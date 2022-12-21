@@ -78,8 +78,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_MAHLZEITENVERGUENSTIGUNG_ENABLED;
+import static ch.dvbern.ebegu.enums.EinstellungKey.OEFFNUNGSSTUNDEN_TFO;
 import static ch.dvbern.ebegu.enums.EinstellungKey.OEFFNUNGSTAGE_KITA;
-import static ch.dvbern.ebegu.enums.EinstellungKey.OEFFNUNGSTAGE_TFO;
 import static ch.dvbern.ebegu.util.EbeguUtil.collectionComparator;
 
 @ApplicationScoped
@@ -220,7 +220,7 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 
 		boolean mahlzeitVergunstigungEnabled = isEnabled(betreuung, GEMEINDE_MAHLZEITENVERGUENSTIGUNG_ENABLED);
 		BigDecimal maxTageProMonat = getEinstellungAsBigdecimal(betreuung, OEFFNUNGSTAGE_KITA);
-		BigDecimal maxStundenProMonat = getEinstellungAsBigdecimal(betreuung, OEFFNUNGSTAGE_TFO);
+		BigDecimal maxStundenProMonat = getEinstellungAsBigdecimal(betreuung, OEFFNUNGSSTUNDEN_TFO);
 
 		ProcessingContext ctx = new ProcessingContext(
 			betreuung,
