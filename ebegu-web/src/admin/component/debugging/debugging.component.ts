@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {ChangeDetectionStrategy, Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {NgForm} from '@angular/forms';
 import {Category, UIRouter} from '@uirouter/core';
 import {visualizer} from '@uirouter/visualizer';
@@ -23,6 +23,7 @@ import * as Raven from 'raven-js';
 import {Subject} from 'rxjs';
 import {distinctUntilChanged, filter, map, takeUntil} from 'rxjs/operators';
 import {LogFactory} from '../../../app/core/logging/LogFactory';
+import {GesuchRS} from '../../../gesuch/service/gesuchRS.rest';
 
 const LOG = LogFactory.createLog('DebuggingComponent');
 
@@ -41,10 +42,18 @@ export class DebuggingComponent implements OnInit, OnDestroy {
 
     public routerTraceCategories: Category[];
     public hasVisualizer: boolean;
+    public gesuchIdsStr: string;
+    public gesuchIds: string[];
+    public simulationResult: string = '';
+    public simulationsFinished: number = 0;
 
     private readonly unsubscribe$ = new Subject<void>();
 
-    public constructor(private readonly router: UIRouter) {
+    public constructor(
+        private readonly router: UIRouter,
+        private readonly gesuchRS: GesuchRS,
+        private readonly cd: ChangeDetectorRef
+        ) {
         this.routerTraceCategories = this.TRACE_CATEGORY_KEYS
             .map(k => Category[k as any] as any)
             .filter(c => router.trace.enabled(c));
@@ -114,6 +123,18 @@ export class DebuggingComponent implements OnInit, OnDestroy {
                 return Category.VIEWCONFIG;
             }
         }
+    }
+
+    public startSimulation(): void {
+        this.gesuchIds = this.gesuchIdsStr.split(',');
+        this.gesuchIds.forEach(id => {
+            this.gesuchRS.simulateNewVerfuegung(id.trim())
+                .then(res => {
+                    this.simulationResult += res.data;
+                    this.simulationsFinished++;
+                    this.cd.markForCheck();
+                });
+        });
     }
 
 }

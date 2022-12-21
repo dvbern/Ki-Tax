@@ -15,8 +15,10 @@
 
 package ch.dvbern.ebegu.api.resource;
 
+import java.math.BigDecimal;
 import java.net.URI;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -61,8 +63,10 @@ import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.GesuchstellerContainer;
 import ch.dvbern.ebegu.entities.Institution;
 import ch.dvbern.ebegu.entities.SteuerdatenResponse;
+import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.AntragStatus;
 import ch.dvbern.ebegu.enums.AntragStatusDTO;
+import ch.dvbern.ebegu.enums.Betreuungsstatus;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.FinSitStatus;
 import ch.dvbern.ebegu.enums.GesuchBetreuungenStatus;
@@ -79,7 +83,9 @@ import ch.dvbern.ebegu.services.KibonAnfrageService;
 import ch.dvbern.ebegu.services.MassenversandService;
 import ch.dvbern.ebegu.services.PensumAusserordentlicherAnspruchService;
 import ch.dvbern.ebegu.services.PersonenSucheService;
+import ch.dvbern.ebegu.services.VerfuegungService;
 import ch.dvbern.ebegu.util.AntragStatusConverterUtil;
+import ch.dvbern.ebegu.util.MathUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.apache.commons.lang3.Validate;
@@ -157,6 +163,9 @@ public class GesuchResource {
 
 	@Inject
 	private EbeguConfiguration configuration;
+
+	@Inject
+	private VerfuegungService verfuegungService;
 
 	@ApiOperation(value = "Creates a new Antrag in the database. The transfer object also has a relation to " +
 		"Familiensituation which is stored in the database as well.", response = JaxGesuch.class)
@@ -1178,6 +1187,60 @@ public class GesuchResource {
 				antragJaxId.getId()));
 		Gesuch modifiedGesuch = gesuchService.updateMarkiertFuerKontroll(gesuchFromDB, markiertFuerKontroll);
 		return converter.gesuchToJAX(modifiedGesuch);
+	}
+
+	@ApiOperation(value = "Simuliert eine neue Verfügung für ein Gesuch",
+		response = Boolean.class)
+	@Nullable
+	@POST
+	@Path("/simulateNewVerfuegung/{gesuchId}")
+	@Consumes(MediaType.WILDCARD)
+	@Produces(MediaType.TEXT_PLAIN)
+	@RolesAllowed({ SUPER_ADMIN })
+	public Response simulateNewVerfuegung(
+		@Nonnull @NotNull @PathParam("gesuchId") String gesuchId
+	) {
+		if (!configuration.getIsDevmode()) {
+			throw new EbeguRuntimeException("simulateNewVerfuegung", "simulateNewVerfuegung darf nur in Devmode verwendet werden");
+		}
+		Gesuch gesuchFromDB = gesuchService.findGesuch(gesuchId).orElseThrow(
+			() -> new EbeguEntityNotFoundException("simulateNewVerfuegung", "Gesuch nicht gefunden", gesuchId)
+		);
+		var log = new StringBuilder();
+		var initialBgs = new HashMap<String, BigDecimal>();
+		gesuchFromDB.getKindContainers().forEach(k -> {
+			k.getBetreuungen().forEach(b -> {
+				var verfuegung = b.getVerfuegung();
+				var sumBG = calculateSumBG(verfuegung.getZeitabschnitte());
+				initialBgs.put(b.getId(), sumBG);
+				b.setBetreuungsstatus(Betreuungsstatus.BESTAETIGT);
+			});
+		});
+		var newGesuch = verfuegungService.calculateVerfuegung(gesuchFromDB);
+		newGesuch.getKindContainers().forEach(k -> {
+			k.getBetreuungen().forEach(b -> {
+				var verfuegung = b.getVerfuegung();
+				var sumNew = calculateSumBG(verfuegung.getZeitabschnitte());
+				var sumOld = initialBgs.get(b.getId());
+				if (sumOld.compareTo(sumNew) != 0) {
+					log.append("Betreuung mit id ")
+						.append(b.getId())
+						.append(" nicht identisch. Alt: ")
+						.append(sumOld).append(" Neu: ")
+						.append(sumNew)
+						.append("\n");
+				}
+			});
+		});
+		return Response.ok(log.toString()).build();
+	}
+
+	private BigDecimal calculateSumBG(@Nonnull List<VerfuegungZeitabschnitt> zeitabschnitte) {
+		var sum = BigDecimal.ZERO;
+		for (var z : zeitabschnitte) {
+			sum = MathUtil.DEFAULT.add(sum, z.getVerguenstigung());
+		}
+		return sum;
 	}
 
 }

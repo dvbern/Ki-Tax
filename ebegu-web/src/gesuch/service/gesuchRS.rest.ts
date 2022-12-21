@@ -247,4 +247,9 @@ export class GesuchRS implements IEntityRS {
         const url = `${this.serviceURL}/markiertfuerkontroll/${encodeURIComponent(antragId)}/${markiertFuerKontroll}`;
         return this.$http.post(url, null).then(response => this.ebeguRestUtil.parseGesuch(new TSGesuch(), response.data));
     }
+
+    public simulateNewVerfuegung(id: string): IPromise<any> {
+        const url = `${this.serviceURL}/simulateNewVerfuegung/${encodeURIComponent(id)}`;
+        return this.$http.post(url, null);
+    }
 }

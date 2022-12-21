@@ -64,5 +64,36 @@
                 </div>
             </div>
         </form>
+
+        <div class="view-title margin-top-20">
+            <h2>Neue BG-Berechung für bereits verfügte Gesuche simulieren</h2>
+            <p>GesuchIds kommagetrennt eingeben</p>
+        </div>
+
+        <div>
+            <div class="row">
+                <div class="col-md-6">
+                    <textarea [(ngModel)]="gesuchIdsStr"
+                              class="form-control"
+                              id="gesuchIds">
+                </textarea>
+                </div>
+                <div class="col-md-3">
+                    <button (click)="startSimulation()" class="dv-btn">
+                        Simulation starten
+                    </button>
+                </div>
+            </div>
+            <div class="row margin-top-10" *ngIf="simulationsFinished > 0">
+                <div class="col-md-12">
+                    <p>Simulation {{simulationsFinished}} von {{gesuchIds.length}} fertig</p>
+                </div>
+                <div class="col-md-12">
+                    <p>{{simulationResult}}</p>
+                </div>
+            </div>
+        </div>
+
+
     </div>
 </dv-full-height-container>
