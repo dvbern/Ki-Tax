@@ -1018,11 +1018,7 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND));
 
 		MitteilungUtil.initializeBetreuungsmitteilung(mitteilung, betreuung, currentBenutzer, locale);
-		mitteilung.setMessage(MitteilungUtil.createNachrichtForMutationsmeldung(
-			pensenFromAbweichungen,
-			mahlzeitenverguenstigungEnabled,
-			locale,
-			betreuungspensumAnzeigeTyp));
+		mitteilung.setMessage(createNachrichtForMutationsmeldung(mitteilung, pensenFromAbweichungen));
 
 		sendBetreuungsmitteilung(mitteilung);
 	}
@@ -1061,7 +1057,7 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 			if (mitteilung.getBetreuungspensen().isEmpty()) {
 				persistence.remove(mitteilung);
 			} else {
-				updateMessage(mitteilung);
+				mitteilung.setMessage(createNachrichtForMutationsmeldung(mitteilung, mitteilung.getBetreuungspensen()));
 				persistence.merge(mitteilung);
 			}
 		});
@@ -1139,10 +1135,13 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 				TECHNICAL_KIBON_BENUTZER_ID));
 	}
 
-	private void updateMessage(Betreuungsmitteilung mitteilung) {
-		assert mitteilung.getBetreuung() != null;
+	@Override
+	public String createNachrichtForMutationsmeldung(
+		@Nonnull Betreuungsmitteilung mitteilung,
+		@Nonnull Set<BetreuungsmitteilungPensum> changedBetreuungen
+	) {
 		final Locale locale = LocaleThreadLocal.get();
-
+		assert mitteilung.getBetreuung() != null;
 		final boolean mvzEnabled = einstellungService.findEinstellung(
 			EinstellungKey.GEMEINDE_MAHLZEITENVERGUENSTIGUNG_ENABLED,
 			mitteilung.getBetreuung().extractGemeinde(),
@@ -1155,11 +1154,11 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 			mitteilung.getBetreuung().extractGesuchsperiode());
 		BetreuungspensumAnzeigeTyp betreuungspensumAnzeigeTyp = BetreuungspensumAnzeigeTyp.valueOf(einstellungAnzeigeTyp.getValue());
 
-		mitteilung.setMessage(MitteilungUtil.createNachrichtForMutationsmeldung(
-			mitteilung.getBetreuungspensen(),
+		return MitteilungUtil.createNachrichtForMutationsmeldung(
+			changedBetreuungen,
 			mvzEnabled,
 			locale,
-			betreuungspensumAnzeigeTyp));
+			betreuungspensumAnzeigeTyp);
 	}
 
 	private Collection<Betreuungsmitteilung> findAllBetreuungsMitteilungenForInstitution(Institution institution) {

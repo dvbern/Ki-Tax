@@ -61,12 +61,9 @@ import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Betreuungsmitteilung;
 import ch.dvbern.ebegu.entities.Dossier;
-import ch.dvbern.ebegu.entities.Einstellung;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Mitteilung;
 import ch.dvbern.ebegu.entities.NeueVeranlagungsMitteilung;
-import ch.dvbern.ebegu.enums.BetreuungspensumAnzeigeTyp;
-import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
@@ -75,7 +72,6 @@ import ch.dvbern.ebegu.i18n.LocaleThreadLocal;
 import ch.dvbern.ebegu.services.BenutzerService;
 import ch.dvbern.ebegu.services.BetreuungService;
 import ch.dvbern.ebegu.services.DossierService;
-import ch.dvbern.ebegu.services.EinstellungService;
 import ch.dvbern.ebegu.services.MitteilungService;
 import ch.dvbern.ebegu.util.MitteilungUtil;
 import ch.dvbern.ebegu.util.MonitoringUtil;
@@ -128,9 +124,6 @@ public class MitteilungResource {
 
 	@Inject
 	private BenutzerService benutzerService;
-
-	@Inject
-	private EinstellungService einstellungService;
 
 	@ApiOperation(value = "Speichert eine Mitteilung", response = JaxMitteilung.class)
 	@Nullable
@@ -192,18 +185,6 @@ public class MitteilungResource {
 
 		final Locale locale = LocaleThreadLocal.get();
 
-		final Einstellung einstellung = einstellungService.findEinstellung(
-			EinstellungKey.GEMEINDE_MAHLZEITENVERGUENSTIGUNG_ENABLED,
-			betreuung.extractGemeinde(),
-			betreuung.extractGesuchsperiode());
-		boolean mahlzeitenverguenstigungEnabled = einstellung.getValueAsBoolean();
-
-		final Einstellung einstellungAnzeigeTyp = einstellungService.findEinstellung(
-			EinstellungKey.PENSUM_ANZEIGE_TYP,
-			betreuung.extractGemeinde(),
-			betreuung.extractGesuchsperiode());
-		BetreuungspensumAnzeigeTyp betreuungspensumAnzeigeTyp = BetreuungspensumAnzeigeTyp.valueOf(einstellungAnzeigeTyp.getValue());
-
 		final Benutzer currentBenutzer = benutzerService.getCurrentBenutzer()
 			.orElseThrow(() -> new EbeguEntityNotFoundException(
 				"sendBetreuungsmitteilung",
@@ -211,10 +192,8 @@ public class MitteilungResource {
 
 		MitteilungUtil.initializeBetreuungsmitteilung(betreuungsmitteilung, betreuung, currentBenutzer, locale);
 
-		betreuungsmitteilung.setMessage(MitteilungUtil.createNachrichtForMutationsmeldung(
-			betreuungsmitteilung.getBetreuungspensen(),
-			mahlzeitenverguenstigungEnabled, locale,
-			betreuungspensumAnzeigeTyp));
+		betreuungsmitteilung.setMessage(mitteilungService.createNachrichtForMutationsmeldung(betreuungsmitteilung,
+			betreuungsmitteilung.getBetreuungspensen()));
 
 		Betreuungsmitteilung persistedMitteilung =
 			this.mitteilungService.sendBetreuungsmitteilung(betreuungsmitteilung);
