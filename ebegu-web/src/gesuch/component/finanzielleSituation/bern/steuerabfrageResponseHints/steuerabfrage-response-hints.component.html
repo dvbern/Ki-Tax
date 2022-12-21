@@ -85,11 +85,11 @@
     <p class="ebegu-h3"
        [innerHTML]="'FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF_ERFOLGREICH' | translate"></p>
 
-    <div *ngIf="tryAgainPossible()" >
+    <div *ngIf="tryAgainPossible() && !steuerAbfrageRequestRunning" >
         <a class="pointer-cursor" translate (click)="tryAgain()">ERNEUT_VERSUCHEN</a>
     </div>
-    <div > <!-- FIXME: spmi hier muss auf den Status geschaut werde ob der Request schon läuft -->
-        <p > {{steuerAbfrageRequestRunning}}  -{{steuerAbfrageResponeHintStatusText}}</p>
+    <div *ngIf="steuerAbfrageRequestRunning">
+         {{steuerAbfrageResponeHintStatusText}}
     </div>
     <p>
 

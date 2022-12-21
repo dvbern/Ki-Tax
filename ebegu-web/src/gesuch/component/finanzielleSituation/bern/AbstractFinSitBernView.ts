@@ -42,7 +42,6 @@ const removeDialogTemplate = require('../../../dialog/removeDialogTemplate.html'
 
 enum saveHints {
     LOADING= "FINSIT_BERN_LOADING",
-    AGAIN='FINSIT_BERN_AGAIN',
     SAVED= 'FINSIT_BERN_SAVED',
     ERROR= 'FINSIT_BERN_ERROR',
 }
@@ -157,6 +156,7 @@ export abstract class AbstractFinSitBernView extends AbstractGesuchViewControlle
     }
 
     public callKiBonAnfrageAndUpdateFinSit(): void {
+        this.finSitRequestRunning = true;
         this.finSitRequestState = saveHints.LOADING;
         this.callKiBonAnfrage(EbeguUtil.isNotNullAndTrue(this.model.gemeinsameSteuererklaerung))
             .then(() => {
@@ -169,9 +169,12 @@ export abstract class AbstractFinSitBernView extends AbstractGesuchViewControlle
                 this.finSitRequestState = saveHints.ERROR;
             },
         ).finally(() => {
-                    this.finSitRequestState = saveHints.AGAIN;
+                    this.finSitRequestState = saveHints.SAVED;
             },
         );
+        setTimeout(() => {
+            this.finSitRequestRunning = false;
+        }, 5000)
     }
 
     protected abstract resetKiBonAnfrageFinSit(): void;
@@ -187,22 +190,7 @@ export abstract class AbstractFinSitBernView extends AbstractGesuchViewControlle
     }
 
     protected showZugriffAufSteuerdaten(): boolean {
-        if (!this.steuerSchnittstelleAktivForPeriode) {
-            return false;
-        }
-
-        if (this.gesuchModelManager.getFall().isSozialdienstFall()) {
-            return false;
-        }
-
-        if (!this.gesuchModelManager.getGesuch().isOnlineGesuch() &&
-            !this.showZugriffAufSteuerdatenForGemeinde()) {
-            return false;
-        }
-
-        return this.authServiceRS.isRole(TSRole.GESUCHSTELLER)
-            || EbeguUtil.isNotNullOrUndefined(this.model.getFiSiConToWorkWith().finanzielleSituationGS)
-            || this.showZugriffAufSteuerdatenForGemeinde();
+       return true;
     }
 
     protected showZugriffAufSteuerdatenForGemeinde(): boolean {
