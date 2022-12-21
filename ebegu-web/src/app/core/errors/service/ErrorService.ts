@@ -14,6 +14,7 @@
  */
 
 import IRootScopeService = angular.IRootScopeService;
+import {DVErrorMessageCallback} from '../../../../models/DVErrorMessageCallback';
 import {TSMessageEvent} from '../../../../models/enums/TSErrorEvent';
 import {TSErrorLevel} from '../../../../models/enums/TSErrorLevel';
 import {TSErrorType} from '../../../../models/enums/TSErrorType';
@@ -89,14 +90,14 @@ export class ErrorService {
         this.$rootScope.$broadcast(TSMessageEvent[udateEvent], this.errors);
     }
 
-    public addMesageAsError(msg: string): void {
-        const error = new TSExceptionReport(TSErrorType.INTERNAL, TSErrorLevel.SEVERE, msg, null);
+    public addMesageAsError(msg: string, errorCallback?: DVErrorMessageCallback): void {
+        const error = new TSExceptionReport(TSErrorType.INTERNAL, TSErrorLevel.SEVERE, msg, null, errorCallback);
         this.addDvbError(error);
 
     }
 
-    public addMesageAsInfo(msg: string): void {
-        const error = new TSExceptionReport(TSErrorType.INTERNAL, TSErrorLevel.INFO, msg, null);
+    public addMesageAsInfo(msg: string, errorCallback?: DVErrorMessageCallback): void {
+        const error = new TSExceptionReport(TSErrorType.INTERNAL, TSErrorLevel.INFO, msg, null, errorCallback);
         this.addDvbError(error);
     }
 

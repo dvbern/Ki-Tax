@@ -49,6 +49,7 @@ public interface LastenausgleichService {
 	Collection<Lastenausgleich> getLastenausgleicheForGemeinden(@Nonnull Set<Gemeinde> gemeinden);
 
 	/**
+	 * Alte Lastenausgleich Berechung.
 	 * Berechnet einen Lastenausgleich fuer das uebergebene Jahr. Die Kosten pro 100% Platz werden als
 	 * LastenausgleichGrundlagen gespeichert.
 	 * Der Lastenausgleich kann pro Jahr nur einmal erstellt werden, auch die Grundlagen duerfen nicht mehr geaendert
@@ -56,9 +57,22 @@ public interface LastenausgleichService {
 	 * Es werden auch rueckwirkende Korrekturen vorgenommen und zwar fuer die letzten 10 Jahre
 	 */
 	@Nonnull
-	Lastenausgleich createLastenausgleich(
+	Lastenausgleich createLastenausgleichOld(
 			int jahr,
 			@Nonnull BigDecimal selbstbehaltPro100ProzentPlatz,
+			Mandant mandant);
+
+	/**
+	 * Neue Lastenausgleich Berechnung.
+	 * Berechnet einen Lastenausgleich fuer das uebergebene Jahr. Ab dem Jahr 2022 wird der Lastenausgleich nicht mehr
+	 * mit dem Selbstbehalt pro 100% Platz berechnet.
+	 * Der Lastenausgleich kann pro Jahr nur einmal erstellt werden, auch die Grundlagen duerfen nicht mehr geaendert
+	 * werden.
+	 * Es werden auch rueckwirkende Korrekturen vorgenommen und zwar fuer die letzten 10 Jahre
+	 */
+	@Nonnull
+	Lastenausgleich createLastenausgleichNew(
+			int jahr,
 			Mandant mandant);
 
 	/**
@@ -83,4 +97,9 @@ public interface LastenausgleichService {
 	 * @param storedLastenausgleich
 	 */
 	void sendEmailsToGemeinden(@Nonnull Lastenausgleich storedLastenausgleich);
+
+	/*
+	Findet Lastenausgleich des übergebenen Jahres, falls vorhanden
+	 */
+	Optional<Lastenausgleich> findLastenausgleich(@Nonnull Integer year);
 }

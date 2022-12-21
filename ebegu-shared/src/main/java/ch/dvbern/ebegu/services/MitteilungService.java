@@ -33,6 +33,7 @@ import ch.dvbern.ebegu.entities.Fall;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Institution;
 import ch.dvbern.ebegu.entities.Mitteilung;
+import ch.dvbern.ebegu.entities.NeueVeranlagungsMitteilung;
 import ch.dvbern.ebegu.types.DateRange;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -65,6 +66,9 @@ public interface MitteilungService {
 	@Nonnull
 	Mitteilung setMitteilungUngelesen(@Nonnull String mitteilungsId);
 
+	@Nonnull
+	Mitteilung setMitteilungIgnoriert(@Nonnull String mitteilungsId);
+
 	/**
 	 * Sucht die Mitteilung mit der uebergebenen ID
 	 */
@@ -76,6 +80,12 @@ public interface MitteilungService {
 	 */
 	@Nonnull
 	Optional<Betreuungsmitteilung> findBetreuungsmitteilung(@Nonnull String key);
+
+	/**
+	 * Sucht die Betreuungsmitteilung mit der uebergebenen ID
+	 */
+	@Nonnull
+	Optional<NeueVeranlagungsMitteilung> findVeranlagungsMitteilungById(@Nonnull String key);
 
 	/**
 	 * Löscht alle offenen Mutationsmeldung für eine Betreuung
@@ -237,4 +247,9 @@ public interface MitteilungService {
 	String applyBetreuungsmitteilungIfPossible(@Nonnull Betreuungsmitteilung betreuungsmitteilung);
 
 	Optional<Betreuungsmitteilung> findAndRefreshBetreuungsmitteilung(String id);
+
+
+	NeueVeranlagungsMitteilung sendNeueVeranlagungsmitteilung(@Nonnull NeueVeranlagungsMitteilung neueVeranlagungsMitteilung);
+
+	Gesuch neueVeranlagungssmitteilungBearbeiten(NeueVeranlagungsMitteilung neueVeranlagungsMitteilung);
 }

@@ -87,7 +87,6 @@ public final class BGRechnerParameterDTO {
 
 	private boolean texteForFKJV = false;
 
-
 	private MahlzeitenverguenstigungParameter mahlzeitenverguenstigungParameter = new MahlzeitenverguenstigungParameter();
 
 	private BGRechnerParameterGemeindeDTO gemeindeParameter = new BGRechnerParameterGemeindeDTO();
@@ -213,6 +212,14 @@ public final class BGRechnerParameterDTO {
 
 	public void setMaxMassgebendesEinkommen(BigDecimal maxMassgebendesEinkommen) {
 		this.maxMassgebendesEinkommen = maxMassgebendesEinkommen;
+	}
+
+	public BigDecimal getMaxMassgebendesEinkommenZurBerechnungDesGutscheinsProZeiteinheit() {
+		if (this.gemeindeParameter.getGemeindePauschalbetragEnabled()) {
+			return this.gemeindeParameter.getGemeindePauschalbetragMaxMassgebendenEinkommenFuerBerechnung();
+		}
+
+		return maxMassgebendesEinkommen;
 	}
 
 	public BigDecimal getMinMassgebendesEinkommen() {

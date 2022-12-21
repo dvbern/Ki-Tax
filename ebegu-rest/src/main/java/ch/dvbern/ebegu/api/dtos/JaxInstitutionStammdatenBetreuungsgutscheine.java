@@ -39,9 +39,6 @@ public class JaxInstitutionStammdatenBetreuungsgutscheine extends JaxAbstractDTO
 	private static final long serialVersionUID = 1881996153584255198L;
 
 	@Nullable
-	private JaxGemeinde gemeinde;
-
-	@Nullable
 	private String iban;
 	@Nullable
 	private String kontoinhaber;
@@ -116,15 +113,6 @@ public class JaxInstitutionStammdatenBetreuungsgutscheine extends JaxAbstractDTO
 
 	@Nonnull
 	private Set<JaxBetreuungsstandort> betreuungsstandorte = new HashSet<>();
-
-	@Nullable
-	public JaxGemeinde getGemeinde() {
-		return gemeinde;
-	}
-
-	public void setGemeinde(@Nullable JaxGemeinde gemeinde) {
-		this.gemeinde = gemeinde;
-	}
 
 	@Nullable
 	public String getIban() {

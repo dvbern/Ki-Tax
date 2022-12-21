@@ -21,8 +21,8 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Month;
-import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -46,7 +46,6 @@ import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.InstitutionExternalClient;
-import ch.dvbern.ebegu.entities.InstitutionStammdaten;
 import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.enums.AntragStatus;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
@@ -119,31 +118,24 @@ public class PlatzbestaetigungEventHandlerTest extends EasyMockSupport {
 	@TestSubject
 	private final PlatzbestaetigungEventHandler handler = new PlatzbestaetigungEventHandler();
 
-	@SuppressWarnings("InstanceVariableMayNotBeInitialized")
 	@Mock
 	private BetreuungService betreuungService;
 
-	@SuppressWarnings("InstanceVariableMayNotBeInitialized")
 	@Mock
 	private EinstellungService einstellungService;
 
-	@SuppressWarnings("InstanceVariableMayNotBeInitialized")
 	@Mock
 	private MitteilungService mitteilungService;
 
-	@SuppressWarnings("InstanceVariableMayNotBeInitialized")
 	@Mock
 	private GemeindeService gemeindeService;
 
-	@SuppressWarnings("InstanceVariableMayNotBeInitialized")
 	@Mock
 	private BetreuungEventHelper betreuungEventHelper;
 
-	@SuppressWarnings("InstanceVariableMayNotBeInitialized")
 	@Mock
 	private InstitutionExternalClient institutionExternalClient;
 
-	@SuppressWarnings("InstanceVariableMayNotBeInitialized")
 	@Mock(MockType.NICE)
 	private BetreuungMonitoringService betreuungMonitoringService;
 
@@ -158,11 +150,12 @@ public class PlatzbestaetigungEventHandlerTest extends EasyMockSupport {
 		gesuchsperiode = TestDataUtil.createGesuchsperiodeXXYY(2020, 2021);
 		gemeinde = TestDataUtil.createGemeindeParis();
 		mandant = requireNonNull(gemeinde.getMandant());
-		List<InstitutionStammdaten> institutionStammdatenList = new ArrayList<>();
-		institutionStammdatenList.add(TestDataUtil.createInstitutionStammdatenKitaWeissenstein());
-		institutionStammdatenList.add(TestDataUtil.createInstitutionStammdatenKitaBruennen());
 		Testfall01_WaeltiDagmar testfall_1GS =
-			new Testfall01_WaeltiDagmar(gesuchsperiode, false, gemeinde,  new TestDataInstitutionStammdatenBuilder(gesuchsperiode));
+			new Testfall01_WaeltiDagmar(
+				gesuchsperiode,
+				false,
+				gemeinde,
+				new TestDataInstitutionStammdatenBuilder(gesuchsperiode));
 		testfall_1GS.createFall();
 		testfall_1GS.createGesuch(LocalDate.of(2016, Month.DECEMBER, 12));
 		gesuch_1GS = testfall_1GS.fillInGesuch();
@@ -295,8 +288,8 @@ public class PlatzbestaetigungEventHandlerTest extends EasyMockSupport {
 			Betreuung betreuung = betreuungWithSingleContainer();
 
 			expectBetreuungFound(betreuung);
-			expect(betreuungEventHelper.getExternalClient(CLIENT_NAME, betreuung))
-				.andReturn(Optional.empty());
+			expect(betreuungEventHelper.getExternalClients(CLIENT_NAME, betreuung))
+				.andReturn(new InstitutionExternalClients());
 			expect(betreuungEventHelper.clientNotFoundFailure(CLIENT_NAME, betreuung))
 				.andReturn(Processing.failure("Kein InstitutionExternalClient Namens ist der Institution zugewiesen"));
 
@@ -319,7 +312,7 @@ public class PlatzbestaetigungEventHandlerTest extends EasyMockSupport {
 			Betreuung betreuung = betreuungWithSingleContainer();
 
 			expectBetreuungFound(betreuung);
-			mockClient(new DateRange(2022));
+			mockClients(new DateRange(2022));
 
 			testIgnored(dto, "Der Client hat innerhalb der Periode keine Berechtigung.");
 		}
@@ -333,7 +326,7 @@ public class PlatzbestaetigungEventHandlerTest extends EasyMockSupport {
 			Betreuung betreuung = betreuungWithSingleContainer();
 
 			expectBetreuungFound(betreuung);
-			mockClient(Constants.DEFAULT_GUELTIGKEIT);
+			mockClients(Constants.DEFAULT_GUELTIGKEIT);
 
 			testIgnored(dto, "Zeitabschnitte dürfen nicht überlappen.");
 		}
@@ -348,7 +341,7 @@ public class PlatzbestaetigungEventHandlerTest extends EasyMockSupport {
 			betreuung.getInstitutionStammdaten().setGueltigkeit(institutionGueltigkeit);
 
 			expectBetreuungFound(betreuung);
-			mockClient(new DateRange(Constants.START_OF_TIME, gueltigAb.minusDays(1)));
+			mockClients(new DateRange(Constants.START_OF_TIME, gueltigAb.minusDays(1)));
 
 			testIgnored(dto, "Die Institution Gültigkeit überlappt nicht mit der Client Gültigkeit.");
 		}
@@ -365,7 +358,7 @@ public class PlatzbestaetigungEventHandlerTest extends EasyMockSupport {
 			betreuung.getInstitutionStammdaten().setGueltigkeit(institutionGueltigkeit);
 
 			expectBetreuungFound(betreuung);
-			mockClient(Constants.DEFAULT_GUELTIGKEIT);
+			mockClients(Constants.DEFAULT_GUELTIGKEIT);
 
 			testIgnored(
 				dto,
@@ -383,7 +376,7 @@ public class PlatzbestaetigungEventHandlerTest extends EasyMockSupport {
 			Betreuung betreuung = betreuungWithSingleContainer();
 
 			expectBetreuungFound(betreuung);
-			mockClient(new DateRange(zeitabschnittBis.plusDays(1), Constants.END_OF_TIME));
+			mockClients(new DateRange(zeitabschnittBis.plusDays(1), Constants.END_OF_TIME));
 
 			testIgnored(
 				dto,
@@ -400,7 +393,7 @@ public class PlatzbestaetigungEventHandlerTest extends EasyMockSupport {
 			betreuung.setBetreuungsstatus(status);
 
 			expectBetreuungFound(betreuung);
-			mockClient(Constants.DEFAULT_GUELTIGKEIT);
+			mockClients(Constants.DEFAULT_GUELTIGKEIT);
 			withMahlzeitenverguenstigung(true);
 
 			replayAll();
@@ -613,11 +606,38 @@ public class PlatzbestaetigungEventHandlerTest extends EasyMockSupport {
 			 * periode. Otherwise it is not possible to augment the data with Zeitabschnitte from another client.
 			 */
 			@Test
-			void requireHumanConfirmationWhenClientGueltigkeitIsNotCoveringEntirePeriod() {
+			void requireHumanConfirmationWhenClientGueltigkeitIsNotCoveringEntirePeriod_withSomeOtherClientInPeriode() {
+				LocalDate periodeAb = gesuchsperiode.getGueltigkeit().getGueltigAb();
+				clientGueltigkeit =
+					new DateRange(periodeAb.plusDays(1), Constants.END_OF_TIME);
+				InstitutionExternalClient client2 =
+					mockClient(new DateRange(Constants.START_OF_TIME, periodeAb), "client2");
+
+				expectHumanConfirmation();
+				expectBetreuungFound(betreuung);
+
+				mockClients(clientGueltigkeit, List.of(client2));
+				withMahlzeitenverguenstigung(true);
+				withZusaetzlicherGutschein(zusaetzlicherGutscheinGemeindeEnabled);
+
+				replayAll();
+
+				Processing result = handler.attemptProcessing(eventMonitor, dto);
+				assertThat(result.isProcessingSuccess(), is(true));
+				verifyAll();
+			}
+
+			/**
+			 * The automatic confirmation must be enabled, when the client is not permittet to set data for the entire
+			 * periode but there is no other client.
+			 */
+			@Test
+			void automaticWhenClientGueltigkeitIsNotCoveringEntirePeriod_whenNoOtherClientInPeriode() {
+
 				clientGueltigkeit =
 					new DateRange(gesuchsperiode.getGueltigkeit().getGueltigAb().plusDays(1), Constants.END_OF_TIME);
 
-				expectHumanConfirmation();
+				expectPlatzBestaetigung();
 				testProcessingSuccess();
 			}
 
@@ -862,7 +882,7 @@ public class PlatzbestaetigungEventHandlerTest extends EasyMockSupport {
 		private void testProcessingSuccess() {
 			expectBetreuungFound(betreuung);
 
-			mockClient(clientGueltigkeit);
+			mockClients(clientGueltigkeit);
 			withMahlzeitenverguenstigung(true);
 			withZusaetzlicherGutschein(zusaetzlicherGutscheinGemeindeEnabled);
 
@@ -1298,7 +1318,7 @@ public class PlatzbestaetigungEventHandlerTest extends EasyMockSupport {
 		private void expectMutationsmeldung(@Nonnull Betreuungsmitteilung... existing) {
 			expectBetreuungFound(betreuung);
 
-			mockClient(clientGueltigkeit);
+			mockClients(clientGueltigkeit);
 
 			ExternalClient mockClient = new ExternalClient();
 			mockClient.setClientName(CLIENT_NAME);
@@ -1318,7 +1338,7 @@ public class PlatzbestaetigungEventHandlerTest extends EasyMockSupport {
 				.andReturn(Optional.of(TestDataUtil.createGemeindeStammdaten(gemeinde)));
 
 			expect(betreuungEventHelper.getMandantFromBgNummer(REF_NUMMER))
-					.andReturn(Optional.of(mandant));
+				.andReturn(Optional.of(mandant));
 		}
 
 		@Nonnull
@@ -1332,7 +1352,6 @@ public class PlatzbestaetigungEventHandlerTest extends EasyMockSupport {
 		}
 	}
 
-	@SuppressWarnings("MethodOnlyUsedFromInnerClass")
 	private void expectBetreuungFound(@Nonnull Betreuung betreuung) {
 		expect(betreuungEventHelper.getMandantFromBgNummer(REF_NUMMER))
 			.andReturn(Optional.of(mandant));
@@ -1341,23 +1360,35 @@ public class PlatzbestaetigungEventHandlerTest extends EasyMockSupport {
 			.andReturn(Optional.of(betreuung));
 	}
 
-	@SuppressWarnings("MethodOnlyUsedFromInnerClass")
-	private void mockClient(@Nonnull DateRange clientGueltigkeit) {
-		institutionExternalClient = mock(InstitutionExternalClient.class);
+	private void mockClients(@Nonnull DateRange clientGueltigkeit) {
+		mockClients(clientGueltigkeit, Collections.emptyList());
+	}
 
-		ExternalClient mockClient = new ExternalClient();
-		mockClient.setClientName(CLIENT_NAME);
-		expect(institutionExternalClient.getExternalClient())
-			.andStubReturn(mockClient);
+	private void mockClients(@Nonnull DateRange clientGueltigkeit, Collection<InstitutionExternalClient> others) {
+		institutionExternalClient = mockClient(clientGueltigkeit, CLIENT_NAME);
 
-		expect(betreuungEventHelper.getExternalClient(eq(CLIENT_NAME), EasyMock.<Betreuung>anyObject()))
-			.andReturn(Optional.of(institutionExternalClient));
+		expect(betreuungEventHelper.getExternalClients(eq(CLIENT_NAME), EasyMock.<Betreuung>anyObject()))
+			.andReturn(new InstitutionExternalClients(institutionExternalClient, others));
 
 		expect(institutionExternalClient.getGueltigkeit())
 			.andStubReturn(clientGueltigkeit);
 	}
 
-	@SuppressWarnings("MethodOnlyUsedFromInnerClass")
+	@Nonnull
+	private InstitutionExternalClient mockClient(@Nonnull DateRange clientGueltigkeit, @Nonnull String clientName) {
+		InstitutionExternalClient client = mock(InstitutionExternalClient.class);
+
+		ExternalClient mockClient = new ExternalClient();
+		mockClient.setClientName(clientName);
+		expect(client.getExternalClient())
+			.andStubReturn(mockClient);
+
+		expect(client.getGueltigkeit())
+			.andStubReturn(clientGueltigkeit);
+
+		return client;
+	}
+
 	private void withMahlzeitenverguenstigung(boolean enabled) {
 		Einstellung einstellung = mock(Einstellung.class);
 		expect(einstellungService.findEinstellung(GEMEINDE_MAHLZEITENVERGUENSTIGUNG_ENABLED, gemeinde, gesuchsperiode))
@@ -1365,7 +1396,6 @@ public class PlatzbestaetigungEventHandlerTest extends EasyMockSupport {
 		expect(einstellung.getValueAsBoolean()).andReturn(enabled);
 	}
 
-	@SuppressWarnings("MethodOnlyUsedFromInnerClass")
 	@Nonnull
 	private ZeitabschnittDTO defaultZeitabschnittDTO() {
 		return PlatzbestaetigungTestUtil.createZeitabschnittDTO(
@@ -1374,7 +1404,6 @@ public class PlatzbestaetigungEventHandlerTest extends EasyMockSupport {
 		);
 	}
 
-	@SuppressWarnings("MethodOnlyUsedFromInnerClass")
 	@Nonnull
 	private Betreuung betreuungWithSingleContainer() {
 		return PlatzbestaetigungTestUtil.betreuungWithSingleContainer(gesuch_1GS);

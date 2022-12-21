@@ -21,11 +21,12 @@ import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
 import {MatTableDataSource} from '@angular/material/table';
 import {TranslateService} from '@ngx-translate/core';
 import {from, Observable, Subject} from 'rxjs';
-import {map, mergeMap, takeUntil} from 'rxjs/operators';
+import {filter, map, mergeMap, takeUntil} from 'rxjs/operators';
 import {AuthServiceRS} from '../../../../authentication/service/AuthServiceRS.rest';
 import {TSRole} from '../../../../models/enums/TSRole';
 import {TSDownloadFile} from '../../../../models/TSDownloadFile';
 import {TSLastenausgleich} from '../../../../models/TSLastenausgleich';
+import {EbeguUtil} from '../../../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../../../utils/TSRoleUtil';
 import {DvNgRemoveDialogComponent} from '../../../core/component/dv-ng-remove-dialog/dv-ng-remove-dialog.component';
 import {ErrorService} from '../../../core/errors/service/ErrorService';
@@ -46,6 +47,9 @@ const LOG = LogFactory.createLog('LastenausgleichViewXComponent');
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class LastenausgleichViewXComponent implements OnInit, OnDestroy {
+
+    // ab dem Jahr 2022 wird der Lastenausgleich ohne Selbstbehalt generiert
+    private readonly FIRST_YEAR_WITHOUT_SELBSTBEHALT = 2022;
 
     public jahr: number;
     public selbstbehaltPro100ProzentPlatz: number;
@@ -123,6 +127,7 @@ export class LastenausgleichViewXComponent implements OnInit, OnDestroy {
         this.dialog.open(DvNgRemoveDialogComponent, dialogConfig)
             .afterClosed()
             .pipe(
+                filter(q => EbeguUtil.isNotNullOrUndefined(q)), // break if dialog is canceled
                 mergeMap(() =>
                     this.lastenausgleichRS.createLastenausgleich(this.jahr, this.selbstbehaltPro100ProzentPlatz))
             )
@@ -256,5 +261,18 @@ export class LastenausgleichViewXComponent implements OnInit, OnDestroy {
 
     public showActions(): boolean {
         return this.authServiceRS.isOneOfRoles(this.TSRoleUtil.getMandantRoles());
+    }
+
+    public showLastenausgleichSelbstbehalt(): boolean {
+        if (!this.jahr || this.jahr.toString(10).length !== 4) {
+            return false;
+        }
+        return this.jahr < this.FIRST_YEAR_WITHOUT_SELBSTBEHALT;
+    }
+
+    public clearSelbstbehaltIfHidden(): void {
+        if (!this.showLastenausgleichSelbstbehalt()) {
+            this.selbstbehaltPro100ProzentPlatz = undefined;
+        }
     }
 }

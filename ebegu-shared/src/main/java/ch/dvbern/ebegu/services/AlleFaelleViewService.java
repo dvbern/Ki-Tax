@@ -15,30 +15,17 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {LOCALLOGIN_DATA, LocalloginDatum} from './LOCALLOGIN_DATA';
-import {KiBonMandant} from './MANDANTS';
-import {MandantVisitor} from './MandantVisitor';
+package ch.dvbern.ebegu.services;
 
-export class MandantLocalloginDatumVisitor implements MandantVisitor<LocalloginDatum> {
+import java.util.List;
 
-    public process(mandant: KiBonMandant): LocalloginDatum {
-        return mandant.accept(this);
-    }
+import ch.dvbern.ebegu.entities.Gesuch;
 
-    public visitAppenzellAusserrhoden(): LocalloginDatum {
-        return LOCALLOGIN_DATA.AR;
-    }
+public interface AlleFaelleViewService {
 
-    public visitBern(): LocalloginDatum {
-        return LOCALLOGIN_DATA.BE;
-    }
+	void updateViewWithFullGesuch(Gesuch gesuch);
 
-    public visitLuzern(): LocalloginDatum {
-        return LOCALLOGIN_DATA.LU;
-    }
+	Long countAllGesuch();
 
-    public visitSolothurn(): LocalloginDatum {
-        return LOCALLOGIN_DATA.SO;
-    }
-
+	List<String> searchAllGesuchIds(int start, int size);
 }

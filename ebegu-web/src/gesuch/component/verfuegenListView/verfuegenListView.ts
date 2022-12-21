@@ -24,7 +24,8 @@ import {DownloadRS} from '../../../app/core/service/downloadRS.rest';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {isAnyStatusOfMahnung, isAnyStatusOfVerfuegt, TSAntragStatus} from '../../../models/enums/TSAntragStatus';
 import {TSAntragTyp} from '../../../models/enums/TSAntragTyp';
-import {TSBetreuungsstatus} from '../../../models/enums/TSBetreuungsstatus';
+import {TSBetreuungsangebotTyp} from '../../../models/enums/TSBetreuungsangebotTyp';
+import {isBetreuungsstatusStorniert, TSBetreuungsstatus} from '../../../models/enums/TSBetreuungsstatus';
 import {TSEinstellungKey} from '../../../models/enums/TSEinstellungKey';
 import {TSFinSitStatus} from '../../../models/enums/TSFinSitStatus';
 import {TSMahnungTyp} from '../../../models/enums/TSMahnungTyp';
@@ -89,9 +90,10 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
     ];
 
     private kinderWithBetreuungList: Array<TSKindContainer>;
-    public veraenderungBG: number = 0;
-    public veraenderungTS: number = 0;
-    public allVerfuegungenIgnorable: boolean = true;
+    private hasAnyNewOrStornierteBetreuung: boolean = false;
+    public veraenderungBG: number;
+    public veraenderungTS: number;
+    public allVerfuegungenIgnorable: boolean = false;
     public mahnungList: TSMahnung[];
     private mahnung: TSMahnung;
     private tempAntragStatus: TSAntragStatus;
@@ -201,8 +203,26 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
     }
 
     public showMutationVeranderung(): boolean {
+        if (this.hasAnyNewOrStornierteBetreuung) {
+            return false;
+        }
+
+        if (EbeguUtil.isNullOrUndefined(this.veraenderungBG)
+            || EbeguUtil.isNullOrUndefined(this.veraenderungTS)) {
+            return false;
+        }
+
+        if (this.veraenderungBG === 0 && this.veraenderungTS === 0) {
+            return false;
+        }
+
         return !isAnyStatusOfVerfuegt(this.gesuchModelManager.getGesuch().status)
-            && this.gesuchModelManager.getGesuch()?.isMutation();
+            && this.isMutation();
+    }
+
+    public showAnyNewOrStornierteBetreuungen(): boolean {
+        return this.isMutation() && this.hasAnyNewOrStornierteBetreuung
+            && !isAnyStatusOfVerfuegt(this.gesuchModelManager.getGesuch().status);
     }
 
     public setMutationIgnorieren(): void {
@@ -815,11 +835,22 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
     }
 
     private calculateVeraenderung(): void {
+        if (this.hasOnlyFerienbetreuung()) {
+            return;
+        }
+
+        this.veraenderungBG = 0;
+        this.veraenderungTS = 0;
+        this.allVerfuegungenIgnorable = true;
 
         this.kinderWithBetreuungList.forEach(kindContainer =>
-            kindContainer.betreuungen.forEach(betreuung => {
-                this.allVerfuegungenIgnorable = this.allVerfuegungenIgnorable && betreuung.verfuegung.ignorable;
-                if (!betreuung.verfuegung.veraenderungVerguenstigungGegenueberVorgaenger) {
+            kindContainer.betreuungen
+                .filter(betreuung => betreuung.getAngebotTyp() !== TSBetreuungsangebotTyp.FERIENINSEL)
+                .forEach(betreuung => {
+                this.allVerfuegungenIgnorable = this.allVerfuegungenIgnorable && betreuung.verfuegung?.ignorable;
+                if (EbeguUtil.isNullOrUndefined(betreuung.verfuegung?.veraenderungVerguenstigungGegenueberVorgaenger)
+                || isBetreuungsstatusStorniert(betreuung.betreuungsstatus)) {
+                    this.hasAnyNewOrStornierteBetreuung = true;
                     return;
                 }
 
@@ -829,9 +860,12 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
                     this.veraenderungBG += betreuung.verfuegung.veraenderungVerguenstigungGegenueberVorgaenger;
                 }
             }));
+    }
 
-        this.veraenderungBG = EbeguUtil.roundToFiveRappen(this.veraenderungBG);
-        this.veraenderungTS = Number(this.veraenderungTS.toFixed(2));
+    private hasOnlyFerienbetreuung(): boolean {
+        return this.kinderWithBetreuungList.every(kindcontainer =>
+            kindcontainer.betreuungen
+                .every(betreuung => betreuung.getAngebotTyp() === TSBetreuungsangebotTyp.FERIENINSEL));
     }
 
     private findAbsoultMax(val1: number, val2: number): number {
@@ -844,7 +878,28 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
 
     public showIgnoreMutation(): boolean {
         return this.isMutation() &&
+            !this.hasAnyNewOrStornierteBetreuung &&
             this.allVerfuegungenIgnorable &&
             this.gesuchModelManager.isGesuchStatusIn([TSAntragStatus.GEPRUEFT]);
+    }
+
+    public getVeraenderungBgString(): string {
+        let formatedString =  this.formatVeraenderungen(EbeguUtil.roundToFiveRappen(this.veraenderungBG));
+        return this.$translate.instant('MUTATION_VERAENDERUNG_BG',
+            {veraenderung: formatedString});
+    }
+
+    public getVeraenderungTsString(): string {
+        let formatedString =  this.formatVeraenderungen(this.veraenderungTS);
+        return this.$translate.instant('MUTATION_VERAENDERUNG_TS',
+            {veraenderung: formatedString});
+    }
+
+    private formatVeraenderungen(veraenderungToFormat: number): string {
+        if (veraenderungToFormat > 0) {
+            return `+${veraenderungToFormat.toFixed(2)}`;
+        }
+
+        return veraenderungToFormat.toFixed(2);
     }
 }

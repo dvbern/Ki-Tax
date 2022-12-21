@@ -28,6 +28,7 @@ import javax.persistence.MappedSuperclass;
 
 import ch.dvbern.ebegu.enums.AnmeldungMutationZustand;
 import ch.dvbern.ebegu.enums.AntragCopyType;
+import ch.dvbern.ebegu.enums.Betreuungsstatus;
 import ch.dvbern.ebegu.enums.Eingangsart;
 import org.hibernate.envers.Audited;
 

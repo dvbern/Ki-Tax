@@ -13,6 +13,7 @@ import {DvNgRemoveDialogComponent} from '../../../app/core/component/dv-ng-remov
 import {LogFactory} from '../../../app/core/logging/LogFactory';
 import {ApplicationPropertyRS} from '../../../app/core/rest-services/applicationPropertyRS.rest';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
+import {SearchRS} from '../../../gesuch/service/searchRS.rest';
 import {TSApplicationProperty} from '../../../models/TSApplicationProperty';
 import {AbstractAdminViewX} from '../../abstractAdminViewX';
 import {ReindexRS} from '../../service/reindexRS.rest';
@@ -36,10 +37,12 @@ export class AdminViewXComponent extends AbstractAdminViewX {
     public displayedColumns: string[] =  ['name', 'value', 'timestampErstellt'];
     public filterColumns: string[] =  ['filter'];
     public reindexInProgress: boolean = false;
+    public recreateAlleFaelleInProgress: boolean = false;
 
     public constructor(
         private readonly applicationPropertyRS: ApplicationPropertyRS,
         private readonly reindexRS: ReindexRS,
+        private readonly searchRS: SearchRS,
         private readonly dvDialog: MatDialog,
         private readonly cd: ChangeDetectorRef,
         authServiceRS: AuthServiceRS
@@ -99,6 +102,14 @@ export class AdminViewXComponent extends AbstractAdminViewX {
         // avoid sending double by keeping it disabled until reload
         this.reindexInProgress = true;
         this.reindexRS.reindex().subscribe(response => {
+            this.dvDialog.open(DvNgOkDialogComponent, {data: {title: response}});
+        });
+    }
+
+    public startRecreateAlleFaelleView(): void {
+        // avoid sending double by keeping it disabled until reload
+        this.recreateAlleFaelleInProgress = true;
+        this.searchRS.recreateAlleFaelleView().subscribe(response => {
             this.dvDialog.open(DvNgOkDialogComponent, {data: {title: response}});
         });
     }

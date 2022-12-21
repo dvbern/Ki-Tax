@@ -21,13 +21,14 @@ import {TSWizardStepName} from '../../../../../models/enums/TSWizardStepName';
 import {BerechnungsManager} from '../../../../service/berechnungsManager';
 import {GesuchModelManager} from '../../../../service/gesuchModelManager';
 import {WizardStepManager} from '../../../../service/wizardStepManager';
-import {FinanzielleSituationLuzernService} from '../../../finanzielleSituation/luzern/finanzielle-situation-luzern.service';
+import {
+    FinanzielleSituationLuzernService
+} from '../../../finanzielleSituation/luzern/finanzielle-situation-luzern.service';
 import {AbstractEinkommensverschlechterungResultat} from '../../AbstractEinkommensverschlechterungResultat';
 
 @Component({
     selector: 'dv-einkommensverschlechterung-luzern-resultate-view',
     templateUrl: './einkommensverschlechterung-luzern-resultate-view.component.html',
-    styleUrls: ['./einkommensverschlechterung-luzern-resultate-view.component.less'],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class EinkommensverschlechterungLuzernResultateViewComponent extends AbstractEinkommensverschlechterungResultat {

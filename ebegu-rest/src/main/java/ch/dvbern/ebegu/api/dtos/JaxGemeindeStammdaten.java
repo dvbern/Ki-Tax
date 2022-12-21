@@ -107,9 +107,19 @@ public class JaxGemeindeStammdaten extends JaxAbstractGemeindeStammdaten {
 	@Nullable
 	private JaxGemeinde gemeindeAusgabestelle;
 	@Nonnull
-	private Boolean hasZusatzText;
+	private Boolean hasZusatzTextVerfuegung;
 	@Nullable
-	private String zusatzText;
+	private String zusatzTextVerfuegung;
+	@Nonnull
+	private Boolean hasZusatzTextFreigabequittung;
+	@Nullable
+	private String zusatzTextFreigabequittung;
+
+	@Nonnull
+	private Boolean alleBgInstitutionenZugelassen;
+
+	@Nonnull
+	private List<JaxInstitution> zugelasseneBgInstitutionen;
 
 	public JaxGemeindeStammdaten() {
 	}
@@ -427,20 +437,56 @@ public class JaxGemeindeStammdaten extends JaxAbstractGemeindeStammdaten {
 	}
 
 	@Nonnull
-	public Boolean getHasZusatzText() {
-		return hasZusatzText;
+	public Boolean getHasZusatzTextVerfuegung() {
+		return hasZusatzTextVerfuegung;
 	}
 
-	public void setHasZusatzText(@Nonnull Boolean hasZusatzText) {
-		this.hasZusatzText = hasZusatzText;
+	public void setHasZusatzTextVerfuegung(@Nonnull Boolean hasZusatzTextVerfuegung) {
+		this.hasZusatzTextVerfuegung = hasZusatzTextVerfuegung;
 	}
 
 	@Nullable
-	public String getZusatzText() {
-		return zusatzText;
+	public String getZusatzTextVerfuegung() {
+		return zusatzTextVerfuegung;
 	}
 
-	public void setZusatzText(@Nullable String zusatzText) {
-		this.zusatzText = zusatzText;
+	public void setZusatzTextVerfuegung(@Nullable String zusatzTextVerfuegung) {
+		this.zusatzTextVerfuegung = zusatzTextVerfuegung;
+	}
+
+	@Nonnull
+	public Boolean getHasZusatzTextFreigabequittung() {
+		return hasZusatzTextFreigabequittung;
+	}
+
+	public void setHasZusatzTextFreigabequittung(@Nonnull Boolean hasZusatzTextFreigabequittung) {
+		this.hasZusatzTextFreigabequittung = hasZusatzTextFreigabequittung;
+	}
+
+	@Nullable
+	public String getZusatzTextFreigabequittung() {
+		return zusatzTextFreigabequittung;
+	}
+
+	public void setZusatzTextFreigabequittung(@Nullable String zusatzTextFreigabequittung) {
+		this.zusatzTextFreigabequittung = zusatzTextFreigabequittung;
+	}
+
+	@Nonnull
+	public Boolean getAlleBgInstitutionenZugelassen() {
+		return alleBgInstitutionenZugelassen;
+	}
+
+	public void setAlleBgInstitutionenZugelassen(@Nonnull Boolean alleBgInstitutionenZugelassen) {
+		this.alleBgInstitutionenZugelassen = alleBgInstitutionenZugelassen;
+	}
+
+	@Nonnull
+	public List<JaxInstitution> getZugelasseneBgInstitutionen() {
+		return zugelasseneBgInstitutionen;
+	}
+
+	public void setZugelasseneBgInstitutionen(@Nonnull List<JaxInstitution> zugelasseneBgInstitutionen) {
+		this.zugelasseneBgInstitutionen = zugelasseneBgInstitutionen;
 	}
 }

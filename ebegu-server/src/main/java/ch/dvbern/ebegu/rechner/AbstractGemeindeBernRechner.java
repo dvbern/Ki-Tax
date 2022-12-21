@@ -116,23 +116,14 @@ public abstract class AbstractGemeindeBernRechner extends AbstractAsivBernRechne
 		// Zusaetzlicher Baby-Gutschein
 		verguenstigungProZeiteinheit =
 			EXACT.addNullSafe(verguenstigungProZeiteinheit, rechnerParameter.getZusaetzlicherBabyGutscheinBetrag());
+		// Minimaler Gutschein der Gemeinde
+		verguenstigungProZeiteinheit = getMinimaleVerguenstigungProZeiteinheit(verguenstigungProZeiteinheit);
 
 		return verguenstigungProZeiteinheit;
 	}
 
-	@Override
-	protected BigDecimal unhabaengigeAnspruchRegelnDurchfuehren(
-		BigDecimal verguenstigung,
-		BigDecimal betreuungspensumZeiteinheit,
-		BetreuungsangebotTyp betreuungsangebotTyp) {
-		// Minimal Pauschalbetrag wenn nicht erreicht
-		verguenstigung = verguenstigung.compareTo(MathUtil.EXACT.multiply(
-			rechnerParameter.getMinimalPauschalBetrag(),
-			betreuungspensumZeiteinheit)) < 0 ?
-			MathUtil.EXACT.multiply(rechnerParameter.getMinimalPauschalBetrag(), betreuungspensumZeiteinheit) :
-			verguenstigung;
-
-		return verguenstigung;
+	protected BigDecimal getMinimaleVerguenstigungProZeiteinheit(BigDecimal verguenstigung) {
+		return MathUtil.minimum(verguenstigung, rechnerParameter.getMinimalPauschalBetrag());
 	}
 
 	/**

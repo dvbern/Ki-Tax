@@ -42,17 +42,21 @@ public class ProcessingContext {
 
 	private boolean isReadyForBestaetigen = true;
 
+	private final boolean singleClientForPeriod;
+
 	public ProcessingContext(
 		@Nonnull Betreuung betreuung,
 		@Nonnull BetreuungEventDTO dto,
 		@Nonnull DateRange clientGueltigkeitInPeriode,
 		boolean mahlzeitVerguenstigungEnabled,
-		@Nonnull EventMonitor eventMonitor) {
+		@Nonnull EventMonitor eventMonitor,
+		boolean singleClientForPeriod) {
 		this.betreuung = betreuung;
 		this.dto = dto;
 		this.gueltigkeitInPeriode = clientGueltigkeitInPeriode;
 		this.mahlzeitVerguenstigungEnabled = mahlzeitVerguenstigungEnabled;
 		this.eventMonitor = eventMonitor;
+		this.singleClientForPeriod = singleClientForPeriod;
 	}
 
 	public void requireHumanConfirmation() {
@@ -98,5 +102,9 @@ public class ProcessingContext {
 	@Nonnull
 	public EventMonitor getEventMonitor() {
 		return eventMonitor;
+	}
+
+	public boolean isSingleClientForPeriod() {
+		return singleClientForPeriod;
 	}
 }

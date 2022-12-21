@@ -22,5 +22,6 @@ public enum MitteilungStatus {
 
 	NEU,
 	GELESEN,
-	ERLEDIGT
+	ERLEDIGT,
+	IGNORIERT
 }

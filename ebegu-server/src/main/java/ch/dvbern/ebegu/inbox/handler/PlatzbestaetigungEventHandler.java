@@ -183,8 +183,11 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 			return Processing.failure("Eine Pensum in DAYS kann nur für ein Angebot in einer Kita angegeben werden.");
 		}
 
-		return betreuungEventHelper.getExternalClient(eventMonitor.getClientName(), betreuung)
-			.map(client -> processEventForExternalClient(eventMonitor, dto, betreuung, client))
+		InstitutionExternalClients clients =
+			betreuungEventHelper.getExternalClients(eventMonitor.getClientName(), betreuung);
+
+		return clients.getRelevantClient().map(client ->
+				processEventForExternalClient(eventMonitor, dto, betreuung, client, clients.getOther().isEmpty()))
 			.orElseGet(() -> betreuungEventHelper.clientNotFoundFailure(eventMonitor.getClientName(), betreuung));
 	}
 
@@ -197,7 +200,8 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 		@Nonnull EventMonitor eventMonitor,
 		@Nonnull BetreuungEventDTO dto,
 		@Nonnull Betreuung betreuung,
-		@Nonnull InstitutionExternalClient client) {
+		@Nonnull InstitutionExternalClient client,
+		boolean singleClientForPeriod) {
 
 		DateRange gesuchsperiode = betreuung.extractGesuchsperiode().getGueltigkeit();
 		DateRange clientGueltigkeit = client.getGueltigkeit();
@@ -213,8 +217,13 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 		}
 
 		boolean mahlzeitVergunstigungEnabled = isEnabled(betreuung, GEMEINDE_MAHLZEITENVERGUENSTIGUNG_ENABLED);
-		ProcessingContext ctx =
-			new ProcessingContext(betreuung, dto, overlap.get(), mahlzeitVergunstigungEnabled, eventMonitor);
+		ProcessingContext ctx = new ProcessingContext(
+			betreuung,
+			dto,
+			overlap.get(),
+			mahlzeitVergunstigungEnabled,
+			eventMonitor,
+			singleClientForPeriod);
 
 		Betreuungsstatus status = betreuung.getBetreuungsstatus();
 
@@ -313,7 +322,7 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 	 */
 	private boolean updateBetreuungForPlatzbestaetigung(@Nonnull ProcessingContext ctx) {
 
-		if (!ctx.isGueltigkeitCoveringPeriode()) {
+		if (!ctx.isGueltigkeitCoveringPeriode() && !ctx.isSingleClientForPeriod()) {
 			ctx.requireHumanConfirmation();
 			LOG.info(
 				"Eine manuelle Bestätigung ist nötig für die PlatzbestaetigungEvent fuer Betreuung mit RefNr: {}, weil"
@@ -388,8 +397,9 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 	private Processing handleMutationsMitteilung(@Nonnull ProcessingContext ctx) {
 		Betreuung betreuung = ctx.getBetreuung();
 
-		if(!mitteilungService.isBetreuungGueltigForMutation(betreuung)) {
-			return Processing.failure("Die Betreuung wurde storniert und es gibt eine neuere Betreuung für dieses Kind und Institution");
+		if (!mitteilungService.isBetreuungGueltigForMutation(betreuung)) {
+			return Processing.failure(
+				"Die Betreuung wurde storniert und es gibt eine neuere Betreuung für dieses Kind und Institution");
 		}
 
 		Collection<Betreuungsmitteilung> open =
@@ -425,7 +435,8 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 		Betreuung betreuung = ctx.getBetreuung();
 		Gesuch gesuch = betreuung.extractGesuch();
 		Locale locale = EbeguUtil.extractKorrespondenzsprache(gesuch, gemeindeService).getLocale();
-		Mandant mandant = betreuungEventHelper.getMandantFromBgNummer(ctx.getDto().getRefnr()).orElseThrow(() -> new EbeguRuntimeException(
+		Mandant mandant = betreuungEventHelper.getMandantFromBgNummer(ctx.getDto().getRefnr())
+			.orElseThrow(() -> new EbeguRuntimeException(
 				KibonLogLevel.ERROR, "createBetreuungsmitteilung", "Mandant konnte nicht gefunden werden"));
 
 		Betreuungsmitteilung betreuungsmitteilung = new Betreuungsmitteilung();
@@ -482,8 +493,9 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 
 	@Nonnull
 	private BiFunction<BetreuungsmitteilungPensum, Integer, String> mahlzeitenMessage(
-			@Nonnull Locale lang,
-			Mandant mandant) {
+		@Nonnull Locale lang,
+		@Nonnull Mandant mandant) {
+
 		return (pensum, counter) -> ServerMessageUtil.getMessage(
 			MESSAGE_MAHLZEIT_KEY,
 			lang,
@@ -501,8 +513,9 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 
 	@Nonnull
 	private BiFunction<BetreuungsmitteilungPensum, Integer, String> defaultMessage(
-			@Nonnull Locale lang,
-			Mandant mandant) {
+		@Nonnull Locale lang,
+		@Nonnull Mandant mandant) {
+
 		return (pensum, counter) -> ServerMessageUtil.getMessage(
 			MESSAGE_KEY,
 			lang,

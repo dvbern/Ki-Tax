@@ -18,7 +18,7 @@
 package ch.dvbern.ebegu.inbox.handler;
 
 import java.time.LocalDateTime;
-import java.util.Objects;
+import java.util.Collections;
 import java.util.Optional;
 
 import javax.annotation.Nonnull;
@@ -154,8 +154,8 @@ public class AnmeldungAblehnenEventHandlerTest extends EasyMockSupport {
 
 			expect(betreuungService.findAnmeldungenTagesschuleByBGNummer(eventMonitor.getRefnr(), mandant))
 				.andReturn(Optional.of(anmeldungTagesschule));
-			expect(betreuungEventHelper.getExternalClient(CLIENT_NAME, anmeldungTagesschule))
-				.andReturn(Optional.empty());
+			expect(betreuungEventHelper.getExternalClients(CLIENT_NAME, anmeldungTagesschule))
+				.andReturn(new InstitutionExternalClients(null, Collections.emptyList()));
 			expect(betreuungEventHelper.clientNotFoundFailure(CLIENT_NAME, anmeldungTagesschule))
 				.andReturn(Processing.failure("Kein InstitutionExternalClient Namens ist der Institution zugewiesen"));
 
@@ -221,12 +221,11 @@ public class AnmeldungAblehnenEventHandlerTest extends EasyMockSupport {
 		}
 	}
 
-	@SuppressWarnings("MethodOnlyUsedFromInnerClass")
 	private void mockClient(@Nonnull DateRange clientGueltigkeit) {
 		InstitutionExternalClient institutionExternalClient = mock(InstitutionExternalClient.class);
 
-		expect(betreuungEventHelper.getExternalClient(eq(CLIENT_NAME), EasyMock.<AnmeldungTagesschule>anyObject()))
-			.andReturn(Optional.of(institutionExternalClient));
+		expect(betreuungEventHelper.getExternalClients(eq(CLIENT_NAME), EasyMock.<AnmeldungTagesschule>anyObject()))
+			.andReturn(new InstitutionExternalClients(institutionExternalClient, Collections.emptyList()));
 
 		expect(institutionExternalClient.getGueltigkeit())
 			.andReturn(clientGueltigkeit);

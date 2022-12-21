@@ -14,8 +14,9 @@
  */
 
 import {HttpClient} from '@angular/common/http';
-import { Injectable} from '@angular/core';
+import {Injectable} from '@angular/core';
 import * as moment from 'moment';
+import {Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
 import {TSBetreuungsangebotTyp} from '../../../models/enums/TSBetreuungsangebotTyp';
 import {TSInstitution} from '../../../models/TSInstitution';
@@ -27,7 +28,6 @@ import {DateUtil} from '../../../utils/DateUtil';
 import {EbeguRestUtil} from '../../../utils/EbeguRestUtil';
 import {EbeguUtil} from '../../../utils/EbeguUtil';
 import {CONSTANTS} from '../constants/CONSTANTS';
-import { Observable } from 'rxjs';
 
 @Injectable({
     providedIn: 'root'
@@ -90,6 +90,11 @@ export class InstitutionRS {
 
     public getAllInstitutionen(): Observable<TSInstitution[]> {
         return this.$http.get(this.serviceURL)
+            .pipe(map((response: any) => this.ebeguRestUtil.parseInstitutionen(response)));
+    }
+
+    public getAllBgInstitutionen(): Observable<TSInstitution[]> {
+        return this.$http.get(`${this.serviceURL}/bg`)
             .pipe(map((response: any) => this.ebeguRestUtil.parseInstitutionen(response)));
     }
 

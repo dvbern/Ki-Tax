@@ -130,6 +130,20 @@
                     </div>
                 </div>
             </div>
+
+            <!-- Alle Faelle Sicht erneu bauen -->
+            <div *ngIf="!isReadonly() && isSuperadmin()">
+                <div class="view-title margin-top-40">
+                    <h1>{{'RECREATE_ALLE_FAELLE_VIEW' | translate}}</h1>
+                </div>
+                <div class="row margin-top-10">
+                    <div class="col-md-12 form-group">
+                        <dv-loading-button [buttonDisabled]="recreateAlleFaelleInProgress" (buttonClick)="startRecreateAlleFaelleView()">
+                            <span>{{'RECREATE_ALLE_FAELLE_VIEW' | translate}}</span>
+                        </dv-loading-button>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>

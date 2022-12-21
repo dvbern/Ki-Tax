@@ -22,6 +22,7 @@ public enum AnmeldungMutationZustand {
 
 	NOCH_NICHT_FREIGEGEBEN,
 	MUTIERT,
+	IGNORIERT,
 	AKTUELLE_ANMELDUNG
 }
 

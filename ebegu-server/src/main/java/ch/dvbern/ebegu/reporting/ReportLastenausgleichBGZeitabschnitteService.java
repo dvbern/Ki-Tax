@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022 DV Bern AG, Switzerland
+ * Copyright (C) 2021 DV Bern AG, Switzerland
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -15,3 +15,23 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+package ch.dvbern.ebegu.reporting;
+
+import java.io.IOException;
+import java.util.Locale;
+
+import javax.annotation.Nonnull;
+
+import ch.dvbern.ebegu.util.UploadFileInfo;
+import ch.dvbern.oss.lib.excelmerger.ExcelMergeException;
+
+public interface ReportLastenausgleichBGZeitabschnitteService {
+
+	@Nonnull
+	UploadFileInfo generateExcelReportLastenausgleichBGZeitabschnitte(
+		@Nonnull Locale locale,
+		@Nonnull String gemeindeId,
+		@Nonnull Integer lastenausgleichJahr
+	) throws ExcelMergeException, IOException;
+
+}

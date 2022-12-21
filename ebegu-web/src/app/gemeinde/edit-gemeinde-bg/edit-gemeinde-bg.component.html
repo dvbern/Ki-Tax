@@ -230,26 +230,26 @@
                         <div class="form-group checkbox-with-tooltip">
                             <mat-checkbox id="zusatzTextBG_id"
                                           name="zusatzTextBG_id"
-                                          [(ngModel)]="stammdaten.hasZusatzText"
-                                          (ngModelChange)="zusatzTextBgHasChange($event)">
-                                {{'ZUSAETZLICHER_TEXT_JA'|translate}}
+                                          [(ngModel)]="stammdaten.hasZusatzTextVerfuegung"
+                                          (change)="zusatzTextBgHasChange(stammdaten)">
+                                {{'ZUSAETZLICHER_TEXT_VERFUEGUNG_JA'|translate}}
                             </mat-checkbox>
                             <dv-tooltip id="zusatzText_tooltip"
-                                        [text]="'ZUSAETZLICHER_TEXT_HELP'|translate"></dv-tooltip>
+                                        [text]="'ZUSAETZLICHER_TEXT_VERFUEGUNG_HELP'|translate"></dv-tooltip>
                         </div>
-                        <div *ngIf="stammdaten.hasZusatzText">
+                        <div *ngIf="stammdaten.hasZusatzTextVerfuegung">
                             <div class="row">
                                 <div class="col-sm-12">
                                     <div class="form-group">
                                         <dv-input-container-x [verticalAlign]="true">
                                             <label class="required"
-                                                   translate for="zusatzText_id">ZUSAETZLICHER_TEXT_TITEL</label>
+                                                   translate for="zusatzText_id">ZUSAETZLICHER_TEXT_VERFUEGUNG_TITEL</label>
                                             <mat-form-field floatLabel="always" class="no-margin-left">
                                             <textarea matInput
                                                       id="zusatzText_id"
                                                       name="nameZusatzText"
                                                       #nameZusatzText="ngModel"
-                                                      [(ngModel)]="stammdaten.zusatzText"
+                                                      [(ngModel)]="stammdaten.zusatzTextVerfuegung"
                                                       type="text"
                                                       class="form-control" required></textarea>
                                                 <dv-error-messages [errorObject]="nameZusatzText.errors"
@@ -265,6 +265,38 @@
                     <div class="form-group mt-5">
                         <h3 translate>BEGU_START</h3>
                         <p>{{beguStartStr}}</p>
+                    </div>
+                    <!-- Welche Institutionen können ausgewählt werden? -->
+                    <div *ngIf="institutionenDurchGemeindenEinladen">
+                        <div class="form-group mt-5">
+                            <h3 translate>WELCHE_INSTITUTIONEN_ZUGELASSEN</h3>
+                            <mat-radio-group name="alleBgInstitutionenZugelassen"
+                                             [(ngModel)]="stammdaten.alleBgInstitutionenZugelassen"
+                                             (ngModelChange)="alleBgInstitutionenZugelassenChanged(stammdaten)"
+                                             required>
+                                <mat-radio-button [value]="true">{{'ALLE_CAPITAL'|translate}}</mat-radio-button>
+                                &nbsp;
+                                <mat-radio-button [value]="false">{{'AUSWAHL'|translate}}
+                                </mat-radio-button>
+                            </mat-radio-group>
+                        </div>
+                        <div class="form-group" *ngIf="!stammdaten.alleBgInstitutionenZugelassen">
+                            <mat-select class="form-control"
+                                        id="zugelasseneBgInstitutionen"
+                                        [(ngModel)]="stammdaten.zugelasseneBgInstitutionen"
+                                        name="zugelasseneBgInstitutionen"
+                                        [multiple]="true"
+                                        [compareWith]="compareInstitution"
+                                        #zugelasseneBgInstitutionen='ngModel'
+                                        required
+                                        panelClass="mat-select-panel1">
+                                <mat-select-trigger>{{zugelasseneBgInstitutionenShort(stammdaten.zugelasseneBgInstitutionen)}}</mat-select-trigger>
+                                <mat-option *ngFor="let i of institutionen"
+                                            [value]="i"><span>{{i.name}}</span></mat-option>
+                            </mat-select>
+                            <dv-error-messages [errorObject]="zugelasseneBgInstitutionen.errors"
+                                               inputId="zusatzTextTitle_id"></dv-error-messages>
+                        </div>
                     </div>
                 </div>
                 <div class="col-sm-6">
@@ -370,6 +402,7 @@
                                     </div>
                                 </div>
                             </div>
+                        </div>
                             <div class="row">
                                 <!-- Alternative Email -->
                                 <div class="col-sm-12">
@@ -404,7 +437,7 @@
                                     </div>
                                 </div>
                             </div>
-                        </div>
+
                         <!-- Alternative Beschwerde-Adresse -->
                         <div class="mt-5">
                             <h3 translate for="keineBeschwerdeAdresse_id">BESCHWERDE_ADRESSE
@@ -1164,26 +1197,6 @@
                                                                        [errorObject]="hohe_einkommensklassen_betrag_kita.errors">
                                                     </dv-error-messages>
                                                 </div>
-                                                <div class="form-group"
-                                                     *ngIf="konfigurationsListe[i].konfigHoheEinkommensklassenAktiviert">
-                                                    <label for="hohe_einkommensklassen_betrag_kita_ab_primarschule_id_{{i}}"
-                                                           class="required"
-                                                           translate>GEMEINDE_HOHE_EINKOMMENSKLASSEN_BETRAG_KITA_AB_PRIMARSCHULE</label>
-                                                    <input id="hohe_einkommensklassen_betrag_kita_ab_primarschule_id_{{i}}"
-                                                           name="hohe_einkommensklassen_betrag_kita_ab_primarschule_id_{{i}}"
-                                                           class="form-control"
-                                                           type="number"
-                                                           #hohe_einkommensklassen_betrag_kita_ab_primarschule='ngModel'
-                                                           required
-                                                           customMinMax
-                                                           [minValue]="0"
-                                                           [(ngModel)]="konfigurationsListe[i].konfigHoheEinkommensklassenBetragKitaAbPrimarschule"
-                                                           (change)="changeKonfigHoheEinkommensklassenBetragKitaAbPrimarschule(konfigurationsListe[i])">
-
-                                                    <dv-error-messages inputId="hohe_einkommensklassen_betrag_kita_ab_primarschule_id_{{i}}"
-                                                                       [errorObject]="hohe_einkommensklassen_betrag_kita_ab_primarschule.errors">
-                                                    </dv-error-messages>
-                                                </div>
                                                 <!-- Höhere Einkommensklassen Betrag TFO pro Stunde-->
                                                 <div class="form-group"
                                                      *ngIf="konfigurationsListe[i].konfigHoheEinkommensklassenAktiviert">
@@ -1248,6 +1261,26 @@
                                                     </dv-error-messages>
                                                 </div>
 
+                                                <!-- Abhängikeit Anspruch und Beschäftigungspensum -->
+                                                <div class="form-group"
+                                                     *ngIf="isSuperAdmin()">
+                                                    <label for="anspruch_unabhaenging_von_beschaeftigungs_pensum{{i}}"
+                                                           class="required"
+                                                           translate>ABHAENGIGKEIT_ANSPRUCH_BESCHAEFTIGUNGPENSUM
+                                                        <dv-tooltip id="anspruch_unabhaenging_von_beschaeftigungs_pensum-tooltip"
+                                                                    [text]="'ABHAENGIGKEIT_ANSPRUCH_BESCHAEFTIGUNGPENSUM_HELP'|translate"></dv-tooltip>
+                                                    </label>
+                                                    <mat-select
+                                                        [(ngModel)]="konfigurationsListe[i].anspruchUnabhaengingVonBeschaeftigungsPensum"
+                                                        (selectionChange)="changeKonfigAbhaengigkeitAnspruchBeschaeftigung(konfigurationsListe[i])"
+                                                        id="anspruch_unabhaenging_von_beschaeftigungs_pensum{{i}}"
+                                                        name=anspruch_unabhaenging_von_beschaeftigungs_pensum{{i}}
+                                                        class="form-control">
+                                                        <mat-option *ngFor="let value of anspruchBeschaeftigungAbhaengigkeitTypValues"
+                                                                    [value]="value">{{value | translate}}
+                                                        </mat-option>
+                                                    </mat-select>
+                                                </div>
                                             </div>
                                         </div>
                                         <div class="row"
@@ -1360,8 +1393,8 @@
                     <!-- Zusätzlicher Text auf der Verfügung -->
                     <div>
                         <div>
-                            <h3 *ngIf="stammdaten.hasZusatzText">
-                                {{'ZUSAETZLICHER_TEXT_JA'| translate}}
+                            <h3 *ngIf="stammdaten.hasZusatzTextVerfuegung">
+                                {{'ZUSAETZLICHER_TEXT_VERFUEGUNG_JA'| translate}}
                             </h3>
                         </div>
                     </div>
@@ -1371,6 +1404,14 @@
                             <h3 translate>BEGU_START</h3>
                             <p>{{beguStartStr}}</p>
                         </div>
+                    </div>
+                    <!-- Welche Institutionen können ausgewählt werden? -->
+                    <div class="form-group mt-5" *ngIf="institutionenDurchGemeindenEinladen">
+                        <h3 translate>WELCHE_INSTITUTIONEN_ZUGELASSEN</h3>
+                        <p translate *ngIf="stammdaten.alleBgInstitutionenZugelassen">ALLE_CAPITAL</p>
+                        <p [title]="zugelasseneBgInstitutionenStr(stammdaten.zugelasseneBgInstitutionen)">
+                            {{zugelasseneBgInstitutionenShort(stammdaten.zugelasseneBgInstitutionen)}}
+                        </p>
                     </div>
                 </div>
 
@@ -1572,6 +1613,9 @@
                                                         ZUSAETZLICHER_ANSPRUCH_FREIWILLIGENARBEIT_MAX_READONLY
                                                     </p>
                                                 </div>
+                                                <!-- Abhängikeit Anspruch und Beschäftigungspensum -->
+                                                <label *ngIf="isSuperAdmin()">{{'ABHAENGIGKEIT_ANSPRUCH_BESCHAEFTIGUNGPENSUM'|translate}}: <strong>{{getKonfigAbhaengigkeitAnspruchBeschaeftigungspensum(
+                                                    konfigurationsListe[i])}}</strong></label>
 
                                                 <!-- Gemeindespezifische Konfurationen für BG -->
                                                 <div

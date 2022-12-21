@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2019 DV Bern AG, Switzerland
+ * Copyright (C) 2022 DV Bern AG, Switzerland
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -15,23 +15,29 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.dvbern.ebegu.reporting;
+export class DVErrorMessageCallback {
+    private _text: string;
+    private _callback: () => any;
 
-import java.io.IOException;
-import java.time.LocalDate;
-import java.util.Locale;
+    public get text(): string {
+        return this._text;
+    }
 
-import javax.annotation.Nonnull;
+    public set text(value: string) {
+        this._text = value;
+    }
 
-import ch.dvbern.ebegu.util.UploadFileInfo;
-import ch.dvbern.oss.lib.excelmerger.ExcelMergeException;
+    public get callback(): () => void {
+        return this._callback;
+    }
 
-public interface ReportLastenausgleichSelbstbehaltService {
+    public set callback(value: () => void) {
+        this._callback = value;
+    }
 
-	@Nonnull
-	UploadFileInfo generateExcelReportLastenausgleichKibon(
-		@Nonnull LocalDate dateFrom,
-		@Nonnull Locale locale
-	) throws ExcelMergeException, IOException;
+    public constructor(text: string, callback: () => any) {
+        this._text = text;
+        this._callback = callback;
+    }
 
 }

@@ -31,7 +31,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.errors.EbeguException;
-import ch.dvbern.ebegu.errors.EbeguExistingAntragException;
+import ch.dvbern.ebegu.errors.EbeguExistingAntragRuntimeException;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.jboss.resteasy.api.validation.Validation;
@@ -61,26 +61,6 @@ public class EbeguExceptionReport {
 	private String objectId; // das ID vom betroffenen Objekt, wenn es eins gibt
 	@Nullable
 	private List<Serializable> argumentList = new ArrayList<>();
-
-	//	public EbeguExceptionReport(EbeguException exception) {
-	//		if (exception != null) {
-	//			this.exceptionName = exception.getClass().getSimpleName();
-	//			this.translatedMessage = exception.getMessage();
-	//			this.customMessage = exception.getCustomMessage();
-	//			this.methodName = exception.getMethodName();
-	//			this.argumentList.addAll(exception.getArgs());
-	//		}
-	//	}
-	//
-	//	public EbeguExceptionReport(EbeguRuntimeException exception) {
-	//		if (exception != null) {
-	//			this.exceptionName = exception.getClass().getSimpleName();
-	//			this.translatedMessage = exception.getMessage();
-	//			this.customMessage = exception.getCustomMessage();
-	//			this.methodName = exception.getMethodName();
-	//			this.argumentList.addAll(exception.getArgs());
-	//		}
-	//	}
 
 	public EbeguExceptionReport(
 		@Nullable String exceptionName,
@@ -210,8 +190,8 @@ public class EbeguExceptionReport {
 		Response.ResponseBuilder builder = setResponseHeaderAndStatus(status);
 
 		String objectId = null;
-		if (ex instanceof EbeguExistingAntragException) {
-			objectId = ((EbeguExistingAntragException) ex).getGesuchId();
+		if (ex instanceof EbeguExistingAntragRuntimeException) {
+			objectId = ((EbeguExistingAntragRuntimeException) ex).getDossierId();
 		}
 
 		Object[] args = ex.getArgs().toArray();

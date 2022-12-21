@@ -63,6 +63,10 @@ export class MitteilungRS {
         return this.$http.put(`${this.serviceURL}/setneu/${mitteilungId}`, null).then((response: any) => this.ebeguRestUtil.parseMitteilung(new TSMitteilung(), response.data));
     }
 
+    public setMitteilungIgnoriert(mitteilungId: string): IPromise<TSMitteilung> {
+        return this.$http.put(`${this.serviceURL}/setignoriert/${mitteilungId}`, null).then((response: any) => this.ebeguRestUtil.parseMitteilung(new TSMitteilung(), response.data));
+    }
+
     public getEntwurfOfDossierForCurrentRolle(dossierId: string): IPromise<TSMitteilung> {
         return this.$http.get(`${this.serviceURL}/entwurf/dossier/${dossierId}`).then((response: any) => this.ebeguRestUtil.parseMitteilung(new TSMitteilung(), response.data));
     }
@@ -160,5 +164,10 @@ export class MitteilungRS {
 
     public applyAlleBetreuungsmitteilungen(antragSearch: any): IPromise<Array<TSMitteilung>> {
         return this.$http.post(`${this.serviceURL}/applyAlleBetreuungsmitteilungen`, antragSearch).then((response: any) => this.ebeguRestUtil.parseMitteilungen(response.data.betreuungsmitteilungen));
+    }
+
+    public neueVeranlagungsmitteilungBearbeiten(mitteilungId: string): IPromise<string> {
+        return this.$http.put(`${this.serviceURL}/neueVeranlagungsmitteilungBearbeiten/${mitteilungId}`,
+            null).then((response: any) => response.data);
     }
 }

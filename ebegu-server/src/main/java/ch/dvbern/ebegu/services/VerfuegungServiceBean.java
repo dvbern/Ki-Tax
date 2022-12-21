@@ -286,7 +286,9 @@ public class VerfuegungServiceBean extends AbstractBaseService implements Verfue
 	}
 
 	private void setVorgaengerAnmeldungTagesschuleAufUebernommen(@Nonnull AnmeldungTagesschule anmeldung) {
-		anmeldung.setBetreuungsstatus(Betreuungsstatus.SCHULAMT_ANMELDUNG_UEBERNOMMEN);
+		if (!anmeldung.getBetreuungsstatus().isIgnoriert()) {
+			anmeldung.setBetreuungsstatus(Betreuungsstatus.SCHULAMT_ANMELDUNG_UEBERNOMMEN);
+		}
 		// Rekursiv alle Vorgänger ungültig setzen
 		if (anmeldung.getVorgaengerId() != null) {
 			final Optional<AnmeldungTagesschule> vorgaengerOpt =

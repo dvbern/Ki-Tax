@@ -19,7 +19,12 @@
         <div>
             <div ng-repeat="error in vm.errors | orderBy:'severity'">
                 <!--maybe we should think a bit harder when to display what but it seems to work for now-->
-                <div data-translate="{{error.msgKey}}" role="alert"></div>
+                <span data-translate="{{error.msgKey}}" role="alert"></span>
+                <a id="errorCallback" ng-click="vm.executeCallback(error)"
+                   data-translate="{{error.errorMessageCallback.text}}"
+                   dv-show-element
+                   dv-show-allowed-roles="vm.TSRoleUtil.getGemeindeRoles()"
+                   dv-show-expression="vm.isMessageCallbackDefined(error)"></a>
                 <div id="action" ng-click="vm.executeAction(error)"
                      data-translate="{{error.action}}"
                      dv-show-element

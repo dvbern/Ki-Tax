@@ -19,7 +19,6 @@ import java.util.List;
 
 import ch.dvbern.ebegu.dto.suchfilter.smarttable.AntragTableFilterDTO;
 import ch.dvbern.ebegu.entities.Gesuch;
-import org.apache.commons.lang3.tuple.Pair;
 
 /**
  * Service zum Suchen

@@ -44,6 +44,7 @@ import ch.dvbern.ebegu.entities.Kind;
 import ch.dvbern.ebegu.entities.KindContainer;
 import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.entities.PensumFachstelle;
+import ch.dvbern.ebegu.enums.AnspruchBeschaeftigungAbhaengigkeitTyp;
 import ch.dvbern.ebegu.enums.DokumentGrundPersonType;
 import ch.dvbern.ebegu.enums.DokumentGrundTyp;
 import ch.dvbern.ebegu.enums.DokumentTyp;
@@ -129,7 +130,7 @@ public class DokumentenverzeichnisEvaluatorTest extends EasyMockSupport {
 	private void setUpEinstellungMock(@Nonnull Gesuch testgesuch, @Nonnull String anspruchUnabhaengig) {
 		var einstellung = new Einstellung();
 		einstellung.setValue(anspruchUnabhaengig);
-		expect(einstellungServiceMock.findEinstellung(EinstellungKey.ANSPRUCH_UNABHAENGIG_BESCHAEFTIGUNGPENSUM,
+		expect(einstellungServiceMock.findEinstellung(EinstellungKey.ABHAENGIGKEIT_ANSPRUCH_BESCHAEFTIGUNGPENSUM,
 			testgesuch.extractGemeinde(), testgesuch.getGesuchsperiode()))
 			.andReturn(einstellung)
 			.anyTimes();
@@ -235,7 +236,7 @@ public class DokumentenverzeichnisEvaluatorTest extends EasyMockSupport {
 
 	@Test
 	public void kindDokumentFachstelleBernTest() {
-		setUpEinstellungMock(testgesuch, "false");
+		setUpEinstellungMock(testgesuch, AnspruchBeschaeftigungAbhaengigkeitTyp.ABHAENGING.name());
 
 		clearKinder(testgesuch);
 		final String kindName = "Jan";
@@ -249,7 +250,7 @@ public class DokumentenverzeichnisEvaluatorTest extends EasyMockSupport {
 
 	@Test
 	public void kindDokumentFachstelleLuzernTest() {
-		setUpEinstellungMock(testgesuchLuzern, "false");
+		setUpEinstellungMock(testgesuchLuzern, AnspruchBeschaeftigungAbhaengigkeitTyp.ABHAENGING.name());
 
 		clearKinder(testgesuchLuzern);
 		final String kindName = "Jan";
@@ -263,7 +264,7 @@ public class DokumentenverzeichnisEvaluatorTest extends EasyMockSupport {
 
 	@Test
 	public void kindDokumentFachstelleSrachlicheIntegrationLuzernTest() {
-		setUpEinstellungMock(testgesuchLuzern, "false");
+		setUpEinstellungMock(testgesuchLuzern, AnspruchBeschaeftigungAbhaengigkeitTyp.ABHAENGING.name());
 
 		clearKinder(testgesuchLuzern);
 		final String kindName = "Jan";
@@ -274,7 +275,7 @@ public class DokumentenverzeichnisEvaluatorTest extends EasyMockSupport {
 
 	@Test
 	public void kindDokumentAbsageschreibenHortPlatzShouldBeRequiredIfKindHasKeinPlatzHort() {
-		setUpEinstellungMock(testgesuchLuzern, "false");
+		setUpEinstellungMock(testgesuchLuzern, AnspruchBeschaeftigungAbhaengigkeitTyp.ABHAENGING.name());
 
 		clearKinder(testgesuchLuzern);
 		final String kindName = "Jan";
@@ -339,7 +340,7 @@ public class DokumentenverzeichnisEvaluatorTest extends EasyMockSupport {
 
 	@Test
 	public void erwpDokumentNeueintrittAfterTest() {
-		setUpEinstellungMock(testgesuch, "false");
+		setUpEinstellungMock(testgesuch, AnspruchBeschaeftigungAbhaengigkeitTyp.ABHAENGING.name());
 
 		final Erwerbspensum erwerbspensum = createErwerbspensum(testgesuch, "Hugo", Taetigkeit.ANGESTELLT, false);
 
@@ -357,7 +358,7 @@ public class DokumentenverzeichnisEvaluatorTest extends EasyMockSupport {
 
 	@Test
 	public void erwpDokumentNeueintrittBeforeTest() {
-		setUpEinstellungMock(testgesuch, "false");
+		setUpEinstellungMock(testgesuch, AnspruchBeschaeftigungAbhaengigkeitTyp.ABHAENGING.name());
 
 		final Erwerbspensum erwerbspensum = createErwerbspensum(testgesuch, "Hugo", Taetigkeit.ANGESTELLT, false);
 
@@ -369,7 +370,7 @@ public class DokumentenverzeichnisEvaluatorTest extends EasyMockSupport {
 
 	@Test
 	public void erwpDokumentSelbstaendigTest() {
-		setUpEinstellungMock(testgesuch, "false");
+		setUpEinstellungMock(testgesuch, AnspruchBeschaeftigungAbhaengigkeitTyp.ABHAENGING.name());
 
 		final Erwerbspensum erwerbspensum = createErwerbspensum(testgesuch, "Hugo", Taetigkeit.SELBSTAENDIG, false);
 
@@ -388,7 +389,7 @@ public class DokumentenverzeichnisEvaluatorTest extends EasyMockSupport {
 
 	@Test
 	public void erwpDokumentAusbildung() {
-		setUpEinstellungMock(testgesuch, "false");
+		setUpEinstellungMock(testgesuch, AnspruchBeschaeftigungAbhaengigkeitTyp.ABHAENGING.name());
 
 		final Erwerbspensum erwerbspensum = createErwerbspensum(testgesuch, "Hugo", Taetigkeit.AUSBILDUNG, false);
 
@@ -404,7 +405,7 @@ public class DokumentenverzeichnisEvaluatorTest extends EasyMockSupport {
 
 	@Test
 	public void erwpDokumentRAV() {
-		setUpEinstellungMock(testgesuch, "false");
+		setUpEinstellungMock(testgesuch, AnspruchBeschaeftigungAbhaengigkeitTyp.ABHAENGING.name());
 
 		final Erwerbspensum erwerbspensum = createErwerbspensum(testgesuch, "Hugo", Taetigkeit.RAV, false);
 
@@ -420,7 +421,7 @@ public class DokumentenverzeichnisEvaluatorTest extends EasyMockSupport {
 
 	@Test
 	public void erwpDokumentArzt() {
-		setUpEinstellungMock(testgesuch, "false");
+		setUpEinstellungMock(testgesuch, AnspruchBeschaeftigungAbhaengigkeitTyp.ABHAENGING.name());
 
 		final Erwerbspensum erwerbspensum = createErwerbspensum(testgesuch, "Hugo", Taetigkeit.ANGESTELLT, true);
 
@@ -436,7 +437,7 @@ public class DokumentenverzeichnisEvaluatorTest extends EasyMockSupport {
 
 	@Test
 	public void erwpDokumentAngestelltLuzern() {
-		setUpEinstellungMock(testgesuchLuzern, "false");
+		setUpEinstellungMock(testgesuchLuzern, AnspruchBeschaeftigungAbhaengigkeitTyp.ABHAENGING.name());
 
 		final Erwerbspensum erwerbspensum = createErwerbspensum(testgesuchLuzern, "Hugo", Taetigkeit.ANGESTELLT, false);
 
@@ -449,7 +450,7 @@ public class DokumentenverzeichnisEvaluatorTest extends EasyMockSupport {
 
 	@Test
 	public void erwpDokumentArbeitlosLuzern() {
-		setUpEinstellungMock(testgesuchLuzern, "false");
+		setUpEinstellungMock(testgesuchLuzern, AnspruchBeschaeftigungAbhaengigkeitTyp.ABHAENGING.name());
 
 		final Erwerbspensum erwerbspensum = createErwerbspensum(testgesuchLuzern, "Hugo", Taetigkeit.RAV, false);
 
@@ -465,7 +466,7 @@ public class DokumentenverzeichnisEvaluatorTest extends EasyMockSupport {
 
 	@Test
 	public void erwpDokumentInAusbildungLuzern() {
-		setUpEinstellungMock(testgesuchLuzern, "false");
+		setUpEinstellungMock(testgesuchLuzern, AnspruchBeschaeftigungAbhaengigkeitTyp.ABHAENGING.name());
 
 		final Erwerbspensum erwerbspensum = createErwerbspensum(testgesuchLuzern, "Hugo", Taetigkeit.AUSBILDUNG, false);
 
@@ -481,7 +482,7 @@ public class DokumentenverzeichnisEvaluatorTest extends EasyMockSupport {
 
 	@Test
 	public void erwpDokumentGesundheitlicheIndikationLuzern() {
-		setUpEinstellungMock(testgesuchLuzern, "false");
+		setUpEinstellungMock(testgesuchLuzern, AnspruchBeschaeftigungAbhaengigkeitTyp.ABHAENGING.name());
 
 		final Erwerbspensum erwerbspensum = createErwerbspensum(testgesuchLuzern, "Hugo", Taetigkeit.GESUNDHEITLICHE_EINSCHRAENKUNGEN, false);
 
@@ -497,7 +498,7 @@ public class DokumentenverzeichnisEvaluatorTest extends EasyMockSupport {
 
 	@Test
 	public void erwpDokumentSelbststaendigLuzern() {
-		setUpEinstellungMock(testgesuchLuzern, "false");
+		setUpEinstellungMock(testgesuchLuzern, AnspruchBeschaeftigungAbhaengigkeitTyp.ABHAENGING.name());
 
 		final Erwerbspensum erwerbspensum = createErwerbspensum(testgesuchLuzern, "Hugo", Taetigkeit.SELBSTAENDIG, false);
 
@@ -558,7 +559,7 @@ public class DokumentenverzeichnisEvaluatorTest extends EasyMockSupport {
 
 	@Test
 	public void finSiSteuerveranlagungGemeinsam() {
-		setUpEinstellungMock(testgesuch, "false");
+		setUpEinstellungMock(testgesuch, AnspruchBeschaeftigungAbhaengigkeitTyp.ABHAENGING.name());
 
 		createFinanzielleSituationGS(1, testgesuch, "Sämi", true);
 		createFinanzielleSituationGS(2, testgesuch, "Alex", true);
@@ -574,7 +575,7 @@ public class DokumentenverzeichnisEvaluatorTest extends EasyMockSupport {
 
 	@Test
 	public void finSiSteuerveranlagungNichtGemeinsam() {
-		setUpEinstellungMock(testgesuch, "false");
+		setUpEinstellungMock(testgesuch, AnspruchBeschaeftigungAbhaengigkeitTyp.ABHAENGING.name());
 
 		createFinanzielleSituationGS(1, testgesuch, "Sämi", true);
 		createFinanzielleSituationGS(2, testgesuch, "Alex", true);
@@ -601,7 +602,7 @@ public class DokumentenverzeichnisEvaluatorTest extends EasyMockSupport {
 
 	@Test
 	public void finSiNichtGemeinsam() {
-		setUpEinstellungMock(testgesuch, "false");
+		setUpEinstellungMock(testgesuch, AnspruchBeschaeftigungAbhaengigkeitTyp.ABHAENGING.name());
 
 		createFinanzielleSituationGS(1, testgesuch, "Sämi", false);
 		createFinanzielleSituationGS(2, testgesuch, "Alex", false);
@@ -639,7 +640,7 @@ public class DokumentenverzeichnisEvaluatorTest extends EasyMockSupport {
 
 	@Test
 	public void finSiDokumenteTest() {
-		setUpEinstellungMock(testgesuch, "false");
+		setUpEinstellungMock(testgesuch, AnspruchBeschaeftigungAbhaengigkeitTyp.ABHAENGING.name());
 
 		createFinanzielleSituationGS(1, testgesuch, "Sämi", false);
 		createFamilienSituation(testgesuch, false, false);
@@ -707,7 +708,7 @@ public class DokumentenverzeichnisEvaluatorTest extends EasyMockSupport {
 
 	@Test
 	public void finSiDokumentSteuerabfrageTest() {
-		setUpEinstellungMock(testgesuch, "false");
+		setUpEinstellungMock(testgesuch, AnspruchBeschaeftigungAbhaengigkeitTyp.ABHAENGING.name());
 
 		createFinanzielleSituationGS(1, testgesuch, "Sämi", false);
 		createFamilienSituation(testgesuch, false, false);
@@ -742,7 +743,7 @@ public class DokumentenverzeichnisEvaluatorTest extends EasyMockSupport {
 		gesuchsperiode.setGueltigkeit(new DateRange(LocalDate.of(2016, 8, 1), Constants.GESUCHSPERIODE_17_18_AB));
 
 		testgesuch.setGesuchsperiode(gesuchsperiode);
-		setUpEinstellungMock(testgesuch, "false");
+		setUpEinstellungMock(testgesuch, AnspruchBeschaeftigungAbhaengigkeitTyp.ABHAENGING.name());
 		createFamilienSituation(testgesuch, true, false);
 
 		Assert.assertNotNull(testgesuch.getGesuchsteller1());
@@ -805,7 +806,7 @@ public class DokumentenverzeichnisEvaluatorTest extends EasyMockSupport {
 
 	@Test
 	public void familiensituationDokumenteTest() {
-		setUpEinstellungMock(testgesuch, "false");
+		setUpEinstellungMock(testgesuch, AnspruchBeschaeftigungAbhaengigkeitTyp.ABHAENGING.name());
 
 		createFamilienSituation(testgesuch, true, true);
 
@@ -817,7 +818,7 @@ public class DokumentenverzeichnisEvaluatorTest extends EasyMockSupport {
 
 	@Test
 	public void erwerbspensumDokumenteNotRequiredTest() {
-		setUpEinstellungMock(testgesuch, "true");
+		setUpEinstellungMock(testgesuch, AnspruchBeschaeftigungAbhaengigkeitTyp.UNABHAENGING.name());
 
 		createFinanzielleSituationGS(1, testgesuch, "Sämi", true);
 		createFinanzielleSituationGS(2, testgesuch, "Alex", true);

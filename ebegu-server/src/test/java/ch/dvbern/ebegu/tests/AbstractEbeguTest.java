@@ -121,6 +121,7 @@ public abstract class AbstractEbeguTest {
 			.addPackages(true, "ch/dvbern/ebegu/reporting")
 			.addPackages(true, "ch/dvbern/ebegu/outbox")
 			.addPackages(true, "ch/dvbern/ebegu/docxmerger")
+			.addPackages(true, "ch/dvbern/ebegu/lastenausgleich")
 			// .addPackages(true, "ch/dvbern/ebegu/enums")
 			.addClasses(AbstractEbeguTest.class, Persistence.class, ISessionContextService.class, AbstractEntity.class)
 			.addPackages(true, "ch/dvbern/ebegu/services/authentication")

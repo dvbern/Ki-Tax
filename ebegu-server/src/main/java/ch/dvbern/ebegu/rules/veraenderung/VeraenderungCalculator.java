@@ -26,7 +26,8 @@ public abstract class VeraenderungCalculator {
 			List<VerfuegungZeitabschnitt> zeitabschnitteAktuell,
 			Verfuegung verfuegung,
 			BigDecimal veraenderung) {
-		if (veraenderung.compareTo(BigDecimal.ZERO) > 0) {
+
+		if (!isVerfuegungIgnorable(veraenderung)) {
 			return false;
 		}
 
@@ -50,4 +51,6 @@ public abstract class VeraenderungCalculator {
 
 		return true;
 	}
+
+	protected abstract boolean isVerfuegungIgnorable(BigDecimal veraenderung);
 }
