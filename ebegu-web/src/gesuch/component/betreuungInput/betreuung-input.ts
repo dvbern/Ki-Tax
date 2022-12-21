@@ -18,6 +18,7 @@
 import {IComponentOptions, IController} from 'angular';
 import {Log, LogFactory} from '../../../app/core/logging/LogFactory';
 import {TSBetreuungsangebotTyp} from '../../../models/enums/TSBetreuungsangebotTyp';
+import {TSPensumAnzeigeTyp} from '../../../models/enums/TSPensumAnzeigeTyp';
 import {TSPensumUnits} from '../../../models/enums/TSPensumUnits';
 import {TSBetreuungspensumContainer} from '../../../models/TSBetreuungspensumContainer';
 import {EbeguUtil} from '../../../utils/EbeguUtil';
@@ -33,7 +34,7 @@ export class BetreuungInputConfig implements IComponentOptions {
         betreuungsangebotTyp: '<',
         multiplierKita: '<',
         multiplierTfo: '<',
-        showBetreuungInputSwitch: '<'
+        betreuungInputSwitchTyp: '<'
     };
     public controller = BetreuungInput;
     public controllerAs = 'vm';
@@ -50,7 +51,7 @@ export class BetreuungInput implements IController {
     public isDisabled: boolean = false;
     public id: string;
     public step: number = 0.01;
-    public showBetreuungInputSwitch: boolean = true;
+    public betreuungInputSwitchTyp: TSPensumAnzeigeTyp = TSPensumAnzeigeTyp.ZEITEINHEIT_UND_PROZENT;
 
     public label: string = '';
     public switchOptions: TSPensumUnits[] = [];
@@ -91,6 +92,10 @@ export class BetreuungInput implements IController {
             }
             return this.translate.instant('TAGE_PLACEHOLDER');
         }
+        if (this.betreuungInputSwitchTyp === TSPensumAnzeigeTyp.NUR_STUNDEN) {
+            return this.translate.instant('STUNDEN_PLACEHOLDER');
+        }
+
         return this.translate.instant('PERCENTAGE_PLACEHOLDER');
     }
 
@@ -101,6 +106,12 @@ export class BetreuungInput implements IController {
         } else {
             this.switchOptions = [TSPensumUnits.PERCENTAGE, TSPensumUnits.DAYS];
             this.multiplier = this.multiplierKita;
+        }
+        if (this.betreuungInputSwitchTyp === TSPensumAnzeigeTyp.NUR_STUNDEN) {
+            this.switchOptions = [TSPensumUnits.HOURS];
+        }
+        if (this.betreuungInputSwitchTyp === TSPensumAnzeigeTyp.NUR_PROZENT) {
+            this.switchOptions = [TSPensumUnits.PERCENTAGE];
         }
     }
 
@@ -138,8 +149,11 @@ export class BetreuungInput implements IController {
         }
 
         // Wenn der Input Switch (Toggle) nicht dargestellt ist, wird das Pensum immer in Prozent dargestellt
-        if (!this.showBetreuungInputSwitch) {
+        if (this.betreuungInputSwitchTyp === TSPensumAnzeigeTyp.NUR_PROZENT) {
             this.pensumContainer.betreuungspensumJA.unitForDisplay = TSPensumUnits.PERCENTAGE;
+        }
+        else if (this.betreuungInputSwitchTyp === TSPensumAnzeigeTyp.NUR_STUNDEN) {
+            this.pensumContainer.betreuungspensumJA.unitForDisplay = TSPensumUnits.HOURS;
         }
 
         this.pensumValue = this.pensumContainer.betreuungspensumJA.pensum;

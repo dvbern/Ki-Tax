@@ -41,6 +41,7 @@ import ch.dvbern.ebegu.entities.KindContainer;
 import ch.dvbern.ebegu.entities.Mahnung;
 import ch.dvbern.ebegu.entities.Verfuegung;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
+import ch.dvbern.ebegu.enums.BetreuungspensumAnzeigeTyp;
 import ch.dvbern.ebegu.enums.DokumentGrundTyp;
 import ch.dvbern.ebegu.enums.DokumentTyp;
 import ch.dvbern.ebegu.enums.FinanzielleSituationTyp;
@@ -192,7 +193,7 @@ public class KibonPdfGeneratorTest extends AbstractPDFGeneratorTest {
 			betreuung.getVerfuegungOrVerfuegungPreview().setManuelleBemerkungen("Dies ist eine Test-Bemerkung");
 		}
 		final VerfuegungPdfGeneratorBern generator = new VerfuegungPdfGeneratorBern(
-			getFirstBetreuung(gesuch), stammdaten, AbstractVerfuegungPdfGenerator.Art.NORMAL, entwurfMitKontingentierung, STADT_BERN_ASIV_CONFIGUERED, false);
+			getFirstBetreuung(gesuch), stammdaten, AbstractVerfuegungPdfGenerator.Art.NORMAL, entwurfMitKontingentierung, STADT_BERN_ASIV_CONFIGUERED, false, BetreuungspensumAnzeigeTyp.ZEITEINHEIT_UND_PROZENT);
 		generateTestDocument(generator, mandant, dokumentname);
 	}
 
@@ -210,7 +211,7 @@ public class KibonPdfGeneratorTest extends AbstractPDFGeneratorTest {
 		assertNotNull(gesuch.getGesuchsteller1());
 		gesuch.getGesuchsteller1().getGesuchstellerJA().setKorrespondenzSprache(locale);
 		final VerfuegungPdfGeneratorBern generator = new VerfuegungPdfGeneratorBern(
-			getFirstBetreuung(gesuch), stammdaten, Art.KEIN_ANSPRUCH, entwurfMitKontingentierung, STADT_BERN_ASIV_CONFIGUERED, false);
+			getFirstBetreuung(gesuch), stammdaten, Art.KEIN_ANSPRUCH, entwurfMitKontingentierung, STADT_BERN_ASIV_CONFIGUERED, false, BetreuungspensumAnzeigeTyp.ZEITEINHEIT_UND_PROZENT);
 		generateTestDocument(generator, mandant, dokumentname);
 	}
 
@@ -229,7 +230,7 @@ public class KibonPdfGeneratorTest extends AbstractPDFGeneratorTest {
 		assertNotNull(gesuch.getGesuchsteller1());
 		gesuch.getGesuchsteller1().getGesuchstellerJA().setKorrespondenzSprache(locale);
 		final VerfuegungPdfGeneratorBern generator = new VerfuegungPdfGeneratorBern(
-			getFirstBetreuung(gesuch), stammdaten, Art.NICHT_EINTRETTEN, entwurfMitKontingentierung, STADT_BERN_ASIV_CONFIGUERED, false);
+			getFirstBetreuung(gesuch), stammdaten, Art.NICHT_EINTRETTEN, entwurfMitKontingentierung, STADT_BERN_ASIV_CONFIGUERED, false, BetreuungspensumAnzeigeTyp.ZEITEINHEIT_UND_PROZENT);
 		generateTestDocument(generator, mandant, dokumentname);
 	}
 
