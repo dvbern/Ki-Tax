@@ -78,6 +78,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_MAHLZEITENVERGUENSTIGUNG_ENABLED;
+import static ch.dvbern.ebegu.enums.EinstellungKey.OEFFNUNGSTAGE_KITA;
+import static ch.dvbern.ebegu.enums.EinstellungKey.OEFFNUNGSTAGE_TFO;
 import static ch.dvbern.ebegu.util.EbeguUtil.collectionComparator;
 
 @ApplicationScoped
@@ -217,13 +219,16 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 		}
 
 		boolean mahlzeitVergunstigungEnabled = isEnabled(betreuung, GEMEINDE_MAHLZEITENVERGUENSTIGUNG_ENABLED);
+		BigDecimal maxTageProMonat = getEinstellungAsBigdecimal(betreuung, OEFFNUNGSTAGE_KITA);
+		BigDecimal maxStundenProMonat = getEinstellungAsBigdecimal(betreuung, OEFFNUNGSTAGE_TFO);
+
 		ProcessingContext ctx = new ProcessingContext(
 			betreuung,
 			dto,
 			overlap.get(),
 			mahlzeitVergunstigungEnabled,
 			eventMonitor,
-			singleClientForPeriod);
+				maxTageProMonat, maxStundenProMonat, singleClientForPeriod);
 
 		Betreuungsstatus status = betreuung.getBetreuungsstatus();
 
@@ -542,6 +547,14 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 		Gesuchsperiode periode = betreuung.extractGesuchsperiode();
 
 		return einstellungService.findEinstellung(key, gemeinde, periode).getValueAsBoolean();
+	}
+
+
+	private BigDecimal getEinstellungAsBigdecimal(@Nonnull Betreuung betreuung, @Nonnull EinstellungKey key) {
+		Gemeinde gemeinde = betreuung.extractGemeinde();
+		Gesuchsperiode periode = betreuung.extractGesuchsperiode();
+
+		return einstellungService.findEinstellung(key, gemeinde, periode).getValueAsBigDecimal();
 	}
 
 	@Nonnull

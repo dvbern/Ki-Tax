@@ -240,7 +240,7 @@ public final class PensumMappingUtil {
 		target.getGueltigkeit().setGueltigAb(zeitabschnittDTO.getVon());
 		target.getGueltigkeit().setGueltigBis(zeitabschnittDTO.getBis());
 		target.setMonatlicheBetreuungskosten(zeitabschnittDTO.getBetreuungskosten());
-		setPensum(target, zeitabschnittDTO);
+		setPensum(target, zeitabschnittDTO, ctx);
 
 		if (ctx.isMahlzeitVerguenstigungEnabled()) {
 			target.setMonatlicheHauptmahlzeiten(coalesce(zeitabschnittDTO.getAnzahlHauptmahlzeiten(), ZERO));
@@ -254,14 +254,15 @@ public final class PensumMappingUtil {
 
 	private static <T extends AbstractMahlzeitenPensum> void setPensum(
 		@Nonnull T target,
-		@Nonnull ZeitabschnittDTO zeitabschnittDTO) {
+		@Nonnull ZeitabschnittDTO zeitabschnittDTO,
+		@Nonnull ProcessingContext ctx) {
 
 		switch (zeitabschnittDTO.getPensumUnit()) {
 		case DAYS:
-			target.applyPensumFromDays(zeitabschnittDTO.getBetreuungspensum());
+			target.applyPensumFromDays(zeitabschnittDTO.getBetreuungspensum(), ctx.getMaxTageProMonat());
 			break;
 		case HOURS:
-			target.applyPensumFromHours(zeitabschnittDTO.getBetreuungspensum());
+			target.applyPensumFromHours(zeitabschnittDTO.getBetreuungspensum(), ctx.getMaxStundenProMonat());
 			break;
 		case PERCENTAGE:
 			target.applyPensumFromPercentage(zeitabschnittDTO.getBetreuungspensum());
