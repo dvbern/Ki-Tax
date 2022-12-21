@@ -65,6 +65,7 @@ import ch.dvbern.ebegu.entities.Einstellung;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Mitteilung;
 import ch.dvbern.ebegu.entities.NeueVeranlagungsMitteilung;
+import ch.dvbern.ebegu.enums.BetreuungspensumAnzeigeTyp;
 import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
@@ -197,6 +198,12 @@ public class MitteilungResource {
 			betreuung.extractGesuchsperiode());
 		boolean mahlzeitenverguenstigungEnabled = einstellung.getValueAsBoolean();
 
+		final Einstellung einstellungAnzeigeTyp = einstellungService.findEinstellung(
+			EinstellungKey.PENSUM_ANZEIGE_TYP,
+			betreuung.extractGemeinde(),
+			betreuung.extractGesuchsperiode());
+		BetreuungspensumAnzeigeTyp betreuungspensumAnzeigeTyp = BetreuungspensumAnzeigeTyp.valueOf(einstellungAnzeigeTyp.getValue());
+
 		final Benutzer currentBenutzer = benutzerService.getCurrentBenutzer()
 			.orElseThrow(() -> new EbeguEntityNotFoundException(
 				"sendBetreuungsmitteilung",
@@ -206,7 +213,8 @@ public class MitteilungResource {
 
 		betreuungsmitteilung.setMessage(MitteilungUtil.createNachrichtForMutationsmeldung(
 			betreuungsmitteilung.getBetreuungspensen(),
-			mahlzeitenverguenstigungEnabled, locale));
+			mahlzeitenverguenstigungEnabled, locale,
+			betreuungspensumAnzeigeTyp));
 
 		Betreuungsmitteilung persistedMitteilung =
 			this.mitteilungService.sendBetreuungsmitteilung(betreuungsmitteilung);
