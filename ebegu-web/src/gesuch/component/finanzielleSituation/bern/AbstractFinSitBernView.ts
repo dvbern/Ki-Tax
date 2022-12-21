@@ -190,7 +190,22 @@ export abstract class AbstractFinSitBernView extends AbstractGesuchViewControlle
     }
 
     protected showZugriffAufSteuerdaten(): boolean {
-       return true;
+        if (!this.steuerSchnittstelleAktivForPeriode) {
+            return false;
+        }
+
+        if (this.gesuchModelManager.getFall().isSozialdienstFall()) {
+            return false;
+        }
+
+        if (!this.gesuchModelManager.getGesuch().isOnlineGesuch() &&
+            !this.showZugriffAufSteuerdatenForGemeinde()) {
+            return false;
+        }
+
+        return this.authServiceRS.isRole(TSRole.GESUCHSTELLER)
+            || EbeguUtil.isNotNullOrUndefined(this.model.getFiSiConToWorkWith().finanzielleSituationGS)
+            || this.showZugriffAufSteuerdatenForGemeinde();
     }
 
     protected showZugriffAufSteuerdatenForGemeinde(): boolean {
