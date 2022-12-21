@@ -2152,7 +2152,7 @@
     "VERANLAGUNG_MIN_UNTERSCHIED_MASSGEBENDESEINK": "Minimaler Unterschied des massgebenden Einkommens, damit kiBon über neue Veranlagung informiert",
     "AUSWEIS_NACHWEIS_REQUIRED": "ID Nachweis für Anantragstellende verlangt",
     "FACHSTELLEN_TYP": "Fachstellen Typ",
-    "BETREUUNG_INPUT_SWITCH_ENABLED": "Wechsel des Betreuungspensum von Prozent zu Tagen erlauben",
+    "PENSUM_ANZEIGE_TYP": "Betreuungspensum Anzeige Typ",
     "VERFUEGUNG_EINGESCHRIEBEN_VERSENDEN_AKTIVIERT": "Verfügung eingeschrieben Versenden aktiv",
     "BEGRUENDUNG_MUTATION_AKTIVIERT": "Mutationsbegründungs Feld aktiv",
     "MAHLZEITENVERGUENSTIGUNG_NULL_EINKOMMEN": "0",

@@ -195,7 +195,7 @@ public class NeueVeranlagungMitteilungTest extends EasyMockSupport {
 			anyObject())).andReturn(gesuch.getGesuchsteller1().getFinanzielleSituationContainer());
 		expect(persistence.merge(neueVeranlagungsMitteilung)).andReturn(neueVeranlagungsMitteilung);
 		replayAll();
-		mitteilungServiceBean.neueVeranlagunssmitteilungBearbeiten(neueVeranlagungsMitteilung);
+		mitteilungServiceBean.neueVeranlagungssmitteilungBearbeiten(neueVeranlagungsMitteilung);
 		verifyAll();
 	}
 
@@ -217,7 +217,7 @@ public class NeueVeranlagungMitteilungTest extends EasyMockSupport {
 			anyObject())).andReturn(gesuch.getGesuchsteller2().getFinanzielleSituationContainer());
 		expect(persistence.merge(neueVeranlagungsMitteilung)).andReturn(neueVeranlagungsMitteilung);
 		replayAll();
-		mitteilungServiceBean.neueVeranlagunssmitteilungBearbeiten(neueVeranlagungsMitteilung);
+		mitteilungServiceBean.neueVeranlagungssmitteilungBearbeiten(neueVeranlagungsMitteilung);
 		verifyAll();
 	}
 
@@ -241,7 +241,7 @@ public class NeueVeranlagungMitteilungTest extends EasyMockSupport {
 
 	private void testExceptionWithErrorCode(ErrorCodeEnum errorCodeEnum) {
 		try {
-			mitteilungServiceBean.neueVeranlagunssmitteilungBearbeiten(neueVeranlagungsMitteilung);
+			mitteilungServiceBean.neueVeranlagungssmitteilungBearbeiten(neueVeranlagungsMitteilung);
 		} catch (EbeguRuntimeException e) {
 			assertThat(e.getErrorCodeEnum(), is(errorCodeEnum));
 		}

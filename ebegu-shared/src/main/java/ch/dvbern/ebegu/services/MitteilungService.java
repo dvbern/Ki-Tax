@@ -251,5 +251,5 @@ public interface MitteilungService {
 
 	NeueVeranlagungsMitteilung sendNeueVeranlagungsmitteilung(@Nonnull NeueVeranlagungsMitteilung neueVeranlagungsMitteilung);
 
-	Gesuch neueVeranlagunssmitteilungBearbeiten(NeueVeranlagungsMitteilung neueVeranlagungsMitteilung);
+	Gesuch neueVeranlagungssmitteilungBearbeiten(NeueVeranlagungsMitteilung neueVeranlagungsMitteilung);
 }
