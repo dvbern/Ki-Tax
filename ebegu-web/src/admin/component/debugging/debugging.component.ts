@@ -53,7 +53,7 @@ export class DebuggingComponent implements OnInit, OnDestroy {
         private readonly router: UIRouter,
         private readonly gesuchRS: GesuchRS,
         private readonly cd: ChangeDetectorRef
-        ) {
+    ) {
         this.routerTraceCategories = this.TRACE_CATEGORY_KEYS
             .map(k => Category[k as any] as any)
             .filter(c => router.trace.enabled(c));
@@ -130,7 +130,7 @@ export class DebuggingComponent implements OnInit, OnDestroy {
         this.gesuchIds.forEach(id => {
             this.gesuchRS.simulateNewVerfuegung(id.trim())
                 .then(res => {
-                    this.simulationResult += res.data;
+                    this.simulationResult += res;
                     this.simulationsFinished++;
                     this.cd.markForCheck();
                 });

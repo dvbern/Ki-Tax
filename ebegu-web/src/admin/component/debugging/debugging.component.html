@@ -65,13 +65,19 @@
             </div>
         </form>
 
-        <div class="view-title margin-top-20">
+        <div class="view-title margin-top-40">
             <h2>Neue BG-Berechung für bereits verfügte Gesuche simulieren</h2>
-            <p>GesuchIds kommagetrennt eingeben</p>
         </div>
-
+        <div class="row">
+            <div class="col-md-12">
+                <p>Hier kann für bereits Gesuche eine Neuberechnung der Betreuungsgutscheine simuliert werden.
+                    Falls es Abweichungen zwischen den Betreuungsgutscheinen des verfügten Gesuchs und der Simulation gibt, werden
+                    die unten angezeigt.
+                    <br>Mehrere GesuchIds auf unterschiedlichen Zeilen eingeben</p>
+            </div>
+        </div>
         <div>
-            <div class="row">
+            <div class="row margin-top-10">
                 <div class="col-md-6">
                     <textarea [(ngModel)]="gesuchIdsStr"
                               class="form-control"
@@ -88,7 +94,7 @@
                 <div class="col-md-12">
                     <p>Simulation {{simulationsFinished}} von {{gesuchIds.length}} fertig</p>
                 </div>
-                <div class="col-md-12">
+                <div class="col-md-12" id="simulationResult">
                     <p>{{simulationResult}}</p>
                 </div>
             </div>
