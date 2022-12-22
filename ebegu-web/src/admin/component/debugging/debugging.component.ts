@@ -126,6 +126,8 @@ export class DebuggingComponent implements OnInit, OnDestroy {
     }
 
     public startSimulation(): void {
+        this.simulationResult = '';
+        this.simulationsFinished = 0;
         this.gesuchIds = this.gesuchIdsStr.split(',');
         this.gesuchIds.forEach(id => {
             this.gesuchRS.simulateNewVerfuegung(id.trim())
