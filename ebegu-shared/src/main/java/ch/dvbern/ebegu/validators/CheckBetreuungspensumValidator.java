@@ -115,12 +115,11 @@ public class CheckBetreuungspensumValidator implements ConstraintValidator<Check
 		return true;
 	}
 
-	@Nonnull
 	private EntityManager createEntityManager() {
 		if (entityManagerFactory != null) {
 			return entityManagerFactory.createEntityManager(); // creates a new EntityManager
 		}
-		throw new EbeguRuntimeException("createEntitymanager", "could not create entitymanger for betreuung validation ", "Validierung konnte nicht durchgefuehrt werden");
+		return null;
 	}
 
 	private void closeEntityManager(@Nullable EntityManager em) {
