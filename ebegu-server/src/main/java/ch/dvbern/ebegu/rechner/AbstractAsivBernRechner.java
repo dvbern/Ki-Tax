@@ -43,6 +43,7 @@ public abstract class AbstractAsivBernRechner extends AbstractBernRechner {
 	 */
 	@Override
 	@Nonnull
+	@SuppressWarnings("PMD.NcssMethodCount")
 	public BGCalculationResult calculateAsiv(
 		@Nonnull BGCalculationInput input,
 		@Nonnull BGRechnerParameterDTO parameterDTO
