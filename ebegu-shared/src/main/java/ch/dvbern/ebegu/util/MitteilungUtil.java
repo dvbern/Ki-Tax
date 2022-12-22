@@ -62,7 +62,8 @@ public final class MitteilungUtil {
 		@Nonnull Set<BetreuungsmitteilungPensum> changedBetreuungen,
 		boolean mahlzeitenverguenstigungEnabled,
 		@Nonnull Locale locale,
-		@Nonnull BetreuungspensumAnzeigeTyp betreuungspensumAnzeigeTyp
+		@Nonnull BetreuungspensumAnzeigeTyp betreuungspensumAnzeigeTyp,
+		@Nonnull BigDecimal multiplier
 	) {
 		final StringBuilder message = new StringBuilder();
 		final int[] index = { 1 }; // Array, weil es final sein muss, damit es in LambdaExpression verwendet werden darf...
@@ -77,7 +78,7 @@ public final class MitteilungUtil {
 			if (index[0] > 1) {
 				message.append('\n');
 			}
-			message.append(createNachrichtForMutationsmeldung(betreuungspensumContainer, mahlzeitenverguenstigungEnabled, index[0], locale, betreuungspensumAnzeigeTyp));
+			message.append(createNachrichtForMutationsmeldung(betreuungspensumContainer, mahlzeitenverguenstigungEnabled, index[0], locale, betreuungspensumAnzeigeTyp, multiplier));
 			index[0]++;
 		});
 		return message.toString();
@@ -88,7 +89,8 @@ public final class MitteilungUtil {
 		@Nonnull BetreuungsmitteilungPensum pensumMitteilung,
 		boolean mahlzeitenverguenstigungEnabled, int index,
 		@Nonnull Locale locale,
-		@Nonnull BetreuungspensumAnzeigeTyp betreuungspensumAnzeigeTyp
+		@Nonnull BetreuungspensumAnzeigeTyp betreuungspensumAnzeigeTyp,
+		@Nonnull BigDecimal multiplier
 	) {
 		String datumAb = Constants.DATE_FORMATTER.format(pensumMitteilung.getGueltigkeit().getGueltigAb());
 		String datumBis = Constants.DATE_FORMATTER.format(pensumMitteilung.getGueltigkeit().getGueltigBis());
@@ -109,7 +111,7 @@ public final class MitteilungUtil {
 				index,
 				datumAb,
 				datumBis,
-				pensumMitteilung.getPensum(),
+				MathUtil.DEFAULT.multiply(pensumMitteilung.getPensum() , multiplier),
 				pensumMitteilung.getMonatlicheBetreuungskosten(),
 				hauptmahlzeiten,
 				nebemahlzeiten,
@@ -121,7 +123,7 @@ public final class MitteilungUtil {
 				index,
 				datumAb,
 				datumBis,
-				pensumMitteilung.getPensum(),
+				MathUtil.DEFAULT.multiply(pensumMitteilung.getPensum() , multiplier),
 				pensumMitteilung.getMonatlicheBetreuungskosten());
 		}
 	}

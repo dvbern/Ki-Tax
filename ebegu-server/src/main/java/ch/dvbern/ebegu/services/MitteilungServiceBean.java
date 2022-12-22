@@ -124,7 +124,9 @@ import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.ebegu.services.util.SearchUtil;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.types.DateRange_;
+import ch.dvbern.ebegu.util.BetreuungUtil;
 import ch.dvbern.ebegu.util.Constants;
+import ch.dvbern.ebegu.util.MathUtil;
 import ch.dvbern.ebegu.util.MitteilungUtil;
 import ch.dvbern.ebegu.util.ServerMessageUtil;
 import ch.dvbern.lib.cdipersistence.Persistence;
@@ -1000,18 +1002,6 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 
 		final Locale locale = LocaleThreadLocal.get();
 
-		final Einstellung einstellung = einstellungService.findEinstellung(
-			EinstellungKey.GEMEINDE_MAHLZEITENVERGUENSTIGUNG_ENABLED,
-			betreuung.extractGemeinde(),
-			betreuung.extractGesuchsperiode());
-		boolean mahlzeitenverguenstigungEnabled = einstellung.getValueAsBoolean();
-
-		final Einstellung einstellungAnzeigeTyp = einstellungService.findEinstellung(
-			EinstellungKey.PENSUM_ANZEIGE_TYP,
-			betreuung.extractGemeinde(),
-			betreuung.extractGesuchsperiode());
-		BetreuungspensumAnzeigeTyp betreuungspensumAnzeigeTyp = BetreuungspensumAnzeigeTyp.valueOf(einstellungAnzeigeTyp.getValue());
-
 		final Benutzer currentBenutzer = benutzerService.getCurrentBenutzer()
 			.orElseThrow(() -> new EbeguEntityNotFoundException(
 				"sendBetreuungsmitteilung",
@@ -1154,11 +1144,38 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 			mitteilung.getBetreuung().extractGesuchsperiode());
 		BetreuungspensumAnzeigeTyp betreuungspensumAnzeigeTyp = BetreuungspensumAnzeigeTyp.valueOf(einstellungAnzeigeTyp.getValue());
 
+		BigDecimal multiplier = getMultiplierForMutationsMitteilung(mitteilung, betreuungspensumAnzeigeTyp);
+
 		return MitteilungUtil.createNachrichtForMutationsmeldung(
 			changedBetreuungen,
 			mvzEnabled,
 			locale,
-			betreuungspensumAnzeigeTyp);
+			betreuungspensumAnzeigeTyp,
+			multiplier);
+	}
+
+	private BigDecimal getMultiplierForMutationsMitteilung(@Nonnull Betreuungsmitteilung mitteilung, @Nonnull BetreuungspensumAnzeigeTyp betreuungspensumAnzeigeTyp) {
+		if(!betreuungspensumAnzeigeTyp.equals(BetreuungspensumAnzeigeTyp.NUR_STUNDEN)){
+			return BigDecimal.ONE;
+		}
+		assert mitteilung.getBetreuung() != null;
+		if(mitteilung.getBetreuung().isAngebotKita()) {
+			BigDecimal oeffnungstageKita = einstellungService.findEinstellung(
+				EinstellungKey.OEFFNUNGSTAGE_KITA,
+				mitteilung.getBetreuung().extractGemeinde(),
+				mitteilung.getBetreuung().extractGesuchsperiode()).getValueAsBigDecimal();
+			return BetreuungUtil.calculateOeffnungszeitPerMonthProcentual(MathUtil.EXACT.multiply(oeffnungstageKita, BetreuungUtil.ANZAHL_STUNDEN_PRO_TAG_KITA));
+		}
+		BigDecimal oeffnungstageTFO =einstellungService.findEinstellung(
+			EinstellungKey.OEFFNUNGSTAGE_TFO,
+			mitteilung.getBetreuung().extractGemeinde(),
+			mitteilung.getBetreuung().extractGesuchsperiode()).getValueAsBigDecimal();
+
+		BigDecimal oeffnungsstundenTFO =einstellungService.findEinstellung(
+				EinstellungKey.OEFFNUNGSSTUNDEN_TFO,
+				mitteilung.getBetreuung().extractGemeinde(),
+				mitteilung.getBetreuung().extractGesuchsperiode()).getValueAsBigDecimal();
+		return MathUtil.DEFAULT.divide(MathUtil.DEFAULT.divide(MathUtil.DEFAULT.multiply(oeffnungstageTFO, oeffnungsstundenTFO), new BigDecimal(12)), new BigDecimal(100));
 	}
 
 	private Collection<Betreuungsmitteilung> findAllBetreuungsMitteilungenForInstitution(Institution institution) {

@@ -22,17 +22,22 @@ import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
 import {MANDANTS} from '../../../app/core/constants/MANDANTS';
 import {DvDialog} from '../../../app/core/directive/dv-dialog/dv-dialog';
 import {ErrorService} from '../../../app/core/errors/service/ErrorService';
+import {LogFactory} from '../../../app/core/logging/LogFactory';
 import {BetreuungRS} from '../../../app/core/service/betreuungRS.rest';
 import {MitteilungRS} from '../../../app/core/service/mitteilungRS.rest';
 import {MandantService} from '../../../app/shared/services/mandant.service';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {TSBetreuungsangebotTyp} from '../../../models/enums/TSBetreuungsangebotTyp';
 import {TSBetreuungspensumAbweichungStatus} from '../../../models/enums/TSBetreuungspensumAbweichungStatus';
+import {TSEinstellungKey} from '../../../models/enums/TSEinstellungKey';
+import {TSPensumAnzeigeTyp} from '../../../models/enums/TSPensumAnzeigeTyp';
 import {TSWizardStepName} from '../../../models/enums/TSWizardStepName';
 import {TSBetreuung} from '../../../models/TSBetreuung';
 import {TSBetreuungsmitteilung} from '../../../models/TSBetreuungsmitteilung';
 import {TSBetreuungspensumAbweichung} from '../../../models/TSBetreuungspensumAbweichung';
+import {TSEinstellung} from '../../../models/TSEinstellung';
 import {TSKindContainer} from '../../../models/TSKindContainer';
+import {EbeguRestUtil} from '../../../utils/EbeguRestUtil';
 import {EbeguUtil} from '../../../utils/EbeguUtil';
 import {OkHtmlDialogController} from '../../dialog/OkHtmlDialogController';
 import {RemoveDialogController} from '../../dialog/RemoveDialogController';
@@ -49,6 +54,8 @@ import ITranslateService = angular.translate.ITranslateService;
 const removeDialogTemplate = require('../../dialog/removeDialogTemplate.html');
 const okHtmlDialogTempl = require('../../dialog/okHtmlDialogTemplate.html');
 const GESUCH_BETREUUNGEN = 'gesuch.betreuungen';
+
+const LOG = LogFactory.createLog('BetreuungAbweichungenViewController');
 
 export class BetreuungAbweichungenViewComponentConfig implements IComponentOptions {
     public transclude = false;
@@ -76,7 +83,8 @@ export class BetreuungAbweichungenViewController extends AbstractGesuchViewContr
         '$timeout',
         '$translate',
         'DvDialog',
-        'MandantService'
+        'MandantService',
+        'EbeguRestUtil'
     ];
 
     public $translate: ITranslateService;
@@ -85,6 +93,7 @@ export class BetreuungAbweichungenViewController extends AbstractGesuchViewContr
     public institution: string;
     public isSavingData: boolean; // Semaphore
     public dvDialog: DvDialog;
+    public betreuungspensumAnzeigeTyp: TSPensumAnzeigeTyp;
     private existingMutationsmeldung: TSBetreuungsmitteilung;
     private isLuzern: boolean;
 
@@ -105,7 +114,8 @@ export class BetreuungAbweichungenViewController extends AbstractGesuchViewContr
         $timeout: ITimeoutService,
         $translate: ITranslateService,
         dvDialog: DvDialog,
-        private readonly mandantService: MandantService
+        private readonly mandantService: MandantService,
+        private readonly ebeguRestUtil: EbeguRestUtil
     ) {
         super(gesuchModelManager, berechnungsManager, wizardStepManager, $scope, TSWizardStepName.BETREUUNG, $timeout);
         this.$translate = $translate;
@@ -144,6 +154,20 @@ export class BetreuungAbweichungenViewController extends AbstractGesuchViewContr
             .then((response: TSBetreuungsmitteilung) => {
                 this.existingMutationsmeldung = response;
             });
+        this.einstellungRS.getAllEinstellungenBySystemCached(this.gesuchModelManager.getGesuchsperiode().id)
+            .subscribe(einstellungen => {
+                this.loadEinstellungPensumAnzeigeTyp(einstellungen);
+            }, error => LOG.error(error));
+    }
+
+    private loadEinstellungPensumAnzeigeTyp(einstellungen: TSEinstellung[]): void {
+        const einstellung = einstellungen
+            .find(e => e.key === TSEinstellungKey.PENSUM_ANZEIGE_TYP);
+        const einstellungPensumAnzeigeTyp = this.ebeguRestUtil
+            .parsePensumAnzeigeTyp(einstellung);
+
+        this.betreuungspensumAnzeigeTyp = EbeguUtil.isNotNullOrUndefined(einstellungPensumAnzeigeTyp) ?
+            einstellungPensumAnzeigeTyp : TSPensumAnzeigeTyp.ZEITEINHEIT_UND_PROZENT;
     }
 
     public getKindModel(): TSKindContainer {
@@ -315,7 +339,7 @@ export class BetreuungAbweichungenViewController extends AbstractGesuchViewContr
     }
 
     public getInputFormatTitle(): string {
-        return this.model.getAngebotTyp() === TSBetreuungsangebotTyp.KITA
+        return this.model.getAngebotTyp() === TSBetreuungsangebotTyp.KITA && this.betreuungspensumAnzeigeTyp !== TSPensumAnzeigeTyp.NUR_STUNDEN
             ? this.$translate.instant('DAYS')
             : this.$translate.instant('HOURS');
     }
