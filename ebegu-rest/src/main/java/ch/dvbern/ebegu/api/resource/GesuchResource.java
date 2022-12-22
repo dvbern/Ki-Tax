@@ -1211,6 +1211,7 @@ public class GesuchResource {
 		try {
 			simulation = simulationService.simulateNewVerfuegung(gesuchFromDB);
 		} catch (EbeguRuntimeException e) {
+			LOG.error("simulateNewVerfuegung", e);
 			simulation = e.getMessage();
 		}
 		// transaction muss rollbacked werden, damit die Änderung in den Betreuungsstatus nicht gespeichert wird.

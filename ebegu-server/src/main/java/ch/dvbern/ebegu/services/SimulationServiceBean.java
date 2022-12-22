@@ -48,10 +48,10 @@ public class SimulationServiceBean extends AbstractBaseService implements Simula
 
 		newGesuch.getKindContainers().forEach(k -> {
 			k.getBetreuungen().forEach(b -> {
-				if (simulationAllowed(b)) {
+				if (!simulationAllowed(b)) {
 					return;
 				}
-				var verfuegung = b.getVerfuegung();
+				var verfuegung = b.getVerfuegungPreview();
 				var sumNew = calculateSumBG(verfuegung.getZeitabschnitte());
 				var sumOld = initialBgs.get(b.getId());
 				if (sumOld.compareTo(sumNew) != 0) {
@@ -80,7 +80,7 @@ public class SimulationServiceBean extends AbstractBaseService implements Simula
 		var initialBgs = new HashMap<String, BigDecimal>();
 		gesuch.getKindContainers().forEach(k -> {
 			k.getBetreuungen().forEach(b -> {
-				if (simulationAllowed(b)) {
+				if (!simulationAllowed(b)) {
 					return;
 				}
 				var verfuegung = b.getVerfuegung();
