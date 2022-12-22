@@ -151,8 +151,7 @@ export class BetreuungInput implements IController {
         // Wenn der Input Switch (Toggle) nicht dargestellt ist, wird das Pensum immer in Prozent dargestellt
         if (this.betreuungInputSwitchTyp === TSPensumAnzeigeTyp.NUR_PROZENT) {
             this.pensumContainer.betreuungspensumJA.unitForDisplay = TSPensumUnits.PERCENTAGE;
-        }
-        else if (this.betreuungInputSwitchTyp === TSPensumAnzeigeTyp.NUR_STUNDEN) {
+        } else if (this.betreuungInputSwitchTyp === TSPensumAnzeigeTyp.NUR_STUNDEN) {
             this.pensumContainer.betreuungspensumJA.unitForDisplay = TSPensumUnits.HOURS;
         }
 

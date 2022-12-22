@@ -37,7 +37,7 @@ public final class BetreuungUtil {
 
 	private static final Pattern COMPILE = Pattern.compile("^0+(?!$)");
 
-	public static final BigDecimal ANZAHL_STUNDEN_PRO_TAG_KITA = new BigDecimal(10);
+	public static final BigDecimal ANZAHL_STUNDEN_PRO_TAG_KITA = BigDecimal.TEN;
 
 	private BetreuungUtil() {
 	}
@@ -55,7 +55,7 @@ public final class BetreuungUtil {
 		@Nonnull Gemeinde gemeinde,
 		@Nullable BetreuungsangebotTyp betreuungsangebotTyp,
 		@Nonnull EinstellungService einstellungService,
-		@Nullable final EntityManager em) {
+		@Nonnull final EntityManager em) {
 
 		EinstellungKey key = null;
 		if (betreuungsangebotTyp == BetreuungsangebotTyp.KITA) {
