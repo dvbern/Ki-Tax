@@ -23,9 +23,11 @@ import java.util.Optional;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.annotation.Resource;
 import javax.annotation.security.DenyAll;
 import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
+import javax.ejb.EJBContext;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletResponse;
@@ -161,6 +163,9 @@ public class GesuchResource {
 
 	@Inject
 	private SimulationService simulationService;
+
+	@Resource
+	private EJBContext context;    //fuer rollback
 
 	@ApiOperation(value = "Creates a new Antrag in the database. The transfer object also has a relation to " +
 		"Familiensituation which is stored in the database as well.", response = JaxGesuch.class)
@@ -1202,7 +1207,14 @@ public class GesuchResource {
 		Gesuch gesuchFromDB = gesuchService.findGesuch(gesuchId).orElseThrow(
 			() -> new EbeguEntityNotFoundException("simulateNewVerfuegung", "Gesuch nicht gefunden", gesuchId)
 		);
-		var simulation = simulationService.simulateNewVerfuegung(gesuchFromDB);
+		String simulation;
+		try {
+			simulation = simulationService.simulateNewVerfuegung(gesuchFromDB);
+		} catch (EbeguRuntimeException e) {
+			simulation = e.getMessage();
+		}
+		// transaction muss rollbacked werden, damit die Änderung in den Betreuungsstatus nicht gespeichert wird.
+		context.setRollbackOnly();
 		return Response.ok(simulation).build();
 	}
 

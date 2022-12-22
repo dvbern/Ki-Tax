@@ -41,14 +41,14 @@ public class SimulationServiceBean extends AbstractBaseService implements Simula
 
 	@Override
 	public String simulateNewVerfuegung(@Nonnull Gesuch gesuch) {
-		HashMap<String, BigDecimal> initialBgs = storeInitialBGs(gesuch);
+		HashMap<String, BigDecimal> initialBgs = storeInitialBGsAndResetBetreuungsstatus(gesuch);
 		var newGesuch = verfuegungService.calculateVerfuegung(gesuch);
 
 		var log = new StringBuilder();
 
 		newGesuch.getKindContainers().forEach(k -> {
 			k.getBetreuungen().forEach(b -> {
-				if (b.getVerfuegung() == null) {
+				if (simulationAllowed(b)) {
 					return;
 				}
 				var verfuegung = b.getVerfuegung();
@@ -76,20 +76,32 @@ public class SimulationServiceBean extends AbstractBaseService implements Simula
 			.append("\n");
 	}
 
-	private HashMap<String, BigDecimal> storeInitialBGs(Gesuch gesuch) {
+	private HashMap<String, BigDecimal> storeInitialBGsAndResetBetreuungsstatus(Gesuch gesuch) {
 		var initialBgs = new HashMap<String, BigDecimal>();
 		gesuch.getKindContainers().forEach(k -> {
 			k.getBetreuungen().forEach(b -> {
-				if (b.getVerfuegung() == null) {
+				if (simulationAllowed(b)) {
 					return;
 				}
 				var verfuegung = b.getVerfuegung();
 				var sumBG = calculateSumBG(verfuegung.getZeitabschnitte());
 				initialBgs.put(b.getId(), sumBG);
+				// wir müssen den Betreuungsstatus zurücksetzen, damit die Verfügung erneut durchgeführt werden kann.
+				// diese Statusänderung wird nicht gespeichert, weil die Transaction rollbacked wird.
 				b.setBetreuungsstatus(Betreuungsstatus.BESTAETIGT);
 			});
 		});
 		return initialBgs;
+	}
+
+	private boolean simulationAllowed(@Nonnull Betreuung betreuung) {
+		if (betreuung.getVerfuegung() == null) {
+			return false;
+		}
+		if (betreuung.isAngebotSchulamt()) {
+			return false;
+		}
+		return true;
 	}
 
 	private BigDecimal calculateSumBG(@Nonnull List< VerfuegungZeitabschnitt > zeitabschnitte) {
