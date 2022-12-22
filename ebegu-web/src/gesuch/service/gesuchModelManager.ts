@@ -363,10 +363,14 @@ export class GesuchModelManager {
             return;
         }
 
+        if (this.gesuch.familiensituationContainer.familiensituationJA.verguenstigungGewuenscht) {
+            return;
+        }
+
         this.gesuch.familiensituationContainer.familiensituationJA.verguenstigungGewuenscht = true;
         this.familiensitutaionRS.saveFamiliensituation(this.gesuch.familiensituationContainer, this.gesuch.id)
-            .subscribe((response: TSFamiliensituationContainer) => {
-                this.gesuch.familiensituationContainer = response;
+            .subscribe(() => {
+                this.reloadGesuch();
             });
     }
 

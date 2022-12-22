@@ -768,7 +768,7 @@ public class ZahlungServiceBean extends AbstractBaseService implements ZahlungSe
 	}
 
 	private VerfuegungsZeitabschnittZahlungsstatus getZahluntsstatusKorrigiert(VerfuegungZeitabschnitt zeitabschnittNeu) {
-		if (zeitabschnittNeu.getRelevantBgCalculationInput().getBetreuungspensumProzent().compareTo(BigDecimal.ZERO) == 0) {
+		if (zeitabschnittNeu.getRelevantBgCalculationResult().getBetreuungspensumProzent().compareTo(BigDecimal.ZERO) == 0) {
 			return VerfuegungsZeitabschnittZahlungsstatus.VERRECHNET_KEINE_BETREUUNG;
 		}
 
