@@ -61,7 +61,9 @@ public class NeueVeranlagungEventHandler extends BaseEventHandler<NeueVeranlagun
 
 	private static final Logger LOG = LoggerFactory.getLogger(NeueVeranlagungEventHandler.class);
 	private static final String BETREFF_KEY = "neue_veranlagung_mitteilung_betreff";
+	private static final String BETREFF_KEY_MARKIERT = "neue_veranlagung_mitteilung_betreff_markiert";
 	private static final String MESSAGE_KEY = "neue_veranlagung_mitteilung_message";
+	private static final String MESSAGE_KEY_MARKIERT = "neue_veranlagung_mitteilung_message_markiert";
 
 
 	@Inject
@@ -137,16 +139,13 @@ public class NeueVeranlagungEventHandler extends BaseEventHandler<NeueVeranlagun
 		FinanzielleSituationResultateDTO finSitNeuResult =
 			finanzielleSituationService.calculateResultate(kibonAnfrageContext.getGesuch());
 
-		// Vergleichen
-		if (finSitOriginalResult.getMassgebendesEinkVorAbzFamGr().compareTo(finSitNeuResult.getMassgebendesEinkVorAbzFamGr()) == 0) {
-			return Processing.failure("Keine Meldung erstellt, da das massgebende Einkommen sich mit der neuen Verfügung nicht verändert hat");
-		}
-
 		BigDecimal minUnterschiedEinkommen = getEinstelungMinUnterschiedEinkommen(kibonAnfrageContext.getGesuch().getGesuchsperiode());
 		BigDecimal unterschiedEinkommen = MathUtil.EXACT.subtract(
 			finSitNeuResult.getMassgebendesEinkVorAbzFamGr(),
 			finSitOriginalResult.getMassgebendesEinkVorAbzFamGr());
-		if (unterschiedEinkommen.compareTo(minUnterschiedEinkommen) <= 0) {
+
+		boolean isMarkierFuerKontroll = kibonAnfrageContext.getGesuch().getMarkiertFuerKontroll();
+		if (!checkBenachrichtigungRequired(isMarkierFuerKontroll, unterschiedEinkommen, minUnterschiedEinkommen)) {
 			String unterschiedEinkommenString = unterschiedEinkommen.stripTrailingZeros().toPlainString();
 			return Processing.failure("Keine Meldung erstellt. Das massgebende Einkommen hat sich um " + unterschiedEinkommenString +
 				" Franken verändert. Der konfigurierte Schwellenwert zur Benachrichtigung liegt bei " + minUnterschiedEinkommen +
@@ -156,6 +155,25 @@ public class NeueVeranlagungEventHandler extends BaseEventHandler<NeueVeranlagun
 		createAndSendNeueVeranlagungsMitteilung(kibonAnfrageContext);
 
 		return Processing.success();
+	}
+
+	private boolean checkBenachrichtigungRequired(
+		boolean isMarkierFuerKontroll,
+		@Nonnull BigDecimal unterschiedEinkommen,
+		@Nonnull BigDecimal minUnterschiedEinkommen
+	) {
+		// falls das Gesuch für die Kontrolle markiert ist, dann immer benachrichtigen
+		if (isMarkierFuerKontroll) {
+			return true;
+		}
+		// Falls neues Einkommen - altes Einkommen < 0 ist, dann würde der BG steigen. Immer benachrichtigen.
+		if (unterschiedEinkommen.compareTo(BigDecimal.ZERO) < 0) {
+			return true;
+		}
+		// falls neues Einkommen - altes Einkommen > 0 ist, dann würde der BG sinken.
+		// nur benachrichtigen, wenn der Schwellenwert überschritten wird
+		return unterschiedEinkommen.compareTo(minUnterschiedEinkommen) > 0;
+
 	}
 
 	@SuppressWarnings("PMD.CloseResource")
@@ -200,12 +218,14 @@ public class NeueVeranlagungEventHandler extends BaseEventHandler<NeueVeranlagun
 		NeueVeranlagungsMitteilung neueVeranlagungsMitteilung = new NeueVeranlagungsMitteilung();
 		neueVeranlagungsMitteilung.setDossier(gesuch.getDossier());
 		Objects.requireNonNull(kibonAnfrageContext.getSteuerdatenResponse());
+		String betreffKey = gesuch.getMarkiertFuerKontroll() ? BETREFF_KEY_MARKIERT : BETREFF_KEY;
+		String messageKey = gesuch.getMarkiertFuerKontroll() ? MESSAGE_KEY_MARKIERT : MESSAGE_KEY;
 		neueVeranlagungsMitteilung.setSubject(ServerMessageUtil.getMessage(
-			BETREFF_KEY,
+			betreffKey,
 			locale,
 			gesuch.extractMandant()));
 		neueVeranlagungsMitteilung.setMessage(ServerMessageUtil.getMessage(
-			MESSAGE_KEY,
+			messageKey,
 			locale,
 			gesuch.extractMandant()));
 		neueVeranlagungsMitteilung.setSteuerdatenResponse(kibonAnfrageContext.getSteuerdatenResponse());
