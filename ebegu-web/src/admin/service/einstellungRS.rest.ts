@@ -80,9 +80,7 @@ export class EinstellungRS {
 
     private getAllEinstellungenBySystem(gesuchsperiodeId: string): Observable<TSEinstellung[]> {
         return this.http.get(`${this.serviceURL}/gesuchsperiode/${gesuchsperiodeId}`)
-            .pipe(map((response: any) => {
-                return this.ebeguRestUtil.parseEinstellungList(response);
-            }));
+            .pipe(map((response: any) => this.ebeguRestUtil.parseEinstellungList(response)));
     }
 
     public getPauschalbetraegeFerienbetreuung(container: TSFerienbetreuungAngabenContainer):

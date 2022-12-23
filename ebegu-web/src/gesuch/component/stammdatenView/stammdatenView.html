@@ -17,15 +17,17 @@
     <h1 class="access-for-all-title" data-translate="AFA_GESUCHSFORMULAR"></h1>
     <div class="row view-title">
         <div class="col-md-12">
-            <h2>
-                <span data-translate="GESUCHSTELLERIN"></span> {{vm.gesuchModelManager.getGesuchstellerNumber()}}
-            </h2>
+                <h2>
+                    <span data-translate="GESUCHSTELLERIN"></span>
+                    {{vm.getFamilienSituationDisplayValue()}}
+                </h2>
             <dv-bisher gs="vm.getModel().gesuchstellerGS"
                        ja="vm.getModel().gesuchstellerJA"
                        specific-bisher-text="'DURCH_GEMEINDE_ERFASST' | translate"
                        show-specific-bisher-text-if-bisher-none="true"></dv-bisher>
             <hr class="header"/>
             <p class="inline-hint" data-translate="PFLICHTFELDER_HINT" ng-if="vm.showHintMandatoryFields()"></p>
+
         </div>
     </div>
     <div class="row">

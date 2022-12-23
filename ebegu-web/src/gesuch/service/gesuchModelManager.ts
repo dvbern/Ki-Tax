@@ -54,6 +54,7 @@ import {TSGesuchBetreuungenStatus} from '../../models/enums/TSGesuchBetreuungenS
 import {TSGesuchsperiodeStatus} from '../../models/enums/TSGesuchsperiodeStatus';
 import {TSRole} from '../../models/enums/TSRole';
 import {TSSozialdienstFallStatus} from '../../models/enums/TSSozialdienstFallStatus';
+import {TSUnterhaltsvereinbarungAnswer} from '../../models/enums/TSUnterhaltsvereinbarungAnswer';
 import {TSWizardStepName} from '../../models/enums/TSWizardStepName';
 import {TSWizardStepStatus} from '../../models/enums/TSWizardStepStatus';
 import {TSAdresse} from '../../models/TSAdresse';
@@ -93,7 +94,6 @@ import {GesuchGenerator} from './gesuchGenerator';
 import {GesuchRS} from './gesuchRS.rest';
 import {GlobalCacheService} from './globalCacheService';
 import {WizardStepManager} from './wizardStepManager';
-
 const LOG = LogFactory.createLog('GesuchModelManager');
 
 export class GesuchModelManager {
@@ -155,6 +155,7 @@ export class GesuchModelManager {
         private readonly gemeindeRS: GemeindeRS,
         private readonly internePendenzenRS: InternePendenzenRS,
         private readonly einstellungenRS: EinstellungRS
+
     ) {
     }
 
@@ -1379,9 +1380,7 @@ export class GesuchModelManager {
     }
 
     public mutationIgnorieren(): IPromise<void> {
-        return this.gesuchRS.mutationIgnorieren(this.gesuch.id).then(() => {
-            return this.reloadGesuch();
-        }).then(() => this.calculateGesuchStatusVerfuegt());
+        return this.gesuchRS.mutationIgnorieren(this.gesuch.id).then(() => this.reloadGesuch()).then(() => this.calculateGesuchStatusVerfuegt());
     }
 
     public verfuegungSchliessenNichtEintreten(): IPromise<TSVerfuegung> {
