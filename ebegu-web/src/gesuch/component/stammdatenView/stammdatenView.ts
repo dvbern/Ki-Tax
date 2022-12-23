@@ -212,7 +212,8 @@ export class StammdatenViewController extends AbstractGesuchViewController<TSGes
             return '1';
         }
 
-        if (this.getGesuch().extractFamiliensituation()=== null && this.getGesuch().extractFamiliensituation() === undefined) {
+        if (this.getGesuch().extractFamiliensituation() === null && this.getGesuch()
+            .extractFamiliensituation() === undefined) {
             return '';
         }
         const familienstatus: TSFamilienstatus = this.getGesuch().extractFamiliensituation().familienstatus;
@@ -221,8 +222,10 @@ export class StammdatenViewController extends AbstractGesuchViewController<TSGes
                 return `2 (${ this.$translate.instant(TSFamilienstatus.KONKUBINAT)  } )`;
             case TSFamilienstatus.KONKUBINAT_KEIN_KIND:
                 const startKonkubinat: moment.Moment = this.getGesuch().extractFamiliensituation().startKonkubinat;
-                if (startKonkubinat.isAfter(moment().subtract(2,'years'))){
-                    return `2 (${ this.$translate.instant('ANDERER_ELTERNTEIL')  } )`;
+                if (this.getGesuch()
+                    .extractFamiliensituation()
+                    .konkubinatGetsLongerThanXYearsBeforeEndOfPeriode(this.getGesuch().gesuchsperiode.gueltigkeit.gueltigBis)) {
+                    return `2 (${this.$translate.instant('ANDERER_ELTERNTEIL')} )`;
                 }
                 return familienstatus;
             case TSFamilienstatus.ALLEINERZIEHEND:
