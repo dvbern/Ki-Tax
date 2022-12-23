@@ -22,7 +22,7 @@ import {TranslateService} from '@ngx-translate/core';
 import {StateService, Transition} from '@uirouter/core';
 import * as moment from 'moment';
 import {take} from 'rxjs/operators';
-import { AuthServiceRS } from '../../../authentication/service/AuthServiceRS.rest';
+import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {GemeindeRS} from '../../../gesuch/service/gemeindeRS.rest';
 import {TSBetreuungsangebotTyp} from '../../../models/enums/TSBetreuungsangebotTyp';
 import {TSInstitutionStatus} from '../../../models/enums/TSInstitutionStatus';
@@ -103,11 +103,11 @@ export class AddInstitutionComponent implements OnInit {
         this.startDate = this.getStartDate();
 
         // if it is not a Betreuungsgutschein Institution we have to load the Gemeinden
-        if (!this.isBGInstitution) {
-            this.loadGemeindenList();
-        }
         this.applicationPropertyRS.getInstitutionenDurchGemeindenEinladen().then(result => {
             this.institutionenDurchGemeindenEinladen = result;
+            if (this.institutionenDurchGemeindenEinladen || !this.isBGInstitution) {
+                this.loadGemeindenList();
+            }
         });
     }
 
@@ -221,6 +221,8 @@ export class AddInstitutionComponent implements OnInit {
             obs$ = this.gemeindeRS.getGemeindenForTSByPrincipal$();
         } else if (this.betreuungsangebot === TSBetreuungsangebotTyp.FERIENINSEL) {
             obs$ = this.gemeindeRS.getGemeindenForFIByPrincipal$();
+        } else {
+            obs$ = this.gemeindeRS.getGemeindenForBGByPrincipal$();
         }
         obs$.pipe(take(1))
             .subscribe(
