@@ -209,4 +209,8 @@ export class SteuerabfrageResponseHintsComponent implements OnInit, OnDestroy, O
     public tryAgainPossible(): boolean {
         return this.isMutation() && !this.gesuchModelManager.isGesuchReadonly();
     }
+
+    public isGesuchReadonly(): boolean {
+        return this.gesuchModelManager.isGesuchReadonly();
+    }
 }
