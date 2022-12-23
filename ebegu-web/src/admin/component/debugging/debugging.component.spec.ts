@@ -16,10 +16,11 @@
  */
 
 import {APP_BASE_HREF} from '@angular/common';
-import {waitForAsync, ComponentFixture, TestBed} from '@angular/core/testing';
+import {ComponentFixture, TestBed, waitForAsync} from '@angular/core/testing';
 import {UIRouterModule} from '@uirouter/angular';
 import {I18nServiceRSRest} from '../../../app/i18n/services/i18nServiceRS.rest';
 import {SharedModule} from '../../../app/shared/shared.module';
+import {GesuchRS} from '../../../gesuch/service/gesuchRS.rest';
 import {SHARED_MODULE_OVERRIDES} from '../../../hybridTools/mockUpgradedComponent';
 
 import {DebuggingComponent} from './debugging.component';
@@ -30,6 +31,8 @@ describe('DebuggingComponent', () => {
 
     const i18nServiceSpy = jasmine
         .createSpyObj<I18nServiceRSRest>(I18nServiceRSRest.name, ['extractPreferredLanguage']);
+    const gesuchRSSpy = jasmine.createSpyObj<GesuchRS>(GesuchRS.name,
+        ['simulateNewVerfuegung']);
 
     beforeEach(waitForAsync(() => {
         TestBed.configureTestingModule({
@@ -40,7 +43,8 @@ describe('DebuggingComponent', () => {
             declarations: [DebuggingComponent],
             providers: [
                 {provide: APP_BASE_HREF, useValue: '/'},
-                {provide: I18nServiceRSRest, useValue: i18nServiceSpy}
+                {provide: I18nServiceRSRest, useValue: i18nServiceSpy},
+                {provide: GesuchRS, useValue: gesuchRSSpy}
             ]
         })
             .overrideModule(SharedModule, SHARED_MODULE_OVERRIDES)
