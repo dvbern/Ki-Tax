@@ -7,6 +7,7 @@ import javax.annotation.Nonnull;
 
 import ch.dvbern.ebegu.entities.Familiensituation;
 import ch.dvbern.ebegu.entities.Gesuch;
+import ch.dvbern.ebegu.enums.UnterhaltsvereinbarungAnswer;
 import ch.dvbern.ebegu.types.DateRange;
 
 import static java.util.Objects.requireNonNull;
@@ -33,7 +34,8 @@ public abstract class AbstractErwerbspensumCalcRule extends AbstractCalcRule {
 		if (familiensituationGueltigAb != null
 			&& familiensituationErstGesuch != null
 			&& gueltigkeit.getGueltigAb().isBefore(familiensituationGueltigAb.plusMonths(1).withDayOfMonth(1))) {
-			return familiensituationErstGesuch.hasSecondGesuchsteller(gueltigkeit.getGueltigBis());
+			return familiensituationErstGesuch.hasSecondGesuchsteller(gueltigkeit.getGueltigBis())
+				&& familiensituationErstGesuch.getUnterhaltsvereinbarung() != UnterhaltsvereinbarungAnswer.NEIN_UNTERHALTSVEREINBARUNG;
 		}
 		return familiensituation.hasSecondGesuchsteller(gueltigkeit.getGueltigBis());
 	}
