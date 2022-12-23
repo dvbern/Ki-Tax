@@ -2150,7 +2150,7 @@
     "VERANLAGUNG_MIN_UNTERSCHIED_MASSGEBENDESEINK": "Minimaler Unterschied des massgebenden Einkommens, damit kiBon über neue Veranlagung informiert",
     "AUSWEIS_NACHWEIS_REQUIRED": "ID Nachweis für Anantragstellende verlangt",
     "FACHSTELLEN_TYP": "Fachstellen Typ",
-    "BETREUUNG_INPUT_SWITCH_ENABLED": "Wechsel des Betreuungspensum von Prozent zu Tagen erlauben",
+    "PENSUM_ANZEIGE_TYP": "Betreuungspensum Anzeige Typ",
     "VERFUEGUNG_EINGESCHRIEBEN_VERSENDEN_AKTIVIERT": "Verfügung eingeschrieben Versenden aktiv",
     "BEGRUENDUNG_MUTATION_AKTIVIERT": "Mutationsbegründungs Feld aktiv",
     "MAHLZEITENVERGUENSTIGUNG_NULL_EINKOMMEN": "0",
@@ -3055,5 +3055,7 @@
     "WELCHE_INSTITUTIONEN_ZUGELASSEN_HINT": "Wählen Sie hier die Institutionen aus, welche die Antragstellenden für die Beantragung eines Betreuungsgutscheins auswählen können.",
     "AUSWAHL": "Auswahl",
     "ALLE_CAPITAL": "Alle",
+    "FINANZIELLE_SITUATION_RUECKWIRKEND_ANPASSEN": "Finanzielle Situation rückwirkend korrigieren",
+    "FINANZIELLE_SITUATION_RUECKWIRKEND_ANPASSEN_HELP": "Verweis auf Art. 68 Abs. 1 resp. Art. 66 Abs. 1 Bst h <br>In diesem Fall werden die Korrekturzahlungen ausserhalb des nächsten Zahlungslaufs erfolgen.",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }
