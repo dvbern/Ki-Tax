@@ -20,14 +20,16 @@ import {
     ChangeDetectorRef,
     Component,
     EventEmitter,
-    Input, OnChanges,
+    Input,
+    OnChanges,
     OnDestroy,
     OnInit,
     Output,
     SimpleChanges,
-    ViewEncapsulation,
+    ViewEncapsulation
 } from '@angular/core';
 import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
+import {TranslateService} from '@ngx-translate/core';
 import {BehaviorSubject, Subscription} from 'rxjs';
 import {TSDemoFeature} from '../../../../../app/core/directive/dv-hide-feature/TSDemoFeature';
 import {LogFactory} from '../../../../../app/core/logging/LogFactory';
@@ -35,16 +37,14 @@ import {AuthServiceRS} from '../../../../../authentication/service/AuthServiceRS
 import {TSRole} from '../../../../../models/enums/TSRole';
 import {
     isSteuerdatenAnfrageStatusErfolgreich,
-    TSSteuerdatenAnfrageStatus,
+    TSSteuerdatenAnfrageStatus
 } from '../../../../../models/enums/TSSteuerdatenAnfrageStatus';
 import {TSBenutzer} from '../../../../../models/TSBenutzer';
 import {EbeguUtil} from '../../../../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../../../../utils/TSRoleUtil';
 import {FinanzielleSituationRS} from '../../../../service/finanzielleSituationRS.rest';
 import {GesuchModelManager} from '../../../../service/gesuchModelManager';
-import {
-    DialogInitZPVNummerVerknuepfen,
-} from '../dialog-init-zpv-nummer-verknuepfen/dialog-init-zpv-nummer-verknpuefen.component';
+import {DialogInitZPVNummerVerknuepfen} from '../dialog-init-zpv-nummer-verknuepfen/dialog-init-zpv-nummer-verknpuefen.component';
 
 const LOG = LogFactory.createLog('SteuerabfrageResponseHintsComponent');
 
@@ -53,7 +53,7 @@ const LOG = LogFactory.createLog('SteuerabfrageResponseHintsComponent');
     templateUrl: './steuerabfrage-response-hints.component.html',
     styleUrls: ['./steuerabfrage-response-hints.component.less'],
     changeDetection: ChangeDetectionStrategy.OnPush,
-    encapsulation: ViewEncapsulation.None,
+    encapsulation: ViewEncapsulation.None
 })
 export class SteuerabfrageResponseHintsComponent implements OnInit, OnDestroy, OnChanges {
 
@@ -82,6 +82,7 @@ export class SteuerabfrageResponseHintsComponent implements OnInit, OnDestroy, O
         private readonly dialog: MatDialog,
         private readonly finSitRS: FinanzielleSituationRS,
         private readonly changeDetectorRef: ChangeDetectorRef,
+        private readonly translate: TranslateService
     ) {
     }
 
@@ -118,40 +119,91 @@ export class SteuerabfrageResponseHintsComponent implements OnInit, OnDestroy, O
             isSteuerdatenAnfrageStatusErfolgreich(this.status);
     }
 
-    public showZugriffFailed(): boolean {
+    public showWarningRetry(): boolean {
+        return this.showZugriffFailed() || this.showWarningKeinPartnerGemeinsam()
+            || this.showWarningGeburtsdatum() || this.showWarningPartnerNichtGemeinsam();
+    }
+
+    public getWarningText(): string {
+        switch (this.status) {
+            case TSSteuerdatenAnfrageStatus.FAILED:
+                return this.translate.instant('FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF_FAILED',
+                    {gs1: this.getGS1Name()});
+                break;
+            case TSSteuerdatenAnfrageStatus.FAILED_PARTNER_NICHT_GEMEINSAM:
+                return this.translate.instant('FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF_PARTNER_NICHT_GEMEINSAM');
+                break;
+            case TSSteuerdatenAnfrageStatus.FAILED_GEBURTSDATUM:
+                return this.translate.instant('FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF_FAILED_GEBURTSDATUM');
+                break;
+            case TSSteuerdatenAnfrageStatus.FAILED_KEIN_PARTNER_GEMEINSAM:
+                return this.translate.instant('FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF_KEIN_PARTNER_GEMEINSAM');
+                break;
+            case TSSteuerdatenAnfrageStatus.FAILED_UNTERJAEHRIGER_FALL:
+                return this.translate.instant('FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF_UNTERJAEHRIG');
+                break;
+            case TSSteuerdatenAnfrageStatus.FAILED_VERAENDERTE_PARTNERSCHAFT:
+                return this.translate.instant('FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF_VERAENDERTE_PARTNERSCHAFT');
+                break;
+            case TSSteuerdatenAnfrageStatus.FAILED_UNREGELMAESSIGKEIT:
+                return this.translate.instant('FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF_UNREGELMAESSIGKEIT');
+                break;
+            case TSSteuerdatenAnfrageStatus.FAILED_KEINE_ZPV_NUMMER:
+                return this.translate.instant('FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF_KEINE_ZPV',
+                    {email: this.getEmailBesitzende()});
+                break;
+            case TSSteuerdatenAnfrageStatus.FAILED_KEINE_ZPV_NUMMER_GS2:
+                return this.translate.instant('FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF_KEINE_ZPV_GS2',
+                    {gs2: this.getGS2name()});
+                break;
+            default:
+                return '';
+        }
+    }
+
+    private showZugriffFailed(): boolean {
         return this.status === TSSteuerdatenAnfrageStatus.FAILED;
     }
 
-    public showZugriffUnterjaehrigeFall(): boolean {
-        return this.status === TSSteuerdatenAnfrageStatus.FAILED_UNTERJAEHRIGER_FALL;
-    }
-
-    public showWarningKeinPartnerGemeinsam(): boolean {
+    private showWarningKeinPartnerGemeinsam(): boolean {
         return this.status === TSSteuerdatenAnfrageStatus.FAILED_KEIN_PARTNER_GEMEINSAM;
     }
 
-    public showWarningGeburtsdatum(): boolean {
+    private showWarningGeburtsdatum(): boolean {
         return this.status === TSSteuerdatenAnfrageStatus.FAILED_GEBURTSDATUM;
     }
 
-    public showZugriffKeineZpvNummer(): boolean {
-        return this.status === TSSteuerdatenAnfrageStatus.FAILED_KEINE_ZPV_NUMMER;
-    }
-
-    public showWarningPartnerNichtGemeinsam(): boolean {
+    private showWarningPartnerNichtGemeinsam(): boolean {
         return this.status === TSSteuerdatenAnfrageStatus.FAILED_PARTNER_NICHT_GEMEINSAM;
     }
 
-    public showZugriffKeineZpvNummerGS2(): boolean {
-        return this.status === TSSteuerdatenAnfrageStatus.FAILED_KEINE_ZPV_NUMMER_GS2;
+    public showWarningWithoutRetry(): boolean {
+        return this.showZugriffUnterjaehrigeFall() || this.showWarningUnregelmaessigkeit()
+            || this.showWarningVeraendertePartnerschaft();
     }
 
-    public showWarningVeraendertePartnerschaft(): boolean {
+    private showZugriffUnterjaehrigeFall(): boolean {
+        return this.status === TSSteuerdatenAnfrageStatus.FAILED_UNTERJAEHRIGER_FALL;
+    }
+
+    private showWarningVeraendertePartnerschaft(): boolean {
         return this.status === TSSteuerdatenAnfrageStatus.FAILED_VERAENDERTE_PARTNERSCHAFT;
     }
 
-    public showWarningUnregelmaessigkeit(): boolean {
+    private showWarningUnregelmaessigkeit(): boolean {
         return this.status === TSSteuerdatenAnfrageStatus.FAILED_UNREGELMAESSIGKEIT;
+    }
+
+    public showZugriffKeineZPVNummer(): boolean {
+        return this.showZugriffKeineZpvNummerGS1() || this.showZugriffKeineZpvNummerGS2();
+    }
+
+    private showZugriffKeineZpvNummerGS1(): boolean {
+        return this.status === TSSteuerdatenAnfrageStatus.FAILED_KEINE_ZPV_NUMMER;
+    }
+
+    private showZugriffKeineZpvNummerGS2(): boolean {
+        return this.status === TSSteuerdatenAnfrageStatus.FAILED_KEINE_ZPV_NUMMER_GS2;
     }
 
     public showRetry(): boolean {

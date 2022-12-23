@@ -41,9 +41,9 @@ const LOG = LogFactory.createLog('AbstractFinSitBernView');
 const removeDialogTemplate = require('../../../dialog/removeDialogTemplate.html');
 
 enum saveHints {
-    LOADING= "FINSIT_BERN_LOADING",
+    LOADING= 'FINSIT_BERN_LOADING',
     SAVED= 'FINSIT_BERN_SAVED',
-    ERROR= 'FINSIT_BERN_ERROR',
+    ERROR= 'FINSIT_BERN_ERROR'
 }
 
 export abstract class AbstractFinSitBernView extends AbstractGesuchViewController<TSFinanzModel> {
@@ -54,7 +54,6 @@ export abstract class AbstractFinSitBernView extends AbstractGesuchViewControlle
     protected zahlungsangabenRequired: boolean =  false;
     protected finSitRequestState: string;
     protected finSitRequestRunning: boolean;
-
 
     public constructor(
         gesuchModelManager: GesuchModelManager,
@@ -163,18 +162,17 @@ export abstract class AbstractFinSitBernView extends AbstractGesuchViewControlle
                     this.model.copyFinSitDataFromGesuch(this.gesuchModelManager.getGesuch());
                     this.form.$setDirty();
                         this.finSitRequestState = saveHints.SAVED;
-
-                },
+                }
             ).catch(() => {
                 this.finSitRequestState = saveHints.ERROR;
-            },
+            }
         ).finally(() => {
                     this.finSitRequestState = saveHints.SAVED;
-            },
+            }
         );
         setTimeout(() => {
             this.finSitRequestRunning = false;
-        }, 5000)
+        }, 5000);
     }
 
     protected abstract resetKiBonAnfrageFinSit(): void;

@@ -15,69 +15,12 @@
   ~ along with this program. If not, see <https://www.gnu.org/licenses/>.
   -->
 
-<div *ngIf="showZugriffFailed()"
+<div *ngIf="showWarningRetry() || showWarningWithoutRetry() || showZugriffKeineZPVNummer()"
      class="well well-status-warten minus-margin">
     <p class="ebegu-h3"
-       [innerHTML]="'FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF_FAILED' | translate:{gs1: getGS1Name()}"></p>
-    <a *ngIf="isGesuchsteller() && !isGesuchReadonly()" class="pointer-cursor" translate (click)="tryAgain()">ERNEUT_VERSUCHEN</a>
-</div>
-
-<div *ngIf="showWarningKeinPartnerGemeinsam()"
-     class="well well-status-warten minus-margin">
-    <p class="ebegu-h3"
-    [innerHTML]="'FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF_KEIN_PARTNER_GEMEINSAM' | translate"></p>
-    <a *ngIf="isGesuchsteller() && !isGesuchReadonly()" class="pointer-cursor" translate (click)="tryAgain()">ERNEUT_VERSUCHEN</a>
-</div>
-
-<div *ngIf="showWarningGeburtsdatum()"
-     class="well well-status-warten minus-margin">
-    <p class="ebegu-h3"
-       [innerHTML]="'FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF_FAILED_GEBURTSDATUM' | translate:{namegs2: getGS2Name()}"
-    ></p>
-    <a *ngIf="isGesuchsteller() && !isGesuchReadonly()" class="pointer-cursor" translate (click)="tryAgain()">ERNEUT_VERSUCHEN</a>
-</div>
-
-<div *ngIf="showZugriffUnterjaehrigeFall()"
-     class="well well-status-warten minus-margin">
-    <p class="ebegu-h3"
-       [innerHTML]="'FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF_UNTERJAEHRIG' | translate"
-    ></p>
-</div>
-
-<div *ngIf="showZugriffKeineZpvNummer()"
-     class="well well-status-warten minus-margin">
-    <p class="ebegu-h3"
-       [innerHTML]="'FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF_KEINE_ZPV' | translate:{email: getEmailBesitzende()}"></p>
-    <a *ngIf="isGesuchsteller() && !isGesuchReadonly()" class="pointer-cursor" translate (click)="openDialogGSZPVVerknuepfen()">FINANZIELLE_SITUATION_STEUERDATEN_ZPV_VERKNUEPFEN_AUSLOESEN</a>
-</div>
-
-<div *ngIf="showWarningPartnerNichtGemeinsam()"
-     class="well well-status-warten minus-margin">
-    <p class="ebegu-h3"
-       [innerHTML]="'FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF_PARTNER_NICHT_GEMEINSAM' | translate"
-    ></p>
-    <a *ngIf="isGesuchsteller() && !isGesuchReadonly()" class="pointer-cursor" translate (click)="tryAgain()">ERNEUT_VERSUCHEN</a>
-</div>
-
-<div *ngIf="showZugriffKeineZpvNummerGS2()"
-     class="well well-status-warten minus-margin">
-    <p class="ebegu-h3"
-       [innerHTML]="'FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF_KEINE_ZPV_GS2' | translate:{gs2: getGS2name()}"></p>
-    <a *ngIf="isGesuchsteller() && !isGesuchReadonly()" class="pointer-cursor" translate (click)="openDialogGSZPVVerknuepfen()">FINANZIELLE_SITUATION_STEUERDATEN_ZPV_VERKNUEPFEN_AUSLOESEN</a>
-</div>
-
-<div *ngIf="showWarningVeraendertePartnerschaft()"
-     class="well well-status-warten minus-margin">
-    <p class="ebegu-h3"
-       [innerHTML]="'FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF_VERAENDERTE_PARTNERSCHAFT' | translate"
-    ></p>
-</div>
-
-<div *ngIf="showWarningUnregelmaessigkeit()"
-     class="well well-status-warten minus-margin">
-    <p class="ebegu-h3"
-       [innerHTML]="'FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF_UNREGELMAESSIGKEIT' | translate"
-    ></p>
+       [innerHTML]="getWarningText()"></p>
+    <a *ngIf="showWarningRetry() && isGesuchsteller() && !isGesuchReadonly()" class="pointer-cursor" translate (click)="tryAgain()">ERNEUT_VERSUCHEN</a>
+    <a *ngIf="showZugriffKeineZPVNummer() && isGesuchsteller() && !isGesuchReadonly()" class="pointer-cursor" translate (click)="openDialogGSZPVVerknuepfen()">FINANZIELLE_SITUATION_STEUERDATEN_ZPV_VERKNUEPFEN_AUSLOESEN</a>
 </div>
 
 <div *ngIf="showZugriffErfolgreich()"
