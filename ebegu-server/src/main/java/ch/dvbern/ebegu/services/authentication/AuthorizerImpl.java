@@ -1139,7 +1139,6 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 	public void checkWriteAuthorizationMitteilung(@Nullable Mitteilung mitteilung) {
 		if (mitteilung != null) {
 			UserRole userRole = principalBean.discoverMostPrivilegedRole();
-			validateGemeindeMatches(mitteilung.getDossier());
 			Objects.requireNonNull(userRole);
 			switch (userRole) {
 			case GESUCHSTELLER: {
@@ -1163,6 +1162,7 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 			case ADMIN_GEMEINDE:
 			case SACHBEARBEITER_TS:
 			case ADMIN_TS:
+				validateGemeindeMatches(mitteilung.getDossier());
 				if (isNotSenderTyp(mitteilung, MitteilungTeilnehmerTyp.JUGENDAMT)) {
 					throwViolation(mitteilung);
 				}
