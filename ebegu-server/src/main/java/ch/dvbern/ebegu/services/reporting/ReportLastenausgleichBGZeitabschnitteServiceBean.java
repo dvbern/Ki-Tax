@@ -182,12 +182,27 @@ public class ReportLastenausgleichBGZeitabschnitteServiceBean extends AbstractRe
 
 		var mandant = principalBean.getMandant();
 
-
-
 		lastenausgleichDetails.forEach(lastenausgleichDetail -> {
 			lastenausgleichDetail.getLastenausgleichDetailZeitabschnitte().forEach(detailZeitabschnitt -> {
+				// wir haben erst ab dem Jahr 2022 die zum Lastenausgleich dazugehörenden Zeitabschnitte in der Datenbank persistiert
+				// deshalb können wir in der Statistik erst ab 2022 die Korrekturwerte der Zeitabschnitte ausgeben.
+				if (detailZeitabschnitt.getZeitabschnitt().getGueltigkeit().getGueltigAb().getYear() < Constants.FIRST_YEAR_LASTENAUSGLEICH_WITHOUT_SELBSTBEHALT) {
+					return;
+				}
 				var zeitabschnitt = detailZeitabschnitt.getZeitabschnitt();
 				var row = new LastenausgleichBGZeitabschnittDataRow();
+
+				/* Ein Zeitabschnitt kann entweder ein regulärer Zeitabschnitt des aktuellen Lastenausgleichjahres
+				sein oder eine Korrektur eines Vorjahres. Bei einer Korrektur gibt es jeweils zwei Zeitabschnitte,
+				einmal der negierte Betrag, der vor der Mutation gegolten hat und einmal der Betrag nach der Mutation.
+				Bei einem negierten Zeitabschnitt müssen wir dies auch im Excel Report entsprechend ausweisen.
+				*/
+				BigDecimal multiplyer;
+				if (detailZeitabschnitt.getLastenausgleichDetail().getTotalBelegung().compareTo(BigDecimal.ZERO) < 0) {
+					multiplyer = BigDecimal.valueOf(-1);
+				} else {
+					multiplyer = BigDecimal.ONE;
+				}
 
 				Objects.requireNonNull(zeitabschnitt.getVerfuegung().getBetreuung());
 				var kind = zeitabschnitt.getVerfuegung().getBetreuung().getKind().getKindJA();
@@ -206,9 +221,15 @@ public class ReportLastenausgleichBGZeitabschnitteServiceBean extends AbstractRe
 				row.setBetreuungsangebotTyp(
 					ServerMessageUtil.translateEnumValue(betreuung.getBetreuungsangebotTyp(), locale, mandant)
 				);
-				row.setBgPensum(zeitabschnitt.getBgCalculationResultAsiv().getBgPensumProzent());
+				row.setBgPensum(
+					zeitabschnitt.getBgCalculationResultAsiv().getBgPensumProzent()
+						.multiply(multiplyer)
+				);
 				row.setKeinSelbstbehaltDurchGemeinde(betreuung.getKind().getKeinSelbstbehaltDurchGemeinde());
-				row.setGutschein(zeitabschnitt.getBgCalculationResultAsiv().getVerguenstigung());
+				row.setGutschein(
+					zeitabschnitt.getBgCalculationResultAsiv().getVerguenstigung()
+						.multiply(multiplyer)
+				);
 				row.setSelbstbehaltProHundertProzentPlatz(findSelbstbehaltPro100ProzentPlatzForDate(row.getVon()));
 				row.setKorrektur(detailZeitabschnitt.getLastenausgleichDetail().isKorrektur());
 
