@@ -33,11 +33,14 @@ public class LastenausgleichBGZeitabschnittDataRow {
 	private LocalDate geburtsdatum;
 	private LocalDate von;
 	private LocalDate bis;
+	private BigDecimal anteilMonat;
 	private String institution;
 	private String betreuungsangebotTyp;
 	private BigDecimal bgPensum;
 	private Boolean keinSelbstbehaltDurchGemeinde;
 	private BigDecimal gutschein;
+	private BigDecimal selbstbehaltProHundertProzentPlatz;
+	private Boolean isKorrektur;
 
 	public LastenausgleichBGZeitabschnittDataRow() {}
 
@@ -105,6 +108,14 @@ public class LastenausgleichBGZeitabschnittDataRow {
 		this.bis = bis;
 	}
 
+	public BigDecimal getAnteilMonat() {
+		return anteilMonat;
+	}
+
+	public void setAnteilMonat(BigDecimal anteilMonat) {
+		this.anteilMonat = anteilMonat;
+	}
+
 	public String getInstitution() {
 		return institution;
 	}
@@ -143,5 +154,21 @@ public class LastenausgleichBGZeitabschnittDataRow {
 
 	public void setGutschein(BigDecimal gutschein) {
 		this.gutschein = gutschein;
+	}
+
+	public BigDecimal getSelbstbehaltProHundertProzentPlatz() {
+		return selbstbehaltProHundertProzentPlatz;
+	}
+
+	public void setSelbstbehaltProHundertProzentPlatz(BigDecimal selbstbehaltProHundertProzentPlatz) {
+		this.selbstbehaltProHundertProzentPlatz = selbstbehaltProHundertProzentPlatz;
+	}
+
+	public Boolean getKorrektur() {
+		return isKorrektur;
+	}
+
+	public void setKorrektur(Boolean korrektur) {
+		isKorrektur = korrektur;
 	}
 }
