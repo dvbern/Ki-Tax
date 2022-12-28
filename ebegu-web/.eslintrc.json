@@ -44,14 +44,14 @@
                     "as-needed"
                 ],
                 "@angular-eslint/prefer-output-readonly": "error",
-                "@typescript-eslint/no-unused-expressions": "warn",
+                "@typescript-eslint/no-unused-expressions": "error",
                 "@angular-eslint/no-host-metadata-property": "error",
                 "@angular-eslint/no-forward-ref": "error",
                 "@angular-eslint/no-output-on-prefix": "error",
                 "@angular-eslint/directive-class-suffix": "error",
-                "@angular-eslint/use-lifecycle-interface": "warn",
+                "@angular-eslint/use-lifecycle-interface": "error",
                 "@angular-eslint/component-class-suffix": "error",
-                "@typescript-eslint/adjacent-overload-signatures": "warn",
+                "@typescript-eslint/adjacent-overload-signatures": "error",
                 "@typescript-eslint/ban-types": [
                     "error",
                     {
@@ -98,7 +98,7 @@
                 "@typescript-eslint/restrict-plus-operands": "error",
                 "@typescript-eslint/triple-slash-reference": "error",
                 "@typescript-eslint/unbound-method": [
-                    "warn",
+                    "error",
                     {
                         "ignoreStatic": true
                     }
@@ -119,7 +119,7 @@
                 ],
                 "id-blacklist": "off",
                 "import/no-extraneous-dependencies": [
-                    "warn",
+                    "error",
                     {
                         "devDependencies": false
                     }
@@ -127,9 +127,9 @@
                 "import/no-internal-modules": [
                     "off"
                 ],
-                "import/no-unassigned-import": "warn",
+                "import/no-unassigned-import": "error",
                 "max-len": [
-                    "off",
+                    "warn",
                     {
                         "ignorePattern": "^import .*|^require\\(.*\\)|^export.*",
                         "code": 120
