@@ -49,7 +49,6 @@ public enum MergeFieldLastenausgleichBGZeitabschnitte implements MergeFieldProvi
 	geburtsdatumTitle(new SimpleMergeField<>("geburtsdatumTitle", STRING_CONVERTER)),
 	vonTitle(new SimpleMergeField<>("vonTitle", STRING_CONVERTER)),
 	bisTitle(new SimpleMergeField<>("bisTitle", STRING_CONVERTER)),
-	anteilMonatTitle(new SimpleMergeField<>("anteilMonatTitle", STRING_CONVERTER)),
 	institutionTitle(new SimpleMergeField<>("institutionTitle", STRING_CONVERTER)),
 	betreuungsangebotTypTitle(new SimpleMergeField<>("betreuungsangebotTypTitle", STRING_CONVERTER)),
 	bgPensumTitle(new SimpleMergeField<>("bgPensumTitle", STRING_CONVERTER)),
@@ -58,8 +57,6 @@ public enum MergeFieldLastenausgleichBGZeitabschnitte implements MergeFieldProvi
 	selbstbehaltGemeindeTitle(new SimpleMergeField<>("selbstbehaltGemeindeTitle", STRING_CONVERTER)),
 	eingabeLastenausgleichTitle(new SimpleMergeField<>("eingabeLastenausgleichTitle", STRING_CONVERTER)),
 	korrekturTitle(new SimpleMergeField<>("korrekturTitle", STRING_CONVERTER)),
-	selbstbehaltProHundertProzentPlatzTitel(new SimpleMergeField<>("selbstbehaltProHundertProzentPlatzTitel", STRING_CONVERTER)),
-	alteBerechnungTitle(new SimpleMergeField<>("alteBerechnungTitle", STRING_CONVERTER)),
 
 	referenznummer(new SimpleMergeField<>("referenznummer", STRING_CONVERTER)),
 	gemeinde(new SimpleMergeField<>("gemeinde", STRING_CONVERTER)),
@@ -70,13 +67,11 @@ public enum MergeFieldLastenausgleichBGZeitabschnitte implements MergeFieldProvi
 	geburtsdatum(new SimpleMergeField<>("geburtsdatum", DATE_CONVERTER)),
 	von(new SimpleMergeField<>("von", DATE_CONVERTER)),
 	bis(new SimpleMergeField<>("bis", DATE_CONVERTER)),
-	anteilMonat(new SimpleMergeField<>("anteilMonat", BIGDECIMAL_CONVERTER)),
 	institution(new SimpleMergeField<>("institution", STRING_CONVERTER)),
 	betreuungsangebotTyp(new SimpleMergeField<>("betreuungsangebotTyp", STRING_CONVERTER)),
 	bgPensum(new SimpleMergeField<>("bgPensum", PERCENT_CONVERTER)),
 	keinSelbstbehaltDurchGemeinde(new SimpleMergeField<>("keinSelbstbehaltDurchGemeinde", BOOLEAN_X_CONVERTER)),
 	gutschein(new SimpleMergeField<>("gutschein", BIGDECIMAL_CONVERTER)),
-	selbstbehaltProHunderProzentPlatz(new SimpleMergeField<>("selbstbehaltProHunderProzentPlatz", BIGDECIMAL_CONVERTER)),
 	isKorrektur(new SimpleMergeField<>("isKorrektur", BOOLEAN_X_CONVERTER));
 
 	@Nonnull

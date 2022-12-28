@@ -110,11 +110,6 @@ public class LastenausgleichBGZeitabschnitteExcelConverter implements ExcelConve
 			MergeFieldLastenausgleichBGZeitabschnitte.bisTitle,
 			ServerMessageUtil.getMessage("Reports_betreuungBisTitle", locale, mandant)
 		);
-		mergeFields.add(MergeFieldLastenausgleichBGZeitabschnitte.anteilMonatTitle.getMergeField());
-		excelMergerDTO.addValue(
-			MergeFieldLastenausgleichBGZeitabschnitte.anteilMonatTitle,
-			ServerMessageUtil.getMessage("Reports_anteilMonatTitle", locale, mandant)
-		);
 		mergeFields.add(MergeFieldLastenausgleichBGZeitabschnitte.institutionTitle.getMergeField());
 		excelMergerDTO.addValue(
 			MergeFieldLastenausgleichBGZeitabschnitte.institutionTitle,
@@ -155,15 +150,6 @@ public class LastenausgleichBGZeitabschnitteExcelConverter implements ExcelConve
 			MergeFieldLastenausgleichBGZeitabschnitte.korrekturTitle,
 			ServerMessageUtil.getMessage("Reports_korrekturTitle", locale, mandant)
 		);
-		mergeFields.add(MergeFieldLastenausgleichBGZeitabschnitte.selbstbehaltProHundertProzentPlatzTitel.getMergeField());
-		excelMergerDTO.addValue(
-			MergeFieldLastenausgleichBGZeitabschnitte.selbstbehaltProHundertProzentPlatzTitel.getMergeField(),
-			ServerMessageUtil.getMessage("Reports_selbstbehaltProHundertProzentPlatzTitel", locale, mandant));
-		mergeFields.add(MergeFieldLastenausgleichBGZeitabschnitte.alteBerechnungTitle.getMergeField());
-		excelMergerDTO.addValue(
-			MergeFieldLastenausgleichBGZeitabschnitte.alteBerechnungTitle,
-			ServerMessageUtil.getMessage("Reports_alteBerechnungLastenausgleichTitle", locale, mandant)
-		);
 
 		ExcelMerger.mergeData(sheet, mergeFields, excelMergerDTO);
 
@@ -186,14 +172,12 @@ public class LastenausgleichBGZeitabschnitteExcelConverter implements ExcelConve
 			excelRowGroup.addValue(MergeFieldLastenausgleichBGZeitabschnitte.geburtsdatum, dataRow.getGeburtsdatum());
 			excelRowGroup.addValue(MergeFieldLastenausgleichBGZeitabschnitte.von, dataRow.getVon());
 			excelRowGroup.addValue(MergeFieldLastenausgleichBGZeitabschnitte.bis, dataRow.getBis());
-			excelRowGroup.addValue(MergeFieldLastenausgleichBGZeitabschnitte.anteilMonat, dataRow.getAnteilMonat());
 			excelRowGroup.addValue(MergeFieldLastenausgleichBGZeitabschnitte.institution, dataRow.getInstitution());
 			excelRowGroup.addValue(MergeFieldLastenausgleichBGZeitabschnitte.betreuungsangebotTyp, dataRow.getBetreuungsangebotTyp());
 			excelRowGroup.addValue(MergeFieldLastenausgleichBGZeitabschnitte.bgPensum, dataRow.getBgPensum());
 			excelRowGroup.addValue(MergeFieldLastenausgleichBGZeitabschnitte.keinSelbstbehaltDurchGemeinde, dataRow.getKeinSelbstbehaltDurchGemeinde());
 			excelRowGroup.addValue(MergeFieldLastenausgleichBGZeitabschnitte.gutschein, dataRow.getGutschein());
 			excelRowGroup.addValue(MergeFieldLastenausgleichBGZeitabschnitte.isKorrektur, dataRow.getKorrektur());
-			excelRowGroup.addValue(MergeFieldLastenausgleichBGZeitabschnitte.selbstbehaltProHunderProzentPlatz, dataRow.getSelbstbehaltProHundertProzentPlatz());
 
 			rowFiller.fillRow(excelRowGroup);
 		});

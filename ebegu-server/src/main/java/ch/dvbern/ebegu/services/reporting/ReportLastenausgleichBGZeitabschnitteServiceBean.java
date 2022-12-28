@@ -20,11 +20,9 @@ package ch.dvbern.ebegu.services.reporting;
 import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
@@ -32,7 +30,6 @@ import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
@@ -42,7 +39,6 @@ import javax.inject.Inject;
 import ch.dvbern.ebegu.authentication.PrincipalBean;
 import ch.dvbern.ebegu.entities.Lastenausgleich;
 import ch.dvbern.ebegu.entities.LastenausgleichDetail;
-import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.reporting.ReportVorlage;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.reporting.ReportLastenausgleichBGZeitabschnitteService;
@@ -52,7 +48,6 @@ import ch.dvbern.ebegu.services.Authorizer;
 import ch.dvbern.ebegu.services.FileSaverService;
 import ch.dvbern.ebegu.services.LastenausgleichService;
 import ch.dvbern.ebegu.util.Constants;
-import ch.dvbern.ebegu.util.DateUtil;
 import ch.dvbern.ebegu.util.ServerMessageUtil;
 import ch.dvbern.ebegu.util.UploadFileInfo;
 import ch.dvbern.oss.lib.excelmerger.ExcelMergeException;
@@ -82,8 +77,6 @@ public class ReportLastenausgleichBGZeitabschnitteServiceBean extends AbstractRe
 
 	@Inject
 	private Authorizer authorizer;
-
-	private HashMap<Integer, BigDecimal> selbstbehaltPro100ProzentPlatzMap = new HashMap<>();
 
 	@Nonnull
 	@Override
@@ -216,7 +209,6 @@ public class ReportLastenausgleichBGZeitabschnitteServiceBean extends AbstractRe
 				row.setGeburtsdatum(kind.getGeburtsdatum());
 				row.setVon(zeitabschnitt.getGueltigkeit().getGueltigAb());
 				row.setBis(zeitabschnitt.getGueltigkeit().getGueltigBis());
-				row.setAnteilMonat(DateUtil.calculateAnteilMonatInklWeekend(row.getVon(), row.getBis()));
 				row.setInstitution(zeitabschnitt.getVerfuegung().getBetreuung().getInstitutionStammdaten().getInstitution().getName());
 				row.setBetreuungsangebotTyp(
 					ServerMessageUtil.translateEnumValue(betreuung.getBetreuungsangebotTyp(), locale, mandant)
@@ -230,7 +222,6 @@ public class ReportLastenausgleichBGZeitabschnitteServiceBean extends AbstractRe
 					zeitabschnitt.getBgCalculationResultAsiv().getVerguenstigung()
 						.multiply(multiplyer)
 				);
-				row.setSelbstbehaltProHundertProzentPlatz(findSelbstbehaltPro100ProzentPlatzForDate(row.getVon()));
 				row.setKorrektur(detailZeitabschnitt.getLastenausgleichDetail().isKorrektur());
 
 				rows.add(row);
@@ -246,21 +237,5 @@ public class ReportLastenausgleichBGZeitabschnitteServiceBean extends AbstractRe
 		);
 
 		return rows;
-	}
-
-	@Nullable
-	private BigDecimal findSelbstbehaltPro100ProzentPlatzForDate(@Nonnull LocalDate date) {
-		var year = date.getYear();
-		if (selbstbehaltPro100ProzentPlatzMap.containsKey(year)) {
-			return selbstbehaltPro100ProzentPlatzMap.get(year);
-		}
-		var grundlagen = lastenausgleichService.findLastenausgleichGrundlagen(year)
-			.orElseThrow(() -> new EbeguEntityNotFoundException(
-				"findSelbstbehaltPro100ProzentPlatzForDate",
-				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
-				year
-			));
-		selbstbehaltPro100ProzentPlatzMap.put(year, grundlagen.getSelbstbehaltPro100ProzentPlatz());
-		return grundlagen.getSelbstbehaltPro100ProzentPlatz();
 	}
 }
