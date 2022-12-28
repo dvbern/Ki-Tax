@@ -57,7 +57,7 @@ export class ModulTagesschuleDialogComponent implements OnInit {
             this.modulTagesschuleGroup.validated = true;
             this.dialogRef.close(this.modulTagesschuleGroup);
         } else {
-            this.modulTagesschuleGroup.module.length === 0 ? this.noDaySelected = true : this.noDaySelected = false;
+            this.noDaySelected = this.modulTagesschuleGroup.module.length === 0;
             this.ngOnInit();
         }
     }

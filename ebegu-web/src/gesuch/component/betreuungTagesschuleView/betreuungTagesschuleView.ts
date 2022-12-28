@@ -424,7 +424,7 @@ export class BetreuungTagesschuleViewController extends BetreuungViewController 
     }
 
     public saveAnmeldungSchulamtUebernehmen(): void {
-        this.isThereAnyAnmeldung() ? this.showErrorMessageNoModule = false : this.showErrorMessageNoModule = true;
+        this.showErrorMessageNoModule = !this.isThereAnyAnmeldung();
         if (!this.form.$valid) {
             this.form.$setDirty();
             return undefined;

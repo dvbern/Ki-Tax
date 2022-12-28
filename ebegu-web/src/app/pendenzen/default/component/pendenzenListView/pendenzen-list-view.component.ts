@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
+import {ChangeDetectionStrategy, Component, OnDestroy, OnInit} from '@angular/core';
 import {StateService} from '@uirouter/core';
 import {BehaviorSubject, Subject, Subscription} from 'rxjs';
 import {filter, takeUntil} from 'rxjs/operators';
@@ -38,7 +38,7 @@ const LOG = LogFactory.createLog('PendenzenListViewComponent');
     templateUrl: './pendenzen-list-view.component.html',
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class PendenzenListViewComponent implements OnInit {
+export class PendenzenListViewComponent implements OnInit, OnDestroy {
 
     public hasGemeindenInStatusAngemeldet: boolean = false;
 
