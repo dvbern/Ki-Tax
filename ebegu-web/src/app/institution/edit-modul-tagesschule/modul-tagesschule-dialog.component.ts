@@ -15,9 +15,9 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {Component, Inject, ViewChild} from '@angular/core';
+import {Component, Inject, OnInit, ViewChild} from '@angular/core';
 import {NgForm} from '@angular/forms';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 import {
     getTSModulTagesschuleIntervallValues,
     TSModulTagesschuleIntervall
@@ -31,7 +31,7 @@ import {CONSTANTS} from '../../core/constants/CONSTANTS';
     templateUrl: './modul-tagesschule-dialog.template.html',
     styleUrls: ['./modul-tagesschule-dialog.component.less']
 })
-export class ModulTagesschuleDialogComponent {
+export class ModulTagesschuleDialogComponent implements OnInit {
 
     @ViewChild(NgForm, { static: true }) public form: NgForm;
 

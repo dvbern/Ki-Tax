@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, ViewChild} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, ViewChild} from '@angular/core';
 import {NgForm} from '@angular/forms';
 import {MatDialog} from '@angular/material/dialog';
 import {MatTableDataSource} from '@angular/material/table';
@@ -33,7 +33,7 @@ const LOG = LogFactory.createLog('GesuchsperiodeViewXComponent');
   styleUrls: ['./gesuchsperiode-view-x.component.less'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class GesuchsperiodeViewXComponent extends AbstractAdminViewX {
+export class GesuchsperiodeViewXComponent extends AbstractAdminViewX implements OnInit {
 
     private static readonly DOKUMENT_TYP_NOT_DEFINED = 'DokumentTyp not defined';
 

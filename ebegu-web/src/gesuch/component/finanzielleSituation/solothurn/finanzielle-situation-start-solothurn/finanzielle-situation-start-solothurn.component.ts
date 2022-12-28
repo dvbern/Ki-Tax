@@ -1,5 +1,4 @@
-import {ChangeDetectionStrategy, Component, ViewChild} from '@angular/core';
-import {NgForm} from '@angular/forms';
+import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
 import {TSFinanzielleSituationSubStepName} from '../../../../../models/enums/TSFinanzielleSituationSubStepName';
 import {TSWizardStepName} from '../../../../../models/enums/TSWizardStepName';
 import {TSWizardStepStatus} from '../../../../../models/enums/TSWizardStepStatus';
@@ -16,7 +15,7 @@ import {FinanzielleSituationSolothurnService} from '../finanzielle-situation-sol
     templateUrl: './finanzielle-situation-solothurn.component.html',
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class FinanzielleSituationStartSolothurnComponent extends AbstractFinSitsolothurnView {
+export class FinanzielleSituationStartSolothurnComponent extends AbstractFinSitsolothurnView implements OnInit {
 
     public sozialhilfeBezueger: boolean;
     public finanzielleSituationRequired: boolean = false;
