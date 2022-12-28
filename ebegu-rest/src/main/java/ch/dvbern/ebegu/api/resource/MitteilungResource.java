@@ -64,6 +64,7 @@ import ch.dvbern.ebegu.entities.Dossier;
 import ch.dvbern.ebegu.entities.Einstellung;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Mitteilung;
+import ch.dvbern.ebegu.entities.NeueVeranlagungsMitteilung;
 import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
@@ -681,5 +682,31 @@ public class MitteilungResource {
 		JaxBetreuungsmitteilungen jaxBetreuungsmitteilungen = new JaxBetreuungsmitteilungen();
 		jaxBetreuungsmitteilungen.setBetreuungsmitteilungen(jaxResult);
 		return jaxBetreuungsmitteilungen;
+	}
+
+	@ApiOperation(value = "Uebernimmt eine neue Veranlagung Mitteilung in eine Mutation. Falls aktuell keine Mutation "
+		+ "offen ist wird eine neue erstellt. Wenn den aktuellen Gesuch Status erlaubt die FinSit noch zu anpassen,"
+		+ "dann wird die neue FinSit direkt angepasst." +
+		"  Falls eine Mutation im Status VERFUEGEN vorhanden ist, oder die Mutation im " +
+		"Status BESCHWERDE ist, wird ein Fehler zurueckgegeben", response = JaxId.class)
+	@Nullable
+	@PUT
+	@Path("/neueVeranlagungsmitteilungBearbeiten/{neueveranlagungsmitteilungId}")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE })
+	public JaxId neueVeranlagungsmitteilungBearbeiten(
+		@Nonnull @NotNull @PathParam("neueveranlagungsmitteilungId") JaxId neueVeranlagungsmitteilungId,
+		@Context UriInfo uriInfo,
+		@Context HttpServletResponse response) {
+
+		final Optional<NeueVeranlagungsMitteilung> mitteilung =
+			mitteilungService.findVeranlagungsMitteilungById(neueVeranlagungsmitteilungId.getId());
+		if (!mitteilung.isPresent()) {
+			throw new EbeguEntityNotFoundException("neueVeranlagungsmitteilungBearbeiten", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
+				"NeueVeranlagungsmitteilungId invalid: " + neueVeranlagungsmitteilungId.getId());
+		}
+		final Gesuch mutiertesGesuch = this.mitteilungService.neueVeranlagungssmitteilungBearbeiten(mitteilung.get());
+		return converter.toJaxId(mutiertesGesuch);
 	}
 }

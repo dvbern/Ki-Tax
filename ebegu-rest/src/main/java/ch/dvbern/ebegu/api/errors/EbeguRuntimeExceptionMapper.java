@@ -23,7 +23,7 @@ import javax.ws.rs.ext.Provider;
 import ch.dvbern.ebegu.api.validation.EbeguExceptionReport;
 import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
-import ch.dvbern.ebegu.errors.EbeguExistingAntragException;
+import ch.dvbern.ebegu.errors.EbeguExistingAntragRuntimeException;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 
 /**
@@ -38,10 +38,10 @@ public class EbeguRuntimeExceptionMapper extends AbstractEbeguExceptionMapper<Eb
 		logException(exception);
 		//standardfall, wenn manche subexceptions speziell gehandhabt werden muessen kann mit instanceof ein if block gemacht werden
 
-		if (exception instanceof EbeguExistingAntragException) {
+		if (exception instanceof EbeguExistingAntragRuntimeException) {
 			// wollen wir das hier so handhaben?
-			EbeguExistingAntragException ebeguExistingAntragException = EbeguExistingAntragException.class.cast(exception);
-			return buildViolationReportResponse(ebeguExistingAntragException, Status.CONFLICT);
+			EbeguExistingAntragRuntimeException ebeguExistingAntragRuntimeException = EbeguExistingAntragRuntimeException.class.cast(exception);
+			return buildViolationReportResponse(ebeguExistingAntragRuntimeException, Status.CONFLICT);
 		}
 		if (exception instanceof EbeguEntityNotFoundException) {
 			// wollen wir das hier so handhaben?

@@ -22,19 +22,23 @@ import {TranslateService} from '@ngx-translate/core';
 import {StateService, Transition} from '@uirouter/core';
 import * as moment from 'moment';
 import {take} from 'rxjs/operators';
+import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {GemeindeRS} from '../../../gesuch/service/gemeindeRS.rest';
 import {TSBetreuungsangebotTyp} from '../../../models/enums/TSBetreuungsangebotTyp';
 import {TSInstitutionStatus} from '../../../models/enums/TSInstitutionStatus';
+import {TSRole} from '../../../models/enums/TSRole';
 import {TSExceptionReport} from '../../../models/TSExceptionReport';
 import {TSGemeinde} from '../../../models/TSGemeinde';
 import {TSInstitution} from '../../../models/TSInstitution';
 import {TSMandant} from '../../../models/TSMandant';
 import {TSTraegerschaft} from '../../../models/TSTraegerschaft';
+import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 import {
     DvNgGesuchstellerDialogComponent
 } from '../../core/component/dv-ng-gesuchsteller-dialog/dv-ng-gesuchsteller-dialog.component';
 import {ErrorService} from '../../core/errors/service/ErrorService';
 import {Log, LogFactory} from '../../core/logging/LogFactory';
+import {ApplicationPropertyRS} from '../../core/rest-services/applicationPropertyRS.rest';
 import {BenutzerRSX} from '../../core/service/benutzerRSX.rest';
 import {InstitutionRS} from '../../core/service/institutionRS.rest';
 import {TraegerschaftRS} from '../../core/service/traegerschaftRS.rest';
@@ -63,6 +67,8 @@ export class AddInstitutionComponent implements OnInit {
 
     public isLatsInstitution: boolean;
 
+    private institutionenDurchGemeindenEinladen: boolean = false;
+
     public constructor(
         private readonly $transition$: Transition,
         private readonly $state: StateService,
@@ -72,7 +78,9 @@ export class AddInstitutionComponent implements OnInit {
         private readonly translate: TranslateService,
         private readonly gemeindeRS: GemeindeRS,
         private readonly benutzerRS: BenutzerRSX,
-        private readonly dialog: MatDialog
+        private readonly dialog: MatDialog,
+        private readonly applicationPropertyRS: ApplicationPropertyRS,
+        private readonly authServiceRS: AuthServiceRS
     ) {
     }
 
@@ -95,9 +103,12 @@ export class AddInstitutionComponent implements OnInit {
         this.startDate = this.getStartDate();
 
         // if it is not a Betreuungsgutschein Institution we have to load the Gemeinden
-        if (!this.isBGInstitution) {
-            this.loadGemeindenList();
-        }
+        this.applicationPropertyRS.getInstitutionenDurchGemeindenEinladen().then(result => {
+            this.institutionenDurchGemeindenEinladen = result;
+            if (this.institutionenDurchGemeindenEinladen || !this.isBGInstitution) {
+                this.loadGemeindenList();
+            }
+        });
     }
 
     public cancel(): void {
@@ -210,6 +221,8 @@ export class AddInstitutionComponent implements OnInit {
             obs$ = this.gemeindeRS.getGemeindenForTSByPrincipal$();
         } else if (this.betreuungsangebot === TSBetreuungsangebotTyp.FERIENINSEL) {
             obs$ = this.gemeindeRS.getGemeindenForFIByPrincipal$();
+        } else {
+            obs$ = this.gemeindeRS.getGemeindenForBGByPrincipal$();
         }
         obs$.pipe(take(1))
             .subscribe(
@@ -236,5 +249,21 @@ export class AddInstitutionComponent implements OnInit {
             return nextMonthBegin;
         }
         return TSMandant.earliestDateOfTSAnmeldung;
+    }
+
+    public selectGemeindeVisible(): boolean {
+        if (!this.isBGInstitution) {
+            return true;
+        }
+        if (!this.institutionenDurchGemeindenEinladen) {
+            return false;
+        }
+        return this.authServiceRS.isOneOfRoles(TSRoleUtil.getAdministratorBgTsGemeindeRole());
+    }
+
+    // das Dropdown ist nur für den Superadmin sichtbar, aber nicht required. für alle
+    // anderen Rollen ist es entweder nicht sichtbar, oder required
+    public selectGemeindeRequired(): boolean {
+        return !this.authServiceRS.isRole(TSRole.SUPER_ADMIN);
     }
 }

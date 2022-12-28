@@ -30,6 +30,7 @@ import {TSFinanzielleSituation} from '../../../../../models/TSFinanzielleSituati
 import {TSFinanzModel} from '../../../../../models/TSFinanzModel';
 import {TSGesuch} from '../../../../../models/TSGesuch';
 import {TSLand} from '../../../../../models/types/TSLand';
+import {DateUtil} from '../../../../../utils/DateUtil';
 import {EbeguRestUtil} from '../../../../../utils/EbeguRestUtil';
 import {EbeguUtil} from '../../../../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../../../../utils/TSRoleUtil';
@@ -412,12 +413,21 @@ export class FinanzielleSituationStartViewController extends AbstractFinSitBernV
     }
 
     public callKiBonAnfrageAndUpdateFinSit(): void {
-       super.callKiBonAnfrage(EbeguUtil.isNotNullAndTrue(this.model.gemeinsameSteuererklaerung))
+        super.callKiBonAnfrage(EbeguUtil.isNotNullAndTrue(this.model.gemeinsameSteuererklaerung))
             .then(() => {
                     this.model.copyFinSitDataFromGesuch(this.gesuchModelManager.getGesuch());
                     this.form.$setDirty();
                 }
             );
+    }
+
+    public updateFinSitAenderungGueltigAbDatum(): void {
+        if (this.model.finanzielleSituationRueckwirkendAnpassen) {
+            this.getGesuch().finSitAenderungGueltigAbDatum =
+                this.getGesuch().gesuchsperiode.gueltigkeit.gueltigAb.subtract(1, 'days');
+        } else {
+            this.getGesuch().finSitAenderungGueltigAbDatum = null;
+        }
     }
 
     private getAbfrageStatus(): string {
@@ -428,7 +438,7 @@ export class FinanzielleSituationStartViewController extends AbstractFinSitBernV
         this.model.copyFinSitDataToGesuch(this.gesuchModelManager.getGesuch());
         this.gesuchModelManager.resetKiBonAnfrageFinSit(EbeguUtil.isNotNullOrUndefined(this.model.finanzielleSituationContainerGS2))
             .then(() => {
-                    this.wizardStepManager.updateCurrentWizardStepStatusSafe(
+                this.wizardStepManager.updateCurrentWizardStepStatusSafe(
                         TSWizardStepName.FINANZIELLE_SITUATION,
                         TSWizardStepStatus.NOK);
                     this.model.copyFinSitDataFromGesuch(this.gesuchModelManager.getGesuch());
@@ -439,5 +449,13 @@ export class FinanzielleSituationStartViewController extends AbstractFinSitBernV
 
     protected isNotFinSitStartOrGS2Required(): boolean {
         return this.gesuchModelManager.isGesuchsteller2Required();
+    }
+
+    public showFinanzielleSituationRueckwirkendAnpassen() {
+        if (!this.gesuchModelManager.getGesuch().isMutation()) {
+            return false;
+        }
+
+        return this.isFinanziellesituationRequired() && this.isFKJV();
     }
 }

@@ -21,8 +21,6 @@ import javax.annotation.Nonnull;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
-import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
 import org.hibernate.envers.Audited;
@@ -42,9 +40,11 @@ public class LastenausgleichDetailZeitabschnitt extends AbstractEntity {
 	@JoinColumn(nullable = false)
 	private LastenausgleichDetail lastenausgleichDetail;
 
-	@OneToOne(optional = false, orphanRemoval = false)
+	@ManyToOne(optional = false)
 	@Nonnull
-	private @Valid VerfuegungZeitabschnitt zeitabschnitt;
+	@NotNull
+	@JoinColumn(nullable = false)
+	private VerfuegungZeitabschnitt zeitabschnitt;
 
 	public LastenausgleichDetailZeitabschnitt() {}
 

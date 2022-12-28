@@ -118,7 +118,7 @@ import ch.dvbern.ebegu.enums.Taetigkeit;
 import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.enums.WizardStepName;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
-import ch.dvbern.ebegu.errors.EbeguExistingAntragException;
+import ch.dvbern.ebegu.errors.EbeguExistingAntragRuntimeException;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.errors.KibonLogLevel;
 import ch.dvbern.ebegu.errors.MailException;
@@ -376,7 +376,7 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 		@Nonnull StringBuilder logInfo
 	) {
 		if (isThereAnyOpenMutation(gesuchToCreate.getDossier(), gesuchsperiode)) {
-			throw new EbeguExistingAntragException(
+			throw new EbeguExistingAntragRuntimeException(
 				"antragMutieren", ErrorCodeEnum.ERROR_EXISTING_ONLINE_MUTATION,
 				null, gesuchToCreate.getDossier().getId(), gesuchsperiode.getId());
 		}
@@ -2627,6 +2627,11 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 				Betreuung betreuung = betreuungList.get(i);
 				this.betreuungService.schliessenOhneVerfuegen(betreuung);
 			}
+			for (AnmeldungTagesschule anmeldung : kindContainer.getAnmeldungenTagesschule()) {
+				this.betreuungService.anmeldungMutationIgnorieren(anmeldung);
+			}
+			// anmeldungen des Vorgesuchs zurücksetzen
+			resetMutierteAnmeldungen(gesuch);
 		});
 
 		return gesuchNachVerfuegungStart;

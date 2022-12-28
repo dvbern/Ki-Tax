@@ -88,7 +88,7 @@ public class KibonAnfrageHelper {
 		}
 	}
 
-	protected static void updateFinSitSteuerdatenAbfrageStatusOk(
+	public static void updateFinSitSteuerdatenAbfrageStatusOk(
 		FinanzielleSituation finSit,
 		SteuerdatenResponse steuerdatenResponse) {
 		assert steuerdatenResponse.getZpvNrPartner() == null;
@@ -118,7 +118,7 @@ public class KibonAnfrageHelper {
 			requireNonNull(steuerdatenResponse.getGeburtsdatumPartner())) == 0;
 	}
 
-	protected static void updateFinSitSteuerdatenAbfrageGemeinsamStatusOk(
+	public static void updateFinSitSteuerdatenAbfrageGemeinsamStatusOk(
 		@Nonnull FinanzielleSituation finSitGS1,
 		@Nonnull FinanzielleSituation finSitGS2,
 		SteuerdatenResponse steuerdatenResponse) {

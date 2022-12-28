@@ -27,6 +27,8 @@ import javax.persistence.AssociationOverrides;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.ForeignKey;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
@@ -77,6 +79,11 @@ public class AnmeldungTagesschule extends AbstractAnmeldung {
 	@OneToOne(optional = true, cascade = CascadeType.REMOVE, orphanRemoval = true, mappedBy = "anmeldungTagesschule")
 	private Verfuegung verfuegung;
 
+	@Nullable
+	@Enumerated(EnumType.STRING)
+	@Column(nullable = true)
+	private Betreuungsstatus statusVorIgnorieren;
+
 	@Transient
 	@Nullable
 	private Verfuegung verfuegungPreview;
@@ -125,6 +132,15 @@ public class AnmeldungTagesschule extends AbstractAnmeldung {
 		this.verfuegungPreview = verfuegungPreview;
 	}
 
+	@Nullable
+	public Betreuungsstatus getStatusVorIgnorieren() {
+		return statusVorIgnorieren;
+	}
+
+	public void setStatusVorIgnorieren(@Nullable Betreuungsstatus statusVorIgnorieren) {
+		this.statusVorIgnorieren = statusVorIgnorieren;
+	}
+
 	@Override
 	@SuppressWarnings("PMD.CompareObjectsWithEquals")
 	@SuppressFBWarnings("BC_UNCONFIRMED_CAST")
@@ -158,6 +174,18 @@ public class AnmeldungTagesschule extends AbstractAnmeldung {
 			}
 			if (this.getBetreuungsstatus().isSchulamtAnmeldungUebernommen()){
 				target.setBetreuungsstatus(Betreuungsstatus.SCHULAMT_MODULE_AKZEPTIERT);
+			}
+			// falls die Mutation ignoriert wurde, muss der Status in der neuen Mutation wieder auf den
+			// Status gesetzt werden, welcher vor der Mutation gesetzt war. Falls der Status bereits übernommen
+			// war, wird er zurückgesetzt auf MODULE_AKZEPTIERT, wie oben
+			if (this.getBetreuungsstatus().isIgnoriert()) {
+				var oldStatus = this.getStatusVorIgnorieren();
+				Objects.requireNonNull(oldStatus, "statusVorIgnorieren darf nicht null sein, falls ignoriert wurde");
+				if (oldStatus.isSchulamtAnmeldungUebernommen()) {
+					target.setBetreuungsstatus(Betreuungsstatus.SCHULAMT_MODULE_AKZEPTIERT);
+				} else {
+					target.setBetreuungsstatus(oldStatus);
+				}
 			}
 			target.setKeineDetailinformationen(this.isKeineDetailinformationen());
 			if (target.isKeineDetailinformationen()) {

@@ -40,7 +40,8 @@ public enum Betreuungsstatus {
 	SCHULAMT_ANMELDUNG_UEBERNOMMEN,
 	SCHULAMT_ANMELDUNG_ABGELEHNT,
 	SCHULAMT_FALSCHE_INSTITUTION,
-	SCHULAMT_ANMELDUNG_STORNIERT;
+	SCHULAMT_ANMELDUNG_STORNIERT,
+	SCHULAMT_MUTATION_IGNORIERT;
 
 	private static final Set<Betreuungsstatus> all = EnumSet.allOf(Betreuungsstatus.class);
 	private static final Set<Betreuungsstatus> none = EnumSet.noneOf(Betreuungsstatus.class);
@@ -56,7 +57,10 @@ public enum Betreuungsstatus {
 	}
 
 	public boolean isGeschlossenSchulamt() {
-		return SCHULAMT_ANMELDUNG_UEBERNOMMEN == this || SCHULAMT_ANMELDUNG_ABGELEHNT == this || SCHULAMT_ANMELDUNG_STORNIERT == this;
+		return SCHULAMT_ANMELDUNG_UEBERNOMMEN == this
+			|| SCHULAMT_ANMELDUNG_ABGELEHNT == this
+			|| SCHULAMT_ANMELDUNG_STORNIERT == this
+			|| SCHULAMT_MUTATION_IGNORIERT == this;
 	}
 
 	/**
@@ -65,7 +69,8 @@ public enum Betreuungsstatus {
 	public boolean isGeschlossen() {
 		return VERFUEGT == this || GESCHLOSSEN_OHNE_VERFUEGUNG == this || NICHT_EINGETRETEN == this
 			|| SCHULAMT_ANMELDUNG_UEBERNOMMEN == this || SCHULAMT_ANMELDUNG_ABGELEHNT == this || SCHULAMT_ANMELDUNG_AUSGELOEST == this
-			|| SCHULAMT_FALSCHE_INSTITUTION == this || SCHULAMT_ANMELDUNG_STORNIERT == this;
+			|| SCHULAMT_FALSCHE_INSTITUTION == this || SCHULAMT_ANMELDUNG_STORNIERT == this
+			|| SCHULAMT_MUTATION_IGNORIERT == this;
 	}
 
 	public boolean isAnyStatusOfVerfuegt() {
@@ -80,7 +85,7 @@ public enum Betreuungsstatus {
 	public boolean isSchulamt() {
 		return SCHULAMT_ANMELDUNG_ERFASST  == this || SCHULAMT_ANMELDUNG_AUSGELOEST == this
 			|| SCHULAMT_ANMELDUNG_UEBERNOMMEN == this|| SCHULAMT_ANMELDUNG_ABGELEHNT == this  || SCHULAMT_FALSCHE_INSTITUTION == this
-			|| SCHULAMT_MODULE_AKZEPTIERT == this || SCHULAMT_ANMELDUNG_STORNIERT == this;
+			|| SCHULAMT_MODULE_AKZEPTIERT == this || SCHULAMT_ANMELDUNG_STORNIERT == this || SCHULAMT_MUTATION_IGNORIERT == this;
 	}
 
 	public boolean isSchulamtStatusWithPotentialVerfuegung() {
@@ -101,6 +106,10 @@ public enum Betreuungsstatus {
 
 	public boolean isStorniert() {
 		return STORNIERT == this;
+	}
+
+	public boolean isIgnoriert() {
+		return SCHULAMT_MUTATION_IGNORIERT == this;
 	}
 
 	@SuppressWarnings({"Duplicates", "checkstyle:CyclomaticComplexity"})

@@ -54,6 +54,7 @@ import {TSGesuchBetreuungenStatus} from '../../models/enums/TSGesuchBetreuungenS
 import {TSGesuchsperiodeStatus} from '../../models/enums/TSGesuchsperiodeStatus';
 import {TSRole} from '../../models/enums/TSRole';
 import {TSSozialdienstFallStatus} from '../../models/enums/TSSozialdienstFallStatus';
+import {TSUnterhaltsvereinbarungAnswer} from '../../models/enums/TSUnterhaltsvereinbarungAnswer';
 import {TSWizardStepName} from '../../models/enums/TSWizardStepName';
 import {TSWizardStepStatus} from '../../models/enums/TSWizardStepStatus';
 import {TSAdresse} from '../../models/TSAdresse';
@@ -93,7 +94,6 @@ import {GesuchGenerator} from './gesuchGenerator';
 import {GesuchRS} from './gesuchRS.rest';
 import {GlobalCacheService} from './globalCacheService';
 import {WizardStepManager} from './wizardStepManager';
-
 const LOG = LogFactory.createLog('GesuchModelManager');
 
 export class GesuchModelManager {
@@ -155,6 +155,7 @@ export class GesuchModelManager {
         private readonly gemeindeRS: GemeindeRS,
         private readonly internePendenzenRS: InternePendenzenRS,
         private readonly einstellungenRS: EinstellungRS
+
     ) {
     }
 
@@ -363,10 +364,14 @@ export class GesuchModelManager {
             return;
         }
 
+        if (this.gesuch.familiensituationContainer.familiensituationJA.verguenstigungGewuenscht) {
+            return;
+        }
+
         this.gesuch.familiensituationContainer.familiensituationJA.verguenstigungGewuenscht = true;
         this.familiensitutaionRS.saveFamiliensituation(this.gesuch.familiensituationContainer, this.gesuch.id)
-            .subscribe((response: TSFamiliensituationContainer) => {
-                this.gesuch.familiensituationContainer = response;
+            .subscribe(() => {
+                this.reloadGesuch();
             });
     }
 

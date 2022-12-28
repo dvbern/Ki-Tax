@@ -762,9 +762,17 @@ public class ZahlungServiceBean extends AbstractBaseService implements ZahlungSe
 		if (helper.getZahlungsstatus(zeitabschnittNeu).isIgnoriertIgnorierend()) {
 			helper.setZahlungsstatus(zeitabschnittNeu, VerfuegungsZeitabschnittZahlungsstatus.IGNORIERT_KORRIGIERT);
 		} else {
-			helper.setZahlungsstatus(zeitabschnittNeu, VerfuegungsZeitabschnittZahlungsstatus.VERRECHNET_KORRIGIERT);
+			helper.setZahlungsstatus(zeitabschnittNeu, getZahluntsstatusKorrigiert(zeitabschnittNeu));
 		}
 		zahlung.getZahlungspositionen().add(zahlungsposition);
+	}
+
+	private VerfuegungsZeitabschnittZahlungsstatus getZahluntsstatusKorrigiert(VerfuegungZeitabschnitt zeitabschnittNeu) {
+		if (zeitabschnittNeu.getRelevantBgCalculationResult().getBetreuungspensumProzent().compareTo(BigDecimal.ZERO) == 0) {
+			return VerfuegungsZeitabschnittZahlungsstatus.VERRECHNET_KEINE_BETREUUNG;
+		}
+
+		return VerfuegungsZeitabschnittZahlungsstatus.VERRECHNET_KORRIGIERT;
 	}
 
 	/**
@@ -791,7 +799,7 @@ public class ZahlungServiceBean extends AbstractBaseService implements ZahlungSe
 		} else {
 			helper.setZahlungsstatus(
 				vorgaengerZeitabschnitt,
-				VerfuegungsZeitabschnittZahlungsstatus.VERRECHNET_KORRIGIERT);
+				getZahluntsstatusKorrigiert(vorgaengerZeitabschnitt));
 		}
 	}
 

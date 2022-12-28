@@ -82,6 +82,12 @@ public interface MitteilungService {
 	Optional<Betreuungsmitteilung> findBetreuungsmitteilung(@Nonnull String key);
 
 	/**
+	 * Sucht die Betreuungsmitteilung mit der uebergebenen ID
+	 */
+	@Nonnull
+	Optional<NeueVeranlagungsMitteilung> findVeranlagungsMitteilungById(@Nonnull String key);
+
+	/**
 	 * Löscht alle offenen Mutationsmeldung für eine Betreuung
 	 */
 	void removeOffeneBetreuungsmitteilungenForBetreuung(Betreuung betreuung);
@@ -245,4 +251,5 @@ public interface MitteilungService {
 
 	NeueVeranlagungsMitteilung sendNeueVeranlagungsmitteilung(@Nonnull NeueVeranlagungsMitteilung neueVeranlagungsMitteilung);
 
+	Gesuch neueVeranlagungssmitteilungBearbeiten(NeueVeranlagungsMitteilung neueVeranlagungsMitteilung);
 }

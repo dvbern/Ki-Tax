@@ -118,6 +118,9 @@
                                 <li><span>{{vm.getVeraenderungTsString()}}</span></li>
                             </ul>
                         </div>
+                        <div ng-if="vm.showAnyNewOrStornierteBetreuungen()" class="well margin-top-20">
+                            <span translate>MUTATION_VERAENDERUNG_NICHT_MOEGLICH</span>
+                        </div>
                     </dv-demo-feature-wrapper>
 
                     <div class="col-xs-12 dv-input-container-question" ng-show="vm.showVerfuegungEingeschriebenSenden()">

@@ -35,6 +35,25 @@
                                                   form="vm.form">
                 </dv-finanzielle-situation-require>
 
+                <div class="row" dv-show-element dv-show-allowed-roles="vm.TSRoleUtil.getAdministratorOrAmtRole()"
+                     dv-show-expression="vm.showFinanzielleSituationRueckwirkendAnpassen()">
+                    <div class="col-xs-12 dv-input-container-question">
+                        <div class="checkbox">
+                            <md-checkbox ng-model="vm.model.finanzielleSituationRueckwirkendAnpassen"
+                                         id="finanzielleSituationRueckwirkendAnpassen"
+                                         name="finanzielleSituationRueckwirkendAnpassen"
+                                         ng-change="vm.updateFinSitAenderungGueltigAbDatum()"
+                                         aria-label="{{'FINANZIELLE_SITUATION_RUECKWIRKEND_ANPASSEN'| translate}}"
+                                         ng-disabled="vm.isGesuchReadonly()">
+                                <span data-translate="FINANZIELLE_SITUATION_RUECKWIRKEND_ANPASSEN"></span>
+                            </md-checkbox>
+                            <dv-tooltip input-id="finanzielleSituationRueckwirkendAnpassen"
+                                        text="'FINANZIELLE_SITUATION_RUECKWIRKEND_ANPASSEN_HELP' | translate"></dv-tooltip>
+                        </div>
+                    </div>
+                </div>
+
+
                 <div ng-if="vm.isFinanziellesituationRequired() && vm.is2GSRequired()">
                     <!-- Gemeinsame Steuererklaerung -->
                     <div class="row">
@@ -183,7 +202,7 @@
                           dv-enable-expression="vm.areZahlungsdatenEditable()">
 
                     <!-- Keine Mahlzeitenverguenstigung gewuenscht -->
-                    <div class="row margin-bottom-20 margin-top-20" ng-if="vm.isMahlzeitenverguenstigungEnabled()">
+                    <div class="row margin-top-20" ng-if="vm.isMahlzeitenverguenstigungEnabled()">
                         <div class="col-xs-12 dv-input-container-question">
                             <div class="checkbox">
                                 <md-checkbox ng-model="vm.model.zahlungsinformationen.keineMahlzeitenverguenstigungBeantragt"
@@ -202,7 +221,7 @@
                     <div ng-if="vm.showZahlungsdaten()" >
                         <!--IBAN-->
                         <div class="row">
-                            <div class="col-sm-12 dv-input-container-medium">
+                            <div class="col-sm-12 margin-top-20 dv-input-container-medium">
                                 <dv-input-container class="form-group">
                                     <label class="md-no-float"for="iban">
                                         <span data-translate="IBAN" ></span>

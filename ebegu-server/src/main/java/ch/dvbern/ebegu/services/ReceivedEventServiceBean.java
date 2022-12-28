@@ -101,6 +101,7 @@ public class ReceivedEventServiceBean implements ReceivedEventService {
 	}
 
 	@Override
+	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	public void processingSuccess(@Nonnull ReceivedEvent receivedEvent) {
 		receivedEvent.setSuccess(true);
 		persistence.persist(receivedEvent);
