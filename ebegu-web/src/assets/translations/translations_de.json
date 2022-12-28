@@ -1350,7 +1350,7 @@
     "GENERIEREN": "Generieren",
     "STATISTIK_GESUCHSTELLER": "Betreuungsgutscheine: Antragsteller/in",
     "STATISTIK_LASTENAUSGLEICH_BG": "Betreuungsgutscheine: Berechnung Lastenausgleich Betreuungsgutscheine pro Gemeinde",
-    "STATISTIK_LASTENAUSGLEICH_BG_HINT": "Zeigt alle Zeitabschnitte, die in die Berechnung des Lastenausgleichs für die Betreuungsgutscheine einfliessen",
+    "STATISTIK_LASTENAUSGLEICH_BG_HINT": "Zeigt alle Zeitabschnitte, die in die Berechnung des Lastenausgleichs für die Betreuungsgutscheine einfliessen.\nDiese Daten sind erst ab dem Lastenausgleichjahr 2022 vorhanden. Zahlen zu früheren Lastenausgleichen und Korrekturen können nicht angezeigt werden.",
     "GESUCHE_NACH_STICHTAG": "Betreuungsgutscheine: Anträge nach Stichtag",
     "GESUCHE_NACH_ZEITRAUM": "Betreuungsgutscheine: Verfügte Anträge und Mutationen nach Zeitraum",
     "KANTON": "Kanton",
