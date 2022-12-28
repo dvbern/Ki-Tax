@@ -32,7 +32,7 @@
         <a class="pointer-cursor" translate (click)="tryAgain()">ERNEUT_VERSUCHEN</a>
     </div>
     <div *ngIf="steuerAbfrageRequestRunning">
-         {{steuerAbfrageResponeHintStatusText}}
+        <p class="ebegu-h3 black-font" [innerHTML]="steuerAbfrageResponeHintStatusText"></p>
     </div>
     <p>
 

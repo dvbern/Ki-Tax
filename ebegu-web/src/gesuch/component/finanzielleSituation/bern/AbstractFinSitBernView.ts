@@ -161,13 +161,13 @@ export abstract class AbstractFinSitBernView extends AbstractGesuchViewControlle
             .then(() => {
                     this.model.copyFinSitDataFromGesuch(this.gesuchModelManager.getGesuch());
                     this.form.$setDirty();
-                        this.finSitRequestState = saveHints.SAVED;
+                    this.finSitRequestState = saveHints.SAVED;
                 }
             ).catch(() => {
                 this.finSitRequestState = saveHints.ERROR;
             }
         ).finally(() => {
-                    this.finSitRequestState = saveHints.SAVED;
+                this.finSitRequestState = saveHints.SAVED;
             }
         );
         setTimeout(() => {
