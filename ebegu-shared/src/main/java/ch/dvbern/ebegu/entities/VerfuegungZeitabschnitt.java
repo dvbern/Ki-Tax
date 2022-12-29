@@ -863,4 +863,14 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 			.map(VerfuegungZeitabschnittBemerkung::getBemerkung)
 			.collect(Collectors.joining("\n"));
 	}
+
+	public void setGeschwisternBonusKind2ForAsivAndGemeinde(boolean geschwisternBonusKind2) {
+		this.bgCalculationInputAsiv.setGeschwisternBonusKind2(geschwisternBonusKind2);
+		this.bgCalculationInputGemeinde.setGeschwisternBonusKind2(geschwisternBonusKind2);
+	}
+
+	public void setGeschwisternBonusKind3ForAsivAndGemeinde(boolean geschwisternBonusKind3) {
+		this.bgCalculationInputAsiv.setGeschwisternBonusKind3(geschwisternBonusKind3);
+		this.bgCalculationInputGemeinde.setGeschwisternBonusKind3(geschwisternBonusKind3);
+	}
 }
