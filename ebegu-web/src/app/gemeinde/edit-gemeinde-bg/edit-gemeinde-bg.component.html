@@ -267,7 +267,7 @@
                         <p>{{beguStartStr}}</p>
                     </div>
                     <!-- Welche Institutionen können ausgewählt werden? -->
-                    <div *ngIf="institutionenDurchGemeindenEinladen">
+                    <div *ngIf="erlaubenInstitutionenZuWaehlen">
                         <div class="form-group mt-5">
                             <h3 translate>WELCHE_INSTITUTIONEN_ZUGELASSEN</h3>
                             <mat-radio-group name="alleBgInstitutionenZugelassen"
@@ -1406,7 +1406,7 @@
                         </div>
                     </div>
                     <!-- Welche Institutionen können ausgewählt werden? -->
-                    <div class="form-group mt-5" *ngIf="institutionenDurchGemeindenEinladen">
+                    <div class="form-group mt-5" *ngIf="erlaubenInstitutionenZuWaehlen">
                         <h3 translate>WELCHE_INSTITUTIONEN_ZUGELASSEN</h3>
                         <p translate *ngIf="stammdaten.alleBgInstitutionenZugelassen">ALLE_CAPITAL</p>
                         <p [title]="zugelasseneBgInstitutionenStr(stammdaten.zugelasseneBgInstitutionen)">
