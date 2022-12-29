@@ -30,6 +30,7 @@ import {
 } from '@angular/core';
 import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
 import {TranslateService} from '@ngx-translate/core';
+import * as moment from 'moment';
 import {BehaviorSubject, Subscription} from 'rxjs';
 import {TSDemoFeature} from '../../../../../app/core/directive/dv-hide-feature/TSDemoFeature';
 import {LogFactory} from '../../../../../app/core/logging/LogFactory';
@@ -39,12 +40,15 @@ import {
     isSteuerdatenAnfrageStatusErfolgreich,
     TSSteuerdatenAnfrageStatus
 } from '../../../../../models/enums/TSSteuerdatenAnfrageStatus';
+import {TSSteuerdatenVeranlagungsstand} from '../../../../../models/enums/TSSteuerdatenVeranlagungsstand';
 import {TSBenutzer} from '../../../../../models/TSBenutzer';
 import {EbeguUtil} from '../../../../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../../../../utils/TSRoleUtil';
 import {FinanzielleSituationRS} from '../../../../service/finanzielleSituationRS.rest';
 import {GesuchModelManager} from '../../../../service/gesuchModelManager';
-import {DialogInitZPVNummerVerknuepfen} from '../dialog-init-zpv-nummer-verknuepfen/dialog-init-zpv-nummer-verknpuefen.component';
+import {
+    DialogInitZPVNummerVerknuepfen
+} from '../dialog-init-zpv-nummer-verknuepfen/dialog-init-zpv-nummer-verknpuefen.component';
 
 const LOG = LogFactory.createLog('SteuerabfrageResponseHintsComponent');
 
@@ -59,6 +63,12 @@ export class SteuerabfrageResponseHintsComponent implements OnInit, OnDestroy, O
 
     @Input()
     private readonly status: TSSteuerdatenAnfrageStatus;
+
+    @Input()
+    public readonly timestampAbruf: moment.Moment;
+
+    @Input()
+    private readonly steuerdatenVeranlagungsstand: TSSteuerdatenVeranlagungsstand;
 
     @Input()
     public steuerAbfrageResponeHintStatusText: string;
@@ -264,5 +274,9 @@ export class SteuerabfrageResponseHintsComponent implements OnInit, OnDestroy, O
 
     public isGesuchReadonly(): boolean {
         return this.gesuchModelManager.isGesuchReadonly();
+    }
+
+    public translateVeranlagungsstand(): string {
+        return this.translate.instant(`VERANLAGUNGSSTAND_${ this.steuerdatenVeranlagungsstand }`);
     }
 }

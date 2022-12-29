@@ -26,7 +26,7 @@
 <div *ngIf="showZugriffErfolgreich()"
      class="well well-status-bestaetigt minus-margin">
     <p class="ebegu-h3"
-       [innerHTML]="'FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF_ERFOLGREICH' | translate"></p>
+       [innerHTML]="'FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF_ERFOLGREICH' | translate: {timestamp: timestampAbruf | ebeguDateTime, veranlagungsstand: translateVeranlagungsstand()}"></p>
 
     <div *ngIf="tryAgainPossible() && !steuerAbfrageRequestRunning" >
         <a class="pointer-cursor" translate (click)="tryAgain()">ERNEUT_VERSUCHEN</a>
