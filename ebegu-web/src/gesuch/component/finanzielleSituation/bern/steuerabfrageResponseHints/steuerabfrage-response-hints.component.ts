@@ -32,7 +32,11 @@ import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
 import {TranslateService} from '@ngx-translate/core';
 import * as moment from 'moment';
 import {BehaviorSubject, Subscription} from 'rxjs';
+import {
+    DvNgRemoveDialogComponent
+} from '../../../../../app/core/component/dv-ng-remove-dialog/dv-ng-remove-dialog.component';
 import {TSDemoFeature} from '../../../../../app/core/directive/dv-hide-feature/TSDemoFeature';
+import {ErrorService} from '../../../../../app/core/errors/service/ErrorService';
 import {LogFactory} from '../../../../../app/core/logging/LogFactory';
 import {AuthServiceRS} from '../../../../../authentication/service/AuthServiceRS.rest';
 import {TSRole} from '../../../../../models/enums/TSRole';
@@ -92,7 +96,8 @@ export class SteuerabfrageResponseHintsComponent implements OnInit, OnDestroy, O
         private readonly dialog: MatDialog,
         private readonly finSitRS: FinanzielleSituationRS,
         private readonly changeDetectorRef: ChangeDetectorRef,
-        private readonly translate: TranslateService
+        private readonly translate: TranslateService,
+        private readonly errorService: ErrorService
     ) {
     }
 
@@ -231,7 +236,17 @@ export class SteuerabfrageResponseHintsComponent implements OnInit, OnDestroy, O
     }
 
     public tryAgain(): void {
-        this.tryAgainEvent.emit();
+        this.dialog.open(DvNgRemoveDialogComponent, {
+            data: {
+                title: this.translate.instant('SCHNITTSTELLE_ERENEUT_ABFRAGEN')
+            }
+        }).afterClosed().subscribe(confirmation => {
+            if (confirmation) {
+                this.tryAgainEvent.emit();
+            }
+        }, () => {
+            this.errorService.addMesageAsInfo(this.translate.instant('ERROR_UNEXPECTED'));
+        });
     }
 
     public getEmailBesitzende(): string {

@@ -89,6 +89,7 @@
     "FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF_ERFOLGREICH": "Die Steuerdaten wurden am {{timestamp}} Uhr erfolgreich abgerufen.<br>Der Veranlagungsstand ist {{veranlagungsstand}}.<br>Bitte beantworten Sie die Frage zum Einkommen aus vereinfachtem Verfahren.<br>Hinweis: Die abgerufenen Werte können von den Angaben abweichen, welche Sie in der Steuererklärung erfasst haben. Die Steuerverwaltung hat allenfalls schon erste Korrekturen vorgenommen, z.B. bezüglich Pauschalabzügen für Liegenschaften oder dem Wert von ausserkantonalen Liegenschaften.",
     "VERANLAGUNGSSTAND_PROVISORISCH": "provisorisch",
     "VERANLAGUNGSSTAND_RECHTSKRAEFTIG": "rechtskräftig",
+    "SCHNITTSTELLE_ERENEUT_ABFRAGEN": "Wollen Sie die Steuerdaten erneut abrufen? Die bisherigen Angaben werden überschrieben.",
     "FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF_UNTERJAEHRIG": "Der Abruf der Steuerdaten ist nicht möglich. <br>Die Abfrage liefert eine unterjährige Steuererklärung als Antwort. Sie müssen die Daten manuell eingeben und die entsprechenden Belege einreichen.",
     "FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF_KEINE_ZPV": "Der Abruf der Steuerdaten ist nicht möglich.<br>Für \"{{email}}\" ist keine ZPV-Nummer hinterlegt.",
     "FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF_WARNING_GEBURTSTDAUM_CHANGED": "ACHTUNG! Das Geburtsdatum aus der Steuerabfrage stimmt nicht mit dem Geburtsdatum, das in kiBon angegeben wurde überein! Überprüfen Sie das angegebene Geburtsdatum",
