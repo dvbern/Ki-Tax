@@ -36,7 +36,7 @@
     </div>
     <p>
 
-    <div [dvDemoFeature]="checkboxInformierenDemoFeature" *ngIf="isGemeindeOrSuperadmin()">
+    <div [dvDemoFeature]="checkboxInformierenDemoFeature" *ngIf="checkboxInformierenPossible()">
         <dv-checkbox-x
             [dvBisherValue]="gesuchModelManager.getGesuch().markiertFuerKontroll"
             [label]="'CHECKBOX_MARKED_FUER_KONTROLL'"

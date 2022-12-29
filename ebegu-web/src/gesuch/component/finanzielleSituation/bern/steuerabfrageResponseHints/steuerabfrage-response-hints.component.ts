@@ -269,7 +269,9 @@ export class SteuerabfrageResponseHintsComponent implements OnInit, OnDestroy, O
     }
 
     public tryAgainPossible(): boolean {
-        return this.isMutation() && !this.gesuchModelManager.isGesuchReadonly();
+        return this.isMutation()
+            && !this.gesuchModelManager.isGesuchReadonly()
+            && this.steuerdatenVeranlagungsstand === TSSteuerdatenVeranlagungsstand.PROVISORISCH;
     }
 
     public isGesuchReadonly(): boolean {
@@ -278,5 +280,10 @@ export class SteuerabfrageResponseHintsComponent implements OnInit, OnDestroy, O
 
     public translateVeranlagungsstand(): string {
         return this.translate.instant(`VERANLAGUNGSSTAND_${ this.steuerdatenVeranlagungsstand }`);
+    }
+
+    public checkboxInformierenPossible(): boolean {
+        return this.isGemeindeOrSuperadmin()
+            && this.steuerdatenVeranlagungsstand === TSSteuerdatenVeranlagungsstand.PROVISORISCH;
     }
 }
