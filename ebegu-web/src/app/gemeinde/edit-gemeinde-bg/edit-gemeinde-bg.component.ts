@@ -84,7 +84,7 @@ export class EditGemeindeComponentBG implements OnInit {
     public gemeindeStatus: TSGemeindeStatus;
     public einschulungTypGemeindeValues: Array<TSEinschulungTyp>;
     public dauerBabyTarife: TSEinstellung[];
-    public institutionenDurchGemeindenEinladen: boolean;
+    public erlaubenInstitutionenZuWaehlen: boolean;
     public institutionen: TSInstitution[];
     public anspruchBeschaeftigungAbhaengigkeitTypValues: Array<TSAnspruchBeschaeftigungAbhaengigkeitTyp>;
     private navigationDest: StateDeclaration;
@@ -118,7 +118,7 @@ export class EditGemeindeComponentBG implements OnInit {
         this.anspruchBeschaeftigungAbhaengigkeitTypValues = Object.values(TSAnspruchBeschaeftigungAbhaengigkeitTyp);
         this.initDauerBabytarifEinstellungen();
         this.initGesuchsperiodeIdsGemeindespezifischeKonfigForBGMap();
-        this.initInstitutionenDurchGemeindenEinladen();
+        this.initErlaubenInstitutionenZuWaehlen();
     }
 
     private initDauerBabytarifEinstellungen(): void {
@@ -588,15 +588,15 @@ export class EditGemeindeComponentBG implements OnInit {
         return EbeguUtil.isUndefined(data);
     }
 
-    private initInstitutionenDurchGemeindenEinladen(): void {
+    private initErlaubenInstitutionenZuWaehlen(): void {
         this.applicationPropertyRS.getPublicPropertiesCached()
-            .then(res => this.institutionenDurchGemeindenEinladen = res.institutionenDurchGemeindenEinladen)
+            .then(res => this.erlaubenInstitutionenZuWaehlen = res.erlaubenInstitutionenZuWaehlen)
             .then(() => this.initInstitutionen());
     }
 
     private initInstitutionen(): void {
         // falls die Einstellung dekativiert ist, benötigen wir die Institutionen nicht
-        if (!this.institutionenDurchGemeindenEinladen) {
+        if (!this.erlaubenInstitutionenZuWaehlen) {
             return;
         }
         this.institutionRS.getAllBgInstitutionen()
