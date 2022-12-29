@@ -1120,7 +1120,7 @@ public final class TestDataUtil {
 		return betreuung;
 	}
 
-	public static Betreuung createDefaultBetreuung(KindContainer kindContainer) {
+	public static Betreuung createDefaultBetreuungOhneBetreuungPensum(KindContainer kindContainer) {
 		Betreuung betreuung = new Betreuung();
 		betreuung.setInstitutionStammdaten(createDefaultInstitutionStammdaten());
 		betreuung.setBetreuungsstatus(Betreuungsstatus.BESTAETIGT);
