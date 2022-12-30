@@ -24,6 +24,7 @@ import javax.annotation.Nonnull;
 
 import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.enums.reporting.MergeFieldLastenausgleichBGZeitabschnitte;
+import ch.dvbern.ebegu.util.ReportUtil;
 import ch.dvbern.ebegu.util.ServerMessageUtil;
 import ch.dvbern.oss.lib.excelmerger.ExcelConverter;
 import ch.dvbern.oss.lib.excelmerger.ExcelMergeException;
@@ -31,9 +32,14 @@ import ch.dvbern.oss.lib.excelmerger.ExcelMerger;
 import ch.dvbern.oss.lib.excelmerger.ExcelMergerDTO;
 import ch.dvbern.oss.lib.excelmerger.RowFiller;
 import ch.dvbern.oss.lib.excelmerger.mergefields.MergeField;
+import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.xssf.streaming.SXSSFRow;
+import org.apache.poi.xssf.streaming.SXSSFSheet;
 
 public class LastenausgleichBGZeitabschnitteExcelConverter implements ExcelConverter {
+
+	private static final Integer TITLE_ROW_NUMBER = 7;
 
 	@Override
 	public void applyAutoSize(@Nonnull Sheet sheet) {
@@ -145,6 +151,11 @@ public class LastenausgleichBGZeitabschnitteExcelConverter implements ExcelConve
 			MergeFieldLastenausgleichBGZeitabschnitte.eingabeLastenausgleichTitle,
 			ServerMessageUtil.getMessage("Reports_EingabeLastenausgleichTitle", locale, mandant)
 		);
+		mergeFields.add(MergeFieldLastenausgleichBGZeitabschnitte.korrekturTitle.getMergeField());
+		excelMergerDTO.addValue(
+			MergeFieldLastenausgleichBGZeitabschnitte.korrekturTitle,
+			ServerMessageUtil.getMessage("Reports_korrekturTitle", locale, mandant)
+		);
 
 		ExcelMerger.mergeData(sheet, mergeFields, excelMergerDTO);
 
@@ -172,8 +183,24 @@ public class LastenausgleichBGZeitabschnitteExcelConverter implements ExcelConve
 			excelRowGroup.addValue(MergeFieldLastenausgleichBGZeitabschnitte.bgPensum, dataRow.getBgPensum());
 			excelRowGroup.addValue(MergeFieldLastenausgleichBGZeitabschnitte.keinSelbstbehaltDurchGemeinde, dataRow.getKeinSelbstbehaltDurchGemeinde());
 			excelRowGroup.addValue(MergeFieldLastenausgleichBGZeitabschnitte.gutschein, dataRow.getGutschein());
+			excelRowGroup.addValue(MergeFieldLastenausgleichBGZeitabschnitte.isKorrektur, dataRow.getKorrektur());
 
 			rowFiller.fillRow(excelRowGroup);
 		});
+		addTotalRow(rowFiller, data.size());
+	}
+
+	private void addTotalRow(RowFiller rowFiller, int nbrRow) {
+		SXSSFSheet sheet = rowFiller.getSheet();
+		SXSSFRow targetRow = sheet.createRow(sheet.getLastRowNum() + 1);
+		CellStyle basicStyle = ReportUtil.createBasicStyleSumRow(sheet);
+		CellStyle procentStyle = ReportUtil.createProcentStyle(sheet, basicStyle);
+		CellStyle zahlStyle = ReportUtil.createNumberStyle(sheet, basicStyle);
+
+		int firstRow = TITLE_ROW_NUMBER + 1;
+		int lastRow = nbrRow + TITLE_ROW_NUMBER;
+		ReportUtil.createCellWithFormula(targetRow, procentStyle, 10, "SUM(K" + firstRow + ":K" + lastRow + ")");
+		ReportUtil.createCellWithFormula(targetRow, zahlStyle, 14, "SUM(O" + firstRow + ":O" + lastRow + ")");
+		ReportUtil.createCellWithFormula(targetRow, zahlStyle, 15, "SUM(P" + firstRow + ":P" + lastRow + ")");
 	}
 }

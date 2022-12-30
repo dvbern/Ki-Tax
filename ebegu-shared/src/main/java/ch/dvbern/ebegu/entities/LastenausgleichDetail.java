@@ -296,6 +296,10 @@ public class LastenausgleichDetail extends AbstractEntity implements Comparable<
 		this.setTotalBelegungenOhneSelbstbehalt(MathUtil.DEFAULT.addNullSafe(this.getTotalBelegungenOhneSelbstbehalt(), other.getTotalBelegungenOhneSelbstbehalt()));
 		this.setTotalBetragGutscheineOhneSelbstbehalt(MathUtil.DEFAULT.addNullSafe(this.getTotalBetragGutscheineOhneSelbstbehalt(), other.getTotalBetragGutscheineOhneSelbstbehalt()));
 		this.setKostenFuerSelbstbehalt(MathUtil.DEFAULT.addNullSafe(this.getKostenFuerSelbstbehalt(), other.getKostenFuerSelbstbehalt()));
+		other.getLastenausgleichDetailZeitabschnitte().forEach(z -> {
+			var copy = new LastenausgleichDetailZeitabschnitt(z.getZeitabschnitt(), this);
+			this.lastenausgleichDetailZeitabschnitte.add(copy);
+		});
 	}
 
 	/**

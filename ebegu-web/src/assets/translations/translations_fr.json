@@ -1282,7 +1282,7 @@
     "GENERIEREN": "Générer",
     "STATISTIK_GESUCHSTELLER": "Bons de garde: auteur-e de la demande",
     "STATISTIK_LASTENAUSGLEICH_BG": "Bons de  garde: calcul de la compensation des charges pour les bons de gardes par commune",
-    "STATISTIK_LASTENAUSGLEICH_BG_HINT": "Montre toutes les tranches temporelles, qui ont été pris en compte pour le calcul de la compensation des charges pour les bons de gardes par commune",
+    "STATISTIK_LASTENAUSGLEICH_BG_HINT": "Montre toutes les tranches temporelles, qui ont été pris en compte pour le calcul de la compensation des charges pour les bons de gardes par commune.\nDiese Daten sind erst ab dem Lastenausgleichjahr 2022 vorhanden. Zahlen zu früheren Lastenausgleichen und Korrekturen können nicht angezeigt werden.",
     "GESUCHE_NACH_STICHTAG": "Bons de garde: Demandes selon jour de référence",
     "GESUCHE_NACH_ZEITRAUM": "Bons de garde: Décisions rendues et changements selon la période",
     "KANTON": "Canton",
