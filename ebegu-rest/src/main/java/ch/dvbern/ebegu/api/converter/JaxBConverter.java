@@ -2862,12 +2862,6 @@ public class JaxBConverter extends AbstractConverter {
 		jaxFinanzielleSituation.setAutomatischePruefungErlaubt(persistedFinanzielleSituation.getAutomatischePruefungErlaubt());
 		jaxFinanzielleSituation.setMomentanSelbststaendig(persistedFinanzielleSituation.getMomentanSelbststaendig());
 
-		var steuerdatenResponse = persistedFinanzielleSituation.getSteuerdatenResponse();
-		if (steuerdatenResponse != null) {
-			jaxFinanzielleSituation.setTimestampSteuerdatenResponse(steuerdatenResponse.getTimestampErstellt());
-			jaxFinanzielleSituation.setSteuerdatenVeranlagungsstand(steuerdatenResponse.getVeranlagungsstand());
-		}
-
 		return jaxFinanzielleSituation;
 	}
 

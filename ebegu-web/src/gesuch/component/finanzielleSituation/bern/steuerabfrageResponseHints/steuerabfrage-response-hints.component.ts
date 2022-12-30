@@ -44,7 +44,6 @@ import {
     isSteuerdatenAnfrageStatusErfolgreich,
     TSSteuerdatenAnfrageStatus
 } from '../../../../../models/enums/TSSteuerdatenAnfrageStatus';
-import {TSSteuerdatenVeranlagungsstand} from '../../../../../models/enums/TSSteuerdatenVeranlagungsstand';
 import {TSBenutzer} from '../../../../../models/TSBenutzer';
 import {EbeguUtil} from '../../../../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../../../../utils/TSRoleUtil';
@@ -70,9 +69,6 @@ export class SteuerabfrageResponseHintsComponent implements OnInit, OnDestroy, O
 
     @Input()
     public readonly timestampAbruf: moment.Moment;
-
-    @Input()
-    private readonly steuerdatenVeranlagungsstand: TSSteuerdatenVeranlagungsstand;
 
     @Input()
     public steuerAbfrageResponeHintStatusText: string;
@@ -286,7 +282,7 @@ export class SteuerabfrageResponseHintsComponent implements OnInit, OnDestroy, O
     public tryAgainPossible(): boolean {
         return this.isMutation()
             && !this.gesuchModelManager.isGesuchReadonly()
-            && this.steuerdatenVeranlagungsstand === TSSteuerdatenVeranlagungsstand.PROVISORISCH;
+            && this.status === TSSteuerdatenAnfrageStatus.PROVISORISCH;
     }
 
     public isGesuchReadonly(): boolean {
@@ -294,11 +290,11 @@ export class SteuerabfrageResponseHintsComponent implements OnInit, OnDestroy, O
     }
 
     public translateVeranlagungsstand(): string {
-        return this.translate.instant(`VERANLAGUNGSSTAND_${ this.steuerdatenVeranlagungsstand }`);
+        return this.translate.instant(`VERANLAGUNGSSTAND_${ this.status }`);
     }
 
     public checkboxInformierenPossible(): boolean {
         return this.isGemeindeOrSuperadmin()
-            && this.steuerdatenVeranlagungsstand === TSSteuerdatenVeranlagungsstand.PROVISORISCH;
+            && this.status === TSSteuerdatenAnfrageStatus.PROVISORISCH;
     }
 }

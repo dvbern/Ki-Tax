@@ -93,8 +93,7 @@
                     ng-if="vm.showZugriffAufSteuerdaten() && vm.getModel().finanzielleSituationJA.steuerdatenZugriff"
                     (try-again-event)="vm.callKiBonAnfrageAndUpdateFinSit()"
                     [status]="vm.getModel().finanzielleSituationJA.steuerdatenAbfrageStatus"
-                    [timestamp-abruf]="vm.getModel().finanzielleSituationJA.timestampSteuerdatenResponse"
-                    [steuerdaten-veranlagungsstand]="vm.getModel().finanzielleSituationJA.steuerdatenVeranlagungsstand"
+                    [timestamp-abruf]="vm.getModel().finanzielleSituationJA.steuerdatenAbfrageTimestamp"
                     [steuer-abfrage-respone-hint-status-text]="vm.finSitRequestState| translate"
                     [steuer-abfrage-request-running]="vm.finSitRequestRunning"
                 >

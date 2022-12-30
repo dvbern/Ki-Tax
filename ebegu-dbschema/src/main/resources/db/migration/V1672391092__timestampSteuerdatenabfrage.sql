@@ -15,5 +15,5 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-ALTER TABLE finanzielle_situation ADD COLUMN steuerdaten_abfrage_timestamp;
-ALTER TABLE finanzielle_situation_aud ADD COLUMN steuerdaten_abfrage_timestamp;
+ALTER TABLE finanzielle_situation ADD COLUMN steuerdaten_abfrage_timestamp DATETIME;
+ALTER TABLE finanzielle_situation_aud ADD COLUMN steuerdaten_abfrage_timestamp DATETIME;

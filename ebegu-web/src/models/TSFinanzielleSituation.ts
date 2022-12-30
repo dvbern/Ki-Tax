@@ -14,7 +14,6 @@
  */
 
 import * as moment from 'moment';
-import {TSSteuerdatenVeranlagungsstand} from './enums/TSSteuerdatenVeranlagungsstand';
 import {TSAbstractFinanzielleSituation} from './TSAbstractFinanzielleSituation';
 
 export class TSFinanzielleSituation extends TSAbstractFinanzielleSituation {
@@ -34,8 +33,7 @@ export class TSFinanzielleSituation extends TSAbstractFinanzielleSituation {
     private _unterhaltsBeitraege: number;
     private _bruttoLohn: number;
     private _momentanSelbststaendig: boolean;
-    private _timestampSteuerdatenResponse: moment.Moment;
-    private _steuerdatenVeranlagungsstand: TSSteuerdatenVeranlagungsstand;
+    private _steuerdatenAbfrageTimestamp: moment.Moment;
 
     public constructor() {
         super();
@@ -160,20 +158,12 @@ export class TSFinanzielleSituation extends TSAbstractFinanzielleSituation {
         this._automatischePruefungErlaubt = value;
     }
 
-    public get timestampSteuerdatenResponse(): moment.Moment {
-        return this._timestampSteuerdatenResponse;
+    public get steuerdatenAbfrageTimestamp(): moment.Moment {
+        return this._steuerdatenAbfrageTimestamp;
     }
 
-    public set timestampSteuerdatenResponse(value: moment.Moment) {
-        this._timestampSteuerdatenResponse = value;
-    }
-
-    public get steuerdatenVeranlagungsstand(): TSSteuerdatenVeranlagungsstand {
-        return this._steuerdatenVeranlagungsstand;
-    }
-
-    public set steuerdatenVeranlagungsstand(value: TSSteuerdatenVeranlagungsstand) {
-        this._steuerdatenVeranlagungsstand = value;
+    public set steuerdatenAbfrageTimestamp(value: moment.Moment) {
+        this._steuerdatenAbfrageTimestamp = value;
     }
 
     public isSelbstaendig(): boolean {

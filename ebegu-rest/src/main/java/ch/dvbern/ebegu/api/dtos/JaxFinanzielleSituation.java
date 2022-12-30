@@ -24,7 +24,6 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
-import ch.dvbern.ebegu.dto.neskovanp.Veranlagungsstand;
 import ch.dvbern.ebegu.enums.SteuerdatenAnfrageStatus;
 import ch.dvbern.lib.date.converters.LocalDateTimeXMLConverter;
 
@@ -87,13 +86,6 @@ public class JaxFinanzielleSituation extends JaxAbstractFinanzielleSituation {
 	@Nullable
 	@XmlJavaTypeAdapter(LocalDateTimeXMLConverter.class)
 	private LocalDateTime steuerdatenAbfrageTimestamp;
-
-	@Nullable
-	@XmlJavaTypeAdapter(LocalDateTimeXMLConverter.class)
-	private LocalDateTime timestampSteuerdatenResponse;
-
-	@Nullable
-	private Veranlagungsstand steuerdatenVeranlagungsstand;
 
 	public Boolean getSteuerveranlagungErhalten() {
 		return steuerveranlagungErhalten;
@@ -244,23 +236,5 @@ public class JaxFinanzielleSituation extends JaxAbstractFinanzielleSituation {
 
 	public void setMomentanSelbststaendig(@Nullable Boolean momentanSelbststaendig) {
 		this.momentanSelbststaendig = momentanSelbststaendig;
-	}
-
-	@Nullable
-	public LocalDateTime getTimestampSteuerdatenResponse() {
-		return timestampSteuerdatenResponse;
-	}
-
-	public void setTimestampSteuerdatenResponse(@Nullable LocalDateTime timestampSteuerdatenResponse) {
-		this.timestampSteuerdatenResponse = timestampSteuerdatenResponse;
-	}
-
-	@Nullable
-	public Veranlagungsstand getSteuerdatenVeranlagungsstand() {
-		return steuerdatenVeranlagungsstand;
-	}
-
-	public void setSteuerdatenVeranlagungsstand(@Nullable Veranlagungsstand steuerdatenVeranlagungsstand) {
-		this.steuerdatenVeranlagungsstand = steuerdatenVeranlagungsstand;
 	}
 }

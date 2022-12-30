@@ -25,10 +25,13 @@
 
 <div *ngIf="showZugriffErfolgreich()"
      class="well well-status-bestaetigt minus-margin">
-    <p class="ebegu-h3"
+<!--    wir haben den timestamp erst später hinzugefügt. deshalb kann es sein, dass dieser leer ist-->
+    <p class="ebegu-h3" *ngIf="timestampAbruf"
        [innerHTML]="'FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF_ERFOLGREICH' | translate: {timestamp: timestampAbruf | ebeguDateTime, veranlagungsstand: translateVeranlagungsstand()}"></p>
+    <p class="ebegu-h3" *ngIf="!timestampAbruf"
+       [innerHTML]="'FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF_ERFOLGREICH_WITHOUT_TIMESTAMP' | translate: {veranlagungsstand: translateVeranlagungsstand()}"></p>
 
-    <div *ngIf="tryAgainPossible() && !steuerAbfrageRequestRunning" >
+    <div class="margin-bottom-20" *ngIf="tryAgainPossible() && !steuerAbfrageRequestRunning" >
         <a class="pointer-cursor" translate (click)="tryAgain()">ERNEUT_VERSUCHEN</a>
     </div>
     <div *ngIf="steuerAbfrageRequestRunning">

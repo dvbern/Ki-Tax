@@ -2134,9 +2134,9 @@ export class EbeguRestUtil {
             finanzielleSituationTS.unterhaltsBeitraege = finanzielleSituationFromServer.unterhaltsBeitraege;
             finanzielleSituationTS.automatischePruefungErlaubt =
                 finanzielleSituationFromServer.automatischePruefungErlaubt;
-            if (finanzielleSituationFromServer.timestampSteuerdatenResponse) {
-                finanzielleSituationTS.timestampSteuerdatenResponse = DateUtil.localDateTimeToMoment(finanzielleSituationFromServer.timestampSteuerdatenResponse);
-                finanzielleSituationTS.steuerdatenVeranlagungsstand = finanzielleSituationFromServer.steuerdatenVeranlagungsstand;
+            if (finanzielleSituationFromServer.steuerdatenAbfrageTimestamp) {
+                finanzielleSituationTS.steuerdatenAbfrageTimestamp =
+                    DateUtil.localDateTimeToMoment(finanzielleSituationFromServer.steuerdatenAbfrageTimestamp);
             }
             finanzielleSituationTS.momentanSelbststaendig = finanzielleSituationFromServer.momentanSelbststaendig;
 
