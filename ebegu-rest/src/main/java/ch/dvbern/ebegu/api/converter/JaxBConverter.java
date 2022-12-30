@@ -2858,6 +2858,7 @@ public class JaxBConverter extends AbstractConverter {
 		jaxFinanzielleSituation.setBruttoLohn(persistedFinanzielleSituation.getBruttoLohn());
 		jaxFinanzielleSituation.setUnterhaltsBeitraege(persistedFinanzielleSituation.getUnterhaltsBeitraege());
 		jaxFinanzielleSituation.setSteuerdatenAbfrageStatus(persistedFinanzielleSituation.getSteuerdatenAbfrageStatus());
+		jaxFinanzielleSituation.setSteuerdatenAbfrageTimestamp(persistedFinanzielleSituation.getSteuerdatenAbfrageTimestamp());
 		jaxFinanzielleSituation.setAutomatischePruefungErlaubt(persistedFinanzielleSituation.getAutomatischePruefungErlaubt());
 		jaxFinanzielleSituation.setMomentanSelbststaendig(persistedFinanzielleSituation.getMomentanSelbststaendig());
 

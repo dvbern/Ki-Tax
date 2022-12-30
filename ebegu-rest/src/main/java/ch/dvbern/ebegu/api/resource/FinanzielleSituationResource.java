@@ -516,6 +516,7 @@ public class FinanzielleSituationResource {
 
 		// reset SteuerdatenAbfrageStatus und NettoVermoegen
 		convertedFinSitCont.getFinanzielleSituationJA().setSteuerdatenAbfrageStatus(null);
+		convertedFinSitCont.getFinanzielleSituationJA().setSteuerdatenAbfrageTimestamp(null);
 		convertedFinSitCont.getFinanzielleSituationJA().setNettoVermoegen(null);
 
 		// auch fuer GS2 wenn gemeinsam
@@ -525,6 +526,7 @@ public class FinanzielleSituationResource {
 			&& gesuch.getGesuchsteller2().getFinanzielleSituationContainer().getFinanzielleSituationJA() != null) {
 			FinanzielleSituationContainer finSitGS2 = gesuch.getGesuchsteller2().getFinanzielleSituationContainer();
 			finSitGS2.getFinanzielleSituationJA().setSteuerdatenAbfrageStatus(null);
+			finSitGS2.getFinanzielleSituationJA().setSteuerdatenAbfrageTimestamp(null);
 			finSitGS2.getFinanzielleSituationJA().setNettoVermoegen(null);
 			finSitGS2.getFinanzielleSituationJA()
 				.setSteuerdatenZugriff(convertedFinSitCont.getFinanzielleSituationJA().getSteuerdatenZugriff());

@@ -502,6 +502,7 @@ public final class FreigabeCopyUtil {
 		gs.setSteuerdatenZugriff(ja.getSteuerdatenZugriff());
 		gs.setAutomatischePruefungErlaubt(ja.getAutomatischePruefungErlaubt());
 		gs.setSteuerdatenAbfrageStatus(ja.getSteuerdatenAbfrageStatus());
+		gs.setSteuerdatenAbfrageTimestamp(ja.getSteuerdatenAbfrageTimestamp());
 		gs.setQuellenbesteuert(ja.getQuellenbesteuert());
 		gs.setGemeinsameStekVorjahr(ja.getGemeinsameStekVorjahr());
 		gs.setAlleinigeStekVorjahr(ja.getAlleinigeStekVorjahr());

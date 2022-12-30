@@ -86,6 +86,10 @@ public class JaxFinanzielleSituation extends JaxAbstractFinanzielleSituation {
 
 	@Nullable
 	@XmlJavaTypeAdapter(LocalDateTimeXMLConverter.class)
+	private LocalDateTime steuerdatenAbfrageTimestamp;
+
+	@Nullable
+	@XmlJavaTypeAdapter(LocalDateTimeXMLConverter.class)
 	private LocalDateTime timestampSteuerdatenResponse;
 
 	@Nullable
@@ -213,6 +217,15 @@ public class JaxFinanzielleSituation extends JaxAbstractFinanzielleSituation {
 
 	public void setSteuerdatenAbfrageStatus(@Nullable SteuerdatenAnfrageStatus steuerdatenAbfrageStatus) {
 		this.steuerdatenAbfrageStatus = steuerdatenAbfrageStatus;
+	}
+
+	@Nullable
+	public LocalDateTime getSteuerdatenAbfrageTimestamp() {
+		return steuerdatenAbfrageTimestamp;
+	}
+
+	public void setSteuerdatenAbfrageTimestamp(@Nullable LocalDateTime steuerdatenAbfrageTimestamp) {
+		this.steuerdatenAbfrageTimestamp = steuerdatenAbfrageTimestamp;
 	}
 
 	@Nullable
