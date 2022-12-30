@@ -15,69 +15,35 @@
   ~ along with this program. If not, see <https://www.gnu.org/licenses/>.
   -->
 
-<div *ngIf="showZugriffFailed()"
+<div *ngIf="showWarningRetry() || showWarningWithoutRetry() || showZugriffKeineZPVNummer()"
      class="well well-status-warten minus-margin">
     <p class="ebegu-h3"
-       [innerHTML]="'FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF_FAILED' | translate:{gs1: getGS1Name()}"></p>
-    <a *ngIf="isGesuchsteller()" class="pointer-cursor" translate (click)="tryAgain()">ERNEUT_VERSUCHEN</a>
+       [innerHTML]="getWarningText()"></p>
+    <a *ngIf="showWarningRetry() && isGesuchsteller() && !isGesuchReadonly()" class="pointer-cursor" translate (click)="tryAgain()">ERNEUT_VERSUCHEN</a>
+    <a *ngIf="showZugriffKeineZPVNummer() && isGesuchsteller() && !isGesuchReadonly()" class="pointer-cursor" translate (click)="openDialogGSZPVVerknuepfen()">FINANZIELLE_SITUATION_STEUERDATEN_ZPV_VERKNUEPFEN_AUSLOESEN</a>
 </div>
 
-<div *ngIf="showWarningKeinPartnerGemeinsam()"
-     class="well well-status-warten minus-margin">
+<div *ngIf="showZugriffErfolgreich()"
+     class="well well-status-bestaetigt minus-margin">
     <p class="ebegu-h3"
-    [innerHTML]="'FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF_KEIN_PARTNER_GEMEINSAM' | translate"></p>
-    <a *ngIf="isGesuchsteller()" class="pointer-cursor" translate (click)="tryAgain()">ERNEUT_VERSUCHEN</a>
-</div>
+       [innerHTML]="'FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF_ERFOLGREICH' | translate"></p>
 
-<div *ngIf="showWarningGeburtsdatum()"
-     class="well well-status-warten minus-margin">
-    <p class="ebegu-h3"
-       [innerHTML]="'FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF_FAILED_GEBURTSDATUM' | translate:{namegs2: getGS2Name()}"
-    ></p>
-    <a *ngIf="isGesuchsteller()" class="pointer-cursor" translate (click)="tryAgain()">ERNEUT_VERSUCHEN</a>
-</div>
+    <div *ngIf="tryAgainPossible() && !steuerAbfrageRequestRunning" >
+        <a class="pointer-cursor" translate (click)="tryAgain()">ERNEUT_VERSUCHEN</a>
+    </div>
+    <div *ngIf="steuerAbfrageRequestRunning">
+        <p class="ebegu-h3 black-font" [innerHTML]="steuerAbfrageResponeHintStatusText"></p>
+    </div>
+    <p>
 
-<div *ngIf="showZugriffUnterjaehrigeFall()"
-     class="well well-status-warten minus-margin">
-    <p class="ebegu-h3"
-       [innerHTML]="'FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF_UNTERJAEHRIG' | translate"
-    ></p>
-</div>
-
-<div *ngIf="showZugriffKeineZpvNummer()"
-     class="well well-status-warten minus-margin">
-    <p class="ebegu-h3"
-       [innerHTML]="'FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF_KEINE_ZPV' | translate:{email: getEmailBesitzende()}"></p>
-    <a *ngIf="isGesuchsteller()" class="pointer-cursor" translate (click)="openDialogGSZPVVerknuepfen()">FINANZIELLE_SITUATION_STEUERDATEN_ZPV_VERKNUEPFEN_AUSLOESEN</a>
-</div>
-
-<div *ngIf="showWarningPartnerNichtGemeinsam()"
-     class="well well-status-warten minus-margin">
-    <p class="ebegu-h3"
-       [innerHTML]="'FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF_PARTNER_NICHT_GEMEINSAM' | translate"
-    ></p>
-    <a *ngIf="isGesuchsteller()" class="pointer-cursor" translate (click)="tryAgain()">ERNEUT_VERSUCHEN</a>
-</div>
-
-<div *ngIf="showZugriffKeineZpvNummerGS2()"
-     class="well well-status-warten minus-margin">
-    <p class="ebegu-h3"
-       [innerHTML]="'FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF_KEINE_ZPV_GS2' | translate:{gs2: getGS2name()}"></p>
-    <a *ngIf="isGesuchsteller()" class="pointer-cursor" translate (click)="openDialogGSZPVVerknuepfen()">FINANZIELLE_SITUATION_STEUERDATEN_ZPV_VERKNUEPFEN_AUSLOESEN</a>
-</div>
-
-<div *ngIf="showWarningVeraendertePartnerschaft()"
-     class="well well-status-warten minus-margin">
-    <p class="ebegu-h3"
-       [innerHTML]="'FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF_VERAENDERTE_PARTNERSCHAFT' | translate"
-    ></p>
-</div>
-
-<div *ngIf="showWarningUnregelmaessigkeit()"
-     class="well well-status-warten minus-margin">
-    <p class="ebegu-h3"
-       [innerHTML]="'FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF_UNREGELMAESSIGKEIT' | translate"
-    ></p>
+    <div [dvDemoFeature]="checkboxInformierenDemoFeature" *ngIf="isGemeindeOrSuperadmin()">
+        <dv-checkbox-x
+            [dvBisherValue]="gesuchModelManager.getGesuch().markiertFuerKontroll"
+            [label]="'CHECKBOX_MARKED_FUER_KONTROLL'"
+            [(model)]="gesuchModelManager.getGesuch().markiertFuerKontroll"
+            (modelChange)="gesuchModelManager.updateGesuchMarkiertFuerKontroll($event)"
+        ></dv-checkbox-x>
+    </div>
 </div>
 
 <div *ngIf="showRetry()"
@@ -90,25 +56,6 @@
             (buttonClick)="tryAgain()">
         {{'STEUERDATEN_ABHOLEN' | translate}}
     </dv-loading-button>
-</div>
-
-<div *ngIf="showZugriffErfolgreich()"
-     class="well well-status-bestaetigt minus-margin">
-    <p class="ebegu-h3"
-       [innerHTML]="'FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF_ERFOLGREICH' | translate"></p>
-
-    <div *ngIf="tryAgainPossible()" [dvDemoFeature]="abfrageErneutDurchfuehrenDemoFeature">
-        <a class="pointer-cursor" translate (click)="tryAgain()">ERNEUT_VERSUCHEN</a>
-    </div>
-
-    <div [dvDemoFeature]="checkboxInformierenDemoFeature" *ngIf="isGemeindeOrSuperadmin()">
-        <dv-checkbox-x
-                [dvBisherValue]="gesuchModelManager.getGesuch().markiertFuerKontroll"
-                [label]="'CHECKBOX_MARKED_FUER_KONTROLL'"
-                [(model)]="gesuchModelManager.getGesuch().markiertFuerKontroll"
-                (modelChange)="gesuchModelManager.updateGesuchMarkiertFuerKontroll($event)"
-        ></dv-checkbox-x>
-    </div>
 </div>
 
 <div *ngIf="geburtstagNotMatching$ | async"

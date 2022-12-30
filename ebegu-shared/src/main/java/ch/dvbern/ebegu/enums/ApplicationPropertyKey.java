@@ -203,6 +203,12 @@ public enum ApplicationPropertyKey {
 	 * Falls aktiv, können Gemeinden durch die Institutionen eingeladen werden. Diese werden direkt mit der Gemeinde
 	 * verknüpft
 	 */
-	INSTITUTIONEN_DURCH_GEMEINDEN_EINLADEN;
+	INSTITUTIONEN_DURCH_GEMEINDEN_EINLADEN,
+
+	/**
+	 * Falls aktiv, können Gemeinden die Institutionen Wahl begrenzen. Nur die Gewaehlte Institutionen sind dann
+	 * im Antrag Prozess waehlbar
+	 */
+	ERLAUBEN_INSTITUTIONEN_ZU_WAEHLEN;
 
 }
