@@ -205,7 +205,7 @@ public class LastenausgleichServiceBean extends AbstractBaseService implements L
 				AbstractLastenausgleichRechner lastenausgleichRechner = getLastenausgleichRechnerForYear(jahr);
 			lastenausgleichRechner.logLastenausgleichRechnerType(jahr, sb);
 			Lastenausgleich lastenausgleichToUpdate = findLastenausgleich(jahr).orElseThrow(() -> new EbeguEntityNotFoundException(
-				"calculateLastenausgleich",
+				"calculateLastenausgleich - details Berechnung",
 				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
 				jahr
 			));
@@ -236,7 +236,7 @@ public class LastenausgleichServiceBean extends AbstractBaseService implements L
 				for (Gemeinde gemeinde : aktiveGemeinden) {
 					transactionHelper.runInNewTransaction(() -> {
 						Lastenausgleich lastenausgleichForKorrektur = findLastenausgleich(jahr).orElseThrow(() -> new EbeguEntityNotFoundException(
-							"calculateLastenausgleich",
+							"calculateLastenausgleich - korrektur",
 							ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
 							jahr
 						));
@@ -260,7 +260,7 @@ public class LastenausgleichServiceBean extends AbstractBaseService implements L
 		// Am Schluss das berechnete Total speichern
 		transactionHelper.runInNewTransaction(() -> {
 			Lastenausgleich lastenausgleichToUpdate = findLastenausgleich(jahr).orElseThrow(() -> new EbeguEntityNotFoundException(
-				"calculateLastenausgleich",
+				"calculateLastenausgleich - Total berechnen",
 				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
 				jahr
 			));
