@@ -526,13 +526,13 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 
 	@Override
 	@Nonnull
-	public AnmeldungTagesschule anmeldungMutationIgnorieren(@Nonnull @Valid AnmeldungTagesschule anmeldung) {
+	public AbstractAnmeldung anmeldungMutationIgnorieren(@Nonnull @Valid AbstractAnmeldung anmeldung) {
 		Objects.requireNonNull(anmeldung, BETREUUNG_DARF_NICHT_NULL_SEIN);
 		authorizer.checkWriteAuthorization(anmeldung);
 
 		// vorgänger zurücksetzen
 		Objects.requireNonNull(anmeldung.getVorgaengerId(), "Eine Anmeldung kann nicht ignoriert werden, wenn sie neu ist");
-		AnmeldungTagesschule vorgaenger = findAnmeldungTagesschule(anmeldung.getVorgaengerId())
+		AbstractAnmeldung vorgaenger = findAnmeldung(anmeldung.getVorgaengerId())
 			.orElseThrow(() -> new EbeguEntityNotFoundException(
 				"resetMutierteAnmeldungen",
 				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
