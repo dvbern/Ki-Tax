@@ -15,7 +15,7 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {ChangeDetectionStrategy, Component, OnInit, ViewEncapsulation} from '@angular/core';
+import {ChangeDetectionStrategy, Component, OnDestroy, OnInit, ViewEncapsulation} from '@angular/core';
 import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
 import {TranslateService} from '@ngx-translate/core';
 import {StateService} from '@uirouter/core';
@@ -45,7 +45,7 @@ const LOG = LogFactory.createLog('FerienbetreuungAbschlussComponent');
     changeDetection: ChangeDetectionStrategy.OnPush,
     encapsulation: ViewEncapsulation.None
 })
-export class FerienbetreuungAbschlussComponent implements OnInit {
+export class FerienbetreuungAbschlussComponent implements OnInit, OnDestroy {
 
     private static readonly FILENAME_DE = 'Verfügung Ferienbetreuung kiBon';
     private static readonly FILENAME_FR = 'Modèle Décisions EJC kibon';
@@ -220,10 +220,10 @@ export class FerienbetreuungAbschlussComponent implements OnInit {
     }
 
     private getFilename(sprache: TSSprache): string {
-        let filename;
+        const filename =
         (sprache === TSSprache.DEUTSCH)
-            ? filename = FerienbetreuungAbschlussComponent.FILENAME_DE
-            : filename = FerienbetreuungAbschlussComponent.FILENAME_FR;
+            ? FerienbetreuungAbschlussComponent.FILENAME_DE
+            : FerienbetreuungAbschlussComponent.FILENAME_FR;
 
         return `${filename} ${this.container.gesuchsperiode.gesuchsperiodeString} ${this.container.gemeinde.name}.docx`;
     }

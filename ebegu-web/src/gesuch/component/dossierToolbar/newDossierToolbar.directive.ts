@@ -19,18 +19,17 @@ import {Directive, ElementRef, Injector, Input} from '@angular/core';
 import {UpgradeComponent} from '@angular/upgrade/static';
 
 @Directive({
-    selector: 'dossier-toolbar-gesuchsteller'
+    selector: 'dossier-toolbar'
 })
-export class NewDossierToolbarGesuchsteller extends UpgradeComponent {
+export class NewDossierToolbarDirective extends UpgradeComponent {
 
     @Input() public gesuchid: string;
     @Input() public dossierId: string;
-    @Input() public fallId: string;
     @Input() public isDashboardScreen: string;
     @Input() public hideActionButtons: string;
     @Input() public forceLoadingFromFall: string;
 
     public constructor(elementRef: ElementRef, injector: Injector) {
-        super('dossierToolbarGesuchsteller', elementRef, injector);
+        super('dossierToolbar', elementRef, injector);
     }
 }

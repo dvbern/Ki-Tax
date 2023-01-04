@@ -53,7 +53,7 @@ export class DVQuicksearchListConfig implements IComponentOptions {
         initialAll: '=',
         showSelectionAll: '=',
         totalResultCount: '<',
-        onUserChanged: '&',
+        userChanged: '&',
         tableId: '@',
         tableTitle: '<'
     };
@@ -95,7 +95,7 @@ export class DVQuicksearchListController implements IController {
     public institutionenList: Array<TSInstitution>;
     public gesuchsperiodenList: Array<string>;
     public gemeindenList: Array<TSGemeinde>;
-    public onUserChanged: (user: any) => void;
+    public userChanged: (user: any) => void;
 
     private readonly unsubscribe$ = new Subject<void>();
 
@@ -109,8 +109,8 @@ export class DVQuicksearchListController implements IController {
     ) {
     }
 
-    public userChanged(selectedUser: TSBenutzerNoDetails): void {
-        this.onUserChanged({user: selectedUser});
+    public userHasChanged(selectedUser: TSBenutzerNoDetails): void {
+        this.userChanged({user: selectedUser});
     }
 
     public $onInit(): void {

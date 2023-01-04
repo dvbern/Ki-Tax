@@ -39,10 +39,10 @@ export class TagesschuleUtil {
         ) {
             return [];
         }
-        let moduleAngemeldet: TSBelegungTagesschuleModul[];
+        const moduleAngemeldet =
         (betreuung.belegungTagesschule?.belegungTagesschuleModule)
-            ? moduleAngemeldet = betreuung.belegungTagesschule.belegungTagesschuleModule
-            : moduleAngemeldet = [];
+            ? betreuung.belegungTagesschule.belegungTagesschuleModule
+            : [];
         const moduleAngeboten = this.loadAngeboteneModuleForTagesschule(betreuung, gesuchsPeriode);
 
         return TagesschuleUtil.initModulGroups(moduleAngemeldet, moduleAngeboten, verfuegungView, false);

@@ -15,7 +15,15 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnInit, ViewEncapsulation} from '@angular/core';
+import {
+    ChangeDetectionStrategy,
+    ChangeDetectorRef,
+    Component,
+    Input,
+    OnDestroy,
+    OnInit,
+    ViewEncapsulation
+} from '@angular/core';
 import {AbstractControl, FormBuilder, FormGroup, ValidatorFn, Validators} from '@angular/forms';
 import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
 import {MatRadioChange} from '@angular/material/radio';
@@ -26,18 +34,28 @@ import {map, startWith} from 'rxjs/operators';
 import {EinstellungRS} from '../../../../../admin/service/einstellungRS.rest';
 import {AuthServiceRS} from '../../../../../authentication/service/AuthServiceRS.rest';
 import {TSEinstellungKey} from '../../../../../models/enums/TSEinstellungKey';
-import {TSLastenausgleichTagesschuleAngabenGemeindeFormularStatus} from '../../../../../models/enums/TSLastenausgleichTagesschuleAngabenGemeindeFormularStatus';
-import {TSLastenausgleichTagesschuleAngabenGemeindeStatus} from '../../../../../models/enums/TSLastenausgleichTagesschuleAngabenGemeindeStatus';
+import {
+    TSLastenausgleichTagesschuleAngabenGemeindeFormularStatus
+} from '../../../../../models/enums/TSLastenausgleichTagesschuleAngabenGemeindeFormularStatus';
+import {
+    TSLastenausgleichTagesschuleAngabenGemeindeStatus
+} from '../../../../../models/enums/TSLastenausgleichTagesschuleAngabenGemeindeStatus';
 import {TSRole} from '../../../../../models/enums/TSRole';
 import {TSWizardStepXTyp} from '../../../../../models/enums/TSWizardStepXTyp';
-import {TSLastenausgleichTagesschuleAngabenGemeinde} from '../../../../../models/gemeindeantrag/TSLastenausgleichTagesschuleAngabenGemeinde';
-import {TSLastenausgleichTagesschuleAngabenGemeindeContainer} from '../../../../../models/gemeindeantrag/TSLastenausgleichTagesschuleAngabenGemeindeContainer';
+import {
+    TSLastenausgleichTagesschuleAngabenGemeinde
+} from '../../../../../models/gemeindeantrag/TSLastenausgleichTagesschuleAngabenGemeinde';
+import {
+    TSLastenausgleichTagesschuleAngabenGemeindeContainer
+} from '../../../../../models/gemeindeantrag/TSLastenausgleichTagesschuleAngabenGemeindeContainer';
 import {TSBenutzer} from '../../../../../models/TSBenutzer';
 import {TSEinstellung} from '../../../../../models/TSEinstellung';
 import {TSExceptionReport} from '../../../../../models/TSExceptionReport';
 import {EbeguUtil} from '../../../../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../../../../utils/TSRoleUtil';
-import {DvNgConfirmDialogComponent} from '../../../../core/component/dv-ng-confirm-dialog/dv-ng-confirm-dialog.component';
+import {
+    DvNgConfirmDialogComponent
+} from '../../../../core/component/dv-ng-confirm-dialog/dv-ng-confirm-dialog.component';
 import {DvNgOkDialogComponent} from '../../../../core/component/dv-ng-ok-dialog/dv-ng-ok-dialog.component';
 import {CONSTANTS} from '../../../../core/constants/CONSTANTS';
 import {ErrorService} from '../../../../core/errors/service/ErrorService';
@@ -58,7 +76,7 @@ const LOG = LogFactory.createLog('GemeindeAngabenComponent');
     changeDetection: ChangeDetectionStrategy.OnPush,
     encapsulation: ViewEncapsulation.None
 })
-export class GemeindeAngabenComponent implements OnInit {
+export class GemeindeAngabenComponent implements OnInit, OnDestroy {
 
     @Input() public lastenausgleichID: string;
     @Input() public triggerValidationOnInit = false;

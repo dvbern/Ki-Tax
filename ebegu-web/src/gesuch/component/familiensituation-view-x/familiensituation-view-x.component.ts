@@ -114,7 +114,7 @@ export class FamiliensituationViewXComponent extends AbstractGesuchViewX<TSFamil
         this.allowedRoles = TSRoleUtil.getAllRolesButTraegerschaftInstitution();
     }
 
-    public async confirmAndSave(onResult: Function): Promise<void> {
+    public async confirmAndSave(onResult: (arg: any) => void): Promise<void> {
         this.savedClicked = true;
         if (this.isGesuchValid() && !this.hasEmptyAenderungPer() && !this.hasError()) {
             if (!this.form.dirty) {
@@ -142,7 +142,7 @@ export class FamiliensituationViewXComponent extends AbstractGesuchViewX<TSFamil
                     const savedContaier = await this.save();
                     onResult(savedContaier);
                 } else {
-                    onResult(false);
+                    onResult(undefined);
                 }
                 return;
 
@@ -151,7 +151,7 @@ export class FamiliensituationViewXComponent extends AbstractGesuchViewX<TSFamil
             const result = await this.save();
             onResult(result);
         } else {
-            onResult(false);
+            onResult(undefined);
         }
     }
 

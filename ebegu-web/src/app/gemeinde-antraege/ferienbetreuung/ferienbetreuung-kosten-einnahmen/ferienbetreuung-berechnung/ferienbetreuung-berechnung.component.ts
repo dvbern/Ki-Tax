@@ -20,6 +20,7 @@ import {
     ChangeDetectorRef,
     Component,
     Input,
+    OnChanges,
     OnDestroy,
     OnInit,
     SimpleChanges
@@ -29,7 +30,9 @@ import {combineLatest, Subscription} from 'rxjs';
 import {mergeMap, startWith, tap} from 'rxjs/operators';
 import {EinstellungRS} from '../../../../../admin/service/einstellungRS.rest';
 import {TSFerienbetreuungAngaben} from '../../../../../models/gemeindeantrag/TSFerienbetreuungAngaben';
-import {TSFerienbetreuungAngabenContainer} from '../../../../../models/gemeindeantrag/TSFerienbetreuungAngabenContainer';
+import {
+    TSFerienbetreuungAngabenContainer
+} from '../../../../../models/gemeindeantrag/TSFerienbetreuungAngabenContainer';
 import {LogFactory} from '../../../../core/logging/LogFactory';
 import {FerienbetreuungService} from '../../services/ferienbetreuung.service';
 import {TSFerienbetreuungBerechnung} from '../TSFerienbetreuungBerechnung';
@@ -42,7 +45,7 @@ const LOG = LogFactory.createLog('FerienbetreuungBerechnungComponent');
     styleUrls: ['./ferienbetreuung-berechnung.component.less'],
     changeDetection: ChangeDetectionStrategy.Default
 })
-export class FerienbetreuungBerechnungComponent implements OnInit, OnDestroy {
+export class FerienbetreuungBerechnungComponent implements OnInit, OnDestroy, OnChanges {
 
     @Input()
     private readonly form: FormGroup;

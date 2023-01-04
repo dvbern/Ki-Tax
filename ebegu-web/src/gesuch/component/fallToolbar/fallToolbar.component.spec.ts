@@ -22,7 +22,7 @@ import {DvNgShowElementDirective} from '../../../app/core/directive/dv-ng-show-e
 import {ApplicationPropertyRS} from '../../../app/core/rest-services/applicationPropertyRS.rest';
 import {SharedModule} from '../../../app/shared/shared.module';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
-import {SHARED_MODULE_OVERRIDES} from '../../../hybridTools/mockUpgradedComponent';
+import {SHARED_MODULE_OVERRIDES} from '../../../hybridTools/mockUpgradedDirective';
 import {TSRole} from '../../../models/enums/TSRole';
 import {TSBenutzer} from '../../../models/TSBenutzer';
 import {TSDossier} from '../../../models/TSDossier';

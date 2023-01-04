@@ -57,7 +57,7 @@
             *ngIf="canViewDokumentErstellenButton | async"
             [disabled]="!hasSavedBetreuungsstundenPrognose"
             (click)="createLatsDocumentDe()">
-        <i *ngIf="!(downloadingDeFile | async)" class="fa fa-file-text-o"></i>
+        <i *ngIf="(downloadingDeFile | async) === false" class="fa fa-file-text-o"></i>
         <i *ngIf="downloadingDeFile | async" class="fa fa-circle-o-notch fa-spin fa-fw"></i>
         &nbsp;
         <span translate>LATS_DOKUMENT_ERSTELLEN_DE</span>
@@ -67,7 +67,7 @@
             *ngIf="canViewDokumentErstellenButton | async"
             [disabled]="!hasSavedBetreuungsstundenPrognose"
             (click)="createLatsDocumentFr()">
-        <i *ngIf="!(downloadingFrFile | async)" class="fa fa-file-text-o"></i>
+        <i *ngIf="(downloadingFrFile | async) === false" class="fa fa-file-text-o"></i>
         <i *ngIf="downloadingFrFile | async" class="fa fa-circle-o-notch fa-spin fa-fw"></i>
         &nbsp;
         <span translate>LATS_DOKUMENT_ERSTELLEN_FR</span>

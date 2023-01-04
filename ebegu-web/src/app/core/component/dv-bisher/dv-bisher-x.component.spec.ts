@@ -19,7 +19,7 @@ import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {By} from '@angular/platform-browser';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {TranslateService} from '@ngx-translate/core';
-import {SHARED_MODULE_OVERRIDES} from '../../../../hybridTools/mockUpgradedComponent';
+import {SHARED_MODULE_OVERRIDES} from '../../../../hybridTools/mockUpgradedDirective';
 import {MaterialModule} from '../../../shared/material.module';
 import {SharedModule} from '../../../shared/shared.module';
 import {WindowRef} from '../../service/windowRef.service';

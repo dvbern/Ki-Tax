@@ -197,8 +197,7 @@ export class GemeindeRS implements IEntityRS {
     }
 
     private postLogo(gemeindeId: string, formData: FormData): IPromise<any> {
-        let result: IPromise<any>;
-        result = this.$http.post(this.getLogoUrl(gemeindeId), formData, {
+        const result = this.$http.post(this.getLogoUrl(gemeindeId), formData, {
             transformRequest: (request: IHttpRequestTransformer) => request,
             headers: {'Content-Type': undefined}
         })

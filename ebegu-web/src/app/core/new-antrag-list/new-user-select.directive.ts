@@ -55,7 +55,7 @@ export class NewUserSelectDirective extends UpgradeComponent {
 
     // eslint-disable-next-line @angular-eslint/no-output-on-prefix
     @Output()
-    public readonly onUserChanged: EventEmitter<{user: TSBenutzerNoDetails}> = new EventEmitter<{user: TSBenutzerNoDetails}>();
+    public readonly userChanged: EventEmitter<{user: TSBenutzerNoDetails}> = new EventEmitter<{user: TSBenutzerNoDetails}>();
 
     public constructor(elementRef: ElementRef, injector: Injector) {
       super('dvUserselect', elementRef, injector);

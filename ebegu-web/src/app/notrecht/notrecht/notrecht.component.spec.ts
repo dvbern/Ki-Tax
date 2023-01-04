@@ -21,7 +21,7 @@ import {NoopAnimationsModule} from '@angular/platform-browser/animations';
 import {TranslateModule} from '@ngx-translate/core';
 import {StateService} from '@uirouter/core';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
-import {SHARED_MODULE_OVERRIDES} from '../../../hybridTools/mockUpgradedComponent';
+import {SHARED_MODULE_OVERRIDES} from '../../../hybridTools/mockUpgradedDirective';
 import {ErrorService} from '../../core/errors/service/ErrorService';
 import {DownloadRS} from '../../core/service/downloadRS.rest';
 import {NotrechtRS} from '../../core/service/notrechtRS.rest';

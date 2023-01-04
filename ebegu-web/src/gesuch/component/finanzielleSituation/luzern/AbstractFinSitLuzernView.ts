@@ -222,7 +222,7 @@ export abstract class AbstractFinSitLuzernView extends AbstractGesuchViewX<TSFin
 
     public abstract getSubStepName(): string;
 
-    public abstract prepareSave(onResult: Function): IPromise<TSFinanzielleSituationContainer>;
+    public abstract prepareSave(onResult: (arg: any) => any): IPromise<TSFinanzielleSituationContainer>;
 
     public getAntragstellerNameForCurrentStep(): string {
         if (this.isGemeinsam()) {
@@ -250,7 +250,7 @@ export abstract class AbstractFinSitLuzernView extends AbstractGesuchViewX<TSFin
         return this.model.getFiSiConToWorkWith();
     }
 
-    protected abstract save(onResult: Function): IPromise<TSFinanzielleSituationContainer>;
+    protected abstract save(onResult: (arg: any) => any): IPromise<TSFinanzielleSituationContainer>;
 
     public getAntragsteller2Name(): string {
         return this.gesuchModelManager.getGesuch().gesuchsteller2?.extractFullName();
