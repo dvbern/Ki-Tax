@@ -161,7 +161,8 @@
                             100,
                             1000,
                             1024,
-                            4096
+                            4096,
+                            5000
                         ],
                         "ignoreArrayIndexes": true,
                         "ignoreDefaultValues": true,
