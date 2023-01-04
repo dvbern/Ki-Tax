@@ -41,6 +41,7 @@ import {TSBetreuungsstatus} from '../../../models/enums/TSBetreuungsstatus';
 import {TSEinstellungKey} from '../../../models/enums/TSEinstellungKey';
 import {TSFachstellenTyp} from '../../../models/enums/TSFachstellenTyp';
 import {TSInstitutionStatus} from '../../../models/enums/TSInstitutionStatus';
+import {TSPensumAnzeigeTyp} from '../../../models/enums/TSPensumAnzeigeTyp';
 import {TSPensumUnits} from '../../../models/enums/TSPensumUnits';
 import {TSRole} from '../../../models/enums/TSRole';
 import {TSWizardStepName} from '../../../models/enums/TSWizardStepName';
@@ -71,7 +72,6 @@ import {GesuchModelManager} from '../../service/gesuchModelManager';
 import {GlobalCacheService} from '../../service/globalCacheService';
 import {WizardStepManager} from '../../service/wizardStepManager';
 import {AbstractGesuchViewController} from '../abstractGesuchView';
-import {TSPensumAnzeigeTyp} from '../../../models/enums/TSPensumAnzeigeTyp';
 import ILogService = angular.ILogService;
 import IScope = angular.IScope;
 import ITimeoutService = angular.ITimeoutService;
@@ -92,6 +92,7 @@ export class BetreuungViewComponentConfig implements IComponentOptions {
 const GESUCH_BETREUUNGEN = 'gesuch.betreuungen';
 const PENDENZEN_BETREUUNG = 'pendenzenBetreuungen.list-view';
 const TAGI_ANGEBOT_VALUE = 'TAGI';
+const ANZAHL_STUNDEN_KITA_PRO_TAG = 10;
 
 export class BetreuungViewController extends AbstractGesuchViewController<TSBetreuung> {
 
@@ -150,7 +151,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     private besondereBeduerfnisseAufwandKonfigurierbar: boolean = false;
     private fachstellenTyp: TSFachstellenTyp;
     protected minEintrittsdatum: moment.Moment;
-    public isSwitchBetreuungspensumEnabled: boolean;
+    public betreuungspensumAnzeigeTyp: TSPensumAnzeigeTyp;
     public isTFOKostenBerechnungStuendlich: boolean = false;
 
     private oeffnungstageKita: number;
@@ -354,9 +355,8 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         const einstellungPensumAnzeigeTyp = this.ebeguRestUtil
             .parsePensumAnzeigeTyp(einstellung);
 
-        this.isSwitchBetreuungspensumEnabled =
-            einstellungPensumAnzeigeTyp ===
-            TSPensumAnzeigeTyp.ZEITEINHEIT_UND_PROZENT;
+        this.betreuungspensumAnzeigeTyp = EbeguUtil.isNotNullOrUndefined(einstellungPensumAnzeigeTyp) ?
+            einstellungPensumAnzeigeTyp : TSPensumAnzeigeTyp.ZEITEINHEIT_UND_PROZENT;
     }
 
     private loadInfomaZahlungenActive(): void {
@@ -1642,6 +1642,10 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     }
 
     private calculateMuliplyerKita(): void {
+        if (this.betreuungspensumAnzeigeTyp === TSPensumAnzeigeTyp.NUR_STUNDEN) {
+            this.multiplierKita = this.oeffnungstageKita * ANZAHL_STUNDEN_KITA_PRO_TAG / 12 / 100;
+            return;
+        }
         // Beispiel: 240 Tage Pro Jahr: 240 / 12 = 20 Tage Pro Monat. 100% = 20 days => 1% = 0.2 tage
         this.multiplierKita = this.oeffnungstageKita / 12 / 100;
     }

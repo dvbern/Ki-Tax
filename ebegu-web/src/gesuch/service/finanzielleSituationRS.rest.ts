@@ -61,7 +61,7 @@ export class FinanzielleSituationRS {
         const finSitContainerToSend = this.ebeguRestUtil.finanzielleSituationContainerToRestObject({},
             gesuchsteller.finanzielleSituationContainer);
         return this.$http.put(url, finSitContainerToSend).then(response => this.wizardStepManager.findStepsFromGesuch(gesuchId).then(() => this.ebeguRestUtil.parseFinanzielleSituationContainer(new TSFinanzielleSituationContainer(),
-                    response.data)));
+            response.data)));
     }
 
     public saveFinanzielleSituationStart(
@@ -83,7 +83,7 @@ export class FinanzielleSituationRS {
         let gesuchToSend = {};
         gesuchToSend = this.ebeguRestUtil.gesuchToRestObject(gesuchToSend, gesuch);
         return this.$http.post(`${this.serviceURL}/calculate`, gesuchToSend).then((httpresponse: any) => this.ebeguRestUtil.parseFinanzielleSituationResultate(new TSFinanzielleSituationResultateDTO(),
-                httpresponse.data));
+            httpresponse.data));
     }
 
     public calculateFinanzielleSituationTemp(finSitModel: TSFinanzModel): IPromise<TSFinanzielleSituationResultateDTO> {
@@ -132,7 +132,7 @@ export class FinanzielleSituationRS {
         const finSitContainerToSend = this.ebeguRestUtil.finanzielleSituationContainerToRestObject({},
             gesuchsteller.finanzielleSituationContainer);
         return this.$http.put(url, finSitContainerToSend).then(response => this.ebeguRestUtil.parseFinanzielleSituationContainer(new TSFinanzielleSituationContainer(),
-                response.data));
+            response.data));
     }
 
     public updateFromAufteilung(aufteilungDTO: TSFinanzielleSituationAufteilungDTO, gesuch: TSGesuch): IPromise<any> {
@@ -151,7 +151,7 @@ export class FinanzielleSituationRS {
         const finSitContainerToSend = this.ebeguRestUtil.finanzielleSituationContainerToRestObject({},
             gesuchsteller.finanzielleSituationContainer);
         return this.$http.put(url, finSitContainerToSend).then(response => this.ebeguRestUtil.parseFinanzielleSituationContainer(new TSFinanzielleSituationContainer(),
-                response.data));
+            response.data));
     }
 
     public geburtsdatumMatchesSteuerabfrage(geburtsdatum: moment.Moment, finSitContainerId: string): IPromise<boolean> {

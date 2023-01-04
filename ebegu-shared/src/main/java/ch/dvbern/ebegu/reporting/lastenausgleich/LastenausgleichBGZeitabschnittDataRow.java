@@ -38,6 +38,7 @@ public class LastenausgleichBGZeitabschnittDataRow {
 	private BigDecimal bgPensum;
 	private Boolean keinSelbstbehaltDurchGemeinde;
 	private BigDecimal gutschein;
+	private Boolean isKorrektur;
 
 	public LastenausgleichBGZeitabschnittDataRow() {}
 
@@ -143,5 +144,13 @@ public class LastenausgleichBGZeitabschnittDataRow {
 
 	public void setGutschein(BigDecimal gutschein) {
 		this.gutschein = gutschein;
+	}
+
+	public Boolean getKorrektur() {
+		return isKorrektur;
+	}
+
+	public void setKorrektur(Boolean korrektur) {
+		isKorrektur = korrektur;
 	}
 }

@@ -45,6 +45,7 @@ import ch.dvbern.ebegu.entities.Verfuegung;
 import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungAngabenContainer;
 import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeContainer;
 import ch.dvbern.ebegu.entities.sozialdienst.SozialdienstFall;
+import ch.dvbern.ebegu.enums.BetreuungspensumAnzeigeTyp;
 import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.RueckforderungInstitutionTyp;
@@ -126,6 +127,7 @@ public class PDFServiceBean implements PDFService {
 		assert mandant != null;
 
 		boolean isFKJVTexte = getEinstellungFKJVTexte(betreuung);
+		BetreuungspensumAnzeigeTyp betreuungspensumAnzeigeTyp = getEinstellungBetreuungspensumAnzeigeTyp(betreuung);
 
 		// Bei Nicht-Eintreten soll der FEBR-Erklaerungstext gar nicht erscheinen, es ist daher egal,
 		// was wir mitgeben
@@ -133,7 +135,7 @@ public class PDFServiceBean implements PDFService {
 			betreuung,
 			stammdaten,
 			Art.NICHT_EINTRETTEN,
-			false, false, isFKJVTexte);
+			false, false, isFKJVTexte, betreuungspensumAnzeigeTyp);
 		AbstractVerfuegungPdfGenerator pdfGenerator =
 			verfuegungPdfGeneratorVisitor.getVerfuegungPdfGeneratorForMandant(mandant);
 		return generateDokument(pdfGenerator, !writeProtected, locale, mandant);
@@ -146,6 +148,15 @@ public class PDFServiceBean implements PDFService {
 			betreuung.extractGesuchsperiode()
 		).getValueAsBoolean();
 	}
+
+	private BetreuungspensumAnzeigeTyp getEinstellungBetreuungspensumAnzeigeTyp(@Nonnull Betreuung betreuung) {
+		return BetreuungspensumAnzeigeTyp.valueOf(einstellungService.findEinstellung(
+			EinstellungKey.PENSUM_ANZEIGE_TYP,
+			betreuung.extractGesuch().extractGemeinde(),
+			betreuung.extractGesuchsperiode()
+		).getValue());
+	}
+
 
 	@Nonnull
 	@Override
@@ -275,6 +286,7 @@ public class PDFServiceBean implements PDFService {
 
 		boolean stadtBernAsivConfigured = applicationPropertyService.isStadtBernAsivConfigured(betreuung.extractGesuch().extractGemeinde().getMandant());
 		boolean isFKJVTexte = getEinstellungFKJVTexte(betreuung);
+		BetreuungspensumAnzeigeTyp betreuungspensumAnzeigeTyp = getEinstellungBetreuungspensumAnzeigeTyp(betreuung);
 
 		Art art = evaluateArt(betreuung);
 
@@ -287,7 +299,8 @@ public class PDFServiceBean implements PDFService {
 			art,
 			showInfoKontingentierung,
 			stadtBernAsivConfigured,
-			isFKJVTexte);
+			isFKJVTexte,
+			betreuungspensumAnzeigeTyp);
 		AbstractVerfuegungPdfGenerator pdfGenerator =
 			verfuegungPdfGeneratorVisitor.getVerfuegungPdfGeneratorForMandant(mandant);
 

@@ -17,20 +17,23 @@
 
 import {
     ChangeDetectionStrategy,
+    ChangeDetectorRef,
     Component,
     EventEmitter,
     Input,
+    OnChanges,
     OnDestroy,
     OnInit,
     Output,
+    SimpleChanges,
     ViewEncapsulation
 } from '@angular/core';
 import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
+import {TranslateService} from '@ngx-translate/core';
 import {BehaviorSubject, Subscription} from 'rxjs';
 import {TSDemoFeature} from '../../../../../app/core/directive/dv-hide-feature/TSDemoFeature';
 import {LogFactory} from '../../../../../app/core/logging/LogFactory';
 import {AuthServiceRS} from '../../../../../authentication/service/AuthServiceRS.rest';
-import {isAnyStatusOfVerfuegt, TSAntragStatus} from '../../../../../models/enums/TSAntragStatus';
 import {TSRole} from '../../../../../models/enums/TSRole';
 import {
     isSteuerdatenAnfrageStatusErfolgreich,
@@ -54,10 +57,16 @@ const LOG = LogFactory.createLog('SteuerabfrageResponseHintsComponent');
     changeDetection: ChangeDetectionStrategy.OnPush,
     encapsulation: ViewEncapsulation.None
 })
-export class SteuerabfrageResponseHintsComponent implements OnInit, OnDestroy {
+export class SteuerabfrageResponseHintsComponent implements OnInit, OnDestroy, OnChanges {
 
     @Input()
     private readonly status: TSSteuerdatenAnfrageStatus;
+
+    @Input()
+    public steuerAbfrageResponeHintStatusText: string;
+
+    @Input()
+    public steuerAbfrageRequestRunning: boolean;
 
     @Output()
     private readonly tryAgainEvent: EventEmitter<void> = new EventEmitter<void>();
@@ -73,8 +82,14 @@ export class SteuerabfrageResponseHintsComponent implements OnInit, OnDestroy {
         public readonly gesuchModelManager: GesuchModelManager,
         private readonly authServiceRS: AuthServiceRS,
         private readonly dialog: MatDialog,
-        private readonly finSitRS: FinanzielleSituationRS
+        private readonly finSitRS: FinanzielleSituationRS,
+        private readonly changeDetectorRef: ChangeDetectorRef,
+        private readonly translate: TranslateService
     ) {
+    }
+
+    public ngOnChanges(changes: SimpleChanges): void {
+        this.changeDetectorRef.markForCheck();
     }
 
     public ngOnInit(): void {
@@ -84,16 +99,17 @@ export class SteuerabfrageResponseHintsComponent implements OnInit, OnDestroy {
                 err => LOG.error(err)
             );
 
-        const gs = this.gesuchModelManager.getGesuchstellerNumber() === 1 ?
+        const gesuchSteller = this.gesuchModelManager.getGesuchstellerNumber() === 1 ?
             this.gesuchModelManager.getGesuch().gesuchsteller1 :
             this.gesuchModelManager.getGesuch().gesuchsteller2;
         // eslint-disable-next-line
         if (this.showZugriffErfolgreich()) {
-            this.finSitRS.geburtsdatumMatchesSteuerabfrage(gs.gesuchstellerJA.geburtsdatum,
-                gs.finanzielleSituationContainer.id).then(isMatching => {
+            this.finSitRS.geburtsdatumMatchesSteuerabfrage(gesuchSteller.gesuchstellerJA.geburtsdatum,
+                gesuchSteller.finanzielleSituationContainer.id).then(isMatching => {
                     this.geburtstagNotMatching$.next(!isMatching);
             });
         }
+
     }
 
     public ngOnDestroy(): void {
@@ -105,40 +121,91 @@ export class SteuerabfrageResponseHintsComponent implements OnInit, OnDestroy {
             isSteuerdatenAnfrageStatusErfolgreich(this.status);
     }
 
-    public showZugriffFailed(): boolean {
+    public showWarningRetry(): boolean {
+        return this.showZugriffFailed() || this.showWarningKeinPartnerGemeinsam()
+            || this.showWarningGeburtsdatum() || this.showWarningPartnerNichtGemeinsam();
+    }
+
+    public getWarningText(): string {
+        switch (this.status) {
+            case TSSteuerdatenAnfrageStatus.FAILED:
+                return this.translate.instant('FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF_FAILED',
+                    {gs1: this.getGS1Name()});
+                break;
+            case TSSteuerdatenAnfrageStatus.FAILED_PARTNER_NICHT_GEMEINSAM:
+                return this.translate.instant('FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF_PARTNER_NICHT_GEMEINSAM');
+                break;
+            case TSSteuerdatenAnfrageStatus.FAILED_GEBURTSDATUM:
+                return this.translate.instant('FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF_FAILED_GEBURTSDATUM');
+                break;
+            case TSSteuerdatenAnfrageStatus.FAILED_KEIN_PARTNER_GEMEINSAM:
+                return this.translate.instant('FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF_KEIN_PARTNER_GEMEINSAM');
+                break;
+            case TSSteuerdatenAnfrageStatus.FAILED_UNTERJAEHRIGER_FALL:
+                return this.translate.instant('FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF_UNTERJAEHRIG');
+                break;
+            case TSSteuerdatenAnfrageStatus.FAILED_VERAENDERTE_PARTNERSCHAFT:
+                return this.translate.instant('FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF_VERAENDERTE_PARTNERSCHAFT');
+                break;
+            case TSSteuerdatenAnfrageStatus.FAILED_UNREGELMAESSIGKEIT:
+                return this.translate.instant('FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF_UNREGELMAESSIGKEIT');
+                break;
+            case TSSteuerdatenAnfrageStatus.FAILED_KEINE_ZPV_NUMMER:
+                return this.translate.instant('FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF_KEINE_ZPV',
+                    {email: this.getEmailBesitzende()});
+                break;
+            case TSSteuerdatenAnfrageStatus.FAILED_KEINE_ZPV_NUMMER_GS2:
+                return this.translate.instant('FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF_KEINE_ZPV_GS2',
+                    {gs2: this.getGS2name()});
+                break;
+            default:
+                return '';
+        }
+    }
+
+    private showZugriffFailed(): boolean {
         return this.status === TSSteuerdatenAnfrageStatus.FAILED;
     }
 
-    public showZugriffUnterjaehrigeFall(): boolean {
-        return this.status === TSSteuerdatenAnfrageStatus.FAILED_UNTERJAEHRIGER_FALL;
-    }
-
-    public showWarningKeinPartnerGemeinsam(): boolean {
+    private showWarningKeinPartnerGemeinsam(): boolean {
         return this.status === TSSteuerdatenAnfrageStatus.FAILED_KEIN_PARTNER_GEMEINSAM;
     }
 
-    public showWarningGeburtsdatum(): boolean {
+    private showWarningGeburtsdatum(): boolean {
         return this.status === TSSteuerdatenAnfrageStatus.FAILED_GEBURTSDATUM;
     }
 
-    public showZugriffKeineZpvNummer(): boolean {
-        return this.status === TSSteuerdatenAnfrageStatus.FAILED_KEINE_ZPV_NUMMER;
-    }
-
-    public showWarningPartnerNichtGemeinsam(): boolean {
+    private showWarningPartnerNichtGemeinsam(): boolean {
         return this.status === TSSteuerdatenAnfrageStatus.FAILED_PARTNER_NICHT_GEMEINSAM;
     }
 
-    public showZugriffKeineZpvNummerGS2(): boolean {
-        return this.status === TSSteuerdatenAnfrageStatus.FAILED_KEINE_ZPV_NUMMER_GS2;
+    public showWarningWithoutRetry(): boolean {
+        return this.showZugriffUnterjaehrigeFall() || this.showWarningUnregelmaessigkeit()
+            || this.showWarningVeraendertePartnerschaft();
     }
 
-    public showWarningVeraendertePartnerschaft(): boolean {
+    private showZugriffUnterjaehrigeFall(): boolean {
+        return this.status === TSSteuerdatenAnfrageStatus.FAILED_UNTERJAEHRIGER_FALL;
+    }
+
+    private showWarningVeraendertePartnerschaft(): boolean {
         return this.status === TSSteuerdatenAnfrageStatus.FAILED_VERAENDERTE_PARTNERSCHAFT;
     }
 
-    public showWarningUnregelmaessigkeit(): boolean {
+    private showWarningUnregelmaessigkeit(): boolean {
         return this.status === TSSteuerdatenAnfrageStatus.FAILED_UNREGELMAESSIGKEIT;
+    }
+
+    public showZugriffKeineZPVNummer(): boolean {
+        return this.showZugriffKeineZpvNummerGS1() || this.showZugriffKeineZpvNummerGS2();
+    }
+
+    private showZugriffKeineZpvNummerGS1(): boolean {
+        return this.status === TSSteuerdatenAnfrageStatus.FAILED_KEINE_ZPV_NUMMER;
+    }
+
+    private showZugriffKeineZpvNummerGS2(): boolean {
+        return this.status === TSSteuerdatenAnfrageStatus.FAILED_KEINE_ZPV_NUMMER_GS2;
     }
 
     public showRetry(): boolean {

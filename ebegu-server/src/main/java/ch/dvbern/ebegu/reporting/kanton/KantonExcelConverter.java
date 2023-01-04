@@ -26,6 +26,7 @@ import javax.enterprise.context.Dependent;
 
 import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.enums.reporting.MergeFieldKanton;
+import ch.dvbern.ebegu.util.ReportUtil;
 import ch.dvbern.ebegu.util.ServerMessageUtil;
 import ch.dvbern.oss.lib.excelmerger.ExcelConverter;
 import ch.dvbern.oss.lib.excelmerger.ExcelMergeException;
@@ -33,11 +34,7 @@ import ch.dvbern.oss.lib.excelmerger.ExcelMerger;
 import ch.dvbern.oss.lib.excelmerger.ExcelMergerDTO;
 import ch.dvbern.oss.lib.excelmerger.RowFiller;
 import ch.dvbern.oss.lib.excelmerger.mergefields.MergeField;
-import org.apache.poi.ss.usermodel.BorderStyle;
 import org.apache.poi.ss.usermodel.CellStyle;
-import org.apache.poi.ss.usermodel.CellType;
-import org.apache.poi.ss.usermodel.FillPatternType;
-import org.apache.poi.ss.usermodel.IndexedColors;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.xssf.streaming.SXSSFCell;
 import org.apache.poi.xssf.streaming.SXSSFRow;
@@ -156,55 +153,28 @@ public class KantonExcelConverter implements ExcelConverter {
 		SXSSFSheet sheet = rowFiller.getSheet();
 		SXSSFRow targetRow = sheet.createRow(sheet.getLastRowNum() + 1);
 		SXSSFCell cell = targetRow.createCell(0);
-		CellStyle basicStyle = this.createBasicStyle(sheet);
+		CellStyle basicStyle = ReportUtil.createBasicStyleSumRow(sheet);
 		cell.setCellValue("Total");
 		cell.setCellStyle(basicStyle);
-		this.fillXCellWithStyle(targetRow, basicStyle, 1, 6);
-		CellStyle procentStyle = this.createBasicStyle(sheet);
-		procentStyle.setDataFormat(sheet.getWorkbook().createDataFormat().getFormat("0%"));
-		CellStyle zahlStyle = this.createBasicStyle(sheet);
-		zahlStyle.setDataFormat(sheet.getWorkbook().createDataFormat().getFormat("0.00"));
+		ReportUtil.fillXCellWithStyle(targetRow, basicStyle, 1, 6);
+		CellStyle procentStyle = ReportUtil.createProcentStyle(sheet, basicStyle);
+		CellStyle zahlStyle = ReportUtil.createNumberStyle(sheet, basicStyle);
 
 		int lastRow = nbrRow + TITLE_ROW_NUMBER;
 		int totalRow = lastRow + 1;
-		this.createCellWithFormula(targetRow, procentStyle, 7, "SUM(H10:H" + lastRow + ")");
-		this.createCellWithFormula(targetRow, procentStyle, 8, "SUM(I10:I" + lastRow + ")");
-		this.createCellWithFormula(targetRow, procentStyle, 9, "SUM(J10:J" + lastRow + ")");
-		this.createCellWithFormula(targetRow, zahlStyle, 10, "SUM(K10:K" + lastRow + ")");
-		this.createCellWithFormula(targetRow, zahlStyle, 11, "=K"+ totalRow +"*$B$6");
-		this.fillXCellWithStyle(targetRow, basicStyle, 12, 16);
-		this.createCellWithFormula(targetRow, procentStyle, 17, "SUM(R10:R" + lastRow + ")");
-		this.createCellWithFormula(targetRow, zahlStyle, 18, "SUM(S10:S" + lastRow + ")");
-		this.createCellWithFormula(targetRow, zahlStyle, 19, "SUM(T10:T" + lastRow + ")");
-		this.createCellWithFormula(targetRow, zahlStyle, 20,"SUM(U10:U" + lastRow + ")");
-		this.createCellWithFormula(targetRow, zahlStyle, 21, "SUM(V10:V" + lastRow + ")");
-		this.createCellWithFormula(targetRow, zahlStyle, 22,"SUM(W10:W" + lastRow + ")");
-		this.fillXCellWithStyle(targetRow, basicStyle, 23, 24);
-	}
-
-	private void createCellWithFormula(SXSSFRow targetRow, CellStyle cellStyle, int cellNbr, String formula) {
-		SXSSFCell cellSumme = targetRow.createCell(cellNbr);
-		cellSumme.setCellFormula(formula);
-		cellSumme.setCellStyle(cellStyle);
-		cellSumme.setCellType(CellType.FORMULA);
-	}
-
-	private void fillXCellWithStyle(SXSSFRow targetRow, CellStyle cellStyle, int firstCellToFill, int lastCellToFill) {
-		for (int i = firstCellToFill; i <= lastCellToFill; i++) {
-			SXSSFCell cell = targetRow.createCell(i);
-			cell.setCellValue("");
-			cell.setCellStyle(cellStyle);
-		}
-	}
-
-	private CellStyle createBasicStyle(SXSSFSheet sheet) {
-		CellStyle basicStyle = sheet.getWorkbook().createCellStyle();
-		basicStyle.setFillForegroundColor(IndexedColors.GREY_25_PERCENT.getIndex());
-		basicStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-		basicStyle.setBorderBottom(BorderStyle.THIN);
-		basicStyle.setBorderLeft(BorderStyle.THIN);
-		basicStyle.setBorderRight(BorderStyle.THIN);
-		return basicStyle;
+		ReportUtil.createCellWithFormula(targetRow, procentStyle, 7, "SUM(H10:H" + lastRow + ")");
+		ReportUtil.createCellWithFormula(targetRow, procentStyle, 8, "SUM(I10:I" + lastRow + ")");
+		ReportUtil.createCellWithFormula(targetRow, procentStyle, 9, "SUM(J10:J" + lastRow + ")");
+		ReportUtil.createCellWithFormula(targetRow, zahlStyle, 10, "SUM(K10:K" + lastRow + ")");
+		ReportUtil.createCellWithFormula(targetRow, zahlStyle, 11, "=K"+ totalRow +"*$B$6");
+		ReportUtil.fillXCellWithStyle(targetRow, basicStyle, 12, 16);
+		ReportUtil.createCellWithFormula(targetRow, procentStyle, 17, "SUM(R10:R" + lastRow + ")");
+		ReportUtil.createCellWithFormula(targetRow, zahlStyle, 18, "SUM(S10:S" + lastRow + ")");
+		ReportUtil.createCellWithFormula(targetRow, zahlStyle, 19, "SUM(T10:T" + lastRow + ")");
+		ReportUtil.createCellWithFormula(targetRow, zahlStyle, 20,"SUM(U10:U" + lastRow + ")");
+		ReportUtil.createCellWithFormula(targetRow, zahlStyle, 21, "SUM(V10:V" + lastRow + ")");
+		ReportUtil.createCellWithFormula(targetRow, zahlStyle, 22,"SUM(W10:W" + lastRow + ")");
+		ReportUtil.fillXCellWithStyle(targetRow, basicStyle, 23, 24);
 	}
 
 	@SuppressWarnings("PMD.NcssMethodCount")

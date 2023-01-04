@@ -226,9 +226,16 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
     }
 
     public setMutationIgnorieren(): void {
-        this.gesuchModelManager.mutationIgnorieren().then(() => {
-            this.refreshKinderListe();
-        });
+        this.dvDialog.showRemoveDialog(removeDialogTempl, this.form, RemoveDialogController, {
+            title: 'CONFIRM_GESUCH_STATUS_IGNORIEREN',
+            deleteText: '',
+            parentController: undefined,
+            elementID: undefined
+        })
+            .then(() => this.gesuchModelManager.mutationIgnorieren())
+            .then(() => {
+                this.refreshKinderListe();
+            });
     }
 
     /**
@@ -880,7 +887,15 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
         return this.isMutation() &&
             !this.hasAnyNewOrStornierteBetreuung &&
             this.allVerfuegungenIgnorable &&
-            this.gesuchModelManager.isGesuchStatusIn([TSAntragStatus.GEPRUEFT]);
+            this.correctStatusForIgnorieren() &&
+            this.getGesuch().finSitStatus === TSFinSitStatus.AKZEPTIERT;
+    }
+
+    private correctStatusForIgnorieren(): boolean {
+        if (this.gesuchModelManager.areThereOnlySchulamtAngebote()) {
+            return this.gesuchModelManager.isGesuchStatusIn([TSAntragStatus.IN_BEARBEITUNG_JA]);
+        }
+        return this.gesuchModelManager.isGesuchStatusIn([TSAntragStatus.GEPRUEFT]);
     }
 
     public getVeraenderungBgString(): string {

@@ -863,9 +863,6 @@ public class GesuchResource {
 		@Context UriInfo uriInfo,
 		@Context HttpServletResponse response) {
 
-		// Sicherstellen, dass der Status des Client-Objektes genau dem des Servers entspricht
-		resourceHelper.assertGesuchStatusEqual(antragJaxId.getId(), AntragStatusDTO.GEPRUEFT, AntragStatusDTO.VERFUEGEN);
-
 		Objects.requireNonNull(antragJaxId.getId());
 		final String antragId = converter.toEntityId(antragJaxId);
 
@@ -873,6 +870,21 @@ public class GesuchResource {
 			new EbeguEntityNotFoundException("mutationIgnorieren", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
 				GESUCH_ID_INVALID + antragId)
 		);
+
+		// Sicherstellen, dass der Status des Client-Objektes genau dem des Servers entspricht
+		if (gesuch.hasOnlyBetreuungenOfSchulamt()) {
+			resourceHelper.assertGesuchStatusEqual(
+				antragJaxId.getId(),
+				AntragStatusDTO.IN_BEARBEITUNG_JA
+			);
+		} else {
+			resourceHelper.assertGesuchStatusEqual(
+				antragJaxId.getId(),
+				AntragStatusDTO.GEPRUEFT,
+				AntragStatusDTO.VERFUEGEN
+			);
+		}
+
 		Gesuch closedGesuch = gesuchService.mutationIgnorieren(gesuch);
 		Optional<Gesuch> reloadedGesuch = gesuchService.findGesuch(closedGesuch.getId());
 

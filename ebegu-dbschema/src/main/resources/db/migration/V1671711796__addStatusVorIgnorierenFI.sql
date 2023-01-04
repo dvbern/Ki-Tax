@@ -14,9 +14,6 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
-@import (reference) '../../../../../style/variables.less';
 
-.ebegu .well-status-bestaetigt .black-font i {
-    color: @black;
-}
-
+ALTER TABLE anmeldung_ferieninsel ADD COLUMN status_vor_ignorieren varchar(255);
+ALTER TABLE anmeldung_ferieninsel_aud ADD COLUMN status_vor_ignorieren varchar(255);

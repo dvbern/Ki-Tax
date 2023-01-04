@@ -33,6 +33,7 @@ import {TSDokumentTyp} from '../../../models/enums/TSDokumentTyp';
 import {TSEingangsart} from '../../../models/enums/TSEingangsart';
 import {TSEinstellungKey} from '../../../models/enums/TSEinstellungKey';
 import {TSGeschlecht} from '../../../models/enums/TSGeschlecht';
+import {TSGesuchstellerKardinalitaet} from '../../../models/enums/TSGesuchstellerKardinalitaet';
 import {TSRole} from '../../../models/enums/TSRole';
 import {getTSSpracheValues, TSSprache} from '../../../models/enums/TSSprache';
 import {TSFamilienstatus} from '../../../models/enums/TSFamilienstatus';
@@ -218,26 +219,26 @@ export class StammdatenViewController extends AbstractGesuchViewController<TSGes
         }
         const familienstatus: TSFamilienstatus = this.getGesuch().extractFamiliensituation().familienstatus;
         switch (familienstatus) {
-            case TSFamilienstatus.KONKUBINAT:
-                return `2 (${ this.$translate.instant(TSFamilienstatus.KONKUBINAT)  } )`;
             case TSFamilienstatus.KONKUBINAT_KEIN_KIND:
-                const startKonkubinat: moment.Moment = this.getGesuch().extractFamiliensituation().startKonkubinat;
-                if (this.getGesuch()
+                if (!this.getGesuch()
                     .extractFamiliensituation()
-                    .konkubinatGetsLongerThanXYearsBeforeEndOfPeriode(this.getGesuch().gesuchsperiode.gueltigkeit.gueltigBis)) {
-                    return `2 (${this.$translate.instant('ANDERER_ELTERNTEIL')} )`;
+                    .konkubinatGetsLongerThanXYearsBeforeEndOfPeriode(
+                        this.getGesuch().gesuchsperiode.gueltigkeit.gueltigBis)) {
+                    return `2 (${this.$translate.instant('ANDERER_ELTERNTEIL')})`;
                 }
-                return familienstatus;
+                break;
             case TSFamilienstatus.ALLEINERZIEHEND:
-                if(! this.getGesuch().extractFamiliensituation().geteilteObhut &&
-                    this.getGesuch().extractFamiliensituation().unterhaltsvereinbarung === TSUnterhaltsvereinbarungAnswer.NEIN_UNTERHALTSVEREINBARUNG){
-                    return `2 (${ this.$translate.instant('ANDERER_ELTERNTEIL')   } )`;
+                if(this.getGesuch().extractFamiliensituation().gesuchstellerKardinalitaet ===
+                        TSGesuchstellerKardinalitaet.ZU_ZWEIT ||
+                    this.getGesuch().extractFamiliensituation().unterhaltsvereinbarung ===
+                        TSUnterhaltsvereinbarungAnswer.NEIN_UNTERHALTSVEREINBARUNG){
+                    return `2 (${ this.$translate.instant('ANDERER_ELTERNTEIL')   })`;
                 }
                 break;
             default:
                 break;
         }
-        return `2 (${ this.$translate.instant(familienstatus)   } )`;
+        return `2 (${ this.$translate.instant(`GS2_${familienstatus}`)   })`;
     }
 
     public korrespondenzAdrClicked(): void {

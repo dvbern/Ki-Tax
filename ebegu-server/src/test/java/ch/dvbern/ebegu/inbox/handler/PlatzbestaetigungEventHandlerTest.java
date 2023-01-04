@@ -87,6 +87,8 @@ import org.junit.jupiter.params.provider.EnumSource.Mode;
 
 import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_MAHLZEITENVERGUENSTIGUNG_ENABLED;
 import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_ENABLED;
+import static ch.dvbern.ebegu.enums.EinstellungKey.OEFFNUNGSSTUNDEN_TFO;
+import static ch.dvbern.ebegu.enums.EinstellungKey.OEFFNUNGSTAGE_KITA;
 import static ch.dvbern.ebegu.inbox.handler.PlatzbestaetigungEventHandler.GO_LIVE;
 import static ch.dvbern.ebegu.inbox.handler.PlatzbestaetigungTestUtil.REF_NUMMER;
 import static ch.dvbern.ebegu.inbox.handler.PlatzbestaetigungTestUtil.createBetreuungEventDTO;
@@ -395,6 +397,7 @@ public class PlatzbestaetigungEventHandlerTest extends EasyMockSupport {
 			expectBetreuungFound(betreuung);
 			mockClients(Constants.DEFAULT_GUELTIGKEIT);
 			withMahlzeitenverguenstigung(true);
+			mockGetStundenTagenEinstellungen();
 
 			replayAll();
 
@@ -618,6 +621,7 @@ public class PlatzbestaetigungEventHandlerTest extends EasyMockSupport {
 
 				mockClients(clientGueltigkeit, List.of(client2));
 				withMahlzeitenverguenstigung(true);
+				mockGetStundenTagenEinstellungen();
 				withZusaetzlicherGutschein(zusaetzlicherGutscheinGemeindeEnabled);
 
 				replayAll();
@@ -884,6 +888,7 @@ public class PlatzbestaetigungEventHandlerTest extends EasyMockSupport {
 
 			mockClients(clientGueltigkeit);
 			withMahlzeitenverguenstigung(true);
+			mockGetStundenTagenEinstellungen();
 			withZusaetzlicherGutschein(zusaetzlicherGutscheinGemeindeEnabled);
 
 			replayAll();
@@ -1326,6 +1331,7 @@ public class PlatzbestaetigungEventHandlerTest extends EasyMockSupport {
 				.andStubReturn(mockClient);
 
 			withMahlzeitenverguenstigung(withMahlzeitenEnabled);
+			mockGetStundenTagenEinstellungen();
 
 			expect(betreuungEventHelper.getMutationsmeldungBenutzer()).andReturn(new Benutzer());
 
@@ -1394,6 +1400,19 @@ public class PlatzbestaetigungEventHandlerTest extends EasyMockSupport {
 		expect(einstellungService.findEinstellung(GEMEINDE_MAHLZEITENVERGUENSTIGUNG_ENABLED, gemeinde, gesuchsperiode))
 			.andReturn(einstellung);
 		expect(einstellung.getValueAsBoolean()).andReturn(enabled);
+	}
+
+	private void mockGetStundenTagenEinstellungen() {
+		Einstellung einstellungOeffnungsTage = mock(Einstellung.class);
+		expect(einstellungService.findEinstellung(OEFFNUNGSTAGE_KITA, gemeinde, gesuchsperiode))
+			.andReturn(einstellungOeffnungsTage);
+		expect(einstellungOeffnungsTage.getValueAsBigDecimal()).andReturn(new BigDecimal("20.00"));
+
+		Einstellung einstellungOeffnungsStunden = mock(Einstellung.class);
+		expect(einstellungService.findEinstellung(OEFFNUNGSSTUNDEN_TFO, gemeinde, gesuchsperiode))
+			.andReturn(einstellungOeffnungsStunden);
+		expect(einstellungOeffnungsStunden.getValueAsBigDecimal()).andReturn(new BigDecimal("220.00"));
+
 	}
 
 	@Nonnull

@@ -252,11 +252,12 @@
                     <span class="uppercase" data-translate="GEPRUEFT"></span>
                 </dv-loading-button>
                 <dv-demo-feature-wrapper demo-feature="{{vm.demoFeature}}">
-                    <dv-loading-button input-id="button_mutationIgnorieren" button-click="vm.setMutationIgnorieren()"
-                                       aria-label="{{'MUTATION_IGNORIEREN' | translate}}"
-                                       ng-if="vm.showIgnoreMutation()">
+                    <button type="button" class="dv-btn cancel-button"
+                            id="button_mutationIgnorieren" ng-click="vm.setMutationIgnorieren()"
+                            aria-label="{{'MUTATION_IGNORIEREN' | translate}}"
+                            ng-if="vm.showIgnoreMutation()">
                         <span class="uppercase" data-translate="MUTATION_IGNORIEREN"></span>
-                    </dv-loading-button>
+                    </button>
                 </dv-demo-feature-wrapper>
                 <dv-loading-button input-id="button_verfuegenStarten" button-click="vm.setGesuchStatusVerfuegen()"
                                    aria-label="{{'VERFUEGUNG_STARTEN' | translate}}"

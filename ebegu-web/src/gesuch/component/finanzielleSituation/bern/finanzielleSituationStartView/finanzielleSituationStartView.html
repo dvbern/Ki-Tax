@@ -133,9 +133,14 @@
                         </p>
                     </div>
                     <dv-steuerabfrage-response-hints
-                        ng-if="vm.showZugriffAufSteuerdaten() && vm.getModel().finanzielleSituationJA.steuerdatenZugriff"
+                        ng-if="vm.showZugriffAufSteuerdaten()
+                            && vm.getModel().finanzielleSituationJA.steuerdatenZugriff"
                         (try-again-event)="vm.callKiBonAnfrageAndUpdateFinSit()"
-                        [status]="vm.getAbfrageStatus()"></dv-steuerabfrage-response-hints>
+                        [status]="vm.getAbfrageStatus()"
+                        [steuer-abfrage-respone-hint-status-text]="vm.finSitRequestState |translate"
+                        [steuer-abfrage-request-running]="vm.finSitRequestRunning"
+                    >
+                    </dv-steuerabfrage-response-hints>
 
                     <!-- Steuerveranlagung -->
                     <div class="row">
