@@ -22,7 +22,12 @@ import {TSDemoFeature} from '../../../app/core/directive/dv-hide-feature/TSDemoF
 import {LogFactory} from '../../../app/core/logging/LogFactory';
 import {DownloadRS} from '../../../app/core/service/downloadRS.rest';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
-import {isAnyStatusOfMahnung, isAnyStatusOfVerfuegt, TSAntragStatus} from '../../../models/enums/TSAntragStatus';
+import {
+    isAnyStatusOfMahnung,
+    isAnyStatusOfVerfuegt,
+    isStatusVerfuegenVerfuegt,
+    TSAntragStatus,
+} from '../../../models/enums/TSAntragStatus';
 import {TSAntragTyp} from '../../../models/enums/TSAntragTyp';
 import {TSBetreuungsangebotTyp} from '../../../models/enums/TSBetreuungsangebotTyp';
 import {isBetreuungsstatusStorniert, TSBetreuungsstatus} from '../../../models/enums/TSBetreuungsstatus';
@@ -90,7 +95,7 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
     ];
 
     private kinderWithBetreuungList: Array<TSKindContainer>;
-    private hasAnyNewOrStornierteBetreuung: boolean = false;
+    public hasAnyNewOrStornierteBetreuung: boolean = false;
     public veraenderungBG: number;
     public veraenderungTS: number;
     public allVerfuegungenIgnorable: boolean = false;
@@ -202,8 +207,12 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
         return this.mahnungList;
     }
 
-    public showMutationVeranderung(): boolean {
-        if (this.hasAnyNewOrStornierteBetreuung) {
+    public hasMutationVeranderung(): boolean {
+        return this.veraenderungBG !== 0 || this.veraenderungTS !== 0;
+    }
+
+    public showSimulationVeranderung(): boolean {
+        if (!this.isMutation()) {
             return false;
         }
 
@@ -212,17 +221,7 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
             return false;
         }
 
-        if (this.veraenderungBG === 0 && this.veraenderungTS === 0) {
-            return false;
-        }
-
-        return !isAnyStatusOfVerfuegt(this.gesuchModelManager.getGesuch().status)
-            && this.isMutation();
-    }
-
-    public showAnyNewOrStornierteBetreuungen(): boolean {
-        return this.isMutation() && this.hasAnyNewOrStornierteBetreuung
-            && !isAnyStatusOfVerfuegt(this.gesuchModelManager.getGesuch().status);
+        return !isStatusVerfuegenVerfuegt(this.gesuchModelManager.getGesuch().status);
     }
 
     public setMutationIgnorieren(): void {
@@ -899,22 +898,26 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
     }
 
     public getVeraenderungBgString(): string {
-        const formatedString =  this.formatVeraenderungen(EbeguUtil.roundToFiveRappen(this.veraenderungBG));
-        return this.$translate.instant('MUTATION_VERAENDERUNG_BG',
-            {veraenderung: formatedString});
+        let roundedVeranderung =  EbeguUtil.roundToFiveRappen(this.veraenderungBG);
+        let translationId = 'MUTATION_VERAENDERUNG_BG_HOEHER';
+
+        if (roundedVeranderung < 0) {
+            translationId = 'MUTATION_VERAENDERUNG_BG_TIEFER';
+            roundedVeranderung *= -1;
+        }
+
+        return this.$translate.instant(translationId, {veraenderung: roundedVeranderung});
     }
 
     public getVeraenderungTsString(): string {
-        const formatedString =  this.formatVeraenderungen(this.veraenderungTS);
-        return this.$translate.instant('MUTATION_VERAENDERUNG_TS',
-            {veraenderung: formatedString});
-    }
+        let translationId = 'MUTATION_VERAENDERUNG_TS_HOEHER';
+        let veranderung = this.veraenderungTS;
 
-    private formatVeraenderungen(veraenderungToFormat: number): string {
-        if (veraenderungToFormat > 0) {
-            return `+${veraenderungToFormat.toFixed(2)}`;
+        if (this.veraenderungTS < 0) {
+            translationId = 'MUTATION_VERAENDERUNG_TS_TIEFER';
+            veranderung *= -1;
         }
 
-        return veraenderungToFormat.toFixed(2);
+        return this.$translate.instant(translationId, {veraenderung: veranderung.toFixed(2)});
     }
 }
