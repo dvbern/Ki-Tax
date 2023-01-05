@@ -26,7 +26,7 @@ import {
     isAnyStatusOfMahnung,
     isAnyStatusOfVerfuegt,
     isStatusVerfuegenVerfuegt,
-    TSAntragStatus,
+    TSAntragStatus
 } from '../../../models/enums/TSAntragStatus';
 import {TSAntragTyp} from '../../../models/enums/TSAntragTyp';
 import {TSBetreuungsangebotTyp} from '../../../models/enums/TSBetreuungsangebotTyp';
