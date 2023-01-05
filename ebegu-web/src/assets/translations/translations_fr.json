@@ -1325,6 +1325,8 @@
     "MUTATIONSMELDUNG_UEBERNEHMEN_BESCHREIBUNG": "Les données saisies sont ajoutées au changement.",
     "MUTATIONSMELDUNG_IGNORIEREN": "Voulez-vous vraiment ignorer des changements à la situation financière? ",
     "MUTATIONSMELDUNG_IGNORIEREN_BESCHREIBUNG": "Le message annonçant des changements dans la situation financière sera ignoré.",
+    "VERANLAGUNGSMITTEILUNG_UEBERNEHMEN": "Möchten Sie die Änderung der finanziellen Verhältnisse zur Mutation hinzufügen?",
+    "VERANLAGUNGSMITTEILUNG_UEBERNEHMEN_BESCHREIBUNG": "Die Daten werden aus der Steuerveranlagung abgerufen und der bestehenden bzw. Einer neuen Mutation hinzugefügt.",
     "ZAHLUNG_FAELLIGKEIT": "Date d'échéance",
     "ZAHLUNG_TOTAL": "Montant",
     "ZAHLUNG_PAIN001": "Document de versement",
