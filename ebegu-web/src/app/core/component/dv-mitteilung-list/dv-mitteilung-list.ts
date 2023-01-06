@@ -35,6 +35,7 @@ import {TSRoleUtil} from '../../../../utils/TSRoleUtil';
 import {IMitteilungenStateParams} from '../../../mitteilungen/mitteilungen.route';
 import {PosteingangService} from '../../../posteingang/service/posteingang.service';
 import {DvDialog} from '../../directive/dv-dialog/dv-dialog';
+import {TSDemoFeature} from '../../directive/dv-hide-feature/TSDemoFeature';
 import {LogFactory} from '../../logging/LogFactory';
 import {BetreuungRS} from '../../service/betreuungRS.rest';
 import {InstitutionRS} from '../../service/institutionRS.rest';
@@ -98,6 +99,7 @@ export class DVMitteilungListController implements IOnInit {
     public empfaenger: any;
     public empfaengerValues: Array<any>;
     public isVolksschuleGemeinde: boolean = false;
+    public readonly demoFeature = TSDemoFeature.ALLE_MUTATIONSMELDUNGEN_VERFUEGEN;
 
     public constructor(
         private readonly $stateParams: IMitteilungenStateParams,
