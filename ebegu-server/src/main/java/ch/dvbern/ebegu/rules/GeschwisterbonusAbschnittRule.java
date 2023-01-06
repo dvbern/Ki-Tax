@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2021 DV Bern AG, Switzerland
+ * Copyright (C) 2023 DV Bern AG, Switzerland
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -8,11 +8,11 @@
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
 package ch.dvbern.ebegu.rules;
@@ -28,7 +28,6 @@ import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
 
-import ch.dvbern.ebegu.dto.BGCalculationInput;
 import ch.dvbern.ebegu.entities.AbstractEntity;
 import ch.dvbern.ebegu.entities.AbstractPersonEntity;
 import ch.dvbern.ebegu.entities.AbstractPlatz;
@@ -111,9 +110,8 @@ public class GeschwisterbonusAbschnittRule extends AbstractAbschnittRule {
 			.filter(kindContainer -> !kindContainer.getBetreuungen().isEmpty()
 				&& kindContainer.getBetreuungen()
 				.stream()
-				.anyMatch(kindBetreuung -> kindBetreuung.getBetreuungspensumContainers().stream()
-					.filter(betreuungspensumContainer -> gueltigkeit.getOverlap(betreuungspensumContainer.getBetreuungspensumJA()
-						.getGueltigkeit()).isPresent()).collect(Collectors.toList()).size() > 0))
+				.anyMatch(kindBetreuung -> atLeastOneBetreuungspensumContainerOverlap(gueltigkeit, kindBetreuung))
+			)
 			.map(KindContainer::getKindJA)
 			.filter(this::kindCouldHaveBG)
 			.sorted(
@@ -121,6 +119,16 @@ public class GeschwisterbonusAbschnittRule extends AbstractAbschnittRule {
 					.comparing(AbstractPersonEntity::getGeburtsdatum)
 					.thenComparing(AbstractEntity::getTimestampErstellt))
 			.collect(Collectors.toList());
+	}
+
+	private static boolean atLeastOneBetreuungspensumContainerOverlap(DateRange gueltigkeit, Betreuung kindBetreuung) {
+		return kindBetreuung.getBetreuungspensumContainers()
+			.stream()
+			.anyMatch(
+				betreuungspensumContainer -> gueltigkeit.getOverlap(
+					betreuungspensumContainer.getBetreuungspensumJA().getGueltigkeit()
+				).isPresent()
+			);
 	}
 
 	@Override
@@ -137,7 +145,8 @@ public class GeschwisterbonusAbschnittRule extends AbstractAbschnittRule {
 	private List<VerfuegungZeitabschnitt> createEineVerfuegungZeitabschnittProMonat(
 		LocalDate gueltigAb,
 		LocalDate gueltigBis,
-		List<VerfuegungZeitabschnitt> verfuegungZeitabschnitts) {
+		List<VerfuegungZeitabschnitt> verfuegungZeitabschnitts
+	) {
 		if (gueltigAb.getMonth().equals(gueltigBis.getMonth())) {
 			verfuegungZeitabschnitts.add(new VerfuegungZeitabschnitt(new DateRange(gueltigAb, gueltigBis)));
 			return verfuegungZeitabschnitts;
