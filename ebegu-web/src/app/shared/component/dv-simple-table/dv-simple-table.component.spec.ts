@@ -2,7 +2,7 @@ import {ChangeDetectionStrategy, SimpleChange} from '@angular/core';
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {By} from '@angular/platform-browser';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
-import {SHARED_MODULE_OVERRIDES} from '../../../../hybridTools/mockUpgradedComponent';
+import {SHARED_MODULE_OVERRIDES} from '../../../../hybridTools/mockUpgradedDirective';
 import {SharedModule} from '../../shared.module';
 import {DvSimpleTableColumnDefinition} from './dv-simple-table-column-definition';
 import {DvSimpleTableConfig} from './dv-simple-table-config';

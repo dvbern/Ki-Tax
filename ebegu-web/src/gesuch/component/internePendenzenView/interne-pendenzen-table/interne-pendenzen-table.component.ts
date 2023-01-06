@@ -1,9 +1,20 @@
-import {ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output, SimpleChanges} from '@angular/core';
+import {
+    ChangeDetectionStrategy,
+    Component,
+    EventEmitter,
+    Input,
+    OnChanges,
+    OnInit,
+    Output,
+    SimpleChanges
+} from '@angular/core';
 import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
 import {MatSort, Sort, SortDirection} from '@angular/material/sort';
 import {MatTableDataSource} from '@angular/material/table';
 import {isMoment} from 'moment';
-import {DvNgRemoveDialogComponent} from '../../../../app/core/component/dv-ng-remove-dialog/dv-ng-remove-dialog.component';
+import {
+    DvNgRemoveDialogComponent
+} from '../../../../app/core/component/dv-ng-remove-dialog/dv-ng-remove-dialog.component';
 import {TSInternePendenz} from '../../../../models/TSInternePendenz';
 
 @Component({
@@ -12,7 +23,7 @@ import {TSInternePendenz} from '../../../../models/TSInternePendenz';
     styleUrls: ['./interne-pendenzen-table.component.less'],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class InternePendenzenTableComponent implements OnInit {
+export class InternePendenzenTableComponent implements OnInit, OnChanges {
 
     @Input()
     public internePendenzen: TSInternePendenz[] = [];

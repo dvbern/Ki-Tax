@@ -63,9 +63,8 @@ export class VerfuegungRS {
 
     public verfuegungSchliessenOhneVerfuegen(gesuchId: string, betreuungId: string): IPromise<void> {
         return this.http.post(`${this.serviceURL}/schliessenOhneVerfuegen/${encodeURIComponent(betreuungId)}`, {})
-            .then(() => this.wizardStepManager.findStepsFromGesuch(gesuchId).then(() => {
-                    return;
-                }));
+            .then(() => this.wizardStepManager.findStepsFromGesuch(gesuchId).then(() => {}
+                ));
     }
 
     public nichtEintreten(gesuchId: string, betreuungId: string): IPromise<TSVerfuegung> {

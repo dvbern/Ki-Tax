@@ -82,10 +82,7 @@ export class NotrechtRS {
             this.ebeguRestUtil.rueckforderungMitteilungToRestObject(restRueckforderungMitteilung, mitteilung);
         const data = {mitteilung: restRueckforderungMitteilung, statusList: statusToSendMitteilung};
         return this.$http.post(`${this.serviceURL}/mitteilung`, data)
-            .then(() => {
-                    return;
-                }
-            );
+            .then(() => {});
     }
 
     public sendEinladung(
@@ -96,10 +93,7 @@ export class NotrechtRS {
             this.ebeguRestUtil.rueckforderungMitteilungToRestObject(restRueckforderungMitteilung, mitteilung);
 
         return this.$http.post(`${this.serviceURL}/einladung`, restRueckforderungMitteilung)
-            .then(() => {
-                    return;
-                }
-            );
+            .then(() => {});
     }
 
     public initializePhase2(): IHttpPromise<any> {

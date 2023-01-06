@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2021 DV Bern AG, Switzerland
+ * Copyright (C) 2022 DV Bern AG, Switzerland
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -15,21 +15,5 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {Directive, ElementRef, Injector, Input} from '@angular/core';
-import {UpgradeComponent} from '@angular/upgrade/static';
-
-@Directive({
-    selector: 'dossier-toolbar'
-})
-export class NewDossierToolbar extends UpgradeComponent {
-
-    @Input() public gesuchid: string;
-    @Input() public dossierId: string;
-    @Input() public isDashboardScreen: string;
-    @Input() public hideActionButtons: string;
-    @Input() public forceLoadingFromFall: string;
-
-    public constructor(elementRef: ElementRef, injector: Injector) {
-        super('dossierToolbar', elementRef, injector);
-    }
-}
+ALTER TABLE anmeldung_ferieninsel ADD COLUMN status_vor_ignorieren varchar(255);
+ALTER TABLE anmeldung_ferieninsel_aud ADD COLUMN status_vor_ignorieren varchar(255);

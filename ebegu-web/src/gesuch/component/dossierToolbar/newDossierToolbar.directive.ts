@@ -14,12 +14,22 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
-export interface DvSimpleTableColumnDefinition {
-    // the name of the column header
-    displayedName: string;
-    // the name of the attribute, used by the cell
-    attributeName: string;
-    // we can use this function to manipulate the display value of a cell, similar to a pipe. E.g. for dates, we cannot
-    // sort the value by the date representation
-    displayFunction?: (...args: any[]) => any;
+
+import {Directive, ElementRef, Injector, Input} from '@angular/core';
+import {UpgradeComponent} from '@angular/upgrade/static';
+
+@Directive({
+    selector: 'dossier-toolbar'
+})
+export class NewDossierToolbarDirective extends UpgradeComponent {
+
+    @Input() public gesuchid: string;
+    @Input() public dossierId: string;
+    @Input() public isDashboardScreen: string;
+    @Input() public hideActionButtons: string;
+    @Input() public forceLoadingFromFall: string;
+
+    public constructor(elementRef: ElementRef, injector: Injector) {
+        super('dossierToolbar', elementRef, injector);
+    }
 }

@@ -27,7 +27,7 @@ import {TSGemeindeStammdaten} from '../../../models/TSGemeindeStammdaten';
     changeDetection: ChangeDetectionStrategy.OnPush,
     viewProviders: [ { provide: ControlContainer, useExisting: NgForm } ]
 })
-export class EditGemeindeComponentFI implements OnInit {
+export class EditGemeindeFIComponent implements OnInit {
 
     @Input() public stammdaten$: Observable<TSGemeindeStammdaten>;
     @Input() private readonly gemeindeId: string;

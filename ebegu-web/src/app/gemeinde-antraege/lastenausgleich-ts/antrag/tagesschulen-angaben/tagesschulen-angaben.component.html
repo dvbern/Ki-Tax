@@ -177,7 +177,7 @@
                 <i class="fa fa-exclamation" aria-hidden="true"></i>
                 <span>
                     <span translate>LATS_ABWEICHUNGEN_ANZAHL_KINDER</span>
-                    <span *ngIf="autoFilled && anzahlEingeschriebeneKinder?.vorschulalter == 1">
+                    <span *ngIf="autoFilled && anzahlEingeschriebeneKinder?.vorschulalter === 1">
                         {{'LATS_ABWEICHUNGEN_ANZAHL_KINDER_VORSCHULALTER_HINT' | translate }}
                     </span>
                     <span *ngIf="autoFilled && anzahlEingeschriebeneKinder?.vorschulalter > 1">

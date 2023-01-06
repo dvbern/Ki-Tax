@@ -83,7 +83,7 @@ import {DvAccordionComponentConfig} from './component/dv-accordion/dv-accordion'
 import {DvAccordionTabComponentConfig} from './component/dv-accordion/dv-accordion-tab/dv-accordion-tab';
 import {AdresseComponentConfig} from './component/dv-adresse/dv-adresse';
 import {DVAntragListConfig} from './component/dv-antrag-list/dv-antrag-list';
-import {DvBenutzerEntry} from './component/dv-benutzer-entry/dv-benutzer-entry.component';
+import {DvBenutzerEntryComponent} from './component/dv-benutzer-entry/dv-benutzer-entry.component';
 import {DvBisherComponentConfig} from './component/dv-bisher/dv-bisher';
 import {DvCountdownComponentConfig} from './component/dv-countdown/dv-countdown';
 import {DVDokumenteListConfig} from './component/dv-dokumente-list/dv-dokumente-list';
@@ -320,7 +320,7 @@ export const CORE_JS_MODULE = angular
     .directive('dvNewAntragList', downgradeComponent({component: NewAntragListComponent}))
     .directive('dvHelpmenu', downgradeComponent({component: DvHelpmenuComponent}))
     .directive('dvMitteilungDelegation', downgradeComponent({component: DvMitteilungDelegationComponent}))
-    .directive('dvBenutzerEntry', downgradeComponent({component: DvBenutzerEntry}))
+    .directive('dvBenutzerEntry', downgradeComponent({component: DvBenutzerEntryComponent}))
     .directive('dvNavbar', downgradeComponent({component: NavbarComponent}))
     .directive('dvBenutzer', downgradeComponent({component: BenutzerComponent}))
     .directive('dvSearchList', downgradeComponent({component: DvSearchListComponent}))
