@@ -19,7 +19,7 @@ import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {StateService, Transition} from '@uirouter/angular';
 import {ErrorService} from '../../../../../app/core/errors/service/ErrorService';
 import {SharedModule} from '../../../../../app/shared/shared.module';
-import {SHARED_MODULE_OVERRIDES} from '../../../../../hybridTools/mockUpgradedComponent';
+import {SHARED_MODULE_OVERRIDES} from '../../../../../hybridTools/mockUpgradedDirective';
 import {TSFinanzielleSituationResultateDTO} from '../../../../../models/dto/TSFinanzielleSituationResultateDTO';
 import {TSFinanzielleSituationTyp} from '../../../../../models/enums/TSFinanzielleSituationTyp';
 import {TSEinkommensverschlechterung} from '../../../../../models/TSEinkommensverschlechterung';

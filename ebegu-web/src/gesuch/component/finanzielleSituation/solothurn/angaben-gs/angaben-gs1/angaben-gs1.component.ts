@@ -1,5 +1,4 @@
-import {Component, ChangeDetectionStrategy, ViewChild} from '@angular/core';
-import {NgForm} from '@angular/forms';
+import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
 import {TSFinanzielleSituationSubStepName} from '../../../../../../models/enums/TSFinanzielleSituationSubStepName';
 import {TSFinanzielleSituationContainer} from '../../../../../../models/TSFinanzielleSituationContainer';
 import {EbeguUtil} from '../../../../../../utils/EbeguUtil';
@@ -13,7 +12,7 @@ import {FinanzielleSituationSolothurnService} from '../../finanzielle-situation-
     templateUrl: '../angaben-gs.component.html',
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class AngabenGs1Component extends AbstractFinSitsolothurnView {
+export class AngabenGs1Component extends AbstractFinSitsolothurnView implements OnInit {
 
     public constructor(
         public gesuchModelManager: GesuchModelManager,
@@ -41,7 +40,7 @@ export class AngabenGs1Component extends AbstractFinSitsolothurnView {
     public notify(): void {
     }
 
-    public prepareSave(onResult: Function): Promise<TSFinanzielleSituationContainer> {
+    public prepareSave(onResult: (arg: any) => any): Promise<TSFinanzielleSituationContainer> {
         if (!this.isGesuchValid()) {
             onResult(undefined);
             return undefined;

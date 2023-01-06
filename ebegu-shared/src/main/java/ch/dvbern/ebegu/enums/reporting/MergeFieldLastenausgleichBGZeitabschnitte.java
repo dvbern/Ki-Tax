@@ -56,6 +56,7 @@ public enum MergeFieldLastenausgleichBGZeitabschnitte implements MergeFieldProvi
 	gutscheinTitle(new SimpleMergeField<>("gutscheinTitle", STRING_CONVERTER)),
 	selbstbehaltGemeindeTitle(new SimpleMergeField<>("selbstbehaltGemeindeTitle", STRING_CONVERTER)),
 	eingabeLastenausgleichTitle(new SimpleMergeField<>("eingabeLastenausgleichTitle", STRING_CONVERTER)),
+	korrekturTitle(new SimpleMergeField<>("korrekturTitle", STRING_CONVERTER)),
 
 	referenznummer(new SimpleMergeField<>("referenznummer", STRING_CONVERTER)),
 	gemeinde(new SimpleMergeField<>("gemeinde", STRING_CONVERTER)),
@@ -70,7 +71,8 @@ public enum MergeFieldLastenausgleichBGZeitabschnitte implements MergeFieldProvi
 	betreuungsangebotTyp(new SimpleMergeField<>("betreuungsangebotTyp", STRING_CONVERTER)),
 	bgPensum(new SimpleMergeField<>("bgPensum", PERCENT_CONVERTER)),
 	keinSelbstbehaltDurchGemeinde(new SimpleMergeField<>("keinSelbstbehaltDurchGemeinde", BOOLEAN_X_CONVERTER)),
-	gutschein(new SimpleMergeField<>("gutschein", BIGDECIMAL_CONVERTER));
+	gutschein(new SimpleMergeField<>("gutschein", BIGDECIMAL_CONVERTER)),
+	isKorrektur(new SimpleMergeField<>("isKorrektur", BOOLEAN_X_CONVERTER));
 
 	@Nonnull
 	private final MergeField<?> mergeField;

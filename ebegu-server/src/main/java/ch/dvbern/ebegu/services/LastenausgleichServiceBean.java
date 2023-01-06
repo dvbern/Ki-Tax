@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2019 DV Bern AG, Switzerland
+ * Copyright (C) 2023 DV Bern AG, Switzerland
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -8,11 +8,11 @@
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
 package ch.dvbern.ebegu.services;
@@ -46,12 +46,14 @@ import ch.dvbern.ebegu.entities.LastenausgleichGrundlagen_;
 import ch.dvbern.ebegu.entities.Lastenausgleich_;
 import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
+import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.errors.KibonLogLevel;
 import ch.dvbern.ebegu.lastenausgleich.AbstractLastenausgleichRechner;
 import ch.dvbern.ebegu.lastenausgleich.LastenausgleichRechnerNew;
 import ch.dvbern.ebegu.lastenausgleich.LastenausgleichRechnerOld;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
+import ch.dvbern.ebegu.persistence.TransactionHelper;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.MathUtil;
 import ch.dvbern.lib.cdipersistence.Persistence;
@@ -87,6 +89,9 @@ public class LastenausgleichServiceBean extends AbstractBaseService implements L
 
 	@Inject
 	private MailService mailService;
+
+	@Inject
+	private TransactionHelper transactionHelper;
 
 	@Nonnull
 	@Override
@@ -157,7 +162,7 @@ public class LastenausgleichServiceBean extends AbstractBaseService implements L
 	@SuppressWarnings("PMD.NcssMethodCount")
 	@Override
 	@Nonnull
-	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+	@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 	public Lastenausgleich createLastenausgleichNew(
 		int jahr,
 		Mandant mandant) {
@@ -185,24 +190,36 @@ public class LastenausgleichServiceBean extends AbstractBaseService implements L
 		@Nonnull StringBuilder sb,
 		@Nonnull LastenausgleichGrundlagen grundlagenErhebungsjahr
 	) {
-		Lastenausgleich lastenausgleich = new Lastenausgleich();
-		lastenausgleich.setJahr(jahr);
-		lastenausgleich.setMandant(mandant);
+		transactionHelper.runInNewTransaction(() -> {
+				Lastenausgleich lastenausgleich = new Lastenausgleich();
+				lastenausgleich.setJahr(jahr);
+				lastenausgleich.setMandant(mandant);
+				persistence.persist(lastenausgleich);
+			}
+		);
 
 		// Die regulare Abrechnung
 		Collection<Gemeinde> aktiveGemeinden = gemeindeService.getAktiveGemeinden(mandant);
 		int counter = 0;
 		for (Gemeinde gemeinde : aktiveGemeinden) {
-			AbstractLastenausgleichRechner lastenausgleichRechner = getLastenausgleichRechnerForYear(jahr);
-			lastenausgleichRechner.logLastenausgleichRechnerType(jahr, sb);
+			transactionHelper.runInNewTransaction(() -> {
+				AbstractLastenausgleichRechner lastenausgleichRechner = getLastenausgleichRechnerForYear(jahr);
+				lastenausgleichRechner.logLastenausgleichRechnerType(jahr, sb);
+				Lastenausgleich lastenausgleichToUpdate = findLastenausgleich(jahr).orElseThrow(() -> new EbeguEntityNotFoundException(
+					"calculateLastenausgleich - details Berechnung",
+					ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
+					jahr
+				));
+				LastenausgleichDetail detailErhebung =
+					lastenausgleichRechner.createLastenausgleichDetail(gemeinde, lastenausgleichToUpdate, grundlagenErhebungsjahr);
+				if (detailErhebung != null) {
+					lastenausgleichToUpdate.addLastenausgleichDetail(detailErhebung);
+					sb.append("Reguläre Abrechnung Gemeinde ").append(gemeinde.getName()).append(NEWLINE);
+					sb.append(detailErhebung).append(NEWLINE);
+					persistence.merge(lastenausgleichToUpdate);
+				}
+			});
 
-			LastenausgleichDetail detailErhebung =
-				lastenausgleichRechner.createLastenausgleichDetail(gemeinde, lastenausgleich, grundlagenErhebungsjahr);
-			if (detailErhebung != null) {
-				lastenausgleich.addLastenausgleichDetail(detailErhebung);
-				sb.append("Reguläre Abrechnung Gemeinde ").append(gemeinde.getName()).append(NEWLINE);
-				sb.append(detailErhebung).append(NEWLINE);
-			}
 			if (counter % 10 == 0) {
 				LOG.info("LastenausgleichDetail für " + counter + " Gemeinden von " + aktiveGemeinden.size() + " berechnet");
 			}
@@ -218,12 +235,19 @@ public class LastenausgleichServiceBean extends AbstractBaseService implements L
 				sb.append("Korrekturen für Jahr ").append(korrekturJahr).append(NEWLINE);
 				counter = 0;
 				for (Gemeinde gemeinde : aktiveGemeinden) {
-					handleKorrekturJahrFuerGemeinde(
-						korrekturJahr,
-						gemeinde,
-						lastenausgleich,
-						grundlagenKorrekturjahr.get(),
-						sb);
+					transactionHelper.runInNewTransaction(() -> {
+						Lastenausgleich lastenausgleichForKorrektur = findLastenausgleich(jahr).orElseThrow(() -> new EbeguEntityNotFoundException(
+							"calculateLastenausgleich - korrektur",
+							ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
+							jahr
+						));
+						handleKorrekturJahrFuerGemeinde(
+							korrekturJahr,
+							gemeinde,
+							lastenausgleichForKorrektur,
+							grundlagenKorrekturjahr.get(),
+							sb);
+					});
 					if (counter % 10 == 0) {
 						LOG.info("Korrektur für " + counter + " Gemeinden von " + aktiveGemeinden.size() + " berechnet");
 					}
@@ -235,18 +259,30 @@ public class LastenausgleichServiceBean extends AbstractBaseService implements L
 		}
 
 		// Am Schluss das berechnete Total speichern
-		BigDecimal totalGesamterLastenausgleich = BigDecimal.ZERO;
-		for (LastenausgleichDetail lastenausgleichDetail : lastenausgleich.getLastenausgleichDetails()) {
-			totalGesamterLastenausgleich = MathUtil.DEFAULT.addNullSafe(
-				totalGesamterLastenausgleich,
-				lastenausgleichDetail.getBetragLastenausgleich());
-			totalGesamterLastenausgleich = MathUtil.DEFAULT.addNullSafe(
-				totalGesamterLastenausgleich,
-				lastenausgleichDetail.getTotalBetragGutscheineOhneSelbstbehalt());
-		}
-		lastenausgleich.setTotalAlleGemeinden(totalGesamterLastenausgleich);
-
-		return persistence.merge(lastenausgleich);
+		transactionHelper.runInNewTransaction(() -> {
+			Lastenausgleich lastenausgleichToUpdate = findLastenausgleich(jahr).orElseThrow(() -> new EbeguEntityNotFoundException(
+				"calculateLastenausgleich - Total berechnen",
+				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
+				jahr
+			));
+			BigDecimal totalGesamterLastenausgleich = BigDecimal.ZERO;
+			for (LastenausgleichDetail lastenausgleichDetail : lastenausgleichToUpdate.getLastenausgleichDetails()) {
+				totalGesamterLastenausgleich = MathUtil.DEFAULT.addNullSafe(
+					totalGesamterLastenausgleich,
+					lastenausgleichDetail.getBetragLastenausgleich());
+				totalGesamterLastenausgleich = MathUtil.DEFAULT.addNullSafe(
+					totalGesamterLastenausgleich,
+					lastenausgleichDetail.getTotalBetragGutscheineOhneSelbstbehalt());
+			}
+			lastenausgleichToUpdate.setTotalAlleGemeinden(totalGesamterLastenausgleich);
+			persistence.merge(lastenausgleichToUpdate);
+		});
+		Lastenausgleich lastenausgleich = findLastenausgleich(jahr).orElseThrow(() -> new EbeguEntityNotFoundException(
+			"calculateLastenausgleich",
+			ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
+			jahr
+		));
+		return lastenausgleich;
 	}
 
 	@Override
@@ -304,6 +340,7 @@ public class LastenausgleichServiceBean extends AbstractBaseService implements L
 						.append(NEWLINE)
 						.append(detailAktuellesTotalKorrekturjahr)
 						.append(NEWLINE);
+					persistence.merge(lastenausgleich);
 				}
 			}
 		}

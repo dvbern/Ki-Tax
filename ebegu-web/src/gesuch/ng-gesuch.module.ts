@@ -18,7 +18,7 @@ import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {UpgradeModule} from '@angular/upgrade/static';
 import {SharedModule} from '../app/shared/shared.module';
 import {BetreuungOverrideWarningComponent} from './component/betreuungOverrideWarning/betreuung-override-warning.component';
-import {DvFinanzielleSituationRequireX} from './component/dv-finanzielle-situation-require/dv-finanzielle-situation-require-x.component';
+import {DvFinanzielleSituationRequireXComponent} from './component/dv-finanzielle-situation-require/dv-finanzielle-situation-require-x.component';
 import {DvSwitchComponent} from './component/dv-switch/dv-switch.component';
 import {EinkommensverschlechterungResultateViewComponent} from './component/einkommensverschlechterung/bern/einkommensverschlechterung-resultate-view/einkommensverschlechterung-resultate-view.component';
 import {EinkommensverschlechterungLuzernResultateViewComponent} from './component/einkommensverschlechterung/luzern/einkommensverschlechterung-luzern-resultate-view/einkommensverschlechterung-luzern-resultate-view.component';
@@ -28,7 +28,7 @@ import {EinkommensverschlechterungSolothurnViewComponent} from './component/eink
 import {FallCreationViewXComponent} from './component/fall-creation-view-x/fall-creation-view-x.component';
 import {FallToolbarModule} from './component/fallToolbar/fall-toolbar.module';
 import {FamiliensituationViewXComponent} from './component/familiensituation-view-x/familiensituation-view-x.component';
-import {DialogInitZPVNummerVerknuepfen} from './component/finanzielleSituation/bern/dialog-init-zpv-nummer-verknuepfen/dialog-init-zpv-nummer-verknpuefen.component';
+import {DialogInitZPVNummerVerknuepfenComponent} from './component/finanzielleSituation/bern/dialog-init-zpv-nummer-verknuepfen/dialog-init-zpv-nummer-verknpuefen.component';
 import {AufteilungComponent} from './component/finanzielleSituation/bern/finanzielleSituationAufteilung/aufteilung/aufteilung.component';
 import {FinanzielleSituationAufteilungComponent} from './component/finanzielleSituation/bern/finanzielleSituationAufteilung/finanzielle-situation-aufteilung.component';
 import {SteuerabfrageResponseHintsComponent} from './component/finanzielleSituation/bern/steuerabfrageResponseHints/steuerabfrage-response-hints.component';
@@ -73,7 +73,7 @@ import {FkjvKinderabzugComponent} from './component/kindView/fkjv-kinderabzug/fk
         EinkommensverschlechterungLuzernResultateViewComponent,
         EinkommensverschlechterungSolothurnResultateViewComponent,
         EinkommensverschlechterungResultateViewComponent,
-        DvFinanzielleSituationRequireX,
+        DvFinanzielleSituationRequireXComponent,
         AngabenGesuchsteller2Component,
         SelbstdeklarationComponent,
         VeranlagungComponent,
@@ -92,7 +92,7 @@ import {FkjvKinderabzugComponent} from './component/kindView/fkjv-kinderabzug/fk
         FinanzielleSituationAufteilungComponent,
         AufteilungComponent,
         SteuerabfrageResponseHintsComponent,
-        DialogInitZPVNummerVerknuepfen,
+        DialogInitZPVNummerVerknuepfenComponent,
         FallCreationViewXComponent,
         FamiliensituationViewXComponent
     ],

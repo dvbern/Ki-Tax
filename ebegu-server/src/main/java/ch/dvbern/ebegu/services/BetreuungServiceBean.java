@@ -92,6 +92,7 @@ import ch.dvbern.ebegu.enums.AnmeldungMutationZustand;
 import ch.dvbern.ebegu.enums.AntragStatus;
 import ch.dvbern.ebegu.enums.AntragTyp;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
+import ch.dvbern.ebegu.enums.BetreuungspensumAnzeigeTyp;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
 import ch.dvbern.ebegu.enums.Eingangsart;
 import ch.dvbern.ebegu.enums.EinstellungKey;
@@ -525,13 +526,13 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 
 	@Override
 	@Nonnull
-	public AnmeldungTagesschule anmeldungMutationIgnorieren(@Nonnull @Valid AnmeldungTagesschule anmeldung) {
+	public AbstractAnmeldung anmeldungMutationIgnorieren(@Nonnull @Valid AbstractAnmeldung anmeldung) {
 		Objects.requireNonNull(anmeldung, BETREUUNG_DARF_NICHT_NULL_SEIN);
 		authorizer.checkWriteAuthorization(anmeldung);
 
 		// vorgänger zurücksetzen
 		Objects.requireNonNull(anmeldung.getVorgaengerId(), "Eine Anmeldung kann nicht ignoriert werden, wenn sie neu ist");
-		AnmeldungTagesschule vorgaenger = findAnmeldungTagesschule(anmeldung.getVorgaengerId())
+		AbstractAnmeldung vorgaenger = findAnmeldung(anmeldung.getVorgaengerId())
 			.orElseThrow(() -> new EbeguEntityNotFoundException(
 				"resetMutierteAnmeldungen",
 				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
@@ -1459,9 +1460,15 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 	public BigDecimal getMultiplierForAbweichnungen(@Nonnull Betreuung betreuung) {
 		Gesuchsperiode gp = betreuung.extractGesuchsperiode();
 
+
 		if (betreuung.isAngebotKita()) {
 			Einstellung oeffnungstageKita = getEinstellung(EinstellungKey.OEFFNUNGSTAGE_KITA, gp);
-			return calculateOeffnungszeitPerMonthProcentual(oeffnungstageKita.getValueAsBigDecimal());
+			Einstellung pensumAnzeigeTyp = getEinstellung(EinstellungKey.PENSUM_ANZEIGE_TYP, gp);
+			BetreuungspensumAnzeigeTyp betreuungspensumAnzeigeTyp = BetreuungspensumAnzeigeTyp.valueOf(pensumAnzeigeTyp.getValue());
+			if(betreuungspensumAnzeigeTyp.equals(BetreuungspensumAnzeigeTyp.NUR_STUNDEN)) {
+				return BetreuungUtil.calculateOeffnungszeitPerMonthProcentual(MathUtil.EXACT.multiply(oeffnungstageKita.getValueAsBigDecimal(), BetreuungUtil.ANZAHL_STUNDEN_PRO_TAG_KITA));
+			}
+			return BetreuungUtil.calculateOeffnungszeitPerMonthProcentual(oeffnungstageKita.getValueAsBigDecimal());
 		}
 
 		Einstellung oeffnungstageTFO = getEinstellung(EinstellungKey.OEFFNUNGSTAGE_TFO, gp);
@@ -1470,13 +1477,7 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 		BigDecimal oeffungszeitProJahrTFO = MathUtil.EXACT.multiply(
 			oeffnungstageTFO.getValueAsBigDecimal(),
 			oeffnungsstundenTFO.getValueAsBigDecimal());
-		return calculateOeffnungszeitPerMonthProcentual(oeffungszeitProJahrTFO);
-	}
-
-	private BigDecimal calculateOeffnungszeitPerMonthProcentual(@Nullable BigDecimal oeffnungszeitProJahr) {
-		return MathUtil.EXACT.divide(
-			MathUtil.EXACT.divide(oeffnungszeitProJahr, MathUtil.EXACT.from(12)),
-			MathUtil.EXACT.from(100));
+		return BetreuungUtil.calculateOeffnungszeitPerMonthProcentual(oeffungszeitProJahrTFO);
 	}
 
 	private Einstellung getEinstellung(EinstellungKey einstellungKey, Gesuchsperiode gesuchsperiode) {

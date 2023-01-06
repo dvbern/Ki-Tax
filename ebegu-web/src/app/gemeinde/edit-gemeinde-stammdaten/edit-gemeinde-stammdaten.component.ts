@@ -31,7 +31,7 @@ import {CONSTANTS} from '../../core/constants/CONSTANTS';
 import {LogFactory} from '../../core/logging/LogFactory';
 import {ApplicationPropertyRS} from '../../core/rest-services/applicationPropertyRS.rest';
 
-const LOG = LogFactory.createLog('EditGemeindeComponentStammdaten');
+const LOG = LogFactory.createLog('EditGemeindeStammdatenComponent');
 
 @Component({
     selector: 'dv-edit-gemeinde-stammdaten',
@@ -39,7 +39,7 @@ const LOG = LogFactory.createLog('EditGemeindeComponentStammdaten');
     changeDetection: ChangeDetectionStrategy.OnPush,
     viewProviders: [{provide: ControlContainer, useExisting: NgForm}]
 })
-export class EditGemeindeComponentStammdaten implements OnInit, OnDestroy {
+export class EditGemeindeStammdatenComponent implements OnInit, OnDestroy {
 
     @Input() public stammdaten$: Observable<TSGemeindeStammdaten>;
     @Input() private readonly gemeindeId: string;

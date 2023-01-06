@@ -23,6 +23,7 @@ import javax.annotation.Nonnull;
 
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.GemeindeStammdaten;
+import ch.dvbern.ebegu.enums.BetreuungspensumAnzeigeTyp;
 import ch.dvbern.lib.invoicegenerator.pdf.PdfGenerator;
 import com.google.common.collect.Lists;
 import com.lowagie.text.Document;
@@ -50,8 +51,9 @@ public class VerfuegungPdfGeneratorSolothurn extends AbstractVerfuegungPdfGenera
 		@Nonnull GemeindeStammdaten stammdaten,
 		@Nonnull Art art, boolean kontingentierungEnabledAndEntwurf,
 		boolean stadtBernAsivConfigured,
-		boolean isFKJVTexte) {
-		super(betreuung, stammdaten, art, kontingentierungEnabledAndEntwurf, stadtBernAsivConfigured, isFKJVTexte);
+		boolean isFKJVTexte,
+		BetreuungspensumAnzeigeTyp betreuungspensumAnzeigeTyp) {
+		super(betreuung, stammdaten, art, kontingentierungEnabledAndEntwurf, stadtBernAsivConfigured, isFKJVTexte, betreuungspensumAnzeigeTyp);
 	}
 
 	@Nonnull

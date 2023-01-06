@@ -109,7 +109,28 @@ public abstract class AbstractBaseService {
 		if (vorgaengerPlatzOptional.isPresent()) {
 			AbstractPlatz vorgaengerPlatz = vorgaengerPlatzOptional.get();
 			vorgaengerPlatz.setGueltig(false);
+			// falls der Vorgänger im Status SCHULAMT_MUTATION_IGNORIERT ist
+			// müssen wir weiter zurück, weil die letzte gültige Betreuung dann möglicherweise
+			// älter als die Vormutation ist
+			updateVorgaengerPlatzOfSchulamtIgnoriert(vorgaengerPlatz);
 		}
+	}
+
+	/**
+	Setzt rekursiv die Vorgängerplätze von plätzen im Status SCHULAMT_MUTATION_IGNORIERT
+	zurück
+	 */
+	private void updateVorgaengerPlatzOfSchulamtIgnoriert(@Nonnull AbstractPlatz platz) {
+		if (platz.getBetreuungsstatus() != Betreuungsstatus.SCHULAMT_MUTATION_IGNORIERT) {
+			return;
+		}
+		Optional<AbstractPlatz> vorgaengerPlatzOptional = findVorgaengerPlatz(platz);
+		if (vorgaengerPlatzOptional.isEmpty()) {
+			return;
+		}
+		AbstractPlatz vorgaengerPlatz = vorgaengerPlatzOptional.get();
+		vorgaengerPlatz.setGueltig(false);
+		updateVorgaengerPlatzOfSchulamtIgnoriert(vorgaengerPlatz);
 	}
 
 	/**
@@ -126,7 +147,8 @@ public abstract class AbstractBaseService {
 		// Leseberechtigt bin, fuer die Mutation aber schon!
 		AbstractPlatz vorgaengerPlatz = persistence.find(abstractPlatz.getClass(), abstractPlatz.getVorgaengerId());
 		if (vorgaengerPlatz != null) {
-			if (vorgaengerPlatz.getBetreuungsstatus() != Betreuungsstatus.GESCHLOSSEN_OHNE_VERFUEGUNG) {
+			if (vorgaengerPlatz.getBetreuungsstatus() != Betreuungsstatus.GESCHLOSSEN_OHNE_VERFUEGUNG &&
+				vorgaengerPlatz.getBetreuungsstatus() != Betreuungsstatus.SCHULAMT_MUTATION_IGNORIERT) {
 				// Hier kann aus demselben Grund die Berechtigung fuer die Vorgaengerverfuegung nicht geprueft werden
 				return Optional.of(vorgaengerPlatz);
 			}

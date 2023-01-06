@@ -134,10 +134,14 @@ export class ApplicationPropertyRS {
     }
 
     public getCheckboxAuszahlungInZukunft(): IPromise<boolean> {
-        return this.getPublicPropertiesCached().then(response => response.checkboxAuszahlungInZukunft);
+        return this.getPublicPropertiesCached().then(response =>
+            response.checkboxAuszahlungInZukunft
+        );
     }
 
     public getInstitutionenDurchGemeindenEinladen(): IPromise<boolean> {
-        return this.getPublicPropertiesCached().then(response => response.institutionenDurchGemeindenEinladen);
+        return this.getPublicPropertiesCached().then(response =>
+            response.institutionenDurchGemeindenEinladen
+        );
     }
 }

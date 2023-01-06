@@ -27,7 +27,7 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 })
 export class DvNgDisplayObjectDialogComponent {
 
-    public object: Object = {};
+    public object = {};
 
     public constructor(
         private readonly dialogRef: MatDialogRef<DvNgDisplayObjectDialogComponent>,

@@ -20,11 +20,11 @@ import {NgxIbanModule} from 'ngx-iban';
 import {MaterialModule} from '../shared/material.module';
 import {SharedModule} from '../shared/shared.module';
 import {AddGemeindeComponent} from './add-gemeinde/add-gemeinde.component';
-import {EditGemeindeComponentBG} from './edit-gemeinde-bg/edit-gemeinde-bg.component';
-import {EditGemeindeComponentFI} from './edit-gemeinde-fi/edit-gemeinde-fi.component';
-import {EditGemeindeComponentKorrespondenz} from './edit-gemeinde-korrespondenz/edit-gemeinde-korrespondenz.component';
-import {EditGemeindeComponentStammdaten} from './edit-gemeinde-stammdaten/edit-gemeinde-stammdaten.component';
-import {EditGemeindeComponentTS} from './edit-gemeinde-ts/edit-gemeinde-ts.component';
+import {EditGemeindeBGComponent} from './edit-gemeinde-bg/edit-gemeinde-bg.component';
+import {EditGemeindeFIComponent} from './edit-gemeinde-fi/edit-gemeinde-fi.component';
+import {EditGemeindeKorrespondenzComponent} from './edit-gemeinde-korrespondenz/edit-gemeinde-korrespondenz.component';
+import {EditGemeindeStammdatenComponent} from './edit-gemeinde-stammdaten/edit-gemeinde-stammdaten.component';
+import {EditGemeindeTSComponent} from './edit-gemeinde-ts/edit-gemeinde-ts.component';
 import {EditGemeindeComponent} from './edit-gemeinde/edit-gemeinde.component';
 import {GemeindeFiKonfigComponent} from './gemeinde-fi-konfiguration/gemeinde-fi-konfig.component';
 import {OverlappingZeitraumDirective} from './gemeinde-fi-konfiguration/overlapping-zeitraum.directive';
@@ -47,11 +47,11 @@ import {GemeindeTsKonfigComponent} from './gemeinde-ts-konfiguration/gemeinde-ts
         GemeindeListComponent,
         AddGemeindeComponent,
         EditGemeindeComponent,
-        EditGemeindeComponentBG,
-        EditGemeindeComponentFI,
-        EditGemeindeComponentStammdaten,
-        EditGemeindeComponentTS,
-        EditGemeindeComponentKorrespondenz,
+        EditGemeindeBGComponent,
+        EditGemeindeFIComponent,
+        EditGemeindeStammdatenComponent,
+        EditGemeindeTSComponent,
+        EditGemeindeKorrespondenzComponent,
         GemeindeTsKonfigComponent,
         GemeindeFiKonfigComponent,
         OverlappingZeitraumDirective

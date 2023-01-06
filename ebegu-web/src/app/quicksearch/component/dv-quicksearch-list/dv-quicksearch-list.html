@@ -144,13 +144,13 @@
                         <th ng-if="vm.isTagesschulangebotEnabled()">
                             <dv-userselect input-id="verantwortlicherTS" dv-usersearch="verantwortlicherTS"
                                            initial-all="vm.initialAll" show-selection-all="vm.showSelectionAll"
-                                           on-user-changed="vm.userChanged(user)" schulamt="true"
+                                           on-user-changed="vm.userHasChanged(user)" schulamt="true"
                                            selected-user="vm.selectedVerantwortlicherTS"></dv-userselect>
                         </th>
                         <th>
                             <dv-userselect input-id="verantwortlicherBG" dv-usersearch="verantwortlicherBG"
                                            initial-all="vm.initialAll" show-selection-all="vm.showSelectionAll"
-                                           on-user-changed="vm.userChanged(user)"
+                                           on-user-changed="vm.userHasChanged(user)"
                                            selected-user="vm.selectedVerantwortlicherBG"></dv-userselect>
                         </th>
                     </tr>

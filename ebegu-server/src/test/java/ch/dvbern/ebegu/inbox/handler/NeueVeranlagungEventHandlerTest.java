@@ -66,7 +66,6 @@ import static ch.dvbern.ebegu.inbox.handler.PlatzbestaetigungTestUtil.failed;
 import static org.easymock.EasyMock.anyObject;
 import static org.easymock.EasyMock.eq;
 import static org.easymock.EasyMock.expect;
-import static org.easymock.EasyMock.expectLastCall;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.stringContainsInOrder;
@@ -176,10 +175,12 @@ public class NeueVeranlagungEventHandlerTest extends EasyMockSupport {
 	void finSitUnterschiedGleich() {
 		kibonAnfrageContext.setSteuerdatenAnfrageStatus(SteuerdatenAnfrageStatus.RECHTSKRAEFTIG);
 		expectGesuchFound();
+		Einstellung einstellung = findEinstellungMinUnterschied();
+		expect(einstellung.getValueAsBigDecimal()).andReturn(new BigDecimal(50));
 		expect(finanzielleSituationService.calculateResultate(anyObject())).andReturn(new FinanzielleSituationResultateDTO());
 		expect(kibonAnfrageHandler.handleKibonAnfrage(anyObject(), eq(false))).andReturn(kibonAnfrageContext);
 		expect(finanzielleSituationService.calculateResultate(anyObject())).andReturn(new FinanzielleSituationResultateDTO());
-		testIgnored("Keine Meldung erstellt, da das massgebende Einkommen sich mit der neuen Verfügung nicht verändert hat");
+		testIgnored("Keine Meldung erstellt. Das massgebende Einkommen hat sich um 0 Franken verändert. Der konfigurierte Schwellenwert zur Benachrichtigung liegt bei 50 Franken");
 	}
 
 	@Test
@@ -195,7 +196,7 @@ public class NeueVeranlagungEventHandlerTest extends EasyMockSupport {
 	void createsNeueVeranlagungMitteilung() {
 		expectEverythingUntilCompare();
 		Einstellung einstellung = findEinstellungMinUnterschied();
-		expect(einstellung.getValueAsBigDecimal()).andReturn(new BigDecimal(70));
+		expect(einstellung.getValueAsBigDecimal()).andReturn(new BigDecimal(50));
 		GemeindeStammdaten gemeindeStammdaten = new GemeindeStammdaten();
 		expect(gemeindeService.getGemeindeStammdatenByGemeindeId(anyObject())).andReturn(Optional.of(gemeindeStammdaten));
 		expect(mitteilungService.sendNeueVeranlagungsmitteilung(anyObject())).andReturn(new NeueVeranlagungsMitteilung());
@@ -204,8 +205,22 @@ public class NeueVeranlagungEventHandlerTest extends EasyMockSupport {
 
 	@Test
 	void createsNeueVeranlagungMitteilungWhenZugunstenAntragsteller() {
-		//Einkommen sinkt
-		expectEverythingUntilCompare(BigDecimal.valueOf(40000));
+		//Einkommen sinkt um 1 CHF
+		expectEverythingUntilCompare(BigDecimal.valueOf(99999));
+		Einstellung einstellung = findEinstellungMinUnterschied();
+		expect(einstellung.getValueAsBigDecimal()).andReturn(new BigDecimal(70));
+		GemeindeStammdaten gemeindeStammdaten = new GemeindeStammdaten();
+		expect(gemeindeService.getGemeindeStammdatenByGemeindeId(anyObject())).andReturn(Optional.of(gemeindeStammdaten));
+		expect(mitteilungService.sendNeueVeranlagungsmitteilung(anyObject())).andReturn(new NeueVeranlagungsMitteilung());
+		testProcessingSuccess();
+	}
+
+	@Test
+	void createsNeueVeranalgungMitteilungWhenGesuchMarkiert() {
+		//Einkommen bleibt gleich
+		expectEverythingUntilCompare(BigDecimal.valueOf(100000));
+		// gesuch ist markiert
+		kibonAnfrageContext.getGesuch().setMarkiertFuerKontroll(true);
 		Einstellung einstellung = findEinstellungMinUnterschied();
 		expect(einstellung.getValueAsBigDecimal()).andReturn(new BigDecimal(70));
 		GemeindeStammdaten gemeindeStammdaten = new GemeindeStammdaten();

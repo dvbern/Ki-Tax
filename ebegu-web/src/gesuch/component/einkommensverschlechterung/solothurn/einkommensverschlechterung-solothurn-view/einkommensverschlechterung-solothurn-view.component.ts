@@ -65,7 +65,7 @@ export class EinkommensverschlechterungSolothurnViewComponent extends AbstractGe
         this.onValueChangeFunction();
     }
 
-    public save(onResult: Function): IPromise<TSEinkommensverschlechterungContainer> {
+    public save(onResult: (arg: any) => void): IPromise<TSEinkommensverschlechterungContainer> {
         if (!this.isGesuchValid()) {
             onResult(undefined);
             return undefined;

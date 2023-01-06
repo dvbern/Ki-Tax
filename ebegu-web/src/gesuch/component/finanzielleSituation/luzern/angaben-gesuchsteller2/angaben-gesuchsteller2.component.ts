@@ -65,7 +65,7 @@ export class AngabenGesuchsteller2Component extends AbstractFinSitLuzernView {
         return TSFinanzielleSituationSubStepName.LUZERN_GS2;
     }
 
-    public prepareSave(onResult: Function): IPromise<TSFinanzielleSituationContainer> {
+    public prepareSave(onResult: (arg: any) => any): IPromise<TSFinanzielleSituationContainer> {
         if (!this.isGesuchValid()) {
             onResult(undefined);
             return undefined;
@@ -73,7 +73,7 @@ export class AngabenGesuchsteller2Component extends AbstractFinSitLuzernView {
         return this.save(onResult);
     }
 
-    protected save(onResult: Function): angular.IPromise<TSFinanzielleSituationContainer> {
+    protected save(onResult: (arg: any) => any): angular.IPromise<TSFinanzielleSituationContainer> {
         this.model.copyFinSitDataToGesuch(this.gesuchModelManager.getGesuch());
         return this.gesuchModelManager.saveFinanzielleSituation()
             .then((finanzielleSituationContainer: TSFinanzielleSituationContainer) => {

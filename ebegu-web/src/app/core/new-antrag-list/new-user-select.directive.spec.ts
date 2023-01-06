@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-import {Component, destroyPlatform, NgModule} from '@angular/core';
+import {Component, destroyPlatform, DoBootstrap, NgModule} from '@angular/core';
 import {BrowserModule} from '@angular/platform-browser';
 import {platformBrowserDynamic} from '@angular/platform-browser-dynamic';
 import {downgradeComponent, UpgradeModule} from '@angular/upgrade/static';
@@ -60,7 +60,7 @@ describe('NewUserSelectDirective', () => {
                 entryComponents: [TestComponent],
                 imports: [BrowserModule, UpgradeModule, TranslateModule.forRoot()]
             })
-            class Ng2Module {
+            class Ng2Module implements DoBootstrap {
                 public ngDoBootstrap(): void {
                 }
             }

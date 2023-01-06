@@ -376,6 +376,8 @@ public class ApplicationPropertyResource {
 				this.applicationPropertyService.readApplicationProperty(ApplicationPropertyKey.INSTITUTIONEN_DURCH_GEMEINDEN_EINLADEN, mandant)
 						.orElseThrow(() -> notFound);
 
+		ApplicationProperty erlaubenInstitutionenZuWaehlen = this.applicationPropertyService.readApplicationProperty(ApplicationPropertyKey.ERLAUBEN_INSTITUTIONEN_ZU_WAEHLEN, mandant).orElseThrow(() -> notFound);
+
 		String nodeName = "";
 		BigDecimal lastenausgleichTagesschulenAnteilZweitpruefungDeConverted;
 		BigDecimal lastenausgleichTagesschulenAnteilZweitpruefungFrConverted;
@@ -428,7 +430,8 @@ public class ApplicationPropertyResource {
 			stringToBool(zusatzinformationenInstitution.getValue()),
 			activatedDemoFeatures.getValue(),
 			stringToBool(checkboxAuszahlungInZukunft.getValue()),
-			stringToBool(institutionenDurchGemeindenEinladen.getValue())
+			stringToBool(institutionenDurchGemeindenEinladen.getValue()),
+			stringToBool(erlaubenInstitutionenZuWaehlen.getValue())
 			);
 		return Response.ok(pubAppConf).build();
 	}

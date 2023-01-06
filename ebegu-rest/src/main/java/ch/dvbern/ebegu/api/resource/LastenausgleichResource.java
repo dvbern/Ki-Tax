@@ -156,6 +156,7 @@ public class LastenausgleichResource {
 			lastenausgleich = lastenausgleichService.createLastenausgleichOld(jahr, selbstbehaltPro100ProzentPlatz, mandant);
 		} else {
 			lastenausgleich = lastenausgleichService.createLastenausgleichNew(jahr, mandant);
+			lastenausgleich = lastenausgleichService.findLastenausgleich(lastenausgleich.getId());
 		}
 
 		lastenausgleichService.sendEmailsToGemeinden(lastenausgleich);

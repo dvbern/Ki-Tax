@@ -1,9 +1,4 @@
-import {
-    ChangeDetectionStrategy,
-    ChangeDetectorRef,
-    Component,
-    ViewChild
-} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, ViewChild} from '@angular/core';
 import {NgForm} from '@angular/forms';
 import {MatDialog} from '@angular/material/dialog';
 import {MatSort} from '@angular/material/sort';
@@ -26,7 +21,7 @@ const LOG = LogFactory.createLog('AdminViewXComponent');
   styleUrls: ['./admin-view-x.component.less'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class AdminViewXComponent extends AbstractAdminViewX {
+export class AdminViewXComponent extends AbstractAdminViewX implements OnInit {
 
     @ViewChild(NgForm) public form: NgForm;
 
