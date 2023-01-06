@@ -66,8 +66,7 @@
     "caniuse-lite": "^1.0.30001039",
     "check-engine": "^1.10.0",
     "concurrently": "^5.1.0",
-    "detect-browser": "^5.0.0",
-    "eslint": "8.22.0",
+    "eslint": "8.30.0",
     "eslint-plugin-import": "latest",
     "eslint-plugin-jsdoc": "^38.1.6",
     "eslint-plugin-prefer-arrow": "latest",
@@ -78,7 +77,6 @@
     "jasmine": "^3.5.0",
     "jasmine-core": "~3.6.0",
     "jasmine-reporters": "^2.3.2",
-    "jquery": "^3.5.1",
     "karma": "~6.4.0",
     "karma-chrome-launcher": "~3.1.0",
     "karma-coverage": "~2.0.3",
@@ -161,6 +159,8 @@
     "raven-js": "^3.27.2",
     "rxjs": "^6.6.3",
     "tslib": "^2.0.0",
-    "zone.js": "~0.11.4"
+    "zone.js": "~0.11.4",
+    "detect-browser": "^5.0.0",
+    "jquery": "^3.5.1"
   }
 }

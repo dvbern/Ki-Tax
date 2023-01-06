@@ -757,8 +757,7 @@ export class GesuchModelManager {
             return;
         }
 
-        let gesuchsteller: TSGesuchsteller;
-        gesuchsteller = new TSGesuchsteller();
+        const gesuchsteller = new TSGesuchsteller();
         if (this.gesuchstellerNumber === 1 && this.authServiceRS.isOneOfRoles(TSRoleUtil.getGesuchstellerOnlyRoles())) {
             const principal = this.authServiceRS.getPrincipal();
             const name = principal ? principal.nachname : undefined;
@@ -1206,8 +1205,7 @@ export class GesuchModelManager {
     }
 
     public removeErwerbspensum(pensum: TSErwerbspensumContainer): IPromise<any> {
-        let erwerbspensenOfCurrentGS: Array<TSErwerbspensumContainer>;
-        erwerbspensenOfCurrentGS = this.getStammdatenToWorkWith().erwerbspensenContainer;
+        const erwerbspensenOfCurrentGS = this.getStammdatenToWorkWith().erwerbspensenContainer;
         const index = erwerbspensenOfCurrentGS.indexOf(pensum);
         if (index < 0) {
             this.log.error('can not remove Erwerbspensum since it could not be found in list');
@@ -1234,8 +1232,7 @@ export class GesuchModelManager {
     }
 
     public findIndexOfErwerbspensum(gesuchstellerNumber: number, pensum: any): number {
-        let gesuchsteller: TSGesuchstellerContainer;
-        gesuchsteller = gesuchstellerNumber === 2 ? this.gesuch.gesuchsteller2 : this.gesuch.gesuchsteller1;
+        const gesuchsteller = gesuchstellerNumber === 2 ? this.gesuch.gesuchsteller2 : this.gesuch.gesuchsteller1;
 
         return gesuchsteller.erwerbspensenContainer.indexOf(pensum);
     }
@@ -1380,7 +1377,8 @@ export class GesuchModelManager {
     }
 
     public mutationIgnorieren(): IPromise<void> {
-        return this.gesuchRS.mutationIgnorieren(this.gesuch.id).then(() => this.reloadGesuch()).then(() => this.calculateGesuchStatusVerfuegt());
+        return this.gesuchRS.mutationIgnorieren(this.gesuch.id).then(() => this.reloadGesuch())
+            .then(() => this.calculateGesuchStatusVerfuegt());
     }
 
     public verfuegungSchliessenNichtEintreten(): IPromise<TSVerfuegung> {

@@ -19,7 +19,7 @@ import {ComponentFixture, TestBed, waitForAsync} from '@angular/core/testing';
 import {NgForm} from '@angular/forms';
 import {NoopAnimationsModule} from '@angular/platform-browser/animations';
 import {of} from 'rxjs';
-import {SHARED_MODULE_OVERRIDES} from '../../../../hybridTools/mockUpgradedComponent';
+import {SHARED_MODULE_OVERRIDES} from '../../../../hybridTools/mockUpgradedDirective';
 import {TSFile} from '../../../../models/TSFile';
 import {ApplicationPropertyRS} from '../../../core/rest-services/applicationPropertyRS.rest';
 import {WindowRef} from '../../../core/service/windowRef.service';

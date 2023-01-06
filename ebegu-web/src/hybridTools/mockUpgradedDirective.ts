@@ -32,7 +32,7 @@ import {TSBenutzerNoDetails} from '../models/TSBenutzerNoDetails';
 @Directive({
     selector: 'dv-loading-button'
 })
-export class MockDvLoadingButton {
+export class MockDvLoadingButtonDirective {
 
     @Input() public type: string;
     @Input() public delay: string;
@@ -81,7 +81,7 @@ export class MockNewUserSelectDirective {
     public useDefaultUserLists: boolean = true;
     // eslint-disable-next-line @angular-eslint/no-output-on-prefix
     @Output()
-    public readonly onUserChanged: EventEmitter<{user: TSBenutzerNoDetails}> = new EventEmitter<{user: TSBenutzerNoDetails}>();
+    public readonly userChanged: EventEmitter<{user: TSBenutzerNoDetails}> = new EventEmitter<{user: TSBenutzerNoDetails}>();
 }
 
 @Injectable()
@@ -103,8 +103,8 @@ export const SHARED_MODULE_OVERRIDES = {
         providers: [MandantService]
     },
     add: {
-        declarations: [MockDvLoadingButton, MockTooltipDirective, MockNewUserSelectDirective],
-        exports: [MockDvLoadingButton, MockTooltipDirective, MockNewUserSelectDirective],
+        declarations: [MockDvLoadingButtonDirective, MockTooltipDirective, MockNewUserSelectDirective],
+        exports: [MockDvLoadingButtonDirective, MockTooltipDirective, MockNewUserSelectDirective],
         providers: [
             WindowRef,
             {

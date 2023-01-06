@@ -13,6 +13,8 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+/* eslint-disable import/no-unassigned-import */
+
 // This file is required by karma.conf.js and loads recursively all the .spec and framework files
 
 // eslint-disable-next-line import/order, import/no-unassigned-import

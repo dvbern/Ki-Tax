@@ -26,12 +26,9 @@ import javax.persistence.EntityManager;
 import ch.dvbern.ebegu.entities.Einstellung;
 import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
-import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.EinstellungKey;
-import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.services.EinstellungService;
-import ch.dvbern.ebegu.services.GemeindeService;
 
 /**
  * Allgemeine Utils fuer Betreuung
@@ -39,6 +36,8 @@ import ch.dvbern.ebegu.services.GemeindeService;
 public final class BetreuungUtil {
 
 	private static final Pattern COMPILE = Pattern.compile("^0+(?!$)");
+
+	public static final BigDecimal ANZAHL_STUNDEN_PRO_TAG_KITA = BigDecimal.TEN;
 
 	private BetreuungUtil() {
 	}
@@ -56,7 +55,7 @@ public final class BetreuungUtil {
 		@Nonnull Gemeinde gemeinde,
 		@Nullable BetreuungsangebotTyp betreuungsangebotTyp,
 		@Nonnull EinstellungService einstellungService,
-		@Nullable final EntityManager em) {
+		@Nonnull final EntityManager em) {
 
 		EinstellungKey key = null;
 		if (betreuungsangebotTyp == BetreuungsangebotTyp.KITA) {
@@ -102,11 +101,10 @@ public final class BetreuungUtil {
 		return bgNummer.matches("^\\d{2}\\.\\d{6}.\\d{3}\\.\\d+\\.\\d+$");
 	}
 
-	public static Mandant getMandantByGemeindeFromBgNummer(@Nonnull GemeindeService gemeindeService, @Nonnull String bgNummer) {
-		final int gemeindeNummer = getGemeindeFromBGNummer(bgNummer);
-		Gemeinde gemeinde = gemeindeService.getGemeindeByGemeindeNummer(gemeindeNummer).orElseThrow(() ->
-				new EbeguEntityNotFoundException("getGemeindeByGemeindeNummer", gemeindeNummer));
-
-		return Objects.requireNonNull(gemeinde.getMandant());
+	@Nonnull
+	public static BigDecimal calculateOeffnungszeitPerMonthProcentual(@Nonnull BigDecimal oeffnungszeitProJahr) {
+		return MathUtil.EXACT.divide(
+			MathUtil.EXACT.divide(oeffnungszeitProJahr, MathUtil.EXACT.from(12)),
+			MathUtil.EXACT.from(100));
 	}
 }

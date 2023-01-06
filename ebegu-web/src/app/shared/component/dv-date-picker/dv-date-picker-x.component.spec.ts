@@ -18,7 +18,7 @@
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {FormsModule, NgForm, ReactiveFormsModule} from '@angular/forms';
 import {NoopAnimationsModule} from '@angular/platform-browser/animations';
-import {SHARED_MODULE_OVERRIDES} from '../../../../hybridTools/mockUpgradedComponent';
+import {SHARED_MODULE_OVERRIDES} from '../../../../hybridTools/mockUpgradedDirective';
 import {WindowRef} from '../../../core/service/windowRef.service';
 import {MaterialModule} from '../../material.module';
 import {SharedModule} from '../../shared.module';

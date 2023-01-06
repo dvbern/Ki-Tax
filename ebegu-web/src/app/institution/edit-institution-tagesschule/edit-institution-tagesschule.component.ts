@@ -47,7 +47,7 @@ import {InstitutionRS} from '../../core/service/institutionRS.rest';
 import {InstitutionStammdatenRS} from '../../core/service/institutionStammdatenRS.rest';
 import {ModulTagesschuleDialogComponent} from '../edit-modul-tagesschule/modul-tagesschule-dialog.component';
 import {InfoSchnittstelleDialogComponent} from '../info-schnittstelle-dialog/info-schnittstelle-dialog.component';
-import {DialogImportFromOtherInstitution} from './dialog-import-from-other-institution/dialog-import-from-other-institution.component';
+import {DialogImportFromOtherInstitutionComponent} from './dialog-import-from-other-institution/dialog-import-from-other-institution.component';
 
 const LOG = LogFactory.createLog('EditInstitutionTagesschuleComponent');
 
@@ -340,7 +340,7 @@ export class EditInstitutionTagesschuleComponent implements OnInit, OnChanges {
         einstellungenTagesschule.modulTagesschuleTyp = TSModulTagesschuleTyp.DYNAMISCH;
         this.institutionStammdatenRS.getAllTagesschulenForCurrentBenutzer()
             .then((institutionStammdatenList: TSInstitutionStammdaten[]) => {
-                this.openDialogImportFromOtherInstitution$(institutionStammdatenList.filter(is => is.id !== this.stammdaten.id)
+                this.openDialogImportFromOtherInstitutionComponent$(institutionStammdatenList.filter(is => is.id !== this.stammdaten.id)
                     .concat(this.stammdaten)).subscribe((modules: TSModulTagesschuleGroup[]) => {
                     if (!modules) {
                         return;
@@ -354,7 +354,7 @@ export class EditInstitutionTagesschuleComponent implements OnInit, OnChanges {
             });
     }
 
-    private openDialogImportFromOtherInstitution$(institutionList: TSInstitutionStammdaten[]): Observable<TSModulTagesschuleGroup[]> {
+    private openDialogImportFromOtherInstitutionComponent$(institutionList: TSInstitutionStammdaten[]): Observable<TSModulTagesschuleGroup[]> {
         if (!this.editMode) {
             return undefined;
         }
@@ -364,7 +364,7 @@ export class EditInstitutionTagesschuleComponent implements OnInit, OnChanges {
         };
         dialogConfig.panelClass = this.panelClass;
         // Wir übergeben die Group an den Dialog. Bei OK erhalten wir die (veränderte) Group zurück, sonst undefined
-        return this.dialog.open(DialogImportFromOtherInstitution, dialogConfig).afterClosed();
+        return this.dialog.open(DialogImportFromOtherInstitutionComponent, dialogConfig).afterClosed();
     }
 
     public compareGemeinde(b1: TSGemeinde, b2: TSGemeinde): boolean {

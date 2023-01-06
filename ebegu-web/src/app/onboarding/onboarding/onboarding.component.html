@@ -55,7 +55,7 @@
             <br/>
             <a href="" uiSref="authentication.locallogin" translate>ONBOARDING_LOCAL_LOGIN</a>
         </ng-container>
-        <div *ngIf="!(isLuzern$ | async)" class="onboarding-iframe-tutorial">
+        <div *ngIf="(isLuzern$ | async) === false" class="onboarding-iframe-tutorial">
             <iframe *ngIf="isGerman$() | async"
                     src="https://www.youtube.com/embed/-nwcolwnI1M"
                     frameborder="0"
@@ -65,7 +65,7 @@
                     picture-in-picture"
                     allowfullscreen>
             </iframe>
-            <iframe *ngIf="!(isGerman$() | async)"
+            <iframe *ngIf="(isGerman$() | async) === false"
                     src="https://www.youtube.com/embed/4Um--UCWaXs"
                     frameborder="0"
                     allow="accelerometer;

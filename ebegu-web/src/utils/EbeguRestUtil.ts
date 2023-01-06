@@ -4471,6 +4471,7 @@ export class EbeguRestUtil {
         publicAppConfigTS.institutionenDurchGemeindenEinladen = data.institutionenDurchGemeindenEinladen;
         publicAppConfigTS.activatedDemoFeatures = data.activatedDemoFeatures;
         publicAppConfigTS.checkboxAuszahlungInZukunft = data.checkboxAuszahlungInZukunft;
+        publicAppConfigTS.erlaubenInstitutionenZuWaehlen = data.erlaubenInstitutionenZuWaehlen;
         return publicAppConfigTS;
 
     }

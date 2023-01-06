@@ -20,7 +20,9 @@ import {TranslateService} from '@ngx-translate/core';
 import {BehaviorSubject, combineLatest} from 'rxjs';
 import {AuthServiceRS} from '../../../../../authentication/service/AuthServiceRS.rest';
 import {TSSprache} from '../../../../../models/enums/TSSprache';
-import {TSLastenausgleichTagesschuleAngabenGemeindeContainer} from '../../../../../models/gemeindeantrag/TSLastenausgleichTagesschuleAngabenGemeindeContainer';
+import {
+    TSLastenausgleichTagesschuleAngabenGemeindeContainer
+} from '../../../../../models/gemeindeantrag/TSLastenausgleichTagesschuleAngabenGemeindeContainer';
 import {TSBenutzer} from '../../../../../models/TSBenutzer';
 import {EbeguUtil} from '../../../../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../../../../utils/TSRoleUtil';
@@ -123,10 +125,10 @@ export class LastenausgleichTsBerechnungComponent implements OnInit {
     }
 
     private getFilename(sprache: TSSprache): string {
-        let filename;
+        const filename =
         (sprache === TSSprache.DEUTSCH)
-            ? filename = LastenausgleichTsBerechnungComponent.FILENAME_DE
-            : filename = LastenausgleichTsBerechnungComponent.FILENAME_FR;
+            ? LastenausgleichTsBerechnungComponent.FILENAME_DE
+            : LastenausgleichTsBerechnungComponent.FILENAME_FR;
 
         return `${filename} ${this.latsContainer.gesuchsperiode.gesuchsperiodeString} ${this.latsContainer.gemeinde.name}.docx`;
     }

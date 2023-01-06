@@ -113,13 +113,12 @@ export class DVSuppressFormSubmitOnEnterController {
     }
 
     private triggerNextButton(element: IAugmentedJQuery): void {
-        let nextButtons: IAugmentedJQuery;
         const formElement: IAugmentedJQuery = angular.element(this.$mdUtil.getClosest(element[0], 'form'));
         if (!formElement) {
             return;
         }
 
-        nextButtons = formElement.children().find('input[type="submit"], button[type="submit"]');
+        const nextButtons = formElement.children().find('input[type="submit"], button[type="submit"]');
         if (nextButtons) {
             nextButtons.first().click();
         } else {

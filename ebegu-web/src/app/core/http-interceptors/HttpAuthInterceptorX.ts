@@ -47,7 +47,6 @@ export class HttpAuthInterceptorX implements HttpInterceptor {
                         // if this request was a background polling request we do not want to relogin or show errors
                         if (
                             HttpErrorInterceptorX.isIgnorableHttpError(req)) {
-                            console.debug('rejecting failed notokenrefresh response');
                             throw err;
                         }
                         const deferred$ = new Subject<HttpEvent<any>>();

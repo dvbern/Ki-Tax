@@ -2618,10 +2618,14 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 
 	@Override
 	public Gesuch mutationIgnorieren(Gesuch gesuch) {
-		Gesuch gesuchNachVerfuegungStart = verfuegenStarten(gesuch);
-		this.persistence.getEntityManager().refresh(gesuchNachVerfuegungStart);
 
-		gesuchNachVerfuegungStart.getKindContainers().forEach(kindContainer -> {
+		// bei reinen BG- und Mischgesuchen muss zuerst verfuegenStarten aufgerufen werden
+		if (!gesuch.hasOnlyBetreuungenOfSchulamt()) {
+			Gesuch gesuchNachVerfuegungStart = verfuegenStarten(gesuch);
+			this.persistence.getEntityManager().refresh(gesuchNachVerfuegungStart);
+		}
+
+		gesuch.getKindContainers().forEach(kindContainer -> {
 			List<Betreuung> betreuungList = new ArrayList<>(kindContainer.getBetreuungen());
 			for (int i = 0; i < betreuungList.size(); i++) {
 				Betreuung betreuung = betreuungList.get(i);
@@ -2630,11 +2634,20 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 			for (AnmeldungTagesschule anmeldung : kindContainer.getAnmeldungenTagesschule()) {
 				this.betreuungService.anmeldungMutationIgnorieren(anmeldung);
 			}
+			for (AnmeldungFerieninsel anmeldung : kindContainer.getAnmeldungenFerieninsel()) {
+				this.betreuungService.anmeldungMutationIgnorieren(anmeldung);
+			}
 			// anmeldungen des Vorgesuchs zurücksetzen
 			resetMutierteAnmeldungen(gesuch);
 		});
 
-		return gesuchNachVerfuegungStart;
+		// wenn das Gesuch nur TS und FI Anmeldungen wird das Gesuch nicht automatisch abgeschlossen.
+		// dies muss noch gemacht werden.
+		if (gesuch.hasOnlyBetreuungenOfSchulamt()) {
+			setAbschliessen(gesuch);
+		}
+
+		return gesuch;
 
 	}
 

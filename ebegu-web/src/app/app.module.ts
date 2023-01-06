@@ -13,7 +13,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {NgModule} from '@angular/core';
+import {DoBootstrap, NgModule} from '@angular/core';
 import {BrowserModule} from '@angular/platform-browser';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {UpgradeModule} from '@angular/upgrade/static';
@@ -78,7 +78,7 @@ import {ZahlungXModule} from './zahlung/zahlung-x.module';
     ]
 })
 
-export class AppModule {
+export class AppModule implements DoBootstrap {
 
     public constructor(private readonly upgrade: UpgradeModule) {
     }

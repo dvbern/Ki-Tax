@@ -46,7 +46,7 @@ import {EbeguUtil} from '../../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 import {
     DvMultiSelectDialogItem,
-    DvNgMultiSelectDialog
+    DvNgMultiSelectDialogComponent
 } from '../../core/component/dv-ng-multi-select-dialog/dv-ng-multi-select-dialog.component';
 import {DvNgRemoveDialogComponent} from '../../core/component/dv-ng-remove-dialog/dv-ng-remove-dialog.component';
 import {ErrorServiceX} from '../../core/errors/service/ErrorServiceX';
@@ -223,7 +223,7 @@ export class GemeindeAntraegeComponent implements OnInit {
         let gemeindeSelection: TSGemeinde[];
 
         if (this.formGroup.value.antragTyp === TSGemeindeAntragTyp.LASTENAUSGLEICH_TAGESSCHULEN) {
-            gemeindeSelection = await this.dialog.open(DvNgMultiSelectDialog, dialogConfig)
+            gemeindeSelection = await this.dialog.open(DvNgMultiSelectDialogComponent, dialogConfig)
                 .afterClosed()
                 .toPromise()
                 .then((allGemeinden: DvMultiSelectDialogItem[]) =>

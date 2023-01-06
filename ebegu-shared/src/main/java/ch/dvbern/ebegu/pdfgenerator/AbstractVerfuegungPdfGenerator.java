@@ -39,6 +39,7 @@ import ch.dvbern.ebegu.entities.Kind;
 import ch.dvbern.ebegu.entities.Verfuegung;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
+import ch.dvbern.ebegu.enums.BetreuungspensumAnzeigeTyp;
 import ch.dvbern.ebegu.pdfgenerator.PdfGenerator.CustomGenerator;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.Constants;
@@ -136,6 +137,7 @@ public abstract class AbstractVerfuegungPdfGenerator extends DokumentAnFamilieGe
 	private final boolean kontingentierungEnabledAndEntwurf;
 	private final boolean stadtBernAsivConfigured;
 	private final boolean isFKJVTexte;
+	private final BetreuungspensumAnzeigeTyp betreuungspensumAnzeigeTyp;
 	private boolean showColumnAnElternAuszahlen;
 	private boolean showColumnAnInsitutionenAuszahlen;
 	private List<VerfuegungZeitabschnitt> abschnitte;
@@ -149,7 +151,8 @@ public abstract class AbstractVerfuegungPdfGenerator extends DokumentAnFamilieGe
 		@Nonnull Art art,
 		boolean kontingentierungEnabledAndEntwurf,
 		boolean stadtBernAsivConfigured,
-		boolean isFKJVTexte
+		boolean isFKJVTexte,
+		BetreuungspensumAnzeigeTyp betreuungspensumAnzeigeTyp
 	) {
 		super(betreuung.extractGesuch(), stammdaten);
 
@@ -158,6 +161,7 @@ public abstract class AbstractVerfuegungPdfGenerator extends DokumentAnFamilieGe
 		this.kontingentierungEnabledAndEntwurf = kontingentierungEnabledAndEntwurf;
 		this.stadtBernAsivConfigured = stadtBernAsivConfigured;
 		this.isFKJVTexte = isFKJVTexte;
+		this.betreuungspensumAnzeigeTyp = betreuungspensumAnzeigeTyp;
 	}
 
 	@Nonnull
@@ -807,33 +811,35 @@ public abstract class AbstractVerfuegungPdfGenerator extends DokumentAnFamilieGe
 		return translate(FUSSZEILE_1_VERFUEGUNG);
 	}
 
-	private boolean isTFO() {
-		return betreuung.getBetreuungsangebotTyp() == BetreuungsangebotTyp.TAGESFAMILIEN;
+	private boolean isStunden() {
+		return (betreuungspensumAnzeigeTyp.equals(BetreuungspensumAnzeigeTyp.ZEITEINHEIT_UND_PROZENT) &&
+			betreuung.getBetreuungsangebotTyp() == BetreuungsangebotTyp.TAGESFAMILIEN)
+			|| betreuungspensumAnzeigeTyp.equals(BetreuungspensumAnzeigeTyp.NUR_STUNDEN);
 	}
 
 	private String getPensumTitle() {
-		if (isTFO()) {
+		if (isStunden()) {
 			return PENSUM_TITLE_TFO;
 		}
 		return PENSUM_TITLE;
 	}
 
 	private String printEffektiv(VerfuegungZeitabschnitt abschnitt) {
-		if (isTFO()) {
+		if (isStunden()) {
 			return PdfUtil.printBigDecimal(abschnitt.getBetreuungspensumZeiteinheit());
 		}
 		return PdfUtil.printPercent(abschnitt.getBetreuungspensumProzent());
 	}
 
 	private String printAnspruch(VerfuegungZeitabschnitt abschnitt) {
-		if (isTFO()) {
+		if (isStunden()) {
 			return PdfUtil.printBigDecimal(abschnitt.getAnspruchsberechtigteAnzahlZeiteinheiten());
 		}
 		return PdfUtil.printPercent(abschnitt.getAnspruchberechtigtesPensum());
 	}
 
 	private String printVerguenstigt(VerfuegungZeitabschnitt abschnitt) {
-		if (isTFO()) {
+		if (isStunden()) {
 			return PdfUtil.printBigDecimal(abschnitt.getVerfuegteAnzahlZeiteinheiten());
 		}
 		return PdfUtil.printPercent(abschnitt.getBgPensum());

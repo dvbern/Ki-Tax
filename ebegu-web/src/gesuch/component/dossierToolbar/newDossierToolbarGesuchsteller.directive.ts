@@ -21,7 +21,7 @@ import {UpgradeComponent} from '@angular/upgrade/static';
 @Directive({
     selector: 'dossier-toolbar-gesuchsteller'
 })
-export class NewDossierToolbarGesuchsteller extends UpgradeComponent {
+export class NewDossierToolbarGesuchstellerDirective extends UpgradeComponent {
 
     @Input() public gesuchid: string;
     @Input() public dossierId: string;

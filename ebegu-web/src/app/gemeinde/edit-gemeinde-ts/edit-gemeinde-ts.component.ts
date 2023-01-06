@@ -39,7 +39,7 @@ const LOG = LogFactory.createLog('EditGemeidneComponentTS');
     changeDetection: ChangeDetectionStrategy.OnPush,
     viewProviders: [{provide: ControlContainer, useExisting: NgForm}]
 })
-export class EditGemeindeComponentTS implements OnInit {
+export class EditGemeindeTSComponent implements OnInit {
 
     @Input() public stammdaten$: Observable<TSGemeindeStammdaten>;
     @Input() private readonly gemeindeId: string;

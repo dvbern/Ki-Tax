@@ -27,8 +27,6 @@ import javax.persistence.AssociationOverrides;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.ForeignKey;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
@@ -78,12 +76,6 @@ public class AnmeldungTagesschule extends AbstractAnmeldung {
 	@Valid
 	@OneToOne(optional = true, cascade = CascadeType.REMOVE, orphanRemoval = true, mappedBy = "anmeldungTagesschule")
 	private Verfuegung verfuegung;
-
-	@Nullable
-	@Enumerated(EnumType.STRING)
-	@Column(nullable = true)
-	private Betreuungsstatus statusVorIgnorieren;
-
 	@Transient
 	@Nullable
 	private Verfuegung verfuegungPreview;
@@ -130,15 +122,6 @@ public class AnmeldungTagesschule extends AbstractAnmeldung {
 	@Override
 	public void setVerfuegungPreview(@Nullable Verfuegung verfuegungPreview) {
 		this.verfuegungPreview = verfuegungPreview;
-	}
-
-	@Nullable
-	public Betreuungsstatus getStatusVorIgnorieren() {
-		return statusVorIgnorieren;
-	}
-
-	public void setStatusVorIgnorieren(@Nullable Betreuungsstatus statusVorIgnorieren) {
-		this.statusVorIgnorieren = statusVorIgnorieren;
 	}
 
 	@Override

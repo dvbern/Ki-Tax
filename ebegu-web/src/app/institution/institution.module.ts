@@ -25,7 +25,7 @@ import {AddInstitutionComponent} from './add-institution/add-institution.compone
 import {EditBetreuungsstandortComponent} from './betreuungsstandort/edit-betreuungsstandort.component';
 import {EditInstitutionBetreuungsgutscheineComponent} from './edit-institution-betreuungsgutscheine/edit-institution-betreuungsgutscheine.component';
 import {EditInstitutionFerieninselComponent} from './edit-institution-ferieninsel/edit-institution-ferieninsel.component';
-import {DialogImportFromOtherInstitution} from './edit-institution-tagesschule/dialog-import-from-other-institution/dialog-import-from-other-institution.component';
+import {DialogImportFromOtherInstitutionComponent} from './edit-institution-tagesschule/dialog-import-from-other-institution/dialog-import-from-other-institution.component';
 import {EditInstitutionTagesschuleComponent} from './edit-institution-tagesschule/edit-institution-tagesschule.component';
 import {EditInstitutionComponent} from './edit-institution/edit-institution.component';
 import {ModulTagesschuleDialogComponent} from './edit-modul-tagesschule/modul-tagesschule-dialog.component';
@@ -54,7 +54,7 @@ import {InstitutionListComponent} from './list-institution/institution-list.comp
         EditInstitutionTagesschuleComponent,
         EditInstitutionFerieninselComponent,
         ModulTagesschuleDialogComponent,
-        DialogImportFromOtherInstitution,
+        DialogImportFromOtherInstitutionComponent,
         EditBetreuungsstandortComponent,
         InfoSchnittstelleDialogComponent
     ],

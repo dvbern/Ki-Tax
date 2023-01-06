@@ -74,7 +74,7 @@ class LogFunctions {
 
 class DefaultLogFunctions extends LogFunctions {
     public constructor() {
-        // eslint-disable-next-line @typescript-eslint/unbound-method
+        // eslint-disable-next-line
         super(console.error, console.warn, console.info, console.debug);
     }
 }

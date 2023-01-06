@@ -13,8 +13,6 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {MANDANTS} from './MANDANTS';
-
 export const CONSTANTS = {
     name: 'EBEGU',
     REST_API: '/ebegu/api/v1/',
@@ -44,7 +42,8 @@ export const CONSTANTS = {
     NUR_LATS_STARTDATUM: '2021-08-01',
     QR_IBAN_PATTERN: /(LI|CH)\d{2}3[01]\d{3}\w{12}/,
     // used for debounce input elements
-    KEYUP_TIMEOUT: 700
+    KEYUP_TIMEOUT: 700,
+    FIRST_YEAR_LASTENAUSGLEICH_WITHOUT_SELBSTBEHALT: 2022
 };
 
 export const DEFAULT_LOCALE = 'de-CH';

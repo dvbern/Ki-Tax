@@ -17,17 +17,17 @@
 
 import {waitForAsync, ComponentFixture, TestBed} from '@angular/core/testing';
 import {NoopAnimationsModule} from '@angular/platform-browser/animations';
-import {SHARED_MODULE_OVERRIDES} from '../../../hybridTools/mockUpgradedComponent';
+import {SHARED_MODULE_OVERRIDES} from '../../../hybridTools/mockUpgradedDirective';
 import {I18nServiceRSRest} from '../../i18n/services/i18nServiceRS.rest';
 import {MaterialModule} from '../../shared/material.module';
 import {SharedModule} from '../../shared/shared.module';
 import {GemeindeModule} from '../gemeinde.module';
-import {EditGemeindeComponentFI} from './edit-gemeinde-fi.component';
+import {EditGemeindeFIComponent} from './edit-gemeinde-fi.component';
 
-describe('EditGemeindeComponentFI', () => {
+describe('EditGemeindeFIComponent', () => {
 
-    let component: EditGemeindeComponentFI;
-    let fixture: ComponentFixture<EditGemeindeComponentFI>;
+    let component: EditGemeindeFIComponent;
+    let fixture: ComponentFixture<EditGemeindeFIComponent>;
 
     const i18nServiceSpy = jasmine
         .createSpyObj<I18nServiceRSRest>(I18nServiceRSRest.name, ['extractPreferredLanguage']);
@@ -52,7 +52,7 @@ describe('EditGemeindeComponentFI', () => {
     }));
 
     beforeEach(waitForAsync(() => {
-        fixture = TestBed.createComponent(EditGemeindeComponentFI);
+        fixture = TestBed.createComponent(EditGemeindeFIComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();
     }));

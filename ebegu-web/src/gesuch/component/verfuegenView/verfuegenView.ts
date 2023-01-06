@@ -20,6 +20,7 @@ import {map} from 'rxjs/operators';
 import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
 import {MANDANTS} from '../../../app/core/constants/MANDANTS';
 import {DvDialog} from '../../../app/core/directive/dv-dialog/dv-dialog';
+import {LogFactory} from '../../../app/core/logging/LogFactory';
 import {ApplicationPropertyRS} from '../../../app/core/rest-services/applicationPropertyRS.rest';
 import {DownloadRS} from '../../../app/core/service/downloadRS.rest';
 import {I18nServiceRSRest} from '../../../app/i18n/services/i18nServiceRS.rest';
@@ -31,17 +32,20 @@ import {TSBetreuungsstatus} from '../../../models/enums/TSBetreuungsstatus';
 import {TSBrowserLanguage} from '../../../models/enums/TSBrowserLanguage';
 import {getWeekdaysValues, TSDayOfWeek} from '../../../models/enums/TSDayOfWeek';
 import {TSEinstellungKey} from '../../../models/enums/TSEinstellungKey';
+import {TSPensumAnzeigeTyp} from '../../../models/enums/TSPensumAnzeigeTyp';
 import {TSRole} from '../../../models/enums/TSRole';
 import {TSWizardStepName} from '../../../models/enums/TSWizardStepName';
 import {TSZahlungslaufTyp} from '../../../models/enums/TSZahlungslaufTyp';
 import {TSBelegungTagesschuleModulGroup} from '../../../models/TSBelegungTagesschuleModulGroup';
 import {TSBetreuung} from '../../../models/TSBetreuung';
 import {TSDownloadFile} from '../../../models/TSDownloadFile';
+import {TSEinstellung} from '../../../models/TSEinstellung';
 import {TSEinstellungenTagesschule} from '../../../models/TSEinstellungenTagesschule';
 import {TSModulTagesschuleGroup} from '../../../models/TSModulTagesschuleGroup';
 import {TSPublicAppConfig} from '../../../models/TSPublicAppConfig';
 import {TSVerfuegung} from '../../../models/TSVerfuegung';
 import {TSVerfuegungZeitabschnitt} from '../../../models/TSVerfuegungZeitabschnitt';
+import {EbeguRestUtil} from '../../../utils/EbeguRestUtil';
 import {EbeguUtil} from '../../../utils/EbeguUtil';
 import {TagesschuleUtil} from '../../../utils/TagesschuleUtil';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
@@ -58,6 +62,8 @@ import ITranslateService = angular.translate.ITranslateService;
 
 const removeDialogTempl = require('../../dialog/removeDialogTemplate.html');
 const stepDialogTempl = require('../../dialog/stepDialog.html');
+
+const LOG = LogFactory.createLog('VerfuegenViewController');
 
 export class VerfuegenViewComponentConfig implements IComponentOptions {
     public transclude = false;
@@ -88,7 +94,8 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
         '$q',
         '$translate',
         'MandantService',
-        'EinstellungRS'
+        'EinstellungRS',
+        'EbeguRestUtil'
     ];
 
     // this is the model...
@@ -138,6 +145,7 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
         private readonly $translate: ITranslateService,
         private readonly mandantService: MandantService,
         private readonly einstellungRS: EinstellungRS,
+        private readonly ebeguRestUtil: EbeguRestUtil
     ) {
 
         super(gesuchModelManager, berechnungsManager, wizardStepManager, $scope, TSWizardStepName.VERFUEGEN, $timeout);
@@ -202,9 +210,14 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
                 this.setParamsDependingOnCurrentVerfuegung();
             });
         }
-        this.showPercent = this.showPensumInPercent();
-        this.showHours = this.showPensumInHours();
-        this.showDays = this.showPensumInDays();
+        this.einstellungRS.getAllEinstellungenBySystemCached(
+            this.gesuchModelManager.getGesuchsperiode().id,
+        ).subscribe((response: TSEinstellung[]) => {
+            response.filter(r => r.key === TSEinstellungKey.PENSUM_ANZEIGE_TYP)
+                .forEach(einstellung => {
+                    this.loadPensumAnzeigeTyp(einstellung);
+                });
+        }, error => LOG.error(error));
         this.showVerfuegung = this.showVerfuegen();
     }
 
@@ -865,5 +878,25 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
             tagesschuleZeitabschnitt.gueltigkeit.gueltigAb = this.getBetreuung().belegungTagesschule.eintrittsdatum;
         }
         return tagesschuleZeitabschnitt;
+    }
+
+    private loadPensumAnzeigeTyp(einstellung: TSEinstellung) {
+        const einstellungPensumAnzeigeTyp = this.ebeguRestUtil
+            .parsePensumAnzeigeTyp(einstellung);
+        if (einstellungPensumAnzeigeTyp === TSPensumAnzeigeTyp.ZEITEINHEIT_UND_PROZENT) {
+            this.showPercent = this.showPensumInPercent();
+            this.showHours = this.showPensumInHours();
+            this.showDays = this.showPensumInDays();
+        }
+        if (einstellungPensumAnzeigeTyp === TSPensumAnzeigeTyp.NUR_PROZENT) {
+            this.showPercent = true;
+            this.showHours = false;
+            this.showDays = false;
+        }
+        if (einstellungPensumAnzeigeTyp === TSPensumAnzeigeTyp.NUR_STUNDEN) {
+            this.showPercent = false;
+            this.showHours = true;
+            this.showDays = false;
+        }
     }
 }
