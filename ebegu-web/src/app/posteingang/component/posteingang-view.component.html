@@ -16,12 +16,22 @@
   -->
 <div class="dv-table">
     <div class="col-md-12">
-        <div class="row">
+        <div class="row view-title">
+            <div class="col-md-10 col-md-offset-1">
+                <h2 class="ng-scope">{{'POSTEINGANG' | translate}}</h2>
+            </div>
+        </div>
+        <div class="row margin-top-20">
             <div class="col-md-8 col-md-offset-1">
-                <div id="titlePosteingang">
-                    <h3 class="ng-scope">{{'POSTEINGANG' | translate}}
-                        <i class="fa fa-undo" (click)="resetFilter()"></i>
-                    </h3>
+                <div class="dv-table-actions">
+                    <a (click)="resetFilter()" class="pointer-cursor">
+                        <i class="fa fa-undo"></i>
+                        {{'NEU_LADEN' | translate}}
+                    </a>
+                    <a class="ng-scope pointer-cursor" (click)="alleMutationsmeldungVerfuegen()" [dvDemoFeature]="mutationsMeldungDemoFeature">
+                        <i class="fa fa-flash fa-lg"></i>
+                        {{'ALLE_MUTATIONSMELDUNG_AUTOMATISCH_BEARBEITEN' | translate}}
+                    </a>
                 </div>
             </div>
             <div *ngIf="!isSozialdienstOrInstitution()"
@@ -291,10 +301,6 @@
                             </li>
                         </ul>
                     </nav>
-                </div> <div *ngIf="canSeeMutationsmeldungenAutomatischBearbeiten()" [dvDemoFeature]="mutationsMeldungDemoFeature"
-                     class="text-right closed-mitteilungen dv-table-actionButton">
-                    <dv-loading-button (buttonClick)="alleMutationsmeldungVerfuegen()">
-                        {{'ALLE_MUTATIONSMELDUNG_AUTOMATISCH_BEARBEITEN' | translate}}</dv-loading-button>
                 </div>
             </div>
         </div>
