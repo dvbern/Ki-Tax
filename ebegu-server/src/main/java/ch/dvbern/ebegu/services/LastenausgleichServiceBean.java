@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2019 DV Bern AG, Switzerland
+ * Copyright (C) 2023 DV Bern AG, Switzerland
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -8,11 +8,11 @@
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
 package ch.dvbern.ebegu.services;
@@ -191,11 +191,12 @@ public class LastenausgleichServiceBean extends AbstractBaseService implements L
 		@Nonnull LastenausgleichGrundlagen grundlagenErhebungsjahr
 	) {
 		transactionHelper.runInNewTransaction(() -> {
-			Lastenausgleich lastenausgleich = new Lastenausgleich();
+				Lastenausgleich lastenausgleich = new Lastenausgleich();
 				lastenausgleich.setJahr(jahr);
 				lastenausgleich.setMandant(mandant);
-			persistence.persist(lastenausgleich);
-			});
+				persistence.persist(lastenausgleich);
+			}
+		);
 
 		// Die regulare Abrechnung
 		Collection<Gemeinde> aktiveGemeinden = gemeindeService.getAktiveGemeinden(mandant);
@@ -203,20 +204,20 @@ public class LastenausgleichServiceBean extends AbstractBaseService implements L
 		for (Gemeinde gemeinde : aktiveGemeinden) {
 			transactionHelper.runInNewTransaction(() -> {
 				AbstractLastenausgleichRechner lastenausgleichRechner = getLastenausgleichRechnerForYear(jahr);
-			lastenausgleichRechner.logLastenausgleichRechnerType(jahr, sb);
-			Lastenausgleich lastenausgleichToUpdate = findLastenausgleich(jahr).orElseThrow(() -> new EbeguEntityNotFoundException(
-				"calculateLastenausgleich - details Berechnung",
-				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
-				jahr
-			));
-			LastenausgleichDetail detailErhebung =
-				lastenausgleichRechner.createLastenausgleichDetail(gemeinde, lastenausgleichToUpdate, grundlagenErhebungsjahr);
-			if (detailErhebung != null) {
-				lastenausgleichToUpdate.addLastenausgleichDetail(detailErhebung);
-				sb.append("Reguläre Abrechnung Gemeinde ").append(gemeinde.getName()).append(NEWLINE);
-				sb.append(detailErhebung).append(NEWLINE);
-				persistence.merge(lastenausgleichToUpdate);
-			}
+				lastenausgleichRechner.logLastenausgleichRechnerType(jahr, sb);
+				Lastenausgleich lastenausgleichToUpdate = findLastenausgleich(jahr).orElseThrow(() -> new EbeguEntityNotFoundException(
+					"calculateLastenausgleich - details Berechnung",
+					ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
+					jahr
+				));
+				LastenausgleichDetail detailErhebung =
+					lastenausgleichRechner.createLastenausgleichDetail(gemeinde, lastenausgleichToUpdate, grundlagenErhebungsjahr);
+				if (detailErhebung != null) {
+					lastenausgleichToUpdate.addLastenausgleichDetail(detailErhebung);
+					sb.append("Reguläre Abrechnung Gemeinde ").append(gemeinde.getName()).append(NEWLINE);
+					sb.append(detailErhebung).append(NEWLINE);
+					persistence.merge(lastenausgleichToUpdate);
+				}
 			});
 
 			if (counter % 10 == 0) {
