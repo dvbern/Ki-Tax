@@ -17,7 +17,7 @@ import {CUSTOM_ELEMENTS_SCHEMA, NgModule} from '@angular/core';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {UpgradeModule} from '@angular/upgrade/static';
 import {SharedModule} from '../app/shared/shared.module';
-import {FinanzielleVerhaeltnisseComponent} from './component/abstractFinanzielleSituation/appenzell/finanzielle-verhaeltnisse/finanzielle-verhaeltnisse.component';
+import {FinanzielleVerhaeltnisseComponent} from './component/finanzielleSituation/appenzell/finanzielle-verhaeltnisse/finanzielle-verhaeltnisse.component';
 import {BetreuungOverrideWarningComponent} from './component/betreuungOverrideWarning/betreuung-override-warning.component';
 import {DvFinanzielleSituationRequireXComponent} from './component/dv-finanzielle-situation-require/dv-finanzielle-situation-require-x.component';
 import {DvSwitchComponent} from './component/dv-switch/dv-switch.component';
