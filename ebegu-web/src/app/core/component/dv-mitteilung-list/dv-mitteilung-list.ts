@@ -193,7 +193,7 @@ export class DVMitteilungListController implements IOnInit {
                 this.currentMitteilung.message = gemeindeStammdaten.gemeindeStammdatenKorrespondenz?.standardSignatur;
             }
         });
-        }
+    }
 
     private initReceiverList(): void {
         this.empfaengerValues = new Array();

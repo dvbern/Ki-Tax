@@ -195,6 +195,7 @@ export class WizardStepManager {
         this.allowedSteps.push(TSWizardStepName.FINANZIELLE_SITUATION);
         this.allowedSteps.push(TSWizardStepName.FINANZIELLE_SITUATION_LUZERN);
         this.allowedSteps.push(TSWizardStepName.FINANZIELLE_SITUATION_SOLOTHURN);
+        this.allowedSteps.push(TSWizardStepName.FINANZIELLE_SITUATION_APPENZELL);
         this.allowedSteps.push(TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG);
         this.allowedSteps.push(TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_LUZERN);
         this.allowedSteps.push(TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_SOLOTHURN);
@@ -550,6 +551,7 @@ export class WizardStepManager {
         this.hideStep(TSWizardStepName.FINANZIELLE_SITUATION);
         this.hideStep(TSWizardStepName.FINANZIELLE_SITUATION_LUZERN);
         this.hideStep(TSWizardStepName.FINANZIELLE_SITUATION_SOLOTHURN);
+        this.hideStep(TSWizardStepName.FINANZIELLE_SITUATION_APPENZELL);
 
         // show just one step if gesuch.finSitTyp is empty (on gesuch creation)
         if (gesuch.finSitTyp === TSFinanzielleSituationTyp.BERN ||
@@ -559,6 +561,8 @@ export class WizardStepManager {
             this.unhideStep(TSWizardStepName.FINANZIELLE_SITUATION_LUZERN);
         } else if (gesuch.finSitTyp === TSFinanzielleSituationTyp.SOLOTHURN) {
             this.unhideStep(TSWizardStepName.FINANZIELLE_SITUATION_SOLOTHURN);
+        } else if (gesuch.finSitTyp === TSFinanzielleSituationTyp.APPENZELL) {
+            this.unhideStep(TSWizardStepName.FINANZIELLE_SITUATION_APPENZELL);
         } else {
             throw new Error(`wrong FinSitTyp ${gesuch.finSitTyp}`);
         }
@@ -575,7 +579,9 @@ export class WizardStepManager {
             this.unhideStep(TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG);
         } else if (gesuch.finSitTyp === TSFinanzielleSituationTyp.LUZERN) {
             this.unhideStep(TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_LUZERN);
-        } else if (gesuch.finSitTyp === TSFinanzielleSituationTyp.SOLOTHURN) {
+        }  else if (gesuch.finSitTyp === TSFinanzielleSituationTyp.SOLOTHURN) {
+            this.unhideStep(TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_SOLOTHURN);
+        } else if (gesuch.finSitTyp === TSFinanzielleSituationTyp.APPENZELL) {
             this.unhideStep(TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_SOLOTHURN);
         } else {
             throw new Error(`wrong FinSitTyp ${gesuch.finSitTyp}`);

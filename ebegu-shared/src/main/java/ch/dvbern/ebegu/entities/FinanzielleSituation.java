@@ -20,10 +20,12 @@ import java.util.Objects;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.ForeignKey;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
@@ -115,6 +117,11 @@ public class FinanzielleSituation extends AbstractFinanzielleSituation {
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_finanzielle_situation_stuerdaten_response"))
 	@Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
 	private SteuerdatenResponse steuerdatenResponse;
+
+	@Nullable
+	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true,fetch = FetchType.EAGER)
+	@JoinColumn(nullable = true)
+	protected FinanzielleVerhaeltnisse finanzielleVerhaeltnisse;
 
 	public FinanzielleSituation() {
 	}
@@ -284,6 +291,9 @@ public class FinanzielleSituation extends AbstractFinanzielleSituation {
 			target.setSteuerdatenAbfrageStatus(this.getSteuerdatenAbfrageStatus());
 			target.setAutomatischePruefungErlaubt(this.getAutomatischePruefungErlaubt());
 			target.setMomentanSelbststaendig(this.getMomentanSelbststaendig());
+			if (this.getFinanzielleVerhaeltnisse() != null) {
+				target.setFinanzielleVerhaeltnisse(this.getFinanzielleVerhaeltnisse().copyFinanzielleVerhaeltnisse(new FinanzielleVerhaeltnisse(), copyType));
+			}
 			break;
 		case ERNEUERUNG:
 		case ERNEUERUNG_NEUES_DOSSIER:
@@ -332,5 +342,13 @@ public class FinanzielleSituation extends AbstractFinanzielleSituation {
 
 	public void setSteuerdatenResponse(@Nullable SteuerdatenResponse steuerdatenResponse) {
 		this.steuerdatenResponse = steuerdatenResponse;
+	}
+	@Nullable
+	public FinanzielleVerhaeltnisse getFinanzielleVerhaeltnisse() {
+		return finanzielleVerhaeltnisse;
+	}
+
+	public void setFinanzielleVerhaeltnisse(@Nullable FinanzielleVerhaeltnisse finanzielleVerhaeltnisse) {
+		this.finanzielleVerhaeltnisse = finanzielleVerhaeltnisse;
 	}
 }

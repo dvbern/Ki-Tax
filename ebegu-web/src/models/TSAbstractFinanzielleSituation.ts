@@ -16,6 +16,7 @@
 import {TSSteuerdatenAnfrageStatus} from './enums/TSSteuerdatenAnfrageStatus';
 import {TSAbstractMutableEntity} from './TSAbstractMutableEntity';
 import {TSFinanzielleSituationSelbstdeklaration} from './TSFinanzielleSituationSelbstdeklaration';
+import {TSFinanzielleVerhaeltnisse} from './TSFinanzielleVerhaeltnisse';
 
 export class TSAbstractFinanzielleSituation extends TSAbstractMutableEntity {
     private _nettolohn: number;
@@ -41,6 +42,7 @@ export class TSAbstractFinanzielleSituation extends TSAbstractMutableEntity {
     private _gewinnungskosten: number;
     private _abzugSchuldzinsen: number;
     private _selbstdeklaration: TSFinanzielleSituationSelbstdeklaration;
+    private _finanzielleVerhaeltnisse: TSFinanzielleVerhaeltnisse;
 
     public constructor() {
         super();
@@ -218,5 +220,13 @@ export class TSAbstractFinanzielleSituation extends TSAbstractMutableEntity {
 
     public set selbstdeklaration(value: TSFinanzielleSituationSelbstdeklaration) {
         this._selbstdeklaration = value;
+    }
+
+    public get finanzielleVerhaeltnisse(): TSFinanzielleVerhaeltnisse {
+        return this._finanzielleVerhaeltnisse;
+    }
+
+    public set finanzielleVerhaeltnisse(value: TSFinanzielleVerhaeltnisse) {
+        this._finanzielleVerhaeltnisse = value;
     }
 }

@@ -136,6 +136,7 @@ import {TSFile} from '../models/TSFile';
 import {TSFinanzielleSituation} from '../models/TSFinanzielleSituation';
 import {TSFinanzielleSituationContainer} from '../models/TSFinanzielleSituationContainer';
 import {TSFinanzielleSituationSelbstdeklaration} from '../models/TSFinanzielleSituationSelbstdeklaration';
+import {TSFinanzielleVerhaeltnisse} from '../models/TSFinanzielleVerhaeltnisse';
 import {TSFinanzModel} from '../models/TSFinanzModel';
 import {TSGemeinde} from '../models/TSGemeinde';
 import {TSGemeindeKonfiguration} from '../models/TSGemeindeKonfiguration';
@@ -2026,6 +2027,11 @@ export class EbeguRestUtil {
                 {},
                 abstractFinanzielleSituation.selbstdeklaration);
         }
+        if (EbeguUtil.isNotNullOrUndefined(abstractFinanzielleSituation.finanzielleVerhaeltnisse)) {
+            restAbstractFinanzielleSituation.finanzielleVerhaeltnisse = this.finanzielleVerhaeltnisseToRestObject(
+                {},
+                abstractFinanzielleSituation.finanzielleVerhaeltnisse);
+        }
         return restAbstractFinanzielleSituation;
     }
 
@@ -2062,6 +2068,24 @@ export class EbeguRestUtil {
             = selbstdeklaration.abzugSteuerfreierBetragKinder;
         return restSelbstdeklaration;
     }
+
+    private finanzielleVerhaeltnisseToRestObject(
+        restFinanzielleVerhaeltnisse: any,
+        finanzielleVerhaeltnisse: TSFinanzielleVerhaeltnisse
+    ): TSFinanzielleVerhaeltnisse {
+
+        this.abstractMutableEntityToRestObject(restFinanzielleVerhaeltnisse, finanzielleVerhaeltnisse);
+        restFinanzielleVerhaeltnisse.saeule3a = finanzielleVerhaeltnisse.saeule3a;
+        restFinanzielleVerhaeltnisse.saeule3aNichtBvg = finanzielleVerhaeltnisse.saeule3aNichtBvg;
+        restFinanzielleVerhaeltnisse.beruflicheVorsorge = finanzielleVerhaeltnisse.beruflicheVorsorge;
+        restFinanzielleVerhaeltnisse.vorjahresverluste = finanzielleVerhaeltnisse.vorjahresverluste;
+        restFinanzielleVerhaeltnisse.liegenschaftsaufwand = finanzielleVerhaeltnisse.liegenschaftsaufwand;
+        restFinanzielleVerhaeltnisse.einkuenfteBgsa = finanzielleVerhaeltnisse.einkuenfteBgsa;
+        restFinanzielleVerhaeltnisse.politischeParteiSpende = finanzielleVerhaeltnisse.politischeParteiSpende;
+        restFinanzielleVerhaeltnisse.leistungAnJuristischePersonen = finanzielleVerhaeltnisse.leistungAnJuristischePersonen;
+        return restFinanzielleVerhaeltnisse;
+    }
+
 
     public parseAbstractFinanzielleSituation(
         abstractFinanzielleSituationTS: TSAbstractFinanzielleSituation,
@@ -2103,6 +2127,9 @@ export class EbeguRestUtil {
             abstractFinanzielleSituationTS.selbstdeklaration =
                 this.parseFinanzielleSituationSelbstdeklaration(new TSFinanzielleSituationSelbstdeklaration(),
                     abstractFinanzielleSituationFromServer.selbstdeklaration);
+            abstractFinanzielleSituationTS.finanzielleVerhaeltnisse =
+                this.parseFinanzielleVerhaeltnisse(new TSFinanzielleVerhaeltnisse(),
+                    abstractFinanzielleSituationFromServer.finanzielleVerhaeltnisse);
             return abstractFinanzielleSituationTS;
         }
         return undefined;
@@ -2175,6 +2202,27 @@ export class EbeguRestUtil {
             tsSelbstdeklaration.abzugSteuerfreierBetragKinder
                 = selbstdeklarationFromServer.abzugSteuerfreierBetragKinder;
             return tsSelbstdeklaration;
+        }
+        return undefined;
+    }
+
+    private parseFinanzielleVerhaeltnisse(
+        tsFinanzielleVerhaeltnisse: TSFinanzielleVerhaeltnisse,
+        finanzielleVerhaeltnisseFromServer: any
+    ): TSFinanzielleVerhaeltnisse {
+
+        if (finanzielleVerhaeltnisseFromServer) {
+            this.parseAbstractMutableEntity(tsFinanzielleVerhaeltnisse, finanzielleVerhaeltnisseFromServer);
+            tsFinanzielleVerhaeltnisse.saeule3a = finanzielleVerhaeltnisseFromServer.saeule3a;
+            tsFinanzielleVerhaeltnisse.saeule3aNichtBvg = finanzielleVerhaeltnisseFromServer.saeule3aNichtBvg;
+            tsFinanzielleVerhaeltnisse.beruflicheVorsorge = finanzielleVerhaeltnisseFromServer.beruflicheVorsorge;
+            tsFinanzielleVerhaeltnisse.einkuenfteBgsa = finanzielleVerhaeltnisseFromServer.einkuenfteBgsa;
+            tsFinanzielleVerhaeltnisse.liegenschaftsaufwand = finanzielleVerhaeltnisseFromServer.liegenschaftsaufwand;
+            tsFinanzielleVerhaeltnisse.vorjahresverluste = finanzielleVerhaeltnisseFromServer.vorjahresverluste;
+            tsFinanzielleVerhaeltnisse.politischeParteiSpende = finanzielleVerhaeltnisseFromServer.politischeParteiSpende;
+            tsFinanzielleVerhaeltnisse.leistungAnJuristischePersonen = finanzielleVerhaeltnisseFromServer.leistungAnJuristischePersonen;
+
+            return tsFinanzielleVerhaeltnisse;
         }
         return undefined;
     }

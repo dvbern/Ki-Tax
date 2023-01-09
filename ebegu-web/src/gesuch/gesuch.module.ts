@@ -56,6 +56,8 @@ import {SteuerabfrageResponseHintsComponent} from './component/finanzielleSituat
 import {AngabenGesuchsteller2Component} from './component/finanzielleSituation/luzern/angaben-gesuchsteller2/angaben-gesuchsteller2.component';
 import {FinanzielleSituationStartViewLuzernComponent} from './component/finanzielleSituation/luzern/finanzielle-situation-start-view-luzern/finanzielle-situation-start-view-luzern.component';
 import {ResultatComponent} from './component/finanzielleSituation/luzern/resultat/resultat.component';
+import {FinanzielleVerhaeltnisseComponent} from './component/abstractFinanzielleSituation/appenzell/finanzielle-verhaeltnisse/finanzielle-verhaeltnisse.component';
+import {FinanzielleSituationAppenzellViewComponent} from './component/finanzielleSituation/appenzell/finanzielle-situation-appenzell-view/finanzielle-situation-appenzell-view.component';
 import {SelbstdeklarationComponent} from './component/abstractFinanzielleSituation/luzern/selbstdeklaration/selbstdeklaration.component';
 import {VeranlagungComponent} from './component/finanzielleSituation/luzern/veranlagung/veranlagung.component';
 import {FinanzielleSituationStartSolothurnComponent} from './component/finanzielleSituation/solothurn/finanzielle-situation-start-solothurn/finanzielle-situation-start-solothurn.component';
@@ -92,8 +94,10 @@ export const GESUCH_JS_MODULE =
             downgradeComponent({component: AngabenGesuchsteller2Component}))
         .component('finanzielleSituationSelbstdeklarationLuzern',
             downgradeComponent({component: SelbstdeklarationComponent}))
+        .component('finanzielleVerhaeltnisseAppenzell', downgradeComponent({component: FinanzielleVerhaeltnisseComponent}))
         .component('finanzielleSituationVeranlagungLuzern', downgradeComponent({component: VeranlagungComponent}))
         .component('finanzielleSituationResultatLuzern', downgradeComponent({component: ResultatComponent}))
+        .component('finanzielleSituationAppenzell', downgradeComponent({component: FinanzielleSituationAppenzellViewComponent}))
         .component('einkommensverschlechterungLuzernView,',
             downgradeComponent({component: EinkommensverschlechterungLuzernViewComponent}))
         .component('einkommensverschlechterungSolothurnView,',

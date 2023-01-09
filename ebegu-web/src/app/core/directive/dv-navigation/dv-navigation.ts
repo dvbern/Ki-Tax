@@ -140,6 +140,10 @@ export class NavigatorController implements IController {
                         this.finSitWizardSubStepManager =
                             new FinanzielleSituationSubStepManagerSolothurn(this.gesuchModelManager);
                         break;
+                    case TSFinanzielleSituationTyp.APPENZELL:
+                        this.finSitWizardSubStepManager =
+                            new FinanzielleSituationSubStepManagerSolothurn(this.gesuchModelManager);
+                        break;
                     default:
                         throw new Error(`unexpected TSFinanzielleSituationTyp ${typ}`);
                 }
@@ -468,6 +472,8 @@ export class NavigatorController implements IController {
                 return this.state.go('gesuch.finanzielleSituationStartLuzern', gesuchIdParam);
             case TSWizardStepName.FINANZIELLE_SITUATION_SOLOTHURN:
                 return this.state.go('gesuch.finanzielleSituationStartSolothurn', gesuchIdParam);
+            case TSWizardStepName.FINANZIELLE_SITUATION_APPENZELL:
+                return this.state.go('gesuch.finanzielleSituationAppenzell', gesuchIdParam);
             case TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG:
             case TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_LUZERN:
             case TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_SOLOTHURN:

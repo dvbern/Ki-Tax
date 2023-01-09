@@ -30,6 +30,7 @@ import {EinkommensverschlechterungSolothurnResultateViewComponent} from './compo
 import {EinkommensverschlechterungSolothurnViewComponent} from './component/einkommensverschlechterung/solothurn/einkommensverschlechterung-solothurn-view/einkommensverschlechterung-solothurn-view.component';
 import {FallCreationViewXComponent} from './component/fall-creation-view-x/fall-creation-view-x.component';
 import {FamiliensituationViewXComponent} from './component/familiensituation-view-x/familiensituation-view-x.component';
+import {FinanzielleSituationAppenzellViewComponent} from './component/finanzielleSituation/appenzell/finanzielle-situation-appenzell-view/finanzielle-situation-appenzell-view.component';
 import {AngabenGesuchsteller2Component} from './component/finanzielleSituation/luzern/angaben-gesuchsteller2/angaben-gesuchsteller2.component';
 import {FinanzielleSituationStartViewLuzernComponent} from './component/finanzielleSituation/luzern/finanzielle-situation-start-view-luzern/finanzielle-situation-start-view-luzern.component';
 import {AngabenGs1Component} from './component/finanzielleSituation/solothurn/angaben-gs/angaben-gs1/angaben-gs1.component';
@@ -612,6 +613,28 @@ export class EbeguFinanzielleSituationGS2LuzernState implements Ng1StateDeclarat
     };
 }
 
+export class EbeguFinanzielleSituationAppenzellState implements Ng1StateDeclaration {
+    public name = 'gesuch.finanzielleSituationAppenzell';
+    public url = '/finanzielleSituationAppenzell/:gesuchId';
+
+    public views: any = {
+        gesuchViewPort: {
+            component: FinanzielleSituationAppenzellViewComponent,
+        },
+        kommentarViewPort: {
+            template: kommentarView,
+        },
+    };
+
+    public resolve = {
+        gesuchModelManager: getGesuchModelManager,
+    };
+
+    public data = {
+        roles: TSRoleUtil.getAllRolesButTraegerschaftInstitution(),
+    };
+}
+
 export class EbeguVerfuegenListState implements Ng1StateDeclaration {
     public name = 'gesuch.verfuegen';
     public url = '/verfuegen/:gesuchId';
@@ -987,6 +1010,7 @@ const ng1States: Ng1StateDeclaration[] = [
     new EbeguFinanzielleSituationGS2LuzernState(),
     new EbeguFinanzielleSituationGS1SolothurnState(),
     new EbeguFinanzielleSituationGS2SolothurnState(),
+    new EbeguFinanzielleSituationAppenzellState(),
     new EbeguKindState(),
     new EbeguErwerbspensenListState(),
     new EbeguErwerbspensumState(),

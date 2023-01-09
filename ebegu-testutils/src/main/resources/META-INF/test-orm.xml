@@ -299,6 +299,7 @@ WHERE (gesuchsperiode.id = :gesuchPeriodeID OR :gesuchPeriodeID IS NULL)
 	<entity class="ch.dvbern.ebegu.entities.FinanzielleSituationContainer"/>
 	<entity class="ch.dvbern.ebegu.entities.FinanzielleSituation"/>
 	<entity class="ch.dvbern.ebegu.entities.FinanzielleSituationSelbstdeklaration"/>
+	<entity class="ch.dvbern.ebegu.entities.FinanzielleVerhaeltnisse"/>
 	<entity class="ch.dvbern.ebegu.entities.Mandant"/>
 	<entity class="ch.dvbern.ebegu.entities.Sequence"/>
 	<entity class="ch.dvbern.ebegu.entities.Traegerschaft"/>

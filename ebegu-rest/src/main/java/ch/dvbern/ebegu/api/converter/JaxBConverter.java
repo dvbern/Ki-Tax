@@ -46,7 +46,7 @@ import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response.Status;
 
 import ch.dvbern.ebegu.api.dtos.JaxAbstractDTO;
-import ch.dvbern.ebegu.api.dtos.JaxAbstractFinanzielleSituation;
+import ch.dvbern.ebegu.api.dtos.finanziellesituation.JaxAbstractFinanzielleSituation;
 import ch.dvbern.ebegu.api.dtos.JaxAbstractGemeindeStammdaten;
 import ch.dvbern.ebegu.api.dtos.JaxAbstractInstitutionStammdaten;
 import ch.dvbern.ebegu.api.dtos.JaxAbwesenheit;
@@ -96,9 +96,9 @@ import ch.dvbern.ebegu.api.dtos.JaxFall;
 import ch.dvbern.ebegu.api.dtos.JaxFamiliensituation;
 import ch.dvbern.ebegu.api.dtos.JaxFamiliensituationContainer;
 import ch.dvbern.ebegu.api.dtos.JaxFerieninselZeitraum;
-import ch.dvbern.ebegu.api.dtos.JaxFinanzielleSituation;
-import ch.dvbern.ebegu.api.dtos.JaxFinanzielleSituationContainer;
-import ch.dvbern.ebegu.api.dtos.JaxFinanzielleSituationSelbstdeklaration;
+import ch.dvbern.ebegu.api.dtos.finanziellesituation.JaxFinanzielleSituation;
+import ch.dvbern.ebegu.api.dtos.finanziellesituation.JaxFinanzielleSituationContainer;
+import ch.dvbern.ebegu.api.dtos.finanziellesituation.JaxFinanzielleSituationSelbstdeklaration;
 import ch.dvbern.ebegu.api.dtos.JaxGemeinde;
 import ch.dvbern.ebegu.api.dtos.JaxGemeindeKonfiguration;
 import ch.dvbern.ebegu.api.dtos.JaxGemeindeStammdaten;
@@ -145,6 +145,7 @@ import ch.dvbern.ebegu.api.dtos.JaxVorlage;
 import ch.dvbern.ebegu.api.dtos.JaxWizardStep;
 import ch.dvbern.ebegu.api.dtos.JaxZahlung;
 import ch.dvbern.ebegu.api.dtos.JaxZahlungsauftrag;
+import ch.dvbern.ebegu.api.dtos.finanziellesituation.JaxFinanzielleVerhaeltnisse;
 import ch.dvbern.ebegu.api.dtos.gemeindeantrag.JaxGemeindeAntrag;
 import ch.dvbern.ebegu.api.dtos.gemeindeantrag.JaxLastenausgleichTagesschuleAngabenGemeinde;
 import ch.dvbern.ebegu.api.dtos.gemeindeantrag.JaxLastenausgleichTagesschuleAngabenGemeindeContainer;
@@ -203,6 +204,7 @@ import ch.dvbern.ebegu.entities.FamiliensituationContainer;
 import ch.dvbern.ebegu.entities.FinanzielleSituation;
 import ch.dvbern.ebegu.entities.FinanzielleSituationContainer;
 import ch.dvbern.ebegu.entities.FinanzielleSituationSelbstdeklaration;
+import ch.dvbern.ebegu.entities.FinanzielleVerhaeltnisse;
 import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.GemeindeStammdaten;
 import ch.dvbern.ebegu.entities.GemeindeStammdatenGesuchsperiodeFerieninsel;
@@ -2761,7 +2763,6 @@ public class JaxBConverter extends AbstractConverter {
 
 		jaxAbstractFinanzielleSituation.setSelbstdeklaration(finanzielleSituationSelbstdeklarationToJAX(
 			persistedAbstractFinanzielleSituation.getSelbstdeklaration()));
-
 	}
 
 	private FinanzielleSituation finanzielleSituationToEntity(
@@ -2800,6 +2801,15 @@ public class JaxBConverter extends AbstractConverter {
 		finanzielleSituation.setVeranlagtVorjahr(finanzielleSituationJAXP.getVeranlagtVorjahr());
 		finanzielleSituation.setMomentanSelbststaendig(finanzielleSituationJAXP.getMomentanSelbststaendig());
 
+		if (finanzielleSituationJAXP.getFinanzielleVerhaeltnisse() != null) {
+			FinanzielleVerhaeltnisse finanzielleVerhaeltnisseToMerge =
+				Optional.ofNullable(finanzielleSituation.getFinanzielleVerhaeltnisse())
+					.orElse(new FinanzielleVerhaeltnisse());
+			finanzielleSituation.setFinanzielleVerhaeltnisse(finanzielleVerhaeltnisseToEntity(
+				finanzielleSituationJAXP.getFinanzielleVerhaeltnisse(),
+				finanzielleVerhaeltnisseToMerge));
+		}
+
 		return finanzielleSituation;
 	}
 
@@ -2832,6 +2842,24 @@ public class JaxBConverter extends AbstractConverter {
 		return selbstdeklaration;
 	}
 
+	private FinanzielleVerhaeltnisse finanzielleVerhaeltnisseToEntity(
+		JaxFinanzielleVerhaeltnisse jaxFinanzielleVerhaeltnisse,
+		FinanzielleVerhaeltnisse finanzielleVerhaeltnisse) {
+
+		convertAbstractVorgaengerFieldsToEntity(jaxFinanzielleVerhaeltnisse, finanzielleVerhaeltnisse);
+
+		finanzielleVerhaeltnisse.setSaeule3a(jaxFinanzielleVerhaeltnisse.getSaeule3a());
+		finanzielleVerhaeltnisse.setSaeule3aNichtBvg(jaxFinanzielleVerhaeltnisse.getSaeule3aNichtBvg());
+		finanzielleVerhaeltnisse.setBeruflicheVorsorge(jaxFinanzielleVerhaeltnisse.getBeruflicheVorsorge());
+		finanzielleVerhaeltnisse.setLiegenschaftsaufwand(jaxFinanzielleVerhaeltnisse.getLiegenschaftsaufwand());
+		finanzielleVerhaeltnisse.setEinkuenfteBgsa(jaxFinanzielleVerhaeltnisse.getEinkuenfteBgsa());
+		finanzielleVerhaeltnisse.setVorjahresverluste(jaxFinanzielleVerhaeltnisse.getVorjahresverluste());
+		finanzielleVerhaeltnisse.setPolitischeParteiSpende(jaxFinanzielleVerhaeltnisse.getPolitischeParteiSpende());
+		finanzielleVerhaeltnisse.setLeistungAnJuristischePersonen(jaxFinanzielleVerhaeltnisse.getLeistungAnJuristischePersonen());
+
+		return finanzielleVerhaeltnisse;
+	}
+
 	@Nullable
 	private JaxFinanzielleSituation finanzielleSituationToJAX(
 		@Nullable final FinanzielleSituation persistedFinanzielleSituation) {
@@ -2860,6 +2888,9 @@ public class JaxBConverter extends AbstractConverter {
 		jaxFinanzielleSituation.setSteuerdatenAbfrageStatus(persistedFinanzielleSituation.getSteuerdatenAbfrageStatus());
 		jaxFinanzielleSituation.setAutomatischePruefungErlaubt(persistedFinanzielleSituation.getAutomatischePruefungErlaubt());
 		jaxFinanzielleSituation.setMomentanSelbststaendig(persistedFinanzielleSituation.getMomentanSelbststaendig());
+
+		jaxFinanzielleSituation.setFinanzielleVerhaeltnisse(finanzielleVerhaeltnisseToJAX(
+			persistedFinanzielleSituation.getFinanzielleVerhaeltnisse()));
 
 		return jaxFinanzielleSituation;
 	}
@@ -2895,6 +2926,27 @@ public class JaxBConverter extends AbstractConverter {
 		jaxSelbstdeklaration.setAbzugSteuerfreierBetragErwachsene(persistedSelbstdeklaration.getAbzugSteuerfreierBetragErwachsene());
 		jaxSelbstdeklaration.setAbzugSteuerfreierBetragKinder(persistedSelbstdeklaration.getAbzugSteuerfreierBetragKinder());
 		return jaxSelbstdeklaration;
+	}
+
+	@Nullable
+	private JaxFinanzielleVerhaeltnisse finanzielleVerhaeltnisseToJAX(
+		@Nullable FinanzielleVerhaeltnisse persistedFinanzielleVerhaeltnisse) {
+		if (persistedFinanzielleVerhaeltnisse == null) {
+			return null;
+		}
+
+		JaxFinanzielleVerhaeltnisse jaxFinanzielleVerhaeltnisse = new JaxFinanzielleVerhaeltnisse();
+		convertAbstractVorgaengerFieldsToJAX(persistedFinanzielleVerhaeltnisse, jaxFinanzielleVerhaeltnisse);
+		jaxFinanzielleVerhaeltnisse.setSaeule3a(persistedFinanzielleVerhaeltnisse.getSaeule3a());
+		jaxFinanzielleVerhaeltnisse.setSaeule3aNichtBvg(persistedFinanzielleVerhaeltnisse.getSaeule3aNichtBvg());
+		jaxFinanzielleVerhaeltnisse.setBeruflicheVorsorge(persistedFinanzielleVerhaeltnisse.getBeruflicheVorsorge());
+		jaxFinanzielleVerhaeltnisse.setLiegenschaftsaufwand(persistedFinanzielleVerhaeltnisse.getLiegenschaftsaufwand());
+		jaxFinanzielleVerhaeltnisse.setEinkuenfteBgsa(persistedFinanzielleVerhaeltnisse.getEinkuenfteBgsa());
+		jaxFinanzielleVerhaeltnisse.setVorjahresverluste(persistedFinanzielleVerhaeltnisse.getVorjahresverluste());
+		jaxFinanzielleVerhaeltnisse.setPolitischeParteiSpende(persistedFinanzielleVerhaeltnisse.getPolitischeParteiSpende());
+		jaxFinanzielleVerhaeltnisse.setLeistungAnJuristischePersonen(persistedFinanzielleVerhaeltnisse.getLeistungAnJuristischePersonen());
+
+		return jaxFinanzielleVerhaeltnisse;
 	}
 
 	private Einkommensverschlechterung einkommensverschlechterungToEntity(

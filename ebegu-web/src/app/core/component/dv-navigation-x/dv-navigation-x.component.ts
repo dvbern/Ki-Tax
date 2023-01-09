@@ -98,6 +98,10 @@ export class DvNavigationXComponent implements OnInit {
                         this.finSitWizardSubStepManager =
                             new FinanzielleSituationSubStepManagerSolothurn(this.gesuchModelManager);
                         break;
+                    case TSFinanzielleSituationTyp.APPENZELL:
+                        this.finSitWizardSubStepManager =
+                            new FinanzielleSituationSubStepManagerSolothurn(this.gesuchModelManager);
+                        break;
                     default:
                         throw new Error(`unexpected TSFinanzielleSituationTyp ${typ}`);
                 }
@@ -468,6 +472,9 @@ export class DvNavigationXComponent implements OnInit {
                 return;
             case TSWizardStepName.FINANZIELLE_SITUATION_SOLOTHURN:
                 this.$state.go('gesuch.finanzielleSituationStartSolothurn', gesuchIdParam);
+                return;
+            case TSWizardStepName.FINANZIELLE_SITUATION_APPENZELL:
+                this.$state.go('gesuch.finanzielleSituationAppenzell', gesuchIdParam);
                 return;
             case TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG:
             case TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_LUZERN:
