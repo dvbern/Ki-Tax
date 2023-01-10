@@ -17,9 +17,8 @@
 
 import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnInit} from '@angular/core';
 import {LogFactory} from '../../../../../app/core/logging/LogFactory';
-import {TSFinanzielleSituationResultateDTO} from '../../../../../models/dto/TSFinanzielleSituationResultateDTO';
-import {TSFinanzielleSituationSubStepName} from '../../../../../models/enums/TSFinanzielleSituationSubStepName';
 import {TSWizardStepName} from '../../../../../models/enums/TSWizardStepName';
+import {TSWizardStepStatus} from '../../../../../models/enums/TSWizardStepStatus';
 import {TSFinanzielleSituationContainer} from '../../../../../models/TSFinanzielleSituationContainer';
 import {TSFinanzielleVerhaeltnisse} from '../../../../../models/TSFinanzielleVerhaeltnisse';
 import {TSFinanzModel} from '../../../../../models/TSFinanzModel';
@@ -56,6 +55,8 @@ export class FinanzielleSituationAppenzellViewComponent extends AbstractGesuchVi
         if(EbeguUtil.isNullOrUndefined(this.getModel().finanzielleSituationJA.finanzielleVerhaeltnisse)){
             this.getModel().finanzielleSituationJA.finanzielleVerhaeltnisse = new TSFinanzielleVerhaeltnisse();
         }
+        this.wizardStepManager.updateCurrentWizardStepStatusSafe(TSWizardStepName.FINANZIELLE_SITUATION_APPENZELL,
+            TSWizardStepStatus.IN_BEARBEITUNG);
     }
 
     public getAntragsteller1Name(): string {
