@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2023 DV Bern AG, Switzerland
+ * Copyright (C) 2022 DV Bern AG, Switzerland
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -15,18 +15,5 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {ChangeDetectionStrategy, Component, Input} from '@angular/core';
-import {TSDemoFeature} from '../../../core/directive/dv-hide-feature/TSDemoFeature';
-
-@Component({
-    selector: 'dv-dv-demo-feature-wrapper',
-    templateUrl: './dv-demo-feature-wrapper.component.html',
-    changeDetection: ChangeDetectionStrategy.OnPush
-})
-export class DvDemoFeatureWrapperComponent {
-
-    @Input() public demoFeature: TSDemoFeature;
-    @Input() public hideIfDemoFeatureActive: boolean;
-
-    public constructor() {}
-}
+ALTER TABLE finanzielle_situation ADD COLUMN steuerdaten_abfrage_timestamp DATETIME;
+ALTER TABLE finanzielle_situation_aud ADD COLUMN steuerdaten_abfrage_timestamp DATETIME;

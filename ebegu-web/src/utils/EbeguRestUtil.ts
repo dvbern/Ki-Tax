@@ -32,6 +32,7 @@ import {TSFachstellenTyp} from '../models/enums/TSFachstellenTyp';
 import {ferienInselNameOrder} from '../models/enums/TSFerienname';
 import {TSFinanzielleSituationTyp} from '../models/enums/TSFinanzielleSituationTyp';
 import {TSKinderabzugTyp} from '../models/enums/TSKinderabzugTyp';
+import {TSPensumAnzeigeTyp} from '../models/enums/TSPensumAnzeigeTyp';
 import {TSGemeindeKennzahlen} from '../models/gemeindeantrag/gemeindekennzahlen/TSGemeindeKennzahlen';
 import {TSAnzahlEingeschriebeneKinder} from '../models/gemeindeantrag/TSAnzahlEingeschriebeneKinder';
 import {TSDurchschnittKinderProTag} from '../models/gemeindeantrag/TSDurchschnittKinderProTag';
@@ -194,7 +195,6 @@ import {TSDateRange} from '../models/types/TSDateRange';
 import {TSLand} from '../models/types/TSLand';
 import {DateUtil} from './DateUtil';
 import {EbeguUtil} from './EbeguUtil';
-import {TSPensumAnzeigeTyp} from '../models/enums/TSPensumAnzeigeTyp';
 
 export class EbeguRestUtil {
 
@@ -2134,6 +2134,10 @@ export class EbeguRestUtil {
             finanzielleSituationTS.unterhaltsBeitraege = finanzielleSituationFromServer.unterhaltsBeitraege;
             finanzielleSituationTS.automatischePruefungErlaubt =
                 finanzielleSituationFromServer.automatischePruefungErlaubt;
+            if (finanzielleSituationFromServer.steuerdatenAbfrageTimestamp) {
+                finanzielleSituationTS.steuerdatenAbfrageTimestamp =
+                    DateUtil.localDateTimeToMoment(finanzielleSituationFromServer.steuerdatenAbfrageTimestamp);
+            }
             finanzielleSituationTS.momentanSelbststaendig = finanzielleSituationFromServer.momentanSelbststaendig;
 
             return finanzielleSituationTS;

@@ -1,16 +1,18 @@
 /*
- * Ki-Tax: System for the management of external childcare subsidies
- * Copyright (C) 2017 City of Bern Switzerland
+ * Copyright (C) 2023 DV Bern AG, Switzerland
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Affero General Public License for more details.
+ *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
 import {StateService} from '@uirouter/core';
@@ -33,6 +35,7 @@ import {TSRoleUtil} from '../../../../utils/TSRoleUtil';
 import {IMitteilungenStateParams} from '../../../mitteilungen/mitteilungen.route';
 import {PosteingangService} from '../../../posteingang/service/posteingang.service';
 import {DvDialog} from '../../directive/dv-dialog/dv-dialog';
+import {TSDemoFeature} from '../../directive/dv-hide-feature/TSDemoFeature';
 import {LogFactory} from '../../logging/LogFactory';
 import {BetreuungRS} from '../../service/betreuungRS.rest';
 import {InstitutionRS} from '../../service/institutionRS.rest';
@@ -96,6 +99,7 @@ export class DVMitteilungListController implements IOnInit {
     public empfaenger: any;
     public empfaengerValues: Array<any>;
     public isVolksschuleGemeinde: boolean = false;
+    public readonly demoFeature = TSDemoFeature.ALLE_MUTATIONSMELDUNGEN_VERFUEGEN;
 
     public constructor(
         private readonly $stateParams: IMitteilungenStateParams,
@@ -460,8 +464,8 @@ export class DVMitteilungListController implements IOnInit {
         }
 
         this.dvDialog.showRemoveDialog(removeDialogTemplate, this.form, RemoveDialogController, {
-            title: 'MUTATIONSMELDUNG_UEBERNEHMEN',
-            deleteText: 'MUTATIONSMELDUNG_UEBERNEHMEN_BESCHREIBUNG',
+            title: 'VERANLAGUNGSMITTEILUNG_UEBERNEHMEN',
+            deleteText: 'VERANLAGUNGSMITTEILUNG_UEBERNEHMEN_BESCHREIBUNG',
             parentController: this,
             elementID: 'Intro'
         }).then(() => {   // User confirmed message
