@@ -235,8 +235,4 @@ export class AbstractGesuchViewController<T> implements IController {
         }
         return undefined;
     }
-
-    public getLabelVergleichswert(basisjahr: number) {
-        return 'ANGABE:' + basisjahr;
-    }
 }
