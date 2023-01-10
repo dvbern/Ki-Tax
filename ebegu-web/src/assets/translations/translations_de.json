@@ -2229,7 +2229,7 @@
     "STANDARD_DOK_UNTERSCHRIFT2_NAME": "Unterschrift 2 - Name",
     "ERROR_NO_MODUL_SELECTED": "Es muss mindestens ein Tag ausgewählt werden",
     "IN_CHF_PLACEHOLDER": "in CHF",
-    "EINGABE_BASISJAHR": "Angabe {{ basisjahr }}: {{ wertBasisjahr }} CHF",
+    "EINGABE_BASISJAHR": "Angabe {{ basisjahr }}:",
     "KEINE_BESCHWERDE_ADRESSE_TOOLTIP": "Falls der Standardtext ausgewählt wird, wird am Ende der Verfügungen folgende Rechtsmittelbelehrung eingefügt: <br><br>Rechtsmittelbelehrung<br>Gegen diese Verfügung kann innert 30 Tagen Beschwerde erhoben werden. Die Beschwerdefrist kann nicht verlängert werden. Die Beschwerde ist an die Adresse <i>(Angegebene Adresse wird eingefügt)</i> zuzustellen. Sie muss (a) angeben, welche Entscheidung anstelle der angefochtenen Verfügung beantragt wird; (b) aus welchen Gründen diese andere Entscheidung verlangt wird, (c) die Unterschrift der beschwerdeführenden Partei oder der sie vertretenden Person enthalten. Der Beschwerdeschrift beizulegen sind die Beweismittel, soweit sie greifbar sind, und die angefochtene Verfügung.",
     "LASTENAUSGLEICH_JAHR": "Jahr",
     "LASTENAUSGLEICH_SELBSTBEHALT": "Selbstbehalt pro 100% Platz",
@@ -3074,5 +3074,6 @@
     "FINANZIELLE_SITUATION_RUECKWIRKEND_ANPASSEN": "Finanzielle Situation rückwirkend korrigieren",
     "FINANZIELLE_SITUATION_RUECKWIRKEND_ANPASSEN_HELP": "Verweis auf Art. 68 Abs. 1 resp. Art. 66 Abs. 1 Bst h <br>In diesem Fall werden die Korrekturzahlungen ausserhalb des nächsten Zahlungslaufs erfolgen.",
     "NEU_LADEN": "Neu laden",
+    "BISHER": "bisher:",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }
