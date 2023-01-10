@@ -31,9 +31,22 @@ export class DvEingabeHintComponent {
     @Input() public neuerWert: number;
     @Input() public vergleichswert: number;
     @Input() public label: string;
+    /** falls dieser Wert true ist, wird der Verleichswert immer gezeigt, falls er grösser als 0 ist **/
+    @Input() public showOnlyIfNotIdentical: boolean = false;
 
     public isVisible(): boolean {
-        return EbeguUtil.isNotNullOrUndefined(this.vergleichswert) && (this.vergleichswert > 0 ||
-            (this.vergleichswert !== this.neuerWert && this.neuerWert > 0));
+        if (EbeguUtil.isNullOrUndefined(this.vergleichswert)) {
+            return false;
+        }
+        // falls neuer Wert gesetzt und nicht identisch mit Vergleichwert, wird hint immer gezeigt
+        if (this.vergleichswert !== this.neuerWert && this.neuerWert > 0) {
+            return true;
+        }
+        // sonst wird der Vergleichswert gezeigt, falls dieser grösser als 0 ist und der Parameter
+        // showOnlyIfNotIdentical gesetzt ist
+        if (!this.showOnlyIfNotIdentical) {
+            return this.vergleichswert > 0;
+        }
+        return false;
     }
 }
