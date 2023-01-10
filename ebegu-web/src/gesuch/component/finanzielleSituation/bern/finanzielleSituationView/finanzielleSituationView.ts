@@ -66,7 +66,8 @@ export class FinanzielleSituationViewController extends AbstractFinSitBernView {
         'EinstellungRS',
         'DvDialog',
         'AuthServiceRS',
-        'ApplicationPropertyRS'
+        'ApplicationPropertyRS',
+        'GesuchRS'
     ];
 
     public showSelbstaendig: boolean;
@@ -88,7 +89,8 @@ export class FinanzielleSituationViewController extends AbstractFinSitBernView {
         einstellungRS: EinstellungRS,
         dvDialog: DvDialog,
         protected readonly authServiceRS: AuthServiceRS,
-        applicationPropertyRS: ApplicationPropertyRS
+        applicationPropertyRS: ApplicationPropertyRS,
+        private readonly gesuchRS: GesuchRS
     ) {
         super(gesuchModelManager,
             berechnungsManager,
@@ -116,6 +118,17 @@ export class FinanzielleSituationViewController extends AbstractFinSitBernView {
         this.gesuchModelManager.setGesuchstellerNumber(parsedNum);
         this.initViewModel();
         this.calculate();
+        this.initFinSitVorMutation();
+    }
+
+    private initFinSitVorMutation(): void {
+        // beim Erstgesuch macht dies keinen Sinn
+        if (EbeguUtil.isNullOrUndefined(this.getGesuch().vorgaengerId)) {
+            return;
+        }
+        this.gesuchRS.findGesuch(this.getGesuch().vorgaengerId).then(gesuchVorMutation => {
+            this.model.initFinSitVorMutation(gesuchVorMutation);
+        });
     }
 
     private initViewModel(): void {
@@ -345,5 +358,13 @@ export class FinanzielleSituationViewController extends AbstractFinSitBernView {
 
     protected isNotFinSitStartOrGS2Required(): boolean {
         return true;
+    }
+
+    public getFinSitVorMutationToWorkWith(): TSFinanzielleSituation | any {
+        if (this.model.getFinSitVorMutationToWorkWith()) {
+            return this.model.getFinSitVorMutationToWorkWith();
+        }
+        // wir returnieren leeres Objekt, damit wir im Template nicht überall den Nullcheck machen müssen
+        return {};
     }
 }
