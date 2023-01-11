@@ -985,29 +985,6 @@ public class MutationsMergerTest {
 		return betreuung;
 	}
 
-	private Betreuung prepareData(BigDecimal massgebendesEinkommen, AntragTyp antragTyp, int startYear, int endYear) {
-		Betreuung betreuung =
-			EbeguRuleTestsHelper.createBetreuungWithPensum(LocalDate.of(startYear, Month.AUGUST, 1), LocalDate.of(endYear, Month.JULY, 31),
-				BetreuungsangebotTyp.KITA, 100, new BigDecimal(2000));
-		final Gesuch gesuch = betreuung.extractGesuch();
-		gesuch.setTyp(antragTyp);
-		TestDataUtil.createDefaultAdressenForGS(gesuch, false);
-		Set<KindContainer> kindContainers = new LinkedHashSet<>();
-		final KindContainer kindContainer = betreuung.getKind();
-		Set<Betreuung> betreuungen = new TreeSet<>();
-		betreuungen.add(betreuung);
-		kindContainer.setBetreuungen(betreuungen);
-		kindContainers.add(betreuung.getKind());
-		gesuch.setKindContainers(kindContainers);
-
-		TestDataUtil.calculateFinanzDaten(gesuch, new FinanzielleSituationBernRechner());
-		gesuch.getFinanzDatenDTO().setMassgebendesEinkBjVorAbzFamGr(massgebendesEinkommen);
-		Assert.assertNotNull(gesuch.getGesuchsteller1());
-		gesuch.getGesuchsteller1().addErwerbspensumContainer(TestDataUtil.createErwerbspensum(
-				LocalDate.of(startYear, Month.AUGUST, 1), LocalDate.of(endYear, Month.JULY, 31), 100));
-		return betreuung;
-	}
-
 	@Nonnull
 	private Betreuung prepareMutation(@Nonnull LocalDate eingangsdatumMuation) {
 		Betreuung mutierteBetreuung = prepareData(MathUtil.DEFAULT.from(50000), AntragTyp.MUTATION);
