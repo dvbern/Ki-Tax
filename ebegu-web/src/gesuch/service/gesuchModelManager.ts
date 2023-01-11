@@ -364,6 +364,10 @@ export class GesuchModelManager {
             return;
         }
 
+        if (this.gesuch.familiensituationContainer.familiensituationJA.sozialhilfeBezueger) {
+            return;
+        }
+
         if (this.gesuch.familiensituationContainer.familiensituationJA.verguenstigungGewuenscht) {
             return;
         }
