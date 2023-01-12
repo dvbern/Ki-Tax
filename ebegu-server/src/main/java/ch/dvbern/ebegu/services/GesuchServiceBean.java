@@ -1,16 +1,18 @@
 /*
- * Ki-Tax: System for the management of external childcare subsidies
- * Copyright (C) 2017 City of Bern Switzerland
+ * Copyright (C) 2023 DV Bern AG, Switzerland
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Affero General Public License for more details.
+ *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
 package ch.dvbern.ebegu.services;
@@ -65,6 +67,7 @@ import ch.dvbern.ebegu.entities.AbstractAnmeldung;
 import ch.dvbern.ebegu.entities.AbstractDateRangedEntity_;
 import ch.dvbern.ebegu.entities.AbstractEntity_;
 import ch.dvbern.ebegu.entities.AbstractPersonEntity_;
+import ch.dvbern.ebegu.entities.AbstractPlatz;
 import ch.dvbern.ebegu.entities.AnmeldungFerieninsel;
 import ch.dvbern.ebegu.entities.AnmeldungTagesschule;
 import ch.dvbern.ebegu.entities.AntragStatusHistory;
@@ -391,10 +394,17 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 			// die Berechnung die richtige FinSit verwendet wird!
 			zuMutierendeAnmeldungenAbschliessen(gesuchForMutation);
 
-			return gesuchForMutation.copyForMutation(
+			var mutation = gesuchForMutation.copyForMutation(
 				new Gesuch(),
 				eingangsart,
 				gesuchToCreate.getRegelStartDatum() != null ? gesuchToCreate.getRegelStartDatum() : LocalDate.now());
+
+			// wenn eine Anmeldung kopiert wird, dann wird die neuste Mutation auf gueltig gesetzt und der Vorgänger auf
+			// ungültig. Falls der Vorgänger aber im Status MUTATION_IGNORIERT war, müssen wir weiter zurück um
+			// sicherzustellen, dass dessen Vorgänger auch nicht gültig ist
+			vorgaengerVonGueltigenAnmeldungenUngueltigSetzen(mutation);
+
+			return mutation;
 		}
 		return gesuchToCreate;
 	}
@@ -689,6 +699,14 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 				this.verfuegungService.anmeldungSchulamtAusgeloestAbschliessen(
 					anmeldung.extractGesuch().getId(),
 					anmeldung.getId());
+			});
+	}
+
+	private void vorgaengerVonGueltigenAnmeldungenUngueltigSetzen(@Nonnull Gesuch currentGesuch) {
+		currentGesuch.extractAllAnmeldungen().stream()
+			.filter(AbstractPlatz::isGueltig)
+			.forEach(anmeldung -> {
+				betreuungService.updateGueltigFlagOnPlatzAndVorgaenger(anmeldung);
 			});
 	}
 
