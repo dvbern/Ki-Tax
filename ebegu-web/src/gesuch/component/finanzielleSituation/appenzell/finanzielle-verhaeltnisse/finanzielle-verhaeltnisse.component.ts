@@ -19,7 +19,7 @@ import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnInit} fr
 import {LogFactory} from '../../../../../app/core/logging/LogFactory';
 import {TSFinanzielleSituationResultateDTO} from '../../../../../models/dto/TSFinanzielleSituationResultateDTO';
 import {TSAbstractFinanzielleSituation} from '../../../../../models/TSAbstractFinanzielleSituation';
-import {TSFinanzielleSituationSelbstdeklaration} from '../../../../../models/TSFinanzielleSituationSelbstdeklaration';
+import {TSFinanzielleVerhaeltnisse} from '../../../../../models/TSFinanzielleVerhaeltnisse';
 import {TSFinanzModel} from '../../../../../models/TSFinanzModel';
 import {EbeguUtil} from '../../../../../utils/EbeguUtil';
 import {GesuchModelManager} from '../../../../service/gesuchModelManager';
@@ -66,8 +66,8 @@ export class FinanzielleVerhaeltnisseComponent implements OnInit {
     }
 
     public ngOnInit(): void {
-        if (!this.model.selbstdeklaration) {
-            this.model.selbstdeklaration = new TSFinanzielleSituationSelbstdeklaration();
+        if (!this.model.finanzielleVerhaeltnisse) {
+            this.model.finanzielleVerhaeltnisse = new TSFinanzielleVerhaeltnisse();
         }
         // load initial results
         this.onValueChangeFunction();
@@ -84,7 +84,7 @@ export class FinanzielleVerhaeltnisseComponent implements OnInit {
 
     public getCurrentAntragstellerName(): string {
         if (this.isGemeinsam) {
-            return this.antragsteller1Name() + ' ' + this.antragsteller2Name();
+            return `${this.antragsteller1Name()} ${this.antragsteller2Name()}`;
         }
 
         return this.antragsteller1Name();

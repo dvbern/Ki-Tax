@@ -31,6 +31,8 @@ import org.hibernate.envers.Audited;
 @Entity
 public class FinanzielleVerhaeltnisse extends AbstractMutableEntity {
 
+	private static final long serialVersionUID = -8876223011487726148L;
+
 	@Nullable
 	@Column(nullable = true)
 	private BigDecimal saeule3a;

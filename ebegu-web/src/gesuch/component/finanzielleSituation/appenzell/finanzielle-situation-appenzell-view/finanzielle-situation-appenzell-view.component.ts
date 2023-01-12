@@ -36,14 +36,14 @@ const LOG = LogFactory.createLog('FinanzielleSituationAppenzellViewComponent');
     selector: 'dv-finanzielle-situation-appenzell-view',
     templateUrl: './finanzielle-situation-appenzell-view.component.html',
     styleUrls: ['./finanzielle-situation-appenzell-view.component.less'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class FinanzielleSituationAppenzellViewComponent extends AbstractGesuchViewX<TSFinanzModel> {
 
     public constructor(
         protected ref: ChangeDetectorRef,
         protected readonly gesuchModelManager: GesuchModelManager,
-        protected readonly wizardStepManager: WizardStepManager,
+        protected readonly wizardStepManager: WizardStepManager
     ) {
         super(gesuchModelManager, wizardStepManager, TSWizardStepName.FINANZIELLE_SITUATION_APPENZELL);
         // wie ich es verstehe sind wir immer auf dem 1 Antragsteller, entweder gemeinsam oder nicht
@@ -89,8 +89,6 @@ export class FinanzielleSituationAppenzellViewComponent extends AbstractGesuchVi
         return this.save(onResult);
     }
 
-
-
     private save(onResult: (arg: any) => any): Promise<TSFinanzielleSituationContainer> {
         this.model.copyFinSitDataToGesuch(this.gesuchModelManager.getGesuch());
         return this.gesuchModelManager.saveFinanzielleSituation()
@@ -112,7 +110,7 @@ export class FinanzielleSituationAppenzellViewComponent extends AbstractGesuchVi
         return this.gesuchModelManager.getGesuch().isMutation() ?
             this.wizardStepManager.updateCurrentWizardStepStatusMutiert() :
             this.wizardStepManager.updateCurrentWizardStepStatusSafe(
-                TSWizardStepName.FINANZIELLE_SITUATION,
+                TSWizardStepName.FINANZIELLE_SITUATION_APPENZELL,
                 TSWizardStepStatus.OK);
     }
 }

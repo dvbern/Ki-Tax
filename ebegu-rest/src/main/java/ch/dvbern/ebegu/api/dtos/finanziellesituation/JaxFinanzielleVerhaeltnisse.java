@@ -25,6 +25,8 @@ import ch.dvbern.ebegu.api.dtos.JaxAbstractDTO;
 
 public class JaxFinanzielleVerhaeltnisse extends JaxAbstractDTO {
 
+	private static final long serialVersionUID = -6899661072522033574L;
+
 	@Nullable
 	private BigDecimal saeule3a;
 

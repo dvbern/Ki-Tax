@@ -2086,7 +2086,6 @@ export class EbeguRestUtil {
         return restFinanzielleVerhaeltnisse;
     }
 
-
     public parseAbstractFinanzielleSituation(
         abstractFinanzielleSituationTS: TSAbstractFinanzielleSituation,
         abstractFinanzielleSituationFromServer: any
