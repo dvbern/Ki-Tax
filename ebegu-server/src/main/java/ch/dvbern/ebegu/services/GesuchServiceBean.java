@@ -2647,8 +2647,11 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 			setAbschliessen(gesuch);
 		}
 
-		return gesuch;
+		// wenn das Gesuch nur TS und FI Anmeldungen wird das Gesuch nicht automatisch abgeschlossen.
+		// dies muss noch gemacht werden.
+		gesuch.setStatus(AntragStatus.IGNORIERT);
 
+		return persistence.merge(gesuch);
 	}
 
 	@Override

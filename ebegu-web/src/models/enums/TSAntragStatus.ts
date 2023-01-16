@@ -37,7 +37,8 @@ export enum TSAntragStatus {
     BESCHWERDE_HAENGIG = 'BESCHWERDE_HAENGIG',
     PRUEFUNG_STV = 'PRUEFUNG_STV',
     IN_BEARBEITUNG_STV = 'IN_BEARBEITUNG_STV',
-    GEPRUEFT_STV = 'GEPRUEFT_STV'
+    GEPRUEFT_STV = 'GEPRUEFT_STV',
+    IGNORIERT = 'IGNORIERT'
 }
 
 export const IN_BEARBEITUNG_BASE_NAME = 'IN_BEARBEITUNG';
@@ -64,7 +65,8 @@ export function getTSAntragStatusValues(): Array<TSAntragStatus> {
         TSAntragStatus.BESCHWERDE_HAENGIG,
         TSAntragStatus.PRUEFUNG_STV,
         TSAntragStatus.IN_BEARBEITUNG_STV,
-        TSAntragStatus.GEPRUEFT_STV
+        TSAntragStatus.GEPRUEFT_STV,
+        TSAntragStatus.IGNORIERT
     ];
 }
 
@@ -123,7 +125,8 @@ export function getTSAntragStatusPendenzValues(userrole: TSRole): TSAntragStatus
                 && element !== TSAntragStatus.NUR_SCHULAMT
                 && element !== TSAntragStatus.KEIN_KONTINGENT
                 && element !== TSAntragStatus.IN_BEARBEITUNG_STV
-                && element !== TSAntragStatus.PRUEFUNG_STV));
+                && element !== TSAntragStatus.PRUEFUNG_STV
+                && element !== TSAntragStatus.IGNORIERT));
         case TSRole.SACHBEARBEITER_TS:
         case TSRole.ADMIN_TS:
             return allVisibleValuesByRole.filter(element => (
@@ -133,7 +136,8 @@ export function getTSAntragStatusPendenzValues(userrole: TSRole): TSAntragStatus
                 && element !== TSAntragStatus.VERFUEGEN
                 && element !== TSAntragStatus.KEIN_KONTINGENT
                 && element !== TSAntragStatus.IN_BEARBEITUNG_STV
-                && element !== TSAntragStatus.PRUEFUNG_STV));
+                && element !== TSAntragStatus.PRUEFUNG_STV
+                && element !== TSAntragStatus.IGNORIERT));
         default:
             return allVisibleValuesByRole.filter(element => (element !== TSAntragStatus.VERFUEGT
                 && element !== TSAntragStatus.KEIN_ANGEBOT && element !== TSAntragStatus.NUR_SCHULAMT));
@@ -159,7 +163,8 @@ export function isAtLeastFreigegeben(status: TSAntragStatus): boolean {
         TSAntragStatus.BESCHWERDE_HAENGIG,
         TSAntragStatus.PRUEFUNG_STV,
         TSAntragStatus.IN_BEARBEITUNG_STV,
-        TSAntragStatus.GEPRUEFT_STV
+        TSAntragStatus.GEPRUEFT_STV,
+        TSAntragStatus.IGNORIERT
     ];
     return validStates.indexOf(status) !== -1;
 }
@@ -175,7 +180,8 @@ export function isAnyStatusOfVerfuegt(status: TSAntragStatus): boolean {
         || status === TSAntragStatus.PRUEFUNG_STV
         || status === TSAntragStatus.IN_BEARBEITUNG_STV
         || status === TSAntragStatus.GEPRUEFT_STV
-        || status === TSAntragStatus.KEIN_ANGEBOT;
+        || status === TSAntragStatus.KEIN_ANGEBOT
+        || status === TSAntragStatus.IGNORIERT;
 }
 
 // KeinKontingent darf zwar nicht zu den "verfuegt" Status hinzugefuegt werden, wird
@@ -190,7 +196,8 @@ export function isAnyStatusOfVerfuegtButSchulamt(status: TSAntragStatus): boolea
         || status === TSAntragStatus.PRUEFUNG_STV
         || status === TSAntragStatus.IN_BEARBEITUNG_STV
         || status === TSAntragStatus.GEPRUEFT_STV
-        || status === TSAntragStatus.KEIN_ANGEBOT;
+        || status === TSAntragStatus.KEIN_ANGEBOT
+        || status === TSAntragStatus.IGNORIERT;
 }
 
 export function isVerfuegtOrSTV(status: TSAntragStatus): boolean {
@@ -198,7 +205,8 @@ export function isVerfuegtOrSTV(status: TSAntragStatus): boolean {
         || status === TSAntragStatus.PRUEFUNG_STV
         || status === TSAntragStatus.IN_BEARBEITUNG_STV
         || status === TSAntragStatus.GEPRUEFT_STV
-        || status === TSAntragStatus.KEIN_ANGEBOT;
+        || status === TSAntragStatus.KEIN_ANGEBOT
+        || status === TSAntragStatus.IGNORIERT;
 }
 
 export function isAnyStatusOfGeprueftVerfuegenVerfuegtOrAbgeschlossen(status: TSAntragStatus): boolean {
