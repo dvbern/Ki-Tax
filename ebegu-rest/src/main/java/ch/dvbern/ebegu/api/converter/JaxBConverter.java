@@ -764,6 +764,7 @@ public class JaxBConverter extends AbstractConverter {
 		familiensituation.setGeteilteObhut(familiensituationJAXP.getGeteilteObhut());
 		familiensituation.setUnterhaltsvereinbarung(familiensituationJAXP.getUnterhaltsvereinbarung());
 		familiensituation.setUnterhaltsvereinbarungBemerkung(familiensituationJAXP.getUnterhaltsvereinbarungBemerkung());
+		familiensituation.setPartnerIdentischMitVorgesuch(familiensituationJAXP.getPartnerIdentischMitVorgesuch());
 		return familiensituation;
 	}
 
@@ -792,6 +793,7 @@ public class JaxBConverter extends AbstractConverter {
 		}
 		familiensituation.getAuszahlungsdaten().setAdresseKontoinhaber(convertedAdresse);
 		familiensituation.setAbweichendeZahlungsadresse(familiensituationJAXP.isAbweichendeZahlungsadresse());
+		familiensituation.setPartnerIdentischMitVorgesuch(familiensituationJAXP.getPartnerIdentischMitVorgesuch());
 	}
 
 	public JaxFamiliensituation familiensituationToJAX(@Nonnull final Familiensituation persistedFamiliensituation) {

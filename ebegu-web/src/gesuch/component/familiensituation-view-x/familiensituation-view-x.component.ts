@@ -113,6 +113,9 @@ export class FamiliensituationViewXComponent extends AbstractGesuchViewX<TSFamil
             TSWizardStepStatus.IN_BEARBEITUNG);
         this.allowedRoles = TSRoleUtil.getAllRolesButTraegerschaftInstitution();
     }
+    private getGesuchsperiodeEnde(): object {
+        return this.gesuchModelManager.getGesuchsperiode().gueltigkeit.gueltigBis;
+    }
 
     public async confirmAndSave(onResult: (arg: any) => void): Promise<void> {
         this.savedClicked = true;
@@ -285,6 +288,11 @@ export class FamiliensituationViewXComponent extends AbstractGesuchViewX<TSFamil
 
     public resetFamsit(): void {
         this.getFamiliensituation().revertFamiliensituation(this.getFamiliensituationErstgesuch());
+    }
+
+    public isNotPartnerIdentischMitVorgesuch():  boolean {
+        return EbeguUtil.isNotNullOrUndefined(this.getFamiliensituation().partnerIdentischMitVorgesuch) &&
+            !this.getFamiliensituation().partnerIdentischMitVorgesuch;
     }
 
     public hasError(): boolean {

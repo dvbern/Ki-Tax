@@ -27,6 +27,7 @@
 			<p *ngIf="isMutation()" translate>MUTATION_FAMSITUATION_HINT</p>
 			<p *ngIf="showError()" role="alert" translate
 			   class="dv-error-messages">ERROR_DATUM_GESETZT_BEI_MUTATION</p>
+            <p *ngIf="isNotPartnerIdentischMitVorgesuch()" translate>NOT_PARTNER_IDENTISCH_MIT_VORGESUCH</p>
 		</div>
 	</div>
 	<div class="row">
@@ -104,25 +105,22 @@
                                     <span translate>FAMILIENSITUATION_FRAGE_BISHERIGER_PARTNER: {{getNameGesuchsteller2()}} </span>
                                 </span>
                                 <dv-radio-container-x>
-                                    <mat-radio-group [(ngModel)]="getFamiliensituation().bisherigerPartner"
+                                    <mat-radio-group [(ngModel)]="getFamiliensituation().partnerIdentischMitVorgesuch"
                                                      [required]="true"
-                                                     #geteilteObhut="ngModel"
-                                                     name="geteilteObhut"
+                                                     #partnerIdentischMitVorgesuch="ngModel"
+                                                     name="partnerIdentischMitVorgesuch"
                                                      class="input-element sp"
                                                      [disabled]="!(showFragePartnerWieBisher())"
-                                                     aria-label="{{ 'FAMILIENSITUATION_FRAGE_GEMEINSAME_OBHUT' |translate}}"
-                                                     aria-described-by="geteilteObhut-error">
+                                                     aria-label="{{ 'FAMILIENSITUATION_FRAGE_BISHERIGER_PARTNER' |translate }}}"
+                                                     aria-described-by="partnerIdentischMitVorgesuch-error">
                                         <mat-radio-button [value]="true">{{'LABEL_JA' | translate}}</mat-radio-button>
-                                        <mat-radio-button [value]="false">{{'LABELbisherigerPartner_NEIN' | translate}}</mat-radio-button>
+                                        <mat-radio-button [value]="false">{{'LABEL_NEIN' | translate}}</mat-radio-button>
                                     </mat-radio-group>
                                 </dv-radio-container-x>
-                                <dv-error-messages *ngIf="savedClicked || geteilteObhut.touched"
-                                                   [inputId]="'geteilteObhut'"
-                                                   [errorObject]="geteilteObhut.errors"
+                                <dv-error-messages *ngIf="savedClicked || partnerIdentischMitVorgesuch.touched"
+                                                   [inputId]="'partnerIdentischMitVorgesuch'"
+                                                   [errorObject]="partnerIdentischMitVorgesuch.errors"
                                                    class="error"></dv-error-messages>
-                                <dv-bisher-x [showBisher]="showBisher()"
-                                             [deklaration]="getFamiliensituationGS()?.geteilteObhut"
-                                             [korrektur]="getFamiliensituation()?.geteilteObhut"></dv-bisher-x>
                             </div>
                         </div>
                     </div>

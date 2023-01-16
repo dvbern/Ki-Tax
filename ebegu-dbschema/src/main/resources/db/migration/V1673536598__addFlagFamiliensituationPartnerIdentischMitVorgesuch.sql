@@ -16,4 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 alter table familiensituation
-	add partnerIdentischMitVorgesuch binary null;
+	add partner_identisch_mit_vorgesuch binary null;
+
+alter table familiensituation_aud
+	add partner_identisch_mit_vorgesuch binary null;

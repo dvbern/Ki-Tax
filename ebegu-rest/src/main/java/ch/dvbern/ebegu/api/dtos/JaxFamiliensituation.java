@@ -172,6 +172,10 @@ public class JaxFamiliensituation extends JaxAbstractDTO {
 		this.partnerIdentischMitVorgesuch = identischerPartner;
 	}
 
+	public Boolean getPartnerIdentischMitVorgesuch(){
+		return partnerIdentischMitVorgesuch;
+	}
+
 	@Nullable
 	public String getZustaendigeAmtsstelle() {
 		return zustaendigeAmtsstelle;
