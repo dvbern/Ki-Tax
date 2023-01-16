@@ -111,14 +111,18 @@
                      dv-show-allowed-roles="vm.TSRoleUtil.getAdministratorJugendamtRole()">
                     <!-- Veränderung der BGs und TS Tarife in Mutationen -->
                     <dv-demo-feature-wrapper  demo-feature="{{vm.demoFeature}}">
-                        <div ng-if="vm.showMutationVeranderung()" class="well margin-top-20">
+                    <div ng-if="vm.showSimulationVeranderung()">
+                        <div ng-if="vm.hasMutationVeranderung() && !vm.hasAnyNewOrStornierteBetreuung" class="well margin-top-20">
                             <span translate>MUTATION_VERAENDERUNG_1</span>
                             <ul>
                                 <li><span>{{vm.getVeraenderungBgString()}}</span></li>
                                 <li><span>{{vm.getVeraenderungTsString()}}</span></li>
                             </ul>
                         </div>
-                        <div ng-if="vm.showAnyNewOrStornierteBetreuungen()" class="well margin-top-20">
+                        <div ng-if="!vm.hasMutationVeranderung() && !vm.hasAnyNewOrStornierteBetreuung" class="well margin-top-20">
+                            <span translate>MUTATION_KEINE_VERAENDERUNG</span>
+                        </div>
+                        <div ng-if="vm.hasAnyNewOrStornierteBetreuung" class="well margin-top-20">
                             <span translate>MUTATION_VERAENDERUNG_NICHT_MOEGLICH</span>
                         </div>
                     </dv-demo-feature-wrapper>
