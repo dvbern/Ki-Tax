@@ -29,12 +29,12 @@ import {TSEinstellungKey} from '../../../models/enums/TSEinstellungKey';
 import {getTSFamilienstatusValues, TSFamilienstatus} from '../../../models/enums/TSFamilienstatus';
 import {
     getTSGesuchstellerKardinalitaetValues,
-    TSGesuchstellerKardinalitaet
+    TSGesuchstellerKardinalitaet,
 } from '../../../models/enums/TSGesuchstellerKardinalitaet';
 import {TSRole} from '../../../models/enums/TSRole';
 import {
     getTSUnterhaltsvereinbarungAnswerValues,
-    TSUnterhaltsvereinbarungAnswer
+    TSUnterhaltsvereinbarungAnswer,
 } from '../../../models/enums/TSUnterhaltsvereinbarungAnswer';
 import {TSWizardStepName} from '../../../models/enums/TSWizardStepName';
 import {TSWizardStepStatus} from '../../../models/enums/TSWizardStepStatus';
@@ -178,6 +178,12 @@ export class FamiliensituationViewXComponent extends AbstractGesuchViewX<TSFamil
 
     public isStartKonkubinatVisible(): boolean {
         return this.getFamiliensituation()?.familienstatus === TSFamilienstatus.KONKUBINAT_KEIN_KIND;
+    }
+
+    public showFragePartnerWieBisher(): boolean {
+        return this.isMutation() &&
+            EbeguUtil.isNotNullOrUndefined(this.getFamiliensituation().aenderungPer) &&
+            !(this.getFamiliensituation()?.familienstatus === TSFamilienstatus.ALLEINERZIEHEND);
     }
 
     /**
@@ -399,5 +405,10 @@ export class FamiliensituationViewXComponent extends AbstractGesuchViewX<TSFamil
 
     public getToday(): moment.Moment {
         return moment();
+    }
+
+    public getNameGesuchsteller2(): string {
+        return this.getGesuch().gesuchsteller2
+            ? this.getGesuch().gesuchsteller2.extractFullName() : ''
     }
 }

@@ -76,6 +76,10 @@ public class Familiensituation extends AbstractMutableEntity {
 	private Boolean sozialhilfeBezueger;
 
 	@Nullable
+	@Column(nullable = true)
+	private Boolean partnerIdentischMitVorgesuch;
+
+	@Nullable
 	@Size(max = DB_DEFAULT_MAX_LENGTH)
 	private String zustaendigeAmtsstelle;
 
@@ -190,6 +194,11 @@ public class Familiensituation extends AbstractMutableEntity {
 	@Nullable
 	public Boolean getSozialhilfeBezueger() {
 		return sozialhilfeBezueger;
+	}
+
+		@Nullable
+	public Boolean getPartnerIdentischMitVorgesuch() {
+		return partnerIdentischMitVorgesuch;
 	}
 
 	public void setSozialhilfeBezueger(@Nullable Boolean sozialhilfeBezueger) {

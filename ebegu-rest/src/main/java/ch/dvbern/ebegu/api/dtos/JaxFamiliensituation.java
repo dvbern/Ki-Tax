@@ -37,7 +37,7 @@ import ch.dvbern.lib.date.converters.LocalDateXMLConverter;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class JaxFamiliensituation extends JaxAbstractDTO {
 
-	private static final long serialVersionUID = -1297019741664130597L;
+	private static final long serialVersionUID = 6551372166765101992L;
 
 	@NotNull
 	private EnumFamilienstatus familienstatus;
@@ -50,6 +50,9 @@ public class JaxFamiliensituation extends JaxAbstractDTO {
 
 	@Nullable
 	private Boolean sozialhilfeBezueger;
+
+	@Nullable
+	private Boolean partnerIdentischMitVorgesuch;
 
 	@Nullable
 	private String zustaendigeAmtsstelle;
@@ -163,6 +166,10 @@ public class JaxFamiliensituation extends JaxAbstractDTO {
 
 	public void setSozialhilfeBezueger(@Nullable Boolean sozialhilfeBezueger) {
 		this.sozialhilfeBezueger = sozialhilfeBezueger;
+	}
+
+	public void setPartnerIdentischMitVorgesuch(@Nullable Boolean identischerPartner) {
+		this.partnerIdentischMitVorgesuch = identischerPartner;
 	}
 
 	@Nullable
