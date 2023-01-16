@@ -577,6 +577,12 @@
                     <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
                     <span translate>AUSZAHLUNG_AN_ELTERN_VERFUEGUNG_NOT_VISIBLE</span>
                 </div>
+                <!-- Info über Korrektur Betrag in Mutation -->
+                <dv-demo-feature-wrapper  demo-feature="{{vm.demoFeature}}">
+                    <div ng-if="vm.showInfoUeberKorrekutren()" class="well margin-top-20">
+                        <div ng-bind-html="vm.getKorrekturenString()"></div>
+                    </div>
+                </dv-demo-feature-wrapper>
                 <!-- Navigation Buttons -->
                 <div class="dv-navigation dv-navigation-flex">
                     <span class="ie11-fix" dv-show-element

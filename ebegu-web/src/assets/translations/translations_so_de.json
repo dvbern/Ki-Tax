@@ -69,5 +69,6 @@
     "HEILPAEDOGOGISCHER_DIENST": "Heilpädagogischer Dienst",
     "ZUSTAENDIGE_SOZIALREGION": "Zuständige Sozialregon",
     "ANSPRUCH_MONATSWEISE": "Anspruchsberechnung monatsweise",
+    "MUTATION_KORREKTUR_AUSBEZAHLT_ELTERN": "Diese Verfügung führt zu einer rückwirkenden Veränderung der Auszahlung an die Eltern von {{betrag}} CHF.",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

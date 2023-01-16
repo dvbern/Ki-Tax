@@ -20,6 +20,7 @@ import {map} from 'rxjs/operators';
 import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
 import {MANDANTS} from '../../../app/core/constants/MANDANTS';
 import {DvDialog} from '../../../app/core/directive/dv-dialog/dv-dialog';
+import {TSDemoFeature} from '../../../app/core/directive/dv-hide-feature/TSDemoFeature';
 import {LogFactory} from '../../../app/core/logging/LogFactory';
 import {ApplicationPropertyRS} from '../../../app/core/rest-services/applicationPropertyRS.rest';
 import {DownloadRS} from '../../../app/core/service/downloadRS.rest';
@@ -123,6 +124,8 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
 
     private showAuszahlungAnInstitutionen: boolean;
     private showAuszahlungAnEltern: boolean;
+
+    public readonly demoFeature = TSDemoFeature.VERAENDERUNG_BEI_MUTATION;
 
     public constructor(
         private readonly $state: StateService,
@@ -899,4 +902,58 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
             this.showDays = false;
         }
     }
+
+    public showInfoUeberKorrekutren(): boolean {
+        if (!this.isMutation()) {
+            return false;
+        }
+
+        if (!this.hasKorrekturAuszahlungInstitution() && !this.hasKorrekturAuszahlungEltern()) {
+            return false;
+        }
+
+        return this.getBetreuungsstatus() === TSBetreuungsstatus.VERFUEGT;
+    }
+
+    private hasKorrekturAuszahlungInstitution(): boolean {
+        return EbeguUtil.isNotNullOrUndefined(this.getVerfuegenToWorkWith().korrekturAusbezahltInstitution) &&
+            this.getVerfuegenToWorkWith().korrekturAusbezahltInstitution !== 0;
+    }
+
+    private hasKorrekturAuszahlungEltern() {
+        return EbeguUtil.isNotNullOrUndefined(this.getVerfuegenToWorkWith().korrekturAusbezahltEltern) &&
+            this.getVerfuegenToWorkWith().korrekturAusbezahltEltern !== 0;
+    }
+
+    public getKorrekturenString(): string {
+        let text = '';
+
+        if (this.hasKorrekturAuszahlungInstitution()) {
+            text += this.$translate.instant('MUTATION_KORREKTUR_AUSBEZAHLT_INSTITUTION',
+                {betrag: this.gesuchModelManager.getVerfuegenToWorkWith().korrekturAusbezahltInstitution});
+
+            if (this.getVerfuegenToWorkWith().isAlreadyIgnorierend()) {
+                text += this.$translate.instant('MUTATION_KORREKTUR_AUSBEZAHLT_AUSSERHALB_KIBON');
+            } else {
+                text += this.$translate.instant('MUTATION_KORREKTUR_AUSBEZAHLT_INNERHLAB_KIBON');
+            }
+
+            text += '<br/><br/>';
+        }
+
+        if (this.hasKorrekturAuszahlungEltern()) {
+            text += this.$translate.instant('MUTATION_KORREKTUR_AUSBEZAHLT_ELTERN',
+                {betrag: this.gesuchModelManager.getVerfuegenToWorkWith().korrekturAusbezahltEltern});
+
+            if (this.getVerfuegenToWorkWith().isAlreadyIgnorierendMahlzeiten()) {
+                text += this.$translate.instant('MUTATION_KORREKTUR_AUSBEZAHLT_AUSSERHALB_KIBON');
+            } else {
+                text += this.$translate.instant('MUTATION_KORREKTUR_AUSBEZAHLT_INNERHLAB_KIBON');
+            }
+        }
+
+        return text;
+    }
+
+
 }

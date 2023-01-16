@@ -13,7 +13,10 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {TSVerfuegungZeitabschnittZahlungsstatus} from './enums/TSVerfuegungZeitabschnittZahlungsstatus';
+import {
+    getZahlungsstatusIgnorieren,
+    TSVerfuegungZeitabschnittZahlungsstatus,
+} from './enums/TSVerfuegungZeitabschnittZahlungsstatus';
 import {TSAbstractMutableEntity} from './TSAbstractMutableEntity';
 import {TSVerfuegungZeitabschnitt} from './TSVerfuegungZeitabschnitt';
 
@@ -199,6 +202,32 @@ export class TSVerfuegung extends TSAbstractMutableEntity {
             const datenVeraeandert = !abschnitt.sameAusbezahlteMahlzeiten;
             const alreadyIgnored = abschnitt.zahlungsstatusAntragsteller === TSVerfuegungZeitabschnittZahlungsstatus.IGNORIERT
                 || abschnitt.zahlungsstatusAntragsteller === TSVerfuegungZeitabschnittZahlungsstatus.IGNORIERT_KORRIGIERT;
+            if (datenVeraeandert && alreadyIgnored) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public isAlreadyIgnorierend(): boolean {
+        // eslint-disable-next-line @typescript-eslint/prefer-for-of
+        for (let i = 0; i < this._zeitabschnitte.length; i++) {
+            const abschnitt = this._zeitabschnitte[i];
+            const datenVeraeandert = !abschnitt.sameAusbezahlteVerguenstigung;
+            const alreadyIgnored = getZahlungsstatusIgnorieren().includes(abschnitt.zahlungsstatusInstitution);
+            if (datenVeraeandert && alreadyIgnored) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public isAlreadyIgnorierendMahlzeiten(): boolean {
+        // eslint-disable-next-line @typescript-eslint/prefer-for-of
+        for (let i = 0; i < this._zeitabschnitte.length; i++) {
+            const abschnitt = this._zeitabschnitte[i];
+            const datenVeraeandert = !abschnitt.sameAusbezahlteMahlzeiten;
+            const alreadyIgnored = getZahlungsstatusIgnorieren().includes(abschnitt.zahlungsstatusAntragsteller);
             if (datenVeraeandert && alreadyIgnored) {
                 return true;
             }
