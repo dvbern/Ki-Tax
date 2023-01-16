@@ -244,22 +244,13 @@ public class BetreuungsgutscheinEvaluator {
 					zeitabschnitte);
 
 				Verfuegung vorgaengerVerfuegung = platz.getVorgaengerVerfuegung();
-				BigDecimal veraenderung = null;
-				boolean ignorable = false;
 
 				if (vorgaengerVerfuegung != null) {
 					usePersistedCalculationResult(zeitabschnitte, vorgaengerVerfuegung);
-					veraenderung = VeraenderungCalculator
-						.getVeranderungCalculator(isTagesschule)
-						.calculateVeraenderung(zeitabschnitte, vorgaengerVerfuegung);
-					ignorable = VeraenderungCalculator
-							.getVeranderungCalculator(isTagesschule)
-							.calculateIgnorable(zeitabschnitte, vorgaengerVerfuegung, veraenderung);
 				}
 				// Und die Resultate in die Verfügung schreiben
 				verfuegungPreview.setZeitabschnitte(zeitabschnitte);
-				verfuegungPreview.setVeraenderungVerguenstigungGegenueberVorgaenger(veraenderung);
-				verfuegungPreview.setIgnorable(ignorable);
+				calculateVeraenderungen(verfuegungPreview, vorgaengerVerfuegung, isTagesschule);
 
 				String bemerkungenToShow = BemerkungsMerger.evaluateBemerkungenForVerfuegung(zeitabschnitte,
 					gesuch.extractMandant(),
@@ -273,6 +264,21 @@ public class BetreuungsgutscheinEvaluator {
 				restanspruchZeitabschnitte = executor.executeRestanspruchInitializer(platz, zeitabschnitte);
 			}
 		}
+	}
+
+	private void calculateVeraenderungen(Verfuegung verfuegungPreview, Verfuegung vorgaengerVerfuegung, boolean isTagesschule) {
+		if (vorgaengerVerfuegung == null) {
+			return;
+		}
+
+		VeraenderungCalculator veraenderungCalculator = VeraenderungCalculator
+			.getVeranderungCalculator(isTagesschule);
+
+		BigDecimal veranderung = veraenderungCalculator.calculateVeraenderung(verfuegungPreview.getZeitabschnitte(), vorgaengerVerfuegung);
+		boolean ignorable = veraenderungCalculator.calculateIgnorable(verfuegungPreview.getZeitabschnitte(), vorgaengerVerfuegung, veranderung);
+
+		verfuegungPreview.setIgnorable(ignorable);
+		verfuegungPreview.setVeraenderungVerguenstigungGegenueberVorgaenger(veranderung);
 	}
 
 	public static Set<EinstellungKey> getRequiredParametersForAbschlussRules() {
