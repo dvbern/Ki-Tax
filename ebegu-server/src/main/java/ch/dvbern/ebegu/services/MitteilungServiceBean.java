@@ -87,6 +87,7 @@ import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.GemeindeStammdaten;
 import ch.dvbern.ebegu.entities.Gemeinde_;
 import ch.dvbern.ebegu.entities.Gesuch;
+import ch.dvbern.ebegu.entities.GesuchstellerContainer;
 import ch.dvbern.ebegu.entities.Institution;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten_;
@@ -656,32 +657,38 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 
 	@Override
 	public void unlinkAllVerfuegungMitteilungenForGesuch(@Nonnull Gesuch gesuch) {
+		if (gesuch.getGesuchsteller1() != null) {
+			unlinkAllVerfuegungMitteilungenForGesuchstellerContainer(gesuch.getGesuchsteller1());
+		}
+		if (gesuch.getGesuchsteller2() != null) {
+			unlinkAllVerfuegungMitteilungenForGesuchstellerContainer(gesuch.getGesuchsteller2());
+		}
+	}
 
-		var finSitIds = new ArrayList<String>();
-		if (gesuch.getGesuchsteller1() != null && gesuch.getGesuchsteller1().getFinanzielleSituationContainer() != null) {
-			finSitIds.add(gesuch.getGesuchsteller1().getFinanzielleSituationContainer().getFinanzielleSituationJA().getId());
+	public void unlinkAllVerfuegungMitteilungenForGesuchstellerContainer(@Nonnull GesuchstellerContainer gesuchstellerContainer) {
+		if (gesuchstellerContainer.getFinanzielleSituationContainer() == null) {
+			return;
 		}
-		if (gesuch.getGesuchsteller2() != null && gesuch.getGesuchsteller2().getFinanzielleSituationContainer() != null) {
-			finSitIds.add(gesuch.getGesuchsteller2().getFinanzielleSituationContainer().getFinanzielleSituationJA().getId());
-		}
+		var finSitId = gesuchstellerContainer.getFinanzielleSituationContainer().getFinanzielleSituationJA().getId();
 
 		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
 		final CriteriaQuery<Mitteilung> query = cb.createQuery(Mitteilung.class);
 		Root<Mitteilung> root = query.from(Mitteilung.class);
 
-		Predicate finSitIdPred = root.get(Mitteilung_.finanzielleSituation).get(AbstractEntity_.id).in(finSitIds);
+		Predicate finSitIdPred = cb.equal(root.get(Mitteilung_.finanzielleSituation).get(AbstractEntity_.id), finSitId);
 
 		query.where(finSitIdPred);
 		final List<Mitteilung> mitteilungen = persistence.getCriteriaResults(query);
 
-		// Wir pruefen nur die grundsaetzliche Schreibberechtigung fuer das Gesuch
-		authorizer.checkWriteAuthorization(gesuch);
+		// Wir pruefen nur die grundsaetzliche Schreibberechtigung fuer den Gesuchstellercontainer
+		authorizer.checkWriteAuthorization(gesuchstellerContainer);
 
 		for (Mitteilung mitteilung : mitteilungen) {
 			mitteilung.setFinanzielleSituation(null);
 			persistence.merge(mitteilung);
 		}
 	}
+
 
 	@Nonnull
 	@Override
