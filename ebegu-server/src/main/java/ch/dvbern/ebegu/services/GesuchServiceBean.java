@@ -2043,21 +2043,10 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 		validateGesuchComplete(gesuch);
 
 		if (gesuch.hasOnlyBetreuungenOfSchulamt()) {
-			wizardStepService.setWizardStepOkay(gesuch.getId(), WizardStepName.VERFUEGEN);
-			gesuch.setStatus(AntragStatus.NUR_SCHULAMT);
-			postGesuchVerfuegen(gesuch);
-		} else {
-			gesuch.setStatus(AntragStatus.VERFUEGEN);
+			throw new EbeguRuntimeException("verfuegenStarten", ErrorCodeEnum.ERROR_ONLY_SCHULAMT_NOT_ALLOWED);
 		}
 
-		// In Fall von NUR_SCHULAMT-Angeboten werden diese nicht verfügt, d.h. ab "Verfügen starten"
-		// sind diese Betreuungen die letzt gültigen
-		final List<AbstractAnmeldung> betreuungen = gesuch.extractAllAnmeldungen();
-		for (AbstractAnmeldung betreuung : betreuungen) {
-			if (betreuung.getInstitutionStammdaten().getBetreuungsangebotTyp().isSchulamt()) {
-				updateGueltigFlagOnPlatzAndVorgaenger(betreuung);
-			}
-		}
+		gesuch.setStatus(AntragStatus.VERFUEGEN);
 
 		Gesuch persistedGesuch = superAdminService.updateGesuch(gesuch, true, principalBean.getBenutzer());
 
