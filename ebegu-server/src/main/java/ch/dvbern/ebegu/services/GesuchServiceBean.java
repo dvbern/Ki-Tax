@@ -645,6 +645,7 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 		// zu diesem Zeitpunkt bereits auf das Vorgaenger Gesuch umgehaengt.
 		mitteilungService.removeAllBetreuungMitteilungenForGesuch(gesToRemove);
 		mitteilungService.removeAllBetreuungspensumAbweichungenForGesuch(gesToRemove);
+		mitteilungService.unlinkAllVerfuegungMitteilungenForGesuch(gesToRemove);
 		internePendenzService.deleteAllInternePendenz(gesToRemove);
 
 		resetMutierteAnmeldungen(gesToRemove);
