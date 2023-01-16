@@ -3794,7 +3794,7 @@ export class EbeguRestUtil {
                 tsMitteilung.finanzielleSituation = this.parseFinanzielleSituation(
                     new TSFinanzielleSituation(),
                     mitteilungFromServer.finanzielleSituation
-                )
+                );
             }
             if (mitteilungFromServer.institution) {
                 tsMitteilung.institution = this.parseInstitution(new TSInstitution(), mitteilungFromServer.institution);
