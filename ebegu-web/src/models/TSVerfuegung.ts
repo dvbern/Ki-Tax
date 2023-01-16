@@ -28,6 +28,8 @@ export class TSVerfuegung extends TSAbstractMutableEntity {
     private _kategorieNichtEintreten: boolean;
     private _veraenderungVerguenstigungGegenueberVorgaenger: number;
     private _ignorable: boolean;
+    private _korrekturAusbezahltInstitution: number;
+    private _korrekturAusbezahltEltern: number;
 
     public constructor() {
         super();
@@ -103,6 +105,21 @@ export class TSVerfuegung extends TSAbstractMutableEntity {
 
     public set ignorable(value: boolean) {
         this._ignorable = value;
+    }
+
+    public get korrekturAusbezahltInstitution(): number {
+        return this._korrekturAusbezahltInstitution;
+    }
+
+    public set korrekturAusbezahltInstitution(value: number) {
+        this._korrekturAusbezahltInstitution = value;
+    }
+    public get korrekturAusbezahltEltern(): number {
+        return this._korrekturAusbezahltEltern;
+    }
+
+    public set korrekturAusbezahltEltern(value: number) {
+        this._korrekturAusbezahltEltern = value;
     }
 
     /**
