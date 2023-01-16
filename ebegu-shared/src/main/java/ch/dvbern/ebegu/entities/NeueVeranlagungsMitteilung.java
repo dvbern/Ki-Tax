@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022 DV Bern AG, Switzerland
+ * Copyright (C) 2023 DV Bern AG, Switzerland
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -8,16 +8,18 @@
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
 package ch.dvbern.ebegu.entities;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.ForeignKey;
 import javax.persistence.JoinColumn;
@@ -40,6 +42,11 @@ public class NeueVeranlagungsMitteilung extends Mitteilung {
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_mitteilung_steuerdaten_response_id"))
 	@Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
 	private SteuerdatenResponse steuerdatenResponse;
+
+	@Nullable
+	@ManyToOne(optional = true, cascade = CascadeType.ALL)
+	@JoinColumn(foreignKey = @ForeignKey(name = "FK_mitteilung_finanzielle_situation_id"), nullable = true)
+	private FinanzielleSituation finanzielleSituation;
 
 	@Override
 	@SuppressWarnings("PMD.CompareObjectsWithEquals")
@@ -66,5 +73,14 @@ public class NeueVeranlagungsMitteilung extends Mitteilung {
 
 	public void setSteuerdatenResponse(@Nonnull SteuerdatenResponse steuerdatenResponse) {
 		this.steuerdatenResponse = steuerdatenResponse;
+	}
+
+	@Nullable
+	public FinanzielleSituation getFinanzielleSituation() {
+		return finanzielleSituation;
+	}
+
+	public void setFinanzielleSituation(@Nullable FinanzielleSituation finanzielleSituation) {
+		this.finanzielleSituation = finanzielleSituation;
 	}
 }

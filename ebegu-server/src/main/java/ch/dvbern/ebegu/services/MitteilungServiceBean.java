@@ -1623,6 +1623,7 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 			finanzielleSituationService.saveFinanzielleSituation(kibonAnfrageContext.getFinSitCont(), gesuch.getId());
 		}
 		mitteilung.setMitteilungStatus(MitteilungStatus.ERLEDIGT);
+		mitteilung.setFinanzielleSituation(kibonAnfrageContext.getFinSitCont().getFinanzielleSituationJA());
 		persistence.merge(mitteilung);
 	}
 
