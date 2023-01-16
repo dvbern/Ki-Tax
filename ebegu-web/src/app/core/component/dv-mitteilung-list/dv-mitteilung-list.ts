@@ -388,6 +388,9 @@ export class DVMitteilungListController implements IOnInit {
         });
     }
 
+    public goToFinanzielleSituation(mitteilung: TSMitteilung): void {
+    }
+
     public isBetreuungsmitteilungApplied(mitteilung: TSMitteilung): boolean {
         return this.isBetreuungsmitteilung(mitteilung) && (mitteilung as TSBetreuungsmitteilung).applied;
     }

@@ -125,9 +125,17 @@
                                             </dv-loading-button>
                                         </div>
                                     </div>
-                                    <span ng-if="vm.isNeueVeranlagungErledigt(mitteilung)"
-                                          class="inline-hint applied"
-                                          data-translate="MUTATIONSMELDUNG_APPLIED"></span>
+                                    <span class="inline-hint applied" ng-if="vm.isNeueVeranlagungErledigt(mitteilung)">
+                                        <span
+                                              data-translate="MUTATIONSMELDUNG_APPLIED">
+                                        </span>
+                                        <a ng-if="mitteilung.finanzielleSituation" class="pointer-cursor"
+                                           ng-click="vm.goToFinanzielleSituation(mitteilung)"
+                                           ng-show="mitteilung.finanzielleSituation">(&nbsp;{{'GSDASHBOARD_OEFFNEN' | translate}}&nbsp;)</a>
+                                        <span ng-if="!mitteilung.finanzielleSituation">
+                                            (&nbsp;{{'FIN_SIT_GELOESCHT' | translate}}&nbsp;)
+                                        </span>
+                                    </span>
                                     <span ng-if="vm.isNeueVeranlagungIgnoriert(mitteilung)"
                                           class="inline-hint applied"
                                           data-translate="MUTATIONSMELDUNG_IGNORIERT"></span>

@@ -18,8 +18,6 @@
 package ch.dvbern.ebegu.entities;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.ForeignKey;
 import javax.persistence.JoinColumn;
@@ -42,11 +40,6 @@ public class NeueVeranlagungsMitteilung extends Mitteilung {
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_mitteilung_steuerdaten_response_id"))
 	@Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
 	private SteuerdatenResponse steuerdatenResponse;
-
-	@Nullable
-	@ManyToOne(optional = true, cascade = CascadeType.ALL)
-	@JoinColumn(foreignKey = @ForeignKey(name = "FK_mitteilung_finanzielle_situation_id"), nullable = true)
-	private FinanzielleSituation finanzielleSituation;
 
 	@Override
 	@SuppressWarnings("PMD.CompareObjectsWithEquals")
@@ -73,14 +66,5 @@ public class NeueVeranlagungsMitteilung extends Mitteilung {
 
 	public void setSteuerdatenResponse(@Nonnull SteuerdatenResponse steuerdatenResponse) {
 		this.steuerdatenResponse = steuerdatenResponse;
-	}
-
-	@Nullable
-	public FinanzielleSituation getFinanzielleSituation() {
-		return finanzielleSituation;
-	}
-
-	public void setFinanzielleSituation(@Nullable FinanzielleSituation finanzielleSituation) {
-		this.finanzielleSituation = finanzielleSituation;
 	}
 }
