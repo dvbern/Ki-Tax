@@ -210,6 +210,8 @@ public class BetreuungsgutscheinEvaluator {
 						// Restanspruch muss mit Daten von Verfügung für nächste Betreuung richtig gesetzt werden
 						restanspruchZeitabschnitte = getRestanspruchForVerfuegteBetreung((Betreuung) platz);
 					}
+					VeraenderungCalculator.getVeranderungCalculator(isTagesschule)
+						.calculateKorrekturAusbezahlteVerguenstigung(platz);
 					continue;
 				}
 
@@ -276,6 +278,7 @@ public class BetreuungsgutscheinEvaluator {
 
 		BigDecimal veranderung = veraenderungCalculator.calculateVeraenderung(verfuegungPreview.getZeitabschnitte(), vorgaengerVerfuegung);
 		boolean ignorable = veraenderungCalculator.calculateIgnorable(verfuegungPreview.getZeitabschnitte(), vorgaengerVerfuegung, veranderung);
+		veraenderungCalculator.calculateKorrekturAusbezahlteVerguenstigung(verfuegungPreview.getPlatz());
 
 		verfuegungPreview.setIgnorable(ignorable);
 		verfuegungPreview.setVeraenderungVerguenstigungGegenueberVorgaenger(veranderung);
