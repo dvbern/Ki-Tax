@@ -3074,5 +3074,7 @@
     "FINANZIELLE_SITUATION_RUECKWIRKEND_ANPASSEN": "Finanzielle Situation rückwirkend korrigieren",
     "FINANZIELLE_SITUATION_RUECKWIRKEND_ANPASSEN_HELP": "Verweis auf Art. 68 Abs. 1 resp. Art. 66 Abs. 1 Bst h <br>In diesem Fall werden die Korrekturzahlungen ausserhalb des nächsten Zahlungslaufs erfolgen.",
     "NEU_LADEN": "Neu laden",
+    "MUTATION_OEFFNEN": "Mutation öffnen",
+    "FIN_SIT_GELOESCHT": "Finanzielle Situation gelöscht",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

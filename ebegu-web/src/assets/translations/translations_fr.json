@@ -2973,5 +2973,7 @@
     "AUSWAHL": "Sélection",
     "ALLE_CAPITAL": "Tous",
     "NEU_LADEN": "Neu laden",
+    "MUTATION_OEFFNEN": "Mutation öffnen",
+    "FIN_SIT_GELOESCHT": "Finanzielle Situation gelöscht",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }
