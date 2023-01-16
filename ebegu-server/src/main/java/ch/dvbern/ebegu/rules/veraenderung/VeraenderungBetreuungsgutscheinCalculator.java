@@ -36,7 +36,6 @@ public class VeraenderungBetreuungsgutscheinCalculator extends VeraenderungCalcu
 	}
 
 	@Override
-	@Nullable
 	public void calculateKorrekturAusbezahlteVerguenstigung(AbstractPlatz platz) {
 		if (platz.getVerfuegungOrVerfuegungPreview() == null || platz.getVorgaengerVerfuegung() == null) {
 			return;
@@ -83,7 +82,6 @@ public class VeraenderungBetreuungsgutscheinCalculator extends VeraenderungCalcu
 			.collect(Collectors.toList());
 	}
 
-	//TODO RENAME METHOD
 	private BigDecimal calculateAuszahlungsbetrag(List<VerfuegungZeitabschnitt> zeitabschnitte, ZahlungslaufHelper helper) {
 		return zeitabschnitte.stream()
 			.map(zeitabschnitt -> helper.getAuszahlungsbetrag(zeitabschnitt))
