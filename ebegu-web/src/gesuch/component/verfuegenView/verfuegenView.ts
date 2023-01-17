@@ -908,6 +908,10 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
             return false;
         }
 
+        if (this.getBetreuung().isAngebotSchulamt()) {
+            return false;
+        }
+
         if (!this.hasKorrekturAuszahlungInstitution() && !this.hasKorrekturAuszahlungEltern()) {
             return false;
         }
