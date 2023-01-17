@@ -1034,7 +1034,7 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 							betreuungService.findAnmeldung(anmeldung.getVorgaengerId());
 						anmeldungOptional.ifPresent(abstractAnmeldung -> {
 							abstractAnmeldung.setAnmeldungMutationZustand(AnmeldungMutationZustand.MUTIERT);
-							abstractAnmeldung.setGueltig(false);
+							betreuungService.updateGueltigFlagOnPlatzAndVorgaenger(anmeldung);
 						});
 					}
 				}
