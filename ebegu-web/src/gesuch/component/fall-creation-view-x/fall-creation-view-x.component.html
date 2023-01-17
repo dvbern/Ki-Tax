@@ -13,6 +13,12 @@
 			<form role="form" name="form" class="" novalidate unsaved-warning-form>
 				<fieldset [disabled]="isGesuchReadonly()">
 
+                    <!-- Bei ignorierte Gesuchen einen Info zeigen -->
+                    <div *ngIf="isGesuchIgnoriert()" class="well well-status-bestaetigt">
+                        <p class="ebegu-h3">{{"GESUCH_IGNORIERT"|translate}}
+                            <a href="" (click)="gotoLetzterGueltigerAntrag()">{{"LETZTER_GUELTIGE_ANTRAG"|translate}}</a></p>
+                    </div>
+
 					<!-- Bei neuen Gesuchen f�r inaktive Periode: Warnen -->
 					<div *ngIf="isSelectedGesuchsperiodeInaktiv()" class="well well-status-warten">
 						<p class="ebegu-h3" translate>GESUCHSPERIODE_INAKTIV_HINT</p>

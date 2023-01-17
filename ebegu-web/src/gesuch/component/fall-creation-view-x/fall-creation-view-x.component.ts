@@ -1,12 +1,12 @@
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, ViewChild} from '@angular/core';
-import {NgForm} from '@angular/forms';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit} from '@angular/core';
 import {TranslateService} from '@ngx-translate/core';
-import {UIRouterGlobals} from '@uirouter/core';
+import {StateService, UIRouterGlobals} from '@uirouter/core';
 import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
 import {ErrorService} from '../../../app/core/errors/service/ErrorService';
 import {LogFactory} from '../../../app/core/logging/LogFactory';
 import {GesuchsperiodeRS} from '../../../app/core/service/gesuchsperiodeRS.rest';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
+import {TSAntragStatus} from '../../../models/enums/TSAntragStatus';
 import {TSAntragTyp} from '../../../models/enums/TSAntragTyp';
 import {TSEinstellungKey} from '../../../models/enums/TSEinstellungKey';
 import {TSGesuchsperiodeStatus} from '../../../models/enums/TSGesuchsperiodeStatus';
@@ -20,6 +20,7 @@ import {DateUtil} from '../../../utils/DateUtil';
 import {EbeguUtil} from '../../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 import {GesuchModelManager} from '../../service/gesuchModelManager';
+import {GesuchRS} from '../../service/gesuchRS.rest';
 import {WizardStepManager} from '../../service/wizardStepManager';
 import {AbstractGesuchViewX} from '../abstractGesuchViewX';
 
@@ -42,6 +43,8 @@ export class FallCreationViewXComponent extends AbstractGesuchViewX<TSGesuch> im
 
     private isBegruendungMutationActiv: boolean;
 
+    private letzteIgnorierteGesuchId: string;
+
     public constructor(
         public readonly gesuchModelManager: GesuchModelManager,
         private readonly errorService: ErrorService,
@@ -51,7 +54,9 @@ export class FallCreationViewXComponent extends AbstractGesuchViewX<TSGesuch> im
         private readonly gesuchsperiodeRS: GesuchsperiodeRS,
         private readonly cd: ChangeDetectorRef,
         private readonly uiRouterGlobals: UIRouterGlobals,
-        private readonly einstellungService: EinstellungRS
+        private readonly einstellungService: EinstellungRS,
+        private readonly $state: StateService,
+        private readonly gesuchRS: GesuchRS
     ) {
         super(gesuchModelManager,
             wizardStepManager,
@@ -63,6 +68,11 @@ export class FallCreationViewXComponent extends AbstractGesuchViewX<TSGesuch> im
 
         this.readStateParams();
         this.initViewModel();
+        if(this.gesuchModelManager.getGesuch().status === TSAntragStatus.IGNORIERT) {
+            this.gesuchRS.findLetzteNichtIgnorierteGesuchId(this.gesuchModelManager.getGesuch().id).then(
+                (response: any) => this.letzteIgnorierteGesuchId = response.id
+            );
+        }
     }
 
     private readStateParams(): void {
@@ -264,4 +274,15 @@ export class FallCreationViewXComponent extends AbstractGesuchViewX<TSGesuch> im
             this.getGesuchModel().isMutation();
     }
 
+    public isGesuchIgnoriert(): boolean {
+        return this.getGesuch().status === TSAntragStatus.IGNORIERT;
+    }
+
+    public gotoLetzterGueltigerAntrag() {
+        const navObj: any = {
+            gesuchId: this.letzteIgnorierteGesuchId,
+            dossierId: this.getGesuch().dossier.id,
+        };
+        this.$state.go('gesuch.fallcreation',navObj);
+    }
 }

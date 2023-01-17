@@ -489,4 +489,7 @@ public interface GesuchService {
 	 * oder Erneuerungsgesuch.
 	 */
 	Gesuch findErstgesuchForGesuch(@Nonnull Gesuch gesuch);
+
+	@Nonnull
+	Optional<Gesuch> findLetzteNichtIgnorierteGesuch(@Nonnull Gesuch gesuch);
 }
