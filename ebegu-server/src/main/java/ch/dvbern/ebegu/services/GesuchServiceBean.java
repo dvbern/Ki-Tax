@@ -2050,7 +2050,6 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 
 		Gesuch persistedGesuch = superAdminService.updateGesuch(gesuch, true, principalBean.getBenutzer());
 
-		// Das Dokument der Finanziellen Situation erstellen
 		createFinSitDokument(persistedGesuch, "verfuegenStarten");
 
 		return persistedGesuch;
@@ -2608,17 +2607,13 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 	@Override
 	public Gesuch mutationIgnorieren(Gesuch gesuch) {
 
-		// bei reinen BG- und Mischgesuchen muss zuerst verfuegenStarten aufgerufen werden
-		if (!gesuch.hasOnlyBetreuungenOfSchulamt()) {
-			Gesuch gesuchNachVerfuegungStart = verfuegenStarten(gesuch);
-			this.persistence.getEntityManager().refresh(gesuchNachVerfuegungStart);
-		}
+		validateGesuchComplete(gesuch);
 
 		gesuch.getKindContainers().forEach(kindContainer -> {
 			List<Betreuung> betreuungList = new ArrayList<>(kindContainer.getBetreuungen());
 			for (int i = 0; i < betreuungList.size(); i++) {
 				Betreuung betreuung = betreuungList.get(i);
-				this.betreuungService.schliessenOhneVerfuegen(betreuung);
+				this.betreuungService.schliessenOnly(betreuung);
 			}
 			for (AnmeldungTagesschule anmeldung : kindContainer.getAnmeldungenTagesschule()) {
 				this.betreuungService.anmeldungMutationIgnorieren(anmeldung);
@@ -2630,17 +2625,12 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 			resetMutierteAnmeldungen(gesuch);
 		});
 
-		// wenn das Gesuch nur TS und FI Anmeldungen wird das Gesuch nicht automatisch abgeschlossen.
-		// dies muss noch gemacht werden.
-		if (gesuch.hasOnlyBetreuungenOfSchulamt()) {
-			setAbschliessen(gesuch);
-		}
-
-		// wenn das Gesuch nur TS und FI Anmeldungen wird das Gesuch nicht automatisch abgeschlossen.
-		// dies muss noch gemacht werden.
 		gesuch.setStatus(AntragStatus.IGNORIERT);
+		gesuch.setTimestampVerfuegt(LocalDateTime.now());
+		wizardStepService.setWizardStepOkay(gesuch.getId(), WizardStepName.VERFUEGEN);
+		Gesuch persistedGesuch = superAdminService.updateGesuch(gesuch, true, principalBean.getBenutzer());
 
-		return persistence.merge(gesuch);
+		return persistedGesuch;
 	}
 
 	@Override
