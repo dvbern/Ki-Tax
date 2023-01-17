@@ -180,5 +180,6 @@
     "EINSCHULUNG_HINT": "Falls Ihr Kind noch nicht in der Schule ist, wählen Sie Vorschulalter.",
     "CHECKBOX_AUSZAHLUNG_IN_ZUKUNFT": "Folgemonat ausbezahlen",
     "ANSPRUCH_MONATSWEISE": "Anspruchsberechnung monatsweise",
+    "FREIGABEQUITTUNG_MUTATION_TEXT": "Wir haben die Freigabequittung bereits erhalten. Bei einer Mutation muss diese nicht erneut eingereicht werden. <br>Über die untenstehende Schaltfläche müssen Sie die Mutation aber noch freigeben.",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

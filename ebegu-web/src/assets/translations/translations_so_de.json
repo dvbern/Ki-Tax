@@ -69,5 +69,6 @@
     "HEILPAEDOGOGISCHER_DIENST": "Heilpädagogischer Dienst",
     "ZUSTAENDIGE_SOZIALREGION": "Zuständige Sozialregon",
     "ANSPRUCH_MONATSWEISE": "Anspruchsberechnung monatsweise",
+    "FREIGABEQUITTUNG_MUTATION_TEXT": "Wir haben die Freigabequittung bereits erhalten. Bei einer Mutation muss diese nicht erneut eingereicht werden. <br>Über die untenstehende Schaltfläche müssen Sie die Mutation aber noch freigeben.",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

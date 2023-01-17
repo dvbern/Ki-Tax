@@ -492,7 +492,7 @@ export class DVMitteilungListController implements IOnInit {
         }
         this.dvDialog.showRemoveDialog(removeDialogTemplate, this.form, RemoveDialogController, {
             title: 'MUTATIONSMELDUNG_IGNORIEREN',
-            deleteText: 'MUTATIONSMELDUNG_IGNORIEREN_BESCHREIBUNG',
+            deleteText: ' ',
             parentController: this,
             elementID: 'Intro'
         }).then(() => {   // User confirmed message
