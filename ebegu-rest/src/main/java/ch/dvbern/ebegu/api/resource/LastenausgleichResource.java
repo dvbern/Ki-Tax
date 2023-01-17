@@ -157,6 +157,7 @@ public class LastenausgleichResource {
 		} else {
 			lastenausgleich = lastenausgleichService.createLastenausgleichNew(jahr, mandant);
 		}
+		lastenausgleich = lastenausgleichService.findLastenausgleich(lastenausgleich.getId());
 
 		lastenausgleichService.sendEmailsToGemeinden(lastenausgleich);
 

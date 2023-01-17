@@ -1,16 +1,18 @@
 /*
- * Ki-Tax: System for the management of external childcare subsidies
- * Copyright (C) 2017 City of Bern Switzerland
+ * Copyright (C) 2023 DV Bern AG, Switzerland
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Affero General Public License for more details.
+ *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
 package ch.dvbern.ebegu.services;
@@ -99,6 +101,7 @@ import ch.dvbern.ebegu.entities.sozialdienst.SozialdienstFall;
 import ch.dvbern.ebegu.entities.sozialdienst.SozialdienstFall_;
 import ch.dvbern.ebegu.enums.AntragStatus;
 import ch.dvbern.ebegu.enums.BetreuungspensumAbweichungStatus;
+import ch.dvbern.ebegu.enums.BetreuungspensumAnzeigeTyp;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
 import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
@@ -123,7 +126,9 @@ import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.ebegu.services.util.SearchUtil;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.types.DateRange_;
+import ch.dvbern.ebegu.util.BetreuungUtil;
 import ch.dvbern.ebegu.util.Constants;
+import ch.dvbern.ebegu.util.MathUtil;
 import ch.dvbern.ebegu.util.MitteilungUtil;
 import ch.dvbern.ebegu.util.ServerMessageUtil;
 import ch.dvbern.lib.cdipersistence.Persistence;
@@ -568,7 +573,7 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 		Predicate predicateSenderOrEmpfaenger = cb.or(predicateSender, predicateEmpfaenger);
 		predicates.add(predicateSenderOrEmpfaenger);
 
-		query.orderBy(cb.desc(root.get(Mitteilung_.sentDatum)));
+		query.orderBy(cb.asc(root.get(Mitteilung_.sentDatum)));
 		query.where(CriteriaQueryHelper.concatenateExpressions(cb, predicates));
 		List<Mitteilung> mitteilungen = persistence.getCriteriaResults(query);
 		authorizer.checkReadAuthorizationMitteilungen(mitteilungen);
@@ -999,22 +1004,13 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 
 		final Locale locale = LocaleThreadLocal.get();
 
-		final Einstellung einstellung = einstellungService.findEinstellung(
-			EinstellungKey.GEMEINDE_MAHLZEITENVERGUENSTIGUNG_ENABLED,
-			betreuung.extractGemeinde(),
-			betreuung.extractGesuchsperiode());
-		boolean mahlzeitenverguenstigungEnabled = einstellung.getValueAsBoolean();
-
 		final Benutzer currentBenutzer = benutzerService.getCurrentBenutzer()
 			.orElseThrow(() -> new EbeguEntityNotFoundException(
 				"sendBetreuungsmitteilung",
 				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND));
 
 		MitteilungUtil.initializeBetreuungsmitteilung(mitteilung, betreuung, currentBenutzer, locale);
-		mitteilung.setMessage(MitteilungUtil.createNachrichtForMutationsmeldung(
-			pensenFromAbweichungen,
-			mahlzeitenverguenstigungEnabled,
-			locale));
+		mitteilung.setMessage(createNachrichtForMutationsmeldung(mitteilung, pensenFromAbweichungen));
 
 		sendBetreuungsmitteilung(mitteilung);
 	}
@@ -1053,7 +1049,7 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 			if (mitteilung.getBetreuungspensen().isEmpty()) {
 				persistence.remove(mitteilung);
 			} else {
-				updateMessage(mitteilung);
+				mitteilung.setMessage(createNachrichtForMutationsmeldung(mitteilung, mitteilung.getBetreuungspensen()));
 				persistence.merge(mitteilung);
 			}
 		});
@@ -1131,20 +1127,57 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 				TECHNICAL_KIBON_BENUTZER_ID));
 	}
 
-	private void updateMessage(Betreuungsmitteilung mitteilung) {
-		assert mitteilung.getBetreuung() != null;
+	@Override
+	public String createNachrichtForMutationsmeldung(
+		@Nonnull Betreuungsmitteilung mitteilung,
+		@Nonnull Set<BetreuungsmitteilungPensum> changedBetreuungen
+	) {
 		final Locale locale = LocaleThreadLocal.get();
-
+		assert mitteilung.getBetreuung() != null;
 		final boolean mvzEnabled = einstellungService.findEinstellung(
 			EinstellungKey.GEMEINDE_MAHLZEITENVERGUENSTIGUNG_ENABLED,
 			mitteilung.getBetreuung().extractGemeinde(),
 			mitteilung.getBetreuung().extractGesuchsperiode())
 			.getValueAsBoolean();
 
-		mitteilung.setMessage(MitteilungUtil.createNachrichtForMutationsmeldung(
-			mitteilung.getBetreuungspensen(),
+		final Einstellung einstellungAnzeigeTyp = einstellungService.findEinstellung(
+			EinstellungKey.PENSUM_ANZEIGE_TYP,
+			mitteilung.getBetreuung().extractGemeinde(),
+			mitteilung.getBetreuung().extractGesuchsperiode());
+		BetreuungspensumAnzeigeTyp betreuungspensumAnzeigeTyp = BetreuungspensumAnzeigeTyp.valueOf(einstellungAnzeigeTyp.getValue());
+
+		BigDecimal multiplier = getMultiplierForMutationsMitteilung(mitteilung, betreuungspensumAnzeigeTyp);
+
+		return MitteilungUtil.createNachrichtForMutationsmeldung(
+			changedBetreuungen,
 			mvzEnabled,
-			locale));
+			locale,
+			betreuungspensumAnzeigeTyp,
+			multiplier);
+	}
+
+	private BigDecimal getMultiplierForMutationsMitteilung(@Nonnull Betreuungsmitteilung mitteilung, @Nonnull BetreuungspensumAnzeigeTyp betreuungspensumAnzeigeTyp) {
+		if(!betreuungspensumAnzeigeTyp.equals(BetreuungspensumAnzeigeTyp.NUR_STUNDEN)){
+			return BigDecimal.ONE;
+		}
+		assert mitteilung.getBetreuung() != null;
+		if(mitteilung.getBetreuung().isAngebotKita()) {
+			BigDecimal oeffnungstageKita = einstellungService.findEinstellung(
+				EinstellungKey.OEFFNUNGSTAGE_KITA,
+				mitteilung.getBetreuung().extractGemeinde(),
+				mitteilung.getBetreuung().extractGesuchsperiode()).getValueAsBigDecimal();
+			return BetreuungUtil.calculateOeffnungszeitPerMonthProcentual(MathUtil.EXACT.multiply(oeffnungstageKita, BetreuungUtil.ANZAHL_STUNDEN_PRO_TAG_KITA));
+		}
+		BigDecimal oeffnungstageTFO =einstellungService.findEinstellung(
+			EinstellungKey.OEFFNUNGSTAGE_TFO,
+			mitteilung.getBetreuung().extractGemeinde(),
+			mitteilung.getBetreuung().extractGesuchsperiode()).getValueAsBigDecimal();
+
+		BigDecimal oeffnungsstundenTFO =einstellungService.findEinstellung(
+				EinstellungKey.OEFFNUNGSSTUNDEN_TFO,
+				mitteilung.getBetreuung().extractGemeinde(),
+				mitteilung.getBetreuung().extractGesuchsperiode()).getValueAsBigDecimal();
+		return MathUtil.DEFAULT.divide(MathUtil.DEFAULT.divide(MathUtil.DEFAULT.multiply(oeffnungstageTFO, oeffnungsstundenTFO), new BigDecimal(12)), new BigDecimal(100));
 	}
 
 	private Collection<Betreuungsmitteilung> findAllBetreuungsMitteilungenForInstitution(Institution institution) {
@@ -1350,8 +1383,10 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 			}
 			// Inkl. abgeschlossene
 			if (!includeClosed) {
-				Predicate predicateNichtErledigt =
-					cb.notEqual(root.get(Mitteilung_.mitteilungStatus), MitteilungStatus.ERLEDIGT);
+				Predicate predicateNichtErledigt = cb.not(
+					root.get(Mitteilung_.mitteilungStatus)
+					.in(MitteilungStatus.IGNORIERT, MitteilungStatus.ERLEDIGT)
+				);
 				predicates.add(predicateNichtErledigt);
 			}
 			// gemeinde

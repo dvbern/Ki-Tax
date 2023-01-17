@@ -177,9 +177,10 @@ export class EditGemeindeComponent implements OnInit {
 
     private initializeEmptyUnrequiredFields(stammdaten: TSGemeindeStammdaten): void {
         // wenn die Stammdaten noch nicht definiert sind, ist der checkbox fur beschwerde Adresse unselektiert
-        (EbeguUtil.isNullOrUndefined(stammdaten.adresse)
+        this.keineBeschwerdeAdresse = (EbeguUtil.isNullOrUndefined(stammdaten.adresse)
             || EbeguUtil.isEmptyStringNullOrUndefined(stammdaten.adresse.strasse))
-            ? this.keineBeschwerdeAdresse = false : this.keineBeschwerdeAdresse = !stammdaten.beschwerdeAdresse;
+            ? false
+            : !stammdaten.beschwerdeAdresse;
         if (EbeguUtil.isNullOrUndefined(stammdaten.beschwerdeAdresse)) {
             stammdaten.beschwerdeAdresse = new TSAdresse();
         }

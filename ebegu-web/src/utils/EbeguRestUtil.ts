@@ -32,6 +32,7 @@ import {TSFachstellenTyp} from '../models/enums/TSFachstellenTyp';
 import {ferienInselNameOrder} from '../models/enums/TSFerienname';
 import {TSFinanzielleSituationTyp} from '../models/enums/TSFinanzielleSituationTyp';
 import {TSKinderabzugTyp} from '../models/enums/TSKinderabzugTyp';
+import {TSPensumAnzeigeTyp} from '../models/enums/TSPensumAnzeigeTyp';
 import {TSGemeindeKennzahlen} from '../models/gemeindeantrag/gemeindekennzahlen/TSGemeindeKennzahlen';
 import {TSAnzahlEingeschriebeneKinder} from '../models/gemeindeantrag/TSAnzahlEingeschriebeneKinder';
 import {TSDurchschnittKinderProTag} from '../models/gemeindeantrag/TSDurchschnittKinderProTag';
@@ -2133,6 +2134,10 @@ export class EbeguRestUtil {
             finanzielleSituationTS.unterhaltsBeitraege = finanzielleSituationFromServer.unterhaltsBeitraege;
             finanzielleSituationTS.automatischePruefungErlaubt =
                 finanzielleSituationFromServer.automatischePruefungErlaubt;
+            if (finanzielleSituationFromServer.steuerdatenAbfrageTimestamp) {
+                finanzielleSituationTS.steuerdatenAbfrageTimestamp =
+                    DateUtil.localDateTimeToMoment(finanzielleSituationFromServer.steuerdatenAbfrageTimestamp);
+            }
             finanzielleSituationTS.momentanSelbststaendig = finanzielleSituationFromServer.momentanSelbststaendig;
 
             return finanzielleSituationTS;
@@ -5983,6 +5988,13 @@ export class EbeguRestUtil {
             return typ.value as TSAnspruchBeschaeftigungAbhaengigkeitTyp;
         }
         throw new Error(`TSAnspruchBeschaeftigungAbhaengigkeitTyp ${typ} not defined`);
+    }
+
+    public parsePensumAnzeigeTyp(typ: any): TSPensumAnzeigeTyp {
+        if (Object.values(TSPensumAnzeigeTyp).includes(typ.value)) {
+            return typ.value as TSPensumAnzeigeTyp;
+        }
+        throw new Error(`TSPensumAnzeigeTyp ${typ.value} not defined`);
     }
 
     public parseKinderabzugTyp(typ: any): TSKinderabzugTyp {

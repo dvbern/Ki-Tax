@@ -1,16 +1,18 @@
 /*
- * Ki-Tax: System for the management of external childcare subsidies
- * Copyright (C) 2017 City of Bern Switzerland
+ * Copyright (C) 2023 DV Bern AG, Switzerland
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Affero General Public License for more details.
+ *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
 import {StateService} from '@uirouter/core';
@@ -226,9 +228,16 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
     }
 
     public setMutationIgnorieren(): void {
-        this.gesuchModelManager.mutationIgnorieren().then(() => {
-            this.refreshKinderListe();
-        });
+        this.dvDialog.showRemoveDialog(removeDialogTempl, this.form, RemoveDialogController, {
+            title: 'CONFIRM_GESUCH_STATUS_IGNORIEREN',
+            deleteText: 'CONFIRM_GESUCH_STATUS_IGNORIEREN_BESCHREIBUNG',
+            parentController: undefined,
+            elementID: undefined
+        })
+            .then(() => this.gesuchModelManager.mutationIgnorieren())
+            .then(() => {
+                this.refreshKinderListe();
+            });
     }
 
     /**
@@ -880,17 +889,25 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
         return this.isMutation() &&
             !this.hasAnyNewOrStornierteBetreuung &&
             this.allVerfuegungenIgnorable &&
-            this.gesuchModelManager.isGesuchStatusIn([TSAntragStatus.GEPRUEFT]);
+            this.correctStatusForIgnorieren() &&
+            this.getGesuch().finSitStatus === TSFinSitStatus.AKZEPTIERT;
+    }
+
+    private correctStatusForIgnorieren(): boolean {
+        if (this.gesuchModelManager.areThereOnlySchulamtAngebote()) {
+            return this.gesuchModelManager.isGesuchStatusIn([TSAntragStatus.IN_BEARBEITUNG_JA]);
+        }
+        return this.gesuchModelManager.isGesuchStatusIn([TSAntragStatus.GEPRUEFT]);
     }
 
     public getVeraenderungBgString(): string {
-        let formatedString =  this.formatVeraenderungen(EbeguUtil.roundToFiveRappen(this.veraenderungBG));
+        const formatedString =  this.formatVeraenderungen(EbeguUtil.roundToFiveRappen(this.veraenderungBG));
         return this.$translate.instant('MUTATION_VERAENDERUNG_BG',
             {veraenderung: formatedString});
     }
 
     public getVeraenderungTsString(): string {
-        let formatedString =  this.formatVeraenderungen(this.veraenderungTS);
+        const formatedString =  this.formatVeraenderungen(this.veraenderungTS);
         return this.$translate.instant('MUTATION_VERAENDERUNG_TS',
             {veraenderung: formatedString});
     }

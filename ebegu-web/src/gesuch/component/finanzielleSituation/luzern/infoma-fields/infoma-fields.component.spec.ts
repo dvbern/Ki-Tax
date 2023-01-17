@@ -21,7 +21,7 @@ import {of} from 'rxjs';
 import {ListResourceRS} from '../../../../../app/core/service/listResourceRS.rest';
 import {SharedModule} from '../../../../../app/shared/shared.module';
 import {AuthServiceRS} from '../../../../../authentication/service/AuthServiceRS.rest';
-import {SHARED_MODULE_OVERRIDES} from '../../../../../hybridTools/mockUpgradedComponent';
+import {SHARED_MODULE_OVERRIDES} from '../../../../../hybridTools/mockUpgradedDirective';
 import {TSFamiliensituation} from '../../../../../models/TSFamiliensituation';
 import {TSFamiliensituationContainer} from '../../../../../models/TSFamiliensituationContainer';
 import {TSFinanzModel} from '../../../../../models/TSFinanzModel';

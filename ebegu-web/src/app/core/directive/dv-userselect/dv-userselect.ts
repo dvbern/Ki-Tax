@@ -37,7 +37,7 @@ export class DvUserSelectConfig implements IComponentOptions {
         ngDisabled: '<',
         initialAll: '=',
         showSelectionAll: '=',
-        onUserChanged: '&',
+        userChanged: '&',
         selectedUser: '=?',
         schulamt: '<',
         useDefaultUserLists: '<',
@@ -63,7 +63,7 @@ export class UserselectController implements IController {
     public initialAll: boolean;
     public showSelectionAll: boolean;
     public valueChanged: () => void;           // Methode, die beim Klick auf die Combobox aufgerufen wird
-    public onUserChanged: (user: any) => void; // Callback, welche aus obiger Methode aufgerufen werden soll
+    public userChanged: (user: any) => void; // Callback, welche aus obiger Methode aufgerufen werden soll
     public schulamt: string;
     public sachbearbeiterGemeinde: boolean;
     public useDefaultUserLists: boolean = true;
@@ -92,7 +92,7 @@ export class UserselectController implements IController {
             this.smartTable.search(this.selectedUser.getFullName(), this.dvUsersearch);
         }
         this.valueChanged = () => {
-            this.onUserChanged({user: this.selectedUser});
+            this.userChanged({user: this.selectedUser});
         };
     }
 

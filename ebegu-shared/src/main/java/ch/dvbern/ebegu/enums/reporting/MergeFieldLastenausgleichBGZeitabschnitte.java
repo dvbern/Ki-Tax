@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2021 DV Bern AG, Switzerland
+ * Copyright (C) 2023 DV Bern AG, Switzerland
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -8,11 +8,11 @@
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
 package ch.dvbern.ebegu.enums.reporting;
@@ -52,10 +52,12 @@ public enum MergeFieldLastenausgleichBGZeitabschnitte implements MergeFieldProvi
 	institutionTitle(new SimpleMergeField<>("institutionTitle", STRING_CONVERTER)),
 	betreuungsangebotTypTitle(new SimpleMergeField<>("betreuungsangebotTypTitle", STRING_CONVERTER)),
 	bgPensumTitle(new SimpleMergeField<>("bgPensumTitle", STRING_CONVERTER)),
+	jaehrlichesBgPensumTitle(new SimpleMergeField<>("jaehrlichesBGPensumTitle", STRING_CONVERTER)),
 	keinSelbstbehaltDurchGemeindeTitle(new SimpleMergeField<>("keinSelbstbehaltDurchGemeindeTitle", STRING_CONVERTER)),
 	gutscheinTitle(new SimpleMergeField<>("gutscheinTitle", STRING_CONVERTER)),
 	selbstbehaltGemeindeTitle(new SimpleMergeField<>("selbstbehaltGemeindeTitle", STRING_CONVERTER)),
 	eingabeLastenausgleichTitle(new SimpleMergeField<>("eingabeLastenausgleichTitle", STRING_CONVERTER)),
+	korrekturTitle(new SimpleMergeField<>("korrekturTitle", STRING_CONVERTER)),
 
 	referenznummer(new SimpleMergeField<>("referenznummer", STRING_CONVERTER)),
 	gemeinde(new SimpleMergeField<>("gemeinde", STRING_CONVERTER)),
@@ -70,7 +72,8 @@ public enum MergeFieldLastenausgleichBGZeitabschnitte implements MergeFieldProvi
 	betreuungsangebotTyp(new SimpleMergeField<>("betreuungsangebotTyp", STRING_CONVERTER)),
 	bgPensum(new SimpleMergeField<>("bgPensum", PERCENT_CONVERTER)),
 	keinSelbstbehaltDurchGemeinde(new SimpleMergeField<>("keinSelbstbehaltDurchGemeinde", BOOLEAN_X_CONVERTER)),
-	gutschein(new SimpleMergeField<>("gutschein", BIGDECIMAL_CONVERTER));
+	gutschein(new SimpleMergeField<>("gutschein", BIGDECIMAL_CONVERTER)),
+	isKorrektur(new SimpleMergeField<>("isKorrektur", BOOLEAN_X_CONVERTER));
 
 	@Nonnull
 	private final MergeField<?> mergeField;

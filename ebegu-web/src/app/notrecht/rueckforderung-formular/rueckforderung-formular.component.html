@@ -326,7 +326,7 @@
                                            [errorObject]="institutionTyp.errors"
                                            inputId="institutionTyp_id">
                         </dv-error-messages>
-                        <div *ngIf="rueckforderungFormular.institutionTyp ==
+                        <div *ngIf="rueckforderungFormular.institutionTyp ===
                         getRueckforderungInstitutionTypOffentlich()">
                             <!-- Stufe 2 Institution offentlich -->
                             <div
@@ -612,7 +612,7 @@
                             </div>
                         </div>
                         <!-- Stufe 2 Privat Institution und Kanton -->
-                        <div *ngIf="rueckforderungFormular.institutionTyp ==
+                        <div *ngIf="rueckforderungFormular.institutionTyp ===
                         getRueckforderungInstitutionTypPrivat()">
                             <div class="row">
                                 <div class="col-sm-6">
@@ -756,7 +756,7 @@
                                 </div>
                             </div>
                             <div *ngIf="!rueckforderungFormular.kurzarbeitBeantragt  &&
-                                rueckforderungFormular.kurzarbeitBeantragt != null">
+                                rueckforderungFormular.kurzarbeitBeantragt !== null">
                                 <div class="row">
                                     <div class="col-sm-6">
                                         <div class="form-group">
@@ -884,7 +884,7 @@
                                 </div>
                             </div>
                             <div *ngIf="!rueckforderungFormular.coronaErwerbsersatzBeantragt &&
-                                rueckforderungFormular.coronaErwerbsersatzBeantragt != null">
+                                rueckforderungFormular.coronaErwerbsersatzBeantragt !== null">
                                 <div class="row">
                                     <div class="col-sm-6">
                                         <div class="form-group">
@@ -1130,7 +1130,7 @@
                          *ngIf="isInstitutionStufe2(rueckforderungFormular)">
                         <!-- Checkbox -->
                         <div class="col-sm-12">
-                            <div class="row mt-5" *ngIf="rueckforderungFormular.institutionTyp ==
+                            <div class="row mt-5" *ngIf="rueckforderungFormular.institutionTyp ===
                                 getRueckforderungInstitutionTypOffentlich()">
                                 <div class="col-sm-12">
                                 <span class="mt-5" [innerHtml]="'ELTERN_BEITRAGE_NICHT_IN_RECHNUNG_OFFENTLICH' |
@@ -1155,7 +1155,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="row mt-5" *ngIf="rueckforderungFormular.institutionTyp ==
+                            <div class="row mt-5" *ngIf="rueckforderungFormular.institutionTyp ===
                                 getRueckforderungInstitutionTypPrivat()">
                                 <div class="col-sm-12">
                                     <span class="mt-5" [innerHtml]="'ELTERN_BEITRAGE_NICHT_IN_RECHNUNG_PRIVAT' |
@@ -1199,7 +1199,7 @@
                         <!-- Checkbox -->
                         <div class="col-sm-12">
                             <div class="row mt-5">
-                                <div class="col-sm-12" *ngIf="rueckforderungFormular.institutionTyp ==
+                                <div class="col-sm-12" *ngIf="rueckforderungFormular.institutionTyp ===
                                 getRueckforderungInstitutionTypOffentlich()">
                                     <span class="mt-5" [innerHtml]="'ELTERN_BEITRAGE_NICHT_IN_RECHNUNG_OFFENTLICH' |
                                     translate">
@@ -1224,7 +1224,7 @@
                                         </mat-checkbox>
                                     </div>
                                 </div>
-                                <div class="col-sm-12" *ngIf="rueckforderungFormular.institutionTyp ==
+                                <div class="col-sm-12" *ngIf="rueckforderungFormular.institutionTyp ===
                                 getRueckforderungInstitutionTypPrivat()">
                                     <span class="mt-5" [innerHtml]="'ELTERN_BEITRAGE_NICHT_IN_RECHNUNG_PRIVAT' |
                                     translate">
@@ -1397,7 +1397,7 @@
                         </dv-multiple-file-upload>
                     </div>
                 </div>
-                <div *ngIf="rueckforderungFormular.institutionTyp == getRueckforderungInstitutionTypPrivat()">
+                <div *ngIf="rueckforderungFormular.institutionTyp === getRueckforderungInstitutionTypPrivat()">
                     <div class="row" *ngIf="rueckforderungFormular.kurzarbeitDefinitivVerfuegt">
                         <div class="col-sm-12">
                             <div class="dv-error-messages" *ngIf="showMessageFehlendeDokumenteKurzarbeit">

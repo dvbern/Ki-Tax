@@ -35,6 +35,10 @@ public class EinstellungServiceMock extends EinstellungServiceBean {
 		if (key == EinstellungKey.GEMEINDE_KONTINGENTIERUNG_ENABLED) {
 			return new Einstellung(EinstellungKey.GEMEINDE_KONTINGENTIERUNG_ENABLED, "false", gesuchsperiode);
 		}
+		if(key == EinstellungKey.PENSUM_ANZEIGE_TYP) {
+			return new Einstellung(EinstellungKey.PENSUM_ANZEIGE_TYP, "ZEITEINHEIT_UND_PROZENT", gesuchsperiode);
+		}
+
 		return new Einstellung(key, "testValue", gesuchsperiode);
 	}
 }

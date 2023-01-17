@@ -315,13 +315,6 @@ export class FinanzielleSituationViewController extends AbstractFinSitBernView {
             });
     }
 
-    public callKiBonAnfrageAndUpdateFinSit(): void {
-       super.callKiBonAnfrage(false).then(() => {
-                this.initAfterKiBonAnfrageUpdate();
-            }
-        );
-    }
-
     public resetKiBonAnfrageFinSit(): void {
         this.model.copyFinSitDataToGesuch(this.gesuchModelManager.getGesuch());
         this.gesuchModelManager.resetKiBonAnfrageFinSit(false).then(() => {

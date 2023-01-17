@@ -40,12 +40,20 @@ const LOG = LogFactory.createLog('AbstractFinSitBernView');
 
 const removeDialogTemplate = require('../../../dialog/removeDialogTemplate.html');
 
+enum saveHints {
+    LOADING= 'FINSIT_BERN_LOADING',
+    SAVED= 'FINSIT_BERN_SAVED',
+    ERROR= 'FINSIT_BERN_ERROR'
+}
+
 export abstract class AbstractFinSitBernView extends AbstractGesuchViewController<TSFinanzModel> {
 
     protected steuerSchnittstelleAktivForPeriode: boolean;
     public steuerSchnittstelleAktivAbStr: string;
     protected steuerSchnittstelleAkivAbInPast: boolean;
     protected zahlungsangabenRequired: boolean =  false;
+    protected finSitRequestState: string;
+    protected finSitRequestRunning: boolean;
 
     public constructor(
         gesuchModelManager: GesuchModelManager,
@@ -144,6 +152,27 @@ export abstract class AbstractFinSitBernView extends AbstractGesuchViewControlle
         this.showResetDialog().then(() => {
             this.resetKiBonAnfrageFinSit();
         }, () => this.getModel().finanzielleSituationJA.steuerdatenZugriff = true);
+    }
+
+    public callKiBonAnfrageAndUpdateFinSit(): void {
+        this.finSitRequestRunning = true;
+        this.finSitRequestState = saveHints.LOADING;
+        this.callKiBonAnfrage(EbeguUtil.isNotNullAndTrue(this.model.gemeinsameSteuererklaerung))
+            .then(() => {
+                    this.model.copyFinSitDataFromGesuch(this.gesuchModelManager.getGesuch());
+                    this.form.$setDirty();
+                    this.finSitRequestState = saveHints.SAVED;
+                }
+            ).catch(() => {
+                this.finSitRequestState = saveHints.ERROR;
+            }
+        ).finally(() => {
+                this.finSitRequestState = saveHints.SAVED;
+            }
+        );
+        setTimeout(() => {
+            this.finSitRequestRunning = false;
+        }, 5000);
     }
 
     protected abstract resetKiBonAnfrageFinSit(): void;

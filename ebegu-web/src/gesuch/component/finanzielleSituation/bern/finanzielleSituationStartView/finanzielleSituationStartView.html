@@ -1,16 +1,18 @@
 <!--
-  ~ Ki-Tax: System for the management of external childcare subsidies
-  ~ Copyright (C) 2017 City of Bern Switzerland
+  ~ Copyright (C) 2023 DV Bern AG, Switzerland
+  ~
   ~ This program is free software: you can redistribute it and/or modify
   ~ it under the terms of the GNU Affero General Public License as
   ~ published by the Free Software Foundation, either version 3 of the
   ~ License, or (at your option) any later version.
+  ~
   ~ This program is distributed in the hope that it will be useful,
   ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
   ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
   ~ GNU Affero General Public License for more details.
+  ~
   ~ You should have received a copy of the GNU Affero General Public License
-  ~ along with this program. If not, see <http://www.gnu.org/licenses/>.
+  ~ along with this program. If not, see <https://www.gnu.org/licenses/>.
   -->
 
 <div class="finanzielle-situation gesuch-modul static-position">
@@ -34,6 +36,25 @@
                                                   are-there-any-bg-betreuungen="!vm.areThereOnlySchulamtangebote"
                                                   form="vm.form">
                 </dv-finanzielle-situation-require>
+
+                <div class="row" dv-show-element dv-show-allowed-roles="vm.TSRoleUtil.getAdministratorOrAmtRole()"
+                     dv-show-expression="vm.showFinanzielleSituationRueckwirkendAnpassen()">
+                    <div class="col-xs-12 dv-input-container-question">
+                        <div class="checkbox">
+                            <md-checkbox ng-model="vm.model.finanzielleSituationRueckwirkendAnpassen"
+                                         id="finanzielleSituationRueckwirkendAnpassen"
+                                         name="finanzielleSituationRueckwirkendAnpassen"
+                                         ng-change="vm.updateFinSitAenderungGueltigAbDatum()"
+                                         aria-label="{{'FINANZIELLE_SITUATION_RUECKWIRKEND_ANPASSEN'| translate}}"
+                                         ng-disabled="vm.isGesuchReadonly()">
+                                <span data-translate="FINANZIELLE_SITUATION_RUECKWIRKEND_ANPASSEN"></span>
+                            </md-checkbox>
+                            <dv-tooltip input-id="finanzielleSituationRueckwirkendAnpassen"
+                                        text="'FINANZIELLE_SITUATION_RUECKWIRKEND_ANPASSEN_HELP' | translate"></dv-tooltip>
+                        </div>
+                    </div>
+                </div>
+
 
                 <div ng-if="vm.isFinanziellesituationRequired() && vm.is2GSRequired()">
                     <!-- Gemeinsame Steuererklaerung -->
@@ -114,9 +135,15 @@
                         </p>
                     </div>
                     <dv-steuerabfrage-response-hints
-                        ng-if="vm.showZugriffAufSteuerdaten() && vm.getModel().finanzielleSituationJA.steuerdatenZugriff"
+                        ng-if="vm.showZugriffAufSteuerdaten()
+                            && vm.getModel().finanzielleSituationJA.steuerdatenZugriff"
                         (try-again-event)="vm.callKiBonAnfrageAndUpdateFinSit()"
-                        [status]="vm.getAbfrageStatus()"></dv-steuerabfrage-response-hints>
+                        [status]="vm.getAbfrageStatus().steuerdatenAbfrageStatus"
+                        [timestamp-abruf]="vm.getModel().finanzielleSituationJA.steuerdatenAbfrageTimestamp"
+                        [steuer-abfrage-respone-hint-status-text]="vm.finSitRequestState |translate"
+                        [steuer-abfrage-request-running]="vm.finSitRequestRunning"
+                    >
+                    </dv-steuerabfrage-response-hints>
 
                     <!-- Steuerveranlagung -->
                     <div class="row">
@@ -206,6 +233,7 @@
                                 <dv-input-container class="form-group">
                                     <label class="md-no-float"for="iban">
                                         <span data-translate="IBAN" ></span>
+                                        <dv-tooltip ng-if="!vm.isMahlzeitenverguenstigungEnabled()" text="'AUSZAHLUNG_HINT' | translate"></dv-tooltip>
                                     </label>
                                     <input id="iban" type="text" name="iban"
                                            ng-model="vm.model.zahlungsinformationen.iban"

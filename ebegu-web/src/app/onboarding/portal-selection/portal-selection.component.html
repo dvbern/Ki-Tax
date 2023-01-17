@@ -33,7 +33,7 @@
 		</div>
 		<div class="flex-grow"></div>
 		<div class="flew-column-center">
-			<div class="onboarding-login-buttons flex-no-grow-auto" *ngIf="!(isScreenMobile$ | async)">
+			<div class="onboarding-login-buttons flex-no-grow-auto" *ngIf="(isScreenMobile$ | async) === false">
 				<button class="dv-btn onboarding-red-border-button onboarding-login-button-width no-margin">
 					<span translate>PORTAL_OEFFNEN</span>
 				</button>

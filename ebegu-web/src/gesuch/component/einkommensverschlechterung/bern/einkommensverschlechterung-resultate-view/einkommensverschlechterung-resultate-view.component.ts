@@ -75,7 +75,7 @@ export class EinkommensverschlechterungResultateViewComponent extends AbstractEi
         return ekvFuerBasisJahrPlus && ekvFuerBasisJahrPlus;
     }
 
-    public save(onResult: Function): IPromise<any> {
+    public save(onResult: (arg: any) => any): IPromise<any> {
         if (!this.isGesuchValid()) {
             onResult(undefined);
             return undefined;

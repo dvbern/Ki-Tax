@@ -116,14 +116,18 @@ public class FKJVAusserordentlicherAnspruchCalcRule extends AbstractAusserordent
 			Integer erwerbspensumGS2) {
 		Kind kind = platz.getKind().getKindJA();
 		assert kind.getEinschulungTyp() != null;
-		if (erwerbspensumGS1 == null || erwerbspensumGS2 == null) {
-			return false;
-		}
+		erwerbspensumGS1 = getValueOrZero(erwerbspensumGS1);
+		erwerbspensumGS2 = getValueOrZero(erwerbspensumGS2);
+
 		final int totalBeschaeftigungspensum = erwerbspensumGS1 + erwerbspensumGS2;
 		if (kind.getEinschulungTyp().isEingeschult()) {
 			return erwerbspensumSufficient(totalBeschaeftigungspensum - 100, this.minBeschaeftigungsPensumEingeschult);
 		}
 		return erwerbspensumSufficient(totalBeschaeftigungspensum - 100, this.minBeschaeftigungsPensumVorschule);
+	}
+
+	private Integer getValueOrZero(Integer i) {
+		return i != null ? i : 0;
 	}
 
 	private boolean erwerbspensumSufficient(int beschaeftigungspensum, int minBeschaeftigungspensum) {

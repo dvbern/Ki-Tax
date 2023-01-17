@@ -26,12 +26,12 @@ export class TSLand {
         this._translationKey = translationKey;
     }
 
-    public set code(code: string) {
-        this._code = code;
-    }
-
     public get translationKey(): string {
         return this._translationKey;
+    }
+
+    public set code(code: string) {
+        this._code = code;
     }
 
     public get code(): string {

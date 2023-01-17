@@ -311,7 +311,7 @@ public enum EinstellungKey {
 	AUSWEIS_NACHWEIS_REQUIRED(MandantIdentifier.getAll()),
 
 	// Switch Eingabe des Betreuungspensums in Tagen oder Prozent erlauben (KIBON-2404)
-	BETREUUNG_INPUT_SWITCH_ENABLED(MandantIdentifier.getAll()),
+	PENSUM_ANZEIGE_TYP(MandantIdentifier.getAll()),
 
 	// Aktiviert die Checkbox, um die Verfügung eingschrieben zu versenden
 	VERFUEGUNG_EINGESCHRIEBEN_VERSENDEN_AKTIVIERT(MandantIdentifier.getAll()),

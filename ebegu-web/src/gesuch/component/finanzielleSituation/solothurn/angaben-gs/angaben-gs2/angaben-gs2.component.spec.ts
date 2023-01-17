@@ -1,6 +1,6 @@
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {SharedModule} from '../../../../../../app/shared/shared.module';
-import {SHARED_MODULE_OVERRIDES} from '../../../../../../hybridTools/mockUpgradedComponent';
+import {SHARED_MODULE_OVERRIDES} from '../../../../../../hybridTools/mockUpgradedDirective';
 import {GesuchModelManager} from '../../../../../service/gesuchModelManager';
 import {FinanzielleSituationSolothurnService} from '../../finanzielle-situation-solothurn.service';
 import {SolothurnFinSitTestHelpers} from '../../SolothurnFinSitTestHelpers';

@@ -19,17 +19,17 @@ import {ComponentFixture, TestBed, waitForAsync} from '@angular/core/testing';
 import {BrowserAnimationsModule, NoopAnimationsModule} from '@angular/platform-browser/animations';
 import {TranslateService} from '@ngx-translate/core';
 import {GemeindeRS} from '../../../gesuch/service/gemeindeRS.rest';
-import {SHARED_MODULE_OVERRIDES} from '../../../hybridTools/mockUpgradedComponent';
+import {SHARED_MODULE_OVERRIDES} from '../../../hybridTools/mockUpgradedDirective';
 import {DownloadRS} from '../../core/service/downloadRS.rest';
 import {MaterialModule} from '../../shared/material.module';
 import {SharedModule} from '../../shared/shared.module';
 import {GemeindeModule} from '../gemeinde.module';
-import {EditGemeindeComponentKorrespondenz} from './edit-gemeinde-korrespondenz.component';
+import {EditGemeindeKorrespondenzComponent} from './edit-gemeinde-korrespondenz.component';
 
-describe('EditGemeindeComponentKorrespondenz', () => {
+describe('EditGemeindeKorrespondenzComponent', () => {
 
-    let component: EditGemeindeComponentKorrespondenz;
-    let fixture: ComponentFixture<EditGemeindeComponentKorrespondenz>;
+    let component: EditGemeindeKorrespondenzComponent;
+    let fixture: ComponentFixture<EditGemeindeKorrespondenzComponent>;
 
     const gemeindeRSSpy = jasmine
         .createSpyObj<GemeindeRS>(GemeindeRS.name, ['downloadMusterDokument']);
@@ -58,7 +58,7 @@ describe('EditGemeindeComponentKorrespondenz', () => {
     }));
 
     beforeEach(waitForAsync(() => {
-        fixture = TestBed.createComponent(EditGemeindeComponentKorrespondenz);
+        fixture = TestBed.createComponent(EditGemeindeKorrespondenzComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();
     }));

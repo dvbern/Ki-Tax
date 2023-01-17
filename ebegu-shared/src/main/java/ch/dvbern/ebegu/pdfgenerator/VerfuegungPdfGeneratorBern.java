@@ -23,6 +23,7 @@ import javax.annotation.Nonnull;
 
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.GemeindeStammdaten;
+import ch.dvbern.ebegu.enums.BetreuungspensumAnzeigeTyp;
 import ch.dvbern.lib.invoicegenerator.pdf.PdfGenerator;
 import com.lowagie.text.Document;
 import com.lowagie.text.Font;
@@ -36,8 +37,9 @@ public class VerfuegungPdfGeneratorBern extends AbstractVerfuegungPdfGenerator {
 		@Nonnull GemeindeStammdaten stammdaten,
 		@Nonnull Art art, boolean kontingentierungEnabledAndEntwurf,
 		boolean stadtBernAsivConfigured,
-		boolean isFKJVTexte) {
-		super(betreuung, stammdaten, art, kontingentierungEnabledAndEntwurf, stadtBernAsivConfigured, isFKJVTexte);
+		boolean isFKJVTexte,
+		BetreuungspensumAnzeigeTyp betreuungspensumAnzeigeTyp) {
+		super(betreuung, stammdaten, art, kontingentierungEnabledAndEntwurf, stadtBernAsivConfigured, isFKJVTexte, betreuungspensumAnzeigeTyp);
 	}
 
 	@Override

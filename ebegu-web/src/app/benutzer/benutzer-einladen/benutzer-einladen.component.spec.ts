@@ -21,7 +21,7 @@ import {UIRouterModule} from '@uirouter/angular';
 import {of} from 'rxjs';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {GemeindeRS} from '../../../gesuch/service/gemeindeRS.rest';
-import {SHARED_MODULE_OVERRIDES} from '../../../hybridTools/mockUpgradedComponent';
+import {SHARED_MODULE_OVERRIDES} from '../../../hybridTools/mockUpgradedDirective';
 import {TestDataUtil} from '../../../utils/TestDataUtil.spec';
 import {ErrorService} from '../../core/errors/service/ErrorService';
 import {BenutzerRSX} from '../../core/service/benutzerRSX.rest';

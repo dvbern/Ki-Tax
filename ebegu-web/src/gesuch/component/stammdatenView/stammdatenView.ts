@@ -33,8 +33,11 @@ import {TSDokumentTyp} from '../../../models/enums/TSDokumentTyp';
 import {TSEingangsart} from '../../../models/enums/TSEingangsart';
 import {TSEinstellungKey} from '../../../models/enums/TSEinstellungKey';
 import {TSGeschlecht} from '../../../models/enums/TSGeschlecht';
+import {TSGesuchstellerKardinalitaet} from '../../../models/enums/TSGesuchstellerKardinalitaet';
 import {TSRole} from '../../../models/enums/TSRole';
 import {getTSSpracheValues, TSSprache} from '../../../models/enums/TSSprache';
+import {TSFamilienstatus} from '../../../models/enums/TSFamilienstatus';
+import {TSUnterhaltsvereinbarungAnswer} from '../../../models/enums/TSUnterhaltsvereinbarungAnswer';
 import {TSWizardStepName} from '../../../models/enums/TSWizardStepName';
 import {TSWizardStepStatus} from '../../../models/enums/TSWizardStepStatus';
 import {TSSozialdienstFallDokument} from '../../../models/sozialdienst/TSSozialdienstFallDokument';
@@ -55,6 +58,9 @@ import {DokumenteRS} from '../../service/dokumenteRS.rest';
 import {GesuchModelManager} from '../../service/gesuchModelManager';
 import {WizardStepManager} from '../../service/wizardStepManager';
 import {AbstractGesuchViewController} from '../abstractGesuchView';
+import * as moment from 'moment';
+import {TSDemoFeature} from '../../../app/core/directive/dv-hide-feature/TSDemoFeature';
+import {DemoFeatureRS} from '../../../app/core/service/demoFeatureRS.rest';
 import IPromise = angular.IPromise;
 import IQService = angular.IQService;
 import IRootScopeService = angular.IRootScopeService;
@@ -93,7 +99,8 @@ export class StammdatenViewController extends AbstractGesuchViewController<TSGes
         'DownloadRS',
         'ApplicationPropertyRS',
         'DokumenteRS',
-        'MandantService'
+        'MandantService',
+        'DemoFeatureRS'
     ];
 
     public filesTooBig: File[];
@@ -113,6 +120,7 @@ export class StammdatenViewController extends AbstractGesuchViewController<TSGes
     public dvFileUploadError: object;
     public frenchEnabled: boolean;
     private isLuzern: boolean;
+    private demoFeature2754: boolean = false;
 
     public constructor(
         $stateParams: IStammdatenStateParams,
@@ -133,7 +141,8 @@ export class StammdatenViewController extends AbstractGesuchViewController<TSGes
         private readonly downloadRS: DownloadRS,
         private readonly applicationPropertyRS: ApplicationPropertyRS,
         private readonly dokumenteRS: DokumenteRS,
-        private readonly mandantService: MandantService
+        private readonly mandantService: MandantService,
+        private readonly demoFeatureRS: DemoFeatureRS
     ) {
         super(gesuchModelManager,
             berechnungsManager,
@@ -191,6 +200,45 @@ export class StammdatenViewController extends AbstractGesuchViewController<TSGes
             this.gesuchModelManager.getGesuchsperiode().id).subscribe(ausweisNachweisRequired => {
             this.ausweisNachweisRequiredEinstellung = ausweisNachweisRequired.value === 'true';
         }, error => LOG.error(error));
+        this.demoFeatureRS.isDemoFeatureAllowed(TSDemoFeature.KIBON_2754)
+            .then(isAllowed => this.demoFeature2754 = isAllowed);
+    }
+
+    public getFamilienSituationDisplayValue(): string {
+        if (!this.gesuchModelManager.isFKJVTexte || !this.demoFeature2754){
+            return this.gesuchstellerNumber.toString();
+        }
+
+        if (this.gesuchstellerNumber === 1) {
+            return '1';
+        }
+
+        if (this.getGesuch().extractFamiliensituation() === null && this.getGesuch()
+            .extractFamiliensituation() === undefined) {
+            return '';
+        }
+        const familienstatus: TSFamilienstatus = this.getGesuch().extractFamiliensituation().familienstatus;
+        switch (familienstatus) {
+            case TSFamilienstatus.KONKUBINAT_KEIN_KIND:
+                if (!this.getGesuch()
+                    .extractFamiliensituation()
+                    .konkubinatGetsLongerThanXYearsBeforeEndOfPeriode(
+                        this.getGesuch().gesuchsperiode.gueltigkeit.gueltigBis)) {
+                    return `2 (${this.$translate.instant('ANDERER_ELTERNTEIL')})`;
+                }
+                break;
+            case TSFamilienstatus.ALLEINERZIEHEND:
+                if(this.getGesuch().extractFamiliensituation().gesuchstellerKardinalitaet ===
+                        TSGesuchstellerKardinalitaet.ZU_ZWEIT ||
+                    this.getGesuch().extractFamiliensituation().unterhaltsvereinbarung ===
+                        TSUnterhaltsvereinbarungAnswer.NEIN_UNTERHALTSVEREINBARUNG){
+                    return `2 (${ this.$translate.instant('ANDERER_ELTERNTEIL')   })`;
+                }
+                break;
+            default:
+                break;
+        }
+        return `2 (${ this.$translate.instant(`GS2_${familienstatus}`)   })`;
     }
 
     public korrespondenzAdrClicked(): void {

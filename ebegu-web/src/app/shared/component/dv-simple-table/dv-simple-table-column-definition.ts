@@ -21,5 +21,5 @@ export interface DvSimpleTableColumnDefinition {
     attributeName: string;
     // we can use this function to manipulate the display value of a cell, similar to a pipe. E.g. for dates, we cannot
     // sort the value by the date representation
-    displayFunction?: Function;
+    displayFunction?: (...args: any[]) => any;
 }
