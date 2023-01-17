@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2019 DV Bern AG, Switzerland
+ * Copyright (C) 2023 DV Bern AG, Switzerland
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -8,11 +8,11 @@
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 package ch.dvbern.ebegu.reporting.lastenausgleich;
 
@@ -131,6 +131,11 @@ public class LastenausgleichBGZeitabschnitteExcelConverter implements ExcelConve
 			MergeFieldLastenausgleichBGZeitabschnitte.bgPensumTitle,
 			ServerMessageUtil.getMessage("Reports_bgPensumTitle", locale, mandant)
 		);
+		mergeFields.add(MergeFieldLastenausgleichBGZeitabschnitte.jaehrlichesBgPensumTitle.getMergeField());
+		excelMergerDTO.addValue(
+			MergeFieldLastenausgleichBGZeitabschnitte.jaehrlichesBgPensumTitle,
+			ServerMessageUtil.getMessage("Reports_jaehrlichesBGPensumTitle", locale, mandant)
+		);
 		mergeFields.add(MergeFieldLastenausgleichBGZeitabschnitte.keinSelbstbehaltDurchGemeindeTitle.getMergeField());
 		excelMergerDTO.addValue(
 			MergeFieldLastenausgleichBGZeitabschnitte.keinSelbstbehaltDurchGemeindeTitle,
@@ -199,8 +204,8 @@ public class LastenausgleichBGZeitabschnitteExcelConverter implements ExcelConve
 
 		int firstRow = TITLE_ROW_NUMBER + 1;
 		int lastRow = nbrRow + TITLE_ROW_NUMBER;
-		ReportUtil.createCellWithFormula(targetRow, procentStyle, 10, "SUM(K" + firstRow + ":K" + lastRow + ")");
-		ReportUtil.createCellWithFormula(targetRow, zahlStyle, 14, "SUM(O" + firstRow + ":O" + lastRow + ")");
-		ReportUtil.createCellWithFormula(targetRow, zahlStyle, 15, "SUM(P" + firstRow + ":P" + lastRow + ")");
+		ReportUtil.createCellWithFormula(targetRow, procentStyle, 16, "SUM(Q" + firstRow + ":Q" + lastRow + ")");
+		ReportUtil.createCellWithFormula(targetRow, zahlStyle, 20, "SUM(U" + firstRow + ":U" + lastRow + ")");
+		ReportUtil.createCellWithFormula(targetRow, zahlStyle, 21, "SUM(V" + firstRow + ":V" + lastRow + ")");
 	}
 }
