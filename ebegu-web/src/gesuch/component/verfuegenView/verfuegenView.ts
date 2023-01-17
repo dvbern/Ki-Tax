@@ -1,19 +1,21 @@
-/* eslint-disable */
 /*
- * Ki-Tax: System for the management of external childcare subsidies
- * Copyright (C) 2017 City of Bern Switzerland
+ * Copyright (C) 2023 DV Bern AG, Switzerland
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Affero General Public License for more details.
+ *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+/* eslint-disable */
 import {StateService, TransitionPromise} from '@uirouter/core';
 import {IComponentOptions, ILogService, IPromise, IQService, IScope, IWindowService} from 'angular';
 import {map} from 'rxjs/operators';
@@ -930,19 +932,31 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
         let text = '';
 
         if (this.hasKorrekturAuszahlungInstitution()) {
-            text += this.$translate.instant('MUTATION_KORREKTUR_AUSBEZAHLT_INSTITUTION',
-                {betrag: this.gesuchModelManager.getVerfuegenToWorkWith().korrekturAusbezahltInstitution});
+            const betrag = this.gesuchModelManager.getVerfuegenToWorkWith().korrekturAusbezahltInstitution;
+            if (betrag < 0) {
+                text += this.$translate.instant('MUTATION_KORREKTUR_AUSBEZAHLT_INSTITUTION_RUECKZAHLUNG',
+                    {betrag: Math.abs(betrag).toFixed(2)});
+            } else {
+                text += this.$translate.instant('MUTATION_KORREKTUR_AUSBEZAHLT_INSTITUTION_RUECKFORDERUNG',
+                    {betrag: betrag.toFixed(2)});
+            }
             text += this.getTextKorrekturAusbezahlt(this.getVerfuegenToWorkWith().isAlreadyIgnorierend());
-            text += '<br/><br/>';
+            text += '\n';
         }
 
         if (this.hasKorrekturAuszahlungEltern()) {
-            text += this.$translate.instant('MUTATION_KORREKTUR_AUSBEZAHLT_ELTERN',
-                {betrag: this.gesuchModelManager.getVerfuegenToWorkWith().korrekturAusbezahltEltern});
+            const betrag = this.gesuchModelManager.getVerfuegenToWorkWith().korrekturAusbezahltEltern;
+            if (betrag < 0) {
+                text += this.$translate.instant('MUTATION_KORREKTUR_AUSBEZAHLT_ELTERN_RUECKZAHLUNG',
+                    {betrag: Math.abs(betrag).toFixed(2)});
+            } else {
+                text += this.$translate.instant('MUTATION_KORREKTUR_AUSBEZAHLT_ELTERN_RUECKFORDERUNG',
+                    {betrag: betrag.toFixed(2)});
+            }
             text += this.getTextKorrekturAusbezahlt(this.getVerfuegenToWorkWith().isAlreadyIgnorierendMahlzeiten());
         }
 
-        return text;
+        return text.trim();
     }
 
     private getTextKorrekturAusbezahlt(isZahlungIgnored: boolean) : string {
