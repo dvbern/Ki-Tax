@@ -5,7 +5,6 @@ import java.time.Month;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import javax.annotation.Nullable;
 import javax.validation.constraints.NotNull;
 
 import ch.dvbern.ebegu.entities.AbstractPlatz;

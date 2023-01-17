@@ -15,7 +15,7 @@
 
 import {
     getZahlungsstatusIgnorieren,
-    TSVerfuegungZeitabschnittZahlungsstatus,
+    TSVerfuegungZeitabschnittZahlungsstatus
 } from './enums/TSVerfuegungZeitabschnittZahlungsstatus';
 import {TSAbstractMutableEntity} from './TSAbstractMutableEntity';
 import {TSVerfuegungZeitabschnitt} from './TSVerfuegungZeitabschnitt';
