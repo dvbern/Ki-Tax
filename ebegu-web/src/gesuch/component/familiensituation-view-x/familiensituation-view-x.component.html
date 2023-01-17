@@ -27,7 +27,7 @@
 			<p *ngIf="isMutation()" translate>MUTATION_FAMSITUATION_HINT</p>
 			<p *ngIf="showError()" role="alert" translate
 			   class="dv-error-messages">ERROR_DATUM_GESETZT_BEI_MUTATION</p>
-            <p *ngIf="isNotPartnerIdentischMitVorgesuch()" translate>NOT_PARTNER_IDENTISCH_MIT_VORGESUCH</p>
+            <p *ngIf="isNotPartnerIdentischMitVorgesuch()"> {{getNotPertnerIdentischMitVorgesuchWarning()}}</p>
 		</div>
 	</div>
 	<div class="row">
