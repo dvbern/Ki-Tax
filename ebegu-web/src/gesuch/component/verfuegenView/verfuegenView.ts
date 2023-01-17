@@ -912,12 +912,9 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
             return false;
         }
 
-        if (!this.hasKorrekturAuszahlungInstitution() && !this.hasKorrekturAuszahlungEltern()) {
-            return false;
-        }
-
-        return this.getBetreuungsstatus() === TSBetreuungsstatus.VERFUEGT;
+        return this.hasKorrekturAuszahlungInstitution() || this.hasKorrekturAuszahlungEltern();
     }
+
 
     private hasKorrekturAuszahlungInstitution(): boolean {
         return EbeguUtil.isNotNullOrUndefined(this.getVerfuegenToWorkWith().korrekturAusbezahltInstitution) &&
@@ -935,28 +932,29 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
         if (this.hasKorrekturAuszahlungInstitution()) {
             text += this.$translate.instant('MUTATION_KORREKTUR_AUSBEZAHLT_INSTITUTION',
                 {betrag: this.gesuchModelManager.getVerfuegenToWorkWith().korrekturAusbezahltInstitution});
-
-            if (this.getVerfuegenToWorkWith().isAlreadyIgnorierend()) {
-                text += this.$translate.instant('MUTATION_KORREKTUR_AUSBEZAHLT_AUSSERHALB_KIBON');
-            } else {
-                text += this.$translate.instant('MUTATION_KORREKTUR_AUSBEZAHLT_INNERHLAB_KIBON');
-            }
-
+            text += this.getTextKorrekturAusbezahlt(this.getVerfuegenToWorkWith().isAlreadyIgnorierend());
             text += '<br/><br/>';
         }
 
         if (this.hasKorrekturAuszahlungEltern()) {
             text += this.$translate.instant('MUTATION_KORREKTUR_AUSBEZAHLT_ELTERN',
                 {betrag: this.gesuchModelManager.getVerfuegenToWorkWith().korrekturAusbezahltEltern});
-
-            if (this.getVerfuegenToWorkWith().isAlreadyIgnorierendMahlzeiten()) {
-                text += this.$translate.instant('MUTATION_KORREKTUR_AUSBEZAHLT_AUSSERHALB_KIBON');
-            } else {
-                text += this.$translate.instant('MUTATION_KORREKTUR_AUSBEZAHLT_INNERHLAB_KIBON');
-            }
+            text += this.getTextKorrekturAusbezahlt(this.getVerfuegenToWorkWith().isAlreadyIgnorierendMahlzeiten());
         }
 
         return text;
+    }
+
+    private getTextKorrekturAusbezahlt(isZahlungIgnored: boolean) : string {
+        if (this.getBetreuungsstatus() !== TSBetreuungsstatus.VERFUEGT) {
+            return '';
+        }
+
+        if (isZahlungIgnored) {
+            return this.$translate.instant('MUTATION_KORREKTUR_AUSBEZAHLT_AUSSERHALB_KIBON');
+        }
+
+        return this.$translate.instant('MUTATION_KORREKTUR_AUSBEZAHLT_INNERHLAB_KIBON');
     }
 
 
