@@ -329,9 +329,9 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
         }
         if (this.isGesuchstellerOrSozialdienst()) {
             return isAnyStatusOfVerfuegt(this.getAntragStatus())
-                && !this.isFinSitAbglehnt();
+                && !this.isFinSitAbglehnt() && !this.isGesuchIgnoriert();
         }
-        return !this.isFinSitAbglehnt();
+        return !this.isFinSitAbglehnt() && !this.isGesuchIgnoriert();
 
     }
 
@@ -919,5 +919,9 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
         }
 
         return this.$translate.instant(translationId, {veraenderung: veranderung.toFixed(2)});
+    }
+
+    private isGesuchIgnoriert(): boolean {
+        return this.getGesuch().status === TSAntragStatus.IGNORIERT;
     }
 }
