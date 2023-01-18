@@ -1,16 +1,18 @@
 <!--
-  ~ Ki-Tax: System for the management of external childcare subsidies
-  ~ Copyright (C) 2017 City of Bern Switzerland
+  ~ Copyright (C) 2023 DV Bern AG, Switzerland
+  ~
   ~ This program is free software: you can redistribute it and/or modify
   ~ it under the terms of the GNU Affero General Public License as
   ~ published by the Free Software Foundation, either version 3 of the
   ~ License, or (at your option) any later version.
+  ~
   ~ This program is distributed in the hope that it will be useful,
   ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
   ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
   ~ GNU Affero General Public License for more details.
+  ~
   ~ You should have received a copy of the GNU Affero General Public License
-  ~ along with this program. If not, see <http://www.gnu.org/licenses/>.
+  ~ along with this program. If not, see <https://www.gnu.org/licenses/>.
   -->
 
 <!--suppress ALL -->
@@ -52,12 +54,12 @@
                                     gs="vm.model.getEkvToWorkWith_GS().nettolohn"
                                     ja="vm.model.getEkvToWorkWith().nettolohn"
                                     show-if-bisher-none="vm.isNotNullOrUndefined(vm.model.getEkvToWorkWith_GS())"></dv-bisher>
-                                <dv-eingabe-basisjahr
+                                <dv-eingabe-hint
                                     [neuer-wert]="vm.model.getEkvToWorkWith().nettolohn"
-                                    [wert-basisjahr]="vm.model.getFiSiConToWorkWith().finanzielleSituationJA.nettolohn"
-                                    [basisjahr]="vm.model.getBasisjahr()"
+                                    [vergleichswert]="vm.model.getFiSiConToWorkWith().finanzielleSituationJA.nettolohn"
+                                    [label]="'EINGABE_BASISJAHR' | translate: {basisjahr: vm.model.getBasisjahr()}"
                                 >
-                                </dv-eingabe-basisjahr>
+                                </dv-eingabe-hint>
                                 <dv-error-messages input-id="nettolohn"
                                                    for="vm.form.nettolohn.$error"
                                                    class="error"></dv-error-messages>
@@ -80,12 +82,12 @@
                                                    ng-model="vm.model.getEkvToWorkWith().familienzulage"
                                                    class="input-element" required>
                                     </dv-valueinput>
-                                    <dv-eingabe-basisjahr
+                                    <dv-eingabe-hint
                                         [neuer-wert]="vm.model.getEkvToWorkWith().familienzulage"
-                                        [wert-basisjahr]="vm.model.getFiSiConToWorkWith().finanzielleSituationJA.familienzulage"
-                                        [basisjahr]="vm.model.getBasisjahr()"
+                                        [vergleichswert]="vm.model.getFiSiConToWorkWith().finanzielleSituationJA.familienzulage"
+                                        [label]="'EINGABE_BASISJAHR' | translate: {basisjahr: vm.model.getBasisjahr()}"
                                     >
-                                    </dv-eingabe-basisjahr>
+                                    </dv-eingabe-hint>
                                     <dv-bisher
                                         gs="vm.model.getEkvToWorkWith_GS().familienzulage"
                                         ja="vm.model.getEkvToWorkWith().familienzulage"
@@ -111,12 +113,12 @@
                                                ng-model="vm.model.getEkvToWorkWith().ersatzeinkommen"
                                                class="input-element" required>
                                 </dv-valueinput>
-                                <dv-eingabe-basisjahr
+                                <dv-eingabe-hint
                                     [neuer-wert]="vm.model.getEkvToWorkWith().ersatzeinkommen"
-                                    [wert-basisjahr]="vm.model.getFiSiConToWorkWith().finanzielleSituationJA.ersatzeinkommen"
-                                    [basisjahr]="vm.model.getBasisjahr()"
+                                    [vergleichswert]="vm.model.getFiSiConToWorkWith().finanzielleSituationJA.ersatzeinkommen"
+                                    [label]="'EINGABE_BASISJAHR' | translate: {basisjahr: vm.model.getBasisjahr()}"
                                 >
-                                </dv-eingabe-basisjahr>
+                                </dv-eingabe-hint>
                                 <dv-bisher
                                     gs="vm.model.getEkvToWorkWith_GS().ersatzeinkommen"
                                     ja="vm.model.getEkvToWorkWith().ersatzeinkommen"
@@ -142,12 +144,12 @@
                                                    ng-model="vm.model.getEkvToWorkWith().erhalteneAlimente"
                                                    class="input-element" required>
                                     </dv-valueinput>
-                                    <dv-eingabe-basisjahr
+                                    <dv-eingabe-hint
                                         [neuer-wert]="vm.model.getEkvToWorkWith().erhalteneAlimente"
-                                        [wert-basisjahr]="vm.model.getFiSiConToWorkWith().finanzielleSituationJA.erhalteneAlimente"
-                                        [basisjahr]="vm.model.getBasisjahr()"
+                                        [vergleichswert]="vm.model.getFiSiConToWorkWith().finanzielleSituationJA.erhalteneAlimente"
+                                        [label]="'EINGABE_BASISJAHR' | translate: {basisjahr: vm.model.getBasisjahr()}"
                                     >
-                                    </dv-eingabe-basisjahr>
+                                    </dv-eingabe-hint>
                                     <dv-bisher
                                         gs="vm.model.getEkvToWorkWith_GS().erhalteneAlimente"
                                         ja="vm.model.getEkvToWorkWith().erhalteneAlimente"
@@ -329,12 +331,12 @@
                                                    ng-model="vm.model.getEkvToWorkWith().bruttoertraegeVermoegen"
                                                    class="input-element" required>
                                     </dv-valueinput>
-                                    <dv-eingabe-basisjahr
+                                    <dv-eingabe-hint
                                         [neuer-wert]="vm.model.getEkvToWorkWith().bruttoertraegeVermoegen"
-                                        [wert-basisjahr]="vm.model.getFiSiConToWorkWith().finanzielleSituationJA.bruttoertraegeVermoegen"
-                                        [basisjahr]="vm.model.getBasisjahr()"
+                                        [vergleichswert]="vm.model.getFiSiConToWorkWith().finanzielleSituationJA.bruttoertraegeVermoegen"
+                                        [label]="'EINGABE_BASISJAHR' | translate: {basisjahr: vm.model.getBasisjahr()}"
                                     >
-                                    </dv-eingabe-basisjahr>
+                                    </dv-eingabe-hint>
                                     <dv-bisher gs="vm.model.getEkvToWorkWith_GS().bruttoertraegeVermoegen"
                                                ja="vm.model.getEkvToWorkWith().bruttoertraegeVermoegen"
                                                show-if-bisher-none="vm.isNotNullOrUndefined(vm.model.getEkvToWorkWith_GS())"></dv-bisher>
@@ -363,12 +365,12 @@
                                                    class="input-element"
                                                    required>
                                     </dv-valueinput>
-                                    <dv-eingabe-basisjahr
+                                    <dv-eingabe-hint
                                         [neuer-wert]="vm.model.getEkvToWorkWith().nettoertraegeErbengemeinschaft"
-                                        [wert-basisjahr]="vm.model.getFiSiConToWorkWith().finanzielleSituationJA.nettoertraegeErbengemeinschaft"
-                                        [basisjahr]="vm.model.getBasisjahr()"
+                                        [vergleichswert]="vm.model.getFiSiConToWorkWith().finanzielleSituationJA.nettoertraegeErbengemeinschaft"
+                                        [label]="'EINGABE_BASISJAHR' | translate: {basisjahr: vm.model.getBasisjahr()}"
                                     >
-                                    </dv-eingabe-basisjahr>
+                                    </dv-eingabe-hint>
                                     <dv-bisher gs="vm.model.getEkvToWorkWith_GS().nettoertraegeErbengemeinschaft"
                                                ja="vm.model.getEkvToWorkWith().nettoertraegeErbengemeinschaft"
                                                show-if-bisher-none="vm.isNotNullOrUndefined(vm.model.getEkvToWorkWith_GS())"></dv-bisher>
@@ -420,12 +422,12 @@
                                                    ng-model="vm.model.getEkvToWorkWith().amountEinkommenInVereinfachtemVerfahrenAbgerechnet"
                                                    class="input-element" required>
                                     </dv-valueinput>
-                                        <dv-eingabe-basisjahr
+                                        <dv-eingabe-hint
                                             [neuer-wert]="vm.model.getEkvToWorkWith().amountEinkommenInVereinfachtemVerfahrenAbgerechnet"
-                                            [wert-basisjahr]="vm.model.getFiSiConToWorkWith().finanzielleSituationJA.amountEinkommenInVereinfachtemVerfahrenAbgerechnet"
-                                            [basisjahr]="vm.model.getBasisjahr()"
+                                            [vergleichswert]="vm.model.getFiSiConToWorkWith().finanzielleSituationJA.amountEinkommenInVereinfachtemVerfahrenAbgerechnet"
+                                            [label]="'EINGABE_BASISJAHR' | translate: {basisjahr: vm.model.getBasisjahr()}"
                                         >
-                                        </dv-eingabe-basisjahr>
+                                        </dv-eingabe-hint>
                                     <dv-bisher gs="vm.model.getEkvToWorkWith_GS().amountEinkommenInVereinfachtemVerfahrenAbgerechnet"
                                                ja="vm.model.getEkvToWorkWith().amountEinkommenInVereinfachtemVerfahrenAbgerechnet"></dv-bisher>
                                     <dv-error-messages input-id="amount_vereinfacht_abgerechnet"
@@ -451,12 +453,12 @@
                                                    ng-model="vm.model.getEkvToWorkWith().geleisteteAlimente"
                                                    class="input-element" required>
                                     </dv-valueinput>
-                                    <dv-eingabe-basisjahr
+                                    <dv-eingabe-hint
                                         [neuer-wert]="vm.model.getEkvToWorkWith().geleisteteAlimente"
-                                        [wert-basisjahr]="vm.model.getFiSiConToWorkWith().finanzielleSituationJA.geleisteteAlimente"
-                                        [basisjahr]="vm.model.getBasisjahr()"
+                                        [vergleichswert]="vm.model.getFiSiConToWorkWith().finanzielleSituationJA.geleisteteAlimente"
+                                        [label]="'EINGABE_BASISJAHR' | translate: {basisjahr: vm.model.getBasisjahr()}"
                                     >
-                                    </dv-eingabe-basisjahr>
+                                    </dv-eingabe-hint>
                                     <dv-bisher
                                         gs="vm.model.getEkvToWorkWith_GS().geleisteteAlimente"
                                         ja="vm.model.getEkvToWorkWith().geleisteteAlimente"
@@ -482,12 +484,12 @@
                                                    ng-model="vm.model.getEkvToWorkWith().abzugSchuldzinsen"
                                                    class="input-element" required>
                                     </dv-valueinput>
-                                    <dv-eingabe-basisjahr
+                                    <dv-eingabe-hint
                                         [neuer-wert]="vm.model.getEkvToWorkWith().abzugSchuldzinsen"
-                                        [wert-basisjahr]="vm.model.getFiSiConToWorkWith().finanzielleSituationJA.abzugSchuldzinsen"
-                                        [basisjahr]="vm.model.getBasisjahr()"
+                                        [vergleichswert]="vm.model.getFiSiConToWorkWith().finanzielleSituationJA.abzugSchuldzinsen"
+                                        [label]="'EINGABE_BASISJAHR' | translate: {basisjahr: vm.model.getBasisjahr()}"
                                     >
-                                    </dv-eingabe-basisjahr>
+                                    </dv-eingabe-hint>
                                     <dv-bisher gs="vm.model.getEkvToWorkWith_GS().abzugSchuldzinsen"
                                                ja="vm.model.getEkvToWorkWith().abzugSchuldzinsen"
                                                show-if-bisher-none="vm.isNotNullOrUndefined(vm.model.getEkvToWorkWith_GS())"></dv-bisher>
@@ -513,12 +515,12 @@
                                                    ng-model="vm.model.getEkvToWorkWith().gewinnungskosten"
                                                    class="input-element" required>
                                     </dv-valueinput>
-                                    <dv-eingabe-basisjahr
+                                    <dv-eingabe-hint
                                         [neuer-wert]="vm.model.getEkvToWorkWith().gewinnungskosten"
-                                        [wert-basisjahr]="vm.model.getFiSiConToWorkWith().finanzielleSituationJA.gewinnungskosten"
-                                        [basisjahr]="vm.model.getBasisjahr()"
+                                        [vergleichswert]="vm.model.getFiSiConToWorkWith().finanzielleSituationJA.gewinnungskosten"
+                                        [label]="'EINGABE_BASISJAHR' | translate: {basisjahr: vm.model.getBasisjahr()}"
                                     >
-                                    </dv-eingabe-basisjahr>
+                                    </dv-eingabe-hint>
                                     <dv-bisher gs="vm.model.getEkvToWorkWith_GS().gewinnungskosten"
                                                ja="vm.model.getEkvToWorkWith().gewinnungskosten"
                                                show-if-bisher-none="vm.isNotNullOrUndefined(vm.model.getEkvToWorkWith_GS())"></dv-bisher>

@@ -2157,7 +2157,7 @@
     "STANDARD_DOK_UNTERSCHRIFT2_NAME": "Signature 2 - Nom",
     "ERROR_NO_MODUL_SELECTED": "Il faut sélectionner au moins un jour",
     "IN_CHF_PLACEHOLDER": "en CHF",
-    "EINGABE_BASISJAHR": "Indication {{ basisjahr }}: {{ wertBasisjahr }} CHF",
+    "EINGABE_BASISJAHR": "Indication {{ basisjahr }}:",
     "KEINE_BESCHWERDE_ADRESSE_TOOLTIP": "Si le text standard est sélectionné, les indication des voies de droit suivantes seront ajoutées à la fin de la décision: <br><br>Indication des voies de droit<br>Les plaintes contre cette décision peuvent être déposées dans les 30 jours. La période de plainte ne peut pas être ralongée. Les plaintes doivent être déposées à l'adresse suivante: <i>(L'adresse sera insérée)</i>. Vous devez nous transmettre, (a) quelle est la décision demandée à la place de celle qui est contestée; (b) pour quelles raisons vous demandez une autre décision, (c) la signature de la partie plaignante ou de la personne qui la représente. Le recours doit être accompagné des preuves dans la mesure où elles sont disponibles et que la décision contestée.",
     "LASTENAUSGLEICH_JAHR": "Année",
     "LASTENAUSGLEICH_SELBSTBEHALT": "Franchise par place à 100%",
@@ -2976,5 +2976,6 @@
     "AUSWAHL": "Sélection",
     "ALLE_CAPITAL": "Tous",
     "NEU_LADEN": "Recharger",
+    "BISHER": "bisher:",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }
