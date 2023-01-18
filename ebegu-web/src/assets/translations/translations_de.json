@@ -3091,7 +3091,7 @@
     "AUSZAHLUNG_HINT": "Allfällige Rückzahlungen aufgrund von Veränderungen Ihrer finanziellen Situation erfolgen auf dieses Konto.",
     "BISHER": "bisher:",
     "GESUCH_IGNORIERT": "Diese Mutation wurde ignoriert. Die aktuell gültige Betreuung und finanzielle Situation sehen Sie hier ein:",
-    "LETZTER_GUELTIGE_ANTRAG":  "letzter gültige Antrag",
+    "LETZTER_GUELTIGE_ANTRAG":  "letzter gültiger Antrag",
     "GESUCH_IGNORIERT_HELP": "Die Gemeinde kann Mutationen unter anderem ignorieren, wenn<br>-    die Mutation ausschliesslich die finanzielle Situation betrifft,<br>-    die Änderung zu einem tieferen Betreuungsgutschein respektive einem höheren Tagesschultarif führt,<br>-    und die Veränderung des Betreuungsgutscheins / Tagesschultarifs geringfügig ist.",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }
