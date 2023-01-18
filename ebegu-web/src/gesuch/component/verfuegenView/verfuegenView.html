@@ -1,16 +1,18 @@
 <!--
-  ~ Ki-Tax: System for the management of external childcare subsidies
-  ~ Copyright (C) 2017 City of Bern Switzerland
+  ~ Copyright (C) 2023 DV Bern AG, Switzerland
+  ~
   ~ This program is free software: you can redistribute it and/or modify
   ~ it under the terms of the GNU Affero General Public License as
   ~ published by the Free Software Foundation, either version 3 of the
   ~ License, or (at your option) any later version.
+  ~
   ~ This program is distributed in the hope that it will be useful,
   ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
   ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
   ~ GNU Affero General Public License for more details.
+  ~
   ~ You should have received a copy of the GNU Affero General Public License
-  ~ along with this program. If not, see <http://www.gnu.org/licenses/>.
+  ~ along with this program. If not, see <https://www.gnu.org/licenses/>.
   -->
 
 <div class="verfuegen-view gesuch-modul static-position">
@@ -502,7 +504,7 @@
                     <div class="row" dv-show-element
                          dv-show-allowed-roles="vm.TSRoleUtil.getAdministratorJugendamtRole()"
                          dv-show-expression="vm.showVerfuegung">
-                        <div class="col-xs-12 dv-input-container-question">
+                        <div class="col-xs-12 dv-input-container-question margin-bottom-20">
                             <div class="checkbox">
                                 <md-checkbox ng-model="vm.verfuegungsBemerkungenKontrolliert"
                                              ng-required="vm.isVerfuegenClicked"
@@ -522,6 +524,13 @@
                             </div>
                         </div>
                     </div>
+
+                    <!-- Info über Korrektur Betrag in Mutation -->
+                    <dv-demo-feature-wrapper  demo-feature="{{vm.demoFeature}}">
+                        <div ng-if="vm.showInfoUeberKorrekutren()" class="well margin-top-20">
+                            <div ng-bind-html="vm.getKorrekturenString()" class="white-space-pre"></div>
+                        </div>
+                    </dv-demo-feature-wrapper>
 
                     <!--VerfuegungPDF anzeigen-->
                     <div class="row margin-top-20 text-left">

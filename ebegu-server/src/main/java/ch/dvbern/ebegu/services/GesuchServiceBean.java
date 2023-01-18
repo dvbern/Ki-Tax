@@ -67,6 +67,7 @@ import ch.dvbern.ebegu.entities.AbstractAnmeldung;
 import ch.dvbern.ebegu.entities.AbstractDateRangedEntity_;
 import ch.dvbern.ebegu.entities.AbstractEntity_;
 import ch.dvbern.ebegu.entities.AbstractPersonEntity_;
+import ch.dvbern.ebegu.entities.AbstractPlatz;
 import ch.dvbern.ebegu.entities.AnmeldungFerieninsel;
 import ch.dvbern.ebegu.entities.AnmeldungTagesschule;
 import ch.dvbern.ebegu.entities.AntragStatusHistory;
@@ -396,10 +397,17 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 			// die Berechnung die richtige FinSit verwendet wird!
 			zuMutierendeAnmeldungenAbschliessen(gesuchForMutation);
 
-			return gesuchForMutation.copyForMutation(
+			var mutation = gesuchForMutation.copyForMutation(
 				new Gesuch(),
 				eingangsart,
 				gesuchToCreate.getRegelStartDatum() != null ? gesuchToCreate.getRegelStartDatum() : LocalDate.now());
+
+			// wenn eine Anmeldung kopiert wird, dann wird die neuste Mutation auf gueltig gesetzt und der Vorgänger auf
+			// ungültig. Falls der Vorgänger aber im Status MUTATION_IGNORIERT war, müssen wir weiter zurück um
+			// sicherzustellen, dass dessen Vorgänger auch nicht gültig ist
+			vorgaengerVonGueltigenAnmeldungenUngueltigSetzen(mutation);
+
+			return mutation;
 		}
 		return gesuchToCreate;
 	}
@@ -670,11 +678,7 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 			.filter(betreuung -> betreuung.getVorgaengerId() != null)
 			.filter(betreuung -> betreuung.getBetreuungsangebotTyp().isSchulamt())
 			.forEach(betreuung -> {
-				AbstractAnmeldung vorgaenger = betreuungService.findAnmeldung(betreuung.getVorgaengerId())
-					.orElseThrow(() -> new EbeguEntityNotFoundException(
-						"resetMutierteAnmeldungen",
-						ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
-						betreuung.getVorgaengerId()));
+				AbstractAnmeldung vorgaenger = findVorgaengerAnmeldungNotIgnoriert(betreuung);
 				vorgaenger.setAnmeldungMutationZustand(AnmeldungMutationZustand.AKTUELLE_ANMELDUNG);
 				vorgaenger.setGueltig(true); // Die alte Anmeldung ist wieder die gueltige
 				if (vorgaenger.getBetreuungsstatus() == Betreuungsstatus.SCHULAMT_ANMELDUNG_AUSGELOEST
@@ -687,6 +691,29 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 			});
 	}
 
+	private AbstractAnmeldung findVorgaengerAnmeldungNotIgnoriert(AbstractAnmeldung betreuung) {
+		if (betreuung.getVorgaengerId() == null) {
+			//Kann eigentlich nicht eintretten, da das Erst-Gesuch nicht ingoriert werden kann und somit immer ein Vorgänger
+			//gfunden werden kann, welcher nicht ignoiert ist
+			throw new EbeguRuntimeException(
+				"findVorgaengerAnmeldungNotIgnoriert",
+				ErrorCodeEnum.ERROR_NICHT_IGNORIERTER_VORGAENGER_NOT_FOUND,
+				betreuung.getId());
+		}
+
+		AbstractAnmeldung vorgaenger = betreuungService.findAnmeldung(betreuung.getVorgaengerId())
+						.orElseThrow(() -> new EbeguEntityNotFoundException(
+							"findVorgaengerAnmeldungNotIgnoriert",
+							ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
+							betreuung.getVorgaengerId()));
+
+		if (vorgaenger.getBetreuungsstatus().isIgnoriert()) {
+			return findVorgaengerAnmeldungNotIgnoriert(vorgaenger);
+		}
+
+		return vorgaenger;
+	}
+
 	private void zuMutierendeAnmeldungenAbschliessen(@Nonnull Gesuch currentGesuch) {
 		currentGesuch.extractAllAnmeldungen().stream()
 			.filter(anmeldung -> anmeldung.getBetreuungsangebotTyp().isTagesschule())
@@ -695,6 +722,14 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 				this.verfuegungService.anmeldungSchulamtAusgeloestAbschliessen(
 					anmeldung.extractGesuch().getId(),
 					anmeldung.getId());
+			});
+	}
+
+	private void vorgaengerVonGueltigenAnmeldungenUngueltigSetzen(@Nonnull Gesuch currentGesuch) {
+		currentGesuch.extractAllAnmeldungen().stream()
+			.filter(AbstractPlatz::isGueltig)
+			.forEach(anmeldung -> {
+				betreuungService.updateGueltigFlagOnPlatzAndVorgaenger(anmeldung);
 			});
 	}
 
@@ -1022,7 +1057,7 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 							betreuungService.findAnmeldung(anmeldung.getVorgaengerId());
 						anmeldungOptional.ifPresent(abstractAnmeldung -> {
 							abstractAnmeldung.setAnmeldungMutationZustand(AnmeldungMutationZustand.MUTIERT);
-							abstractAnmeldung.setGueltig(false);
+							betreuungService.updateGueltigFlagOnPlatzAndVorgaenger(anmeldung);
 						});
 					}
 				}

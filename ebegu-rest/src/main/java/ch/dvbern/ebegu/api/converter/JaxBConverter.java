@@ -3857,6 +3857,8 @@ public class JaxBConverter extends AbstractConverter {
 		jaxVerfuegung.setKategorieNormal(verfuegung.isKategorieNormal());
 		jaxVerfuegung.setVeraenderungVerguenstigungGegenueberVorgaenger(verfuegung.getVeraenderungVerguenstigungGegenueberVorgaenger());
 		jaxVerfuegung.setIgnorable(verfuegung.getIgnorable());
+		jaxVerfuegung.setKorrekturAusbezahltEltern(verfuegung.getKorrekturAusbezahltEltern());
+		jaxVerfuegung.setKorrekturAusbezahltInstitution(verfuegung.getKorrekturAusbezahltInstitution());
 
 		List<JaxVerfuegungZeitabschnitt> zeitabschnitte = verfuegung.getZeitabschnitte().stream()
 			.map(this::verfuegungZeitabschnittToJax)
