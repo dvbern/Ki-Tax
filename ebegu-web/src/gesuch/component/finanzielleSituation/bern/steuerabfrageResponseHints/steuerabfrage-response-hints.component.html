@@ -1,5 +1,5 @@
 <!--
-  ~ Copyright (C) 2022 DV Bern AG, Switzerland
+  ~ Copyright (C) 2023 DV Bern AG, Switzerland
   ~
   ~ This program is free software: you can redistribute it and/or modify
   ~ it under the terms of the GNU Affero General Public License as
@@ -33,6 +33,7 @@
 
     <div class="margin-bottom-20" *ngIf="tryAgainPossible() && !steuerAbfrageRequestRunning" >
         <a class="pointer-cursor" translate (click)="tryAgain()">ERNEUT_VERSUCHEN</a>
+        <dv-tooltip class="black-font" [text]="'ERNEUT_VERSUCHEN_HINT' | translate"></dv-tooltip>
     </div>
     <div *ngIf="steuerAbfrageRequestRunning">
         <p class="ebegu-h3 black-font" [innerHTML]="steuerAbfrageResponeHintStatusText"></p>
@@ -45,6 +46,7 @@
             [label]="'CHECKBOX_MARKED_FUER_KONTROLL'"
             [(model)]="gesuchModelManager.getGesuch().markiertFuerKontroll"
             (modelChange)="gesuchModelManager.updateGesuchMarkiertFuerKontroll($event)"
+            [tooltip]="'CHECKBOX_MARKED_FUER_KONTROLL_INFO'"
         ></dv-checkbox-x>
     </div>
 </div>

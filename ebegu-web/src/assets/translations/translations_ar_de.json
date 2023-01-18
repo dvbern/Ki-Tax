@@ -68,5 +68,6 @@
     "ONBOARDING_HELP_DIALOG_CONTENT": "<b>Anleitung für Antragstellende</b><br><a target='_blank' href='assets/pdf/Anleitung_Antragstellende_Solothurn.pdf'>Anleitung für Antragstellende</a>.<br><b><br>Benötigen Sie Hilfe?</b><br>Als Antragsteller/in melden Sie sich bitte bei der Gemeinde, bei der Sie Ihren Antrag einreichen möchten.<br>",
     "HEILPAEDOGOGISCHER_DIENST": "Heilpädagogischer Dienst",
     "ZUSTAENDIGE_SOZIALREGION": "Zuständige Sozialregon",
+    "FREIGABEQUITTUNG_MUTATION_TEXT": "Wir haben die Freigabequittung bereits erhalten. Bei einer Mutation muss diese nicht erneut eingereicht werden. <br>Über die untenstehende Schaltfläche müssen Sie die Mutation aber noch freigeben.",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }
