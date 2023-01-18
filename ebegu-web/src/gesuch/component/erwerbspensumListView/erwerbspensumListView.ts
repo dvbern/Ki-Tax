@@ -287,7 +287,7 @@ export class ErwerbspensumListViewController
         return familiensitution.familienstatus === TSFamilienstatus.ALLEINERZIEHEND;
     }
 
-    private getKonfigAnspruchUnabhaengigVomBeschaeftigungsPensumForGemeinde() : TSAnspruchBeschaeftigungAbhaengigkeitTyp {
+    private getKonfigAnspruchUnabhaengigVomBeschaeftigungsPensumForGemeinde(): TSAnspruchBeschaeftigungAbhaengigkeitTyp {
         return this.gesuchModelManager.gemeindeKonfiguration.anspruchUnabhaengingVonBeschaeftigungsPensum;
     }
 
