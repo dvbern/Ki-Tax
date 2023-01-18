@@ -281,7 +281,7 @@ export class FallCreationViewXComponent extends AbstractGesuchViewX<TSGesuch> im
     public gotoLetzterGueltigerAntrag() {
         const navObj: any = {
             gesuchId: this.letzteIgnorierteGesuchId,
-            dossierId: this.getGesuch().dossier.id,
+            dossierId: this.getGesuch().dossier.id
         };
         this.$state.go('gesuch.fallcreation',navObj);
     }
