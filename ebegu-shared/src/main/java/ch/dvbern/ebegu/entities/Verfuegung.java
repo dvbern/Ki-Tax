@@ -97,6 +97,12 @@ public class Verfuegung extends AbstractMutableEntity {
 	@Transient
 	private boolean ignorable;
 
+	@Transient
+	private BigDecimal korrekturAusbezahltInstitution;
+
+	@Transient
+	private BigDecimal korrekturAusbezahltEltern;
+
 	public Verfuegung() {
 	}
 
@@ -253,5 +259,21 @@ public class Verfuegung extends AbstractMutableEntity {
 
 	public void setIgnorable(boolean ignorable) {
 		this.ignorable = ignorable;
+	}
+
+	public BigDecimal getKorrekturAusbezahltInstitution() {
+		return korrekturAusbezahltInstitution;
+	}
+
+	public void setKorrekturAusbezahltInstitution(BigDecimal korrekturAusbezahltInstitution) {
+		this.korrekturAusbezahltInstitution = korrekturAusbezahltInstitution;
+	}
+
+	public BigDecimal getKorrekturAusbezahltEltern() {
+		return korrekturAusbezahltEltern;
+	}
+
+	public void setKorrekturAusbezahltEltern(BigDecimal korrekturAusbezahltEltern) {
+		this.korrekturAusbezahltEltern = korrekturAusbezahltEltern;
 	}
 }

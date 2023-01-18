@@ -3395,6 +3395,8 @@ export class EbeguRestUtil {
             verfuegungTS.kategorieNormal = verfuegungFromServer.kategorieNormal;
             verfuegungTS.veraenderungVerguenstigungGegenueberVorgaenger = verfuegungFromServer.veraenderungVerguenstigungGegenueberVorgaenger;
             verfuegungTS.ignorable = verfuegungFromServer.ignorable;
+            verfuegungTS.korrekturAusbezahltEltern = verfuegungFromServer.korrekturAusbezahltEltern;
+            verfuegungTS.korrekturAusbezahltInstitution = verfuegungFromServer.korrekturAusbezahltInstitution;
             return verfuegungTS;
         }
         return undefined;
