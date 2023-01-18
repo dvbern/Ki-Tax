@@ -102,6 +102,7 @@ import ch.dvbern.ebegu.entities.KindContainer_;
 import ch.dvbern.ebegu.entities.Kind_;
 import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.enums.AnmeldungMutationZustand;
+import ch.dvbern.ebegu.enums.AntragCopyType;
 import ch.dvbern.ebegu.enums.AntragStatus;
 import ch.dvbern.ebegu.enums.AntragTyp;
 import ch.dvbern.ebegu.enums.ApplicationPropertyKey;
@@ -391,12 +392,29 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 			// die Berechnung die richtige FinSit verwendet wird!
 			zuMutierendeAnmeldungenAbschliessen(gesuchForMutation);
 
-			return gesuchForMutation.copyForMutation(
+			Gesuch mutation = gesuchForMutation.copyForMutation(
 				new Gesuch(),
 				eingangsart,
 				gesuchToCreate.getRegelStartDatum() != null ? gesuchToCreate.getRegelStartDatum() : LocalDate.now());
+
+			setNotIgnoredFinanzielleSituationContainerIfNeeded(gesuchForMutation, mutation);
+			return mutation;
 		}
 		return gesuchToCreate;
+	}
+
+	private void setNotIgnoredFinanzielleSituationContainerIfNeeded(@Nonnull Gesuch orginial, @Nonnull Gesuch neuesGesuch){
+		if(orginial.getStatus().equals(AntragStatus.IGNORIERT)) {
+			Gesuch letzteNichtIgnorierteGesuch = findLetzteNichtIgnorierteGesuch(orginial).orElseThrow(
+				() -> new EbeguEntityNotFoundException("createMutation - findLetzteNichtIgnorierteGesuch", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, "Gesuch with ID ist immer ignoriert: " + orginial.getId()));
+
+			if(neuesGesuch.getGesuchsteller1() != null && letzteNichtIgnorierteGesuch.getGesuchsteller1() != null){
+				letzteNichtIgnorierteGesuch.getGesuchsteller1().copyFinanzen(neuesGesuch.getGesuchsteller1(), AntragCopyType.MUTATION);
+			}
+			if(neuesGesuch.getGesuchsteller2() != null && letzteNichtIgnorierteGesuch.getGesuchsteller2() != null){
+				letzteNichtIgnorierteGesuch.getGesuchsteller2().copyFinanzen(neuesGesuch.getGesuchsteller2(), AntragCopyType.MUTATION);
+			}
+		}
 	}
 
 	@Nonnull
@@ -408,11 +426,15 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 		if (gesuchForErneuerungOptional.isPresent()) {
 			logInfo.append('\n').append("... und es gibt ein Gesuch zu kopieren");
 			Gesuch gesuchForErneuerung = gesuchForErneuerungOptional.get();
-			return gesuchForErneuerung.copyForErneuerung(
+			Gesuch erneuteGesuch = gesuchForErneuerung.copyForErneuerung(
 				new Gesuch(),
 				gesuchsperiode,
 				eingangsart,
 				gesuchToCreate.getRegelStartDatum() != null ? gesuchToCreate.getRegelStartDatum() : LocalDate.now());
+
+			setNotIgnoredFinanzielleSituationContainerIfNeeded(gesuchForErneuerung, erneuteGesuch);
+
+			return erneuteGesuch;
 		}
 		return gesuchToCreate;
 	}
@@ -438,11 +460,12 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 		if (gesuchToCopyOptional.isPresent()) {
 			logInfo.append('\n').append("Es ist das erste Gesuch in einem neuen Dossier!");
 			Gesuch gesuchToCopy = gesuchToCopyOptional.get();
+			Gesuch erstGesuchInNeuemDossier;
 			if (gesuchsperiode.equals(gesuchToCopy.getGesuchsperiode())) {
-				return gesuchToCopy.copyForMutationNeuesDossier(gesuchToCreate, eingangsart,
+				erstGesuchInNeuemDossier = gesuchToCopy.copyForMutationNeuesDossier(gesuchToCreate, eingangsart,
 					gesuchToCreate.getDossier());
 			} else {
-				return gesuchToCopy.copyForErneuerungsgesuchNeuesDossier(
+				erstGesuchInNeuemDossier = gesuchToCopy.copyForErneuerungsgesuchNeuesDossier(
 					gesuchToCreate,
 					eingangsart,
 					gesuchToCreate.getDossier(),
@@ -451,6 +474,7 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 						gesuchToCreate.getRegelStartDatum() :
 						LocalDate.now());
 			}
+			setNotIgnoredFinanzielleSituationContainerIfNeeded(gesuchToCopy, erstGesuchInNeuemDossier);
 		}
 		return gesuchToCreate;
 	}
@@ -2513,6 +2537,7 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 			new Gesuch(),
 			Eingangsart.PAPIER,
 			gesuch.getRegelStartDatum() != null ? gesuch.getRegelStartDatum() : LocalDate.now());
+		setNotIgnoredFinanzielleSituationContainerIfNeeded(gesuch, mutation);
 		mutation.setTyp(AntragTyp.MUTATION);
 		mutation.setEingangsdatum(LocalDate.now());
 		mutation.setStatus(AntragStatus.IN_BEARBEITUNG_JA);
@@ -2624,6 +2649,13 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 			// anmeldungen des Vorgesuchs zurücksetzen
 			resetMutierteAnmeldungen(gesuch);
 		});
+		if (gesuch.getVorgaengerId() != null) {
+			final Optional<Gesuch> vorgaengerOpt = findGesuch(gesuch.getVorgaengerId());
+			vorgaengerOpt.ifPresent(this::setGesuchAndVorgaengerUngueltig);
+		}
+
+		// neues Gesuch erst nachdem das andere auf ungültig gesetzt wurde setzen wegen unique key
+		gesuch.setGueltig(true);
 
 		gesuch.setStatus(AntragStatus.IGNORIERT);
 		gesuch.setTimestampVerfuegt(LocalDateTime.now());
