@@ -34,6 +34,8 @@ export class TSFinanzModel {
     private _finanzielleSituationRueckwirkendAnpassen: boolean;
     private _finanzielleSituationContainerGS1: TSFinanzielleSituationContainer;
     private _finanzielleSituationContainerGS2: TSFinanzielleSituationContainer;
+    private _finanzielleSituationVorMutationGS1: TSFinanzielleSituation;
+    private _finanzielleSituationVorMutationGS2: TSFinanzielleSituation;
     private _einkommensverschlechterungContainerGS1: TSEinkommensverschlechterungContainer;
     private _einkommensverschlechterungContainerGS2: TSEinkommensverschlechterungContainer;
     private _einkommensverschlechterungInfoContainer: TSEinkommensverschlechterungInfoContainer;
@@ -264,6 +266,15 @@ export class TSFinanzModel {
         return gesuch;
     }
 
+    public initFinSitVorMutation(gesuchVorMutation: TSGesuch): void {
+        this._finanzielleSituationVorMutationGS1 =
+            gesuchVorMutation.gesuchsteller1.finanzielleSituationContainer.finanzielleSituationJA;
+        if (gesuchVorMutation.gesuchsteller2) {
+            this._finanzielleSituationVorMutationGS2 =
+                gesuchVorMutation.gesuchsteller2.finanzielleSituationContainer.finanzielleSituationJA;
+        }
+    }
+
     /**
      * if gemeinsameSteuererklaerung has been set to true and steuerveranlagungErhalten ist set to true for the GS1
      * as well, then we need to set steuerveranlagungErhalten to true for the GS2 too, if it exists.
@@ -340,6 +351,12 @@ export class TSFinanzModel {
         return this.basisjahrPlus === 2 ?
             einkommensverschlechterungContainer.ekvGSBasisJahrPlus2 :
             einkommensverschlechterungContainer.ekvGSBasisJahrPlus1;
+    }
+
+    public getFinSitVorMutationToWorkWith(): TSFinanzielleSituation {
+        return this.gesuchstellerNumber === 2 ?
+            this._finanzielleSituationVorMutationGS2 :
+            this._finanzielleSituationVorMutationGS1;
     }
 
     public getGesuchstellerNumber(): number {

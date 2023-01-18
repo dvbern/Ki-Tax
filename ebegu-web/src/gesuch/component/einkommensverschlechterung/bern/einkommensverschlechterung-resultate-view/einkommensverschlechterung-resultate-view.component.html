@@ -1,5 +1,5 @@
 <!--
-  ~ Copyright (C) 2022 DV Bern AG, Switzerland
+  ~ Copyright (C) 2023 DV Bern AG, Switzerland
   ~
   ~ This program is free software: you can redistribute it and/or modify
   ~ it under the terms of the GNU Affero General Public License as
@@ -8,11 +8,11 @@
   ~
   ~ This program is distributed in the hope that it will be useful,
   ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
-  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
   ~ GNU Affero General Public License for more details.
   ~
   ~ You should have received a copy of the GNU Affero General Public License
-  ~ along with this program.  If not, see <https://www.gnu.org/licenses/>.
+  ~ along with this program. If not, see <https://www.gnu.org/licenses/>.
   -->
 
 <div class="einkommensverschlechterungResultate gesuch-modul static-position">
@@ -57,8 +57,8 @@
                                 [inputRequired]="true"
                                 [tooltipMessageKey]="getBruttovermoegenTooltipLabel()"
                                 [neuerWert]="getEinkommensverschlechterungGS1_JA().bruttovermoegen"
-                                [wertBasisjahr]="model.finanzielleSituationContainerGS1.finanzielleSituationJA.bruttovermoegen"
-                                [basisjahr]="model.getBasisjahr()"
+                                [vergleichswert]="model.finanzielleSituationContainerGS1.finanzielleSituationJA.bruttovermoegen"
+                                [vergleichwertLabel]="'EINGABE_BASISJAHR' | translate: {basisjahr: model.getBasisjahr()}"
                                 [showBisher]="showBisher(getEinkommensverschlechterungGS1_GS())"
                                 [deklaration]="getEinkommensverschlechterungGS1_GS()?.bruttovermoegen"
                                 [korrektur]="getEinkommensverschlechterungGS1_JA().bruttovermoegen">
@@ -84,8 +84,8 @@
                                 [inputRequired]="true"
                                 [tooltipMessageKey]="getBruttovermoegenTooltipLabel()"
                                 [neuerWert]="getEinkommensverschlechterungGS2_JA().bruttovermoegen"
-                                [wertBasisjahr]="model.finanzielleSituationContainerGS2.finanzielleSituationJA.bruttovermoegen"
-                                [basisjahr]="model.getBasisjahr()"
+                                [vergleichswert]="model.finanzielleSituationContainerGS2.finanzielleSituationJA.bruttovermoegen"
+                                [vergleichwertLabel]="'EINGABE_BASISJAHR' | translate: {basisjahr: model.getBasisjahr()}"
                                 [showBisher]="showBisher(getEinkommensverschlechterungGS2_GS())"
                                 [deklaration]="getEinkommensverschlechterungGS2_GS()?.bruttovermoegen"
                                 [korrektur]="getEinkommensverschlechterungGS2_JA().bruttovermoegen">
@@ -108,8 +108,8 @@
                                 [inputRequired]="true"
                                 [tooltipMessageKey]="'FINANZIELLE_SITUATION_SCHULDEN_HELP'"
                                 [neuerWert]="getEinkommensverschlechterungGS1_JA().schulden"
-                                [wertBasisjahr]="model.finanzielleSituationContainerGS1.finanzielleSituationJA.schulden"
-                                [basisjahr]="model.getBasisjahr()"
+                                [vergleichswert]="model.finanzielleSituationContainerGS1.finanzielleSituationJA.schulden"
+                                [vergleichwertLabel]="'EINGABE_BASISJAHR' | translate: {basisjahr: model.getBasisjahr()}"
                                 [showBisher]="showBisher(getEinkommensverschlechterungGS1_GS())"
                                 [deklaration]="getEinkommensverschlechterungGS1_GS()?.schulden"
                                 [korrektur]="getEinkommensverschlechterungGS1_JA().schulden">
@@ -131,8 +131,8 @@
                                 [inputRequired]="true"
                                 [tooltipMessageKey]="'FINANZIELLE_SITUATION_SCHULDEN_HELP'"
                                 [neuerWert]="getEinkommensverschlechterungGS2_JA().schulden"
-                                [wertBasisjahr]="model.finanzielleSituationContainerGS2.finanzielleSituationJA.schulden"
-                                [basisjahr]="model.getBasisjahr()"
+                                [vergleichswert]="model.finanzielleSituationContainerGS2.finanzielleSituationJA.schulden"
+                                [vergleichwertLabel]="'EINGABE_BASISJAHR' | translate: {basisjahr: model.getBasisjahr()}"
                                 [showBisher]="showBisher(getEinkommensverschlechterungGS2_GS())"
                                 [deklaration]="getEinkommensverschlechterungGS2_GS()?.schulden"
                                 [korrektur]="getEinkommensverschlechterungGS2_JA().schulden">
