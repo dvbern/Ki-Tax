@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.validation.constraints.NotNull;
 
+import ch.dvbern.ebegu.entities.AbstractPlatz;
 import ch.dvbern.ebegu.entities.Verfuegung;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 
@@ -53,4 +54,6 @@ public abstract class VeraenderungCalculator {
 	}
 
 	protected abstract boolean isVerfuegungIgnorable(BigDecimal veraenderung);
+
+	public abstract void calculateKorrekturAusbezahlteVerguenstigung(@NotNull AbstractPlatz platz);
 }

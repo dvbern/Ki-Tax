@@ -6,6 +6,7 @@ import java.util.Locale;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.ejb.Local;
 
 import ch.dvbern.ebegu.dto.BGCalculationInput;
 import ch.dvbern.ebegu.entities.AbstractPlatz;
@@ -25,11 +26,23 @@ public class MutationsMergerFinanzielleSituationBern extends AbstractMutationsMe
 		BGCalculationResult resultVorgaenger,
 		AbstractPlatz platz,
 		LocalDate mutationsEingansdatum) {
-		if (platz.extractGesuch().getFinSitTyp().equals(FinanzielleSituationTyp.BERN_FKJV)){
-			LocalDate finSitGueltigAb = platz.extractGesuch().getFinSitAenderungGueltigAbDatum();
-			mutationsEingansdatum = finSitGueltigAb != null ? finSitGueltigAb : mutationsEingansdatum;
+		LocalDate finSitGueltigAb = handleFinanzielleSituationGueltigAb(inputAktuel, platz, mutationsEingansdatum);
+		handleVerminderungEinkommen(inputAktuel, resultVorgaenger, finSitGueltigAb);
+	}
+
+	private LocalDate handleFinanzielleSituationGueltigAb(
+		BGCalculationInput inputData,
+		AbstractPlatz platz,
+		LocalDate mutationsEingansdatum) {
+		LocalDate finSitGueltigAb = mutationsEingansdatum;
+
+		if (platz.extractGesuch().getFinSitTyp() == FinanzielleSituationTyp.BERN_FKJV &&
+			platz.extractGesuch().getFinSitAenderungGueltigAbDatum() != null) {
+			finSitGueltigAb = platz.extractGesuch().getFinSitAenderungGueltigAbDatum();
+			inputData.addBemerkung(MsgKey.FIN_SIT_RUECKWIRKEND_ANGEPASST, getLocale());
 		}
-		handleVerminderungEinkommen(inputAktuel, resultVorgaenger, mutationsEingansdatum);
+
+		return finSitGueltigAb;
 	}
 
 	private void handleVerminderungEinkommen(

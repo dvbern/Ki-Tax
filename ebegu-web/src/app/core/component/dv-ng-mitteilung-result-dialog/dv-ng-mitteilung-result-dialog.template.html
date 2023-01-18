@@ -1,5 +1,5 @@
 <!--
-  ~ Copyright (C) 2022 DV Bern AG, Switzerland
+  ~ Copyright (C) 2023 DV Bern AG, Switzerland
   ~
   ~ This program is free software: you can redistribute it and/or modify
   ~ it under the terms of the GNU Affero General Public License as
@@ -8,11 +8,11 @@
   ~
   ~ This program is distributed in the hope that it will be useful,
   ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
-  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
   ~ GNU Affero General Public License for more details.
   ~
   ~ You should have received a copy of the GNU Affero General Public License
-  ~ along with this program.  If not, see <https://www.gnu.org/licenses/>.
+  ~ along with this program. If not, see <https://www.gnu.org/licenses/>.
   -->
 
 <mat-dialog-content>
@@ -23,12 +23,14 @@
             <li class="applied" *ngFor="let betreuungsmitteilung of betreuungsmitteilungsOkVerfuegt">
                 <a href="{{getBetreuungUrl(betreuungsmitteilung)}}" target="_blank">{{getRererenceNummer(betreuungsmitteilung)}}</a>
             </li>
+            <span *ngIf="betreuungsmitteilungsOkNotVerfuegt.length === 0">-</span>
             <br><br>
             <span>{{'AUTOMATISCHE_BEARBEITETE_MITTEILUNGEN_NICHT_VERFUEGT' | translate}}</span>
             <br>
             <li class="applied" *ngFor="let betreuungsmitteilung of betreuungsmitteilungsOkNotVerfuegt">
                 <a href="{{getBetreuungUrl(betreuungsmitteilung)}}" target="_blank">{{getRererenceNummer(betreuungsmitteilung)}}</a>
             </li>
+            <span *ngIf="betreuungsmitteilungsOkNotVerfuegt.length === 0">-</span>
             <br><br>
             <span>{{'NICHT_BEARBEITETE_MITTEILUNGEN' | translate}}</span>
             <br>
@@ -36,6 +38,7 @@
                 <a href="{{getBetreuungUrl(betreuungsmitteilung)}}" target="_blank">{{getRererenceNummer(betreuungsmitteilung)}}</a>:
                 <i>{{betreuungsmitteilung.errorMessage}}</i>
             </li>
+            <span *ngIf="betreuungsmitteilungsKo.length === 0">-</span>
         </ul>
     </nav>
 </mat-dialog-content>
