@@ -674,11 +674,7 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 			.filter(betreuung -> betreuung.getVorgaengerId() != null)
 			.filter(betreuung -> betreuung.getBetreuungsangebotTyp().isSchulamt())
 			.forEach(betreuung -> {
-				AbstractAnmeldung vorgaenger = betreuungService.findAnmeldung(betreuung.getVorgaengerId())
-					.orElseThrow(() -> new EbeguEntityNotFoundException(
-						"resetMutierteAnmeldungen",
-						ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
-						betreuung.getVorgaengerId()));
+				AbstractAnmeldung vorgaenger = findVorgaengerAnmeldungNotIgnoriert(betreuung);
 				vorgaenger.setAnmeldungMutationZustand(AnmeldungMutationZustand.AKTUELLE_ANMELDUNG);
 				vorgaenger.setGueltig(true); // Die alte Anmeldung ist wieder die gueltige
 				if (vorgaenger.getBetreuungsstatus() == Betreuungsstatus.SCHULAMT_ANMELDUNG_AUSGELOEST
@@ -689,6 +685,29 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 				}
 				persistence.merge(vorgaenger);
 			});
+	}
+
+	private AbstractAnmeldung findVorgaengerAnmeldungNotIgnoriert(AbstractAnmeldung betreuung) {
+		if (betreuung.getVorgaengerId() == null) {
+			//Kann eigentlich nicht eintretten, da das Erst-Gesuch nicht ingoriert werden kann und somit immer ein Vorgänger
+			//gfunden werden kann, welcher nicht ignoiert ist
+			throw new EbeguRuntimeException(
+				"findVorgaengerAnmeldungNotIgnoriert",
+				ErrorCodeEnum.ERROR_NICHT_IGNORIERTER_VORGAENGER_NOT_FOUND,
+				betreuung.getId());
+		}
+
+		AbstractAnmeldung vorgaenger = betreuungService.findAnmeldung(betreuung.getVorgaengerId())
+						.orElseThrow(() -> new EbeguEntityNotFoundException(
+							"findVorgaengerAnmeldungNotIgnoriert",
+							ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
+							betreuung.getVorgaengerId()));
+
+		if (vorgaenger.getBetreuungsstatus().isIgnoriert()) {
+			return findVorgaengerAnmeldungNotIgnoriert(vorgaenger);
+		}
+
+		return vorgaenger;
 	}
 
 	private void zuMutierendeAnmeldungenAbschliessen(@Nonnull Gesuch currentGesuch) {
