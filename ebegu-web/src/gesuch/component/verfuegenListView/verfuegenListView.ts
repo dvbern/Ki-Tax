@@ -109,6 +109,7 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
     private readonly ebeguUtil: EbeguUtil;
     private isVerfuegungEingeschriebenSendenAktiv: boolean;
     public readonly demoFeature = TSDemoFeature.VERAENDERUNG_BEI_MUTATION;
+    private letzteIgnorierteGesuchId: string;
 
     public constructor(
         private readonly $state: StateService,
@@ -130,6 +131,12 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
         super(gesuchModelManager, berechnungsManager, wizardStepManager, $scope, TSWizardStepName.VERFUEGEN, $timeout);
         this.initViewModel();
         this.ebeguUtil = ebeguUtil;
+
+        if(this.gesuchModelManager.getGesuch().status === TSAntragStatus.IGNORIERT) {
+            this.gesuchRS.findLetzteNichtIgnorierteGesuchId(this.gesuchModelManager.getGesuch().id).then(
+                (response: any) => this.letzteIgnorierteGesuchId = response.id
+            );
+        }
     }
 
     /**
@@ -908,7 +915,7 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
             roundedVeranderung *= -1;
         }
 
-        return this.$translate.instant(translationId, {veraenderung: roundedVeranderung});
+        return this.$translate.instant(translationId, {veraenderung: roundedVeranderung.toFixed(2)});
     }
 
     public getVeraenderungTsString(): string {
@@ -923,7 +930,14 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
         return this.$translate.instant(translationId, {veraenderung: veranderung.toFixed(2)});
     }
 
-    private isGesuchIgnoriert(): boolean {
+    public isGesuchIgnoriert(): boolean {
         return this.getGesuch().status === TSAntragStatus.IGNORIERT;
+    }
+
+    public gotoLetzterGueltigerAntrag() {
+        const navObj: any = {
+            gesuchId: this.letzteIgnorierteGesuchId
+        };
+        this.$state.go('gesuch.verfuegen',navObj);
     }
 }

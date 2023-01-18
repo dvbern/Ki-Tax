@@ -1,3 +1,20 @@
+/*
+ * Copyright (C) 2023 DV Bern AG, Switzerland
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
 import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit} from '@angular/core';
 import {TranslateService} from '@ngx-translate/core';
 import {StateService, UIRouterGlobals} from '@uirouter/core';
@@ -6,7 +23,6 @@ import {ErrorService} from '../../../app/core/errors/service/ErrorService';
 import {LogFactory} from '../../../app/core/logging/LogFactory';
 import {GesuchsperiodeRS} from '../../../app/core/service/gesuchsperiodeRS.rest';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
-import {TSAntragStatus} from '../../../models/enums/TSAntragStatus';
 import {TSAntragTyp} from '../../../models/enums/TSAntragTyp';
 import {TSEinstellungKey} from '../../../models/enums/TSEinstellungKey';
 import {TSGesuchsperiodeStatus} from '../../../models/enums/TSGesuchsperiodeStatus';
@@ -43,8 +59,6 @@ export class FallCreationViewXComponent extends AbstractGesuchViewX<TSGesuch> im
 
     private isBegruendungMutationActiv: boolean;
 
-    private letzteIgnorierteGesuchId: string;
-
     public constructor(
         public readonly gesuchModelManager: GesuchModelManager,
         private readonly errorService: ErrorService,
@@ -68,11 +82,6 @@ export class FallCreationViewXComponent extends AbstractGesuchViewX<TSGesuch> im
 
         this.readStateParams();
         this.initViewModel();
-        if(this.gesuchModelManager.getGesuch().status === TSAntragStatus.IGNORIERT) {
-            this.gesuchRS.findLetzteNichtIgnorierteGesuchId(this.gesuchModelManager.getGesuch().id).then(
-                (response: any) => this.letzteIgnorierteGesuchId = response.id
-            );
-        }
     }
 
     private readStateParams(): void {
@@ -272,17 +281,5 @@ export class FallCreationViewXComponent extends AbstractGesuchViewX<TSGesuch> im
     public isShowInputBegruendungMutation(): boolean {
         return this.isBegruendungMutationActiv &&
             this.getGesuchModel().isMutation();
-    }
-
-    public isGesuchIgnoriert(): boolean {
-        return this.getGesuch().status === TSAntragStatus.IGNORIERT;
-    }
-
-    public gotoLetzterGueltigerAntrag() {
-        const navObj: any = {
-            gesuchId: this.letzteIgnorierteGesuchId,
-            dossierId: this.getGesuch().dossier.id
-        };
-        this.$state.go('gesuch.fallcreation',navObj);
     }
 }
