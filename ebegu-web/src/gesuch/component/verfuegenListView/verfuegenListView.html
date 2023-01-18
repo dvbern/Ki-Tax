@@ -1,16 +1,18 @@
 <!--
-  ~ Ki-Tax: System for the management of external childcare subsidies
-  ~ Copyright (C) 2017 City of Bern Switzerland
+  ~ Copyright (C) 2023 DV Bern AG, Switzerland
+  ~
   ~ This program is free software: you can redistribute it and/or modify
   ~ it under the terms of the GNU Affero General Public License as
   ~ published by the Free Software Foundation, either version 3 of the
   ~ License, or (at your option) any later version.
+  ~
   ~ This program is distributed in the hope that it will be useful,
   ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
   ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
   ~ GNU Affero General Public License for more details.
+  ~
   ~ You should have received a copy of the GNU Affero General Public License
-  ~ along with this program. If not, see <http://www.gnu.org/licenses/>.
+  ~ along with this program. If not, see <https://www.gnu.org/licenses/>.
   -->
 
 <div class="verfuegen-list-view gesuch-modul static-position">
@@ -111,21 +113,29 @@
                      dv-show-allowed-roles="vm.TSRoleUtil.getAdministratorJugendamtRole()">
                     <!-- Veränderung der BGs und TS Tarife in Mutationen -->
                     <dv-demo-feature-wrapper  demo-feature="{{vm.demoFeature}}">
-                    <div ng-if="vm.showSimulationVeranderung()">
-                        <div ng-if="vm.hasMutationVeranderung() && !vm.hasAnyNewOrStornierteBetreuung" class="well margin-top-20">
-                            <span translate>MUTATION_VERAENDERUNG_1</span>
-                            <ul>
-                                <li><span>{{vm.getVeraenderungBgString()}}</span></li>
-                                <li><span>{{vm.getVeraenderungTsString()}}</span></li>
-                            </ul>
-                        </div>
-                        <div ng-if="!vm.hasMutationVeranderung() && !vm.hasAnyNewOrStornierteBetreuung" class="well margin-top-20">
-                            <span translate>MUTATION_KEINE_VERAENDERUNG</span>
-                        </div>
-                        <div ng-if="vm.hasAnyNewOrStornierteBetreuung" class="well margin-top-20">
-                            <span translate>MUTATION_VERAENDERUNG_NICHT_MOEGLICH</span>
+                        <div ng-if="vm.showSimulationVeranderung()">
+                            <div ng-if="vm.hasMutationVeranderung() && !vm.hasAnyNewOrStornierteBetreuung" class="well margin-top-20">
+                                <span translate>MUTATION_VERAENDERUNG_1</span>
+                                <ul>
+                                    <li><span>{{vm.getVeraenderungBgString()}}</span></li>
+                                    <li><span>{{vm.getVeraenderungTsString()}}</span></li>
+                                </ul>
+                            </div>
+                            <div ng-if="!vm.hasMutationVeranderung() && !vm.hasAnyNewOrStornierteBetreuung" class="well margin-top-20">
+                                <span translate>MUTATION_KEINE_VERAENDERUNG</span>
+                            </div>
+                            <div ng-if="vm.hasAnyNewOrStornierteBetreuung" class="well margin-top-20">
+                                <span translate>MUTATION_VERAENDERUNG_NICHT_MOEGLICH</span>
+                            </div>
                         </div>
                     </dv-demo-feature-wrapper>
+                    <!-- Bei ignorierte Gesuchen einen Info zeigen -->
+                    <div ng-if="vm.isGesuchIgnoriert()" class="well">
+                        <span>{{"GESUCH_IGNORIERT"|translate}}
+                            <a href="" ng-click="vm.gotoLetzterGueltigerAntrag()">{{"LETZTER_GUELTIGE_ANTRAG"|translate}}</a>
+                            <dv-tooltip text="'GESUCH_IGNORIERT_HELP' | translate"></dv-tooltip>
+                        </span>
+                    </div>
 
                     <div class="col-xs-12 dv-input-container-question" ng-show="vm.showVerfuegungEingeschriebenSenden()">
                         <div class="checkbox">
