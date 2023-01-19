@@ -38,6 +38,7 @@ import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten;
 import ch.dvbern.ebegu.entities.NeueVeranlagungsMitteilung;
 import ch.dvbern.ebegu.entities.SteuerdatenResponse;
+import ch.dvbern.ebegu.enums.AntragStatus;
 import ch.dvbern.ebegu.enums.Eingangsart;
 import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.enums.SteuerdatenAnfrageStatus;
@@ -61,6 +62,9 @@ import org.hibernate.Session;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
+import org.junit.jupiter.params.provider.EnumSource.Mode;
 
 import static ch.dvbern.ebegu.inbox.handler.PlatzbestaetigungTestUtil.failed;
 import static org.easymock.EasyMock.anyObject;
@@ -152,6 +156,16 @@ public class NeueVeranlagungEventHandlerTest extends EasyMockSupport {
 		expectGesuchNotFound();
 
 		testIgnored("Kein Gesuch für Key gefunen. Key: ");
+	}
+
+	@ParameterizedTest
+	@EnumSource(value = AntragStatus.class,
+		names = { "IN_BEARBEITUNG_GS", "IN_BEARBEITUNG_SOZIALDIENST", "FREIGABEQUITTUNG" },
+		mode = Mode.INCLUDE)
+	void gesuchNochNichtFreigegeben(@Nonnull AntragStatus status) {
+		gesuch_1GS.setStatus(status);
+		expectGesuchFound();
+		testIgnored("Gesuch ist noch nicht freigegeben");
 	}
 
 	@Test

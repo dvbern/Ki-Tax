@@ -114,6 +114,10 @@ public class NeueVeranlagungEventHandler extends BaseEventHandler<NeueVeranlagun
 			return Processing.failure("Kein Gesuch für Key gefunen. Key: " + key);
 		}
 
+		if (gesuch.getStatus().isAnyOfInBearbeitungGSOrSZD()) {
+			return Processing.failure("Gesuch ist noch nicht freigegeben: " + key);
+		}
+
 		// erst die Massgegebenes Einkommens fuer das betroffenes Gesuch berechnen
 		FinanzielleSituationResultateDTO finSitOriginalResult = finanzielleSituationService.calculateResultate(gesuch);
 
