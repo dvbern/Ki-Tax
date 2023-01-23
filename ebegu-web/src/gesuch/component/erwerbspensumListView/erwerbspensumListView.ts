@@ -66,10 +66,7 @@ export class ErwerbspensumListViewController
         '$scope',
         'AuthServiceRS',
         '$timeout',
-        '$translate',
-        'GemeindeRS',
-        'EinstellungRS',
-        'EbeguRestUtil'
+        '$translate'
     ];
 
     public erwerbspensenGS1: Array<TSErwerbspensumContainer> = undefined;
@@ -79,7 +76,6 @@ export class ErwerbspensumListViewController
     public showInfoAusserordentlichenAnspruch: boolean;
     public gemeindeTelefon: string = '';
     public gemeindeEmail: string = '';
-    public konfigAbhaengigkeitAnspruchBeschaeftigungspensum: TSAnspruchBeschaeftigungAbhaengigkeitTyp;
 
     public constructor(
         private readonly $state: StateService,
@@ -91,10 +87,7 @@ export class ErwerbspensumListViewController
         $scope: IScope,
         private readonly authServiceRS: AuthServiceRS,
         $timeout: ITimeoutService,
-        private readonly $translate: ITranslateService,
-        private readonly gemeindeRS: GemeindeRS,
-        private readonly einstellungenRS: EinstellungRS,
-        private readonly ebeguRestUtil: EbeguRestUtil
+        private readonly $translate: ITranslateService
     ) {
         super(gesuchModelManager,
             berechnungsManager,
@@ -126,11 +119,10 @@ export class ErwerbspensumListViewController
             this.gemeindeTelefon = this.gesuchModelManager.gemeindeStammdaten.telefon;
             this.gemeindeEmail = this.gesuchModelManager.gemeindeStammdaten.mail;
         }
-        this.loadAnspruchUnabhaengingVomBeschaeftigungspensumKonfig();
     }
 
     private setShowInfoAusserordentlichenAnspruchIfPossible(): void {
-        if (this.konfigAbhaengigkeitAnspruchBeschaeftigungspensum !==
+        if (this.getKonfigAnspruchUnabhaengigVomBeschaeftigungsPensumForGemeinde() !==
             TSAnspruchBeschaeftigungAbhaengigkeitTyp.ABHAENGING) {
             this.showInfoAusserordentlichenAnspruch = false;
             return;
@@ -295,17 +287,12 @@ export class ErwerbspensumListViewController
         return familiensitution.familienstatus === TSFamilienstatus.ALLEINERZIEHEND;
     }
 
-    private loadAnspruchUnabhaengingVomBeschaeftigungspensumKonfig(): void {
-        this.einstellungenRS.getAllEinstellungenBySystemCached(this.gesuchModelManager.getGesuchsperiode().id)
-            .subscribe(einstellungen => {
-                this.konfigAbhaengigkeitAnspruchBeschaeftigungspensum = this.ebeguRestUtil
-                    .parseAnspruchBeschaeftigungAbhaengigkeitTyp(einstellungen
-                        .find(e => e.key === TSEinstellungKey.ABHAENGIGKEIT_ANSPRUCH_BESCHAEFTIGUNGPENSUM));
-            }, error => LOG.error(error));
+    private getKonfigAnspruchUnabhaengigVomBeschaeftigungsPensumForGemeinde(): TSAnspruchBeschaeftigungAbhaengigkeitTyp {
+        return this.gesuchModelManager.gemeindeKonfiguration.anspruchUnabhaengingVonBeschaeftigungsPensum;
     }
 
     public anspruchUnabhaengingVomBeschaeftigungspensum(): boolean {
-        return this.konfigAbhaengigkeitAnspruchBeschaeftigungspensum ===
+        return this.getKonfigAnspruchUnabhaengigVomBeschaeftigungsPensumForGemeinde()  ===
             TSAnspruchBeschaeftigungAbhaengigkeitTyp.UNABHAENGING;
     }
 }
