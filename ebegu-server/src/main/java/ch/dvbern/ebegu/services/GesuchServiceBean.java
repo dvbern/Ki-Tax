@@ -2775,6 +2775,25 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 			&& gesuch.getFall().getSozialdienstFall().getStatus() == SozialdienstFallStatus.ENTZOGEN;
 	}
 
+	@Nonnull
+	public Gesuch findVorgaengerGesuchNotIgnoriert(@Nonnull String gesuchId) {
+		var gesuch = findGesuch(gesuchId).orElseThrow(() -> new EbeguEntityNotFoundException(
+			"findVorgaengerGesuchNotIgnoriert",
+			ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
+			gesuchId));
+		if (gesuch.getStatus() != AntragStatus.IGNORIERT) {
+			authorizer.checkReadAuthorization(gesuch);
+			return gesuch;
+		}
+		if (gesuch.getVorgaengerId() == null) {
+			throw new EbeguRuntimeException(
+				"findVorgaengerGesuchNotIgnoriert",
+				"Kein Vorgänger gefunden, der nicht ignoriert war"
+			);
+		}
+		return findVorgaengerGesuchNotIgnoriert(gesuch.getVorgaengerId());
+	}
+
 }
 
 
