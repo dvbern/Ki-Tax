@@ -3069,7 +3069,7 @@
     "MUTATION_VERAENDERUNG_BG_HOEHER": "Die Betreuungsgutscheine sind kumuliert und für die ganze Periode {{veraenderung}} CHF höher als vor der Mutation",
     "MUTATION_VERAENDERUNG_BG_TIEFER": "Die Betreuungsgutscheine sind kumuliert und für die ganze Periode {{veraenderung}} CHF tiefer als vor der Mutation",
     "MUTATION_VERAENDERUNG_TS_HOEHER": "Der Tagesschultarif pro Stunde ist {{veraenderung}} CHF höher als vor der Mutation.",
-    "MUTATION_VERAENDERUNG_TS_TIEFER": "Der Tagesschultarif pro Stunde ist {{veraenderung}} CHF tifer als vor der Mutation.",
+    "MUTATION_VERAENDERUNG_TS_TIEFER": "Der Tagesschultarif pro Stunde ist {{veraenderung}} CHF tiefer als vor der Mutation.",
     "MUTATION_KEINE_VERAENDERUNG": "Diese Mutation führt zu keinen Veränderungen an Tagesschultarif und Betreuungsgutscheinen.",
     "ZAHLUNGSANGABEN_ANTRAGSTELLER_REQUIRED": "Zahlungsabgaben required für Antragsteller",
     "MUTATION_IGNORIEREN": "Mutation ignorieren",
