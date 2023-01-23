@@ -111,7 +111,7 @@ public class NeueVeranlagungEventHandler extends BaseEventHandler<NeueVeranlagun
 		Gesuch gesuch = findDetachedGesuchByKey(key);
 
 		if (gesuch == null) {
-			return Processing.failure("Kein Gesuch für Key gefunen. Key: " + key);
+			return Processing.failure("Kein Gesuch für Key gefunden. Key: " + key);
 		}
 
 		if (gesuch.getStatus().isAnyOfInBearbeitungGSOrSZD()) {

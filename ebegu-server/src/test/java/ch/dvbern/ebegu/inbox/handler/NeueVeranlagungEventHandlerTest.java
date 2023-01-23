@@ -155,7 +155,7 @@ public class NeueVeranlagungEventHandlerTest extends EasyMockSupport {
 	void gesuchIdUnbekannt() {
 		expectGesuchNotFound();
 
-		testIgnored("Kein Gesuch für Key gefunen. Key: ");
+		testIgnored("Kein Gesuch für Key gefunden. Key: ");
 	}
 
 	@ParameterizedTest
