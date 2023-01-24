@@ -89,6 +89,7 @@ import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_MAHLZEITENVERGUENSTI
 import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_ENABLED;
 import static ch.dvbern.ebegu.enums.EinstellungKey.OEFFNUNGSSTUNDEN_TFO;
 import static ch.dvbern.ebegu.enums.EinstellungKey.OEFFNUNGSTAGE_KITA;
+import static ch.dvbern.ebegu.enums.EinstellungKey.OEFFNUNGSTAGE_TFO;
 import static ch.dvbern.ebegu.inbox.handler.PlatzbestaetigungEventHandler.GO_LIVE;
 import static ch.dvbern.ebegu.inbox.handler.PlatzbestaetigungTestUtil.REF_NUMMER;
 import static ch.dvbern.ebegu.inbox.handler.PlatzbestaetigungTestUtil.createBetreuungEventDTO;
@@ -1408,11 +1409,15 @@ public class PlatzbestaetigungEventHandlerTest extends EasyMockSupport {
 			.andReturn(einstellungOeffnungsTage);
 		expect(einstellungOeffnungsTage.getValueAsBigDecimal()).andReturn(new BigDecimal("20.00"));
 
+		Einstellung einstellungOeffnungsTageTFO = mock(Einstellung.class);
+		expect(einstellungService.findEinstellung(OEFFNUNGSTAGE_TFO, gemeinde, gesuchsperiode))
+			.andReturn(einstellungOeffnungsTageTFO);
+		expect(einstellungOeffnungsTageTFO.getValueAsBigDecimal()).andReturn(new BigDecimal("11.00"));
+
 		Einstellung einstellungOeffnungsStunden = mock(Einstellung.class);
 		expect(einstellungService.findEinstellung(OEFFNUNGSSTUNDEN_TFO, gemeinde, gesuchsperiode))
 			.andReturn(einstellungOeffnungsStunden);
 		expect(einstellungOeffnungsStunden.getValueAsBigDecimal()).andReturn(new BigDecimal("220.00"));
-
 	}
 
 	@Nonnull
