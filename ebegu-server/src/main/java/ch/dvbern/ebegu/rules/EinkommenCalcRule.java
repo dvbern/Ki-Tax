@@ -84,6 +84,7 @@ public class EinkommenCalcRule extends AbstractCalcRule {
 		// - "Bezahlt Vollkosten" darf nur gesetzt werden, wenn KEINE erweiterten Beduerfnisse
 
  		Familiensituation familiensituation = platz.extractGesuch().extractFamiliensituation();
+
 		boolean sozialhilfeEmpfaenger = familiensituation != null && Boolean.TRUE.equals(familiensituation.getSozialhilfeBezueger());
 		int basisjahr = platz.extractGesuchsperiode().getBasisJahr();
 
