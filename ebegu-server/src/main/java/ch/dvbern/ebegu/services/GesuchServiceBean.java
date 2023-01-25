@@ -705,6 +705,18 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 			});
 	}
 
+	private void setVorgaengerAnmeldungToGueltig(@Nonnull Gesuch currentGesuch) {
+		currentGesuch.extractAllAnmeldungen().stream()
+			.filter(betreuung -> betreuung.getVorgaengerId() != null)
+			.filter(betreuung -> betreuung.getBetreuungsangebotTyp().isSchulamt())
+			.forEach(betreuung -> {
+				AbstractAnmeldung vorgaenger = findVorgaengerAnmeldungNotIgnoriert(betreuung);
+				vorgaenger.setAnmeldungMutationZustand(AnmeldungMutationZustand.AKTUELLE_ANMELDUNG);
+				vorgaenger.setGueltig(true); // Die alte Anmeldung ist wieder die gueltige
+				persistence.merge(vorgaenger);
+			});
+	}
+
 	private AbstractAnmeldung findVorgaengerAnmeldungNotIgnoriert(AbstractAnmeldung betreuung) {
 		if (betreuung.getVorgaengerId() == null) {
 			//Kann eigentlich nicht eintretten, da das Erst-Gesuch nicht ingoriert werden kann und somit immer ein Vorgänger
@@ -731,11 +743,18 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 	private void zuMutierendeAnmeldungenAbschliessen(@Nonnull Gesuch currentGesuch) {
 		currentGesuch.extractAllAnmeldungen().stream()
 			.filter(anmeldung -> anmeldung.getBetreuungsangebotTyp().isTagesschule())
-			.filter(anmeldung -> anmeldung.getBetreuungsstatus() == Betreuungsstatus.SCHULAMT_ANMELDUNG_AUSGELOEST)
 			.forEach(anmeldung -> {
-				this.verfuegungService.anmeldungSchulamtAusgeloestAbschliessen(
-					anmeldung.extractGesuch().getId(),
-					anmeldung.getId());
+				AbstractAnmeldung anmeldungToAbschliessen = anmeldung;
+
+				if (anmeldung.getBetreuungsstatus() == Betreuungsstatus.SCHULAMT_MUTATION_IGNORIERT) {
+					anmeldungToAbschliessen = findVorgaengerAnmeldungNotIgnoriert(anmeldung);
+				}
+
+				if (anmeldungToAbschliessen.getBetreuungsstatus() == Betreuungsstatus.SCHULAMT_ANMELDUNG_AUSGELOEST) {
+					this.verfuegungService.anmeldungSchulamtAusgeloestAbschliessen(
+						anmeldungToAbschliessen.extractGesuch().getId(),
+						anmeldungToAbschliessen.getId());
+				}
 			});
 	}
 
@@ -2677,9 +2696,10 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 			for (AnmeldungFerieninsel anmeldung : kindContainer.getAnmeldungenFerieninsel()) {
 				this.betreuungService.anmeldungMutationIgnorieren(anmeldung);
 			}
-			// anmeldungen des Vorgesuchs zurücksetzen
-			resetMutierteAnmeldungen(gesuch);
 		});
+		// anmeldungen des Vorgesuchs zurücksetzen
+		setVorgaengerAnmeldungToGueltig(gesuch);
+
 		if (gesuch.getVorgaengerId() != null) {
 			final Optional<Gesuch> vorgaengerOpt = findGesuch(gesuch.getVorgaengerId());
 			vorgaengerOpt.ifPresent(this::setGesuchAndVorgaengerUngueltig);
