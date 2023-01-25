@@ -748,11 +748,18 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 	private void zuMutierendeAnmeldungenAbschliessen(@Nonnull Gesuch currentGesuch) {
 		currentGesuch.extractAllAnmeldungen().stream()
 			.filter(anmeldung -> anmeldung.getBetreuungsangebotTyp().isTagesschule())
-			.filter(anmeldung -> anmeldung.getBetreuungsstatus() == Betreuungsstatus.SCHULAMT_ANMELDUNG_AUSGELOEST)
 			.forEach(anmeldung -> {
-				this.verfuegungService.anmeldungSchulamtAusgeloestAbschliessen(
-					anmeldung.extractGesuch().getId(),
-					anmeldung.getId());
+				AbstractAnmeldung anmeldungToAbschliessen = anmeldung;
+
+				if (anmeldung.getBetreuungsstatus() == Betreuungsstatus.SCHULAMT_MUTATION_IGNORIERT) {
+					anmeldungToAbschliessen = findVorgaengerAnmeldungNotIgnoriert(anmeldung);
+				}
+
+				if (anmeldungToAbschliessen.getBetreuungsstatus() == Betreuungsstatus.SCHULAMT_ANMELDUNG_AUSGELOEST) {
+					this.verfuegungService.anmeldungSchulamtAusgeloestAbschliessen(
+						anmeldungToAbschliessen.extractGesuch().getId(),
+						anmeldungToAbschliessen.getId());
+				}
 			});
 	}
 

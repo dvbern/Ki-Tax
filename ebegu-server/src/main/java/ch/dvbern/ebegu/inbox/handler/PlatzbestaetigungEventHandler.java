@@ -70,6 +70,7 @@ import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.EbeguUtil;
 import ch.dvbern.ebegu.util.Gueltigkeit;
 import ch.dvbern.ebegu.util.GueltigkeitsUtil;
+import ch.dvbern.ebegu.util.MathUtil;
 import ch.dvbern.ebegu.util.ServerMessageUtil;
 import ch.dvbern.kibon.exchange.commons.platzbestaetigung.BetreuungEventDTO;
 import ch.dvbern.kibon.exchange.commons.types.Zeiteinheit;
@@ -80,6 +81,7 @@ import org.slf4j.LoggerFactory;
 import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_MAHLZEITENVERGUENSTIGUNG_ENABLED;
 import static ch.dvbern.ebegu.enums.EinstellungKey.OEFFNUNGSSTUNDEN_TFO;
 import static ch.dvbern.ebegu.enums.EinstellungKey.OEFFNUNGSTAGE_KITA;
+import static ch.dvbern.ebegu.enums.EinstellungKey.OEFFNUNGSTAGE_TFO;
 import static ch.dvbern.ebegu.util.EbeguUtil.collectionComparator;
 
 @ApplicationScoped
@@ -219,8 +221,15 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 		}
 
 		boolean mahlzeitVergunstigungEnabled = isEnabled(betreuung, GEMEINDE_MAHLZEITENVERGUENSTIGUNG_ENABLED);
-		BigDecimal maxTageProMonat = getEinstellungAsBigdecimal(betreuung, OEFFNUNGSTAGE_KITA);
-		BigDecimal maxStundenProMonat = getEinstellungAsBigdecimal(betreuung, OEFFNUNGSSTUNDEN_TFO);
+		BigDecimal maxTageProJahr = getEinstellungAsBigdecimal(betreuung, OEFFNUNGSTAGE_KITA);
+		BigDecimal maxTageProJahrTFO = getEinstellungAsBigdecimal(betreuung, OEFFNUNGSTAGE_TFO);
+		BigDecimal hoursProTag = getEinstellungAsBigdecimal(betreuung, OEFFNUNGSSTUNDEN_TFO);
+		BigDecimal anzahlMonatProJahr = new BigDecimal("12.00");
+		BigDecimal maxTageProMonat = MathUtil.DEFAULT.divideNullSafe(maxTageProJahr, anzahlMonatProJahr);
+
+		BigDecimal maxTageProMonatTFO = MathUtil.DEFAULT.divideNullSafe(maxTageProJahrTFO, anzahlMonatProJahr);
+		BigDecimal maxStundenProMonat = MathUtil.DEFAULT.multiplyNullSafe(maxTageProMonatTFO, hoursProTag);
+
 
 		ProcessingContext ctx = new ProcessingContext(
 			betreuung,
