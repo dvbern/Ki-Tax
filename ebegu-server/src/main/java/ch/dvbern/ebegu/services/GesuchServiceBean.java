@@ -435,15 +435,11 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 		if (gesuchForErneuerungOptional.isPresent()) {
 			logInfo.append('\n').append("... und es gibt ein Gesuch zu kopieren");
 			Gesuch gesuchForErneuerung = gesuchForErneuerungOptional.get();
-			Gesuch erneuteGesuch = gesuchForErneuerung.copyForErneuerung(
+			return gesuchForErneuerung.copyForErneuerung(
 				new Gesuch(),
 				gesuchsperiode,
 				eingangsart,
 				gesuchToCreate.getRegelStartDatum() != null ? gesuchToCreate.getRegelStartDatum() : LocalDate.now());
-
-			setNotIgnoredFinanzielleSituationContainerIfNeeded(gesuchForErneuerung, erneuteGesuch);
-
-			return erneuteGesuch;
 		}
 		return gesuchToCreate;
 	}
@@ -469,21 +465,20 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 		if (gesuchToCopyOptional.isPresent()) {
 			logInfo.append('\n').append("Es ist das erste Gesuch in einem neuen Dossier!");
 			Gesuch gesuchToCopy = gesuchToCopyOptional.get();
-			Gesuch erstGesuchInNeuemDossier;
+
 			if (gesuchsperiode.equals(gesuchToCopy.getGesuchsperiode())) {
-				erstGesuchInNeuemDossier = gesuchToCopy.copyForMutationNeuesDossier(gesuchToCreate, eingangsart,
+				return gesuchToCopy.copyForMutationNeuesDossier(gesuchToCreate, eingangsart,
 					gesuchToCreate.getDossier());
-			} else {
-				erstGesuchInNeuemDossier = gesuchToCopy.copyForErneuerungsgesuchNeuesDossier(
-					gesuchToCreate,
-					eingangsart,
-					gesuchToCreate.getDossier(),
-					gesuchsperiode,
-					gesuchToCreate.getRegelStartDatum() != null ?
-						gesuchToCreate.getRegelStartDatum() :
-						LocalDate.now());
 			}
-			setNotIgnoredFinanzielleSituationContainerIfNeeded(gesuchToCopy, erstGesuchInNeuemDossier);
+
+			return gesuchToCopy.copyForErneuerungsgesuchNeuesDossier(
+				gesuchToCreate,
+				eingangsart,
+				gesuchToCreate.getDossier(),
+				gesuchsperiode,
+				gesuchToCreate.getRegelStartDatum() != null ?
+					gesuchToCreate.getRegelStartDatum() :
+					LocalDate.now());
 		}
 		return gesuchToCreate;
 	}
