@@ -27,6 +27,7 @@
 			<p *ngIf="isMutation()" translate>MUTATION_FAMSITUATION_HINT</p>
 			<p *ngIf="showError()" role="alert" translate
 			   class="dv-error-messages">ERROR_DATUM_GESETZT_BEI_MUTATION</p>
+            <p *ngIf="isNotPartnerIdentischMitVorgesuch()"> {{getNotPertnerIdentischMitVorgesuchWarning()}}</p>
 		</div>
 	</div>
 	<div class="row">
@@ -95,6 +96,34 @@
 							</div>
 						</div>
 					</div>
+
+                    <!--Geteilte Obhut-->
+                    <div class="row" *ngIf="showFragePartnerWieBisher()">
+                        <div class="col-xs-12 dv-input-container-question">
+                            <div class="form-group">
+                                <span class="ebegu-h1 required">
+                                    <span translate>FAMILIENSITUATION_FRAGE_BISHERIGER_PARTNER: {{getNameGesuchsteller2()}} </span>
+                                </span>
+                                <dv-radio-container-x>
+                                    <mat-radio-group [(ngModel)]="getFamiliensituation().partnerIdentischMitVorgesuch"
+                                                     [required]="true"
+                                                     #partnerIdentischMitVorgesuch="ngModel"
+                                                     name="partnerIdentischMitVorgesuch"
+                                                     class="input-element sp"
+                                                     [disabled]="!(showFragePartnerWieBisher())"
+                                                     aria-label="{{ 'FAMILIENSITUATION_FRAGE_BISHERIGER_PARTNER' |translate }}}"
+                                                     aria-described-by="partnerIdentischMitVorgesuch-error">
+                                        <mat-radio-button [value]="true">{{'LABEL_JA' | translate}}</mat-radio-button>
+                                        <mat-radio-button [value]="false">{{'LABEL_NEIN' | translate}}</mat-radio-button>
+                                    </mat-radio-group>
+                                </dv-radio-container-x>
+                                <dv-error-messages *ngIf="savedClicked || partnerIdentischMitVorgesuch.touched"
+                                                   [inputId]="'partnerIdentischMitVorgesuch'"
+                                                   [errorObject]="partnerIdentischMitVorgesuch.errors"
+                                                   class="error"></dv-error-messages>
+                            </div>
+                        </div>
+                    </div>
 
 					<!--Start Konkubinat-->
 					<div class="row" *ngIf="isStartKonkubinatVisible()">

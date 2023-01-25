@@ -88,6 +88,13 @@
                                            #proeprtyValue="ngModel"
                                            [maxlength]="4000" class="smallfont">
                                 </div>
+                                <div class="col-md-12" *ngIf="applicationProperty.value.split(',' ).length > 1" >
+                                    <div>
+                                        <ul *ngFor="let value of applicationProperty.value.split(',')">
+                                            <li>{{value}}</li>
+                                        </ul>
+                                    </div>
+                                </div>
                             </div>
                             <div class="row form-group">
                                 <div class="col-md-3 col-md-offset-3">

@@ -29,12 +29,12 @@ import {TSEinstellungKey} from '../../../models/enums/TSEinstellungKey';
 import {getTSFamilienstatusValues, TSFamilienstatus} from '../../../models/enums/TSFamilienstatus';
 import {
     getTSGesuchstellerKardinalitaetValues,
-    TSGesuchstellerKardinalitaet
+    TSGesuchstellerKardinalitaet,
 } from '../../../models/enums/TSGesuchstellerKardinalitaet';
 import {TSRole} from '../../../models/enums/TSRole';
 import {
     getTSUnterhaltsvereinbarungAnswerValues,
-    TSUnterhaltsvereinbarungAnswer
+    TSUnterhaltsvereinbarungAnswer,
 } from '../../../models/enums/TSUnterhaltsvereinbarungAnswer';
 import {TSWizardStepName} from '../../../models/enums/TSWizardStepName';
 import {TSWizardStepStatus} from '../../../models/enums/TSWizardStepStatus';
@@ -66,6 +66,7 @@ export class FamiliensituationViewXComponent extends AbstractGesuchViewX<TSFamil
     public gesuchstellerKardinalitaetValues: Array<TSGesuchstellerKardinalitaet>;
     public unterhaltsvereinbarungAnswerValues: Array<TSUnterhaltsvereinbarungAnswer>;
 
+
     public constructor(
         protected readonly gesuchModelManager: GesuchModelManager,
         private readonly berechnungsManager: BerechnungsManager,
@@ -87,7 +88,7 @@ export class FamiliensituationViewXComponent extends AbstractGesuchViewX<TSFamil
         this.gesuchstellerKardinalitaetValues = getTSGesuchstellerKardinalitaetValues();
         this.unterhaltsvereinbarungAnswerValues = getTSUnterhaltsvereinbarungAnswerValues();
         this.initViewModel();
-
+        const defaultFormat = 'DD.MM.YYYY';
     }
 
     public ngOnInit(): void {
@@ -112,6 +113,9 @@ export class FamiliensituationViewXComponent extends AbstractGesuchViewX<TSFamil
             TSWizardStepName.FAMILIENSITUATION,
             TSWizardStepStatus.IN_BEARBEITUNG);
         this.allowedRoles = TSRoleUtil.getAllRolesButTraegerschaftInstitution();
+    }
+    private getGesuchsperiodeEnde(): object {
+        return this.gesuchModelManager.getGesuchsperiode().gueltigkeit.gueltigBis;
     }
 
     public async confirmAndSave(onResult: (arg: any) => void): Promise<void> {
@@ -178,6 +182,12 @@ export class FamiliensituationViewXComponent extends AbstractGesuchViewX<TSFamil
 
     public isStartKonkubinatVisible(): boolean {
         return this.getFamiliensituation()?.familienstatus === TSFamilienstatus.KONKUBINAT_KEIN_KIND;
+    }
+
+    public showFragePartnerWieBisher(): boolean {
+        return this.isMutation() &&
+            EbeguUtil.isNotNullOrUndefined(this.getFamiliensituation().aenderungPer) &&
+            !(this.getFamiliensituation()?.familienstatus === TSFamilienstatus.ALLEINERZIEHEND);
     }
 
     /**
@@ -279,6 +289,11 @@ export class FamiliensituationViewXComponent extends AbstractGesuchViewX<TSFamil
 
     public resetFamsit(): void {
         this.getFamiliensituation().revertFamiliensituation(this.getFamiliensituationErstgesuch());
+    }
+
+    public isNotPartnerIdentischMitVorgesuch():  boolean {
+        return EbeguUtil.isNotNullOrUndefined(this.getFamiliensituation().partnerIdentischMitVorgesuch) &&
+            !this.getFamiliensituation().partnerIdentischMitVorgesuch;
     }
 
     public hasError(): boolean {
@@ -399,5 +414,34 @@ export class FamiliensituationViewXComponent extends AbstractGesuchViewX<TSFamil
 
     public getToday(): moment.Moment {
         return moment();
+    }
+
+    public getNameGesuchsteller2(): string {
+        return this.getGesuch().gesuchsteller2
+            ? this.getGesuch().gesuchsteller2.extractFullName() : ''
+    }
+
+    public getNotPertnerIdentischMitVorgesuchWarning(): string {
+        let warning: string;
+        let partnerNotIdentischWarning: string = this.$translate.instant('NOT_PARTNER_IDENTISCH_MIT_VORGESUCH', {
+            partnerAlt: this.gesuchModelManager.getGesuch().gesuchsteller2.extractFullName(),
+            endeDatum: this.gesuchModelManager.getGesuch().gesuchsperiode.gueltigkeit.gueltigBis.format('DD.MM.YYYY')
+            });
+        warning = partnerNotIdentischWarning;
+        if (this.gesuchModelManager.getGesuch().extractFamiliensituation().familienstatus !== TSFamilienstatus.ALLEINERZIEHEND){
+            let partnerNotIdentischWarningBeiPaaren: string = this.$translate.instant('NOT_PARTNER_IDENTISCH_MIT_VORGESUCH_PAAR',
+                {
+                    bezeichnung: this.getBezeichnung()
+                })
+            warning = partnerNotIdentischWarning.concat( ' '.toString() ,partnerNotIdentischWarningBeiPaaren.toString());
+        }
+        return warning;
+    }
+
+    private getBezeichnung(): string{
+        if(this.gesuchModelManager.getGesuch().extractFamiliensituation().familienstatus === TSFamilienstatus.VERHEIRATET){
+            return this.$translate.instant("EHEPARTNER");
+        }
+        return this.$translate.instant("KONKUBINTASPARTNER");
     }
 }
