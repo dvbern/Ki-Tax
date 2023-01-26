@@ -2984,5 +2984,6 @@
     "NEU_LADEN": "Recharger",
     "BISHER": "bisher:",
     "GESUCH_IGNORIERT": "Diese Mutation wurde ignoriert. Die aktuell gültige Betreuung und finanzielle Situation sehen Sie hier ein:",
+    "LETZTER_GUELTIGE_ANTRAG":  "aktuell gültiger Antrag",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

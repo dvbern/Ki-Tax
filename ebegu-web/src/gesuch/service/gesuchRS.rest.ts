@@ -74,8 +74,8 @@ export class GesuchRS implements IEntityRS {
             .then((response: any) => this.ebeguRestUtil.parseGesuch(new TSGesuch(), response.data));
     }
 
-    public findLetzteNichtIgnorierteGesuchId(gesuchID: string): IPromise<string> {
-        return this.$http.get(`${this.serviceURL}/letzteNichtIgnorierte/${encodeURIComponent(gesuchID)}`)
+    public getNeustesVerfuegtesGesuchFuerGesuch(gesuchID: string): IPromise<string> {
+        return this.$http.get(`${this.serviceURL}/neustesVerfuegtesGesuchFuerGesuch/${encodeURIComponent(gesuchID)}`)
             .then((response: any) => response.data);
     }
 

@@ -323,30 +323,30 @@ public class GesuchResource {
 	}
 
 
-	@ApiOperation(value = "Gibt den letzten Antrag die nicht ignoriert wuerde mit der uebergebenen Id zurueck. ", response = JaxGesuch.class)
+	@ApiOperation(value = "Gibt das letzte verfügte Gesuch für das Gesuch mit uebergebenen Id zurueck. ", response = JaxGesuch.class)
 	@Nullable
 	@GET
-	@Path("/letzteNichtIgnorierte/{gesuchId}")
+	@Path("/neustesVerfuegtesGesuchFuerGesuch/{gesuchId}")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
 	@PermitAll
-	public JaxId findLetzteNichtIgnorierte(
+	public JaxId getNeustesVerfuegtesGesuchFuerGesuch(
 		@Nonnull @NotNull @PathParam("gesuchId") JaxId gesuchJAXPId) {
 		Optional<Gesuch> gesuchOptional = gesuchService.findGesuch(converter.toEntityId(gesuchJAXPId));
 
 		if (gesuchOptional.isPresent()) {
-			Optional<Gesuch> letzteNichtIgnorierteGesuch = gesuchService.findLetzteNichtIgnorierteGesuch(gesuchOptional.get());
-			if (!letzteNichtIgnorierteGesuch.isPresent()) {
-				throw new EbeguEntityNotFoundException("findLetzteNichtIgnorierte",
-					"Keine nicht ignorierte Gesuch gefunden", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND);
+			Optional<Gesuch> neustesVerfuegtesGesuch = gesuchService.getNeustesVerfuegtesGesuchFuerGesuch(gesuchOptional.get());
+			if (neustesVerfuegtesGesuch.isEmpty()) {
+				throw new EbeguEntityNotFoundException("getNeustesVerfuegtesGesuchFuerGesuch",
+					"Neustes verfügtes Gesuch nicht gefunden", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND);
 			}
-			Gesuch gesuchToReturn = letzteNichtIgnorierteGesuch.get();
+			Gesuch gesuchToReturn = neustesVerfuegtesGesuch.get();
 			return converter.toJaxId(gesuchToReturn);
 		}
 		String message = String.format(
-			"Could not update Status because the Gesuch with ID %s could not be read",
+			"Could not get Gesuch because the Gesuch with ID %s could not be read",
 			gesuchJAXPId.getId());
-		throw new EbeguEntityNotFoundException("findLetzteNichtIgnorierte", message, ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
+		throw new EbeguEntityNotFoundException("getNeustesVerfuegtesGesuchFuerGesuch", message, ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
 			GESUCH_ID_INVALID + gesuchJAXPId.getId());
 	}
 

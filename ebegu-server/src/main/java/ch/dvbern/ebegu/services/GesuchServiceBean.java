@@ -414,7 +414,7 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 
 	private void setNotIgnoredFinanzielleSituationContainerIfNeeded(@Nonnull Gesuch orginial, @Nonnull Gesuch neuesGesuch){
 		if(orginial.getStatus().equals(AntragStatus.IGNORIERT)) {
-			Gesuch letzteNichtIgnorierteGesuch = findLetzteNichtIgnorierteGesuch(orginial).orElseThrow(
+			Gesuch letzteNichtIgnorierteGesuch = getNeustesVerfuegtesGesuchFuerGesuch(orginial).orElseThrow(
 				() -> new EbeguEntityNotFoundException("createMutation - findLetzteNichtIgnorierteGesuch", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, "Gesuch with ID ist immer ignoriert: " + orginial.getId()));
 
 			if(neuesGesuch.getGesuchsteller1() != null && letzteNichtIgnorierteGesuch.getGesuchsteller1() != null){
@@ -2749,25 +2749,8 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 
 	@Nonnull
 	@Override
-	public Optional<Gesuch> findLetzteNichtIgnorierteGesuch(@Nonnull Gesuch gesuch) {
-		authorizer.checkReadAuthorizationDossier(gesuch.getDossier());
-
-		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
-		final CriteriaQuery<Gesuch> query = cb.createQuery(Gesuch.class);
-
-		Root<Gesuch> root = query.from(Gesuch.class);
-		Predicate dossierPredicate = cb.equal(root.get(Gesuch_.dossier), gesuch.getDossier());
-		Predicate gesuchsperiodePredicate = cb.equal(root.get(Gesuch_.gesuchsperiode), gesuch.getGesuchsperiode());
-		Predicate nichtIgnorierteEntfernen = cb.not(root.get(Gesuch_.status).in(AntragStatus.IGNORIERT));
-
-		query.where(dossierPredicate, gesuchsperiodePredicate, nichtIgnorierteEntfernen);
-		query.orderBy(cb.desc(root.get(AbstractEntity_.timestampErstellt)));
-		List<Gesuch> criteriaResults = persistence.getCriteriaResults(query, 1);
-
-		if (criteriaResults.isEmpty()) {
-			return Optional.empty();
-		}
-		return Optional.of(criteriaResults.get(0));
+	public Optional<Gesuch> getNeustesVerfuegtesGesuchFuerGesuch(@Nonnull Gesuch gesuch) {
+		return getNeustesVerfuegtesGesuchFuerGesuch(gesuch.getGesuchsperiode(), gesuch.getDossier(), true);
 	}
 
 	private boolean checkIsSZFallAndEntgezogen(Gesuch gesuch) {
