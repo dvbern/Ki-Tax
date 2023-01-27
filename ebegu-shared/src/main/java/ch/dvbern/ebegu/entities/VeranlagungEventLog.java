@@ -20,19 +20,15 @@ package ch.dvbern.ebegu.entities;
 import java.time.LocalDate;
 import java.util.Objects;
 
-import javax.annotation.Nullable;
+import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.ForeignKey;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.envers.Audited;
 
-@Audited
 @Entity
 @Table
 @Getter
@@ -41,10 +37,9 @@ public class VeranlagungEventLog extends AbstractEntity {
 
 	private static final long serialVersionUID = -6291354522204281488L;
 
-	@Nullable
-	@ManyToOne(optional = false)
-	@JoinColumn(foreignKey = @ForeignKey(name = "FK_veranlagungsevent_log_antrag_id"), nullable = true)
-	private Gesuch gesuch;
+	@NotNull
+	@Column(nullable = false)
+	private String antragId;
 
 	@NotNull
 	private Integer zpvNummer;
@@ -58,11 +53,11 @@ public class VeranlagungEventLog extends AbstractEntity {
 	private String result;
 
 	public VeranlagungEventLog(
-			@Nullable Gesuch gesuch,
-			Integer zpvNummer,
-			LocalDate geburtsdatum,
-			Integer gesuchsperiodeBeginnJahr) {
-		this.gesuch = gesuch;
+		String antragId,
+		Integer zpvNummer,
+		LocalDate geburtsdatum,
+		Integer gesuchsperiodeBeginnJahr) {
+		this.antragId = antragId;
 		this.zpvNummer = zpvNummer;
 		this.geburtsdatum = geburtsdatum;
 		this.gesuchsperiodeBeginnJahr = gesuchsperiodeBeginnJahr;
@@ -85,7 +80,7 @@ public class VeranlagungEventLog extends AbstractEntity {
 			return false;
 		}
 		VeranlagungEventLog veranlagungEventLog = (VeranlagungEventLog) other;
-		return Objects.equals(this.gesuch, veranlagungEventLog.gesuch) &&
+		return Objects.equals(this.antragId, veranlagungEventLog.antragId) &&
 				Objects.equals(geburtsdatum, veranlagungEventLog.geburtsdatum) &&
 				Objects.equals(zpvNummer, veranlagungEventLog.zpvNummer) &&
 				Objects.equals(gesuchsperiodeBeginnJahr, veranlagungEventLog.gesuchsperiodeBeginnJahr) &&

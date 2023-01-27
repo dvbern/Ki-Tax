@@ -97,37 +97,35 @@ public class NeueVeranlagungEventHandler extends BaseEventHandler<NeueVeranlagun
 		@Nonnull NeueVeranlagungEventDTO dto,
 		@Nonnull String clientName) {
 		Processing processing = attemptProcessing(key, dto);
+		VeranlagungEventLog veranlagungEventLog = new VeranlagungEventLog(
+			key,
+			dto.getZpvNummer(),
+			dto.getGeburtsdatum(),
+			dto.getGesuchsperiodeBeginnJahr()
+		);
 		if (!processing.isProcessingSuccess()) {
 			String message = processing.getMessage();
 			LOG.warn("NeueVeranlagungEventHandler: Neue Veranlagung Event für ZPV-Nummer {} und Gesuch: {} nicht verarbeitet: {}",
 				dto.getZpvNummer(), key, message);
+			veranlagungEventLog.setResult(processing.getMessage());
 		} else {
 			LOG.info("NeueVeranlagungEventHandler: Neue Veranlagung Event für ZPV-Nummer {} und Gesuch: {} verarbeitet",
 				dto.getZpvNummer(), key);
+			veranlagungEventLog.setResult("Veranlagung erfolgreich verarbeitet");
 		}
+		persistence.persist(veranlagungEventLog);
 	}
 
 	@Nonnull
 	protected Processing attemptProcessing(@Nonnull String key, @Nonnull NeueVeranlagungEventDTO dto) {
 		Gesuch gesuch = findDetachedGesuchByKey(key);
 
-		VeranlagungEventLog veranlagungEventLog = new VeranlagungEventLog(
-				gesuch,
-				dto.getZpvNummer(),
-				dto.getGeburtsdatum(),
-				dto.getGesuchsperiodeBeginnJahr()
-		);
 		if (gesuch == null) {
-			veranlagungEventLog.setResult("Kein Gesuch für Key gefunden. Key: " + key);
-			persistence.persist(veranlagungEventLog);
-			return Processing.failure(veranlagungEventLog.getResult());
+			return Processing.failure("Kein Gesuch für Key gefunden. Key: " + key);
 		}
 
-
 		if (gesuch.getStatus().isAnyOfInBearbeitungGSOrSZD()) {
-			veranlagungEventLog.setResult("Gesuch ist noch nicht freigegeben: " + key);
-			persistence.persist(veranlagungEventLog);
-			return Processing.failure(veranlagungEventLog.getResult());
+			return Processing.failure("Gesuch ist noch nicht freigegeben: " + key);
 		}
 
 		// erst die Massgegebenes Einkommens fuer das betroffenes Gesuch berechnen
@@ -136,27 +134,21 @@ public class NeueVeranlagungEventHandler extends BaseEventHandler<NeueVeranlagun
 		KibonAnfrageContext kibonAnfrageContext =
 			requestCurrentSteuerdaten(gesuch, dto.getZpvNummer(), dto.getGeburtsdatum());
 
-
 		if (kibonAnfrageContext == null) {
-			veranlagungEventLog.setResult("Die neue Veranlagung mit Geburtsdatum: "
+			return Processing.failure(
+				"Die neue Veranlagung mit Geburtsdatum: "
 					+ dto.getGeburtsdatum()
 					+ ", koennte nicht mit einer gueltige Antragstellende verlinket werden.");
-			persistence.persist(veranlagungEventLog);
-			return Processing.failure(veranlagungEventLog.getResult());
 		}
 
 		if (kibonAnfrageContext.getSteuerdatenAnfrageStatus() == null
 			|| !kibonAnfrageContext.getSteuerdatenAnfrageStatus().isSteuerdatenAbfrageErfolgreich()) {
-			veranlagungEventLog.setResult("Keine neue Veranlagung gefunden");
-			persistence.persist(veranlagungEventLog);
-			return Processing.failure(veranlagungEventLog.getResult());
+			return Processing.failure("Keine neue Veranlagung gefunden");
 		}
 
 		// Nur RECHTSKRAEFTIGE SteuerResponse sind zu betrachten
 		if (kibonAnfrageContext.getSteuerdatenAnfrageStatus() != SteuerdatenAnfrageStatus.RECHTSKRAEFTIG) {
-			veranlagungEventLog.setResult("Die neue Veranlagung ist noch nicht Rechtskraeftig");
-			persistence.persist(veranlagungEventLog);
-			return Processing.failure(veranlagungEventLog.getResult());
+			return Processing.failure("Die neue Veranlagung ist noch nicht Rechtskraeftig");
 		}
 
 		FinanzielleSituationResultateDTO finSitNeuResult =
@@ -170,16 +162,12 @@ public class NeueVeranlagungEventHandler extends BaseEventHandler<NeueVeranlagun
 		boolean isMarkierFuerKontroll = kibonAnfrageContext.getGesuch().getMarkiertFuerKontroll();
 		if (!checkBenachrichtigungRequired(isMarkierFuerKontroll, unterschiedEinkommen, minUnterschiedEinkommen)) {
 			String unterschiedEinkommenString = unterschiedEinkommen.stripTrailingZeros().toPlainString();
-			veranlagungEventLog.setResult("Keine Meldung erstellt. Das massgebende Einkommen hat sich um " + unterschiedEinkommenString +
-					" Franken verändert. Der konfigurierte Schwellenwert zur Benachrichtigung liegt bei " + minUnterschiedEinkommen +
-					" Franken");
-			persistence.persist(veranlagungEventLog);
-			return Processing.failure(veranlagungEventLog.getResult());
+			return Processing.failure("Keine Meldung erstellt. Das massgebende Einkommen hat sich um " + unterschiedEinkommenString +
+				" Franken verändert. Der konfigurierte Schwellenwert zur Benachrichtigung liegt bei " + minUnterschiedEinkommen +
+				" Franken");
 		}
 
 		createAndSendNeueVeranlagungsMitteilung(kibonAnfrageContext);
-		veranlagungEventLog.setResult("Veranlagung erfolgreich verarbeitet");
-		persistence.persist(veranlagungEventLog);
 
 		return Processing.success();
 	}
