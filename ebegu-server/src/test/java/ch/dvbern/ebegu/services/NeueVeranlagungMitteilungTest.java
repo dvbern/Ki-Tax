@@ -263,6 +263,9 @@ public class NeueVeranlagungMitteilungTest extends EasyMockSupport {
 		testfall_1GS.createFall();
 		testfall_1GS.createGesuch(LocalDate.of(2016, Month.DECEMBER, 12));
 		Gesuch gesuch = testfall_1GS.fillInGesuch();
+		Objects.requireNonNull(gesuch.getGesuchsteller1());
+		Objects.requireNonNull(gesuch.getGesuchsteller1().getFinanzielleSituationContainer());
+		gesuch.getGesuchsteller1().getFinanzielleSituationContainer().getFinanzielleSituationJA().setSteuerdatenZugriff(true);
 		gesuch.setEingangsart(Eingangsart.ONLINE);
 		gesuch.getDossier().getFall().setBesitzer(new Benutzer());
 		gesuch.setStatus(AntragStatus.VERFUEGT);
@@ -303,12 +306,20 @@ public class NeueVeranlagungMitteilungTest extends EasyMockSupport {
 			.getFinanzielleSituationContainer()
 			.getFinanzielleSituationJA()
 			.setSteuerdatenResponse(steuerdatenResponse);
+		gesuch.getGesuchsteller1()
+			.getFinanzielleSituationContainer()
+			.getFinanzielleSituationJA()
+			.setSteuerdatenZugriff(true);
 		Objects.requireNonNull(gesuch.getGesuchsteller2());
 		Objects.requireNonNull(gesuch.getGesuchsteller2().getFinanzielleSituationContainer());
 		gesuch.getGesuchsteller2()
 			.getFinanzielleSituationContainer()
 			.getFinanzielleSituationJA()
 			.setSteuerdatenResponse(steuerdatenResponse);
+		gesuch.getGesuchsteller2()
+			.getFinanzielleSituationContainer()
+			.getFinanzielleSituationJA()
+			.setSteuerdatenZugriff(true);
 		Objects.requireNonNull(gesuch.getFamiliensituationContainer());
 		Objects.requireNonNull(gesuch.getFamiliensituationContainer().getFamiliensituationJA());
 		gesuch.getFamiliensituationContainer().getFamiliensituationJA().setGemeinsameSteuererklaerung(true);
