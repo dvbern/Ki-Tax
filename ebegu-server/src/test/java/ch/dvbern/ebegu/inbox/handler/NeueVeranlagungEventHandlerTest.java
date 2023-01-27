@@ -172,7 +172,7 @@ public class NeueVeranlagungEventHandlerTest extends EasyMockSupport {
 	void steuerAbfrageNichtErfolgreich() {
 		expectGesuchFound();
 		expect(finanzielleSituationService.calculateResultate(anyObject())).andReturn(new FinanzielleSituationResultateDTO());
-		expect(kibonAnfrageHandler.handleKibonAnfrage(anyObject(), eq(false))).andReturn(kibonAnfrageContext);
+		expect(kibonAnfrageHandler.handleKibonNeueVeranlagungAnfrage(anyObject(), eq(false))).andReturn(kibonAnfrageContext);
 		testIgnored("Keine neue Veranlagung gefunden");
 	}
 
@@ -181,7 +181,7 @@ public class NeueVeranlagungEventHandlerTest extends EasyMockSupport {
 		kibonAnfrageContext.setSteuerdatenAnfrageStatus(SteuerdatenAnfrageStatus.PROVISORISCH);
 		expectGesuchFound();
 		expect(finanzielleSituationService.calculateResultate(anyObject())).andReturn(new FinanzielleSituationResultateDTO());
-		expect(kibonAnfrageHandler.handleKibonAnfrage(anyObject(), eq(false))).andReturn(kibonAnfrageContext);
+		expect(kibonAnfrageHandler.handleKibonNeueVeranlagungAnfrage(anyObject(), eq(false))).andReturn(kibonAnfrageContext);
 		testIgnored("Die neue Veranlagung ist noch nicht Rechtskraeftig");
 	}
 
@@ -192,7 +192,7 @@ public class NeueVeranlagungEventHandlerTest extends EasyMockSupport {
 		Einstellung einstellung = findEinstellungMinUnterschied();
 		expect(einstellung.getValueAsBigDecimal()).andReturn(new BigDecimal(50));
 		expect(finanzielleSituationService.calculateResultate(anyObject())).andReturn(new FinanzielleSituationResultateDTO());
-		expect(kibonAnfrageHandler.handleKibonAnfrage(anyObject(), eq(false))).andReturn(kibonAnfrageContext);
+		expect(kibonAnfrageHandler.handleKibonNeueVeranlagungAnfrage(anyObject(), eq(false))).andReturn(kibonAnfrageContext);
 		expect(finanzielleSituationService.calculateResultate(anyObject())).andReturn(new FinanzielleSituationResultateDTO());
 		testIgnored("Keine Meldung erstellt. Das massgebende Einkommen hat sich um 0 Franken verändert. Der konfigurierte Schwellenwert zur Benachrichtigung liegt bei 50 Franken");
 	}
@@ -277,7 +277,7 @@ public class NeueVeranlagungEventHandlerTest extends EasyMockSupport {
 		finanzielleSituationResultateDTONeu.setMassgebendesEinkVorAbzFamGr(einkommenNeu);
 		expectGesuchFound();
 		expect(finanzielleSituationService.calculateResultate(anyObject())).andReturn(finanzielleSituationResultateDTOOrig);
-		expect(kibonAnfrageHandler.handleKibonAnfrage(anyObject(), eq(false))).andReturn(kibonAnfrageContext);
+		expect(kibonAnfrageHandler.handleKibonNeueVeranlagungAnfrage(anyObject(), eq(false))).andReturn(kibonAnfrageContext);
 		expect(finanzielleSituationService.calculateResultate(anyObject())).andReturn(finanzielleSituationResultateDTONeu);
 	}
 
