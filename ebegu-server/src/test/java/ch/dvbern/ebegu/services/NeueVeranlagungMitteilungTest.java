@@ -163,6 +163,7 @@ public class NeueVeranlagungMitteilungTest extends EasyMockSupport {
 	@Test
 	public void neueVeranlaungsMitteilung1GSSteuerresponseGemeinsamRejected() {
 		SteuerdatenResponse steuerdatenResponse = new SteuerdatenResponse();
+		steuerdatenResponse.setZpvNrAntragsteller(1000001);
 		steuerdatenResponse.setZpvNrDossiertraeger(1000001);
 		steuerdatenResponse.setZpvNrPartner(1000002);
 		Gesuch gesuch = prepareGS1Fall(steuerdatenResponse);
@@ -175,6 +176,7 @@ public class NeueVeranlagungMitteilungTest extends EasyMockSupport {
 	@Test
 	public void neueVeranlaungsMitteilung2GSSteuerresponseGemeinsamRejected() {
 		SteuerdatenResponse steuerdatenResponse = new SteuerdatenResponse();
+		steuerdatenResponse.setZpvNrAntragsteller(1000001);
 		steuerdatenResponse.setZpvNrDossiertraeger(1000001);
 		Gesuch gesuch = prepareGemeinsamFall(steuerdatenResponse);
 		expectEverythingBisBearbeitung(gesuch);
@@ -186,6 +188,7 @@ public class NeueVeranlagungMitteilungTest extends EasyMockSupport {
 	@Test
 	public void neueVeranlaungsMitteilung1GSOk() {
 		SteuerdatenResponse steuerdatenResponse = new SteuerdatenResponse();
+		steuerdatenResponse.setZpvNrAntragsteller(1000001);
 		steuerdatenResponse.setZpvNrDossiertraeger(1000001);
 		Gesuch gesuch = prepareGS1Fall(steuerdatenResponse);
 		expectEverythingBisBearbeitung(gesuch);
