@@ -163,6 +163,7 @@ public class NeueVeranlagungMitteilungTest extends EasyMockSupport {
 	@Test
 	public void neueVeranlaungsMitteilung1GSSteuerresponseGemeinsamRejected() {
 		SteuerdatenResponse steuerdatenResponse = new SteuerdatenResponse();
+		steuerdatenResponse.setZpvNrAntragsteller(1000001);
 		steuerdatenResponse.setZpvNrDossiertraeger(1000001);
 		steuerdatenResponse.setZpvNrPartner(1000002);
 		Gesuch gesuch = prepareGS1Fall(steuerdatenResponse);
@@ -175,6 +176,7 @@ public class NeueVeranlagungMitteilungTest extends EasyMockSupport {
 	@Test
 	public void neueVeranlaungsMitteilung2GSSteuerresponseGemeinsamRejected() {
 		SteuerdatenResponse steuerdatenResponse = new SteuerdatenResponse();
+		steuerdatenResponse.setZpvNrAntragsteller(1000001);
 		steuerdatenResponse.setZpvNrDossiertraeger(1000001);
 		Gesuch gesuch = prepareGemeinsamFall(steuerdatenResponse);
 		expectEverythingBisBearbeitung(gesuch);
@@ -186,6 +188,7 @@ public class NeueVeranlagungMitteilungTest extends EasyMockSupport {
 	@Test
 	public void neueVeranlaungsMitteilung1GSOk() {
 		SteuerdatenResponse steuerdatenResponse = new SteuerdatenResponse();
+		steuerdatenResponse.setZpvNrAntragsteller(1000001);
 		steuerdatenResponse.setZpvNrDossiertraeger(1000001);
 		Gesuch gesuch = prepareGS1Fall(steuerdatenResponse);
 		expectEverythingBisBearbeitung(gesuch);
@@ -260,6 +263,9 @@ public class NeueVeranlagungMitteilungTest extends EasyMockSupport {
 		testfall_1GS.createFall();
 		testfall_1GS.createGesuch(LocalDate.of(2016, Month.DECEMBER, 12));
 		Gesuch gesuch = testfall_1GS.fillInGesuch();
+		Objects.requireNonNull(gesuch.getGesuchsteller1());
+		Objects.requireNonNull(gesuch.getGesuchsteller1().getFinanzielleSituationContainer());
+		gesuch.getGesuchsteller1().getFinanzielleSituationContainer().getFinanzielleSituationJA().setSteuerdatenZugriff(true);
 		gesuch.setEingangsart(Eingangsart.ONLINE);
 		gesuch.getDossier().getFall().setBesitzer(new Benutzer());
 		gesuch.setStatus(AntragStatus.VERFUEGT);
@@ -300,12 +306,20 @@ public class NeueVeranlagungMitteilungTest extends EasyMockSupport {
 			.getFinanzielleSituationContainer()
 			.getFinanzielleSituationJA()
 			.setSteuerdatenResponse(steuerdatenResponse);
+		gesuch.getGesuchsteller1()
+			.getFinanzielleSituationContainer()
+			.getFinanzielleSituationJA()
+			.setSteuerdatenZugriff(true);
 		Objects.requireNonNull(gesuch.getGesuchsteller2());
 		Objects.requireNonNull(gesuch.getGesuchsteller2().getFinanzielleSituationContainer());
 		gesuch.getGesuchsteller2()
 			.getFinanzielleSituationContainer()
 			.getFinanzielleSituationJA()
 			.setSteuerdatenResponse(steuerdatenResponse);
+		gesuch.getGesuchsteller2()
+			.getFinanzielleSituationContainer()
+			.getFinanzielleSituationJA()
+			.setSteuerdatenZugriff(true);
 		Objects.requireNonNull(gesuch.getFamiliensituationContainer());
 		Objects.requireNonNull(gesuch.getFamiliensituationContainer().getFamiliensituationJA());
 		gesuch.getFamiliensituationContainer().getFamiliensituationJA().setGemeinsameSteuererklaerung(true);

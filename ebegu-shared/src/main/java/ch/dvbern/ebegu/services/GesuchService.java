@@ -205,6 +205,12 @@ public interface GesuchService {
 	List<Gesuch> getAllGesucheForDossierAndPeriod(@Nonnull Dossier dossier, @Nonnull Gesuchsperiode gesuchsperiode);
 
 	/**
+	 * Alle Gesuche Ids fuer den gegebenen Dossier in der gegebenen Periode
+	 */
+	@Nonnull
+	List<String> getAllGesucheIdsForDossierAndPeriod(@Nonnull Dossier dossier, @Nonnull Gesuchsperiode gesuchsperiode);
+
+	/**
 	 * Das gegebene Gesuch wird mit heutigem Datum freigegeben und den Step FREIGABE auf OK gesetzt
 	 */
 	Gesuch antragFreigabequittungErstellen(@Nonnull Gesuch gesuch, AntragStatus statusToChangeTo);
@@ -491,6 +497,9 @@ public interface GesuchService {
 	 * oder Erneuerungsgesuch.
 	 */
 	Gesuch findErstgesuchForGesuch(@Nonnull Gesuch gesuch);
+
+	@Nonnull
+	Optional<Gesuch> findLetzteNichtIgnorierteGesuch(@Nonnull Gesuch gesuch);
 
 	/**
 	 * Findet für eine FinanzielleSituation das Gesuch, egal ob es sich dabei um die Finanzielle Situation

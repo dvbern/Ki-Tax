@@ -13,6 +13,7 @@ import {TSEinstellung} from '../../../models/TSEinstellung';
 import {TSGesuch} from '../../../models/TSGesuch';
 import {FinanzielleSituationRS} from '../../service/finanzielleSituationRS.rest';
 import {GesuchModelManager} from '../../service/gesuchModelManager';
+import {GesuchRS} from '../../service/gesuchRS.rest';
 import {WizardStepManager} from '../../service/wizardStepManager';
 
 import {FallCreationViewXComponent} from './fall-creation-view-x.component';
@@ -43,6 +44,10 @@ describe('FallCreationViewXComponent', () => {
     const stateService = jasmine.createSpyObj<StateService>(StateService.name, ['transition']);
     const uiRouterGlobals = jasmine.createSpyObj<UIRouterGlobals>(UIRouterGlobals.name, ['params']);
     const einstellungenRS = jasmine.createSpyObj<EinstellungRS>(EinstellungRS.name, ['findEinstellung']);
+    const stateServiceSpy = jasmine.createSpyObj<StateService>(StateService.name,
+        ['go']);
+    const gesuchRSSpy = jasmine.createSpyObj<GesuchRS>(GesuchRS.name,
+        ['findLetzteNichtIgnorierteGesuchId']);
     const gesuch = new TSGesuch();
     gesuch.typ = TSAntragTyp.ERSTGESUCH;
     gesuchModelManager.getGesuch.and.returnValue(gesuch);
@@ -62,7 +67,9 @@ describe('FallCreationViewXComponent', () => {
                 {provide: FinanzielleSituationRS, useValue: finSitRS},
                 {provide: StateService, useValue: stateService},
                 {provide: UIRouterGlobals, useValue: uiRouterGlobals},
-                {provide: EinstellungRS, useValue: einstellungenRS}
+                {provide: EinstellungRS, useValue: einstellungenRS},
+                {provide: StateService, useValue: stateServiceSpy},
+                {provide: GesuchRS, useValue: gesuchRSSpy}
             ]
         }).overrideModule(SharedModule, SHARED_MODULE_OVERRIDES)
             .compileComponents();

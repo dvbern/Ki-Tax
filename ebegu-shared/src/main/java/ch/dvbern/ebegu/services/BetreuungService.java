@@ -197,11 +197,18 @@ public interface BetreuungService {
 	List<Betreuung> findAllBetreuungenWithVerfuegungForDossier(@Nonnull Dossier dossier);
 
 	/**
-	 * Schliesst die Betreuung (Status GESCHLOSSEN_OHNE_VERFUEGUNG) ohne eine neue Verfuegung zu erstellen
+	 * Schliesst die Betreuung (Status GESCHLOSSEN_OHNE_VERFUEGUNG) und verfügt das Gesuch wenn moeglich
+	 * ohne eine neue Verfuegung zu erstellen
 	 * (bei gleichbleibenden Daten)
 	 */
 	@Nonnull
 	Betreuung schliessenOhneVerfuegen(@Nonnull Betreuung betreuung);
+
+	/**
+	 * Schliesst die Betreuung (Status GESCHLOSSEN_OHNE_VERFUEGUNG) only
+	 */
+	@Nonnull
+	Betreuung schliessenOnly(@Nonnull Betreuung betreuung);
 
 	/**
 	 * Gibt alle Betreuungen zurueck, welche Mutationen betreffen, die verfügt sind und deren

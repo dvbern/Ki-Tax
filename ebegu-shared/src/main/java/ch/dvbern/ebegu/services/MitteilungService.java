@@ -269,4 +269,6 @@ public interface MitteilungService {
 	Gesuch neueVeranlagungssmitteilungBearbeiten(NeueVeranlagungsMitteilung neueVeranlagungsMitteilung);
 
 	String createNachrichtForMutationsmeldung(Betreuungsmitteilung betreuungsmitteilung, Set<BetreuungsmitteilungPensum> betreuungspensen);
+
+	Collection<NeueVeranlagungsMitteilung> findOffeneNeueVeranlagungsmitteilungenForGesuch(List<String> gesuchIds);
 }

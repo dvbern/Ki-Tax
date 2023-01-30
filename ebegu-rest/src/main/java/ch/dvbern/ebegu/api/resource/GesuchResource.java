@@ -342,6 +342,34 @@ public class GesuchResource {
 		return null; // aus sicherheitsgruenden geben wir null zurueck wenn etwas nicht stimmmt
 	}
 
+
+	@ApiOperation(value = "Gibt den letzten Antrag die nicht ignoriert wuerde mit der uebergebenen Id zurueck. ", response = JaxGesuch.class)
+	@Nullable
+	@GET
+	@Path("/letzteNichtIgnorierte/{gesuchId}")
+	@Consumes(MediaType.WILDCARD)
+	@Produces(MediaType.APPLICATION_JSON)
+	@PermitAll
+	public JaxId findLetzteNichtIgnorierte(
+		@Nonnull @NotNull @PathParam("gesuchId") JaxId gesuchJAXPId) {
+		Optional<Gesuch> gesuchOptional = gesuchService.findGesuch(converter.toEntityId(gesuchJAXPId));
+
+		if (gesuchOptional.isPresent()) {
+			Optional<Gesuch> letzteNichtIgnorierteGesuch = gesuchService.findLetzteNichtIgnorierteGesuch(gesuchOptional.get());
+			if (!letzteNichtIgnorierteGesuch.isPresent()) {
+				throw new EbeguEntityNotFoundException("findLetzteNichtIgnorierte",
+					"Keine nicht ignorierte Gesuch gefunden", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND);
+			}
+			Gesuch gesuchToReturn = letzteNichtIgnorierteGesuch.get();
+			return converter.toJaxId(gesuchToReturn);
+		}
+		String message = String.format(
+			"Could not update Status because the Gesuch with ID %s could not be read",
+			gesuchJAXPId.getId());
+		throw new EbeguEntityNotFoundException("findLetzteNichtIgnorierte", message, ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
+			GESUCH_ID_INVALID + gesuchJAXPId.getId());
+	}
+
 	/**
 	 * Nimmt das uebergebene Gesuch und entfernt alle Daten die fuer die Rollen SACHBEARBEITER_INSTITUTION oder
 	 * SACHBEARBEITER_TRAEGERSCHAFT nicht

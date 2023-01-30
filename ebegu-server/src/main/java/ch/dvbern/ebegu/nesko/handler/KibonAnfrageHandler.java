@@ -48,6 +48,13 @@ public class KibonAnfrageHandler {
 		return handleKibonAnfrage(kibonAnfrageContext, isGemeinsam, true);
 	}
 
+	// Bei neue Veranlagung Event hat man keine Retry Mechanismus
+	public KibonAnfrageContext handleKibonNeueVeranlagungAnfrage(
+		KibonAnfrageContext kibonAnfrageContext,
+		boolean isGemeinsam) {
+		return handleKibonAnfrage(kibonAnfrageContext, isGemeinsam, false);
+	}
+
 	private KibonAnfrageContext handleKibonAnfrage(
 		KibonAnfrageContext kibonAnfrageContext,
 		boolean isGemeinsam,
@@ -71,12 +78,11 @@ public class KibonAnfrageHandler {
 						kibonAnfrageContext.getKibonAnfrageId(),
 						kibonAnfrageContext.getGesuch().getGesuchsperiode().getBasisJahrPlus1());
 					kibonAnfrageContext.setSteuerdatenResponse(steuerdatenResponse);
-					assert kibonAnfrageContext.getFinSitContGS2() != null;
+					Objects.requireNonNull(kibonAnfrageContext.getFinSitContGS2());
 					KibonAnfrageHelper.handleSteuerdatenGemeinsamResponse(kibonAnfrageContext, steuerdatenResponse);
 				} catch (KiBonAnfrageServiceException e) {
-					assert kibonAnfrageContext.getGesuch().getFamiliensituationContainer() != null;
-					assert kibonAnfrageContext.getGesuch().getFamiliensituationContainer().getFamiliensituationJA()
-						!= null;
+					Objects.requireNonNull( kibonAnfrageContext.getGesuch().getFamiliensituationContainer());
+					Objects.requireNonNull( kibonAnfrageContext.getGesuch().getFamiliensituationContainer().getFamiliensituationJA());
 					if (kibonAnfrageContext.getGesuch()
 						.getFamiliensituationContainer()
 						.getFamiliensituationJA()

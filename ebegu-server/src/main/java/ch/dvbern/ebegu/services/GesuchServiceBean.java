@@ -108,6 +108,7 @@ import ch.dvbern.ebegu.entities.KindContainer_;
 import ch.dvbern.ebegu.entities.Kind_;
 import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.enums.AnmeldungMutationZustand;
+import ch.dvbern.ebegu.enums.AntragCopyType;
 import ch.dvbern.ebegu.enums.AntragStatus;
 import ch.dvbern.ebegu.enums.AntragTyp;
 import ch.dvbern.ebegu.enums.ApplicationPropertyKey;
@@ -397,10 +398,12 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 			// die Berechnung die richtige FinSit verwendet wird!
 			zuMutierendeAnmeldungenAbschliessen(gesuchForMutation);
 
-			var mutation = gesuchForMutation.copyForMutation(
+			Gesuch mutation = gesuchForMutation.copyForMutation(
 				new Gesuch(),
 				eingangsart,
 				gesuchToCreate.getRegelStartDatum() != null ? gesuchToCreate.getRegelStartDatum() : LocalDate.now());
+
+			setNotIgnoredFinanzielleSituationContainerIfNeeded(gesuchForMutation, mutation);
 
 			// wenn eine Anmeldung kopiert wird, dann wird die neuste Mutation auf gueltig gesetzt und der Vorgänger auf
 			// ungültig. Falls der Vorgänger aber im Status MUTATION_IGNORIERT war, müssen wir weiter zurück um
@@ -412,6 +415,20 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 		return gesuchToCreate;
 	}
 
+	private void setNotIgnoredFinanzielleSituationContainerIfNeeded(@Nonnull Gesuch orginial, @Nonnull Gesuch neuesGesuch){
+		if(orginial.getStatus().equals(AntragStatus.IGNORIERT)) {
+			Gesuch letzteNichtIgnorierteGesuch = findLetzteNichtIgnorierteGesuch(orginial).orElseThrow(
+				() -> new EbeguEntityNotFoundException("createMutation - findLetzteNichtIgnorierteGesuch", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, "Gesuch with ID ist immer ignoriert: " + orginial.getId()));
+
+			if(neuesGesuch.getGesuchsteller1() != null && letzteNichtIgnorierteGesuch.getGesuchsteller1() != null){
+				letzteNichtIgnorierteGesuch.getGesuchsteller1().copyFinanzen(neuesGesuch.getGesuchsteller1(), AntragCopyType.MUTATION);
+			}
+			if(neuesGesuch.getGesuchsteller2() != null && letzteNichtIgnorierteGesuch.getGesuchsteller2() != null){
+				letzteNichtIgnorierteGesuch.getGesuchsteller2().copyFinanzen(neuesGesuch.getGesuchsteller2(), AntragCopyType.MUTATION);
+			}
+		}
+	}
+
 	@Nonnull
 	private Gesuch createErneuerungsgesuch(
 		@Nonnull Gesuch gesuchToCreate, @Nonnull Gesuchsperiode gesuchsperiode,
@@ -421,11 +438,15 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 		if (gesuchForErneuerungOptional.isPresent()) {
 			logInfo.append('\n').append("... und es gibt ein Gesuch zu kopieren");
 			Gesuch gesuchForErneuerung = gesuchForErneuerungOptional.get();
-			return gesuchForErneuerung.copyForErneuerung(
+			Gesuch erneuteGesuch = gesuchForErneuerung.copyForErneuerung(
 				new Gesuch(),
 				gesuchsperiode,
 				eingangsart,
 				gesuchToCreate.getRegelStartDatum() != null ? gesuchToCreate.getRegelStartDatum() : LocalDate.now());
+
+			setNotIgnoredFinanzielleSituationContainerIfNeeded(gesuchForErneuerung, erneuteGesuch);
+
+			return erneuteGesuch;
 		}
 		return gesuchToCreate;
 	}
@@ -451,11 +472,12 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 		if (gesuchToCopyOptional.isPresent()) {
 			logInfo.append('\n').append("Es ist das erste Gesuch in einem neuen Dossier!");
 			Gesuch gesuchToCopy = gesuchToCopyOptional.get();
+			Gesuch erstGesuchInNeuemDossier;
 			if (gesuchsperiode.equals(gesuchToCopy.getGesuchsperiode())) {
-				return gesuchToCopy.copyForMutationNeuesDossier(gesuchToCreate, eingangsart,
+				erstGesuchInNeuemDossier = gesuchToCopy.copyForMutationNeuesDossier(gesuchToCreate, eingangsart,
 					gesuchToCreate.getDossier());
 			} else {
-				return gesuchToCopy.copyForErneuerungsgesuchNeuesDossier(
+				erstGesuchInNeuemDossier = gesuchToCopy.copyForErneuerungsgesuchNeuesDossier(
 					gesuchToCreate,
 					eingangsart,
 					gesuchToCreate.getDossier(),
@@ -464,6 +486,7 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 						gesuchToCreate.getRegelStartDatum() :
 						LocalDate.now());
 			}
+			setNotIgnoredFinanzielleSituationContainerIfNeeded(gesuchToCopy, erstGesuchInNeuemDossier);
 		}
 		return gesuchToCreate;
 	}
@@ -691,6 +714,18 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 			});
 	}
 
+	private void setVorgaengerAnmeldungToGueltig(@Nonnull Gesuch currentGesuch) {
+		currentGesuch.extractAllAnmeldungen().stream()
+			.filter(betreuung -> betreuung.getVorgaengerId() != null)
+			.filter(betreuung -> betreuung.getBetreuungsangebotTyp().isSchulamt())
+			.forEach(betreuung -> {
+				AbstractAnmeldung vorgaenger = findVorgaengerAnmeldungNotIgnoriert(betreuung);
+				vorgaenger.setAnmeldungMutationZustand(AnmeldungMutationZustand.AKTUELLE_ANMELDUNG);
+				vorgaenger.setGueltig(true); // Die alte Anmeldung ist wieder die gueltige
+				persistence.merge(vorgaenger);
+			});
+	}
+
 	private AbstractAnmeldung findVorgaengerAnmeldungNotIgnoriert(AbstractAnmeldung betreuung) {
 		if (betreuung.getVorgaengerId() == null) {
 			//Kann eigentlich nicht eintretten, da das Erst-Gesuch nicht ingoriert werden kann und somit immer ein Vorgänger
@@ -717,11 +752,18 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 	private void zuMutierendeAnmeldungenAbschliessen(@Nonnull Gesuch currentGesuch) {
 		currentGesuch.extractAllAnmeldungen().stream()
 			.filter(anmeldung -> anmeldung.getBetreuungsangebotTyp().isTagesschule())
-			.filter(anmeldung -> anmeldung.getBetreuungsstatus() == Betreuungsstatus.SCHULAMT_ANMELDUNG_AUSGELOEST)
 			.forEach(anmeldung -> {
-				this.verfuegungService.anmeldungSchulamtAusgeloestAbschliessen(
-					anmeldung.extractGesuch().getId(),
-					anmeldung.getId());
+				AbstractAnmeldung anmeldungToAbschliessen = anmeldung;
+
+				if (anmeldung.getBetreuungsstatus() == Betreuungsstatus.SCHULAMT_MUTATION_IGNORIERT) {
+					anmeldungToAbschliessen = findVorgaengerAnmeldungNotIgnoriert(anmeldung);
+				}
+
+				if (anmeldungToAbschliessen.getBetreuungsstatus() == Betreuungsstatus.SCHULAMT_ANMELDUNG_AUSGELOEST) {
+					this.verfuegungService.anmeldungSchulamtAusgeloestAbschliessen(
+						anmeldungToAbschliessen.extractGesuch().getId(),
+						anmeldungToAbschliessen.getId());
+				}
 			});
 	}
 
@@ -979,6 +1021,25 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 		final CriteriaQuery<Gesuch> query = cb.createQuery(Gesuch.class);
 
 		Root<Gesuch> root = query.from(Gesuch.class);
+		Predicate dossierPredicate = cb.equal(root.get(Gesuch_.dossier), dossier);
+		Predicate gesuchsperiodePredicate = cb.equal(root.get(Gesuch_.gesuchsperiode), gesuchsperiode);
+
+		query.where(dossierPredicate, gesuchsperiodePredicate);
+		return persistence.getCriteriaResults(query);
+	}
+
+	@Override
+	@Nonnull
+	public List<String> getAllGesucheIdsForDossierAndPeriod(
+		@Nonnull Dossier dossier,
+		@Nonnull Gesuchsperiode gesuchsperiode) {
+		authorizer.checkReadAuthorizationDossier(dossier);
+
+		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
+		final CriteriaQuery<String> query = cb.createQuery(String.class);
+
+		Root<Gesuch> root = query.from(Gesuch.class);
+		query.select(root.get(AbstractEntity_.id));
 		Predicate dossierPredicate = cb.equal(root.get(Gesuch_.dossier), dossier);
 		Predicate gesuchsperiodePredicate = cb.equal(root.get(Gesuch_.gesuchsperiode), gesuchsperiode);
 
@@ -2084,25 +2145,13 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 		validateGesuchComplete(gesuch);
 
 		if (gesuch.hasOnlyBetreuungenOfSchulamt()) {
-			wizardStepService.setWizardStepOkay(gesuch.getId(), WizardStepName.VERFUEGEN);
-			gesuch.setStatus(AntragStatus.NUR_SCHULAMT);
-			postGesuchVerfuegen(gesuch);
-		} else {
-			gesuch.setStatus(AntragStatus.VERFUEGEN);
+			throw new EbeguRuntimeException("verfuegenStarten", ErrorCodeEnum.ERROR_ONLY_SCHULAMT_NOT_ALLOWED);
 		}
 
-		// In Fall von NUR_SCHULAMT-Angeboten werden diese nicht verfügt, d.h. ab "Verfügen starten"
-		// sind diese Betreuungen die letzt gültigen
-		final List<AbstractAnmeldung> betreuungen = gesuch.extractAllAnmeldungen();
-		for (AbstractAnmeldung betreuung : betreuungen) {
-			if (betreuung.getInstitutionStammdaten().getBetreuungsangebotTyp().isSchulamt()) {
-				updateGueltigFlagOnPlatzAndVorgaenger(betreuung);
-			}
-		}
+		gesuch.setStatus(AntragStatus.VERFUEGEN);
 
 		Gesuch persistedGesuch = superAdminService.updateGesuch(gesuch, true, principalBean.getBenutzer());
 
-		// Das Dokument der Finanziellen Situation erstellen
 		createFinSitDokument(persistedGesuch, "verfuegenStarten");
 
 		return persistedGesuch;
@@ -2566,6 +2615,7 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 			new Gesuch(),
 			Eingangsart.PAPIER,
 			gesuch.getRegelStartDatum() != null ? gesuch.getRegelStartDatum() : LocalDate.now());
+		setNotIgnoredFinanzielleSituationContainerIfNeeded(gesuch, mutation);
 		mutation.setTyp(AntragTyp.MUTATION);
 		mutation.setEingangsdatum(LocalDate.now());
 		mutation.setStatus(AntragStatus.IN_BEARBEITUNG_JA);
@@ -2660,17 +2710,13 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 	@Override
 	public Gesuch mutationIgnorieren(Gesuch gesuch) {
 
-		// bei reinen BG- und Mischgesuchen muss zuerst verfuegenStarten aufgerufen werden
-		if (!gesuch.hasOnlyBetreuungenOfSchulamt()) {
-			Gesuch gesuchNachVerfuegungStart = verfuegenStarten(gesuch);
-			this.persistence.getEntityManager().refresh(gesuchNachVerfuegungStart);
-		}
+		validateGesuchComplete(gesuch);
 
 		gesuch.getKindContainers().forEach(kindContainer -> {
 			List<Betreuung> betreuungList = new ArrayList<>(kindContainer.getBetreuungen());
 			for (int i = 0; i < betreuungList.size(); i++) {
 				Betreuung betreuung = betreuungList.get(i);
-				this.betreuungService.schliessenOhneVerfuegen(betreuung);
+				this.betreuungService.schliessenOnly(betreuung);
 			}
 			for (AnmeldungTagesschule anmeldung : kindContainer.getAnmeldungenTagesschule()) {
 				this.betreuungService.anmeldungMutationIgnorieren(anmeldung);
@@ -2678,18 +2724,24 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 			for (AnmeldungFerieninsel anmeldung : kindContainer.getAnmeldungenFerieninsel()) {
 				this.betreuungService.anmeldungMutationIgnorieren(anmeldung);
 			}
-			// anmeldungen des Vorgesuchs zurücksetzen
-			resetMutierteAnmeldungen(gesuch);
 		});
+		// anmeldungen des Vorgesuchs zurücksetzen
+		setVorgaengerAnmeldungToGueltig(gesuch);
 
-		// wenn das Gesuch nur TS und FI Anmeldungen wird das Gesuch nicht automatisch abgeschlossen.
-		// dies muss noch gemacht werden.
-		if (gesuch.hasOnlyBetreuungenOfSchulamt()) {
-			setAbschliessen(gesuch);
+		if (gesuch.getVorgaengerId() != null) {
+			final Optional<Gesuch> vorgaengerOpt = findGesuch(gesuch.getVorgaengerId());
+			vorgaengerOpt.ifPresent(this::setGesuchAndVorgaengerUngueltig);
 		}
 
-		return gesuch;
+		// neues Gesuch erst nachdem das andere auf ungültig gesetzt wurde setzen wegen unique key
+		gesuch.setGueltig(true);
 
+		gesuch.setStatus(AntragStatus.IGNORIERT);
+		gesuch.setTimestampVerfuegt(LocalDateTime.now());
+		wizardStepService.setWizardStepOkay(gesuch.getId(), WizardStepName.VERFUEGEN);
+		Gesuch persistedGesuch = superAdminService.updateGesuch(gesuch, true, principalBean.getBenutzer());
+
+		return persistedGesuch;
 	}
 
 	@Override
@@ -2716,6 +2768,29 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 		List<Gesuch> queryResult = persistence.getCriteriaResults(query);
 
 		return getExactlyOneGesuchFromResult(queryResult, "findErstgesuchForGesuch");
+	}
+
+	@Nonnull
+	@Override
+	public Optional<Gesuch> findLetzteNichtIgnorierteGesuch(@Nonnull Gesuch gesuch) {
+		authorizer.checkReadAuthorizationDossier(gesuch.getDossier());
+
+		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
+		final CriteriaQuery<Gesuch> query = cb.createQuery(Gesuch.class);
+
+		Root<Gesuch> root = query.from(Gesuch.class);
+		Predicate dossierPredicate = cb.equal(root.get(Gesuch_.dossier), gesuch.getDossier());
+		Predicate gesuchsperiodePredicate = cb.equal(root.get(Gesuch_.gesuchsperiode), gesuch.getGesuchsperiode());
+		Predicate nichtIgnorierteEntfernen = cb.not(root.get(Gesuch_.status).in(AntragStatus.IGNORIERT));
+
+		query.where(dossierPredicate, gesuchsperiodePredicate, nichtIgnorierteEntfernen);
+		query.orderBy(cb.desc(root.get(AbstractEntity_.timestampErstellt)));
+		List<Gesuch> criteriaResults = persistence.getCriteriaResults(query, 1);
+
+		if (criteriaResults.isEmpty()) {
+			return Optional.empty();
+		}
+		return Optional.of(criteriaResults.get(0));
 	}
 
 	private boolean checkIsSZFallAndEntgezogen(Gesuch gesuch) {
