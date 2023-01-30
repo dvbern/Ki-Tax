@@ -20,6 +20,7 @@ package ch.dvbern.ebegu.inbox.handler;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
@@ -157,7 +158,7 @@ public class NeueVeranlagungEventHandler extends BaseEventHandler<NeueVeranlagun
 				" Franken");
 		}
 
-		createAndSendNeueVeranlagungsMitteilung(kibonAnfrageContext);
+		createAndSendNeueVeranlagungsMitteilung(kibonAnfrageContext, dto.getZpvNummer());
 
 		return Processing.success();
 	}
@@ -223,12 +224,23 @@ public class NeueVeranlagungEventHandler extends BaseEventHandler<NeueVeranlagun
 		return kibonAnfrageHandler.handleKibonNeueVeranlagungAnfrage(kibonAnfrageContext, gemeinsam);
 	}
 
-	private void createAndSendNeueVeranlagungsMitteilung(KibonAnfrageContext kibonAnfrageContext) {
+	private void createAndSendNeueVeranlagungsMitteilung(@Nonnull KibonAnfrageContext kibonAnfrageContext, int zpvNummer) {
 		Gesuch gesuch = kibonAnfrageContext.getGesuch();
+		List<String> gesuchIds = gesuchService.getAllGesucheIdsForDossierAndPeriod(gesuch.getDossier(), gesuch.getGesuchsperiode());
+
+		Collection<NeueVeranlagungsMitteilung> open =
+			mitteilungService.findOffeneNeueVeranlagungsmitteilungenForGesuch(gesuchIds);
+
+		Optional<NeueVeranlagungsMitteilung> latest = findRelevantNeueVzpveranlagungsMitteilung(open, zpvNummer);
 
 		Locale locale = EbeguUtil.extractKorrespondenzsprache(gesuch, gemeindeService).getLocale();
-		NeueVeranlagungsMitteilung neueVeranlagungsMitteilung = new NeueVeranlagungsMitteilung();
-		neueVeranlagungsMitteilung.setDossier(gesuch.getDossier());
+		NeueVeranlagungsMitteilung neueVeranlagungsMitteilung;
+		if(latest.isPresent()){
+			neueVeranlagungsMitteilung = latest.get();
+		} else {
+			neueVeranlagungsMitteilung = new NeueVeranlagungsMitteilung();
+			neueVeranlagungsMitteilung.setDossier(gesuch.getDossier());
+		}
 		Objects.requireNonNull(kibonAnfrageContext.getSteuerdatenResponse());
 		String betreffKey = gesuch.getMarkiertFuerKontroll() ? BETREFF_KEY_MARKIERT : BETREFF_KEY;
 		String messageKey = gesuch.getMarkiertFuerKontroll() ? MESSAGE_KEY_MARKIERT : MESSAGE_KEY;
@@ -244,6 +256,10 @@ public class NeueVeranlagungEventHandler extends BaseEventHandler<NeueVeranlagun
 		mitteilungService.sendNeueVeranlagungsmitteilung(neueVeranlagungsMitteilung);
 	}
 
+
+	private Optional<NeueVeranlagungsMitteilung> findRelevantNeueVzpveranlagungsMitteilung(@Nonnull Collection<NeueVeranlagungsMitteilung> open, Integer zpvNummer) {
+		return open.stream().filter(neueVeranlagungsMitteilung -> zpvNummer.equals(neueVeranlagungsMitteilung.getSteuerdatenResponse().getZpvNrAntragsteller())).findFirst();
+	}
 	private BigDecimal getEinstelungMinUnterschiedEinkommen(Gesuchsperiode gesuchsperiode) {
 		List<Einstellung> einstellungList = einstellungService.findEinstellungen(
 			EinstellungKey.VERANLAGUNG_MIN_UNTERSCHIED_MASSGEBENDESEINK,

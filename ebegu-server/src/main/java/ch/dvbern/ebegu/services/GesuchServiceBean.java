@@ -1025,6 +1025,25 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 	}
 
 	@Override
+	@Nonnull
+	public List<String> getAllGesucheIdsForDossierAndPeriod(
+		@Nonnull Dossier dossier,
+		@Nonnull Gesuchsperiode gesuchsperiode) {
+		authorizer.checkReadAuthorizationDossier(dossier);
+
+		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
+		final CriteriaQuery<String> query = cb.createQuery(String.class);
+
+		Root<Gesuch> root = query.from(Gesuch.class);
+		query.select(root.get(AbstractEntity_.id));
+		Predicate dossierPredicate = cb.equal(root.get(Gesuch_.dossier), dossier);
+		Predicate gesuchsperiodePredicate = cb.equal(root.get(Gesuch_.gesuchsperiode), gesuchsperiode);
+
+		query.where(dossierPredicate, gesuchsperiodePredicate);
+		return persistence.getCriteriaResults(query);
+	}
+
+	@Override
 	public Gesuch antragFreigabequittungErstellen(@Nonnull Gesuch gesuch, AntragStatus statusToChangeTo) {
 		authorizer.checkWriteAuthorization(gesuch);
 
