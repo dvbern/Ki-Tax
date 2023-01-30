@@ -2988,7 +2988,7 @@
     "ALLE_CAPITAL": "Tous",
     "NEU_LADEN": "Recharger",
     "AUSZAHLUNG_HINT": "Sauf avis contraire de votre part, les éventuels remboursements résultant d’un changement de votre situation financière seront versés sur ce compte.",
-    "BISHER": "bisher:",
+    "BISHER": "jusqu'ici:",
     "GESUCH_IGNORIERT": "Ce changement a été ignoré. Vous pouvez consulter les données actuelles concernant la prise en charge et la situation financière ici :",
     "LETZTER_GUELTIGE_ANTRAG":  "demande en vigueur",
     "GESUCH_IGNORIERT_HELP": "La commune peut ignorer des changements à certaines conditions, par exemple<br>-    lorsque la situation financière a été adaptée mais que la modification entraîne uniquement une faible réduction du bon de garde ou une légère hausse du tarif des modules d’école à journée continue. ou<br>-    lorsque l’adaptation ne change rien au montant du bon de garde ou au tarif des modules d’école à journée continue.<br>-    Par contre, la commune ne peut pas ignorer les changements qui entraînent une hausse du montant du bon de garde ou une baisse du tarif des modules d’école à journée continue.",
