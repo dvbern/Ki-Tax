@@ -20,6 +20,7 @@ import {Injectable} from '@angular/core';
 import {Observable} from 'rxjs';
 import {TSGemeinde} from '../../../models/TSGemeinde';
 import {CONSTANTS} from '../constants/CONSTANTS';
+import * as moment from "moment";
 
 /**
  * spricht die reportAsync ressource an welche die reports async generiert
@@ -242,10 +243,12 @@ export class ReportAsyncRS {
         );
     }
 
-    public getLastenausgleichBGReportExcel(gemeinde: TSGemeinde, jahr: number) {
+    public getLastenausgleichBGReportExcel(gemeinde: TSGemeinde, jahr: number, von: string, bis: string) {
         const reportParams = ReportAsyncRS.createParamsFromObject({
-            gemeindeId: gemeinde.id,
-            jahr
+            gemeindeId: gemeinde?.id,
+            jahr,
+            von,
+            bis
         });
         return this.http.get<{workjobId: string}>(
             `${this.serviceURL}/excel/lastenausgleichBGZeitabschnitte`,

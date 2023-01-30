@@ -19,6 +19,8 @@ package ch.dvbern.ebegu.services.reporting;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -30,11 +32,14 @@ import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
+import javax.validation.constraints.NotNull;
+import javax.xml.crypto.Data;
 
 import ch.dvbern.ebegu.authentication.PrincipalBean;
 import ch.dvbern.ebegu.entities.Lastenausgleich;
@@ -84,7 +89,9 @@ public class ReportLastenausgleichBGZeitabschnitteServiceBean extends AbstractRe
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	public UploadFileInfo generateExcelReportLastenausgleichBGZeitabschnitte(
 		@Nonnull Locale locale,
-		@Nonnull String gemeindeId,
+		@Nullable String von,
+		@Nullable String bis,
+		@Nullable String gemeindeId,
 		@Nonnull Integer lastenausgleichJahr
 	) throws ExcelMergeException, IOException {
 		final ReportVorlage reportVorlage = ReportVorlage.VORLAGE_REPORT_LASTENAUSGLEICH_BG_ZEITABSCHNITTE;
@@ -102,13 +109,26 @@ public class ReportLastenausgleichBGZeitabschnitteServiceBean extends AbstractRe
 				);
 
 			List<LastenausgleichDetail> lastenausgleichDetails =
-				lastenausgleich.getLastenausgleichDetails()
-					.stream()
-					.filter(detail -> filterLastenausgleichDetail(detail, gemeindeId))
-					.collect(Collectors.toList());
+				new ArrayList<>(lastenausgleich.getLastenausgleichDetails());
+
+			if (gemeindeId != null) {
+				lastenausgleichDetails =
+					lastenausgleich.getLastenausgleichDetails()
+						.stream()
+						.filter(detail -> filterLastenausgleichDetail(detail, gemeindeId))
+						.collect(Collectors.toList());
+			}
 
 			List<LastenausgleichBGZeitabschnittDataRow> reportData =
 				getReportLastenausgleichZeitabschnitte(lastenausgleichDetails, locale);
+
+			if (von != null && bis != null) {
+				reportData =
+					reportData
+						.stream()
+						.filter(detail -> filterLastenausgleichDetailVonBis(detail, von, bis))
+						.collect(Collectors.toList());
+			}
 
 			final XSSFSheet xsslSheet =
 				(XSSFSheet) lastenausgleichBGZeitabschnitteExcelConverter.mergeHeaders(
@@ -134,13 +154,21 @@ public class ReportLastenausgleichBGZeitabschnitteServiceBean extends AbstractRe
 		}
 	}
 
-	private boolean filterLastenausgleichDetail(@Nonnull LastenausgleichDetail lastenausgleichDetail, String gemeindeId) {
+	private boolean filterLastenausgleichDetail(@NotNull LastenausgleichDetail lastenausgleichDetail, String gemeindeId) {
 		boolean isGemeinde = lastenausgleichDetail.getGemeinde().getId().equals(gemeindeId);
 		if (!isGemeinde) {
 			return false;
 		}
 		authorizer.checkReadAuthorization(lastenausgleichDetail.getGemeinde());
 		return true;
+	}
+
+	private boolean filterLastenausgleichDetailVonBis(@NotNull LastenausgleichBGZeitabschnittDataRow reportData, String von, String bis) {
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+		LocalDate formattedVon = LocalDate.parse(von, formatter);
+		LocalDate formattedBis = LocalDate.parse(bis, formatter);
+		boolean isVonBis = (reportData.getVon().equals(formattedVon) || formattedVon.isBefore(reportData.getVon())) && (reportData.getBis().equals(formattedBis) || formattedBis.isAfter(reportData.getBis()));
+		return isVonBis;
 	}
 
 	/**
