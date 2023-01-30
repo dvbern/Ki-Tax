@@ -116,6 +116,7 @@ public class FinanzielleSituationAppenzellRechner extends AbstractFinanzielleSit
 		}
 	}
 
+	@SuppressWarnings("PMD.UnusedFormalParameter")
 	private void calculateEKVFinSit(
 		@Nullable AbstractFinanzielleSituation finanzielleSituationGS1,
 		@Nullable AbstractFinanzielleSituation finanzielleSituationGS2,
