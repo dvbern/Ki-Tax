@@ -398,9 +398,8 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 			Gesuch mutation = gesuchForMutation.copyForMutation(
 				new Gesuch(),
 				eingangsart,
-				gesuchToCreate.getRegelStartDatum() != null ? gesuchToCreate.getRegelStartDatum() : LocalDate.now());
-
-			setNotIgnoredFinanzielleSituationContainerIfNeeded(gesuchForMutation, mutation);
+				gesuchToCreate.getRegelStartDatum() != null ? gesuchToCreate.getRegelStartDatum() : LocalDate.now(),
+				getNextLaufnummerForGesuch(gesuchForMutation));
 
 			// wenn eine Anmeldung kopiert wird, dann wird die neuste Mutation auf gueltig gesetzt und der Vorgänger auf
 			// ungültig. Falls der Vorgänger aber im Status MUTATION_IGNORIERT war, müssen wir weiter zurück um
@@ -412,18 +411,10 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 		return gesuchToCreate;
 	}
 
-	private void setNotIgnoredFinanzielleSituationContainerIfNeeded(@Nonnull Gesuch orginial, @Nonnull Gesuch neuesGesuch){
-		if(orginial.getStatus().equals(AntragStatus.IGNORIERT)) {
-			Gesuch letzteNichtIgnorierteGesuch = findLetzteNichtIgnorierteGesuch(orginial).orElseThrow(
-				() -> new EbeguEntityNotFoundException("createMutation - findLetzteNichtIgnorierteGesuch", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, "Gesuch with ID ist immer ignoriert: " + orginial.getId()));
-
-			if(neuesGesuch.getGesuchsteller1() != null && letzteNichtIgnorierteGesuch.getGesuchsteller1() != null){
-				letzteNichtIgnorierteGesuch.getGesuchsteller1().copyFinanzen(neuesGesuch.getGesuchsteller1(), AntragCopyType.MUTATION);
-			}
-			if(neuesGesuch.getGesuchsteller2() != null && letzteNichtIgnorierteGesuch.getGesuchsteller2() != null){
-				letzteNichtIgnorierteGesuch.getGesuchsteller2().copyFinanzen(neuesGesuch.getGesuchsteller2(), AntragCopyType.MUTATION);
-			}
-		}
+	private int getNextLaufnummerForGesuch(Gesuch gesuch) {
+		Gesuch neustesGesuch = getNeustesGesuchFuerGesuch(gesuch)
+			.orElse(gesuch);
+		return neustesGesuch.getLaufnummer() + 1;
 	}
 
 	@Nonnull
@@ -2587,7 +2578,6 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 			new Gesuch(),
 			Eingangsart.PAPIER,
 			gesuch.getRegelStartDatum() != null ? gesuch.getRegelStartDatum() : LocalDate.now());
-		setNotIgnoredFinanzielleSituationContainerIfNeeded(gesuch, mutation);
 		mutation.setTyp(AntragTyp.MUTATION);
 		mutation.setEingangsdatum(LocalDate.now());
 		mutation.setStatus(AntragStatus.IN_BEARBEITUNG_JA);
@@ -2699,14 +2689,6 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 		});
 		// anmeldungen des Vorgesuchs zurücksetzen
 		setVorgaengerAnmeldungToGueltig(gesuch);
-
-		if (gesuch.getVorgaengerId() != null) {
-			final Optional<Gesuch> vorgaengerOpt = findGesuch(gesuch.getVorgaengerId());
-			vorgaengerOpt.ifPresent(this::setGesuchAndVorgaengerUngueltig);
-		}
-
-		// neues Gesuch erst nachdem das andere auf ungültig gesetzt wurde setzen wegen unique key
-		gesuch.setGueltig(true);
 
 		gesuch.setStatus(AntragStatus.IGNORIERT);
 		gesuch.setTimestampVerfuegt(LocalDateTime.now());
