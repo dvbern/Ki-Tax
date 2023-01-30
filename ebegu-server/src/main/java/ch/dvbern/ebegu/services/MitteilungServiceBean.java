@@ -1583,6 +1583,14 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 			gesuch,
 			mitteilung.getSteuerdatenResponse().getZpvNrDossiertraeger());
 
+		if(kibonAnfrageContext.getFinSitCont().getFinanzielleSituationJA().getSteuerdatenZugriff() == null ||
+			kibonAnfrageContext.getFinSitCont().getFinanzielleSituationJA().getSteuerdatenZugriff().equals(Boolean.FALSE)) {
+			throw new EbeguException(
+				"neueVeranlagungsMitteilungImAntragErsetzen",
+				ErrorCodeEnum.ERROR_FIN_SIT_MANUELLE_EINGABE,
+				gesuch.getId());
+		}
+
 		Objects.requireNonNull(gesuch.getFamiliensituationContainer());
 		Objects.requireNonNull(gesuch.getFamiliensituationContainer().getFamiliensituationJA());
 		boolean gemeinsam = Boolean.TRUE
