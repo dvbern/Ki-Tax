@@ -2932,7 +2932,7 @@
     "FINANZIELLE_SITUATION_AUFGETEILTE_WERTE": "Einige Werte, die in der Steuererklärung gemeinsam angegeben wurden, wurden 50:50 zwischen beiden Antragstellenden aufgeteilt. Dies betrifft folgende Werte:",
     "AUFTEILUNG_AENDERN": "Aufteilung ändern",
     "ERNEUT_VERSUCHEN": "Steuerdaten erneut abrufen",
-    "ERNEUT_VERSUCHEN_HINT": "Der aktuelle Stand der Steuerdaten wird abgerufen. Die finanziellen Verhältnisse werden für die ganze Periode angepasst.",
+    "ERNEUT_VERSUCHEN_HINT": "Der aktuelle Stand der Steuerdaten wird abgerufen. Die finanziellen Verhältnisse werden für die betroffene Periode angepasst.",
     "DAUER_BABYTARIF": "Bis zu welchem Alter (in Monaten) soll der Babytarif gewährt werden",
     "ANRECHENBARES_VERMOEGEN_GEMAESS_SELBSTDEKLARATION": "Anrechenbares Vermögen gemäss Selbstdeklaration",
     "ANRECHENBARES_VERMOEGEN_GEMAESS_SELBSTDEKLARATION_HINT": "10% des deklarierten Vermögens gemäss Selbstdeklaration",
@@ -3092,6 +3092,6 @@
     "BISHER": "bisher:",
     "GESUCH_IGNORIERT": "Diese Mutation wurde ignoriert. Die aktuell gültige Betreuung und finanzielle Situation sehen Sie hier ein:",
     "LETZTER_GUELTIGE_ANTRAG":  "letzter gültiger Antrag",
-    "GESUCH_IGNORIERT_HELP": "Die Gemeinde kann Mutationen unter anderem ignorieren, wenn<br>-    die Mutation ausschliesslich die finanzielle Situation betrifft,<br>-    die Änderung zu einem tieferen Betreuungsgutschein respektive einem höheren Tagesschultarif führt,<br>-    und die Veränderung des Betreuungsgutscheins / Tagesschultarifs geringfügig ist.",
+    "GESUCH_IGNORIERT_HELP": "Die Gemeinde kann Mutationen unter bestimmten Bedingungen ignorieren. Ignorieren ist Z.B. möglich <br>-    wenn die finanziellen Verhältnisse angepasst wurden und der Betreuungsgutschein geringfügig tiefer/ Tageschultarif geringfügig höher ausfällt. Oder<br>-    wenn sich der Betreuungsgutschein /Tagesschultarif durch die Mutation nicht verändert.<br>-    Mutationen, die zu einem <b>höheren</b> Betreuungsgutschein/<b>tieferen</b> Tagesschultarif führen, kann die Gemeinde nicht ignorieren.",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }
