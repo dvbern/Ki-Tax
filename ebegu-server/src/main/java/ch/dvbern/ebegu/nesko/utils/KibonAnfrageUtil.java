@@ -44,12 +44,12 @@ public final class KibonAnfrageUtil {
 			.getFinanzielleSituationContainer()
 			.getFinanzielleSituationJA()
 			.getSteuerdatenResponse()
-			.getZpvNrDossiertraeger() != null) {
+			.getZpvNrAntragsteller() != null) {
 			if (gesuch.getGesuchsteller1()
 				.getFinanzielleSituationContainer()
 				.getFinanzielleSituationJA()
 				.getSteuerdatenResponse()
-				.getZpvNrDossiertraeger()
+				.getZpvNrAntragsteller()
 				.equals(zpvNummer)) {
 				kibonAnfrageContext = new KibonAnfrageContext(
 					gesuch,
@@ -68,11 +68,11 @@ public final class KibonAnfrageUtil {
 				.getFinanzielleSituationContainer()
 				.getFinanzielleSituationJA()
 				.getSteuerdatenResponse()
-				.getZpvNrDossiertraeger() != null && gesuch.getGesuchsteller2()
+				.getZpvNrAntragsteller() != null && gesuch.getGesuchsteller2()
 				.getFinanzielleSituationContainer()
 				.getFinanzielleSituationJA()
 				.getSteuerdatenResponse()
-				.getZpvNrDossiertraeger()
+				.getZpvNrAntragsteller()
 				.equals(zpvNummer)) {
 				kibonAnfrageContext = new KibonAnfrageContext(
 					gesuch,
