@@ -212,8 +212,7 @@ public class NeueVeranlagungEventHandlerTest extends EasyMockSupport {
 		Einstellung einstellung = findEinstellungMinUnterschied();
 		expect(einstellung.getValueAsBigDecimal()).andReturn(new BigDecimal(50));
 		GemeindeStammdaten gemeindeStammdaten = new GemeindeStammdaten();
-		expect(gemeindeService.getGemeindeStammdatenByGemeindeId(anyObject())).andReturn(Optional.of(gemeindeStammdaten));
-		expect(mitteilungService.sendNeueVeranlagungsmitteilung(anyObject())).andReturn(new NeueVeranlagungsMitteilung());
+		expectMitteilungIsSend(gemeindeStammdaten);
 		testProcessingSuccess();
 	}
 
@@ -224,8 +223,7 @@ public class NeueVeranlagungEventHandlerTest extends EasyMockSupport {
 		Einstellung einstellung = findEinstellungMinUnterschied();
 		expect(einstellung.getValueAsBigDecimal()).andReturn(new BigDecimal(70));
 		GemeindeStammdaten gemeindeStammdaten = new GemeindeStammdaten();
-		expect(gemeindeService.getGemeindeStammdatenByGemeindeId(anyObject())).andReturn(Optional.of(gemeindeStammdaten));
-		expect(mitteilungService.sendNeueVeranlagungsmitteilung(anyObject())).andReturn(new NeueVeranlagungsMitteilung());
+		expectMitteilungIsSend(gemeindeStammdaten);
 		testProcessingSuccess();
 	}
 
@@ -238,8 +236,7 @@ public class NeueVeranlagungEventHandlerTest extends EasyMockSupport {
 		Einstellung einstellung = findEinstellungMinUnterschied();
 		expect(einstellung.getValueAsBigDecimal()).andReturn(new BigDecimal(70));
 		GemeindeStammdaten gemeindeStammdaten = new GemeindeStammdaten();
-		expect(gemeindeService.getGemeindeStammdatenByGemeindeId(anyObject())).andReturn(Optional.of(gemeindeStammdaten));
-		expect(mitteilungService.sendNeueVeranlagungsmitteilung(anyObject())).andReturn(new NeueVeranlagungsMitteilung());
+		expectMitteilungIsSend(gemeindeStammdaten);
 		testProcessingSuccess();
 	}
 
@@ -269,16 +266,30 @@ public class NeueVeranlagungEventHandlerTest extends EasyMockSupport {
 	}
 
 	private void expectEverythingUntilCompare(BigDecimal einkommenNeu) {
-		kibonAnfrageContext.setSteuerdatenAnfrageStatus(SteuerdatenAnfrageStatus.RECHTSKRAEFTIG);
-		kibonAnfrageContext.setSteuerdatenResponse(steuerdatenResponse);
-		FinanzielleSituationResultateDTO finanzielleSituationResultateDTOOrig = new FinanzielleSituationResultateDTO();
-		finanzielleSituationResultateDTOOrig.setMassgebendesEinkVorAbzFamGr(new BigDecimal(100000));
-		FinanzielleSituationResultateDTO finanzielleSituationResultateDTONeu = new FinanzielleSituationResultateDTO();
-		finanzielleSituationResultateDTONeu.setMassgebendesEinkVorAbzFamGr(einkommenNeu);
-		expectGesuchFound();
-		expect(finanzielleSituationService.calculateResultate(anyObject())).andReturn(finanzielleSituationResultateDTOOrig);
-		expect(kibonAnfrageHandler.handleKibonNeueVeranlagungAnfrage(anyObject(), eq(false))).andReturn(kibonAnfrageContext);
-		expect(finanzielleSituationService.calculateResultate(anyObject())).andReturn(finanzielleSituationResultateDTONeu);
+		{
+			kibonAnfrageContext.setSteuerdatenAnfrageStatus(SteuerdatenAnfrageStatus.RECHTSKRAEFTIG);
+			kibonAnfrageContext.setSteuerdatenResponse(steuerdatenResponse);
+			FinanzielleSituationResultateDTO finanzielleSituationResultateDTOOrig =
+				new FinanzielleSituationResultateDTO();
+			finanzielleSituationResultateDTOOrig.setMassgebendesEinkVorAbzFamGr(new BigDecimal(100000));
+			FinanzielleSituationResultateDTO finanzielleSituationResultateDTONeu =
+				new FinanzielleSituationResultateDTO();
+			finanzielleSituationResultateDTONeu.setMassgebendesEinkVorAbzFamGr(einkommenNeu);
+			expectGesuchFound();
+			expect(finanzielleSituationService.calculateResultate(anyObject())).andReturn(
+				finanzielleSituationResultateDTOOrig);
+			expect(kibonAnfrageHandler.handleKibonNeueVeranlagungAnfrage(anyObject(), eq(false))).andReturn(
+				kibonAnfrageContext);
+			expect(finanzielleSituationService.calculateResultate(anyObject())).andReturn(
+				finanzielleSituationResultateDTONeu);
+		}
+	}
+
+	private void expectMitteilungIsSend(GemeindeStammdaten gemeindeStammdaten) {
+		expect(gemeindeService.getGemeindeStammdatenByGemeindeId(anyObject())).andReturn(Optional.of(gemeindeStammdaten));
+		expect(gesuchService.getAllGesucheIdsForDossierAndPeriod(kibonAnfrageContext.getGesuch().getDossier(), kibonAnfrageContext.getGesuch().getGesuchsperiode())).andReturn(new ArrayList<>());
+		expect(mitteilungService.findOffeneNeueVeranlagungsmitteilungenForGesuch(new ArrayList<>())).andReturn(new ArrayList<>());
+		expect(mitteilungService.sendNeueVeranlagungsmitteilung(anyObject())).andReturn(new NeueVeranlagungsMitteilung());
 	}
 
 	private Einstellung findEinstellungMinUnterschied() {

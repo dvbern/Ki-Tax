@@ -203,6 +203,12 @@ public interface GesuchService {
 	List<Gesuch> getAllGesucheForDossierAndPeriod(@Nonnull Dossier dossier, @Nonnull Gesuchsperiode gesuchsperiode);
 
 	/**
+	 * Alle Gesuche Ids fuer den gegebenen Dossier in der gegebenen Periode
+	 */
+	@Nonnull
+	List<String> getAllGesucheIdsForDossierAndPeriod(@Nonnull Dossier dossier, @Nonnull Gesuchsperiode gesuchsperiode);
+
+	/**
 	 * Das gegebene Gesuch wird mit heutigem Datum freigegeben und den Step FREIGABE auf OK gesetzt
 	 */
 	Gesuch antragFreigabequittungErstellen(@Nonnull Gesuch gesuch, AntragStatus statusToChangeTo);
