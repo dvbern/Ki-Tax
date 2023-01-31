@@ -1578,12 +1578,12 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 		@Nonnull Gesuch gesuch,
 		@Nonnull NeueVeranlagungsMitteilung mitteilung) throws EbeguException {
 		Objects.requireNonNull(mitteilung.getSteuerdatenResponse());
-		Objects.requireNonNull(mitteilung.getSteuerdatenResponse().getZpvNrDossiertraeger());
+		Objects.requireNonNull(mitteilung.getSteuerdatenResponse().getZpvNrAntragsteller());
 		authorizer.checkWriteAuthorization(gesuch);
 		authorizer.checkReadAuthorizationMitteilung(mitteilung);
 		KibonAnfrageContext kibonAnfrageContext = KibonAnfrageUtil.initKibonAnfrageContext(
 			gesuch,
-			mitteilung.getSteuerdatenResponse().getZpvNrDossiertraeger());
+			mitteilung.getSteuerdatenResponse().getZpvNrAntragsteller());
 
 		if(kibonAnfrageContext.getFinSitCont().getFinanzielleSituationJA().getSteuerdatenZugriff() == null ||
 			kibonAnfrageContext.getFinSitCont().getFinanzielleSituationJA().getSteuerdatenZugriff().equals(Boolean.FALSE)) {
