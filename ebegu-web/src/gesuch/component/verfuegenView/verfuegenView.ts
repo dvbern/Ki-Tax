@@ -965,10 +965,10 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
         }
 
         if (isZahlungIgnored) {
-            return this.$translate.instant('MUTATION_KORREKTUR_AUSBEZAHLT_AUSSERHALB_KIBON');
+            return ' ' + this.$translate.instant('MUTATION_KORREKTUR_AUSBEZAHLT_AUSSERHALB_KIBON');
         }
 
-        return this.$translate.instant('MUTATION_KORREKTUR_AUSBEZAHLT_INNERHLAB_KIBON');
+        return ' ' + this.$translate.instant('MUTATION_KORREKTUR_AUSBEZAHLT_INNERHLAB_KIBON');
     }
 
 
