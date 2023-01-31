@@ -771,7 +771,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		predicates.add(mandantPredicate);
 
 		// Status ist verfuegt
-		predicates.add(root.get(AntragStatusHistory_.status).in(AntragStatus.getAllVerfuegtStates()));
+		predicates.add(root.get(AntragStatusHistory_.status).in(AntragStatus.getAllVerfuegtNotIgnoriertStates()));
 		// Datum der Verfuegung muss nach (oder gleich) dem Anfang des Abfragezeitraums sein
 		predicates.add(builder.greaterThanOrEqualTo(
 			root.get(AntragStatusHistory_.timestampVon),
@@ -1309,7 +1309,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 				requireNonNull(gesuch.getFall().getMandant())));
 		row.setEingangsdatum(gesuch.getEingangsdatum());
 		for (AntragStatusHistory antragStatusHistory : gesuch.getAntragStatusHistories()) {
-			if (AntragStatus.getAllVerfuegtStates().contains(antragStatusHistory.getStatus())) {
+			if (AntragStatus.getAllVerfuegtNotIgnoriertStates().contains(antragStatusHistory.getStatus())) {
 				row.setVerfuegungsdatum(antragStatusHistory.getTimestampVon().toLocalDate());
 			}
 		}
