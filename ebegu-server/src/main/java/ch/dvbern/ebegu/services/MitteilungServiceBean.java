@@ -658,41 +658,6 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 		}
 	}
 
-	@Override
-	public void unlinkAllVerfuegungMitteilungenForGesuch(@Nonnull Gesuch gesuch) {
-		if (gesuch.getGesuchsteller1() != null) {
-			unlinkAllVerfuegungMitteilungenForGesuchstellerContainer(gesuch.getGesuchsteller1());
-		}
-		if (gesuch.getGesuchsteller2() != null) {
-			unlinkAllVerfuegungMitteilungenForGesuchstellerContainer(gesuch.getGesuchsteller2());
-		}
-	}
-
-	public void unlinkAllVerfuegungMitteilungenForGesuchstellerContainer(@Nonnull GesuchstellerContainer gesuchstellerContainer) {
-		if (gesuchstellerContainer.getFinanzielleSituationContainer() == null) {
-			return;
-		}
-		var finSitId = gesuchstellerContainer.getFinanzielleSituationContainer().getFinanzielleSituationJA().getId();
-
-		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
-		final CriteriaQuery<Mitteilung> query = cb.createQuery(Mitteilung.class);
-		Root<Mitteilung> root = query.from(Mitteilung.class);
-
-		Predicate finSitIdPred = cb.equal(root.get(Mitteilung_.finanzielleSituation).get(AbstractEntity_.id), finSitId);
-
-		query.where(finSitIdPred);
-		final List<Mitteilung> mitteilungen = persistence.getCriteriaResults(query);
-
-		// Wir pruefen nur die grundsaetzliche Schreibberechtigung fuer den Gesuchstellercontainer
-		authorizer.checkWriteAuthorization(gesuchstellerContainer);
-
-		for (Mitteilung mitteilung : mitteilungen) {
-			mitteilung.setFinanzielleSituation(null);
-			persistence.merge(mitteilung);
-		}
-	}
-
-
 	@Nonnull
 	@Override
 	public Collection<Mitteilung> setAllNewMitteilungenOfDossierGelesen(@Nonnull Dossier dossier) {
@@ -1668,7 +1633,6 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 			finanzielleSituationService.saveFinanzielleSituation(kibonAnfrageContext.getFinSitCont(), gesuch.getId());
 		}
 		mitteilung.setMitteilungStatus(MitteilungStatus.ERLEDIGT);
-		mitteilung.setFinanzielleSituation(kibonAnfrageContext.getFinSitCont().getFinanzielleSituationJA());
 		persistence.merge(mitteilung);
 	}
 

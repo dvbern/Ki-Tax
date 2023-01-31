@@ -228,6 +228,7 @@ import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.entities.Mitteilung;
 import ch.dvbern.ebegu.entities.ModulTagesschule;
 import ch.dvbern.ebegu.entities.ModulTagesschuleGroup;
+import ch.dvbern.ebegu.entities.NeueVeranlagungsMitteilung;
 import ch.dvbern.ebegu.entities.PensumAusserordentlicherAnspruch;
 import ch.dvbern.ebegu.entities.PensumFachstelle;
 import ch.dvbern.ebegu.entities.RueckforderungDokument;
@@ -4892,8 +4893,8 @@ public class JaxBConverter extends AbstractConverter {
 		if (persistedMitteilung.getBetreuung() != null) {
 			jaxMitteilung.setBetreuung(betreuungToJAX(persistedMitteilung.getBetreuung()));
 		}
-		if (persistedMitteilung.getFinanzielleSituation() != null) {
-			jaxMitteilung.setFinanzielleSituation(finanzielleSituationToJAX(persistedMitteilung.getFinanzielleSituation()));
+		if (persistedMitteilung instanceof NeueVeranlagungsMitteilung) {
+			jaxMitteilung.setFinanzielleSituation(finanzielleSituationToJAX(finanzielleSituationService.findFinanzielleSituationForNeueVeranlagungsMitteilung((NeueVeranlagungsMitteilung) persistedMitteilung)));
 		}
 		if (persistedMitteilung.getInstitution() != null) {
 			jaxMitteilung.setInstitution(institutionToJAX(persistedMitteilung.getInstitution()));

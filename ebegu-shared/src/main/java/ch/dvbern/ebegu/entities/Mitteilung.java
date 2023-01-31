@@ -64,11 +64,6 @@ public class Mitteilung extends AbstractMutableEntity {
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_mitteilung_betreuung_id"))
 	private Betreuung betreuung;
 
-	@Nullable
-	@ManyToOne(optional = true, cascade = CascadeType.ALL)
-	@JoinColumn(foreignKey = @ForeignKey(name = "FK_mitteilung_finanzielle_situation_id"), nullable = true)
-	private FinanzielleSituation finanzielleSituation;
-
 	@NotNull @Nonnull
 	@Column(nullable = false)
 	@Enumerated(EnumType.STRING)
@@ -134,15 +129,6 @@ public class Mitteilung extends AbstractMutableEntity {
 
 	public void setBetreuung(@Nullable Betreuung betreuung) {
 		this.betreuung = betreuung;
-	}
-
-	@Nullable
-	public FinanzielleSituation getFinanzielleSituation() {
-		return finanzielleSituation;
-	}
-
-	public void setFinanzielleSituation(@Nullable FinanzielleSituation finanzielleSituation) {
-		this.finanzielleSituation = finanzielleSituation;
 	}
 
 	@Nonnull

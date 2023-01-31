@@ -20,21 +20,31 @@ import java.util.Objects;
 import java.util.Optional;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import javax.persistence.TypedQuery;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.ParameterExpression;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 
 import ch.dvbern.ebegu.authentication.PrincipalBean;
 import ch.dvbern.ebegu.dto.FinanzielleSituationResultateDTO;
 import ch.dvbern.ebegu.dto.FinanzielleSituationStartDTO;
 import ch.dvbern.ebegu.dto.JaxFinanzielleSituationAufteilungDTO;
+import ch.dvbern.ebegu.entities.AbstractEntity_;
 import ch.dvbern.ebegu.entities.Auszahlungsdaten;
 import ch.dvbern.ebegu.entities.Einstellung;
 import ch.dvbern.ebegu.entities.Familiensituation;
 import ch.dvbern.ebegu.entities.FamiliensituationContainer;
 import ch.dvbern.ebegu.entities.FinanzielleSituation;
 import ch.dvbern.ebegu.entities.FinanzielleSituationContainer;
+import ch.dvbern.ebegu.entities.FinanzielleSituation_;
 import ch.dvbern.ebegu.entities.Gesuch;
+import ch.dvbern.ebegu.entities.NeueVeranlagungsMitteilung;
 import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.FinSitStatus;
@@ -348,4 +358,23 @@ public class FinanzielleSituationServiceBean extends AbstractBaseService impleme
 		throw new EbeguRuntimeException("assertSumIsEqual", "Sum is not the same for " + valueName);
 	}
 
+	@Override
+	@Nullable
+	public FinanzielleSituation findFinanzielleSituationForNeueVeranlagungsMitteilung(@Nonnull
+		NeueVeranlagungsMitteilung persistedMitteilung) {
+		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
+		final CriteriaQuery<FinanzielleSituation> query = cb.createQuery(FinanzielleSituation.class);
+		Root<FinanzielleSituation> root = query.from(FinanzielleSituation.class);
+
+		ParameterExpression<String>
+			steuerDatenResponseIdParam = cb.parameter(String.class, "sozialdienstFallId");
+		Predicate predicateSteuerdatenResponseId = cb.equal(root.get(FinanzielleSituation_.steuerdatenResponse).get(
+			AbstractEntity_.id), steuerDatenResponseIdParam);
+
+		query.where(predicateSteuerdatenResponseId);
+		TypedQuery<FinanzielleSituation> q = persistence.getEntityManager().createQuery(query);
+		q.setParameter(steuerDatenResponseIdParam, persistedMitteilung.getSteuerdatenResponse().getId());
+
+		return q.getResultList().size() > 0 ? q.getResultList().get(0) : null;
+	}
 }

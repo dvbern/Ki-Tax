@@ -72,8 +72,6 @@ public class GesuchstellerServiceBean extends AbstractBaseService implements Ges
 	private WizardStepService wizardStepService;
 	@Inject
 	private CriteriaQueryHelper criteriaQueryHelper;
-	@Inject
-	private MitteilungService mitteilungService;
 
 	@Nonnull
 	@Override
@@ -253,7 +251,6 @@ public class GesuchstellerServiceBean extends AbstractBaseService implements Ges
 				"removeGesuchsteller",
 				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
 				gesuchsteller));
-		mitteilungService.unlinkAllVerfuegungMitteilungenForGesuchstellerContainer(gesuchstellerToRemove);
 		persistence.remove(gesuchstellerToRemove);
 	}
 

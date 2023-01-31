@@ -35,7 +35,6 @@ import ch.dvbern.ebegu.entities.BetreuungspensumAbweichung;
 import ch.dvbern.ebegu.entities.Dossier;
 import ch.dvbern.ebegu.entities.Fall;
 import ch.dvbern.ebegu.entities.Gesuch;
-import ch.dvbern.ebegu.entities.GesuchstellerContainer;
 import ch.dvbern.ebegu.entities.Institution;
 import ch.dvbern.ebegu.entities.Mitteilung;
 import ch.dvbern.ebegu.entities.NeueVeranlagungsMitteilung;
@@ -154,16 +153,6 @@ public interface MitteilungService {
 	 * Loescht alle BetreuungspensumAbweichungen des uebergebenen Gesuchs.
 	 */
 	void removeAllBetreuungspensumAbweichungenForGesuch(@Nonnull Gesuch gesuch);
-
-	/**
-	 * Setzt ForeignKey zur FinanziellenSituation auf für Gesuch
-	 */
-	void unlinkAllVerfuegungMitteilungenForGesuch(@Nonnull Gesuch gesuch);
-
-	/**
-	 * Setzt ForeignKey zur FinanziellenSituation auf null für Gesuchsteller
-	 */
-	void unlinkAllVerfuegungMitteilungenForGesuchstellerContainer(@Nonnull GesuchstellerContainer gesuchstellerContainer);
 
 	/**
 	 * Sucht alle Mitteilungen des uebergebenen Dossiers und fuer jede, die im Status NEU ist, wechselt
