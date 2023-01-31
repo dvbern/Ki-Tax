@@ -35,6 +35,7 @@ import ch.dvbern.ebegu.entities.Einstellung;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.NeueVeranlagungsMitteilung;
+import ch.dvbern.ebegu.entities.VeranlagungEventLog;
 import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.enums.SteuerdatenAnfrageStatus;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
@@ -110,12 +111,23 @@ public class NeueVeranlagungEventHandler extends BaseEventHandler<NeueVeranlagun
 	protected Processing attemptProcessing(@Nonnull String key, @Nonnull NeueVeranlagungEventDTO dto) {
 		Gesuch gesuch = findDetachedGesuchByKey(key);
 
+		VeranlagungEventLog veranlagungEventLog = new VeranlagungEventLog(
+				gesuch,
+				dto.getZpvNummer(),
+				dto.getGeburtsdatum(),
+				dto.getGesuchsperiodeBeginnJahr()
+		);
 		if (gesuch == null) {
-			return Processing.failure("Kein Gesuch für Key gefunden. Key: " + key);
+			veranlagungEventLog.setResult("Kein Gesuch für Key gefunden. Key: " + key);
+			persistence.persist(veranlagungEventLog);
+			return Processing.failure(veranlagungEventLog.getResult());
 		}
 
+
 		if (gesuch.getStatus().isAnyOfInBearbeitungGSOrSZD()) {
-			return Processing.failure("Gesuch ist noch nicht freigegeben: " + key);
+			veranlagungEventLog.setResult("Gesuch ist noch nicht freigegeben: " + key);
+			persistence.persist(veranlagungEventLog);
+			return Processing.failure(veranlagungEventLog.getResult());
 		}
 
 		// erst die Massgegebenes Einkommens fuer das betroffenes Gesuch berechnen
@@ -124,21 +136,27 @@ public class NeueVeranlagungEventHandler extends BaseEventHandler<NeueVeranlagun
 		KibonAnfrageContext kibonAnfrageContext =
 			requestCurrentSteuerdaten(gesuch, dto.getZpvNummer(), dto.getGeburtsdatum());
 
+
 		if (kibonAnfrageContext == null) {
-			return Processing.failure(
-				"Die neue Veranlagung mit Geburtsdatum: "
+			veranlagungEventLog.setResult("Die neue Veranlagung mit Geburtsdatum: "
 					+ dto.getGeburtsdatum()
 					+ ", koennte nicht mit einer gueltige Antragstellende verlinket werden.");
+			persistence.persist(veranlagungEventLog);
+			return Processing.failure(veranlagungEventLog.getResult());
 		}
 
 		if (kibonAnfrageContext.getSteuerdatenAnfrageStatus() == null
 			|| !kibonAnfrageContext.getSteuerdatenAnfrageStatus().isSteuerdatenAbfrageErfolgreich()) {
-			return Processing.failure("Keine neue Veranlagung gefunden");
+			veranlagungEventLog.setResult("Keine neue Veranlagung gefunden");
+			persistence.persist(veranlagungEventLog);
+			return Processing.failure(veranlagungEventLog.getResult());
 		}
 
 		// Nur RECHTSKRAEFTIGE SteuerResponse sind zu betrachten
 		if (kibonAnfrageContext.getSteuerdatenAnfrageStatus() != SteuerdatenAnfrageStatus.RECHTSKRAEFTIG) {
-			return Processing.failure("Die neue Veranlagung ist noch nicht Rechtskraeftig");
+			veranlagungEventLog.setResult("Die neue Veranlagung ist noch nicht Rechtskraeftig");
+			persistence.persist(veranlagungEventLog);
+			return Processing.failure(veranlagungEventLog.getResult());
 		}
 
 		FinanzielleSituationResultateDTO finSitNeuResult =
@@ -152,12 +170,16 @@ public class NeueVeranlagungEventHandler extends BaseEventHandler<NeueVeranlagun
 		boolean isMarkierFuerKontroll = kibonAnfrageContext.getGesuch().getMarkiertFuerKontroll();
 		if (!checkBenachrichtigungRequired(isMarkierFuerKontroll, unterschiedEinkommen, minUnterschiedEinkommen)) {
 			String unterschiedEinkommenString = unterschiedEinkommen.stripTrailingZeros().toPlainString();
-			return Processing.failure("Keine Meldung erstellt. Das massgebende Einkommen hat sich um " + unterschiedEinkommenString +
-				" Franken verändert. Der konfigurierte Schwellenwert zur Benachrichtigung liegt bei " + minUnterschiedEinkommen +
-				" Franken");
+			veranlagungEventLog.setResult("Keine Meldung erstellt. Das massgebende Einkommen hat sich um " + unterschiedEinkommenString +
+					" Franken verändert. Der konfigurierte Schwellenwert zur Benachrichtigung liegt bei " + minUnterschiedEinkommen +
+					" Franken");
+			persistence.persist(veranlagungEventLog);
+			return Processing.failure(veranlagungEventLog.getResult());
 		}
 
 		createAndSendNeueVeranlagungsMitteilung(kibonAnfrageContext);
+		veranlagungEventLog.setResult("Veranlagung erfolgreich verarbeitet");
+		persistence.persist(veranlagungEventLog);
 
 		return Processing.success();
 	}
