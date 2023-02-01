@@ -165,7 +165,8 @@ export class PosteingangViewComponent implements OnInit, OnDestroy, AfterViewIni
         private readonly posteingangService: PosteingangService,
         private readonly dialog: MatDialog,
         private readonly translate: TranslateService,
-        private readonly errorService: ErrorServiceX
+        private readonly errorService: ErrorServiceX,
+        private readonly demoFeatureRS: DemoFeatureRS
     ) {
     }
 
@@ -368,6 +369,9 @@ export class PosteingangViewComponent implements OnInit, OnDestroy, AfterViewIni
         this.filterPredicate = (this.filterId && this.stateStore.has(this.filterId)) ?
             this.stateStore.get(this.filterId) as DVPosteingangFilter :
             {...this.initialFilter};
+        if (await this.demoFeatureRS.isDemoFeatureAllowed(TSDemoFeature.NEUE_VERANLAGUNG_MITTEILUNG)) {
+            this.filterPredicate.messageTypes.push(TSMitteilungTypes.NEUEVERANLAGUNGMITTEILUNG);
+        }
     }
 
     private initStateStores(): void {

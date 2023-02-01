@@ -31,7 +31,9 @@ import {TSDossier} from '../../../models/TSDossier';
 import {TSFall} from '../../../models/TSFall';
 import {TSMitteilung} from '../../../models/TSMitteilung';
 import {TSMtteilungSearchresultDTO} from '../../../models/TSMitteilungSearchresultDTO';
+import {ApplicationPropertyRS} from '../../core/rest-services/applicationPropertyRS.rest';
 import {BenutzerRSX} from '../../core/service/benutzerRSX.rest';
+import {DemoFeatureRS} from '../../core/service/demoFeatureRS.rest';
 import {MitteilungRS} from '../../core/service/mitteilungRS.rest';
 import {MaterialModule} from '../../shared/material.module';
 import {StateStoreService} from '../../shared/services/state-store.service';
@@ -53,6 +55,8 @@ describe('PosteingangViewComponent', () => {
         ['$current']);
     const benutzerSpy = jasmine.createSpyObj<BenutzerRSX>(BenutzerRSX.name, ['getAllBenutzerBgTsOrGemeinde']);
     authRSSpy.principal$ = of(new TSBenutzer());
+    const demoFeatureRSSpy = jasmine.createSpyObj<DemoFeatureRS>(DemoFeatureRS.name, ['isDemoFeatureAllowed']);
+    demoFeatureRSSpy.isDemoFeatureAllowed.and.returnValue(Promise.resolve(false));
 
     beforeEach(() => {
         TestBed.configureTestingModule({
@@ -66,7 +70,8 @@ describe('PosteingangViewComponent', () => {
                 {provide: TransitionService, useValue: transitionServiceSpy},
                 {provide: StateStoreService, useValue: stateStoreServiceSpy},
                 {provide: UIRouterGlobals, useValue: uiRouterGlobals},
-                {provide: BenutzerRSX, useValue: benutzerSpy}
+                {provide: BenutzerRSX, useValue: benutzerSpy},
+                {provide: DemoFeatureRS, useValue: demoFeatureRSSpy}
             ],
             schemas: [CUSTOM_ELEMENTS_SCHEMA]
         }).compileComponents();
