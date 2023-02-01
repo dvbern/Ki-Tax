@@ -382,6 +382,11 @@ public enum AntragStatus {
 			PRUEFUNG_STV, IN_BEARBEITUNG_STV, GEPRUEFT_STV, KEIN_ANGEBOT, IGNORIERT);
 	}
 
+	public static Collection<AntragStatus> getAllVerfuegtNotIgnoriertStates() {
+		return Arrays.asList(VERFUEGT, NUR_SCHULAMT, BESCHWERDE_HAENGIG,
+			PRUEFUNG_STV, IN_BEARBEITUNG_STV, GEPRUEFT_STV, KEIN_ANGEBOT);
+	}
+
 	public static Collection<AntragStatus> getVerfuegtAndSTVStates() {
 		return Arrays.asList(VERFUEGT, PRUEFUNG_STV, IN_BEARBEITUNG_STV, GEPRUEFT_STV);
 	}

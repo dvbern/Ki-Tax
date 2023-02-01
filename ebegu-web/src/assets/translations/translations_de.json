@@ -1249,6 +1249,7 @@
     "GSDASHBOARD_BEANTRAGEN": "BEANTRAGEN",
     "GSDASHBOARD_MITTEILUNGEN": "Mitteilungen",
     "GSDASHBOARD_OEFFNEN": "Öffnen",
+    "OEFFNEN": "Öffnen",
     "GSDASHBOARD_ANTRAEGE": "Aktuelle Anträge",
     "GSDASHBOARD_KEINE_PERIODEN": "Betreuungsgutscheine werden in {{gemeinde}} erst ab dem Schuljahr {{periodenjahre}} ausgestellt. Da diese Periode noch nicht aktiviert wurde, können aktuell noch keine Betreuungsgutscheine beantragt werden.",
     "IDENTISCHE_BERECHNUNG": "Identische Berechnung",
@@ -3093,5 +3094,7 @@
     "GESUCH_IGNORIERT": "Diese Mutation wurde ignoriert. Die aktuell gültige Betreuung und finanzielle Situation sehen Sie hier ein:",
     "LETZTER_GUELTIGE_ANTRAG":  "letzter gültiger Antrag",
     "GESUCH_IGNORIERT_HELP": "Die Gemeinde kann Mutationen unter bestimmten Bedingungen ignorieren. Ignorieren ist Z.B. möglich <br>-    wenn die finanziellen Verhältnisse angepasst wurden und der Betreuungsgutschein geringfügig tiefer/ Tageschultarif geringfügig höher ausfällt. Oder<br>-    wenn sich der Betreuungsgutschein /Tagesschultarif durch die Mutation nicht verändert.<br>-    Mutationen, die zu einem <b>höheren</b> Betreuungsgutschein/<b>tieferen</b> Tagesschultarif führen, kann die Gemeinde nicht ignorieren.",
+    "MUTATION_OEFFNEN": "Mutation öffnen",
+    "FIN_SIT_GELOESCHT": "Finanzielle Situation gelöscht",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

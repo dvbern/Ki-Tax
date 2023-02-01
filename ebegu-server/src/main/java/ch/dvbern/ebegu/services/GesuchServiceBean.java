@@ -86,6 +86,9 @@ import ch.dvbern.ebegu.entities.Fall;
 import ch.dvbern.ebegu.entities.Fall_;
 import ch.dvbern.ebegu.entities.Familiensituation;
 import ch.dvbern.ebegu.entities.FamiliensituationContainer;
+import ch.dvbern.ebegu.entities.FinanzielleSituation;
+import ch.dvbern.ebegu.entities.FinanzielleSituationContainer;
+import ch.dvbern.ebegu.entities.FinanzielleSituationContainer_;
 import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.GemeindeStammdaten;
 import ch.dvbern.ebegu.entities.Gesuch;
@@ -398,9 +401,8 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 			Gesuch mutation = gesuchForMutation.copyForMutation(
 				new Gesuch(),
 				eingangsart,
-				gesuchToCreate.getRegelStartDatum() != null ? gesuchToCreate.getRegelStartDatum() : LocalDate.now());
-
-			setNotIgnoredFinanzielleSituationContainerIfNeeded(gesuchForMutation, mutation);
+				gesuchToCreate.getRegelStartDatum() != null ? gesuchToCreate.getRegelStartDatum() : LocalDate.now(),
+				getNextLaufnummerForGesuch(gesuchForMutation));
 
 			// wenn eine Anmeldung kopiert wird, dann wird die neuste Mutation auf gueltig gesetzt und der Vorgänger auf
 			// ungültig. Falls der Vorgänger aber im Status MUTATION_IGNORIERT war, müssen wir weiter zurück um
@@ -412,18 +414,10 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 		return gesuchToCreate;
 	}
 
-	private void setNotIgnoredFinanzielleSituationContainerIfNeeded(@Nonnull Gesuch orginial, @Nonnull Gesuch neuesGesuch){
-		if(orginial.getStatus().equals(AntragStatus.IGNORIERT)) {
-			Gesuch letzteNichtIgnorierteGesuch = findLetzteNichtIgnorierteGesuch(orginial).orElseThrow(
-				() -> new EbeguEntityNotFoundException("createMutation - findLetzteNichtIgnorierteGesuch", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, "Gesuch with ID ist immer ignoriert: " + orginial.getId()));
-
-			if(neuesGesuch.getGesuchsteller1() != null && letzteNichtIgnorierteGesuch.getGesuchsteller1() != null){
-				letzteNichtIgnorierteGesuch.getGesuchsteller1().copyFinanzen(neuesGesuch.getGesuchsteller1(), AntragCopyType.MUTATION);
-			}
-			if(neuesGesuch.getGesuchsteller2() != null && letzteNichtIgnorierteGesuch.getGesuchsteller2() != null){
-				letzteNichtIgnorierteGesuch.getGesuchsteller2().copyFinanzen(neuesGesuch.getGesuchsteller2(), AntragCopyType.MUTATION);
-			}
-		}
+	private int getNextLaufnummerForGesuch(Gesuch gesuch) {
+		Gesuch neustesGesuch = getNeustesGesuchFuerGesuch(gesuch)
+			.orElse(gesuch);
+		return neustesGesuch.getLaufnummer() + 1;
 	}
 
 	@Nonnull
@@ -435,15 +429,11 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 		if (gesuchForErneuerungOptional.isPresent()) {
 			logInfo.append('\n').append("... und es gibt ein Gesuch zu kopieren");
 			Gesuch gesuchForErneuerung = gesuchForErneuerungOptional.get();
-			Gesuch erneuteGesuch = gesuchForErneuerung.copyForErneuerung(
+			return gesuchForErneuerung.copyForErneuerung(
 				new Gesuch(),
 				gesuchsperiode,
 				eingangsart,
 				gesuchToCreate.getRegelStartDatum() != null ? gesuchToCreate.getRegelStartDatum() : LocalDate.now());
-
-			setNotIgnoredFinanzielleSituationContainerIfNeeded(gesuchForErneuerung, erneuteGesuch);
-
-			return erneuteGesuch;
 		}
 		return gesuchToCreate;
 	}
@@ -469,21 +459,20 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 		if (gesuchToCopyOptional.isPresent()) {
 			logInfo.append('\n').append("Es ist das erste Gesuch in einem neuen Dossier!");
 			Gesuch gesuchToCopy = gesuchToCopyOptional.get();
-			Gesuch erstGesuchInNeuemDossier;
+
 			if (gesuchsperiode.equals(gesuchToCopy.getGesuchsperiode())) {
-				erstGesuchInNeuemDossier = gesuchToCopy.copyForMutationNeuesDossier(gesuchToCreate, eingangsart,
+				return gesuchToCopy.copyForMutationNeuesDossier(gesuchToCreate, eingangsart,
 					gesuchToCreate.getDossier());
-			} else {
-				erstGesuchInNeuemDossier = gesuchToCopy.copyForErneuerungsgesuchNeuesDossier(
-					gesuchToCreate,
-					eingangsart,
-					gesuchToCreate.getDossier(),
-					gesuchsperiode,
-					gesuchToCreate.getRegelStartDatum() != null ?
-						gesuchToCreate.getRegelStartDatum() :
-						LocalDate.now());
 			}
-			setNotIgnoredFinanzielleSituationContainerIfNeeded(gesuchToCopy, erstGesuchInNeuemDossier);
+
+			return gesuchToCopy.copyForErneuerungsgesuchNeuesDossier(
+				gesuchToCreate,
+				eingangsart,
+				gesuchToCreate.getDossier(),
+				gesuchsperiode,
+				gesuchToCreate.getRegelStartDatum() != null ?
+					gesuchToCreate.getRegelStartDatum() :
+					LocalDate.now());
 		}
 		return gesuchToCreate;
 	}
@@ -1017,6 +1006,25 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 		final CriteriaQuery<Gesuch> query = cb.createQuery(Gesuch.class);
 
 		Root<Gesuch> root = query.from(Gesuch.class);
+		Predicate dossierPredicate = cb.equal(root.get(Gesuch_.dossier), dossier);
+		Predicate gesuchsperiodePredicate = cb.equal(root.get(Gesuch_.gesuchsperiode), gesuchsperiode);
+
+		query.where(dossierPredicate, gesuchsperiodePredicate);
+		return persistence.getCriteriaResults(query);
+	}
+
+	@Override
+	@Nonnull
+	public List<String> getAllGesucheIdsForDossierAndPeriod(
+		@Nonnull Dossier dossier,
+		@Nonnull Gesuchsperiode gesuchsperiode) {
+		authorizer.checkReadAuthorizationDossier(dossier);
+
+		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
+		final CriteriaQuery<String> query = cb.createQuery(String.class);
+
+		Root<Gesuch> root = query.from(Gesuch.class);
+		query.select(root.get(AbstractEntity_.id));
 		Predicate dossierPredicate = cb.equal(root.get(Gesuch_.dossier), dossier);
 		Predicate gesuchsperiodePredicate = cb.equal(root.get(Gesuch_.gesuchsperiode), gesuchsperiode);
 
@@ -2592,7 +2600,6 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 			new Gesuch(),
 			Eingangsart.PAPIER,
 			gesuch.getRegelStartDatum() != null ? gesuch.getRegelStartDatum() : LocalDate.now());
-		setNotIgnoredFinanzielleSituationContainerIfNeeded(gesuch, mutation);
 		mutation.setTyp(AntragTyp.MUTATION);
 		mutation.setEingangsdatum(LocalDate.now());
 		mutation.setStatus(AntragStatus.IN_BEARBEITUNG_JA);
@@ -2705,14 +2712,6 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 		// anmeldungen des Vorgesuchs zurücksetzen
 		setVorgaengerAnmeldungToGueltig(gesuch);
 
-		if (gesuch.getVorgaengerId() != null) {
-			final Optional<Gesuch> vorgaengerOpt = findGesuch(gesuch.getVorgaengerId());
-			vorgaengerOpt.ifPresent(this::setGesuchAndVorgaengerUngueltig);
-		}
-
-		// neues Gesuch erst nachdem das andere auf ungültig gesetzt wurde setzen wegen unique key
-		gesuch.setGueltig(true);
-
 		gesuch.setStatus(AntragStatus.IGNORIERT);
 		gesuch.setTimestampVerfuegt(LocalDateTime.now());
 		wizardStepService.setWizardStepOkay(gesuch.getId(), WizardStepName.VERFUEGEN);
@@ -2773,6 +2772,36 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 	private boolean checkIsSZFallAndEntgezogen(Gesuch gesuch) {
 		return gesuch.getFall().getSozialdienstFall() != null
 			&& gesuch.getFall().getSozialdienstFall().getStatus() == SozialdienstFallStatus.ENTZOGEN;
+	}
+
+	@Override
+	public Optional<Gesuch> findGesuchForFinSit(@Nonnull String finSitId) {
+		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
+		final CriteriaQuery<Gesuch> query = cb.createQuery(Gesuch.class);
+		Root<Gesuch> root = query.from(Gesuch.class);
+
+		Join<Gesuch, GesuchstellerContainer> gesuchsteller1 = root.join(Gesuch_.gesuchsteller1, JoinType.LEFT);
+		Join<GesuchstellerContainer, FinanzielleSituationContainer> finSit1Cont =
+			gesuchsteller1.join(GesuchstellerContainer_.finanzielleSituationContainer, JoinType.LEFT);
+		Join<FinanzielleSituationContainer, FinanzielleSituation> finSit1Ja =
+			finSit1Cont.join(FinanzielleSituationContainer_.finanzielleSituationJA, JoinType.LEFT);
+
+		Predicate predicateGS1 = cb.equal(finSit1Ja.get(AbstractEntity_.id),
+			finSitId
+		);
+
+		Join<Gesuch, GesuchstellerContainer> gesuchsteller2 = root.join(Gesuch_.gesuchsteller2, JoinType.LEFT);
+		Join<GesuchstellerContainer, FinanzielleSituationContainer> finSit2Cont =
+			gesuchsteller2.join(GesuchstellerContainer_.finanzielleSituationContainer, JoinType.LEFT);
+		Join<FinanzielleSituationContainer, FinanzielleSituation> finSit2Ja =
+			finSit2Cont.join(FinanzielleSituationContainer_.finanzielleSituationJA, JoinType.LEFT);
+
+		Predicate predicateGS2 = cb.equal(finSit2Ja.get(AbstractEntity_.id),
+			finSitId
+		);
+
+		query.where(cb.or(predicateGS1, predicateGS2));
+		return Optional.ofNullable(persistence.getCriteriaSingleResult(query));
 	}
 
 }
