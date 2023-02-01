@@ -1290,6 +1290,9 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 
 		if (predicateObjectDto != null) {
 
+
+			predicates.add(getMessageTypePredicate(root, predicateObjectDto));
+
 			// sender
 			if (predicateObjectDto.getSender() != null) {
 				predicates.add(
@@ -1450,6 +1453,19 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 			break;
 		}
 		return result;
+	}
+
+	private static Predicate getMessageTypePredicate(Root<Mitteilung> root, MitteilungPredicateObjectDTO predicateObjectDto) {
+		List<Class> classes = Arrays.stream(predicateObjectDto.getMessageTypes()).map(messageType -> {
+			try {
+			return Class.forName("ch.dvbern.ebegu.entities." + messageType);
+			} catch (ClassNotFoundException e) {
+				throw new RuntimeException(e);
+			}
+		}).collect(Collectors.toList());
+
+		final Predicate messageTypePredicate = root.type().in(classes);
+		return messageTypePredicate;
 	}
 
 	private void filterGemeinde(Benutzer user, Join<Dossier, Gemeinde> joinGemeinde, List<Predicate> predicates) {

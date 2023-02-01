@@ -36,6 +36,7 @@ import {GemeindeRS} from '../../../gesuch/service/gemeindeRS.rest';
 import {TSPagination} from '../../../models/dto/TSPagination';
 import {DVErrorMessageCallback} from '../../../models/DVErrorMessageCallback';
 import {getTSMitteilungsStatusForFilter, TSMitteilungStatus} from '../../../models/enums/TSMitteilungStatus';
+import {TSMitteilungTypes} from '../../../models/enums/TSMitteilungTypes';
 import {TSRole} from '../../../models/enums/TSRole';
 import {TSVerantwortung} from '../../../models/enums/TSVerantwortung';
 import {TSBenutzerNoDetails} from '../../../models/TSBenutzerNoDetails';
@@ -45,11 +46,14 @@ import {TSMtteilungSearchresultDTO} from '../../../models/TSMitteilungSearchresu
 import {EbeguUtil} from '../../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 import {DvNgConfirmDialogComponent} from '../../core/component/dv-ng-confirm-dialog/dv-ng-confirm-dialog.component';
-import {DvNgMitteilungResultDialogComponent} from '../../core/component/dv-ng-mitteilung-result-dialog/dv-ng-mitteilung-result-dialog.component';
+import {
+    DvNgMitteilungResultDialogComponent
+} from '../../core/component/dv-ng-mitteilung-result-dialog/dv-ng-mitteilung-result-dialog.component';
 import {TSDemoFeature} from '../../core/directive/dv-hide-feature/TSDemoFeature';
 import {ErrorServiceX} from '../../core/errors/service/ErrorServiceX';
 import {Log, LogFactory} from '../../core/logging/LogFactory';
 import {BenutzerRSX} from '../../core/service/benutzerRSX.rest';
+import {DemoFeatureRS} from '../../core/service/demoFeatureRS.rest';
 import {MitteilungRS} from '../../core/service/mitteilungRS.rest';
 import {DVPosteingangFilter} from '../../shared/interfaces/DVPosteingangFilter';
 import {StateStoreService} from '../../shared/services/state-store.service';
@@ -126,10 +130,17 @@ export class PosteingangViewComponent implements OnInit, OnDestroy, AfterViewIni
     public gemeindenList: Array<TSGemeinde> = [];
     public paginationItems: number[];
     public initialEmpfaenger: TSBenutzerNoDetails;
-    public filterPredicate: DVPosteingangFilter = {};
+    public filterPredicate: DVPosteingangFilter = {
+        messageTypes: [TSMitteilungTypes.BETREUUNGSMITTEILUNG, TSMitteilungTypes.MITTEILUNG]
+    };
 
     // StateStore Properties
-    public initialFilter: DVPosteingangFilter = {};
+    public initialFilter: DVPosteingangFilter = {
+        messageTypes: [
+            TSMitteilungTypes.BETREUUNGSMITTEILUNG,
+            TSMitteilungTypes.MITTEILUNG
+        ]
+    };
     public readonly stateStoreId: string = 'posteingangId';
     private sortId: string;
     private filterId: string;
@@ -353,9 +364,9 @@ export class PosteingangViewComponent implements OnInit, OnDestroy, AfterViewIni
         }
     }
 
-    private initFilter(): void {
+    private async initFilter(): Promise<void> {
         this.filterPredicate = (this.filterId && this.stateStore.has(this.filterId)) ?
-            this.stateStore.get(this.filterId) :
+            this.stateStore.get(this.filterId) as DVPosteingangFilter :
             {...this.initialFilter};
     }
 
