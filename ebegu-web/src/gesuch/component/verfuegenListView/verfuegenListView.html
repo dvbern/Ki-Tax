@@ -117,8 +117,8 @@
                             <div ng-if="vm.hasMutationVeranderung() && !vm.hasAnyNewOrStornierteBetreuung" class="well margin-top-20">
                                 <span translate>MUTATION_VERAENDERUNG_1</span>
                                 <ul>
-                                    <li><span>{{vm.getVeraenderungBgString()}}</span></li>
-                                    <li><span>{{vm.getVeraenderungTsString()}}</span></li>
+                                    <li ng-if="vm.veraenderungBG !== 0"><span>{{vm.getVeraenderungBgString()}}</span></li>
+                                    <li ng-if="vm.veraenderungTS !== 0"><span>{{vm.getVeraenderungTsString()}}</span></li>
                                 </ul>
                             </div>
                             <div ng-if="!vm.hasMutationVeranderung() && !vm.hasAnyNewOrStornierteBetreuung" class="well margin-top-20">

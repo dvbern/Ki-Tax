@@ -201,7 +201,7 @@ export abstract class AbstractFinSitBernView extends AbstractGesuchViewControlle
             return false;
         }
 
-        return this.authServiceRS.isRole(TSRole.GESUCHSTELLER)
+        return this.authServiceRS.isOneOfRoles([TSRole.GESUCHSTELLER, TSRole.SUPER_ADMIN])
             || EbeguUtil.isNotNullOrUndefined(this.model.getFiSiConToWorkWith().finanzielleSituationGS)
             || this.showZugriffAufSteuerdatenForGemeinde();
     }
