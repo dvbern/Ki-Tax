@@ -1249,6 +1249,7 @@
     "GSDASHBOARD_BEANTRAGEN": "BEANTRAGEN",
     "GSDASHBOARD_MITTEILUNGEN": "Mitteilungen",
     "GSDASHBOARD_OEFFNEN": "Öffnen",
+    "OEFFNEN": "Öffnen",
     "GSDASHBOARD_ANTRAEGE": "Aktuelle Anträge",
     "GSDASHBOARD_KEINE_PERIODEN": "Betreuungsgutscheine werden in {{gemeinde}} erst ab dem Schuljahr {{periodenjahre}} ausgestellt. Da diese Periode noch nicht aktiviert wurde, können aktuell noch keine Betreuungsgutscheine beantragt werden.",
     "IDENTISCHE_BERECHNUNG": "Identische Berechnung",

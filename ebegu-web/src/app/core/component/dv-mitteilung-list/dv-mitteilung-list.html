@@ -129,9 +129,13 @@
                                         <span
                                               data-translate="MUTATIONSMELDUNG_APPLIED">
                                         </span>
-                                        <a ng-if="mitteilung.finanzielleSituation" class="pointer-cursor"
-                                           ng-click="vm.goToFinanzielleSituation(mitteilung)"
-                                           ng-show="mitteilung.finanzielleSituation">(&nbsp;{{'GSDASHBOARD_OEFFNEN' | translate}}&nbsp;)</a>
+                                        <span>
+                                            (
+                                            <a ng-if="mitteilung.finanzielleSituation" class="pointer-cursor"
+                                               ng-click="vm.goToFinanzielleSituation(mitteilung)"
+                                               ng-show="mitteilung.finanzielleSituation">{{'OEFFNEN' | translate}}</a>
+                                            )
+                                        </span>
                                         <span ng-if="!mitteilung.finanzielleSituation">
                                             (&nbsp;{{'FIN_SIT_GELOESCHT' | translate}}&nbsp;)
                                         </span>

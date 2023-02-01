@@ -1178,6 +1178,7 @@
     "GSDASHBOARD_BEANTRAGEN": "DEMANDER",
     "GSDASHBOARD_MITTEILUNGEN": "Messages",
     "GSDASHBOARD_OEFFNEN": "Ouvrir",
+    "OEFFNEN": "Ouvrir",
     "GSDASHBOARD_ANTRAEGE": "Demandes actuelles",
     "GSDASHBOARD_KEINE_PERIODEN": "Les bons de garde ne sont émis dans la commune de {{gemeinde}} qu'à partir de l'année scolaire {{periodenjahre}}. Etant donné que cette période n'est pas encore active, aucun bon de garde ne peut actuellement être demandé.",
     "IDENTISCHE_BERECHNUNG": "Calcul identique",
