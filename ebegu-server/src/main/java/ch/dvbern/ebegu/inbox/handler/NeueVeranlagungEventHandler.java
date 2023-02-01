@@ -36,6 +36,7 @@ import ch.dvbern.ebegu.entities.Einstellung;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.NeueVeranlagungsMitteilung;
+import ch.dvbern.ebegu.entities.VeranlagungEventLog;
 import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.enums.SteuerdatenAnfrageStatus;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
@@ -97,14 +98,23 @@ public class NeueVeranlagungEventHandler extends BaseEventHandler<NeueVeranlagun
 		@Nonnull NeueVeranlagungEventDTO dto,
 		@Nonnull String clientName) {
 		Processing processing = attemptProcessing(key, dto);
+		VeranlagungEventLog veranlagungEventLog = new VeranlagungEventLog(
+			key,
+			dto.getZpvNummer(),
+			dto.getGeburtsdatum(),
+			dto.getGesuchsperiodeBeginnJahr()
+		);
 		if (!processing.isProcessingSuccess()) {
 			String message = processing.getMessage();
 			LOG.warn("NeueVeranlagungEventHandler: Neue Veranlagung Event für ZPV-Nummer {} und Gesuch: {} nicht verarbeitet: {}",
 				dto.getZpvNummer(), key, message);
+			veranlagungEventLog.setResult(processing.getMessage());
 		} else {
 			LOG.info("NeueVeranlagungEventHandler: Neue Veranlagung Event für ZPV-Nummer {} und Gesuch: {} verarbeitet",
 				dto.getZpvNummer(), key);
+			veranlagungEventLog.setResult("Veranlagung erfolgreich verarbeitet");
 		}
+		persistence.persist(veranlagungEventLog);
 	}
 
 	@Nonnull

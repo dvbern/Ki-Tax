@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2021 DV Bern AG, Switzerland
+ * Copyright (C) 2023 DV Bern AG, Switzerland
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -15,17 +15,20 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {TSMitteilungTypes} from '../../../models/enums/TSMitteilungTypes';
+CREATE TABLE veranlagung_event_log (
+    id BINARY(16) NOT NULL,
+	timestamp_erstellt datetime not null,
+	timestamp_mutiert datetime not null,
+	user_erstellt varchar(255) not null,
+	user_mutiert varchar(255) not null,
+	version bigint not null,
+	zpv_nummer bigint NOT NULL,
+	geburtsdatum date NOT NULL,
+	antrag_id varchar(255) not null,
+	gesuchsperiode_beginn_jahr INTEGER NOT NULL,
+	result VARCHAR(255),
+	primary key (id)
+);
 
-export interface DVPosteingangFilter {
-    sender?: string;
-    gemeinde?: string;
-    fallNummer?: string;
-    mitteilungStatus?: string;
-    familienName?: string;
-    subject?: string;
-    sentDatum?: string;
-    empfaenger?: string;
-    empfaengerVerantwortung?: string;
-    messageTypes: TSMitteilungTypes[];
-}
+
+
