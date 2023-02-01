@@ -1460,7 +1460,8 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 			try {
 			return Class.forName("ch.dvbern.ebegu.entities." + messageType);
 			} catch (ClassNotFoundException e) {
-				throw new RuntimeException(e);
+				LOG.error(e.getMessage() + ". Using default class Mitteilung");
+				return Mitteilung.class;
 			}
 		}).collect(Collectors.toList());
 
