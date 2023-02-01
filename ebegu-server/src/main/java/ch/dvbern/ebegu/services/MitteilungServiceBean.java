@@ -87,7 +87,6 @@ import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.GemeindeStammdaten;
 import ch.dvbern.ebegu.entities.Gemeinde_;
 import ch.dvbern.ebegu.entities.Gesuch;
-import ch.dvbern.ebegu.entities.GesuchstellerContainer;
 import ch.dvbern.ebegu.entities.Institution;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten_;
@@ -892,15 +891,22 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 					ErrorCodeEnum.ERROR_MUTATIONSMELDUNG_STATUS_VERFUEGEN,
 					neustesGesuch.getId());
 			}
-			if (!AntragStatus.getVerfuegtAndSTVStates().contains(neustesGesuch.getStatus())
+			if (!AntragStatus.getVerfuegtIgnoriertAndSTVStates().contains(neustesGesuch.getStatus())
 				&& neustesGesuch.isMutation()) {
+				// veranlagungsmitteilungen dürfen nicht zu bestehender Mutation hinzugefügt werden
+				if (mitteilung instanceof NeueVeranlagungsMitteilung) {
+					throw new EbeguException(
+						"doApplymitteilung",
+						ErrorCodeEnum.ERROR_EXISTING_MUTATION_VERANLAGUNGSMITTEILUNG,
+						neustesGesuch.getId());
+				}
 				// aenderungen der bestehenden, offenen Mutation hinzufuegen (wenn wir hier sind muss es sich
 				// um ein PAPIER) Antrag handeln
 				authorizer.checkWriteAuthorization(neustesGesuch);
 				applyMitteilungToMutation(neustesGesuch, mitteilung);
 				return neustesGesuch;
 			}
-			if (AntragStatus.getVerfuegtAndSTVStates().contains(neustesGesuch.getStatus())) {
+			if (AntragStatus.getVerfuegtIgnoriertAndSTVStates().contains(neustesGesuch.getStatus())) {
 				// create Mutation if there is currently no Mutation
 				Gesuch mutation = Gesuch.createMutation(gesuch.getDossier(), neustesGesuch.getGesuchsperiode(),
 					LocalDate.now());
