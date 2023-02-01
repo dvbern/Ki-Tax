@@ -132,10 +132,10 @@ public class MitteilungPredicateObjectDTO implements Serializable {
 	}
 
 	public String[] getMessageTypes() {
-		return messageTypes;
+		return messageTypes.clone();
 	}
 
 	public void setMessageTypes(String[] messageTypes) {
-		this.messageTypes = messageTypes;
+		this.messageTypes = messageTypes.clone();
 	}
 }

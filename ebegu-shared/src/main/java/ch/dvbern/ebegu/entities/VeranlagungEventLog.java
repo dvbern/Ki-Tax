@@ -85,11 +85,11 @@ public class VeranlagungEventLog extends AbstractEntity {
 			return false;
 		}
 		VeranlagungEventLog veranlagungEventLog = (VeranlagungEventLog) other;
-		return Objects.equals(this.gesuch, ((VeranlagungEventLog) other).gesuch) &&
-				Objects.equals(geburtsdatum, ((VeranlagungEventLog) other).geburtsdatum) &&
-				Objects.equals(zpvNummer, ((VeranlagungEventLog) other).zpvNummer) &&
-				Objects.equals(gesuchsperiodeBeginnJahr, ((VeranlagungEventLog) other).gesuchsperiodeBeginnJahr) &&
-				Objects.equals(result, ((VeranlagungEventLog) other).result);
+		return Objects.equals(this.gesuch, veranlagungEventLog.gesuch) &&
+				Objects.equals(geburtsdatum, veranlagungEventLog.geburtsdatum) &&
+				Objects.equals(zpvNummer, veranlagungEventLog.zpvNummer) &&
+				Objects.equals(gesuchsperiodeBeginnJahr, veranlagungEventLog.gesuchsperiodeBeginnJahr) &&
+				Objects.equals(result, veranlagungEventLog.result);
 
 	}
 }
