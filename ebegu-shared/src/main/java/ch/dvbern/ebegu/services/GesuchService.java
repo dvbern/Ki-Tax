@@ -205,6 +205,12 @@ public interface GesuchService {
 	List<Gesuch> getAllGesucheForDossierAndPeriod(@Nonnull Dossier dossier, @Nonnull Gesuchsperiode gesuchsperiode);
 
 	/**
+	 * Alle Gesuche Ids fuer den gegebenen Dossier in der gegebenen Periode
+	 */
+	@Nonnull
+	List<String> getAllGesucheIdsForDossierAndPeriod(@Nonnull Dossier dossier, @Nonnull Gesuchsperiode gesuchsperiode);
+
+	/**
 	 * Das gegebene Gesuch wird mit heutigem Datum freigegeben und den Step FREIGABE auf OK gesetzt
 	 */
 	Gesuch antragFreigabequittungErstellen(@Nonnull Gesuch gesuch, AntragStatus statusToChangeTo);
@@ -502,4 +508,9 @@ public interface GesuchService {
 		der nicht ignoriert wurde. Wirft einen Fehler, falls kein Vorgesuch gefunden wird */
 	@Nonnull
 	Gesuch findVorgaengerGesuchNotIgnoriert(@Nonnull String gesuchId);
+	/**
+	 * Findet für eine FinanzielleSituation das Gesuch, egal ob es sich dabei um die Finanzielle Situation
+	 * von Gesuchsteler 1 oder 2 handelt. Betrachtet wird finanzielleSituationJA
+	 */
+	Optional<Gesuch> findGesuchForFinSit(@Nonnull String finSitId);
 }

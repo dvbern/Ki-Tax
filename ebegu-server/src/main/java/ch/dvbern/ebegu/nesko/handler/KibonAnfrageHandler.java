@@ -157,7 +157,7 @@ public class KibonAnfrageHandler {
 
 	@Nullable
 	private String findZpvNummerFromGesuchBesitzer(KibonAnfrageContext context) {
-		if (principalBean.isCallerInAnyOfRole(UserRole.getTsBgAndGemeindeRoles())
+		if (principalBean.isCallerInAnyOfRole(UserRole.getSuperadminAllGemeindeRoles())
 			|| principalBean.isAnonymousSuperadmin()) {
 			//Online Fall hat immer ein Besitzer
 			Objects.requireNonNull(context.getGesuch().getFall().getBesitzer());

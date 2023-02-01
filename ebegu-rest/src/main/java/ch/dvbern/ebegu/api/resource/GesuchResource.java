@@ -233,6 +233,26 @@ public class GesuchResource {
 		return jaxGesuch;
 	}
 
+	@ApiOperation(value = "Gibt den Antrag für die übergebene FinSit ID zurück", response = JaxGesuch.class)
+	@Nullable
+	@GET
+	@Path("/gesuchForFinSit/{finSitId}")
+	@Consumes(MediaType.WILDCARD)
+	@Produces(MediaType.APPLICATION_JSON)
+	@PermitAll // Grundsaetzliche fuer alle Rollen: Datenabhaengig. -> Authorizer
+	public JaxGesuch findGesuchForFinSit(
+		@Nonnull @NotNull @PathParam("finSitId") JaxId finSitJAXPId) {
+		Objects.requireNonNull(finSitJAXPId.getId());
+		String finSitId = converter.toEntityId(finSitJAXPId);
+		Optional<Gesuch> gesuchOptional = gesuchService.findGesuchForFinSit(finSitId);
+
+		if (gesuchOptional.isEmpty()) {
+			throw new EbeguEntityNotFoundException("findGesuchForFinSit", finSitId);
+		}
+		Gesuch gesuchToReturn = gesuchOptional.get();
+		return converter.gesuchToJAX(gesuchToReturn);
+	}
+
 	@ApiOperation(value = "Sucht eine Person im EWK nach Name, Vorname, Geburtsdatum und Geschlecht.",
 		response = EWKResultat.class)
 	@Nullable

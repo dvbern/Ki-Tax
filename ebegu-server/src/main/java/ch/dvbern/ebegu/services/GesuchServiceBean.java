@@ -86,6 +86,9 @@ import ch.dvbern.ebegu.entities.Fall;
 import ch.dvbern.ebegu.entities.Fall_;
 import ch.dvbern.ebegu.entities.Familiensituation;
 import ch.dvbern.ebegu.entities.FamiliensituationContainer;
+import ch.dvbern.ebegu.entities.FinanzielleSituation;
+import ch.dvbern.ebegu.entities.FinanzielleSituationContainer;
+import ch.dvbern.ebegu.entities.FinanzielleSituationContainer_;
 import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.GemeindeStammdaten;
 import ch.dvbern.ebegu.entities.Gesuch;
@@ -1003,6 +1006,25 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 		final CriteriaQuery<Gesuch> query = cb.createQuery(Gesuch.class);
 
 		Root<Gesuch> root = query.from(Gesuch.class);
+		Predicate dossierPredicate = cb.equal(root.get(Gesuch_.dossier), dossier);
+		Predicate gesuchsperiodePredicate = cb.equal(root.get(Gesuch_.gesuchsperiode), gesuchsperiode);
+
+		query.where(dossierPredicate, gesuchsperiodePredicate);
+		return persistence.getCriteriaResults(query);
+	}
+
+	@Override
+	@Nonnull
+	public List<String> getAllGesucheIdsForDossierAndPeriod(
+		@Nonnull Dossier dossier,
+		@Nonnull Gesuchsperiode gesuchsperiode) {
+		authorizer.checkReadAuthorizationDossier(dossier);
+
+		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
+		final CriteriaQuery<String> query = cb.createQuery(String.class);
+
+		Root<Gesuch> root = query.from(Gesuch.class);
+		query.select(root.get(AbstractEntity_.id));
 		Predicate dossierPredicate = cb.equal(root.get(Gesuch_.dossier), dossier);
 		Predicate gesuchsperiodePredicate = cb.equal(root.get(Gesuch_.gesuchsperiode), gesuchsperiode);
 
@@ -2752,6 +2774,36 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 			);
 		}
 		return findVorgaengerGesuchNotIgnoriert(gesuch.getVorgaengerId());
+	}
+
+	@Override
+	public Optional<Gesuch> findGesuchForFinSit(@Nonnull String finSitId) {
+		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
+		final CriteriaQuery<Gesuch> query = cb.createQuery(Gesuch.class);
+		Root<Gesuch> root = query.from(Gesuch.class);
+
+		Join<Gesuch, GesuchstellerContainer> gesuchsteller1 = root.join(Gesuch_.gesuchsteller1, JoinType.LEFT);
+		Join<GesuchstellerContainer, FinanzielleSituationContainer> finSit1Cont =
+			gesuchsteller1.join(GesuchstellerContainer_.finanzielleSituationContainer, JoinType.LEFT);
+		Join<FinanzielleSituationContainer, FinanzielleSituation> finSit1Ja =
+			finSit1Cont.join(FinanzielleSituationContainer_.finanzielleSituationJA, JoinType.LEFT);
+
+		Predicate predicateGS1 = cb.equal(finSit1Ja.get(AbstractEntity_.id),
+			finSitId
+		);
+
+		Join<Gesuch, GesuchstellerContainer> gesuchsteller2 = root.join(Gesuch_.gesuchsteller2, JoinType.LEFT);
+		Join<GesuchstellerContainer, FinanzielleSituationContainer> finSit2Cont =
+			gesuchsteller2.join(GesuchstellerContainer_.finanzielleSituationContainer, JoinType.LEFT);
+		Join<FinanzielleSituationContainer, FinanzielleSituation> finSit2Ja =
+			finSit2Cont.join(FinanzielleSituationContainer_.finanzielleSituationJA, JoinType.LEFT);
+
+		Predicate predicateGS2 = cb.equal(finSit2Ja.get(AbstractEntity_.id),
+			finSitId
+		);
+
+		query.where(cb.or(predicateGS1, predicateGS2));
+		return Optional.ofNullable(persistence.getCriteriaSingleResult(query));
 	}
 
 }

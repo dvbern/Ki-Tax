@@ -18,6 +18,7 @@ package ch.dvbern.ebegu.services;
 import java.util.Optional;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import ch.dvbern.ebegu.dto.FinanzielleSituationResultateDTO;
 import ch.dvbern.ebegu.dto.FinanzielleSituationStartDTO;
@@ -25,6 +26,7 @@ import ch.dvbern.ebegu.dto.JaxFinanzielleSituationAufteilungDTO;
 import ch.dvbern.ebegu.entities.FinanzielleSituation;
 import ch.dvbern.ebegu.entities.FinanzielleSituationContainer;
 import ch.dvbern.ebegu.entities.Gesuch;
+import ch.dvbern.ebegu.entities.NeueVeranlagungsMitteilung;
 
 /**
  * Service zum Verwalten von Finanziellen Situationen
@@ -79,4 +81,8 @@ public interface FinanzielleSituationService {
 	FinanzielleSituationContainer saveFinanzielleSituationTemp(FinanzielleSituationContainer finanzielleSituation);
 
 	void setValuesFromAufteilungDTO(@Nonnull FinanzielleSituation finSitGs1, @Nonnull FinanzielleSituation finSitGs2, @Nonnull JaxFinanzielleSituationAufteilungDTO dto);
+
+	@Nullable
+    FinanzielleSituation findFinanzielleSituationForNeueVeranlagungsMitteilung(@Nonnull
+		NeueVeranlagungsMitteilung persistedMitteilung);
 }
