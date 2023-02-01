@@ -498,9 +498,16 @@ public interface GesuchService {
 	 */
 	Gesuch findErstgesuchForGesuch(@Nonnull Gesuch gesuch);
 
+	/**
+	 * Findet für das übergebene Gesuch das neuste, verfügte Gesuch
+	 */
 	@Nonnull
-	Optional<Gesuch> findLetzteNichtIgnorierteGesuch(@Nonnull Gesuch gesuch);
+	Optional<Gesuch> getNeustesVerfuegtesGesuchFuerGesuch(@Nonnull Gesuch gesuch);
 
+	/** Gibt der jüngste Vorgänger des übergebenen Gesuches zurück
+		der nicht ignoriert wurde. Wirft einen Fehler, falls kein Vorgesuch gefunden wird */
+	@Nonnull
+	Gesuch findVorgaengerGesuchNotIgnoriert(@Nonnull String gesuchId);
 	/**
 	 * Findet für eine FinanzielleSituation das Gesuch, egal ob es sich dabei um die Finanzielle Situation
 	 * von Gesuchsteler 1 oder 2 handelt. Betrachtet wird finanzielleSituationJA

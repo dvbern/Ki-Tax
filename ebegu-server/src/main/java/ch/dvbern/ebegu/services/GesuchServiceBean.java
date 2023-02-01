@@ -686,7 +686,7 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 			.filter(betreuung -> betreuung.getVorgaengerId() != null)
 			.filter(betreuung -> betreuung.getBetreuungsangebotTyp().isSchulamt())
 			.forEach(betreuung -> {
-				AbstractAnmeldung vorgaenger = findVorgaengerAnmeldungNotIgnoriert(betreuung);
+				AbstractAnmeldung vorgaenger =  betreuungService.findVorgaengerAnmeldungNotIgnoriert(betreuung);
 				vorgaenger.setAnmeldungMutationZustand(AnmeldungMutationZustand.AKTUELLE_ANMELDUNG);
 				vorgaenger.setGueltig(true); // Die alte Anmeldung ist wieder die gueltige
 				if (vorgaenger.getBetreuungsstatus() == Betreuungsstatus.SCHULAMT_ANMELDUNG_AUSGELOEST
@@ -699,41 +699,6 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 			});
 	}
 
-	private void setVorgaengerAnmeldungToGueltig(@Nonnull Gesuch currentGesuch) {
-		currentGesuch.extractAllAnmeldungen().stream()
-			.filter(betreuung -> betreuung.getVorgaengerId() != null)
-			.filter(betreuung -> betreuung.getBetreuungsangebotTyp().isSchulamt())
-			.forEach(betreuung -> {
-				AbstractAnmeldung vorgaenger = findVorgaengerAnmeldungNotIgnoriert(betreuung);
-				vorgaenger.setAnmeldungMutationZustand(AnmeldungMutationZustand.AKTUELLE_ANMELDUNG);
-				vorgaenger.setGueltig(true); // Die alte Anmeldung ist wieder die gueltige
-				persistence.merge(vorgaenger);
-			});
-	}
-
-	private AbstractAnmeldung findVorgaengerAnmeldungNotIgnoriert(AbstractAnmeldung betreuung) {
-		if (betreuung.getVorgaengerId() == null) {
-			//Kann eigentlich nicht eintretten, da das Erst-Gesuch nicht ingoriert werden kann und somit immer ein Vorgänger
-			//gfunden werden kann, welcher nicht ignoiert ist
-			throw new EbeguRuntimeException(
-				"findVorgaengerAnmeldungNotIgnoriert",
-				ErrorCodeEnum.ERROR_NICHT_IGNORIERTER_VORGAENGER_NOT_FOUND,
-				betreuung.getId());
-		}
-
-		AbstractAnmeldung vorgaenger = betreuungService.findAnmeldung(betreuung.getVorgaengerId())
-						.orElseThrow(() -> new EbeguEntityNotFoundException(
-							"findVorgaengerAnmeldungNotIgnoriert",
-							ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
-							betreuung.getVorgaengerId()));
-
-		if (vorgaenger.getBetreuungsstatus().isIgnoriert()) {
-			return findVorgaengerAnmeldungNotIgnoriert(vorgaenger);
-		}
-
-		return vorgaenger;
-	}
-
 	private void zuMutierendeAnmeldungenAbschliessen(@Nonnull Gesuch currentGesuch) {
 		currentGesuch.extractAllAnmeldungen().stream()
 			.filter(anmeldung -> anmeldung.getBetreuungsangebotTyp().isTagesschule())
@@ -741,7 +706,7 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 				AbstractAnmeldung anmeldungToAbschliessen = anmeldung;
 
 				if (anmeldung.getBetreuungsstatus() == Betreuungsstatus.SCHULAMT_MUTATION_IGNORIERT) {
-					anmeldungToAbschliessen = findVorgaengerAnmeldungNotIgnoriert(anmeldung);
+					anmeldungToAbschliessen = betreuungService.findVorgaengerAnmeldungNotIgnoriert(anmeldung);
 				}
 
 				if (anmeldungToAbschliessen.getBetreuungsstatus() == Betreuungsstatus.SCHULAMT_ANMELDUNG_AUSGELOEST) {
@@ -2695,22 +2660,22 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 	public Gesuch mutationIgnorieren(Gesuch gesuch) {
 
 		validateGesuchComplete(gesuch);
-
-		gesuch.getKindContainers().forEach(kindContainer -> {
-			List<Betreuung> betreuungList = new ArrayList<>(kindContainer.getBetreuungen());
-			for (int i = 0; i < betreuungList.size(); i++) {
-				Betreuung betreuung = betreuungList.get(i);
+		KindContainer[] kindArray =
+			gesuch.getKindContainers().toArray(new KindContainer[gesuch.getKindContainers().size()]);
+		for (int i = 0; i < gesuch.getKindContainers().size(); i++) {
+			KindContainer kindContainerToWorkWith = kindArray[i];
+			List<Betreuung> betreuungList = new ArrayList<>(kindContainerToWorkWith.getBetreuungen());
+			for (int j = 0; j < betreuungList.size(); j++) {
+				Betreuung betreuung = betreuungList.get(j);
 				this.betreuungService.schliessenOnly(betreuung);
 			}
-			for (AnmeldungTagesschule anmeldung : kindContainer.getAnmeldungenTagesschule()) {
+			for (AnmeldungTagesschule anmeldung : kindContainerToWorkWith.getAnmeldungenTagesschule()) {
 				this.betreuungService.anmeldungMutationIgnorieren(anmeldung);
 			}
-			for (AnmeldungFerieninsel anmeldung : kindContainer.getAnmeldungenFerieninsel()) {
+			for (AnmeldungFerieninsel anmeldung : kindContainerToWorkWith.getAnmeldungenFerieninsel()) {
 				this.betreuungService.anmeldungMutationIgnorieren(anmeldung);
 			}
-		});
-		// anmeldungen des Vorgesuchs zurücksetzen
-		setVorgaengerAnmeldungToGueltig(gesuch);
+		}
 
 		gesuch.setStatus(AntragStatus.IGNORIERT);
 		gesuch.setTimestampVerfuegt(LocalDateTime.now());
@@ -2748,30 +2713,32 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 
 	@Nonnull
 	@Override
-	public Optional<Gesuch> findLetzteNichtIgnorierteGesuch(@Nonnull Gesuch gesuch) {
-		authorizer.checkReadAuthorizationDossier(gesuch.getDossier());
-
-		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
-		final CriteriaQuery<Gesuch> query = cb.createQuery(Gesuch.class);
-
-		Root<Gesuch> root = query.from(Gesuch.class);
-		Predicate dossierPredicate = cb.equal(root.get(Gesuch_.dossier), gesuch.getDossier());
-		Predicate gesuchsperiodePredicate = cb.equal(root.get(Gesuch_.gesuchsperiode), gesuch.getGesuchsperiode());
-		Predicate nichtIgnorierteEntfernen = cb.not(root.get(Gesuch_.status).in(AntragStatus.IGNORIERT));
-
-		query.where(dossierPredicate, gesuchsperiodePredicate, nichtIgnorierteEntfernen);
-		query.orderBy(cb.desc(root.get(AbstractEntity_.timestampErstellt)));
-		List<Gesuch> criteriaResults = persistence.getCriteriaResults(query, 1);
-
-		if (criteriaResults.isEmpty()) {
-			return Optional.empty();
-		}
-		return Optional.of(criteriaResults.get(0));
+	public Optional<Gesuch> getNeustesVerfuegtesGesuchFuerGesuch(@Nonnull Gesuch gesuch) {
+		return getNeustesVerfuegtesGesuchFuerGesuch(gesuch.getGesuchsperiode(), gesuch.getDossier(), true);
 	}
 
 	private boolean checkIsSZFallAndEntgezogen(Gesuch gesuch) {
 		return gesuch.getFall().getSozialdienstFall() != null
 			&& gesuch.getFall().getSozialdienstFall().getStatus() == SozialdienstFallStatus.ENTZOGEN;
+	}
+
+	@Nonnull
+	public Gesuch findVorgaengerGesuchNotIgnoriert(@Nonnull String gesuchId) {
+		var gesuch = findGesuch(gesuchId).orElseThrow(() -> new EbeguEntityNotFoundException(
+			"findVorgaengerGesuchNotIgnoriert",
+			ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
+			gesuchId));
+		if (gesuch.getStatus() != AntragStatus.IGNORIERT) {
+			authorizer.checkReadAuthorization(gesuch);
+			return gesuch;
+		}
+		if (gesuch.getVorgaengerId() == null) {
+			throw new EbeguRuntimeException(
+				"findVorgaengerGesuchNotIgnoriert",
+				"Kein Vorgänger gefunden, der nicht ignoriert war"
+			);
+		}
+		return findVorgaengerGesuchNotIgnoriert(gesuch.getVorgaengerId());
 	}
 
 	@Override
