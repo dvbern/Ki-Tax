@@ -2653,12 +2653,10 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 	public Gesuch updateMarkiertFuerKontroll(@NotNull Gesuch gesuch, Boolean markiertFuerKontroll) {
 		var gesuche = this.getAllGesucheForDossierAndPeriod(gesuch.getDossier(), gesuch.getGesuchsperiode());
 		for (var g : gesuche) {
-			try {
-				authorizer.checkWriteAuthorization(g);
-				g.setMarkiertFuerKontroll(markiertFuerKontroll);
-			} catch (EJBAccessException e) {
-				// noop. Gesuche ohne write access nicht bearbeiten. Z.b. noch in Bearbeitung bei Gesuchsteller.
+			if (g.getStatus().isAnyOfInBearbeitungGSOrSZD()) {
+				continue;
 			}
+			g.setMarkiertFuerKontroll(markiertFuerKontroll);
 		}
 		return persistence.merge(gesuch);
 	}
