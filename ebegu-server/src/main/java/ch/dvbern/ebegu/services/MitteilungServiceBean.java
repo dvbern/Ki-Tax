@@ -1633,6 +1633,8 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 					.getFinanzielleSituationJA(),
 				kibonAnfrageContext.getGesuch().getGesuchsteller2().getFinanzielleSituationContainer().getFinanzielleSituationJA(),
 				mitteilung.getSteuerdatenResponse());
+			kibonAnfrageContext.getFinSitCont().getFinanzielleSituationJA().setSteuerdatenAbfrageStatus(kibonAnfrageContext.getSteuerdatenAnfrageStatus());
+			kibonAnfrageContext.getFinSitCont().getFinanzielleSituationJA().setSteuerdatenAbfrageStatus(kibonAnfrageContext.getSteuerdatenAnfrageStatus());
 			finanzielleSituationService.saveFinanzielleSituation(kibonAnfrageContext.getFinSitCont(), gesuch.getId());
 			finanzielleSituationService.saveFinanzielleSituation(kibonAnfrageContext.getGesuch().getGesuchsteller2().getFinanzielleSituationContainer(), gesuch.getId());
 		} else {
@@ -1649,10 +1651,12 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 				.getGesuchstellerJA()
 				.getZpvNummer()
 				.equals(String.valueOf(mitteilung.getSteuerdatenResponse().getZpvNrDossiertraeger()))) {
+				kibonAnfrageContext.setFinSitContGS2(kibonAnfrageContext.getGesuch().getGesuchsteller2().getFinanzielleSituationContainer());
 				kibonAnfrageContext.switchGSContainer();
 			}
 			KibonAnfrageHelper.updateFinSitSteuerdatenAbfrageStatusOk(kibonAnfrageContext.getFinSitCont()
 				.getFinanzielleSituationJA(), mitteilung.getSteuerdatenResponse());
+			kibonAnfrageContext.getFinSitCont().getFinanzielleSituationJA().setSteuerdatenAbfrageStatus(kibonAnfrageContext.getSteuerdatenAnfrageStatus());
 			finanzielleSituationService.saveFinanzielleSituation(kibonAnfrageContext.getFinSitCont(), gesuch.getId());
 		}
 		mitteilung.setMitteilungStatus(MitteilungStatus.ERLEDIGT);
