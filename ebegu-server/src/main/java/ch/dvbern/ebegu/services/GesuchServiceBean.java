@@ -108,7 +108,6 @@ import ch.dvbern.ebegu.entities.KindContainer_;
 import ch.dvbern.ebegu.entities.Kind_;
 import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.enums.AnmeldungMutationZustand;
-import ch.dvbern.ebegu.enums.AntragCopyType;
 import ch.dvbern.ebegu.enums.AntragStatus;
 import ch.dvbern.ebegu.enums.AntragTyp;
 import ch.dvbern.ebegu.enums.ApplicationPropertyKey;
@@ -2652,7 +2651,15 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 
 	@Override
 	public Gesuch updateMarkiertFuerKontroll(@NotNull Gesuch gesuch, Boolean markiertFuerKontroll) {
-		gesuch.setMarkiertFuerKontroll(markiertFuerKontroll);
+		var gesuche = this.getAllGesucheForDossierAndPeriod(gesuch.getDossier(), gesuch.getGesuchsperiode());
+		for (var g : gesuche) {
+			try {
+				authorizer.checkWriteAuthorization(g);
+				g.setMarkiertFuerKontroll(markiertFuerKontroll);
+			} catch (EJBAccessException e) {
+				// noop. Gesuche ohne write access nicht bearbeiten. Z.b. noch in Bearbeitung bei Gesuchsteller.
+			}
+		}
 		return persistence.merge(gesuch);
 	}
 
