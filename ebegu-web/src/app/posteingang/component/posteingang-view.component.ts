@@ -1,16 +1,18 @@
 /*
- * Ki-Tax: System for the management of external childcare subsidies
- * Copyright (C) 2017 City of Bern Switzerland
+ * Copyright (C) 2023 DV Bern AG, Switzerland
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Affero General Public License for more details.
+ *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
 import {
@@ -36,6 +38,7 @@ import {GemeindeRS} from '../../../gesuch/service/gemeindeRS.rest';
 import {TSPagination} from '../../../models/dto/TSPagination';
 import {DVErrorMessageCallback} from '../../../models/DVErrorMessageCallback';
 import {getTSMitteilungsStatusForFilter, TSMitteilungStatus} from '../../../models/enums/TSMitteilungStatus';
+import {TSMitteilungTypes} from '../../../models/enums/TSMitteilungTypes';
 import {TSRole} from '../../../models/enums/TSRole';
 import {TSVerantwortung} from '../../../models/enums/TSVerantwortung';
 import {TSBenutzerNoDetails} from '../../../models/TSBenutzerNoDetails';
@@ -45,11 +48,14 @@ import {TSMtteilungSearchresultDTO} from '../../../models/TSMitteilungSearchresu
 import {EbeguUtil} from '../../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 import {DvNgConfirmDialogComponent} from '../../core/component/dv-ng-confirm-dialog/dv-ng-confirm-dialog.component';
-import {DvNgMitteilungResultDialogComponent} from '../../core/component/dv-ng-mitteilung-result-dialog/dv-ng-mitteilung-result-dialog.component';
+import {
+    DvNgMitteilungResultDialogComponent
+} from '../../core/component/dv-ng-mitteilung-result-dialog/dv-ng-mitteilung-result-dialog.component';
 import {TSDemoFeature} from '../../core/directive/dv-hide-feature/TSDemoFeature';
 import {ErrorServiceX} from '../../core/errors/service/ErrorServiceX';
 import {Log, LogFactory} from '../../core/logging/LogFactory';
 import {BenutzerRSX} from '../../core/service/benutzerRSX.rest';
+import {DemoFeatureRS} from '../../core/service/demoFeatureRS.rest';
 import {MitteilungRS} from '../../core/service/mitteilungRS.rest';
 import {DVPosteingangFilter} from '../../shared/interfaces/DVPosteingangFilter';
 import {StateStoreService} from '../../shared/services/state-store.service';
@@ -126,10 +132,17 @@ export class PosteingangViewComponent implements OnInit, OnDestroy, AfterViewIni
     public gemeindenList: Array<TSGemeinde> = [];
     public paginationItems: number[];
     public initialEmpfaenger: TSBenutzerNoDetails;
-    public filterPredicate: DVPosteingangFilter = {};
+    public filterPredicate: DVPosteingangFilter = {
+        messageTypes: [TSMitteilungTypes.BETREUUNGSMITTEILUNG, TSMitteilungTypes.MITTEILUNG]
+    };
 
     // StateStore Properties
-    public initialFilter: DVPosteingangFilter = {};
+    public initialFilter: DVPosteingangFilter = {
+        messageTypes: [
+            TSMitteilungTypes.BETREUUNGSMITTEILUNG,
+            TSMitteilungTypes.MITTEILUNG
+        ]
+    };
     public readonly stateStoreId: string = 'posteingangId';
     private sortId: string;
     private filterId: string;
@@ -154,7 +167,8 @@ export class PosteingangViewComponent implements OnInit, OnDestroy, AfterViewIni
         private readonly posteingangService: PosteingangService,
         private readonly dialog: MatDialog,
         private readonly translate: TranslateService,
-        private readonly errorService: ErrorServiceX
+        private readonly errorService: ErrorServiceX,
+        private readonly demoFeatureRS: DemoFeatureRS
     ) {
     }
 
@@ -214,6 +228,7 @@ export class PosteingangViewComponent implements OnInit, OnDestroy, AfterViewIni
             .subscribe(
                 gemeinden => {
                     this.gemeindenList = gemeinden;
+                    this.gemeindenList.sort((a, b) => a.name.localeCompare(b.name));
                 },
                 err => this.log.error(err)
             );
@@ -353,10 +368,13 @@ export class PosteingangViewComponent implements OnInit, OnDestroy, AfterViewIni
         }
     }
 
-    private initFilter(): void {
+    private async initFilter(): Promise<void> {
         this.filterPredicate = (this.filterId && this.stateStore.has(this.filterId)) ?
-            this.stateStore.get(this.filterId) :
+            this.stateStore.get(this.filterId) as DVPosteingangFilter :
             {...this.initialFilter};
+        if (await this.demoFeatureRS.isDemoFeatureAllowed(TSDemoFeature.NEUE_VERANLAGUNG_MITTEILUNG)) {
+            this.filterPredicate.messageTypes.push(TSMitteilungTypes.NEUEVERANLAGUNGMITTEILUNG);
+        }
     }
 
     private initStateStores(): void {

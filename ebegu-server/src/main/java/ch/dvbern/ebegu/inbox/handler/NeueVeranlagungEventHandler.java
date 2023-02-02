@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2021 DV Bern AG, Switzerland
+ * Copyright (C) 2023 DV Bern AG, Switzerland
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -8,11 +8,11 @@
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
 package ch.dvbern.ebegu.inbox.handler;
@@ -36,6 +36,7 @@ import ch.dvbern.ebegu.entities.Einstellung;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.NeueVeranlagungsMitteilung;
+import ch.dvbern.ebegu.entities.VeranlagungEventLog;
 import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.enums.SteuerdatenAnfrageStatus;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
@@ -97,14 +98,23 @@ public class NeueVeranlagungEventHandler extends BaseEventHandler<NeueVeranlagun
 		@Nonnull NeueVeranlagungEventDTO dto,
 		@Nonnull String clientName) {
 		Processing processing = attemptProcessing(key, dto);
+		VeranlagungEventLog veranlagungEventLog = new VeranlagungEventLog(
+			key,
+			dto.getZpvNummer(),
+			dto.getGeburtsdatum(),
+			dto.getGesuchsperiodeBeginnJahr()
+		);
 		if (!processing.isProcessingSuccess()) {
 			String message = processing.getMessage();
 			LOG.warn("NeueVeranlagungEventHandler: Neue Veranlagung Event für ZPV-Nummer {} und Gesuch: {} nicht verarbeitet: {}",
 				dto.getZpvNummer(), key, message);
+			veranlagungEventLog.setResult(processing.getMessage());
 		} else {
 			LOG.info("NeueVeranlagungEventHandler: Neue Veranlagung Event für ZPV-Nummer {} und Gesuch: {} verarbeitet",
 				dto.getZpvNummer(), key);
+			veranlagungEventLog.setResult("Veranlagung erfolgreich verarbeitet");
 		}
+		persistence.persist(veranlagungEventLog);
 	}
 
 	@Nonnull
@@ -237,6 +247,8 @@ public class NeueVeranlagungEventHandler extends BaseEventHandler<NeueVeranlagun
 		NeueVeranlagungsMitteilung neueVeranlagungsMitteilung;
 		if(latest.isPresent()){
 			neueVeranlagungsMitteilung = latest.get();
+			LOG.info("Es wurde bereits eine offene Veranlagungsmitteilung zu dieser ZPV Nummer in diesem Gesuch gefunden. "
+				+ "Die Mitteilung mit ID " + neueVeranlagungsMitteilung.getId() + " wird überschrieben.");
 		} else {
 			neueVeranlagungsMitteilung = new NeueVeranlagungsMitteilung();
 			neueVeranlagungsMitteilung.setDossier(gesuch.getDossier());

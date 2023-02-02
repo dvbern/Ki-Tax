@@ -41,6 +41,7 @@ public class MitteilungPredicateObjectDTO implements Serializable {
 	private String empfaengerVerantwortung;     // mitteilung.empfaengerVerantwortung;
 	private String mitteilungStatus;  // mitteilung.status
 	private String gemeinde;
+	private String[] messageTypes;
 
 	public String getSender() {
 		return sender;
@@ -126,6 +127,15 @@ public class MitteilungPredicateObjectDTO implements Serializable {
 			.append("empfaengerVerantwortung", empfaengerVerantwortung)
 			.append("mitteilungStatus", mitteilungStatus)
 			.append("gemeinde", gemeinde)
+			.append("messageTypes", messageTypes)
 			.toString();
+	}
+
+	public String[] getMessageTypes() {
+		return messageTypes.clone();
+	}
+
+	public void setMessageTypes(String[] messageTypes) {
+		this.messageTypes = messageTypes.clone();
 	}
 }
