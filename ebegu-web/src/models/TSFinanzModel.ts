@@ -31,7 +31,6 @@ export class TSFinanzModel {
     private _zustaendigeAmtsstelle: string;
     private _nameBetreuer: string;
     private _verguenstigungGewuenscht: boolean;
-    private _finanzielleSituationRueckwirkendAnpassen: boolean;
     private _finanzielleSituationContainerGS1: TSFinanzielleSituationContainer;
     private _finanzielleSituationContainerGS2: TSFinanzielleSituationContainer;
     private _finanzielleSituationVorMutationGS1: TSFinanzielleSituation;
@@ -134,14 +133,6 @@ export class TSFinanzModel {
         this._finanzielleSituationTyp = value;
     }
 
-    public get finanzielleSituationRueckwirkendAnpassen(): boolean {
-        return this._finanzielleSituationRueckwirkendAnpassen;
-    }
-
-    public set finanzielleSituationRueckwirkendAnpassen(value: boolean) {
-        this._finanzielleSituationRueckwirkendAnpassen = value;
-    }
-
     public copyFinSitDataFromGesuch(gesuch: TSGesuch): void {
         if (!gesuch) {
             return;
@@ -186,8 +177,6 @@ export class TSFinanzModel {
         }
 
         this.finanzielleSituationTyp = gesuch.finSitTyp;
-
-        this.finanzielleSituationRueckwirkendAnpassen = EbeguUtil.isNotNullOrUndefined(gesuch.finSitAenderungGueltigAbDatum);
 
         this.initFinSit();
     }
