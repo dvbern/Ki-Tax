@@ -175,10 +175,11 @@ export class PosteingangViewComponent implements OnInit, OnDestroy, AfterViewIni
     public ngOnInit(): void {
         this.updateGemeindenList();
         this.initStateStores();
-        this.initFilter();
-        this.initSort();
-        this.initDisplayedColumns();
-        this.initEmpfaenger().subscribe(() => this.passFilterToServer(), error => LOG.error(error));
+        this.initFilter().then(() => {
+            this.initSort();
+            this.initDisplayedColumns();
+            this.initEmpfaenger().subscribe(() => this.passFilterToServer(), error => LOG.error(error));
+        });
     }
 
     public ngAfterViewInit(): void {
