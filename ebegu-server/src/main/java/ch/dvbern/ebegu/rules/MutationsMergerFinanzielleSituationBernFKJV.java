@@ -24,25 +24,43 @@ public class MutationsMergerFinanzielleSituationBernFKJV extends MutationsMerger
 		AbstractPlatz platz,
 		LocalDate mutationsEingansdatum) {
 
-		if (hasEinkommenChanged(inputAktuel, resultVorgaenger)) {
-			if (inputAktuel.isEkvAccepted()) {
-				//Einkommensverschlechterung behandeln, wie bisanhin in bern
-				handleVerminderungEinkommen(inputAktuel, resultVorgaenger, mutationsEingansdatum);
-			} else {
-				//Finanzielle Situation ist gültig ab Datum vor Perioden-Start
-				platz
-					.extractGesuch()
-					.setFinSitAenderungGueltigAbDatum(platz.extractGesuchsperiode().getGueltigkeit().getGueltigAb().minusDays(1));
-				inputAktuel.addBemerkung(MsgKey.FIN_SIT_RUECKWIRKEND_ANGEPASST, getLocale());
-			}
+		if (hasMassgebendesEinkommenVorAbzugFamgrChanged(inputAktuel, resultVorgaenger) && !inputAktuel.isEkvAccepted()) {
+			handleFinanzielleSituationRueckwirkendAnpassen(inputAktuel, resultVorgaenger, platz, mutationsEingansdatum);
+			return;
 		}
+
+		handleVerminderungEinkommen(inputAktuel, resultVorgaenger, mutationsEingansdatum);
 	}
-	private boolean hasEinkommenChanged(
+
+	private void handleFinanzielleSituationRueckwirkendAnpassen(
+		BGCalculationInput inputData,
+		BGCalculationResult resultVorgaenger,
+		AbstractPlatz platz,
+		LocalDate mutationsEingansdatum) {
+
+		//Finanzielle Situation ist gültig ab Datum vor Perioden-Start
+		platz
+			.extractGesuch()
+			.setFinSitAenderungGueltigAbDatum(platz.extractGesuchsperiode().getGueltigkeit().getGueltigAb().minusDays(1));
+		inputData.addBemerkung(MsgKey.FIN_SIT_RUECKWIRKEND_ANGEPASST, getLocale());
+
+		// Das Handling der Familiensituation darf sich nicht ändern
+		// Der Abzug und die Famliengrösse soll sich also per mutationsEingangsdatum erst ändern!!
+		if (inputData.getParent().getGueltigkeit().getGueltigAb().isAfter(mutationsEingansdatum)) {
+			return;
+		}
+
+		inputData.setFamGroesse(resultVorgaenger.getFamGroesse());
+		inputData.setAbzugFamGroesse(resultVorgaenger.getAbzugFamGroesse());
+
+	}
+
+	private boolean hasMassgebendesEinkommenVorAbzugFamgrChanged(
 		@Nonnull BGCalculationInput inputData,
 		@Nonnull BGCalculationResult resultVorangehenderAbschnitt) {
 
-		BigDecimal massgebendesEinkommen = inputData.getMassgebendesEinkommen();
-		BigDecimal massgebendesEinkommenVorher = resultVorangehenderAbschnitt.getMassgebendesEinkommen();
+		BigDecimal massgebendesEinkommen = inputData.getMassgebendesEinkommenVorAbzugFamgr();
+		BigDecimal massgebendesEinkommenVorher = resultVorangehenderAbschnitt.getMassgebendesEinkommenVorAbzugFamgr();
 
 		return massgebendesEinkommen.compareTo(massgebendesEinkommenVorher) != 0;
 	}
