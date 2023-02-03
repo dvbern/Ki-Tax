@@ -940,7 +940,7 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
         this.$state.go('gesuch.verfuegen',navObj);
     }
 
-    private loadNeustesVerfuegtesGesuchFuerGesuch() :void  {
+    private loadNeustesVerfuegtesGesuchFuerGesuch(): void  {
         this.gesuchRS.getNeustesVerfuegtesGesuchFuerGesuch(this.gesuchModelManager.getGesuch().id).then(
             (response: any) => this.letzteIgnorierteGesuchId = response.id
         );
