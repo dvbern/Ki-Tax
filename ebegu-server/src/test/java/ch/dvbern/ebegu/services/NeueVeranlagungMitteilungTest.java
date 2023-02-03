@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022 DV Bern AG, Switzerland
+ * Copyright (C) 2023 DV Bern AG, Switzerland
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -8,11 +8,11 @@
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
 package ch.dvbern.ebegu.services;
@@ -28,6 +28,7 @@ import javax.annotation.Nonnull;
 import javax.ejb.EJBAccessException;
 import javax.ejb.EJBTransactionRolledbackException;
 
+import ch.dvbern.ebegu.dto.neskovanp.Veranlagungsstand;
 import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Dossier;
 import ch.dvbern.ebegu.entities.Gemeinde;
@@ -166,6 +167,7 @@ public class NeueVeranlagungMitteilungTest extends EasyMockSupport {
 		steuerdatenResponse.setZpvNrAntragsteller(1000001);
 		steuerdatenResponse.setZpvNrDossiertraeger(1000001);
 		steuerdatenResponse.setZpvNrPartner(1000002);
+		steuerdatenResponse.setVeranlagungsstand(Veranlagungsstand.RECHTSKRAEFTIG);
 		Gesuch gesuch = prepareGS1Fall(steuerdatenResponse);
 		expectEverythingBisBearbeitung(gesuch);
 		replayAll();
@@ -178,6 +180,7 @@ public class NeueVeranlagungMitteilungTest extends EasyMockSupport {
 		SteuerdatenResponse steuerdatenResponse = new SteuerdatenResponse();
 		steuerdatenResponse.setZpvNrAntragsteller(1000001);
 		steuerdatenResponse.setZpvNrDossiertraeger(1000001);
+		steuerdatenResponse.setVeranlagungsstand(Veranlagungsstand.RECHTSKRAEFTIG);
 		Gesuch gesuch = prepareGemeinsamFall(steuerdatenResponse);
 		expectEverythingBisBearbeitung(gesuch);
 		replayAll();
@@ -190,6 +193,7 @@ public class NeueVeranlagungMitteilungTest extends EasyMockSupport {
 		SteuerdatenResponse steuerdatenResponse = new SteuerdatenResponse();
 		steuerdatenResponse.setZpvNrAntragsteller(1000001);
 		steuerdatenResponse.setZpvNrDossiertraeger(1000001);
+		steuerdatenResponse.setVeranlagungsstand(Veranlagungsstand.RECHTSKRAEFTIG);
 		Gesuch gesuch = prepareGS1Fall(steuerdatenResponse);
 		expectEverythingBisBearbeitung(gesuch);
 		Objects.requireNonNull(gesuch.getGesuchsteller1());
@@ -208,6 +212,7 @@ public class NeueVeranlagungMitteilungTest extends EasyMockSupport {
 		steuerdatenResponse.setZpvNrDossiertraeger(1000001);
 		steuerdatenResponse.setZpvNrPartner(1000002);
 		steuerdatenResponse.setZpvNrAntragsteller(1000001);
+		steuerdatenResponse.setVeranlagungsstand(Veranlagungsstand.RECHTSKRAEFTIG);
 		Gesuch gesuch = prepareGemeinsamFall(steuerdatenResponse);
 		expectEverythingBisBearbeitung(gesuch);
 		Objects.requireNonNull(gesuch.getGesuchsteller1());
