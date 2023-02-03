@@ -27,7 +27,7 @@ ${templateConfiguration.mailCss}
 		Chère famille,
 	</p>
 	<p>
-        <#if isSozialdienst>Le changement pour ${gesuchsteller.fullName}<#else>Le changement</#if> que vous avez communiqué le ${gesuch.getEingangsdatumFormated()} a été enregistré.
+        <#if isSozialdienst>Le changement pour ${gesuchsteller.fullName}<#else>Le changement</#if> qui a été saisi le ${gesuch.getEingangsdatumFormated()} a été travaillé.
 		Vous pouvez consulter le résultat
 		<a href="<#if configuration.clientUsingHTTPS>https://<#else>http://</#if>${hostname}/gesuch/verfuegen/${gesuch.id}">ici</a>.
 	</p>
