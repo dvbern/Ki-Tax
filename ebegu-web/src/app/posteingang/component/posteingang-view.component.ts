@@ -38,6 +38,7 @@ import {GemeindeRS} from '../../../gesuch/service/gemeindeRS.rest';
 import {TSPagination} from '../../../models/dto/TSPagination';
 import {DVErrorMessageCallback} from '../../../models/DVErrorMessageCallback';
 import {getTSMitteilungsStatusForFilter, TSMitteilungStatus} from '../../../models/enums/TSMitteilungStatus';
+import {TSMitteilungTypes} from '../../../models/enums/TSMitteilungTypes';
 import {TSRole} from '../../../models/enums/TSRole';
 import {TSVerantwortung} from '../../../models/enums/TSVerantwortung';
 import {TSBenutzerNoDetails} from '../../../models/TSBenutzerNoDetails';
@@ -54,6 +55,7 @@ import {TSDemoFeature} from '../../core/directive/dv-hide-feature/TSDemoFeature'
 import {ErrorServiceX} from '../../core/errors/service/ErrorServiceX';
 import {Log, LogFactory} from '../../core/logging/LogFactory';
 import {BenutzerRSX} from '../../core/service/benutzerRSX.rest';
+import {DemoFeatureRS} from '../../core/service/demoFeatureRS.rest';
 import {MitteilungRS} from '../../core/service/mitteilungRS.rest';
 import {DVPosteingangFilter} from '../../shared/interfaces/DVPosteingangFilter';
 import {StateStoreService} from '../../shared/services/state-store.service';
@@ -130,10 +132,17 @@ export class PosteingangViewComponent implements OnInit, OnDestroy, AfterViewIni
     public gemeindenList: Array<TSGemeinde> = [];
     public paginationItems: number[];
     public initialEmpfaenger: TSBenutzerNoDetails;
-    public filterPredicate: DVPosteingangFilter = {};
+    public filterPredicate: DVPosteingangFilter = {
+        messageTypes: [TSMitteilungTypes.BETREUUNGSMITTEILUNG, TSMitteilungTypes.MITTEILUNG]
+    };
 
     // StateStore Properties
-    public initialFilter: DVPosteingangFilter = {};
+    public initialFilter: DVPosteingangFilter = {
+        messageTypes: [
+            TSMitteilungTypes.BETREUUNGSMITTEILUNG,
+            TSMitteilungTypes.MITTEILUNG
+        ]
+    };
     public readonly stateStoreId: string = 'posteingangId';
     private sortId: string;
     private filterId: string;
@@ -158,17 +167,19 @@ export class PosteingangViewComponent implements OnInit, OnDestroy, AfterViewIni
         private readonly posteingangService: PosteingangService,
         private readonly dialog: MatDialog,
         private readonly translate: TranslateService,
-        private readonly errorService: ErrorServiceX
+        private readonly errorService: ErrorServiceX,
+        private readonly demoFeatureRS: DemoFeatureRS
     ) {
     }
 
     public ngOnInit(): void {
         this.updateGemeindenList();
         this.initStateStores();
-        this.initFilter();
-        this.initSort();
-        this.initDisplayedColumns();
-        this.initEmpfaenger().subscribe(() => this.passFilterToServer(), error => LOG.error(error));
+        this.initFilter().then(() => {
+            this.initSort();
+            this.initDisplayedColumns();
+            this.initEmpfaenger().subscribe(() => this.passFilterToServer(), error => LOG.error(error));
+        });
     }
 
     public ngAfterViewInit(): void {
@@ -358,10 +369,13 @@ export class PosteingangViewComponent implements OnInit, OnDestroy, AfterViewIni
         }
     }
 
-    private initFilter(): void {
+    private async initFilter(): Promise<void> {
         this.filterPredicate = (this.filterId && this.stateStore.has(this.filterId)) ?
-            this.stateStore.get(this.filterId) :
+            this.stateStore.get(this.filterId) as DVPosteingangFilter :
             {...this.initialFilter};
+        if (await this.demoFeatureRS.isDemoFeatureAllowed(TSDemoFeature.NEUE_VERANLAGUNG_MITTEILUNG)) {
+            this.filterPredicate.messageTypes.push(TSMitteilungTypes.NEUEVERANLAGUNGMITTEILUNG);
+        }
     }
 
     private initStateStores(): void {

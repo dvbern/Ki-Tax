@@ -61,6 +61,7 @@ import javax.validation.Validator;
 
 import ch.dvbern.ebegu.authentication.PrincipalBean;
 import ch.dvbern.ebegu.config.EbeguConfiguration;
+import ch.dvbern.ebegu.dto.neskovanp.Veranlagungsstand;
 import ch.dvbern.ebegu.dto.suchfilter.smarttable.MitteilungPredicateObjectDTO;
 import ch.dvbern.ebegu.dto.suchfilter.smarttable.MitteilungTableFilterDTO;
 import ch.dvbern.ebegu.entities.AbstractDateRangedEntity_;
@@ -87,7 +88,6 @@ import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.GemeindeStammdaten;
 import ch.dvbern.ebegu.entities.Gemeinde_;
 import ch.dvbern.ebegu.entities.Gesuch;
-import ch.dvbern.ebegu.entities.GesuchstellerContainer;
 import ch.dvbern.ebegu.entities.Institution;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten_;
@@ -113,6 +113,7 @@ import ch.dvbern.ebegu.enums.FinSitStatus;
 import ch.dvbern.ebegu.enums.MitteilungStatus;
 import ch.dvbern.ebegu.enums.MitteilungTeilnehmerTyp;
 import ch.dvbern.ebegu.enums.SearchMode;
+import ch.dvbern.ebegu.enums.SteuerdatenAnfrageStatus;
 import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.enums.UserRoleName;
 import ch.dvbern.ebegu.enums.Verantwortung;
@@ -892,15 +893,22 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 					ErrorCodeEnum.ERROR_MUTATIONSMELDUNG_STATUS_VERFUEGEN,
 					neustesGesuch.getId());
 			}
-			if (!AntragStatus.getVerfuegtAndSTVStates().contains(neustesGesuch.getStatus())
+			if (!AntragStatus.getVerfuegtIgnoriertAndSTVStates().contains(neustesGesuch.getStatus())
 				&& neustesGesuch.isMutation()) {
+				// veranlagungsmitteilungen dürfen nicht zu bestehender Mutation hinzugefügt werden
+				if (mitteilung instanceof NeueVeranlagungsMitteilung) {
+					throw new EbeguException(
+						"doApplymitteilung",
+						ErrorCodeEnum.ERROR_EXISTING_MUTATION_VERANLAGUNGSMITTEILUNG,
+						neustesGesuch.getId());
+				}
 				// aenderungen der bestehenden, offenen Mutation hinzufuegen (wenn wir hier sind muss es sich
 				// um ein PAPIER) Antrag handeln
 				authorizer.checkWriteAuthorization(neustesGesuch);
 				applyMitteilungToMutation(neustesGesuch, mitteilung);
 				return neustesGesuch;
 			}
-			if (AntragStatus.getVerfuegtAndSTVStates().contains(neustesGesuch.getStatus())) {
+			if (AntragStatus.getVerfuegtIgnoriertAndSTVStates().contains(neustesGesuch.getStatus())) {
 				// create Mutation if there is currently no Mutation
 				Gesuch mutation = Gesuch.createMutation(gesuch.getDossier(), neustesGesuch.getGesuchsperiode(),
 					LocalDate.now());
@@ -1292,6 +1300,9 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 
 		if (predicateObjectDto != null) {
 
+
+			predicates.add(getMessageTypePredicate(root, predicateObjectDto));
+
 			// sender
 			if (predicateObjectDto.getSender() != null) {
 				predicates.add(
@@ -1454,6 +1465,20 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 		return result;
 	}
 
+	private static Predicate getMessageTypePredicate(Root<Mitteilung> root, MitteilungPredicateObjectDTO predicateObjectDto) {
+		List<Class> classes = Arrays.stream(predicateObjectDto.getMessageTypes()).map(messageType -> {
+			try {
+			return Class.forName("ch.dvbern.ebegu.entities." + messageType);
+			} catch (ClassNotFoundException e) {
+				LOG.error(e.getMessage() + ". Using default class Mitteilung");
+				return Mitteilung.class;
+			}
+		}).collect(Collectors.toList());
+
+		final Predicate messageTypePredicate = root.type().in(classes);
+		return messageTypePredicate;
+	}
+
 	private void filterGemeinde(Benutzer user, Join<Dossier, Gemeinde> joinGemeinde, List<Predicate> predicates) {
 		if (user.getCurrentBerechtigung().getRole().isRoleGemeindeabhaengig()) {
 			Collection<Gemeinde> gemeindenForUser = user.extractGemeindenForUser();
@@ -1585,6 +1610,12 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 			gesuch,
 			mitteilung.getSteuerdatenResponse().getZpvNrAntragsteller());
 
+		// status muss bei Veranlagungsmitteilung immer rechtskräftig sein. Prüfungen wurden beim Erstellen der Veranlagungsmitteilungen gemacht.
+		if (mitteilung.getSteuerdatenResponse().getVeranlagungsstand() != Veranlagungsstand.RECHTSKRAEFTIG) {
+			throw new EbeguRuntimeException("neueVeranlagungsMitteilungImAntragErsetzen", "Veranlagungsstand muss rechtskräftig sein");
+		}
+		kibonAnfrageContext.setSteuerdatenAnfrageStatus(SteuerdatenAnfrageStatus.RECHTSKRAEFTIG);
+
 		if(kibonAnfrageContext.getFinSitCont().getFinanzielleSituationJA().getSteuerdatenZugriff() == null ||
 			kibonAnfrageContext.getFinSitCont().getFinanzielleSituationJA().getSteuerdatenZugriff().equals(Boolean.FALSE)) {
 			throw new EbeguException(
@@ -1610,6 +1641,9 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 					.getFinanzielleSituationJA(),
 				kibonAnfrageContext.getGesuch().getGesuchsteller2().getFinanzielleSituationContainer().getFinanzielleSituationJA(),
 				mitteilung.getSteuerdatenResponse());
+			kibonAnfrageContext.getFinSitCont().getFinanzielleSituationJA().setSteuerdatenAbfrageStatus(kibonAnfrageContext.getSteuerdatenAnfrageStatus());
+			kibonAnfrageContext.getGesuch().getGesuchsteller2().getFinanzielleSituationContainer().getFinanzielleSituationJA()
+				.setSteuerdatenAbfrageStatus(kibonAnfrageContext.getSteuerdatenAnfrageStatus());
 			finanzielleSituationService.saveFinanzielleSituation(kibonAnfrageContext.getFinSitCont(), gesuch.getId());
 			finanzielleSituationService.saveFinanzielleSituation(kibonAnfrageContext.getGesuch().getGesuchsteller2().getFinanzielleSituationContainer(), gesuch.getId());
 		} else {
@@ -1626,10 +1660,12 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 				.getGesuchstellerJA()
 				.getZpvNummer()
 				.equals(String.valueOf(mitteilung.getSteuerdatenResponse().getZpvNrDossiertraeger()))) {
+				kibonAnfrageContext.setFinSitContGS2(kibonAnfrageContext.getGesuch().getGesuchsteller2().getFinanzielleSituationContainer());
 				kibonAnfrageContext.switchGSContainer();
 			}
 			KibonAnfrageHelper.updateFinSitSteuerdatenAbfrageStatusOk(kibonAnfrageContext.getFinSitCont()
 				.getFinanzielleSituationJA(), mitteilung.getSteuerdatenResponse());
+			kibonAnfrageContext.getFinSitCont().getFinanzielleSituationJA().setSteuerdatenAbfrageStatus(kibonAnfrageContext.getSteuerdatenAnfrageStatus());
 			finanzielleSituationService.saveFinanzielleSituation(kibonAnfrageContext.getFinSitCont(), gesuch.getId());
 		}
 		mitteilung.setMitteilungStatus(MitteilungStatus.ERLEDIGT);

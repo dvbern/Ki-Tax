@@ -141,7 +141,7 @@ export class FinanzielleSituationViewController extends AbstractFinSitBernView {
         if (EbeguUtil.isNullOrUndefined(this.getGesuch().vorgaengerId)) {
             return;
         }
-        const gesuchVorMutation = await this.gesuchRS.findGesuch(this.getGesuch().vorgaengerId);
+        const gesuchVorMutation = await this.gesuchRS.findVorgaengerGesuchNotIgnoriert(this.getGesuch().vorgaengerId);
         this.model.initFinSitVorMutation(gesuchVorMutation);
     }
 

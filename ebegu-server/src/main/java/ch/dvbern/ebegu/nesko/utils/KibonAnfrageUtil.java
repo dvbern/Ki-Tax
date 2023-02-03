@@ -57,8 +57,7 @@ public final class KibonAnfrageUtil {
 					gesuch.getGesuchsteller1().getFinanzielleSituationContainer(),
 					gesuch.getId());
 			}
-		} else {
-			Objects.requireNonNull(gesuch.getGesuchsteller2());
+		} else if (gesuch.getGesuchsteller2() != null){
 			Objects.requireNonNull(gesuch.getGesuchsteller2()
 				.getFinanzielleSituationContainer());
 			if (gesuch.getGesuchsteller2()

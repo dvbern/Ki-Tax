@@ -133,7 +133,7 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
         this.ebeguUtil = ebeguUtil;
 
         if(this.gesuchModelManager.getGesuch().status === TSAntragStatus.IGNORIERT) {
-            this.gesuchRS.findLetzteNichtIgnorierteGesuchId(this.gesuchModelManager.getGesuch().id).then(
+            this.gesuchRS.getNeustesVerfuegtesGesuchFuerGesuch(this.gesuchModelManager.getGesuch().id).then(
                 (response: any) => this.letzteIgnorierteGesuchId = response.id
             );
         }

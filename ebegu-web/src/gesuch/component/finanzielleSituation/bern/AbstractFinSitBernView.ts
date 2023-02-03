@@ -201,14 +201,14 @@ export abstract class AbstractFinSitBernView extends AbstractGesuchViewControlle
             return false;
         }
 
-        return this.authServiceRS.isRole(TSRole.GESUCHSTELLER)
+        return this.authServiceRS.isOneOfRoles([TSRole.GESUCHSTELLER, TSRole.SUPER_ADMIN])
             || EbeguUtil.isNotNullOrUndefined(this.model.getFiSiConToWorkWith().finanzielleSituationGS)
             || this.showZugriffAufSteuerdatenForGemeinde();
     }
 
     protected showZugriffAufSteuerdatenForGemeinde(): boolean {
         return  EbeguUtil.isNotNullOrUndefined(this.model.getFiSiConToWorkWith().finanzielleSituationJA?.steuerdatenAbfrageStatus)
-            && this.authServiceRS.isOneOfRoles(TSRoleUtil.getGemeindeOrBGRoles());
+            && this.authServiceRS.isOneOfRoles(TSRoleUtil.getGemeindeOrBGRoles().concat(TSRole.SUPER_ADMIN));
     }
 
     protected callKiBonAnfrage(isGemeinsam: boolean): IPromise<TSFinanzielleSituationContainer> {
