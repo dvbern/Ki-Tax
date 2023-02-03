@@ -16,6 +16,7 @@
 package ch.dvbern.ebegu.dto.suchfilter.smarttable;
 
 import java.io.Serializable;
+import java.util.Arrays;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -137,6 +138,6 @@ public class MitteilungPredicateObjectDTO implements Serializable {
 	}
 
 	public void setMessageTypes(MessageTypes[] messageTypes) {
-		this.messageTypes = messageTypes;
+		this.messageTypes = Arrays.copyOf(messageTypes, messageTypes.length);
 	}
 }
