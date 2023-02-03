@@ -168,9 +168,7 @@ public class NeueVeranlagungEventHandler extends BaseEventHandler<NeueVeranlagun
 				" Franken");
 		}
 
-		createAndSendNeueVeranlagungsMitteilung(kibonAnfrageContext, dto.getZpvNummer());
-
-		return Processing.success();
+		return createAndSendNeueVeranlagungsMitteilung(kibonAnfrageContext, dto.getZpvNummer());
 	}
 
 	private boolean checkBenachrichtigungRequired(
@@ -234,7 +232,7 @@ public class NeueVeranlagungEventHandler extends BaseEventHandler<NeueVeranlagun
 		return kibonAnfrageHandler.handleKibonNeueVeranlagungAnfrage(kibonAnfrageContext, gemeinsam);
 	}
 
-	private void createAndSendNeueVeranlagungsMitteilung(@Nonnull KibonAnfrageContext kibonAnfrageContext, int zpvNummer) {
+	private Processing createAndSendNeueVeranlagungsMitteilung(@Nonnull KibonAnfrageContext kibonAnfrageContext, int zpvNummer) {
 		Gesuch gesuch = kibonAnfrageContext.getGesuch();
 		List<String> gesuchIds = gesuchService.getAllGesucheIdsForDossierAndPeriod(gesuch.getDossier(), gesuch.getGesuchsperiode());
 
@@ -244,15 +242,12 @@ public class NeueVeranlagungEventHandler extends BaseEventHandler<NeueVeranlagun
 		Optional<NeueVeranlagungsMitteilung> latest = findRelevantNeueVzpveranlagungsMitteilung(open, zpvNummer);
 
 		Locale locale = EbeguUtil.extractKorrespondenzsprache(gesuch, gemeindeService).getLocale();
-		NeueVeranlagungsMitteilung neueVeranlagungsMitteilung;
-		if(latest.isPresent()){
-			neueVeranlagungsMitteilung = latest.get();
-			LOG.info("Es wurde bereits eine offene Veranlagungsmitteilung zu dieser ZPV Nummer in diesem Gesuch gefunden. "
-				+ "Die Mitteilung mit ID " + neueVeranlagungsMitteilung.getId() + " wird überschrieben.");
-		} else {
-			neueVeranlagungsMitteilung = new NeueVeranlagungsMitteilung();
-			neueVeranlagungsMitteilung.setDossier(gesuch.getDossier());
+		if(latest.isPresent()) {
+			return Processing.failure("Es wurde bereits eine offene Veranlagungsmitteilung zu dieser ZPV Nummer gefunden.");
 		}
+
+		NeueVeranlagungsMitteilung neueVeranlagungsMitteilung = new NeueVeranlagungsMitteilung();
+		neueVeranlagungsMitteilung.setDossier(gesuch.getDossier());
 		Objects.requireNonNull(kibonAnfrageContext.getSteuerdatenResponse());
 		String betreffKey = gesuch.getMarkiertFuerKontroll() ? BETREFF_KEY_MARKIERT : BETREFF_KEY;
 		String messageKey = gesuch.getMarkiertFuerKontroll() ? MESSAGE_KEY_MARKIERT : MESSAGE_KEY;
@@ -266,6 +261,7 @@ public class NeueVeranlagungEventHandler extends BaseEventHandler<NeueVeranlagun
 			gesuch.extractMandant()));
 		neueVeranlagungsMitteilung.setSteuerdatenResponse(kibonAnfrageContext.getSteuerdatenResponse());
 		mitteilungService.sendNeueVeranlagungsmitteilung(neueVeranlagungsMitteilung);
+		return Processing.success();
 	}
 
 
