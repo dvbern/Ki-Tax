@@ -1365,6 +1365,13 @@ export class GesuchModelManager {
         });
     }
 
+    private calculateGesuchStatusIgnoriert(): void {
+        if (!this.isThereAnyOpenBetreuung()) {
+            this.gesuch.status = this.calculateNewStatus(TSAntragStatus.IGNORIERT);
+            this.antragStatusHistoryRS.loadLastStatusChange(this.getGesuch());
+        }
+    }
+
     private calculateGesuchStatusVerfuegt(): void {
         if (!this.isThereAnyOpenBetreuung()) {
             this.gesuch.status = this.calculateNewStatus(TSAntragStatus.VERFUEGT);
@@ -1382,7 +1389,7 @@ export class GesuchModelManager {
 
     public mutationIgnorieren(): IPromise<void> {
         return this.gesuchRS.mutationIgnorieren(this.gesuch.id).then(() => this.reloadGesuch())
-            .then(() => this.calculateGesuchStatusVerfuegt());
+            .then(() => this.calculateGesuchStatusIgnoriert());
     }
 
     public verfuegungSchliessenNichtEintreten(): IPromise<TSVerfuegung> {

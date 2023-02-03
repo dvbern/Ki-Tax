@@ -27,8 +27,7 @@ ${templateConfiguration.mailCss}
 		Sehr geehrte Familie
 	</p>
 	<p>
-		Am ${gesuch.getEingangsdatumFormated()} haben Sie via kiBon eine Mutation eingereicht.
-		Wir haben die Mutation <#if isSozialdienst>für den Antrag von ${gesuchsteller.fullName}</#if> bearbeitet und Sie können das Ergebnis
+		Am ${gesuch.getEingangsdatumFormated()} wurde auf kiBon eine Mutation zu Ihrem Antrag erfasst. Wir haben die Mutation<#if isSozialdienst> für den Antrag von ${gesuchsteller.fullName}</#if> bearbeitet. Sie können das Ergebnis
 		<a href="<#if configuration.clientUsingHTTPS>https://<#else>http://</#if>${hostname}/gesuch/verfuegen/${gesuch.id}">hier</a>
         einsehen.
 	</p>

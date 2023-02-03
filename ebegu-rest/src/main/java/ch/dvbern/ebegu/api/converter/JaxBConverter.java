@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018 DV Bern AG, Switzerland
+ * Copyright (C) 2023 DV Bern AG, Switzerland
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -8,11 +8,11 @@
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
 package ch.dvbern.ebegu.api.converter;
@@ -228,6 +228,7 @@ import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.entities.Mitteilung;
 import ch.dvbern.ebegu.entities.ModulTagesschule;
 import ch.dvbern.ebegu.entities.ModulTagesschuleGroup;
+import ch.dvbern.ebegu.entities.NeueVeranlagungsMitteilung;
 import ch.dvbern.ebegu.entities.PensumAusserordentlicherAnspruch;
 import ch.dvbern.ebegu.entities.PensumFachstelle;
 import ch.dvbern.ebegu.entities.RueckforderungDokument;
@@ -3857,6 +3858,8 @@ public class JaxBConverter extends AbstractConverter {
 		jaxVerfuegung.setKategorieNormal(verfuegung.isKategorieNormal());
 		jaxVerfuegung.setVeraenderungVerguenstigungGegenueberVorgaenger(verfuegung.getVeraenderungVerguenstigungGegenueberVorgaenger());
 		jaxVerfuegung.setIgnorable(verfuegung.getIgnorable());
+		jaxVerfuegung.setKorrekturAusbezahltEltern(verfuegung.getKorrekturAusbezahltEltern());
+		jaxVerfuegung.setKorrekturAusbezahltInstitution(verfuegung.getKorrekturAusbezahltInstitution());
 
 		List<JaxVerfuegungZeitabschnitt> zeitabschnitte = verfuegung.getZeitabschnitte().stream()
 			.map(this::verfuegungZeitabschnittToJax)
@@ -4889,6 +4892,9 @@ public class JaxBConverter extends AbstractConverter {
 		jaxMitteilung.setDossier(this.dossierToJAX(persistedMitteilung.getDossier()));
 		if (persistedMitteilung.getBetreuung() != null) {
 			jaxMitteilung.setBetreuung(betreuungToJAX(persistedMitteilung.getBetreuung()));
+		}
+		if (persistedMitteilung instanceof NeueVeranlagungsMitteilung) {
+			jaxMitteilung.setFinanzielleSituation(finanzielleSituationToJAX(finanzielleSituationService.findFinanzielleSituationForNeueVeranlagungsMitteilung((NeueVeranlagungsMitteilung) persistedMitteilung)));
 		}
 		if (persistedMitteilung.getInstitution() != null) {
 			jaxMitteilung.setInstitution(institutionToJAX(persistedMitteilung.getInstitution()));

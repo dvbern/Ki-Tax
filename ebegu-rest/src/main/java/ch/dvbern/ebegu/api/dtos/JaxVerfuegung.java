@@ -63,6 +63,12 @@ public class JaxVerfuegung extends JaxAbstractDTO {
 	private boolean ignorable = false;
 
 	@Nullable
+	private BigDecimal korrekturAusbezahltInstitution;
+
+	@Nullable
+	private BigDecimal korrekturAusbezahltEltern;
+
+	@Nullable
 	public String getGeneratedBemerkungen() {
 		return generatedBemerkungen;
 	}
@@ -137,5 +143,23 @@ public class JaxVerfuegung extends JaxAbstractDTO {
 
 	public void setIgnorable(boolean ignorable) {
 		this.ignorable = ignorable;
+	}
+
+	@Nullable
+	public BigDecimal getKorrekturAusbezahltInstitution() {
+		return korrekturAusbezahltInstitution;
+	}
+
+	public void setKorrekturAusbezahltInstitution(@Nullable BigDecimal korrekturAusbezahltInstitution) {
+		this.korrekturAusbezahltInstitution = korrekturAusbezahltInstitution;
+	}
+
+	@Nullable
+	public BigDecimal getKorrekturAusbezahltEltern() {
+		return korrekturAusbezahltEltern;
+	}
+
+	public void setKorrekturAusbezahltEltern(@Nullable BigDecimal korrekturAusbezahltEltern) {
+		this.korrekturAusbezahltEltern = korrekturAusbezahltEltern;
 	}
 }

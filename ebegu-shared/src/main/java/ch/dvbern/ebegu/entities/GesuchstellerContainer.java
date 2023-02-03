@@ -279,7 +279,7 @@ public class GesuchstellerContainer extends AbstractMutableEntity implements Sea
 		return target;
 	}
 
-	private void copyFinanzen(@Nonnull GesuchstellerContainer target, @Nonnull AntragCopyType copyType) {
+	public void copyFinanzen(@Nonnull GesuchstellerContainer target, @Nonnull AntragCopyType copyType) {
 		if (this.getFinanzielleSituationContainer() != null) {
 			target.setFinanzielleSituationContainer(this.getFinanzielleSituationContainer()
 				.copyFinanzielleSituationContainer(new FinanzielleSituationContainer(), copyType, this));

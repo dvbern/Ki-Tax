@@ -1,16 +1,18 @@
 /*
- * Ki-Tax: System for the management of external childcare subsidies
- * Copyright (C) 2017 City of Bern Switzerland
+ * Copyright (C) 2023 DV Bern AG, Switzerland
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Affero General Public License for more details.
+ *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
 package ch.dvbern.ebegu.services;
@@ -195,11 +197,18 @@ public interface BetreuungService {
 	List<Betreuung> findAllBetreuungenWithVerfuegungForDossier(@Nonnull Dossier dossier);
 
 	/**
-	 * Schliesst die Betreuung (Status GESCHLOSSEN_OHNE_VERFUEGUNG) ohne eine neue Verfuegung zu erstellen
+	 * Schliesst die Betreuung (Status GESCHLOSSEN_OHNE_VERFUEGUNG) und verfügt das Gesuch wenn moeglich
+	 * ohne eine neue Verfuegung zu erstellen
 	 * (bei gleichbleibenden Daten)
 	 */
 	@Nonnull
 	Betreuung schliessenOhneVerfuegen(@Nonnull Betreuung betreuung);
+
+	/**
+	 * Schliesst die Betreuung (Status GESCHLOSSEN_OHNE_VERFUEGUNG) only
+	 */
+	@Nonnull
+	Betreuung schliessenOnly(@Nonnull Betreuung betreuung);
 
 	/**
 	 * Gibt alle Betreuungen zurueck, welche Mutationen betreffen, die verfügt sind und deren
@@ -258,4 +267,12 @@ public interface BetreuungService {
 
 	@Nonnull
 	BigDecimal getMultiplierForAbweichnungen(@Nonnull Betreuung betreuung);
+
+	void updateGueltigFlagOnPlatzAndVorgaenger(@Nonnull AbstractPlatz platz);
+
+	/**
+	 * Findet für eine Anmeldung die letzte gültige nicht ignorierte
+	 */
+	@Nonnull
+	AbstractAnmeldung findVorgaengerAnmeldungNotIgnoriert(AbstractAnmeldung betreuung);
 }

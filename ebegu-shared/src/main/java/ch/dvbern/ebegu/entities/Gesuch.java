@@ -991,7 +991,6 @@ public class Gesuch extends AbstractMutableEntity implements Searchable {
 
 		switch (copyType) {
 		case MUTATION:
-			target.setLaufnummer(this.getLaufnummer() + 1);
 			copyGesuchsteller2(target, copyType);
 			copyEinkommensverschlechterungInfoContainer(target, copyType);
 			copyDokumentGruende(target, copyType);
@@ -1111,7 +1110,19 @@ public class Gesuch extends AbstractMutableEntity implements Searchable {
 
 	@Nonnull
 	public Gesuch copyForMutation(
-		@Nonnull Gesuch mutation, @Nonnull Eingangsart eingangsartOfTarget, @Nonnull LocalDate regelStartDatum) {
+		@Nonnull Gesuch mutation,
+		@Nonnull Eingangsart eingangsartOfTarget,
+		@Nonnull LocalDate regelStartDatum) {
+		return this.copyForMutation(mutation, eingangsartOfTarget, regelStartDatum, laufnummer+1);
+	}
+
+	@Nonnull
+	public Gesuch copyForMutation(
+		@Nonnull Gesuch mutation,
+		@Nonnull Eingangsart eingangsartOfTarget,
+		@Nonnull LocalDate regelStartDatum,
+		int laufnr) {
+		mutation.setLaufnummer(laufnr);
 		return this.copyGesuch(
 			mutation,
 			AntragCopyType.MUTATION,

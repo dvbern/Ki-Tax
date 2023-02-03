@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2021 DV Bern AG, Switzerland
+ * Copyright (C) 2023 DV Bern AG, Switzerland
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -8,17 +8,19 @@
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
 package ch.dvbern.ebegu.inbox.handler;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
@@ -34,6 +36,7 @@ import ch.dvbern.ebegu.entities.Einstellung;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.NeueVeranlagungsMitteilung;
+import ch.dvbern.ebegu.entities.VeranlagungEventLog;
 import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.enums.SteuerdatenAnfrageStatus;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
@@ -95,29 +98,42 @@ public class NeueVeranlagungEventHandler extends BaseEventHandler<NeueVeranlagun
 		@Nonnull NeueVeranlagungEventDTO dto,
 		@Nonnull String clientName) {
 		Processing processing = attemptProcessing(key, dto);
+		VeranlagungEventLog veranlagungEventLog = new VeranlagungEventLog(
+			key,
+			dto.getZpvNummer(),
+			dto.getGeburtsdatum(),
+			dto.getGesuchsperiodeBeginnJahr()
+		);
 		if (!processing.isProcessingSuccess()) {
 			String message = processing.getMessage();
 			LOG.warn("NeueVeranlagungEventHandler: Neue Veranlagung Event für ZPV-Nummer {} und Gesuch: {} nicht verarbeitet: {}",
 				dto.getZpvNummer(), key, message);
+			veranlagungEventLog.setResult(processing.getMessage());
 		} else {
 			LOG.info("NeueVeranlagungEventHandler: Neue Veranlagung Event für ZPV-Nummer {} und Gesuch: {} verarbeitet",
 				dto.getZpvNummer(), key);
+			veranlagungEventLog.setResult("Veranlagung erfolgreich verarbeitet");
 		}
+		persistence.persist(veranlagungEventLog);
 	}
-
 
 	@Nonnull
 	protected Processing attemptProcessing(@Nonnull String key, @Nonnull NeueVeranlagungEventDTO dto) {
 		Gesuch gesuch = findDetachedGesuchByKey(key);
 
 		if (gesuch == null) {
-			return Processing.failure("Kein Gesuch für Key gefunen. Key: " + key);
+			return Processing.failure("Kein Gesuch für Key gefunden. Key: " + key);
+		}
+
+		if (gesuch.getStatus().isAnyOfInBearbeitungGSOrSZD()) {
+			return Processing.failure("Gesuch ist noch nicht freigegeben: " + key);
 		}
 
 		// erst die Massgegebenes Einkommens fuer das betroffenes Gesuch berechnen
 		FinanzielleSituationResultateDTO finSitOriginalResult = finanzielleSituationService.calculateResultate(gesuch);
 
-		KibonAnfrageContext kibonAnfrageContext = requestCurrentSteuerdaten(gesuch, dto.getZpvNummer());
+		KibonAnfrageContext kibonAnfrageContext =
+			requestCurrentSteuerdaten(gesuch, dto.getZpvNummer(), dto.getGeburtsdatum());
 
 		if (kibonAnfrageContext == null) {
 			return Processing.failure(
@@ -152,9 +168,7 @@ public class NeueVeranlagungEventHandler extends BaseEventHandler<NeueVeranlagun
 				" Franken");
 		}
 
-		createAndSendNeueVeranlagungsMitteilung(kibonAnfrageContext);
-
-		return Processing.success();
+		return createAndSendNeueVeranlagungsMitteilung(kibonAnfrageContext, dto.getZpvNummer());
 	}
 
 	private boolean checkBenachrichtigungRequired(
@@ -194,7 +208,7 @@ public class NeueVeranlagungEventHandler extends BaseEventHandler<NeueVeranlagun
 	}
 
 	@Nullable
-	private KibonAnfrageContext requestCurrentSteuerdaten(Gesuch gesuch, int zpvNummer) {
+	private KibonAnfrageContext requestCurrentSteuerdaten(Gesuch gesuch, int zpvNummer, LocalDate geburtsdatum) {
 		KibonAnfrageContext kibonAnfrageContext = KibonAnfrageUtil.initKibonAnfrageContext(gesuch, zpvNummer);
 
 		if (kibonAnfrageContext == null) {
@@ -207,14 +221,31 @@ public class NeueVeranlagungEventHandler extends BaseEventHandler<NeueVeranlagun
 
 		boolean gemeinsam = Boolean.TRUE
 			.equals(gesuch.getFamiliensituationContainer().getFamiliensituationJA().getGemeinsameSteuererklaerung());
-
-		return kibonAnfrageHandler.handleKibonAnfrage(kibonAnfrageContext, gemeinsam);
+		if (gemeinsam && !kibonAnfrageContext.getGesuchsteller()
+			.getGesuchstellerJA()
+			.getGeburtsdatum()
+			.equals(geburtsdatum)
+			&& gesuch.getGesuchsteller2() != null) {
+			kibonAnfrageContext.setFinSitContGS2(gesuch.getGesuchsteller2().getFinanzielleSituationContainer());
+			kibonAnfrageContext = kibonAnfrageContext.switchGSContainer();
+		}
+		return kibonAnfrageHandler.handleKibonNeueVeranlagungAnfrage(kibonAnfrageContext, gemeinsam);
 	}
 
-	private void createAndSendNeueVeranlagungsMitteilung(KibonAnfrageContext kibonAnfrageContext) {
+	private Processing createAndSendNeueVeranlagungsMitteilung(@Nonnull KibonAnfrageContext kibonAnfrageContext, int zpvNummer) {
 		Gesuch gesuch = kibonAnfrageContext.getGesuch();
+		List<String> gesuchIds = gesuchService.getAllGesucheIdsForDossierAndPeriod(gesuch.getDossier(), gesuch.getGesuchsperiode());
+
+		Collection<NeueVeranlagungsMitteilung> open =
+			mitteilungService.findOffeneNeueVeranlagungsmitteilungenForGesuch(gesuchIds);
+
+		Optional<NeueVeranlagungsMitteilung> latest = findRelevantNeueVzpveranlagungsMitteilung(open, zpvNummer);
 
 		Locale locale = EbeguUtil.extractKorrespondenzsprache(gesuch, gemeindeService).getLocale();
+		if(latest.isPresent()) {
+			return Processing.failure("Es wurde bereits eine offene Veranlagungsmitteilung zu dieser ZPV Nummer gefunden.");
+		}
+
 		NeueVeranlagungsMitteilung neueVeranlagungsMitteilung = new NeueVeranlagungsMitteilung();
 		neueVeranlagungsMitteilung.setDossier(gesuch.getDossier());
 		Objects.requireNonNull(kibonAnfrageContext.getSteuerdatenResponse());
@@ -230,8 +261,13 @@ public class NeueVeranlagungEventHandler extends BaseEventHandler<NeueVeranlagun
 			gesuch.extractMandant()));
 		neueVeranlagungsMitteilung.setSteuerdatenResponse(kibonAnfrageContext.getSteuerdatenResponse());
 		mitteilungService.sendNeueVeranlagungsmitteilung(neueVeranlagungsMitteilung);
+		return Processing.success();
 	}
 
+
+	private Optional<NeueVeranlagungsMitteilung> findRelevantNeueVzpveranlagungsMitteilung(@Nonnull Collection<NeueVeranlagungsMitteilung> open, Integer zpvNummer) {
+		return open.stream().filter(neueVeranlagungsMitteilung -> zpvNummer.equals(neueVeranlagungsMitteilung.getSteuerdatenResponse().getZpvNrAntragsteller())).findFirst();
+	}
 	private BigDecimal getEinstelungMinUnterschiedEinkommen(Gesuchsperiode gesuchsperiode) {
 		List<Einstellung> einstellungList = einstellungService.findEinstellungen(
 			EinstellungKey.VERANLAGUNG_MIN_UNTERSCHIED_MASSGEBENDESEINK,

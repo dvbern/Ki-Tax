@@ -1,16 +1,18 @@
 /*
- * Ki-Tax: System for the management of external childcare subsidies
- * Copyright (C) 2017 City of Bern Switzerland
+ * Copyright (C) 2023 DV Bern AG, Switzerland
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Affero General Public License for more details.
+ *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
 import {CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
@@ -31,7 +33,9 @@ import {TSDossier} from '../../../models/TSDossier';
 import {TSFall} from '../../../models/TSFall';
 import {TSMitteilung} from '../../../models/TSMitteilung';
 import {TSMtteilungSearchresultDTO} from '../../../models/TSMitteilungSearchresultDTO';
+import {ApplicationPropertyRS} from '../../core/rest-services/applicationPropertyRS.rest';
 import {BenutzerRSX} from '../../core/service/benutzerRSX.rest';
+import {DemoFeatureRS} from '../../core/service/demoFeatureRS.rest';
 import {MitteilungRS} from '../../core/service/mitteilungRS.rest';
 import {MaterialModule} from '../../shared/material.module';
 import {StateStoreService} from '../../shared/services/state-store.service';
@@ -53,6 +57,8 @@ describe('PosteingangViewComponent', () => {
         ['$current']);
     const benutzerSpy = jasmine.createSpyObj<BenutzerRSX>(BenutzerRSX.name, ['getAllBenutzerBgTsOrGemeinde']);
     authRSSpy.principal$ = of(new TSBenutzer());
+    const demoFeatureRSSpy = jasmine.createSpyObj<DemoFeatureRS>(DemoFeatureRS.name, ['isDemoFeatureAllowed']);
+    demoFeatureRSSpy.isDemoFeatureAllowed.and.returnValue(Promise.resolve(false));
 
     beforeEach(() => {
         TestBed.configureTestingModule({
@@ -66,7 +72,8 @@ describe('PosteingangViewComponent', () => {
                 {provide: TransitionService, useValue: transitionServiceSpy},
                 {provide: StateStoreService, useValue: stateStoreServiceSpy},
                 {provide: UIRouterGlobals, useValue: uiRouterGlobals},
-                {provide: BenutzerRSX, useValue: benutzerSpy}
+                {provide: BenutzerRSX, useValue: benutzerSpy},
+                {provide: DemoFeatureRS, useValue: demoFeatureRSSpy}
             ],
             schemas: [CUSTOM_ELEMENTS_SCHEMA]
         }).compileComponents();
@@ -94,6 +101,7 @@ describe('PosteingangViewComponent', () => {
         const gesuchsteller = new TSBenutzer();
         gesuchsteller.currentBerechtigung.role = TSRole.GESUCHSTELLER;
         const result = new TSMitteilung(mockDossier,
+            undefined,
             undefined,
             TSMitteilungTeilnehmerTyp.GESUCHSTELLER,
             TSMitteilungTeilnehmerTyp.JUGENDAMT,

@@ -33,3 +33,11 @@ export function getZahlungsstatusAlreadyHandeledInZahlungsauftrag(): Array<TSVer
         TSVerfuegungZeitabschnittZahlungsstatus.IGNORIERT_KORRIGIERT
     ];
 }
+
+export function getZahlungsstatusIgnorieren(): Array<TSVerfuegungZeitabschnittZahlungsstatus> {
+    return [
+        TSVerfuegungZeitabschnittZahlungsstatus.IGNORIERT,
+        TSVerfuegungZeitabschnittZahlungsstatus.IGNORIERT_KORRIGIERT,
+        TSVerfuegungZeitabschnittZahlungsstatus.IGNORIEREND
+    ];
+}
