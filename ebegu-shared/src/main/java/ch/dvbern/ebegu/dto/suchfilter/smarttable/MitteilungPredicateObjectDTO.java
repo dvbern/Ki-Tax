@@ -21,6 +21,7 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlTransient;
 
+import ch.dvbern.ebegu.enums.MessageTypes;
 import org.apache.commons.lang.builder.ToStringBuilder;
 
 /**
@@ -41,7 +42,7 @@ public class MitteilungPredicateObjectDTO implements Serializable {
 	private String empfaengerVerantwortung;     // mitteilung.empfaengerVerantwortung;
 	private String mitteilungStatus;  // mitteilung.status
 	private String gemeinde;
-	private String[] messageTypes;
+	private MessageTypes[] messageTypes = new MessageTypes[0];
 
 	public String getSender() {
 		return sender;
@@ -131,11 +132,11 @@ public class MitteilungPredicateObjectDTO implements Serializable {
 			.toString();
 	}
 
-	public String[] getMessageTypes() {
-		return messageTypes.clone();
+	public MessageTypes[] getMessageTypes() {
+		return messageTypes;
 	}
 
-	public void setMessageTypes(String[] messageTypes) {
-		this.messageTypes = messageTypes.clone();
+	public void setMessageTypes(MessageTypes[] messageTypes) {
+		this.messageTypes = messageTypes;
 	}
 }
