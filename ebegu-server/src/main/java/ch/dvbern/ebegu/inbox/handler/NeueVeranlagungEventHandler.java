@@ -222,7 +222,6 @@ public class NeueVeranlagungEventHandler extends BaseEventHandler<NeueVeranlagun
 		boolean gemeinsam = Boolean.TRUE
 			.equals(gesuch.getFamiliensituationContainer().getFamiliensituationJA().getGemeinsameSteuererklaerung());
 		if (gemeinsam && gesuch.getGesuchsteller2() != null) {
-			kibonAnfrageContext.setFinSitContGS2(gesuch.getGesuchsteller2().getFinanzielleSituationContainer());
 			if (!kibonAnfrageContext.getGesuchsteller()
 				.getGesuchstellerJA()
 				.getGeburtsdatum()
