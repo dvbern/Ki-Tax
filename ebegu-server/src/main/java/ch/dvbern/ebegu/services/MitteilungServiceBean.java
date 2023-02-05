@@ -1637,15 +1637,16 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 					ErrorCodeEnum.ERROR_FIN_SIT_GEMEINSAM_NEUE_VERANLAGUNG_ALLEIN,
 					gesuch.getId());
 			}
+			assert kibonAnfrageContext.getFinSitContGS2() != null;
 			KibonAnfrageHelper.updateFinSitSteuerdatenAbfrageGemeinsamStatusOk(kibonAnfrageContext.getFinSitCont()
 					.getFinanzielleSituationJA(),
-				kibonAnfrageContext.getGesuch().getGesuchsteller2().getFinanzielleSituationContainer().getFinanzielleSituationJA(),
+				kibonAnfrageContext.getFinSitContGS2().getFinanzielleSituationJA(),
 				mitteilung.getSteuerdatenResponse());
 			kibonAnfrageContext.getFinSitCont().getFinanzielleSituationJA().setSteuerdatenAbfrageStatus(kibonAnfrageContext.getSteuerdatenAnfrageStatus());
-			kibonAnfrageContext.getGesuch().getGesuchsteller2().getFinanzielleSituationContainer().getFinanzielleSituationJA()
+			kibonAnfrageContext.getFinSitContGS2().getFinanzielleSituationJA()
 				.setSteuerdatenAbfrageStatus(kibonAnfrageContext.getSteuerdatenAnfrageStatus());
 			finanzielleSituationService.saveFinanzielleSituation(kibonAnfrageContext.getFinSitCont(), gesuch.getId());
-			finanzielleSituationService.saveFinanzielleSituation(kibonAnfrageContext.getGesuch().getGesuchsteller2().getFinanzielleSituationContainer(), gesuch.getId());
+			finanzielleSituationService.saveFinanzielleSituation(kibonAnfrageContext.getFinSitContGS2(), gesuch.getId());
 		} else {
 			if (mitteilung.getSteuerdatenResponse().getZpvNrPartner() != null) {
 				throw new EbeguException(
