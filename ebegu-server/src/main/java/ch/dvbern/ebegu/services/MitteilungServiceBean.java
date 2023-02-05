@@ -110,6 +110,7 @@ import ch.dvbern.ebegu.enums.Betreuungsstatus;
 import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.FinSitStatus;
+import ch.dvbern.ebegu.enums.MessageTypes;
 import ch.dvbern.ebegu.enums.MitteilungStatus;
 import ch.dvbern.ebegu.enums.MitteilungTeilnehmerTyp;
 import ch.dvbern.ebegu.enums.SearchMode;
@@ -1468,7 +1469,7 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 	private static Predicate getMessageTypePredicate(Root<Mitteilung> root, MitteilungPredicateObjectDTO predicateObjectDto) {
 		List<Class> classes = Arrays.stream(predicateObjectDto.getMessageTypes()).map(messageType -> {
 			try {
-			return Class.forName("ch.dvbern.ebegu.entities." + messageType);
+				return Class.forName("ch.dvbern.ebegu.entities." + getEntityNameForMessageType(messageType));
 			} catch (ClassNotFoundException e) {
 				LOG.error(e.getMessage() + ". Using default class Mitteilung");
 				return Mitteilung.class;
@@ -1477,6 +1478,19 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 
 		final Predicate messageTypePredicate = root.type().in(classes);
 		return messageTypePredicate;
+	}
+
+	private static String getEntityNameForMessageType(MessageTypes messageTypes) {
+		switch (messageTypes) {
+		case MITTEILUNG:
+			return "Mitteilung";
+		case BETREUUNGSMITTEILUNG:
+			return "Betreuungsmitteilung";
+		case NEUEVERANLAGUNGMITTEILUNG:
+			return "NeueVeranlagungsMitteilung";
+		default:
+			return "Mitteilung";
+		}
 	}
 
 	private void filterGemeinde(Benutzer user, Join<Dossier, Gemeinde> joinGemeinde, List<Predicate> predicates) {
@@ -1630,7 +1644,9 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 			.equals(gesuch.getFamiliensituationContainer().getFamiliensituationJA().getGemeinsameSteuererklaerung());
 		boolean hasGS2 = kibonAnfrageContext.getGesuch().getGesuchsteller2() != null;
 		if (hasGS2 && gemeinsam) {
-			Objects.requireNonNull(kibonAnfrageContext.getGesuch().getGesuchsteller2().getFinanzielleSituationContainer());
+			Objects.requireNonNull(kibonAnfrageContext.getGesuch()
+				.getGesuchsteller2()
+				.getFinanzielleSituationContainer());
 			if (mitteilung.getSteuerdatenResponse().getZpvNrPartner() == null) {
 				throw new EbeguException(
 					"neueVeranlagungsMitteilungImAntragErsetzen",
@@ -1638,15 +1654,26 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 					gesuch.getId());
 			}
 			assert kibonAnfrageContext.getFinSitContGS2() != null;
-			KibonAnfrageHelper.updateFinSitSteuerdatenAbfrageGemeinsamStatusOk(kibonAnfrageContext.getFinSitCont()
+			if (!kibonAnfrageContext.getFinSitCont().getGesuchsteller().getGesuchstellerJA().getGeburtsdatum().equals(
+				mitteilung.getSteuerdatenResponse().getGeburtsdatumAntragsteller()
+			)) {
+				kibonAnfrageContext.switchGSContainer();
+			}
+
+			KibonAnfrageHelper.updateFinSitSteuerdatenAbfrageGemeinsamStatusOk(
+				kibonAnfrageContext.getFinSitCont()
 					.getFinanzielleSituationJA(),
 				kibonAnfrageContext.getFinSitContGS2().getFinanzielleSituationJA(),
 				mitteilung.getSteuerdatenResponse());
-			kibonAnfrageContext.getFinSitCont().getFinanzielleSituationJA().setSteuerdatenAbfrageStatus(kibonAnfrageContext.getSteuerdatenAnfrageStatus());
+			kibonAnfrageContext.getFinSitCont()
+				.getFinanzielleSituationJA()
+				.setSteuerdatenAbfrageStatus(kibonAnfrageContext.getSteuerdatenAnfrageStatus());
 			kibonAnfrageContext.getFinSitContGS2().getFinanzielleSituationJA()
 				.setSteuerdatenAbfrageStatus(kibonAnfrageContext.getSteuerdatenAnfrageStatus());
 			finanzielleSituationService.saveFinanzielleSituation(kibonAnfrageContext.getFinSitCont(), gesuch.getId());
-			finanzielleSituationService.saveFinanzielleSituation(kibonAnfrageContext.getFinSitContGS2(), gesuch.getId());
+			finanzielleSituationService.saveFinanzielleSituation(
+				kibonAnfrageContext.getFinSitContGS2(),
+				gesuch.getId());
 		} else {
 			if (mitteilung.getSteuerdatenResponse().getZpvNrPartner() != null) {
 				throw new EbeguException(
