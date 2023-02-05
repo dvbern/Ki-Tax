@@ -1482,12 +1482,11 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 
 	private static String getEntityNameForMessageType(MessageTypes messageTypes) {
 		switch (messageTypes) {
-		case MITTEILUNG:
-			return "Mitteilung";
 		case BETREUUNGSMITTEILUNG:
 			return "Betreuungsmitteilung";
 		case NEUEVERANLAGUNGMITTEILUNG:
 			return "NeueVeranlagungsMitteilung";
+		case MITTEILUNG:
 		default:
 			return "Mitteilung";
 		}
