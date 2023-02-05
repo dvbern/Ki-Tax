@@ -221,13 +221,13 @@ public class NeueVeranlagungEventHandler extends BaseEventHandler<NeueVeranlagun
 
 		boolean gemeinsam = Boolean.TRUE
 			.equals(gesuch.getFamiliensituationContainer().getFamiliensituationJA().getGemeinsameSteuererklaerung());
-		if (gemeinsam && !kibonAnfrageContext.getGesuchsteller()
-			.getGesuchstellerJA()
-			.getGeburtsdatum()
-			.equals(geburtsdatum)
-			&& gesuch.getGesuchsteller2() != null) {
-			kibonAnfrageContext.setFinSitContGS2(gesuch.getGesuchsteller2().getFinanzielleSituationContainer());
-			kibonAnfrageContext = kibonAnfrageContext.switchGSContainer();
+		if (gemeinsam && gesuch.getGesuchsteller2() != null) {
+			if (!kibonAnfrageContext.getGesuchsteller()
+				.getGesuchstellerJA()
+				.getGeburtsdatum()
+				.equals(geburtsdatum)){
+				kibonAnfrageContext = kibonAnfrageContext.switchGSContainer();
+			}
 		}
 		return kibonAnfrageHandler.handleKibonNeueVeranlagungAnfrage(kibonAnfrageContext, gemeinsam);
 	}
