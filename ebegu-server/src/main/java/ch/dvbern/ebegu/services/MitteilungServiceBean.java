@@ -1654,7 +1654,7 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 			}
 			assert kibonAnfrageContext.getFinSitContGS2() != null;
 			if (!kibonAnfrageContext.getFinSitCont().getGesuchsteller().getGesuchstellerJA().getGeburtsdatum().equals(
-				mitteilung.getSteuerdatenResponse().getGeburtsdatumAntragsteller()
+				mitteilung.getSteuerdatenResponse().getGeburtsdatumDossiertraeger()
 			)) {
 				kibonAnfrageContext.switchGSContainer();
 			}
