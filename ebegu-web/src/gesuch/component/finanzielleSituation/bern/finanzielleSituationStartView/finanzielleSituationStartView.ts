@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022 DV Bern AG, Switzerland
+ * Copyright (C) 2023 DV Bern AG, Switzerland
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -340,8 +340,8 @@ export class FinanzielleSituationStartViewController extends AbstractFinSitBernV
     }
 
     public isZahlungsangabenRequired(): boolean {
-        return !this.model.zahlungsinformationen.keineMahlzeitenverguenstigungBeantragt ||
-            this.zahlungsangabenRequired;
+        return (!this.model.zahlungsinformationen.keineMahlzeitenverguenstigungBeantragt && this.isMahlzeitenverguenstigungEnabled())
+            || this.zahlungsangabenRequired;
     }
 
     public areZahlungsdatenEditable(): boolean {
