@@ -1653,7 +1653,6 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 					gesuch.getId());
 			}
 
-			assert kibonAnfrageContext.getSteuerdatenResponse() != null;
 			if (!KibonAnfrageHelper.isAntragstellerDossiertraeger(mitteilung.getSteuerdatenResponse())) {
 				kibonAnfrageContext = kibonAnfrageContext.switchGSContainer();
 				kibonAnfrageContext.setSteuerdatenAnfrageStatus(SteuerdatenAnfrageStatus.RECHTSKRAEFTIG);
