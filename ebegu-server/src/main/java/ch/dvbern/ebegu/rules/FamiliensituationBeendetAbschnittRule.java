@@ -40,6 +40,9 @@ public class FamiliensituationBeendetAbschnittRule extends AbstractAbschnittRule
 		if (null == familiensituationAenderungPer) {
 			return new LinkedList<>();
 		}
+		if (null == gesuch || null == gesuch.getGesuchsperiode()) {
+			return new LinkedList<>();
+		}
 		LocalDate gueltigBis = gesuch.getGesuchsperiode().getGueltigkeit().getGueltigBis();
 		LocalDate firstDayOfNextMonth = familiensituationAenderungPer.with(TemporalAdjusters.firstDayOfNextMonth());
 
