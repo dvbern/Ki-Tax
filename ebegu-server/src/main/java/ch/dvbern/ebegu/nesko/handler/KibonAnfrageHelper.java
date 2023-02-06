@@ -179,7 +179,7 @@ public class KibonAnfrageHelper {
 		setBerechneteFelder(finSit, steuerdatenResponse, anzahlGesuchsteller);
 	}
 
-	protected static boolean isAntragstellerDossiertraeger(SteuerdatenResponse steuerdatenResponse) {
+	public static boolean isAntragstellerDossiertraeger(SteuerdatenResponse steuerdatenResponse) {
 		assert steuerdatenResponse.getZpvNrAntragsteller() != null;
 		return steuerdatenResponse.getZpvNrAntragsteller().equals(steuerdatenResponse.getZpvNrDossiertraeger());
 	}
