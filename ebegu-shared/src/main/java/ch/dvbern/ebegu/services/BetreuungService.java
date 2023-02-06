@@ -269,4 +269,10 @@ public interface BetreuungService {
 	BigDecimal getMultiplierForAbweichnungen(@Nonnull Betreuung betreuung);
 
 	void updateGueltigFlagOnPlatzAndVorgaenger(@Nonnull AbstractPlatz platz);
+
+	/**
+	 * Findet für eine Anmeldung die letzte gültige nicht ignorierte
+	 */
+	@Nonnull
+	AbstractAnmeldung findVorgaengerAnmeldungNotIgnoriert(AbstractAnmeldung betreuung);
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2021 DV Bern AG, Switzerland
+ * Copyright (C) 2023 DV Bern AG, Switzerland
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -15,17 +15,10 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {TSMitteilungTypes} from '../../../models/enums/TSMitteilungTypes';
+package ch.dvbern.ebegu.enums;
 
-export interface DVPosteingangFilter {
-    sender?: string;
-    gemeinde?: string;
-    fallNummer?: string;
-    mitteilungStatus?: string;
-    familienName?: string;
-    subject?: string;
-    sentDatum?: string;
-    empfaenger?: string;
-    empfaengerVerantwortung?: string;
-    messageTypes: TSMitteilungTypes[];
+public enum MessageTypes {
+	MITTEILUNG,
+	BETREUUNGSMITTEILUNG,
+	NEUEVERANLAGUNGMITTEILUNG
 }

@@ -1,22 +1,25 @@
 /*
- * Ki-Tax: System for the management of external childcare subsidies
- * Copyright (C) 2017 City of Bern Switzerland
+ * Copyright (C) 2023 DV Bern AG, Switzerland
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Affero General Public License for more details.
+ *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
 import * as angular from 'angular';
 import {AuthServiceRS} from '../../../../authentication/service/AuthServiceRS.rest';
 import {DossierRS} from '../../../../gesuch/service/dossierRS.rest';
 import {GemeindeRS} from '../../../../gesuch/service/gemeindeRS.rest';
+import {GesuchRS} from '../../../../gesuch/service/gesuchRS.rest';
 import {ngServicesMock} from '../../../../hybridTools/ngServicesMocks';
 import {translationsMock} from '../../../../hybridTools/translationsMock';
 import {TSMitteilungStatus} from '../../../../models/enums/TSMitteilungStatus';
@@ -55,6 +58,7 @@ describe('mitteilungenView', () => {
     let $timeout: ITimeoutService;
     let institutionRS: InstitutionRS;
     let gemeindeRS: GemeindeRS;
+    let gesuchRS: GesuchRS;
 
     beforeEach(angular.mock.module(MITTEILUNGEN_JS_MODULE.name));
 
@@ -74,6 +78,7 @@ describe('mitteilungenView', () => {
         institutionRS = $injector.get('InstitutionRS');
         scope = $rootScope.$new();
         gemeindeRS = $injector.get('GemeindeRS');
+        gesuchRS = $injector.get('GesuchRS');
 
         // prepare fall
         stateParams.dossierId = '123';
@@ -206,7 +211,7 @@ describe('mitteilungenView', () => {
         spyOn(mitteilungRS, 'setAllNewMitteilungenOfDossierGelesen').and.returnValue($q.resolve([]));
         controller = new DVMitteilungListController(stateParams, mitteilungRS, authServiceRS, betreuungRS, $q, null,
             $rootScope, undefined, undefined, undefined, undefined, scope, $timeout,
-            dossierRS, undefined, institutionRS, gemeindeRS);
+            dossierRS, undefined, institutionRS, gemeindeRS, gesuchRS);
         controller.$onInit();   // hack, muesste wohl eher so gehen
                                 // http://stackoverflow.com/questions/38631204/how-to-trigger-oninit-or-onchanges-implictly-in-unit-testing-angular-component
         $rootScope.$apply();

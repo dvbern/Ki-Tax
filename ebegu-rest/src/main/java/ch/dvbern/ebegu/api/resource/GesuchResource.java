@@ -1,16 +1,18 @@
 /*
- * Ki-Tax: System for the management of external childcare subsidies
- * Copyright (C) 2017 City of Bern Switzerland
+ * Copyright (C) 2023 DV Bern AG, Switzerland
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Affero General Public License for more details.
+ *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
 package ch.dvbern.ebegu.api.resource;
@@ -231,6 +233,26 @@ public class GesuchResource {
 		return jaxGesuch;
 	}
 
+	@ApiOperation(value = "Gibt den Antrag für die übergebene FinSit ID zurück", response = JaxGesuch.class)
+	@Nullable
+	@GET
+	@Path("/gesuchForFinSit/{finSitId}")
+	@Consumes(MediaType.WILDCARD)
+	@Produces(MediaType.APPLICATION_JSON)
+	@PermitAll // Grundsaetzliche fuer alle Rollen: Datenabhaengig. -> Authorizer
+	public JaxGesuch findGesuchForFinSit(
+		@Nonnull @NotNull @PathParam("finSitId") JaxId finSitJAXPId) {
+		Objects.requireNonNull(finSitJAXPId.getId());
+		String finSitId = converter.toEntityId(finSitJAXPId);
+		Optional<Gesuch> gesuchOptional = gesuchService.findGesuchForFinSit(finSitId);
+
+		if (gesuchOptional.isEmpty()) {
+			throw new EbeguEntityNotFoundException("findGesuchForFinSit", finSitId);
+		}
+		Gesuch gesuchToReturn = gesuchOptional.get();
+		return converter.gesuchToJAX(gesuchToReturn);
+	}
+
 	@ApiOperation(value = "Sucht eine Person im EWK nach Name, Vorname, Geburtsdatum und Geschlecht.",
 		response = EWKResultat.class)
 	@Nullable
@@ -321,30 +343,30 @@ public class GesuchResource {
 	}
 
 
-	@ApiOperation(value = "Gibt den letzten Antrag die nicht ignoriert wuerde mit der uebergebenen Id zurueck. ", response = JaxGesuch.class)
+	@ApiOperation(value = "Gibt das letzte verfügte Gesuch für das Gesuch mit uebergebenen Id zurueck. ", response = JaxGesuch.class)
 	@Nullable
 	@GET
-	@Path("/letzteNichtIgnorierte/{gesuchId}")
+	@Path("/neustesVerfuegtesGesuchFuerGesuch/{gesuchId}")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
 	@PermitAll
-	public JaxId findLetzteNichtIgnorierte(
+	public JaxId getNeustesVerfuegtesGesuchFuerGesuch(
 		@Nonnull @NotNull @PathParam("gesuchId") JaxId gesuchJAXPId) {
 		Optional<Gesuch> gesuchOptional = gesuchService.findGesuch(converter.toEntityId(gesuchJAXPId));
 
 		if (gesuchOptional.isPresent()) {
-			Optional<Gesuch> letzteNichtIgnorierteGesuch = gesuchService.findLetzteNichtIgnorierteGesuch(gesuchOptional.get());
-			if (!letzteNichtIgnorierteGesuch.isPresent()) {
-				throw new EbeguEntityNotFoundException("findLetzteNichtIgnorierte",
-					"Keine nicht ignorierte Gesuch gefunden", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND);
+			Optional<Gesuch> neustesVerfuegtesGesuch = gesuchService.getNeustesVerfuegtesGesuchFuerGesuch(gesuchOptional.get());
+			if (neustesVerfuegtesGesuch.isEmpty()) {
+				throw new EbeguEntityNotFoundException("getNeustesVerfuegtesGesuchFuerGesuch",
+					"Neustes verfügtes Gesuch nicht gefunden", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND);
 			}
-			Gesuch gesuchToReturn = letzteNichtIgnorierteGesuch.get();
+			Gesuch gesuchToReturn = neustesVerfuegtesGesuch.get();
 			return converter.toJaxId(gesuchToReturn);
 		}
 		String message = String.format(
-			"Could not update Status because the Gesuch with ID %s could not be read",
+			"Could not get Gesuch because the Gesuch with ID %s could not be read",
 			gesuchJAXPId.getId());
-		throw new EbeguEntityNotFoundException("findLetzteNichtIgnorierte", message, ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
+		throw new EbeguEntityNotFoundException("getNeustesVerfuegtesGesuchFuerGesuch", message, ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
 			GESUCH_ID_INVALID + gesuchJAXPId.getId());
 	}
 
@@ -885,7 +907,7 @@ public class GesuchResource {
 	@Path("/{antragId}/ignorieren")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE })
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, SACHBEARBEITER_TS, ADMIN_TS })
 	public Response mutationIgnorieren(
 		@Nonnull @NotNull @PathParam("antragId") JaxId antragJaxId,
 		@Context UriInfo uriInfo,
@@ -1218,6 +1240,22 @@ public class GesuchResource {
 				antragJaxId.getId()));
 		Gesuch modifiedGesuch = gesuchService.updateMarkiertFuerKontroll(gesuchFromDB, markiertFuerKontroll);
 		return converter.gesuchToJAX(modifiedGesuch);
+	}
+
+	@ApiOperation(value = "Gibt der jüngste Vorgänger des übergebenen Gesuches zurück" +
+		"der nicht ignoriert wurde.", response = JaxGesuch.class)
+	@Nullable
+	@GET
+	@Path("/vorgaengerGesuchNotIgnoriert/{gesuchId}")
+	@Consumes(MediaType.WILDCARD)
+	@Produces(MediaType.APPLICATION_JSON)
+	@PermitAll // Grundsaetzliche fuer alle Rollen: Datenabhaengig. -> Authorizer
+	public JaxGesuch findVorgaengerGesuchNotIgnoriert(
+		@Nonnull @NotNull @PathParam("gesuchId") JaxId gesuchJAXPId) {
+		Objects.requireNonNull(gesuchJAXPId.getId());
+		String gesuchId = converter.toEntityId(gesuchJAXPId);
+		var vorgangerGesuch = gesuchService.findVorgaengerGesuchNotIgnoriert(gesuchId);
+		return converter.gesuchToJAX(vorgangerGesuch);
 	}
 
 }

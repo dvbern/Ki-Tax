@@ -22,6 +22,7 @@ import {RemoveDialogController} from '../../../../gesuch/dialog/RemoveDialogCont
 import {DossierRS} from '../../../../gesuch/service/dossierRS.rest';
 import {GemeindeRS} from '../../../../gesuch/service/gemeindeRS.rest';
 import {GesuchModelManager} from '../../../../gesuch/service/gesuchModelManager';
+import {GesuchRS} from '../../../../gesuch/service/gesuchRS.rest';
 import {TSMitteilungEvent} from '../../../../models/enums/TSMitteilungEvent';
 import {TSMitteilungStatus} from '../../../../models/enums/TSMitteilungStatus';
 import {TSMitteilungTeilnehmerTyp} from '../../../../models/enums/TSMitteilungTeilnehmerTyp';
@@ -29,6 +30,7 @@ import {TSRole} from '../../../../models/enums/TSRole';
 import {TSBetreuung} from '../../../../models/TSBetreuung';
 import {TSBetreuungsmitteilung} from '../../../../models/TSBetreuungsmitteilung';
 import {TSDossier} from '../../../../models/TSDossier';
+import {TSGesuchstellerContainer} from '../../../../models/TSGesuchstellerContainer';
 import {TSMitteilung} from '../../../../models/TSMitteilung';
 import {EbeguUtil} from '../../../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../../../utils/TSRoleUtil';
@@ -83,7 +85,8 @@ export class DVMitteilungListController implements IOnInit {
         'DossierRS',
         'PosteingangService',
         'InstitutionRS',
-        'GemeindeRS'
+        'GemeindeRS',
+        'GesuchRS'
     ];
 
     public dossier: TSDossier;
@@ -118,7 +121,8 @@ export class DVMitteilungListController implements IOnInit {
         private readonly dossierRS: DossierRS,
         private readonly posteingangService: PosteingangService,
         private readonly institutionRS: InstitutionRS,
-        private readonly gemeindeRS: GemeindeRS
+        private readonly gemeindeRS: GemeindeRS,
+        private readonly gesuchRS: GesuchRS
     ) {
     }
 
@@ -386,6 +390,29 @@ export class DVMitteilungListController implements IOnInit {
             kindNumber: mitteilung.betreuung.kindNummer,
             gesuchId: mitteilung.betreuung.gesuchId
         });
+    }
+
+    public async goToFinanzielleSituation(mitteilung: TSMitteilung): Promise<void> {
+        const gesuch = await this.gesuchRS.findGesuchForFinSit(mitteilung.finanzielleSituation.id);
+        let gesuchstellerNumber: number;
+        if (this.finSitIdEquals(mitteilung, gesuch.gesuchsteller1)) {
+            gesuchstellerNumber = 1;
+        } else if (this.finSitIdEquals(mitteilung, gesuch.gesuchsteller2)) {
+            gesuchstellerNumber = 2;
+        } else {
+            const e = new Error('finSit nicht gefunden');
+            LOG.error(e);
+            throw e;
+        }
+        this.$state.go('gesuch.finanzielleSituation', {
+            gesuchstellerNumber,
+            gesuchId: gesuch.id
+        });
+    }
+
+    private finSitIdEquals(mitteilung: TSMitteilung, gesuchstellerCont: TSGesuchstellerContainer): boolean {
+        return gesuchstellerCont.finanzielleSituationContainer.finanzielleSituationJA.id
+            === mitteilung.finanzielleSituation.id;
     }
 
     public isBetreuungsmitteilungApplied(mitteilung: TSMitteilung): boolean {

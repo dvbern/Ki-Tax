@@ -37,6 +37,11 @@ public final class KibonAnfrageUtil {
 		KibonAnfrageContext kibonAnfrageContext = null;
 		Objects.requireNonNull(gesuch.getGesuchsteller1());
 		Objects.requireNonNull(gesuch.getGesuchsteller1().getFinanzielleSituationContainer());
+		Objects.requireNonNull(gesuch.getFamiliensituationContainer());
+		Objects.requireNonNull(gesuch.getFamiliensituationContainer().getFamiliensituationJA());
+
+		boolean gemeinsam = Boolean.TRUE
+			.equals(gesuch.getFamiliensituationContainer().getFamiliensituationJA().getGemeinsameSteuererklaerung());
 		if (gesuch.getGesuchsteller1()
 			.getFinanzielleSituationContainer()
 			.getFinanzielleSituationJA()
@@ -56,9 +61,11 @@ public final class KibonAnfrageUtil {
 					gesuch.getGesuchsteller1(),
 					gesuch.getGesuchsteller1().getFinanzielleSituationContainer(),
 					gesuch.getId());
+				if(gemeinsam && gesuch.getGesuchsteller2() != null) {
+					kibonAnfrageContext.setFinSitContGS2(gesuch.getGesuchsteller2().getFinanzielleSituationContainer());
+				}
 			}
-		} else {
-			Objects.requireNonNull(gesuch.getGesuchsteller2());
+		} else if (gesuch.getGesuchsteller2() != null){
 			Objects.requireNonNull(gesuch.getGesuchsteller2()
 				.getFinanzielleSituationContainer());
 			if (gesuch.getGesuchsteller2()
@@ -79,7 +86,9 @@ public final class KibonAnfrageUtil {
 					gesuch.getGesuchsteller2(),
 					gesuch.getGesuchsteller2().getFinanzielleSituationContainer(),
 					gesuch.getId());
-
+				if(gemeinsam && gesuch.getGesuchsteller1() != null) {
+					kibonAnfrageContext.setFinSitContGS2(gesuch.getGesuchsteller1().getFinanzielleSituationContainer());
+				}
 			}
 		}
 		return kibonAnfrageContext;

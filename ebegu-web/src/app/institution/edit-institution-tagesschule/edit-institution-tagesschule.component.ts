@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2019 DV Bern AG, Switzerland
+ * Copyright (C) 2023 DV Bern AG, Switzerland
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -8,11 +8,11 @@
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
 import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnChanges, OnInit} from '@angular/core';
@@ -40,14 +40,18 @@ import {TSDateRange} from '../../../models/types/TSDateRange';
 import {EbeguUtil} from '../../../utils/EbeguUtil';
 import {TagesschuleUtil} from '../../../utils/TagesschuleUtil';
 import {DvNgRemoveDialogComponent} from '../../core/component/dv-ng-remove-dialog/dv-ng-remove-dialog.component';
-import {DvNgThreeButtonDialogComponent} from '../../core/component/dv-ng-three-button-dialog/dv-ng-three-button-dialog.component';
+import {
+    DvNgThreeButtonDialogComponent
+} from '../../core/component/dv-ng-three-button-dialog/dv-ng-three-button-dialog.component';
 import {ErrorService} from '../../core/errors/service/ErrorService';
 import {LogFactory} from '../../core/logging/LogFactory';
 import {InstitutionRS} from '../../core/service/institutionRS.rest';
 import {InstitutionStammdatenRS} from '../../core/service/institutionStammdatenRS.rest';
 import {ModulTagesschuleDialogComponent} from '../edit-modul-tagesschule/modul-tagesschule-dialog.component';
 import {InfoSchnittstelleDialogComponent} from '../info-schnittstelle-dialog/info-schnittstelle-dialog.component';
-import {DialogImportFromOtherInstitutionComponent} from './dialog-import-from-other-institution/dialog-import-from-other-institution.component';
+import {
+    DialogImportFromOtherInstitutionComponent
+} from './dialog-import-from-other-institution/dialog-import-from-other-institution.component';
 
 const LOG = LogFactory.createLog('EditInstitutionTagesschuleComponent');
 
@@ -411,6 +415,18 @@ export class EditInstitutionTagesschuleComponent implements OnInit, OnChanges {
         return this.canEditEinstellungen(einstellungenTagesschule);
     }
 
+    public canDeleteModule(
+        einstellungenTagesschule: TSEinstellungenTagesschule,
+        group: TSModulTagesschuleGroup,
+        last: boolean
+    ): boolean {
+        // bei scolaris Modulen darf nur immer das letzte gelöscht werden
+        if (this.isModulTagesschuleTypScolaris(einstellungenTagesschule) && !last) {
+            return false;
+        }
+        return this.canEditModule(einstellungenTagesschule, group);
+    }
+
     public canEditEinstellungen(einstellungenTagesschule: TSEinstellungenTagesschule): boolean {
         if (EbeguUtil.isNullOrUndefined(this.konfigurationsListe)) {
             return false;
@@ -424,7 +440,7 @@ export class EditInstitutionTagesschuleComponent implements OnInit, OnChanges {
         return false;
     }
 
-    public getEditDeleteButtonTooltip(
+    public getEditButtonTooltip(
         einstellungenTagesschule: TSEinstellungenTagesschule,
         group: TSModulTagesschuleGroup
     ): string {
@@ -432,6 +448,17 @@ export class EditInstitutionTagesschuleComponent implements OnInit, OnChanges {
             return this.translate.instant('MODUL_NICHT_BEARBEITBAR_TOOLTIP');
         }
         return '';
+    }
+
+    public getDeleteButtonTooltip(
+        einstellungenTagesschule: TSEinstellungenTagesschule,
+        group: TSModulTagesschuleGroup,
+        last: boolean
+    ): string {
+        if (this.isModulTagesschuleTypScolaris(einstellungenTagesschule) && !last) {
+            return this.translate.instant('MODUL_SCOLARIS_NICHT_LOESCHBAR');;
+        }
+        return this.getEditButtonTooltip(einstellungenTagesschule, group);
     }
 
     public showGesuchsperiode(gueltigkeit: TSDateRange): boolean {
