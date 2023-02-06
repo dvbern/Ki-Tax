@@ -1652,13 +1652,13 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 					ErrorCodeEnum.ERROR_FIN_SIT_GEMEINSAM_NEUE_VERANLAGUNG_ALLEIN,
 					gesuch.getId());
 			}
-			assert kibonAnfrageContext.getFinSitContGS2() != null;
-			if (!kibonAnfrageContext.getFinSitCont().getGesuchsteller().getGesuchstellerJA().getGeburtsdatum().equals(
-				mitteilung.getSteuerdatenResponse().getGeburtsdatumDossiertraeger()
-			)) {
-				kibonAnfrageContext.switchGSContainer();
-			}
 
+			assert kibonAnfrageContext.getSteuerdatenResponse() != null;
+			if (!KibonAnfrageHelper.isAntragstellerDossiertraeger(mitteilung.getSteuerdatenResponse())) {
+				kibonAnfrageContext = kibonAnfrageContext.switchGSContainer();
+				kibonAnfrageContext.setSteuerdatenAnfrageStatus(SteuerdatenAnfrageStatus.RECHTSKRAEFTIG);
+			}
+			assert kibonAnfrageContext.getFinSitContGS2() != null;
 			KibonAnfrageHelper.updateFinSitSteuerdatenAbfrageGemeinsamStatusOk(
 				kibonAnfrageContext.getFinSitCont()
 					.getFinanzielleSituationJA(),
