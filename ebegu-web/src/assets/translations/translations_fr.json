@@ -1753,6 +1753,7 @@
     "TAGESSCHULE_ANMELDUNG_START_END": "Période de validité de l’école à journée",
     "FERIENINSEL_ANMELDUNG_START_END": "Accepter les accueils extrascolaires pendant les vacances à partir de / jusqu'à",
     "ADMIN_MAIL": "Administrateurs - courriel",
+    "ADMIN_MAIL_BUTTON": "E-Mail von Administrator/in der Trägerschaft auswählen",
     "KONTAKT_MAIL": "Courriel de l'adresse de contact",
     "EINLADUNG_SENDEN": "Envoyer l'invitation",
     "EINLADUNG_ABSCHLIESSEN": "Terminer l'enregistrement",

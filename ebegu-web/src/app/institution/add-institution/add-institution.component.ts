@@ -266,4 +266,8 @@ export class AddInstitutionComponent implements OnInit {
     public selectGemeindeRequired(): boolean {
         return !this.authServiceRS.isRole(TSRole.SUPER_ADMIN);
     }
+
+    public selectAdminMail(): void {
+        this.adminMail = this.institution.traegerschaft.email;
+    }
 }
