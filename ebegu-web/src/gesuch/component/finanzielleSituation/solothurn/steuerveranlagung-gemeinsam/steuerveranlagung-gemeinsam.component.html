@@ -1,9 +1,9 @@
 <div class="row">
 	<div class="col-xs-12 dv-input-container-question">
 		<div class="form-group">
+			<span class="ebegu-h1 required">{{'FINANZIELLE_SITUATION_STEK_GEMEINSAM' | translate:{basisjahr: gesuchModelManager.getBasisjahr(), namegs2: gesuchModelManager.getGesuch()?.gesuchsteller2?.gesuchstellerJA?.getFullName() || ''} }}</span>
 			<dv-input-container-x [verticalAlign]="true">
-                <span class="ebegu-h1 required">{{'FINANZIELLE_SITUATION_STEK_GEMEINSAM' | translate:{basisjahr: gesuchModelManager.getBasisjahr(), namegs2: gesuchModelManager.getGesuch()?.gesuchsteller2?.gesuchstellerJA?.getFullName() || ''} }}</span>
-                <dv-radio-container-x>
+				<dv-radio-container-x>
 					<mat-radio-group
 							aria-labelledby="steuerveranlagungGemeinsam_id"
 							name="steuerveranlagungGemeinsam"
