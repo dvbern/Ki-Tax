@@ -84,6 +84,10 @@ export class AdminViewXComponent extends AbstractAdminViewX implements OnInit {
         this.applicationProperty = row;
     }
 
+    public getApplicationPropertyArray():string[] {
+        return this.applicationProperty.value.split(',');
+    }
+
     public resetForm(): void {
         this.applicationProperty = undefined;
         this.applicationPropertyRS.getAllApplicationProperties().then(response => {
@@ -112,4 +116,6 @@ export class AdminViewXComponent extends AbstractAdminViewX implements OnInit {
     public doFilter(value: string): void {
         this.displayedCollection.filter = value;
     }
+
+
 }
