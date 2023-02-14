@@ -185,9 +185,10 @@ export class FamiliensituationViewXComponent extends AbstractGesuchViewX<TSFamil
     }
 
     public showFragePartnerWieBisher(): boolean {
+        const bis = this.gesuchModelManager.getGesuchsperiode().gueltigkeit.gueltigBis;
         return this.isMutation() &&
-            EbeguUtil.isNotNullOrUndefined(this.getFamiliensituation().aenderungPer) &&
-            !(this.getFamiliensituation()?.familienstatus === TSFamilienstatus.ALLEINERZIEHEND);
+            this.getFamiliensituationErstgesuch().hasSecondGesuchsteller(bis) &&
+            this.getFamiliensituation().hasSecondGesuchsteller(bis);
     }
 
     /**
@@ -424,7 +425,7 @@ export class FamiliensituationViewXComponent extends AbstractGesuchViewX<TSFamil
     public getNotPertnerIdentischMitVorgesuchWarning(): string {
         let warning: string = this.$translate.instant('NOT_PARTNER_IDENTISCH_MIT_VORGESUCH', {
             partnerAlt: this.gesuchModelManager.getGesuch().gesuchsteller2.extractFullName(),
-            endeDatum: this.gesuchModelManager.getGesuch().gesuchsperiode.gueltigkeit.gueltigBis.format(CONSTANTS.DATE_FORMAT)
+            endeDatum: this.getFamiliensituation().aenderungPer.endOf('month')
             });
         if (this.gesuchModelManager.getGesuch().extractFamiliensituation().familienstatus !== TSFamilienstatus.ALLEINERZIEHEND){
             let partnerNotIdentischWarningBeiPaaren: string = this.$translate.instant('NOT_PARTNER_IDENTISCH_MIT_VORGESUCH_PAAR',
