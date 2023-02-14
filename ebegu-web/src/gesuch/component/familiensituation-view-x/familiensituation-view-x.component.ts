@@ -20,6 +20,7 @@ import * as moment from 'moment';
 import {mergeMap} from 'rxjs/operators';
 import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
 import {DvNgRemoveDialogComponent} from '../../../app/core/component/dv-ng-remove-dialog/dv-ng-remove-dialog.component';
+import {CONSTANTS} from '../../../app/core/constants/CONSTANTS';
 import {ErrorService} from '../../../app/core/errors/service/ErrorService';
 import {LogFactory} from '../../../app/core/logging/LogFactory';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
@@ -88,7 +89,6 @@ export class FamiliensituationViewXComponent extends AbstractGesuchViewX<TSFamil
         this.gesuchstellerKardinalitaetValues = getTSGesuchstellerKardinalitaetValues();
         this.unterhaltsvereinbarungAnswerValues = getTSUnterhaltsvereinbarungAnswerValues();
         this.initViewModel();
-        const defaultFormat = 'DD.MM.YYYY';
     }
 
     public ngOnInit(): void {
@@ -425,7 +425,7 @@ export class FamiliensituationViewXComponent extends AbstractGesuchViewX<TSFamil
         let warning: string;
         let partnerNotIdentischWarning: string = this.$translate.instant('NOT_PARTNER_IDENTISCH_MIT_VORGESUCH', {
             partnerAlt: this.gesuchModelManager.getGesuch().gesuchsteller2.extractFullName(),
-            endeDatum: this.gesuchModelManager.getGesuch().gesuchsperiode.gueltigkeit.gueltigBis.format('DD.MM.YYYY')
+            endeDatum: this.gesuchModelManager.getGesuch().gesuchsperiode.gueltigkeit.gueltigBis.format(CONSTANTS.DATE_FORMAT)
             });
         warning = partnerNotIdentischWarning;
         if (this.gesuchModelManager.getGesuch().extractFamiliensituation().familienstatus !== TSFamilienstatus.ALLEINERZIEHEND){
