@@ -20,7 +20,6 @@ import * as moment from 'moment';
 import {mergeMap} from 'rxjs/operators';
 import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
 import {DvNgRemoveDialogComponent} from '../../../app/core/component/dv-ng-remove-dialog/dv-ng-remove-dialog.component';
-import {CONSTANTS} from '../../../app/core/constants/CONSTANTS';
 import {ErrorService} from '../../../app/core/errors/service/ErrorService';
 import {LogFactory} from '../../../app/core/logging/LogFactory';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
@@ -418,14 +417,13 @@ export class FamiliensituationViewXComponent extends AbstractGesuchViewX<TSFamil
     }
 
     public getNameGesuchsteller2(): string {
-        return this.getGesuch().gesuchsteller2
-            ? this.getGesuch().gesuchsteller2.extractFullName() : ''
+        return this.gesuchModelManager.getGesuch().gesuchsteller2 ? this.gesuchModelManager.getGesuch().gesuchsteller2.extractFullName() : '';
     }
 
     public getNotPertnerIdentischMitVorgesuchWarning(): string {
         let warning: string = this.$translate.instant('NOT_PARTNER_IDENTISCH_MIT_VORGESUCH', {
-            partnerAlt: this.gesuchModelManager.getGesuch().gesuchsteller2.extractFullName(),
-            endeDatum: this.getFamiliensituation().aenderungPer.endOf('month')
+            partnerAlt: this.getNameGesuchsteller2(),
+            endeDatum: this.getFamiliensituation().aenderungPer.endOf('month').format('DD.MM.YYYY')
             });
         if (this.gesuchModelManager.getGesuch().extractFamiliensituation().familienstatus !== TSFamilienstatus.ALLEINERZIEHEND){
             let partnerNotIdentischWarningBeiPaaren: string = this.$translate.instant('NOT_PARTNER_IDENTISCH_MIT_VORGESUCH_PAAR',

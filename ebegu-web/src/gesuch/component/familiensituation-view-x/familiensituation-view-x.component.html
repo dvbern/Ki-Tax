@@ -27,8 +27,16 @@
 			<p *ngIf="isMutation()" translate>MUTATION_FAMSITUATION_HINT</p>
 			<p *ngIf="showError()" role="alert" translate
 			   class="dv-error-messages">ERROR_DATUM_GESETZT_BEI_MUTATION</p>
-            <p *ngIf="isNotPartnerIdentischMitVorgesuch()"> {{getNotPertnerIdentischMitVorgesuchWarning()}}</p>
-		</div>
+
+
+        <div class="row" *ngIf="isNotPartnerIdentischMitVorgesuch()">
+            <div class="col-xs-12">
+                <div class="well well-status-warten minus-margin">
+                    <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
+                    <span>{{getNotPertnerIdentischMitVorgesuchWarning()}}</span>
+                </div>
+            </div>
+        </div>
 	</div>
 	<div class="row">
 		<div class="col-md-12">
@@ -102,7 +110,10 @@
                         <div class="col-xs-12 dv-input-container-question">
                             <div class="form-group">
                                 <span class="ebegu-h1 required">
-                                    <span translate>FAMILIENSITUATION_FRAGE_BISHERIGER_PARTNER: {{getNameGesuchsteller2()}} </span>
+                                    <span>{{ 'FAMILIENSITUATION_FRAGE_BISHERIGER_PARTNER' | translate: {
+                                        namegs2: getNameGesuchsteller2()
+                                    }
+                                        }}</span>
                                 </span>
                                 <dv-radio-container-x>
                                     <mat-radio-group [(ngModel)]="getFamiliensituation().partnerIdentischMitVorgesuch"
@@ -111,7 +122,7 @@
                                                      name="partnerIdentischMitVorgesuch"
                                                      class="input-element sp"
                                                      [disabled]="isGesuchReadonly()"
-                                                     aria-label="{{ 'FAMILIENSITUATION_FRAGE_BISHERIGER_PARTNER' |translate }}}"
+                                                     aria-label="{{ 'FAMILIENSITUATION_FRAGE_BISHERIGER_PARTNER' | translate }}}"
                                                      aria-described-by="partnerIdentischMitVorgesuch-error">
                                         <mat-radio-button [value]="true">{{'LABEL_JA' | translate}}</mat-radio-button>
                                         <mat-radio-button [value]="false">{{'LABEL_NEIN' | translate}}</mat-radio-button>
