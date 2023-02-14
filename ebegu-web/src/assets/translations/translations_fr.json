@@ -45,6 +45,8 @@
     "ERROR_NO_FUTURE_DATETIME": "Vous ne pouvez pas saisir un horaire ultérieur à celui actuel.",
     "ERROR_MINDESTENS_EIN_WERT": "Choisir au moins un domaine de changement",
     "ERROR_DATUM_GESETZT_BEI_MUTATION": "En cas de changement, la situation familiale doit être modifiée si une date a été fixée.",
+    "NOT_PARTNER_IDENTISCH_MIT_VORGESUCH": "Ihr Antrag zusammen mit {{partnerAlt}} wird per {{endeDatum}} beendet.",
+    "NOT_PARTNER_IDENTISCH_MIT_VORGESUCH_PAAR": "Wenden Sie sich an Ihre Gemeinde, wenn Sie anschliessend mit {{bezeichnung}} ein neuer Antrag stellen möchten.",
     "ERSTGESUCH_WILLKOMMEN_TEXT_2_MIT_TS": "KiBon vous accompagne pas à pas dans votre demande de bons de garde et/ou insciption dans une école à journée continue.",
     "ERSTGESUCH_WILLKOMMEN_TEXT_2_OHNE_TS": "KiBon vous accompagne pas à pas dans votre demande de bons de garde.",
     "ERSTGESUCH_WILLKOMMEN_TEXT_3": "Pour plus d'informations, cliquez sur l'icône Information ",
