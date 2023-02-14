@@ -17,6 +17,7 @@ package ch.dvbern.ebegu.services;
 
 import java.time.LocalDate;
 import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 
 import javax.annotation.Nonnull;
@@ -119,4 +120,6 @@ public interface DossierService {
 	 */
 	@Nonnull
 	LocalDate getErstesEinreichungsdatum(@Nonnull Dossier dossier, @Nonnull Gesuchsperiode gesuchsperiode);
+
+	List<Dossier> getAllDossiersForFallNummer(long fallNummer);
 }

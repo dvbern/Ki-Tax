@@ -196,6 +196,7 @@ public class BGCalculationInput {
 	private BigDecimal percentage;
 
 	private boolean isEkvAccepted = false;
+	private boolean potentielleDoppelBetreuung = false;
 
 	public BGCalculationInput(@Nonnull VerfuegungZeitabschnitt parent, @Nonnull RuleValidity ruleValidity) {
 		this.parent = parent;
@@ -857,6 +858,7 @@ public class BGCalculationInput {
 
 		this.kitaPlusZuschlag = this.kitaPlusZuschlag || other.kitaPlusZuschlag;
 		this.besondereBeduerfnisseZuschlag = add(this.getBesondereBeduerfnisseZuschlag(), other.getBesondereBeduerfnisseZuschlag());
+		this.potentielleDoppelBetreuung = (this.potentielleDoppelBetreuung || other.potentielleDoppelBetreuung);
 	}
 
 	/**
@@ -1057,7 +1059,8 @@ public class BGCalculationInput {
 			this.geschwisternBonusKind3 == other.geschwisternBonusKind3 &&
 			MathUtil.isSame(this.stuendlicheVollkosten, other.stuendlicheVollkosten) &&
 			this.isAuszahlungAnEltern == other.isAuszahlungAnEltern &&
-			this.isEkvAccepted == other.isEkvAccepted;
+			this.isEkvAccepted == other.isEkvAccepted &&
+			this.potentielleDoppelBetreuung == other.potentielleDoppelBetreuung ;
 	}
 
 	@SuppressWarnings("PMD.CompareObjectsWithEquals")
@@ -1209,5 +1212,13 @@ public class BGCalculationInput {
 
 	public void setEkvAccepted(boolean ekvAccepted) {
 		isEkvAccepted = ekvAccepted;
+	}
+
+	public void setPotentielleDoppelBetreuung(boolean isDoppeltBetreut) {
+		this.potentielleDoppelBetreuung = isDoppeltBetreut;
+	}
+
+	public boolean getPotentielleDoppelBetreuung() {
+		return potentielleDoppelBetreuung;
 	}
 }
