@@ -20,6 +20,7 @@ package ch.dvbern.ebegu.rules;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.Month;
+import java.time.temporal.TemporalAdjusters;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
@@ -56,6 +57,9 @@ public class GeschwistertenBonusAbschnittRuleTest {
 	@Nonnull
 	private Gesuch gesuch;
 
+	private static final DateRange AUGUST = new DateRange(
+		Constants.GESUCHSPERIODE_17_18_AB,
+		Constants.GESUCHSPERIODE_17_18_AB.with(TemporalAdjusters.lastDayOfMonth()));
 
 	@Before
 	public void setUp() {
@@ -80,14 +84,14 @@ public class GeschwistertenBonusAbschnittRuleTest {
 
 	@Test
 	public void oneKindShouldHaveNeitherBonus() {
-		executeRuleAndAssertNoGeschwisternBonus(betreuung);
+		assertNoGeschwisternBonus(executeRule(betreuung));
 	}
 
 	@Test
 	public void twoKidsWithBetreuung() {
 		Betreuung betreuungOldestKind = createBetreuungWithOldestKindAndAddToGesuch();
-		executeRuleAndAssertNoGeschwisternBonus(betreuungOldestKind);
-		executeRuleAndAssertGeschwisternBonus2(betreuung);
+		assertNoGeschwisternBonus(executeRule(betreuungOldestKind));
+		assertGeschwisternBonus2(executeRule(betreuung));
 	}
 
 	@Test
@@ -96,9 +100,9 @@ public class GeschwistertenBonusAbschnittRuleTest {
 		Betreuung betreuungYoungestKind = createBetreuungWithYoungestKindAndAddToGesuch();
 
 
-		executeRuleAndAssertNoGeschwisternBonus(betreuungOldestKind);
-		executeRuleAndAssertGeschwisternBonus2(betreuung);
-		executeRuleAndAssertGeschwisternBonus3(betreuungYoungestKind);
+		assertNoGeschwisternBonus(executeRule(betreuungOldestKind));
+		assertGeschwisternBonus2(executeRule(betreuung));
+		assertGeschwisternBonus3(executeRule(betreuungYoungestKind));
 	}
 
 	@Test
@@ -107,10 +111,10 @@ public class GeschwistertenBonusAbschnittRuleTest {
 		Betreuung secondOldest = createBetreuungWithOldestKindAndAddToGesuch();
 		Betreuung oldest = createBetreuungWithOldestKindAndAddToGesuch();
 
-		executeRuleAndAssertGeschwisternBonus3(betreuung); //Test Youngest Kind
-		executeRuleAndAssertGeschwisternBonus3(thirdOldest);
-		executeRuleAndAssertGeschwisternBonus2(secondOldest);
-		executeRuleAndAssertNoGeschwisternBonus(oldest);
+		assertGeschwisternBonus3(executeRule(betreuung)); //Test Youngest Kind
+		assertGeschwisternBonus3(executeRule(thirdOldest));
+		assertGeschwisternBonus2(executeRule(secondOldest));
+		assertNoGeschwisternBonus(executeRule(oldest));
 	}
 
 	@Test
@@ -118,10 +122,7 @@ public class GeschwistertenBonusAbschnittRuleTest {
 		Betreuung olderKindBetreuung = createBetreuungWithOldestKindAndAddToGesuch();
 		BetreuungspensumContainer betreuungspensumContainer =
 			olderKindBetreuung.getBetreuungspensumContainers().stream().findFirst().orElseThrow();
-		DateRange augustOnly = new DateRange();
-		augustOnly.setGueltigAb(Constants.GESUCHSPERIODE_17_18_AB);
-		augustOnly.setGueltigBis(LocalDate.of(2017, 8, 30));
-		betreuungspensumContainer.getBetreuungspensumJA().setGueltigkeit(augustOnly);
+		betreuungspensumContainer.getBetreuungspensumJA().setGueltigkeit(AUGUST);
 
 		// Younger Kind
 		List<VerfuegungZeitabschnitt> verfuegungZeitabschnittList =
@@ -148,18 +149,13 @@ public class GeschwistertenBonusAbschnittRuleTest {
 		Betreuung middleKindBetreuung = createBetreuungWithOldestKindAndAddToGesuch();
 		BetreuungspensumContainer betreuungspensumContainerMiddleKid =
 			middleKindBetreuung.getBetreuungspensumContainers().stream().findFirst().orElseThrow();
-		DateRange augustOnly = new DateRange();
-		augustOnly.setGueltigAb(Constants.GESUCHSPERIODE_17_18_AB);
-		augustOnly.setGueltigBis(LocalDate.of(2017, 8, 30));
-		betreuungspensumContainerMiddleKid.getBetreuungspensumJA().setGueltigkeit(augustOnly);
+		betreuungspensumContainerMiddleKid.getBetreuungspensumJA().setGueltigkeit(AUGUST);
 
 		// Oldest kind
 		Betreuung olderKindBetreuung = createBetreuungWithOldestKindAndAddToGesuch();
 		BetreuungspensumContainer betreuungspensumContainer =
 			olderKindBetreuung.getBetreuungspensumContainers().stream().findFirst().orElseThrow();
-		augustOnly.setGueltigAb(Constants.GESUCHSPERIODE_17_18_AB);
-		augustOnly.setGueltigBis(LocalDate.of(2017, 8, 30));
-		betreuungspensumContainer.getBetreuungspensumJA().setGueltigkeit(augustOnly);
+		betreuungspensumContainer.getBetreuungspensumJA().setGueltigkeit(AUGUST);
 
 		// Younger Kind
 		List<VerfuegungZeitabschnitt> verfuegungZeitabschnittList =
@@ -186,13 +182,10 @@ public class GeschwistertenBonusAbschnittRuleTest {
 		Betreuung middleKindBetreuung = createBetreuungWithOldestKindAndAddToGesuch();
 		BetreuungspensumContainer betreuungspensumContainerMiddleKid =
 			middleKindBetreuung.getBetreuungspensumContainers().stream().findFirst().orElseThrow();
-		DateRange augustOnly = new DateRange();
-		augustOnly.setGueltigAb(Constants.GESUCHSPERIODE_17_18_AB);
-		augustOnly.setGueltigBis(LocalDate.of(2017, 8, 30));
-		betreuungspensumContainerMiddleKid.getBetreuungspensumJA().setGueltigkeit(augustOnly);
+		betreuungspensumContainerMiddleKid.getBetreuungspensumJA().setGueltigkeit(AUGUST);
 
 		// Oldest kind
-		createOldestKindWithBetreuungForGesuch();
+		createBetreuungWithOldestKindAndAddToGesuch();
 
 		// Younger Kind
 		List<VerfuegungZeitabschnitt> verfuegungZeitabschnittList =
@@ -225,9 +218,9 @@ public class GeschwistertenBonusAbschnittRuleTest {
 			.setTimestampErstellt(betreuung.getKind().getKindJA().getTimestampErstellt().minusSeconds(1));
 
 		// Younger Kind by timestamp
-		executeRuleAndAssertGeschwisternBonus2(betreuung);
+		assertGeschwisternBonus2(executeRule(betreuung));
 		// Older Kind by timestamp
-		executeRuleAndAssertNoGeschwisternBonus(olderKindBetreuung);
+		assertNoGeschwisternBonus(executeRule(olderKindBetreuung));
 	}
 
 	@Test
@@ -236,14 +229,14 @@ public class GeschwistertenBonusAbschnittRuleTest {
 		Betreuung youngestKind = createBetreuungWithYoungestKindAndAddToGesuch();
 
 		betreuung.getKind().getKindJA().setEinschulungTyp(EinschulungTyp.KINDERGARTEN1);
-		executeRuleAndAssertNoGeschwisternBonus(betreuung);
-		executeRuleAndAssertNoGeschwisternBonus(secondKind);
-		executeRuleAndAssertGeschwisternBonus2(youngestKind);
+		assertNoZeitabschnitteCreatedInRule(executeRule(betreuung));
+		assertNoGeschwisternBonus(executeRule(secondKind));
+		assertGeschwisternBonus2(executeRule(youngestKind));
 
 		betreuung.getKind().getKindJA().setEinschulungTyp(EinschulungTyp.KINDERGARTEN2);
-		executeRuleAndAssertNoGeschwisternBonus(betreuung);
-		executeRuleAndAssertNoGeschwisternBonus(secondKind);
-		executeRuleAndAssertGeschwisternBonus2(youngestKind);
+		assertNoZeitabschnitteCreatedInRule(executeRule(betreuung));
+		assertNoGeschwisternBonus(executeRule(secondKind));
+		assertGeschwisternBonus2(executeRule(youngestKind));
 	}
 
 	@Test
@@ -252,49 +245,49 @@ public class GeschwistertenBonusAbschnittRuleTest {
 		Betreuung youngestKind = createBetreuungWithYoungestKindAndAddToGesuch();
 
 		betreuung.getKind().getKindJA().setEinschulungTyp(EinschulungTyp.KLASSE1);
-		executeRuleAndAssertNoGeschwisternBonus(betreuung);
-		executeRuleAndAssertNoGeschwisternBonus(secondKind);
-		executeRuleAndAssertGeschwisternBonus2(youngestKind);
+		assertNoZeitabschnitteCreatedInRule(executeRule(betreuung));
+		assertNoGeschwisternBonus(executeRule(secondKind));
+		assertGeschwisternBonus2(executeRule(youngestKind));
 
 		betreuung.getKind().getKindJA().setEinschulungTyp(EinschulungTyp.KLASSE2);
-		executeRuleAndAssertNoGeschwisternBonus(betreuung);
-		executeRuleAndAssertNoGeschwisternBonus(secondKind);
-		executeRuleAndAssertGeschwisternBonus2(youngestKind);
+		assertNoZeitabschnitteCreatedInRule(executeRule(betreuung));
+		assertNoGeschwisternBonus(executeRule(secondKind));
+		assertGeschwisternBonus2(executeRule(youngestKind));
 
 		betreuung.getKind().getKindJA().setEinschulungTyp(EinschulungTyp.KLASSE3);
-		executeRuleAndAssertNoGeschwisternBonus(betreuung);
-		executeRuleAndAssertNoGeschwisternBonus(secondKind);
-		executeRuleAndAssertGeschwisternBonus2(youngestKind);
+		assertNoZeitabschnitteCreatedInRule(executeRule(betreuung));
+		assertNoGeschwisternBonus(executeRule(secondKind));
+		assertGeschwisternBonus2(executeRule(youngestKind));
 
 		betreuung.getKind().getKindJA().setEinschulungTyp(EinschulungTyp.KLASSE4);
-		executeRuleAndAssertNoGeschwisternBonus(betreuung);
-		executeRuleAndAssertNoGeschwisternBonus(secondKind);
-		executeRuleAndAssertGeschwisternBonus2(youngestKind);
+		assertNoZeitabschnitteCreatedInRule(executeRule(betreuung));
+		assertNoGeschwisternBonus(executeRule(secondKind));
+		assertGeschwisternBonus2(executeRule(youngestKind));
 
 		betreuung.getKind().getKindJA().setEinschulungTyp(EinschulungTyp.KLASSE5);
-		executeRuleAndAssertNoGeschwisternBonus(betreuung);
-		executeRuleAndAssertNoGeschwisternBonus(secondKind);
-		executeRuleAndAssertGeschwisternBonus2(youngestKind);
+		assertNoZeitabschnitteCreatedInRule(executeRule(betreuung));
+		assertNoGeschwisternBonus(executeRule(secondKind));
+		assertGeschwisternBonus2(executeRule(youngestKind));
 
 		betreuung.getKind().getKindJA().setEinschulungTyp(EinschulungTyp.KLASSE6);
-		executeRuleAndAssertNoGeschwisternBonus(betreuung);
-		executeRuleAndAssertNoGeschwisternBonus(secondKind);
-		executeRuleAndAssertGeschwisternBonus2(youngestKind);
+		assertNoZeitabschnitteCreatedInRule(executeRule(betreuung));
+		assertNoGeschwisternBonus(executeRule(secondKind));
+		assertGeschwisternBonus2(executeRule(youngestKind));
 
 		betreuung.getKind().getKindJA().setEinschulungTyp(EinschulungTyp.KLASSE7);
-		executeRuleAndAssertNoGeschwisternBonus(betreuung);
-		executeRuleAndAssertNoGeschwisternBonus(secondKind);
-		executeRuleAndAssertGeschwisternBonus2(youngestKind);
+		assertNoZeitabschnitteCreatedInRule(executeRule(betreuung));
+		assertNoGeschwisternBonus(executeRule(secondKind));
+		assertGeschwisternBonus2(executeRule(youngestKind));
 
 		betreuung.getKind().getKindJA().setEinschulungTyp(EinschulungTyp.KLASSE8);
-		executeRuleAndAssertNoGeschwisternBonus(betreuung);
-		executeRuleAndAssertNoGeschwisternBonus(secondKind);
-		executeRuleAndAssertGeschwisternBonus2(youngestKind);
+		assertNoZeitabschnitteCreatedInRule(executeRule(betreuung));
+		assertNoGeschwisternBonus(executeRule(secondKind));
+		assertGeschwisternBonus2(executeRule(youngestKind));
 
 		betreuung.getKind().getKindJA().setEinschulungTyp(EinschulungTyp.KLASSE9);
-		executeRuleAndAssertNoGeschwisternBonus(betreuung);
-		executeRuleAndAssertNoGeschwisternBonus(secondKind);
-		executeRuleAndAssertGeschwisternBonus2(youngestKind);
+		assertNoZeitabschnitteCreatedInRule(executeRule(betreuung));
+		assertNoGeschwisternBonus(executeRule(secondKind));
+		assertGeschwisternBonus2(executeRule(youngestKind));
 	}
 
 	private Betreuung createBetreuungWithYoungestKindAndAddToGesuch() {
@@ -313,42 +306,51 @@ public class GeschwistertenBonusAbschnittRuleTest {
 		return betreuungY;
 	}
 
-	private void executeRuleAndAssertNoGeschwisternBonus(@Nonnull Betreuung betreuungToExecute) {
-		List<VerfuegungZeitabschnitt> verfuegungZeitabschnittList =
-			ruleToTest.createVerfuegungsZeitabschnitte(betreuungToExecute);
+	private List<VerfuegungZeitabschnitt> executeRule(@Nonnull Betreuung betreuungToExecute) {
+		return ruleToTest.createVerfuegungsZeitabschnitte(betreuungToExecute);
+	}
+
+	private void assertNoZeitabschnitteCreatedInRule(@Nonnull List<VerfuegungZeitabschnitt> verfuegungZeitabschnittList) {
+		Assert.assertTrue(verfuegungZeitabschnittList.isEmpty());
+	}
+
+	private void assertNoGeschwisternBonus(@Nonnull List<VerfuegungZeitabschnitt> verfuegungZeitabschnittList) {
+		Assert.assertFalse(verfuegungZeitabschnittList.isEmpty());
 		verfuegungZeitabschnittList.forEach(verfuegungZeitabschnitt -> {
 			Assert.assertFalse("GeschwisternBonus 2 gewährt, obwohl kein Geschwisternbonus erwartet",
 				verfuegungZeitabschnitt
+					.getRelevantBgCalculationInput()
+					.isGeschwisternBonusKind2());
+			Assert.assertFalse("GeschwisternBonus 3 gewährt, obwohl kein Geschwisternbonus erwartet",
+				verfuegungZeitabschnitt
+					.getRelevantBgCalculationInput()
+					.isGeschwisternBonusKind3());
+		});
+	}
+
+	private void assertGeschwisternBonus2(@Nonnull List<VerfuegungZeitabschnitt> verfuegungZeitabschnittList) {
+		Assert.assertFalse(verfuegungZeitabschnittList.isEmpty());
+		verfuegungZeitabschnittList.forEach(verfuegungZeitabschnitt -> {
+			Assert.assertTrue("GeschwisternBonus 2 nicht gewährt, obwohl erwartet",
+				verfuegungZeitabschnitt
 				.getRelevantBgCalculationInput()
 				.isGeschwisternBonusKind2());
-			Assert.assertFalse("GeschwisternBonus 3 gewährt, obwohl kein Geschwisternbonus erwartet",
+			Assert.assertFalse("GeschwisternBonus 3 gewährt, obwohl Geschwisternbonus 2 erwartet",
 				verfuegungZeitabschnitt
 				.getRelevantBgCalculationInput()
 				.isGeschwisternBonusKind3());
 		});
 	}
 
-	private void executeRuleAndAssertGeschwisternBonus2(@Nonnull Betreuung betreuungToExecute) {
-		List<VerfuegungZeitabschnitt> verfuegungZeitabschnittList =
-			ruleToTest.createVerfuegungsZeitabschnitte(betreuungToExecute);
+	private void assertGeschwisternBonus3(@Nonnull List<VerfuegungZeitabschnitt> verfuegungZeitabschnittList) {
+		Assert.assertFalse(verfuegungZeitabschnittList.isEmpty());
 		verfuegungZeitabschnittList.forEach(verfuegungZeitabschnitt -> {
-			Assert.assertTrue(verfuegungZeitabschnitt
+			Assert.assertFalse("GeschwisternBonus 2 gewährt, obwohl Geschwisternbonus 3 erwartet",
+				verfuegungZeitabschnitt
 				.getRelevantBgCalculationInput()
 				.isGeschwisternBonusKind2());
-			Assert.assertFalse(verfuegungZeitabschnitt
-				.getRelevantBgCalculationInput()
-				.isGeschwisternBonusKind3());
-		});
-	}
-
-	private void executeRuleAndAssertGeschwisternBonus3(@Nonnull Betreuung betreuungToExecute) {
-		List<VerfuegungZeitabschnitt> verfuegungZeitabschnittList =
-			ruleToTest.createVerfuegungsZeitabschnitte(betreuungToExecute);
-		verfuegungZeitabschnittList.forEach(verfuegungZeitabschnitt -> {
-			Assert.assertFalse(verfuegungZeitabschnitt
-				.getRelevantBgCalculationInput()
-				.isGeschwisternBonusKind2());
-			Assert.assertTrue(verfuegungZeitabschnitt
+			Assert.assertTrue("GeschwisternBonus 3 nicht gewährt, obwohl erwartet",
+				verfuegungZeitabschnitt
 				.getRelevantBgCalculationInput()
 				.isGeschwisternBonusKind3());
 		});
@@ -370,14 +372,6 @@ public class GeschwistertenBonusAbschnittRuleTest {
 			.stream()
 			.min(Comparator.comparing((KindContainer a) -> a.getKindJA()
 				.getGeburtsdatum()));
-	}
-
-	private KindContainer createOldestKindWithBetreuungForGesuch() {
-		KindContainer toAdd = createOldestKindForGesuch();
-		gesuch.getKindContainers().add(toAdd);
-
-		toAdd.getBetreuungen().add(createBetreuungMitBetreuungpensum(toAdd));
-		return toAdd;
 	}
 
 	private Betreuung createBetreuungMitBetreuungpensum(KindContainer kindContainer) {
