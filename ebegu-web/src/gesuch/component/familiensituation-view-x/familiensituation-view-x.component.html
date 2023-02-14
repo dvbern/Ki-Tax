@@ -110,7 +110,7 @@
                                                      #partnerIdentischMitVorgesuch="ngModel"
                                                      name="partnerIdentischMitVorgesuch"
                                                      class="input-element sp"
-                                                     [disabled]="!(showFragePartnerWieBisher())"
+                                                     [disabled]="isGesuchReadonly()"
                                                      aria-label="{{ 'FAMILIENSITUATION_FRAGE_BISHERIGER_PARTNER' |translate }}}"
                                                      aria-described-by="partnerIdentischMitVorgesuch-error">
                                         <mat-radio-button [value]="true">{{'LABEL_JA' | translate}}</mat-radio-button>
