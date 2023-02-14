@@ -422,18 +422,16 @@ export class FamiliensituationViewXComponent extends AbstractGesuchViewX<TSFamil
     }
 
     public getNotPertnerIdentischMitVorgesuchWarning(): string {
-        let warning: string;
-        let partnerNotIdentischWarning: string = this.$translate.instant('NOT_PARTNER_IDENTISCH_MIT_VORGESUCH', {
+        let warning: string = this.$translate.instant('NOT_PARTNER_IDENTISCH_MIT_VORGESUCH', {
             partnerAlt: this.gesuchModelManager.getGesuch().gesuchsteller2.extractFullName(),
             endeDatum: this.gesuchModelManager.getGesuch().gesuchsperiode.gueltigkeit.gueltigBis.format(CONSTANTS.DATE_FORMAT)
             });
-        warning = partnerNotIdentischWarning;
         if (this.gesuchModelManager.getGesuch().extractFamiliensituation().familienstatus !== TSFamilienstatus.ALLEINERZIEHEND){
             let partnerNotIdentischWarningBeiPaaren: string = this.$translate.instant('NOT_PARTNER_IDENTISCH_MIT_VORGESUCH_PAAR',
                 {
                     bezeichnung: this.getBezeichnung()
                 })
-            warning = partnerNotIdentischWarning.concat( ' '.toString() ,partnerNotIdentischWarningBeiPaaren.toString());
+            warning = warning.concat( ' '.toString() ,partnerNotIdentischWarningBeiPaaren.toString());
         }
         return warning;
     }
