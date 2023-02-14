@@ -29,12 +29,12 @@ import {TSEinstellungKey} from '../../../models/enums/TSEinstellungKey';
 import {getTSFamilienstatusValues, TSFamilienstatus} from '../../../models/enums/TSFamilienstatus';
 import {
     getTSGesuchstellerKardinalitaetValues,
-    TSGesuchstellerKardinalitaet,
+    TSGesuchstellerKardinalitaet
 } from '../../../models/enums/TSGesuchstellerKardinalitaet';
 import {TSRole} from '../../../models/enums/TSRole';
 import {
     getTSUnterhaltsvereinbarungAnswerValues,
-    TSUnterhaltsvereinbarungAnswer,
+    TSUnterhaltsvereinbarungAnswer
 } from '../../../models/enums/TSUnterhaltsvereinbarungAnswer';
 import {TSWizardStepName} from '../../../models/enums/TSWizardStepName';
 import {TSWizardStepStatus} from '../../../models/enums/TSWizardStepStatus';
@@ -56,7 +56,8 @@ const LOG = LogFactory.createLog('FamiliensitutionViewComponent');
     templateUrl: './familiensituation-view-x.component.html',
     styleUrls: ['./familiensituation-view-x.component.less']
 })
-export class FamiliensituationViewXComponent extends AbstractGesuchViewX<TSFamiliensituationContainer> implements OnInit{
+export class FamiliensituationViewXComponent extends AbstractGesuchViewX<TSFamiliensituationContainer>
+    implements OnInit {
 
     private familienstatusValues: Array<TSFamilienstatus>;
     public allowedRoles: ReadonlyArray<TSRole>;
@@ -65,7 +66,6 @@ export class FamiliensituationViewXComponent extends AbstractGesuchViewX<TSFamil
     public situationFKJV = false;
     public gesuchstellerKardinalitaetValues: Array<TSGesuchstellerKardinalitaet>;
     public unterhaltsvereinbarungAnswerValues: Array<TSUnterhaltsvereinbarungAnswer>;
-
 
     public constructor(
         protected readonly gesuchModelManager: GesuchModelManager,
@@ -113,6 +113,7 @@ export class FamiliensituationViewXComponent extends AbstractGesuchViewX<TSFamil
             TSWizardStepStatus.IN_BEARBEITUNG);
         this.allowedRoles = TSRoleUtil.getAllRolesButTraegerschaftInstitution();
     }
+
     private getGesuchsperiodeEnde(): object {
         return this.gesuchModelManager.getGesuchsperiode().gueltigkeit.gueltigBis;
     }
@@ -231,7 +232,7 @@ export class FamiliensituationViewXComponent extends AbstractGesuchViewX<TSFamil
      */
     private isConfirmationRequired(): boolean {
         return (!this.isKorrekturModusJugendamt()
-            || (this.isKorrekturModusJugendamt() && this.getGesuch().gesuchsteller2))
+                || (this.isKorrekturModusJugendamt() && this.getGesuch().gesuchsteller2))
             && ((!this.isMutation() && this.checkChanged2To1GS())
                 || (this.isMutation() && (this.isChanged1To2Reverted() || this.checkChanged2To1GSMutation())));
     }
@@ -270,7 +271,9 @@ export class FamiliensituationViewXComponent extends AbstractGesuchViewX<TSFamil
             return true;
         }
 
-        return EbeguUtil.isNotNullOrUndefined(this.getFamiliensituation()) && EbeguUtil.isNotNullOrUndefined(this.getFamiliensituation().aenderungPer);
+        return EbeguUtil.isNotNullOrUndefined(
+                this.getFamiliensituation()) &&
+            EbeguUtil.isNotNullOrUndefined(this.getFamiliensituation().aenderungPer);
     }
 
     public isFamiliensituationEnabled(): boolean {
@@ -291,7 +294,7 @@ export class FamiliensituationViewXComponent extends AbstractGesuchViewX<TSFamil
         this.getFamiliensituation().revertFamiliensituation(this.getFamiliensituationErstgesuch());
     }
 
-    public isNotPartnerIdentischMitVorgesuch():  boolean {
+    public isNotPartnerIdentischMitVorgesuch(): boolean {
         return EbeguUtil.isNotNullOrUndefined(this.getFamiliensituation().partnerIdentischMitVorgesuch) &&
             !this.getFamiliensituation().partnerIdentischMitVorgesuch;
     }
@@ -321,21 +324,24 @@ export class FamiliensituationViewXComponent extends AbstractGesuchViewX<TSFamil
     }
 
     public showGesuchstellerKardinalitaet(): boolean {
-        if (this.getFamiliensituation() && this.situationFKJV && this.isFamilienstatusAlleinerziehendOrShortKonkubinat()) {
+        if (this.getFamiliensituation() && this.situationFKJV &&
+            this.isFamilienstatusAlleinerziehendOrShortKonkubinat()) {
             return this.getFamiliensituation().geteilteObhut;
         }
         return false;
     }
 
     public showFrageUnterhaltsvereinbarung(): boolean {
-        if (this.getFamiliensituation() && this.situationFKJV && this.isFamilienstatusAlleinerziehendOrShortKonkubinat()) {
+        if (this.getFamiliensituation() && this.situationFKJV &&
+            this.isFamilienstatusAlleinerziehendOrShortKonkubinat()) {
             return EbeguUtil.isNotNullAndFalse(this.getFamiliensituation().geteilteObhut);
         }
         return false;
     }
 
     public showBemerkungUnterhaltsvereinbarung(): boolean {
-        return this.getFamiliensituation()?.unterhaltsvereinbarung === TSUnterhaltsvereinbarungAnswer.UNTERHALTSVEREINBARUNG_NICHT_MOEGLICH;
+        return this.getFamiliensituation()?.unterhaltsvereinbarung
+            === TSUnterhaltsvereinbarungAnswer.UNTERHALTSVEREINBARUNG_NICHT_MOEGLICH;
     }
 
     public showFrageGeteilteObhut(): boolean {
@@ -394,7 +400,7 @@ export class FamiliensituationViewXComponent extends AbstractGesuchViewX<TSFamil
         return this.$translate.instant('UNTERHALTSVEREINBARUNG_GRUND_INFO');
     }
 
-    public getAllRolesButTraegerschaftInstitutionSteueramt(): ReadonlyArray<TSRole>  {
+    public getAllRolesButTraegerschaftInstitutionSteueramt(): ReadonlyArray<TSRole> {
         return TSRoleUtil.getAllRolesButTraegerschaftInstitutionSteueramt();
     }
 
@@ -417,28 +423,32 @@ export class FamiliensituationViewXComponent extends AbstractGesuchViewX<TSFamil
     }
 
     public getNameGesuchsteller2(): string {
-        return this.gesuchModelManager.getGesuch().gesuchsteller2 ? this.gesuchModelManager.getGesuch().gesuchsteller2.extractFullName() : '';
+        return this.gesuchModelManager.getGesuch().gesuchsteller2 ?
+            this.gesuchModelManager.getGesuch().gesuchsteller2.extractFullName() : '';
     }
 
     public getNotPertnerIdentischMitVorgesuchWarning(): string {
         let warning: string = this.$translate.instant('NOT_PARTNER_IDENTISCH_MIT_VORGESUCH', {
             partnerAlt: this.getNameGesuchsteller2(),
             endeDatum: this.getFamiliensituation().aenderungPer.endOf('month').format('DD.MM.YYYY')
-            });
-        if (this.gesuchModelManager.getGesuch().extractFamiliensituation().familienstatus !== TSFamilienstatus.ALLEINERZIEHEND){
-            let partnerNotIdentischWarningBeiPaaren: string = this.$translate.instant('NOT_PARTNER_IDENTISCH_MIT_VORGESUCH_PAAR',
-                {
-                    bezeichnung: this.getBezeichnung()
-                })
-            warning = warning.concat( ' '.toString() ,partnerNotIdentischWarningBeiPaaren.toString());
+        });
+        if (this.gesuchModelManager.getGesuch()
+            .extractFamiliensituation().familienstatus !== TSFamilienstatus.ALLEINERZIEHEND) {
+            const partnerNotIdentischWarningBeiPaaren: string =
+                this.$translate.instant('NOT_PARTNER_IDENTISCH_MIT_VORGESUCH_PAAR',
+                    {
+                        bezeichnung: this.getBezeichnung()
+                    });
+            warning = warning.concat(' '.toString(), partnerNotIdentischWarningBeiPaaren.toString());
         }
         return warning;
     }
 
-    private getBezeichnung(): string{
-        if(this.gesuchModelManager.getGesuch().extractFamiliensituation().familienstatus === TSFamilienstatus.VERHEIRATET){
-            return this.$translate.instant("EHEPARTNER");
+    private getBezeichnung(): string {
+        if (this.gesuchModelManager.getGesuch().extractFamiliensituation().familienstatus
+            === TSFamilienstatus.VERHEIRATET) {
+            return this.$translate.instant('EHEPARTNER');
         }
-        return this.$translate.instant("KONKUBINTASPARTNER");
+        return this.$translate.instant('KONKUBINTASPARTNER');
     }
 }
