@@ -43,15 +43,18 @@ public class FamiliensituationBeendetAbschnittRule extends AbstractAbschnittRule
 		if (null == gesuch || null == gesuch.getGesuchsperiode()) {
 			return new LinkedList<>();
 		}
+		if (Boolean.TRUE.equals(familiensituation.getPartnerIdentischMitVorgesuch())){
+			return new LinkedList<>();
+		}
 		LocalDate gueltigBis = gesuch.getGesuchsperiode().getGueltigkeit().getGueltigBis();
 		LocalDate firstDayOfNextMonth = familiensituationAenderungPer.with(TemporalAdjusters.firstDayOfNextMonth());
 
-		VerfuegungZeitabschnitt neuerZeitabschnittOhnePartner =
+		VerfuegungZeitabschnitt abschnittNachPartnerStatusAenderung =
 			createZeitabschnittWithinValidityPeriodOfRule(new DateRange(firstDayOfNextMonth, gueltigBis));
-		neuerZeitabschnittOhnePartner.setPartnerIdentischMitVorgesuch(Boolean.FALSE);
+		abschnittNachPartnerStatusAenderung.setPartnerIdentischMitVorgesuch(Boolean.FALSE);
 
 		final List<VerfuegungZeitabschnitt> neueZeitabschnitte = new LinkedList<>();
-		neueZeitabschnitte.add(neuerZeitabschnittOhnePartner);
+		neueZeitabschnitte.add(abschnittNachPartnerStatusAenderung);
 		return neueZeitabschnitte;
 	}
 
