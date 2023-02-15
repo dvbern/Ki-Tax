@@ -52,7 +52,7 @@ describe('PosteingangViewComponent', () => {
     const transitionServiceSpy = jasmine.createSpyObj<TransitionService>(TransitionService.name,
         ['onStart']);
     const stateStoreServiceSpy = jasmine.createSpyObj<StateStoreService>(StateStoreService.name,
-        ['has', 'get']);
+        ['has', 'get', 'delete', 'store']);
     const uiRouterGlobals = jasmine.createSpyObj<UIRouterGlobals>(UIRouterGlobals.name,
         ['$current']);
     const benutzerSpy = jasmine.createSpyObj<BenutzerRSX>(BenutzerRSX.name, ['getAllBenutzerBgTsOrGemeinde']);
