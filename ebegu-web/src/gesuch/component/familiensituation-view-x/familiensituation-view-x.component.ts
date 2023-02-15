@@ -29,12 +29,12 @@ import {TSEinstellungKey} from '../../../models/enums/TSEinstellungKey';
 import {getTSFamilienstatusValues, TSFamilienstatus} from '../../../models/enums/TSFamilienstatus';
 import {
     getTSGesuchstellerKardinalitaetValues,
-    TSGesuchstellerKardinalitaet,
+    TSGesuchstellerKardinalitaet
 } from '../../../models/enums/TSGesuchstellerKardinalitaet';
 import {TSRole} from '../../../models/enums/TSRole';
 import {
     getTSUnterhaltsvereinbarungAnswerValues,
-    TSUnterhaltsvereinbarungAnswer,
+    TSUnterhaltsvereinbarungAnswer
 } from '../../../models/enums/TSUnterhaltsvereinbarungAnswer';
 import {TSWizardStepName} from '../../../models/enums/TSWizardStepName';
 import {TSWizardStepStatus} from '../../../models/enums/TSWizardStepStatus';
@@ -65,7 +65,6 @@ export class FamiliensituationViewXComponent extends AbstractGesuchViewX<TSFamil
     public situationFKJV = false;
     public gesuchstellerKardinalitaetValues: Array<TSGesuchstellerKardinalitaet>;
     public unterhaltsvereinbarungAnswerValues: Array<TSUnterhaltsvereinbarungAnswer>;
-
 
     public constructor(
         protected readonly gesuchModelManager: GesuchModelManager,
@@ -418,30 +417,31 @@ export class FamiliensituationViewXComponent extends AbstractGesuchViewX<TSFamil
 
     public getNameGesuchsteller2(): string {
         return this.getGesuch().gesuchsteller2
-            ? this.getGesuch().gesuchsteller2.extractFullName() : ''
+            ? this.getGesuch().gesuchsteller2.extractFullName() : '';
     }
 
     public getNotPertnerIdentischMitVorgesuchWarning(): string {
         let warning: string;
-        let partnerNotIdentischWarning: string = this.$translate.instant('NOT_PARTNER_IDENTISCH_MIT_VORGESUCH', {
+        const partnerNotIdentischWarning: string = this.$translate.instant('NOT_PARTNER_IDENTISCH_MIT_VORGESUCH', {
             partnerAlt: this.gesuchModelManager.getGesuch().gesuchsteller2.extractFullName(),
             endeDatum: this.gesuchModelManager.getGesuch().gesuchsperiode.gueltigkeit.gueltigBis.format('DD.MM.YYYY')
             });
         warning = partnerNotIdentischWarning;
         if (this.gesuchModelManager.getGesuch().extractFamiliensituation().familienstatus !== TSFamilienstatus.ALLEINERZIEHEND){
-            let partnerNotIdentischWarningBeiPaaren: string = this.$translate.instant('NOT_PARTNER_IDENTISCH_MIT_VORGESUCH_PAAR',
+            const partnerNotIdentischWarningBeiPaaren: string = this.$translate.instant('NOT_PARTNER_IDENTISCH_MIT_VORGESUCH_PAAR',
                 {
                     bezeichnung: this.getBezeichnung()
-                })
+                });
             warning = partnerNotIdentischWarning.concat( ' '.toString() ,partnerNotIdentischWarningBeiPaaren.toString());
         }
         return warning;
     }
 
     private getBezeichnung(): string{
-        if(this.gesuchModelManager.getGesuch().extractFamiliensituation().familienstatus === TSFamilienstatus.VERHEIRATET){
-            return this.$translate.instant("EHEPARTNER");
+        if(this.gesuchModelManager.getGesuch().extractFamiliensituation().familienstatus
+            === TSFamilienstatus.VERHEIRATET){
+            return this.$translate.instant('EHEPARTNER');
         }
-        return this.$translate.instant("KONKUBINTASPARTNER");
+        return this.$translate.instant('KONKUBINTASPARTNER');
     }
 }
