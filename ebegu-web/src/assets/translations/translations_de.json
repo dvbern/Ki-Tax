@@ -1653,6 +1653,7 @@
     "TAGESSCHULE_ANMELDUNG_GESPEICHERT": "Die Anmeldung zur Tagesschule wurde erfolgreich ausgelöst",
     "FERIENINSEL_ANMELDUNG_GESPEICHERT": "Die Anmeldung zur Ferieninsel wurde erfolgreich ausgelöst",
     "TAGESSCHULE_ANMELDEN": "Tagesschule anmelden",
+    "TAGESSCHULE_ANMELDEN_LONGTEXT": "Tagesschule anmelden",
     "FERIENINSEL_ANMELDEN": "Ferieninsel anmelden",
     "MUTATION_NOETIG": "Um Anmeldungen oder Betreuungen erfassen zu können, müssen sie den Antrag mutieren. Die Mutation können Sie auf dem Dashboard starten.",
     "MUTATION_NOETIG_DB": "Um Anmeldungen für eine Tagesschule erfassen zu können, müssen sie den Antrag mutieren.",
