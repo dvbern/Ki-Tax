@@ -43,7 +43,8 @@ public class FamiliensituationBeendetAbschnittRule extends AbstractAbschnittRule
 		if (null == gesuch || null == gesuch.getGesuchsperiode()) {
 			return new LinkedList<>();
 		}
-		if (Boolean.TRUE.equals(familiensituation.getPartnerIdentischMitVorgesuch())){
+		if (Objects.isNull(familiensituation.getPartnerIdentischMitVorgesuch()) ||
+				Objects.equals(Boolean.TRUE, familiensituation.getPartnerIdentischMitVorgesuch())){
 			return new LinkedList<>();
 		}
 		LocalDate gueltigBis = gesuch.getGesuchsperiode().getGueltigkeit().getGueltigBis();

@@ -38,7 +38,7 @@ class FamiliensituationBeendetAbschnittRuleTest {
 		assertNotNull(zeitAbschnitteErstgesuch, "ZeitAbschnitte erstgesuch müssen gesetzt sein.");
 		Assertions.assertEquals(1, zeitAbschnitteErstgesuch.size(), "Es darf nur einen geben");
 		assertNotNull(zeitAbschnitteErstgesuch.get(0));
-		Betreuung mutation = createMutationMitAndererFamiliensituation(erstGesuch);
+		Betreuung mutation = createMutationMitAndererFamiliensituation(erstGesuch, Boolean.FALSE);
 		assertNotNull(mutation);
 		assertNotNull(mutation.extractGesuch());
 		assertNotNull(mutation.extractGesuch().getGesuchsteller1());
@@ -56,7 +56,50 @@ class FamiliensituationBeendetAbschnittRuleTest {
 		assertEquals(TestDataUtil.ENDE_PERIODE, zeitabschnitteMutation.get(1).getGueltigkeit().getGueltigBis());
 	}
 
-	private Betreuung createMutationMitAndererFamiliensituation(final Betreuung erstGesuch) {
+
+	@Test
+	void doNotcreateVerfuegungsZeitabschnitte_PartnerIdentischNotSet() {
+		assertNotNull(erstGesuch, "Erstgesuch darf nicht Null sein.");
+		assertNotNull(zeitAbschnitteErstgesuch, "ZeitAbschnitte erstgesuch müssen gesetzt sein.");
+		Assertions.assertEquals(1, zeitAbschnitteErstgesuch.size(), "Es darf nur einen geben");
+		assertNotNull(zeitAbschnitteErstgesuch.get(0));
+		Betreuung mutation = createMutationMitAndererFamiliensituation(erstGesuch, null);
+		assertNotNull(mutation);
+		assertNotNull(mutation.extractGesuch());
+		assertNotNull(mutation.extractGesuch().getGesuchsteller1());
+		assertNotNull(mutation.extractGesuch().getGesuchsteller2());
+		TestDataUtil.createDefaultGesuchstellerAdresseContainer(Objects.requireNonNull(mutation.extractGesuch()
+				.getGesuchsteller1()));
+		TestDataUtil.createDefaultGesuchstellerAdresseContainer(Objects.requireNonNull(mutation.extractGesuch()
+				.getGesuchsteller2()));
+
+		List<VerfuegungZeitabschnitt> zeitabschnitteMutation = EbeguRuleTestsHelper.calculate(mutation);
+		assertNotNull(zeitabschnitteMutation);
+		assertEquals(1, zeitabschnitteMutation.size());
+	}
+
+	@Test
+	void doNotcreateVerfuegungsZeitabschnitte_PartnerIdentischTRUE() {
+		assertNotNull(erstGesuch, "Erstgesuch darf nicht Null sein.");
+		assertNotNull(zeitAbschnitteErstgesuch, "ZeitAbschnitte erstgesuch müssen gesetzt sein.");
+		Assertions.assertEquals(1, zeitAbschnitteErstgesuch.size(), "Es darf nur einen geben");
+		assertNotNull(zeitAbschnitteErstgesuch.get(0));
+		Betreuung mutation = createMutationMitAndererFamiliensituation(erstGesuch, Boolean.TRUE);
+		assertNotNull(mutation);
+		assertNotNull(mutation.extractGesuch());
+		assertNotNull(mutation.extractGesuch().getGesuchsteller1());
+		assertNotNull(mutation.extractGesuch().getGesuchsteller2());
+		TestDataUtil.createDefaultGesuchstellerAdresseContainer(Objects.requireNonNull(mutation.extractGesuch()
+				.getGesuchsteller1()));
+		TestDataUtil.createDefaultGesuchstellerAdresseContainer(Objects.requireNonNull(mutation.extractGesuch()
+				.getGesuchsteller2()));
+
+		List<VerfuegungZeitabschnitt> zeitabschnitteMutation = EbeguRuleTestsHelper.calculate(mutation);
+		assertNotNull(zeitabschnitteMutation);
+		assertEquals(1, zeitabschnitteMutation.size());
+	}
+
+	private Betreuung createMutationMitAndererFamiliensituation(final Betreuung erstGesuch, final Boolean partnerIdentisch) {
 		VerfuegungZeitabschnitt ersterZeitabschnitt = zeitAbschnitteErstgesuch.get(0);
 		LocalDate erstGesuchGueltigAb = ersterZeitabschnitt.getGueltigkeit().getGueltigAb();
 		Betreuung mutation = TestDataUtil.createGesuchWithBetreuungspensum(true);
@@ -67,6 +110,7 @@ class FamiliensituationBeendetAbschnittRuleTest {
 		assertNotNull(mutation.extractGesuch().getFamiliensituationContainer().getFamiliensituationJA());
 		mutation.extractGesuch().getFamiliensituationContainer().setFamiliensituationErstgesuch(erstGesuch.extractGesuch().getFamiliensituationContainer().getFamiliensituationJA());
 		mutation.extractGesuch().getFamiliensituationContainer().getFamiliensituationJA().setAenderungPer(erstGesuchGueltigAb.plusDays(DAYS_TO_ADD));
+		mutation.extractGesuch().getFamiliensituationContainer().getFamiliensituationJA().setPartnerIdentischMitVorgesuch(partnerIdentisch);
 		mutation.extractGesuch().getFamiliensituationContainer().getFamiliensituationJA().setFamilienstatus(EnumFamilienstatus.KONKUBINAT);
 		mutation.setVorgaengerId(erstGesuch.getId());
 		return mutation;
