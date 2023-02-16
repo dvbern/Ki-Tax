@@ -613,6 +613,11 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 		this.getBgCalculationInputGemeinde().calculateInputValuesProportionaly(percentag);
 	}
 
+	public void roundValuesAfterCalculateProportinaly() {
+		this.getBgCalculationInputAsiv().roundValuesAfterCalculateProportinaly();
+		this.getBgCalculationInputGemeinde().roundValuesAfterCalculateProportinaly();
+	}
+
 	public void setKostenAnteilMonat(BigDecimal kostenAnteilMonat) {
 		this.getBgCalculationInputAsiv().setKostenAnteilMonat(kostenAnteilMonat);
 		this.getBgCalculationInputGemeinde().setKostenAnteilMonat(kostenAnteilMonat);
