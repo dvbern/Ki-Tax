@@ -337,6 +337,7 @@ public class Kind extends AbstractPersonEntity {
 			target.setAlimenteErhalten(this.getAlimenteErhalten());
 			target.setAlimenteBezahlen(this.getAlimenteBezahlen());
 			target.setZukunftigeGeburtsdatum(target.getGeburtsdatum().isAfter(regelStartDatum) ? true : false);
+			target.setKeinPlatzInSchulhort(this.getKeinPlatzInSchulhort());
 			copyFachstelle(target, copyType);
 			copyAusserordentlicherAnspruch(target, copyType);
 			break;
