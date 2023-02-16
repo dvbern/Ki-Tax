@@ -956,6 +956,11 @@ public class BGCalculationInput {
 		this.tsInputMitBetreuung.calculatePercentage(percentage);
 		this.tsInputOhneBetreuung.calculatePercentage(percentage);
 		this.bezahltVollkostenMonatAnteil = calculatePercentage(this.bezahltVollkostenMonatAnteil, percentage);
+
+	}
+
+	public void roundValuesAfterCalculateProportinaly() {
+		this.massgebendesEinkommenVorAbzugFamgr = MathUtil.GANZZAHL.from(this.massgebendesEinkommenVorAbzugFamgr);
 	}
 
 	private boolean isPercentCaluclable(double percent) {
