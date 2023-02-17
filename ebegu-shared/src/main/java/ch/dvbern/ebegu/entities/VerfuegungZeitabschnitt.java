@@ -56,6 +56,7 @@ import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.EbeguUtil;
 import ch.dvbern.ebegu.util.MathUtil;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import org.apache.commons.collections.bidimap.AbstractBidiMapDecorator;
 import org.apache.commons.lang3.builder.CompareToBuilder;
 import org.hibernate.envers.Audited;
 
@@ -325,6 +326,11 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 	@Nonnull
 	public BigDecimal getBetreuungspensumZeiteinheit() {
 		return getRelevantBgCalculationResult().getBetreuungspensumZeiteinheit();
+	}
+
+	@Nonnull
+	public BigDecimal getBGPensumZeiteinheit() {
+		return getRelevantBgCalculationResult().getBgPensumZeiteinheit();
 	}
 
 	@Nullable
