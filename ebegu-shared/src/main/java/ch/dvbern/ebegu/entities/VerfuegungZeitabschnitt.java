@@ -329,7 +329,7 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 	}
 
 	@Nonnull
-	public BigDecimal getBGPensumZeiteinheit() {
+	public BigDecimal getBgPensumZeiteinheit() {
 		return getRelevantBgCalculationResult().getBgPensumZeiteinheit();
 	}
 
