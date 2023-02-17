@@ -127,6 +127,19 @@ public class GeschwistertenBonusAbschnittRuleTest {
 	}
 
 	@Test
+	public void threeKidsWithBereuungKeinPlatzImSchulhorn() {
+		Betreuung betreuungOldestKind = createBetreuungWithOldestKindAndAddToGesuch();
+		betreuungOldestKind.getKind().getKindJA().setKeinPlatzInSchulhort(true);
+		betreuungOldestKind.getKind().getKindJA().setEinschulungTyp(EinschulungTyp.KLASSE1);
+		Betreuung betreuungYoungestKind = createBetreuungWithYoungestKindAndAddToGesuch();
+
+
+		assertNoZeitabschnitteCreatedInRule(executeRule(betreuungOldestKind));
+		assertGeschwisternBonus2(executeRule(betreuung));
+		assertGeschwisternBonus3(executeRule(betreuungYoungestKind));
+	}
+
+	@Test
 	public void fourKidsWithBetreuung() {
 		Betreuung thirdOldest = createBetreuungWithOldestKindAndAddToGesuch();
 		Betreuung secondOldest = createBetreuungWithOldestKindAndAddToGesuch();
