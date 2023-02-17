@@ -90,7 +90,12 @@ public class GeschwisterbonusAbschnittRule extends AbstractAbschnittRule {
 		if (kind.getEinschulungTyp() == null) {
 			return false;
 		}
-		return kind.getEinschulungTyp().getOrdinalitaet() <= this.einstellungBgAusstellenBisStufe.getOrdinalitaet();
+
+		if (kind.getEinschulungTyp().getOrdinalitaet() <= this.einstellungBgAusstellenBisStufe.getOrdinalitaet()) {
+			return true;
+		}
+
+		return Boolean.TRUE.equals(kind.getKeinPlatzInSchulhort());
 	}
 
 	private List<KindContainer> getGeschwisterOrderdByAge(Betreuung betreuung) {
