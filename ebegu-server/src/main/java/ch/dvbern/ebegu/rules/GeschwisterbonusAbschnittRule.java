@@ -24,15 +24,17 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+import java.util.SortedSet;
 import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
 
-import ch.dvbern.ebegu.entities.AbstractEntity;
-import ch.dvbern.ebegu.entities.AbstractPersonEntity;
 import ch.dvbern.ebegu.entities.AbstractPlatz;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Einstellung;
+import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.Kind;
 import ch.dvbern.ebegu.entities.KindContainer;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
@@ -45,7 +47,7 @@ import com.google.common.collect.ImmutableList;
 
 public class GeschwisterbonusAbschnittRule extends AbstractAbschnittRule {
 
-	private EinschulungTyp einstellungBgAusstellenBisStufe;
+	private final EinschulungTyp einstellungBgAusstellenBisStufe;
 
 	protected GeschwisterbonusAbschnittRule(
 		@Nonnull EinschulungTyp einstellungBgAusstellenBisStufe,
@@ -57,33 +59,31 @@ public class GeschwisterbonusAbschnittRule extends AbstractAbschnittRule {
 
 	@Nonnull
 	@Override
-	List<VerfuegungZeitabschnitt> createVerfuegungsZeitabschnitte(
-		@Nonnull AbstractPlatz platz) {
+	List<VerfuegungZeitabschnitt> createVerfuegungsZeitabschnitte(@Nonnull AbstractPlatz platz) {
 		List<VerfuegungZeitabschnitt> verfuegungZeitabschnitts = new ArrayList<>();
+
 		if (!kindCouldHaveBG(platz.getKind().getKindJA())) {
 			return verfuegungZeitabschnitts;
 		}
-		Betreuung betreuung = (Betreuung) platz;
-		betreuung.getBetreuungspensumContainers().forEach(betreuungspensumContainer ->
-				createEineVerfuegungZeitabschnittProMonat(
-					betreuungspensumContainer.getBetreuungspensumJA().getGueltigkeit().getGueltigAb(),
-					betreuungspensumContainer.getBetreuungspensumJA().getGueltigkeit().getGueltigBis(),
-					verfuegungZeitabschnitts)
-		);
-		for (VerfuegungZeitabschnitt verfuegungZeitabschnitt: verfuegungZeitabschnitts) {
-			boolean hasBonusKind2 = getHasGeschwistersBonusKind2(betreuung, verfuegungZeitabschnitt.getGueltigkeit());
-			if (hasBonusKind2) {
-				verfuegungZeitabschnitt.setGeschwisternBonusKind2ForAsivAndGemeinde(hasBonusKind2);
-				verfuegungZeitabschnitt.getRelevantBgCalculationInput().addBemerkung(MsgKey.GESCHWSTERNBONUS_KIND_2, getLocale());
-			}
-			boolean hasBonusKind3 = getHasGeschwistersBonusKind3(betreuung, verfuegungZeitabschnitt.getGueltigkeit());
-			if (hasBonusKind3) {
-				verfuegungZeitabschnitt.setGeschwisternBonusKind3ForAsivAndGemeinde(hasBonusKind3);
-				verfuegungZeitabschnitt.getRelevantBgCalculationInput().addBemerkung(MsgKey.GESCHWSTERNBONUS_KIND_3, getLocale());
-			}
-		}
-		return verfuegungZeitabschnitts;
 
+		Betreuung betreuung = (Betreuung) platz;
+		List<KindContainer> geschwisterOrderedByAge = getGeschwisterOrderdByAge(betreuung);
+
+		//wenn das kind das älteste Kind ist, gibt es sicher kein geschwisternbonus
+		if (getKindNumber(geschwisterOrderedByAge, betreuung.getKind()) <= 0) {
+			return verfuegungZeitabschnitts;
+		}
+
+		betreuung.getBetreuungspensumContainers().forEach(betreuungspensumContainer ->
+			createEinZeitabschnittProMonatBisMaximalEndePeriode(
+					betreuungspensumContainer.getBetreuungspensumJA().getGueltigkeit(),
+					betreuung.extractGesuchsperiode(),
+					verfuegungZeitabschnitts));
+
+		verfuegungZeitabschnitts.forEach(zeitabschnitt ->
+		 setGeschwisernbonusInZeitabschnitt(zeitabschnitt, betreuung.getKind(), geschwisterOrderedByAge));
+
+		return verfuegungZeitabschnitts;
 	}
 
 	private boolean kindCouldHaveBG(Kind kind) {
@@ -93,42 +93,109 @@ public class GeschwisterbonusAbschnittRule extends AbstractAbschnittRule {
 		return kind.getEinschulungTyp().getOrdinalitaet() <= this.einstellungBgAusstellenBisStufe.getOrdinalitaet();
 	}
 
-	private boolean getHasGeschwistersBonusKind2(Betreuung betreuung, DateRange gueltigkeit) {
-		List<Kind> kinderList = getRelevantKinderSortedByAgeFromBetreuung(betreuung, gueltigkeit);
-		return kinderList.indexOf(betreuung.getKind().getKindJA()) == 1;
+	private List<KindContainer> getGeschwisterOrderdByAge(Betreuung betreuung) {
+		return betreuung.extractGesuch().getKindContainers().stream()
+			.filter(kindContainer -> kindCouldHaveBG(kindContainer.getKindJA()))
+			.sorted(getKindGeburtstagAndTimestampComparator())
+			.collect(Collectors.toUnmodifiableList());
 	}
 
-	private boolean getHasGeschwistersBonusKind3(Betreuung betreuung, DateRange gueltigkeit) {
-		List<Kind> kinderList = getRelevantKinderSortedByAgeFromBetreuung(betreuung, gueltigkeit);
-		return kinderList.indexOf(betreuung.getKind().getKindJA()) >= 2;
+	private void setGeschwisernbonusInZeitabschnitt(
+		VerfuegungZeitabschnitt zeitabschnitt,
+		KindContainer kindToCheckGeschwisternBonus,
+		List<KindContainer> geschwisterOrderedByAge) {
+
+		List<KindContainer> kinderWithBetreuungInZeitraum =
+			getKinderOrderedByAgeThatHaveBetreuungInSameZeitraum(geschwisterOrderedByAge, zeitabschnitt.getGueltigkeit());
+
+		if (hasKindGeschwisterBonus2(kindToCheckGeschwisternBonus, kinderWithBetreuungInZeitraum)) {
+			zeitabschnitt.setGeschwisternBonusKind2ForAsivAndGemeinde(true);
+			zeitabschnitt.getRelevantBgCalculationInput().addBemerkung(MsgKey.GESCHWSTERNBONUS_KIND_2, getLocale());
+		} else if (hasKindGeschwisterBonus3(kindToCheckGeschwisternBonus, kinderWithBetreuungInZeitraum)) {
+			zeitabschnitt.setGeschwisternBonusKind3ForAsivAndGemeinde(true);
+			zeitabschnitt.getRelevantBgCalculationInput().addBemerkung(MsgKey.GESCHWSTERNBONUS_KIND_3, getLocale());
+		}
 	}
 
-	private List<Kind> getRelevantKinderSortedByAgeFromBetreuung(Betreuung betreuung, DateRange gueltigkeit) {
-		return betreuung.extractGesuch()
-			.getKindContainers()
-			.stream()
-			.filter(kindContainer -> !kindContainer.getBetreuungen().isEmpty()
-				&& kindContainer.getBetreuungen()
-				.stream()
-				.anyMatch(kindBetreuung -> atLeastOneBetreuungspensumContainerOverlap(gueltigkeit, kindBetreuung))
-			)
-			.map(KindContainer::getKindJA)
-			.filter(this::kindCouldHaveBG)
-			.sorted(
-				Comparator
-					.comparing(AbstractPersonEntity::getGeburtsdatum)
-					.thenComparing(AbstractEntity::getTimestampErstellt))
+	private List<KindContainer> getKinderOrderedByAgeThatHaveBetreuungInSameZeitraum(
+		List<KindContainer> kindContainer,
+		DateRange gueltigkeit) {
+
+		return kindContainer.stream()
+			.filter(container -> atLeastOneBetreuungspensumContainerOverlap(container.getBetreuungen(), gueltigkeit))
+			.sorted(getKindGeburtstagAndTimestampComparator())
 			.collect(Collectors.toList());
 	}
 
-	private static boolean atLeastOneBetreuungspensumContainerOverlap(DateRange gueltigkeit, Betreuung kindBetreuung) {
-		return kindBetreuung.getBetreuungspensumContainers()
-			.stream()
-			.anyMatch(
-				betreuungspensumContainer -> gueltigkeit.getOverlap(
-					betreuungspensumContainer.getBetreuungspensumJA().getGueltigkeit()
-				).isPresent()
-			);
+	private boolean atLeastOneBetreuungspensumContainerOverlap(Set<Betreuung> betreuungen, DateRange gueltigkeit) {
+		return betreuungen.stream()
+				.flatMap(betreuung -> betreuung.getBetreuungspensumContainers().stream())
+				.anyMatch(betreuungspensumContainer ->
+					gueltigkeit.intersects(betreuungspensumContainer.getBetreuungspensumJA().getGueltigkeit())
+				);
+	}
+
+
+	private boolean hasKindGeschwisterBonus2(KindContainer kindToCheck, List<KindContainer> orderedKindByAge) {
+		if(!orderedKindByAge.contains(kindToCheck)) {
+			return false;
+		}
+
+		return getKindNumber(orderedKindByAge, kindToCheck) == 1;
+	}
+
+	private boolean hasKindGeschwisterBonus3(KindContainer kindToCheck, List<KindContainer> orderedKindByAge) {
+		if(!orderedKindByAge.contains(kindToCheck)) {
+			return false;
+		}
+
+		return getKindNumber(orderedKindByAge, kindToCheck) >= 2;
+	}
+
+	private Comparator<KindContainer> getKindGeburtstagAndTimestampComparator() {
+		return (o1, o2) -> {
+			if (o1.getKindJA().getGeburtsdatum().isEqual(o2.getKindJA().getGeburtsdatum())) {
+				Objects.requireNonNull(o1.getKindJA().getTimestampErstellt());
+				Objects.requireNonNull(o2.getKindJA().getTimestampErstellt());
+
+				return o1.getKindJA().getTimestampErstellt().compareTo(o2.getKindJA().getTimestampErstellt());
+			}
+
+			return o1.getKindJA().getGeburtsdatum().compareTo(o2.getKindJA().getGeburtsdatum());
+		};
+	}
+
+	/**
+	 * returns the number of the child (0 for oldest, 1 for second oldest, etc...)
+	 */
+	private int getKindNumber(List<KindContainer> kindOrderedByAge, KindContainer kindToGetNumber) {
+		return kindOrderedByAge.indexOf(kindToGetNumber);
+	}
+
+	private void createEinZeitabschnittProMonatBisMaximalEndePeriode(
+		DateRange gueltigkeit,
+		Gesuchsperiode gesuchsperiode,
+		List<VerfuegungZeitabschnitt> verfuegungZeitabschnitts) {
+		LocalDate guleitgAb = gueltigkeit.getGueltigAb();
+		LocalDate gueltigBis = gueltigkeit.getGueltigBis().isAfter(gesuchsperiode.getGueltigkeit().getGueltigBis()) ?
+			gesuchsperiode.getGueltigkeit().getGueltigBis() :
+			gueltigkeit.getGueltigBis();
+
+		createEineVerfuegungZeitabschnittProMonat(guleitgAb, gueltigBis, verfuegungZeitabschnitts);
+	}
+
+	private void createEineVerfuegungZeitabschnittProMonat(
+		LocalDate gueltigAb,
+		LocalDate gueltigBis,
+		List<VerfuegungZeitabschnitt> verfuegungZeitabschnitts
+	) {
+		if (gueltigAb.getMonth() == gueltigBis.getMonth()) {
+			verfuegungZeitabschnitts.add(createZeitabschnittWithinValidityPeriodOfRule(new DateRange(gueltigAb, gueltigBis)));
+			return;
+		}
+		LocalDate startOfNextMonth = gueltigAb.plusMonths(1).with(TemporalAdjusters.firstDayOfMonth());
+		verfuegungZeitabschnitts.add(createZeitabschnittWithinValidityPeriodOfRule(new DateRange(gueltigAb, startOfNextMonth.minusDays(1))));
+		createEineVerfuegungZeitabschnittProMonat(startOfNextMonth, gueltigBis, verfuegungZeitabschnitts);
 	}
 
 	@Override
@@ -140,19 +207,5 @@ public class GeschwisterbonusAbschnittRule extends AbstractAbschnittRule {
 	public boolean isRelevantForGemeinde(@Nonnull Map<EinstellungKey, Einstellung> einstellungMap) {
 		Einstellung geschwisternbonusAktiv = einstellungMap.get(EinstellungKey.GESCHWISTERNBONUS_AKTIVIERT);
 		return geschwisternbonusAktiv.getValueAsBoolean();
-	}
-
-	private List<VerfuegungZeitabschnitt> createEineVerfuegungZeitabschnittProMonat(
-		LocalDate gueltigAb,
-		LocalDate gueltigBis,
-		List<VerfuegungZeitabschnitt> verfuegungZeitabschnitts
-	) {
-		if (gueltigAb.getMonth().equals(gueltigBis.getMonth())) {
-			verfuegungZeitabschnitts.add(new VerfuegungZeitabschnitt(new DateRange(gueltigAb, gueltigBis)));
-			return verfuegungZeitabschnitts;
-		}
-		LocalDate startOfNextMonth = gueltigAb.plusMonths(1).with(TemporalAdjusters.firstDayOfMonth());
-		verfuegungZeitabschnitts.add(new VerfuegungZeitabschnitt(new DateRange(gueltigAb, startOfNextMonth.minusDays(1))));
-		return createEineVerfuegungZeitabschnittProMonat(startOfNextMonth, gueltigBis, verfuegungZeitabschnitts);
 	}
 }

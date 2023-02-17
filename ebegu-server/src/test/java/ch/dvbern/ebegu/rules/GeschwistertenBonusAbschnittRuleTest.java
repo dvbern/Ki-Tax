@@ -27,7 +27,6 @@ import java.util.Optional;
 
 import javax.annotation.Nonnull;
 
-import ch.dvbern.ebegu.dto.BGCalculationInput;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Betreuungspensum;
 import ch.dvbern.ebegu.entities.BetreuungspensumContainer;
@@ -60,6 +59,11 @@ public class GeschwistertenBonusAbschnittRuleTest {
 	private static final DateRange AUGUST = new DateRange(
 		Constants.GESUCHSPERIODE_17_18_AB,
 		Constants.GESUCHSPERIODE_17_18_AB.with(TemporalAdjusters.lastDayOfMonth()));
+	private static final DateRange SEPTEMBER = new DateRange(
+		Constants.GESUCHSPERIODE_17_18_AB.plusMonths(1),
+		Constants.GESUCHSPERIODE_17_18_AB.plusMonths(1).with(TemporalAdjusters.lastDayOfMonth()));
+
+	private static final LocalDate END_OF_TIME = LocalDate.of(9999, Month.DECEMBER, 31);
 
 	@Before
 	public void setUp() {
@@ -84,13 +88,13 @@ public class GeschwistertenBonusAbschnittRuleTest {
 
 	@Test
 	public void oneKindShouldHaveNeitherBonus() {
-		assertNoGeschwisternBonus(executeRule(betreuung));
+		assertNoZeitabschnitteCreatedInRule(executeRule(betreuung));
 	}
 
 	@Test
 	public void twoKidsWithBetreuung() {
 		Betreuung betreuungOldestKind = createBetreuungWithOldestKindAndAddToGesuch();
-		assertNoGeschwisternBonus(executeRule(betreuungOldestKind));
+		assertNoZeitabschnitteCreatedInRule(executeRule(betreuungOldestKind));
 		assertGeschwisternBonus2(executeRule(betreuung));
 	}
 
@@ -100,7 +104,24 @@ public class GeschwistertenBonusAbschnittRuleTest {
 		Betreuung betreuungYoungestKind = createBetreuungWithYoungestKindAndAddToGesuch();
 
 
-		assertNoGeschwisternBonus(executeRule(betreuungOldestKind));
+		assertNoZeitabschnitteCreatedInRule(executeRule(betreuungOldestKind));
+		assertGeschwisternBonus2(executeRule(betreuung));
+		assertGeschwisternBonus3(executeRule(betreuungYoungestKind));
+	}
+
+	@Test
+	public void threeKidsWithBereuungTillEndOfTime() {
+		Betreuung betreuungOldestKind = createBetreuungWithOldestKindAndAddToGesuch();
+		Betreuung betreuungYoungestKind = createBetreuungWithYoungestKindAndAddToGesuch();
+
+		betreuung.getBetreuungspensumContainers().stream()
+			.findFirst()
+			.orElseThrow()
+			.getBetreuungspensumJA()
+			.getGueltigkeit()
+			.setGueltigBis(END_OF_TIME);
+
+		assertNoZeitabschnitteCreatedInRule(executeRule(betreuungOldestKind));
 		assertGeschwisternBonus2(executeRule(betreuung));
 		assertGeschwisternBonus3(executeRule(betreuungYoungestKind));
 	}
@@ -114,7 +135,98 @@ public class GeschwistertenBonusAbschnittRuleTest {
 		assertGeschwisternBonus3(executeRule(betreuung)); //Test Youngest Kind
 		assertGeschwisternBonus3(executeRule(thirdOldest));
 		assertGeschwisternBonus2(executeRule(secondOldest));
-		assertNoGeschwisternBonus(executeRule(oldest));
+		assertNoZeitabschnitteCreatedInRule(executeRule(oldest));
+	}
+
+
+
+	@Test
+	public void untermonatlicheBetreuung() {
+		Betreuung thirdOldest = createBetreuungWithOldestKindAndAddToGesuch();
+		Betreuung secondOldest = createBetreuungWithOldestKindAndAddToGesuch();
+		Betreuung oldest = createBetreuungWithOldestKindAndAddToGesuch();
+
+		DateRange midSeptemberTillMidOcober = new DateRange(
+			SEPTEMBER.getGueltigAb().plusDays(15),
+			SEPTEMBER.getGueltigBis().plusDays(15)
+		);
+
+		BetreuungspensumContainer betreuungspensumContainer =
+			secondOldest.getBetreuungspensumContainers().stream().findFirst().orElseThrow();
+		betreuungspensumContainer.getBetreuungspensumJA().setGueltigkeit(midSeptemberTillMidOcober);
+
+		List<VerfuegungZeitabschnitt> verfuegungZeitabschnittThirdOldestList =
+			ruleToTest.createVerfuegungsZeitabschnitte(thirdOldest);
+		Assert.assertFalse(verfuegungZeitabschnittThirdOldestList.isEmpty());
+
+		List<VerfuegungZeitabschnitt> verfuegungZeitabschnittSecondOldestList =
+			ruleToTest.createVerfuegungsZeitabschnitte(secondOldest);
+		Assert.assertFalse(verfuegungZeitabschnittSecondOldestList.isEmpty());
+
+		// Expected Result
+		// Other than September, Ocotober = Bonus 2 thirdOldes, Bonus 3 youngest
+		// September, October  = Bonus 2 secondOldest, Bonus 3 thirdOldest and Youngest
+		assertGeschwisternBonus3(executeRule(betreuung));
+		assertNoZeitabschnitteCreatedInRule(executeRule(oldest));
+
+		verfuegungZeitabschnittThirdOldestList.forEach(zeitabschnitt -> {
+			Month month = zeitabschnitt.getGueltigkeit().getGueltigAb().getMonth();
+			if (month == Month.SEPTEMBER || month == Month.OCTOBER) {
+				assertGeschwisternBonus3(List.of(zeitabschnitt));
+			} else {
+				assertGeschwisternBonus2(List.of(zeitabschnitt));
+			}
+		});
+
+		verfuegungZeitabschnittSecondOldestList.forEach(zeitabschnitt -> {
+			Month month = zeitabschnitt.getGueltigkeit().getGueltigAb().getMonth();
+			if (month == Month.SEPTEMBER || month == Month.OCTOBER) {
+				assertGeschwisternBonus2(List.of(zeitabschnitt));
+			} else {
+				assertNoGeschwisternBonus(List.of(zeitabschnitt));
+			}
+		});
+	}
+
+	@Test
+	public void fourKidsOneWithBetreuungOnlyInSeptember() {
+		Betreuung thirdOldest = createBetreuungWithOldestKindAndAddToGesuch();
+		Betreuung secondOldest = createBetreuungWithOldestKindAndAddToGesuch();
+		Betreuung oldest = createBetreuungWithOldestKindAndAddToGesuch();
+
+		BetreuungspensumContainer betreuungspensumContainer =
+			secondOldest.getBetreuungspensumContainers().stream().findFirst().orElseThrow();
+		betreuungspensumContainer.getBetreuungspensumJA().setGueltigkeit(SEPTEMBER);
+
+		List<VerfuegungZeitabschnitt> verfuegungZeitabschnittThirdOldestList =
+			ruleToTest.createVerfuegungsZeitabschnitte(thirdOldest);
+		Assert.assertFalse(verfuegungZeitabschnittThirdOldestList.isEmpty());
+
+		List<VerfuegungZeitabschnitt> verfuegungZeitabschnittSecondOldestList =
+			ruleToTest.createVerfuegungsZeitabschnitte(secondOldest);
+		Assert.assertFalse(verfuegungZeitabschnittSecondOldestList.isEmpty());
+
+		// Expected Result
+		// Other than September = Bonus 2 thirdOldes, Bonus 3 youngest
+		// September = Bonus 2 secondOldest, Bonus 3 thirdOldest and Youngest
+		assertGeschwisternBonus3(executeRule(betreuung));
+		assertNoZeitabschnitteCreatedInRule(executeRule(oldest));
+
+		verfuegungZeitabschnittThirdOldestList.forEach(zeitabschnitt -> {
+			if (zeitabschnitt.getGueltigkeit().getGueltigAb().getMonth() == Month.SEPTEMBER) {
+				assertGeschwisternBonus3(List.of(zeitabschnitt));
+			} else {
+				assertGeschwisternBonus2(List.of(zeitabschnitt));
+			}
+		});
+
+		verfuegungZeitabschnittSecondOldestList.forEach(zeitabschnitt -> {
+			if (zeitabschnitt.getGueltigkeit().getGueltigAb().getMonth() == Month.SEPTEMBER) {
+				assertGeschwisternBonus2(List.of(zeitabschnitt));
+			} else {
+				assertNoGeschwisternBonus(List.of(zeitabschnitt));
+			}
+		});
 	}
 
 	@Test
@@ -127,19 +239,14 @@ public class GeschwistertenBonusAbschnittRuleTest {
 		// Younger Kind
 		List<VerfuegungZeitabschnitt> verfuegungZeitabschnittList =
 			ruleToTest.createVerfuegungsZeitabschnitte(betreuung);
+
+		Assert.assertFalse(verfuegungZeitabschnittList.isEmpty());
 		verfuegungZeitabschnittList.forEach(verfuegungZeitabschnitt -> {
 			if (verfuegungZeitabschnitt.getGueltigkeit().getGueltigAb().getMonth() == Month.AUGUST) {
-				Assert.assertTrue(verfuegungZeitabschnitt
-					.getRelevantBgCalculationInput()
-					.isGeschwisternBonusKind2());
+				assertGeschwisternBonus2(List.of(verfuegungZeitabschnitt));
 			} else {
-				Assert.assertFalse(verfuegungZeitabschnitt
-					.getRelevantBgCalculationInput()
-					.isGeschwisternBonusKind2());
+				assertNoGeschwisternBonus(List.of(verfuegungZeitabschnitt));
 			}
-			Assert.assertFalse(verfuegungZeitabschnitt
-				.getRelevantBgCalculationInput()
-				.isGeschwisternBonusKind3());
 		});
 	}
 
@@ -160,19 +267,14 @@ public class GeschwistertenBonusAbschnittRuleTest {
 		// Younger Kind
 		List<VerfuegungZeitabschnitt> verfuegungZeitabschnittList =
 			ruleToTest.createVerfuegungsZeitabschnitte(betreuung);
+
+		Assert.assertFalse(verfuegungZeitabschnittList.isEmpty());
 		verfuegungZeitabschnittList.forEach(verfuegungZeitabschnitt -> {
 			if (verfuegungZeitabschnitt.getGueltigkeit().getGueltigAb().getMonth() == Month.AUGUST) {
-				Assert.assertTrue(verfuegungZeitabschnitt
-					.getRelevantBgCalculationInput()
-					.isGeschwisternBonusKind3());
+				assertGeschwisternBonus3(List.of(verfuegungZeitabschnitt));
 			} else {
-				Assert.assertFalse(verfuegungZeitabschnitt
-					.getRelevantBgCalculationInput()
-					.isGeschwisternBonusKind3());
+				assertNoGeschwisternBonus(List.of(verfuegungZeitabschnitt));
 			}
-			Assert.assertFalse(verfuegungZeitabschnitt
-				.getRelevantBgCalculationInput()
-				.isGeschwisternBonusKind2());
 		});
 	}
 
@@ -190,21 +292,12 @@ public class GeschwistertenBonusAbschnittRuleTest {
 		// Younger Kind
 		List<VerfuegungZeitabschnitt> verfuegungZeitabschnittList =
 			ruleToTest.createVerfuegungsZeitabschnitte(betreuung);
+		Assert.assertFalse(verfuegungZeitabschnittList.isEmpty());
 		verfuegungZeitabschnittList.forEach(verfuegungZeitabschnitt -> {
 			if (verfuegungZeitabschnitt.getGueltigkeit().getGueltigAb().getMonth() == Month.AUGUST) {
-				Assert.assertTrue(verfuegungZeitabschnitt
-					.getRelevantBgCalculationInput()
-					.isGeschwisternBonusKind3());
-				Assert.assertFalse(verfuegungZeitabschnitt
-					.getRelevantBgCalculationInput()
-					.isGeschwisternBonusKind2());
+				assertGeschwisternBonus3(List.of(verfuegungZeitabschnitt));
 			} else {
-				Assert.assertFalse(verfuegungZeitabschnitt
-					.getRelevantBgCalculationInput()
-					.isGeschwisternBonusKind3());
-				Assert.assertTrue(verfuegungZeitabschnitt
-					.getRelevantBgCalculationInput()
-					.isGeschwisternBonusKind2());
+				assertGeschwisternBonus2(List.of(verfuegungZeitabschnitt));
 			}
 		});
 	}
@@ -220,7 +313,7 @@ public class GeschwistertenBonusAbschnittRuleTest {
 		// Younger Kind by timestamp
 		assertGeschwisternBonus2(executeRule(betreuung));
 		// Older Kind by timestamp
-		assertNoGeschwisternBonus(executeRule(olderKindBetreuung));
+		assertNoZeitabschnitteCreatedInRule(executeRule(olderKindBetreuung));
 	}
 
 	@Test
@@ -230,12 +323,12 @@ public class GeschwistertenBonusAbschnittRuleTest {
 
 		betreuung.getKind().getKindJA().setEinschulungTyp(EinschulungTyp.KINDERGARTEN1);
 		assertNoZeitabschnitteCreatedInRule(executeRule(betreuung));
-		assertNoGeschwisternBonus(executeRule(secondKind));
+		assertNoZeitabschnitteCreatedInRule(executeRule(secondKind));
 		assertGeschwisternBonus2(executeRule(youngestKind));
 
 		betreuung.getKind().getKindJA().setEinschulungTyp(EinschulungTyp.KINDERGARTEN2);
 		assertNoZeitabschnitteCreatedInRule(executeRule(betreuung));
-		assertNoGeschwisternBonus(executeRule(secondKind));
+		assertNoZeitabschnitteCreatedInRule(executeRule(secondKind));
 		assertGeschwisternBonus2(executeRule(youngestKind));
 	}
 
@@ -246,47 +339,47 @@ public class GeschwistertenBonusAbschnittRuleTest {
 
 		betreuung.getKind().getKindJA().setEinschulungTyp(EinschulungTyp.KLASSE1);
 		assertNoZeitabschnitteCreatedInRule(executeRule(betreuung));
-		assertNoGeschwisternBonus(executeRule(secondKind));
+		assertNoZeitabschnitteCreatedInRule(executeRule(secondKind));
 		assertGeschwisternBonus2(executeRule(youngestKind));
 
 		betreuung.getKind().getKindJA().setEinschulungTyp(EinschulungTyp.KLASSE2);
 		assertNoZeitabschnitteCreatedInRule(executeRule(betreuung));
-		assertNoGeschwisternBonus(executeRule(secondKind));
+		assertNoZeitabschnitteCreatedInRule(executeRule(secondKind));
 		assertGeschwisternBonus2(executeRule(youngestKind));
 
 		betreuung.getKind().getKindJA().setEinschulungTyp(EinschulungTyp.KLASSE3);
 		assertNoZeitabschnitteCreatedInRule(executeRule(betreuung));
-		assertNoGeschwisternBonus(executeRule(secondKind));
+		assertNoZeitabschnitteCreatedInRule(executeRule(secondKind));
 		assertGeschwisternBonus2(executeRule(youngestKind));
 
 		betreuung.getKind().getKindJA().setEinschulungTyp(EinschulungTyp.KLASSE4);
 		assertNoZeitabschnitteCreatedInRule(executeRule(betreuung));
-		assertNoGeschwisternBonus(executeRule(secondKind));
+		assertNoZeitabschnitteCreatedInRule(executeRule(secondKind));
 		assertGeschwisternBonus2(executeRule(youngestKind));
 
 		betreuung.getKind().getKindJA().setEinschulungTyp(EinschulungTyp.KLASSE5);
 		assertNoZeitabschnitteCreatedInRule(executeRule(betreuung));
-		assertNoGeschwisternBonus(executeRule(secondKind));
+		assertNoZeitabschnitteCreatedInRule(executeRule(secondKind));
 		assertGeschwisternBonus2(executeRule(youngestKind));
 
 		betreuung.getKind().getKindJA().setEinschulungTyp(EinschulungTyp.KLASSE6);
 		assertNoZeitabschnitteCreatedInRule(executeRule(betreuung));
-		assertNoGeschwisternBonus(executeRule(secondKind));
+		assertNoZeitabschnitteCreatedInRule(executeRule(secondKind));
 		assertGeschwisternBonus2(executeRule(youngestKind));
 
 		betreuung.getKind().getKindJA().setEinschulungTyp(EinschulungTyp.KLASSE7);
 		assertNoZeitabschnitteCreatedInRule(executeRule(betreuung));
-		assertNoGeschwisternBonus(executeRule(secondKind));
+		assertNoZeitabschnitteCreatedInRule(executeRule(secondKind));
 		assertGeschwisternBonus2(executeRule(youngestKind));
 
 		betreuung.getKind().getKindJA().setEinschulungTyp(EinschulungTyp.KLASSE8);
 		assertNoZeitabschnitteCreatedInRule(executeRule(betreuung));
-		assertNoGeschwisternBonus(executeRule(secondKind));
+		assertNoZeitabschnitteCreatedInRule(executeRule(secondKind));
 		assertGeschwisternBonus2(executeRule(youngestKind));
 
 		betreuung.getKind().getKindJA().setEinschulungTyp(EinschulungTyp.KLASSE9);
 		assertNoZeitabschnitteCreatedInRule(executeRule(betreuung));
-		assertNoGeschwisternBonus(executeRule(secondKind));
+		assertNoZeitabschnitteCreatedInRule(executeRule(secondKind));
 		assertGeschwisternBonus2(executeRule(youngestKind));
 	}
 
