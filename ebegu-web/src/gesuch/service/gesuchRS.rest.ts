@@ -258,9 +258,7 @@ export class GesuchRS implements IEntityRS {
     public simulateNewVerfuegung(id: string): IPromise<string> {
         const url = `${this.serviceURL}/simulateNewVerfuegung/${encodeURIComponent(id)}`;
         return this.$http.post(url, null)
-            .then(response => {
-                return response.data as string;
-            });
+            .then(response => response.data as string);
     }
 
     public findGesuchForFinSit(finSitId: string): IPromise<TSGesuch> {
