@@ -1,5 +1,5 @@
 <!--
-  ~ Copyright (C) 2019 DV Bern AG, Switzerland
+  ~ Copyright (C) 2023 DV Bern AG, Switzerland
   ~
   ~ This program is free software: you can redistribute it and/or modify
   ~ it under the terms of the GNU Affero General Public License as
@@ -8,11 +8,11 @@
   ~
   ~ This program is distributed in the hope that it will be useful,
   ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
-  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
   ~ GNU Affero General Public License for more details.
   ~
   ~ You should have received a copy of the GNU Affero General Public License
-  ~ along with this program.  If not, see <https://www.gnu.org/licenses/>.
+  ~ along with this program. If not, see <https://www.gnu.org/licenses/>.
   -->
 
 <fieldset>
@@ -83,7 +83,7 @@
                                 </tr>
                                 </thead>
                                 <tbody *ngIf="einstellungGP.modulTagesschuleGroups?.length > 0">
-                                <tr *ngFor="let group of einstellungGP.modulTagesschuleGroups; trackBy:trackByIdentifier">
+                                <tr *ngFor="let group of einstellungGP.modulTagesschuleGroups; trackBy:trackByIdentifier; let last = last">
                                     <td *ngIf="isScolaris(einstellungGP.modulTagesschuleGroups)" title="{{getModulName(group)}}"
                                         (click)="editModulTagesschuleGroup(einstellungGP, group)">
                                         <span>{{getModulName(group)}}</span>
@@ -118,16 +118,16 @@
                                     </td>
                                     <td *ngIf="editMode || schnittstelleInfosVisible()">
                                         <button *ngIf="editMode" type="button" class="dv-btn dv-btn-operation"
-                                                [title]="getEditDeleteButtonTooltip(einstellungGP, group)"
+                                                [title]="getEditButtonTooltip(einstellungGP, group)"
                                                 (click)="editModulTagesschuleGroup(einstellungGP, group)"
                                                 [disabled]="!canEditModule(einstellungGP, group)">
                                             <i class="fa fa-lg fa-edit"></i>
                                         </button>
                                         &nbsp;
                                         <button *ngIf="editMode" type="button" class="dv-btn dv-btn-operation"
-                                                [title]="getEditDeleteButtonTooltip(einstellungGP, group)"
+                                                [title]="getDeleteButtonTooltip(einstellungGP, group, last)"
                                                 (click)="removeModulTagesschuleGroup(einstellungGP, group)"
-                                                [disabled]="!canEditModule(einstellungGP, group)">
+                                                [disabled]="!canDeleteModule(einstellungGP, group, last)">
                                             <i class="fa fa-lg fa-trash-o"></i>
                                         </button>
                                         &nbsp;

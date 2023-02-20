@@ -16,9 +16,11 @@
 package ch.dvbern.ebegu.api.resource.authentication;
 
 import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
+import java.util.Locale;
 import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.Optional;
@@ -55,11 +57,12 @@ import ch.dvbern.ebegu.entities.AuthorisierterBenutzer;
 import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Berechtigung;
 import ch.dvbern.ebegu.entities.Mandant;
+import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.services.AuthService;
 import ch.dvbern.ebegu.services.BenutzerService;
-import ch.dvbern.ebegu.services.MandantService;
+import ch.dvbern.ebegu.util.mandant.MandantIdentifier;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
@@ -101,9 +104,6 @@ public class AuthResource {
 	@Inject
 	private LoginProviderInfoRestService loginProviderInfoRestService;
 
-	@Inject
-	private MandantService mandantService;
-
 	@Path("/portalAccountPage")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.TEXT_PLAIN)
@@ -133,11 +133,28 @@ public class AuthResource {
 	public Response initSSOLogin(@Nullable @QueryParam("relayPath") String relayPath,
 		@CookieParam(AuthConstants.COOKIE_MANDANT) Cookie mandantCookie) {
 
-		var mandant = mandantService.findMandantByCookie(mandantCookie);
-
-		String url = this.loginProviderInfoRestService.getSSOLoginInitURL(relayPath, toConnectorTenant(mandant));
+		String url = this.loginProviderInfoRestService.getSSOLoginInitURL(relayPath, findMandantIdentifierByName(mandantCookie));
 		LOG.debug("Received URL to initialize singleSignOn login '{}'", url);
 		return Response.ok(url).build();
+	}
+
+	private static String findMandantIdentifierByName(Cookie mandantCookie) {
+		if (mandantCookie == null) {
+			throw new EbeguRuntimeException("findMandantByCookie", ErrorCodeEnum.ERROR_MANDANT_COOKIE_IS_NULL);
+		}
+		var mandantNameDecoded = URLDecoder.decode(mandantCookie.getValue(), StandardCharsets.UTF_8);
+
+		switch (mandantNameDecoded) {
+		case "Stadt Luzern":
+			return MandantIdentifier.LUZERN.name().toLowerCase(Locale.ROOT);
+		case "Appenzell Ausserrhoden":
+			return MandantIdentifier.APPENZELL_AUSSERRHODEN.name().toLowerCase(Locale.ROOT);
+		case "Kanton Solothurn":
+			return MandantIdentifier.SOLOTHURN.name().toLowerCase(Locale.ROOT);
+		case "Kanton Bern":
+		default:
+			return MandantIdentifier.BERN.name().toLowerCase(Locale.ROOT);
+		}
 	}
 
 
@@ -149,9 +166,7 @@ public class AuthResource {
 	public Response initSSOLoginToConnectGSZPV(@Nullable @QueryParam("relayPath") String relayPath,
 			@CookieParam(AuthConstants.COOKIE_MANDANT) Cookie mandantCookie) {
 
-		var mandant = mandantService.findMandantByCookie(mandantCookie);
-
-		String url = this.loginProviderInfoRestService.getSSOLoginInitURL(relayPath, toConnectorTenant(mandant));
+		String url = this.loginProviderInfoRestService.getSSOLoginInitURL(relayPath, findMandantIdentifierByName(mandantCookie));
 		LOG.debug("Received URL to initialize singleSignOn login '{}'", url);
 		return Response.ok(url).build();
 	}
@@ -167,13 +182,11 @@ public class AuthResource {
 		@CookieParam(AuthConstants.COOKIE_MANDANT) Cookie mandantCookie
 	) {
 
-		var mandant = mandantService.findMandantByCookie(mandantCookie);
-
 		if (authTokenCookie != null && authTokenCookie.getValue() != null) {
 			Optional<AuthorisierterBenutzer> currentAuthOpt = authService
 				.validateAndRefreshLoginToken(authTokenCookie.getValue(), false);
 			if (currentAuthOpt.isPresent()) {
-				String logoutUrl = loginProviderInfoRestService.getSingleLogoutURL(toConnectorTenant(mandant));
+				String logoutUrl = loginProviderInfoRestService.getSingleLogoutURL(findMandantIdentifierByName(mandantCookie));
 				LOG.debug("Received URL to initialize Logout URL '{}'", logoutUrl);
 				return Response.ok(logoutUrl).build();
 			}

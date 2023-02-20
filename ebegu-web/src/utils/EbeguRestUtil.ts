@@ -1,16 +1,18 @@
 /*
- * Ki-Tax: System for the management of external childcare subsidies
- * Copyright (C) 2017 City of Bern Switzerland
+ * Copyright (C) 2023 DV Bern AG, Switzerland
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Affero General Public License for more details.
+ *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
 import * as moment from 'moment';
@@ -32,6 +34,7 @@ import {TSFachstellenTyp} from '../models/enums/TSFachstellenTyp';
 import {ferienInselNameOrder} from '../models/enums/TSFerienname';
 import {TSFinanzielleSituationTyp} from '../models/enums/TSFinanzielleSituationTyp';
 import {TSKinderabzugTyp} from '../models/enums/TSKinderabzugTyp';
+import {TSPensumAnzeigeTyp} from '../models/enums/TSPensumAnzeigeTyp';
 import {TSGemeindeKennzahlen} from '../models/gemeindeantrag/gemeindekennzahlen/TSGemeindeKennzahlen';
 import {TSAnzahlEingeschriebeneKinder} from '../models/gemeindeantrag/TSAnzahlEingeschriebeneKinder';
 import {TSDurchschnittKinderProTag} from '../models/gemeindeantrag/TSDurchschnittKinderProTag';
@@ -194,7 +197,6 @@ import {TSDateRange} from '../models/types/TSDateRange';
 import {TSLand} from '../models/types/TSLand';
 import {DateUtil} from './DateUtil';
 import {EbeguUtil} from './EbeguUtil';
-import {TSPensumAnzeigeTyp} from '../models/enums/TSPensumAnzeigeTyp';
 
 export class EbeguRestUtil {
 
@@ -2134,6 +2136,10 @@ export class EbeguRestUtil {
             finanzielleSituationTS.unterhaltsBeitraege = finanzielleSituationFromServer.unterhaltsBeitraege;
             finanzielleSituationTS.automatischePruefungErlaubt =
                 finanzielleSituationFromServer.automatischePruefungErlaubt;
+            if (finanzielleSituationFromServer.steuerdatenAbfrageTimestamp) {
+                finanzielleSituationTS.steuerdatenAbfrageTimestamp =
+                    DateUtil.localDateTimeToMoment(finanzielleSituationFromServer.steuerdatenAbfrageTimestamp);
+            }
             finanzielleSituationTS.momentanSelbststaendig = finanzielleSituationFromServer.momentanSelbststaendig;
 
             return finanzielleSituationTS;
@@ -3391,6 +3397,8 @@ export class EbeguRestUtil {
             verfuegungTS.kategorieNormal = verfuegungFromServer.kategorieNormal;
             verfuegungTS.veraenderungVerguenstigungGegenueberVorgaenger = verfuegungFromServer.veraenderungVerguenstigungGegenueberVorgaenger;
             verfuegungTS.ignorable = verfuegungFromServer.ignorable;
+            verfuegungTS.korrekturAusbezahltEltern = verfuegungFromServer.korrekturAusbezahltEltern;
+            verfuegungTS.korrekturAusbezahltInstitution = verfuegungFromServer.korrekturAusbezahltInstitution;
             return verfuegungTS;
         }
         return undefined;
@@ -3783,6 +3791,12 @@ export class EbeguRestUtil {
             tsMitteilung.dossier = this.parseDossier(new TSDossier(), mitteilungFromServer.dossier);
             if (mitteilungFromServer.betreuung) {
                 tsMitteilung.betreuung = this.parseBetreuung(new TSBetreuung(), mitteilungFromServer.betreuung);
+            }
+            if (mitteilungFromServer.finanzielleSituation) {
+                tsMitteilung.finanzielleSituation = this.parseFinanzielleSituation(
+                    new TSFinanzielleSituation(),
+                    mitteilungFromServer.finanzielleSituation
+                );
             }
             if (mitteilungFromServer.institution) {
                 tsMitteilung.institution = this.parseInstitution(new TSInstitution(), mitteilungFromServer.institution);

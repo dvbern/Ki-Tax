@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 import javax.annotation.Nullable;
 import javax.validation.constraints.NotNull;
 
+import ch.dvbern.ebegu.entities.AbstractPlatz;
 import ch.dvbern.ebegu.entities.TSCalculationResult;
 import ch.dvbern.ebegu.entities.Verfuegung;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
@@ -41,6 +42,11 @@ public class VeraenderungTagesschuleTarifCalculator extends VeraenderungCalculat
 	protected boolean isVerfuegungIgnorable(BigDecimal veraenderung) {
 		//Wenn der Tagesschuletarif steigt, darf die Verfügung ignoriert werden (TS Veränderung zu Ungusten der Eltern)
 		return veraenderung.compareTo(BigDecimal.ZERO) >= 0;
+	}
+
+	@Override
+	public void calculateKorrekturAusbezahlteVerguenstigung(AbstractPlatz platz) {
+		//no-op wir berechnen die korrektur für die tagesschulen noch nicht.
 	}
 
 	private void mapGueltigkeitToTarifOhneBetreuung(Verfuegung verfuegung) {

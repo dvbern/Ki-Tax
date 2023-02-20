@@ -53,7 +53,6 @@ describe('erwerbspensumListView', () => {
     let $q: angular.IQService;
     let dossier: TSDossier;
     let gesuchsperiode: TSGesuchsperiode;
-    let einstellungRS: EinstellungRS;
     let $httpBackend: IHttpBackendService;
     let ebeguRestUtil: EbeguRestUtil;
 
@@ -63,7 +62,6 @@ describe('erwerbspensumListView', () => {
 
         gesuchModelManager = $injector.get('GesuchModelManager');
         $componentController = $injector.get('$componentController');
-        einstellungRS = $injector.get('EinstellungRS');
         $q = $injector.get('$q');
         scope = $injector.get('$rootScope').$new();
         $httpBackend = $injector.get('$httpBackend');
@@ -72,11 +70,7 @@ describe('erwerbspensumListView', () => {
         spyOn(gesuchModelManager, 'showInfoAusserordentlichenAnspruch').and.returnValue($q.when(false));
         spyOn(gesuchModelManager, 'getDossier').and.returnValue(dossier);
         spyOn(gesuchModelManager, 'getGesuchsperiode').and.returnValue(gesuchsperiode);
-        spyOn(einstellungRS, 'getAllEinstellungenBySystemCached').and.returnValue(
-            of([new TSEinstellung(null, TSEinstellungKey.ABHAENGIGKEIT_ANSPRUCH_BESCHAEFTIGUNGPENSUM)])
-        );
-        spyOn(ebeguRestUtil, 'parseAnspruchBeschaeftigungAbhaengigkeitTyp')
-            .and.returnValue(TSAnspruchBeschaeftigungAbhaengigkeitTyp.ABHAENGING);
+        gesuchModelManager.gemeindeKonfiguration = TestDataUtil.createGemeindeKonfiguration();
         gesuchModelManager.gemeindeStammdaten = gemeindeStammdaten;
 
         TestDataUtil.mockDefaultGesuchModelManagerHttpCalls($httpBackend);

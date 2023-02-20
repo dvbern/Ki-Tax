@@ -16,6 +16,7 @@
 package ch.dvbern.ebegu.entities;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 import javax.annotation.Nonnull;
@@ -65,6 +66,10 @@ public class FinanzielleSituation extends AbstractFinanzielleSituation {
 	@Column(nullable = true)
 	@Enumerated(EnumType.STRING)
 	private SteuerdatenAnfrageStatus steuerdatenAbfrageStatus;
+
+	@Nullable
+	@Column(nullable = true)
+	private LocalDateTime steuerdatenAbfrageTimestamp;
 
 	@Nullable
 	@Column(nullable = true)
@@ -245,6 +250,15 @@ public class FinanzielleSituation extends AbstractFinanzielleSituation {
 	}
 
 	@Nullable
+	public LocalDateTime getSteuerdatenAbfrageTimestamp() {
+		return steuerdatenAbfrageTimestamp;
+	}
+
+	public void setSteuerdatenAbfrageTimestamp(@Nullable LocalDateTime steuerdatenAbfrageTimestamp) {
+		this.steuerdatenAbfrageTimestamp = steuerdatenAbfrageTimestamp;
+	}
+
+	@Nullable
 	public Boolean getAutomatischePruefungErlaubt() {
 		return automatischePruefungErlaubt;
 	}
@@ -282,6 +296,7 @@ public class FinanzielleSituation extends AbstractFinanzielleSituation {
 			target.setAbzuegeKinderAusbildung(this.getAbzuegeKinderAusbildung());
 			target.setBruttoLohn(this.getBruttoLohn());
 			target.setSteuerdatenAbfrageStatus(this.getSteuerdatenAbfrageStatus());
+			target.setSteuerdatenAbfrageTimestamp(this.getSteuerdatenAbfrageTimestamp());
 			target.setAutomatischePruefungErlaubt(this.getAutomatischePruefungErlaubt());
 			target.setMomentanSelbststaendig(this.getMomentanSelbststaendig());
 			break;

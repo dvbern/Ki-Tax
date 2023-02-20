@@ -1,25 +1,37 @@
 <!--
-  ~ Ki-Tax: System for the management of external childcare subsidies
-  ~ Copyright (C) 2017 City of Bern Switzerland
+  ~ Copyright (C) 2023 DV Bern AG, Switzerland
+  ~
   ~ This program is free software: you can redistribute it and/or modify
   ~ it under the terms of the GNU Affero General Public License as
   ~ published by the Free Software Foundation, either version 3 of the
   ~ License, or (at your option) any later version.
+  ~
   ~ This program is distributed in the hope that it will be useful,
   ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
   ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
   ~ GNU Affero General Public License for more details.
+  ~
   ~ You should have received a copy of the GNU Affero General Public License
-  ~ along with this program. If not, see <http://www.gnu.org/licenses/>.
+  ~ along with this program. If not, see <https://www.gnu.org/licenses/>.
   -->
 <div class="dv-table">
     <div class="col-md-12">
-        <div class="row">
+        <div class="row view-title">
+            <div class="col-md-10 col-md-offset-1">
+                <h2 class="ng-scope">{{'POSTEINGANG' | translate}}</h2>
+            </div>
+        </div>
+        <div class="row margin-top-20">
             <div class="col-md-8 col-md-offset-1">
-                <div id="titlePosteingang">
-                    <h3 class="ng-scope">{{'POSTEINGANG' | translate}}
-                        <i class="fa fa-undo" (click)="resetFilter()"></i>
-                    </h3>
+                <div class="dv-table-actions">
+                    <a (click)="resetFilter()" class="pointer-cursor">
+                        <i class="fa fa-undo"></i>
+                        {{'NEU_LADEN' | translate}}
+                    </a>
+                    <a class="ng-scope pointer-cursor" (click)="alleMutationsmeldungVerfuegen()" [dvDemoFeature]="mutationsMeldungDemoFeature">
+                        <i class="fa fa-flash fa-lg"></i>
+                        {{'ALLE_MUTATIONSMELDUNG_AUTOMATISCH_BEARBEITEN' | translate}}
+                    </a>
                 </div>
             </div>
             <div *ngIf="!isSozialdienstOrInstitution()"
@@ -131,18 +143,20 @@
                             <span translate></span>
                         </mat-header-cell>
                         <mat-cell *matCellDef="let element">
-                            <dv-loading-button (buttonClick)="setUngelesen(element)"
+                            <button type="button" class="dv-btn dv-btn-operation" (click)="$event.stopPropagation(); setUngelesen(element)"
                                                *ngIf="isSuperAdmin() && isStatusGelesen(element)">
-                                <i class="fa fa-envelope" [title]="'MITTEILUNG_UNGELESEN' | translate"></i>
-                            </dv-loading-button>
-                            <dv-loading-button (buttonClick)="setIgnoriert(element)" [dvDemoFeature]="mitteilungIgnorierenDemoFeature"
+                                <i class="fa fa-envelope fa-lg" [title]="'MITTEILUNG_UNGELESEN' | translate"></i>
+                            </button>
+                            <button type="button" class="dv-btn dv-btn-operation" (click)="$event.stopPropagation(); setIgnoriert(element)"
+                                    [dvDemoFeature]="mitteilungIgnorierenDemoFeature"
                                                *ngIf="isSuperAdminOrGemeinde() && canBeIgnored(element)">
-                                <span translate>IGNORIEREN</span>
-                            </dv-loading-button>
-                            <dv-loading-button (buttonClick)="setGelesen(element)" [dvDemoFeature]="mitteilungIgnorierenDemoFeature"
+                                <i class="fa fa-eye-slash fa-lg" [title]="'MITTEILUNG_IGNORIEREN' | translate"></i>
+                            </button>
+                            <button type="button" class="dv-btn dv-btn-operation" (click)="$event.stopPropagation(); setGelesen(element)"
+                                    [dvDemoFeature]="mitteilungIgnorierenDemoFeature"
                                                *ngIf="isSuperAdminOrGemeinde() && canMitteilungStatusBeReverted(element)">
-                                <span translate>RUECKGAENGIG</span>
-                            </dv-loading-button>
+                                <i class="fa fa-eye fa-lg" [title]="'MITTEILUNG_NICHT_IGNORIEREN' | translate"></i>
+                            </button>
                         </mat-cell>
                     </ng-container>
 
@@ -287,10 +301,6 @@
                             </li>
                         </ul>
                     </nav>
-                </div> <div *ngIf="canSeeMutationsmeldungenAutomatischBearbeiten()" [dvDemoFeature]="mutationsMeldungDemoFeature"
-                     class="text-right closed-mitteilungen dv-table-actionButton">
-                    <dv-loading-button (buttonClick)="alleMutationsmeldungVerfuegen()">
-                        {{'ALLE_MUTATIONSMELDUNG_AUTOMATISCH_BEARBEITEN' | translate}}</dv-loading-button>
                 </div>
             </div>
         </div>

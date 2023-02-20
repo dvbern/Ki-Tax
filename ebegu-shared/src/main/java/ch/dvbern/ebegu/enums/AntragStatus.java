@@ -1,16 +1,18 @@
 /*
- * Ki-Tax: System for the management of external childcare subsidies
- * Copyright (C) 2017 City of Bern Switzerland
+ * Copyright (C) 2023 DV Bern AG, Switzerland
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Affero General Public License for more details.
+ *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
 package ch.dvbern.ebegu.enums;
@@ -43,7 +45,8 @@ public enum AntragStatus {
 	BESCHWERDE_HAENGIG,
 	PRUEFUNG_STV,
 	IN_BEARBEITUNG_STV,
-	GEPRUEFT_STV;
+	GEPRUEFT_STV,
+	IGNORIERT;
 
 	public static final Set<AntragStatus> FOR_ADMIN_ROLE = EnumSet.of(
 		FREIGEGEBEN,        // Freigabequittung im Jugendamt eingelesen ODER keine Quittung notwendig
@@ -61,7 +64,8 @@ public enum AntragStatus {
 		PRUEFUNG_STV,
 		IN_BEARBEITUNG_STV,
 		GEPRUEFT_STV,
-		NUR_SCHULAMT
+		NUR_SCHULAMT,
+		IGNORIERT
 	);
 
 	public static final Set<AntragStatus> FOR_INSTITUTION_ROLE = EnumSet.of(
@@ -84,7 +88,8 @@ public enum AntragStatus {
 		BESCHWERDE_HAENGIG,
 		PRUEFUNG_STV,
 		IN_BEARBEITUNG_STV,
-		GEPRUEFT_STV);
+		GEPRUEFT_STV,
+		IGNORIERT);
 
 	public static final Set<AntragStatus> FOR_STEUERAMT_ROLE = EnumSet.of(
 		PRUEFUNG_STV,
@@ -106,7 +111,8 @@ public enum AntragStatus {
 		BESCHWERDE_HAENGIG,
 		PRUEFUNG_STV,
 		IN_BEARBEITUNG_STV,
-		GEPRUEFT_STV);
+		GEPRUEFT_STV,
+		IGNORIERT);
 
 	public static final Set<AntragStatus> FOR_SOZIALDIENST_ROLE = EnumSet.of(
 		FREIGABEQUITTUNG,
@@ -126,7 +132,8 @@ public enum AntragStatus {
 		IN_BEARBEITUNG_STV,
 		GEPRUEFT_STV,
 		NUR_SCHULAMT,
-		IN_BEARBEITUNG_SOZIALDIENST
+		IN_BEARBEITUNG_SOZIALDIENST,
+		IGNORIERT
 	);
 
 	public static final Set<AntragStatus> FIRST_STATUS_OF_VERFUEGT = EnumSet.of(VERFUEGT, NUR_SCHULAMT, KEIN_ANGEBOT);
@@ -188,9 +195,10 @@ public enum AntragStatus {
 		VERFUEGEN,
 		VERFUEGT,
 		KEIN_ANGEBOT,
-		BESCHWERDE_HAENGIG);
+		BESCHWERDE_HAENGIG,
+		IGNORIERT);
 
-	public static final Set<AntragStatus> ERLEDIGTE_PENDENZ = EnumSet.of(VERFUEGT, NUR_SCHULAMT, KEIN_ANGEBOT);
+	public static final Set<AntragStatus> ERLEDIGTE_PENDENZ = EnumSet.of(VERFUEGT, NUR_SCHULAMT, KEIN_ANGEBOT, IGNORIERT);
 
 	private static final Set<AntragStatus> inBearbeitung = EnumSet.range(IN_BEARBEITUNG_GS, IN_BEARBEITUNG_JA);
 
@@ -211,7 +219,8 @@ public enum AntragStatus {
 		PRUEFUNG_STV,
 		IN_BEARBEITUNG_STV,
 		GEPRUEFT_STV,
-		NUR_SCHULAMT);
+		NUR_SCHULAMT,
+		IGNORIERT);
 
 	public static final Set<AntragStatus> FOR_INSTITUTION_ROLE_WRITE = EnumSet.of(
 		IN_BEARBEITUNG_GS,
@@ -238,7 +247,8 @@ public enum AntragStatus {
 		ERSTE_MAHNUNG_ABGELAUFEN,
 		ZWEITE_MAHNUNG,
 		ZWEITE_MAHNUNG_ABGELAUFEN,
-		VERFUEGT // Damit eine Mutation erstellt werden kann
+		VERFUEGT, // Damit eine Mutation erstellt werden kann
+		IGNORIERT // Damit eine Mutation erstellt werden kann
 	);
 
 	public static final Set<AntragStatus> FOR_STEUERAMT_ROLE_WRITE = EnumSet.of(
@@ -258,7 +268,8 @@ public enum AntragStatus {
 		ERSTE_MAHNUNG_ABGELAUFEN,
 		ZWEITE_MAHNUNG,
 		ZWEITE_MAHNUNG_ABGELAUFEN,
-		VERFUEGT // Damit eine Mutation erstellt werden kann
+		VERFUEGT, // Damit eine Mutation erstellt werden kann
+		IGNORIERT // Damit eine Mutation erstellt werden kann
 	);
 
 	/**
@@ -370,11 +381,16 @@ public enum AntragStatus {
 
 	public static Collection<AntragStatus> getAllVerfuegtStates() {
 		return Arrays.asList(VERFUEGT, NUR_SCHULAMT, BESCHWERDE_HAENGIG,
+			PRUEFUNG_STV, IN_BEARBEITUNG_STV, GEPRUEFT_STV, KEIN_ANGEBOT, IGNORIERT);
+	}
+
+	public static Collection<AntragStatus> getAllVerfuegtNotIgnoriertStates() {
+		return Arrays.asList(VERFUEGT, NUR_SCHULAMT, BESCHWERDE_HAENGIG,
 			PRUEFUNG_STV, IN_BEARBEITUNG_STV, GEPRUEFT_STV, KEIN_ANGEBOT);
 	}
 
-	public static Collection<AntragStatus> getVerfuegtAndSTVStates() {
-		return Arrays.asList(VERFUEGT, PRUEFUNG_STV, IN_BEARBEITUNG_STV, GEPRUEFT_STV);
+	public static Collection<AntragStatus> getVerfuegtIgnoriertAndSTVStates() {
+		return Arrays.asList(VERFUEGT, PRUEFUNG_STV, IN_BEARBEITUNG_STV, GEPRUEFT_STV, IGNORIERT);
 	}
 
 	public static Collection<AntragStatus> getInBearbeitungGSStates() {
@@ -392,7 +408,8 @@ public enum AntragStatus {
 			BESCHWERDE_HAENGIG,
 			PRUEFUNG_STV,
 			IN_BEARBEITUNG_STV,
-			GEPRUEFT_STV
+			GEPRUEFT_STV,
+			IGNORIERT
 		);
 	}
 
@@ -413,7 +430,8 @@ public enum AntragStatus {
 			BESCHWERDE_HAENGIG,
 			PRUEFUNG_STV,
 			IN_BEARBEITUNG_STV,
-			GEPRUEFT_STV
+			GEPRUEFT_STV,
+			IGNORIERT
 		);
 	}
 

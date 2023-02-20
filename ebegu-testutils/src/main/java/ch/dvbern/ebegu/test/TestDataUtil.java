@@ -138,6 +138,7 @@ import ch.dvbern.ebegu.enums.Kinderabzug;
 import ch.dvbern.ebegu.enums.KorrespondenzSpracheTyp;
 import ch.dvbern.ebegu.enums.Land;
 import ch.dvbern.ebegu.enums.MahnungTyp;
+import ch.dvbern.ebegu.enums.MessageTypes;
 import ch.dvbern.ebegu.enums.MitteilungStatus;
 import ch.dvbern.ebegu.enums.MitteilungTeilnehmerTyp;
 import ch.dvbern.ebegu.enums.ModulTagesschuleIntervall;
@@ -2386,6 +2387,7 @@ public final class TestDataUtil {
 	public static MitteilungTableFilterDTO createMitteilungTableFilterDTO() {
 		MitteilungTableFilterDTO filterDTO = new MitteilungTableFilterDTO();
 		filterDTO.setSearch(new MitteilungSearchDTO());
+		filterDTO.getSearch().getPredicateObject().setMessageTypes(new MessageTypes[]{MessageTypes.MITTEILUNG, MessageTypes.BETREUUNGSMITTEILUNG});
 		return filterDTO;
 	}
 

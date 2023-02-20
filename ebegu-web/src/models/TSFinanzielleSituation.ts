@@ -13,6 +13,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import * as moment from 'moment';
 import {TSAbstractFinanzielleSituation} from './TSAbstractFinanzielleSituation';
 
 export class TSFinanzielleSituation extends TSAbstractFinanzielleSituation {
@@ -32,6 +33,7 @@ export class TSFinanzielleSituation extends TSAbstractFinanzielleSituation {
     private _unterhaltsBeitraege: number;
     private _bruttoLohn: number;
     private _momentanSelbststaendig: boolean;
+    private _steuerdatenAbfrageTimestamp: moment.Moment;
 
     public constructor() {
         super();
@@ -154,6 +156,14 @@ export class TSFinanzielleSituation extends TSAbstractFinanzielleSituation {
 
     public set automatischePruefungErlaubt(value: boolean) {
         this._automatischePruefungErlaubt = value;
+    }
+
+    public get steuerdatenAbfrageTimestamp(): moment.Moment {
+        return this._steuerdatenAbfrageTimestamp;
+    }
+
+    public set steuerdatenAbfrageTimestamp(value: moment.Moment) {
+        this._steuerdatenAbfrageTimestamp = value;
     }
 
     public isSelbstaendig(): boolean {

@@ -1,16 +1,18 @@
 /*
- * Ki-Tax: System for the management of external childcare subsidies
- * Copyright (C) 2017 City of Bern Switzerland
+ * Copyright (C) 2023 DV Bern AG, Switzerland
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Affero General Public License for more details.
+ *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
 package ch.dvbern.ebegu.services;
@@ -20,21 +22,31 @@ import java.util.Objects;
 import java.util.Optional;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import javax.persistence.TypedQuery;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.ParameterExpression;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 
 import ch.dvbern.ebegu.authentication.PrincipalBean;
 import ch.dvbern.ebegu.dto.FinanzielleSituationResultateDTO;
 import ch.dvbern.ebegu.dto.FinanzielleSituationStartDTO;
 import ch.dvbern.ebegu.dto.JaxFinanzielleSituationAufteilungDTO;
+import ch.dvbern.ebegu.entities.AbstractEntity_;
 import ch.dvbern.ebegu.entities.Auszahlungsdaten;
 import ch.dvbern.ebegu.entities.Einstellung;
 import ch.dvbern.ebegu.entities.Familiensituation;
 import ch.dvbern.ebegu.entities.FamiliensituationContainer;
 import ch.dvbern.ebegu.entities.FinanzielleSituation;
 import ch.dvbern.ebegu.entities.FinanzielleSituationContainer;
+import ch.dvbern.ebegu.entities.FinanzielleSituation_;
 import ch.dvbern.ebegu.entities.Gesuch;
+import ch.dvbern.ebegu.entities.NeueVeranlagungsMitteilung;
 import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.FinSitStatus;
@@ -348,4 +360,23 @@ public class FinanzielleSituationServiceBean extends AbstractBaseService impleme
 		throw new EbeguRuntimeException("assertSumIsEqual", "Sum is not the same for " + valueName);
 	}
 
+	@Override
+	@Nullable
+	public FinanzielleSituation findFinanzielleSituationForNeueVeranlagungsMitteilung(@Nonnull
+		NeueVeranlagungsMitteilung persistedMitteilung) {
+		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
+		final CriteriaQuery<FinanzielleSituation> query = cb.createQuery(FinanzielleSituation.class);
+		Root<FinanzielleSituation> root = query.from(FinanzielleSituation.class);
+
+		ParameterExpression<String>
+			steuerDatenResponseIdParam = cb.parameter(String.class, "steuerDatenResponseId");
+		Predicate predicateSteuerdatenResponseId = cb.equal(root.get(FinanzielleSituation_.steuerdatenResponse).get(
+			AbstractEntity_.id), steuerDatenResponseIdParam);
+
+		query.where(predicateSteuerdatenResponseId);
+		TypedQuery<FinanzielleSituation> q = persistence.getEntityManager().createQuery(query);
+		q.setParameter(steuerDatenResponseIdParam, persistedMitteilung.getSteuerdatenResponse().getId());
+
+		return q.getResultList().size() > 0 ? q.getResultList().get(0) : null;
+	}
 }
