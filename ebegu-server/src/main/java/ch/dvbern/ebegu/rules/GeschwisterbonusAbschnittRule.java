@@ -26,7 +26,6 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
-import java.util.SortedSet;
 import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
@@ -42,6 +41,7 @@ import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.EinschulungTyp;
 import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.enums.MsgKey;
+import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.types.DateRange;
 import com.google.common.collect.ImmutableList;
 
@@ -70,8 +70,13 @@ public class GeschwisterbonusAbschnittRule extends AbstractAbschnittRule {
 		List<KindContainer> geschwisterOrderedByAge = getGeschwisterOrderdByAge(betreuung);
 
 		//wenn das kind das älteste Kind ist, gibt es sicher kein geschwisternbonus
-		if (getKindNumber(geschwisterOrderedByAge, betreuung.getKind()) <= 0) {
+		var kindNumber = getKindNumber(geschwisterOrderedByAge, betreuung.getKind());
+		if (kindNumber == 0) {
 			return verfuegungZeitabschnitts;
+		}
+		// kind muss gefunden werden
+		if (kindNumber < 0) {
+			throw new EbeguRuntimeException("createVerfuegungsZeitabschnitte", "Kind nicht gefunden");
 		}
 
 		betreuung.getBetreuungspensumContainers().forEach(betreuungspensumContainer ->
