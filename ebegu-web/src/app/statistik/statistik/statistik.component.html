@@ -1029,7 +1029,7 @@
                             <span translate>GESTARTET</span>
                         </th>
                         <td mat-cell *matCellDef="let element" class="ellipsis">
-                            {{element.execution.createTime | ebeguDateTime}}
+                            {{element.execution?.createTime | ebeguDateTime}}
                         </td>
                     </ng-container>
 
@@ -1038,7 +1038,7 @@
                             <span translate>BEENDET</span>
                         </th>
                         <td mat-cell *matCellDef="let element" class="ellipsis">
-                            {{element.execution.endTime | ebeguDateTime}}
+                            {{element.execution?.endTime | ebeguDateTime}}
                         </td>
                     </ng-container>
 

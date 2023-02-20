@@ -193,6 +193,8 @@ public class BGCalculationInput {
 
 	private BigDecimal percentage;
 
+	private boolean isEkvAccepted = false;
+
 	public BGCalculationInput(@Nonnull VerfuegungZeitabschnitt parent, @Nonnull RuleValidity ruleValidity) {
 		this.parent = parent;
 		this.ruleValidity = ruleValidity;
@@ -256,6 +258,7 @@ public class BGCalculationInput {
 		this.besondereBeduerfnisseZuschlag = toCopy.besondereBeduerfnisseZuschlag;
 		this.stuendlicheVollkosten = toCopy.stuendlicheVollkosten;
 		this.isAuszahlungAnEltern = toCopy.isAuszahlungAnEltern;
+		this.isEkvAccepted = toCopy.isEkvAccepted;
 	}
 
 	@Nonnull
@@ -815,6 +818,7 @@ public class BGCalculationInput {
 		this.geschwisternBonusKind2 = this.geschwisternBonusKind2 || other.geschwisternBonusKind2;
 		this.geschwisternBonusKind3 = this.geschwisternBonusKind3 || other.geschwisternBonusKind3;
 		this.isAuszahlungAnEltern = this.isAuszahlungAnEltern || other.isAuszahlungAnEltern;
+		this.isEkvAccepted = this.isEkvAccepted || other.isEkvAccepted;
 
 		// Die Felder betreffend Familienabzug können nicht linear addiert werden. Es darf also nie Überschneidungen geben!
 		if (other.getAbzugFamGroesse() != null) {
@@ -932,6 +936,11 @@ public class BGCalculationInput {
 		this.tsInputMitBetreuung.calculatePercentage(percentage);
 		this.tsInputOhneBetreuung.calculatePercentage(percentage);
 		this.bezahltVollkostenMonatAnteil = calculatePercentage(this.bezahltVollkostenMonatAnteil, percentage);
+
+	}
+
+	public void roundValuesAfterCalculateProportinaly() {
+		this.massgebendesEinkommenVorAbzugFamgr = MathUtil.GANZZAHL.from(this.massgebendesEinkommenVorAbzugFamgr);
 	}
 
 	private boolean isPercentCaluclable(double percent) {
@@ -1032,7 +1041,8 @@ public class BGCalculationInput {
 			this.geschwisternBonusKind2 == other.geschwisternBonusKind2 &&
 			this.geschwisternBonusKind3 == other.geschwisternBonusKind3 &&
 			MathUtil.isSame(this.stuendlicheVollkosten, other.stuendlicheVollkosten) &&
-			this.isAuszahlungAnEltern == other.isAuszahlungAnEltern;
+			this.isAuszahlungAnEltern == other.isAuszahlungAnEltern &&
+			this.isEkvAccepted == other.isEkvAccepted;
 	}
 
 	@SuppressWarnings("PMD.CompareObjectsWithEquals")
@@ -1176,5 +1186,13 @@ public class BGCalculationInput {
 
 	public void setStuendlicheVollkosten(BigDecimal stuendlicheVollkosten) {
 		this.stuendlicheVollkosten = stuendlicheVollkosten;
+	}
+
+	public boolean isEkvAccepted() {
+		return isEkvAccepted;
+	}
+
+	public void setEkvAccepted(boolean ekvAccepted) {
+		isEkvAccepted = ekvAccepted;
 	}
 }

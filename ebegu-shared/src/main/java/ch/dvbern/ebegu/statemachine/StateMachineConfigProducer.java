@@ -56,16 +56,19 @@ public class StateMachineConfigProducer {
 		gesuchFSMConfig.configure(AntragStatus.IN_BEARBEITUNG_JA)
 			.permit(AntragEvents.MAHNEN, AntragStatus.ERSTE_MAHNUNG)
 			.permit(AntragEvents.GEPRUEFT, AntragStatus.GEPRUEFT)
-			.permit(AntragEvents.ABSCHLIESSEN, AntragStatus.NUR_SCHULAMT);
+			.permit(AntragEvents.ABSCHLIESSEN, AntragStatus.NUR_SCHULAMT)
+			.permit(AntragEvents.IGNORIEREN, AntragStatus.IGNORIERT);
 
 		gesuchFSMConfig.configure(AntragStatus.GEPRUEFT)
 			.permit(AntragEvents.ZUWEISUNG_SCHULAMT, AntragStatus.NUR_SCHULAMT)
 			.permit(AntragEvents.VERFUEGUNG_STARTEN, AntragStatus.VERFUEGEN)
 			.permit(AntragEvents.VERFUEGEN_OHNE_ANGEBOT, AntragStatus.KEIN_ANGEBOT)
-			.permit(AntragEvents.KEIN_KONTINGENT, AntragStatus.KEIN_KONTINGENT);
+			.permit(AntragEvents.KEIN_KONTINGENT, AntragStatus.KEIN_KONTINGENT)
+			.permit(AntragEvents.IGNORIEREN, AntragStatus.IGNORIERT);
 
 		gesuchFSMConfig.configure(AntragStatus.VERFUEGEN)
-			.permit(AntragEvents.VERFUEGEN, AntragStatus.VERFUEGT);
+			.permit(AntragEvents.VERFUEGEN, AntragStatus.VERFUEGT)
+			.permit(AntragEvents.IGNORIEREN, AntragStatus.IGNORIERT);
 
 		gesuchFSMConfig.configure(AntragStatus.VERFUEGT)
 			.permit(AntragEvents.BESCHWEREN, AntragStatus.BESCHWERDE_HAENGIG)

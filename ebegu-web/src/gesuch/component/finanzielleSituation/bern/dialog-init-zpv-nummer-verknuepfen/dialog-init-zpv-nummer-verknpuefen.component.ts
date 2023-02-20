@@ -27,14 +27,14 @@ import {TSGesuchstellerContainer} from '../../../../../models/TSGesuchstellerCon
     selector: 'dv-ng-zpv-nummmer-verknuepfen-dialog',
     templateUrl: './dialog-init-zpv-nummer-verknpuefen.template.html'
 })
-export class DialogInitZPVNummerVerknuepfen implements OnInit {
+export class DialogInitZPVNummerVerknuepfenComponent implements OnInit {
 
     private readonly gs: TSGesuchstellerContainer;
     private readonly korrespondenzSprache: TSSprache;
     public email: string;
 
     public constructor(
-        private readonly dialogRef: MatDialogRef<DialogInitZPVNummerVerknuepfen>,
+        private readonly dialogRef: MatDialogRef<DialogInitZPVNummerVerknuepfenComponent>,
         private readonly gesuchstellerRS: GesuchstellerRS,
         private readonly languageService: TranslateService,
         private readonly $state: StateService,

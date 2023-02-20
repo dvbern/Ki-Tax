@@ -1,16 +1,18 @@
 /*
- * Ki-Tax: System for the management of external childcare subsidies
- * Copyright (C) 2017 City of Bern Switzerland
+ * Copyright (C) 2023 DV Bern AG, Switzerland
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Affero General Public License for more details.
+ *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
 package ch.dvbern.ebegu.services;
@@ -102,14 +104,35 @@ public abstract class AbstractBaseService {
 		return parameter;
 	}
 
-	protected void updateGueltigFlagOnPlatzAndVorgaenger(@Nonnull AbstractPlatz platz) {
+	public void updateGueltigFlagOnPlatzAndVorgaenger(@Nonnull AbstractPlatz platz) {
 		// Gueltigkeit auf dem neuen setzen, auf der bisherigen entfernen
 		platz.setGueltig(true);
 		Optional<AbstractPlatz> vorgaengerPlatzOptional = findVorgaengerPlatz(platz);
 		if (vorgaengerPlatzOptional.isPresent()) {
 			AbstractPlatz vorgaengerPlatz = vorgaengerPlatzOptional.get();
 			vorgaengerPlatz.setGueltig(false);
+			// falls der Vorgänger im Status SCHULAMT_MUTATION_IGNORIERT ist
+			// müssen wir weiter zurück, weil die letzte gültige Betreuung dann möglicherweise
+			// älter als die Vormutation ist
+			updateVorgaengerPlatzOfSchulamtIgnoriert(vorgaengerPlatz);
 		}
+	}
+
+	/**
+	Setzt rekursiv die Vorgängerplätze von plätzen im Status SCHULAMT_MUTATION_IGNORIERT
+	zurück
+	 */
+	private void updateVorgaengerPlatzOfSchulamtIgnoriert(@Nonnull AbstractPlatz platz) {
+		if (platz.getBetreuungsstatus() != Betreuungsstatus.SCHULAMT_MUTATION_IGNORIERT) {
+			return;
+		}
+		Optional<AbstractPlatz> vorgaengerPlatzOptional = findVorgaengerPlatz(platz);
+		if (vorgaengerPlatzOptional.isEmpty()) {
+			return;
+		}
+		AbstractPlatz vorgaengerPlatz = vorgaengerPlatzOptional.get();
+		vorgaengerPlatz.setGueltig(false);
+		updateVorgaengerPlatzOfSchulamtIgnoriert(vorgaengerPlatz);
 	}
 
 	/**
@@ -126,7 +149,8 @@ public abstract class AbstractBaseService {
 		// Leseberechtigt bin, fuer die Mutation aber schon!
 		AbstractPlatz vorgaengerPlatz = persistence.find(abstractPlatz.getClass(), abstractPlatz.getVorgaengerId());
 		if (vorgaengerPlatz != null) {
-			if (vorgaengerPlatz.getBetreuungsstatus() != Betreuungsstatus.GESCHLOSSEN_OHNE_VERFUEGUNG) {
+			if (vorgaengerPlatz.getBetreuungsstatus() != Betreuungsstatus.GESCHLOSSEN_OHNE_VERFUEGUNG &&
+				vorgaengerPlatz.getBetreuungsstatus() != Betreuungsstatus.SCHULAMT_MUTATION_IGNORIERT) {
 				// Hier kann aus demselben Grund die Berechtigung fuer die Vorgaengerverfuegung nicht geprueft werden
 				return Optional.of(vorgaengerPlatz);
 			}

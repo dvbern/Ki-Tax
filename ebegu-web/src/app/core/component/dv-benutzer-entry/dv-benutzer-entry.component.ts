@@ -26,7 +26,7 @@ import {EbeguUtil} from '../../../../utils/EbeguUtil';
     templateUrl: './dv-benutzer-entry.component.html',
     styleUrls: ['./dv-benutzer-entry.component.less']
 })
-export class DvBenutzerEntry {
+export class DvBenutzerEntryComponent {
 
     @Input() public benutzer: TSBenutzer;
     @Input() public noIcons: boolean;

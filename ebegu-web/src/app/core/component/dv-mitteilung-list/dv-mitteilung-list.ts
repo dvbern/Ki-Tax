@@ -1,16 +1,18 @@
 /*
- * Ki-Tax: System for the management of external childcare subsidies
- * Copyright (C) 2017 City of Bern Switzerland
+ * Copyright (C) 2023 DV Bern AG, Switzerland
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Affero General Public License for more details.
+ *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
 import {StateService} from '@uirouter/core';
@@ -20,6 +22,7 @@ import {RemoveDialogController} from '../../../../gesuch/dialog/RemoveDialogCont
 import {DossierRS} from '../../../../gesuch/service/dossierRS.rest';
 import {GemeindeRS} from '../../../../gesuch/service/gemeindeRS.rest';
 import {GesuchModelManager} from '../../../../gesuch/service/gesuchModelManager';
+import {GesuchRS} from '../../../../gesuch/service/gesuchRS.rest';
 import {TSMitteilungEvent} from '../../../../models/enums/TSMitteilungEvent';
 import {TSMitteilungStatus} from '../../../../models/enums/TSMitteilungStatus';
 import {TSMitteilungTeilnehmerTyp} from '../../../../models/enums/TSMitteilungTeilnehmerTyp';
@@ -27,12 +30,14 @@ import {TSRole} from '../../../../models/enums/TSRole';
 import {TSBetreuung} from '../../../../models/TSBetreuung';
 import {TSBetreuungsmitteilung} from '../../../../models/TSBetreuungsmitteilung';
 import {TSDossier} from '../../../../models/TSDossier';
+import {TSGesuchstellerContainer} from '../../../../models/TSGesuchstellerContainer';
 import {TSMitteilung} from '../../../../models/TSMitteilung';
 import {EbeguUtil} from '../../../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../../../utils/TSRoleUtil';
 import {IMitteilungenStateParams} from '../../../mitteilungen/mitteilungen.route';
 import {PosteingangService} from '../../../posteingang/service/posteingang.service';
 import {DvDialog} from '../../directive/dv-dialog/dv-dialog';
+import {TSDemoFeature} from '../../directive/dv-hide-feature/TSDemoFeature';
 import {LogFactory} from '../../logging/LogFactory';
 import {BetreuungRS} from '../../service/betreuungRS.rest';
 import {InstitutionRS} from '../../service/institutionRS.rest';
@@ -80,7 +85,8 @@ export class DVMitteilungListController implements IOnInit {
         'DossierRS',
         'PosteingangService',
         'InstitutionRS',
-        'GemeindeRS'
+        'GemeindeRS',
+        'GesuchRS'
     ];
 
     public dossier: TSDossier;
@@ -96,6 +102,7 @@ export class DVMitteilungListController implements IOnInit {
     public empfaenger: any;
     public empfaengerValues: Array<any>;
     public isVolksschuleGemeinde: boolean = false;
+    public readonly demoFeature = TSDemoFeature.ALLE_MUTATIONSMELDUNGEN_VERFUEGEN;
 
     public constructor(
         private readonly $stateParams: IMitteilungenStateParams,
@@ -114,7 +121,8 @@ export class DVMitteilungListController implements IOnInit {
         private readonly dossierRS: DossierRS,
         private readonly posteingangService: PosteingangService,
         private readonly institutionRS: InstitutionRS,
-        private readonly gemeindeRS: GemeindeRS
+        private readonly gemeindeRS: GemeindeRS,
+        private readonly gesuchRS: GesuchRS
     ) {
     }
 
@@ -384,6 +392,29 @@ export class DVMitteilungListController implements IOnInit {
         });
     }
 
+    public async goToFinanzielleSituation(mitteilung: TSMitteilung): Promise<void> {
+        const gesuch = await this.gesuchRS.findGesuchForFinSit(mitteilung.finanzielleSituation.id);
+        let gesuchstellerNumber: number;
+        if (this.finSitIdEquals(mitteilung, gesuch.gesuchsteller1)) {
+            gesuchstellerNumber = 1;
+        } else if (this.finSitIdEquals(mitteilung, gesuch.gesuchsteller2)) {
+            gesuchstellerNumber = 2;
+        } else {
+            const e = new Error('finSit nicht gefunden');
+            LOG.error(e);
+            throw e;
+        }
+        this.$state.go('gesuch.finanzielleSituation', {
+            gesuchstellerNumber,
+            gesuchId: gesuch.id
+        });
+    }
+
+    private finSitIdEquals(mitteilung: TSMitteilung, gesuchstellerCont: TSGesuchstellerContainer): boolean {
+        return gesuchstellerCont.finanzielleSituationContainer.finanzielleSituationJA.id
+            === mitteilung.finanzielleSituation.id;
+    }
+
     public isBetreuungsmitteilungApplied(mitteilung: TSMitteilung): boolean {
         return this.isBetreuungsmitteilung(mitteilung) && (mitteilung as TSBetreuungsmitteilung).applied;
     }
@@ -460,8 +491,8 @@ export class DVMitteilungListController implements IOnInit {
         }
 
         this.dvDialog.showRemoveDialog(removeDialogTemplate, this.form, RemoveDialogController, {
-            title: 'MUTATIONSMELDUNG_UEBERNEHMEN',
-            deleteText: 'MUTATIONSMELDUNG_UEBERNEHMEN_BESCHREIBUNG',
+            title: 'VERANLAGUNGSMITTEILUNG_UEBERNEHMEN',
+            deleteText: 'VERANLAGUNGSMITTEILUNG_UEBERNEHMEN_BESCHREIBUNG',
             parentController: this,
             elementID: 'Intro'
         }).then(() => {   // User confirmed message
@@ -488,7 +519,7 @@ export class DVMitteilungListController implements IOnInit {
         }
         this.dvDialog.showRemoveDialog(removeDialogTemplate, this.form, RemoveDialogController, {
             title: 'MUTATIONSMELDUNG_IGNORIEREN',
-            deleteText: 'MUTATIONSMELDUNG_IGNORIEREN_BESCHREIBUNG',
+            deleteText: ' ',
             parentController: this,
             elementID: 'Intro'
         }).then(() => {   // User confirmed message

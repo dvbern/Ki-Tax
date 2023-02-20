@@ -1,25 +1,29 @@
-/* eslint-disable */
 /*
- * Ki-Tax: System for the management of external childcare subsidies
- * Copyright (C) 2017 City of Bern Switzerland
+ * Copyright (C) 2023 DV Bern AG, Switzerland
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Affero General Public License for more details.
+ *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+/* eslint-disable */
 import {StateService, TransitionPromise} from '@uirouter/core';
 import {IComponentOptions, ILogService, IPromise, IQService, IScope, IWindowService} from 'angular';
 import {map} from 'rxjs/operators';
 import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
 import {MANDANTS} from '../../../app/core/constants/MANDANTS';
 import {DvDialog} from '../../../app/core/directive/dv-dialog/dv-dialog';
+import {TSDemoFeature} from '../../../app/core/directive/dv-hide-feature/TSDemoFeature';
+import {LogFactory} from '../../../app/core/logging/LogFactory';
 import {ApplicationPropertyRS} from '../../../app/core/rest-services/applicationPropertyRS.rest';
 import {DownloadRS} from '../../../app/core/service/downloadRS.rest';
 import {I18nServiceRSRest} from '../../../app/i18n/services/i18nServiceRS.rest';
@@ -31,17 +35,20 @@ import {TSBetreuungsstatus} from '../../../models/enums/TSBetreuungsstatus';
 import {TSBrowserLanguage} from '../../../models/enums/TSBrowserLanguage';
 import {getWeekdaysValues, TSDayOfWeek} from '../../../models/enums/TSDayOfWeek';
 import {TSEinstellungKey} from '../../../models/enums/TSEinstellungKey';
+import {TSPensumAnzeigeTyp} from '../../../models/enums/TSPensumAnzeigeTyp';
 import {TSRole} from '../../../models/enums/TSRole';
 import {TSWizardStepName} from '../../../models/enums/TSWizardStepName';
 import {TSZahlungslaufTyp} from '../../../models/enums/TSZahlungslaufTyp';
 import {TSBelegungTagesschuleModulGroup} from '../../../models/TSBelegungTagesschuleModulGroup';
 import {TSBetreuung} from '../../../models/TSBetreuung';
 import {TSDownloadFile} from '../../../models/TSDownloadFile';
+import {TSEinstellung} from '../../../models/TSEinstellung';
 import {TSEinstellungenTagesschule} from '../../../models/TSEinstellungenTagesschule';
 import {TSModulTagesschuleGroup} from '../../../models/TSModulTagesschuleGroup';
 import {TSPublicAppConfig} from '../../../models/TSPublicAppConfig';
 import {TSVerfuegung} from '../../../models/TSVerfuegung';
 import {TSVerfuegungZeitabschnitt} from '../../../models/TSVerfuegungZeitabschnitt';
+import {EbeguRestUtil} from '../../../utils/EbeguRestUtil';
 import {EbeguUtil} from '../../../utils/EbeguUtil';
 import {TagesschuleUtil} from '../../../utils/TagesschuleUtil';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
@@ -58,6 +65,8 @@ import ITranslateService = angular.translate.ITranslateService;
 
 const removeDialogTempl = require('../../dialog/removeDialogTemplate.html');
 const stepDialogTempl = require('../../dialog/stepDialog.html');
+
+const LOG = LogFactory.createLog('VerfuegenViewController');
 
 export class VerfuegenViewComponentConfig implements IComponentOptions {
     public transclude = false;
@@ -88,7 +97,8 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
         '$q',
         '$translate',
         'MandantService',
-        'EinstellungRS'
+        'EinstellungRS',
+        'EbeguRestUtil'
     ];
 
     // this is the model...
@@ -117,6 +127,8 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
     private showAuszahlungAnInstitutionen: boolean;
     private showAuszahlungAnEltern: boolean;
 
+    public readonly demoFeature = TSDemoFeature.VERAENDERUNG_BEI_MUTATION;
+
     public constructor(
         private readonly $state: StateService,
         gesuchModelManager: GesuchModelManager,
@@ -138,6 +150,7 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
         private readonly $translate: ITranslateService,
         private readonly mandantService: MandantService,
         private readonly einstellungRS: EinstellungRS,
+        private readonly ebeguRestUtil: EbeguRestUtil
     ) {
 
         super(gesuchModelManager, berechnungsManager, wizardStepManager, $scope, TSWizardStepName.VERFUEGEN, $timeout);
@@ -202,9 +215,14 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
                 this.setParamsDependingOnCurrentVerfuegung();
             });
         }
-        this.showPercent = this.showPensumInPercent();
-        this.showHours = this.showPensumInHours();
-        this.showDays = this.showPensumInDays();
+        this.einstellungRS.getAllEinstellungenBySystemCached(
+            this.gesuchModelManager.getGesuchsperiode().id,
+        ).subscribe((response: TSEinstellung[]) => {
+            response.filter(r => r.key === TSEinstellungKey.PENSUM_ANZEIGE_TYP)
+                .forEach(einstellung => {
+                    this.loadPensumAnzeigeTyp(einstellung);
+                });
+        }, error => LOG.error(error));
         this.showVerfuegung = this.showVerfuegen();
     }
 
@@ -362,6 +380,9 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
     ): IPromise<boolean> {
         if (isDirektVerfuegen) {
             return this.createDeferPromise<boolean>();
+        }
+        if(this.isFKJV() && EbeguUtil.isNotNullOrUndefined(this.getGesuch().finSitAenderungGueltigAbDatum)) {
+            return Promise.resolve(true);
         }
         return this.askIfIgnorieren(zahlungslaufTyp)
             .then(ignoreVerguenstigung => {
@@ -863,4 +884,92 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
         }
         return tagesschuleZeitabschnitt;
     }
+
+    private loadPensumAnzeigeTyp(einstellung: TSEinstellung) {
+        const einstellungPensumAnzeigeTyp = this.ebeguRestUtil
+            .parsePensumAnzeigeTyp(einstellung);
+        if (einstellungPensumAnzeigeTyp === TSPensumAnzeigeTyp.ZEITEINHEIT_UND_PROZENT) {
+            this.showPercent = this.showPensumInPercent();
+            this.showHours = this.showPensumInHours();
+            this.showDays = this.showPensumInDays();
+        }
+        if (einstellungPensumAnzeigeTyp === TSPensumAnzeigeTyp.NUR_PROZENT) {
+            this.showPercent = true;
+            this.showHours = false;
+            this.showDays = false;
+        }
+        if (einstellungPensumAnzeigeTyp === TSPensumAnzeigeTyp.NUR_STUNDEN) {
+            this.showPercent = false;
+            this.showHours = true;
+            this.showDays = false;
+        }
+    }
+
+    public showInfoUeberKorrekutren(): boolean {
+        if (!this.isMutation()) {
+            return false;
+        }
+
+        if (this.getBetreuung().isAngebotSchulamt()) {
+            return false;
+        }
+
+        return this.hasKorrekturAuszahlungInstitution() || this.hasKorrekturAuszahlungEltern();
+    }
+
+
+    private hasKorrekturAuszahlungInstitution(): boolean {
+        return EbeguUtil.isNotNullOrUndefined(this.getVerfuegenToWorkWith().korrekturAusbezahltInstitution) &&
+            this.getVerfuegenToWorkWith().korrekturAusbezahltInstitution !== 0;
+    }
+
+    private hasKorrekturAuszahlungEltern() {
+        return EbeguUtil.isNotNullOrUndefined(this.getVerfuegenToWorkWith().korrekturAusbezahltEltern) &&
+            this.getVerfuegenToWorkWith().korrekturAusbezahltEltern !== 0;
+    }
+
+    public getKorrekturenString(): string {
+        let text = '';
+
+        if (this.hasKorrekturAuszahlungInstitution()) {
+            const betrag = this.gesuchModelManager.getVerfuegenToWorkWith().korrekturAusbezahltInstitution;
+            if (betrag < 0) {
+                text += this.$translate.instant('MUTATION_KORREKTUR_AUSBEZAHLT_INSTITUTION_RUECKZAHLUNG',
+                    {betrag: Math.abs(betrag).toFixed(2)});
+            } else {
+                text += this.$translate.instant('MUTATION_KORREKTUR_AUSBEZAHLT_INSTITUTION_RUECKFORDERUNG',
+                    {betrag: betrag.toFixed(2)});
+            }
+            text += this.getTextKorrekturAusbezahlt(this.getVerfuegenToWorkWith().isAlreadyIgnorierend());
+            text += '\n';
+        }
+
+        if (this.hasKorrekturAuszahlungEltern()) {
+            const betrag = this.gesuchModelManager.getVerfuegenToWorkWith().korrekturAusbezahltEltern;
+            if (betrag < 0) {
+                text += this.$translate.instant('MUTATION_KORREKTUR_AUSBEZAHLT_ELTERN_RUECKZAHLUNG',
+                    {betrag: Math.abs(betrag).toFixed(2)});
+            } else {
+                text += this.$translate.instant('MUTATION_KORREKTUR_AUSBEZAHLT_ELTERN_RUECKFORDERUNG',
+                    {betrag: betrag.toFixed(2)});
+            }
+            text += this.getTextKorrekturAusbezahlt(this.getVerfuegenToWorkWith().isAlreadyIgnorierendMahlzeiten());
+        }
+
+        return text.trim();
+    }
+
+    private getTextKorrekturAusbezahlt(isZahlungIgnored: boolean) : string {
+        if (this.getBetreuungsstatus() !== TSBetreuungsstatus.VERFUEGT) {
+            return '';
+        }
+
+        if (isZahlungIgnored) {
+            return ' ' + this.$translate.instant('MUTATION_KORREKTUR_AUSBEZAHLT_AUSSERHALB_KIBON');
+        }
+
+        return ' ' + this.$translate.instant('MUTATION_KORREKTUR_AUSBEZAHLT_INNERHLAB_KIBON');
+    }
+
+
 }

@@ -19,7 +19,7 @@ import {Component} from '@angular/core';
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {BehaviorSubject} from 'rxjs';
 
-import {SavingInfo} from './saving-info.component';
+import {SavingInfoComponent} from './saving-info.component';
 
 describe('SaveInputInfoComponent', () => {
     let component: TestHostComponent;
@@ -27,7 +27,7 @@ describe('SaveInputInfoComponent', () => {
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
-            declarations: [SavingInfo, TestHostComponent]
+            declarations: [SavingInfoComponent, TestHostComponent]
         })
             .compileComponents();
     });

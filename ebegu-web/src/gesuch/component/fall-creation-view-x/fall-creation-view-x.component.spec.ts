@@ -1,3 +1,20 @@
+/*
+ * Copyright (C) 2023 DV Bern AG, Switzerland
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {NgForm} from '@angular/forms';
 import {StateService, UIRouterGlobals} from '@uirouter/core';
@@ -7,12 +24,13 @@ import {ErrorService} from '../../../app/core/errors/service/ErrorService';
 import {GesuchsperiodeRS} from '../../../app/core/service/gesuchsperiodeRS.rest';
 import {SharedModule} from '../../../app/shared/shared.module';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
-import {SHARED_MODULE_OVERRIDES} from '../../../hybridTools/mockUpgradedComponent';
+import {SHARED_MODULE_OVERRIDES} from '../../../hybridTools/mockUpgradedDirective';
 import {TSAntragTyp} from '../../../models/enums/TSAntragTyp';
 import {TSEinstellung} from '../../../models/TSEinstellung';
 import {TSGesuch} from '../../../models/TSGesuch';
 import {FinanzielleSituationRS} from '../../service/finanzielleSituationRS.rest';
 import {GesuchModelManager} from '../../service/gesuchModelManager';
+import {GesuchRS} from '../../service/gesuchRS.rest';
 import {WizardStepManager} from '../../service/wizardStepManager';
 
 import {FallCreationViewXComponent} from './fall-creation-view-x.component';
@@ -43,6 +61,10 @@ describe('FallCreationViewXComponent', () => {
     const stateService = jasmine.createSpyObj<StateService>(StateService.name, ['transition']);
     const uiRouterGlobals = jasmine.createSpyObj<UIRouterGlobals>(UIRouterGlobals.name, ['params']);
     const einstellungenRS = jasmine.createSpyObj<EinstellungRS>(EinstellungRS.name, ['findEinstellung']);
+    const stateServiceSpy = jasmine.createSpyObj<StateService>(StateService.name,
+        ['go']);
+    const gesuchRSSpy = jasmine.createSpyObj<GesuchRS>(GesuchRS.name,
+        ['getNeustesVerfuegtesGesuchFuerGesuch']);
     const gesuch = new TSGesuch();
     gesuch.typ = TSAntragTyp.ERSTGESUCH;
     gesuchModelManager.getGesuch.and.returnValue(gesuch);
@@ -62,7 +84,9 @@ describe('FallCreationViewXComponent', () => {
                 {provide: FinanzielleSituationRS, useValue: finSitRS},
                 {provide: StateService, useValue: stateService},
                 {provide: UIRouterGlobals, useValue: uiRouterGlobals},
-                {provide: EinstellungRS, useValue: einstellungenRS}
+                {provide: EinstellungRS, useValue: einstellungenRS},
+                {provide: StateService, useValue: stateServiceSpy},
+                {provide: GesuchRS, useValue: gesuchRSSpy}
             ]
         }).overrideModule(SharedModule, SHARED_MODULE_OVERRIDES)
             .compileComponents();

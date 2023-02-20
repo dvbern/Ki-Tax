@@ -20,7 +20,7 @@ import {Transition} from '@uirouter/core';
 import {of} from 'rxjs';
 import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
-import {SHARED_MODULE_OVERRIDES} from '../../../hybridTools/mockUpgradedComponent';
+import {SHARED_MODULE_OVERRIDES} from '../../../hybridTools/mockUpgradedDirective';
 import {TSRole} from '../../../models/enums/TSRole';
 import {TSBenutzer} from '../../../models/TSBenutzer';
 import {ApplicationPropertyRS} from '../../core/rest-services/applicationPropertyRS.rest';
@@ -29,12 +29,12 @@ import {I18nServiceRSRest} from '../../i18n/services/i18nServiceRS.rest';
 import {MaterialModule} from '../../shared/material.module';
 import {SharedModule} from '../../shared/shared.module';
 import {GemeindeModule} from '../gemeinde.module';
-import {EditGemeindeComponentBG} from './edit-gemeinde-bg.component';
+import {EditGemeindeBGComponent} from './edit-gemeinde-bg.component';
 
-describe('EditGemeindeComponentBG', () => {
+describe('EditGemeindeBGComponent', () => {
 
-    let component: EditGemeindeComponentBG;
-    let fixture: ComponentFixture<EditGemeindeComponentBG>;
+    let component: EditGemeindeBGComponent;
+    let fixture: ComponentFixture<EditGemeindeBGComponent>;
     const user = new TSBenutzer();
 
     const i18nServiceSpy = jasmine
@@ -84,7 +84,7 @@ describe('EditGemeindeComponentBG', () => {
     }));
 
     beforeEach(waitForAsync(() => {
-        fixture = TestBed.createComponent(EditGemeindeComponentBG);
+        fixture = TestBed.createComponent(EditGemeindeBGComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();
     }));

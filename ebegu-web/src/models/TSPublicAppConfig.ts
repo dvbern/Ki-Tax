@@ -50,4 +50,5 @@ export class TSPublicAppConfig {
     public activatedDemoFeatures: string;
     public checkboxAuszahlungInZukunft: boolean;
     public institutionenDurchGemeindenEinladen: boolean;
+    public erlaubenInstitutionenZuWaehlen: boolean;
 }

@@ -19,6 +19,7 @@ package ch.dvbern.ebegu.nesko.handler;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -100,6 +101,7 @@ public class KibonAnfrageHelper {
 		FinanzielleSituation finSitGS,
 		@Nullable SteuerdatenAnfrageStatus steuerdatenAnfrageStatus) {
 		finSitGS.setSteuerdatenAbfrageStatus(steuerdatenAnfrageStatus);
+		finSitGS.setSteuerdatenAbfrageTimestamp(LocalDateTime.now());
 	}
 
 	protected static boolean isGebrutsdatumGS2CorrectInResponse(
@@ -177,7 +179,7 @@ public class KibonAnfrageHelper {
 		setBerechneteFelder(finSit, steuerdatenResponse, anzahlGesuchsteller);
 	}
 
-	protected static boolean isAntragstellerDossiertraeger(SteuerdatenResponse steuerdatenResponse) {
+	public static boolean isAntragstellerDossiertraeger(SteuerdatenResponse steuerdatenResponse) {
 		assert steuerdatenResponse.getZpvNrAntragsteller() != null;
 		return steuerdatenResponse.getZpvNrAntragsteller().equals(steuerdatenResponse.getZpvNrDossiertraeger());
 	}

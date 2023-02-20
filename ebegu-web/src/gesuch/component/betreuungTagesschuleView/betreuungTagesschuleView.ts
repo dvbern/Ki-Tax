@@ -424,7 +424,7 @@ export class BetreuungTagesschuleViewController extends BetreuungViewController 
     }
 
     public saveAnmeldungSchulamtUebernehmen(): void {
-        this.isThereAnyAnmeldung() ? this.showErrorMessageNoModule = false : this.showErrorMessageNoModule = true;
+        this.showErrorMessageNoModule = !this.isThereAnyAnmeldung();
         if (!this.form.$valid) {
             this.form.$setDirty();
             return undefined;
@@ -479,8 +479,7 @@ export class BetreuungTagesschuleViewController extends BetreuungViewController 
             this.gesuchModelManager.getGesuchsperiode().id,
             sprache, TSDokumentTyp.MERKBLATT_ANMELDUNG_TS).then(
             response => {
-                let file;
-                file = new Blob([response], {type: 'application/pdf'});
+                const file = new Blob([response], {type: 'application/pdf'});
                 const filename = this.$translate.instant('MERKBLATT_ANMELDUNG_TAGESSCHULE_DATEI_NAME');
                 this.downloadRS.openDownload(file, filename);
             });

@@ -32,6 +32,7 @@ import ch.dvbern.ebegu.entities.Betreuungspensum;
 import ch.dvbern.ebegu.entities.BetreuungspensumContainer;
 import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
+import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.services.EinstellungService;
 import ch.dvbern.ebegu.util.BetreuungUtil;
 import ch.dvbern.ebegu.util.ValidationMessageUtil;
@@ -114,7 +115,6 @@ public class CheckBetreuungspensumValidator implements ConstraintValidator<Check
 		return true;
 	}
 
-	@Nullable
 	private EntityManager createEntityManager() {
 		if (entityManagerFactory != null) {
 			return entityManagerFactory.createEntityManager(); // creates a new EntityManager

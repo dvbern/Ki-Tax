@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022 DV Bern AG, Switzerland
+ * Copyright (C) 2023 DV Bern AG, Switzerland
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -8,11 +8,11 @@
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
 import {IPromise, IScope, ITimeoutService} from 'angular';
@@ -40,12 +40,20 @@ const LOG = LogFactory.createLog('AbstractFinSitBernView');
 
 const removeDialogTemplate = require('../../../dialog/removeDialogTemplate.html');
 
+enum saveHints {
+    LOADING= 'FINSIT_BERN_LOADING',
+    SAVED= 'FINSIT_BERN_SAVED',
+    ERROR= 'FINSIT_BERN_ERROR'
+}
+
 export abstract class AbstractFinSitBernView extends AbstractGesuchViewController<TSFinanzModel> {
 
     protected steuerSchnittstelleAktivForPeriode: boolean;
     public steuerSchnittstelleAktivAbStr: string;
     protected steuerSchnittstelleAkivAbInPast: boolean;
     protected zahlungsangabenRequired: boolean =  false;
+    protected finSitRequestState: string;
+    protected finSitRequestRunning: boolean;
 
     public constructor(
         gesuchModelManager: GesuchModelManager,
@@ -146,6 +154,27 @@ export abstract class AbstractFinSitBernView extends AbstractGesuchViewControlle
         }, () => this.getModel().finanzielleSituationJA.steuerdatenZugriff = true);
     }
 
+    public callKiBonAnfrageAndUpdateFinSit(): void {
+        this.finSitRequestRunning = true;
+        this.finSitRequestState = saveHints.LOADING;
+        this.callKiBonAnfrage(EbeguUtil.isNotNullAndTrue(this.model.gemeinsameSteuererklaerung))
+            .then(() => {
+                    this.model.copyFinSitDataFromGesuch(this.gesuchModelManager.getGesuch());
+                    this.form.$setDirty();
+                    this.finSitRequestState = saveHints.SAVED;
+                }
+            ).catch(() => {
+                this.finSitRequestState = saveHints.ERROR;
+            }
+        ).finally(() => {
+                this.finSitRequestState = saveHints.SAVED;
+            }
+        );
+        setTimeout(() => {
+            this.finSitRequestRunning = false;
+        }, 5000);
+    }
+
     protected abstract resetKiBonAnfrageFinSit(): void;
 
     protected abstract showAutomatischePruefungSteuerdatenFrage(): boolean;
@@ -172,25 +201,18 @@ export abstract class AbstractFinSitBernView extends AbstractGesuchViewControlle
             return false;
         }
 
-        return this.authServiceRS.isRole(TSRole.GESUCHSTELLER)
+        return this.authServiceRS.isOneOfRoles([TSRole.GESUCHSTELLER, TSRole.SUPER_ADMIN])
             || EbeguUtil.isNotNullOrUndefined(this.model.getFiSiConToWorkWith().finanzielleSituationGS)
             || this.showZugriffAufSteuerdatenForGemeinde();
     }
 
     protected showZugriffAufSteuerdatenForGemeinde(): boolean {
         return  EbeguUtil.isNotNullOrUndefined(this.model.getFiSiConToWorkWith().finanzielleSituationJA?.steuerdatenAbfrageStatus)
-            && this.gesuchModelManager.getGesuch().isMutation()
-            && this.authServiceRS.isOneOfRoles(TSRoleUtil.getGemeindeOrBGRoles());
+            && this.authServiceRS.isOneOfRoles(TSRoleUtil.getGemeindeOrBGRoles().concat(TSRole.SUPER_ADMIN));
     }
 
     protected callKiBonAnfrage(isGemeinsam: boolean): IPromise<TSFinanzielleSituationContainer> {
         this.model.copyFinSitDataToGesuch(this.gesuchModelManager.getGesuch());
-
-        if (!this.authServiceRS.isRole(TSRole.GESUCHSTELLER)
-        && !this.showZugriffAufSteuerdatenForGemeinde()) {
-            return undefined;
-        }
-
         return this.gesuchModelManager.callKiBonAnfrageAndUpdateFinSit(isGemeinsam);
     }
 }

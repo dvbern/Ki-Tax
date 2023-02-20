@@ -108,6 +108,7 @@ public class MonatsMergerRule extends AbstractAbschlussRule {
 			}
 
 			zeitabschnittMerged.add(zeitabschnitt);
+			zeitabschnittMerged.roundValuesAfterCalculateProportinaly();
 		}
 
 		return zeitabschnittMerged;

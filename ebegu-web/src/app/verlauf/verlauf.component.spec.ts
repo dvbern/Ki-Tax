@@ -20,7 +20,7 @@ import {StateService} from '@uirouter/angular';
 import {UIRouterGlobals} from '@uirouter/core';
 import {AuthServiceRS} from '../../authentication/service/AuthServiceRS.rest';
 import {GesuchRS} from '../../gesuch/service/gesuchRS.rest';
-import {SHARED_MODULE_OVERRIDES} from '../../hybridTools/mockUpgradedComponent';
+import {SHARED_MODULE_OVERRIDES} from '../../hybridTools/mockUpgradedDirective';
 import {EbeguUtil} from '../../utils/EbeguUtil';
 import {AntragStatusHistoryRS} from '../core/service/antragStatusHistoryRS.rest';
 import {SharedModule} from '../shared/shared.module';

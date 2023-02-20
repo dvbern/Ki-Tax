@@ -38,6 +38,7 @@ import {DateUtil} from '../../../utils/DateUtil';
 import {EbeguUtil} from '../../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 import {DvNgRemoveDialogComponent} from '../../core/component/dv-ng-remove-dialog/dv-ng-remove-dialog.component';
+import {CONSTANTS} from '../../core/constants/CONSTANTS';
 import {TSDemoFeature} from '../../core/directive/dv-hide-feature/TSDemoFeature';
 import {ErrorService} from '../../core/errors/service/ErrorService';
 import {LogFactory} from '../../core/logging/LogFactory';
@@ -140,6 +141,7 @@ export class StatistikComponent implements OnInit, OnDestroy {
         if (this.showLastenausgleichBGStatistikAllowedForRole()) {
             this.lastenausgleichRS.getAllLastenausgleiche().subscribe(lastenausgleiche => {
                 this.lastenausgleichYears = lastenausgleiche.map(l => l.jahr)
+                    .filter(y => y >= CONSTANTS.FIRST_YEAR_LASTENAUSGLEICH_WITHOUT_SELBSTBEHALT)
                     .sort((a,b) => a - b);
                 this.cd.markForCheck();
             }, err => {

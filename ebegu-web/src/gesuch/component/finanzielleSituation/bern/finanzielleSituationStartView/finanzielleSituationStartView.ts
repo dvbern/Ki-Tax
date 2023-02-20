@@ -1,16 +1,18 @@
 /*
- * Ki-Tax: System for the management of external childcare subsidies
- * Copyright (C) 2017 City of Bern Switzerland
+ * Copyright (C) 2023 DV Bern AG, Switzerland
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Affero General Public License for more details.
+ *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
 import {IComponentOptions} from 'angular';
@@ -79,6 +81,7 @@ export class FinanzielleSituationStartViewController extends AbstractFinSitBernV
     private triedSavingWithoutForm: boolean = false;
 
     private isAlwaysShowAuszahlungsdatenActivated: boolean = false;
+    private isMutationIgnorierenActivated: boolean = false;
 
     public constructor(
         gesuchModelManager: GesuchModelManager,
@@ -126,6 +129,8 @@ export class FinanzielleSituationStartViewController extends AbstractFinSitBernV
 
         demoFeatureRS.isDemoFeatureAllowed(TSDemoFeature.ALLWAYS_SHOW_ZAHLUNGSDATEN_ON_FINSIT_BERN)
             .then(isAllowed => this.isAlwaysShowAuszahlungsdatenActivated = isAllowed);
+        demoFeatureRS.isDemoFeatureAllowed(TSDemoFeature.VERAENDERUNG_BEI_MUTATION)
+            .then(isAllowed => this.isMutationIgnorierenActivated = isAllowed);
     }
 
     public showSteuerveranlagung(): boolean {
@@ -335,8 +340,8 @@ export class FinanzielleSituationStartViewController extends AbstractFinSitBernV
     }
 
     public isZahlungsangabenRequired(): boolean {
-        return !this.model.zahlungsinformationen.keineMahlzeitenverguenstigungBeantragt ||
-            this.zahlungsangabenRequired;
+        return (!this.model.zahlungsinformationen.keineMahlzeitenverguenstigungBeantragt && this.isMahlzeitenverguenstigungEnabled())
+            || this.zahlungsangabenRequired;
     }
 
     public areZahlungsdatenEditable(): boolean {
@@ -411,15 +416,6 @@ export class FinanzielleSituationStartViewController extends AbstractFinSitBernV
         this.resetKiBonAnfrageFinSitIfRequired();
     }
 
-    public callKiBonAnfrageAndUpdateFinSit(): void {
-       super.callKiBonAnfrage(EbeguUtil.isNotNullAndTrue(this.model.gemeinsameSteuererklaerung))
-            .then(() => {
-                    this.model.copyFinSitDataFromGesuch(this.gesuchModelManager.getGesuch());
-                    this.form.$setDirty();
-                }
-            );
-    }
-
     private getAbfrageStatus(): string {
         return this.getModel().finanzielleSituationJA.steuerdatenAbfrageStatus;
     }
@@ -428,7 +424,7 @@ export class FinanzielleSituationStartViewController extends AbstractFinSitBernV
         this.model.copyFinSitDataToGesuch(this.gesuchModelManager.getGesuch());
         this.gesuchModelManager.resetKiBonAnfrageFinSit(EbeguUtil.isNotNullOrUndefined(this.model.finanzielleSituationContainerGS2))
             .then(() => {
-                    this.wizardStepManager.updateCurrentWizardStepStatusSafe(
+                this.wizardStepManager.updateCurrentWizardStepStatusSafe(
                         TSWizardStepName.FINANZIELLE_SITUATION,
                         TSWizardStepStatus.NOK);
                     this.model.copyFinSitDataFromGesuch(this.gesuchModelManager.getGesuch());

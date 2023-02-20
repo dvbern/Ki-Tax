@@ -15,7 +15,7 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {ChangeDetectionStrategy, Component, Input, OnInit} from '@angular/core';
+import {ChangeDetectionStrategy, Component, Input, OnDestroy, OnInit} from '@angular/core';
 import {TranslateService} from '@ngx-translate/core';
 import {Subscription} from 'rxjs';
 import {AuthServiceRS} from '../../../../authentication/service/AuthServiceRS.rest';
@@ -35,7 +35,7 @@ const LOG = LogFactory.createLog('FerienbetreuungComponent');
     styleUrls: ['./ferienbetreuung.component.less'],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class FerienbetreuungComponent implements OnInit {
+export class FerienbetreuungComponent implements OnInit, OnDestroy {
 
     @Input()
     public ferienbetreuungId: string;
@@ -79,10 +79,8 @@ export class FerienbetreuungComponent implements OnInit {
     }
 
     private openDownloadForFile(response: BlobPart): void {
-        let file;
-        let filename;
-        file = new Blob([response], {type: 'application/pdf'});
-        filename = this.translate.instant('FERIENBETREUUNG_REPORT_NAME',
+        const file = new Blob([response], {type: 'application/pdf'});
+        const filename = this.translate.instant('FERIENBETREUUNG_REPORT_NAME',
             {
                 gemeinde: this.ferienbetreuungContainer.gemeinde.name,
                 gp: this.ferienbetreuungContainer.gesuchsperiode.gesuchsperiodeString

@@ -1,16 +1,18 @@
 /*
- * Ki-Tax: System for the management of external childcare subsidies
- * Copyright (C) 2017 City of Bern Switzerland
+ * Copyright (C) 2023 DV Bern AG, Switzerland
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Affero General Public License for more details.
+ *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
 package ch.dvbern.ebegu.services;
@@ -59,6 +61,7 @@ import javax.validation.Validator;
 
 import ch.dvbern.ebegu.authentication.PrincipalBean;
 import ch.dvbern.ebegu.config.EbeguConfiguration;
+import ch.dvbern.ebegu.dto.neskovanp.Veranlagungsstand;
 import ch.dvbern.ebegu.dto.suchfilter.smarttable.MitteilungPredicateObjectDTO;
 import ch.dvbern.ebegu.dto.suchfilter.smarttable.MitteilungTableFilterDTO;
 import ch.dvbern.ebegu.entities.AbstractDateRangedEntity_;
@@ -95,17 +98,23 @@ import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.entities.Mitteilung;
 import ch.dvbern.ebegu.entities.Mitteilung_;
 import ch.dvbern.ebegu.entities.NeueVeranlagungsMitteilung;
+import ch.dvbern.ebegu.entities.NeueVeranlagungsMitteilung_;
+import ch.dvbern.ebegu.entities.SteuerdatenResponse;
+import ch.dvbern.ebegu.entities.SteuerdatenResponse_;
 import ch.dvbern.ebegu.entities.sozialdienst.SozialdienstFall;
 import ch.dvbern.ebegu.entities.sozialdienst.SozialdienstFall_;
 import ch.dvbern.ebegu.enums.AntragStatus;
 import ch.dvbern.ebegu.enums.BetreuungspensumAbweichungStatus;
+import ch.dvbern.ebegu.enums.BetreuungspensumAnzeigeTyp;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
 import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.FinSitStatus;
+import ch.dvbern.ebegu.enums.MessageTypes;
 import ch.dvbern.ebegu.enums.MitteilungStatus;
 import ch.dvbern.ebegu.enums.MitteilungTeilnehmerTyp;
 import ch.dvbern.ebegu.enums.SearchMode;
+import ch.dvbern.ebegu.enums.SteuerdatenAnfrageStatus;
 import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.enums.UserRoleName;
 import ch.dvbern.ebegu.enums.Verantwortung;
@@ -123,7 +132,9 @@ import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.ebegu.services.util.SearchUtil;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.types.DateRange_;
+import ch.dvbern.ebegu.util.BetreuungUtil;
 import ch.dvbern.ebegu.util.Constants;
+import ch.dvbern.ebegu.util.MathUtil;
 import ch.dvbern.ebegu.util.MitteilungUtil;
 import ch.dvbern.ebegu.util.ServerMessageUtil;
 import ch.dvbern.lib.cdipersistence.Persistence;
@@ -568,7 +579,7 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 		Predicate predicateSenderOrEmpfaenger = cb.or(predicateSender, predicateEmpfaenger);
 		predicates.add(predicateSenderOrEmpfaenger);
 
-		query.orderBy(cb.desc(root.get(Mitteilung_.sentDatum)));
+		query.orderBy(cb.asc(root.get(Mitteilung_.sentDatum)));
 		query.where(CriteriaQueryHelper.concatenateExpressions(cb, predicates));
 		List<Mitteilung> mitteilungen = persistence.getCriteriaResults(query);
 		authorizer.checkReadAuthorizationMitteilungen(mitteilungen);
@@ -883,15 +894,22 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 					ErrorCodeEnum.ERROR_MUTATIONSMELDUNG_STATUS_VERFUEGEN,
 					neustesGesuch.getId());
 			}
-			if (!AntragStatus.getVerfuegtAndSTVStates().contains(neustesGesuch.getStatus())
+			if (!AntragStatus.getVerfuegtIgnoriertAndSTVStates().contains(neustesGesuch.getStatus())
 				&& neustesGesuch.isMutation()) {
+				// veranlagungsmitteilungen dürfen nicht zu bestehender Mutation hinzugefügt werden
+				if (mitteilung instanceof NeueVeranlagungsMitteilung) {
+					throw new EbeguException(
+						"doApplymitteilung",
+						ErrorCodeEnum.ERROR_EXISTING_MUTATION_VERANLAGUNGSMITTEILUNG,
+						neustesGesuch.getId());
+				}
 				// aenderungen der bestehenden, offenen Mutation hinzufuegen (wenn wir hier sind muss es sich
 				// um ein PAPIER) Antrag handeln
 				authorizer.checkWriteAuthorization(neustesGesuch);
 				applyMitteilungToMutation(neustesGesuch, mitteilung);
 				return neustesGesuch;
 			}
-			if (AntragStatus.getVerfuegtAndSTVStates().contains(neustesGesuch.getStatus())) {
+			if (AntragStatus.getVerfuegtIgnoriertAndSTVStates().contains(neustesGesuch.getStatus())) {
 				// create Mutation if there is currently no Mutation
 				Gesuch mutation = Gesuch.createMutation(gesuch.getDossier(), neustesGesuch.getGesuchsperiode(),
 					LocalDate.now());
@@ -999,22 +1017,13 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 
 		final Locale locale = LocaleThreadLocal.get();
 
-		final Einstellung einstellung = einstellungService.findEinstellung(
-			EinstellungKey.GEMEINDE_MAHLZEITENVERGUENSTIGUNG_ENABLED,
-			betreuung.extractGemeinde(),
-			betreuung.extractGesuchsperiode());
-		boolean mahlzeitenverguenstigungEnabled = einstellung.getValueAsBoolean();
-
 		final Benutzer currentBenutzer = benutzerService.getCurrentBenutzer()
 			.orElseThrow(() -> new EbeguEntityNotFoundException(
 				"sendBetreuungsmitteilung",
 				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND));
 
 		MitteilungUtil.initializeBetreuungsmitteilung(mitteilung, betreuung, currentBenutzer, locale);
-		mitteilung.setMessage(MitteilungUtil.createNachrichtForMutationsmeldung(
-			pensenFromAbweichungen,
-			mahlzeitenverguenstigungEnabled,
-			locale));
+		mitteilung.setMessage(createNachrichtForMutationsmeldung(mitteilung, pensenFromAbweichungen));
 
 		sendBetreuungsmitteilung(mitteilung);
 	}
@@ -1053,7 +1062,7 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 			if (mitteilung.getBetreuungspensen().isEmpty()) {
 				persistence.remove(mitteilung);
 			} else {
-				updateMessage(mitteilung);
+				mitteilung.setMessage(createNachrichtForMutationsmeldung(mitteilung, mitteilung.getBetreuungspensen()));
 				persistence.merge(mitteilung);
 			}
 		});
@@ -1112,16 +1121,14 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 	public NeueVeranlagungsMitteilung sendNeueVeranlagungsmitteilung(@Nonnull NeueVeranlagungsMitteilung neueVeranlagungsMitteilung) {
 		Objects.requireNonNull(neueVeranlagungsMitteilung);
 
-		neueVeranlagungsMitteilung.setEmpfaengerTyp(MitteilungTeilnehmerTyp.JUGENDAMT);  // immer an Jugendamt
+		neueVeranlagungsMitteilung.setEmpfaengerTyp(MitteilungTeilnehmerTyp.JUGENDAMT);
 		neueVeranlagungsMitteilung.setSenderTyp(MitteilungTeilnehmerTyp.JUGENDAMT);
 		neueVeranlagungsMitteilung.setSender(getTechnicalKibonBenutzer());
 		neueVeranlagungsMitteilung.setMitteilungStatus(MitteilungStatus.NEU);
 		neueVeranlagungsMitteilung.setSentDatum(LocalDateTime.now());
-
 		neueVeranlagungsMitteilung.setEmpfaenger(getEmpfaengerBeiMitteilungAnGemeinde(neueVeranlagungsMitteilung));
 
-		// A Betreuungsmitteilung is created and sent, therefore persist and not merge
-		return persistence.persist(neueVeranlagungsMitteilung);
+		return persistence.merge(neueVeranlagungsMitteilung);
 	}
 
 	@Nonnull
@@ -1131,20 +1138,57 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 				TECHNICAL_KIBON_BENUTZER_ID));
 	}
 
-	private void updateMessage(Betreuungsmitteilung mitteilung) {
-		assert mitteilung.getBetreuung() != null;
+	@Override
+	public String createNachrichtForMutationsmeldung(
+		@Nonnull Betreuungsmitteilung mitteilung,
+		@Nonnull Set<BetreuungsmitteilungPensum> changedBetreuungen
+	) {
 		final Locale locale = LocaleThreadLocal.get();
-
+		assert mitteilung.getBetreuung() != null;
 		final boolean mvzEnabled = einstellungService.findEinstellung(
 			EinstellungKey.GEMEINDE_MAHLZEITENVERGUENSTIGUNG_ENABLED,
 			mitteilung.getBetreuung().extractGemeinde(),
 			mitteilung.getBetreuung().extractGesuchsperiode())
 			.getValueAsBoolean();
 
-		mitteilung.setMessage(MitteilungUtil.createNachrichtForMutationsmeldung(
-			mitteilung.getBetreuungspensen(),
+		final Einstellung einstellungAnzeigeTyp = einstellungService.findEinstellung(
+			EinstellungKey.PENSUM_ANZEIGE_TYP,
+			mitteilung.getBetreuung().extractGemeinde(),
+			mitteilung.getBetreuung().extractGesuchsperiode());
+		BetreuungspensumAnzeigeTyp betreuungspensumAnzeigeTyp = BetreuungspensumAnzeigeTyp.valueOf(einstellungAnzeigeTyp.getValue());
+
+		BigDecimal multiplier = getMultiplierForMutationsMitteilung(mitteilung, betreuungspensumAnzeigeTyp);
+
+		return MitteilungUtil.createNachrichtForMutationsmeldung(
+			changedBetreuungen,
 			mvzEnabled,
-			locale));
+			locale,
+			betreuungspensumAnzeigeTyp,
+			multiplier);
+	}
+
+	private BigDecimal getMultiplierForMutationsMitteilung(@Nonnull Betreuungsmitteilung mitteilung, @Nonnull BetreuungspensumAnzeigeTyp betreuungspensumAnzeigeTyp) {
+		if(!betreuungspensumAnzeigeTyp.equals(BetreuungspensumAnzeigeTyp.NUR_STUNDEN)){
+			return BigDecimal.ONE;
+		}
+		assert mitteilung.getBetreuung() != null;
+		if(mitteilung.getBetreuung().isAngebotKita()) {
+			BigDecimal oeffnungstageKita = einstellungService.findEinstellung(
+				EinstellungKey.OEFFNUNGSTAGE_KITA,
+				mitteilung.getBetreuung().extractGemeinde(),
+				mitteilung.getBetreuung().extractGesuchsperiode()).getValueAsBigDecimal();
+			return BetreuungUtil.calculateOeffnungszeitPerMonthProcentual(MathUtil.EXACT.multiply(oeffnungstageKita, BetreuungUtil.ANZAHL_STUNDEN_PRO_TAG_KITA));
+		}
+		BigDecimal oeffnungstageTFO =einstellungService.findEinstellung(
+			EinstellungKey.OEFFNUNGSTAGE_TFO,
+			mitteilung.getBetreuung().extractGemeinde(),
+			mitteilung.getBetreuung().extractGesuchsperiode()).getValueAsBigDecimal();
+
+		BigDecimal oeffnungsstundenTFO =einstellungService.findEinstellung(
+				EinstellungKey.OEFFNUNGSSTUNDEN_TFO,
+				mitteilung.getBetreuung().extractGemeinde(),
+				mitteilung.getBetreuung().extractGesuchsperiode()).getValueAsBigDecimal();
+		return MathUtil.DEFAULT.divide(MathUtil.DEFAULT.divide(MathUtil.DEFAULT.multiply(oeffnungstageTFO, oeffnungsstundenTFO), new BigDecimal(12)), new BigDecimal(100));
 	}
 
 	private Collection<Betreuungsmitteilung> findAllBetreuungsMitteilungenForInstitution(Institution institution) {
@@ -1257,6 +1301,9 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 
 		if (predicateObjectDto != null) {
 
+
+			predicates.add(getMessageTypePredicate(root, predicateObjectDto));
+
 			// sender
 			if (predicateObjectDto.getSender() != null) {
 				predicates.add(
@@ -1350,8 +1397,10 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 			}
 			// Inkl. abgeschlossene
 			if (!includeClosed) {
-				Predicate predicateNichtErledigt =
-					cb.notEqual(root.get(Mitteilung_.mitteilungStatus), MitteilungStatus.ERLEDIGT);
+				Predicate predicateNichtErledigt = cb.not(
+					root.get(Mitteilung_.mitteilungStatus)
+					.in(MitteilungStatus.IGNORIERT, MitteilungStatus.ERLEDIGT)
+				);
 				predicates.add(predicateNichtErledigt);
 			}
 			// gemeinde
@@ -1415,6 +1464,32 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 			break;
 		}
 		return result;
+	}
+
+	private static Predicate getMessageTypePredicate(Root<Mitteilung> root, MitteilungPredicateObjectDTO predicateObjectDto) {
+		List<Class> classes = Arrays.stream(predicateObjectDto.getMessageTypes()).map(messageType -> {
+			try {
+				return Class.forName("ch.dvbern.ebegu.entities." + getEntityNameForMessageType(messageType));
+			} catch (ClassNotFoundException e) {
+				LOG.error(e.getMessage() + ". Using default class Mitteilung");
+				return Mitteilung.class;
+			}
+		}).collect(Collectors.toList());
+
+		final Predicate messageTypePredicate = root.type().in(classes);
+		return messageTypePredicate;
+	}
+
+	private static String getEntityNameForMessageType(MessageTypes messageTypes) {
+		switch (messageTypes) {
+		case BETREUUNGSMITTEILUNG:
+			return "Betreuungsmitteilung";
+		case NEUEVERANLAGUNGMITTEILUNG:
+			return "NeueVeranlagungsMitteilung";
+		case MITTEILUNG:
+		default:
+			return "Mitteilung";
+		}
 	}
 
 	private void filterGemeinde(Benutzer user, Join<Dossier, Gemeinde> joinGemeinde, List<Predicate> predicates) {
@@ -1541,12 +1616,26 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 		@Nonnull Gesuch gesuch,
 		@Nonnull NeueVeranlagungsMitteilung mitteilung) throws EbeguException {
 		Objects.requireNonNull(mitteilung.getSteuerdatenResponse());
-		Objects.requireNonNull(mitteilung.getSteuerdatenResponse().getZpvNrDossiertraeger());
+		Objects.requireNonNull(mitteilung.getSteuerdatenResponse().getZpvNrAntragsteller());
 		authorizer.checkWriteAuthorization(gesuch);
 		authorizer.checkReadAuthorizationMitteilung(mitteilung);
 		KibonAnfrageContext kibonAnfrageContext = KibonAnfrageUtil.initKibonAnfrageContext(
 			gesuch,
-			mitteilung.getSteuerdatenResponse().getZpvNrDossiertraeger());
+			mitteilung.getSteuerdatenResponse().getZpvNrAntragsteller());
+
+		// status muss bei Veranlagungsmitteilung immer rechtskräftig sein. Prüfungen wurden beim Erstellen der Veranlagungsmitteilungen gemacht.
+		if (mitteilung.getSteuerdatenResponse().getVeranlagungsstand() != Veranlagungsstand.RECHTSKRAEFTIG) {
+			throw new EbeguRuntimeException("neueVeranlagungsMitteilungImAntragErsetzen", "Veranlagungsstand muss rechtskräftig sein");
+		}
+		kibonAnfrageContext.setSteuerdatenAnfrageStatus(SteuerdatenAnfrageStatus.RECHTSKRAEFTIG);
+
+		if(kibonAnfrageContext.getFinSitCont().getFinanzielleSituationJA().getSteuerdatenZugriff() == null ||
+			kibonAnfrageContext.getFinSitCont().getFinanzielleSituationJA().getSteuerdatenZugriff().equals(Boolean.FALSE)) {
+			throw new EbeguException(
+				"neueVeranlagungsMitteilungImAntragErsetzen",
+				ErrorCodeEnum.ERROR_FIN_SIT_MANUELLE_EINGABE,
+				gesuch.getId());
+		}
 
 		Objects.requireNonNull(gesuch.getFamiliensituationContainer());
 		Objects.requireNonNull(gesuch.getFamiliensituationContainer().getFamiliensituationJA());
@@ -1554,19 +1643,35 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 			.equals(gesuch.getFamiliensituationContainer().getFamiliensituationJA().getGemeinsameSteuererklaerung());
 		boolean hasGS2 = kibonAnfrageContext.getGesuch().getGesuchsteller2() != null;
 		if (hasGS2 && gemeinsam) {
-			Objects.requireNonNull(kibonAnfrageContext.getGesuch().getGesuchsteller2().getFinanzielleSituationContainer());
+			Objects.requireNonNull(kibonAnfrageContext.getGesuch()
+				.getGesuchsteller2()
+				.getFinanzielleSituationContainer());
 			if (mitteilung.getSteuerdatenResponse().getZpvNrPartner() == null) {
 				throw new EbeguException(
 					"neueVeranlagungsMitteilungImAntragErsetzen",
 					ErrorCodeEnum.ERROR_FIN_SIT_GEMEINSAM_NEUE_VERANLAGUNG_ALLEIN,
 					gesuch.getId());
 			}
-			KibonAnfrageHelper.updateFinSitSteuerdatenAbfrageGemeinsamStatusOk(kibonAnfrageContext.getFinSitCont()
+
+			if (!KibonAnfrageHelper.isAntragstellerDossiertraeger(mitteilung.getSteuerdatenResponse())) {
+				kibonAnfrageContext = kibonAnfrageContext.switchGSContainer();
+				kibonAnfrageContext.setSteuerdatenAnfrageStatus(SteuerdatenAnfrageStatus.RECHTSKRAEFTIG);
+			}
+			assert kibonAnfrageContext.getFinSitContGS2() != null;
+			KibonAnfrageHelper.updateFinSitSteuerdatenAbfrageGemeinsamStatusOk(
+				kibonAnfrageContext.getFinSitCont()
 					.getFinanzielleSituationJA(),
-				kibonAnfrageContext.getGesuch().getGesuchsteller2().getFinanzielleSituationContainer().getFinanzielleSituationJA(),
+				kibonAnfrageContext.getFinSitContGS2().getFinanzielleSituationJA(),
 				mitteilung.getSteuerdatenResponse());
+			kibonAnfrageContext.getFinSitCont()
+				.getFinanzielleSituationJA()
+				.setSteuerdatenAbfrageStatus(kibonAnfrageContext.getSteuerdatenAnfrageStatus());
+			kibonAnfrageContext.getFinSitContGS2().getFinanzielleSituationJA()
+				.setSteuerdatenAbfrageStatus(kibonAnfrageContext.getSteuerdatenAnfrageStatus());
 			finanzielleSituationService.saveFinanzielleSituation(kibonAnfrageContext.getFinSitCont(), gesuch.getId());
-			finanzielleSituationService.saveFinanzielleSituation(kibonAnfrageContext.getGesuch().getGesuchsteller2().getFinanzielleSituationContainer(), gesuch.getId());
+			finanzielleSituationService.saveFinanzielleSituation(
+				kibonAnfrageContext.getFinSitContGS2(),
+				gesuch.getId());
 		} else {
 			if (mitteilung.getSteuerdatenResponse().getZpvNrPartner() != null) {
 				throw new EbeguException(
@@ -1581,10 +1686,12 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 				.getGesuchstellerJA()
 				.getZpvNummer()
 				.equals(String.valueOf(mitteilung.getSteuerdatenResponse().getZpvNrDossiertraeger()))) {
+				kibonAnfrageContext.setFinSitContGS2(kibonAnfrageContext.getGesuch().getGesuchsteller2().getFinanzielleSituationContainer());
 				kibonAnfrageContext.switchGSContainer();
 			}
 			KibonAnfrageHelper.updateFinSitSteuerdatenAbfrageStatusOk(kibonAnfrageContext.getFinSitCont()
 				.getFinanzielleSituationJA(), mitteilung.getSteuerdatenResponse());
+			kibonAnfrageContext.getFinSitCont().getFinanzielleSituationJA().setSteuerdatenAbfrageStatus(kibonAnfrageContext.getSteuerdatenAnfrageStatus());
 			finanzielleSituationService.saveFinanzielleSituation(kibonAnfrageContext.getFinSitCont(), gesuch.getId());
 		}
 		mitteilung.setMitteilungStatus(MitteilungStatus.ERLEDIGT);
@@ -1838,6 +1945,30 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 		persistence.getEntityManager().refresh(mitteilung);
 		authorizer.checkReadAuthorizationMitteilung(mitteilung);
 		return Optional.ofNullable(mitteilung);
+	}
+
+	@Override
+	public Collection<NeueVeranlagungsMitteilung> findOffeneNeueVeranlagungsmitteilungenForGesuch(List<String> gesuchIds) {
+		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
+		final CriteriaQuery<NeueVeranlagungsMitteilung> query = cb.createQuery(NeueVeranlagungsMitteilung.class);
+		Root<NeueVeranlagungsMitteilung> root = query.from(NeueVeranlagungsMitteilung.class);
+		List<Predicate> predicates = new ArrayList<>();
+
+		Join<NeueVeranlagungsMitteilung, SteuerdatenResponse> steuerDatenJoin =
+			root.join(NeueVeranlagungsMitteilung_.steuerdatenResponse, JoinType.LEFT);
+
+		Predicate predicateId = steuerDatenJoin.get(SteuerdatenResponse_.kibonAntragId).in(gesuchIds);
+		query.where(predicateId);
+		predicates.add(predicateId);
+
+		final Predicate predicateNotApplied = root.get(Mitteilung_.mitteilungStatus).in(MitteilungStatus.NEU, MitteilungStatus.GELESEN);
+		predicates.add(predicateNotApplied);
+
+		query.orderBy(cb.desc(root.get(Mitteilung_.sentDatum)));
+		query.where(CriteriaQueryHelper.concatenateExpressions(cb, predicates));
+
+		List<NeueVeranlagungsMitteilung> criteriaResults = persistence.getCriteriaResults(query);
+		return criteriaResults;
 	}
 }
 

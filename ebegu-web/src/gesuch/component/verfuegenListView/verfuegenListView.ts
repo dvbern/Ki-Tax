@@ -1,16 +1,18 @@
 /*
- * Ki-Tax: System for the management of external childcare subsidies
- * Copyright (C) 2017 City of Bern Switzerland
+ * Copyright (C) 2023 DV Bern AG, Switzerland
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Affero General Public License for more details.
+ *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
 import {StateService} from '@uirouter/core';
@@ -22,7 +24,12 @@ import {TSDemoFeature} from '../../../app/core/directive/dv-hide-feature/TSDemoF
 import {LogFactory} from '../../../app/core/logging/LogFactory';
 import {DownloadRS} from '../../../app/core/service/downloadRS.rest';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
-import {isAnyStatusOfMahnung, isAnyStatusOfVerfuegt, TSAntragStatus} from '../../../models/enums/TSAntragStatus';
+import {
+    isAnyStatusOfMahnung,
+    isAnyStatusOfVerfuegt,
+    isStatusVerfuegenVerfuegt,
+    TSAntragStatus
+} from '../../../models/enums/TSAntragStatus';
 import {TSAntragTyp} from '../../../models/enums/TSAntragTyp';
 import {TSBetreuungsangebotTyp} from '../../../models/enums/TSBetreuungsangebotTyp';
 import {isBetreuungsstatusStorniert, TSBetreuungsstatus} from '../../../models/enums/TSBetreuungsstatus';
@@ -90,7 +97,7 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
     ];
 
     private kinderWithBetreuungList: Array<TSKindContainer>;
-    private hasAnyNewOrStornierteBetreuung: boolean = false;
+    public hasAnyNewOrStornierteBetreuung: boolean = false;
     public veraenderungBG: number;
     public veraenderungTS: number;
     public allVerfuegungenIgnorable: boolean = false;
@@ -102,6 +109,7 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
     private readonly ebeguUtil: EbeguUtil;
     private isVerfuegungEingeschriebenSendenAktiv: boolean;
     public readonly demoFeature = TSDemoFeature.VERAENDERUNG_BEI_MUTATION;
+    private letzteIgnorierteGesuchId: string;
 
     public constructor(
         private readonly $state: StateService,
@@ -123,6 +131,10 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
         super(gesuchModelManager, berechnungsManager, wizardStepManager, $scope, TSWizardStepName.VERFUEGEN, $timeout);
         this.initViewModel();
         this.ebeguUtil = ebeguUtil;
+
+        if(this.gesuchModelManager.getGesuch().status === TSAntragStatus.IGNORIERT) {
+            this.loadNeustesVerfuegtesGesuchFuerGesuch();
+        }
     }
 
     /**
@@ -202,8 +214,12 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
         return this.mahnungList;
     }
 
-    public showMutationVeranderung(): boolean {
-        if (this.hasAnyNewOrStornierteBetreuung) {
+    public hasMutationVeranderung(): boolean {
+        return this.veraenderungBG !== 0 || this.veraenderungTS !== 0;
+    }
+
+    public showSimulationVeranderung(): boolean {
+        if (!this.isMutation()) {
             return false;
         }
 
@@ -212,23 +228,21 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
             return false;
         }
 
-        if (this.veraenderungBG === 0 && this.veraenderungTS === 0) {
-            return false;
-        }
-
-        return !isAnyStatusOfVerfuegt(this.gesuchModelManager.getGesuch().status)
-            && this.isMutation();
-    }
-
-    public showAnyNewOrStornierteBetreuungen(): boolean {
-        return this.isMutation() && this.hasAnyNewOrStornierteBetreuung
-            && !isAnyStatusOfVerfuegt(this.gesuchModelManager.getGesuch().status);
+        return !isStatusVerfuegenVerfuegt(this.gesuchModelManager.getGesuch().status);
     }
 
     public setMutationIgnorieren(): void {
-        this.gesuchModelManager.mutationIgnorieren().then(() => {
-            this.refreshKinderListe();
-        });
+        this.dvDialog.showRemoveDialog(removeDialogTempl, this.form, RemoveDialogController, {
+            title: 'CONFIRM_GESUCH_STATUS_IGNORIEREN',
+            deleteText: 'CONFIRM_GESUCH_STATUS_IGNORIEREN_BESCHREIBUNG',
+            parentController: undefined,
+            elementID: undefined
+        })
+            .then(() => this.gesuchModelManager.mutationIgnorieren())
+            .then(() => {
+                this.refreshKinderListe();
+                this.loadNeustesVerfuegtesGesuchFuerGesuch();
+            });
     }
 
     /**
@@ -323,9 +337,9 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
         }
         if (this.isGesuchstellerOrSozialdienst()) {
             return isAnyStatusOfVerfuegt(this.getAntragStatus())
-                && !this.isFinSitAbglehnt();
+                && !this.isFinSitAbglehnt() && !this.isGesuchIgnoriert();
         }
-        return !this.isFinSitAbglehnt();
+        return !this.isFinSitAbglehnt() && !this.isGesuchIgnoriert();
 
     }
 
@@ -880,26 +894,55 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
         return this.isMutation() &&
             !this.hasAnyNewOrStornierteBetreuung &&
             this.allVerfuegungenIgnorable &&
-            this.gesuchModelManager.isGesuchStatusIn([TSAntragStatus.GEPRUEFT]);
+            this.correctStatusForIgnorieren() &&
+            this.getGesuch().finSitStatus === TSFinSitStatus.AKZEPTIERT;
+    }
+
+    private correctStatusForIgnorieren(): boolean {
+        if (this.gesuchModelManager.areThereOnlySchulamtAngebote()) {
+            return this.gesuchModelManager.isGesuchStatusIn([TSAntragStatus.IN_BEARBEITUNG_JA]);
+        }
+        return this.gesuchModelManager.isGesuchStatusIn([TSAntragStatus.GEPRUEFT]);
     }
 
     public getVeraenderungBgString(): string {
-        let formatedString =  this.formatVeraenderungen(EbeguUtil.roundToFiveRappen(this.veraenderungBG));
-        return this.$translate.instant('MUTATION_VERAENDERUNG_BG',
-            {veraenderung: formatedString});
+        let roundedVeranderung =  EbeguUtil.roundToFiveRappen(this.veraenderungBG);
+        let translationId = 'MUTATION_VERAENDERUNG_BG_HOEHER';
+
+        if (roundedVeranderung < 0) {
+            translationId = 'MUTATION_VERAENDERUNG_BG_TIEFER';
+            roundedVeranderung *= -1;
+        }
+
+        return this.$translate.instant(translationId, {veraenderung: roundedVeranderung.toFixed(2)});
     }
 
     public getVeraenderungTsString(): string {
-        let formatedString =  this.formatVeraenderungen(this.veraenderungTS);
-        return this.$translate.instant('MUTATION_VERAENDERUNG_TS',
-            {veraenderung: formatedString});
-    }
+        let translationId = 'MUTATION_VERAENDERUNG_TS_HOEHER';
+        let veranderung = this.veraenderungTS;
 
-    private formatVeraenderungen(veraenderungToFormat: number): string {
-        if (veraenderungToFormat > 0) {
-            return `+${veraenderungToFormat.toFixed(2)}`;
+        if (this.veraenderungTS < 0) {
+            translationId = 'MUTATION_VERAENDERUNG_TS_TIEFER';
+            veranderung *= -1;
         }
 
-        return veraenderungToFormat.toFixed(2);
+        return this.$translate.instant(translationId, {veraenderung: veranderung.toFixed(2)});
+    }
+
+    public isGesuchIgnoriert(): boolean {
+        return this.getGesuch().status === TSAntragStatus.IGNORIERT;
+    }
+
+    public gotoLetzterGueltigerAntrag() {
+        const navObj: any = {
+            gesuchId: this.letzteIgnorierteGesuchId
+        };
+        this.$state.go('gesuch.verfuegen',navObj);
+    }
+
+    private loadNeustesVerfuegtesGesuchFuerGesuch(): void  {
+        this.gesuchRS.getNeustesVerfuegtesGesuchFuerGesuch(this.gesuchModelManager.getGesuch().id).then(
+            (response: any) => this.letzteIgnorierteGesuchId = response.id
+        );
     }
 }

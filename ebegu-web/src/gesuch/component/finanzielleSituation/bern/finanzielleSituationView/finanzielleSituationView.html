@@ -20,7 +20,10 @@
 
             <h2>
             <span data-translate="FINANZIELLE_SITUATION"
-                  translate-values="{basisjahr: vm.gesuchModelManager.getBasisjahr(), gesuchsteller: vm.gesuchModelManager.getStammdatenToWorkWith().extractFullName()}"></span>
+                  translate-values="{
+                    basisjahr: vm.gesuchModelManager.getBasisjahr(),
+                    gesuchsteller: vm.gesuchModelManager.getStammdatenToWorkWith().extractFullName()
+                  }"></span>
             </h2>
             <dv-bisher gs="vm.getModel().finanzielleSituationGS"
                        ja="vm.getModel().finanzielleSituationJA"
@@ -64,9 +67,9 @@
                         <div class="margin-bottom-20" ng-if="vm.showSteuerdatenAbholenButton()">
                             <div class="col-xs-12">
                                 <dv-loading-button
-                                        button-disabled="!vm.isGesuchsteller()"
-                                        type="button"
-                                        button-click="vm.callKiBonAnfrageAndUpdateFinSit()">
+                                    button-disabled="!vm.isGesuchsteller()"
+                                    type="button"
+                                    button-click="vm.callKiBonAnfrageAndUpdateFinSit()">
                                     {{'STEUERDATEN_ABHOLEN' | translate}}
                                 </dv-loading-button>
                                 <div class="margin-top-05" ng-if="!vm.isGesuchsteller()">
@@ -74,7 +77,8 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="margin-top-05 col-xs-12" ng-if="vm.triedSavingWithoutForm && vm.showSteuerdatenAbholenButton()">
+                        <div class="margin-top-05 col-xs-12"
+                             ng-if="vm.triedSavingWithoutForm && vm.showSteuerdatenAbholenButton()">
                             <p class="dv-error-messages">{{'ZUERST_STEUERDATEN_ABHOLEN' | translate}}</p>
                         </div>
                     </div>
@@ -85,10 +89,16 @@
                         </p>
                     </div>
                 </fieldset>
-                    <dv-steuerabfrage-response-hints
-                        ng-if="vm.showZugriffAufSteuerdaten() && vm.getModel().finanzielleSituationJA.steuerdatenZugriff"
-                        (try-again-event)="vm.callKiBonAnfrageAndUpdateFinSit()"
-                        [status]="vm.getModel().finanzielleSituationJA.steuerdatenAbfrageStatus"></dv-steuerabfrage-response-hints>
+                <dv-steuerabfrage-response-hints
+                    ng-if="vm.showZugriffAufSteuerdaten() && vm.getModel().finanzielleSituationJA.steuerdatenZugriff"
+                    (try-again-event)="vm.callKiBonAnfrageAndUpdateFinSit()"
+                    [status]="vm.getModel().finanzielleSituationJA.steuerdatenAbfrageStatus"
+                    [timestamp-abruf]="vm.getModel().finanzielleSituationJA.steuerdatenAbfrageTimestamp"
+                    [steuer-abfrage-respone-hint-status-text]="vm.finSitRequestState| translate"
+                    [steuer-abfrage-request-running]="vm.finSitRequestRunning"
+                >
+
+                </dv-steuerabfrage-response-hints>
 
                 <fieldset ng-disabled="vm.isGesuchReadonly()">
                     <!--Steuerveranlagung -->
@@ -145,13 +155,18 @@
 
                         <div ng-if="vm.getModel().finanzielleSituationJA.steuererklaerungAusgefuellt === false && vm.showSteuerveranlagung()"
                              class="well well-status-warten minus-margin">
-                            <p ng-if="vm.isFKJV()" class="ebegu-h3" data-translate="FINANZIELLE_SITUATION_STEUERERKLAERUNG_NEIN_WARNING_FKJV"></p>
-                            <p ng-if="!vm.isFKJV()" class="ebegu-h3" data-translate="FINANZIELLE_SITUATION_STEUERERKLAERUNG_NEIN_WARNING"></p>
+                            <p ng-if="vm.isFKJV()"
+                               class="ebegu-h3"
+                               data-translate="FINANZIELLE_SITUATION_STEUERERKLAERUNG_NEIN_WARNING_FKJV"></p>
+                            <p ng-if="!vm.isFKJV()"
+                               class="ebegu-h3"
+                               data-translate="FINANZIELLE_SITUATION_STEUERERKLAERUNG_NEIN_WARNING"></p>
                         </div>
-
                         <!-- Infotext -->
-                        <p class="inline-hint margin-bottom-30" data-translate="FINANZIELLE_SITUATION_HINT1"
-                           translate-values="{basisjahr: vm.gesuchModelManager.getBasisjahr()}"></p>
+                        <p class="inline-hint margin-bottom-30"
+                           data-translate="FINANZIELLE_SITUATION_HINT1"
+                           translate-values="{basisjahr: vm.gesuchModelManager.getBasisjahr()}">
+                        </p>
 
                         <!-- Nettolohn -->
                         <div class="row">
@@ -170,6 +185,12 @@
                                     <dv-bisher gs="vm.getModel().finanzielleSituationGS.nettolohn"
                                                ja="vm.getModel().finanzielleSituationJA.nettolohn"
                                                show-if-bisher-none="vm.isNotNullOrUndefined(vm.getModel().finanzielleSituationGS)"></dv-bisher>
+                                    <dv-eingabe-hint
+                                        [neuer-wert]="vm.getModel().finanzielleSituationJA.nettolohn"
+                                        [vergleichswert]="vm.getFinSitVorMutationToWorkWith().nettolohn"
+                                        [label]="'BISHER' | translate"
+                                        [show-only-if-not-identical]="true"
+                                    ></dv-eingabe-hint>
                                     <dv-error-messages input-id="nettolohn"
                                                        for="vm.form.nettolohn.$error"
                                                        class="error"></dv-error-messages>
@@ -195,6 +216,12 @@
                                         <dv-bisher gs="vm.getModel().finanzielleSituationGS.familienzulage"
                                                    ja="vm.getModel().finanzielleSituationJA.familienzulage"
                                                    show-if-bisher-none="vm.isNotNullOrUndefined(vm.getModel().finanzielleSituationGS)"></dv-bisher>
+                                        <dv-eingabe-hint
+                                            [neuer-wert]="vm.getModel().finanzielleSituationJA.familienzulage"
+                                            [vergleichswert]="vm.getFinSitVorMutationToWorkWith().familienzulage"
+                                            [label]="'BISHER' | translate"
+                                            [show-only-if-not-identical]="true"
+                                        ></dv-eingabe-hint>
                                         <dv-error-messages input-id="familienzulage" for="vm.form.familienzulage.$error"
                                                            class="error"></dv-error-messages>
                                     </div>
@@ -220,6 +247,12 @@
                                     <dv-bisher gs="vm.getModel().finanzielleSituationGS.ersatzeinkommen"
                                                ja="vm.getModel().finanzielleSituationJA.ersatzeinkommen"
                                                show-if-bisher-none="vm.isNotNullOrUndefined(vm.getModel().finanzielleSituationGS)"></dv-bisher>
+                                    <dv-eingabe-hint
+                                        [neuer-wert]="vm.getModel().finanzielleSituationJA.ersatzeinkommen"
+                                        [vergleichswert]="vm.getFinSitVorMutationToWorkWith().ersatzeinkommen"
+                                        [label]="'BISHER' | translate"
+                                        [show-only-if-not-identical]="true"
+                                    ></dv-eingabe-hint>
                                     <dv-error-messages input-id="ersatzeinkommen" for="vm.form.ersatzeinkommen.$error"
                                                        class="error"></dv-error-messages>
                                 </dv-input-container>
@@ -244,6 +277,12 @@
                                         <dv-bisher gs="vm.getModel().finanzielleSituationGS.erhalteneAlimente"
                                                    ja="vm.getModel().finanzielleSituationJA.erhalteneAlimente"
                                                    show-if-bisher-none="vm.isNotNullOrUndefined(vm.getModel().finanzielleSituationGS)"></dv-bisher>
+                                        <dv-eingabe-hint
+                                            [neuer-wert]="vm.getModel().finanzielleSituationJA.erhalteneAlimente"
+                                            [vergleichswert]="vm.getFinSitVorMutationToWorkWith().erhalteneAlimente"
+                                            [label]="'BISHER' | translate"
+                                            [show-only-if-not-identical]="true"
+                                        ></dv-eingabe-hint>
                                         <dv-error-messages input-id="erhalteneAlimente"
                                                            for="vm.form.erhalteneAlimente.$error"
                                                            class="error"></dv-error-messages>
@@ -299,6 +338,12 @@
                                                    ja="vm.getModel().finanzielleSituationJA.geschaeftsgewinnBasisjahr"
                                                    show-if-bisher-none="false"
                                                    block-existed="vm.showSelbstaendigGS === true"></dv-bisher>
+                                        <dv-eingabe-hint
+                                            [neuer-wert]="vm.getModel().finanzielleSituationJA.geschaeftsgewinnBasisjahr"
+                                            [vergleichswert]="vm.getFinSitVorMutationToWorkWith().geschaeftsgewinnBasisjahr"
+                                            [label]="'BISHER' | translate"
+                                            [show-only-if-not-identical]="true"
+                                        ></dv-eingabe-hint>
                                     </dv-input-container>
                                 </div>
                             </div>
@@ -324,6 +369,12 @@
                                             ja="vm.getModel().finanzielleSituationJA.geschaeftsgewinnBasisjahrMinus1"
                                             show-if-bisher-none="false"
                                             block-existed="vm.showSelbstaendigGS === true"></dv-bisher>
+                                        <dv-eingabe-hint
+                                            [neuer-wert]="vm.getModel().finanzielleSituationJA.geschaeftsgewinnBasisjahrMinus1"
+                                            [vergleichswert]="vm.getFinSitVorMutationToWorkWith().geschaeftsgewinnBasisjahrMinus1"
+                                            [label]="'BISHER' | translate"
+                                            [show-only-if-not-identical]="true"
+                                        ></dv-eingabe-hint>
                                     </dv-input-container>
                                 </div>
                             </div>
@@ -349,6 +400,12 @@
                                             ja="vm.getModel().finanzielleSituationJA.geschaeftsgewinnBasisjahrMinus2"
                                             show-if-bisher-none="false"
                                             block-existed="vm.showSelbstaendigGS === true"></dv-bisher>
+                                        <dv-eingabe-hint
+                                            [neuer-wert]="vm.getModel().finanzielleSituationJA.geschaeftsgewinnBasisjahrMinus2"
+                                            [vergleichswert]="vm.getFinSitVorMutationToWorkWith().geschaeftsgewinnBasisjahrMinus2"
+                                            [label]="'BISHER' | translate"
+                                            [show-only-if-not-identical]="true"
+                                        ></dv-eingabe-hint>
                                     </dv-input-container>
                                 </div>
                             </div>
@@ -402,6 +459,12 @@
                                         <dv-bisher gs="vm.getModel().finanzielleSituationGS.bruttoertraegeVermoegen"
                                                    ja="vm.getModel().finanzielleSituationJA.bruttoertraegeVermoegen"
                                                    show-if-bisher-none="vm.isNotNullOrUndefined(vm.getModel().finanzielleSituationGS)"></dv-bisher>
+                                        <dv-eingabe-hint
+                                            [neuer-wert]="vm.getModel().finanzielleSituationJA.bruttoertraegeVermoegen"
+                                            [vergleichswert]="vm.getFinSitVorMutationToWorkWith().bruttoertraegeVermoegen"
+                                            [label]="'BISHER' | translate"
+                                            [show-only-if-not-identical]="true"
+                                        ></dv-eingabe-hint>
                                         <dv-error-messages input-id="bruttoErtraegeVermoegen"
                                                            for="vm.form.bruttoertraegeVermoegen.$error"
                                                            class="error"></dv-error-messages>
@@ -431,6 +494,12 @@
                                         <dv-bisher gs="vm.getModel().finanzielleSituationGS.nettoertraegeErbengemeinschaft"
                                                    ja="vm.getModel().finanzielleSituationJA.nettoertraegeErbengemeinschaft"
                                                    show-if-bisher-none="vm.isNotNullOrUndefined(vm.getModel().finanzielleSituationGS)"></dv-bisher>
+                                        <dv-eingabe-hint
+                                            [neuer-wert]="vm.getModel().finanzielleSituationJA.nettoertraegeErbengemeinschaft"
+                                            [vergleichswert]="vm.getFinSitVorMutationToWorkWith().nettoertraegeErbengemeinschaft"
+                                            [label]="'BISHER' | translate"
+                                            [show-only-if-not-identical]="true"
+                                        ></dv-eingabe-hint>
                                         <dv-error-messages input-id="nettoertraege_erbengemeinschaften"
                                                            for="vm.form.nettoertraegeErbengemeinschaft.$error"
                                                            class="error"></dv-error-messages>
@@ -483,6 +552,12 @@
                                         </dv-valueinput>
                                         <dv-bisher gs="vm.getModel().finanzielleSituationGS.amountEinkommenInVereinfachtemVerfahrenAbgerechnet"
                                                    ja="vm.getModel().finanzielleSituationJA.amountEinkommenInVereinfachtemVerfahrenAbgerechnet"></dv-bisher>
+                                        <dv-eingabe-hint
+                                            [neuer-wert]="vm.getModel().finanzielleSituationJA.amountEinkommenInVereinfachtemVerfahrenAbgerechnet"
+                                            [vergleichswert]="vm.getFinSitVorMutationToWorkWith().amountEinkommenInVereinfachtemVerfahrenAbgerechnet"
+                                            [label]="'BISHER' | translate"
+                                            [show-only-if-not-identical]="true"
+                                        ></dv-eingabe-hint>
                                         <dv-error-messages input-id="amount_vereinfacht_abgerechnet"
                                                            for="vm.form.testasd.$error"
                                                            class="error"></dv-error-messages>
@@ -506,6 +581,12 @@
                                                        ng-disabled="vm.isGesuchReadonly() || vm.isSteueranfrageErfolgreich()"
                                                        class="input-element" required>
                                         </dv-valueinput>
+                                        <dv-eingabe-hint
+                                            [neuer-wert]="vm.getModel().finanzielleSituationJA.geleisteteAlimente"
+                                            [vergleichswert]="vm.getFinSitVorMutationToWorkWith().geleisteteAlimente"
+                                            [label]="'BISHER' | translate"
+                                            [show-only-if-not-identical]="true"
+                                        ></dv-eingabe-hint>
                                         <dv-bisher gs="vm.getModel().finanzielleSituationGS.geleisteteAlimente"
                                                    ja="vm.getModel().finanzielleSituationJA.geleisteteAlimente"
                                                    show-if-bisher-none="vm.isNotNullOrUndefined(vm.getModel().finanzielleSituationGS)"></dv-bisher>
@@ -532,6 +613,12 @@
                                                        ng-disabled="vm.isGesuchReadonly() || vm.isSteueranfrageErfolgreich()"
                                                        class="input-element" required>
                                         </dv-valueinput>
+                                        <dv-eingabe-hint
+                                            [neuer-wert]="vm.getModel().finanzielleSituationJA.abzugSchuldzinsen"
+                                            [vergleichswert]="vm.getFinSitVorMutationToWorkWith().abzugSchuldzinsen"
+                                            [label]="'BISHER' | translate"
+                                            [show-only-if-not-identical]="true"
+                                        ></dv-eingabe-hint>
                                         <dv-bisher gs="vm.getModel().finanzielleSituationGS.abzugSchuldzinsen"
                                                    ja="vm.getModel().finanzielleSituationJA.abzugSchuldzinsen"
                                                    show-if-bisher-none="vm.isNotNullOrUndefined(vm.getModel().finanzielleSituationGS)"></dv-bisher>
@@ -561,6 +648,12 @@
                                         <dv-bisher gs="vm.getModel().finanzielleSituationGS.gewinnungskosten"
                                                    ja="vm.getModel().finanzielleSituationJA.gewinnungskosten"
                                                    show-if-bisher-none="vm.isNotNullOrUndefined(vm.getModel().finanzielleSituationGS)"></dv-bisher>
+                                        <dv-eingabe-hint
+                                            [neuer-wert]="vm.getModel().finanzielleSituationJA.gewinnungskosten"
+                                            [vergleichswert]="vm.getFinSitVorMutationToWorkWith().gewinnungskosten"
+                                            [label]="'BISHER' | translate"
+                                            [show-only-if-not-identical]="true"
+                                        ></dv-eingabe-hint>
                                         <dv-error-messages input-id="abzug_gewinnungskosten"
                                                            for="vm.form.gewinnungskosten.$error"
                                                            class="error"></dv-error-messages>
@@ -609,8 +702,12 @@
                 </div>
 
                 <!--Buttons-->
-                <dv-navigation dv-previous="true" dv-next="true" dv-save="vm.save()" dv-next-disabled="vm.showWarningSteuerschnittstelleNotYetActive()"
-                               dv-sub-step="2" dv-sub-step-name="{{vm.subStepName()}}">
+                <dv-navigation dv-previous="true"
+                               dv-next="true"
+                               dv-save="vm.save()"
+                               dv-next-disabled="vm.showWarningSteuerschnittstelleNotYetActive()"
+                               dv-sub-step="2"
+                               dv-sub-step-name="{{vm.subStepName()}}">
                 </dv-navigation>
             </form>
         </div>

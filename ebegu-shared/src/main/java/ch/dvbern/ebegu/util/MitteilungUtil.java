@@ -32,6 +32,7 @@ import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Betreuungsmitteilung;
 import ch.dvbern.ebegu.entities.BetreuungsmitteilungPensum;
 import ch.dvbern.ebegu.entities.Mandant;
+import ch.dvbern.ebegu.enums.BetreuungspensumAnzeigeTyp;
 import ch.dvbern.ebegu.enums.MitteilungStatus;
 import ch.dvbern.ebegu.enums.MitteilungTeilnehmerTyp;
 
@@ -60,7 +61,9 @@ public final class MitteilungUtil {
 	public static String createNachrichtForMutationsmeldung(
 		@Nonnull Set<BetreuungsmitteilungPensum> changedBetreuungen,
 		boolean mahlzeitenverguenstigungEnabled,
-		@Nonnull Locale locale
+		@Nonnull Locale locale,
+		@Nonnull BetreuungspensumAnzeigeTyp betreuungspensumAnzeigeTyp,
+		@Nonnull BigDecimal multiplier
 	) {
 		final StringBuilder message = new StringBuilder();
 		final int[] index = { 1 }; // Array, weil es final sein muss, damit es in LambdaExpression verwendet werden darf...
@@ -75,7 +78,7 @@ public final class MitteilungUtil {
 			if (index[0] > 1) {
 				message.append('\n');
 			}
-			message.append(createNachrichtForMutationsmeldung(betreuungspensumContainer, mahlzeitenverguenstigungEnabled, index[0], locale));
+			message.append(createNachrichtForMutationsmeldung(betreuungspensumContainer, mahlzeitenverguenstigungEnabled, index[0], locale, betreuungspensumAnzeigeTyp, multiplier));
 			index[0]++;
 		});
 		return message.toString();
@@ -85,7 +88,9 @@ public final class MitteilungUtil {
 	private static String createNachrichtForMutationsmeldung(
 		@Nonnull BetreuungsmitteilungPensum pensumMitteilung,
 		boolean mahlzeitenverguenstigungEnabled, int index,
-		@Nonnull Locale locale
+		@Nonnull Locale locale,
+		@Nonnull BetreuungspensumAnzeigeTyp betreuungspensumAnzeigeTyp,
+		@Nonnull BigDecimal multiplier
 	) {
 		String datumAb = Constants.DATE_FORMATTER.format(pensumMitteilung.getGueltigkeit().getGueltigAb());
 		String datumBis = Constants.DATE_FORMATTER.format(pensumMitteilung.getGueltigkeit().getGueltigBis());
@@ -100,22 +105,25 @@ public final class MitteilungUtil {
 			BigDecimal tarifNeben = pensumMitteilung.getTarifProNebenmahlzeit();
 
 			return ServerMessageUtil.getMessage(
-				"mutationsmeldung_message_mahlzeitverguenstigung_mit_tarif", locale, mandant,
+				betreuungspensumAnzeigeTyp.equals(BetreuungspensumAnzeigeTyp.NUR_STUNDEN) ?
+					"mutationsmeldung_message_mahlzeitverguenstigung_mit_tarif_stunden" :
+					"mutationsmeldung_message_mahlzeitverguenstigung_mit_tarif", locale, mandant,
 				index,
 				datumAb,
 				datumBis,
-				pensumMitteilung.getPensum(),
+				MathUtil.DEFAULT.multiply(pensumMitteilung.getPensum() , multiplier),
 				pensumMitteilung.getMonatlicheBetreuungskosten(),
 				hauptmahlzeiten,
 				nebemahlzeiten,
 				tarifHaupt,
 				tarifNeben);
 		} else {
-			return ServerMessageUtil.getMessage("mutationsmeldung_message", locale, mandant,
+			return ServerMessageUtil.getMessage(betreuungspensumAnzeigeTyp.equals(BetreuungspensumAnzeigeTyp.NUR_STUNDEN) ?
+					"mutationsmeldung_message_stunden" :"mutationsmeldung_message", locale, mandant,
 				index,
 				datumAb,
 				datumBis,
-				pensumMitteilung.getPensum(),
+				MathUtil.DEFAULT.multiply(pensumMitteilung.getPensum() , multiplier),
 				pensumMitteilung.getMonatlicheBetreuungskosten());
 		}
 	}

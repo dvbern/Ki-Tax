@@ -1,23 +1,27 @@
 /*
- * Ki-Tax: System for the management of external childcare subsidies
- * Copyright (C) 2017 City of Bern Switzerland
+ * Copyright (C) 2023 DV Bern AG, Switzerland
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Affero General Public License for more details.
+ *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
 import {IComponentOptions} from 'angular';
 import {EinstellungRS} from '../../../../../admin/service/einstellungRS.rest';
 import {DvDialog} from '../../../../../app/core/directive/dv-dialog/dv-dialog';
+import {TSDemoFeature} from '../../../../../app/core/directive/dv-hide-feature/TSDemoFeature';
 import {ErrorService} from '../../../../../app/core/errors/service/ErrorService';
 import {ApplicationPropertyRS} from '../../../../../app/core/rest-services/applicationPropertyRS.rest';
+import {DemoFeatureRS} from '../../../../../app/core/service/demoFeatureRS.rest';
 import {AuthServiceRS} from '../../../../../authentication/service/AuthServiceRS.rest';
 import {TSFinanzielleSituationResultateDTO} from '../../../../../models/dto/TSFinanzielleSituationResultateDTO';
 import {TSFinanzielleSituationSubStepName} from '../../../../../models/enums/TSFinanzielleSituationSubStepName';
@@ -25,6 +29,7 @@ import {TSRole} from '../../../../../models/enums/TSRole';
 import {isSteuerdatenAnfrageStatusErfolgreich} from '../../../../../models/enums/TSSteuerdatenAnfrageStatus';
 import {TSWizardStepName} from '../../../../../models/enums/TSWizardStepName';
 import {TSWizardStepStatus} from '../../../../../models/enums/TSWizardStepStatus';
+import {TSFinanzielleSituation} from '../../../../../models/TSFinanzielleSituation';
 import {TSFinanzielleSituationContainer} from '../../../../../models/TSFinanzielleSituationContainer';
 import {TSFinanzModel} from '../../../../../models/TSFinanzModel';
 import {EbeguUtil} from '../../../../../utils/EbeguUtil';
@@ -34,6 +39,7 @@ import {
 import {IStammdatenStateParams} from '../../../../gesuch.route';
 import {BerechnungsManager} from '../../../../service/berechnungsManager';
 import {GesuchModelManager} from '../../../../service/gesuchModelManager';
+import {GesuchRS} from '../../../../service/gesuchRS.rest';
 import {WizardStepManager} from '../../../../service/wizardStepManager';
 import {AbstractFinSitBernView} from '../AbstractFinSitBernView';
 import IPromise = angular.IPromise;
@@ -66,7 +72,9 @@ export class FinanzielleSituationViewController extends AbstractFinSitBernView {
         'EinstellungRS',
         'DvDialog',
         'AuthServiceRS',
-        'ApplicationPropertyRS'
+        'ApplicationPropertyRS',
+        'GesuchRS',
+        'DemoFeatureRS'
     ];
 
     public showSelbstaendig: boolean;
@@ -88,7 +96,9 @@ export class FinanzielleSituationViewController extends AbstractFinSitBernView {
         einstellungRS: EinstellungRS,
         dvDialog: DvDialog,
         protected readonly authServiceRS: AuthServiceRS,
-        applicationPropertyRS: ApplicationPropertyRS
+        applicationPropertyRS: ApplicationPropertyRS,
+        private readonly gesuchRS: GesuchRS,
+        private readonly demoFeatureRS: DemoFeatureRS
     ) {
         super(gesuchModelManager,
             berechnungsManager,
@@ -116,6 +126,23 @@ export class FinanzielleSituationViewController extends AbstractFinSitBernView {
         this.gesuchModelManager.setGesuchstellerNumber(parsedNum);
         this.initViewModel();
         this.calculate();
+        this.initFinSitVorMutation();
+    }
+
+    private async initFinSitVorMutation(): Promise<void> {
+
+        const allowed = await this.demoFeatureRS
+            .isDemoFeatureAllowed(TSDemoFeature.STEUERABFRAGE_ERNEUT_DURCHFUEHREN_IN_MUTATION);
+
+        if (!allowed) {
+            return;
+        }
+        // beim Erstgesuch macht dies keinen Sinn
+        if (EbeguUtil.isNullOrUndefined(this.getGesuch().vorgaengerId)) {
+            return;
+        }
+        const gesuchVorMutation = await this.gesuchRS.findVorgaengerGesuchNotIgnoriert(this.getGesuch().vorgaengerId);
+        this.model.initFinSitVorMutation(gesuchVorMutation);
     }
 
     private initViewModel(): void {
@@ -315,13 +342,6 @@ export class FinanzielleSituationViewController extends AbstractFinSitBernView {
             });
     }
 
-    public callKiBonAnfrageAndUpdateFinSit(): void {
-       super.callKiBonAnfrage(false).then(() => {
-                this.initAfterKiBonAnfrageUpdate();
-            }
-        );
-    }
-
     public resetKiBonAnfrageFinSit(): void {
         this.model.copyFinSitDataToGesuch(this.gesuchModelManager.getGesuch());
         this.gesuchModelManager.resetKiBonAnfrageFinSit(false).then(() => {
@@ -352,5 +372,13 @@ export class FinanzielleSituationViewController extends AbstractFinSitBernView {
 
     protected isNotFinSitStartOrGS2Required(): boolean {
         return true;
+    }
+
+    public getFinSitVorMutationToWorkWith(): TSFinanzielleSituation | any {
+        if (this.model.getFinSitVorMutationToWorkWith()) {
+            return this.model.getFinSitVorMutationToWorkWith();
+        }
+        // wir returnieren leeres Objekt, damit wir im Template nicht überall den Nullcheck machen müssen
+        return {};
     }
 }
