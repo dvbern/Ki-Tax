@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022 DV Bern AG, Switzerland
+ * Copyright (C) 2023 DV Bern AG, Switzerland
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -8,11 +8,11 @@
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
 package ch.dvbern.ebegu.services;
@@ -28,6 +28,7 @@ import javax.annotation.Nonnull;
 import javax.ejb.EJBAccessException;
 import javax.ejb.EJBTransactionRolledbackException;
 
+import ch.dvbern.ebegu.dto.neskovanp.Veranlagungsstand;
 import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Dossier;
 import ch.dvbern.ebegu.entities.Gemeinde;
@@ -163,8 +164,10 @@ public class NeueVeranlagungMitteilungTest extends EasyMockSupport {
 	@Test
 	public void neueVeranlaungsMitteilung1GSSteuerresponseGemeinsamRejected() {
 		SteuerdatenResponse steuerdatenResponse = new SteuerdatenResponse();
+		steuerdatenResponse.setZpvNrAntragsteller(1000001);
 		steuerdatenResponse.setZpvNrDossiertraeger(1000001);
 		steuerdatenResponse.setZpvNrPartner(1000002);
+		steuerdatenResponse.setVeranlagungsstand(Veranlagungsstand.RECHTSKRAEFTIG);
 		Gesuch gesuch = prepareGS1Fall(steuerdatenResponse);
 		expectEverythingBisBearbeitung(gesuch);
 		replayAll();
@@ -175,7 +178,9 @@ public class NeueVeranlagungMitteilungTest extends EasyMockSupport {
 	@Test
 	public void neueVeranlaungsMitteilung2GSSteuerresponseGemeinsamRejected() {
 		SteuerdatenResponse steuerdatenResponse = new SteuerdatenResponse();
+		steuerdatenResponse.setZpvNrAntragsteller(1000001);
 		steuerdatenResponse.setZpvNrDossiertraeger(1000001);
+		steuerdatenResponse.setVeranlagungsstand(Veranlagungsstand.RECHTSKRAEFTIG);
 		Gesuch gesuch = prepareGemeinsamFall(steuerdatenResponse);
 		expectEverythingBisBearbeitung(gesuch);
 		replayAll();
@@ -186,7 +191,9 @@ public class NeueVeranlagungMitteilungTest extends EasyMockSupport {
 	@Test
 	public void neueVeranlaungsMitteilung1GSOk() {
 		SteuerdatenResponse steuerdatenResponse = new SteuerdatenResponse();
+		steuerdatenResponse.setZpvNrAntragsteller(1000001);
 		steuerdatenResponse.setZpvNrDossiertraeger(1000001);
+		steuerdatenResponse.setVeranlagungsstand(Veranlagungsstand.RECHTSKRAEFTIG);
 		Gesuch gesuch = prepareGS1Fall(steuerdatenResponse);
 		expectEverythingBisBearbeitung(gesuch);
 		Objects.requireNonNull(gesuch.getGesuchsteller1());
@@ -205,6 +212,7 @@ public class NeueVeranlagungMitteilungTest extends EasyMockSupport {
 		steuerdatenResponse.setZpvNrDossiertraeger(1000001);
 		steuerdatenResponse.setZpvNrPartner(1000002);
 		steuerdatenResponse.setZpvNrAntragsteller(1000001);
+		steuerdatenResponse.setVeranlagungsstand(Veranlagungsstand.RECHTSKRAEFTIG);
 		Gesuch gesuch = prepareGemeinsamFall(steuerdatenResponse);
 		expectEverythingBisBearbeitung(gesuch);
 		Objects.requireNonNull(gesuch.getGesuchsteller1());
@@ -260,6 +268,9 @@ public class NeueVeranlagungMitteilungTest extends EasyMockSupport {
 		testfall_1GS.createFall();
 		testfall_1GS.createGesuch(LocalDate.of(2016, Month.DECEMBER, 12));
 		Gesuch gesuch = testfall_1GS.fillInGesuch();
+		Objects.requireNonNull(gesuch.getGesuchsteller1());
+		Objects.requireNonNull(gesuch.getGesuchsteller1().getFinanzielleSituationContainer());
+		gesuch.getGesuchsteller1().getFinanzielleSituationContainer().getFinanzielleSituationJA().setSteuerdatenZugriff(true);
 		gesuch.setEingangsart(Eingangsart.ONLINE);
 		gesuch.getDossier().getFall().setBesitzer(new Benutzer());
 		gesuch.setStatus(AntragStatus.VERFUEGT);
@@ -300,12 +311,20 @@ public class NeueVeranlagungMitteilungTest extends EasyMockSupport {
 			.getFinanzielleSituationContainer()
 			.getFinanzielleSituationJA()
 			.setSteuerdatenResponse(steuerdatenResponse);
+		gesuch.getGesuchsteller1()
+			.getFinanzielleSituationContainer()
+			.getFinanzielleSituationJA()
+			.setSteuerdatenZugriff(true);
 		Objects.requireNonNull(gesuch.getGesuchsteller2());
 		Objects.requireNonNull(gesuch.getGesuchsteller2().getFinanzielleSituationContainer());
 		gesuch.getGesuchsteller2()
 			.getFinanzielleSituationContainer()
 			.getFinanzielleSituationJA()
 			.setSteuerdatenResponse(steuerdatenResponse);
+		gesuch.getGesuchsteller2()
+			.getFinanzielleSituationContainer()
+			.getFinanzielleSituationJA()
+			.setSteuerdatenZugriff(true);
 		Objects.requireNonNull(gesuch.getFamiliensituationContainer());
 		Objects.requireNonNull(gesuch.getFamiliensituationContainer().getFamiliensituationJA());
 		gesuch.getFamiliensituationContainer().getFamiliensituationJA().setGemeinsameSteuererklaerung(true);

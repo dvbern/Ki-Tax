@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018 DV Bern AG, Switzerland
+ * Copyright (C) 2023 DV Bern AG, Switzerland
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -8,11 +8,11 @@
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
 import {CommonModule} from '@angular/common';
@@ -23,7 +23,7 @@ import {MatMenuModule} from '@angular/material/menu';
 import {TranslateLoader, TranslateModule, TranslateService} from '@ngx-translate/core';
 import {UIRouterModule} from '@uirouter/angular';
 import {GuidedTourModule} from 'ngx-guided-tour';
-import {DvEingabeBasisjahrComponent} from '../../gesuch/component/dv-eingabe-basisjahr/dv-eingabe-basisjahr.component';
+import {DvEingabeHintComponent} from '../../gesuch/component/dv-eingabe-hint/dv-eingabe-hint.component';
 import {DvNgHelpDialogComponent} from '../../gesuch/dialog/dv-ng-help-dialog/dv-ng-help-dialog.component';
 import {DvNgSupportDialogComponent} from '../../gesuch/dialog/dv-ng-support-dialog.component';
 import {TSBrowserLanguage} from '../../models/enums/TSBrowserLanguage';
@@ -34,21 +34,37 @@ import {ErrorMessagesComponent} from '../core/component/dv-error-messages/error-
 import {DvHelpmenuComponent} from '../core/component/dv-helpmenu/dv-helpmenu.component';
 import {DVInputContainerXComponent} from '../core/component/dv-input-container/dv-input-container-x.component';
 import {DvInputLabelFieldComponent} from '../core/component/dv-input-label-field/dv-input-label-field.component';
-import {DvMitteilungDelegationComponent} from '../core/component/dv-mitteilung-delegation/dv-mitteilung-delegation.component';
+import {
+    DvMitteilungDelegationComponent
+} from '../core/component/dv-mitteilung-delegation/dv-mitteilung-delegation.component';
 import {DvNavigationXComponent} from '../core/component/dv-navigation-x/dv-navigation-x.component';
 import {DvNgBackDialogComponent} from '../core/component/dv-ng-back-dialog/dv-ng-back-dialog.component';
 import {DvNgConfirmDialogComponent} from '../core/component/dv-ng-confirm-dialog/dv-ng-confirm-dialog.component';
-import {DvNgDisplayObjectDialogComponent} from '../core/component/dv-ng-display-object-dialog/dv-ng-display-object-dialog.component';
+import {
+    DvNgDisplayObjectDialogComponent
+} from '../core/component/dv-ng-display-object-dialog/dv-ng-display-object-dialog.component';
 import {DvNgGemeindeDialogComponent} from '../core/component/dv-ng-gemeinde-dialog/dv-ng-gemeinde-dialog.component';
-import {DvNgGesuchstellerDialogComponent} from '../core/component/dv-ng-gesuchsteller-dialog/dv-ng-gesuchsteller-dialog.component';
+import {
+    DvNgGesuchstellerDialogComponent
+} from '../core/component/dv-ng-gesuchsteller-dialog/dv-ng-gesuchsteller-dialog.component';
 import {DvNgLinkDialogComponent} from '../core/component/dv-ng-link-dialog/dv-ng-link-dialog.component';
-import {DvNgMitteilungDelegationDialogComponent} from '../core/component/dv-ng-mitteilung-delegation-dialog/dv-ng-mitteilung-delegation-dialog.component';
-import {DvNgMitteilungResultDialogComponent} from '../core/component/dv-ng-mitteilung-result-dialog/dv-ng-mitteilung-result-dialog.component';
-import {DvNgMultiSelectDialogComponent} from '../core/component/dv-ng-multi-select-dialog/dv-ng-multi-select-dialog.component';
+import {
+    DvNgMitteilungDelegationDialogComponent
+} from '../core/component/dv-ng-mitteilung-delegation-dialog/dv-ng-mitteilung-delegation-dialog.component';
+import {
+    DvNgMitteilungResultDialogComponent
+} from '../core/component/dv-ng-mitteilung-result-dialog/dv-ng-mitteilung-result-dialog.component';
+import {
+    DvNgMultiSelectDialogComponent
+} from '../core/component/dv-ng-multi-select-dialog/dv-ng-multi-select-dialog.component';
 import {DvNgOkDialogComponent} from '../core/component/dv-ng-ok-dialog/dv-ng-ok-dialog.component';
 import {DvNgRemoveDialogComponent} from '../core/component/dv-ng-remove-dialog/dv-ng-remove-dialog.component';
-import {DvNgSozialdienstDialogComponent} from '../core/component/dv-ng-sozialdienst-dialog/dv-ng-sozialdienst-dialog.component';
-import {DvNgThreeButtonDialogComponent} from '../core/component/dv-ng-three-button-dialog/dv-ng-three-button-dialog.component';
+import {
+    DvNgSozialdienstDialogComponent
+} from '../core/component/dv-ng-sozialdienst-dialog/dv-ng-sozialdienst-dialog.component';
+import {
+    DvNgThreeButtonDialogComponent
+} from '../core/component/dv-ng-three-button-dialog/dv-ng-three-button-dialog.component';
 import {DvPosteingangComponent} from '../core/component/dv-posteingang/dv-posteingang.component';
 import {DvRadioContainerXComponent} from '../core/component/dv-radio-container/dv-radio-container-x.component';
 import {DvRadioInputXComponent} from '../core/component/dv-radio-input-x/dv-radio-input-x.component';
@@ -71,8 +87,12 @@ import {DvDatePickerXComponent} from './component/dv-date-picker/dv-date-picker-
 import {DvDemoFeatureWrapperComponent} from './component/dv-demo-feture-wrapper/dv-demo-feature-wrapper.component';
 import {DvMonthPickerComponent} from './component/dv-month-picker/dv-month-picker.component';
 import {DvSimpleTableComponent} from './component/dv-simple-table/dv-simple-table.component';
-import {ExternalClientAssignmentComponent} from './component/external-client-assignment/external-client-assignment.component';
-import {ExternalClientMultiselectComponent} from './component/external-client-multiselect/external-client-multiselect.component';
+import {
+    ExternalClientAssignmentComponent
+} from './component/external-client-assignment/external-client-assignment.component';
+import {
+    ExternalClientMultiselectComponent
+} from './component/external-client-multiselect/external-client-multiselect.component';
 import {GemeindeMultiselectComponent} from './component/gemeinde-multiselect/gemeinde-multiselect.component';
 import {MultipleFileUploadComponent} from './component/multpile-file-upload/multiple-file-upload.component';
 import {SavingInfoComponent} from './component/save-input-info/saving-info.component';
@@ -87,7 +107,9 @@ import {LoadingButtonDirective} from './directive/loading-button.directive';
 import {NumbersMinMaxDirective} from './directive/numbers-min-max.directive';
 import {TooltipDirective} from './directive/TooltipDirective';
 import {FullHeightContainerComponent} from './full-height-container/full-height-container.component';
-import {FullHeightInnerPaddingContainerComponent} from './full-height-inner-padding-container/full-height-inner-padding-container.component';
+import {
+    FullHeightInnerPaddingContainerComponent
+} from './full-height-inner-padding-container/full-height-inner-padding-container.component';
 import {MaterialModule} from './material.module';
 import {EbeguDateTimePipe} from './pipe/ebegu-date-time.pipe';
 import {EbeguDatePipe} from './pipe/ebegu-date.pipe';
@@ -184,7 +206,7 @@ export function createTranslateLoader(http: HttpClient, mandantService: MandantS
         DvNavigationXComponent,
         DvInputLabelFieldComponent,
         EnableElementDirective,
-        DvEingabeBasisjahrComponent,
+        DvEingabeHintComponent,
         EbeguNumberPipe,
         DvValueinputXComponent,
         DvRadioInputXComponent,
@@ -262,7 +284,7 @@ export function createTranslateLoader(http: HttpClient, mandantService: MandantS
         DvNavigationXComponent,
         DvInputLabelFieldComponent,
         EnableElementDirective,
-        DvEingabeBasisjahrComponent,
+        DvEingabeHintComponent,
         DvValueinputXComponent,
         EbeguNumberPipe,
         DvValueinputXComponent,

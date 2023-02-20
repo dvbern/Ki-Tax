@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022 DV Bern AG, Switzerland
+ * Copyright (C) 2023 DV Bern AG, Switzerland
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -340,8 +340,8 @@ export class FinanzielleSituationStartViewController extends AbstractFinSitBernV
     }
 
     public isZahlungsangabenRequired(): boolean {
-        return !this.model.zahlungsinformationen.keineMahlzeitenverguenstigungBeantragt ||
-            this.zahlungsangabenRequired;
+        return (!this.model.zahlungsinformationen.keineMahlzeitenverguenstigungBeantragt && this.isMahlzeitenverguenstigungEnabled())
+            || this.zahlungsangabenRequired;
     }
 
     public areZahlungsdatenEditable(): boolean {
@@ -416,15 +416,6 @@ export class FinanzielleSituationStartViewController extends AbstractFinSitBernV
         this.resetKiBonAnfrageFinSitIfRequired();
     }
 
-    public updateFinSitAenderungGueltigAbDatum(): void {
-        if (this.model.finanzielleSituationRueckwirkendAnpassen) {
-            this.getGesuch().finSitAenderungGueltigAbDatum =
-                this.getGesuch().gesuchsperiode.gueltigkeit.gueltigAb.subtract(1, 'days');
-        } else {
-            this.getGesuch().finSitAenderungGueltigAbDatum = null;
-        }
-    }
-
     private getAbfrageStatus(): string {
         return this.getModel().finanzielleSituationJA.steuerdatenAbfrageStatus;
     }
@@ -444,16 +435,5 @@ export class FinanzielleSituationStartViewController extends AbstractFinSitBernV
 
     protected isNotFinSitStartOrGS2Required(): boolean {
         return this.gesuchModelManager.isGesuchsteller2Required();
-    }
-
-    public showFinanzielleSituationRueckwirkendAnpassen() {
-        if (!this.gesuchModelManager.getGesuch().isMutation()) {
-            return false;
-        }
-        if (!this.isMutationIgnorierenActivated) {
-            return false;
-        }
-
-        return this.isFinanziellesituationRequired() && this.isFKJV();
     }
 }

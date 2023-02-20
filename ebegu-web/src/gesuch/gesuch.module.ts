@@ -1,29 +1,38 @@
 /*
- * Ki-Tax: System for the management of external childcare subsidies
- * Copyright (C) 2017 City of Bern Switzerland
+ * Copyright (C) 2023 DV Bern AG, Switzerland
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Affero General Public License for more details.
+ *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
 import {downgradeComponent} from '@angular/upgrade/static';
 import * as angular from 'angular';
 import {CORE_JS_MODULE} from '../app/core/core.angularjs.module';
 import {MultipleFileUploadComponent} from '../app/shared/component/multpile-file-upload/multiple-file-upload.component';
+import {
+    SelbstdeklarationComponent
+} from './component/abstractFinanzielleSituation/luzern/selbstdeklaration/selbstdeklaration.component';
 import {AbwesenheitViewComponentConfig} from './component/abwesenheitView/abwesenheitView';
-import {BetreuungAbweichungenViewComponentConfig} from './component/betreuungAbweichungenView/betreuungAbweichungenView';
+import {
+    BetreuungAbweichungenViewComponentConfig
+} from './component/betreuungAbweichungenView/betreuungAbweichungenView';
 import {BetreuungFerieninselViewComponentConfig} from './component/betreuungFerieninselView/betreuungFerieninselView';
 import {BetreuungInputConfig} from './component/betreuungInput/betreuung-input';
 import {BetreuungListViewComponentConfig} from './component/betreuungListView/betreuungListView';
 import {BetreuungMitteilungViewComponentConfig} from './component/betreuungMitteilungView/betreuungMitteilungView';
-import {BetreuungOverrideWarningComponent} from './component/betreuungOverrideWarning/betreuung-override-warning.component';
+import {
+    BetreuungOverrideWarningComponent
+} from './component/betreuungOverrideWarning/betreuung-override-warning.component';
 import {BetreuungTagesschuleViewComponentConfig} from './component/betreuungTagesschuleView/betreuungTagesschuleView';
 import {BetreuungViewComponentConfig} from './component/betreuungView/betreuungView';
 import {DokumenteViewComponentConfig} from './component/DokumenteView/dokumenteView';
@@ -31,44 +40,84 @@ import {
     DossierToolbarComponentConfig,
     DossierToolbarGesuchstellerComponentConfig
 } from './component/dossierToolbar/dossierToolbar';
-import {DvEingabeBasisjahrComponent} from './component/dv-eingabe-basisjahr/dv-eingabe-basisjahr.component';
-import {DvFinanzielleSituationRequire} from './component/dv-finanzielle-situation-require/dv-finanzielle-situation-require';
+import {DvEingabeHintComponent} from './component/dv-eingabe-hint/dv-eingabe-hint.component';
+import {
+    DvFinanzielleSituationRequire
+} from './component/dv-finanzielle-situation-require/dv-finanzielle-situation-require';
 import {DvSwitchComponent} from './component/dv-switch/dv-switch.component';
-import {EinkommensverschlechterungResultateViewComponent} from './component/einkommensverschlechterung/bern/einkommensverschlechterung-resultate-view/einkommensverschlechterung-resultate-view.component';
-import {EinkommensverschlechterungInfoViewComponentConfig} from './component/einkommensverschlechterung/einkommensverschlechterungInfoView/einkommensverschlechterungInfoView';
-import {EinkommensverschlechterungViewComponentConfig} from './component/einkommensverschlechterung/bern/einkommensverschlechterungView/einkommensverschlechterungView';
-import {EinkommensverschlechterungLuzernResultateViewComponent} from './component/einkommensverschlechterung/luzern/einkommensverschlechterung-luzern-resultate-view/einkommensverschlechterung-luzern-resultate-view.component';
-import {EinkommensverschlechterungLuzernViewComponent} from './component/einkommensverschlechterung/luzern/einkommensverschlechterung-luzern-view/einkommensverschlechterung-luzern-view.component';
-import {EinkommensverschlechterungSolothurnResultateViewComponent} from './component/einkommensverschlechterung/solothurn/einkommensverschlechterung-solothurn-resultate-view/einkommensverschlechterung-solothurn-resultate-view.component';
-import {EinkommensverschlechterungSolothurnViewComponent} from './component/einkommensverschlechterung/solothurn/einkommensverschlechterung-solothurn-view/einkommensverschlechterung-solothurn-view.component';
+import {
+    EinkommensverschlechterungResultateViewComponent
+} from './component/einkommensverschlechterung/bern/einkommensverschlechterung-resultate-view/einkommensverschlechterung-resultate-view.component';
+import {
+    EinkommensverschlechterungViewComponentConfig
+} from './component/einkommensverschlechterung/bern/einkommensverschlechterungView/einkommensverschlechterungView';
+import {
+    EinkommensverschlechterungInfoViewComponentConfig
+} from './component/einkommensverschlechterung/einkommensverschlechterungInfoView/einkommensverschlechterungInfoView';
+import {
+    EinkommensverschlechterungLuzernResultateViewComponent
+} from './component/einkommensverschlechterung/luzern/einkommensverschlechterung-luzern-resultate-view/einkommensverschlechterung-luzern-resultate-view.component';
+import {
+    EinkommensverschlechterungLuzernViewComponent
+} from './component/einkommensverschlechterung/luzern/einkommensverschlechterung-luzern-view/einkommensverschlechterung-luzern-view.component';
+import {
+    EinkommensverschlechterungSolothurnResultateViewComponent
+} from './component/einkommensverschlechterung/solothurn/einkommensverschlechterung-solothurn-resultate-view/einkommensverschlechterung-solothurn-resultate-view.component';
+import {
+    EinkommensverschlechterungSolothurnViewComponent
+} from './component/einkommensverschlechterung/solothurn/einkommensverschlechterung-solothurn-view/einkommensverschlechterung-solothurn-view.component';
 import {ErwerbspensumListViewComponentConfig} from './component/erwerbspensumListView/erwerbspensumListView';
 import {ErwerbspensumViewComponentConfig} from './component/erwerbspensumView/erwerbspensumView';
 import {FallCreationViewXComponent} from './component/fall-creation-view-x/fall-creation-view-x.component';
 import {FallToolbarComponent} from './component/fallToolbar/fallToolbar.component';
 import {FamiliensituationViewXComponent} from './component/familiensituation-view-x/familiensituation-view-x.component';
-import {FinanzielleSituationAufteilungComponent} from './component/finanzielleSituation/bern/finanzielleSituationAufteilung/finanzielle-situation-aufteilung.component';
-import {FinanzielleSituationResultateViewComponentConfig} from './component/finanzielleSituation/bern/finanzielleSituationResultateView/finanzielleSituationResultateView';
-import {FinanzielleSituationStartViewComponentConfig} from './component/finanzielleSituation/bern/finanzielleSituationStartView/finanzielleSituationStartView';
-import {FinanzielleSituationViewComponentConfig} from './component/finanzielleSituation/bern/finanzielleSituationView/finanzielleSituationView';
-import {SozialhilfeZeitraumListViewComponentConfig} from './component/finanzielleSituation/bern/sozialhilfeZeitraumListView/sozialhilfeZeitraumListView';
-import {SozialhilfeZeitraumViewComponentConfig} from './component/finanzielleSituation/bern/sozialhilfeZeitraumView/sozialhilfeZeitraumView';
-import {SteuerabfrageResponseHintsComponent} from './component/finanzielleSituation/bern/steuerabfrageResponseHints/steuerabfrage-response-hints.component';
-import {AngabenGesuchsteller2Component} from './component/finanzielleSituation/luzern/angaben-gesuchsteller2/angaben-gesuchsteller2.component';
-import {FinanzielleSituationStartViewLuzernComponent} from './component/finanzielleSituation/luzern/finanzielle-situation-start-view-luzern/finanzielle-situation-start-view-luzern.component';
+import {
+    FinanzielleSituationAufteilungComponent
+} from './component/finanzielleSituation/bern/finanzielleSituationAufteilung/finanzielle-situation-aufteilung.component';
+import {
+    FinanzielleSituationResultateViewComponentConfig
+} from './component/finanzielleSituation/bern/finanzielleSituationResultateView/finanzielleSituationResultateView';
+import {
+    FinanzielleSituationStartViewComponentConfig
+} from './component/finanzielleSituation/bern/finanzielleSituationStartView/finanzielleSituationStartView';
+import {
+    FinanzielleSituationViewComponentConfig
+} from './component/finanzielleSituation/bern/finanzielleSituationView/finanzielleSituationView';
+import {
+    SozialhilfeZeitraumListViewComponentConfig
+} from './component/finanzielleSituation/bern/sozialhilfeZeitraumListView/sozialhilfeZeitraumListView';
+import {
+    SozialhilfeZeitraumViewComponentConfig
+} from './component/finanzielleSituation/bern/sozialhilfeZeitraumView/sozialhilfeZeitraumView';
+import {
+    SteuerabfrageResponseHintsComponent
+} from './component/finanzielleSituation/bern/steuerabfrageResponseHints/steuerabfrage-response-hints.component';
+import {
+    AngabenGesuchsteller2Component
+} from './component/finanzielleSituation/luzern/angaben-gesuchsteller2/angaben-gesuchsteller2.component';
+import {
+    FinanzielleSituationStartViewLuzernComponent
+} from './component/finanzielleSituation/luzern/finanzielle-situation-start-view-luzern/finanzielle-situation-start-view-luzern.component';
 import {ResultatComponent} from './component/finanzielleSituation/luzern/resultat/resultat.component';
 import {FinanzielleVerhaeltnisseComponent} from './component/finanzielleSituation/appenzell/finanzielle-verhaeltnisse/finanzielle-verhaeltnisse.component';
 import {FinanzielleSituationAppenzellViewComponent} from './component/finanzielleSituation/appenzell/finanzielle-situation-appenzell-view/finanzielle-situation-appenzell-view.component';
 import {SelbstdeklarationComponent} from './component/abstractFinanzielleSituation/luzern/selbstdeklaration/selbstdeklaration.component';
 import {VeranlagungComponent} from './component/finanzielleSituation/luzern/veranlagung/veranlagung.component';
-import {FinanzielleSituationStartSolothurnComponent} from './component/finanzielleSituation/solothurn/finanzielle-situation-start-solothurn/finanzielle-situation-start-solothurn.component';
+import {
+    FinanzielleSituationStartSolothurnComponent
+} from './component/finanzielleSituation/solothurn/finanzielle-situation-start-solothurn/finanzielle-situation-start-solothurn.component';
 import {FreigabeViewComponentConfig} from './component/freigabeView/freigabeView';
-import {InternePendenzDialogComponent} from './component/internePendenzenView/interne-pendenz-dialog/interne-pendenz-dialog.component';
+import {
+    InternePendenzDialogComponent
+} from './component/internePendenzenView/interne-pendenz-dialog/interne-pendenz-dialog.component';
 import {InternePendenzenComponent} from './component/internePendenzenView/interne-pendenzen.component';
 import {KinderListViewComponentConfig} from './component/kinderListView/kinderListView';
 import {FkjvKinderabzugComponent} from './component/kindView/fkjv-kinderabzug/fkjv-kinderabzug.component';
 import {KindViewComponentConfig} from './component/kindView/kindView';
 import {KommentarViewComponentConfig} from './component/kommentarView/kommentarView';
-import {SozialdienstFallCreationViewComponentConfig} from './component/sozialdienstFallCreationView/sozialdienstFallCreationView';
+import {
+    SozialdienstFallCreationViewComponentConfig
+} from './component/sozialdienstFallCreationView/sozialdienstFallCreationView';
 import {StammdatenViewComponentConfig} from './component/stammdatenView/stammdatenView';
 import {UmzugViewComponentConfig} from './component/umzugView/umzugView';
 import {VerfuegenListViewComponentConfig} from './component/verfuegenListView/verfuegenListView';
@@ -133,7 +182,7 @@ export const GESUCH_JS_MODULE =
         .component('sozialhilfeZeitraumView', new SozialhilfeZeitraumViewComponentConfig())
         .directive('dvFallToolbar', downgradeComponent({component: FallToolbarComponent}))
         .component('dvBetreuungInput', new BetreuungInputConfig())
-        .directive('dvEingabeBasisjahr', downgradeComponent({component: DvEingabeBasisjahrComponent}))
+        .directive('dvEingabeHint', downgradeComponent({component: DvEingabeHintComponent}))
         .directive('dvSwitch', downgradeComponent({component: DvSwitchComponent}))
         .directive('betreuungOverrideWarning', downgradeComponent({component: BetreuungOverrideWarningComponent}))
         .directive('dvMultipleFileUpload',

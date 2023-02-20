@@ -86,6 +86,8 @@ public final class AntragStatusConverterUtil {
 			return AntragStatusDTO.IN_BEARBEITUNG_STV;
 		case GEPRUEFT_STV:
 			return AntragStatusDTO.GEPRUEFT_STV;
+		case IGNORIERT:
+			return  AntragStatusDTO.IGNORIERT;
 		default:
 			throw new IllegalStateException("Unbekannter Status: " + status + " in Gesuch " + antrag.getId());
 		}
@@ -157,6 +159,8 @@ public final class AntragStatusConverterUtil {
 			return AntragStatus.IN_BEARBEITUNG_STV;
 		case GEPRUEFT_STV:
 			return AntragStatus.GEPRUEFT_STV;
+		case IGNORIERT:
+			return AntragStatus.IGNORIERT;
 		default:
 			throw new EbeguRuntimeException("convertStatusToEntity", ErrorCodeEnum.ERROR_INVALID_EBEGUSTATE, statusDTO);
 		}
