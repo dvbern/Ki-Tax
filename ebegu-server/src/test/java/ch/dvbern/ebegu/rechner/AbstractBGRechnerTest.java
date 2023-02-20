@@ -838,19 +838,4 @@ public abstract class AbstractBGRechnerTest {
 			assertEquals(bgResult.getVerguenstigungMahlzeitenTotal(), BigDecimal.valueOf(60));
 		}
 	}
-
-	protected BigDecimal calculateKostenAnteilMonat(BGCalculationInput input, DateRange gueltigkeit) {
-		BigDecimal anteilMonat = DateUtil.calculateAnteilMonatInklWeekend(
-			gueltigkeit.getGueltigAb(),
-			gueltigkeit.getGueltigBis());
-
-		BigDecimal anteilVerguenstigesPensumAmBetreuungspensum = BigDecimal.ZERO;
-		if (input.getBetreuungspensumProzent().compareTo(BigDecimal.ZERO) > 0) {
-			anteilVerguenstigesPensumAmBetreuungspensum =
-				MathUtil.EXACT.divide(input.getBgPensumProzent(), input.getBetreuungspensumProzent());
-		}
-		BigDecimal vollkostenFuerVerguenstigtesPensum =
-			MathUtil.EXACT.multiply(input.getMonatlicheBetreuungskosten(), anteilVerguenstigesPensumAmBetreuungspensum);
-		return MathUtil.EXACT.multiply(anteilMonat, vollkostenFuerVerguenstigtesPensum);
-	}
 }
