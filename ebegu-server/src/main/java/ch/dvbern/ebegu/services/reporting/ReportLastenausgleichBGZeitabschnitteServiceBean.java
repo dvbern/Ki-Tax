@@ -22,6 +22,8 @@ import java.io.InputStream;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.math.BigDecimal;
+import java.time.temporal.TemporalAdjuster;
+import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
@@ -53,6 +55,7 @@ import ch.dvbern.ebegu.services.Authorizer;
 import ch.dvbern.ebegu.services.FileSaverService;
 import ch.dvbern.ebegu.services.LastenausgleichService;
 import ch.dvbern.ebegu.util.Constants;
+import ch.dvbern.ebegu.util.DateUtil;
 import ch.dvbern.ebegu.util.ServerMessageUtil;
 import ch.dvbern.ebegu.util.UploadFileInfo;
 import ch.dvbern.oss.lib.excelmerger.ExcelMergeException;
@@ -164,11 +167,9 @@ public class ReportLastenausgleichBGZeitabschnitteServiceBean extends AbstractRe
 	}
 
 	private boolean filterLastenausgleichDetailVonBis(@NotNull LastenausgleichBGZeitabschnittDataRow reportData, String von, String bis) {
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-		LocalDate formattedVon = LocalDate.parse(von, formatter);
-		LocalDate formattedBis = LocalDate.parse(bis, formatter);
-		boolean isVonBis = (reportData.getVon().equals(formattedVon) || formattedVon.isBefore(reportData.getVon())) && (reportData.getBis().equals(formattedBis) || formattedBis.isAfter(reportData.getBis()));
-		return isVonBis;
+		LocalDate formattedVon = DateUtil.parseStringToDateNullSafe(von).with(TemporalAdjusters.firstDayOfMonth());
+		LocalDate formattedBis = DateUtil.parseStringToDateNullSafe(bis).with(TemporalAdjusters.lastDayOfMonth());
+		return (reportData.getVon().equals(formattedVon) || formattedVon.isBefore(reportData.getVon())) && (reportData.getBis().equals(formattedBis) || formattedBis.isAfter(reportData.getBis()));
 	}
 
 	/**
