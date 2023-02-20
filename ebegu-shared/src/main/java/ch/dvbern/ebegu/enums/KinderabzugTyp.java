@@ -21,5 +21,10 @@ package ch.dvbern.ebegu.enums;
 public enum KinderabzugTyp {
 	ASIV,
 	FKJV,
-	KEINE,
+	FKJV_2,
+	KEINE;
+
+	public boolean isFKJV() {
+		return this == FKJV || this == FKJV_2;
+	}
 }

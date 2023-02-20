@@ -217,8 +217,9 @@ public class FamilienabzugAbschnittRule extends AbstractAbschnittRule {
 		@Nonnull Double famGrBeruecksichtigungAbzug,
 		int famGrAnzahlPersonen
 	) {
-		if (this.kinderabzugTyp == KinderabzugTyp.FKJV) {
-			return addAbzugFromKinderFkjv(gesuch, stichtag, famGrBeruecksichtigungAbzug, famGrAnzahlPersonen);
+		if (this.kinderabzugTyp.isFKJV()) {
+			boolean isKinderabzugTypV2 = this.kinderabzugTyp == KinderabzugTyp.FKJV_2;
+			return addAbzugFromKinderFkjv(gesuch, stichtag, famGrBeruecksichtigungAbzug, famGrAnzahlPersonen, isKinderabzugTypV2);
 		}
 		return addAbzugFromKinderAsiv(gesuch, stichtag, famGrBeruecksichtigungAbzug, famGrAnzahlPersonen);
 	}
@@ -254,7 +255,8 @@ public class FamilienabzugAbschnittRule extends AbstractAbschnittRule {
 		@Nonnull Gesuch gesuch,
 		@Nonnull LocalDate stichtag,
 		@Nonnull Double famGrBeruecksichtigungAbzug,
-		int famGrAnzahlPersonen
+		int famGrAnzahlPersonen,
+		boolean isKinderAbzugTypeVersion2
 	) {
 		LocalDate dateToCompare = getRelevantDateForKinder(gesuch.getGesuchsperiode(), stichtag);
 		Familiensituation familiensituation = gesuch.extractFamiliensituation();
@@ -262,12 +264,25 @@ public class FamilienabzugAbschnittRule extends AbstractAbschnittRule {
 		for (KindContainer kindContainer : gesuch.getKindContainers()) {
 			Kind kind = kindContainer.getKindJA();
 			if (kind != null && (dateToCompare == null || kind.getGeburtsdatum().isBefore(dateToCompare))) {
-				famGrAnzahlPersonen++;
-				famGrBeruecksichtigungAbzug+= calculateFKJVKinderabzugForKind(kind, familiensituation, dateToCompare);
+				double beruecksichtigungAbzug = calculateFKJVKinderabzugForKind(kind, familiensituation, dateToCompare);
+				famGrBeruecksichtigungAbzug += beruecksichtigungAbzug;
+				famGrAnzahlPersonen += calculateFKJVAnzahlPersonen(beruecksichtigungAbzug, isKinderAbzugTypeVersion2);
 			}
 		}
 
 		return new AbstractMap.SimpleEntry(famGrBeruecksichtigungAbzug, famGrAnzahlPersonen);
+	}
+
+	private int calculateFKJVAnzahlPersonen(double beruecksichtigungAbzug, boolean isKinderAbzugTypeVersion2) {
+		if (!isKinderAbzugTypeVersion2) {
+			return 1;
+		}
+
+		if (beruecksichtigungAbzug == 0) {
+			return 0;
+		}
+
+		return 1;
 	}
 
 	private double calculateFKJVKinderabzugForKind(@Nonnull Kind kind, Familiensituation familiensituation, LocalDate dateToCompare) {
