@@ -72,6 +72,12 @@ import {FallCreationViewXComponent} from './component/fall-creation-view-x/fall-
 import {FallToolbarComponent} from './component/fallToolbar/fallToolbar.component';
 import {FamiliensituationViewXComponent} from './component/familiensituation-view-x/familiensituation-view-x.component';
 import {
+    FinanzielleSituationAppenzellViewComponent
+} from './component/finanzielleSituation/appenzell/finanzielle-situation-appenzell-view/finanzielle-situation-appenzell-view.component';
+import {
+    FinanzielleVerhaeltnisseComponent
+} from './component/finanzielleSituation/appenzell/finanzielle-verhaeltnisse/finanzielle-verhaeltnisse.component';
+import {
     FinanzielleSituationAufteilungComponent
 } from './component/finanzielleSituation/bern/finanzielleSituationAufteilung/finanzielle-situation-aufteilung.component';
 import {
@@ -99,9 +105,6 @@ import {
     FinanzielleSituationStartViewLuzernComponent
 } from './component/finanzielleSituation/luzern/finanzielle-situation-start-view-luzern/finanzielle-situation-start-view-luzern.component';
 import {ResultatComponent} from './component/finanzielleSituation/luzern/resultat/resultat.component';
-import {FinanzielleVerhaeltnisseComponent} from './component/finanzielleSituation/appenzell/finanzielle-verhaeltnisse/finanzielle-verhaeltnisse.component';
-import {FinanzielleSituationAppenzellViewComponent} from './component/finanzielleSituation/appenzell/finanzielle-situation-appenzell-view/finanzielle-situation-appenzell-view.component';
-import {SelbstdeklarationComponent} from './component/abstractFinanzielleSituation/luzern/selbstdeklaration/selbstdeklaration.component';
 import {VeranlagungComponent} from './component/finanzielleSituation/luzern/veranlagung/veranlagung.component';
 import {
     FinanzielleSituationStartSolothurnComponent
