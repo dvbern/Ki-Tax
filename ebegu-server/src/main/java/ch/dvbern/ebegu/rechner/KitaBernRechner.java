@@ -58,12 +58,14 @@ public class KitaBernRechner extends AbstractGemeindeBernRechner {
 	protected BigDecimal getMaximaleVerguenstigungProZeiteinheit(
 		@Nonnull BGRechnerParameterDTO parameterDTO,
 		@Nonnull Boolean unter12Monate,
-		@Nonnull Boolean eingeschult) {
+		@Nonnull Boolean eingeschultKindergarten,
+		@Nonnull Boolean eingeschultSchulstufe
+	) {
 		if (unter12Monate) {
 			return parameterDTO.getMaxVerguenstigungVorschuleBabyProTg();
 		}
-		if (eingeschult) {
-			return parameterDTO.getMaxVerguenstigungSchuleKindProTg();
+		if (eingeschultKindergarten) {
+			return parameterDTO.getMaxVerguenstigungKindergartenKindProTg();
 		}
 		return parameterDTO.getMaxVerguenstigungVorschuleKindProTg();
 	}
