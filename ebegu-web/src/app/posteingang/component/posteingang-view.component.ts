@@ -32,7 +32,7 @@ import {TranslateService} from '@ngx-translate/core';
 import {TransitionService} from '@uirouter/angular';
 import {StateService, UIRouterGlobals} from '@uirouter/core';
 import {from, Observable, of, Subject} from 'rxjs';
-import {map, mergeMap, takeUntil, tap} from 'rxjs/operators';
+import {map, mergeMap, takeUntil} from 'rxjs/operators';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {GemeindeRS} from '../../../gesuch/service/gemeindeRS.rest';
 import {TSPagination} from '../../../models/dto/TSPagination';
@@ -41,6 +41,7 @@ import {getTSMitteilungsStatusForFilter, TSMitteilungStatus} from '../../../mode
 import {TSMitteilungTypes} from '../../../models/enums/TSMitteilungTypes';
 import {TSRole} from '../../../models/enums/TSRole';
 import {TSVerantwortung} from '../../../models/enums/TSVerantwortung';
+import {TSBenutzer} from '../../../models/TSBenutzer';
 import {TSBenutzerNoDetails} from '../../../models/TSBenutzerNoDetails';
 import {TSGemeinde} from '../../../models/TSGemeinde';
 import {TSMitteilung} from '../../../models/TSMitteilung';
@@ -144,8 +145,8 @@ export class PosteingangViewComponent implements OnInit, OnDestroy, AfterViewIni
         ]
     };
     public readonly stateStoreId: string = 'posteingangId';
-    private sortId: string;
-    private filterId: string;
+    private readonly sortId = 'posteingangId-sort';
+    private readonly filterId = 'posteingangId-filter';
     private readonly sort: {
         predicate?: string;
         reverse?: boolean;
@@ -174,12 +175,16 @@ export class PosteingangViewComponent implements OnInit, OnDestroy, AfterViewIni
 
     public ngOnInit(): void {
         this.updateGemeindenList();
-        this.initStateStores();
-        this.initFilter().then(() => {
-            this.initSort();
-            this.initDisplayedColumns();
-            this.initEmpfaenger().subscribe(() => this.passFilterToServer(), error => LOG.error(error));
-        });
+        this.initDisplayedColumns();
+        this.initSort();
+        this.initFilter().subscribe(filter => {
+            this.filterPredicate = filter;
+            this.benutzerRS.getAllBenutzerBgTsOrGemeinde().then(response => {
+                this.initialEmpfaenger = EbeguUtil.findUserByNameInList(filter?.empfaenger, response);
+                this.changeDetectorRef.markForCheck();
+            });
+            this.passFilterToServer();
+        }, error => LOG.error(error));
     }
 
     public ngAfterViewInit(): void {
@@ -187,27 +192,8 @@ export class PosteingangViewComponent implements OnInit, OnDestroy, AfterViewIni
         this.initMatSort();
     }
 
-    private initEmpfaenger(): Observable<DVPosteingangFilter> {
-        return this.authServiceRS.principal$.pipe(
-            map(principal => principal.hasOneOfRoles([TSRole.SUPER_ADMIN])),
-            mergeMap(isSuperAdmin => {
-                if (isSuperAdmin) {
-                    return of(this.filterPredicate);
-                }
-                return from(this.benutzerRS.getAllBenutzerBgTsOrGemeinde()).pipe(
-                    tap(response => {
-                        this.filterPredicate.empfaenger = this.authServiceRS.getPrincipal().getFullName();
-                        this.initialEmpfaenger =
-                            EbeguUtil.findUserByNameInList(this.filterPredicate?.empfaenger, response);
-                        this.changeDetectorRef.markForCheck();
-                    }),
-                    map(() => this.filterPredicate)
-                );
-            })
-        );
-    }
-
     public ngOnDestroy(): void {
+        this.storeFilterSortStates();
         this.unsubscribe$.next();
         this.unsubscribe$.complete();
     }
@@ -369,29 +355,53 @@ export class PosteingangViewComponent implements OnInit, OnDestroy, AfterViewIni
         }
     }
 
-    private async initFilter(): Promise<void> {
-        this.filterPredicate = (this.filterId && this.stateStore.has(this.filterId)) ?
+    private initFilter(): Observable<DVPosteingangFilter> {
+        const initial = (this.filterId && this.stateStore.has(this.filterId)) ?
             this.stateStore.get(this.filterId) as DVPosteingangFilter :
             {...this.initialFilter};
-        if (await this.demoFeatureRS.isDemoFeatureAllowed(TSDemoFeature.NEUE_VERANLAGUNG_MITTEILUNG)) {
-            this.filterPredicate.messageTypes.push(TSMitteilungTypes.NEUEVERANLAGUNGMITTEILUNG);
-        }
+
+        return of(initial).pipe(
+            mergeMap(filter => this.getDemoFeatureFilter(filter)),
+            mergeMap(filter => this.adaptFilterForPrincipal(filter))
+        );
     }
 
-    private initStateStores(): void {
-        this.sortId = `${this.stateStoreId}-sort`;
-        this.filterId = `${this.stateStoreId}-filter`;
+    private getDemoFeatureFilter(filter: DVPosteingangFilter): Observable<DVPosteingangFilter> {
+        return from(this.demoFeatureRS.isDemoFeatureAllowed(TSDemoFeature.NEUE_VERANLAGUNG_MITTEILUNG)).pipe(
+            map(isAllowed => {
+                if (isAllowed) {
+                    filter.messageTypes.push(TSMitteilungTypes.NEUEVERANLAGUNGMITTEILUNG);
+                }
+                return filter;
+            })
+        );
+    }
 
-        this.transitionService.onStart({exiting: this.uiRouterGlobals.$current.name}, () => {
-            if (this.sort.predicate) {
-                this.stateStore.store(this.sortId, this.sort);
-            } else {
-                this.stateStore.delete(this.sortId);
-                this.stateStore.delete(this.filterId);
-            }
+    private adaptFilterForPrincipal(filter: DVPosteingangFilter): Observable<DVPosteingangFilter> {
+        return this.authServiceRS.principal$.pipe(
+            map(principal => {
+                if (principal.hasOneOfRoles([TSRole.SUPER_ADMIN])) {
+                    return filter;
+                }
+                return this.addEmpfaengerToFilter(filter, principal);
+            })
+        );
+    }
 
-            this.stateStore.store(this.filterId, this.filterPredicate);
-        });
+    private addEmpfaengerToFilter(filter: DVPosteingangFilter, user: TSBenutzer): DVPosteingangFilter {
+        filter.empfaenger = user.getFullName();
+        return filter;
+    }
+
+    private storeFilterSortStates() {
+        if (this.sort.predicate) {
+            this.stateStore.store(this.sortId, this.sort);
+        } else {
+            this.stateStore.delete(this.sortId);
+            this.stateStore.delete(this.filterId);
+        }
+
+        this.stateStore.store(this.filterId, this.filterPredicate);
     }
 
     private initSort(): void {
@@ -423,8 +433,10 @@ export class PosteingangViewComponent implements OnInit, OnDestroy, AfterViewIni
 
     public resetFilter(): void {
         this.filterPredicate = this.initialFilter;
-        this.applyFilter();
-        this.initEmpfaenger();
+        this.initFilter().subscribe(filter => {
+            this.adaptFilterForPrincipal(filter);
+            this.applyFilter();
+        });
     }
 
     public setUngelesen(mitteilung: TSMitteilung): void {

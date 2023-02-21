@@ -175,7 +175,7 @@
             [dvOnBlur]="onValueChangeFunction"
             [inputDisabled]="readOnly"
             [neuerWert]="model.selbstdeklaration.abzugSchuldzinsen"
-            [vergleichswert]="isEKV ? finanzModel.getFiSiConToWorkWith().finanzielleSituationJA.selbstdeklaration.abzugSchuldzinsen : undefined"
+            [vergleichswert]="isEKV ? finanzModel.getFiSiConToWorkWith().finanzielleSituationJA.selbstdeklaration?.abzugSchuldzinsen : undefined"
             [vergleichwertLabel]="'EINGABE_BASISJAHR' | translate: {basisjahr: finanzModel.getBasisjahr()}"
             [showBisher]="isEKV ? showBisher(finanzModel.getEkvToWorkWith_GS()) : showBisher(finanzModel.getFiSiConToWorkWith().finanzielleSituationGS)"
             [deklaration]="isEKV ? finanzModel.getEkvToWorkWith_GS()?.selbstdeklaration?.abzugSchuldzinsen : finanzModel.getFiSiConToWorkWith().finanzielleSituationGS?.abzugSchuldzinsen"

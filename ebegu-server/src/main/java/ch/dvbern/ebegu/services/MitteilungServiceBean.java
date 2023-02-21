@@ -1862,7 +1862,7 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 				}
 				throw new EbeguRuntimeException(
 					"isMitteilungReadableForInstitution",
-					"Mitteilung for INSTITUTION should have institution or betreuung");
+					"Mitteilung for INSTITUTION must have institution or betreuung, this is likely a data error. See KSKB-2613");
 			}
 			return false;
 		} else if (principalBean.isCallerInAnyOfRole(
