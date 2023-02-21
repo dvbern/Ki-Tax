@@ -22,9 +22,11 @@ import java.util.List;
 import java.util.Optional;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import ch.dvbern.ebegu.dto.BGCalculationInput;
 import ch.dvbern.ebegu.entities.BGCalculationResult;
+import ch.dvbern.ebegu.enums.EinschulungTyp;
 import ch.dvbern.ebegu.rechner.rules.RechnerRule;
 import ch.dvbern.ebegu.util.MathUtil;
 
@@ -97,17 +99,16 @@ public abstract class AbstractGemeindeBernRechner extends AbstractAsivBernRechne
 	BigDecimal getVerguenstigungProZeiteinheit(
 		@Nonnull BGRechnerParameterDTO parameterDTO,
 		@Nonnull Boolean unter12Monate,
-		@Nonnull Boolean eingeschultKindergarten,
-		@Nonnull Boolean eingeschultSchulstufe,
 		@Nonnull Boolean besonderebeduerfnisse,
 		@Nonnull BigDecimal massgebendesEinkommen,
-		boolean bezahltVollkosten) {
+		boolean bezahltVollkosten,
+		@Nullable EinschulungTyp einschulungTyp) {
 		// "Normale" Verguentigung pro Zeiteinheit
 		BigDecimal verguenstigungProZeiteinheit =
 			super.getVerguenstigungProZeiteinheit(parameterDTO, unter12Monate,
-					eingeschultKindergarten, eingeschultSchulstufe, besonderebeduerfnisse,
+				besonderebeduerfnisse,
 				massgebendesEinkommen,
-				bezahltVollkosten);
+				bezahltVollkosten, einschulungTyp);
 		// Zusaetzlicher Gutschein Gemeinde
 		verguenstigungProZeiteinheit =
 			EXACT.addNullSafe(
