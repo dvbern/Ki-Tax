@@ -20,7 +20,9 @@ import java.util.List;
 import java.util.function.Function;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
+import ch.dvbern.ebegu.enums.EinschulungTyp;
 import ch.dvbern.ebegu.enums.PensumUnits;
 import ch.dvbern.ebegu.rechner.rules.RechnerRule;
 import ch.dvbern.ebegu.util.MathUtil;
@@ -63,9 +65,11 @@ public class TageselternBernRechner extends AbstractGemeindeBernRechner {
 	protected BigDecimal getMaximaleVerguenstigungProZeiteinheit(
 		@Nonnull BGRechnerParameterDTO parameterDTO,
 		@Nonnull Boolean unter12Monate,
-		@Nonnull Boolean eingeschultKindergarten,
-		@Nonnull Boolean eingeschultSchulstufe
-	) {
+		@Nullable EinschulungTyp einschulungTyp) {
+		boolean eingeschultKindergarten = einschulungTyp != null && einschulungTyp.isEingeschult();
+		boolean eingeschultSchulstufe = einschulungTyp != null &&
+				(einschulungTyp.isPrimarstufe() || einschulungTyp.isSekundarstufe());
+
 		if (eingeschultSchulstufe) {
 			return parameterDTO.getMaxVerguenstigungPrimarschuleKindProStd();
 		}

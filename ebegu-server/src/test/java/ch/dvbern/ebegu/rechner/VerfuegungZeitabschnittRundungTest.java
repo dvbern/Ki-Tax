@@ -60,10 +60,9 @@ public class VerfuegungZeitabschnittRundungTest extends AbstractBGRechnerTest {
 			parameterDTO,
 			false,
 			false,
-			false,
-			false,
 			BigDecimal.valueOf(88600),
-			false
+			false,
+			EinschulungTyp.VORSCHULALTER
 		);
 
 		assertThat(verguenstigungProZeiteinheit, of("5.1871794872"));
