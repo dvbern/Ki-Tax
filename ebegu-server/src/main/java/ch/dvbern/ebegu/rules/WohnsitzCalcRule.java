@@ -22,6 +22,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.function.Supplier;
 
 import javax.annotation.Nonnull;
 import javax.enterprise.inject.spi.CDI;
@@ -54,9 +55,33 @@ import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.TAGESFAMILIEN;
  */
 public class WohnsitzCalcRule extends AbstractCalcRule {
 
+	private final @Nonnull Supplier<DossierService> dossierServiceResolver;
+
+	private final @Nonnull Supplier<GesuchService> gesuchServiceResolver;
+
 	public WohnsitzCalcRule(@Nonnull DateRange validityPeriod, @Nonnull Locale locale) {
 		super(RuleKey.WOHNSITZ, RuleType.REDUKTIONSREGEL, RuleValidity.ASIV, validityPeriod, locale);
+		this.dossierServiceResolver = WohnsitzCalcRule::resolveDossierServiceFromCDI;
+		this.gesuchServiceResolver = WohnsitzCalcRule::resolveGesuchServiceFromCDI;
 	}
+
+	/**
+	 * for testing only
+	 * @param validityPeriod
+	 * @param locale
+	 * @param dossierServiceResolver
+	 */
+	WohnsitzCalcRule(
+			@Nonnull DateRange validityPeriod,
+			@Nonnull Locale locale,
+			@Nonnull Supplier<DossierService> dossierServiceResolver,
+			@Nonnull Supplier<GesuchService> gesuchServcieResolver
+	) {
+		super(RuleKey.WOHNSITZ, RuleType.REDUKTIONSREGEL, RuleValidity.ASIV, validityPeriod, locale);
+		this.dossierServiceResolver = dossierServiceResolver;
+		this.gesuchServiceResolver = gesuchServcieResolver;
+	}
+
 
 	@Override
 	protected List<BetreuungsangebotTyp> getAnwendbareAngebote() {
@@ -77,7 +102,7 @@ public class WohnsitzCalcRule extends AbstractCalcRule {
 			if (!inputData.getPotentielleDoppelBetreuung()) {
 				return;
 			}
-			DossierService dossierService = CDI.current().select(DossierService.class).get();
+			DossierService dossierService = this.dossierServiceResolver.get();
 
 			List<Dossier> allDossiersForFallNummer = dossierService.getAllDossiersForFallNummer(
 				platz.getKind()
@@ -104,14 +129,15 @@ public class WohnsitzCalcRule extends AbstractCalcRule {
 		Map<String, List<Betreuung>> allBetreuungenProKind,
 		VerfuegungZeitabschnitt aktuellBerechneterAbschnitt) {
 		Map<String, List<Betreuung>> relevantEntries = new HashMap<>();
-		for (String key : allBetreuungenProKind.keySet()) {
-			List<Betreuung> betreuungList = allBetreuungenProKind.get(key);
+
+		allBetreuungenProKind.entrySet().forEach(entry -> {
+			List<Betreuung> betreuungList = entry.getValue();
 			if (betreuungList.size() > 1 &&
-				istEineBetreuungVerfuegt(betreuungList) &&
-				betrifftGleichePeriode(betreuungList, aktuellBerechneterAbschnitt)) {
-				relevantEntries.put(key, betreuungList);
+					istEineBetreuungVerfuegt(betreuungList) &&
+					betrifftGleichePeriode(betreuungList, aktuellBerechneterAbschnitt)) {
+				relevantEntries.put(entry.getKey(), betreuungList);
 			}
-		}
+		});
 		return relevantEntries;
 	}
 
@@ -182,10 +208,19 @@ public class WohnsitzCalcRule extends AbstractCalcRule {
 
 	private List<Gesuch> getAllGesucheForDossiers(List<Dossier> allDossiersForFallNummer) {
 		List<Gesuch> alleGesuche = new LinkedList<>();
-		GesuchService gesuchService = CDI.current().select(GesuchService.class).get();
+		GesuchService gesuchService = this.gesuchServiceResolver.get();
 		for (Dossier dossier : allDossiersForFallNummer) {
 			alleGesuche.addAll(gesuchService.getAllGesuchForDossier(dossier.getId()));
 		}
 		return alleGesuche;
+	}
+
+
+	private static DossierService resolveDossierServiceFromCDI() {
+		return CDI.current().select(DossierService.class).get();
+	}
+
+	private static GesuchService resolveGesuchServiceFromCDI() {
+		return CDI.current().select(GesuchService.class).get();
 	}
 }

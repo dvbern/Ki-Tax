@@ -97,17 +97,13 @@ public class WohnsitzAbschnittRule extends AbstractAbschnittRule {
 					// Es hat geaendert. Was war es fuer eine Anpassung?
 					if ((changedAsiv && newNichtInGemeindeAsiv) || (changedGemeinde && newNichtInGemeindeGemeinde)) {
 						// Es ist ein Wegzug
-						LocalDate stichtagEndeAnspruch = zeitabschnitt.getGueltigkeit().getGueltigAb().with(TemporalAdjusters.lastDayOfMonth());
-						lastZeitAbschnitt.getGueltigkeit().setGueltigBis(stichtagEndeAnspruch);
-						if (zeitabschnitt.getGueltigkeit().getGueltigBis().isAfter(stichtagEndeAnspruch.plusDays(1))) {
-							zeitabschnitt.getGueltigkeit().setGueltigAb(stichtagEndeAnspruch.plusDays(1));
-							result.add(zeitabschnitt);
-						}
+						LocalDate stichTagUmzug = zeitabschnitt.getGueltigkeit().getGueltigAb();
+						result.addAll(createWegzugZeitabschnitte(zeitabschnitt, stichTagUmzug));
 					} else {
 						// Es ist ein Zuzug
 						LocalDate gueltigAb = zeitabschnitt.getGueltigkeit().getGueltigAb();
 						if (gueltigAb.isBefore(gueltigAb.with(TemporalAdjusters.lastDayOfMonth()))) {
-							result.addAll(createUmzugsZeitabschnitte(zeitabschnitt, gueltigAb));
+							result.addAll(createZuzugZeitabschnitte(zeitabschnitt, gueltigAb));
 						} else {
 							result.add(zeitabschnitt);
 						}
@@ -121,7 +117,24 @@ public class WohnsitzAbschnittRule extends AbstractAbschnittRule {
 		return result;
 	}
 
-	private List<VerfuegungZeitabschnitt> createUmzugsZeitabschnitte(
+	private List<VerfuegungZeitabschnitt> createWegzugZeitabschnitte(
+			@Nonnull VerfuegungZeitabschnitt zeitabschnitt,
+			@Nonnull LocalDate stichTagUmzug) {
+		List<VerfuegungZeitabschnitt> wegzugListe = new LinkedList<>();
+		LocalDate stichtagEndeAnspruch = stichTagUmzug.with(TemporalAdjusters.lastDayOfMonth());
+		VerfuegungZeitabschnitt abschnittAnfangMonatBisUmzug = new VerfuegungZeitabschnitt(zeitabschnitt);
+		abschnittAnfangMonatBisUmzug.setPotentielleDoppelBetreuung(true);
+		abschnittAnfangMonatBisUmzug.getGueltigkeit().setGueltigAb(zeitabschnitt.getGueltigkeit().getGueltigAb());
+		abschnittAnfangMonatBisUmzug.getGueltigkeit().setGueltigBis(stichtagEndeAnspruch);
+		wegzugListe.add(abschnittAnfangMonatBisUmzug);
+		if (zeitabschnitt.getGueltigkeit().getGueltigBis().isAfter(stichtagEndeAnspruch.plusDays(1))) {
+			zeitabschnitt.getGueltigkeit().setGueltigAb(stichtagEndeAnspruch.plusDays(1));
+			wegzugListe.add(zeitabschnitt);
+		}
+		return wegzugListe;
+	}
+
+	private List<VerfuegungZeitabschnitt> createZuzugZeitabschnitte(
 		@Nonnull  VerfuegungZeitabschnitt zeitabschnitt,
 		@Nonnull LocalDate gueltigAb) {
 		// Hier brauchts fuer dne Task KIBON-1843 2 Zeitabschnitte falls der Zuzug != Ende des
