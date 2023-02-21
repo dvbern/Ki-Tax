@@ -70,14 +70,14 @@ public class TageselternBernRechner extends AbstractGemeindeBernRechner {
 		boolean eingeschultSchulstufe = einschulungTyp != null &&
 				(einschulungTyp.isPrimarstufe() || einschulungTyp.isSekundarstufe());
 
+		if (unter12Monate) {
+			return parameterDTO.getMaxVerguenstigungVorschuleBabyProStd();
+		}
 		if (eingeschultSchulstufe) {
 			return parameterDTO.getMaxVerguenstigungPrimarschuleKindProStd();
 		}
 		if (eingeschultKindergarten) {
 			return parameterDTO.getMaxVerguenstigungKindergartenKindProStd();
-		}
-		if (unter12Monate) {
-			return parameterDTO.getMaxVerguenstigungVorschuleBabyProStd();
 		}
 		return parameterDTO.getMaxVerguenstigungVorschuleKindProStd();
 	}
