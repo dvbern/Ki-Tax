@@ -186,10 +186,11 @@ public abstract class AbstractBGRechnerTest {
 		BGRechnerParameterDTO dto = new BGRechnerParameterDTO();
 		dto.setMaxVerguenstigungVorschuleBabyProTg(MathUtil.GANZZAHL.from(150));
 		dto.setMaxVerguenstigungVorschuleKindProTg(MathUtil.GANZZAHL.from(100));
-		dto.setMaxVerguenstigungSchuleKindProTg(MathUtil.GANZZAHL.from(75));
+		dto.setMaxVerguenstigungKindergartenKindProTg(MathUtil.GANZZAHL.from(75));
 		dto.setMaxVerguenstigungVorschuleBabyProStd(MathUtil.DEFAULT.from(12.75));
 		dto.setMaxVerguenstigungVorschuleKindProStd(MathUtil.DEFAULT.from(8.50));
-		dto.setMaxVerguenstigungSchuleKindProStd(MathUtil.DEFAULT.from(8.50));
+		dto.setMaxVerguenstigungKindergartenKindProStd(MathUtil.DEFAULT.from(8.50));
+		dto.setMaxVerguenstigungPrimarschuleKindProStd(MathUtil.DEFAULT.from(8.50));
 		dto.setMaxMassgebendesEinkommen(MathUtil.GANZZAHL.from(160000));
 		dto.setMinMassgebendesEinkommen(MathUtil.GANZZAHL.from(43000));
 		dto.setOeffnungstageKita(MathUtil.GANZZAHL.from(240));
