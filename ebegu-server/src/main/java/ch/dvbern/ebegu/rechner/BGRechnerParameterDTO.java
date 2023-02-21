@@ -38,8 +38,9 @@ import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_MAHLZEITENVERGUENSTI
 import static ch.dvbern.ebegu.enums.EinstellungKey.MAX_MASSGEBENDES_EINKOMMEN;
 import static ch.dvbern.ebegu.enums.EinstellungKey.MAX_TARIF_MIT_PAEDAGOGISCHER_BETREUUNG;
 import static ch.dvbern.ebegu.enums.EinstellungKey.MAX_TARIF_OHNE_PAEDAGOGISCHER_BETREUUNG;
-import static ch.dvbern.ebegu.enums.EinstellungKey.MAX_VERGUENSTIGUNG_SCHULE_PRO_STD;
-import static ch.dvbern.ebegu.enums.EinstellungKey.MAX_VERGUENSTIGUNG_SCHULE_PRO_TG;
+import static ch.dvbern.ebegu.enums.EinstellungKey.MAX_VERGUENSTIGUNG_PRIMAR_PRO_STD;
+import static ch.dvbern.ebegu.enums.EinstellungKey.MAX_VERGUENSTIGUNG_KINDERGARTEN_PRO_STD;
+import static ch.dvbern.ebegu.enums.EinstellungKey.MAX_VERGUENSTIGUNG_KINDERGARTEN_PRO_TG;
 import static ch.dvbern.ebegu.enums.EinstellungKey.MAX_VERGUENSTIGUNG_VORSCHULE_BABY_PRO_STD;
 import static ch.dvbern.ebegu.enums.EinstellungKey.MAX_VERGUENSTIGUNG_VORSCHULE_BABY_PRO_TG;
 import static ch.dvbern.ebegu.enums.EinstellungKey.MAX_VERGUENSTIGUNG_VORSCHULE_KIND_PRO_STD;
@@ -62,11 +63,12 @@ public final class BGRechnerParameterDTO {
 
 	private BigDecimal maxVerguenstigungVorschuleBabyProTg;
 	private BigDecimal maxVerguenstigungVorschuleKindProTg;
-	private BigDecimal maxVerguenstigungSchuleKindProTg;
+	private BigDecimal maxVerguenstigungKindergartenKindProTg;
 
 	private BigDecimal maxVerguenstigungVorschuleBabyProStd;
 	private BigDecimal maxVerguenstigungVorschuleKindProStd;
-	private BigDecimal maxVerguenstigungSchuleKindProStd;
+	private BigDecimal maxVerguenstigungKindergartenKindProStd;
+	private BigDecimal maxVerguenstigungPrimarschuleKindProStd;
 
 	private BigDecimal maxMassgebendesEinkommen;
 	private BigDecimal minMassgebendesEinkommen;
@@ -94,10 +96,11 @@ public final class BGRechnerParameterDTO {
 	public BGRechnerParameterDTO(Map<EinstellungKey, Einstellung> paramMap, Gesuchsperiode gesuchsperiode, Gemeinde gemeinde) {
 		this.setMaxVerguenstigungVorschuleBabyProTg(asBigDecimal(paramMap, MAX_VERGUENSTIGUNG_VORSCHULE_BABY_PRO_TG, gesuchsperiode, gemeinde));
 		this.setMaxVerguenstigungVorschuleKindProTg(asBigDecimal(paramMap, MAX_VERGUENSTIGUNG_VORSCHULE_KIND_PRO_TG, gesuchsperiode, gemeinde));
-		this.setMaxVerguenstigungSchuleKindProTg(asBigDecimal(paramMap, MAX_VERGUENSTIGUNG_SCHULE_PRO_TG, gesuchsperiode, gemeinde));
+		this.setMaxVerguenstigungKindergartenKindProTg(asBigDecimal(paramMap, MAX_VERGUENSTIGUNG_KINDERGARTEN_PRO_TG, gesuchsperiode, gemeinde));
 		this.setMaxVerguenstigungVorschuleBabyProStd(asBigDecimal(paramMap, MAX_VERGUENSTIGUNG_VORSCHULE_BABY_PRO_STD, gesuchsperiode, gemeinde));
 		this.setMaxVerguenstigungVorschuleKindProStd(asBigDecimal(paramMap, MAX_VERGUENSTIGUNG_VORSCHULE_KIND_PRO_STD, gesuchsperiode, gemeinde));
-		this.setMaxVerguenstigungSchuleKindProStd(asBigDecimal(paramMap, MAX_VERGUENSTIGUNG_SCHULE_PRO_STD, gesuchsperiode, gemeinde));
+		this.setMaxVerguenstigungKindergartenKindProStd(asBigDecimal(paramMap, MAX_VERGUENSTIGUNG_KINDERGARTEN_PRO_STD, gesuchsperiode, gemeinde));
+		this.setMaxVerguenstigungPrimarschuleKindProStd(asBigDecimal(paramMap, MAX_VERGUENSTIGUNG_PRIMAR_PRO_STD, gesuchsperiode, gemeinde));
 		this.setMaxMassgebendesEinkommen(asBigDecimal(paramMap, MAX_MASSGEBENDES_EINKOMMEN, gesuchsperiode, gemeinde));
 		this.setMinMassgebendesEinkommen(asBigDecimal(paramMap, MIN_MASSGEBENDES_EINKOMMEN, gesuchsperiode, gemeinde));
 		this.setOeffnungstageKita(asBigDecimal(paramMap, OEFFNUNGSTAGE_KITA, gesuchsperiode, gemeinde));
@@ -174,12 +177,12 @@ public final class BGRechnerParameterDTO {
 		this.maxVerguenstigungVorschuleKindProTg = maxVerguenstigungVorschuleKindProTg;
 	}
 
-	public BigDecimal getMaxVerguenstigungSchuleKindProTg() {
-		return maxVerguenstigungSchuleKindProTg;
+	public BigDecimal getMaxVerguenstigungKindergartenKindProTg() {
+		return maxVerguenstigungKindergartenKindProTg;
 	}
 
-	public void setMaxVerguenstigungSchuleKindProTg(BigDecimal maxVerguenstigungSchuleKindProTg) {
-		this.maxVerguenstigungSchuleKindProTg = maxVerguenstigungSchuleKindProTg;
+	public void setMaxVerguenstigungKindergartenKindProTg(BigDecimal maxVerguenstigungKindergartenKindProTg) {
+		this.maxVerguenstigungKindergartenKindProTg = maxVerguenstigungKindergartenKindProTg;
 	}
 
 	public BigDecimal getMaxVerguenstigungVorschuleBabyProStd() {
@@ -198,12 +201,12 @@ public final class BGRechnerParameterDTO {
 		this.maxVerguenstigungVorschuleKindProStd = maxVerguenstigungVorschuleKindProStd;
 	}
 
-	public BigDecimal getMaxVerguenstigungSchuleKindProStd() {
-		return maxVerguenstigungSchuleKindProStd;
+	public BigDecimal getMaxVerguenstigungKindergartenKindProStd() {
+		return maxVerguenstigungKindergartenKindProStd;
 	}
 
-	public void setMaxVerguenstigungSchuleKindProStd(BigDecimal maxVerguenstigungSchuleKindProStd) {
-		this.maxVerguenstigungSchuleKindProStd = maxVerguenstigungSchuleKindProStd;
+	public void setMaxVerguenstigungKindergartenKindProStd(BigDecimal maxVerguenstigungKindergartenKindProStd) {
+		this.maxVerguenstigungKindergartenKindProStd = maxVerguenstigungKindergartenKindProStd;
 	}
 
 	public BigDecimal getMaxMassgebendesEinkommen() {
@@ -332,5 +335,13 @@ public final class BGRechnerParameterDTO {
 
 	public boolean isTexteForFKJV() {
 		return texteForFKJV;
+	}
+
+	public BigDecimal getMaxVerguenstigungPrimarschuleKindProStd() {
+		return maxVerguenstigungPrimarschuleKindProStd;
+	}
+
+	public void setMaxVerguenstigungPrimarschuleKindProStd(BigDecimal maxVerguenstigungPrimarschuleKindProStd) {
+		this.maxVerguenstigungPrimarschuleKindProStd = maxVerguenstigungPrimarschuleKindProStd;
 	}
 }
