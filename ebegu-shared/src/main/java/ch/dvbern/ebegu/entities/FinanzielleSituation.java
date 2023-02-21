@@ -1,16 +1,18 @@
 /*
- * Ki-Tax: System for the management of external childcare subsidies
- * Copyright (C) 2017 City of Bern Switzerland
+ * Copyright (C) 2023 DV Bern AG, Switzerland
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Affero General Public License for more details.
+ *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
 package ch.dvbern.ebegu.entities;
@@ -126,7 +128,7 @@ public class FinanzielleSituation extends AbstractFinanzielleSituation {
 	@Nullable
 	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true,fetch = FetchType.EAGER)
 	@JoinColumn(nullable = true)
-	protected FinanzielleVerhaeltnisse finanzielleVerhaeltnisse;
+	protected FinSitZusatzangabenAppenzell finSitZusatzangabenAppenzell;
 
 	public FinanzielleSituation() {
 	}
@@ -307,7 +309,7 @@ public class FinanzielleSituation extends AbstractFinanzielleSituation {
 			target.setAutomatischePruefungErlaubt(this.getAutomatischePruefungErlaubt());
 			target.setMomentanSelbststaendig(this.getMomentanSelbststaendig());
 			if (this.getFinanzielleVerhaeltnisse() != null) {
-				target.setFinanzielleVerhaeltnisse(this.getFinanzielleVerhaeltnisse().copyFinanzielleVerhaeltnisse(new FinanzielleVerhaeltnisse(), copyType));
+				target.setFinanzielleVerhaeltnisse(this.getFinanzielleVerhaeltnisse().copyFinanzielleVerhaeltnisse(new FinSitZusatzangabenAppenzell(), copyType));
 			}
 			break;
 		case ERNEUERUNG:
@@ -359,11 +361,11 @@ public class FinanzielleSituation extends AbstractFinanzielleSituation {
 		this.steuerdatenResponse = steuerdatenResponse;
 	}
 	@Nullable
-	public FinanzielleVerhaeltnisse getFinanzielleVerhaeltnisse() {
-		return finanzielleVerhaeltnisse;
+	public FinSitZusatzangabenAppenzell getFinanzielleVerhaeltnisse() {
+		return finSitZusatzangabenAppenzell;
 	}
 
-	public void setFinanzielleVerhaeltnisse(@Nullable FinanzielleVerhaeltnisse finanzielleVerhaeltnisse) {
-		this.finanzielleVerhaeltnisse = finanzielleVerhaeltnisse;
+	public void setFinanzielleVerhaeltnisse(@Nullable FinSitZusatzangabenAppenzell finSitZusatzangabenAppenzell) {
+		this.finSitZusatzangabenAppenzell = finSitZusatzangabenAppenzell;
 	}
 }

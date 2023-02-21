@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2021 DV Bern AG, Switzerland
+ * Copyright (C) 2023 DV Bern AG, Switzerland
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -8,14 +8,14 @@
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-CREATE TABLE finanzielle_verhaeltnisse (
+CREATE TABLE fin_sit_zusatzangaben_appenzell (
 	id                                			BINARY(16)   NOT NULL,
 	timestamp_erstellt                			DATETIME     NOT NULL,
 	timestamp_mutiert                 			DATETIME     NOT NULL,
@@ -34,7 +34,7 @@ CREATE TABLE finanzielle_verhaeltnisse (
 	PRIMARY KEY (id)
 );
 
-CREATE TABLE finanzielle_verhaeltnisse_aud (
+CREATE TABLE fin_sit_zusatzangaben_appenzell_aud (
 	id                                			BINARY(16)   NOT NULL,
 	rev											INTEGER		 NOT NULL,
 	revtype										TINYINT,
@@ -56,17 +56,17 @@ CREATE TABLE finanzielle_verhaeltnisse_aud (
 );
 
 ALTER TABLE finanzielle_situation
-	ADD COLUMN finanzielle_verhaeltnisse_id BINARY(16);
+	ADD COLUMN fin_sit_zusatzangaben_appenzell_id BINARY(16);
 
 ALTER TABLE finanzielle_situation_aud
-	ADD COLUMN finanzielle_verhaeltnisse_id BINARY(16);
+	ADD COLUMN fin_sit_zusatzangaben_appenzell_id BINARY(16);
 
 ALTER TABLE finanzielle_situation
-	ADD CONSTRAINT FK_finanziellesituation_finanzielle_verhaeltnisse_id
-		FOREIGN KEY (finanzielle_verhaeltnisse_id)
-			REFERENCES finanzielle_verhaeltnisse(id);
+	ADD CONSTRAINT FK_finanziellesituation_fin_sit_appenzell_id
+		FOREIGN KEY (fin_sit_zusatzangaben_appenzell_id)
+			REFERENCES fin_sit_zusatzangaben_appenzell(id);
 
-alter table finanzielle_verhaeltnisse_aud
-	add constraint FK_finanzielle_verhaeltnisse_aud_revinfo
+alter table fin_sit_zusatzangaben_appenzell_aud
+	add constraint FK_fin_sit_appenzell_aud_revinfo
 		foreign key (rev)
 			references revinfo (rev);

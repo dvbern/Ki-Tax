@@ -8,11 +8,11 @@
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
 package ch.dvbern.ebegu.entities;
@@ -29,7 +29,7 @@ import org.hibernate.envers.Audited;
 
 @Audited
 @Entity
-public class FinanzielleVerhaeltnisse extends AbstractMutableEntity {
+public class FinSitZusatzangabenAppenzell extends AbstractMutableEntity {
 
 	private static final long serialVersionUID = -8876223011487726148L;
 
@@ -65,7 +65,7 @@ public class FinanzielleVerhaeltnisse extends AbstractMutableEntity {
 	@Column(nullable = true)
 	private BigDecimal leistungAnJuristischePersonen;
 
-	public FinanzielleVerhaeltnisse() {
+	public FinSitZusatzangabenAppenzell() {
 	}
 
 	@Nullable
@@ -156,7 +156,7 @@ public class FinanzielleVerhaeltnisse extends AbstractMutableEntity {
 		if (!super.equals(o)) {
 			return false;
 		}
-		FinanzielleVerhaeltnisse that = (FinanzielleVerhaeltnisse) o;
+		FinSitZusatzangabenAppenzell that = (FinSitZusatzangabenAppenzell) o;
 		return Objects.equals(getSaeule3a(), that.getSaeule3a())
 			&& Objects.equals(
 			getSaeule3aNichtBvg(),
@@ -187,8 +187,8 @@ public class FinanzielleVerhaeltnisse extends AbstractMutableEntity {
 			getLeistungAnJuristischePersonen());
 	}
 
-	public FinanzielleVerhaeltnisse copyFinanzielleVerhaeltnisse(
-		FinanzielleVerhaeltnisse target,
+	public FinSitZusatzangabenAppenzell copyFinanzielleVerhaeltnisse(
+		FinSitZusatzangabenAppenzell target,
 		AntragCopyType copyType) {
 		switch (copyType) {
 		case MUTATION:

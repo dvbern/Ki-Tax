@@ -8,26 +8,24 @@
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnInit} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component} from '@angular/core';
 import {IPromise} from 'angular';
 import {LogFactory} from '../../../../../app/core/logging/LogFactory';
 import {TSWizardStepName} from '../../../../../models/enums/TSWizardStepName';
 import {TSWizardStepStatus} from '../../../../../models/enums/TSWizardStepStatus';
 import {TSFinanzielleSituationContainer} from '../../../../../models/TSFinanzielleSituationContainer';
-import {TSFinanzielleVerhaeltnisse} from '../../../../../models/TSFinanzielleVerhaeltnisse';
 import {TSFinanzModel} from '../../../../../models/TSFinanzModel';
+import {TSFinSitZusatzangabenAppenzell} from '../../../../../models/TSFinSitZusatzangabenAppenzell';
 import {EbeguUtil} from '../../../../../utils/EbeguUtil';
-import {BerechnungsManager} from '../../../../service/berechnungsManager';
 import {GesuchModelManager} from '../../../../service/gesuchModelManager';
 import {WizardStepManager} from '../../../../service/wizardStepManager';
-import {AbstractGesuchViewController} from '../../../abstractGesuchView';
 import {AbstractGesuchViewX} from '../../../abstractGesuchViewX';
 
 const LOG = LogFactory.createLog('FinanzielleSituationAppenzellViewComponent');
@@ -54,7 +52,7 @@ export class FinanzielleSituationAppenzellViewComponent extends AbstractGesuchVi
         this.model.copyFinSitDataFromGesuch(this.gesuchModelManager.getGesuch());
         this.gesuchModelManager.setGesuchstellerNumber(1);
         if(EbeguUtil.isNullOrUndefined(this.getModel().finanzielleSituationJA.finanzielleVerhaeltnisse)){
-            this.getModel().finanzielleSituationJA.finanzielleVerhaeltnisse = new TSFinanzielleVerhaeltnisse();
+            this.getModel().finanzielleSituationJA.finanzielleVerhaeltnisse = new TSFinSitZusatzangabenAppenzell();
         }
         this.wizardStepManager.updateCurrentWizardStepStatusSafe(TSWizardStepName.FINANZIELLE_SITUATION_APPENZELL,
             TSWizardStepStatus.IN_BEARBEITUNG);

@@ -8,19 +8,19 @@
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
 import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnInit} from '@angular/core';
 import {LogFactory} from '../../../../../app/core/logging/LogFactory';
 import {TSFinanzielleSituationResultateDTO} from '../../../../../models/dto/TSFinanzielleSituationResultateDTO';
 import {TSAbstractFinanzielleSituation} from '../../../../../models/TSAbstractFinanzielleSituation';
-import {TSFinanzielleVerhaeltnisse} from '../../../../../models/TSFinanzielleVerhaeltnisse';
 import {TSFinanzModel} from '../../../../../models/TSFinanzModel';
+import {TSFinSitZusatzangabenAppenzell} from '../../../../../models/TSFinSitZusatzangabenAppenzell';
 import {EbeguUtil} from '../../../../../utils/EbeguUtil';
 import {GesuchModelManager} from '../../../../service/gesuchModelManager';
 import {FinanzielleSituationAppenzellService} from '../finanzielle-situation-appenzell.service';
@@ -67,7 +67,7 @@ export class FinanzielleVerhaeltnisseComponent implements OnInit {
 
     public ngOnInit(): void {
         if (!this.model.finanzielleVerhaeltnisse) {
-            this.model.finanzielleVerhaeltnisse = new TSFinanzielleVerhaeltnisse();
+            this.model.finanzielleVerhaeltnisse = new TSFinSitZusatzangabenAppenzell();
         }
         // load initial results
         this.onValueChangeFunction();

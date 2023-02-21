@@ -8,20 +8,20 @@
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
 package ch.dvbern.ebegu.finanzielleSituationRechner;
 
 import java.math.BigDecimal;
 
+import ch.dvbern.ebegu.entities.FinSitZusatzangabenAppenzell;
 import ch.dvbern.ebegu.entities.FinanzielleSituation;
 import ch.dvbern.ebegu.entities.FinanzielleSituationContainer;
-import ch.dvbern.ebegu.entities.FinanzielleVerhaeltnisse;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.GesuchstellerContainer;
 import org.junit.jupiter.api.Test;
@@ -69,7 +69,7 @@ public class FinanzielleSituationAppenzellRechnerTest {
 		assert gesuch.getGesuchsteller1() != null;
 		assert gesuch.getGesuchsteller1().getFinanzielleSituationContainer() != null;
 		FinanzielleSituation emptyFinanzielleSituationForTest = new FinanzielleSituation();
-		emptyFinanzielleSituationForTest.setFinanzielleVerhaeltnisse(new FinanzielleVerhaeltnisse());
+		emptyFinanzielleSituationForTest.setFinanzielleVerhaeltnisse(new FinSitZusatzangabenAppenzell());
 		gesuch.getGesuchsteller1().getFinanzielleSituationContainer().setFinanzielleSituationJA(emptyFinanzielleSituationForTest);
 		finSitRechner.calculateFinanzDaten(gesuch, null);
 		assertThat(gesuch.getFinanzDatenDTO_alleine().getMassgebendesEinkBjVorAbzFamGr(), is(BigDecimal.valueOf(0)));
@@ -96,16 +96,16 @@ public class FinanzielleSituationAppenzellRechnerTest {
 		return gesuchstellerContainer;
 	}
 
-	private FinanzielleVerhaeltnisse createFinanzielleVerhaeltnisse() {
-		FinanzielleVerhaeltnisse finanzielleVerhaeltnisse = new FinanzielleVerhaeltnisse();
-		finanzielleVerhaeltnisse.setSaeule3a(BigDecimal.valueOf(1000));
-		finanzielleVerhaeltnisse.setSaeule3aNichtBvg(BigDecimal.valueOf(1000));
-		finanzielleVerhaeltnisse.setBeruflicheVorsorge(BigDecimal.valueOf(2000));
-		finanzielleVerhaeltnisse.setLiegenschaftsaufwand(BigDecimal.valueOf(2000));
-		finanzielleVerhaeltnisse.setEinkuenfteBgsa(BigDecimal.valueOf(3000));
-		finanzielleVerhaeltnisse.setVorjahresverluste(BigDecimal.valueOf(3000));
-		finanzielleVerhaeltnisse.setPolitischeParteiSpende(BigDecimal.valueOf(4000));
-		finanzielleVerhaeltnisse.setLeistungAnJuristischePersonen(BigDecimal.valueOf(4000));
-		return finanzielleVerhaeltnisse;
+	private FinSitZusatzangabenAppenzell createFinanzielleVerhaeltnisse() {
+		FinSitZusatzangabenAppenzell finSitZusatzangabenAppenzell = new FinSitZusatzangabenAppenzell();
+		finSitZusatzangabenAppenzell.setSaeule3a(BigDecimal.valueOf(1000));
+		finSitZusatzangabenAppenzell.setSaeule3aNichtBvg(BigDecimal.valueOf(1000));
+		finSitZusatzangabenAppenzell.setBeruflicheVorsorge(BigDecimal.valueOf(2000));
+		finSitZusatzangabenAppenzell.setLiegenschaftsaufwand(BigDecimal.valueOf(2000));
+		finSitZusatzangabenAppenzell.setEinkuenfteBgsa(BigDecimal.valueOf(3000));
+		finSitZusatzangabenAppenzell.setVorjahresverluste(BigDecimal.valueOf(3000));
+		finSitZusatzangabenAppenzell.setPolitischeParteiSpende(BigDecimal.valueOf(4000));
+		finSitZusatzangabenAppenzell.setLeistungAnJuristischePersonen(BigDecimal.valueOf(4000));
+		return finSitZusatzangabenAppenzell;
 	}
 }

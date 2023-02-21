@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022 DV Bern AG, Switzerland
+ * Copyright (C) 2023 DV Bern AG, Switzerland
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -8,11 +8,11 @@
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
 package ch.dvbern.ebegu.finanzielleSituationRechner;
@@ -25,8 +25,8 @@ import javax.annotation.Nullable;
 import ch.dvbern.ebegu.dto.FinanzielleSituationResultateDTO;
 import ch.dvbern.ebegu.entities.AbstractFinanzielleSituation;
 import ch.dvbern.ebegu.entities.Einkommensverschlechterung;
+import ch.dvbern.ebegu.entities.FinSitZusatzangabenAppenzell;
 import ch.dvbern.ebegu.entities.FinanzielleSituation;
-import ch.dvbern.ebegu.entities.FinanzielleVerhaeltnisse;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.util.MathUtil;
 import org.apache.commons.lang.NotImplementedException;
@@ -161,16 +161,16 @@ public class FinanzielleSituationAppenzellRechner extends AbstractFinanzielleSit
 		return MathUtil.positiveNonNullAndRound(total);
 	}
 
-	private BigDecimal calcAufrechnungFaktoren(@Nonnull FinanzielleVerhaeltnisse finanzielleVerhaeltnisse){
+	private BigDecimal calcAufrechnungFaktoren(@Nonnull FinSitZusatzangabenAppenzell finSitZusatzangabenAppenzell){
 		BigDecimal total = BigDecimal.ZERO;
-		total = add(total, finanzielleVerhaeltnisse.getSaeule3a());
-		total = add(total, finanzielleVerhaeltnisse.getSaeule3aNichtBvg());
-		total = add(total, finanzielleVerhaeltnisse.getBeruflicheVorsorge());
-		total = add(total, finanzielleVerhaeltnisse.getLiegenschaftsaufwand());
-		total = add(total, finanzielleVerhaeltnisse.getEinkuenfteBgsa());
-		total = add(total, finanzielleVerhaeltnisse.getVorjahresverluste());
-		total = add(total, finanzielleVerhaeltnisse.getPolitischeParteiSpende());
-		total = add(total, finanzielleVerhaeltnisse.getLeistungAnJuristischePersonen());
+		total = add(total, finSitZusatzangabenAppenzell.getSaeule3a());
+		total = add(total, finSitZusatzangabenAppenzell.getSaeule3aNichtBvg());
+		total = add(total, finSitZusatzangabenAppenzell.getBeruflicheVorsorge());
+		total = add(total, finSitZusatzangabenAppenzell.getLiegenschaftsaufwand());
+		total = add(total, finSitZusatzangabenAppenzell.getEinkuenfteBgsa());
+		total = add(total, finSitZusatzangabenAppenzell.getVorjahresverluste());
+		total = add(total, finSitZusatzangabenAppenzell.getPolitischeParteiSpende());
+		total = add(total, finSitZusatzangabenAppenzell.getLeistungAnJuristischePersonen());
 		return MathUtil.positiveNonNullAndRound(total);
 	}
 

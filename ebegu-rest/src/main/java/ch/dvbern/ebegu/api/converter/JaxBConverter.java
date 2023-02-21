@@ -46,7 +46,6 @@ import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response.Status;
 
 import ch.dvbern.ebegu.api.dtos.JaxAbstractDTO;
-import ch.dvbern.ebegu.api.dtos.finanziellesituation.JaxAbstractFinanzielleSituation;
 import ch.dvbern.ebegu.api.dtos.JaxAbstractGemeindeStammdaten;
 import ch.dvbern.ebegu.api.dtos.JaxAbstractInstitutionStammdaten;
 import ch.dvbern.ebegu.api.dtos.JaxAbwesenheit;
@@ -96,9 +95,6 @@ import ch.dvbern.ebegu.api.dtos.JaxFall;
 import ch.dvbern.ebegu.api.dtos.JaxFamiliensituation;
 import ch.dvbern.ebegu.api.dtos.JaxFamiliensituationContainer;
 import ch.dvbern.ebegu.api.dtos.JaxFerieninselZeitraum;
-import ch.dvbern.ebegu.api.dtos.finanziellesituation.JaxFinanzielleSituation;
-import ch.dvbern.ebegu.api.dtos.finanziellesituation.JaxFinanzielleSituationContainer;
-import ch.dvbern.ebegu.api.dtos.finanziellesituation.JaxFinanzielleSituationSelbstdeklaration;
 import ch.dvbern.ebegu.api.dtos.JaxGemeinde;
 import ch.dvbern.ebegu.api.dtos.JaxGemeindeKonfiguration;
 import ch.dvbern.ebegu.api.dtos.JaxGemeindeStammdaten;
@@ -145,6 +141,10 @@ import ch.dvbern.ebegu.api.dtos.JaxVorlage;
 import ch.dvbern.ebegu.api.dtos.JaxWizardStep;
 import ch.dvbern.ebegu.api.dtos.JaxZahlung;
 import ch.dvbern.ebegu.api.dtos.JaxZahlungsauftrag;
+import ch.dvbern.ebegu.api.dtos.finanziellesituation.JaxAbstractFinanzielleSituation;
+import ch.dvbern.ebegu.api.dtos.finanziellesituation.JaxFinanzielleSituation;
+import ch.dvbern.ebegu.api.dtos.finanziellesituation.JaxFinanzielleSituationContainer;
+import ch.dvbern.ebegu.api.dtos.finanziellesituation.JaxFinanzielleSituationSelbstdeklaration;
 import ch.dvbern.ebegu.api.dtos.finanziellesituation.JaxFinanzielleVerhaeltnisse;
 import ch.dvbern.ebegu.api.dtos.gemeindeantrag.JaxGemeindeAntrag;
 import ch.dvbern.ebegu.api.dtos.gemeindeantrag.JaxLastenausgleichTagesschuleAngabenGemeinde;
@@ -201,10 +201,10 @@ import ch.dvbern.ebegu.entities.Fachstelle;
 import ch.dvbern.ebegu.entities.Fall;
 import ch.dvbern.ebegu.entities.Familiensituation;
 import ch.dvbern.ebegu.entities.FamiliensituationContainer;
+import ch.dvbern.ebegu.entities.FinSitZusatzangabenAppenzell;
 import ch.dvbern.ebegu.entities.FinanzielleSituation;
 import ch.dvbern.ebegu.entities.FinanzielleSituationContainer;
 import ch.dvbern.ebegu.entities.FinanzielleSituationSelbstdeklaration;
-import ch.dvbern.ebegu.entities.FinanzielleVerhaeltnisse;
 import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.GemeindeStammdaten;
 import ch.dvbern.ebegu.entities.GemeindeStammdatenGesuchsperiodeFerieninsel;
@@ -2803,12 +2803,12 @@ public class JaxBConverter extends AbstractConverter {
 		finanzielleSituation.setMomentanSelbststaendig(finanzielleSituationJAXP.getMomentanSelbststaendig());
 
 		if (finanzielleSituationJAXP.getFinanzielleVerhaeltnisse() != null) {
-			FinanzielleVerhaeltnisse finanzielleVerhaeltnisseToMerge =
+			FinSitZusatzangabenAppenzell finSitZusatzangabenAppenzellToMerge =
 				Optional.ofNullable(finanzielleSituation.getFinanzielleVerhaeltnisse())
-					.orElse(new FinanzielleVerhaeltnisse());
+					.orElse(new FinSitZusatzangabenAppenzell());
 			finanzielleSituation.setFinanzielleVerhaeltnisse(finanzielleVerhaeltnisseToEntity(
 				finanzielleSituationJAXP.getFinanzielleVerhaeltnisse(),
-				finanzielleVerhaeltnisseToMerge));
+				finSitZusatzangabenAppenzellToMerge));
 		}
 
 		return finanzielleSituation;
@@ -2843,22 +2843,22 @@ public class JaxBConverter extends AbstractConverter {
 		return selbstdeklaration;
 	}
 
-	private FinanzielleVerhaeltnisse finanzielleVerhaeltnisseToEntity(
+	private FinSitZusatzangabenAppenzell finanzielleVerhaeltnisseToEntity(
 		JaxFinanzielleVerhaeltnisse jaxFinanzielleVerhaeltnisse,
-		FinanzielleVerhaeltnisse finanzielleVerhaeltnisse) {
+		FinSitZusatzangabenAppenzell finSitZusatzangabenAppenzell) {
 
-		convertAbstractVorgaengerFieldsToEntity(jaxFinanzielleVerhaeltnisse, finanzielleVerhaeltnisse);
+		convertAbstractVorgaengerFieldsToEntity(jaxFinanzielleVerhaeltnisse, finSitZusatzangabenAppenzell);
 
-		finanzielleVerhaeltnisse.setSaeule3a(jaxFinanzielleVerhaeltnisse.getSaeule3a());
-		finanzielleVerhaeltnisse.setSaeule3aNichtBvg(jaxFinanzielleVerhaeltnisse.getSaeule3aNichtBvg());
-		finanzielleVerhaeltnisse.setBeruflicheVorsorge(jaxFinanzielleVerhaeltnisse.getBeruflicheVorsorge());
-		finanzielleVerhaeltnisse.setLiegenschaftsaufwand(jaxFinanzielleVerhaeltnisse.getLiegenschaftsaufwand());
-		finanzielleVerhaeltnisse.setEinkuenfteBgsa(jaxFinanzielleVerhaeltnisse.getEinkuenfteBgsa());
-		finanzielleVerhaeltnisse.setVorjahresverluste(jaxFinanzielleVerhaeltnisse.getVorjahresverluste());
-		finanzielleVerhaeltnisse.setPolitischeParteiSpende(jaxFinanzielleVerhaeltnisse.getPolitischeParteiSpende());
-		finanzielleVerhaeltnisse.setLeistungAnJuristischePersonen(jaxFinanzielleVerhaeltnisse.getLeistungAnJuristischePersonen());
+		finSitZusatzangabenAppenzell.setSaeule3a(jaxFinanzielleVerhaeltnisse.getSaeule3a());
+		finSitZusatzangabenAppenzell.setSaeule3aNichtBvg(jaxFinanzielleVerhaeltnisse.getSaeule3aNichtBvg());
+		finSitZusatzangabenAppenzell.setBeruflicheVorsorge(jaxFinanzielleVerhaeltnisse.getBeruflicheVorsorge());
+		finSitZusatzangabenAppenzell.setLiegenschaftsaufwand(jaxFinanzielleVerhaeltnisse.getLiegenschaftsaufwand());
+		finSitZusatzangabenAppenzell.setEinkuenfteBgsa(jaxFinanzielleVerhaeltnisse.getEinkuenfteBgsa());
+		finSitZusatzangabenAppenzell.setVorjahresverluste(jaxFinanzielleVerhaeltnisse.getVorjahresverluste());
+		finSitZusatzangabenAppenzell.setPolitischeParteiSpende(jaxFinanzielleVerhaeltnisse.getPolitischeParteiSpende());
+		finSitZusatzangabenAppenzell.setLeistungAnJuristischePersonen(jaxFinanzielleVerhaeltnisse.getLeistungAnJuristischePersonen());
 
-		return finanzielleVerhaeltnisse;
+		return finSitZusatzangabenAppenzell;
 	}
 
 	@Nullable
@@ -2932,21 +2932,21 @@ public class JaxBConverter extends AbstractConverter {
 
 	@Nullable
 	private JaxFinanzielleVerhaeltnisse finanzielleVerhaeltnisseToJAX(
-		@Nullable FinanzielleVerhaeltnisse persistedFinanzielleVerhaeltnisse) {
-		if (persistedFinanzielleVerhaeltnisse == null) {
+		@Nullable FinSitZusatzangabenAppenzell persistedFinSitZusatzangabenAppenzell) {
+		if (persistedFinSitZusatzangabenAppenzell == null) {
 			return null;
 		}
 
 		JaxFinanzielleVerhaeltnisse jaxFinanzielleVerhaeltnisse = new JaxFinanzielleVerhaeltnisse();
-		convertAbstractVorgaengerFieldsToJAX(persistedFinanzielleVerhaeltnisse, jaxFinanzielleVerhaeltnisse);
-		jaxFinanzielleVerhaeltnisse.setSaeule3a(persistedFinanzielleVerhaeltnisse.getSaeule3a());
-		jaxFinanzielleVerhaeltnisse.setSaeule3aNichtBvg(persistedFinanzielleVerhaeltnisse.getSaeule3aNichtBvg());
-		jaxFinanzielleVerhaeltnisse.setBeruflicheVorsorge(persistedFinanzielleVerhaeltnisse.getBeruflicheVorsorge());
-		jaxFinanzielleVerhaeltnisse.setLiegenschaftsaufwand(persistedFinanzielleVerhaeltnisse.getLiegenschaftsaufwand());
-		jaxFinanzielleVerhaeltnisse.setEinkuenfteBgsa(persistedFinanzielleVerhaeltnisse.getEinkuenfteBgsa());
-		jaxFinanzielleVerhaeltnisse.setVorjahresverluste(persistedFinanzielleVerhaeltnisse.getVorjahresverluste());
-		jaxFinanzielleVerhaeltnisse.setPolitischeParteiSpende(persistedFinanzielleVerhaeltnisse.getPolitischeParteiSpende());
-		jaxFinanzielleVerhaeltnisse.setLeistungAnJuristischePersonen(persistedFinanzielleVerhaeltnisse.getLeistungAnJuristischePersonen());
+		convertAbstractVorgaengerFieldsToJAX(persistedFinSitZusatzangabenAppenzell, jaxFinanzielleVerhaeltnisse);
+		jaxFinanzielleVerhaeltnisse.setSaeule3a(persistedFinSitZusatzangabenAppenzell.getSaeule3a());
+		jaxFinanzielleVerhaeltnisse.setSaeule3aNichtBvg(persistedFinSitZusatzangabenAppenzell.getSaeule3aNichtBvg());
+		jaxFinanzielleVerhaeltnisse.setBeruflicheVorsorge(persistedFinSitZusatzangabenAppenzell.getBeruflicheVorsorge());
+		jaxFinanzielleVerhaeltnisse.setLiegenschaftsaufwand(persistedFinSitZusatzangabenAppenzell.getLiegenschaftsaufwand());
+		jaxFinanzielleVerhaeltnisse.setEinkuenfteBgsa(persistedFinSitZusatzangabenAppenzell.getEinkuenfteBgsa());
+		jaxFinanzielleVerhaeltnisse.setVorjahresverluste(persistedFinSitZusatzangabenAppenzell.getVorjahresverluste());
+		jaxFinanzielleVerhaeltnisse.setPolitischeParteiSpende(persistedFinSitZusatzangabenAppenzell.getPolitischeParteiSpende());
+		jaxFinanzielleVerhaeltnisse.setLeistungAnJuristischePersonen(persistedFinSitZusatzangabenAppenzell.getLeistungAnJuristischePersonen());
 
 		return jaxFinanzielleVerhaeltnisse;
 	}

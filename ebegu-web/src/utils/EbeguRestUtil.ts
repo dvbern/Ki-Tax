@@ -139,8 +139,8 @@ import {TSFile} from '../models/TSFile';
 import {TSFinanzielleSituation} from '../models/TSFinanzielleSituation';
 import {TSFinanzielleSituationContainer} from '../models/TSFinanzielleSituationContainer';
 import {TSFinanzielleSituationSelbstdeklaration} from '../models/TSFinanzielleSituationSelbstdeklaration';
-import {TSFinanzielleVerhaeltnisse} from '../models/TSFinanzielleVerhaeltnisse';
 import {TSFinanzModel} from '../models/TSFinanzModel';
+import {TSFinSitZusatzangabenAppenzell} from '../models/TSFinSitZusatzangabenAppenzell';
 import {TSGemeinde} from '../models/TSGemeinde';
 import {TSGemeindeKonfiguration} from '../models/TSGemeindeKonfiguration';
 import {TSGemeindeRegistrierung} from '../models/TSGemeindeRegistrierung';
@@ -2073,8 +2073,8 @@ export class EbeguRestUtil {
 
     private finanzielleVerhaeltnisseToRestObject(
         restFinanzielleVerhaeltnisse: any,
-        finanzielleVerhaeltnisse: TSFinanzielleVerhaeltnisse
-    ): TSFinanzielleVerhaeltnisse {
+        finanzielleVerhaeltnisse: TSFinSitZusatzangabenAppenzell
+    ): TSFinSitZusatzangabenAppenzell {
 
         this.abstractMutableEntityToRestObject(restFinanzielleVerhaeltnisse, finanzielleVerhaeltnisse);
         restFinanzielleVerhaeltnisse.saeule3a = finanzielleVerhaeltnisse.saeule3a;
@@ -2129,7 +2129,7 @@ export class EbeguRestUtil {
                 this.parseFinanzielleSituationSelbstdeklaration(new TSFinanzielleSituationSelbstdeklaration(),
                     abstractFinanzielleSituationFromServer.selbstdeklaration);
             abstractFinanzielleSituationTS.finanzielleVerhaeltnisse =
-                this.parseFinanzielleVerhaeltnisse(new TSFinanzielleVerhaeltnisse(),
+                this.parseFinanzielleVerhaeltnisse(new TSFinSitZusatzangabenAppenzell(),
                     abstractFinanzielleSituationFromServer.finanzielleVerhaeltnisse);
             return abstractFinanzielleSituationTS;
         }
@@ -2212,9 +2212,9 @@ export class EbeguRestUtil {
     }
 
     private parseFinanzielleVerhaeltnisse(
-        tsFinanzielleVerhaeltnisse: TSFinanzielleVerhaeltnisse,
+        tsFinanzielleVerhaeltnisse: TSFinSitZusatzangabenAppenzell,
         finanzielleVerhaeltnisseFromServer: any
-    ): TSFinanzielleVerhaeltnisse {
+    ): TSFinSitZusatzangabenAppenzell {
 
         if (finanzielleVerhaeltnisseFromServer) {
             this.parseAbstractMutableEntity(tsFinanzielleVerhaeltnisse, finanzielleVerhaeltnisseFromServer);
