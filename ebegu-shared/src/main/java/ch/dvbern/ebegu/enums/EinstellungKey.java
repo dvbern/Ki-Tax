@@ -125,7 +125,7 @@ public enum EinstellungKey {
 	MAX_VERGUENSTIGUNG_KINDERGARTEN_PRO_STD(MandantIdentifier.getAll()),
 
 	// Maximale Vergünstigung bei Eintritt in die Primarstufe
-	MAX_VERGUENSTIGUNG_PRIMAR_PRO_STD(MandantIdentifier.SOLOTHURN),
+	MAX_VERGUENSTIGUNG_PRIMAR_PRO_STD(MandantIdentifier.getAll()),
 
 	// Minimal Massgebendes Einkommen
 	MIN_MASSGEBENDES_EINKOMMEN(MandantIdentifier.getAll()),
