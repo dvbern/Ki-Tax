@@ -63,13 +63,17 @@ public class TageselternBernRechner extends AbstractGemeindeBernRechner {
 	protected BigDecimal getMaximaleVerguenstigungProZeiteinheit(
 		@Nonnull BGRechnerParameterDTO parameterDTO,
 		@Nonnull Boolean unter12Monate,
-		@Nonnull Boolean eingeschult) {
-
+		@Nonnull Boolean eingeschultKindergarten,
+		@Nonnull Boolean eingeschultSchulstufe
+	) {
 		if (unter12Monate) {
 			return parameterDTO.getMaxVerguenstigungVorschuleBabyProStd();
 		}
-		if (eingeschult) {
-			return parameterDTO.getMaxVerguenstigungSchuleKindProStd();
+		if (eingeschultKindergarten) {
+			return parameterDTO.getMaxVerguenstigungKindergartenKindProStd();
+		}
+		if (eingeschultSchulstufe) {
+			return parameterDTO.getMaxVerguenstigungPrimarschuleKindProStd();
 		}
 		return parameterDTO.getMaxVerguenstigungVorschuleKindProStd();
 	}
