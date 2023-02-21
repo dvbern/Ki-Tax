@@ -115,14 +115,17 @@ public enum EinstellungKey {
 	// Maximale Vergünstigung für Vorschulkinder ab 12 Monaten
 	MAX_VERGUENSTIGUNG_VORSCHULE_KIND_PRO_TG(MandantIdentifier.getAll()),
 	// Maximale Vergünstigung bei Eintritt des Kindergartens
-	MAX_VERGUENSTIGUNG_SCHULE_PRO_TG(MandantIdentifier.getAll()),
+	MAX_VERGUENSTIGUNG_KINDERGARTEN_PRO_TG(MandantIdentifier.getAll()),
 
 	// Maximale Vergünstigung für Vorschulkinder unter 12 Monaten
 	MAX_VERGUENSTIGUNG_VORSCHULE_BABY_PRO_STD(MandantIdentifier.getAll()),
 	// Maximale Vergünstigung für Vorschulkinder ab 12 Monaten
 	MAX_VERGUENSTIGUNG_VORSCHULE_KIND_PRO_STD(MandantIdentifier.getAll()),
 	// Maximale Vergünstigung bei Eintritt des Kindergartens
-	MAX_VERGUENSTIGUNG_SCHULE_PRO_STD(MandantIdentifier.getAll()),
+	MAX_VERGUENSTIGUNG_KINDERGARTEN_PRO_STD(MandantIdentifier.getAll()),
+
+	// Maximale Vergünstigung bei Eintritt in die Primarstufe
+	MAX_VERGUENSTIGUNG_PRIMAR_PRO_STD(MandantIdentifier.SOLOTHURN),
 
 	// Minimal Massgebendes Einkommen
 	MIN_MASSGEBENDES_EINKOMMEN(MandantIdentifier.getAll()),
