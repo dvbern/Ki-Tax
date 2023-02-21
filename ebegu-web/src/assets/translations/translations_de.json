@@ -3053,7 +3053,7 @@
     "GEMEINDE_HOHE_EINKOMMENSKLASSEN": "Pauschalbetrag von X CHF pro Tag für hohe Einkommensklassen",
     "GEMEINDE_HOHE_EINKOMMENSKLASSEN_BETRAG_KITA": "Betrag in CHF pro Tag (Kita)",
     "GEMEINDE_HOHE_EINKOMMENSKLASSEN_BETRAG_TFO": "Betrag in CHF pro Stunde (Tagesfamilien)",
-    "GEMEINDE_HOHE_EINKOMMENSKLASSEN_BETRAG_TFO_AB_PRIMARSCHULE": "Betrag in CHF pro Stunde ab Primarschue (Tagesfamilien)",
+    "GEMEINDE_HOHE_EINKOMMENSKLASSEN_BETRAG_TFO_AB_PRIMARSCHULE": "Betrag in CHF pro Stunde ab Primarschule (Tagesfamilien)",
     "GEMEINDE_HOHE_EINKOMMENSKLASSEN_MASSGEBENDENEINKOMMEN": "Maximal massgebendens Einkommen in CHF für die lineare Berechnung des Gutscheins",
     "GEMEINDE_HOHE_EINKOMMENSKLASSEN_BETRAG_KITA_VALUE_READONLY": "Betrag pro Tag: {{value}} CHF (Kita)",
     "GEMEINDE_HOHE_EINKOMMENSKLASSEN_BETRAG_TFO_VALUE_READONLY": "Betrag pro Stunde: {{value}} CHF (Tagesfamilie)",
