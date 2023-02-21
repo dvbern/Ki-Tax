@@ -70,3 +70,8 @@ alter table fin_sit_zusatzangaben_appenzell_aud
 	add constraint FK_fin_sit_appenzell_aud_revinfo
 		foreign key (rev)
 			references revinfo (rev);
+
+UPDATE einstellung INNER JOIN gesuchsperiode ON einstellung.gesuchsperiode_id = gesuchsperiode.id
+SET einstellung.value = 'APPENZELL'
+WHERE gesuchsperiode.mandant_id = UNHEX('5b9e6fa4399111eda63db05cda43de9c') AND
+	einstellung.einstellung_key = 'FINANZIELLE_SITUATION_TYP';

@@ -1,25 +1,36 @@
 /*
- * Ki-Tax: System for the management of external childcare subsidies
- * Copyright (C) 2017 City of Bern Switzerland
+ * Copyright (C) 2023 DV Bern AG, Switzerland
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Affero General Public License for more details.
+ *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
 import {StateService, TransitionPromise} from '@uirouter/core';
 import {IComponentController, IController, IQService, ITimeoutService} from 'angular';
 import {FinanzielleSituationRS} from '../../../../gesuch/service/finanzielleSituationRS.rest';
 import {FinanzielleSituationSubStepManager} from '../../../../gesuch/service/finanzielleSituationSubStepManager';
-import {FinanzielleSituationSubStepManagerBernAsiv} from '../../../../gesuch/service/finanzielleSituationSubStepManagerBernAsiv';
-import {FinanzielleSituationSubStepManagerLuzern} from '../../../../gesuch/service/finanzielleSituationSubStepManagerLuzern';
-import {FinanzielleSituationSubStepManagerSolothurn} from '../../../../gesuch/service/finanzielleSituationSubStepManagerSolothurn';
+import {
+    FinanzielleSituationSubStepManagerAppenzell
+} from '../../../../gesuch/service/finanzielleSituationSubStepManagerAppenzell';
+import {
+    FinanzielleSituationSubStepManagerBernAsiv
+} from '../../../../gesuch/service/finanzielleSituationSubStepManagerBernAsiv';
+import {
+    FinanzielleSituationSubStepManagerLuzern
+} from '../../../../gesuch/service/finanzielleSituationSubStepManagerLuzern';
+import {
+    FinanzielleSituationSubStepManagerSolothurn
+} from '../../../../gesuch/service/finanzielleSituationSubStepManagerSolothurn';
 import {GesuchModelManager} from '../../../../gesuch/service/gesuchModelManager';
 import {WizardStepManager} from '../../../../gesuch/service/wizardStepManager';
 import {TSEingangsart} from '../../../../models/enums/TSEingangsart';
@@ -142,7 +153,7 @@ export class NavigatorController implements IController {
                         break;
                     case TSFinanzielleSituationTyp.APPENZELL:
                         this.finSitWizardSubStepManager =
-                            new FinanzielleSituationSubStepManagerSolothurn(this.gesuchModelManager);
+                            new FinanzielleSituationSubStepManagerAppenzell(this.gesuchModelManager);
                         break;
                     default:
                         throw new Error(`unexpected TSFinanzielleSituationTyp ${typ}`);
