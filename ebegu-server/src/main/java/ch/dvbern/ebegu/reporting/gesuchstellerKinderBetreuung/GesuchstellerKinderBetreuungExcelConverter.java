@@ -222,6 +222,7 @@ public class GesuchstellerKinderBetreuungExcelConverter implements ExcelConverte
 				excelRowGroup.addValue(MergeFieldGesuchstellerKinderBetreuung.verguenstigungGemeinde, BigDecimal.ZERO);
 				excelRowGroup.addValue(MergeFieldGesuchstellerKinderBetreuung.verguenstigungTotal, BigDecimal.ZERO);
 			}
+			excelRowGroup.addValue(MergeFieldGesuchstellerKinderBetreuung.ausserordentlicherAnspruch, dataRow.getAusserordentlicherAnspruch());
 
 			rowFiller.fillRow(excelRowGroup);
 		});
@@ -484,6 +485,12 @@ public class GesuchstellerKinderBetreuungExcelConverter implements ExcelConverte
 
 		mergeFields.add(MergeFieldGesuchstellerKinderBetreuung.bgNummerTitle.getMergeField());
 		mergerDTO.addValue(MergeFieldGesuchstellerKinderBetreuung.bgNummerTitle, ServerMessageUtil.getMessage("Reports_bgNummerTitle",locale, mandant));
+
+		mergeFields.add(MergeFieldGesuchstellerKinderBetreuung.ausserordentlicherAnspruchTitle.getMergeField());
+		mergerDTO.addValue(MergeFieldGesuchstellerKinderBetreuung.ausserordentlicherAnspruchTitle, ServerMessageUtil.getMessage("Reports_ausserordentlicherAnspruchTitle",locale, mandant));
+
+		mergeFields.add(MergeFieldGesuchstellerKinderBetreuung.zusatzFelderGemeinden.getMergeField());
+		mergerDTO.addValue(MergeFieldGesuchstellerKinderBetreuung.zusatzFelderGemeinden, ServerMessageUtil.getMessage("Reports_zusatzFelderGemeinden",locale, mandant));
 
 	}
 

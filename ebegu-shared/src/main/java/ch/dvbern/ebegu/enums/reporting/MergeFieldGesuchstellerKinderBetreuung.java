@@ -116,6 +116,8 @@ public enum MergeFieldGesuchstellerKinderBetreuung implements MergeFieldProvider
 	statusTitle(new SimpleMergeField<>("statusTitle", STRING_CONVERTER)),
 	gesuchstellerKinderBetreuungTitle(new SimpleMergeField<>("gesuchstellerKinderBetreuungTitle", STRING_CONVERTER)),
 	bgNummerTitle(new SimpleMergeField<>("bgNummerTitle", STRING_CONVERTER)),
+	ausserordentlicherAnspruchTitle(new SimpleMergeField<>("ausserordentlicherAnspruchTitle", STRING_CONVERTER)),
+	zusatzFelderGemeinden(new SimpleMergeField<>("zusatzFelderGemeinden", STRING_CONVERTER)),
 
 	stichtag(new SimpleMergeField<>("stichtag", DATE_CONVERTER)),
 	auswertungVon(new SimpleMergeField<>("auswertungVon", DATE_CONVERTER)),
@@ -213,7 +215,8 @@ public enum MergeFieldGesuchstellerKinderBetreuung implements MergeFieldProvider
 	elternbeitrag(new SimpleMergeField<>("elternbeitrag", BIGDECIMAL_CONVERTER)),
 	verguenstigungKanton(new SimpleMergeField<>("verguenstigungKanton", BIGDECIMAL_CONVERTER)),
 	verguenstigungGemeinde(new SimpleMergeField<>("verguenstigungGemeinde", BIGDECIMAL_CONVERTER)),
-	verguenstigungTotal(new SimpleMergeField<>("verguenstigungTotal", BIGDECIMAL_CONVERTER));
+	verguenstigungTotal(new SimpleMergeField<>("verguenstigungTotal", BIGDECIMAL_CONVERTER)),
+	ausserordentlicherAnspruch(new SimpleMergeField<>("ausserordentlicherAnspruch", INTEGER_CONVERTER));
 
 	@Nonnull
 	private final MergeField<?> mergeField;

@@ -1446,6 +1446,9 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		row.setKindSprichtAmtssprache(kind.getSprichtAmtssprache());
 		row.setKindEinschulungTyp(kind.getEinschulungTyp());
 		row.setKeinPlatzImSchulhort(kind.getKeinPlatzInSchulhort());
+		if (kind.getPensumAusserordentlicherAnspruch() != null) {
+			row.setAusserordentlicherAnspruch(kind.getPensumAusserordentlicherAnspruch().getPensum());
+		}
 	}
 
 	private void addBetreuungToGesuchstellerKinderBetreuungDataRow(
