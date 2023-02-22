@@ -49,16 +49,16 @@ public class SimulationServiceBean extends AbstractBaseService implements Simula
 
 		var log = new StringBuilder();
 
-		newGesuch.getKindContainers().forEach(k -> {
-			k.getBetreuungen().forEach(b -> {
-				if (!simulationAllowed(b)) {
+		newGesuch.getKindContainers().forEach(kindContainer -> {
+			kindContainer.getBetreuungen().forEach(betreuung -> {
+				if (!simulationAllowed(betreuung)) {
 					return;
 				}
-				var verfuegung = b.getVerfuegungPreview();
+				var verfuegung = betreuung.getVerfuegungPreview();
 				var sumNew = calculateSumBG(verfuegung.getZeitabschnitte());
-				var sumOld = initialBgs.get(b.getId());
+				var sumOld = initialBgs.get(betreuung.getId());
 				if (sumOld.compareTo(sumNew) != 0) {
-					logDifference(log, b, sumNew, sumOld);
+					logDifference(log, betreuung, sumNew, sumOld);
 				}
 			});
 		});
@@ -81,17 +81,17 @@ public class SimulationServiceBean extends AbstractBaseService implements Simula
 
 	private Map<String, BigDecimal> storeInitialBGsAndResetBetreuungsstatus(Gesuch gesuch) {
 		var initialBgs = new HashMap<String, BigDecimal>();
-		gesuch.getKindContainers().forEach(k -> {
-			k.getBetreuungen().forEach(b -> {
-				if (!simulationAllowed(b)) {
+		gesuch.getKindContainers().forEach(kindContainer -> {
+			kindContainer.getBetreuungen().forEach(betreuung -> {
+				if (!simulationAllowed(betreuung)) {
 					return;
 				}
-				var verfuegung = b.getVerfuegung();
+				var verfuegung = betreuung.getVerfuegung();
 				var sumBG = calculateSumBG(verfuegung.getZeitabschnitte());
-				initialBgs.put(b.getId(), sumBG);
+				initialBgs.put(betreuung.getId(), sumBG);
 				// wir müssen den Betreuungsstatus zurücksetzen, damit die Verfügung erneut durchgeführt werden kann.
 				// diese Statusänderung wird nicht gespeichert, weil die Transaction rollbacked wird.
-				b.setBetreuungsstatus(Betreuungsstatus.BESTAETIGT);
+				betreuung.setBetreuungsstatus(Betreuungsstatus.BESTAETIGT);
 			});
 		});
 		return initialBgs;
