@@ -64,6 +64,11 @@ public class FamilienabzugAbschnittRuleTest {
 			pauschalabzugProPersonFamiliengroesse4, pauschalabzugProPersonFamiliengroesse5,
 			pauschalabzugProPersonFamiliengroesse6, 5, KinderabzugTyp.ASIV, Constants.DEFAULT_LOCALE);
 
+	private final FamilienabzugAbschnittRule famabAbschnittRule_FKJV2 =
+		new FamilienabzugAbschnittRule(Constants.DEFAULT_GUELTIGKEIT, pauschalabzugProPersonFamiliengroesse3,
+			pauschalabzugProPersonFamiliengroesse4, pauschalabzugProPersonFamiliengroesse5,
+			pauschalabzugProPersonFamiliengroesse6, 5, KinderabzugTyp.FKJV_2, Constants.DEFAULT_LOCALE);
+
 	@Test
 	public void test2PKeinAbzug() {
 		Betreuung betreuung = TestDataUtil.createGesuchWithBetreuungspensum(false);
@@ -432,6 +437,70 @@ public class FamilienabzugAbschnittRuleTest {
 		Assert.assertEquals(gesuch.getGesuchsperiode().getGueltigkeit().getGueltigBis(), zeitabschnitt1.getGueltigkeit().getGueltigBis());
 		Assert.assertEquals(11400, zeitabschnitt1.getAbzugFamGroesse().intValue());
 		Assert.assertEquals(BigDecimal.valueOf(3.0), zeitabschnitt1.getFamGroesse());
+	}
+
+	@Test
+	public void kinderAbzugFKJV2_HalbesKindZaehltGanzFuerPauschale() {
+		Gesuch gesuch = createGesuchWithTwoGesuchsteller();
+		Set<KindContainer> kindContainers = new LinkedHashSet<>();
+		final LocalDate date = LocalDate.of(2015, Month.MARCH, 25);
+		KindContainer kind = createKindContainer(Kinderabzug.HALBER_ABZUG, date);
+		kind.getKindJA().setObhutAlternierendAusueben(true);
+		kind.getKindJA().setGemeinsamesGesuch(false);
+
+		kindContainers.add(kind);
+		gesuch.setKindContainers(kindContainers);
+
+
+		final Entry<Double, Integer> famGroesse = famabAbschnittRule_FKJV2.calculateFamiliengroesse(gesuch, LocalDate.now());
+		double familiengroesse = famGroesse.getKey();
+		double familienMitglieder = famGroesse.getValue();
+		Assert.assertEquals(2.5, familiengroesse, DELTA);
+		Assert.assertEquals(3, familienMitglieder, DELTA);
+	}
+
+	@Test
+	public void kinderAbzugFKJV2_GanzesKindZaehltGanzFuerPauschale() {
+		Gesuch gesuch = createGesuchWithTwoGesuchsteller();
+		Set<KindContainer> kindContainers = new LinkedHashSet<>();
+		final LocalDate date = LocalDate.of(2015, Month.MARCH, 25);
+		KindContainer kind = createKindContainer(Kinderabzug.GANZER_ABZUG, date);
+		kind.getKindJA().setObhutAlternierendAusueben(false);
+
+		kindContainers.add(kind);
+		gesuch.setKindContainers(kindContainers);
+
+
+		final Entry<Double, Integer> famGroesse = famabAbschnittRule_FKJV2.calculateFamiliengroesse(gesuch, LocalDate.now());
+		double familiengroesse = famGroesse.getKey();
+		double familienMitglieder = famGroesse.getValue();
+		Assert.assertEquals(3, familiengroesse, DELTA);
+		Assert.assertEquals(3, familienMitglieder, DELTA);
+	}
+
+	@Test
+	public void kinderAbzugFKJV2_KindUeber18ZaehltNicht() {
+		Gesuch gesuch = createGesuchWithTwoGesuchsteller();
+		Set<KindContainer> kindContainers = new LinkedHashSet<>();
+		final LocalDate u18 = LocalDate.of(2015, Month.MARCH, 25);
+		KindContainer kindU18 = createKindContainer(Kinderabzug.GANZER_ABZUG, u18);
+		kindU18.getKindJA().setObhutAlternierendAusueben(false);
+
+		final LocalDate over18 = LocalDate.of(2000, Month.MARCH, 25);
+		KindContainer kindOver18 = createKindContainer(Kinderabzug.GANZER_ABZUG, over18);
+		kindOver18.getKindJA().setInErstausbildung(false);
+
+		kindContainers.add(kindU18);
+		kindContainers.add(kindOver18);
+
+		gesuch.setKindContainers(kindContainers);
+
+
+		final Entry<Double, Integer> famGroesse = famabAbschnittRule_FKJV2.calculateFamiliengroesse(gesuch, LocalDate.now());
+		double familiengroesse = famGroesse.getKey();
+		double familienMitglieder = famGroesse.getValue();
+		Assert.assertEquals(3, familiengroesse, DELTA);
+		Assert.assertEquals(3, familienMitglieder, DELTA);
 	}
 
 	@Nonnull
