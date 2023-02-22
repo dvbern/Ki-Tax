@@ -35,14 +35,19 @@ INSERT INTO einstellung (id, timestamp_erstellt, timestamp_mutiert, user_erstell
 	);
 
 UPDATE einstellung
-	INNER JOIN gemeinde ON einstellung.gemeinde_id = gemeinde.id
-SET einstellung.value = 7
-WHERE einstellung_key = 'MAX_VERGUENSTIGUNG_PRIMAR_PRO_STD' AND gemeinde.name = 'Grenchen';
-
-UPDATE einstellung
 SET einstellung_key = 'MAX_VERGUENSTIGUNG_KINDERGARTEN_PRO_STD'
 WHERE einstellung_key = 'MAX_VERGUENSTIGUNG_SCHULE_PRO_STD';
 
 UPDATE einstellung
 SET einstellung_key = 'MAX_VERGUENSTIGUNG_KINDERGARTEN_PRO_TG'
 WHERE einstellung_key = 'MAX_VERGUENSTIGUNG_SCHULE_PRO_TG';
+
+UPDATE einstellung
+	INNER JOIN gemeinde ON einstellung.gemeinde_id = gemeinde.id
+	SET einstellung.value = 7
+WHERE einstellung_key = 'MAX_VERGUENSTIGUNG_PRIMAR_PRO_STD' AND gemeinde.name = 'Grenchen';
+
+UPDATE einstellung
+	INNER JOIN gemeinde ON einstellung.gemeinde_id = gemeinde.id
+	SET einstellung.value = 9.5
+WHERE einstellung_key = 'MAX_VERGUENSTIGUNG_KINDERGARTEN_PRO_STD' AND gemeinde.name = 'Grenchen';
