@@ -25,7 +25,7 @@ import javax.annotation.Nullable;
 import ch.dvbern.ebegu.dto.BGCalculationInput;
 import ch.dvbern.ebegu.entities.BGCalculationResult;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
-import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
+import ch.dvbern.ebegu.enums.EinschulungTyp;
 import ch.dvbern.ebegu.enums.PensumUnits;
 import ch.dvbern.ebegu.util.DateUtil;
 import ch.dvbern.ebegu.util.MathUtil;
@@ -50,7 +50,6 @@ public abstract class AbstractAsivBernRechner extends AbstractBernRechner {
 	) {
 		// Benoetigte Daten
 		boolean unter12Monate = input.isBabyTarif();
-		boolean eingeschult = input.getEinschulungTyp() != null && input.getEinschulungTyp().isEingeschult();
 		// Die Institution muss die besonderen Bedürfnisse bestätigt haben
 		boolean besonderebeduerfnisse = input.isBesondereBeduerfnisseBestaetigt();
 		LocalDate von = input.getParent().getGueltigkeit().getGueltigAb();
@@ -67,10 +66,10 @@ public abstract class AbstractAsivBernRechner extends AbstractBernRechner {
 		BigDecimal verguenstigungProZeiteinheit = getVerguenstigungProZeiteinheit(
 			parameterDTO,
 			unter12Monate,
-			eingeschult,
-			besonderebeduerfnisse,
+				besonderebeduerfnisse,
 			massgebendesEinkommen,
-			input.isBezahltKompletteVollkosten());
+			input.isBezahltKompletteVollkosten(),
+			input.getEinschulungTyp());
 
 		BigDecimal anteilMonat = DateUtil.calculateAnteilMonatInklWeekend(von, bis);
 
@@ -174,10 +173,10 @@ public abstract class AbstractAsivBernRechner extends AbstractBernRechner {
 	BigDecimal getVerguenstigungProZeiteinheit(
 		@Nonnull BGRechnerParameterDTO parameterDTO,
 		@Nonnull Boolean unter12Monate,
-		@Nonnull Boolean eingeschult,
 		@Nonnull Boolean besonderebeduerfnisse,
 		@Nonnull BigDecimal massgebendesEinkommen,
-		boolean bezahltVollkosten) {
+		boolean bezahltVollkosten,
+		@Nullable EinschulungTyp einschulungTyp) {
 
 		// BezahltVollkosten ist/darf nur TRUE sein, wenn keine erweiterteBetreuung besteht!
 		if (bezahltVollkosten) {
@@ -185,7 +184,7 @@ public abstract class AbstractAsivBernRechner extends AbstractBernRechner {
 		}
 
 		BigDecimal maximaleVerguenstigungProTag =
-			getMaximaleVerguenstigungProZeiteinheit(parameterDTO, unter12Monate, eingeschult);
+			getMaximaleVerguenstigungProZeiteinheit(parameterDTO, unter12Monate, einschulungTyp);
 		BigDecimal minEinkommen = parameterDTO.getMinMassgebendesEinkommen();
 		BigDecimal maxEinkommen = parameterDTO.getMaxMassgebendesEinkommenZurBerechnungDesGutscheinsProZeiteinheit();
 
@@ -216,7 +215,7 @@ public abstract class AbstractAsivBernRechner extends AbstractBernRechner {
 	protected abstract BigDecimal getMaximaleVerguenstigungProZeiteinheit(
 		@Nonnull BGRechnerParameterDTO parameterDTO,
 		@Nonnull Boolean unter12Monate,
-		@Nonnull Boolean eingeschult);
+		@Nullable EinschulungTyp einschulungTyp);
 
 	@Nonnull
 	protected abstract BigDecimal getZuschlagFuerBesondereBeduerfnisse(
