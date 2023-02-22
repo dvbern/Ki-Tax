@@ -66,6 +66,11 @@ export class FinanzielleSituationAppenzellViewComponent extends AbstractGesuchVi
         return this.gesuchModelManager.getGesuch().gesuchsteller2.extractFullName();
     }
 
+    public getAntragstellerNumber(): number {
+        // im moment gibt es nur antragsteller 1
+        return 1;
+    }
+
     public isGemeinsam(): boolean {
         // TODO definieren ob er gemeinsam ist oder nicht
         return false;

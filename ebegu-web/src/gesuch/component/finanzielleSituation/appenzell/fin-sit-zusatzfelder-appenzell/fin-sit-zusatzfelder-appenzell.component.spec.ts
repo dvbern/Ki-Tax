@@ -8,11 +8,11 @@
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
 import {ComponentFixture, TestBed} from '@angular/core/testing';
@@ -28,11 +28,11 @@ import {TSGesuchstellerContainer} from '../../../../../models/TSGesuchstellerCon
 import {BerechnungsManager} from '../../../../service/berechnungsManager';
 import {GesuchModelManager} from '../../../../service/gesuchModelManager';
 
-import {FinanzielleVerhaeltnisseComponent} from './finanzielle-verhaeltnisse.component';
+import {FinSitZusatzfelderAppenzellComponent} from './fin-sit-zusatzfelder-appenzell.component';
 
 describe('FinanzielleVerhaeltnisseComponent', () => {
-    let component: FinanzielleVerhaeltnisseComponent;
-    let fixture: ComponentFixture<FinanzielleVerhaeltnisseComponent>;
+    let component: FinSitZusatzfelderAppenzellComponent;
+    let fixture: ComponentFixture<FinSitZusatzfelderAppenzellComponent>;
     const berechnungsManagerSpy = jasmine.createSpyObj<BerechnungsManager>(BerechnungsManager.name, ['calculateFinanzielleSituation', 'calculateFinanzielleSituationTemp']);
     berechnungsManagerSpy.calculateFinanzielleSituationTemp.and.returnValue(Promise.resolve(new TSFinanzielleSituationResultateDTO()));
     const gesuchModelManagerSpy = jasmine.createSpyObj<GesuchModelManager>(GesuchModelManager.name, ['getGesuch', 'getBasisjahr']);
@@ -40,7 +40,7 @@ describe('FinanzielleVerhaeltnisseComponent', () => {
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
-            declarations: [FinanzielleVerhaeltnisseComponent],
+            declarations: [FinSitZusatzfelderAppenzellComponent],
             imports: [SharedModule],
             providers: [
                 {provide: NgForm, useValue: new NgForm([], [])},
@@ -53,7 +53,7 @@ describe('FinanzielleVerhaeltnisseComponent', () => {
     });
 
     beforeEach(() => {
-        fixture = TestBed.createComponent(FinanzielleVerhaeltnisseComponent);
+        fixture = TestBed.createComponent(FinSitZusatzfelderAppenzellComponent);
         component = fixture.componentInstance;
         component.model = new TSFinanzielleSituation();
         component.finanzModel = new TSFinanzModel(0, false, 1);

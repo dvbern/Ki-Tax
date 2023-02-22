@@ -30,14 +30,15 @@
                 <form role="form"
                       #form="ngForm"
                       novalidate>
-                    <dv-finanzielle-verhaeltnisse
+                    <dv-fin-sit-zusatzfelder-appenzell
                         [isGemeinsam]="isGemeinsam()"
                         [basisJahr]="getBasisjahr()"
                         [readOnly]="isGesuchReadonly()"
                         [finanzModel]="model"
+                        [antragstellerNumber]="getAntragstellerNumber()"
                         [model]="getModel().finanzielleSituationJA"
                         [isKorrekturModusJungendamtOrFreigegeben]="this.isKorrekturModusJugendamtOrFreigegeben()"
-                    ></dv-finanzielle-verhaeltnisse>
+                    ></dv-fin-sit-zusatzfelder-appenzell>
                     <dv-navigation-x (dvSave)="prepareSave($event.onResult)"
                                      [dvNext]="true"
                                      [dvPrevious]="true"

@@ -25,15 +25,15 @@ import {EbeguUtil} from '../../../../../utils/EbeguUtil';
 import {GesuchModelManager} from '../../../../service/gesuchModelManager';
 import {FinanzielleSituationAppenzellService} from '../finanzielle-situation-appenzell.service';
 
-const LOG = LogFactory.createLog('FinanzielleVerhaeltnisseComponent');
+const LOG = LogFactory.createLog('FinSitZusatzfelderAppenzell');
 
 @Component({
-    selector: 'dv-finanzielle-verhaeltnisse',
-    templateUrl: './finanzielle-verhaeltnisse.component.html',
-    styleUrls: ['./finanzielle-verhaeltnisse.component.less'],
+    selector: 'dv-fin-sit-zusatzfelder-appenzell',
+    templateUrl: './fin-sit-zusatzfelder-appenzell.component.html',
+    styleUrls: ['./fin-sit-zusatzfelder-appenzell.component.less'],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class FinanzielleVerhaeltnisseComponent implements OnInit {
+export class FinSitZusatzfelderAppenzellComponent implements OnInit {
 
     @Input()
     public isGemeinsam: boolean;
@@ -55,6 +55,9 @@ export class FinanzielleVerhaeltnisseComponent implements OnInit {
 
     @Input()
     public isKorrekturModusJungendamtOrFreigegeben: boolean;
+
+    @Input()
+    public antragstellerNumber: number;
 
     public resultate: TSFinanzielleSituationResultateDTO;
 
@@ -103,7 +106,16 @@ export class FinanzielleVerhaeltnisseComponent implements OnInit {
             && this.isKorrekturModusJungendamtOrFreigegeben;
     }
 
-    public getVermoegenGekurz(): number {
-        return EbeguUtil.isNotNullOrUndefined(this.model.steuerbaresEinkommen) ? (this.model.steuerbaresEinkommen * 15 / 100) : undefined;
+    public getVermoegenAnrechenbar(): number {
+        if (!this.resultate) {
+            return 0;
+        }
+        if (this.antragstellerNumber === 1) {
+            return this.resultate.vermoegenXPercentAnrechenbarGS1;
+        } else if (this.antragstellerNumber === 2) {
+            return this.resultate.vermoegenXPercentAnrechenbarGS2;
+        } else {
+            throw new Error(`Falsche Antragsteller Nummer: ${  this.antragstellerNumber}`);
+        }
     }
 }
