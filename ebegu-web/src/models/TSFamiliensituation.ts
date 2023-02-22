@@ -14,6 +14,7 @@
  */
 
 import * as moment from 'moment';
+import {EbeguUtil} from '../utils/EbeguUtil';
 import {TSFamilienstatus} from './enums/TSFamilienstatus';
 import {TSGesuchstellerKardinalitaet} from './enums/TSGesuchstellerKardinalitaet';
 import {TSUnterhaltsvereinbarungAnswer} from './enums/TSUnterhaltsvereinbarungAnswer';
@@ -240,14 +241,14 @@ export class TSFamiliensituation extends TSAbstractMutableEntity {
     }
 
     public isSameFamiliensituation(other: TSFamiliensituation): boolean {
-        let same = this.familienstatus === other.familienstatus;
+        let same = EbeguUtil.areSame_orWithoutValue(this.familienstatus, other.familienstatus);
         if (same && this.familienstatus === TSFamilienstatus.KONKUBINAT_KEIN_KIND) {
             same = this.startKonkubinat.isSame(other.startKonkubinat);
         }
         if (same && this.fkjvFamSit) {
-            same = this.geteilteObhut === other.geteilteObhut
-                && this.unterhaltsvereinbarung === other.unterhaltsvereinbarung
-                && this.gesuchstellerKardinalitaet === other.gesuchstellerKardinalitaet;
+            same = EbeguUtil.areSame_orWithoutValue(this.geteilteObhut, other.geteilteObhut)
+                && EbeguUtil.areSame_orWithoutValue(this.unterhaltsvereinbarung , other.unterhaltsvereinbarung)
+                && EbeguUtil.areSame_orWithoutValue(this.gesuchstellerKardinalitaet, other.gesuchstellerKardinalitaet);
         }
         return same;
     }
