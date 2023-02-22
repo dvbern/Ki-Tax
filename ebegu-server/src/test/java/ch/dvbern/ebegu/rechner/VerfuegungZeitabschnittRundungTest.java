@@ -162,7 +162,6 @@ public class VerfuegungZeitabschnittRundungTest extends AbstractBGRechnerTest {
 		inputAsiv.setMassgebendesEinkommenVorAbzugFamgr(BigDecimal.valueOf(88600));
 		inputAsiv.setBetreuungspensumProzent(BigDecimal.valueOf(100));
 		inputAsiv.setEinschulungTyp(EinschulungTyp.VORSCHULALTER);
-		inputAsiv.setKostenAnteilMonat(calculateKostenAnteilMonat(inputAsiv, gueltigkeit));
 		return inputAsiv;
 	}
 

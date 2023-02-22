@@ -25,9 +25,11 @@ import java.util.Optional;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.annotation.Resource;
 import javax.annotation.security.DenyAll;
 import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
+import javax.ejb.EJBContext;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletResponse;
@@ -81,6 +83,7 @@ import ch.dvbern.ebegu.services.KibonAnfrageService;
 import ch.dvbern.ebegu.services.MassenversandService;
 import ch.dvbern.ebegu.services.PensumAusserordentlicherAnspruchService;
 import ch.dvbern.ebegu.services.PersonenSucheService;
+import ch.dvbern.ebegu.services.SimulationService;
 import ch.dvbern.ebegu.util.AntragStatusConverterUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -159,6 +162,12 @@ public class GesuchResource {
 
 	@Inject
 	private EbeguConfiguration configuration;
+
+	@Inject
+	private SimulationService simulationService;
+
+	@Resource
+	private EJBContext context;    //fuer rollback
 
 	@ApiOperation(value = "Creates a new Antrag in the database. The transfer object also has a relation to " +
 		"Familiensituation which is stored in the database as well.", response = JaxGesuch.class)
@@ -1240,6 +1249,36 @@ public class GesuchResource {
 				antragJaxId.getId()));
 		Gesuch modifiedGesuch = gesuchService.updateMarkiertFuerKontroll(gesuchFromDB, markiertFuerKontroll);
 		return converter.gesuchToJAX(modifiedGesuch);
+	}
+
+	@ApiOperation(value = "Simuliert eine neue Neuberechnung der Betreuungsgutscheine"
+		+ " für ein bereits verfügtes Gesuch.",
+		response = Boolean.class)
+	@Nullable
+	@POST
+	@Path("/simulateNewVerfuegung/{gesuchId}")
+	@Consumes(MediaType.WILDCARD)
+	@Produces(MediaType.TEXT_PLAIN)
+	@RolesAllowed({ SUPER_ADMIN })
+	public Response simulateNewVerfuegung(
+		@Nonnull @NotNull @PathParam("gesuchId") String gesuchId
+	) {
+		if (!configuration.getIsDevmode()) {
+			throw new EbeguRuntimeException("simulateNewVerfuegung", "simulateNewVerfuegung darf nur in Devmode verwendet werden");
+		}
+		Gesuch gesuchFromDB = gesuchService.findGesuch(gesuchId).orElseThrow(
+			() -> new EbeguEntityNotFoundException("simulateNewVerfuegung", "Gesuch nicht gefunden", gesuchId)
+		);
+		String simulation;
+		try {
+			simulation = simulationService.simulateNewVerfuegung(gesuchFromDB);
+		} catch (EbeguRuntimeException e) {
+			LOG.error("simulateNewVerfuegung", e);
+			simulation = e.getMessage();
+		}
+		// transaction muss rollbacked werden, damit die Änderung in den Betreuungsstatus nicht gespeichert wird.
+		context.setRollbackOnly();
+		return Response.ok(simulation).build();
 	}
 
 	@ApiOperation(value = "Gibt der jüngste Vorgänger des übergebenen Gesuches zurück" +

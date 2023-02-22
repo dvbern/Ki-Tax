@@ -205,7 +205,7 @@ public class BetreuungsgutscheinEvaluator {
 				if (platz.getBetreuungsstatus().isGeschlossenJA() || platz.getBetreuungsstatus()
 					.isGeschlossenSchulamt()) {
 					// Verfuegte Betreuungen duerfen nicht neu berechnet werden
-					LOG.info("Betreuung ist schon verfuegt. Keine Neuberechnung durchgefuehrt");
+					LOG.info("Betreuung oder Tagesschulanmeldung ist schon abgeschlossen. Keine Neuberechnung durchgefuehrt");
 					if (platz.getBetreuungsstatus().isGeschlossenJA()) {
 						// Restanspruch muss mit Daten von Verfügung für nächste Betreuung richtig gesetzt werden
 						restanspruchZeitabschnitte = getRestanspruchForVerfuegteBetreung((Betreuung) platz);
