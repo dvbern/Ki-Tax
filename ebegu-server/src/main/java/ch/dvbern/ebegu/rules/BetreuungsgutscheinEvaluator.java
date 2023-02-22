@@ -212,6 +212,10 @@ public class BetreuungsgutscheinEvaluator {
 					}
 					VeraenderungCalculator.getVeranderungCalculator(isTagesschule)
 						.calculateKorrekturAusbezahlteVerguenstigung(platz);
+
+					if (!isTagesschule) {
+						setZahlungRelevanteDaten((Betreuung) platz, bgRechnerParameterDTO);
+					}
 					continue;
 				}
 
