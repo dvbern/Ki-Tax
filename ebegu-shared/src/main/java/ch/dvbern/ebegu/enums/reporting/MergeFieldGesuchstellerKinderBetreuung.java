@@ -1,16 +1,18 @@
 /*
- * Ki-Tax: System for the management of external childcare subsidies
- * Copyright (C) 2017 City of Bern Switzerland
+ * Copyright (C) 2023 DV Bern AG, Switzerland
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Affero General Public License for more details.
+ *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 package ch.dvbern.ebegu.enums.reporting;
 
@@ -86,6 +88,7 @@ public enum MergeFieldGesuchstellerKinderBetreuung implements MergeFieldProvider
 	besonderebeduerfnisseTitle(new SimpleMergeField<>("besonderebeduerfnisseTitle", STRING_CONVERTER)),
 	sprichtAmtsspracheTitle(new SimpleMergeField<>("sprichtAmtsspracheTitle", STRING_CONVERTER)),
 	schulstufeTitle(new SimpleMergeField<>("schulstufeTitle", STRING_CONVERTER)),
+	keinPlatzImSchulhortTitle(new SimpleMergeField<>("keinPlatzImSchulhortTitle", STRING_CONVERTER)),
 	bis1MonateTitle(new SimpleMergeField<>("bis1MonateTitle", STRING_CONVERTER)),
 	bis2MonateTitle(new SimpleMergeField<>("bis2MonateTitle", STRING_CONVERTER)),
 	bis3MonateTitle(new SimpleMergeField<>("bis3MonateTitle", STRING_CONVERTER)),
@@ -188,6 +191,7 @@ public enum MergeFieldGesuchstellerKinderBetreuung implements MergeFieldProvider
 	kindErwBeduerfnisse(new SimpleMergeField<>("kindErwBeduerfnisse", BOOLEAN_X_CONVERTER)),
 	kindSprichtAmtssprache(new SimpleMergeField<>("kindSprichtAmtssprache", BOOLEAN_X_CONVERTER)),
 	eingeschult(new SimpleMergeField<>("eingeschult", STRING_CONVERTER)),
+	keinPlatzImSchulhort(new SimpleMergeField<>("keinPlatzImSchulhort", BOOLEAN_X_CONVERTER)),
 
 	zeitabschnittVon(new SimpleMergeField<>("zeitabschnittVon", DATE_CONVERTER)),
 	zeitabschnittBis(new SimpleMergeField<>("zeitabschnittBis", DATE_CONVERTER)),
