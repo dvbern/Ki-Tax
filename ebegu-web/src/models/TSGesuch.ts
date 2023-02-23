@@ -59,6 +59,7 @@ export class TSGesuch extends TSAbstractAntragEntity {
     private _gesuchBetreuungenStatus: TSGesuchBetreuungenStatus;
     private _dokumenteHochgeladen: boolean = false;
     private _markiertFuerKontroll: boolean = false;
+    private _finSitRueckwirkendKorrigiertInThisMutation: boolean = false;
 
     private _timestampVerfuegt: moment.Moment;
     private _gueltig: boolean;
@@ -253,6 +254,14 @@ export class TSGesuch extends TSAbstractAntragEntity {
 
     public set finSitAenderungGueltigAbDatum(value: moment.Moment) {
         this._finSitAenderungGueltigAbDatum = value;
+    }
+
+    public get finSitRueckwirkendKorrigiertInThisMutation(): boolean {
+        return this._finSitRueckwirkendKorrigiertInThisMutation;
+    }
+
+    public set finSitRueckwirkendKorrigiertInThisMutation(value: boolean) {
+        this._finSitRueckwirkendKorrigiertInThisMutation = value;
     }
 
     /**

@@ -140,6 +140,9 @@ public class JaxGesuch extends JaxAbstractDTO {
 
 	private boolean markiertFuerKontroll;
 
+
+	private boolean finSitRueckwirkendKorrigiertInThisMutation;
+
 	@NotNull
 	private GesuchBetreuungenStatus gesuchBetreuungenStatus = GesuchBetreuungenStatus.ALLE_BESTAETIGT;
 
@@ -419,6 +422,15 @@ public class JaxGesuch extends JaxAbstractDTO {
 
 	public void setMarkiertFuerKontroll(boolean markiertFuerKontroll) {
 		this.markiertFuerKontroll = markiertFuerKontroll;
+	}
+
+	public boolean isFinSitRueckwirkendKorrigiertInThisMutation() {
+		return finSitRueckwirkendKorrigiertInThisMutation;
+	}
+
+	public void setFinSitRueckwirkendKorrigiertInThisMutation(boolean finSitRueckwirkendKorrigiertInThisMutation) {
+		this.finSitRueckwirkendKorrigiertInThisMutation =
+			finSitRueckwirkendKorrigiertInThisMutation;
 	}
 }
 

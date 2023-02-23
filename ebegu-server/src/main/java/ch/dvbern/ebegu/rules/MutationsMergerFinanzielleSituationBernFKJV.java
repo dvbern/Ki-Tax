@@ -42,6 +42,8 @@ public class MutationsMergerFinanzielleSituationBernFKJV extends MutationsMerger
 		platz
 			.extractGesuch()
 			.setFinSitAenderungGueltigAbDatum(platz.extractGesuchsperiode().getGueltigkeit().getGueltigAb().minusDays(1));
+		platz.extractGesuch()
+				.setFinSitRueckwirkendKorrigiertInThisMutation(true);
 		inputData.addBemerkung(MsgKey.FIN_SIT_RUECKWIRKEND_ANGEPASST, getLocale());
 
 		// Das Handling der Familiensituation darf sich nicht ändern

@@ -381,7 +381,7 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
         if (isDirektVerfuegen) {
             return this.createDeferPromise<boolean>();
         }
-        if(this.isFKJV() && EbeguUtil.isNotNullOrUndefined(this.getGesuch().finSitAenderungGueltigAbDatum)) {
+        if(this.isFKJV() && this.getGesuch().finSitRueckwirkendKorrigiertInThisMutation) {
             return Promise.resolve(true);
         }
         return this.askIfIgnorieren(zahlungslaufTyp)
@@ -919,12 +919,12 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
 
 
     private hasKorrekturAuszahlungInstitution(): boolean {
-        return EbeguUtil.isNotNullOrUndefined(this.getVerfuegenToWorkWith().korrekturAusbezahltInstitution) &&
+        return EbeguUtil.isNotNullOrUndefined(this.getVerfuegenToWorkWith()?.korrekturAusbezahltInstitution) &&
             this.getVerfuegenToWorkWith().korrekturAusbezahltInstitution !== 0;
     }
 
     private hasKorrekturAuszahlungEltern() {
-        return EbeguUtil.isNotNullOrUndefined(this.getVerfuegenToWorkWith().korrekturAusbezahltEltern) &&
+        return EbeguUtil.isNotNullOrUndefined(this.getVerfuegenToWorkWith()?.korrekturAusbezahltEltern) &&
             this.getVerfuegenToWorkWith().korrekturAusbezahltEltern !== 0;
     }
 

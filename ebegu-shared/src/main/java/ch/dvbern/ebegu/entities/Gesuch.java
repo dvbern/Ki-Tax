@@ -283,6 +283,8 @@ public class Gesuch extends AbstractMutableEntity implements Searchable {
 	@Transient
 	private boolean newlyCreatedMutation = false;
 
+	@Transient
+	private boolean finSitRueckwirkendKorrigiertInThisMutation = false;
 
 	public Gesuch() {
 	}
@@ -1443,5 +1445,14 @@ public class Gesuch extends AbstractMutableEntity implements Searchable {
 
 	public void setNewlyCreatedMutation(boolean newlyCreatedMutation) {
 		this.newlyCreatedMutation = newlyCreatedMutation;
+	}
+
+	public boolean isFinSitRueckwirkendKorrigiertInThisMutation() {
+		return finSitRueckwirkendKorrigiertInThisMutation;
+	}
+
+	public void setFinSitRueckwirkendKorrigiertInThisMutation(boolean finSitRueckwirkendKorrigiertInThisMutation) {
+		this.finSitRueckwirkendKorrigiertInThisMutation =
+			finSitRueckwirkendKorrigiertInThisMutation;
 	}
 }
