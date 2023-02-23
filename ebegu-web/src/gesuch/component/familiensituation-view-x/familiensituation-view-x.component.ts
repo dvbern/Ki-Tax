@@ -435,7 +435,7 @@ export class FamiliensituationViewXComponent extends AbstractGesuchViewX<TSFamil
     public getNotPertnerIdentischMitVorgesuchWarning(): string {
         let warning: string = this.$translate.instant('FAMILIENSITUATION_FRAGE_PARTNERIDENTISCH_WARNING', {
             partnerAlt: this.getNameGesuchsteller2(),
-            endeDatum: this.getDatumEndOfMonthAfterAenderungPer(),
+            endeDatum: this.getDatumEndOfMonthAfterAenderungPer()
         });
 
         const partnerNotIdentischWarningBeiPaaren: string =
@@ -446,12 +446,12 @@ export class FamiliensituationViewXComponent extends AbstractGesuchViewX<TSFamil
     }
 
     private getBezeichnung(): string {
-        let familienstatus: TSFamilienstatus = this.gesuchModelManager.getGesuch().extractFamiliensituation().familienstatus;
+        const familienstatus: TSFamilienstatus = this.gesuchModelManager.getGesuch().extractFamiliensituation().familienstatus;
         if (familienstatus === TSFamilienstatus.VERHEIRATET) {
             return this.$translate.instant('FAMILIENSITUATION_FRAGE_PARTNERIDENTISCH_EHEPARTNER');
         }
         if (familienstatus === TSFamilienstatus.ALLEINERZIEHEND){
-            return this.$translate.instant("FAMILIENSITUATION_FRAGE_PARTNERIDENTISCH_ANDERER_ELTERNTEIL");
+            return this.$translate.instant('AMILIENSITUATION_FRAGE_PARTNERIDENTISCH_ANDERER_ELTERNTEIL');
         }
         return this.$translate.instant('FAMILIENSITUATION_FRAGE_PARTNERIDENTISCH_KONKUBINTASPARTNER');
     }
