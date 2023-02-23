@@ -241,14 +241,14 @@ export class TSFamiliensituation extends TSAbstractMutableEntity {
     }
 
     public isSameFamiliensituation(other: TSFamiliensituation): boolean {
-        let same = EbeguUtil.areSame_orWithoutValue(this.familienstatus, other.familienstatus);
+        let same = EbeguUtil.areSameOrWithoutValue(this.familienstatus, other.familienstatus);
         if (same && this.familienstatus === TSFamilienstatus.KONKUBINAT_KEIN_KIND) {
             same = this.startKonkubinat.isSame(other.startKonkubinat);
         }
         if (same && this.fkjvFamSit) {
-            same = EbeguUtil.areSame_orWithoutValue(this.geteilteObhut, other.geteilteObhut)
-                && EbeguUtil.areSame_orWithoutValue(this.unterhaltsvereinbarung , other.unterhaltsvereinbarung)
-                && EbeguUtil.areSame_orWithoutValue(this.gesuchstellerKardinalitaet, other.gesuchstellerKardinalitaet);
+            same = EbeguUtil.areSameOrWithoutValue(this.geteilteObhut, other.geteilteObhut)
+                && EbeguUtil.areSameOrWithoutValue(this.unterhaltsvereinbarung , other.unterhaltsvereinbarung)
+                && EbeguUtil.areSameOrWithoutValue(this.gesuchstellerKardinalitaet, other.gesuchstellerKardinalitaet);
         }
         return same;
     }

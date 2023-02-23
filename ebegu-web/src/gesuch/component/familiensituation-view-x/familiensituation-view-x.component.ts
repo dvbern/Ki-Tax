@@ -426,7 +426,7 @@ export class FamiliensituationViewXComponent extends AbstractGesuchViewX<TSFamil
             this.gesuchModelManager.getGesuch().gesuchsteller2.extractFullName() : '';
     }
 
-    public getDatumAenderungPer(): string {
+    private getDatumEndOfMonthAfterAenderungPer(): string {
         return this.getFamiliensituation()
                 .aenderungPer.endOf('month')
                 .format(CONSTANTS.DATE_FORMAT);
@@ -435,7 +435,7 @@ export class FamiliensituationViewXComponent extends AbstractGesuchViewX<TSFamil
     public getNotPertnerIdentischMitVorgesuchWarning(): string {
         let warning: string = this.$translate.instant('FAMILIENSITUATION_FRAGE_PARTNERIDENTISCH_WARNING', {
             partnerAlt: this.getNameGesuchsteller2(),
-            endeDatum: this.getDatumAenderungPer(),
+            endeDatum: this.getDatumEndOfMonthAfterAenderungPer(),
         });
 
         const partnerNotIdentischWarningBeiPaaren: string =

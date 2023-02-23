@@ -236,7 +236,7 @@ export class EbeguUtil {
         return true;
     }
 
-    public static areSame_orWithoutValue(right: any, left:any): boolean{
+    public static areSameOrWithoutValue(right: any, left:any): boolean{
         return (EbeguUtil.isNullOrUndefined(right) && EbeguUtil.isNullOrUndefined(left)) ||
                 right === left
     }
