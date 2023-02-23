@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022 DV Bern AG, Switzerland
+ * Copyright (C) 2023 DV Bern AG, Switzerland
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -8,11 +8,11 @@
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
 import {IPromise, IScope, ITimeoutService} from 'angular';
@@ -201,25 +201,18 @@ export abstract class AbstractFinSitBernView extends AbstractGesuchViewControlle
             return false;
         }
 
-        return this.authServiceRS.isRole(TSRole.GESUCHSTELLER)
+        return this.authServiceRS.isOneOfRoles([TSRole.GESUCHSTELLER, TSRole.SUPER_ADMIN])
             || EbeguUtil.isNotNullOrUndefined(this.model.getFiSiConToWorkWith().finanzielleSituationGS)
             || this.showZugriffAufSteuerdatenForGemeinde();
     }
 
     protected showZugriffAufSteuerdatenForGemeinde(): boolean {
         return  EbeguUtil.isNotNullOrUndefined(this.model.getFiSiConToWorkWith().finanzielleSituationJA?.steuerdatenAbfrageStatus)
-            && this.gesuchModelManager.getGesuch().isMutation()
-            && this.authServiceRS.isOneOfRoles(TSRoleUtil.getGemeindeOrBGRoles());
+            && this.authServiceRS.isOneOfRoles(TSRoleUtil.getGemeindeOrBGRoles().concat(TSRole.SUPER_ADMIN));
     }
 
     protected callKiBonAnfrage(isGemeinsam: boolean): IPromise<TSFinanzielleSituationContainer> {
         this.model.copyFinSitDataToGesuch(this.gesuchModelManager.getGesuch());
-
-        if (!this.authServiceRS.isRole(TSRole.GESUCHSTELLER)
-        && !this.showZugriffAufSteuerdatenForGemeinde()) {
-            return undefined;
-        }
-
         return this.gesuchModelManager.callKiBonAnfrageAndUpdateFinSit(isGemeinsam);
     }
 }

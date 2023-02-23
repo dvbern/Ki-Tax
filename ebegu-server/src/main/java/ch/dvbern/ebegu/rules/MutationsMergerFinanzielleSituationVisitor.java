@@ -26,7 +26,7 @@ public class MutationsMergerFinanzielleSituationVisitor implements FinanzielleSi
 
 	@Override
 	public AbstractMutationsMergerFinanzielleSituation visitFinSitBernFKJV() {
-		return new MutationsMergerFinanzielleSituationBern(locale);
+		return new MutationsMergerFinanzielleSituationBernFKJV(locale);
 	}
 
 	@Override

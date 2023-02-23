@@ -56,6 +56,7 @@ import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.EbeguUtil;
 import ch.dvbern.ebegu.util.MathUtil;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import org.apache.commons.collections.bidimap.AbstractBidiMapDecorator;
 import org.apache.commons.lang3.builder.CompareToBuilder;
 import org.hibernate.envers.Audited;
 
@@ -325,6 +326,11 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 	@Nonnull
 	public BigDecimal getBetreuungspensumZeiteinheit() {
 		return getRelevantBgCalculationResult().getBetreuungspensumZeiteinheit();
+	}
+
+	@Nonnull
+	public BigDecimal getBgPensumZeiteinheit() {
+		return getRelevantBgCalculationResult().getBgPensumZeiteinheit();
 	}
 
 	@Nullable
@@ -613,9 +619,9 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 		this.getBgCalculationInputGemeinde().calculateInputValuesProportionaly(percentag);
 	}
 
-	public void setKostenAnteilMonat(BigDecimal kostenAnteilMonat) {
-		this.getBgCalculationInputAsiv().setKostenAnteilMonat(kostenAnteilMonat);
-		this.getBgCalculationInputGemeinde().setKostenAnteilMonat(kostenAnteilMonat);
+	public void roundValuesAfterCalculateProportinaly() {
+		this.getBgCalculationInputAsiv().roundValuesAfterCalculateProportinaly();
+		this.getBgCalculationInputGemeinde().roundValuesAfterCalculateProportinaly();
 	}
 
 	public void setStuendlicheVollkosten(BigDecimal stuendlicheVollkosten) {
@@ -862,5 +868,15 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 		return this.getVerfuegungZeitabschnittBemerkungList().stream()
 			.map(VerfuegungZeitabschnittBemerkung::getBemerkung)
 			.collect(Collectors.joining("\n"));
+	}
+
+	public void setGeschwisternBonusKind2ForAsivAndGemeinde(boolean geschwisternBonusKind2) {
+		this.bgCalculationInputAsiv.setGeschwisternBonusKind2(geschwisternBonusKind2);
+		this.bgCalculationInputGemeinde.setGeschwisternBonusKind2(geschwisternBonusKind2);
+	}
+
+	public void setGeschwisternBonusKind3ForAsivAndGemeinde(boolean geschwisternBonusKind3) {
+		this.bgCalculationInputAsiv.setGeschwisternBonusKind3(geschwisternBonusKind3);
+		this.bgCalculationInputGemeinde.setGeschwisternBonusKind3(geschwisternBonusKind3);
 	}
 }

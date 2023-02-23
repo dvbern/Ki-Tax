@@ -138,6 +138,7 @@ import ch.dvbern.ebegu.enums.Kinderabzug;
 import ch.dvbern.ebegu.enums.KorrespondenzSpracheTyp;
 import ch.dvbern.ebegu.enums.Land;
 import ch.dvbern.ebegu.enums.MahnungTyp;
+import ch.dvbern.ebegu.enums.MessageTypes;
 import ch.dvbern.ebegu.enums.MitteilungStatus;
 import ch.dvbern.ebegu.enums.MitteilungTeilnehmerTyp;
 import ch.dvbern.ebegu.enums.ModulTagesschuleIntervall;
@@ -180,6 +181,7 @@ import static ch.dvbern.ebegu.enums.EinstellungKey.AUSSERORDENTLICHER_ANSPRUCH_R
 import static ch.dvbern.ebegu.enums.EinstellungKey.AUSWEIS_NACHWEIS_REQUIRED;
 import static ch.dvbern.ebegu.enums.EinstellungKey.BEGRUENDUNG_MUTATION_AKTIVIERT;
 import static ch.dvbern.ebegu.enums.EinstellungKey.BESONDERE_BEDUERFNISSE_LUZERN;
+import static ch.dvbern.ebegu.enums.EinstellungKey.MAX_VERGUENSTIGUNG_PRIMAR_PRO_STD;
 import static ch.dvbern.ebegu.enums.EinstellungKey.PENSUM_ANZEIGE_TYP;
 import static ch.dvbern.ebegu.enums.EinstellungKey.DAUER_BABYTARIF;
 import static ch.dvbern.ebegu.enums.EinstellungKey.DIPLOMATENSTATUS_DEAKTIVIERT;
@@ -248,8 +250,8 @@ import static ch.dvbern.ebegu.enums.EinstellungKey.LATS_STICHTAG;
 import static ch.dvbern.ebegu.enums.EinstellungKey.MAX_MASSGEBENDES_EINKOMMEN;
 import static ch.dvbern.ebegu.enums.EinstellungKey.MAX_TARIF_MIT_PAEDAGOGISCHER_BETREUUNG;
 import static ch.dvbern.ebegu.enums.EinstellungKey.MAX_TARIF_OHNE_PAEDAGOGISCHER_BETREUUNG;
-import static ch.dvbern.ebegu.enums.EinstellungKey.MAX_VERGUENSTIGUNG_SCHULE_PRO_STD;
-import static ch.dvbern.ebegu.enums.EinstellungKey.MAX_VERGUENSTIGUNG_SCHULE_PRO_TG;
+import static ch.dvbern.ebegu.enums.EinstellungKey.MAX_VERGUENSTIGUNG_KINDERGARTEN_PRO_STD;
+import static ch.dvbern.ebegu.enums.EinstellungKey.MAX_VERGUENSTIGUNG_KINDERGARTEN_PRO_TG;
 import static ch.dvbern.ebegu.enums.EinstellungKey.MAX_VERGUENSTIGUNG_VORSCHULE_BABY_PRO_STD;
 import static ch.dvbern.ebegu.enums.EinstellungKey.MAX_VERGUENSTIGUNG_VORSCHULE_BABY_PRO_TG;
 import static ch.dvbern.ebegu.enums.EinstellungKey.MAX_VERGUENSTIGUNG_VORSCHULE_KIND_PRO_STD;
@@ -1120,7 +1122,7 @@ public final class TestDataUtil {
 		return betreuung;
 	}
 
-	public static Betreuung createDefaultBetreuung(KindContainer kindContainer) {
+	public static Betreuung createDefaultBetreuungOhneBetreuungPensum(KindContainer kindContainer) {
 		Betreuung betreuung = new Betreuung();
 		betreuung.setInstitutionStammdaten(createDefaultInstitutionStammdaten());
 		betreuung.setBetreuungsstatus(Betreuungsstatus.BESTAETIGT);
@@ -1928,10 +1930,11 @@ public final class TestDataUtil {
 		saveEinstellung(PARAM_MAX_TAGE_ABWESENHEIT, "30", gesuchsperiode, persistence);
 		saveEinstellung(MAX_VERGUENSTIGUNG_VORSCHULE_BABY_PRO_TG, "150", gesuchsperiode, persistence);
 		saveEinstellung(MAX_VERGUENSTIGUNG_VORSCHULE_KIND_PRO_TG, "100", gesuchsperiode, persistence);
-		saveEinstellung(MAX_VERGUENSTIGUNG_SCHULE_PRO_TG, "75", gesuchsperiode, persistence);
+		saveEinstellung(MAX_VERGUENSTIGUNG_KINDERGARTEN_PRO_TG, "75", gesuchsperiode, persistence);
 		saveEinstellung(MAX_VERGUENSTIGUNG_VORSCHULE_BABY_PRO_STD, "11.90", gesuchsperiode, persistence);
 		saveEinstellung(MAX_VERGUENSTIGUNG_VORSCHULE_KIND_PRO_STD, "8.50", gesuchsperiode, persistence);
-		saveEinstellung(MAX_VERGUENSTIGUNG_SCHULE_PRO_STD, "8.50", gesuchsperiode, persistence);
+		saveEinstellung(MAX_VERGUENSTIGUNG_KINDERGARTEN_PRO_STD, "8.50", gesuchsperiode, persistence);
+		saveEinstellung(MAX_VERGUENSTIGUNG_PRIMAR_PRO_STD, "8.50", gesuchsperiode, persistence);
 		saveEinstellung(MAX_MASSGEBENDES_EINKOMMEN, "160000", gesuchsperiode, persistence);
 		saveEinstellung(MIN_MASSGEBENDES_EINKOMMEN, "43000", gesuchsperiode, persistence);
 		saveEinstellung(OEFFNUNGSTAGE_KITA, "240", gesuchsperiode, persistence);
@@ -2386,6 +2389,7 @@ public final class TestDataUtil {
 	public static MitteilungTableFilterDTO createMitteilungTableFilterDTO() {
 		MitteilungTableFilterDTO filterDTO = new MitteilungTableFilterDTO();
 		filterDTO.setSearch(new MitteilungSearchDTO());
+		filterDTO.getSearch().getPredicateObject().setMessageTypes(new MessageTypes[]{MessageTypes.MITTEILUNG, MessageTypes.BETREUUNGSMITTEILUNG});
 		return filterDTO;
 	}
 

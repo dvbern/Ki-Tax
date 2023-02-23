@@ -1,16 +1,18 @@
 /*
- * Ki-Tax: System for the management of external childcare subsidies
- * Copyright (C) 2017 City of Bern Switzerland
+ * Copyright (C) 2023 DV Bern AG, Switzerland
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Affero General Public License for more details.
+ *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
 package ch.dvbern.ebegu.rules;
@@ -217,8 +219,9 @@ public class FamilienabzugAbschnittRule extends AbstractAbschnittRule {
 		@Nonnull Double famGrBeruecksichtigungAbzug,
 		int famGrAnzahlPersonen
 	) {
-		if (this.kinderabzugTyp == KinderabzugTyp.FKJV) {
-			return addAbzugFromKinderFkjv(gesuch, stichtag, famGrBeruecksichtigungAbzug, famGrAnzahlPersonen);
+		if (this.kinderabzugTyp.isFKJV()) {
+			boolean isKinderabzugTypV2 = this.kinderabzugTyp == KinderabzugTyp.FKJV_2;
+			return addAbzugFromKinderFkjv(gesuch, stichtag, famGrBeruecksichtigungAbzug, famGrAnzahlPersonen, isKinderabzugTypV2);
 		}
 		return addAbzugFromKinderAsiv(gesuch, stichtag, famGrBeruecksichtigungAbzug, famGrAnzahlPersonen);
 	}
@@ -254,7 +257,8 @@ public class FamilienabzugAbschnittRule extends AbstractAbschnittRule {
 		@Nonnull Gesuch gesuch,
 		@Nonnull LocalDate stichtag,
 		@Nonnull Double famGrBeruecksichtigungAbzug,
-		int famGrAnzahlPersonen
+		int famGrAnzahlPersonen,
+		boolean isKinderAbzugTypeVersion2
 	) {
 		LocalDate dateToCompare = getRelevantDateForKinder(gesuch.getGesuchsperiode(), stichtag);
 		Familiensituation familiensituation = gesuch.extractFamiliensituation();
@@ -262,12 +266,28 @@ public class FamilienabzugAbschnittRule extends AbstractAbschnittRule {
 		for (KindContainer kindContainer : gesuch.getKindContainers()) {
 			Kind kind = kindContainer.getKindJA();
 			if (kind != null && (dateToCompare == null || kind.getGeburtsdatum().isBefore(dateToCompare))) {
-				famGrAnzahlPersonen++;
-				famGrBeruecksichtigungAbzug+= calculateFKJVKinderabzugForKind(kind, familiensituation, dateToCompare);
+				double beruecksichtigungAbzug = calculateFKJVKinderabzugForKind(kind, familiensituation, dateToCompare);
+				famGrBeruecksichtigungAbzug += beruecksichtigungAbzug;
+				famGrAnzahlPersonen += calculateFKJVAnzahlPersonen(beruecksichtigungAbzug, isKinderAbzugTypeVersion2);
 			}
 		}
 
 		return new AbstractMap.SimpleEntry(famGrBeruecksichtigungAbzug, famGrAnzahlPersonen);
+	}
+
+	private int calculateFKJVAnzahlPersonen(double beruecksichtigungAbzug, boolean isKinderAbzugTypeVersion2) {
+		// in der FKJV Periode 22/23 hatten wir einen Fehler, der die Kinder immer mitzählte, auch wenn es für ein Kind keinen Kinderabzug gab.
+		// dies wird auf die Periode 23/24 geändert. Kinder ohne Kinderabzug zählen nicht zur Familiengrösse und Kinder für die der
+		// halbe oder der ganze Pauschalabzug abgezogen werden kann, zählen ganz zur Familiengrösse
+		if (!isKinderAbzugTypeVersion2) {
+			return 1;
+		}
+
+		if (beruecksichtigungAbzug == 0) {
+			return 0;
+		}
+
+		return 1;
 	}
 
 	private double calculateFKJVKinderabzugForKind(@Nonnull Kind kind, Familiensituation familiensituation, LocalDate dateToCompare) {

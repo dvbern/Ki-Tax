@@ -117,8 +117,8 @@
                             <div ng-if="vm.hasMutationVeranderung() && !vm.hasAnyNewOrStornierteBetreuung" class="well margin-top-20">
                                 <span translate>MUTATION_VERAENDERUNG_1</span>
                                 <ul>
-                                    <li><span>{{vm.getVeraenderungBgString()}}</span></li>
-                                    <li><span>{{vm.getVeraenderungTsString()}}</span></li>
+                                    <li ng-if="vm.veraenderungBG !== 0"><span>{{vm.getVeraenderungBgString()}}</span></li>
+                                    <li ng-if="vm.veraenderungTS !== 0"><span>{{vm.getVeraenderungTsString()}}</span></li>
                                 </ul>
                             </div>
                             <div ng-if="!vm.hasMutationVeranderung() && !vm.hasAnyNewOrStornierteBetreuung" class="well margin-top-20">
@@ -257,14 +257,10 @@
         </div>
 
         <div class="dv-navigation dv-navigation-flex dv-navigation--verfuegen-list">
-            <span class="ie11-fix" dv-show-element
-                  dv-show-allowed-roles="vm.TSRoleUtil.getAdministratorJugendamtRole()"
-                  dv-show-expression="!vm.gesuchModelManager.isGesuchsperiodeReadonly()">
-                <dv-loading-button input-id="button_geprueft" type="button" button-click="vm.setGesuchStatusGeprueft()"
-                                   aria-label="{{'GEPRUEFT' | translate}}" ng-if="vm.showGeprueft()"
-                                   button-disabled="!vm.isFinSitChoosen()">
-                    <span class="uppercase" data-translate="GEPRUEFT"></span>
-                </dv-loading-button>
+
+              <span class="ie11-fix" dv-show-element
+                    dv-show-allowed-roles="vm.TSRoleUtil.getAdministratorOrAmtRole()"
+                    dv-show-expression="!vm.gesuchModelManager.isGesuchsperiodeReadonly()">
                 <dv-demo-feature-wrapper demo-feature="{{vm.demoFeature}}">
                     <button type="button" class="dv-btn cancel-button"
                             id="button_mutationIgnorieren" ng-click="vm.setMutationIgnorieren()"
@@ -273,6 +269,15 @@
                         <span class="uppercase" data-translate="MUTATION_IGNORIEREN"></span>
                     </button>
                 </dv-demo-feature-wrapper>
+              </span>
+            <span class="ie11-fix" dv-show-element
+                  dv-show-allowed-roles="vm.TSRoleUtil.getAdministratorJugendamtRole()"
+                  dv-show-expression="!vm.gesuchModelManager.isGesuchsperiodeReadonly()">
+                <dv-loading-button input-id="button_geprueft" type="button" button-click="vm.setGesuchStatusGeprueft()"
+                                   aria-label="{{'GEPRUEFT' | translate}}" ng-if="vm.showGeprueft()"
+                                   button-disabled="!vm.isFinSitChoosen()">
+                    <span class="uppercase" data-translate="GEPRUEFT"></span>
+                </dv-loading-button>
                 <dv-loading-button input-id="button_verfuegenStarten" button-click="vm.setGesuchStatusVerfuegen()"
                                    aria-label="{{'VERFUEGUNG_STARTEN' | translate}}"
                                    ng-if="vm.showVerfuegenStarten()">

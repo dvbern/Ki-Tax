@@ -29,7 +29,6 @@ import javax.annotation.Nullable;
 
 import ch.dvbern.ebegu.entities.Einstellung;
 import ch.dvbern.ebegu.entities.Gemeinde;
-import ch.dvbern.ebegu.enums.AnspruchBeschaeftigungAbhaengigkeitTyp;
 import ch.dvbern.ebegu.enums.EinschulungTyp;
 import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.enums.KinderabzugTyp;
@@ -241,6 +240,12 @@ public class BetreuungsgutscheinConfigurator {
 		FachstelleAbschnittRule fachstelleAbschnittRule = new FachstelleAbschnittRule(defaultGueltigkeit, locale);
 		addToRuleSetIfRelevantForGemeinde(fachstelleAbschnittRule, einstellungMap);
 
+		// - GeschwisterBonus
+		Einstellung einstellungBgAusstellenBisStufe = einstellungMap.get(EinstellungKey.GEMEINDE_BG_BIS_UND_MIT_SCHULSTUFE);
+		EinschulungTyp bgAusstellenBisUndMitStufe = EinschulungTyp.valueOf(einstellungBgAusstellenBisStufe.getValue());
+		GeschwisterbonusAbschnittRule geschwisterbonusAbschnittRule = new GeschwisterbonusAbschnittRule(bgAusstellenBisUndMitStufe, defaultGueltigkeit, locale);
+		addToRuleSetIfRelevantForGemeinde(geschwisterbonusAbschnittRule, einstellungMap);
+
 		// - Ausserordentlicher Anspruch
 		AusserordentlicherAnspruchAbschnittRule ausserordntl = new AusserordentlicherAnspruchAbschnittRule(defaultGueltigkeit, locale);
 		addToRuleSetIfRelevantForGemeinde(ausserordntl, einstellungMap);
@@ -340,11 +345,6 @@ public class BetreuungsgutscheinConfigurator {
 
 		KitaPlusZuschlagCalcRule kitaPlusZuschlagCalcRule = new KitaPlusZuschlagCalcRule(defaultGueltigkeit, locale);
 		addToRuleSetIfRelevantForGemeinde(kitaPlusZuschlagCalcRule, einstellungMap);
-
-		Einstellung einstellungBgAusstellenBisStufe = einstellungMap.get(EinstellungKey.GEMEINDE_BG_BIS_UND_MIT_SCHULSTUFE);
-		EinschulungTyp bgAusstellenBisUndMitStufe = EinschulungTyp.valueOf(einstellungBgAusstellenBisStufe.getValue());
-		GeschwisterbonusCalcRule geschwisterbonusCalcRule = new GeschwisterbonusCalcRule(bgAusstellenBisUndMitStufe, defaultGueltigkeit, locale);
-		addToRuleSetIfRelevantForGemeinde(geschwisterbonusCalcRule, einstellungMap);
 
 		// - Ausserordentlicher Anspruch: Muss am Schluss gemacht werden, da er alle anderen Regeln überschreiben kann.
 		// Wir haben je eine Anspruch-Regel für ASIV und FKJV, die entsprechend der Einstellungen aktiv sind

@@ -133,9 +133,7 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
         this.ebeguUtil = ebeguUtil;
 
         if(this.gesuchModelManager.getGesuch().status === TSAntragStatus.IGNORIERT) {
-            this.gesuchRS.findLetzteNichtIgnorierteGesuchId(this.gesuchModelManager.getGesuch().id).then(
-                (response: any) => this.letzteIgnorierteGesuchId = response.id
-            );
+            this.loadNeustesVerfuegtesGesuchFuerGesuch();
         }
     }
 
@@ -243,6 +241,7 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
             .then(() => this.gesuchModelManager.mutationIgnorieren())
             .then(() => {
                 this.refreshKinderListe();
+                this.loadNeustesVerfuegtesGesuchFuerGesuch();
             });
     }
 
@@ -939,5 +938,11 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
             gesuchId: this.letzteIgnorierteGesuchId
         };
         this.$state.go('gesuch.verfuegen',navObj);
+    }
+
+    private loadNeustesVerfuegtesGesuchFuerGesuch(): void  {
+        this.gesuchRS.getNeustesVerfuegtesGesuchFuerGesuch(this.gesuchModelManager.getGesuch().id).then(
+            (response: any) => this.letzteIgnorierteGesuchId = response.id
+        );
     }
 }

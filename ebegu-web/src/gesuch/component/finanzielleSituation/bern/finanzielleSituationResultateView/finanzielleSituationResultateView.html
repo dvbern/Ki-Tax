@@ -1,16 +1,18 @@
 <!--
-  ~ Ki-Tax: System for the management of external childcare subsidies
-  ~ Copyright (C) 2017 City of Bern Switzerland
+  ~ Copyright (C) 2023 DV Bern AG, Switzerland
+  ~
   ~ This program is free software: you can redistribute it and/or modify
   ~ it under the terms of the GNU Affero General Public License as
   ~ published by the Free Software Foundation, either version 3 of the
   ~ License, or (at your option) any later version.
+  ~
   ~ This program is distributed in the hope that it will be useful,
   ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
   ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
   ~ GNU Affero General Public License for more details.
+  ~
   ~ You should have received a copy of the GNU Affero General Public License
-  ~ along with this program. If not, see <http://www.gnu.org/licenses/>.
+  ~ along with this program. If not, see <https://www.gnu.org/licenses/>.
   -->
 
 <div class="finanzielle-situation gesuch-modul static-position">
@@ -70,6 +72,12 @@
                                     <dv-bisher
                                         gs="vm.getFinanzielleSituationGS1().finanzielleSituationGS.nettoVermoegen"
                                         ja="vm.getFinanzielleSituationGS1().finanzielleSituationJA.nettoVermoegen"></dv-bisher>
+                                    <dv-eingabe-hint
+                                        [neuer-wert]="vm.getFinanzielleSituationGS1().finanzielleSituationJA.nettoVermoegen"
+                                        [vergleichswert]="vm.getFinanzielleSituationVorMutationGS1().nettoVermoegen"
+                                        [label]="'BISHER' | translate"
+                                        [show-only-if-not-identical]="true"
+                                    ></dv-eingabe-hint>
                                     <dv-error-messages input-id="nettovermoegenGS1" for="vm.form.nettovermoegenGS1.$error"
                                                        class="error"></dv-error-messages>
                                 </div>
@@ -97,6 +105,12 @@
                                     <dv-bisher
                                         gs="vm.getFinanzielleSituationGS1().finanzielleSituationGS.bruttovermoegen"
                                         ja="vm.getFinanzielleSituationGS1().finanzielleSituationJA.bruttovermoegen"></dv-bisher>
+                                    <dv-eingabe-hint
+                                        [neuer-wert]="vm.getFinanzielleSituationGS1().finanzielleSituationJA.bruttovermoegen"
+                                        [vergleichswert]="vm.getFinanzielleSituationVorMutationGS1().bruttovermoegen"
+                                        [label]="'BISHER' | translate"
+                                        [show-only-if-not-identical]="true"
+                                    ></dv-eingabe-hint>
                                     <dv-error-messages input-id="bruttovermoegen1" for="vm.form.bruttovermoegen1.$error"
                                                        class="error"></dv-error-messages>
                                 </div>
@@ -125,6 +139,12 @@
                                     <dv-bisher
                                         gs="vm.getFinanzielleSituationGS2().finanzielleSituationGS.bruttovermoegen"
                                         ja="vm.getFinanzielleSituationGS2().finanzielleSituationJA.bruttovermoegen"></dv-bisher>
+                                    <dv-eingabe-hint
+                                        [neuer-wert]="vm.getFinanzielleSituationGS2().finanzielleSituationJA.bruttovermoegen"
+                                        [vergleichswert]="vm.getFinanzielleSituationVorMutationGS2().bruttovermoegen"
+                                        [label]="'BISHER' | translate"
+                                        [show-only-if-not-identical]="true"
+                                    ></dv-eingabe-hint>
                                     <dv-error-messages input-id="bruttovermoegen2" for="vm.form.bruttovermoegen2.$error"
                                                        class="error"></dv-error-messages>
                                 </div>
@@ -152,6 +172,12 @@
                                     </dv-valueinput>
                                     <dv-bisher gs="vm.getFinanzielleSituationGS1().finanzielleSituationGS.schulden"
                                                ja="vm.getFinanzielleSituationGS1().finanzielleSituationJA.schulden"></dv-bisher>
+                                    <dv-eingabe-hint
+                                        [neuer-wert]="vm.getFinanzielleSituationGS1().finanzielleSituationJA.schulden"
+                                        [vergleichswert]="vm.getFinanzielleSituationVorMutationGS1().schulden"
+                                        [label]="'BISHER' | translate"
+                                        [show-only-if-not-identical]="true"
+                                    ></dv-eingabe-hint>
                                     <dv-error-messages input-id="schulden1"
                                                        for="vm.form.schulden1.$error"
                                                        class="error"></dv-error-messages>
@@ -180,6 +206,12 @@
                                     </dv-valueinput>
                                     <dv-bisher gs="vm.getFinanzielleSituationGS2().finanzielleSituationGS.schulden"
                                                ja="vm.getFinanzielleSituationGS2().finanzielleSituationJA.schulden"></dv-bisher>
+                                    <dv-eingabe-hint
+                                        [neuer-wert]="vm.getFinanzielleSituationGS2().finanzielleSituationJA.schulden"
+                                        [vergleichswert]="vm.getFinanzielleSituationVorMutationGS2().schulden"
+                                        [label]="'BISHER' | translate"
+                                        [show-only-if-not-identical]="true"
+                                    ></dv-eingabe-hint>
                                     <dv-error-messages input-id="schulden2"
                                                        for="vm.form.schulden2.$error"
                                                        class="error"></dv-error-messages>
@@ -207,6 +239,12 @@
                                     <dv-bisher
                                         gs="vm.getFinanzielleSituationGS2().finanzielleSituationGS.nettoVermoegen"
                                         ja="vm.getFinanzielleSituationGS2().finanzielleSituationJA.nettoVermoegen"></dv-bisher>
+                                    <dv-eingabe-hint
+                                        [neuer-wert]="vm.getFinanzielleSituationGS2().finanzielleSituationJA.nettoVermoegen"
+                                        [vergleichswert]="vm.getFinanzielleSituationVorMutationGS2().nettoVermoegen"
+                                        [label]="'BISHER' | translate"
+                                        [show-only-if-not-identical]="true"
+                                    ></dv-eingabe-hint>
                                     <dv-error-messages input-id="nettovermoegenGS2" for="vm.form.nettovermoegenGS2.$error"
                                                        class="error"></dv-error-messages>
                                 </div>

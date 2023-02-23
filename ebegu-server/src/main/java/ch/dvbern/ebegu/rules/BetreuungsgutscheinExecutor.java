@@ -99,7 +99,6 @@ public class BetreuungsgutscheinExecutor {
 		AnspruchFristRule anspruchFristRule = new AnspruchFristRule(isDebug);
 		AbschlussNormalizer abschlussNormalizerOhneMonate = new AbschlussNormalizer(false, isDebug);
 		MonatsRule monatsRule = new MonatsRule(isDebug);
-		KostenAnteilRule kostenAnteilRule = new KostenAnteilRule(isDebug);
 		Boolean anspruchMonatsweise = kibonAbschlussRulesParameters.get(EinstellungKey.ANSPRUCH_MONATSWEISE).getValueAsBoolean();
 		MonatsMergerRule monatsMergerRule = new MonatsMergerRule(isDebug, anspruchMonatsweise);
 		Boolean pauschaleRueckwirkendAuszahlen = kibonAbschlussRulesParameters.get(EinstellungKey.FKJV_PAUSCHALE_RUECKWIRKEND).getValueAsBoolean();
@@ -113,8 +112,6 @@ public class BetreuungsgutscheinExecutor {
 		zeitabschnitte = abschlussNormalizerOhneMonate.executeIfApplicable(platz, zeitabschnitte);
 		// Nach dem Durchlaufen aller Rules noch die Monatsstückelungen machen
 		zeitabschnitte = monatsRule.executeIfApplicable(platz, zeitabschnitte);
-		// Berechnet die effektiven Kosten nach Länge des Zeitabschnitts
-		zeitabschnitte = kostenAnteilRule.executeIfApplicable(platz, zeitabschnitte);
 		// Danach den Anspruch nur noch monatsweise berechnet werden
 		zeitabschnitte = monatsMergerRule.executeIfApplicable(platz, zeitabschnitte);
 		// Ganz am Ende der Berechnung mergen wir das aktuelle Ergebnis mit der Verfügung des letzten Gesuches

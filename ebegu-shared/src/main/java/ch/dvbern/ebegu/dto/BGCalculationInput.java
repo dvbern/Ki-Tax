@@ -186,14 +186,14 @@ public class BGCalculationInput {
 
 	private PensumUnits pensumUnit = PensumUnits.PERCENTAGE;
 
-	private BigDecimal kostenAnteilMonat = BigDecimal.ZERO;
-
 	private boolean isAuszahlungAnEltern = false;
 
 	//für TFO Luzern
 	private BigDecimal stuendlicheVollkosten;
 
 	private BigDecimal percentage;
+
+	private boolean isEkvAccepted = false;
 
 	public BGCalculationInput(@Nonnull VerfuegungZeitabschnitt parent, @Nonnull RuleValidity ruleValidity) {
 		this.parent = parent;
@@ -252,13 +252,13 @@ public class BGCalculationInput {
 		this.minimalErforderlichesPensum = toCopy.minimalErforderlichesPensum;
 		this.rueckwirkendReduziertesPensumRest = toCopy.rueckwirkendReduziertesPensumRest;
 		this.kitaPlusZuschlag = toCopy.kitaPlusZuschlag;
-		this.kostenAnteilMonat = toCopy.kostenAnteilMonat;
 		this.isKesbPlatzierung = toCopy.isKesbPlatzierung;
 		this.geschwisternBonusKind2 = toCopy.geschwisternBonusKind2;
 		this.geschwisternBonusKind3 = toCopy.geschwisternBonusKind3;
 		this.besondereBeduerfnisseZuschlag = toCopy.besondereBeduerfnisseZuschlag;
 		this.stuendlicheVollkosten = toCopy.stuendlicheVollkosten;
 		this.isAuszahlungAnEltern = toCopy.isAuszahlungAnEltern;
+		this.isEkvAccepted = toCopy.isEkvAccepted;
 	}
 
 	@Nonnull
@@ -711,14 +711,6 @@ public class BGCalculationInput {
 		isAuszahlungAnEltern = auszahlungAnEltern;
 	}
 
-	public BigDecimal getKostenAnteilMonat() {
-		return kostenAnteilMonat;
-	}
-
-	public void setKostenAnteilMonat(BigDecimal kostenAnteilMonat) {
-		this.kostenAnteilMonat = kostenAnteilMonat;
-	}
-
 	@Override
 	public String toString() {
 		final StringBuilder sb = new StringBuilder("BGCalculationInput{");
@@ -800,8 +792,6 @@ public class BGCalculationInput {
 		this.betreuungsangebotTyp =
 			this.betreuungsangebotTyp != null ? this.betreuungsangebotTyp : other.betreuungsangebotTyp;
 
-		this.kostenAnteilMonat = this.kostenAnteilMonat.add(other.kostenAnteilMonat);
-
 		//Minimal erforderliches Pensum ist immer nur auf dem Vorgänger gesetzt und muss einfach übernommen werden.
 		this.minimalErforderlichesPensum = other.minimalErforderlichesPensum;
 
@@ -828,6 +818,7 @@ public class BGCalculationInput {
 		this.geschwisternBonusKind2 = this.geschwisternBonusKind2 || other.geschwisternBonusKind2;
 		this.geschwisternBonusKind3 = this.geschwisternBonusKind3 || other.geschwisternBonusKind3;
 		this.isAuszahlungAnEltern = this.isAuszahlungAnEltern || other.isAuszahlungAnEltern;
+		this.isEkvAccepted = this.isEkvAccepted || other.isEkvAccepted;
 
 		// Die Felder betreffend Familienabzug können nicht linear addiert werden. Es darf also nie Überschneidungen geben!
 		if (other.getAbzugFamGroesse() != null) {
@@ -879,14 +870,10 @@ public class BGCalculationInput {
 			|| other.bezahltVollkostenMonatAnteil.compareTo(BigDecimal.ZERO) > 0) && this.percentage != null &&
 			other.getBetreuungspensumProzent().compareTo(BigDecimal.ZERO) > 0
 			&& this.getBetreuungspensumProzent().compareTo(BigDecimal.ZERO) > 0 &&
-			(this.getBetreuungspensumProzent().compareTo(other.getBetreuungspensumProzent()) != 0 ||
-				this.getKostenAnteilMonat().compareTo(other.getKostenAnteilMonat()) != 0)) {
+			this.getBetreuungspensumProzent().compareTo(other.getBetreuungspensumProzent()) != 0) {
 
 			if (this.bezahltVollkostenMonatAnteil.compareTo(BigDecimal.ZERO) > 0
 				&& other.bezahltVollkostenMonatAnteil.compareTo(BigDecimal.ZERO) <= 0) {
-				this.setKostenAnteilMonat(calculatePercentage(calculatePercentageBackward(
-					other.getKostenAnteilMonat(),
-					other.percentage.doubleValue()), this.percentage.doubleValue()));
 				this.setBetreuungspensumProzent(calculatePercentage(calculatePercentageBackward(
 					other.getBetreuungspensumProzent(),
 					other.percentage.doubleValue()), this.percentage.doubleValue()));
@@ -898,9 +885,6 @@ public class BGCalculationInput {
 			}
 			if (other.bezahltVollkostenMonatAnteil.compareTo(BigDecimal.ZERO) > 0
 				&& this.bezahltVollkostenMonatAnteil.compareTo(BigDecimal.ZERO) <= 0) {
-				other.setKostenAnteilMonat(calculatePercentage(calculatePercentageBackward(
-					this.getKostenAnteilMonat(),
-					this.percentage.doubleValue()), other.percentage.doubleValue()));
 				other.setBetreuungspensumProzent(calculatePercentage(calculatePercentageBackward(
 					this.getBetreuungspensumProzent(),
 					this.percentage.doubleValue()), other.percentage.doubleValue()));
@@ -952,6 +936,11 @@ public class BGCalculationInput {
 		this.tsInputMitBetreuung.calculatePercentage(percentage);
 		this.tsInputOhneBetreuung.calculatePercentage(percentage);
 		this.bezahltVollkostenMonatAnteil = calculatePercentage(this.bezahltVollkostenMonatAnteil, percentage);
+
+	}
+
+	public void roundValuesAfterCalculateProportinaly() {
+		this.massgebendesEinkommenVorAbzugFamgr = MathUtil.GANZZAHL.from(this.massgebendesEinkommenVorAbzugFamgr);
 	}
 
 	private boolean isPercentCaluclable(double percent) {
@@ -1052,7 +1041,8 @@ public class BGCalculationInput {
 			this.geschwisternBonusKind2 == other.geschwisternBonusKind2 &&
 			this.geschwisternBonusKind3 == other.geschwisternBonusKind3 &&
 			MathUtil.isSame(this.stuendlicheVollkosten, other.stuendlicheVollkosten) &&
-			this.isAuszahlungAnEltern == other.isAuszahlungAnEltern;
+			this.isAuszahlungAnEltern == other.isAuszahlungAnEltern &&
+			this.isEkvAccepted == other.isEkvAccepted;
 	}
 
 	@SuppressWarnings("PMD.CompareObjectsWithEquals")
@@ -1196,5 +1186,13 @@ public class BGCalculationInput {
 
 	public void setStuendlicheVollkosten(BigDecimal stuendlicheVollkosten) {
 		this.stuendlicheVollkosten = stuendlicheVollkosten;
+	}
+
+	public boolean isEkvAccepted() {
+		return isEkvAccepted;
+	}
+
+	public void setEkvAccepted(boolean ekvAccepted) {
+		isEkvAccepted = ekvAccepted;
 	}
 }

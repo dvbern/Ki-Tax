@@ -532,13 +532,7 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 
 		// vorgänger zurücksetzen
 		Objects.requireNonNull(anmeldung.getVorgaengerId(), "Eine Anmeldung kann nicht ignoriert werden, wenn sie neu ist");
-		AbstractAnmeldung vorgaenger = findAnmeldung(anmeldung.getVorgaengerId())
-			.orElseThrow(() -> new EbeguEntityNotFoundException(
-				"resetMutierteAnmeldungen",
-				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
-				anmeldung.getVorgaengerId()));
-		vorgaenger.setAnmeldungMutationZustand(AnmeldungMutationZustand.AKTUELLE_ANMELDUNG);
-		persistence.merge(vorgaenger);
+		setVorgaengerAnmeldungToGueltig(anmeldung);
 
 		anmeldung.setGueltig(false);
 		anmeldung.setStatusVorIgnorieren(anmeldung.getBetreuungsstatus());
@@ -546,6 +540,38 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 		anmeldung.setAnmeldungMutationZustand(AnmeldungMutationZustand.IGNORIERT);
 
 		return persistence.merge(anmeldung);
+	}
+
+	private void setVorgaengerAnmeldungToGueltig(@Nonnull AbstractAnmeldung anmeldung) {
+		AbstractAnmeldung vorgaenger = findVorgaengerAnmeldungNotIgnoriert(anmeldung);
+		vorgaenger.setAnmeldungMutationZustand(AnmeldungMutationZustand.AKTUELLE_ANMELDUNG);
+		vorgaenger.setGueltig(true); // Die alte Anmeldung ist wieder die gueltige
+		persistence.merge(vorgaenger);
+	}
+
+	@Override
+	@Nonnull
+	public AbstractAnmeldung findVorgaengerAnmeldungNotIgnoriert(AbstractAnmeldung betreuung) {
+		if (betreuung.getVorgaengerId() == null) {
+			//Kann eigentlich nicht eintretten, da das Erst-Gesuch nicht ingoriert werden kann und somit immer ein Vorgänger
+			//gfunden werden kann, welcher nicht ignoiert ist
+			throw new EbeguRuntimeException(
+				"findVorgaengerAnmeldungNotIgnoriert",
+				ErrorCodeEnum.ERROR_NICHT_IGNORIERTER_VORGAENGER_NOT_FOUND,
+				betreuung.getId());
+		}
+
+		AbstractAnmeldung vorgaenger = findAnmeldung(betreuung.getVorgaengerId())
+			.orElseThrow(() -> new EbeguEntityNotFoundException(
+				"findVorgaengerAnmeldungNotIgnoriert",
+				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
+				betreuung.getVorgaengerId()));
+
+		if (vorgaenger.getBetreuungsstatus().isIgnoriert()) {
+			return findVorgaengerAnmeldungNotIgnoriert(vorgaenger);
+		}
+
+		return vorgaenger;
 	}
 
 	/**
@@ -1296,7 +1322,7 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 
 		Predicate predicateMutation = cb.equal(joinGesuch.get(Gesuch_.typ), AntragTyp.MUTATION);
 		Predicate predicateFlag = cb.isNull(root.get(Betreuung_.betreuungMutiert));
-		Predicate predicateStatus = joinGesuch.get(Gesuch_.status).in(AntragStatus.getAllVerfuegtStates());
+		Predicate predicateStatus = joinGesuch.get(Gesuch_.status).in(AntragStatus.getAllVerfuegtNotIgnoriertStates());
 
 		query.where(predicateMutation, predicateFlag, predicateStatus);
 		query.orderBy(cb.desc(joinGesuch.get(Gesuch_.laufnummer)));
@@ -1319,7 +1345,7 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 
 		Predicate predicateMutation = cb.equal(joinGesuch.get(Gesuch_.typ), AntragTyp.MUTATION);
 		Predicate predicateFlag = cb.isNull(joinBetreuung.get(Betreuung_.abwesenheitMutiert));
-		Predicate predicateStatus = joinGesuch.get(Gesuch_.status).in(AntragStatus.getAllVerfuegtStates());
+		Predicate predicateStatus = joinGesuch.get(Gesuch_.status).in(AntragStatus.getAllVerfuegtNotIgnoriertStates());
 
 		query.where(predicateMutation, predicateFlag, predicateStatus);
 		query.orderBy(cb.desc(joinGesuch.get(Gesuch_.laufnummer)));
