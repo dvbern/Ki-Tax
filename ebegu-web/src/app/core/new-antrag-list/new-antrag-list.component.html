@@ -14,14 +14,9 @@
   ~ You should have received a copy of the GNU Affero General Public License
   ~ along with this program. If not, see <https://www.gnu.org/licenses/>.
   -->
-<dv-checkbox-x
-    [model]="searchInaktivePerioden"
-    [label]="'SEARCH_INAKTIVE_PERIODEN' | translate"
-    (modelChange)="changeSearchInaktivePerioden($event)"
-></dv-checkbox-x>
 <div class="dv-table">
     <div class="row">
-        <div class="col-md-10">
+        <div class="col-md-8">
             <div id="titleText">
                 <h3 class="ng-scope" *ngIf="title">{{title}}</h3>
                 <h3 class="ng-scope" *ngIf="!title" translate>FAELLE_LIST</h3>
@@ -30,8 +25,18 @@
                 <i class="fa fa-undo" (click)="resetFilter()"></i>
             </div>
         </div>
-        <div class="col-md-2 text-right">
-            <h3>{{totalItems}}</h3>
+        <div class="col-md-4">
+            <div id="box-right">
+                <dv-checkbox-x
+                    *ngIf="showSearchInaktivePerioden()"
+                    [ngModel]="searchInaktivePerioden"
+                    name="includeClosed"
+                    id="includeClosed"
+                    (ngModelChange)="changeSearchInaktivePerioden($event)"
+                    [label]="'SEARCH_INAKTIVE_PERIODEN' | translate">
+                </dv-checkbox-x>
+                <h3>{{totalItems}}</h3>
+            </div>
         </div>
     </div>
 

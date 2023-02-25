@@ -50,6 +50,7 @@ import {TSAntragDTO} from '../../../models/TSAntragDTO';
 import {TSAntragSearchresultDTO} from '../../../models/TSAntragSearchresultDTO';
 import {TSBenutzerNoDetails} from '../../../models/TSBenutzerNoDetails';
 import {TSGemeinde} from '../../../models/TSGemeinde';
+import {TSGesuchsperiode} from '../../../models/TSGesuchsperiode';
 import {TSInstitution} from '../../../models/TSInstitution';
 import {EbeguUtil} from '../../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
@@ -298,9 +299,9 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges, Aft
 
     public ngOnInit(): void {
         this.updateInstitutionenList();
-        this.updateGesuchsperiodenList();
         this.updateGemeindenList();
         this.initStateStores();
+        this.updateGesuchsperiodenList();
         this.initFilter(true);
         this.initDisplayedColumns();
         this.initBenutzerLists();
@@ -382,10 +383,22 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges, Aft
 
     public updateGesuchsperiodenList(): void {
         this.gesuchsperiodeRS.getAllGesuchsperioden().then(response => {
+            this.gesuchsperiodenList = [];
             response.forEach(gesuchsperiode => {
-                this.gesuchsperiodenList.push(gesuchsperiode.gesuchsperiodeString);
+                if (this.showPeriodeInList(gesuchsperiode)) {
+                    this.gesuchsperiodenList.push(gesuchsperiode.gesuchsperiodeString);
+                }
             });
         });
+    }
+
+    private showPeriodeInList(periode: TSGesuchsperiode): boolean {
+        // falls der User die inaktiven Perioden nicht rausfiltern kann, dann wird die
+        // periode immer gezeigt
+        if (!this.showSearchInaktivePerioden()) {
+            return true;
+        }
+        return this.searchInaktivePerioden || periode.isAktiv();
     }
 
     private updateGemeindenList(): void {
@@ -766,6 +779,14 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges, Aft
 
     public changeSearchInaktivePerioden(searchInaktivenPerioden: boolean): void {
         this.searchInaktivePerioden = searchInaktivenPerioden;
+        this.updateGesuchsperiodenList();
         this.loadData();
+    }
+
+    // wenn externe daten in diesen Component eingegeben werden,
+    // dann zeigen wir diese Checkbox nicht, weil sie nur für die Abruf der Daten
+    // über loadData() innerhalb dieses Components relevant ist.
+    public showSearchInaktivePerioden(): boolean {
+        return EbeguUtil.isNullOrUndefined(this.data$);
     }
 }
