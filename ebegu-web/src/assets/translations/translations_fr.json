@@ -3002,5 +3002,6 @@
     "GESUCH_IGNORIERT_HELP": "La commune peut ignorer des changements à certaines conditions, par exemple<br>-    lorsque la situation financière a été adaptée mais que la modification entraîne uniquement une faible réduction du bon de garde ou une légère hausse du tarif des modules d’école à journée continue. ou<br>-    lorsque l’adaptation ne change rien au montant du bon de garde ou au tarif des modules d’école à journée continue.<br>-    Par contre, la commune ne peut pas ignorer les changements qui entraînent une hausse du montant du bon de garde ou une baisse du tarif des modules d’école à journée continue.",
     "MUTATION_OEFFNEN": "Ouvrir le changement",
     "FIN_SIT_GELOESCHT": "La situation financière a été effacée",
+    "SEARCH_INAKTIVE_PERIODEN": "Inaktive Perioden durchsuchen",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

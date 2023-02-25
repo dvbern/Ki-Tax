@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2021 DV Bern AG, Switzerland
+ * Copyright (C) 2023 DV Bern AG, Switzerland
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -8,11 +8,11 @@
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 import {
     AfterViewInit,
@@ -250,6 +250,9 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges, Aft
 
     public filterPredicate: DVAntragListFilter;
 
+    public searchInaktivePerioden = false;
+    private searchInaktivePeriodenId: string;
+
     private readonly unsubscribe$ = new Subject<void>();
 
     // used to cancel the previous subscription so we don't have two data loads racing each other
@@ -305,6 +308,7 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges, Aft
 
     public ngAfterViewInit(): void {
         this.initSort();
+        this.initSearchInaktivePerioden();
         this.initTable();
     }
 
@@ -402,6 +406,13 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges, Aft
         this.filterChange.emit(this.filterPredicate);
     }
 
+    private initSearchInaktivePerioden(): void {
+        if (this.stateStoreId && this.stateStore.has(this.searchInaktivePeriodenId)) {
+            const stored = this.stateStore.get(this.searchInaktivePeriodenId) as { searchInaktivePerioden: boolean };
+            this.searchInaktivePerioden = stored.searchInaktivePerioden;
+        }
+    }
+
     public ngOnDestroy(): void {
         this.unsubscribe$.next();
         this.unsubscribe$.complete();
@@ -421,7 +432,8 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges, Aft
             search: {
                 predicateObject: this.filterPredicate
             },
-            sort: this.sort
+            sort: this.sort,
+            onlyAktivePerioden: !this.searchInaktivePerioden
         };
         const dataToLoad$: Observable<DVAntragListItem[]> = this.data$ ?
             this.data$ :
@@ -696,6 +708,7 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges, Aft
         }
         this.sortId = `${this.stateStoreId}-sort`;
         this.filterId = `${this.stateStoreId}-filter`;
+        this.searchInaktivePeriodenId = `${this.stateStoreId}-searchInaktivePerioden`;
 
         this.transitionService.onStart({exiting: this.uiRouterGlobals.$current.name}, () => {
             if (this.sort.predicate) {
@@ -706,6 +719,7 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges, Aft
             }
 
             this.stateStore.store(this.filterId, this.filterPredicate);
+            this.stateStore.store(this.searchInaktivePeriodenId, {searchInaktivePerioden: this.searchInaktivePerioden});
         });
 
     }
@@ -748,5 +762,10 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges, Aft
             this.userListGemeindeantraege = response;
             this.changeDetectorRef.markForCheck();
         });
+    }
+
+    public changeSearchInaktivePerioden(searchInaktivenPerioden: boolean): void {
+        this.searchInaktivePerioden = searchInaktivenPerioden;
+        this.loadData();
     }
 }
