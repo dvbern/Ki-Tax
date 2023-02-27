@@ -3103,5 +3103,6 @@
     "GESUCH_IGNORIERT_HELP": "Die Gemeinde kann Mutationen unter bestimmten Bedingungen ignorieren. Ignorieren ist Z.B. möglich <br>-    wenn die finanziellen Verhältnisse angepasst wurden und der Betreuungsgutschein geringfügig tiefer/ Tageschultarif geringfügig höher ausfällt. Oder<br>-    wenn sich der Betreuungsgutschein /Tagesschultarif durch die Mutation nicht verändert.<br>-    Mutationen, die zu einem <b>höheren</b> Betreuungsgutschein/<b>tieferen</b> Tagesschultarif führen, kann die Gemeinde nicht ignorieren.",
     "MUTATION_OEFFNEN": "Mutation öffnen",
     "FIN_SIT_GELOESCHT": "Finanzielle Situation gelöscht",
+    "FREIGABEQUITTUNG_WARNUNG": "",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

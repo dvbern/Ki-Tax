@@ -1,16 +1,18 @@
 /*
- * Ki-Tax: System for the management of external childcare subsidies
- * Copyright (C) 2017 City of Bern Switzerland
+ * Copyright (C) 2023 DV Bern AG, Switzerland
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Affero General Public License for more details.
+ *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
 import {TranslateService} from '@ngx-translate/core';
@@ -250,5 +252,11 @@ export class FreigabeViewController extends AbstractGesuchViewController<any> {
             return this.$translate.instant('MUTATION_FREIGEBEN');
         }
         return this.$translate.instant('ANTRAG_EINREICHEN');
+    }
+
+    // nicht alle mandanten wollen hier eine Warnung. Wir zeigen diese nur, falls die Übersetzung nicht leer ist.
+    public showFreigabeWarning(): boolean {
+        return this.isFreigabequittungAusstehend()
+        && this.$translate.instant('FREIGABEQUITTUNG_WARNUNG').length;
     }
 }
