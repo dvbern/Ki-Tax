@@ -21,8 +21,10 @@ import {mergeMap} from 'rxjs/operators';
 import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
 import {DvNgRemoveDialogComponent} from '../../../app/core/component/dv-ng-remove-dialog/dv-ng-remove-dialog.component';
 import {CONSTANTS} from '../../../app/core/constants/CONSTANTS';
+import {TSDemoFeature} from '../../../app/core/directive/dv-hide-feature/TSDemoFeature';
 import {ErrorService} from '../../../app/core/errors/service/ErrorService';
 import {LogFactory} from '../../../app/core/logging/LogFactory';
+import {DemoFeatureRS} from '../../../app/core/service/demoFeatureRS.rest';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {isAtLeastFreigegeben} from '../../../models/enums/TSAntragStatus';
 import {TSEingangsart} from '../../../models/enums/TSEingangsart';
@@ -67,6 +69,8 @@ export class FamiliensituationViewXComponent extends AbstractGesuchViewX<TSFamil
     public situationFKJV = false;
     public gesuchstellerKardinalitaetValues: Array<TSGesuchstellerKardinalitaet>;
     public unterhaltsvereinbarungAnswerValues: Array<TSUnterhaltsvereinbarungAnswer>;
+    public gesuchBeendenDemoFeature = TSDemoFeature.GESUCH_BEENDEN_FAMSIT;
+    public demoFeatureGesuchBeendenFamSitActive: boolean;
 
     public constructor(
         protected readonly gesuchModelManager: GesuchModelManager,
@@ -77,7 +81,8 @@ export class FamiliensituationViewXComponent extends AbstractGesuchViewX<TSFamil
         private readonly $translate: TranslateService,
         private readonly familiensituationRS: FamiliensituationRS,
         private readonly einstellungRS: EinstellungRS,
-        private readonly authService: AuthServiceRS
+        private readonly authService: AuthServiceRS,
+        private readonly demoFeatureRS: DemoFeatureRS
     ) {
 
         super(gesuchModelManager,
@@ -89,6 +94,8 @@ export class FamiliensituationViewXComponent extends AbstractGesuchViewX<TSFamil
         this.gesuchstellerKardinalitaetValues = getTSGesuchstellerKardinalitaetValues();
         this.unterhaltsvereinbarungAnswerValues = getTSUnterhaltsvereinbarungAnswerValues();
         this.initViewModel();
+        demoFeatureRS.isDemoFeatureAllowed(this.gesuchBeendenDemoFeature)
+            .then(isAllowed => this.demoFeatureGesuchBeendenFamSitActive = isAllowed);
     }
 
     public ngOnInit(): void {

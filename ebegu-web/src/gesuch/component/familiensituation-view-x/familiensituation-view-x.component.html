@@ -103,7 +103,7 @@
 					</div>
 
                     <!--Geteilte Obhut-->
-                    <div class="row" *ngIf="showFragePartnerWieBisher()">
+                    <div class="row" *ngIf="showFragePartnerWieBisher()" [dvDemoFeature]="gesuchBeendenDemoFeature">
                         <div class="col-xs-12 dv-input-container-question">
                             <div class="form-group">
                                 <span class="ebegu-h1 required">
@@ -114,7 +114,7 @@
                                 </span>
                                 <dv-radio-container-x>
                                     <mat-radio-group [(ngModel)]="getFamiliensituation().partnerIdentischMitVorgesuch"
-                                                     [required]="true"
+                                                     [required]="demoFeatureGesuchBeendenFamSitActive"
                                                      #partnerIdentischMitVorgesuch="ngModel"
                                                      name="partnerIdentischMitVorgesuch"
                                                      class="input-element sp"
