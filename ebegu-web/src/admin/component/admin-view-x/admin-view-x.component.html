@@ -88,9 +88,9 @@
                                            #proeprtyValue="ngModel"
                                            [maxlength]="4000" class="smallfont">
                                 </div>
-                                <div class="col-md-12" *ngIf="applicationProperty.value.split(',' ).length > 1" >
+                                <div class="col-md-12" *ngIf="getApplicationPropertyArray().length > 1" >
                                     <div>
-                                        <ul *ngFor="let value of applicationProperty.value.split(',')">
+                                        <ul *ngFor="let value of getApplicationPropertyArray()">
                                             <li>{{value}}</li>
                                         </ul>
                                     </div>

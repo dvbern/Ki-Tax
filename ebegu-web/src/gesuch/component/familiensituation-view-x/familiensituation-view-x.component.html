@@ -27,8 +27,15 @@
 			<p *ngIf="isMutation()" translate>MUTATION_FAMSITUATION_HINT</p>
 			<p *ngIf="showError()" role="alert" translate
 			   class="dv-error-messages">ERROR_DATUM_GESETZT_BEI_MUTATION</p>
-            <p *ngIf="isNotPartnerIdentischMitVorgesuch()"> {{getNotPertnerIdentischMitVorgesuchWarning()}}</p>
 		</div>
+        <div class="row" *ngIf="isNotPartnerIdentischMitVorgesuch()">
+            <div class="col-xs-12">
+                <div class="well well-status-warten minus-margin">
+                    <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
+                    <span>{{getNotPertnerIdentischMitVorgesuchWarning()}}</span>
+                </div>
+            </div>
+        </div>
 	</div>
 	<div class="row">
 		<div class="col-md-12">
@@ -58,8 +65,6 @@
 													 [korrektur]="getFamiliensituation()?.aenderungPer"></dv-bisher-x>
 									</div>
 								</div>
-
-
 							</dv-input-container>
 						</div>
 					</div>
@@ -98,22 +103,23 @@
 					</div>
 
                     <!--Geteilte Obhut-->
-                    <div class="row" *ngIf="showFragePartnerWieBisher()">
+                    <div class="row" *ngIf="showFragePartnerWieBisher()" [dvDemoFeature]="gesuchBeendenDemoFeature">
                         <div class="col-xs-12 dv-input-container-question">
                             <div class="form-group">
                                 <span class="ebegu-h1 required">
-                                    <span translate
-                                          [translateParams]="{namegs2: getNameGesuchsteller2()}">
-                                    FAMILIENSITUATION_FRAGE_BISHERIGER_PARTNER</span>
+                                    <span>{{ 'FAMILIENSITUATION_FRAGE_PARTNERIDENTISCH' | translate: {
+                                        namegs2: getNameGesuchsteller2()
+                                    }
+                                        }}</span>
                                 </span>
                                 <dv-radio-container-x>
                                     <mat-radio-group [(ngModel)]="getFamiliensituation().partnerIdentischMitVorgesuch"
-                                                     [required]="true"
+                                                     [required]="demoFeatureGesuchBeendenFamSitActive"
                                                      #partnerIdentischMitVorgesuch="ngModel"
                                                      name="partnerIdentischMitVorgesuch"
                                                      class="input-element sp"
-                                                     [disabled]="!(showFragePartnerWieBisher())"
-                                                     aria-label="{{ 'FAMILIENSITUATION_FRAGE_BISHERIGER_PARTNER' |translate }}"
+                                                     [disabled]="isGesuchReadonly()"
+                                                     aria-label="{{ 'FAMILIENSITUATION_FRAGE_PARTNERIDENTISCH' | translate }}}"
                                                      aria-described-by="partnerIdentischMitVorgesuch-error">
                                         <mat-radio-button [value]="true">{{'LABEL_JA' | translate}}</mat-radio-button>
                                         <mat-radio-button [value]="false">{{'LABEL_NEIN' | translate}}</mat-radio-button>

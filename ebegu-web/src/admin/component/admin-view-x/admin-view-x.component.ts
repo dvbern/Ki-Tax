@@ -16,10 +16,10 @@ import {ReindexRS} from '../../service/reindexRS.rest';
 const LOG = LogFactory.createLog('AdminViewXComponent');
 
 @Component({
-  selector: 'dv-admin-view-x',
-  templateUrl: './admin-view-x.component.html',
-  styleUrls: ['./admin-view-x.component.less'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+    selector: 'dv-admin-view-x',
+    templateUrl: './admin-view-x.component.html',
+    styleUrls: ['./admin-view-x.component.less'],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AdminViewXComponent extends AbstractAdminViewX implements OnInit {
 
@@ -29,8 +29,8 @@ export class AdminViewXComponent extends AbstractAdminViewX implements OnInit {
 
     public applicationProperty: TSApplicationProperty;
     public displayedCollection: MatTableDataSource<TSApplicationProperty>;
-    public displayedColumns: string[] =  ['name', 'value', 'timestampErstellt'];
-    public filterColumns: string[] =  ['filter'];
+    public displayedColumns: string[] = ['name', 'value', 'timestampErstellt'];
+    public filterColumns: string[] = ['filter'];
     public reindexInProgress: boolean = false;
     public recreateAlleFaelleInProgress: boolean = false;
 
@@ -57,10 +57,12 @@ export class AdminViewXComponent extends AbstractAdminViewX implements OnInit {
         // eslint-disable-next-line
         if (this.applicationProperty.name === 'STADT_BERN_ASIV_CONFIGURED'
             && this.applicationProperty.value === 'true') {
-            this.dvDialog.open(DvNgRemoveDialogComponent, {data : {
+            this.dvDialog.open(DvNgRemoveDialogComponent, {
+                data: {
                     title: 'CREATE_MASSENMUTATION_BERN_DIALOG_TITLE',
                     text: 'CREATE_MASSENMUTATION_BERN_DIALOG_TEXT'
-            }}).afterClosed().subscribe(() => {
+                }
+            }).afterClosed().subscribe(() => {
                 this.doSave();
             }, err => {
                 LOG.error(err);
@@ -82,6 +84,10 @@ export class AdminViewXComponent extends AbstractAdminViewX implements OnInit {
 
     public editRow(row: TSApplicationProperty): void {
         this.applicationProperty = row;
+    }
+
+    public getApplicationPropertyArray(): string[] {
+        return this.applicationProperty.value.split(',');
     }
 
     public resetForm(): void {
