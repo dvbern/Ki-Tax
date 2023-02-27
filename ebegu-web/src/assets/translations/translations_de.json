@@ -1405,7 +1405,7 @@
     "MUTATIONSMELDUNG_UEBERNEHMEN_BESCHREIBUNG": "Die eingegebenen Daten werden der bestehenden Mutation bzw. einer neuen Mutation hinzugefügt",
     "MUTATIONSMELDUNG_IGNORIEREN": "Möchten Sie die Mitteilung zur Steuerveranlagung ignorieren?",
     "VERANLAGUNGSMITTEILUNG_UEBERNEHMEN": "Möchten Sie die Änderung der finanziellen Verhältnisse zur Mutation hinzufügen?",
-    "VERANLAGUNGSMITTEILUNG_UEBERNEHMEN_BESCHREIBUNG": "Die Daten werden aus der Steuerveranlagung abgerufen und der bestehenden bzw. Einer neuen Mutation hinzugefügt.",
+    "VERANLAGUNGSMITTEILUNG_UEBERNEHMEN_BESCHREIBUNG": "Die Daten werden aus der Steuerveranlagung abgerufen und einer neuen Mutation hinzugefügt.",
     "ZAHLUNG_FAELLIGKEIT": "Fälligkeitsdatum",
     "ZAHLUNG_TOTAL": "Betrag",
     "ZAHLUNG_PAIN001": "Zahlungsdatei",
