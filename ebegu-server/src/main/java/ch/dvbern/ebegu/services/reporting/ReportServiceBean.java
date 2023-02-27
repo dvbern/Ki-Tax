@@ -1496,7 +1496,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		row.setBgPensumKanton(bgPensumKanton);
 		row.setBgPensumGemeinde(bgPensumGemeinde);
 		row.setBgPensumTotal(bgPensumTotal);
-		row.setBgStunden(zeitabschnitt.getBetreuungspensumZeiteinheit());
+		row.setBgStunden(zeitabschnitt.getBgPensumZeiteinheit());
 		// Wir koennen nicht die gespeicherte Zeiteinheit nehmen, da diese entweder Prozent oder Tage/Stunden ist
 		// Daher fix TAGE fuer Kita und STUNDEN fuer TFO
 		PensumUnits zeiteinheit =

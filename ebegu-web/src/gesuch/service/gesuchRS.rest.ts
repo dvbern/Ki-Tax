@@ -255,6 +255,12 @@ export class GesuchRS implements IEntityRS {
         return this.$http.post(url, null).then(response => this.ebeguRestUtil.parseGesuch(new TSGesuch(), response.data));
     }
 
+    public simulateNewVerfuegung(id: string): IPromise<string> {
+        const url = `${this.serviceURL}/simulateNewVerfuegung/${encodeURIComponent(id)}`;
+        return this.$http.post(url, null)
+            .then(response => response.data as string);
+    }
+
     public findGesuchForFinSit(finSitId: string): IPromise<TSGesuch> {
         return this.$http.get(`${this.serviceURL}/gesuchForFinSit/${encodeURIComponent(finSitId)}`)
             .then((response: any) => this.ebeguRestUtil.parseGesuch(new TSGesuch(), response.data));

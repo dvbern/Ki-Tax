@@ -60,9 +60,10 @@ public class VerfuegungZeitabschnittRundungTest extends AbstractBGRechnerTest {
 			parameterDTO,
 			false,
 			false,
-			false,
 			BigDecimal.valueOf(88600),
-			false);
+			false,
+			EinschulungTyp.VORSCHULALTER
+		);
 
 		assertThat(verguenstigungProZeiteinheit, of("5.1871794872"));
 	}
@@ -162,7 +163,6 @@ public class VerfuegungZeitabschnittRundungTest extends AbstractBGRechnerTest {
 		inputAsiv.setMassgebendesEinkommenVorAbzugFamgr(BigDecimal.valueOf(88600));
 		inputAsiv.setBetreuungspensumProzent(BigDecimal.valueOf(100));
 		inputAsiv.setEinschulungTyp(EinschulungTyp.VORSCHULALTER);
-		inputAsiv.setKostenAnteilMonat(calculateKostenAnteilMonat(inputAsiv, gueltigkeit));
 		return inputAsiv;
 	}
 

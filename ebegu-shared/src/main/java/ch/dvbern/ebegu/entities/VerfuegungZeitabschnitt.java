@@ -56,6 +56,7 @@ import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.EbeguUtil;
 import ch.dvbern.ebegu.util.MathUtil;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import org.apache.commons.collections.bidimap.AbstractBidiMapDecorator;
 import org.apache.commons.lang3.builder.CompareToBuilder;
 import org.hibernate.envers.Audited;
 
@@ -325,6 +326,11 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 	@Nonnull
 	public BigDecimal getBetreuungspensumZeiteinheit() {
 		return getRelevantBgCalculationResult().getBetreuungspensumZeiteinheit();
+	}
+
+	@Nonnull
+	public BigDecimal getBgPensumZeiteinheit() {
+		return getRelevantBgCalculationResult().getBgPensumZeiteinheit();
 	}
 
 	@Nullable
@@ -616,11 +622,6 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 	public void roundValuesAfterCalculateProportinaly() {
 		this.getBgCalculationInputAsiv().roundValuesAfterCalculateProportinaly();
 		this.getBgCalculationInputGemeinde().roundValuesAfterCalculateProportinaly();
-	}
-
-	public void setKostenAnteilMonat(BigDecimal kostenAnteilMonat) {
-		this.getBgCalculationInputAsiv().setKostenAnteilMonat(kostenAnteilMonat);
-		this.getBgCalculationInputGemeinde().setKostenAnteilMonat(kostenAnteilMonat);
 	}
 
 	public void setStuendlicheVollkosten(BigDecimal stuendlicheVollkosten) {

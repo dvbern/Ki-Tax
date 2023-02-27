@@ -205,13 +205,17 @@ public class BetreuungsgutscheinEvaluator {
 				if (platz.getBetreuungsstatus().isGeschlossenJA() || platz.getBetreuungsstatus()
 					.isGeschlossenSchulamt()) {
 					// Verfuegte Betreuungen duerfen nicht neu berechnet werden
-					LOG.info("Betreuung ist schon verfuegt. Keine Neuberechnung durchgefuehrt");
+					LOG.info("Betreuung oder Tagesschulanmeldung ist schon abgeschlossen. Keine Neuberechnung durchgefuehrt");
 					if (platz.getBetreuungsstatus().isGeschlossenJA()) {
 						// Restanspruch muss mit Daten von Verfügung für nächste Betreuung richtig gesetzt werden
 						restanspruchZeitabschnitte = getRestanspruchForVerfuegteBetreung((Betreuung) platz);
 					}
 					VeraenderungCalculator.getVeranderungCalculator(isTagesschule)
 						.calculateKorrekturAusbezahlteVerguenstigung(platz);
+
+					if (!isTagesschule) {
+						setZahlungRelevanteDaten((Betreuung) platz, bgRechnerParameterDTO, true);
+					}
 					continue;
 				}
 
@@ -259,7 +263,7 @@ public class BetreuungsgutscheinEvaluator {
 					bgRechnerParameterDTO.isTexteForFKJV());
 				verfuegungPreview.setGeneratedBemerkungen(bemerkungenToShow);
 				if (!isTagesschule) {
-					setZahlungRelevanteDaten((Betreuung) platz, bgRechnerParameterDTO);
+					setZahlungRelevanteDaten((Betreuung) platz, bgRechnerParameterDTO, false);
 				}
 
 				// Am Schluss der Abhandlung dieser Betreuung die Restansprüche für die nächste Betreuung extrahieren
@@ -322,7 +326,8 @@ public class BetreuungsgutscheinEvaluator {
 	 */
 	private void setZahlungRelevanteDaten(
 		@Nonnull Betreuung betreuung,
-		@Nonnull BGRechnerParameterDTO bgRechnerParameterDTO
+		@Nonnull BGRechnerParameterDTO bgRechnerParameterDTO,
+		boolean onlySetIsSameAusbezahlteVerguenstigung
 	) {
 		Verfuegung verfuegungZuBerechnen = betreuung.getVerfuegungOrVerfuegungPreview();
 		if (verfuegungZuBerechnen == null) {
@@ -330,16 +335,9 @@ public class BetreuungsgutscheinEvaluator {
 		}
 		final Map<ZahlungslaufTyp, Verfuegung> vorgaengerAusbezahlteVerfuegungProAuszahlungstyp =
 			betreuung.getVorgaengerAusbezahlteVerfuegungProAuszahlungstyp();
-		Verfuegung vorgaengerVerfuegung = betreuung.getVorgaengerVerfuegung();
 
 		// Den Zahlungsstatus aus der letzten *ausbezahlten* Verfuegung berechnen
 		if (vorgaengerAusbezahlteVerfuegungProAuszahlungstyp != null) {
-			// Zahlungsstatus aus vorgaenger uebernehmen
-			// Dies machen wir immer, auch wenn Mahlzeiten disabled, da das Feld gespeichert wird, und
-			// die Mahlzeiten evtl. spaeter erst enabled werden!
-			VerfuegungUtil.setZahlungsstatusForAllZahlungslauftypes(
-				verfuegungZuBerechnen,
-				vorgaengerAusbezahlteVerfuegungProAuszahlungstyp);
 			// sameAusbezahlteVerguenstigung wird benoetigt, um im GUI die Frage nach dem Ignorieren zu stellen (oder
 			// eben nicht)
 			VerfuegungUtil.setIsSameAusbezahlteVerguenstigung(
@@ -347,7 +345,20 @@ public class BetreuungsgutscheinEvaluator {
 				vorgaengerAusbezahlteVerfuegungProAuszahlungstyp.get(ZahlungslaufTyp.GEMEINDE_INSTITUTION),
 				vorgaengerAusbezahlteVerfuegungProAuszahlungstyp.get(ZahlungslaufTyp.GEMEINDE_ANTRAGSTELLER),
 				bgRechnerParameterDTO.getMahlzeitenverguenstigungEnabled());
+
+			if (onlySetIsSameAusbezahlteVerguenstigung) {
+				return;
+			}
+
+			// Zahlungsstatus aus vorgaenger uebernehmen
+			// Dies machen wir immer, auch wenn Mahlzeiten disabled, da das Feld gespeichert wird, und
+			// die Mahlzeiten evtl. spaeter erst enabled werden!
+			VerfuegungUtil.setZahlungsstatusForAllZahlungslauftypes(
+				verfuegungZuBerechnen,
+				vorgaengerAusbezahlteVerfuegungProAuszahlungstyp);
+
 		}
+		Verfuegung vorgaengerVerfuegung = betreuung.getVorgaengerVerfuegung();
 		// Das Flag "Gleiche Verfügungsdaten" aus der letzten Verfuegung berechnen
 		if (vorgaengerVerfuegung != null) {
 			// Ueberpruefen, ob sich die Verfuegungsdaten veraendert haben
