@@ -17,11 +17,8 @@ package ch.dvbern.ebegu.rules;
 
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 import java.util.function.Supplier;
 
 import javax.annotation.Nonnull;
@@ -30,8 +27,9 @@ import javax.enterprise.inject.spi.CDI;
 import ch.dvbern.ebegu.dto.BGCalculationInput;
 import ch.dvbern.ebegu.entities.AbstractPlatz;
 import ch.dvbern.ebegu.entities.Betreuung;
-import ch.dvbern.ebegu.entities.Dossier;
+import ch.dvbern.ebegu.entities.Fall;
 import ch.dvbern.ebegu.entities.Gesuch;
+import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.KindContainer;
 import ch.dvbern.ebegu.entities.Verfuegung;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
@@ -41,7 +39,6 @@ import ch.dvbern.ebegu.services.DossierService;
 import ch.dvbern.ebegu.services.GesuchService;
 import ch.dvbern.ebegu.types.DateRange;
 import com.google.common.collect.ImmutableList;
-import org.apache.commons.lang.StringUtils;
 
 import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.KITA;
 import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.TAGESFAMILIEN;
@@ -56,13 +53,10 @@ import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.TAGESFAMILIEN;
  */
 public class WohnsitzCalcRule extends AbstractCalcRule {
 
-	private final @Nonnull Supplier<DossierService> dossierServiceResolver;
-
 	private final @Nonnull Supplier<GesuchService> gesuchServiceResolver;
 
 	public WohnsitzCalcRule(@Nonnull DateRange validityPeriod, @Nonnull Locale locale) {
 		super(RuleKey.WOHNSITZ, RuleType.REDUKTIONSREGEL, RuleValidity.ASIV, validityPeriod, locale);
-		this.dossierServiceResolver = WohnsitzCalcRule::resolveDossierServiceFromCDI;
 		this.gesuchServiceResolver = WohnsitzCalcRule::resolveGesuchServiceFromCDI;
 	}
 
@@ -79,7 +73,6 @@ public class WohnsitzCalcRule extends AbstractCalcRule {
 			@Nonnull Supplier<GesuchService> gesuchServcieResolver
 	) {
 		super(RuleKey.WOHNSITZ, RuleType.REDUKTIONSREGEL, RuleValidity.ASIV, validityPeriod, locale);
-		this.dossierServiceResolver = dossierServiceResolver;
 		this.gesuchServiceResolver = gesuchServcieResolver;
 	}
 
@@ -118,51 +111,18 @@ public class WohnsitzCalcRule extends AbstractCalcRule {
 		}
 
 		Betreuung betreuung = (Betreuung) platz;
-		DossierService dossierService = this.dossierServiceResolver.get();
-
-		List<Dossier> allDossiersForFallNummer = dossierService.getAllDossiersForFallNummer(
-			platz.getKind()
-				.getGesuch()
-				.getDossier()
-				.getFall()
-				.getFallNummer());
-
-		List<Gesuch> allGesucheForFallNummer = getAllGesucheForDossiers(allDossiersForFallNummer);
+		List<Gesuch> allGesucheForFallNummer = getAllGesucheForFallAndGesuchsperiode(platz.extractGesuch().getFall(), platz.extractGesuchsperiode());
 		// Pro Kind im Kindcontainer(dossier)
 		List<Betreuung> allRelevanteBetreuungen = getAllRelevantBetreuungenForKind(allGesucheForFallNummer, betreuung);
-		return hasVerfuegteBetreuungInSamePeriode(allRelevanteBetreuungen, inputData.getParent());
+		return hasVerfuegteBetreuungInSamePeriode(allRelevanteBetreuungen);
 	}
 
-	private boolean hasVerfuegteBetreuungInSamePeriode(
-		List<Betreuung> allBetreuungenProKind,
-		VerfuegungZeitabschnitt aktuellBerechneterAbschnitt) {
-
+	private boolean hasVerfuegteBetreuungInSamePeriode(List<Betreuung> allBetreuungenProKind) {
 		if (allBetreuungenProKind.size() <= 1) {
 			return false;
 		}
 
-		return istEineBetreuungVerfuegt(allBetreuungenProKind) &&
-			betrifftGleichePeriode(allBetreuungenProKind, aktuellBerechneterAbschnitt);
-	}
-
-	private boolean betrifftGleichePeriode(
-		final List<Betreuung> betreuungList,
-		VerfuegungZeitabschnitt aktuellBerechneterAbschnitt) {
-		// eine Betreuung ist verfügt ... und der abschnitt muss in einem Zeitabschnitt der vorhanden sein.
-		for (Betreuung b : betreuungList) {
-			Verfuegung verfuegung = b.getVerfuegung();
-			if (null != verfuegung) {
-				List<VerfuegungZeitabschnitt> zeitabschnitte = verfuegung.getZeitabschnitte();
-				for (VerfuegungZeitabschnitt abschnitt : zeitabschnitte) {
-					if (abschnitt.getGueltigkeit()
-						.contains(aktuellBerechneterAbschnitt.getGueltigkeit().getGueltigAb())) {
-						return true;
-					}
-
-				}
-			}
-		}
-		return false;
+		return istEineBetreuungVerfuegt(allBetreuungenProKind);
 	}
 
 	private List<Betreuung> getAllRelevantBetreuungenForKind(List<Gesuch> gesuche, Betreuung relevantBetreuung) {
@@ -208,18 +168,9 @@ public class WohnsitzCalcRule extends AbstractCalcRule {
 			+ betreuung.getInstitutionStammdaten().getInstitution().getId();
 	}
 
-	private List<Gesuch> getAllGesucheForDossiers(List<Dossier> allDossiersForFallNummer) {
-		List<Gesuch> alleGesuche = new LinkedList<>();
+	private List<Gesuch> getAllGesucheForFallAndGesuchsperiode(Fall fall, Gesuchsperiode gesuchsperiode) {
 		GesuchService gesuchService = this.gesuchServiceResolver.get();
-		for (Dossier dossier : allDossiersForFallNummer) {
-			alleGesuche.addAll(gesuchService.getAllGesuchForDossier(dossier.getId()));
-		}
-		return alleGesuche;
-	}
-
-
-	private static DossierService resolveDossierServiceFromCDI() {
-		return CDI.current().select(DossierService.class).get();
+		return gesuchService.getAllGesuchForFallAndGesuchsperiode(fall, gesuchsperiode);
 	}
 
 	private static GesuchService resolveGesuchServiceFromCDI() {

@@ -30,6 +30,7 @@ import javax.validation.constraints.NotNull;
 import ch.dvbern.ebegu.dto.JaxAntragDTO;
 import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Dossier;
+import ch.dvbern.ebegu.entities.Fall;
 import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
@@ -185,6 +186,12 @@ public interface GesuchService {
 	 */
 	@Nonnull
 	List<String> getAllGesuchIDsForFall(String fallId);
+
+	/**
+	 * Alle Gesuche einer bestimmten Gesuchsperiode für einen Fall
+	 */
+	@Nonnull
+	List<Gesuch> getAllGesuchForFallAndGesuchsperiode(Fall fall, Gesuchsperiode gp);
 
 	/**
 	 * Alle GesucheIDs des Dossiers zurueckgeben

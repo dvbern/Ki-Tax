@@ -923,6 +923,22 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 
 	@Override
 	@Nonnull
+	public List<Gesuch> getAllGesuchForFallAndGesuchsperiode(Fall fall, Gesuchsperiode gp) {
+		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
+		final CriteriaQuery<Gesuch> query = cb.createQuery(Gesuch.class);
+		Root<Gesuch> root = query.from(Gesuch.class);
+
+		Join<Gesuch, Dossier> joinDossier = root.join(Gesuch_.dossier);
+		Predicate predicateFall = cb.equal(joinDossier.get(Dossier_.fall), fall);
+		Predicate predicateGesuchsperiode = cb.equal(root.get(Gesuch_.gesuchsperiode), gp);
+
+		query.where(predicateFall, predicateGesuchsperiode);
+
+		return persistence.getCriteriaResults(query);
+	}
+
+	@Override
+	@Nonnull
 	public List<String> getAllGesuchIDsForDossier(@Nonnull String dossierId) {
 		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
 		final CriteriaQuery<String> query = cb.createQuery(String.class);
