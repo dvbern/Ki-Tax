@@ -909,7 +909,8 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 				applyMitteilungToMutation(neustesGesuch, mitteilung);
 				return neustesGesuch;
 			}
-			if (AntragStatus.getVerfuegtIgnoriertAndSTVStates().contains(neustesGesuch.getStatus())) {
+			if (AntragStatus.getVerfuegtIgnoriertAndSTVStates().contains(neustesGesuch.getStatus()) ||
+					mitteilung instanceof NeueVeranlagungsMitteilung && neustesGesuch.getStatus() == AntragStatus.NUR_SCHULAMT) {
 				// create Mutation if there is currently no Mutation
 				Gesuch mutation = Gesuch.createMutation(gesuch.getDossier(), neustesGesuch.getGesuchsperiode(),
 					LocalDate.now());
