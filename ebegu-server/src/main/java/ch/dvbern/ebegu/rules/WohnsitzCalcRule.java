@@ -93,6 +93,7 @@ public class WohnsitzCalcRule extends AbstractCalcRule {
 	protected void executeRule(@Nonnull AbstractPlatz platz, @Nonnull BGCalculationInput inputData) {
 		if (hasDoppelBetreuung(platz, inputData)) {
 			inputData.setAnspruchZeroAndSaveRestanspruch();
+			inputData.addBemerkung(MsgKey.UMZUG_BG_BEREITS_IN_ANDERER_GEMEINDE, getLocale());
 			return;
 		}
 
