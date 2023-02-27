@@ -458,7 +458,7 @@ export class FamiliensituationViewXComponent extends AbstractGesuchViewX<TSFamil
             return this.$translate.instant('FAMILIENSITUATION_FRAGE_PARTNERIDENTISCH_EHEPARTNER');
         }
         if (familienstatus === TSFamilienstatus.ALLEINERZIEHEND){
-            return this.$translate.instant('AMILIENSITUATION_FRAGE_PARTNERIDENTISCH_ANDERER_ELTERNTEIL');
+            return this.$translate.instant('FAMILIENSITUATION_FRAGE_PARTNERIDENTISCH_ANDERER_ELTERNTEIL');
         }
         return this.$translate.instant('FAMILIENSITUATION_FRAGE_PARTNERIDENTISCH_KONKUBINTASPARTNER');
     }
