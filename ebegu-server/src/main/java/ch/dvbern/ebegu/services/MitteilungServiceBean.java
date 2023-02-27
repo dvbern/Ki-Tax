@@ -851,7 +851,8 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 	}
 
 	@Nonnull
-	private Gesuch doApplymitteilung(@Nonnull Mitteilung mitteilung, @Nonnull Gesuch gesuch) throws EbeguException {
+	private Gesuch doApplymitteilung(@Nonnull Mitteilung mitteilung, @Nonnull Gesuch gesuch) throws EbeguException,
+			EbeguExistingAntragException {
 		authorizer.checkReadAuthorizationMitteilung(mitteilung);
 		if (gesuch.getStatus() == AntragStatus.FREIGEGEBEN || gesuch.getStatus() == AntragStatus.FREIGABEQUITTUNG) {
 			throw new EbeguExistingAntragException(
