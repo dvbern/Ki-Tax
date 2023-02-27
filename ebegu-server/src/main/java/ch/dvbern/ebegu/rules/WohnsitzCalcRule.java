@@ -88,11 +88,11 @@ public class WohnsitzCalcRule extends AbstractCalcRule {
 		return ImmutableList.of(KITA, TAGESFAMILIEN);
 	}
 
-	@SuppressWarnings("PMD.CollapsibleIfStatements")
 	@Override
 	protected void executeRule(@Nonnull AbstractPlatz platz, @Nonnull BGCalculationInput inputData) {
 		if (hasDoppelBetreuung(platz, inputData)) {
 			inputData.setAnspruchZeroAndSaveRestanspruch();
+			inputData.setAnspruchSinktDuringMonat(true);
 			inputData.addBemerkung(MsgKey.UMZUG_BG_BEREITS_IN_ANDERER_GEMEINDE, getLocale());
 			return;
 		}

@@ -198,6 +198,11 @@ public class BGCalculationInput {
 	private boolean isEkvAccepted = false;
 	private boolean potentielleDoppelBetreuung = false;
 
+	/*Wenn diese Flag den Wert true hat, wird die AnspruchFristRule nicht ausgeführt! Der Anspruch darf dann innerhalb
+	eines Monats sinken. Dieses Flag soll nur gesetzt werden, wenn effektiv die Anforderung besteht, dass der Anspruch
+	sinken darf.*/
+	private boolean anspruchSinktDuringMonat = false;
+
 	public BGCalculationInput(@Nonnull VerfuegungZeitabschnitt parent, @Nonnull RuleValidity ruleValidity) {
 		this.parent = parent;
 		this.ruleValidity = ruleValidity;
@@ -263,6 +268,7 @@ public class BGCalculationInput {
 		this.stuendlicheVollkosten = toCopy.stuendlicheVollkosten;
 		this.isAuszahlungAnEltern = toCopy.isAuszahlungAnEltern;
 		this.isEkvAccepted = toCopy.isEkvAccepted;
+		this.anspruchSinktDuringMonat = toCopy.anspruchSinktDuringMonat;
 	}
 
 	@Nonnull
@@ -859,6 +865,7 @@ public class BGCalculationInput {
 		this.kitaPlusZuschlag = this.kitaPlusZuschlag || other.kitaPlusZuschlag;
 		this.besondereBeduerfnisseZuschlag = add(this.getBesondereBeduerfnisseZuschlag(), other.getBesondereBeduerfnisseZuschlag());
 		this.potentielleDoppelBetreuung = (this.potentielleDoppelBetreuung || other.potentielleDoppelBetreuung);
+		this.anspruchSinktDuringMonat = this.anspruchSinktDuringMonat || other.anspruchSinktDuringMonat;
 	}
 
 	/**
@@ -1060,7 +1067,8 @@ public class BGCalculationInput {
 			MathUtil.isSame(this.stuendlicheVollkosten, other.stuendlicheVollkosten) &&
 			this.isAuszahlungAnEltern == other.isAuszahlungAnEltern &&
 			this.isEkvAccepted == other.isEkvAccepted &&
-			this.potentielleDoppelBetreuung == other.potentielleDoppelBetreuung ;
+			this.potentielleDoppelBetreuung == other.potentielleDoppelBetreuung &&
+			this.anspruchSinktDuringMonat == other.anspruchSinktDuringMonat;
 	}
 
 	@SuppressWarnings("PMD.CompareObjectsWithEquals")
@@ -1220,5 +1228,13 @@ public class BGCalculationInput {
 
 	public boolean getPotentielleDoppelBetreuung() {
 		return potentielleDoppelBetreuung;
+	}
+
+	public boolean isAnspruchSinktDuringMonat() {
+		return anspruchSinktDuringMonat;
+	}
+
+	public void setAnspruchSinktDuringMonat(boolean anspruchSinktDuringMonat) {
+		this.anspruchSinktDuringMonat = anspruchSinktDuringMonat;
 	}
 }

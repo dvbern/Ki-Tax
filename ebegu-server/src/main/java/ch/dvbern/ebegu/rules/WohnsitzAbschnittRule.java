@@ -172,7 +172,6 @@ public class WohnsitzAbschnittRule extends AbstractAbschnittRule {
 		VerfuegungZeitabschnitt abschnittNachUmzug = new VerfuegungZeitabschnitt(zeitabschnitt);
 		LocalDate firstDayOfNextMonth = gueltigAb.with(TemporalAdjusters.firstDayOfNextMonth());
 		abschnittNachUmzug.getGueltigkeit().setGueltigAb(firstDayOfNextMonth);
-		abschnittNachUmzug.setVorgaengerId(zeitabschnitt.getVorgaengerId());
 		abschnittNachUmzug.setPotentielleDoppelBetreuung(false);
 		zuzugListe.add(abschnittNachUmzug);
 		return zuzugListe;
