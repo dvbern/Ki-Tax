@@ -76,6 +76,10 @@ public class Familiensituation extends AbstractMutableEntity {
 	private Boolean sozialhilfeBezueger;
 
 	@Nullable
+	@Column(nullable = true)
+	private Boolean partnerIdentischMitVorgesuch;
+
+	@Nullable
 	@Size(max = DB_DEFAULT_MAX_LENGTH)
 	private String zustaendigeAmtsstelle;
 
@@ -148,6 +152,7 @@ public class Familiensituation extends AbstractMutableEntity {
 			this.startKonkubinat = that.getStartKonkubinat();
 			this.sozialhilfeBezueger = that.getSozialhilfeBezueger();
 			this.verguenstigungGewuenscht = that.getVerguenstigungGewuenscht();
+			this.partnerIdentischMitVorgesuch = that.getPartnerIdentischMitVorgesuch();
 		}
 	}
 
@@ -194,6 +199,15 @@ public class Familiensituation extends AbstractMutableEntity {
 
 	public void setSozialhilfeBezueger(@Nullable Boolean sozialhilfeBezueger) {
 		this.sozialhilfeBezueger = sozialhilfeBezueger;
+	}
+
+	@Nullable
+	public Boolean getPartnerIdentischMitVorgesuch() {
+		return partnerIdentischMitVorgesuch;
+	}
+
+	public void setPartnerIdentischMitVorgesuch(@Nullable Boolean partnerIdentischMitVorgesuch){
+		this.partnerIdentischMitVorgesuch = partnerIdentischMitVorgesuch;
 	}
 
 	@Nullable

@@ -654,6 +654,7 @@ export class EbeguRestUtil {
             restFamiliensituation.geteilteObhut = familiensituation.geteilteObhut;
             restFamiliensituation.unterhaltsvereinbarung = familiensituation.unterhaltsvereinbarung;
             restFamiliensituation.unterhaltsvereinbarungBemerkung = familiensituation.unterhaltsvereinbarungBemerkung;
+            restFamiliensituation.partnerIdentischMitVorgesuch = familiensituation.partnerIdentischMitVorgesuch;
             return restFamiliensituation;
         }
 
@@ -737,6 +738,7 @@ export class EbeguRestUtil {
             familiensituation.unterhaltsvereinbarung = familiensituationFromServer.unterhaltsvereinbarung;
             familiensituation.unterhaltsvereinbarungBemerkung =
                 familiensituationFromServer.unterhaltsvereinbarungBemerkung;
+            familiensituation.partnerIdentischMitVorgesuch = familiensituationFromServer.partnerIdentischMitVorgesuch;
             return familiensituation;
         }
         return undefined;
