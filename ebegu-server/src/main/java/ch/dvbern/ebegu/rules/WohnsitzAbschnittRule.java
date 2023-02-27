@@ -83,7 +83,7 @@ public class WohnsitzAbschnittRule extends AbstractAbschnittRule {
 			if (isFirstAbschnitt) {
 				// Der erste Abschnitt. Wir wissen noch nicht, ob Zuzug oder Wegzug
 				isFirstAbschnitt = false;
-				result.add(zeitabschnitt);
+				result.addAll(splitFirstZeitabschnitt(zeitabschnitt));
 			} else {
 				// Dies ist mindestens die zweite Adresse -> pruefen, ob sich an der Wohnsitz-Situation etwas geaendert hat.
 				boolean lastNichtInGemeindeAsiv = lastZeitAbschnitt.getBgCalculationInputAsiv().isWohnsitzNichtInGemeindeGS1();
@@ -115,6 +115,31 @@ public class WohnsitzAbschnittRule extends AbstractAbschnittRule {
 			lastZeitAbschnitt = zeitabschnitt;
 		}
 		return result;
+	}
+
+	private List<VerfuegungZeitabschnitt> splitFirstZeitabschnitt(VerfuegungZeitabschnitt zeitabschnitt) {
+		// Wenn der Zeitabschnitt ab dem ersten Tag des Monats gültig ist, müssen wir nicht spliten
+		if (zeitabschnitt.getGueltigkeit().getGueltigAb().getDayOfMonth() == 1) {
+			return List.of(zeitabschnitt);
+		}
+
+		// Sonst erster Monat, als potentielle Dublette flagen (z.B. 15.10-31.12 splitten in...)
+		List<VerfuegungZeitabschnitt> zeitabschnittList = new ArrayList<>();
+
+		//... 15.10-31.10 (potentielle Doublette) und ...
+		VerfuegungZeitabschnitt ersterMonat = new VerfuegungZeitabschnitt(zeitabschnitt);
+		ersterMonat.getGueltigkeit().setGueltigBis(ersterMonat.getGueltigkeit().getGueltigAb().with(TemporalAdjusters.lastDayOfMonth()));
+		ersterMonat.setPotentielleDoppelBetreuung(true);
+		zeitabschnittList.add(ersterMonat);
+
+		if (ersterMonat.getGueltigkeit().getGueltigAb().getMonth() != zeitabschnitt.getGueltigkeit().getGueltigBis().getMonth()) {
+			//...01.11 - 31.12
+			zeitabschnitt.getGueltigkeit()
+				.setGueltigAb(ersterMonat.getGueltigkeit().getGueltigAb().with(TemporalAdjusters.firstDayOfNextMonth()));
+			zeitabschnittList.add(zeitabschnitt);
+		}
+
+		return zeitabschnittList;
 	}
 
 	private List<VerfuegungZeitabschnitt> createWegzugZeitabschnitte(
