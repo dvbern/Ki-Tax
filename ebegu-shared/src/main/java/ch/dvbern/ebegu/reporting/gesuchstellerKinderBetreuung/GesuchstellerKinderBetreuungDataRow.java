@@ -121,7 +121,7 @@ public class GesuchstellerKinderBetreuungDataRow {
 	@Nullable private BigDecimal verguenstigungGemeinde;
 	@Nullable private BigDecimal verguenstigungTotal;
 
-	@Nullable private Integer ausserordentlicherAnspruch;
+	@Nullable private BigDecimal ausserordentlicherAnspruch;
 
 	public GesuchstellerKinderBetreuungDataRow() {
 	}
@@ -760,11 +760,11 @@ public class GesuchstellerKinderBetreuungDataRow {
 	}
 
 	@Nullable
-	public Integer getAusserordentlicherAnspruch() {
+	public BigDecimal getAusserordentlicherAnspruch() {
 		return ausserordentlicherAnspruch;
 	}
 
-	public void setAusserordentlicherAnspruch(@Nullable Integer ausserordentlicherAnspruch) {
+	public void setAusserordentlicherAnspruch(@Nullable BigDecimal ausserordentlicherAnspruch) {
 		this.ausserordentlicherAnspruch = ausserordentlicherAnspruch;
 	}
 

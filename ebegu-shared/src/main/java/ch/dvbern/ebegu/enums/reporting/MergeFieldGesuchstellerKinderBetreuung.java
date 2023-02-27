@@ -216,7 +216,7 @@ public enum MergeFieldGesuchstellerKinderBetreuung implements MergeFieldProvider
 	verguenstigungKanton(new SimpleMergeField<>("verguenstigungKanton", BIGDECIMAL_CONVERTER)),
 	verguenstigungGemeinde(new SimpleMergeField<>("verguenstigungGemeinde", BIGDECIMAL_CONVERTER)),
 	verguenstigungTotal(new SimpleMergeField<>("verguenstigungTotal", BIGDECIMAL_CONVERTER)),
-	ausserordentlicherAnspruch(new SimpleMergeField<>("ausserordentlicherAnspruch", INTEGER_CONVERTER));
+	ausserordentlicherAnspruch(new SimpleMergeField<>("ausserordentlicherAnspruch", PERCENT_CONVERTER));
 
 	@Nonnull
 	private final MergeField<?> mergeField;
