@@ -41,6 +41,7 @@ import ch.dvbern.ebegu.services.DossierService;
 import ch.dvbern.ebegu.services.GesuchService;
 import ch.dvbern.ebegu.types.DateRange;
 import com.google.common.collect.ImmutableList;
+import org.apache.commons.lang.StringUtils;
 
 import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.KITA;
 import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.TAGESFAMILIEN;
@@ -112,6 +113,11 @@ public class WohnsitzCalcRule extends AbstractCalcRule {
 			return false;
 		}
 
+		if (!(platz instanceof Betreuung)) {
+			return false;
+		}
+
+		Betreuung betreuung = (Betreuung) platz;
 		DossierService dossierService = this.dossierServiceResolver.get();
 
 		List<Dossier> allDossiersForFallNummer = dossierService.getAllDossiersForFallNummer(
@@ -123,27 +129,20 @@ public class WohnsitzCalcRule extends AbstractCalcRule {
 
 		List<Gesuch> allGesucheForFallNummer = getAllGesucheForDossiers(allDossiersForFallNummer);
 		// Pro Kind im Kindcontainer(dossier)
-		List<Betreuung> alleBetreuungen = getAlleBetreuungen(allGesucheForFallNummer);
-		Map<String, List<Betreuung>> allBetreuungenProKind = getAllBetreuungenProKind(alleBetreuungen);
-		Map<String, List<Betreuung>> relevanteBetreuungen =
-			keepRelevantEntries(allBetreuungenProKind, inputData.getParent());
-		return !relevanteBetreuungen.isEmpty();
+		List<Betreuung> allRelevanteBetreuungen = getAllRelevantBetreuungenForKind(allGesucheForFallNummer, betreuung);
+		return hasVerfuegteBetreuungInSamePeriode(allRelevanteBetreuungen, inputData.getParent());
 	}
 
-	private Map<String, List<Betreuung>> keepRelevantEntries(
-		Map<String, List<Betreuung>> allBetreuungenProKind,
+	private boolean hasVerfuegteBetreuungInSamePeriode(
+		List<Betreuung> allBetreuungenProKind,
 		VerfuegungZeitabschnitt aktuellBerechneterAbschnitt) {
-		Map<String, List<Betreuung>> relevantEntries = new HashMap<>();
 
-		allBetreuungenProKind.entrySet().forEach(entry -> {
-			List<Betreuung> betreuungList = entry.getValue();
-			if (betreuungList.size() > 1 &&
-					istEineBetreuungVerfuegt(betreuungList) &&
-					betrifftGleichePeriode(betreuungList, aktuellBerechneterAbschnitt)) {
-				relevantEntries.put(entry.getKey(), betreuungList);
-			}
-		});
-		return relevantEntries;
+		if (allBetreuungenProKind.size() <= 1) {
+			return false;
+		}
+
+		return istEineBetreuungVerfuegt(allBetreuungenProKind) &&
+			betrifftGleichePeriode(allBetreuungenProKind, aktuellBerechneterAbschnitt);
 	}
 
 	private boolean betrifftGleichePeriode(
@@ -166,21 +165,19 @@ public class WohnsitzCalcRule extends AbstractCalcRule {
 		return false;
 	}
 
-	private Map<String, List<Betreuung>> getAllBetreuungenProKind(List<Betreuung> alleBetreuungen) {
-		Map<String, List<Betreuung>> betreuungProKindListe = new HashMap<>();
+	private List<Betreuung> getAllRelevantBetreuungenForKind(List<Gesuch> gesuche, Betreuung relevantBetreuung) {
+		List<Betreuung> alleBetreuungen = getAlleBetreuungen(gesuche);
+		String relevantIdentifier = constructSortIdentifier(relevantBetreuung.getKind(), relevantBetreuung);
+
+		List<Betreuung> relevanteBetreuungen = new ArrayList<>();
 		for (Betreuung betreuung : alleBetreuungen) {
 			KindContainer kc = betreuung.getKind();
 			String identifier = constructSortIdentifier(kc, betreuung);
-			if (null == betreuungProKindListe.get(identifier)) {
-				List<Betreuung> betreuungsList = new LinkedList<>();
-				betreuungsList.add(betreuung);
-				betreuungProKindListe.put(identifier, betreuungsList);
-			} else {
-				betreuungProKindListe.get(identifier).add(betreuung);
+			if (relevantIdentifier.equals(identifier)) {
+				relevanteBetreuungen.add(betreuung);
 			}
-
 		}
-		return betreuungProKindListe;
+		return relevanteBetreuungen;
 	}
 
 	private List<Betreuung> getAlleBetreuungen(List<Gesuch> alleGesuche) {
