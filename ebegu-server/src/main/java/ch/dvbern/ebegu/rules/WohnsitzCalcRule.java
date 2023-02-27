@@ -91,38 +91,42 @@ public class WohnsitzCalcRule extends AbstractCalcRule {
 	@SuppressWarnings("PMD.CollapsibleIfStatements")
 	@Override
 	protected void executeRule(@Nonnull AbstractPlatz platz, @Nonnull BGCalculationInput inputData) {
+		if (hasDoppelBetreuung(platz, inputData)) {
+			inputData.setAnspruchZeroAndSaveRestanspruch();
+			return;
+		}
+
 		if (inputData.isWohnsitzNichtInGemeindeGS1()) {
 			inputData.setAnspruchZeroAndSaveRestanspruch();
 			inputData.addBemerkung(
 				MsgKey.WOHNSITZ_MSG,
 				getLocale(),
 				platz.extractGesuch().getDossier().getGemeinde().getName());
-		} else {
-			// KIBON_1843 2 Ative gesuche in unterschiedlichen gemeinden möglich
-			if (!inputData.getPotentielleDoppelBetreuung()) {
-				return;
-			}
-			DossierService dossierService = this.dossierServiceResolver.get();
-
-			List<Dossier> allDossiersForFallNummer = dossierService.getAllDossiersForFallNummer(
-				platz.getKind()
-					.getGesuch()
-					.getDossier()
-					.getFall()
-					.getFallNummer());
-
-			List<Gesuch> allGesucheForFallNummer = getAllGesucheForDossiers(allDossiersForFallNummer);
-			// Pro Kind im Kindcontainer(dossier)
-			List<Betreuung> alleBetreuungen = getAlleBetreuungen(allGesucheForFallNummer);
-			Map<String, List<Betreuung>> allBetreuungenProKind = getAllBetreuungenProKind(alleBetreuungen);
-			Map<String, List<Betreuung>> relevanteBetreuungen =
-				keepRelevantEntries(allBetreuungenProKind, inputData.getParent());
-			if (relevanteBetreuungen.size() > 0) {
-				if (inputData.getPotentielleDoppelBetreuung()) {
-					inputData.setAnspruchZeroAndSaveRestanspruch();
-				}
-			}
 		}
+	}
+
+	private boolean hasDoppelBetreuung(AbstractPlatz platz, BGCalculationInput inputData) {
+		// KIBON_1843 2 Ative gesuche in unterschiedlichen gemeinden möglich
+		if (!inputData.getPotentielleDoppelBetreuung()) {
+			return false;
+		}
+
+		DossierService dossierService = this.dossierServiceResolver.get();
+
+		List<Dossier> allDossiersForFallNummer = dossierService.getAllDossiersForFallNummer(
+			platz.getKind()
+				.getGesuch()
+				.getDossier()
+				.getFall()
+				.getFallNummer());
+
+		List<Gesuch> allGesucheForFallNummer = getAllGesucheForDossiers(allDossiersForFallNummer);
+		// Pro Kind im Kindcontainer(dossier)
+		List<Betreuung> alleBetreuungen = getAlleBetreuungen(allGesucheForFallNummer);
+		Map<String, List<Betreuung>> allBetreuungenProKind = getAllBetreuungenProKind(alleBetreuungen);
+		Map<String, List<Betreuung>> relevanteBetreuungen =
+			keepRelevantEntries(allBetreuungenProKind, inputData.getParent());
+		return !relevanteBetreuungen.isEmpty();
 	}
 
 	private Map<String, List<Betreuung>> keepRelevantEntries(
