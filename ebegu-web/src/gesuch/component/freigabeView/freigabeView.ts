@@ -257,6 +257,6 @@ export class FreigabeViewController extends AbstractGesuchViewController<any> {
     // nicht alle mandanten wollen hier eine Warnung. Wir zeigen diese nur, falls die Übersetzung nicht leer ist.
     public showFreigabeWarning(): boolean {
         return this.isFreigabequittungAusstehend()
-        && this.$translate.instant('FREIGABEQUITTUNG_WARNUNG').length;
+        && this.$translate.instant('FREIGABEQUITTUNG_WARNUNG').length > 0;
     }
 }
