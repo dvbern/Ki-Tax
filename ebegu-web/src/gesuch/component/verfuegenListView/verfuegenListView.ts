@@ -28,7 +28,7 @@ import {
     isAnyStatusOfMahnung,
     isAnyStatusOfVerfuegt,
     isStatusVerfuegenVerfuegt,
-    TSAntragStatus
+    TSAntragStatus,
 } from '../../../models/enums/TSAntragStatus';
 import {TSAntragTyp} from '../../../models/enums/TSAntragTyp';
 import {TSBetreuungsangebotTyp} from '../../../models/enums/TSBetreuungsangebotTyp';
@@ -37,7 +37,7 @@ import {TSEinstellungKey} from '../../../models/enums/TSEinstellungKey';
 import {TSFinSitStatus} from '../../../models/enums/TSFinSitStatus';
 import {TSMahnungTyp} from '../../../models/enums/TSMahnungTyp';
 import {TSRole} from '../../../models/enums/TSRole';
-import {TSWizardStepName} from '../../../models/enums/TSWizardStepName';
+import {getAllWizardStepsWithoutFinSitSteps, TSWizardStepName} from '../../../models/enums/TSWizardStepName';
 import {TSWizardStepStatus} from '../../../models/enums/TSWizardStepStatus';
 import {TSBetreuung} from '../../../models/TSBetreuung';
 import {TSDownloadFile} from '../../../models/TSDownloadFile';
@@ -895,6 +895,7 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
             !this.hasAnyNewOrStornierteBetreuung &&
             this.allVerfuegungenIgnorable &&
             this.correctStatusForIgnorieren() &&
+            this.hasOnlyFinSitChanges() &&
             this.getGesuch().finSitStatus === TSFinSitStatus.AKZEPTIERT;
     }
 
@@ -944,5 +945,15 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
         this.gesuchRS.getNeustesVerfuegtesGesuchFuerGesuch(this.gesuchModelManager.getGesuch().id).then(
             (response: any) => this.letzteIgnorierteGesuchId = response.id
         );
+    }
+
+    private hasOnlyFinSitChanges(): boolean {
+        for(let step of getAllWizardStepsWithoutFinSitSteps()) {
+            if (this.wizardStepManager.hasStepGivenStatus(step, TSWizardStepStatus.MUTIERT)) {
+                return false;
+            }
+        }
+
+        return true;
     }
 }
