@@ -526,7 +526,7 @@
     "WEIBLICH": "weiblich",
     "ALLEINERZIEHEND": "Nein",
     "FAMILIENSITUATION_FRAGE_PARTNERIDENTISCH": "Ist Ihr Partner {{namegs2}} ?",
-    "FAMILIENSITUATION_FRAGE_PARTNERIDENTISCH_EHEPARTNER": "ihrem Ehepartner/ ihrer Ehepartnerin",
+    "FAMILIENSITUATION_FRAGE_PARTNERIDENTISCH_EHEPARTNER": "ihrem Ehepartner/ ihrer Ehepartnerilonn",
     "FAMILIENSITUATION_FRAGE_PARTNERIDENTISCH_KONKUBINTASPARTNER": "ihrem Konkubinatspartner/ ihrer Konkubinatspartnerin",
     "FAMILIENSITUATION_FRAGE_PARTNERIDENTISCH_ANDERER_ELTERNTEIL": "dem Anderen Elternteil",
     "FAMILIENSITUATION_FRAGE_PARTNERIDENTISCH_WARNING": "Ihr Antrag zusammen mit {{partnerAlt}} wird per {{endeDatum}} beendet.",
@@ -534,6 +534,7 @@
     "VERHEIRATET": "Ja, Ehepartner/in oder eingetragene(r) Partner/in",
     "KONKUBINAT": "Ja, Konkubinatspartner/in mit gemeinsamem Kind",
     "KONKUBINAT_KEIN_KIND": "Ja, Konkubinatspartner/in ohne gemeinsames Kind",
+    "ANDERER_ELTERNTEIL": "Anderer Elternteil",
     "GS2_VERHEIRATET": "Ehepartner/in oder eingetragene(r) Partner/in",
     "GS2_KONKUBINAT": "Konkubinatspartner/in mit gemeinsamem Kind",
     "GS2_KONKUBINAT_KEIN_KIND": "Konkubinatspartner/in ohne gemeinsames Kind",
@@ -3103,5 +3104,6 @@
     "GESUCH_IGNORIERT_HELP": "Die Gemeinde kann Mutationen unter bestimmten Bedingungen ignorieren. Ignorieren ist Z.B. möglich <br>-    wenn die finanziellen Verhältnisse angepasst wurden und der Betreuungsgutschein geringfügig tiefer/ Tageschultarif geringfügig höher ausfällt. Oder<br>-    wenn sich der Betreuungsgutschein /Tagesschultarif durch die Mutation nicht verändert.<br>-    Mutationen, die zu einem <b>höheren</b> Betreuungsgutschein/<b>tieferen</b> Tagesschultarif führen, kann die Gemeinde nicht ignorieren.",
     "MUTATION_OEFFNEN": "Mutation öffnen",
     "FIN_SIT_GELOESCHT": "Finanzielle Situation gelöscht",
+    "FREIGABEQUITTUNG_WARNUNG": "",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

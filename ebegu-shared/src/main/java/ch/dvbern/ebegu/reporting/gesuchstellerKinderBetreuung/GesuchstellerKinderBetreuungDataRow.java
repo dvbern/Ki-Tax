@@ -1,16 +1,18 @@
 /*
- * Ki-Tax: System for the management of external childcare subsidies
- * Copyright (C) 2017 City of Bern Switzerland
+ * Copyright (C) 2023 DV Bern AG, Switzerland
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Affero General Public License for more details.
+ *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
 package ch.dvbern.ebegu.reporting.gesuchstellerKinderBetreuung;
@@ -95,6 +97,7 @@ public class GesuchstellerKinderBetreuungDataRow {
 	@Nullable private Boolean kindErwBeduerfnisse;
 	@Nullable private Boolean kindSprichtAmtssprache;
 	@Nullable private EinschulungTyp kindEinschulungTyp;
+	@Nullable private Boolean keinPlatzImSchulhort;
 
 	private LocalDate zeitabschnittVon;
 	private LocalDate zeitabschnittBis;
@@ -117,6 +120,8 @@ public class GesuchstellerKinderBetreuungDataRow {
 	@Nullable private BigDecimal verguenstigungKanton;
 	@Nullable private BigDecimal verguenstigungGemeinde;
 	@Nullable private BigDecimal verguenstigungTotal;
+
+	@Nullable private BigDecimal ausserordentlicherAnspruch;
 
 	public GesuchstellerKinderBetreuungDataRow() {
 	}
@@ -594,6 +599,15 @@ public class GesuchstellerKinderBetreuungDataRow {
 
 	public void setKindEinschulungTyp(@Nullable EinschulungTyp kindEinschulungTyp) { this.kindEinschulungTyp = kindEinschulungTyp; }
 
+	@Nullable
+	public Boolean getKeinPlatzImSchulhort() {
+		return keinPlatzImSchulhort;
+	}
+
+	public void setKeinPlatzImSchulhort(@Nullable Boolean keinPlatzImSchulhort) {
+		this.keinPlatzImSchulhort = keinPlatzImSchulhort;
+	}
+
 	public LocalDate getZeitabschnittVon() {
 		return zeitabschnittVon;
 	}
@@ -743,6 +757,15 @@ public class GesuchstellerKinderBetreuungDataRow {
 
 	public void setVerguenstigungTotal(@Nullable BigDecimal verguenstigungTotal) {
 		this.verguenstigungTotal = verguenstigungTotal;
+	}
+
+	@Nullable
+	public BigDecimal getAusserordentlicherAnspruch() {
+		return ausserordentlicherAnspruch;
+	}
+
+	public void setAusserordentlicherAnspruch(@Nullable BigDecimal ausserordentlicherAnspruch) {
+		this.ausserordentlicherAnspruch = ausserordentlicherAnspruch;
 	}
 
 	@Nonnull
