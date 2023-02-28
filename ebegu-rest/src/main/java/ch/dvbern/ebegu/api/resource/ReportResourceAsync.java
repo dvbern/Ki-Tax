@@ -17,6 +17,7 @@ package ch.dvbern.ebegu.api.resource;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.Date;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
@@ -886,22 +887,43 @@ public class ReportResourceAsync {
 	public Response getLastenausgleichBGZeitabschnitteExcelReport(
 		@QueryParam("gemeindeId") String gemeindeId,
 		@QueryParam("jahr") Integer jahr,
+		@QueryParam("von") String von,
+		@QueryParam("bis") String bis,
 		@Context HttpServletRequest request,
 		@Context UriInfo uriInfo) {
 
+		if ((von == null || bis == null) && gemeindeId == null) {
+			throw new EbeguRuntimeException(
+				KibonLogLevel.ERROR,
+				"getLastenausgleichBGZeitabschnitteExcelReport",
+				"Gemeinde oder Von und Bis Datum müssen spezifieziert sein",
+				ErrorCodeEnum.ERROR_LASTENAUSGLEICH_STAT_PARAMS_MISSING);
+		}
+
 		String ip = downloadResource.getIP(request);
 
-		Gemeinde gemeinde = gemeindeService.findGemeinde(gemeindeId).orElseThrow(() ->
-			new EbeguEntityNotFoundException("getLastenausgleichBGZeitabschnitteExcelReport", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND)
-		);
+		Gemeinde gemeinde = null;
+		LocalDate dateVon = null;
+		LocalDate dateBis = null;
+
+		if (gemeindeId != null) {
+			gemeinde = gemeindeService.findGemeinde(gemeindeId).orElseThrow(() ->
+				new EbeguEntityNotFoundException("getLastenausgleichBGZeitabschnitteExcelReport", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND)
+			);
+		}
+
+		if (von != null && bis != null) {
+			dateVon = DateUtil.parseStringToDateOrReturnNow(von);
+			dateBis = DateUtil.parseStringToDateOrReturnNow(bis);
+		}
 
 		Workjob workJob = createWorkjobForReport(request, uriInfo, ip);
 
 		workJob = workjobService.createNewReporting(
 			workJob,
 			ReportVorlage.VORLAGE_REPORT_LASTENAUSGLEICH_BG_ZEITABSCHNITTE,
-			null,
-			null,
+			dateVon,
+			dateBis,
 			null,
 			false,
 			false,

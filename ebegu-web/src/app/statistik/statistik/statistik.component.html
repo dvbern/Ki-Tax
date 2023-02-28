@@ -928,7 +928,7 @@
                     </dv-accordion-tab>
                 </div>
 
-                <div *ngIf="showLastenausgleichBGStatistikAllowedForRole() && lastenausgleichYears.length" [dvDemoFeature]="demoFeature">
+                <div *ngIf="showLastenausgleichBGStatistikAllowedForRole()" [dvDemoFeature]="demoFeature">
                     <div>
                         <dv-accordion-tab [tabid]="'lastenausgleichBG'">
                             <tab-title>
@@ -960,9 +960,24 @@
                                             </div>
                                         </div>
 
+                                        <div class="col-xs-3" *ngIf="isSuperadmin()">
+                                            <dv-date-picker-x label="VON"
+                                                              [minDate]="minDate"
+                                                              [maxDate]="maxDate"
+                                                              [(date)]="statistikParameter.von">
+                                            </dv-date-picker-x>
+                                        </div>
+                                        <div class="col-xs-3" *ngIf="isSuperadmin()">
+                                            <dv-date-picker-x label="BIS"
+                                                              [minDate]="statistikParameter.von || minDate"
+                                                              [maxDate]="maxDate"
+                                                              [(date)]="statistikParameter.bis">
+                                            </dv-date-picker-x>
+                                        </div>
+
                                         <div class="col-xs-3" *ngIf="gemeinden">
                                             <div class="form-group">
-                                                <label class="md-no-float required" for="gemeinden_mahlzeitenverguenstigung"
+                                                <label class="md-no-float" [class.required]="!isSuperadmin()" for="gemeinden_mahlzeitenverguenstigung"
                                                        translate>GEMEINDE</label>
                                                 <div class="dv-select-style">
                                                     <select name="gemeinden"
@@ -970,14 +985,14 @@
                                                             [(ngModel)]="statistikParameter.gemeinde"
                                                             #gemeindeRef='ngModel'
                                                             class="form-control"
-                                                            required>
+                                                            [required]="!isSuperadmin()">
                                                         <option *ngFor="let gemeinde of gemeinden" [ngValue]="gemeinde">{{gemeinde.name}}</option>
                                                     </select>
                                                     <dv-error-messages [errorObject]="gemeindeRef.errors" class="error"></dv-error-messages>
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="col-xs-3 statistik-button">
+                                        <div class="generieren-button statistik-button">
                                             <dv-loading-button type="submit"
                                                                style="margin-left:auto;margin-right:auto;width:13rem;">
                                                 <span class="uppercase" translate>GENERIEREN</span>

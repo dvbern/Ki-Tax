@@ -242,10 +242,12 @@ export class ReportAsyncRS {
         );
     }
 
-    public getLastenausgleichBGReportExcel(gemeinde: TSGemeinde, jahr: number) {
+    public getLastenausgleichBGReportExcel(gemeinde: TSGemeinde, jahr: number, von: string, bis: string) {
         const reportParams = ReportAsyncRS.createParamsFromObject({
-            gemeindeId: gemeinde.id,
-            jahr
+            gemeindeId: gemeinde?.id,
+            jahr,
+            von,
+            bis
         });
         return this.http.get<{workjobId: string}>(
             `${this.serviceURL}/excel/lastenausgleichBGZeitabschnitte`,
