@@ -851,7 +851,8 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 	}
 
 	@Nonnull
-	private Gesuch doApplymitteilung(@Nonnull Mitteilung mitteilung, @Nonnull Gesuch gesuch) throws EbeguException {
+	private Gesuch doApplymitteilung(@Nonnull Mitteilung mitteilung, @Nonnull Gesuch gesuch) throws EbeguException,
+			EbeguExistingAntragException {
 		authorizer.checkReadAuthorizationMitteilung(mitteilung);
 		if (gesuch.getStatus() == AntragStatus.FREIGEGEBEN || gesuch.getStatus() == AntragStatus.FREIGABEQUITTUNG) {
 			throw new EbeguExistingAntragException(
@@ -909,7 +910,8 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 				applyMitteilungToMutation(neustesGesuch, mitteilung);
 				return neustesGesuch;
 			}
-			if (AntragStatus.getVerfuegtIgnoriertAndSTVStates().contains(neustesGesuch.getStatus())) {
+			if (AntragStatus.getVerfuegtIgnoriertAndSTVStates().contains(neustesGesuch.getStatus()) ||
+					mitteilung instanceof NeueVeranlagungsMitteilung && neustesGesuch.getStatus() == AntragStatus.NUR_SCHULAMT) {
 				// create Mutation if there is currently no Mutation
 				Gesuch mutation = Gesuch.createMutation(gesuch.getDossier(), neustesGesuch.getGesuchsperiode(),
 					LocalDate.now());

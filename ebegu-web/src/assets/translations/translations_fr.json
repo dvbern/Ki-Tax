@@ -1341,7 +1341,7 @@
     "MUTATIONSMELDUNG_UEBERNEHMEN_BESCHREIBUNG": "Les données saisies sont ajoutées au changement.",
     "MUTATIONSMELDUNG_IGNORIEREN": "Voulez-vous vraiment ignorer l’avis de disponibilité de la taxation fiscale ?",
     "VERANLAGUNGSMITTEILUNG_UEBERNEHMEN": "Voulez-vous intégrer la modification de la situation financière au changement ?",
-    "VERANLAGUNGSMITTEILUNG_UEBERNEHMEN_BESCHREIBUNG": "Les données sont alors récupérées de la taxation fiscale et intégrées au changement en cours ou à un nouveau changement.",
+    "VERANLAGUNGSMITTEILUNG_UEBERNEHMEN_BESCHREIBUNG": "Les données sont alors récupérées de la taxation fiscale et intégrées à un nouveau changement.",
     "ZAHLUNG_FAELLIGKEIT": "Date d'échéance",
     "ZAHLUNG_TOTAL": "Montant",
     "ZAHLUNG_PAIN001": "Document de versement",
