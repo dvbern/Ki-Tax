@@ -189,6 +189,11 @@ export class FamiliensituationViewXComponent extends AbstractGesuchViewX<TSFamil
     }
 
     public showFragePartnerWieBisher(): boolean {
+        const isVorPeriode = this.getFamiliensituation().aenderungPer?.isBefore(
+            this.gesuchModelManager.getGesuchsperiode().gueltigkeit.gueltigAb);
+        if (isVorPeriode) {
+            return false;
+        }
         const bis = this.gesuchModelManager.getGesuchsperiode().gueltigkeit.gueltigBis;
         return EbeguUtil.isNotNullOrUndefined(this.getFamiliensituation()?.aenderungPer) &&
             !this.getFamiliensituationErstgesuch()?.isSameFamiliensituation(this.getFamiliensituation()) &&

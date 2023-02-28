@@ -395,6 +395,7 @@ public class Familiensituation extends AbstractMutableEntity {
 			}
 			target.setAbweichendeZahlungsadresse(this.isAbweichendeZahlungsadresse());
 			target.setVerguenstigungGewuenscht(this.verguenstigungGewuenscht);
+			target.setPartnerIdentischMitVorgesuch(this.partnerIdentischMitVorgesuch);
 			break;
 		case MUTATION_NEUES_DOSSIER:
 			target.setVerguenstigungGewuenscht(this.getVerguenstigungGewuenscht());
@@ -408,6 +409,7 @@ public class Familiensituation extends AbstractMutableEntity {
 					.copyAuszahlungsdaten(new Auszahlungsdaten(), copyType));
 			}
 			target.setAbweichendeZahlungsadresse(this.isAbweichendeZahlungsadresse());
+			target.setPartnerIdentischMitVorgesuch(this.partnerIdentischMitVorgesuch);
 			break;
 		case ERNEUERUNG:
 		case ERNEUERUNG_NEUES_DOSSIER:
