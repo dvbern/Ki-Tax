@@ -7,6 +7,7 @@ import java.util.Locale;
 import javax.annotation.Nonnull;
 
 import ch.dvbern.ebegu.dto.BGCalculationInput;
+import ch.dvbern.ebegu.dto.FinanzDatenDTO;
 import ch.dvbern.ebegu.entities.AbstractPlatz;
 import ch.dvbern.ebegu.entities.BGCalculationResult;
 import ch.dvbern.ebegu.enums.MsgKey;
@@ -24,19 +25,45 @@ public class MutationsMergerFinanzielleSituationBernFKJV extends MutationsMerger
 		AbstractPlatz platz,
 		LocalDate mutationsEingansdatum) {
 
-		if (hasMassgebendesEinkommenVorAbzugFamgrChanged(inputAktuel, resultVorgaenger) && !inputAktuel.isEkvAccepted()) {
-			handleFinanzielleSituationRueckwirkendAnpassen(inputAktuel, resultVorgaenger, platz, mutationsEingansdatum);
+		if (inputAktuel.getParent().getGueltigkeit().getGueltigAb().isAfter(mutationsEingansdatum)) {
 			return;
 		}
 
-		handleVerminderungEinkommen(inputAktuel, resultVorgaenger, mutationsEingansdatum);
+		if (inputAktuel.isEkvAccepted()) {
+			BigDecimal massgebendesEinkommen = getMassgebendesEinkommenFromFinSit(inputAktuel, platz);
+
+			if (hasMassgebendesEinkommenVorAbzugFamgrChanged(massgebendesEinkommen, resultVorgaenger)) {
+				inputAktuel.setMassgebendesEinkommenVorAbzugFamgr(massgebendesEinkommen);
+				inputAktuel.setEinkommensjahr(platz.extractGesuchsperiode().getBasisJahr());
+				handleFinanzielleSituationRueckwirkendAnpassen(inputAktuel, resultVorgaenger, platz);
+			} else {
+				handleVerminderungEinkommen(inputAktuel, resultVorgaenger, mutationsEingansdatum);
+			}
+
+			return;
+		}
+
+		if (hasMassgebendesEinkommenVorAbzugFamgrChanged(inputAktuel.getMassgebendesEinkommenVorAbzugFamgr(), resultVorgaenger)) {
+			handleFinanzielleSituationRueckwirkendAnpassen(inputAktuel, resultVorgaenger, platz);
+		}
+	}
+
+	private BigDecimal getMassgebendesEinkommenFromFinSit(BGCalculationInput inputAktuel, AbstractPlatz platz) {
+		FinanzDatenDTO finanzDatenDTO ;
+
+		if (inputAktuel.isHasSecondGesuchstellerForFinanzielleSituation()) {
+			finanzDatenDTO = platz.extractGesuch().getFinanzDatenDTO_zuZweit();
+		} else {
+			finanzDatenDTO = platz.extractGesuch().getFinanzDatenDTO_alleine();
+		}
+
+		return finanzDatenDTO.getMassgebendesEinkBjVorAbzFamGr();
 	}
 
 	private void handleFinanzielleSituationRueckwirkendAnpassen(
 		BGCalculationInput inputData,
 		BGCalculationResult resultVorgaenger,
-		AbstractPlatz platz,
-		LocalDate mutationsEingansdatum) {
+		AbstractPlatz platz) {
 
 		//Finanzielle Situation ist gültig ab Datum vor Perioden-Start
 		platz
@@ -46,22 +73,15 @@ public class MutationsMergerFinanzielleSituationBernFKJV extends MutationsMerger
 				.setFinSitRueckwirkendKorrigiertInThisMutation(true);
 		inputData.addBemerkung(MsgKey.FIN_SIT_RUECKWIRKEND_ANGEPASST, getLocale());
 
-		// Das Handling der Familiensituation darf sich nicht ändern
-		// Der Abzug und die Famliengrösse soll sich also per mutationsEingangsdatum erst ändern!!
-		if (inputData.getParent().getGueltigkeit().getGueltigAb().isAfter(mutationsEingansdatum)) {
-			return;
-		}
-
+		//Nur die finanzielle Situation soll rückwirkend geändert werden, FamilienSituation nicht
 		inputData.setFamGroesse(resultVorgaenger.getFamGroesse());
 		inputData.setAbzugFamGroesse(resultVorgaenger.getAbzugFamGroesse());
 
 	}
 
 	private boolean hasMassgebendesEinkommenVorAbzugFamgrChanged(
-		@Nonnull BGCalculationInput inputData,
+		@Nonnull BigDecimal massgebendesEinkommen,
 		@Nonnull BGCalculationResult resultVorangehenderAbschnitt) {
-
-		BigDecimal massgebendesEinkommen = inputData.getMassgebendesEinkommenVorAbzugFamgr();
 		BigDecimal massgebendesEinkommenVorher = resultVorangehenderAbschnitt.getMassgebendesEinkommenVorAbzugFamgr();
 
 		return massgebendesEinkommen.compareTo(massgebendesEinkommenVorher) != 0;
