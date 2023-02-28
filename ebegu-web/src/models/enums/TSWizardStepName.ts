@@ -79,5 +79,5 @@ export function getAllWizardStepsWithoutFinSitSteps(): Array<TSWizardStepName> {
         TSWizardStepName.DOKUMENTE,
         TSWizardStepName.FREIGABE,
         TSWizardStepName.VERFUEGEN
-    ]
+    ];
 }
