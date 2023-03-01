@@ -30,6 +30,7 @@
                 <dv-checkbox-x
                     *ngIf="showSearchInaktivePerioden()"
                     [ngModel]="searchInaktivePerioden"
+                    [marginClass]="'no-margin-bottom'"
                     name="includeClosed"
                     id="includeClosed"
                     (ngModelChange)="changeSearchInaktivePerioden($event)"
