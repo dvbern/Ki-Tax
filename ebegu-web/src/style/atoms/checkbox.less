@@ -20,7 +20,9 @@
 .checkbox {
     font-size: 0;
     height: auto;
-    margin: 0 0 3rem;
+    &:not(.no-margin-bottom) {
+        margin: 0 0 3rem;
+    }
     dv-tooltip {
         display: inline-block;
         font-size: 0;
