@@ -94,7 +94,7 @@ describe('wizardStepManager', () => {
             spyOn(authServiceRS, 'getPrincipalRole').and.returnValue(TSRole.SACHBEARBEITER_BG);
             wizardStepManager.getAllowedSteps().splice(0);
             wizardStepManager.setAllowedStepsForRole(TSRole.SACHBEARBEITER_BG);
-            const expectedSteps = 18;
+            const expectedSteps = 19;
             expect(wizardStepManager.getAllowedSteps().length).toBe(expectedSteps);
             expect(wizardStepManager.getAllowedSteps()[0]).toBe(TSWizardStepName.GESUCH_ERSTELLEN);
             expect(wizardStepManager.getAllowedSteps()[1]).toBe(TSWizardStepName.FAMILIENSITUATION);
@@ -107,16 +107,17 @@ describe('wizardStepManager', () => {
             expect(wizardStepManager.getAllowedSteps()[8]).toBe(TSWizardStepName.FINANZIELLE_SITUATION);
             expect(wizardStepManager.getAllowedSteps()[9]).toBe(TSWizardStepName.FINANZIELLE_SITUATION_LUZERN);
             expect(wizardStepManager.getAllowedSteps()[10]).toBe(TSWizardStepName.FINANZIELLE_SITUATION_SOLOTHURN);
-            expect(wizardStepManager.getAllowedSteps()[11]).toBe(TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG);
-            expect(wizardStepManager.getAllowedSteps()[12]).toBe(TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_LUZERN);
+            expect(wizardStepManager.getAllowedSteps()[11]).toBe(TSWizardStepName.FINANZIELLE_SITUATION_APPENZELL);
+            expect(wizardStepManager.getAllowedSteps()[12]).toBe(TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG);
+            expect(wizardStepManager.getAllowedSteps()[13]).toBe(TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_LUZERN);
             // eslint-disable-next-line no-magic-numbers
-            expect(wizardStepManager.getAllowedSteps()[13]).toBe(TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_SOLOTHURN);
+            expect(wizardStepManager.getAllowedSteps()[14]).toBe(TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_SOLOTHURN);
             // eslint-disable-next-line no-magic-numbers
-            expect(wizardStepManager.getAllowedSteps()[14]).toBe(TSWizardStepName.DOKUMENTE);
+            expect(wizardStepManager.getAllowedSteps()[15]).toBe(TSWizardStepName.DOKUMENTE);
             // eslint-disable-next-line no-magic-numbers
-            expect(wizardStepManager.getAllowedSteps()[15]).toBe(TSWizardStepName.FREIGABE);
+            expect(wizardStepManager.getAllowedSteps()[16]).toBe(TSWizardStepName.FREIGABE);
             // eslint-disable-next-line no-magic-numbers
-            expect(wizardStepManager.getAllowedSteps()[16]).toBe(TSWizardStepName.VERFUEGEN);
+            expect(wizardStepManager.getAllowedSteps()[17]).toBe(TSWizardStepName.VERFUEGEN);
         });
     });
     describe('findStepsFromGesuch', () => {

@@ -638,6 +638,11 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 		return !MathUtil.isZero(this.getRelevantBgCalculationResult().getBetreuungspensumProzent());
 	}
 
+	public void setPartnerIdentischMitVorgesuch(boolean partnerIdentischMitVorgesuch){
+		this.getBgCalculationInputAsiv().setPartnerIdentischMitVorgesuch(partnerIdentischMitVorgesuch);
+		this.getBgCalculationInputGemeinde().setPartnerIdentischMitVorgesuch(partnerIdentischMitVorgesuch);
+	}
+
 	/* Ende Delegator Setter-Methoden: Setzen die Werte auf BEIDEN inputs */
 
 	@Nonnull

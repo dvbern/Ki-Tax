@@ -35,7 +35,7 @@ import {TSGeschlecht} from '../../../models/enums/TSGeschlecht';
 import {TSGruendeZusatzleistung} from '../../../models/enums/TSGruendeZusatzleistung';
 import {TSIntegrationTyp} from '../../../models/enums/TSIntegrationTyp';
 import {getTSKinderabzugValues, TSKinderabzug} from '../../../models/enums/TSKinderabzug';
-import {TSKinderabzugTyp} from '../../../models/enums/TSKinderabzugTyp';
+import {isKinderabzugTypFKJV, TSKinderabzugTyp} from '../../../models/enums/TSKinderabzugTyp';
 import {TSRole} from '../../../models/enums/TSRole';
 import {TSWizardStepName} from '../../../models/enums/TSWizardStepName';
 import {TSEinstellung} from '../../../models/TSEinstellung';
@@ -415,7 +415,7 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
     }
 
     public showFkjvKinderabzug(): boolean {
-        return this.kinderabzugTyp === TSKinderabzugTyp.FKJV;
+        return isKinderabzugTypFKJV(this.kinderabzugTyp);
     }
 
     public isGeburtsdatumValid(): boolean {

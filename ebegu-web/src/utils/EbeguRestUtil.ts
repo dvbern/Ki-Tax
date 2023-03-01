@@ -140,6 +140,7 @@ import {TSFinanzielleSituation} from '../models/TSFinanzielleSituation';
 import {TSFinanzielleSituationContainer} from '../models/TSFinanzielleSituationContainer';
 import {TSFinanzielleSituationSelbstdeklaration} from '../models/TSFinanzielleSituationSelbstdeklaration';
 import {TSFinanzModel} from '../models/TSFinanzModel';
+import {TSFinSitZusatzangabenAppenzell} from '../models/TSFinSitZusatzangabenAppenzell';
 import {TSGemeinde} from '../models/TSGemeinde';
 import {TSGemeindeKonfiguration} from '../models/TSGemeindeKonfiguration';
 import {TSGemeindeRegistrierung} from '../models/TSGemeindeRegistrierung';
@@ -654,6 +655,7 @@ export class EbeguRestUtil {
             restFamiliensituation.geteilteObhut = familiensituation.geteilteObhut;
             restFamiliensituation.unterhaltsvereinbarung = familiensituation.unterhaltsvereinbarung;
             restFamiliensituation.unterhaltsvereinbarungBemerkung = familiensituation.unterhaltsvereinbarungBemerkung;
+            restFamiliensituation.partnerIdentischMitVorgesuch = familiensituation.partnerIdentischMitVorgesuch;
             return restFamiliensituation;
         }
 
@@ -737,6 +739,7 @@ export class EbeguRestUtil {
             familiensituation.unterhaltsvereinbarung = familiensituationFromServer.unterhaltsvereinbarung;
             familiensituation.unterhaltsvereinbarungBemerkung =
                 familiensituationFromServer.unterhaltsvereinbarungBemerkung;
+            familiensituation.partnerIdentischMitVorgesuch = familiensituationFromServer.partnerIdentischMitVorgesuch;
             return familiensituation;
         }
         return undefined;
@@ -2030,6 +2033,11 @@ export class EbeguRestUtil {
                 {},
                 abstractFinanzielleSituation.selbstdeklaration);
         }
+        if (EbeguUtil.isNotNullOrUndefined(abstractFinanzielleSituation.finSitZusatzangabenAppenzell)) {
+            restAbstractFinanzielleSituation.finSitZusatzangabenAppenzell = this.finSitZusatzangabenAppenzellToRestObject(
+                {},
+                abstractFinanzielleSituation.finSitZusatzangabenAppenzell);
+        }
         return restAbstractFinanzielleSituation;
     }
 
@@ -2065,6 +2073,23 @@ export class EbeguRestUtil {
         restSelbstdeklaration.abzugSteuerfreierBetragKinder
             = selbstdeklaration.abzugSteuerfreierBetragKinder;
         return restSelbstdeklaration;
+    }
+
+    private finSitZusatzangabenAppenzellToRestObject(
+        restFinanzielleVerhaeltnisse: any,
+        finanzielleVerhaeltnisse: TSFinSitZusatzangabenAppenzell
+    ): TSFinSitZusatzangabenAppenzell {
+
+        this.abstractMutableEntityToRestObject(restFinanzielleVerhaeltnisse, finanzielleVerhaeltnisse);
+        restFinanzielleVerhaeltnisse.saeule3a = finanzielleVerhaeltnisse.saeule3a;
+        restFinanzielleVerhaeltnisse.saeule3aNichtBvg = finanzielleVerhaeltnisse.saeule3aNichtBvg;
+        restFinanzielleVerhaeltnisse.beruflicheVorsorge = finanzielleVerhaeltnisse.beruflicheVorsorge;
+        restFinanzielleVerhaeltnisse.vorjahresverluste = finanzielleVerhaeltnisse.vorjahresverluste;
+        restFinanzielleVerhaeltnisse.liegenschaftsaufwand = finanzielleVerhaeltnisse.liegenschaftsaufwand;
+        restFinanzielleVerhaeltnisse.einkuenfteBgsa = finanzielleVerhaeltnisse.einkuenfteBgsa;
+        restFinanzielleVerhaeltnisse.politischeParteiSpende = finanzielleVerhaeltnisse.politischeParteiSpende;
+        restFinanzielleVerhaeltnisse.leistungAnJuristischePersonen = finanzielleVerhaeltnisse.leistungAnJuristischePersonen;
+        return restFinanzielleVerhaeltnisse;
     }
 
     public parseAbstractFinanzielleSituation(
@@ -2107,6 +2132,9 @@ export class EbeguRestUtil {
             abstractFinanzielleSituationTS.selbstdeklaration =
                 this.parseFinanzielleSituationSelbstdeklaration(new TSFinanzielleSituationSelbstdeklaration(),
                     abstractFinanzielleSituationFromServer.selbstdeklaration);
+            abstractFinanzielleSituationTS.finSitZusatzangabenAppenzell =
+                this.parseFinSitZusatzangabenAppenzell(new TSFinSitZusatzangabenAppenzell(),
+                    abstractFinanzielleSituationFromServer.finSitZusatzangabenAppenzell);
             return abstractFinanzielleSituationTS;
         }
         return undefined;
@@ -2183,6 +2211,27 @@ export class EbeguRestUtil {
             tsSelbstdeklaration.abzugSteuerfreierBetragKinder
                 = selbstdeklarationFromServer.abzugSteuerfreierBetragKinder;
             return tsSelbstdeklaration;
+        }
+        return undefined;
+    }
+
+    private parseFinSitZusatzangabenAppenzell(
+        tsFinSitZusatzangabenAppenzell: TSFinSitZusatzangabenAppenzell,
+        finSitZusatzangabenAppenzellFromServer: any
+    ): TSFinSitZusatzangabenAppenzell {
+
+        if (finSitZusatzangabenAppenzellFromServer) {
+            this.parseAbstractMutableEntity(tsFinSitZusatzangabenAppenzell, finSitZusatzangabenAppenzellFromServer);
+            tsFinSitZusatzangabenAppenzell.saeule3a = finSitZusatzangabenAppenzellFromServer.saeule3a;
+            tsFinSitZusatzangabenAppenzell.saeule3aNichtBvg = finSitZusatzangabenAppenzellFromServer.saeule3aNichtBvg;
+            tsFinSitZusatzangabenAppenzell.beruflicheVorsorge = finSitZusatzangabenAppenzellFromServer.beruflicheVorsorge;
+            tsFinSitZusatzangabenAppenzell.einkuenfteBgsa = finSitZusatzangabenAppenzellFromServer.einkuenfteBgsa;
+            tsFinSitZusatzangabenAppenzell.liegenschaftsaufwand = finSitZusatzangabenAppenzellFromServer.liegenschaftsaufwand;
+            tsFinSitZusatzangabenAppenzell.vorjahresverluste = finSitZusatzangabenAppenzellFromServer.vorjahresverluste;
+            tsFinSitZusatzangabenAppenzell.politischeParteiSpende = finSitZusatzangabenAppenzellFromServer.politischeParteiSpende;
+            tsFinSitZusatzangabenAppenzell.leistungAnJuristischePersonen = finSitZusatzangabenAppenzellFromServer.leistungAnJuristischePersonen;
+
+            return tsFinSitZusatzangabenAppenzell;
         }
         return undefined;
     }

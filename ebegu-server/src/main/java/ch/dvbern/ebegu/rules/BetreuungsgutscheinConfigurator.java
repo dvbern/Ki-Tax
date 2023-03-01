@@ -275,6 +275,10 @@ public class BetreuungsgutscheinConfigurator {
 		// Sozialhilfe
 		SozialhilfeAbschnittRule sozialhilfeAbschnittRule = new SozialhilfeAbschnittRule(defaultGueltigkeit, locale);
 		addToRuleSetIfRelevantForGemeinde(sozialhilfeAbschnittRule, einstellungMap);
+
+		// FamiliensituationBeendet
+		FamiliensituationBeendetAbschnittRule familiensituationBeendetAbschnittRule = new FamiliensituationBeendetAbschnittRule(defaultGueltigkeit, locale);
+		addToRuleSetIfRelevantForGemeinde(familiensituationBeendetAbschnittRule, einstellungMap);
 	}
 
 	private void berechnenAnspruchRegeln(
@@ -452,6 +456,9 @@ public class BetreuungsgutscheinConfigurator {
 		// Verfuegungsbemerkung
 		VerfuegungsBemerkungCalcRule bemerkungCalcRule = new VerfuegungsBemerkungCalcRule(defaultGueltigkeit, locale);
 		addToRuleSetIfRelevantForGemeinde(bemerkungCalcRule, einstellungMap);
+
+		FamiliensituationBeendetCalcRule familiensituationBeendetCalcRule = new FamiliensituationBeendetCalcRule(defaultGueltigkeit, locale);
+		addToRuleSetIfRelevantForGemeinde(familiensituationBeendetCalcRule, einstellungMap);
 	}
 
 	private void addToRuleSetIfRelevantForGemeinde(@Nonnull Rule rule, @Nonnull Map<EinstellungKey, Einstellung> einstellungMap) {

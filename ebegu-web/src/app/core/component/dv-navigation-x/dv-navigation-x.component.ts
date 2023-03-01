@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2021 DV Bern AG, Switzerland
+ * Copyright (C) 2023 DV Bern AG, Switzerland
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -8,11 +8,11 @@
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
 import {ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
@@ -20,9 +20,18 @@ import {TranslateService} from '@ngx-translate/core';
 import {StateService, TransitionPromise} from '@uirouter/core';
 import {FinanzielleSituationRS} from '../../../../gesuch/service/finanzielleSituationRS.rest';
 import {FinanzielleSituationSubStepManager} from '../../../../gesuch/service/finanzielleSituationSubStepManager';
-import {FinanzielleSituationSubStepManagerBernAsiv} from '../../../../gesuch/service/finanzielleSituationSubStepManagerBernAsiv';
-import {FinanzielleSituationSubStepManagerLuzern} from '../../../../gesuch/service/finanzielleSituationSubStepManagerLuzern';
-import {FinanzielleSituationSubStepManagerSolothurn} from '../../../../gesuch/service/finanzielleSituationSubStepManagerSolothurn';
+import {
+    FinanzielleSituationSubStepManagerAppenzell
+} from '../../../../gesuch/service/finanzielleSituationSubStepManagerAppenzell';
+import {
+    FinanzielleSituationSubStepManagerBernAsiv
+} from '../../../../gesuch/service/finanzielleSituationSubStepManagerBernAsiv';
+import {
+    FinanzielleSituationSubStepManagerLuzern
+} from '../../../../gesuch/service/finanzielleSituationSubStepManagerLuzern';
+import {
+    FinanzielleSituationSubStepManagerSolothurn
+} from '../../../../gesuch/service/finanzielleSituationSubStepManagerSolothurn';
 import {GesuchModelManager} from '../../../../gesuch/service/gesuchModelManager';
 import {WizardStepManager} from '../../../../gesuch/service/wizardStepManager';
 import {TSEingangsart} from '../../../../models/enums/TSEingangsart';
@@ -97,6 +106,10 @@ export class DvNavigationXComponent implements OnInit {
                     case TSFinanzielleSituationTyp.SOLOTHURN:
                         this.finSitWizardSubStepManager =
                             new FinanzielleSituationSubStepManagerSolothurn(this.gesuchModelManager);
+                        break;
+                    case TSFinanzielleSituationTyp.APPENZELL:
+                        this.finSitWizardSubStepManager =
+                            new FinanzielleSituationSubStepManagerAppenzell(this.gesuchModelManager);
                         break;
                     default:
                         throw new Error(`unexpected TSFinanzielleSituationTyp ${typ}`);
@@ -468,6 +481,9 @@ export class DvNavigationXComponent implements OnInit {
                 return;
             case TSWizardStepName.FINANZIELLE_SITUATION_SOLOTHURN:
                 this.$state.go('gesuch.finanzielleSituationStartSolothurn', gesuchIdParam);
+                return;
+            case TSWizardStepName.FINANZIELLE_SITUATION_APPENZELL:
+                this.$state.go('gesuch.finanzielleSituationAppenzell', gesuchIdParam);
                 return;
             case TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG:
             case TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_LUZERN:

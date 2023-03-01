@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.util.Locale;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import ch.dvbern.ebegu.util.UploadFileInfo;
 import ch.dvbern.oss.lib.excelmerger.ExcelMergeException;
@@ -30,7 +31,9 @@ public interface ReportLastenausgleichBGZeitabschnitteService {
 	@Nonnull
 	UploadFileInfo generateExcelReportLastenausgleichBGZeitabschnitte(
 		@Nonnull Locale locale,
-		@Nonnull String gemeindeId,
+		@Nullable String von,
+		@Nullable String bis,
+		@Nullable String gemeindeId,
 		@Nonnull Integer lastenausgleichJahr
 	) throws ExcelMergeException, IOException;
 

@@ -236,6 +236,11 @@ export class EbeguUtil {
         return true;
     }
 
+    public static areSameOrWithoutValue(right: any, left: any): boolean{
+        return (EbeguUtil.isNullOrUndefined(right) && EbeguUtil.isNullOrUndefined(left)) ||
+                right === left;
+    }
+
     public static isNotNullAndTrue(data: boolean): boolean {
         return this.isNotNullOrUndefined(data) && data;
     }

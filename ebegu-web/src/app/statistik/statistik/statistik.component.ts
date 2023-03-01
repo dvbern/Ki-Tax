@@ -351,7 +351,11 @@ export class StatistikComponent implements OnInit, OnDestroy {
                 }, StatistikComponent.handleError);
                 return;
             case TSStatistikParameterType.LASTENAUSGLEICH_BG:
-                this.reportAsyncRS.getLastenausgleichBGReportExcel(this.statistikParameter.gemeinde, this.statistikParameter.jahr)
+                this.reportAsyncRS.getLastenausgleichBGReportExcel(
+                    this.statistikParameter.gemeinde,
+                    this.statistikParameter.jahr,
+                    this.statistikParameter.von?.format(this.DATE_PARAM_FORMAT),
+                    this.statistikParameter.bis?.format(this.DATE_PARAM_FORMAT))
                     .subscribe((res: { workjobId: string }) => {
                     this.informReportGenerationStarted(res);
                 }, StatistikComponent.handleError);

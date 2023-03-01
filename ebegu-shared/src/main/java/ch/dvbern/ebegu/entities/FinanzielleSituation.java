@@ -1,16 +1,18 @@
 /*
- * Ki-Tax: System for the management of external childcare subsidies
- * Copyright (C) 2017 City of Bern Switzerland
+ * Copyright (C) 2023 DV Bern AG, Switzerland
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Affero General Public License for more details.
+ *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
 package ch.dvbern.ebegu.entities;
@@ -21,10 +23,12 @@ import java.util.Objects;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.ForeignKey;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
@@ -121,10 +125,15 @@ public class FinanzielleSituation extends AbstractFinanzielleSituation {
 	@Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
 	private SteuerdatenResponse steuerdatenResponse;
 
+	@Nullable
+	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true,fetch = FetchType.EAGER)
+	@JoinColumn(nullable = true)
+	private FinSitZusatzangabenAppenzell finSitZusatzangabenAppenzell;
+
 	public FinanzielleSituation() {
 	}
 
-
+	@Override
 	public Boolean getSteuerveranlagungErhalten() {
 		return steuerveranlagungErhalten;
 	}
@@ -133,6 +142,7 @@ public class FinanzielleSituation extends AbstractFinanzielleSituation {
 		this.steuerveranlagungErhalten = steuerveranlagungErhalten;
 	}
 
+	@Override
 	public Boolean getSteuererklaerungAusgefuellt() {
 		return steuererklaerungAusgefuellt;
 	}
@@ -141,6 +151,7 @@ public class FinanzielleSituation extends AbstractFinanzielleSituation {
 		this.steuererklaerungAusgefuellt = steuererklaerungAusgefuellt;
 	}
 
+	@Override
 	@Nullable
 	public Boolean getSteuerdatenZugriff() {
 		return steuerdatenZugriff;
@@ -240,6 +251,7 @@ public class FinanzielleSituation extends AbstractFinanzielleSituation {
 		this.bruttoLohn = bruttoLohn;
 	}
 
+	@Override
 	@Nullable
 	public SteuerdatenAnfrageStatus getSteuerdatenAbfrageStatus() {
 		return steuerdatenAbfrageStatus;
@@ -299,6 +311,9 @@ public class FinanzielleSituation extends AbstractFinanzielleSituation {
 			target.setSteuerdatenAbfrageTimestamp(this.getSteuerdatenAbfrageTimestamp());
 			target.setAutomatischePruefungErlaubt(this.getAutomatischePruefungErlaubt());
 			target.setMomentanSelbststaendig(this.getMomentanSelbststaendig());
+			if (this.getFinSitZusatzangabenAppenzell() != null) {
+				target.setFinSitZusatzangabenAppenzell(this.getFinSitZusatzangabenAppenzell().copyFinanzielleVerhaeltnisse(new FinSitZusatzangabenAppenzell(), copyType));
+			}
 			break;
 		case ERNEUERUNG:
 		case ERNEUERUNG_NEUES_DOSSIER:
@@ -347,5 +362,13 @@ public class FinanzielleSituation extends AbstractFinanzielleSituation {
 
 	public void setSteuerdatenResponse(@Nullable SteuerdatenResponse steuerdatenResponse) {
 		this.steuerdatenResponse = steuerdatenResponse;
+	}
+	@Nullable
+	public FinSitZusatzangabenAppenzell getFinSitZusatzangabenAppenzell() {
+		return finSitZusatzangabenAppenzell;
+	}
+
+	public void setFinSitZusatzangabenAppenzell(@Nullable FinSitZusatzangabenAppenzell finSitZusatzangabenAppenzell) {
+		this.finSitZusatzangabenAppenzell = finSitZusatzangabenAppenzell;
 	}
 }
