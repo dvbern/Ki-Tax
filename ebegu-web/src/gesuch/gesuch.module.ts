@@ -72,6 +72,12 @@ import {FallCreationViewXComponent} from './component/fall-creation-view-x/fall-
 import {FallToolbarComponent} from './component/fallToolbar/fallToolbar.component';
 import {FamiliensituationViewXComponent} from './component/familiensituation-view-x/familiensituation-view-x.component';
 import {
+    FinSitZusatzfelderAppenzellComponent
+} from './component/finanzielleSituation/appenzell/fin-sit-zusatzfelder-appenzell/fin-sit-zusatzfelder-appenzell.component';
+import {
+    FinanzielleSituationAppenzellViewComponent
+} from './component/finanzielleSituation/appenzell/finanzielle-situation-appenzell-view/finanzielle-situation-appenzell-view.component';
+import {
     FinanzielleSituationAufteilungComponent
 } from './component/finanzielleSituation/bern/finanzielleSituationAufteilung/finanzielle-situation-aufteilung.component';
 import {
@@ -140,8 +146,10 @@ export const GESUCH_JS_MODULE =
             downgradeComponent({component: AngabenGesuchsteller2Component}))
         .component('finanzielleSituationSelbstdeklarationLuzern',
             downgradeComponent({component: SelbstdeklarationComponent}))
+        .component('finanzielleVerhaeltnisseAppenzell', downgradeComponent({component: FinSitZusatzfelderAppenzellComponent}))
         .component('finanzielleSituationVeranlagungLuzern', downgradeComponent({component: VeranlagungComponent}))
         .component('finanzielleSituationResultatLuzern', downgradeComponent({component: ResultatComponent}))
+        .component('finanzielleSituationAppenzell', downgradeComponent({component: FinanzielleSituationAppenzellViewComponent}))
         .component('einkommensverschlechterungLuzernView,',
             downgradeComponent({component: EinkommensverschlechterungLuzernViewComponent}))
         .component('einkommensverschlechterungSolothurnView,',

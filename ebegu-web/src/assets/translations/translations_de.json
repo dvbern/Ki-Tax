@@ -3105,5 +3105,9 @@
     "MUTATION_OEFFNEN": "Mutation öffnen",
     "FIN_SIT_GELOESCHT": "Finanzielle Situation gelöscht",
     "FREIGABEQUITTUNG_WARNUNG": "",
+    "FINANZIELLE_VERHAELTNISSE_BERECHNUNG": "Berechnung der Finanziellen Verhältnisse",
+    "FINANZIELLE_VERHAELTNISSE_ECKDATEN": "Eckdaten",
+    "FINANZIELLE_VERHAELTNISSE_STEUERBARES_EINKOMMEN": "Steuerbares Einkommen resp. Reineinkommen (Staatssteuer)",
+    "FINANZIELLE_VERHAELTNISSE_STEUERBARES_EINKOMMEN_HELP": "",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }
