@@ -2029,10 +2029,10 @@ export class EbeguRestUtil {
                 {},
                 abstractFinanzielleSituation.selbstdeklaration);
         }
-        if (EbeguUtil.isNotNullOrUndefined(abstractFinanzielleSituation.finanzielleVerhaeltnisse)) {
-            restAbstractFinanzielleSituation.finanzielleVerhaeltnisse = this.finanzielleVerhaeltnisseToRestObject(
+        if (EbeguUtil.isNotNullOrUndefined(abstractFinanzielleSituation.finSitZusatzangabenAppenzell)) {
+            restAbstractFinanzielleSituation.finSitZusatzangabenAppenzell = this.finSitZusatzangabenAppenzellToRestObject(
                 {},
-                abstractFinanzielleSituation.finanzielleVerhaeltnisse);
+                abstractFinanzielleSituation.finSitZusatzangabenAppenzell);
         }
         return restAbstractFinanzielleSituation;
     }
@@ -2071,7 +2071,7 @@ export class EbeguRestUtil {
         return restSelbstdeklaration;
     }
 
-    private finanzielleVerhaeltnisseToRestObject(
+    private finSitZusatzangabenAppenzellToRestObject(
         restFinanzielleVerhaeltnisse: any,
         finanzielleVerhaeltnisse: TSFinSitZusatzangabenAppenzell
     ): TSFinSitZusatzangabenAppenzell {
@@ -2128,9 +2128,9 @@ export class EbeguRestUtil {
             abstractFinanzielleSituationTS.selbstdeklaration =
                 this.parseFinanzielleSituationSelbstdeklaration(new TSFinanzielleSituationSelbstdeklaration(),
                     abstractFinanzielleSituationFromServer.selbstdeklaration);
-            abstractFinanzielleSituationTS.finanzielleVerhaeltnisse =
-                this.parseFinanzielleVerhaeltnisse(new TSFinSitZusatzangabenAppenzell(),
-                    abstractFinanzielleSituationFromServer.finanzielleVerhaeltnisse);
+            abstractFinanzielleSituationTS.finSitZusatzangabenAppenzell =
+                this.parseFinSitZusatzangabenAppenzell(new TSFinSitZusatzangabenAppenzell(),
+                    abstractFinanzielleSituationFromServer.finSitZusatzangabenAppenzell);
             return abstractFinanzielleSituationTS;
         }
         return undefined;
@@ -2211,23 +2211,23 @@ export class EbeguRestUtil {
         return undefined;
     }
 
-    private parseFinanzielleVerhaeltnisse(
-        tsFinanzielleVerhaeltnisse: TSFinSitZusatzangabenAppenzell,
-        finanzielleVerhaeltnisseFromServer: any
+    private parseFinSitZusatzangabenAppenzell(
+        tsFinSitZusatzangabenAppenzell: TSFinSitZusatzangabenAppenzell,
+        finSitZusatzangabenAppenzellFromServer: any
     ): TSFinSitZusatzangabenAppenzell {
 
-        if (finanzielleVerhaeltnisseFromServer) {
-            this.parseAbstractMutableEntity(tsFinanzielleVerhaeltnisse, finanzielleVerhaeltnisseFromServer);
-            tsFinanzielleVerhaeltnisse.saeule3a = finanzielleVerhaeltnisseFromServer.saeule3a;
-            tsFinanzielleVerhaeltnisse.saeule3aNichtBvg = finanzielleVerhaeltnisseFromServer.saeule3aNichtBvg;
-            tsFinanzielleVerhaeltnisse.beruflicheVorsorge = finanzielleVerhaeltnisseFromServer.beruflicheVorsorge;
-            tsFinanzielleVerhaeltnisse.einkuenfteBgsa = finanzielleVerhaeltnisseFromServer.einkuenfteBgsa;
-            tsFinanzielleVerhaeltnisse.liegenschaftsaufwand = finanzielleVerhaeltnisseFromServer.liegenschaftsaufwand;
-            tsFinanzielleVerhaeltnisse.vorjahresverluste = finanzielleVerhaeltnisseFromServer.vorjahresverluste;
-            tsFinanzielleVerhaeltnisse.politischeParteiSpende = finanzielleVerhaeltnisseFromServer.politischeParteiSpende;
-            tsFinanzielleVerhaeltnisse.leistungAnJuristischePersonen = finanzielleVerhaeltnisseFromServer.leistungAnJuristischePersonen;
+        if (finSitZusatzangabenAppenzellFromServer) {
+            this.parseAbstractMutableEntity(tsFinSitZusatzangabenAppenzell, finSitZusatzangabenAppenzellFromServer);
+            tsFinSitZusatzangabenAppenzell.saeule3a = finSitZusatzangabenAppenzellFromServer.saeule3a;
+            tsFinSitZusatzangabenAppenzell.saeule3aNichtBvg = finSitZusatzangabenAppenzellFromServer.saeule3aNichtBvg;
+            tsFinSitZusatzangabenAppenzell.beruflicheVorsorge = finSitZusatzangabenAppenzellFromServer.beruflicheVorsorge;
+            tsFinSitZusatzangabenAppenzell.einkuenfteBgsa = finSitZusatzangabenAppenzellFromServer.einkuenfteBgsa;
+            tsFinSitZusatzangabenAppenzell.liegenschaftsaufwand = finSitZusatzangabenAppenzellFromServer.liegenschaftsaufwand;
+            tsFinSitZusatzangabenAppenzell.vorjahresverluste = finSitZusatzangabenAppenzellFromServer.vorjahresverluste;
+            tsFinSitZusatzangabenAppenzell.politischeParteiSpende = finSitZusatzangabenAppenzellFromServer.politischeParteiSpende;
+            tsFinSitZusatzangabenAppenzell.leistungAnJuristischePersonen = finSitZusatzangabenAppenzellFromServer.leistungAnJuristischePersonen;
 
-            return tsFinanzielleVerhaeltnisse;
+            return tsFinSitZusatzangabenAppenzell;
         }
         return undefined;
     }

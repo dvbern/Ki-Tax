@@ -44,7 +44,7 @@ export class TSAbstractFinanzielleSituation extends TSAbstractMutableEntity {
     private _gewinnungskosten: number;
     private _abzugSchuldzinsen: number;
     private _selbstdeklaration: TSFinanzielleSituationSelbstdeklaration;
-    private _finanzielleVerhaeltnisse: TSFinSitZusatzangabenAppenzell;
+    private _finSitZusatzangabenAppenzell: TSFinSitZusatzangabenAppenzell;
 
     public constructor() {
         super();
@@ -224,11 +224,11 @@ export class TSAbstractFinanzielleSituation extends TSAbstractMutableEntity {
         this._selbstdeklaration = value;
     }
 
-    public get finanzielleVerhaeltnisse(): TSFinSitZusatzangabenAppenzell {
-        return this._finanzielleVerhaeltnisse;
+    public get finSitZusatzangabenAppenzell(): TSFinSitZusatzangabenAppenzell {
+        return this._finSitZusatzangabenAppenzell;
     }
 
-    public set finanzielleVerhaeltnisse(value: TSFinSitZusatzangabenAppenzell) {
-        this._finanzielleVerhaeltnisse = value;
+    public set finSitZusatzangabenAppenzell(value: TSFinSitZusatzangabenAppenzell) {
+        this._finSitZusatzangabenAppenzell = value;
     }
 }

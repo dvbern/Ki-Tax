@@ -51,8 +51,8 @@ export class FinanzielleSituationAppenzellViewComponent extends AbstractGesuchVi
             1);
         this.model.copyFinSitDataFromGesuch(this.gesuchModelManager.getGesuch());
         this.gesuchModelManager.setGesuchstellerNumber(1);
-        if(EbeguUtil.isNullOrUndefined(this.getModel().finanzielleSituationJA.finanzielleVerhaeltnisse)){
-            this.getModel().finanzielleSituationJA.finanzielleVerhaeltnisse = new TSFinSitZusatzangabenAppenzell();
+        if(EbeguUtil.isNullOrUndefined(this.getModel().finanzielleSituationJA.finSitZusatzangabenAppenzell)){
+            this.getModel().finanzielleSituationJA.finSitZusatzangabenAppenzell = new TSFinSitZusatzangabenAppenzell();
         }
         this.wizardStepManager.updateCurrentWizardStepStatusSafe(TSWizardStepName.FINANZIELLE_SITUATION_APPENZELL,
             TSWizardStepStatus.IN_BEARBEITUNG);

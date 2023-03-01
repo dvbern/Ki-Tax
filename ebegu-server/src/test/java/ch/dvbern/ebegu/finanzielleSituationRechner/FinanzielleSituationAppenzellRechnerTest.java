@@ -69,7 +69,7 @@ public class FinanzielleSituationAppenzellRechnerTest {
 		assert gesuch.getGesuchsteller1() != null;
 		assert gesuch.getGesuchsteller1().getFinanzielleSituationContainer() != null;
 		FinanzielleSituation emptyFinanzielleSituationForTest = new FinanzielleSituation();
-		emptyFinanzielleSituationForTest.setFinanzielleVerhaeltnisse(new FinSitZusatzangabenAppenzell());
+		emptyFinanzielleSituationForTest.setFinSitZusatzangabenAppenzell(new FinSitZusatzangabenAppenzell());
 		gesuch.getGesuchsteller1().getFinanzielleSituationContainer().setFinanzielleSituationJA(emptyFinanzielleSituationForTest);
 		finSitRechner.calculateFinanzDaten(gesuch, null);
 		assertThat(gesuch.getFinanzDatenDTO_alleine().getMassgebendesEinkBjVorAbzFamGr(), is(BigDecimal.valueOf(0)));
@@ -90,7 +90,7 @@ public class FinanzielleSituationAppenzellRechnerTest {
 		FinanzielleSituation finanzielleSituationForTest = new FinanzielleSituation();
 		finanzielleSituationForTest.setSteuerbaresEinkommen(BigDecimal.valueOf(60000));
 		finanzielleSituationForTest.setSteuerbaresVermoegen(BigDecimal.valueOf(15000));
-		finanzielleSituationForTest.setFinanzielleVerhaeltnisse(createFinanzielleVerhaeltnisse());
+		finanzielleSituationForTest.setFinSitZusatzangabenAppenzell(createFinanzielleVerhaeltnisse());
 		finanzielleSituationContainer.setFinanzielleSituationJA(finanzielleSituationForTest);
 		gesuchstellerContainer.setFinanzielleSituationContainer(finanzielleSituationContainer);
 		return gesuchstellerContainer;

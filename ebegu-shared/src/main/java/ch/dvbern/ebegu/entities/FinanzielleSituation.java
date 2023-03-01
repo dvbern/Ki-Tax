@@ -128,12 +128,12 @@ public class FinanzielleSituation extends AbstractFinanzielleSituation {
 	@Nullable
 	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true,fetch = FetchType.EAGER)
 	@JoinColumn(nullable = true)
-	protected FinSitZusatzangabenAppenzell finSitZusatzangabenAppenzell;
+	private FinSitZusatzangabenAppenzell finSitZusatzangabenAppenzell;
 
 	public FinanzielleSituation() {
 	}
 
-
+	@Override
 	public Boolean getSteuerveranlagungErhalten() {
 		return steuerveranlagungErhalten;
 	}
@@ -142,6 +142,7 @@ public class FinanzielleSituation extends AbstractFinanzielleSituation {
 		this.steuerveranlagungErhalten = steuerveranlagungErhalten;
 	}
 
+	@Override
 	public Boolean getSteuererklaerungAusgefuellt() {
 		return steuererklaerungAusgefuellt;
 	}
@@ -150,6 +151,7 @@ public class FinanzielleSituation extends AbstractFinanzielleSituation {
 		this.steuererklaerungAusgefuellt = steuererklaerungAusgefuellt;
 	}
 
+	@Override
 	@Nullable
 	public Boolean getSteuerdatenZugriff() {
 		return steuerdatenZugriff;
@@ -249,6 +251,7 @@ public class FinanzielleSituation extends AbstractFinanzielleSituation {
 		this.bruttoLohn = bruttoLohn;
 	}
 
+	@Override
 	@Nullable
 	public SteuerdatenAnfrageStatus getSteuerdatenAbfrageStatus() {
 		return steuerdatenAbfrageStatus;
@@ -308,8 +311,8 @@ public class FinanzielleSituation extends AbstractFinanzielleSituation {
 			target.setSteuerdatenAbfrageTimestamp(this.getSteuerdatenAbfrageTimestamp());
 			target.setAutomatischePruefungErlaubt(this.getAutomatischePruefungErlaubt());
 			target.setMomentanSelbststaendig(this.getMomentanSelbststaendig());
-			if (this.getFinanzielleVerhaeltnisse() != null) {
-				target.setFinanzielleVerhaeltnisse(this.getFinanzielleVerhaeltnisse().copyFinanzielleVerhaeltnisse(new FinSitZusatzangabenAppenzell(), copyType));
+			if (this.getFinSitZusatzangabenAppenzell() != null) {
+				target.setFinSitZusatzangabenAppenzell(this.getFinSitZusatzangabenAppenzell().copyFinanzielleVerhaeltnisse(new FinSitZusatzangabenAppenzell(), copyType));
 			}
 			break;
 		case ERNEUERUNG:
@@ -361,11 +364,11 @@ public class FinanzielleSituation extends AbstractFinanzielleSituation {
 		this.steuerdatenResponse = steuerdatenResponse;
 	}
 	@Nullable
-	public FinSitZusatzangabenAppenzell getFinanzielleVerhaeltnisse() {
+	public FinSitZusatzangabenAppenzell getFinSitZusatzangabenAppenzell() {
 		return finSitZusatzangabenAppenzell;
 	}
 
-	public void setFinanzielleVerhaeltnisse(@Nullable FinSitZusatzangabenAppenzell finSitZusatzangabenAppenzell) {
+	public void setFinSitZusatzangabenAppenzell(@Nullable FinSitZusatzangabenAppenzell finSitZusatzangabenAppenzell) {
 		this.finSitZusatzangabenAppenzell = finSitZusatzangabenAppenzell;
 	}
 }

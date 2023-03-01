@@ -86,7 +86,7 @@ public class JaxFinanzielleSituation extends JaxAbstractFinanzielleSituation {
 	private Boolean momentanSelbststaendig;
 
 	@Nullable
-	private JaxFinanzielleVerhaeltnisse finanzielleVerhaeltnisse;
+	private JaxFinSitZusatzangabenAppenzell finSitZusatzangabenAppenzell;
 
 	@Nullable
 	@XmlJavaTypeAdapter(LocalDateTimeXMLConverter.class)
@@ -244,11 +244,11 @@ public class JaxFinanzielleSituation extends JaxAbstractFinanzielleSituation {
 	}
 
 	@Nullable
-	public JaxFinanzielleVerhaeltnisse getFinanzielleVerhaeltnisse() {
-		return finanzielleVerhaeltnisse;
+	public JaxFinSitZusatzangabenAppenzell getFinSitZusatzangabenAppenzell() {
+		return finSitZusatzangabenAppenzell;
 	}
 
-	public void setFinanzielleVerhaeltnisse(@Nullable JaxFinanzielleVerhaeltnisse finanzielleVerhaeltnisse) {
-		this.finanzielleVerhaeltnisse = finanzielleVerhaeltnisse;
+	public void setFinSitZusatzangabenAppenzell(@Nullable JaxFinSitZusatzangabenAppenzell finSitZusatzangabenAppenzell) {
+		this.finSitZusatzangabenAppenzell = finSitZusatzangabenAppenzell;
 	}
 }

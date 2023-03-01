@@ -152,11 +152,11 @@ public class FinanzielleSituationAppenzellRechner extends AbstractFinanzielleSit
 	private BigDecimal calcAufrechnungFaktoren(	@Nullable FinanzielleSituation finanzielleSituation1,
 		@Nullable FinanzielleSituation finanzielleSituation2) {
 		BigDecimal total = BigDecimal.ZERO;
-		if(finanzielleSituation1 != null && finanzielleSituation1.getFinanzielleVerhaeltnisse() != null) {
-			total =  add(total, calcAufrechnungFaktoren(finanzielleSituation1.getFinanzielleVerhaeltnisse()));
+		if(finanzielleSituation1 != null && finanzielleSituation1.getFinSitZusatzangabenAppenzell() != null) {
+			total =  add(total, calcAufrechnungFaktoren(finanzielleSituation1.getFinSitZusatzangabenAppenzell()));
 		}
-		if(finanzielleSituation2 != null && finanzielleSituation2.getFinanzielleVerhaeltnisse() != null) {
-			total =  add(total, calcAufrechnungFaktoren(finanzielleSituation2.getFinanzielleVerhaeltnisse()));
+		if(finanzielleSituation2 != null && finanzielleSituation2.getFinSitZusatzangabenAppenzell() != null) {
+			total =  add(total, calcAufrechnungFaktoren(finanzielleSituation2.getFinSitZusatzangabenAppenzell()));
 		}
 		return MathUtil.positiveNonNullAndRound(total);
 	}

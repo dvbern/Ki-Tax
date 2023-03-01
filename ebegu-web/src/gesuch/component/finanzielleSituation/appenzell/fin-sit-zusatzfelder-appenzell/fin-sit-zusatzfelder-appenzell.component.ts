@@ -69,8 +69,8 @@ export class FinSitZusatzfelderAppenzellComponent implements OnInit {
     }
 
     public ngOnInit(): void {
-        if (!this.model.finanzielleVerhaeltnisse) {
-            this.model.finanzielleVerhaeltnisse = new TSFinSitZusatzangabenAppenzell();
+        if (!this.model.finSitZusatzangabenAppenzell) {
+            this.model.finSitZusatzangabenAppenzell = new TSFinSitZusatzangabenAppenzell();
         }
         // load initial results
         this.onValueChangeFunction();

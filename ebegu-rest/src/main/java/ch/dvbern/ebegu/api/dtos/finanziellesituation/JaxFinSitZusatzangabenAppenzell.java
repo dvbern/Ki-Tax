@@ -23,7 +23,7 @@ import javax.annotation.Nullable;
 
 import ch.dvbern.ebegu.api.dtos.JaxAbstractDTO;
 
-public class JaxFinanzielleVerhaeltnisse extends JaxAbstractDTO {
+public class JaxFinSitZusatzangabenAppenzell extends JaxAbstractDTO {
 
 	private static final long serialVersionUID = -6899661072522033574L;
 
