@@ -41,7 +41,7 @@ public class FinanzielleSituationAppenzellRechner extends AbstractFinanzielleSit
 		final FinanzielleSituation finanzielleSituationGS1 = getFinanzielleSituationGS(gesuch.getGesuchsteller1());
 		// Die Daten fuer GS 2 werden nur beruecksichtigt, wenn es (aktuell) zwei Gesuchsteller hat
 		FinanzielleSituation finanzielleSituationGS2 = null;
-		if (hasSecondGesuchsteller && gesuch.getGesuchsteller2() != null) {
+		if (hasSecondGesuchsteller) {
 			finanzielleSituationGS2 = getFinanzielleSituationGS(gesuch.getGesuchsteller2());
 		}
 		calculateFinSit(finanzielleSituationGS1, finanzielleSituationGS2, finSitResultDTO);
@@ -55,8 +55,8 @@ public class FinanzielleSituationAppenzellRechner extends AbstractFinanzielleSit
 		@Nullable FinanzielleSituation finanzielleSituationGS2,
 		@Nonnull FinanzielleSituationResultateDTO finSitResultDTO
 	) {
-		var einkommenGS1 = calcEinkommen(finanzielleSituationGS1, null);
-		var aufrechnungFaktorenGS1 = calcAufrechnungFaktoren(finanzielleSituationGS1, null);
+		var einkommenGS1 = calcEinkommen(finanzielleSituationGS1);
+		var aufrechnungFaktorenGS1 = calcAufrechnungFaktoren(finanzielleSituationGS1);
 		var vermoegen15PercentGS1 = calcualteSteuerbaresVermoegen15Prozent(finanzielleSituationGS1);
 		var massgebendesEinkommenGS1 = calculateMassgebendesEinkommen(
 			einkommenGS1,
@@ -68,8 +68,8 @@ public class FinanzielleSituationAppenzellRechner extends AbstractFinanzielleSit
 		finSitResultDTO.setVermoegenXPercentAnrechenbarGS1(vermoegen15PercentGS1);
 		finSitResultDTO.setMassgebendesEinkVorAbzFamGrGS1(massgebendesEinkommenGS1);
 
-		var einkommenGS2 = calcEinkommen(finanzielleSituationGS2, null);
-		var aufrechnungFaktorenGS2 = calcAufrechnungFaktoren(finanzielleSituationGS2, null);
+		var einkommenGS2 = calcEinkommen(finanzielleSituationGS2);
+		var aufrechnungFaktorenGS2 = calcAufrechnungFaktoren(finanzielleSituationGS2);
 		var vermoegen15PercenGS2 = calcualteSteuerbaresVermoegen15Prozent(finanzielleSituationGS2);
 		var massgebendesEinkommenGS2 = calculateMassgebendesEinkommen(
 			einkommenGS2,
@@ -135,29 +135,21 @@ public class FinanzielleSituationAppenzellRechner extends AbstractFinanzielleSit
 	}
 
 	@Nonnull
-	private BigDecimal calcEinkommen(
-		@Nullable AbstractFinanzielleSituation abstractFinanzielleSituation1,
-		@Nullable AbstractFinanzielleSituation abstractFinanzielleSituation2
-	) {
+	private BigDecimal calcEinkommen(@Nullable AbstractFinanzielleSituation abstractFinanzielleSituation1) {
 		BigDecimal total = BigDecimal.ZERO;
 		if(abstractFinanzielleSituation1 != null) {
 			total =  add(total, abstractFinanzielleSituation1.getSteuerbaresEinkommen());
 		}
-		if(abstractFinanzielleSituation2 != null) {
-			total =  add(total, abstractFinanzielleSituation2.getSteuerbaresEinkommen());
-		}
+
 		return MathUtil.positiveNonNullAndRound(total);
 	}
 
-	private BigDecimal calcAufrechnungFaktoren(	@Nullable FinanzielleSituation finanzielleSituation1,
-		@Nullable FinanzielleSituation finanzielleSituation2) {
+	private BigDecimal calcAufrechnungFaktoren(@Nullable FinanzielleSituation finanzielleSituation1) {
 		BigDecimal total = BigDecimal.ZERO;
 		if(finanzielleSituation1 != null && finanzielleSituation1.getFinSitZusatzangabenAppenzell() != null) {
 			total =  add(total, calcAufrechnungFaktoren(finanzielleSituation1.getFinSitZusatzangabenAppenzell()));
 		}
-		if(finanzielleSituation2 != null && finanzielleSituation2.getFinSitZusatzangabenAppenzell() != null) {
-			total =  add(total, calcAufrechnungFaktoren(finanzielleSituation2.getFinSitZusatzangabenAppenzell()));
-		}
+
 		return MathUtil.positiveNonNullAndRound(total);
 	}
 
