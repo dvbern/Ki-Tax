@@ -18,39 +18,39 @@ import {MatDialog} from '@angular/material/dialog';
 import {TranslateService} from '@ngx-translate/core';
 import * as moment from 'moment';
 import {mergeMap} from 'rxjs/operators';
-import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
-import {DvNgRemoveDialogComponent} from '../../../app/core/component/dv-ng-remove-dialog/dv-ng-remove-dialog.component';
-import {CONSTANTS} from '../../../app/core/constants/CONSTANTS';
-import {TSDemoFeature} from '../../../app/core/directive/dv-hide-feature/TSDemoFeature';
-import {ErrorService} from '../../../app/core/errors/service/ErrorService';
-import {LogFactory} from '../../../app/core/logging/LogFactory';
-import {DemoFeatureRS} from '../../../app/core/service/demoFeatureRS.rest';
-import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
-import {isAtLeastFreigegeben} from '../../../models/enums/TSAntragStatus';
-import {TSEingangsart} from '../../../models/enums/TSEingangsart';
-import {TSEinstellungKey} from '../../../models/enums/TSEinstellungKey';
-import {getTSFamilienstatusValues, TSFamilienstatus} from '../../../models/enums/TSFamilienstatus';
+import {EinstellungRS} from '../../../../admin/service/einstellungRS.rest';
+import {DvNgRemoveDialogComponent} from '../../../../app/core/component/dv-ng-remove-dialog/dv-ng-remove-dialog.component';
+import {CONSTANTS} from '../../../../app/core/constants/CONSTANTS';
+import {TSDemoFeature} from '../../../../app/core/directive/dv-hide-feature/TSDemoFeature';
+import {ErrorService} from '../../../../app/core/errors/service/ErrorService';
+import {LogFactory} from '../../../../app/core/logging/LogFactory';
+import {DemoFeatureRS} from '../../../../app/core/service/demoFeatureRS.rest';
+import {AuthServiceRS} from '../../../../authentication/service/AuthServiceRS.rest';
+import {isAtLeastFreigegeben} from '../../../../models/enums/TSAntragStatus';
+import {TSEingangsart} from '../../../../models/enums/TSEingangsart';
+import {TSEinstellungKey} from '../../../../models/enums/TSEinstellungKey';
+import {getTSFamilienstatusValues, TSFamilienstatus} from '../../../../models/enums/TSFamilienstatus';
 import {
     getTSGesuchstellerKardinalitaetValues,
     TSGesuchstellerKardinalitaet
-} from '../../../models/enums/TSGesuchstellerKardinalitaet';
-import {TSRole} from '../../../models/enums/TSRole';
+} from '../../../../models/enums/TSGesuchstellerKardinalitaet';
+import {TSRole} from '../../../../models/enums/TSRole';
 import {
     getTSUnterhaltsvereinbarungAnswerValues,
     TSUnterhaltsvereinbarungAnswer
-} from '../../../models/enums/TSUnterhaltsvereinbarungAnswer';
-import {TSWizardStepName} from '../../../models/enums/TSWizardStepName';
-import {TSWizardStepStatus} from '../../../models/enums/TSWizardStepStatus';
-import {TSEinstellung} from '../../../models/TSEinstellung';
-import {TSFamiliensituation} from '../../../models/TSFamiliensituation';
-import {TSFamiliensituationContainer} from '../../../models/TSFamiliensituationContainer';
-import {EbeguUtil} from '../../../utils/EbeguUtil';
-import {TSRoleUtil} from '../../../utils/TSRoleUtil';
-import {BerechnungsManager} from '../../service/berechnungsManager';
-import {FamiliensituationRS} from '../../service/familiensituationRS.service';
-import {GesuchModelManager} from '../../service/gesuchModelManager';
-import {WizardStepManager} from '../../service/wizardStepManager';
-import {AbstractGesuchViewX} from '../abstractGesuchViewX';
+} from '../../../../models/enums/TSUnterhaltsvereinbarungAnswer';
+import {TSWizardStepName} from '../../../../models/enums/TSWizardStepName';
+import {TSWizardStepStatus} from '../../../../models/enums/TSWizardStepStatus';
+import {TSEinstellung} from '../../../../models/TSEinstellung';
+import {TSFamiliensituation} from '../../../../models/TSFamiliensituation';
+import {TSFamiliensituationContainer} from '../../../../models/TSFamiliensituationContainer';
+import {EbeguUtil} from '../../../../utils/EbeguUtil';
+import {TSRoleUtil} from '../../../../utils/TSRoleUtil';
+import {BerechnungsManager} from '../../../service/berechnungsManager';
+import {FamiliensituationRS} from '../../../service/familiensituationRS.service';
+import {GesuchModelManager} from '../../../service/gesuchModelManager';
+import {WizardStepManager} from '../../../service/wizardStepManager';
+import {AbstractGesuchViewX} from '../../abstractGesuchViewX';
 
 const LOG = LogFactory.createLog('FamiliensitutionViewComponent');
 

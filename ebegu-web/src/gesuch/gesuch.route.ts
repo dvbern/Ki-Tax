@@ -29,7 +29,7 @@ import {EinkommensverschlechterungLuzernViewComponent} from './component/einkomm
 import {EinkommensverschlechterungSolothurnResultateViewComponent} from './component/einkommensverschlechterung/solothurn/einkommensverschlechterung-solothurn-resultate-view/einkommensverschlechterung-solothurn-resultate-view.component';
 import {EinkommensverschlechterungSolothurnViewComponent} from './component/einkommensverschlechterung/solothurn/einkommensverschlechterung-solothurn-view/einkommensverschlechterung-solothurn-view.component';
 import {FallCreationViewXComponent} from './component/fall-creation-view-x/fall-creation-view-x.component';
-import {FamiliensituationViewXComponent} from './component/familiensituation-view-x/familiensituation-view-x.component';
+import {FamiliensituationViewXComponent} from './component/familiensituation/familiensituation-view-x/familiensituation-view-x.component';
 import {FinanzielleSituationAppenzellViewComponent} from './component/finanzielleSituation/appenzell/finanzielle-situation-appenzell-view/finanzielle-situation-appenzell-view.component';
 import {AngabenGesuchsteller2Component} from './component/finanzielleSituation/luzern/angaben-gesuchsteller2/angaben-gesuchsteller2.component';
 import {FinanzielleSituationStartViewLuzernComponent} from './component/finanzielleSituation/luzern/finanzielle-situation-start-view-luzern/finanzielle-situation-start-view-luzern.component';

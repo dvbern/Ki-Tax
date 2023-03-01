@@ -46,7 +46,10 @@ import {
 } from './component/einkommensverschlechterung/solothurn/einkommensverschlechterung-solothurn-view/einkommensverschlechterung-solothurn-view.component';
 import {FallCreationViewXComponent} from './component/fall-creation-view-x/fall-creation-view-x.component';
 import {FallToolbarModule} from './component/fallToolbar/fall-toolbar.module';
-import {FamiliensituationViewXComponent} from './component/familiensituation-view-x/familiensituation-view-x.component';
+import {
+    FamiliensituationAppenzellViewXComponent
+} from './component/familiensituation/familiensituation-appenzell-view-x/familiensituation-appenzell-view-x.component';
+import {FamiliensituationViewXComponent} from './component/familiensituation/familiensituation-view-x/familiensituation-view-x.component';
 import {
     FinSitZusatzfelderAppenzellComponent
 } from './component/finanzielleSituation/appenzell/fin-sit-zusatzfelder-appenzell/fin-sit-zusatzfelder-appenzell.component';
@@ -150,7 +153,8 @@ import {FkjvKinderabzugComponent} from './component/kindView/fkjv-kinderabzug/fk
         SteuerabfrageResponseHintsComponent,
         DialogInitZPVNummerVerknuepfenComponent,
         FallCreationViewXComponent,
-        FamiliensituationViewXComponent
+        FamiliensituationViewXComponent,
+        FamiliensituationAppenzellViewXComponent
     ],
     exports: [
         DvSwitchComponent
