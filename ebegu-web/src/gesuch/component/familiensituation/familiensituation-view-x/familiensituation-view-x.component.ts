@@ -51,6 +51,7 @@ import {FamiliensituationRS} from '../../../service/familiensituationRS.service'
 import {GesuchModelManager} from '../../../service/gesuchModelManager';
 import {WizardStepManager} from '../../../service/wizardStepManager';
 import {AbstractGesuchViewX} from '../../abstractGesuchViewX';
+import {AbstractFamiliensitutaionView} from '../AbstractFamiliensitutaionView';
 
 const LOG = LogFactory.createLog('FamiliensitutionViewComponent');
 
@@ -59,11 +60,9 @@ const LOG = LogFactory.createLog('FamiliensitutionViewComponent');
     templateUrl: './familiensituation-view-x.component.html',
     styleUrls: ['./familiensituation-view-x.component.less']
 })
-export class FamiliensituationViewXComponent extends AbstractGesuchViewX<TSFamiliensituationContainer>
-    implements OnInit {
+export class FamiliensituationViewXComponent extends AbstractFamiliensitutaionView implements OnInit {
 
     private familienstatusValues: Array<TSFamilienstatus>;
-    public allowedRoles: ReadonlyArray<TSRole>;
     public initialFamiliensituation: TSFamiliensituation;
     public savedClicked: boolean = false;
     public situationFKJV = false;
@@ -84,12 +83,7 @@ export class FamiliensituationViewXComponent extends AbstractGesuchViewX<TSFamil
         private readonly authService: AuthServiceRS,
         private readonly demoFeatureRS: DemoFeatureRS
     ) {
-
-        super(gesuchModelManager,
-            wizardStepManager,
-            TSWizardStepName.FAMILIENSITUATION);
-        this.gesuchModelManager.initFamiliensituation();
-        this.model = this.getGesuch().familiensituationContainer;
+        super(gesuchModelManager, wizardStepManager);
         this.initialFamiliensituation = this.gesuchModelManager.getFamiliensituation();
         this.gesuchstellerKardinalitaetValues = getTSGesuchstellerKardinalitaetValues();
         this.unterhaltsvereinbarungAnswerValues = getTSUnterhaltsvereinbarungAnswerValues();
@@ -113,13 +107,6 @@ export class FamiliensituationViewXComponent extends AbstractGesuchViewX<TSFamil
                     this.getFamiliensituation().minDauerKonkubinat = Number(value.value);
                 });
         }, error => LOG.error(error));
-    }
-
-    private initViewModel(): void {
-        this.wizardStepManager.updateCurrentWizardStepStatusSafe(
-            TSWizardStepName.FAMILIENSITUATION,
-            TSWizardStepStatus.IN_BEARBEITUNG);
-        this.allowedRoles = TSRoleUtil.getAllRolesButTraegerschaftInstitution();
     }
 
     public async confirmAndSave(onResult: (arg: any) => void): Promise<void> {
