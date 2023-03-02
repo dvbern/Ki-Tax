@@ -17,40 +17,33 @@ import {Component, OnInit} from '@angular/core';
 import {MatDialog} from '@angular/material/dialog';
 import {TranslateService} from '@ngx-translate/core';
 import * as moment from 'moment';
-import {mergeMap} from 'rxjs/operators';
 import {EinstellungRS} from '../../../../admin/service/einstellungRS.rest';
-import {DvNgRemoveDialogComponent} from '../../../../app/core/component/dv-ng-remove-dialog/dv-ng-remove-dialog.component';
+import {
+    DvNgRemoveDialogComponent,
+} from '../../../../app/core/component/dv-ng-remove-dialog/dv-ng-remove-dialog.component';
 import {CONSTANTS} from '../../../../app/core/constants/CONSTANTS';
 import {TSDemoFeature} from '../../../../app/core/directive/dv-hide-feature/TSDemoFeature';
 import {ErrorService} from '../../../../app/core/errors/service/ErrorService';
 import {LogFactory} from '../../../../app/core/logging/LogFactory';
 import {DemoFeatureRS} from '../../../../app/core/service/demoFeatureRS.rest';
 import {AuthServiceRS} from '../../../../authentication/service/AuthServiceRS.rest';
-import {isAtLeastFreigegeben} from '../../../../models/enums/TSAntragStatus';
-import {TSEingangsart} from '../../../../models/enums/TSEingangsart';
 import {TSEinstellungKey} from '../../../../models/enums/TSEinstellungKey';
 import {getTSFamilienstatusValues, TSFamilienstatus} from '../../../../models/enums/TSFamilienstatus';
 import {
     getTSGesuchstellerKardinalitaetValues,
-    TSGesuchstellerKardinalitaet
+    TSGesuchstellerKardinalitaet,
 } from '../../../../models/enums/TSGesuchstellerKardinalitaet';
-import {TSRole} from '../../../../models/enums/TSRole';
 import {
     getTSUnterhaltsvereinbarungAnswerValues,
-    TSUnterhaltsvereinbarungAnswer
+    TSUnterhaltsvereinbarungAnswer,
 } from '../../../../models/enums/TSUnterhaltsvereinbarungAnswer';
-import {TSWizardStepName} from '../../../../models/enums/TSWizardStepName';
-import {TSWizardStepStatus} from '../../../../models/enums/TSWizardStepStatus';
 import {TSEinstellung} from '../../../../models/TSEinstellung';
 import {TSFamiliensituation} from '../../../../models/TSFamiliensituation';
-import {TSFamiliensituationContainer} from '../../../../models/TSFamiliensituationContainer';
 import {EbeguUtil} from '../../../../utils/EbeguUtil';
-import {TSRoleUtil} from '../../../../utils/TSRoleUtil';
 import {BerechnungsManager} from '../../../service/berechnungsManager';
 import {FamiliensituationRS} from '../../../service/familiensituationRS.service';
 import {GesuchModelManager} from '../../../service/gesuchModelManager';
 import {WizardStepManager} from '../../../service/wizardStepManager';
-import {AbstractGesuchViewX} from '../../abstractGesuchViewX';
 import {AbstractFamiliensitutaionView} from '../AbstractFamiliensitutaionView';
 
 const LOG = LogFactory.createLog('FamiliensitutionViewComponent');
@@ -64,7 +57,6 @@ export class FamiliensituationViewXComponent extends AbstractFamiliensitutaionVi
 
     private familienstatusValues: Array<TSFamilienstatus>;
     public initialFamiliensituation: TSFamiliensituation;
-    public savedClicked: boolean = false;
     public situationFKJV = false;
     public gesuchstellerKardinalitaetValues: Array<TSGesuchstellerKardinalitaet>;
     public unterhaltsvereinbarungAnswerValues: Array<TSUnterhaltsvereinbarungAnswer>;
@@ -74,16 +66,16 @@ export class FamiliensituationViewXComponent extends AbstractFamiliensitutaionVi
     public constructor(
         protected readonly gesuchModelManager: GesuchModelManager,
         private readonly berechnungsManager: BerechnungsManager,
-        private readonly errorService: ErrorService,
+        protected readonly errorService: ErrorService,
         protected readonly wizardStepManager: WizardStepManager,
         private readonly dialog: MatDialog,
         private readonly $translate: TranslateService,
-        private readonly familiensituationRS: FamiliensituationRS,
+        protected readonly familiensituationRS: FamiliensituationRS,
         private readonly einstellungRS: EinstellungRS,
-        private readonly authService: AuthServiceRS,
+        protected readonly authService: AuthServiceRS,
         private readonly demoFeatureRS: DemoFeatureRS
     ) {
-        super(gesuchModelManager, wizardStepManager);
+        super(gesuchModelManager, errorService, wizardStepManager, familiensituationRS, authService);
         this.initialFamiliensituation = this.gesuchModelManager.getFamiliensituation();
         this.gesuchstellerKardinalitaetValues = getTSGesuchstellerKardinalitaetValues();
         this.unterhaltsvereinbarungAnswerValues = getTSUnterhaltsvereinbarungAnswerValues();
@@ -109,18 +101,7 @@ export class FamiliensituationViewXComponent extends AbstractFamiliensitutaionVi
         }, error => LOG.error(error));
     }
 
-    public async confirmAndSave(onResult: (arg: any) => void): Promise<void> {
-        this.savedClicked = true;
-        if (this.isGesuchValid() && !this.hasEmptyAenderungPer() && !this.hasError()) {
-            if (!this.form.dirty) {
-                // If there are no changes in form we don't need anything to update on Server and we could return the
-                // promise immediately
-                // Update wizardStepStatus also if the form is empty and not dirty
-                this.wizardStepManager.updateCurrentWizardStepStatus(TSWizardStepStatus.OK);
-                onResult(this.getGesuch().familiensituationContainer);
-                return;
-            }
-
+    public async confirm(onResult: (arg: any) => void): Promise<void> {
             if (this.isConfirmationRequired()) {
                 const descriptionText: any = this.$translate.instant('FAMILIENSITUATION_WARNING_BESCHREIBUNG', {
                     gsfullname: this.getGesuch().gesuchsteller2
@@ -145,22 +126,6 @@ export class FamiliensituationViewXComponent extends AbstractFamiliensitutaionVi
 
             const result = await this.save();
             onResult(result);
-        } else {
-            onResult(undefined);
-        }
-    }
-
-    private save(): Promise<TSFamiliensituationContainer> {
-        this.errorService.clearAll();
-        return this.familiensituationRS.saveFamiliensituation(
-            this.model,
-            this.getGesuch().id
-        ).pipe(mergeMap((familienContainerResponse: any) => {
-            this.model = familienContainerResponse;
-            this.getGesuch().familiensituationContainer = familienContainerResponse;
-            // Gesuchsteller may changed...
-            return this.gesuchModelManager.reloadGesuch().then(() => this.model);
-        })).toPromise();
     }
 
     public getFamiliensituation(): TSFamiliensituation {
@@ -220,10 +185,6 @@ export class FamiliensituationViewXComponent extends AbstractFamiliensitutaionVi
         this.onDatumBlur();
     }
 
-    public getFamiliensituationErstgesuch(): TSFamiliensituation {
-        return this.model.familiensituationErstgesuch;
-    }
-
     /**
      * Confirmation is required when the GS2 already exists and the familiensituation changes from 2GS to 1GS. Or when
      * in a Mutation the GS2 is new and will be removed
@@ -264,53 +225,13 @@ export class FamiliensituationViewXComponent extends AbstractFamiliensitutaionVi
             && !this.getFamiliensituation()?.hasSecondGesuchsteller(bis);
     }
 
-    public isMutationAndDateSet(): boolean {
-        if (!this.isMutation()) {
-            return true;
-        }
-
-        return EbeguUtil.isNotNullOrUndefined(
-                this.getFamiliensituation()) &&
-            EbeguUtil.isNotNullOrUndefined(this.getFamiliensituation().aenderungPer);
-    }
-
-    public isFamiliensituationEnabled(): boolean {
-        return this.isMutationAndDateSet() && !this.isGesuchReadonly();
-    }
-
     public isStartKonkubinatDisabled(): boolean {
         return this.isMutation() || (this.isGesuchReadonly() && !this.isKorrekturModusJugendamt());
-    }
-
-    public hasEmptyAenderungPer(): boolean {
-        return this.isMutation()
-            && !this.getFamiliensituation()?.aenderungPer
-            && !this.getFamiliensituationErstgesuch()?.isSameFamiliensituation(this.getFamiliensituation());
-    }
-
-    public resetFamsit(): void {
-        this.getFamiliensituation().revertFamiliensituation(this.getFamiliensituationErstgesuch());
     }
 
     public isNotPartnerIdentischMitVorgesuch(): boolean {
         return EbeguUtil.isNotNullOrUndefined(this.getFamiliensituation().partnerIdentischMitVorgesuch) &&
             !this.getFamiliensituation().partnerIdentischMitVorgesuch;
-    }
-
-    public hasError(): boolean {
-        return this.isMutation()
-            && this.getFamiliensituation()?.aenderungPer
-            && this.getFamiliensituationErstgesuch()?.isSameFamiliensituation(this.getFamiliensituation());
-    }
-
-    public showError(): boolean {
-        return this.hasError() && this.savedClicked;
-    }
-
-    public onDatumBlur(): void {
-        if (this.hasEmptyAenderungPer()) {
-            this.resetFamsit();
-        }
     }
 
     public getFamiliensituationValues(): Array<TSFamilienstatus> {
@@ -396,24 +317,6 @@ export class FamiliensituationViewXComponent extends AbstractFamiliensitutaionVi
 
     public getTextForFamSitUnterhaltsvereinbarungGrund(): string {
         return this.$translate.instant('UNTERHALTSVEREINBARUNG_GRUND_INFO');
-    }
-
-    public getAllRolesButTraegerschaftInstitutionSteueramt(): ReadonlyArray<TSRole> {
-        return TSRoleUtil.getAllRolesButTraegerschaftInstitutionSteueramt();
-    }
-
-    public getTraegerschaftInstitutionSteueramtOnlyRoles(): ReadonlyArray<TSRole> {
-        return TSRoleUtil.getTraegerschaftInstitutionSteueramtOnlyRoles();
-    }
-
-    public showBisher(): boolean {
-        return this.gesuchModelManager.getGesuch()
-            && isAtLeastFreigegeben(this.gesuchModelManager.getGesuch().status)
-            && (TSEingangsart.ONLINE === this.gesuchModelManager.getGesuch().eingangsart);
-    }
-
-    public isOneOfRoles(allowedRoles: ReadonlyArray<TSRole>) {
-        return this.authService.isOneOfRoles(allowedRoles);
     }
 
     public getToday(): moment.Moment {

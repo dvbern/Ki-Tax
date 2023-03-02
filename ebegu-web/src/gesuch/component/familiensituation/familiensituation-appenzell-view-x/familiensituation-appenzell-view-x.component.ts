@@ -1,4 +1,7 @@
 import {Component, OnInit} from '@angular/core';
+import {ErrorService} from '../../../../app/core/errors/service/ErrorService';
+import {AuthServiceRS} from '../../../../authentication/service/AuthServiceRS.rest';
+import {FamiliensituationRS} from '../../../service/familiensituationRS.service';
 import {GesuchModelManager} from '../../../service/gesuchModelManager';
 import {WizardStepManager} from '../../../service/wizardStepManager';
 import {AbstractFamiliensitutaionView} from '../AbstractFamiliensitutaionView';
@@ -12,14 +15,22 @@ import {AbstractFamiliensitutaionView} from '../AbstractFamiliensitutaionView';
 })
 export class FamiliensituationAppenzellViewXComponent extends AbstractFamiliensitutaionView implements OnInit {
 
-    public constructor(
-        protected readonly gesuchModelManager: GesuchModelManager,
-        protected readonly wizardStepManager: WizardStepManager
-    ) {
-        super(gesuchModelManager, wizardStepManager);
+    public ngOnInit(): void {
     }
 
-    public ngOnInit(): void {
+    public constructor(
+        protected readonly gesuchModelManager: GesuchModelManager,
+        protected readonly errorService: ErrorService,
+        protected readonly wizardStepManager: WizardStepManager,
+        protected readonly familiensituationRS: FamiliensituationRS,
+        protected readonly authService: AuthServiceRS,
+    ) {
+        super(gesuchModelManager, errorService, wizardStepManager, familiensituationRS, authService);
+    }
+
+    public async confirm(onResult: (arg: any) => void): Promise<void> {
+        const savedContaier = await this.save();
+        onResult(savedContaier);
     }
 
 }

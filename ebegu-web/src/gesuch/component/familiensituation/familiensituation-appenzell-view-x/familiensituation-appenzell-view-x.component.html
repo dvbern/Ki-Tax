@@ -1,0 +1,158 @@
+<div class="familiensituation-view gesuch-modul static-position">
+    <h1 class="access-for-all-title" translate>AFA_GESUCHSFORMULAR</h1>
+    <div class="row view-title">
+        <div class="col-md-12">
+            <h2>
+                <span *ngIf="isMutation()" translate>MUTATION_FAMSITUATION_TITLE</span>
+                <span *ngIf="!isMutation()" translate>FAMILIENSITUATION</span>
+            </h2>
+            <hr class="header"/>
+            <p *ngIf="isMutation()" translate>MUTATION_FAMSITUATION_HINT</p>
+            <p *ngIf="showError()" role="alert" translate
+               class="dv-error-messages">ERROR_DATUM_GESETZT_BEI_MUTATION</p>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+
+            <form role="form" name="form" class="" novalidate unsaved-warning-form>
+                <fieldset>
+
+                    <!--Aenderung per-->
+                    <div class="row" *ngIf="isMutation()">
+                        <div class="col-md-12">
+                            <dv-input-container class="form-group">
+
+                                <div class="row">
+                                    <div class="col-xs-12 dv-input-container-small">
+                                        <label class="md-no-float"
+                                               translate=""
+                                               for="aenderungPer_ID">AENDERUNG_PER</label>
+                                        <dv-date-picker-x [inputId]="'aenderungPer_ID'"
+                                                          class="input-element"
+                                                          [(date)]="getFamiliensituation().aenderungPer"
+                                                          (dateChange)="onDatumBlur()"
+                                                          [datePickerEnabled]="false"
+                                                          [disabled]="isGesuchReadonly()">
+                                        </dv-date-picker-x>
+                                        <dv-bisher-x [showBisher]="showBisher()"
+                                                     [deklaration]="getFamiliensituationGS()?.aenderungPer"
+                                                     [korrektur]="getFamiliensituation()?.aenderungPer"></dv-bisher-x>
+                                    </div>
+                                </div>
+                            </dv-input-container>
+                        </div>
+                    </div>
+
+                    <!--Geteilte Obhut-->
+                    <div class="row">
+                        <div class="col-xs-12 dv-input-container-question">
+                            <div class="form-group">
+                                    <span class="ebegu-h1 required">
+                                        <span translate>FAMILIEN_SITUATION_OBHUT</span>
+                                    </span>
+                                <dv-radio-container-x>
+                                    <mat-radio-group [(ngModel)]="getFamiliensituation().geteilteObhut"
+                                                     [required]="true"
+                                                     #geteilteObhut="ngModel"
+                                                     name="geteilteObhut"
+                                                     class="input-element sp"
+                                                     [disabled]="!(isFamiliensituationEnabled() && isOneOfRoles(allowedRoles))"
+                                                     aria-label="{{ 'FAMILIEN_SITUATION_OBHUT' |translate}}"
+                                                     aria-described-by="geteilteObhut-error">
+                                        <mat-radio-button [value]="true">{{'LABEL_JA' | translate}}</mat-radio-button>
+                                        <mat-radio-button [value]="false">{{'LABEL_NEIN' | translate}}</mat-radio-button>
+                                    </mat-radio-group>
+                                </dv-radio-container-x>
+                                <dv-error-messages *ngIf="savedClicked || geteilteObhut.touched"
+                                                   [inputId]="'geteilteObhut'"
+                                                   [errorObject]="geteilteObhut.errors"
+                                                   class="error"></dv-error-messages>
+    <!--                            <dv-bisher-x [showBisher]="showBisher()"-->
+    <!--                                         [deklaration]="getFamiliensituationGS()?.geteilteObhut"-->
+    <!--                                         [korrektur]="getFamiliensituation()?.geteilteObhut"></dv-bisher-x>-->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!--Gemeinsamer Haushalt-->
+                    <div class="row">
+                        <div class="col-xs-12 dv-input-container-question">
+                            <div class="form-group">
+                                    <span class="ebegu-h1 required">
+                                        <span translate>FAMILIEN_SITUATION_GEMEINSAMER_HAUSHALT</span>
+                                    </span>
+                                <dv-radio-container-x>
+                                    <mat-radio-group [(ngModel)]="getFamiliensituation().geteilteObhut"
+                                                     [required]="true"
+                                                     #gemeinsamerHaushalt="ngModel"
+                                                     name="gemeinsamerHaushalt"
+                                                     class="input-element sp"
+                                                     [disabled]="!(isFamiliensituationEnabled() && isOneOfRoles(allowedRoles))"
+                                                     aria-label="{{ 'FAMILIEN_SITUATION_GEMEINSAMER_HAUSHALT' |translate}}"
+                                                     aria-described-by="gemeinsamerHaushalt-error">
+                                        <mat-radio-button [value]="true">{{'LABEL_JA' | translate}}</mat-radio-button>
+                                        <mat-radio-button [value]="false">{{'LABEL_NEIN' | translate}}</mat-radio-button>
+                                    </mat-radio-group>
+                                </dv-radio-container-x>
+                                <dv-error-messages *ngIf="savedClicked || gemeinsamerHaushalt.touched"
+                                                   [inputId]="'gemeinsamerHaushalt'"
+                                                   [errorObject]="gemeinsamerHaushalt.errors"
+                                                   class="error"></dv-error-messages>
+                                <!--                            <dv-bisher-x [showBisher]="showBisher()"-->
+                                <!--                                         [deklaration]="getFamiliensituationGS()?.geteilteObhut"-->
+                                <!--                                         [korrektur]="getFamiliensituation()?.geteilteObhut"></dv-bisher-x>-->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!--Verheiratet-->
+                    <div class="row">
+                        <div class="col-xs-12 dv-input-container-question">
+                            <div class="form-group">
+                                    <span class="ebegu-h1 required">
+                                        <span translate>FAMILIEN_SITUATION_VERHEIRATET</span>
+                                    </span>
+                                <dv-radio-container-x>
+                                    <mat-radio-group [(ngModel)]="getFamiliensituation().geteilteObhut"
+                                                     [required]="true"
+                                                     #verheiratet="ngModel"
+                                                     name="verheiratet"
+                                                     class="input-element sp"
+                                                     [disabled]="!(isFamiliensituationEnabled() && isOneOfRoles(allowedRoles))"
+                                                     aria-label="{{ 'FAMILIEN_SITUATION_VERHEIRATET' |translate}}"
+                                                     aria-described-by="verheiratet-error">
+                                        <mat-radio-button [value]="true">{{'LABEL_JA' | translate}}</mat-radio-button>
+                                        <mat-radio-button [value]="false">{{'LABEL_NEIN' | translate}}</mat-radio-button>
+                                    </mat-radio-group>
+                                </dv-radio-container-x>
+                                <dv-error-messages *ngIf="savedClicked || verheiratet.touched"
+                                                   [inputId]="'verheiratet'"
+                                                   [errorObject]="verheiratet.errors"
+                                                   class="error"></dv-error-messages>
+                                <!--                            <dv-bisher-x [showBisher]="showBisher()"-->
+                                <!--                                         [deklaration]="getFamiliensituationGS()?.geteilteObhut"-->
+                                <!--                                         [korrektur]="getFamiliensituation()?.geteilteObhut"></dv-bisher-x>-->
+                            </div>
+                        </div>
+                    </div>
+
+
+                </fieldset>
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <dv-navigation-x *dvNgShowElement="true; roles: getAllRolesButTraegerschaftInstitutionSteueramt()"
+                                         [dvPrevious]="true" [dvNext]="true" (dvSave)="confirmAndSave($event.onResult)">
+                        </dv-navigation-x>
+                        <dv-navigation-x *dvNgShowElement="true; roles: getTraegerschaftInstitutionSteueramtOnlyRoles()"
+                                         [dvNext]="true">
+                        </dv-navigation-x>
+                    </div>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>
