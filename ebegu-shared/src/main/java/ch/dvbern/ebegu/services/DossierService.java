@@ -27,6 +27,7 @@ import javax.validation.constraints.NotNull;
 import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Dossier;
 import ch.dvbern.ebegu.entities.Gemeinde;
+import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.enums.GesuchDeletionCause;
@@ -120,6 +121,4 @@ public interface DossierService {
 	 */
 	@Nonnull
 	LocalDate getErstesEinreichungsdatum(@Nonnull Dossier dossier, @Nonnull Gesuchsperiode gesuchsperiode);
-
-	List<Dossier> getAllDossiersForFallNummer(long fallNummer);
 }

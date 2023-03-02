@@ -17,7 +17,6 @@ package ch.dvbern.ebegu.services;
 
 import java.time.LocalDate;
 import java.util.Collection;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -269,17 +268,6 @@ public class DossierServiceBean extends AbstractBaseService implements DossierSe
 			}
 		}
 		return erstesEinreichungsdatum != null ? erstesEinreichungsdatum : LocalDate.now();
-	}
-
-	@Override
-	public List<Dossier> getAllDossiersForFallNummer(long fallNummer) {
-		List<Dossier> dossierList = new LinkedList<>();
-		gesuchService.getAllGesuche()
-			.stream()
-			.filter(x -> x.getDossier().getFall().getFallNummer() == fallNummer)
-			.forEach(y -> dossierList.add(y.getDossier()));
-
-		return dossierList;
 	}
 
 	private void validateVerantwortlicher(@Nonnull Dossier dossier, @Nonnull Class validationGroup) {
