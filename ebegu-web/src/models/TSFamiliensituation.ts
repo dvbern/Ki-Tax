@@ -254,6 +254,11 @@ export class TSFamiliensituation extends TSAbstractMutableEntity {
                 && EbeguUtil.areSameOrWithoutValue(this.unterhaltsvereinbarung , other.unterhaltsvereinbarung)
                 && EbeguUtil.areSameOrWithoutValue(this.gesuchstellerKardinalitaet, other.gesuchstellerKardinalitaet);
         }
+        if(this.familienstatus === TSFamilienstatus.APPENZELL) {
+            same = EbeguUtil.areSameOrWithoutValue(this.geteilteObhut, other.geteilteObhut)
+                && EbeguUtil.areSameOrWithoutValue(this.gemeinsamerHaushaltMitObhutsberechtigterPerson, other.gemeinsamerHaushaltMitObhutsberechtigterPerson)
+                && EbeguUtil.areSameOrWithoutValue(this.gemeinsamerHaushaltMitPartner, other.gemeinsamerHaushaltMitPartner)
+        }
         return same;
     }
 
@@ -264,6 +269,8 @@ export class TSFamiliensituation extends TSAbstractMutableEntity {
         this.unterhaltsvereinbarung = other.unterhaltsvereinbarung;
         this.geteilteObhut = other.geteilteObhut;
         this.unterhaltsvereinbarungBemerkung = other.unterhaltsvereinbarungBemerkung;
+        this.gemeinsamerHaushaltMitPartner = other.gemeinsamerHaushaltMitPartner;
+        this.gemeinsamerHaushaltMitObhutsberechtigterPerson = other.gemeinsamerHaushaltMitObhutsberechtigterPerson;
     }
 
     public get fkjvFamSit(): boolean {
