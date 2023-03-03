@@ -55,9 +55,8 @@ const LOG = LogFactory.createLog('FamiliensitutionViewComponent');
 })
 export class FamiliensituationViewXComponent extends AbstractFamiliensitutaionView implements OnInit {
 
-    private familienstatusValues: Array<TSFamilienstatus>;
+    private readonly familienstatusValues: Array<TSFamilienstatus>;
     public initialFamiliensituation: TSFamiliensituation;
-    public situationFKJV = false;
     public gesuchstellerKardinalitaetValues: Array<TSGesuchstellerKardinalitaet>;
     public unterhaltsvereinbarungAnswerValues: Array<TSUnterhaltsvereinbarungAnswer>;
     public gesuchBeendenDemoFeature = TSDemoFeature.GESUCH_BEENDEN_FAMSIT;
@@ -79,7 +78,7 @@ export class FamiliensituationViewXComponent extends AbstractFamiliensitutaionVi
         this.initialFamiliensituation = this.gesuchModelManager.getFamiliensituation();
         this.gesuchstellerKardinalitaetValues = getTSGesuchstellerKardinalitaetValues();
         this.unterhaltsvereinbarungAnswerValues = getTSUnterhaltsvereinbarungAnswerValues();
-        this.initViewModel();
+        this.familienstatusValues = getTSFamilienstatusValues();
         demoFeatureRS.isDemoFeatureAllowed(this.gesuchBeendenDemoFeature)
             .then(isAllowed => this.demoFeatureGesuchBeendenFamSitActive = isAllowed);
     }
@@ -90,9 +89,7 @@ export class FamiliensituationViewXComponent extends AbstractFamiliensitutaionVi
         ).subscribe((response: TSEinstellung[]) => {
             response.filter(r => r.key === TSEinstellungKey.FKJV_FAMILIENSITUATION_NEU)
                 .forEach(value => {
-                    this.situationFKJV = value.getValueAsBoolean();
-                    this.familienstatusValues = getTSFamilienstatusValues();
-                    this.getFamiliensituation().fkjvFamSit = this.situationFKJV;
+                    this.getFamiliensituation().fkjvFamSit = value.getValueAsBoolean();
                 });
             response.filter(r => r.key === TSEinstellungKey.MINIMALDAUER_KONKUBINAT)
                 .forEach(value => {
@@ -243,7 +240,7 @@ export class FamiliensituationViewXComponent extends AbstractFamiliensitutaionVi
     }
 
     public showGesuchstellerKardinalitaet(): boolean {
-        if (this.getFamiliensituation() && this.situationFKJV &&
+        if (this.getFamiliensituation() && this.isFKJVFamSit() &&
             this.isFamilienstatusAlleinerziehendOrShortKonkubinat()) {
             return this.getFamiliensituation().geteilteObhut;
         }
@@ -251,7 +248,7 @@ export class FamiliensituationViewXComponent extends AbstractFamiliensitutaionVi
     }
 
     public showFrageUnterhaltsvereinbarung(): boolean {
-        if (this.getFamiliensituation() && this.situationFKJV &&
+        if (this.getFamiliensituation() && this.isFKJVFamSit() &&
             this.isFamilienstatusAlleinerziehendOrShortKonkubinat()) {
             return EbeguUtil.isNotNullAndFalse(this.getFamiliensituation().geteilteObhut);
         }
@@ -264,7 +261,7 @@ export class FamiliensituationViewXComponent extends AbstractFamiliensitutaionVi
     }
 
     public showFrageGeteilteObhut(): boolean {
-        if (this.getFamiliensituation() && this.situationFKJV) {
+        if (this.getFamiliensituation() && this.isFKJVFamSit()) {
             return this.isFamilienstatusAlleinerziehendOrShortKonkubinat()
                 || this.isFamilienstatusKonkubinatKeinKindAndSmallerThanXYears();
         }
@@ -356,5 +353,9 @@ export class FamiliensituationViewXComponent extends AbstractFamiliensitutaionVi
             return this.$translate.instant('FAMILIENSITUATION_FRAGE_PARTNERIDENTISCH_ANDERER_ELTERNTEIL');
         }
         return this.$translate.instant('FAMILIENSITUATION_FRAGE_PARTNERIDENTISCH_KONKUBINTASPARTNER');
+    }
+
+    public isFKJVFamSit(): boolean {
+        return this.getFamiliensituation().fkjvFamSit;
     }
 }
