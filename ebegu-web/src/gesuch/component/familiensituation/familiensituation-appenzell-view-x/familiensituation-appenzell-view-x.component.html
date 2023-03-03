@@ -55,37 +55,39 @@
                                 <dv-radio-container-x>
                                     <mat-radio-group [(ngModel)]="getFamiliensituation().geteilteObhut"
                                                      [required]="true"
+                                                     (change)="onGeteilteObhutFrageChange()"
                                                      #geteilteObhut="ngModel"
                                                      name="geteilteObhut"
                                                      class="input-element sp"
                                                      [disabled]="!(isFamiliensituationEnabled() && isOneOfRoles(allowedRoles))"
                                                      aria-label="{{ 'FAMILIEN_SITUATION_OBHUT' |translate}}"
                                                      aria-described-by="geteilteObhut-error">
-                                        <mat-radio-button [value]="true">{{'LABEL_JA' | translate}}</mat-radio-button>
-                                        <mat-radio-button [value]="false">{{'LABEL_NEIN' | translate}}</mat-radio-button>
+                                        <mat-radio-button [value]="false">{{'LABEL_JA' | translate}}</mat-radio-button>
+                                        <mat-radio-button [value]="true">{{'LABEL_NEIN' | translate}}</mat-radio-button>
                                     </mat-radio-group>
                                 </dv-radio-container-x>
                                 <dv-error-messages *ngIf="savedClicked || geteilteObhut.touched"
                                                    [inputId]="'geteilteObhut'"
                                                    [errorObject]="geteilteObhut.errors"
                                                    class="error"></dv-error-messages>
-    <!--                            <dv-bisher-x [showBisher]="showBisher()"-->
-    <!--                                         [deklaration]="getFamiliensituationGS()?.geteilteObhut"-->
-    <!--                                         [korrektur]="getFamiliensituation()?.geteilteObhut"></dv-bisher-x>-->
+                                <dv-bisher-x [showBisher]="showBisher()"
+                                             [deklaration]="getFamiliensituationGS()?.geteilteObhut"
+                                             [korrektur]="getFamiliensituation()?.geteilteObhut"></dv-bisher-x>
                             </div>
                         </div>
                     </div>
 
                     <!--Gemeinsamer Haushalt-->
-                    <div class="row">
+                    <div class="row" *ngIf="showGemeinsamerHausltMitObhutsberchtigterPersonFrage()">
                         <div class="col-xs-12 dv-input-container-question">
                             <div class="form-group">
                                     <span class="ebegu-h1 required">
                                         <span translate>FAMILIEN_SITUATION_GEMEINSAMER_HAUSHALT</span>
                                     </span>
                                 <dv-radio-container-x>
-                                    <mat-radio-group [(ngModel)]="getFamiliensituation().geteilteObhut"
+                                    <mat-radio-group [(ngModel)]="getFamiliensituation().gemeinsamerHaushaltMitObhutsberechtigterPerson"
                                                      [required]="true"
+                                                     (change)="onGemeinsamerHausaltMitObhutsberechtigerPersionChange()"
                                                      #gemeinsamerHaushalt="ngModel"
                                                      name="gemeinsamerHaushalt"
                                                      class="input-element sp"
@@ -100,22 +102,22 @@
                                                    [inputId]="'gemeinsamerHaushalt'"
                                                    [errorObject]="gemeinsamerHaushalt.errors"
                                                    class="error"></dv-error-messages>
-                                <!--                            <dv-bisher-x [showBisher]="showBisher()"-->
-                                <!--                                         [deklaration]="getFamiliensituationGS()?.geteilteObhut"-->
-                                <!--                                         [korrektur]="getFamiliensituation()?.geteilteObhut"></dv-bisher-x>-->
+                                <dv-bisher-x [showBisher]="showBisher()"
+                                             [deklaration]="getFamiliensituationGS()?.gemeinsamerHaushaltMitObhutsberechtigterPerson"
+                                             [korrektur]="getFamiliensituation()?.gemeinsamerHaushaltMitObhutsberechtigterPerson"></dv-bisher-x>
                             </div>
                         </div>
                     </div>
 
                     <!--Verheiratet-->
-                    <div class="row">
+                    <div class="row" *ngIf="showGemeinsamerHausltMitPartnerFrage()">
                         <div class="col-xs-12 dv-input-container-question">
                             <div class="form-group">
                                     <span class="ebegu-h1 required">
                                         <span translate>FAMILIEN_SITUATION_VERHEIRATET</span>
                                     </span>
                                 <dv-radio-container-x>
-                                    <mat-radio-group [(ngModel)]="getFamiliensituation().geteilteObhut"
+                                    <mat-radio-group [(ngModel)]="getFamiliensituation().gemeinsamerHaushaltMitPartner"
                                                      [required]="true"
                                                      #verheiratet="ngModel"
                                                      name="verheiratet"
@@ -131,9 +133,9 @@
                                                    [inputId]="'verheiratet'"
                                                    [errorObject]="verheiratet.errors"
                                                    class="error"></dv-error-messages>
-                                <!--                            <dv-bisher-x [showBisher]="showBisher()"-->
-                                <!--                                         [deklaration]="getFamiliensituationGS()?.geteilteObhut"-->
-                                <!--                                         [korrektur]="getFamiliensituation()?.geteilteObhut"></dv-bisher-x>-->
+                                <dv-bisher-x [showBisher]="showBisher()"
+                                             [deklaration]="getFamiliensituationGS()?.gemeinsamerHaushaltMitPartner"
+                                             [korrektur]="getFamiliensituation()?.gemeinsamerHaushaltMitPartner"></dv-bisher-x>
                             </div>
                         </div>
                     </div>

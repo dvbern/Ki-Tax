@@ -22,6 +22,6 @@ alter table familiensituation
 	add gemeinsamer_haushalt_mit_partner bit;
 
 alter table familiensituation_aud
-	add gemeinsamer_haushalt_mit_obhutsbrechtigter_person bit;
+	add gemeinsamer_haushalt_mit_obhutsberechtigter_person bit;
 alter table familiensituation_aud
 	add gemeinsamer_haushalt_mit_partner bit;
