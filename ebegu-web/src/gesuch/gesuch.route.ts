@@ -224,7 +224,7 @@ export class EbeguFamiliensituationDefaultState implements Ng1StateDeclaration {
 
 export class EbeguFamiliensituationAppenzellState implements Ng1StateDeclaration {
     public name = 'gesuch.familiensituation-appenzell';
-    public url = '/familiensituation/:gesuchId';
+    public url = '/familiensituation-ar/:gesuchId';
 
     public views: any = {
         gesuchViewPort: {
