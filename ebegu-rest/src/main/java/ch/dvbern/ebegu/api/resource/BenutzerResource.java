@@ -60,6 +60,7 @@ import ch.dvbern.ebegu.einladung.Einladung;
 import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Mandant;
+import ch.dvbern.ebegu.entities.Traegerschaft;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
@@ -68,6 +69,7 @@ import ch.dvbern.ebegu.services.BenutzerService;
 import ch.dvbern.ebegu.services.GemeindeService;
 import ch.dvbern.ebegu.services.MandantService;
 import ch.dvbern.ebegu.services.SuperAdminService;
+import ch.dvbern.ebegu.services.TraegerschaftService;
 import ch.dvbern.ebegu.util.MonitoringUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -115,6 +117,9 @@ public class BenutzerResource {
 
 	@Inject
 	private JaxBConverter converter;
+
+	@Inject
+	private TraegerschaftService traegerschaftService;
 
 	@Inject
 	private Authorizer authorizer;
@@ -552,5 +557,27 @@ public class BenutzerResource {
 			.orElseThrow(() -> new EbeguEntityNotFoundException("deleteExternalUuidForBenutzer",	ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND));
 		benutzerService.deleteExternalUUIDInNewTransaction(benutzer.getId());
 		return Response.ok().build();
+	}
+
+	@ApiOperation(value = "Setzt die externalUUID des Benutzers mit der uebergebenen id zurueck.",
+		responseContainer = "List",
+		response = String.class)
+	@GET
+	@Path("/mailAdminTraegerschaft/{traegerschaftId}")
+	@Consumes(MediaType.WILDCARD)
+	@RolesAllowed({SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT, ADMIN_TRAEGERSCHAFT,
+		ADMIN_GEMEINDE, ADMIN_BG, ADMIN_TS, SACHBEARBEITER_GEMEINDE, SACHBEARBEITER_GEMEINDE, SACHBEARBEITER_TS})
+	public List<String> getAllEmailAdminForTraegerschaft(
+		@Nonnull @NotNull @PathParam("traegerschaftId") String traegerschaftId
+	) {
+		Traegerschaft traegerschaft = traegerschaftService.findTraegerschaft(traegerschaftId)
+			.orElseThrow(() -> new EbeguEntityNotFoundException("", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND));
+
+
+		List<String> test = benutzerService.getTraegerschaftAdministratoren(traegerschaft).stream()
+			.map(Benutzer::getEmail)
+			.collect(Collectors.toList());
+
+		return test;
 	}
 }

@@ -537,6 +537,36 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 
 	@Nonnull
 	@Override
+	public Collection<Benutzer> getTraegerschaftAdministratoren(final Traegerschaft traegerschaft) {
+		getCurrentBenutzer().orElseThrow(() -> new EbeguRuntimeException(
+			"getTraegerschaftAdministratoren", "Non logged in user should never reach this"));
+		authorizer.checkReadAuthorization(traegerschaft);
+
+		List<Predicate> predicates = new ArrayList<>();
+
+		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
+		final CriteriaQuery<Benutzer> query = cb.createQuery(Benutzer.class);
+		Root<Benutzer> root = query.from(Benutzer.class);
+
+		Join<Benutzer, Berechtigung> joinBerechtigungen = root.join(Benutzer_.berechtigungen);
+
+		query.select(root);
+
+		predicates.add(cb.between(
+			cb.literal(LocalDate.now()),
+			joinBerechtigungen.get(AbstractDateRangedEntity_.gueltigkeit).get(DateRange_.gueltigAb),
+			joinBerechtigungen.get(AbstractDateRangedEntity_.gueltigkeit).get(DateRange_.gueltigBis)));
+		predicates.add(cb.equal(joinBerechtigungen.get(Berechtigung_.role), UserRole.ADMIN_TRAEGERSCHAFT));
+		predicates.add(cb.equal(joinBerechtigungen.get(Berechtigung_.traegerschaft), traegerschaft));
+
+		query.where(predicates.toArray(NEW));
+		query.distinct(true);
+
+		return persistence.getCriteriaResults(query);
+	}
+
+	@Nonnull
+	@Override
 	public Collection<Benutzer> getBenutzerBgOrGemeinde(Gemeinde gemeinde) {
 		return getBenutzersOfRoles(getBgAndGemeindeRoles(), gemeinde);
 	}
