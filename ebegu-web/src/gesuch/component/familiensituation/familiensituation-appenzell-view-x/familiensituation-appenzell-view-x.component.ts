@@ -21,7 +21,7 @@ const LOG = LogFactory.createLog('FamiliensituationAppenzellViewXComponent');
 })
 export class FamiliensituationAppenzellViewXComponent extends AbstractFamiliensitutaionView implements OnInit {
 
-    public async confirm(onResult: (arg: any) => void): Promise<void> {
+    protected async confirm(onResult: (arg: any) => void): Promise<void> {
         const savedContaier = await this.save();
         onResult(savedContaier);
     }
@@ -32,7 +32,7 @@ export class FamiliensituationAppenzellViewXComponent extends AbstractFamiliensi
         protected readonly wizardStepManager: WizardStepManager,
         protected readonly familiensituationRS: FamiliensituationRS,
         protected readonly authService: AuthServiceRS,
-        private readonly einstellungRS: EinstellungRS,
+        private readonly einstellungRS: EinstellungRS
     ) {
         super(gesuchModelManager, errorService, wizardStepManager, familiensituationRS, authService);
         this.getFamiliensituation().familienstatus = TSFamilienstatus.APPENZELL;

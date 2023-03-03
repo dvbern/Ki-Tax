@@ -19,7 +19,7 @@ import {TranslateService} from '@ngx-translate/core';
 import * as moment from 'moment';
 import {EinstellungRS} from '../../../../admin/service/einstellungRS.rest';
 import {
-    DvNgRemoveDialogComponent,
+    DvNgRemoveDialogComponent
 } from '../../../../app/core/component/dv-ng-remove-dialog/dv-ng-remove-dialog.component';
 import {CONSTANTS} from '../../../../app/core/constants/CONSTANTS';
 import {TSDemoFeature} from '../../../../app/core/directive/dv-hide-feature/TSDemoFeature';
@@ -31,11 +31,11 @@ import {TSEinstellungKey} from '../../../../models/enums/TSEinstellungKey';
 import {getTSFamilienstatusValues, TSFamilienstatus} from '../../../../models/enums/TSFamilienstatus';
 import {
     getTSGesuchstellerKardinalitaetValues,
-    TSGesuchstellerKardinalitaet,
+    TSGesuchstellerKardinalitaet
 } from '../../../../models/enums/TSGesuchstellerKardinalitaet';
 import {
     getTSUnterhaltsvereinbarungAnswerValues,
-    TSUnterhaltsvereinbarungAnswer,
+    TSUnterhaltsvereinbarungAnswer
 } from '../../../../models/enums/TSUnterhaltsvereinbarungAnswer';
 import {TSEinstellung} from '../../../../models/TSEinstellung';
 import {TSFamiliensituation} from '../../../../models/TSFamiliensituation';
@@ -98,7 +98,7 @@ export class FamiliensituationViewXComponent extends AbstractFamiliensitutaionVi
         }, error => LOG.error(error));
     }
 
-    public async confirm(onResult: (arg: any) => void): Promise<void> {
+    protected async confirm(onResult: (arg: any) => void): Promise<void> {
             if (this.isConfirmationRequired()) {
                 const descriptionText: any = this.$translate.instant('FAMILIENSITUATION_WARNING_BESCHREIBUNG', {
                     gsfullname: this.getGesuch().gesuchsteller2

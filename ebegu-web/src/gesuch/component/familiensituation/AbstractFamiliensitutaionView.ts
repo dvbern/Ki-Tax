@@ -66,7 +66,6 @@ export abstract class AbstractFamiliensitutaionView extends AbstractGesuchViewX<
         return this.model.familiensituationGS;
     }
 
-
     public showBisher(): boolean {
         return this.gesuchModelManager.getGesuch()
             && isAtLeastFreigegeben(this.gesuchModelManager.getGesuch().status)
@@ -119,7 +118,7 @@ export abstract class AbstractFamiliensitutaionView extends AbstractGesuchViewX<
         this.errorService.clearAll();
         return this.familiensituationRS.saveFamiliensituation(
             this.model,
-            this.getGesuch().id,
+            this.getGesuch().id
         ).pipe(mergeMap((familienContainerResponse: any) => {
             this.model = familienContainerResponse;
             this.getGesuch().familiensituationContainer = familienContainerResponse;
@@ -128,7 +127,7 @@ export abstract class AbstractFamiliensitutaionView extends AbstractGesuchViewX<
         })).toPromise();
     }
 
-    abstract confirm(onResult: (arg: any) => void): Promise<void>;
+    protected abstract confirm(onResult: (arg: any) => void): Promise<void>;
 
     public isFamiliensituationEnabled(): boolean {
         return this.isMutationAndDateSet() && !this.isGesuchReadonly();
