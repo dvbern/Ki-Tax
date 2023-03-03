@@ -32,11 +32,12 @@ export abstract class AbstractFamiliensitutaionView extends AbstractGesuchViewX<
         super(gesuchModelManager,
             wizardStepManager,
             TSWizardStepName.FAMILIENSITUATION);
-        this.model = this.getGesuch().familiensituationContainer;
+        this.initViewModel();
         this.gesuchModelManager.initFamiliensituation();
+        this.model = this.getGesuch().familiensituationContainer;
     }
 
-    protected initViewModel(): void {
+    private initViewModel(): void {
         this.wizardStepManager.updateCurrentWizardStepStatusSafe(
             TSWizardStepName.FAMILIENSITUATION,
             TSWizardStepStatus.IN_BEARBEITUNG);
