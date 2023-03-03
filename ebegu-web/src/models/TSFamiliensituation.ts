@@ -257,7 +257,7 @@ export class TSFamiliensituation extends TSAbstractMutableEntity {
         if(this.familienstatus === TSFamilienstatus.APPENZELL) {
             same = EbeguUtil.areSameOrWithoutValue(this.geteilteObhut, other.geteilteObhut)
                 && EbeguUtil.areSameOrWithoutValue(this.gemeinsamerHaushaltMitObhutsberechtigterPerson, other.gemeinsamerHaushaltMitObhutsberechtigterPerson)
-                && EbeguUtil.areSameOrWithoutValue(this.gemeinsamerHaushaltMitPartner, other.gemeinsamerHaushaltMitPartner)
+                && EbeguUtil.areSameOrWithoutValue(this.gemeinsamerHaushaltMitPartner, other.gemeinsamerHaushaltMitPartner);
         }
         return same;
     }
