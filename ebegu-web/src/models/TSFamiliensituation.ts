@@ -193,6 +193,8 @@ export class TSFamiliensituation extends TSAbstractMutableEntity {
 
     public hasSecondGesuchsteller(endOfPeriode: moment.Moment): boolean {
         switch (this.familienstatus) {
+            case TSFamilienstatus.APPENZELL:
+                return this.hasSecondGesuchstellerAppenzell();
             case TSFamilienstatus.ALLEINERZIEHEND:
                 if (!this.fkjvFamSit) {
                     return false;
@@ -333,5 +335,9 @@ export class TSFamiliensituation extends TSAbstractMutableEntity {
         }
 
         return this.unterhaltsvereinbarung === TSUnterhaltsvereinbarungAnswer.NEIN_UNTERHALTSVEREINBARUNG;
+    }
+
+    private hasSecondGesuchstellerAppenzell(): boolean {
+        return this.geteilteObhut && this.gemeinsamerHaushaltMitObhutsberechtigterPerson;
     }
 }

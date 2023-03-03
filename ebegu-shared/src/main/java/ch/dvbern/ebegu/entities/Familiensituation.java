@@ -355,6 +355,8 @@ public class Familiensituation extends AbstractMutableEntity {
 	public boolean hasSecondGesuchsteller(LocalDate referenzdatum) {
 		if (this.familienstatus != null) {
 			switch (this.familienstatus) {
+			case APPENZELL:
+				return this.hasSecondGesuchstellerAppenzell();
 			case ALLEINERZIEHEND:
 				if (!this.isFkjvFamSit()) {
 					return false;
@@ -385,6 +387,15 @@ public class Familiensituation extends AbstractMutableEntity {
 		return false;
 	}
 
+	private boolean hasSecondGesuchstellerAppenzell() {
+		if (this.geteilteObhut == null ||
+			this.gemeinsamerHaushaltMitObhutsberechtigterPerson == null) {
+			return false;
+		}
+
+		return this.geteilteObhut && this.gemeinsamerHaushaltMitObhutsberechtigterPerson;
+	}
+
 	private boolean hasSecondGesuchstellerFKJV() {
 		if (this.geteilteObhut != null && this.geteilteObhut) {
 			return this.gesuchstellerKardinalitaet == EnumGesuchstellerKardinalitaet.ZU_ZWEIT;
@@ -406,6 +417,8 @@ public class Familiensituation extends AbstractMutableEntity {
 		target.setGeteilteObhut(this.getGeteilteObhut());
 		target.setUnterhaltsvereinbarung(this.unterhaltsvereinbarung);
 		target.setUnterhaltsvereinbarungBemerkung(this.unterhaltsvereinbarungBemerkung);
+		target.setGemeinsamerHaushaltMitPartner(this.getGemeinsamerHaushaltMitPartner());
+		target.setGemeinsamerHaushaltMitObhutsberechtigterPerson(this.getGemeinsamerHaushaltMitObhutsberechtigterPerson());
 		switch (copyType) {
 		case MUTATION:
 			target.setAenderungPer(this.getAenderungPer());
@@ -472,6 +485,9 @@ public class Familiensituation extends AbstractMutableEntity {
 			Objects.equals(getStartKonkubinat(), otherFamiliensituation.getStartKonkubinat()) &&
 			Objects.equals(getGesuchstellerKardinalitaet(), otherFamiliensituation.getGesuchstellerKardinalitaet()) &&
 			Objects.equals(getGeteilteObhut(), otherFamiliensituation.getGeteilteObhut()) &&
-			Objects.equals(getUnterhaltsvereinbarung(), otherFamiliensituation.getUnterhaltsvereinbarung());
+			Objects.equals(getUnterhaltsvereinbarung(), otherFamiliensituation.getUnterhaltsvereinbarung()) &&
+			Objects.equals(getGemeinsamerHaushaltMitPartner(), otherFamiliensituation.getGemeinsamerHaushaltMitPartner()) &&
+			Objects.equals(getGemeinsamerHaushaltMitObhutsberechtigterPerson(),
+				otherFamiliensituation.getGemeinsamerHaushaltMitObhutsberechtigterPerson());
 	}
 }
