@@ -48,6 +48,8 @@ export class TSFamiliensituation extends TSAbstractMutableEntity {
     private _unterhaltsvereinbarungBemerkung: string;
     private _geteilteObhut: boolean;
     private _partnerIdentischMitVorgesuch: boolean;
+    private _gemeinsamerHaushaltMitObhutsberechtigterPerson: boolean;
+    private _gemeinsamerHaushaltMitPartner: boolean;
 
     public constructor() {
         super();
@@ -308,6 +310,21 @@ export class TSFamiliensituation extends TSAbstractMutableEntity {
 
     public set partnerIdentischMitVorgesuch(value: boolean) {
         this._partnerIdentischMitVorgesuch = value;
+    }
+
+    public get gemeinsamerHaushaltMitPartner(): boolean {
+        return this._gemeinsamerHaushaltMitPartner;
+    }
+
+    public set gemeinsamerHaushaltMitPartner(value: boolean) {
+        this._gemeinsamerHaushaltMitPartner = value;
+    }
+    public get gemeinsamerHaushaltMitObhutsberechtigterPerson(): boolean {
+        return this._gemeinsamerHaushaltMitObhutsberechtigterPerson;
+    }
+
+    public set gemeinsamerHaushaltMitObhutsberechtigterPerson(value: boolean) {
+        this._gemeinsamerHaushaltMitObhutsberechtigterPerson = value;
     }
 
     private hasSecondGesuchstellerFKJV(): boolean {

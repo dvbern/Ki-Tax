@@ -141,6 +141,15 @@ public class Familiensituation extends AbstractMutableEntity {
 	@Column(nullable = true)
 	private Boolean geteilteObhut;
 
+	@Nullable
+	@Column(nullable = true)
+	private Boolean gemeinsamerHaushaltMitObhutsberechtigterPerson;
+
+	@Nullable
+	@Column(nullable = true)
+	private Boolean gemeinsamerHaushaltMitPartner;
+
+
 	public Familiensituation() {
 	}
 
@@ -321,6 +330,25 @@ public class Familiensituation extends AbstractMutableEntity {
 	@Nullable
 	public UnterhaltsvereinbarungAnswer getUnterhaltsvereinbarung() {
 		return unterhaltsvereinbarung;
+	}
+
+	@Nullable
+	public Boolean getGemeinsamerHaushaltMitObhutsberechtigterPerson() {
+		return gemeinsamerHaushaltMitObhutsberechtigterPerson;
+	}
+
+	public void setGemeinsamerHaushaltMitObhutsberechtigterPerson(
+		@Nullable Boolean gemeinsamerHaushaltMitObhutsBerechtigterPerson) {
+		this.gemeinsamerHaushaltMitObhutsberechtigterPerson = gemeinsamerHaushaltMitObhutsBerechtigterPerson;
+	}
+
+	@Nullable
+	public Boolean getGemeinsamerHaushaltMitPartner() {
+		return gemeinsamerHaushaltMitPartner;
+	}
+
+	public void setGemeinsamerHaushaltMitPartner(@Nullable Boolean gemeinsamerHaushaltMitPartner) {
+		this.gemeinsamerHaushaltMitPartner = gemeinsamerHaushaltMitPartner;
 	}
 
 	@Transient
