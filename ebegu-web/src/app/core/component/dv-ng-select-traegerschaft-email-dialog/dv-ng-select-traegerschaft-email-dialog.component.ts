@@ -18,7 +18,7 @@
 import {Component, Inject} from '@angular/core';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 import {TranslateService} from '@ngx-translate/core';
-import {TSTraegerschaft} from "../../../../models/TSTraegerschaft";
+import {TSTraegerschaft} from '../../../../models/TSTraegerschaft';
 
 @Component({
     selector: 'dv-ng-select-tragerschaft-email-dialog',
