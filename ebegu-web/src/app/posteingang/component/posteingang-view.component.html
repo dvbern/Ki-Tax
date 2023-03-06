@@ -37,11 +37,9 @@
             <div *ngIf="!isSozialdienstOrInstitution()"
                  class="col-md-2 text-right closed-mitteilungen dv-table-resultCombo">
                 <dv-checkbox-x
-                    [ngModel]="includeClosed"
+                    [model]="includeClosed"
                     [marginClass]="'no-margin-bottom'"
-                    name="includeClosed"
-                    id="includeClosed"
-                    (ngModelChange)="clickedIncludeClosed($event)"
+                    (modelChange)="clickedIncludeClosed($event)"
                     [label]="'POSTEINGANG_INCLUDE_CLOSED' | translate">
                 </dv-checkbox-x>
                 <h3 class="dv-table-resultcount">{{totalResultCount}}</h3>

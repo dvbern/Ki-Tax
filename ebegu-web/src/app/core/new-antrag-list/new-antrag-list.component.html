@@ -29,11 +29,9 @@
             <div id="box-right">
                 <dv-checkbox-x
                     *ngIf="showSearchInaktivePerioden()"
-                    [ngModel]="searchInaktivePerioden"
+                    [model]="searchInaktivePerioden"
                     [marginClass]="'no-margin-bottom'"
-                    name="includeClosed"
-                    id="includeClosed"
-                    (ngModelChange)="changeSearchInaktivePerioden($event)"
+                    (modelChange)="changeSearchInaktivePerioden($event)"
                     [label]="'SEARCH_INAKTIVE_PERIODEN' | translate">
                 </dv-checkbox-x>
                 <h3>{{totalItems}}</h3>
