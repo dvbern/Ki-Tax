@@ -28,14 +28,12 @@ import ch.dvbern.ebegu.dto.BGCalculationInput;
 import ch.dvbern.ebegu.entities.AbstractPlatz;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Fall;
+import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.KindContainer;
-import ch.dvbern.ebegu.entities.Verfuegung;
-import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.MsgKey;
-import ch.dvbern.ebegu.services.DossierService;
 import ch.dvbern.ebegu.services.GesuchService;
 import ch.dvbern.ebegu.types.DateRange;
 import com.google.common.collect.ImmutableList;
@@ -64,12 +62,11 @@ public class WohnsitzCalcRule extends AbstractCalcRule {
 	 * for testing only
 	 * @param validityPeriod
 	 * @param locale
-	 * @param dossierServiceResolver
+	 * @param gesuchServcieResolver
 	 */
 	WohnsitzCalcRule(
 			@Nonnull DateRange validityPeriod,
 			@Nonnull Locale locale,
-			@Nonnull Supplier<DossierService> dossierServiceResolver,
 			@Nonnull Supplier<GesuchService> gesuchServcieResolver
 	) {
 		super(RuleKey.WOHNSITZ, RuleType.REDUKTIONSREGEL, RuleValidity.ASIV, validityPeriod, locale);
@@ -105,13 +102,12 @@ public class WohnsitzCalcRule extends AbstractCalcRule {
 		if (!inputData.getPotentielleDoppelBetreuung()) {
 			return false;
 		}
-
 		if (!(platz instanceof Betreuung)) {
 			return false;
 		}
-
 		Betreuung betreuung = (Betreuung) platz;
-		List<Gesuch> allGesucheForFallNummer = getAllGesucheForFallAndGesuchsperiode(platz.extractGesuch().getFall(), platz.extractGesuchsperiode());
+		List<Gesuch> allGesucheForFallNummer = getAllGesucheForFallAndGesuchsperiode(
+				platz.extractGesuch().getFall(), platz.extractGesuchsperiode(), betreuung.extractGemeinde());
 		// Pro Kind im Kindcontainer(dossier)
 		List<Betreuung> allRelevanteBetreuungen = getAllRelevantBetreuungenForKind(allGesucheForFallNummer, betreuung);
 		return hasVerfuegteBetreuungInSamePeriode(allRelevanteBetreuungen);
@@ -121,7 +117,6 @@ public class WohnsitzCalcRule extends AbstractCalcRule {
 		if (allBetreuungenProKind.size() <= 1) {
 			return false;
 		}
-
 		return istEineBetreuungVerfuegt(allBetreuungenProKind);
 	}
 
@@ -142,6 +137,9 @@ public class WohnsitzCalcRule extends AbstractCalcRule {
 
 	private List<Betreuung> getAlleBetreuungen(List<Gesuch> alleGesuche) {
 		List<Betreuung> alleBetreuungen = new ArrayList<>();
+		if (null == alleGesuche){
+			return alleBetreuungen;
+		}
 		for (Gesuch gesuch : alleGesuche) {
 			for (KindContainer kc : gesuch.getKindContainers()) {
 				alleBetreuungen.addAll(kc.getBetreuungen());
@@ -168,9 +166,12 @@ public class WohnsitzCalcRule extends AbstractCalcRule {
 			+ betreuung.getInstitutionStammdaten().getInstitution().getId();
 	}
 
-	private List<Gesuch> getAllGesucheForFallAndGesuchsperiode(Fall fall, Gesuchsperiode gesuchsperiode) {
+	private List<Gesuch> getAllGesucheForFallAndGesuchsperiode(
+			@Nonnull Fall fall,
+			@Nonnull Gesuchsperiode gesuchsperiode,
+			@Nonnull Gemeinde gemeinde) {
 		GesuchService gesuchService = this.gesuchServiceResolver.get();
-		return gesuchService.getAllGesuchForFallAndGesuchsperiode(fall, gesuchsperiode);
+		return gesuchService.getAllGesuchForFallAndGesuchsperiodeInUnterschiedlichenGemeinden(fall, gesuchsperiode, gemeinde);
 	}
 
 	private static GesuchService resolveGesuchServiceFromCDI() {

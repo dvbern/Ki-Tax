@@ -191,7 +191,10 @@ public interface GesuchService {
 	 * Alle Gesuche einer bestimmten Gesuchsperiode für einen Fall
 	 */
 	@Nonnull
-	List<Gesuch> getAllGesuchForFallAndGesuchsperiode(Fall fall, Gesuchsperiode gp);
+	List<Gesuch> getAllGesuchForFallAndGesuchsperiodeInUnterschiedlichenGemeinden(
+			Fall fall,
+			Gesuchsperiode gp,
+			Gemeinde gemeinde);
 
 	/**
 	 * Alle GesucheIDs des Dossiers zurueckgeben

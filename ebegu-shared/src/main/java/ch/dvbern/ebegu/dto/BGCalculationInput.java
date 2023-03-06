@@ -269,6 +269,7 @@ public class BGCalculationInput {
 		this.isAuszahlungAnEltern = toCopy.isAuszahlungAnEltern;
 		this.isEkvAccepted = toCopy.isEkvAccepted;
 		this.anspruchSinktDuringMonat = toCopy.anspruchSinktDuringMonat;
+		this.potentielleDoppelBetreuung = toCopy.potentielleDoppelBetreuung;
 	}
 
 	@Nonnull
