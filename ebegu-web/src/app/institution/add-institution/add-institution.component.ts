@@ -15,13 +15,13 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {ChangeDetectionStrategy, Component, OnInit, ViewChild} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, ViewChild} from '@angular/core';
 import {NgForm} from '@angular/forms';
 import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
 import {TranslateService} from '@ngx-translate/core';
 import {StateService, Transition} from '@uirouter/core';
 import * as moment from 'moment';
-import {take} from 'rxjs/operators';
+import {filter, mergeMap, take} from 'rxjs/operators';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {GemeindeRS} from '../../../gesuch/service/gemeindeRS.rest';
 import {TSBetreuungsangebotTyp} from '../../../models/enums/TSBetreuungsangebotTyp';
@@ -42,6 +42,7 @@ import {ApplicationPropertyRS} from '../../core/rest-services/applicationPropert
 import {BenutzerRSX} from '../../core/service/benutzerRSX.rest';
 import {InstitutionRS} from '../../core/service/institutionRS.rest';
 import {TraegerschaftRS} from '../../core/service/traegerschaftRS.rest';
+import {DvNgSelectTraegerschaftEmailDialogComponent} from "../../core/component/dv-ng-select-traegerschaft-email-dialog/dv-ng-select-traegerschaft-email-dialog.component";
 
 const LOG = LogFactory.createLog('AddInstitutionComponent');
 
@@ -80,7 +81,8 @@ export class AddInstitutionComponent implements OnInit {
         private readonly benutzerRS: BenutzerRSX,
         private readonly dialog: MatDialog,
         private readonly applicationPropertyRS: ApplicationPropertyRS,
-        private readonly authServiceRS: AuthServiceRS
+        private readonly authServiceRS: AuthServiceRS,
+        private readonly cd: ChangeDetectorRef
     ) {
     }
 
@@ -268,6 +270,20 @@ export class AddInstitutionComponent implements OnInit {
     }
 
     public selectAdminMail(): void {
-        this.adminMail = this.institution.traegerschaft.email;
+
+
+        this.benutzerRS.getAllEmailAdminForTraegerschaft(this.institution.traegerschaft)
+            .then(mail => {
+                let dialogConfig = new MatDialogConfig();
+
+                dialogConfig.data = mail
+
+                this.dialog.open(DvNgSelectTraegerschaftEmailDialogComponent, dialogConfig)
+                    .afterClosed()
+                    .subscribe(result => {
+                        this.adminMail = result.selectedEmail;
+                        this.cd.markForCheck()
+                    });
+            })
     }
 }
