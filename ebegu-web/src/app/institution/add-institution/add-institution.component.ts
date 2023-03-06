@@ -42,7 +42,7 @@ import {ApplicationPropertyRS} from '../../core/rest-services/applicationPropert
 import {BenutzerRSX} from '../../core/service/benutzerRSX.rest';
 import {InstitutionRS} from '../../core/service/institutionRS.rest';
 import {TraegerschaftRS} from '../../core/service/traegerschaftRS.rest';
-import {DvNgSelectTraegerschaftEmailDialogComponent} from "../../core/component/dv-ng-select-traegerschaft-email-dialog/dv-ng-select-traegerschaft-email-dialog.component";
+import {DvNgSelectTraegerschaftEmailDialogComponent} from '../../core/component/dv-ng-select-traegerschaft-email-dialog/dv-ng-select-traegerschaft-email-dialog.component';
 
 const LOG = LogFactory.createLog('AddInstitutionComponent');
 
@@ -271,19 +271,18 @@ export class AddInstitutionComponent implements OnInit {
 
     public selectAdminMail(): void {
 
-
         this.benutzerRS.getAllEmailAdminForTraegerschaft(this.institution.traegerschaft)
             .then(mail => {
-                let dialogConfig = new MatDialogConfig();
+                const dialogConfig = new MatDialogConfig();
 
-                dialogConfig.data = mail
+                dialogConfig.data = mail;
 
                 this.dialog.open(DvNgSelectTraegerschaftEmailDialogComponent, dialogConfig)
                     .afterClosed()
                     .subscribe(result => {
                         this.adminMail = result.selectedEmail;
-                        this.cd.markForCheck()
+                        this.cd.markForCheck();
                     });
-            })
+            });
     }
 }

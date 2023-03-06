@@ -34,7 +34,7 @@ export class DvNgSelectTraegerschaftEmailDialogComponent {
         private readonly translate: TranslateService,
         @Inject(MAT_DIALOG_DATA) data: any
     ) {
-        this.adminMails = data
+        this.adminMails = data;
     }
 
     public save(): void {

@@ -25,7 +25,7 @@ import {EbeguRestUtil} from '../../../utils/EbeguRestUtil';
 import {CONSTANTS} from '../constants/CONSTANTS';
 import {CoreModule} from '../core.module';
 import {LogFactory} from '../logging/LogFactory';
-import {TSTraegerschaft} from "../../../models/TSTraegerschaft";
+import {TSTraegerschaft} from '../../../models/TSTraegerschaft';
 
 @Injectable({
     providedIn: CoreModule
