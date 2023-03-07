@@ -108,7 +108,7 @@ public class WohnsitzCalcRuleTest {
 		wohnsitzCalcRule = new WohnsitzCalcRule(range, Locale.GERMAN, gesuchServiceSupplier);
 		assertNotNull(wohnsitzCalcRule);
 		wohnsitzCalcRule.executeRule(preparePlatz(), inputData);
-		assertTrue(inputData.getParent().getBemerkungenDTOList().isEmpty());
+		assertFalse(inputData.getParent().getBemerkungenDTOList().isEmpty());
 	}
 
 	@Test
