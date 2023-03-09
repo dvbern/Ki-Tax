@@ -139,6 +139,7 @@ public class WohnsitzCalcRuleTest {
 		EasyMock.expect(fallMock.getFallNummer()).andReturn(5007L);
 		EasyMock.expect(gesuchMock.getDossier()).andReturn(dossierMock);
 		EasyMock.expect(gesuchMock.getFall()).andReturn(fallMock);
+		EasyMock.expect(gesuchMock.getKindContainers()).andReturn(Set.of(kindContainerMock)).anyTimes();
 		EasyMock.expect(betreuungMock.extractGesuchsperiode()).andReturn(gesuchsPeriodeMock).anyTimes();
 		EasyMock.expect(betreuungMock.extractGesuch()).andReturn(gesuchMock).anyTimes();
 		EasyMock.expect(betreuungMock.extractGemeinde()).andReturn(gemeindeMock).anyTimes();
@@ -151,6 +152,7 @@ public class WohnsitzCalcRuleTest {
 		EasyMock.expect(institution.getId()).andReturn("veryUniqueID").anyTimes();
 		EasyMock.expect(kindContainerMock.getGesuch()).andReturn(gesuchMock);
 		EasyMock.expect(kindContainerMock.getKindJA()).andReturn(kind).anyTimes();
+		EasyMock.expect(kindContainerMock.getBetreuungen()).andReturn(Set.of((Betreuung) betreuungMock)).anyTimes();
 		EasyMock.expect(kind.getNachname()).andReturn("Tester").anyTimes();
 		EasyMock.expect(kind.getVorname()).andReturn("hans-ueli").anyTimes();
 		EasyMock.expect(kind.getGeburtsdatum()).andReturn(LocalDate.of(2028, 3, 7)).anyTimes();
@@ -227,30 +229,10 @@ public class WohnsitzCalcRuleTest {
 	}
 
 	private List<Gesuch> populateGesuchsliste() {
-		Kind kindMock = EasyMock.createMock(Kind.class);
-		Gesuch gesuch1 = EasyMock.createMock(Gesuch.class);
-		Gesuch gesuch2 = EasyMock.createMock(Gesuch.class);
-		KindContainer kindContainerMock = EasyMock.createMock(KindContainer.class);
-		List<Gesuch>  gesuchListe = new LinkedList<>();
-		Set<KindContainer> kinderListe = new HashSet<>();
-		kinderListe.add(kindContainerMock);
-		EasyMock.expect(kindContainerMock.getKindJA()).andReturn(kindMock);
-		EasyMock.expect(gesuch1.getKindContainers()).andReturn(kinderListe);
-		EasyMock.expect(gesuch2.getKindContainers()).andReturn(kinderListe);
 		Betreuung betreuung = (Betreuung) preparePlatz();
 
-
-		Set<Betreuung> betreungsList = new HashSet<>();
-		betreungsList.add(betreuung);
-		EasyMock.expect(kindContainerMock.getBetreuungen()).andReturn(betreungsList).anyTimes();
-
-
-		EasyMock.replay(gesuch1);
-		EasyMock.replay((gesuch2));
-		EasyMock.replay(kindContainerMock);
-		EasyMock.replay(kindMock);
-		gesuchListe.add(gesuch1);
-		gesuchListe.add(gesuch2);
+		List<Gesuch>  gesuchListe = new LinkedList<>();
+		gesuchListe.add(betreuung.extractGesuch());
 
 		return gesuchListe;
 	}
