@@ -538,8 +538,7 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 	@Nonnull
 	@Override
 	public Collection<Benutzer> getTraegerschaftAdministratoren(final Traegerschaft traegerschaft) {
-		getCurrentBenutzer().orElseThrow(() -> new EbeguRuntimeException(
-			"getTraegerschaftAdministratoren", "Non logged in user should never reach this"));
+		checkWhenUserLogin("getTraegerschaftAdministratoren");
 		authorizer.checkReadAuthorization(traegerschaft);
 
 		List<Predicate> predicates = new ArrayList<>();
@@ -618,8 +617,7 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 	 * @return Liste aller Benutzern mit entsprechender Rolle aus der DB
 	 */
 	private Collection<Benutzer> getBenutzersOfRoles(List<UserRole> roles) {
-		Benutzer currentBenutzer = getCurrentBenutzer().orElseThrow(() -> new EbeguRuntimeException(
-			"getBenutzersOfRole", "Non logged in user should never reach this"));
+		Benutzer currentBenutzer = checkWhenUserLogin("getBenutzersOfRole");
 
 		List<Predicate> predicates = new ArrayList<>();
 
@@ -655,8 +653,7 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 	 * @return Liste aller Benutzern mit entsprechender Rolle aus der DB
 	 */
 	private Collection<Benutzer> getBenutzersOfRoles(@Nonnull List<UserRole> roles, @Nonnull Gemeinde gemeinde) {
-		getCurrentBenutzer().orElseThrow(() -> new EbeguRuntimeException(
-			"getBenutzersOfRole", "Non logged in user should never reach this"));
+		checkWhenUserLogin("getBenutzersOfRoles");
 		authorizer.checkReadAuthorization(gemeinde);
 
 		List<Predicate> predicates = new ArrayList<>();
@@ -691,8 +688,7 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 	 * @return Liste aller Benutzern mit entsprechender Rolle aus der DB
 	 */
 	private Collection<Benutzer> getBenutzersOfRoles(@Nonnull List<UserRole> roles, @Nonnull Institution institution) {
-		getCurrentBenutzer().orElseThrow(() -> new EbeguRuntimeException(
-			"getBenutzersOfRole", "Non logged in user should never reach this"));
+		checkWhenUserLogin("getBenutzersOfRoles");
 		authorizer.checkReadAuthorizationInstitution(institution);
 
 		List<Predicate> predicates = new ArrayList<>();
@@ -1615,5 +1611,10 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 			.get();
 
 		return lastNotGesperrtHistory.getStatus();
+	}
+
+	private Benutzer checkWhenUserLogin(String methodName) {
+		return getCurrentBenutzer().orElseThrow(() -> new EbeguRuntimeException(
+			methodName, "Non logged in user should never reach this"));
 	}
 }
