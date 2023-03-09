@@ -114,7 +114,7 @@ public class WohnsitzCalcRule extends AbstractCalcRule {
 	}
 
 	private boolean hasVerfuegteBetreuungInSamePeriode(List<Betreuung> allBetreuungenProKind) {
-		if (allBetreuungenProKind.size() <= 1) {
+		if (allBetreuungenProKind.isEmpty()) {
 			return false;
 		}
 		return istEineBetreuungVerfuegt(allBetreuungenProKind);
