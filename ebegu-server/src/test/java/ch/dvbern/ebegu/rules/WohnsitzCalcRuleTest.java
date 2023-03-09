@@ -1,6 +1,9 @@
 package ch.dvbern.ebegu.rules;
 
 import java.time.LocalDate;
+import java.time.Month;
+import java.time.temporal.TemporalAdjusters;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
@@ -29,17 +32,18 @@ import org.easymock.EasyMock;
 import org.easymock.EasyMockRunner;
 import org.easymock.TestSubject;
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 @RunWith(EasyMockRunner.class)
-public class WohnsitzCalcRuleTest {
+@SuppressWarnings("ConstantConditions")
+public class WohnsitzCalcRuleTest extends WohnsitzRuleTest {
 
 	private final DateRange TEST_PERIODE = new DateRange(TestDataUtil.START_PERIODE, TestDataUtil.START_PERIODE);
 	private Supplier<GesuchService> gesuchServiceSupplier;
@@ -107,19 +111,6 @@ public class WohnsitzCalcRuleTest {
 		assertTrue(inputData.getParent().getBemerkungenDTOList().isEmpty());
 		wohnsitzCalcRule.executeRule(preparePlatzWithSameKind(), inputData);
 		assertTrue(inputData.getParent().getBemerkungenDTOList().containsMsgKey(MsgKey.UMZUG_BG_BEREITS_IN_ANDERER_GEMEINDE));
-	}
-
-	@Test
-	public void testZuzug() {
-		Betreuung betreuung = (Betreuung) preparePlatzWithSameKind();
-		BGCalculationInput bgCalculationInput = prepareInputData();
-		bgCalculationInput.setPotentielleDoppelBetreuung(true);
-		assertFalse(bgCalculationInput.isAnspruchSinktDuringMonat());
-		assertFalse(bgCalculationInput.getParent().getBemerkungenDTOList().containsMsgKey(MsgKey.UMZUG_BG_BEREITS_IN_ANDERER_GEMEINDE));
-		wohnsitzCalcRule.executeRule(betreuung, bgCalculationInput);
-		assertTrue(bgCalculationInput.isAnspruchSinktDuringMonat());
-		assertEquals(bgCalculationInput.getAnspruchspensumProzent(), 0);
-		assertTrue(bgCalculationInput.getParent().getBemerkungenDTOList().containsMsgKey(MsgKey.UMZUG_BG_BEREITS_IN_ANDERER_GEMEINDE));
 	}
 
 	private BGCalculationInput prepareInputData() {
@@ -197,6 +188,117 @@ public class WohnsitzCalcRuleTest {
 		gesuchListe.add(betreuung.extractGesuch());
 
 		return gesuchListe;
+	}
+
+
+
+	@Test
+	public void testZuzug() {
+		LocalDate zuzugsDatum = LocalDate.of(TestDataUtil.PERIODE_JAHR_1, Month.OCTOBER, 16);
+		Betreuung betreuung = createTestdata(true);
+
+		final Gesuch gesuch = betreuung.extractGesuch();
+
+		gesuch.getGesuchsteller1().addAdresse(createGesuchstellerAdresse(
+			TestDataUtil.START_PERIODE,
+			zuzugsDatum.minusDays(1),
+			true,
+			gesuch.getGesuchsteller1()));
+		gesuch.getGesuchsteller1().addAdresse(createGesuchstellerAdresse(
+			zuzugsDatum,
+			TestDataUtil.ENDE_PERIODE,
+			false,
+			gesuch.getGesuchsteller1()));
+		gesuch.getGesuchsteller2().addAdresse(createGesuchstellerAdresse(
+			TestDataUtil.START_PERIODE,
+			TestDataUtil.ENDE_PERIODE,
+			true,
+			gesuch.getGesuchsteller2()));
+
+		createDossier(gesuch);
+		List<VerfuegungZeitabschnitt> zeitabschnittList = runWohnsitzAbschnittAndCalcRule(betreuung);
+
+		Assert.assertNotNull(zeitabschnittList);
+		Assert.assertEquals(3, zeitabschnittList.size());
+		VerfuegungZeitabschnitt abschnittNichtInBern = zeitabschnittList.get(0);
+		Assert.assertTrue(abschnittNichtInBern.getBgCalculationInputAsiv().isWohnsitzNichtInGemeindeGS1());
+		Assert.assertEquals(0, abschnittNichtInBern.getBgCalculationInputAsiv().getAnspruchspensumProzent());
+		VerfuegungZeitabschnitt abschnittFirstMonthInBern = zeitabschnittList.get(1);
+		Assert.assertEquals(zuzugsDatum, abschnittFirstMonthInBern.getGueltigkeit().getGueltigAb());
+		Assert.assertEquals(zuzugsDatum.with(TemporalAdjusters.lastDayOfMonth()), abschnittFirstMonthInBern.getGueltigkeit().getGueltigBis());
+		Assert.assertFalse(abschnittFirstMonthInBern.getBgCalculationInputAsiv().isWohnsitzNichtInGemeindeGS1());
+		Assert.assertEquals(100, abschnittFirstMonthInBern.getBgCalculationInputAsiv().getAnspruchspensumProzent());
+
+		VerfuegungZeitabschnitt abschnittInBern = zeitabschnittList.get(2);
+		Assert.assertEquals(zuzugsDatum.with(TemporalAdjusters.firstDayOfNextMonth()), abschnittInBern.getGueltigkeit().getGueltigAb());
+		Assert.assertEquals(TestDataUtil.ENDE_PERIODE, abschnittInBern.getGueltigkeit().getGueltigBis());
+		Assert.assertFalse(abschnittInBern.getBgCalculationInputAsiv().isWohnsitzNichtInGemeindeGS1());
+		Assert.assertEquals(100, abschnittInBern.getBgCalculationInputAsiv().getAnspruchspensumProzent());
+	}
+
+	@Test
+	public void testWegzug() {
+		LocalDate wegzugsDatum = LocalDate.of(TestDataUtil.PERIODE_JAHR_1, Month.OCTOBER, 16);
+		Betreuung betreuung = createTestdata(true);
+
+		final Gesuch gesuch = betreuung.extractGesuch();
+
+		gesuch.getGesuchsteller1().addAdresse(createGesuchstellerAdresse(
+			TestDataUtil.START_PERIODE,
+			wegzugsDatum.minusDays(1),
+			false,
+			gesuch.getGesuchsteller1()));
+		gesuch.getGesuchsteller1().addAdresse(createGesuchstellerAdresse(
+			wegzugsDatum,
+			TestDataUtil.ENDE_PERIODE,
+			true,
+			gesuch.getGesuchsteller1()));
+
+		gesuch.getGesuchsteller2().addAdresse(createGesuchstellerAdresse(
+			TestDataUtil.START_PERIODE,
+			TestDataUtil.ENDE_PERIODE,
+			true,
+			gesuch.getGesuchsteller2()));
+
+		createDossier(gesuch);
+
+		List<VerfuegungZeitabschnitt> zeitabschnittList = runWohnsitzAbschnittAndCalcRule(betreuung);
+
+		Assert.assertNotNull(zeitabschnittList);
+		Assert.assertEquals(3, zeitabschnittList.size());
+		VerfuegungZeitabschnitt abschnittInBern = zeitabschnittList.get(0);
+		Assert.assertFalse(abschnittInBern.getBgCalculationInputAsiv().isWohnsitzNichtInGemeindeGS1());
+		Assert.assertEquals(100, abschnittInBern.getBgCalculationInputAsiv().getAnspruchspensumProzent());
+		Assert.assertEquals(wegzugsDatum.minusDays(1), abschnittInBern.getGueltigkeit().getGueltigBis());
+
+
+		VerfuegungZeitabschnitt abschnittFirstMonthNichtInBern = zeitabschnittList.get(1);
+		Assert.assertTrue(abschnittFirstMonthNichtInBern.getBgCalculationInputAsiv().isWohnsitzNichtInGemeindeGS1());
+		Assert.assertEquals(0, abschnittFirstMonthNichtInBern.getBgCalculationInputAsiv().getAnspruchspensumProzent());
+		Assert.assertEquals(wegzugsDatum.with(TemporalAdjusters.lastDayOfMonth()), abschnittFirstMonthNichtInBern.getGueltigkeit().getGueltigBis());
+
+		//Anspruch noch 2 Monate nach wegzug auf Ende Monat
+		VerfuegungZeitabschnitt abschnittNichtInBern = zeitabschnittList.get(2);
+		Assert.assertEquals(wegzugsDatum.with(TemporalAdjusters.firstDayOfNextMonth()), abschnittNichtInBern.getGueltigkeit().getGueltigAb());
+		Assert.assertEquals(0, abschnittNichtInBern.getAnspruchberechtigtesPensum());
+	}
+
+
+	private List<VerfuegungZeitabschnitt> runWohnsitzAbschnittAndCalcRule(AbstractPlatz betreuung) {
+		WohnsitzAbschnittRule wohnsitzAbschnittRule = new WohnsitzAbschnittRule(new DateRange(TestDataUtil.START_PERIODE, TestDataUtil.ENDE_PERIODE), Locale.GERMAN);
+		List<VerfuegungZeitabschnitt> zeitabschnittList = wohnsitzAbschnittRule.calculate(betreuung, Collections.emptyList());
+
+		zeitabschnittList.forEach(zeitabschnitt -> {
+			BGCalculationInput input = zeitabschnitt.getBgCalculationInputAsiv();
+			//wir wollen nicht, dass auf Doppellbetreuung geprüft wird in diesem Test
+			input.setPotentielleDoppelBetreuung(false);
+			//da neu nur noch die WohnsitzCalcRule durchlaufen wird, aber z.B. die Anspruch-Rule nicht mehr müssen wir den Anspruch
+			//manuell setzt, um zu prüfen, dass er in den entsprechenden Abschnitten zurückgesetzt wird
+			input.setAnspruchspensumProzent(100);
+			wohnsitzCalcRule.executeRule(betreuung, zeitabschnitt.getBgCalculationInputAsiv());
+		});
+
+		return zeitabschnittList;
 	}
 
 }

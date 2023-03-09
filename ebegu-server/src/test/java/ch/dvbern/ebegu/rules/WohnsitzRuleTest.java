@@ -163,7 +163,7 @@ public class WohnsitzRuleTest {
 		Assert.assertEquals(MathUtil.DEFAULT.from(0), abschnittImmerNochNichtInBern2.getBgPensum());
 	}
 
-	private Betreuung createTestdata(boolean zweigesuchsteller) {
+	protected Betreuung createTestdata(boolean zweigesuchsteller) {
 		Betreuung betreuung = TestDataUtil.createGesuchWithBetreuungspensum(zweigesuchsteller);
 		betreuung.getInstitutionStammdaten().setBetreuungsangebotTyp(BetreuungsangebotTyp.KITA);
 		betreuung.setBetreuungspensumContainers(new LinkedHashSet<>());
@@ -204,8 +204,20 @@ public class WohnsitzRuleTest {
 		return adresse;
 	}
 
-	private void createDossier(Gesuch gesuch) {
+	protected void createDossier(Gesuch gesuch) {
 		Dossier dossier = TestDataUtil.createDefaultDossier();
 		gesuch.setDossier(dossier);
+	}
+
+	protected GesuchstellerAdresseContainer createGesuchstellerAdresse(
+		LocalDate von,
+		LocalDate bis,
+		boolean nichtInGemeinde,
+		GesuchstellerContainer gesuchsteller) {
+		GesuchstellerAdresseContainer adresse = TestDataUtil.createDefaultGesuchstellerAdresseContainer(gesuchsteller);
+		adresse.getGesuchstellerAdresseJA().setNichtInGemeinde(nichtInGemeinde);
+		adresse.extractGueltigkeit().setGueltigAb(von);
+		adresse.extractGueltigkeit().setGueltigBis(bis);
+		return adresse;
 	}
 }
