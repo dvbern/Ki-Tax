@@ -74,12 +74,29 @@ public class WohnsitzCalcRuleTest {
 	public void tearDown() {
 	}
 
-
 	@Test
 	public void testExecuteRule() {
 		BGCalculationInput inputData = prepareInputData();
-		wohnsitzCalcRule.executeRule(preparePlatz(), inputData);
+		wohnsitzCalcRule.executeRule(preparePlatzWithSameKind(), inputData);
 		assertNotNull(inputData);
+		assertFalse(inputData.getParent().getBemerkungenDTOList().containsMsgKey(MsgKey.UMZUG_BG_BEREITS_IN_ANDERER_GEMEINDE));
+	}
+
+	@Test
+	public void testNoPotentielleDoppelbetreuung() {
+		assertNotNull(wohnsitzCalcRule);
+		BGCalculationInput inputData = prepareInputData();
+		inputData.setPotentielleDoppelBetreuung(false);
+		wohnsitzCalcRule.executeRule(preparePlatzWithSameKind(), inputData);
+		assertFalse(inputData.getParent().getBemerkungenDTOList().containsMsgKey(MsgKey.UMZUG_BG_BEREITS_IN_ANDERER_GEMEINDE));
+	}
+
+	@Test
+	public void testNotSameKindInOtherBetreuung() {
+		assertNotNull(wohnsitzCalcRule);
+		BGCalculationInput inputData = prepareInputData();
+		inputData.setPotentielleDoppelBetreuung(true);
+		wohnsitzCalcRule.executeRule(preparePlatzWithOtherKind(), inputData);
 		assertFalse(inputData.getParent().getBemerkungenDTOList().containsMsgKey(MsgKey.UMZUG_BG_BEREITS_IN_ANDERER_GEMEINDE));
 	}
 
@@ -89,9 +106,7 @@ public class WohnsitzCalcRuleTest {
 		inputData.setWohnsitzNichtInGemeindeGS1(true);
 		inputData.setPotentielleDoppelBetreuung(true);
 		assertFalse(inputData.getParent().getBemerkungenDTOList().containsMsgKey(MsgKey.UMZUG_BG_BEREITS_IN_ANDERER_GEMEINDE));
-		wohnsitzCalcRule = new WohnsitzCalcRule(TEST_PERIODE, Locale.GERMAN, gesuchServiceSupplier);
-		assertNotNull(wohnsitzCalcRule);
-		wohnsitzCalcRule.executeRule(preparePlatz(), inputData);
+		wohnsitzCalcRule.executeRule(preparePlatzWithSameKind(), inputData);
 		assertTrue(inputData.getParent().getBemerkungenDTOList().containsMsgKey(MsgKey.UMZUG_BG_BEREITS_IN_ANDERER_GEMEINDE));
 	}
 
@@ -101,16 +116,13 @@ public class WohnsitzCalcRuleTest {
 		inputData.setWohnsitzNichtInGemeindeGS1(false);
 		inputData.setPotentielleDoppelBetreuung(true);
 		assertTrue(inputData.getParent().getBemerkungenDTOList().isEmpty());
-		wohnsitzCalcRule = new WohnsitzCalcRule(TEST_PERIODE, Locale.GERMAN, gesuchServiceSupplier);
-		assertNotNull(wohnsitzCalcRule);
-		wohnsitzCalcRule.executeRule(preparePlatz(), inputData);
+		wohnsitzCalcRule.executeRule(preparePlatzWithSameKind(), inputData);
 		assertTrue(inputData.getParent().getBemerkungenDTOList().containsMsgKey(MsgKey.UMZUG_BG_BEREITS_IN_ANDERER_GEMEINDE));
 	}
 
 	@Test
 	public void testZuzug() {
-		wohnsitzCalcRule= new WohnsitzCalcRule(TEST_PERIODE, Locale.GERMAN, gesuchServiceSupplier);
-		Betreuung betreuung = (Betreuung) prepareZweiPlaetzeEinerVerfuegt();
+		Betreuung betreuung = (Betreuung) preparePlatzWithSameKind();
 		BGCalculationInput bgCalculationInput = prepareInputData();
 		bgCalculationInput.setPotentielleDoppelBetreuung(true);
 		assertFalse(bgCalculationInput.isAnspruchSinktDuringMonat());
@@ -125,115 +137,72 @@ public class WohnsitzCalcRuleTest {
 		return new BGCalculationInput(new VerfuegungZeitabschnitt(TEST_PERIODE), RuleValidity.ASIV);
 	}
 
-	private AbstractPlatz preparePlatz() {
+	private AbstractPlatz preparePlatz(KindContainer kindMock) {
 		AbstractPlatz betreuungMock  = EasyMock.createMock(Betreuung.class);
 		Gesuch gesuchMock = EasyMock.createMock(Gesuch.class);
 		Dossier dossierMock = EasyMock.createMock(Dossier.class);
 		Gemeinde gemeindeMock = EasyMock.createMock(Gemeinde.class);
 		Gesuchsperiode gesuchsPeriodeMock = EasyMock.createMock(Gesuchsperiode.class);
-		KindContainer kindContainerMock = EasyMock.createMock(KindContainer.class);
 		Fall fallMock = EasyMock.createMock(Fall.class);
-		Kind kind = EasyMock.createMock(Kind.class);
 		InstitutionStammdaten institutionStammdaten = EasyMock.createMock(InstitutionStammdaten.class);
 		Institution institution = EasyMock.createMock(Institution.class);
 
+		EasyMock.expect(kindMock.getGesuch()).andReturn(gesuchMock);
+		EasyMock.expect(kindMock.getBetreuungen()).andReturn(Set.of((Betreuung) betreuungMock)).anyTimes();
+		EasyMock.expect(gesuchMock.getKindContainers()).andReturn(Set.of(kindMock));
 		EasyMock.expect(gemeindeMock.getName()).andReturn("TEST_GEMAINDE_32");
 		EasyMock.expect(dossierMock.getGemeinde()).andReturn(gemeindeMock);
 		EasyMock.expect(dossierMock.getFall()).andReturn(fallMock);
 		EasyMock.expect(fallMock.getFallNummer()).andReturn(5007L);
 		EasyMock.expect(gesuchMock.getDossier()).andReturn(dossierMock);
 		EasyMock.expect(gesuchMock.getFall()).andReturn(fallMock);
-		EasyMock.expect(gesuchMock.getKindContainers()).andReturn(Set.of(kindContainerMock)).anyTimes();
+		EasyMock.expect(gesuchMock.getKindContainers()).andReturn(Set.of(kindMock)).anyTimes();
 		EasyMock.expect(betreuungMock.extractGesuchsperiode()).andReturn(gesuchsPeriodeMock).anyTimes();
 		EasyMock.expect(betreuungMock.extractGesuch()).andReturn(gesuchMock).anyTimes();
 		EasyMock.expect(betreuungMock.extractGemeinde()).andReturn(gemeindeMock).anyTimes();
-		EasyMock.expect(betreuungMock.getKind()).andReturn(kindContainerMock).anyTimes();
+		EasyMock.expect(betreuungMock.getKind()).andReturn(kindMock).anyTimes();
 		EasyMock.expect(betreuungMock.getInstitutionStammdaten()).andReturn(institutionStammdaten).anyTimes();
 		Verfuegung verfuegung = EasyMock.createMock(Verfuegung.class);
 		EasyMock.expect(betreuungMock.getVerfuegung()).andReturn(verfuegung).anyTimes();
 
 		EasyMock.expect(institutionStammdaten.getInstitution()).andReturn(institution).anyTimes();
 		EasyMock.expect(institution.getId()).andReturn("veryUniqueID").anyTimes();
-		EasyMock.expect(kindContainerMock.getGesuch()).andReturn(gesuchMock);
-		EasyMock.expect(kindContainerMock.getKindJA()).andReturn(kind).anyTimes();
-		EasyMock.expect(kindContainerMock.getBetreuungen()).andReturn(Set.of((Betreuung) betreuungMock)).anyTimes();
-		EasyMock.expect(kind.getNachname()).andReturn("Tester").anyTimes();
-		EasyMock.expect(kind.getVorname()).andReturn("hans-ueli").anyTimes();
-		EasyMock.expect(kind.getGeburtsdatum()).andReturn(LocalDate.of(2028, 3, 7)).anyTimes();
 		EasyMock.replay(verfuegung);
 		EasyMock.replay(betreuungMock);
 		EasyMock.replay(gesuchMock);
 		EasyMock.replay(gemeindeMock);
 		EasyMock.replay(dossierMock);
-		EasyMock.replay(kindContainerMock);
 		EasyMock.replay(fallMock);
 		EasyMock.replay(gesuchsPeriodeMock);
-		EasyMock.replay(kind);
 		EasyMock.replay(institution);
 		EasyMock.replay(institutionStammdaten);
+		EasyMock.replay(kindMock);
 		return betreuungMock;
 	}
 
-	private AbstractPlatz prepareZweiPlaetzeEinerVerfuegt() {
-		AbstractPlatz betreuungMock  = EasyMock.createMock(Betreuung.class);
-		AbstractPlatz betreuungMock2  = EasyMock.createMock(Betreuung.class);
+	private AbstractPlatz preparePlatzWithSameKind() {
+		return preparePlatz(mockKind("hans-ueli", "Tester", LocalDate.of(2018, 3, 15)));
+	}
 
-		Gesuch gesuchMock = EasyMock.createMock(Gesuch.class);
-		Dossier dossierMock = EasyMock.createMock(Dossier.class);
-		Gemeinde gemeindeMock = EasyMock.createMock(Gemeinde.class);
-		Gesuchsperiode gesuchsPeriodeMock = EasyMock.createMock(Gesuchsperiode.class);
-		KindContainer kindContainerMock = EasyMock.createMock(KindContainer.class);
-		Fall fallMock = EasyMock.createMock(Fall.class);
+	private AbstractPlatz preparePlatzWithOtherKind() {
+		return preparePlatz(mockKind("Mia", "Tester", LocalDate.of(2018, 3, 15)));
+	}
+
+	private KindContainer mockKind(String vorname, String nachname, LocalDate geburtsdatum) {
 		Kind kind = EasyMock.createMock(Kind.class);
-		InstitutionStammdaten institutionStammdaten = EasyMock.createMock(InstitutionStammdaten.class);
-		Institution institution = EasyMock.createMock(Institution.class);
-		Verfuegung verfuegungBetreuung1Mock = EasyMock.createMock(Verfuegung.class);
+		EasyMock.expect(kind.getNachname()).andReturn(nachname).anyTimes();
+		EasyMock.expect(kind.getVorname()).andReturn(vorname).anyTimes();
+		EasyMock.expect(kind.getGeburtsdatum()).andReturn(geburtsdatum).anyTimes();
 
-		EasyMock.expect(gemeindeMock.getName()).andReturn("TEST_GEMAINDE_32");
-		EasyMock.expect(dossierMock.getGemeinde()).andReturn(gemeindeMock);
-		EasyMock.expect(dossierMock.getFall()).andReturn(fallMock);
-		EasyMock.expect(fallMock.getFallNummer()).andReturn(5007L);
-		EasyMock.expect(gesuchMock.getDossier()).andReturn(dossierMock);
-		EasyMock.expect(gesuchMock.getFall()).andReturn(fallMock);
-		EasyMock.expect(betreuungMock.extractGesuchsperiode()).andReturn(gesuchsPeriodeMock).anyTimes();
-		EasyMock.expect(betreuungMock.extractGesuch()).andReturn(gesuchMock).anyTimes();
-		EasyMock.expect(betreuungMock.extractGemeinde()).andReturn(gemeindeMock).anyTimes();
-		EasyMock.expect(betreuungMock.getKind()).andReturn(kindContainerMock).anyTimes();
-		EasyMock.expect(betreuungMock.getInstitutionStammdaten()).andReturn(institutionStammdaten).anyTimes();
-		EasyMock.expect(betreuungMock.getVerfuegung()).andReturn(verfuegungBetreuung1Mock).anyTimes();
-
-		EasyMock.expect(betreuungMock2.extractGesuchsperiode()).andReturn(gesuchsPeriodeMock).anyTimes();
-		EasyMock.expect(betreuungMock2.extractGesuch()).andReturn(gesuchMock).anyTimes();
-		EasyMock.expect(betreuungMock2.extractGemeinde()).andReturn(gemeindeMock).anyTimes();
-		EasyMock.expect(betreuungMock2.getKind()).andReturn(kindContainerMock).anyTimes();
-		EasyMock.expect(betreuungMock2.getInstitutionStammdaten()).andReturn(institutionStammdaten).anyTimes();
-		EasyMock.expect(betreuungMock2.getVerfuegung()).andReturn(null);
-
-		EasyMock.expect(institutionStammdaten.getInstitution()).andReturn(institution).anyTimes();
-		EasyMock.expect(institution.getId()).andReturn("veryUniqueID").anyTimes();
-		EasyMock.expect(kindContainerMock.getGesuch()).andReturn(gesuchMock);
+		KindContainer kindContainerMock = EasyMock.createMock(KindContainer.class);
 		EasyMock.expect(kindContainerMock.getKindJA()).andReturn(kind).anyTimes();
-		EasyMock.expect(kind.getNachname()).andReturn("Tester").anyTimes();
-		EasyMock.expect(kind.getVorname()).andReturn("hans-ueli").anyTimes();
-		EasyMock.expect(kind.getGeburtsdatum()).andReturn(LocalDate.of(2028, 3, 7)).anyTimes();
 
-		EasyMock.replay(verfuegungBetreuung1Mock);
-		EasyMock.replay(betreuungMock);
-		EasyMock.replay(betreuungMock2);
-		EasyMock.replay(gesuchMock);
-		EasyMock.replay(gemeindeMock);
-		EasyMock.replay(dossierMock);
-		EasyMock.replay(kindContainerMock);
-		EasyMock.replay(fallMock);
-		EasyMock.replay(gesuchsPeriodeMock);
 		EasyMock.replay(kind);
-		EasyMock.replay(institution);
-		EasyMock.replay(institutionStammdaten);
-		return betreuungMock;
+		return kindContainerMock;
 	}
 
 	private List<Gesuch> populateGesuchsliste() {
-		Betreuung betreuung = (Betreuung) preparePlatz();
+		Betreuung betreuung = (Betreuung) preparePlatzWithSameKind();
 
 		List<Gesuch>  gesuchListe = new LinkedList<>();
 		gesuchListe.add(betreuung.extractGesuch());
