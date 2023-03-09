@@ -647,4 +647,23 @@ public class InstitutionResource {
 			.map(institution -> converter.institutionToJAX(institution))
 			.collect(Collectors.toList());
 	}
+
+	@ApiOperation(value = "Setzt eine Institution aus dem Status NUR_LATS in die Konfiguration", response = JaxInstitution.class)
+	@Nonnull
+	@PUT
+	@Path("{institutionId}/nurlatsUmwandeln")
+	@Consumes(MediaType.WILDCARD)
+	@Produces(MediaType.APPLICATION_JSON)
+	@RolesAllowed({SUPER_ADMIN, ADMIN_TRAEGERSCHAFT, ADMIN_INSTITUTION, ADMIN_GEMEINDE, ADMIN_BG
+			, ADMIN_TS, SACHBEARBEITER_GEMEINDE, SACHBEARBEITER_TS })
+	public JaxInstitution nurLatsInstitutionUmwandeln(@Nonnull @PathParam("institutionId") JaxId jaxInstitutionId) {
+		Objects.requireNonNull(jaxInstitutionId.getId());
+
+		Institution institution = institutionService.findInstitution(jaxInstitutionId.getId(), true)
+				.orElseThrow(() -> {
+					throw new EbeguEntityNotFoundException("nurLatsInstitutionUmwandeln", jaxInstitutionId.getId());
+				});
+
+		return converter.institutionToJAX(institutionService.nurLatsInstitutionUmwandeln(institution));
+	}
 }

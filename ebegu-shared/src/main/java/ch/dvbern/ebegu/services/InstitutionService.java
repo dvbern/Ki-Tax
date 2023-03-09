@@ -138,4 +138,6 @@ public interface InstitutionService {
 	Collection<Institution> findAllInstitutionen(@Nonnull String dossierId);
 
 	List<Institution> findAllInstitutionen(@Nonnull List<String> ids);
+
+	Institution nurLatsInstitutionUmwandeln(@Nonnull Institution institution);
 }
