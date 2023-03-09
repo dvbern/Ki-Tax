@@ -57,10 +57,7 @@ public class WohnsitzAbschnittRuleTest {
 			new WohnsitzAbschnittRule(Constants.DEFAULT_GUELTIGKEIT, Constants.DEFAULT_LOCALE);
 
 	@Test
-	public void testCreateZeitAbschnitte()
-
-
-	{
+	public void testCreateZeitAbschnitte() {
 		Betreuung betreuung = TestDataUtil.createGesuchWithBetreuungspensum(true);
 		Gesuch gesuch = betreuung.extractGesuch();
 

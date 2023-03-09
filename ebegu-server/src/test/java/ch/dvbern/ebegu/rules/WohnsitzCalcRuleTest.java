@@ -51,11 +51,11 @@ import static org.junit.Assert.assertTrue;
 @RunWith(EasyMockRunner.class)
 public class WohnsitzCalcRuleTest {
 
-	DateRange range = new DateRange(TestDataUtil.START_PERIODE, TestDataUtil.START_PERIODE);
+	private final DateRange TEST_PERIODE = new DateRange(TestDataUtil.START_PERIODE, TestDataUtil.START_PERIODE);
 	private Supplier<GesuchService> gesuchServiceSupplier;
 
 	@TestSubject
-	WohnsitzCalcRule wohnsitzCalcRule = new WohnsitzCalcRule(range, Locale.GERMAN, gesuchServiceSupplier);
+	private WohnsitzCalcRule wohnsitzCalcRule = new WohnsitzCalcRule(TEST_PERIODE, Locale.GERMAN, gesuchServiceSupplier);
 
 
 	@Before
@@ -66,7 +66,7 @@ public class WohnsitzCalcRuleTest {
 
 		EasyMock.replay(gesuchService);
 		this.gesuchServiceSupplier = () ->  gesuchService;
-
+		wohnsitzCalcRule = new WohnsitzCalcRule(TEST_PERIODE, Locale.GERMAN, gesuchServiceSupplier);
 	}
 
 	@After
@@ -76,55 +76,49 @@ public class WohnsitzCalcRuleTest {
 
 	@Test
 	public void testExecuteRule() {
-		DateRange dateRange = new DateRange(LocalDate.of(2020, 1, 1), LocalDate.of(2022, 1, 1));
-		assertNotNull(wohnsitzCalcRule);
-		BGCalculationInput inputData = prepareInputData(dateRange);
+		BGCalculationInput inputData = prepareInputData();
 		wohnsitzCalcRule.executeRule(preparePlatz(), inputData);
 		assertNotNull(inputData);
 	}
 
 	@Test
-	public void testExecuteRuleWithDossierservice() throws IOException {
-		DateRange dateRange = new DateRange(LocalDate.of(2020, 1, 1), LocalDate.of(2022, 1, 1));
-		BGCalculationInput inputData = prepareInputData(dateRange);
+	public void testExecuteRuleWithDossierservice() {
+		BGCalculationInput inputData = prepareInputData();
 		inputData.setWohnsitzNichtInGemeindeGS1(true);
 		inputData.setPotentielleDoppelBetreuung(true);
-		assertNotNull(inputData.getParent());
 		assertTrue(inputData.getParent().getBemerkungenDTOList().isEmpty());
-		wohnsitzCalcRule = new WohnsitzCalcRule(range, Locale.GERMAN, gesuchServiceSupplier);
+		wohnsitzCalcRule = new WohnsitzCalcRule(TEST_PERIODE, Locale.GERMAN, gesuchServiceSupplier);
 		assertNotNull(wohnsitzCalcRule);
 		wohnsitzCalcRule.executeRule(preparePlatz(), inputData);
 		assertFalse(inputData.getParent().getBemerkungenDTOList().isEmpty());
 	}
 
 	@Test
-	public void testExecuteRuleWithDossierserviceNichtInGemeindeFalse() throws IOException {
-		DateRange dateRange = new DateRange(LocalDate.of(2020, 1, 1), LocalDate.of(2022, 1, 1));
-		BGCalculationInput inputData = prepareInputData(dateRange);
+	public void testExecuteRuleWithDossierserviceNichtInGemeindeFalse() {
+		BGCalculationInput inputData = prepareInputData();
 		inputData.setWohnsitzNichtInGemeindeGS1(false);
 		inputData.setPotentielleDoppelBetreuung(true);
-		assertNotNull(inputData.getParent());
 		assertTrue(inputData.getParent().getBemerkungenDTOList().isEmpty());
-		wohnsitzCalcRule = new WohnsitzCalcRule(range, Locale.GERMAN, gesuchServiceSupplier);
+		wohnsitzCalcRule = new WohnsitzCalcRule(TEST_PERIODE, Locale.GERMAN, gesuchServiceSupplier);
 		assertNotNull(wohnsitzCalcRule);
 		wohnsitzCalcRule.executeRule(preparePlatz(), inputData);
 		assertFalse(inputData.getParent().getBemerkungenDTOList().isEmpty());
 	}
 
 	@Test
-	public void testExecuteRuleWithDossierEmptyList() throws IOException {
-		DateRange dateRange = new DateRange(LocalDate.of(2020, 1, 1), LocalDate.of(2022, 1, 1));
-		BGCalculationInput inputData = prepareInputData(dateRange);
-		inputData.setPotentielleDoppelBetreuung(true);
-		try{
-			wohnsitzCalcRule.executeRule(preparePlatz(), inputData);
-		} catch (NullPointerException expected){
-			//ignore
-		}
+	public void testZuzug() {
+		wohnsitzCalcRule= new WohnsitzCalcRule(TEST_PERIODE, Locale.GERMAN, gesuchServiceSupplier);
+		Betreuung betreuung = (Betreuung) prepareZweiPlaetzeEinerVerfuegt();
+		BGCalculationInput bgCalculationInput = prepareInputData();
+		bgCalculationInput.setPotentielleDoppelBetreuung(true);
+		assertFalse(bgCalculationInput.isAnspruchSinktDuringMonat());
+		wohnsitzCalcRule.executeRule(betreuung, bgCalculationInput);
+		assertTrue(bgCalculationInput.isAnspruchSinktDuringMonat());
+		assertEquals(bgCalculationInput.getAnspruchspensumProzent(), 0);
 	}
 
-	private BGCalculationInput prepareInputData(DateRange dateRange) {
-		return new BGCalculationInput(new VerfuegungZeitabschnitt(dateRange), RuleValidity.ASIV);
+	private BGCalculationInput prepareInputData() {
+		return new BGCalculationInput(new VerfuegungZeitabschnitt(TEST_PERIODE), RuleValidity.ASIV);
 	}
 
 	private AbstractPlatz preparePlatz() {
@@ -232,20 +226,6 @@ public class WohnsitzCalcRuleTest {
 		return betreuungMock;
 	}
 
-	@Test
-	public void testZuzug() {
-		DateRange dateRange = new DateRange(LocalDate.of(2020, 1, 1), LocalDate.of(2022, 1, 1));
-		wohnsitzCalcRule= new WohnsitzCalcRule(range, Locale.GERMAN, gesuchServiceSupplier);
-		Betreuung betreuung = (Betreuung) prepareZweiPlaetzeEinerVerfuegt();
-		BGCalculationInput bgCalculationInput = prepareInputData(dateRange);
-		bgCalculationInput.setPotentielleDoppelBetreuung(true);
-		assertFalse(bgCalculationInput.isAnspruchSinktDuringMonat());
-		wohnsitzCalcRule.executeRule(betreuung, bgCalculationInput);
-		assertTrue(bgCalculationInput.isAnspruchSinktDuringMonat());
-		assertEquals(bgCalculationInput.getAnspruchspensumProzent(), 0);
-
-	}
-
 	private List<Gesuch> populateGesuchsliste() {
 		Kind kindMock = EasyMock.createMock(Kind.class);
 		Gesuch gesuch1 = EasyMock.createMock(Gesuch.class);
@@ -273,124 +253,6 @@ public class WohnsitzCalcRuleTest {
 		gesuchListe.add(gesuch2);
 
 		return gesuchListe;
-	}
-
-	@Test
-	public void testWegzug() {
-		LocalDate wegzugsDatum = LocalDate.of(TestDataUtil.PERIODE_JAHR_1, Month.OCTOBER, 16);
-		Betreuung betreuung = createTestdata_withZweiGesuchsteller();
-		DateRange dateRange = new DateRange(LocalDate.of(2020, 1, 1), LocalDate.of(2022, 1, 1));
-		BGCalculationInput inputData = prepareInputData(dateRange);
-
-		final Gesuch gesuch = betreuung.extractGesuch();
-
-		gesuch.getGesuchsteller1().addAdresse(createGesuchstellerAdresse(
-				TestDataUtil.START_PERIODE,
-				wegzugsDatum.minusDays(1),
-				false,
-				gesuch.getGesuchsteller1()));
-		gesuch.getGesuchsteller1().addAdresse(createGesuchstellerAdresse(
-				wegzugsDatum,
-				TestDataUtil.ENDE_PERIODE,
-				true,
-				gesuch.getGesuchsteller1()));
-
-		gesuch.getGesuchsteller2().addAdresse(createGesuchstellerAdresse(
-				TestDataUtil.START_PERIODE,
-				TestDataUtil.ENDE_PERIODE,
-				true,
-				gesuch.getGesuchsteller2()));
-
-		createDossier(gesuch);
-
-		WohnsitzCalcRule rule = new WohnsitzCalcRule(dateRange, Locale.GERMAN);
-		rule.executeRule(betreuung, inputData);
-
-
-	}
-
-	private Betreuung createTestdata_withZweiGesuchsteller() {
-		Betreuung betreuung = TestDataUtil.createGesuchWithBetreuungspensum(true);
-		betreuung.getInstitutionStammdaten().setBetreuungsangebotTyp(BetreuungsangebotTyp.KITA);
-		betreuung.setBetreuungspensumContainers(new LinkedHashSet<>());
-		betreuung.setVerfuegung(new Verfuegung());
-		LinkedList<VerfuegungZeitabschnitt> zeitabschnitte = new LinkedList<>();
-		zeitabschnitte.add(new VerfuegungZeitabschnitt());
-		zeitabschnitte.get(0).setGueltigkeit(new DateRange(TestDataUtil.START_PERIODE, TestDataUtil.ENDE_PERIODE));
-		betreuung.getVerfuegung().setZeitabschnitte(zeitabschnitte);
-		BetreuungspensumContainer betreuungspensumContainer = new BetreuungspensumContainer();
-		betreuungspensumContainer.setBetreuung(betreuung);
-		DateRange gueltigkeit = new DateRange(TestDataUtil.START_PERIODE, TestDataUtil.ENDE_PERIODE);
-		betreuungspensumContainer.setBetreuungspensumJA(new Betreuungspensum(gueltigkeit));
-		betreuungspensumContainer.getBetreuungspensumJA().setPensum(MathUtil.DEFAULT.from(100));
-		betreuungspensumContainer.getBetreuungspensumJA().setMonatlicheHauptmahlzeiten(BigDecimal.ZERO);
-		betreuungspensumContainer.getBetreuungspensumJA().setMonatlicheNebenmahlzeiten(BigDecimal.ZERO);
-		betreuung.getBetreuungspensumContainers().add(betreuungspensumContainer);
-		betreuung.getKind()
-				.getGesuch()
-				.getGesuchsteller1()
-				.addErwerbspensumContainer(TestDataUtil.createErwerbspensum(
-						TestDataUtil.START_PERIODE,
-						TestDataUtil.ENDE_PERIODE,
-						100));
-		if (true) {
-			betreuung.getKind()
-					.getGesuch()
-					.getGesuchsteller2()
-					.addErwerbspensumContainer(TestDataUtil.createErwerbspensum(
-							TestDataUtil.START_PERIODE,
-							TestDataUtil.ENDE_PERIODE,
-							100));
-		}
-		return betreuung;
-	}
-
-	private GesuchstellerAdresseContainer createGesuchstellerAdresse(
-			LocalDate von,
-			LocalDate bis,
-			boolean nichtInGemeinde,
-			GesuchstellerContainer gesuchsteller) {
-		GesuchstellerAdresseContainer adresse = TestDataUtil.createDefaultGesuchstellerAdresseContainer(gesuchsteller);
-		adresse.getGesuchstellerAdresseJA().setNichtInGemeinde(nichtInGemeinde);
-		adresse.extractGueltigkeit().setGueltigAb(von);
-		adresse.extractGueltigkeit().setGueltigBis(bis);
-		return adresse;
-	}
-
-	private void createDossier(Gesuch gesuch) {
-		Dossier dossier = TestDataUtil.createDefaultDossier();
-		gesuch.setDossier(dossier);
-	}
-
-	private Betreuung createTestdata(boolean zweigesuchsteller) {
-		Betreuung betreuung = TestDataUtil.createGesuchWithBetreuungspensum(zweigesuchsteller);
-		betreuung.getInstitutionStammdaten().setBetreuungsangebotTyp(BetreuungsangebotTyp.KITA);
-		betreuung.setBetreuungspensumContainers(new LinkedHashSet<>());
-		BetreuungspensumContainer betreuungspensumContainer = new BetreuungspensumContainer();
-		betreuungspensumContainer.setBetreuung(betreuung);
-		DateRange gueltigkeit = new DateRange(TestDataUtil.START_PERIODE, TestDataUtil.ENDE_PERIODE);
-		betreuungspensumContainer.setBetreuungspensumJA(new Betreuungspensum(gueltigkeit));
-		betreuungspensumContainer.getBetreuungspensumJA().setPensum(MathUtil.DEFAULT.from(100));
-		betreuungspensumContainer.getBetreuungspensumJA().setMonatlicheHauptmahlzeiten(BigDecimal.ZERO);
-		betreuungspensumContainer.getBetreuungspensumJA().setMonatlicheNebenmahlzeiten(BigDecimal.ZERO);
-		betreuung.getBetreuungspensumContainers().add(betreuungspensumContainer);
-		betreuung.getKind()
-				.getGesuch()
-				.getGesuchsteller1()
-				.addErwerbspensumContainer(TestDataUtil.createErwerbspensum(
-						TestDataUtil.START_PERIODE,
-						TestDataUtil.ENDE_PERIODE,
-						100));
-		if (zweigesuchsteller) {
-			betreuung.getKind()
-					.getGesuch()
-					.getGesuchsteller2()
-					.addErwerbspensumContainer(TestDataUtil.createErwerbspensum(
-							TestDataUtil.START_PERIODE,
-							TestDataUtil.ENDE_PERIODE,
-							100));
-		}
-		return betreuung;
 	}
 
 }
