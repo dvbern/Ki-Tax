@@ -31,6 +31,7 @@ import ch.dvbern.ebegu.entities.KindContainer;
 import ch.dvbern.ebegu.entities.Verfuegung;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
+import ch.dvbern.ebegu.enums.MsgKey;
 import ch.dvbern.ebegu.services.GesuchService;
 import ch.dvbern.ebegu.test.TestDataUtil;
 import ch.dvbern.ebegu.types.DateRange;
@@ -79,6 +80,7 @@ public class WohnsitzCalcRuleTest {
 		BGCalculationInput inputData = prepareInputData();
 		wohnsitzCalcRule.executeRule(preparePlatz(), inputData);
 		assertNotNull(inputData);
+		assertFalse(inputData.getParent().getBemerkungenDTOList().containsMsgKey(MsgKey.UMZUG_BG_BEREITS_IN_ANDERER_GEMEINDE));
 	}
 
 	@Test
@@ -86,11 +88,11 @@ public class WohnsitzCalcRuleTest {
 		BGCalculationInput inputData = prepareInputData();
 		inputData.setWohnsitzNichtInGemeindeGS1(true);
 		inputData.setPotentielleDoppelBetreuung(true);
-		assertTrue(inputData.getParent().getBemerkungenDTOList().isEmpty());
+		assertFalse(inputData.getParent().getBemerkungenDTOList().containsMsgKey(MsgKey.UMZUG_BG_BEREITS_IN_ANDERER_GEMEINDE));
 		wohnsitzCalcRule = new WohnsitzCalcRule(TEST_PERIODE, Locale.GERMAN, gesuchServiceSupplier);
 		assertNotNull(wohnsitzCalcRule);
 		wohnsitzCalcRule.executeRule(preparePlatz(), inputData);
-		assertFalse(inputData.getParent().getBemerkungenDTOList().isEmpty());
+		assertTrue(inputData.getParent().getBemerkungenDTOList().containsMsgKey(MsgKey.UMZUG_BG_BEREITS_IN_ANDERER_GEMEINDE));
 	}
 
 	@Test
@@ -102,7 +104,7 @@ public class WohnsitzCalcRuleTest {
 		wohnsitzCalcRule = new WohnsitzCalcRule(TEST_PERIODE, Locale.GERMAN, gesuchServiceSupplier);
 		assertNotNull(wohnsitzCalcRule);
 		wohnsitzCalcRule.executeRule(preparePlatz(), inputData);
-		assertFalse(inputData.getParent().getBemerkungenDTOList().isEmpty());
+		assertTrue(inputData.getParent().getBemerkungenDTOList().containsMsgKey(MsgKey.UMZUG_BG_BEREITS_IN_ANDERER_GEMEINDE));
 	}
 
 	@Test
@@ -112,9 +114,11 @@ public class WohnsitzCalcRuleTest {
 		BGCalculationInput bgCalculationInput = prepareInputData();
 		bgCalculationInput.setPotentielleDoppelBetreuung(true);
 		assertFalse(bgCalculationInput.isAnspruchSinktDuringMonat());
+		assertFalse(bgCalculationInput.getParent().getBemerkungenDTOList().containsMsgKey(MsgKey.UMZUG_BG_BEREITS_IN_ANDERER_GEMEINDE));
 		wohnsitzCalcRule.executeRule(betreuung, bgCalculationInput);
 		assertTrue(bgCalculationInput.isAnspruchSinktDuringMonat());
 		assertEquals(bgCalculationInput.getAnspruchspensumProzent(), 0);
+		assertTrue(bgCalculationInput.getParent().getBemerkungenDTOList().containsMsgKey(MsgKey.UMZUG_BG_BEREITS_IN_ANDERER_GEMEINDE));
 	}
 
 	private BGCalculationInput prepareInputData() {
