@@ -602,4 +602,26 @@ export class EditInstitutionComponent implements OnInit {
     public showWarningInstitutionRueckwirkendSchliessen(): boolean {
         return this.authServiceRS.isRole(TSRole.SUPER_ADMIN) && this.stammdaten.gueltigkeit.gueltigBis?.isBefore(this.tomorrow);
     }
+
+    public isNurLats(): boolean {
+        return this.stammdaten.institution?.status === TSInstitutionStatus.NUR_LATS;
+    }
+
+    public nurLatsInstitutionUmwandeln(): void {
+        this.dialog.open(DvNgConfirmDialogComponent, {
+            data: {
+                frage: this.translate.instant('NUR_LATS_UMWANDELN_CONFIRM')
+            }
+        }).afterClosed().subscribe(confirmation => {
+            if (!confirmation) {
+                return;
+            }
+            this.institutionRS.nurLatsInstitutionUmwandeln(this.stammdaten.institution)
+                .subscribe((updatedInsti: TSInstitution) => {
+                    this.stammdaten.institution = updatedInsti;
+                    this.errorService.addMesageAsInfo(this.translate.instant('NUR_LATS_UMWANDELN_SUCCESS'));
+                    this.changeDetectorRef.markForCheck();
+                });
+        });
+    }
 }

@@ -430,6 +430,13 @@
 
         <!-- Buttons -->
         <div class="dv-footer">
+            <button *ngIf="isNurLats() && !editMode"
+                    type="button"
+                    (click)="nurLatsInstitutionUmwandeln()"
+                    class="dv-btn next-button"
+                    translate>
+                {{'NUR_LATS_UMWANDELN'}}
+            </button>
             <button *ngIf="isStammdatenEditable()" [type]="'submit'" class="dv-btn next-button">
                 {{submitButtonLabel()}}
             </button>
