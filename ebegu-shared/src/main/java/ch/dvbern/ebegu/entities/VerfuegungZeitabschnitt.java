@@ -634,6 +634,10 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 		this.getBgCalculationInputGemeinde().setAuszahlungAnEltern(auszahlungAnEltern);
 	}
 
+	public void setPotentielleDoppelBetreuung(boolean isUmzugsMonat ){
+		this.getBgCalculationInputAsiv().setPotentielleDoppelBetreuung(isUmzugsMonat);
+		this.getBgCalculationInputGemeinde().setPotentielleDoppelBetreuung(isUmzugsMonat);
+	}
 	public boolean hasBetreuungspensum() {
 		return !MathUtil.isZero(this.getRelevantBgCalculationResult().getBetreuungspensumProzent());
 	}
