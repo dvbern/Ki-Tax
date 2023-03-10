@@ -59,6 +59,7 @@ import ch.dvbern.ebegu.entities.Institution_;
 import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
+import ch.dvbern.ebegu.enums.InstitutionStatus;
 import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
@@ -549,5 +550,16 @@ public class InstitutionServiceBean extends AbstractBaseService implements Insti
 		Predicate predicate = root.get(Institution_.id).in(ids);
 		query.where(predicate);
 		return persistence.getCriteriaResults(query);
+	}
+
+	@Override
+	public Institution nurLatsInstitutionUmwandeln(@Nonnull Institution institution) {
+		if (institution.getStatus() != InstitutionStatus.NUR_LATS) {
+			throw new EbeguRuntimeException("nurLatsInstitutionUmwandeln", "Institution " + institution.getName() + " ist nicht im Status NUR_LATS");
+		}
+
+		institution.setStatus(InstitutionStatus.KONFIGURATION);
+
+		return persistence.persist(institution);
 	}
 }
