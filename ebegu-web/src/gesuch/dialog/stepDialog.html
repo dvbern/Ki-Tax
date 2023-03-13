@@ -26,9 +26,9 @@
         <div class="md-dialog-content-body ng-scope"><p class="ng-binding" ng-bind="vm.questionText"></p></div>
 
         <md-radio-group ng-model="vm.selected">
-            <md-radio-button ng-value="1" ng-disabled="vm.zahlungDirektIgnoriere">{{vm.radioYes}}</md-radio-button>
+            <md-radio-button ng-value="1" ng-disabled="vm.zahlungDirektIgnorieren">{{vm.radioYes}}</md-radio-button>
             <div class="md-dialog-content-body">
-                <p class="step-hint" ng-class="{'hint-transition': vm.selected == 1, 'disabled': vm.zahlungDirektIgnoriere}">
+                <p class="step-hint" ng-class="{'hint-transition': vm.selected == 1, 'disabled': vm.zahlungDirektIgnorieren}">
                     {{vm.radioYesHint}}<br><br>
                     {{vm.radioYesCasesInfo}}<br><br>
                     <span ng-repeat="case in vm.radioYesCases">&bull; {{case}}</span><br>
