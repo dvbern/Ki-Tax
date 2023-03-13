@@ -1761,6 +1761,7 @@
     "TAGESSCHULE_ANMELDUNG_START_END": "Période de validité de l’école à journée",
     "FERIENINSEL_ANMELDUNG_START_END": "Accepter les accueils extrascolaires pendant les vacances à partir de / jusqu'à",
     "ADMIN_MAIL": "Administrateurs - courriel",
+    "ADMIN_MAIL_BUTTON": "E-Mail von Administrator/in der Trägerschaft auswählen",
     "KONTAKT_MAIL": "Courriel de l'adresse de contact",
     "EINLADUNG_SENDEN": "Envoyer l'invitation",
     "EINLADUNG_ABSCHLIESSEN": "Terminer l'enregistrement",
@@ -3012,5 +3013,6 @@
     "NUR_LATS_UMWANDELN": "Zu regulärer Tagesschule umwandeln",
     "NUR_LATS_UMWANDELN_CONFIRM": "Hiermit wird die Institution aus dem Status \"nur für Lastenausgleich\" zu einer Institution in der Konfiguration umgewandelt. Dieser Schritt kann nicht rückgängig gemacht werden. Fortfahren?",
     "NUR_LATS_UMWANDELN_SUCCESS": "Die Institution wurde zu einer regulärer Institution in der Konfiguration umgewandelt.",
+    "EMAIL_ADMIN_TRAEGERSCHAFT_AUSWAEHLEN": "E-Mail von Administrator/in der Trägerschaft auswählen",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

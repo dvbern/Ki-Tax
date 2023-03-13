@@ -119,6 +119,7 @@ import {PreviousPeriodeStrPipe} from './pipe/previous-periode-str.pipe';
 import {MandantService} from './services/mandant.service';
 import {UiViewComponent} from './ui-view/ui-view.component';
 import {QrIbanValidatorDirective} from './validators/qr-iban-validator.directive';
+import {DvNgSelectTraegerschaftEmailDialogComponent} from '../core/component/dv-ng-select-traegerschaft-email-dialog/dv-ng-select-traegerschaft-email-dialog.component';
 
 export function createTranslateLoader(http: HttpClient, mandantService: MandantService): TranslateLoader {
     return new MultiMandantHttpLoader(http, mandantService);
@@ -179,6 +180,7 @@ export function createTranslateLoader(http: HttpClient, mandantService: MandantS
         UiViewComponent,
         KiBonGuidedTourComponent,
         DvNgGesuchstellerDialogComponent,
+        DvNgSelectTraegerschaftEmailDialogComponent,
         ExternalClientAssignmentComponent,
         ExternalClientMultiselectComponent,
         MultipleFileUploadComponent,
