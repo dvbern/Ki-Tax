@@ -27,6 +27,7 @@ import javax.annotation.Nullable;
 import ch.dvbern.ebegu.entities.ApplicationProperty;
 import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.enums.ApplicationPropertyKey;
+import ch.dvbern.ebegu.enums.DemoFeatureTyp;
 
 /**
  * Service zum Verwalten von Application Properties
@@ -130,4 +131,9 @@ public interface ApplicationPropertyService {
 	 */
 	@Nonnull
 	Boolean isPublishSchnittstelleEventsAktiviert(@Nonnull Mandant mandant);
+
+	/**
+	 * Gibt eine Liste mit den aktivierten DemoFeatures zurück
+	 */
+	List<DemoFeatureTyp> getActivatedDemoFeatures(@Nonnull Mandant mandant);
 }

@@ -18,6 +18,7 @@ package ch.dvbern.ebegu.services;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.Month;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -40,12 +41,14 @@ import ch.dvbern.ebegu.entities.Gemeinde_;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.enums.ApplicationPropertyKey;
+import ch.dvbern.ebegu.enums.DemoFeatureTyp;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.lib.cdipersistence.Persistence;
+import com.google.common.base.Enums;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -253,5 +256,21 @@ public class ApplicationPropertyServiceBean extends AbstractBaseService implemen
 	@Nonnull
 	public Boolean isPublishSchnittstelleEventsAktiviert(@Nonnull Mandant mandant) {
 		return findApplicationPropertyAsBoolean(ApplicationPropertyKey.SCHNITTSTELLE_EVENTS_AKTIVIERT, mandant, true);
+	}
+
+	@Override
+	public List<DemoFeatureTyp> getActivatedDemoFeatures(@Nonnull Mandant mandant) {
+		String activatedDemoFeatures = findApplicationPropertyAsString(ApplicationPropertyKey.ACTIVATED_DEMO_FEATURES, mandant);
+
+		List<DemoFeatureTyp> activatdDemoFeatures = new ArrayList<>();
+
+		if (activatedDemoFeatures == null) {
+			return activatdDemoFeatures;
+		}
+
+		return Arrays.stream(activatedDemoFeatures.split(","))
+			.map(demoFeatureString -> Enums.getIfPresent(DemoFeatureTyp.class, demoFeatureString).orNull())
+			.filter(Objects::nonNull)
+			.collect(Collectors.toList());
 	}
 }
