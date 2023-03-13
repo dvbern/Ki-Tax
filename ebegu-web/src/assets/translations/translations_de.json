@@ -3111,7 +3111,7 @@
     "FINANZIELLE_VERHAELTNISSE_STEUERBARES_EINKOMMEN_HELP": "",
     "SEARCH_INAKTIVE_PERIODEN": "Inaktive Perioden durchsuchen",
     "NUR_LATS_UMWANDELN": "Zu regulärer Tagesschule umwandeln",
-    "NUR_LATS_UMWANDELN_CONFIRM": "Hiermit wird die Institution aus dem Status \"nur für Lastenausgleich\" zu einer Institution in der Konfiguration umgewandelt. Dieser Schritt kann nicht rückgängig gemacht werden. Fortfahren?",
-    "NUR_LATS_UMWANDELN_SUCCESS": "Die Institution wurde zu einer regulärer Institution in der Konfiguration umgewandelt.",
+    "NUR_LATS_UMWANDELN_CONFIRM": "Hiermit wird die Institution aus dem Status \"nur für Lastenausgleich\" zu einer Institution im Status \"Konfiguration\" umgewandelt. Dieser Schritt kann nicht rückgängig gemacht werden. Fortfahren?",
+    "NUR_LATS_UMWANDELN_SUCCESS": "Die Institution wurde zu einer regulärer Institution im Status \"Konfiguration\" umgewandelt.",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }
