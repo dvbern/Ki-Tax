@@ -16,14 +16,9 @@
   -->
 
 <mat-dialog-content class="dv-dialog-content">
-    <p>E-Mail von Administrator/in der Trägerschaft auswählen</p>
-<!--    <mat-select id="traegerschaftemail_id"-->
-<!--                name="traegerschaftemail_id" class="form-control" required>-->
-<!--        <mat-option *ngFor="let email of adminMails"-->
-<!--        [ngvalue]="email"><span>{{email}}</span></mat-option>-->
-<!--    </mat-select>-->
+    <p [textContent]="'EMAIL_TRAEGERSCHAFT_POPUP' | translate"></p>
     <div class="dv-select-style dv-dialog-select margin-top-20">
-        <select aria-describedby="betreuungsangebot-error" aria-labelledby="dv-dialog-text" name="gemeinde"
+        <select aria-describedby="selectTraegerschaftAdminMail" aria-labelledby="dv-dialog-text" name="traegerschaftAdminMail"
                 id="traegerschaftemail_id"
                 [(ngModel)]="selectedMail"
                 class="form-control"

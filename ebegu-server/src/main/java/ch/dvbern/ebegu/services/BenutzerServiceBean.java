@@ -538,7 +538,7 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 	@Nonnull
 	@Override
 	public Collection<Benutzer> getTraegerschaftAdministratoren(final Traegerschaft traegerschaft) {
-		checkWhenUserLogin("getTraegerschaftAdministratoren");
+		checkIfUserIsLoggedIn("getTraegerschaftAdministratoren");
 		authorizer.checkReadAuthorization(traegerschaft);
 
 		List<Predicate> predicates = new ArrayList<>();
@@ -617,7 +617,7 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 	 * @return Liste aller Benutzern mit entsprechender Rolle aus der DB
 	 */
 	private Collection<Benutzer> getBenutzersOfRoles(List<UserRole> roles) {
-		Benutzer currentBenutzer = checkWhenUserLogin("getBenutzersOfRole");
+		Benutzer currentBenutzer = checkIfUserIsLoggedIn("getBenutzersOfRole");
 
 		List<Predicate> predicates = new ArrayList<>();
 
@@ -653,7 +653,7 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 	 * @return Liste aller Benutzern mit entsprechender Rolle aus der DB
 	 */
 	private Collection<Benutzer> getBenutzersOfRoles(@Nonnull List<UserRole> roles, @Nonnull Gemeinde gemeinde) {
-		checkWhenUserLogin("getBenutzersOfRoles");
+		checkIfUserIsLoggedIn("getBenutzersOfRoles");
 		authorizer.checkReadAuthorization(gemeinde);
 
 		List<Predicate> predicates = new ArrayList<>();
@@ -688,7 +688,7 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 	 * @return Liste aller Benutzern mit entsprechender Rolle aus der DB
 	 */
 	private Collection<Benutzer> getBenutzersOfRoles(@Nonnull List<UserRole> roles, @Nonnull Institution institution) {
-		checkWhenUserLogin("getBenutzersOfRoles");
+		checkIfUserIsLoggedIn("getBenutzersOfRoles");
 		authorizer.checkReadAuthorizationInstitution(institution);
 
 		List<Predicate> predicates = new ArrayList<>();
@@ -1613,7 +1613,7 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 		return lastNotGesperrtHistory.getStatus();
 	}
 
-	private Benutzer checkWhenUserLogin(String methodName) {
+	private Benutzer checkIfUserIsLoggedIn(String methodName) {
 		return getCurrentBenutzer().orElseThrow(() -> new EbeguRuntimeException(
 			methodName, "Non logged in user should never reach this"));
 	}

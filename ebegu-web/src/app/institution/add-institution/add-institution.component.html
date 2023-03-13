@@ -109,8 +109,8 @@
                         <div class="form-group">
                             <div style="display: flex; justify-content: space-between">
                                 <label *ngIf="isBGInstitution" class="required" translate for="admin_mail_ID">ADMIN_MAIL</label>
-                                <button type="button" class="dv-btn btn-link link-underline link-color" style="height: 100%;" (click)="selectAdminMail()" *ngIf="institution.traegerschaft"
-                                        [textContent]="'ADMIN_MAIL_BUTTON' | translate">
+                                <button type="button" class="dv-btn btn-link link-underline link-color-primary" style="height: 100%;" (click)="selectAdminMail()" *ngIf="institution.traegerschaft">
+                                    <span [textContent]="'ADMIN_MAIL_BUTTON' | translate"></span>
                                 </button>
                             </div>
                             <label *ngIf="!isBGInstitution" class="required" translate for="admin_mail_ID">KONTAKT_MAIL</label>

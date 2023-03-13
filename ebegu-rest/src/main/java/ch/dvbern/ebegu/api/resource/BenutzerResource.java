@@ -559,7 +559,7 @@ public class BenutzerResource {
 		return Response.ok().build();
 	}
 
-	@ApiOperation(value = "Setzt die externalUUID des Benutzers mit der uebergebenen id zurueck.",
+	@ApiOperation(value = "Gibt alle Admin E-Mails einer Trägerschaft zurück.",
 		responseContainer = "List",
 		response = String.class)
 	@GET
@@ -571,13 +571,10 @@ public class BenutzerResource {
 		@Nonnull @NotNull @PathParam("traegerschaftId") String traegerschaftId
 	) {
 		Traegerschaft traegerschaft = traegerschaftService.findTraegerschaft(traegerschaftId)
-			.orElseThrow(() -> new EbeguEntityNotFoundException("", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND));
+			.orElseThrow(() -> new EbeguEntityNotFoundException("getAllEmailAdminForTraegerschaft", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND));
 
-
-		List<String> test = benutzerService.getTraegerschaftAdministratoren(traegerschaft).stream()
+		return benutzerService.getTraegerschaftAdministratoren(traegerschaft).stream()
 			.map(Benutzer::getEmail)
 			.collect(Collectors.toList());
-
-		return test;
 	}
 }
