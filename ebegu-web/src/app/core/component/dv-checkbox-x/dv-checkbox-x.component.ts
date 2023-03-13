@@ -43,6 +43,9 @@ export class DvCheckboxXComponent implements OnInit {
     @Input()
     public dvBisherValue: boolean;
 
+    @Input()
+    public marginClass: 'no-margin-bottom' | 'default' = 'default';
+
     @Output()
     public readonly modelChange: EventEmitter<boolean> = new EventEmitter<boolean>();
 

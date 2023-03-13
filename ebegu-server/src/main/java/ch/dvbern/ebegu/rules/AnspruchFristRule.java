@@ -56,6 +56,12 @@ public final class AnspruchFristRule extends AbstractAbschlussRule {
 		VerfuegungZeitabschnitt vorangehenderAbschnitt = null;
 		for (VerfuegungZeitabschnitt zeitabschnitt : zeitabschnitte) {
 			result.add(zeitabschnitt);
+
+			if (zeitabschnitt.getBgCalculationInputGemeinde().isAnspruchSinktDuringMonat() ||
+				zeitabschnitt.getBgCalculationInputAsiv().isAnspruchSinktDuringMonat()) {
+				continue;
+			}
+
 			// Es muessen nur Abschnitte beachtet werden, die *innerhalb* des Monats anfangen!
 			if (vorangehenderAbschnitt != null && zeitabschnitt.getGueltigkeit().getGueltigAb().getDayOfMonth() > 1) {
 				// Der Anspruch ist kleiner als der Anspruch von vorangehenderAbschnitt

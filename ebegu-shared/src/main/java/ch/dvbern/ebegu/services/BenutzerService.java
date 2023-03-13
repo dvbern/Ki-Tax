@@ -163,6 +163,15 @@ public interface BenutzerService {
 	Collection<Benutzer> getInstitutionSachbearbeiter(Institution institution);
 
 	/**
+	 * Gibt alle Administratoren einer Traegerschaft zurueck.
+	 *
+	 * @param traegerschaft Die Traegerschaft
+	 * @return Liste aller Benutzern aus der DB
+	 */
+	@Nonnull
+	Collection<Benutzer> getTraegerschaftAdministratoren(Traegerschaft traegerschaft);
+
+	/**
 	 * Gibt alle existierenden Benutzer mit den Rollen Sachbearbeiter_BG oder Admin_BG oder
 	 * Sachbearbeiter_Gemeinde oder Admin_Gemeinde einer bestimmten Gemeinde zurueck.
 	 *

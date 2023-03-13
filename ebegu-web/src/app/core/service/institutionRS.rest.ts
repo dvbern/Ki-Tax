@@ -145,4 +145,9 @@ export class InstitutionRS {
         return this.$http.get(`${this.serviceURL}/findAllInstitutionen/${encodeURIComponent(dossierId)}`)
             .pipe(map((response: any) => this.ebeguRestUtil.parseInstitutionen(response)));
     }
+
+    public nurLatsInstitutionUmwandeln(institution: TSInstitution): Observable<TSInstitution> {
+        return this.$http.put(`${this.serviceURL}/${encodeURIComponent(institution.id)}/nurlatsUmwandeln`, {})
+            .pipe(map((response: any) => this.ebeguRestUtil.parseInstitution(new TSInstitution(), response)));
+    }
 }

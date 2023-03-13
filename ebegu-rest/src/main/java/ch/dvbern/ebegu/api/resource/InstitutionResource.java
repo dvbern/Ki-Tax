@@ -1,16 +1,18 @@
 /*
- * Ki-Tax: System for the management of external childcare subsidies
- * Copyright (C) 2017 City of Bern Switzerland
+ * Copyright (C) 2023 DV Bern AG, Switzerland
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Affero General Public License for more details.
+ *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
 package ch.dvbern.ebegu.api.resource;
@@ -646,5 +648,24 @@ public class InstitutionResource {
 			.distinct()
 			.map(institution -> converter.institutionToJAX(institution))
 			.collect(Collectors.toList());
+	}
+
+	@ApiOperation(value = "Setzt eine Institution aus dem Status NUR_LATS in die Konfiguration", response = JaxInstitution.class)
+	@Nonnull
+	@PUT
+	@Path("{institutionId}/nurlatsUmwandeln")
+	@Consumes(MediaType.WILDCARD)
+	@Produces(MediaType.APPLICATION_JSON)
+	@RolesAllowed({SUPER_ADMIN, ADMIN_TRAEGERSCHAFT, ADMIN_INSTITUTION, ADMIN_GEMEINDE, ADMIN_BG,
+		ADMIN_TS, SACHBEARBEITER_GEMEINDE, SACHBEARBEITER_TS, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
+	public JaxInstitution nurLatsInstitutionUmwandeln(@Nonnull @PathParam("institutionId") JaxId jaxInstitutionId) {
+		Objects.requireNonNull(jaxInstitutionId.getId());
+
+		Institution institution = institutionService.findInstitution(jaxInstitutionId.getId(), true)
+				.orElseThrow(() -> {
+					throw new EbeguEntityNotFoundException("nurLatsInstitutionUmwandeln", jaxInstitutionId.getId());
+				});
+
+		return converter.institutionToJAX(institutionService.nurLatsInstitutionUmwandeln(institution));
 	}
 }

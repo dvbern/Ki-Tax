@@ -1,22 +1,26 @@
 /*
- * Ki-Tax: System for the management of external childcare subsidies
- * Copyright (C) 2017 City of Bern Switzerland
+ * Copyright (C) 2023 DV Bern AG, Switzerland
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Affero General Public License for more details.
+ *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
 package ch.dvbern.ebegu.dto.suchfilter.smarttable;
 
 import java.io.Serializable;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -36,6 +40,8 @@ public class AntragTableFilterDTO implements Serializable {
 	private AntragSearchDTO search;
 
 	private SortDTO sort;
+
+	private Boolean onlyAktivePerioden;
 
 	public PaginationDTO getPagination() {
 		return pagination;
@@ -61,12 +67,22 @@ public class AntragTableFilterDTO implements Serializable {
 		this.sort = sort;
 	}
 
+	@Nullable
+	public Boolean isOnlyAktivePerioden() {
+		return onlyAktivePerioden;
+	}
+
+	public void setOnlyAktivePerioden(@Nonnull Boolean onlyAktivePerioden) {
+		this.onlyAktivePerioden = onlyAktivePerioden;
+	}
+
 	@Override
 	public String toString() {
 		return new ToStringBuilder(this)
 			.append("pagination", pagination)
 			.append("search", search)
 			.append("sort", sort)
+			.append("onlyAktivePerioden", onlyAktivePerioden)
 			.toString();
 	}
 }

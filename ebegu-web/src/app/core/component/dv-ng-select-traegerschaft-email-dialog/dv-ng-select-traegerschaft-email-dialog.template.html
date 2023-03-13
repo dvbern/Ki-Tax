@@ -1,0 +1,39 @@
+<!--
+  ~ Copyright (C) 2019 DV Bern AG, Switzerland
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU Affero General Public License as
+  ~ published by the Free Software Foundation, either version 3 of the
+  ~ License, or (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU Affero General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU Affero General Public License
+  ~ along with this program.  If not, see <https://www.gnu.org/licenses/>.
+  -->
+
+<mat-dialog-content class="dv-dialog-content">
+    <p [textContent]="'EMAIL_ADMIN_TRAEGERSCHAFT_AUSWAEHLEN' | translate"></p>
+    <div class="dv-select-style dv-dialog-select margin-top-20">
+        <select aria-describedby="selectTraegerschaftAdminMail" aria-labelledby="dv-dialog-text" name="traegerschaftAdminMail"
+                id="traegerschaftemail_id"
+                [(ngModel)]="selectedMail"
+                class="form-control"
+                [required]="true">
+
+            <option *ngFor="let email of adminMails" [ngValue]="email">{{email}}</option>
+        </select>
+    </div>
+</mat-dialog-content>
+
+<mat-dialog-actions>
+    <div class="dv-dialog-actions">
+        <button class="dv-btn uppercase" (click)="save()" [textContent]="'OK' | translate"></button>
+        <button class="ng-scope dv-btn cancel-button uppercase" type="button"
+                (click)="close()" [textContent]="'CANCEL' | translate">
+        </button>
+    </div>
+</mat-dialog-actions>
