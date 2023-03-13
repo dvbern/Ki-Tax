@@ -62,7 +62,6 @@ export class TSBetreuung extends TSAbstractMutableEntity {
 
     private _finSitRueckwirkendKorrigiertInThisMutation: boolean = false;
 
-
     public constructor() {
         super();
     }
