@@ -98,6 +98,8 @@ public abstract class AbstractPlatz extends AbstractMutableEntity implements Com
 	@Transient
 	private boolean vorgaengerInitialized = false;
 
+	@Transient
+	private boolean finSitRueckwirkendKorrigiertInThisMutation = false;
 
 	protected AbstractPlatz() {
 	}
@@ -346,5 +348,13 @@ public abstract class AbstractPlatz extends AbstractMutableEntity implements Com
 	@Transient
 	public boolean isAngebotSchulamt() {
 		return BetreuungsangebotTyp.TAGESSCHULE == getBetreuungsangebotTyp() || BetreuungsangebotTyp.FERIENINSEL == getBetreuungsangebotTyp();
+	}
+
+	public boolean isFinSitRueckwirkendKorrigiertInThisMutation() {
+		return finSitRueckwirkendKorrigiertInThisMutation;
+	}
+
+	public void setFinSitRueckwirkendKorrigiertInThisMutation(boolean finSitRueckwirkendKorrigiertInThisMutation) {
+		this.finSitRueckwirkendKorrigiertInThisMutation = finSitRueckwirkendKorrigiertInThisMutation;
 	}
 }

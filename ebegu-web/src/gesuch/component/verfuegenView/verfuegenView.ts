@@ -527,7 +527,7 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
     }
 
     private askIfIgnorieren(myZahlungslaufTyp: TSZahlungslaufTyp): IPromise<boolean> {
-        const zahlungDirektIgnorieren = this.isFKJV() && this.getGesuch().finSitRueckwirkendKorrigiertInThisMutation;
+        const zahlungDirektIgnorieren = this.isFKJV() && this.getBetreuung().finSitRueckwirkendKorrigiertInThisMutation;
 
         return this.dvDialog.showDialog(stepDialogTempl, StepDialogController, {
             institutionName: this.getInstitutionName(),
