@@ -6,7 +6,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 
-import javax.validation.constraints.NotNull;
+import javax.annotation.Nonnull;
 
 import ch.dvbern.ebegu.entities.Einstellung;
 import ch.dvbern.ebegu.enums.DemoFeatureTyp;
@@ -50,7 +50,7 @@ public class RuleParameterUtil {
 		return kitaxUebergangsloesungParameter;
 	}
 
-	@NotNull
+	@Nonnull
 	public Einstellung getEinstellung(EinstellungKey einstellungKey) {
 		Einstellung einstellung = einstellungen.get(einstellungKey);
 		Objects.requireNonNull(einstellung, "Parameter " + einstellungKey + " muss gesetzt sein");

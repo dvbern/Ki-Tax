@@ -62,9 +62,6 @@ public class WohnsitzCalcRule extends AbstractCalcRule {
 
 	/**
 	 * for testing only
-	 * @param validityPeriod
-	 * @param locale
-	 * @param gesuchServcieResolver
 	 */
 	WohnsitzCalcRule(
 			@Nonnull DateRange validityPeriod,
@@ -74,7 +71,6 @@ public class WohnsitzCalcRule extends AbstractCalcRule {
 		super(RuleKey.WOHNSITZ, RuleType.REDUKTIONSREGEL, RuleValidity.ASIV, validityPeriod, locale);
 		this.gesuchServiceResolver = gesuchServcieResolver;
 	}
-
 
 	@Override
 	protected List<BetreuungsangebotTyp> getAnwendbareAngebote() {
@@ -93,9 +89,9 @@ public class WohnsitzCalcRule extends AbstractCalcRule {
 		if (inputData.isWohnsitzNichtInGemeindeGS1()) {
 			inputData.setAnspruchZeroAndSaveRestanspruch();
 			inputData.addBemerkung(
-				MsgKey.WOHNSITZ_MSG,
-				getLocale(),
-				platz.extractGesuch().getDossier().getGemeinde().getName());
+					MsgKey.WOHNSITZ_MSG,
+					getLocale(),
+					platz.extractGesuch().getDossier().getGemeinde().getName());
 		}
 	}
 
@@ -142,7 +138,7 @@ public class WohnsitzCalcRule extends AbstractCalcRule {
 
 	private List<Betreuung> getAlleBetreuungen(List<Gesuch> alleGesuche) {
 		List<Betreuung> alleBetreuungen = new ArrayList<>();
-		if (null == alleGesuche){
+		if (null == alleGesuche) {
 			return alleBetreuungen;
 		}
 		for (Gesuch gesuch : alleGesuche) {
@@ -161,14 +157,15 @@ public class WohnsitzCalcRule extends AbstractCalcRule {
 		}
 		return false;
 	}
+
 	private String constructSortIdentifier(KindContainer kc, Betreuung betreuung) {
 		final char SPACER = '-';
 		//für die Lesbarkeit :-) nur ein String mit
 		// <JAHR><Monat><Tag>-<Nachnmae>-<Vorname>-<InstitutionsID>
 		return kc.getKindJA().getGeburtsdatum().format(DateTimeFormatter.ofPattern("yyyyMMdd")) + SPACER
-			+ kc.getKindJA().getNachname() + SPACER
-			+ kc.getKindJA().getVorname() + SPACER
-			+ betreuung.getInstitutionStammdaten().getInstitution().getId();
+				+ kc.getKindJA().getNachname() + SPACER
+				+ kc.getKindJA().getVorname() + SPACER
+				+ betreuung.getInstitutionStammdaten().getInstitution().getId();
 	}
 
 	private List<Gesuch> getAllGesucheForFallAndGesuchsperiode(
@@ -176,7 +173,10 @@ public class WohnsitzCalcRule extends AbstractCalcRule {
 			@Nonnull Gesuchsperiode gesuchsperiode,
 			@Nonnull Gemeinde gemeinde) {
 		GesuchService gesuchService = this.gesuchServiceResolver.get();
-		return gesuchService.getAllGesuchForFallAndGesuchsperiodeInUnterschiedlichenGemeinden(fall, gesuchsperiode, gemeinde);
+		return gesuchService.getAllGesuchForFallAndGesuchsperiodeInUnterschiedlichenGemeinden(
+				fall,
+				gesuchsperiode,
+				gemeinde);
 	}
 
 	private static GesuchService resolveGesuchServiceFromCDI() {

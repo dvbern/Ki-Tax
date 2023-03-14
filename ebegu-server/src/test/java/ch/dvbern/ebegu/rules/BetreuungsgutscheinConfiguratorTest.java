@@ -20,8 +20,9 @@ import org.junit.Test;
 public class BetreuungsgutscheinConfiguratorTest extends AbstractBGRechnerTest {
 
 	private BetreuungsgutscheinConfigurator ruleConfigurator;
-	private Map<EinstellungKey, Einstellung> einstellungenGemaessAsiv = EbeguRuleTestsHelper.getEinstellungenConfiguratorAsiv(gesuchsperiodeOfEvaluator);
-	private KitaxUebergangsloesungParameter kitaxParams = TestDataUtil.geKitaxUebergangsloesungParameter();
+	private final Map<EinstellungKey, Einstellung> einstellungenGemaessAsiv =
+			EbeguRuleTestsHelper.getEinstellungenConfiguratorAsiv(gesuchsperiodeOfEvaluator);
+	private final KitaxUebergangsloesungParameter kitaxParams = TestDataUtil.geKitaxUebergangsloesungParameter();
 
 	private static final int ANZAHL_RULES_ASIV = 33;
 
@@ -44,8 +45,10 @@ public class BetreuungsgutscheinConfiguratorTest extends AbstractBGRechnerTest {
 
 	@Test
 	public void mitFreiwilligenarbeitEnabledAberGleicherWertWieAsiv() {
-		einstellungenGemaessAsiv.get(EinstellungKey.GEMEINDE_ZUSAETZLICHER_ANSPRUCH_FREIWILLIGENARBEIT_ENABLED).setValue("true");
-		einstellungenGemaessAsiv.get(EinstellungKey.GEMEINDE_ZUSAETZLICHER_ANSPRUCH_FREIWILLIGENARBEIT_MAXPROZENT).setValue("0");
+		einstellungenGemaessAsiv.get(EinstellungKey.GEMEINDE_ZUSAETZLICHER_ANSPRUCH_FREIWILLIGENARBEIT_ENABLED)
+				.setValue("true");
+		einstellungenGemaessAsiv.get(EinstellungKey.GEMEINDE_ZUSAETZLICHER_ANSPRUCH_FREIWILLIGENARBEIT_MAXPROZENT)
+				.setValue("0");
 		// Keine zusaetzliche Regel erwartet
 		final List<Rule> rules = configureRuleForMandant(gemeindeOfEvaluator);
 		Assert.assertEquals(ANZAHL_RULES_ASIV, rules.size());
@@ -55,8 +58,10 @@ public class BetreuungsgutscheinConfiguratorTest extends AbstractBGRechnerTest {
 
 	@Test
 	public void mitFreiwilligenarbeitEnabledMitAnderemWert() {
-		einstellungenGemaessAsiv.get(EinstellungKey.GEMEINDE_ZUSAETZLICHER_ANSPRUCH_FREIWILLIGENARBEIT_ENABLED).setValue("true");
-		einstellungenGemaessAsiv.get(EinstellungKey.GEMEINDE_ZUSAETZLICHER_ANSPRUCH_FREIWILLIGENARBEIT_MAXPROZENT).setValue("15");
+		einstellungenGemaessAsiv.get(EinstellungKey.GEMEINDE_ZUSAETZLICHER_ANSPRUCH_FREIWILLIGENARBEIT_ENABLED)
+				.setValue("true");
+		einstellungenGemaessAsiv.get(EinstellungKey.GEMEINDE_ZUSAETZLICHER_ANSPRUCH_FREIWILLIGENARBEIT_MAXPROZENT)
+				.setValue("15");
 		// Zusaetzliche Regel erwartet, da Wert abweicht
 		final List<Rule> rules = configureRuleForMandant(gemeindeOfEvaluator);
 		Assert.assertEquals(ANZAHL_RULES_ASIV + 1, rules.size());
@@ -66,7 +71,8 @@ public class BetreuungsgutscheinConfiguratorTest extends AbstractBGRechnerTest {
 
 	@Test
 	public void mitUeberschriebenemMinPensumVorschuleGleicherWertWieAsiv() {
-		einstellungenGemaessAsiv.get(EinstellungKey.GEMEINDE_MIN_ERWERBSPENSUM_NICHT_EINGESCHULT).setValue(EinstellungenDefaultWerteAsiv.EINSTELLUNG_MIN_ERWERBSPENSUM_NICHT_EINGESCHULT);
+		einstellungenGemaessAsiv.get(EinstellungKey.GEMEINDE_MIN_ERWERBSPENSUM_NICHT_EINGESCHULT)
+				.setValue(EinstellungenDefaultWerteAsiv.EINSTELLUNG_MIN_ERWERBSPENSUM_NICHT_EINGESCHULT);
 		// Keine zusaetzliche Regel erwartet
 		final List<Rule> rules = configureRuleForMandant(gemeindeOfEvaluator);
 		Assert.assertEquals(ANZAHL_RULES_ASIV, rules.size());
@@ -86,8 +92,10 @@ public class BetreuungsgutscheinConfiguratorTest extends AbstractBGRechnerTest {
 
 	@Test
 	public void mitAllenSondereinstellungen() {
-		einstellungenGemaessAsiv.get(EinstellungKey.GEMEINDE_ZUSAETZLICHER_ANSPRUCH_FREIWILLIGENARBEIT_ENABLED).setValue("true");
-		einstellungenGemaessAsiv.get(EinstellungKey.GEMEINDE_ZUSAETZLICHER_ANSPRUCH_FREIWILLIGENARBEIT_MAXPROZENT).setValue("15");
+		einstellungenGemaessAsiv.get(EinstellungKey.GEMEINDE_ZUSAETZLICHER_ANSPRUCH_FREIWILLIGENARBEIT_ENABLED)
+				.setValue("true");
+		einstellungenGemaessAsiv.get(EinstellungKey.GEMEINDE_ZUSAETZLICHER_ANSPRUCH_FREIWILLIGENARBEIT_MAXPROZENT)
+				.setValue("15");
 		einstellungenGemaessAsiv.get(EinstellungKey.GEMEINDE_MIN_ERWERBSPENSUM_NICHT_EINGESCHULT).setValue("80");
 		einstellungenGemaessAsiv.get(EinstellungKey.GEMEINDE_MIN_ERWERBSPENSUM_EINGESCHULT).setValue("80");
 		// 2 zusaetzliche Regeln erwartet
@@ -120,7 +128,7 @@ public class BetreuungsgutscheinConfiguratorTest extends AbstractBGRechnerTest {
 		final List<Rule> rules = configureRuleForMandant(gemeindeParis);
 		// Es hat zwar nur eine Einstellunge geaendert, aber wegen der Uebergangsloesung der Gemeinde Paris
 		// kommt die Regel doppelt: Einmal fuer den Zeitraum vor dem Stichtag, einmal nach dem Stichtag
-		Assert.assertEquals(ANZAHL_RULES_ASIV +  2, rules.size());
+		Assert.assertEquals(ANZAHL_RULES_ASIV + 2, rules.size());
 		assertContainsRule(rules, ErwerbspensumGemeindeAbschnittRule.class, 0);
 		assertContainsRule(rules, ErwerbspensumGemeindeCalcRule.class, 2);
 	}
@@ -128,8 +136,8 @@ public class BetreuungsgutscheinConfiguratorTest extends AbstractBGRechnerTest {
 	@Test
 	public void anspruchUnabhaengigRule() {
 		einstellungenGemaessAsiv
-			.get(EinstellungKey.ABHAENGIGKEIT_ANSPRUCH_BESCHAEFTIGUNGPENSUM)
-			.setValue(AnspruchBeschaeftigungAbhaengigkeitTyp.UNABHAENGING.name());
+				.get(EinstellungKey.ABHAENGIGKEIT_ANSPRUCH_BESCHAEFTIGUNGPENSUM)
+				.setValue(AnspruchBeschaeftigungAbhaengigkeitTyp.UNABHAENGING.name());
 		final List<Rule> rules = configureRuleForMandant(gemeindeOfEvaluator);
 		assertContainsRule(rules, ErwerbspensumNotRelevantForAnspruchCalcRule.class, 1);
 		assertContainsRule(rules, ErwerbspensumAsivCalcRule.class, 0);
@@ -138,8 +146,8 @@ public class BetreuungsgutscheinConfiguratorTest extends AbstractBGRechnerTest {
 	@Test
 	public void anspruchAsivRule() {
 		einstellungenGemaessAsiv
-			.get(EinstellungKey.ABHAENGIGKEIT_ANSPRUCH_BESCHAEFTIGUNGPENSUM)
-			.setValue(AnspruchBeschaeftigungAbhaengigkeitTyp.ABHAENGING.name());
+				.get(EinstellungKey.ABHAENGIGKEIT_ANSPRUCH_BESCHAEFTIGUNGPENSUM)
+				.setValue(AnspruchBeschaeftigungAbhaengigkeitTyp.ABHAENGING.name());
 		final List<Rule> rules = configureRuleForMandant(gemeindeOfEvaluator);
 		assertContainsRule(rules, ErwerbspensumNotRelevantForAnspruchCalcRule.class, 0);
 		assertContainsRule(rules, ErwerbspensumAsivCalcRule.class, 1);

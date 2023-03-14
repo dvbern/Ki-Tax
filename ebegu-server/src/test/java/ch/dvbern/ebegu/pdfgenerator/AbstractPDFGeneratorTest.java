@@ -50,8 +50,10 @@ public abstract class AbstractPDFGeneratorTest {
 		@Nonnull Gesuchsperiode gesuchsperiode,
 		@Nonnull Gemeinde bern
 	) {
-		Map<EinstellungKey, Einstellung> einstellungen = EbeguRuleTestsHelper.getEinstellungenConfiguratorAsiv(gesuchsperiode);
-		RuleParameterUtil ruleParameterUtil = new RuleParameterUtil(einstellungen, TestDataUtil.geKitaxUebergangsloesungParameter());
+		Map<EinstellungKey, Einstellung> einstellungen =
+				EbeguRuleTestsHelper.getEinstellungenConfiguratorAsiv(gesuchsperiode);
+		RuleParameterUtil ruleParameterUtil =
+				new RuleParameterUtil(einstellungen, TestDataUtil.geKitaxUebergangsloesungParameter());
 		BetreuungsgutscheinConfigurator configurator = new BetreuungsgutscheinConfigurator();
 		List<Rule> rules = configurator.configureRulesForMandant(bern, ruleParameterUtil);
 		return new BetreuungsgutscheinEvaluator(rules, einstellungen);

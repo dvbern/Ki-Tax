@@ -93,18 +93,19 @@ public abstract class AbstractBGRechnerTest {
 	protected Gemeinde gemeindeOfEvaluator = TestDataUtil.createGemeindeLondon();
 	protected Gesuchsperiode gesuchsperiodeOfEvaluator = TestDataUtil.createGesuchsperiode1718();
 
-
 	@Before
 	public void setUpCalcuator() {
 		evaluator = createEvaluator(gesuchsperiodeOfEvaluator, gemeindeOfEvaluator);
 	}
 
 	public static BetreuungsgutscheinEvaluator createEvaluator(
-		@Nonnull Gesuchsperiode gesuchsperiode,
-		@Nonnull Gemeinde bern
+			@Nonnull Gesuchsperiode gesuchsperiode,
+			@Nonnull Gemeinde bern
 	) {
-		Map<EinstellungKey, Einstellung> einstellungen = EbeguRuleTestsHelper.getEinstellungenConfiguratorAsiv(gesuchsperiode);
-		RuleParameterUtil ruleParameterUtil = new RuleParameterUtil(einstellungen, TestDataUtil.geKitaxUebergangsloesungParameter());
+		Map<EinstellungKey, Einstellung> einstellungen =
+				EbeguRuleTestsHelper.getEinstellungenConfiguratorAsiv(gesuchsperiode);
+		RuleParameterUtil ruleParameterUtil =
+				new RuleParameterUtil(einstellungen, TestDataUtil.geKitaxUebergangsloesungParameter());
 
 		BetreuungsgutscheinConfigurator configurator = new BetreuungsgutscheinConfigurator();
 		List<Rule> rules = configurator.configureRulesForMandant(bern, ruleParameterUtil);
@@ -112,36 +113,41 @@ public abstract class AbstractBGRechnerTest {
 	}
 
 	public static void assertZeitabschnitt(
-		VerfuegungZeitabschnitt abschnitt,
-		BigDecimal betreuungspensum,
-		int anspruchsberechtigtesPensum,
-		BigDecimal bgPensum) {
-		assertEquals("Beantragtes Pensum " + betreuungspensum + " entspricht nicht " + abschnitt,
-			MathUtil.DEFAULT.from(betreuungspensum), MathUtil.DEFAULT.from(abschnitt.getBetreuungspensumProzent()));
+			VerfuegungZeitabschnitt abschnitt,
+			BigDecimal betreuungspensum,
+			int anspruchsberechtigtesPensum,
+			BigDecimal bgPensum) {
+		assertEquals(
+				"Beantragtes Pensum " + betreuungspensum + " entspricht nicht " + abschnitt,
+				MathUtil.DEFAULT.from(betreuungspensum),
+				MathUtil.DEFAULT.from(abschnitt.getBetreuungspensumProzent()));
 		assertEquals(anspruchsberechtigtesPensum, abschnitt.getAnspruchberechtigtesPensum());
 		assertEquals(MathUtil.DEFAULT.from(bgPensum), MathUtil.DEFAULT.from(abschnitt.getBgPensum()));
 	}
 
 	public static void assertZeitabschnitt(
-		VerfuegungZeitabschnitt abschnitt,
-		int betreuungspensum,
-		int anspruchsberechtigtesPensum,
-		int bgPensum,
-		int anspruchspensumRest) {
-		assertEquals("Beantragtes Pensum " + betreuungspensum + " entspricht nicht " + abschnitt,
-			MathUtil.DEFAULT.from(betreuungspensum), MathUtil.DEFAULT.from(abschnitt.getBetreuungspensumProzent()));
+			VerfuegungZeitabschnitt abschnitt,
+			int betreuungspensum,
+			int anspruchsberechtigtesPensum,
+			int bgPensum,
+			int anspruchspensumRest) {
+		assertEquals(
+				"Beantragtes Pensum " + betreuungspensum + " entspricht nicht " + abschnitt,
+				MathUtil.DEFAULT.from(betreuungspensum),
+				MathUtil.DEFAULT.from(abschnitt.getBetreuungspensumProzent()));
 		assertEquals(anspruchsberechtigtesPensum, abschnitt.getAnspruchberechtigtesPensum());
 		assertEquals(MathUtil.DEFAULT.from(bgPensum), MathUtil.DEFAULT.from(abschnitt.getBgPensum()));
-		assertEquals(MathUtil.DEFAULT.from(anspruchspensumRest),
-			MathUtil.DEFAULT.from(abschnitt.getRelevantBgCalculationInput().getAnspruchspensumRest()));
+		assertEquals(
+				MathUtil.DEFAULT.from(anspruchspensumRest),
+				MathUtil.DEFAULT.from(abschnitt.getRelevantBgCalculationInput().getAnspruchspensumRest()));
 	}
 
 	protected void assertZeitabschnitt(
-		@Nonnull VerfuegungZeitabschnitt abschnitt,
-		@Nonnull LocalDate gueltigAb,
-		int betreuungspensum,
-		int anspruch,
-		int bgPensum
+			@Nonnull VerfuegungZeitabschnitt abschnitt,
+			@Nonnull LocalDate gueltigAb,
+			int betreuungspensum,
+			int anspruch,
+			int bgPensum
 	) {
 		assertEquals(gueltigAb, abschnitt.getGueltigkeit().getGueltigAb());
 		assertEquals(betreuungspensum, abschnitt.getBetreuungspensumProzent().intValue());
@@ -150,16 +156,18 @@ public abstract class AbstractBGRechnerTest {
 	}
 
 	public static void assertZeitabschnitt(
-		VerfuegungZeitabschnitt abschnitt,
-		BigDecimal betreuungspensum,
-		int anspruchsberechtigtesPensum,
-		BigDecimal bgPensum,
-		double vollkosten,
-		double verguenstigung,
-		double elternbeitrag) {
+			VerfuegungZeitabschnitt abschnitt,
+			BigDecimal betreuungspensum,
+			int anspruchsberechtigtesPensum,
+			BigDecimal bgPensum,
+			double vollkosten,
+			double verguenstigung,
+			double elternbeitrag) {
 
-		assertEquals("Beantragtes Pensum " + betreuungspensum + " entspricht nicht " + abschnitt,
-			MathUtil.DEFAULT.from(betreuungspensum), MathUtil.DEFAULT.from(abschnitt.getBetreuungspensumProzent()));
+		assertEquals(
+				"Beantragtes Pensum " + betreuungspensum + " entspricht nicht " + abschnitt,
+				MathUtil.DEFAULT.from(betreuungspensum),
+				MathUtil.DEFAULT.from(abschnitt.getBetreuungspensumProzent()));
 		assertEquals(anspruchsberechtigtesPensum, abschnitt.getAnspruchberechtigtesPensum());
 		assertEquals(MathUtil.DEFAULT.from(bgPensum), MathUtil.DEFAULT.from(abschnitt.getBgPensum()));
 		assertEquals(MATH.from(vollkosten), abschnitt.getVollkosten());
@@ -168,15 +176,16 @@ public abstract class AbstractBGRechnerTest {
 	}
 
 	public static void assertZeitabschnittFinanzdaten(
-		VerfuegungZeitabschnitt abschnitt, LocalDate gueltigAb, double massgebendesEinkVorFamAbz,
-		int einkommensjahr, double abzugFam, double massgebendesEinkommen,
-		double famGroesse) {
+			VerfuegungZeitabschnitt abschnitt, LocalDate gueltigAb, double massgebendesEinkVorFamAbz,
+			int einkommensjahr, double abzugFam, double massgebendesEinkommen,
+			double famGroesse) {
 
 		assertEquals(gueltigAb, abschnitt.getGueltigkeit().getGueltigAb());
 		assertEquals(einkommensjahr, abschnitt.getEinkommensjahr().intValue());
 		assertEquals(MATH.from(famGroesse), MATH.from(abschnitt.getFamGroesse()));
-		assertEquals(MATH.from(massgebendesEinkVorFamAbz),
-			MATH.from(abschnitt.getMassgebendesEinkommenVorAbzFamgr()));
+		assertEquals(
+				MATH.from(massgebendesEinkVorFamAbz),
+				MATH.from(abschnitt.getMassgebendesEinkommenVorAbzFamgr()));
 		assertEquals(MATH.from(abzugFam), MATH.from(abschnitt.getAbzugFamGroesse()));
 		assertEquals(MATH.from(massgebendesEinkommen), MATH.from(abschnitt.getMassgebendesEinkommen()));
 	}
@@ -232,7 +241,7 @@ public abstract class AbstractBGRechnerTest {
 		return defaultParameter;
 	}
 
-	public static  BGRechnerParameterDTO getRechnerParamterAppenzell() {
+	public static BGRechnerParameterDTO getRechnerParamterAppenzell() {
 		BGRechnerParameterDTO defaultParameter = getParameter();
 
 		//SET Parameters for AR
@@ -246,13 +255,13 @@ public abstract class AbstractBGRechnerTest {
 	 * Erstellt eine Verfügung mit einem einzelnen Zeitabschnitt und den für Kita notwendigen Parametern zusammen
 	 */
 	protected Verfuegung prepareVerfuegungKita(
-		@Nonnull LocalDate geburtsdatumKind,
-		@Nonnull LocalDate von,
-		@Nonnull LocalDate bis,
-		@Nonnull EinschulungTyp einschulungTyp,
-		boolean besondereBeduerfnisse,
-		@Nonnull BigDecimal massgebendesEinkommen,
-		@Nonnull BigDecimal monatlicheBetreuungskosten) {
+			@Nonnull LocalDate geburtsdatumKind,
+			@Nonnull LocalDate von,
+			@Nonnull LocalDate bis,
+			@Nonnull EinschulungTyp einschulungTyp,
+			boolean besondereBeduerfnisse,
+			@Nonnull BigDecimal massgebendesEinkommen,
+			@Nonnull BigDecimal monatlicheBetreuungskosten) {
 
 		Betreuung betreuung = new Betreuung();
 		ErweiterteBetreuungContainer erweiterteBetreuungContainer = new ErweiterteBetreuungContainer();
@@ -285,10 +294,10 @@ public abstract class AbstractBGRechnerTest {
 	 * Erstellt eine Verfügung mit den übergebenen Parametern
 	 */
 	private Verfuegung createVerfuegung(
-		@Nonnull LocalDate von,
-		@Nonnull LocalDate bis,
-		@Nonnull BigDecimal massgebendesEinkommen,
-		@Nonnull BigDecimal monatlicheBetreuungskosten) {
+			@Nonnull LocalDate von,
+			@Nonnull LocalDate bis,
+			@Nonnull BigDecimal massgebendesEinkommen,
+			@Nonnull BigDecimal monatlicheBetreuungskosten) {
 
 		VerfuegungZeitabschnitt zeitabschnitt = new VerfuegungZeitabschnitt(new DateRange(von, bis));
 		zeitabschnitt.getBgCalculationInputAsiv().setAnspruchspensumProzent(20);
@@ -314,33 +323,71 @@ public abstract class AbstractBGRechnerTest {
 					Verfuegung verfuegung = betreuung.getVerfuegungOrVerfuegungPreview();
 					assertNotNull(verfuegung);
 					assertEquals(12, verfuegung.getZeitabschnitte().size());
-					assertEquals(53872,
-						verfuegung.getZeitabschnitte().get(0).getMassgebendesEinkommen().intValue());
+					assertEquals(
+							53872,
+							verfuegung.getZeitabschnitte().get(0).getMassgebendesEinkommen().intValue());
 					// Erster Monat
 					VerfuegungZeitabschnitt august = verfuegung.getZeitabschnitte().get(0);
-					assertZeitabschnitt(august, new BigDecimal("80.00"), 80 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS, new BigDecimal("80.00"), VOLLKOSTEN_DEFAULT, 1451.30, 548.70);
+					assertZeitabschnitt(august,
+							new BigDecimal("80.00"),
+							80 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS,
+							new BigDecimal("80.00"), VOLLKOSTEN_DEFAULT,
+							1451.30,
+							548.70);
 					// Letzter Monat
 					VerfuegungZeitabschnitt januar = verfuegung.getZeitabschnitte().get(5);
-					assertZeitabschnitt(januar, new BigDecimal("80.00"), 80 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS, new BigDecimal("80.00"), VOLLKOSTEN_DEFAULT, 1451.30, 548.70);
+					assertZeitabschnitt(januar, new BigDecimal("80.00"),
+							80 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS,
+							new BigDecimal("80.00"),
+							VOLLKOSTEN_DEFAULT,
+							1451.30,
+							548.70);
 					// Kein Anspruch mehr ab Februar
 					VerfuegungZeitabschnitt februar = verfuegung.getZeitabschnitte().get(6);
-					assertZeitabschnitt(februar, MathUtil.DEFAULT.from(0.00), 80 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS,MathUtil.DEFAULT.from(0.00), VOLLKOSTEN_NULL, 0, 0);
+					assertZeitabschnitt(februar, MathUtil.DEFAULT.from(0.00),
+							80 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS,
+							MathUtil.DEFAULT.from(0.00),
+							VOLLKOSTEN_NULL,
+							0,
+							0);
 				} else {     //KITA Bruennen
 					Verfuegung verfuegung = betreuung.getVerfuegungOrVerfuegungPreview();
 					assertNotNull(verfuegung);
 					assertEquals(12, verfuegung.getZeitabschnitte().size());
-					assertEquals(53872,
-						verfuegung.getZeitabschnitte().get(0).getMassgebendesEinkommen().intValue());
+					assertEquals(
+							53872,
+							verfuegung.getZeitabschnitte().get(0).getMassgebendesEinkommen().intValue());
 					// Noch kein Anspruch im Januar 2017, Kind geht erst ab Feb 2017 in Kita, Anspruch muss ausserdem
 					// 0 sein im Januar weil das Kind in die andere Kita geht
 					VerfuegungZeitabschnitt januar = verfuegung.getZeitabschnitte().get(5);
-					assertZeitabschnitt(januar, MathUtil.DEFAULT.from(0.00), 20, MathUtil.DEFAULT.from(0.00), VOLLKOSTEN_NULL, 0, 0);
+					assertZeitabschnitt(
+							januar,
+							MathUtil.DEFAULT.from(0.00),
+							20,
+							MathUtil.DEFAULT.from(0.00),
+							VOLLKOSTEN_NULL,
+							0,
+							0);
 					// Erster Monat
 					VerfuegungZeitabschnitt februar = verfuegung.getZeitabschnitte().get(6);
-					assertZeitabschnitt(februar, new BigDecimal("40.00"), 100, new BigDecimal("40.00"), VOLLKOSTEN_DEFAULT, 725.65, 1274.35);
+					assertZeitabschnitt(
+							februar,
+							new BigDecimal("40.00"),
+							100,
+							new BigDecimal("40.00"),
+							VOLLKOSTEN_DEFAULT,
+							725.65,
+							1274.35);
 					// Letzter Monat
 					VerfuegungZeitabschnitt juli = verfuegung.getZeitabschnitte().get(11);
-					assertZeitabschnitt(juli, new BigDecimal("40.00"), 100, new BigDecimal("40.00"), VOLLKOSTEN_DEFAULT, 725.65, 1274.35);
+					assertZeitabschnitt(
+							juli,
+							new BigDecimal("40.00"),
+							100,
+							new BigDecimal("40.00"),
+							VOLLKOSTEN_DEFAULT,
+							725.65,
+							1274.35);
 				}
 			}
 		}
@@ -353,9 +400,14 @@ public abstract class AbstractBGRechnerTest {
 	public static void checkTestfall02FeutzYvonne(Gesuch gesuch) {
 		Set<KindContainer> kinderList = gesuch.getKindContainers();
 		assertEquals(2, kinderList.size());
-		assertEquals(2,
-			kinderList.stream().map(KindContainer::getKindJA).map(AbstractPersonEntity::getVorname).filter(s -> s.equals("Leonard") || s.equals(
-			"Tamara")).count());
+		assertEquals(
+				2,
+				kinderList.stream()
+						.map(KindContainer::getKindJA)
+						.map(AbstractPersonEntity::getVorname)
+						.filter(s -> s.equals("Leonard") || s.equals(
+								"Tamara"))
+						.count());
 		for (KindContainer kindContainer : kinderList) {
 			if ("Leonard".equals(kindContainer.getKindJA().getVorname())) {
 				assertEquals(1, kindContainer.getBetreuungen().size());
@@ -364,15 +416,30 @@ public abstract class AbstractBGRechnerTest {
 				assertNotNull(verfuegung);
 
 				assertEquals(12, verfuegung.getZeitabschnitte().size());
-				assertEquals(113346,
-					verfuegung.getZeitabschnitte().get(0).getMassgebendesEinkommen().intValue());
+				assertEquals(
+						113346,
+						verfuegung.getZeitabschnitte().get(0).getMassgebendesEinkommen().intValue());
 				// Erster Monat
 				VerfuegungZeitabschnitt august = verfuegung.getZeitabschnitte().get(0);
-				assertZeitabschnitt(august, new BigDecimal("40.00"), 40 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS, new BigDecimal("40.00"), VOLLKOSTEN_DEFAULT, 319.00, 1681.00);
+				assertZeitabschnitt(
+						august,
+						new BigDecimal("40.00"),
+						40 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS,
+						new BigDecimal("40.00"),
+						VOLLKOSTEN_DEFAULT,
+						319.00,
+						1681.00);
 
 				// Letzter Monat
 				VerfuegungZeitabschnitt juli = verfuegung.getZeitabschnitte().get(11);
-				assertZeitabschnitt(juli, new BigDecimal("40.00"), 40 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS, new BigDecimal("40.00"), VOLLKOSTEN_DEFAULT, 319.00, 1681.00);
+				assertZeitabschnitt(
+						juli,
+						new BigDecimal("40.00"),
+						40 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS,
+						new BigDecimal("40.00"),
+						VOLLKOSTEN_DEFAULT,
+						319.00,
+						1681.00);
 			}
 			if ("Tamara".equals(kindContainer.getKindJA().getVorname())) {
 				assertEquals(1, kindContainer.getBetreuungen().size());
@@ -381,14 +448,29 @@ public abstract class AbstractBGRechnerTest {
 				assertNotNull(verfuegung);
 
 				assertEquals(12, verfuegung.getZeitabschnitte().size());
-				assertEquals(113346,
-					verfuegung.getZeitabschnitte().get(0).getMassgebendesEinkommen().intValue());
+				assertEquals(
+						113346,
+						verfuegung.getZeitabschnitte().get(0).getMassgebendesEinkommen().intValue());
 				// Erster Monat
 				VerfuegungZeitabschnitt august = verfuegung.getZeitabschnitte().get(0);
-				assertZeitabschnitt(august, new BigDecimal("60.00"), 40 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS, new BigDecimal(40.00 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS), VOLLKOSTEN_DEFAULT, 478.50, 1521.50);
+				assertZeitabschnitt(
+						august,
+						new BigDecimal("60.00"),
+						40 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS,
+						new BigDecimal(40.00 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS),
+						VOLLKOSTEN_DEFAULT,
+						478.50,
+						1521.50);
 				// Letzter Monat
 				VerfuegungZeitabschnitt juli = verfuegung.getZeitabschnitte().get(11);
-				assertZeitabschnitt(juli, new BigDecimal("60.00"), 40 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS, new BigDecimal(40.00 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS), VOLLKOSTEN_DEFAULT, 478.50, 1521.50);
+				assertZeitabschnitt(
+						juli,
+						new BigDecimal("60.00"),
+						40 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS,
+						new BigDecimal(40.00 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS),
+						VOLLKOSTEN_DEFAULT,
+						478.50,
+						1521.50);
 			}
 		}
 	}
@@ -406,14 +488,29 @@ public abstract class AbstractBGRechnerTest {
 				Verfuegung verfuegung = betreuung.getVerfuegungOrVerfuegungPreview();
 				assertNotNull(verfuegung);
 				assertEquals(12, verfuegung.getZeitabschnitte().size());
-				assertEquals(68678,
-					verfuegung.getZeitabschnitte().get(0).getMassgebendesEinkommen().intValue());
+				assertEquals(
+						68678,
+						verfuegung.getZeitabschnitte().get(0).getMassgebendesEinkommen().intValue());
 				// Erster Monat
 				VerfuegungZeitabschnitt august = verfuegung.getZeitabschnitte().get(0);
-				assertZeitabschnitt(august, new BigDecimal("50.00"), 50 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS, new BigDecimal("50.00"), VOLLKOSTEN_DEFAULT, 780.55, 1219.45);
+				assertZeitabschnitt(
+						august,
+						new BigDecimal("50.00"),
+						50 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS,
+						new BigDecimal("50.00"),
+						VOLLKOSTEN_DEFAULT,
+						780.55,
+						1219.45);
 				// Letzter Monat
 				VerfuegungZeitabschnitt juli = verfuegung.getZeitabschnitte().get(11);
-				assertZeitabschnitt(juli, new BigDecimal("50.00"), 50 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS, new BigDecimal("50.00"), VOLLKOSTEN_DEFAULT, 780.55, 1219.45);
+				assertZeitabschnitt(
+						juli,
+						new BigDecimal("50.00"),
+						50 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS,
+						new BigDecimal("50.00"),
+						VOLLKOSTEN_DEFAULT,
+						780.55,
+						1219.45);
 			}
 		}
 	}
@@ -431,8 +528,9 @@ public abstract class AbstractBGRechnerTest {
 				Verfuegung verfuegung = betreuung.getVerfuegungOrVerfuegungPreview();
 				assertNotNull(verfuegung);
 				assertEquals(12, verfuegung.getZeitabschnitte().size());
-				assertEquals(MathUtil.DEFAULT.from(162126.00),
-					verfuegung.getZeitabschnitte().get(0).getMassgebendesEinkommen());
+				assertEquals(
+						MathUtil.DEFAULT.from(162126.00),
+						verfuegung.getZeitabschnitte().get(0).getMassgebendesEinkommen());
 				// Das Einkommen ist zu hoch. Es werden alle Beträge auf 0 gesetzt, die Familie bezahlt die Vollkosten
 				// Erster Monat
 				VerfuegungZeitabschnitt august = verfuegung.getZeitabschnitte().get(0);
@@ -440,7 +538,7 @@ public abstract class AbstractBGRechnerTest {
 				// Letzter Monat
 				VerfuegungZeitabschnitt juli = verfuegung.getZeitabschnitte().get(11);
 				assertZeitabschnitt(juli, new BigDecimal("50.00"), 0, MathUtil.DEFAULT.from(0.00), 0, 0, 0);
-			} else  {
+			} else {
 				fail("Nur ein Kind names Lorenz sollte vorhanden sein!");
 			}
 		}
@@ -459,20 +557,49 @@ public abstract class AbstractBGRechnerTest {
 				Verfuegung verfuegung = betreuung.getVerfuegungOrVerfuegungPreview();
 				assertNotNull(verfuegung);
 				assertEquals(12, verfuegung.getZeitabschnitte().size());
-				assertEquals(98830,
-					verfuegung.getZeitabschnitte().get(0).getMassgebendesEinkommen().intValue());
+				assertEquals(
+						98830,
+						verfuegung.getZeitabschnitte().get(0).getMassgebendesEinkommen().intValue());
 				// Erster Monat 50%
 				VerfuegungZeitabschnitt august = verfuegung.getZeitabschnitte().get(0);
-				assertZeitabschnitt(august, new BigDecimal("50.00"), 70 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS, new BigDecimal("50.00"), VOLLKOSTEN_DEFAULT, 522.80, 1477.20);
+				assertZeitabschnitt(
+						august,
+						new BigDecimal("50.00"),
+						70 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS,
+						new BigDecimal("50.00"),
+						VOLLKOSTEN_DEFAULT,
+						522.80,
+						1477.20);
 				// Letzter Monat 50%
 				VerfuegungZeitabschnitt dezember = verfuegung.getZeitabschnitte().get(4);
-				assertZeitabschnitt(dezember, new BigDecimal("50.00"), 70 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS, new BigDecimal("50.00"), VOLLKOSTEN_DEFAULT, 522.80, 1477.20);
+				assertZeitabschnitt(
+						dezember,
+						new BigDecimal("50.00"),
+						70 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS,
+						new BigDecimal("50.00"),
+						VOLLKOSTEN_DEFAULT,
+						522.80,
+						1477.20);
 				// Erster Monat 60 %
 				VerfuegungZeitabschnitt januar = verfuegung.getZeitabschnitte().get(5);
-				assertZeitabschnitt(januar, new BigDecimal("60.00"), 70 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS, new BigDecimal("60.00"), VOLLKOSTEN_DEFAULT, 627.40, 1372.60);
+				assertZeitabschnitt(
+						januar,
+						new BigDecimal("60.00"),
+						70 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS,
+						new BigDecimal("60.00"),
+						VOLLKOSTEN_DEFAULT,
+						627.40,
+						1372.60);
 				// Letzter Monat 60 %
 				VerfuegungZeitabschnitt juli = verfuegung.getZeitabschnitte().get(11);
-				assertZeitabschnitt(juli, new BigDecimal("60.00"), 70 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS, new BigDecimal("60.00"), VOLLKOSTEN_DEFAULT, 627.40, 1372.60);
+				assertZeitabschnitt(
+						juli,
+						new BigDecimal("60.00"),
+						70 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS,
+						new BigDecimal("60.00"),
+						VOLLKOSTEN_DEFAULT,
+						627.40,
+						1372.60);
 			}
 		}
 	}
@@ -499,7 +626,14 @@ public abstract class AbstractBGRechnerTest {
 			assertEquals(-7600, verfuegung.getZeitabschnitte().get(0).getMassgebendesEinkommen().intValue());
 			// Erster Monat
 			VerfuegungZeitabschnitt august = verfuegung.getZeitabschnitte().get(0);
-			assertZeitabschnitt(august, new BigDecimal("100.00"), 60 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS, new BigDecimal(60.00 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS), 1600, 1488, 112);
+			assertZeitabschnitt(
+					august,
+					new BigDecimal("100.00"),
+					60 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS,
+					new BigDecimal(60.00 + ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS),
+					1600,
+					1488,
+					112);
 		}
 	}
 
@@ -515,19 +649,103 @@ public abstract class AbstractBGRechnerTest {
 		assertEquals(12, result.size());
 		int i = 0;
 
-		assertZeitabschnittFinanzdaten(result.get(i++), LocalDate.of(BASISJAHR_PLUS_1, Month.AUGUST, 1), 70000, BASISJAHR, 0, 70000, 2);
-		assertZeitabschnittFinanzdaten(result.get(i++), LocalDate.of(BASISJAHR_PLUS_1, Month.SEPTEMBER, 1), 70000, BASISJAHR, 0, 70000, 2);
-		assertZeitabschnittFinanzdaten(result.get(i++), LocalDate.of(BASISJAHR_PLUS_1, Month.OCTOBER, 1), 70000, BASISJAHR, 0, 70000, 2);
+		assertZeitabschnittFinanzdaten(
+				result.get(i++),
+				LocalDate.of(BASISJAHR_PLUS_1, Month.AUGUST, 1),
+				70000,
+				BASISJAHR,
+				0,
+				70000,
+				2);
+		assertZeitabschnittFinanzdaten(
+				result.get(i++),
+				LocalDate.of(BASISJAHR_PLUS_1, Month.SEPTEMBER, 1),
+				70000,
+				BASISJAHR,
+				0,
+				70000,
+				2);
+		assertZeitabschnittFinanzdaten(
+				result.get(i++),
+				LocalDate.of(BASISJAHR_PLUS_1, Month.OCTOBER, 1),
+				70000,
+				BASISJAHR,
+				0,
+				70000,
+				2);
 		// Heirat
-		assertZeitabschnittFinanzdaten(result.get(i++), LocalDate.of(BASISJAHR_PLUS_1, Month.NOVEMBER, 1), 100000, BASISJAHR, 11400, 88600, 3);
-		assertZeitabschnittFinanzdaten(result.get(i++), LocalDate.of(BASISJAHR_PLUS_1, Month.DECEMBER, 1), 100000, BASISJAHR, 11400, 88600, 3);
-		assertZeitabschnittFinanzdaten(result.get(i++), LocalDate.of(BASISJAHR_PLUS_2, Month.JANUARY, 1), 100000, BASISJAHR, 11400, 88600, 3);
-		assertZeitabschnittFinanzdaten(result.get(i++), LocalDate.of(BASISJAHR_PLUS_2, Month.FEBRUARY, 1), 100000, BASISJAHR, 11400, 88600, 3);
-		assertZeitabschnittFinanzdaten(result.get(i++), LocalDate.of(BASISJAHR_PLUS_2, Month.MARCH, 1), 100000, BASISJAHR, 11400, 88600, 3);
-		assertZeitabschnittFinanzdaten(result.get(i++), LocalDate.of(BASISJAHR_PLUS_2, Month.APRIL, 1), 100000, BASISJAHR, 11400, 88600, 3);
-		assertZeitabschnittFinanzdaten(result.get(i++), LocalDate.of(BASISJAHR_PLUS_2, Month.MAY, 1), 100000, BASISJAHR, 11400, 88600, 3);
-		assertZeitabschnittFinanzdaten(result.get(i++), LocalDate.of(BASISJAHR_PLUS_2, Month.JUNE, 1), 100000, BASISJAHR, 11400, 88600, 3);
-		assertZeitabschnittFinanzdaten(result.get(i++), LocalDate.of(BASISJAHR_PLUS_2, Month.JULY, 1), 100000, BASISJAHR, 11400, 88600, 3);
+		assertZeitabschnittFinanzdaten(
+				result.get(i++),
+				LocalDate.of(BASISJAHR_PLUS_1, Month.NOVEMBER, 1),
+				100000,
+				BASISJAHR,
+				11400,
+				88600,
+				3);
+		assertZeitabschnittFinanzdaten(
+				result.get(i++),
+				LocalDate.of(BASISJAHR_PLUS_1, Month.DECEMBER, 1),
+				100000,
+				BASISJAHR,
+				11400,
+				88600,
+				3);
+		assertZeitabschnittFinanzdaten(
+				result.get(i++),
+				LocalDate.of(BASISJAHR_PLUS_2, Month.JANUARY, 1),
+				100000,
+				BASISJAHR,
+				11400,
+				88600,
+				3);
+		assertZeitabschnittFinanzdaten(
+				result.get(i++),
+				LocalDate.of(BASISJAHR_PLUS_2, Month.FEBRUARY, 1),
+				100000,
+				BASISJAHR,
+				11400,
+				88600,
+				3);
+		assertZeitabschnittFinanzdaten(
+				result.get(i++),
+				LocalDate.of(BASISJAHR_PLUS_2, Month.MARCH, 1),
+				100000,
+				BASISJAHR,
+				11400,
+				88600,
+				3);
+		assertZeitabschnittFinanzdaten(
+				result.get(i++),
+				LocalDate.of(BASISJAHR_PLUS_2, Month.APRIL, 1),
+				100000,
+				BASISJAHR,
+				11400,
+				88600,
+				3);
+		assertZeitabschnittFinanzdaten(
+				result.get(i++),
+				LocalDate.of(BASISJAHR_PLUS_2, Month.MAY, 1),
+				100000,
+				BASISJAHR,
+				11400,
+				88600,
+				3);
+		assertZeitabschnittFinanzdaten(
+				result.get(i++),
+				LocalDate.of(BASISJAHR_PLUS_2, Month.JUNE, 1),
+				100000,
+				BASISJAHR,
+				11400,
+				88600,
+				3);
+		assertZeitabschnittFinanzdaten(
+				result.get(i++),
+				LocalDate.of(BASISJAHR_PLUS_2, Month.JULY, 1),
+				100000,
+				BASISJAHR,
+				11400,
+				88600,
+				3);
 	}
 
 	/**
@@ -542,19 +760,103 @@ public abstract class AbstractBGRechnerTest {
 		assertEquals(12, result.size());
 		int i = 0;
 
-		assertZeitabschnittFinanzdaten(result.get(i++), LocalDate.of(BASISJAHR_PLUS_1, Month.AUGUST, 1), 100000, BASISJAHR, 11400, 88600, 3);
-		assertZeitabschnittFinanzdaten(result.get(i++), LocalDate.of(BASISJAHR_PLUS_1, Month.SEPTEMBER, 1), 100000, BASISJAHR, 11400, 88600, 3);
-		assertZeitabschnittFinanzdaten(result.get(i++), LocalDate.of(BASISJAHR_PLUS_1, Month.OCTOBER, 1), 100000, BASISJAHR, 11400, 88600, 3);
+		assertZeitabschnittFinanzdaten(
+				result.get(i++),
+				LocalDate.of(BASISJAHR_PLUS_1, Month.AUGUST, 1),
+				100000,
+				BASISJAHR,
+				11400,
+				88600,
+				3);
+		assertZeitabschnittFinanzdaten(
+				result.get(i++),
+				LocalDate.of(BASISJAHR_PLUS_1, Month.SEPTEMBER, 1),
+				100000,
+				BASISJAHR,
+				11400,
+				88600,
+				3);
+		assertZeitabschnittFinanzdaten(
+				result.get(i++),
+				LocalDate.of(BASISJAHR_PLUS_1, Month.OCTOBER, 1),
+				100000,
+				BASISJAHR,
+				11400,
+				88600,
+				3);
 		// Scheidung
-		assertZeitabschnittFinanzdaten(result.get(i++), LocalDate.of(BASISJAHR_PLUS_1, Month.NOVEMBER, 1), 70000, BASISJAHR, 0, 70000, 2);
-		assertZeitabschnittFinanzdaten(result.get(i++), LocalDate.of(BASISJAHR_PLUS_1, Month.DECEMBER, 1), 70000, BASISJAHR, 0, 70000, 2);
-		assertZeitabschnittFinanzdaten(result.get(i++), LocalDate.of(BASISJAHR_PLUS_2, Month.JANUARY, 1), 70000, BASISJAHR, 0, 70000, 2);
-		assertZeitabschnittFinanzdaten(result.get(i++), LocalDate.of(BASISJAHR_PLUS_2, Month.FEBRUARY, 1), 70000, BASISJAHR, 0, 70000, 2);
-		assertZeitabschnittFinanzdaten(result.get(i++), LocalDate.of(BASISJAHR_PLUS_2, Month.MARCH, 1), 70000, BASISJAHR, 0, 70000, 2);
-		assertZeitabschnittFinanzdaten(result.get(i++), LocalDate.of(BASISJAHR_PLUS_2, Month.APRIL, 1), 70000, BASISJAHR, 0, 70000, 2);
-		assertZeitabschnittFinanzdaten(result.get(i++), LocalDate.of(BASISJAHR_PLUS_2, Month.MAY, 1), 70000, BASISJAHR, 0, 70000, 2);
-		assertZeitabschnittFinanzdaten(result.get(i++), LocalDate.of(BASISJAHR_PLUS_2, Month.JUNE, 1), 70000, BASISJAHR, 0, 70000, 2);
-		assertZeitabschnittFinanzdaten(result.get(i++), LocalDate.of(BASISJAHR_PLUS_2, Month.JULY, 1), 70000, BASISJAHR, 0, 70000, 2);
+		assertZeitabschnittFinanzdaten(
+				result.get(i++),
+				LocalDate.of(BASISJAHR_PLUS_1, Month.NOVEMBER, 1),
+				70000,
+				BASISJAHR,
+				0,
+				70000,
+				2);
+		assertZeitabschnittFinanzdaten(
+				result.get(i++),
+				LocalDate.of(BASISJAHR_PLUS_1, Month.DECEMBER, 1),
+				70000,
+				BASISJAHR,
+				0,
+				70000,
+				2);
+		assertZeitabschnittFinanzdaten(
+				result.get(i++),
+				LocalDate.of(BASISJAHR_PLUS_2, Month.JANUARY, 1),
+				70000,
+				BASISJAHR,
+				0,
+				70000,
+				2);
+		assertZeitabschnittFinanzdaten(
+				result.get(i++),
+				LocalDate.of(BASISJAHR_PLUS_2, Month.FEBRUARY, 1),
+				70000,
+				BASISJAHR,
+				0,
+				70000,
+				2);
+		assertZeitabschnittFinanzdaten(
+				result.get(i++),
+				LocalDate.of(BASISJAHR_PLUS_2, Month.MARCH, 1),
+				70000,
+				BASISJAHR,
+				0,
+				70000,
+				2);
+		assertZeitabschnittFinanzdaten(
+				result.get(i++),
+				LocalDate.of(BASISJAHR_PLUS_2, Month.APRIL, 1),
+				70000,
+				BASISJAHR,
+				0,
+				70000,
+				2);
+		assertZeitabschnittFinanzdaten(
+				result.get(i++),
+				LocalDate.of(BASISJAHR_PLUS_2, Month.MAY, 1),
+				70000,
+				BASISJAHR,
+				0,
+				70000,
+				2);
+		assertZeitabschnittFinanzdaten(
+				result.get(i++),
+				LocalDate.of(BASISJAHR_PLUS_2, Month.JUNE, 1),
+				70000,
+				BASISJAHR,
+				0,
+				70000,
+				2);
+		assertZeitabschnittFinanzdaten(
+				result.get(i++),
+				LocalDate.of(BASISJAHR_PLUS_2, Month.JULY, 1),
+				70000,
+				BASISJAHR,
+				0,
+				70000,
+				2);
 	}
 
 	/**
@@ -569,19 +871,103 @@ public abstract class AbstractBGRechnerTest {
 		assertEquals(12, result.size());
 		int i = 0;
 
-		assertZeitabschnittFinanzdaten(result.get(i++), LocalDate.of(BASISJAHR_PLUS_1, Month.AUGUST, 1), 49000, BASISJAHR_PLUS_1, 0, 49000, 2);
-		assertZeitabschnittFinanzdaten(result.get(i++), LocalDate.of(BASISJAHR_PLUS_1, Month.SEPTEMBER, 1), 49000, BASISJAHR_PLUS_1, 0, 49000, 2);
-		assertZeitabschnittFinanzdaten(result.get(i++), LocalDate.of(BASISJAHR_PLUS_1, Month.OCTOBER, 1), 49000, BASISJAHR_PLUS_1, 0, 49000, 2);
-		assertZeitabschnittFinanzdaten(result.get(i++), LocalDate.of(BASISJAHR_PLUS_1, Month.NOVEMBER, 1), 49000, BASISJAHR_PLUS_1, 0, 49000, 2);
-		assertZeitabschnittFinanzdaten(result.get(i++), LocalDate.of(BASISJAHR_PLUS_1, Month.DECEMBER, 1), 49000, BASISJAHR_PLUS_1, 0, 49000, 2);
+		assertZeitabschnittFinanzdaten(
+				result.get(i++),
+				LocalDate.of(BASISJAHR_PLUS_1, Month.AUGUST, 1),
+				49000,
+				BASISJAHR_PLUS_1,
+				0,
+				49000,
+				2);
+		assertZeitabschnittFinanzdaten(
+				result.get(i++),
+				LocalDate.of(BASISJAHR_PLUS_1, Month.SEPTEMBER, 1),
+				49000,
+				BASISJAHR_PLUS_1,
+				0,
+				49000,
+				2);
+		assertZeitabschnittFinanzdaten(
+				result.get(i++),
+				LocalDate.of(BASISJAHR_PLUS_1, Month.OCTOBER, 1),
+				49000,
+				BASISJAHR_PLUS_1,
+				0,
+				49000,
+				2);
+		assertZeitabschnittFinanzdaten(
+				result.get(i++),
+				LocalDate.of(BASISJAHR_PLUS_1, Month.NOVEMBER, 1),
+				49000,
+				BASISJAHR_PLUS_1,
+				0,
+				49000,
+				2);
+		assertZeitabschnittFinanzdaten(
+				result.get(i++),
+				LocalDate.of(BASISJAHR_PLUS_1, Month.DECEMBER, 1),
+				49000,
+				BASISJAHR_PLUS_1,
+				0,
+				49000,
+				2);
 		// Keine EKV 2: Ab Januar gilt wieder das Einkommen des Basisjahres
-		assertZeitabschnittFinanzdaten(result.get(i++), LocalDate.of(BASISJAHR_PLUS_2, Month.JANUARY, 1), 70000, BASISJAHR, 0, 70000, 2);
-		assertZeitabschnittFinanzdaten(result.get(i++), LocalDate.of(BASISJAHR_PLUS_2, Month.FEBRUARY, 1), 70000, BASISJAHR, 0, 70000, 2);
-		assertZeitabschnittFinanzdaten(result.get(i++), LocalDate.of(BASISJAHR_PLUS_2, Month.MARCH, 1), 70000, BASISJAHR, 0, 70000, 2);
-		assertZeitabschnittFinanzdaten(result.get(i++), LocalDate.of(BASISJAHR_PLUS_2, Month.APRIL, 1), 70000, BASISJAHR, 0, 70000, 2);
-		assertZeitabschnittFinanzdaten(result.get(i++), LocalDate.of(BASISJAHR_PLUS_2, Month.MAY, 1), 70000, BASISJAHR, 0, 70000, 2);
-		assertZeitabschnittFinanzdaten(result.get(i++), LocalDate.of(BASISJAHR_PLUS_2, Month.JUNE, 1), 70000, BASISJAHR, 0, 70000, 2);
-		assertZeitabschnittFinanzdaten(result.get(i++), LocalDate.of(BASISJAHR_PLUS_2, Month.JULY, 1), 70000, BASISJAHR, 0, 70000, 2);
+		assertZeitabschnittFinanzdaten(
+				result.get(i++),
+				LocalDate.of(BASISJAHR_PLUS_2, Month.JANUARY, 1),
+				70000,
+				BASISJAHR,
+				0,
+				70000,
+				2);
+		assertZeitabschnittFinanzdaten(
+				result.get(i++),
+				LocalDate.of(BASISJAHR_PLUS_2, Month.FEBRUARY, 1),
+				70000,
+				BASISJAHR,
+				0,
+				70000,
+				2);
+		assertZeitabschnittFinanzdaten(
+				result.get(i++),
+				LocalDate.of(BASISJAHR_PLUS_2, Month.MARCH, 1),
+				70000,
+				BASISJAHR,
+				0,
+				70000,
+				2);
+		assertZeitabschnittFinanzdaten(
+				result.get(i++),
+				LocalDate.of(BASISJAHR_PLUS_2, Month.APRIL, 1),
+				70000,
+				BASISJAHR,
+				0,
+				70000,
+				2);
+		assertZeitabschnittFinanzdaten(
+				result.get(i++),
+				LocalDate.of(BASISJAHR_PLUS_2, Month.MAY, 1),
+				70000,
+				BASISJAHR,
+				0,
+				70000,
+				2);
+		assertZeitabschnittFinanzdaten(
+				result.get(i++),
+				LocalDate.of(BASISJAHR_PLUS_2, Month.JUNE, 1),
+				70000,
+				BASISJAHR,
+				0,
+				70000,
+				2);
+		assertZeitabschnittFinanzdaten(
+				result.get(i++),
+				LocalDate.of(BASISJAHR_PLUS_2, Month.JULY, 1),
+				70000,
+				BASISJAHR,
+				0,
+				70000,
+				2);
 	}
 
 	/**
@@ -596,19 +982,103 @@ public abstract class AbstractBGRechnerTest {
 		assertEquals(12, result.size());
 		int i = 0;
 
-		assertZeitabschnittFinanzdaten(result.get(i++), LocalDate.of(BASISJAHR_PLUS_1, Month.AUGUST, 1), 49000, BASISJAHR_PLUS_1, 11400, 37600, 3);
-		assertZeitabschnittFinanzdaten(result.get(i++), LocalDate.of(BASISJAHR_PLUS_1, Month.SEPTEMBER, 1), 49000, BASISJAHR_PLUS_1, 11400, 37600, 3);
-		assertZeitabschnittFinanzdaten(result.get(i++), LocalDate.of(BASISJAHR_PLUS_1, Month.OCTOBER, 1), 49000, BASISJAHR_PLUS_1, 11400, 37600, 3);
-		assertZeitabschnittFinanzdaten(result.get(i++), LocalDate.of(BASISJAHR_PLUS_1, Month.NOVEMBER, 1), 49000, BASISJAHR_PLUS_1, 11400, 37600, 3);
-		assertZeitabschnittFinanzdaten(result.get(i++), LocalDate.of(BASISJAHR_PLUS_1, Month.DECEMBER, 1), 49000, BASISJAHR_PLUS_1, 11400, 37600, 3);
+		assertZeitabschnittFinanzdaten(
+				result.get(i++),
+				LocalDate.of(BASISJAHR_PLUS_1, Month.AUGUST, 1),
+				49000,
+				BASISJAHR_PLUS_1,
+				11400,
+				37600,
+				3);
+		assertZeitabschnittFinanzdaten(
+				result.get(i++),
+				LocalDate.of(BASISJAHR_PLUS_1, Month.SEPTEMBER, 1),
+				49000,
+				BASISJAHR_PLUS_1,
+				11400,
+				37600,
+				3);
+		assertZeitabschnittFinanzdaten(
+				result.get(i++),
+				LocalDate.of(BASISJAHR_PLUS_1, Month.OCTOBER, 1),
+				49000,
+				BASISJAHR_PLUS_1,
+				11400,
+				37600,
+				3);
+		assertZeitabschnittFinanzdaten(
+				result.get(i++),
+				LocalDate.of(BASISJAHR_PLUS_1, Month.NOVEMBER, 1),
+				49000,
+				BASISJAHR_PLUS_1,
+				11400,
+				37600,
+				3);
+		assertZeitabschnittFinanzdaten(
+				result.get(i++),
+				LocalDate.of(BASISJAHR_PLUS_1, Month.DECEMBER, 1),
+				49000,
+				BASISJAHR_PLUS_1,
+				11400,
+				37600,
+				3);
 		// Keine EKV 2: Ab Januar gilt wieder das Einkommen des Basisjahres
-		assertZeitabschnittFinanzdaten(result.get(i++), LocalDate.of(BASISJAHR_PLUS_2, Month.JANUARY, 1), 100000, BASISJAHR, 11400, 88600, 3);
-		assertZeitabschnittFinanzdaten(result.get(i++), LocalDate.of(BASISJAHR_PLUS_2, Month.FEBRUARY, 1), 100000, BASISJAHR, 11400, 88600, 3);
-		assertZeitabschnittFinanzdaten(result.get(i++), LocalDate.of(BASISJAHR_PLUS_2, Month.MARCH, 1), 100000, BASISJAHR, 11400, 88600, 3);
-		assertZeitabschnittFinanzdaten(result.get(i++), LocalDate.of(BASISJAHR_PLUS_2, Month.APRIL, 1), 100000, BASISJAHR, 11400, 88600, 3);
-		assertZeitabschnittFinanzdaten(result.get(i++), LocalDate.of(BASISJAHR_PLUS_2, Month.MAY, 1), 100000, BASISJAHR, 11400, 88600, 3);
-		assertZeitabschnittFinanzdaten(result.get(i++), LocalDate.of(BASISJAHR_PLUS_2, Month.JUNE, 1), 100000, BASISJAHR, 11400, 88600, 3);
-		assertZeitabschnittFinanzdaten(result.get(i++), LocalDate.of(BASISJAHR_PLUS_2, Month.JULY, 1), 100000, BASISJAHR, 11400, 88600, 3);
+		assertZeitabschnittFinanzdaten(
+				result.get(i++),
+				LocalDate.of(BASISJAHR_PLUS_2, Month.JANUARY, 1),
+				100000,
+				BASISJAHR,
+				11400,
+				88600,
+				3);
+		assertZeitabschnittFinanzdaten(
+				result.get(i++),
+				LocalDate.of(BASISJAHR_PLUS_2, Month.FEBRUARY, 1),
+				100000,
+				BASISJAHR,
+				11400,
+				88600,
+				3);
+		assertZeitabschnittFinanzdaten(
+				result.get(i++),
+				LocalDate.of(BASISJAHR_PLUS_2, Month.MARCH, 1),
+				100000,
+				BASISJAHR,
+				11400,
+				88600,
+				3);
+		assertZeitabschnittFinanzdaten(
+				result.get(i++),
+				LocalDate.of(BASISJAHR_PLUS_2, Month.APRIL, 1),
+				100000,
+				BASISJAHR,
+				11400,
+				88600,
+				3);
+		assertZeitabschnittFinanzdaten(
+				result.get(i++),
+				LocalDate.of(BASISJAHR_PLUS_2, Month.MAY, 1),
+				100000,
+				BASISJAHR,
+				11400,
+				88600,
+				3);
+		assertZeitabschnittFinanzdaten(
+				result.get(i++),
+				LocalDate.of(BASISJAHR_PLUS_2, Month.JUNE, 1),
+				100000,
+				BASISJAHR,
+				11400,
+				88600,
+				3);
+		assertZeitabschnittFinanzdaten(
+				result.get(i++),
+				LocalDate.of(BASISJAHR_PLUS_2, Month.JULY, 1),
+				100000,
+				BASISJAHR,
+				11400,
+				88600,
+				3);
 	}
 
 	/**
@@ -623,20 +1093,104 @@ public abstract class AbstractBGRechnerTest {
 		assertEquals(12, result.size());
 		int i = 0;
 
-		assertZeitabschnittFinanzdaten(result.get(i++), LocalDate.of(BASISJAHR_PLUS_1, Month.AUGUST, 1), 49000, BASISJAHR_PLUS_1, 0, 49000, 2);
-		assertZeitabschnittFinanzdaten(result.get(i++), LocalDate.of(BASISJAHR_PLUS_1, Month.SEPTEMBER, 1), 49000, BASISJAHR_PLUS_1, 0, 49000, 2);
-		assertZeitabschnittFinanzdaten(result.get(i++), LocalDate.of(BASISJAHR_PLUS_1, Month.OCTOBER, 1), 49000, BASISJAHR_PLUS_1, 0, 49000, 2);
-		assertZeitabschnittFinanzdaten(result.get(i++), LocalDate.of(BASISJAHR_PLUS_1, Month.NOVEMBER, 1), 49000, BASISJAHR_PLUS_1, 0, 49000, 2);
-		assertZeitabschnittFinanzdaten(result.get(i++), LocalDate.of(BASISJAHR_PLUS_1, Month.DECEMBER, 1), 49000, BASISJAHR_PLUS_1, 0, 49000, 2);
+		assertZeitabschnittFinanzdaten(
+				result.get(i++),
+				LocalDate.of(BASISJAHR_PLUS_1, Month.AUGUST, 1),
+				49000,
+				BASISJAHR_PLUS_1,
+				0,
+				49000,
+				2);
+		assertZeitabschnittFinanzdaten(
+				result.get(i++),
+				LocalDate.of(BASISJAHR_PLUS_1, Month.SEPTEMBER, 1),
+				49000,
+				BASISJAHR_PLUS_1,
+				0,
+				49000,
+				2);
+		assertZeitabschnittFinanzdaten(
+				result.get(i++),
+				LocalDate.of(BASISJAHR_PLUS_1, Month.OCTOBER, 1),
+				49000,
+				BASISJAHR_PLUS_1,
+				0,
+				49000,
+				2);
+		assertZeitabschnittFinanzdaten(
+				result.get(i++),
+				LocalDate.of(BASISJAHR_PLUS_1, Month.NOVEMBER, 1),
+				49000,
+				BASISJAHR_PLUS_1,
+				0,
+				49000,
+				2);
+		assertZeitabschnittFinanzdaten(
+				result.get(i++),
+				LocalDate.of(BASISJAHR_PLUS_1, Month.DECEMBER, 1),
+				49000,
+				BASISJAHR_PLUS_1,
+				0,
+				49000,
+				2);
 		// Keine EKV 2: Ab Januar gilt wieder das Einkommen des Basisjahres
-		assertZeitabschnittFinanzdaten(result.get(i++), LocalDate.of(BASISJAHR_PLUS_2, Month.JANUARY, 1), 70000, BASISJAHR, 0, 70000, 2);
+		assertZeitabschnittFinanzdaten(
+				result.get(i++),
+				LocalDate.of(BASISJAHR_PLUS_2, Month.JANUARY, 1),
+				70000,
+				BASISJAHR,
+				0,
+				70000,
+				2);
 		// Heirat: 15.01.
-		assertZeitabschnittFinanzdaten(result.get(i++), LocalDate.of(BASISJAHR_PLUS_2, Month.FEBRUARY, 1), 100000, BASISJAHR, 11400, 88600, 3);
-		assertZeitabschnittFinanzdaten(result.get(i++), LocalDate.of(BASISJAHR_PLUS_2, Month.MARCH, 1), 100000, BASISJAHR, 11400, 88600, 3);
-		assertZeitabschnittFinanzdaten(result.get(i++), LocalDate.of(BASISJAHR_PLUS_2, Month.APRIL, 1), 100000, BASISJAHR, 11400, 88600, 3);
-		assertZeitabschnittFinanzdaten(result.get(i++), LocalDate.of(BASISJAHR_PLUS_2, Month.MAY, 1), 100000, BASISJAHR, 11400, 88600, 3);
-		assertZeitabschnittFinanzdaten(result.get(i++), LocalDate.of(BASISJAHR_PLUS_2, Month.JUNE, 1), 100000, BASISJAHR, 11400, 88600, 3);
-		assertZeitabschnittFinanzdaten(result.get(i++), LocalDate.of(BASISJAHR_PLUS_2, Month.JULY, 1), 100000, BASISJAHR, 11400, 88600, 3);
+		assertZeitabschnittFinanzdaten(
+				result.get(i++),
+				LocalDate.of(BASISJAHR_PLUS_2, Month.FEBRUARY, 1),
+				100000,
+				BASISJAHR,
+				11400,
+				88600,
+				3);
+		assertZeitabschnittFinanzdaten(
+				result.get(i++),
+				LocalDate.of(BASISJAHR_PLUS_2, Month.MARCH, 1),
+				100000,
+				BASISJAHR,
+				11400,
+				88600,
+				3);
+		assertZeitabschnittFinanzdaten(
+				result.get(i++),
+				LocalDate.of(BASISJAHR_PLUS_2, Month.APRIL, 1),
+				100000,
+				BASISJAHR,
+				11400,
+				88600,
+				3);
+		assertZeitabschnittFinanzdaten(
+				result.get(i++),
+				LocalDate.of(BASISJAHR_PLUS_2, Month.MAY, 1),
+				100000,
+				BASISJAHR,
+				11400,
+				88600,
+				3);
+		assertZeitabschnittFinanzdaten(
+				result.get(i++),
+				LocalDate.of(BASISJAHR_PLUS_2, Month.JUNE, 1),
+				100000,
+				BASISJAHR,
+				11400,
+				88600,
+				3);
+		assertZeitabschnittFinanzdaten(
+				result.get(i++),
+				LocalDate.of(BASISJAHR_PLUS_2, Month.JULY, 1),
+				100000,
+				BASISJAHR,
+				11400,
+				88600,
+				3);
 	}
 
 	/**
@@ -651,20 +1205,104 @@ public abstract class AbstractBGRechnerTest {
 		assertEquals(12, result.size());
 		int i = 0;
 
-		assertZeitabschnittFinanzdaten(result.get(i++), LocalDate.of(BASISJAHR_PLUS_1, Month.AUGUST, 1), 49000, BASISJAHR_PLUS_1, 0, 49000, 2);
-		assertZeitabschnittFinanzdaten(result.get(i++), LocalDate.of(BASISJAHR_PLUS_1, Month.SEPTEMBER, 1), 49000, BASISJAHR_PLUS_1, 0, 49000, 2);
-		assertZeitabschnittFinanzdaten(result.get(i++), LocalDate.of(BASISJAHR_PLUS_1, Month.OCTOBER, 1), 49000, BASISJAHR_PLUS_1, 0, 49000, 2);
-		assertZeitabschnittFinanzdaten(result.get(i++), LocalDate.of(BASISJAHR_PLUS_1, Month.NOVEMBER, 1), 49000, BASISJAHR_PLUS_1, 0, 49000, 2);
-		assertZeitabschnittFinanzdaten(result.get(i++), LocalDate.of(BASISJAHR_PLUS_1, Month.DECEMBER, 1), 49000, BASISJAHR_PLUS_1, 0, 49000, 2);
+		assertZeitabschnittFinanzdaten(
+				result.get(i++),
+				LocalDate.of(BASISJAHR_PLUS_1, Month.AUGUST, 1),
+				49000,
+				BASISJAHR_PLUS_1,
+				0,
+				49000,
+				2);
+		assertZeitabschnittFinanzdaten(
+				result.get(i++),
+				LocalDate.of(BASISJAHR_PLUS_1, Month.SEPTEMBER, 1),
+				49000,
+				BASISJAHR_PLUS_1,
+				0,
+				49000,
+				2);
+		assertZeitabschnittFinanzdaten(
+				result.get(i++),
+				LocalDate.of(BASISJAHR_PLUS_1, Month.OCTOBER, 1),
+				49000,
+				BASISJAHR_PLUS_1,
+				0,
+				49000,
+				2);
+		assertZeitabschnittFinanzdaten(
+				result.get(i++),
+				LocalDate.of(BASISJAHR_PLUS_1, Month.NOVEMBER, 1),
+				49000,
+				BASISJAHR_PLUS_1,
+				0,
+				49000,
+				2);
+		assertZeitabschnittFinanzdaten(
+				result.get(i++),
+				LocalDate.of(BASISJAHR_PLUS_1, Month.DECEMBER, 1),
+				49000,
+				BASISJAHR_PLUS_1,
+				0,
+				49000,
+				2);
 		// Keine EKV 2: Ab Januar gilt wieder das Einkommen des Basisjahres
-		assertZeitabschnittFinanzdaten(result.get(i++), LocalDate.of(BASISJAHR_PLUS_2, Month.JANUARY, 1), 70000, BASISJAHR, 0, 70000, 2);
+		assertZeitabschnittFinanzdaten(
+				result.get(i++),
+				LocalDate.of(BASISJAHR_PLUS_2, Month.JANUARY, 1),
+				70000,
+				BASISJAHR,
+				0,
+				70000,
+				2);
 		// Heirat: 15.01.
-		assertZeitabschnittFinanzdaten(result.get(i++), LocalDate.of(BASISJAHR_PLUS_2, Month.FEBRUARY, 1), 120000, BASISJAHR, 11400, 108600, 3);
-		assertZeitabschnittFinanzdaten(result.get(i++), LocalDate.of(BASISJAHR_PLUS_2, Month.MARCH, 1), 120000, BASISJAHR, 11400, 108600, 3);
-		assertZeitabschnittFinanzdaten(result.get(i++), LocalDate.of(BASISJAHR_PLUS_2, Month.APRIL, 1), 120000, BASISJAHR, 11400, 108600, 3);
-		assertZeitabschnittFinanzdaten(result.get(i++), LocalDate.of(BASISJAHR_PLUS_2, Month.MAY, 1), 120000, BASISJAHR, 11400, 108600, 3);
-		assertZeitabschnittFinanzdaten(result.get(i++), LocalDate.of(BASISJAHR_PLUS_2, Month.JUNE, 1), 120000, BASISJAHR, 11400, 108600, 3);
-		assertZeitabschnittFinanzdaten(result.get(i++), LocalDate.of(BASISJAHR_PLUS_2, Month.JULY, 1), 120000, BASISJAHR, 11400, 108600, 3);
+		assertZeitabschnittFinanzdaten(
+				result.get(i++),
+				LocalDate.of(BASISJAHR_PLUS_2, Month.FEBRUARY, 1),
+				120000,
+				BASISJAHR,
+				11400,
+				108600,
+				3);
+		assertZeitabschnittFinanzdaten(
+				result.get(i++),
+				LocalDate.of(BASISJAHR_PLUS_2, Month.MARCH, 1),
+				120000,
+				BASISJAHR,
+				11400,
+				108600,
+				3);
+		assertZeitabschnittFinanzdaten(
+				result.get(i++),
+				LocalDate.of(BASISJAHR_PLUS_2, Month.APRIL, 1),
+				120000,
+				BASISJAHR,
+				11400,
+				108600,
+				3);
+		assertZeitabschnittFinanzdaten(
+				result.get(i++),
+				LocalDate.of(BASISJAHR_PLUS_2, Month.MAY, 1),
+				120000,
+				BASISJAHR,
+				11400,
+				108600,
+				3);
+		assertZeitabschnittFinanzdaten(
+				result.get(i++),
+				LocalDate.of(BASISJAHR_PLUS_2, Month.JUNE, 1),
+				120000,
+				BASISJAHR,
+				11400,
+				108600,
+				3);
+		assertZeitabschnittFinanzdaten(
+				result.get(i++),
+				LocalDate.of(BASISJAHR_PLUS_2, Month.JULY, 1),
+				120000,
+				BASISJAHR,
+				11400,
+				108600,
+				3);
 	}
 
 	/**
@@ -679,20 +1317,104 @@ public abstract class AbstractBGRechnerTest {
 		assertEquals(12, result.size());
 		int i = 0;
 
-		assertZeitabschnittFinanzdaten(result.get(i++), LocalDate.of(BASISJAHR_PLUS_1, Month.AUGUST, 1), 71000, BASISJAHR_PLUS_1, 11400, 59600, 3);
-		assertZeitabschnittFinanzdaten(result.get(i++), LocalDate.of(BASISJAHR_PLUS_1, Month.SEPTEMBER, 1), 71000, BASISJAHR_PLUS_1, 11400, 59600, 3);
-		assertZeitabschnittFinanzdaten(result.get(i++), LocalDate.of(BASISJAHR_PLUS_1, Month.OCTOBER, 1), 71000, BASISJAHR_PLUS_1, 11400, 59600, 3);
-		assertZeitabschnittFinanzdaten(result.get(i++), LocalDate.of(BASISJAHR_PLUS_1, Month.NOVEMBER, 1), 71000, BASISJAHR_PLUS_1, 11400, 59600, 3);
-		assertZeitabschnittFinanzdaten(result.get(i++), LocalDate.of(BASISJAHR_PLUS_1, Month.DECEMBER, 1), 71000, BASISJAHR_PLUS_1, 11400, 59600, 3);
+		assertZeitabschnittFinanzdaten(
+				result.get(i++),
+				LocalDate.of(BASISJAHR_PLUS_1, Month.AUGUST, 1),
+				71000,
+				BASISJAHR_PLUS_1,
+				11400,
+				59600,
+				3);
+		assertZeitabschnittFinanzdaten(
+				result.get(i++),
+				LocalDate.of(BASISJAHR_PLUS_1, Month.SEPTEMBER, 1),
+				71000,
+				BASISJAHR_PLUS_1,
+				11400,
+				59600,
+				3);
+		assertZeitabschnittFinanzdaten(
+				result.get(i++),
+				LocalDate.of(BASISJAHR_PLUS_1, Month.OCTOBER, 1),
+				71000,
+				BASISJAHR_PLUS_1,
+				11400,
+				59600,
+				3);
+		assertZeitabschnittFinanzdaten(
+				result.get(i++),
+				LocalDate.of(BASISJAHR_PLUS_1, Month.NOVEMBER, 1),
+				71000,
+				BASISJAHR_PLUS_1,
+				11400,
+				59600,
+				3);
+		assertZeitabschnittFinanzdaten(
+				result.get(i++),
+				LocalDate.of(BASISJAHR_PLUS_1, Month.DECEMBER, 1),
+				71000,
+				BASISJAHR_PLUS_1,
+				11400,
+				59600,
+				3);
 		// Keine EKV 2: Ab Januar gilt wieder das Einkommen des Basisjahres
-		assertZeitabschnittFinanzdaten(result.get(i++), LocalDate.of(BASISJAHR_PLUS_2, Month.JANUARY, 1), 100000, BASISJAHR, 11400, 88600, 3);
+		assertZeitabschnittFinanzdaten(
+				result.get(i++),
+				LocalDate.of(BASISJAHR_PLUS_2, Month.JANUARY, 1),
+				100000,
+				BASISJAHR,
+				11400,
+				88600,
+				3);
 		// Scheidung: 15.01.
-		assertZeitabschnittFinanzdaten(result.get(i++), LocalDate.of(BASISJAHR_PLUS_2, Month.FEBRUARY, 1), 70000, BASISJAHR, 0, 70000, 2);
-		assertZeitabschnittFinanzdaten(result.get(i++), LocalDate.of(BASISJAHR_PLUS_2, Month.MARCH, 1), 70000, BASISJAHR, 0, 70000, 2);
-		assertZeitabschnittFinanzdaten(result.get(i++), LocalDate.of(BASISJAHR_PLUS_2, Month.APRIL, 1), 70000, BASISJAHR, 0, 70000, 2);
-		assertZeitabschnittFinanzdaten(result.get(i++), LocalDate.of(BASISJAHR_PLUS_2, Month.MAY, 1), 70000, BASISJAHR, 0, 70000, 2);
-		assertZeitabschnittFinanzdaten(result.get(i++), LocalDate.of(BASISJAHR_PLUS_2, Month.JUNE, 1), 70000, BASISJAHR, 0, 70000, 2);
-		assertZeitabschnittFinanzdaten(result.get(i++), LocalDate.of(BASISJAHR_PLUS_2, Month.JULY, 1), 70000, BASISJAHR, 0, 70000, 2);
+		assertZeitabschnittFinanzdaten(
+				result.get(i++),
+				LocalDate.of(BASISJAHR_PLUS_2, Month.FEBRUARY, 1),
+				70000,
+				BASISJAHR,
+				0,
+				70000,
+				2);
+		assertZeitabschnittFinanzdaten(
+				result.get(i++),
+				LocalDate.of(BASISJAHR_PLUS_2, Month.MARCH, 1),
+				70000,
+				BASISJAHR,
+				0,
+				70000,
+				2);
+		assertZeitabschnittFinanzdaten(
+				result.get(i++),
+				LocalDate.of(BASISJAHR_PLUS_2, Month.APRIL, 1),
+				70000,
+				BASISJAHR,
+				0,
+				70000,
+				2);
+		assertZeitabschnittFinanzdaten(
+				result.get(i++),
+				LocalDate.of(BASISJAHR_PLUS_2, Month.MAY, 1),
+				70000,
+				BASISJAHR,
+				0,
+				70000,
+				2);
+		assertZeitabschnittFinanzdaten(
+				result.get(i++),
+				LocalDate.of(BASISJAHR_PLUS_2, Month.JUNE, 1),
+				70000,
+				BASISJAHR,
+				0,
+				70000,
+				2);
+		assertZeitabschnittFinanzdaten(
+				result.get(i++),
+				LocalDate.of(BASISJAHR_PLUS_2, Month.JULY, 1),
+				70000,
+				BASISJAHR,
+				0,
+				70000,
+				2);
 	}
 
 	/**
@@ -707,20 +1429,104 @@ public abstract class AbstractBGRechnerTest {
 		assertEquals(12, result.size());
 		int i = 0;
 
-		assertZeitabschnittFinanzdaten(result.get(i++), LocalDate.of(BASISJAHR_PLUS_1, Month.AUGUST, 1), 79000, BASISJAHR_PLUS_1, 11400, 67600, 3);
-		assertZeitabschnittFinanzdaten(result.get(i++), LocalDate.of(BASISJAHR_PLUS_1, Month.SEPTEMBER, 1), 79000, BASISJAHR_PLUS_1, 11400, 67600, 3);
-		assertZeitabschnittFinanzdaten(result.get(i++), LocalDate.of(BASISJAHR_PLUS_1, Month.OCTOBER, 1), 79000, BASISJAHR_PLUS_1, 11400, 67600, 3);
-		assertZeitabschnittFinanzdaten(result.get(i++), LocalDate.of(BASISJAHR_PLUS_1, Month.NOVEMBER, 1), 79000, BASISJAHR_PLUS_1, 11400, 67600, 3);
-		assertZeitabschnittFinanzdaten(result.get(i++), LocalDate.of(BASISJAHR_PLUS_1, Month.DECEMBER, 1), 79000, BASISJAHR_PLUS_1, 11400, 67600, 3);
+		assertZeitabschnittFinanzdaten(
+				result.get(i++),
+				LocalDate.of(BASISJAHR_PLUS_1, Month.AUGUST, 1),
+				79000,
+				BASISJAHR_PLUS_1,
+				11400,
+				67600,
+				3);
+		assertZeitabschnittFinanzdaten(
+				result.get(i++),
+				LocalDate.of(BASISJAHR_PLUS_1, Month.SEPTEMBER, 1),
+				79000,
+				BASISJAHR_PLUS_1,
+				11400,
+				67600,
+				3);
+		assertZeitabschnittFinanzdaten(
+				result.get(i++),
+				LocalDate.of(BASISJAHR_PLUS_1, Month.OCTOBER, 1),
+				79000,
+				BASISJAHR_PLUS_1,
+				11400,
+				67600,
+				3);
+		assertZeitabschnittFinanzdaten(
+				result.get(i++),
+				LocalDate.of(BASISJAHR_PLUS_1, Month.NOVEMBER, 1),
+				79000,
+				BASISJAHR_PLUS_1,
+				11400,
+				67600,
+				3);
+		assertZeitabschnittFinanzdaten(
+				result.get(i++),
+				LocalDate.of(BASISJAHR_PLUS_1, Month.DECEMBER, 1),
+				79000,
+				BASISJAHR_PLUS_1,
+				11400,
+				67600,
+				3);
 		// Keine EKV 2: Ab Januar gilt wieder das Einkommen des Basisjahres
-		assertZeitabschnittFinanzdaten(result.get(i++), LocalDate.of(BASISJAHR_PLUS_2, Month.JANUARY, 1), 100000, BASISJAHR, 11400, 88600, 3);
+		assertZeitabschnittFinanzdaten(
+				result.get(i++),
+				LocalDate.of(BASISJAHR_PLUS_2, Month.JANUARY, 1),
+				100000,
+				BASISJAHR,
+				11400,
+				88600,
+				3);
 		// Scheidung: 15.01.
-		assertZeitabschnittFinanzdaten(result.get(i++), LocalDate.of(BASISJAHR_PLUS_2, Month.FEBRUARY, 1), 70000, BASISJAHR, 0, 70000, 2);
-		assertZeitabschnittFinanzdaten(result.get(i++), LocalDate.of(BASISJAHR_PLUS_2, Month.MARCH, 1), 70000, BASISJAHR, 0, 70000, 2);
-		assertZeitabschnittFinanzdaten(result.get(i++), LocalDate.of(BASISJAHR_PLUS_2, Month.APRIL, 1), 70000, BASISJAHR, 0, 70000, 2);
-		assertZeitabschnittFinanzdaten(result.get(i++), LocalDate.of(BASISJAHR_PLUS_2, Month.MAY, 1), 70000, BASISJAHR, 0, 70000, 2);
-		assertZeitabschnittFinanzdaten(result.get(i++), LocalDate.of(BASISJAHR_PLUS_2, Month.JUNE, 1), 70000, BASISJAHR, 0, 70000, 2);
-		assertZeitabschnittFinanzdaten(result.get(i++), LocalDate.of(BASISJAHR_PLUS_2, Month.JULY, 1), 70000, BASISJAHR, 0, 70000, 2);
+		assertZeitabschnittFinanzdaten(
+				result.get(i++),
+				LocalDate.of(BASISJAHR_PLUS_2, Month.FEBRUARY, 1),
+				70000,
+				BASISJAHR,
+				0,
+				70000,
+				2);
+		assertZeitabschnittFinanzdaten(
+				result.get(i++),
+				LocalDate.of(BASISJAHR_PLUS_2, Month.MARCH, 1),
+				70000,
+				BASISJAHR,
+				0,
+				70000,
+				2);
+		assertZeitabschnittFinanzdaten(
+				result.get(i++),
+				LocalDate.of(BASISJAHR_PLUS_2, Month.APRIL, 1),
+				70000,
+				BASISJAHR,
+				0,
+				70000,
+				2);
+		assertZeitabschnittFinanzdaten(
+				result.get(i++),
+				LocalDate.of(BASISJAHR_PLUS_2, Month.MAY, 1),
+				70000,
+				BASISJAHR,
+				0,
+				70000,
+				2);
+		assertZeitabschnittFinanzdaten(
+				result.get(i++),
+				LocalDate.of(BASISJAHR_PLUS_2, Month.JUNE, 1),
+				70000,
+				BASISJAHR,
+				0,
+				70000,
+				2);
+		assertZeitabschnittFinanzdaten(
+				result.get(i++),
+				LocalDate.of(BASISJAHR_PLUS_2, Month.JULY, 1),
+				70000,
+				BASISJAHR,
+				0,
+				70000,
+				2);
 	}
 
 	/**
@@ -735,22 +1541,113 @@ public abstract class AbstractBGRechnerTest {
 		assertEquals(13, result.size());
 		int i = 0;
 
-		assertZeitabschnittFinanzdaten(result.get(i++), LocalDate.of(BASISJAHR_PLUS_1, Month.AUGUST, 1), 70000, BASISJAHR, 0, 70000, 2);
+		assertZeitabschnittFinanzdaten(
+				result.get(i++),
+				LocalDate.of(BASISJAHR_PLUS_1, Month.AUGUST, 1),
+				70000,
+				BASISJAHR,
+				0,
+				70000,
+				2);
 		// Betreuungsbeginn
-		assertZeitabschnittFinanzdaten(result.get(i++), LocalDate.of(BASISJAHR_PLUS_1, Month.AUGUST, 15), 70000, BASISJAHR, 0, 70000, 2);
-		assertZeitabschnittFinanzdaten(result.get(i++), LocalDate.of(BASISJAHR_PLUS_1, Month.SEPTEMBER, 1), 70000, BASISJAHR, 0, 70000, 2);
-		assertZeitabschnittFinanzdaten(result.get(i++), LocalDate.of(BASISJAHR_PLUS_1, Month.OCTOBER, 1), 70000, BASISJAHR, 0, 70000, 2);
-		assertZeitabschnittFinanzdaten(result.get(i++), LocalDate.of(BASISJAHR_PLUS_1, Month.NOVEMBER, 1), 70000, BASISJAHR, 0, 70000, 2);
-		assertZeitabschnittFinanzdaten(result.get(i++), LocalDate.of(BASISJAHR_PLUS_1, Month.DECEMBER, 1), 70000, BASISJAHR, 0, 70000, 2);
+		assertZeitabschnittFinanzdaten(
+				result.get(i++),
+				LocalDate.of(BASISJAHR_PLUS_1, Month.AUGUST, 15),
+				70000,
+				BASISJAHR,
+				0,
+				70000,
+				2);
+		assertZeitabschnittFinanzdaten(
+				result.get(i++),
+				LocalDate.of(BASISJAHR_PLUS_1, Month.SEPTEMBER, 1),
+				70000,
+				BASISJAHR,
+				0,
+				70000,
+				2);
+		assertZeitabschnittFinanzdaten(
+				result.get(i++),
+				LocalDate.of(BASISJAHR_PLUS_1, Month.OCTOBER, 1),
+				70000,
+				BASISJAHR,
+				0,
+				70000,
+				2);
+		assertZeitabschnittFinanzdaten(
+				result.get(i++),
+				LocalDate.of(BASISJAHR_PLUS_1, Month.NOVEMBER, 1),
+				70000,
+				BASISJAHR,
+				0,
+				70000,
+				2);
+		assertZeitabschnittFinanzdaten(
+				result.get(i++),
+				LocalDate.of(BASISJAHR_PLUS_1, Month.DECEMBER, 1),
+				70000,
+				BASISJAHR,
+				0,
+				70000,
+				2);
 		// EKV (gilt für das ganze Jahr)
-		assertZeitabschnittFinanzdaten(result.get(i++), LocalDate.of(BASISJAHR_PLUS_2, Month.JANUARY, 1), 50000, BASISJAHR_PLUS_2, 0, 50000, 2);
+		assertZeitabschnittFinanzdaten(
+				result.get(i++),
+				LocalDate.of(BASISJAHR_PLUS_2, Month.JANUARY, 1),
+				50000,
+				BASISJAHR_PLUS_2,
+				0,
+				50000,
+				2);
 		// Heirat: 15.01.
-		assertZeitabschnittFinanzdaten(result.get(i++), LocalDate.of(BASISJAHR_PLUS_2, Month.FEBRUARY, 1), 79000, BASISJAHR_PLUS_2, 11400, 67600, 3);
-		assertZeitabschnittFinanzdaten(result.get(i++), LocalDate.of(BASISJAHR_PLUS_2, Month.MARCH, 1), 79000, BASISJAHR_PLUS_2, 11400, 67600, 3);
-		assertZeitabschnittFinanzdaten(result.get(i++), LocalDate.of(BASISJAHR_PLUS_2, Month.APRIL, 1), 79000, BASISJAHR_PLUS_2, 11400, 67600, 3);
-		assertZeitabschnittFinanzdaten(result.get(i++), LocalDate.of(BASISJAHR_PLUS_2, Month.MAY, 1), 79000, BASISJAHR_PLUS_2, 11400, 67600, 3);
-		assertZeitabschnittFinanzdaten(result.get(i++), LocalDate.of(BASISJAHR_PLUS_2, Month.JUNE, 1), 79000, BASISJAHR_PLUS_2, 11400, 67600, 3);
-		assertZeitabschnittFinanzdaten(result.get(i++), LocalDate.of(BASISJAHR_PLUS_2, Month.JULY, 1), 79000, BASISJAHR_PLUS_2, 11400, 67600, 3);
+		assertZeitabschnittFinanzdaten(
+				result.get(i++),
+				LocalDate.of(BASISJAHR_PLUS_2, Month.FEBRUARY, 1),
+				79000,
+				BASISJAHR_PLUS_2,
+				11400,
+				67600,
+				3);
+		assertZeitabschnittFinanzdaten(
+				result.get(i++),
+				LocalDate.of(BASISJAHR_PLUS_2, Month.MARCH, 1),
+				79000,
+				BASISJAHR_PLUS_2,
+				11400,
+				67600,
+				3);
+		assertZeitabschnittFinanzdaten(
+				result.get(i++),
+				LocalDate.of(BASISJAHR_PLUS_2, Month.APRIL, 1),
+				79000,
+				BASISJAHR_PLUS_2,
+				11400,
+				67600,
+				3);
+		assertZeitabschnittFinanzdaten(
+				result.get(i++),
+				LocalDate.of(BASISJAHR_PLUS_2, Month.MAY, 1),
+				79000,
+				BASISJAHR_PLUS_2,
+				11400,
+				67600,
+				3);
+		assertZeitabschnittFinanzdaten(
+				result.get(i++),
+				LocalDate.of(BASISJAHR_PLUS_2, Month.JUNE, 1),
+				79000,
+				BASISJAHR_PLUS_2,
+				11400,
+				67600,
+				3);
+		assertZeitabschnittFinanzdaten(
+				result.get(i++),
+				LocalDate.of(BASISJAHR_PLUS_2, Month.JULY, 1),
+				79000,
+				BASISJAHR_PLUS_2,
+				11400,
+				67600,
+				3);
 	}
 
 	/**
@@ -765,22 +1662,113 @@ public abstract class AbstractBGRechnerTest {
 		assertEquals(13, result.size());
 		int i = 0;
 
-		assertZeitabschnittFinanzdaten(result.get(i++), LocalDate.of(BASISJAHR_PLUS_1, Month.AUGUST, 1), 100000, BASISJAHR, 11400, 88600, 3);
+		assertZeitabschnittFinanzdaten(
+				result.get(i++),
+				LocalDate.of(BASISJAHR_PLUS_1, Month.AUGUST, 1),
+				100000,
+				BASISJAHR,
+				11400,
+				88600,
+				3);
 		// Betreuungsstart: 15.08.
-		assertZeitabschnittFinanzdaten(result.get(i++), LocalDate.of(BASISJAHR_PLUS_1, Month.AUGUST, 15), 100000, BASISJAHR, 11400, 88600, 3);
-		assertZeitabschnittFinanzdaten(result.get(i++), LocalDate.of(BASISJAHR_PLUS_1, Month.SEPTEMBER, 1), 100000, BASISJAHR, 11400, 88600, 3);
-		assertZeitabschnittFinanzdaten(result.get(i++), LocalDate.of(BASISJAHR_PLUS_1, Month.OCTOBER, 1), 100000, BASISJAHR, 11400, 88600, 3);
-		assertZeitabschnittFinanzdaten(result.get(i++), LocalDate.of(BASISJAHR_PLUS_1, Month.NOVEMBER, 1), 100000, BASISJAHR, 11400, 88600, 3);
-		assertZeitabschnittFinanzdaten(result.get(i++), LocalDate.of(BASISJAHR_PLUS_1, Month.DECEMBER, 1), 100000, BASISJAHR, 11400, 88600, 3);
+		assertZeitabschnittFinanzdaten(
+				result.get(i++),
+				LocalDate.of(BASISJAHR_PLUS_1, Month.AUGUST, 15),
+				100000,
+				BASISJAHR,
+				11400,
+				88600,
+				3);
+		assertZeitabschnittFinanzdaten(
+				result.get(i++),
+				LocalDate.of(BASISJAHR_PLUS_1, Month.SEPTEMBER, 1),
+				100000,
+				BASISJAHR,
+				11400,
+				88600,
+				3);
+		assertZeitabschnittFinanzdaten(
+				result.get(i++),
+				LocalDate.of(BASISJAHR_PLUS_1, Month.OCTOBER, 1),
+				100000,
+				BASISJAHR,
+				11400,
+				88600,
+				3);
+		assertZeitabschnittFinanzdaten(
+				result.get(i++),
+				LocalDate.of(BASISJAHR_PLUS_1, Month.NOVEMBER, 1),
+				100000,
+				BASISJAHR,
+				11400,
+				88600,
+				3);
+		assertZeitabschnittFinanzdaten(
+				result.get(i++),
+				LocalDate.of(BASISJAHR_PLUS_1, Month.DECEMBER, 1),
+				100000,
+				BASISJAHR,
+				11400,
+				88600,
+				3);
 		// EKV (gilt für das ganze Jahr)
-		assertZeitabschnittFinanzdaten(result.get(i++), LocalDate.of(BASISJAHR_PLUS_2, Month.JANUARY, 1), 50000, BASISJAHR_PLUS_2, 11400, 38600, 3);
+		assertZeitabschnittFinanzdaten(
+				result.get(i++),
+				LocalDate.of(BASISJAHR_PLUS_2, Month.JANUARY, 1),
+				50000,
+				BASISJAHR_PLUS_2,
+				11400,
+				38600,
+				3);
 		// Scheidung: 15.01.
-		assertZeitabschnittFinanzdaten(result.get(i++), LocalDate.of(BASISJAHR_PLUS_2, Month.FEBRUARY, 1), 50000, BASISJAHR_PLUS_2, 0, 50000, 2);
-		assertZeitabschnittFinanzdaten(result.get(i++), LocalDate.of(BASISJAHR_PLUS_2, Month.MARCH, 1), 50000, BASISJAHR_PLUS_2, 0, 50000, 2);
-		assertZeitabschnittFinanzdaten(result.get(i++), LocalDate.of(BASISJAHR_PLUS_2, Month.APRIL, 1), 50000, BASISJAHR_PLUS_2, 0, 50000, 2);
-		assertZeitabschnittFinanzdaten(result.get(i++), LocalDate.of(BASISJAHR_PLUS_2, Month.MAY, 1), 50000, BASISJAHR_PLUS_2, 0, 50000, 2);
-		assertZeitabschnittFinanzdaten(result.get(i++), LocalDate.of(BASISJAHR_PLUS_2, Month.JUNE, 1), 50000, BASISJAHR_PLUS_2, 0, 50000, 2);
-		assertZeitabschnittFinanzdaten(result.get(i++), LocalDate.of(BASISJAHR_PLUS_2, Month.JULY, 1), 50000, BASISJAHR_PLUS_2, 0, 50000, 2);
+		assertZeitabschnittFinanzdaten(
+				result.get(i++),
+				LocalDate.of(BASISJAHR_PLUS_2, Month.FEBRUARY, 1),
+				50000,
+				BASISJAHR_PLUS_2,
+				0,
+				50000,
+				2);
+		assertZeitabschnittFinanzdaten(
+				result.get(i++),
+				LocalDate.of(BASISJAHR_PLUS_2, Month.MARCH, 1),
+				50000,
+				BASISJAHR_PLUS_2,
+				0,
+				50000,
+				2);
+		assertZeitabschnittFinanzdaten(
+				result.get(i++),
+				LocalDate.of(BASISJAHR_PLUS_2, Month.APRIL, 1),
+				50000,
+				BASISJAHR_PLUS_2,
+				0,
+				50000,
+				2);
+		assertZeitabschnittFinanzdaten(
+				result.get(i++),
+				LocalDate.of(BASISJAHR_PLUS_2, Month.MAY, 1),
+				50000,
+				BASISJAHR_PLUS_2,
+				0,
+				50000,
+				2);
+		assertZeitabschnittFinanzdaten(
+				result.get(i++),
+				LocalDate.of(BASISJAHR_PLUS_2, Month.JUNE, 1),
+				50000,
+				BASISJAHR_PLUS_2,
+				0,
+				50000,
+				2);
+		assertZeitabschnittFinanzdaten(
+				result.get(i++),
+				LocalDate.of(BASISJAHR_PLUS_2, Month.JULY, 1),
+				50000,
+				BASISJAHR_PLUS_2,
+				0,
+				50000,
+				2);
 	}
 
 	public static void checkTestfall_ASIV_11_MZV(Gesuch gesuch) {
@@ -789,7 +1777,7 @@ public abstract class AbstractBGRechnerTest {
 		List<VerfuegungZeitabschnitt> result = betreuung.getVerfuegungOrVerfuegungPreview().getZeitabschnitte();
 		assertNotNull(result);
 		assertEquals(12, result.size());
-		for(int i = 0; i < 12; i++){
+		for (int i = 0; i < 12; i++) {
 			final BGCalculationResult bgResult = result.get(i).getBgCalculationResultGemeinde();
 			assertNotNull(bgResult);
 			assertEquals(bgResult.getVerguenstigungMahlzeitenTotal(), BigDecimal.valueOf(60));
@@ -809,7 +1797,7 @@ public abstract class AbstractBGRechnerTest {
 		assertNotNull(bgResult0);
 		assertEquals(bgResult0.getVerguenstigungMahlzeitenTotal(), BigDecimal.valueOf(0));
 		// aber ab September sollte wie normal die MVZ gegeben werden
-		for(int i = 1; i < 12; i++){
+		for (int i = 1; i < 12; i++) {
 			final BGCalculationResult bgResult = result.get(i).getBgCalculationResultGemeinde();
 			assertNotNull(bgResult);
 			assertEquals(bgResult.getVerguenstigungMahlzeitenTotal(), BigDecimal.valueOf(60));
@@ -827,12 +1815,13 @@ public abstract class AbstractBGRechnerTest {
 		final BGCalculationResult bgResult0 = result.get(0).getBgCalculationResultGemeinde();
 		assertNotNull(bgResult0);
 		assertEquals(bgResult0.getVerguenstigungMahlzeitenTotal(), BigDecimal.valueOf(0));
-		// wegen die Mutation die gilt ab September soll in der letzten Zeitabschnitt von August noch keine Mahlzeitverguenstigung geben
+		// wegen die Mutation die gilt ab September soll in der letzten Zeitabschnitt von August noch keine
+		// Mahlzeitverguenstigung geben
 		final BGCalculationResult bgResult1 = result.get(1).getBgCalculationResultGemeinde();
 		assertNotNull(bgResult1);
 		assertEquals(bgResult1.getVerguenstigungMahlzeitenTotal(), BigDecimal.valueOf(0));
 		// aber ab September sollte wie normal die MVZ gegeben werden
-		for(int i = 2; i < 13; i++){
+		for (int i = 2; i < 13; i++) {
 			final BGCalculationResult bgResult = result.get(i).getBgCalculationResultGemeinde();
 			assertNotNull(bgResult);
 			assertEquals(bgResult.getVerguenstigungMahlzeitenTotal(), BigDecimal.valueOf(60));

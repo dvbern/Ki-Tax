@@ -49,7 +49,8 @@ public class RulesServiceBean extends AbstractBaseService implements RulesServic
 	private ApplicationPropertyService applicationPropertyService;
 
 	/**
-	 * Diese Methode initialisiert den Calculator mit den richtigen Parametern und benotigten Regeln fuer den Mandanten der
+	 * Diese Methode initialisiert den Calculator mit den
+	 * richtigen Parametern und benotigten Regeln fuer den Mandanten der
 	 * gebraucht wird
 	 */
 	@Override
@@ -61,11 +62,12 @@ public class RulesServiceBean extends AbstractBaseService implements RulesServic
 	) {
 		BetreuungsgutscheinConfigurator ruleConfigurator = new BetreuungsgutscheinConfigurator();
 		Set<EinstellungKey> keysToLoad = ruleConfigurator.getRequiredParametersForGemeinde();
-		Map<EinstellungKey, Einstellung> einstellungen = einstellungService.loadRuleParameters(gemeinde, gesuchsperiode, keysToLoad);
-		List<DemoFeatureTyp> activatedDemoFeatures = applicationPropertyService.getActivatedDemoFeatures(gesuchsperiode.getMandant());
-		RuleParameterUtil ruleParameterUtil = new RuleParameterUtil(einstellungen, activatedDemoFeatures, kitaxParameterDTO, locale);
+		Map<EinstellungKey, Einstellung> einstellungen =
+				einstellungService.loadRuleParameters(gemeinde, gesuchsperiode, keysToLoad);
+		List<DemoFeatureTyp> activatedDemoFeatures =
+				applicationPropertyService.getActivatedDemoFeatures(gesuchsperiode.getMandant());
+		RuleParameterUtil ruleParameterUtil =
+				new RuleParameterUtil(einstellungen, activatedDemoFeatures, kitaxParameterDTO, locale);
 		return ruleConfigurator.configureRulesForMandant(gemeinde, ruleParameterUtil);
 	}
-
-
 }
