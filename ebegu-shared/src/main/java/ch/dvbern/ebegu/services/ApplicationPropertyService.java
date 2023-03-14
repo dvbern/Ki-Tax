@@ -27,6 +27,7 @@ import javax.annotation.Nullable;
 import ch.dvbern.ebegu.entities.ApplicationProperty;
 import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.enums.ApplicationPropertyKey;
+import ch.dvbern.ebegu.enums.DemoFeatureTyp;
 
 /**
  * Service zum Verwalten von Application Properties
@@ -43,15 +44,19 @@ public interface ApplicationPropertyService {
 	 * @return ApplicationProperty mit key und value
 	 */
 	@Nonnull
-	ApplicationProperty saveOrUpdateApplicationProperty(@Nonnull ApplicationPropertyKey key, @Nonnull String value, @Nonnull
-			Mandant mandant);
+	ApplicationProperty saveOrUpdateApplicationProperty(
+			@Nonnull ApplicationPropertyKey key,
+			@Nonnull String value,
+			@Nonnull Mandant mandant);
 
 	/**
 	 * @param key name des Property
 	 * @return Property mit demg egebenen key oder null falls nicht vorhanden
 	 */
 	@Nonnull
-	Optional<ApplicationProperty> readApplicationProperty(@Nonnull ApplicationPropertyKey key, @Nonnull Mandant mandant);
+	Optional<ApplicationProperty> readApplicationProperty(
+			@Nonnull ApplicationPropertyKey key,
+			@Nonnull Mandant mandant);
 
 	/**
 	 * List die Liste der zugelassenen Mimetypes
@@ -105,7 +110,10 @@ public interface ApplicationPropertyService {
 	 * Falls das Property nicht gefunden wird, wird defaultValue zurueckgegeben.
 	 */
 	@Nonnull
-	Boolean findApplicationPropertyAsBoolean(@Nonnull ApplicationPropertyKey name, @Nonnull Mandant mandant, boolean defaultValue);
+	Boolean findApplicationPropertyAsBoolean(
+			@Nonnull ApplicationPropertyKey name,
+			@Nonnull Mandant mandant,
+			boolean defaultValue);
 
 	/**
 	 * Ab diesem Datum gelten fuer die Stadt Bern die ASIV Regeln
@@ -130,4 +138,9 @@ public interface ApplicationPropertyService {
 	 */
 	@Nonnull
 	Boolean isPublishSchnittstelleEventsAktiviert(@Nonnull Mandant mandant);
+
+	/**
+	 * Gibt eine Liste mit den aktivierten DemoFeatures zurück
+	 */
+	List<DemoFeatureTyp> getActivatedDemoFeatures(@Nonnull Mandant mandant);
 }
