@@ -15,7 +15,6 @@
 
 package ch.dvbern.ebegu.services;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -29,10 +28,12 @@ import javax.inject.Inject;
 import ch.dvbern.ebegu.entities.Einstellung;
 import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
+import ch.dvbern.ebegu.enums.DemoFeatureTyp;
 import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.rules.BetreuungsgutscheinConfigurator;
 import ch.dvbern.ebegu.rules.Rule;
 import ch.dvbern.ebegu.util.KitaxUebergangsloesungParameter;
+import ch.dvbern.ebegu.util.RuleParameterUtil;
 
 /**
  * Services fuer Rules
@@ -44,8 +45,12 @@ public class RulesServiceBean extends AbstractBaseService implements RulesServic
 	@Inject
 	private EinstellungService einstellungService;
 
+	@Inject
+	private ApplicationPropertyService applicationPropertyService;
+
 	/**
-	 * Diese Methode initialisiert den Calculator mit den richtigen Parametern und benotigten Regeln fuer den Mandanten der
+	 * Diese Methode initialisiert den Calculator mit den
+	 * richtigen Parametern und benotigten Regeln fuer den Mandanten der
 	 * gebraucht wird
 	 */
 	@Override
@@ -57,7 +62,12 @@ public class RulesServiceBean extends AbstractBaseService implements RulesServic
 	) {
 		BetreuungsgutscheinConfigurator ruleConfigurator = new BetreuungsgutscheinConfigurator();
 		Set<EinstellungKey> keysToLoad = ruleConfigurator.getRequiredParametersForGemeinde();
-		Map<EinstellungKey, Einstellung> einstellungen = einstellungService.loadRuleParameters(gemeinde, gesuchsperiode, keysToLoad);
-		return ruleConfigurator.configureRulesForMandant(gemeinde, einstellungen, kitaxParameterDTO, locale);
+		Map<EinstellungKey, Einstellung> einstellungen =
+				einstellungService.loadRuleParameters(gemeinde, gesuchsperiode, keysToLoad);
+		List<DemoFeatureTyp> activatedDemoFeatures =
+				applicationPropertyService.getActivatedDemoFeatures(gesuchsperiode.getMandant());
+		RuleParameterUtil ruleParameterUtil =
+				new RuleParameterUtil(einstellungen, activatedDemoFeatures, kitaxParameterDTO, locale);
+		return ruleConfigurator.configureRulesForMandant(gemeinde, ruleParameterUtil);
 	}
 }

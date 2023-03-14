@@ -34,6 +34,7 @@ import ch.dvbern.ebegu.rules.Rule;
 import ch.dvbern.ebegu.test.TestDataUtil;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.KitaxUebergangsloesungParameter;
+import ch.dvbern.ebegu.util.RuleParameterUtil;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -46,7 +47,8 @@ import static ch.dvbern.ebegu.util.Constants.EinstellungenDefaultWerteAsiv.ZUSCH
 public class GemeindespezifischeBerechnungTest extends AbstractBGRechnerTest {
 
 	private BetreuungsgutscheinConfigurator ruleConfigurator = new BetreuungsgutscheinConfigurator();
-	private Map<EinstellungKey, Einstellung> einstellungenGemaessAsiv = EbeguRuleTestsHelper.getAllEinstellungen(gesuchsperiodeOfEvaluator);
+	private Map<EinstellungKey, Einstellung> einstellungenGemaessAsiv =
+			EbeguRuleTestsHelper.getAllEinstellungen(gesuchsperiodeOfEvaluator);
 	private BetreuungsgutscheinExecutor executor = new BetreuungsgutscheinExecutor(true, einstellungenGemaessAsiv);
 	private KitaxUebergangsloesungParameter kitaxParams = TestDataUtil.geKitaxUebergangsloesungParameter();
 
@@ -69,17 +71,20 @@ public class GemeindespezifischeBerechnungTest extends AbstractBGRechnerTest {
 	public void gemeindeOhneSpezialeinstellungen() {
 		// Normale Default Einstellungen nach ASIV
 		Map<EinstellungKey, Einstellung> einstellungenGemeinde = prepareEinstellungen(
-			MAX_ERWERBSPENSUM_FREIWILLIGENARBEIT, MIN_ERWERBSPENSUM_NICHT_EINGESCHULT, MIN_ERWERBSPENSUM_EINGESCHULT, ZUSCHLAG_ERWERBSPENSUM);
+				MAX_ERWERBSPENSUM_FREIWILLIGENARBEIT,
+				MIN_ERWERBSPENSUM_NICHT_EINGESCHULT,
+				MIN_ERWERBSPENSUM_EINGESCHULT,
+				ZUSCHLAG_ERWERBSPENSUM);
 		// EWP 20 -> erreicht
 		final AbstractPlatz platz = preparePlatz(EinschulungTyp.VORSCHULALTER, 20, 0);
 
 		final VerfuegungZeitabschnitt abschnitt = calculate(einstellungenGemeinde, platz);
 		Assert.assertFalse(
-			"Keine Gemeindespezifische Berechnung, die Einstellungen entsprechen den Defaults von ASIV",
-			abschnitt.isHasGemeindeSpezifischeBerechnung());
+				"Keine Gemeindespezifische Berechnung, die Einstellungen entsprechen den Defaults von ASIV",
+				abschnitt.isHasGemeindeSpezifischeBerechnung());
 		Assert.assertNull(
-			"Entsprechend soll das Gemeinde-Result null sein",
-			abschnitt.getBgCalculationResultGemeinde());
+				"Entsprechend soll das Gemeinde-Result null sein",
+				abschnitt.getBgCalculationResultGemeinde());
 
 		Assert.assertEquals(40, abschnitt.getBgCalculationInputAsiv().getBgPensumProzent().intValue());
 		Assert.assertEquals(2, abschnitt.getBemerkungenDTOList().uniqueSize());
@@ -95,18 +100,21 @@ public class GemeindespezifischeBerechnungTest extends AbstractBGRechnerTest {
 	public void gemeindeOhneSpezialeinstellungenMitFreiwilligenarbeit() {
 		// Normale Default Einstellungen nach ASIV
 		Map<EinstellungKey, Einstellung> einstellungenGemeinde = prepareEinstellungen(
-			MAX_ERWERBSPENSUM_FREIWILLIGENARBEIT, MIN_ERWERBSPENSUM_NICHT_EINGESCHULT, MIN_ERWERBSPENSUM_EINGESCHULT, ZUSCHLAG_ERWERBSPENSUM);
+				MAX_ERWERBSPENSUM_FREIWILLIGENARBEIT,
+				MIN_ERWERBSPENSUM_NICHT_EINGESCHULT,
+				MIN_ERWERBSPENSUM_EINGESCHULT,
+				ZUSCHLAG_ERWERBSPENSUM);
 		// EWP 20 Angestellt, plus 20 Freiwilligenarbeit, welche aber nicht beachtet werden darf.
 		final AbstractPlatz platz = preparePlatz(EinschulungTyp.VORSCHULALTER, 20, 20);
 
 		final VerfuegungZeitabschnitt abschnitt = calculate(einstellungenGemeinde, platz);
 		Assert.assertFalse(
-			"Keine Gemeindespezifische Berechnung, die Einstellungen entsprechen den Defaults von ASIV. "
-				+ "Freiwilligenarbeit wird nicht gewaehrt",
-			abschnitt.isHasGemeindeSpezifischeBerechnung());
+				"Keine Gemeindespezifische Berechnung, die Einstellungen entsprechen den Defaults von ASIV. "
+						+ "Freiwilligenarbeit wird nicht gewaehrt",
+				abschnitt.isHasGemeindeSpezifischeBerechnung());
 		Assert.assertNull(
-			"Entsprechend soll das Gemeinde-Result null sein",
-			abschnitt.getBgCalculationResultGemeinde());
+				"Entsprechend soll das Gemeinde-Result null sein",
+				abschnitt.getBgCalculationResultGemeinde());
 
 		Assert.assertEquals(40, abschnitt.getBgCalculationInputAsiv().getBgPensumProzent().intValue());
 		Assert.assertEquals(2, abschnitt.getBemerkungenDTOList().uniqueSize());
@@ -122,17 +130,17 @@ public class GemeindespezifischeBerechnungTest extends AbstractBGRechnerTest {
 	public void gemeindeFreiwilligenarbeitZugelassenMitFreiwilligenarbeit() {
 		// Einstellung zu Freiwilligenarbeit angepasst
 		Map<EinstellungKey, Einstellung> einstellungenGemeinde = prepareEinstellungen(
-			15, MIN_ERWERBSPENSUM_NICHT_EINGESCHULT, MIN_ERWERBSPENSUM_EINGESCHULT, ZUSCHLAG_ERWERBSPENSUM);
+				15, MIN_ERWERBSPENSUM_NICHT_EINGESCHULT, MIN_ERWERBSPENSUM_EINGESCHULT, ZUSCHLAG_ERWERBSPENSUM);
 		// EWP 20 Angestellt, plus 20 Freiwilligenarbeit, wovon 15% gewaehrt werden
 		final AbstractPlatz platz = preparePlatz(EinschulungTyp.VORSCHULALTER, 20, 20);
 
 		final VerfuegungZeitabschnitt abschnitt = calculate(einstellungenGemeinde, platz);
 		Assert.assertTrue(
-			"Gemeindespezifische Berechnung, Freiwilligenarbeit gewaehrt",
-			abschnitt.isHasGemeindeSpezifischeBerechnung());
+				"Gemeindespezifische Berechnung, Freiwilligenarbeit gewaehrt",
+				abschnitt.isHasGemeindeSpezifischeBerechnung());
 		Assert.assertNotNull(
-			"Entsprechend darf das Gemeinde-Result nicht null sein",
-			abschnitt.getBgCalculationResultGemeinde());
+				"Entsprechend darf das Gemeinde-Result nicht null sein",
+				abschnitt.getBgCalculationResultGemeinde());
 
 		Assert.assertEquals(40, abschnitt.getBgCalculationInputAsiv().getBgPensumProzent().intValue());
 		Assert.assertEquals(55, abschnitt.getBgCalculationInputGemeinde().getBgPensumProzent().intValue());
@@ -150,25 +158,25 @@ public class GemeindespezifischeBerechnungTest extends AbstractBGRechnerTest {
 	public void gemeindeMinEwpReduziert_PensumAuchNachAsivErreicht() {
 		// Einstellungen zum Minimalen EWP ueberschrieben
 		Map<EinstellungKey, Einstellung> einstellungenGemeinde = prepareEinstellungen(
-			MAX_ERWERBSPENSUM_FREIWILLIGENARBEIT,
-			MIN_ERWERBSPENSUM_NICHT_EINGESCHULT-10,
-			MIN_ERWERBSPENSUM_EINGESCHULT-10,
-			ZUSCHLAG_ERWERBSPENSUM);
+				MAX_ERWERBSPENSUM_FREIWILLIGENARBEIT,
+				MIN_ERWERBSPENSUM_NICHT_EINGESCHULT - 10,
+				MIN_ERWERBSPENSUM_EINGESCHULT - 10,
+				ZUSCHLAG_ERWERBSPENSUM);
 		// EWP wird auch gemaess ASIV erreicht
 		final AbstractPlatz platz = preparePlatz(EinschulungTyp.VORSCHULALTER, 20, 0);
 
 		final VerfuegungZeitabschnitt abschnitt = calculate(einstellungenGemeinde, platz);
 		Assert.assertTrue(
-			"Gemeindespezifische Berechnung, da die Minimalen Erwerbspensen ueberschrieben wurden",
-			abschnitt.isHasGemeindeSpezifischeBerechnung());
+				"Gemeindespezifische Berechnung, da die Minimalen Erwerbspensen ueberschrieben wurden",
+				abschnitt.isHasGemeindeSpezifischeBerechnung());
 		Assert.assertNotNull(
-			"Entsprechend darf das Gemeinde-Result nicht null sein",
-			abschnitt.getBgCalculationResultGemeinde());
+				"Entsprechend darf das Gemeinde-Result nicht null sein",
+				abschnitt.getBgCalculationResultGemeinde());
 
 		Assert.assertEquals("Die Werte sind sowohl nach ASIV wie nach Gmde erreicht",
-			40, abschnitt.getBgCalculationInputAsiv().getBgPensumProzent().intValue());
+				40, abschnitt.getBgCalculationInputAsiv().getBgPensumProzent().intValue());
 		Assert.assertEquals("Die Werte sind sowohl nach ASIV wie nach Gmde erreicht",
-			40, abschnitt.getBgCalculationInputGemeinde().getBgPensumProzent().intValue());
+				40, abschnitt.getBgCalculationInputGemeinde().getBgPensumProzent().intValue());
 		Assert.assertEquals(2, abschnitt.getBemerkungenDTOList().uniqueSize());
 		Assert.assertTrue(abschnitt.getBemerkungenDTOList().containsMsgKey(MsgKey.ERWERBSPENSUM_ANSPRUCH));
 		Assert.assertTrue(abschnitt.getBemerkungenDTOList().containsMsgKey(MsgKey.VERFUEGUNG_MIT_ANSPRUCH));
@@ -182,23 +190,29 @@ public class GemeindespezifischeBerechnungTest extends AbstractBGRechnerTest {
 	public void gemeindeMinEwpReduziert_PensumNachAsivNichtErreicht() {
 		// Einstellungen zum Minimalen EWP ueberschrieben
 		Map<EinstellungKey, Einstellung> einstellungenGemeinde = prepareEinstellungen(
-			MAX_ERWERBSPENSUM_FREIWILLIGENARBEIT,
-			MIN_ERWERBSPENSUM_NICHT_EINGESCHULT-10,
-			MIN_ERWERBSPENSUM_EINGESCHULT-10,
-			ZUSCHLAG_ERWERBSPENSUM);
+				MAX_ERWERBSPENSUM_FREIWILLIGENARBEIT,
+				MIN_ERWERBSPENSUM_NICHT_EINGESCHULT - 10,
+				MIN_ERWERBSPENSUM_EINGESCHULT - 10,
+				ZUSCHLAG_ERWERBSPENSUM);
 		// EWP wird auch gemaess ASIV erreicht
 		final AbstractPlatz platz = preparePlatz(EinschulungTyp.VORSCHULALTER, 10, 0);
 
 		final VerfuegungZeitabschnitt abschnitt = calculate(einstellungenGemeinde, platz);
 		Assert.assertTrue(
-			"Gemeindespezifische Berechnung, da die Minimalen Erwerbspensen ueberschrieben wurden",
-			abschnitt.isHasGemeindeSpezifischeBerechnung());
+				"Gemeindespezifische Berechnung, da die Minimalen Erwerbspensen ueberschrieben wurden",
+				abschnitt.isHasGemeindeSpezifischeBerechnung());
 		Assert.assertNotNull(
-			"Entsprechend darf das Gemeinde-Result nicht null sein",
-			abschnitt.getBgCalculationResultGemeinde());
+				"Entsprechend darf das Gemeinde-Result nicht null sein",
+				abschnitt.getBgCalculationResultGemeinde());
 
-		Assert.assertEquals("BG-Pensum gemaess ASIV 0", 0, abschnitt.getBgCalculationInputAsiv().getBgPensumProzent().intValue());
-		Assert.assertEquals("BG-Pensum gemaess Gemeinde 30", 30, abschnitt.getBgCalculationInputGemeinde().getBgPensumProzent().intValue());
+		Assert.assertEquals(
+				"BG-Pensum gemaess ASIV 0",
+				0,
+				abschnitt.getBgCalculationInputAsiv().getBgPensumProzent().intValue());
+		Assert.assertEquals(
+				"BG-Pensum gemaess Gemeinde 30",
+				30,
+				abschnitt.getBgCalculationInputGemeinde().getBgPensumProzent().intValue());
 		Assert.assertEquals(2, abschnitt.getBemerkungenDTOList().uniqueSize());
 		Assert.assertTrue(abschnitt.getBemerkungenDTOList().containsMsgKey(MsgKey.ERWERBSPENSUM_ANSPRUCH));
 		Assert.assertTrue(abschnitt.getBemerkungenDTOList().containsMsgKey(MsgKey.VERFUEGUNG_MIT_ANSPRUCH));
@@ -212,29 +226,35 @@ public class GemeindespezifischeBerechnungTest extends AbstractBGRechnerTest {
 	public void gemeindeZuschlagReduziert() {
 		// Einstellungen zum Minimalen EWP ueberschrieben
 		Map<EinstellungKey, Einstellung> einstellungenGemeinde = prepareEinstellungen(
-			MAX_ERWERBSPENSUM_FREIWILLIGENARBEIT,
-			MIN_ERWERBSPENSUM_NICHT_EINGESCHULT,
-			MIN_ERWERBSPENSUM_EINGESCHULT,
-			ZUSCHLAG_ERWERBSPENSUM-10);
+				MAX_ERWERBSPENSUM_FREIWILLIGENARBEIT,
+				MIN_ERWERBSPENSUM_NICHT_EINGESCHULT,
+				MIN_ERWERBSPENSUM_EINGESCHULT,
+				ZUSCHLAG_ERWERBSPENSUM - 10);
 		// EWP wird auch gemaess ASIV erreicht
 		final AbstractPlatz platz = preparePlatz(EinschulungTyp.VORSCHULALTER, 20, 0);
 
 		final VerfuegungZeitabschnitt abschnitt = calculate(einstellungenGemeinde, platz);
 		Assert.assertFalse(
-			"Keine Gemeindespezifische Berechnung, da nur Zuschlag reduziert",
-			abschnitt.isHasGemeindeSpezifischeBerechnung());
+				"Keine Gemeindespezifische Berechnung, da nur Zuschlag reduziert",
+				abschnitt.isHasGemeindeSpezifischeBerechnung());
 		Assert.assertNull(
-			"Entsprechend soll das Gemeinde-Result null sein",
-			abschnitt.getBgCalculationResultGemeinde());
+				"Entsprechend soll das Gemeinde-Result null sein",
+				abschnitt.getBgCalculationResultGemeinde());
 
-		Assert.assertEquals("BG-Pensum gemaess ASIV 0", 30, abschnitt.getBgCalculationInputAsiv().getBgPensumProzent().intValue());
+		Assert.assertEquals(
+				"BG-Pensum gemaess ASIV 0",
+				30,
+				abschnitt.getBgCalculationInputAsiv().getBgPensumProzent().intValue());
 		Assert.assertEquals(2, abschnitt.getBemerkungenDTOList().uniqueSize());
 		Assert.assertTrue(abschnitt.getBemerkungenDTOList().containsMsgKey(MsgKey.ERWERBSPENSUM_ANSPRUCH));
 		Assert.assertTrue(abschnitt.getBemerkungenDTOList().containsMsgKey(MsgKey.VERFUEGUNG_MIT_ANSPRUCH));
 	}
 
-	private VerfuegungZeitabschnitt calculate(Map<EinstellungKey, Einstellung> einstellungenGemeinde, AbstractPlatz platz) {
-		final List<Rule> rules = ruleConfigurator.configureRulesForMandant(gemeindeOfEvaluator, einstellungenGemeinde, kitaxParams, GERMAN);
+	private VerfuegungZeitabschnitt calculate(
+			Map<EinstellungKey, Einstellung> einstellungenGemeinde,
+			AbstractPlatz platz) {
+		RuleParameterUtil ruleParameterUtil = new RuleParameterUtil(einstellungenGemeinde, kitaxParams);
+		final List<Rule> rules = ruleConfigurator.configureRulesForMandant(gemeindeOfEvaluator, ruleParameterUtil);
 		TestDataUtil.calculateFinanzDaten(platz.extractGesuch(), new FinanzielleSituationBernRechner());
 		List<VerfuegungZeitabschnitt> result = executor.executeRules(rules, platz, initialerRestanspruch);
 		Assert.assertNotNull(result);
@@ -243,8 +263,15 @@ public class GemeindespezifischeBerechnungTest extends AbstractBGRechnerTest {
 		result = monatsRule.executeIfApplicable(platz, result);
 		Assert.assertNotNull(result);
 		Assert.assertEquals(12, result.size());
-		executor.calculateRechner(new BGRechnerParameterDTO(einstellungenGemeinde, gesuchsperiodeOfEvaluator, gemeindeOfEvaluator), kitaxParams, GERMAN,
-			Collections.emptyList(),	platz, result);
+		executor.calculateRechner(new BGRechnerParameterDTO(
+						einstellungenGemeinde,
+						gesuchsperiodeOfEvaluator,
+						gemeindeOfEvaluator),
+				kitaxParams,
+				GERMAN,
+				Collections.emptyList(),
+				platz,
+				result);
 		Assert.assertNotNull(result);
 		final VerfuegungZeitabschnitt abschnitt = result.get(0);
 		Assert.assertNotNull(abschnitt);
@@ -252,14 +279,18 @@ public class GemeindespezifischeBerechnungTest extends AbstractBGRechnerTest {
 	}
 
 	private Map<EinstellungKey, Einstellung> prepareEinstellungen(
-		int maxFreiwilligenarbeit, int minEwpNichtEingeschult, int minEwpEingeschult, int zuschlagEWP
+			int maxFreiwilligenarbeit, int minEwpNichtEingeschult, int minEwpEingeschult, int zuschlagEWP
 	) {
 		Map<EinstellungKey, Einstellung> einstellungenGemeinde = new HashMap<>();
 		einstellungenGemeinde.putAll(einstellungenGemaessAsiv);
-		einstellungenGemeinde.get(EinstellungKey.GEMEINDE_ZUSAETZLICHER_ANSPRUCH_FREIWILLIGENARBEIT_ENABLED).setValue("true");
-		einstellungenGemeinde.get(EinstellungKey.GEMEINDE_ZUSAETZLICHER_ANSPRUCH_FREIWILLIGENARBEIT_MAXPROZENT).setValue(String.valueOf(maxFreiwilligenarbeit));
-		einstellungenGemeinde.get(EinstellungKey.GEMEINDE_MIN_ERWERBSPENSUM_NICHT_EINGESCHULT).setValue(String.valueOf(minEwpNichtEingeschult));
-		einstellungenGemeinde.get(EinstellungKey.GEMEINDE_MIN_ERWERBSPENSUM_EINGESCHULT).setValue(String.valueOf(minEwpEingeschult));
+		einstellungenGemeinde.get(EinstellungKey.GEMEINDE_ZUSAETZLICHER_ANSPRUCH_FREIWILLIGENARBEIT_ENABLED)
+				.setValue("true");
+		einstellungenGemeinde.get(EinstellungKey.GEMEINDE_ZUSAETZLICHER_ANSPRUCH_FREIWILLIGENARBEIT_MAXPROZENT)
+				.setValue(String.valueOf(maxFreiwilligenarbeit));
+		einstellungenGemeinde.get(EinstellungKey.GEMEINDE_MIN_ERWERBSPENSUM_NICHT_EINGESCHULT)
+				.setValue(String.valueOf(minEwpNichtEingeschult));
+		einstellungenGemeinde.get(EinstellungKey.GEMEINDE_MIN_ERWERBSPENSUM_EINGESCHULT)
+				.setValue(String.valueOf(minEwpEingeschult));
 		einstellungenGemeinde.get(EinstellungKey.ERWERBSPENSUM_ZUSCHLAG).setValue(String.valueOf(zuschlagEWP));
 		return einstellungenGemeinde;
 	}
@@ -276,10 +307,13 @@ public class GemeindespezifischeBerechnungTest extends AbstractBGRechnerTest {
 		final GesuchstellerContainer gesuchsteller1 = betreuung.extractGesuch().getGesuchsteller1();
 		Assert.assertNotNull(gesuchsteller1);
 		gesuchsteller1.getErwerbspensenContainers().clear();
-		gesuchsteller1.getErwerbspensenContainers().add(TestDataUtil.createErwerbspensum(ewpAngestellt, Taetigkeit.ANGESTELLT));
-		gesuchsteller1.getErwerbspensenContainers().add(TestDataUtil.createErwerbspensum(ewpFreiwillig, Taetigkeit.FREIWILLIGENARBEIT));
+		gesuchsteller1.getErwerbspensenContainers()
+				.add(TestDataUtil.createErwerbspensum(ewpAngestellt, Taetigkeit.ANGESTELLT));
+		gesuchsteller1.getErwerbspensenContainers()
+				.add(TestDataUtil.createErwerbspensum(ewpFreiwillig, Taetigkeit.FREIWILLIGENARBEIT));
 		gesuchsteller1.addAdresse(TestDataUtil.createDefaultGesuchstellerAdresseContainer(gesuchsteller1));
-		final GesuchstellerAdresse gesuchstellerAdresseJA = gesuchsteller1.getAdressen().get(0).getGesuchstellerAdresseJA();
+		final GesuchstellerAdresse gesuchstellerAdresseJA =
+				gesuchsteller1.getAdressen().get(0).getGesuchstellerAdresseJA();
 		Assert.assertNotNull(gesuchstellerAdresseJA);
 		gesuchstellerAdresseJA.setGueltigkeit(Constants.DEFAULT_GUELTIGKEIT);
 		gesuchstellerAdresseJA.setNichtInGemeinde(false);
