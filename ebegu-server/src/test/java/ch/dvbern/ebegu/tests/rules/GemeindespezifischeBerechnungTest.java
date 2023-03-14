@@ -34,6 +34,7 @@ import ch.dvbern.ebegu.rules.Rule;
 import ch.dvbern.ebegu.test.TestDataUtil;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.KitaxUebergangsloesungParameter;
+import ch.dvbern.ebegu.util.RuleParameterUtil;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -234,7 +235,8 @@ public class GemeindespezifischeBerechnungTest extends AbstractBGRechnerTest {
 	}
 
 	private VerfuegungZeitabschnitt calculate(Map<EinstellungKey, Einstellung> einstellungenGemeinde, AbstractPlatz platz) {
-		final List<Rule> rules = ruleConfigurator.configureRulesForMandant(gemeindeOfEvaluator, einstellungenGemeinde, kitaxParams, GERMAN);
+		RuleParameterUtil ruleParameterUtil = new RuleParameterUtil(einstellungenGemeinde, kitaxParams);
+		final List<Rule> rules = ruleConfigurator.configureRulesForMandant(gemeindeOfEvaluator, ruleParameterUtil, GERMAN);
 		TestDataUtil.calculateFinanzDaten(platz.extractGesuch(), new FinanzielleSituationBernRechner());
 		List<VerfuegungZeitabschnitt> result = executor.executeRules(rules, platz, initialerRestanspruch);
 		Assert.assertNotNull(result);

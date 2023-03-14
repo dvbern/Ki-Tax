@@ -50,6 +50,7 @@ import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.KitaxUebergangsloesungParameter;
 import ch.dvbern.ebegu.util.MathUtil;
+import ch.dvbern.ebegu.util.RuleParameterUtil;
 
 import static ch.dvbern.ebegu.enums.EinstellungKey.ABHAENGIGKEIT_ANSPRUCH_BESCHAEFTIGUNGPENSUM;
 import static ch.dvbern.ebegu.enums.EinstellungKey.AUSSERORDENTLICHER_ANSPRUCH_RULE;
@@ -253,8 +254,8 @@ public final class EbeguRuleTestsHelper {
 		@Nonnull BetreuungsgutscheinExecutor executorToUse,
 		boolean doMonatsstueckelungen
 	) {
-		final List<Rule> rules = ruleConfigurator.configureRulesForMandant(
-			platz.extractGemeinde(), einstellungenGemeinde, kitaxParams, Locale.GERMAN);
+		RuleParameterUtil ruleParameterUtil = new RuleParameterUtil(einstellungenGemeinde, kitaxParams);
+		final List<Rule> rules = ruleConfigurator.configureRulesForMandant(platz.extractGemeinde(), ruleParameterUtil, Locale.GERMAN);
 
 		List<VerfuegungZeitabschnitt> result = executorToUse.executeRules(rules, platz, initialenRestanspruchAbschnitte);
 		// Die Abschluss-Rules ebenfalls ausführen

@@ -36,6 +36,7 @@ import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.KitaxUebergangsloesungParameter;
 import ch.dvbern.ebegu.util.KitaxUtil;
+import ch.dvbern.ebegu.util.RuleParameterUtil;
 
 import static ch.dvbern.ebegu.enums.EinstellungKey.ABHAENGIGKEIT_ANSPRUCH_BESCHAEFTIGUNGPENSUM;
 import static ch.dvbern.ebegu.enums.EinstellungKey.AUSSERORDENTLICHER_ANSPRUCH_RULE;
@@ -91,12 +92,11 @@ public class BetreuungsgutscheinConfigurator {
 	@Nonnull
 	public List<Rule> configureRulesForMandant(
 		@Nonnull Gemeinde gemeinde,
-		@Nonnull Map<EinstellungKey, Einstellung> ebeguRuleParameter,
-		@Nullable KitaxUebergangsloesungParameter kitaxParameterDTO,
+		@Nonnull RuleParameterUtil ruleParameterUtil,
 		@Nonnull Locale inputLocale
 	) {
 		this.locale = inputLocale;
-		useRulesOfGemeinde(gemeinde, kitaxParameterDTO, ebeguRuleParameter);
+		useRulesOfGemeinde(gemeinde, ruleParameterUtil.getKitaxUebergangsloesungParameter(), ruleParameterUtil.getEinstellungen());
 		return rules;
 	}
 

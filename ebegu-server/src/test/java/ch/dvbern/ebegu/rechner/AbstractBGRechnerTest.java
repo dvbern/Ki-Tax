@@ -25,7 +25,6 @@ import java.util.Set;
 
 import javax.annotation.Nonnull;
 
-import ch.dvbern.ebegu.dto.BGCalculationInput;
 import ch.dvbern.ebegu.entities.AbstractPersonEntity;
 import ch.dvbern.ebegu.entities.BGCalculationResult;
 import ch.dvbern.ebegu.entities.Betreuung;
@@ -64,8 +63,8 @@ import ch.dvbern.ebegu.testfaelle.Testfall_ASIV_09;
 import ch.dvbern.ebegu.testfaelle.Testfall_ASIV_10;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.Constants;
-import ch.dvbern.ebegu.util.DateUtil;
 import ch.dvbern.ebegu.util.MathUtil;
+import ch.dvbern.ebegu.util.RuleParameterUtil;
 import ch.dvbern.ebegu.util.TestUtils;
 import org.junit.Before;
 
@@ -106,9 +105,10 @@ public abstract class AbstractBGRechnerTest {
 		@Nonnull Gemeinde bern
 	) {
 		Map<EinstellungKey, Einstellung> einstellungen = EbeguRuleTestsHelper.getEinstellungenConfiguratorAsiv(gesuchsperiode);
+		RuleParameterUtil ruleParameterUtil = new RuleParameterUtil(einstellungen, TestDataUtil.geKitaxUebergangsloesungParameter());
 
 		BetreuungsgutscheinConfigurator configurator = new BetreuungsgutscheinConfigurator();
-		List<Rule> rules = configurator.configureRulesForMandant(bern, einstellungen, TestDataUtil.geKitaxUebergangsloesungParameter(), Constants.DEFAULT_LOCALE);
+		List<Rule> rules = configurator.configureRulesForMandant(bern, ruleParameterUtil, Constants.DEFAULT_LOCALE);
 		return new BetreuungsgutscheinEvaluator(rules, einstellungen);
 	}
 
