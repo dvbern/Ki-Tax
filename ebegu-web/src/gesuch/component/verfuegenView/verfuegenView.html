@@ -374,10 +374,10 @@
                                 <td ng-if="vm.showGutscheinProStunde()" class="result">
                                     <dv-tooltip text="'GUTSCHEIN_PRO_STUNDE_HELP' | translate"></dv-tooltip>
                                 </td>
-                                <td ng-if="vm.showAuszahlungAnInstitutionenRow()" class="result">
+                                <td ng-if="vm.showAuszahlungAnInstitutionenCol()" class="result">
                                     <dv-tooltip text="'VERGUENSTIGUNG_HELP' | translate"></dv-tooltip>
                                 </td>
-                                <td ng-if="vm.showAuszahlungAnElternRow()" class="result">
+                                <td ng-if="vm.showAuszahlungAnElternCol()" class="result">
                                     <dv-tooltip text="'VERGUENSTIGUNG_ELTERN_HELP' | translate"></dv-tooltip>
                                 </td>
                                 <td class="result" ng-if="vm.showMahlzeitenverguenstigung()">
@@ -405,9 +405,11 @@
                                     data-translate="GUTSCHEIN_OHNE_BERUECKSICHTIGUNG_MINIMALBEITRAG"></th>
                                 <th ng-if="!vm.isLuzern" class="result" data-translate="MIN_ELTERNBEITRAG"></th>
                                 <th ng-if="vm.showGutscheinProStunde()" class="result" data-translate="GUTSCHEIN_PRO_STUNDE"></th>
-                                <th ng-if="vm.showAuszahlungAnInstitutionenRow()" class="result" data-translate="VERGUENSTIGUNG_AN_INSTITUTION"></th>
-                                <th ng-if="vm.showAuszahlungAnElternRow()" class="result" data-translate="VERGUENSTIGUNG_AN_ELTERN"></th>
+                                <th ng-if="vm.showAuszahlungAnInstitutionenCol()" class="result" data-translate="VERGUENSTIGUNG_AN_INSTITUTION"></th>
+                                <th ng-if="vm.showZahlungsstatusInstitutionenCol()" class="result" data-translate="ZAHLUNG_AN_INSTITUTION"></th>
+                                <th ng-if="vm.showAuszahlungAnElternCol()" class="result" data-translate="VERGUENSTIGUNG_AN_ELTERN"></th>
                                 <th ng-if="vm.showMahlzeitenverguenstigung()" class="result" data-translate="VERGUENSTIGUNG_MAHLZEITEN"></th>
+                                <th ng-if="vm.showZahlungsstatusAntragstellerCol()" class="result" data-translate="ZAHLUNG_AN_ELTERN"></th>
                             </tr>
                             </thead>
                             <tbody ng-if="vm.getVerfuegungZeitabschnitte().length > 0">
@@ -460,15 +462,21 @@
                                <td ng-if="vm.showGutscheinProStunde()" class="result"
                                     ng-bind="verfuegungZeitabschnitt.verguenstigungProZeiteinheit | currency : '' : 2"></td>-
                                 <!-- An Kita überwiesen (Gutschein) -->
-                                <td class="result" ng-if="vm.showAuszahlungAnInstitutionenRow()"
+                                <td class="result" ng-if="vm.showAuszahlungAnInstitutionenCol()"
                                     ng-bind="vm.getVerguenstigungAnInstitution(verfuegungZeitabschnitt) | currency : '' : 2"></td>
+                                <!-- Zahlungsstatus an Institution -->
+                                <td class="result" ng-if="vm.showZahlungsstatusInstitutionenCol()"
+                                    ng-bind="verfuegungZeitabschnitt.zahlungsstatusInstitution"></td>
                                 <!-- An Kita überwiesen (Gutschein) -->
-                                <td class="result" ng-if="vm.showAuszahlungAnElternRow()"
+                                <td class="result" ng-if="vm.showAuszahlungAnElternCol()"
                                     ng-bind="vm.getVerguenstigungAnEltern(verfuegungZeitabschnitt) | currency : '' : 2"></td>
                                 <!-- Mahlzeitenverguenstigung Hauptmahlzeiten -->
                                 <td class="result"
                                     ng-if="vm.showMahlzeitenverguenstigung()"
                                     ng-bind="verfuegungZeitabschnitt.verguenstigungMahlzeitTotal | currency : '' : 2"></td>
+                                <!-- Zahlungsstatus an Antragsteller -->
+                                <td class="result" ng-if="vm.showZahlungsstatusAntragstellerCol()"
+                                    ng-bind="verfuegungZeitabschnitt.zahlungsstatusAntragsteller"></td>
                             </tr>
                             </tbody>
                             <tbody ng-if="vm.getVerfuegungZeitabschnitte().length === 0">

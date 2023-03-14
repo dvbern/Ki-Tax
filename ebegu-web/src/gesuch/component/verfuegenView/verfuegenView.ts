@@ -814,7 +814,7 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
             && this.authServiceRs.isOneOfRoles(this.TSRoleUtil.getAdministratorOrAmtRole());
     }
 
-    public showAuszahlungAnInstitutionenRow(): boolean {
+    public showAuszahlungAnInstitutionenCol(): boolean {
         if (EbeguUtil.isNullOrUndefined(this.getVerfuegungZeitabschnitte())) {
             return false;
         }
@@ -831,11 +831,18 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
         return this.showAuszahlungAnInstitutionen;
     }
 
+    public showZahlungsstatusInstitutionenCol(): boolean {
+        return this.showAuszahlungAnInstitutionenCol();
+    }
+    public showZahlungsstatusAntragstellerCol(): boolean {
+        return this.showAuszahlungAnElternCol() || this.showMahlzeitenverguenstigung()
+    }
+
     private hasBetreuungInZeitabschnitt(zeitabschnitt: TSVerfuegungZeitabschnitt): boolean {
         return zeitabschnitt.betreuungspensumProzent !== 0;
     }
 
-    public showAuszahlungAnElternRow(): boolean {
+    public showAuszahlungAnElternCol(): boolean {
         if (EbeguUtil.isNullOrUndefined(this.getVerfuegungZeitabschnitte())) {
             return false;
         }
