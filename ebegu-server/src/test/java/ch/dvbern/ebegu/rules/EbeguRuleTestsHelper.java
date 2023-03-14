@@ -255,7 +255,7 @@ public final class EbeguRuleTestsHelper {
 		boolean doMonatsstueckelungen
 	) {
 		RuleParameterUtil ruleParameterUtil = new RuleParameterUtil(einstellungenGemeinde, kitaxParams);
-		final List<Rule> rules = ruleConfigurator.configureRulesForMandant(platz.extractGemeinde(), ruleParameterUtil, Locale.GERMAN);
+		final List<Rule> rules = ruleConfigurator.configureRulesForMandant(platz.extractGemeinde(), ruleParameterUtil);
 
 		List<VerfuegungZeitabschnitt> result = executorToUse.executeRules(rules, platz, initialenRestanspruchAbschnitte);
 		// Die Abschluss-Rules ebenfalls ausführen

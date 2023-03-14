@@ -17,8 +17,6 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import static java.util.Locale.GERMAN;
-
 public class BetreuungsgutscheinConfiguratorTest extends AbstractBGRechnerTest {
 
 	private BetreuungsgutscheinConfigurator ruleConfigurator;
@@ -149,7 +147,7 @@ public class BetreuungsgutscheinConfiguratorTest extends AbstractBGRechnerTest {
 
 	private List<Rule> configureRuleForMandant(Gemeinde gemeinde) {
 		RuleParameterUtil ruleParameterUtil = new RuleParameterUtil(einstellungenGemaessAsiv, kitaxParams);
-		return ruleConfigurator.configureRulesForMandant(gemeinde, ruleParameterUtil, GERMAN);
+		return ruleConfigurator.configureRulesForMandant(gemeinde, ruleParameterUtil);
 	}
 
 	private void assertContainsRule(List<Rule> rules, Class<? extends Rule> classOfRuleToFind, int expectedCount) {

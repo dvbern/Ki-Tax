@@ -92,10 +92,9 @@ public class BetreuungsgutscheinConfigurator {
 	@Nonnull
 	public List<Rule> configureRulesForMandant(
 		@Nonnull Gemeinde gemeinde,
-		@Nonnull RuleParameterUtil ruleParameterUtil,
-		@Nonnull Locale inputLocale
+		@Nonnull RuleParameterUtil ruleParameterUtil
 	) {
-		this.locale = inputLocale;
+		this.locale = ruleParameterUtil.getLocale();
 		useRulesOfGemeinde(gemeinde, ruleParameterUtil.getKitaxUebergangsloesungParameter(), ruleParameterUtil.getEinstellungen());
 		return rules;
 	}

@@ -63,8 +63,8 @@ public class RulesServiceBean extends AbstractBaseService implements RulesServic
 		Set<EinstellungKey> keysToLoad = ruleConfigurator.getRequiredParametersForGemeinde();
 		Map<EinstellungKey, Einstellung> einstellungen = einstellungService.loadRuleParameters(gemeinde, gesuchsperiode, keysToLoad);
 		List<DemoFeatureTyp> activatedDemoFeatures = applicationPropertyService.getActivatedDemoFeatures(gesuchsperiode.getMandant());
-		RuleParameterUtil ruleParameterUtil = new RuleParameterUtil(einstellungen, activatedDemoFeatures, kitaxParameterDTO);
-		return ruleConfigurator.configureRulesForMandant(gemeinde, ruleParameterUtil, locale);
+		RuleParameterUtil ruleParameterUtil = new RuleParameterUtil(einstellungen, activatedDemoFeatures, kitaxParameterDTO, locale);
+		return ruleConfigurator.configureRulesForMandant(gemeinde, ruleParameterUtil);
 	}
 
 

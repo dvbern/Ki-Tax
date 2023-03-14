@@ -2,6 +2,7 @@ package ch.dvbern.ebegu.util;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import ch.dvbern.ebegu.entities.Einstellung;
@@ -16,21 +17,26 @@ public class RuleParameterUtil {
 
 	private final KitaxUebergangsloesungParameter kitaxUebergangsloesungParameter;
 
+	private final Locale locale;
+
 	public RuleParameterUtil(
 		Map<EinstellungKey, Einstellung> einstellungen,
 		KitaxUebergangsloesungParameter kitaxUebergangsloesungParameter) {
 		this.einstellungen = einstellungen;
 		this.activatedDemoFeatures = Collections.emptyList();
 		this.kitaxUebergangsloesungParameter = kitaxUebergangsloesungParameter;
+		this.locale = Constants.DEFAULT_LOCALE;
 	}
 
 	public RuleParameterUtil(
 		Map<EinstellungKey, Einstellung> einstellungen,
 		List<DemoFeatureTyp> activatedDemoFeatures,
-		KitaxUebergangsloesungParameter kitaxUebergangsloesungParameter) {
+		KitaxUebergangsloesungParameter kitaxUebergangsloesungParameter,
+		Locale locale) {
 		this.einstellungen = einstellungen;
 		this.activatedDemoFeatures = activatedDemoFeatures;
 		this.kitaxUebergangsloesungParameter = kitaxUebergangsloesungParameter;
+		this.locale = locale;
 	}
 
 	public Map<EinstellungKey, Einstellung> getEinstellungen() {
@@ -39,5 +45,9 @@ public class RuleParameterUtil {
 
 	public KitaxUebergangsloesungParameter getKitaxUebergangsloesungParameter() {
 		return kitaxUebergangsloesungParameter;
+	}
+
+	public Locale getLocale() {
+		return locale;
 	}
 }

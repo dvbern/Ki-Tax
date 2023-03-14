@@ -236,7 +236,7 @@ public class GemeindespezifischeBerechnungTest extends AbstractBGRechnerTest {
 
 	private VerfuegungZeitabschnitt calculate(Map<EinstellungKey, Einstellung> einstellungenGemeinde, AbstractPlatz platz) {
 		RuleParameterUtil ruleParameterUtil = new RuleParameterUtil(einstellungenGemeinde, kitaxParams);
-		final List<Rule> rules = ruleConfigurator.configureRulesForMandant(gemeindeOfEvaluator, ruleParameterUtil, GERMAN);
+		final List<Rule> rules = ruleConfigurator.configureRulesForMandant(gemeindeOfEvaluator, ruleParameterUtil);
 		TestDataUtil.calculateFinanzDaten(platz.extractGesuch(), new FinanzielleSituationBernRechner());
 		List<VerfuegungZeitabschnitt> result = executor.executeRules(rules, platz, initialerRestanspruch);
 		Assert.assertNotNull(result);
