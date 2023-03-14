@@ -29,6 +29,7 @@ import javax.validation.constraints.NotNull;
 
 import ch.dvbern.ebegu.entities.Einstellung;
 import ch.dvbern.ebegu.entities.Gemeinde;
+import ch.dvbern.ebegu.enums.DemoFeatureTyp;
 import ch.dvbern.ebegu.enums.EinschulungTyp;
 import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.enums.KinderabzugTyp;
@@ -401,7 +402,10 @@ public class BetreuungsgutscheinConfigurator {
 		addToRuleSetIfRelevantForGemeinde(betreuungsangebotTypCalcRule, ruleParameterUtil);
 
 		// Wohnsitz (Zuzug und Wegzug)
-		WohnsitzCalcRule wohnsitzCalcRule = new WohnsitzCalcRule(defaultGueltigkeit, locale);
+		WohnsitzCalcRule wohnsitzCalcRule = new WohnsitzCalcRule(
+			defaultGueltigkeit,
+			locale,
+			ruleParameterUtil.isDemoFeatureActivated(DemoFeatureTyp.NEUE_UMZUGSTREGEL));
 		addToRuleSetIfRelevantForGemeinde(wohnsitzCalcRule, ruleParameterUtil);
 
 		// Einreichungsfrist

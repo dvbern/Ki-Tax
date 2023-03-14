@@ -60,4 +60,8 @@ public class RuleParameterUtil {
 	public Locale getLocale() {
 		return locale;
 	}
+
+	public boolean isDemoFeatureActivated(DemoFeatureTyp demoFeatureTyp) {
+		return activatedDemoFeatures.contains(demoFeatureTyp);
+	}
 }

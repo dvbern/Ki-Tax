@@ -52,10 +52,12 @@ import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.TAGESFAMILIEN;
 public class WohnsitzCalcRule extends AbstractCalcRule {
 
 	private final @Nonnull Supplier<GesuchService> gesuchServiceResolver;
+	private boolean checkIfDoppelBetreuung = true;
 
-	public WohnsitzCalcRule(@Nonnull DateRange validityPeriod, @Nonnull Locale locale) {
+	public WohnsitzCalcRule(@Nonnull DateRange validityPeriod, @Nonnull Locale locale, boolean checkIfDoppelbtreuung) {
 		super(RuleKey.WOHNSITZ, RuleType.REDUKTIONSREGEL, RuleValidity.ASIV, validityPeriod, locale);
 		this.gesuchServiceResolver = WohnsitzCalcRule::resolveGesuchServiceFromCDI;
+		this.checkIfDoppelBetreuung = checkIfDoppelbtreuung;
 	}
 
 	/**
@@ -98,6 +100,9 @@ public class WohnsitzCalcRule extends AbstractCalcRule {
 	}
 
 	private boolean hasDoppelBetreuung(AbstractPlatz platz, BGCalculationInput inputData) {
+		if (!this.checkIfDoppelBetreuung) {
+			return false;
+		}
 		// KIBON_1843 2 Ative gesuche in unterschiedlichen gemeinden möglich
 		if (!inputData.getPotentielleDoppelBetreuung()) {
 			return false;
