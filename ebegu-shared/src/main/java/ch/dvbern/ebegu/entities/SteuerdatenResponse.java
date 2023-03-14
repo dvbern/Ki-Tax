@@ -610,4 +610,85 @@ public class SteuerdatenResponse extends AbstractEntity {
 
 		return that.compareTo(other) == 0;
 	}
+
+	@Nullable
+	public BigDecimal getErwerbseinkommenUnselbstaendigkeit(SteuerdatenDatenTraeger steuerdatenDatenTraeger) {
+		if (steuerdatenDatenTraeger == SteuerdatenDatenTraeger.PARTNER) {
+			return getErwerbseinkommenUnselbstaendigkeitPartner();
+		}
+
+		return getErwerbseinkommenUnselbstaendigkeitDossiertraeger();
+	}
+
+	@Nullable
+	public BigDecimal getWeitereSteuerbareEinkuenfte(SteuerdatenDatenTraeger steuerdatenDatenTraeger) {
+		if (steuerdatenDatenTraeger == SteuerdatenDatenTraeger.PARTNER) {
+			return getWeitereSteuerbareEinkuenftePartner();
+		}
+
+		return getWeitereSteuerbareEinkuenfteDossiertraeger();
+	}
+
+	@Nullable
+	public BigDecimal getSteuerpflichtigesErsatzeinkommen(SteuerdatenDatenTraeger steuerdatenDatenTraeger) {
+		if (steuerdatenDatenTraeger == SteuerdatenDatenTraeger.PARTNER) {
+			return getSteuerpflichtigesErsatzeinkommenPartner();
+		}
+
+		return getSteuerpflichtigesErsatzeinkommenDossiertraeger();
+	}
+
+	@Nullable
+	public BigDecimal getErhalteneUnterhaltsbeitraege(SteuerdatenDatenTraeger steuerdatenDatenTraeger) {
+		if (steuerdatenDatenTraeger == SteuerdatenDatenTraeger.PARTNER) {
+			return getErhalteneUnterhaltsbeitraegePartner();
+		}
+
+		return getErhalteneUnterhaltsbeitraegeDossiertraeger();
+	}
+
+	@Nullable
+	public BigDecimal getNettoertraegeAusEgme(SteuerdatenDatenTraeger steuerdatenDatenTraeger) {
+		if (steuerdatenDatenTraeger == SteuerdatenDatenTraeger.PARTNER) {
+			return getNettoertraegeAusEgmePartner();
+		}
+
+		return getNettoertraegeAusEgmeDossiertraeger();
+	}
+
+	@Nullable
+	public BigDecimal getAusgewiesenerGeschaeftsertrag(SteuerdatenDatenTraeger steuerdatenDatenTraeger) {
+		if (steuerdatenDatenTraeger == SteuerdatenDatenTraeger.PARTNER) {
+			return getAusgewiesenerGeschaeftsertragPartner();
+		}
+
+		return getAusgewiesenerGeschaeftsertragDossiertraeger();
+	}
+
+	@Nullable
+	public BigDecimal getAusgewiesenerGeschaeftsertragVorperiode(SteuerdatenDatenTraeger steuerdatenDatenTraeger) {
+		if (steuerdatenDatenTraeger == SteuerdatenDatenTraeger.PARTNER) {
+			return getAusgewiesenerGeschaeftsertragVorperiodePartner();
+		}
+
+		return getAusgewiesenerGeschaeftsertragVorperiodeDossiertraeger();
+	}
+
+	@Nullable
+	public BigDecimal getAusgewiesenerGeschaeftsertragVorperiode2(SteuerdatenDatenTraeger steuerdatenDatenTraeger) {
+		if (steuerdatenDatenTraeger == SteuerdatenDatenTraeger.PARTNER) {
+			return getAusgewiesenerGeschaeftsertragVorperiode2Partner();
+		}
+
+		return getAusgewiesenerGeschaeftsertragVorperiode2Dossiertraeger();
+	}
+
+
+
+	public enum SteuerdatenDatenTraeger {
+		DOSSIERTRAEGER,
+		PARTNER
+	}
 }
+
+
