@@ -4,6 +4,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
+
+import javax.validation.constraints.NotNull;
 
 import ch.dvbern.ebegu.entities.Einstellung;
 import ch.dvbern.ebegu.enums.DemoFeatureTyp;
@@ -45,6 +48,13 @@ public class RuleParameterUtil {
 
 	public KitaxUebergangsloesungParameter getKitaxUebergangsloesungParameter() {
 		return kitaxUebergangsloesungParameter;
+	}
+
+	@NotNull
+	public Einstellung getEinstellung(EinstellungKey einstellungKey) {
+		Einstellung einstellung = einstellungen.get(einstellungKey);
+		Objects.requireNonNull(einstellung, "Parameter " + einstellungKey + " muss gesetzt sein");
+		return einstellung;
 	}
 
 	public Locale getLocale() {
