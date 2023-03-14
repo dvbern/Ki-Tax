@@ -17,6 +17,7 @@
 
 package ch.dvbern.ebegu.services;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.Month;
 import java.util.ArrayList;
@@ -50,6 +51,7 @@ import org.easymock.EasyMockExtension;
 import org.easymock.EasyMockSupport;
 import org.easymock.Mock;
 import org.easymock.TestSubject;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -69,6 +71,7 @@ import static org.hamcrest.Matchers.is;
  * Mitteilungen
  */
 @ExtendWith(EasyMockExtension.class)
+@SuppressWarnings("ConstantConditions")
 public class NeueVeranlagungMitteilungTest extends EasyMockSupport {
 
 	private Gesuchsperiode gesuchsperiode;
@@ -229,6 +232,79 @@ public class NeueVeranlagungMitteilungTest extends EasyMockSupport {
 		verifyAll();
 	}
 
+	@Test
+	public void neueVeranlaungsMitteilung_gemeinsam_GS1NotDossiertrager() {
+		int zpvGS1Partner = 1000001;
+		BigDecimal nettoLohnGS1Partner = BigDecimal.valueOf(10000);
+		int zpvGS2Dossiertraeger = 1000002;
+		BigDecimal nettoLohnGS2Dossiertraeger = BigDecimal.valueOf(20000);
+
+		SteuerdatenResponse steuerdatenResponse = new SteuerdatenResponse();
+		steuerdatenResponse.setZpvNrDossiertraeger(zpvGS2Dossiertraeger);
+		steuerdatenResponse.setErwerbseinkommenUnselbstaendigkeitDossiertraeger(nettoLohnGS2Dossiertraeger);
+		steuerdatenResponse.setZpvNrPartner(zpvGS1Partner);
+		steuerdatenResponse.setErwerbseinkommenUnselbstaendigkeitPartner(nettoLohnGS1Partner);
+		steuerdatenResponse.setZpvNrAntragsteller(zpvGS1Partner);
+		steuerdatenResponse.setVeranlagungsstand(Veranlagungsstand.RECHTSKRAEFTIG);
+
+		Gesuch gesuch = prepareGemeinsamFall(steuerdatenResponse);
+		gesuch.getDossier().getFall().getBesitzer().setZpvNummer(String.valueOf(zpvGS1Partner));
+
+		mockCalls(gesuch);
+
+		Gesuch gesuchMitVerandlagungsmitteilung =
+			mitteilungServiceBean.neueVeranlagungssmitteilungBearbeiten(neueVeranlagungsMitteilung);
+
+		Assertions.assertEquals(
+			nettoLohnGS1Partner,
+			gesuchMitVerandlagungsmitteilung.getGesuchsteller1().getFinanzielleSituationContainer().getFinanzielleSituationJA().getNettolohn());
+		Assertions.assertEquals(
+			nettoLohnGS2Dossiertraeger,
+			gesuchMitVerandlagungsmitteilung.getGesuchsteller2().getFinanzielleSituationContainer().getFinanzielleSituationJA().getNettolohn());
+	}
+
+	@Test
+	public void neueVeranlaungsMitteilung_gemeinsam_GS1Dossiertrager() {
+		int zpvGS1Dossiertraeger = 1000001;
+		BigDecimal nettoLohnGS1Dossiertraeger = BigDecimal.valueOf(10000);
+		int zpvGS2Partner = 1000002;
+		BigDecimal nettoLohnGS2Partner = BigDecimal.valueOf(20000);
+
+		SteuerdatenResponse steuerdatenResponse = new SteuerdatenResponse();
+		steuerdatenResponse.setZpvNrDossiertraeger(zpvGS1Dossiertraeger);
+		steuerdatenResponse.setErwerbseinkommenUnselbstaendigkeitDossiertraeger(nettoLohnGS1Dossiertraeger);
+		steuerdatenResponse.setZpvNrPartner(zpvGS2Partner);
+		steuerdatenResponse.setErwerbseinkommenUnselbstaendigkeitPartner(nettoLohnGS2Partner);
+		steuerdatenResponse.setZpvNrAntragsteller(zpvGS1Dossiertraeger);
+		steuerdatenResponse.setVeranlagungsstand(Veranlagungsstand.RECHTSKRAEFTIG);
+
+		Gesuch gesuch = prepareGemeinsamFall(steuerdatenResponse);
+		gesuch.getDossier().getFall().getBesitzer().setZpvNummer(String.valueOf(zpvGS1Dossiertraeger));
+
+		mockCalls(gesuch);
+
+		Gesuch gesuchMitVerandlagungsmitteilung =
+			mitteilungServiceBean.neueVeranlagungssmitteilungBearbeiten(neueVeranlagungsMitteilung);
+
+		Assertions.assertEquals(
+			nettoLohnGS1Dossiertraeger,
+			gesuchMitVerandlagungsmitteilung.getGesuchsteller1().getFinanzielleSituationContainer().getFinanzielleSituationJA().getNettolohn());
+		Assertions.assertEquals(
+			nettoLohnGS2Partner,
+			gesuchMitVerandlagungsmitteilung.getGesuchsteller2().getFinanzielleSituationContainer().getFinanzielleSituationJA().getNettolohn());
+	}
+
+	private void mockCalls(Gesuch gesuch) {
+		expectEverythingBisBearbeitung(gesuch);
+
+		expect(finanzielleSituationService.saveFinanzielleSituation(anyObject(), anyObject()))
+			.andReturn(gesuch.getGesuchsteller1().getFinanzielleSituationContainer());
+		expect(finanzielleSituationService.saveFinanzielleSituation(anyObject(), anyObject()))
+			.andReturn(gesuch.getGesuchsteller2().getFinanzielleSituationContainer());
+		expect(persistence.merge(neueVeranlagungsMitteilung)).andReturn(neueVeranlagungsMitteilung);
+		replayAll();
+	}
+
 	private void expectGesuchFound(Gesuch gesuch) {
 		expect(gesuchService.findGesuch(gesuch.getId())).andReturn(Optional.of(gesuch));
 		authorizer.checkReadAuthorizationMitteilung(neueVeranlagungsMitteilung);
@@ -288,9 +364,6 @@ public class NeueVeranlagungMitteilungTest extends EasyMockSupport {
 	}
 
 	private Gesuch prepareGemeinsamFall(SteuerdatenResponse steuerdatenResponse) {
-		List<InstitutionStammdaten> institutionStammdatenList = new ArrayList<>();
-		institutionStammdatenList.add(TestDataUtil.createInstitutionStammdatenKitaWeissenstein());
-		institutionStammdatenList.add(TestDataUtil.createInstitutionStammdatenKitaBruennen());
 		Testfall04_WaltherLaura testfall_2GS =
 			new Testfall04_WaltherLaura(
 				gesuchsperiode,
@@ -299,14 +372,12 @@ public class NeueVeranlagungMitteilungTest extends EasyMockSupport {
 				new TestDataInstitutionStammdatenBuilder(gesuchsperiode));
 		testfall_2GS.createFall();
 		testfall_2GS.createGesuch(LocalDate.of(2016, Month.DECEMBER, 12));
+
 		Gesuch gesuch = testfall_2GS.fillInGesuch();
 		gesuch.setEingangsart(Eingangsart.ONLINE);
 		gesuch.getDossier().getFall().setBesitzer(new Benutzer());
 		gesuch.setStatus(AntragStatus.VERFUEGT);
-		Objects.requireNonNull(gesuch.getDossier().getFall().getBesitzer());
 		gesuch.getDossier().getFall().getBesitzer().setZpvNummer("1000001");
-		Objects.requireNonNull(gesuch.getGesuchsteller1());
-		Objects.requireNonNull(gesuch.getGesuchsteller1().getFinanzielleSituationContainer());
 		gesuch.getGesuchsteller1()
 			.getFinanzielleSituationContainer()
 			.getFinanzielleSituationJA()
@@ -315,8 +386,6 @@ public class NeueVeranlagungMitteilungTest extends EasyMockSupport {
 			.getFinanzielleSituationContainer()
 			.getFinanzielleSituationJA()
 			.setSteuerdatenZugriff(true);
-		Objects.requireNonNull(gesuch.getGesuchsteller2());
-		Objects.requireNonNull(gesuch.getGesuchsteller2().getFinanzielleSituationContainer());
 		gesuch.getGesuchsteller2()
 			.getFinanzielleSituationContainer()
 			.getFinanzielleSituationJA()
@@ -325,8 +394,6 @@ public class NeueVeranlagungMitteilungTest extends EasyMockSupport {
 			.getFinanzielleSituationContainer()
 			.getFinanzielleSituationJA()
 			.setSteuerdatenZugriff(true);
-		Objects.requireNonNull(gesuch.getFamiliensituationContainer());
-		Objects.requireNonNull(gesuch.getFamiliensituationContainer().getFamiliensituationJA());
 		gesuch.getFamiliensituationContainer().getFamiliensituationJA().setGemeinsameSteuererklaerung(true);
 		steuerdatenResponse.setKiBonAntragId(gesuch.getId());
 		neueVeranlagungsMitteilung.setSteuerdatenResponse(steuerdatenResponse);
