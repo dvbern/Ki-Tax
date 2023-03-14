@@ -402,9 +402,6 @@ public class GesuchstellerKinderBetreuungExcelConverter implements ExcelConverte
 		mergeFields.add(MergeFieldGesuchstellerKinderBetreuung.schulstufeTitle.getMergeField());
 		mergerDTO.addValue(MergeFieldGesuchstellerKinderBetreuung.schulstufeTitle, ServerMessageUtil.getMessage("Reports_schulstufeTitle",locale, mandant));
 
-		mergeFields.add(MergeFieldGesuchstellerKinderBetreuung.keinPlatzImSchulhortTitle.getMergeField());
-		mergerDTO.addValue(MergeFieldGesuchstellerKinderBetreuung.keinPlatzImSchulhortTitle, ServerMessageUtil.getMessage("Reports_keinPlatzImSchulhortTitle",locale, mandant));
-
 		mergeFields.add(MergeFieldGesuchstellerKinderBetreuung.bis1MonateTitle.getMergeField());
 		mergerDTO.addValue(MergeFieldGesuchstellerKinderBetreuung.bis1MonateTitle, ServerMessageUtil.getMessage("Reports_bis1MonateTitle",locale, mandant));
 
@@ -492,6 +489,20 @@ public class GesuchstellerKinderBetreuungExcelConverter implements ExcelConverte
 		mergeFields.add(MergeFieldGesuchstellerKinderBetreuung.zusatzFelderGemeinden.getMergeField());
 		mergerDTO.addValue(MergeFieldGesuchstellerKinderBetreuung.zusatzFelderGemeinden, ServerMessageUtil.getMessage("Reports_zusatzFelderGemeinden",locale, mandant));
 
+		addSpecialValuesForLuzern(mergerDTO, mergeFields, locale, mandant);
+
+	}
+
+	private static void addSpecialValuesForLuzern(ExcelMergerDTO mergerDTO, List<MergeField<?>> mergeFields, Locale locale, Mandant mandant) {
+		mergeFields.add(MergeFieldGesuchstellerKinderBetreuung.repeatSchulhort.getMergeField());
+		var keinPlatzImSchulhortTitleStr = ServerMessageUtil.getMessage("Reports_keinPlatzImSchulhortTitle", locale, mandant);
+		mergeFields.add(MergeFieldGesuchstellerKinderBetreuung.keinPlatzImSchulhortTitle.getMergeField());
+		mergerDTO.addValue(MergeFieldGesuchstellerKinderBetreuung.keinPlatzImSchulhortTitle, keinPlatzImSchulhortTitleStr);
+		// falls die Translations keine Übersetzung für den Titel haben, bedeutet das, dass wir die Spalte beim Mandanten nicht
+		// anzeigen wollen. Falls wir sie anzeigen wollen, muss in das repateCol Mergefield ein leerer String geschrieben werden.
+		if (!keinPlatzImSchulhortTitleStr.equals("")) {
+			mergerDTO.addValue(MergeFieldGesuchstellerKinderBetreuung.repeatSchulhort, "");
+		}
 	}
 
 }
