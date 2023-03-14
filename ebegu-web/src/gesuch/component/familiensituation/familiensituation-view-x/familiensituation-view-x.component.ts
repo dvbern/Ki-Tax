@@ -333,29 +333,46 @@ export class FamiliensituationViewXComponent extends AbstractFamiliensitutaionVi
 
     public getNotPertnerIdentischMitVorgesuchWarning(): string {
         let warning: string = this.$translate.instant('FAMILIENSITUATION_FRAGE_PARTNERIDENTISCH_WARNING', {
-            partnerAlt: this.getNameGesuchsteller2(),
+            namegs2: this.getNameGesuchsteller2(),
             endeDatum: this.getDatumEndOfMonthAfterAenderungPer()
         });
 
         const partnerNotIdentischWarningBeiPaaren: string =
                 this.$translate.instant('FAMILIENSITUATION_FRAGE_PARTNERIDENTISCH_WARNING_PAAR',
-                        { bezeichnung: this.getBezeichnung() });
+                        { warnbez: this.getWarningPaarBezeichnung() });
         warning = warning.concat(' '.toString(), partnerNotIdentischWarningBeiPaaren.toString());
         return warning;
     }
 
-    private getBezeichnung(): string {
+    private getWarningPaarBezeichnung(): string {
         const familienstatus: TSFamilienstatus = this.gesuchModelManager.getGesuch().extractFamiliensituation().familienstatus;
         if (familienstatus === TSFamilienstatus.VERHEIRATET) {
-            return this.$translate.instant('FAMILIENSITUATION_FRAGE_PARTNERIDENTISCH_EHEPARTNER');
+            return this.$translate.instant('FAMILIENSITUATION_FRAGE_PARTNERIDENTISCH_WARNBEZ_EHEPARTNER');
         }
         if (familienstatus === TSFamilienstatus.ALLEINERZIEHEND){
-            return this.$translate.instant('FAMILIENSITUATION_FRAGE_PARTNERIDENTISCH_ANDERER_ELTERNTEIL');
+            return this.$translate.instant('FAMILIENSITUATION_FRAGE_PARTNERIDENTISCH_WARNBEZ_ANDERER_ELTERNTEIL');
         }
-        return this.$translate.instant('FAMILIENSITUATION_FRAGE_PARTNERIDENTISCH_KONKUBINTASPARTNER');
+        return this.$translate.instant('FAMILIENSITUATION_FRAGE_PARTNERIDENTISCH_WARNBEZ_KONKUBINTASPARTNER');
     }
 
     public isFKJVFamSit(): boolean {
         return this.getFamiliensituation().fkjvFamSit;
+    }
+
+    public getPartnerIdentischFrage(): string {
+        const familienstatus: TSFamilienstatus = this.gesuchModelManager.getGesuch().extractFamiliensituation().familienstatus;
+        if (familienstatus === TSFamilienstatus.VERHEIRATET) {
+            return this.$translate.instant('FAMILIENSITUATION_FRAGE_PARTNERIDENTISCH_EHE' , {
+                namegs2: this.getNameGesuchsteller2()
+            } );
+        }
+        if (familienstatus === TSFamilienstatus.ALLEINERZIEHEND){
+            return this.$translate.instant('FAMILIENSITUATION_FRAGE_PARTNERIDENTISCH_ANDERER_ELTERNTEIL', {
+                namegs2: this.getNameGesuchsteller2()
+            } );
+        }
+        return this.$translate.instant('FAMILIENSITUATION_FRAGE_PARTNERIDENTISCH_KONKUBINAT', {
+            namegs2: this.getNameGesuchsteller2()
+        } );
     }
 }
