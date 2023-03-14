@@ -155,6 +155,10 @@ public class KibonAnfrageHelper {
 			finSit.setGeschaeftsgewinnBasisjahr(steuerdatenResponse.getAusgewiesenerGeschaeftsertragPartner());
 			finSit.setGeschaeftsgewinnBasisjahrMinus1(steuerdatenResponse.getAusgewiesenerGeschaeftsertragVorperiodePartner());
 			finSit.setGeschaeftsgewinnBasisjahrMinus2(steuerdatenResponse.getAusgewiesenerGeschaeftsertragVorperiode2Partner());
+		} else {
+			finSit.setGeschaeftsgewinnBasisjahr(null);
+			finSit.setGeschaeftsgewinnBasisjahrMinus1(null);
+			finSit.setGeschaeftsgewinnBasisjahrMinus2(null);
 		}
 		setBerechneteFelder(finSit, steuerdatenResponse, BIG_DECIMAL_TWO);
 	}
@@ -175,6 +179,10 @@ public class KibonAnfrageHelper {
 			finSit.setGeschaeftsgewinnBasisjahr(steuerdatenResponse.getAusgewiesenerGeschaeftsertragDossiertraeger());
 			finSit.setGeschaeftsgewinnBasisjahrMinus1(steuerdatenResponse.getAusgewiesenerGeschaeftsertragVorperiodeDossiertraeger());
 			finSit.setGeschaeftsgewinnBasisjahrMinus2(steuerdatenResponse.getAusgewiesenerGeschaeftsertragVorperiode2Dossiertraeger());
+		} else {
+			finSit.setGeschaeftsgewinnBasisjahr(null);
+			finSit.setGeschaeftsgewinnBasisjahrMinus1(null);
+			finSit.setGeschaeftsgewinnBasisjahrMinus2(null);
 		}
 		setBerechneteFelder(finSit, steuerdatenResponse, anzahlGesuchsteller);
 	}

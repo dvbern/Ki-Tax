@@ -250,7 +250,7 @@ public class NeueVeranlagungMitteilungTest extends EasyMockSupport {
 		Gesuch gesuch = prepareGemeinsamFall(steuerdatenResponse);
 		gesuch.getDossier().getFall().getBesitzer().setZpvNummer(String.valueOf(zpvGS1Partner));
 
-		mockCalls(gesuch);
+		mockCalls(gesuch, true);
 
 		Gesuch gesuchMitVerandlagungsmitteilung =
 			mitteilungServiceBean.neueVeranlagungssmitteilungBearbeiten(neueVeranlagungsMitteilung);
@@ -281,7 +281,7 @@ public class NeueVeranlagungMitteilungTest extends EasyMockSupport {
 		Gesuch gesuch = prepareGemeinsamFall(steuerdatenResponse);
 		gesuch.getDossier().getFall().getBesitzer().setZpvNummer(String.valueOf(zpvGS1Dossiertraeger));
 
-		mockCalls(gesuch);
+		mockCalls(gesuch, true);
 
 		Gesuch gesuchMitVerandlagungsmitteilung =
 			mitteilungServiceBean.neueVeranlagungssmitteilungBearbeiten(neueVeranlagungsMitteilung);
@@ -294,13 +294,91 @@ public class NeueVeranlagungMitteilungTest extends EasyMockSupport {
 			gesuchMitVerandlagungsmitteilung.getGesuchsteller2().getFinanzielleSituationContainer().getFinanzielleSituationJA().getNettolohn());
 	}
 
-	private void mockCalls(Gesuch gesuch) {
+	@Test
+	public void neueVeranlaungsMitteilung_selbststaendigToSelbststaendig() {
+		int zpvGS1Dossiertraeger = 1000001;
+		BigDecimal ausgewiesenerGeschaeftsertrag = BigDecimal.valueOf(10000);
+		BigDecimal ausgewiesenerGeschaeftsertragVeranlagung = BigDecimal.valueOf(20000);
+
+		SteuerdatenResponse steuerdatenResponse = new SteuerdatenResponse();
+		steuerdatenResponse.setZpvNrDossiertraeger(zpvGS1Dossiertraeger);
+		steuerdatenResponse.setZpvNrAntragsteller(zpvGS1Dossiertraeger);
+		steuerdatenResponse.setAusgewiesenerGeschaeftsertragDossiertraeger(ausgewiesenerGeschaeftsertragVeranlagung);
+		steuerdatenResponse.setVeranlagungsstand(Veranlagungsstand.RECHTSKRAEFTIG);
+
+		Gesuch gesuch = prepareGS1Fall(steuerdatenResponse);
+		gesuch.getDossier().getFall().getBesitzer().setZpvNummer(String.valueOf(zpvGS1Dossiertraeger));
+		gesuch.getGesuchsteller1().getFinanzielleSituationContainer().getFinanzielleSituationJA().setGeschaeftsgewinnBasisjahr(ausgewiesenerGeschaeftsertrag);
+
+		mockCalls(gesuch, false);
+
+		Gesuch gesuchMitVerandlagungsmitteilung =
+			mitteilungServiceBean.neueVeranlagungssmitteilungBearbeiten(neueVeranlagungsMitteilung);
+
+		Assertions.assertEquals(
+			ausgewiesenerGeschaeftsertragVeranlagung,
+			gesuchMitVerandlagungsmitteilung.getGesuchsteller1().getFinanzielleSituationContainer().getFinanzielleSituationJA().getGeschaeftsgewinnBasisjahr());
+	}
+
+	@Test
+	public void neueVeranlaungsMitteilung_selbststaendigToNotSelbststaendig() {
+		int zpvGS1Dossiertraeger = 1000001;
+		BigDecimal ausgewiesenerGeschaeftsertrag = BigDecimal.valueOf(10000);
+
+		SteuerdatenResponse steuerdatenResponse = new SteuerdatenResponse();
+		steuerdatenResponse.setZpvNrDossiertraeger(zpvGS1Dossiertraeger);
+		steuerdatenResponse.setZpvNrAntragsteller(zpvGS1Dossiertraeger);
+		steuerdatenResponse.setAusgewiesenerGeschaeftsertragDossiertraeger(null);
+		steuerdatenResponse.setVeranlagungsstand(Veranlagungsstand.RECHTSKRAEFTIG);
+
+		Gesuch gesuch = prepareGS1Fall(steuerdatenResponse);
+		gesuch.getDossier().getFall().getBesitzer().setZpvNummer(String.valueOf(zpvGS1Dossiertraeger));
+		gesuch.getGesuchsteller1().getFinanzielleSituationContainer().getFinanzielleSituationJA().setGeschaeftsgewinnBasisjahr(ausgewiesenerGeschaeftsertrag);
+
+		mockCalls(gesuch, false);
+
+		Gesuch gesuchMitVerandlagungsmitteilung =
+			mitteilungServiceBean.neueVeranlagungssmitteilungBearbeiten(neueVeranlagungsMitteilung);
+
+		Assertions.assertNull(gesuchMitVerandlagungsmitteilung.getGesuchsteller1().getFinanzielleSituationContainer()
+			.getFinanzielleSituationJA().getGeschaeftsgewinnBasisjahr());
+	}
+
+	@Test
+	public void neueVeranlaungsMitteilung_notSelbststaendigToSelbststaendig() {
+		int zpvGS1Dossiertraeger = 1000001;
+		BigDecimal ausgewiesenerGeschaeftsertrag = BigDecimal.valueOf(10000);
+
+		SteuerdatenResponse steuerdatenResponse = new SteuerdatenResponse();
+		steuerdatenResponse.setZpvNrDossiertraeger(zpvGS1Dossiertraeger);
+		steuerdatenResponse.setZpvNrAntragsteller(zpvGS1Dossiertraeger);
+		steuerdatenResponse.setAusgewiesenerGeschaeftsertragDossiertraeger(ausgewiesenerGeschaeftsertrag);
+		steuerdatenResponse.setVeranlagungsstand(Veranlagungsstand.RECHTSKRAEFTIG);
+
+		Gesuch gesuch = prepareGS1Fall(steuerdatenResponse);
+		gesuch.getDossier().getFall().getBesitzer().setZpvNummer(String.valueOf(zpvGS1Dossiertraeger));
+		gesuch.getGesuchsteller1().getFinanzielleSituationContainer().getFinanzielleSituationJA().setGeschaeftsgewinnBasisjahr(null);
+
+		mockCalls(gesuch, false);
+
+		Gesuch gesuchMitVerandlagungsmitteilung =
+			mitteilungServiceBean.neueVeranlagungssmitteilungBearbeiten(neueVeranlagungsMitteilung);
+
+		Assertions.assertEquals(
+			ausgewiesenerGeschaeftsertrag,
+			gesuchMitVerandlagungsmitteilung.getGesuchsteller1().getFinanzielleSituationContainer().getFinanzielleSituationJA().getGeschaeftsgewinnBasisjahr());
+	}
+
+	private void mockCalls(Gesuch gesuch, boolean hasGS2) {
 		expectEverythingBisBearbeitung(gesuch);
 
 		expect(finanzielleSituationService.saveFinanzielleSituation(anyObject(), anyObject()))
 			.andReturn(gesuch.getGesuchsteller1().getFinanzielleSituationContainer());
-		expect(finanzielleSituationService.saveFinanzielleSituation(anyObject(), anyObject()))
-			.andReturn(gesuch.getGesuchsteller2().getFinanzielleSituationContainer());
+
+		if (hasGS2) {
+			expect(finanzielleSituationService.saveFinanzielleSituation(anyObject(), anyObject()))
+				.andReturn(gesuch.getGesuchsteller2().getFinanzielleSituationContainer());
+		}
 		expect(persistence.merge(neueVeranlagungsMitteilung)).andReturn(neueVeranlagungsMitteilung);
 		replayAll();
 	}
