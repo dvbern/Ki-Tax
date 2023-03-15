@@ -36,7 +36,6 @@ public final class KibonAnfrageUtil {
 	 * @return KibonAnfrageContext
 	 */
 	public static KibonAnfrageContext initKibonAnfrageContext(@Nonnull Gesuch gesuch, int zpvNummer) {
-		KibonAnfrageContext kibonAnfrageContext = null;
 		Objects.requireNonNull(gesuch.getGesuchsteller1());
 		Objects.requireNonNull(gesuch.getGesuchsteller1().getFinanzielleSituationContainer());
 		Objects.requireNonNull(gesuch.getFamiliensituationContainer());
@@ -45,7 +44,7 @@ public final class KibonAnfrageUtil {
 		boolean gemeinsam = Boolean.TRUE
 			.equals(gesuch.getFamiliensituationContainer().getFamiliensituationJA().getGemeinsameSteuererklaerung());
 		if (isZpvNrFromAntragsteller(gesuch.getGesuchsteller1().getFinanzielleSituationContainer(), zpvNummer)) {
-				kibonAnfrageContext = new KibonAnfrageContext(
+				KibonAnfrageContext kibonAnfrageContext = new KibonAnfrageContext(
 					gesuch,
 					gesuch.getGesuchsteller1(),
 					gesuch.getGesuchsteller1().getFinanzielleSituationContainer(),
@@ -53,11 +52,15 @@ public final class KibonAnfrageUtil {
 				if(gemeinsam && gesuch.getGesuchsteller2() != null) {
 					kibonAnfrageContext.setFinSitContGS2(gesuch.getGesuchsteller2().getFinanzielleSituationContainer());
 				}
-		} else if (gesuch.getGesuchsteller2() != null){
+
+				return kibonAnfrageContext;
+		}
+
+		if (gesuch.getGesuchsteller2() != null) {
 			Objects.requireNonNull(gesuch.getGesuchsteller2().getFinanzielleSituationContainer());
 
 			if (isZpvNrFromAntragsteller(gesuch.getGesuchsteller2().getFinanzielleSituationContainer(), zpvNummer)) {
-				kibonAnfrageContext = new KibonAnfrageContext(
+				KibonAnfrageContext kibonAnfrageContext = new KibonAnfrageContext(
 					gesuch,
 					gesuch.getGesuchsteller2(),
 					gesuch.getGesuchsteller2().getFinanzielleSituationContainer(),
@@ -65,9 +68,12 @@ public final class KibonAnfrageUtil {
 				if(gemeinsam && gesuch.getGesuchsteller1() != null) {
 					kibonAnfrageContext.setFinSitContGS2(gesuch.getGesuchsteller1().getFinanzielleSituationContainer());
 				}
+
+				return kibonAnfrageContext;
 			}
 		}
-		return kibonAnfrageContext;
+
+		return null;
 	}
 
 	private static boolean isZpvNrFromAntragsteller(FinanzielleSituationContainer finanzielleSituationContainer, int zpvNummer) {

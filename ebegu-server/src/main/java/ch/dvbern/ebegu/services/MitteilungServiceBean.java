@@ -1625,6 +1625,11 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 			gesuch,
 			mitteilung.getSteuerdatenResponse().getZpvNrAntragsteller());
 
+		if (kibonAnfrageContext == null) {
+			throw new EbeguRuntimeException("neueVeranlagungsMitteilungImAntragErsetzen",
+				"Die neue Veranlagung koennte nicht mit einem gueltigen Antragstellenden verlinkt werden.");
+		}
+
 		// status muss bei Veranlagungsmitteilung immer rechtskräftig sein. Prüfungen wurden beim Erstellen der Veranlagungsmitteilungen gemacht.
 		if (mitteilung.getSteuerdatenResponse().getVeranlagungsstand() != Veranlagungsstand.RECHTSKRAEFTIG) {
 			throw new EbeguRuntimeException("neueVeranlagungsMitteilungImAntragErsetzen", "Veranlagungsstand muss rechtskräftig sein");
