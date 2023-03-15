@@ -20,7 +20,9 @@ import javax.annotation.Nonnull;
 
 import ch.dvbern.oss.lib.excelmerger.mergefields.MergeField;
 import ch.dvbern.oss.lib.excelmerger.mergefields.MergeFieldProvider;
+import ch.dvbern.oss.lib.excelmerger.mergefields.RepeatColMergeField;
 import ch.dvbern.oss.lib.excelmerger.mergefields.RepeatRowMergeField;
+import ch.dvbern.oss.lib.excelmerger.mergefields.RepeatValMergeField;
 import ch.dvbern.oss.lib.excelmerger.mergefields.SimpleMergeField;
 
 import static ch.dvbern.oss.lib.excelmerger.converters.StandardConverters.BIGDECIMAL_CONVERTER;
@@ -88,7 +90,6 @@ public enum MergeFieldGesuchstellerKinderBetreuung implements MergeFieldProvider
 	besonderebeduerfnisseTitle(new SimpleMergeField<>("besonderebeduerfnisseTitle", STRING_CONVERTER)),
 	sprichtAmtsspracheTitle(new SimpleMergeField<>("sprichtAmtsspracheTitle", STRING_CONVERTER)),
 	schulstufeTitle(new SimpleMergeField<>("schulstufeTitle", STRING_CONVERTER)),
-	keinPlatzImSchulhortTitle(new SimpleMergeField<>("keinPlatzImSchulhortTitle", STRING_CONVERTER)),
 	bis1MonateTitle(new SimpleMergeField<>("bis1MonateTitle", STRING_CONVERTER)),
 	bis2MonateTitle(new SimpleMergeField<>("bis2MonateTitle", STRING_CONVERTER)),
 	bis3MonateTitle(new SimpleMergeField<>("bis3MonateTitle", STRING_CONVERTER)),
@@ -193,7 +194,6 @@ public enum MergeFieldGesuchstellerKinderBetreuung implements MergeFieldProvider
 	kindErwBeduerfnisse(new SimpleMergeField<>("kindErwBeduerfnisse", BOOLEAN_X_CONVERTER)),
 	kindSprichtAmtssprache(new SimpleMergeField<>("kindSprichtAmtssprache", BOOLEAN_X_CONVERTER)),
 	eingeschult(new SimpleMergeField<>("eingeschult", STRING_CONVERTER)),
-	keinPlatzImSchulhort(new SimpleMergeField<>("keinPlatzImSchulhort", BOOLEAN_X_CONVERTER)),
 
 	zeitabschnittVon(new SimpleMergeField<>("zeitabschnittVon", DATE_CONVERTER)),
 	zeitabschnittBis(new SimpleMergeField<>("zeitabschnittBis", DATE_CONVERTER)),
@@ -216,7 +216,10 @@ public enum MergeFieldGesuchstellerKinderBetreuung implements MergeFieldProvider
 	verguenstigungKanton(new SimpleMergeField<>("verguenstigungKanton", BIGDECIMAL_CONVERTER)),
 	verguenstigungGemeinde(new SimpleMergeField<>("verguenstigungGemeinde", BIGDECIMAL_CONVERTER)),
 	verguenstigungTotal(new SimpleMergeField<>("verguenstigungTotal", BIGDECIMAL_CONVERTER)),
-	ausserordentlicherAnspruch(new SimpleMergeField<>("ausserordentlicherAnspruch", PERCENT_CONVERTER));
+	ausserordentlicherAnspruch(new SimpleMergeField<>("ausserordentlicherAnspruch", PERCENT_CONVERTER)),
+	repeatSchulhort(new RepeatColMergeField<>("repeatSchulhort", STRING_CONVERTER)),
+	keinPlatzImSchulhortTitle(new RepeatValMergeField<>("keinPlatzImSchulhortTitle", STRING_CONVERTER)),
+	keinPlatzImSchulhort(new RepeatValMergeField<>("keinPlatzImSchulhort", BOOLEAN_X_CONVERTER));
 
 	@Nonnull
 	private final MergeField<?> mergeField;
