@@ -1644,6 +1644,7 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 		boolean gemeinsam = Boolean.TRUE
 			.equals(gesuch.getFamiliensituationContainer().getFamiliensituationJA().getGemeinsameSteuererklaerung());
 		boolean hasGS2 = kibonAnfrageContext.getGesuch().getGesuchsteller2() != null;
+		// GEMEINSAME STEUERERKLÄRUNG (VERHEIRATET, ...)
 		if (hasGS2 && gemeinsam) {
 			Objects.requireNonNull(kibonAnfrageContext.getGesuch()
 				.getGesuchsteller2()
@@ -1655,10 +1656,6 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 					gesuch.getId());
 			}
 
-			if (!KibonAnfrageHelper.isAntragstellerDossiertraeger(mitteilung.getSteuerdatenResponse())) {
-				kibonAnfrageContext = kibonAnfrageContext.switchGSContainer();
-				kibonAnfrageContext.setSteuerdatenAnfrageStatus(SteuerdatenAnfrageStatus.RECHTSKRAEFTIG);
-			}
 			assert kibonAnfrageContext.getFinSitContGS2() != null;
 			KibonAnfrageHelper.updateFinSitSteuerdatenAbfrageGemeinsamStatusOk(
 				kibonAnfrageContext.getFinSitCont()
@@ -1674,6 +1671,7 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 			finanzielleSituationService.saveFinanzielleSituation(
 				kibonAnfrageContext.getFinSitContGS2(),
 				gesuch.getId());
+		// KEINE GEMEINSAME STEUERERKLÄRUNG (KONKUBINAT, ETC.)
 		} else {
 			if (mitteilung.getSteuerdatenResponse().getZpvNrPartner() != null) {
 				throw new EbeguException(
@@ -1681,6 +1679,7 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 					ErrorCodeEnum.ERROR_FIN_SIT_ALLEIN_NEUE_VERANLAGUNG_GEMEINSAM,
 					gesuch.getId());
 			}
+			// STEUERDATEN DES ZWEITEN ANTRAGSTELLERS
 			if (hasGS2
 				&& kibonAnfrageContext.getGesuch().getGesuchsteller2().getGesuchstellerJA().getZpvNummer() != null
 				&& kibonAnfrageContext.getGesuch()
@@ -1689,7 +1688,6 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 				.getZpvNummer()
 				.equals(String.valueOf(mitteilung.getSteuerdatenResponse().getZpvNrDossiertraeger()))) {
 				kibonAnfrageContext.setFinSitContGS2(kibonAnfrageContext.getGesuch().getGesuchsteller2().getFinanzielleSituationContainer());
-				kibonAnfrageContext.switchGSContainer();
 			}
 			KibonAnfrageHelper.updateFinSitSteuerdatenAbfrageStatusOk(kibonAnfrageContext.getFinSitCont()
 				.getFinanzielleSituationJA(), mitteilung.getSteuerdatenResponse());
