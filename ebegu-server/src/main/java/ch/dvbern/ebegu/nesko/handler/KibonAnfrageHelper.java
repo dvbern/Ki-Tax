@@ -113,12 +113,10 @@ public class KibonAnfrageHelper {
 			finanzielleSituationContainer.getGesuchsteller().getGesuchstellerJA().getGeburtsdatum();
 
 		if (isGS2Dossiertraeger(steuerdatenResponse)) {
-			return geburstdatumGS2.compareTo(
-				requireNonNull(steuerdatenResponse.getGeburtsdatumDossiertraeger())) == 0;
+			return geburstdatumGS2.isEqual(requireNonNull(steuerdatenResponse.getGeburtsdatumDossiertraeger()));
 		}
 
-		return geburstdatumGS2.compareTo(
-			requireNonNull(steuerdatenResponse.getGeburtsdatumPartner())) == 0;
+		return geburstdatumGS2.isEqual(requireNonNull(steuerdatenResponse.getGeburtsdatumPartner()));
 	}
 
 	public static void updateFinSitSteuerdatenAbfrageGemeinsamStatusOk(

@@ -21,7 +21,9 @@ import java.util.Objects;
 
 import javax.annotation.Nonnull;
 
+import ch.dvbern.ebegu.entities.FinanzielleSituationContainer;
 import ch.dvbern.ebegu.entities.Gesuch;
+import ch.dvbern.ebegu.entities.SteuerdatenResponse;
 import ch.dvbern.ebegu.nesko.handler.KibonAnfrageContext;
 
 public final class KibonAnfrageUtil {
@@ -42,20 +44,7 @@ public final class KibonAnfrageUtil {
 
 		boolean gemeinsam = Boolean.TRUE
 			.equals(gesuch.getFamiliensituationContainer().getFamiliensituationJA().getGemeinsameSteuererklaerung());
-		if (gesuch.getGesuchsteller1()
-			.getFinanzielleSituationContainer()
-			.getFinanzielleSituationJA()
-			.getSteuerdatenResponse() != null && gesuch.getGesuchsteller1()
-			.getFinanzielleSituationContainer()
-			.getFinanzielleSituationJA()
-			.getSteuerdatenResponse()
-			.getZpvNrAntragsteller() != null) {
-			if (gesuch.getGesuchsteller1()
-				.getFinanzielleSituationContainer()
-				.getFinanzielleSituationJA()
-				.getSteuerdatenResponse()
-				.getZpvNrAntragsteller()
-				.equals(zpvNummer)) {
+		if (isZpvNrFromAntragsteller(gesuch.getGesuchsteller1().getFinanzielleSituationContainer(), zpvNummer)) {
 				kibonAnfrageContext = new KibonAnfrageContext(
 					gesuch,
 					gesuch.getGesuchsteller1(),
@@ -64,23 +53,10 @@ public final class KibonAnfrageUtil {
 				if(gemeinsam && gesuch.getGesuchsteller2() != null) {
 					kibonAnfrageContext.setFinSitContGS2(gesuch.getGesuchsteller2().getFinanzielleSituationContainer());
 				}
-			}
 		} else if (gesuch.getGesuchsteller2() != null){
-			Objects.requireNonNull(gesuch.getGesuchsteller2()
-				.getFinanzielleSituationContainer());
-			if (gesuch.getGesuchsteller2()
-				.getFinanzielleSituationContainer()
-				.getFinanzielleSituationJA()
-				.getSteuerdatenResponse() != null && gesuch.getGesuchsteller2()
-				.getFinanzielleSituationContainer()
-				.getFinanzielleSituationJA()
-				.getSteuerdatenResponse()
-				.getZpvNrAntragsteller() != null && gesuch.getGesuchsteller2()
-				.getFinanzielleSituationContainer()
-				.getFinanzielleSituationJA()
-				.getSteuerdatenResponse()
-				.getZpvNrAntragsteller()
-				.equals(zpvNummer)) {
+			Objects.requireNonNull(gesuch.getGesuchsteller2().getFinanzielleSituationContainer());
+
+			if (isZpvNrFromAntragsteller(gesuch.getGesuchsteller2().getFinanzielleSituationContainer(), zpvNummer)) {
 				kibonAnfrageContext = new KibonAnfrageContext(
 					gesuch,
 					gesuch.getGesuchsteller2(),
@@ -92,5 +68,18 @@ public final class KibonAnfrageUtil {
 			}
 		}
 		return kibonAnfrageContext;
+	}
+
+	private static boolean isZpvNrFromAntragsteller(FinanzielleSituationContainer finanzielleSituationContainer, int zpvNummer) {
+		SteuerdatenResponse steuerdatenResponse =
+			finanzielleSituationContainer
+			.getFinanzielleSituationJA()
+			.getSteuerdatenResponse();
+
+		if (steuerdatenResponse == null || steuerdatenResponse.getZpvNrAntragsteller() == null) {
+			return false;
+		}
+
+		return steuerdatenResponse.getZpvNrAntragsteller().equals(zpvNummer);
 	}
 }

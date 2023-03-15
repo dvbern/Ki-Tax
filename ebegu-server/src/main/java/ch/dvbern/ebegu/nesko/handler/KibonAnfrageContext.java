@@ -17,6 +17,8 @@
 
 package ch.dvbern.ebegu.nesko.handler;
 
+import java.util.Objects;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
@@ -51,6 +53,8 @@ public class KibonAnfrageContext {
 
 	private boolean isSwitched = false;
 
+	private boolean gemeinsam;
+
 	public KibonAnfrageContext(
 		@Nonnull Gesuch gesuch,
 		@Nonnull GesuchstellerContainer gesuchsteller,
@@ -60,6 +64,16 @@ public class KibonAnfrageContext {
 		this.gesuchsteller = gesuchsteller;
 		this.finSitCont = finSitCont;
 		this.kibonAnfrageId = kibonAnfrageId;
+
+		initGemeinsam();
+	}
+
+	private void initGemeinsam() {
+		Objects.requireNonNull(gesuch.getFamiliensituationContainer());
+		Objects.requireNonNull(gesuch.getFamiliensituationContainer().getFamiliensituationJA());
+
+		this.gemeinsam = Boolean.TRUE
+			.equals(gesuch.getFamiliensituationContainer().getFamiliensituationJA().getGemeinsameSteuererklaerung());
 	}
 
 	@Nonnull
@@ -128,5 +142,27 @@ public class KibonAnfrageContext {
 
 	public void setSteuerdatenResponse(@Nullable SteuerdatenResponse steuerdatenResponse) {
 		this.steuerdatenResponse = steuerdatenResponse;
+	}
+
+	public boolean isGemeinsam() {
+		return gemeinsam;
+	}
+
+	public boolean hasGS1SteuerzuriffErlaubt() {
+		return Boolean.TRUE.equals(getFinSitCont().getFinanzielleSituationJA().getSteuerdatenZugriff());
+	}
+
+	public boolean hasGS2() {
+		return gesuch.getGesuchsteller2() != null;
+	}
+
+	public boolean equalZpvNrGS2(Integer zpvNummer) {
+		if (gesuch.getGesuchsteller2() == null ||
+			gesuch.getGesuchsteller2().getGesuchstellerJA() == null ||
+			gesuch.getGesuchsteller2().getGesuchstellerJA().getZpvNummer() == null) {
+			return false;
+		}
+
+		return String.valueOf(zpvNummer).equals(gesuch.getGesuchsteller2().getGesuchstellerJA().getZpvNummer());
 	}
 }
