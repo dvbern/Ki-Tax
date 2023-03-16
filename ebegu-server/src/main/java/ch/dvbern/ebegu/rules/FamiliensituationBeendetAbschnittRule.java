@@ -14,6 +14,7 @@ import ch.dvbern.ebegu.entities.Familiensituation;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
+import ch.dvbern.ebegu.enums.EnumFamilienstatus;
 import ch.dvbern.ebegu.types.DateRange;
 import com.google.common.collect.ImmutableList;
 
@@ -25,8 +26,8 @@ public class FamiliensituationBeendetAbschnittRule extends AbstractAbschnittRule
 	public static final int ZERO = 0;
 
 	protected FamiliensituationBeendetAbschnittRule(
-		@Nonnull DateRange validityPeriod,
-		@Nonnull Locale locale) {
+			@Nonnull DateRange validityPeriod,
+			@Nonnull Locale locale) {
 		super(RuleKey.FAMILIENSITUATION, RuleType.REDUKTIONSREGEL, RuleValidity.ASIV, validityPeriod, locale);
 	}
 
@@ -35,28 +36,59 @@ public class FamiliensituationBeendetAbschnittRule extends AbstractAbschnittRule
 	List<VerfuegungZeitabschnitt> createVerfuegungsZeitabschnitte(@Nonnull AbstractPlatz platz) {
 		Gesuch gesuch = platz.extractGesuch();
 		Familiensituation familiensituation = platz.extractGesuch().extractFamiliensituation();
+		final List<VerfuegungZeitabschnitt> neueZeitabschnitte = new LinkedList<>();
+
+		if (familiensituation.getFamilienstatus().equals(EnumFamilienstatus.KONKUBINAT_KEIN_KIND)) {
+			LocalDate startKonkubinat = familiensituation.getStartKonkubinat();
+			if (null == startKonkubinat) {
+				return neueZeitabschnitte;
+			}
+			createZeitabschnitteNachZweiJahrenKonkubinat(neueZeitabschnitte, gesuch, startKonkubinat);
+		}
 
 		LocalDate familiensituationAenderungPer = Objects.requireNonNull(familiensituation).getAenderungPer();
 		if (null == familiensituationAenderungPer) {
-			return new LinkedList<>();
+			return neueZeitabschnitte;
 		}
 		if (null == gesuch || null == gesuch.getGesuchsperiode()) {
-			return new LinkedList<>();
+			return neueZeitabschnitte;
 		}
+
 		if (Objects.isNull(familiensituation.getPartnerIdentischMitVorgesuch()) ||
-				Objects.equals(Boolean.TRUE, familiensituation.getPartnerIdentischMitVorgesuch())){
-			return new LinkedList<>();
+				Objects.equals(Boolean.TRUE, familiensituation.getPartnerIdentischMitVorgesuch())) {
+			return neueZeitabschnitte;
 		}
 		LocalDate gueltigBis = gesuch.getGesuchsperiode().getGueltigkeit().getGueltigBis();
 		LocalDate firstDayOfNextMonth = familiensituationAenderungPer.with(TemporalAdjusters.firstDayOfNextMonth());
 
-		VerfuegungZeitabschnitt abschnittNachPartnerStatusAenderung =
-			createZeitabschnittWithinValidityPeriodOfRule(new DateRange(firstDayOfNextMonth, gueltigBis));
-		abschnittNachPartnerStatusAenderung.setPartnerIdentischMitVorgesuch(Boolean.FALSE);
-
-		final List<VerfuegungZeitabschnitt> neueZeitabschnitte = new LinkedList<>();
-		neueZeitabschnitte.add(abschnittNachPartnerStatusAenderung);
+		createZeitabschnitteNachPartnerStatusAenderung(neueZeitabschnitte, gueltigBis, firstDayOfNextMonth);
 		return neueZeitabschnitte;
+	}
+
+	private void createZeitabschnitteNachZweiJahrenKonkubinat(
+			@Nonnull List<VerfuegungZeitabschnitt> neueZeitabschnitte,
+			@Nonnull Gesuch gesuch,
+			@Nonnull LocalDate startKonkubinat) {
+		LocalDate zweiJahreKonkubinat = startKonkubinat.plusYears(2);
+		if (!gesuch.getGesuchsperiode().getGueltigkeit().contains(zweiJahreKonkubinat)) {
+			return;
+		}
+		LocalDate zweiJahreKonkubinatNextMonth = zweiJahreKonkubinat.with(TemporalAdjusters.firstDayOfNextMonth());
+		VerfuegungZeitabschnitt abschnittNachJahrenKonkubinat =
+				createZeitabschnittWithinValidityPeriodOfRule(new DateRange(
+						zweiJahreKonkubinatNextMonth,
+						gesuch.getGesuchsperiode().getGueltigkeit().getGueltigBis()));
+		neueZeitabschnitte.add(abschnittNachJahrenKonkubinat);
+
+	}
+
+	private void createZeitabschnitteNachPartnerStatusAenderung(
+			List<VerfuegungZeitabschnitt> neueZeitabschnitte, @Nonnull LocalDate gueltigBis,
+			@Nonnull LocalDate firstDayOfNextMonth) {
+		VerfuegungZeitabschnitt abschnittNachPartnerStatusAenderung =
+				createZeitabschnittWithinValidityPeriodOfRule(new DateRange(firstDayOfNextMonth, gueltigBis));
+		abschnittNachPartnerStatusAenderung.setPartnerIdentischMitVorgesuch(Boolean.FALSE);
+		neueZeitabschnitte.add(abschnittNachPartnerStatusAenderung);
 	}
 
 	@Override
