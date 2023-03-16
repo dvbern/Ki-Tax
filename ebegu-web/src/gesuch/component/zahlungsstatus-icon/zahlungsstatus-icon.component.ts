@@ -16,7 +16,12 @@
  */
 
 import {ChangeDetectionStrategy, Component, Input, OnInit} from '@angular/core';
-import {TSZahlungsstatus} from '../../../models/enums/TSZahlungsstatus';
+import {TranslateService} from '@ngx-translate/core';
+import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
+import {TSRole} from '../../../models/enums/TSRole';
+import {TSVerfuegungZeitabschnittZahlungsstatus} from '../../../models/enums/TSVerfuegungZeitabschnittZahlungsstatus';
+import {TSBetreuung} from '../../../models/TSBetreuung';
+import {TSZahlungsstatusIconLabel} from './TSZahlungsstatusIconLabel';
 
 @Component({
     selector: 'dv-zahlungsstatus-icon',
@@ -27,12 +32,27 @@ import {TSZahlungsstatus} from '../../../models/enums/TSZahlungsstatus';
 export class ZahlungsstatusIconComponent implements OnInit {
 
     @Input()
-    public zahlungsstatus: TSZahlungsstatus;
+    public zahlungsstatus: TSVerfuegungZeitabschnittZahlungsstatus;
+    @Input()
+    private readonly betreuung: TSBetreuung;
+    public iconLabel: TSZahlungsstatusIconLabel;
 
-    public constructor() {
+    public constructor(
+        private readonly translate: TranslateService,
+        private readonly authService: AuthServiceRS
+    ) {
     }
 
     public ngOnInit(): void {
+        this.iconLabel = new TSZahlungsstatusIconLabel(this.translate);
+        this.iconLabel.zahlungsstatusToIconLabel(this.zahlungsstatus, this.betreuung);
     }
 
+    public getTitle(): string {
+        let title = this.iconLabel.tooltipLabel;
+        if (this.authService.isRole(TSRole.SUPER_ADMIN)) {
+            title += ` (Superadmin: ${  this.zahlungsstatus})`;
+        }
+        return title;
+    }
 }

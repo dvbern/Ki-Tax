@@ -466,7 +466,10 @@
                                     ng-bind="vm.getVerguenstigungAnInstitution(verfuegungZeitabschnitt) | currency : '' : 2"></td>
                                 <!-- Zahlungsstatus an Institution -->
                                 <td class="result" ng-if="vm.showZahlungsstatusInstitutionenCol()">
-                                    <dv-zahlungsstatus-icon [zahlungsstatus]="verfuegungZeitabschnitt.zahlungsstatusInstitution"></dv-zahlungsstatus-icon>
+                                    <dv-zahlungsstatus-icon
+                                        [zahlungsstatus]="verfuegungZeitabschnitt.zahlungsstatusInstitution"
+                                        [betreuung]="vm.getBetreuung()"
+                                    ></dv-zahlungsstatus-icon>
                                 </td>
                                 <!-- An Kita überwiesen (Gutschein) -->
                                 <td class="result" ng-if="vm.showAuszahlungAnElternCol()"
@@ -477,7 +480,10 @@
                                     ng-bind="verfuegungZeitabschnitt.verguenstigungMahlzeitTotal | currency : '' : 2"></td>
                                 <!-- Zahlungsstatus an Antragsteller -->
                                 <td class="result" ng-if="vm.showZahlungsstatusAntragstellerCol()">
-                                    <dv-zahlungsstatus-icon [zahlungsstatus]="verfuegungZeitabschnitt.zahlungsstatusAntragsteller"></dv-zahlungsstatus-icon>
+                                    <dv-zahlungsstatus-icon
+                                        [zahlungsstatus]="verfuegungZeitabschnitt.zahlungsstatusAntragsteller"
+                                        [betreuung]="vm.getBetreuung()"
+                                    ></dv-zahlungsstatus-icon>
                                 </td>
                             </tr>
                             </tbody>

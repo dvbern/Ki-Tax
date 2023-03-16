@@ -185,5 +185,6 @@
     "FREIGABEQUITTUNG_MUTATION_TEXT": "Wir haben die Freigabequittung bereits erhalten. Bei einer Mutation muss diese nicht erneut eingereicht werden. <br>Über die untenstehende Schaltfläche müssen Sie die Mutation aber noch freigeben.",
     "FREIGABEQUITTUNG_AUSSTEHEND_TEXT": "",
     "FREIGABEQUITTUNG_WARNUNG": "Bitte beachten Sie, dass die unterzeichnete Freigabequittung umgehend per Mail oder Post eingereicht werden muss. Andernfalls gilt Ihr Antrag als unvollständig und kann von der Gemeinde nicht weiter bearbeitet werden.",
+    "ZAHLUNG_AN_ELTERN": "Zahlung Eltern",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

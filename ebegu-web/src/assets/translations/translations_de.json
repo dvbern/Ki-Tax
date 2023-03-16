@@ -3115,5 +3115,15 @@
     "NUR_LATS_UMWANDELN_CONFIRM": "Hiermit wird die Institution aus dem Status \"nur für Lastenausgleich\" zu einer Institution im Status \"Konfiguration\" umgewandelt. Dieser Schritt kann nicht rückgängig gemacht werden. Fortfahren?",
     "NUR_LATS_UMWANDELN_SUCCESS": "Die Institution wurde zu einer regulärer Institution im Status \"Konfiguration\" umgewandelt.",
     "EMAIL_ADMIN_TRAEGERSCHAFT_AUSWAEHLEN": "E-Mail von Administrator/in der Trägerschaft auswählen",
+    "ZAHLUNGSSTATUS_VERRECHNET_ICON":  "v",
+    "ZAHLUNGSSTATUS_VERRECHNET": "Verrechnet",
+    "ZAHLUNGSSTATUS_AUSSERHALB_ICON":  "a",
+    "ZAHLUNGSSTATUS_AUSSERHALB": "Ausserhalb von kiBon",
+    "ZAHLUNGSSTATUS_ZUKUENFTIG_ICON":  "z",
+    "ZAHLUNGSSTATUS_ZUKUENFTIG": "Zukünftig",
+    "ZAHLUNGSSTATUS_KORRIGIERT_ICON":  "k",
+    "ZAHLUNGSSTATUS_KORRIGIERT": "Korrigiert",
+    "ZAHLUNG_AN_INSTITUTION":  "Zahlung Institution",
+    "ZAHLUNG_AN_ELTERN": "Zahlung Mahlzeiten",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }
