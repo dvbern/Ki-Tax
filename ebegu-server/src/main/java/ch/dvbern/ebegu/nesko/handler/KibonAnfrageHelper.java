@@ -154,10 +154,15 @@ public class KibonAnfrageHelper {
 		finSit.setErhalteneAlimente(getPositvValueOrZero(steuerdatenResponse.getErhalteneUnterhaltsbeitraege(traeger)));
 		finSit.setNettoertraegeErbengemeinschaft(getValueOrZero(steuerdatenResponse.getNettoertraegeAusEgme(traeger)));
 
-
-		finSit.setGeschaeftsgewinnBasisjahr(steuerdatenResponse.getAusgewiesenerGeschaeftsertrag(traeger));
-		finSit.setGeschaeftsgewinnBasisjahrMinus1(steuerdatenResponse.getAusgewiesenerGeschaeftsertragVorperiode(traeger));
-		finSit.setGeschaeftsgewinnBasisjahrMinus2(steuerdatenResponse.getAusgewiesenerGeschaeftsertragVorperiode2(traeger));
+		if (steuerdatenResponse.getAusgewiesenerGeschaeftsertrag(traeger) != null) {
+			finSit.setGeschaeftsgewinnBasisjahr(steuerdatenResponse.getAusgewiesenerGeschaeftsertrag(traeger));
+			finSit.setGeschaeftsgewinnBasisjahrMinus1(steuerdatenResponse.getAusgewiesenerGeschaeftsertragVorperiode(traeger));
+			finSit.setGeschaeftsgewinnBasisjahrMinus2(steuerdatenResponse.getAusgewiesenerGeschaeftsertragVorperiode2(traeger));
+		} else {
+			finSit.setGeschaeftsgewinnBasisjahr(null);
+			finSit.setGeschaeftsgewinnBasisjahrMinus1(null);
+			finSit.setGeschaeftsgewinnBasisjahrMinus2(null);
+		}
 
 		setBerechneteFelder(finSit, steuerdatenResponse, anzahlGesuchsteller);
 	}
