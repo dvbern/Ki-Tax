@@ -138,17 +138,17 @@ export class FamiliensituationViewXComponent extends AbstractFamiliensitutaionVi
     }
 
     public showFragePartnerWieBisher(): boolean {
-        return true;
-        // const isVorPeriode = this.getFamiliensituation().aenderungPer?.isBefore(
-        //     this.gesuchModelManager.getGesuchsperiode().gueltigkeit.gueltigAb);
-        // if (isVorPeriode) {
-        //     return false;
-        // }
-        // const bis = this.gesuchModelManager.getGesuchsperiode().gueltigkeit.gueltigBis;
-        // return EbeguUtil.isNotNullOrUndefined(this.getFamiliensituation()?.aenderungPer) &&
-        //     !this.getFamiliensituationErstgesuch()?.isSameFamiliensituation(this.getFamiliensituation()) &&
-        //     this.getFamiliensituationErstgesuch().hasSecondGesuchsteller(bis) &&
-        //     this.getFamiliensituation().hasSecondGesuchsteller(bis);
+
+        const isVorPeriode = this.getFamiliensituation().aenderungPer?.isBefore(
+            this.gesuchModelManager.getGesuchsperiode().gueltigkeit.gueltigAb);
+        if (isVorPeriode) {
+            return false;
+        }
+        const bis = this.gesuchModelManager.getGesuchsperiode().gueltigkeit.gueltigBis;
+        return EbeguUtil.isNotNullOrUndefined(this.getFamiliensituation()?.aenderungPer) &&
+            !this.getFamiliensituationErstgesuch()?.isSameFamiliensituation(this.getFamiliensituation()) &&
+            this.getFamiliensituationErstgesuch().hasSecondGesuchsteller(bis) &&
+            this.getFamiliensituation().hasSecondGesuchsteller(bis);
     }
 
     /**
@@ -385,9 +385,7 @@ export class FamiliensituationViewXComponent extends AbstractFamiliensitutaionVi
 
     private konkubinatIsTwoYearsOld(): Boolean {
         let startKonkubinat: moment.Moment = this.gesuchModelManager.getGesuch().extractFamiliensituation().startKonkubinat;
-        console.log('startkonkubinat' + startKonkubinat.format('YYYY-MM-DD'));
         let twoYearsAfterKonkubinat: moment.Moment = moment(startKonkubinat).add(2, 'year');
-        console.log('twoYears' + twoYearsAfterKonkubinat.format('YYYY-MM-DD'));
         return moment().isAfter(twoYearsAfterKonkubinat);
 
     }
