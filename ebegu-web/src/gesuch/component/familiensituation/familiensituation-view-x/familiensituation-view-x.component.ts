@@ -379,9 +379,10 @@ export class FamiliensituationViewXComponent extends AbstractFamiliensitutaionVi
         } );
     }
 
-    private konkubinatIsTwoYearsOld(): Boolean {
-        let startKonkubinat: moment.Moment = this.gesuchModelManager.getGesuch().extractFamiliensituation().startKonkubinat;
-        let twoYearsAfterKonkubinat: moment.Moment = moment(startKonkubinat).add(2, 'year');
+    private konkubinatIsTwoYearsOld(): boolean {
+        const startKonkubinat: moment.Moment =
+                this.gesuchModelManager.getGesuch().extractFamiliensituation().startKonkubinat;
+        const twoYearsAfterKonkubinat: moment.Moment = moment(startKonkubinat).add(2, 'year');
         return moment().isAfter(twoYearsAfterKonkubinat);
 
     }
