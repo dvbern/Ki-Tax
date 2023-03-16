@@ -169,6 +169,15 @@
                          (click)="logIn(gesuchstellerHansZimmermann)"></div>
                 </td>
             </tr>
+            <tr>
+                <td>Gesuchsteller/in</td>
+                <td></td>
+                <td>
+                    <div class="first-row panel panel-default mark-hover panel-body"
+                         [textContent]="'Einloggen als ' + gesuchstellerJeanChambre?.vorname  + ' ' + gesuchstellerJeanChambre?.nachname"
+                         (click)="logIn(gesuchstellerJeanChambre)"></div>
+                </td>
+            </tr>
 
             <th><h2 class="local-login-h2">Gemeinde:</h2></th>
             <th><h2 class="local-login-h2">{{localLoginDaten?.default_gemeinde.name}}</h2></th>
