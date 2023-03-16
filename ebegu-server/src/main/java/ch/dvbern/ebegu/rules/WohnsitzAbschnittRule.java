@@ -98,6 +98,7 @@ public class WohnsitzAbschnittRule extends AbstractAbschnittRule {
 					if ((changedAsiv && newNichtInGemeindeAsiv) || (changedGemeinde && newNichtInGemeindeGemeinde)) {
 						// Es ist ein Wegzug
 						LocalDate stichTagUmzug = zeitabschnitt.getGueltigkeit().getGueltigAb();
+						lastZeitAbschnitt.getGueltigkeit().setGueltigBis(stichTagUmzug.with(TemporalAdjusters.lastDayOfMonth()));
 						result.addAll(createWegzugZeitabschnitte(zeitabschnitt, stichTagUmzug));
 					} else {
 						// Es ist ein Zuzug
