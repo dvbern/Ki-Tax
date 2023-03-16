@@ -350,7 +350,8 @@ export class FamiliensituationViewXComponent extends AbstractFamiliensitutaionVi
         if (familienstatus === TSFamilienstatus.VERHEIRATET) {
             return this.$translate.instant('FAMILIENSITUATION_FRAGE_PARTNERIDENTISCH_WARNBEZ_EHEPARTNER');
         }
-        if (familienstatus === TSFamilienstatus.ALLEINERZIEHEND){
+        if ((familienstatus === TSFamilienstatus.ALLEINERZIEHEND) ||
+                (familienstatus === TSFamilienstatus.KONKUBINAT_KEIN_KIND && !this.konkubinatIsTwoYearsOld())){
             return this.$translate.instant('FAMILIENSITUATION_FRAGE_PARTNERIDENTISCH_WARNBEZ_ANDERER_ELTERNTEIL');
         }
         return this.$translate.instant('FAMILIENSITUATION_FRAGE_PARTNERIDENTISCH_WARNBEZ_KONKUBINTASPARTNER');
@@ -367,13 +368,8 @@ export class FamiliensituationViewXComponent extends AbstractFamiliensitutaionVi
                 namegs2: this.getNameGesuchsteller2()
             } );
         }
-        if (familienstatus === TSFamilienstatus.ALLEINERZIEHEND){
-            return this.$translate.instant('FAMILIENSITUATION_FRAGE_PARTNERIDENTISCH_ANDERER_ELTERNTEIL', {
-                namegs2: this.getNameGesuchsteller2()
-            } );
-        }
-
-        if (familienstatus === TSFamilienstatus.KONKUBINAT_KEIN_KIND && !this.konkubinatIsTwoYearsOld() ){
+        if ((familienstatus === TSFamilienstatus.ALLEINERZIEHEND) ||
+                (familienstatus === TSFamilienstatus.KONKUBINAT_KEIN_KIND && !this.konkubinatIsTwoYearsOld())){
             return this.$translate.instant('FAMILIENSITUATION_FRAGE_PARTNERIDENTISCH_ANDERER_ELTERNTEIL', {
                 namegs2: this.getNameGesuchsteller2()
             } );
