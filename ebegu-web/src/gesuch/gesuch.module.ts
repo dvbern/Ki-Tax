@@ -73,7 +73,9 @@ import {FallToolbarComponent} from './component/fallToolbar/fallToolbar.componen
 import {
     FamiliensituationAppenzellViewXComponent
 } from './component/familiensituation/familiensituation-appenzell-view-x/familiensituation-appenzell-view-x.component';
-import {FamiliensituationViewXComponent} from './component/familiensituation/familiensituation-view-x/familiensituation-view-x.component';
+import {
+    FamiliensituationViewXComponent
+} from './component/familiensituation/familiensituation-view-x/familiensituation-view-x.component';
 import {
     FinSitZusatzfelderAppenzellComponent
 } from './component/finanzielleSituation/appenzell/fin-sit-zusatzfelder-appenzell/fin-sit-zusatzfelder-appenzell.component';
@@ -128,6 +130,7 @@ import {StammdatenViewComponentConfig} from './component/stammdatenView/stammdat
 import {UmzugViewComponentConfig} from './component/umzugView/umzugView';
 import {VerfuegenListViewComponentConfig} from './component/verfuegenListView/verfuegenListView';
 import {VerfuegenViewComponentConfig} from './component/verfuegenView/verfuegenView';
+import {ZahlungsstatusIconComponent} from './component/zahlungsstatus-icon/zahlungsstatus-icon.component';
 import {gesuchRun} from './gesuch.route';
 
 export const GESUCH_JS_MODULE =
@@ -215,4 +218,5 @@ export const GESUCH_JS_MODULE =
                 inputs: ['status', 'finSitRequestState','finSitRequestRunning'],
                 outputs: ['tryAgainEvent']
             }))
+        .directive('dvZahlungsstatusIcon', downgradeComponent({component: ZahlungsstatusIconComponent}))
 ;

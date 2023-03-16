@@ -465,8 +465,9 @@
                                 <td class="result" ng-if="vm.showAuszahlungAnInstitutionenCol()"
                                     ng-bind="vm.getVerguenstigungAnInstitution(verfuegungZeitabschnitt) | currency : '' : 2"></td>
                                 <!-- Zahlungsstatus an Institution -->
-                                <td class="result" ng-if="vm.showZahlungsstatusInstitutionenCol()"
-                                    ng-bind="verfuegungZeitabschnitt.zahlungsstatusInstitution"></td>
+                                <td class="result" ng-if="vm.showZahlungsstatusInstitutionenCol()">
+                                    <dv-zahlungsstatus-icon [zahlungsstatus]="verfuegungZeitabschnitt.zahlungsstatusInstitution"></dv-zahlungsstatus-icon>
+                                </td>
                                 <!-- An Kita überwiesen (Gutschein) -->
                                 <td class="result" ng-if="vm.showAuszahlungAnElternCol()"
                                     ng-bind="vm.getVerguenstigungAnEltern(verfuegungZeitabschnitt) | currency : '' : 2"></td>
@@ -475,8 +476,9 @@
                                     ng-if="vm.showMahlzeitenverguenstigung()"
                                     ng-bind="verfuegungZeitabschnitt.verguenstigungMahlzeitTotal | currency : '' : 2"></td>
                                 <!-- Zahlungsstatus an Antragsteller -->
-                                <td class="result" ng-if="vm.showZahlungsstatusAntragstellerCol()"
-                                    ng-bind="verfuegungZeitabschnitt.zahlungsstatusAntragsteller"></td>
+                                <td class="result" ng-if="vm.showZahlungsstatusAntragstellerCol()">
+                                    <dv-zahlungsstatus-icon [zahlungsstatus]="verfuegungZeitabschnitt.zahlungsstatusAntragsteller"></dv-zahlungsstatus-icon>
+                                </td>
                             </tr>
                             </tbody>
                             <tbody ng-if="vm.getVerfuegungZeitabschnitte().length === 0">

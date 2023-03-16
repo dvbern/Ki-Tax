@@ -49,7 +49,9 @@ import {FallToolbarModule} from './component/fallToolbar/fall-toolbar.module';
 import {
     FamiliensituationAppenzellViewXComponent
 } from './component/familiensituation/familiensituation-appenzell-view-x/familiensituation-appenzell-view-x.component';
-import {FamiliensituationViewXComponent} from './component/familiensituation/familiensituation-view-x/familiensituation-view-x.component';
+import {
+    FamiliensituationViewXComponent
+} from './component/familiensituation/familiensituation-view-x/familiensituation-view-x.component';
 import {
     FinSitZusatzfelderAppenzellComponent
 } from './component/finanzielleSituation/appenzell/fin-sit-zusatzfelder-appenzell/fin-sit-zusatzfelder-appenzell.component';
@@ -107,6 +109,7 @@ import {
 } from './component/internePendenzenView/interne-pendenzen-table/interne-pendenzen-table.component';
 import {InternePendenzenComponent} from './component/internePendenzenView/interne-pendenzen.component';
 import {FkjvKinderabzugComponent} from './component/kindView/fkjv-kinderabzug/fkjv-kinderabzug.component';
+import {ZahlungsstatusIconComponent} from './component/zahlungsstatus-icon/zahlungsstatus-icon.component';
 
 @NgModule({
     imports: [
@@ -154,10 +157,12 @@ import {FkjvKinderabzugComponent} from './component/kindView/fkjv-kinderabzug/fk
         DialogInitZPVNummerVerknuepfenComponent,
         FallCreationViewXComponent,
         FamiliensituationViewXComponent,
-        FamiliensituationAppenzellViewXComponent
+        FamiliensituationAppenzellViewXComponent,
+        ZahlungsstatusIconComponent
     ],
     exports: [
-        DvSwitchComponent
+        DvSwitchComponent,
+        ZahlungsstatusIconComponent
     ]
 })
 
