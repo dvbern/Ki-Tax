@@ -381,9 +381,7 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
         if (isDirektVerfuegen) {
             return this.createDeferPromise<boolean>();
         }
-        if(this.isFKJV() && this.getGesuch().finSitRueckwirkendKorrigiertInThisMutation) {
-            return Promise.resolve(true);
-        }
+
         return this.askIfIgnorieren(zahlungslaufTyp)
             .then(ignoreVerguenstigung => {
                 return ignoreVerguenstigung;
@@ -529,10 +527,13 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
     }
 
     private askIfIgnorieren(myZahlungslaufTyp: TSZahlungslaufTyp): IPromise<boolean> {
+        const zahlungDirektIgnorieren = this.isFKJV() && this.getBetreuung().finSitRueckwirkendKorrigiertInThisMutation;
+
         return this.dvDialog.showDialog(stepDialogTempl, StepDialogController, {
             institutionName: this.getInstitutionName(),
             institutionPhone: this.getInstitutionPhone(),
             zahlungslaufTyp: myZahlungslaufTyp,
+            zahlungDirektIgnorieren: zahlungDirektIgnorieren,
         }).then(response => {
             this.isVerfuegenClicked = false;
             return response === 2;

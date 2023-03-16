@@ -1384,7 +1384,6 @@ export class EbeguRestUtil {
         restGesuch.dokumenteHochgeladen = gesuch.dokumenteHochgeladen;
         restGesuch.finSitStatus = gesuch.finSitStatus;
         restGesuch.finSitTyp = gesuch.finSitTyp;
-        restGesuch.finSitRueckwirkendKorrigiertInThisMutation = gesuch.finSitRueckwirkendKorrigiertInThisMutation;
         restGesuch.finSitAenderungGueltigAbDatum = DateUtil.momentToLocalDate(gesuch.finSitAenderungGueltigAbDatum);
         return restGesuch;
     }
@@ -1420,7 +1419,6 @@ export class EbeguRestUtil {
             gesuchTS.dokumenteHochgeladen = gesuchFromServer.dokumenteHochgeladen;
             gesuchTS.finSitStatus = gesuchFromServer.finSitStatus;
             gesuchTS.finSitTyp = gesuchFromServer.finSitTyp;
-            gesuchTS.finSitRueckwirkendKorrigiertInThisMutation = gesuchFromServer.finSitRueckwirkendKorrigiertInThisMutation;
             gesuchTS.finSitAenderungGueltigAbDatum = DateUtil.localDateToMoment(gesuchFromServer.finSitAenderungGueltigAbDatum);
             gesuchTS.markiertFuerKontroll = gesuchFromServer.markiertFuerKontroll;
             return gesuchTS;
@@ -2782,6 +2780,7 @@ export class EbeguRestUtil {
             betreuungTS.eingewoehnung = betreuungFromServer.eingewoehnung;
             betreuungTS.auszahlungAnEltern = betreuungFromServer.auszahlungAnEltern;
             betreuungTS.begruendungAuszahlungAnInstitution = betreuungFromServer.begruendungAuszahlungAnInstitution;
+            betreuungTS.finSitRueckwirkendKorrigiertInThisMutation = betreuungFromServer.finSitRueckwirkendKorrigiertInThisMutation;
             return betreuungTS;
         }
         return undefined;

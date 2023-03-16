@@ -2120,7 +2120,7 @@
     "KORREKTURZAHLUNG_NO_CASE_1": "Lors d'un rehaussement rétroactif du revenu",
     "KORREKTURZAHLUNG_NO_CASE_2": "Lors d'une diminution rétroactive du droit",
     "KORREKTURZAHLUNG_NO_CASE_3": "Lors d'une annulation rétroactive du bon de garde",
-    "KORREKTURZAHLUNG_INSTITUTION_HINT": "Information: Si le taux de prise en charge aussi bien que le revenu déterminant ou le droit ont été modifiés rétroactivement, il est généralement raisonnable de traiter les demandes de restitution directement avec les parents en dehors de kiBon et les remboursements aux institutions dans kiBon. Dans les deux cas nous vous recommandons de consulter l'institution",
+    "WARNUNG_ZAHLUNG_AUSSERHALB_KIBON": "In diesem Fall hat sich das massgebende Einkommen verändert. Es ist deshalb nicht möglich, die Korrekturen in den nächsten Zahlungslauf zu übernehmen. Bitte nehmen Sie Rücksprach mit der Institution {{institution}}, falls sich das Betreuungspensum in dieser Mutation geändert hat.",
     "GESUCHSTELLER_HOEHRE_ROLLE_EINLADEN_FRAGE": "L'adresse Email {{emailAdresse}} a déjà un rôle d'attribué (Rolle Gesuchsteller) ainsi qu'une demande qui n'est pas encore libérée.<br> Voulez-vous attribuer un nouveau rôle «{{administratorRolle}}» à cette utilisateur et supprimer ça demande ?",
     "GESUCHSTELLER_DIALOG_CONFIRM_DELETE": "Nous avons pris contact avec {{gesuchstellerName}}. {{gesuchstellerName}} nous a confirmé que nous pouvons changer son rôle et supprimer ça demande",
     "BESTAETIGEN": "Confirmer",

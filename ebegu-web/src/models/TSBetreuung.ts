@@ -60,6 +60,8 @@ export class TSBetreuung extends TSAbstractMutableEntity {
     private _auszahlungAnEltern: boolean = false;
     private _begruendungAuszahlungAnInstitution: string;
 
+    private _finSitRueckwirkendKorrigiertInThisMutation: boolean = false;
+
     public constructor() {
         super();
     }
@@ -347,5 +349,13 @@ export class TSBetreuung extends TSAbstractMutableEntity {
 
     public set begruendungAuszahlungAnInstitution(value: string) {
         this._begruendungAuszahlungAnInstitution = value;
+    }
+
+    public get finSitRueckwirkendKorrigiertInThisMutation(): boolean {
+        return this._finSitRueckwirkendKorrigiertInThisMutation;
+    }
+
+    public set finSitRueckwirkendKorrigiertInThisMutation(value: boolean) {
+        this._finSitRueckwirkendKorrigiertInThisMutation = value;
     }
 }

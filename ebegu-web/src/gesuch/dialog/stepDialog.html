@@ -26,9 +26,9 @@
         <div class="md-dialog-content-body ng-scope"><p class="ng-binding" ng-bind="vm.questionText"></p></div>
 
         <md-radio-group ng-model="vm.selected">
-            <md-radio-button ng-value="1">{{vm.radioYes}}</md-radio-button>
+            <md-radio-button ng-value="1" ng-disabled="vm.zahlungDirektIgnorieren">{{vm.radioYes}}</md-radio-button>
             <div class="md-dialog-content-body">
-                <p class="step-hint" ng-class="vm.selected == 1 ? 'hint-transition' : ''">
+                <p class="step-hint" ng-class="{'hint-transition': vm.selected == 1, 'disabled': vm.zahlungDirektIgnorieren}">
                     {{vm.radioYesHint}}<br><br>
                     {{vm.radioYesCasesInfo}}<br><br>
                     <span ng-repeat="case in vm.radioYesCases">&bull; {{case}}</span><br>
@@ -45,7 +45,7 @@
             </div>
         </md-radio-group>
         <br><br>
-        <p>{{vm.institutionHint}}</p>
+        <p class="font-color-warning">{{vm.warningZahlungAusserhalbKibon}}</p>
     </md-dialog-content>
 
     <md-dialog-content class="md-dialog-content step" ng-if="vm.isStepDisplayed(1)">
