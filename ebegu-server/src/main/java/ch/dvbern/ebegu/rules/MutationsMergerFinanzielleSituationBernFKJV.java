@@ -53,7 +53,6 @@ public class MutationsMergerFinanzielleSituationBernFKJV extends MutationsMerger
 
 		inputData.setFamGroesse(resultVorgaenger.getFamGroesse());
 		inputData.setAbzugFamGroesse(resultVorgaenger.getAbzugFamGroesse());
-
 	}
 
 	private boolean hasMassgebendesEinkommenVorAbzugFamgrChanged(
