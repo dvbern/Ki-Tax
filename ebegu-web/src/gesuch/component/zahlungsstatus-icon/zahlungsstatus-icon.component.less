@@ -15,3 +15,19 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+@circle-radius: 6px;
+
+svg {
+    width: 2* @circle-radius;
+    height: 2* @circle-radius;
+
+    circle {
+        r: @circle-radius;
+        cx: @circle-radius;
+        cy: @circle-radius;
+    }
+
+    text {
+        fill: white;
+    }
+}

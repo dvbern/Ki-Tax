@@ -15,4 +15,9 @@
   ~ along with this program. If not, see <https://www.gnu.org/licenses/>.
   -->
 
-<div [title]="getTitle()">{{iconLabel.iconLabel}}</div>
+<div [title]="getTitle()">
+    <svg>
+        <circle></circle>
+        <text x="3" y="9">{{iconLabel.iconLabel}}</text>
+    </svg>
+</div>

@@ -377,6 +377,9 @@
                                 <td ng-if="vm.showAuszahlungAnInstitutionenCol()" class="result">
                                     <dv-tooltip text="'VERGUENSTIGUNG_HELP' | translate"></dv-tooltip>
                                 </td>
+                                <td class="result" ng-if="vm.showZahlungsstatusInstitutionenCol()">
+                                    <dv-tooltip text="'ZAHLUNGSSTATUS_HELP' | translate"></dv-tooltip>
+                                </td>
                                 <td ng-if="vm.showAuszahlungAnElternCol()" class="result">
                                     <dv-tooltip text="'VERGUENSTIGUNG_ELTERN_HELP' | translate"></dv-tooltip>
                                 </td>
@@ -385,6 +388,9 @@
                                 </td>
                                 <td class="result" ng-if="vm.showMahlzeitenverguenstigung()">
                                     &nbsp;
+                                </td>
+                                <td class="result" ng-if="vm.showZahlungsstatusAntragstellerCol()">
+                                    <dv-tooltip text="'ZAHLUNGSSTATUS_HELP' | translate"></dv-tooltip>
                                 </td>
                             </tr>
                             <tr class="title-row">

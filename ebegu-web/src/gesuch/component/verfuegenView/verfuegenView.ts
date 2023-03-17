@@ -25,6 +25,7 @@ import {DvDialog} from '../../../app/core/directive/dv-dialog/dv-dialog';
 import {TSDemoFeature} from '../../../app/core/directive/dv-hide-feature/TSDemoFeature';
 import {LogFactory} from '../../../app/core/logging/LogFactory';
 import {ApplicationPropertyRS} from '../../../app/core/rest-services/applicationPropertyRS.rest';
+import {DemoFeatureRS} from '../../../app/core/service/demoFeatureRS.rest';
 import {DownloadRS} from '../../../app/core/service/downloadRS.rest';
 import {I18nServiceRSRest} from '../../../app/i18n/services/i18nServiceRS.rest';
 import {MandantService} from '../../../app/shared/services/mandant.service';
@@ -98,7 +99,8 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
         '$translate',
         'MandantService',
         'EinstellungRS',
-        'EbeguRestUtil'
+        'EbeguRestUtil',
+        'DemoFeatureRS'
     ];
 
     // this is the model...
@@ -128,6 +130,7 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
     private showAuszahlungAnEltern: boolean;
 
     public readonly demoFeature = TSDemoFeature.VERAENDERUNG_BEI_MUTATION;
+    private demoFeatureZahlungsstatusAllowed: boolean = false;
 
     public constructor(
         private readonly $state: StateService,
@@ -150,7 +153,8 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
         private readonly $translate: ITranslateService,
         private readonly mandantService: MandantService,
         private readonly einstellungRS: EinstellungRS,
-        private readonly ebeguRestUtil: EbeguRestUtil
+        private readonly ebeguRestUtil: EbeguRestUtil,
+        private readonly demoFeatureRS: DemoFeatureRS
     ) {
 
         super(gesuchModelManager, berechnungsManager, wizardStepManager, $scope, TSWizardStepName.VERFUEGEN, $timeout);
@@ -188,6 +192,10 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
             if ((newValue !== oldValue)) {
                 this.setBemerkungen();
             }
+        });
+
+        this.demoFeatureRS.isDemoFeatureAllowed(TSDemoFeature.ZAHLUNGSSTATUS).then(res => {
+            this.demoFeatureZahlungsstatusAllowed = res;
         });
     }
 
@@ -327,10 +335,10 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
                     'BESCHREIBUNG_CONFIRM_ALREADY_IGNORED_MAHLZEITEN')
                     .then(() => {
                         // Jetzt wenn notwendig nach ingorieren fragen und dann verfuegen
-                        this.askForIgnoringIfNecessaryAndSaveVerfuegung(direktVerfuegenVerguenstigung,
-                            direktVerfuegenMahlzeiten).then(() => {
-                            this.goToVerfuegen();
-                        });
+                        this.askForIgnoringIfNecessaryAndSaveVerfuegung(
+                            direktVerfuegenVerguenstigung,
+                            direktVerfuegenMahlzeiten
+                        )
                     });
             });
     }
@@ -831,10 +839,29 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
         return this.showAuszahlungAnInstitutionen;
     }
 
+    private showZahlungsstatusCol(): boolean {
+        if (!this.demoFeatureZahlungsstatusAllowed) {
+            return false;
+        }
+        if (this.authServiceRs.isRole(TSRole.GESUCHSTELLER)) {
+            return false;
+        }
+        if (this.getBetreuung().betreuungsstatus !== TSBetreuungsstatus.VERFUEGT) {
+            return false;
+        }
+        return true;
+    }
+
     public showZahlungsstatusInstitutionenCol(): boolean {
+        if (!this.showZahlungsstatusCol()) {
+            return false;
+        }
         return this.showAuszahlungAnInstitutionenCol();
     }
     public showZahlungsstatusAntragstellerCol(): boolean {
+        if (!this.showZahlungsstatusCol()) {
+            return false;
+        }
         return this.showAuszahlungAnElternCol() || this.showMahlzeitenverguenstigung()
     }
 
