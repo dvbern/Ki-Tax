@@ -16,6 +16,8 @@
  */
 
 import {ComponentFixture, TestBed} from '@angular/core/testing';
+import {TranslateService} from '@ngx-translate/core';
+import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 
 import {ZahlungsstatusIconComponent} from './zahlungsstatus-icon.component';
 
@@ -23,9 +25,20 @@ describe('ZahlungsstatusIconComponent', () => {
     let component: ZahlungsstatusIconComponent;
     let fixture: ComponentFixture<ZahlungsstatusIconComponent>;
 
+    const translateSpy = jasmine.createSpyObj<TranslateService>(
+        TranslateService.name, ['instant']
+    );
+    const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(
+        AuthServiceRS.name, ['isRole']
+    );
+
     beforeEach(async () => {
         await TestBed.configureTestingModule({
-            declarations: [ZahlungsstatusIconComponent]
+            declarations: [ZahlungsstatusIconComponent],
+            providers: [
+                {provide: TranslateService, useValue: translateSpy},
+                {provide: AuthServiceRS, useValue: authServiceSpy}
+            ]
         })
             .compileComponents();
     });
