@@ -1200,7 +1200,7 @@
     "GESUCH_ABSCHLIESSEN": "Antrag abschliessen",
     "BESCHREIBUNG_GESUCH_ABSCHLIESSEN": "Möchten Sie den Antrag wirklich abschliessen? Wenn Sie auf Ja klicken, ändert der Status des Antrags auf \"Tarif berechnet\" und kann nicht bearbeitet werden.",
     "ABGESCHLOSSEN": "Abgeschlossen",
-    "CONFIRM_GESUCH_STATUS_GEPRUEFT": "Möchten Sie den Antrag wirklich als \"geprüft\" setzen?",
+    "CONFIRM_GESUCH_STATUS_GEPRUEFT": "Möchten Sie den Antrag wirklich auf \"geprüft\" setzen?",
     "CONFIRM_GESUCH_STATUS_VERFUEGEN": "Möchten Sie den Verfügungsprozess wirklich starten?",
     "CONFIRM_GESUCH_STATUS_IGNORIEREN": "Möchten Sie auf die Anpassung des Betreuungsgutscheins/Tagesschultarifs verzichten?",
     "CONFIRM_GESUCH_STATUS_IGNORIEREN_BESCHREIBUNG": "Die Mutation erhält den Status “ignoriert”.<br>Die Gemeinde kann die Mutation ignorieren, wenn sie zu einer geringfügigen Reduktion des Betreuungsgutscheins resp. zu einer geringfügigen Erhöhung des Tagesschultarifs führt.",
