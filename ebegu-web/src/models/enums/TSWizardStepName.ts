@@ -67,3 +67,23 @@ export function getTSWizardStepNameValues(): Array<TSWizardStepName> {
         TSWizardStepName.VERFUEGEN
     ];
 }
+
+export function getAllWizardStepsWithoutFinSitSteps(): Array<TSWizardStepName> {
+    return [
+        TSWizardStepName.SOZIALDIENSTFALL_ERSTELLEN,
+        TSWizardStepName.GESUCH_ERSTELLEN,
+        TSWizardStepName.FAMILIENSITUATION,
+        TSWizardStepName.GESUCHSTELLER,
+        TSWizardStepName.UMZUG,
+        TSWizardStepName.KINDER,
+        TSWizardStepName.BETREUUNG,
+        TSWizardStepName.ABWESENHEIT,
+        TSWizardStepName.ERWERBSPENSUM,
+        TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG,
+        TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_LUZERN,
+        TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_SOLOTHURN,
+        TSWizardStepName.DOKUMENTE,
+        TSWizardStepName.FREIGABE,
+        TSWizardStepName.VERFUEGEN
+    ];
+}

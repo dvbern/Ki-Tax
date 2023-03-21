@@ -24,37 +24,35 @@ public class MutationsMergerFinanzielleSituationBernFKJV extends MutationsMerger
 		AbstractPlatz platz,
 		LocalDate mutationsEingansdatum) {
 
+		handleFamiliengroesse(inputAktuel, resultVorgaenger, mutationsEingansdatum);
+
 		if (hasMassgebendesEinkommenVorAbzugFamgrChanged(inputAktuel, resultVorgaenger) && !inputAktuel.isEkvAccepted()) {
-			handleFinanzielleSituationRueckwirkendAnpassen(inputAktuel, resultVorgaenger, platz, mutationsEingansdatum);
+			handleFinanzielleSituationRueckwirkendAnpassen(inputAktuel, platz);
 			return;
 		}
 
 		handleVerminderungEinkommen(inputAktuel, resultVorgaenger, mutationsEingansdatum);
 	}
 
-	private void handleFinanzielleSituationRueckwirkendAnpassen(
-		BGCalculationInput inputData,
-		BGCalculationResult resultVorgaenger,
-		AbstractPlatz platz,
-		LocalDate mutationsEingansdatum) {
-
-		//Finanzielle Situation ist gültig ab Datum vor Perioden-Start
-		platz
-			.extractGesuch()
-			.setFinSitAenderungGueltigAbDatum(platz.extractGesuchsperiode().getGueltigkeit().getGueltigAb().minusDays(1));
-		platz.extractGesuch()
-				.setFinSitRueckwirkendKorrigiertInThisMutation(true);
-		inputData.addBemerkung(MsgKey.FIN_SIT_RUECKWIRKEND_ANGEPASST, getLocale());
-
-		// Das Handling der Familiensituation darf sich nicht ändern
-		// Der Abzug und die Famliengrösse soll sich also per mutationsEingangsdatum erst ändern!!
+	private void handleFamiliengroesse(BGCalculationInput inputData, BGCalculationResult resultVorgaenger, LocalDate mutationsEingansdatum) {
 		if (inputData.getParent().getGueltigkeit().getGueltigAb().isAfter(mutationsEingansdatum)) {
 			return;
 		}
 
 		inputData.setFamGroesse(resultVorgaenger.getFamGroesse());
 		inputData.setAbzugFamGroesse(resultVorgaenger.getAbzugFamGroesse());
+	}
 
+	private void handleFinanzielleSituationRueckwirkendAnpassen(
+		BGCalculationInput inputData,
+		AbstractPlatz platz) {
+
+		//Finanzielle Situation ist gültig ab Datum vor Perioden-Start
+		platz
+			.extractGesuch()
+			.setFinSitAenderungGueltigAbDatum(platz.extractGesuchsperiode().getGueltigkeit().getGueltigAb().minusDays(1));
+		platz.setFinSitRueckwirkendKorrigiertInThisMutation(true);
+		inputData.addBemerkung(MsgKey.FIN_SIT_RUECKWIRKEND_ANGEPASST, getLocale());
 	}
 
 	private boolean hasMassgebendesEinkommenVorAbzugFamgrChanged(

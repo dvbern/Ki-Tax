@@ -381,7 +381,7 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
         if (isDirektVerfuegen) {
             return this.createDeferPromise<boolean>();
         }
-        if(this.isFKJV() && this.getGesuch().finSitRueckwirkendKorrigiertInThisMutation) {
+        if(this.isFKJV() && this.getBetreuung().finSitRueckwirkendKorrigiertInThisMutation) {
             return Promise.resolve(true);
         }
         return this.askIfIgnorieren(zahlungslaufTyp)

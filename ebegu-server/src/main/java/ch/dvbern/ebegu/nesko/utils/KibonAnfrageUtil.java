@@ -21,7 +21,9 @@ import java.util.Objects;
 
 import javax.annotation.Nonnull;
 
+import ch.dvbern.ebegu.entities.FinanzielleSituationContainer;
 import ch.dvbern.ebegu.entities.Gesuch;
+import ch.dvbern.ebegu.entities.SteuerdatenResponse;
 import ch.dvbern.ebegu.nesko.handler.KibonAnfrageContext;
 
 public final class KibonAnfrageUtil {
@@ -34,7 +36,6 @@ public final class KibonAnfrageUtil {
 	 * @return KibonAnfrageContext
 	 */
 	public static KibonAnfrageContext initKibonAnfrageContext(@Nonnull Gesuch gesuch, int zpvNummer) {
-		KibonAnfrageContext kibonAnfrageContext = null;
 		Objects.requireNonNull(gesuch.getGesuchsteller1());
 		Objects.requireNonNull(gesuch.getGesuchsteller1().getFinanzielleSituationContainer());
 		Objects.requireNonNull(gesuch.getFamiliensituationContainer());
@@ -42,21 +43,8 @@ public final class KibonAnfrageUtil {
 
 		boolean gemeinsam = Boolean.TRUE
 			.equals(gesuch.getFamiliensituationContainer().getFamiliensituationJA().getGemeinsameSteuererklaerung());
-		if (gesuch.getGesuchsteller1()
-			.getFinanzielleSituationContainer()
-			.getFinanzielleSituationJA()
-			.getSteuerdatenResponse() != null && gesuch.getGesuchsteller1()
-			.getFinanzielleSituationContainer()
-			.getFinanzielleSituationJA()
-			.getSteuerdatenResponse()
-			.getZpvNrAntragsteller() != null) {
-			if (gesuch.getGesuchsteller1()
-				.getFinanzielleSituationContainer()
-				.getFinanzielleSituationJA()
-				.getSteuerdatenResponse()
-				.getZpvNrAntragsteller()
-				.equals(zpvNummer)) {
-				kibonAnfrageContext = new KibonAnfrageContext(
+		if (isZpvNrFromAntragsteller(gesuch.getGesuchsteller1().getFinanzielleSituationContainer(), zpvNummer)) {
+				KibonAnfrageContext kibonAnfrageContext = new KibonAnfrageContext(
 					gesuch,
 					gesuch.getGesuchsteller1(),
 					gesuch.getGesuchsteller1().getFinanzielleSituationContainer(),
@@ -64,24 +52,15 @@ public final class KibonAnfrageUtil {
 				if(gemeinsam && gesuch.getGesuchsteller2() != null) {
 					kibonAnfrageContext.setFinSitContGS2(gesuch.getGesuchsteller2().getFinanzielleSituationContainer());
 				}
-			}
-		} else if (gesuch.getGesuchsteller2() != null){
-			Objects.requireNonNull(gesuch.getGesuchsteller2()
-				.getFinanzielleSituationContainer());
-			if (gesuch.getGesuchsteller2()
-				.getFinanzielleSituationContainer()
-				.getFinanzielleSituationJA()
-				.getSteuerdatenResponse() != null && gesuch.getGesuchsteller2()
-				.getFinanzielleSituationContainer()
-				.getFinanzielleSituationJA()
-				.getSteuerdatenResponse()
-				.getZpvNrAntragsteller() != null && gesuch.getGesuchsteller2()
-				.getFinanzielleSituationContainer()
-				.getFinanzielleSituationJA()
-				.getSteuerdatenResponse()
-				.getZpvNrAntragsteller()
-				.equals(zpvNummer)) {
-				kibonAnfrageContext = new KibonAnfrageContext(
+
+				return kibonAnfrageContext;
+		}
+
+		if (gesuch.getGesuchsteller2() != null) {
+			Objects.requireNonNull(gesuch.getGesuchsteller2().getFinanzielleSituationContainer());
+
+			if (isZpvNrFromAntragsteller(gesuch.getGesuchsteller2().getFinanzielleSituationContainer(), zpvNummer)) {
+				KibonAnfrageContext kibonAnfrageContext = new KibonAnfrageContext(
 					gesuch,
 					gesuch.getGesuchsteller2(),
 					gesuch.getGesuchsteller2().getFinanzielleSituationContainer(),
@@ -89,8 +68,24 @@ public final class KibonAnfrageUtil {
 				if(gemeinsam && gesuch.getGesuchsteller1() != null) {
 					kibonAnfrageContext.setFinSitContGS2(gesuch.getGesuchsteller1().getFinanzielleSituationContainer());
 				}
+
+				return kibonAnfrageContext;
 			}
 		}
-		return kibonAnfrageContext;
+
+		return null;
+	}
+
+	private static boolean isZpvNrFromAntragsteller(FinanzielleSituationContainer finanzielleSituationContainer, int zpvNummer) {
+		SteuerdatenResponse steuerdatenResponse =
+			finanzielleSituationContainer
+			.getFinanzielleSituationJA()
+			.getSteuerdatenResponse();
+
+		if (steuerdatenResponse == null || steuerdatenResponse.getZpvNrAntragsteller() == null) {
+			return false;
+		}
+
+		return steuerdatenResponse.getZpvNrAntragsteller().equals(zpvNummer);
 	}
 }
