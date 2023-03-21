@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.net.URISyntaxException;
 import java.time.LocalDate;
+import java.util.Date;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.Properties;
@@ -230,16 +231,21 @@ public class ReportJobGeneratorBatchlet extends AbstractBatchlet {
 				return this.reportLastenausgleichTagesschulenService.generateExcelReportLastenausgleichTagesschulen(gesuchPeriodeId);
 			}
 			case VORLAGE_REPORT_LASTENAUSGLEICH_BG_ZEITABSCHNITTE: {
+				final String von = getParameters().getProperty(WorkJobConstants.DATE_FROM_PARAM);
+				final String bis = getParameters().getProperty(WorkJobConstants.DATE_TO_PARAM);
 				final String gemeindeId = getParameters().getProperty(WorkJobConstants.GEMEINDE_ID_PARAM);
-				if (gemeindeId == null) {
-					throw new EbeguRuntimeException(methodName, "gemeindeId not defined");
+				if ((von == null || bis == null) && gemeindeId == null) {
+					throw new EbeguRuntimeException(methodName, "von/bis and gemeindeId not defined");
 				}
+
 				final String lastenausgleichJahr = getParameters().getProperty(WorkJobConstants.JAHR_PARAM);
 				if (lastenausgleichJahr == null) {
 					throw new EbeguRuntimeException(methodName, "lastenausgleichJahr not defined");
 				}
 				return this.reportLastenausgleichBGZeitabschnitteService.generateExcelReportLastenausgleichBGZeitabschnitte(
 					locale,
+					von,
+					bis,
 					gemeindeId,
 					Integer.parseInt(lastenausgleichJahr, 10)
 				);

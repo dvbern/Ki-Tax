@@ -1,16 +1,18 @@
 /*
- * Ki-Tax: System for the management of external childcare subsidies
- * Copyright (C) 2017 City of Bern Switzerland
+ * Copyright (C) 2023 DV Bern AG, Switzerland
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Affero General Public License for more details.
+ *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 package ch.dvbern.ebegu.enums.reporting;
 
@@ -18,7 +20,9 @@ import javax.annotation.Nonnull;
 
 import ch.dvbern.oss.lib.excelmerger.mergefields.MergeField;
 import ch.dvbern.oss.lib.excelmerger.mergefields.MergeFieldProvider;
+import ch.dvbern.oss.lib.excelmerger.mergefields.RepeatColMergeField;
 import ch.dvbern.oss.lib.excelmerger.mergefields.RepeatRowMergeField;
+import ch.dvbern.oss.lib.excelmerger.mergefields.RepeatValMergeField;
 import ch.dvbern.oss.lib.excelmerger.mergefields.SimpleMergeField;
 
 import static ch.dvbern.oss.lib.excelmerger.converters.StandardConverters.BIGDECIMAL_CONVERTER;
@@ -113,6 +117,8 @@ public enum MergeFieldGesuchstellerKinderBetreuung implements MergeFieldProvider
 	statusTitle(new SimpleMergeField<>("statusTitle", STRING_CONVERTER)),
 	gesuchstellerKinderBetreuungTitle(new SimpleMergeField<>("gesuchstellerKinderBetreuungTitle", STRING_CONVERTER)),
 	bgNummerTitle(new SimpleMergeField<>("bgNummerTitle", STRING_CONVERTER)),
+	ausserordentlicherAnspruchTitle(new SimpleMergeField<>("ausserordentlicherAnspruchTitle", STRING_CONVERTER)),
+	zusatzFelderGemeinden(new SimpleMergeField<>("zusatzFelderGemeinden", STRING_CONVERTER)),
 
 	stichtag(new SimpleMergeField<>("stichtag", DATE_CONVERTER)),
 	auswertungVon(new SimpleMergeField<>("auswertungVon", DATE_CONVERTER)),
@@ -209,7 +215,11 @@ public enum MergeFieldGesuchstellerKinderBetreuung implements MergeFieldProvider
 	elternbeitrag(new SimpleMergeField<>("elternbeitrag", BIGDECIMAL_CONVERTER)),
 	verguenstigungKanton(new SimpleMergeField<>("verguenstigungKanton", BIGDECIMAL_CONVERTER)),
 	verguenstigungGemeinde(new SimpleMergeField<>("verguenstigungGemeinde", BIGDECIMAL_CONVERTER)),
-	verguenstigungTotal(new SimpleMergeField<>("verguenstigungTotal", BIGDECIMAL_CONVERTER));
+	verguenstigungTotal(new SimpleMergeField<>("verguenstigungTotal", BIGDECIMAL_CONVERTER)),
+	ausserordentlicherAnspruch(new SimpleMergeField<>("ausserordentlicherAnspruch", PERCENT_CONVERTER)),
+	repeatSchulhort(new RepeatColMergeField<>("repeatSchulhort", STRING_CONVERTER)),
+	keinPlatzImSchulhortTitle(new RepeatValMergeField<>("keinPlatzImSchulhortTitle", STRING_CONVERTER)),
+	keinPlatzImSchulhort(new RepeatValMergeField<>("keinPlatzImSchulhort", BOOLEAN_X_CONVERTER));
 
 	@Nonnull
 	private final MergeField<?> mergeField;

@@ -38,4 +38,9 @@ public class MutationsMergerFinanzielleSituationVisitor implements FinanzielleSi
 	public AbstractMutationsMergerFinanzielleSituation visitFinSitSolothurn() {
 		return new MutationsMergerFinanzielleSituationBern(locale);
 	}
+
+	@Override
+	public AbstractMutationsMergerFinanzielleSituation visitFinSitAppenzell() {
+		return new MutationsMergerFinanzielleSituationBern(locale);
+	}
 }

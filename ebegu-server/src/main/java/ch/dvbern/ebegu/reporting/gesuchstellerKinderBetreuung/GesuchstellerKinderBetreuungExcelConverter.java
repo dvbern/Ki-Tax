@@ -1,16 +1,18 @@
 /*
- * Ki-Tax: System for the management of external childcare subsidies
- * Copyright (C) 2017 City of Bern Switzerland
+ * Copyright (C) 2023 DV Bern AG, Switzerland
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Affero General Public License for more details.
+ *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 package ch.dvbern.ebegu.reporting.gesuchstellerKinderBetreuung;
 
@@ -188,6 +190,7 @@ public class GesuchstellerKinderBetreuungExcelConverter implements ExcelConverte
 			String einschulungTyp = dataRow.getKindEinschulungTyp() != null ?
 				ServerMessageUtil.translateEnumValue(dataRow.getKindEinschulungTyp(), locale, mandant) : "";
 			excelRowGroup.addValue(MergeFieldGesuchstellerKinderBetreuung.eingeschult, einschulungTyp);
+			excelRowGroup.addValue(MergeFieldGesuchstellerKinderBetreuung.keinPlatzImSchulhort, dataRow.getKeinPlatzImSchulhort());
 
 			excelRowGroup.addValue(MergeFieldGesuchstellerKinderBetreuung.zeitabschnittVon, dataRow.getZeitabschnittVon());
 			excelRowGroup.addValue(MergeFieldGesuchstellerKinderBetreuung.zeitabschnittBis, dataRow.getZeitabschnittBis());
@@ -219,6 +222,7 @@ public class GesuchstellerKinderBetreuungExcelConverter implements ExcelConverte
 				excelRowGroup.addValue(MergeFieldGesuchstellerKinderBetreuung.verguenstigungGemeinde, BigDecimal.ZERO);
 				excelRowGroup.addValue(MergeFieldGesuchstellerKinderBetreuung.verguenstigungTotal, BigDecimal.ZERO);
 			}
+			excelRowGroup.addValue(MergeFieldGesuchstellerKinderBetreuung.ausserordentlicherAnspruch, dataRow.getAusserordentlicherAnspruch());
 
 			rowFiller.fillRow(excelRowGroup);
 		});
@@ -479,6 +483,26 @@ public class GesuchstellerKinderBetreuungExcelConverter implements ExcelConverte
 		mergeFields.add(MergeFieldGesuchstellerKinderBetreuung.bgNummerTitle.getMergeField());
 		mergerDTO.addValue(MergeFieldGesuchstellerKinderBetreuung.bgNummerTitle, ServerMessageUtil.getMessage("Reports_bgNummerTitle",locale, mandant));
 
+		mergeFields.add(MergeFieldGesuchstellerKinderBetreuung.ausserordentlicherAnspruchTitle.getMergeField());
+		mergerDTO.addValue(MergeFieldGesuchstellerKinderBetreuung.ausserordentlicherAnspruchTitle, ServerMessageUtil.getMessage("Reports_ausserordentlicherAnspruchTitle",locale, mandant));
+
+		mergeFields.add(MergeFieldGesuchstellerKinderBetreuung.zusatzFelderGemeinden.getMergeField());
+		mergerDTO.addValue(MergeFieldGesuchstellerKinderBetreuung.zusatzFelderGemeinden, ServerMessageUtil.getMessage("Reports_zusatzFelderGemeinden",locale, mandant));
+
+		addSpecialValuesForLuzern(mergerDTO, mergeFields, locale, mandant);
+
+	}
+
+	private static void addSpecialValuesForLuzern(ExcelMergerDTO mergerDTO, List<MergeField<?>> mergeFields, Locale locale, Mandant mandant) {
+		mergeFields.add(MergeFieldGesuchstellerKinderBetreuung.repeatSchulhort.getMergeField());
+		var keinPlatzImSchulhortTitleStr = ServerMessageUtil.getMessage("Reports_keinPlatzImSchulhortTitle", locale, mandant);
+		mergeFields.add(MergeFieldGesuchstellerKinderBetreuung.keinPlatzImSchulhortTitle.getMergeField());
+		mergerDTO.addValue(MergeFieldGesuchstellerKinderBetreuung.keinPlatzImSchulhortTitle, keinPlatzImSchulhortTitleStr);
+		// falls die Translations keine Übersetzung für den Titel haben, bedeutet das, dass wir die Spalte beim Mandanten nicht
+		// anzeigen wollen. Falls wir sie anzeigen wollen, muss in das repateCol Mergefield ein leerer String geschrieben werden.
+		if (!keinPlatzImSchulhortTitleStr.equals("")) {
+			mergerDTO.addValue(MergeFieldGesuchstellerKinderBetreuung.repeatSchulhort, "");
+		}
 	}
 
 }

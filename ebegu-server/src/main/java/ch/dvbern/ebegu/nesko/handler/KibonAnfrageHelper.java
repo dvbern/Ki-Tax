@@ -29,6 +29,7 @@ import ch.dvbern.ebegu.dto.neskovanp.Veranlagungsstand;
 import ch.dvbern.ebegu.entities.FinanzielleSituation;
 import ch.dvbern.ebegu.entities.FinanzielleSituationContainer;
 import ch.dvbern.ebegu.entities.SteuerdatenResponse;
+import ch.dvbern.ebegu.entities.SteuerdatenResponse.SteuerdatenDatenTraeger;
 import ch.dvbern.ebegu.enums.SteuerdatenAnfrageStatus;
 import ch.dvbern.ebegu.util.MathUtil;
 
@@ -94,7 +95,7 @@ public class KibonAnfrageHelper {
 		SteuerdatenResponse steuerdatenResponse) {
 		assert steuerdatenResponse.getZpvNrPartner() == null;
 		finSit.setSteuerdatenResponse(steuerdatenResponse);
-		setValuesFromDossiertraegerToFinSit(finSit, steuerdatenResponse, BigDecimal.ONE);
+		setValuesToFinSit(finSit, steuerdatenResponse, BigDecimal.ONE, SteuerdatenDatenTraeger.DOSSIERTRAEGER);
 	}
 
 	public static void updateFinSitSteuerdatenAbfrageStatus(
@@ -112,12 +113,10 @@ public class KibonAnfrageHelper {
 			finanzielleSituationContainer.getGesuchsteller().getGesuchstellerJA().getGeburtsdatum();
 
 		if (isGS2Dossiertraeger(steuerdatenResponse)) {
-			return geburstdatumGS2.compareTo(
-				requireNonNull(steuerdatenResponse.getGeburtsdatumDossiertraeger())) == 0;
+			return geburstdatumGS2.isEqual(requireNonNull(steuerdatenResponse.getGeburtsdatumDossiertraeger()));
 		}
 
-		return geburstdatumGS2.compareTo(
-			requireNonNull(steuerdatenResponse.getGeburtsdatumPartner())) == 0;
+		return geburstdatumGS2.isEqual(requireNonNull(steuerdatenResponse.getGeburtsdatumPartner()));
 	}
 
 	public static void updateFinSitSteuerdatenAbfrageGemeinsamStatusOk(
@@ -129,12 +128,12 @@ public class KibonAnfrageHelper {
 		finSitGS2.setSteuerdatenResponse(steuerdatenResponse);
 		if (isAntragstellerDossiertraeger(steuerdatenResponse)) {
 			//GS1 = Dossierträger GS2 = Partner
-			setValuesFromDossiertraegerToFinSit(finSitGS1, steuerdatenResponse, BIG_DECIMAL_TWO);
-			setValuesFromPartnerToFinSit(finSitGS2, steuerdatenResponse);
+			setValuesToFinSit(finSitGS1, steuerdatenResponse, BIG_DECIMAL_TWO, SteuerdatenDatenTraeger.DOSSIERTRAEGER);
+			setValuesToFinSit(finSitGS2, steuerdatenResponse, BIG_DECIMAL_TWO, SteuerdatenDatenTraeger.PARTNER);
 		} else {
 			//GS2 = Dossierträger GS1 = Partner
-			setValuesFromPartnerToFinSit(finSitGS1, steuerdatenResponse);
-			setValuesFromDossiertraegerToFinSit(finSitGS2, steuerdatenResponse, BIG_DECIMAL_TWO);
+			setValuesToFinSit(finSitGS1, steuerdatenResponse, BIG_DECIMAL_TWO, SteuerdatenDatenTraeger.PARTNER);
+			setValuesToFinSit(finSitGS2, steuerdatenResponse, BIG_DECIMAL_TWO, SteuerdatenDatenTraeger.DOSSIERTRAEGER);
 		}
 	}
 
@@ -142,40 +141,29 @@ public class KibonAnfrageHelper {
 		return !isAntragstellerDossiertraeger(steuerdatenResponse);
 	}
 
-	protected static void setValuesFromPartnerToFinSit(
-		FinanzielleSituation finSit,
-		SteuerdatenResponse steuerdatenResponse) {
-		finSit.setNettolohn(getPositvValueOrZero(steuerdatenResponse.getErwerbseinkommenUnselbstaendigkeitPartner()));
-		finSit.setFamilienzulage(getPositvValueOrZero(steuerdatenResponse.getWeitereSteuerbareEinkuenftePartner()));
-		finSit.setErsatzeinkommen(getPositvValueOrZero(steuerdatenResponse.getSteuerpflichtigesErsatzeinkommenPartner()));
-		finSit.setErhalteneAlimente(getPositvValueOrZero(steuerdatenResponse.getErhalteneUnterhaltsbeitraegePartner()));
-		finSit.setNettoertraegeErbengemeinschaft(getValueOrZero(steuerdatenResponse.getNettoertraegeAusEgmePartner()));
-
-		if (steuerdatenResponse.getAusgewiesenerGeschaeftsertragPartner() != null) {
-			finSit.setGeschaeftsgewinnBasisjahr(steuerdatenResponse.getAusgewiesenerGeschaeftsertragPartner());
-			finSit.setGeschaeftsgewinnBasisjahrMinus1(steuerdatenResponse.getAusgewiesenerGeschaeftsertragVorperiodePartner());
-			finSit.setGeschaeftsgewinnBasisjahrMinus2(steuerdatenResponse.getAusgewiesenerGeschaeftsertragVorperiode2Partner());
-		}
-		setBerechneteFelder(finSit, steuerdatenResponse, BIG_DECIMAL_TWO);
-	}
-
-	protected static void setValuesFromDossiertraegerToFinSit(
+	protected static void setValuesToFinSit(
 		FinanzielleSituation finSit,
 		SteuerdatenResponse steuerdatenResponse,
-		BigDecimal anzahlGesuchsteller) {
+		BigDecimal anzahlGesuchsteller,
+		SteuerdatenDatenTraeger traeger) {
 
 		// Pflichtfeldern wenn null muessen zu 0 gesetzt werden, Sie sind nicht editierbar im Formular
-		finSit.setNettolohn(getPositvValueOrZero(steuerdatenResponse.getErwerbseinkommenUnselbstaendigkeitDossiertraeger()));
-		finSit.setFamilienzulage(getPositvValueOrZero(steuerdatenResponse.getWeitereSteuerbareEinkuenfteDossiertraeger()));
-		finSit.setErsatzeinkommen(getPositvValueOrZero(steuerdatenResponse.getSteuerpflichtigesErsatzeinkommenDossiertraeger()));
-		finSit.setErhalteneAlimente(getPositvValueOrZero(steuerdatenResponse.getErhalteneUnterhaltsbeitraegeDossiertraeger()));
-		finSit.setNettoertraegeErbengemeinschaft(getValueOrZero(steuerdatenResponse.getNettoertraegeAusEgmeDossiertraeger()));
+		finSit.setNettolohn(getPositvValueOrZero(steuerdatenResponse.getErwerbseinkommenUnselbstaendigkeit(traeger)));
+		finSit.setFamilienzulage(getPositvValueOrZero(steuerdatenResponse.getWeitereSteuerbareEinkuenfte(traeger)));
+		finSit.setErsatzeinkommen(getPositvValueOrZero(steuerdatenResponse.getSteuerpflichtigesErsatzeinkommen(traeger)));
+		finSit.setErhalteneAlimente(getPositvValueOrZero(steuerdatenResponse.getErhalteneUnterhaltsbeitraege(traeger)));
+		finSit.setNettoertraegeErbengemeinschaft(getValueOrZero(steuerdatenResponse.getNettoertraegeAusEgme(traeger)));
 
-		if (steuerdatenResponse.getAusgewiesenerGeschaeftsertragDossiertraeger() != null) {
-			finSit.setGeschaeftsgewinnBasisjahr(steuerdatenResponse.getAusgewiesenerGeschaeftsertragDossiertraeger());
-			finSit.setGeschaeftsgewinnBasisjahrMinus1(steuerdatenResponse.getAusgewiesenerGeschaeftsertragVorperiodeDossiertraeger());
-			finSit.setGeschaeftsgewinnBasisjahrMinus2(steuerdatenResponse.getAusgewiesenerGeschaeftsertragVorperiode2Dossiertraeger());
+		if (steuerdatenResponse.getAusgewiesenerGeschaeftsertrag(traeger) != null) {
+			finSit.setGeschaeftsgewinnBasisjahr(steuerdatenResponse.getAusgewiesenerGeschaeftsertrag(traeger));
+			finSit.setGeschaeftsgewinnBasisjahrMinus1(steuerdatenResponse.getAusgewiesenerGeschaeftsertragVorperiode(traeger));
+			finSit.setGeschaeftsgewinnBasisjahrMinus2(steuerdatenResponse.getAusgewiesenerGeschaeftsertragVorperiode2(traeger));
+		} else {
+			finSit.setGeschaeftsgewinnBasisjahr(null);
+			finSit.setGeschaeftsgewinnBasisjahrMinus1(null);
+			finSit.setGeschaeftsgewinnBasisjahrMinus2(null);
 		}
+
 		setBerechneteFelder(finSit, steuerdatenResponse, anzahlGesuchsteller);
 	}
 

@@ -132,6 +132,10 @@ public class JaxBetreuung extends JaxAbstractDTO {
 	// transient (Not stored on server, just an information for client)
 	private String bgNummer;
 
+	// transient (Not stored on server, just an information for client)
+	private boolean finSitRueckwirkendKorrigiertInThisMutation = false;
+
+
 	public JaxInstitutionStammdatenSummary getInstitutionStammdaten() {
 		return institutionStammdaten;
 	}
@@ -390,5 +394,13 @@ public class JaxBetreuung extends JaxAbstractDTO {
 
 	public void setBegruendungAuszahlungAnInstitution(@Nullable String begruendungAuszahlungAnInstitution) {
 		this.begruendungAuszahlungAnInstitution = begruendungAuszahlungAnInstitution;
+	}
+
+	public boolean isFinSitRueckwirkendKorrigiertInThisMutation() {
+		return finSitRueckwirkendKorrigiertInThisMutation;
+	}
+
+	public void setFinSitRueckwirkendKorrigiertInThisMutation(boolean finSitRueckwirkendKorrigiertInThisMutation) {
+		this.finSitRueckwirkendKorrigiertInThisMutation = finSitRueckwirkendKorrigiertInThisMutation;
 	}
 }

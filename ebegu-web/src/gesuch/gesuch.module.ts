@@ -70,7 +70,16 @@ import {ErwerbspensumListViewComponentConfig} from './component/erwerbspensumLis
 import {ErwerbspensumViewComponentConfig} from './component/erwerbspensumView/erwerbspensumView';
 import {FallCreationViewXComponent} from './component/fall-creation-view-x/fall-creation-view-x.component';
 import {FallToolbarComponent} from './component/fallToolbar/fallToolbar.component';
-import {FamiliensituationViewXComponent} from './component/familiensituation-view-x/familiensituation-view-x.component';
+import {
+    FamiliensituationAppenzellViewXComponent
+} from './component/familiensituation/familiensituation-appenzell-view-x/familiensituation-appenzell-view-x.component';
+import {FamiliensituationViewXComponent} from './component/familiensituation/familiensituation-view-x/familiensituation-view-x.component';
+import {
+    FinSitZusatzfelderAppenzellComponent
+} from './component/finanzielleSituation/appenzell/fin-sit-zusatzfelder-appenzell/fin-sit-zusatzfelder-appenzell.component';
+import {
+    FinanzielleSituationAppenzellViewComponent
+} from './component/finanzielleSituation/appenzell/finanzielle-situation-appenzell-view/finanzielle-situation-appenzell-view.component';
 import {
     FinanzielleSituationAufteilungComponent
 } from './component/finanzielleSituation/bern/finanzielleSituationAufteilung/finanzielle-situation-aufteilung.component';
@@ -125,6 +134,7 @@ export const GESUCH_JS_MODULE =
     angular.module('ebeguWeb.gesuch', [CORE_JS_MODULE.name])
         .run(gesuchRun)
         .component('familiensituationView', downgradeComponent({component: FamiliensituationViewXComponent}))
+        .component('familiensituationAppenzellView', downgradeComponent({component: FamiliensituationAppenzellViewXComponent}))
         .component('stammdatenView', new StammdatenViewComponentConfig())
         .component('umzugView', new UmzugViewComponentConfig())
         .component('kinderListView', new KinderListViewComponentConfig())
@@ -140,8 +150,10 @@ export const GESUCH_JS_MODULE =
             downgradeComponent({component: AngabenGesuchsteller2Component}))
         .component('finanzielleSituationSelbstdeklarationLuzern',
             downgradeComponent({component: SelbstdeklarationComponent}))
+        .component('finanzielleVerhaeltnisseAppenzell', downgradeComponent({component: FinSitZusatzfelderAppenzellComponent}))
         .component('finanzielleSituationVeranlagungLuzern', downgradeComponent({component: VeranlagungComponent}))
         .component('finanzielleSituationResultatLuzern', downgradeComponent({component: ResultatComponent}))
+        .component('finanzielleSituationAppenzell', downgradeComponent({component: FinanzielleSituationAppenzellViewComponent}))
         .component('einkommensverschlechterungLuzernView,',
             downgradeComponent({component: EinkommensverschlechterungLuzernViewComponent}))
         .component('einkommensverschlechterungSolothurnView,',

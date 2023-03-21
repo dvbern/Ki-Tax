@@ -634,8 +634,17 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 		this.getBgCalculationInputGemeinde().setAuszahlungAnEltern(auszahlungAnEltern);
 	}
 
+	public void setPotentielleDoppelBetreuung(boolean isUmzugsMonat ){
+		this.getBgCalculationInputAsiv().setPotentielleDoppelBetreuung(isUmzugsMonat);
+		this.getBgCalculationInputGemeinde().setPotentielleDoppelBetreuung(isUmzugsMonat);
+	}
 	public boolean hasBetreuungspensum() {
 		return !MathUtil.isZero(this.getRelevantBgCalculationResult().getBetreuungspensumProzent());
+	}
+
+	public void setPartnerIdentischMitVorgesuch(boolean partnerIdentischMitVorgesuch){
+		this.getBgCalculationInputAsiv().setPartnerIdentischMitVorgesuch(partnerIdentischMitVorgesuch);
+		this.getBgCalculationInputGemeinde().setPartnerIdentischMitVorgesuch(partnerIdentischMitVorgesuch);
 	}
 
 	/* Ende Delegator Setter-Methoden: Setzen die Werte auf BEIDEN inputs */

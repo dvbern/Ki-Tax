@@ -537,6 +537,35 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 
 	@Nonnull
 	@Override
+	public Collection<Benutzer> getTraegerschaftAdministratoren(final Traegerschaft traegerschaft) {
+		checkIfUserIsLoggedIn("getTraegerschaftAdministratoren");
+		authorizer.checkReadAuthorization(traegerschaft);
+
+		List<Predicate> predicates = new ArrayList<>();
+
+		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
+		final CriteriaQuery<Benutzer> query = cb.createQuery(Benutzer.class);
+		Root<Benutzer> root = query.from(Benutzer.class);
+
+		Join<Benutzer, Berechtigung> joinBerechtigungen = root.join(Benutzer_.berechtigungen);
+
+		query.select(root);
+
+		predicates.add(cb.between(
+			cb.literal(LocalDate.now()),
+			joinBerechtigungen.get(AbstractDateRangedEntity_.gueltigkeit).get(DateRange_.gueltigAb),
+			joinBerechtigungen.get(AbstractDateRangedEntity_.gueltigkeit).get(DateRange_.gueltigBis)));
+		predicates.add(cb.equal(joinBerechtigungen.get(Berechtigung_.role), UserRole.ADMIN_TRAEGERSCHAFT));
+		predicates.add(cb.equal(joinBerechtigungen.get(Berechtigung_.traegerschaft), traegerschaft));
+
+		query.where(predicates.toArray(NEW));
+		query.distinct(true);
+
+		return persistence.getCriteriaResults(query);
+	}
+
+	@Nonnull
+	@Override
 	public Collection<Benutzer> getBenutzerBgOrGemeinde(Gemeinde gemeinde) {
 		return getBenutzersOfRoles(getBgAndGemeindeRoles(), gemeinde);
 	}
@@ -588,8 +617,7 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 	 * @return Liste aller Benutzern mit entsprechender Rolle aus der DB
 	 */
 	private Collection<Benutzer> getBenutzersOfRoles(List<UserRole> roles) {
-		Benutzer currentBenutzer = getCurrentBenutzer().orElseThrow(() -> new EbeguRuntimeException(
-			"getBenutzersOfRole", "Non logged in user should never reach this"));
+		Benutzer currentBenutzer = checkIfUserIsLoggedIn("getBenutzersOfRole");
 
 		List<Predicate> predicates = new ArrayList<>();
 
@@ -625,8 +653,7 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 	 * @return Liste aller Benutzern mit entsprechender Rolle aus der DB
 	 */
 	private Collection<Benutzer> getBenutzersOfRoles(@Nonnull List<UserRole> roles, @Nonnull Gemeinde gemeinde) {
-		getCurrentBenutzer().orElseThrow(() -> new EbeguRuntimeException(
-			"getBenutzersOfRole", "Non logged in user should never reach this"));
+		checkIfUserIsLoggedIn("getBenutzersOfRoles");
 		authorizer.checkReadAuthorization(gemeinde);
 
 		List<Predicate> predicates = new ArrayList<>();
@@ -661,8 +688,7 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 	 * @return Liste aller Benutzern mit entsprechender Rolle aus der DB
 	 */
 	private Collection<Benutzer> getBenutzersOfRoles(@Nonnull List<UserRole> roles, @Nonnull Institution institution) {
-		getCurrentBenutzer().orElseThrow(() -> new EbeguRuntimeException(
-			"getBenutzersOfRole", "Non logged in user should never reach this"));
+		checkIfUserIsLoggedIn("getBenutzersOfRoles");
 		authorizer.checkReadAuthorizationInstitution(institution);
 
 		List<Predicate> predicates = new ArrayList<>();
@@ -1585,5 +1611,10 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 			.get();
 
 		return lastNotGesperrtHistory.getStatus();
+	}
+
+	private Benutzer checkIfUserIsLoggedIn(String methodName) {
+		return getCurrentBenutzer().orElseThrow(() -> new EbeguRuntimeException(
+			methodName, "Non logged in user should never reach this"));
 	}
 }

@@ -229,7 +229,8 @@ export class PosteingangViewComponent implements OnInit, OnDestroy, AfterViewIni
         return getTSMitteilungsStatusForFilter();
     }
 
-    public clickedIncludeClosed(): void {
+    public clickedIncludeClosed(includeClosed: boolean): void {
+        this.includeClosed = includeClosed;
         this.passFilterToServer();
     }
 

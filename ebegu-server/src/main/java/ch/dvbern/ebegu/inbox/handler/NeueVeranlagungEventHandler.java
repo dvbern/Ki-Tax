@@ -219,16 +219,16 @@ public class NeueVeranlagungEventHandler extends BaseEventHandler<NeueVeranlagun
 		Objects.requireNonNull(gesuch.getFamiliensituationContainer());
 		Objects.requireNonNull(gesuch.getFamiliensituationContainer().getFamiliensituationJA());
 
-		boolean gemeinsam = Boolean.TRUE
-			.equals(gesuch.getFamiliensituationContainer().getFamiliensituationJA().getGemeinsameSteuererklaerung());
-		if (gemeinsam && !kibonAnfrageContext.getGesuchsteller()
+
+		if (kibonAnfrageContext.isGemeinsam() && !kibonAnfrageContext.getGesuchsteller()
 			.getGesuchstellerJA()
 			.getGeburtsdatum()
 			.equals(geburtsdatum)
 			&& gesuch.getGesuchsteller2() != null) {
 			kibonAnfrageContext = kibonAnfrageContext.switchGSContainer();
 		}
-		return kibonAnfrageHandler.handleKibonNeueVeranlagungAnfrage(kibonAnfrageContext, gemeinsam);
+		return kibonAnfrageHandler.handleKibonNeueVeranlagungAnfrage(kibonAnfrageContext,
+			kibonAnfrageContext.isGemeinsam());
 	}
 
 	private Processing createAndSendNeueVeranlagungsMitteilung(@Nonnull KibonAnfrageContext kibonAnfrageContext, int zpvNummer) {

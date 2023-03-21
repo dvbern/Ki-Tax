@@ -35,6 +35,9 @@ public final class FinanzielleSituationRechnerFactory {
 		if(gesuch.getFinSitTyp() == FinanzielleSituationTyp.SOLOTHURN) {
 			return new FinanzielleSituationSolothurnRechner();
 		}
+		if(gesuch.getFinSitTyp() == FinanzielleSituationTyp.APPENZELL) {
+			return new FinanzielleSituationAppenzellRechner();
+		}
 		// per default ist der Berner Rechner genommen
 		return new FinanzielleSituationBernRechner();
 	}

@@ -13,8 +13,12 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {Ng1StateDeclaration} from '@uirouter/angularjs';
+import {Ng1StateDeclaration, StateParams} from '@uirouter/angularjs';
+import {StateService} from '@uirouter/core';
+import {take} from 'rxjs/operators';
+import {FamiliensituationVisitor} from '../app/core/constants/FamiliensituationVisitor';
 import {KindRS} from '../app/core/service/kindRS.rest';
+import {MandantService} from '../app/shared/services/mandant.service';
 import {AuthServiceRS} from '../authentication/service/AuthServiceRS.rest';
 import {RouterHelper} from '../dvbModules/router/route-helper-provider';
 import {TSCreationAction} from '../models/enums/TSCreationAction';
@@ -29,7 +33,11 @@ import {EinkommensverschlechterungLuzernViewComponent} from './component/einkomm
 import {EinkommensverschlechterungSolothurnResultateViewComponent} from './component/einkommensverschlechterung/solothurn/einkommensverschlechterung-solothurn-resultate-view/einkommensverschlechterung-solothurn-resultate-view.component';
 import {EinkommensverschlechterungSolothurnViewComponent} from './component/einkommensverschlechterung/solothurn/einkommensverschlechterung-solothurn-view/einkommensverschlechterung-solothurn-view.component';
 import {FallCreationViewXComponent} from './component/fall-creation-view-x/fall-creation-view-x.component';
-import {FamiliensituationViewXComponent} from './component/familiensituation-view-x/familiensituation-view-x.component';
+import {
+    FamiliensituationAppenzellViewXComponent
+} from './component/familiensituation/familiensituation-appenzell-view-x/familiensituation-appenzell-view-x.component';
+import {FamiliensituationViewXComponent} from './component/familiensituation/familiensituation-view-x/familiensituation-view-x.component';
+import {FinanzielleSituationAppenzellViewComponent} from './component/finanzielleSituation/appenzell/finanzielle-situation-appenzell-view/finanzielle-situation-appenzell-view.component';
 import {AngabenGesuchsteller2Component} from './component/finanzielleSituation/luzern/angaben-gesuchsteller2/angaben-gesuchsteller2.component';
 import {FinanzielleSituationStartViewLuzernComponent} from './component/finanzielleSituation/luzern/finanzielle-situation-start-view-luzern/finanzielle-situation-start-view-luzern.component';
 import {AngabenGs1Component} from './component/finanzielleSituation/solothurn/angaben-gs/angaben-gs1/angaben-gs1.component';
@@ -178,11 +186,49 @@ export class EbeguErneuerungsgesuchState implements Ng1StateDeclaration {
 
 export class EbeguFamiliensituationState implements Ng1StateDeclaration {
     public name = 'gesuch.familiensituation';
+    public url = '/familiensituation-route/:gesuchId';
+    onEnter =  redirectToFamiliensituation
+}
+
+redirectToFamiliensituation.$inject = ['MandantService', '$state', '$stateParams'];
+function redirectToFamiliensituation(mandantService: MandantService, $state: StateService, $stateParams: StateParams) {
+    mandantService.mandant$
+        .pipe(take(1))
+        .subscribe((mandant) => {
+            const route = new FamiliensituationVisitor().process(mandant);
+            $state.transitionTo(route, {gesuchId:$stateParams.gesuchId});
+        });
+}
+
+export class EbeguFamiliensituationDefaultState implements Ng1StateDeclaration {
+    public name = 'gesuch.familiensituation-default';
     public url = '/familiensituation/:gesuchId';
 
     public views: any = {
         gesuchViewPort: {
             component: FamiliensituationViewXComponent,
+        },
+        kommentarViewPort: {
+            template: kommentarView,
+        },
+    };
+
+    public resolve = {
+        gesuch: getGesuchModelManager,
+    };
+
+    public data = {
+        roles: TSRoleUtil.getAllRolesButAnonymous(),
+    };
+}
+
+export class EbeguFamiliensituationAppenzellState implements Ng1StateDeclaration {
+    public name = 'gesuch.familiensituation-appenzell';
+    public url = '/familiensituation-ar/:gesuchId';
+
+    public views: any = {
+        gesuchViewPort: {
+            component: FamiliensituationAppenzellViewXComponent,
         },
         kommentarViewPort: {
             template: kommentarView,
@@ -612,6 +658,28 @@ export class EbeguFinanzielleSituationGS2LuzernState implements Ng1StateDeclarat
     };
 }
 
+export class EbeguFinanzielleSituationAppenzellState implements Ng1StateDeclaration {
+    public name = 'gesuch.finanzielleSituationAppenzell';
+    public url = '/finanzielleSituationAppenzell/:gesuchId';
+
+    public views: any = {
+        gesuchViewPort: {
+            component: FinanzielleSituationAppenzellViewComponent,
+        },
+        kommentarViewPort: {
+            template: kommentarView,
+        },
+    };
+
+    public resolve = {
+        gesuchModelManager: getGesuchModelManager,
+    };
+
+    public data = {
+        roles: TSRoleUtil.getAllRolesButTraegerschaftInstitution(),
+    };
+}
+
 export class EbeguVerfuegenListState implements Ng1StateDeclaration {
     public name = 'gesuch.verfuegen';
     public url = '/verfuegen/:gesuchId';
@@ -976,6 +1044,8 @@ export class EbeguInternePendenzenState implements Ng1StateDeclaration {
 const ng1States: Ng1StateDeclaration[] = [
     new EbeguGesuchState(),
     new EbeguFamiliensituationState(),
+    new EbeguFamiliensituationDefaultState(),
+    new EbeguFamiliensituationAppenzellState(),
     new EbeguStammdatenState(),
     new EbeguUmzugState(),
     new EbeguKinderListState(),
@@ -987,6 +1057,7 @@ const ng1States: Ng1StateDeclaration[] = [
     new EbeguFinanzielleSituationGS2LuzernState(),
     new EbeguFinanzielleSituationGS1SolothurnState(),
     new EbeguFinanzielleSituationGS2SolothurnState(),
+    new EbeguFinanzielleSituationAppenzellState(),
     new EbeguKindState(),
     new EbeguErwerbspensenListState(),
     new EbeguErwerbspensumState(),
