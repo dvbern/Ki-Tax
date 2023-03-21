@@ -358,4 +358,24 @@ export class FamiliensituationViewXComponent extends AbstractFamiliensitutaionVi
     public isFKJVFamSit(): boolean {
         return this.getFamiliensituation().fkjvFamSit;
     }
+
+    public wirdKonkubinatInPeriodeXJahreAlt(): boolean {
+        return this.getFamiliensituation()
+                .konkubinatIsShorterThanXYearsAtAnyTimeAfterStartOfPeriode(this.gesuchModelManager.getGesuchsperiode());
+
+    }
+
+    public getKonkubinatWirdInPeriodeXJahreAltWarning(): string {
+
+        let endDatum: string = this.getFamiliensituation()
+                .getStartKonkubinatEndofMonthPlusMinDauer()
+                .format(CONSTANTS.DATE_FORMAT);
+
+        return this.$translate.instant('FAMILIENSITUATION_X_JAHRE_KONKUBINAT_MSG',
+                {
+                    namegs2: this.getGesuch().gesuchsteller2.extractFullName(),
+                    endeDatum: endDatum
+                });
+    }
+
 }

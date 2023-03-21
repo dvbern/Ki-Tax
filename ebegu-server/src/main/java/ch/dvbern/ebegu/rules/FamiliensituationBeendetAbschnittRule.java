@@ -69,11 +69,16 @@ public class FamiliensituationBeendetAbschnittRule extends AbstractAbschnittRule
 			@Nonnull List<VerfuegungZeitabschnitt> neueZeitabschnitte,
 			@Nonnull Gesuch gesuch,
 			@Nonnull LocalDate startKonkubinat) {
-		LocalDate zweiJahreKonkubinat = startKonkubinat.plusYears(2);
-		if (!gesuch.getGesuchsperiode().getGueltigkeit().contains(zweiJahreKonkubinat)) {
+
+		LocalDate minDauerKonkubinat =
+				Objects.requireNonNull(gesuch.extractFamiliensituation())
+						.getStartKonkubinatPlusMindauer(startKonkubinat);
+
+		if (!gesuch.getGesuchsperiode().getGueltigkeit().contains(minDauerKonkubinat)) {
 			return;
 		}
-		LocalDate zweiJahreKonkubinatNextMonth = zweiJahreKonkubinat.with(TemporalAdjusters.firstDayOfNextMonth());
+		LocalDate zweiJahreKonkubinatNextMonth = Objects.requireNonNull(gesuch.extractFamiliensituation())
+				.getStartKonkubinatPlusMindauerEndOfMonth(startKonkubinat);
 		VerfuegungZeitabschnitt abschnittNachJahrenKonkubinat =
 				createZeitabschnittWithinValidityPeriodOfRule(new DateRange(
 						zweiJahreKonkubinatNextMonth,

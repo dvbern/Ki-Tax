@@ -17,6 +17,7 @@ package ch.dvbern.ebegu.entities;
 
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
+import java.time.temporal.TemporalAdjusters;
 import java.util.Objects;
 
 import javax.annotation.Nonnull;
@@ -294,6 +295,18 @@ public class Familiensituation extends AbstractMutableEntity {
 
 	public void setFkjvFamSit(boolean fkjvFamSit) {
 		this.fkjvFamSit = fkjvFamSit;
+	}
+	@Nonnull
+	public LocalDate getStartKonkubinatPlusMindauer( @Nonnull LocalDate startKonkubinat){
+		return startKonkubinat
+				.with(TemporalAdjusters.lastDayOfMonth())
+				.plusYears(this.minDauerKonkubinat);
+	}
+
+	@Nonnull
+	public LocalDate getStartKonkubinatPlusMindauerEndOfMonth( @Nonnull LocalDate startKonkubinat){
+		LocalDate startKonkubinatPlusMindauer = getStartKonkubinatPlusMindauer(startKonkubinat);
+		return startKonkubinatPlusMindauer.with(TemporalAdjusters.lastDayOfMonth());
 	}
 
 	@Nonnull

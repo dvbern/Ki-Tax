@@ -229,19 +229,26 @@ export class TSFamiliensituation extends TSAbstractMutableEntity {
         if (!this.startKonkubinat) {
             return false;
         }
-        const konkubinatEndOfMonth = moment(this.startKonkubinat).endOf('month');
-        const konkubinatPlusYears = konkubinatEndOfMonth.add(this.minDauerKonkubinat, 'years');
+        const konkubinatPlusYears = this.getStartKonkubinatEndofMonthPlusMinDauer();
         return konkubinatPlusYears.isAfter(periode.gueltigkeit.gueltigAb);
     }
 
     /**
-     * Wir prüfen, ob das Konkubinat irgendwann in der Periode mindestens zwei Jahre alt ist.
+     * Wir prüfen, ob das Konkubinat irgendwann in der Periode mindestens x Jahre alt ist.
      * z.B. Periode 22/23, Start Konkubinat 1.11.2020 => zwei Jahre am 1.11.2022 erreicht => true
      */
     public konkubinatGetsLongerThanXYearsBeforeEndOfPeriode(endOfPeriode: moment.Moment): boolean {
-        const konkubinatEndOfMonth = moment(this.startKonkubinat).endOf('month');
-        const konkubinatPlusYears = konkubinatEndOfMonth.add(this.minDauerKonkubinat, 'years');
+        const konkubinatPlusYears = this.getStartKonkubinatPlusMinDauer();
         return konkubinatPlusYears.isSameOrBefore(endOfPeriode);
+    }
+
+    public getStartKonkubinatPlusMinDauer( ): moment.Moment {
+        const konkubinat_start: moment.Moment = this.startKonkubinat.clone();
+        return konkubinat_start.add(this.minDauerKonkubinat, 'years');
+    }
+
+    public getStartKonkubinatEndofMonthPlusMinDauer( ): moment.Moment {
+        return this.getStartKonkubinatPlusMinDauer().endOf('month');
     }
 
     public isSameFamiliensituation(other: TSFamiliensituation): boolean {

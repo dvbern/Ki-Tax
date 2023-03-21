@@ -36,6 +36,14 @@
                 </div>
             </div>
         </div>
+		<div class="row" *ngIf="wirdKonkubinatInPeriodeXJahreAlt()">
+			<div class="col-xs-12">
+				<div class="well well-status-warten minus-margin">
+					<i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
+					<span>{{getKonkubinatWirdInPeriodeXJahreAltWarning()}}</span>
+				</div>
+			</div>
+		</div>
 	</div>
 	<div class="row">
 		<div class="col-md-12">
