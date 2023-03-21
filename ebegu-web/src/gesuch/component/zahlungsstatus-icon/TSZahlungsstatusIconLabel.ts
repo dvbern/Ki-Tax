@@ -45,12 +45,10 @@ export class TSZahlungsstatusIconLabel {
             case TSVerfuegungZeitabschnittZahlungsstatus.IGNORIERT_KORRIGIERT:
                 this.setIconLabelAusserhalb();
                 break;
-            case TSVerfuegungZeitabschnittZahlungsstatus.VERRECHNEND:
-                this.setIconLabelZukuenftig();
-                break;
             case TSVerfuegungZeitabschnittZahlungsstatus.VERRECHNET_KORRIGIERT:
                 this.setIconLabelKorrigiert();
                 break;
+            case TSVerfuegungZeitabschnittZahlungsstatus.VERRECHNEND:
             case TSVerfuegungZeitabschnittZahlungsstatus.NEU: {
                 if (betreuung.gueltig) {
                     this.setIconLabelZukuenftig();

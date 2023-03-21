@@ -335,10 +335,11 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
                     'BESCHREIBUNG_CONFIRM_ALREADY_IGNORED_MAHLZEITEN')
                     .then(() => {
                         // Jetzt wenn notwendig nach ingorieren fragen und dann verfuegen
-                        this.askForIgnoringIfNecessaryAndSaveVerfuegung(
-                            direktVerfuegenVerguenstigung,
+                        this.askForIgnoringIfNecessaryAndSaveVerfuegung(direktVerfuegenVerguenstigung,
                             direktVerfuegenMahlzeiten
-                        )
+                        ).then(() => {
+                            this.gesuchModelManager.reloadGesuch();
+                        });
                     });
             });
     }
