@@ -299,7 +299,6 @@ public class Familiensituation extends AbstractMutableEntity {
 	@Nonnull
 	public LocalDate getStartKonkubinatPlusMindauer( @Nonnull LocalDate startKonkubinat){
 		return startKonkubinat
-				.with(TemporalAdjusters.lastDayOfMonth())
 				.plusYears(this.minDauerKonkubinat);
 	}
 

@@ -70,11 +70,11 @@ public class FamiliensituationBeendetAbschnittRule extends AbstractAbschnittRule
 			@Nonnull Gesuch gesuch,
 			@Nonnull LocalDate startKonkubinat) {
 
-		LocalDate minDauerKonkubinat =
+		LocalDate konkubinatPlusMinDauerKonukubinat =
 				Objects.requireNonNull(gesuch.extractFamiliensituation())
 						.getStartKonkubinatPlusMindauer(startKonkubinat);
 
-		if (!gesuch.getGesuchsperiode().getGueltigkeit().contains(minDauerKonkubinat)) {
+		if (!gesuch.getGesuchsperiode().getGueltigkeit().contains(konkubinatPlusMinDauerKonukubinat)) {
 			return;
 		}
 		LocalDate zweiJahreKonkubinatNextMonth = Objects.requireNonNull(gesuch.extractFamiliensituation())

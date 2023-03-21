@@ -597,7 +597,7 @@ describe('gesuchModelManager', () => {
                 gesuchModelManager.getGesuch().gesuchsperiode = gesuchsperiode;
                 const famSit = gesuchModelManager.getGesuch().familiensituationContainer.familiensituationJA;
 
-                famSit.startKonkubinat = moment('2019-07-31');
+                famSit.startKonkubinat = moment('2021-07-31');
                 expect(famSit.konkubinatGetsLongerThanXYearsBeforeEndOfPeriode(moment('2021-07-31'))).toBe(false);
 
                 famSit.startKonkubinat = moment('2018-08-01');

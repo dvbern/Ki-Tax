@@ -345,7 +345,8 @@ export class FamiliensituationViewXComponent extends AbstractFamiliensitutaionVi
     }
 
     private getBezeichnung(): string {
-        const familienstatus: TSFamilienstatus = this.gesuchModelManager.getGesuch().extractFamiliensituation().familienstatus;
+        const familienstatus: TSFamilienstatus =
+                this.gesuchModelManager.getGesuch().extractFamiliensituation().familienstatus;
         if (familienstatus === TSFamilienstatus.VERHEIRATET) {
             return this.$translate.instant('FAMILIENSITUATION_FRAGE_PARTNERIDENTISCH_EHEPARTNER');
         }
@@ -367,7 +368,7 @@ export class FamiliensituationViewXComponent extends AbstractFamiliensitutaionVi
 
     public getKonkubinatWirdInPeriodeXJahreAltWarning(): string {
 
-        let endDatum: string = this.getFamiliensituation()
+        const endDatum: string = this.getFamiliensituation()
                 .getStartKonkubinatEndofMonthPlusMinDauer()
                 .format(CONSTANTS.DATE_FORMAT);
 
