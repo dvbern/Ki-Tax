@@ -462,7 +462,7 @@
     "FAMILIENSITUATION_FRAGE_PARTNERIDENTISCH_ANDERER_ELTERNTEIL": "Ist der andere Elternteil {{namegs2}} ?",
     "FAMILIENSITUATION_FRAGE_PARTNERIDENTISCH_WARNBEZ_EHEPARTNER": "ihrem Ehepartner/ ihrer Ehepartnerilonn",
     "FAMILIENSITUATION_FRAGE_PARTNERIDENTISCH_WARNBEZ_KONKUBINTASPARTNER": "ihrem Konkubinatspartner/ ihrer Konkubinatspartnerin",
-    "FAMILIENSITUATION_FRAGE_PARTNERIDENTISCH_WARNBEZ_ANDERER_ELTERNTEIL": "dem Anderen Elternteil",
+    "FAMILIENSITUATION_FRAGE_PARTNERIDENTISCH_WARNBEZ_ANDERER_ELTERNTEIL": "dem anderen Elternteil",
     "FAMILIENSITUATION_FRAGE_PARTNERIDENTISCH_WARNING": "Ihr Antrag zusammen mit {{namegs2}} wird per {{endeDatum}} beendet.",
     "FAMILIENSITUATION_FRAGE_PARTNERIDENTISCH_WARNING_PAAR": "Wenden Sie sich an Ihre Gemeinde, wenn Sie anschliessend mit {{warnbez}} ein neuer Antrag stellen möchten.",
     "KONKUBINAT_KEIN_KIND": "Oui, concubin-e sans enfant commun",
