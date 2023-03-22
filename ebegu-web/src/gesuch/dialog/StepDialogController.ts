@@ -101,7 +101,8 @@ export class StepDialogController {
             this.radioNoCases = [
                 $translate.instant('KORREKTURZAHLUNG_NO_CASE_1'),
                 $translate.instant('KORREKTURZAHLUNG_NO_CASE_2'),
-                $translate.instant('KORREKTURZAHLUNG_NO_CASE_3')];
+                $translate.instant('KORREKTURZAHLUNG_NO_CASE_3'),
+                $translate.instant('KORREKTURZAHLUNG_NO_CASE_4')];
         }
 
         if (this.zahlungDirektIgnorieren) {
