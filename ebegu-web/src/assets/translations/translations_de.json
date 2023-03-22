@@ -528,7 +528,7 @@
     "FAMILIENSITUATION_FRAGE_PARTNERIDENTISCH_EHE": "Ist Ihr/Ihre Ehepartner/in {{namegs2}} ?",
     "FAMILIENSITUATION_FRAGE_PARTNERIDENTISCH_KONKUBINAT": "Ist Ihr/Ihre Konkubinatspartner/in {{namegs2}} ?",
     "FAMILIENSITUATION_FRAGE_PARTNERIDENTISCH_ANDERER_ELTERNTEIL": "Ist der andere Elternteil {{namegs2}} ?",
-    "FAMILIENSITUATION_FRAGE_PARTNERIDENTISCH_WARNBEZ_EHEPARTNER": "ihrem Ehepartner/ ihrer Ehepartnerilonn",
+    "FAMILIENSITUATION_FRAGE_PARTNERIDENTISCH_WARNBEZ_EHEPARTNER": "ihrem Ehepartner/ ihrer Ehepartnerin",
     "FAMILIENSITUATION_FRAGE_PARTNERIDENTISCH_WARNBEZ_KONKUBINTASPARTNER": "ihrem Konkubinatspartner/ ihrer Konkubinatspartnerin",
     "FAMILIENSITUATION_FRAGE_PARTNERIDENTISCH_WARNBEZ_ANDERER_ELTERNTEIL": "dem anderen Elternteil",
     "FAMILIENSITUATION_FRAGE_PARTNERIDENTISCH_WARNING": "Ihr Antrag zusammen mit {{namegs2}} wird per {{endeDatum}} beendet.",
