@@ -3016,5 +3016,15 @@
     "NUR_LATS_UMWANDELN_CONFIRM": "Par la présente votre institution sera convertie d'une institution avec le status \"Seulement pour la compensation des charges écoles à journée continue\" à une institution en \"Configuration\". Cette étape ne peut pas être annulée. Voulez-vous continuer?",
     "NUR_LATS_UMWANDELN_SUCCESS": "L'institution a été convertie en instituion régulière avec le status \"Configuration\".",
     "EMAIL_ADMIN_TRAEGERSCHAFT_AUSWAEHLEN": "Choisir le courriel de l'administrateur/-trice d'un organisme responsable",
+    "ZAHLUNGSSTATUS_VERRECHNET_ICON":  "v",
+    "ZAHLUNGSSTATUS_VERRECHNET": "Verrechnet",
+    "ZAHLUNGSSTATUS_AUSSERHALB_ICON":  "a",
+    "ZAHLUNGSSTATUS_AUSSERHALB": "Ausserhalb von kiBon",
+    "ZAHLUNGSSTATUS_ZUKUENFTIG_ICON":  "z",
+    "ZAHLUNGSSTATUS_ZUKUENFTIG": "Zukünftig",
+    "ZAHLUNGSSTATUS_KORRIGIERT_ICON":  "k",
+    "ZAHLUNGSSTATUS_KORRIGIERT": "Korrigiert",
+    "ZAHLUNG_AN_INSTITUTION":  "Zahlung Institution",
+    "ZAHLUNG_AN_ELTERN": "Zahlung Mahlzeiten",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

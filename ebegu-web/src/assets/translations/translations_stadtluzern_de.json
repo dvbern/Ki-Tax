@@ -186,5 +186,6 @@
     "FREIGABEQUITTUNG_AUSSTEHEND_TEXT": "",
     "FREIGABEQUITTUNG_WARNUNG": "Bitte beachten Sie, dass die unterzeichnete Freigabequittung umgehend per Mail oder Post eingereicht werden muss. Andernfalls gilt Ihr Antrag als unvollständig und kann von der Gemeinde nicht weiter bearbeitet werden.",
     "UMZUG_LIST_HINT": "Sämtliche Umzugsadressen für die ganze Periode müssen hier erfasst werden!",
+    "ZAHLUNG_AN_ELTERN": "Zahlung Eltern",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

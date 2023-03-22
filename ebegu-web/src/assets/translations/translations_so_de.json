@@ -74,5 +74,6 @@
     "MUTATION_KORREKTUR_AUSBEZAHLT_ELTERN_RUECKZAHLUNG": "Diese Verfügung führt zu einer zusätzlichen Auszahlung an die Eltern von {{betrag}} CHF.",
     "FACHSTELLE_HELP": "Als Sozialdienste gelten auch Asylsozialhilfestellen und Flüchtlingssozialdienste",
     "UMZUG_LIST_HINT": "Sämtliche Umzugsadressen für die ganze Periode müssen hier erfasst werden!",
+    "ZAHLUNG_AN_ELTERN": "Zahlung Eltern",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

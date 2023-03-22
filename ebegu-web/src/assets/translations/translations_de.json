@@ -3116,5 +3116,16 @@
     "NUR_LATS_UMWANDELN_CONFIRM": "Hiermit wird die Institution aus dem Status \"nur für Lastenausgleich\" zu einer Institution im Status \"Konfiguration\" umgewandelt. Dieser Schritt kann nicht rückgängig gemacht werden. Fortfahren?",
     "NUR_LATS_UMWANDELN_SUCCESS": "Die Institution wurde zu einer regulärer Institution im Status \"Konfiguration\" umgewandelt.",
     "EMAIL_ADMIN_TRAEGERSCHAFT_AUSWAEHLEN": "E-Mail von Administrator/in der Trägerschaft auswählen",
+    "ZAHLUNGSSTATUS_VERRECHNET_ICON":  "v",
+    "ZAHLUNGSSTATUS_VERRECHNET": "Verrechnet",
+    "ZAHLUNGSSTATUS_AUSSERHALB_ICON":  "a",
+    "ZAHLUNGSSTATUS_AUSSERHALB": "Ausserhalb von kiBon",
+    "ZAHLUNGSSTATUS_ZUKUENFTIG_ICON":  "z",
+    "ZAHLUNGSSTATUS_ZUKUENFTIG": "Zukünftig",
+    "ZAHLUNGSSTATUS_KORRIGIERT_ICON":  "k",
+    "ZAHLUNGSSTATUS_KORRIGIERT": "Korrigiert",
+    "ZAHLUNG_AN_INSTITUTION":  "Zahlung Institution",
+    "ZAHLUNG_AN_ELTERN": "Zahlung Mahlzeiten",
+    "ZAHLUNGSSTATUS_HELP": "<p>Diese Spalte zeigt den Status der Auszahlung dieses Zeitabschnitts. Es gibt vier Möglichkeiten:</p><br><table class=\"table\">\t<tr>\t\t<th>Symbol</th>\t\t<th>Status</th>\t\t<th>Beschreibung</th>\t</tr>\t<tr>\t\t<td>v</td>\t\t<td>Verrechnet</td>\t\t<td>Dieser Zeitabschnitt wurde bereits in einer früheren Zahlung berücksichtigt und ausbezahlt.</td>\t</tr>\t<tr>\t\t<td>a</td>\t\t<td>Ausserhalb von kiBon</td>\t\t<td>Die Rückforderung/zusätzliche Zahlung, die aus der Korrektur dieses Zeitabschnitts erfolgt, muss ausserhalb von kiBon gemacht werden, da die Korrekturzahlung im Zahlungslauf ignoriert wurde. Die Gemeinde verrechnet den Differenzbetrag direkt mit den Antragstellenden.</td>\t</tr>\t<tr>\t\t<td>z</td>\t\t<td>Zukünftige Zahlung</td>\t\t<td>Dieser Zeitabschnitt wurde noch nicht ausbezahlt und wird in einer zukünftigen Zahlung berücksichtigt.</td>\t</tr>\t<tr>\t\t<td>k</td>\t\t<td>Korrigiert</td>\t\t<td>Dieser Zeitabschnitt wurde bereits in einer früheren Zahlung berücksichtigt, wurde aber inzwischen durch eine weitere Mutation korrigiert.</td>\t</tr></table>",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

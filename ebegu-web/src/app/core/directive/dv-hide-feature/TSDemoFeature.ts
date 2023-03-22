@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022 DV Bern AG, Switzerland
+ * Copyright (C) 2023 DV Bern AG, Switzerland
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -25,5 +25,6 @@ export enum TSDemoFeature {
     LASTENAUSGLEICH_STATISTIK = 'LASTENAUSGLEICH_STATISTIK',
     KIBON_2754 = 'KIBON_2754',
     NEUE_VERANLAGUNG_MITTEILUNG = 'NEUE_VERANLAGUNG_MITTEILUNG',
-    GESUCH_BEENDEN_FAMSIT = 'GESUCH_BEENDEN_FAMSIT'
+    GESUCH_BEENDEN_FAMSIT = 'GESUCH_BEENDEN_FAMSIT',
+    ZAHLUNGSSTATUS = 'ZAHLUNGSSTATUS'
 }
