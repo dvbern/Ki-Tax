@@ -339,6 +339,7 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
                             direktVerfuegenMahlzeiten
                         ).then(() => {
                             this.gesuchModelManager.reloadGesuch();
+                            this.showVerfuegung = this.showVerfuegen();
                         });
                     });
             });
