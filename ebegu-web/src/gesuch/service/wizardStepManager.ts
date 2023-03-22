@@ -585,7 +585,7 @@ export class WizardStepManager {
         }  else if (gesuch.finSitTyp === TSFinanzielleSituationTyp.SOLOTHURN) {
             this.unhideStep(TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_SOLOTHURN);
         } else if (gesuch.finSitTyp === TSFinanzielleSituationTyp.APPENZELL) {
-            // this.unhideStep(TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_APPENZELL);
+            this.unhideStep(TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_SOLOTHURN);
         } else {
             throw new Error(`wrong FinSitTyp ${gesuch.finSitTyp}`);
         }
@@ -599,7 +599,7 @@ export class WizardStepManager {
             return TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_SOLOTHURN;
         }
         if (gesuch.finSitTyp === TSFinanzielleSituationTyp.APPENZELL) {
-            return TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_APPENZELL;
+            return TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_SOLOTHURN;
         }
         return TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG;
     }

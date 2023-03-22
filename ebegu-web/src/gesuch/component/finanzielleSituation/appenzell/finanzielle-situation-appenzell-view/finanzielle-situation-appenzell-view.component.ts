@@ -50,6 +50,8 @@ export class FinanzielleSituationAppenzellViewComponent extends AbstractGesuchVi
             this.gesuchModelManager.isGesuchsteller2Required(),
             1);
         this.model.copyFinSitDataFromGesuch(this.gesuchModelManager.getGesuch());
+        // in Appenzell stellen wir die Frage nach dem Sozialhilfebezüger nicht. Deshalb setzen wir den immer auf false.
+        this.model.sozialhilfeBezueger = false;
         this.gesuchModelManager.setGesuchstellerNumber(1);
         if(EbeguUtil.isNullOrUndefined(this.getModel().finanzielleSituationJA.finSitZusatzangabenAppenzell)){
             this.getModel().finanzielleSituationJA.finSitZusatzangabenAppenzell = new TSFinSitZusatzangabenAppenzell();

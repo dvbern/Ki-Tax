@@ -70,7 +70,10 @@ import {ErwerbspensumListViewComponentConfig} from './component/erwerbspensumLis
 import {ErwerbspensumViewComponentConfig} from './component/erwerbspensumView/erwerbspensumView';
 import {FallCreationViewXComponent} from './component/fall-creation-view-x/fall-creation-view-x.component';
 import {FallToolbarComponent} from './component/fallToolbar/fallToolbar.component';
-import {FamiliensituationViewXComponent} from './component/familiensituation-view-x/familiensituation-view-x.component';
+import {
+    FamiliensituationAppenzellViewXComponent
+} from './component/familiensituation/familiensituation-appenzell-view-x/familiensituation-appenzell-view-x.component';
+import {FamiliensituationViewXComponent} from './component/familiensituation/familiensituation-view-x/familiensituation-view-x.component';
 import {
     FinSitZusatzfelderAppenzellComponent
 } from './component/finanzielleSituation/appenzell/fin-sit-zusatzfelder-appenzell/fin-sit-zusatzfelder-appenzell.component';
@@ -131,6 +134,7 @@ export const GESUCH_JS_MODULE =
     angular.module('ebeguWeb.gesuch', [CORE_JS_MODULE.name])
         .run(gesuchRun)
         .component('familiensituationView', downgradeComponent({component: FamiliensituationViewXComponent}))
+        .component('familiensituationAppenzellView', downgradeComponent({component: FamiliensituationAppenzellViewXComponent}))
         .component('stammdatenView', new StammdatenViewComponentConfig())
         .component('umzugView', new UmzugViewComponentConfig())
         .component('kinderListView', new KinderListViewComponentConfig())

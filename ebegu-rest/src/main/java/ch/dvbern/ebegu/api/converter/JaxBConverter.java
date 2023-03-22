@@ -768,6 +768,9 @@ public class JaxBConverter extends AbstractConverter {
 		familiensituation.setUnterhaltsvereinbarung(familiensituationJAXP.getUnterhaltsvereinbarung());
 		familiensituation.setUnterhaltsvereinbarungBemerkung(familiensituationJAXP.getUnterhaltsvereinbarungBemerkung());
 		familiensituation.setPartnerIdentischMitVorgesuch(familiensituationJAXP.getPartnerIdentischMitVorgesuch());
+		familiensituation.setGemeinsamerHaushaltMitObhutsberechtigterPerson
+			(familiensituationJAXP.getGemeinsamerHaushaltMitObhutsberechtigterPerson());
+		familiensituation.setGemeinsamerHaushaltMitPartner(familiensituationJAXP.getGemeinsamerHaushaltMitPartner());
 		return familiensituation;
 	}
 
@@ -839,6 +842,9 @@ public class JaxBConverter extends AbstractConverter {
 		jaxFamiliensituation.setUnterhaltsvereinbarung(persistedFamiliensituation.getUnterhaltsvereinbarung());
 		jaxFamiliensituation.setUnterhaltsvereinbarungBemerkung(persistedFamiliensituation.getUnterhaltsvereinbarungBemerkung());
 		jaxFamiliensituation.setGeteilteObhut(persistedFamiliensituation.getGeteilteObhut());
+		jaxFamiliensituation.setGemeinsamerHaushaltMitObhutsberechtigterPerson(
+			persistedFamiliensituation.getGemeinsamerHaushaltMitObhutsberechtigterPerson());
+		jaxFamiliensituation.setGemeinsamerHaushaltMitPartner(persistedFamiliensituation.getGemeinsamerHaushaltMitPartner());
 		return jaxFamiliensituation;
 	}
 

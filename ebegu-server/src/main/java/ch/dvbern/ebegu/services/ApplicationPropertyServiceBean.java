@@ -18,6 +18,7 @@ package ch.dvbern.ebegu.services;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.Month;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -40,12 +41,14 @@ import ch.dvbern.ebegu.entities.Gemeinde_;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.enums.ApplicationPropertyKey;
+import ch.dvbern.ebegu.enums.DemoFeatureTyp;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.lib.cdipersistence.Persistence;
+import com.google.common.base.Enums;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -78,9 +81,9 @@ public class ApplicationPropertyServiceBean extends AbstractBaseService implemen
 	@Nonnull
 	@Override
 	public ApplicationProperty saveOrUpdateApplicationProperty(
-		@Nonnull final ApplicationPropertyKey key,
-		@Nonnull final String value,
-		@Nonnull final Mandant mandant) {
+			@Nonnull final ApplicationPropertyKey key,
+			@Nonnull final String value,
+			@Nonnull final Mandant mandant) {
 		Objects.requireNonNull(key);
 		Objects.requireNonNull(value);
 		Optional<ApplicationProperty> property = readApplicationProperty(key, mandant);
@@ -102,22 +105,28 @@ public class ApplicationPropertyServiceBean extends AbstractBaseService implemen
 	}
 
 	private void createMutationForEachClosedAntragForBern() {
-		final Collection<Gemeinde> bernCandidates = criteriaQueryHelper.getEntitiesByAttribute(Gemeinde.class, "Bern", Gemeinde_.name);
+		final Collection<Gemeinde> bernCandidates =
+				criteriaQueryHelper.getEntitiesByAttribute(Gemeinde.class, "Bern", Gemeinde_.name);
 		if (bernCandidates.size() != 1) {
-			throw new EbeguRuntimeException("createMutationForEachClosedAntragForBern", "Gemeinde Bern wurde nicht eindeutig gefunden");
+			throw new EbeguRuntimeException(
+					"createMutationForEachClosedAntragForBern",
+					"Gemeinde Bern wurde nicht eindeutig gefunden");
 		}
 		final Gemeinde bern = bernCandidates.stream().findFirst().get();
-		final Gesuchsperiode gesuchsperiode = gesuchsperiodeService.findNewestGesuchsperiode(Objects.requireNonNull(bern.getMandant()))
-			.orElseThrow(() -> new EbeguEntityNotFoundException(
-				"createMutationForEachClosedAntragForBern",
-				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
-				"newest"));
+		final Gesuchsperiode gesuchsperiode =
+				gesuchsperiodeService.findNewestGesuchsperiode(Objects.requireNonNull(bern.getMandant()))
+						.orElseThrow(() -> new EbeguEntityNotFoundException(
+								"createMutationForEachClosedAntragForBern",
+								ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
+								"newest"));
 		superAdminService.createMutationForEachClosedAntragOfGemeinde(bern, gesuchsperiode);
 	}
 
 	@Nonnull
 	@Override
-	public Optional<ApplicationProperty> readApplicationProperty(@Nonnull final ApplicationPropertyKey key, @Nonnull final Mandant mandant) {
+	public Optional<ApplicationProperty> readApplicationProperty(
+			@Nonnull final ApplicationPropertyKey key,
+			@Nonnull final Mandant mandant) {
 		return criteriaQueryHelper.getEntitiesByAttribute(
 						ApplicationProperty.class,
 						key,
@@ -133,13 +142,13 @@ public class ApplicationPropertyServiceBean extends AbstractBaseService implemen
 		//note this is a candidate for caching
 		Set<String> allowedTypes = Collections.emptySet();
 		final Optional<ApplicationProperty> whitelistVal =
-			this.readApplicationProperty(ApplicationPropertyKey.UPLOAD_FILETYPES_WHITELIST, mandant);
+				this.readApplicationProperty(ApplicationPropertyKey.UPLOAD_FILETYPES_WHITELIST, mandant);
 		if (whitelistVal.isPresent() && StringUtils.isNotEmpty(whitelistVal.get().getValue())) {
 			final String[] values = whitelistVal.get().getValue().split(",");
 			allowedTypes = Arrays.stream(values)
-				.map(StringUtils::trimToNull)
-				.filter(Objects::nonNull)
-				.collect(Collectors.toSet());
+					.map(StringUtils::trimToNull)
+					.filter(Objects::nonNull)
+					.collect(Collectors.toSet());
 
 		}
 		return allowedTypes;
@@ -169,9 +178,9 @@ public class ApplicationPropertyServiceBean extends AbstractBaseService implemen
 	public void removeApplicationProperty(@Nonnull ApplicationPropertyKey key, @Nonnull Mandant mandant) {
 		Objects.requireNonNull(key);
 		ApplicationProperty toRemove =
-			readApplicationProperty(key, mandant).orElseThrow(() -> new EbeguEntityNotFoundException(
-				"removeApplicationProperty",
-				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, key));
+				readApplicationProperty(key, mandant).orElseThrow(() -> new EbeguEntityNotFoundException(
+						"removeApplicationProperty",
+						ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, key));
 		persistence.remove(toRemove);
 	}
 
@@ -185,7 +194,9 @@ public class ApplicationPropertyServiceBean extends AbstractBaseService implemen
 
 	@Override
 	@Nullable
-	public BigDecimal findApplicationPropertyAsBigDecimal(@Nonnull ApplicationPropertyKey name, @Nonnull Mandant mandant) {
+	public BigDecimal findApplicationPropertyAsBigDecimal(
+			@Nonnull ApplicationPropertyKey name,
+			@Nonnull Mandant mandant) {
 		Objects.requireNonNull(name, NAME_MISSING_MSG);
 		String valueAsString = findApplicationPropertyAsString(name, mandant);
 		if (valueAsString != null) {
@@ -218,7 +229,10 @@ public class ApplicationPropertyServiceBean extends AbstractBaseService implemen
 
 	@Override
 	@Nonnull
-	public Boolean findApplicationPropertyAsBoolean(@Nonnull ApplicationPropertyKey name, @Nonnull Mandant mandant, boolean defaultValue) {
+	public Boolean findApplicationPropertyAsBoolean(
+			@Nonnull ApplicationPropertyKey name,
+			@Nonnull Mandant mandant,
+			boolean defaultValue) {
 		Boolean property = findApplicationPropertyAsBoolean(name, mandant);
 		if (property == null) {
 			return defaultValue;
@@ -229,7 +243,8 @@ public class ApplicationPropertyServiceBean extends AbstractBaseService implemen
 	@Override
 	@Nonnull
 	public LocalDate getStadtBernAsivStartDatum(@Nonnull Mandant mandant) {
-		String valueAsString = findApplicationPropertyAsString(ApplicationPropertyKey.STADT_BERN_ASIV_START_DATUM, mandant);
+		String valueAsString =
+				findApplicationPropertyAsString(ApplicationPropertyKey.STADT_BERN_ASIV_START_DATUM, mandant);
 		if (valueAsString != null) {
 			return LocalDate.parse(valueAsString, Constants.DATE_FORMATTER);
 		}
@@ -246,12 +261,34 @@ public class ApplicationPropertyServiceBean extends AbstractBaseService implemen
 	@Override
 	@Nonnull
 	public Boolean isKantonNotverordnungPhase2Aktiviert(@Nonnull Mandant mandant) {
-		return findApplicationPropertyAsBoolean(ApplicationPropertyKey.KANTON_NOTVERORDNUNG_PHASE_2_AKTIV, mandant, false);
+		return findApplicationPropertyAsBoolean(
+				ApplicationPropertyKey.KANTON_NOTVERORDNUNG_PHASE_2_AKTIV,
+				mandant,
+				false);
 	}
 
 	@Override
 	@Nonnull
 	public Boolean isPublishSchnittstelleEventsAktiviert(@Nonnull Mandant mandant) {
 		return findApplicationPropertyAsBoolean(ApplicationPropertyKey.SCHNITTSTELLE_EVENTS_AKTIVIERT, mandant, true);
+	}
+
+	@Override
+	public List<DemoFeatureTyp> getActivatedDemoFeatures(@Nonnull Mandant mandant) {
+		String activatedDemoFeatures =
+				findApplicationPropertyAsString(ApplicationPropertyKey.ACTIVATED_DEMO_FEATURES, mandant);
+
+		List<DemoFeatureTyp> activatdDemoFeatures = new ArrayList<>();
+
+		if (activatedDemoFeatures == null) {
+			return activatdDemoFeatures;
+		}
+
+		return Arrays.stream(activatedDemoFeatures.split(","))
+				.map(demoFeatureString -> Enums.getIfPresent(
+						DemoFeatureTyp.class,
+						demoFeatureString.stripLeading().stripTrailing()).orNull())
+				.filter(Objects::nonNull)
+				.collect(Collectors.toList());
 	}
 }

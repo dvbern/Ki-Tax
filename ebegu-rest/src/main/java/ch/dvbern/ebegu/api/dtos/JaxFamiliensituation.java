@@ -110,6 +110,12 @@ public class JaxFamiliensituation extends JaxAbstractDTO {
 	@Nullable
 	private Boolean geteilteObhut;
 
+	@Nullable
+	private Boolean gemeinsamerHaushaltMitObhutsberechtigterPerson;
+
+	@Nullable
+	private Boolean gemeinsamerHaushaltMitPartner;
+
 	public static long getSerialVersionUID() {
 		return serialVersionUID;
 	}
@@ -322,5 +328,24 @@ public class JaxFamiliensituation extends JaxAbstractDTO {
 
 	public void setGeteilteObhut(@Nullable Boolean geteilteObhut) {
 		this.geteilteObhut = geteilteObhut;
+	}
+
+	@Nullable
+	public Boolean getGemeinsamerHaushaltMitObhutsberechtigterPerson() {
+		return gemeinsamerHaushaltMitObhutsberechtigterPerson;
+	}
+
+	public void setGemeinsamerHaushaltMitObhutsberechtigterPerson(
+		@Nullable Boolean gemeinsamerHaushaltMitObhutsberechtigterPerson) {
+		this.gemeinsamerHaushaltMitObhutsberechtigterPerson = gemeinsamerHaushaltMitObhutsberechtigterPerson;
+	}
+
+	@Nullable
+	public Boolean getGemeinsamerHaushaltMitPartner() {
+		return gemeinsamerHaushaltMitPartner;
+	}
+
+	public void setGemeinsamerHaushaltMitPartner(@Nullable Boolean gemeinsamerHaushaltMitPartner) {
+		this.gemeinsamerHaushaltMitPartner = gemeinsamerHaushaltMitPartner;
 	}
 }

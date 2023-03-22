@@ -48,6 +48,8 @@ export class TSFamiliensituation extends TSAbstractMutableEntity {
     private _unterhaltsvereinbarungBemerkung: string;
     private _geteilteObhut: boolean;
     private _partnerIdentischMitVorgesuch: boolean;
+    private _gemeinsamerHaushaltMitObhutsberechtigterPerson: boolean;
+    private _gemeinsamerHaushaltMitPartner: boolean;
 
     public constructor() {
         super();
@@ -191,6 +193,8 @@ export class TSFamiliensituation extends TSAbstractMutableEntity {
 
     public hasSecondGesuchsteller(endOfPeriode: moment.Moment): boolean {
         switch (this.familienstatus) {
+            case TSFamilienstatus.APPENZELL:
+                return this.hasSecondGesuchstellerAppenzell();
             case TSFamilienstatus.ALLEINERZIEHEND:
                 if (!this.fkjvFamSit) {
                     return false;
@@ -250,6 +254,11 @@ export class TSFamiliensituation extends TSAbstractMutableEntity {
                 && EbeguUtil.areSameOrWithoutValue(this.unterhaltsvereinbarung , other.unterhaltsvereinbarung)
                 && EbeguUtil.areSameOrWithoutValue(this.gesuchstellerKardinalitaet, other.gesuchstellerKardinalitaet);
         }
+        if(this.familienstatus === TSFamilienstatus.APPENZELL) {
+            same = EbeguUtil.areSameOrWithoutValue(this.geteilteObhut, other.geteilteObhut)
+                && EbeguUtil.areSameOrWithoutValue(this.gemeinsamerHaushaltMitObhutsberechtigterPerson, other.gemeinsamerHaushaltMitObhutsberechtigterPerson)
+                && EbeguUtil.areSameOrWithoutValue(this.gemeinsamerHaushaltMitPartner, other.gemeinsamerHaushaltMitPartner);
+        }
         return same;
     }
 
@@ -260,6 +269,8 @@ export class TSFamiliensituation extends TSAbstractMutableEntity {
         this.unterhaltsvereinbarung = other.unterhaltsvereinbarung;
         this.geteilteObhut = other.geteilteObhut;
         this.unterhaltsvereinbarungBemerkung = other.unterhaltsvereinbarungBemerkung;
+        this.gemeinsamerHaushaltMitPartner = other.gemeinsamerHaushaltMitPartner;
+        this.gemeinsamerHaushaltMitObhutsberechtigterPerson = other.gemeinsamerHaushaltMitObhutsberechtigterPerson;
     }
 
     public get fkjvFamSit(): boolean {
@@ -310,11 +321,30 @@ export class TSFamiliensituation extends TSAbstractMutableEntity {
         this._partnerIdentischMitVorgesuch = value;
     }
 
+    public get gemeinsamerHaushaltMitPartner(): boolean {
+        return this._gemeinsamerHaushaltMitPartner;
+    }
+
+    public set gemeinsamerHaushaltMitPartner(value: boolean) {
+        this._gemeinsamerHaushaltMitPartner = value;
+    }
+    public get gemeinsamerHaushaltMitObhutsberechtigterPerson(): boolean {
+        return this._gemeinsamerHaushaltMitObhutsberechtigterPerson;
+    }
+
+    public set gemeinsamerHaushaltMitObhutsberechtigterPerson(value: boolean) {
+        this._gemeinsamerHaushaltMitObhutsberechtigterPerson = value;
+    }
+
     private hasSecondGesuchstellerFKJV(): boolean {
         if (this.geteilteObhut) {
             return this.gesuchstellerKardinalitaet === TSGesuchstellerKardinalitaet.ZU_ZWEIT;
         }
 
         return this.unterhaltsvereinbarung === TSUnterhaltsvereinbarungAnswer.NEIN_UNTERHALTSVEREINBARUNG;
+    }
+
+    private hasSecondGesuchstellerAppenzell(): boolean {
+        return this.geteilteObhut && this.gemeinsamerHaushaltMitObhutsberechtigterPerson;
     }
 }

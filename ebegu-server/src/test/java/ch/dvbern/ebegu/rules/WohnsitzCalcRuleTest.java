@@ -272,10 +272,12 @@ public class WohnsitzCalcRuleTest extends WohnsitzRuleTest {
 		Assert.assertEquals(wegzugsDatum.minusDays(1), abschnittInBern.getGueltigkeit().getGueltigBis());
 
 
-		VerfuegungZeitabschnitt abschnittFirstMonthNichtInBern = zeitabschnittList.get(1);
-		Assert.assertTrue(abschnittFirstMonthNichtInBern.getBgCalculationInputAsiv().isWohnsitzNichtInGemeindeGS1());
-		Assert.assertEquals(0, abschnittFirstMonthNichtInBern.getBgCalculationInputAsiv().getAnspruchspensumProzent());
-		Assert.assertEquals(wegzugsDatum.with(TemporalAdjusters.lastDayOfMonth()), abschnittFirstMonthNichtInBern.getGueltigkeit().getGueltigBis());
+		//Zeitabschnitt 16.10-31.10 (Eigentlich nicht mehr in Bern, aber Umzug gilt erst per Ende Monat)
+		VerfuegungZeitabschnitt abschnittZweiterAnteilNichtInBern = zeitabschnittList.get(1);
+		Assert.assertFalse(abschnittZweiterAnteilNichtInBern.getBgCalculationInputAsiv().isWohnsitzNichtInGemeindeGS1());
+		Assert.assertEquals(100, abschnittZweiterAnteilNichtInBern.getBgCalculationInputAsiv().getAnspruchspensumProzent());
+		Assert.assertEquals(wegzugsDatum.with(TemporalAdjusters.lastDayOfMonth()), abschnittZweiterAnteilNichtInBern.getGueltigkeit().getGueltigBis());
+		Assert.assertEquals(wegzugsDatum, abschnittZweiterAnteilNichtInBern.getGueltigkeit().getGueltigAb());
 
 		//Anspruch noch 2 Monate nach wegzug auf Ende Monat
 		VerfuegungZeitabschnitt abschnittNichtInBern = zeitabschnittList.get(2);
