@@ -44,8 +44,7 @@ export class ZahlungsstatusIconComponent implements OnInit {
     }
 
     public ngOnInit(): void {
-        this.iconLabel = new TSZahlungsstatusIconLabel(this.translate);
-        this.iconLabel.zahlungsstatusToIconLabel(this.zahlungsstatus, this.betreuung);
+        this.iconLabel = new TSZahlungsstatusIconLabel(this.translate, this.zahlungsstatus, this.betreuung);
     }
 
     public getTitle(): string {

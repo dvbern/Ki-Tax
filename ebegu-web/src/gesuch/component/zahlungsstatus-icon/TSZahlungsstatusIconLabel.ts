@@ -27,11 +27,14 @@ export class TSZahlungsstatusIconLabel {
     private _tooltipLabel: string;
 
     public constructor(
-        private readonly translateService: TranslateService
+        private readonly translateService: TranslateService,
+        private readonly zahlungsstatus: TSVerfuegungZeitabschnittZahlungsstatus,
+        private readonly betreuung: TSBetreuung
     ) {
+        this.initIconLabel(zahlungsstatus, betreuung);
     }
 
-    public zahlungsstatusToIconLabel(
+    private initIconLabel(
         zahlungsstatus: TSVerfuegungZeitabschnittZahlungsstatus,
         betreuung: TSBetreuung
     ): void {
