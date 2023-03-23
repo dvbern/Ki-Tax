@@ -16,8 +16,10 @@
  */
 
 import {ChangeDetectionStrategy, ChangeDetectorRef, Component} from '@angular/core';
+import {Transition} from '@uirouter/core';
 import {IPromise} from 'angular';
 import {LogFactory} from '../../../../../app/core/logging/LogFactory';
+import {TSFinanzielleSituationSubStepName} from '../../../../../models/enums/TSFinanzielleSituationSubStepName';
 import {TSWizardStepName} from '../../../../../models/enums/TSWizardStepName';
 import {TSWizardStepStatus} from '../../../../../models/enums/TSWizardStepStatus';
 import {TSFinanzielleSituationContainer} from '../../../../../models/TSFinanzielleSituationContainer';
@@ -27,6 +29,7 @@ import {EbeguUtil} from '../../../../../utils/EbeguUtil';
 import {GesuchModelManager} from '../../../../service/gesuchModelManager';
 import {WizardStepManager} from '../../../../service/wizardStepManager';
 import {AbstractGesuchViewX} from '../../../abstractGesuchViewX';
+import {FinanzielleSituationAppenzellService} from '../finanzielle-situation-appenzell.service';
 
 const LOG = LogFactory.createLog('FinanzielleSituationAppenzellViewComponent');
 
@@ -38,21 +41,23 @@ const LOG = LogFactory.createLog('FinanzielleSituationAppenzellViewComponent');
 })
 export class FinanzielleSituationAppenzellViewComponent extends AbstractGesuchViewX<TSFinanzModel> {
 
+    private readonly gesuchstellerNumber: number;
+
     public constructor(
         protected ref: ChangeDetectorRef,
         protected readonly gesuchModelManager: GesuchModelManager,
-        protected readonly wizardStepManager: WizardStepManager
+        protected readonly wizardStepManager: WizardStepManager,
+        private readonly $transition$: Transition,
     ) {
         super(gesuchModelManager, wizardStepManager, TSWizardStepName.FINANZIELLE_SITUATION_APPENZELL);
-        // wie ich es verstehe sind wir immer auf dem 1 Antragsteller, entweder gemeinsam oder nicht
-        // falls gemeinsam soll die FinSit fuer beide in einmal erfasst werden
+        this.gesuchstellerNumber = parseInt(this.$transition$.params().gesuchstellerNumber, 10);
         this.model = new TSFinanzModel(this.gesuchModelManager.getBasisjahr(),
-            this.gesuchModelManager.isGesuchsteller2Required(),
-            1);
+            FinanzielleSituationAppenzellService.finSitNeedsTwoSeparateAntragsteller(gesuchModelManager),
+            this.gesuchstellerNumber);
         this.model.copyFinSitDataFromGesuch(this.gesuchModelManager.getGesuch());
         // in Appenzell stellen wir die Frage nach dem Sozialhilfebezüger nicht. Deshalb setzen wir den immer auf false.
         this.model.sozialhilfeBezueger = false;
-        this.gesuchModelManager.setGesuchstellerNumber(1);
+        this.gesuchModelManager.setGesuchstellerNumber(this.gesuchstellerNumber);
         if(EbeguUtil.isNullOrUndefined(this.getModel().finanzielleSituationJA.finSitZusatzangabenAppenzell)){
             this.getModel().finanzielleSituationJA.finSitZusatzangabenAppenzell = new TSFinSitZusatzangabenAppenzell();
         }
@@ -70,7 +75,7 @@ export class FinanzielleSituationAppenzellViewComponent extends AbstractGesuchVi
 
     public getAntragstellerNumber(): number {
         // im moment gibt es nur antragsteller 1
-        return 1;
+        return this.gesuchstellerNumber;
     }
 
     public isGemeinsam(): boolean {
@@ -83,7 +88,23 @@ export class FinanzielleSituationAppenzellViewComponent extends AbstractGesuchVi
     }
 
     public getSubStepIndex(): number {
-        return 0;
+        if (this.gesuchstellerNumber === 1) {
+            return 1;
+        } else if (this.gesuchstellerNumber === 2) {
+            return 2;
+        }
+        LOG.error('SubStepIndex not defined');
+        return undefined;
+    }
+
+    public getSubStepName(): TSFinanzielleSituationSubStepName {
+        if (this.gesuchstellerNumber === 1) {
+            return TSFinanzielleSituationSubStepName.APPENZELL_START;
+        } else if (this.gesuchstellerNumber === 2) {
+            return TSFinanzielleSituationSubStepName.APPENZELL_GS2;
+        }
+        LOG.error('SubStepName not defined');
+        return undefined;
     }
 
     public prepareSave(onResult: (arg: any) => void): Promise<TSFinanzielleSituationContainer> {

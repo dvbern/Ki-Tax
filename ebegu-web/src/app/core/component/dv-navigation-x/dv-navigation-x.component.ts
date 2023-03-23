@@ -275,7 +275,8 @@ export class DvNavigationXComponent implements OnInit {
         }
         if (TSWizardStepName.FINANZIELLE_SITUATION === this.wizardStepManager.getCurrentStepName()
             || TSWizardStepName.FINANZIELLE_SITUATION_LUZERN === this.wizardStepManager.getCurrentStepName()
-            || TSWizardStepName.FINANZIELLE_SITUATION_SOLOTHURN === this.wizardStepManager.getCurrentStepName()) {
+            || TSWizardStepName.FINANZIELLE_SITUATION_SOLOTHURN === this.wizardStepManager.getCurrentStepName()
+            || TSWizardStepName.FINANZIELLE_SITUATION_APPENZELL === this.wizardStepManager.getCurrentStepName()) {
             const nextSubStep = this.finSitWizardSubStepManager.getNextSubStepFinanzielleSituation(this.dvSubStepName);
             const nextMainStep = this.wizardStepManager.getNextStep(this.gesuchModelManager.getGesuch());
             this.navigateToSubStepFinanzielleSituation(
@@ -433,6 +434,12 @@ export class DvNavigationXComponent implements OnInit {
                 return;
             case TSFinanzielleSituationSubStepName.SOLOTHURN_GS2:
                 this.navigateToSolothurnGS2();
+                return;
+            case TSFinanzielleSituationSubStepName.APPENZELL_START:
+                this.navigateToAppenzellStart();
+                return;
+            case TSFinanzielleSituationSubStepName.APPENZELL_GS2:
+                this.navigateToAppenzellGS2();
                 return;
             default:
                 throw new Error(`not implemented for Substep ${navigateToSubStep}`);
@@ -601,6 +608,22 @@ export class DvNavigationXComponent implements OnInit {
         return this.$state.go('gesuch.finanzielleSituationGS2Solothurn', {
             gesuchId: this.getGesuchId(),
             gsNummer: 2
+        });
+    }
+
+    // eslint-disable-next-line
+    private navigateToAppenzellStart(): any {
+        return this.$state.go('gesuch.finanzielleSituationAppenzell', {
+            gesuchId: this.getGesuchId(),
+            gesuchstellerNumber: 1
+        });
+    }
+
+    // eslint-disable-next-line
+    private navigateToAppenzellGS2(): any {
+        return this.$state.go('gesuch.finanzielleSituationAppenzellGS2', {
+            gesuchId: this.getGesuchId(),
+            gesuchstellerNumber: 2
         });
     }
 
