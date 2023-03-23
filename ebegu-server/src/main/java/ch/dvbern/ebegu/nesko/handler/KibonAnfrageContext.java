@@ -22,9 +22,10 @@ import java.util.Objects;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import ch.dvbern.ebegu.entities.FinanzielleSituation;
 import ch.dvbern.ebegu.entities.FinanzielleSituationContainer;
 import ch.dvbern.ebegu.entities.Gesuch;
-import ch.dvbern.ebegu.entities.GesuchstellerContainer;
+import ch.dvbern.ebegu.entities.Gesuchsteller;
 import ch.dvbern.ebegu.entities.SteuerdatenResponse;
 import ch.dvbern.ebegu.enums.SteuerdatenAnfrageStatus;
 
@@ -33,37 +34,18 @@ public class KibonAnfrageContext {
 	@Nonnull
 	private Gesuch gesuch;
 
-	@Nonnull
-	private GesuchstellerContainer gesuchsteller;
-
-	@Nonnull
-	private FinanzielleSituationContainer finSitCont;
-
-	@Nullable
-	private FinanzielleSituationContainer finSitContGS2;
-
-	@Nonnull
-	private String kibonAnfrageId;
-
 	@Nullable
 	private SteuerdatenAnfrageStatus steuerdatenAnfrageStatus;
 
 	@Nullable
 	private SteuerdatenResponse steuerdatenResponse;
 
-	private boolean isSwitched = false;
 
 	private boolean gemeinsam;
 
 	public KibonAnfrageContext(
-		@Nonnull Gesuch gesuch,
-		@Nonnull GesuchstellerContainer gesuchsteller,
-		@Nonnull FinanzielleSituationContainer finSitCont,
-		@Nonnull String kibonAnfrageId) {
+		@Nonnull Gesuch gesuch) {
 		this.gesuch = gesuch;
-		this.gesuchsteller = gesuchsteller;
-		this.finSitCont = finSitCont;
-		this.kibonAnfrageId = kibonAnfrageId;
 
 		initGemeinsam();
 	}
@@ -74,21 +56,15 @@ public class KibonAnfrageContext {
 
 		this.gemeinsam = Boolean.TRUE
 			.equals(gesuch.getFamiliensituationContainer().getFamiliensituationJA().getGemeinsameSteuererklaerung());
+		if(null == gesuch.getGesuchsteller2()){
+			return;
+		}
+//		createFinSitGS2Container();
 	}
 
 	@Nonnull
 	public Gesuch getGesuch() {
 		return gesuch;
-	}
-
-	@Nonnull
-	public GesuchstellerContainer getGesuchsteller() {
-		return gesuchsteller;
-	}
-
-	@Nonnull
-	public FinanzielleSituationContainer getFinSitCont() {
-		return finSitCont;
 	}
 
 	@Nullable
@@ -98,41 +74,6 @@ public class KibonAnfrageContext {
 
 	public void setSteuerdatenAnfrageStatus(@Nullable SteuerdatenAnfrageStatus steuerdatenAnfrageStatus) {
 		this.steuerdatenAnfrageStatus = steuerdatenAnfrageStatus;
-	}
-
-	@Nonnull
-	public String getKibonAnfrageId() {
-		return kibonAnfrageId;
-	}
-
-	@Nullable
-	public FinanzielleSituationContainer getFinSitContGS2() {
-		return finSitContGS2;
-	}
-
-	public void setFinSitContGS2(@Nullable FinanzielleSituationContainer finSitContGS2) {
-		this.finSitContGS2 = finSitContGS2;
-	}
-
-	public boolean isSwitched() {
-		return isSwitched;
-	}
-
-	public KibonAnfrageContext switchGSContainer() {
-		assert this.finSitContGS2 != null;
-		KibonAnfrageContext kibonAnfrageContext =
-			new KibonAnfrageContext(
-				this.gesuch,
-				this.finSitContGS2.getGesuchsteller(),
-				this.finSitContGS2,
-				this.kibonAnfrageId);
-		kibonAnfrageContext.setFinSitContGS2(this.finSitCont);
-		kibonAnfrageContext.isSwitched = true;
-		return kibonAnfrageContext;
-	}
-
-	public boolean isGesuchsteller2() {
-		return this.getGesuchsteller().equals(this.getGesuch().getGesuchsteller2());
 	}
 
 	@Nullable
@@ -149,20 +90,46 @@ public class KibonAnfrageContext {
 	}
 
 	public boolean hasGS1SteuerzuriffErlaubt() {
-		return Boolean.TRUE.equals(getFinSitCont().getFinanzielleSituationJA().getSteuerdatenZugriff());
+		return Boolean.TRUE.equals(getFinSitCont(1).getFinanzielleSituationJA().getSteuerdatenZugriff());
 	}
 
 	public boolean hasGS2() {
 		return gesuch.getGesuchsteller2() != null;
 	}
 
-	public boolean equalZpvNrGS2(Integer zpvNummer) {
-		if (gesuch.getGesuchsteller2() == null ||
-			gesuch.getGesuchsteller2().getGesuchstellerJA() == null ||
-			gesuch.getGesuchsteller2().getGesuchstellerJA().getZpvNummer() == null) {
+	public boolean equalGeburtsdatumPartner(Gesuchsteller gesuchsteller) {
+		if (gesuchsteller.getGeburtsdatum() == null || steuerdatenResponse.getGeburtsdatumPartner() == null) {
 			return false;
 		}
 
-		return String.valueOf(zpvNummer).equals(gesuch.getGesuchsteller2().getGesuchstellerJA().getZpvNummer());
+		return steuerdatenResponse.getGeburtsdatumPartner().equals(gesuchsteller.getGeburtsdatum());
+	}
+
+	private void createFinSitGS2Container() {
+		assert this.getGesuch().getGesuchsteller2() != null;
+		FinanzielleSituationContainer finSitGS2Cont =
+				this.getGesuch().getGesuchsteller2().getFinanzielleSituationContainer() != null ?
+						this.getGesuch().getGesuchsteller2().getFinanzielleSituationContainer() :
+						new FinanzielleSituationContainer();
+		if (finSitGS2Cont.getFinanzielleSituationJA() == null) {
+			finSitGS2Cont.setFinanzielleSituationJA(new FinanzielleSituation());
+		}
+		finSitGS2Cont.setJahr(this.gesuch.getGesuchsteller1().getFinanzielleSituationContainer().getJahr());
+		finSitGS2Cont.getFinanzielleSituationJA().setSteuerdatenZugriff(true);
+//		finSitGS2Cont.getFinanzielleSituationJA()
+//				.setSteuererklaerungAusgefuellt(this.getFinSitCont().getFinanzielleSituationJA()
+//						.getSteuererklaerungAusgefuellt());
+//		finSitGS2Cont.getFinanzielleSituationJA()
+//				.setSteuerveranlagungErhalten(this.getFinSitCont().getFinanzielleSituationJA()
+//						.getSteuerveranlagungErhalten());
+		finSitGS2Cont.setGesuchsteller(this.getGesuch().getGesuchsteller2());
+//		this.setFinSitContGS2(finSitGS2Cont);
+	}
+
+	public FinanzielleSituationContainer getFinSitCont(int gesuchstellerNumber) {
+		if (gesuchstellerNumber == 1) {
+			return getGesuch().getGesuchsteller1().getFinanzielleSituationContainer();
+		}
+		return getGesuch().getGesuchsteller2().getFinanzielleSituationContainer();
 	}
 }

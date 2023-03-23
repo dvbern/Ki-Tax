@@ -214,21 +214,19 @@ public class NeueVeranlagungEventHandler extends BaseEventHandler<NeueVeranlagun
 		if (kibonAnfrageContext == null) {
 			return null;
 		}
-
 		// entscheiden, ob es geht um das GS1 oder GS2
 		Objects.requireNonNull(gesuch.getFamiliensituationContainer());
 		Objects.requireNonNull(gesuch.getFamiliensituationContainer().getFamiliensituationJA());
-
-
-		if (kibonAnfrageContext.isGemeinsam() && !kibonAnfrageContext.getGesuchsteller()
-			.getGesuchstellerJA()
-			.getGeburtsdatum()
-			.equals(geburtsdatum)
-			&& gesuch.getGesuchsteller2() != null) {
-			kibonAnfrageContext = kibonAnfrageContext.switchGSContainer();
+		boolean isGS1Abfrage = gesuch.getGesuchsteller1().getGesuchstellerJA().getGeburtsdatum().equals(geburtsdatum);
+		if (gesuch.getGesuchsteller1().getGesuchstellerJA().getGeburtsdatum().equals(geburtsdatum)){
+			return kibonAnfrageHandler.handleKibonAnfrage(kibonAnfrageContext,
+					kibonAnfrageContext.isGemeinsam(),1 );
 		}
-		return kibonAnfrageHandler.handleKibonNeueVeranlagungAnfrage(kibonAnfrageContext,
-			kibonAnfrageContext.isGemeinsam());
+		if(gesuch.getGesuchsteller1().getGesuchstellerJA().getGeburtsdatum().equals(geburtsdatum)){
+			return kibonAnfrageHandler.handleKibonAnfrage(kibonAnfrageContext,
+					kibonAnfrageContext.isGemeinsam(), 2);
+		}
+		return null;
 	}
 
 	private Processing createAndSendNeueVeranlagungsMitteilung(@Nonnull KibonAnfrageContext kibonAnfrageContext, int zpvNummer) {

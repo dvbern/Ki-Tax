@@ -21,13 +21,12 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.validation.constraints.NotNull;
 
 import ch.dvbern.ebegu.dto.neskovanp.Veranlagungsstand;
 import ch.dvbern.ebegu.entities.FinanzielleSituation;
-import ch.dvbern.ebegu.entities.FinanzielleSituationContainer;
+import ch.dvbern.ebegu.entities.Gesuchsteller;
 import ch.dvbern.ebegu.entities.SteuerdatenResponse;
 import ch.dvbern.ebegu.entities.SteuerdatenResponse.SteuerdatenDatenTraeger;
 import ch.dvbern.ebegu.enums.SteuerdatenAnfrageStatus;
@@ -44,19 +43,25 @@ public class KibonAnfrageHelper {
 	 * handle steuerdatenResponse for single GS
 	 */
 	public static void handleSteuerdatenResponse(
-		KibonAnfrageContext kibonAnfrageContext,
-		SteuerdatenResponse steuerdatenResponse) {
+			KibonAnfrageContext kibonAnfrageContext,
+			SteuerdatenResponse steuerdatenResponse,
+			int gesuchstellerNumber) {
 		if (steuerdatenResponse.getVeranlagungsstand() == Veranlagungsstand.OFFEN) {
 			kibonAnfrageContext.setSteuerdatenAnfrageStatus(SteuerdatenAnfrageStatus.FAILED);
-		} else if (steuerdatenResponse.getUnterjaehrigerFall() != null && steuerdatenResponse.getUnterjaehrigerFall()) {
-			kibonAnfrageContext.setSteuerdatenAnfrageStatus(SteuerdatenAnfrageStatus.FAILED_UNTERJAEHRIGER_FALL);
-		} else if (steuerdatenResponse.getZpvNrPartner() != null) {
-			kibonAnfrageContext.setSteuerdatenAnfrageStatus(SteuerdatenAnfrageStatus.FAILED_PARTNER_NICHT_GEMEINSAM);
-		} else {
-			setVeranlagungsstand(kibonAnfrageContext, steuerdatenResponse);
-			KibonAnfrageHelper.updateFinSitSteuerdatenAbfrageStatusOk(kibonAnfrageContext.getFinSitCont()
-				.getFinanzielleSituationJA(), steuerdatenResponse);
+			return;
 		}
+		if (steuerdatenResponse.getUnterjaehrigerFall() != null && steuerdatenResponse.getUnterjaehrigerFall()) {
+			kibonAnfrageContext.setSteuerdatenAnfrageStatus(SteuerdatenAnfrageStatus.FAILED_UNTERJAEHRIGER_FALL);
+			return;
+		}
+		if (steuerdatenResponse.getZpvNrPartner() != null) {
+			kibonAnfrageContext.setSteuerdatenAnfrageStatus(SteuerdatenAnfrageStatus.FAILED_PARTNER_NICHT_GEMEINSAM);
+			return;
+		}
+		setVeranlagungsstand(kibonAnfrageContext, steuerdatenResponse);
+		KibonAnfrageHelper.updateFinSitSteuerdatenAbfrageStatusOk(kibonAnfrageContext.getFinSitCont(gesuchstellerNumber)
+				.getFinanzielleSituationJA(), steuerdatenResponse);
+
 	}
 
 	public static void handleSteuerdatenGemeinsamResponse(
@@ -64,30 +69,36 @@ public class KibonAnfrageHelper {
 		SteuerdatenResponse steuerdatenResponse) {
 		if (steuerdatenResponse.getVeranlagungsstand() == Veranlagungsstand.OFFEN) {
 			kibonAnfrageContext.setSteuerdatenAnfrageStatus(SteuerdatenAnfrageStatus.FAILED);
-		} else if (steuerdatenResponse.getUnterjaehrigerFall() != null && steuerdatenResponse.getUnterjaehrigerFall()) {
+			return;
+		}
+		if (steuerdatenResponse.getUnterjaehrigerFall() != null && steuerdatenResponse.getUnterjaehrigerFall()) {
 			kibonAnfrageContext.setSteuerdatenAnfrageStatus(SteuerdatenAnfrageStatus.FAILED_UNTERJAEHRIGER_FALL);
-		} else if (steuerdatenResponse.getVeraendertePartnerschaft() != null
-			&& steuerdatenResponse.getVeraendertePartnerschaft()) {
+			return;
+		}
+		if (steuerdatenResponse.getVeraendertePartnerschaft() != null
+				&& steuerdatenResponse.getVeraendertePartnerschaft()) {
 			kibonAnfrageContext.setSteuerdatenAnfrageStatus(SteuerdatenAnfrageStatus.FAILED_VERAENDERTE_PARTNERSCHAFT);
-		} else if (steuerdatenResponse.getUnregelmaessigkeitInDerVeranlagung() != null
+			return;
+		}
+		if (steuerdatenResponse.getUnregelmaessigkeitInDerVeranlagung() != null
 			&& steuerdatenResponse.getUnregelmaessigkeitInDerVeranlagung()) {
 			kibonAnfrageContext.setSteuerdatenAnfrageStatus(SteuerdatenAnfrageStatus.FAILED_UNREGELMAESSIGKEIT);
-		} else if (steuerdatenResponse.getZpvNrPartner() == null) {
-			kibonAnfrageContext.setSteuerdatenAnfrageStatus(SteuerdatenAnfrageStatus.FAILED_KEIN_PARTNER_GEMEINSAM);
-		} else {
-			assert kibonAnfrageContext.getFinSitContGS2() != null;
-			if (!KibonAnfrageHelper.isGebrutsdatumGS2CorrectInResponse(
-				kibonAnfrageContext.getFinSitContGS2(),
-				steuerdatenResponse)) {
-				kibonAnfrageContext.setSteuerdatenAnfrageStatus(SteuerdatenAnfrageStatus.FAILED_GEBURTSDATUM);
-			} else {
-				setVeranlagungsstand(kibonAnfrageContext, steuerdatenResponse);
-				KibonAnfrageHelper.updateFinSitSteuerdatenAbfrageGemeinsamStatusOk(
-					kibonAnfrageContext.getFinSitCont().getFinanzielleSituationJA(),
-					kibonAnfrageContext.getFinSitContGS2().getFinanzielleSituationJA(),
-					steuerdatenResponse);
-			}
+			return;
 		}
+		if (steuerdatenResponse.getZpvNrPartner() == null) {
+			kibonAnfrageContext.setSteuerdatenAnfrageStatus(SteuerdatenAnfrageStatus.FAILED_KEIN_PARTNER_GEMEINSAM);
+			return;
+		}
+		if (!KibonAnfrageHelper.isGeburtsdatumPartnerCorrectInResponse(
+				kibonAnfrageContext,
+				steuerdatenResponse)) {
+			kibonAnfrageContext.setSteuerdatenAnfrageStatus(SteuerdatenAnfrageStatus.FAILED_GEBURTSDATUM);
+			return;
+		}
+		setVeranlagungsstand(kibonAnfrageContext, steuerdatenResponse);
+		KibonAnfrageHelper.updateFinSitSteuerdatenAbfrageGemeinsamStatusOk(
+				steuerdatenResponse, kibonAnfrageContext);
+
 	}
 
 	public static void updateFinSitSteuerdatenAbfrageStatusOk(
@@ -105,28 +116,30 @@ public class KibonAnfrageHelper {
 		finSitGS.setSteuerdatenAbfrageTimestamp(LocalDateTime.now());
 	}
 
-	protected static boolean isGebrutsdatumGS2CorrectInResponse(
-		FinanzielleSituationContainer finanzielleSituationContainer,
+	protected static boolean isGeburtsdatumPartnerCorrectInResponse(
+		KibonAnfrageContext anfrageContext,
 		SteuerdatenResponse steuerdatenResponse) {
 
-		LocalDate geburstdatumGS2 =
-			finanzielleSituationContainer.getGesuchsteller().getGesuchstellerJA().getGeburtsdatum();
+		LocalDate geburtsdatumPartner;
 
-		if (isGS2Dossiertraeger(steuerdatenResponse)) {
-			return geburstdatumGS2.isEqual(requireNonNull(steuerdatenResponse.getGeburtsdatumDossiertraeger()));
+		if (isGesuchstellerSteuerdossiertraeger(anfrageContext.getGesuch().getGesuchsteller1().getGesuchstellerJA(), steuerdatenResponse)) {
+			geburtsdatumPartner = anfrageContext.getGesuch().getGesuchsteller2().getGesuchstellerJA().getGeburtsdatum();
+		} else {
+			geburtsdatumPartner = anfrageContext.getGesuch().getGesuchsteller1().getGesuchstellerJA().getGeburtsdatum();
 		}
 
-		return geburstdatumGS2.isEqual(requireNonNull(steuerdatenResponse.getGeburtsdatumPartner()));
+		return geburtsdatumPartner.isEqual(requireNonNull(steuerdatenResponse.getGeburtsdatumPartner()));
 	}
 
 	public static void updateFinSitSteuerdatenAbfrageGemeinsamStatusOk(
-		@Nonnull FinanzielleSituation finSitGS1,
-		@Nonnull FinanzielleSituation finSitGS2,
-		SteuerdatenResponse steuerdatenResponse) {
+			SteuerdatenResponse steuerdatenResponse,
+			KibonAnfrageContext anfrageContext) {
+		FinanzielleSituation finSitGS1 = anfrageContext.getFinSitCont(1).getFinanzielleSituationJA();
+		FinanzielleSituation finSitGS2 = anfrageContext.getFinSitCont(2).getFinanzielleSituationJA();
 		assert steuerdatenResponse.getZpvNrPartner() != null;
 		finSitGS1.setSteuerdatenResponse(steuerdatenResponse);
 		finSitGS2.setSteuerdatenResponse(steuerdatenResponse);
-		if (isAntragstellerDossiertraeger(steuerdatenResponse)) {
+		if (isGesuchstellerSteuerdossiertraeger(anfrageContext.getGesuch().getGesuchsteller1().getGesuchstellerJA(), steuerdatenResponse)) {
 			//GS1 = Dossierträger GS2 = Partner
 			setValuesToFinSit(finSitGS1, steuerdatenResponse, BIG_DECIMAL_TWO, SteuerdatenDatenTraeger.DOSSIERTRAEGER);
 			setValuesToFinSit(finSitGS2, steuerdatenResponse, BIG_DECIMAL_TWO, SteuerdatenDatenTraeger.PARTNER);
@@ -137,9 +150,6 @@ public class KibonAnfrageHelper {
 		}
 	}
 
-	private static boolean isGS2Dossiertraeger(SteuerdatenResponse steuerdatenResponse) {
-		return !isAntragstellerDossiertraeger(steuerdatenResponse);
-	}
 
 	protected static void setValuesToFinSit(
 		FinanzielleSituation finSit,
@@ -167,9 +177,9 @@ public class KibonAnfrageHelper {
 		setBerechneteFelder(finSit, steuerdatenResponse, anzahlGesuchsteller);
 	}
 
-	public static boolean isAntragstellerDossiertraeger(SteuerdatenResponse steuerdatenResponse) {
-		assert steuerdatenResponse.getZpvNrAntragsteller() != null;
-		return steuerdatenResponse.getZpvNrAntragsteller().equals(steuerdatenResponse.getZpvNrDossiertraeger());
+	public static boolean isGesuchstellerSteuerdossiertraeger(Gesuchsteller gesuchsteller, SteuerdatenResponse steuerdatenResponse) {
+		assert steuerdatenResponse.getGeburtsdatumDossiertraeger() != null;
+		return gesuchsteller.getGeburtsdatum().equals(steuerdatenResponse.getGeburtsdatumDossiertraeger());
 	}
 
 	protected static void setVeranlagungsstand(

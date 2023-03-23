@@ -45,10 +45,6 @@ public final class NeueVeranlagungTestUtil {
 	public static KibonAnfrageContext initKibonAnfrageContext(Gesuch gesuch) {
 		Objects.requireNonNull(gesuch.getGesuchsteller1());
 		Objects.requireNonNull(gesuch.getGesuchsteller1().getFinanzielleSituationContainer());
-		return new KibonAnfrageContext(gesuch,
-			gesuch.getGesuchsteller1(),
-			gesuch.getGesuchsteller1().getFinanzielleSituationContainer(),
-			gesuch.getId()
-		);
+		return new KibonAnfrageContext(gesuch);
 	}
 }

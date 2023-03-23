@@ -17,15 +17,16 @@
 
 package ch.dvbern.ebegu.nesko.handler;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import ch.dvbern.ebegu.authentication.PrincipalBean;
-import ch.dvbern.ebegu.entities.FinanzielleSituation;
-import ch.dvbern.ebegu.entities.FinanzielleSituationContainer;
 import ch.dvbern.ebegu.entities.SteuerdatenResponse;
 import ch.dvbern.ebegu.enums.EnumFamilienstatus;
 import ch.dvbern.ebegu.enums.SteuerdatenAnfrageStatus;
@@ -36,6 +37,9 @@ import ch.dvbern.ebegu.services.KibonAnfrageService;
 @Stateless
 public class KibonAnfrageHandler {
 
+	private static final String ZPV_BESITZER = "ZPV_BESITZER";
+	private static final String ZPV_GESUCHSTELLER_1 = "ZPV_GESUCHSTELLER_1";
+	private static final String ZPV_GESUCHSTELLER_2 = "ZPV_GESUCHSTELLER_2";
 	@Inject
 	private KibonAnfrageService kibonAnfrageService;
 
@@ -43,122 +47,150 @@ public class KibonAnfrageHandler {
 	private PrincipalBean principalBean;
 
 	public KibonAnfrageContext handleKibonAnfrage(
-		KibonAnfrageContext kibonAnfrageContext,
-		boolean isGemeinsam) {
-		return handleKibonAnfrage(kibonAnfrageContext, isGemeinsam, true);
-	}
-
-	// Bei neue Veranlagung Event hat man keine Retry Mechanismus
-	public KibonAnfrageContext handleKibonNeueVeranlagungAnfrage(
-		KibonAnfrageContext kibonAnfrageContext,
-		boolean isGemeinsam) {
-		return handleKibonAnfrage(kibonAnfrageContext, isGemeinsam, false);
-	}
-
-	private KibonAnfrageContext handleKibonAnfrage(
-		KibonAnfrageContext kibonAnfrageContext,
-		boolean isGemeinsam,
-		boolean doRetry) {
+			KibonAnfrageContext kibonAnfrageContext, boolean isGemeinsam,
+			int gesuchstellerNumber) {
 		boolean hasTwoAntragStellende = kibonAnfrageContext.getGesuch().getGesuchsteller2() != null;
+		Map<String, String> zpvNummerMap = findZpvNummerForRequest(kibonAnfrageContext);
 
+		if (zpvNummerMap.isEmpty()) {
+			kibonAnfrageContext.setSteuerdatenAnfrageStatus(SteuerdatenAnfrageStatus.FAILED_KEINE_ZPV_NUMMER);
+			return kibonAnfrageContext;
+		}
+
+		SteuerdatenResponse steuerdatenResponse;
 		if (hasTwoAntragStellende && isGemeinsam) {
 			// nur erstes Mal, dann schon initialisiert
-			if (doRetry) {
-				createFinSitGS2Container(kibonAnfrageContext);
-			}
-
-			String zpvNummer = findZpvNummerForRequest(kibonAnfrageContext, false);
-
-			if (zpvNummer != null) {
+			if (null != zpvNummerMap.get(ZPV_BESITZER)) {
 				try {
 					// try gemeinsame Steuererklärung anfrage
-					SteuerdatenResponse steuerdatenResponse = kibonAnfrageService.getSteuerDaten(
-						Integer.valueOf(zpvNummer),
-						kibonAnfrageContext.getGesuchsteller().getGesuchstellerJA().getGeburtsdatum(),
-						kibonAnfrageContext.getKibonAnfrageId(),
-						kibonAnfrageContext.getGesuch().getGesuchsperiode().getBasisJahrPlus1());
+					steuerdatenResponse = kibonAnfrageService.getSteuerDaten(
+							Integer.valueOf(zpvNummerMap.get(ZPV_BESITZER)),
+							kibonAnfrageContext.getGesuch().getGesuchsteller1().getGesuchstellerJA().getGeburtsdatum(),
+							kibonAnfrageContext.getGesuch().getId(),
+							kibonAnfrageContext.getGesuch().getGesuchsperiode().getBasisJahrPlus1());
 					kibonAnfrageContext.setSteuerdatenResponse(steuerdatenResponse);
-					Objects.requireNonNull(kibonAnfrageContext.getFinSitContGS2());
+
 					KibonAnfrageHelper.handleSteuerdatenGemeinsamResponse(kibonAnfrageContext, steuerdatenResponse);
 				} catch (KiBonAnfrageServiceException e) {
-					Objects.requireNonNull( kibonAnfrageContext.getGesuch().getFamiliensituationContainer());
-					Objects.requireNonNull( kibonAnfrageContext.getGesuch().getFamiliensituationContainer().getFamiliensituationJA());
+					Objects.requireNonNull(kibonAnfrageContext.getGesuch().getFamiliensituationContainer());
+					Objects.requireNonNull(kibonAnfrageContext.getGesuch()
+							.getFamiliensituationContainer()
+							.getFamiliensituationJA());
 					if (kibonAnfrageContext.getGesuch()
-						.getFamiliensituationContainer()
-						.getFamiliensituationJA()
-						.getFamilienstatus()
-						.equals(
-							EnumFamilienstatus.VERHEIRATET) && doRetry) {
-						return handleKibonAnfrage(kibonAnfrageContext.switchGSContainer(), true, false);
+							.getFamiliensituationContainer()
+							.getFamiliensituationJA()
+							.getFamilienstatus()
+							.equals(
+									EnumFamilienstatus.VERHEIRATET)) {
+						try {
+							steuerdatenResponse = kibonAnfrageService.getSteuerDaten(
+									Integer.valueOf(zpvNummerMap.get(ZPV_BESITZER)),
+									kibonAnfrageContext.getGesuch()
+											.getGesuchsteller2()
+											.getGesuchstellerJA()
+											.getGeburtsdatum(),
+									kibonAnfrageContext.getGesuch().getId(),
+									kibonAnfrageContext.getGesuch().getGesuchsperiode().getBasisJahrPlus1());
+							kibonAnfrageContext.setSteuerdatenResponse(steuerdatenResponse);
+							KibonAnfrageHelper.handleSteuerdatenGemeinsamResponse(kibonAnfrageContext, steuerdatenResponse);
+							return kibonAnfrageContext;
+						} catch (KiBonAnfrageServiceException e2) {
+							kibonAnfrageContext.setSteuerdatenAnfrageStatus(SteuerdatenAnfrageStatus.FAILED);
+							return kibonAnfrageContext;
+						}
 					} else {
 						kibonAnfrageContext.setSteuerdatenAnfrageStatus(SteuerdatenAnfrageStatus.FAILED);
+						return kibonAnfrageContext;
 					}
 				}
-			} else {
-				kibonAnfrageContext.setSteuerdatenAnfrageStatus(SteuerdatenAnfrageStatus.FAILED_KEINE_ZPV_NUMMER);
 			}
 		} else {
 			// anfrage single GS
-			String zpvNummer = findZpvNummerForRequest(kibonAnfrageContext, kibonAnfrageContext.isGesuchsteller2());
+			if (gesuchstellerNumber == 1) {
 
-			if (zpvNummer != null) {
+				String zpvNummer = zpvNummerMap.get(ZPV_BESITZER) == null ?
+						zpvNummerMap.get(ZPV_GESUCHSTELLER_1) : zpvNummerMap.get(ZPV_BESITZER);
+				if (null == zpvNummer) {
+					kibonAnfrageContext.setSteuerdatenAnfrageStatus(SteuerdatenAnfrageStatus.FAILED_KEINE_ZPV_NUMMER);
+					return kibonAnfrageContext;
+				}
 				try {
-					SteuerdatenResponse steuerdatenResponseGS1 = kibonAnfrageService.getSteuerDaten(
-						Integer.valueOf(zpvNummer),
-						kibonAnfrageContext.getGesuchsteller().getGesuchstellerJA().getGeburtsdatum(),
-						kibonAnfrageContext.getKibonAnfrageId(),
-						kibonAnfrageContext.getGesuch().getGesuchsperiode().getBasisJahrPlus1());
-					kibonAnfrageContext.setSteuerdatenResponse(steuerdatenResponseGS1);
+					SteuerdatenResponse steuerdatenResponseGS = kibonAnfrageService.getSteuerDaten(
+							Integer.valueOf(zpvNummer),
+							kibonAnfrageContext.getGesuch().getGesuchsteller1().getGesuchstellerJA().getGeburtsdatum(),
+							kibonAnfrageContext.getGesuch().getId(),
+							kibonAnfrageContext.getGesuch().getGesuchsperiode().getBasisJahrPlus1());
+					kibonAnfrageContext.setSteuerdatenResponse(steuerdatenResponseGS);
 					KibonAnfrageHelper.handleSteuerdatenResponse(
-						kibonAnfrageContext,
-						steuerdatenResponseGS1);
+							kibonAnfrageContext,
+							steuerdatenResponseGS,
+							gesuchstellerNumber);
+					return kibonAnfrageContext;
 				} catch (KiBonAnfrageServiceException e) {
 					kibonAnfrageContext.setSteuerdatenAnfrageStatus(SteuerdatenAnfrageStatus.FAILED);
 				}
-			} else {
-				kibonAnfrageContext.setSteuerdatenAnfrageStatus(
-					kibonAnfrageContext.isGesuchsteller2() ?
-						SteuerdatenAnfrageStatus.FAILED_KEINE_ZPV_NUMMER_GS2 :
-						SteuerdatenAnfrageStatus.FAILED_KEINE_ZPV_NUMMER);
+			}
+			// anfrage single GS
+			if (gesuchstellerNumber == 2) {
+
+				String zpvNummer = zpvNummerMap.get(ZPV_BESITZER) == null ?
+						zpvNummerMap.get(ZPV_GESUCHSTELLER_2) : zpvNummerMap.get(ZPV_BESITZER);
+				if (null == zpvNummer) {
+					kibonAnfrageContext.setSteuerdatenAnfrageStatus(SteuerdatenAnfrageStatus.FAILED_KEINE_ZPV_NUMMER_GS2);
+					return kibonAnfrageContext;
+				}
+				try {
+					SteuerdatenResponse steuerdatenResponseGS = kibonAnfrageService.getSteuerDaten(
+							Integer.valueOf(zpvNummer),
+							kibonAnfrageContext.getGesuch().getGesuchsteller2().getGesuchstellerJA().getGeburtsdatum(),
+							kibonAnfrageContext.getGesuch().getId(),
+							kibonAnfrageContext.getGesuch().getGesuchsperiode().getBasisJahrPlus1());
+					kibonAnfrageContext.setSteuerdatenResponse(steuerdatenResponseGS);
+					KibonAnfrageHelper.handleSteuerdatenResponse(
+							kibonAnfrageContext,
+							steuerdatenResponseGS,
+							gesuchstellerNumber);
+					return kibonAnfrageContext;
+				} catch (KiBonAnfrageServiceException e) {
+					kibonAnfrageContext.setSteuerdatenAnfrageStatus(SteuerdatenAnfrageStatus.FAILED);
+					return kibonAnfrageContext;
+				}
 			}
 		}
 		return kibonAnfrageContext;
 	}
 
-	private void createFinSitGS2Container(KibonAnfrageContext kibonAnfrageContext) {
-		assert kibonAnfrageContext.getGesuch().getGesuchsteller2() != null;
-		FinanzielleSituationContainer finSitGS2Cont =
-			kibonAnfrageContext.getGesuch().getGesuchsteller2().getFinanzielleSituationContainer() != null ?
-				kibonAnfrageContext.getGesuch().getGesuchsteller2().getFinanzielleSituationContainer() :
-				new FinanzielleSituationContainer();
-		if (finSitGS2Cont.getFinanzielleSituationJA() == null) {
-			finSitGS2Cont.setFinanzielleSituationJA(new FinanzielleSituation());
-		}
-		finSitGS2Cont.setJahr(kibonAnfrageContext.getFinSitCont().getJahr());
-		finSitGS2Cont.getFinanzielleSituationJA().setSteuerdatenZugriff(true);
-		finSitGS2Cont.getFinanzielleSituationJA()
-			.setSteuererklaerungAusgefuellt(kibonAnfrageContext.getFinSitCont().getFinanzielleSituationJA()
-				.getSteuererklaerungAusgefuellt());
-		finSitGS2Cont.getFinanzielleSituationJA()
-			.setSteuerveranlagungErhalten(kibonAnfrageContext.getFinSitCont().getFinanzielleSituationJA()
-				.getSteuerveranlagungErhalten());
-		finSitGS2Cont.setGesuchsteller(kibonAnfrageContext.getGesuch().getGesuchsteller2());
-		kibonAnfrageContext.setFinSitContGS2(finSitGS2Cont);
-	}
 
-	@Nullable
-	private String findZpvNummerForRequest(KibonAnfrageContext context, boolean isGesuchsteller2) {
+
+	@Nonnull
+	private Map<String, String> findZpvNummerForRequest(@Nonnull KibonAnfrageContext context) {
+		HashMap<String, String> gesuchstellerToZpvMap
+				= new HashMap<>();
 		String zpvBesitzer = findZpvNummerFromGesuchBesitzer(context);
 
-		return isGesuchsteller2 || zpvBesitzer == null ?
-			context.getGesuchsteller().getGesuchstellerJA().getZpvNummer() :
-			zpvBesitzer;
+		if (null != zpvBesitzer && !zpvBesitzer.trim().isEmpty()) {
+			gesuchstellerToZpvMap.put(ZPV_BESITZER, zpvBesitzer);
+		}
+		if (null != context.getGesuch().getGesuchsteller1().getGesuchstellerJA()
+				&& null != context.getGesuch().getGesuchsteller1()
+				.getGesuchstellerJA()
+				.getZpvNummer()) {
+			gesuchstellerToZpvMap.put(ZPV_GESUCHSTELLER_1,
+					context.getGesuch().getGesuchsteller1().getGesuchstellerJA().getZpvNummer().trim());
+		}
+		if (context.getGesuch().getGesuchsteller2() != null &&
+				context.getGesuch().getGesuchsteller2().getGesuchstellerJA() != null &&
+				context.getGesuch().getGesuchsteller2().getGesuchstellerJA().getZpvNummer() != null) {
+			gesuchstellerToZpvMap.put(ZPV_GESUCHSTELLER_2,
+					context.getGesuch().getGesuchsteller2().getGesuchstellerJA().getZpvNummer().trim());
+		}
+		return gesuchstellerToZpvMap;
 	}
 
 	@Nullable
 	private String findZpvNummerFromGesuchBesitzer(KibonAnfrageContext context) {
 		if (principalBean.isCallerInAnyOfRole(UserRole.getSuperadminAllGemeindeRoles())
-			|| principalBean.isAnonymousSuperadmin()) {
+				|| principalBean.isAnonymousSuperadmin()) {
 			//Online Fall hat immer ein Besitzer
 			Objects.requireNonNull(context.getGesuch().getFall().getBesitzer());
 			return context.getGesuch().getFall().getBesitzer().getZpvNummer();
@@ -167,6 +199,5 @@ public class KibonAnfrageHandler {
 		//wenn user role nicht gemeinde, dann soll nur der aktuelle benutzer die steuerdaten abfragen können
 		return principalBean.getBenutzer().getZpvNummer();
 	}
-
 
 }

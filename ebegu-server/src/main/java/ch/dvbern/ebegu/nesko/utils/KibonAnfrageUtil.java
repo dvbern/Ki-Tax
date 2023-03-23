@@ -41,35 +41,15 @@ public final class KibonAnfrageUtil {
 		Objects.requireNonNull(gesuch.getFamiliensituationContainer());
 		Objects.requireNonNull(gesuch.getFamiliensituationContainer().getFamiliensituationJA());
 
-		boolean gemeinsam = Boolean.TRUE
-			.equals(gesuch.getFamiliensituationContainer().getFamiliensituationJA().getGemeinsameSteuererklaerung());
 		if (isZpvNrFromAntragsteller(gesuch.getGesuchsteller1().getFinanzielleSituationContainer(), zpvNummer)) {
-				KibonAnfrageContext kibonAnfrageContext = new KibonAnfrageContext(
-					gesuch,
-					gesuch.getGesuchsteller1(),
-					gesuch.getGesuchsteller1().getFinanzielleSituationContainer(),
-					gesuch.getId());
-				if(gemeinsam && gesuch.getGesuchsteller2() != null) {
-					kibonAnfrageContext.setFinSitContGS2(gesuch.getGesuchsteller2().getFinanzielleSituationContainer());
-				}
-
-				return kibonAnfrageContext;
+			return new KibonAnfrageContext(gesuch);
 		}
 
 		if (gesuch.getGesuchsteller2() != null) {
 			Objects.requireNonNull(gesuch.getGesuchsteller2().getFinanzielleSituationContainer());
-
 			if (isZpvNrFromAntragsteller(gesuch.getGesuchsteller2().getFinanzielleSituationContainer(), zpvNummer)) {
-				KibonAnfrageContext kibonAnfrageContext = new KibonAnfrageContext(
-					gesuch,
-					gesuch.getGesuchsteller2(),
-					gesuch.getGesuchsteller2().getFinanzielleSituationContainer(),
-					gesuch.getId());
-				if(gemeinsam && gesuch.getGesuchsteller1() != null) {
-					kibonAnfrageContext.setFinSitContGS2(gesuch.getGesuchsteller1().getFinanzielleSituationContainer());
-				}
-
-				return kibonAnfrageContext;
+				return new KibonAnfrageContext(
+					gesuch);
 			}
 		}
 

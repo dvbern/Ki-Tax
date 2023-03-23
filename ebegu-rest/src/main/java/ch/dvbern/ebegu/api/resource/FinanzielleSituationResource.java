@@ -423,23 +423,21 @@ public class FinanzielleSituationResource {
 		response = SteuerdatenResponse.class)
 	@Nullable
 	@PUT
-	@Path("/kibonanfrage/{kibonAnfrageId}/{gesuchstellerId}/{isGemeinsam}")
+	@Path("/kibonanfrage/{kibonAnfrageId}/{gesuchstellerNumber}/{isGemeinsam}")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	@RolesAllowed({ GESUCHSTELLER, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_TS, SACHBEARBEITER_TS, ADMIN_GEMEINDE,
 		SACHBEARBEITER_GEMEINDE, SACHBEARBEITER_GEMEINDE, SUPER_ADMIN})
 	@TransactionAttribute(TransactionAttributeType.NEVER)
 	public JaxFinanzielleSituationContainer updateFinSitMitSteuerdaten(
+		@Nonnull @NotNull @PathParam("gesuchstellerNumber") int gesuchstellerNumber,
 		@Nonnull @NotNull @PathParam("kibonAnfrageId") JaxId kibonAnfrageId,
-		@Nonnull @NotNull @PathParam("gesuchstellerId") JaxId jaxGesuchstellerId,
 		@Nonnull @NotNull @PathParam("isGemeinsam") boolean isGemeinsam,
-		@Nonnull @NotNull @Valid JaxFinanzielleSituationContainer jaxFinanzielleSituationContainer,
 		@Context UriInfo uriInfo,
 		@Context HttpServletResponse response
 	) {
 
 		Objects.requireNonNull(kibonAnfrageId.getId());
-		Objects.requireNonNull(jaxGesuchstellerId.getId());
 
 		//Antrag suchen
 		Gesuch gesuch = gesuchService.findGesuch(kibonAnfrageId.getId()).orElseThrow(()
@@ -451,34 +449,22 @@ public class FinanzielleSituationResource {
 		assert gesuch.getFamiliensituationContainer() != null;
 		assert gesuch.getFamiliensituationContainer().getFamiliensituationJA() != null;
 
-		//FinSit Suchen, Feldern updaten
-		GesuchstellerContainer gesuchsteller =
-			findGesuchstellerById(jaxGesuchstellerId.getId(), "updateFinSitMitSteuerdaten");
-
-		FinanzielleSituationContainer convertedFinSitCont = converter.finanzielleSituationContainerToStorableEntity(
-			jaxFinanzielleSituationContainer,
-			gesuchsteller.getFinanzielleSituationContainer());
-		convertedFinSitCont.setGesuchsteller(gesuchsteller);
-
 		KibonAnfrageContext
-			kibonAnfrageContext = new KibonAnfrageContext(gesuch, gesuchsteller, convertedFinSitCont, kibonAnfrageId.getId());
+			kibonAnfrageContext = new KibonAnfrageContext(gesuch);
 
-		kibonAnfrageContext = kibonAnfrageHandler.handleKibonAnfrage(kibonAnfrageContext, isGemeinsam);
-		FinanzielleSituationContainer persistedFinSitGS2 = null;
+		kibonAnfrageContext = kibonAnfrageHandler.handleKibonAnfrage(kibonAnfrageContext, isGemeinsam, gesuchstellerNumber);
 		// Save
-		if (kibonAnfrageContext.getFinSitContGS2() != null) {
-			KibonAnfrageHelper.updateFinSitSteuerdatenAbfrageStatus(
-				kibonAnfrageContext.getFinSitContGS2().getFinanzielleSituationJA(),
-				kibonAnfrageContext.getSteuerdatenAnfrageStatus());
-			persistedFinSitGS2 = this.finanzielleSituationService.saveFinanzielleSituationTemp(kibonAnfrageContext.getFinSitContGS2());
-		}
 		KibonAnfrageHelper.updateFinSitSteuerdatenAbfrageStatus(
-			kibonAnfrageContext.getFinSitCont().getFinanzielleSituationJA(),
-			kibonAnfrageContext.getSteuerdatenAnfrageStatus());
-		FinanzielleSituationContainer persistedFinSit =
-			this.finanzielleSituationService.saveFinanzielleSituationTemp(kibonAnfrageContext.getFinSitCont());
-		return converter.finanzielleSituationContainerToJAX(kibonAnfrageContext.isSwitched() ?
-			requireNonNull(persistedFinSitGS2) : persistedFinSit);
+				kibonAnfrageContext.getFinSitCont(gesuchstellerNumber).getFinanzielleSituationJA(),
+				kibonAnfrageContext.getSteuerdatenAnfrageStatus()
+		);
+		if (isGemeinsam) {
+			this.finanzielleSituationService.
+					saveFinanzielleSituationTemp(kibonAnfrageContext.getFinSitCont(2));
+		}
+		FinanzielleSituationContainer persistedFinSit = this.finanzielleSituationService.saveFinanzielleSituationTemp(
+				kibonAnfrageContext.getFinSitCont(1));
+		return converter.finanzielleSituationContainerToJAX(persistedFinSit);
 	}
 
 	@ApiOperation(value = "reset die FinSit Status und Nettovermoegen falls gesetzt"

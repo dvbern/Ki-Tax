@@ -1652,22 +1652,16 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 					gesuch.getId());
 			}
 
-			assert kibonAnfrageContext.getFinSitContGS2() != null;
+			assert kibonAnfrageContext.getFinSitCont(2) != null;
 			KibonAnfrageHelper.updateFinSitSteuerdatenAbfrageGemeinsamStatusOk(
-				kibonAnfrageContext.getFinSitCont()
-					.getFinanzielleSituationJA(),
-				kibonAnfrageContext.getFinSitContGS2().getFinanzielleSituationJA(),
-				mitteilung.getSteuerdatenResponse());
-			kibonAnfrageContext.getFinSitCont()
-				.getFinanzielleSituationJA()
+					mitteilung.getSteuerdatenResponse(), kibonAnfrageContext);
+			kibonAnfrageContext.getFinSitCont(1).getFinanzielleSituationJA()
 				.setSteuerdatenAbfrageStatus(kibonAnfrageContext.getSteuerdatenAnfrageStatus());
-			kibonAnfrageContext.getFinSitContGS2().getFinanzielleSituationJA()
+			kibonAnfrageContext.getFinSitCont(2).getFinanzielleSituationJA()
 				.setSteuerdatenAbfrageStatus(kibonAnfrageContext.getSteuerdatenAnfrageStatus());
-			finanzielleSituationService.saveFinanzielleSituation(kibonAnfrageContext.getFinSitCont(), gesuch.getId());
 			finanzielleSituationService.saveFinanzielleSituation(
-				kibonAnfrageContext.getFinSitContGS2(),
-				gesuch.getId());
-		// KEINE GEMEINSAME STEUERERKLÄRUNG (KONKUBINAT, ETC.)
+					kibonAnfrageContext.getFinSitCont(1), gesuch.getId());
+			// KEINE GEMEINSAME STEUERERKLÄRUNG (KONKUBINAT, ETC.)
 		} else {
 			if (mitteilung.getSteuerdatenResponse().getZpvNrPartner() != null) {
 				throw new EbeguException(
@@ -1676,15 +1670,35 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 					gesuch.getId());
 			}
 			// STEUERDATEN DES ZWEITEN ANTRAGSTELLERS
-			if (kibonAnfrageContext.getGesuch().getGesuchsteller2() != null
-				&& kibonAnfrageContext.equalZpvNrGS2(mitteilung.getSteuerdatenResponse().getZpvNrDossiertraeger())) {
-				kibonAnfrageContext.setFinSitContGS2(kibonAnfrageContext.getGesuch().getGesuchsteller2().getFinanzielleSituationContainer());
+			LocalDate geburtsdatumGS =
+					kibonAnfrageContext.getGesuch().getGesuchsteller1().getGesuchstellerJA().getGeburtsdatum();
+			boolean geburtstagsMatchFound = false;
+			if (mitteilung.getSteuerdatenResponse().getGeburtsdatumDossiertraeger().equals(geburtsdatumGS)){
+				KibonAnfrageHelper.handleSteuerdatenResponse(kibonAnfrageContext, mitteilung.getSteuerdatenResponse(), 1);
+				finanzielleSituationService.saveFinanzielleSituation(
+						kibonAnfrageContext.getFinSitCont(1), gesuch.getId());
+				geburtstagsMatchFound = true;
 			}
-			KibonAnfrageHelper.updateFinSitSteuerdatenAbfrageStatusOk(kibonAnfrageContext.getFinSitCont()
-				.getFinanzielleSituationJA(), mitteilung.getSteuerdatenResponse());
-			kibonAnfrageContext.getFinSitCont().getFinanzielleSituationJA().setSteuerdatenAbfrageStatus(kibonAnfrageContext.getSteuerdatenAnfrageStatus());
-			finanzielleSituationService.saveFinanzielleSituation(kibonAnfrageContext.getFinSitCont(), gesuch.getId());
+			LocalDate geburtsdatumGS2 =
+					kibonAnfrageContext.getGesuch().getGesuchsteller2().getGesuchstellerJA().getGeburtsdatum();
+			if (mitteilung.getSteuerdatenResponse().getGeburtsdatumDossiertraeger().equals(geburtsdatumGS2)) {
+				KibonAnfrageHelper.handleSteuerdatenResponse(
+						kibonAnfrageContext,
+						mitteilung.getSteuerdatenResponse(),
+						2);
+				finanzielleSituationService.saveFinanzielleSituation(
+						kibonAnfrageContext.getFinSitCont(2), gesuch.getId());
+				geburtstagsMatchFound = true;
+			}
+			if (!geburtstagsMatchFound) {
+				throw new EbeguException("neueVeranlagungsMitteilungImAntragErsetzen",
+						"Fixme: im Gesuch:" + gesuch.getId() +
+								" Das hätte nicht passieren dürfen ... das ist ein noch unbekanner Fehler.",
+						null,
+						null);
+			}
 		}
+
 		mitteilung.setMitteilungStatus(MitteilungStatus.ERLEDIGT);
 		persistence.merge(mitteilung);
 	}
