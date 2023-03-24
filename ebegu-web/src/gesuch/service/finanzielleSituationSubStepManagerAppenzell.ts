@@ -25,7 +25,7 @@ import {GesuchModelManager} from './gesuchModelManager';
 export class FinanzielleSituationSubStepManagerAppenzell extends FinanzielleSituationSubStepManager {
 
     public constructor(
-        gesuchModelManager: GesuchModelManager,
+        gesuchModelManager: GesuchModelManager
     ) {
         super(gesuchModelManager);
     }
