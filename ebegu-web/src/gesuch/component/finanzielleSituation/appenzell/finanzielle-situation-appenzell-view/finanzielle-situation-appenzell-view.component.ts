@@ -20,7 +20,7 @@ import {MatRadioChange} from '@angular/material/radio';
 import {TranslateService} from '@ngx-translate/core';
 import {Transition} from '@uirouter/core';
 import {IPromise} from 'angular';
-import {Observable} from 'rxjs';
+import {Observable, of} from 'rxjs';
 import {LogFactory} from '../../../../../app/core/logging/LogFactory';
 import {TSFinanzielleSituationResultateDTO} from '../../../../../models/dto/TSFinanzielleSituationResultateDTO';
 import {TSFinanzielleSituationSubStepName} from '../../../../../models/enums/TSFinanzielleSituationSubStepName';
@@ -30,6 +30,7 @@ import {TSFinanzielleSituation} from '../../../../../models/TSFinanzielleSituati
 import {TSFinanzielleSituationContainer} from '../../../../../models/TSFinanzielleSituationContainer';
 import {TSFinanzModel} from '../../../../../models/TSFinanzModel';
 import {TSFinSitZusatzangabenAppenzell} from '../../../../../models/TSFinSitZusatzangabenAppenzell';
+import {TSGesuch} from '../../../../../models/TSGesuch';
 import {EbeguUtil} from '../../../../../utils/EbeguUtil';
 import {
     FinanzielleSituationSubStepManagerAppenzell
@@ -67,6 +68,8 @@ export class FinanzielleSituationAppenzellViewComponent extends AbstractGesuchVi
         this.model.copyFinSitDataFromGesuch(this.gesuchModelManager.getGesuch());
         // in Appenzell stellen wir die Frage nach dem Sozialhilfebezüger nicht. Deshalb setzen wir den immer auf false.
         this.model.sozialhilfeBezueger = false;
+        // in Appenzell gibt es keinen Grund, keine Vergünstigung zu wünschen
+        this.model.verguenstigungGewuenscht = true;
         this.gesuchModelManager.setGesuchstellerNumber(this.gesuchstellerNumber);
         if(EbeguUtil.isNullOrUndefined(this.getModel().finanzielleSituationJA.finSitZusatzangabenAppenzell)){
             this.getModel().finanzielleSituationJA.finSitZusatzangabenAppenzell = new TSFinSitZusatzangabenAppenzell();
@@ -133,7 +136,8 @@ export class FinanzielleSituationAppenzellViewComponent extends AbstractGesuchVi
 
     private save(onResult: (arg: any) => any): Promise<TSFinanzielleSituationContainer> {
         this.model.copyFinSitDataToGesuch(this.gesuchModelManager.getGesuch());
-        return this.gesuchModelManager.saveFinanzielleSituation()
+        return this.saveFinSitStartIfNecessary()
+            .then(() => this.gesuchModelManager.saveFinanzielleSituation())
             .then(async (finanzielleSituationContainer: TSFinanzielleSituationContainer) => {
                 if (this.isLastStep()) {
                     await this.updateWizardStepStatus();
@@ -144,6 +148,13 @@ export class FinanzielleSituationAppenzellViewComponent extends AbstractGesuchVi
             }).catch(error => {
                 throw(error);
             }) as Promise<TSFinanzielleSituationContainer>;
+    }
+
+    private saveFinSitStartIfNecessary(): IPromise<TSGesuch | any> {
+        if (this.getSubStepIndex() === 1) {
+            return this.gesuchModelManager.saveFinanzielleSituationStart();
+        }
+        return of().toPromise();
     }
 
     /**
