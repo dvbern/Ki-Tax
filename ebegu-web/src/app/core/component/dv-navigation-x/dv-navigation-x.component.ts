@@ -815,7 +815,9 @@ export class DvNavigationXComponent implements OnInit {
             return;
         }
 
-        this.navigateToStep(this.wizardStepManager.getNextStep(this.gesuchModelManager.getGesuch()));
+        this.wizardStepManager.updateCurrentWizardStepStatus(TSWizardStepStatus.OK).then(() => {
+            this.navigateToStep(this.wizardStepManager.getNextStep(this.gesuchModelManager.getGesuch()));
+        });
     }
 
     public setSubstepManager(manager: FinanzielleSituationSubStepManager): void {
