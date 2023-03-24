@@ -187,7 +187,7 @@ public class FinSitZusatzangabenAppenzell extends AbstractMutableEntity {
 			getLeistungAnJuristischePersonen());
 	}
 
-	public FinSitZusatzangabenAppenzell copyFinanzielleVerhaeltnisse(
+	public FinSitZusatzangabenAppenzell copyFinSitZusatzangabenAppenzell(
 		FinSitZusatzangabenAppenzell target,
 		AntragCopyType copyType) {
 		switch (copyType) {
@@ -206,5 +206,16 @@ public class FinSitZusatzangabenAppenzell extends AbstractMutableEntity {
 			break;
 		}
 		return target;
+	}
+
+	public boolean isVollstaendig() {
+		return saeule3a != null &&
+			saeule3aNichtBvg != null &&
+			beruflicheVorsorge != null &&
+			liegenschaftsaufwand != null &&
+			einkuenfteBgsa != null &&
+			vorjahresverluste != null &&
+			politischeParteiSpende != null &&
+			leistungAnJuristischePersonen != null;
 	}
 }

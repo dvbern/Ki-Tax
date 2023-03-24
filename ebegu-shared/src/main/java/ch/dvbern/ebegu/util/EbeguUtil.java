@@ -368,6 +368,8 @@ public final class EbeguUtil {
 					&& finanzielleSituation.getUnterhaltsBeitraege() != null
 					&& finanzielleSituation.getAbzuegeKinderAusbildung() != null
 					&& finanzielleSituation.getSteuerbaresVermoegen() != null);
+		} else if (finSitTyp.equals(FinanzielleSituationTyp.APPENZELL)) {
+			valid = isFinSitAppenzellVollstaendig(finanzielleSituation);
 		} else {
 			valid = isAbstractFinanzielleSituationVollstaendig(finanzielleSituation, finSitTyp, gesuch);
 		}
@@ -384,6 +386,15 @@ public final class EbeguUtil {
 			return finanzielleSituation.getGeschaeftsgewinnBasisjahr() != null;
 		}
 		return true;
+	}
+
+	private static boolean isFinSitAppenzellVollstaendig(FinanzielleSituation finanzielleSituation) {
+		if (finanzielleSituation.getFinSitZusatzangabenAppenzell() == null) {
+			return false;
+		}
+		return finanzielleSituation.getFinSitZusatzangabenAppenzell().isVollstaendig()
+			&& finanzielleSituation.getSteuerbaresEinkommen() != null
+			&& finanzielleSituation.getSteuerbaresVermoegen() != null;
 	}
 
 	private static boolean isEinkommensverschlechterungVollstaendig(
