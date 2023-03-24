@@ -16,6 +16,7 @@
  */
 
 import {ChangeDetectionStrategy, ChangeDetectorRef, Component} from '@angular/core';
+import {TranslateService} from '@ngx-translate/core';
 import {Transition} from '@uirouter/core';
 import {IPromise} from 'angular';
 import {Observable} from 'rxjs';
@@ -50,7 +51,8 @@ export class FinanzielleSituationAppenzellViewComponent extends AbstractGesuchVi
         protected readonly gesuchModelManager: GesuchModelManager,
         protected readonly wizardStepManager: WizardStepManager,
         private readonly $transition$: Transition,
-        private readonly finanzielleSituationService: FinanzielleSituationAppenzellService
+        private readonly finanzielleSituationService: FinanzielleSituationAppenzellService,
+        private readonly translate: TranslateService
     ) {
         super(gesuchModelManager, wizardStepManager, TSWizardStepName.FINANZIELLE_SITUATION_APPENZELL);
         this.gesuchstellerNumber = parseInt(this.$transition$.params().gesuchstellerNumber, 10);
@@ -151,5 +153,20 @@ export class FinanzielleSituationAppenzellViewComponent extends AbstractGesuchVi
 
     public getMassgebendesEinkommen$(): Observable<TSFinanzielleSituationResultateDTO> {
         return this.finanzielleSituationService.massgebendesEinkommenStore;
+    }
+
+    public getFinSitTitle(): string {
+        const title = this.translate.instant('APPENZELL_TITEL_FIN_SIT') as string;
+        if (this.getAntragstellerNumber() === 1) {
+            if (this.isGemeinsam()) {
+                return `${title} ${this.getAntragsteller1Name()} + ${this.getAntragsteller2Name()}`;
+            } else {
+                return title + this.getAntragsteller1Name();
+            }
+        } else if (this.getAntragstellerNumber() === 2) {
+            return title + this.getAntragsteller2Name();
+        }
+        LOG.error('wrong antragstellerNumber');
+        return '';
     }
 }

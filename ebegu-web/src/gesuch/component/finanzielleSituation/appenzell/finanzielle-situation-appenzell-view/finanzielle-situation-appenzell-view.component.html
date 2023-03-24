@@ -24,6 +24,11 @@
             <hr class="header"/>
         </div>
     </div>
+    <div class="row margin-bottom-50">
+        <div class="col-md-12">
+            <p class="inline-hint">{{'APPENZELL_FIN_SIT_EINLEITUNG' | translate}}</p>
+        </div>
+    </div>
     <div class="row">
         <div class="col-md-12">
             <div class="form-group">
@@ -35,6 +40,11 @@
                             <dv-steuerveranlagung-gemeinsam [model]="model"></dv-steuerveranlagung-gemeinsam>
                         </div>
                     </div>
+
+                    <h2>{{getFinSitTitle()}}</h2>
+
+                    <mat-divider class="margin-top-20"></mat-divider>
+
                     <dv-fin-sit-zusatzfelder-appenzell
                         [isGemeinsam]="isGemeinsam()"
                         [basisJahr]="getBasisjahr()"
