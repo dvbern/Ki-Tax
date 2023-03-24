@@ -78,9 +78,15 @@ export class FinanzielleSituationAppenzellViewComponent extends AbstractGesuchVi
         return this.gesuchstellerNumber;
     }
 
+    // die Frage wird nur auf dem ersten Step gezeigt und nur, falls das Gesuch überhaupt einen
+    // zweiten Antragsteller hat.
+    public showQuestionGemeinsameSteuererklaerung(): boolean {
+        return EbeguUtil.isNotNullOrUndefined(this.gesuchModelManager.getGesuch().gesuchsteller2)
+        && this.getSubStepIndex() === 1;
+    }
+
     public isGemeinsam(): boolean {
-        // TODO definieren ob er gemeinsam ist oder nicht
-        return false;
+        return this.model.gemeinsameSteuererklaerung;
     }
 
     public getModel(): TSFinanzielleSituationContainer {

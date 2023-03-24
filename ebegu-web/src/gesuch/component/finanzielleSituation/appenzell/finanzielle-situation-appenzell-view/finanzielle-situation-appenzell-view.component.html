@@ -30,6 +30,11 @@
                 <form role="form"
                       #form="ngForm"
                       novalidate>
+                    <div class="row" *ngIf="showQuestionGemeinsameSteuererklaerung()">
+                        <div class="col-xs-12">
+                            <dv-steuerveranlagung-gemeinsam [model]="model"></dv-steuerveranlagung-gemeinsam>
+                        </div>
+                    </div>
                     <dv-fin-sit-zusatzfelder-appenzell
                         [isGemeinsam]="isGemeinsam()"
                         [basisJahr]="getBasisjahr()"
