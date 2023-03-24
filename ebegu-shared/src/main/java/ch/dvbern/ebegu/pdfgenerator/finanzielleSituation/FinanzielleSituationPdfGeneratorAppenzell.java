@@ -44,11 +44,6 @@ public class FinanzielleSituationPdfGeneratorAppenzell extends FinanzielleSituat
 		initialzeEkv();
 	}
 
-	@Override
-	protected void initialzeEkv() {
-		super.initialzeEkv();
-	}
-
 	protected void createPageBasisJahr(
 		@Nonnull PdfGenerator generator,
 		@Nonnull Document document
