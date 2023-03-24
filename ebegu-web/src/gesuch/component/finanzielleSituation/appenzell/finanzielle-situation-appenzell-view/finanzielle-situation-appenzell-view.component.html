@@ -24,12 +24,16 @@
             <hr class="header"/>
         </div>
     </div>
-    <div class="row margin-bottom-50">
+    <div class="well well-status-warten" *ngIf="showWarningAngabenVervollstaendigen()">
+        <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
+        <span translate>APPENZELL_FIN_SIT_FORMULAR_VERVOLLSTAENDIGEN</span>
+    </div>
+    <div class="row margin-bottom-50" *ngIf="!showWarningAngabenVervollstaendigen()">
         <div class="col-md-12">
             <p class="inline-hint">{{'APPENZELL_FIN_SIT_EINLEITUNG' | translate}}</p>
         </div>
     </div>
-    <div class="row">
+    <div class="row" *ngIf="!showWarningAngabenVervollstaendigen()">
         <div class="col-md-12">
             <div class="form-group">
                 <form role="form"
@@ -69,6 +73,7 @@
                                      [dvPrevious]="true"
                                      [dvSubStep]="getSubStepIndex()"
                                      [dvSubStepName]="getSubStepName()"
+                                     [dvNextDisabled]="showWarningAngabenVervollstaendigen()"
                     ></dv-navigation-x>
                 </form>
             </div>

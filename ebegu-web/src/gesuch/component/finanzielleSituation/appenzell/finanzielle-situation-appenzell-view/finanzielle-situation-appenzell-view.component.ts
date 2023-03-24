@@ -29,6 +29,9 @@ import {TSFinanzielleSituationContainer} from '../../../../../models/TSFinanziel
 import {TSFinanzModel} from '../../../../../models/TSFinanzModel';
 import {TSFinSitZusatzangabenAppenzell} from '../../../../../models/TSFinSitZusatzangabenAppenzell';
 import {EbeguUtil} from '../../../../../utils/EbeguUtil';
+import {
+    FinanzielleSituationSubStepManagerAppenzell
+} from '../../../../service/finanzielleSituationSubStepManagerAppenzell';
 import {GesuchModelManager} from '../../../../service/gesuchModelManager';
 import {WizardStepManager} from '../../../../service/wizardStepManager';
 import {AbstractGesuchViewX} from '../../../abstractGesuchViewX';
@@ -130,8 +133,9 @@ export class FinanzielleSituationAppenzellViewComponent extends AbstractGesuchVi
         this.model.copyFinSitDataToGesuch(this.gesuchModelManager.getGesuch());
         return this.gesuchModelManager.saveFinanzielleSituation()
             .then(async (finanzielleSituationContainer: TSFinanzielleSituationContainer) => {
-                // TODO to adapt when step are clear
-                await this.updateWizardStepStatus();
+                if (this.isLastStep()) {
+                    await this.updateWizardStepStatus();
+                }
 
                 onResult(finanzielleSituationContainer);
                 return finanzielleSituationContainer;
@@ -151,6 +155,12 @@ export class FinanzielleSituationAppenzellViewComponent extends AbstractGesuchVi
                 TSWizardStepStatus.OK);
     }
 
+    private isLastStep(): boolean {
+        const finSitSubStepManager = new FinanzielleSituationSubStepManagerAppenzell(this.gesuchModelManager);
+        return finSitSubStepManager.getNextSubStepFinanzielleSituation(this.getSubStepName()) ===
+            TSFinanzielleSituationSubStepName.KEIN_WEITERER_SUBSTEP;
+    }
+
     public getMassgebendesEinkommen$(): Observable<TSFinanzielleSituationResultateDTO> {
         return this.finanzielleSituationService.massgebendesEinkommenStore;
     }
@@ -168,5 +178,13 @@ export class FinanzielleSituationAppenzellViewComponent extends AbstractGesuchVi
         }
         LOG.error('wrong antragstellerNumber');
         return '';
+    }
+
+    // bei einem Wechsel von ein auf zwei Antragstellenden müssen zuerst die Stammdaten ausgefüllt werden
+    // damit die FinSit korrekt ausgefüllt werden kann. Es wird eine Warnung gezeigt, falls die Stammdaten noch
+    // ungültig sind
+    public showWarningAngabenVervollstaendigen(): boolean {
+        return this.wizardStepManager.getStepByName(TSWizardStepName.GESUCHSTELLER).wizardStepStatus
+            === TSWizardStepStatus.NOK;
     }
 }
