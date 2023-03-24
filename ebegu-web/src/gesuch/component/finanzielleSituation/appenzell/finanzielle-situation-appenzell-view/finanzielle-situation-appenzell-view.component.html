@@ -41,7 +41,10 @@
                       novalidate>
                     <div class="row" *ngIf="showQuestionGemeinsameSteuererklaerung()">
                         <div class="col-xs-12">
-                            <dv-steuerveranlagung-gemeinsam [model]="model"></dv-steuerveranlagung-gemeinsam>
+                            <dv-steuerveranlagung-gemeinsam
+                                [model]="model"
+                                (gemeinsamChanged)="this.gemeinsamChanged($event)"
+                            ></dv-steuerveranlagung-gemeinsam>
                         </div>
                     </div>
 

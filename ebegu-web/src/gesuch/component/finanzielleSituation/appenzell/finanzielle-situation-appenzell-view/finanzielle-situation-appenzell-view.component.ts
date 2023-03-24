@@ -16,6 +16,7 @@
  */
 
 import {ChangeDetectionStrategy, ChangeDetectorRef, Component} from '@angular/core';
+import {MatRadioChange} from '@angular/material/radio';
 import {TranslateService} from '@ngx-translate/core';
 import {Transition} from '@uirouter/core';
 import {IPromise} from 'angular';
@@ -25,6 +26,7 @@ import {TSFinanzielleSituationResultateDTO} from '../../../../../models/dto/TSFi
 import {TSFinanzielleSituationSubStepName} from '../../../../../models/enums/TSFinanzielleSituationSubStepName';
 import {TSWizardStepName} from '../../../../../models/enums/TSWizardStepName';
 import {TSWizardStepStatus} from '../../../../../models/enums/TSWizardStepStatus';
+import {TSFinanzielleSituation} from '../../../../../models/TSFinanzielleSituation';
 import {TSFinanzielleSituationContainer} from '../../../../../models/TSFinanzielleSituationContainer';
 import {TSFinanzModel} from '../../../../../models/TSFinanzModel';
 import {TSFinSitZusatzangabenAppenzell} from '../../../../../models/TSFinSitZusatzangabenAppenzell';
@@ -186,5 +188,12 @@ export class FinanzielleSituationAppenzellViewComponent extends AbstractGesuchVi
     public showWarningAngabenVervollstaendigen(): boolean {
         return this.wizardStepManager.getStepByName(TSWizardStepName.GESUCHSTELLER).wizardStepStatus
             === TSWizardStepStatus.NOK;
+    }
+
+    // bei einem Wechsel auf gemeinsam muss der Container von GS2 gelöscht werden.
+    public gemeinsamChanged($event: MatRadioChange) {
+        if ($event.value === true) {
+            this.model.finanzielleSituationContainerGS2.finanzielleSituationJA = new TSFinanzielleSituation();
+        }
     }
 }
