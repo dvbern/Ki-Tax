@@ -18,7 +18,9 @@
 import {ChangeDetectionStrategy, ChangeDetectorRef, Component} from '@angular/core';
 import {Transition} from '@uirouter/core';
 import {IPromise} from 'angular';
+import {Observable} from 'rxjs';
 import {LogFactory} from '../../../../../app/core/logging/LogFactory';
+import {TSFinanzielleSituationResultateDTO} from '../../../../../models/dto/TSFinanzielleSituationResultateDTO';
 import {TSFinanzielleSituationSubStepName} from '../../../../../models/enums/TSFinanzielleSituationSubStepName';
 import {TSWizardStepName} from '../../../../../models/enums/TSWizardStepName';
 import {TSWizardStepStatus} from '../../../../../models/enums/TSWizardStepStatus';
@@ -48,6 +50,7 @@ export class FinanzielleSituationAppenzellViewComponent extends AbstractGesuchVi
         protected readonly gesuchModelManager: GesuchModelManager,
         protected readonly wizardStepManager: WizardStepManager,
         private readonly $transition$: Transition,
+        private readonly finanzielleSituationService: FinanzielleSituationAppenzellService
     ) {
         super(gesuchModelManager, wizardStepManager, TSWizardStepName.FINANZIELLE_SITUATION_APPENZELL);
         this.gesuchstellerNumber = parseInt(this.$transition$.params().gesuchstellerNumber, 10);
@@ -144,5 +147,9 @@ export class FinanzielleSituationAppenzellViewComponent extends AbstractGesuchVi
             this.wizardStepManager.updateCurrentWizardStepStatusSafe(
                 TSWizardStepName.FINANZIELLE_SITUATION_APPENZELL,
                 TSWizardStepStatus.OK);
+    }
+
+    public getMassgebendesEinkommen$(): Observable<TSFinanzielleSituationResultateDTO> {
+        return this.finanzielleSituationService.massgebendesEinkommenStore;
     }
 }

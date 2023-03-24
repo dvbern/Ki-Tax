@@ -44,6 +44,16 @@
                         [model]="getModel().finanzielleSituationJA"
                         [isKorrekturModusJungendamtOrFreigegeben]="this.isKorrekturModusJugendamtOrFreigegeben()"
                     ></dv-fin-sit-zusatzfelder-appenzell>
+
+                    <mat-divider class="margin-bottom-20"></mat-divider>
+
+                    <dv-massgebendes-einkommen
+                        [massgebendesEinkommen$]="getMassgebendesEinkommen$()"
+                        [isGemeinsam]="isGemeinsam()"
+                        [antragstellerNummer]="getAntragstellerNumber()"
+                        [nameGS1]="extractFullNameGS1()"
+                        [nameGS2]="extractFullNameGS2()"
+                    ></dv-massgebendes-einkommen>
                     <dv-navigation-x (dvSave)="prepareSave($event.onResult)"
                                      [dvNext]="true"
                                      [dvPrevious]="true"
