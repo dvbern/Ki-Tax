@@ -459,11 +459,15 @@ public class FinanzielleSituationResource {
 				kibonAnfrageContext.getSteuerdatenAnfrageStatus()
 		);
 		if (isGemeinsam) {
+			this.gesuchstellerService.saveGesuchsteller(requireNonNull(gesuch.getGesuchsteller2()), gesuch, 2, false);
 			this.finanzielleSituationService.
 					saveFinanzielleSituationTemp(kibonAnfrageContext.getFinSitCont(2));
 		}
+		gesuchstellerService.saveGesuchsteller(requireNonNull(gesuchstellerNumber == 1 ?
+				gesuch.getGesuchsteller1() :
+				gesuch.getGesuchsteller2()), gesuch, gesuchstellerNumber, false);
 		FinanzielleSituationContainer persistedFinSit = this.finanzielleSituationService.saveFinanzielleSituationTemp(
-				kibonAnfrageContext.getFinSitCont(1));
+				kibonAnfrageContext.getFinSitCont(gesuchstellerNumber));
 		return converter.finanzielleSituationContainerToJAX(persistedFinSit);
 	}
 
