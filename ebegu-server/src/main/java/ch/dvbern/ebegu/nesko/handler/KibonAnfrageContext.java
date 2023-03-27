@@ -47,6 +47,20 @@ public class KibonAnfrageContext {
 		this.gesuch = gesuch;
 
 		initGemeinsam();
+		setSteuerdatenZugriffFlags();
+	}
+
+	private void setSteuerdatenZugriffFlags() {
+		Objects.requireNonNull(gesuch);
+		Objects.requireNonNull(gesuch.getGesuchsteller1());
+		Objects.requireNonNull(gesuch.getGesuchsteller1().getFinanzielleSituationContainer());
+
+		gesuch.getGesuchsteller1().getFinanzielleSituationContainer().getFinanzielleSituationJA().setSteuerdatenZugriff(Boolean.TRUE);
+
+		if (gesuch.getGesuchsteller2() != null && !this.gemeinsam) {
+			Objects.requireNonNull(gesuch.getGesuchsteller2().getFinanzielleSituationContainer());
+				gesuch.getGesuchsteller1().getFinanzielleSituationContainer().getFinanzielleSituationJA().setSteuerdatenZugriff(Boolean.TRUE);
+		}
 	}
 
 	private void initGemeinsam() {
