@@ -25,7 +25,6 @@ import javax.annotation.Nullable;
 import ch.dvbern.ebegu.entities.FinanzielleSituation;
 import ch.dvbern.ebegu.entities.FinanzielleSituationContainer;
 import ch.dvbern.ebegu.entities.Gesuch;
-import ch.dvbern.ebegu.entities.Gesuchsteller;
 import ch.dvbern.ebegu.entities.SteuerdatenResponse;
 import ch.dvbern.ebegu.enums.SteuerdatenAnfrageStatus;
 
@@ -59,7 +58,7 @@ public class KibonAnfrageContext {
 		if(null == gesuch.getGesuchsteller2()){
 			return;
 		}
-//		createFinSitGS2Container();
+		createFinSitGS2Container();
 	}
 
 	@Nonnull
@@ -97,16 +96,13 @@ public class KibonAnfrageContext {
 		return gesuch.getGesuchsteller2() != null;
 	}
 
-	public boolean equalGeburtsdatumPartner(Gesuchsteller gesuchsteller) {
-		if (gesuchsteller.getGeburtsdatum() == null || steuerdatenResponse.getGeburtsdatumPartner() == null) {
-			return false;
-		}
-
-		return steuerdatenResponse.getGeburtsdatumPartner().equals(gesuchsteller.getGeburtsdatum());
-	}
-
 	private void createFinSitGS2Container() {
-		assert this.getGesuch().getGesuchsteller2() != null;
+		Objects.requireNonNull(this.getGesuch().getGesuchsteller2());
+		Objects.requireNonNull(this.getGesuch().getGesuchsteller1());
+		final FinanzielleSituationContainer finSitCont1 =
+				this.getGesuch().getGesuchsteller1().getFinanzielleSituationContainer();
+		Objects.requireNonNull(finSitCont1);
+
 		FinanzielleSituationContainer finSitGS2Cont =
 				this.getGesuch().getGesuchsteller2().getFinanzielleSituationContainer() != null ?
 						this.getGesuch().getGesuchsteller2().getFinanzielleSituationContainer() :
@@ -114,16 +110,16 @@ public class KibonAnfrageContext {
 		if (finSitGS2Cont.getFinanzielleSituationJA() == null) {
 			finSitGS2Cont.setFinanzielleSituationJA(new FinanzielleSituation());
 		}
-		finSitGS2Cont.setJahr(this.gesuch.getGesuchsteller1().getFinanzielleSituationContainer().getJahr());
+		finSitGS2Cont.setJahr(finSitCont1.getJahr());
 		finSitGS2Cont.getFinanzielleSituationJA().setSteuerdatenZugriff(true);
-//		finSitGS2Cont.getFinanzielleSituationJA()
-//				.setSteuererklaerungAusgefuellt(this.getFinSitCont().getFinanzielleSituationJA()
-//						.getSteuererklaerungAusgefuellt());
-//		finSitGS2Cont.getFinanzielleSituationJA()
-//				.setSteuerveranlagungErhalten(this.getFinSitCont().getFinanzielleSituationJA()
-//						.getSteuerveranlagungErhalten());
+		finSitGS2Cont.getFinanzielleSituationJA()
+				.setSteuererklaerungAusgefuellt(finSitCont1.getFinanzielleSituationJA()
+						.getSteuererklaerungAusgefuellt());
+		finSitGS2Cont.getFinanzielleSituationJA()
+				.setSteuerveranlagungErhalten(finSitCont1.getFinanzielleSituationJA()
+						.getSteuerveranlagungErhalten());
 		finSitGS2Cont.setGesuchsteller(this.getGesuch().getGesuchsteller2());
-//		this.setFinSitContGS2(finSitGS2Cont);
+		this.getGesuch().getGesuchsteller2().setFinanzielleSituationContainer(finSitGS2Cont);
 	}
 
 	public FinanzielleSituationContainer getFinSitCont(int gesuchstellerNumber) {
