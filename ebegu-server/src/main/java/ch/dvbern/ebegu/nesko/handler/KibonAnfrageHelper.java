@@ -148,6 +148,8 @@ public class KibonAnfrageHelper {
 			setValuesToFinSit(finSitGS1, steuerdatenResponse, BIG_DECIMAL_TWO, SteuerdatenDatenTraeger.PARTNER);
 			setValuesToFinSit(finSitGS2, steuerdatenResponse, BIG_DECIMAL_TWO, SteuerdatenDatenTraeger.DOSSIERTRAEGER);
 		}
+		updateFinSitSteuerdatenAbfrageStatus(finSitGS1, anfrageContext.getSteuerdatenAnfrageStatus());
+		updateFinSitSteuerdatenAbfrageStatus(finSitGS2, anfrageContext.getSteuerdatenAnfrageStatus());
 	}
 
 
