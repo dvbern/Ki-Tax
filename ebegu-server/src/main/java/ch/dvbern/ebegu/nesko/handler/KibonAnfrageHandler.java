@@ -59,12 +59,14 @@ public class KibonAnfrageHandler {
 
 		SteuerdatenResponse steuerdatenResponse;
 		if (hasTwoAntragStellende && isGemeinsam) {
+			String zpvNummer = zpvNummerMap.get(ZPV_BESITZER) == null ?
+					zpvNummerMap.get(ZPV_GESUCHSTELLER_1) : zpvNummerMap.get(ZPV_BESITZER);
 			// nur erstes Mal, dann schon initialisiert
-			if (null != zpvNummerMap.get(ZPV_BESITZER)) {
+			if (null != zpvNummer) {
 				try {
 					// try gemeinsame Steuererklärung anfrage
 					steuerdatenResponse = kibonAnfrageService.getSteuerDaten(
-							Integer.valueOf(zpvNummerMap.get(ZPV_BESITZER)),
+							Integer.valueOf(zpvNummer),
 							kibonAnfrageContext.getGesuch().getGesuchsteller1().getGesuchstellerJA().getGeburtsdatum(),
 							kibonAnfrageContext.getGesuch().getId(),
 							kibonAnfrageContext.getGesuch().getGesuchsperiode().getBasisJahrPlus1());
@@ -84,7 +86,7 @@ public class KibonAnfrageHandler {
 									EnumFamilienstatus.VERHEIRATET)) {
 						try {
 							steuerdatenResponse = kibonAnfrageService.getSteuerDaten(
-									Integer.valueOf(zpvNummerMap.get(ZPV_BESITZER)),
+									Integer.valueOf(zpvNummer),
 									kibonAnfrageContext.getGesuch()
 											.getGesuchsteller2()
 											.getGesuchstellerJA()
@@ -103,6 +105,8 @@ public class KibonAnfrageHandler {
 						return kibonAnfrageContext;
 					}
 				}
+			} else {
+				kibonAnfrageContext.setSteuerdatenAnfrageStatus(SteuerdatenAnfrageStatus.FAILED_KEINE_ZPV_NUMMER);
 			}
 		} else {
 			// anfrage single GS
