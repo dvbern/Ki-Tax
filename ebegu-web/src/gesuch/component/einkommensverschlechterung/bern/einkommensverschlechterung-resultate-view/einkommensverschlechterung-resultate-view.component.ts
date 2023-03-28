@@ -155,36 +155,6 @@ export class EinkommensverschlechterungResultateViewComponent extends AbstractEi
             this.getEinkommensverschlechterungContainerGS2().ekvJABasisJahrPlus1;
     }
 
-    /**
-     * Hier wird der Status von WizardStep auf OK (MUTIERT fuer Mutationen) aktualisiert aber nur wenn es die letzt
-     * Seite EVResultate gespeichert wird. Sonst liefern wir einfach den aktuellen GS als Promise zurueck.
-     */
-    private updateStatus(changes: boolean): IPromise<any> {
-        if (this.isLastEinkVersStep()) {
-            if (this.gesuchModelManager.getGesuch().isMutation()) {
-                if (this.wizardStepManager.getCurrentStep().wizardStepStatus === TSWizardStepStatus.NOK || changes) {
-                    this.wizardStepManager.updateCurrentWizardStepStatusMutiert();
-                }
-            } else {
-                return this.wizardStepManager.updateCurrentWizardStepStatusSafe(
-                    TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG,
-                    TSWizardStepStatus.OK);
-            }
-        }
-        // wenn nichts gespeichert einfach den aktuellen GS zurueckgeben
-        return Promise.resolve(this.gesuchModelManager.getStammdatenToWorkWith());
-    }
-
-    /**
-     * Prueft ob es die letzte Seite von EVResultate ist. Es ist die letzte Seite wenn es zum letzten EV-Jahr gehoert
-     */
-    private isLastEinkVersStep(): boolean {
-        // Letztes Jahr haengt von den eingegebenen Daten ab
-        const info = this.gesuchModelManager.getGesuch().extractEinkommensverschlechterungInfo();
-
-        return info.ekvFuerBasisJahrPlus2 && this.gesuchModelManager.basisJahrPlusNumber === 2
-            || !info.ekvFuerBasisJahrPlus2 && this.gesuchModelManager.basisJahrPlusNumber === 1;
-    }
 
     public getBruttovermoegenTooltipLabel(): string {
         if (this.isFKJV()) {

@@ -17,6 +17,7 @@
 
 import {Component, ChangeDetectionStrategy, ChangeDetectorRef} from '@angular/core';
 import {Transition} from '@uirouter/core';
+import {IPromise} from 'angular';
 import {TSFinanzielleSituationResultateDTO} from '../../../../../models/dto/TSFinanzielleSituationResultateDTO';
 import {TSWizardStepName} from '../../../../../models/enums/TSWizardStepName';
 import {BerechnungsManager} from '../../../../service/berechnungsManager';
@@ -49,5 +50,11 @@ export class EinkommensverschlechterungSolothurnResultateViewComponent
             ref,
             TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_SOLOTHURN,
             $transition$);
+    }
+
+    public save(onResult: (arg: any) => any): IPromise<any> {
+        //hier müssen wir nur den WizardStep Updaten. Die EKV ist schon gespeichert.
+        this.updateStatus(true);
+        return onResult(true);
     }
 }

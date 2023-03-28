@@ -89,6 +89,7 @@
                 <div class="col-md-12">
 
                     <dv-navigation-x [dvPrevious]="true" [dvNext]="true"
+                                     (dvSave)="save($event.onResult)"
                                      [dvSubStep]="4"></dv-navigation-x>
                 </div>
             </form>
