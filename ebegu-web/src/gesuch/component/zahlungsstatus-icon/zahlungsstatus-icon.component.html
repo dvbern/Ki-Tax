@@ -16,7 +16,7 @@
   -->
 
 <div [title]="getTitle()">
-    <svg>
+    <svg *ngIf="iconLabel.iconLabel">
         <circle></circle>
         <text x="3" y="9">{{iconLabel.iconLabel}}</text>
     </svg>
