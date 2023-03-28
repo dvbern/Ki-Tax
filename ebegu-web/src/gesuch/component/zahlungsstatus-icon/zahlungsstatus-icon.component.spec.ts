@@ -18,6 +18,7 @@
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {TranslateService} from '@ngx-translate/core';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
+import {TSBetreuung} from '../../../models/TSBetreuung';
 
 import {ZahlungsstatusIconComponent} from './zahlungsstatus-icon.component';
 
@@ -46,6 +47,7 @@ describe('ZahlungsstatusIconComponent', () => {
     beforeEach(() => {
         fixture = TestBed.createComponent(ZahlungsstatusIconComponent);
         component = fixture.componentInstance;
+        component.betreuung = new TSBetreuung();
         fixture.detectChanges();
     });
 
