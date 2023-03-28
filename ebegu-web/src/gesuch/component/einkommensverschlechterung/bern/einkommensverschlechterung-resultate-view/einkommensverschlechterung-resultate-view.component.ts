@@ -155,7 +155,6 @@ export class EinkommensverschlechterungResultateViewComponent extends AbstractEi
             this.getEinkommensverschlechterungContainerGS2().ekvJABasisJahrPlus1;
     }
 
-
     public getBruttovermoegenTooltipLabel(): string {
         if (this.isFKJV()) {
             return 'FINANZIELLE_SITUATION_VERMOEGEN_HELP_FKJV';
