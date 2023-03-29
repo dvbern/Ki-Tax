@@ -163,6 +163,6 @@ export class FinanzielleSituationRS {
         const url = `${this.serviceURL}/remove/${encodeURIComponent(gesuchsteller.id)}`;
         return this.$http.delete(url)
             .then(response =>
-                this.ebeguRestUtil.parseGesuchstellerContainer(new TSGesuchstellerContainer(), response.data))
+                this.ebeguRestUtil.parseGesuchstellerContainer(new TSGesuchstellerContainer(), response.data));
     }
 }
