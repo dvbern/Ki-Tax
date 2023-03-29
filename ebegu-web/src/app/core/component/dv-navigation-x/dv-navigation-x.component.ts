@@ -286,7 +286,8 @@ export class DvNavigationXComponent implements OnInit {
         }
         if (TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG === this.wizardStepManager.getCurrentStepName() ||
             TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_LUZERN === this.wizardStepManager.getCurrentStepName() ||
-            TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_SOLOTHURN === this.wizardStepManager.getCurrentStepName()) {
+            TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_SOLOTHURN === this.wizardStepManager.getCurrentStepName() ||
+            TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_APPENZELL === this.wizardStepManager.getCurrentStepName()) {
             if (this.dvSubStep === 1) {
                 const info = this.gesuchModelManager.getGesuch().extractEinkommensverschlechterungInfo();
                 if (info && info.einkommensverschlechterung) { // was muss hier sein?
@@ -361,7 +362,8 @@ export class DvNavigationXComponent implements OnInit {
 
         if (TSWizardStepName.FINANZIELLE_SITUATION === this.wizardStepManager.getCurrentStepName()
             || TSWizardStepName.FINANZIELLE_SITUATION_LUZERN === this.wizardStepManager.getCurrentStepName()
-            || TSWizardStepName.FINANZIELLE_SITUATION_SOLOTHURN === this.wizardStepManager.getCurrentStepName()) {
+            || TSWizardStepName.FINANZIELLE_SITUATION_SOLOTHURN === this.wizardStepManager.getCurrentStepName()
+            || TSWizardStepName.FINANZIELLE_SITUATION_APPENZELL === this.wizardStepManager.getCurrentStepName()) {
             const previousSubStep = this.finSitWizardSubStepManager.getPreviousSubStepFinanzielleSituation(this.dvSubStepName);
             const previousMainStep = this.wizardStepManager.getPreviousStep(this.gesuchModelManager.getGesuch());
 
