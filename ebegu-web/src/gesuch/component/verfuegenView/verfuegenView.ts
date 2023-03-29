@@ -124,6 +124,7 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
     public tagesschuleZeitabschnitteOhneBetreuung: Array<TSVerfuegungZeitabschnitt>;
 
     public isLuzern: boolean;
+    public isAppenzell: boolean;
     private isAuszahlungAnAntragstellerEnabled: boolean = false;
 
     private showAuszahlungAnInstitutionen: boolean;
@@ -174,6 +175,10 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
 
         this.mandantService.mandant$.pipe(map(mandant => mandant === MANDANTS.LUZERN)).subscribe(isLuzern => {
             this.isLuzern = isLuzern;
+        }, error => this.$log.error(error));
+
+        this.mandantService.mandant$.pipe(map(mandant => mandant === MANDANTS.APPENZELL_AUSSERRHODEN)).subscribe(isAppenzell => {
+            this.isAppenzell = isAppenzell;
         }, error => this.$log.error(error));
 
         this.initView();

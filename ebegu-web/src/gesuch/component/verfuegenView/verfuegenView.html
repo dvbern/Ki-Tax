@@ -360,15 +360,15 @@
                                 <td>
                                     <dv-tooltip text="'VOLLKOSTEN_HELP' | translate"></dv-tooltip>
                                 </td>
-                                <td ng-if="!vm.isLuzern">
+                                <td ng-if="!vm.isLuzern && !vm.isAppenzell">
                                     <dv-tooltip
                                         text="'GUTSCHEIN_OHNE_BERUECKSICHTIGUNG_VOLLKOSTEN_HELP' | translate"></dv-tooltip>
                                 </td>
-                                <td ng-if="!vm.isLuzern" class="result">
+                                <td ng-if="!vm.isLuzern && !vm.isAppenzell" class="result">
                                     <dv-tooltip
                                         text="'GUTSCHEIN_OHNE_BERUECKSICHTIGUNG_MINIMALBEITRAG_HELP' | translate"></dv-tooltip>
                                 </td>
-                                <td ng-if="!vm.isLuzern" class="result">
+                                <td ng-if="!vm.isLuzern && !vm.isAppenzell" class="result">
                                     <dv-tooltip text="'MIN_ELTERNBEITRAG_HELP' | translate"></dv-tooltip>
                                 </td>
                                 <td ng-if="vm.showGutscheinProStunde()" class="result">
@@ -403,10 +403,10 @@
                                 <th data-translate="VERGUENSTIGT_IN_H" ng-if="vm.showHours"></th>
                                 <th data-translate="VERGUENSTIGT_IN_D" ng-if="vm.showDays"></th>
                                 <th data-translate="VOLLKOSTEN"></th>
-                                <th ng-if="!vm.isLuzern" data-translate="GUTSCHEIN_OHNE_BERUECKSICHTIGUNG_VOLLKOSTEN"></th>
-                                <th ng-if="!vm.isLuzern" class="result"
+                                <th ng-if="!vm.isLuzern && !vm.isAppenzell" data-translate="GUTSCHEIN_OHNE_BERUECKSICHTIGUNG_VOLLKOSTEN"></th>
+                                <th ng-if="!vm.isLuzern && !vm.isAppenzell" class="result"
                                     data-translate="GUTSCHEIN_OHNE_BERUECKSICHTIGUNG_MINIMALBEITRAG"></th>
-                                <th ng-if="!vm.isLuzern" class="result" data-translate="MIN_ELTERNBEITRAG"></th>
+                                <th ng-if="!vm.isLuzern && !vm.isAppenzell" class="result" data-translate="MIN_ELTERNBEITRAG"></th>
                                 <th ng-if="vm.showGutscheinProStunde()" class="result" data-translate="GUTSCHEIN_PRO_STUNDE"></th>
                                 <th ng-if="vm.showAuszahlungAnInstitutionenCol()" class="result" data-translate="VERGUENSTIGUNG_AN_INSTITUTION"></th>
                                 <th ng-if="vm.showZahlungsstatusInstitutionenCol()" class="result" data-translate="ZAHLUNG_AN_INSTITUTION"></th>
@@ -454,12 +454,12 @@
                                 <!-- Kosten -->
                                 <td ng-bind="verfuegungZeitabschnitt.vollkosten | currency : '' : 2"></td>
                                 <!-- Gutschein gemäss Formel (Gutschein vor Beruecksichtigung Vollkosten) -->
-                                <td ng-if="!vm.isLuzern" ng-bind="verfuegungZeitabschnitt.verguenstigungOhneBeruecksichtigungVollkosten | currency : '' : 2"></td>
+                                <td ng-if="!vm.isLuzern && !vm.isAppenzell" ng-bind="verfuegungZeitabschnitt.verguenstigungOhneBeruecksichtigungVollkosten | currency : '' : 2"></td>
                                 <!-- Gutschein (Gutschein vor Beruecksichtigung Minimalbeitrag) -->
-                                <td ng-if="!vm.isLuzern" class="result"
+                                <td ng-if="!vm.isLuzern && !vm.isAppenzell" class="result"
                                     ng-bind="verfuegungZeitabschnitt.verguenstigungOhneBeruecksichtigungMinimalbeitrag | currency : '' : 2"></td>
                                 <!-- Minimaler Elternbeitrag -->
-                                <td  ng-if="!vm.isLuzern" class="result"
+                                <td  ng-if="!vm.isLuzern && !vm.isAppenzell" class="result"
                                     ng-bind="verfuegungZeitabschnitt.minimalerElternbeitragGekuerzt | currency : '' : 2"></td>
                                 <!-- Gutschein pro Stunde -->
                                <td ng-if="vm.showGutscheinProStunde()" class="result"
