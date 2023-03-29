@@ -45,6 +45,7 @@ import {TSBetreuung} from '../../../models/TSBetreuung';
 import {TSDownloadFile} from '../../../models/TSDownloadFile';
 import {TSEinstellung} from '../../../models/TSEinstellung';
 import {TSEinstellungenTagesschule} from '../../../models/TSEinstellungenTagesschule';
+import {TSGesuch} from '../../../models/TSGesuch';
 import {TSModulTagesschuleGroup} from '../../../models/TSModulTagesschuleGroup';
 import {TSPublicAppConfig} from '../../../models/TSPublicAppConfig';
 import {TSVerfuegung} from '../../../models/TSVerfuegung';
@@ -59,6 +60,7 @@ import {IBetreuungStateParams} from '../../gesuch.route';
 import {BerechnungsManager} from '../../service/berechnungsManager';
 import {ExportRS} from '../../service/exportRS.rest';
 import {GesuchModelManager} from '../../service/gesuchModelManager';
+import {GesuchRS} from '../../service/gesuchRS.rest';
 import {WizardStepManager} from '../../service/wizardStepManager';
 import {AbstractGesuchViewController} from '../abstractGesuchView';
 import ITimeoutService = angular.ITimeoutService;
@@ -100,7 +102,8 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
         'MandantService',
         'EinstellungRS',
         'EbeguRestUtil',
-        'DemoFeatureRS'
+        'DemoFeatureRS',
+        'GesuchRS'
     ];
 
     // this is the model...
@@ -132,6 +135,7 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
 
     public readonly demoFeature = TSDemoFeature.VERAENDERUNG_BEI_MUTATION;
     private demoFeatureZahlungsstatusAllowed: boolean = false;
+    public vorgaengerZeitabschnitte: TSVerfuegungZeitabschnitt[];
 
     public constructor(
         private readonly $state: StateService,
@@ -155,7 +159,8 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
         private readonly mandantService: MandantService,
         private readonly einstellungRS: EinstellungRS,
         private readonly ebeguRestUtil: EbeguRestUtil,
-        private readonly demoFeatureRS: DemoFeatureRS
+        private readonly demoFeatureRS: DemoFeatureRS,
+        private readonly gesuchRS: GesuchRS
     ) {
 
         super(gesuchModelManager, berechnungsManager, wizardStepManager, $scope, TSWizardStepName.VERFUEGEN, $timeout);
@@ -202,6 +207,8 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
         this.demoFeatureRS.isDemoFeatureAllowed(TSDemoFeature.ZAHLUNGSSTATUS).then(res => {
             this.demoFeatureZahlungsstatusAllowed = res;
         });
+
+        this.initVorgaengerGebuehren();
     }
 
     private initView(): void {
@@ -1014,6 +1021,36 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
         }
 
         return ' ' + this.$translate.instant('MUTATION_KORREKTUR_AUSBEZAHLT_INNERHLAB_KIBON');
+    }
+
+    private initVorgaengerGebuehren(): void {
+        // beim Erstgesuch macht dies keinen Sinn
+        if (EbeguUtil.isNullOrUndefined(this.getGesuch().vorgaengerId)) {
+            return;
+        }
+        this.getBetreuung().kindId
+        this.gesuchRS
+            .findVorgaengerGesuchNotIgnoriert(this.getGesuch().vorgaengerId)
+            .then(gesuch => {
+                this.vorgaengerZeitabschnitte = this.extractVoraengerZeitabschnitteFromVorgaengerGesuch(gesuch)
+            });
+
+    }
+
+    private extractVoraengerZeitabschnitteFromVorgaengerGesuch(gesuch: TSGesuch): TSVerfuegungZeitabschnitt[] {
+        const vorgaengerKind = gesuch.kindContainers
+            .find(kc => kc.kindNummer = this.getBetreuung().kindNummer);
+
+        if (!vorgaengerKind) {
+            return [];
+        }
+        const vorgaengerBetreuung = vorgaengerKind.betreuungen
+            .find(b => b.betreuungNummer === this.getBetreuung().betreuungNummer)
+
+        if (!vorgaengerBetreuung || !vorgaengerBetreuung.anmeldungTagesschuleZeitabschnitts) {
+            return [];
+        }
+        return vorgaengerBetreuung.verfuegung.zeitabschnitte;
     }
 
 

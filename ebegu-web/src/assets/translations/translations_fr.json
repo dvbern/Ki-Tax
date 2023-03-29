@@ -2196,6 +2196,8 @@
     "TOTAL_KOSTEN_PRO_WOCHE": "Coût total par semaine",
     "TAGESSCHULE_GEBUEHREN_BETREUT": "Tarifs (offre avec suivi pédagogique)",
     "TAGESSCHULE_GEBUEHREN_NICHT_BETREUT": "Tarifs (offre sans suivi pédagogique)",
+    "TAGESSCHULE_GEBUEHR_VOR_MUTATION": "Émolument en vigueur avant le changement",
+    "TAGESSCHULE_GEBUEHR_VOR_MUTATION_HELP": "La présente modification change les émoluments pour les modules d’école à journée continue. Ici sont affichés les émoluments pour toute la période qui étaient valables avant le changement.",
     "MERKBLATT_ANMELDUNG_TAGESSCHULE": "Conditions d'inscriptions aux écoles à journée continue",
     "VORLAGE_MERKBLATT_ANMELDUNG_TAGESSCHULE_DE": "Modèle de conditions d'inscriptions aux écoles à journée continue allemand (.docx)",
     "VORLAGE_MERKBLATT_ANMELDUNG_TAGESSCHULE_FR": "Modèle de conditions d'inscriptions aux écoles à journée continue français (.docx)",

@@ -301,6 +301,24 @@
                             </div>
                         </div>
 
+                        <div class="row margin-top-20" ng-if="vm.isMutation()">
+                            <div class="col-xs-12">
+                                <h3>
+                                    <span data-translate="TAGESSCHULE_GEBUEHR_VOR_MUTATION"> </span>
+                                    <dv-tooltip input-id="planKlasse" text="'TAGESSCHULE_GEBUEHR_VOR_MUTATION_HELP' | translate"></dv-tooltip>
+                                </h3>
+                                <ul>
+                                    <li ng-repeat="zeitabschnitt in vm.vorgaengerZeitabschnitte"><p>
+                                        <span ng-bind="zeitabschnitt.gueltigkeit.gueltigAb | amDateFormat : 'DD.MM.YYYY'"></span>
+                                        <span>&nbsp;-&nbsp;</span>
+                                        <span ng-bind="zeitabschnitt.gueltigkeit.gueltigBis | amDateFormat : 'DD.MM.YYYY'"></span>
+                                        <span>&nbsp;:&nbsp;</span>
+                                        <span ng-bind="zeitabschnitt.tsCalculationResultMitPaedagogischerBetreuung.gebuehrProStunde"></span>
+                                    </p></li>
+                                </ul>
+                            </div>
+                        </div>
+
                         <!--VerfuegungPDF anzeigen-->
                         <div class="row margin-top-20 text-left">
                             <div class="col-xs-12" ng-if="vm.showAnmeldebestaetigungOhneTarifPdfLink()">

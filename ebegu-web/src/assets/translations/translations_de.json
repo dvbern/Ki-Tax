@@ -2267,6 +2267,8 @@
     "TOTAL_KOSTEN_PRO_WOCHE": "Total Kosten pro Woche",
     "TAGESSCHULE_GEBUEHREN_BETREUT": "Gebühren (pädagogisch betreutes Angebot)",
     "TAGESSCHULE_GEBUEHREN_NICHT_BETREUT": "Gebühren (pädagogisch nicht betreutes Angebot)",
+    "TAGESSCHULE_GEBUEHR_VOR_MUTATION": "Vor dieser Mutation gültige Gebühr",
+    "TAGESSCHULE_GEBUEHR_VOR_MUTATION_HELP": "Mit der vorliegenden Mutation verändert sich die Tagesschulgebühr. Hier wird für alle Zeitabschnitte der Periode die Gebühr angezeigt, die vor der Mutation gültig war.",
     "MERKBLATT_ANMELDUNG_TAGESSCHULE": "Merkblatt Anmeldung Tagesschule",
     "VORLAGE_MERKBLATT_ANMELDUNG_TAGESSCHULE_DE": "Vorlage Merkblatt Anmeldung Tagesschule Deutsch (.docx)",
     "VORLAGE_MERKBLATT_ANMELDUNG_TAGESSCHULE_FR": "Vorlage Merkblatt Anmeldung Tagesschule Französich (.docx)",
