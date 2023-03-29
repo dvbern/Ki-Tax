@@ -19,6 +19,7 @@ import {Injectable} from '@angular/core';
 import {Observable, ReplaySubject, Subject} from 'rxjs';
 import {TSFinanzielleSituationResultateDTO} from '../../../../models/dto/TSFinanzielleSituationResultateDTO';
 import {TSFinanzModel} from '../../../../models/TSFinanzModel';
+import {TSGesuch} from '../../../../models/TSGesuch';
 import {EbeguUtil} from '../../../../utils/EbeguUtil';
 import {BerechnungsManager} from '../../../service/berechnungsManager';
 import {GesuchModelManager} from '../../../service/gesuchModelManager';
@@ -49,8 +50,7 @@ export class FinanzielleSituationAppenzellService {
             .then(result => this._massgebendesEinkommenStore.next(result));
     }
 
-    public static finSitNeedsTwoSeparateAntragsteller(gesuchModelManager: GesuchModelManager): boolean {
-        const gesuch = gesuchModelManager.getGesuch();
+    public static finSitNeedsTwoSeparateAntragsteller(gesuch: TSGesuch): boolean {
         if (EbeguUtil.isNullOrUndefined(gesuch)) {
             return false;
         }

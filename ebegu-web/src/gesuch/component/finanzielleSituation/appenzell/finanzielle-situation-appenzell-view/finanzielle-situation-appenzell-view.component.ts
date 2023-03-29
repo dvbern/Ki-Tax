@@ -63,7 +63,7 @@ export class FinanzielleSituationAppenzellViewComponent extends AbstractGesuchVi
         super(gesuchModelManager, wizardStepManager, TSWizardStepName.FINANZIELLE_SITUATION_APPENZELL);
         this.gesuchstellerNumber = parseInt(this.$transition$.params().gesuchstellerNumber, 10);
         this.model = new TSFinanzModel(this.gesuchModelManager.getBasisjahr(),
-            FinanzielleSituationAppenzellService.finSitNeedsTwoSeparateAntragsteller(gesuchModelManager),
+            FinanzielleSituationAppenzellService.finSitNeedsTwoSeparateAntragsteller(gesuchModelManager.getGesuch()),
             this.gesuchstellerNumber);
         this.model.copyFinSitDataFromGesuch(this.gesuchModelManager.getGesuch());
         // in Appenzell stellen wir die Frage nach dem Sozialhilfebezüger nicht. Deshalb setzen wir den immer auf false.
@@ -87,7 +87,6 @@ export class FinanzielleSituationAppenzellViewComponent extends AbstractGesuchVi
     }
 
     public getAntragstellerNumber(): number {
-        // im moment gibt es nur antragsteller 1
         return this.gesuchstellerNumber;
     }
 
