@@ -73,7 +73,8 @@ public class KibonAnfrageHandler {
 							zpvNummer,
 							Objects.requireNonNull(kibonAnfrageContext.getGesuch().getGesuchsteller1()),
 							kibonAnfrageContext,
-							gesuchstellerNumber);
+							gesuchstellerNumber,
+							isGemeinsam);
 
 				} catch (KiBonAnfrageServiceException e) {
 					Objects.requireNonNull(kibonAnfrageContext.getGesuch().getFamiliensituationContainer());
@@ -91,7 +92,8 @@ public class KibonAnfrageHandler {
 									zpvNummer,
 									kibonAnfrageContext.getGesuch().getGesuchsteller2(),
 									kibonAnfrageContext,
-									gesuchstellerNumber);
+									gesuchstellerNumber,
+									isGemeinsam);
 						} catch (KiBonAnfrageServiceException e2) {
 							kibonAnfrageContext.setSteuerdatenAnfrageStatus(SteuerdatenAnfrageStatus.FAILED);
 							return kibonAnfrageContext;
@@ -107,7 +109,6 @@ public class KibonAnfrageHandler {
 		} else {
 			// anfrage single GS
 			if (gesuchstellerNumber == 1) {
-
 				String zpvNummer = zpvNummerMap.get(ZpvEnum.ZPV_BESITZER) == null ?
 						zpvNummerMap.get(ZpvEnum.ZPV_GESUCHSTELLER_1) : zpvNummerMap.get(ZpvEnum.ZPV_BESITZER);
 				if (null == zpvNummer) {
@@ -119,7 +120,8 @@ public class KibonAnfrageHandler {
 							zpvNummer,
 							Objects.requireNonNull(kibonAnfrageContext.getGesuch().getGesuchsteller1()),
 							kibonAnfrageContext,
-							gesuchstellerNumber);
+							gesuchstellerNumber,
+							isGemeinsam);
 				} catch (KiBonAnfrageServiceException e) {
 					kibonAnfrageContext.setSteuerdatenAnfrageStatus(SteuerdatenAnfrageStatus.FAILED);
 				}
@@ -139,7 +141,8 @@ public class KibonAnfrageHandler {
 							zpvNummer,
 							kibonAnfrageContext.getGesuch().getGesuchsteller2(),
 							kibonAnfrageContext,
-							gesuchstellerNumber);
+							gesuchstellerNumber,
+							isGemeinsam);
 				} catch (KiBonAnfrageServiceException e) {
 					kibonAnfrageContext.setSteuerdatenAnfrageStatus(SteuerdatenAnfrageStatus.FAILED);
 					return kibonAnfrageContext;
@@ -153,13 +156,20 @@ public class KibonAnfrageHandler {
 			String zpvNummer,
 			GesuchstellerContainer gesuchstellerContainer,
 			KibonAnfrageContext kibonAnfrageContext,
-			int gesuchstellerNumber) throws KiBonAnfrageServiceException {
+			int gesuchstellerNumber,
+			boolean isGemeinsam) throws KiBonAnfrageServiceException {
 		SteuerdatenResponse steuerdatenResponseGS = kibonAnfrageService.getSteuerDaten(
 				Integer.valueOf(zpvNummer),
 				gesuchstellerContainer.getGesuchstellerJA().getGeburtsdatum(),
 				kibonAnfrageContext.getGesuch().getId(),
 				kibonAnfrageContext.getGesuch().getGesuchsperiode().getBasisJahrPlus1());
 		kibonAnfrageContext.setSteuerdatenResponse(steuerdatenResponseGS);
+		if (isGemeinsam) {
+			KibonAnfrageHelper.handleSteuerdatenGemeinsamResponse(
+					kibonAnfrageContext,
+					steuerdatenResponseGS);
+			return kibonAnfrageContext;
+		}
 		KibonAnfrageHelper.handleSteuerdatenResponse(
 				kibonAnfrageContext,
 				steuerdatenResponseGS,
