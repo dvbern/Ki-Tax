@@ -31,6 +31,7 @@ import {TSFinanzielleSituationContainer} from '../../../../../models/TSFinanziel
 import {TSFinanzModel} from '../../../../../models/TSFinanzModel';
 import {TSFinSitZusatzangabenAppenzell} from '../../../../../models/TSFinSitZusatzangabenAppenzell';
 import {TSGesuch} from '../../../../../models/TSGesuch';
+import {TSGesuchstellerContainer} from '../../../../../models/TSGesuchstellerContainer';
 import {EbeguUtil} from '../../../../../utils/EbeguUtil';
 import {
     FinanzielleSituationSubStepManagerAppenzell
@@ -135,6 +136,8 @@ export class FinanzielleSituationAppenzellViewComponent extends AbstractGesuchVi
 
     private save(onResult: (arg: any) => any): Promise<TSFinanzielleSituationContainer> {
         this.model.copyFinSitDataToGesuch(this.gesuchModelManager.getGesuch());
+        this.removeFinSitGS2IfNecessary();
+
         return this.saveFinSitStartIfNecessary()
             .then(() => this.gesuchModelManager.saveFinanzielleSituation())
             .then(async (finanzielleSituationContainer: TSFinanzielleSituationContainer) => {
@@ -201,9 +204,16 @@ export class FinanzielleSituationAppenzellViewComponent extends AbstractGesuchVi
     }
 
     // bei einem Wechsel auf gemeinsam muss der Container von GS2 gelöscht werden.
-    public gemeinsamChanged($event: MatRadioChange) {
+    public gemeinsamChanged($event: MatRadioChange): void {
         if ($event.value === true) {
             this.model.finanzielleSituationContainerGS2.finanzielleSituationJA = new TSFinanzielleSituation();
         }
+    }
+
+    private removeFinSitGS2IfNecessary(): IPromise<TSGesuchstellerContainer> {
+        if (this.showQuestionGemeinsameSteuererklaerung() && this.model.gemeinsameSteuererklaerung) {
+            return this.gesuchModelManager.removeFinanzielleSitautionFromGesuchsteller2();
+        }
+        return undefined;
     }
 }

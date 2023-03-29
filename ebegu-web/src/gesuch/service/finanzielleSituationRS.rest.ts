@@ -30,6 +30,7 @@ import {TSFinanzModel} from '../../models/TSFinanzModel';
 import {TSGemeinde} from '../../models/TSGemeinde';
 import {TSGesuch} from '../../models/TSGesuch';
 import {TSGesuchsperiode} from '../../models/TSGesuchsperiode';
+import {TSGesuchsteller} from '../../models/TSGesuchsteller';
 import {TSGesuchstellerContainer} from '../../models/TSGesuchstellerContainer';
 import {EbeguRestUtil} from '../../utils/EbeguRestUtil';
 import {WizardStepManager} from './wizardStepManager';
@@ -156,5 +157,12 @@ export class FinanzielleSituationRS {
 
     public geburtsdatumMatchesSteuerabfrage(geburtsdatum: moment.Moment, finSitContainerId: string): IPromise<boolean> {
         return this.$http.get(`${this.serviceURL}/geburtsdatum-matches-steuerabfrage/${finSitContainerId}?geburtsdatum=${geburtsdatum.format(CONSTANTS.DATE_FORMAT)}`).then(result => result.data as boolean);
+    }
+
+    public removeFinanzielleSituationFromGesuchsteller(gesuchsteller: TSGesuchstellerContainer): IPromise<TSGesuchstellerContainer> {
+        const url = `${this.serviceURL}/remove/${encodeURIComponent(gesuchsteller.id)}`;
+        return this.$http.delete(url)
+            .then(response =>
+                this.ebeguRestUtil.parseGesuchstellerContainer(new TSGesuchstellerContainer(), response.data))
     }
 }

@@ -628,6 +628,15 @@ export class GesuchModelManager {
             });
     }
 
+    public removeFinanzielleSitautionFromGesuchsteller2(): IPromise<TSGesuchstellerContainer> {
+        return this.finanzielleSituationRS.removeFinanzielleSituationFromGesuchsteller(this.getGesuch().gesuchsteller2)
+            .then((gesuchstellerContariner: TSGesuchstellerContainer) => {
+                this.gesuch.gesuchsteller2 = gesuchstellerContariner;
+                return this.gesuch.gesuchsteller2;
+            });
+    }
+
+
     public saveEinkommensverschlechterungContainer(): IPromise<TSEinkommensverschlechterungContainer> {
         return this.einkommensverschlechterungContainerRS.saveEinkommensverschlechterungContainer(
             this.getStammdatenToWorkWith().einkommensverschlechterungContainer,
