@@ -33,8 +33,9 @@ export class ZahlungsstatusIconComponent implements OnInit {
 
     @Input()
     public zahlungsstatus: TSVerfuegungZeitabschnittZahlungsstatus;
+
     @Input()
-    private readonly betreuung: TSBetreuung;
+    public betreuung: TSBetreuung;
     public iconLabel: TSZahlungsstatusIconLabel;
 
     public constructor(

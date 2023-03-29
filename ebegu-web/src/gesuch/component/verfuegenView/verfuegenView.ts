@@ -843,6 +843,9 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
     }
 
     private showZahlungsstatusCol(): boolean {
+        if (EbeguUtil.isNullOrUndefined(this.getBetreuung())) {
+            return false;
+        }
         if (!this.demoFeatureZahlungsstatusAllowed) {
             return false;
         }
