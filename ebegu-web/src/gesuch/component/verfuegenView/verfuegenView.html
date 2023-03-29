@@ -230,19 +230,19 @@
                                         </td>
                                         <!-- Gebühren Pro Stunde -->
                                         <td><span
-                                            ng-bind="zeitabschnitt.tsCalculationResultMitPaedagogischerBetreuung.gebuehrProStunde"></span>
+                                            ng-bind="zeitabschnitt.tsCalculationResultMitPaedagogischerBetreuung.gebuehrProStunde | currency : '' : 2"></span>
                                         </td>
                                         <!-- Verpflegungskosten Pro Woche -->
                                         <td><span
-                                            ng-bind="zeitabschnitt.tsCalculationResultMitPaedagogischerBetreuung.verpflegungskosten"></span>
+                                            ng-bind="zeitabschnitt.tsCalculationResultMitPaedagogischerBetreuung.verpflegungskosten | currency : '' : 2"></span>
                                         </td>
                                         <!-- Mahlzeitenvergünstigung -->
                                         <td ng-if="vm.isMahlzeitenverguenstigungEnabled()"><span
-                                            ng-bind="zeitabschnitt.tsCalculationResultMitPaedagogischerBetreuung.verpflegungskostenVerguenstigt"></span>
+                                            ng-bind="zeitabschnitt.tsCalculationResultMitPaedagogischerBetreuung.verpflegungskostenVerguenstigt | currency : '' : 2"></span>
                                         </td>
                                         <!-- Total Kosten Pro Woche -->
                                         <td class="result"><span
-                                            ng-bind="zeitabschnitt.tsCalculationResultMitPaedagogischerBetreuung.totalKostenProWoche"></span>
+                                            ng-bind="zeitabschnitt.tsCalculationResultMitPaedagogischerBetreuung.totalKostenProWoche | currency : '' : 2"></span>
                                         </td>
                                     </tr>
                                     </tbody>
@@ -313,7 +313,7 @@
                                         <span>&nbsp;-&nbsp;</span>
                                         <span ng-bind="zeitabschnitt.gueltigkeit.gueltigBis | amDateFormat : 'DD.MM.YYYY'"></span>
                                         <span>&nbsp;:&nbsp;</span>
-                                        <span ng-bind="zeitabschnitt.tsCalculationResultMitPaedagogischerBetreuung.gebuehrProStunde"></span>
+                                        <span ng-bind="zeitabschnitt.tsCalculationResultMitPaedagogischerBetreuung.gebuehrProStunde  | currency : '' : 2"></span>
                                     </p></li>
                                 </ul>
                             </div>
