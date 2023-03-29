@@ -17,6 +17,7 @@
 
 import {ChangeDetectionStrategy, ChangeDetectorRef, Component} from '@angular/core';
 import {Transition} from '@uirouter/core';
+import {IPromise} from 'angular';
 import {TSWizardStepName} from '../../../../../models/enums/TSWizardStepName';
 import {BerechnungsManager} from '../../../../service/berechnungsManager';
 import {GesuchModelManager} from '../../../../service/gesuchModelManager';
@@ -47,5 +48,13 @@ export class EinkommensverschlechterungLuzernResultateViewComponent extends Abst
             ref,
             TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_LUZERN,
             $transition$);
+    }
+
+    public save(onResult: (arg: any) => any): IPromise<any> {
+        //hier müssen wir nur den WizardStep Updaten. Die EKV ist schon gespeichert.
+        if (this.form.dirty) {
+            this.updateStatus(true);
+        }
+        return onResult(true);
     }
 }

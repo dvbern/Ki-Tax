@@ -294,9 +294,7 @@ export class DvNavigationXComponent implements OnInit {
                     }
                     this.navigateToStepEinkommensverschlechterung('1', '2');
                 }
-                this.wizardStepManager.updateCurrentWizardStepStatus(TSWizardStepStatus.OK).then(() => {
-                    this.navigateToStep(this.wizardStepManager.getNextStep(this.gesuchModelManager.getGesuch()));
-                });
+                this.navigateToStep(this.wizardStepManager.getNextStep(this.gesuchModelManager.getGesuch()));
                 return;
             }
             if (this.dvSubStep === 2) {
@@ -815,9 +813,7 @@ export class DvNavigationXComponent implements OnInit {
             return;
         }
 
-        this.wizardStepManager.updateCurrentWizardStepStatus(TSWizardStepStatus.OK).then(() => {
-            this.navigateToStep(this.wizardStepManager.getNextStep(this.gesuchModelManager.getGesuch()));
-        });
+        this.navigateToStep(this.wizardStepManager.getNextStep(this.gesuchModelManager.getGesuch()));
     }
 
     public setSubstepManager(manager: FinanzielleSituationSubStepManager): void {

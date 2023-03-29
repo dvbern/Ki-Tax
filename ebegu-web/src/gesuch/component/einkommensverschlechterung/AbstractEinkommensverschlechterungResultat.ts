@@ -16,8 +16,10 @@
  */
 import {ChangeDetectorRef} from '@angular/core';
 import {Transition} from '@uirouter/core';
+import {IPromise} from 'angular';
 import {TSFinanzielleSituationResultateDTO} from '../../../models/dto/TSFinanzielleSituationResultateDTO';
 import {TSWizardStepName} from '../../../models/enums/TSWizardStepName';
+import {TSWizardStepStatus} from '../../../models/enums/TSWizardStepStatus';
 import {TSFinanzModel} from '../../../models/TSFinanzModel';
 import {EbeguUtil} from '../../../utils/EbeguUtil';
 import {BerechnungsManager} from '../../service/berechnungsManager';
@@ -116,5 +118,36 @@ export abstract class AbstractEinkommensverschlechterungResultat extends Abstrac
 
     public getAntragsteller2Name(): string {
         return EKVViewUtil.getAntragsteller2Name(this.gesuchModelManager);
+    }
+
+    /**
+     * Hier wird der Status von WizardStep auf OK (MUTIERT fuer Mutationen) aktualisiert aber nur wenn die letzte
+     * Seite EVResultate gespeichert wird. Sonst liefern wir einfach den aktuellen GS als Promise zurueck.
+     */
+    public updateStatus(changes: boolean): IPromise<any> {
+        if (this.isLastEinkVersStep()) {
+            if (this.gesuchModelManager.getGesuch().isMutation()) {
+                if (this.wizardStepManager.getCurrentStep().wizardStepStatus === TSWizardStepStatus.NOK || changes) {
+                    this.wizardStepManager.updateCurrentWizardStepStatusMutiert();
+                }
+            } else {
+                return this.wizardStepManager.updateCurrentWizardStepStatusSafe(
+                    this.wizardStepManager.getCurrentStepName(),
+                    TSWizardStepStatus.OK);
+            }
+        }
+        // wenn nichts gespeichert einfach den aktuellen GS zurueckgeben
+        return Promise.resolve(this.gesuchModelManager.getStammdatenToWorkWith());
+    }
+
+    /**
+     * Prueft ob es die letzte Seite von EVResultate ist. Es ist die letzte Seite wenn es zum letzten EV-Jahr gehoert
+     */
+    private isLastEinkVersStep(): boolean {
+        // Letztes Jahr haengt von den eingegebenen Daten ab
+        const info = this.gesuchModelManager.getGesuch().extractEinkommensverschlechterungInfo();
+
+        return info.ekvFuerBasisJahrPlus2 && this.gesuchModelManager.basisJahrPlusNumber === 2
+            || !info.ekvFuerBasisJahrPlus2 && this.gesuchModelManager.basisJahrPlusNumber === 1;
     }
 }
