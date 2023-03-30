@@ -52,9 +52,7 @@ export class EinkommensverschlechterungLuzernResultateViewComponent extends Abst
 
     public save(onResult: (arg: any) => any): IPromise<any> {
         //hier müssen wir nur den WizardStep Updaten. Die EKV ist schon gespeichert.
-        if (this.form.dirty) {
-            this.updateStatus(true);
-        }
+        this.updateStatus(true);
         return onResult(true);
     }
 }
