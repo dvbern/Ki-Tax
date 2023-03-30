@@ -94,42 +94,39 @@ describe('BenutzerEinladenComponent', () => {
         const pattern = new RegExp(CONSTANTS.PATTERN_EMAIL);
 
         it('should check valid email', () => {
-            const validEmail = "severin.aeschlimann@dvbern.ch";
+            const validEmail = 'severin.aeschlimann@dvbern.ch';
             const validationCheck = pattern.test(validEmail);
             expect(validationCheck).toBeTruthy();
         });
 
         it('should check invalid email with two dots', () => {
-            const invalidEmail = "severin.aeschlimann.dvbern@dvbern.ch";
+            const invalidEmail = 'severin.aeschlimann.dvbern@dvbern.ch';
             const validationCheck = pattern.test(invalidEmail);
             expect(validationCheck).toBeTruthy();
         });
 
         it('should check invalid email without dot', () => {
-            const invalidEmail = "severin.aeschlimann@dvbern.ch";
+            const invalidEmail = 'severin.aeschlimann@dvbern.ch';
             const validationCheck = pattern.test(invalidEmail);
             expect(validationCheck).toBeTruthy();
         });
 
         it('should check invalid email', () => {
-            const invalidEmail = "severin.aeschlimann@dvbernch";
+            const invalidEmail = 'severin.aeschlimann@dvbernch';
             const validationCheck = pattern.test(invalidEmail);
             expect(validationCheck).toBeFalsy();
         });
 
         it('should check invalid email with specialchar', () => {
-            const invalidEmail = "severin.aesc#hlimann@dvbern.ch";
+            const invalidEmail = 'severin.aesc#hlimann@dvbern.ch';
             const validationCheck = pattern.test(invalidEmail);
             expect(validationCheck).toBeFalsy();
         });
 
         it('should check invalid email with bracket', () => {
-            const invalidEmail = "severin.aeschlimann@dvbern.ch)";
+            const invalidEmail = 'severin.aeschlimann@dvbern.ch)';
             const validationCheck = pattern.test(invalidEmail);
             expect(validationCheck).toBeFalsy();
         });
-    })
-
-
-
+    });
 });
