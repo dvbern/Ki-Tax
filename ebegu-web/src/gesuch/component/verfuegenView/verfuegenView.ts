@@ -1023,9 +1023,15 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
         return ' ' + this.$translate.instant('MUTATION_KORREKTUR_AUSBEZAHLT_INNERHLAB_KIBON');
     }
 
-    private initVorgaengerGebuehren(): void {
-        // beim Erstgesuch macht dies keinen Sinn
+    private showVorgaengerGebuehren(): boolean {
         if (EbeguUtil.isNullOrUndefined(this.getGesuch().vorgaengerId)) {
+            // beim Erstgesuch macht dies keinen Sinn
+            return false;
+        }
+        return this.isMutation();
+    }
+    private initVorgaengerGebuehren(): void {
+        if (! this.showVorgaengerGebuehren()) {
             return;
         }
         this.getBetreuung().kindId
