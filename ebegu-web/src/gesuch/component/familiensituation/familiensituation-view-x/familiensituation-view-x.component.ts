@@ -146,7 +146,7 @@ export class FamiliensituationViewXComponent extends AbstractFamiliensitutaionVi
             return false;
         }
         const bis = this.gesuchModelManager.getGesuchsperiode().gueltigkeit.gueltigBis;
-        let partnerfrage: boolean = EbeguUtil.isNotNullOrUndefined(this.getFamiliensituation()?.aenderungPer) &&
+        const partnerfrage: boolean = EbeguUtil.isNotNullOrUndefined(this.getFamiliensituation()?.aenderungPer) &&
                 !this.getFamiliensituationErstgesuch()?.isSameFamiliensituation(this.getFamiliensituation()) &&
                 this.getFamiliensituationErstgesuch().hasSecondGesuchsteller(bis) &&
                 this.getFamiliensituation().hasSecondGesuchsteller(bis);
