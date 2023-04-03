@@ -423,7 +423,7 @@ public class FinanzielleSituationResource {
 		response = SteuerdatenResponse.class)
 	@Nullable
 	@PUT
-	@Path("/kibonanfrage/{kibonAnfrageId}/{gesuchstellerNumber}/{isGemeinsam}")
+	@Path("/kibonanfrage/{gesuchId}/{gesuchstellerNumber}/{isGemeinsam}")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	@RolesAllowed({ GESUCHSTELLER, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_TS, SACHBEARBEITER_TS, ADMIN_GEMEINDE,
@@ -431,33 +431,32 @@ public class FinanzielleSituationResource {
 	@TransactionAttribute(TransactionAttributeType.NEVER)
 	public JaxFinanzielleSituationContainer updateFinSitMitSteuerdaten(
 		@Nonnull @NotNull @PathParam("gesuchstellerNumber") int gesuchstellerNumber,
-		@Nonnull @NotNull @PathParam("kibonAnfrageId") JaxId kibonAnfrageId,
+		@Nonnull @NotNull @PathParam("gesuchId") JaxId gesuchId,
 		@Nonnull @NotNull @PathParam("isGemeinsam") boolean isGemeinsam,
 		@Context UriInfo uriInfo,
 		@Context HttpServletResponse response
 	) {
 
-		Objects.requireNonNull(kibonAnfrageId.getId());
+		Objects.requireNonNull(gesuchId.getId());
 
 		//Antrag suchen
-		Gesuch gesuch = gesuchService.findGesuch(kibonAnfrageId.getId()).orElseThrow(()
+		Gesuch gesuch = gesuchService.findGesuch(gesuchId.getId()).orElseThrow(()
 			-> new EbeguEntityNotFoundException(
 			"getSteuerdatenBeiAntragId",
 			ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
-			"Gesuch ID invalid: " + kibonAnfrageId.getId()));
+			"Gesuch ID invalid: " + gesuchId.getId()));
 
 		assert gesuch.getFamiliensituationContainer() != null;
 		assert gesuch.getFamiliensituationContainer().getFamiliensituationJA() != null;
 
-		KibonAnfrageContext
-			kibonAnfrageContext = new KibonAnfrageContext(gesuch);
+		KibonAnfrageContext kibonAnfrageContext = new KibonAnfrageContext(gesuch);
 
 		kibonAnfrageContext = kibonAnfrageHandler.handleKibonAnfrage(kibonAnfrageContext, isGemeinsam, gesuchstellerNumber);
 		// Save
 		KibonAnfrageHelper.updateFinSitSteuerdatenAbfrageStatus(
 				kibonAnfrageContext.getFinSitCont(gesuchstellerNumber).getFinanzielleSituationJA(),
-				kibonAnfrageContext.getSteuerdatenAnfrageStatus()
-		);
+				kibonAnfrageContext.getSteuerdatenAnfrageStatus());
+
 		if (isGemeinsam) {
 			this.gesuchstellerService.saveGesuchsteller(requireNonNull(gesuch.getGesuchsteller2()), gesuch, 2, false);
 			this.finanzielleSituationService.
