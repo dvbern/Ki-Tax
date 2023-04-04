@@ -124,7 +124,7 @@ public class AppenzellRechner extends AbstractRechner {
 	}
 
 	private boolean isMaxStundenAnsatzRequired() {
-		return true;
+		return !input.isBesondereBeduerfnisseBestaetigt();
 	}
 
 	private BigDecimal getProzentsatzByMassgebendemEinkommen(BigDecimal massgebendesEinkommen) {
