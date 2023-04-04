@@ -42,11 +42,19 @@ public class KibonAnfrageContext {
 
 	private boolean gemeinsam;
 
-	public KibonAnfrageContext(
-		@Nonnull Gesuch gesuch) {
+	public KibonAnfrageContext(@Nonnull Gesuch gesuch, boolean isGemeinsam) {
+		this.gesuch = gesuch;
+		this.gemeinsam = isGemeinsam;
+
+		createFinSitGS2Container();
+		setSteuerdatenZugriffFlags();
+	}
+
+	public KibonAnfrageContext(@Nonnull Gesuch gesuch) {
 		this.gesuch = gesuch;
 
 		initGemeinsam();
+		createFinSitGS2Container();
 		setSteuerdatenZugriffFlags();
 	}
 
@@ -69,10 +77,6 @@ public class KibonAnfrageContext {
 
 		this.gemeinsam = Boolean.TRUE
 			.equals(gesuch.getFamiliensituationContainer().getFamiliensituationJA().getGemeinsameSteuererklaerung());
-		if(null == gesuch.getGesuchsteller2()){
-			return;
-		}
-		createFinSitGS2Container();
 	}
 
 	@Nonnull
@@ -111,7 +115,10 @@ public class KibonAnfrageContext {
 	}
 
 	private void createFinSitGS2Container() {
-		Objects.requireNonNull(this.getGesuch().getGesuchsteller2());
+		if (this.getGesuch().getGesuchsteller2() == null){
+			return;
+		}
+
 		Objects.requireNonNull(this.getGesuch().getGesuchsteller1());
 		final FinanzielleSituationContainer finSitCont1 =
 				this.getGesuch().getGesuchsteller1().getFinanzielleSituationContainer();

@@ -449,9 +449,9 @@ public class FinanzielleSituationResource {
 		assert gesuch.getFamiliensituationContainer() != null;
 		assert gesuch.getFamiliensituationContainer().getFamiliensituationJA() != null;
 
-		KibonAnfrageContext kibonAnfrageContext = new KibonAnfrageContext(gesuch);
+		KibonAnfrageContext kibonAnfrageContext = new KibonAnfrageContext(gesuch, isGemeinsam);
+		kibonAnfrageContext = kibonAnfrageHandler.handleKibonAnfrage(kibonAnfrageContext, gesuchstellerNumber);
 
-		kibonAnfrageContext = kibonAnfrageHandler.handleKibonAnfrage(kibonAnfrageContext, isGemeinsam, gesuchstellerNumber);
 		// Save
 		KibonAnfrageHelper.updateFinSitSteuerdatenAbfrageStatus(
 				kibonAnfrageContext.getFinSitCont(gesuchstellerNumber).getFinanzielleSituationJA(),

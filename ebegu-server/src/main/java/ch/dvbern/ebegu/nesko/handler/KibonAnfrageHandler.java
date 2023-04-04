@@ -52,7 +52,6 @@ public class KibonAnfrageHandler {
 
 	public KibonAnfrageContext handleKibonAnfrage(
 			@Nonnull KibonAnfrageContext kibonAnfrageContext,
-			boolean isGemeinsam,
 			int gesuchstellerNumber) {
 		boolean hasTwoAntragStellende = kibonAnfrageContext.getGesuch().getGesuchsteller2() != null;
 		Map<ZpvEnum, String> zpvNummerMap = findZpvNummerForRequest(kibonAnfrageContext);
@@ -61,7 +60,7 @@ public class KibonAnfrageHandler {
 			kibonAnfrageContext.setSteuerdatenAnfrageStatus(SteuerdatenAnfrageStatus.FAILED_KEINE_ZPV_NUMMER);
 			return kibonAnfrageContext;
 		}
-		if (hasTwoAntragStellende && isGemeinsam) {
+		if (hasTwoAntragStellende && kibonAnfrageContext.isGemeinsam()) {
 			String zpvNummer = zpvNummerMap.get(ZpvEnum.ZPV_BESITZER) == null ?
 					zpvNummerMap.get(ZpvEnum.ZPV_GESUCHSTELLER_1) : zpvNummerMap.get(ZpvEnum.ZPV_BESITZER);
 			// nur erstes Mal, dann schon initialisiert
@@ -73,8 +72,7 @@ public class KibonAnfrageHandler {
 							zpvNummer,
 							Objects.requireNonNull(kibonAnfrageContext.getGesuch().getGesuchsteller1()),
 							kibonAnfrageContext,
-							gesuchstellerNumber,
-							isGemeinsam);
+							gesuchstellerNumber);
 
 				} catch (KiBonAnfrageServiceException e) {
 					Objects.requireNonNull(kibonAnfrageContext.getGesuch().getFamiliensituationContainer());
@@ -92,8 +90,7 @@ public class KibonAnfrageHandler {
 									zpvNummer,
 									kibonAnfrageContext.getGesuch().getGesuchsteller2(),
 									kibonAnfrageContext,
-									gesuchstellerNumber,
-									isGemeinsam);
+									gesuchstellerNumber);
 						} catch (KiBonAnfrageServiceException e2) {
 							kibonAnfrageContext.setSteuerdatenAnfrageStatus(SteuerdatenAnfrageStatus.FAILED);
 							return kibonAnfrageContext;
@@ -120,8 +117,7 @@ public class KibonAnfrageHandler {
 							zpvNummer,
 							Objects.requireNonNull(kibonAnfrageContext.getGesuch().getGesuchsteller1()),
 							kibonAnfrageContext,
-							gesuchstellerNumber,
-							isGemeinsam);
+							gesuchstellerNumber);
 				} catch (KiBonAnfrageServiceException e) {
 					kibonAnfrageContext.setSteuerdatenAnfrageStatus(SteuerdatenAnfrageStatus.FAILED);
 				}
@@ -141,8 +137,7 @@ public class KibonAnfrageHandler {
 							zpvNummer,
 							kibonAnfrageContext.getGesuch().getGesuchsteller2(),
 							kibonAnfrageContext,
-							gesuchstellerNumber,
-							isGemeinsam);
+							gesuchstellerNumber);
 				} catch (KiBonAnfrageServiceException e) {
 					kibonAnfrageContext.setSteuerdatenAnfrageStatus(SteuerdatenAnfrageStatus.FAILED);
 					return kibonAnfrageContext;
@@ -156,15 +151,14 @@ public class KibonAnfrageHandler {
 			String zpvNummer,
 			GesuchstellerContainer gesuchstellerContainer,
 			KibonAnfrageContext kibonAnfrageContext,
-			int gesuchstellerNumber,
-			boolean isGemeinsam) throws KiBonAnfrageServiceException {
+			int gesuchstellerNumber) throws KiBonAnfrageServiceException {
 		SteuerdatenResponse steuerdatenResponseGS = kibonAnfrageService.getSteuerDaten(
 				Integer.valueOf(zpvNummer),
 				gesuchstellerContainer.getGesuchstellerJA().getGeburtsdatum(),
 				kibonAnfrageContext.getGesuch().getId(),
 				kibonAnfrageContext.getGesuch().getGesuchsperiode().getBasisJahrPlus1());
 		kibonAnfrageContext.setSteuerdatenResponse(steuerdatenResponseGS);
-		if (isGemeinsam) {
+		if (kibonAnfrageContext.isGemeinsam()) {
 			KibonAnfrageHelper.handleSteuerdatenGemeinsamResponse(
 					kibonAnfrageContext,
 					steuerdatenResponseGS);

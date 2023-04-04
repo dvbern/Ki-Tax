@@ -230,13 +230,11 @@ public class NeueVeranlagungEventHandler extends BaseEventHandler<NeueVeranlagun
 		// entscheiden, ob es geht um das GS1 oder GS2
 		if (null != gesuch.getGesuchsteller1() &&
 				gesuch.getGesuchsteller1().getGesuchstellerJA().getGeburtsdatum().equals(geburtsdatum)) {
-			return kibonAnfrageHandler.handleKibonAnfrage(kibonAnfrageContext,
-					kibonAnfrageContext.isGemeinsam(), 1);
+			return kibonAnfrageHandler.handleKibonAnfrage(kibonAnfrageContext, 1);
 		}
 		if (null != gesuch.getGesuchsteller2() &&
 				gesuch.getGesuchsteller2().getGesuchstellerJA().getGeburtsdatum().equals(geburtsdatum)) {
-			return kibonAnfrageHandler.handleKibonAnfrage(kibonAnfrageContext,
-					kibonAnfrageContext.isGemeinsam(), 2);
+			return kibonAnfrageHandler.handleKibonAnfrage(kibonAnfrageContext, 2);
 
 		}
 		return null;
