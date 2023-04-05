@@ -38,8 +38,6 @@ public final class KibonAnfrageUtil {
 	public static KibonAnfrageContext initKibonAnfrageContext(@Nonnull Gesuch gesuch, int zpvNummer) {
 		Objects.requireNonNull(gesuch.getGesuchsteller1());
 		Objects.requireNonNull(gesuch.getGesuchsteller1().getFinanzielleSituationContainer());
-		Objects.requireNonNull(gesuch.getFamiliensituationContainer());
-		Objects.requireNonNull(gesuch.getFamiliensituationContainer().getFamiliensituationJA());
 
 		if (isZpvNrFromAntragsteller(gesuch.getGesuchsteller1().getFinanzielleSituationContainer(), zpvNummer)) {
 			return new KibonAnfrageContext(gesuch);
@@ -48,8 +46,7 @@ public final class KibonAnfrageUtil {
 		if (gesuch.getGesuchsteller2() != null) {
 			Objects.requireNonNull(gesuch.getGesuchsteller2().getFinanzielleSituationContainer());
 			if (isZpvNrFromAntragsteller(gesuch.getGesuchsteller2().getFinanzielleSituationContainer(), zpvNummer)) {
-				return new KibonAnfrageContext(
-					gesuch);
+				return new KibonAnfrageContext(gesuch);
 			}
 		}
 

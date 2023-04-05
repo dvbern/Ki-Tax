@@ -1608,7 +1608,6 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 						gesuch.getId());
 			}
 
-			assert kibonAnfrageContext.getFinSitCont(2) != null;
 			KibonAnfrageHelper.updateFinSitSteuerdatenAbfrageGemeinsamStatusOk(mitteilung.getSteuerdatenResponse(),
 					kibonAnfrageContext);
 			kibonAnfrageContext.getFinSitCont(1)
@@ -1620,13 +1619,12 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 			finanzielleSituationService.saveFinanzielleSituation(kibonAnfrageContext.getFinSitCont(1), gesuch.getId());
 			finanzielleSituationService.saveFinanzielleSituation(kibonAnfrageContext.getFinSitCont(2), gesuch.getId());
 		} else {
-			// KEINE GEMEINSAME STEUERERKLÄRUNG (KONKUBINAT, ETC.)
 			if (mitteilung.getSteuerdatenResponse().getZpvNrPartner() != null) {
 				throw new EbeguException("neueVeranlagungsMitteilungImAntragErsetzen",
 						ErrorCodeEnum.ERROR_FIN_SIT_ALLEIN_NEUE_VERANLAGUNG_GEMEINSAM,
 						gesuch.getId());
 			}
-			// STEUERDATEN DES ZWEITEN ANTRAGSTELLERS
+
 			LocalDate geburtsdatumGS =
 					kibonAnfrageContext.getGesuch().getGesuchsteller1().getGesuchstellerJA().getGeburtsdatum();
 

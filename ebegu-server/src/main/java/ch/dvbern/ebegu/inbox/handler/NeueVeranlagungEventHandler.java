@@ -225,9 +225,6 @@ public class NeueVeranlagungEventHandler extends BaseEventHandler<NeueVeranlagun
 			return null;
 		}
 
-		Objects.requireNonNull(gesuch.getFamiliensituationContainer());
-		Objects.requireNonNull(gesuch.getFamiliensituationContainer().getFamiliensituationJA());
-		// entscheiden, ob es geht um das GS1 oder GS2
 		if (null != gesuch.getGesuchsteller1() &&
 				gesuch.getGesuchsteller1().getGesuchstellerJA().getGeburtsdatum().equals(geburtsdatum)) {
 			return kibonAnfrageHandler.handleKibonAnfrage(kibonAnfrageContext, 1);

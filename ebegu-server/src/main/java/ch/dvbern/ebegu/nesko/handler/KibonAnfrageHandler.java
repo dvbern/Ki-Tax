@@ -50,11 +50,9 @@ public class KibonAnfrageHandler {
 	@Inject
 	private PrincipalBean principalBean;
 
-	public KibonAnfrageContext handleKibonAnfrage(
-			@Nonnull KibonAnfrageContext kibonAnfrageContext,
-			int gesuchstellerNumber) {
+	public KibonAnfrageContext handleKibonAnfrage(@Nonnull KibonAnfrageContext kibonAnfrageContext, int gesuchstellerNumber) {
 		boolean hasTwoAntragStellende = kibonAnfrageContext.getGesuch().getGesuchsteller2() != null;
-		Map<ZpvEnum, String> zpvNummerMap = findZpvNummerForRequest(kibonAnfrageContext);
+		Map<ZpvEnum, String> zpvNummerMap = mapZPVNummerToBesitzer(kibonAnfrageContext);
 
 		if (zpvNummerMap.isEmpty()) {
 			kibonAnfrageContext.setSteuerdatenAnfrageStatus(SteuerdatenAnfrageStatus.FAILED_KEINE_ZPV_NUMMER);
@@ -63,11 +61,8 @@ public class KibonAnfrageHandler {
 		if (hasTwoAntragStellende && kibonAnfrageContext.isGemeinsam()) {
 			String zpvNummer = zpvNummerMap.get(ZpvEnum.ZPV_BESITZER) == null ?
 					zpvNummerMap.get(ZpvEnum.ZPV_GESUCHSTELLER_1) : zpvNummerMap.get(ZpvEnum.ZPV_BESITZER);
-			// nur erstes Mal, dann schon initialisiert
 			if (null != zpvNummer) {
 				try {
-					// try gemeinsame Steuererklärung anfrage
-
 					return getKibonAnfrageContextWithSteuerdaten(
 							zpvNummer,
 							Objects.requireNonNull(kibonAnfrageContext.getGesuch().getGesuchsteller1()),
@@ -95,14 +90,12 @@ public class KibonAnfrageHandler {
 							kibonAnfrageContext.setSteuerdatenAnfrageStatus(SteuerdatenAnfrageStatus.FAILED);
 							return kibonAnfrageContext;
 						}
-					} else {
-						kibonAnfrageContext.setSteuerdatenAnfrageStatus(SteuerdatenAnfrageStatus.FAILED);
-						return kibonAnfrageContext;
 					}
+					kibonAnfrageContext.setSteuerdatenAnfrageStatus(SteuerdatenAnfrageStatus.FAILED);
+					return kibonAnfrageContext;
 				}
-			} else {
-				kibonAnfrageContext.setSteuerdatenAnfrageStatus(SteuerdatenAnfrageStatus.FAILED_KEINE_ZPV_NUMMER);
 			}
+			kibonAnfrageContext.setSteuerdatenAnfrageStatus(SteuerdatenAnfrageStatus.FAILED_KEINE_ZPV_NUMMER);
 		} else {
 			// anfrage single GS
 			if (gesuchstellerNumber == 1) {
@@ -172,9 +165,8 @@ public class KibonAnfrageHandler {
 	}
 
 	@Nonnull
-	private Map<ZpvEnum, String> findZpvNummerForRequest(@Nonnull KibonAnfrageContext context) {
-		HashMap<ZpvEnum, String> gesuchstellerToZpvMap
-				= new HashMap<>();
+	private Map<ZpvEnum, String> mapZPVNummerToBesitzer(@Nonnull KibonAnfrageContext context) {
+		HashMap<ZpvEnum, String> gesuchstellerToZpvMap = new HashMap<>();
 		String zpvBesitzer = findZpvNummerFromGesuchBesitzer(context);
 
 		if (null != zpvBesitzer && !zpvBesitzer.trim().isEmpty()) {

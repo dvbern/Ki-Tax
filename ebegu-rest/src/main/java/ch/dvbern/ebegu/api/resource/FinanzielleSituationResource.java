@@ -446,9 +446,6 @@ public class FinanzielleSituationResource {
 			ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
 			"Gesuch ID invalid: " + gesuchId.getId()));
 
-		assert gesuch.getFamiliensituationContainer() != null;
-		assert gesuch.getFamiliensituationContainer().getFamiliensituationJA() != null;
-
 		KibonAnfrageContext kibonAnfrageContext = new KibonAnfrageContext(gesuch, isGemeinsam);
 		kibonAnfrageContext = kibonAnfrageHandler.handleKibonAnfrage(kibonAnfrageContext, gesuchstellerNumber);
 
