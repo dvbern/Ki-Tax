@@ -195,12 +195,6 @@ public class BGCalculationInput {
 	private Boolean partnerIdentischMitVorgesuch;
 
 	private boolean isEkvAccepted = false;
-	private boolean potentielleDoppelBetreuung = false;
-
-	/*Wenn diese Flag den Wert true hat, wird die AnspruchFristRule nicht ausgeführt! Der Anspruch darf dann innerhalb
-	eines Monats sinken. Dieses Flag soll nur gesetzt werden, wenn effektiv die Anforderung besteht, dass der Anspruch
-	sinken darf.*/
-	private boolean anspruchSinktDuringMonat = false;
 
 	public BGCalculationInput(@Nonnull VerfuegungZeitabschnitt parent, @Nonnull RuleValidity ruleValidity) {
 		this.parent = parent;
@@ -267,8 +261,6 @@ public class BGCalculationInput {
 		this.isAuszahlungAnEltern = toCopy.isAuszahlungAnEltern;
 		this.partnerIdentischMitVorgesuch = toCopy.partnerIdentischMitVorgesuch;
 		this.isEkvAccepted = toCopy.isEkvAccepted;
-		this.anspruchSinktDuringMonat = toCopy.anspruchSinktDuringMonat;
-		this.potentielleDoppelBetreuung = toCopy.potentielleDoppelBetreuung;
 	}
 
 	@Nonnull
@@ -616,8 +608,7 @@ public class BGCalculationInput {
 		this.tsInputMitBetreuung.setVerpflegungskosten(tsVerpflegungskostenMitBetreuung);
 	}
 
-	public void setTsVerpflegungskostenVerguenstigtMitBetreuung(
-		@Nonnull BigDecimal tsVerpflegungskostenVerguenstigtMitBetreuung) {
+	public void setTsVerpflegungskostenVerguenstigtMitBetreuung(@Nonnull BigDecimal tsVerpflegungskostenVerguenstigtMitBetreuung) {
 		this.tsInputMitBetreuung.setVerpflegungskostenVerguenstigt(tsVerpflegungskostenVerguenstigtMitBetreuung);
 	}
 
@@ -645,8 +636,7 @@ public class BGCalculationInput {
 		this.tsInputOhneBetreuung.setVerpflegungskosten(tsVerpflegungskostenOhneBetreuung);
 	}
 
-	public void setTsVerpflegungskostenVerguenstigtOhneBetreuung(
-		@Nonnull BigDecimal tsVerpflegungskostenVerguenstigtOhneBetreuung) {
+	public void setTsVerpflegungskostenVerguenstigtOhneBetreuung(@Nonnull BigDecimal tsVerpflegungskostenVerguenstigtOhneBetreuung) {
 		this.tsInputOhneBetreuung.setVerpflegungskostenVerguenstigt(tsVerpflegungskostenVerguenstigtOhneBetreuung);
 	}
 
@@ -871,10 +861,7 @@ public class BGCalculationInput {
 		}
 
 		this.kitaPlusZuschlag = this.kitaPlusZuschlag || other.kitaPlusZuschlag;
-		this.besondereBeduerfnisseZuschlag =
-			add(this.getBesondereBeduerfnisseZuschlag(), other.getBesondereBeduerfnisseZuschlag());
-		this.potentielleDoppelBetreuung = (this.potentielleDoppelBetreuung || other.potentielleDoppelBetreuung);
-		this.anspruchSinktDuringMonat = this.anspruchSinktDuringMonat || other.anspruchSinktDuringMonat;
+		this.besondereBeduerfnisseZuschlag = add(this.getBesondereBeduerfnisseZuschlag(), other.getBesondereBeduerfnisseZuschlag());
 	}
 
 	/**
@@ -1074,9 +1061,7 @@ public class BGCalculationInput {
 			MathUtil.isSame(this.stuendlicheVollkosten, other.stuendlicheVollkosten) &&
 			this.isAuszahlungAnEltern == other.isAuszahlungAnEltern &&
 			Objects.equals( this.partnerIdentischMitVorgesuch , other.partnerIdentischMitVorgesuch) &&
-			this.isEkvAccepted == other.isEkvAccepted &&
-			this.potentielleDoppelBetreuung == other.potentielleDoppelBetreuung &&
-			this.anspruchSinktDuringMonat == other.anspruchSinktDuringMonat;
+			this.isEkvAccepted == other.isEkvAccepted;
 	}
 
 	@SuppressWarnings("PMD.CompareObjectsWithEquals")
@@ -1236,21 +1221,5 @@ public class BGCalculationInput {
 
 	public void setEkvAccepted(boolean ekvAccepted) {
 		isEkvAccepted = ekvAccepted;
-	}
-
-	public void setPotentielleDoppelBetreuung(boolean isDoppeltBetreut) {
-		this.potentielleDoppelBetreuung = isDoppeltBetreut;
-	}
-
-	public boolean getPotentielleDoppelBetreuung() {
-		return potentielleDoppelBetreuung;
-	}
-
-	public boolean isAnspruchSinktDuringMonat() {
-		return anspruchSinktDuringMonat;
-	}
-
-	public void setAnspruchSinktDuringMonat(boolean anspruchSinktDuringMonat) {
-		this.anspruchSinktDuringMonat = anspruchSinktDuringMonat;
 	}
 }
