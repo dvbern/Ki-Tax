@@ -56,7 +56,6 @@ import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.EbeguUtil;
 import ch.dvbern.ebegu.util.MathUtil;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-import org.apache.commons.collections.bidimap.AbstractBidiMapDecorator;
 import org.apache.commons.lang3.builder.CompareToBuilder;
 import org.hibernate.envers.Audited;
 
@@ -634,10 +633,6 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 		this.getBgCalculationInputGemeinde().setAuszahlungAnEltern(auszahlungAnEltern);
 	}
 
-	public void setPotentielleDoppelBetreuung(boolean isUmzugsMonat ){
-		this.getBgCalculationInputAsiv().setPotentielleDoppelBetreuung(isUmzugsMonat);
-		this.getBgCalculationInputGemeinde().setPotentielleDoppelBetreuung(isUmzugsMonat);
-	}
 	public boolean hasBetreuungspensum() {
 		return !MathUtil.isZero(this.getRelevantBgCalculationResult().getBetreuungspensumProzent());
 	}
