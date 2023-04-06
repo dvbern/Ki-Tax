@@ -62,9 +62,16 @@ public class MutationsMergerFinanzielleSituationBern extends AbstractMutationsMe
 			} else {
 				inputData.getTsInputOhneBetreuung().setVerpflegungskostenVerguenstigt(BigDecimal.ZERO);
 			}
-			if (massgebendesEinkommen.compareTo(massgebendesEinkommenVorher) < 0) {
-				inputData.addBemerkung(MsgKey.ANSPRUCHSAENDERUNG_MSG, getLocale());
-			}
+			handleRueckwirkendAnspruchaenderungMsg(inputData, massgebendesEinkommen, massgebendesEinkommenVorher);
+		}
+	}
+
+	protected void handleRueckwirkendAnspruchaenderungMsg(
+			BGCalculationInput inputData,
+			BigDecimal massgebendesEinkommen,
+			BigDecimal massgebendesEinkommenVorher) {
+		if (massgebendesEinkommen.compareTo(massgebendesEinkommenVorher) < 0) {
+			inputData.addBemerkung(MsgKey.ANSPRUCHSAENDERUNG_MSG, getLocale());
 		}
 	}
 
