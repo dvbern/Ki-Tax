@@ -1023,18 +1023,15 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
         return ' ' + this.$translate.instant('MUTATION_KORREKTUR_AUSBEZAHLT_INNERHLAB_KIBON');
     }
 
-    private showVorgaengerGebuehren(): boolean {
+    public showVorgaengerGebuehren(): boolean {
         if (EbeguUtil.isNullOrUndefined(this.getGesuch().vorgaengerId)) {
             // beim Erstgesuch macht dies keinen Sinn
             return false;
         }
-        return this.isMutation();
+
+        return !EbeguUtil.isEmptyArrayNullOrUndefined(this.vorgaengerZeitabschnitte);
     }
     private initVorgaengerGebuehren(): void {
-        if (! this.showVorgaengerGebuehren()) {
-            return;
-        }
-        this.getBetreuung().kindId
         this.gesuchRS
             .findVorgaengerGesuchNotIgnoriert(this.getGesuch().vorgaengerId)
             .then(gesuch => {
@@ -1045,7 +1042,7 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
 
     private extractVoraengerZeitabschnitteFromVorgaengerGesuch(gesuch: TSGesuch): TSVerfuegungZeitabschnitt[] {
         const vorgaengerKind = gesuch.kindContainers
-            .find(kc => kc.kindNummer = this.getBetreuung().kindNummer);
+            .find(kc => kc.kindNummer === this.getBetreuung().kindNummer);
 
         if (!vorgaengerKind) {
             return [];
