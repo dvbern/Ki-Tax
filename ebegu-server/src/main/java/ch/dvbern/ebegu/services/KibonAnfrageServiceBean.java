@@ -37,9 +37,9 @@ public class KibonAnfrageServiceBean implements KibonAnfrageService {
 
 	@Override
 	@Nonnull
-	public SteuerdatenResponse getSteuerDaten(Integer zpvNummer, LocalDate geburtsdatum, String kibonAntragId, Integer gesuchsperiodeBeginnJahr)
+	public SteuerdatenResponse getSteuerDaten(Integer zpvNummer, LocalDate geburtsdatum, String gesuchId, Integer gesuchsperiodeBeginnJahr)
 		throws KiBonAnfrageServiceException {
-		return kibonAnfrageWebService.getSteuerDaten(zpvNummer, geburtsdatum, kibonAntragId, gesuchsperiodeBeginnJahr);
+		return kibonAnfrageWebService.getSteuerDaten(zpvNummer, geburtsdatum, gesuchId, gesuchsperiodeBeginnJahr);
 	}
 
 }
