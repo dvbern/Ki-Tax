@@ -135,7 +135,7 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
 
     public readonly demoFeature = TSDemoFeature.VERAENDERUNG_BEI_MUTATION;
     private demoFeatureZahlungsstatusAllowed: boolean = false;
-    public vorgaengerZeitabschnitte: TSVerfuegungZeitabschnitt[];
+    public vorgaengerZeitabschnitteSchulamt: TSVerfuegungZeitabschnitt[];
 
     public constructor(
         private readonly $state: StateService,
@@ -1029,13 +1029,13 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
             return false;
         }
 
-        return !EbeguUtil.isEmptyArrayNullOrUndefined(this.vorgaengerZeitabschnitte);
+        return !EbeguUtil.isEmptyArrayNullOrUndefined(this.vorgaengerZeitabschnitteSchulamt);
     }
     private initVorgaengerGebuehren(): void {
         this.gesuchRS
             .findVorgaengerGesuchNotIgnoriert(this.getGesuch().vorgaengerId)
             .then(gesuch => {
-                this.vorgaengerZeitabschnitte = this.extractVoraengerZeitabschnitteFromVorgaengerGesuch(gesuch)
+                this.vorgaengerZeitabschnitteSchulamt = this.extractVoraengerZeitabschnitteFromVorgaengerGesuch(gesuch)
             });
 
     }
