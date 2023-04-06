@@ -60,6 +60,6 @@ export class DVLoginButtonController implements IController {
         if (this.uiRouterGlobals.current.name !== 'einladung.logininfo') {
             return !this.principal;
         }
-        return true;
+        return false;
     }
 }
