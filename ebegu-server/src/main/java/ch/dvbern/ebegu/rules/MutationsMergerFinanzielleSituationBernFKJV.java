@@ -90,4 +90,11 @@ public class MutationsMergerFinanzielleSituationBernFKJV extends MutationsMerger
 		return finanzDatenDTO.getMassgebendesEinkBjVorAbzFamGr();
 	}
 
+	@Override
+	protected void handleRueckwirkendAnspruchaenderungMsg(
+			BGCalculationInput inputData,
+			BigDecimal massgebendesEinkommen,
+			BigDecimal massgebendesEinkommenVorher) {
+		// we don't want any msg for FKJV
+	}
 }
