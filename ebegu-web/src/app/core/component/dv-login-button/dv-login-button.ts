@@ -57,7 +57,7 @@ export class DVLoginButtonController implements IController {
     }
 
     public showButton(): boolean {
-        if (this.uiRouterGlobals.current.name != "einladung.logininfo") {
+        if (this.uiRouterGlobals.current.name !== 'einladung.logininfo') {
             return !this.principal;
         }
         return true;
