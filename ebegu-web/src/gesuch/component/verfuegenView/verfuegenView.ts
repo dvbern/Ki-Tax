@@ -1032,6 +1032,10 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
         return !EbeguUtil.isEmptyArrayNullOrUndefined(this.vorgaengerZeitabschnitteSchulamt);
     }
     private initVorgaengerGebuehren(): void {
+        if (!this.getBetreuung().isAngebotSchulamt()) {
+            return;
+        }
+
         this.gesuchRS
             .findVorgaengerGesuchNotIgnoriert(this.getGesuch().vorgaengerId)
             .then(gesuch => {
@@ -1050,7 +1054,7 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
         const vorgaengerBetreuung = vorgaengerKind.betreuungen
             .find(b => b.betreuungNummer === this.getBetreuung().betreuungNummer)
 
-        if (!vorgaengerBetreuung || !vorgaengerBetreuung.anmeldungTagesschuleZeitabschnitts) {
+        if (!vorgaengerBetreuung || !vorgaengerBetreuung.isAngebotSchulamt()) {
             return [];
         }
         return vorgaengerBetreuung.verfuegung.zeitabschnitte;
