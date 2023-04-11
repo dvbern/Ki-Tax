@@ -47,7 +47,6 @@ describe('ZahlungsstatusIconComponent', () => {
     beforeEach(() => {
         fixture = TestBed.createComponent(ZahlungsstatusIconComponent);
         component = fixture.componentInstance;
-        component.betreuung = new TSBetreuung();
         fixture.detectChanges();
     });
 
