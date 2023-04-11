@@ -986,10 +986,10 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
         if (this.hasKorrekturAuszahlungInstitution()) {
             const betrag = this.gesuchModelManager.getVerfuegenToWorkWith().korrekturAusbezahltInstitution;
             if (betrag < 0) {
-                text += this.$translate.instant('MUTATION_KORREKTUR_AUSBEZAHLT_INSTITUTION_RUECKZAHLUNG',
+                text += this.$translate.instant('MUTATION_KORREKTUR_AUSBEZAHLT_RUECKZAHLUNG_INSTITUTION',
                     {betrag: Math.abs(betrag).toFixed(2)});
             } else {
-                text += this.$translate.instant('MUTATION_KORREKTUR_AUSBEZAHLT_INSTITUTION_RUECKFORDERUNG',
+                text += this.$translate.instant('MUTATION_KORREKTUR_AUSBEZAHLT_RUECKFORDERUNG_INSTITUTION',
                     {betrag: betrag.toFixed(2)});
             }
             text += this.getTextKorrekturAusbezahlt(this.getVerfuegenToWorkWith().isAlreadyIgnorierend());
@@ -999,10 +999,10 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
         if (this.hasKorrekturAuszahlungEltern()) {
             const betrag = this.gesuchModelManager.getVerfuegenToWorkWith().korrekturAusbezahltEltern;
             if (betrag < 0) {
-                text += this.$translate.instant('MUTATION_KORREKTUR_AUSBEZAHLT_ELTERN_RUECKZAHLUNG',
+                text += this.$translate.instant('MUTATION_KORREKTUR_AUSBEZAHLT_RUECKZAHLUNG_ELTERN',
                     {betrag: Math.abs(betrag).toFixed(2)});
             } else {
-                text += this.$translate.instant('MUTATION_KORREKTUR_AUSBEZAHLT_ELTERN_RUECKFORDERUNG',
+                text += this.$translate.instant('MUTATION_KORREKTUR_AUSBEZAHLT_RUECKFORDERUNG_ELTERN',
                     {betrag: betrag.toFixed(2)});
             }
             text += this.getTextKorrekturAusbezahlt(this.getVerfuegenToWorkWith().isAlreadyIgnorierendMahlzeiten());
