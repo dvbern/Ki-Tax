@@ -308,11 +308,11 @@
                                     <dv-tooltip input-id="planKlasse" text="'TAGESSCHULE_GEBUEHR_VOR_MUTATION_HELP' | translate"></dv-tooltip>
                                 </h3>
                                 <ul>
-                                    <li ng-repeat="zeitabschnitt in vm.vorgaengerZeitabschnitte"><p>
+                                    <li ng-repeat="zeitabschnitt in vm.vorgaengerZeitabschnitteSchulamt"><p>
                                         <span ng-bind="zeitabschnitt.gueltigkeit.gueltigAb | amDateFormat : 'DD.MM.YYYY'"></span>
                                         <span>&nbsp;-&nbsp;</span>
                                         <span ng-bind="zeitabschnitt.gueltigkeit.gueltigBis | amDateFormat : 'DD.MM.YYYY'"></span>
-                                        <span>&nbsp;:&nbsp;</span>
+                                        <span>:&nbsp;CHF </span>
                                         <span ng-bind="zeitabschnitt.tsCalculationResultMitPaedagogischerBetreuung.gebuehrProStunde  | currency : '' : 2"></span>
                                     </p></li>
                                 </ul>
