@@ -1032,7 +1032,7 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
         return !EbeguUtil.isEmptyArrayNullOrUndefined(this.vorgaengerZeitabschnitteSchulamt);
     }
     private initVorgaengerGebuehren(): void {
-        if (!this.getBetreuung().isAngebotSchulamt()) {
+        if (!this.getBetreuung().isAngebotSchulamt() || !this.isMutation()) {
             return;
         }
 
