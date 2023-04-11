@@ -133,6 +133,13 @@ public class NeueVeranlagungEventHandler extends BaseEventHandler<NeueVeranlagun
 			return Processing.failure("Gesuch ist noch nicht freigegeben: " + key);
 		}
 
+		if (!KibonAnfrageUtil.hasGesuchSteuerdatenResponseWithZpvNummer(gesuch, dto.getZpvNummer())) {
+			return Processing.failure(
+					"Die neue Veranlagung mit ZPV-Nummer: "
+							+ dto.getZpvNummer()
+							+ ", konnte nicht mit einer gueltige Antragstellende verlinket werden.");
+		}
+
 		// erst die Massgegebenes Einkommens fuer das betroffenes Gesuch berechnen
 		FinanzielleSituationResultateDTO finSitOriginalResult = finanzielleSituationService.calculateResultate(gesuch);
 
@@ -219,11 +226,7 @@ public class NeueVeranlagungEventHandler extends BaseEventHandler<NeueVeranlagun
 			Gesuch gesuch,
 			int zpvNummer,
 			LocalDate geburtsdatum) {
-		KibonAnfrageContext kibonAnfrageContext = KibonAnfrageUtil.initKibonAnfrageContext(gesuch, zpvNummer);
-
-		if (kibonAnfrageContext == null) {
-			return null;
-		}
+	    KibonAnfrageContext kibonAnfrageContext = new KibonAnfrageContext(gesuch);
 
 		if (null != gesuch.getGesuchsteller1() &&
 				gesuch.getGesuchsteller1().getGesuchstellerJA().getGeburtsdatum().equals(geburtsdatum)) {

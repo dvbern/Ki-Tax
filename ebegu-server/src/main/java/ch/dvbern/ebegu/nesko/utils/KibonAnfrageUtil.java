@@ -20,40 +20,37 @@ package ch.dvbern.ebegu.nesko.utils;
 import java.util.Objects;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import ch.dvbern.ebegu.entities.FinanzielleSituationContainer;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.SteuerdatenResponse;
-import ch.dvbern.ebegu.nesko.handler.KibonAnfrageContext;
 
 public final class KibonAnfrageUtil {
 
 	private KibonAnfrageUtil(){
 	}
-	/**
-	 * Bestimmen ob der Veranlagung Event betrifft der GS1 oder GS2 und das Context entsprechend initialisieren
-	 *
-	 * @return KibonAnfrageContext
-	 */
-	public static KibonAnfrageContext initKibonAnfrageContext(@Nonnull Gesuch gesuch, int zpvNummer) {
+
+	public static boolean hasGesuchSteuerdatenResponseWithZpvNummer(@Nonnull Gesuch gesuch, int zpvNummer) {
 		Objects.requireNonNull(gesuch.getGesuchsteller1());
-		Objects.requireNonNull(gesuch.getGesuchsteller1().getFinanzielleSituationContainer());
 
 		if (isZpvNrFromAntragsteller(gesuch.getGesuchsteller1().getFinanzielleSituationContainer(), zpvNummer)) {
-			return new KibonAnfrageContext(gesuch);
+			return true;
 		}
 
-		if (gesuch.getGesuchsteller2() != null) {
-			Objects.requireNonNull(gesuch.getGesuchsteller2().getFinanzielleSituationContainer());
-			if (isZpvNrFromAntragsteller(gesuch.getGesuchsteller2().getFinanzielleSituationContainer(), zpvNummer)) {
-				return new KibonAnfrageContext(gesuch);
-			}
+		if (gesuch.getGesuchsteller2() != null &&
+			gesuch.getGesuchsteller2().getFinanzielleSituationContainer() != null) {
+			return isZpvNrFromAntragsteller(gesuch.getGesuchsteller2().getFinanzielleSituationContainer(), zpvNummer);
 		}
 
-		return null;
+		return false;
 	}
 
-	private static boolean isZpvNrFromAntragsteller(FinanzielleSituationContainer finanzielleSituationContainer, int zpvNummer) {
+	private static boolean isZpvNrFromAntragsteller(@Nullable FinanzielleSituationContainer finanzielleSituationContainer, int zpvNummer) {
+		if (finanzielleSituationContainer == null) {
+			return false;
+		}
+
 		SteuerdatenResponse steuerdatenResponse =
 			finanzielleSituationContainer
 			.getFinanzielleSituationJA()

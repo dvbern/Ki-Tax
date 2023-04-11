@@ -1577,14 +1577,15 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 		Objects.requireNonNull(mitteilung.getSteuerdatenResponse().getZpvNrAntragsteller());
 		authorizer.checkWriteAuthorization(gesuch);
 		authorizer.checkReadAuthorizationMitteilung(mitteilung);
-		KibonAnfrageContext kibonAnfrageContext = KibonAnfrageUtil.initKibonAnfrageContext(gesuch,
-				mitteilung.getSteuerdatenResponse().getZpvNrAntragsteller());
 
-		if (kibonAnfrageContext == null) {
+		if (!KibonAnfrageUtil.hasGesuchSteuerdatenResponseWithZpvNummer(gesuch,
+			mitteilung.getSteuerdatenResponse().getZpvNrAntragsteller())) {
 			throw new EbeguRuntimeException(
 					"neueVeranlagungsMitteilungImAntragErsetzen",
-					"Die neue Veranlagung koennte nicht mit einem gueltigen Antragstellenden verlinkt werden.");
+					"Die neue Veranlagung konnte nicht mit einem gueltigen Antragstellenden verlinkt werden.");
 		}
+
+		KibonAnfrageContext kibonAnfrageContext = new KibonAnfrageContext(gesuch);
 
 		// status muss bei Veranlagungsmitteilung immer rechtskräftig sein. Prüfungen wurden beim Erstellen der
 		// Veranlagungsmitteilungen gemacht.
