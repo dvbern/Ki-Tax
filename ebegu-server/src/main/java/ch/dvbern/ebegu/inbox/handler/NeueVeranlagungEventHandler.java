@@ -38,6 +38,7 @@ import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.NeueVeranlagungsMitteilung;
 import ch.dvbern.ebegu.entities.VeranlagungEventLog;
 import ch.dvbern.ebegu.enums.EinstellungKey;
+import ch.dvbern.ebegu.enums.GesuchstellerTyp;
 import ch.dvbern.ebegu.enums.SteuerdatenAnfrageStatus;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.kafka.BaseEventHandler;
@@ -140,7 +141,9 @@ public class NeueVeranlagungEventHandler extends BaseEventHandler<NeueVeranlagun
 							+ ", konnte nicht mit einer gueltige Antragstellende verlinkt werden.");
 		}
 
-		if (!KibonAnfrageUtil.hasGesuchOneGSWithGeburstdatum(gesuch, dto.getGeburtsdatum())) {
+		GesuchstellerTyp gesuchstellerTyp = getGesuchstellerTypByGeburtsdatum(gesuch, dto.getGeburtsdatum());
+
+		if (gesuchstellerTyp == null) {
 			return Processing.failure(
 				"Die neue Veranlagung mit Geburtsdatum: "
 					+ dto.getGeburtsdatum()
@@ -150,8 +153,8 @@ public class NeueVeranlagungEventHandler extends BaseEventHandler<NeueVeranlagun
 		// erst die Massgegebenes Einkommens fuer das betroffenes Gesuch berechnen
 		FinanzielleSituationResultateDTO finSitOriginalResult = finanzielleSituationService.calculateResultate(gesuch);
 
-		KibonAnfrageContext kibonAnfrageContext = new KibonAnfrageContext(gesuch);
-		kibonAnfrageHandler.handleKibonAnfrage(kibonAnfrageContext, getGesuchstellerNummerByGeburtsdatum(gesuch, dto.getGeburtsdatum()));
+		KibonAnfrageContext kibonAnfrageContext =
+			kibonAnfrageHandler.requestSteuerdaten(gesuch, dto.getZpvNummer(), gesuchstellerTyp);
 
 		if (kibonAnfrageContext.getSteuerdatenAnfrageStatus() == null
 				|| !kibonAnfrageContext.getSteuerdatenAnfrageStatus().isSteuerdatenAbfrageErfolgreich()) {
@@ -221,17 +224,18 @@ public class NeueVeranlagungEventHandler extends BaseEventHandler<NeueVeranlagun
 		return gesuch;
 	}
 
-
-	//TODO Remove after Refactoring
-	private int getGesuchstellerNummerByGeburtsdatum(
-			Gesuch gesuch,
-			LocalDate geburtsdatum) {
-		if (null != gesuch.getGesuchsteller1() &&
-				gesuch.getGesuchsteller1().getGesuchstellerJA().getGeburtsdatum().equals(geburtsdatum)) {
-			return 1;
+	private GesuchstellerTyp getGesuchstellerTypByGeburtsdatum(Gesuch gesuch, LocalDate geburtsdatum) {
+		if (gesuch.getGesuchsteller1() != null &&
+			gesuch.getGesuchsteller1().getGesuchstellerJA().getGeburtsdatum().equals(geburtsdatum)) {
+			return GesuchstellerTyp.GESUCHSTELLER_1;
 		}
 
-		return 2;
+		if (gesuch.getGesuchsteller2() != null &&
+			gesuch.getGesuchsteller2().getGesuchstellerJA().getGeburtsdatum().equals(geburtsdatum)) {
+			return GesuchstellerTyp.GESUCHSTELLER_2;
+		}
+
+		return null;
 	}
 
 	private Processing createAndSendNeueVeranlagungsMitteilung(

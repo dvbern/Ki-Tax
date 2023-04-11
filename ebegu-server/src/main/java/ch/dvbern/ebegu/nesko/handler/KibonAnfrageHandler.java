@@ -27,9 +27,11 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import ch.dvbern.ebegu.authentication.PrincipalBean;
+import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.GesuchstellerContainer;
 import ch.dvbern.ebegu.entities.SteuerdatenResponse;
 import ch.dvbern.ebegu.enums.EnumFamilienstatus;
+import ch.dvbern.ebegu.enums.GesuchstellerTyp;
 import ch.dvbern.ebegu.enums.SteuerdatenAnfrageStatus;
 import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.errors.KiBonAnfrageServiceException;
@@ -49,6 +51,15 @@ public class KibonAnfrageHandler {
 
 	@Inject
 	private PrincipalBean principalBean;
+
+	public KibonAnfrageContext requestSteuerdaten(
+		@Nonnull Gesuch gesuch,
+		int zpvNummer,
+		@Nonnull GesuchstellerTyp gesuchstellerTyp) {
+
+		KibonAnfrageContext kibonAnfrageContext = new KibonAnfrageContext(gesuch, zpvNummer);
+		return handleKibonAnfrage(kibonAnfrageContext, gesuchstellerTyp.getGesuchstellerNummer());
+	}
 
 	public KibonAnfrageContext handleKibonAnfrage(@Nonnull KibonAnfrageContext kibonAnfrageContext, int gesuchstellerNumber) {
 		boolean hasTwoAntragStellende = kibonAnfrageContext.getGesuch().getGesuchsteller2() != null;

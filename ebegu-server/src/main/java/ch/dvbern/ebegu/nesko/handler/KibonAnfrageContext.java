@@ -33,6 +33,8 @@ public class KibonAnfrageContext {
 	@Nonnull
 	private Gesuch gesuch;
 
+	private int zpvNummerForRequest;
+
 	@Nullable
 	private SteuerdatenAnfrageStatus steuerdatenAnfrageStatus;
 
@@ -41,6 +43,17 @@ public class KibonAnfrageContext {
 
 
 	private boolean gemeinsam;
+
+	public KibonAnfrageContext(
+		@Nonnull Gesuch gesuch,
+		int zpvNummerForRequest) {
+		this.gesuch = gesuch;
+		this.zpvNummerForRequest = zpvNummerForRequest;
+
+		initGemeinsam();
+		createFinSitGS2Container();
+		setSteuerdatenZugriffFlags();
+	}
 
 	public KibonAnfrageContext(@Nonnull Gesuch gesuch, boolean isGemeinsam) {
 		this.gesuch = gesuch;
