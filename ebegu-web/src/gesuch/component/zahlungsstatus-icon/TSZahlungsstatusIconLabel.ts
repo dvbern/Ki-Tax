@@ -29,16 +29,16 @@ export class TSZahlungsstatusIconLabel {
     public constructor(
         private readonly translateService: TranslateService,
         private readonly zahlungsstatus: TSVerfuegungZeitabschnittZahlungsstatus,
-        private readonly betreuung: TSBetreuung
+        private readonly isBetreuungGueltig: boolean
     ) {
-        this.initIconLabel(zahlungsstatus, betreuung);
+        this.initIconLabel(zahlungsstatus, isBetreuungGueltig);
     }
 
     private initIconLabel(
         zahlungsstatus: TSVerfuegungZeitabschnittZahlungsstatus,
-        betreuung: TSBetreuung
+        isBetreuungGueltig: boolean
     ): void {
-       if (betreuung.gueltig) {
+       if (isBetreuungGueltig) {
            this.initIconLabelGueltigeBetreuung(zahlungsstatus);
        } else {
            this.initIconLabelNichtGueltigeBetreuung(zahlungsstatus);

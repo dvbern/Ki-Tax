@@ -35,7 +35,7 @@ export class ZahlungsstatusIconComponent implements OnInit {
     public zahlungsstatus: TSVerfuegungZeitabschnittZahlungsstatus;
 
     @Input()
-    public betreuung: TSBetreuung;
+    public isBetreuungGueltig: boolean;
     public iconLabel: TSZahlungsstatusIconLabel;
 
     public constructor(
@@ -45,7 +45,7 @@ export class ZahlungsstatusIconComponent implements OnInit {
     }
 
     public ngOnInit(): void {
-        this.iconLabel = new TSZahlungsstatusIconLabel(this.translate, this.zahlungsstatus, this.betreuung);
+        this.iconLabel = new TSZahlungsstatusIconLabel(this.translate, this.zahlungsstatus, this.isBetreuungGueltig);
     }
 
     public getTitle(): string {

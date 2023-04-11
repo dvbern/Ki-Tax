@@ -1,4 +1,5 @@
 /*
+/*
  * Copyright (C) 2023 DV Bern AG, Switzerland
  *
  * This program is free software: you can redistribute it and/or modify
@@ -122,6 +123,7 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
     private isVerfuegungExportEnabled: boolean;
 
     public showVerfuegung: boolean;
+    public betreuungVerfuegt: boolean = false;
     public modulGroups: TSBelegungTagesschuleModulGroup[] = [];
     public tagesschuleZeitabschnitteMitBetreuung: Array<TSVerfuegungZeitabschnitt>;
     public tagesschuleZeitabschnitteOhneBetreuung: Array<TSVerfuegungZeitabschnitt>;
@@ -350,8 +352,8 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
                         this.askForIgnoringIfNecessaryAndSaveVerfuegung(direktVerfuegenVerguenstigung,
                             direktVerfuegenMahlzeiten
                         ).then(() => {
-                            this.gesuchModelManager.reloadGesuch();
                             this.showVerfuegung = this.showVerfuegen();
+                            this.betreuungVerfuegt = true;
                         });
                     });
             });
@@ -900,6 +902,10 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
         }
 
         return this.showAuszahlungAnEltern;
+    }
+
+    public isBetreuungGueltig(): boolean {
+        return this.getBetreuung().gueltig || this.betreuungVerfuegt;
     }
 
     public getVerguenstigungAnInstitution(zeiabschnitt: TSVerfuegungZeitabschnitt): number {

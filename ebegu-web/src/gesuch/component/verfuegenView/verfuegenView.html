@@ -489,7 +489,7 @@
                                 <td class="result" ng-if="vm.showZahlungsstatusInstitutionenCol()">
                                     <dv-zahlungsstatus-icon
                                         [zahlungsstatus]="verfuegungZeitabschnitt.zahlungsstatusInstitution"
-                                        [betreuung]="vm.getBetreuung()"
+                                        [is-betreuung-gueltig]="vm.isBetreuungGueltig()"
                                     ></dv-zahlungsstatus-icon>
                                 </td>
                                 <!-- An Kita überwiesen (Gutschein) -->
@@ -503,7 +503,7 @@
                                 <td class="result" ng-if="vm.showZahlungsstatusAntragstellerCol()">
                                     <dv-zahlungsstatus-icon
                                         [zahlungsstatus]="verfuegungZeitabschnitt.zahlungsstatusAntragsteller"
-                                        [betreuung]="vm.getBetreuung()"
+                                        [is-betreuung-gueltig]="vm.isBetreuungGueltig()"
                                     ></dv-zahlungsstatus-icon>
                                 </td>
                             </tr>
