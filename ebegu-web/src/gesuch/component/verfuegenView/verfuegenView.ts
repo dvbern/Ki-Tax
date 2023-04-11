@@ -135,7 +135,7 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
 
     public readonly demoFeature = TSDemoFeature.VERAENDERUNG_BEI_MUTATION;
     private demoFeatureZahlungsstatusAllowed: boolean = false;
-    public vorgaengerZeitabschnitte: TSVerfuegungZeitabschnitt[];
+    public vorgaengerZeitabschnitteSchulamt: TSVerfuegungZeitabschnitt[];
 
     public constructor(
         private readonly $state: StateService,
@@ -1031,29 +1031,30 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
         }
     }
 
-    private showVorgaengerGebuehren(): boolean {
+    public showVorgaengerGebuehren(): boolean {
         if (EbeguUtil.isNullOrUndefined(this.getGesuch().vorgaengerId)) {
             // beim Erstgesuch macht dies keinen Sinn
             return false;
         }
-        return this.isMutation();
+
+        return !EbeguUtil.isEmptyArrayNullOrUndefined(this.vorgaengerZeitabschnitteSchulamt);
     }
     private initVorgaengerGebuehren(): void {
-        if (! this.showVorgaengerGebuehren()) {
+        if (!this.getBetreuung().isAngebotSchulamt() || !this.isMutation()) {
             return;
         }
-        this.getBetreuung().kindId
+
         this.gesuchRS
             .findVorgaengerGesuchNotIgnoriert(this.getGesuch().vorgaengerId)
             .then(gesuch => {
-                this.vorgaengerZeitabschnitte = this.extractVoraengerZeitabschnitteFromVorgaengerGesuch(gesuch)
+                this.vorgaengerZeitabschnitteSchulamt = this.extractVoraengerZeitabschnitteFromVorgaengerGesuch(gesuch)
             });
 
     }
 
     private extractVoraengerZeitabschnitteFromVorgaengerGesuch(gesuch: TSGesuch): TSVerfuegungZeitabschnitt[] {
         const vorgaengerKind = gesuch.kindContainers
-            .find(kc => kc.kindNummer = this.getBetreuung().kindNummer);
+            .find(kc => kc.kindNummer === this.getBetreuung().kindNummer);
 
         if (!vorgaengerKind) {
             return [];
@@ -1061,7 +1062,7 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
         const vorgaengerBetreuung = vorgaengerKind.betreuungen
             .find(b => b.betreuungNummer === this.getBetreuung().betreuungNummer)
 
-        if (!vorgaengerBetreuung || !vorgaengerBetreuung.anmeldungTagesschuleZeitabschnitts) {
+        if (!vorgaengerBetreuung || !vorgaengerBetreuung.isAngebotSchulamt()) {
             return [];
         }
         return vorgaengerBetreuung.verfuegung.zeitabschnitte;
