@@ -985,42 +985,50 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
 
         if (this.hasKorrekturAuszahlungInstitution()) {
             const betrag = this.gesuchModelManager.getVerfuegenToWorkWith().korrekturAusbezahltInstitution;
-            if (betrag < 0) {
-                text += this.$translate.instant('MUTATION_KORREKTUR_AUSBEZAHLT_RUECKZAHLUNG_INSTITUTION',
-                    {betrag: Math.abs(betrag).toFixed(2)});
-            } else {
-                text += this.$translate.instant('MUTATION_KORREKTUR_AUSBEZAHLT_RUECKFORDERUNG_INSTITUTION',
-                    {betrag: betrag.toFixed(2)});
-            }
-            text += this.getTextKorrekturAusbezahlt(this.getVerfuegenToWorkWith().isAlreadyIgnorierend());
+            const isZahlungIgnoriert = this.getVerfuegenToWorkWith().isAlreadyIgnorierend();
+            text += this.getTextForKorrekturAuszahlung('INSTITUTION', betrag, isZahlungIgnoriert);
             text += '\n';
         }
 
         if (this.hasKorrekturAuszahlungEltern()) {
             const betrag = this.gesuchModelManager.getVerfuegenToWorkWith().korrekturAusbezahltEltern;
-            if (betrag < 0) {
-                text += this.$translate.instant('MUTATION_KORREKTUR_AUSBEZAHLT_RUECKZAHLUNG_ELTERN',
-                    {betrag: Math.abs(betrag).toFixed(2)});
-            } else {
-                text += this.$translate.instant('MUTATION_KORREKTUR_AUSBEZAHLT_RUECKFORDERUNG_ELTERN',
-                    {betrag: betrag.toFixed(2)});
-            }
-            text += this.getTextKorrekturAusbezahlt(this.getVerfuegenToWorkWith().isAlreadyIgnorierendMahlzeiten());
+            const isZahlungIgnoriert = this.getVerfuegenToWorkWith().isAlreadyIgnorierendMahlzeiten();
+            text +=  this.getTextForKorrekturAuszahlung('ELTERN', betrag, isZahlungIgnoriert);
         }
 
         return text.trim();
     }
 
-    private getTextKorrekturAusbezahlt(isZahlungIgnored: boolean) : string {
-        if (this.getBetreuungsstatus() !== TSBetreuungsstatus.VERFUEGT) {
-            return '';
+    private getTextForKorrekturAuszahlung(keyPostFix: string, betrag: number, isZahlungIgnored: boolean) : string {
+        if (this.getBetreuungsstatus() === TSBetreuungsstatus.VERFUEGT && isZahlungIgnored) {
+            return this.getTextKorrekturForVerfuegteBetreuungAndIgnored(betrag);
         }
 
-        if (isZahlungIgnored) {
-            return ' ' + this.$translate.instant('MUTATION_KORREKTUR_AUSBEZAHLT_AUSSERHALB_KIBON');
+        let text = '';
+
+        if (betrag < 0) {
+            text += this.$translate.instant('MUTATION_KORREKTUR_AUSBEZAHLT_RUECKZAHLUNG_' + keyPostFix,
+                {betrag: Math.abs(betrag).toFixed(2)});
+        } else {
+            text += this.$translate.instant('MUTATION_KORREKTUR_AUSBEZAHLT_RUECKFORDERUNG_' + keyPostFix,
+                {betrag: betrag.toFixed(2)});
         }
 
-        return ' ' + this.$translate.instant('MUTATION_KORREKTUR_AUSBEZAHLT_INNERHLAB_KIBON');
+        if (this.getBetreuungsstatus() === TSBetreuungsstatus.VERFUEGT) {
+            text += this.$translate.instant('MUTATION_KORREKTUR_AUSBEZAHLT_INNERHLAB_KIBON');
+        }
+
+        return text.trim();
+    }
+
+    private getTextKorrekturForVerfuegteBetreuungAndIgnored(betrag: number) : string {
+        if (betrag < 0) {
+            return this.$translate.instant('MUTATION_KORREKTUR_AUSBEZAHLT_AUSSERHALB_KIBON_RUECKZAHLUNG',
+                {betrag: Math.abs(betrag).toFixed(2)});
+        } else {
+            return this.$translate.instant('MUTATION_KORREKTUR_AUSBEZAHLT_AUSSERHALB_KIBON_RUECKFORDERUNG',
+                {betrag: betrag.toFixed(2)});
+        }
     }
 
     private showVorgaengerGebuehren(): boolean {
