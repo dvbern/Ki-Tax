@@ -137,21 +137,21 @@ public class NeueVeranlagungEventHandler extends BaseEventHandler<NeueVeranlagun
 			return Processing.failure(
 					"Die neue Veranlagung mit ZPV-Nummer: "
 							+ dto.getZpvNummer()
-							+ ", konnte nicht mit einer gueltige Antragstellende verlinket werden.");
+							+ ", konnte nicht mit einer gueltige Antragstellende verlinkt werden.");
+		}
+
+		if (!KibonAnfrageUtil.hasGesuchOneGSWithGeburstdatum(gesuch, dto.getGeburtsdatum())) {
+			return Processing.failure(
+				"Die neue Veranlagung mit Geburtsdatum: "
+					+ dto.getGeburtsdatum()
+					+ ", konnte nicht mit einer gueltige Antragstellende verlinkt werden.");
 		}
 
 		// erst die Massgegebenes Einkommens fuer das betroffenes Gesuch berechnen
 		FinanzielleSituationResultateDTO finSitOriginalResult = finanzielleSituationService.calculateResultate(gesuch);
 
-		KibonAnfrageContext kibonAnfrageContext =
-				requestCurrentSteuerdaten(gesuch, dto.getZpvNummer(), dto.getGeburtsdatum());
-
-		if (kibonAnfrageContext == null) {
-			return Processing.failure(
-					"Die neue Veranlagung mit Geburtsdatum: "
-							+ dto.getGeburtsdatum()
-							+ ", koennte nicht mit einer gueltige Antragstellende verlinket werden.");
-		}
+		KibonAnfrageContext kibonAnfrageContext = new KibonAnfrageContext(gesuch);
+		kibonAnfrageHandler.handleKibonAnfrage(kibonAnfrageContext, getGesuchstellerNummerByGeburtsdatum(gesuch, dto.getGeburtsdatum()));
 
 		if (kibonAnfrageContext.getSteuerdatenAnfrageStatus() == null
 				|| !kibonAnfrageContext.getSteuerdatenAnfrageStatus().isSteuerdatenAbfrageErfolgreich()) {
@@ -221,23 +221,17 @@ public class NeueVeranlagungEventHandler extends BaseEventHandler<NeueVeranlagun
 		return gesuch;
 	}
 
-	@Nullable
-	private KibonAnfrageContext requestCurrentSteuerdaten(
-			Gesuch gesuch,
-			int zpvNummer,
-			LocalDate geburtsdatum) {
-	    KibonAnfrageContext kibonAnfrageContext = new KibonAnfrageContext(gesuch);
 
+	//TODO Remove after Refactoring
+	private int getGesuchstellerNummerByGeburtsdatum(
+			Gesuch gesuch,
+			LocalDate geburtsdatum) {
 		if (null != gesuch.getGesuchsteller1() &&
 				gesuch.getGesuchsteller1().getGesuchstellerJA().getGeburtsdatum().equals(geburtsdatum)) {
-			return kibonAnfrageHandler.handleKibonAnfrage(kibonAnfrageContext, 1);
+			return 1;
 		}
-		if (null != gesuch.getGesuchsteller2() &&
-				gesuch.getGesuchsteller2().getGesuchstellerJA().getGeburtsdatum().equals(geburtsdatum)) {
-			return kibonAnfrageHandler.handleKibonAnfrage(kibonAnfrageContext, 2);
 
-		}
-		return null;
+		return 2;
 	}
 
 	private Processing createAndSendNeueVeranlagungsMitteilung(

@@ -17,6 +17,7 @@
 
 package ch.dvbern.ebegu.nesko.utils;
 
+import java.time.LocalDate;
 import java.util.Objects;
 
 import javax.annotation.Nonnull;
@@ -29,6 +30,15 @@ import ch.dvbern.ebegu.entities.SteuerdatenResponse;
 public final class KibonAnfrageUtil {
 
 	private KibonAnfrageUtil(){
+	}
+
+	public static boolean hasGesuchOneGSWithGeburstdatum(@Nonnull Gesuch gesuch, LocalDate geburtsdatum) {
+		if (gesuch.getGesuchsteller1() != null &&
+			gesuch.getGesuchsteller1().getGesuchstellerJA().getGeburtsdatum().equals(geburtsdatum)) {
+			return true;
+		}
+		return (gesuch.getGesuchsteller2() != null &&
+			gesuch.getGesuchsteller2().getGesuchstellerJA().getGeburtsdatum().equals(geburtsdatum));
 	}
 
 	public static boolean hasGesuchSteuerdatenResponseWithZpvNummer(@Nonnull Gesuch gesuch, int zpvNummer) {
