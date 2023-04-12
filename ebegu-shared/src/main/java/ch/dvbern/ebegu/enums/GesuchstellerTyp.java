@@ -13,4 +13,17 @@ public enum GesuchstellerTyp {
 	public int getGesuchstellerNummer() {
 		return gesuchstellerNummer;
 	}
+
+	public static GesuchstellerTyp getGesuchstellerTypByNummer(int nummer) {
+		if (nummer == 1) {
+			return GESUCHSTELLER_1;
+		}
+
+		if (nummer == 2) {
+			return GESUCHSTELLER_2;
+		}
+
+		throw new IllegalArgumentException("Invalid GesuchstellerNummer " + nummer
+												   + " can not be converted to Gesuchstellertyp");
+	}
 }

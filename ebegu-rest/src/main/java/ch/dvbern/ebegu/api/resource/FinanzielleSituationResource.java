@@ -70,6 +70,7 @@ import ch.dvbern.ebegu.entities.SteuerdatenResponse;
 import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.FinanzielleSituationTyp;
+import ch.dvbern.ebegu.enums.GesuchstellerTyp;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.nesko.handler.KibonAnfrageContext;
 import ch.dvbern.ebegu.nesko.handler.KibonAnfrageHandler;
@@ -446,8 +447,10 @@ public class FinanzielleSituationResource {
 			ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
 			"Gesuch ID invalid: " + gesuchId.getId()));
 
-		KibonAnfrageContext kibonAnfrageContext = new KibonAnfrageContext(gesuch, isGemeinsam);
-		kibonAnfrageContext = kibonAnfrageHandler.handleKibonAnfrage(kibonAnfrageContext, gesuchstellerNumber);
+		GesuchstellerTyp gesuchstellerTyp = GesuchstellerTyp.getGesuchstellerTypByNummer(gesuchstellerNumber);
+
+		KibonAnfrageContext kibonAnfrageContext =
+				kibonAnfrageHandler.handleKibonAnfrage(gesuch, isGemeinsam, gesuchstellerTyp);
 
 		// Save
 		KibonAnfrageHelper.updateFinSitSteuerdatenAbfrageStatus(

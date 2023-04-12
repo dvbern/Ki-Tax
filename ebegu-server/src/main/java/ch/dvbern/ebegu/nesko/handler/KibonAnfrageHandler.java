@@ -68,7 +68,9 @@ public class KibonAnfrageHandler {
 		return kibonAnfrageContext;
 	}
 
-	public KibonAnfrageContext handleKibonAnfrage(@Nonnull KibonAnfrageContext kibonAnfrageContext, int gesuchstellerNumber) {
+	public KibonAnfrageContext handleKibonAnfrage(Gesuch gesuch, boolean isGemsinam, GesuchstellerTyp gesuchstellerTyp) {
+		int gesuchstellerNumber = gesuchstellerTyp.getGesuchstellerNummer();
+		KibonAnfrageContext kibonAnfrageContext = new KibonAnfrageContext(gesuch, isGemsinam);
 		boolean hasTwoAntragStellende = kibonAnfrageContext.getGesuch().getGesuchsteller2() != null;
 		Map<ZpvEnum, String> zpvNummerMap = mapZPVNummerToBesitzer(kibonAnfrageContext);
 
