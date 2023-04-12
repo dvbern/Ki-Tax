@@ -111,10 +111,7 @@ public class KibonAnfrageHandler {
 				steuerdatenResponseGS);
 			return;
 		}
-		KibonAnfrageHelper.handleSteuerdatenResponse(
-				kibonAnfrageContext,
-				steuerdatenResponseGS,
-				kibonAnfrageContext.getGesuchstellernTyp().getGesuchstellerNummer());
+		KibonAnfrageHelper.handleSteuerdatenResponse(kibonAnfrageContext, steuerdatenResponseGS);
 	}
 
 	@Nullable

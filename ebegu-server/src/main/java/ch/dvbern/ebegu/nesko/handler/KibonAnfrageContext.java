@@ -202,10 +202,6 @@ public class KibonAnfrageContext {
 		return this.gesuch.getGesuchsteller1();
 	}
 
-	public GesuchstellerTyp getGesuchstellernTyp() {
-		return gesuchstellerTyp;
-	}
-
 	private void createFinSitGS2Container() {
 		if (this.getGesuch().getGesuchsteller2() == null){
 			return;
@@ -240,6 +236,16 @@ public class KibonAnfrageContext {
 			return getGesuch().getGesuchsteller1().getFinanzielleSituationContainer();
 		}
 		return getGesuch().getGesuchsteller2().getFinanzielleSituationContainer();
+	}
+
+	public FinanzielleSituationContainer getFinanzielleSituationContainerToUse() {
+		Objects.requireNonNull(getGesuchstellerContainerToUse().getFinanzielleSituationContainer());
+		return getGesuchstellerContainerToUse().getFinanzielleSituationContainer();
+	}
+
+	public FinanzielleSituation getFinanzielleSituationJAToUse() {
+		Objects.requireNonNull(getFinanzielleSituationContainerToUse().getFinanzielleSituationJA());
+		return getFinanzielleSituationContainerToUse().getFinanzielleSituationJA();
 	}
 
 	public void setSteuerdatenAnfrageStatusFailedNoZPV() {

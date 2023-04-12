@@ -42,10 +42,7 @@ public class KibonAnfrageHelper {
 	/**
 	 * handle steuerdatenResponse for single GS
 	 */
-	public static void handleSteuerdatenResponse(
-			KibonAnfrageContext kibonAnfrageContext,
-			SteuerdatenResponse steuerdatenResponse,
-			int gesuchstellerNumber) {
+	public static void handleSteuerdatenResponse(KibonAnfrageContext kibonAnfrageContext, SteuerdatenResponse steuerdatenResponse) {
 		if (steuerdatenResponse.getVeranlagungsstand() == Veranlagungsstand.OFFEN) {
 			kibonAnfrageContext.setSteuerdatenAnfrageStatus(SteuerdatenAnfrageStatus.FAILED);
 			return;
@@ -59,8 +56,9 @@ public class KibonAnfrageHelper {
 			return;
 		}
 		setVeranlagungsstand(kibonAnfrageContext, steuerdatenResponse);
-		KibonAnfrageHelper.updateFinSitSteuerdatenAbfrageStatusOk(kibonAnfrageContext.getFinSitCont(gesuchstellerNumber)
-				.getFinanzielleSituationJA(), steuerdatenResponse);
+		KibonAnfrageHelper.updateFinSitSteuerdatenAbfrageStatusOk(
+				kibonAnfrageContext.getFinanzielleSituationJAToUse(),
+				steuerdatenResponse);
 
 	}
 
