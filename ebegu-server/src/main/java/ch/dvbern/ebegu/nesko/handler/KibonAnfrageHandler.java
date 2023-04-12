@@ -195,6 +195,7 @@ public class KibonAnfrageHandler {
 			KibonAnfrageHelper.handleSteuerdatenGemeinsamResponse(
 				kibonAnfrageContext,
 				steuerdatenResponseGS);
+			return;
 		}
 		KibonAnfrageHelper.handleSteuerdatenResponse(
 				kibonAnfrageContext,
