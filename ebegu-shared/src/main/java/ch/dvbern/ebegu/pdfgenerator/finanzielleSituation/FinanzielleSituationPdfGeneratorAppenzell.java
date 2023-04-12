@@ -24,54 +24,39 @@ import javax.annotation.Nonnull;
 import ch.dvbern.ebegu.entities.GemeindeStammdaten;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Verfuegung;
-import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.finanzielleSituationRechner.AbstractFinanzielleSituationRechner;
-import ch.dvbern.ebegu.pdfgenerator.DokumentAnFamilieGenerator;
+import ch.dvbern.lib.invoicegenerator.pdf.PdfGenerator;
+import com.lowagie.text.Document;
 
-public abstract class FinanzielleSituationPdfGeneratorFactory {
-	public static DokumentAnFamilieGenerator getGenerator(
+public class FinanzielleSituationPdfGeneratorAppenzell extends FinanzielleSituationPdfGenerator {
+
+	public FinanzielleSituationPdfGeneratorAppenzell(
 		@Nonnull Gesuch gesuch,
 		@Nonnull Verfuegung verfuegungFuerMassgEinkommen,
 		@Nonnull GemeindeStammdaten stammdaten,
 		@Nonnull LocalDate erstesEinreichungsdatum,
 		@Nonnull AbstractFinanzielleSituationRechner finanzielleSituationRechner
 	) {
-		switch (gesuch.getFinSitTyp()) {
-		case BERN_FKJV:
-		case BERN:
-			return new FinanzielleSituationPdfGeneratorBern(
-				gesuch,
-				verfuegungFuerMassgEinkommen,
-				stammdaten,
-				erstesEinreichungsdatum,
-				finanzielleSituationRechner
-			);
-		case SOLOTHURN:
-			return new FinanzielleSituationPdfGeneratorSolothurn(
-				gesuch,
-				verfuegungFuerMassgEinkommen,
-				stammdaten,
-				erstesEinreichungsdatum,
-				finanzielleSituationRechner
-			);
-		case LUZERN:
-			return new FinanzielleSituationPdfGeneratorLuzern(
-				gesuch,
-				verfuegungFuerMassgEinkommen,
-				stammdaten,
-				erstesEinreichungsdatum,
-				finanzielleSituationRechner
-			);
-		case APPENZELL:
-			return new FinanzielleSituationPdfGeneratorAppenzell(
-				gesuch,
-				verfuegungFuerMassgEinkommen,
-				stammdaten,
-				erstesEinreichungsdatum,
-				finanzielleSituationRechner
-			);
-		default:
-			throw new EbeguRuntimeException("getGenerator", "No PDF Generator found for finSitTyp: " + gesuch.getFinSitTyp());
-		}
+		super(gesuch, verfuegungFuerMassgEinkommen, stammdaten, erstesEinreichungsdatum, finanzielleSituationRechner);
+	}
+
+	protected void initializeValues() {
+		initialzeEkv();
+	}
+
+	protected void createPageBasisJahr(
+		@Nonnull PdfGenerator generator,
+		@Nonnull Document document
+	) {
+	}
+
+	@Override
+	protected void createPageEkv1(@Nonnull PdfGenerator generator, @Nonnull Document document) {
+
+	}
+
+	@Override
+	protected void createPageEkv2(@Nonnull PdfGenerator generator, @Nonnull Document document) {
+
 	}
 }

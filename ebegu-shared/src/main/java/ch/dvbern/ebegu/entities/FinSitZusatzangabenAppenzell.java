@@ -187,24 +187,39 @@ public class FinSitZusatzangabenAppenzell extends AbstractMutableEntity {
 			getLeistungAnJuristischePersonen());
 	}
 
-	public FinSitZusatzangabenAppenzell copyFinanzielleVerhaeltnisse(
+	public FinSitZusatzangabenAppenzell copyFinSitZusatzangabenAppenzell(
 		FinSitZusatzangabenAppenzell target,
 		AntragCopyType copyType) {
 		switch (copyType) {
 		case MUTATION:
 		case MUTATION_NEUES_DOSSIER:
-			target.setSaeule3a(this.getSaeule3a());
-			target.setSaeule3aNichtBvg(this.getSaeule3aNichtBvg());
-			target.setBeruflicheVorsorge(this.getBeruflicheVorsorge());
-			target.setLiegenschaftsaufwand(this.getLiegenschaftsaufwand());
-			target.setEinkuenfteBgsa(this.getEinkuenfteBgsa());
-			target.setVorjahresverluste(this.getVorjahresverluste());
-			target.setPolitischeParteiSpende(this.getPolitischeParteiSpende());
-			target.setLeistungAnJuristischePersonen(this.getLeistungAnJuristischePersonen());
-			break;
+			return copyAllValues(target);
 		default:
 			break;
 		}
 		return target;
+	}
+
+	public FinSitZusatzangabenAppenzell copyAllValues(FinSitZusatzangabenAppenzell target) {
+		target.setSaeule3a(this.getSaeule3a());
+		target.setSaeule3aNichtBvg(this.getSaeule3aNichtBvg());
+		target.setBeruflicheVorsorge(this.getBeruflicheVorsorge());
+		target.setLiegenschaftsaufwand(this.getLiegenschaftsaufwand());
+		target.setEinkuenfteBgsa(this.getEinkuenfteBgsa());
+		target.setVorjahresverluste(this.getVorjahresverluste());
+		target.setPolitischeParteiSpende(this.getPolitischeParteiSpende());
+		target.setLeistungAnJuristischePersonen(this.getLeistungAnJuristischePersonen());
+		return target;
+	}
+
+	public boolean isVollstaendig() {
+		return saeule3a != null &&
+			saeule3aNichtBvg != null &&
+			beruflicheVorsorge != null &&
+			liegenschaftsaufwand != null &&
+			einkuenfteBgsa != null &&
+			vorjahresverluste != null &&
+			politischeParteiSpende != null &&
+			leistungAnJuristischePersonen != null;
 	}
 }

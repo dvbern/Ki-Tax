@@ -27,7 +27,8 @@ export class StepDialogController {
         '$translate',
         'institutionName',
         'institutionPhone',
-        'zahlungslaufTyp'
+        'zahlungslaufTyp',
+        'zahlungDirektIgnorieren'
     ];
 
     public title: string;
@@ -51,16 +52,19 @@ export class StepDialogController {
     public radioYesCases: Array<string>;
     public radioNoCasesInfo: string;
     public radioNoCases: Array<string>;
-    public institutionHint: string;
+    public warningZahlungAusserhalbKibon: string;
+    public zahlungDirektIgnorieren: boolean;
 
     public constructor(
         private readonly $mdDialog: IDialogService,
         $translate: ITranslateService,
         institutionName: string,
         institutionPhone: string,
-        zahlungslaufTyp: TSZahlungslaufTyp
+        zahlungslaufTyp: TSZahlungslaufTyp,
+        zahlungDirektIgnorieren: boolean
     ) {
         const isInstitutionszahlung = TSZahlungslaufTyp.GEMEINDE_INSTITUTION === zahlungslaufTyp;
+        this.zahlungDirektIgnorieren = zahlungDirektIgnorieren;
 
         // "Mutaton fuehrt zu Korrekturen von bereits ausbezahlten.."
         const titleKey = isInstitutionszahlung
@@ -98,12 +102,9 @@ export class StepDialogController {
                 $translate.instant('KORREKTURZAHLUNG_NO_CASE_1'),
                 $translate.instant('KORREKTURZAHLUNG_NO_CASE_2'),
                 $translate.instant('KORREKTURZAHLUNG_NO_CASE_3')];
-            this.institutionHint = $translate.instant('KORREKTURZAHLUNG_INSTITUTION_HINT');
-            if (institutionName) {
-                this.institutionHint += ` ${institutionName}`;
-            }
-            if (institutionPhone) {
-                this.institutionHint += ` (${$translate.instant('TELEFON')} ${institutionPhone})`;
+            if (this.zahlungDirektIgnorieren) {
+                this.warningZahlungAusserhalbKibon = $translate.instant('WARNUNG_ZAHLUNG_AUSSERHALB_KIBON', {institution: institutionName});
+                this.selected = 2;
             }
         }
     }

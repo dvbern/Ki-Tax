@@ -36,6 +36,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
@@ -664,5 +665,29 @@ public class FinanzielleSituationResource {
 			methodeName,
 			ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
 			"GesuchstellerId invalid: " + gesuchstellerId));
+	}
+
+	@ApiOperation(value = "Remove FinanzielleSituation from Gesuchsteller", response = GesuchstellerContainer.class)
+	@Nullable
+	@DELETE
+	@Path("/remove/{gesuchstellerId}")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, GESUCHSTELLER,
+		SACHBEARBEITER_TS, ADMIN_TS, ADMIN_SOZIALDIENST, SACHBEARBEITER_SOZIALDIENST })
+	public JaxGesuchstellerContainer removeFinanzielleSituationFromGesuchsteller(
+		@Nonnull @NotNull @PathParam("gesuchstellerId") JaxId jaxGesuchstellerId,
+		@Context UriInfo uriInfo,
+		@Context HttpServletResponse response
+	) {
+		Objects.requireNonNull(jaxGesuchstellerId.getId());
+
+		GesuchstellerContainer gesuchsteller =
+			findGesuchstellerById(jaxGesuchstellerId.getId(), "removeFinanzielleSituationFromGesuchsteller");
+
+		gesuchsteller.setFinanzielleSituationContainer(null);
+
+		GesuchstellerContainer updatedGesuchsteller = gesuchstellerService.updateGesuchsteller(gesuchsteller);
+		return converter.gesuchstellerContainerToJAX(updatedGesuchsteller);
 	}
 }

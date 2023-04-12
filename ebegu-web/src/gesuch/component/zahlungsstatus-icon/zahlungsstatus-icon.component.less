@@ -15,29 +15,22 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {KiBonMandant} from './MANDANTS';
-import {MandantVisitor} from './MandantVisitor';
+@circle-radius: 6px;
+div {
+    min-width: 12px;
+    min-height: 12px;
+}
+svg {
+    width: 2* @circle-radius;
+    height: 2* @circle-radius;
 
-export class UnknownTFOIdVisitor implements MandantVisitor<string> {
-
-    public process(mandant: KiBonMandant): string {
-        return mandant.accept(this);
+    circle {
+        r: @circle-radius;
+        cx: @circle-radius;
+        cy: @circle-radius;
     }
 
-    public visitBern(): string {
-        return '00000000-0000-0000-0000-000000000001';
+    text {
+        fill: white;
     }
-
-    public visitLuzern(): string {
-        return '00000000-0000-0000-0000-000000000004';
-    }
-
-    public visitSolothurn(): string {
-        return '00000000-0000-0000-0000-000000000007';
-    }
-
-    public visitAppenzellAusserrhoden(): string {
-        return '00000000-0000-0000-0000-000000000010';
-    }
-
 }

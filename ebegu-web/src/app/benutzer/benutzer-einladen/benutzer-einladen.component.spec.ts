@@ -31,6 +31,7 @@ import {TraegerschaftRS} from '../../core/service/traegerschaftRS.rest';
 import {I18nServiceRSRest} from '../../i18n/services/i18nServiceRS.rest';
 import {SharedModule} from '../../shared/shared.module';
 import {BenutzerEinladenComponent} from './benutzer-einladen.component';
+import {CONSTANTS} from '../../core/constants/CONSTANTS';
 
 describe('BenutzerEinladenComponent', () => {
     let component: BenutzerEinladenComponent;
@@ -87,5 +88,51 @@ describe('BenutzerEinladenComponent', () => {
 
     it('should create', () => {
         expect(component).toBeTruthy();
+    });
+
+    describe('Email validation check', () => {
+        const pattern = new RegExp(CONSTANTS.PATTERN_EMAIL);
+
+        it('should check valid email with one dot before and after @', () => {
+            const validEmail = 'test.test@dvbern.ch';
+            const validationCheck = pattern.test(validEmail);
+            expect(validationCheck).toBeTruthy();
+        });
+
+        it('should check invalid email with two dots', () => {
+            const invalidEmail = 'test.test.test@dvbern.ch';
+            const validationCheck = pattern.test(invalidEmail);
+            expect(validationCheck).toBeTruthy();
+        });
+
+        it('should check invalid email without dot', () => {
+            const invalidEmail = 'testtest@dvbern.ch';
+            const validationCheck = pattern.test(invalidEmail);
+            expect(validationCheck).toBeTruthy();
+        });
+
+        it('should check valid email with specialchar', () => {
+            const invalidEmail = 'test.te#s*t@dvbern.ch';
+            const validationCheck = pattern.test(invalidEmail);
+            expect(validationCheck).toBeTruthy();
+        });
+
+        it('should check valid email with hyphen after @', () => {
+            const invalidEmail = 'test.test@dv-bern.ch';
+            const validationCheck = pattern.test(invalidEmail);
+            expect(validationCheck).toBeTruthy();
+        });
+
+        it('should check invalid email without dot after @', () => {
+            const invalidEmail = 'test.test@dvbernch';
+            const validationCheck = pattern.test(invalidEmail);
+            expect(validationCheck).toBeFalsy();
+        });
+
+        it('should check invalid email with bracket', () => {
+            const invalidEmail = 'test.test@dvbern.ch)';
+            const validationCheck = pattern.test(invalidEmail);
+            expect(validationCheck).toBeFalsy();
+        });
     });
 });

@@ -1,16 +1,18 @@
 /*
- * Ki-Tax: System for the management of external childcare subsidies
- * Copyright (C) 2017 City of Bern Switzerland
+ * Copyright (C) 2023 DV Bern AG, Switzerland
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Affero General Public License for more details.
+ *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
 import {Ng1StateDeclaration, StateParams} from '@uirouter/angularjs';
@@ -27,22 +29,46 @@ import {TSGesuch} from '../models/TSGesuch';
 import {TSKindDublette} from '../models/TSKindDublette';
 import {TSMahnung} from '../models/TSMahnung';
 import {TSRoleUtil} from '../utils/TSRoleUtil';
-import {EinkommensverschlechterungResultateViewComponent} from './component/einkommensverschlechterung/bern/einkommensverschlechterung-resultate-view/einkommensverschlechterung-resultate-view.component';
-import {EinkommensverschlechterungLuzernResultateViewComponent} from './component/einkommensverschlechterung/luzern/einkommensverschlechterung-luzern-resultate-view/einkommensverschlechterung-luzern-resultate-view.component';
-import {EinkommensverschlechterungLuzernViewComponent} from './component/einkommensverschlechterung/luzern/einkommensverschlechterung-luzern-view/einkommensverschlechterung-luzern-view.component';
-import {EinkommensverschlechterungSolothurnResultateViewComponent} from './component/einkommensverschlechterung/solothurn/einkommensverschlechterung-solothurn-resultate-view/einkommensverschlechterung-solothurn-resultate-view.component';
-import {EinkommensverschlechterungSolothurnViewComponent} from './component/einkommensverschlechterung/solothurn/einkommensverschlechterung-solothurn-view/einkommensverschlechterung-solothurn-view.component';
+import {
+    EinkommensverschlechterungResultateViewComponent
+} from './component/einkommensverschlechterung/bern/einkommensverschlechterung-resultate-view/einkommensverschlechterung-resultate-view.component';
+import {
+    EinkommensverschlechterungLuzernResultateViewComponent
+} from './component/einkommensverschlechterung/luzern/einkommensverschlechterung-luzern-resultate-view/einkommensverschlechterung-luzern-resultate-view.component';
+import {
+    EinkommensverschlechterungLuzernViewComponent
+} from './component/einkommensverschlechterung/luzern/einkommensverschlechterung-luzern-view/einkommensverschlechterung-luzern-view.component';
+import {
+    EinkommensverschlechterungSolothurnResultateViewComponent
+} from './component/einkommensverschlechterung/solothurn/einkommensverschlechterung-solothurn-resultate-view/einkommensverschlechterung-solothurn-resultate-view.component';
+import {
+    EinkommensverschlechterungSolothurnViewComponent
+} from './component/einkommensverschlechterung/solothurn/einkommensverschlechterung-solothurn-view/einkommensverschlechterung-solothurn-view.component';
 import {FallCreationViewXComponent} from './component/fall-creation-view-x/fall-creation-view-x.component';
 import {
     FamiliensituationAppenzellViewXComponent
 } from './component/familiensituation/familiensituation-appenzell-view-x/familiensituation-appenzell-view-x.component';
-import {FamiliensituationViewXComponent} from './component/familiensituation/familiensituation-view-x/familiensituation-view-x.component';
-import {FinanzielleSituationAppenzellViewComponent} from './component/finanzielleSituation/appenzell/finanzielle-situation-appenzell-view/finanzielle-situation-appenzell-view.component';
-import {AngabenGesuchsteller2Component} from './component/finanzielleSituation/luzern/angaben-gesuchsteller2/angaben-gesuchsteller2.component';
-import {FinanzielleSituationStartViewLuzernComponent} from './component/finanzielleSituation/luzern/finanzielle-situation-start-view-luzern/finanzielle-situation-start-view-luzern.component';
-import {AngabenGs1Component} from './component/finanzielleSituation/solothurn/angaben-gs/angaben-gs1/angaben-gs1.component';
-import {AngabenGs2Component} from './component/finanzielleSituation/solothurn/angaben-gs/angaben-gs2/angaben-gs2.component';
-import {FinanzielleSituationStartSolothurnComponent} from './component/finanzielleSituation/solothurn/finanzielle-situation-start-solothurn/finanzielle-situation-start-solothurn.component';
+import {
+    FamiliensituationViewXComponent
+} from './component/familiensituation/familiensituation-view-x/familiensituation-view-x.component';
+import {
+    FinanzielleSituationAppenzellViewComponent
+} from './component/finanzielleSituation/appenzell/finanzielle-situation-appenzell-view/finanzielle-situation-appenzell-view.component';
+import {
+    AngabenGesuchsteller2Component
+} from './component/finanzielleSituation/luzern/angaben-gesuchsteller2/angaben-gesuchsteller2.component';
+import {
+    FinanzielleSituationStartViewLuzernComponent
+} from './component/finanzielleSituation/luzern/finanzielle-situation-start-view-luzern/finanzielle-situation-start-view-luzern.component';
+import {
+    AngabenGs1Component
+} from './component/finanzielleSituation/solothurn/angaben-gs/angaben-gs1/angaben-gs1.component';
+import {
+    AngabenGs2Component
+} from './component/finanzielleSituation/solothurn/angaben-gs/angaben-gs2/angaben-gs2.component';
+import {
+    FinanzielleSituationStartSolothurnComponent
+} from './component/finanzielleSituation/solothurn/finanzielle-situation-start-solothurn/finanzielle-situation-start-solothurn.component';
 import {GesuchRouteController} from './gesuch';
 import {BerechnungsManager} from './service/berechnungsManager';
 import {GesuchModelManager} from './service/gesuchModelManager';
@@ -660,7 +686,36 @@ export class EbeguFinanzielleSituationGS2LuzernState implements Ng1StateDeclarat
 
 export class EbeguFinanzielleSituationAppenzellState implements Ng1StateDeclaration {
     public name = 'gesuch.finanzielleSituationAppenzell';
-    public url = '/finanzielleSituationAppenzell/:gesuchId';
+    public url = '/finanzielleSituationAppenzell/:gesuchstellerNumber/:gesuchId';
+
+    public params = {
+        gesuchstellerNumber: '1',
+    };
+
+    public views: any = {
+        gesuchViewPort: {
+            component: FinanzielleSituationAppenzellViewComponent,
+        },
+        kommentarViewPort: {
+            template: kommentarView,
+        },
+    };
+
+    public resolve = {
+        gesuchModelManager: getGesuchModelManager,
+    };
+
+    public data = {
+        roles: TSRoleUtil.getAllRolesButTraegerschaftInstitution(),
+    };
+}
+export class EbeguFinanzielleSituationAppenzellGS2State implements Ng1StateDeclaration {
+    public name = 'gesuch.finanzielleSituationAppenzellGS2';
+    public url = '/finanzielleSituationAppenzell/:gesuchstellerNumber/:gesuchId';
+
+    public params = {
+        gesuchstellerNumber: '2',
+    };
 
     public views: any = {
         gesuchViewPort: {
@@ -1058,6 +1113,7 @@ const ng1States: Ng1StateDeclaration[] = [
     new EbeguFinanzielleSituationGS1SolothurnState(),
     new EbeguFinanzielleSituationGS2SolothurnState(),
     new EbeguFinanzielleSituationAppenzellState(),
+    new EbeguFinanzielleSituationAppenzellGS2State(),
     new EbeguKindState(),
     new EbeguErwerbspensenListState(),
     new EbeguErwerbspensumState(),

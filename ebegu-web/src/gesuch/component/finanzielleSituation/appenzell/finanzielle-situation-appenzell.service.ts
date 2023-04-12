@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2021 DV Bern AG, Switzerland
+ * Copyright (C) 2023 DV Bern AG, Switzerland
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -19,7 +19,10 @@ import {Injectable} from '@angular/core';
 import {Observable, ReplaySubject, Subject} from 'rxjs';
 import {TSFinanzielleSituationResultateDTO} from '../../../../models/dto/TSFinanzielleSituationResultateDTO';
 import {TSFinanzModel} from '../../../../models/TSFinanzModel';
+import {TSGesuch} from '../../../../models/TSGesuch';
+import {EbeguUtil} from '../../../../utils/EbeguUtil';
 import {BerechnungsManager} from '../../../service/berechnungsManager';
+import {GesuchModelManager} from '../../../service/gesuchModelManager';
 
 @Injectable({
     providedIn: 'root'
@@ -45,5 +48,17 @@ export class FinanzielleSituationAppenzellService {
     public calculateEinkommensverschlechterung(model: TSFinanzModel, basisJahrPlus: number): void {
         this.berechnungsManager.calculateEinkommensverschlechterungTemp(model, basisJahrPlus)
             .then(result => this._massgebendesEinkommenStore.next(result));
+    }
+
+    public static finSitNeedsTwoSeparateAntragsteller(gesuch: TSGesuch): boolean {
+        if (EbeguUtil.isNullOrUndefined(gesuch)) {
+            return false;
+        }
+        if (EbeguUtil.isNullOrUndefined(gesuch.extractFamiliensituation())) {
+            return false;
+        }
+        const gesuchHasSecondAntragsteller = EbeguUtil.isNotNullOrUndefined(gesuch.gesuchsteller2);
+        const gemeinsameSteuererklaerung = gesuch.extractFamiliensituation().gemeinsameSteuererklaerung;
+        return gesuchHasSecondAntragsteller && EbeguUtil.isNotNullAndFalse(gemeinsameSteuererklaerung);
     }
 }
