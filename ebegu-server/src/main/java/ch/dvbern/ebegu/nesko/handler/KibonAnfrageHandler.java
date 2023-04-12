@@ -67,57 +67,37 @@ public class KibonAnfrageHandler {
 				gesuchstellerTyp,
 				zpvBesitzer);
 
-		int gesuchstellerNumber = gesuchstellerTyp.getGesuchstellerNummer();
-
 		if (kibonAnfrageContext.isGemeinsam()) {
 			try {
 				return getKibonAnfrageContextWithSteuerdaten(
 						Objects.requireNonNull(kibonAnfrageContext.getGesuch().getGesuchsteller1()),
-						kibonAnfrageContext,
-						gesuchstellerNumber);
+						kibonAnfrageContext);
 			} catch (KiBonAnfrageServiceException e) {
 				try {
 					return getKibonAnfrageContextWithSteuerdaten(
 							kibonAnfrageContext.getGesuch().getGesuchsteller2(),
-							kibonAnfrageContext,
-							gesuchstellerNumber);
+							kibonAnfrageContext);
 				} catch (KiBonAnfrageServiceException e2) {
 					kibonAnfrageContext.setSteuerdatenAnfrageStatus(SteuerdatenAnfrageStatus.FAILED);
 					return kibonAnfrageContext;
 				}
 			}
-		} else {
-			// anfrage single GS
-			if (gesuchstellerNumber == 1) {
-				try {
-					return getKibonAnfrageContextWithSteuerdaten(
-							Objects.requireNonNull(kibonAnfrageContext.getGesuch().getGesuchsteller1()),
-							kibonAnfrageContext,
-							gesuchstellerNumber);
-				} catch (KiBonAnfrageServiceException e) {
-					kibonAnfrageContext.setSteuerdatenAnfrageStatus(SteuerdatenAnfrageStatus.FAILED);
-				}
-			}
-			// anfrage single GS
-			if (gesuchstellerNumber == 2) {
-				try {
-					return getKibonAnfrageContextWithSteuerdaten(
-							kibonAnfrageContext.getGesuch().getGesuchsteller2(),
-							kibonAnfrageContext,
-							gesuchstellerNumber);
-				} catch (KiBonAnfrageServiceException e) {
-					kibonAnfrageContext.setSteuerdatenAnfrageStatus(SteuerdatenAnfrageStatus.FAILED);
-					return kibonAnfrageContext;
-				}
-			}
 		}
-		return kibonAnfrageContext;
+
+		//anfrage Single GS
+		try {
+			return getKibonAnfrageContextWithSteuerdaten(
+					kibonAnfrageContext.getGesuchstellerContainerToUse(),
+					kibonAnfrageContext);
+		} catch (KiBonAnfrageServiceException e) {
+			kibonAnfrageContext.setSteuerdatenAnfrageStatus(SteuerdatenAnfrageStatus.FAILED);
+			return kibonAnfrageContext;
+		}
 	}
 
 	private KibonAnfrageContext getKibonAnfrageContextWithSteuerdaten(
 			GesuchstellerContainer gesuchstellerContainer,
-			KibonAnfrageContext kibonAnfrageContext,
-			int gesuchstellerNumber) throws KiBonAnfrageServiceException {
+			KibonAnfrageContext kibonAnfrageContext) throws KiBonAnfrageServiceException {
 		if (kibonAnfrageContext.getZpvNummerForRequest().isEmpty()) {
 			kibonAnfrageContext.setSteuerdatenAnfrageStatusFailedNoZPV();
 			return kibonAnfrageContext;
@@ -138,7 +118,7 @@ public class KibonAnfrageHandler {
 		KibonAnfrageHelper.handleSteuerdatenResponse(
 				kibonAnfrageContext,
 				steuerdatenResponseGS,
-				gesuchstellerNumber);
+				kibonAnfrageContext.getGesuchstellernTyp().getGesuchstellerNummer());
 		return kibonAnfrageContext;
 	}
 
