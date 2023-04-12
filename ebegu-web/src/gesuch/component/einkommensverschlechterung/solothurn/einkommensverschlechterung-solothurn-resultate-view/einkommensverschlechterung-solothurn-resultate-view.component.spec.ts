@@ -34,8 +34,8 @@ import {BerechnungsManager} from '../../../../service/berechnungsManager';
 import {FinanzielleSituationRS} from '../../../../service/finanzielleSituationRS.rest';
 import {GesuchModelManager} from '../../../../service/gesuchModelManager';
 import {WizardStepManager} from '../../../../service/wizardStepManager';
-
 import {EinkommensverschlechterungSolothurnResultateViewComponent} from './einkommensverschlechterung-solothurn-resultate-view.component';
+import {EinstellungRS} from '../../../../../admin/service/einstellungRS.rest';
 
 const gesuchModelManagerSpy = jasmine.createSpyObj<GesuchModelManager>(
     GesuchModelManager.name,
@@ -70,6 +70,9 @@ const stateServiceSpy = jasmine.createSpyObj<StateService>(StateService.name,
     ['go']);
 const errorServiceSpy = jasmine.createSpyObj<ErrorService>(ErrorService.name, ['clearError']);
 
+const einstellungRSSpy = jasmine.createSpyObj<EinstellungRS>(EinstellungRS.name,
+    ['getAllEinstellungenBySystemCached']);
+
 describe('EinkommensverschlechterungSolothurnResultateViewComponent', () => {
     let component: EinkommensverschlechterungSolothurnResultateViewComponent;
     let fixture: ComponentFixture<EinkommensverschlechterungSolothurnResultateViewComponent>;
@@ -82,6 +85,7 @@ describe('EinkommensverschlechterungSolothurnResultateViewComponent', () => {
                 {provide: WizardStepManager, useValue: wizardStepMangerSpy},
                 {provide: FinanzielleSituationRS, useValue: finanzielleSituationRSSpy},
                 {provide: BerechnungsManager, useValue: berechnungsManagerSpy},
+                {provide: EinstellungRS, useValue: einstellungRSSpy}
                 {provide: Transition, useValue: transitionSpy},
                 {provide: StateService, useValue: stateServiceSpy},
                 {provide: ErrorService, useValue: errorServiceSpy}

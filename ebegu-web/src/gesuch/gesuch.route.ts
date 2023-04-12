@@ -78,10 +78,10 @@ import IPromise = angular.IPromise;
 import IQService = angular.IQService;
 import {
     EinkommensverschlechterungAppenzellViewComponent
-} from "./component/einkommensverschlechterung/appenzell/einkommensverschlechterung-appenzell-view/einkommensverschlechterung-appenzell-view.component";
+} from './component/einkommensverschlechterung/appenzell/einkommensverschlechterung-appenzell-view/einkommensverschlechterung-appenzell-view.component';
 import {
     EinkommensverschlechterungAppenzellResultateViewComponent
-} from "./component/einkommensverschlechterung/appenzell/einkommensverschlechterung-appenzell-resultate-view/einkommensverschlechterung-appenzell-resultate-view.component";
+} from './component/einkommensverschlechterung/appenzell/einkommensverschlechterung-appenzell-resultate-view/einkommensverschlechterung-appenzell-resultate-view.component';
 
 /* eslint-disable */
 

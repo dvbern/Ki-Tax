@@ -134,10 +134,10 @@ import {ZahlungsstatusIconComponent} from './component/zahlungsstatus-icon/zahlu
 import {gesuchRun} from './gesuch.route';
 import {
     EinkommensverschlechterungAppenzellResultateViewComponent
-} from "./component/einkommensverschlechterung/appenzell/einkommensverschlechterung-appenzell-resultate-view/einkommensverschlechterung-appenzell-resultate-view.component";
+} from './component/einkommensverschlechterung/appenzell/einkommensverschlechterung-appenzell-resultate-view/einkommensverschlechterung-appenzell-resultate-view.component';
 import {
     EinkommensverschlechterungAppenzellViewComponent
-} from "./component/einkommensverschlechterung/appenzell/einkommensverschlechterung-appenzell-view/einkommensverschlechterung-appenzell-view.component";
+} from './component/einkommensverschlechterung/appenzell/einkommensverschlechterung-appenzell-view/einkommensverschlechterung-appenzell-view.component';
 
 export const GESUCH_JS_MODULE =
     angular.module('ebeguWeb.gesuch', [CORE_JS_MODULE.name])

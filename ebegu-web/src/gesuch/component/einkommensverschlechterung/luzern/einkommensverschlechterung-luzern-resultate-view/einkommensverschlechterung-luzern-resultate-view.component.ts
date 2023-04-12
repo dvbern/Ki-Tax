@@ -26,7 +26,7 @@ import {
     FinanzielleSituationLuzernService
 } from '../../../finanzielleSituation/luzern/finanzielle-situation-luzern.service';
 import {AbstractEinkommensverschlechterungResultat} from '../../AbstractEinkommensverschlechterungResultat';
-import {EinstellungRS} from "../../../../../admin/service/einstellungRS.rest";
+import {EinstellungRS} from '../../../../../admin/service/einstellungRS.rest';
 
 @Component({
     selector: 'dv-einkommensverschlechterung-luzern-resultate-view',

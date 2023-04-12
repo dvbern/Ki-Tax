@@ -112,10 +112,10 @@ import {FkjvKinderabzugComponent} from './component/kindView/fkjv-kinderabzug/fk
 import {ZahlungsstatusIconComponent} from './component/zahlungsstatus-icon/zahlungsstatus-icon.component';
 import {
     EinkommensverschlechterungAppenzellViewComponent
-} from "./component/einkommensverschlechterung/appenzell/einkommensverschlechterung-appenzell-view/einkommensverschlechterung-appenzell-view.component";
+} from './component/einkommensverschlechterung/appenzell/einkommensverschlechterung-appenzell-view/einkommensverschlechterung-appenzell-view.component';
 import {
     EinkommensverschlechterungAppenzellResultateViewComponent
-} from "./component/einkommensverschlechterung/appenzell/einkommensverschlechterung-appenzell-resultate-view/einkommensverschlechterung-appenzell-resultate-view.component";
+} from './component/einkommensverschlechterung/appenzell/einkommensverschlechterung-appenzell-resultate-view/einkommensverschlechterung-appenzell-resultate-view.component';
 
 @NgModule({
     imports: [

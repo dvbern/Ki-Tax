@@ -27,9 +27,9 @@ import {GesuchModelManager} from '../../service/gesuchModelManager';
 import {WizardStepManager} from '../../service/wizardStepManager';
 import {AbstractGesuchViewX} from '../abstractGesuchViewX';
 import {EKVViewUtil} from './EKVViewUtil';
-import {EinstellungRS} from "../../../admin/service/einstellungRS.rest";
-import {TSEinstellung} from "../../../models/TSEinstellung";
-import {TSEinstellungKey} from "../../../models/enums/TSEinstellungKey";
+import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
+import {TSEinstellung} from '../../../models/TSEinstellung';
+import {TSEinstellungKey} from '../../../models/enums/TSEinstellungKey';
 
 export abstract class AbstractEinkommensverschlechterungResultat extends AbstractGesuchViewX<TSFinanzModel> {
     public resultatBasisjahr?: TSFinanzielleSituationResultateDTO;
