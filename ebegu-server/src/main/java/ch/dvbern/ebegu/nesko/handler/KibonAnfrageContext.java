@@ -19,6 +19,7 @@ package ch.dvbern.ebegu.nesko.handler;
 
 import java.time.LocalDate;
 import java.util.Objects;
+import java.util.Optional;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -30,13 +31,14 @@ import ch.dvbern.ebegu.entities.GesuchstellerContainer;
 import ch.dvbern.ebegu.entities.SteuerdatenResponse;
 import ch.dvbern.ebegu.enums.GesuchstellerTyp;
 import ch.dvbern.ebegu.enums.SteuerdatenAnfrageStatus;
+import org.apache.commons.lang3.StringUtils;
 
 public class KibonAnfrageContext {
 
 	@Nonnull
 	private Gesuch gesuch;
 
-	private int zpvNummerForRequest;
+	private Integer zpvNummerForRequest;
 
 	private GesuchstellerTyp gesuchstellerTyp;
 
@@ -62,12 +64,53 @@ public class KibonAnfrageContext {
 		setSteuerdatenZugriffFlags();
 	}
 
-	public KibonAnfrageContext(@Nonnull Gesuch gesuch, boolean isGemeinsam) {
+	public KibonAnfrageContext(
+			@Nonnull Gesuch gesuch,
+			boolean isGemeinsam,
+			@Nonnull GesuchstellerTyp gesuchstellerTyp,
+			@Nullable String zpvBesizter) {
 		this.gesuch = gesuch;
 		this.gemeinsam = isGemeinsam;
+		this.gesuchstellerTyp = gesuchstellerTyp;
 
+		initZpvNummerForRequest(zpvBesizter);
 		createFinSitGS2Container();
 		setSteuerdatenZugriffFlags();
+	}
+
+	private void initZpvNummerForRequest(@Nullable String zpvBesitzer) {
+		String zpvNummer = null;
+
+		if (gesuchstellerTyp == GesuchstellerTyp.GESUCHSTELLER_2) {
+			zpvNummer = getZpvNummerFromGS2();
+		} else {
+			zpvNummer = getZpvNummerFromGS1OrBesitzer(zpvBesitzer);
+		}
+
+		if (StringUtils.isNotEmpty(zpvNummer)) {
+			this.zpvNummerForRequest = Integer.parseInt(zpvNummer);
+		}
+	}
+
+	@Nullable
+	private String getZpvNummerFromGS1OrBesitzer(@Nullable String zpvBesitzer) {
+		if (gesuch.extractGesuchsteller1().isPresent()) {
+			String zpvNr = gesuch.extractGesuchsteller1().get().getZpvNummer();
+			if (StringUtils.isNotEmpty(zpvNr)) {
+				return zpvNr;
+			}
+		}
+
+		return zpvBesitzer;
+	}
+
+	@Nullable
+	private String getZpvNummerFromGS2() {
+		if (gesuch.extractGesuchsteller2().isPresent()) {
+			return gesuch.extractGesuchsteller2().get().getZpvNummer();
+		}
+
+		return null;
 	}
 
 	public KibonAnfrageContext(@Nonnull Gesuch gesuch) {
@@ -134,8 +177,8 @@ public class KibonAnfrageContext {
 		return gesuch.getGesuchsteller2() != null;
 	}
 
-	public int getZpvNummerForRequest() {
-		return zpvNummerForRequest;
+	public Optional<Integer> getZpvNummerForRequest() {
+		return Optional.ofNullable(zpvNummerForRequest);
 	}
 
 	public LocalDate getGeburstdatumForRequest() {
@@ -152,7 +195,7 @@ public class KibonAnfrageContext {
 	}
 
 	public GesuchstellerTyp getGesuchstellernTyp() {
-		return getGesuchstellernTyp();
+		return gesuchstellerTyp;
 	}
 
 	private void createFinSitGS2Container() {
@@ -189,5 +232,13 @@ public class KibonAnfrageContext {
 			return getGesuch().getGesuchsteller1().getFinanzielleSituationContainer();
 		}
 		return getGesuch().getGesuchsteller2().getFinanzielleSituationContainer();
+	}
+
+	public void setSteuerdatenAnfrageStatusFailedNoZPV() {
+		if (this.gesuchstellerTyp == GesuchstellerTyp.GESUCHSTELLER_2) {
+			this.setSteuerdatenAnfrageStatus(SteuerdatenAnfrageStatus.FAILED_KEINE_ZPV_NUMMER_GS2);
+		} else {
+			this.setSteuerdatenAnfrageStatus(SteuerdatenAnfrageStatus.FAILED_KEINE_ZPV_NUMMER);
+		}
 	}
 }
