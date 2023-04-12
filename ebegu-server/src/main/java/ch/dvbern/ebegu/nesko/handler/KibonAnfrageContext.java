@@ -48,8 +48,9 @@ public class KibonAnfrageContext {
 	@Nullable
 	private SteuerdatenResponse steuerdatenResponse;
 
-
 	private boolean gemeinsam;
+
+	private boolean useGeburtrsdatumFromOtherGesuchsteller = false;
 
 	public KibonAnfrageContext(
 			@Nonnull Gesuch gesuch,
@@ -181,16 +182,40 @@ public class KibonAnfrageContext {
 		return Optional.ofNullable(zpvNummerForRequest);
 	}
 
-	public LocalDate getGeburstdatumForRequest() {
-		return getGesuchstellerContainerToUse().getGesuchstellerJA().getGeburtsdatum();
+	public void useGeburtrsdatumFromOtherGesuchsteller() {
+		this.useGeburtrsdatumFromOtherGesuchsteller = true;
 	}
 
+	public Optional<LocalDate> getGeburstdatumForRequest() {
+		if (this.useGeburtrsdatumFromOtherGesuchsteller) {
+			return getGeburtsdatumFromOtherGesuchsteller();
+		}
+		return Optional.ofNullable(getGesuchstellerContainerToUse().getGesuchstellerJA().getGeburtsdatum());
+	}
+
+	private Optional<LocalDate> getGeburtsdatumFromOtherGesuchsteller() {
+		if (this.gesuchstellerTyp == GesuchstellerTyp.GESUCHSTELLER_1) {
+			if (gesuch.extractGesuchsteller2().isPresent()) {
+				return Optional.ofNullable(gesuch.extractGesuchsteller2().get().getGeburtsdatum());
+			}
+
+			return Optional.empty();
+		}
+
+		Objects.requireNonNull(this.gesuch.getGesuchsteller1());
+		Objects.requireNonNull(this.gesuch.getGesuchsteller1().getGesuchstellerJA());
+		return Optional.ofNullable(this.gesuch.getGesuchsteller1().getGesuchstellerJA().getGeburtsdatum());
+
+	}
+
+	@Nonnull
 	public GesuchstellerContainer getGesuchstellerContainerToUse() {
 		if (this.gesuchstellerTyp == GesuchstellerTyp.GESUCHSTELLER_2) {
 			Objects.requireNonNull(this.gesuch.getGesuchsteller2());
 			return this.gesuch.getGesuchsteller2();
 		}
 
+		Objects.requireNonNull(this.gesuch.getGesuchsteller1());
 		return this.gesuch.getGesuchsteller1();
 	}
 

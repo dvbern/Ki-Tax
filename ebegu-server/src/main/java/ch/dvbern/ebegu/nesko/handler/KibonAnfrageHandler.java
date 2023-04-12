@@ -26,7 +26,6 @@ import javax.inject.Inject;
 
 import ch.dvbern.ebegu.authentication.PrincipalBean;
 import ch.dvbern.ebegu.entities.Gesuch;
-import ch.dvbern.ebegu.entities.GesuchstellerContainer;
 import ch.dvbern.ebegu.entities.SteuerdatenResponse;
 import ch.dvbern.ebegu.enums.GesuchstellerTyp;
 import ch.dvbern.ebegu.enums.SteuerdatenAnfrageStatus;
@@ -61,64 +60,28 @@ public class KibonAnfrageHandler {
 
 	public KibonAnfrageContext handleKibonAnfrage(Gesuch gesuch, boolean isGemsinam, GesuchstellerTyp gesuchstellerTyp) {
 		String zpvBesitzer = findZpvNummerFromGesuchBesitzer(gesuch);
-		KibonAnfrageContext kibonAnfrageContext = new KibonAnfrageContext(
-				gesuch,
-				isGemsinam,
-				gesuchstellerTyp,
-				zpvBesitzer);
+		KibonAnfrageContext kibonAnfrageContext = new KibonAnfrageContext(gesuch, isGemsinam, gesuchstellerTyp, zpvBesitzer);
 
-		if (kibonAnfrageContext.isGemeinsam()) {
-			try {
-				return getKibonAnfrageContextWithSteuerdaten(
-						Objects.requireNonNull(kibonAnfrageContext.getGesuch().getGesuchsteller1()),
-						kibonAnfrageContext);
-			} catch (KiBonAnfrageServiceException e) {
-				try {
-					return getKibonAnfrageContextWithSteuerdaten(
-							kibonAnfrageContext.getGesuch().getGesuchsteller2(),
-							kibonAnfrageContext);
-				} catch (KiBonAnfrageServiceException e2) {
-					kibonAnfrageContext.setSteuerdatenAnfrageStatus(SteuerdatenAnfrageStatus.FAILED);
-					return kibonAnfrageContext;
-				}
-			}
-		}
-
-		//anfrage Single GS
 		try {
-			return getKibonAnfrageContextWithSteuerdaten(
-					kibonAnfrageContext.getGesuchstellerContainerToUse(),
-					kibonAnfrageContext);
+			getSteuerdatenAndHandleResponse(kibonAnfrageContext);
 		} catch (KiBonAnfrageServiceException e) {
+			if (kibonAnfrageContext.isGemeinsam()) {
+				return retryWithOtherGesuchstellersGeburtsdatum(kibonAnfrageContext);
+			}
 			kibonAnfrageContext.setSteuerdatenAnfrageStatus(SteuerdatenAnfrageStatus.FAILED);
-			return kibonAnfrageContext;
 		}
+		return kibonAnfrageContext;
 	}
 
-	private KibonAnfrageContext getKibonAnfrageContextWithSteuerdaten(
-			GesuchstellerContainer gesuchstellerContainer,
-			KibonAnfrageContext kibonAnfrageContext) throws KiBonAnfrageServiceException {
-		if (kibonAnfrageContext.getZpvNummerForRequest().isEmpty()) {
-			kibonAnfrageContext.setSteuerdatenAnfrageStatusFailedNoZPV();
-			return kibonAnfrageContext;
+	private KibonAnfrageContext retryWithOtherGesuchstellersGeburtsdatum(KibonAnfrageContext kibonAnfrageContext) {
+		kibonAnfrageContext.useGeburtrsdatumFromOtherGesuchsteller();
+
+		try {
+			getSteuerdatenAndHandleResponse(kibonAnfrageContext);
+		} catch (KiBonAnfrageServiceException ex) {
+			kibonAnfrageContext.setSteuerdatenAnfrageStatus(SteuerdatenAnfrageStatus.FAILED);
 		}
 
-		SteuerdatenResponse steuerdatenResponseGS = kibonAnfrageService.getSteuerDaten(
-				kibonAnfrageContext.getZpvNummerForRequest().get(),
-				gesuchstellerContainer.getGesuchstellerJA().getGeburtsdatum(),
-				kibonAnfrageContext.getGesuch().getId(),
-				kibonAnfrageContext.getGesuch().getGesuchsperiode().getBasisJahrPlus1());
-		kibonAnfrageContext.setSteuerdatenResponse(steuerdatenResponseGS);
-		if (kibonAnfrageContext.isGemeinsam()) {
-			KibonAnfrageHelper.handleSteuerdatenGemeinsamResponse(
-					kibonAnfrageContext,
-					steuerdatenResponseGS);
-			return kibonAnfrageContext;
-		}
-		KibonAnfrageHelper.handleSteuerdatenResponse(
-				kibonAnfrageContext,
-				steuerdatenResponseGS,
-				kibonAnfrageContext.getGesuchstellernTyp().getGesuchstellerNummer());
 		return kibonAnfrageContext;
 	}
 
@@ -130,9 +93,14 @@ public class KibonAnfrageHandler {
 			return;
 		}
 
+		if (kibonAnfrageContext.getGeburstdatumForRequest().isEmpty()) {
+			kibonAnfrageContext.setSteuerdatenAnfrageStatus(SteuerdatenAnfrageStatus.FAILED_GEBURTSDATUM);
+			return;
+		}
+
 		SteuerdatenResponse steuerdatenResponseGS = kibonAnfrageService.getSteuerDaten(
 				kibonAnfrageContext.getZpvNummerForRequest().get(),
-				kibonAnfrageContext.getGeburstdatumForRequest(),
+				kibonAnfrageContext.getGeburstdatumForRequest().get(),
 				kibonAnfrageContext.getGesuch().getId(),
 				kibonAnfrageContext.getGesuch().getGesuchsperiode().getBasisJahrPlus1());
 
