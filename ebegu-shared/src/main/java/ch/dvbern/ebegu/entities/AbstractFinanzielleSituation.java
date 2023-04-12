@@ -138,6 +138,11 @@ public abstract class AbstractFinanzielleSituation extends AbstractMutableEntity
 	@JoinColumn(nullable = true)
 	protected FinanzielleSituationSelbstdeklaration selbstdeklaration;
 
+	@Nullable
+	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true,fetch = FetchType.EAGER)
+	@JoinColumn(nullable = true)
+	private FinSitZusatzangabenAppenzell finSitZusatzangabenAppenzell;
+
 	public AbstractFinanzielleSituation() {
 	}
 
@@ -351,6 +356,15 @@ public abstract class AbstractFinanzielleSituation extends AbstractMutableEntity
 		this.selbstdeklaration = selbstdeklaration;
 	}
 
+	@Nullable
+	public FinSitZusatzangabenAppenzell getFinSitZusatzangabenAppenzell() {
+		return finSitZusatzangabenAppenzell;
+	}
+
+	public void setFinSitZusatzangabenAppenzell(@Nullable FinSitZusatzangabenAppenzell finSitZusatzangabenAppenzell) {
+		this.finSitZusatzangabenAppenzell = finSitZusatzangabenAppenzell;
+	}
+
 	@Nonnull
 	public AbstractFinanzielleSituation copyAbstractFinanzielleSituation(
 		@Nonnull AbstractFinanzielleSituation target,
@@ -381,6 +395,9 @@ public abstract class AbstractFinanzielleSituation extends AbstractMutableEntity
 			target.setBruttoertraegeVermoegen(this.getBruttoertraegeVermoegen());
 			if (this.getSelbstdeklaration() != null) {
 				target.setSelbstdeklaration(this.getSelbstdeklaration().copySelbsteklaration(new FinanzielleSituationSelbstdeklaration(), copyType));
+			}
+			if (this.getFinSitZusatzangabenAppenzell() != null) {
+				target.setFinSitZusatzangabenAppenzell(this.getFinSitZusatzangabenAppenzell().copyFinSitZusatzangabenAppenzell(new FinSitZusatzangabenAppenzell(), copyType));
 			}
 			break;
 		case ERNEUERUNG:

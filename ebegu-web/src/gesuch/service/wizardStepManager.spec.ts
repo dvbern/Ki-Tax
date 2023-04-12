@@ -113,11 +113,13 @@ describe('wizardStepManager', () => {
             // eslint-disable-next-line no-magic-numbers
             expect(wizardStepManager.getAllowedSteps()[14]).toBe(TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_SOLOTHURN);
             // eslint-disable-next-line no-magic-numbers
-            expect(wizardStepManager.getAllowedSteps()[15]).toBe(TSWizardStepName.DOKUMENTE);
+            expect(wizardStepManager.getAllowedSteps()[15]).toBe(TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_APPENZELL);
             // eslint-disable-next-line no-magic-numbers
-            expect(wizardStepManager.getAllowedSteps()[16]).toBe(TSWizardStepName.FREIGABE);
+            expect(wizardStepManager.getAllowedSteps()[16]).toBe(TSWizardStepName.DOKUMENTE);
             // eslint-disable-next-line no-magic-numbers
-            expect(wizardStepManager.getAllowedSteps()[17]).toBe(TSWizardStepName.VERFUEGEN);
+            expect(wizardStepManager.getAllowedSteps()[17]).toBe(TSWizardStepName.FREIGABE);
+            // eslint-disable-next-line no-magic-numbers
+            expect(wizardStepManager.getAllowedSteps()[18]).toBe(TSWizardStepName.VERFUEGEN);
         });
     });
     describe('findStepsFromGesuch', () => {

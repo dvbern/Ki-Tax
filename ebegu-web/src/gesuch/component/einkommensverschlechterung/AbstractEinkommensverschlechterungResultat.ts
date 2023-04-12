@@ -31,7 +31,7 @@ import {EKVViewUtil} from './EKVViewUtil';
 export abstract class AbstractEinkommensverschlechterungResultat extends AbstractGesuchViewX<TSFinanzModel> {
     public resultatBasisjahr?: TSFinanzielleSituationResultateDTO;
     public resultatProzent: string;
-    private readonly grenze: number = 25;
+    private readonly grenze: number = 25; // TODO why hardcoded here ?
 
     public constructor(
         public gesuchModelManager: GesuchModelManager,

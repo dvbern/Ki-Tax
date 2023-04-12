@@ -2734,6 +2734,16 @@ public class JaxBConverter extends AbstractConverter {
 				selbstdeklarationToMerge));
 		}
 
+		if (abstractFinanzielleSituationJAXP.getFinSitZusatzangabenAppenzell() != null) {
+			FinSitZusatzangabenAppenzell finSitZusatzangabenAppenzellToMerge =
+				Optional.ofNullable(abstractFinanzielleSituation.getFinSitZusatzangabenAppenzell())
+					.orElse(new FinSitZusatzangabenAppenzell());
+			abstractFinanzielleSituation.setFinSitZusatzangabenAppenzell(finSitZusatzangabenAppenzellToEntity(
+				abstractFinanzielleSituationJAXP.getFinSitZusatzangabenAppenzell(),
+				finSitZusatzangabenAppenzellToMerge));
+		}
+
+
 		return abstractFinanzielleSituation;
 	}
 
@@ -2773,6 +2783,8 @@ public class JaxBConverter extends AbstractConverter {
 
 		jaxAbstractFinanzielleSituation.setSelbstdeklaration(finanzielleSituationSelbstdeklarationToJAX(
 			persistedAbstractFinanzielleSituation.getSelbstdeklaration()));
+
+		jaxAbstractFinanzielleSituation.setFinSitZusatzangabenAppenzell(finSitZusatzangabenAppenzellToJax(persistedAbstractFinanzielleSituation.getFinSitZusatzangabenAppenzell()));
 	}
 
 	private FinanzielleSituation finanzielleSituationToEntity(
@@ -2810,15 +2822,6 @@ public class JaxBConverter extends AbstractConverter {
 		finanzielleSituation.setVeranlagt(finanzielleSituationJAXP.getVeranlagt());
 		finanzielleSituation.setVeranlagtVorjahr(finanzielleSituationJAXP.getVeranlagtVorjahr());
 		finanzielleSituation.setMomentanSelbststaendig(finanzielleSituationJAXP.getMomentanSelbststaendig());
-
-		if (finanzielleSituationJAXP.getFinSitZusatzangabenAppenzell() != null) {
-			FinSitZusatzangabenAppenzell finSitZusatzangabenAppenzellToMerge =
-				Optional.ofNullable(finanzielleSituation.getFinSitZusatzangabenAppenzell())
-					.orElse(new FinSitZusatzangabenAppenzell());
-			finanzielleSituation.setFinSitZusatzangabenAppenzell(finSitZusatzangabenAppenzellToEntity(
-				finanzielleSituationJAXP.getFinSitZusatzangabenAppenzell(),
-				finSitZusatzangabenAppenzellToMerge));
-		}
 
 		return finanzielleSituation;
 	}
@@ -2899,9 +2902,6 @@ public class JaxBConverter extends AbstractConverter {
 		jaxFinanzielleSituation.setSteuerdatenAbfrageTimestamp(persistedFinanzielleSituation.getSteuerdatenAbfrageTimestamp());
 		jaxFinanzielleSituation.setAutomatischePruefungErlaubt(persistedFinanzielleSituation.getAutomatischePruefungErlaubt());
 		jaxFinanzielleSituation.setMomentanSelbststaendig(persistedFinanzielleSituation.getMomentanSelbststaendig());
-
-		jaxFinanzielleSituation.setFinSitZusatzangabenAppenzell(finSitZusatzangabenAppenzellToJax(
-			persistedFinanzielleSituation.getFinSitZusatzangabenAppenzell()));
 
 		return jaxFinanzielleSituation;
 	}

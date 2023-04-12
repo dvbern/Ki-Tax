@@ -1192,8 +1192,9 @@ public class WizardStepServiceBean extends AbstractBaseService implements Wizard
 		case LUZERN:
 			return WizardStepName.EINKOMMENSVERSCHLECHTERUNG_LUZERN;
 		case SOLOTHURN:
-		case APPENZELL:
 			return WizardStepName.EINKOMMENSVERSCHLECHTERUNG_SOLOTHURN;
+		case APPENZELL:
+			return WizardStepName.EINKOMMENSVERSCHLECHTERUNG_APPENZELL;
 		default:
 			throw new EbeguRuntimeException(
 				"getEKVWizardStepNameForGesuch",

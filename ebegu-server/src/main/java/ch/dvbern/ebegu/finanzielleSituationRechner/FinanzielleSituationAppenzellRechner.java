@@ -51,8 +51,8 @@ public class FinanzielleSituationAppenzellRechner extends AbstractFinanzielleSit
 	 * calculate massgebendes einkommen for each antragsteller separately and stores variables in finSitResultDTO
 	 */
 	private void calculateFinSit(
-		@Nullable FinanzielleSituation finanzielleSituationGS1,
-		@Nullable FinanzielleSituation finanzielleSituationGS2,
+		@Nullable AbstractFinanzielleSituation finanzielleSituationGS1,
+		@Nullable AbstractFinanzielleSituation finanzielleSituationGS2,
 		@Nonnull FinanzielleSituationResultateDTO finSitResultDTO
 	) {
 		var einkommenGS1 = calcEinkommen(finanzielleSituationGS1);
@@ -104,25 +104,16 @@ public class FinanzielleSituationAppenzellRechner extends AbstractFinanzielleSit
 		}
 
 		if (basisJahrPlus == 2) {
-			calculateEKVFinSit(
+			calculateFinSit(
 				einkommensverschlechterungGS1Bjp2,
 				einkommensverschlechterungGS2Bjp2,
 				einkVerResultDTO);
 		} else {
-			calculateEKVFinSit(
+			calculateFinSit(
 				einkommensverschlechterungGS1Bjp1,
 				einkommensverschlechterungGS2Bjp1,
 				einkVerResultDTO);
 		}
-	}
-
-	@SuppressWarnings("PMD.UnusedFormalParameter")
-	private void calculateEKVFinSit(
-		@Nullable AbstractFinanzielleSituation finanzielleSituationGS1,
-		@Nullable AbstractFinanzielleSituation finanzielleSituationGS2,
-		@Nonnull FinanzielleSituationResultateDTO finSitResultDTO
-	) {
-		// TODO noch nicht definiert, wird aber keine finanzielleVerhaeltnisse sein
 	}
 
 	private BigDecimal calculateMassgebendesEinkommen(
@@ -144,7 +135,7 @@ public class FinanzielleSituationAppenzellRechner extends AbstractFinanzielleSit
 		return MathUtil.positiveNonNullAndRound(total);
 	}
 
-	private BigDecimal calcAufrechnungFaktoren(@Nullable FinanzielleSituation finanzielleSituation1) {
+	private BigDecimal calcAufrechnungFaktoren(@Nullable AbstractFinanzielleSituation finanzielleSituation1) {
 		BigDecimal total = BigDecimal.ZERO;
 		if(finanzielleSituation1 != null && finanzielleSituation1.getFinSitZusatzangabenAppenzell() != null) {
 			total =  add(total, calcAufrechnungFaktoren(finanzielleSituation1.getFinSitZusatzangabenAppenzell()));

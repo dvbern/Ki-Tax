@@ -23,7 +23,7 @@ import {TSFinanzModel} from '../../../../../models/TSFinanzModel';
 import {TSFinSitZusatzangabenAppenzell} from '../../../../../models/TSFinSitZusatzangabenAppenzell';
 import {EbeguUtil} from '../../../../../utils/EbeguUtil';
 import {GesuchModelManager} from '../../../../service/gesuchModelManager';
-import {FinanzielleSituationAppenzellService} from '../finanzielle-situation-appenzell.service';
+import {FinanzielleSituationAppenzellService} from '../../../finanzielleSituation/appenzell/finanzielle-situation-appenzell.service';
 
 const LOG = LogFactory.createLog('FinSitZusatzfelderAppenzell');
 
