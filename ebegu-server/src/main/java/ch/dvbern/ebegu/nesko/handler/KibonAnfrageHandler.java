@@ -28,7 +28,6 @@ import ch.dvbern.ebegu.authentication.PrincipalBean;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.GesuchstellerContainer;
 import ch.dvbern.ebegu.entities.SteuerdatenResponse;
-import ch.dvbern.ebegu.enums.EnumFamilienstatus;
 import ch.dvbern.ebegu.enums.GesuchstellerTyp;
 import ch.dvbern.ebegu.enums.SteuerdatenAnfrageStatus;
 import ch.dvbern.ebegu.enums.UserRole;
@@ -69,38 +68,23 @@ public class KibonAnfrageHandler {
 				zpvBesitzer);
 
 		int gesuchstellerNumber = gesuchstellerTyp.getGesuchstellerNummer();
-		boolean hasTwoAntragStellende = kibonAnfrageContext.getGesuch().getGesuchsteller2() != null;
 
-		if (hasTwoAntragStellende && kibonAnfrageContext.isGemeinsam()) {
+		if (kibonAnfrageContext.isGemeinsam()) {
 			try {
 				return getKibonAnfrageContextWithSteuerdaten(
 						Objects.requireNonNull(kibonAnfrageContext.getGesuch().getGesuchsteller1()),
 						kibonAnfrageContext,
 						gesuchstellerNumber);
-
 			} catch (KiBonAnfrageServiceException e) {
-				Objects.requireNonNull(kibonAnfrageContext.getGesuch().getFamiliensituationContainer());
-				Objects.requireNonNull(kibonAnfrageContext.getGesuch()
-											   .getFamiliensituationContainer()
-											   .getFamiliensituationJA());
-				if (kibonAnfrageContext.getGesuch()
-							.getFamiliensituationContainer()
-							.getFamiliensituationJA()
-							.getFamilienstatus()
-							.equals(
-									EnumFamilienstatus.VERHEIRATET)) {
-					try {
-						return getKibonAnfrageContextWithSteuerdaten(
-								kibonAnfrageContext.getGesuch().getGesuchsteller2(),
-								kibonAnfrageContext,
-								gesuchstellerNumber);
-					} catch (KiBonAnfrageServiceException e2) {
-						kibonAnfrageContext.setSteuerdatenAnfrageStatus(SteuerdatenAnfrageStatus.FAILED);
-						return kibonAnfrageContext;
-					}
+				try {
+					return getKibonAnfrageContextWithSteuerdaten(
+							kibonAnfrageContext.getGesuch().getGesuchsteller2(),
+							kibonAnfrageContext,
+							gesuchstellerNumber);
+				} catch (KiBonAnfrageServiceException e2) {
+					kibonAnfrageContext.setSteuerdatenAnfrageStatus(SteuerdatenAnfrageStatus.FAILED);
+					return kibonAnfrageContext;
 				}
-				kibonAnfrageContext.setSteuerdatenAnfrageStatus(SteuerdatenAnfrageStatus.FAILED);
-				return kibonAnfrageContext;
 			}
 		} else {
 			// anfrage single GS
