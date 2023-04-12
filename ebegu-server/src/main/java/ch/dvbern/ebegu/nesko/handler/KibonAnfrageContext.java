@@ -17,6 +17,7 @@
 
 package ch.dvbern.ebegu.nesko.handler;
 
+import java.time.LocalDate;
 import java.util.Objects;
 
 import javax.annotation.Nonnull;
@@ -25,7 +26,9 @@ import javax.annotation.Nullable;
 import ch.dvbern.ebegu.entities.FinanzielleSituation;
 import ch.dvbern.ebegu.entities.FinanzielleSituationContainer;
 import ch.dvbern.ebegu.entities.Gesuch;
+import ch.dvbern.ebegu.entities.GesuchstellerContainer;
 import ch.dvbern.ebegu.entities.SteuerdatenResponse;
+import ch.dvbern.ebegu.enums.GesuchstellerTyp;
 import ch.dvbern.ebegu.enums.SteuerdatenAnfrageStatus;
 
 public class KibonAnfrageContext {
@@ -34,6 +37,8 @@ public class KibonAnfrageContext {
 	private Gesuch gesuch;
 
 	private int zpvNummerForRequest;
+
+	private GesuchstellerTyp gesuchstellerTyp;
 
 	@Nullable
 	private SteuerdatenAnfrageStatus steuerdatenAnfrageStatus;
@@ -45,10 +50,12 @@ public class KibonAnfrageContext {
 	private boolean gemeinsam;
 
 	public KibonAnfrageContext(
-		@Nonnull Gesuch gesuch,
-		int zpvNummerForRequest) {
+			@Nonnull Gesuch gesuch,
+			int zpvNummerForRequest,
+			GesuchstellerTyp gesuchstellerTyp) {
 		this.gesuch = gesuch;
 		this.zpvNummerForRequest = zpvNummerForRequest;
+		this.gesuchstellerTyp = gesuchstellerTyp;
 
 		initGemeinsam();
 		createFinSitGS2Container();
@@ -125,6 +132,27 @@ public class KibonAnfrageContext {
 
 	public boolean hasGS2() {
 		return gesuch.getGesuchsteller2() != null;
+	}
+
+	public int getZpvNummerForRequest() {
+		return zpvNummerForRequest;
+	}
+
+	public LocalDate getGeburstdatumForRequest() {
+		return getGesuchstellerContainerToUse().getGesuchstellerJA().getGeburtsdatum();
+	}
+
+	public GesuchstellerContainer getGesuchstellerContainerToUse() {
+		if (this.gesuchstellerTyp == GesuchstellerTyp.GESUCHSTELLER_2) {
+			Objects.requireNonNull(this.gesuch.getGesuchsteller2());
+			return this.gesuch.getGesuchsteller2();
+		}
+
+		return this.gesuch.getGesuchsteller1();
+	}
+
+	public GesuchstellerTyp getGesuchstellernTyp() {
+		return getGesuchstellernTyp();
 	}
 
 	private void createFinSitGS2Container() {

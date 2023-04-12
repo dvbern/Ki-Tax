@@ -57,8 +57,15 @@ public class KibonAnfrageHandler {
 		int zpvNummer,
 		@Nonnull GesuchstellerTyp gesuchstellerTyp) {
 
-		KibonAnfrageContext kibonAnfrageContext = new KibonAnfrageContext(gesuch, zpvNummer);
-		return handleKibonAnfrage(kibonAnfrageContext, gesuchstellerTyp.getGesuchstellerNummer());
+		KibonAnfrageContext kibonAnfrageContext = new KibonAnfrageContext(gesuch, zpvNummer, gesuchstellerTyp);
+
+		try {
+			getSteuerdatenAndHandleResponse(kibonAnfrageContext);
+		} catch (KiBonAnfrageServiceException e) {
+			kibonAnfrageContext.setSteuerdatenAnfrageStatus(SteuerdatenAnfrageStatus.FAILED);
+		}
+
+		return kibonAnfrageContext;
 	}
 
 	public KibonAnfrageContext handleKibonAnfrage(@Nonnull KibonAnfrageContext kibonAnfrageContext, int gesuchstellerNumber) {
@@ -173,6 +180,26 @@ public class KibonAnfrageHandler {
 				steuerdatenResponseGS,
 				gesuchstellerNumber);
 		return kibonAnfrageContext;
+	}
+
+	private void getSteuerdatenAndHandleResponse(KibonAnfrageContext kibonAnfrageContext)
+			throws KiBonAnfrageServiceException {
+		SteuerdatenResponse steuerdatenResponseGS = kibonAnfrageService.getSteuerDaten(
+				kibonAnfrageContext.getZpvNummerForRequest(),
+				kibonAnfrageContext.getGeburstdatumForRequest(),
+				kibonAnfrageContext.getGesuch().getId(),
+				kibonAnfrageContext.getGesuch().getGesuchsperiode().getBasisJahrPlus1());
+
+		kibonAnfrageContext.setSteuerdatenResponse(steuerdatenResponseGS);
+		if (kibonAnfrageContext.isGemeinsam()) {
+			KibonAnfrageHelper.handleSteuerdatenGemeinsamResponse(
+				kibonAnfrageContext,
+				steuerdatenResponseGS);
+		}
+		KibonAnfrageHelper.handleSteuerdatenResponse(
+				kibonAnfrageContext,
+				steuerdatenResponseGS,
+				kibonAnfrageContext.getGesuchstellernTyp().getGesuchstellerNummer());
 	}
 
 	@Nonnull
