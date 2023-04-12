@@ -85,7 +85,7 @@ describe('EinkommensverschlechterungSolothurnResultateViewComponent', () => {
                 {provide: WizardStepManager, useValue: wizardStepMangerSpy},
                 {provide: FinanzielleSituationRS, useValue: finanzielleSituationRSSpy},
                 {provide: BerechnungsManager, useValue: berechnungsManagerSpy},
-                {provide: EinstellungRS, useValue: einstellungRSSpy}
+                {provide: EinstellungRS, useValue: einstellungRSSpy},
                 {provide: Transition, useValue: transitionSpy},
                 {provide: StateService, useValue: stateServiceSpy},
                 {provide: ErrorService, useValue: errorServiceSpy}
