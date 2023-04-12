@@ -62,21 +62,18 @@ public class KibonAnfrageContext {
 
 		initGemeinsam();
 		createFinSitGS2Container();
-		setSteuerdatenZugriffFlags();
 	}
 
 	public KibonAnfrageContext(
 			@Nonnull Gesuch gesuch,
-			boolean isGemeinsam,
 			@Nonnull GesuchstellerTyp gesuchstellerTyp,
 			@Nullable String zpvBesizter) {
 		this.gesuch = gesuch;
-		this.gemeinsam = isGemeinsam;
 		this.gesuchstellerTyp = gesuchstellerTyp;
 
+		initGemeinsam();
 		initZpvNummerForRequest(zpvBesizter);
 		createFinSitGS2Container();
-		setSteuerdatenZugriffFlags();
 	}
 
 	public KibonAnfrageContext(@Nonnull Gesuch gesuch) {
@@ -84,7 +81,6 @@ public class KibonAnfrageContext {
 
 		initGemeinsam();
 		createFinSitGS2Container();
-		setSteuerdatenZugriffFlags();
 	}
 
 	private void initZpvNummerForRequest(@Nullable String zpvBesitzer) {
@@ -120,19 +116,6 @@ public class KibonAnfrageContext {
 		}
 
 		return null;
-	}
-
-	private void setSteuerdatenZugriffFlags() {
-		Objects.requireNonNull(gesuch);
-		Objects.requireNonNull(gesuch.getGesuchsteller1());
-		Objects.requireNonNull(gesuch.getGesuchsteller1().getFinanzielleSituationContainer());
-
-		gesuch.getGesuchsteller1().getFinanzielleSituationContainer().getFinanzielleSituationJA().setSteuerdatenZugriff(Boolean.TRUE);
-
-		if (gesuch.getGesuchsteller2() != null && !this.gemeinsam) {
-			Objects.requireNonNull(gesuch.getGesuchsteller2().getFinanzielleSituationContainer());
-				gesuch.getGesuchsteller1().getFinanzielleSituationContainer().getFinanzielleSituationJA().setSteuerdatenZugriff(Boolean.TRUE);
-		}
 	}
 
 	private void initGemeinsam() {

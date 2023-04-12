@@ -51,11 +51,11 @@ import javax.ws.rs.core.UriInfo;
 import ch.dvbern.ebegu.api.converter.JaxBConverter;
 import ch.dvbern.ebegu.api.dtos.JaxFamiliensituation;
 import ch.dvbern.ebegu.api.dtos.JaxFamiliensituationContainer;
-import ch.dvbern.ebegu.api.dtos.finanziellesituation.JaxFinanzModel;
-import ch.dvbern.ebegu.api.dtos.finanziellesituation.JaxFinanzielleSituationContainer;
 import ch.dvbern.ebegu.api.dtos.JaxGesuch;
 import ch.dvbern.ebegu.api.dtos.JaxGesuchstellerContainer;
 import ch.dvbern.ebegu.api.dtos.JaxId;
+import ch.dvbern.ebegu.api.dtos.finanziellesituation.JaxFinanzModel;
+import ch.dvbern.ebegu.api.dtos.finanziellesituation.JaxFinanzielleSituationContainer;
 import ch.dvbern.ebegu.dto.FinanzielleSituationResultateDTO;
 import ch.dvbern.ebegu.dto.FinanzielleSituationStartDTO;
 import ch.dvbern.ebegu.dto.JaxFinanzielleSituationAufteilungDTO;
@@ -448,9 +448,10 @@ public class FinanzielleSituationResource {
 			"Gesuch ID invalid: " + gesuchId.getId()));
 
 		GesuchstellerTyp gesuchstellerTyp = GesuchstellerTyp.getGesuchstellerTypByNummer(gesuchstellerNumber);
+		initFinanzielleSituationContainerForSteuerdatenRequest(gesuch, isGemeinsam, gesuchstellerTyp);
 
 		KibonAnfrageContext kibonAnfrageContext =
-				kibonAnfrageHandler.handleKibonAnfrage(gesuch, isGemeinsam, gesuchstellerTyp);
+				kibonAnfrageHandler.handleKibonAnfrage(gesuch, gesuchstellerTyp);
 
 		// Save
 		KibonAnfrageHelper.updateFinSitSteuerdatenAbfrageStatus(
@@ -468,6 +469,23 @@ public class FinanzielleSituationResource {
 		FinanzielleSituationContainer persistedFinSit = this.finanzielleSituationService.saveFinanzielleSituationTemp(
 				kibonAnfrageContext.getFinSitCont(gesuchstellerNumber));
 		return converter.finanzielleSituationContainerToJAX(persistedFinSit);
+	}
+
+	private void initFinanzielleSituationContainerForSteuerdatenRequest(
+			Gesuch gesuch,
+			boolean isGemeinsam,
+			GesuchstellerTyp gesuchstellerTyp) {
+
+		GesuchstellerContainer gesuchstellerToInitialse = gesuchstellerTyp == GesuchstellerTyp.GESUCHSTELLER_1 ?
+			 gesuch.getGesuchsteller1() : gesuch.getGesuchsteller2();
+
+		Objects.requireNonNull(gesuchstellerToInitialse);
+		Objects.requireNonNull(gesuchstellerToInitialse.getFinanzielleSituationContainer());
+		gesuchstellerToInitialse.getFinanzielleSituationContainer().getFinanzielleSituationJA().setSteuerdatenZugriff(true);
+
+		Objects.requireNonNull(gesuch.getFamiliensituationContainer());
+		Objects.requireNonNull(gesuch.getFamiliensituationContainer().getFamiliensituationJA());
+		gesuch.getFamiliensituationContainer().getFamiliensituationJA().setGemeinsameSteuererklaerung(isGemeinsam);
 	}
 
 	@ApiOperation(value = "reset die FinSit Status und Nettovermoegen falls gesetzt"

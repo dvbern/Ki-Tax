@@ -58,9 +58,9 @@ public class KibonAnfrageHandler {
 		return kibonAnfrageContext;
 	}
 
-	public KibonAnfrageContext handleKibonAnfrage(Gesuch gesuch, boolean isGemsinam, GesuchstellerTyp gesuchstellerTyp) {
+	public KibonAnfrageContext handleKibonAnfrage(Gesuch gesuch, GesuchstellerTyp gesuchstellerTyp) {
 		String zpvBesitzer = findZpvNummerFromGesuchBesitzer(gesuch);
-		KibonAnfrageContext kibonAnfrageContext = new KibonAnfrageContext(gesuch, isGemsinam, gesuchstellerTyp, zpvBesitzer);
+		KibonAnfrageContext kibonAnfrageContext = new KibonAnfrageContext(gesuch, gesuchstellerTyp, zpvBesitzer);
 
 		try {
 			getSteuerdatenAndHandleResponse(kibonAnfrageContext);
