@@ -26,6 +26,7 @@ import {
     FinanzielleSituationLuzernService
 } from '../../../finanzielleSituation/luzern/finanzielle-situation-luzern.service';
 import {AbstractEinkommensverschlechterungResultat} from '../../AbstractEinkommensverschlechterungResultat';
+import {EinstellungRS} from "../../../../../admin/service/einstellungRS.rest";
 
 @Component({
     selector: 'dv-einkommensverschlechterung-luzern-resultate-view',
@@ -40,6 +41,7 @@ export class EinkommensverschlechterungLuzernResultateViewComponent extends Abst
         protected finSitLuService: FinanzielleSituationLuzernService,
         protected berechnungsManager: BerechnungsManager,
         protected ref: ChangeDetectorRef,
+        protected readonly einstellungRS: EinstellungRS,
         protected readonly $transition$: Transition
     ) {
         super(gesuchModelManager,
@@ -47,6 +49,7 @@ export class EinkommensverschlechterungLuzernResultateViewComponent extends Abst
             berechnungsManager,
             ref,
             TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_LUZERN,
+            einstellungRS,
             $transition$);
     }
 

@@ -92,7 +92,7 @@
                     <div class="col-md-12">
                         <div class="well well-status-bestaetigt">
                             <span translate
-                                  [translateParams]="{basisjahr: this.gesuchModelManager.getBasisjahr(), ekvJahr:this.gesuchModelManager.getBasisjahrToWorkWith()}">RESULTATE_EKV_AKZEPTIERT</span>
+                                  [translateParams]="{basisjahr: this.gesuchModelManager.getBasisjahr(), ekvJahr: this.gesuchModelManager.getBasisjahrToWorkWith(), ekvGrenze: ekvGrenzWerte()}">RESULTATE_EKV_AKZEPTIERT</span>
                         </div>
                     </div>
                 </div>
@@ -100,7 +100,7 @@
                     <div class="col-md-12">
                         <div class="well well-status-warten">
                             <span translate
-                                  [translateParams]="{basisjahr: this.gesuchModelManager.getBasisjahr(), ekvJahr:this.gesuchModelManager.getBasisjahrToWorkWith()}">RESULTATE_EKV_NICHT_AKZEPTIERT</span>
+                                  [translateParams]="{basisjahr: this.gesuchModelManager.getBasisjahr(), ekvJahr:this.gesuchModelManager.getBasisjahrToWorkWith(), ekvGrenze: ekvGrenzWerte()}">RESULTATE_EKV_NICHT_AKZEPTIERT</span>
                         </div>
                     </div>
                 </div>

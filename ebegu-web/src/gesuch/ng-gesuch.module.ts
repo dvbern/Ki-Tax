@@ -91,7 +91,7 @@ import {
 } from './component/finanzielleSituation/solothurn/finanzielle-situation-start-solothurn/finanzielle-situation-start-solothurn.component';
 import {
     MassgebendesEinkommenComponent
-} from './component/finanzielleSituation/solothurn/resultat/massgebendes-einkommen.component';
+} from './component/abstractFinanzielleSituation/resultat/massgebendes-einkommen.component';
 import {
     SteuerveranlagungErhaltenComponent
 } from './component/finanzielleSituation/solothurn/steuerveranlagung-erhalten/steuerveranlagung-erhalten.component';

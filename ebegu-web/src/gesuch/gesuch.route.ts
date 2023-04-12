@@ -989,7 +989,7 @@ export class EbeguEinkommensverschlechterungAppenzellState implements Ng1StateDe
 
 export class EbeguEinkommensverschlechterungAppenzellResultateState implements Ng1StateDeclaration {
     public name = 'gesuch.einkommensverschlechterungAppenzellResultate';
-    public url = '/lu/einkommensverschlechterungResultate/:gesuchId/:basisjahrPlus';
+    public url = '/ar/einkommensverschlechterungResultate/:gesuchId/:basisjahrPlus';
     public params = {
         basisjahrPlus: '1',
     };

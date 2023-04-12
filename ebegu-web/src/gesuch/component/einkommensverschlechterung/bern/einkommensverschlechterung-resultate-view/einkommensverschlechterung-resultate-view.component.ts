@@ -30,6 +30,7 @@ import {BerechnungsManager} from '../../../../service/berechnungsManager';
 import {GesuchModelManager} from '../../../../service/gesuchModelManager';
 import {WizardStepManager} from '../../../../service/wizardStepManager';
 import {AbstractEinkommensverschlechterungResultat} from '../../AbstractEinkommensverschlechterungResultat';
+import {EinstellungRS} from "../../../../../admin/service/einstellungRS.rest";
 
 @Component({
     selector: 'dv-einkommensverschlechterung-resultate-view',
@@ -48,6 +49,7 @@ export class EinkommensverschlechterungResultateViewComponent extends AbstractEi
         protected wizardStepManager: WizardStepManager,
         protected berechnungsManager: BerechnungsManager,
         protected ref: ChangeDetectorRef,
+        protected readonly einstellungRS: EinstellungRS,
         protected readonly $transition$: Transition,
         private readonly errorService: ErrorService
     ) {
@@ -56,6 +58,7 @@ export class EinkommensverschlechterungResultateViewComponent extends AbstractEi
             berechnungsManager,
             ref,
             TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG,
+            einstellungRS,
             $transition$);
         this.readOnly = this.gesuchModelManager.isGesuchReadonly();
     }
