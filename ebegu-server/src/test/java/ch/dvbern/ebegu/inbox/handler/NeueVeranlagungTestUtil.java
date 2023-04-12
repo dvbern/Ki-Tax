@@ -18,11 +18,8 @@
 package ch.dvbern.ebegu.inbox.handler;
 
 import java.math.BigDecimal;
-import java.util.Objects;
 
-import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.SteuerdatenResponse;
-import ch.dvbern.ebegu.nesko.handler.KibonAnfrageContext;
 import ch.dvbern.kibon.exchange.commons.neskovanp.NeueVeranlagungEventDTO;
 
 public final class NeueVeranlagungTestUtil {
@@ -40,11 +37,5 @@ public final class NeueVeranlagungTestUtil {
 		steuerdatenResponse.setSchuldzinsen(new BigDecimal(7000));
 		steuerdatenResponse.setLiegenschaftsAbzuege(new BigDecimal(5000));
 		return steuerdatenResponse;
-	}
-
-	public static KibonAnfrageContext initKibonAnfrageContext(Gesuch gesuch) {
-		Objects.requireNonNull(gesuch.getGesuchsteller1());
-		Objects.requireNonNull(gesuch.getGesuchsteller1().getFinanzielleSituationContainer());
-		return new KibonAnfrageContext(gesuch);
 	}
 }

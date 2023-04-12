@@ -148,7 +148,7 @@ public class NeueVeranlagungEventHandlerTest extends EasyMockSupport {
 			.getFinanzielleSituationJA()
 			.setSteuerdatenResponse(steuerdatenResponse);
 
-		kibonAnfrageContext = NeueVeranlagungTestUtil.initKibonAnfrageContext(gesuch_1GS);
+		kibonAnfrageContext = new KibonAnfrageContext(gesuch_1GS);
 	}
 
 	@Test

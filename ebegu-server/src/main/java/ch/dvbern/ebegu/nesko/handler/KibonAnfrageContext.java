@@ -36,7 +36,7 @@ import org.apache.commons.lang3.StringUtils;
 public class KibonAnfrageContext {
 
 	@Nonnull
-	private Gesuch gesuch;
+	private final Gesuch gesuch;
 
 	private Integer zpvNummerForRequest;
 
@@ -78,6 +78,14 @@ public class KibonAnfrageContext {
 		setSteuerdatenZugriffFlags();
 	}
 
+	public KibonAnfrageContext(@Nonnull Gesuch gesuch) {
+		this.gesuch = gesuch;
+
+		initGemeinsam();
+		createFinSitGS2Container();
+		setSteuerdatenZugriffFlags();
+	}
+
 	private void initZpvNummerForRequest(@Nullable String zpvBesitzer) {
 		String zpvNummer = null;
 
@@ -111,14 +119,6 @@ public class KibonAnfrageContext {
 		}
 
 		return null;
-	}
-
-	public KibonAnfrageContext(@Nonnull Gesuch gesuch) {
-		this.gesuch = gesuch;
-
-		initGemeinsam();
-		createFinSitGS2Container();
-		setSteuerdatenZugriffFlags();
 	}
 
 	private void setSteuerdatenZugriffFlags() {

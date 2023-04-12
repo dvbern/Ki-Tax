@@ -116,14 +116,6 @@ public class KibonAnfrageHandler {
 			}
 			// anfrage single GS
 			if (gesuchstellerNumber == 2) {
-				String zpvNummer = zpvNummerMap.get(ZpvEnum.ZPV_BESITZER) == null ?
-						zpvNummerMap.get(ZpvEnum.ZPV_GESUCHSTELLER_2) :
-						zpvNummerMap.get(ZpvEnum.ZPV_BESITZER);
-				if (null == zpvNummer) {
-					kibonAnfrageContext.setSteuerdatenAnfrageStatus(
-							SteuerdatenAnfrageStatus.FAILED_KEINE_ZPV_NUMMER_GS2);
-					return kibonAnfrageContext;
-				}
 				try {
 					return getKibonAnfrageContextWithSteuerdaten(
 							kibonAnfrageContext.getGesuch().getGesuchsteller2(),
