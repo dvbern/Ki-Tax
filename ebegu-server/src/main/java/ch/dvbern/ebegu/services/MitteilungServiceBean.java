@@ -1608,7 +1608,7 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 				KibonAnfrageUtil.getZpvFromBesitzer(gesuch));
 		kibonAnfrageContext.setSteuerdatenAnfrageStatus(SteuerdatenAnfrageStatus.RECHTSKRAEFTIG);
 
-		if (!kibonAnfrageContext.hasGS1SteuerzuriffErlaubt()) {
+		if (!kibonAnfrageContext.isSteuerZugriffErlaubt()) {
 			throw new EbeguException("neueVeranlagungsMitteilungImAntragErsetzen",
 					ErrorCodeEnum.ERROR_FIN_SIT_MANUELLE_EINGABE,
 					gesuch.getId());

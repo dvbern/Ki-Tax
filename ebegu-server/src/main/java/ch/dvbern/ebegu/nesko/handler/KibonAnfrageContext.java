@@ -147,9 +147,8 @@ public class KibonAnfrageContext {
 		return gemeinsam;
 	}
 
-	public boolean hasGS1SteuerzuriffErlaubt() {
-		return Boolean.TRUE
-		 	.equals(getFinSitCont(GesuchstellerTyp.GESUCHSTELLER_1).getFinanzielleSituationJA().getSteuerdatenZugriff());
+	public boolean isSteuerZugriffErlaubt() {
+		return Boolean.TRUE.equals(getFinanzielleSituationJAToUse().getSteuerdatenZugriff());
 	}
 
 	public boolean hasGS2() {
