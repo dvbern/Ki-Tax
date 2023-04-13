@@ -30,7 +30,7 @@ import {EKVViewUtil} from './EKVViewUtil';
 import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
 import {TSEinstellung} from '../../../models/TSEinstellung';
 import {TSEinstellungKey} from '../../../models/enums/TSEinstellungKey';
-import {take} from "rxjs/operators";
+import {take} from 'rxjs/operators';
 
 export abstract class AbstractEinkommensverschlechterungResultat extends AbstractGesuchViewX<TSFinanzModel> {
     public resultatBasisjahr?: TSFinanzielleSituationResultateDTO;
