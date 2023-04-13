@@ -1633,32 +1633,7 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 						gesuch.getId());
 			}
 
-			LocalDate geburtsdatumGS =
-					kibonAnfrageContext.getGesuch().getGesuchsteller1().getGesuchstellerJA().getGeburtsdatum();
-
-			boolean geburtstagsMatchFound = false;
-			if (geburtsDatumGSFoundInResponse(mitteilung, geburtsdatumGS)) {
-				handleSteuerdatenResponse(kibonAnfrageContext, mitteilung, 1, gesuch);
-				geburtstagsMatchFound = true;
-			}
-
-			if (kibonAnfrageContext.getGesuch().getGesuchsteller2() != null) {
-				LocalDate geburtsdatumGS2 =
-						kibonAnfrageContext.getGesuch().getGesuchsteller2().getGesuchstellerJA().getGeburtsdatum();
-				if (geburtsDatumGSFoundInResponse(mitteilung, geburtsdatumGS2)) {
-					handleSteuerdatenResponse(kibonAnfrageContext, mitteilung, 2, gesuch);
-					geburtstagsMatchFound = true;
-				}
-			}
-			if (!geburtstagsMatchFound) {
-				//FIXME: neuer Fehler erstellen -> Geburtstags-mutation
-				throw new EbeguException("neueVeranlagungsMitteilungImAntragErsetzen",
-						"Fixme: im Gesuch:"
-								+ gesuch.getId()
-								+ " Das hätte nicht passieren dürfen ... das ist ein noch unbekanner Fehler.",
-						ERROR_ENTITY_NOT_FOUND,
-						gesuch.getId());
-			}
+			handleSteuerdatenResponse(kibonAnfrageContext, mitteilung, gesuch);
 		}
 		mitteilung.setMitteilungStatus(MitteilungStatus.ERLEDIGT);
 		persistence.merge(mitteilung);
@@ -1667,20 +1642,11 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 	private void handleSteuerdatenResponse(
 			KibonAnfrageContext kibonAnfrageContext,
 			NeueVeranlagungsMitteilung mitteilung,
-			int gesuchstellerNumber,
 			Gesuch gesuch) {
-		KibonAnfrageHelper.handleSteuerdatenResponse(kibonAnfrageContext,
-				mitteilung.getSteuerdatenResponse(),
-				gesuchstellerNumber);
+		KibonAnfrageHelper.handleSteuerdatenResponse(kibonAnfrageContext, mitteilung.getSteuerdatenResponse());
 		finanzielleSituationService.saveFinanzielleSituation(
-				kibonAnfrageContext.getFinSitCont(gesuchstellerNumber),
+				kibonAnfrageContext.getFinanzielleSituationContainerToUse(),
 				gesuch.getId());
-	}
-
-	private static boolean geburtsDatumGSFoundInResponse(
-			@Nonnull NeueVeranlagungsMitteilung mitteilung, @Nonnull LocalDate geburtsdatumGS) {
-		return Objects.equals(mitteilung.getSteuerdatenResponse().getGeburtsdatumDossiertraeger(), geburtsdatumGS)
-				|| Objects.equals(mitteilung.getSteuerdatenResponse().getGeburtsdatumAntragsteller(), geburtsdatumGS);
 	}
 
 	private void applyBetreuungsmitteilungToMutation(
