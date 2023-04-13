@@ -96,5 +96,8 @@
     "APPENZELL_TITEL_FIN_SIT": "Finanzielle Verhältnisse ",
     "APPENZELL_FIN_SIT_EINLEITUNG": "Bitte füllen Sie dieses Formular anhand Ihrer letzten Steuerveranlagung aus. Falls Sie noch keine Steuerveranlagung im Kanton Appenzell Ausserrhoden erhalten haben, ERGÄNZEN...",
     "APPENZELL_FIN_SIT_FORMULAR_VERVOLLSTAENDIGEN": "Bitte vervollständigen Sie zuerst die Angaben zu den Antragstellenden",
+    "GESUNDHEITLICHE_EINSCHRAENKUNGEN": "Gesundheitliche / Familiäre Indikation",
+    "KLASSE1": "Eingeschult",
+    "VORSCHULALTER": "Nicht eingeschult",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

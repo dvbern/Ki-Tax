@@ -57,6 +57,13 @@ export function getTSEinschulungTypValuesLuzern(): Array<TSEinschulungTyp> {
     ];
 }
 
+export function getTSEinschulungTypValuesAppenzellAusserrhoden(): Array<TSEinschulungTyp> {
+    return [
+        TSEinschulungTyp.VORSCHULALTER,
+        TSEinschulungTyp.KLASSE1
+    ];
+}
+
 export function getTSEinschulungTypGemeindeValues(): Array<TSEinschulungTyp> {
     return [
         TSEinschulungTyp.VORSCHULALTER,
