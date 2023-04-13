@@ -25,6 +25,7 @@ import javax.annotation.Nullable;
 import ch.dvbern.ebegu.entities.FinanzielleSituationContainer;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.SteuerdatenResponse;
+import ch.dvbern.ebegu.enums.GesuchstellerTyp;
 
 public final class KibonAnfrageUtil {
 
@@ -61,5 +62,18 @@ public final class KibonAnfrageUtil {
 		}
 
 		return steuerdatenResponse.getZpvNrAntragsteller().equals(zpvNummer);
+	}
+	public static GesuchstellerTyp getGesuchstellerTypByGeburtsdatum(Gesuch gesuch, LocalDate geburtsdatum) {
+		if (gesuch.getGesuchsteller1() != null &&
+					gesuch.getGesuchsteller1().getGesuchstellerJA().getGeburtsdatum().equals(geburtsdatum)) {
+			return GesuchstellerTyp.GESUCHSTELLER_1;
+		}
+
+		if (gesuch.getGesuchsteller2() != null &&
+					gesuch.getGesuchsteller2().getGesuchstellerJA().getGeburtsdatum().equals(geburtsdatum)) {
+			return GesuchstellerTyp.GESUCHSTELLER_2;
+		}
+
+		return null;
 	}
 }

@@ -110,6 +110,7 @@ import ch.dvbern.ebegu.enums.Betreuungsstatus;
 import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.FinSitStatus;
+import ch.dvbern.ebegu.enums.GesuchstellerTyp;
 import ch.dvbern.ebegu.enums.MessageTypes;
 import ch.dvbern.ebegu.enums.MitteilungStatus;
 import ch.dvbern.ebegu.enums.MitteilungTeilnehmerTyp;
@@ -1580,6 +1581,15 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 
 		if (!KibonAnfrageUtil.hasGesuchSteuerdatenResponseWithZpvNummer(gesuch,
 			mitteilung.getSteuerdatenResponse().getZpvNrAntragsteller())) {
+			throw new EbeguRuntimeException(
+					"neueVeranlagungsMitteilungImAntragErsetzen",
+					"Die neue Veranlagung konnte nicht mit einem gueltigen Antragstellenden verlinkt werden.");
+		}
+
+		GesuchstellerTyp gesuchstellerTyp = KibonAnfrageUtil.getGesuchstellerTypByGeburtsdatum(gesuch,
+				mitteilung.getSteuerdatenResponse().getGeburtsdatumAntragsteller());
+
+		if (gesuchstellerTyp == null) {
 			throw new EbeguRuntimeException(
 					"neueVeranlagungsMitteilungImAntragErsetzen",
 					"Die neue Veranlagung konnte nicht mit einem gueltigen Antragstellenden verlinkt werden.");

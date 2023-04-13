@@ -141,7 +141,7 @@ public class NeueVeranlagungEventHandler extends BaseEventHandler<NeueVeranlagun
 							+ ", konnte nicht mit einer gueltige Antragstellende verlinkt werden.");
 		}
 
-		GesuchstellerTyp gesuchstellerTyp = getGesuchstellerTypByGeburtsdatum(gesuch, dto.getGeburtsdatum());
+		GesuchstellerTyp gesuchstellerTyp = KibonAnfrageUtil.getGesuchstellerTypByGeburtsdatum(gesuch, dto.getGeburtsdatum());
 
 		if (gesuchstellerTyp == null) {
 			return Processing.failure(
@@ -222,20 +222,6 @@ public class NeueVeranlagungEventHandler extends BaseEventHandler<NeueVeranlagun
 		Session session = persistence.getEntityManager().unwrap(Session.class);
 		session.evict(gesuch);
 		return gesuch;
-	}
-
-	private GesuchstellerTyp getGesuchstellerTypByGeburtsdatum(Gesuch gesuch, LocalDate geburtsdatum) {
-		if (gesuch.getGesuchsteller1() != null &&
-			gesuch.getGesuchsteller1().getGesuchstellerJA().getGeburtsdatum().equals(geburtsdatum)) {
-			return GesuchstellerTyp.GESUCHSTELLER_1;
-		}
-
-		if (gesuch.getGesuchsteller2() != null &&
-			gesuch.getGesuchsteller2().getGesuchstellerJA().getGeburtsdatum().equals(geburtsdatum)) {
-			return GesuchstellerTyp.GESUCHSTELLER_2;
-		}
-
-		return null;
 	}
 
 	private Processing createAndSendNeueVeranlagungsMitteilung(
