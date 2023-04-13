@@ -1624,8 +1624,10 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 
 			KibonAnfrageHelper.updateFinSitSteuerdatenAbfrageGemeinsamStatusOk(mitteilung.getSteuerdatenResponse(),
 					kibonAnfrageContext);
-			finanzielleSituationService.saveFinanzielleSituation(kibonAnfrageContext.getFinSitCont(1), gesuch.getId());
-			finanzielleSituationService.saveFinanzielleSituation(kibonAnfrageContext.getFinSitCont(2), gesuch.getId());
+			finanzielleSituationService.saveFinanzielleSituation(
+					kibonAnfrageContext.getFinSitCont(GesuchstellerTyp.GESUCHSTELLER_1), gesuch.getId());
+			finanzielleSituationService.saveFinanzielleSituation(
+					kibonAnfrageContext.getFinSitCont(GesuchstellerTyp.GESUCHSTELLER_2), gesuch.getId());
 		} else {
 			if (mitteilung.getSteuerdatenResponse().getZpvNrPartner() != null) {
 				throw new EbeguException("neueVeranlagungsMitteilungImAntragErsetzen",

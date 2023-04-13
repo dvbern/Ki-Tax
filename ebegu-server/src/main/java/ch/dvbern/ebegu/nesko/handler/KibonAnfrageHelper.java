@@ -28,6 +28,7 @@ import ch.dvbern.ebegu.entities.FinanzielleSituation;
 import ch.dvbern.ebegu.entities.Gesuchsteller;
 import ch.dvbern.ebegu.entities.SteuerdatenResponse;
 import ch.dvbern.ebegu.entities.SteuerdatenResponse.SteuerdatenDatenTraeger;
+import ch.dvbern.ebegu.enums.GesuchstellerTyp;
 import ch.dvbern.ebegu.enums.SteuerdatenAnfrageStatus;
 import ch.dvbern.ebegu.util.MathUtil;
 
@@ -110,12 +111,16 @@ public class KibonAnfrageHelper {
 		KibonAnfrageContext anfrageContext,
 		SteuerdatenResponse steuerdatenResponse) {
 
+		if (anfrageContext.getGesuch().getGesuchsteller2() == null) {
+			return false;
+		}
+
 		LocalDate geburtsdatumPartner;
 
-		if (isGesuchstellerSteuerdossiertraeger(anfrageContext.getGesuch().getGesuchsteller1().getGesuchstellerJA(), steuerdatenResponse)) {
+		if (isGesuchstellerSteuerdossiertraeger(anfrageContext.getGesuchsteller1(), steuerdatenResponse)) {
 			geburtsdatumPartner = anfrageContext.getGesuch().getGesuchsteller2().getGesuchstellerJA().getGeburtsdatum();
 		} else {
-			geburtsdatumPartner = anfrageContext.getGesuch().getGesuchsteller1().getGesuchstellerJA().getGeburtsdatum();
+			geburtsdatumPartner = anfrageContext.getGesuchsteller1().getGeburtsdatum();
 		}
 
 		return geburtsdatumPartner.isEqual(requireNonNull(steuerdatenResponse.getGeburtsdatumPartner()));
@@ -124,12 +129,12 @@ public class KibonAnfrageHelper {
 	public static void updateFinSitSteuerdatenAbfrageGemeinsamStatusOk(
 			SteuerdatenResponse steuerdatenResponse,
 			KibonAnfrageContext anfrageContext) {
-		FinanzielleSituation finSitGS1 = anfrageContext.getFinSitCont(1).getFinanzielleSituationJA();
-		FinanzielleSituation finSitGS2 = anfrageContext.getFinSitCont(2).getFinanzielleSituationJA();
+		FinanzielleSituation finSitGS1 = anfrageContext.getFinanzielleSituationForGSTyp(GesuchstellerTyp.GESUCHSTELLER_1);
+		FinanzielleSituation finSitGS2 = anfrageContext.getFinanzielleSituationForGSTyp(GesuchstellerTyp.GESUCHSTELLER_2);
 		assert steuerdatenResponse.getZpvNrPartner() != null;
 		finSitGS1.setSteuerdatenResponse(steuerdatenResponse);
 		finSitGS2.setSteuerdatenResponse(steuerdatenResponse);
-		if (isGesuchstellerSteuerdossiertraeger(anfrageContext.getGesuch().getGesuchsteller1().getGesuchstellerJA(), steuerdatenResponse)) {
+		if (isGesuchstellerSteuerdossiertraeger(anfrageContext.getGesuchsteller1(), steuerdatenResponse)) {
 			//GS1 = Dossierträger GS2 = Partner
 			setValuesToFinSit(finSitGS1, steuerdatenResponse, BIG_DECIMAL_TWO, SteuerdatenDatenTraeger.DOSSIERTRAEGER);
 			setValuesToFinSit(finSitGS2, steuerdatenResponse, BIG_DECIMAL_TWO, SteuerdatenDatenTraeger.PARTNER);

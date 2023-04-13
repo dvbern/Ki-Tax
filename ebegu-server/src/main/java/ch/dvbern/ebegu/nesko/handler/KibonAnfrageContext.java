@@ -28,6 +28,7 @@ import javax.annotation.Nullable;
 import ch.dvbern.ebegu.entities.FinanzielleSituation;
 import ch.dvbern.ebegu.entities.FinanzielleSituationContainer;
 import ch.dvbern.ebegu.entities.Gesuch;
+import ch.dvbern.ebegu.entities.Gesuchsteller;
 import ch.dvbern.ebegu.entities.GesuchstellerContainer;
 import ch.dvbern.ebegu.entities.SteuerdatenResponse;
 import ch.dvbern.ebegu.enums.GesuchstellerTyp;
@@ -113,6 +114,12 @@ public class KibonAnfrageContext {
 		return gesuch;
 	}
 
+	@Nonnull
+	public Gesuchsteller getGesuchsteller1() {
+		Objects.requireNonNull(gesuch.getGesuchsteller1());
+		return gesuch.getGesuchsteller1().getGesuchstellerJA();
+	}
+
 	@Nullable
 	public SteuerdatenAnfrageStatus getSteuerdatenAnfrageStatus() {
 		return steuerdatenAnfrageStatus;
@@ -141,7 +148,8 @@ public class KibonAnfrageContext {
 	}
 
 	public boolean hasGS1SteuerzuriffErlaubt() {
-		return Boolean.TRUE.equals(getFinSitCont(1).getFinanzielleSituationJA().getSteuerdatenZugriff());
+		return Boolean.TRUE
+		 	.equals(getFinSitCont(GesuchstellerTyp.GESUCHSTELLER_1).getFinanzielleSituationJA().getSteuerdatenZugriff());
 	}
 
 	public boolean hasGS2() {
@@ -218,11 +226,17 @@ public class KibonAnfrageContext {
 		this.getGesuch().getGesuchsteller2().setFinanzielleSituationContainer(finSitGS2Cont);
 	}
 
-	public FinanzielleSituationContainer getFinSitCont(int gesuchstellerNumber) {
-		if (gesuchstellerNumber == 1) {
-			return getGesuch().getGesuchsteller1().getFinanzielleSituationContainer();
+	public FinanzielleSituationContainer getFinSitCont(GesuchstellerTyp gsTyp) {
+		if (GesuchstellerTyp.GESUCHSTELLER_2 == gsTyp) {
+			Objects.requireNonNull(gesuch.getGesuchsteller2());
+			return gesuch.getGesuchsteller2().getFinanzielleSituationContainer();
 		}
-		return getGesuch().getGesuchsteller2().getFinanzielleSituationContainer();
+		Objects.requireNonNull(gesuch.getGesuchsteller1());
+		return gesuch.getGesuchsteller1().getFinanzielleSituationContainer();
+	}
+
+	public FinanzielleSituation getFinanzielleSituationForGSTyp(GesuchstellerTyp gsTyp) {
+		return getFinSitCont(gsTyp).getFinanzielleSituationJA();
 	}
 
 	public FinanzielleSituationContainer getFinanzielleSituationContainerToUse() {

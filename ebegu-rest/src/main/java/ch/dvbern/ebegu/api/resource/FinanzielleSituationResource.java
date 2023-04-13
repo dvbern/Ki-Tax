@@ -455,7 +455,7 @@ public class FinanzielleSituationResource {
 		if (isGemeinsam) {
 			this.gesuchstellerService.saveGesuchsteller(requireNonNull(gesuch.getGesuchsteller2()), gesuch, 2, false);
 			this.finanzielleSituationService.
-					saveFinanzielleSituationTemp(kibonAnfrageContext.getFinSitCont(2));
+					saveFinanzielleSituationTemp(kibonAnfrageContext.getFinSitCont(GesuchstellerTyp.GESUCHSTELLER_2));
 		}
 		gesuchstellerService.saveGesuchsteller(
 				kibonAnfrageContext.getGesuchstellerContainerToUse(),
