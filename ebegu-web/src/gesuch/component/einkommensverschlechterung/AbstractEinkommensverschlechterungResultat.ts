@@ -30,6 +30,7 @@ import {EKVViewUtil} from './EKVViewUtil';
 import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
 import {TSEinstellung} from '../../../models/TSEinstellung';
 import {TSEinstellungKey} from '../../../models/enums/TSEinstellungKey';
+import {take} from "rxjs/operators";
 
 export abstract class AbstractEinkommensverschlechterungResultat extends AbstractGesuchViewX<TSFinanzModel> {
     public resultatBasisjahr?: TSFinanzielleSituationResultateDTO;
@@ -58,14 +59,16 @@ export abstract class AbstractEinkommensverschlechterungResultat extends Abstrac
         this.resultatBasisjahr = null;
         this.calculateResultateVorjahr();
 
-        this.einstellungRS.getAllEinstellungenBySystemCached(
-            this.gesuchModelManager.getGesuchsperiode().id
-        ).subscribe((response: TSEinstellung[]) => {
-            response.filter(r => r.key === TSEinstellungKey.PARAM_GRENZWERT_EINKOMMENSVERSCHLECHTERUNG)
-                .forEach(value => {
-                    this.grenze = Number(value.value);
-                });
-        });
+        if(EbeguUtil.isNotNullOrUndefined(this.gesuchModelManager.getGesuchsperiode())) {
+            this.einstellungRS.getAllEinstellungenBySystemCached(
+                this.gesuchModelManager.getGesuchsperiode().id
+            ).pipe(take(1)).subscribe((response: TSEinstellung[]) => {
+                response.filter(r => r.key === TSEinstellungKey.PARAM_GRENZWERT_EINKOMMENSVERSCHLECHTERUNG)
+                    .forEach(value => {
+                        this.grenze = Number(value.value);
+                    });
+            });
+        }
     }
 
     public calculate(): void {
