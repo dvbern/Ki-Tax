@@ -213,6 +213,9 @@ public class KibonAnfrageHelper {
 		finSit.setNettoVermoegen(divideByAnzahlGesuchsteller(
 			steuerdatenResponse.getNettovermoegen(),
 			anzahlGesuchsteller, true));
+
+		finSit.setBruttovermoegen(BigDecimal.ZERO);
+		finSit.setSchulden(BigDecimal.ZERO);
 	}
 
 	private static BigDecimal divideByAnzahlGesuchsteller(
