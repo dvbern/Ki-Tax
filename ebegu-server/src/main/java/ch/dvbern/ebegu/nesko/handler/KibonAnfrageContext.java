@@ -77,13 +77,6 @@ public class KibonAnfrageContext {
 		createFinSitGS2Container();
 	}
 
-	public KibonAnfrageContext(@Nonnull Gesuch gesuch) {
-		this.gesuch = gesuch;
-
-		initGemeinsam();
-		createFinSitGS2Container();
-	}
-
 	private void initZpvNummerForRequest(@Nullable String zpvBesitzer) {
 		String zpvNummer = null;
 

@@ -17,6 +17,7 @@
 
 package ch.dvbern.ebegu.nesko.utils;
 
+import java.time.LocalDate;
 import java.util.Objects;
 
 import javax.annotation.Nonnull;
@@ -63,6 +64,7 @@ public final class KibonAnfrageUtil {
 
 		return steuerdatenResponse.getZpvNrAntragsteller().equals(zpvNummer);
 	}
+
 	public static GesuchstellerTyp getGesuchstellerTypByGeburtsdatum(Gesuch gesuch, LocalDate geburtsdatum) {
 		if (gesuch.getGesuchsteller1() != null &&
 					gesuch.getGesuchsteller1().getGesuchstellerJA().getGeburtsdatum().equals(geburtsdatum)) {
@@ -75,5 +77,11 @@ public final class KibonAnfrageUtil {
 		}
 
 		return null;
+	}
+
+	public static String getZpvFromBesitzer(Gesuch gesuch) {
+		//Online Fall hat immer ein Besitzer
+		Objects.requireNonNull(gesuch.getFall().getBesitzer());
+		return gesuch.getFall().getBesitzer().getZpvNummer();
 	}
 }

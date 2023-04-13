@@ -17,9 +17,6 @@
 
 package ch.dvbern.ebegu.nesko.handler;
 
-import java.util.Objects;
-
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -31,6 +28,7 @@ import ch.dvbern.ebegu.enums.GesuchstellerTyp;
 import ch.dvbern.ebegu.enums.SteuerdatenAnfrageStatus;
 import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.errors.KiBonAnfrageServiceException;
+import ch.dvbern.ebegu.nesko.utils.KibonAnfrageUtil;
 import ch.dvbern.ebegu.services.KibonAnfrageService;
 
 @Stateless
@@ -120,9 +118,7 @@ public class KibonAnfrageHandler {
 	private String findZpvNummerFromGesuchBesitzer(Gesuch gesuch) {
 		if (principalBean.isCallerInAnyOfRole(UserRole.getSuperadminAllGemeindeRoles())
 				|| principalBean.isAnonymousSuperadmin()) {
-			//Online Fall hat immer ein Besitzer
-			Objects.requireNonNull(gesuch.getFall().getBesitzer());
-			return gesuch.getFall().getBesitzer().getZpvNummer();
+			return KibonAnfrageUtil.getZpvFromBesitzer(gesuch);
 		}
 
 		//wenn user role nicht gemeinde, dann soll nur der aktuelle benutzer die steuerdaten abfragen können

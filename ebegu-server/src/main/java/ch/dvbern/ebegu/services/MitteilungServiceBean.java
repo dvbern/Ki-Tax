@@ -1595,14 +1595,17 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 					"Die neue Veranlagung konnte nicht mit einem gueltigen Antragstellenden verlinkt werden.");
 		}
 
-		KibonAnfrageContext kibonAnfrageContext = new KibonAnfrageContext(gesuch);
-
 		// status muss bei Veranlagungsmitteilung immer rechtskräftig sein. Prüfungen wurden beim Erstellen der
 		// Veranlagungsmitteilungen gemacht.
 		if (mitteilung.getSteuerdatenResponse().getVeranlagungsstand() != Veranlagungsstand.RECHTSKRAEFTIG) {
 			throw new EbeguRuntimeException("neueVeranlagungsMitteilungImAntragErsetzen",
 					"Veranlagungsstand muss rechtskräftig sein");
 		}
+
+		KibonAnfrageContext kibonAnfrageContext = new KibonAnfrageContext(
+				gesuch,
+				gesuchstellerTyp,
+				KibonAnfrageUtil.getZpvFromBesitzer(gesuch));
 		kibonAnfrageContext.setSteuerdatenAnfrageStatus(SteuerdatenAnfrageStatus.RECHTSKRAEFTIG);
 
 		if (!kibonAnfrageContext.hasGS1SteuerzuriffErlaubt()) {
