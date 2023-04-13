@@ -18,7 +18,6 @@
 package ch.dvbern.ebegu.inbox.handler;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
@@ -153,8 +152,7 @@ public class NeueVeranlagungEventHandler extends BaseEventHandler<NeueVeranlagun
 		// erst die Massgegebenes Einkommens fuer das betroffenes Gesuch berechnen
 		FinanzielleSituationResultateDTO finSitOriginalResult = finanzielleSituationService.calculateResultate(gesuch);
 
-		KibonAnfrageContext kibonAnfrageContext =
-			kibonAnfrageHandler.requestSteuerdaten(gesuch, dto.getZpvNummer(), gesuchstellerTyp);
+		KibonAnfrageContext kibonAnfrageContext = kibonAnfrageHandler.handleKibonAnfrage(gesuch, gesuchstellerTyp);
 
 		if (kibonAnfrageContext.getSteuerdatenAnfrageStatus() == null
 				|| !kibonAnfrageContext.getSteuerdatenAnfrageStatus().isSteuerdatenAbfrageErfolgreich()) {

@@ -40,22 +40,6 @@ public class KibonAnfrageHandler {
 	@Inject
 	private PrincipalBean principalBean;
 
-	public KibonAnfrageContext requestSteuerdaten(
-		@Nonnull Gesuch gesuch,
-		int zpvNummer,
-		@Nonnull GesuchstellerTyp gesuchstellerTyp) {
-
-		KibonAnfrageContext kibonAnfrageContext = new KibonAnfrageContext(gesuch, zpvNummer, gesuchstellerTyp);
-
-		try {
-			getSteuerdatenAndHandleResponse(kibonAnfrageContext);
-		} catch (KiBonAnfrageServiceException e) {
-			kibonAnfrageContext.setSteuerdatenAnfrageStatus(SteuerdatenAnfrageStatus.FAILED);
-		}
-
-		return kibonAnfrageContext;
-	}
-
 	public KibonAnfrageContext handleKibonAnfrage(Gesuch gesuch, GesuchstellerTyp gesuchstellerTyp) {
 		String zpvBesitzer = findZpvNummerFromGesuchBesitzer(gesuch);
 		KibonAnfrageContext kibonAnfrageContext = new KibonAnfrageContext(gesuch, gesuchstellerTyp, zpvBesitzer);

@@ -55,18 +55,6 @@ public class KibonAnfrageContext {
 
 	public KibonAnfrageContext(
 			@Nonnull Gesuch gesuch,
-			int zpvNummerForRequest,
-			GesuchstellerTyp gesuchstellerTyp) {
-		this.gesuch = gesuch;
-		this.zpvNummerForRequest = zpvNummerForRequest;
-		this.gesuchstellerTyp = gesuchstellerTyp;
-
-		initGemeinsam();
-		createFinSitGS2Container();
-	}
-
-	public KibonAnfrageContext(
-			@Nonnull Gesuch gesuch,
 			@Nonnull GesuchstellerTyp gesuchstellerTyp,
 			@Nullable String zpvBesizter) {
 		this.gesuch = gesuch;
