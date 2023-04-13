@@ -1611,12 +1611,6 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 
 			KibonAnfrageHelper.updateFinSitSteuerdatenAbfrageGemeinsamStatusOk(mitteilung.getSteuerdatenResponse(),
 					kibonAnfrageContext);
-			kibonAnfrageContext.getFinSitCont(1)
-					.getFinanzielleSituationJA()
-					.setSteuerdatenAbfrageStatus(kibonAnfrageContext.getSteuerdatenAnfrageStatus());
-			kibonAnfrageContext.getFinSitCont(2)
-					.getFinanzielleSituationJA()
-					.setSteuerdatenAbfrageStatus(kibonAnfrageContext.getSteuerdatenAnfrageStatus());
 			finanzielleSituationService.saveFinanzielleSituation(kibonAnfrageContext.getFinSitCont(1), gesuch.getId());
 			finanzielleSituationService.saveFinanzielleSituation(kibonAnfrageContext.getFinSitCont(2), gesuch.getId());
 		} else {

@@ -19,7 +19,6 @@ package ch.dvbern.ebegu.nesko.handler;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 import javax.annotation.Nullable;
 import javax.validation.constraints.NotNull;
@@ -107,13 +106,6 @@ public class KibonAnfrageHelper {
 		setValuesToFinSit(finSit, steuerdatenResponse, BigDecimal.ONE, SteuerdatenDatenTraeger.DOSSIERTRAEGER);
 	}
 
-	public static void updateFinSitSteuerdatenAbfrageStatus(
-		FinanzielleSituation finSitGS,
-		@Nullable SteuerdatenAnfrageStatus steuerdatenAnfrageStatus) {
-		finSitGS.setSteuerdatenAbfrageStatus(steuerdatenAnfrageStatus);
-		finSitGS.setSteuerdatenAbfrageTimestamp(LocalDateTime.now());
-	}
-
 	protected static boolean isGeburtsdatumPartnerCorrectInResponse(
 		KibonAnfrageContext anfrageContext,
 		SteuerdatenResponse steuerdatenResponse) {
@@ -146,8 +138,6 @@ public class KibonAnfrageHelper {
 			setValuesToFinSit(finSitGS1, steuerdatenResponse, BIG_DECIMAL_TWO, SteuerdatenDatenTraeger.PARTNER);
 			setValuesToFinSit(finSitGS2, steuerdatenResponse, BIG_DECIMAL_TWO, SteuerdatenDatenTraeger.DOSSIERTRAEGER);
 		}
-		updateFinSitSteuerdatenAbfrageStatus(finSitGS1, anfrageContext.getSteuerdatenAnfrageStatus());
-		updateFinSitSteuerdatenAbfrageStatus(finSitGS2, anfrageContext.getSteuerdatenAnfrageStatus());
 	}
 
 

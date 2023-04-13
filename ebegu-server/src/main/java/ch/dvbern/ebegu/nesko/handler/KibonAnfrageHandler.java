@@ -88,6 +88,8 @@ public class KibonAnfrageHandler {
 	private void getSteuerdatenAndHandleResponse(KibonAnfrageContext kibonAnfrageContext)
 			throws KiBonAnfrageServiceException {
 
+		kibonAnfrageContext.setSteuerdatenAbfrageTimestampNow();
+
 		if (kibonAnfrageContext.getZpvNummerForRequest().isEmpty()) {
 			kibonAnfrageContext.setSteuerdatenAnfrageStatusFailedNoZPV();
 			return;

@@ -18,6 +18,7 @@
 package ch.dvbern.ebegu.nesko.handler;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -138,6 +139,11 @@ public class KibonAnfrageContext {
 
 	public void setSteuerdatenAnfrageStatus(@Nullable SteuerdatenAnfrageStatus steuerdatenAnfrageStatus) {
 		this.steuerdatenAnfrageStatus = steuerdatenAnfrageStatus;
+		getFinanzielleSituationJAToUse().setSteuerdatenAbfrageStatus(steuerdatenAnfrageStatus);
+	}
+
+	public void setSteuerdatenAbfrageTimestampNow() {
+		getFinanzielleSituationJAToUse().setSteuerdatenAbfrageTimestamp(LocalDateTime.now());
 	}
 
 	@Nullable

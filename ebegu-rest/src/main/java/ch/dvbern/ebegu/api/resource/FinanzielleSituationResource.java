@@ -74,7 +74,6 @@ import ch.dvbern.ebegu.enums.GesuchstellerTyp;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.nesko.handler.KibonAnfrageContext;
 import ch.dvbern.ebegu.nesko.handler.KibonAnfrageHandler;
-import ch.dvbern.ebegu.nesko.handler.KibonAnfrageHelper;
 import ch.dvbern.ebegu.services.EinstellungService;
 import ch.dvbern.ebegu.services.FamiliensituationService;
 import ch.dvbern.ebegu.services.FinanzielleSituationService;
@@ -452,11 +451,6 @@ public class FinanzielleSituationResource {
 
 		KibonAnfrageContext kibonAnfrageContext =
 				kibonAnfrageHandler.handleKibonAnfrage(gesuch, gesuchstellerTyp);
-
-		// Save
-		KibonAnfrageHelper.updateFinSitSteuerdatenAbfrageStatus(
-				kibonAnfrageContext.getFinanzielleSituationJAToUse(),
-				kibonAnfrageContext.getSteuerdatenAnfrageStatus());
 
 		if (isGemeinsam) {
 			this.gesuchstellerService.saveGesuchsteller(requireNonNull(gesuch.getGesuchsteller2()), gesuch, 2, false);
