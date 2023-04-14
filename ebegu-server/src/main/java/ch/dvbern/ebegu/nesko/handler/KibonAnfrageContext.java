@@ -65,7 +65,6 @@ public class KibonAnfrageContext {
 		initGemeinsam();
 		initGesuchstellerTyp(gesuchstellerTyp);
 		initZpvNummerForRequest(zpvBesizter);
-		createFinSitGS2Container();
 	}
 
 	private void initZpvNummerForRequest(@Nullable String zpvBesitzer) {
@@ -208,35 +207,6 @@ public class KibonAnfrageContext {
 
 		Objects.requireNonNull(this.gesuch.getGesuchsteller1());
 		return this.gesuch.getGesuchsteller1();
-	}
-
-	private void createFinSitGS2Container() {
-		if (this.getGesuch().getGesuchsteller2() == null){
-			return;
-		}
-
-		Objects.requireNonNull(this.getGesuch().getGesuchsteller1());
-		final FinanzielleSituationContainer finSitCont1 =
-				this.getGesuch().getGesuchsteller1().getFinanzielleSituationContainer();
-		Objects.requireNonNull(finSitCont1);
-
-		FinanzielleSituationContainer finSitGS2Cont =
-				this.getGesuch().getGesuchsteller2().getFinanzielleSituationContainer() != null ?
-						this.getGesuch().getGesuchsteller2().getFinanzielleSituationContainer() :
-						new FinanzielleSituationContainer();
-		if (finSitGS2Cont.getFinanzielleSituationJA() == null) {
-			finSitGS2Cont.setFinanzielleSituationJA(new FinanzielleSituation());
-		}
-		finSitGS2Cont.setJahr(finSitCont1.getJahr());
-		finSitGS2Cont.getFinanzielleSituationJA().setSteuerdatenZugriff(true);
-		finSitGS2Cont.getFinanzielleSituationJA()
-				.setSteuererklaerungAusgefuellt(finSitCont1.getFinanzielleSituationJA()
-						.getSteuererklaerungAusgefuellt());
-		finSitGS2Cont.getFinanzielleSituationJA()
-				.setSteuerveranlagungErhalten(finSitCont1.getFinanzielleSituationJA()
-						.getSteuerveranlagungErhalten());
-		finSitGS2Cont.setGesuchsteller(this.getGesuch().getGesuchsteller2());
-		this.getGesuch().getGesuchsteller2().setFinanzielleSituationContainer(finSitGS2Cont);
 	}
 
 	public FinanzielleSituationContainer getFinSitCont(GesuchstellerTyp gsTyp) {

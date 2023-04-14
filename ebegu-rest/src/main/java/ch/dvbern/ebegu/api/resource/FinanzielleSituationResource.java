@@ -63,6 +63,7 @@ import ch.dvbern.ebegu.entities.Adresse;
 import ch.dvbern.ebegu.entities.Einstellung;
 import ch.dvbern.ebegu.entities.Familiensituation;
 import ch.dvbern.ebegu.entities.FamiliensituationContainer;
+import ch.dvbern.ebegu.entities.FinanzielleSituation;
 import ch.dvbern.ebegu.entities.FinanzielleSituationContainer;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.GesuchstellerContainer;
@@ -472,16 +473,46 @@ public class FinanzielleSituationResource {
 			boolean isGemeinsam,
 			GesuchstellerTyp gesuchstellerTyp) {
 
-		GesuchstellerContainer gesuchstellerToInitialse = gesuchstellerTyp == GesuchstellerTyp.GESUCHSTELLER_1 ?
-			 gesuch.getGesuchsteller1() : gesuch.getGesuchsteller2();
+		if (gesuchstellerTyp == GesuchstellerTyp.GESUCHSTELLER_1) {
+			Objects.requireNonNull(gesuch.getGesuchsteller1());
+			Objects.requireNonNull(gesuch.getGesuchsteller1().getFinanzielleSituationContainer());
+			gesuch.getGesuchsteller1().getFinanzielleSituationContainer().getFinanzielleSituationJA().setSteuerdatenZugriff(true);
+		}
 
-		Objects.requireNonNull(gesuchstellerToInitialse);
-		Objects.requireNonNull(gesuchstellerToInitialse.getFinanzielleSituationContainer());
-		gesuchstellerToInitialse.getFinanzielleSituationContainer().getFinanzielleSituationJA().setSteuerdatenZugriff(true);
+		if (gesuchstellerTyp == GesuchstellerTyp.GESUCHSTELLER_2 || isGemeinsam) {
+			initFinanzielleSituationGS2ContainerForSteuerdatenRequest(gesuch, isGemeinsam);
+
+			if (!isGemeinsam) {
+				Objects.requireNonNull(gesuch.getGesuchsteller2());
+				Objects.requireNonNull(gesuch.getGesuchsteller2().getFinanzielleSituationContainer());
+				gesuch.getGesuchsteller2().getFinanzielleSituationContainer().getFinanzielleSituationJA().setSteuerdatenZugriff(true);
+			}
+		}
 
 		Objects.requireNonNull(gesuch.getFamiliensituationContainer());
 		Objects.requireNonNull(gesuch.getFamiliensituationContainer().getFamiliensituationJA());
 		gesuch.getFamiliensituationContainer().getFamiliensituationJA().setGemeinsameSteuererklaerung(isGemeinsam);
+	}
+
+	private void initFinanzielleSituationGS2ContainerForSteuerdatenRequest(Gesuch gesuch, boolean isGemeinsam) {
+		Objects.requireNonNull(gesuch.getGesuchsteller2());
+
+		if (gesuch.getGesuchsteller2().getFinanzielleSituationContainer() != null)  {
+			return;
+		}
+
+		Objects.requireNonNull(gesuch.getGesuchsteller1());
+		Objects.requireNonNull(gesuch.getGesuchsteller1().getFinanzielleSituationContainer());
+
+		FinanzielleSituation finSitJa = new FinanzielleSituation();
+		finSitJa.setSteuererklaerungAusgefuellt(false); //default
+		finSitJa.setSteuerveranlagungErhalten(false); //default
+
+		FinanzielleSituationContainer finSit = new FinanzielleSituationContainer();
+		finSit.setJahr(gesuch.getGesuchsteller1().getFinanzielleSituationContainer().getJahr());
+		finSit.setFinanzielleSituationJA(finSitJa);
+		finSit.setGesuchsteller(gesuch.getGesuchsteller2());
+		gesuch.getGesuchsteller2().setFinanzielleSituationContainer(finSit);
 	}
 
 	@ApiOperation(value = "reset die FinSit Status und Nettovermoegen falls gesetzt"

@@ -134,6 +134,7 @@ public class KibonAnfrageHelper {
 		assert steuerdatenResponse.getZpvNrPartner() != null;
 		finSitGS1.setSteuerdatenResponse(steuerdatenResponse);
 		finSitGS2.setSteuerdatenResponse(steuerdatenResponse);
+		finSitGS2.setSteuerdatenZugriff(true);
 		if (isGesuchstellerSteuerdossiertraeger(anfrageContext.getGesuchsteller1(), steuerdatenResponse)) {
 			//GS1 = Dossierträger GS2 = Partner
 			setValuesToFinSit(finSitGS1, steuerdatenResponse, BIG_DECIMAL_TWO, SteuerdatenDatenTraeger.DOSSIERTRAEGER);
