@@ -141,10 +141,19 @@ public class KibonAnfrageContext {
 	public void setSteuerdatenAnfrageStatus(@Nullable SteuerdatenAnfrageStatus steuerdatenAnfrageStatus) {
 		this.steuerdatenAnfrageStatus = steuerdatenAnfrageStatus;
 		getFinanzielleSituationJAToUse().setSteuerdatenAbfrageStatus(steuerdatenAnfrageStatus);
+		if (this.gemeinsam) {
+			getFinanzielleSituationForGSTyp(GesuchstellerTyp.GESUCHSTELLER_2)
+					.setSteuerdatenAbfrageStatus(steuerdatenAnfrageStatus);
+		}
 	}
 
 	public void setSteuerdatenAbfrageTimestampNow() {
 		getFinanzielleSituationJAToUse().setSteuerdatenAbfrageTimestamp(LocalDateTime.now());
+
+		if (this.gemeinsam) {
+			getFinanzielleSituationForGSTyp(GesuchstellerTyp.GESUCHSTELLER_2)
+					.setSteuerdatenAbfrageTimestamp(LocalDateTime.now());
+		}
 	}
 
 	@Nullable
