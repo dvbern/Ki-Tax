@@ -40,8 +40,10 @@ public class KibonAnfrageContext {
 	@Nonnull
 	private final Gesuch gesuch;
 
-	private Integer zpvNummerForRequest;
+	@Nullable
+	private Integer zpvNummerForRequest = null;
 
+	@Nonnull
 	private GesuchstellerTyp gesuchstellerTyp;
 
 	@Nullable
@@ -59,9 +61,9 @@ public class KibonAnfrageContext {
 			@Nonnull GesuchstellerTyp gesuchstellerTyp,
 			@Nullable String zpvBesizter) {
 		this.gesuch = gesuch;
-		this.gesuchstellerTyp = gesuchstellerTyp;
 
 		initGemeinsam();
+		initGesuchstellerTyp(gesuchstellerTyp);
 		initZpvNummerForRequest(zpvBesizter);
 		createFinSitGS2Container();
 	}
@@ -107,6 +109,18 @@ public class KibonAnfrageContext {
 
 		this.gemeinsam = Boolean.TRUE
 			.equals(gesuch.getFamiliensituationContainer().getFamiliensituationJA().getGemeinsameSteuererklaerung());
+	}
+
+	private void initGesuchstellerTyp(@Nonnull GesuchstellerTyp typ) {
+		if (this.gemeinsam && typ == GesuchstellerTyp.GESUCHSTELLER_2) {
+			//wenn gemeinsam, ist der abfragende Gesuchsteller immer GS1
+			this.gesuchstellerTyp = GesuchstellerTyp.GESUCHSTELLER_1;
+			//aber wir wissen bereits, dass geburtsdatum von GS2 verwendet werden soll
+			this.useGeburtrsdatumFromOtherGesuchsteller();
+			return;
+		}
+
+		this.gesuchstellerTyp = typ;
 	}
 
 	@Nonnull
