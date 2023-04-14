@@ -1576,6 +1576,7 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 			@Nonnull Gesuch gesuch, @Nonnull NeueVeranlagungsMitteilung mitteilung) throws EbeguException {
 		Objects.requireNonNull(mitteilung.getSteuerdatenResponse());
 		Objects.requireNonNull(mitteilung.getSteuerdatenResponse().getZpvNrAntragsteller());
+		Objects.requireNonNull(mitteilung.getSteuerdatenResponse().getGeburtsdatumAntragsteller());
 		authorizer.checkWriteAuthorization(gesuch);
 		authorizer.checkReadAuthorizationMitteilung(mitteilung);
 

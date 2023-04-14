@@ -169,6 +169,7 @@ public class NeueVeranlagungMitteilungTest extends EasyMockSupport {
 		SteuerdatenResponse steuerdatenResponse = new SteuerdatenResponse();
 		steuerdatenResponse.setZpvNrAntragsteller(1000001);
 		steuerdatenResponse.setZpvNrDossiertraeger(1000001);
+		steuerdatenResponse.setGeburtsdatumAntragsteller(LocalDate.of(1980, 03, 25));
 		steuerdatenResponse.setZpvNrPartner(1000002);
 		steuerdatenResponse.setVeranlagungsstand(Veranlagungsstand.RECHTSKRAEFTIG);
 		Gesuch gesuch = prepareGS1Fall(steuerdatenResponse);
@@ -183,6 +184,7 @@ public class NeueVeranlagungMitteilungTest extends EasyMockSupport {
 		SteuerdatenResponse steuerdatenResponse = new SteuerdatenResponse();
 		steuerdatenResponse.setZpvNrAntragsteller(1000001);
 		steuerdatenResponse.setZpvNrDossiertraeger(1000001);
+		steuerdatenResponse.setGeburtsdatumAntragsteller(LocalDate.of(1980, 03, 25));
 		steuerdatenResponse.setVeranlagungsstand(Veranlagungsstand.RECHTSKRAEFTIG);
 		Gesuch gesuch = prepareGemeinsamFall(steuerdatenResponse);
 		expectEverythingBisBearbeitung(gesuch);
@@ -247,6 +249,7 @@ public class NeueVeranlagungMitteilungTest extends EasyMockSupport {
 		steuerdatenResponse.setErwerbseinkommenUnselbstaendigkeitDossiertraeger(nettoLohnGS2Dossiertraeger);
 		steuerdatenResponse.setGeburtsdatumDossiertraeger(LocalDate.of(1985, 03, 25));
 		steuerdatenResponse.setGeburtsdatumPartner(LocalDate.of(1980, 03, 25));
+		steuerdatenResponse.setGeburtsdatumAntragsteller(LocalDate.of(1980, 03, 25));
 		steuerdatenResponse.setZpvNrPartner(zpvGS1Partner);
 		steuerdatenResponse.setErwerbseinkommenUnselbstaendigkeitPartner(nettoLohnGS1Partner);
 		steuerdatenResponse.setZpvNrAntragsteller(zpvGS1Partner);
