@@ -115,7 +115,7 @@ public class KibonAnfrageContext {
 			//wenn gemeinsam, ist der abfragende Gesuchsteller immer GS1
 			this.gesuchstellerTyp = GesuchstellerTyp.GESUCHSTELLER_1;
 			//aber wir wissen bereits, dass geburtsdatum von GS2 verwendet werden soll
-			this.useGeburtrsdatumFromOtherGesuchsteller();
+			this.useGeburtrsdatumFromOtherGesuchsteller = true;
 			return;
 		}
 
