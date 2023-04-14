@@ -480,7 +480,7 @@ public class FinanzielleSituationResource {
 		}
 
 		if (gesuchstellerTyp == GesuchstellerTyp.GESUCHSTELLER_2 || isGemeinsam) {
-			initFinanzielleSituationGS2ContainerForSteuerdatenRequest(gesuch, isGemeinsam);
+			initFinanzielleSituationGS2ContainerForSteuerdatenRequest(gesuch);
 
 			if (!isGemeinsam) {
 				Objects.requireNonNull(gesuch.getGesuchsteller2());
@@ -494,7 +494,7 @@ public class FinanzielleSituationResource {
 		gesuch.getFamiliensituationContainer().getFamiliensituationJA().setGemeinsameSteuererklaerung(isGemeinsam);
 	}
 
-	private void initFinanzielleSituationGS2ContainerForSteuerdatenRequest(Gesuch gesuch, boolean isGemeinsam) {
+	private void initFinanzielleSituationGS2ContainerForSteuerdatenRequest(Gesuch gesuch) {
 		Objects.requireNonNull(gesuch.getGesuchsteller2());
 
 		if (gesuch.getGesuchsteller2().getFinanzielleSituationContainer() != null)  {
