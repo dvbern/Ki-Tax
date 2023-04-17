@@ -387,10 +387,14 @@ public abstract class AbstractVerfuegungPdfGenerator extends DokumentAnFamilieGe
 			intro.add(new TableRowLabelValue(BEMERKUNG, translate(ERSETZT_VERFUEGUNG,
 				Constants.DATE_FORMATTER.format(betreuung.getVorgaengerVerfuegung().getTimestampErstellt()))));
 		}
-		intro.add(new TableRowLabelValue(ANGEBOT, translateEnumValue(betreuung.getBetreuungsangebotTyp())));
+		addAngebotToIntro(intro);
 		intro.add(new TableRowLabelValue(BETREUUNG_INSTITUTION, institutionName));
 		intro.add(new TableRowLabelValue(GEMEINDE, gemeinde));
 		return PdfUtil.createIntroTable(intro, sprache, mandant);
+	}
+
+	protected void addAngebotToIntro(List<TableRowLabelValue> intro) {
+		intro.add(new TableRowLabelValue(ANGEBOT, translateEnumValue(betreuung.getBetreuungsangebotTyp())));
 	}
 
 	@Nonnull
@@ -697,7 +701,7 @@ public abstract class AbstractVerfuegungPdfGenerator extends DokumentAnFamilieGe
 		return result;
 	}
 
-	private void removeLeadingZeitabschnitteWithNoPositivBetreuungsPensum(List<VerfuegungZeitabschnitt> result) {
+	protected void removeLeadingZeitabschnitteWithNoPositivBetreuungsPensum(List<VerfuegungZeitabschnitt> result) {
 		ListIterator<VerfuegungZeitabschnitt> listIterator = result.listIterator();
 		while (listIterator.hasNext()) {
 			VerfuegungZeitabschnitt zeitabschnitt = listIterator.next();

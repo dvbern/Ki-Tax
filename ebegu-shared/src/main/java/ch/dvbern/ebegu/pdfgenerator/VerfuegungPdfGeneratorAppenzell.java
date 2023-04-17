@@ -92,6 +92,11 @@ public class VerfuegungPdfGeneratorAppenzell extends AbstractVerfuegungPdfGenera
 	}
 
 	@Override
+	protected void addAngebotToIntro(List<TableRowLabelValue> intro) {
+		//no-op, wird in Appenzell nicht angezeigt
+	}
+
+	@Override
 	protected void addTitleGutscheinProStunde(PdfPTable table) {
 		if (isBetreuungTagesfamilie) {
 			table.addCell(createCell(
@@ -194,5 +199,10 @@ public class VerfuegungPdfGeneratorAppenzell extends AbstractVerfuegungPdfGenera
 	@Override
 	protected void createDokumentKeinAnspruchTFO(Document document, PdfGenerator generator) {
 		super.createDokumentNormal(document, generator);
+	}
+
+	@Override
+	protected void removeLeadingZeitabschnitteWithNoPositivBetreuungsPensum(List<VerfuegungZeitabschnitt> result) {
+		//no-op in Appenzell sollen immer alle Zeitabschnitte angezeigt werden
 	}
 }
