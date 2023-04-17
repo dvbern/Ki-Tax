@@ -383,6 +383,10 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 		return getRelevantBgCalculationResult().isAuszahlungAnEltern();
 	}
 
+	public Integer getBeitraghoheProzent() {
+		return getRelevantBgCalculationResult().getBeitragshoeheProzent();
+	}
+
 	/* Ende Delegator-Methoden */
 
 	/* Start Delegator Setter-Methoden: Setzen die Werte auf BEIDEN inputs */

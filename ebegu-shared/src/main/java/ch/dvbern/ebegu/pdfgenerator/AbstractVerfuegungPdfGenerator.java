@@ -427,6 +427,7 @@ public abstract class AbstractVerfuegungPdfGenerator extends DokumentAnFamilieGe
 		table.addCell(createCell(true, Element.ALIGN_CENTER, translate(getPensumTitle()), null, fontTabelle, 1, 3));
 		table.addCell(createCell(true, Element.ALIGN_RIGHT, translate(VOLLKOSTEN), null, fontTabelle, 2, 1));
 
+		addTitleBeitraghoheInProzent(table);
 		addTitleBerechneterGutschein(table);
 		addTitleBetreuungsGutschein(table);
 		addTitleNrElternBeitrag(table);
@@ -489,6 +490,7 @@ public abstract class AbstractVerfuegungPdfGenerator extends DokumentAnFamilieGe
 				fontTabelle,
 				1,
 				1));
+			addValueaBeitraghoheInProzent(table, abschnitt.getBeitraghoheProzent());
 			addValueBerechneterGutschein(table, abschnitt.getVerguenstigungOhneBeruecksichtigungVollkosten());
 			addValueBetreuungsGutschein(table, abschnitt.getVerguenstigungOhneBeruecksichtigungMinimalbeitrag());
 			addValueElternBeitrag(table, abschnitt.getMinimalerElternbeitragGekuerzt());
@@ -550,6 +552,10 @@ public abstract class AbstractVerfuegungPdfGenerator extends DokumentAnFamilieGe
 		if (showColumnAnInsitutionenAuszahlen) {
 			table.addCell(createCell(true, Element.ALIGN_RIGHT, translate(GUTSCHEIN_AN_INSTITUTION), Color.LIGHT_GRAY, fontTabelle, 2, 1));
 		}
+	}
+
+	protected void addTitleBeitraghoheInProzent(PdfPTable table) {
+		//no-op ausser in Appenzell
 	}
 
 	protected void addValueBerechneterGutschein(PdfPTable table, BigDecimal verguenstigungOhneBeruecksichtigungVollkosten) {
@@ -622,6 +628,10 @@ public abstract class AbstractVerfuegungPdfGenerator extends DokumentAnFamilieGe
 			getBgColorForUeberwiesenerBetragCell(),
 			1,
 			1));
+	}
+
+	protected void addValueaBeitraghoheInProzent(PdfPTable table, Integer beitraghoheInProzent) {
+		//no-op ausser in Appenzell
 	}
 
 	protected abstract float[] getVerfuegungColumnWidths();

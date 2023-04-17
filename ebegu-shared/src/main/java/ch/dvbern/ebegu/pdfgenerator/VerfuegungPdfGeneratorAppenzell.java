@@ -38,7 +38,7 @@ import com.lowagie.text.pdf.PdfPTable;
 
 public class VerfuegungPdfGeneratorAppenzell extends AbstractVerfuegungPdfGenerator {
 
-	private final float[] COLUMN_WIDTHS_DEFAULT = { 90, 100, 88, 88, 88, 100, 110 };
+	private final float[] COLUMN_WIDTHS_DEFAULT = { 90, 100, 88, 88, 88, 88, 100, 110 };
 	private final float[] COLUMN_WIDTHS_TFO = { 90, 100, 88, 88, 88, 100, 110, 110 };
 
 	private static final String GUTSCHEIN_PRO_STUNDE = "PdfGeneration_Verfuegung_GutscheinProStunde";
@@ -46,6 +46,7 @@ public class VerfuegungPdfGeneratorAppenzell extends AbstractVerfuegungPdfGenera
 	private boolean isBetreuungTagesfamilie = false;
 
 	protected static final String VERFUEGUNG_NICHT_EINTRETEN_TITLE = "PdfGeneration_Verfuegung_NichtEintreten_Title";
+	private static final String BEITRAGSHOHE_PROZENT = "PdfGeneration_Verfuegung_Beitragshoehe_Prozent";
 
 	public VerfuegungPdfGeneratorAppenzell(
 		@Nonnull Betreuung betreuung,
@@ -125,6 +126,18 @@ public class VerfuegungPdfGeneratorAppenzell extends AbstractVerfuegungPdfGenera
 	}
 
 	@Override
+	protected void addTitleBeitraghoheInProzent(PdfPTable table) {
+		table.addCell(createCell(
+				true,
+				Element.ALIGN_RIGHT,
+				translate(BEITRAGSHOHE_PROZENT),
+				Color.LIGHT_GRAY,
+				fontTabelle,
+				2,
+				1));
+	}
+
+	@Override
 	protected void addValueBerechneterGutschein(PdfPTable table, BigDecimal verguenstigungOhneBeruecksichtigungVollkosten) {
 		//no-op die Spalte soll in Appenzell nicht angezeigt werden
 	}
@@ -137,6 +150,18 @@ public class VerfuegungPdfGeneratorAppenzell extends AbstractVerfuegungPdfGenera
 	@Override
 	protected void addValueElternBeitrag(PdfPTable table, BigDecimal minimalerElternbeitragGekuerzt) {
 		//no-op die Spalte soll in Appenzell nicht angezeigt werden
+	}
+
+	@Override
+	protected void addValueaBeitraghoheInProzent(PdfPTable table, Integer beitraghoheInProzent) {
+		table.addCell(createCell(
+				false,
+				Element.ALIGN_RIGHT,
+				PdfUtil.printPercent(beitraghoheInProzent),
+				Color.LIGHT_GRAY,
+				getBgColorForBetreuungsgutscheinCell(),
+				1,
+				1));
 	}
 
 	@Override
