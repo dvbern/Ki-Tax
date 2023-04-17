@@ -14,8 +14,8 @@
  */
 
 import {IComponentOptions, IPromise} from 'angular';
-import {from, Observable} from 'rxjs';
-import {filter, map, mergeMap} from 'rxjs/operators';
+import {combineLatest, from, Observable} from 'rxjs';
+import {filter, map} from 'rxjs/operators';
 import {EinstellungRS} from '../../../../admin/service/einstellungRS.rest';
 import {DvDialog} from '../../../../app/core/directive/dv-dialog/dv-dialog';
 import {ErrorService} from '../../../../app/core/errors/service/ErrorService';
@@ -77,13 +77,9 @@ export class EinkommensverschlechterungInfoViewController
 
     public initialEinkVersInfo: TSEinkommensverschlechterungInfoContainer;
     public allowedRoles: ReadonlyArray<TSRole>;
-    public basisJahrUndPeriode = {
-        jahr1periode: this.getBasisjahrPlus1(),
-        jahr2periode: this.getBasisjahrPlus2(),
-        basisjahr: this.getBasisjahr()
-    };
     public maxAllowedEinkommenForEKV: number;
     public currentMinEinkommenEKV: number;
+    private grenzwertEKV: number;
 
     public constructor(
         gesuchModelManager: GesuchModelManager,
@@ -182,7 +178,7 @@ export class EinkommensverschlechterungInfoViewController
         if (this.isConfirmationOnlyOnePeriodeRequired()) {
             const descriptionText: any = this.$translate.instant(
                 'EINKVERS_ONE_PERIODE_WARNING_BESCHREIBUNG',
-                this.basisJahrUndPeriode
+                this.getBasisJahrUndPeriode()
             );
             return this.dvDialog.showRemoveDialog(removeDialogTemplate, this.form, RemoveDialogController, {
                 title: 'EINKVERS_ONE_PERIODE_WARNING',
@@ -376,16 +372,17 @@ export class EinkommensverschlechterungInfoViewController
     }
 
     private initEKVMinEinkommen(): void {
-        this.getEinkommensverschlechterungBis$()
-            .pipe(
-                mergeMap(einkommensverschlechterungBis => this.getMinMassgebendesEinkommen$().pipe(
-                    map(
-                        minMassgebendenEinkommen => [einkommensverschlechterungBis, minMassgebendenEinkommen]))
-                )
-            ).subscribe(([einkommensverschlechterungBis, minMassgebendenEinkommen]) => {
+        combineLatest([this.getEinkommensverschlechterungBis$(), this.getMinMassgebendesEinkommen$()])
+            .subscribe(([einkommensverschlechterungBis, minMassgebendenEinkommen]) => {
             this.maxAllowedEinkommenForEKV = einkommensverschlechterungBis;
             this.currentMinEinkommenEKV = minMassgebendenEinkommen;
         }, error => LOG.error(error));
+        this.einstellungRS.findEinstellung(TSEinstellungKey.PARAM_GRENZWERT_EINKOMMENSVERSCHLECHTERUNG, this.gesuchModelManager.getGemeinde().id, this.gesuchModelManager.getGesuchsperiode().id)
+            .pipe(
+                map(einstellung => parseInt(einstellung.value, 10))
+            ).subscribe(value => {
+                this.grenzwertEKV = value;
+        })
 
     }
 
@@ -410,6 +407,15 @@ export class EinkommensverschlechterungInfoViewController
         return {
             maxEinkommenEKV: this.maxAllowedEinkommenForEKV.toLocaleString('de-ch'),
             massgebendesEinkommen: this.currentMinEinkommenEKV.toLocaleString('de-ch')
+        };
+    }
+
+    public getBasisJahrUndPeriode(): any {
+        return {
+            jahr1periode: this.getBasisjahrPlus1(),
+            jahr2periode: this.getBasisjahrPlus2(),
+            minAbweichungEkv: this.grenzwertEKV?.toLocaleString('de-ch'),
+            basisjahr: this.getBasisjahr()
         };
     }
 }
