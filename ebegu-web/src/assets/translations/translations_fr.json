@@ -2991,7 +2991,7 @@
     "MUTATION_VERAENDERUNG_BG_HOEHER": "Les bons de garde cumulés sont supérieurs de CHF {{veraenderung}} au montant avant changement pour l’ensemble de la période (01.08-31.07).",
     "MUTATION_VERAENDERUNG_BG_TIEFER": "Les bons de garde cumulés sont inférieurs de CHF {{veraenderung}} au montant avant changement pour l’ensemble de la période (01.08-31.07).",
     "MUTATION_VERAENDERUNG_TS_HOEHER": "Le tarif horaire des modules d’école à journée continue peut être jusqu’à CHF {{veraenderung}} plus élevé qu’avant le changement.",
-    "MUTATION_VERAENDERUNG_TS_TIEFER": "Le tarif horaire des modules d’école à journée continue peut être jusqu’à inférieur de CHF {{veraenderung}} au montant avant changement.",
+    "MUTATION_VERAENDERUNG_TS_TIEFER": "Le tarif horaire des modules d’école à journée continue peut être jusqu’à CHF {{veraenderung}} inférieur au montant avant changement.",
     "MUTATION_KEINE_VERAENDERUNG": "Ce changement ne modifie rien au montant du bon de garde ou au tarif des modules d’école à journée continue.",
     "IGNORIERT": "Ignoré",
     "IGNORIEREN": "Ignorer",
