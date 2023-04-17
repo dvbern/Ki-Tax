@@ -3995,6 +3995,7 @@ public class JaxBConverter extends AbstractConverter {
 		jaxZeitabschn.setVerguenstigungMahlzeitTotal(zeitabschnitt.getRelevantBgCalculationResult()
 			.getVerguenstigungMahlzeitenTotal());
 		jaxZeitabschn.setAuszahlungAnEltern(zeitabschnitt.isAuszahlungAnEltern());
+		jaxZeitabschn.setBeitragshoeheProzent(zeitabschnitt.getRelevantBgCalculationResult().getBeitragshoeheProzent());
 		return jaxZeitabschn;
 	}
 
