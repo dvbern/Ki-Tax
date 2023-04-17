@@ -177,6 +177,7 @@ import com.google.errorprone.annotations.CanIgnoreReturnValue;
 
 import static ch.dvbern.ebegu.enums.EinstellungKey.ABWESENHEIT_AKTIV;
 import static ch.dvbern.ebegu.enums.EinstellungKey.ABHAENGIGKEIT_ANSPRUCH_BESCHAEFTIGUNGPENSUM;
+import static ch.dvbern.ebegu.enums.EinstellungKey.ANSPRUCH_AB_X_MONATEN;
 import static ch.dvbern.ebegu.enums.EinstellungKey.AUSSERORDENTLICHER_ANSPRUCH_RULE;
 import static ch.dvbern.ebegu.enums.EinstellungKey.AUSWEIS_NACHWEIS_REQUIRED;
 import static ch.dvbern.ebegu.enums.EinstellungKey.BEGRUENDUNG_MUTATION_AKTIVIERT;
@@ -2041,6 +2042,7 @@ public final class TestDataUtil {
 		saveEinstellung(VERFUEGUNG_EXPORT_ENABLED, "false", gesuchsperiode, persistence);
 		saveEinstellung(ZAHLUNGSANGABEN_ANTRAGSTELLER_REQUIRED, "false", gesuchsperiode, persistence);
 		saveEinstellung(VERANLAGUNG_MIN_UNTERSCHIED_MASSGEBENDESEINK, "0", gesuchsperiode,persistence);
+		saveEinstellung(ANSPRUCH_AB_X_MONATEN, "0", gesuchsperiode,persistence);
 	}
 
 	public static void saveEinstellung(
