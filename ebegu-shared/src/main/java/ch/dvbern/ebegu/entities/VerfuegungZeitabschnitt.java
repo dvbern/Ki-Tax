@@ -883,4 +883,9 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 		this.bgCalculationInputAsiv.setGeschwisternBonusKind3(geschwisternBonusKind3);
 		this.bgCalculationInputGemeinde.setGeschwisternBonusKind3(geschwisternBonusKind3);
 	}
+
+	public void setRequiredAgeForAnspruchNotReached(boolean requiredAgeForAnspruchNotReached) {
+		this.bgCalculationInputAsiv.setRequiredAgeForAnspruchNotReached(requiredAgeForAnspruchNotReached);
+		this.bgCalculationInputGemeinde.setRequiredAgeForAnspruchNotReached(requiredAgeForAnspruchNotReached);
+	}
 }

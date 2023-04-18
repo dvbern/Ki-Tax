@@ -111,6 +111,19 @@ public class AnspruchAbAlterAbschnittRuleTest {
 	}
 
 	@Test
+	public void testAlterAb3KindBornOnSecond3MonthsBeforeGPShouldCreateNoAbschnitte() {
+		// Erster voller Tag als 3-Monatiges und damit Anspruch am 2.8.
+		final LocalDate geburtsdatum = GP_PERIODE_START.minusMonths(3).plusDays(1);
+		setUpRule(3);
+		setChildBirthDate(geburtsdatum);
+		List<VerfuegungZeitabschnitt> createdAbschnitte = ruleToTest.createVerfuegungsZeitabschnitte(betreuung);
+		Assert.assertEquals(1, createdAbschnitte.size());
+		Assert.assertEquals(GP_PERIODE_START, createdAbschnitte.get(0).getGueltigkeit().getGueltigAb());
+		Assert.assertEquals(geburtsdatum.plusMonths(3).minusDays(1),
+				createdAbschnitte.get(0).getGueltigkeit().getGueltigBis());
+	}
+
+	@Test
 	public void testAlterAb3KindBornAfterGPStartShouldHaveAbschnittWithoutAnspruch() {
 		final LocalDate geburtsdatum = GP_PERIODE_START.plusMonths(3);
 		final LocalDate firstDayOfAnspruch = geburtsdatum.plusMonths(3);

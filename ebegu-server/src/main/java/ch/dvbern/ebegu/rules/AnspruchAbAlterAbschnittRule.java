@@ -19,16 +19,15 @@ package ch.dvbern.ebegu.rules;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
 import javax.annotation.Nonnull;
 
-import ch.dvbern.ebegu.dto.BGCalculationInput;
 import ch.dvbern.ebegu.entities.AbstractPlatz;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
-import ch.dvbern.ebegu.enums.MsgKey;
 import ch.dvbern.ebegu.types.DateRange;
 import com.google.common.collect.ImmutableList;
 
@@ -64,9 +63,8 @@ public class AnspruchAbAlterAbschnittRule extends AbstractAbschnittRule {
 					createZeitabschnittWithinValidityPeriodOfRule(
 							firstDayOfGP,
 							firstDayOfAnspruch.isAfter(lastDayOfGP) ? lastDayOfGP : firstDayOfAnspruch.minusDays(1));
-			noAnspruchZeitabschnitt.setAnspruchspensumProzentForAsivAndGemeinde(0);
-			noAnspruchZeitabschnitt.getBemerkungenDTOList().addBemerkung(RuleValidity.ASIV, MsgKey.ANSPRUCH_AB_ALTER_NICHT_ERFUELLT, getLocale());
-			return new ArrayList<>(List.of(noAnspruchZeitabschnitt));
+			noAnspruchZeitabschnitt.setRequiredAgeForAnspruchNotReached(true);
+			return Arrays.asList(noAnspruchZeitabschnitt);
 		}
 		return new ArrayList<>();
 	}

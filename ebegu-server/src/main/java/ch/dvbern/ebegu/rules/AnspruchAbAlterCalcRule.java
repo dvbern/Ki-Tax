@@ -42,24 +42,11 @@ public class AnspruchAbAlterCalcRule extends AbstractCalcRule {
 	}
 
 	@Override
-	void executeRule(
-			@Nonnull AbstractPlatz platz, @Nonnull BGCalculationInput inputData) {
-		if (requiredAgeInMonths <= 0) {
-			return;
-		}
-		var kind = platz.getKind().getKindJA();
-
-		var geburtsTag = kind.getGeburtsdatum();
-
-		var firstDayOfRequiredAge = geburtsTag.plusMonths(requiredAgeInMonths).plusDays(1);
-
-		var gueltigkeit = inputData.getParent().getGueltigkeit();
-
-		if (gueltigkeit.endsBefore(firstDayOfRequiredAge)) {
-			inputData.setAnspruchspensumProzent(0);
+	void executeRule(@Nonnull AbstractPlatz platz, @Nonnull BGCalculationInput inputData) {
+		if (inputData.isRequiredAgeForAnspruchNotReached()) {
+			inputData.setAnspruchZeroAndSaveRestanspruch();
 			inputData.addBemerkung(MsgKey.ANSPRUCH_AB_ALTER_NICHT_ERFUELLT, getLocale(), requiredAgeInMonths);
 		}
-
 	}
 
 	@Override
