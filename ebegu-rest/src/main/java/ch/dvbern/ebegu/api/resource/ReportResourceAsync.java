@@ -1,23 +1,24 @@
 /*
- * Ki-Tax: System for the management of external childcare subsidies
- * Copyright (C) 2017 City of Bern Switzerland
+ * Copyright (C) 2023 DV Bern AG, Switzerland
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Affero General Public License for more details.
+ *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
 package ch.dvbern.ebegu.api.resource;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.Date;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
@@ -48,6 +49,7 @@ import ch.dvbern.ebegu.api.dtos.JaxId;
 import ch.dvbern.ebegu.authentication.PrincipalBean;
 import ch.dvbern.ebegu.entities.EinstellungenTagesschule;
 import ch.dvbern.ebegu.entities.Gemeinde;
+import ch.dvbern.ebegu.entities.Institution;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten;
 import ch.dvbern.ebegu.entities.Workjob;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
@@ -59,6 +61,7 @@ import ch.dvbern.ebegu.errors.KibonLogLevel;
 import ch.dvbern.ebegu.i18n.LocaleThreadLocal;
 import ch.dvbern.ebegu.services.Authorizer;
 import ch.dvbern.ebegu.services.GemeindeService;
+import ch.dvbern.ebegu.services.InstitutionService;
 import ch.dvbern.ebegu.services.InstitutionStammdatenService;
 import ch.dvbern.ebegu.services.WorkjobService;
 import ch.dvbern.ebegu.util.Constants;
@@ -114,6 +117,9 @@ public class ReportResourceAsync {
 
 	@Inject
 	private GemeindeService gemeindeService;
+
+	@Inject
+	private InstitutionService institutionService;
 
 	@ApiOperation(value = "Erstellt ein Excel mit der Statistik 'Gesuch-Stichtag'", response = JaxDownloadFile.class)
 	@Nonnull
@@ -575,6 +581,7 @@ public class ReportResourceAsync {
 			Boolean.valueOf(ohneErneuerungsgesuch),
 			null,
 			null,
+			null,
 			text,
 			LocaleThreadLocal.get(),
 				Objects.requireNonNull(principalBean.getMandant())
@@ -773,6 +780,7 @@ public class ReportResourceAsync {
 			gemeinde,
 			null,
 			null,
+			null,
 			LocaleThreadLocal.get(),
 				Objects.requireNonNull(principalBean.getMandant())
 		);
@@ -808,6 +816,7 @@ public class ReportResourceAsync {
 			false,
 			false,
 			false,
+			null,
 			null,
 			null,
 			null,
@@ -930,7 +939,67 @@ public class ReportResourceAsync {
 			false,
 			false,
 			gemeinde,
+			null,
 			jahr,
+			null,
+			LocaleThreadLocal.get(),
+			Objects.requireNonNull(principalBean.getMandant())
+		);
+
+		return createWorkjobResponse(workJob);
+	}
+
+	@ApiOperation(value = "Erstellt ein Excel mit der Statistik 'Zahlungen'", response = JaxDownloadFile.class)
+	@Nonnull
+	@GET
+	@Path("/excel/zahlungen")
+	@Consumes(MediaType.WILDCARD)
+	@Produces(MediaType.TEXT_PLAIN)
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE,
+	ADMIN_BG, SACHBEARBEITER_BG, ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION, ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT})
+	public Response getZahlungenExcelReport(
+		@Nullable @QueryParam("gesuchsperiodeId") String gesuchsperiodeId,
+		@Nullable @QueryParam("gemeindeId") String gemeindeId,
+		@Nullable @QueryParam("institutionId") String institutionId,
+		@Context HttpServletRequest request,
+		@Context UriInfo uriInfo)
+	{
+
+		String ip = downloadResource.getIP(request);
+
+		Workjob workJob = createWorkjobForReport(request, uriInfo, ip);
+
+		Gemeinde gemeinde = null;
+		Institution institution = null;
+
+		if (gemeindeId != null) {
+			gemeinde = gemeindeService.findGemeinde(gemeindeId).orElseThrow(() ->
+				new EbeguEntityNotFoundException("getZahlungenExcelReport", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND)
+			);
+		}
+		if (institutionId != null) {
+			institution = institutionService.findInstitution(institutionId, true).orElseThrow(() ->
+				new EbeguEntityNotFoundException("getZahlungenExcelReport", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND)
+			);
+		}
+
+		final ReportVorlage reportVorlage = LocaleThreadLocal.get().equals(Locale.FRENCH)
+			? ReportVorlage.VORLAGE_REPORT_ZAHLUNGEN_FR
+			: ReportVorlage.VORLAGE_REPORT_ZAHLUNGEN_DE;
+
+		workJob = workjobService.createNewReporting(
+			workJob,
+			reportVorlage,
+			null,
+			null,
+			gesuchsperiodeId,
+			false,
+			false,
+			false,
+			false,
+			gemeinde,
+			institution,
+			null,
 			null,
 			LocaleThreadLocal.get(),
 			Objects.requireNonNull(principalBean.getMandant())

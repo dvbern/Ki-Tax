@@ -15,31 +15,25 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.dvbern.ebegu.enums;
+package ch.dvbern.ebegu.reporting;
 
-public enum ReportFileName {
-	GESUCH_STICHTAG,
-	GESUCH_ZEITRAUM,
-	KANTON,
-	MITARBEITERINNEN,
-	BENUTZER,
-	ZAHLUNG_AUFTRAG,
-	ZAHLUNG_AUFTRAG_PERIODE,
-	GESUCHSTELLER_KINDER_BETREUUNG,
-	KINDER,
-	GESUCHSTELLER,
-	MASSENVERSAND,
-	INSTITUTIONEN,
-	VERRECHNUNG_KIBON,
-	LASTENAUSGLEICH_BERECHNUNG,
-	KINDER_MIT_ZEMIS_NUMMER,
-	TAGESSCHULE_ANMELDUNGEN,
-	TAGESSCHULE_RECHNUNGSSTELLUNG,
-	NOTRECHT,
-	MAHLZEITENVERGUENSTIGUNG,
-	GEMEINDEN,
-	FERIENBETREUUNG,
-	LASTENAUSGLEICH_TAGESSCHULEN,
-	LASTENAUSGLEICH_BG_ZEITABSCHNITTE,
-	ZAHLUNGEN;
+import java.io.IOException;
+import java.util.Locale;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
+import ch.dvbern.ebegu.util.UploadFileInfo;
+import ch.dvbern.oss.lib.excelmerger.ExcelMergeException;
+
+public interface ReportZahlungenService {
+
+	@Nonnull
+	UploadFileInfo generateExcelReportZahlungen(
+		@Nonnull Locale locale,
+		@Nonnull String gesuchsperiodeId,
+		@Nullable String gemeindeId,
+		@Nullable String institutionId
+	) throws ExcelMergeException, IOException;
+
 }

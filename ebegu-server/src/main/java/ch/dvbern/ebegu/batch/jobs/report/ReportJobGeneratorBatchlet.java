@@ -1,16 +1,18 @@
 /*
- * Ki-Tax: System for the management of external childcare subsidies
- * Copyright (C) 2018 City of Bern Switzerland
+ * Copyright (C) 2023 DV Bern AG, Switzerland
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Affero General Public License for more details.
+ *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
 package ch.dvbern.ebegu.batch.jobs.report;
@@ -19,7 +21,6 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.net.URISyntaxException;
 import java.time.LocalDate;
-import java.util.Date;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.Properties;
@@ -50,6 +51,7 @@ import ch.dvbern.ebegu.reporting.ReportNotrechtService;
 import ch.dvbern.ebegu.reporting.ReportService;
 import ch.dvbern.ebegu.reporting.ReportTagesschuleService;
 import ch.dvbern.ebegu.reporting.ReportVerrechnungKibonService;
+import ch.dvbern.ebegu.reporting.ReportZahlungenService;
 import ch.dvbern.ebegu.services.MandantService;
 import ch.dvbern.ebegu.util.DateUtil;
 import ch.dvbern.ebegu.util.MathUtil;
@@ -93,6 +95,9 @@ public class ReportJobGeneratorBatchlet extends AbstractBatchlet {
 
 	@Inject
 	private ReportLastenausgleichBGZeitabschnitteService reportLastenausgleichBGZeitabschnitteService;
+
+	@Inject
+	private ReportZahlungenService reportZahlungenService;
 
 	@Inject
 	private JobContext jobCtx;
@@ -248,6 +253,18 @@ public class ReportJobGeneratorBatchlet extends AbstractBatchlet {
 					bis,
 					gemeindeId,
 					Integer.parseInt(lastenausgleichJahr, 10)
+				);
+			}
+			case VORLAGE_REPORT_ZAHLUNGEN_DE:
+			case VORLAGE_REPORT_ZAHLUNGEN_FR: {
+				final String gesuchsperiodeId = getParameters().getProperty(WorkJobConstants.GESUCH_PERIODE_ID_PARAM);
+				final String gemeindeId = getParameters().getProperty(WorkJobConstants.GEMEINDE_ID_PARAM);
+				final String institutionId = getParameters().getProperty(WorkJobConstants.INSTITUTION_ID_PARAM);
+				return this.reportZahlungenService.generateExcelReportZahlungen(
+					locale,
+					gesuchsperiodeId,
+					gemeindeId,
+					institutionId
 				);
 			}
 		}
