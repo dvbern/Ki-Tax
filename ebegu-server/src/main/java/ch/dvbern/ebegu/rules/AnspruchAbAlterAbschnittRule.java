@@ -51,8 +51,11 @@ public class AnspruchAbAlterAbschnittRule extends AbstractAbschnittRule {
 			return new ArrayList<>();
 		}
 		var birthDay = platz.getKind().getKindJA().getGeburtsdatum();
-
 		var firstDayOfAnspruch = birthDay.plusMonths(this.requiredAgeInMonths);
+
+		if (!platz.extractGesuchsperiode().getGueltigkeit().contains(firstDayOfAnspruch)) {
+			return new ArrayList<>();
+		}
 		final LocalDate firstDayOfGP = platz.extractGesuchsperiode().getGueltigkeit().getGueltigAb();
 
 		if (firstDayOfAnspruch.isAfter(firstDayOfGP)) {

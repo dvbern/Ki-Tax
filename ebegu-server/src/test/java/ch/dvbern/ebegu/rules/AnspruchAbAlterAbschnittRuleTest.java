@@ -133,14 +133,11 @@ public class AnspruchAbAlterAbschnittRuleTest {
 
 
 	@Test
-	public void testAlterAb3KindBornAfterGPShouldHaveNoAnspruchEntireGP() {
+	public void testAlterAb3KindBornAfterGPShoulCreateNoAbschnitt() {
 		setUpRule(3);
 		setChildBirthDate(GP_PERIODE_START.plusYears(1));
 		List<VerfuegungZeitabschnitt> createdAbschnitte = ruleToTest.createVerfuegungsZeitabschnitte(betreuung);
-		Assert.assertEquals(1, createdAbschnitte.size());
-		assertAnspruchZero(createdAbschnitte.get(0));
-		Assert.assertEquals(GP_PERIODE_START, createdAbschnitte.get(0).getGueltigkeit().getGueltigAb());
-		Assert.assertEquals(GP_PERIODE_END, createdAbschnitte.get(0).getGueltigkeit().getGueltigBis());
+		Assert.assertTrue(createdAbschnitte.isEmpty());
 	}
 
 	private void setChildBirthDate(LocalDate geburtsdatum) {
