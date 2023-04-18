@@ -258,8 +258,8 @@ export class ErwerbspensumListViewController
         if (EbeguUtil.isNullOrUndefined(this.gesuchModelManager.getGesuch())) {
             return false;
         }
-        var familiensituation: TSFamiliensituation = this.gesuchModelManager.getGesuch().familiensituationContainer.familiensituationJA;
-        let partnerIdentischMitVorgesuch: boolean = this.getGesuch().extractFamiliensituation().partnerIdentischMitVorgesuch;
+        let familiensituation: TSFamiliensituation = this.gesuchModelManager.getGesuch().familiensituationContainer.familiensituationJA;
+        const partnerIdentischMitVorgesuch: boolean = this.getGesuch().extractFamiliensituation().partnerIdentischMitVorgesuch;
         if (EbeguUtil.isNotNullAndFalse(partnerIdentischMitVorgesuch)){
             familiensituation = this.getGesuch().extractFamiliensituationErstgesuch();
         }
