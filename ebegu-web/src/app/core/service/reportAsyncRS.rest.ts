@@ -264,7 +264,7 @@ export class ReportAsyncRS {
         const reportParams = ReportAsyncRS.createParamsFromObject({
             gesuchsperiodeId,
 			gemeindeId: gemeinde.id,
-			institutionId: institution.id
+			institutionId: institution?.id
         });
         return this.http.get<{workjobId: string}>(
             `${this.serviceURL}/excel/zahlungen`,
