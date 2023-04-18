@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2021 DV Bern AG, Switzerland
+ * Copyright (C) 2023 DV Bern AG, Switzerland
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -19,6 +19,7 @@ import {HttpClient, HttpParams} from '@angular/common/http';
 import {Injectable} from '@angular/core';
 import {Observable} from 'rxjs';
 import {TSGemeinde} from '../../../models/TSGemeinde';
+import {TSInstitution} from '../../../models/TSInstitution';
 import {CONSTANTS} from '../constants/CONSTANTS';
 
 /**
@@ -251,6 +252,22 @@ export class ReportAsyncRS {
         });
         return this.http.get<{workjobId: string}>(
             `${this.serviceURL}/excel/lastenausgleichBGZeitabschnitte`,
+            {params: reportParams}
+        );
+    }
+
+    public getZahlungenReportExcel(
+		gesuchsperiodeId: string,
+		gemeinde: TSGemeinde,
+		institution: TSInstitution
+	): Observable<{workjobId: string}> {
+        const reportParams = ReportAsyncRS.createParamsFromObject({
+            gesuchsperiodeId,
+			gemeindeId: gemeinde.id,
+			institutionId: institution.id
+        });
+        return this.http.get<{workjobId: string}>(
+            `${this.serviceURL}/excel/zahlungen`,
             {params: reportParams}
         );
     }

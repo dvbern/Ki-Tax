@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2021 DV Bern AG, Switzerland
+ * Copyright (C) 2023 DV Bern AG, Switzerland
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -31,6 +31,7 @@ import {TSStatistikParameterType} from '../../../models/enums/TSStatistikParamet
 import {TSBatchJobInformation} from '../../../models/TSBatchJobInformation';
 import {TSGemeinde} from '../../../models/TSGemeinde';
 import {TSGesuchsperiode} from '../../../models/TSGesuchsperiode';
+import {TSInstitution} from '../../../models/TSInstitution';
 import {TSInstitutionStammdaten} from '../../../models/TSInstitutionStammdaten';
 import {TSStatistikParameter} from '../../../models/TSStatistikParameter';
 import {TSWorkJob} from '../../../models/TSWorkJob';
@@ -46,6 +47,7 @@ import {ApplicationPropertyRS} from '../../core/rest-services/applicationPropert
 import {BatchJobRS} from '../../core/service/batchRS.rest';
 import {DownloadRS} from '../../core/service/downloadRS.rest';
 import {GesuchsperiodeRS} from '../../core/service/gesuchsperiodeRS.rest';
+import {InstitutionRS} from '../../core/service/institutionRS.rest';
 import {InstitutionStammdatenRS} from '../../core/service/institutionStammdatenRS.rest';
 import {ReportAsyncRS} from '../../core/service/reportAsyncRS.rest';
 import {LastenausgleichRS} from '../../lastenausgleich/services/lastenausgleichRS.rest';
@@ -63,7 +65,7 @@ export class StatistikComponent implements OnInit, OnDestroy {
     public readonly TSStatistikParameterType = TSStatistikParameterType;
     public readonly TSRole = TSRole;
     public readonly TSRoleUtil = TSRoleUtil;
-    public readonly demoFeature = TSDemoFeature.LASTENAUSGLEICH_STATISTIK;
+    public readonly demoFeature = TSDemoFeature.ZAHLUNGEN_STATISTIK;
 
     private polling: NodeJS.Timeout;
     public statistikParameter: TSStatistikParameter;
@@ -77,6 +79,7 @@ export class StatistikComponent implements OnInit, OnDestroy {
     public allJobs: Array<TSBatchJobInformation>;
     public years: number[];
     public tagesschulenStammdatenList: TSInstitutionStammdaten[];
+    public bgInstitutionen: TSInstitution[];
     public gemeinden: TSGemeinde[];
     public gemeindenMahlzeitenverguenstigungen: TSGemeinde[];
     public flagShowErrorNoGesuchSelected: boolean = false;
@@ -90,6 +93,7 @@ export class StatistikComponent implements OnInit, OnDestroy {
     public constructor(
         private readonly gesuchsperiodeRS: GesuchsperiodeRS,
         private readonly institutionStammdatenRS: InstitutionStammdatenRS,
+		private readonly institutionRS: InstitutionRS,
         private readonly reportAsyncRS: ReportAsyncRS,
         private readonly downloadRS: DownloadRS,
         private readonly batchJobRS: BatchJobRS,
@@ -132,6 +136,11 @@ export class StatistikComponent implements OnInit, OnDestroy {
                 this.tagesschulenStammdatenList = StatistikComponent.sortInstitutions(this.tagesschulenStammdatenList);
                 this.cd.markForCheck();
             });
+
+		this.institutionRS.getAllBgInstitutionen()
+			.subscribe(institutionen => {
+				this.bgInstitutionen = institutionen;
+			});
 
         this.gemeindeRS.getGemeindenForPrincipal$().subscribe(gemeinden => {
             this.gemeinden = gemeinden;
@@ -357,6 +366,15 @@ export class StatistikComponent implements OnInit, OnDestroy {
                     this.statistikParameter.von?.format(this.DATE_PARAM_FORMAT),
                     this.statistikParameter.bis?.format(this.DATE_PARAM_FORMAT))
                     .subscribe((res: { workjobId: string }) => {
+                    this.informReportGenerationStarted(res);
+                }, StatistikComponent.handleError);
+                return;
+            case TSStatistikParameterType.ZAHLUNGEN:
+                this.reportAsyncRS.getZahlungenReportExcel(
+                    this.statistikParameter.gesuchsperiode,
+					this.statistikParameter.gemeinde,
+					this.statistikParameter.institution
+                ).subscribe((res: { workjobId: string }) => {
                     this.informReportGenerationStarted(res);
                 }, StatistikComponent.handleError);
                 return;
@@ -711,4 +729,18 @@ export class StatistikComponent implements OnInit, OnDestroy {
     public showLastenausgleichBGStatistikAllowedForRole() {
         return this.authServiceRS.isOneOfRoles(TSRoleUtil.getGemeindeOrBGRoles().concat(TSRoleUtil.getMandantRoles()));
     }
+
+    public showZahlungenStatistik(): boolean {
+        return this.authServiceRS.isOneOfRoles(
+            TSRoleUtil.getGemeindeOrBGRoles()
+                .concat(TSRoleUtil.getMandantRoles())
+                .concat(TSRoleUtil.getTraegerschaftInstitutionOnlyRoles())
+        );
+    }
+
+	public gemeindenVisibleZahlungenStatistik(): boolean {
+		return !this.authServiceRS.isOneOfRoles(
+			TSRoleUtil.getTraegerschaftInstitutionOnlyRoles()
+		);
+	}
 }
