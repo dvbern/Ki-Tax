@@ -72,6 +72,13 @@ public enum EinschulungTyp {
 
 	}
 
+	public static List<EinschulungTyp> getListAR() {
+		return List.of(
+				VORSCHULALTER,
+				KLASSE1
+		);
+	}
+
 	public boolean isEingeschult() {
 		return this != VORSCHULALTER && this != FREIWILLIGER_KINDERGARTEN;
 	}

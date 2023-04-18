@@ -18,7 +18,8 @@ import * as moment from 'moment';
 import {map} from 'rxjs/operators';
 import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
 import {CONSTANTS} from '../../../app/core/constants/CONSTANTS';
-import {MANDANTS} from '../../../app/core/constants/MANDANTS';
+import {EinschulungTypesVisitor} from '../../../app/core/constants/EinschulungTypesVisitor';
+import {KiBonMandant, MANDANTS} from '../../../app/core/constants/MANDANTS';
 import {ErrorService} from '../../../app/core/errors/service/ErrorService';
 import {LogFactory} from '../../../app/core/logging/LogFactory';
 import {MandantService} from '../../../app/shared/services/mandant.service';
@@ -96,7 +97,7 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
     public gruendeZusatzleistung: Array<string>;
     public geschlechter: Array<string>;
     public kinderabzugValues: Array<TSKinderabzug>;
-    public einschulungTypValues: Array<TSEinschulungTyp>;
+    public einschulungTypValues: ReadonlyArray<TSEinschulungTyp>;
     public showFachstelle: boolean;
     public showFachstelleGS: boolean;
     public showAusserordentlicherAnspruch: boolean;
@@ -112,10 +113,10 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
     private fachstellenTyp: TSFachstellenTyp;
     public maxPensumAusserordentlicherAnspruch: string;
     // When migrating to ng, use observable in template
-    private isLuzern: boolean;
     public submitted: boolean = false;
     private isSpracheAmtspracheDisabled: boolean;
     private isZemisDeaktiviert: boolean = false;
+    private mandant: KiBonMandant;
 
     public constructor(
         $stateParams: IKindStateParams,
@@ -151,17 +152,19 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
             this.gesuchModelManager.setKindIndex(kindIndex);
         }
         this.allowedRoles = this.TSRoleUtil.getAllRolesButTraegerschaftInstitution();
-        this.mandantService.mandant$.pipe(map(mandant => mandant === MANDANTS.LUZERN)).subscribe(isLuzern => {
-            this.isLuzern = isLuzern;
+        // TODO: Replace with angularX async template pipe during ablösung
+        this.mandantService.mandant$.subscribe(mandant => {
+            this.mandant = mandant;
             this.initViewModel();
         }, err => LOG.error(err));
+
     }
 
     private initViewModel(): void {
         this.gruendeZusatzleistung = EnumEx.getNames(TSGruendeZusatzleistung);
         this.geschlechter = EnumEx.getNames(TSGeschlecht);
         this.kinderabzugValues = getTSKinderabzugValues();
-        this.einschulungTypValues = this.isLuzern ? getTSEinschulungTypValuesLuzern() : getTSEinschulungTypValues();
+        this.einschulungTypValues = new EinschulungTypesVisitor().process(this.mandant);
         this.loadEinstellungenForIntegration();
         this.initFachstelle();
         this.initAusserordentlicherAnspruch();
