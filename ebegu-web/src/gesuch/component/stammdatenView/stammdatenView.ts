@@ -213,7 +213,7 @@ export class StammdatenViewController extends AbstractGesuchViewController<TSGes
         if (this.gesuchstellerNumber === 1) {
             return '1';
         }
-        var tsFamiliensituation: TSFamiliensituation = this.getGesuch().extractFamiliensituation();
+        let tsFamiliensituation: TSFamiliensituation = this.getGesuch().extractFamiliensituation();
         if (EbeguUtil.isNullOrUndefined(tsFamiliensituation)) {
             return '';
         }
