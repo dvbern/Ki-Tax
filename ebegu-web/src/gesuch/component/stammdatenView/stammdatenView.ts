@@ -46,6 +46,7 @@ import {TSAdresseContainer} from '../../../models/TSAdresseContainer';
 import {TSDokument} from '../../../models/TSDokument';
 import {TSDokumentGrund} from '../../../models/TSDokumentGrund';
 import {TSDownloadFile} from '../../../models/TSDownloadFile';
+import {TSFamiliensituation} from '../../../models/TSFamiliensituation';
 import {TSGesuchsteller} from '../../../models/TSGesuchsteller';
 import {TSGesuchstellerContainer} from '../../../models/TSGesuchstellerContainer';
 import {EbeguRestUtil} from '../../../utils/EbeguRestUtil';
@@ -212,25 +213,28 @@ export class StammdatenViewController extends AbstractGesuchViewController<TSGes
         if (this.gesuchstellerNumber === 1) {
             return '1';
         }
-
-        if (this.getGesuch().extractFamiliensituation() === null && this.getGesuch()
-            .extractFamiliensituation() === undefined) {
+        var tsFamiliensituation: TSFamiliensituation = this.getGesuch().extractFamiliensituation();
+        if (EbeguUtil.isNullOrUndefined(tsFamiliensituation)) {
             return '';
         }
-        const familienstatus: TSFamilienstatus = this.getGesuch().extractFamiliensituation().familienstatus;
+        const partnerIdentisch: boolean = tsFamiliensituation.partnerIdentischMitVorgesuch;
+        let familienstatus: TSFamilienstatus = tsFamiliensituation.familienstatus;
+        if (EbeguUtil.isNotNullAndFalse(partnerIdentisch)){
+            familienstatus= this.getGesuch().extractFamiliensituationErstgesuch().familienstatus;
+            tsFamiliensituation = this.getGesuch().extractFamiliensituationErstgesuch();
+        }
+
         switch (familienstatus) {
             case TSFamilienstatus.KONKUBINAT_KEIN_KIND:
-                if (!this.getGesuch()
-                    .extractFamiliensituation()
+                if (!tsFamiliensituation
                     .konkubinatGetsLongerThanXYearsBeforeEndOfPeriode(
                         this.getGesuch().gesuchsperiode.gueltigkeit.gueltigBis)) {
                     return `2 (${this.$translate.instant('ANDERER_ELTERNTEIL')})`;
                 }
                 break;
             case TSFamilienstatus.ALLEINERZIEHEND:
-                if(this.getGesuch().extractFamiliensituation().gesuchstellerKardinalitaet ===
-                        TSGesuchstellerKardinalitaet.ZU_ZWEIT ||
-                    this.getGesuch().extractFamiliensituation().unterhaltsvereinbarung ===
+                if(tsFamiliensituation.gesuchstellerKardinalitaet ===  TSGesuchstellerKardinalitaet.ZU_ZWEIT ||
+                    tsFamiliensituation.unterhaltsvereinbarung ===
                         TSUnterhaltsvereinbarungAnswer.NEIN_UNTERHALTSVEREINBARUNG){
                     return `2 (${ this.$translate.instant('ANDERER_ELTERNTEIL')   })`;
                 }

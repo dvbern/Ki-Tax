@@ -31,6 +31,7 @@ import {TSWizardStepName} from '../../../models/enums/TSWizardStepName';
 import {TSWizardStepStatus} from '../../../models/enums/TSWizardStepStatus';
 import {TSErwerbspensumContainer} from '../../../models/TSErwerbspensumContainer';
 import {TSFamiliensituation} from '../../../models/TSFamiliensituation';
+import {TSFamiliensituationContainer} from '../../../models/TSFamiliensituationContainer';
 import {EbeguRestUtil} from '../../../utils/EbeguRestUtil';
 import {EbeguUtil} from '../../../utils/EbeguUtil';
 import {RemoveDialogController} from '../../dialog/RemoveDialogController';
@@ -257,11 +258,14 @@ export class ErwerbspensumListViewController
         if (EbeguUtil.isNullOrUndefined(this.gesuchModelManager.getGesuch())) {
             return false;
         }
+        var familiensituation: TSFamiliensituation = this.gesuchModelManager.getGesuch().familiensituationContainer.familiensituationJA;
+        let partnerIdentischMitVorgesuch: boolean = this.getGesuch().extractFamiliensituation().partnerIdentischMitVorgesuch;
+        if (EbeguUtil.isNotNullAndFalse(partnerIdentischMitVorgesuch)){
+            familiensituation = this.getGesuch().extractFamiliensituationErstgesuch();
+        }
         // Wenn zwei Gesuchsteller und keine Unterhatsvereinbarung abgeschlossen ist,
         // muss das Erwerbspensum von GS2 nicht angegeben werden
-        const unterhaltsvereinbarung = this.gesuchModelManager.getGesuch()
-            .familiensituationContainer.familiensituationJA.unterhaltsvereinbarung;
-        const familiensituation = this.gesuchModelManager.getGesuch().familiensituationContainer.familiensituationJA;
+        const unterhaltsvereinbarung = familiensituation.unterhaltsvereinbarung;
 
         if (
             unterhaltsvereinbarung !== null
