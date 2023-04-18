@@ -374,12 +374,6 @@ public class BetreuungsgutscheinConfigurator {
 		FachstelleLuzernCalcRule fachstelleLuzrnCalcRule = new FachstelleLuzernCalcRule(defaultGueltigkeit, locale);
 		addToRuleSetIfRelevantForGemeinde(fachstelleLuzrnCalcRule, ruleParameterUtil);
 
-		AnspruchAbAlterCalcRule
-				anspruchAbAlterCalcRule = new AnspruchAbAlterCalcRule(defaultGueltigkeit, locale,
-				ruleParameterUtil.getEinstellung(EinstellungKey.ANSPRUCH_AB_X_MONATEN).getValueAsInteger());
-		addToRuleSetIfRelevantForGemeinde(anspruchAbAlterCalcRule, ruleParameterUtil);
-
-
 		KitaPlusZuschlagCalcRule kitaPlusZuschlagCalcRule = new KitaPlusZuschlagCalcRule(defaultGueltigkeit, locale);
 		addToRuleSetIfRelevantForGemeinde(kitaPlusZuschlagCalcRule, ruleParameterUtil);
 
@@ -493,6 +487,12 @@ public class BetreuungsgutscheinConfigurator {
 		SozialhilfeKeinAnspruchCalcRule
 				sozialhilfeCalcRule = new SozialhilfeKeinAnspruchCalcRule(defaultGueltigkeit, locale);
 		addToRuleSetIfRelevantForGemeinde(sozialhilfeCalcRule, ruleParameterUtil);
+
+		// Kinder erhalten erst ab einem gewissen Altern einen Anspruch, wenn entsprechend konfiguriert
+		AnspruchAbAlterCalcRule
+				anspruchAbAlterCalcRule = new AnspruchAbAlterCalcRule(defaultGueltigkeit, locale,
+				ruleParameterUtil.getEinstellung(EinstellungKey.ANSPRUCH_AB_X_MONATEN).getValueAsInteger());
+		addToRuleSetIfRelevantForGemeinde(anspruchAbAlterCalcRule, ruleParameterUtil);
 
 		//RESTANSPRUCH REDUKTION limitiert Anspruch auf  minimum(anspruchRest, anspruchPensum)
 		RestanspruchLimitCalcRule restanspruchLimitCalcRule = new RestanspruchLimitCalcRule(defaultGueltigkeit,

@@ -37,7 +37,7 @@ public class AnspruchAbAlterCalcRule extends AbstractCalcRule {
 			@Nonnull DateRange validityPeriod,
 			@Nonnull Locale locale,
 			int requiredAgeInMonths) {
-		super(RuleKey.ANSPRUCH_AB_X_MONATEN, RuleType.GRUNDREGEL_CALC, RuleValidity.ASIV, validityPeriod, locale);
+		super(RuleKey.ANSPRUCH_AB_X_MONATEN, RuleType.REDUKTIONSREGEL, RuleValidity.ASIV, validityPeriod, locale);
 		this.requiredAgeInMonths = requiredAgeInMonths;
 	}
 
