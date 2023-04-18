@@ -19,19 +19,14 @@ package ch.dvbern.ebegu.rules;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.temporal.TemporalAdjuster;
-import java.time.temporal.TemporalAdjusters;
 import java.util.List;
 
 import javax.annotation.Nonnull;
 
-import ch.dvbern.ebegu.dto.BGCalculationInput;
 import ch.dvbern.ebegu.entities.Betreuung;
-import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
-import ch.dvbern.ebegu.enums.MsgKey;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.mandant.MandantIdentifier;
@@ -48,10 +43,10 @@ public class AnspruchAbAlterAbschnittRuleTest {
 	@Nonnull
 	private Betreuung betreuung;
 
-	final int BASIS_JAHR = 2022;
-	private final LocalDate GP_PERIODE_START = LocalDate.of(BASIS_JAHR, 8, 1);
-	private final LocalDate BIRTHDAY_JULY_16 = LocalDate.of(BASIS_JAHR, 6, 16);
-	private final LocalDate GP_PERIODE_END = LocalDate.of(BASIS_JAHR + 1, 7, 31);
+	private static final int BASIS_JAHR = 2022;
+	private static final LocalDate GP_PERIODE_START = LocalDate.of(BASIS_JAHR, 8, 1);
+	private static final LocalDate BIRTHDAY_JULY_16 = LocalDate.of(BASIS_JAHR, 6, 16);
+	private static final LocalDate GP_PERIODE_END = LocalDate.of(BASIS_JAHR + 1, 7, 31);
 
 	@Before
 	public void setUp() {
@@ -107,7 +102,7 @@ public class AnspruchAbAlterAbschnittRuleTest {
 
 	@Test
 	public void testAlterAb3KindBornOnFirst3MonthsBeforeGPShouldCreateNoAbschnitte() {
-		// Erster voller Tag als 3-Monatiges und damit Anspruch am 2.8.
+		// Erster voller Tag als 3-Monatiges und damit Anspruch am 1.8.
 		final LocalDate geburtsdatum = GP_PERIODE_START.minusMonths(3);
 		setUpRule(3);
 		setChildBirthDate(geburtsdatum);
@@ -157,7 +152,7 @@ public class AnspruchAbAlterAbschnittRuleTest {
 	}
 
 	private void setUpRule(int anspruchAbInMonths) {
-		DateRange validy = new DateRange(LocalDate.of(1000, 1, 1), LocalDate.of(3000, 1, 1));
+		DateRange validy = new DateRange(Constants.START_OF_TIME, Constants.END_OF_TIME);
 		ruleToTest = new AnspruchAbAlterAbschnittRule(validy, Constants.DEUTSCH_LOCALE, anspruchAbInMonths);
 	}
 
