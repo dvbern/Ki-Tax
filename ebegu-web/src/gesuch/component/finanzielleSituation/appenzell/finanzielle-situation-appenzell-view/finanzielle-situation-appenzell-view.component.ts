@@ -233,7 +233,7 @@ export class FinanzielleSituationAppenzellViewComponent extends AbstractGesuchVi
     }
 
     public calculateResults() {
-        this.finanzielleSituationService.calculateMassgebendesEinkommen(this.model);
+        this.finanzielleSituationService.calculateMassgebendesEinkommen(this.getGesuch());
     }
 
     public extractFullNameGS2(): string {

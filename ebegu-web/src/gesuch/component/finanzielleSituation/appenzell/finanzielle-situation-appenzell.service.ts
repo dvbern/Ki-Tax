@@ -40,13 +40,13 @@ export class FinanzielleSituationAppenzellService {
         return this._massgebendesEinkommenStore.asObservable();
     }
 
-    public calculateMassgebendesEinkommen(model: TSFinanzModel): void {
-        this.berechnungsManager.calculateFinanzielleSituationTemp(model)
+    public calculateMassgebendesEinkommen(gesuch: TSGesuch): void {
+        this.berechnungsManager.calculateFinanzielleSituation(gesuch)
             .then(result => this._massgebendesEinkommenStore.next(result));
     }
 
-    public calculateEinkommensverschlechterung(model: TSFinanzModel, basisJahrPlus: number): void {
-        this.berechnungsManager.calculateEinkommensverschlechterungTemp(model, basisJahrPlus)
+    public calculateEinkommensverschlechterung(gesuch: TSGesuch, basisJahrPlus: number): void {
+        this.berechnungsManager.calculateEinkommensverschlechterung(gesuch, basisJahrPlus)
             .then(result => this._massgebendesEinkommenStore.next(result));
     }
 

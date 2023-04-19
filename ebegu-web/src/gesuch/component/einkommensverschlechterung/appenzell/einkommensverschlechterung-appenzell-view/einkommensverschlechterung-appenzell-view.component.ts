@@ -132,7 +132,7 @@ export class EinkommensverschlechterungAppenzellViewComponent extends AbstractGe
     }
 
     public calculateResults(): void {
-        this.finSitAppenzellService.calculateEinkommensverschlechterung(this.model, this.model.getBasisJahrPlus());
+        this.finSitAppenzellService.calculateEinkommensverschlechterung(this.getGesuch(), this.model.getBasisJahrPlus());
     }
 
     public getGesuchstellerName() {
