@@ -70,17 +70,10 @@ export class FinanzielleSituationAppenzellViewComponent extends AbstractGesuchVi
             this.gesuchstellerNumber);
         this.model.copyFinSitDataFromGesuch(this.gesuchModelManager.getGesuch());
         // in Appenzell stellen wir die Frage nach dem Sozialhilfebezüger nicht. Deshalb setzen wir den immer auf false.
-        this.model.sozialhilfeBezueger = false;
+        this.model.familienSituation.sozialhilfeBezueger = false;
         // in Appenzell gibt es keinen Grund, keine Vergünstigung zu wünschen
-        this.model.verguenstigungGewuenscht = true;
+        this.model.familienSituation.verguenstigungGewuenscht = true;
         this.gesuchModelManager.setGesuchstellerNumber(this.gesuchstellerNumber);
-        if (EbeguUtil.isNullOrUndefined(this.getModel().finanzielleSituationJA.finSitZusatzangabenAppenzell)) {
-            this.getModel().finanzielleSituationJA.finSitZusatzangabenAppenzell = new TSFinSitZusatzangabenAppenzell();
-        }
-        if (this.isSpezialFallAR() && EbeguUtil.isNullOrUndefined(this.getModel().finanzielleSituationJA.finSitZusatzangabenAppenzell.zusatzangabenPartner)) {
-            this.getModel().finanzielleSituationJA.finSitZusatzangabenAppenzell.zusatzangabenPartner =
-                new TSFinSitZusatzangabenAppenzell();
-        }
         this.wizardStepManager.updateCurrentWizardStepStatusSafe(TSWizardStepName.FINANZIELLE_SITUATION_APPENZELL,
             TSWizardStepStatus.IN_BEARBEITUNG);
         this.calculateResults();
@@ -108,11 +101,11 @@ export class FinanzielleSituationAppenzellViewComponent extends AbstractGesuchVi
     }
 
     public isGemeinsam(): boolean {
-        return this.model.gemeinsameSteuererklaerung;
+        return this.model.familienSituation.gemeinsameSteuererklaerung;
     }
 
     public getModel(): TSFinanzielleSituationContainer {
-        return this.isSpezialFallAR()? this.model.finanzielleSituationContainerGS1 : this.model.getFiSiConToWorkWith();
+        return this.isSpezialFallAR() ? this.model.finanzielleSituationContainerGS1 : this.model.getFiSiConToWorkWith();
     }
 
     public getSubStepIndex(): number {
@@ -220,7 +213,7 @@ export class FinanzielleSituationAppenzellViewComponent extends AbstractGesuchVi
     }
 
     private removeFinSitGS2IfNecessary(): IPromise<TSGesuchstellerContainer> {
-        if (this.showQuestionGemeinsameSteuererklaerung() && this.model.gemeinsameSteuererklaerung) {
+        if (this.showQuestionGemeinsameSteuererklaerung() && this.model.familienSituation.gemeinsameSteuererklaerung) {
             return this.gesuchModelManager.removeFinanzielleSitautionFromGesuchsteller2();
         }
         return undefined;
@@ -233,7 +226,7 @@ export class FinanzielleSituationAppenzellViewComponent extends AbstractGesuchVi
     }
 
     public calculateResults() {
-        this.finanzielleSituationService.calculateMassgebendesEinkommen(this.getGesuch());
+        this.finanzielleSituationService.calculateMassgebendesEinkommen(this.model);
     }
 
     public extractFullNameGS2(): string {
@@ -245,7 +238,7 @@ export class FinanzielleSituationAppenzellViewComponent extends AbstractGesuchVi
             : '';
     }
 
-    private saveFinSitAR(): IPromise<TSFinanzielleSituationContainer>{
+    private saveFinSitAR(): IPromise<TSFinanzielleSituationContainer> {
         if (this.isSpezialFallAR()) {
             return this.finSitRS.saveFinanzielleSituation(this.getGesuch().id, this.getGesuch().gesuchsteller1);
         }

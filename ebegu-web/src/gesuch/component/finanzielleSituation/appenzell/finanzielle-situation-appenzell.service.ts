@@ -18,11 +18,11 @@
 import {Injectable} from '@angular/core';
 import {Observable, ReplaySubject, Subject} from 'rxjs';
 import {TSFinanzielleSituationResultateDTO} from '../../../../models/dto/TSFinanzielleSituationResultateDTO';
+import {TSFamilienstatus} from '../../../../models/enums/TSFamilienstatus';
 import {TSFinanzModel} from '../../../../models/TSFinanzModel';
 import {TSGesuch} from '../../../../models/TSGesuch';
 import {EbeguUtil} from '../../../../utils/EbeguUtil';
 import {BerechnungsManager} from '../../../service/berechnungsManager';
-import {GesuchModelManager} from '../../../service/gesuchModelManager';
 
 @Injectable({
     providedIn: 'root'
@@ -40,13 +40,13 @@ export class FinanzielleSituationAppenzellService {
         return this._massgebendesEinkommenStore.asObservable();
     }
 
-    public calculateMassgebendesEinkommen(gesuch: TSGesuch): void {
-        this.berechnungsManager.calculateFinanzielleSituation(gesuch)
+    public calculateMassgebendesEinkommen(finanzModel: TSFinanzModel): void {
+        this.berechnungsManager.calculateFinanzielleSituationTemp(finanzModel)
             .then(result => this._massgebendesEinkommenStore.next(result));
     }
 
-    public calculateEinkommensverschlechterung(gesuch: TSGesuch, basisJahrPlus: number): void {
-        this.berechnungsManager.calculateEinkommensverschlechterung(gesuch, basisJahrPlus)
+    public calculateEinkommensverschlechterung(finanzModel: TSFinanzModel, basisJahrPlus: number): void {
+        this.berechnungsManager.calculateEinkommensverschlechterungTemp(finanzModel, basisJahrPlus)
             .then(result => this._massgebendesEinkommenStore.next(result));
     }
 

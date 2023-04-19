@@ -104,14 +104,14 @@ export abstract class AbstractFinSitBernView extends AbstractGesuchViewControlle
         // Wenn Steuerveranlagung erhalten, muss auch STEK ausgefüllt worden sein
         if (this.getModel().finanzielleSituationJA.steuerveranlagungErhalten) {
             this.getModel().finanzielleSituationJA.steuererklaerungAusgefuellt = true;
-            if (this.model.gemeinsameSteuererklaerung) {
+            if (this.model.familienSituation.gemeinsameSteuererklaerung) {
                 this.model.finanzielleSituationContainerGS2.finanzielleSituationJA.steuerveranlagungErhalten = true;
                 this.model.finanzielleSituationContainerGS2.finanzielleSituationJA.steuererklaerungAusgefuellt = true;
             }
         } else if (!this.getModel().finanzielleSituationJA.steuerveranlagungErhalten) {
             // Steuerveranlagung neu NEIN -> Fragen loeschen
             this.getModel().finanzielleSituationJA.steuererklaerungAusgefuellt = undefined;
-            if (this.model.gemeinsameSteuererklaerung) {
+            if (this.model.familienSituation.gemeinsameSteuererklaerung) {
                 this.model.finanzielleSituationContainerGS2.finanzielleSituationJA.steuerveranlagungErhalten = false;
                 this.model.finanzielleSituationContainerGS2.finanzielleSituationJA.steuererklaerungAusgefuellt =
                     undefined;
@@ -157,7 +157,7 @@ export abstract class AbstractFinSitBernView extends AbstractGesuchViewControlle
     public callKiBonAnfrageAndUpdateFinSit(): void {
         this.finSitRequestRunning = true;
         this.finSitRequestState = saveHints.LOADING;
-        this.callKiBonAnfrage(EbeguUtil.isNotNullAndTrue(this.model.gemeinsameSteuererklaerung))
+        this.callKiBonAnfrage(EbeguUtil.isNotNullAndTrue(this.model.familienSituation.gemeinsameSteuererklaerung))
             .then(() => {
                     this.model.copyFinSitDataFromGesuch(this.gesuchModelManager.getGesuch());
                     this.form.$setDirty();

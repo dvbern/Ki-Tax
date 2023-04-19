@@ -3712,7 +3712,10 @@ export class EbeguRestUtil {
                     this.einkommensverschlechterungInfoContainerToRestObject({},
                         finSitModel.einkommensverschlechterungInfoContainer);
             }
-            restFinSitModel.gemeinsameSteuererklaerung = finSitModel.gemeinsameSteuererklaerung;
+            if (finSitModel.familienSituation) {
+                restFinSitModel.familiensituation =
+                    this.familiensituationToRestObject({}, finSitModel.familienSituation);
+            }
             restFinSitModel.finanzielleSituationTyp = finSitModel.finanzielleSituationTyp;
             return restFinSitModel;
         }

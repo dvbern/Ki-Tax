@@ -128,11 +128,11 @@ export class EinkommensverschlechterungAppenzellViewComponent extends AbstractGe
     }
 
     public isGemeinsam(): boolean {
-        return this.model.gemeinsameSteuererklaerung;
+        return this.model.familienSituation.gemeinsameSteuererklaerung;
     }
 
     public calculateResults(): void {
-        this.finSitAppenzellService.calculateEinkommensverschlechterung(this.getGesuch(), this.model.getBasisJahrPlus());
+        this.finSitAppenzellService.calculateEinkommensverschlechterung(this.model, this.model.getBasisJahrPlus());
     }
 
     public getGesuchstellerName() {

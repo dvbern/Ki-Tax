@@ -30,8 +30,8 @@
         <div class="col-md-12">
             <form role="form" name="vm.form" class="" unsaved-warning-form novalidate>
 
-                <dv-finanzielle-situation-require sozialhilfe-bezueger="vm.model.sozialhilfeBezueger"
-                                                  verguenstigung-gewuenscht="vm.model.verguenstigungGewuenscht"
+                <dv-finanzielle-situation-require sozialhilfe-bezueger="vm.model.familienSituation.sozialhilfeBezueger"
+                                                  verguenstigung-gewuenscht="vm.model.familienSituation.verguenstigungGewuenscht"
                                                   finanzielle-situation-required="vm.finanzielleSituationRequired"
                                                   are-there-any-bg-betreuungen="!vm.areThereOnlySchulamtangebote"
                                                   form="vm.form">
@@ -49,7 +49,7 @@
                         </span>
                                 <dv-radio-container name="gemeinsameSteuererklaerung"
                                                     class="input-element"
-                                                    ng-model="vm.model.gemeinsameSteuererklaerung"
+                                                    ng-model="vm.model.familienSituation.gemeinsameSteuererklaerung"
                                                     ng-required="true"
                                                     class="radio"
                                                     ng-change="vm.gemeinsameStekClicked()"
