@@ -304,7 +304,7 @@ export class GesuchModelManager {
     public isRequiredEKV_GS_BJ(gs: number, bj: number): boolean {
         if (this.wizardStepManager.getCurrentStepName() === TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_APPENZELL) {
             return gs === 2 ?
-                this.getEkvFuerBasisJahrPlus(bj) && this.isSpezialFallAR() :
+                this.getEkvFuerBasisJahrPlus(bj) || this.isSpezialFallAR() :
                 this.getEkvFuerBasisJahrPlus(bj);
         }
         if (this.wizardStepManager.getCurrentStepName() === TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_LUZERN) {
