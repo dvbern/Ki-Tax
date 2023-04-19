@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022 DV Bern AG, Switzerland
+ * Copyright (C) 2023 DV Bern AG, Switzerland
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -8,11 +8,11 @@
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
 package ch.dvbern.ebegu.pdfgenerator;
@@ -23,18 +23,17 @@ import java.util.List;
 
 import javax.annotation.Nonnull;
 
-import org.jetbrains.annotations.Nullable;
-
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.GemeindeStammdaten;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.BetreuungspensumAnzeigeTyp;
+import ch.dvbern.ebegu.util.MathUtil;
 import ch.dvbern.lib.invoicegenerator.pdf.PdfGenerator;
-
 import com.lowagie.text.Document;
 import com.lowagie.text.Element;
 import com.lowagie.text.Font;
 import com.lowagie.text.pdf.PdfPTable;
+import org.jetbrains.annotations.Nullable;
 
 public class VerfuegungPdfGeneratorAppenzell extends AbstractVerfuegungPdfGenerator {
 
@@ -159,10 +158,11 @@ public class VerfuegungPdfGeneratorAppenzell extends AbstractVerfuegungPdfGenera
 
 	@Override
 	protected void addValueaBeitraghoheInProzent(PdfPTable table, Integer beitraghoheInProzent) {
+		BigDecimal beitragHoeheGanzzahl = MathUtil.GANZZAHL.from(beitraghoheInProzent);
 		table.addCell(createCell(
 				false,
 				Element.ALIGN_RIGHT,
-				PdfUtil.printPercent(beitraghoheInProzent),
+				PdfUtil.printPercent(beitragHoeheGanzzahl),
 				Color.LIGHT_GRAY,
 				getBgColorForBetreuungsgutscheinCell(),
 				1,
@@ -188,12 +188,12 @@ public class VerfuegungPdfGeneratorAppenzell extends AbstractVerfuegungPdfGenera
 	@Override
 	@Nonnull
 	protected List<VerfuegungZeitabschnitt> getVerfuegungZeitabschnitt() {
-		if (!this.isBetreuungTagesfamilie) {
-			return super.getVerfuegungZeitabschnitt();
-		}
-
-		//Für TFOs sollen die Zeitabschnitte, welche kein Betreuungspensum haben nicht aus der Liste entfernt werden
 		return super.getZeitabschnitteOrderByGueltigAb(false);
+	}
+
+	protected void createDokumentKeinAnspruch(Document document, PdfGenerator generator) {
+		// bei Appenzell wird auch bei keinem Anspruch die Verfügung generiert.
+		super.createDokumentNormal(document, generator);
 	}
 
 	@Override
