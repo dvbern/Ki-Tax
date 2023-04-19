@@ -65,7 +65,7 @@ export class FinanzielleSituationAppenzellService {
         const gesuchHasSecondAntragsteller = EbeguUtil.isNotNullOrUndefined(gesuch.gesuchsteller2);
         const gemeinsameSteuererklaerung = gesuch.extractFamiliensituation().gemeinsameSteuererklaerung;
         return gesuchHasSecondAntragsteller && EbeguUtil.isNotNullAndFalse(gemeinsameSteuererklaerung)
-            || (gesuch.extractFamiliensituation().familienstatus === TSFamilienstatus.ALLEINERZIEHEND
+            || (gesuch.extractFamiliensituation().familienstatus === TSFamilienstatus.APPENZELL
                 && (spezialFall || spezialFall1));
     }
 }
