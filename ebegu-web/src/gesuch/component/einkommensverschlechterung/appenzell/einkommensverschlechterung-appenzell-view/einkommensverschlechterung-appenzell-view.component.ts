@@ -16,19 +16,24 @@
  */
 
 import {ChangeDetectionStrategy, ChangeDetectorRef, Component, ViewChild} from '@angular/core';
-import {NgForm} from '@angular/forms';
 import {Transition} from '@uirouter/core';
 import {IPromise} from 'angular';
-import {TSFinanzielleSituationResultateDTO} from '../../../../../models/dto/TSFinanzielleSituationResultateDTO';
 import {TSWizardStepName} from '../../../../../models/enums/TSWizardStepName';
 import {TSWizardStepStatus} from '../../../../../models/enums/TSWizardStepStatus';
+import {TSEinkommensverschlechterung} from '../../../../../models/TSEinkommensverschlechterung';
 import {TSEinkommensverschlechterungContainer} from '../../../../../models/TSEinkommensverschlechterungContainer';
 import {TSFinanzModel} from '../../../../../models/TSFinanzModel';
+import {TSFinSitZusatzangabenAppenzell} from '../../../../../models/TSFinSitZusatzangabenAppenzell';
+import {TSGesuchstellerContainer} from '../../../../../models/TSGesuchstellerContainer';
 import {EbeguUtil} from '../../../../../utils/EbeguUtil';
 import {BerechnungsManager} from '../../../../service/berechnungsManager';
+import {EinkommensverschlechterungContainerRS} from '../../../../service/einkommensverschlechterungContainerRS.rest';
 import {GesuchModelManager} from '../../../../service/gesuchModelManager';
 import {WizardStepManager} from '../../../../service/wizardStepManager';
 import {AbstractGesuchViewX} from '../../../abstractGesuchViewX';
+import {
+    FinanzielleSituationAppenzellService
+} from '../../../finanzielleSituation/appenzell/finanzielle-situation-appenzell.service';
 
 @Component({
     selector: 'dv-einkommensverschlechterung-appenzell-view',
@@ -47,7 +52,9 @@ export class EinkommensverschlechterungAppenzellViewComponent extends AbstractGe
         protected wizardStepManager: WizardStepManager,
         protected berechnungsManager: BerechnungsManager,
         private readonly $transition$: Transition,
-        protected ref: ChangeDetectorRef
+        protected ref: ChangeDetectorRef,
+        private readonly finSitAppenzellService: FinanzielleSituationAppenzellService,
+        private readonly ekvContainerRS: EinkommensverschlechterungContainerRS
     ) {
         super(gesuchModelManager, wizardStepManager, TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_APPENZELL);
         const parsedGesuchstelllerNum = parseInt(this.$transition$.params().gesuchstellerNumber, 10);
@@ -65,6 +72,32 @@ export class EinkommensverschlechterungAppenzellViewComponent extends AbstractGe
         this.wizardStepManager.updateCurrentWizardStepStatusSafe(
             TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_APPENZELL,
             TSWizardStepStatus.IN_BEARBEITUNG);
+
+        if (EbeguUtil.isNullOrUndefined(this.getEkvToWorkWith().finSitZusatzangabenAppenzell)) {
+            this.getEkvToWorkWith().finSitZusatzangabenAppenzell =
+                new TSFinSitZusatzangabenAppenzell();
+        }
+
+        if (this.isSpezialFallAR() && EbeguUtil.isNullOrUndefined(this.getEkvToWorkWith().finSitZusatzangabenAppenzell.zusatzangabenPartner)) {
+            this.getEkvToWorkWith().finSitZusatzangabenAppenzell.zusatzangabenPartner =
+                new TSFinSitZusatzangabenAppenzell();
+        }
+        this.calculateResults();
+    }
+
+    public getEkvToWorkWith(): TSEinkommensverschlechterung {
+        if (this.isSpezialFallAR() && this.gesuchstellerNumber === 2) {
+            return this.model.einkommensverschlechterungContainerGS1.getJA(this.model.getBasisJahrPlus());
+        }
+        return this.model.getEkvToWorkWith();
+    }
+
+    public getZusatzangabenAppenzellToWorkWith(): TSFinSitZusatzangabenAppenzell {
+        const finSitZusatzangabenAppenzell = this.getEkvToWorkWith().finSitZusatzangabenAppenzell;
+        if (this.isSpezialFallAR() && this.gesuchstellerNumber === 2) {
+            return finSitZusatzangabenAppenzell.zusatzangabenPartner;
+        }
+        return finSitZusatzangabenAppenzell;
     }
 
     public save(onResult: (arg: any) => void): IPromise<TSEinkommensverschlechterungContainer> {
@@ -80,7 +113,11 @@ export class EinkommensverschlechterungAppenzellViewComponent extends AbstractGe
             return Promise.resolve(this.model.getEkvContToWorkWith());
         }
         this.model.copyEkvSitDataToGesuch(this.gesuchModelManager.getGesuch());
-        return this.gesuchModelManager.saveEinkommensverschlechterungContainer().then(ekv => {
+        return this.ekvContainerRS.saveEinkommensverschlechterungContainer(
+            this.getStammdatenToWorkWith().einkommensverschlechterungContainer,
+            this.getStammdatenToWorkWith().id,
+            this.getGesuch().id
+        ).then(ekv => {
             onResult(ekv);
             return ekv;
         });
@@ -92,5 +129,30 @@ export class EinkommensverschlechterungAppenzellViewComponent extends AbstractGe
 
     public isGemeinsam(): boolean {
         return this.model.gemeinsameSteuererklaerung;
+    }
+
+    public calculateResults(): void {
+        this.finSitAppenzellService.calculateEinkommensverschlechterung(this.model, this.model.getBasisJahrPlus());
+    }
+
+    public getGesuchstellerName() {
+        return this.gesuchstellerNumber === 2 ?
+            this.extractFullNameGS2() :
+            this.gesuchModelManager.getStammdatenToWorkWith().extractFullName();
+    }
+
+    public extractFullNameGS2(): string {
+        if (this.isSpezialFallAR()) {
+            return 'Ehepartner/-in';
+        }
+        return this.getGesuch() && this.getGesuch().gesuchsteller2
+            ? this.getGesuch().gesuchsteller2.extractFullName()
+            : '';
+    }
+
+    private getStammdatenToWorkWith(): TSGesuchstellerContainer {
+        return this.gesuchstellerNumber === 2 && this.isSpezialFallAR() ?
+            this.getGesuch().gesuchsteller1 :
+            this.gesuchModelManager.getStammdatenToWorkWith();
     }
 }
