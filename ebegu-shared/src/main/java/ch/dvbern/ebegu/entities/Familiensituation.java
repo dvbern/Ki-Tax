@@ -492,7 +492,7 @@ public class Familiensituation extends AbstractMutableEntity {
 	}
 
 	public boolean isSpezialFallAR() {
-		if (this.familienstatus != EnumFamilienstatus.ALLEINERZIEHEND) {
+		if (this.familienstatus != EnumFamilienstatus.APPENZELL) {
 			return false;
 		}
 		var spezialFallGeteilteObhut = EbeguUtil.isNotNullAndTrue(this.geteilteObhut)
