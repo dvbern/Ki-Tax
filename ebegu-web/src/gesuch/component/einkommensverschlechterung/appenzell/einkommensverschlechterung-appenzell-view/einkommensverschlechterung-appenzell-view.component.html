@@ -21,7 +21,7 @@
         <div class="col-md-12">
             <h2>
                 <span translate
-                      [translateParams]="{gesuchsteller: this.gesuchModelManager.getStammdatenToWorkWith().extractFullName(), basisjahr: this.gesuchModelManager.getBasisjahrToWorkWith()}">EKVI_EINKOMMENSVERSCHLECHTERUNG_FUER_BASISJAHR</span>
+                      [translateParams]="{gesuchsteller: getGesuchstellerName(), basisjahr: this.gesuchModelManager.getBasisjahrToWorkWith()}">EKVI_EINKOMMENSVERSCHLECHTERUNG_FUER_BASISJAHR</span>
             </h2>
             <hr class="header"/>
         </div>
@@ -31,15 +31,13 @@
               #form="ngForm"
               novalidate>
             <div class="col-md-12">
-                    <dv-fin-sit-zusatzfelder-appenzell
-                        [isGemeinsam]="isGemeinsam()"
-                        [basisJahr]="getBasisjahr()"
+                    <dv-fin-sit-felder-appenzell
                         [readOnly]="isGesuchReadonly()"
                         [finanzModel]="model"
                         [antragstellerNumber]="getAntragstellerNumber()"
-                        [model]="model.getEkvToWorkWith()"
-                        [isKorrekturModusJungendamtOrFreigegeben]="this.isKorrekturModusJugendamtOrFreigegeben()"
-                    ></dv-fin-sit-zusatzfelder-appenzell>
+                        [finSitZusatzangabenAppenzell]="getZusatzangabenAppenzellToWorkWith()"
+                        (valueChanges)="calculateResults()"
+                    ></dv-fin-sit-felder-appenzell>
                 <dv-navigation-x (dvSave)="save($event.onResult)" [dvPrevious]="true" [dvNext]="true"
                                  [dvSubStep]="3"></dv-navigation-x>
             </div>

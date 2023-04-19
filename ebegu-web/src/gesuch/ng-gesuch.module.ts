@@ -53,8 +53,8 @@ import {
     FamiliensituationViewXComponent
 } from './component/familiensituation/familiensituation-view-x/familiensituation-view-x.component';
 import {
-    FinSitZusatzfelderAppenzellComponent
-} from './component/abstractFinanzielleSituation/appenzell/fin-sit-zusatzfelder-appenzell/fin-sit-zusatzfelder-appenzell.component';
+    FinSitFelderAppenzellComponent
+} from './component/abstractFinanzielleSituation/appenzell/fin-sit-zusatzfelder-appenzell/fin-sit-felder-appenzell.component';
 import {
     FinanzielleSituationAppenzellViewComponent
 } from './component/finanzielleSituation/appenzell/finanzielle-situation-appenzell-view/finanzielle-situation-appenzell-view.component';
@@ -145,7 +145,7 @@ import {
         AngabenGesuchsteller2Component,
         SelbstdeklarationComponent,
         VeranlagungComponent,
-        FinSitZusatzfelderAppenzellComponent,
+        FinSitFelderAppenzellComponent,
         FinanzielleSituationAppenzellViewComponent,
         InfomaFieldsComponent,
         VeranlagungComponent,

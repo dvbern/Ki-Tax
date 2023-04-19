@@ -28,11 +28,11 @@ import {TSGesuchstellerContainer} from '../../../../../models/TSGesuchstellerCon
 import {BerechnungsManager} from '../../../../service/berechnungsManager';
 import {GesuchModelManager} from '../../../../service/gesuchModelManager';
 
-import {FinSitZusatzfelderAppenzellComponent} from './fin-sit-zusatzfelder-appenzell.component';
+import {FinSitFelderAppenzellComponent} from './fin-sit-felder-appenzell.component';
 
 describe('FinanzielleVerhaeltnisseComponent', () => {
-    let component: FinSitZusatzfelderAppenzellComponent;
-    let fixture: ComponentFixture<FinSitZusatzfelderAppenzellComponent>;
+    let component: FinSitFelderAppenzellComponent;
+    let fixture: ComponentFixture<FinSitFelderAppenzellComponent>;
     const berechnungsManagerSpy = jasmine.createSpyObj<BerechnungsManager>(BerechnungsManager.name, ['calculateFinanzielleSituation', 'calculateFinanzielleSituationTemp']);
     berechnungsManagerSpy.calculateFinanzielleSituationTemp.and.returnValue(Promise.resolve(new TSFinanzielleSituationResultateDTO()));
     const gesuchModelManagerSpy = jasmine.createSpyObj<GesuchModelManager>(GesuchModelManager.name, ['getGesuch', 'getBasisjahr']);
@@ -40,7 +40,7 @@ describe('FinanzielleVerhaeltnisseComponent', () => {
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
-            declarations: [FinSitZusatzfelderAppenzellComponent],
+            declarations: [FinSitFelderAppenzellComponent],
             imports: [SharedModule],
             providers: [
                 {provide: NgForm, useValue: new NgForm([], [])},
@@ -53,7 +53,7 @@ describe('FinanzielleVerhaeltnisseComponent', () => {
     });
 
     beforeEach(() => {
-        fixture = TestBed.createComponent(FinSitZusatzfelderAppenzellComponent);
+        fixture = TestBed.createComponent(FinSitFelderAppenzellComponent);
         component = fixture.componentInstance;
         component.model = new TSFinanzielleSituation();
         component.finanzModel = new TSFinanzModel(0, false, 1);

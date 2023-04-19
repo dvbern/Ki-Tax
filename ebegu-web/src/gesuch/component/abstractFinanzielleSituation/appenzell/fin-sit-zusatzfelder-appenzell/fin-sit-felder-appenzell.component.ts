@@ -15,7 +15,15 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnInit} from '@angular/core';
+import {
+    ChangeDetectionStrategy,
+    ChangeDetectorRef,
+    Component,
+    EventEmitter,
+    Input,
+    OnInit,
+    Output
+} from '@angular/core';
 import {LogFactory} from '../../../../../app/core/logging/LogFactory';
 import {TSFinanzielleSituationResultateDTO} from '../../../../../models/dto/TSFinanzielleSituationResultateDTO';
 import {TSAbstractFinanzielleSituation} from '../../../../../models/TSAbstractFinanzielleSituation';
@@ -23,29 +31,22 @@ import {TSFinanzModel} from '../../../../../models/TSFinanzModel';
 import {TSFinSitZusatzangabenAppenzell} from '../../../../../models/TSFinSitZusatzangabenAppenzell';
 import {EbeguUtil} from '../../../../../utils/EbeguUtil';
 import {GesuchModelManager} from '../../../../service/gesuchModelManager';
-import {FinanzielleSituationAppenzellService} from '../../../finanzielleSituation/appenzell/finanzielle-situation-appenzell.service';
+import {
+    FinanzielleSituationAppenzellService
+} from '../../../finanzielleSituation/appenzell/finanzielle-situation-appenzell.service';
 
 const LOG = LogFactory.createLog('FinSitZusatzfelderAppenzell');
 
 @Component({
-    selector: 'dv-fin-sit-zusatzfelder-appenzell',
-    templateUrl: './fin-sit-zusatzfelder-appenzell.component.html',
-    styleUrls: ['./fin-sit-zusatzfelder-appenzell.component.less'],
+    selector: 'dv-fin-sit-felder-appenzell',
+    templateUrl: './fin-sit-felder-appenzell.component.html',
+    styleUrls: ['./fin-sit-felder-appenzell.component.less'],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class FinSitZusatzfelderAppenzellComponent implements OnInit {
+export class FinSitFelderAppenzellComponent implements OnInit {
 
     @Input()
-    public isGemeinsam: boolean;
-
-    @Input()
-    public basisJahr: number;
-
-    @Input()
-    public basisJahrPlus: number; // number years added to basisjahr. for EKV. can be 1 oder 2
-
-    @Input()
-    public model: TSAbstractFinanzielleSituation;
+    public finSitZusatzangabenAppenzell: TSFinSitZusatzangabenAppenzell;
 
     @Input()
     public readOnly: boolean = false;
@@ -54,10 +55,16 @@ export class FinSitZusatzfelderAppenzellComponent implements OnInit {
     public finanzModel: TSFinanzModel;
 
     @Input()
-    public isKorrekturModusJungendamtOrFreigegeben: boolean;
+    public showBisher: boolean;
 
     @Input()
     public antragstellerNumber: number;
+
+    @Input()
+    public deklaration: TSFinSitZusatzangabenAppenzell;
+
+    @Output()
+    private readonly valueChanges = new EventEmitter<TSFinSitZusatzangabenAppenzell>();
 
     public resultate: TSFinanzielleSituationResultateDTO;
 
@@ -69,11 +76,6 @@ export class FinSitZusatzfelderAppenzellComponent implements OnInit {
     }
 
     public ngOnInit(): void {
-        if (!this.model.finSitZusatzangabenAppenzell) {
-            this.model.finSitZusatzangabenAppenzell = new TSFinSitZusatzangabenAppenzell();
-        }
-        // load initial results
-        this.onValueChangeFunction();
         this.finSitAppenzellService.massgebendesEinkommenStore.subscribe(resultate => {
                 this.resultate = resultate;
                 this.ref.markForCheck();
@@ -82,16 +84,8 @@ export class FinSitZusatzfelderAppenzellComponent implements OnInit {
     }
 
     public onValueChangeFunction = (): void => {
-        this.finSitAppenzellService.calculateMassgebendesEinkommen(this.finanzModel);
+        this.valueChanges.emit(this.finSitZusatzangabenAppenzell);
     };
-
-    public getCurrentAntragstellerName(): string {
-        if (this.isGemeinsam) {
-            return `${this.antragsteller1Name()} ${this.antragsteller2Name()}`;
-        }
-
-        return this.antragsteller1Name();
-    }
 
     public antragsteller1Name(): string {
         return this.gesuchModelManager.getGesuch().gesuchsteller1?.extractFullName();
@@ -99,11 +93,6 @@ export class FinSitZusatzfelderAppenzellComponent implements OnInit {
 
     public antragsteller2Name(): string {
         return this.gesuchModelManager.getGesuch().gesuchsteller2?.extractFullName();
-    }
-
-    public showBisher(abstractFinanzielleSituation: TSAbstractFinanzielleSituation): boolean {
-        return (EbeguUtil.isNotNullOrUndefined(abstractFinanzielleSituation))
-            && this.isKorrekturModusJungendamtOrFreigegeben;
     }
 
     public getVermoegenAnrechenbar(): number {
@@ -115,7 +104,13 @@ export class FinSitZusatzfelderAppenzellComponent implements OnInit {
         } else if (this.antragstellerNumber === 2) {
             return this.resultate.vermoegenXPercentAnrechenbarGS2;
         } else {
-            throw new Error(`Falsche Antragsteller Nummer: ${  this.antragstellerNumber}`);
+            throw new Error(`Falsche Antragsteller Nummer: ${this.antragstellerNumber}`);
         }
+    }
+
+    public getJahr(): number {
+        return EbeguUtil.isNullOrUndefined(this.finanzModel.getBasisJahrPlus()) ?
+            this.finanzModel.getBasisjahr() :
+            this.finanzModel.getBasisjahr() + this.finanzModel.getBasisJahrPlus();
     }
 }
