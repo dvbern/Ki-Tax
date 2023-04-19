@@ -237,6 +237,9 @@ public abstract class AbstractFinanzielleSituation extends AbstractMutableEntity
 
 	@Nullable
 	public BigDecimal getSteuerbaresEinkommen() {
+		if (this.getFinSitZusatzangabenAppenzell() != null) {
+			return this.getFinSitZusatzangabenAppenzell().getSteuerbaresEinkommen();
+		}
 		return steuerbaresEinkommen;
 	}
 
@@ -450,6 +453,9 @@ public abstract class AbstractFinanzielleSituation extends AbstractMutableEntity
 					&& this.getGeschaeftsverlust() != null
 					&& this.getEinkaeufeVorsorge() != null) ||
 			 this.getSelbstdeklaration() != null && this.getSelbstdeklaration().isVollstaendig();
+		case APPENZELL:
+			return this.getFinSitZusatzangabenAppenzell() != null
+					&& this.getFinSitZusatzangabenAppenzell().isVollstaendig();
 		case SOLOTHURN:
 		case BERN_FKJV:
 		case BERN:

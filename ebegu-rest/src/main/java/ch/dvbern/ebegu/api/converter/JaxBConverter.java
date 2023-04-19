@@ -2869,6 +2869,16 @@ public class JaxBConverter extends AbstractConverter {
 		finSitZusatzangabenAppenzell.setVorjahresverluste(jaxFinSitZusatzangabenAppenzell.getVorjahresverluste());
 		finSitZusatzangabenAppenzell.setPolitischeParteiSpende(jaxFinSitZusatzangabenAppenzell.getPolitischeParteiSpende());
 		finSitZusatzangabenAppenzell.setLeistungAnJuristischePersonen(jaxFinSitZusatzangabenAppenzell.getLeistungAnJuristischePersonen());
+		finSitZusatzangabenAppenzell.setSteuerbaresEinkommen(jaxFinSitZusatzangabenAppenzell.getSteuerbaresEinkommen());
+		finSitZusatzangabenAppenzell.setSteuerbaresVermoegen(jaxFinSitZusatzangabenAppenzell.getSteuerbaresVermoegen());
+
+		if (jaxFinSitZusatzangabenAppenzell.getZusatzangabenPartner() != null) {
+			FinSitZusatzangabenAppenzell toMerge = Optional.ofNullable(finSitZusatzangabenAppenzell.getZusatzangabenPartner())
+					.orElse(new FinSitZusatzangabenAppenzell());
+			finSitZusatzangabenAppenzell.setZusatzangabenPartner(finSitZusatzangabenAppenzellToEntity(jaxFinSitZusatzangabenAppenzell.getZusatzangabenPartner(), toMerge));
+		} else {
+			finSitZusatzangabenAppenzell.setZusatzangabenPartner(null);
+		}
 
 		return finSitZusatzangabenAppenzell;
 	}
@@ -2956,6 +2966,9 @@ public class JaxBConverter extends AbstractConverter {
 		jaxFinSitZusatzangabenAppenzell.setVorjahresverluste(persistedFinSitZusatzangabenAppenzell.getVorjahresverluste());
 		jaxFinSitZusatzangabenAppenzell.setPolitischeParteiSpende(persistedFinSitZusatzangabenAppenzell.getPolitischeParteiSpende());
 		jaxFinSitZusatzangabenAppenzell.setLeistungAnJuristischePersonen(persistedFinSitZusatzangabenAppenzell.getLeistungAnJuristischePersonen());
+		jaxFinSitZusatzangabenAppenzell.setSteuerbaresVermoegen(persistedFinSitZusatzangabenAppenzell.getSteuerbaresVermoegen());
+		jaxFinSitZusatzangabenAppenzell.setSteuerbaresEinkommen(persistedFinSitZusatzangabenAppenzell.getSteuerbaresEinkommen());
+		jaxFinSitZusatzangabenAppenzell.setZusatzangabenPartner(finSitZusatzangabenAppenzellToJax(persistedFinSitZusatzangabenAppenzell.getZusatzangabenPartner()));
 
 		return jaxFinSitZusatzangabenAppenzell;
 	}
