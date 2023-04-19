@@ -178,7 +178,7 @@
     <div dv-show-element
          dv-show-allowed-roles="vmgs.TSRoleUtil.getGesuchstellerOnlyRoles()"
          dv-show-expression="vmgs.showGesuchLoeschen()" class="gesuchsperioden-container">
-        <button ng-click="vmgs.gesuchLoeschen()"
+        <button ng-click="vmgs.closeSidenav('dossier-toolbar-mobile');vmgs.gesuchLoeschen()"
                 aria-label="{{'TOOLBAR_LOESCHEN' | translate}}" class="dv-btn gesuchsperiode-button">
             <span data-translate="TOOLBAR_LOESCHEN"></span>
         </button>
