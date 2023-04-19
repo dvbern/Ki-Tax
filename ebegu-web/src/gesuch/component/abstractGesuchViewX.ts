@@ -150,4 +150,8 @@ export class AbstractGesuchViewX<T> implements AfterViewInit {
 
         return this.form.valid;
     }
+
+    protected isSpezialFallAR(): boolean {
+        return this.gesuchModelManager.isSpezialFallAR();
+    }
 }

@@ -57,8 +57,15 @@ export class FinanzielleSituationAppenzellService {
         if (EbeguUtil.isNullOrUndefined(gesuch.extractFamiliensituation())) {
             return false;
         }
+        const spezialFall = gesuch.extractFamiliensituation().geteilteObhut
+            && EbeguUtil.isNotNullAndFalse(gesuch.extractFamiliensituation().gemeinsamerHaushaltMitObhutsberechtigterPerson)
+            && gesuch.extractFamiliensituation().gemeinsamerHaushaltMitPartner;
+        const spezialFall1 = EbeguUtil.isNotNullAndFalse(gesuch.extractFamiliensituation().geteilteObhut)
+            && gesuch.extractFamiliensituation().gemeinsamerHaushaltMitPartner;
         const gesuchHasSecondAntragsteller = EbeguUtil.isNotNullOrUndefined(gesuch.gesuchsteller2);
         const gemeinsameSteuererklaerung = gesuch.extractFamiliensituation().gemeinsameSteuererklaerung;
-        return gesuchHasSecondAntragsteller && EbeguUtil.isNotNullAndFalse(gemeinsameSteuererklaerung);
+        return gesuchHasSecondAntragsteller && EbeguUtil.isNotNullAndFalse(gemeinsameSteuererklaerung)
+            || spezialFall
+            || spezialFall1;
     }
 }
