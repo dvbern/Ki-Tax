@@ -20,9 +20,9 @@ import {NgForm} from '@angular/forms';
 import {SharedModule} from '../../../../../app/shared/shared.module';
 import {SHARED_MODULE_OVERRIDES} from '../../../../../hybridTools/mockUpgradedDirective';
 import {TSFinanzielleSituationResultateDTO} from '../../../../../models/dto/TSFinanzielleSituationResultateDTO';
-import {TSFinanzielleSituation} from '../../../../../models/TSFinanzielleSituation';
 import {TSFinanzielleSituationContainer} from '../../../../../models/TSFinanzielleSituationContainer';
 import {TSFinanzModel} from '../../../../../models/TSFinanzModel';
+import {TSFinSitZusatzangabenAppenzell} from '../../../../../models/TSFinSitZusatzangabenAppenzell';
 import {TSGesuch} from '../../../../../models/TSGesuch';
 import {TSGesuchstellerContainer} from '../../../../../models/TSGesuchstellerContainer';
 import {BerechnungsManager} from '../../../../service/berechnungsManager';
@@ -55,7 +55,8 @@ describe('FinanzielleVerhaeltnisseComponent', () => {
     beforeEach(() => {
         fixture = TestBed.createComponent(FinSitFelderAppenzellComponent);
         component = fixture.componentInstance;
-        component.model = new TSFinanzielleSituation();
+        component.finSitZusatzangabenAppenzell = new TSFinSitZusatzangabenAppenzell();
+        component.finSitZusatzangabenAppenzell.zusatzangabenPartner = new TSFinSitZusatzangabenAppenzell();
         component.finanzModel = new TSFinanzModel(0, false, 1);
         component.finanzModel.finanzielleSituationContainerGS1 = new TSFinanzielleSituationContainer();
         fixture.detectChanges();

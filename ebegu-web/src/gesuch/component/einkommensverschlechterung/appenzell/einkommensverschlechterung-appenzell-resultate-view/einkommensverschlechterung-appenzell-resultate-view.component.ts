@@ -71,7 +71,7 @@ export class EinkommensverschlechterungAppenzellResultateViewComponent
 
     public getAntragsteller2Name(): string {
         if (this.isSpezialFallAR()) {
-            return this.translate.instant('EHEPARTNERIN')
+            return this.translate.instant('EHEPARTNERIN');
         }
         return super.getAntragsteller2Name();
     }

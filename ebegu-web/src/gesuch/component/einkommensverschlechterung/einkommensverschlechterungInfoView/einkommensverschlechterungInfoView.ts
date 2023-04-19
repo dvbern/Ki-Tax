@@ -382,7 +382,7 @@ export class EinkommensverschlechterungInfoViewController
                 map(einstellung => parseInt(einstellung.value, 10))
             ).subscribe(value => {
                 this.grenzwertEKV = value;
-        })
+        });
 
     }
 
