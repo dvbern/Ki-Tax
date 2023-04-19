@@ -18,6 +18,7 @@
 package ch.dvbern.ebegu.finanzielleSituationRechner;
 
 import java.math.BigDecimal;
+import java.util.Objects;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -102,28 +103,28 @@ public class FinanzielleSituationAppenzellRechner extends AbstractFinanzielleSit
 	public void setEinkommensverschlechterungParameters(
 		@Nonnull Gesuch gesuch, int basisJahrPlus,
 		final FinanzielleSituationResultateDTO einkVerResultDTO, boolean hasSecondGesuchsteller) {
-		Einkommensverschlechterung einkommensverschlechterungGS1Bjp1 =
-			getEinkommensverschlechterungGS(gesuch.getGesuchsteller1(), 1);
-		Einkommensverschlechterung einkommensverschlechterungGS1Bjp2 =
-			getEinkommensverschlechterungGS(gesuch.getGesuchsteller1(), 2);
+		FinSitZusatzangabenAppenzell einkommensverschlechterungGS1Bjp1 =
+			getEinkommensverschlechterungGS(gesuch, 1, 1);
+		FinSitZusatzangabenAppenzell einkommensverschlechterungGS1Bjp2 =
+			getEinkommensverschlechterungGS(gesuch, 2, 1);
 
 		// Die Daten fuer GS 2 werden nur beruecksichtigt, wenn es (aktuell) zwei Gesuchsteller hat
-		Einkommensverschlechterung einkommensverschlechterungGS2Bjp1 = null;
-		Einkommensverschlechterung einkommensverschlechterungGS2Bjp2 = null;
+		FinSitZusatzangabenAppenzell einkommensverschlechterungGS2Bjp1 = null;
+		FinSitZusatzangabenAppenzell einkommensverschlechterungGS2Bjp2 = null;
 		if (hasSecondGesuchsteller) {
-			einkommensverschlechterungGS2Bjp1 = getEinkommensverschlechterungGS(gesuch.getGesuchsteller2(), 1);
-			einkommensverschlechterungGS2Bjp2 = getEinkommensverschlechterungGS(gesuch.getGesuchsteller2(), 2);
+			einkommensverschlechterungGS2Bjp1 = getEinkommensverschlechterungGS(gesuch, 1, 2);
+			einkommensverschlechterungGS2Bjp2 = getEinkommensverschlechterungGS(gesuch, 2,2 );
 		}
 
 		if (basisJahrPlus == 2) {
 			calculateFinSit(
-				einkommensverschlechterungGS1Bjp2 != null ? einkommensverschlechterungGS1Bjp2.getFinSitZusatzangabenAppenzell() : null,
-				einkommensverschlechterungGS2Bjp2 != null ? einkommensverschlechterungGS2Bjp2.getFinSitZusatzangabenAppenzell() : null,
+					einkommensverschlechterungGS1Bjp2,
+					einkommensverschlechterungGS2Bjp2,
 				einkVerResultDTO);
 		} else {
 			calculateFinSit(
-				einkommensverschlechterungGS1Bjp1 != null ? einkommensverschlechterungGS1Bjp1.getFinSitZusatzangabenAppenzell() : null,
-				einkommensverschlechterungGS2Bjp1 != null ? einkommensverschlechterungGS2Bjp1.getFinSitZusatzangabenAppenzell() : null,
+					einkommensverschlechterungGS1Bjp1,
+					einkommensverschlechterungGS2Bjp1,
 				einkVerResultDTO);
 		}
 	}
@@ -194,5 +195,24 @@ public class FinanzielleSituationAppenzellRechner extends AbstractFinanzielleSit
 	public boolean calculateByVeranlagung(@Nonnull AbstractFinanzielleSituation abstractFinanzielleSituation) {
 		// bei Bern rechnen wir nie nach Veranlagung.
 		throw new NotImplementedException();
+	}
+
+	@Nullable
+	protected FinSitZusatzangabenAppenzell getEinkommensverschlechterungGS(
+			@Nonnull Gesuch gesuch,
+			int basisJahrPlus,
+			int gesuchstellerNummer) {
+		final Einkommensverschlechterung ekvGS1 =
+				getEinkommensverschlechterungGS(gesuch.getGesuchsteller1(), basisJahrPlus);
+		if (gesuchstellerNummer == 1) {
+			return ekvGS1 == null ? null : ekvGS1.getFinSitZusatzangabenAppenzell();
+		}
+		if (Objects.requireNonNull(gesuch.extractFamiliensituation()).isSpezialFallAR()) {
+			return ekvGS1 == null ? null : Objects.requireNonNull(ekvGS1.getFinSitZusatzangabenAppenzell()).getZusatzangabenPartner();
+		}
+		final Einkommensverschlechterung ekvGS2 =
+				getEinkommensverschlechterungGS(gesuch.getGesuchsteller2(), basisJahrPlus);
+
+		return ekvGS2 == null ? null : ekvGS2.getFinSitZusatzangabenAppenzell();
 	}
 }
