@@ -26,8 +26,8 @@ import ch.dvbern.ebegu.dto.FinanzielleSituationResultateDTO;
 import ch.dvbern.ebegu.entities.AbstractFinanzielleSituation;
 import ch.dvbern.ebegu.entities.Einkommensverschlechterung;
 import ch.dvbern.ebegu.entities.FinSitZusatzangabenAppenzell;
-import ch.dvbern.ebegu.entities.FinanzielleSituation;
 import ch.dvbern.ebegu.entities.Gesuch;
+import ch.dvbern.ebegu.entities.GesuchstellerContainer;
 import ch.dvbern.ebegu.util.MathUtil;
 import org.apache.commons.lang.NotImplementedException;
 
@@ -38,21 +38,33 @@ public class FinanzielleSituationAppenzellRechner extends AbstractFinanzielleSit
 		@Nonnull Gesuch gesuch,
 		final FinanzielleSituationResultateDTO finSitResultDTO,
 		boolean hasSecondGesuchsteller) {
-		final FinanzielleSituation finanzielleSituationGS1 = getFinanzielleSituationGS(gesuch.getGesuchsteller1());
+		final FinSitZusatzangabenAppenzell finanzielleSituationGS1 = getFinSitAppenzell(gesuch.getGesuchsteller1());
 		// Die Daten fuer GS 2 werden nur beruecksichtigt, wenn es (aktuell) zwei Gesuchsteller hat
-		FinanzielleSituation finanzielleSituationGS2 = null;
+		FinSitZusatzangabenAppenzell finanzielleSituationGS2 = null;
 		if (hasSecondGesuchsteller) {
-			finanzielleSituationGS2 = getFinanzielleSituationGS(gesuch.getGesuchsteller2());
+			finanzielleSituationGS2 = getFinSitAppenzell(gesuch.getGesuchsteller2());
+		}
+		if (finanzielleSituationGS1 != null && finanzielleSituationGS1.getZusatzangabenPartner() != null) {
+			finanzielleSituationGS2 = finanzielleSituationGS1.getZusatzangabenPartner();
 		}
 		calculateFinSit(finanzielleSituationGS1, finanzielleSituationGS2, finSitResultDTO);
+	}
+
+
+	@Nullable
+	private FinSitZusatzangabenAppenzell getFinSitAppenzell(@Nullable GesuchstellerContainer gesuchsteller) {
+		if (gesuchsteller != null && gesuchsteller.getFinanzielleSituationContainer() != null) {
+			return gesuchsteller.getFinanzielleSituationContainer().getFinanzielleSituationJA().getFinSitZusatzangabenAppenzell();
+		}
+		return null;
 	}
 
 	/**
 	 * calculate massgebendes einkommen for each antragsteller separately and stores variables in finSitResultDTO
 	 */
 	private void calculateFinSit(
-		@Nullable AbstractFinanzielleSituation finanzielleSituationGS1,
-		@Nullable AbstractFinanzielleSituation finanzielleSituationGS2,
+		@Nullable FinSitZusatzangabenAppenzell finanzielleSituationGS1,
+		@Nullable FinSitZusatzangabenAppenzell finanzielleSituationGS2,
 		@Nonnull FinanzielleSituationResultateDTO finSitResultDTO
 	) {
 		var einkommenGS1 = calcEinkommen(finanzielleSituationGS1);
@@ -105,13 +117,13 @@ public class FinanzielleSituationAppenzellRechner extends AbstractFinanzielleSit
 
 		if (basisJahrPlus == 2) {
 			calculateFinSit(
-				einkommensverschlechterungGS1Bjp2,
-				einkommensverschlechterungGS2Bjp2,
+				einkommensverschlechterungGS1Bjp2 != null ? einkommensverschlechterungGS1Bjp2.getFinSitZusatzangabenAppenzell() : null,
+				einkommensverschlechterungGS2Bjp2 != null ? einkommensverschlechterungGS2Bjp2.getFinSitZusatzangabenAppenzell() : null,
 				einkVerResultDTO);
 		} else {
 			calculateFinSit(
-				einkommensverschlechterungGS1Bjp1,
-				einkommensverschlechterungGS2Bjp1,
+				einkommensverschlechterungGS1Bjp1 != null ? einkommensverschlechterungGS1Bjp1.getFinSitZusatzangabenAppenzell() : null,
+				einkommensverschlechterungGS2Bjp1 != null ? einkommensverschlechterungGS2Bjp1.getFinSitZusatzangabenAppenzell() : null,
 				einkVerResultDTO);
 		}
 	}
@@ -126,7 +138,7 @@ public class FinanzielleSituationAppenzellRechner extends AbstractFinanzielleSit
 	}
 
 	@Nonnull
-	private BigDecimal calcEinkommen(@Nullable AbstractFinanzielleSituation abstractFinanzielleSituation1) {
+	private BigDecimal calcEinkommen(@Nullable FinSitZusatzangabenAppenzell abstractFinanzielleSituation1) {
 		BigDecimal total = BigDecimal.ZERO;
 		if(abstractFinanzielleSituation1 != null) {
 			total =  add(total, abstractFinanzielleSituation1.getSteuerbaresEinkommen());
@@ -135,17 +147,11 @@ public class FinanzielleSituationAppenzellRechner extends AbstractFinanzielleSit
 		return MathUtil.positiveNonNullAndRound(total);
 	}
 
-	private BigDecimal calcAufrechnungFaktoren(@Nullable AbstractFinanzielleSituation finanzielleSituation1) {
+	private BigDecimal calcAufrechnungFaktoren(@Nullable FinSitZusatzangabenAppenzell finSitZusatzangabenAppenzell){
 		BigDecimal total = BigDecimal.ZERO;
-		if(finanzielleSituation1 != null && finanzielleSituation1.getFinSitZusatzangabenAppenzell() != null) {
-			total =  add(total, calcAufrechnungFaktoren(finanzielleSituation1.getFinSitZusatzangabenAppenzell()));
+		if (finSitZusatzangabenAppenzell == null) {
+			return total;
 		}
-
-		return MathUtil.positiveNonNullAndRound(total);
-	}
-
-	private BigDecimal calcAufrechnungFaktoren(@Nonnull FinSitZusatzangabenAppenzell finSitZusatzangabenAppenzell){
-		BigDecimal total = BigDecimal.ZERO;
 		total = add(total, finSitZusatzangabenAppenzell.getSaeule3a());
 		total = add(total, finSitZusatzangabenAppenzell.getSaeule3aNichtBvg());
 		total = add(total, finSitZusatzangabenAppenzell.getBeruflicheVorsorge());
@@ -172,15 +178,15 @@ public class FinanzielleSituationAppenzellRechner extends AbstractFinanzielleSit
 		return false;
 	}
 
-	private BigDecimal calcualteSteuerbaresVermoegen15Prozent(@Nullable AbstractFinanzielleSituation abstractFinanzielleSituation) {
-		if (abstractFinanzielleSituation == null || isNullOrZero(abstractFinanzielleSituation.getSteuerbaresVermoegen())) {
+	private BigDecimal calcualteSteuerbaresVermoegen15Prozent(@Nullable FinSitZusatzangabenAppenzell finSitZusatzangabenAppenzell) {
+		if (finSitZusatzangabenAppenzell == null || isNullOrZero(finSitZusatzangabenAppenzell.getSteuerbaresVermoegen())) {
 			return BigDecimal.ZERO;
 		}
 
-		return MathUtil.EXACT.multiply(abstractFinanzielleSituation.getSteuerbaresVermoegen(), BigDecimal.valueOf(0.15));
+		return MathUtil.EXACT.multiply(finSitZusatzangabenAppenzell.getSteuerbaresVermoegen(), BigDecimal.valueOf(0.15));
 	}
 
-	private boolean isNullOrZero(BigDecimal number) {
+	private boolean isNullOrZero(@Nullable BigDecimal number) {
 		return number == null || number.compareTo(BigDecimal.ZERO) == 0;
 	}
 
