@@ -19,11 +19,14 @@ package ch.dvbern.ebegu.finanzielleSituationRechner;
 
 import java.math.BigDecimal;
 
+import ch.dvbern.ebegu.entities.Familiensituation;
+import ch.dvbern.ebegu.entities.FamiliensituationContainer;
 import ch.dvbern.ebegu.entities.FinSitZusatzangabenAppenzell;
 import ch.dvbern.ebegu.entities.FinanzielleSituation;
 import ch.dvbern.ebegu.entities.FinanzielleSituationContainer;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.GesuchstellerContainer;
+import ch.dvbern.ebegu.enums.EnumFamilienstatus;
 import org.junit.jupiter.api.Test;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -75,8 +78,37 @@ public class FinanzielleSituationAppenzellRechnerTest {
 		assertThat(gesuch.getFinanzDatenDTO_alleine().getMassgebendesEinkBjVorAbzFamGr(), is(BigDecimal.valueOf(0)));
 	}
 
+	@Test
+	public void testSpezialFall() {
+		Gesuch gesuch = prepareGesuch(false);
+		var familiensituation = gesuch.extractFamiliensituation();
+		assert familiensituation != null;
+		familiensituation.setFamilienstatus(EnumFamilienstatus.APPENZELL);
+		familiensituation.setGeteilteObhut(true);
+		familiensituation.setGemeinsamerHaushaltMitObhutsberechtigterPerson(false);
+
+		assert gesuch.getGesuchsteller1() != null;
+		assert gesuch.getGesuchsteller1().getFinanzielleSituationContainer() != null;
+		assert gesuch.getGesuchsteller1()
+				.getFinanzielleSituationContainer()
+				.getFinanzielleSituationJA()
+				.getFinSitZusatzangabenAppenzell() != null;
+		gesuch.getGesuchsteller1()
+				.getFinanzielleSituationContainer()
+				.getFinanzielleSituationJA()
+				.getFinSitZusatzangabenAppenzell()
+				.setZusatzangabenPartner(createFinanzielleVerhaeltnisseHalfed());
+		finSitRechner.calculateFinanzDaten(gesuch, null);
+		assertThat(gesuch.getFinanzDatenDTO_alleine().getMassgebendesEinkBjVorAbzFamGr(), is(BigDecimal.valueOf(82250)));
+		assertThat(gesuch.getFinanzDatenDTO_zuZweit().getMassgebendesEinkBjVorAbzFamGr(), is(BigDecimal.valueOf(82250 + 82250 / 2)));
+
+	}
+
 	private Gesuch prepareGesuch(boolean secondGesuchsteller) {
 		Gesuch gesuch = new Gesuch();
+		gesuch.setFamiliensituationContainer(new FamiliensituationContainer());
+		assert gesuch.getFamiliensituationContainer() != null;
+		gesuch.getFamiliensituationContainer().setFamiliensituationJA(new Familiensituation());
 		gesuch.setGesuchsteller1(createGesuchstellerMitFinSit());
 		if(secondGesuchsteller) {
 			gesuch.setGesuchsteller2(createGesuchstellerMitFinSit());
@@ -89,8 +121,6 @@ public class FinanzielleSituationAppenzellRechnerTest {
 		FinanzielleSituationContainer finanzielleSituationContainer = new FinanzielleSituationContainer();
 		FinanzielleSituation finanzielleSituationForTest = new FinanzielleSituation();
 		finanzielleSituationForTest.setFinSitZusatzangabenAppenzell(createFinanzielleVerhaeltnisse());
-		finanzielleSituationForTest.setSteuerbaresEinkommen(BigDecimal.valueOf(60000));
-		finanzielleSituationForTest.setSteuerbaresVermoegen(BigDecimal.valueOf(15000));
 		finanzielleSituationContainer.setFinanzielleSituationJA(finanzielleSituationForTest);
 		gesuchstellerContainer.setFinanzielleSituationContainer(finanzielleSituationContainer);
 		return gesuchstellerContainer;
@@ -98,6 +128,8 @@ public class FinanzielleSituationAppenzellRechnerTest {
 
 	private FinSitZusatzangabenAppenzell createFinanzielleVerhaeltnisse() {
 		FinSitZusatzangabenAppenzell finSitZusatzangabenAppenzell = new FinSitZusatzangabenAppenzell();
+		finSitZusatzangabenAppenzell.setSteuerbaresEinkommen(BigDecimal.valueOf(60000));
+		finSitZusatzangabenAppenzell.setSteuerbaresVermoegen(BigDecimal.valueOf(15000));
 		finSitZusatzangabenAppenzell.setSaeule3a(BigDecimal.valueOf(1000));
 		finSitZusatzangabenAppenzell.setSaeule3aNichtBvg(BigDecimal.valueOf(1000));
 		finSitZusatzangabenAppenzell.setBeruflicheVorsorge(BigDecimal.valueOf(2000));
@@ -106,6 +138,21 @@ public class FinanzielleSituationAppenzellRechnerTest {
 		finSitZusatzangabenAppenzell.setVorjahresverluste(BigDecimal.valueOf(3000));
 		finSitZusatzangabenAppenzell.setPolitischeParteiSpende(BigDecimal.valueOf(4000));
 		finSitZusatzangabenAppenzell.setLeistungAnJuristischePersonen(BigDecimal.valueOf(4000));
+		return finSitZusatzangabenAppenzell;
+	}
+
+	private FinSitZusatzangabenAppenzell createFinanzielleVerhaeltnisseHalfed() {
+		FinSitZusatzangabenAppenzell finSitZusatzangabenAppenzell = new FinSitZusatzangabenAppenzell();
+		finSitZusatzangabenAppenzell.setSteuerbaresEinkommen(BigDecimal.valueOf(30000));
+		finSitZusatzangabenAppenzell.setSteuerbaresVermoegen(BigDecimal.valueOf(7500));
+		finSitZusatzangabenAppenzell.setSaeule3a(BigDecimal.valueOf(500));
+		finSitZusatzangabenAppenzell.setSaeule3aNichtBvg(BigDecimal.valueOf(500));
+		finSitZusatzangabenAppenzell.setBeruflicheVorsorge(BigDecimal.valueOf(1000));
+		finSitZusatzangabenAppenzell.setLiegenschaftsaufwand(BigDecimal.valueOf(1000));
+		finSitZusatzangabenAppenzell.setEinkuenfteBgsa(BigDecimal.valueOf(1500));
+		finSitZusatzangabenAppenzell.setVorjahresverluste(BigDecimal.valueOf(1500));
+		finSitZusatzangabenAppenzell.setPolitischeParteiSpende(BigDecimal.valueOf(2000));
+		finSitZusatzangabenAppenzell.setLeistungAnJuristischePersonen(BigDecimal.valueOf(2000));
 		return finSitZusatzangabenAppenzell;
 	}
 }
