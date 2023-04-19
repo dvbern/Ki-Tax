@@ -20,7 +20,7 @@
     <parent>
         <artifactId>ebegu</artifactId>
         <groupId>ch.dvbern.ebegu</groupId>
-        <version>2023.5.3-SNAPSHOT</version>
+        <version>2023.5.3</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
