@@ -79,13 +79,40 @@ public class FinanzielleSituationAppenzellRechnerTest {
 	}
 
 	@Test
-	public void testSpezialFall() {
+	public void testSpezialFallNichtGeteilteObhut() {
 		Gesuch gesuch = prepareGesuch(false);
 		var familiensituation = gesuch.extractFamiliensituation();
 		assert familiensituation != null;
 		familiensituation.setFamilienstatus(EnumFamilienstatus.APPENZELL);
 		familiensituation.setGeteilteObhut(true);
 		familiensituation.setGemeinsamerHaushaltMitObhutsberechtigterPerson(false);
+
+		assert gesuch.getGesuchsteller1() != null;
+		assert gesuch.getGesuchsteller1().getFinanzielleSituationContainer() != null;
+		assert gesuch.getGesuchsteller1()
+				.getFinanzielleSituationContainer()
+				.getFinanzielleSituationJA()
+				.getFinSitZusatzangabenAppenzell() != null;
+		gesuch.getGesuchsteller1()
+				.getFinanzielleSituationContainer()
+				.getFinanzielleSituationJA()
+				.getFinSitZusatzangabenAppenzell()
+				.setZusatzangabenPartner(createFinanzielleVerhaeltnisseHalfed());
+		finSitRechner.calculateFinanzDaten(gesuch, null);
+		assertThat(gesuch.getFinanzDatenDTO_alleine().getMassgebendesEinkBjVorAbzFamGr(), is(BigDecimal.valueOf(82250)));
+		assertThat(gesuch.getFinanzDatenDTO_zuZweit().getMassgebendesEinkBjVorAbzFamGr(), is(BigDecimal.valueOf(82250 + 82250 / 2)));
+
+	}
+
+	@Test
+	public void testSpezialFallGeteilteObhut() {
+		Gesuch gesuch = prepareGesuch(false);
+		var familiensituation = gesuch.extractFamiliensituation();
+		assert familiensituation != null;
+		familiensituation.setFamilienstatus(EnumFamilienstatus.APPENZELL);
+		familiensituation.setGeteilteObhut(false);
+		familiensituation.setGemeinsamerHaushaltMitObhutsberechtigterPerson(false);
+		familiensituation.setGemeinsamerHaushaltMitPartner(false);
 
 		assert gesuch.getGesuchsteller1() != null;
 		assert gesuch.getGesuchsteller1().getFinanzielleSituationContainer() != null;
