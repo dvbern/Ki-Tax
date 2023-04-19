@@ -492,6 +492,9 @@ public class Familiensituation extends AbstractMutableEntity {
 	}
 
 	public boolean isSpezialFallAR() {
+		if (this.familienstatus != EnumFamilienstatus.ALLEINERZIEHEND) {
+			return false;
+		}
 		var spezialFallGeteilteObhut = EbeguUtil.isNotNullAndTrue(this.geteilteObhut)
 				&& EbeguUtil.isNotNullAndFalse(this.gemeinsamerHaushaltMitObhutsberechtigterPerson)
 				&& EbeguUtil.isNotNullAndTrue(gemeinsamerHaushaltMitPartner);
