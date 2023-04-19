@@ -206,10 +206,9 @@ public class FamiliensituationServiceBean extends AbstractBaseService implements
 			return;
 		}
 
-		if (oldFamiliensituation.isSpezialFallAR()) {
-			if (!mergedFamiliensituationContainer.getFamiliensituationJA().isSpezialFallAR()) {
-				resetFinSitARZusatzangabenPartner(gesuch);
-			}
+		if (oldFamiliensituation.isSpezialFallAR()
+				&& !mergedFamiliensituationContainer.getFamiliensituationJA().isSpezialFallAR()) {
+			resetFinSitARZusatzangabenPartner(gesuch);
 		}
 
 
