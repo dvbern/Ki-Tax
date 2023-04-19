@@ -220,9 +220,29 @@ export class FinanzielleSituationAppenzellViewComponent extends AbstractGesuchVi
     }
 
     public getFinSitZusatzangabenAppenzellToWorkWith(): TSFinSitZusatzangabenAppenzell {
-        return this.gesuchstellerNumber === 1 ?
-            this.getModel().finanzielleSituationJA.finSitZusatzangabenAppenzell :
-            this.getModel().finanzielleSituationJA.finSitZusatzangabenAppenzell.zusatzangabenPartner;
+        return this.isSpezialFallAR() ?
+            this.getFinSitZusatzangabenAppenzellToWorkWithSpezialfall() :
+            this.getOrCreateFinSitModel(this.model.getFiSiConToWorkWith().finanzielleSituationJA);
+    }
+
+    private getFinSitZusatzangabenAppenzellToWorkWithSpezialfall() {
+        if (this.gesuchstellerNumber === 1) {
+            return this.getOrCreateFinSitModel(this.getModel().finanzielleSituationJA);
+        }
+        if (EbeguUtil.isNullOrUndefined(
+            this.getModel().finanzielleSituationJA.finSitZusatzangabenAppenzell.zusatzangabenPartner)
+        ) {
+            this.getModel().finanzielleSituationJA.finSitZusatzangabenAppenzell.zusatzangabenPartner =
+                new TSFinSitZusatzangabenAppenzell();
+        }
+        return this.getModel().finanzielleSituationJA.finSitZusatzangabenAppenzell.zusatzangabenPartner;
+    }
+
+    private getOrCreateFinSitModel(finSitToWorkWith: TSFinanzielleSituation): TSFinSitZusatzangabenAppenzell {
+        if (EbeguUtil.isNullOrUndefined(finSitToWorkWith.finSitZusatzangabenAppenzell)) {
+            finSitToWorkWith.finSitZusatzangabenAppenzell = new TSFinSitZusatzangabenAppenzell();
+        }
+        return finSitToWorkWith.finSitZusatzangabenAppenzell;
     }
 
     public calculateResults() {
