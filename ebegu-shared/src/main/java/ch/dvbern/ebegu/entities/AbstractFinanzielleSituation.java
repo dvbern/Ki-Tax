@@ -244,15 +244,27 @@ public abstract class AbstractFinanzielleSituation extends AbstractMutableEntity
 	}
 
 	public void setSteuerbaresEinkommen(@Nullable BigDecimal steuerbaresEinkommen) {
+		if (this.getFinSitZusatzangabenAppenzell() != null) {
+			this.getFinSitZusatzangabenAppenzell().setSteuerbaresEinkommen(steuerbaresEinkommen);
+			return;
+		}
 		this.steuerbaresEinkommen = steuerbaresEinkommen;
 	}
 
 	@Nullable
 	public BigDecimal getSteuerbaresVermoegen() {
+		if (this.getFinSitZusatzangabenAppenzell() != null) {
+			return this.getFinSitZusatzangabenAppenzell().getSteuerbaresVermoegen();
+		}
+
 		return steuerbaresVermoegen;
 	}
 
 	public void setSteuerbaresVermoegen(@Nullable BigDecimal steuerbaresVermoegen) {
+		if (this.getFinSitZusatzangabenAppenzell() != null) {
+			this.getFinSitZusatzangabenAppenzell().setSteuerbaresVermoegen(steuerbaresVermoegen);
+			return;
+		}
 		this.steuerbaresVermoegen = steuerbaresVermoegen;
 	}
 

@@ -88,9 +88,9 @@ public class FinanzielleSituationAppenzellRechnerTest {
 		GesuchstellerContainer gesuchstellerContainer = new GesuchstellerContainer();
 		FinanzielleSituationContainer finanzielleSituationContainer = new FinanzielleSituationContainer();
 		FinanzielleSituation finanzielleSituationForTest = new FinanzielleSituation();
+		finanzielleSituationForTest.setFinSitZusatzangabenAppenzell(createFinanzielleVerhaeltnisse());
 		finanzielleSituationForTest.setSteuerbaresEinkommen(BigDecimal.valueOf(60000));
 		finanzielleSituationForTest.setSteuerbaresVermoegen(BigDecimal.valueOf(15000));
-		finanzielleSituationForTest.setFinSitZusatzangabenAppenzell(createFinanzielleVerhaeltnisse());
 		finanzielleSituationContainer.setFinanzielleSituationJA(finanzielleSituationForTest);
 		gesuchstellerContainer.setFinanzielleSituationContainer(finanzielleSituationContainer);
 		return gesuchstellerContainer;
