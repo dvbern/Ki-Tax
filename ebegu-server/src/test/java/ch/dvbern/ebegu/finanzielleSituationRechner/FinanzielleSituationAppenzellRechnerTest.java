@@ -27,6 +27,7 @@ import ch.dvbern.ebegu.entities.FinanzielleSituationContainer;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.GesuchstellerContainer;
 import ch.dvbern.ebegu.enums.EnumFamilienstatus;
+import ch.dvbern.ebegu.util.TestUtils;
 import org.junit.jupiter.api.Test;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -81,23 +82,9 @@ public class FinanzielleSituationAppenzellRechnerTest {
 	@Test
 	public void testSpezialFallNichtGeteilteObhut() {
 		Gesuch gesuch = prepareGesuch(false);
-		var familiensituation = gesuch.extractFamiliensituation();
-		assert familiensituation != null;
-		familiensituation.setFamilienstatus(EnumFamilienstatus.APPENZELL);
-		familiensituation.setGeteilteObhut(true);
-		familiensituation.setGemeinsamerHaushaltMitObhutsberechtigterPerson(false);
+		setSpezialFallNichtGeteilteObhut(gesuch);
 
-		assert gesuch.getGesuchsteller1() != null;
-		assert gesuch.getGesuchsteller1().getFinanzielleSituationContainer() != null;
-		assert gesuch.getGesuchsteller1()
-				.getFinanzielleSituationContainer()
-				.getFinanzielleSituationJA()
-				.getFinSitZusatzangabenAppenzell() != null;
-		gesuch.getGesuchsteller1()
-				.getFinanzielleSituationContainer()
-				.getFinanzielleSituationJA()
-				.getFinSitZusatzangabenAppenzell()
-				.setZusatzangabenPartner(createFinanzielleVerhaeltnisseHalfed());
+		setARDatenPartnerHalfed(gesuch);
 		finSitRechner.calculateFinanzDaten(gesuch, null);
 		assertThat(gesuch.getFinanzDatenDTO_alleine().getMassgebendesEinkBjVorAbzFamGr(), is(BigDecimal.valueOf(82250)));
 		assertThat(gesuch.getFinanzDatenDTO_zuZweit().getMassgebendesEinkBjVorAbzFamGr(), is(BigDecimal.valueOf(82250 + 82250 / 2)));
@@ -107,13 +94,81 @@ public class FinanzielleSituationAppenzellRechnerTest {
 	@Test
 	public void testSpezialFallGeteilteObhut() {
 		Gesuch gesuch = prepareGesuch(false);
+		setSpezialfallGeteilteObhut(gesuch);
+
+		setARDatenPartnerHalfed(gesuch);
+		finSitRechner.calculateFinanzDaten(gesuch, null);
+		assertThat(gesuch.getFinanzDatenDTO_alleine().getMassgebendesEinkBjVorAbzFamGr(), is(BigDecimal.valueOf(82250)));
+		assertThat(gesuch.getFinanzDatenDTO_zuZweit().getMassgebendesEinkBjVorAbzFamGr(), is(BigDecimal.valueOf(82250 + 82250 / 2)));
+
+	}
+
+	@Test
+	public void testEKVAlleine() {
+		Gesuch gesuch = prepareGesuch(false);
+		assert gesuch.getGesuchsteller1() != null;
+		TestUtils.prepareEKVInfoTwoYears(gesuch);
+		TestUtils.prepareEKVTwoYears(gesuch.getGesuchsteller1());
+		setEkvARDatenGS(gesuch.getGesuchsteller1());
+
+		finSitRechner.calculateFinanzDaten(gesuch, BigDecimal.valueOf(20));
+		assertThat(gesuch.getFinanzDatenDTO_alleine().getMassgebendesEinkBjVorAbzFamGr(), is(BigDecimal.valueOf(82250)));
+		assertThat(gesuch.getFinanzDatenDTO_alleine().getMassgebendesEinkBjP1VorAbzFamGr(), is(BigDecimal.valueOf(82250 / 2)));
+		assertThat(gesuch.getFinanzDatenDTO_alleine().getMassgebendesEinkBjP2VorAbzFamGr(), is(BigDecimal.valueOf(82250 / 2)));
+	}
+
+	@Test
+	public void testEKVZweiGS() {
+		Gesuch gesuch = prepareGesuch(true);
+		assert gesuch.getGesuchsteller1() != null;
+		assert gesuch.getGesuchsteller2() != null;
+		TestUtils.prepareEKVInfoTwoYears(gesuch);
+		TestUtils.prepareEKVTwoYears(gesuch.getGesuchsteller1());
+		TestUtils.prepareEKVTwoYears(gesuch.getGesuchsteller2());
+		setEkvARDatenGS(gesuch.getGesuchsteller1());
+		setEkvARDatenGS(gesuch.getGesuchsteller2());
+
+		finSitRechner.calculateFinanzDaten(gesuch, BigDecimal.valueOf(20));
+		assertThat(gesuch.getFinanzDatenDTO_zuZweit().getMassgebendesEinkBjVorAbzFamGr(), is(BigDecimal.valueOf(82250 * 2)));
+		assertThat(gesuch.getFinanzDatenDTO_zuZweit().getMassgebendesEinkBjP1VorAbzFamGr(), is(BigDecimal.valueOf(82250)));
+		assertThat(gesuch.getFinanzDatenDTO_zuZweit().getMassgebendesEinkBjP2VorAbzFamGr(), is(BigDecimal.valueOf(82250)));
+	}
+
+	@Test
+	public void testEKVSpezialfallGeteilteObhut() {
+		Gesuch gesuch = prepareGesuch(false);
+		assert gesuch.getGesuchsteller1() != null;
+		setSpezialfallGeteilteObhut(gesuch);
+		TestUtils.prepareEKVInfoTwoYears(gesuch);
+		TestUtils.prepareEKVTwoYears(gesuch.getGesuchsteller1());
+		setARDatenPartnerHalfed(gesuch);
+		setEkvARDatenGS(gesuch.getGesuchsteller1());
+		setEkvARDatenPartner(gesuch.getGesuchsteller1());
+
+		finSitRechner.calculateFinanzDaten(gesuch, BigDecimal.valueOf(20));
+		assertThat(gesuch.getFinanzDatenDTO_zuZweit().getMassgebendesEinkBjVorAbzFamGr(), is(BigDecimal.valueOf(82250 + 82250 / 2)));
+		assertThat(gesuch.getFinanzDatenDTO_zuZweit().getMassgebendesEinkBjP1VorAbzFamGr(), is(BigDecimal.valueOf(82250)));
+		assertThat(gesuch.getFinanzDatenDTO_zuZweit().getMassgebendesEinkBjP2VorAbzFamGr(), is(BigDecimal.valueOf(82250)));
+	}
+
+	private static void setSpezialfallGeteilteObhut(Gesuch gesuch) {
 		var familiensituation = gesuch.extractFamiliensituation();
 		assert familiensituation != null;
 		familiensituation.setFamilienstatus(EnumFamilienstatus.APPENZELL);
-		familiensituation.setGeteilteObhut(false);
+		familiensituation.setGeteilteObhut(true);
 		familiensituation.setGemeinsamerHaushaltMitObhutsberechtigterPerson(false);
-		familiensituation.setGemeinsamerHaushaltMitPartner(false);
+		familiensituation.setGemeinsamerHaushaltMitPartner(true);
+	}
 
+	private static void setSpezialFallNichtGeteilteObhut(Gesuch gesuch) {
+		Familiensituation familiensituation = gesuch.extractFamiliensituation();
+		assert familiensituation != null;
+		familiensituation.setFamilienstatus(EnumFamilienstatus.APPENZELL);
+		familiensituation.setGeteilteObhut(false);
+		familiensituation.setGemeinsamerHaushaltMitPartner(true);
+	}
+
+	private void setARDatenPartnerHalfed(Gesuch gesuch) {
 		assert gesuch.getGesuchsteller1() != null;
 		assert gesuch.getGesuchsteller1().getFinanzielleSituationContainer() != null;
 		assert gesuch.getGesuchsteller1()
@@ -125,10 +180,35 @@ public class FinanzielleSituationAppenzellRechnerTest {
 				.getFinanzielleSituationJA()
 				.getFinSitZusatzangabenAppenzell()
 				.setZusatzangabenPartner(createFinanzielleVerhaeltnisseHalfed());
-		finSitRechner.calculateFinanzDaten(gesuch, null);
-		assertThat(gesuch.getFinanzDatenDTO_alleine().getMassgebendesEinkBjVorAbzFamGr(), is(BigDecimal.valueOf(82250)));
-		assertThat(gesuch.getFinanzDatenDTO_zuZweit().getMassgebendesEinkBjVorAbzFamGr(), is(BigDecimal.valueOf(82250 + 82250 / 2)));
+	}
 
+	private void setEkvARDatenGS(GesuchstellerContainer gesuchstellerContainer) {
+		assert gesuchstellerContainer.getEinkommensverschlechterungContainer() != null;
+		gesuchstellerContainer.getEinkommensverschlechterungContainer()
+				.getEkvJABasisJahrPlus1()
+				.setFinSitZusatzangabenAppenzell(createFinanzielleVerhaeltnisseHalfed());
+		gesuchstellerContainer.getEinkommensverschlechterungContainer()
+				.getEkvJABasisJahrPlus2()
+				.setFinSitZusatzangabenAppenzell(createFinanzielleVerhaeltnisseHalfed());
+	}
+
+	private void setEkvARDatenPartner(GesuchstellerContainer gesuch) {
+		assert gesuch.getEinkommensverschlechterungContainer() != null;
+		assert gesuch.getEinkommensverschlechterungContainer()
+				.getEkvJABasisJahrPlus1()
+				.getFinSitZusatzangabenAppenzell() != null;
+		assert gesuch.getEinkommensverschlechterungContainer()
+				.getEkvJABasisJahrPlus2()
+				.getFinSitZusatzangabenAppenzell() != null;
+
+		gesuch.getEinkommensverschlechterungContainer()
+				.getEkvJABasisJahrPlus1()
+				.getFinSitZusatzangabenAppenzell()
+				.setZusatzangabenPartner(createFinanzielleVerhaeltnisseHalfed());
+		gesuch.getEinkommensverschlechterungContainer()
+				.getEkvJABasisJahrPlus2()
+				.getFinSitZusatzangabenAppenzell()
+				.setZusatzangabenPartner(createFinanzielleVerhaeltnisseHalfed());
 	}
 
 	private Gesuch prepareGesuch(boolean secondGesuchsteller) {
