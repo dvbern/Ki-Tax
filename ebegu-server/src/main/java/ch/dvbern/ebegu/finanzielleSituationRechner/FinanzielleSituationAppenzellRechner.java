@@ -44,9 +44,9 @@ public class FinanzielleSituationAppenzellRechner extends AbstractFinanzielleSit
 		FinSitZusatzangabenAppenzell finanzielleSituationGS2 = null;
 		if (hasSecondGesuchsteller) {
 			finanzielleSituationGS2 = getFinSitAppenzell(gesuch.getGesuchsteller2());
-		}
-		if (finanzielleSituationGS1 != null && finanzielleSituationGS1.getZusatzangabenPartner() != null) {
-			finanzielleSituationGS2 = finanzielleSituationGS1.getZusatzangabenPartner();
+			if (finanzielleSituationGS1 != null && finanzielleSituationGS1.getZusatzangabenPartner() != null) {
+				finanzielleSituationGS2 = finanzielleSituationGS1.getZusatzangabenPartner();
+			}
 		}
 		calculateFinSit(finanzielleSituationGS1, finanzielleSituationGS2, finSitResultDTO);
 	}
