@@ -109,5 +109,8 @@
     "VERGUENSTIGUNG_AN_INSTITUTION": "Beitragshöhe in CHF",
     "VERGUENSTIGUNG_AN_ELTERN": "Beitragshöhe in CHF",
     "BEITRAGSHOHE_PROZENT": "Beitragshöhe in %",
+    "GESUNDHEITLICHE_EINSCHRAENKUNGEN": "Gesundheitliche / Familiäre Indikation",
+    "KLASSE1": "Eingeschult",
+    "VORSCHULALTER": "Nicht eingeschult",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }
