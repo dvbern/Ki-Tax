@@ -24,6 +24,6 @@ import ch.dvbern.ebegu.errors.KiBonAnfrageServiceException;
 
 public interface IKibonAnfrageWebService {
 
-	SteuerdatenResponse getSteuerDaten(Integer zpvNummer, LocalDate geburtsdatum, String kibonAntragId, Integer gesuchsperiodeBeginnJahr) throws
+	SteuerdatenResponse getSteuerDaten(Integer zpvNummer, LocalDate geburtsdatum, String gesuchId, Integer gesuchsperiodeBeginnJahr) throws
 		KiBonAnfrageServiceException;
 }

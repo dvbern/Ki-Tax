@@ -74,8 +74,7 @@ public interface FinanzielleSituationService {
 	/**
 	 * speichert einfach die Datenstand ohne weitere Arbeit
 	 *
-	 * @param convertedFinSitCont
-	 * @return
+	 * @param finanzielleSituation
 	 */
 	@Nonnull
 	FinanzielleSituationContainer saveFinanzielleSituationTemp(FinanzielleSituationContainer finanzielleSituation);
