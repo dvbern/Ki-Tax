@@ -218,6 +218,8 @@ public class FinSitZusatzangabenAppenzell extends AbstractMutableEntity {
 	}
 
 	public FinSitZusatzangabenAppenzell copyAllValues(FinSitZusatzangabenAppenzell target) {
+		target.setSteuerbaresEinkommen(this.getSteuerbaresEinkommen());
+		target.setSteuerbaresVermoegen(this.getSteuerbaresVermoegen());
 		target.setSaeule3a(this.getSaeule3a());
 		target.setSaeule3aNichtBvg(this.getSaeule3aNichtBvg());
 		target.setBeruflicheVorsorge(this.getBeruflicheVorsorge());
