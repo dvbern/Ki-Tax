@@ -65,15 +65,15 @@ export class FamiliensituationViewXComponent extends AbstractFamiliensitutaionVi
     public demoFeatureGesuchBeendenFamSitActive: boolean;
 
     public constructor(
-        protected readonly gesuchModelManager: GesuchModelManager,
-        private readonly berechnungsManager: BerechnungsManager,
-        protected readonly errorService: ErrorService,
-        protected readonly wizardStepManager: WizardStepManager,
-        private readonly dialog: MatDialog,
-        private readonly $translate: TranslateService,
-        protected readonly familiensituationRS: FamiliensituationRS,
-        private readonly einstellungRS: EinstellungRS,
-        protected readonly authService: AuthServiceRS,
+            protected readonly gesuchModelManager: GesuchModelManager,
+            private readonly berechnungsManager: BerechnungsManager,
+            protected readonly errorService: ErrorService,
+            protected readonly wizardStepManager: WizardStepManager,
+            private readonly dialog: MatDialog,
+            private readonly $translate: TranslateService,
+            protected readonly familiensituationRS: FamiliensituationRS,
+            private readonly einstellungRS: EinstellungRS,
+            protected readonly authService: AuthServiceRS,
         private readonly demoFeatureRS: DemoFeatureRS
     ) {
         super(gesuchModelManager, errorService, wizardStepManager, familiensituationRS, authService);
@@ -82,7 +82,7 @@ export class FamiliensituationViewXComponent extends AbstractFamiliensitutaionVi
         this.unterhaltsvereinbarungAnswerValues = getTSUnterhaltsvereinbarungAnswerValues();
         this.familienstatusValues = getTSFamilienstatusValues();
         demoFeatureRS.isDemoFeatureAllowed(this.gesuchBeendenDemoFeature)
-            .then(isAllowed => this.demoFeatureGesuchBeendenFamSitActive = isAllowed);
+                .then(isAllowed => this.demoFeatureGesuchBeendenFamSitActive = isAllowed);
     }
 
     public ngOnInit(): void {
@@ -90,41 +90,41 @@ export class FamiliensituationViewXComponent extends AbstractFamiliensitutaionVi
             this.gesuchModelManager.getGesuchsperiode().id
         ).subscribe((response: TSEinstellung[]) => {
             response.filter(r => r.key === TSEinstellungKey.FKJV_FAMILIENSITUATION_NEU)
-                .forEach(value => {
-                    this.getFamiliensituation().fkjvFamSit = value.getValueAsBoolean();
-                });
+                    .forEach(value => {
+                        this.getFamiliensituation().fkjvFamSit = value.getValueAsBoolean();
+                    });
             response.filter(r => r.key === TSEinstellungKey.MINIMALDAUER_KONKUBINAT)
-                .forEach(value => {
-                    this.getFamiliensituation().minDauerKonkubinat = Number(value.value);
-                });
+                    .forEach(value => {
+                        this.getFamiliensituation().minDauerKonkubinat = Number(value.value);
+                    });
         }, error => LOG.error(error));
     }
 
     protected async confirm(onResult: (arg: any) => void): Promise<void> {
-            if (this.isConfirmationRequired()) {
-                const descriptionText: any = this.$translate.instant('FAMILIENSITUATION_WARNING_BESCHREIBUNG', {
-                    gsfullname: this.getGesuch().gesuchsteller2
+        if (this.isConfirmationRequired()) {
+            const descriptionText: any = this.$translate.instant('FAMILIENSITUATION_WARNING_BESCHREIBUNG', {
+                gsfullname: this.getGesuch().gesuchsteller2
                         ? this.getGesuch().gesuchsteller2.extractFullName() : ''
-                });
-                const dialogResult = await this.dialog.open(DvNgRemoveDialogComponent, {
-                    data: {
-                        title: 'FAMILIENSITUATION_WARNING',
+            });
+            const dialogResult = await this.dialog.open(DvNgRemoveDialogComponent, {
+                data: {
+                    title: 'FAMILIENSITUATION_WARNING',
                         text: descriptionText
                     }
-                }).afterClosed().toPromise();
+            }).afterClosed().toPromise();
 
-                if (dialogResult) {
-                    const savedContaier = await this.save();
-                    onResult(savedContaier);
-                } else {
-                    onResult(undefined);
-                }
-                return;
-
+            if (dialogResult) {
+                const savedContaier = await this.save();
+                onResult(savedContaier);
+            } else {
+                onResult(undefined);
             }
+            return;
 
-            const result = await this.save();
-            onResult(result);
+        }
+
+        const result = await this.save();
+        onResult(result);
     }
 
     public getFamiliensituation(): TSFamiliensituation {
@@ -140,17 +140,21 @@ export class FamiliensituationViewXComponent extends AbstractFamiliensitutaionVi
     }
 
     public showFragePartnerWieBisher(): boolean {
-
         const isVorPeriode = this.getFamiliensituation().aenderungPer?.isBefore(
-            this.gesuchModelManager.getGesuchsperiode().gueltigkeit.gueltigAb);
+                this.gesuchModelManager.getGesuchsperiode().gueltigkeit.gueltigAb);
         if (isVorPeriode) {
             return false;
         }
         const bis = this.gesuchModelManager.getGesuchsperiode().gueltigkeit.gueltigBis;
-        return EbeguUtil.isNotNullOrUndefined(this.getFamiliensituation()?.aenderungPer) &&
-            !this.getFamiliensituationErstgesuch()?.isSameFamiliensituation(this.getFamiliensituation()) &&
-            this.getFamiliensituationErstgesuch().hasSecondGesuchsteller(bis) &&
-            this.getFamiliensituation().hasSecondGesuchsteller(bis);
+        const partnerfrage: boolean = EbeguUtil.isNotNullOrUndefined(this.getFamiliensituation()?.aenderungPer) &&
+                !this.getFamiliensituationErstgesuch()?.isSameFamiliensituation(this.getFamiliensituation()) &&
+                this.getFamiliensituationErstgesuch().hasSecondGesuchsteller(bis) &&
+                this.getFamiliensituation().hasSecondGesuchsteller(bis);
+
+        if (!partnerfrage) {
+            this.getFamiliensituation().partnerIdentischMitVorgesuch = null;
+        }
+        return partnerfrage;
     }
 
     /**
@@ -191,38 +195,38 @@ export class FamiliensituationViewXComponent extends AbstractFamiliensitutaionVi
      */
     private isConfirmationRequired(): boolean {
         return (!this.isKorrekturModusJugendamt()
-                || (this.isKorrekturModusJugendamt() && this.getGesuch().gesuchsteller2))
-            && ((!this.isMutation() && this.checkChanged2To1GS())
-                || (this.isMutation() && (this.isChanged1To2Reverted() || this.checkChanged2To1GSMutation())));
+                        || (this.isKorrekturModusJugendamt() && this.getGesuch().gesuchsteller2))
+                && ((!this.isMutation() && this.checkChanged2To1GS())
+                        || (this.isMutation() && (this.isChanged1To2Reverted() || this.checkChanged2To1GSMutation())));
     }
 
     private checkChanged2To1GS(): boolean {
         const bis = this.gesuchModelManager.getGesuchsperiode().gueltigkeit.gueltigBis;
         return this.getGesuch().gesuchsteller2
-            && this.getGesuch().gesuchsteller2.id
-            && this.initialFamiliensituation.hasSecondGesuchsteller(bis)
-            && this.isScheidung();
+                && this.getGesuch().gesuchsteller2.id
+                && this.initialFamiliensituation.hasSecondGesuchsteller(bis)
+                && this.isScheidung();
     }
 
     private isChanged1To2Reverted(): boolean {
         const bis = this.gesuchModelManager.getGesuchsperiode().gueltigkeit.gueltigBis;
         return this.getGesuch().gesuchsteller2
-            && this.getGesuch().gesuchsteller2.id
-            && this.isScheidung()
-            && this.model.familiensituationErstgesuch
-            && !this.model.familiensituationErstgesuch.hasSecondGesuchsteller(bis);
+                && this.getGesuch().gesuchsteller2.id
+                && this.isScheidung()
+                && this.model.familiensituationErstgesuch
+                && !this.model.familiensituationErstgesuch.hasSecondGesuchsteller(bis);
     }
 
     private checkChanged2To1GSMutation(): boolean {
         const ab = this.gesuchModelManager.getGesuchsperiode().gueltigkeit.gueltigAb;
         return (this.getFamiliensituation()?.aenderungPer?.isBefore(ab)
-            && this.getGesuch().getRegelStartDatum().isBefore(ab));
+                && this.getGesuch().getRegelStartDatum().isBefore(ab));
     }
 
     private isScheidung(): boolean {
         const bis = this.gesuchModelManager.getGesuchsperiode().gueltigkeit.gueltigBis;
         return this.initialFamiliensituation.hasSecondGesuchsteller(bis)
-            && !this.getFamiliensituation()?.hasSecondGesuchsteller(bis);
+                && !this.getFamiliensituation()?.hasSecondGesuchsteller(bis);
     }
 
     public isStartKonkubinatDisabled(): boolean {
@@ -231,7 +235,7 @@ export class FamiliensituationViewXComponent extends AbstractFamiliensitutaionVi
 
     public isNotPartnerIdentischMitVorgesuch(): boolean {
         return EbeguUtil.isNotNullOrUndefined(this.getFamiliensituation().partnerIdentischMitVorgesuch) &&
-            !this.getFamiliensituation().partnerIdentischMitVorgesuch;
+                !this.getFamiliensituation().partnerIdentischMitVorgesuch;
     }
 
     public getFamiliensituationValues(): Array<TSFamilienstatus> {
@@ -244,7 +248,7 @@ export class FamiliensituationViewXComponent extends AbstractFamiliensitutaionVi
 
     public showGesuchstellerKardinalitaet(): boolean {
         if (this.getFamiliensituation() && this.isFKJVFamSit() &&
-            this.isFamilienstatusAlleinerziehendOrShortKonkubinat()) {
+                this.isFamilienstatusAlleinerziehendOrShortKonkubinat()) {
             return this.getFamiliensituation().geteilteObhut;
         }
         return false;
@@ -252,7 +256,7 @@ export class FamiliensituationViewXComponent extends AbstractFamiliensitutaionVi
 
     public showFrageUnterhaltsvereinbarung(): boolean {
         if (this.getFamiliensituation() && this.isFKJVFamSit() &&
-            this.isFamilienstatusAlleinerziehendOrShortKonkubinat()) {
+                this.isFamilienstatusAlleinerziehendOrShortKonkubinat()) {
             return EbeguUtil.isNotNullAndFalse(this.getFamiliensituation().geteilteObhut);
         }
         return false;
@@ -260,13 +264,13 @@ export class FamiliensituationViewXComponent extends AbstractFamiliensitutaionVi
 
     public showBemerkungUnterhaltsvereinbarung(): boolean {
         return this.getFamiliensituation()?.unterhaltsvereinbarung
-            === TSUnterhaltsvereinbarungAnswer.UNTERHALTSVEREINBARUNG_NICHT_MOEGLICH;
+                === TSUnterhaltsvereinbarungAnswer.UNTERHALTSVEREINBARUNG_NICHT_MOEGLICH;
     }
 
     public showFrageGeteilteObhut(): boolean {
         if (this.getFamiliensituation() && this.isFKJVFamSit()) {
             return this.isFamilienstatusAlleinerziehendOrShortKonkubinat()
-                || this.isFamilienstatusKonkubinatKeinKindAndSmallerThanXYears();
+                    || this.isFamilienstatusKonkubinatKeinKindAndSmallerThanXYears();
         }
         return false;
     }
@@ -279,8 +283,8 @@ export class FamiliensituationViewXComponent extends AbstractFamiliensitutaionVi
             return true;
         }
         return this.getFamiliensituation().familienstatus === TSFamilienstatus.KONKUBINAT_KEIN_KIND
-            && this.getFamiliensituation()
-                .konkubinatIsShorterThanXYearsAtAnyTimeAfterStartOfPeriode(this.getGesuch().gesuchsperiode);
+                && this.getFamiliensituation()
+                        .konkubinatIsShorterThanXYearsAtAnyTimeAfterStartOfPeriode(this.getGesuch().gesuchsperiode);
     }
 
     private isFamilienstatusKonkubinatKeinKindAndSmallerThanXYears(): boolean {
@@ -288,8 +292,8 @@ export class FamiliensituationViewXComponent extends AbstractFamiliensitutaionVi
             return false;
         }
         return this.getFamiliensituation().familienstatus === TSFamilienstatus.KONKUBINAT_KEIN_KIND
-            && this.getFamiliensituation()
-                .konkubinatIsShorterThanXYearsAtAnyTimeAfterStartOfPeriode(this.getGesuch().gesuchsperiode);
+                && this.getFamiliensituation()
+                        .konkubinatIsShorterThanXYearsAtAnyTimeAfterStartOfPeriode(this.getGesuch().gesuchsperiode);
     }
 
     public frageGeteiltObhutClicked(): void {
@@ -304,7 +308,7 @@ export class FamiliensituationViewXComponent extends AbstractFamiliensitutaionVi
 
     public getTextForFamSitFrage2Tooltip(): string {
         return this.$translate.instant('FAMILIENSITUATION_HELP',
-            {jahr: this.getFamiliensituation().minDauerKonkubinat});
+                {jahr: this.getFamiliensituation().minDauerKonkubinat});
     }
 
     public getTextForFamSitGeteilteObhut(): string {
@@ -325,7 +329,7 @@ export class FamiliensituationViewXComponent extends AbstractFamiliensitutaionVi
 
     public getNameGesuchsteller2(): string {
         return this.gesuchModelManager.getGesuch().gesuchsteller2 ?
-            this.gesuchModelManager.getGesuch().gesuchsteller2.extractFullName() : '';
+                this.gesuchModelManager.getGesuch().gesuchsteller2.extractFullName() : '';
     }
 
     private getDatumEndOfMonthAfterAenderungPer(): string {
@@ -348,7 +352,8 @@ export class FamiliensituationViewXComponent extends AbstractFamiliensitutaionVi
     }
 
     private getWarningPaarBezeichnung(): string {
-        const familienstatus: TSFamilienstatus = this.gesuchModelManager.getGesuch().extractFamiliensituation().familienstatus;
+        const familienstatus: TSFamilienstatus =
+                this.gesuchModelManager.getGesuch().extractFamiliensituation().familienstatus;
         if (familienstatus === TSFamilienstatus.VERHEIRATET) {
             return this.$translate.instant('FAMILIENSITUATION_FRAGE_PARTNERIDENTISCH_WARNBEZ_EHEPARTNER');
         }
@@ -364,7 +369,8 @@ export class FamiliensituationViewXComponent extends AbstractFamiliensitutaionVi
     }
 
     public getPartnerIdentischFrage(): string {
-        const familienstatus: TSFamilienstatus = this.gesuchModelManager.getGesuch().extractFamiliensituation().familienstatus;
+        const familienstatus: TSFamilienstatus =
+                this.gesuchModelManager.getGesuch().extractFamiliensituation().familienstatus;
         if (familienstatus === TSFamilienstatus.VERHEIRATET) {
             return this.$translate.instant('FAMILIENSITUATION_FRAGE_PARTNERIDENTISCH_EHE' , {
                 namegs2: this.getNameGesuchsteller2()
@@ -384,8 +390,8 @@ export class FamiliensituationViewXComponent extends AbstractFamiliensitutaionVi
     private konkubinatIsTwoYearsOld(): boolean {
         const gesuch = this.gesuchModelManager.getGesuch();
         return gesuch.extractFamiliensituation()
-            .konkubinatGetsLongerThanXYearsBeforeEndOfPeriode(
+                .konkubinatGetsLongerThanXYearsBeforeEndOfPeriode(
                 gesuch.gesuchsperiode.gueltigkeit.gueltigBis
-            );
+                );
     }
 }

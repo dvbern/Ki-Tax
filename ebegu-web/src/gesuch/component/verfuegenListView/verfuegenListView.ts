@@ -27,6 +27,7 @@ import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest'
 import {
     isAnyStatusOfMahnung,
     isAnyStatusOfVerfuegt,
+    isAnyStatusOfVerfuegtButIgnoriert,
     isStatusVerfuegenVerfuegt,
     TSAntragStatus
 } from '../../../models/enums/TSAntragStatus';
@@ -358,7 +359,7 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
 
     public isBegleitschreibenVisible(): boolean {
         if (this.isGesuchstellerOrSozialdienst()) {
-            return isAnyStatusOfVerfuegt(this.getAntragStatus())
+            return isAnyStatusOfVerfuegtButIgnoriert(this.getAntragStatus())
                 && !this.gesuchModelManager.areThereOnlySchulamtAngebote()
                 && !this.gesuchModelManager.areThereOnlyGeschlossenOhneVerfuegung();
         }
@@ -370,7 +371,7 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
         const status = this.getAntragStatus();
 
         return this.isBegleitschreibenVisible()
-            && isAnyStatusOfVerfuegt(status)
+            && isAnyStatusOfVerfuegtButIgnoriert(status)
             && this.authServiceRs.isOneOfRoles(this.TSRoleUtil.getJugendamtAndSchulamtRole());
     }
 

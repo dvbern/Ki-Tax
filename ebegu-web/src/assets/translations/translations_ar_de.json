@@ -93,5 +93,8 @@
     "FAMILIEN_SITUATION_VERHEIRATET": "Sind Sie verheiratet / in eingetragener Partnerschaft oder wohnen Sie im gemeinsamen Haushalt mit festem Konkubinatspartner?",
     "FAMILIEN_SITUATION_GEMEINSAMER_HAUSHALT": "Führen Sie einen gemeinsamen Haushalt mit der weiteren obhutsberechtigten Person?",
     "ZAHLUNG_AN_ELTERN": "Zahlung Eltern",
+    "APPENZELL_TITEL_FIN_SIT": "Finanzielle Verhältnisse ",
+    "APPENZELL_FIN_SIT_EINLEITUNG": "Bitte füllen Sie dieses Formular anhand Ihrer letzten Steuerveranlagung aus. Falls Sie noch keine Steuerveranlagung im Kanton Appenzell Ausserrhoden erhalten haben, ERGÄNZEN...",
+    "APPENZELL_FIN_SIT_FORMULAR_VERVOLLSTAENDIGEN": "Bitte vervollständigen Sie zuerst die Angaben zu den Antragstellenden",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

@@ -145,7 +145,8 @@ export class SteuerabfrageResponseHintsComponent implements OnInit, OnDestroy, O
                 return this.translate.instant('FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF_PARTNER_NICHT_GEMEINSAM');
                 break;
             case TSSteuerdatenAnfrageStatus.FAILED_GEBURTSDATUM:
-                return this.translate.instant('FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF_FAILED_GEBURTSDATUM');
+                return this.translate.instant('FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF_FAILED_GEBURTSDATUM',
+                        {namegs2: this.getGS2name()});
                 break;
             case TSSteuerdatenAnfrageStatus.FAILED_KEIN_PARTNER_GEMEINSAM:
                 return this.translate.instant('FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF_KEIN_PARTNER_GEMEINSAM');

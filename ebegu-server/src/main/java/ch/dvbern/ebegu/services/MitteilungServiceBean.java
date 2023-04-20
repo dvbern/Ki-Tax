@@ -110,6 +110,7 @@ import ch.dvbern.ebegu.enums.Betreuungsstatus;
 import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.FinSitStatus;
+import ch.dvbern.ebegu.enums.GesuchstellerTyp;
 import ch.dvbern.ebegu.enums.MessageTypes;
 import ch.dvbern.ebegu.enums.MitteilungStatus;
 import ch.dvbern.ebegu.enums.MitteilungTeilnehmerTyp;
@@ -150,7 +151,7 @@ import static org.apache.commons.lang3.StringUtils.EMPTY;
 /**
  * Service fuer Mitteilungen
  */
-@SuppressWarnings({"PMD.NcssTypeCount", "PMD.AvoidDuplicateLiterals"})
+@SuppressWarnings({ "PMD.NcssTypeCount", "PMD.AvoidDuplicateLiterals" })
 @Stateless
 @Local(MitteilungService.class)
 public class MitteilungServiceBean extends AbstractBaseService implements MitteilungService {
@@ -207,7 +208,7 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 
 		if (MitteilungStatus.NEU != mitteilung.getMitteilungStatus()) {
 			throw new IllegalArgumentException("Mitteilung ist nicht im Status ENTWURF und kann nicht gesendet "
-				+ "werden");
+					+ "werden");
 		}
 		mitteilung.setMitteilungStatus(MitteilungStatus.NEU);
 		mitteilung.setSentDatum(LocalDateTime.now());
@@ -226,16 +227,19 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 			}
 
 			if (MitteilungTeilnehmerTyp.GESUCHSTELLER == mitteilung.getEmpfaengerTyp()
-				&& mitteilung.getEmpfaenger() != null) {
+					&& mitteilung.getEmpfaenger() != null) {
 				mailService.sendInfoMitteilungErhalten(mitteilung);
 			}
 
 		} catch (MailException e) {
 			String message = String.format(
-				"Mail InfoMitteilungErhalten konnte nicht verschickt werden fuer Mitteilung %s",
-				mitteilung.getId());
+					"Mail InfoMitteilungErhalten konnte nicht verschickt werden fuer Mitteilung %s",
+					mitteilung.getId());
 			throw new EbeguRuntimeException(ebeguConfiguration.getDefaultLogLevel(),
-				"sendMitteilung", message, ErrorCodeEnum.ERROR_MAIL, e);
+					"sendMitteilung",
+					message,
+					ErrorCodeEnum.ERROR_MAIL,
+					e);
 		}
 
 		return persistence.merge(mitteilung);
@@ -245,16 +249,15 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 	private void checkMitteilungDataConsistency(@Nonnull Mitteilung mitteilung) {
 		if (!mitteilung.isNew()) {
 			Mitteilung persistedMitteilung =
-				findMitteilung(mitteilung.getId()).orElseThrow(() -> new EbeguEntityNotFoundException
-					(
-						"sendMitteilung",
-						ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
-						"MitteilungId invalid: " + mitteilung.getId()));
+					findMitteilung(mitteilung.getId()).orElseThrow(() -> new EbeguEntityNotFoundException(
+							"sendMitteilung",
+							ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
+							"MitteilungId invalid: " + mitteilung.getId()));
 
 			// Die gespeicherte wie auch die uebergebene Mitteilung muss im Status NEU sein
 			if (MitteilungStatus.NEU != persistedMitteilung.getMitteilungStatus()) {
 				throw new IllegalArgumentException(
-					"Mitteilung aus DB ist nicht im Status ENTWURF und kann nicht gesendet werden");
+						"Mitteilung aus DB ist nicht im Status ENTWURF und kann nicht gesendet werden");
 			}
 			if (!persistedMitteilung.getSender().equals(mitteilung.getSender())) {
 				throw new IllegalArgumentException("Mitteilung aus DB hat anderen Sender gesetzt");
@@ -266,12 +269,12 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 	private void setSenderAndEmpfaengerAndCheckAuthorization(@Nonnull Mitteilung mitteilung) {
 		Optional<Benutzer> currentBenutzer = benutzerService.getCurrentBenutzer();
 		//wenn man direkt aus Kafka Event liest sind man nicht eingeloggt, aber man hat der Rolle SUPER_ADMIN
-		if (!currentBenutzer.isPresent() && !principalBean.isCallerInRole(UserRoleName.SUPER_ADMIN)) {
+		if (currentBenutzer.isEmpty() && !principalBean.isCallerInRole(UserRoleName.SUPER_ADMIN)) {
 			throw new IllegalStateException("Benutzer ist nicht eingeloggt!");
 		}
-		if (!currentBenutzer.isPresent() && principalBean.isCallerInRole(UserRoleName.SUPER_ADMIN)) {
+		if (currentBenutzer.isEmpty() && principalBean.isCallerInRole(UserRoleName.SUPER_ADMIN)) {
 			mitteilung.setEmpfaenger(getEmpfaengerBeiMitteilungAnGemeinde(mitteilung));
-		} else {
+		} else if (currentBenutzer.isPresent()) {
 			switch (currentBenutzer.get().getRole()) {
 			case GESUCHSTELLER: {
 				mitteilung.setEmpfaenger(getEmpfaengerBeiMitteilungAnGemeinde(mitteilung));
@@ -353,7 +356,7 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 		if (empfaenger == null) {
 			String gemeindeId = mitteilung.getDossier().getGemeinde().getId();
 			Optional<GemeindeStammdaten> stammdatenOptional =
-				gemeindeService.getGemeindeStammdatenByGemeindeId(gemeindeId);
+					gemeindeService.getGemeindeStammdatenByGemeindeId(gemeindeId);
 			if (stammdatenOptional.isPresent()) {
 				// Wir kontrollieren bei den Mitteilungen explizit nicht, ob die Rolle stimmt!
 				// Wir nehmen den Allgemeinen Default, weil wir auf der Mitteilung kein Gesuch haben
@@ -362,10 +365,9 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 			}
 		}
 		if (empfaenger == null) {
-			throw new EbeguRuntimeException(
-				"getEmpfaengerBeiMitteilungAnGemeinde",
-				ErrorCodeEnum.ERROR_VERANTWORTLICHER_NOT_FOUND,
-				mitteilung.getId());
+			throw new EbeguRuntimeException("getEmpfaengerBeiMitteilungAnGemeinde",
+					ErrorCodeEnum.ERROR_VERANTWORTLICHER_NOT_FOUND,
+					mitteilung.getId());
 		}
 		return empfaenger;
 	}
@@ -373,39 +375,35 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 	@Nonnull
 	@Override
 	public Mitteilung setMitteilungGelesen(@Nonnull String mitteilungsId) {
-		return setMitteilungsStatusIfBerechtigt(
-			mitteilungsId,
-			MitteilungStatus.GELESEN,
-			MitteilungStatus.NEU,
-			MitteilungStatus.ERLEDIGT,
-			MitteilungStatus.IGNORIERT);
+		return setMitteilungsStatusIfBerechtigt(mitteilungsId,
+				MitteilungStatus.GELESEN,
+				MitteilungStatus.NEU,
+				MitteilungStatus.ERLEDIGT,
+				MitteilungStatus.IGNORIERT);
 	}
 
 	@Nonnull
 	@Override
 	public Mitteilung setMitteilungErledigt(@Nonnull String mitteilungsId) {
-		return setMitteilungsStatusIfBerechtigt(mitteilungsId, MitteilungStatus.ERLEDIGT, MitteilungStatus.GELESEN,
-			MitteilungStatus.NEU);
+		return setMitteilungsStatusIfBerechtigt(mitteilungsId,
+				MitteilungStatus.ERLEDIGT,
+				MitteilungStatus.GELESEN,
+				MitteilungStatus.NEU);
 	}
 
 	@Nonnull
 	@Override
 	public Mitteilung setMitteilungUngelesen(@Nonnull String mitteilungsId) {
-		return setMitteilungsStatusIfBerechtigt(
-			mitteilungsId,
-			MitteilungStatus.NEU,
-			MitteilungStatus.GELESEN);
+		return setMitteilungsStatusIfBerechtigt(mitteilungsId, MitteilungStatus.NEU, MitteilungStatus.GELESEN);
 	}
 
 	@Nonnull
 	@Override
 	public Mitteilung setMitteilungIgnoriert(@Nonnull String mitteilungsId) {
-		return setMitteilungsStatusIfBerechtigt(
-				mitteilungsId,
+		return setMitteilungsStatusIfBerechtigt(mitteilungsId,
 				MitteilungStatus.IGNORIERT,
 				MitteilungStatus.GELESEN,
-				MitteilungStatus.NEU
-		);
+				MitteilungStatus.NEU);
 	}
 
 	@Nonnull
@@ -495,8 +493,7 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 	@Nonnull
 	@Override
 	public Collection<BetreuungspensumAbweichung> findAllBetreuungspensumAbweichungenForBetreuung(
-		@Nonnull Betreuung betreuung
-	) {
+			@Nonnull Betreuung betreuung) {
 		Objects.requireNonNull(betreuung, "betreuung muss gesetzt sein");
 
 		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
@@ -549,9 +546,9 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 	public Collection<Mitteilung> getMitteilungenForCurrentRolle(@Nonnull Dossier dossier) {
 		Objects.requireNonNull(dossier, "dossier muss gesetzt sein");
 		authorizer.checkReadAuthorizationDossier(dossier);
-		return getMitteilungenForCurrentRolle(Mitteilung_.dossier, dossier).stream().filter(
-			this::isMitteilungReadableForInstitution
-		).collect(Collectors.toList());
+		return getMitteilungenForCurrentRolle(Mitteilung_.dossier, dossier).stream()
+				.filter(this::isMitteilungReadableForInstitution)
+				.collect(Collectors.toList());
 	}
 
 	@Nonnull
@@ -563,8 +560,7 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 	}
 
 	private <T> Collection<Mitteilung> getMitteilungenForCurrentRolle(
-		SingularAttribute<Mitteilung, T> attribute,
-		@Nonnull T linkedEntity) {
+			SingularAttribute<Mitteilung, T> attribute, @Nonnull T linkedEntity) {
 		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
 		final CriteriaQuery<Mitteilung> query = cb.createQuery(Mitteilung.class);
 		Root<Mitteilung> root = query.from(Mitteilung.class);
@@ -587,12 +583,13 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 	}
 
 	private void setActiveAndRolePredicates(
-		CriteriaBuilder cb, SetJoin<Benutzer, Berechtigung> joinSenderBerechtigungen,
-		List<Predicate> predicates, List<UserRole> jugendamtRoles) {
-		Predicate predicateActive = cb.between(
-			cb.literal(LocalDate.now()),
-			joinSenderBerechtigungen.get(AbstractDateRangedEntity_.gueltigkeit).get(DateRange_.gueltigAb),
-			joinSenderBerechtigungen.get(AbstractDateRangedEntity_.gueltigkeit).get(DateRange_.gueltigBis));
+			CriteriaBuilder cb,
+			SetJoin<Benutzer, Berechtigung> joinSenderBerechtigungen,
+			List<Predicate> predicates,
+			List<UserRole> jugendamtRoles) {
+		Predicate predicateActive = cb.between(cb.literal(LocalDate.now()),
+				joinSenderBerechtigungen.get(AbstractDateRangedEntity_.gueltigkeit).get(DateRange_.gueltigAb),
+				joinSenderBerechtigungen.get(AbstractDateRangedEntity_.gueltigkeit).get(DateRange_.gueltigBis));
 		Predicate predicateSenderGleichesAmt = joinSenderBerechtigungen.get(Berechtigung_.role).in(jugendamtRoles);
 		predicates.add(cb.and(predicateActive, predicateSenderGleichesAmt));
 	}
@@ -608,10 +605,10 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 	public void removeAllMitteilungenForFall(@Nonnull Fall fall) {
 		// Alle Mitteilungen aller Dossiers dieses Falls
 		Collection<Dossier> dossiersOfFall =
-			criteriaQueryHelper.getEntitiesByAttribute(Dossier.class, fall, Dossier_.fall);
+				criteriaQueryHelper.getEntitiesByAttribute(Dossier.class, fall, Dossier_.fall);
 		for (Dossier dossier : dossiersOfFall) {
 			Collection<Mitteilung> mitteilungen =
-				criteriaQueryHelper.getEntitiesByAttribute(Mitteilung.class, dossier, Mitteilung_.dossier);
+					criteriaQueryHelper.getEntitiesByAttribute(Mitteilung.class, dossier, Mitteilung_.dossier);
 			for (Mitteilung mitteilung : mitteilungen) {
 				authorizer.checkWriteAuthorizationMitteilung(mitteilung);
 				persistence.remove(Mitteilung.class, mitteilung.getId());
@@ -624,8 +621,8 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
 		final CriteriaQuery<Mitteilung> query = cb.createQuery(Mitteilung.class);
 		Root<Mitteilung> root = query.from(Mitteilung.class);
-		final Join<Betreuung, KindContainer> join = root.join(Mitteilung_.betreuung, JoinType.LEFT)
-			.join(AbstractPlatz_.kind, JoinType.LEFT);
+		final Join<Betreuung, KindContainer> join =
+				root.join(Mitteilung_.betreuung, JoinType.LEFT).join(AbstractPlatz_.kind, JoinType.LEFT);
 
 		Predicate gesuchPred = cb.equal(join.get(KindContainer_.gesuch), gesuch);
 		Predicate withBetreuungPred = cb.isNotNull(root.get(Mitteilung_.betreuung));
@@ -646,9 +643,8 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
 		final CriteriaQuery<BetreuungspensumAbweichung> query = cb.createQuery(BetreuungspensumAbweichung.class);
 		Root<BetreuungspensumAbweichung> root = query.from(BetreuungspensumAbweichung.class);
-		final Join<Betreuung, KindContainer> join = root
-			.join(BetreuungspensumAbweichung_.betreuung, JoinType.LEFT)
-			.join(AbstractPlatz_.kind, JoinType.LEFT);
+		final Join<Betreuung, KindContainer> join = root.join(BetreuungspensumAbweichung_.betreuung, JoinType.LEFT)
+				.join(AbstractPlatz_.kind, JoinType.LEFT);
 
 		Predicate gesuchPred = cb.equal(join.get(KindContainer_.gesuch), gesuch);
 		query.where(gesuchPred);
@@ -700,8 +696,10 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 	@Override
 	@Nonnull
 	public Long getAmountNewMitteilungenForCurrentBenutzer() {
-		Benutzer loggedInBenutzer = benutzerService.getCurrentBenutzer().orElseThrow(() -> new EbeguRuntimeException
-			("getAmountNewMitteilungenForCurrentBenutzer", "No User is logged in"));
+		Benutzer loggedInBenutzer = benutzerService.getCurrentBenutzer()
+				.orElseThrow(() -> new EbeguRuntimeException(
+						"getAmountNewMitteilungenForCurrentBenutzer",
+						"No User is logged in"));
 
 		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
 		final CriteriaQuery<Long> query = cb.createQuery(Long.class);
@@ -731,33 +729,25 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 	}
 
 	private Predicate countNewMitteilungenPredicatesForSozialdienstBenutzer(
-		@Nonnull Benutzer loggedInBenutzer,
-		CriteriaBuilder cb,
-		Root<Mitteilung> root) {
+			@Nonnull Benutzer loggedInBenutzer, CriteriaBuilder cb, Root<Mitteilung> root) {
 
 		Join<Mitteilung, Dossier> joinDossier = root.join(Mitteilung_.dossier, JoinType.INNER);
 		Join<Dossier, Fall> joinFall = joinDossier.join(Dossier_.fall);
 		Join<Fall, SozialdienstFall> joinSozialdienst = joinFall.join(Fall_.sozialdienstFall, JoinType.LEFT);
 
-		Predicate sozialdienstFall =
-			cb.equal(joinSozialdienst.get(SozialdienstFall_.sozialdienst), loggedInBenutzer.getSozialdienst());
-
-		return sozialdienstFall;
+		return cb.equal(joinSozialdienst.get(SozialdienstFall_.sozialdienst), loggedInBenutzer.getSozialdienst());
 	}
 
 	private Predicate countNewMitteilungenPredicatesForInstitutionBenutzer(
-		@Nonnull Benutzer loggedInBenutzer,
-		CriteriaBuilder cb,
-		Root<Mitteilung> root) {
+			@Nonnull Benutzer loggedInBenutzer, CriteriaBuilder cb, Root<Mitteilung> root) {
 		Predicate institution = null;
 		if (loggedInBenutzer.getRole() == UserRole.ADMIN_INSTITUTION
-			|| loggedInBenutzer.getRole() == UserRole.SACHBEARBEITER_INSTITUTION) {
-			institution =
-				cb.equal(root.get(Mitteilung_.institution), loggedInBenutzer.getInstitution());
+				|| loggedInBenutzer.getRole() == UserRole.SACHBEARBEITER_INSTITUTION) {
+			institution = cb.equal(root.get(Mitteilung_.institution), loggedInBenutzer.getInstitution());
 		} else {
 			Join<Mitteilung, Institution> joinInstitution = root.join(Mitteilung_.institution, JoinType.LEFT);
 			institution =
-				cb.equal(joinInstitution.get(Institution_.traegerschaft), loggedInBenutzer.getTraegerschaft());
+					cb.equal(joinInstitution.get(Institution_.traegerschaft), loggedInBenutzer.getTraegerschaft());
 		}
 
 		return institution;
@@ -765,17 +755,13 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 
 	private Predicate getPredicateEmpfaengerMitteilungTyp(CriteriaBuilder cb, Root<Mitteilung> root) {
 		MitteilungTeilnehmerTyp mitteilungTeilnehmerTyp = getMitteilungTeilnehmerTypForCurrentUser();
-		Predicate predicateEmpfaenger = cb.equal(root.get(Mitteilung_.empfaengerTyp), mitteilungTeilnehmerTyp);
-		return predicateEmpfaenger;
+		return cb.equal(root.get(Mitteilung_.empfaengerTyp), mitteilungTeilnehmerTyp);
 	}
 
 	@Override
 	public void replaceBetreungsmitteilungen(
-		@Valid @Nonnull Betreuungsmitteilung betreuungsmitteilung) {
-
+			@Valid @Nonnull Betreuungsmitteilung betreuungsmitteilung) {
 		removeOffeneBetreuungsmitteilungenForBetreuung(requireNonNull(betreuungsmitteilung.getBetreuung()));
-
-		//noinspection ResultOfMethodCallIgnored
 		sendBetreuungsmitteilung(betreuungsmitteilung);
 	}
 
@@ -785,7 +771,7 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 		Objects.requireNonNull(betreuungsmitteilung);
 		if (MitteilungTeilnehmerTyp.INSTITUTION != betreuungsmitteilung.getSenderTyp()) {
 			throw new IllegalArgumentException(
-				"Eine Betreuungsmitteilung darf nur bei einer Institution geschickt werden");
+					"Eine Betreuungsmitteilung darf nur bei einer Institution geschickt werden");
 		}
 		if (MitteilungTeilnehmerTyp.JUGENDAMT != betreuungsmitteilung.getEmpfaengerTyp()) {
 			throw new IllegalArgumentException("Eine Betreuungsmitteilung darf nur an das Jugendamt geschickt werden");
@@ -805,20 +791,18 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 	public Gesuch applyBetreuungsmitteilung(@Nonnull Betreuungsmitteilung mitteilung) {
 		try {
 			Objects.requireNonNull(mitteilung.getBetreuung());
-			return doApplymitteilung(mitteilung,  mitteilung.getBetreuung().extractGesuch());
+			return doApplymitteilung(mitteilung, mitteilung.getBetreuung().extractGesuch());
 		} catch (EbeguExistingAntragException e) {
-			throw new EbeguExistingAntragRuntimeException(
-				"applyBetreuungsmitteilung",
-				e.getErrorCodeEnum(),
-				e,
-				e.getDossierId(),
-				e.getGesuchperiodeId());
+			throw new EbeguExistingAntragRuntimeException("applyBetreuungsmitteilung",
+					e.getErrorCodeEnum(),
+					e,
+					e.getDossierId(),
+					e.getGesuchperiodeId());
 		} catch (EbeguException e) {
-			throw new EbeguRuntimeException(
-				"applyBetreuungsmitteilung",
-				"error while applying betreuungsmitteilungen",
-				e.getErrorCodeEnum(),
-				e);
+			throw new EbeguRuntimeException("applyBetreuungsmitteilung",
+					"error while applying betreuungsmitteilungen",
+					e.getErrorCodeEnum(),
+					e);
 		}
 	}
 
@@ -828,38 +812,34 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 		try {
 			Objects.requireNonNull(mitteilung.getSteuerdatenResponse().getKibonAntragId());
 			Gesuch gesuch = gesuchService.findGesuch(mitteilung.getSteuerdatenResponse().getKibonAntragId())
-				.orElseThrow(() -> new EbeguException(
-					"neueVeranlagungssmitteilungBearbeiten",
-					ERROR_ENTITY_NOT_FOUND,
-					null,
-					mitteilung.getSteuerdatenResponse().getKibonAntragId()));
+					.orElseThrow(() -> new EbeguException("neueVeranlagungssmitteilungBearbeiten",
+							ERROR_ENTITY_NOT_FOUND,
+							null,
+							mitteilung.getSteuerdatenResponse().getKibonAntragId()));
 			return doApplymitteilung(mitteilung, gesuch);
 		} catch (EbeguExistingAntragException e) {
-			throw new EbeguExistingAntragRuntimeException(
-				"neueVeranlagungssmitteilungBearbeiten",
-				e.getErrorCodeEnum(),
-				e,
-				e.getDossierId(),
-				e.getGesuchperiodeId());
+			throw new EbeguExistingAntragRuntimeException("neueVeranlagungssmitteilungBearbeiten",
+					e.getErrorCodeEnum(),
+					e,
+					e.getDossierId(),
+					e.getGesuchperiodeId());
 		} catch (EbeguException e) {
-			throw new EbeguRuntimeException(
-				"neueVeranlagungssmitteilungBearbeiten",
-				"error while applying neueVeranlagungsmitteilungen",
-				e.getErrorCodeEnum(),
-				e);
+			throw new EbeguRuntimeException("neueVeranlagungssmitteilungBearbeiten",
+					"error while applying neueVeranlagungsmitteilungen",
+					e.getErrorCodeEnum(),
+					e);
 		}
 	}
 
 	@Nonnull
-	private Gesuch doApplymitteilung(@Nonnull Mitteilung mitteilung, @Nonnull Gesuch gesuch) throws EbeguException,
-			EbeguExistingAntragException {
+	private Gesuch doApplymitteilung(@Nonnull Mitteilung mitteilung, @Nonnull Gesuch gesuch)
+			throws EbeguException, EbeguExistingAntragException {
 		authorizer.checkReadAuthorizationMitteilung(mitteilung);
 		if (gesuch.getStatus() == AntragStatus.FREIGEGEBEN || gesuch.getStatus() == AntragStatus.FREIGABEQUITTUNG) {
-			throw new EbeguExistingAntragException(
-				"doApplymitteilung",
-				ErrorCodeEnum.ERROR_NOCH_NICHT_FREIGEGEBENE_ANTRAG,
-				gesuch.getDossier().getId(),
-				gesuch.getGesuchsperiode().getId());
+			throw new EbeguExistingAntragException("doApplymitteilung",
+					ErrorCodeEnum.ERROR_NOCH_NICHT_FREIGEGEBENE_ANTRAG,
+					gesuch.getDossier().getId(),
+					gesuch.getGesuchsperiode().getId());
 		}
 
 		// neustes Gesuch lesen
@@ -870,12 +850,11 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 			// Wenn der Sachbearbeiter den neusten Antrag nicht lesen darf ist es ein noch nicht freigegebener ONLINE
 			// Antrag
 			if (exception.getCause().getClass().equals(EJBAccessException.class)) {
-				throw new EbeguExistingAntragException(
-					"doApplymitteilung",
-					ErrorCodeEnum.ERROR_EXISTING_ONLINE_MUTATION,
-					gesuch.getDossier().getId(),
-					gesuch.getGesuchsperiode().getId(),
-					exception);
+				throw new EbeguExistingAntragException("doApplymitteilung",
+						ErrorCodeEnum.ERROR_EXISTING_ONLINE_MUTATION,
+						gesuch.getDossier().getId(),
+						gesuch.getGesuchsperiode().getId(),
+						exception);
 			}
 			throw exception;
 		}
@@ -884,25 +863,22 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 			// Sobald irgendein Antrag dieser Periode geperrt ist, darf keine Mutationsmeldungs-Mutation erstellt
 			// werden!
 			if (neustesGesuch.isGesperrtWegenBeschwerde()) {
-				throw new EbeguException(
-					"doApplymitteilung",
-					ErrorCodeEnum.ERROR_MUTATIONSMELDUNG_FALL_GESPERRT,
-					neustesGesuch.getId());
+				throw new EbeguException("doApplymitteilung",
+						ErrorCodeEnum.ERROR_MUTATIONSMELDUNG_FALL_GESPERRT,
+						neustesGesuch.getId());
 			}
 			if (AntragStatus.VERFUEGEN == neustesGesuch.getStatus()) {
-				throw new EbeguException(
-					"doApplymitteilung",
-					ErrorCodeEnum.ERROR_MUTATIONSMELDUNG_STATUS_VERFUEGEN,
-					neustesGesuch.getId());
+				throw new EbeguException("doApplymitteilung",
+						ErrorCodeEnum.ERROR_MUTATIONSMELDUNG_STATUS_VERFUEGEN,
+						neustesGesuch.getId());
 			}
 			if (!AntragStatus.getVerfuegtIgnoriertAndSTVStates().contains(neustesGesuch.getStatus())
-				&& neustesGesuch.isMutation()) {
+					&& neustesGesuch.isMutation()) {
 				// veranlagungsmitteilungen dürfen nicht zu bestehender Mutation hinzugefügt werden
 				if (mitteilung instanceof NeueVeranlagungsMitteilung) {
-					throw new EbeguException(
-						"doApplymitteilung",
-						ErrorCodeEnum.ERROR_EXISTING_MUTATION_VERANLAGUNGSMITTEILUNG,
-						neustesGesuch.getId());
+					throw new EbeguException("doApplymitteilung",
+							ErrorCodeEnum.ERROR_EXISTING_MUTATION_VERANLAGUNGSMITTEILUNG,
+							neustesGesuch.getId());
 				}
 				// aenderungen der bestehenden, offenen Mutation hinzufuegen (wenn wir hier sind muss es sich
 				// um ein PAPIER) Antrag handeln
@@ -910,23 +886,23 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 				applyMitteilungToMutation(neustesGesuch, mitteilung);
 				return neustesGesuch;
 			}
-			if (AntragStatus.getVerfuegtIgnoriertAndSTVStates().contains(neustesGesuch.getStatus()) ||
-					mitteilung instanceof NeueVeranlagungsMitteilung && neustesGesuch.getStatus() == AntragStatus.NUR_SCHULAMT) {
+			if (AntragStatus.getVerfuegtIgnoriertAndSTVStates().contains(neustesGesuch.getStatus())
+					|| mitteilung instanceof NeueVeranlagungsMitteilung
+					&& neustesGesuch.getStatus() == AntragStatus.NUR_SCHULAMT) {
 				// create Mutation if there is currently no Mutation
-				Gesuch mutation = Gesuch.createMutation(gesuch.getDossier(), neustesGesuch.getGesuchsperiode(),
-					LocalDate.now());
+				Gesuch mutation =
+						Gesuch.createMutation(gesuch.getDossier(), neustesGesuch.getGesuchsperiode(), LocalDate.now());
 				mutation = gesuchService.createGesuch(mutation);
 				authorizer.checkWriteAuthorization(mutation);
-				if(mitteilung instanceof NeueVeranlagungsMitteilung){
+				if (mitteilung instanceof NeueVeranlagungsMitteilung) {
 					setSteuerdatenResponseInMutationTemp(gesuch, mutation);
 				}
 				applyMitteilungToMutation(mutation, mitteilung);
 				return mutation;
 			}
-			throw new EbeguException(
-				"doApplymitteilung",
-				ErrorCodeEnum.ERROR_MUTATIONSMELDUNG_GESUCH_NICHT_FREIGEGEBEN_INBEARBEITUNG,
-				neustesGesuch.getId());
+			throw new EbeguException("doApplymitteilung",
+					ErrorCodeEnum.ERROR_MUTATIONSMELDUNG_GESUCH_NICHT_FREIGEGEBEN_INBEARBEITUNG,
+					neustesGesuch.getId());
 		}
 		return gesuch;
 	}
@@ -936,16 +912,24 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 		Objects.requireNonNull(gesuch.getGesuchsteller1().getFinanzielleSituationContainer());
 		Objects.requireNonNull(mutation.getGesuchsteller1());
 		Objects.requireNonNull(mutation.getGesuchsteller1().getFinanzielleSituationContainer());
-		mutation.getGesuchsteller1().getFinanzielleSituationContainer().getFinanzielleSituationJA().setSteuerdatenResponse(
-			gesuch.getGesuchsteller1().getFinanzielleSituationContainer().getFinanzielleSituationJA().getSteuerdatenResponse()
-		);
-		if(mutation.getGesuchsteller2() != null
-			&& mutation.getGesuchsteller2().getFinanzielleSituationContainer() != null
-			&& gesuch.getGesuchsteller2() != null
-			&& gesuch.getGesuchsteller2().getFinanzielleSituationContainer() != null){
-			mutation.getGesuchsteller2().getFinanzielleSituationContainer().getFinanzielleSituationJA().setSteuerdatenResponse(
-				gesuch.getGesuchsteller2().getFinanzielleSituationContainer().getFinanzielleSituationJA().getSteuerdatenResponse()
-			);
+		mutation.getGesuchsteller1()
+				.getFinanzielleSituationContainer()
+				.getFinanzielleSituationJA()
+				.setSteuerdatenResponse(gesuch.getGesuchsteller1()
+						.getFinanzielleSituationContainer()
+						.getFinanzielleSituationJA()
+						.getSteuerdatenResponse());
+		if (mutation.getGesuchsteller2() != null
+				&& mutation.getGesuchsteller2().getFinanzielleSituationContainer() != null
+				&& gesuch.getGesuchsteller2() != null
+				&& gesuch.getGesuchsteller2().getFinanzielleSituationContainer() != null) {
+			mutation.getGesuchsteller2()
+					.getFinanzielleSituationContainer()
+					.getFinanzielleSituationJA()
+					.setSteuerdatenResponse(gesuch.getGesuchsteller2()
+							.getFinanzielleSituationContainer()
+							.getFinanzielleSituationJA()
+							.getSteuerdatenResponse());
 		}
 	}
 
@@ -957,15 +941,15 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 		Root<Betreuungsmitteilung> root = query.from(Betreuungsmitteilung.class);
 
 		Predicate predicateLinkedObject =
-			cb.equal(root.get(Mitteilung_.betreuung).get(AbstractEntity_.id), betreuungId);
+				cb.equal(root.get(Mitteilung_.betreuung).get(AbstractEntity_.id), betreuungId);
 		Predicate predicateNotErledigt =
-			cb.equal(root.get(Mitteilung_.mitteilungStatus), MitteilungStatus.ERLEDIGT).not();
+				cb.equal(root.get(Mitteilung_.mitteilungStatus), MitteilungStatus.ERLEDIGT).not();
 
 		query.orderBy(cb.desc(root.get(Mitteilung_.sentDatum)));
 		query.where(predicateLinkedObject, predicateNotErledigt);
 
 		final List<Betreuungsmitteilung> result =
-			persistence.getEntityManager().createQuery(query).setFirstResult(0).setMaxResults(1).getResultList();
+				persistence.getEntityManager().createQuery(query).setFirstResult(0).setMaxResults(1).getResultList();
 		if (result.isEmpty()) {
 			return Optional.empty();
 		}
@@ -977,23 +961,23 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 	@Nonnull
 	@Override
 	public Mitteilung mitteilungWeiterleiten(@Nonnull String mitteilungId, @Nonnull String userName) {
-		Mitteilung mitteilung = findMitteilung(mitteilungId)
-			.orElseThrow(() -> new EbeguRuntimeException("mitteilungUebergebenAnJugendamt", "Mitteilung not found"));
+		Mitteilung mitteilung = findMitteilung(mitteilungId).orElseThrow(() -> new EbeguRuntimeException(
+				"mitteilungUebergebenAnJugendamt",
+				"Mitteilung not found"));
 
 		authorizer.checkReadAuthorizationMitteilung(mitteilung);
 
 		Optional<Benutzer> benutzerOptional =
-			benutzerService.findBenutzer(userName, mitteilung.getDossier().getFall().getMandant());
+				benutzerService.findBenutzer(userName, mitteilung.getDossier().getFall().getMandant());
 
 		if (benutzerOptional.isPresent()) {
 			// Den VerantwortlichenJA als Empfänger setzen
 			mitteilung.setEmpfaenger(benutzerOptional.get());
 			mitteilung.setMitteilungStatus(MitteilungStatus.NEU);
 		} else {
-			throw new EbeguRuntimeException(
-				"mitteilungWeiterleiten",
-				ErrorCodeEnum.ERROR_EMPFAENGER_NOT_FOUND,
-				mitteilung.getId());
+			throw new EbeguRuntimeException("mitteilungWeiterleiten",
+					ErrorCodeEnum.ERROR_EMPFAENGER_NOT_FOUND,
+					mitteilung.getId());
 		}
 
 		return persistence.merge(mitteilung);
@@ -1001,28 +985,26 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 
 	@Override
 	public void createMutationsmeldungAbweichungen(
-		@Nonnull Betreuungsmitteilung mitteilung,
-		@Nonnull Betreuung betreuung) {
+			@Nonnull Betreuungsmitteilung mitteilung, @Nonnull Betreuung betreuung) {
 
 		// convert BetreuungspensumAbweichung to MitteilungPensum
 		// (1) Zusammenfuegen der bestehenden Pensen mit den evtl. hinzugefuegten Abweichungen. Resultat ist ein Pensum
 		// pro Monat mit entweder dem vertraglichen oder dem abgewichenen Pensum ODER 0.
-		List<BetreuungspensumAbweichung> initialAbweichungen = betreuung.fillAbweichungen(betreuungService.getMultiplierForAbweichnungen(betreuung));
+		List<BetreuungspensumAbweichung> initialAbweichungen =
+				betreuung.fillAbweichungen(betreuungService.getMultiplierForAbweichnungen(betreuung));
 		// (2) Die Abschnitte werden zu BetreuungsMitteilungspensen konvertiert.
-		Set<BetreuungsmitteilungPensum> pensenFromAbweichungen = initialAbweichungen
-			.stream()
-			.filter(abweichung -> (abweichung.getVertraglichesPensum() != null))
-			.map(abweichung -> abweichung.convertAbweichungToMitteilungPensum(mitteilung))
-			.collect(Collectors.toSet());
+		Set<BetreuungsmitteilungPensum> pensenFromAbweichungen = initialAbweichungen.stream()
+				.filter(abweichung -> (abweichung.getVertraglichesPensum() != null))
+				.map(abweichung -> abweichung.convertAbweichungToMitteilungPensum(mitteilung))
+				.collect(Collectors.toSet());
 
 		mitteilung.setBetreuungspensen(pensenFromAbweichungen);
 
 		final Locale locale = LocaleThreadLocal.get();
 
 		final Benutzer currentBenutzer = benutzerService.getCurrentBenutzer()
-			.orElseThrow(() -> new EbeguEntityNotFoundException(
-				"sendBetreuungsmitteilung",
-				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND));
+				.orElseThrow(() -> new EbeguEntityNotFoundException("sendBetreuungsmitteilung",
+						ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND));
 
 		MitteilungUtil.initializeBetreuungsmitteilung(mitteilung, betreuung, currentBenutzer, locale);
 		mitteilung.setMessage(createNachrichtForMutationsmeldung(mitteilung, pensenFromAbweichungen));
@@ -1037,12 +1019,10 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 		final CriteriaQuery<Mitteilung> query = cb.createQuery(Mitteilung.class);
 		Root<Mitteilung> root = query.from(Mitteilung.class);
 
-		Predicate predicateLinkedObject =
-			cb.equal(root.get(Mitteilung_.institution), institution);
-		Predicate predicateNeu =
-			cb.equal(root.get(Mitteilung_.mitteilungStatus), MitteilungStatus.NEU);
+		Predicate predicateLinkedObject = cb.equal(root.get(Mitteilung_.institution), institution);
+		Predicate predicateNeu = cb.equal(root.get(Mitteilung_.mitteilungStatus), MitteilungStatus.NEU);
 		Predicate predicateEmpfaenger =
-			cb.equal(root.get(Mitteilung_.empfaengerTyp), MitteilungTeilnehmerTyp.INSTITUTION);
+				cb.equal(root.get(Mitteilung_.empfaengerTyp), MitteilungTeilnehmerTyp.INSTITUTION);
 
 		query.where(predicateLinkedObject, predicateNeu, predicateEmpfaenger);
 
@@ -1052,19 +1032,19 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 
 	@Override
 	public void adaptOffeneMutationsmitteilungenToInstiGueltigkeitChange(
-		@Nonnull Institution institution, @Nonnull DateRange gueltigkeit) {
+			@Nonnull Institution institution, @Nonnull DateRange gueltigkeit) {
 		Collection<Betreuungsmitteilung> offeneMutationsmitteilungenForInstitution =
-			findAllBetreuungsMitteilungenForInstitution(institution);
+				findAllBetreuungsMitteilungenForInstitution(institution);
 
 		offeneMutationsmitteilungenForInstitution.forEach(mitteilung -> {
-			mitteilung.setBetreuungspensen(betreuungService.capBetreuungspensenToGueltigkeit(
-				mitteilung.getBetreuungspensen(),
-				gueltigkeit));
+			mitteilung.setBetreuungspensen(betreuungService.capBetreuungspensenToGueltigkeit(mitteilung.getBetreuungspensen(),
+					gueltigkeit));
 
 			if (mitteilung.getBetreuungspensen().isEmpty()) {
 				persistence.remove(mitteilung);
 			} else {
-				mitteilung.setMessage(createNachrichtForMutationsmeldung(mitteilung, mitteilung.getBetreuungspensen()));
+				mitteilung.setMessage(createNachrichtForMutationsmeldung(mitteilung,
+						mitteilung.getBetreuungspensen()));
 				persistence.merge(mitteilung);
 			}
 		});
@@ -1075,52 +1055,59 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 	 * Betreuung storniert aber keine andere fuer dasselbe Kind und Institution -> ok
 	 * Betreuung storniert und andere mit Pensum -> ko
 	 * Betreuung storniert mit anderen die auch storniert sind ->
-	 * 		if a mutation Mitteilung exist for this kind and Institution -> ko
-	 * 		otherwise => ok
-	 * @param betreuung
-	 * @return
+	 * if a mutation Mitteilung exist for this kind and Institution -> ko
+	 * otherwise => ok
 	 */
 	@Override
 	public boolean isBetreuungGueltigForMutation(Betreuung betreuung) {
 		// Stornieren set all Pensum to 0, if there's a pensum who's not set to 0 it means it's gueltig for Mutation
-		if (!betreuung.getBetreuungspensumContainers().stream().filter(betreuungspensumContainer ->
-			betreuungspensumContainer.getBetreuungspensumJA().getPensum().compareTo(BigDecimal.ZERO) != 0
-		).collect(Collectors.toList()).isEmpty()) {
+		if (!(betreuung.getBetreuungspensumContainers()
+				.stream()
+				.noneMatch(betreuungspensumContainer -> betreuungspensumContainer.getBetreuungspensumJA()
+						.getPensum()
+						.compareTo(BigDecimal.ZERO) != 0))) {
 			return true;
 		}
 		//Check if there is at least one more Betreuung for the same institution and kind
-		List<Betreuung> sameInstitutionBetreuungList =
-			betreuung.extractGesuch().extractAllBetreuungen().stream().filter(
-				betreuungFromGesuch -> betreuungFromGesuch.getInstitutionStammdaten()
-					.getId()
-					.equals(betreuung.getInstitutionStammdaten().getId())
-					&& !betreuungFromGesuch.getId().equals(betreuung.getId())
-					&& betreuungFromGesuch.getKind().getId().equals(betreuung.getKind().getId())
-
-			).collect(Collectors.toList());
+		List<Betreuung> sameInstitutionBetreuungList = betreuung.extractGesuch()
+				.extractAllBetreuungen()
+				.stream()
+				.filter(betreuungFromGesuch -> betreuungFromGesuch.getInstitutionStammdaten()
+						.getId()
+						.equals(betreuung.getInstitutionStammdaten().getId()) && !betreuungFromGesuch.getId()
+						.equals(betreuung.getId()) && betreuungFromGesuch.getKind()
+						.getId()
+						.equals(betreuung.getKind().getId()))
+				.collect(Collectors.toList());
 		if (sameInstitutionBetreuungList.isEmpty()) {
 			return true;
 		}
 		// otherwise we need to check if another one got a Pensum
-		if (sameInstitutionBetreuungList.stream().map(Betreuung::getBetreuungspensumContainers).filter(
-			betreuungspensumContainers -> !betreuungspensumContainers.stream()
-				.filter(betreuungspensumContainer ->
-					betreuungspensumContainer.getBetreuungspensumJA().getPensum().compareTo(BigDecimal.ZERO) != 0)
+		if (sameInstitutionBetreuungList.stream()
+				.map(Betreuung::getBetreuungspensumContainers)
+				.filter(betreuungspensumContainers -> !betreuungspensumContainers.stream()
+						.filter(betreuungspensumContainer -> betreuungspensumContainer.getBetreuungspensumJA()
+								.getPensum()
+								.compareTo(BigDecimal.ZERO) != 0)
+						.collect(Collectors.toList())
+						.isEmpty())
 				.collect(Collectors.toList())
-				.isEmpty())
-			.collect(Collectors.toList()).isEmpty()
-		) { //if none are found with a pensum set it means they are alle storniert or set to 0, we need to check if there's already a
+				.isEmpty()) { //if none are found with a pensum set it means they are alle storniert or set to 0, we
+			// need to check if
+			// there's already a
 			// mutationmitteilung for one of them, if none then we can open a new one
-			return sameInstitutionBetreuungList.stream().filter(
-				betreuungToCheck -> !findOffeneBetreuungsmitteilungenForBetreuung(betreuungToCheck).isEmpty()
-			).collect(Collectors.toList()).isEmpty();
+			return sameInstitutionBetreuungList.stream()
+					.filter(betreuungToCheck -> !findOffeneBetreuungsmitteilungenForBetreuung(betreuungToCheck).isEmpty())
+					.collect(Collectors.toList())
+					.isEmpty();
 		}
 		return false;
 	}
 
 	@Nonnull
 	@Override
-	public NeueVeranlagungsMitteilung sendNeueVeranlagungsmitteilung(@Nonnull NeueVeranlagungsMitteilung neueVeranlagungsMitteilung) {
+	public NeueVeranlagungsMitteilung sendNeueVeranlagungsmitteilung(
+			@Nonnull NeueVeranlagungsMitteilung neueVeranlagungsMitteilung) {
 		Objects.requireNonNull(neueVeranlagungsMitteilung);
 
 		neueVeranlagungsMitteilung.setEmpfaengerTyp(MitteilungTeilnehmerTyp.JUGENDAMT);
@@ -1136,61 +1123,59 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 	@Nonnull
 	private Benutzer getTechnicalKibonBenutzer() {
 		return benutzerService.findBenutzerById(TECHNICAL_KIBON_BENUTZER_ID)
-			.orElseThrow(() -> new EbeguEntityNotFoundException(EMPTY, ERROR_ENTITY_NOT_FOUND,
-				TECHNICAL_KIBON_BENUTZER_ID));
+				.orElseThrow(() -> new EbeguEntityNotFoundException(EMPTY,
+						ERROR_ENTITY_NOT_FOUND,
+						TECHNICAL_KIBON_BENUTZER_ID));
 	}
 
 	@Override
 	public String createNachrichtForMutationsmeldung(
-		@Nonnull Betreuungsmitteilung mitteilung,
-		@Nonnull Set<BetreuungsmitteilungPensum> changedBetreuungen
-	) {
+			@Nonnull Betreuungsmitteilung mitteilung,
+			@Nonnull Set<BetreuungsmitteilungPensum> changedBetreuungen) {
 		final Locale locale = LocaleThreadLocal.get();
 		assert mitteilung.getBetreuung() != null;
-		final boolean mvzEnabled = einstellungService.findEinstellung(
-			EinstellungKey.GEMEINDE_MAHLZEITENVERGUENSTIGUNG_ENABLED,
-			mitteilung.getBetreuung().extractGemeinde(),
-			mitteilung.getBetreuung().extractGesuchsperiode())
-			.getValueAsBoolean();
+		final boolean mvzEnabled =
+				einstellungService.findEinstellung(EinstellungKey.GEMEINDE_MAHLZEITENVERGUENSTIGUNG_ENABLED,
+						mitteilung.getBetreuung().extractGemeinde(),
+						mitteilung.getBetreuung().extractGesuchsperiode()).getValueAsBoolean();
 
-		final Einstellung einstellungAnzeigeTyp = einstellungService.findEinstellung(
-			EinstellungKey.PENSUM_ANZEIGE_TYP,
-			mitteilung.getBetreuung().extractGemeinde(),
-			mitteilung.getBetreuung().extractGesuchsperiode());
-		BetreuungspensumAnzeigeTyp betreuungspensumAnzeigeTyp = BetreuungspensumAnzeigeTyp.valueOf(einstellungAnzeigeTyp.getValue());
+		final Einstellung einstellungAnzeigeTyp = einstellungService.findEinstellung(EinstellungKey.PENSUM_ANZEIGE_TYP,
+				mitteilung.getBetreuung().extractGemeinde(),
+				mitteilung.getBetreuung().extractGesuchsperiode());
+		BetreuungspensumAnzeigeTyp betreuungspensumAnzeigeTyp =
+				BetreuungspensumAnzeigeTyp.valueOf(einstellungAnzeigeTyp.getValue());
 
 		BigDecimal multiplier = getMultiplierForMutationsMitteilung(mitteilung, betreuungspensumAnzeigeTyp);
 
-		return MitteilungUtil.createNachrichtForMutationsmeldung(
-			changedBetreuungen,
-			mvzEnabled,
-			locale,
-			betreuungspensumAnzeigeTyp,
-			multiplier);
+		return MitteilungUtil.createNachrichtForMutationsmeldung(changedBetreuungen,
+				mvzEnabled,
+				locale,
+				betreuungspensumAnzeigeTyp,
+				multiplier);
 	}
 
-	private BigDecimal getMultiplierForMutationsMitteilung(@Nonnull Betreuungsmitteilung mitteilung, @Nonnull BetreuungspensumAnzeigeTyp betreuungspensumAnzeigeTyp) {
-		if(!betreuungspensumAnzeigeTyp.equals(BetreuungspensumAnzeigeTyp.NUR_STUNDEN)){
+	private BigDecimal getMultiplierForMutationsMitteilung(
+			@Nonnull Betreuungsmitteilung mitteilung, @Nonnull BetreuungspensumAnzeigeTyp betreuungspensumAnzeigeTyp) {
+		if (!betreuungspensumAnzeigeTyp.equals(BetreuungspensumAnzeigeTyp.NUR_STUNDEN)) {
 			return BigDecimal.ONE;
 		}
 		assert mitteilung.getBetreuung() != null;
-		if(mitteilung.getBetreuung().isAngebotKita()) {
-			BigDecimal oeffnungstageKita = einstellungService.findEinstellung(
-				EinstellungKey.OEFFNUNGSTAGE_KITA,
-				mitteilung.getBetreuung().extractGemeinde(),
-				mitteilung.getBetreuung().extractGesuchsperiode()).getValueAsBigDecimal();
-			return BetreuungUtil.calculateOeffnungszeitPerMonthProcentual(MathUtil.EXACT.multiply(oeffnungstageKita, BetreuungUtil.ANZAHL_STUNDEN_PRO_TAG_KITA));
+		if (mitteilung.getBetreuung().isAngebotKita()) {
+			BigDecimal oeffnungstageKita = einstellungService.findEinstellung(EinstellungKey.OEFFNUNGSTAGE_KITA,
+					mitteilung.getBetreuung().extractGemeinde(),
+					mitteilung.getBetreuung().extractGesuchsperiode()).getValueAsBigDecimal();
+			return BetreuungUtil.calculateOeffnungszeitPerMonthProcentual(MathUtil.EXACT.multiply(oeffnungstageKita,
+					BetreuungUtil.ANZAHL_STUNDEN_PRO_TAG_KITA));
 		}
-		BigDecimal oeffnungstageTFO =einstellungService.findEinstellung(
-			EinstellungKey.OEFFNUNGSTAGE_TFO,
-			mitteilung.getBetreuung().extractGemeinde(),
-			mitteilung.getBetreuung().extractGesuchsperiode()).getValueAsBigDecimal();
-
-		BigDecimal oeffnungsstundenTFO =einstellungService.findEinstellung(
-				EinstellungKey.OEFFNUNGSSTUNDEN_TFO,
+		BigDecimal oeffnungstageTFO = einstellungService.findEinstellung(EinstellungKey.OEFFNUNGSTAGE_TFO,
 				mitteilung.getBetreuung().extractGemeinde(),
 				mitteilung.getBetreuung().extractGesuchsperiode()).getValueAsBigDecimal();
-		return MathUtil.DEFAULT.divide(MathUtil.DEFAULT.divide(MathUtil.DEFAULT.multiply(oeffnungstageTFO, oeffnungsstundenTFO), new BigDecimal(12)), new BigDecimal(100));
+
+		BigDecimal oeffnungsstundenTFO = einstellungService.findEinstellung(EinstellungKey.OEFFNUNGSSTUNDEN_TFO,
+				mitteilung.getBetreuung().extractGemeinde(),
+				mitteilung.getBetreuung().extractGesuchsperiode()).getValueAsBigDecimal();
+		return MathUtil.DEFAULT.divide(MathUtil.DEFAULT.divide(MathUtil.DEFAULT.multiply(oeffnungstageTFO,
+				oeffnungsstundenTFO), new BigDecimal(12)), new BigDecimal(100));
 	}
 
 	private Collection<Betreuungsmitteilung> findAllBetreuungsMitteilungenForInstitution(Institution institution) {
@@ -1200,7 +1185,7 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 
 		Join<Betreuungsmitteilung, Betreuung> betreuungJoin = root.join(Mitteilung_.betreuung);
 		Join<Betreuung, InstitutionStammdaten> stammdatenJoin =
-			betreuungJoin.join(AbstractPlatz_.institutionStammdaten);
+				betreuungJoin.join(AbstractPlatz_.institutionStammdaten);
 
 		Predicate predicateInstitution = cb.equal(stammdatenJoin.get(InstitutionStammdaten_.institution), institution);
 		Predicate notApplied = cb.notEqual(root.get(Betreuungsmitteilung_.APPLIED), true);
@@ -1212,16 +1197,15 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 	@Nonnull
 	@Override
 	public Pair<Long, List<Mitteilung>> searchMitteilungen(
-		@Nonnull MitteilungTableFilterDTO mitteilungTableFilterDto,
-		@Nonnull Boolean includeClosed
-	) {
+			@Nonnull MitteilungTableFilterDTO mitteilungTableFilterDto,
+			@Nonnull Boolean includeClosed) {
 		Pair<Long, List<Mitteilung>> result;
 		Long countResult = searchMitteilungen(mitteilungTableFilterDto, includeClosed, SearchMode.COUNT).getLeft();
 		if (countResult.equals(0L)) {    // no result found
 			result = new ImmutablePair<>(0L, Collections.emptyList());
 		} else {
 			Pair<Long, List<Mitteilung>> searchResult =
-				searchMitteilungen(mitteilungTableFilterDto, includeClosed, SearchMode.SEARCH);
+					searchMitteilungen(mitteilungTableFilterDto, includeClosed, SearchMode.SEARCH);
 			result = new ImmutablePair<>(countResult, searchResult.getRight());
 		}
 		return result;
@@ -1229,14 +1213,13 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 
 	@SuppressWarnings({ "rawtypes", "unchecked", "PMD.NcssMethodCount" }) // Je nach Abfrage ist es String oder Long
 	private Pair<Long, List<Mitteilung>> searchMitteilungen(
-		@Nonnull MitteilungTableFilterDTO mitteilungTableFilterDto,
-		@Nonnull Boolean includeClosed,
-		@Nonnull SearchMode mode
-	) {
+			@Nonnull MitteilungTableFilterDTO mitteilungTableFilterDto,
+			@Nonnull Boolean includeClosed,
+			@Nonnull SearchMode mode) {
 
 		Mandant mandant = principalBean.getMandant();
 		Benutzer user = benutzerService.getCurrentBenutzer()
-			.orElseThrow(() -> new EbeguRuntimeException("searchAllAntraege", "No User is logged in"));
+				.orElseThrow(() -> new EbeguRuntimeException("searchAllAntraege", "No User is logged in"));
 
 		CriteriaBuilder cb = persistence.getCriteriaBuilder();
 		CriteriaQuery query = SearchUtil.getQueryForSearchMode(cb, mode, "searchMitteilungen");
@@ -1262,11 +1245,8 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 		predicates.add(getPredicateEmpfaengerMitteilungTyp(cb, root));
 
 		// Mandant
-		Predicate mandantPredicate = cb.equal(
-			root.get(Mitteilung_.dossier)
-				.get(Dossier_.fall)
-				.get(Fall_.MANDANT), mandant
-		);
+		Predicate mandantPredicate =
+				cb.equal(root.get(Mitteilung_.dossier).get(Dossier_.fall).get(Fall_.MANDANT), mandant);
 		predicates.add(mandantPredicate);
 
 		filterGemeinde(user, joinGemeinde, predicates);
@@ -1277,12 +1257,11 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 			if (user.getSozialdienst() != null) {
 				Join<Fall, SozialdienstFall> joinSozialdienst = joinFall.join(Fall_.sozialdienstFall, JoinType.LEFT);
 				Predicate sozialdienstFall =
-					cb.equal(joinSozialdienst.get(SozialdienstFall_.sozialdienst), user.getSozialdienst());
+						cb.equal(joinSozialdienst.get(SozialdienstFall_.sozialdienst), user.getSozialdienst());
 				predicates.add(sozialdienstFall);
 			} else {
-				throw new EbeguRuntimeException(
-					"mitteilungTableFilterDto",
-					"Sozialdienst not defined for Sozialdienstuser");
+				throw new EbeguRuntimeException("mitteilungTableFilterDto",
+						"Sozialdienst not defined for Sozialdienstuser");
 			}
 		} else if (user.getCurrentBerechtigung().getRole().isRoleTraegerschaftInstitution()) {
 			if (user.getInstitution() != null) {
@@ -1291,7 +1270,7 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 			} else {
 				Join<Mitteilung, Institution> joinInstitution = root.join(Mitteilung_.institution, JoinType.LEFT);
 				Predicate traegerschaft =
-					cb.equal(joinInstitution.get(Institution_.traegerschaft), user.getTraegerschaft());
+						cb.equal(joinInstitution.get(Institution_.traegerschaft), user.getTraegerschaft());
 				predicates.add(traegerschaft);
 			}
 		} else {
@@ -1303,20 +1282,14 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 
 		if (predicateObjectDto != null) {
 
-
 			predicates.add(getMessageTypePredicate(root, predicateObjectDto));
 
 			// sender
 			if (predicateObjectDto.getSender() != null) {
-				predicates.add(
-					cb.or(
-						cb.like(
-							joinSender.get(Benutzer_.nachname),
-							SearchUtil.withWildcards(predicateObjectDto.getSender())),
-						cb.like(
-							joinSender.get(Benutzer_.vorname),
-							SearchUtil.withWildcards(predicateObjectDto.getSender()))
-					));
+				predicates.add(cb.or(cb.like(joinSender.get(Benutzer_.nachname),
+								SearchUtil.withWildcards(predicateObjectDto.getSender())),
+						cb.like(joinSender.get(Benutzer_.vorname),
+								SearchUtil.withWildcards(predicateObjectDto.getSender()))));
 			}
 			// fallNummer
 			if (predicateObjectDto.getFallNummer() != null) {
@@ -1328,32 +1301,24 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 			}
 			// familienName
 			if (predicateObjectDto.getFamilienName() != null) {
-				predicates.add(
-					cb.or(
-						cb.like(
-							joinBesitzer.get(Benutzer_.nachname),
-							SearchUtil.withWildcards(predicateObjectDto.getFamilienName())),
-						cb.like(
-							joinBesitzer.get(Benutzer_.vorname),
-							SearchUtil.withWildcards(predicateObjectDto.getFamilienName()))
-					));
+				predicates.add(cb.or(cb.like(joinBesitzer.get(Benutzer_.nachname),
+								SearchUtil.withWildcards(predicateObjectDto.getFamilienName())),
+						cb.like(joinBesitzer.get(Benutzer_.vorname),
+								SearchUtil.withWildcards(predicateObjectDto.getFamilienName()))));
 			}
 			// subject
 			if (predicateObjectDto.getSubject() != null) {
-				predicates.add(cb.like(
-					root.get(Mitteilung_.subject),
-					SearchUtil.withWildcards(predicateObjectDto.getSubject())));
+				predicates.add(cb.like(root.get(Mitteilung_.subject),
+						SearchUtil.withWildcards(predicateObjectDto.getSubject())));
 			}
 			// sentDatum
 			if (predicateObjectDto.getSentDatum() != null) {
 				try {
-					LocalDate searchDate = LocalDate.parse(
-						predicateObjectDto.getSentDatum(),
-						Constants.DATE_FORMATTER);
-					predicates.add(cb.between(
-						root.get(Mitteilung_.sentDatum),
-						searchDate.atStartOfDay(),
-						searchDate.plusDays(1).atStartOfDay()));
+					LocalDate searchDate = LocalDate.parse(predicateObjectDto.getSentDatum(),
+							Constants.DATE_FORMATTER);
+					predicates.add(cb.between(root.get(Mitteilung_.sentDatum),
+							searchDate.atStartOfDay(),
+							searchDate.plusDays(1).atStartOfDay()));
 				} catch (DateTimeParseException e) {
 					// Kein gueltiges Datum. Es kann kein Mitteilung geben, welches passt. Wir geben leer zurueck
 					return new ImmutablePair<>(0L, Collections.emptyList());
@@ -1361,34 +1326,30 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 			}
 			// empfaenger
 			if (predicateObjectDto.getEmpfaenger() != null && joinEmpfaenger != null) {
-				predicates.add(
-					cb.and(
-						cb.equal(joinEmpfaenger.get(Benutzer_.fullName), predicateObjectDto.getEmpfaenger())
-					));
+				predicates.add(cb.and(cb.equal(
+						joinEmpfaenger.get(Benutzer_.fullName),
+						predicateObjectDto.getEmpfaenger())));
 			}
 			if (predicateObjectDto.getEmpfaengerVerantwortung() != null && joinEmpfaengerBerechtigungen != null) {
 				Verantwortung verantwortung = Verantwortung.valueOf(predicateObjectDto.getEmpfaengerVerantwortung());
 				switch (verantwortung) {
 				case VERANTWORTUNG_BG:
-					setActiveAndRolePredicates(
-						cb,
-						joinEmpfaengerBerechtigungen,
-						predicates,
-						UserRole.getJugendamtSuperadminRoles());
+					setActiveAndRolePredicates(cb,
+							joinEmpfaengerBerechtigungen,
+							predicates,
+							UserRole.getJugendamtSuperadminRoles());
 					break;
 				case VERANTWORTUNG_TS:
-					setActiveAndRolePredicates(
-						cb,
-						joinEmpfaengerBerechtigungen,
-						predicates,
-						UserRole.getTsAndGemeindeRoles());
+					setActiveAndRolePredicates(cb,
+							joinEmpfaengerBerechtigungen,
+							predicates,
+							UserRole.getTsAndGemeindeRoles());
 					break;
 				case VERANTWORTUNG_BG_TS:
-					setActiveAndRolePredicates(
-						cb,
-						joinEmpfaengerBerechtigungen,
-						predicates,
-						UserRole.getSuperadminAllGemeindeRoles());
+					setActiveAndRolePredicates(cb,
+							joinEmpfaengerBerechtigungen,
+							predicates,
+							UserRole.getSuperadminAllGemeindeRoles());
 					break;
 				}
 			}
@@ -1399,18 +1360,15 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 			}
 			// Inkl. abgeschlossene
 			if (!includeClosed) {
-				Predicate predicateNichtErledigt = cb.not(
-					root.get(Mitteilung_.mitteilungStatus)
-					.in(MitteilungStatus.IGNORIERT, MitteilungStatus.ERLEDIGT)
-				);
+				Predicate predicateNichtErledigt = cb.not(root.get(Mitteilung_.mitteilungStatus)
+						.in(MitteilungStatus.IGNORIERT, MitteilungStatus.ERLEDIGT));
 				predicates.add(predicateNichtErledigt);
 			}
 			// gemeinde
 			if (predicateObjectDto.getGemeinde() != null) {
 
-				Predicate gemeindePredicate = cb.equal(
-					joinDossier.get(Dossier_.gemeinde).get(Gemeinde_.name),
-					predicateObjectDto.getGemeinde());
+				Predicate gemeindePredicate = cb.equal(joinDossier.get(Dossier_.gemeinde).get(Gemeinde_.name),
+						predicateObjectDto.getGemeinde());
 				predicates.add(gemeindePredicate);
 			}
 		}
@@ -1420,24 +1378,22 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 		case SEARCH:
 			//noinspection unchecked // Je nach Abfrage ist das Query String oder Long
 			query.select(root.get(AbstractEntity_.id))
-				.where(CriteriaQueryHelper.concatenateExpressions(cb, predicates));
-			constructOrderByClause(
-				mitteilungTableFilterDto,
-				cb,
-				query,
-				root,
-				joinFall,
-				joinBesitzer,
-				joinSender,
-				joinEmpfaenger,
-				joinEmpfaengerBerechtigungen,
-				user.getMandant()
-			);
+					.where(CriteriaQueryHelper.concatenateExpressions(cb, predicates));
+			constructOrderByClause(mitteilungTableFilterDto,
+					cb,
+					query,
+					root,
+					joinFall,
+					joinBesitzer,
+					joinSender,
+					joinEmpfaenger,
+					joinEmpfaengerBerechtigungen,
+					user.getMandant());
 			break;
 		case COUNT:
 			//noinspection unchecked // Je nach Abfrage ist das Query String oder Long
 			query.select(cb.countDistinct(root.get(AbstractEntity_.id)))
-				.where(CriteriaQueryHelper.concatenateExpressions(cb, predicates));
+					.where(CriteriaQueryHelper.concatenateExpressions(cb, predicates));
 			break;
 		}
 
@@ -1446,13 +1402,13 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 		switch (mode) {
 		case SEARCH:
 			List<String> mitteilungIds =
-				persistence.getCriteriaResults(query); //select all ids in order, may contain duplicates
+					persistence.getCriteriaResults(query); //select all ids in order, may contain duplicates
 			List<Mitteilung> pagedResult;
 			if (mitteilungTableFilterDto.getPagination() != null) {
 				int firstIndex = mitteilungTableFilterDto.getPagination().getStart();
 				Integer maxresults = mitteilungTableFilterDto.getPagination().getNumber();
 				List<String> orderedIdsToLoad =
-					SearchUtil.determineDistinctIdsToLoad(mitteilungIds, firstIndex, maxresults);
+						SearchUtil.determineDistinctIdsToLoad(mitteilungIds, firstIndex, maxresults);
 				pagedResult = findMitteilungen(orderedIdsToLoad);
 			} else {
 				pagedResult = findMitteilungen(mitteilungIds);
@@ -1468,7 +1424,8 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 		return result;
 	}
 
-	private static Predicate getMessageTypePredicate(Root<Mitteilung> root, MitteilungPredicateObjectDTO predicateObjectDto) {
+	private static Predicate getMessageTypePredicate(
+			Root<Mitteilung> root, MitteilungPredicateObjectDTO predicateObjectDto) {
 		List<Class> classes = Arrays.stream(predicateObjectDto.getMessageTypes()).map(messageType -> {
 			try {
 				return Class.forName("ch.dvbern.ebegu.entities." + getEntityNameForMessageType(messageType));
@@ -1478,8 +1435,7 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 			}
 		}).collect(Collectors.toList());
 
-		final Predicate messageTypePredicate = root.type().in(classes);
-		return messageTypePredicate;
+		return root.type().in(classes);
 	}
 
 	private static String getEntityNameForMessageType(MessageTypes messageTypes) {
@@ -1544,30 +1500,34 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 				break;
 			case "empfaengerVerantwortung":
 				if (joinEmpfaengerBerechtigungen != null) {
-					Predicate predicateActive = cb.between(
-						cb.literal(LocalDate.now()),
-						joinEmpfaengerBerechtigungen.get(AbstractDateRangedEntity_.gueltigkeit)
-							.get(DateRange_.gueltigAb),
-						joinEmpfaengerBerechtigungen.get(AbstractDateRangedEntity_.gueltigkeit)
-							.get(DateRange_.gueltigBis));
+					Predicate predicateActive = cb.between(cb.literal(LocalDate.now()),
+							joinEmpfaengerBerechtigungen.get(AbstractDateRangedEntity_.gueltigkeit)
+									.get(DateRange_.gueltigAb),
+							joinEmpfaengerBerechtigungen.get(AbstractDateRangedEntity_.gueltigkeit)
+									.get(DateRange_.gueltigBis));
 					Predicate predicateBg =
-						joinEmpfaengerBerechtigungen.get(Berechtigung_.role).in(UserRole.getBgOnlyRoles());
+							joinEmpfaengerBerechtigungen.get(Berechtigung_.role).in(UserRole.getBgOnlyRoles());
 					Predicate predicateTs =
-						joinEmpfaengerBerechtigungen.get(Berechtigung_.role).in(UserRole.getTsOnlyRoles());
+							joinEmpfaengerBerechtigungen.get(Berechtigung_.role).in(UserRole.getTsOnlyRoles());
 					Expression<Boolean> isActiveBg = cb.and(predicateActive, predicateBg);
 					Expression<Boolean> isActiveTs = cb.and(predicateActive, predicateTs);
 					Locale browserSprache = LocaleThreadLocal.get(); // Nur fuer Sortierung!
-					String bg = ServerMessageUtil.getMessage(Verantwortung.VERANTWORTUNG_BG.name(), browserSprache, mandant);
-					String ts = ServerMessageUtil.getMessage(Verantwortung.VERANTWORTUNG_TS.name(), browserSprache, mandant);
-					String bg_ts =
-						ServerMessageUtil.getMessage(Verantwortung.VERANTWORTUNG_BG_TS.name(), browserSprache, mandant);
+					String bg = ServerMessageUtil.getMessage(Verantwortung.VERANTWORTUNG_BG.name(),
+							browserSprache,
+							mandant);
+					String ts = ServerMessageUtil.getMessage(Verantwortung.VERANTWORTUNG_TS.name(),
+							browserSprache,
+							mandant);
+					String bg_ts = ServerMessageUtil.getMessage(Verantwortung.VERANTWORTUNG_BG_TS.name(),
+							browserSprache,
+							mandant);
 					expression = cb.selectCase().when(isActiveBg, bg).when(isActiveTs, ts).otherwise(bg_ts);
 				}
 				break;
 			default:
 				LOG.warn(
-					"Using default sort by SentDatum because there is no specific clause for predicate {}",
-					tableFilterDTO.getSort().getPredicate());
+						"Using default sort by SentDatum because there is no specific clause for predicate {}",
+						tableFilterDTO.getSort().getPredicate());
 				expression = root.get(Mitteilung_.sentDatum);
 				break;
 			}
@@ -1592,9 +1552,9 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 			//richtige reihenfolge beibehalten
 			for (String mitteilungId : mitteilungIds) {
 				listWithDuplicates.stream()
-					.filter(mitteilung -> mitteilung.getId().equals(mitteilungId))
-					.findFirst()
-					.ifPresent(set::add);
+						.filter(mitteilung -> mitteilung.getId().equals(mitteilungId))
+						.findFirst()
+						.ifPresent(set::add);
 			}
 			return new ArrayList<>(set);
 		}
@@ -1602,9 +1562,7 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 	}
 
 	private void applyMitteilungToMutation(
-		@Nonnull Gesuch gesuch,
-		@Nonnull Mitteilung mitteilung
-	) throws EbeguException {
+			@Nonnull Gesuch gesuch, @Nonnull Mitteilung mitteilung) throws EbeguException {
 		if (mitteilung instanceof Betreuungsmitteilung) {
 			Betreuungsmitteilung betreuungsmitteilung = (Betreuungsmitteilung) mitteilung;
 			applyBetreuungsmitteilungToMutation(gesuch, betreuungsmitteilung);
@@ -1615,84 +1573,87 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 	}
 
 	private void neueVeranlagungsMitteilungImAntragErsetzen(
-		@Nonnull Gesuch gesuch,
-		@Nonnull NeueVeranlagungsMitteilung mitteilung) throws EbeguException {
+			@Nonnull Gesuch gesuch, @Nonnull NeueVeranlagungsMitteilung mitteilung) throws EbeguException {
 		Objects.requireNonNull(mitteilung.getSteuerdatenResponse());
 		Objects.requireNonNull(mitteilung.getSteuerdatenResponse().getZpvNrAntragsteller());
+		Objects.requireNonNull(mitteilung.getSteuerdatenResponse().getGeburtsdatumAntragsteller());
 		authorizer.checkWriteAuthorization(gesuch);
 		authorizer.checkReadAuthorizationMitteilung(mitteilung);
-		KibonAnfrageContext kibonAnfrageContext = KibonAnfrageUtil.initKibonAnfrageContext(
-			gesuch,
-			mitteilung.getSteuerdatenResponse().getZpvNrAntragsteller());
 
-		if (kibonAnfrageContext == null) {
-			throw new EbeguRuntimeException("neueVeranlagungsMitteilungImAntragErsetzen",
-				"Die neue Veranlagung koennte nicht mit einem gueltigen Antragstellenden verlinkt werden.");
+		if (!KibonAnfrageUtil.hasGesuchSteuerdatenResponseWithZpvNummer(gesuch,
+			mitteilung.getSteuerdatenResponse().getZpvNrAntragsteller())) {
+			throw new EbeguRuntimeException(
+					"neueVeranlagungsMitteilungImAntragErsetzen",
+					"Die neue Veranlagung konnte nicht mit einem gueltigen Antragstellenden verlinkt werden.");
 		}
 
-		// status muss bei Veranlagungsmitteilung immer rechtskräftig sein. Prüfungen wurden beim Erstellen der Veranlagungsmitteilungen gemacht.
+		GesuchstellerTyp gesuchstellerTyp = KibonAnfrageUtil.getGesuchstellerTypByGeburtsdatum(gesuch,
+				mitteilung.getSteuerdatenResponse().getGeburtsdatumAntragsteller());
+
+		if (gesuchstellerTyp == null) {
+			throw new EbeguRuntimeException(
+					"neueVeranlagungsMitteilungImAntragErsetzen",
+					"Die neue Veranlagung konnte nicht mit einem gueltigen Antragstellenden verlinkt werden.");
+		}
+
+		// status muss bei Veranlagungsmitteilung immer rechtskräftig sein. Prüfungen wurden beim Erstellen der
+		// Veranlagungsmitteilungen gemacht.
 		if (mitteilung.getSteuerdatenResponse().getVeranlagungsstand() != Veranlagungsstand.RECHTSKRAEFTIG) {
-			throw new EbeguRuntimeException("neueVeranlagungsMitteilungImAntragErsetzen", "Veranlagungsstand muss rechtskräftig sein");
+			throw new EbeguRuntimeException("neueVeranlagungsMitteilungImAntragErsetzen",
+					"Veranlagungsstand muss rechtskräftig sein");
 		}
+
+		KibonAnfrageContext kibonAnfrageContext = new KibonAnfrageContext(
+				gesuch,
+				gesuchstellerTyp,
+				KibonAnfrageUtil.getZpvFromBesitzer(gesuch));
 		kibonAnfrageContext.setSteuerdatenAnfrageStatus(SteuerdatenAnfrageStatus.RECHTSKRAEFTIG);
 
-		if(!kibonAnfrageContext.hasGS1SteuerzuriffErlaubt()) {
-			throw new EbeguException(
-				"neueVeranlagungsMitteilungImAntragErsetzen",
-				ErrorCodeEnum.ERROR_FIN_SIT_MANUELLE_EINGABE,
-				gesuch.getId());
+		if (!kibonAnfrageContext.isSteuerZugriffErlaubt()) {
+			throw new EbeguException("neueVeranlagungsMitteilungImAntragErsetzen",
+					ErrorCodeEnum.ERROR_FIN_SIT_MANUELLE_EINGABE,
+					gesuch.getId());
 		}
 
 		// GEMEINSAME STEUERERKLÄRUNG (VERHEIRATET, ...)
 		if (kibonAnfrageContext.hasGS2() && kibonAnfrageContext.isGemeinsam()) {
 			if (mitteilung.getSteuerdatenResponse().getZpvNrPartner() == null) {
-				throw new EbeguException(
-					"neueVeranlagungsMitteilungImAntragErsetzen",
-					ErrorCodeEnum.ERROR_FIN_SIT_GEMEINSAM_NEUE_VERANLAGUNG_ALLEIN,
-					gesuch.getId());
+				throw new EbeguException("neueVeranlagungsMitteilungImAntragErsetzen",
+						ErrorCodeEnum.ERROR_FIN_SIT_GEMEINSAM_NEUE_VERANLAGUNG_ALLEIN,
+						gesuch.getId());
 			}
 
-			assert kibonAnfrageContext.getFinSitContGS2() != null;
-			KibonAnfrageHelper.updateFinSitSteuerdatenAbfrageGemeinsamStatusOk(
-				kibonAnfrageContext.getFinSitCont()
-					.getFinanzielleSituationJA(),
-				kibonAnfrageContext.getFinSitContGS2().getFinanzielleSituationJA(),
-				mitteilung.getSteuerdatenResponse());
-			kibonAnfrageContext.getFinSitCont()
-				.getFinanzielleSituationJA()
-				.setSteuerdatenAbfrageStatus(kibonAnfrageContext.getSteuerdatenAnfrageStatus());
-			kibonAnfrageContext.getFinSitContGS2().getFinanzielleSituationJA()
-				.setSteuerdatenAbfrageStatus(kibonAnfrageContext.getSteuerdatenAnfrageStatus());
-			finanzielleSituationService.saveFinanzielleSituation(kibonAnfrageContext.getFinSitCont(), gesuch.getId());
+			KibonAnfrageHelper.updateFinSitSteuerdatenAbfrageGemeinsamStatusOk(mitteilung.getSteuerdatenResponse(),
+					kibonAnfrageContext);
 			finanzielleSituationService.saveFinanzielleSituation(
-				kibonAnfrageContext.getFinSitContGS2(),
-				gesuch.getId());
-		// KEINE GEMEINSAME STEUERERKLÄRUNG (KONKUBINAT, ETC.)
+					kibonAnfrageContext.getFinSitCont(GesuchstellerTyp.GESUCHSTELLER_1), gesuch.getId());
+			finanzielleSituationService.saveFinanzielleSituation(
+					kibonAnfrageContext.getFinSitCont(GesuchstellerTyp.GESUCHSTELLER_2), gesuch.getId());
 		} else {
 			if (mitteilung.getSteuerdatenResponse().getZpvNrPartner() != null) {
-				throw new EbeguException(
-					"neueVeranlagungsMitteilungImAntragErsetzen",
-					ErrorCodeEnum.ERROR_FIN_SIT_ALLEIN_NEUE_VERANLAGUNG_GEMEINSAM,
-					gesuch.getId());
+				throw new EbeguException("neueVeranlagungsMitteilungImAntragErsetzen",
+						ErrorCodeEnum.ERROR_FIN_SIT_ALLEIN_NEUE_VERANLAGUNG_GEMEINSAM,
+						gesuch.getId());
 			}
-			// STEUERDATEN DES ZWEITEN ANTRAGSTELLERS
-			if (kibonAnfrageContext.getGesuch().getGesuchsteller2() != null
-				&& kibonAnfrageContext.equalZpvNrGS2(mitteilung.getSteuerdatenResponse().getZpvNrDossiertraeger())) {
-				kibonAnfrageContext.setFinSitContGS2(kibonAnfrageContext.getGesuch().getGesuchsteller2().getFinanzielleSituationContainer());
-			}
-			KibonAnfrageHelper.updateFinSitSteuerdatenAbfrageStatusOk(kibonAnfrageContext.getFinSitCont()
-				.getFinanzielleSituationJA(), mitteilung.getSteuerdatenResponse());
-			kibonAnfrageContext.getFinSitCont().getFinanzielleSituationJA().setSteuerdatenAbfrageStatus(kibonAnfrageContext.getSteuerdatenAnfrageStatus());
-			finanzielleSituationService.saveFinanzielleSituation(kibonAnfrageContext.getFinSitCont(), gesuch.getId());
+
+			handleSteuerdatenResponse(kibonAnfrageContext, mitteilung, gesuch);
 		}
 		mitteilung.setMitteilungStatus(MitteilungStatus.ERLEDIGT);
 		persistence.merge(mitteilung);
 	}
 
+	private void handleSteuerdatenResponse(
+			KibonAnfrageContext kibonAnfrageContext,
+			NeueVeranlagungsMitteilung mitteilung,
+			Gesuch gesuch) {
+		KibonAnfrageHelper.handleSteuerdatenResponse(kibonAnfrageContext, mitteilung.getSteuerdatenResponse());
+		finanzielleSituationService.saveFinanzielleSituation(
+				kibonAnfrageContext.getFinanzielleSituationContainerToUse(),
+				gesuch.getId());
+	}
+
 	private void applyBetreuungsmitteilungToMutation(
-		@Nonnull Gesuch gesuch,
-		@Nonnull Betreuungsmitteilung mitteilung
-	) {
+			@Nonnull Gesuch gesuch, @Nonnull Betreuungsmitteilung mitteilung) {
 		Objects.requireNonNull(gesuch);
 		Objects.requireNonNull(mitteilung);
 		Objects.requireNonNull(mitteilung.getBetreuung());
@@ -1700,13 +1661,13 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 		authorizer.checkWriteAuthorization(gesuch);
 		authorizer.checkReadAuthorizationMitteilung(mitteilung);
 
-		final Optional<Betreuung> betreuungToChangeOpt = gesuch.extractBetreuungsFromBetreuungNummer(
-			mitteilung.getBetreuung().getKind().getKindNummer(),
-			mitteilung.getBetreuung().getBetreuungNummer());
+		final Optional<Betreuung> betreuungToChangeOpt =
+				gesuch.extractBetreuungsFromBetreuungNummer(mitteilung.getBetreuung().getKind().getKindNummer(),
+						mitteilung.getBetreuung().getBetreuungNummer());
 		if (betreuungToChangeOpt.isPresent()) {
 			Betreuung existingBetreuung = betreuungToChangeOpt.get();
 			existingBetreuung.getBetreuungspensumContainers()
-				.clear();//delete all current Betreuungspensen before we add the modified list
+					.clear();//delete all current Betreuungspensen before we add the modified list
 			boolean betreuungsMitteilungVollstaendig = true;
 			for (final BetreuungsmitteilungPensum betPensumMitteilung : mitteilung.getBetreuungspensen()) {
 				if (!betPensumMitteilung.isVollstaendig()) {
@@ -1722,7 +1683,7 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 
 				if (betPensumMitteilung.getBetreuungspensumAbweichung() != null) {
 					betPensumMitteilung.getBetreuungspensumAbweichung()
-						.setStatus(BetreuungspensumAbweichungStatus.UEBERNOMMEN);
+							.setStatus(BetreuungspensumAbweichungStatus.UEBERNOMMEN);
 				}
 			}
 			// when we apply a Betreuungsmitteilung we have to change the status to BESTAETIGT wenn Vollstaendig,
@@ -1782,27 +1743,29 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 
 	@SuppressWarnings("OverloadedVarargsMethod")
 	private Mitteilung setMitteilungsStatusIfBerechtigt(
-		@Nonnull String mitteilungsId, @Nonnull MitteilungStatus statusRequested,
-		@Nonnull MitteilungStatus... statusRequired) {
+			@Nonnull String mitteilungsId,
+			@Nonnull MitteilungStatus statusRequested,
+			@Nonnull MitteilungStatus... statusRequired) {
 		Optional<Mitteilung> mitteilungOptional = findMitteilung(mitteilungsId);
 		Mitteilung mitteilung = mitteilungOptional.orElseThrow(() -> new EbeguRuntimeException(
-			"setMitteilungsStatusIfBerechtigt",
-			"Mitteilung not found"));
+				"setMitteilungsStatusIfBerechtigt",
+				"Mitteilung not found"));
 		return setMitteilungsStatusIfBerechtigt(mitteilung, statusRequested, statusRequired);
 	}
 
 	@SuppressWarnings("OverloadedVarargsMethod")
 	private Mitteilung setMitteilungsStatusIfBerechtigt(
-		@Nonnull Mitteilung mitteilung, @Nonnull MitteilungStatus statusRequested,
-		@Nonnull MitteilungStatus... statusRequired) {
+			@Nonnull Mitteilung mitteilung,
+			@Nonnull MitteilungStatus statusRequested,
+			@Nonnull MitteilungStatus... statusRequired) {
 		authorizer.checkReadAuthorizationMitteilung(mitteilung);
 		if (!Arrays.asList(statusRequired).contains(mitteilung.getMitteilungStatus())) {
 			throw new IllegalStateException("Mitteilung "
-				+ mitteilung.getId()
-				+ " ist im falschen Status: "
-				+ mitteilung.getMitteilungStatus()
-				+ " anstatt "
-				+ Arrays.toString(statusRequired));
+					+ mitteilung.getId()
+					+ " ist im falschen Status: "
+					+ mitteilung.getMitteilungStatus()
+					+ " anstatt "
+					+ Arrays.toString(statusRequired));
 		}
 		// Der EmpfaengerTyp (bei Institution und GS) muss uebereinstimmen
 		boolean sameEmpfaengerTyp = mitteilung.getEmpfaengerTyp() == getMitteilungTeilnehmerTypForCurrentUser();
@@ -1823,13 +1786,9 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 		Join<Mitteilung, Benutzer> joinSender = root.join(Mitteilung_.sender, JoinType.LEFT);
 		Join<Mitteilung, Benutzer> joinEmpfaenger = root.join(Mitteilung_.empfaenger, JoinType.LEFT);
 
-		Predicate predicate = cb.or(
-			cb.equal(joinSender, benutzer),
-			cb.equal(joinEmpfaenger, benutzer)
-		);
+		Predicate predicate = cb.or(cb.equal(joinSender, benutzer), cb.equal(joinEmpfaenger, benutzer));
 
-		query.select(cb.countDistinct(root.get(AbstractEntity_.id)))
-			.where(predicate);
+		query.select(cb.countDistinct(root.get(AbstractEntity_.id))).where(predicate);
 
 		Long count = (Long) persistence.getCriteriaSingleResult(query);
 
@@ -1848,42 +1807,45 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 				}
 				if (mitteilung.getBetreuung() != null) {
 					return principalBean.getBenutzer()
-						.getInstitution()
-						.equals(mitteilung.getBetreuung().getInstitutionStammdaten().getInstitution());
+							.getInstitution()
+							.equals(mitteilung.getBetreuung().getInstitutionStammdaten().getInstitution());
 				}
 				throw new EbeguRuntimeException(
-					"isMitteilungReadableForInstitution",
-					"Mitteilung for INSTITUTION must have institution or betreuung, this is likely a data error. See KSKB-2613");
+						"isMitteilungReadableForInstitution",
+						"Mitteilung for INSTITUTION must have institution or betreuung, this is likely a data "
+								+ "error. "
+								+ "See KSKB-2613");
 			}
 			return false;
-		} else if (principalBean.isCallerInAnyOfRole(
-			UserRole.ADMIN_TRAEGERSCHAFT,
-			UserRole.SACHBEARBEITER_TRAEGERSCHAFT)) {
+		} else if (principalBean.isCallerInAnyOfRole(UserRole.ADMIN_TRAEGERSCHAFT,
+				UserRole.SACHBEARBEITER_TRAEGERSCHAFT)) {
 			if (principalBean.getBenutzer().getTraegerschaft() != null) {
 				if (mitteilung.getInstitution() != null && mitteilung.getInstitution().getTraegerschaft() != null) {
 					return principalBean.getBenutzer()
-						.getTraegerschaft()
-						.equals(mitteilung.getInstitution().getTraegerschaft());
+							.getTraegerschaft()
+							.equals(mitteilung.getInstitution().getTraegerschaft());
 				}
 				if (mitteilung.getBetreuung() != null
-					&& mitteilung.getBetreuung().getInstitutionStammdaten().getInstitution().getTraegerschaft()
-					!= null) {
-					return principalBean.getBenutzer()
-						.getTraegerschaft()
-						.equals(mitteilung.getBetreuung()
-							.getInstitutionStammdaten()
-							.getInstitution()
-							.getTraegerschaft());
-				}
-				if ((mitteilung.getInstitution() != null && mitteilung.getInstitution().getTraegerschaft() == null) ||
-					(mitteilung.getBetreuung() != null
 						&& mitteilung.getBetreuung().getInstitutionStammdaten().getInstitution().getTraegerschaft()
-						== null)) {
+						!= null) {
+					return principalBean.getBenutzer()
+							.getTraegerschaft()
+							.equals(mitteilung.getBetreuung()
+									.getInstitutionStammdaten()
+									.getInstitution()
+									.getTraegerschaft());
+				}
+				if ((mitteilung.getInstitution() != null && mitteilung.getInstitution().getTraegerschaft() == null) || (
+						mitteilung.getBetreuung() != null
+								&& mitteilung.getBetreuung()
+								.getInstitutionStammdaten()
+								.getInstitution()
+								.getTraegerschaft() == null)) {
 					return false;
 				}
 				throw new EbeguRuntimeException(
-					"isMitteilungReadableForInstitution",
-					"Mitteilung for TRAEGERSCHAFT should have institution, traegerschaft or betreuung");
+						"isMitteilungReadableForInstitution",
+						"Mitteilung for TRAEGERSCHAFT should have institution, traegerschaft or betreuung");
 			}
 			return false;
 		}
@@ -1894,10 +1856,11 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 	@Override
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	public String applyBetreuungsmitteilungIfPossible(
-		@Nonnull Betreuungsmitteilung betreuungsmitteilung) {
+			@Nonnull Betreuungsmitteilung betreuungsmitteilung) {
 		try {
 			Objects.requireNonNull(betreuungsmitteilung.getBetreuung());
-			Gesuch mutation = doApplymitteilung(betreuungsmitteilung, betreuungsmitteilung.getBetreuung().extractGesuch());
+			Gesuch mutation =
+					doApplymitteilung(betreuungsmitteilung, betreuungsmitteilung.getBetreuung().extractGesuch());
 			acceptFinSit(mutation);
 			if (canGesuchBeAutomatischVerfuegt(mutation)) {
 				verfuegungService.gesuchAutomatischVerfuegen(mutation);
@@ -1905,11 +1868,8 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 			persistence.getEntityManager().flush();
 		} catch (EbeguException e) {
 			final Locale locale = LocaleThreadLocal.get();
-			String translatedError = ServerMessageUtil.translateEnumValue(
-				e.getErrorCodeEnum(),
-				locale,
-				principalBean.getMandant()
-			);
+			String translatedError =
+					ServerMessageUtil.translateEnumValue(e.getErrorCodeEnum(), locale, principalBean.getMandant());
 			return translatedError;
 		}
 		return null;
@@ -1946,13 +1906,14 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 		List<Predicate> predicates = new ArrayList<>();
 
 		Join<NeueVeranlagungsMitteilung, SteuerdatenResponse> steuerDatenJoin =
-			root.join(NeueVeranlagungsMitteilung_.steuerdatenResponse, JoinType.LEFT);
+				root.join(NeueVeranlagungsMitteilung_.steuerdatenResponse, JoinType.LEFT);
 
 		Predicate predicateId = steuerDatenJoin.get(SteuerdatenResponse_.kibonAntragId).in(gesuchIds);
 		query.where(predicateId);
 		predicates.add(predicateId);
 
-		final Predicate predicateNotApplied = root.get(Mitteilung_.mitteilungStatus).in(MitteilungStatus.NEU, MitteilungStatus.GELESEN);
+		final Predicate predicateNotApplied =
+				root.get(Mitteilung_.mitteilungStatus).in(MitteilungStatus.NEU, MitteilungStatus.GELESEN);
 		predicates.add(predicateNotApplied);
 
 		query.orderBy(cb.desc(root.get(Mitteilung_.sentDatum)));

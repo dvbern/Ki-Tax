@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2019 DV Bern AG, Switzerland
+ * Copyright (C) 2023 DV Bern AG, Switzerland
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -8,11 +8,11 @@
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
 import IDialogService = angular.material.IDialogService;
@@ -77,14 +77,7 @@ export class StepDialogController {
         this.firstOkText = $translate.instant('WEITER_ONLY');
         this.radioYes = $translate.instant('KORREKTURZAHLUNG_DIALOG_OPTION_JA');
 
-        // In diesem Fall erfolgt der Abgleich automatisch und wie bis anhin über kiBon direkt an ...
-        const radioYesHintKey = isInstitutionszahlung
-            ? 'KORREKTURZAHLUNG_DIALOG_OPTION_JA_DESCRIPTION'
-            : 'KORREKTURZAHLUNG_DIALOG_OPTION_JA_DESCRIPTION_MAHLZEITEN';
-        this.radioYesHint = $translate.instant(radioYesHintKey);
-
         this.radioNo = $translate.instant('KORREKTURZAHLUNG_DIALOG_OPTION_NEIN');
-        this.radioNoHint = $translate.instant('KORREKTURZAHLUNG_DIALOG_OPTION_NEIN_DESCRIPTION');
         this.checkboxLabel = $translate.instant('KORREKTURZAHLUNG_DIALOG_CHECKBOX_LABEL');
         this.titleStep2 = $translate.instant('KORREKTURZAHLUNG_DIALOG_STEP2_TITLE');
         this.warning = $translate.instant('KORREKTURZAHLUNG_DIALOG_IMMUTABLE');
@@ -101,7 +94,8 @@ export class StepDialogController {
             this.radioNoCases = [
                 $translate.instant('KORREKTURZAHLUNG_NO_CASE_1'),
                 $translate.instant('KORREKTURZAHLUNG_NO_CASE_2'),
-                $translate.instant('KORREKTURZAHLUNG_NO_CASE_3')];
+                $translate.instant('KORREKTURZAHLUNG_NO_CASE_3'),
+                $translate.instant('KORREKTURZAHLUNG_NO_CASE_4')];
             if (this.zahlungDirektIgnorieren) {
                 this.warningZahlungAusserhalbKibon = $translate.instant('WARNUNG_ZAHLUNG_AUSSERHALB_KIBON', {institution: institutionName});
                 this.selected = 2;

@@ -29,15 +29,23 @@ export class TSZahlungsstatusIconLabel {
     public constructor(
         private readonly translateService: TranslateService,
         private readonly zahlungsstatus: TSVerfuegungZeitabschnittZahlungsstatus,
-        private readonly betreuung: TSBetreuung
+        private readonly isBetreuungGueltig: boolean
     ) {
-        this.initIconLabel(zahlungsstatus, betreuung);
+        this.initIconLabel(zahlungsstatus, isBetreuungGueltig);
     }
 
     private initIconLabel(
         zahlungsstatus: TSVerfuegungZeitabschnittZahlungsstatus,
-        betreuung: TSBetreuung
+        isBetreuungGueltig: boolean
     ): void {
+       if (isBetreuungGueltig) {
+           this.initIconLabelGueltigeBetreuung(zahlungsstatus);
+       } else {
+           this.initIconLabelNichtGueltigeBetreuung(zahlungsstatus);
+       }
+    }
+
+    private initIconLabelGueltigeBetreuung(zahlungsstatus: TSVerfuegungZeitabschnittZahlungsstatus): void {
         switch (zahlungsstatus) {
             case TSVerfuegungZeitabschnittZahlungsstatus.VERRECHNET:
             case TSVerfuegungZeitabschnittZahlungsstatus.VERRECHNET_KEINE_BETREUUNG:
@@ -53,11 +61,32 @@ export class TSZahlungsstatusIconLabel {
                 break;
             case TSVerfuegungZeitabschnittZahlungsstatus.VERRECHNEND:
             case TSVerfuegungZeitabschnittZahlungsstatus.NEU: {
-                if (betreuung.gueltig) {
-                    this.setIconLabelZukuenftig();
-                } else {
-                    this.setIconLabelKorrigiert();
-                }
+                this.setIconLabelZukuenftig();
+                break;
+            }
+            default:
+                LOG.error(`No Icon for Zahlungsstatus ${  zahlungsstatus  } defined`);
+        }
+    }
+
+    private initIconLabelNichtGueltigeBetreuung(zahlungsstatus: TSVerfuegungZeitabschnittZahlungsstatus): void {
+        switch (zahlungsstatus) {
+            case TSVerfuegungZeitabschnittZahlungsstatus.VERRECHNET:
+            case TSVerfuegungZeitabschnittZahlungsstatus.VERRECHNET_KEINE_BETREUUNG:
+                this.setIconLabelVerrechnet();
+                break;
+            case TSVerfuegungZeitabschnittZahlungsstatus.IGNORIERT:
+            case TSVerfuegungZeitabschnittZahlungsstatus.IGNORIERT_KORRIGIERT:
+                this.setIconLabelAusserhalb();
+                break;
+            case TSVerfuegungZeitabschnittZahlungsstatus.VERRECHNET_KORRIGIERT:
+                this.setIconLabelKorrigiert();
+                break;
+            case TSVerfuegungZeitabschnittZahlungsstatus.VERRECHNEND:
+            case TSVerfuegungZeitabschnittZahlungsstatus.IGNORIEREND:
+            case TSVerfuegungZeitabschnittZahlungsstatus.NEU: {
+                //bei nicht gültigen Betreuungen wird das Label nicht angezeigt für nicht definitve Zahlungsstatus
+                this.setIconLabelUeberschreiben();
                 break;
             }
             default:
@@ -83,6 +112,11 @@ export class TSZahlungsstatusIconLabel {
     private setIconLabelKorrigiert(): void {
         this._iconLabel = this.translateService.instant('ZAHLUNGSSTATUS_KORRIGIERT_ICON');
         this._tooltipLabel = this.translateService.instant('ZAHLUNGSSTATUS_KORRIGIERT');
+    }
+
+    private setIconLabelUeberschreiben(): void {
+        //das Icon wird im Überschrieben-Fall nicht angezeigt
+        this._tooltipLabel = this.translateService.instant('ZAHLUNGSSTATUS_UEBERSCHREIBEN');
     }
 
     public get iconLabel(): string {

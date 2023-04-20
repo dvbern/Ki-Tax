@@ -312,7 +312,7 @@ public class FinanzielleSituation extends AbstractFinanzielleSituation {
 			target.setAutomatischePruefungErlaubt(this.getAutomatischePruefungErlaubt());
 			target.setMomentanSelbststaendig(this.getMomentanSelbststaendig());
 			if (this.getFinSitZusatzangabenAppenzell() != null) {
-				target.setFinSitZusatzangabenAppenzell(this.getFinSitZusatzangabenAppenzell().copyFinanzielleVerhaeltnisse(new FinSitZusatzangabenAppenzell(), copyType));
+				target.setFinSitZusatzangabenAppenzell(this.getFinSitZusatzangabenAppenzell().copyFinSitZusatzangabenAppenzell(new FinSitZusatzangabenAppenzell(), copyType));
 			}
 			break;
 		case ERNEUERUNG:

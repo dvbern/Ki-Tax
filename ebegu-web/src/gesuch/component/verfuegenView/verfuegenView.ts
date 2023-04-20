@@ -1,4 +1,5 @@
 /*
+/*
  * Copyright (C) 2023 DV Bern AG, Switzerland
  *
  * This program is free software: you can redistribute it and/or modify
@@ -45,6 +46,7 @@ import {TSBetreuung} from '../../../models/TSBetreuung';
 import {TSDownloadFile} from '../../../models/TSDownloadFile';
 import {TSEinstellung} from '../../../models/TSEinstellung';
 import {TSEinstellungenTagesschule} from '../../../models/TSEinstellungenTagesschule';
+import {TSGesuch} from '../../../models/TSGesuch';
 import {TSModulTagesschuleGroup} from '../../../models/TSModulTagesschuleGroup';
 import {TSPublicAppConfig} from '../../../models/TSPublicAppConfig';
 import {TSVerfuegung} from '../../../models/TSVerfuegung';
@@ -59,6 +61,7 @@ import {IBetreuungStateParams} from '../../gesuch.route';
 import {BerechnungsManager} from '../../service/berechnungsManager';
 import {ExportRS} from '../../service/exportRS.rest';
 import {GesuchModelManager} from '../../service/gesuchModelManager';
+import {GesuchRS} from '../../service/gesuchRS.rest';
 import {WizardStepManager} from '../../service/wizardStepManager';
 import {AbstractGesuchViewController} from '../abstractGesuchView';
 import ITimeoutService = angular.ITimeoutService;
@@ -100,7 +103,8 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
         'MandantService',
         'EinstellungRS',
         'EbeguRestUtil',
-        'DemoFeatureRS'
+        'DemoFeatureRS',
+        'GesuchRS'
     ];
 
     // this is the model...
@@ -119,11 +123,13 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
     private isVerfuegungExportEnabled: boolean;
 
     public showVerfuegung: boolean;
+    public betreuungVerfuegt: boolean = false;
     public modulGroups: TSBelegungTagesschuleModulGroup[] = [];
     public tagesschuleZeitabschnitteMitBetreuung: Array<TSVerfuegungZeitabschnitt>;
     public tagesschuleZeitabschnitteOhneBetreuung: Array<TSVerfuegungZeitabschnitt>;
 
     public isLuzern: boolean;
+    public isAppenzell: boolean;
     private isAuszahlungAnAntragstellerEnabled: boolean = false;
 
     private showAuszahlungAnInstitutionen: boolean;
@@ -131,6 +137,7 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
 
     public readonly demoFeature = TSDemoFeature.VERAENDERUNG_BEI_MUTATION;
     private demoFeatureZahlungsstatusAllowed: boolean = false;
+    public vorgaengerZeitabschnitteSchulamt: TSVerfuegungZeitabschnitt[];
 
     public constructor(
         private readonly $state: StateService,
@@ -154,7 +161,8 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
         private readonly mandantService: MandantService,
         private readonly einstellungRS: EinstellungRS,
         private readonly ebeguRestUtil: EbeguRestUtil,
-        private readonly demoFeatureRS: DemoFeatureRS
+        private readonly demoFeatureRS: DemoFeatureRS,
+        private readonly gesuchRS: GesuchRS
     ) {
 
         super(gesuchModelManager, berechnungsManager, wizardStepManager, $scope, TSWizardStepName.VERFUEGEN, $timeout);
@@ -174,6 +182,10 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
 
         this.mandantService.mandant$.pipe(map(mandant => mandant === MANDANTS.LUZERN)).subscribe(isLuzern => {
             this.isLuzern = isLuzern;
+        }, error => this.$log.error(error));
+
+        this.mandantService.mandant$.pipe(map(mandant => mandant === MANDANTS.APPENZELL_AUSSERRHODEN)).subscribe(isAppenzell => {
+            this.isAppenzell = isAppenzell;
         }, error => this.$log.error(error));
 
         this.initView();
@@ -197,6 +209,8 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
         this.demoFeatureRS.isDemoFeatureAllowed(TSDemoFeature.ZAHLUNGSSTATUS).then(res => {
             this.demoFeatureZahlungsstatusAllowed = res;
         });
+
+        this.initVorgaengerGebuehren();
     }
 
     private initView(): void {
@@ -338,8 +352,8 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
                         this.askForIgnoringIfNecessaryAndSaveVerfuegung(direktVerfuegenVerguenstigung,
                             direktVerfuegenMahlzeiten
                         ).then(() => {
-                            this.gesuchModelManager.reloadGesuch();
                             this.showVerfuegung = this.showVerfuegen();
+                            this.betreuungVerfuegt = true;
                         });
                     });
             });
@@ -843,6 +857,9 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
     }
 
     private showZahlungsstatusCol(): boolean {
+        if (EbeguUtil.isNullOrUndefined(this.getBetreuung())) {
+            return false;
+        }
         if (!this.demoFeatureZahlungsstatusAllowed) {
             return false;
         }
@@ -885,6 +902,10 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
         }
 
         return this.showAuszahlungAnEltern;
+    }
+
+    public isBetreuungGueltig(): boolean {
+        return this.getBetreuung().gueltig || this.betreuungVerfuegt;
     }
 
     public getVerguenstigungAnInstitution(zeiabschnitt: TSVerfuegungZeitabschnitt): number {
@@ -970,42 +991,87 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
 
         if (this.hasKorrekturAuszahlungInstitution()) {
             const betrag = this.gesuchModelManager.getVerfuegenToWorkWith().korrekturAusbezahltInstitution;
-            if (betrag < 0) {
-                text += this.$translate.instant('MUTATION_KORREKTUR_AUSBEZAHLT_INSTITUTION_RUECKZAHLUNG',
-                    {betrag: Math.abs(betrag).toFixed(2)});
-            } else {
-                text += this.$translate.instant('MUTATION_KORREKTUR_AUSBEZAHLT_INSTITUTION_RUECKFORDERUNG',
-                    {betrag: betrag.toFixed(2)});
-            }
-            text += this.getTextKorrekturAusbezahlt(this.getVerfuegenToWorkWith().isAlreadyIgnorierend());
+            const isZahlungIgnoriert = this.getVerfuegenToWorkWith().isAlreadyIgnorierend();
+            text += this.getTextForKorrekturAuszahlung('INSTITUTION', betrag, isZahlungIgnoriert);
             text += '\n';
         }
 
         if (this.hasKorrekturAuszahlungEltern()) {
             const betrag = this.gesuchModelManager.getVerfuegenToWorkWith().korrekturAusbezahltEltern;
-            if (betrag < 0) {
-                text += this.$translate.instant('MUTATION_KORREKTUR_AUSBEZAHLT_ELTERN_RUECKZAHLUNG',
-                    {betrag: Math.abs(betrag).toFixed(2)});
-            } else {
-                text += this.$translate.instant('MUTATION_KORREKTUR_AUSBEZAHLT_ELTERN_RUECKFORDERUNG',
-                    {betrag: betrag.toFixed(2)});
-            }
-            text += this.getTextKorrekturAusbezahlt(this.getVerfuegenToWorkWith().isAlreadyIgnorierendMahlzeiten());
+            const isZahlungIgnoriert = this.getVerfuegenToWorkWith().isAlreadyIgnorierendMahlzeiten();
+            text +=  this.getTextForKorrekturAuszahlung('ELTERN', betrag, isZahlungIgnoriert);
         }
 
         return text.trim();
     }
 
-    private getTextKorrekturAusbezahlt(isZahlungIgnored: boolean) : string {
-        if (this.getBetreuungsstatus() !== TSBetreuungsstatus.VERFUEGT) {
-            return '';
+    private getTextForKorrekturAuszahlung(keyPostFix: string, betrag: number, isZahlungIgnored: boolean) : string {
+        if (this.getBetreuungsstatus() === TSBetreuungsstatus.VERFUEGT && isZahlungIgnored) {
+            return this.getTextKorrekturForVerfuegteBetreuungAndIgnored(betrag);
         }
 
-        if (isZahlungIgnored) {
-            return ' ' + this.$translate.instant('MUTATION_KORREKTUR_AUSBEZAHLT_AUSSERHALB_KIBON');
+        let text = '';
+
+        if (betrag < 0) {
+            text += this.$translate.instant('MUTATION_KORREKTUR_AUSBEZAHLT_RUECKZAHLUNG_' + keyPostFix,
+                {betrag: Math.abs(betrag).toFixed(2)});
+        } else {
+            text += this.$translate.instant('MUTATION_KORREKTUR_AUSBEZAHLT_RUECKFORDERUNG_' + keyPostFix,
+                {betrag: betrag.toFixed(2)});
         }
 
-        return ' ' + this.$translate.instant('MUTATION_KORREKTUR_AUSBEZAHLT_INNERHLAB_KIBON');
+        if (this.getBetreuungsstatus() === TSBetreuungsstatus.VERFUEGT) {
+            text += this.$translate.instant('MUTATION_KORREKTUR_AUSBEZAHLT_INNERHLAB_KIBON');
+        }
+
+        return text.trim();
+    }
+
+    private getTextKorrekturForVerfuegteBetreuungAndIgnored(betrag: number) : string {
+        if (betrag < 0) {
+            return this.$translate.instant('MUTATION_KORREKTUR_AUSBEZAHLT_AUSSERHALB_KIBON_RUECKZAHLUNG',
+                {betrag: Math.abs(betrag).toFixed(2)});
+        } else {
+            return this.$translate.instant('MUTATION_KORREKTUR_AUSBEZAHLT_AUSSERHALB_KIBON_RUECKFORDERUNG',
+                {betrag: betrag.toFixed(2)});
+        }
+    }
+
+    public showVorgaengerGebuehren(): boolean {
+        if (EbeguUtil.isNullOrUndefined(this.getGesuch().vorgaengerId)) {
+            // beim Erstgesuch macht dies keinen Sinn
+            return false;
+        }
+
+        return !EbeguUtil.isEmptyArrayNullOrUndefined(this.vorgaengerZeitabschnitteSchulamt);
+    }
+    private initVorgaengerGebuehren(): void {
+        if (!this.getBetreuung().isAngebotSchulamt() || !this.isMutation()) {
+            return;
+        }
+
+        this.gesuchRS
+            .findVorgaengerGesuchNotIgnoriert(this.getGesuch().vorgaengerId)
+            .then(gesuch => {
+                this.vorgaengerZeitabschnitteSchulamt = this.extractVoraengerZeitabschnitteFromVorgaengerGesuch(gesuch)
+            });
+
+    }
+
+    private extractVoraengerZeitabschnitteFromVorgaengerGesuch(gesuch: TSGesuch): TSVerfuegungZeitabschnitt[] {
+        const vorgaengerKind = gesuch.kindContainers
+            .find(kc => kc.kindNummer === this.getBetreuung().kindNummer);
+
+        if (!vorgaengerKind) {
+            return [];
+        }
+        const vorgaengerBetreuung = vorgaengerKind.betreuungen
+            .find(b => b.betreuungNummer === this.getBetreuung().betreuungNummer)
+
+        if (!vorgaengerBetreuung || !vorgaengerBetreuung.isAngebotSchulamt()) {
+            return [];
+        }
+        return vorgaengerBetreuung.verfuegung.zeitabschnitte;
     }
 
 

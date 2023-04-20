@@ -606,7 +606,7 @@ export class GesuchModelManager {
     public callKiBonAnfrageAndUpdateFinSit(isGemeinsam: boolean): IPromise<TSFinanzielleSituationContainer> {
         return this.finanzielleSituationRS.updateFinSitMitSteuerdaten(
             this.gesuch.id,
-            this.getStammdatenToWorkWith(),
+            this.getGesuchstellerNumber(),
             isGemeinsam)
             .then((finSitContRespo: TSFinanzielleSituationContainer) => {
                 this.getStammdatenToWorkWith().finanzielleSituationContainer = finSitContRespo;
@@ -625,6 +625,14 @@ export class GesuchModelManager {
             .then((finSitContRespo: TSFinanzielleSituationContainer) => {
                 this.getStammdatenToWorkWith().finanzielleSituationContainer = finSitContRespo;
                 return this.getStammdatenToWorkWith().finanzielleSituationContainer;
+            });
+    }
+
+    public removeFinanzielleSitautionFromGesuchsteller2(): IPromise<TSGesuchstellerContainer> {
+        return this.finanzielleSituationRS.removeFinanzielleSituationFromGesuchsteller(this.getGesuch().gesuchsteller2)
+            .then((gesuchstellerContariner: TSGesuchstellerContainer) => {
+                this.gesuch.gesuchsteller2 = gesuchstellerContariner;
+                return this.gesuch.gesuchsteller2;
             });
     }
 

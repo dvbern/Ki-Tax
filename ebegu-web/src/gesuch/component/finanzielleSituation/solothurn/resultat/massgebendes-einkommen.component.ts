@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022 DV Bern AG, Switzerland
+ * Copyright (C) 2023 DV Bern AG, Switzerland
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -8,23 +8,17 @@
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {
-    ChangeDetectionStrategy,
-    ChangeDetectorRef,
-    Component,
-    Input,
-    OnInit
-} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnDestroy, OnInit} from '@angular/core';
+import {Observable, Subscription} from 'rxjs';
 import {LogFactory} from '../../../../../app/core/logging/LogFactory';
 import {TSFinanzielleSituationResultateDTO} from '../../../../../models/dto/TSFinanzielleSituationResultateDTO';
-import {FinanzielleSituationSolothurnService} from '../finanzielle-situation-solothurn.service';
 
 const LOG = LogFactory.createLog('ResultatComponent');
 
@@ -34,7 +28,10 @@ const LOG = LogFactory.createLog('ResultatComponent');
     styleUrls: ['./massgebendes-einkommen.component.less'],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class MassgebendesEinkommenComponent implements OnInit {
+export class MassgebendesEinkommenComponent implements OnInit, OnDestroy {
+
+    @Input()
+    public massgebendesEinkommen$: Observable<TSFinanzielleSituationResultateDTO>;
 
     @Input()
     public isGemeinsam: boolean;
@@ -49,10 +46,10 @@ export class MassgebendesEinkommenComponent implements OnInit {
     public antragstellerNummer: number;
 
     public resultate?: TSFinanzielleSituationResultateDTO;
+    private subscription: Subscription;
 
     public constructor(
-        protected ref: ChangeDetectorRef,
-        private readonly finSitSoService: FinanzielleSituationSolothurnService
+        protected ref: ChangeDetectorRef
     ) {
     }
 
@@ -60,8 +57,12 @@ export class MassgebendesEinkommenComponent implements OnInit {
         this.setupCalculation();
     }
 
+    public ngOnDestroy(): void {
+        this.subscription.unsubscribe();
+    }
+
     public setupCalculation(): void {
-        this.finSitSoService.massgebendesEinkommenStore().subscribe((resultate: TSFinanzielleSituationResultateDTO) => {
+        this.subscription = this.massgebendesEinkommen$.subscribe((resultate: TSFinanzielleSituationResultateDTO) => {
                 this.resultate = resultate;
                 this.ref.markForCheck();
             }, error => LOG.error(error)
