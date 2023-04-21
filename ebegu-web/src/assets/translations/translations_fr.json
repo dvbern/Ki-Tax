@@ -498,6 +498,7 @@
     "PROVISORISCHE_BERECHNUNG_ANZEIGEN_LINK": "Calcul provisoire",
     "KINDER_HINT1": "Veuillez saisir les enfants bénéficiant d'un accueil extrafamilial et les autres enfants vivant dans votre ménage.",
     "KINDER_HINT2": "Veuillez également saisir les enfants qui ne vivent plus chez vous mais pour lesquels vous pouvez encore faire valoir encore des déductions.",
+    "KINDER_HINT3": "",
     "KINDER_TOOLTIP_REQUIRED": "Au moins un enfant bénéficiant d'une prise en charge externe doit être saisi. ",
     "KINDER_UEBERPRUEFEN_STATUS": "Contrôler",
     "KINDER_UEBERPRUEFEN_HINT": "Veuillez vérifier les données et compléter les informations manquantes.",
@@ -3031,5 +3032,6 @@
     "ZAHLUNG_AN_INSTITUTION":  "Zahlung Institution",
     "ZAHLUNG_AN_ELTERN": "Zahlung Mahlzeiten",
     "ZAHLUNGSSTATUS_HELP": "<p>Diese Spalte zeigt den Status der Auszahlung dieses Zeitabschnitts. Es gibt vier Möglichkeiten:</p><br><table class=\"table\">\t<tr>\t\t<th>Symbol</th>\t\t<th>Status</th>\t\t<th>Beschreibung</th>\t</tr>\t<tr>\t\t<td>v</td>\t\t<td>Verrechnet</td>\t\t<td>Dieser Zeitabschnitt wurde bereits in einer früheren Zahlung berücksichtigt und ausbezahlt.</td>\t</tr>\t<tr>\t\t<td>a</td>\t\t<td>Ausserhalb von kiBon</td>\t\t<td>Die Rückforderung/zusätzliche Zahlung, die aus der Korrektur dieses Zeitabschnitts erfolgt, muss ausserhalb von kiBon gemacht werden, da die Korrekturzahlung im Zahlungslauf ignoriert wurde. Die Gemeinde verrechnet den Differenzbetrag direkt mit den Antragstellenden.</td>\t</tr>\t<tr>\t\t<td>z</td>\t\t<td>Zukünftige Zahlung</td>\t\t<td>Dieser Zeitabschnitt wurde noch nicht ausbezahlt und wird in einer zukünftigen Zahlung berücksichtigt.</td>\t</tr>\t<tr>\t\t<td>k</td>\t\t<td>Korrigiert</td>\t\t<td>Dieser Zeitabschnitt wurde bereits in einer früheren Zahlung berücksichtigt, wurde aber inzwischen durch eine weitere Mutation korrigiert.</td>\t</tr>\t<tr>\t\t<td></td>\t\t<td>Überschrieben</td>\t\t<td>Dieser Zeitabschnitt wurde in einer Folgemutation überschrieben.</td>\t</tr></table>",
+    "INSTITUTION_NOT_FOUND_HINT": "",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

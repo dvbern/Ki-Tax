@@ -568,6 +568,7 @@
     "PROVISORISCHE_BERECHNUNG_ANZEIGEN_LINK": "Zu den provisorischen Berechnungen",
     "KINDER_HINT1": "Bitte erfassen Sie sowohl die familienergänzend betreuten Kinder wie auch die weiteren Kinder, die in Ihrem Haushalt wohnen.",
     "KINDER_HINT2": "Ebenfalls sind Kinder zu erfassen, welche nicht mehr zu Hause wohnen, für die Sie aber noch einen Kinderabzug machen können.",
+    "KINDER_HINT3": "",
     "KINDER_TOOLTIP_REQUIRED": "Es muss mindestens ein Kind mit externer Betreuung erfasst werden",
     "KINDER_UEBERPRUEFEN_STATUS": "Überprüfen",
     "KINDER_UEBERPRUEFEN_HINT": "Bitte überprüfen Sie die Angaben und ergänzen Sie die fehlenden Informationen.",
@@ -3110,10 +3111,6 @@
     "MUTATION_OEFFNEN": "Mutation öffnen",
     "FIN_SIT_GELOESCHT": "Finanzielle Situation gelöscht",
     "FREIGABEQUITTUNG_WARNUNG": "",
-    "FINANZIELLE_VERHAELTNISSE_BERECHNUNG": "Berechnung der Finanziellen Verhältnisse",
-    "FINANZIELLE_VERHAELTNISSE_ECKDATEN": "Eckdaten",
-    "FINANZIELLE_VERHAELTNISSE_STEUERBARES_EINKOMMEN": "Steuerbares Einkommen resp. Reineinkommen (Staatssteuer)",
-    "FINANZIELLE_VERHAELTNISSE_STEUERBARES_EINKOMMEN_HELP": "",
     "SEARCH_INAKTIVE_PERIODEN": "Inaktive Perioden durchsuchen",
     "NUR_LATS_UMWANDELN": "Zu regulärer Tagesschule umwandeln",
     "NUR_LATS_UMWANDELN_CONFIRM": "Hiermit wird die Institution aus dem Status \"nur für Lastenausgleich\" zu einer Institution im Status \"Konfiguration\" umgewandelt. Dieser Schritt kann nicht rückgängig gemacht werden. Fortfahren?",
@@ -3131,5 +3128,6 @@
     "ZAHLUNG_AN_INSTITUTION":  "Zahlung Institution",
     "ZAHLUNG_AN_ELTERN": "Zahlung Mahlzeiten",
     "ZAHLUNGSSTATUS_HELP": "<p>Diese Spalte zeigt den Status der Auszahlung dieses Zeitabschnitts. Es gibt vier Möglichkeiten:</p><br><table class=\"table\">\t<tr>\t\t<th>Symbol</th>\t\t<th>Status</th>\t\t<th>Beschreibung</th>\t</tr>\t<tr>\t\t<td>v</td>\t\t<td>Verrechnet</td>\t\t<td>Dieser Zeitabschnitt wurde bereits in einer früheren Zahlung berücksichtigt und ausbezahlt.</td>\t</tr>\t<tr>\t\t<td>a</td>\t\t<td>Ausserhalb von kiBon</td>\t\t<td>Die Rückforderung/zusätzliche Zahlung, die aus der Korrektur dieses Zeitabschnitts erfolgt, muss ausserhalb von kiBon gemacht werden, da die Korrekturzahlung im Zahlungslauf ignoriert wurde. Die Gemeinde verrechnet den Differenzbetrag direkt mit den Antragstellenden.</td>\t</tr>\t<tr>\t\t<td>z</td>\t\t<td>Zukünftige Zahlung</td>\t\t<td>Dieser Zeitabschnitt wurde noch nicht ausbezahlt und wird in einer zukünftigen Zahlung berücksichtigt.</td>\t</tr>\t<tr>\t\t<td>k</td>\t\t<td>Korrigiert</td>\t\t<td>Dieser Zeitabschnitt wurde bereits in einer früheren Zahlung berücksichtigt, wurde aber inzwischen durch eine weitere Mutation korrigiert.</td>\t</tr>\t<tr>\t\t<td></td>\t\t<td>Überschrieben</td>\t\t<td>Dieser Zeitabschnitt wurde in einer Folgemutation überschrieben.</td>\t</tr></table>",
+    "INSTITUTION_NOT_FOUND_HINT": "",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }
