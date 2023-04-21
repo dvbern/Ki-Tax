@@ -247,4 +247,8 @@ export class InstitutionListComponent extends AbstractAdminViewX implements OnIn
     public isSuperAdmin(): boolean {
         return this.authServiceRS.isRole(TSRole.SUPER_ADMIN);
     }
+
+    public isAdminBG(): boolean {
+        return this.authServiceRS.isRole(TSRole.ADMIN_BG);
+    }
 }
