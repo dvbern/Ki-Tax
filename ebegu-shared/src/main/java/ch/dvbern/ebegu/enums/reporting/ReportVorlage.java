@@ -186,13 +186,13 @@ public enum ReportVorlage {
 		"/reporting/Zahlungen_DE.xlsx",
 		ReportFileName.ZAHLUNGEN,
 		Constants.DATA,
-		MergeFieldGesuchStichtag.class
+		MergeFieldZahlungen.class
 	),
 	VORLAGE_REPORT_ZAHLUNGEN_FR(
 		"/reporting/Zahlungen_FR.xlsx",
 		ReportFileName.ZAHLUNGEN,
 		Constants.DATA,
-		MergeFieldGesuchStichtag.class
+		MergeFieldZahlungen.class
 	);
 
 	@Nonnull

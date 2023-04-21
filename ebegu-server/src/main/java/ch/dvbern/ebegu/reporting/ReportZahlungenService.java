@@ -23,6 +23,7 @@ import java.util.Locale;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import ch.dvbern.ebegu.enums.reporting.ReportVorlage;
 import ch.dvbern.ebegu.util.UploadFileInfo;
 import ch.dvbern.oss.lib.excelmerger.ExcelMergeException;
 
@@ -30,6 +31,7 @@ public interface ReportZahlungenService {
 
 	@Nonnull
 	UploadFileInfo generateExcelReportZahlungen(
+		@Nonnull ReportVorlage workJobType,
 		@Nonnull Locale locale,
 		@Nonnull String gesuchsperiodeId,
 		@Nullable String gemeindeId,

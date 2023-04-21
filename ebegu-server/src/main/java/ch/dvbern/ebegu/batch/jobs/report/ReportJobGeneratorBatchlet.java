@@ -261,6 +261,7 @@ public class ReportJobGeneratorBatchlet extends AbstractBatchlet {
 				final String gemeindeId = getParameters().getProperty(WorkJobConstants.GEMEINDE_ID_PARAM);
 				final String institutionId = getParameters().getProperty(WorkJobConstants.INSTITUTION_ID_PARAM);
 				return this.reportZahlungenService.generateExcelReportZahlungen(
+					workJobType,
 					locale,
 					gesuchsperiodeId,
 					gemeindeId,

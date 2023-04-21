@@ -18,6 +18,7 @@
 package ch.dvbern.ebegu.services.reporting;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -32,25 +33,42 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+import javax.validation.constraints.NotNull;
 
+import ch.dvbern.ebegu.authentication.PrincipalBean;
 import ch.dvbern.ebegu.entities.Zahlung;
 import ch.dvbern.ebegu.entities.Zahlungsauftrag;
 import ch.dvbern.ebegu.entities.Zahlungsauftrag_;
+import ch.dvbern.ebegu.entities.Zahlungsposition;
 import ch.dvbern.ebegu.enums.ZahlungslaufTyp;
+import ch.dvbern.ebegu.enums.ZahlungspositionStatus;
+import ch.dvbern.ebegu.enums.reporting.ReportVorlage;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.ebegu.reporting.ReportZahlungenService;
+import ch.dvbern.ebegu.reporting.zahlungen.ReportZahlungenExcelConverter;
+import ch.dvbern.ebegu.reporting.zahlungen.ZahlungenDataRow;
 import ch.dvbern.ebegu.services.Authorizer;
+import ch.dvbern.ebegu.services.FileSaverService;
 import ch.dvbern.ebegu.services.GemeindeService;
 import ch.dvbern.ebegu.services.GesuchsperiodeService;
+import ch.dvbern.ebegu.util.Constants;
+import ch.dvbern.ebegu.util.ServerMessageUtil;
 import ch.dvbern.ebegu.util.UploadFileInfo;
 import ch.dvbern.lib.cdipersistence.Persistence;
 import ch.dvbern.oss.lib.excelmerger.ExcelMergeException;
+import ch.dvbern.oss.lib.excelmerger.ExcelMergerDTO;
+import ch.dvbern.oss.lib.excelmerger.RowFiller;
+import ch.dvbern.oss.lib.excelmerger.mergefields.MergeFieldProvider;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
 
 @Stateless
 @Local(ReportZahlungenService.class)
 public class ReportZahlungenServiceBean extends AbstractReportServiceBean implements ReportZahlungenService {
+
+	private ReportZahlungenExcelConverter zahlungenConverter = new ReportZahlungenExcelConverter();
 
 	@Inject
 	private Persistence persistence;
@@ -64,32 +82,57 @@ public class ReportZahlungenServiceBean extends AbstractReportServiceBean implem
 	@Inject
 	private Authorizer authorizer;
 
+	@Inject
+	private FileSaverService fileSaverService;
+
+	@Inject
+	private PrincipalBean principalBean;
+
 	@Nonnull
 	@Override
 	public UploadFileInfo generateExcelReportZahlungen(
+		@Nonnull ReportVorlage reportVorlage,
 		@Nonnull Locale locale,
 		@Nonnull String gesuchsperiodeId,
 		@Nullable String gemeindeId,
 		@Nullable String institutionId
 	) throws ExcelMergeException, IOException {
+		ExcelMergerDTO mergerDTO = new ExcelMergerDTO();
+
+		InputStream is = ReportLastenausgleichBGZeitabschnitteServiceBean.class.getResourceAsStream(reportVorlage.getTemplatePath());
+		Workbook workbook = createWorkbook(is, reportVorlage);
+		final XSSFSheet sheet = (XSSFSheet) workbook.getSheet(reportVorlage.getDataSheetName());
+
 		var zahlungsauftrage = findZahlungsauftrageWithAuszahlungsTypInstitution(gesuchsperiodeId, gemeindeId);
+		var reportData = zahlungsauftraegeToDataRows(zahlungsauftrage, institutionId);
+		final RowFiller rowFiller = fillAndMergeRows(reportVorlage, sheet, reportData);
 
-		for (Zahlungsauftrag zahlungsauftrag : zahlungsauftrage) {
-			authorizer.checkReadAuthorizationZahlungsauftrag(zahlungsauftrag);
+		byte[] bytes = createWorkbook(rowFiller.getSheet().getWorkbook());
+		rowFiller.getSheet().getWorkbook().dispose();
 
-			// DO STUFF WITH ZAHLUNGSAUFTRAG
+		return fileSaverService.save(
+			bytes,
+			ServerMessageUtil.translateEnumValue(
+				reportVorlage.getDefaultExportFilename(),
+				locale,
+				principalBean.getMandant()) + ".xlsx",
+			Constants.TEMP_REPORT_FOLDERNAME,
+			getContentTypeForExport());
+	}
 
-			var zahlungen = zahlungsauftrag.getZahlungen();
-			if (institutionId != null) {
-				zahlungen = filterZahlungenByInstitution(zahlungen, institutionId);
-			}
+	private RowFiller fillAndMergeRows(
+		ReportVorlage reportResource,
+		XSSFSheet sheet,
+		List<ZahlungenDataRow> reportData
+	) {
 
-			for (Zahlung zahlung : zahlungen) {
-				authorizer.checkReadAuthorizationZahlung(zahlung);
-				// DO STUFF WITH ZAHLUNGEN
-			}
-		}
-		return null;
+		RowFiller rowFiller = RowFiller.initRowFiller(
+			sheet,
+			MergeFieldProvider.toMergeFields(reportResource.getMergeFields()),
+			reportData.size());
+
+		zahlungenConverter.mergeRows(rowFiller, reportData);
+		return rowFiller;
 	}
 
 	private List<Zahlungsauftrag> findZahlungsauftrageWithAuszahlungsTypInstitution(
@@ -124,6 +167,83 @@ public class ReportZahlungenServiceBean extends AbstractReportServiceBean implem
 
 		query.where(CriteriaQueryHelper.concatenateExpressions(cb, predicates));
 		return persistence.getCriteriaResults(query);
+	}
+
+
+	private List<ZahlungenDataRow> zahlungsauftraegeToDataRows(
+		@Nonnull List<Zahlungsauftrag> zahlungsauftrage,
+		@NotNull String institutionId
+	) {
+		var rows = new ArrayList<ZahlungenDataRow>();
+		for (Zahlungsauftrag zahlungsauftrag : zahlungsauftrage) {
+			authorizer.checkReadAuthorizationZahlungsauftrag(zahlungsauftrag);
+
+			var zahlungen = zahlungsauftrag.getZahlungen();
+			if (institutionId != null) {
+				zahlungen = filterZahlungenByInstitution(zahlungen, institutionId);
+			}
+
+			for (Zahlung zahlung : zahlungen) {
+
+				for (Zahlungsposition zahlungsposition : zahlung.getZahlungspositionen()) {
+					authorizer.checkReadAuthorizationZahlung(zahlung);
+					rows.add(zahlungToDataRow(zahlungsauftrag, zahlung, zahlungsposition));
+				}
+			}
+		}
+		return rows;
+	}
+
+	public static ZahlungenDataRow zahlungToDataRow(
+		@Nonnull Zahlungsauftrag zahlungsauftrag,
+		@Nonnull Zahlung zahlung,
+		@Nonnull Zahlungsposition zahlungsposition
+	) {
+
+		var row = new ZahlungenDataRow();
+		row.setZahlungslaufTitle(zahlungsauftrag.getBeschrieb());
+		row.setGemeinde(zahlungsauftrag.getGemeinde().getName());
+		row.setInstitution(zahlung.extractInstitution().getName());
+		row.setTimestampZahlungslauf(zahlungsauftrag.getTimestampErstellt());
+		row.setKindVorname(zahlungsposition.getKind().getVorname());
+		row.setKindNachname(zahlungsposition.getKind().getNachname());
+		row.setReferenznummer(zahlungsposition.getVerfuegungZeitabschnitt().getVerfuegung().getBetreuung().getBGNummer());
+		row.setZeitabschnittVon(zahlungsposition.getVerfuegungZeitabschnitt().getGueltigkeit().getGueltigAb());
+		row.setZeitabschnittBis(zahlungsposition.getVerfuegungZeitabschnitt().getGueltigkeit().getGueltigBis());
+		row.setBgPensum(zahlungsposition.getVerfuegungZeitabschnitt().getBgPensum());
+		row.setBetrag(zahlungsposition.getBetrag());
+		row.setKorrektur(ZahlungspositionStatus.NORMAL != zahlungsposition.getStatus());
+		row.setIgnorieren(zahlungsposition.isIgnoriert());
+
+		// auszahlungsdaten nur bei ignorierten zeitabschnitten zeigen
+		if (!zahlungsposition.isIgnoriert()) {
+			return row;
+		}
+
+		var famSitContainer = zahlungsposition
+			.getVerfuegungZeitabschnitt()
+			.getVerfuegung()
+			.getBetreuung()
+			.getKind()
+			.getGesuch()
+			.getFamiliensituationContainer();
+
+		if (famSitContainer == null
+			|| famSitContainer.getFamiliensituationJA() == null
+			|| famSitContainer.getFamiliensituationJA().getAuszahlungsdaten() == null) {
+			return row;
+		}
+
+		var auszahlungsdaten = famSitContainer
+			.getFamiliensituationJA()
+			.getAuszahlungsdaten();
+
+		if (auszahlungsdaten.getIban() != null) {
+			row.setIbanEltern(auszahlungsdaten.getIban().getIban());
+		}
+		row.setKontoEltern(auszahlungsdaten.getKontoinhaber());
+
+		return row;
 	}
 
 	private List<Zahlung> filterZahlungenByInstitution(
