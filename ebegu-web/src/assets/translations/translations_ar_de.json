@@ -8,6 +8,7 @@
     "EINKOMMENSVERSCHLECHTERUNG": "Einkommensänderung",
     "EKVI_EINKOMMENSVERSCHLECHTERUNG_FUER_BASISJAHR": "Einkommensänderung {{gesuchsteller}} {{basisjahr}}",
     "EVK_EINKOMMEN_JAHR": "Massgebendes Einkommen {{basisjahr}}",
+    "EVK_EINKOMMEN_OHNE_JAHR": "Massgebendes Einkommen aufgrund der letzten Steuerveranlagung",
     "EKV_RESULTATE": "Resultate Einkommensänderung {{basisjahr}}",
     "EKV_RESULTATE_ANTRAGSTELLENDE": "Resultate Einkommensänderung {{antragsteller}} {{basisjahr}}",
     "EVK_IN_PROZENT": "Einkommensänderung in %",
