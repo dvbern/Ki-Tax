@@ -25,6 +25,7 @@ import java.util.function.Function;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import ch.dvbern.ebegu.dto.FinanzielleSituationResultateDTO;
 import ch.dvbern.ebegu.entities.Familiensituation;
 import ch.dvbern.ebegu.entities.FinSitZusatzangabenAppenzell;
 import ch.dvbern.ebegu.entities.GemeindeStammdaten;
@@ -107,17 +108,21 @@ public class FinanzielleSituationPdfGeneratorAppenzell extends FinanzielleSituat
 			@Nonnull PdfGenerator generator,
 			@Nonnull Document document
 	) {
+		Objects.requireNonNull(finanzDatenDTO);
 		document.add(createIntroBasisjahr());
 
-		document.add(createTableEinkommen());
-		document.add(createTableVermoegen());
+		document.add(createTableEinkommen(angabenGS1Bj, angabenGS2Bj, angabenGS1BjUrspruenglich, angabenGS2BjUrspruenglich, finanzDatenDTO));
+		document.add(createTableVermoegen(angabenGS1Bj, angabenGS2Bj, angabenGS1BjUrspruenglich, angabenGS2BjUrspruenglich));
 
 	}
 
-	private Element createTableEinkommen() {
-		Objects.requireNonNull(gesuch.getGesuchsteller1());
-		Objects.requireNonNull(finanzDatenDTO);
-		
+	private Element createTableEinkommen(
+			FinSitZusatzangabenAppenzell gs1Angaben,
+			@Nullable FinSitZusatzangabenAppenzell gs2Angaben,
+			@Nullable FinSitZusatzangabenAppenzell gs1AngabenUrsprünglich,
+			@Nullable FinSitZusatzangabenAppenzell gs2AngabenUrspruenglich,
+			FinanzielleSituationResultateDTO finSitDTO
+	) {
 		FinanzielleSituationTable einkommenTable = new FinanzielleSituationTable(
 				getPageConfiguration(),
 				hasSecondGesuchsteller,
@@ -128,84 +133,84 @@ public class FinanzielleSituationPdfGeneratorAppenzell extends FinanzielleSituat
 		FinanzielleSituationRow steurbaresEinkommenRow = createRow(
 				translate(STEUERBARES_EINKOMMEN_ROW, mandant),
 				FinSitZusatzangabenAppenzell::getSteuerbaresEinkommen,
-				angabenGS1Bj,
-				angabenGS2Bj,
-				angabenGS1BjUrspruenglich,
-				angabenGS2BjUrspruenglich);
+				gs1Angaben,
+				gs2Angaben,
+				gs1AngabenUrsprünglich,
+				gs2AngabenUrspruenglich);
 
 		FinanzielleSituationRow saeule3aRow = createRow(
 				translate(SAEULE3A_ROW, mandant),
 				FinSitZusatzangabenAppenzell::getSaeule3a,
-				angabenGS1Bj,
-				angabenGS2Bj,
-				angabenGS1BjUrspruenglich,
-				angabenGS2BjUrspruenglich);
+				gs1Angaben,
+				gs2Angaben,
+				gs1AngabenUrsprünglich,
+				gs2AngabenUrspruenglich);
 
 		FinanzielleSituationRow saeule3aNichtBvgRow = createRow(
 				translate(SAEULE3ANICHTBVG_ROW, mandant),
 				FinSitZusatzangabenAppenzell::getSaeule3aNichtBvg,
-				angabenGS1Bj,
-				angabenGS2Bj,
-				angabenGS1BjUrspruenglich,
-				angabenGS2BjUrspruenglich);
+				gs1Angaben,
+				gs2Angaben,
+				gs1AngabenUrsprünglich,
+				gs2AngabenUrspruenglich);
 
 		FinanzielleSituationRow beruflicheVorsorgeRow = createRow(
 				translate(BERUFLICHE_VORSORGE_ROW, mandant),
 				FinSitZusatzangabenAppenzell::getBeruflicheVorsorge,
-				angabenGS1Bj,
-				angabenGS2Bj,
-				angabenGS1BjUrspruenglich,
-				angabenGS2BjUrspruenglich);
+				gs1Angaben,
+				gs2Angaben,
+				gs1AngabenUrsprünglich,
+				gs2AngabenUrspruenglich);
 
 		FinanzielleSituationRow liegenschaftsaufwandRow = createRow(
 				translate(LIEGENSCHAFTSAUFWAND_ROW, mandant),
 				FinSitZusatzangabenAppenzell::getLiegenschaftsaufwand,
-				angabenGS1Bj,
-				angabenGS2Bj,
-				angabenGS1BjUrspruenglich,
-				angabenGS2BjUrspruenglich);
+				gs1Angaben,
+				gs2Angaben,
+				gs1AngabenUrsprünglich,
+				gs2AngabenUrspruenglich);
 
 		FinanzielleSituationRow einkuenfteBgsaRow = createRow(
 				translate(EINKUENFTE_BGSA_ROW, mandant),
 				FinSitZusatzangabenAppenzell::getEinkuenfteBgsa,
-				angabenGS1Bj,
-				angabenGS2Bj,
-				angabenGS1BjUrspruenglich,
-				angabenGS2BjUrspruenglich);
+				gs1Angaben,
+				gs2Angaben,
+				gs1AngabenUrsprünglich,
+				gs2AngabenUrspruenglich);
 
 		FinanzielleSituationRow vorjahresverlustRow = createRow(
 				translate(VORJAHRESVERLUSTE_ROW, mandant),
 				FinSitZusatzangabenAppenzell::getVorjahresverluste,
-				angabenGS1Bj,
-				angabenGS2Bj,
-				angabenGS1BjUrspruenglich,
-				angabenGS2BjUrspruenglich);
+				gs1Angaben,
+				gs2Angaben,
+				gs1AngabenUrsprünglich,
+				gs2AngabenUrspruenglich);
 
 		FinanzielleSituationRow politischeParteiSpendeRow = createRow(
 				translate(POLITISCHE_PARTEI_SPENDE_ROW, mandant),
 				FinSitZusatzangabenAppenzell::getPolitischeParteiSpende,
-				angabenGS1Bj,
-				angabenGS2Bj,
-				angabenGS1BjUrspruenglich,
-				angabenGS2BjUrspruenglich);
+				gs1Angaben,
+				gs2Angaben,
+				gs1AngabenUrsprünglich,
+				gs2AngabenUrspruenglich);
 
 		FinanzielleSituationRow leistungJurPersRow = createRow(
 				translate(LEISTUNG_AN_JURISTISCHE_PERSONEN_ROW, mandant),
 				FinSitZusatzangabenAppenzell::getLeistungAnJuristischePersonen,
-				angabenGS1Bj,
-				angabenGS2Bj,
-				angabenGS1BjUrspruenglich,
-				angabenGS2BjUrspruenglich);
+				gs1Angaben,
+				gs2Angaben,
+				gs1AngabenUrsprünglich,
+				gs2AngabenUrspruenglich);
 
 		FinanzielleSituationRow totalRow = createRow(translate(EINKOMMEN_TOTAL),
-				hasSecondGesuchsteller ? null : finanzDatenDTO.getMassgebendesEinkVorAbzFamGrGS1(),
+				hasSecondGesuchsteller ? null : finSitDTO.getMassgebendesEinkVorAbzFamGrGS1(),
 				hasSecondGesuchsteller,
-				hasSecondGesuchsteller ? finanzDatenDTO.getMassgebendesEinkVorAbzFamGrGS1() : null);
+				hasSecondGesuchsteller ? finSitDTO.getMassgebendesEinkVorAbzFamGrGS1() : null);
 
 		FinanzielleSituationRow einkommenTitle = new FinanzielleSituationRow(
 				translate(EIKOMMEN_TITLE, mandant), extractFullnameGS1());
 
-		if (angabenGS2Bj != null) {
+		if (gs2Angaben != null) {
 			setPartnerInNameNullsafe(einkommenTitle);
 		}
 
@@ -249,7 +254,12 @@ public class FinanzielleSituationPdfGeneratorAppenzell extends FinanzielleSituat
 		return gesuch.getFamiliensituationContainer().getFamiliensituationJA();
 	}
 
-	private Element createTableVermoegen() {
+	private Element createTableVermoegen(
+			FinSitZusatzangabenAppenzell gs1Angaben,
+			@Nullable FinSitZusatzangabenAppenzell gs2Angaben,
+			@Nullable FinSitZusatzangabenAppenzell gs1AngabenUrspruenglich,
+			@Nullable FinSitZusatzangabenAppenzell gs2AngabenUrspruenglich
+	) {
 		Objects.requireNonNull(gesuch.getGesuchsteller1());
 		FinanzielleSituationTable vermoegenTable = new FinanzielleSituationTable(
 				getPageConfiguration(),
@@ -264,14 +274,14 @@ public class FinanzielleSituationPdfGeneratorAppenzell extends FinanzielleSituat
 
 		FinanzielleSituationRow vermoegenRow = createRow(translate(STEUERBARES_VERMOEGEN_ROW, mandant),
 				FinSitZusatzangabenAppenzell::getSteuerbaresVermoegen,
-				angabenGS1Bj,
-				angabenGS2Bj,
-				angabenGS1BjUrspruenglich,
-				angabenGS2BjUrspruenglich);
+				gs1Angaben,
+				gs2Angaben,
+				gs1AngabenUrspruenglich,
+				gs2AngabenUrspruenglich);
 
 		FinanzielleSituationRow vermoegen15ProzentRow = new FinanzielleSituationRow(translate(STEUERBARES_VERMOEGEN_15_PROZENT_ROW, mandant),"");
 		FinanzielleSituationRow vermoegenTotalRow = new FinanzielleSituationRow(translate(STEUERBARES_VERMOEGEN_TOTAL_ROW, mandant),"");
-		if (angabenGS2Bj != null) {
+		if (gs2Angaben != null) {
 			setPartnerInNameNullsafe(vermoegenTitle);
 
 			vermoegenTotalRow.setGs2(getVermoegenTotal());
@@ -283,7 +293,7 @@ public class FinanzielleSituationPdfGeneratorAppenzell extends FinanzielleSituat
 		vermoegenTable.addRow(vermoegenTitle);
 		vermoegenTable.addRow(vermoegenRow);
 		// Zwischentotal ist unnötig, wenn es keinen GS2 gibt
-		if (angabenGS2Bj !=null) {
+		if (gs2Angaben !=null) {
 			vermoegenTable.addRow(vermoegenTotalRow);
 		}
 		vermoegenTable.addRow(vermoegen15ProzentRow);
