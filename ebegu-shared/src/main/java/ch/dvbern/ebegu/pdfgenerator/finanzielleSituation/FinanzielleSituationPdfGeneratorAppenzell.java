@@ -57,6 +57,7 @@ public class FinanzielleSituationPdfGeneratorAppenzell extends FinanzielleSituat
 	private static final String STEUERBARES_VERMOEGEN_TOTAL_ROW = "PdfGeneration_FinSit_SteuerbaresVermoegenTotalTitle";
 	private static final String EIKOMMEN_TITLE = "PdfGeneration_FinSit_EinkommenTitle";
 	private static final String VERMOEGEN = "PdfGeneration_FinSit_VermoegenTitle";
+	private static final String PARTNERIN = "PdfGeneration_Partnerin";
 
 	private FinSitZusatzangabenAppenzell angabenGS1Bj = null;
 	@Nullable
@@ -197,16 +198,15 @@ public class FinanzielleSituationPdfGeneratorAppenzell extends FinanzielleSituat
 				angabenGS2BjUrspruenglich);
 
 		FinanzielleSituationRow totalRow = createRow(translate(EINKOMMEN_TOTAL),
-				finanzDatenDTO.getMassgebendesEinkVorAbzFamGrGS1(),
+				hasSecondGesuchsteller ? null : finanzDatenDTO.getMassgebendesEinkVorAbzFamGrGS1(),
 				hasSecondGesuchsteller,
-				finanzDatenDTO.getMassgebendesEinkVorAbzFamGrGS2());
+				hasSecondGesuchsteller ? finanzDatenDTO.getMassgebendesEinkVorAbzFamGrGS1() : null);
 
 		FinanzielleSituationRow einkommenTitle = new FinanzielleSituationRow(
 				translate(EIKOMMEN_TITLE, mandant), extractFullnameGS1());
 
 		if (angabenGS2Bj != null) {
-			requireNonNull(gesuch.getGesuchsteller2());
-			einkommenTitle.setGs2(gesuch.getGesuchsteller2().extractFullName());
+			setPartnerInNameNullsafe(einkommenTitle);
 		}
 
 		einkommenTable.addRow(einkommenTitle);
@@ -223,9 +223,18 @@ public class FinanzielleSituationPdfGeneratorAppenzell extends FinanzielleSituat
 		return einkommenTable.createTable();
 	}
 
+	private void setPartnerInNameNullsafe(FinanzielleSituationRow row) {
+		if (getFamSitNullSafe().isSpezialFallAR()) {
+			row.setGs2(translate(PARTNERIN));
+		} else {
+			requireNonNull(gesuch.getGesuchsteller2());
+			row.setGs2(gesuch.getGesuchsteller2().extractFullName());
+		}
+	}
+
 	@Nonnull
 	private String extractFullnameGS1() {
-		Familiensituation famSitGS1 = getFamSitGS1NullSafe();
+		Familiensituation famSitGS1 = getFamSitNullSafe();
 		requireNonNull(gesuch.getGesuchsteller1());
 		if (Boolean.FALSE.equals(famSitGS1.getGemeinsameSteuererklaerung())) {
 			return gesuch.getGesuchsteller1().extractFullName();
@@ -234,7 +243,7 @@ public class FinanzielleSituationPdfGeneratorAppenzell extends FinanzielleSituat
 				" + " + gesuch.getGesuchsteller2().extractFullName() : "");
 	}
 
-	private Familiensituation getFamSitGS1NullSafe() {
+	private Familiensituation getFamSitNullSafe() {
 		Objects.requireNonNull(gesuch.getFamiliensituationContainer());
 		Objects.requireNonNull(gesuch.getFamiliensituationContainer().getFamiliensituationJA());
 		return gesuch.getFamiliensituationContainer().getFamiliensituationJA();
@@ -263,8 +272,7 @@ public class FinanzielleSituationPdfGeneratorAppenzell extends FinanzielleSituat
 		FinanzielleSituationRow vermoegen15ProzentRow = new FinanzielleSituationRow(translate(STEUERBARES_VERMOEGEN_15_PROZENT_ROW, mandant),"");
 		FinanzielleSituationRow vermoegenTotalRow = new FinanzielleSituationRow(translate(STEUERBARES_VERMOEGEN_TOTAL_ROW, mandant),"");
 		if (angabenGS2Bj != null) {
-			requireNonNull(gesuch.getGesuchsteller2());
-			vermoegenTitle.setGs2(gesuch.getGesuchsteller2().extractFullName());
+			setPartnerInNameNullsafe(vermoegenTitle);
 
 			vermoegenTotalRow.setGs2(getVermoegenTotal());
 			vermoegen15ProzentRow.setGs2(getVermoegen15Prozent());
@@ -330,6 +338,13 @@ public class FinanzielleSituationPdfGeneratorAppenzell extends FinanzielleSituat
 
 	@Nullable
 	private FinSitZusatzangabenAppenzell getAngabenGS2(Gesuch gesuchToUse, boolean urspruenglich) {
+		if (getFamSitNullSafe().isSpezialFallAR()) {
+			var angabenGS1 = getAngabenGS1(gesuchToUse, urspruenglich);
+			if (angabenGS1 != null) {
+				return angabenGS1.getZusatzangabenPartner();
+			}
+			return null;
+		}
 		if (gesuchToUse.getGesuchsteller2() == null
 				|| gesuchToUse.getGesuchsteller2().getFinanzielleSituationContainer() == null) {
 			return null;
