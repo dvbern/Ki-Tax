@@ -15,29 +15,34 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {KiBonMandant} from './MANDANTS';
-import {MandantVisitor} from './MandantVisitor';
+import {Component, Inject} from '@angular/core';
+import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 
-export class MandantLogoNameVisitor implements MandantVisitor<string> {
+/**
+ * This Dialog should be used for asking the user to confirm an action
+ */
+@Component({
+    selector: 'dv-ng-confirm-dialog',
+    templateUrl: './dv-ng-cancel-dialog.template.html'
+})
+export class DvNgCancelDialogComponent {
 
-    public process(mandant: KiBonMandant): string {
-        return mandant.accept(this);
+    public frage: string = '';
+
+    public constructor(
+        private readonly dialogRef: MatDialogRef<DvNgCancelDialogComponent>,
+        @Inject(MAT_DIALOG_DATA) data: any
+    ) {
+        if (data) {
+            this.frage = data.frage;
+        }
     }
 
-    public visitAppenzellAusserrhoden(): string {
-        return 'logo-kibon-ar.svg';
+    public ok(): void {
+        this.dialogRef.close(true);
     }
 
-    public visitBern(): string {
-        return 'logo-kibon-bern.svg';
+    public cancel(): void {
+        this.dialogRef.close();
     }
-
-    public visitLuzern(): string {
-        return 'logo-kibon-luzern.svg';
-    }
-
-    public visitSolothurn(): string {
-        return 'logo-kibon-solothurn.svg';
-    }
-
 }

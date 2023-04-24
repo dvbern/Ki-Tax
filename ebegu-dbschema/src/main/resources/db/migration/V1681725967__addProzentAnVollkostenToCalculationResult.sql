@@ -1,5 +1,6 @@
+
 /*
- * Copyright (C) 2021 DV Bern AG, Switzerland
+ * Copyright (C) 2023 DV Bern AG, Switzerland
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -15,15 +16,8 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.dvbern.ebegu.ws.neskovanp;
+alter TABLE bgcalculation_result
+add beitragshoehe_prozent integer;
 
-import java.time.LocalDate;
-
-import ch.dvbern.ebegu.entities.SteuerdatenResponse;
-import ch.dvbern.ebegu.errors.KiBonAnfrageServiceException;
-
-public interface IKibonAnfrageWebService {
-
-	SteuerdatenResponse getSteuerDaten(Integer zpvNummer, LocalDate geburtsdatum, String gesuchId, Integer gesuchsperiodeBeginnJahr) throws
-		KiBonAnfrageServiceException;
-}
+alter TABLE bgcalculation_result_aud
+add beitragshoehe_prozent integer;

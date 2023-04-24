@@ -41,6 +41,7 @@ import ch.dvbern.ebegu.entities.SteuerdatenResponse;
 import ch.dvbern.ebegu.enums.AntragStatus;
 import ch.dvbern.ebegu.enums.Eingangsart;
 import ch.dvbern.ebegu.enums.EinstellungKey;
+import ch.dvbern.ebegu.enums.GesuchstellerTyp;
 import ch.dvbern.ebegu.enums.SteuerdatenAnfrageStatus;
 import ch.dvbern.ebegu.nesko.handler.KibonAnfrageContext;
 import ch.dvbern.ebegu.nesko.handler.KibonAnfrageHandler;
@@ -68,7 +69,6 @@ import org.junit.jupiter.params.provider.EnumSource.Mode;
 
 import static ch.dvbern.ebegu.inbox.handler.PlatzbestaetigungTestUtil.failed;
 import static org.easymock.EasyMock.anyObject;
-import static org.easymock.EasyMock.eq;
 import static org.easymock.EasyMock.expect;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
@@ -148,7 +148,7 @@ public class NeueVeranlagungEventHandlerTest extends EasyMockSupport {
 			.getFinanzielleSituationJA()
 			.setSteuerdatenResponse(steuerdatenResponse);
 
-		kibonAnfrageContext = NeueVeranlagungTestUtil.initKibonAnfrageContext(gesuch_1GS);
+		kibonAnfrageContext = new KibonAnfrageContext(gesuch_1GS, GesuchstellerTyp.GESUCHSTELLER_1, zpvNummer);
 	}
 
 	@Test
@@ -172,7 +172,7 @@ public class NeueVeranlagungEventHandlerTest extends EasyMockSupport {
 	void steuerAbfrageNichtErfolgreich() {
 		expectGesuchFound();
 		expect(finanzielleSituationService.calculateResultate(anyObject())).andReturn(new FinanzielleSituationResultateDTO());
-		expect(kibonAnfrageHandler.handleKibonNeueVeranlagungAnfrage(anyObject(), eq(false))).andReturn(kibonAnfrageContext);
+		expect(kibonAnfrageHandler.handleKibonAnfrage(gesuch_1GS, GesuchstellerTyp.GESUCHSTELLER_1)).andReturn(kibonAnfrageContext);
 		testIgnored("Keine neue Veranlagung gefunden");
 	}
 
@@ -181,7 +181,7 @@ public class NeueVeranlagungEventHandlerTest extends EasyMockSupport {
 		kibonAnfrageContext.setSteuerdatenAnfrageStatus(SteuerdatenAnfrageStatus.PROVISORISCH);
 		expectGesuchFound();
 		expect(finanzielleSituationService.calculateResultate(anyObject())).andReturn(new FinanzielleSituationResultateDTO());
-		expect(kibonAnfrageHandler.handleKibonNeueVeranlagungAnfrage(anyObject(), eq(false))).andReturn(kibonAnfrageContext);
+		expect(kibonAnfrageHandler.handleKibonAnfrage(gesuch_1GS, GesuchstellerTyp.GESUCHSTELLER_1)).andReturn(kibonAnfrageContext);
 		testIgnored("Die neue Veranlagung ist noch nicht Rechtskraeftig");
 	}
 
@@ -192,7 +192,7 @@ public class NeueVeranlagungEventHandlerTest extends EasyMockSupport {
 		Einstellung einstellung = findEinstellungMinUnterschied();
 		expect(einstellung.getValueAsBigDecimal()).andReturn(new BigDecimal(50));
 		expect(finanzielleSituationService.calculateResultate(anyObject())).andReturn(new FinanzielleSituationResultateDTO());
-		expect(kibonAnfrageHandler.handleKibonNeueVeranlagungAnfrage(anyObject(), eq(false))).andReturn(kibonAnfrageContext);
+		expect(kibonAnfrageHandler.handleKibonAnfrage(gesuch_1GS, GesuchstellerTyp.GESUCHSTELLER_1)).andReturn(kibonAnfrageContext);
 		expect(finanzielleSituationService.calculateResultate(anyObject())).andReturn(new FinanzielleSituationResultateDTO());
 		testIgnored("Keine Meldung erstellt. Das massgebende Einkommen hat sich um 0 Franken verändert. Der konfigurierte Schwellenwert zur Benachrichtigung liegt bei 50 Franken");
 	}
@@ -266,23 +266,21 @@ public class NeueVeranlagungEventHandlerTest extends EasyMockSupport {
 	}
 
 	private void expectEverythingUntilCompare(BigDecimal einkommenNeu) {
-		{
-			kibonAnfrageContext.setSteuerdatenAnfrageStatus(SteuerdatenAnfrageStatus.RECHTSKRAEFTIG);
-			kibonAnfrageContext.setSteuerdatenResponse(steuerdatenResponse);
-			FinanzielleSituationResultateDTO finanzielleSituationResultateDTOOrig =
-				new FinanzielleSituationResultateDTO();
-			finanzielleSituationResultateDTOOrig.setMassgebendesEinkVorAbzFamGr(new BigDecimal(100000));
-			FinanzielleSituationResultateDTO finanzielleSituationResultateDTONeu =
-				new FinanzielleSituationResultateDTO();
-			finanzielleSituationResultateDTONeu.setMassgebendesEinkVorAbzFamGr(einkommenNeu);
-			expectGesuchFound();
-			expect(finanzielleSituationService.calculateResultate(anyObject())).andReturn(
-				finanzielleSituationResultateDTOOrig);
-			expect(kibonAnfrageHandler.handleKibonNeueVeranlagungAnfrage(anyObject(), eq(false))).andReturn(
-				kibonAnfrageContext);
-			expect(finanzielleSituationService.calculateResultate(anyObject())).andReturn(
-				finanzielleSituationResultateDTONeu);
-		}
+		kibonAnfrageContext.setSteuerdatenAnfrageStatus(SteuerdatenAnfrageStatus.RECHTSKRAEFTIG);
+		kibonAnfrageContext.setSteuerdatenResponse(steuerdatenResponse);
+		FinanzielleSituationResultateDTO finanzielleSituationResultateDTOOrig =
+			new FinanzielleSituationResultateDTO();
+		finanzielleSituationResultateDTOOrig.setMassgebendesEinkVorAbzFamGr(new BigDecimal(100000));
+		FinanzielleSituationResultateDTO finanzielleSituationResultateDTONeu =
+			new FinanzielleSituationResultateDTO();
+		finanzielleSituationResultateDTONeu.setMassgebendesEinkVorAbzFamGr(einkommenNeu);
+		expectGesuchFound();
+		expect(finanzielleSituationService.calculateResultate(anyObject())).andReturn(
+			finanzielleSituationResultateDTOOrig);
+		expect(kibonAnfrageHandler.handleKibonAnfrage(gesuch_1GS,  GesuchstellerTyp.GESUCHSTELLER_1)).andReturn(
+			kibonAnfrageContext);
+		expect(finanzielleSituationService.calculateResultate(anyObject())).andReturn(
+			finanzielleSituationResultateDTONeu);
 	}
 
 	private void expectMitteilungIsSend(GemeindeStammdaten gemeindeStammdaten) {

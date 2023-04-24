@@ -622,7 +622,7 @@ export class GesuchModelManager {
     public callKiBonAnfrageAndUpdateFinSit(isGemeinsam: boolean): IPromise<TSFinanzielleSituationContainer> {
         return this.finanzielleSituationRS.updateFinSitMitSteuerdaten(
             this.gesuch.id,
-            this.getStammdatenToWorkWith(),
+            this.getGesuchstellerNumber(),
             isGemeinsam)
             .then((finSitContRespo: TSFinanzielleSituationContainer) => {
                 this.getStammdatenToWorkWith().finanzielleSituationContainer = finSitContRespo;

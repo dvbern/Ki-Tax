@@ -82,7 +82,7 @@
     "FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF_JA": "Oui",
     "FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF_NEIN": "Non, saisir les informations manuellement et télécharger les justificatifs.",
     "FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF_HELP": "Si vous acceptez que les données fiscales soient importées, aucune opération manuelle n’est requise et aucun justificatif concernant votre situation financière ne doit être téléversé. Il se peut que les informations saisies soient comparées avec les données fiscales, même sans votre consentement. Cette opération a généralement lieu lorsque l’avis de taxation est disponible.",
-    "FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF_FAILED": "Les données fiscales ne peuvent pas être récupérées. Cela peut être dû au fait que la déclaration d’impôt n’a pas encore été remplie ou traitée. Veuillez également contrôler que la date de naissance de {{gs1}} est correctement indiquée.",
+    "FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF_FAILED": "Les données fiscales ne peuvent pas être récupérées. Cela peut être dû au fait que la déclaration d’impôt n’a pas encore été remplie ou traitée par le stade de taxation. Veuillez également contrôler que la date de naissance de {{gs1}} est correctement indiquée.",
     "FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF_KEIN_PARTNER_GEMEINSAM": "Les données fiscales ne peuvent pas être récupérées.  <br>Il semble s’agir d’une déclaration d’impôt pour une personne seule. Selon vos indications, vous avez remis votre déclaration d’impôt avec une autre personne.",
     "FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF_PARTNER_NICHT_GEMEINSAM": "Les données fiscales ne peuvent pas être récupérées. <br>La déclaration d’impôt semble avoir été remise en commun. <br>Vous avez indiqué avoir rempli la déclaration d’impôt en votre nom uniquement.",
     "FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF_FAILED_GEBURTSDATUM": "Les données fiscales ne peuvent pas être récupérées. <br>La date de naissance de {{namegs2}} figurant dans la déclaration d’impôt ne correspond pas à celle indiquée dans kiBon.",
@@ -498,6 +498,7 @@
     "PROVISORISCHE_BERECHNUNG_ANZEIGEN_LINK": "Calcul provisoire",
     "KINDER_HINT1": "Veuillez saisir les enfants bénéficiant d'un accueil extrafamilial et les autres enfants vivant dans votre ménage.",
     "KINDER_HINT2": "Veuillez également saisir les enfants qui ne vivent plus chez vous mais pour lesquels vous pouvez encore faire valoir encore des déductions.",
+    "KINDER_HINT3": "",
     "KINDER_TOOLTIP_REQUIRED": "Au moins un enfant bénéficiant d'une prise en charge externe doit être saisi. ",
     "KINDER_UEBERPRUEFEN_STATUS": "Contrôler",
     "KINDER_UEBERPRUEFEN_HINT": "Veuillez vérifier les données et compléter les informations manquantes.",
@@ -3031,5 +3032,7 @@
     "ZAHLUNG_AN_INSTITUTION":  "Zahlung Institution",
     "ZAHLUNG_AN_ELTERN": "Zahlung Mahlzeiten",
     "ZAHLUNGSSTATUS_HELP": "<p>Diese Spalte zeigt den Status der Auszahlung dieses Zeitabschnitts. Es gibt vier Möglichkeiten:</p><br><table class=\"table\">\t<tr>\t\t<th>Symbol</th>\t\t<th>Status</th>\t\t<th>Beschreibung</th>\t</tr>\t<tr>\t\t<td>v</td>\t\t<td>Verrechnet</td>\t\t<td>Dieser Zeitabschnitt wurde bereits in einer früheren Zahlung berücksichtigt und ausbezahlt.</td>\t</tr>\t<tr>\t\t<td>a</td>\t\t<td>Ausserhalb von kiBon</td>\t\t<td>Die Rückforderung/zusätzliche Zahlung, die aus der Korrektur dieses Zeitabschnitts erfolgt, muss ausserhalb von kiBon gemacht werden, da die Korrekturzahlung im Zahlungslauf ignoriert wurde. Die Gemeinde verrechnet den Differenzbetrag direkt mit den Antragstellenden.</td>\t</tr>\t<tr>\t\t<td>z</td>\t\t<td>Zukünftige Zahlung</td>\t\t<td>Dieser Zeitabschnitt wurde noch nicht ausbezahlt und wird in einer zukünftigen Zahlung berücksichtigt.</td>\t</tr>\t<tr>\t\t<td>k</td>\t\t<td>Korrigiert</td>\t\t<td>Dieser Zeitabschnitt wurde bereits in einer früheren Zahlung berücksichtigt, wurde aber inzwischen durch eine weitere Mutation korrigiert.</td>\t</tr>\t<tr>\t\t<td></td>\t\t<td>Überschrieben</td>\t\t<td>Dieser Zeitabschnitt wurde in einer Folgemutation überschrieben.</td>\t</tr></table>",
+    "INSTITUTION_NOT_FOUND_HINT": "",
+    "POPUPTEXT_AFTER_REGISTRIEREN": "",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

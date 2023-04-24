@@ -15,29 +15,34 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+import {
+    getTSEinschulungTypValues,
+    getTSEinschulungTypValuesAppenzellAusserrhoden,
+    getTSEinschulungTypValuesLuzern,
+    TSEinschulungTyp
+} from '../../../models/enums/TSEinschulungTyp';
 import {KiBonMandant} from './MANDANTS';
 import {MandantVisitor} from './MandantVisitor';
 
-export class MandantLogoNameVisitor implements MandantVisitor<string> {
+export class EinschulungTypesVisitor implements MandantVisitor<ReadonlyArray<TSEinschulungTyp>> {
 
-    public process(mandant: KiBonMandant): string {
+    public process(mandant: KiBonMandant): ReadonlyArray<TSEinschulungTyp> {
         return mandant.accept(this);
     }
-
-    public visitAppenzellAusserrhoden(): string {
-        return 'logo-kibon-ar.svg';
+    public visitBern(): ReadonlyArray<TSEinschulungTyp> {
+        return getTSEinschulungTypValues();
     }
 
-    public visitBern(): string {
-        return 'logo-kibon-bern.svg';
+    public visitLuzern(): ReadonlyArray<TSEinschulungTyp> {
+        return getTSEinschulungTypValuesLuzern();
     }
 
-    public visitLuzern(): string {
-        return 'logo-kibon-luzern.svg';
+    public visitAppenzellAusserrhoden(): ReadonlyArray<TSEinschulungTyp> {
+        return getTSEinschulungTypValuesAppenzellAusserrhoden();
     }
 
-    public visitSolothurn(): string {
-        return 'logo-kibon-solothurn.svg';
+    public visitSolothurn(): ReadonlyArray<TSEinschulungTyp> {
+        return this.visitBern();
     }
 
 }

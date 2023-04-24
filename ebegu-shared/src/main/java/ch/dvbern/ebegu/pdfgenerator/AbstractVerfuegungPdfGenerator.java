@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018 DV Bern AG, Switzerland
+ * Copyright (C) 2023 DV Bern AG, Switzerland
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -8,11 +8,11 @@
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
 package ch.dvbern.ebegu.pdfgenerator;
@@ -227,7 +227,7 @@ public abstract class AbstractVerfuegungPdfGenerator extends DokumentAnFamilieGe
 		addZusatzTextIfAvailable(document);
 	}
 
-	private void createDokumentKeinAnspruch(Document document, PdfGenerator generator) {
+	protected void createDokumentKeinAnspruch(Document document, PdfGenerator generator) {
 		DateRange gp = gesuch.getGesuchsperiode().getGueltigkeit();
 		LocalDate eingangsdatum = gesuch.getEingangsdatum() != null ? gesuch.getEingangsdatum() : LocalDate.now();
 		Kind kind = betreuung.getKind().getKindJA();
@@ -387,10 +387,14 @@ public abstract class AbstractVerfuegungPdfGenerator extends DokumentAnFamilieGe
 			intro.add(new TableRowLabelValue(BEMERKUNG, translate(ERSETZT_VERFUEGUNG,
 				Constants.DATE_FORMATTER.format(betreuung.getVorgaengerVerfuegung().getTimestampErstellt()))));
 		}
-		intro.add(new TableRowLabelValue(ANGEBOT, translateEnumValue(betreuung.getBetreuungsangebotTyp())));
+		addAngebotToIntro(intro);
 		intro.add(new TableRowLabelValue(BETREUUNG_INSTITUTION, institutionName));
 		intro.add(new TableRowLabelValue(GEMEINDE, gemeinde));
 		return PdfUtil.createIntroTable(intro, sprache, mandant);
+	}
+
+	protected void addAngebotToIntro(List<TableRowLabelValue> intro) {
+		intro.add(new TableRowLabelValue(ANGEBOT, translateEnumValue(betreuung.getBetreuungsangebotTyp())));
 	}
 
 	@Nonnull
@@ -427,6 +431,7 @@ public abstract class AbstractVerfuegungPdfGenerator extends DokumentAnFamilieGe
 		table.addCell(createCell(true, Element.ALIGN_CENTER, translate(getPensumTitle()), null, fontTabelle, 1, 3));
 		table.addCell(createCell(true, Element.ALIGN_RIGHT, translate(VOLLKOSTEN), null, fontTabelle, 2, 1));
 
+		addTitleBeitraghoheInProzent(table);
 		addTitleBerechneterGutschein(table);
 		addTitleBetreuungsGutschein(table);
 		addTitleNrElternBeitrag(table);
@@ -489,6 +494,7 @@ public abstract class AbstractVerfuegungPdfGenerator extends DokumentAnFamilieGe
 				fontTabelle,
 				1,
 				1));
+			addValueaBeitraghoheInProzent(table, abschnitt.getBeitraghoheProzent());
 			addValueBerechneterGutschein(table, abschnitt.getVerguenstigungOhneBeruecksichtigungVollkosten());
 			addValueBetreuungsGutschein(table, abschnitt.getVerguenstigungOhneBeruecksichtigungMinimalbeitrag());
 			addValueElternBeitrag(table, abschnitt.getMinimalerElternbeitragGekuerzt());
@@ -550,6 +556,10 @@ public abstract class AbstractVerfuegungPdfGenerator extends DokumentAnFamilieGe
 		if (showColumnAnInsitutionenAuszahlen) {
 			table.addCell(createCell(true, Element.ALIGN_RIGHT, translate(GUTSCHEIN_AN_INSTITUTION), Color.LIGHT_GRAY, fontTabelle, 2, 1));
 		}
+	}
+
+	protected void addTitleBeitraghoheInProzent(PdfPTable table) {
+		//no-op ausser in Appenzell
 	}
 
 	protected void addValueBerechneterGutschein(PdfPTable table, BigDecimal verguenstigungOhneBeruecksichtigungVollkosten) {
@@ -624,6 +634,10 @@ public abstract class AbstractVerfuegungPdfGenerator extends DokumentAnFamilieGe
 			1));
 	}
 
+	protected void addValueaBeitraghoheInProzent(PdfPTable table, Integer beitraghoheInProzent) {
+		//no-op ausser in Appenzell
+	}
+
 	protected abstract float[] getVerfuegungColumnWidths();
 
 	private float[] calculateVerfuegungColumnWidths() {
@@ -687,7 +701,7 @@ public abstract class AbstractVerfuegungPdfGenerator extends DokumentAnFamilieGe
 		return result;
 	}
 
-	private void removeLeadingZeitabschnitteWithNoPositivBetreuungsPensum(List<VerfuegungZeitabschnitt> result) {
+	protected void removeLeadingZeitabschnitteWithNoPositivBetreuungsPensum(List<VerfuegungZeitabschnitt> result) {
 		ListIterator<VerfuegungZeitabschnitt> listIterator = result.listIterator();
 		while (listIterator.hasNext()) {
 			VerfuegungZeitabschnitt zeitabschnitt = listIterator.next();

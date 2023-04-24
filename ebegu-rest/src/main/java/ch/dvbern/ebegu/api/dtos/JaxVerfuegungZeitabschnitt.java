@@ -139,6 +139,11 @@ public class JaxVerfuegungZeitabschnitt extends JaxAbstractDateRangedDTO {
 
 	private boolean auszahlungAnEltern;
 
+	@Max(100)
+	@Min(0)
+	@Nullable
+	private Integer beitragshoeheProzent;
+
 	public Integer getErwerbspensumGS1() {
 		return erwerbspensumGS1;
 	}
@@ -452,5 +457,14 @@ public class JaxVerfuegungZeitabschnitt extends JaxAbstractDateRangedDTO {
 
 	public void setAuszahlungAnEltern(boolean auszahlungAnEltern) {
 		this.auszahlungAnEltern = auszahlungAnEltern;
+	}
+
+	@Nullable
+	public Integer getBeitragshoeheProzent() {
+		return beitragshoeheProzent;
+	}
+
+	public void setBeitragshoeheProzent(@Nullable Integer beitragshoeheProzent) {
+		this.beitragshoeheProzent = beitragshoeheProzent;
 	}
 }

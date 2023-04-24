@@ -3537,6 +3537,7 @@ export class EbeguRestUtil {
                 this.parseTsCalculationResult(zeitabschnittFromServer.tsCalculationResultOhnePaedagogischerBetreuung);
             verfuegungZeitabschnittTS.verguenstigungMahlzeitTotal = zeitabschnittFromServer.verguenstigungMahlzeitTotal;
             verfuegungZeitabschnittTS.auszahlungAnEltern = zeitabschnittFromServer.auszahlungAnEltern;
+            verfuegungZeitabschnittTS.beitragshoeheProzent = zeitabschnittFromServer.beitragshoeheProzent;
 
             if (zeitabschnittFromServer.verfuegungZeitabschnittBemerkungList) {
                 zeitabschnittFromServer.verfuegungZeitabschnittBemerkungList.forEach((bemerkung: any) => {
