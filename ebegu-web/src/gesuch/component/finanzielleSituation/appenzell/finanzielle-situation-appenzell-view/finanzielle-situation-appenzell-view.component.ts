@@ -85,7 +85,7 @@ export class FinanzielleSituationAppenzellViewComponent extends AbstractGesuchVi
 
     public getAntragsteller2Name(): string {
         return this.isSpezialFallAR() ?
-            'Ehepartner-/in' :
+            this.translate.instant('GS2_VERHEIRATET') :
             this.gesuchModelManager.getGesuch().gesuchsteller2?.extractFullName();
     }
 
@@ -251,7 +251,7 @@ export class FinanzielleSituationAppenzellViewComponent extends AbstractGesuchVi
 
     public extractFullNameGS2(): string {
         if (this.isSpezialFallAR()) {
-            return 'Ehepartner/-in';
+            return this.translate.instant('GS2_VERHEIRATET');
         }
         return this.getGesuch() && this.getGesuch().gesuchsteller2
             ? this.getGesuch().gesuchsteller2.extractFullName()
