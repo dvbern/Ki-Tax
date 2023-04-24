@@ -21,8 +21,11 @@ import java.math.BigDecimal;
 import java.util.Objects;
 
 import javax.annotation.Nullable;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
 
 import ch.dvbern.ebegu.enums.AntragCopyType;
 import org.hibernate.envers.Audited;
@@ -64,6 +67,20 @@ public class FinSitZusatzangabenAppenzell extends AbstractMutableEntity {
 	@Nullable
 	@Column(nullable = true)
 	private BigDecimal leistungAnJuristischePersonen;
+
+
+	@Nullable
+	@Column(nullable = true)
+	private BigDecimal steuerbaresEinkommen;
+
+	@Nullable
+	@Column(nullable = true)
+	private BigDecimal steuerbaresVermoegen;
+
+	@Nullable
+	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+	@JoinColumn()
+	private FinSitZusatzangabenAppenzell zusatzangabenPartner;
 
 	public FinSitZusatzangabenAppenzell() {
 	}
@@ -201,6 +218,8 @@ public class FinSitZusatzangabenAppenzell extends AbstractMutableEntity {
 	}
 
 	public FinSitZusatzangabenAppenzell copyAllValues(FinSitZusatzangabenAppenzell target) {
+		target.setSteuerbaresEinkommen(this.getSteuerbaresEinkommen());
+		target.setSteuerbaresVermoegen(this.getSteuerbaresVermoegen());
 		target.setSaeule3a(this.getSaeule3a());
 		target.setSaeule3aNichtBvg(this.getSaeule3aNichtBvg());
 		target.setBeruflicheVorsorge(this.getBeruflicheVorsorge());
@@ -221,5 +240,32 @@ public class FinSitZusatzangabenAppenzell extends AbstractMutableEntity {
 			vorjahresverluste != null &&
 			politischeParteiSpende != null &&
 			leistungAnJuristischePersonen != null;
+	}
+
+	@Nullable
+	public FinSitZusatzangabenAppenzell getZusatzangabenPartner() {
+		return zusatzangabenPartner;
+	}
+
+	public void setZusatzangabenPartner(@Nullable FinSitZusatzangabenAppenzell zusatzangabenPartner) {
+		this.zusatzangabenPartner = zusatzangabenPartner;
+	}
+
+	@Nullable
+	public BigDecimal getSteuerbaresEinkommen() {
+		return steuerbaresEinkommen;
+	}
+
+	public void setSteuerbaresEinkommen(@Nullable BigDecimal steuerbaresEinkommen) {
+		this.steuerbaresEinkommen = steuerbaresEinkommen;
+	}
+
+	@Nullable
+	public BigDecimal getSteuerbaresVermoegen() {
+		return steuerbaresVermoegen;
+	}
+
+	public void setSteuerbaresVermoegen(@Nullable BigDecimal steuerbaresVermoegen) {
+		this.steuerbaresVermoegen = steuerbaresVermoegen;
 	}
 }

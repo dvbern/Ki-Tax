@@ -2734,6 +2734,16 @@ public class JaxBConverter extends AbstractConverter {
 				selbstdeklarationToMerge));
 		}
 
+		if (abstractFinanzielleSituationJAXP.getFinSitZusatzangabenAppenzell() != null) {
+			FinSitZusatzangabenAppenzell finSitZusatzangabenAppenzellToMerge =
+				Optional.ofNullable(abstractFinanzielleSituation.getFinSitZusatzangabenAppenzell())
+					.orElse(new FinSitZusatzangabenAppenzell());
+			abstractFinanzielleSituation.setFinSitZusatzangabenAppenzell(finSitZusatzangabenAppenzellToEntity(
+				abstractFinanzielleSituationJAXP.getFinSitZusatzangabenAppenzell(),
+				finSitZusatzangabenAppenzellToMerge));
+		}
+
+
 		return abstractFinanzielleSituation;
 	}
 
@@ -2773,6 +2783,8 @@ public class JaxBConverter extends AbstractConverter {
 
 		jaxAbstractFinanzielleSituation.setSelbstdeklaration(finanzielleSituationSelbstdeklarationToJAX(
 			persistedAbstractFinanzielleSituation.getSelbstdeklaration()));
+
+		jaxAbstractFinanzielleSituation.setFinSitZusatzangabenAppenzell(finSitZusatzangabenAppenzellToJax(persistedAbstractFinanzielleSituation.getFinSitZusatzangabenAppenzell()));
 	}
 
 	private FinanzielleSituation finanzielleSituationToEntity(
@@ -2810,15 +2822,6 @@ public class JaxBConverter extends AbstractConverter {
 		finanzielleSituation.setVeranlagt(finanzielleSituationJAXP.getVeranlagt());
 		finanzielleSituation.setVeranlagtVorjahr(finanzielleSituationJAXP.getVeranlagtVorjahr());
 		finanzielleSituation.setMomentanSelbststaendig(finanzielleSituationJAXP.getMomentanSelbststaendig());
-
-		if (finanzielleSituationJAXP.getFinSitZusatzangabenAppenzell() != null) {
-			FinSitZusatzangabenAppenzell finSitZusatzangabenAppenzellToMerge =
-				Optional.ofNullable(finanzielleSituation.getFinSitZusatzangabenAppenzell())
-					.orElse(new FinSitZusatzangabenAppenzell());
-			finanzielleSituation.setFinSitZusatzangabenAppenzell(finSitZusatzangabenAppenzellToEntity(
-				finanzielleSituationJAXP.getFinSitZusatzangabenAppenzell(),
-				finSitZusatzangabenAppenzellToMerge));
-		}
 
 		return finanzielleSituation;
 	}
@@ -2866,6 +2869,16 @@ public class JaxBConverter extends AbstractConverter {
 		finSitZusatzangabenAppenzell.setVorjahresverluste(jaxFinSitZusatzangabenAppenzell.getVorjahresverluste());
 		finSitZusatzangabenAppenzell.setPolitischeParteiSpende(jaxFinSitZusatzangabenAppenzell.getPolitischeParteiSpende());
 		finSitZusatzangabenAppenzell.setLeistungAnJuristischePersonen(jaxFinSitZusatzangabenAppenzell.getLeistungAnJuristischePersonen());
+		finSitZusatzangabenAppenzell.setSteuerbaresEinkommen(jaxFinSitZusatzangabenAppenzell.getSteuerbaresEinkommen());
+		finSitZusatzangabenAppenzell.setSteuerbaresVermoegen(jaxFinSitZusatzangabenAppenzell.getSteuerbaresVermoegen());
+
+		if (jaxFinSitZusatzangabenAppenzell.getZusatzangabenPartner() != null) {
+			FinSitZusatzangabenAppenzell toMerge = Optional.ofNullable(finSitZusatzangabenAppenzell.getZusatzangabenPartner())
+					.orElse(new FinSitZusatzangabenAppenzell());
+			finSitZusatzangabenAppenzell.setZusatzangabenPartner(finSitZusatzangabenAppenzellToEntity(jaxFinSitZusatzangabenAppenzell.getZusatzangabenPartner(), toMerge));
+		} else {
+			finSitZusatzangabenAppenzell.setZusatzangabenPartner(null);
+		}
 
 		return finSitZusatzangabenAppenzell;
 	}
@@ -2899,9 +2912,6 @@ public class JaxBConverter extends AbstractConverter {
 		jaxFinanzielleSituation.setSteuerdatenAbfrageTimestamp(persistedFinanzielleSituation.getSteuerdatenAbfrageTimestamp());
 		jaxFinanzielleSituation.setAutomatischePruefungErlaubt(persistedFinanzielleSituation.getAutomatischePruefungErlaubt());
 		jaxFinanzielleSituation.setMomentanSelbststaendig(persistedFinanzielleSituation.getMomentanSelbststaendig());
-
-		jaxFinanzielleSituation.setFinSitZusatzangabenAppenzell(finSitZusatzangabenAppenzellToJax(
-			persistedFinanzielleSituation.getFinSitZusatzangabenAppenzell()));
 
 		return jaxFinanzielleSituation;
 	}
@@ -2956,6 +2966,9 @@ public class JaxBConverter extends AbstractConverter {
 		jaxFinSitZusatzangabenAppenzell.setVorjahresverluste(persistedFinSitZusatzangabenAppenzell.getVorjahresverluste());
 		jaxFinSitZusatzangabenAppenzell.setPolitischeParteiSpende(persistedFinSitZusatzangabenAppenzell.getPolitischeParteiSpende());
 		jaxFinSitZusatzangabenAppenzell.setLeistungAnJuristischePersonen(persistedFinSitZusatzangabenAppenzell.getLeistungAnJuristischePersonen());
+		jaxFinSitZusatzangabenAppenzell.setSteuerbaresVermoegen(persistedFinSitZusatzangabenAppenzell.getSteuerbaresVermoegen());
+		jaxFinSitZusatzangabenAppenzell.setSteuerbaresEinkommen(persistedFinSitZusatzangabenAppenzell.getSteuerbaresEinkommen());
+		jaxFinSitZusatzangabenAppenzell.setZusatzangabenPartner(finSitZusatzangabenAppenzellToJax(persistedFinSitZusatzangabenAppenzell.getZusatzangabenPartner()));
 
 		return jaxFinSitZusatzangabenAppenzell;
 	}

@@ -181,7 +181,7 @@ export class FinanzielleSituationViewController extends AbstractFinSitBernView {
             return false;
         }
         // bei gemeinsamer Steuererklärung wird die Frage immer auf der StartView gezeigt
-        if (this.model.gemeinsameSteuererklaerung) {
+        if (this.model.familienSituation.gemeinsameSteuererklaerung) {
             return false;
         }
 
@@ -215,7 +215,7 @@ export class FinanzielleSituationViewController extends AbstractFinSitBernView {
     }
 
     public showZugriffAufSteuerdaten(): boolean {
-        return super.showZugriffAufSteuerdaten() && !this.model.gemeinsameSteuererklaerung;
+        return super.showZugriffAufSteuerdaten() && !this.model.familienSituation.gemeinsameSteuererklaerung;
     }
 
     public save(): IPromise<TSFinanzielleSituationContainer> {
@@ -302,7 +302,7 @@ export class FinanzielleSituationViewController extends AbstractFinSitBernView {
             return true;
         }
         // falls die Frage bei nicht gmeinsamer stek noch nicht beantwortet wurde, zeigen wir das Formular noch nicht
-        if (EbeguUtil.isNotNullAndFalse(this.model.gemeinsameSteuererklaerung) && EbeguUtil.isNullOrUndefined(this.getModel().finanzielleSituationJA.steuerdatenZugriff)) {
+        if (EbeguUtil.isNotNullAndFalse(this.model.familienSituation.gemeinsameSteuererklaerung) && EbeguUtil.isNullOrUndefined(this.getModel().finanzielleSituationJA.steuerdatenZugriff)) {
             return false;
         }
         // falls die Frage mit ja beantwortet wurde, die Abfrage aber noch nicht gemacht wurde,
@@ -365,7 +365,7 @@ export class FinanzielleSituationViewController extends AbstractFinSitBernView {
 
         return EbeguUtil.isNotNullOrUndefined(this.gesuchModelManager.getGesuch()) &&
             this.gesuchModelManager.getGesuch().isOnlineGesuch() &&
-            !this.model.gemeinsameSteuererklaerung &&
+            !this.model.familienSituation.gemeinsameSteuererklaerung &&
             this.gesuchModelManager.getGesuchstellerNumber() === 1 &&
             EbeguUtil.isNotNullAndFalse(this.getModel().finanzielleSituationJA.steuerdatenZugriff);
     }

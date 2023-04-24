@@ -350,7 +350,7 @@ public class FinanzielleSituationResource {
 		}
 		Familiensituation familiensituation = gesuch.extractFamiliensituation();
 		requireNonNull(familiensituation);
-		familiensituation.setGemeinsameSteuererklaerung(jaxFinSitModel.isGemeinsameSteuererklaerung());
+		familiensituation.setGemeinsameSteuererklaerung(jaxFinSitModel.getJaxFamiliensituation().getGemeinsameSteuererklaerung());
 		if (jaxFinSitModel.getFinanzielleSituationContainerGS1() != null) {
 			gesuch.setGesuchsteller1(new GesuchstellerContainer());
 			//noinspection ConstantConditions

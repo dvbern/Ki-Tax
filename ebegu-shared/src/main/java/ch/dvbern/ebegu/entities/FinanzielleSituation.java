@@ -125,11 +125,6 @@ public class FinanzielleSituation extends AbstractFinanzielleSituation {
 	@Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
 	private SteuerdatenResponse steuerdatenResponse;
 
-	@Nullable
-	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true,fetch = FetchType.EAGER)
-	@JoinColumn(nullable = true)
-	private FinSitZusatzangabenAppenzell finSitZusatzangabenAppenzell;
-
 	public FinanzielleSituation() {
 	}
 
@@ -311,9 +306,6 @@ public class FinanzielleSituation extends AbstractFinanzielleSituation {
 			target.setSteuerdatenAbfrageTimestamp(this.getSteuerdatenAbfrageTimestamp());
 			target.setAutomatischePruefungErlaubt(this.getAutomatischePruefungErlaubt());
 			target.setMomentanSelbststaendig(this.getMomentanSelbststaendig());
-			if (this.getFinSitZusatzangabenAppenzell() != null) {
-				target.setFinSitZusatzangabenAppenzell(this.getFinSitZusatzangabenAppenzell().copyFinSitZusatzangabenAppenzell(new FinSitZusatzangabenAppenzell(), copyType));
-			}
 			break;
 		case ERNEUERUNG:
 		case ERNEUERUNG_NEUES_DOSSIER:
@@ -362,13 +354,5 @@ public class FinanzielleSituation extends AbstractFinanzielleSituation {
 
 	public void setSteuerdatenResponse(@Nullable SteuerdatenResponse steuerdatenResponse) {
 		this.steuerdatenResponse = steuerdatenResponse;
-	}
-	@Nullable
-	public FinSitZusatzangabenAppenzell getFinSitZusatzangabenAppenzell() {
-		return finSitZusatzangabenAppenzell;
-	}
-
-	public void setFinSitZusatzangabenAppenzell(@Nullable FinSitZusatzangabenAppenzell finSitZusatzangabenAppenzell) {
-		this.finSitZusatzangabenAppenzell = finSitZusatzangabenAppenzell;
 	}
 }

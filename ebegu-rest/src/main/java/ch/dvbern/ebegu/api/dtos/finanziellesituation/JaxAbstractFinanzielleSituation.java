@@ -85,6 +85,8 @@ public class JaxAbstractFinanzielleSituation extends JaxAbstractDTO {
 	@Nullable
 	private JaxFinanzielleSituationSelbstdeklaration selbstdeklaration;
 
+	@Nullable
+	private JaxFinSitZusatzangabenAppenzell finSitZusatzangabenAppenzell;
 
 	@Nullable
 	public BigDecimal getNettolohn() {
@@ -263,5 +265,14 @@ public class JaxAbstractFinanzielleSituation extends JaxAbstractDTO {
 
 	public void setSelbstdeklaration(@Nullable JaxFinanzielleSituationSelbstdeklaration selbstdeklaration) {
 		this.selbstdeklaration = selbstdeklaration;
+	}
+
+	@Nullable
+	public JaxFinSitZusatzangabenAppenzell getFinSitZusatzangabenAppenzell() {
+		return finSitZusatzangabenAppenzell;
+	}
+
+	public void setFinSitZusatzangabenAppenzell(@Nullable JaxFinSitZusatzangabenAppenzell finSitZusatzangabenAppenzell) {
+		this.finSitZusatzangabenAppenzell = finSitZusatzangabenAppenzell;
 	}
 }

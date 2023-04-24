@@ -42,8 +42,9 @@ describe('FinanzielleSituationAppenzellViewComponent', () => {
         ['calculateFinanzielleSituationTemp']);
     berechnungsManagerSpy.calculateFinanzielleSituationTemp.and.returnValue(Promise.resolve(new TSFinanzielleSituationResultateDTO()));
     const gesuchModelManagerSpy = jasmine.createSpyObj<GesuchModelManager>(GesuchModelManager.name,
-        ['getGesuch', 'getBasisjahr', 'isGesuchsteller2Required', 'setGesuchstellerNumber', 'isGesuchReadonly', 'getGesuchsperiode']);
+        ['getGesuch', 'getBasisjahr', 'isGesuchsteller2Required', 'setGesuchstellerNumber', 'isGesuchReadonly', 'getGesuchsperiode', 'isSpezialFallAR']);
     gesuchModelManagerSpy.getGesuch.and.returnValue(createGesuch());
+    gesuchModelManagerSpy.isSpezialFallAR.and.returnValue(false);
     const wizardStepManagerSpy = jasmine.createSpyObj<WizardStepManager>(WizardStepManager.name,
         ['setCurrentStep',
             'isNextStepBesucht',

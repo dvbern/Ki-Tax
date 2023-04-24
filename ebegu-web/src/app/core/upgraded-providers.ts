@@ -20,6 +20,7 @@ import {DatabaseMigrationRS} from '../../admin/service/databaseMigrationRS.rest'
 import {AuthServiceRS} from '../../authentication/service/AuthServiceRS.rest';
 import {BerechnungsManager} from '../../gesuch/service/berechnungsManager';
 import {DossierRS} from '../../gesuch/service/dossierRS.rest';
+import {EinkommensverschlechterungContainerRS} from '../../gesuch/service/einkommensverschlechterungContainerRS.rest';
 import {FallRS} from '../../gesuch/service/fallRS.rest';
 import {FinanzielleSituationRS} from '../../gesuch/service/finanzielleSituationRS.rest';
 import {FinanzielleSituationSubStepManager} from '../../gesuch/service/finanzielleSituationSubStepManager';
@@ -343,6 +344,17 @@ export const globalCacheServiceProvider = {
     deps: ['$injector'],
 };
 
+// EKV Container RS
+export function ekvContainerRSServiceFactory(i: IInjectorService): EinkommensverschlechterungContainerRS {
+    return i.get('EinkommensverschlechterungContainerRS');
+}
+
+export const ekvContainerRSServiceProvider = {
+    provide: EinkommensverschlechterungContainerRS,
+    useFactory: ekvContainerRSServiceFactory,
+    deps: ['$injector'],
+};
+
 export const UPGRADED_PROVIDERS: Provider[] = [
     authServiceRSProvider,
     applicationPropertyRSProvider,
@@ -369,5 +381,6 @@ export const UPGRADED_PROVIDERS: Provider[] = [
     berechnungsManagerProvider,
     listResourceRSProvider,
     gesuchstellerRSProvider,
-    globalCacheServiceProvider
+    globalCacheServiceProvider,
+    ekvContainerRSServiceProvider
 ];

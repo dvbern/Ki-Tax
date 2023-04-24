@@ -54,7 +54,6 @@ import {TSGesuchBetreuungenStatus} from '../../models/enums/TSGesuchBetreuungenS
 import {TSGesuchsperiodeStatus} from '../../models/enums/TSGesuchsperiodeStatus';
 import {TSRole} from '../../models/enums/TSRole';
 import {TSSozialdienstFallStatus} from '../../models/enums/TSSozialdienstFallStatus';
-import {TSUnterhaltsvereinbarungAnswer} from '../../models/enums/TSUnterhaltsvereinbarungAnswer';
 import {TSWizardStepName} from '../../models/enums/TSWizardStepName';
 import {TSWizardStepStatus} from '../../models/enums/TSWizardStepStatus';
 import {TSAdresse} from '../../models/TSAdresse';
@@ -84,6 +83,9 @@ import {TSKindContainer} from '../../models/TSKindContainer';
 import {TSVerfuegung} from '../../models/TSVerfuegung';
 import {EbeguUtil} from '../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../utils/TSRoleUtil';
+import {
+    FinanzielleSituationAppenzellService
+} from '../component/finanzielleSituation/appenzell/finanzielle-situation-appenzell.service';
 import {InternePendenzenRS} from '../component/internePendenzenView/internePendenzenRS.rest';
 import {DossierRS} from './dossierRS.rest';
 import {EinkommensverschlechterungContainerRS} from './einkommensverschlechterungContainerRS.rest';
@@ -94,6 +96,7 @@ import {GesuchGenerator} from './gesuchGenerator';
 import {GesuchRS} from './gesuchRS.rest';
 import {GlobalCacheService} from './globalCacheService';
 import {WizardStepManager} from './wizardStepManager';
+
 const LOG = LogFactory.createLog('GesuchModelManager');
 
 export class GesuchModelManager {
@@ -299,6 +302,11 @@ export class GesuchModelManager {
 
     // eslint-disable-next-line
     public isRequiredEKV_GS_BJ(gs: number, bj: number): boolean {
+        if (this.wizardStepManager.getCurrentStepName() === TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_APPENZELL) {
+            return gs === 2 ?
+                this.getEkvFuerBasisJahrPlus(bj) || this.isSpezialFallAR() :
+                this.getEkvFuerBasisJahrPlus(bj);
+        }
         if (this.wizardStepManager.getCurrentStepName() === TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_LUZERN) {
             return gs === 2 ?
                 this.getEkvFuerBasisJahrPlus(bj) && this.isGesuchsteller2RequiredForLuzernEKV() :
@@ -1874,5 +1882,11 @@ export class GesuchModelManager {
                 return gesuch;
             }
         );
+    }
+
+    public isSpezialFallAR(): boolean {
+        return FinanzielleSituationAppenzellService.finSitNeedsTwoSeparateAntragsteller(
+            this.getGesuch()
+        ) && EbeguUtil.isNullOrUndefined(this.getGesuch().gesuchsteller2);
     }
 }

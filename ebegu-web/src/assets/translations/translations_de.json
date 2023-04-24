@@ -3001,8 +3001,8 @@
     "FINANZIELLE_SITUATION_ZUSTIMMUNG_AUTOMATISCHE_PRUEFUNG_HELP": "Sie geben mit dieser Frage Ihr Einverständnis für den Abruf der Steuerdaten, um Ihre Angaben zu überprüfen. Dieser Abruf geschieht in der Regel, sobald die Steuerveranlagung vorliegt. </br></br>Wichtig: Ihre Angaben können auch ohne Ihr Einverständnis anhand der Steuerdaten überprüft werden. Diese Prüfung geschieht manuell durch einen Austausch mit den Steuerbehörden. ",
     "ONBOARDING_TO_FIN_SIT": "Zurück zum Antrag",
     "SCHNITTSTELLE_STEUERSYSTEME_AKTIV_AB": "Schnittstelle zu Steuersystemen aktiv ab",
-    "RESULTATE_EKV_AKZEPTIERT": "Ihr Antrag zur Anwendung der Einkommensveränderung wurde akzeptiert. Das massgebende Einkommen des Jahres {{ekvJahr}} weicht mehr als 25 Prozent ab vom massgebenden Einkommen des aktuellen Bemessungszeitraums (Jahr {{basisjahr}}). ",
-    "RESULTATE_EKV_NICHT_AKZEPTIERT": "Ihr Antrag zur Anwendung der Einkommensveränderung wurde nicht akzeptiert. Das massgebende Einkommen des Jahres {{ekvJahr}} weicht weniger als 25 Prozent ab vom massgebenden Einkommen des aktuellen Bemessungszeitraums (Jahr {{basisjahr}}). Die Gutscheine werden aufgrund des massgebenden Einkommens {{basisjahr}} berechnet.",
+    "RESULTATE_EKV_AKZEPTIERT": "Ihr Antrag zur Anwendung der Einkommensveränderung wurde akzeptiert. Das massgebende Einkommen des Jahres {{ekvJahr}} weicht mehr als {{ekvGrenze}} Prozent ab vom massgebenden Einkommen des aktuellen Bemessungszeitraums (Jahr {{basisjahr}}). ",
+    "RESULTATE_EKV_NICHT_AKZEPTIERT": "Ihr Antrag zur Anwendung der Einkommensveränderung wurde nicht akzeptiert. Das massgebende Einkommen des Jahres {{ekvJahr}} weicht weniger als {{ekvGrenze}} Prozent ab vom massgebenden Einkommen des aktuellen Bemessungszeitraums (Jahr {{basisjahr}}). Die Gutscheine werden aufgrund des massgebenden Einkommens {{basisjahr}} berechnet.",
     "SELECT_PORTAL": "Wählen Sie Ihr Portal aus",
     "PORTAL_OEFFNEN": "Portal öffnen",
     "PORTAL_WECHSELN": "Sie sind nicht aus Bern? Klicken Sie hier um das Portal zu wechseln.",
@@ -3131,5 +3131,6 @@
     "ZAHLUNG_AN_INSTITUTION":  "Zahlung Institution",
     "ZAHLUNG_AN_ELTERN": "Zahlung Mahlzeiten",
     "ZAHLUNGSSTATUS_HELP": "<p>Diese Spalte zeigt den Status der Auszahlung dieses Zeitabschnitts. Es gibt vier Möglichkeiten:</p><br><table class=\"table\">\t<tr>\t\t<th>Symbol</th>\t\t<th>Status</th>\t\t<th>Beschreibung</th>\t</tr>\t<tr>\t\t<td>v</td>\t\t<td>Verrechnet</td>\t\t<td>Dieser Zeitabschnitt wurde bereits in einer früheren Zahlung berücksichtigt und ausbezahlt.</td>\t</tr>\t<tr>\t\t<td>a</td>\t\t<td>Ausserhalb von kiBon</td>\t\t<td>Die Rückforderung/zusätzliche Zahlung, die aus der Korrektur dieses Zeitabschnitts erfolgt, muss ausserhalb von kiBon gemacht werden, da die Korrekturzahlung im Zahlungslauf ignoriert wurde. Die Gemeinde verrechnet den Differenzbetrag direkt mit den Antragstellenden.</td>\t</tr>\t<tr>\t\t<td>z</td>\t\t<td>Zukünftige Zahlung</td>\t\t<td>Dieser Zeitabschnitt wurde noch nicht ausbezahlt und wird in einer zukünftigen Zahlung berücksichtigt.</td>\t</tr>\t<tr>\t\t<td>k</td>\t\t<td>Korrigiert</td>\t\t<td>Dieser Zeitabschnitt wurde bereits in einer früheren Zahlung berücksichtigt, wurde aber inzwischen durch eine weitere Mutation korrigiert.</td>\t</tr>\t<tr>\t\t<td></td>\t\t<td>Überschrieben</td>\t\t<td>Dieser Zeitabschnitt wurde in einer Folgemutation überschrieben.</td>\t</tr></table>",
+    "EHEPARTNERIN": "Ehepartner/in",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

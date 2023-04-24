@@ -28,11 +28,6 @@ import {TSGesuch} from './TSGesuch';
 import {TSZahlungsinformationen} from './TSZahlungsinformationen';
 
 export class TSFinanzModel {
-    private _gemeinsameSteuererklaerung: boolean;
-    private _sozialhilfeBezueger: boolean;
-    private _zustaendigeAmtsstelle: string;
-    private _nameBetreuer: string;
-    private _verguenstigungGewuenscht: boolean;
     private _finanzielleSituationContainerGS1: TSFinanzielleSituationContainer;
     private _finanzielleSituationContainerGS2: TSFinanzielleSituationContainer;
     private _finanzielleSituationVorMutationGS1: TSFinanzielleSituation;
@@ -45,6 +40,8 @@ export class TSFinanzModel {
     private _zahlungsinformationen: TSZahlungsinformationen;
 
     private _finanzielleSituationTyp: TSFinanzielleSituationTyp;
+
+    private _familienSituation: TSFamiliensituation;
 
     private readonly basisjahr: number;
     private readonly basisjahrPlus: number;
@@ -61,46 +58,6 @@ export class TSFinanzModel {
         this.basisjahrPlus = basisjahrPlus;
         this.gesuchsteller2Required = gesuchsteller2Required;
         this.gesuchstellerNumber = gesuchstellerNumber;
-    }
-
-    public get gemeinsameSteuererklaerung(): boolean {
-        return this._gemeinsameSteuererklaerung;
-    }
-
-    public set gemeinsameSteuererklaerung(value: boolean) {
-        this._gemeinsameSteuererklaerung = value;
-    }
-
-    public get sozialhilfeBezueger(): boolean {
-        return this._sozialhilfeBezueger;
-    }
-
-    public set sozialhilfeBezueger(value: boolean) {
-        this._sozialhilfeBezueger = value;
-    }
-
-    public get zustaendigeAmtsstelle(): string {
-        return this._zustaendigeAmtsstelle;
-    }
-
-    public set zustaendigeAmtsstelle(value: string) {
-        this._zustaendigeAmtsstelle = value;
-    }
-
-    public get nameBetreuer(): string {
-        return this._nameBetreuer;
-    }
-
-    public set nameBetreuer(value: string) {
-        this._nameBetreuer = value;
-    }
-
-    public get verguenstigungGewuenscht(): boolean {
-        return this._verguenstigungGewuenscht;
-    }
-
-    public set verguenstigungGewuenscht(value: boolean) {
-        this._verguenstigungGewuenscht = value;
     }
 
     public get finanzielleSituationContainerGS1(): TSFinanzielleSituationContainer {
@@ -135,18 +92,27 @@ export class TSFinanzModel {
         this._finanzielleSituationTyp = value;
     }
 
+    public get familienSituation(): TSFamiliensituation {
+        return this._familienSituation;
+    }
+
+    public set familienSituation(value: TSFamiliensituation) {
+        this._familienSituation = value;
+    }
+
     public copyFinSitDataFromGesuch(gesuch: TSGesuch): void {
         if (!gesuch) {
             return;
         }
-        this.gemeinsameSteuererklaerung =
+        this.familienSituation = angular.copy(gesuch.extractFamiliensituation());
+        this.familienSituation.gemeinsameSteuererklaerung =
             this.getCopiedValueOrFalse(gesuch.extractFamiliensituation().gemeinsameSteuererklaerung);
-        this.sozialhilfeBezueger =
+        this.familienSituation.sozialhilfeBezueger =
             this.getCopiedValueOrUndefined(gesuch.extractFamiliensituation().sozialhilfeBezueger);
-        this.zustaendigeAmtsstelle = gesuch.extractFamiliensituation().zustaendigeAmtsstelle;
-        this.nameBetreuer = gesuch.extractFamiliensituation().nameBetreuer;
+        this.familienSituation.zustaendigeAmtsstelle = gesuch.extractFamiliensituation().zustaendigeAmtsstelle;
 
-        this.verguenstigungGewuenscht =
+        this.familienSituation.nameBetreuer = gesuch.extractFamiliensituation().nameBetreuer;
+        this.familienSituation.verguenstigungGewuenscht =
             this.getCopiedValueOrUndefined(gesuch.extractFamiliensituation().verguenstigungGewuenscht);
         this.finanzielleSituationContainerGS1 = angular.copy(gesuch.gesuchsteller1.finanzielleSituationContainer);
         if (gesuch.gesuchsteller2) {
@@ -230,11 +196,7 @@ export class TSFinanzModel {
             familiensituation = new TSFamiliensituation();
             gesuch.familiensituationContainer.familiensituationJA = familiensituation;
         }
-        familiensituation.gemeinsameSteuererklaerung = this.gemeinsameSteuererklaerung;
-        familiensituation.sozialhilfeBezueger = this.sozialhilfeBezueger;
-        familiensituation.nameBetreuer = this.nameBetreuer;
-        familiensituation.zustaendigeAmtsstelle = this.zustaendigeAmtsstelle;
-        familiensituation.verguenstigungGewuenscht = this.verguenstigungGewuenscht;
+        gesuch.familiensituationContainer.familiensituationJA = this.familienSituation;
         gesuch.gesuchsteller1.finanzielleSituationContainer = this.finanzielleSituationContainerGS1;
         if (gesuch.gesuchsteller2) {
             gesuch.gesuchsteller2.finanzielleSituationContainer = this.finanzielleSituationContainerGS2;
@@ -437,7 +399,7 @@ export class TSFinanzModel {
      * Indicates whether FinSit must be filled out or not. It supposes that it is enabled.
      */
     public isFinanzielleSituationRequired(): boolean {
-        return EbeguUtil.isFinanzielleSituationRequired(this.sozialhilfeBezueger, this.verguenstigungGewuenscht);
+        return EbeguUtil.isFinanzielleSituationRequired(this.familienSituation.sozialhilfeBezueger, this.familienSituation.verguenstigungGewuenscht);
     }
 
     public get finanzielleSituationVorMutationGS1(): TSFinanzielleSituation {

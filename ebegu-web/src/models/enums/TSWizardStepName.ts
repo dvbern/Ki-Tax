@@ -82,6 +82,7 @@ export function getAllWizardStepsWithoutFinSitSteps(): Array<TSWizardStepName> {
         TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG,
         TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_LUZERN,
         TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_SOLOTHURN,
+        TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_APPENZELL,
         TSWizardStepName.DOKUMENTE,
         TSWizardStepName.FREIGABE,
         TSWizardStepName.VERFUEGEN

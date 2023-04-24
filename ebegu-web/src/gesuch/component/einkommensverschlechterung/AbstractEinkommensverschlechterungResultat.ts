@@ -27,11 +27,15 @@ import {GesuchModelManager} from '../../service/gesuchModelManager';
 import {WizardStepManager} from '../../service/wizardStepManager';
 import {AbstractGesuchViewX} from '../abstractGesuchViewX';
 import {EKVViewUtil} from './EKVViewUtil';
+import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
+import {TSEinstellung} from '../../../models/TSEinstellung';
+import {TSEinstellungKey} from '../../../models/enums/TSEinstellungKey';
+import {take} from 'rxjs/operators';
 
 export abstract class AbstractEinkommensverschlechterungResultat extends AbstractGesuchViewX<TSFinanzModel> {
     public resultatBasisjahr?: TSFinanzielleSituationResultateDTO;
     public resultatProzent: string;
-    private readonly grenze: number = 25;
+    private grenze?: number;
 
     public constructor(
         public gesuchModelManager: GesuchModelManager,
@@ -39,6 +43,7 @@ export abstract class AbstractEinkommensverschlechterungResultat extends Abstrac
         protected berechnungsManager: BerechnungsManager,
         protected ref: ChangeDetectorRef,
         protected stepName: TSWizardStepName,
+        protected readonly einstellungRS: EinstellungRS,
         protected readonly $transition$: Transition
     ) {
         super(gesuchModelManager, wizardStepManager, stepName);
@@ -53,6 +58,17 @@ export abstract class AbstractEinkommensverschlechterungResultat extends Abstrac
         this.calculate();
         this.resultatBasisjahr = null;
         this.calculateResultateVorjahr();
+
+        if(EbeguUtil.isNotNullOrUndefined(this.gesuchModelManager.getGesuchsperiode())) {
+            this.einstellungRS.getAllEinstellungenBySystemCached(
+                this.gesuchModelManager.getGesuchsperiode().id
+            ).pipe(take(1)).subscribe((response: TSEinstellung[]) => {
+                response.filter(r => r.key === TSEinstellungKey.PARAM_GRENZWERT_EINKOMMENSVERSCHLECHTERUNG)
+                    .forEach(value => {
+                        this.grenze = Number(value.value);
+                    });
+            });
+        }
     }
 
     public calculate(): void {
@@ -102,6 +118,10 @@ export abstract class AbstractEinkommensverschlechterungResultat extends Abstrac
             return true;
         }
         return false;
+    }
+
+    public ekvGrenzWerte(): number {
+        return this.grenze;
     }
 
     public hasSecondAntragstellende(): boolean {

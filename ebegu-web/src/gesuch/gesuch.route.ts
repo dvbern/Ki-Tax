@@ -76,6 +76,12 @@ import {MahnungRS} from './service/mahnungRS.rest';
 import ILogService = angular.ILogService;
 import IPromise = angular.IPromise;
 import IQService = angular.IQService;
+import {
+    EinkommensverschlechterungAppenzellViewComponent
+} from './component/einkommensverschlechterung/appenzell/einkommensverschlechterung-appenzell-view/einkommensverschlechterung-appenzell-view.component';
+import {
+    EinkommensverschlechterungAppenzellResultateViewComponent
+} from './component/einkommensverschlechterung/appenzell/einkommensverschlechterung-appenzell-resultate-view/einkommensverschlechterung-appenzell-resultate-view.component';
 
 /* eslint-disable */
 
@@ -955,6 +961,57 @@ export class EbeguEinkommensverschlechterungSolothurnResultateState implements N
     };
 }
 
+export class EbeguEinkommensverschlechterungAppenzellState implements Ng1StateDeclaration {
+    public name = 'gesuch.einkommensverschlechterungAppenzell';
+    public url = '/ar/einkommensverschlechterung/:gesuchId/:gesuchstellerNumber/:basisjahrPlus';
+    public params = {
+        gesuchstellerNumber: '1',
+        basisjahrPlus: '1',
+    };
+
+    public views: any = {
+        gesuchViewPort: {
+            component: EinkommensverschlechterungAppenzellViewComponent,
+        },
+        kommentarViewPort: {
+            template: kommentarView,
+        },
+    };
+
+    public resolve = {
+        gesuch: getGesuchModelManager,
+    };
+
+    public data = {
+        roles: TSRoleUtil.getAllRolesButTraegerschaftInstitution(),
+    };
+}
+
+export class EbeguEinkommensverschlechterungAppenzellResultateState implements Ng1StateDeclaration {
+    public name = 'gesuch.einkommensverschlechterungAppenzellResultate';
+    public url = '/ar/einkommensverschlechterungResultate/:gesuchId/:basisjahrPlus';
+    public params = {
+        basisjahrPlus: '1',
+    };
+
+    public views: any = {
+        gesuchViewPort: {
+            component: EinkommensverschlechterungAppenzellResultateViewComponent,
+        },
+        kommentarViewPort: {
+            template: kommentarView,
+        },
+    };
+
+    public resolve = {
+        gesuch: getGesuchModelManager,
+    };
+
+    public data = {
+        roles: TSRoleUtil.getAllRolesButTraegerschaftInstitution(),
+    };
+}
+
 export class EbeguDokumenteState implements Ng1StateDeclaration {
     public name = 'gesuch.dokumente';
     public url = '/dokumente/:gesuchId/:gesuchstellerNumber';
@@ -1134,6 +1191,8 @@ const ng1States: Ng1StateDeclaration[] = [
     new EbeguEinkommensverschlechterungResultateState(),
     new EbeguEinkommensverschlechterungLuzernResultateState(),
     new EbeguEinkommensverschlechterungSolothurnResultateState(),
+    new EbeguEinkommensverschlechterungAppenzellState(),
+    new EbeguEinkommensverschlechterungAppenzellResultateState(),
     new EbeguDokumenteState(),
     new EbeguFreigabeState(),
     new EbeguBetreuungMitteilungState(),

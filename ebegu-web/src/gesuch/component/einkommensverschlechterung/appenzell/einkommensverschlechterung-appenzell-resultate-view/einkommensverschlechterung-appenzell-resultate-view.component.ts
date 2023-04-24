@@ -16,10 +16,12 @@
  */
 
 import {Component, ChangeDetectionStrategy, ChangeDetectorRef} from '@angular/core';
+import {TranslateService} from '@ngx-translate/core';
 import {Transition} from '@uirouter/core';
 import {IPromise} from 'angular';
 import {TSFinanzielleSituationResultateDTO} from '../../../../../models/dto/TSFinanzielleSituationResultateDTO';
 import {TSWizardStepName} from '../../../../../models/enums/TSWizardStepName';
+import {EbeguUtil} from '../../../../../utils/EbeguUtil';
 import {BerechnungsManager} from '../../../../service/berechnungsManager';
 import {GesuchModelManager} from '../../../../service/gesuchModelManager';
 import {WizardStepManager} from '../../../../service/wizardStepManager';
@@ -28,11 +30,11 @@ import {EinstellungRS} from '../../../../../admin/service/einstellungRS.rest';
 
 @Component({
     selector: 'dv-einkommensverschlechterung-solothurn-resultate-view',
-    templateUrl: './einkommensverschlechterung-solothurn-resultate-view.component.html',
-    styleUrls: ['./einkommensverschlechterung-solothurn-resultate-view.component.less'],
+    templateUrl: './einkommensverschlechterung-appenzell-resultate-view.component.html',
+    styleUrls: ['./einkommensverschlechterung-appenzell-resultate-view.component.less'],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class EinkommensverschlechterungSolothurnResultateViewComponent
+export class EinkommensverschlechterungAppenzellResultateViewComponent
     extends AbstractEinkommensverschlechterungResultat {
 
     public resultatBasisjahr?: TSFinanzielleSituationResultateDTO;
@@ -44,13 +46,14 @@ export class EinkommensverschlechterungSolothurnResultateViewComponent
         protected berechnungsManager: BerechnungsManager,
         protected ref: ChangeDetectorRef,
         protected readonly einstellungRS: EinstellungRS,
-        protected readonly $transition$: Transition
+        protected readonly $transition$: Transition,
+        private readonly translate: TranslateService
     ) {
         super(gesuchModelManager,
             wizardStepManager,
             berechnungsManager,
             ref,
-            TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_SOLOTHURN,
+            TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_APPENZELL,
             einstellungRS,
             $transition$);
     }
@@ -59,5 +62,36 @@ export class EinkommensverschlechterungSolothurnResultateViewComponent
         //hier müssen wir nur den WizardStep Updaten. Die EKV ist schon gespeichert.
         this.updateStatus(true);
         return onResult(true);
+    }
+
+    public hasSecondAntragstellende(): boolean {
+        return EbeguUtil.isNotNullOrUndefined(this.gesuchModelManager.getGesuch().gesuchsteller2)
+            || this.isSpezialFallAR();
+    }
+
+    public getAntragsteller2Name(): string {
+        if (this.isSpezialFallAR()) {
+            return this.translate.instant('EHEPARTNERIN');
+        }
+        return super.getAntragsteller2Name();
+    }
+
+    public getGemeinsameFullname(): string {
+        if (this.isSpezialFallAR()) {
+            return `${this.getAntragsteller1Name()} + ${this.getAntragsteller2Name()}`;
+        }
+        return super.getGemeinsameFullname();
+    }
+
+    public calculate(): void {
+        if (!this.model || !this.model.getBasisJahrPlus()) {
+            console.log('No gesuch and Basisjahr to calculate');
+            return;
+        }
+        // we can't use the temp calculation, because we need the famSit to determine the spezialfall
+        this.berechnungsManager.calculateEinkommensverschlechterung(this.getGesuch(), this.model.getBasisJahrPlus())
+            .then(() => {
+                this.resultatProzent = this.calculateVeraenderung();
+            });
     }
 }
