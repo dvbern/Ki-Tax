@@ -59,10 +59,11 @@ public class FinanzielleSituationPdfGeneratorAppenzell extends FinanzielleSituat
 	private static final String LEISTUNG_AN_JURISTISCHE_PERSONEN_ROW = "PdfGeneration_FinSit_LeistungJurPersTitle";
 	private static final String STEUERBARES_EINKOMMEN_ROW = "PdfGeneration_FinSit_SteuerbaresEinkommenTitle";
 	private static final String EINKOMMEN_TOTAL = "PdfGeneration_FinSit_EinkommenTotal";
+	private static final String EINKOMMEN_ZWISCHENTOTAL = "PdfGeneration_FinSit_EinkommenZwischentotal";
 	private static final String STEUERBARES_VERMOEGEN_ROW = "PdfGeneration_FinSit_SteuerbaresVermoegenTitle";
 	private static final String STEUERBARES_VERMOEGEN_15_PROZENT_ROW = "PdfGeneration_FinSit_SteuerbaresVermoegen15ProzentTitle";
 	private static final String STEUERBARES_VERMOEGEN_TOTAL_ROW = "PdfGeneration_FinSit_SteuerbaresVermoegenTotalTitle";
-	private static final String EIKOMMEN_TITLE = "PdfGeneration_FinSit_EinkommenTitle";
+	private static final String EINKOMMEN_TITLE = "PdfGeneration_FinSit_EinkommenTitle";
 	private static final String VERMOEGEN = "PdfGeneration_FinSit_VermoegenTitle";
 	private static final String PARTNERIN = "PdfGeneration_Partnerin";
 	private static final String EINKOMMENSAENDERUNG = "Reports_einkommensverschlechterungTitle";
@@ -109,7 +110,7 @@ public class FinanzielleSituationPdfGeneratorAppenzell extends FinanzielleSituat
 		Objects.requireNonNull(finanzDatenDTO);
 		document.add(createIntroBasisjahr());
 
-		document.add(createTableEinkommen(angabenGS1Bj, angabenGS2Bj, angabenGS1BjUrspruenglich, angabenGS2BjUrspruenglich, finanzDatenDTO.getMassgebendesEinkVorAbzFamGr()));
+		document.add(createTableEinkommen(angabenGS1Bj, angabenGS2Bj, angabenGS1BjUrspruenglich, angabenGS2BjUrspruenglich));
 		document.add(createTableVermoegen(angabenGS1Bj, angabenGS2Bj, angabenGS1BjUrspruenglich, angabenGS2BjUrspruenglich));
 
 	}
@@ -168,9 +169,9 @@ public class FinanzielleSituationPdfGeneratorAppenzell extends FinanzielleSituat
 			FinSitZusatzangabenAppenzell gs1Angaben,
 			@Nullable FinSitZusatzangabenAppenzell gs2Angaben,
 			@Nullable FinSitZusatzangabenAppenzell gs1AngabenUrsprünglich,
-			@Nullable FinSitZusatzangabenAppenzell gs2AngabenUrspruenglich,
-			@Nullable BigDecimal massgebendesEinkommen
+			@Nullable FinSitZusatzangabenAppenzell gs2AngabenUrspruenglich
 	) {
+		Objects.requireNonNull(finanzDatenDTO);
 		FinanzielleSituationTable einkommenTable = new FinanzielleSituationTable(
 				getPageConfiguration(),
 				hasSecondGesuchsteller,
@@ -250,14 +251,21 @@ public class FinanzielleSituationPdfGeneratorAppenzell extends FinanzielleSituat
 				gs1AngabenUrsprünglich,
 				gs2AngabenUrspruenglich);
 
-
-		FinanzielleSituationRow totalRow = createRow(translate(EINKOMMEN_TOTAL),
-				hasSecondGesuchsteller ? null : massgebendesEinkommen,
+		FinanzielleSituationRow totalRow = createRow(
+				EINKOMMEN_TOTAL,
+				hasSecondGesuchsteller ? null : finanzDatenDTO.getMassgebendesEinkVorAbzFamGr(),
 				hasSecondGesuchsteller,
-				hasSecondGesuchsteller ? massgebendesEinkommen : null);
+				hasSecondGesuchsteller ? finanzDatenDTO.getMassgebendesEinkVorAbzFamGr() : null
+		);
+
+		FinanzielleSituationRow zwischenTotalRow = createRow(
+				EINKOMMEN_ZWISCHENTOTAL,
+				finanzDatenDTO.getMassgebendesEinkVorAbzFamGrGS1(),
+				hasSecondGesuchsteller,
+				finanzDatenDTO.getMassgebendesEinkVorAbzFamGrGS2());
 
 		FinanzielleSituationRow einkommenTitle = new FinanzielleSituationRow(
-				translate(EIKOMMEN_TITLE, mandant), extractFullnameGS1());
+				translate(EINKOMMEN_TITLE), extractFullnameGS1());
 
 		if (gs2Angaben != null) {
 			setPartnerInNameNullsafe(einkommenTitle);
@@ -273,6 +281,7 @@ public class FinanzielleSituationPdfGeneratorAppenzell extends FinanzielleSituat
 		einkommenTable.addRow(vorjahresverlustRow);
 		einkommenTable.addRow(politischeParteiSpendeRow);
 		einkommenTable.addRow(leistungJurPersRow);
+		einkommenTable.addRow(zwischenTotalRow);
 		einkommenTable.addRow(totalRow);
 		return einkommenTable.createTable();
 	}
@@ -308,10 +317,10 @@ public class FinanzielleSituationPdfGeneratorAppenzell extends FinanzielleSituat
 			setPartnerInNameNullsafe(vermoegenTitle);
 
 			vermoegenTotalRow.setGs2(getVermoegenTotal(gs1Angaben, gs2Angaben));
-			vermoegen15ProzentRow.setGs2(getVermoegen15Prozent(gs1Angaben, gs2Angaben));
+			vermoegen15ProzentRow.setGs2(getVermoegen15Prozent());
 		} else {
 			vermoegenTotalRow.setGs1(getVermoegenTotal(gs1Angaben, gs2Angaben));
-			vermoegen15ProzentRow.setGs1(getVermoegen15Prozent(gs1Angaben, gs2Angaben));
+			vermoegen15ProzentRow.setGs1(getVermoegen15Prozent());
 		}
 		vermoegenTable.addRow(vermoegenTitle);
 		vermoegenTable.addRow(vermoegenRow);
@@ -343,7 +352,7 @@ public class FinanzielleSituationPdfGeneratorAppenzell extends FinanzielleSituat
 
 		BigDecimal massgebendesEinkommen = getMassgebendesEinkommenEKV(jahrPlus);
 
-		document.add(createTableEinkommen(ekv1GS1, ekv1GS2, ekv1GS1Urspruenglich, ekv1GS2Urspruenglich, massgebendesEinkommen));
+		document.add(createTableEinkommen(ekv1GS1, ekv1GS2, ekv1GS1Urspruenglich, ekv1GS2Urspruenglich));
 		document.add(createTableVermoegen(ekv1GS1, ekv1GS2, ekv1GS1Urspruenglich, ekv1GS2Urspruenglich));
 	}
 
@@ -405,13 +414,11 @@ public class FinanzielleSituationPdfGeneratorAppenzell extends FinanzielleSituat
 	}
 
 	@Nullable
-	private BigDecimal getVermoegen15Prozent(
-			FinSitZusatzangabenAppenzell gs1Angaben,
-			@Nullable FinSitZusatzangabenAppenzell gs2Angaben) {
-		if (getVermoegenTotal(gs1Angaben, gs2Angaben) == null) {
+	private BigDecimal getVermoegen15Prozent() {
+		if (finanzDatenDTO == null) {
 			return null;
 		}
-		return MathUtil.DEFAULT.multiply(BigDecimal.valueOf(0.15), getVermoegenTotal(gs1Angaben, gs2Angaben));
+		return MathUtil.DEFAULT.add(finanzDatenDTO.getVermoegenXPercentAnrechenbarGS1(), finanzDatenDTO.getVermoegenXPercentAnrechenbarGS2());
 	}
 
 	@Nullable
