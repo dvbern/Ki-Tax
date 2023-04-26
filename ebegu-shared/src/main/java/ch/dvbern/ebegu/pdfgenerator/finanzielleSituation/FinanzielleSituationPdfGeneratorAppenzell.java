@@ -354,15 +354,6 @@ public class FinanzielleSituationPdfGeneratorAppenzell extends FinanzielleSituat
 		document.add(createTableVermoegen(ekv1GS1, ekv1GS2, ekv1GS1Urspruenglich, ekv1GS2Urspruenglich));
 	}
 
-	@Nullable
-	private BigDecimal getMassgebendesEinkommenEKV(int jahrPlus) {
-
-		if (jahrPlus == 1) {
-			return ekvBasisJahrPlus1 != null ? ekvBasisJahrPlus1.getMassgebendesEinkVorAbzFamGr() : null;
-		}
-		return ekvBasisJahrPlus2 != null ? ekvBasisJahrPlus2.getMassgebendesEinkVorAbzFamGr() : null;
-	}
-
 	private FinanzielleSituationRow createRow(
 			String message,
 			Function<FinSitZusatzangabenAppenzell, BigDecimal> getter,
