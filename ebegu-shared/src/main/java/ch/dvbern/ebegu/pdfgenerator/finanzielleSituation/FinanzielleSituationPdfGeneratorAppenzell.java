@@ -168,7 +168,7 @@ public class FinanzielleSituationPdfGeneratorAppenzell extends FinanzielleSituat
 	private Element createTableEinkommen(
 			FinSitZusatzangabenAppenzell gs1Angaben,
 			@Nullable FinSitZusatzangabenAppenzell gs2Angaben,
-			@Nullable FinSitZusatzangabenAppenzell gs1AngabenUrsprünglich,
+			@Nullable FinSitZusatzangabenAppenzell gs1AngabenUrspruenglich,
 			@Nullable FinSitZusatzangabenAppenzell gs2AngabenUrspruenglich
 	) {
 		Objects.requireNonNull(finanzDatenDTO);
@@ -184,7 +184,7 @@ public class FinanzielleSituationPdfGeneratorAppenzell extends FinanzielleSituat
 				FinSitZusatzangabenAppenzell::getSteuerbaresEinkommen,
 				gs1Angaben,
 				gs2Angaben,
-				gs1AngabenUrsprünglich,
+				gs1AngabenUrspruenglich,
 				gs2AngabenUrspruenglich);
 
 		FinanzielleSituationRow saeule3aRow = createRow(
@@ -192,7 +192,7 @@ public class FinanzielleSituationPdfGeneratorAppenzell extends FinanzielleSituat
 				FinSitZusatzangabenAppenzell::getSaeule3a,
 				gs1Angaben,
 				gs2Angaben,
-				gs1AngabenUrsprünglich,
+				gs1AngabenUrspruenglich,
 				gs2AngabenUrspruenglich);
 
 		FinanzielleSituationRow saeule3aNichtBvgRow = createRow(
@@ -200,7 +200,7 @@ public class FinanzielleSituationPdfGeneratorAppenzell extends FinanzielleSituat
 				FinSitZusatzangabenAppenzell::getSaeule3aNichtBvg,
 				gs1Angaben,
 				gs2Angaben,
-				gs1AngabenUrsprünglich,
+				gs1AngabenUrspruenglich,
 				gs2AngabenUrspruenglich);
 
 		FinanzielleSituationRow beruflicheVorsorgeRow = createRow(
@@ -208,7 +208,7 @@ public class FinanzielleSituationPdfGeneratorAppenzell extends FinanzielleSituat
 				FinSitZusatzangabenAppenzell::getBeruflicheVorsorge,
 				gs1Angaben,
 				gs2Angaben,
-				gs1AngabenUrsprünglich,
+				gs1AngabenUrspruenglich,
 				gs2AngabenUrspruenglich);
 
 		FinanzielleSituationRow liegenschaftsaufwandRow = createRow(
@@ -216,7 +216,7 @@ public class FinanzielleSituationPdfGeneratorAppenzell extends FinanzielleSituat
 				FinSitZusatzangabenAppenzell::getLiegenschaftsaufwand,
 				gs1Angaben,
 				gs2Angaben,
-				gs1AngabenUrsprünglich,
+				gs1AngabenUrspruenglich,
 				gs2AngabenUrspruenglich);
 
 		FinanzielleSituationRow einkuenfteBgsaRow = createRow(
@@ -224,7 +224,7 @@ public class FinanzielleSituationPdfGeneratorAppenzell extends FinanzielleSituat
 				FinSitZusatzangabenAppenzell::getEinkuenfteBgsa,
 				gs1Angaben,
 				gs2Angaben,
-				gs1AngabenUrsprünglich,
+				gs1AngabenUrspruenglich,
 				gs2AngabenUrspruenglich);
 
 		FinanzielleSituationRow vorjahresverlustRow = createRow(
@@ -232,7 +232,7 @@ public class FinanzielleSituationPdfGeneratorAppenzell extends FinanzielleSituat
 				FinSitZusatzangabenAppenzell::getVorjahresverluste,
 				gs1Angaben,
 				gs2Angaben,
-				gs1AngabenUrsprünglich,
+				gs1AngabenUrspruenglich,
 				gs2AngabenUrspruenglich);
 
 		FinanzielleSituationRow politischeParteiSpendeRow = createRow(
@@ -240,7 +240,7 @@ public class FinanzielleSituationPdfGeneratorAppenzell extends FinanzielleSituat
 				FinSitZusatzangabenAppenzell::getPolitischeParteiSpende,
 				gs1Angaben,
 				gs2Angaben,
-				gs1AngabenUrsprünglich,
+				gs1AngabenUrspruenglich,
 				gs2AngabenUrspruenglich);
 
 		FinanzielleSituationRow leistungJurPersRow = createRow(
@@ -248,7 +248,7 @@ public class FinanzielleSituationPdfGeneratorAppenzell extends FinanzielleSituat
 				FinSitZusatzangabenAppenzell::getLeistungAnJuristischePersonen,
 				gs1Angaben,
 				gs2Angaben,
-				gs1AngabenUrsprünglich,
+				gs1AngabenUrspruenglich,
 				gs2AngabenUrspruenglich);
 
 		FinanzielleSituationRow totalRow = createRow(
@@ -319,7 +319,7 @@ public class FinanzielleSituationPdfGeneratorAppenzell extends FinanzielleSituat
 			vermoegenTotalRow.setGs2(getVermoegenTotal(gs1Angaben, gs2Angaben));
 			vermoegen15ProzentRow.setGs2(getVermoegen15Prozent());
 		} else {
-			vermoegenTotalRow.setGs1(getVermoegenTotal(gs1Angaben, gs2Angaben));
+			vermoegenTotalRow.setGs1(getVermoegenTotal(gs1Angaben, null));
 			vermoegen15ProzentRow.setGs1(getVermoegen15Prozent());
 		}
 		vermoegenTable.addRow(vermoegenTitle);
