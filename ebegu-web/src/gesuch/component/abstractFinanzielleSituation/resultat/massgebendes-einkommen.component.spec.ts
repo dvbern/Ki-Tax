@@ -18,10 +18,10 @@
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {NgForm} from '@angular/forms';
 import {of} from 'rxjs';
-import {SharedModule} from '../../../../../app/shared/shared.module';
-import {SHARED_MODULE_OVERRIDES} from '../../../../../hybridTools/mockUpgradedDirective';
-import {TSFinanzielleSituationResultateDTO} from '../../../../../models/dto/TSFinanzielleSituationResultateDTO';
-import {BerechnungsManager} from '../../../../service/berechnungsManager';
+import {SharedModule} from '../../../../app/shared/shared.module';
+import {SHARED_MODULE_OVERRIDES} from '../../../../hybridTools/mockUpgradedDirective';
+import {TSFinanzielleSituationResultateDTO} from '../../../../models/dto/TSFinanzielleSituationResultateDTO';
+import {BerechnungsManager} from '../../../service/berechnungsManager';
 import {MassgebendesEinkommenComponent} from './massgebendes-einkommen.component';
 
 describe('MassgebendesEinkommenComponent', () => {

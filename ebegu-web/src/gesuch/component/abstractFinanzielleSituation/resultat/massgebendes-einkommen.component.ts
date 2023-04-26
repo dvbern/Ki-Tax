@@ -17,8 +17,8 @@
 
 import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnDestroy, OnInit} from '@angular/core';
 import {Observable, Subscription} from 'rxjs';
-import {LogFactory} from '../../../../../app/core/logging/LogFactory';
-import {TSFinanzielleSituationResultateDTO} from '../../../../../models/dto/TSFinanzielleSituationResultateDTO';
+import {LogFactory} from '../../../../app/core/logging/LogFactory';
+import {TSFinanzielleSituationResultateDTO} from '../../../../models/dto/TSFinanzielleSituationResultateDTO';
 
 const LOG = LogFactory.createLog('ResultatComponent');
 

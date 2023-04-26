@@ -36,6 +36,7 @@ import {GesuchModelManager} from '../../../../service/gesuchModelManager';
 import {WizardStepManager} from '../../../../service/wizardStepManager';
 
 import {EinkommensverschlechterungLuzernResultateViewComponent} from './einkommensverschlechterung-luzern-resultate-view.component';
+import {EinstellungRS} from '../../../../../admin/service/einstellungRS.rest';
 
 const gesuchModelManagerSpy = jasmine.createSpyObj<GesuchModelManager>(
     GesuchModelManager.name,
@@ -70,6 +71,9 @@ const stateServiceSpy = jasmine.createSpyObj<StateService>(StateService.name,
     ['go']);
 const errorServiceSpy = jasmine.createSpyObj<ErrorService>(ErrorService.name, ['clearError']);
 
+const einstellungRSSpy = jasmine.createSpyObj<EinstellungRS>(EinstellungRS.name,
+    ['getAllEinstellungenBySystemCached']);
+
 describe('EinkommensverschlechterungLuzernResultateViewComponent', () => {
     let component: EinkommensverschlechterungLuzernResultateViewComponent;
     let fixture: ComponentFixture<EinkommensverschlechterungLuzernResultateViewComponent>;
@@ -82,6 +86,7 @@ describe('EinkommensverschlechterungLuzernResultateViewComponent', () => {
                 {provide: WizardStepManager, useValue: wizardStepMangerSpy},
                 {provide: FinanzielleSituationRS, useValue: finanzielleSituationRSSpy},
                 {provide: BerechnungsManager, useValue: berechnungsManagerSpy},
+                {provide: EinstellungRS, useValue: einstellungRSSpy},
                 {provide: Transition, useValue: transitionSpy},
                 {provide: StateService, useValue: stateServiceSpy},
                 {provide: ErrorService, useValue: errorServiceSpy}

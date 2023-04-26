@@ -1,16 +1,18 @@
 /*
- * Ki-Tax: System for the management of external childcare subsidies
- * Copyright (C) 2017 City of Bern Switzerland
+ * Copyright (C) 2023 DV Bern AG, Switzerland
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Affero General Public License for more details.
+ *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
 import {ILogService, IPromise, IQService} from 'angular';
@@ -54,7 +56,6 @@ import {TSGesuchBetreuungenStatus} from '../../models/enums/TSGesuchBetreuungenS
 import {TSGesuchsperiodeStatus} from '../../models/enums/TSGesuchsperiodeStatus';
 import {TSRole} from '../../models/enums/TSRole';
 import {TSSozialdienstFallStatus} from '../../models/enums/TSSozialdienstFallStatus';
-import {TSUnterhaltsvereinbarungAnswer} from '../../models/enums/TSUnterhaltsvereinbarungAnswer';
 import {TSWizardStepName} from '../../models/enums/TSWizardStepName';
 import {TSWizardStepStatus} from '../../models/enums/TSWizardStepStatus';
 import {TSAdresse} from '../../models/TSAdresse';
@@ -84,6 +85,9 @@ import {TSKindContainer} from '../../models/TSKindContainer';
 import {TSVerfuegung} from '../../models/TSVerfuegung';
 import {EbeguUtil} from '../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../utils/TSRoleUtil';
+import {
+    FinanzielleSituationAppenzellService
+} from '../component/finanzielleSituation/appenzell/finanzielle-situation-appenzell.service';
 import {InternePendenzenRS} from '../component/internePendenzenView/internePendenzenRS.rest';
 import {DossierRS} from './dossierRS.rest';
 import {EinkommensverschlechterungContainerRS} from './einkommensverschlechterungContainerRS.rest';
@@ -94,6 +98,7 @@ import {GesuchGenerator} from './gesuchGenerator';
 import {GesuchRS} from './gesuchRS.rest';
 import {GlobalCacheService} from './globalCacheService';
 import {WizardStepManager} from './wizardStepManager';
+
 const LOG = LogFactory.createLog('GesuchModelManager');
 
 export class GesuchModelManager {
@@ -299,6 +304,17 @@ export class GesuchModelManager {
 
     // eslint-disable-next-line
     public isRequiredEKV_GS_BJ(gs: number, bj: number): boolean {
+        if (this.wizardStepManager.getCurrentStepName() === TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_APPENZELL) {
+            if (gs === 1) {
+                return this.getEkvFuerBasisJahrPlus(bj);
+            }
+            // GS 2 Spezialfall
+            if (this.isSpezialFallAR()) {
+                return true;
+            }
+            // GS 2 Normalfall
+            return this.getEkvFuerBasisJahrPlus(bj) && EbeguUtil.isNotNullOrUndefined(this.gesuch.gesuchsteller2);
+        }
         if (this.wizardStepManager.getCurrentStepName() === TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_LUZERN) {
             return gs === 2 ?
                 this.getEkvFuerBasisJahrPlus(bj) && this.isGesuchsteller2RequiredForLuzernEKV() :
@@ -606,7 +622,7 @@ export class GesuchModelManager {
     public callKiBonAnfrageAndUpdateFinSit(isGemeinsam: boolean): IPromise<TSFinanzielleSituationContainer> {
         return this.finanzielleSituationRS.updateFinSitMitSteuerdaten(
             this.gesuch.id,
-            this.getStammdatenToWorkWith(),
+            this.getGesuchstellerNumber(),
             isGemeinsam)
             .then((finSitContRespo: TSFinanzielleSituationContainer) => {
                 this.getStammdatenToWorkWith().finanzielleSituationContainer = finSitContRespo;
@@ -1874,5 +1890,11 @@ export class GesuchModelManager {
                 return gesuch;
             }
         );
+    }
+
+    public isSpezialFallAR(): boolean {
+        return FinanzielleSituationAppenzellService.finSitNeedsTwoSeparateAntragsteller(
+            this.getGesuch()
+        ) && EbeguUtil.isNullOrUndefined(this.getGesuch().gesuchsteller2);
     }
 }

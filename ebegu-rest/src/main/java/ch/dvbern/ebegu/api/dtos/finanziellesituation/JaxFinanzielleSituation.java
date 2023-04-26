@@ -86,9 +86,6 @@ public class JaxFinanzielleSituation extends JaxAbstractFinanzielleSituation {
 	private Boolean momentanSelbststaendig;
 
 	@Nullable
-	private JaxFinSitZusatzangabenAppenzell finSitZusatzangabenAppenzell;
-
-	@Nullable
 	@XmlJavaTypeAdapter(LocalDateTimeXMLConverter.class)
 	private LocalDateTime steuerdatenAbfrageTimestamp;
 
@@ -241,14 +238,5 @@ public class JaxFinanzielleSituation extends JaxAbstractFinanzielleSituation {
 
 	public void setMomentanSelbststaendig(@Nullable Boolean momentanSelbststaendig) {
 		this.momentanSelbststaendig = momentanSelbststaendig;
-	}
-
-	@Nullable
-	public JaxFinSitZusatzangabenAppenzell getFinSitZusatzangabenAppenzell() {
-		return finSitZusatzangabenAppenzell;
-	}
-
-	public void setFinSitZusatzangabenAppenzell(@Nullable JaxFinSitZusatzangabenAppenzell finSitZusatzangabenAppenzell) {
-		this.finSitZusatzangabenAppenzell = finSitZusatzangabenAppenzell;
 	}
 }

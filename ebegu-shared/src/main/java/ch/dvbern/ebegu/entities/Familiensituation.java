@@ -490,4 +490,16 @@ public class Familiensituation extends AbstractMutableEntity {
 			Objects.equals(getGemeinsamerHaushaltMitObhutsberechtigterPerson(),
 				otherFamiliensituation.getGemeinsamerHaushaltMitObhutsberechtigterPerson());
 	}
+
+	public boolean isSpezialFallAR() {
+		if (this.familienstatus != EnumFamilienstatus.APPENZELL) {
+			return false;
+		}
+		var spezialFallGeteilteObhut = EbeguUtil.isNotNullAndTrue(this.geteilteObhut)
+				&& EbeguUtil.isNotNullAndFalse(this.gemeinsamerHaushaltMitObhutsberechtigterPerson)
+				&& EbeguUtil.isNotNullAndTrue(gemeinsamerHaushaltMitPartner);
+		var spezialFallNichtGeteilteObhut = EbeguUtil.isNotNullAndFalse(this.geteilteObhut)
+				&& EbeguUtil.isNotNullAndTrue(gemeinsamerHaushaltMitPartner);
+		return spezialFallGeteilteObhut || spezialFallNichtGeteilteObhut;
+	}
 }

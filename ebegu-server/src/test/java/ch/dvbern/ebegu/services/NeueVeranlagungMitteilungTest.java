@@ -169,6 +169,7 @@ public class NeueVeranlagungMitteilungTest extends EasyMockSupport {
 		SteuerdatenResponse steuerdatenResponse = new SteuerdatenResponse();
 		steuerdatenResponse.setZpvNrAntragsteller(1000001);
 		steuerdatenResponse.setZpvNrDossiertraeger(1000001);
+		steuerdatenResponse.setGeburtsdatumAntragsteller(LocalDate.of(1980, 03, 25));
 		steuerdatenResponse.setZpvNrPartner(1000002);
 		steuerdatenResponse.setVeranlagungsstand(Veranlagungsstand.RECHTSKRAEFTIG);
 		Gesuch gesuch = prepareGS1Fall(steuerdatenResponse);
@@ -183,6 +184,7 @@ public class NeueVeranlagungMitteilungTest extends EasyMockSupport {
 		SteuerdatenResponse steuerdatenResponse = new SteuerdatenResponse();
 		steuerdatenResponse.setZpvNrAntragsteller(1000001);
 		steuerdatenResponse.setZpvNrDossiertraeger(1000001);
+		steuerdatenResponse.setGeburtsdatumAntragsteller(LocalDate.of(1980, 03, 25));
 		steuerdatenResponse.setVeranlagungsstand(Veranlagungsstand.RECHTSKRAEFTIG);
 		Gesuch gesuch = prepareGemeinsamFall(steuerdatenResponse);
 		expectEverythingBisBearbeitung(gesuch);
@@ -196,6 +198,7 @@ public class NeueVeranlagungMitteilungTest extends EasyMockSupport {
 		SteuerdatenResponse steuerdatenResponse = new SteuerdatenResponse();
 		steuerdatenResponse.setZpvNrAntragsteller(1000001);
 		steuerdatenResponse.setZpvNrDossiertraeger(1000001);
+		steuerdatenResponse.setGeburtsdatumAntragsteller(LocalDate.of(1980, 03, 25));
 		steuerdatenResponse.setVeranlagungsstand(Veranlagungsstand.RECHTSKRAEFTIG);
 		Gesuch gesuch = prepareGS1Fall(steuerdatenResponse);
 		expectEverythingBisBearbeitung(gesuch);
@@ -215,6 +218,8 @@ public class NeueVeranlagungMitteilungTest extends EasyMockSupport {
 		steuerdatenResponse.setZpvNrDossiertraeger(1000001);
 		steuerdatenResponse.setZpvNrPartner(1000002);
 		steuerdatenResponse.setZpvNrAntragsteller(1000001);
+		steuerdatenResponse.setGeburtsdatumAntragsteller(LocalDate.of(1980, 03, 25));
+		steuerdatenResponse.setGeburtsdatumDossiertraeger(LocalDate.of(1980, 03, 25));
 		steuerdatenResponse.setVeranlagungsstand(Veranlagungsstand.RECHTSKRAEFTIG);
 		Gesuch gesuch = prepareGemeinsamFall(steuerdatenResponse);
 		expectEverythingBisBearbeitung(gesuch);
@@ -242,6 +247,9 @@ public class NeueVeranlagungMitteilungTest extends EasyMockSupport {
 		SteuerdatenResponse steuerdatenResponse = new SteuerdatenResponse();
 		steuerdatenResponse.setZpvNrDossiertraeger(zpvGS2Dossiertraeger);
 		steuerdatenResponse.setErwerbseinkommenUnselbstaendigkeitDossiertraeger(nettoLohnGS2Dossiertraeger);
+		steuerdatenResponse.setGeburtsdatumDossiertraeger(LocalDate.of(1985, 03, 25));
+		steuerdatenResponse.setGeburtsdatumPartner(LocalDate.of(1980, 03, 25));
+		steuerdatenResponse.setGeburtsdatumAntragsteller(LocalDate.of(1980, 03, 25));
 		steuerdatenResponse.setZpvNrPartner(zpvGS1Partner);
 		steuerdatenResponse.setErwerbseinkommenUnselbstaendigkeitPartner(nettoLohnGS1Partner);
 		steuerdatenResponse.setZpvNrAntragsteller(zpvGS1Partner);
@@ -257,10 +265,12 @@ public class NeueVeranlagungMitteilungTest extends EasyMockSupport {
 
 		Assertions.assertEquals(
 			nettoLohnGS1Partner,
-			gesuchMitVerandlagungsmitteilung.getGesuchsteller1().getFinanzielleSituationContainer().getFinanzielleSituationJA().getNettolohn());
+			gesuchMitVerandlagungsmitteilung.getGesuchsteller1()
+					.getFinanzielleSituationContainer().getFinanzielleSituationJA().getNettolohn());
 		Assertions.assertEquals(
 			nettoLohnGS2Dossiertraeger,
-			gesuchMitVerandlagungsmitteilung.getGesuchsteller2().getFinanzielleSituationContainer().getFinanzielleSituationJA().getNettolohn());
+			gesuchMitVerandlagungsmitteilung.getGesuchsteller2()
+					.getFinanzielleSituationContainer().getFinanzielleSituationJA().getNettolohn());
 	}
 
 	@Test
@@ -272,6 +282,8 @@ public class NeueVeranlagungMitteilungTest extends EasyMockSupport {
 
 		SteuerdatenResponse steuerdatenResponse = new SteuerdatenResponse();
 		steuerdatenResponse.setZpvNrDossiertraeger(zpvGS1Dossiertraeger);
+		steuerdatenResponse.setGeburtsdatumAntragsteller(LocalDate.of(1980, 03, 25));
+		steuerdatenResponse.setGeburtsdatumDossiertraeger(LocalDate.of(1980, 03, 25));
 		steuerdatenResponse.setErwerbseinkommenUnselbstaendigkeitDossiertraeger(nettoLohnGS1Dossiertraeger);
 		steuerdatenResponse.setZpvNrPartner(zpvGS2Partner);
 		steuerdatenResponse.setErwerbseinkommenUnselbstaendigkeitPartner(nettoLohnGS2Partner);
@@ -288,10 +300,12 @@ public class NeueVeranlagungMitteilungTest extends EasyMockSupport {
 
 		Assertions.assertEquals(
 			nettoLohnGS1Dossiertraeger,
-			gesuchMitVerandlagungsmitteilung.getGesuchsteller1().getFinanzielleSituationContainer().getFinanzielleSituationJA().getNettolohn());
+			gesuchMitVerandlagungsmitteilung.getGesuchsteller1().getFinanzielleSituationContainer()
+					.getFinanzielleSituationJA().getNettolohn());
 		Assertions.assertEquals(
 			nettoLohnGS2Partner,
-			gesuchMitVerandlagungsmitteilung.getGesuchsteller2().getFinanzielleSituationContainer().getFinanzielleSituationJA().getNettolohn());
+			gesuchMitVerandlagungsmitteilung.getGesuchsteller2().getFinanzielleSituationContainer()
+					.getFinanzielleSituationJA().getNettolohn());
 	}
 
 	@Test
@@ -303,12 +317,15 @@ public class NeueVeranlagungMitteilungTest extends EasyMockSupport {
 		SteuerdatenResponse steuerdatenResponse = new SteuerdatenResponse();
 		steuerdatenResponse.setZpvNrDossiertraeger(zpvGS1Dossiertraeger);
 		steuerdatenResponse.setZpvNrAntragsteller(zpvGS1Dossiertraeger);
+		steuerdatenResponse.setGeburtsdatumDossiertraeger(LocalDate.now());
+		steuerdatenResponse.setGeburtsdatumAntragsteller(LocalDate.of(1980, 03, 25));
 		steuerdatenResponse.setAusgewiesenerGeschaeftsertragDossiertraeger(ausgewiesenerGeschaeftsertragVeranlagung);
 		steuerdatenResponse.setVeranlagungsstand(Veranlagungsstand.RECHTSKRAEFTIG);
 
 		Gesuch gesuch = prepareGS1Fall(steuerdatenResponse);
 		gesuch.getDossier().getFall().getBesitzer().setZpvNummer(String.valueOf(zpvGS1Dossiertraeger));
-		gesuch.getGesuchsteller1().getFinanzielleSituationContainer().getFinanzielleSituationJA().setGeschaeftsgewinnBasisjahr(ausgewiesenerGeschaeftsertrag);
+		gesuch.getGesuchsteller1().getFinanzielleSituationContainer().getFinanzielleSituationJA()
+				.setGeschaeftsgewinnBasisjahr(ausgewiesenerGeschaeftsertrag);
 
 		mockCalls(gesuch, false);
 
@@ -317,7 +334,8 @@ public class NeueVeranlagungMitteilungTest extends EasyMockSupport {
 
 		Assertions.assertEquals(
 			ausgewiesenerGeschaeftsertragVeranlagung,
-			gesuchMitVerandlagungsmitteilung.getGesuchsteller1().getFinanzielleSituationContainer().getFinanzielleSituationJA().getGeschaeftsgewinnBasisjahr());
+			gesuchMitVerandlagungsmitteilung.getGesuchsteller1().getFinanzielleSituationContainer()
+					.getFinanzielleSituationJA().getGeschaeftsgewinnBasisjahr());
 	}
 
 	@Test
@@ -328,12 +346,14 @@ public class NeueVeranlagungMitteilungTest extends EasyMockSupport {
 		SteuerdatenResponse steuerdatenResponse = new SteuerdatenResponse();
 		steuerdatenResponse.setZpvNrDossiertraeger(zpvGS1Dossiertraeger);
 		steuerdatenResponse.setZpvNrAntragsteller(zpvGS1Dossiertraeger);
+		steuerdatenResponse.setGeburtsdatumAntragsteller(LocalDate.of(1980, 03, 25));
 		steuerdatenResponse.setAusgewiesenerGeschaeftsertragDossiertraeger(null);
 		steuerdatenResponse.setVeranlagungsstand(Veranlagungsstand.RECHTSKRAEFTIG);
 
 		Gesuch gesuch = prepareGS1Fall(steuerdatenResponse);
 		gesuch.getDossier().getFall().getBesitzer().setZpvNummer(String.valueOf(zpvGS1Dossiertraeger));
-		gesuch.getGesuchsteller1().getFinanzielleSituationContainer().getFinanzielleSituationJA().setGeschaeftsgewinnBasisjahr(ausgewiesenerGeschaeftsertrag);
+		gesuch.getGesuchsteller1().getFinanzielleSituationContainer().getFinanzielleSituationJA()
+				.setGeschaeftsgewinnBasisjahr(ausgewiesenerGeschaeftsertrag);
 
 		mockCalls(gesuch, false);
 
@@ -353,11 +373,13 @@ public class NeueVeranlagungMitteilungTest extends EasyMockSupport {
 		steuerdatenResponse.setZpvNrDossiertraeger(zpvGS1Dossiertraeger);
 		steuerdatenResponse.setZpvNrAntragsteller(zpvGS1Dossiertraeger);
 		steuerdatenResponse.setAusgewiesenerGeschaeftsertragDossiertraeger(ausgewiesenerGeschaeftsertrag);
+		steuerdatenResponse.setGeburtsdatumAntragsteller(LocalDate.of(1980, 03, 25));
 		steuerdatenResponse.setVeranlagungsstand(Veranlagungsstand.RECHTSKRAEFTIG);
 
 		Gesuch gesuch = prepareGS1Fall(steuerdatenResponse);
 		gesuch.getDossier().getFall().getBesitzer().setZpvNummer(String.valueOf(zpvGS1Dossiertraeger));
-		gesuch.getGesuchsteller1().getFinanzielleSituationContainer().getFinanzielleSituationJA().setGeschaeftsgewinnBasisjahr(null);
+		gesuch.getGesuchsteller1().getFinanzielleSituationContainer().getFinanzielleSituationJA()
+				.setGeschaeftsgewinnBasisjahr(null);
 
 		mockCalls(gesuch, false);
 

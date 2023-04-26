@@ -79,6 +79,7 @@ public class AppenzellRechner extends AbstractRechner {
 		BigDecimal bgPensumInStunden = anspruchpensumInStunden.min(betreuungspensumInStunden);
 		BigDecimal vollkostenGekuerzt = calculateVollkostenGekuerztByPensumAndMonatAnteil(bgPensumInStunden, betreuungspensumInStunden);
 		BigDecimal prozentsatzAnVollkosten = getProzentsatzByMassgebendemEinkommen(input.getMassgebendesEinkommen());
+		Integer prozentsatzAnVollkostenInteger = EXACT.multiply(prozentsatzAnVollkosten, BigDecimal.valueOf(100)).intValue();
 		BigDecimal gutscheinGemaessFormel = calculateGutschein(vollkostenGekuerzt, bgPensumInStunden, prozentsatzAnVollkosten);
 
 		BGCalculationResult result = new BGCalculationResult();
@@ -89,6 +90,7 @@ public class AppenzellRechner extends AbstractRechner {
 		result.setBgPensumZeiteinheit(bgPensumInStunden);
 		result.setVollkosten(vollkostenGekuerzt);
 		result.setVerguenstigung(gutscheinGemaessFormel);
+		result.setBeitragshoeheProzent(prozentsatzAnVollkostenInteger);
 		result.roundAllValues();
 
 		verfuegungZeitabschnitt.setBgCalculationResultAsiv(result);

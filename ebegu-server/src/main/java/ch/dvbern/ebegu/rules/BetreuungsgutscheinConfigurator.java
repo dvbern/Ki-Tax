@@ -38,6 +38,7 @@ import ch.dvbern.ebegu.util.KitaxUtil;
 import ch.dvbern.ebegu.util.RuleParameterUtil;
 
 import static ch.dvbern.ebegu.enums.EinstellungKey.ABHAENGIGKEIT_ANSPRUCH_BESCHAEFTIGUNGPENSUM;
+import static ch.dvbern.ebegu.enums.EinstellungKey.ANSPRUCH_AB_X_MONATEN;
 import static ch.dvbern.ebegu.enums.EinstellungKey.ANSPRUCH_MONATSWEISE;
 import static ch.dvbern.ebegu.enums.EinstellungKey.AUSSERORDENTLICHER_ANSPRUCH_RULE;
 import static ch.dvbern.ebegu.enums.EinstellungKey.DAUER_BABYTARIF;
@@ -137,7 +138,8 @@ public class BetreuungsgutscheinConfigurator {
 				KINDERABZUG_TYP,
 				FKJV_TEXTE,
 				FACHSTELLEN_TYP,
-				GEMEINDE_KEIN_GUTSCHEIN_FUER_SOZIALHILFE_EMPFAENGER
+				GEMEINDE_KEIN_GUTSCHEIN_FUER_SOZIALHILFE_EMPFAENGER,
+				ANSPRUCH_AB_X_MONATEN
 		);
 	}
 
@@ -298,6 +300,11 @@ public class BetreuungsgutscheinConfigurator {
 		FamiliensituationBeendetAbschnittRule familiensituationBeendetAbschnittRule =
 				new FamiliensituationBeendetAbschnittRule(defaultGueltigkeit, locale);
 		addToRuleSetIfRelevantForGemeinde(familiensituationBeendetAbschnittRule, ruleParameterUtil);
+
+		AnspruchAbAlterAbschnittRule
+				anspruchAbAlterAbschnittRule = new AnspruchAbAlterAbschnittRule(defaultGueltigkeit, locale,
+				ruleParameterUtil.getEinstellung(EinstellungKey.ANSPRUCH_AB_X_MONATEN).getValueAsInteger());
+		addToRuleSetIfRelevantForGemeinde(anspruchAbAlterAbschnittRule, ruleParameterUtil);
 	}
 
 	private void berechnenAnspruchRegeln(@Nonnull Gemeinde gemeinde, @Nonnull RuleParameterUtil ruleParameterUtil) {
@@ -480,6 +487,12 @@ public class BetreuungsgutscheinConfigurator {
 		SozialhilfeKeinAnspruchCalcRule
 				sozialhilfeCalcRule = new SozialhilfeKeinAnspruchCalcRule(defaultGueltigkeit, locale);
 		addToRuleSetIfRelevantForGemeinde(sozialhilfeCalcRule, ruleParameterUtil);
+
+		// Kinder erhalten erst ab einem gewissen Altern einen Anspruch, wenn entsprechend konfiguriert
+		AnspruchAbAlterCalcRule
+				anspruchAbAlterCalcRule = new AnspruchAbAlterCalcRule(defaultGueltigkeit, locale,
+				ruleParameterUtil.getEinstellung(EinstellungKey.ANSPRUCH_AB_X_MONATEN).getValueAsInteger());
+		addToRuleSetIfRelevantForGemeinde(anspruchAbAlterCalcRule, ruleParameterUtil);
 
 		//RESTANSPRUCH REDUKTION limitiert Anspruch auf  minimum(anspruchRest, anspruchPensum)
 		RestanspruchLimitCalcRule restanspruchLimitCalcRule = new RestanspruchLimitCalcRule(defaultGueltigkeit,

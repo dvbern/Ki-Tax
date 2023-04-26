@@ -113,6 +113,6 @@ export class FinanzielleSituationStartViewLuzernComponent extends AbstractFinSit
     }
 
     public isNotSozialhilfeBezueger(): boolean {
-        return EbeguUtil.isNotNullAndFalse(this.model.sozialhilfeBezueger);
+        return EbeguUtil.isNotNullAndFalse(this.model.familienSituation.sozialhilfeBezueger);
     }
 }

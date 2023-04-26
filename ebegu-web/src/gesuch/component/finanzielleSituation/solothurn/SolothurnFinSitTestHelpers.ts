@@ -124,6 +124,7 @@ export class SolothurnFinSitTestHelpers {
         const model = new TSFinanzModel(2019, false, 1);
         model.finanzielleSituationContainerGS1 = new TSFinanzielleSituationContainer();
         model.finanzielleSituationContainerGS1.finanzielleSituationJA = new TSFinanzielleSituation();
+        model.familienSituation = new TSFamiliensituation();
         return model;
     }
 }
