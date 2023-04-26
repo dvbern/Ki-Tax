@@ -99,6 +99,45 @@ public class GeschwistertenBonusAbschnittRuleTest {
 	}
 
 	@Test
+	public void twoKidsWithBetreuungAusserhalbGP() {
+		Betreuung betreuungYoungestKind = createBetreuungWithYoungestKindAndAddToGesuch();
+
+		DateRange ausserhalbGP = new DateRange(Constants.GESUCHSPERIODE_17_18_AB.minusYears(1),
+											Constants.GESUCHSPERIODE_17_18_BIS);
+
+		betreuungYoungestKind.getBetreuungspensumContainers()
+				.stream()
+				.findFirst()
+				.orElseThrow()
+				.getBetreuungspensumJA()
+				.setGueltigkeit(ausserhalbGP);
+
+		//Oldest Betreuung nur im August
+		betreuung.getBetreuungspensumContainers()
+				.stream()
+				.findFirst()
+				.orElseThrow()
+				.getBetreuungspensumJA()
+				.setGueltigkeit(AUGUST);
+
+		assertNoZeitabschnitteCreatedInRule(executeRule(betreuung));
+
+		//Zweites Kind soll nur im August Geschwisternbonus erhalten
+		List<VerfuegungZeitabschnitt> verfuegungZeitabschnittYoungestList =
+				ruleToTest.createVerfuegungsZeitabschnitte(betreuungYoungestKind);
+
+		verfuegungZeitabschnittYoungestList.forEach(verfuegungZeitabschnitt -> {
+			LocalDate gueltigAb = verfuegungZeitabschnitt.getGueltigkeit().getGueltigAb();
+			if (gueltigAb.getMonth() == Month.AUGUST
+				&& gueltigAb.getYear() == Constants.GESUCHSPERIODE_17_18_AB.getYear()) {
+				assertGeschwisternBonus2(List.of(verfuegungZeitabschnitt));
+			} else {
+				assertNoGeschwisternBonus(List.of(verfuegungZeitabschnitt));
+			}
+		});
+	}
+
+	@Test
 	public void threeKidsWithBereuung() {
 		Betreuung betreuungOldestKind = createBetreuungWithOldestKindAndAddToGesuch();
 		Betreuung betreuungYoungestKind = createBetreuungWithYoungestKindAndAddToGesuch();
