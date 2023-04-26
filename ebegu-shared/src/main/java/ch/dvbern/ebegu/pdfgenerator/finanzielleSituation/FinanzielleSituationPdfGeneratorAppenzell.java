@@ -25,7 +25,7 @@ import java.util.function.Function;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import ch.dvbern.ebegu.dto.FinanzielleSituationResultateDTO;
+import ch.dvbern.ebegu.entities.EinkommensverschlechterungContainer;
 import ch.dvbern.ebegu.entities.Familiensituation;
 import ch.dvbern.ebegu.entities.FinSitZusatzangabenAppenzell;
 import ch.dvbern.ebegu.entities.GemeindeStammdaten;
@@ -78,16 +78,7 @@ public class FinanzielleSituationPdfGeneratorAppenzell extends FinanzielleSituat
 		super(gesuch, verfuegungFuerMassgEinkommen, stammdaten, erstesEinreichungsdatum, finanzielleSituationRechner);
 		finanzDatenDTO = finanzielleSituationRechner.calculateResultateFinanzielleSituation(gesuch, hasSecondGesuchsteller);
 		hasSecondGesuchsteller = calculateHasSecondGesuchsteller(gesuch);
-		
-	}
 
-	private static boolean calculateHasSecondGesuchsteller(@Nonnull Gesuch gesuch) {
-		requireNonNull(gesuch.getFamiliensituationContainer());
-		requireNonNull(gesuch.getFamiliensituationContainer().getFamiliensituationJA());
-		return gesuch.getGesuchsteller2() != null && Boolean.FALSE.equals(gesuch.getFamiliensituationContainer()
-				.getFamiliensituationJA()
-				.getGemeinsameSteuererklaerung())
-				|| gesuch.getFamiliensituationContainer().getFamiliensituationJA().isSpezialFallAR();
 	}
 
 	@Override
@@ -111,9 +102,19 @@ public class FinanzielleSituationPdfGeneratorAppenzell extends FinanzielleSituat
 		Objects.requireNonNull(finanzDatenDTO);
 		document.add(createIntroBasisjahr());
 
-		document.add(createTableEinkommen(angabenGS1Bj, angabenGS2Bj, angabenGS1BjUrspruenglich, angabenGS2BjUrspruenglich, finanzDatenDTO));
+		document.add(createTableEinkommen(angabenGS1Bj, angabenGS2Bj, angabenGS1BjUrspruenglich, angabenGS2BjUrspruenglich, finanzDatenDTO.getMassgebendesEinkVorAbzFamGr()));
 		document.add(createTableVermoegen(angabenGS1Bj, angabenGS2Bj, angabenGS1BjUrspruenglich, angabenGS2BjUrspruenglich));
 
+	}
+
+	@Override
+	protected void createPageEkv1(@Nonnull PdfGenerator generator, @Nonnull Document document) {
+		createPageEkv(document, 1);
+	}
+
+	@Override
+	protected void createPageEkv2(@Nonnull PdfGenerator generator, @Nonnull Document document) {
+		createPageEkv(document, 2);
 	}
 
 	private Element createTableEinkommen(
@@ -121,7 +122,7 @@ public class FinanzielleSituationPdfGeneratorAppenzell extends FinanzielleSituat
 			@Nullable FinSitZusatzangabenAppenzell gs2Angaben,
 			@Nullable FinSitZusatzangabenAppenzell gs1AngabenUrsprünglich,
 			@Nullable FinSitZusatzangabenAppenzell gs2AngabenUrspruenglich,
-			FinanzielleSituationResultateDTO finSitDTO
+			@Nullable BigDecimal massgebendesEinkommen
 	) {
 		FinanzielleSituationTable einkommenTable = new FinanzielleSituationTable(
 				getPageConfiguration(),
@@ -202,10 +203,11 @@ public class FinanzielleSituationPdfGeneratorAppenzell extends FinanzielleSituat
 				gs1AngabenUrsprünglich,
 				gs2AngabenUrspruenglich);
 
+
 		FinanzielleSituationRow totalRow = createRow(translate(EINKOMMEN_TOTAL),
-				hasSecondGesuchsteller ? null : finSitDTO.getMassgebendesEinkVorAbzFamGrGS1(),
+				hasSecondGesuchsteller ? null : massgebendesEinkommen,
 				hasSecondGesuchsteller,
-				hasSecondGesuchsteller ? finSitDTO.getMassgebendesEinkVorAbzFamGrGS1() : null);
+				hasSecondGesuchsteller ? massgebendesEinkommen : null);
 
 		FinanzielleSituationRow einkommenTitle = new FinanzielleSituationRow(
 				translate(EIKOMMEN_TITLE, mandant), extractFullnameGS1());
@@ -226,32 +228,6 @@ public class FinanzielleSituationPdfGeneratorAppenzell extends FinanzielleSituat
 		einkommenTable.addRow(leistungJurPersRow);
 		einkommenTable.addRow(totalRow);
 		return einkommenTable.createTable();
-	}
-
-	private void setPartnerInNameNullsafe(FinanzielleSituationRow row) {
-		if (getFamSitNullSafe().isSpezialFallAR()) {
-			row.setGs2(translate(PARTNERIN));
-		} else {
-			requireNonNull(gesuch.getGesuchsteller2());
-			row.setGs2(gesuch.getGesuchsteller2().extractFullName());
-		}
-	}
-
-	@Nonnull
-	private String extractFullnameGS1() {
-		Familiensituation famSitGS1 = getFamSitNullSafe();
-		requireNonNull(gesuch.getGesuchsteller1());
-		if (Boolean.FALSE.equals(famSitGS1.getGemeinsameSteuererklaerung())) {
-			return gesuch.getGesuchsteller1().extractFullName();
-		}
-		return gesuch.getGesuchsteller1().extractFullName() + (gesuch.getGesuchsteller2() != null ?
-				" + " + gesuch.getGesuchsteller2().extractFullName() : "");
-	}
-
-	private Familiensituation getFamSitNullSafe() {
-		Objects.requireNonNull(gesuch.getFamiliensituationContainer());
-		Objects.requireNonNull(gesuch.getFamiliensituationContainer().getFamiliensituationJA());
-		return gesuch.getFamiliensituationContainer().getFamiliensituationJA();
 	}
 
 	private Element createTableVermoegen(
@@ -284,11 +260,11 @@ public class FinanzielleSituationPdfGeneratorAppenzell extends FinanzielleSituat
 		if (gs2Angaben != null) {
 			setPartnerInNameNullsafe(vermoegenTitle);
 
-			vermoegenTotalRow.setGs2(getVermoegenTotal());
-			vermoegen15ProzentRow.setGs2(getVermoegen15Prozent());
+			vermoegenTotalRow.setGs2(getVermoegenTotal(gs1Angaben, gs2Angaben));
+			vermoegen15ProzentRow.setGs2(getVermoegen15Prozent(gs1Angaben, gs2Angaben));
 		} else {
-			vermoegenTotalRow.setGs1(getVermoegenTotal());
-			vermoegen15ProzentRow.setGs1(getVermoegen15Prozent());
+			vermoegenTotalRow.setGs1(getVermoegenTotal(gs1Angaben, gs2Angaben));
+			vermoegen15ProzentRow.setGs1(getVermoegen15Prozent(gs1Angaben, gs2Angaben));
 		}
 		vermoegenTable.addRow(vermoegenTitle);
 		vermoegenTable.addRow(vermoegenRow);
@@ -303,24 +279,105 @@ public class FinanzielleSituationPdfGeneratorAppenzell extends FinanzielleSituat
 		return vermoegenTable.createTable();
 	}
 
-	@Nullable
-	private BigDecimal getVermoegen15Prozent() {
-		if (getVermoegenTotal() == null) {
-			return null;
-		}
-		return MathUtil.DEFAULT.multiply(BigDecimal.valueOf(0.15), getVermoegenTotal());
+	private void createPageEkv(@Nonnull Document document, int jahrPlus) {
+		FinSitZusatzangabenAppenzell ekv1GS1 = getEkvGS(gesuch.getGesuchsteller1(), jahrPlus);
+		FinSitZusatzangabenAppenzell ekv1GS1Urspruenglich = getEkvGSUrspruenglich(gesuch.getGesuchsteller1(), jahrPlus);
+		FinSitZusatzangabenAppenzell ekv1GS2 = getEkvGS2(jahrPlus);
+		FinSitZusatzangabenAppenzell ekv1GS2Urspruenglich = getEkvGS2Urspruenglich(jahrPlus);
+
+		Objects.requireNonNull(ekv1GS1);
+		Objects.requireNonNull(finanzDatenDTO);
+
+		document.newPage();
+		document.add(createTitleEkv(jahrPlus == 1 ?
+				gesuch.getGesuchsperiode().getBasisJahrPlus1() :
+				gesuch.getGesuchsperiode().getBasisJahrPlus2()));
+		document.add(createIntroEkv());
+
+		BigDecimal massgebendesEinkommen = getMassgebendesEinkommenEKV(jahrPlus);
+
+		document.add(createTableEinkommen(ekv1GS1, ekv1GS2, ekv1GS1Urspruenglich, ekv1GS2Urspruenglich, massgebendesEinkommen));
+		document.add(createTableVermoegen(ekv1GS1, ekv1GS2, ekv1GS1Urspruenglich, ekv1GS2Urspruenglich));
 	}
 
 	@Nullable
-	private BigDecimal getVermoegenTotal() {
-		Objects.requireNonNull(angabenGS1Bj);
-		if(angabenGS1Bj.getSteuerbaresVermoegen() == null) {
+	private BigDecimal getMassgebendesEinkommenEKV(int jahrPlus) {
+
+		if (jahrPlus == 1) {
+			return ekvBasisJahrPlus1 != null ? ekvBasisJahrPlus1.getMassgebendesEinkVorAbzFamGr() : null;
+		}
+		return ekvBasisJahrPlus2 != null ? ekvBasisJahrPlus2.getMassgebendesEinkVorAbzFamGr() : null;
+	}
+
+	private FinanzielleSituationRow createRow(
+			String message,
+			Function<FinSitZusatzangabenAppenzell, BigDecimal> getter,
+			FinSitZusatzangabenAppenzell gs1,
+			@Nullable FinSitZusatzangabenAppenzell gs2,
+			@Nullable FinSitZusatzangabenAppenzell gs1Urspruenglich,
+			@Nullable FinSitZusatzangabenAppenzell gs2Urspruenglich) {
+		BigDecimal gs1BigDecimal = gs1 == null ? null : getter.apply(gs1);
+		BigDecimal gs2BigDecimal = gs2 == null ? null : getter.apply(gs2);
+		BigDecimal gs1UrspruenglichBigDecimal = gs1Urspruenglich == null ? null : getter.apply(gs1Urspruenglich);
+		BigDecimal gs2UrspruenglichBigDecimal = gs2Urspruenglich == null ? null : getter.apply(gs2Urspruenglich);
+		FinanzielleSituationRow row = new FinanzielleSituationRow(message, gs1BigDecimal);
+		row.setGs2(gs2BigDecimal);
+		if (!MathUtil.isSameWithNullAsZero(gs1BigDecimal, gs1UrspruenglichBigDecimal)) {
+			row.setGs1Urspruenglich(gs1UrspruenglichBigDecimal, sprache, mandant);
+		}
+		if (!MathUtil.isSameWithNullAsZero(gs2BigDecimal, gs2UrspruenglichBigDecimal)) {
+			row.setGs2Urspruenglich(gs2UrspruenglichBigDecimal, sprache, mandant);
+		}
+		return row;
+	}
+
+	@Nonnull
+	private String extractFullnameGS1() {
+		Familiensituation famSitGS1 = getFamSitNullSafe();
+		requireNonNull(gesuch.getGesuchsteller1());
+		if (Boolean.FALSE.equals(famSitGS1.getGemeinsameSteuererklaerung())) {
+			return gesuch.getGesuchsteller1().extractFullName();
+		}
+		return gesuch.getGesuchsteller1().extractFullName() + (gesuch.getGesuchsteller2() != null ?
+				" + " + gesuch.getGesuchsteller2().extractFullName() : "");
+	}
+
+	private void setPartnerInNameNullsafe(FinanzielleSituationRow row) {
+		if (getFamSitNullSafe().isSpezialFallAR()) {
+			row.setGs2(translate(PARTNERIN));
+		} else {
+			requireNonNull(gesuch.getGesuchsteller2());
+			row.setGs2(gesuch.getGesuchsteller2().extractFullName());
+		}
+	}
+
+	private Familiensituation getFamSitNullSafe() {
+		Objects.requireNonNull(gesuch.getFamiliensituationContainer());
+		Objects.requireNonNull(gesuch.getFamiliensituationContainer().getFamiliensituationJA());
+		return gesuch.getFamiliensituationContainer().getFamiliensituationJA();
+	}
+
+	@Nullable
+	private BigDecimal getVermoegen15Prozent(
+			FinSitZusatzangabenAppenzell gs1Angaben,
+			@Nullable FinSitZusatzangabenAppenzell gs2Angaben) {
+		if (getVermoegenTotal(gs1Angaben, gs2Angaben) == null) {
 			return null;
 		}
-		if (angabenGS2Bj != null) {
-			return MathUtil.DEFAULT.addNullSafe(angabenGS1Bj.getSteuerbaresVermoegen(), angabenGS2Bj.getSteuerbaresVermoegen());
+		return MathUtil.DEFAULT.multiply(BigDecimal.valueOf(0.15), getVermoegenTotal(gs1Angaben, gs2Angaben));
+	}
+
+	@Nullable
+	private BigDecimal getVermoegenTotal(
+			FinSitZusatzangabenAppenzell gs1Angaben,
+			@Nullable FinSitZusatzangabenAppenzell gs2Angaben) {
+		if(gs1Angaben.getSteuerbaresVermoegen() == null) {
+			return null;
 		}
-		return angabenGS1Bj.getSteuerbaresVermoegen();
+		if (gs2Angaben != null) {
+			return MathUtil.DEFAULT.addNullSafe(gs1Angaben.getSteuerbaresVermoegen(), gs2Angaben.getSteuerbaresVermoegen());
+		}
+		return gs1Angaben.getSteuerbaresVermoegen();
 	}
 
 	@Nullable
@@ -375,35 +432,65 @@ public class FinanzielleSituationPdfGeneratorAppenzell extends FinanzielleSituat
 				.getFinSitZusatzangabenAppenzell();
 	}
 
-	private FinanzielleSituationRow createRow(
-			String message,
-			Function<FinSitZusatzangabenAppenzell, BigDecimal> getter,
-			FinSitZusatzangabenAppenzell gs1,
-			@Nullable FinSitZusatzangabenAppenzell gs2,
-			@Nullable FinSitZusatzangabenAppenzell gs1Urspruenglich,
-			@Nullable FinSitZusatzangabenAppenzell gs2Urspruenglich) {
-		BigDecimal gs1BigDecimal = gs1 == null ? null : getter.apply(gs1);
-		BigDecimal gs2BigDecimal = gs2 == null ? null : getter.apply(gs2);
-		BigDecimal gs1UrspruenglichBigDecimal = gs1Urspruenglich == null ? null : getter.apply(gs1Urspruenglich);
-		BigDecimal gs2UrspruenglichBigDecimal = gs2Urspruenglich == null ? null : getter.apply(gs2Urspruenglich);
-		FinanzielleSituationRow row = new FinanzielleSituationRow(message, gs1BigDecimal);
-		row.setGs2(gs2BigDecimal);
-		if (!MathUtil.isSameWithNullAsZero(gs1BigDecimal, gs1UrspruenglichBigDecimal)) {
-			row.setGs1Urspruenglich(gs1UrspruenglichBigDecimal, sprache, mandant);
+
+	@Nullable
+	private static FinSitZusatzangabenAppenzell getEkvGS(@Nullable GesuchstellerContainer gesuchstellerContainer, int plusJahr) {
+		EinkommensverschlechterungContainer ekvContainer =
+				getEinkommensverschlechterungContainer(gesuchstellerContainer);
+		if (ekvContainer == null) {
+			return null;
 		}
-		if (!MathUtil.isSameWithNullAsZero(gs2BigDecimal, gs2UrspruenglichBigDecimal)) {
-			row.setGs2Urspruenglich(gs2UrspruenglichBigDecimal, sprache, mandant);
+		if (plusJahr == 1) {
+			return ekvContainer.getEkvJABasisJahrPlus1() == null ? null : ekvContainer.getEkvJABasisJahrPlus1().getFinSitZusatzangabenAppenzell();
 		}
-		return row;
+		return ekvContainer.getEkvJABasisJahrPlus2() == null ? null : ekvContainer.getEkvJABasisJahrPlus2().getFinSitZusatzangabenAppenzell();
 	}
 
-	@Override
-	protected void createPageEkv1(@Nonnull PdfGenerator generator, @Nonnull Document document) {
-
+	@Nullable
+	private static FinSitZusatzangabenAppenzell getEkvGSUrspruenglich(@Nullable GesuchstellerContainer gesuchstellerContainer, int plusJahr) {
+		EinkommensverschlechterungContainer ekvContainer = getEinkommensverschlechterungContainer(gesuchstellerContainer);
+		if (ekvContainer == null) {
+			return null;
+		}
+		if (plusJahr == 1) {
+			return ekvContainer.getEkvGSBasisJahrPlus1() == null ? null : ekvContainer.getEkvGSBasisJahrPlus1().getFinSitZusatzangabenAppenzell();
+		}
+		return ekvContainer.getEkvGSBasisJahrPlus2() == null ? null : ekvContainer.getEkvGSBasisJahrPlus2().getFinSitZusatzangabenAppenzell();
 	}
 
-	@Override
-	protected void createPageEkv2(@Nonnull PdfGenerator generator, @Nonnull Document document) {
+	@Nullable
+	private FinSitZusatzangabenAppenzell getEkvGS2(int plusJahr) {
+		if (getFamSitNullSafe().isSpezialFallAR()) {
+			FinSitZusatzangabenAppenzell finSitZusatzangabenAppenzell = getEkvGS(gesuch.getGesuchsteller1(), plusJahr);
+			return finSitZusatzangabenAppenzell == null ? null : finSitZusatzangabenAppenzell.getZusatzangabenPartner();
+		}
+		return getEkvGS(gesuch.getGesuchsteller2(), plusJahr);
+	}
+	@Nullable
+	private FinSitZusatzangabenAppenzell getEkvGS2Urspruenglich(int plusJahr) {
+		if (getFamSitNullSafe().isSpezialFallAR()) {
+			FinSitZusatzangabenAppenzell finSitZusatzangabenAppenzell = getEkvGSUrspruenglich(gesuch.getGesuchsteller1(), plusJahr);
+			return finSitZusatzangabenAppenzell == null ? null : finSitZusatzangabenAppenzell.getZusatzangabenPartner();
+		}
+		return getEkvGSUrspruenglich(gesuch.getGesuchsteller2(), plusJahr);
+	}
 
+	@Nullable
+	private static EinkommensverschlechterungContainer getEinkommensverschlechterungContainer(
+			@Nullable GesuchstellerContainer gesuchstellerContainer) {
+		if (gesuchstellerContainer == null) {
+			return null;
+		}
+		EinkommensverschlechterungContainer ekvContainer = gesuchstellerContainer.getEinkommensverschlechterungContainer();
+		return ekvContainer;
+	}
+
+	private static boolean calculateHasSecondGesuchsteller(@Nonnull Gesuch gesuch) {
+		requireNonNull(gesuch.getFamiliensituationContainer());
+		requireNonNull(gesuch.getFamiliensituationContainer().getFamiliensituationJA());
+		return gesuch.getGesuchsteller2() != null && Boolean.FALSE.equals(gesuch.getFamiliensituationContainer()
+				.getFamiliensituationJA()
+				.getGemeinsameSteuererklaerung())
+				|| gesuch.getFamiliensituationContainer().getFamiliensituationJA().isSpezialFallAR();
 	}
 }
