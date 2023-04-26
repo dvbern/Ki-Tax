@@ -304,7 +304,7 @@ export class GesuchModelManager {
     public isRequiredEKV_GS_BJ(gs: number, bj: number): boolean {
         if (this.wizardStepManager.getCurrentStepName() === TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_APPENZELL) {
             return gs === 2 ?
-                this.getEkvFuerBasisJahrPlus(bj) && (this.isGesuchsteller2Required() || this.isSpezialFallAR()) :
+                this.getEkvFuerBasisJahrPlus(bj) && this.isGesuchsteller2RequiredForAREKV() :
                 this.getEkvFuerBasisJahrPlus(bj);
         }
         if (this.wizardStepManager.getCurrentStepName() === TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_LUZERN) {
@@ -316,6 +316,11 @@ export class GesuchModelManager {
             this.getEkvFuerBasisJahrPlus(bj) && this.isGesuchsteller2Required() :
             this.getEkvFuerBasisJahrPlus(bj);
 
+    }
+
+    private isGesuchsteller2RequiredForAREKV(): boolean {
+        return (this.isGesuchsteller2Required() && !this.getFamiliensituation().gemeinsameSteuererklaerung)
+            || this.isSpezialFallAR();
     }
 
     /**
