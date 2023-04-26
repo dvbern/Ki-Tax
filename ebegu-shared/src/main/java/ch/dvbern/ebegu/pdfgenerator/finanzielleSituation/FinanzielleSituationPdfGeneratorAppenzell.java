@@ -350,8 +350,6 @@ public class FinanzielleSituationPdfGeneratorAppenzell extends FinanzielleSituat
 				gesuch.getGesuchsperiode().getBasisJahrPlus2()));
 		document.add(createIntroEkv());
 
-		BigDecimal massgebendesEinkommen = getMassgebendesEinkommenEKV(jahrPlus);
-
 		document.add(createTableEinkommen(ekv1GS1, ekv1GS2, ekv1GS1Urspruenglich, ekv1GS2Urspruenglich));
 		document.add(createTableVermoegen(ekv1GS1, ekv1GS2, ekv1GS1Urspruenglich, ekv1GS2Urspruenglich));
 	}
