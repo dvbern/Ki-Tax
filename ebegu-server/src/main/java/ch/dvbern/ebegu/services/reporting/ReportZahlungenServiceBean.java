@@ -19,6 +19,7 @@ package ch.dvbern.ebegu.services.reporting;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -54,6 +55,7 @@ import ch.dvbern.ebegu.services.FileSaverService;
 import ch.dvbern.ebegu.services.GemeindeService;
 import ch.dvbern.ebegu.services.GesuchsperiodeService;
 import ch.dvbern.ebegu.util.Constants;
+import ch.dvbern.ebegu.util.MathUtil;
 import ch.dvbern.ebegu.util.ServerMessageUtil;
 import ch.dvbern.ebegu.util.UploadFileInfo;
 import ch.dvbern.lib.cdipersistence.Persistence;
@@ -210,7 +212,8 @@ public class ReportZahlungenServiceBean extends AbstractReportServiceBean implem
 		row.setReferenznummer(zahlungsposition.getVerfuegungZeitabschnitt().getVerfuegung().getBetreuung().getBGNummer());
 		row.setZeitabschnittVon(zahlungsposition.getVerfuegungZeitabschnitt().getGueltigkeit().getGueltigAb());
 		row.setZeitabschnittBis(zahlungsposition.getVerfuegungZeitabschnitt().getGueltigkeit().getGueltigBis());
-		row.setBgPensum(zahlungsposition.getVerfuegungZeitabschnitt().getBgPensum());
+		var pensum = MathUtil.EXACT.divide(zahlungsposition.getVerfuegungZeitabschnitt().getBgPensum(), BigDecimal.valueOf(100));
+		row.setBgPensum(pensum);
 		row.setBetrag(zahlungsposition.getBetrag());
 		row.setKorrektur(ZahlungspositionStatus.NORMAL != zahlungsposition.getStatus());
 		row.setIgnorieren(zahlungsposition.isIgnoriert());
@@ -254,6 +257,5 @@ public class ReportZahlungenServiceBean extends AbstractReportServiceBean implem
 			.filter(z -> z.extractInstitution().getId().equals(institutionId))
 			.collect(Collectors.toList());
 	}
-
 
 }
