@@ -22,6 +22,7 @@ import {AuthServiceRS} from '../../../../authentication/service/AuthServiceRS.re
 import {TSBenutzer} from '../../../../models/TSBenutzer';
 import {TSRoleUtil} from '../../../../utils/TSRoleUtil';
 import {LogFactory} from '../../logging/LogFactory';
+import {UIRouterGlobals} from '@uirouter/core';
 
 export class DVLoginButtonConfig implements IComponentOptions {
     public transclude = true;
@@ -34,14 +35,15 @@ const LOG = LogFactory.createLog('DvLoginButtonController');
 
 export class DVLoginButtonController implements IController {
 
-    public static $inject: ReadonlyArray<string> = ['AuthServiceRS'];
+    public static $inject: ReadonlyArray<string> = ['AuthServiceRS', '$uiRouterGlobals'];
 
     private readonly unsubscribe$ = new Subject<void>();
     public readonly TSRoleUtil = TSRoleUtil;
     public principal?: TSBenutzer = undefined;
 
     public constructor(
-        private readonly authServiceRS: AuthServiceRS
+        private readonly authServiceRS: AuthServiceRS,
+        private readonly uiRouterGlobals: UIRouterGlobals
     ) {
     }
 
@@ -52,5 +54,12 @@ export class DVLoginButtonController implements IController {
                     this.principal = principal;
                 },
                 err => LOG.error(err));
+    }
+
+    public showButton(): boolean {
+        if (this.uiRouterGlobals.current.name !== 'einladung.logininfo') {
+            return !this.principal;
+        }
+        return false;
     }
 }
