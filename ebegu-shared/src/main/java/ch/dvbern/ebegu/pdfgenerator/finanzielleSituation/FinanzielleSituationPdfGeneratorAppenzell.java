@@ -19,6 +19,8 @@ package ch.dvbern.ebegu.pdfgenerator.finanzielleSituation;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.function.Function;
 
@@ -32,10 +34,14 @@ import ch.dvbern.ebegu.entities.GemeindeStammdaten;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.GesuchstellerContainer;
 import ch.dvbern.ebegu.entities.Verfuegung;
+import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.finanzielleSituationRechner.AbstractFinanzielleSituationRechner;
+import ch.dvbern.ebegu.pdfgenerator.PdfUtil;
+import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.EbeguUtil;
 import ch.dvbern.ebegu.util.MathUtil;
 import ch.dvbern.lib.invoicegenerator.pdf.PdfGenerator;
+import com.google.common.collect.Iterables;
 import com.lowagie.text.Document;
 import com.lowagie.text.Element;
 
@@ -59,6 +65,7 @@ public class FinanzielleSituationPdfGeneratorAppenzell extends FinanzielleSituat
 	private static final String EIKOMMEN_TITLE = "PdfGeneration_FinSit_EinkommenTitle";
 	private static final String VERMOEGEN = "PdfGeneration_FinSit_VermoegenTitle";
 	private static final String PARTNERIN = "PdfGeneration_Partnerin";
+	private static final String EINKOMMENSAENDERUNG = "Reports_einkommensverschlechterungTitle";
 
 	private FinSitZusatzangabenAppenzell angabenGS1Bj = null;
 	@Nullable
@@ -115,6 +122,46 @@ public class FinanzielleSituationPdfGeneratorAppenzell extends FinanzielleSituat
 	@Override
 	protected void createPageEkv2(@Nonnull PdfGenerator generator, @Nonnull Document document) {
 		createPageEkv(document, 2);
+	}
+
+	@Override
+	protected void createPageMassgebendesEinkommen(@Nonnull Document document) {
+		List<String[]> values = new ArrayList<>();
+		String[] titles = {
+				translate(VON),
+				translate(BIS),
+				translate(EINKOMMENSAENDERUNG),
+				translate(MASSG_EINK) };
+		values.add(titles);
+		// Falls alle Abschnitte *nach* dem ersten Einreichungsdatum liegen, wird das ganze Dokument nicht gedruckt
+		if (isAbschnittZuSpaetEingereicht(Iterables.getLast(verfuegungFuerMassgEinkommen.getZeitabschnitte()))) {
+			return;
+		}
+		for (VerfuegungZeitabschnitt abschnitt : verfuegungFuerMassgEinkommen.getZeitabschnitte()) {
+			// Wir drucken nur diejenigen Abschnitte, für die überhaupt ein Anspruch besteht
+			if (isAbschnittZuSpaetEingereicht(abschnitt)) {
+				continue;
+			}
+			boolean ekvEinkommen = abschnitt.getEinkommensjahr() != gesuch.getGesuchsperiode().getBasisJahr();
+			String[] data = {
+					Constants.DATE_FORMATTER.format(abschnitt.getGueltigkeit().getGueltigAb()),
+					Constants.DATE_FORMATTER.format(abschnitt.getGueltigkeit().getGueltigBis()),
+					ekvEinkommen ? "x" : "",
+					PdfUtil.printBigDecimal(abschnitt.getMassgebendesEinkommen())
+			};
+			values.add(data);
+		}
+		final float[] widthMassgebendesEinkommen = { 5, 5, 6, 10 };
+		final int[] alignmentMassgebendesEinkommen = {
+				Element.ALIGN_RIGHT,
+				Element.ALIGN_RIGHT,
+				Element.ALIGN_RIGHT,
+				Element.ALIGN_RIGHT
+		};
+		document.newPage();
+		document.add(PdfUtil.createBoldParagraph(translate(MASSG_EINK_TITLE), 2));
+		document.add(createIntroMassgebendesEinkommen());
+		document.add(PdfUtil.createTable(values, widthMassgebendesEinkommen, alignmentMassgebendesEinkommen, 0));
 	}
 
 	private Element createTableEinkommen(
