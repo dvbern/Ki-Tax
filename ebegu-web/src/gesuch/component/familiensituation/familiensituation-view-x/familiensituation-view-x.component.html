@@ -36,7 +36,7 @@
                 </div>
             </div>
         </div>
-		<div class="row" *ngIf="antragWirdBeendet()">
+		<div class="row" *ngIf="erstAntragWirdBeendet()">
 			<div class="col-xs-12">
 				<div class="well well-status-warten minus-margin">
 					<i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
@@ -280,6 +280,7 @@
 													 #gesuchstellerKardinalitaet="ngModel"
                                                      name="gesuchstellerKardinalitaet"
 													 class="input-element sp" items="gesuchstellerKardinalitaetValues"
+													 (change)="gesuchstellerKardinalitaetChange()"
 													 [disabled]="!(isFamiliensituationEnabled() && isOneOfRoles(allowedRoles))"
 													 aria-label="{{ 'FAMILIENSITUATION_FRAGE_2' |translate}}"
 													 aria-described-by="gesuchstellerKardinalitaet-error">
