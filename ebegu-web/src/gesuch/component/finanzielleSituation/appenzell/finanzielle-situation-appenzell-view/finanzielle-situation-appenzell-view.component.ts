@@ -217,9 +217,18 @@ export class FinanzielleSituationAppenzellViewComponent extends AbstractGesuchVi
     }
 
     private removeFinSitGS2IfNecessary(): IPromise<TSGesuchstellerContainer> {
-        if (this.showQuestionGemeinsameSteuererklaerung() && this.model.familienSituation.gemeinsameSteuererklaerung) {
+        if (!this.model.familienSituation.gemeinsameSteuererklaerung) {
+            return undefined;
+        }
+        if (this.gesuchModelManager.isSpezialFallAR()) {
+            this.getModel().finanzielleSituationJA.finSitZusatzangabenAppenzell.zusatzangabenPartner = undefined;
+            return undefined;
+        }
+
+        if (this.showQuestionGemeinsameSteuererklaerung() ) {
             return this.gesuchModelManager.removeFinanzielleSitautionFromGesuchsteller2();
         }
+
         return undefined;
     }
 
@@ -230,7 +239,7 @@ export class FinanzielleSituationAppenzellViewComponent extends AbstractGesuchVi
     }
 
     private getFinSitZusatzangabenAppenzellToWorkWithSpezialfall() {
-        if (this.gesuchstellerNumber === 1) {
+        if (this.gesuchstellerNumber === 1 || this.isGemeinsam()) {
             return this.getOrCreateFinSitModel(this.getModel().finanzielleSituationJA);
         }
         if (EbeguUtil.isNullOrUndefined(
