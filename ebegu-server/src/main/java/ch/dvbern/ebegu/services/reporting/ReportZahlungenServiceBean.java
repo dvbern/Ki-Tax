@@ -106,47 +106,49 @@ public class ReportZahlungenServiceBean extends AbstractReportServiceBean implem
 		@Nullable String institutionId
 	) throws ExcelMergeException, IOException {
 
-		InputStream is = ReportLastenausgleichBGZeitabschnitteServiceBean.class.getResourceAsStream(reportVorlage.getTemplatePath());
-		Workbook workbook = createWorkbook(is, reportVorlage);
-		XSSFSheet sheet = (XSSFSheet) workbook.getSheet(reportVorlage.getDataSheetName());
+		try (
+			InputStream is = ReportLastenausgleichBGZeitabschnitteServiceBean.class.getResourceAsStream(reportVorlage.getTemplatePath());
+			Workbook workbook = createWorkbook(is, reportVorlage);
+		) {
+			XSSFSheet sheet = (XSSFSheet) workbook.getSheet(reportVorlage.getDataSheetName());
 
-		var periode = gesuchsperiodeService.findGesuchsperiode(gesuchsperiodeId)
-			.orElseThrow(() -> new EbeguRuntimeException("generateExcelReportZahlungen", gesuchsperiodeId));
+			var periode = gesuchsperiodeService.findGesuchsperiode(gesuchsperiodeId)
+				.orElseThrow(() -> new EbeguRuntimeException("generateExcelReportZahlungen", gesuchsperiodeId));
 
-		Gemeinde gemeinde = null;
-		if (gemeindeId != null) {
-			gemeinde = gemeindeService.findGemeinde(gemeindeId)
-				.orElseThrow(() -> new EbeguRuntimeException("generateExcelReportZahlungen", gemeindeId));
+			Gemeinde gemeinde = null;
+			if (gemeindeId != null) {
+				gemeinde = gemeindeService.findGemeinde(gemeindeId)
+					.orElseThrow(() -> new EbeguRuntimeException("generateExcelReportZahlungen", gemeindeId));
+			}
+			Institution institution = null;
+			if (institutionId != null) {
+				institution = institutionService.findInstitution(institutionId, true)
+					.orElseThrow(() -> new EbeguRuntimeException("generateExcelReportZahlungen", institutionId));
+			}
+
+			sheet = zahlungenConverter.mergeHeaders(
+				sheet,
+				periode,
+				gemeinde,
+				institution
+			);
+
+			var zahlungsauftrage = findZahlungsauftrageWithAuszahlungsTypInstitution(gesuchsperiodeId, gemeinde, institution);
+			var reportData = filterZahlungenAndConvertToDataRows(zahlungsauftrage, institutionId);
+			final RowFiller rowFiller = fillAndMergeRows(reportVorlage, sheet, reportData);
+
+			byte[] bytes = createWorkbook(rowFiller.getSheet().getWorkbook());
+			rowFiller.getSheet().getWorkbook().dispose();
+
+			return fileSaverService.save(
+				bytes,
+				ServerMessageUtil.translateEnumValue(
+					reportVorlage.getDefaultExportFilename(),
+					locale,
+					principalBean.getMandant()) + ".xlsx",
+				Constants.TEMP_REPORT_FOLDERNAME,
+				getContentTypeForExport());
 		}
-		Institution institution = null;
-		if (institutionId != null) {
-			institution = institutionService.findInstitution(institutionId, true)
-				.orElseThrow(() -> new EbeguRuntimeException("generateExcelReportZahlungen", institutionId));
-		}
-
-		sheet = zahlungenConverter.mergeHeaders(
-			sheet,
-			periode,
-			gemeinde,
-			institution
-		);
-
-		var zahlungsauftrage = findZahlungsauftrageWithAuszahlungsTypInstitution(gesuchsperiodeId, gemeinde, institution);
-		var reportData = filterZahlungenAndConvertToDataRows(zahlungsauftrage, institutionId);
-		final RowFiller rowFiller = fillAndMergeRows(reportVorlage, sheet, reportData);
-
-		byte[] bytes = createWorkbook(rowFiller.getSheet().getWorkbook());
-		rowFiller.getSheet().getWorkbook().dispose();
-		is.close();
-
-		return fileSaverService.save(
-			bytes,
-			ServerMessageUtil.translateEnumValue(
-				reportVorlage.getDefaultExportFilename(),
-				locale,
-				principalBean.getMandant()) + ".xlsx",
-			Constants.TEMP_REPORT_FOLDERNAME,
-			getContentTypeForExport());
 	}
 
 	private RowFiller fillAndMergeRows(
