@@ -18,7 +18,7 @@
 INSERT IGNORE INTO application_property (id, mandant_id, timestamp_erstellt, timestamp_mutiert, user_erstellt,
 										 user_mutiert, version, vorgaenger_id, name, value)
 SELECT UNHEX(REPLACE(UUID(), '-', '')), id, NOW(), NOW(), 'flyway', 'flyway', 0, NULL,
-	'ANGEBOT_TS_ENABLED', angebotts
+	'ANGEBOT_TS_ENABLED', IF(angebotts, 'true', 'false')
 FROM mandant;
 
 ALTER TABLE mandant DROP COLUMN angebotts;
@@ -27,7 +27,7 @@ ALTER TABLE mandant_aud DROP COLUMN angebotts;
 INSERT IGNORE INTO application_property (id, mandant_id, timestamp_erstellt, timestamp_mutiert, user_erstellt,
 										 user_mutiert, version, vorgaenger_id, name, value)
 SELECT UNHEX(REPLACE(UUID(), '-', '')), id, NOW(), NOW(), 'flyway', 'flyway', 0, NULL,
-	'ANGEBOT_FI_ENABLED', angebotfi
+	'ANGEBOT_FI_ENABLED', IF(angebotfi, 'true', 'false')
 FROM mandant;
 
 ALTER TABLE mandant DROP COLUMN angebotfi;
