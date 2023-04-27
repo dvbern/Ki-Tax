@@ -64,7 +64,6 @@ import ch.dvbern.ebegu.util.ServerMessageUtil;
 import ch.dvbern.ebegu.util.UploadFileInfo;
 import ch.dvbern.lib.cdipersistence.Persistence;
 import ch.dvbern.oss.lib.excelmerger.ExcelMergeException;
-import ch.dvbern.oss.lib.excelmerger.ExcelMergerDTO;
 import ch.dvbern.oss.lib.excelmerger.RowFiller;
 import ch.dvbern.oss.lib.excelmerger.mergefields.MergeFieldProvider;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -106,7 +105,6 @@ public class ReportZahlungenServiceBean extends AbstractReportServiceBean implem
 		@Nullable String gemeindeId,
 		@Nullable String institutionId
 	) throws ExcelMergeException, IOException {
-		ExcelMergerDTO mergerDTO = new ExcelMergerDTO();
 
 		InputStream is = ReportLastenausgleichBGZeitabschnitteServiceBean.class.getResourceAsStream(reportVorlage.getTemplatePath());
 		Workbook workbook = createWorkbook(is, reportVorlage);
@@ -139,6 +137,7 @@ public class ReportZahlungenServiceBean extends AbstractReportServiceBean implem
 
 		byte[] bytes = createWorkbook(rowFiller.getSheet().getWorkbook());
 		rowFiller.getSheet().getWorkbook().dispose();
+		is.close();
 
 		return fileSaverService.save(
 			bytes,
