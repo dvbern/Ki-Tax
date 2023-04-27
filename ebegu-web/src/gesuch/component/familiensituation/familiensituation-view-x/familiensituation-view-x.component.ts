@@ -361,7 +361,10 @@ export class FamiliensituationViewXComponent extends AbstractFamiliensitutaionVi
         return this.getFamiliensituation().fkjvFamSit;
     }
 
-    public antragWirdBeendet(): boolean {
+    public erstAntragWirdBeendet(): boolean {
+        if (this.getGesuch().isMutation()){
+            return false;
+        }
         const isKonkubinatKeinKind: boolean = this.getFamiliensituation().familienstatus
                 === TSFamilienstatus.KONKUBINAT_KEIN_KIND;
         const isGeteilteObhut: boolean = this.getFamiliensituation().geteilteObhut;
@@ -395,5 +398,9 @@ export class FamiliensituationViewXComponent extends AbstractFamiliensitutaionVi
                         endeDatum: endDatum
                     });
         }
+    }
+
+    public gesuchstellerKardinalitaetChange(): void {
+        this.getFamiliensituation().partnerIdentischMitVorgesuch = undefined;
     }
 }
