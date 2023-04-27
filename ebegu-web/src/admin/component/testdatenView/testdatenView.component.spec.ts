@@ -78,6 +78,8 @@ describe('testdatenView', () => {
             gemeindeKennzahlenAktiv: true,
             mulitmandantAktiv: false,
             angebotTSActivated: true,
+            angebotFIActivated: true,
+            angebotTFOActivated: true,
             infomaZahlungen: true,
             frenchEnabled: true,
             geresEnabledForMandant: true,

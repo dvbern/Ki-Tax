@@ -61,6 +61,7 @@ export class NavbarComponent implements OnDestroy, AfterViewInit, OnInit {
     public gemeindeAntraegeActive = false;
     public lastenausgleichActive = false;
     public gemeindeAntragVisible: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+    private tagesschulangebotEnabled: boolean;
 
     public constructor(
         private readonly authServiceRS: AuthServiceRS,
@@ -119,6 +120,7 @@ export class NavbarComponent implements OnDestroy, AfterViewInit, OnInit {
             this.gemeindeAntraegeActive =
                 properties.ferienbetreuungAktiv || properties.lastenausgleichTagesschulenAktiv;
             this.lastenausgleichActive = properties.lastenausgleichAktiv;
+            this.tagesschulangebotEnabled = properties.angebotTSActivated;
             this.changeDetectorRef.markForCheck();
         });
     }
@@ -281,6 +283,6 @@ export class NavbarComponent implements OnDestroy, AfterViewInit, OnInit {
     }
 
     public isTagesschulangebotEnabled(): boolean {
-        return this.authServiceRS.hasMandantAngebotTS();
+        return this.tagesschulangebotEnabled;
     }
 }

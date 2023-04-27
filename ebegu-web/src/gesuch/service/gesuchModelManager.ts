@@ -22,6 +22,7 @@ import {EinstellungRS} from '../../admin/service/einstellungRS.rest';
 import {CONSTANTS} from '../../app/core/constants/CONSTANTS';
 import {ErrorService} from '../../app/core/errors/service/ErrorService';
 import {LogFactory} from '../../app/core/logging/LogFactory';
+import {ApplicationPropertyRS} from '../../app/core/rest-services/applicationPropertyRS.rest';
 import {AntragStatusHistoryRS} from '../../app/core/service/antragStatusHistoryRS.rest';
 import {BetreuungRS} from '../../app/core/service/betreuungRS.rest';
 import {ErwerbspensumRS} from '../../app/core/service/erwerbspensumRS.rest';
@@ -132,6 +133,8 @@ export class GesuchModelManager {
     public emptyKinderList: Array<TSKindContainer> = [];
 
     private subscription: Subscription;
+    private tagesschulangebotEnabled: boolean;
+    private fiAngebotEnabled: boolean;
 
     public constructor(
         private readonly gesuchRS: GesuchRS,
@@ -159,8 +162,8 @@ export class GesuchModelManager {
         private readonly gesuchGenerator: GesuchGenerator,
         private readonly gemeindeRS: GemeindeRS,
         private readonly internePendenzenRS: InternePendenzenRS,
-        private readonly einstellungenRS: EinstellungRS
-
+        private readonly einstellungenRS: EinstellungRS,
+        private readonly applicationPropertyRS: ApplicationPropertyRS
     ) {
     }
 
@@ -172,6 +175,10 @@ export class GesuchModelManager {
                 },
                 err => this.log.error(err)
             );
+        this.applicationPropertyRS.getPublicPropertiesCached().then(res => {
+            this.tagesschulangebotEnabled = res.angebotTSActivated;
+            this.fiAngebotEnabled = res.angebotFIActivated;
+        });
     }
 
     /**
@@ -1795,11 +1802,11 @@ export class GesuchModelManager {
     }
 
     public isTagesschulangebotEnabled(): boolean {
-        return this.authServiceRS.hasMandantAngebotTS();
+        return this.tagesschulangebotEnabled;
     }
 
     public isFerieninselangebotEnabled(): boolean {
-        return this.authServiceRS.hasMandantAngebotFI();
+        return this.fiAngebotEnabled;
     }
 
     public isSozialhilfeBezueger(): boolean {

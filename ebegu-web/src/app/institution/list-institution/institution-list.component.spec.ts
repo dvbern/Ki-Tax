@@ -23,6 +23,7 @@ import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest'
 import {GemeindeRS} from '../../../gesuch/service/gemeindeRS.rest';
 import {SHARED_MODULE_OVERRIDES} from '../../../hybridTools/mockUpgradedDirective';
 import {TSBenutzer} from '../../../models/TSBenutzer';
+import {TSPublicAppConfig} from '../../../models/TSPublicAppConfig';
 import {ErrorService} from '../../core/errors/service/ErrorService';
 import {ApplicationPropertyRS} from '../../core/rest-services/applicationPropertyRS.rest';
 import {InstitutionRS} from '../../core/service/institutionRS.rest';
@@ -50,6 +51,7 @@ describe('InstitutionListComponent', () => {
             .createSpyObj<I18nServiceRSRest>(I18nServiceRSRest.name, ['extractPreferredLanguage']);
         const applicationPropertyRSSpy = jasmine.createSpyObj<ApplicationPropertyRS>(ApplicationPropertyRS.name,
             ['getPublicPropertiesCached', 'getInstitutionenDurchGemeindenEinladen']);
+        applicationPropertyRSSpy.getPublicPropertiesCached.and.returnValue(Promise.resolve(new TSPublicAppConfig()));
 
         authServiceSpy.principal$ = of(new TSBenutzer());
 

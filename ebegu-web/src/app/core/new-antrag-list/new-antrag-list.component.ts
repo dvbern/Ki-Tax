@@ -61,6 +61,7 @@ import {StateStoreService} from '../../shared/services/state-store.service';
 import {CONSTANTS} from '../constants/CONSTANTS';
 import {ErrorService} from '../errors/service/ErrorService';
 import {LogFactory} from '../logging/LogFactory';
+import {ApplicationPropertyRS} from '../rest-services/applicationPropertyRS.rest';
 import {BenutzerRSX} from '../service/benutzerRSX.rest';
 import {GesuchsperiodeRS} from '../service/gesuchsperiodeRS.rest';
 import {InstitutionRS} from '../service/institutionRS.rest';
@@ -280,6 +281,7 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges, Aft
     public initialTsGemeindeUser: TSBenutzerNoDetails;
     private sortId: string;
     private filterId: string;
+    private tagesschulangebotEnabled: boolean;
 
     public constructor(
         private readonly institutionRS: InstitutionRS,
@@ -293,7 +295,8 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges, Aft
         private readonly transitionService: TransitionService,
         private readonly stateStore: StateStoreService,
         private readonly uiRouterGlobals: UIRouterGlobals,
-        private readonly benutzerRS: BenutzerRSX
+        private readonly benutzerRS: BenutzerRSX,
+        private readonly applicationPropertyRS: ApplicationPropertyRS
     ) {
     }
 
@@ -305,6 +308,7 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges, Aft
         this.initFilter(true);
         this.initDisplayedColumns();
         this.initBenutzerLists();
+        this.initPublicProperties();
     }
 
     public ngAfterViewInit(): void {
@@ -645,7 +649,7 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges, Aft
     }
 
     private isTagesschulangebotEnabled(): boolean {
-        return this.authServiceRS.hasMandantAngebotTS();
+        return this.tagesschulangebotEnabled;
     }
 
     public sortData(sortEvent: Sort): void {
@@ -788,5 +792,11 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges, Aft
     // über loadData() innerhalb dieses Components relevant ist.
     public showSearchInaktivePerioden(): boolean {
         return EbeguUtil.isNullOrUndefined(this.data$);
+    }
+
+    private initPublicProperties() {
+        this.applicationPropertyRS.getPublicPropertiesCached().then(res => {
+            this.tagesschulangebotEnabled = res.angebotTSActivated;
+        });
     }
 }
