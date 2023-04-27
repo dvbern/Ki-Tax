@@ -239,11 +239,14 @@ public enum ReportVorlage {
 
 		if (UserRole.getInstitutionTraegerschaftAdminRoles().contains(role)) {
 			return vorlage == VORLAGE_REPORT_KINDER || vorlage == VORLAGE_REPORT_KANTON
-				|| vorlage == VORLAGE_REPORT_BENUTZER  || vorlage == VORLAGE_REPORT_TAGESSCHULE_ANMELDUNGEN;
+				|| vorlage == VORLAGE_REPORT_BENUTZER  || vorlage == VORLAGE_REPORT_TAGESSCHULE_ANMELDUNGEN
+				|| vorlage == VORLAGE_REPORT_ZAHLUNGEN_DE || vorlage == VORLAGE_REPORT_ZAHLUNGEN_FR;
 		}
 
 		if (UserRole.getInstitutionTraegerschaftRoles().contains(role)) {
-			return vorlage == VORLAGE_REPORT_KINDER || vorlage == VORLAGE_REPORT_KANTON  || vorlage == VORLAGE_REPORT_TAGESSCHULE_ANMELDUNGEN;
+			return vorlage == VORLAGE_REPORT_KINDER || vorlage == VORLAGE_REPORT_KANTON
+				|| vorlage == VORLAGE_REPORT_TAGESSCHULE_ANMELDUNGEN
+				|| vorlage == VORLAGE_REPORT_ZAHLUNGEN_DE || vorlage == VORLAGE_REPORT_ZAHLUNGEN_FR;
 		}
 
 		if (UserRole.getTsOnlyRoles().contains(role)) {

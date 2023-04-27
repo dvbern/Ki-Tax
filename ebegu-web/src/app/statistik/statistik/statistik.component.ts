@@ -137,10 +137,7 @@ export class StatistikComponent implements OnInit, OnDestroy {
                 this.cd.markForCheck();
             });
 
-		this.institutionRS.getAllBgInstitutionen()
-			.subscribe(institutionen => {
-				this.bgInstitutionen = institutionen;
-			});
+        this.loadBGInstitutionen();
 
         this.gemeindeRS.getGemeindenForPrincipal$().subscribe(gemeinden => {
             this.gemeinden = gemeinden;
@@ -370,6 +367,12 @@ export class StatistikComponent implements OnInit, OnDestroy {
                 }, StatistikComponent.handleError);
                 return;
             case TSStatistikParameterType.ZAHLUNGEN:
+                // falls der eingeloggte benutzer eine institution ist, wird das Dropdown mit den Institutinen
+                // nicht gezeigt. Wir setzen die BG Institution, weil es in diesem Fall immer nur eine in der Liste
+                // hat
+                if (this.authServiceRS.isOneOfRoles(TSRoleUtil.getInstitutionOnlyRoles())) {
+                    this.statistikParameter.institution = this.bgInstitutionen[0];
+                }
                 this.reportAsyncRS.getZahlungenReportExcel(
                     this.statistikParameter.gesuchsperiode,
 					this.statistikParameter.gemeinde,
@@ -415,6 +418,22 @@ export class StatistikComponent implements OnInit, OnDestroy {
         const startmsg = this.translate.instant('STARTED_GENERATION');
         this.errorService.addMesageAsInfo(startmsg);
         this.refreshUserJobs();
+    }
+
+    private loadBGInstitutionen(): void {
+        // bei trägerschaften und Institutionen laden wir nur die Institutionen, für die sie berechtigt sind.
+        if (this.authServiceRS.isOneOfRoles(TSRoleUtil.getTraegerschaftInstitutionOnlyRoles())) {
+            this.institutionRS.getInstitutionenEditableForCurrentBenutzer()
+                .subscribe(institutionen => {
+                    this.bgInstitutionen = institutionen;
+                });
+            return;
+        }
+        // mandanten und gemeinden sollen grundsätzlich alle Institutionen sehen.
+        this.institutionRS.getInstitutionenReadableForCurrentBenutzer()
+            .subscribe(institutionen => {
+                this.bgInstitutionen = institutionen;
+            });
     }
 
     public downloadStatistik(row: TSWorkJob): void {
@@ -731,16 +750,24 @@ export class StatistikComponent implements OnInit, OnDestroy {
     }
 
     public showZahlungenStatistik(): boolean {
+        // die Statistik wird nur gezeigt, falls der User für mindestens eine BG Institution berechtigt ist.
+        // ansonsten handelt es sich allenfalls um einen TS Institution User
         return this.authServiceRS.isOneOfRoles(
             TSRoleUtil.getGemeindeOrBGRoles()
                 .concat(TSRoleUtil.getMandantRoles())
                 .concat(TSRoleUtil.getTraegerschaftInstitutionOnlyRoles())
-        );
+        ) && this.bgInstitutionen?.length > 0;
     }
 
 	public gemeindenVisibleZahlungenStatistik(): boolean {
 		return !this.authServiceRS.isOneOfRoles(
 			TSRoleUtil.getTraegerschaftInstitutionOnlyRoles()
+		);
+	}
+
+	public institutionenVisibleZahlungenStatistik(): boolean {
+		return !this.authServiceRS.isOneOfRoles(
+			TSRoleUtil.getInstitutionOnlyRoles()
 		);
 	}
 }

@@ -37,7 +37,10 @@ import javax.persistence.criteria.Root;
 import javax.validation.constraints.NotNull;
 
 import ch.dvbern.ebegu.authentication.PrincipalBean;
+import ch.dvbern.ebegu.entities.Gemeinde;
+import ch.dvbern.ebegu.entities.Institution;
 import ch.dvbern.ebegu.entities.Zahlung;
+import ch.dvbern.ebegu.entities.Zahlung_;
 import ch.dvbern.ebegu.entities.Zahlungsauftrag;
 import ch.dvbern.ebegu.entities.Zahlungsauftrag_;
 import ch.dvbern.ebegu.entities.Zahlungsposition;
@@ -54,6 +57,7 @@ import ch.dvbern.ebegu.services.Authorizer;
 import ch.dvbern.ebegu.services.FileSaverService;
 import ch.dvbern.ebegu.services.GemeindeService;
 import ch.dvbern.ebegu.services.GesuchsperiodeService;
+import ch.dvbern.ebegu.services.InstitutionService;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.MathUtil;
 import ch.dvbern.ebegu.util.ServerMessageUtil;
@@ -80,6 +84,9 @@ public class ReportZahlungenServiceBean extends AbstractReportServiceBean implem
 
 	@Inject
 	private GemeindeService gemeindeService;
+
+	@Inject
+	private InstitutionService institutionService;
 
 	@Inject
 	private Authorizer authorizer;
@@ -148,7 +155,6 @@ public class ReportZahlungenServiceBean extends AbstractReportServiceBean implem
 		XSSFSheet sheet,
 		List<ZahlungenDataRow> reportData
 	) {
-
 		RowFiller rowFiller = RowFiller.initRowFiller(
 			sheet,
 			MergeFieldProvider.toMergeFields(reportResource.getMergeFields()),
@@ -160,11 +166,12 @@ public class ReportZahlungenServiceBean extends AbstractReportServiceBean implem
 
 	private List<Zahlungsauftrag> findZahlungsauftrageWithAuszahlungsTypInstitution(
 		@Nonnull String gesuchsperiodeId,
-		@Nullable String gemeindeId
+		@Nullable Gemeinde gemeinde,
+		@Nullable Institution institution
 	) {
 
 		var periode = gesuchsperiodeService.findGesuchsperiode(gesuchsperiodeId)
-			.orElseThrow(() -> new EbeguEntityNotFoundException("findZahlungsauftrage", gesuchsperiodeId));
+			.orElseThrow(() -> new EbeguEntityNotFoundException("findZahlungsauftrageWithAuszahlungsTypInstitution", gesuchsperiodeId));
 
 		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
 		final CriteriaQuery<Zahlungsauftrag> query = cb.createQuery(Zahlungsauftrag.class);
@@ -181,11 +188,15 @@ public class ReportZahlungenServiceBean extends AbstractReportServiceBean implem
 		Predicate zahlungslaufTyp = cb.equal(root.get(Zahlungsauftrag_.zahlungslaufTyp), ZahlungslaufTyp.GEMEINDE_INSTITUTION);
 		predicates.add(zahlungslaufTyp);
 
-		if (gemeindeId != null) {
-			var gemeinde = gemeindeService.findGemeinde(gemeindeId)
-				.orElseThrow(() -> new EbeguRuntimeException("findZahlungsauftrage", gemeindeId));
+		if (gemeinde != null) {
 			Predicate predicateGemeinde = cb.equal(root.get(Zahlungsauftrag_.gemeinde), gemeinde);
 			predicates.add(predicateGemeinde);
+		}
+
+		if (institution != null) {
+			var joinZahlungen = root.join(Zahlungsauftrag_.zahlungen);
+			var predicateInstitution = cb.equal(joinZahlungen.get(Zahlung_.empfaengerId), institution.getId());
+			predicates.add(predicateInstitution);
 		}
 
 		query.where(CriteriaQueryHelper.concatenateExpressions(cb, predicates));
@@ -193,7 +204,7 @@ public class ReportZahlungenServiceBean extends AbstractReportServiceBean implem
 	}
 
 
-	private List<ZahlungenDataRow> zahlungsauftraegeToDataRows(
+	private List<ZahlungenDataRow> filterZahlungenAndConvertToDataRows(
 		@Nonnull List<Zahlungsauftrag> zahlungsauftrage,
 		@NotNull String institutionId
 	) {

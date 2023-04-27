@@ -263,7 +263,7 @@ export class ReportAsyncRS {
 	): Observable<{workjobId: string}> {
         const reportParams = ReportAsyncRS.createParamsFromObject({
             gesuchsperiodeId,
-			gemeindeId: gemeinde.id,
+			gemeindeId: gemeinde?.id,
 			institutionId: institution?.id
         });
         return this.http.get<{workjobId: string}>(
