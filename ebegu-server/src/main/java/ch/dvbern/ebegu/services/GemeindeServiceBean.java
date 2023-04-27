@@ -56,6 +56,7 @@ import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeContainer;
 import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeContainer_;
+import ch.dvbern.ebegu.enums.ApplicationPropertyKey;
 import ch.dvbern.ebegu.enums.DokumentTyp;
 import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
@@ -105,6 +106,9 @@ public class GemeindeServiceBean extends AbstractBaseService implements Gemeinde
 
 	@Inject
 	private GemeindeEventConverter gemeindeEventConverter;
+
+	@Inject
+	private ApplicationPropertyService applicationPropertyService;
 
 	@Nonnull
 	@Override
@@ -294,7 +298,9 @@ public class GemeindeServiceBean extends AbstractBaseService implements Gemeinde
 		}
 
 		// Wenn das Tagesschule-Flag nicht gesetzt ist, dürfen Verbunds-Gemeinden nicht ausgewählt werden können.
-		boolean tagesschuleEnabled = mandant.isAngebotTS();
+		boolean tagesschuleEnabled = Boolean.TRUE.equals(applicationPropertyService.findApplicationPropertyAsBoolean(
+				ApplicationPropertyKey.ANGEBOT_TS_ENABLED,
+				mandant));
 		if (!tagesschuleEnabled) {
 			List<Long> verbundsBfsNummern = getVerbundsBfsNummern(mandant);
 			if (verbundsBfsNummern.size() > 0) {
