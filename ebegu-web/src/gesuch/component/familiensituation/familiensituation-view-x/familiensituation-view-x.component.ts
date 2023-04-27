@@ -32,15 +32,16 @@ import {TSEinstellungKey} from '../../../../models/enums/TSEinstellungKey';
 import {getTSFamilienstatusValues, TSFamilienstatus} from '../../../../models/enums/TSFamilienstatus';
 import {
     getTSGesuchstellerKardinalitaetValues,
-    TSGesuchstellerKardinalitaet,
+    TSGesuchstellerKardinalitaet
 } from '../../../../models/enums/TSGesuchstellerKardinalitaet';
 import {
     getTSUnterhaltsvereinbarungAnswerValues,
-    TSUnterhaltsvereinbarungAnswer,
+    TSUnterhaltsvereinbarungAnswer
 } from '../../../../models/enums/TSUnterhaltsvereinbarungAnswer';
 import {TSEinstellung} from '../../../../models/TSEinstellung';
 import {TSFamiliensituation} from '../../../../models/TSFamiliensituation';
 import {EbeguUtil} from '../../../../utils/EbeguUtil';
+import {isNotNullOrUndefined} from '../../../../utils/rxjs-operators';
 import {BerechnungsManager} from '../../../service/berechnungsManager';
 import {FamiliensituationRS} from '../../../service/familiensituationRS.service';
 import {GesuchModelManager} from '../../../service/gesuchModelManager';
