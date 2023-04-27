@@ -371,10 +371,8 @@ export class FamiliensituationViewXComponent extends AbstractFamiliensitutaionVi
             return true;
         }
         const keineUnterhaltsVereinbarung: boolean = this.getFamiliensituation().unterhaltsvereinbarung === TSUnterhaltsvereinbarungAnswer.NEIN_UNTERHALTSVEREINBARUNG;
-        if (isKonkubinatKeinKind && !isGeteilteObhut && keineUnterhaltsVereinbarung){
-            return true;
-        }
-        return false;
+        return isKonkubinatKeinKind && !isGeteilteObhut && keineUnterhaltsVereinbarung;
+
     }
 
     public getAntragStellerZweiAendertWarning(): string {
