@@ -171,6 +171,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     private angebotTS: boolean;
     private angebotFI: boolean;
     private angebotTFO: boolean;
+    private direktAnmeldung: boolean = false;
 
     public constructor(
         private readonly $state: StateService,
@@ -233,25 +234,11 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
                 this.gesuchModelManager.setBetreuungIndex(this.betreuungIndex);
             }
 
-            this.initApplicationProperties().then(() => this.setBetreuungsangebotTypValues());
-            // Falls ein Typ gesetzt ist, handelt es sich um eine direkt-Anmeldung
-            if (this.$stateParams.betreuungsangebotTyp) {
-                for (const obj of this.betreuungsangebotValues) {
-                    // eslint-disable-next-line
-                    if (obj.key === this.$stateParams.betreuungsangebotTyp
-                        && obj.value !== this.ebeguUtil.translateString(TAGI_ANGEBOT_VALUE)
-                    ) {
-                        // Es wurde ein Angebot ueber den Direktlink mitgegeben und dieses ist auch erlaubt
-                        // -> wir nehmen alle anderen Angebote aus der Liste raus
-                        this.betreuungsangebotValues = new Array<any>();
-                        this.betreuungsangebotValues.push(obj);
-                        this.betreuungsangebot = obj;
-                        this.changedAngebot();
-                    }
-                }
-            } else {
-                this.betreuungsangebot = undefined;
-            }
+            this.initApplicationProperties().then(() => {
+                this.setBetreuungsangebotTypValues();
+                // Falls ein Typ gesetzt ist, handelt es sich um eine direkt-Anmeldung
+                this.initBetreuungsangebotTyp();
+            });
             this.initViewModel();
 
             if (this.getErweiterteBetreuungJA() && this.getErweiterteBetreuungJA().fachstelle) {
@@ -354,6 +341,27 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         ).subscribe(res => {
             this.zuschlagBehinderungProStd = Number(res.value);
         }, error => LOG.error(error));
+    }
+
+    private initBetreuungsangebotTyp() {
+        if (this.$stateParams.betreuungsangebotTyp) {
+            for (const obj of this.betreuungsangebotValues) {
+                // eslint-disable-next-line
+                if (obj.key === this.$stateParams.betreuungsangebotTyp
+                    && obj.value !== this.ebeguUtil.translateString(TAGI_ANGEBOT_VALUE)
+                ) {
+                    // Es wurde ein Angebot ueber den Direktlink mitgegeben und dieses ist auch erlaubt
+                    // -> wir nehmen alle anderen Angebote aus der Liste raus
+                    this.betreuungsangebotValues = new Array<any>();
+                    this.betreuungsangebotValues.push(obj);
+                    this.betreuungsangebot = obj;
+                    this.direktAnmeldung = true;
+                    this.changedAngebot();
+                }
+            }
+        } else {
+            this.betreuungsangebot = undefined;
+        }
     }
 
     private loadPensumAnzeigeTyp(einstellung: TSEinstellung) {
@@ -582,7 +590,8 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     }
 
     public enableBetreuungsangebotsTyp(): boolean {
-        return this.model
+        return this.betreuungsangebotValues.length > 1
+            && this.model
             && this.model.isNew()
             && !this.gesuchModelManager.isGesuchReadonly();
     }
@@ -708,12 +717,18 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
 
         this.betreuungsangebotValues = this.ebeguUtil.translateStringList(betreuungsangebotTypValues);
         if (!this.gesuchModelManager.isTagesschuleTagisEnabled()) {
+            if (this.betreuungsangebotValues.length === 1) {
+                this.betreuungsangebot = this.betreuungsangebotValues[0];
+            }
             return;
         }
         this.betreuungsangebotValues.push({
             key: TSBetreuungsangebotTyp.TAGESSCHULE,
             value: this.ebeguUtil.translateString(TAGI_ANGEBOT_VALUE)
         });
+        if (this.betreuungsangebotValues.length === 1) {
+            this.betreuungsangebot = this.betreuungsangebotValues[0];
+        }
     }
 
     public cancel(): void {
@@ -1710,5 +1725,9 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
             this.angebotFI = res.angebotFIActivated;
             this.angebotTFO = res.angebotTFOActivated;
         })
+    }
+
+    public hasMoreThanOneBetreuungsangebotTyp(): boolean {
+        return this.direktAnmeldung || this.betreuungsangebotValues?.length > 1;
     }
 }
