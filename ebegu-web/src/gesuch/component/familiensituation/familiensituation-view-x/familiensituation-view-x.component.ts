@@ -335,7 +335,7 @@ export class FamiliensituationViewXComponent extends AbstractFamiliensitutaionVi
     public getNotPertnerIdentischMitVorgesuchWarning(): string {
         let warning: string = this.$translate.instant('FAMILIENSITUATION_FRAGE_PARTNERIDENTISCH_WARNING', {
             partnerAlt: this.getNameGesuchsteller2(),
-            endeDatum: this.getDatumEndOfMonthAfterAenderungPer(),
+            endeDatum: this.getDatumEndOfMonthAfterAenderungPer()
         });
 
         const partnerNotIdentischWarningBeiPaaren: string =
@@ -366,8 +366,8 @@ export class FamiliensituationViewXComponent extends AbstractFamiliensitutaionVi
                 === TSFamilienstatus.KONKUBINAT_KEIN_KIND;
         const isGeteilteObhut: boolean = this.getFamiliensituation().geteilteObhut;
         const isUnterhaltsMitAndererPerson: boolean = this.getFamiliensituation().gesuchstellerKardinalitaet
-                === TSGesuchstellerKardinalitaet.ZU_ZWEIT
-        let konkubinatShorter: boolean = this.getFamiliensituation()
+                === TSGesuchstellerKardinalitaet.ZU_ZWEIT;
+        const konkubinatShorter: boolean = this.getFamiliensituation()
                 .konkubinatIsShorterThanXYearsAtAnyTimeAfterStartOfPeriode(this.gesuchModelManager.getGesuchsperiode());
         if (isKonkubinatKeinKind && isGeteilteObhut && isUnterhaltsMitAndererPerson && konkubinatShorter) {
             return true;
@@ -386,13 +386,13 @@ export class FamiliensituationViewXComponent extends AbstractFamiliensitutaionVi
             return this.$translate.instant('FAMILIENSITUATION_X_JAHRE_KONKUBINAT_MSG',
                     {
                         namegs2: this.$translate.instant('FAMILIENSITUATION_FRAGE_PARTNERIDENTISCH_ANDERER_ELTERNTEIL'),
-                        endeDatum: endDatum,
+                        endeDatum: endDatum
                     });
         } else {
             return this.$translate.instant('FAMILIENSITUATION_X_JAHRE_KONKUBINAT_MSG',
                     {
                         namegs2: this.getGesuch().gesuchsteller2.extractFullName(),
-                        endeDatum: endDatum,
+                        endeDatum: endDatum
                     });
         }
     }
