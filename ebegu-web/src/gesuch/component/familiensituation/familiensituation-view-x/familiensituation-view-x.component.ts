@@ -16,10 +16,11 @@
 import {Component, OnInit} from '@angular/core';
 import {MatDialog} from '@angular/material/dialog';
 import {TranslateService} from '@ngx-translate/core';
+import {isNullOrUndefined} from '@uirouter/core';
 import * as moment from 'moment';
 import {EinstellungRS} from '../../../../admin/service/einstellungRS.rest';
 import {
-    DvNgRemoveDialogComponent
+    DvNgRemoveDialogComponent,
 } from '../../../../app/core/component/dv-ng-remove-dialog/dv-ng-remove-dialog.component';
 import {CONSTANTS} from '../../../../app/core/constants/CONSTANTS';
 import {TSDemoFeature} from '../../../../app/core/directive/dv-hide-feature/TSDemoFeature';
@@ -31,11 +32,11 @@ import {TSEinstellungKey} from '../../../../models/enums/TSEinstellungKey';
 import {getTSFamilienstatusValues, TSFamilienstatus} from '../../../../models/enums/TSFamilienstatus';
 import {
     getTSGesuchstellerKardinalitaetValues,
-    TSGesuchstellerKardinalitaet
+    TSGesuchstellerKardinalitaet,
 } from '../../../../models/enums/TSGesuchstellerKardinalitaet';
 import {
     getTSUnterhaltsvereinbarungAnswerValues,
-    TSUnterhaltsvereinbarungAnswer
+    TSUnterhaltsvereinbarungAnswer,
 } from '../../../../models/enums/TSUnterhaltsvereinbarungAnswer';
 import {TSEinstellung} from '../../../../models/TSEinstellung';
 import {TSFamiliensituation} from '../../../../models/TSFamiliensituation';
@@ -360,23 +361,38 @@ export class FamiliensituationViewXComponent extends AbstractFamiliensitutaionVi
         return this.getFamiliensituation().fkjvFamSit;
     }
 
-    public wirdKonkubinatInPeriodeXJahreAlt(): boolean {
-        return this.getFamiliensituation()
+    public antragWirdBeendet(): boolean {
+        const isKonkubinatKeinKind: boolean = this.getFamiliensituation().familienstatus === TSFamilienstatus.KONKUBINAT_KEIN_KIND;
+        const isGeteilteObhut: boolean = this.getFamiliensituation().geteilteObhut;
+        const isUnterhaltsMitAndererPerson: boolean = this.getFamiliensituation().gesuchstellerKardinalitaet === TSGesuchstellerKardinalitaet.ZU_ZWEIT
+        let konkubinatShorter: boolean = this.getFamiliensituation()
                 .konkubinatIsShorterThanXYearsAtAnyTimeAfterStartOfPeriode(this.gesuchModelManager.getGesuchsperiode());
-
+        if (isKonkubinatKeinKind && isGeteilteObhut && isUnterhaltsMitAndererPerson && konkubinatShorter){
+            return true;
+        }
+        const keineUnterhaltsVereinbarung: boolean = this.getFamiliensituation().unterhaltsvereinbarung === TSUnterhaltsvereinbarungAnswer.NEIN_UNTERHALTSVEREINBARUNG;
+        if (isKonkubinatKeinKind && !isGeteilteObhut && keineUnterhaltsVereinbarung){
+            return true;
+        }
+        return false;
     }
 
-    public getKonkubinatWirdInPeriodeXJahreAltWarning(): string {
-
+    public getAntragStellerZweiAendertWarning(): string {
         const endDatum: string = this.getFamiliensituation()
                 .getStartKonkubinatEndofMonthPlusMinDauer()
                 .format(CONSTANTS.DATE_FORMAT);
-
-        return this.$translate.instant('FAMILIENSITUATION_X_JAHRE_KONKUBINAT_MSG',
-                {
-                    namegs2: this.getGesuch().gesuchsteller2.extractFullName(),
-                    endeDatum: endDatum
-                });
+        if ( isNullOrUndefined( this.getGesuch().gesuchsteller2 )){
+            return this.$translate.instant('FAMILIENSITUATION_X_JAHRE_KONKUBINAT_MSG',
+                    {
+                        namegs2: this.$translate.instant('FAMILIENSITUATION_FRAGE_PARTNERIDENTISCH_ANDERER_ELTERNTEIL'),
+                        endeDatum: endDatum });
+        }
+        else {
+            return this.$translate.instant('FAMILIENSITUATION_X_JAHRE_KONKUBINAT_MSG',
+                    {
+                        namegs2: this.getGesuch().gesuchsteller2.extractFullName(),
+                        endeDatum: endDatum
+                    });
+        }
     }
-
 }
