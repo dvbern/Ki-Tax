@@ -18,6 +18,7 @@ import {IComponentOptions} from 'angular';
 import {IDVFocusableController} from '../../../app/core/component/IDVFocusableController';
 import {DvDialog} from '../../../app/core/directive/dv-dialog/dv-dialog';
 import {ErrorService} from '../../../app/core/errors/service/ErrorService';
+import {ApplicationPropertyRS} from '../../../app/core/rest-services/applicationPropertyRS.rest';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {isStatusVerfuegenVerfuegt, TSAntragStatus} from '../../../models/enums/TSAntragStatus';
 import {TSBetreuungsangebotTyp} from '../../../models/enums/TSBetreuungsangebotTyp';
@@ -65,10 +66,13 @@ export class BetreuungListViewController extends AbstractGesuchViewController<an
         'AuthServiceRS',
         '$scope',
         '$log',
-        '$timeout'
+        '$timeout',
+        'ApplicationPropertyRS'
     ];
 
     public readonly TSRoleUtil = TSRoleUtil;
+    private angebotTS: boolean;
+    private angebotFI: boolean;
 
     public constructor(
         private readonly $state: StateService,
@@ -82,13 +86,21 @@ export class BetreuungListViewController extends AbstractGesuchViewController<an
         private readonly authServiceRS: AuthServiceRS,
         $scope: IScope,
         private readonly $log: ILogService,
-        $timeout: ITimeoutService
+        $timeout: ITimeoutService,
+        private readonly applicationPropertyRS: ApplicationPropertyRS
     ) {
         super(gesuchModelManager, berechnungsManager, wizardStepManager, $scope, TSWizardStepName.BETREUUNG, $timeout);
         this.wizardStepManager.updateCurrentWizardStepStatusSafe(
             TSWizardStepName.BETREUUNG,
             TSWizardStepStatus.IN_BEARBEITUNG);
 
+    }
+
+    public $onInit(): void {
+        this.applicationPropertyRS.getPublicPropertiesCached().then(res => {
+            this.angebotTS = res.angebotTSActivated;
+            this.angebotFI = res.angebotFIActivated;
+        });
     }
 
     public editBetreuung(kind: TSKindContainer, betreuung: any): void {
@@ -247,13 +259,15 @@ export class BetreuungListViewController extends AbstractGesuchViewController<an
     }
 
     public showButtonAnmeldungTagesschule(): boolean {
-        return this.gesuchModelManager.isAnmeldungTagesschuleEnabledForMandantAndGemeinde()
+        return this.angebotTS
+            && this.gesuchModelManager.isAnmeldungTagesschuleEnabledForGemeinde()
             && this.gesuchModelManager.isAnmeldungenTagesschuleEnabledForGemeindeAndGesuchsperiode()
             && this.isAnmeldungenHinzufuegenMoeglich();
     }
 
     public showButtonAnmeldungFerieninsel(): boolean {
-        return this.isAnmeldungFerieninselEnabledForMandantAndGemeinde()
+        return this.angebotFI
+            && this.isAnmeldungFerieninselEnabledForGemeinde()
             && this.isAnmeldungenFerieninselEnabledForGemeindeAndGesuchsperiode()
             && this.isAnmeldungenHinzufuegenMoeglich();
     }
@@ -261,11 +275,7 @@ export class BetreuungListViewController extends AbstractGesuchViewController<an
     /**
      * Entscheidet, ob Ferieninseln sowohl für den Mandanten wie auch für die Gemeinde eingeschaltet sind
      */
-    private isAnmeldungFerieninselEnabledForMandantAndGemeinde(): boolean {
-        if (!this.gesuchModelManager.isFerieninselangebotEnabled()) {
-            // Ferieninsel sind grundsätzlich auf dem Mandant nicht eingeschaltet
-            return false;
-        }
+    private isAnmeldungFerieninselEnabledForGemeinde(): boolean {
         const gemeinde = this.gesuchModelManager.getGemeinde();
         const gesuchsperiode = this.gesuchModelManager.getGesuchsperiode();
         return gemeinde
@@ -309,10 +319,10 @@ export class BetreuungListViewController extends AbstractGesuchViewController<an
         if (this.gesuchModelManager.getGesuch().status !== TSAntragStatus.FREIGABEQUITTUNG) {
             return false;
         }
-        const tagesschuleGrundsaetzlichErlaubt =
-            this.gesuchModelManager.isAnmeldungTagesschuleEnabledForMandantAndGemeinde()
+        const tagesschuleGrundsaetzlichErlaubt = this.angebotTS
+            && this.gesuchModelManager.isAnmeldungTagesschuleEnabledForGemeinde()
             && this.gesuchModelManager.isAnmeldungenTagesschuleEnabledForGemeindeAndGesuchsperiode();
-        const ferieninselGrundsaetzlichErlaubt = this.isAnmeldungFerieninselEnabledForMandantAndGemeinde()
+        const ferieninselGrundsaetzlichErlaubt = this.isAnmeldungFerieninselEnabledForGemeinde()
             && this.isAnmeldungenFerieninselEnabledForGemeindeAndGesuchsperiode();
         return tagesschuleGrundsaetzlichErlaubt || ferieninselGrundsaetzlichErlaubt;
     }

@@ -16,7 +16,7 @@
  */
 
 import {StateService} from '@uirouter/core';
-import {IComponentOptions} from 'angular';
+import {IComponentOptions, IPromise} from 'angular';
 import * as $ from 'jquery';
 import * as moment from 'moment';
 import {map} from 'rxjs/operators';
@@ -168,6 +168,9 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     private hideKesbPlatzierung: boolean;
     public infomaZahlungen: boolean;
     private mandant: KiBonMandant;
+    private angebotTS: boolean;
+    private angebotFI: boolean;
+    private angebotTFO: boolean;
 
     public constructor(
         private readonly $state: StateService,
@@ -230,7 +233,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
                 this.gesuchModelManager.setBetreuungIndex(this.betreuungIndex);
             }
 
-            this.setBetreuungsangebotTypValues();
+            this.initApplicationProperties().then(() => this.setBetreuungsangebotTypValues());
             // Falls ein Typ gesetzt ist, handelt es sich um eine direkt-Anmeldung
             if (this.$stateParams.betreuungsangebotTyp) {
                 for (const obj of this.betreuungsangebotValues) {
@@ -697,7 +700,8 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     private setBetreuungsangebotTypValues(): void {
         const betreuungsangebotTypValues =
             getTSBetreuungsangebotTypValuesForMandantIfTagesschulanmeldungen(
-                this.gesuchModelManager.isTagesschulangebotEnabled(),
+                this.angebotTS,
+                this.angebotTFO,
                 this.checkIfGemeindeOrBetreuungHasTSAnmeldung(),
                 this.gesuchModelManager.getGemeinde(),
                 this.gesuchModelManager.getGesuchsperiode());
@@ -1698,5 +1702,13 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
 
     public getInstitutionNotFoundHint(): string {
         return this.$translate.instant('INSTITUTION_NOT_FOUND_HINT');
+    }
+
+    private initApplicationProperties(): IPromise<void> {
+        return this.applicationPropertyRS.getPublicPropertiesCached().then(res => {
+            this.angebotTS = res.angebotTSActivated;
+            this.angebotFI = res.angebotFIActivated;
+            this.angebotTFO = res.angebotTFOActivated;
+        })
     }
 }

@@ -4540,6 +4540,8 @@ export class EbeguRestUtil {
         publicAppConfigTS.lastenausgleichAktiv = data.lastenausgleichAktiv;
         publicAppConfigTS.mulitmandantAktiv = data.multimandantAktiviert;
         publicAppConfigTS.angebotTSActivated = data.angebotTSActivated;
+        publicAppConfigTS.angebotFIActivated = data.angebotFIActivated;
+        publicAppConfigTS.angebotTFOActivated = data.angebotTFOActivated;
         publicAppConfigTS.infomaZahlungen = data.infomaZahlungen;
         publicAppConfigTS.frenchEnabled = data.frenchEnabled;
         publicAppConfigTS.geresEnabledForMandant = data.geresEnabledForMandant;

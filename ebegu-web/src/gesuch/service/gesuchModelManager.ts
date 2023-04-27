@@ -133,8 +133,6 @@ export class GesuchModelManager {
     public emptyKinderList: Array<TSKindContainer> = [];
 
     private subscription: Subscription;
-    private tagesschulangebotEnabled: boolean;
-    private fiAngebotEnabled: boolean;
 
     public constructor(
         private readonly gesuchRS: GesuchRS,
@@ -175,10 +173,6 @@ export class GesuchModelManager {
                 },
                 err => this.log.error(err)
             );
-        this.applicationPropertyRS.getPublicPropertiesCached().then(res => {
-            this.tagesschulangebotEnabled = res.angebotTSActivated;
-            this.fiAngebotEnabled = res.angebotFIActivated;
-        });
     }
 
     /**
@@ -1801,14 +1795,6 @@ export class GesuchModelManager {
         return this.gesuchRS.isAusserordentlicherAnspruchPossible(this.gesuch.id);
     }
 
-    public isTagesschulangebotEnabled(): boolean {
-        return this.tagesschulangebotEnabled;
-    }
-
-    public isFerieninselangebotEnabled(): boolean {
-        return this.fiAngebotEnabled;
-    }
-
     public isSozialhilfeBezueger(): boolean {
         return this.getFamiliensituation() && this.getFamiliensituation().sozialhilfeBezueger;
     }
@@ -1867,11 +1853,7 @@ export class GesuchModelManager {
     /**
      * Entscheidet, ob Tagesschulen sowohl für den Mandanten wie auch für die Gemeinde eingeschaltet sind
      */
-    public isAnmeldungTagesschuleEnabledForMandantAndGemeinde(): boolean {
-        if (!this.isTagesschulangebotEnabled()) {
-            // Tagesschulen sind grundsätzlich auf dem Mandant nicht eingeschaltet
-            return false;
-        }
+    public isAnmeldungTagesschuleEnabledForGemeinde(): boolean {
         const gemeinde = this.getGemeinde();
         const gesuchsperiode = this.getGesuchsperiode();
         return gemeinde
