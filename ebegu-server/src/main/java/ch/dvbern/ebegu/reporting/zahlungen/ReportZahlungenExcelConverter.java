@@ -16,16 +16,26 @@
  */
 package ch.dvbern.ebegu.reporting.zahlungen;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.enterprise.context.Dependent;
 
+import ch.dvbern.ebegu.entities.Gemeinde;
+import ch.dvbern.ebegu.entities.Gesuchsperiode;
+import ch.dvbern.ebegu.entities.Institution;
 import ch.dvbern.ebegu.enums.reporting.MergeFieldZahlungen;
 import ch.dvbern.oss.lib.excelmerger.ExcelConverter;
+import ch.dvbern.oss.lib.excelmerger.ExcelMergeException;
+import ch.dvbern.oss.lib.excelmerger.ExcelMerger;
 import ch.dvbern.oss.lib.excelmerger.ExcelMergerDTO;
 import ch.dvbern.oss.lib.excelmerger.RowFiller;
+import ch.dvbern.oss.lib.excelmerger.mergefields.MergeField;
 import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
 
 @Dependent
 public class ReportZahlungenExcelConverter implements ExcelConverter {
@@ -54,5 +64,41 @@ public class ReportZahlungenExcelConverter implements ExcelConverter {
 			excelRowGroup.addValue(MergeFieldZahlungen.kontoEltern, row.getKontoEltern());
 			rowFiller.fillRow(excelRowGroup);
 		});
+	}
+
+	public @Nonnull XSSFSheet mergeHeaders(
+		@Nonnull XSSFSheet sheet,
+		@Nonnull Gesuchsperiode periode,
+		@Nullable Gemeinde gemeinde,
+		@Nullable Institution institution
+	) throws ExcelMergeException {
+
+		ExcelMergerDTO excelMergerDTO = new ExcelMergerDTO();
+		List<MergeField<?>> mergeFields = new ArrayList<>();
+
+		mergeFields.add(MergeFieldZahlungen.periodeParam.getMergeField());
+		excelMergerDTO.addValue(
+			MergeFieldZahlungen.periodeParam,
+			periode.getGesuchsperiodeString()
+		);
+		mergeFields.add(MergeFieldZahlungen.gemeindeParam.getMergeField());
+		excelMergerDTO.addValue(
+			MergeFieldZahlungen.gemeindeParam,
+			gemeinde != null ? gemeinde.getName() : ""
+		);
+		mergeFields.add(MergeFieldZahlungen.institutionParam.getMergeField());
+		excelMergerDTO.addValue(
+			MergeFieldZahlungen.institutionParam,
+			institution != null ? institution.getName() : ""
+		);
+		mergeFields.add(MergeFieldZahlungen.timestampParam.getMergeField());
+		excelMergerDTO.addValue(
+			MergeFieldZahlungen.timestampParam,
+			LocalDateTime.now()
+		);
+
+		ExcelMerger.mergeData(sheet, mergeFields, excelMergerDTO);
+
+		return sheet;
 	}
 }

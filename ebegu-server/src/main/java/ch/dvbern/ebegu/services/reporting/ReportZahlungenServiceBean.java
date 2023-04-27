@@ -103,10 +103,31 @@ public class ReportZahlungenServiceBean extends AbstractReportServiceBean implem
 
 		InputStream is = ReportLastenausgleichBGZeitabschnitteServiceBean.class.getResourceAsStream(reportVorlage.getTemplatePath());
 		Workbook workbook = createWorkbook(is, reportVorlage);
-		final XSSFSheet sheet = (XSSFSheet) workbook.getSheet(reportVorlage.getDataSheetName());
+		XSSFSheet sheet = (XSSFSheet) workbook.getSheet(reportVorlage.getDataSheetName());
 
-		var zahlungsauftrage = findZahlungsauftrageWithAuszahlungsTypInstitution(gesuchsperiodeId, gemeindeId);
-		var reportData = zahlungsauftraegeToDataRows(zahlungsauftrage, institutionId);
+		var periode = gesuchsperiodeService.findGesuchsperiode(gesuchsperiodeId)
+			.orElseThrow(() -> new EbeguRuntimeException("generateExcelReportZahlungen", gesuchsperiodeId));
+
+		Gemeinde gemeinde = null;
+		if (gemeindeId != null) {
+			gemeinde = gemeindeService.findGemeinde(gemeindeId)
+				.orElseThrow(() -> new EbeguRuntimeException("generateExcelReportZahlungen", gemeindeId));
+		}
+		Institution institution = null;
+		if (institutionId != null) {
+			institution = institutionService.findInstitution(institutionId, true)
+				.orElseThrow(() -> new EbeguRuntimeException("generateExcelReportZahlungen", institutionId));
+		}
+
+		sheet = zahlungenConverter.mergeHeaders(
+			sheet,
+			periode,
+			gemeinde,
+			institution
+		);
+
+		var zahlungsauftrage = findZahlungsauftrageWithAuszahlungsTypInstitution(gesuchsperiodeId, gemeinde, institution);
+		var reportData = filterZahlungenAndConvertToDataRows(zahlungsauftrage, institutionId);
 		final RowFiller rowFiller = fillAndMergeRows(reportVorlage, sheet, reportData);
 
 		byte[] bytes = createWorkbook(rowFiller.getSheet().getWorkbook());

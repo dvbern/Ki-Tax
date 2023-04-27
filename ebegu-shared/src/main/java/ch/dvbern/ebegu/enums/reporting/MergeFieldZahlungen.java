@@ -30,6 +30,13 @@ import static ch.dvbern.oss.lib.excelmerger.converters.StandardConverters.DATE_C
 import static ch.dvbern.oss.lib.excelmerger.converters.StandardConverters.STRING_CONVERTER;
 
 public enum MergeFieldZahlungen implements MergeFieldProvider {
+
+	periodeParam(new SimpleMergeField<>("periodeParam", STRING_CONVERTER)),
+	gemeindeParam(new SimpleMergeField<>("gemeindeParam", STRING_CONVERTER)),
+	institutionParam(new SimpleMergeField<>("institutionParam", STRING_CONVERTER)),
+	timestampParam(new SimpleMergeField<>("timestampParam", DATETIME_CONVERTER)),
+
+
 	repeatRow(new RepeatRowMergeField("repeatRow")),
 	zahlungslaufTitle(new SimpleMergeField<>("zahlungslaufTitle", STRING_CONVERTER)),
 	gemeinde(new SimpleMergeField<>("gemeinde", STRING_CONVERTER)),
