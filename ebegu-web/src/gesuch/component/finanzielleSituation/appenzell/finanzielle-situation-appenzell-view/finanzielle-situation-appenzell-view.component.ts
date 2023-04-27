@@ -96,6 +96,10 @@ export class FinanzielleSituationAppenzellViewComponent extends AbstractGesuchVi
     // die Frage wird nur auf dem ersten Step gezeigt und nur, falls das Gesuch überhaupt einen
     // zweiten Antragsteller hat.
     public showQuestionGemeinsameSteuererklaerung(): boolean {
+        if (this.isSpezialFallAR() && this.getSubStepIndex() === 1) {
+            return true;
+        }
+
         return EbeguUtil.isNotNullOrUndefined(this.gesuchModelManager.getGesuch().gesuchsteller2)
             && this.getSubStepIndex() === 1;
     }

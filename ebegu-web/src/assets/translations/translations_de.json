@@ -78,6 +78,7 @@
     "FINANZIELLE_SITUATION_VERGUENSTIGUNG_GEWUENSCHT_NEIN": "Nein",
     "FINANZIELLE_SITUATION_VERGUENSTIGUNG_GEWUENSCHT_NEIN_FKJV": "Nein, Verzicht auf Subventionen. Ich bezahle den Maximaltarif.",
     "FINANZIELLE_SITUATION_STEK_GEMEINSAM": "Haben Sie eine gemeinsame Steuererklärung {{basisjahr}} mit {{namegs2}} erhalten?",
+    "FINANZIELLE_SITUATION_STEK_GEMEINSAM_NO_GS2_NAME": "Haben Sie eine gemeinsame Steuererklärung {{basisjahr}} mit ihrer/ihrem Ehepartner/in oder festern Konkubinatspartner/in erhalten?",
     "FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF": "Sind Sie einverstanden, dass die Angaben zu den finanziellen Verhältnissen aus den Steuerdaten abgerufen werden?",
     "FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF_JA": "Ja",
     "FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF_NEIN": "Nein, manuelle Eingabe und Belege hochladen",

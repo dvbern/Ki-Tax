@@ -78,6 +78,7 @@
     "FINANZIELLE_SITUATION_VERGUENSTIGUNG_GEWUENSCHT_NEIN": "Non",
     "FINANZIELLE_SITUATION_VERGUENSTIGUNG_GEWUENSCHT_NEIN_FKJV": "Non, je renonce aux subventions et m’acquitte du tarif maximal.",
     "FINANZIELLE_SITUATION_STEK_GEMEINSAM": "Avez-vous reçu une déclaration d'impôt commune avec {{namegs2}} pour l'année {{basisjahr}} ?",
+    "FINANZIELLE_SITUATION_STEK_GEMEINSAM_NO_GS2_NAME": "Haben Sie eine gemeinsame Steuererklärung {{basisjahr}} mit ihrer/ihrem Ehepartner/in oder festern Konkubinatspartner/in erhalten?",
     "FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF": "Acceptez-vous que les informations concernant votre situation financière soient récupérées à partir des données fiscales?",
     "FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF_JA": "Oui",
     "FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF_NEIN": "Non, saisir les informations manuellement et télécharger les justificatifs.",

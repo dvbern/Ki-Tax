@@ -18,7 +18,9 @@
 import {ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {ControlContainer, NgForm} from '@angular/forms';
 import {MatRadioChange} from '@angular/material/radio';
+import {TranslateService} from '@ngx-translate/core';
 import {TSFinanzModel} from '../../../../../models/TSFinanzModel';
+import {EbeguUtil} from '../../../../../utils/EbeguUtil';
 import {GesuchModelManager} from '../../../../service/gesuchModelManager';
 
 @Component({
@@ -34,13 +36,25 @@ export class SteuerveranlagungGemeinsamComponent implements OnInit {
   @Output() public readonly gemeinsamChanged = new EventEmitter<MatRadioChange>();
 
   public constructor(
-      public gesuchModelManager: GesuchModelManager
+      public gesuchModelManager: GesuchModelManager,
+      private readonly $translate: TranslateService
   ) { }
 
   public ngOnInit(): void {
   }
 
-    public change($event: MatRadioChange): void {
-        this.gemeinsamChanged.emit($event);
+  public change($event: MatRadioChange): void {
+      this.gemeinsamChanged.emit($event);
+  }
+
+  public getLabel(): string {
+    if (EbeguUtil.isNullOrUndefined(this.gesuchModelManager.getGesuch()?.gesuchsteller2)) {
+      return this.$translate.instant('FINANZIELLE_SITUATION_STEK_GEMEINSAM_NO_GS2_NAME', {
+        basisjahr: this.gesuchModelManager.getBasisjahr()});
     }
+
+    return this.$translate.instant('FINANZIELLE_SITUATION_STEK_GEMEINSAM', {
+      basisjahr: this.gesuchModelManager.getBasisjahr(),
+      namegs2: this.gesuchModelManager.getGesuch()?.gesuchsteller2?.gesuchstellerJA?.getFullName() || ''});
+  }
 }
