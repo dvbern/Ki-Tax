@@ -138,6 +138,10 @@ export class EinkommensverschlechterungAppenzellViewComponent extends AbstractGe
     }
 
     public getGesuchstellerName() {
+        if (this.isGemeinsam()) {
+            return `${this.gesuchModelManager.getStammdatenToWorkWith()
+                .extractFullName()  } + ${  this.extractFullNameGS2()}`;
+        }
         return this.gesuchstellerNumber === 2 ?
             this.extractFullNameGS2() :
             this.gesuchModelManager.getStammdatenToWorkWith().extractFullName();
