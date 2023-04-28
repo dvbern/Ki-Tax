@@ -20,7 +20,8 @@ import * as moment from 'moment';
 import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
 import {CONSTANTS} from '../../../app/core/constants/CONSTANTS';
 import {EinschulungTypesVisitor} from '../../../app/core/constants/EinschulungTypesVisitor';
-import {KiBonMandant, MANDANTS} from '../../../app/core/constants/MANDANTS';
+import {KindGeschlechtVisitor} from '../../../app/core/constants/KindGeschlechtVisitor';
+import {KiBonMandant} from '../../../app/core/constants/MANDANTS';
 import {ErrorService} from '../../../app/core/errors/service/ErrorService';
 import {LogFactory} from '../../../app/core/logging/LogFactory';
 import {MandantService} from '../../../app/shared/services/mandant.service';
@@ -40,7 +41,6 @@ import {TSEinstellung} from '../../../models/TSEinstellung';
 import {TSFachstelle} from '../../../models/TSFachstelle';
 import {TSKind} from '../../../models/TSKind';
 import {TSKindContainer} from '../../../models/TSKindContainer';
-import {TSMandant} from '../../../models/TSMandant';
 import {TSPensumAusserordentlicherAnspruch} from '../../../models/TSPensumAusserordentlicherAnspruch';
 import {TSPensumFachstelle} from '../../../models/TSPensumFachstelle';
 import {DateUtil} from '../../../utils/DateUtil';
@@ -607,6 +607,6 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
     }
 
     public isGeschlechtOfKindRequired(): boolean {
-        return this.mandant !== MANDANTS.APPENZELL_AUSSERRHODEN;
+        return new KindGeschlechtVisitor().process(this.mandant);
     }
 }
