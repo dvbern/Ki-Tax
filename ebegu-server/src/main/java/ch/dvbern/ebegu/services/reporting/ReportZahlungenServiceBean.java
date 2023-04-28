@@ -34,10 +34,10 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
-import javax.validation.constraints.NotNull;
 
 import ch.dvbern.ebegu.authentication.PrincipalBean;
 import ch.dvbern.ebegu.entities.Gemeinde;
+import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.Institution;
 import ch.dvbern.ebegu.entities.Zahlung;
 import ch.dvbern.ebegu.entities.Zahlung_;
@@ -48,7 +48,6 @@ import ch.dvbern.ebegu.enums.ZahlungslaufTyp;
 import ch.dvbern.ebegu.enums.ZahlungspositionStatus;
 import ch.dvbern.ebegu.enums.reporting.ReportVorlage;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
-import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.ebegu.reporting.ReportZahlungenService;
 import ch.dvbern.ebegu.reporting.zahlungen.ReportZahlungenExcelConverter;
@@ -107,23 +106,23 @@ public class ReportZahlungenServiceBean extends AbstractReportServiceBean implem
 	) throws ExcelMergeException, IOException {
 
 		try (
-			InputStream is = ReportLastenausgleichBGZeitabschnitteServiceBean.class.getResourceAsStream(reportVorlage.getTemplatePath());
+			InputStream is = ReportServiceBean.class.getResourceAsStream(reportVorlage.getTemplatePath());
 			Workbook workbook = createWorkbook(is, reportVorlage);
 		) {
 			XSSFSheet sheet = (XSSFSheet) workbook.getSheet(reportVorlage.getDataSheetName());
 
 			var periode = gesuchsperiodeService.findGesuchsperiode(gesuchsperiodeId)
-				.orElseThrow(() -> new EbeguRuntimeException("generateExcelReportZahlungen", gesuchsperiodeId));
+				.orElseThrow(() -> new EbeguEntityNotFoundException("generateExcelReportZahlungen", gesuchsperiodeId));
 
 			Gemeinde gemeinde = null;
 			if (gemeindeId != null) {
 				gemeinde = gemeindeService.findGemeinde(gemeindeId)
-					.orElseThrow(() -> new EbeguRuntimeException("generateExcelReportZahlungen", gemeindeId));
+					.orElseThrow(() -> new EbeguEntityNotFoundException("generateExcelReportZahlungen", gemeindeId));
 			}
 			Institution institution = null;
 			if (institutionId != null) {
 				institution = institutionService.findInstitution(institutionId, true)
-					.orElseThrow(() -> new EbeguRuntimeException("generateExcelReportZahlungen", institutionId));
+					.orElseThrow(() -> new EbeguEntityNotFoundException("generateExcelReportZahlungen", institutionId));
 			}
 
 			sheet = zahlungenConverter.mergeHeaders(
@@ -133,7 +132,7 @@ public class ReportZahlungenServiceBean extends AbstractReportServiceBean implem
 				institution
 			);
 
-			var zahlungsauftrage = findZahlungsauftrageWithAuszahlungsTypInstitution(gesuchsperiodeId, gemeinde, institution);
+			var zahlungsauftrage = findZahlungsauftrageWithAuszahlungsTypInstitution(periode, gemeinde, institution);
 			var reportData = filterZahlungenAndConvertToDataRows(zahlungsauftrage, institutionId);
 			final RowFiller rowFiller = fillAndMergeRows(reportVorlage, sheet, reportData);
 
@@ -166,14 +165,10 @@ public class ReportZahlungenServiceBean extends AbstractReportServiceBean implem
 	}
 
 	private List<Zahlungsauftrag> findZahlungsauftrageWithAuszahlungsTypInstitution(
-		@Nonnull String gesuchsperiodeId,
+		@Nonnull Gesuchsperiode periode,
 		@Nullable Gemeinde gemeinde,
 		@Nullable Institution institution
 	) {
-
-		var periode = gesuchsperiodeService.findGesuchsperiode(gesuchsperiodeId)
-			.orElseThrow(() -> new EbeguEntityNotFoundException("findZahlungsauftrageWithAuszahlungsTypInstitution", gesuchsperiodeId));
-
 		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
 		final CriteriaQuery<Zahlungsauftrag> query = cb.createQuery(Zahlungsauftrag.class);
 		List<Predicate> predicates = new ArrayList<>();
@@ -207,7 +202,7 @@ public class ReportZahlungenServiceBean extends AbstractReportServiceBean implem
 
 	private List<ZahlungenDataRow> filterZahlungenAndConvertToDataRows(
 		@Nonnull List<Zahlungsauftrag> zahlungsauftrage,
-		@NotNull String institutionId
+		@Nullable String institutionId
 	) {
 		var rows = new ArrayList<ZahlungenDataRow>();
 		for (Zahlungsauftrag zahlungsauftrag : zahlungsauftrage) {
@@ -219,9 +214,9 @@ public class ReportZahlungenServiceBean extends AbstractReportServiceBean implem
 			}
 
 			for (Zahlung zahlung : zahlungen) {
+				authorizer.checkReadAuthorizationZahlung(zahlung);
 
 				for (Zahlungsposition zahlungsposition : zahlung.getZahlungspositionen()) {
-					authorizer.checkReadAuthorizationZahlung(zahlung);
 					rows.add(zahlungToDataRow(zahlungsauftrag, zahlung, zahlungsposition));
 				}
 			}
