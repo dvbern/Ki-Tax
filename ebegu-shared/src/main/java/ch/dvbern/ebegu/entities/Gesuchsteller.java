@@ -28,6 +28,7 @@ import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
 import ch.dvbern.ebegu.enums.AntragCopyType;
+import ch.dvbern.ebegu.enums.Geschlecht;
 import ch.dvbern.ebegu.enums.Sprache;
 import ch.dvbern.ebegu.util.Constants;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
@@ -43,6 +44,11 @@ import static ch.dvbern.ebegu.util.Constants.DB_DEFAULT_MAX_LENGTH;
 public class Gesuchsteller extends AbstractPersonEntity {
 
 	private static final long serialVersionUID = -9032257320578372570L;
+
+	@Enumerated(EnumType.STRING)
+	@Column(nullable = false)
+	@NotNull
+	private Geschlecht geschlecht;
 
 	@Pattern(regexp = Constants.REGEX_EMAIL, message = "{validator.constraints.Email.message}")
 	@Size(max = DB_DEFAULT_MAX_LENGTH)
@@ -78,6 +84,16 @@ public class Gesuchsteller extends AbstractPersonEntity {
 
 
 	public Gesuchsteller() {
+	}
+
+	@Override
+	public Geschlecht getGeschlecht() {
+		return geschlecht;
+	}
+
+	@Override
+	public void setGeschlecht(Geschlecht geschlecht) {
+		this.geschlecht = geschlecht;
 	}
 
 	@Nullable

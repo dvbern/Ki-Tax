@@ -34,7 +34,7 @@
                 <fieldset ng-disabled="vm.isGesuchReadonly()">
 
                     <!--Geschlecht-->
-                    <div class="row">
+                    <div class="row" ng-if="vm.isGeschlechtOfKindRequired()">
                         <div class="col-xs-12 dv-input-container-small">
                             <div class="form-group">
                                 <label class="md-no-float required"

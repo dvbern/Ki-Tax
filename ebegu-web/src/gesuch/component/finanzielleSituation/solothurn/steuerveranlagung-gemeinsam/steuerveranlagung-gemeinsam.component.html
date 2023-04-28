@@ -18,7 +18,7 @@
 <div class="row">
 	<div class="col-xs-12 dv-input-container-question">
 		<div class="form-group">
-			<span class="ebegu-h1 required">{{'FINANZIELLE_SITUATION_STEK_GEMEINSAM' | translate:{basisjahr: gesuchModelManager.getBasisjahr(), namegs2: gesuchModelManager.getGesuch()?.gesuchsteller2?.gesuchstellerJA?.getFullName() || ''} }}</span>
+			<span class="ebegu-h1 required">{{this.getLabel()}}</span>
 			<dv-input-container-x [verticalAlign]="true">
 				<dv-radio-container-x>
 					<mat-radio-group

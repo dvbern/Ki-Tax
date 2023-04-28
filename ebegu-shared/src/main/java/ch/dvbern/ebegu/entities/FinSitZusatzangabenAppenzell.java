@@ -207,6 +207,8 @@ public class FinSitZusatzangabenAppenzell extends AbstractMutableEntity {
 	public FinSitZusatzangabenAppenzell copyFinSitZusatzangabenAppenzell(
 		FinSitZusatzangabenAppenzell target,
 		AntragCopyType copyType) {
+		super.copyAbstractEntity(target, copyType);
+
 		switch (copyType) {
 		case MUTATION:
 		case MUTATION_NEUES_DOSSIER:
@@ -228,6 +230,7 @@ public class FinSitZusatzangabenAppenzell extends AbstractMutableEntity {
 		target.setVorjahresverluste(this.getVorjahresverluste());
 		target.setPolitischeParteiSpende(this.getPolitischeParteiSpende());
 		target.setLeistungAnJuristischePersonen(this.getLeistungAnJuristischePersonen());
+		target.setZusatzangabenPartner(this.zusatzangabenPartner);
 		return target;
 	}
 
