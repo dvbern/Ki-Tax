@@ -1,16 +1,18 @@
 /*
- * Ki-Tax: System for the management of external childcare subsidies
- * Copyright (C) 2018 City of Bern Switzerland
+ * Copyright (C) 2023 DV Bern AG, Switzerland
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Affero General Public License for more details.
+ *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
 package ch.dvbern.ebegu.services;
@@ -49,6 +51,7 @@ import javax.persistence.criteria.Root;
 import ch.dvbern.ebegu.authentication.PrincipalBean;
 import ch.dvbern.ebegu.entities.AbstractEntity_;
 import ch.dvbern.ebegu.entities.Gemeinde;
+import ch.dvbern.ebegu.entities.Institution;
 import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.entities.Workjob;
 import ch.dvbern.ebegu.entities.Workjob_;
@@ -144,6 +147,7 @@ public class WorkjobServiceBean extends AbstractBaseService implements WorkjobSe
 		boolean inklTsGesuche,
 		boolean ohneErneuerungsgesuch,
 		@Nullable Gemeinde gemeinde,
+		@Nullable Institution institution,
 		@Nullable Integer jahr,
 		@Nullable String text,
 		@Nonnull Locale locale,
@@ -160,8 +164,9 @@ public class WorkjobServiceBean extends AbstractBaseService implements WorkjobSe
 			inklMischGesuche,
 			inklTsGesuche,
 			ohneErneuerungsgesuch,
-			gemeinde,
 			jahr,
+			gemeinde,
+			institution,
 			text,
 			false,
 			BigDecimal.ZERO,
@@ -182,8 +187,9 @@ public class WorkjobServiceBean extends AbstractBaseService implements WorkjobSe
 		boolean inklMischGesuche,
 		boolean inklTsGesuche,
 		boolean ohneErneuerungsgesuch,
-		@Nullable Gemeinde gemeinde,
 		@Nullable Integer jahr,
+		@Nullable Gemeinde gemeinde,
+		@Nullable Institution institution,
 		@Nullable String text,
 		boolean doSave,
 		@Nonnull BigDecimal betragProKind,
@@ -226,6 +232,9 @@ public class WorkjobServiceBean extends AbstractBaseService implements WorkjobSe
 		if (gemeinde != null) {
 			jobParameters.setProperty(WorkJobConstants.GEMEINDE_ID_PARAM, gemeinde.getId());
 		}
+		if (institution != null) {
+			jobParameters.setProperty(WorkJobConstants.INSTITUTION_ID_PARAM, institution.getId());
+		}
 		if (jahr != null) {
 			jobParameters.setProperty(WorkJobConstants.JAHR_PARAM, jahr.toString());
 		}
@@ -242,7 +251,7 @@ public class WorkjobServiceBean extends AbstractBaseService implements WorkjobSe
 		workJob.setExecutionId(executionId);
 		workJob = this.saveWorkjob(workJob);
 
-		LOG.debug("Startet GesuchStichttagStatistik with executionId {}", executionId);
+		LOG.debug("Startet workjob für {} with executionId {}", vorlage.getDefaultExportFilename(), executionId);
 
 		return workJob;
 	}
@@ -269,7 +278,7 @@ public class WorkjobServiceBean extends AbstractBaseService implements WorkjobSe
 			false,
 			false,
 			null,
-			null,
+			null, null,
 			null,
 			locale,
 			mandant);
@@ -315,6 +324,7 @@ public class WorkjobServiceBean extends AbstractBaseService implements WorkjobSe
 			null,
 			null,
 			null,
+			null,
 			false,
 			BigDecimal.ZERO,
 			kantonSelbstbehalt,
@@ -337,6 +347,7 @@ public class WorkjobServiceBean extends AbstractBaseService implements WorkjobSe
 			false,
 			false,
 			false,
+			null,
 			null,
 			null,
 			null,
@@ -367,6 +378,7 @@ public class WorkjobServiceBean extends AbstractBaseService implements WorkjobSe
 			false,
 			false,
 			false,
+			null,
 			null,
 			null,
 			null,

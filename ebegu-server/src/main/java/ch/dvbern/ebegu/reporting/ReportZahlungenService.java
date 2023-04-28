@@ -15,16 +15,27 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-export enum TSDemoFeature {
-    ALLE_MUTATIONSMELDUNGEN_VERFUEGEN = 'ALLE_MUTATIONSMELDUNGEN_VERFUEGEN',
-    STEUERABFRAGE_ERNEUT_DURCHFUEHREN_IN_MUTATION = 'STEUERABFRAGE_ERNEUT_DURCHFUEHREN_IN_MUTATION',
-    STEUERABFRAGE_NEUE_VERANLAGUNG = 'STEUERABFRAGE_NEUE_VERANLAGUNG',
-    VERAENDERUNG_BEI_MUTATION = 'VERAENDERUNG_BEI_MUTATION',
-    ALLWAYS_SHOW_ZAHLUNGSDATEN_ON_FINSIT_BERN = 'ALLWAYS_SHOW_ZAHLUNGSDATEN_ON_FINSIT_BERN',
-    MITTEILUNG_IGNORIEREN = 'MITTEILUNG_IGNORIEREN',
-    KIBON_2754 = 'KIBON_2754',
-    NEUE_VERANLAGUNG_MITTEILUNG = 'NEUE_VERANLAGUNG_MITTEILUNG',
-    GESUCH_BEENDEN_FAMSIT = 'GESUCH_BEENDEN_FAMSIT',
-    ZAHLUNGSSTATUS = 'ZAHLUNGSSTATUS',
-    ZAHLUNGEN_STATISTIK = 'ZAHLUNGEN_STATISTIK'
+package ch.dvbern.ebegu.reporting;
+
+import java.io.IOException;
+import java.util.Locale;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
+import ch.dvbern.ebegu.enums.reporting.ReportVorlage;
+import ch.dvbern.ebegu.util.UploadFileInfo;
+import ch.dvbern.oss.lib.excelmerger.ExcelMergeException;
+
+public interface ReportZahlungenService {
+
+	@Nonnull
+	UploadFileInfo generateExcelReportZahlungen(
+		@Nonnull ReportVorlage workJobType,
+		@Nonnull Locale locale,
+		@Nonnull String gesuchsperiodeId,
+		@Nullable String gemeindeId,
+		@Nullable String institutionId
+	) throws ExcelMergeException, IOException;
+
 }
