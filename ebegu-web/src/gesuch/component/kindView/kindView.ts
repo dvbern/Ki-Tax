@@ -20,6 +20,7 @@ import * as moment from 'moment';
 import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
 import {CONSTANTS} from '../../../app/core/constants/CONSTANTS';
 import {EinschulungTypesVisitor} from '../../../app/core/constants/EinschulungTypesVisitor';
+import {KindGeschlechtVisitor} from '../../../app/core/constants/KindGeschlechtVisitor';
 import {KiBonMandant} from '../../../app/core/constants/MANDANTS';
 import {ErrorService} from '../../../app/core/errors/service/ErrorService';
 import {LogFactory} from '../../../app/core/logging/LogFactory';
@@ -603,5 +604,9 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
         if (this.getModel().einschulungTyp !== TSEinschulungTyp.OBLIGATORISCHER_KINDERGARTEN) {
             this.getModel().keinPlatzInSchulhort = false;
         }
+    }
+
+    public isGeschlechtOfKindRequired(): boolean {
+        return new KindGeschlechtVisitor().process(this.mandant);
     }
 }

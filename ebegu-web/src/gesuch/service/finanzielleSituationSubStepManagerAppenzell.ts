@@ -34,7 +34,8 @@ export class FinanzielleSituationSubStepManagerAppenzell extends FinanzielleSitu
         currentSubStep: TSFinanzielleSituationSubStepName
     ): TSFinanzielleSituationSubStepName {
         if (currentSubStep === TSFinanzielleSituationSubStepName.APPENZELL_START
-        && FinanzielleSituationAppenzellService.finSitNeedsTwoSeparateAntragsteller(this.gesuchModelManager.getGesuch())) {
+        && FinanzielleSituationAppenzellService.finSitNeedsTwoSeparateAntragsteller(this.gesuchModelManager.getGesuch())
+        && !this.gesuchModelManager.getGesuch().extractFamiliensituation().gemeinsameSteuererklaerung) {
             return TSFinanzielleSituationSubStepName.APPENZELL_GS2;
         }
         return TSFinanzielleSituationSubStepName.KEIN_WEITERER_SUBSTEP;

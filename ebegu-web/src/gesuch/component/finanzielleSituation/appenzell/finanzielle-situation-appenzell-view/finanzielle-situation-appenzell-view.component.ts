@@ -96,6 +96,10 @@ export class FinanzielleSituationAppenzellViewComponent extends AbstractGesuchVi
     // die Frage wird nur auf dem ersten Step gezeigt und nur, falls das Gesuch überhaupt einen
     // zweiten Antragsteller hat.
     public showQuestionGemeinsameSteuererklaerung(): boolean {
+        if (this.isSpezialFallAR() && this.getSubStepIndex() === 1) {
+            return true;
+        }
+
         return EbeguUtil.isNotNullOrUndefined(this.gesuchModelManager.getGesuch().gesuchsteller2)
             && this.getSubStepIndex() === 1;
     }
@@ -213,9 +217,18 @@ export class FinanzielleSituationAppenzellViewComponent extends AbstractGesuchVi
     }
 
     private removeFinSitGS2IfNecessary(): IPromise<TSGesuchstellerContainer> {
-        if (this.showQuestionGemeinsameSteuererklaerung() && this.model.familienSituation.gemeinsameSteuererklaerung) {
+        if (!this.model.familienSituation.gemeinsameSteuererklaerung) {
+            return undefined;
+        }
+        if (this.gesuchModelManager.isSpezialFallAR()) {
+            this.getModel().finanzielleSituationJA.finSitZusatzangabenAppenzell.zusatzangabenPartner = undefined;
+            return undefined;
+        }
+
+        if (this.showQuestionGemeinsameSteuererklaerung() ) {
             return this.gesuchModelManager.removeFinanzielleSitautionFromGesuchsteller2();
         }
+
         return undefined;
     }
 
@@ -226,7 +239,7 @@ export class FinanzielleSituationAppenzellViewComponent extends AbstractGesuchVi
     }
 
     private getFinSitZusatzangabenAppenzellToWorkWithSpezialfall() {
-        if (this.gesuchstellerNumber === 1) {
+        if (this.gesuchstellerNumber === 1 || this.isGemeinsam()) {
             return this.getOrCreateFinSitModel(this.getModel().finanzielleSituationJA);
         }
         if (EbeguUtil.isNullOrUndefined(

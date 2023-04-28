@@ -15,14 +15,16 @@
 
 package ch.dvbern.ebegu.api.dtos;
 
-import ch.dvbern.ebegu.enums.Sprache;
-import ch.dvbern.ebegu.util.Constants;
-
 import javax.annotation.Nullable;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+
+import ch.dvbern.ebegu.enums.Geschlecht;
+import ch.dvbern.ebegu.enums.Sprache;
+import ch.dvbern.ebegu.util.Constants;
 
 import static ch.dvbern.ebegu.util.Constants.DB_DEFAULT_MAX_LENGTH;
 
@@ -33,6 +35,9 @@ import static ch.dvbern.ebegu.util.Constants.DB_DEFAULT_MAX_LENGTH;
 public class JaxGesuchsteller extends JaxAbstractPersonDTO {
 
 	private static final long serialVersionUID = -1297026901664130397L;
+
+	@NotNull
+	private Geschlecht geschlecht;
 
 	@Pattern(regexp = Constants.REGEX_EMAIL, message = "{validator.constraints.Email.message}")
 	@Size(max = DB_DEFAULT_MAX_LENGTH)
@@ -106,5 +111,15 @@ public class JaxGesuchsteller extends JaxAbstractPersonDTO {
 
 	public void setKorrespondenzSprache(@Nullable Sprache korrespondenzSprache) {
 		this.korrespondenzSprache = korrespondenzSprache;
+	}
+
+	@Override
+	public Geschlecht getGeschlecht() {
+		return geschlecht;
+	}
+
+	@Override
+	public void setGeschlecht(Geschlecht geschlecht) {
+		this.geschlecht = geschlecht;
 	}
 }

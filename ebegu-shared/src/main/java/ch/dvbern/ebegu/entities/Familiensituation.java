@@ -162,6 +162,18 @@ public class Familiensituation extends AbstractMutableEntity {
 			this.sozialhilfeBezueger = that.getSozialhilfeBezueger();
 			this.verguenstigungGewuenscht = that.getVerguenstigungGewuenscht();
 			this.partnerIdentischMitVorgesuch = that.getPartnerIdentischMitVorgesuch();
+			this.geteilteObhut = that.getGeteilteObhut();
+			this.gemeinsamerHaushaltMitObhutsberechtigterPerson = that.getGemeinsamerHaushaltMitObhutsberechtigterPerson();
+			this.gemeinsamerHaushaltMitPartner = that.getGemeinsamerHaushaltMitPartner();
+			this.zustaendigeAmtsstelle = that.getZustaendigeAmtsstelle();
+			this.nameBetreuer = that.getNameBetreuer();
+			this.keineMahlzeitenverguenstigungBeantragt = that.isKeineMahlzeitenverguenstigungBeantragt();
+			this.keineMahlzeitenverguenstigungBeantragtEditable = that.isKeineMahlzeitenverguenstigungBeantragtEditable();
+			this.auszahlungsdaten = that.getAuszahlungsdaten();
+			this.abweichendeZahlungsadresse = that.isAbweichendeZahlungsadresse();
+			this.fkjvFamSit = that.isFkjvFamSit();
+			this.minDauerKonkubinat = that.getMinDauerKonkubinat();
+			this.unterhaltsvereinbarung = that.getUnterhaltsvereinbarung();
 		}
 	}
 
