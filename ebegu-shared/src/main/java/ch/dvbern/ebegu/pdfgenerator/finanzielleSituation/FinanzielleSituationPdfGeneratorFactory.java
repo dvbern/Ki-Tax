@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022 DV Bern AG, Switzerland
+ * Copyright (C) 2023 DV Bern AG, Switzerland
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -56,6 +56,14 @@ public abstract class FinanzielleSituationPdfGeneratorFactory {
 			);
 		case LUZERN:
 			return new FinanzielleSituationPdfGeneratorLuzern(
+				gesuch,
+				verfuegungFuerMassgEinkommen,
+				stammdaten,
+				erstesEinreichungsdatum,
+				finanzielleSituationRechner
+			);
+		case APPENZELL:
+			return new FinanzielleSituationPdfGeneratorAppenzell(
 				gesuch,
 				verfuegungFuerMassgEinkommen,
 				stammdaten,

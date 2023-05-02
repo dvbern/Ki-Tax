@@ -163,6 +163,18 @@ public class Familiensituation extends AbstractMutableEntity {
 			this.sozialhilfeBezueger = that.getSozialhilfeBezueger();
 			this.verguenstigungGewuenscht = that.getVerguenstigungGewuenscht();
 			this.partnerIdentischMitVorgesuch = that.getPartnerIdentischMitVorgesuch();
+			this.geteilteObhut = that.getGeteilteObhut();
+			this.gemeinsamerHaushaltMitObhutsberechtigterPerson = that.getGemeinsamerHaushaltMitObhutsberechtigterPerson();
+			this.gemeinsamerHaushaltMitPartner = that.getGemeinsamerHaushaltMitPartner();
+			this.zustaendigeAmtsstelle = that.getZustaendigeAmtsstelle();
+			this.nameBetreuer = that.getNameBetreuer();
+			this.keineMahlzeitenverguenstigungBeantragt = that.isKeineMahlzeitenverguenstigungBeantragt();
+			this.keineMahlzeitenverguenstigungBeantragtEditable = that.isKeineMahlzeitenverguenstigungBeantragtEditable();
+			this.auszahlungsdaten = that.getAuszahlungsdaten();
+			this.abweichendeZahlungsadresse = that.isAbweichendeZahlungsadresse();
+			this.fkjvFamSit = that.isFkjvFamSit();
+			this.minDauerKonkubinat = that.getMinDauerKonkubinat();
+			this.unterhaltsvereinbarung = that.getUnterhaltsvereinbarung();
 		}
 	}
 
@@ -501,5 +513,17 @@ public class Familiensituation extends AbstractMutableEntity {
 			Objects.equals(getGemeinsamerHaushaltMitPartner(), otherFamiliensituation.getGemeinsamerHaushaltMitPartner()) &&
 			Objects.equals(getGemeinsamerHaushaltMitObhutsberechtigterPerson(),
 				otherFamiliensituation.getGemeinsamerHaushaltMitObhutsberechtigterPerson());
+	}
+
+	public boolean isSpezialFallAR() {
+		if (this.familienstatus != EnumFamilienstatus.APPENZELL) {
+			return false;
+		}
+		var spezialFallGeteilteObhut = EbeguUtil.isNotNullAndTrue(this.geteilteObhut)
+				&& EbeguUtil.isNotNullAndFalse(this.gemeinsamerHaushaltMitObhutsberechtigterPerson)
+				&& EbeguUtil.isNotNullAndTrue(gemeinsamerHaushaltMitPartner);
+		var spezialFallNichtGeteilteObhut = EbeguUtil.isNotNullAndFalse(this.geteilteObhut)
+				&& EbeguUtil.isNotNullAndTrue(gemeinsamerHaushaltMitPartner);
+		return spezialFallGeteilteObhut || spezialFallNichtGeteilteObhut;
 	}
 }

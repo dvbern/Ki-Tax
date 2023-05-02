@@ -18,7 +18,6 @@ package ch.dvbern.ebegu.rules;
 import java.time.LocalDate;
 import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 
@@ -83,7 +82,7 @@ public class WohnsitzAbschnittRule extends AbstractAbschnittRule {
 			if (isFirstAbschnitt) {
 				// Der erste Abschnitt. Wir wissen noch nicht, ob Zuzug oder Wegzug
 				isFirstAbschnitt = false;
-				result.addAll(splitFirstZeitabschnitt(zeitabschnitt));
+				result.add(zeitabschnitt);
 			} else {
 				// Dies ist mindestens die zweite Adresse -> pruefen, ob sich an der Wohnsitz-Situation etwas geaendert hat.
 				boolean lastNichtInGemeindeAsiv = lastZeitAbschnitt.getBgCalculationInputAsiv().isWohnsitzNichtInGemeindeGS1();
@@ -97,18 +96,15 @@ public class WohnsitzAbschnittRule extends AbstractAbschnittRule {
 					// Es hat geaendert. Was war es fuer eine Anpassung?
 					if ((changedAsiv && newNichtInGemeindeAsiv) || (changedGemeinde && newNichtInGemeindeGemeinde)) {
 						// Es ist ein Wegzug
-						LocalDate stichTagUmzug = zeitabschnitt.getGueltigkeit().getGueltigAb();
-						//FIXME: BUAN ... das macht meine Tests kaputt
-						//lastZeitAbschnitt.getGueltigkeit().setGueltigBis(stichTagUmzug.with(TemporalAdjusters.lastDayOfMonth()));
-						result.addAll(createWegzugZeitabschnitte(zeitabschnitt, stichTagUmzug));
-					} else {
-						// Es ist ein Zuzug
-						LocalDate gueltigAb = zeitabschnitt.getGueltigkeit().getGueltigAb();
-						if (gueltigAb.isBefore(gueltigAb.with(TemporalAdjusters.lastDayOfMonth()))) {
-							result.addAll(createZuzugZeitabschnitte(zeitabschnitt, gueltigAb));
-						} else {
+						LocalDate stichtagEndeAnspruch = zeitabschnitt.getGueltigkeit().getGueltigAb().with(TemporalAdjusters.lastDayOfMonth());
+						lastZeitAbschnitt.getGueltigkeit().setGueltigBis(stichtagEndeAnspruch);
+						if (zeitabschnitt.getGueltigkeit().getGueltigBis().isAfter(stichtagEndeAnspruch.plusDays(1))) {
+							zeitabschnitt.getGueltigkeit().setGueltigAb(stichtagEndeAnspruch.plusDays(1));
 							result.add(zeitabschnitt);
 						}
+					} else {
+						// Es ist ein Zuzug
+						result.add(zeitabschnitt);
 					}
 				} else {
 					result.add(zeitabschnitt);
@@ -119,85 +115,20 @@ public class WohnsitzAbschnittRule extends AbstractAbschnittRule {
 		return result;
 	}
 
-	private List<VerfuegungZeitabschnitt> splitFirstZeitabschnitt(VerfuegungZeitabschnitt zeitabschnitt) {
-		// Wenn der Zeitabschnitt ab dem ersten Tag des Monats gültig ist, müssen wir nicht spliten
-		if (zeitabschnitt.getGueltigkeit().getGueltigAb().getDayOfMonth() == 1) {
-			return List.of(zeitabschnitt);
-		}
-
-		// Sonst erster Monat, als potentielle Dublette flagen (z.B. 15.10-31.12 splitten in...)
-		List<VerfuegungZeitabschnitt> zeitabschnittList = new ArrayList<>();
-
-		//... 15.10-31.10 (potentielle Doublette) und ...
-		VerfuegungZeitabschnitt ersterMonat = new VerfuegungZeitabschnitt(zeitabschnitt);
-		ersterMonat.getGueltigkeit().setGueltigBis(ersterMonat.getGueltigkeit().getGueltigAb().with(TemporalAdjusters.lastDayOfMonth()));
-		ersterMonat.setPotentielleDoppelBetreuung(true);
-		zeitabschnittList.add(ersterMonat);
-
-		if (ersterMonat.getGueltigkeit().getGueltigAb().getMonth() != zeitabschnitt.getGueltigkeit().getGueltigBis().getMonth()) {
-			//...01.11 - 31.12
-			zeitabschnitt.getGueltigkeit()
-				.setGueltigAb(ersterMonat.getGueltigkeit().getGueltigAb().with(TemporalAdjusters.firstDayOfNextMonth()));
-			zeitabschnittList.add(zeitabschnitt);
-		}
-
-		return zeitabschnittList;
-	}
-
-	private List<VerfuegungZeitabschnitt> createWegzugZeitabschnitte(
-			@Nonnull VerfuegungZeitabschnitt zeitabschnitt,
-			@Nonnull LocalDate stichTagUmzug) {
-		List<VerfuegungZeitabschnitt> wegzugListe = new LinkedList<>();
-		LocalDate stichtagEndeAnspruch = stichTagUmzug.with(TemporalAdjusters.lastDayOfMonth());
-		VerfuegungZeitabschnitt abschnittUmzugsTagPlus1BisEndeMonat = new VerfuegungZeitabschnitt(zeitabschnitt);
-		abschnittUmzugsTagPlus1BisEndeMonat.setPotentielleDoppelBetreuung(true);
-		abschnittUmzugsTagPlus1BisEndeMonat.getGueltigkeit().setGueltigAb(zeitabschnitt.getGueltigkeit().getGueltigAb());
-		abschnittUmzugsTagPlus1BisEndeMonat.getGueltigkeit().setGueltigBis(stichtagEndeAnspruch);
-		wegzugListe.add(abschnittUmzugsTagPlus1BisEndeMonat);
-		if (zeitabschnitt.getGueltigkeit().getGueltigBis().isAfter(stichtagEndeAnspruch.plusDays(1))) {
-			zeitabschnitt.getGueltigkeit().setGueltigAb(stichtagEndeAnspruch.plusDays(1));
-			wegzugListe.add(zeitabschnitt);
-		}
-		return wegzugListe;
-	}
-
-	private List<VerfuegungZeitabschnitt> createZuzugZeitabschnitte(
-		@Nonnull  VerfuegungZeitabschnitt zeitabschnitt,
-		@Nonnull LocalDate gueltigAb) {
-		// Hier brauchts fuer dne Task KIBON-1843 2 Zeitabschnitte falls der Zuzug != Ende des
-		// Monats ist.
-		List<VerfuegungZeitabschnitt> zuzugListe = new LinkedList<>();
-		VerfuegungZeitabschnitt abschnittUmzugBisEndeMonat = new VerfuegungZeitabschnitt(zeitabschnitt);
-		abschnittUmzugBisEndeMonat.setPotentielleDoppelBetreuung(true);
-		abschnittUmzugBisEndeMonat.getGueltigkeit().setGueltigBis(gueltigAb.with(TemporalAdjusters.lastDayOfMonth()));
-		zuzugListe.add(abschnittUmzugBisEndeMonat);
-		VerfuegungZeitabschnitt abschnittNachUmzug = new VerfuegungZeitabschnitt(zeitabschnitt);
-		LocalDate firstDayOfNextMonth = gueltigAb.with(TemporalAdjusters.firstDayOfNextMonth());
-		abschnittNachUmzug.getGueltigkeit().setGueltigAb(firstDayOfNextMonth);
-		abschnittNachUmzug.setPotentielleDoppelBetreuung(false);
-		zuzugListe.add(abschnittNachUmzug);
-		return zuzugListe;
-	}
-
 	/**
 	 * geht durch die Adressen des Gesuchstellers und gibt Abschnitte zurueck
 	 */
 	@Nonnull
-	private List<VerfuegungZeitabschnitt> getAdresseAbschnittForGesuchsteller(
-		@Nonnull Gesuch gesuch,
-		@Nonnull GesuchstellerContainer gesuchsteller,
-		boolean gs1) {
+	private List<VerfuegungZeitabschnitt> getAdresseAbschnittForGesuchsteller(@Nonnull Gesuch gesuch, @Nonnull GesuchstellerContainer gesuchsteller, boolean gs1) {
 		List<VerfuegungZeitabschnitt> adressenZeitabschnitte = new ArrayList<>();
 		List<GesuchstellerAdresseContainer> gesuchstellerAdressen = gesuchsteller.getAdressen();
 		gesuchstellerAdressen.stream()
-			.filter(gesuchstellerAdresse -> !gesuchstellerAdresse.extractIsKorrespondenzAdresse()
-				&& !gesuchstellerAdresse.extractIsRechnungsAdresse())
+			.filter(gesuchstellerAdresse -> !gesuchstellerAdresse.extractIsKorrespondenzAdresse() && !gesuchstellerAdresse.extractIsRechnungsAdresse())
 			.forEach(gesuchstellerAdresse -> {
 				final DateRange gsAdresseGueltigkeit = gesuchstellerAdresse.extractGueltigkeit();
 				requireNonNull(gsAdresseGueltigkeit);
 				if (gs1) {
-					VerfuegungZeitabschnitt zeitabschnitt =
-						createZeitabschnittWithinValidityPeriodOfRule(gsAdresseGueltigkeit);
+					VerfuegungZeitabschnitt zeitabschnitt = createZeitabschnittWithinValidityPeriodOfRule(gsAdresseGueltigkeit);
 					zeitabschnitt.setWohnsitzNichtInGemeindeGS1ForAsivAndGemeinde(gesuchstellerAdresse.extractIsNichtInGemeinde());
 					adressenZeitabschnitte.add(zeitabschnitt);
 				} else { // gs2
@@ -241,9 +172,7 @@ public class WohnsitzAbschnittRule extends AbstractAbschnittRule {
 		return adressenZeitabschnitte;
 	}
 
-	private void createZeitabschnittForGS2(
-		List<VerfuegungZeitabschnitt> adressenZeitabschnitte,
-		DateRange gueltigkeit) {
+	private void createZeitabschnittForGS2(List<VerfuegungZeitabschnitt> adressenZeitabschnitte, DateRange gueltigkeit) {
 		VerfuegungZeitabschnitt zeitabschnitt = createZeitabschnittWithinValidityPeriodOfRule(gueltigkeit);
 		adressenZeitabschnitte.add(zeitabschnitt);
 	}

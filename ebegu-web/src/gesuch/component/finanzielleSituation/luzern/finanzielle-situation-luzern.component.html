@@ -70,13 +70,13 @@
 
                 <dv-finanzielle-situation-require-x [hideVerguenstigungGewunscht]="true"
                                                     [hideSozialhilfeQuestion]="!isGS1()"
-                                                    [(sozialhilfeBezueger)]="model.sozialhilfeBezueger"
+                                                    [(sozialhilfeBezueger)]="model.familienSituation.sozialhilfeBezueger"
                                                     (sozialhilfeBezuegerChange)="sozialhilfeBezuegerChange()">
                 </dv-finanzielle-situation-require-x>
 
                 <dv-warning *ngIf="isSozialhilfeBezueger()">SOZIALHILFEBEZUEGER_WARNING</dv-warning>
 
-                <div *ngIf="model.sozialhilfeBezueger">
+                <div *ngIf="model.familienSituation.sozialhilfeBezueger">
                     <div class="row">
                         <div class="col-sm-12 dv-input-container-medium">
                             <div class="form-group">
@@ -85,7 +85,7 @@
                                 <input id="zustaendige_amtsstelle_id" type="text"
                                        name="zustaendigeAmtsstelle"
                                        #zustaendigeAmtsstelle="ngModel"
-                                       [(ngModel)]="model.zustaendigeAmtsstelle"
+                                       [(ngModel)]="model.familienSituation.zustaendigeAmtsstelle"
                                        class="form-control"
                                        [maxlength]="255"
                                        [disabled]="isGesuchReadonly()"
@@ -105,7 +105,7 @@
                                 <input id="nameBetreuer_id" type="text"
                                        name="nameBetreuer"
                                        #nameBetreuer="ngModel"
-                                       [(ngModel)]="model.nameBetreuer"
+                                       [(ngModel)]="model.familienSituation.nameBetreuer"
                                        class="form-control"
                                        [maxlength]="255"
                                        [disabled]="isGesuchReadonly()"

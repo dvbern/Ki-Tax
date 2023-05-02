@@ -291,6 +291,19 @@
                     <span class="col-xs-2 fa  ng-class:vm.getIcon('EINKOMMENSVERSCHLECHTERUNG_SOLOTHURN')"
                           aria-hidden="true"></span>
                 </li>
+                <li ng-if="vm.isStepVisible('EINKOMMENSVERSCHLECHTERUNG_APPENZELL')"
+                    class="row" ng-class="{'active-element': vm.isElementActive('EINKOMMENSVERSCHLECHTERUNG_APPENZELL')}"
+                    ui-sref-active="active">
+                    <button type="button" class="col-xs-10 dv-btn btn-link"
+                            ui-sref="gesuch.einkommensverschlechterungInfo({gesuchId: vm.getGesuchId()})"
+                            ng-disabled="vm.isWizardStepDisabled('EINKOMMENSVERSCHLECHTERUNG_APPENZELL')"
+                            aria-hidden="{{vm.isWizardStepDisabled('EINKOMMENSVERSCHLECHTERUNG_APPENZELL')}}"
+                            ng-click="vm.closeSidenav('sidenav')">
+                        <span data-translate="MENU_EINKOMMENSVERSCHLECHTERUNG"></span>
+                    </button>
+                    <span class="col-xs-2 fa  ng-class:vm.getIcon('EINKOMMENSVERSCHLECHTERUNG_APPENZELL')"
+                          aria-hidden="true"></span>
+                </li>
                 <li ng-if="vm.isStepVisible('DOKUMENTE')"
                     class="row" ng-class="{'active-element': vm.isElementActive('DOKUMENTE')}" ui-sref-active="active">
                     <button type="button" class="col-xs-10 dv-btn btn-link"

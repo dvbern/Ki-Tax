@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022 DV Bern AG, Switzerland
+ * Copyright (C) 2023 DV Bern AG, Switzerland
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -8,22 +8,23 @@
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {NgForm} from '@angular/forms';
-import {SharedModule} from '../../../../../app/shared/shared.module';
-import {SHARED_MODULE_OVERRIDES} from '../../../../../hybridTools/mockUpgradedDirective';
-import {TSFinanzielleSituationResultateDTO} from '../../../../../models/dto/TSFinanzielleSituationResultateDTO';
-import {BerechnungsManager} from '../../../../service/berechnungsManager';
+import {of} from 'rxjs';
+import {SharedModule} from '../../../../app/shared/shared.module';
+import {SHARED_MODULE_OVERRIDES} from '../../../../hybridTools/mockUpgradedDirective';
+import {TSFinanzielleSituationResultateDTO} from '../../../../models/dto/TSFinanzielleSituationResultateDTO';
+import {BerechnungsManager} from '../../../service/berechnungsManager';
 import {MassgebendesEinkommenComponent} from './massgebendes-einkommen.component';
 
-describe('ResultatComponent', () => {
+describe('MassgebendesEinkommenComponent', () => {
     let component: MassgebendesEinkommenComponent;
     let fixture: ComponentFixture<MassgebendesEinkommenComponent>;
 
@@ -51,6 +52,7 @@ describe('ResultatComponent', () => {
         berechnungsManagerSpy.finanzielleSituationResultate = new TSFinanzielleSituationResultateDTO();
         fixture = TestBed.createComponent(MassgebendesEinkommenComponent);
         component = fixture.componentInstance;
+        component.massgebendesEinkommen$ = of(new TSFinanzielleSituationResultateDTO());
         fixture.detectChanges();
     });
 

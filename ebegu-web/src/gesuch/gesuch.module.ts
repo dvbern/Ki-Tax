@@ -73,10 +73,12 @@ import {FallToolbarComponent} from './component/fallToolbar/fallToolbar.componen
 import {
     FamiliensituationAppenzellViewXComponent
 } from './component/familiensituation/familiensituation-appenzell-view-x/familiensituation-appenzell-view-x.component';
-import {FamiliensituationViewXComponent} from './component/familiensituation/familiensituation-view-x/familiensituation-view-x.component';
 import {
-    FinSitZusatzfelderAppenzellComponent
-} from './component/finanzielleSituation/appenzell/fin-sit-zusatzfelder-appenzell/fin-sit-zusatzfelder-appenzell.component';
+    FamiliensituationViewXComponent
+} from './component/familiensituation/familiensituation-view-x/familiensituation-view-x.component';
+import {
+    FinSitFelderAppenzellComponent
+} from './component/abstractFinanzielleSituation/appenzell/fin-sit-zusatzfelder-appenzell/fin-sit-felder-appenzell.component';
 import {
     FinanzielleSituationAppenzellViewComponent
 } from './component/finanzielleSituation/appenzell/finanzielle-situation-appenzell-view/finanzielle-situation-appenzell-view.component';
@@ -128,7 +130,14 @@ import {StammdatenViewComponentConfig} from './component/stammdatenView/stammdat
 import {UmzugViewComponentConfig} from './component/umzugView/umzugView';
 import {VerfuegenListViewComponentConfig} from './component/verfuegenListView/verfuegenListView';
 import {VerfuegenViewComponentConfig} from './component/verfuegenView/verfuegenView';
+import {ZahlungsstatusIconComponent} from './component/zahlungsstatus-icon/zahlungsstatus-icon.component';
 import {gesuchRun} from './gesuch.route';
+import {
+    EinkommensverschlechterungAppenzellResultateViewComponent
+} from './component/einkommensverschlechterung/appenzell/einkommensverschlechterung-appenzell-resultate-view/einkommensverschlechterung-appenzell-resultate-view.component';
+import {
+    EinkommensverschlechterungAppenzellViewComponent
+} from './component/einkommensverschlechterung/appenzell/einkommensverschlechterung-appenzell-view/einkommensverschlechterung-appenzell-view.component';
 
 export const GESUCH_JS_MODULE =
     angular.module('ebeguWeb.gesuch', [CORE_JS_MODULE.name])
@@ -150,7 +159,7 @@ export const GESUCH_JS_MODULE =
             downgradeComponent({component: AngabenGesuchsteller2Component}))
         .component('finanzielleSituationSelbstdeklarationLuzern',
             downgradeComponent({component: SelbstdeklarationComponent}))
-        .component('finanzielleVerhaeltnisseAppenzell', downgradeComponent({component: FinSitZusatzfelderAppenzellComponent}))
+        .component('finanzielleVerhaeltnisseAppenzell', downgradeComponent({component: FinSitFelderAppenzellComponent}))
         .component('finanzielleSituationVeranlagungLuzern', downgradeComponent({component: VeranlagungComponent}))
         .component('finanzielleSituationResultatLuzern', downgradeComponent({component: ResultatComponent}))
         .component('finanzielleSituationAppenzell', downgradeComponent({component: FinanzielleSituationAppenzellViewComponent}))
@@ -162,6 +171,10 @@ export const GESUCH_JS_MODULE =
             downgradeComponent({component: EinkommensverschlechterungLuzernResultateViewComponent}))
         .component('einkommensverschlechterungSolothurnResultateView',
             downgradeComponent({component: EinkommensverschlechterungSolothurnResultateViewComponent}))
+        .component('einkommensverschlechterungAppenzellResultateView',
+            downgradeComponent({component: EinkommensverschlechterungAppenzellResultateViewComponent}))
+        .component('einkommensverschlechterungAppenzellViewComponent',
+            downgradeComponent({component: EinkommensverschlechterungAppenzellViewComponent}))
         .component('dvFallCreationViewX',
             downgradeComponent({component: FallCreationViewXComponent}))
         .component('kindView', new KindViewComponentConfig())
@@ -215,4 +228,5 @@ export const GESUCH_JS_MODULE =
                 inputs: ['status', 'finSitRequestState','finSitRequestRunning'],
                 outputs: ['tryAgainEvent']
             }))
+        .directive('dvZahlungsstatusIcon', downgradeComponent({component: ZahlungsstatusIconComponent}))
 ;

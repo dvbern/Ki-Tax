@@ -176,11 +176,11 @@ public abstract class AbstractFinanzielleSituationRechner {
 		@Nonnull FinanzDatenDTO finanzDatenDTO,
 		BigDecimal massgebendesEinkommenEKV1,
 		BigDecimal massgebendesEinkommenBasisjahr,
-		BigDecimal minimumEKV
+		BigDecimal minimumProzentFuerEKV
 	) {
 		// In der EKV 1 vergleichen wir immer mit dem Basisjahr
 		finanzDatenDTO.setEkv1Erfasst(true);
-		boolean accepted = acceptEKV(massgebendesEinkommenBasisjahr, massgebendesEinkommenEKV1, minimumEKV);
+		boolean accepted = acceptEKV(massgebendesEinkommenBasisjahr, massgebendesEinkommenEKV1, minimumProzentFuerEKV);
 		finanzDatenDTO.setEkv1Accepted(accepted);
 		if (accepted) {
 			finanzDatenDTO.setMassgebendesEinkBjP1VorAbzFamGr(massgebendesEinkommenEKV1);
@@ -193,14 +193,14 @@ public abstract class AbstractFinanzielleSituationRechner {
 		@Nonnull FinanzDatenDTO finanzDatenDTO,
 		BigDecimal massgebendesEinkommenEKV2,
 		BigDecimal massgebendesEinkommenBasisjahr,
-		BigDecimal minimumEKV
+		BigDecimal minimumProzentFuerEKV
 	) {
 		// In der EKV 2 vergleichen wir immer mit dem Basisjahr. Egal ob eine EKV 1 vorhanden ist
 		finanzDatenDTO.setEkv2Erfasst(true);
 		boolean accepted = acceptEKV(
 			massgebendesEinkommenBasisjahr,
 			massgebendesEinkommenEKV2,
-			minimumEKV);
+			minimumProzentFuerEKV);
 		finanzDatenDTO.setEkv2Accepted(accepted);
 		if (accepted) {
 			finanzDatenDTO.setMassgebendesEinkBjP2VorAbzFamGr(massgebendesEinkommenEKV2);
@@ -216,7 +216,7 @@ public abstract class AbstractFinanzielleSituationRechner {
 	public boolean acceptEKV(
 		BigDecimal massgebendesEinkommenBasisjahr,
 		BigDecimal massgebendesEinkommenJahr,
-		BigDecimal minimumEKV) {
+		BigDecimal minimumProzentFuerEKV) {
 
 		boolean result = massgebendesEinkommenBasisjahr.compareTo(BigDecimal.ZERO) > 0;
 		if (result) {
@@ -224,7 +224,7 @@ public abstract class AbstractFinanzielleSituationRechner {
 			// -19.999 => -19 (nicht akzeptiert)
 			// -20.000 => -20 (akzeptiert)
 			// -20.001 => -20 (akzeptiert)
-			return differenzGerundet.compareTo(minimumEKV.negate()) <= 0;
+			return differenzGerundet.compareTo(minimumProzentFuerEKV.negate()) <= 0;
 		}
 		return false;
 	}

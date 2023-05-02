@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2021 DV Bern AG, Switzerland
+ * Copyright (C) 2023 DV Bern AG, Switzerland
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -8,16 +8,16 @@
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {NgForm} from '@angular/forms';
 import {MatRadioChange} from '@angular/material/radio';
 import {IPromise} from 'angular';
+import {Observable} from 'rxjs';
 import {TSFinanzielleSituationResultateDTO} from '../../../../models/dto/TSFinanzielleSituationResultateDTO';
 import {TSWizardStepName} from '../../../../models/enums/TSWizardStepName';
 import {TSWizardStepStatus} from '../../../../models/enums/TSWizardStepStatus';
@@ -61,7 +61,7 @@ export abstract class AbstractFinSitsolothurnView extends AbstractGesuchViewX<TS
 
     public showSelbstdeklaration(): boolean {
         return EbeguUtil.isNotNullAndTrue(this.getModel().finanzielleSituationJA.quellenbesteuert)
-            || EbeguUtil.isNotNullAndFalse(this.model.gemeinsameSteuererklaerung)
+            || EbeguUtil.isNotNullAndFalse(this.model.familienSituation.gemeinsameSteuererklaerung)
             || EbeguUtil.isNotNullAndFalse(this.getModel().finanzielleSituationJA.alleinigeStekVorjahr)
             || EbeguUtil.isNotNullAndFalse(this.getModel().finanzielleSituationJA.veranlagt);
     }
@@ -89,7 +89,7 @@ export abstract class AbstractFinSitsolothurnView extends AbstractGesuchViewX<TS
     }
 
     public alleinigeStekVorjahrChange(newAlleinigeStekVorjahr: MatRadioChange): void {
-        if (newAlleinigeStekVorjahr.value === false && EbeguUtil.isNullOrFalse(this.model.gemeinsameSteuererklaerung)) {
+        if (newAlleinigeStekVorjahr.value === false && EbeguUtil.isNullOrFalse(this.model.familienSituation.gemeinsameSteuererklaerung)) {
             this.getModel().finanzielleSituationJA.veranlagt = undefined;
         }
     }
@@ -97,7 +97,7 @@ export abstract class AbstractFinSitsolothurnView extends AbstractGesuchViewX<TS
     public getYearForDeklaration(): number | string {
         const currentYear = this.getBasisjahrPlus1();
         const previousYear = this.getBasisjahr();
-        if (this.model.gemeinsameSteuererklaerung) {
+        if (this.model.familienSituation.gemeinsameSteuererklaerung) {
             return previousYear;
         }
         return currentYear;
@@ -188,7 +188,7 @@ export abstract class AbstractFinSitsolothurnView extends AbstractGesuchViewX<TS
 
     private isStartOk(): boolean {
         const finanzielleSituationJA = this.getModel().finanzielleSituationJA;
-        if (this.model.sozialhilfeBezueger) {
+        if (this.model.familienSituation.sozialhilfeBezueger) {
             return true;
         }
         const isStartOk = finanzielleSituationJA.steuerveranlagungErhalten ?
@@ -211,7 +211,7 @@ export abstract class AbstractFinSitsolothurnView extends AbstractGesuchViewX<TS
     }
 
     public isSteuerveranlagungGemeinsam(): boolean {
-        return this.model.gemeinsameSteuererklaerung;
+        return this.model.familienSituation.gemeinsameSteuererklaerung;
     }
 
     protected resetVeranlagungSolothurn(): void {
@@ -263,5 +263,9 @@ export abstract class AbstractFinSitsolothurnView extends AbstractGesuchViewX<TS
             return EbeguUtil.isNotNullOrUndefined(this.getGesuch().gesuchsteller1.finanzielleSituationContainer.finanzielleSituationJA.momentanSelbststaendig);
         }
         return EbeguUtil.isNotNullOrUndefined(this.getModel().finanzielleSituationJA.momentanSelbststaendig);
+    }
+
+    public getMassgebendesEinkommen$(): Observable<TSFinanzielleSituationResultateDTO> {
+        return this.finSitSoService.massgebendesEinkommenStore();
     }
 }

@@ -32,9 +32,9 @@ export class FinanzielleSituationStartSolothurnComponent extends AbstractFinSits
 
     public ngOnInit(): void {
         // verguenstigungGewunscht ist alway true for Solothurn, expect when sozialhilfeempfaenger is true
-        this.model.verguenstigungGewuenscht = !EbeguUtil.isNotNullAndTrue(this.model.sozialhilfeBezueger);
+        this.model.familienSituation.verguenstigungGewuenscht = !EbeguUtil.isNotNullAndTrue(this.model.familienSituation.sozialhilfeBezueger);
 
-        if (EbeguUtil.isNotNullAndFalse(this.model.sozialhilfeBezueger)) {
+        if (EbeguUtil.isNotNullAndFalse(this.model.familienSituation.sozialhilfeBezueger)) {
             this.finanzielleSituationRequired = true;
         }
     }
@@ -85,7 +85,7 @@ export class FinanzielleSituationStartSolothurnComponent extends AbstractFinSits
     }
 
     public onSozialhilfeBezuegerChange(isSozialhilfebezueger: boolean): void {
-        this.model.verguenstigungGewuenscht = !isSozialhilfebezueger;
+        this.model.familienSituation.verguenstigungGewuenscht = !isSozialhilfebezueger;
         this.finanzielleSituationRequired = !isSozialhilfebezueger;
 
         if (EbeguUtil.isNotNullAndFalse(isSozialhilfebezueger)) {

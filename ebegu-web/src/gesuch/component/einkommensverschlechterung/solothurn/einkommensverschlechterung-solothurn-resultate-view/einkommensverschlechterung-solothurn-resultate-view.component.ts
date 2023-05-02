@@ -17,12 +17,14 @@
 
 import {Component, ChangeDetectionStrategy, ChangeDetectorRef} from '@angular/core';
 import {Transition} from '@uirouter/core';
+import {IPromise} from 'angular';
 import {TSFinanzielleSituationResultateDTO} from '../../../../../models/dto/TSFinanzielleSituationResultateDTO';
 import {TSWizardStepName} from '../../../../../models/enums/TSWizardStepName';
 import {BerechnungsManager} from '../../../../service/berechnungsManager';
 import {GesuchModelManager} from '../../../../service/gesuchModelManager';
 import {WizardStepManager} from '../../../../service/wizardStepManager';
 import {AbstractEinkommensverschlechterungResultat} from '../../AbstractEinkommensverschlechterungResultat';
+import {EinstellungRS} from '../../../../../admin/service/einstellungRS.rest';
 
 @Component({
     selector: 'dv-einkommensverschlechterung-solothurn-resultate-view',
@@ -41,6 +43,7 @@ export class EinkommensverschlechterungSolothurnResultateViewComponent
         protected wizardStepManager: WizardStepManager,
         protected berechnungsManager: BerechnungsManager,
         protected ref: ChangeDetectorRef,
+        protected readonly einstellungRS: EinstellungRS,
         protected readonly $transition$: Transition
     ) {
         super(gesuchModelManager,
@@ -48,6 +51,13 @@ export class EinkommensverschlechterungSolothurnResultateViewComponent
             berechnungsManager,
             ref,
             TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_SOLOTHURN,
+            einstellungRS,
             $transition$);
+    }
+
+    public save(onResult: (arg: any) => any): IPromise<any> {
+        //hier müssen wir nur den WizardStep Updaten. Die EKV ist schon gespeichert.
+        this.updateStatus(true);
+        return onResult(true);
     }
 }

@@ -62,6 +62,7 @@ export class LocalLoginComponent {
     public gesuchstellerHeinrichMueller: TSBenutzer;
     public gesuchstellerMichaelBerger: TSBenutzer;
     public gesuchstellerHansZimmermann: TSBenutzer;
+    public gesuchstellerJeanChambre: TSBenutzer;
 
     // Gemeindeabhängige User
     public administratorBGParis: TSBenutzer;
@@ -327,6 +328,13 @@ export class LocalLoginComponent {
             'ziha',
             'password6',
             `hans.zimmermann.${this.mandantHostname}@mailbucket.dvbern.ch`,
+            this.mandant,
+            TSRole.GESUCHSTELLER);
+        this.gesuchstellerJeanChambre = new TSBenutzer('Jean',
+            'Chambre',
+            'chje',
+            'password6',
+            `jean.chambre.${this.mandantHostname}@mailbucket.dvbern.ch`,
             this.mandant,
             TSRole.GESUCHSTELLER);
         this.administratorSozialdienst = new TSBenutzer('Patrick',

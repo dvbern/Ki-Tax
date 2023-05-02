@@ -53,6 +53,7 @@ import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Institution;
 import ch.dvbern.ebegu.entities.Zahlung;
 import ch.dvbern.ebegu.entities.Zahlungsauftrag;
+import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.ZahlungslaufTyp;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
@@ -338,6 +339,7 @@ public class ZahlungResource {
 		LocalDateTime datumGeneriert;
 		if (stringDatumGeneriert != null) {
 			datumGeneriert = DateUtil.parseStringToDateOrReturnNow(stringDatumGeneriert).atStartOfDay();
+			validateDatumGeneriert(datumGeneriert);
 		} else {
 			datumGeneriert = LocalDateTime.now();
 		}
@@ -355,6 +357,14 @@ public class ZahlungResource {
 		zahlungService.zahlungenKontrollieren(zahlungslaufTyp, gemeindeId, auszahlungInZukunft);
 
 		return converter.zahlungsauftragToJAX(zahlungsauftrag, false);
+	}
+
+	private void validateDatumGeneriert(LocalDateTime datumGeneriert) {
+		if (LocalDate.now().atStartOfDay().isAfter(datumGeneriert)) {
+			throw new EbeguRuntimeException(
+					"validateDatumGeneriert",
+					ErrorCodeEnum.ERROR_GENERIERT_DATUM_MUSS_IN_ZUKUNFT_LIEGEN);
+		}
 	}
 
 	@ApiOperation(value = "Aktualisiert einen Zahlungsauftrag", response = JaxZahlungsauftrag.class)

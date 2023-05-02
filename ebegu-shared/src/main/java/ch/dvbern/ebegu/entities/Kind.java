@@ -36,6 +36,7 @@ import javax.validation.constraints.Pattern;
 
 import ch.dvbern.ebegu.enums.AntragCopyType;
 import ch.dvbern.ebegu.enums.EinschulungTyp;
+import ch.dvbern.ebegu.enums.Geschlecht;
 import ch.dvbern.ebegu.enums.Kinderabzug;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.EbeguUtil;
@@ -55,6 +56,11 @@ import org.hibernate.envers.Audited;
 public class Kind extends AbstractPersonEntity {
 
 	private static final long serialVersionUID = -9032257320578372570L;
+
+	@Enumerated(EnumType.STRING)
+	@Column(nullable = true)
+	@Nullable
+	private Geschlecht geschlecht;
 
 	@Column(nullable = true)
 	@Nullable
@@ -146,6 +152,17 @@ public class Kind extends AbstractPersonEntity {
 	private Boolean inPruefung = false;
 
 	public Kind() {
+	}
+
+	@Override
+	@Nullable
+	public Geschlecht getGeschlecht() {
+		return geschlecht;
+	}
+
+	@Override
+	public void setGeschlecht(@Nullable Geschlecht geschlecht) {
+		this.geschlecht = geschlecht;
 	}
 
 	@Nullable

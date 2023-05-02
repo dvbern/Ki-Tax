@@ -49,10 +49,12 @@ import {FallToolbarModule} from './component/fallToolbar/fall-toolbar.module';
 import {
     FamiliensituationAppenzellViewXComponent
 } from './component/familiensituation/familiensituation-appenzell-view-x/familiensituation-appenzell-view-x.component';
-import {FamiliensituationViewXComponent} from './component/familiensituation/familiensituation-view-x/familiensituation-view-x.component';
 import {
-    FinSitZusatzfelderAppenzellComponent
-} from './component/finanzielleSituation/appenzell/fin-sit-zusatzfelder-appenzell/fin-sit-zusatzfelder-appenzell.component';
+    FamiliensituationViewXComponent
+} from './component/familiensituation/familiensituation-view-x/familiensituation-view-x.component';
+import {
+    FinSitFelderAppenzellComponent
+} from './component/abstractFinanzielleSituation/appenzell/fin-sit-zusatzfelder-appenzell/fin-sit-felder-appenzell.component';
 import {
     FinanzielleSituationAppenzellViewComponent
 } from './component/finanzielleSituation/appenzell/finanzielle-situation-appenzell-view/finanzielle-situation-appenzell-view.component';
@@ -89,7 +91,7 @@ import {
 } from './component/finanzielleSituation/solothurn/finanzielle-situation-start-solothurn/finanzielle-situation-start-solothurn.component';
 import {
     MassgebendesEinkommenComponent
-} from './component/finanzielleSituation/solothurn/resultat/massgebendes-einkommen.component';
+} from './component/abstractFinanzielleSituation/resultat/massgebendes-einkommen.component';
 import {
     SteuerveranlagungErhaltenComponent
 } from './component/finanzielleSituation/solothurn/steuerveranlagung-erhalten/steuerveranlagung-erhalten.component';
@@ -107,6 +109,13 @@ import {
 } from './component/internePendenzenView/interne-pendenzen-table/interne-pendenzen-table.component';
 import {InternePendenzenComponent} from './component/internePendenzenView/interne-pendenzen.component';
 import {FkjvKinderabzugComponent} from './component/kindView/fkjv-kinderabzug/fkjv-kinderabzug.component';
+import {ZahlungsstatusIconComponent} from './component/zahlungsstatus-icon/zahlungsstatus-icon.component';
+import {
+    EinkommensverschlechterungAppenzellViewComponent
+} from './component/einkommensverschlechterung/appenzell/einkommensverschlechterung-appenzell-view/einkommensverschlechterung-appenzell-view.component';
+import {
+    EinkommensverschlechterungAppenzellResultateViewComponent
+} from './component/einkommensverschlechterung/appenzell/einkommensverschlechterung-appenzell-resultate-view/einkommensverschlechterung-appenzell-resultate-view.component';
 
 @NgModule({
     imports: [
@@ -130,11 +139,13 @@ import {FkjvKinderabzugComponent} from './component/kindView/fkjv-kinderabzug/fk
         EinkommensverschlechterungLuzernResultateViewComponent,
         EinkommensverschlechterungSolothurnResultateViewComponent,
         EinkommensverschlechterungResultateViewComponent,
+        EinkommensverschlechterungAppenzellViewComponent,
+        EinkommensverschlechterungAppenzellResultateViewComponent,
         DvFinanzielleSituationRequireXComponent,
         AngabenGesuchsteller2Component,
         SelbstdeklarationComponent,
         VeranlagungComponent,
-        FinSitZusatzfelderAppenzellComponent,
+        FinSitFelderAppenzellComponent,
         FinanzielleSituationAppenzellViewComponent,
         InfomaFieldsComponent,
         VeranlagungComponent,
@@ -154,10 +165,12 @@ import {FkjvKinderabzugComponent} from './component/kindView/fkjv-kinderabzug/fk
         DialogInitZPVNummerVerknuepfenComponent,
         FallCreationViewXComponent,
         FamiliensituationViewXComponent,
-        FamiliensituationAppenzellViewXComponent
+        FamiliensituationAppenzellViewXComponent,
+        ZahlungsstatusIconComponent
     ],
     exports: [
-        DvSwitchComponent
+        DvSwitchComponent,
+        ZahlungsstatusIconComponent
     ]
 })
 

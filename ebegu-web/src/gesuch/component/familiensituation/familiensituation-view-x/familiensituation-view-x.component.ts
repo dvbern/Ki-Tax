@@ -1,16 +1,18 @@
 /*
- * Ki-Tax: System for the management of external childcare subsidies
- * Copyright (C) 2017 City of Bern Switzerland
+ * Copyright (C) 2023 DV Bern AG, Switzerland
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Affero General Public License for more details.
+ *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
 import {Component, OnInit} from '@angular/core';
@@ -145,10 +147,15 @@ export class FamiliensituationViewXComponent extends AbstractFamiliensitutaionVi
             return false;
         }
         const bis = this.gesuchModelManager.getGesuchsperiode().gueltigkeit.gueltigBis;
-        return EbeguUtil.isNotNullOrUndefined(this.getFamiliensituation()?.aenderungPer) &&
+        const partnerfrage: boolean = EbeguUtil.isNotNullOrUndefined(this.getFamiliensituation()?.aenderungPer) &&
                 !this.getFamiliensituationErstgesuch()?.isSameFamiliensituation(this.getFamiliensituation()) &&
                 this.getFamiliensituationErstgesuch().hasSecondGesuchsteller(bis) &&
                 this.getFamiliensituation().hasSecondGesuchsteller(bis);
+
+        if (!partnerfrage) {
+            this.getFamiliensituation().partnerIdentischMitVorgesuch = null;
+        }
+        return partnerfrage;
     }
 
     /**
@@ -334,31 +341,59 @@ export class FamiliensituationViewXComponent extends AbstractFamiliensitutaionVi
 
     public getNotPertnerIdentischMitVorgesuchWarning(): string {
         let warning: string = this.$translate.instant('FAMILIENSITUATION_FRAGE_PARTNERIDENTISCH_WARNING', {
-            partnerAlt: this.getNameGesuchsteller2(),
+            namegs2: this.getNameGesuchsteller2(),
             endeDatum: this.getDatumEndOfMonthAfterAenderungPer()
         });
 
         const partnerNotIdentischWarningBeiPaaren: string =
                 this.$translate.instant('FAMILIENSITUATION_FRAGE_PARTNERIDENTISCH_WARNING_PAAR',
-                        {bezeichnung: this.getBezeichnung()});
+                        { warnbez: this.getWarningPaarBezeichnung() });
         warning = warning.concat(' '.toString(), partnerNotIdentischWarningBeiPaaren.toString());
         return warning;
     }
 
-    private getBezeichnung(): string {
+    private getWarningPaarBezeichnung(): string {
         const familienstatus: TSFamilienstatus =
                 this.gesuchModelManager.getGesuch().extractFamiliensituation().familienstatus;
         if (familienstatus === TSFamilienstatus.VERHEIRATET) {
-            return this.$translate.instant('FAMILIENSITUATION_FRAGE_PARTNERIDENTISCH_EHEPARTNER');
+            return this.$translate.instant('FAMILIENSITUATION_FRAGE_PARTNERIDENTISCH_WARNBEZ_EHEPARTNER');
         }
-        if (familienstatus === TSFamilienstatus.ALLEINERZIEHEND) {
-            return this.$translate.instant('FAMILIENSITUATION_FRAGE_PARTNERIDENTISCH_ANDERER_ELTERNTEIL');
+        if ((familienstatus === TSFamilienstatus.ALLEINERZIEHEND) ||
+                (familienstatus === TSFamilienstatus.KONKUBINAT_KEIN_KIND && !this.konkubinatIsTwoYearsOld())){
+            return this.$translate.instant('FAMILIENSITUATION_FRAGE_PARTNERIDENTISCH_WARNBEZ_ANDERER_ELTERNTEIL');
         }
-        return this.$translate.instant('FAMILIENSITUATION_FRAGE_PARTNERIDENTISCH_KONKUBINTASPARTNER');
+        return this.$translate.instant('FAMILIENSITUATION_FRAGE_PARTNERIDENTISCH_WARNBEZ_KONKUBINTASPARTNER');
     }
 
     public isFKJVFamSit(): boolean {
         return this.getFamiliensituation().fkjvFamSit;
+    }
+
+    public getPartnerIdentischFrage(): string {
+        const familienstatus: TSFamilienstatus =
+                this.gesuchModelManager.getGesuch().extractFamiliensituation().familienstatus;
+        if (familienstatus === TSFamilienstatus.VERHEIRATET) {
+            return this.$translate.instant('FAMILIENSITUATION_FRAGE_PARTNERIDENTISCH_EHE' , {
+                namegs2: this.getNameGesuchsteller2()
+            } );
+        }
+        if ((familienstatus === TSFamilienstatus.ALLEINERZIEHEND) ||
+                (familienstatus === TSFamilienstatus.KONKUBINAT_KEIN_KIND && !this.konkubinatIsTwoYearsOld())){
+            return this.$translate.instant('FAMILIENSITUATION_FRAGE_PARTNERIDENTISCH_ANDERER_ELTERNTEIL', {
+                namegs2: this.getNameGesuchsteller2()
+            } );
+        }
+        return this.$translate.instant('FAMILIENSITUATION_FRAGE_PARTNERIDENTISCH_KONKUBINAT', {
+            namegs2: this.getNameGesuchsteller2()
+        } );
+    }
+
+    private konkubinatIsTwoYearsOld(): boolean {
+        const gesuch = this.gesuchModelManager.getGesuch();
+        return gesuch.extractFamiliensituation()
+                .konkubinatGetsLongerThanXYearsBeforeEndOfPeriode(
+                gesuch.gesuchsperiode.gueltigkeit.gueltigBis
+                );
     }
 
     public erstAntragWirdBeendet(): boolean {

@@ -1,5 +1,5 @@
 <!--
-  ~ Copyright (C) 2019 DV Bern AG, Switzerland
+  ~ Copyright (C) 2023 DV Bern AG, Switzerland
   ~
   ~ This program is free software: you can redistribute it and/or modify
   ~ it under the terms of the GNU Affero General Public License as
@@ -8,11 +8,11 @@
   ~
   ~ This program is distributed in the hope that it will be useful,
   ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
-  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
   ~ GNU Affero General Public License for more details.
   ~
   ~ You should have received a copy of the GNU Affero General Public License
-  ~ along with this program.  If not, see <https://www.gnu.org/licenses/>.
+  ~ along with this program. If not, see <https://www.gnu.org/licenses/>.
   -->
 
 <md-dialog ng-class="vm.css"
@@ -26,26 +26,28 @@
         <div class="md-dialog-content-body ng-scope"><p class="ng-binding" ng-bind="vm.questionText"></p></div>
 
         <md-radio-group ng-model="vm.selected">
-            <md-radio-button ng-value="1">{{vm.radioYes}}</md-radio-button>
+            <md-radio-button ng-value="1" ng-disabled="vm.zahlungDirektIgnorieren">{{vm.radioYes}}</md-radio-button>
             <div class="md-dialog-content-body">
-                <p class="step-hint" ng-class="vm.selected == 1 ? 'hint-transition' : ''">
-                    {{vm.radioYesHint}}<br><br>
-                    {{vm.radioYesCasesInfo}}<br><br>
-                    <span ng-repeat="case in vm.radioYesCases">&bull; {{case}}</span><br>
-                </p>
+                <div class="step-hint" ng-class="{'hint-transition': vm.selected == 1, 'disabled': vm.zahlungDirektIgnorieren}">
+                    <p>{{vm.radioYesCasesInfo}}<br><br></p>
+                    <ul>
+                        <li ng-repeat="case in vm.radioYesCases"><p>{{case}}</p></li>
+                    </ul>
+                </div>
             </div>
             <md-radio-button ng-value="2">{{vm.radioNo}}</md-radio-button>
             <div class="md-dialog-content-body">
-                <p class="step-hint" ng-class="vm.selected == 2 ? 'hint-transition' : ''">
-                    {{vm.radioNoHint}}<br><br>
-                    {{vm.radioNoCasesInfo}}<br><br>
-                    <span ng-repeat="case in vm.radioNoCases">&bull; {{case}}<br></span>
-                </p>
+                <div class="step-hint" ng-class="vm.selected == 2 ? 'hint-transition' : ''">
+                    <p>{{vm.radioNoCasesInfo}}<br><br></p>
+                    <ul>
+                        <li ng-repeat="case in vm.radioNoCases"><p>{{case}}</p></li>
+                    </ul>
+                </div>
 
             </div>
         </md-radio-group>
         <br><br>
-        <p>{{vm.institutionHint}}</p>
+        <p class="font-color-warning">{{vm.warningZahlungAusserhalbKibon}}</p>
     </md-dialog-content>
 
     <md-dialog-content class="md-dialog-content step" ng-if="vm.isStepDisplayed(1)">
@@ -53,7 +55,7 @@
 
         <div class="checkbox">
             <md-checkbox ng-model="vm.confirmed">
-                <span>{{vm.checkboxLabel}}</span>
+                <span ng-bind-html="vm.checkboxLabel"></span>
             </md-checkbox>
         </div>
 

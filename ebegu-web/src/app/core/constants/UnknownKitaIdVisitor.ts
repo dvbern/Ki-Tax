@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022 DV Bern AG, Switzerland
+ * Copyright (C) 2023 DV Bern AG, Switzerland
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -8,11 +8,11 @@
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
 import {KiBonMandant} from './MANDANTS';
@@ -22,10 +22,6 @@ export class UnknownKitaIdVisitor implements MandantVisitor<string> {
 
     public process(mandant: KiBonMandant): string {
         return mandant.accept(this);
-    }
-
-    public visitAppenzellAusserrhoden(): string {
-        return '00000000-0000-0000-0000-000000000006';
     }
 
     public visitBern(): string {
@@ -38,6 +34,10 @@ export class UnknownKitaIdVisitor implements MandantVisitor<string> {
 
     public visitSolothurn(): string {
         return '00000000-0000-0000-0000-000000000006';
+    }
+
+    public visitAppenzellAusserrhoden(): string {
+        return '00000000-0000-0000-0000-000000000009';
     }
 
 }

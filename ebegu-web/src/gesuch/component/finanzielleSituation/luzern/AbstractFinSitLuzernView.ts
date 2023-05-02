@@ -285,6 +285,6 @@ export abstract class AbstractFinSitLuzernView extends AbstractGesuchViewX<TSFin
     }
 
     public isSozialhilfeBezueger(): boolean {
-        return EbeguUtil.isNotNullAndTrue(this.model.sozialhilfeBezueger);
+        return EbeguUtil.isNotNullAndTrue(this.model.familienSituation.sozialhilfeBezueger);
     }
 }

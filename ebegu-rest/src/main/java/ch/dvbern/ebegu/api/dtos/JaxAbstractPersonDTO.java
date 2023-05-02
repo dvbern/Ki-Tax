@@ -34,7 +34,7 @@ import static ch.dvbern.ebegu.util.Constants.DB_DEFAULT_MAX_LENGTH;
  */
 @XmlTransient
 @XmlAccessorType(XmlAccessType.FIELD)
-public class JaxAbstractPersonDTO extends JaxAbstractDTO {
+public abstract class JaxAbstractPersonDTO extends JaxAbstractDTO {
 
 	private static final long serialVersionUID = -1897026905664190397L;
 
@@ -45,9 +45,6 @@ public class JaxAbstractPersonDTO extends JaxAbstractDTO {
 	@Size(min = 1, max = DB_DEFAULT_MAX_LENGTH)
 	@NotNull
 	private String nachname;
-
-	@NotNull
-	private Geschlecht geschlecht;
 
 	@NotNull
 	@XmlJavaTypeAdapter(LocalDateXMLConverter.class)
@@ -69,13 +66,9 @@ public class JaxAbstractPersonDTO extends JaxAbstractDTO {
 		this.nachname = nachname;
 	}
 
-	public Geschlecht getGeschlecht() {
-		return geschlecht;
-	}
+	public abstract Geschlecht getGeschlecht();
 
-	public void setGeschlecht(Geschlecht geschlecht) {
-		this.geschlecht = geschlecht;
-	}
+	public abstract void setGeschlecht(Geschlecht geschlecht);
 
 	public LocalDate getGeburtsdatum() {
 		return geburtsdatum;

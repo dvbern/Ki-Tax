@@ -17,7 +17,8 @@ import {IComponentOptions, IPromise, IQService, IScope, ITimeoutService} from 'a
 import {map} from 'rxjs/operators';
 import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
 import {CONSTANTS} from '../../../app/core/constants/CONSTANTS';
-import {MANDANTS} from '../../../app/core/constants/MANDANTS';
+import {KiBonMandant, MANDANTS} from '../../../app/core/constants/MANDANTS';
+import {TaetigkeitVisitor} from '../../../app/core/constants/TaetigkeitVisitor';
 import {ErrorService} from '../../../app/core/errors/service/ErrorService';
 import {LogFactory} from '../../../app/core/logging/LogFactory';
 import {MandantService} from '../../../app/shared/services/mandant.service';
@@ -30,6 +31,7 @@ import {TSErwerbspensumContainer} from '../../../models/TSErwerbspensumContainer
 import {TSGesuchstellerContainer} from '../../../models/TSGesuchstellerContainer';
 import {TSUnbezahlterUrlaub} from '../../../models/TSUnbezahlterUrlaub';
 import {DateUtil} from '../../../utils/DateUtil';
+import {EbeguUtil} from '../../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 import {IErwerbspensumStateParams} from '../../gesuch.route';
 import {BerechnungsManager} from '../../service/berechnungsManager';
@@ -70,6 +72,7 @@ export class ErwerbspensumViewController extends AbstractGesuchViewController<TS
     public hasUnbezahlterUrlaub: boolean;
     public hasUnbezahlterUrlaubGS: boolean;
     public isLuzern: boolean;
+    public mandant: KiBonMandant;
     private isUnbezahlterUrlaubAktiv: boolean;
 
     public constructor(
@@ -111,11 +114,20 @@ export class ErwerbspensumViewController extends AbstractGesuchViewController<TS
         this.mandantService.mandant$.pipe(map(mandant => mandant === MANDANTS.LUZERN)).subscribe(isLuzern => {
             this.isLuzern = isLuzern;
         }, err => LOG.error(err));
+        // TODO: Replace with angularX async template pipe during ablösung
+        this.mandantService.mandant$.subscribe(mandant => {
+            this.mandant = mandant;
+        }, error => LOG.error(error));
     }
 
+    // TODO: replace with observable pipe during abloesung
     public getTaetigkeitenList(): Array<TSTaetigkeit> {
-        return this.gesuchModelManager.gemeindeKonfiguration.konfigZusaetzlicherAnspruchFreiwilligenarbeitEnabled ?
-            getTSTaetigkeitWithFreiwilligenarbeit() : getTSTaetigkeit();
+        if (EbeguUtil.isNullOrUndefined(this.mandant)) {
+            return [];
+        }
+        return new TaetigkeitVisitor(
+            this.gesuchModelManager.gemeindeKonfiguration.konfigZusaetzlicherAnspruchFreiwilligenarbeitEnabled
+        ).process(this.mandant);
     }
 
     public save(): IPromise<any> {

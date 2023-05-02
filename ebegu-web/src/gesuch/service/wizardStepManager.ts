@@ -201,6 +201,7 @@ export class WizardStepManager {
         this.allowedSteps.push(TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG);
         this.allowedSteps.push(TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_LUZERN);
         this.allowedSteps.push(TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_SOLOTHURN);
+        this.allowedSteps.push(TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_APPENZELL);
         this.allowedSteps.push(TSWizardStepName.DOKUMENTE);
         this.allowedSteps.push(TSWizardStepName.FREIGABE);
         this.allowedSteps.push(TSWizardStepName.VERFUEGEN);
@@ -585,7 +586,7 @@ export class WizardStepManager {
         }  else if (gesuch.finSitTyp === TSFinanzielleSituationTyp.SOLOTHURN) {
             this.unhideStep(TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_SOLOTHURN);
         } else if (gesuch.finSitTyp === TSFinanzielleSituationTyp.APPENZELL) {
-            this.unhideStep(TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_SOLOTHURN);
+            this.unhideStep(TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_APPENZELL);
         } else {
             throw new Error(`wrong FinSitTyp ${gesuch.finSitTyp}`);
         }
@@ -599,7 +600,7 @@ export class WizardStepManager {
             return TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_SOLOTHURN;
         }
         if (gesuch.finSitTyp === TSFinanzielleSituationTyp.APPENZELL) {
-            return TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_SOLOTHURN;
+            return TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_APPENZELL;
         }
         return TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG;
     }

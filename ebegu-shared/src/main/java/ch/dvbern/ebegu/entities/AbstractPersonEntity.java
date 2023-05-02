@@ -20,8 +20,6 @@ import java.util.Objects;
 
 import javax.annotation.Nonnull;
 import javax.persistence.Column;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.MappedSuperclass;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -45,11 +43,6 @@ import static ch.dvbern.ebegu.util.Constants.DB_DEFAULT_MAX_LENGTH;
 public abstract class AbstractPersonEntity extends AbstractMutableEntity {
 
 	private static final long serialVersionUID = -9037857320548372570L;
-
-	@Enumerated(EnumType.STRING)
-	@Column(nullable = false)
-	@NotNull
-	private Geschlecht geschlecht;
 
 	@Size(min = 1, max = DB_DEFAULT_MAX_LENGTH)
 	@Column(nullable = false)
@@ -88,13 +81,9 @@ public abstract class AbstractPersonEntity extends AbstractMutableEntity {
 		this.nachname = nachname;
 	}
 
-	public Geschlecht getGeschlecht() {
-		return geschlecht;
-	}
+	public abstract Geschlecht getGeschlecht();
 
-	public void setGeschlecht(Geschlecht geschlecht) {
-		this.geschlecht = geschlecht;
-	}
+	public abstract void setGeschlecht(Geschlecht geschlecht);
 
 	public LocalDate getGeburtsdatum() {
 		return geburtsdatum;
