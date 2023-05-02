@@ -191,12 +191,14 @@ export class TSFinanzModel {
         if (EbeguUtil.isNullOrUndefined(gesuch.familiensituationContainer)) {
             gesuch.familiensituationContainer = new TSFamiliensituationContainer();
         }
+        gesuch.familiensituationContainer.familiensituationJA = this.familienSituation;
+
         let familiensituation = gesuch.extractFamiliensituation();
         if (EbeguUtil.isNullOrUndefined(familiensituation)) {
             familiensituation = new TSFamiliensituation();
             gesuch.familiensituationContainer.familiensituationJA = familiensituation;
         }
-        gesuch.familiensituationContainer.familiensituationJA = this.familienSituation;
+
         gesuch.gesuchsteller1.finanzielleSituationContainer = this.finanzielleSituationContainerGS1;
         if (gesuch.gesuchsteller2) {
             gesuch.gesuchsteller2.finanzielleSituationContainer = this.finanzielleSituationContainerGS2;
