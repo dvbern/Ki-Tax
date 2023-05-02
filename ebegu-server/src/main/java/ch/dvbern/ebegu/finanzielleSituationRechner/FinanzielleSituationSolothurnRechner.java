@@ -87,13 +87,14 @@ public class FinanzielleSituationSolothurnRechner extends AbstractFinanzielleSit
 	public boolean acceptEKV(
 		BigDecimal massgebendesEinkommenBasisjahr,
 		BigDecimal massgebendesEinkommenJahr,
-		BigDecimal minimumEKV) {
+		BigDecimal minimumProzentFuerEKV) {
 
 		boolean result = massgebendesEinkommenBasisjahr.compareTo(BigDecimal.ZERO) > 0;
 		if (result) {
 			BigDecimal differenzGerundet = getCalculatedProzentualeDifferenzRounded(massgebendesEinkommenBasisjahr, massgebendesEinkommenJahr);
 			// wenn es gibt mehr als minimumEKV in einer positive oder negative Richtung ist der EKV akkzeptiert
-			return differenzGerundet.compareTo(minimumEKV.negate()) <= 0 || differenzGerundet.compareTo(minimumEKV) >= 0;
+			return differenzGerundet.compareTo(minimumProzentFuerEKV.negate()) <= 0 || differenzGerundet.compareTo(
+					minimumProzentFuerEKV) >= 0;
 		}
 		return false;
 	}

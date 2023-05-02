@@ -24,6 +24,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 import ch.dvbern.ebegu.api.dtos.JaxEinkommensverschlechterungContainer;
 import ch.dvbern.ebegu.api.dtos.JaxEinkommensverschlechterungInfoContainer;
+import ch.dvbern.ebegu.api.dtos.JaxFamiliensituation;
 import ch.dvbern.ebegu.enums.FinanzielleSituationTyp;
 
 /**
@@ -45,9 +46,9 @@ public class JaxFinanzModel {
 
 	private JaxEinkommensverschlechterungInfoContainer einkommensverschlechterungInfoContainer;
 
-	private boolean gemeinsameSteuererklaerung;
-
 	private FinanzielleSituationTyp finanzielleSituationTyp;
+
+	private JaxFamiliensituation familiensituation;
 
 	public JaxFinanzielleSituationContainer getFinanzielleSituationContainerGS1() {
 		return finanzielleSituationContainerGS1;
@@ -63,14 +64,6 @@ public class JaxFinanzModel {
 
 	public void setFinanzielleSituationContainerGS2(JaxFinanzielleSituationContainer finanzielleSituationContainerGS2) {
 		this.finanzielleSituationContainerGS2 = finanzielleSituationContainerGS2;
-	}
-
-	public boolean isGemeinsameSteuererklaerung() {
-		return gemeinsameSteuererklaerung;
-	}
-
-	public void setGemeinsameSteuererklaerung(boolean gemeinsameSteuererklaerung) {
-		this.gemeinsameSteuererklaerung = gemeinsameSteuererklaerung;
 	}
 
 	public JaxEinkommensverschlechterungContainer getEinkommensverschlechterungContainerGS1() {
@@ -103,6 +96,14 @@ public class JaxFinanzModel {
 
 	public void setFinanzielleSituationTyp(FinanzielleSituationTyp finanzielleSituationTyp) {
 		this.finanzielleSituationTyp = finanzielleSituationTyp;
+	}
+
+	public JaxFamiliensituation getJaxFamiliensituation() {
+		return familiensituation;
+	}
+
+	public void setJaxFamiliensituation(JaxFamiliensituation jaxFamiliensituation) {
+		this.familiensituation = jaxFamiliensituation;
 	}
 }
 

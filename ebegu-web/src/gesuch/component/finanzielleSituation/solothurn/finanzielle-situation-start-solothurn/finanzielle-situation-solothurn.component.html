@@ -28,7 +28,7 @@
 	</div>
 	<form #form="ngForm">
 		<dv-finanzielle-situation-require-x [hideVerguenstigungGewunscht]="true"
-                                            [(sozialhilfeBezueger)]="model.sozialhilfeBezueger"
+                                            [(sozialhilfeBezueger)]="model.familienSituation.sozialhilfeBezueger"
                                             (sozialhilfeBezuegerChange)="onSozialhilfeBezuegerChange($event)">
         </dv-finanzielle-situation-require-x>
 		<div *ngIf="finanzielleSituationRequired && !isGemeinsam()">

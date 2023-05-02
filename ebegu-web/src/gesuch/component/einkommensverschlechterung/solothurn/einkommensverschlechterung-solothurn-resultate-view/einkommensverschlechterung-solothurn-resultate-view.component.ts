@@ -24,6 +24,7 @@ import {BerechnungsManager} from '../../../../service/berechnungsManager';
 import {GesuchModelManager} from '../../../../service/gesuchModelManager';
 import {WizardStepManager} from '../../../../service/wizardStepManager';
 import {AbstractEinkommensverschlechterungResultat} from '../../AbstractEinkommensverschlechterungResultat';
+import {EinstellungRS} from '../../../../../admin/service/einstellungRS.rest';
 
 @Component({
     selector: 'dv-einkommensverschlechterung-solothurn-resultate-view',
@@ -42,6 +43,7 @@ export class EinkommensverschlechterungSolothurnResultateViewComponent
         protected wizardStepManager: WizardStepManager,
         protected berechnungsManager: BerechnungsManager,
         protected ref: ChangeDetectorRef,
+        protected readonly einstellungRS: EinstellungRS,
         protected readonly $transition$: Transition
     ) {
         super(gesuchModelManager,
@@ -49,6 +51,7 @@ export class EinkommensverschlechterungSolothurnResultateViewComponent
             berechnungsManager,
             ref,
             TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_SOLOTHURN,
+            einstellungRS,
             $transition$);
     }
 

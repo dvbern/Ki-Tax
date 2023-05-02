@@ -55,7 +55,7 @@
 
         <div class="checkbox">
             <md-checkbox ng-model="vm.confirmed">
-                <span>{{vm.checkboxLabel}}</span>
+                <span ng-bind-html="vm.checkboxLabel"></span>
             </md-checkbox>
         </div>
 

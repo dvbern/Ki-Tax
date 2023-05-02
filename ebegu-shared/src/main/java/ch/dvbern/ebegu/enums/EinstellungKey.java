@@ -332,7 +332,10 @@ public enum EinstellungKey {
 	VERANLAGUNG_MIN_UNTERSCHIED_MASSGEBENDESEINK(MandantIdentifier.getAll()),
 
 	// Gibt an, ob die Zahlungsangaben für Antragsteller auf der FinSit required oder optional sind (KIBON-2688)
-	ZAHLUNGSANGABEN_ANTRAGSTELLER_REQUIRED(MandantIdentifier.BERN);
+	ZAHLUNGSANGABEN_ANTRAGSTELLER_REQUIRED(MandantIdentifier.BERN),
+
+	// Ab welchem Alter in Monaten kann ein Kind Anspruch haben (davor ist der Anspruch 0)
+	ANSPRUCH_AB_X_MONATEN(MandantIdentifier.getAll());
 
 
 	private EinstellungTyp typ;

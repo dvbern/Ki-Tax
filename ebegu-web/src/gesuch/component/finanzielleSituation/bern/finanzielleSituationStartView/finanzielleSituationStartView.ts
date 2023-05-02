@@ -139,7 +139,7 @@ export class FinanzielleSituationStartViewController extends AbstractFinSitBernV
             return false;
         }
         // bei alleiniger Steuererklärung wird die Frage immer auf der finSitView gezeigt
-        if (!this.model.gemeinsameSteuererklaerung) {
+        if (!this.model.familienSituation.gemeinsameSteuererklaerung) {
             return false;
         }
 
@@ -242,14 +242,14 @@ export class FinanzielleSituationStartViewController extends AbstractFinSitBernV
     }
 
     public gemeinsameStekClicked(): void {
-        if (!this.model.gemeinsameSteuererklaerung && this.model.finanzielleSituationContainerGS1 && !this.model.finanzielleSituationContainerGS1.isNew()) {
+        if (!this.model.familienSituation.gemeinsameSteuererklaerung && this.model.finanzielleSituationContainerGS1 && !this.model.finanzielleSituationContainerGS1.isNew()) {
             // Wenn neu NEIN und schon was eingegeben -> Fragen mal auf false setzen und Status auf nok damit man
             // sicher noch weiter muss!
             this.initSteuerFragen();
             this.wizardStepManager.updateCurrentWizardStepStatusSafe(
                 TSWizardStepName.FINANZIELLE_SITUATION,
                 TSWizardStepStatus.NOK);
-        } else if (!this.model.gemeinsameSteuererklaerung) {
+        } else if (!this.model.familienSituation.gemeinsameSteuererklaerung) {
             // Wenn neu NEIN -> Fragen loeschen wenn noch nichts eingegeben worden ist
             this.model.finanzielleSituationContainerGS1 = undefined;
             this.model.finanzielleSituationContainerGS2 = undefined;
@@ -289,7 +289,7 @@ export class FinanzielleSituationStartViewController extends AbstractFinSitBernV
     }
 
     public steuererklaerungClicked(): void {
-        if (this.model.gemeinsameSteuererklaerung) {
+        if (this.model.familienSituation.gemeinsameSteuererklaerung) {
             this.model.finanzielleSituationContainerGS2.finanzielleSituationJA.steuererklaerungAusgefuellt =
                 this.model.finanzielleSituationContainerGS1.finanzielleSituationJA.steuererklaerungAusgefuellt;
         }
@@ -312,7 +312,7 @@ export class FinanzielleSituationStartViewController extends AbstractFinSitBernV
 
     public isMahlzeitenverguenstigungEnabled(): boolean {
         return this.gesuchModelManager.isMahlzeitenverguenstigungEnabled() &&
-            (this.model.sozialhilfeBezueger || this.model.verguenstigungGewuenscht)
+            (this.model.familienSituation.sozialhilfeBezueger || this.model.familienSituation.verguenstigungGewuenscht)
             && this.getGesuch() && !this.getGesuch().areThereOnlyFerieninsel();
     }
 
@@ -391,7 +391,7 @@ export class FinanzielleSituationStartViewController extends AbstractFinSitBernV
     }
 
     public showZugriffAufSteuerdaten(): boolean {
-        return super.showZugriffAufSteuerdaten() && this.model.gemeinsameSteuererklaerung;
+        return super.showZugriffAufSteuerdaten() && this.model.familienSituation.gemeinsameSteuererklaerung;
     }
 
     public showAutomatischePruefungSteuerdatenFrage(): boolean {
@@ -404,7 +404,7 @@ export class FinanzielleSituationStartViewController extends AbstractFinSitBernV
         }
 
         return this.gesuchModelManager.getGesuch().isOnlineGesuch() &&
-            this.model.gemeinsameSteuererklaerung &&
+            this.model.familienSituation.gemeinsameSteuererklaerung &&
             (EbeguUtil.isNotNullAndFalse(this.getModel().finanzielleSituationJA.steuerdatenZugriff));
     }
 

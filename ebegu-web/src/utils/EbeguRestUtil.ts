@@ -2093,6 +2093,11 @@ export class EbeguRestUtil {
         restFinanzielleVerhaeltnisse.einkuenfteBgsa = finanzielleVerhaeltnisse.einkuenfteBgsa;
         restFinanzielleVerhaeltnisse.politischeParteiSpende = finanzielleVerhaeltnisse.politischeParteiSpende;
         restFinanzielleVerhaeltnisse.leistungAnJuristischePersonen = finanzielleVerhaeltnisse.leistungAnJuristischePersonen;
+        restFinanzielleVerhaeltnisse.steuerbaresVermoegen = finanzielleVerhaeltnisse.steuerbaresVermoegen;
+        restFinanzielleVerhaeltnisse.steuerbaresEinkommen = finanzielleVerhaeltnisse.steuerbaresEinkommen;
+        if (EbeguUtil.isNotNullOrUndefined(finanzielleVerhaeltnisse.zusatzangabenPartner)) {
+            restFinanzielleVerhaeltnisse.zusatzangabenPartner = this.finSitZusatzangabenAppenzellToRestObject({}, finanzielleVerhaeltnisse.zusatzangabenPartner);
+        }
         return restFinanzielleVerhaeltnisse;
     }
 
@@ -2234,6 +2239,13 @@ export class EbeguRestUtil {
             tsFinSitZusatzangabenAppenzell.vorjahresverluste = finSitZusatzangabenAppenzellFromServer.vorjahresverluste;
             tsFinSitZusatzangabenAppenzell.politischeParteiSpende = finSitZusatzangabenAppenzellFromServer.politischeParteiSpende;
             tsFinSitZusatzangabenAppenzell.leistungAnJuristischePersonen = finSitZusatzangabenAppenzellFromServer.leistungAnJuristischePersonen;
+            tsFinSitZusatzangabenAppenzell.steuerbaresEinkommen = finSitZusatzangabenAppenzellFromServer.steuerbaresEinkommen;
+            tsFinSitZusatzangabenAppenzell.steuerbaresVermoegen = finSitZusatzangabenAppenzellFromServer.steuerbaresVermoegen;
+            if (EbeguUtil.isNotNullOrUndefined(finSitZusatzangabenAppenzellFromServer.zusatzangabenPartner)) {
+                tsFinSitZusatzangabenAppenzell.zusatzangabenPartner =
+                    this.parseFinSitZusatzangabenAppenzell(new TSFinSitZusatzangabenAppenzell(),
+                        finSitZusatzangabenAppenzellFromServer.zusatzangabenPartner);
+            }
 
             return tsFinSitZusatzangabenAppenzell;
         }
@@ -3525,6 +3537,7 @@ export class EbeguRestUtil {
                 this.parseTsCalculationResult(zeitabschnittFromServer.tsCalculationResultOhnePaedagogischerBetreuung);
             verfuegungZeitabschnittTS.verguenstigungMahlzeitTotal = zeitabschnittFromServer.verguenstigungMahlzeitTotal;
             verfuegungZeitabschnittTS.auszahlungAnEltern = zeitabschnittFromServer.auszahlungAnEltern;
+            verfuegungZeitabschnittTS.beitragshoeheProzent = zeitabschnittFromServer.beitragshoeheProzent;
 
             if (zeitabschnittFromServer.verfuegungZeitabschnittBemerkungList) {
                 zeitabschnittFromServer.verfuegungZeitabschnittBemerkungList.forEach((bemerkung: any) => {
@@ -3700,7 +3713,10 @@ export class EbeguRestUtil {
                     this.einkommensverschlechterungInfoContainerToRestObject({},
                         finSitModel.einkommensverschlechterungInfoContainer);
             }
-            restFinSitModel.gemeinsameSteuererklaerung = finSitModel.gemeinsameSteuererklaerung;
+            if (finSitModel.familienSituation) {
+                restFinSitModel.familiensituation =
+                    this.familiensituationToRestObject({}, finSitModel.familienSituation);
+            }
             restFinSitModel.finanzielleSituationTyp = finSitModel.finanzielleSituationTyp;
             return restFinSitModel;
         }

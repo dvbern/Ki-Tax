@@ -383,6 +383,10 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 		return getRelevantBgCalculationResult().isAuszahlungAnEltern();
 	}
 
+	public Integer getBeitraghoheProzent() {
+		return getRelevantBgCalculationResult().getBeitragshoeheProzent();
+	}
+
 	/* Ende Delegator-Methoden */
 
 	/* Start Delegator Setter-Methoden: Setzen die Werte auf BEIDEN inputs */
@@ -882,5 +886,10 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 	public void setGeschwisternBonusKind3ForAsivAndGemeinde(boolean geschwisternBonusKind3) {
 		this.bgCalculationInputAsiv.setGeschwisternBonusKind3(geschwisternBonusKind3);
 		this.bgCalculationInputGemeinde.setGeschwisternBonusKind3(geschwisternBonusKind3);
+	}
+
+	public void setRequiredAgeForAnspruchNotReached(boolean requiredAgeForAnspruchNotReached) {
+		this.bgCalculationInputAsiv.setRequiredAgeForAnspruchNotReached(requiredAgeForAnspruchNotReached);
+		this.bgCalculationInputGemeinde.setRequiredAgeForAnspruchNotReached(requiredAgeForAnspruchNotReached);
 	}
 }

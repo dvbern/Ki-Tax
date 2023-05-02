@@ -196,6 +196,8 @@ public class BGCalculationInput {
 
 	private boolean isEkvAccepted = false;
 
+	private boolean requiredAgeForAnspruchNotReached = false;
+
 	public BGCalculationInput(@Nonnull VerfuegungZeitabschnitt parent, @Nonnull RuleValidity ruleValidity) {
 		this.parent = parent;
 		this.ruleValidity = ruleValidity;
@@ -261,6 +263,7 @@ public class BGCalculationInput {
 		this.isAuszahlungAnEltern = toCopy.isAuszahlungAnEltern;
 		this.partnerIdentischMitVorgesuch = toCopy.partnerIdentischMitVorgesuch;
 		this.isEkvAccepted = toCopy.isEkvAccepted;
+		this.requiredAgeForAnspruchNotReached = toCopy.requiredAgeForAnspruchNotReached;
 	}
 
 	@Nonnull
@@ -714,6 +717,14 @@ public class BGCalculationInput {
 		isAuszahlungAnEltern = auszahlungAnEltern;
 	}
 
+	public boolean isRequiredAgeForAnspruchNotReached() {
+		return requiredAgeForAnspruchNotReached;
+	}
+
+	public void setRequiredAgeForAnspruchNotReached(boolean requiredAgeForAnspruchNotReached) {
+		this.requiredAgeForAnspruchNotReached = requiredAgeForAnspruchNotReached;
+	}
+
 	@Override
 	public String toString() {
 		final StringBuilder sb = new StringBuilder("BGCalculationInput{");
@@ -862,6 +873,7 @@ public class BGCalculationInput {
 
 		this.kitaPlusZuschlag = this.kitaPlusZuschlag || other.kitaPlusZuschlag;
 		this.besondereBeduerfnisseZuschlag = add(this.getBesondereBeduerfnisseZuschlag(), other.getBesondereBeduerfnisseZuschlag());
+		this.requiredAgeForAnspruchNotReached = this.requiredAgeForAnspruchNotReached || other.requiredAgeForAnspruchNotReached;
 	}
 
 	/**
@@ -1061,7 +1073,8 @@ public class BGCalculationInput {
 			MathUtil.isSame(this.stuendlicheVollkosten, other.stuendlicheVollkosten) &&
 			this.isAuszahlungAnEltern == other.isAuszahlungAnEltern &&
 			Objects.equals( this.partnerIdentischMitVorgesuch , other.partnerIdentischMitVorgesuch) &&
-			this.isEkvAccepted == other.isEkvAccepted;
+			this.isEkvAccepted == other.isEkvAccepted &&
+			this.requiredAgeForAnspruchNotReached == other.requiredAgeForAnspruchNotReached;
 	}
 
 	@SuppressWarnings("PMD.CompareObjectsWithEquals")

@@ -27,6 +27,9 @@ export class TSFinSitZusatzangabenAppenzell extends TSAbstractMutableEntity {
     private _vorjahresverluste: number;
     private _politischeParteiSpende: number;
     private _leistungAnJuristischePersonen: number;
+    private _steuerbaresEinkommen: number;
+    private _steuerbaresVermoegen: number;
+    private _zusatzangabenPartner: TSFinSitZusatzangabenAppenzell;
 
     public get saeule3a(): number {
         return this._saeule3a;
@@ -90,5 +93,28 @@ export class TSFinSitZusatzangabenAppenzell extends TSAbstractMutableEntity {
 
     public set leistungAnJuristischePersonen(value: number) {
         this._leistungAnJuristischePersonen = value;
+    }
+
+    public get zusatzangabenPartner(): TSFinSitZusatzangabenAppenzell {
+        return this._zusatzangabenPartner;
+    }
+
+    public set zusatzangabenPartner(value: TSFinSitZusatzangabenAppenzell) {
+        this._zusatzangabenPartner = value;
+    }
+
+    public get steuerbaresVermoegen(): number {
+        return this._steuerbaresVermoegen;
+    }
+
+    public set steuerbaresVermoegen(value: number) {
+        this._steuerbaresVermoegen = value;
+    }
+    public get steuerbaresEinkommen(): number {
+        return this._steuerbaresEinkommen;
+    }
+
+    public set steuerbaresEinkommen(value: number) {
+        this._steuerbaresEinkommen = value;
     }
 }

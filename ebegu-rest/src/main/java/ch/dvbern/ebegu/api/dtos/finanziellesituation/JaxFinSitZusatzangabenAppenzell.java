@@ -50,6 +50,14 @@ public class JaxFinSitZusatzangabenAppenzell extends JaxAbstractDTO {
 
 	@Nullable
 	private BigDecimal leistungAnJuristischePersonen;
+	@Nullable
+	private BigDecimal steuerbaresEinkommen;
+
+	@Nullable
+	private BigDecimal steuerbaresVermoegen;
+
+	@Nullable
+	private JaxFinSitZusatzangabenAppenzell zusatzangabenPartner;
 
 	@Nullable
 	public BigDecimal getSaeule3a() {
@@ -121,5 +129,32 @@ public class JaxFinSitZusatzangabenAppenzell extends JaxAbstractDTO {
 
 	public void setLeistungAnJuristischePersonen(@Nullable BigDecimal leistungAnJuristischePersonen) {
 		this.leistungAnJuristischePersonen = leistungAnJuristischePersonen;
+	}
+
+	@Nullable
+	public JaxFinSitZusatzangabenAppenzell getZusatzangabenPartner() {
+		return zusatzangabenPartner;
+	}
+
+	public void setZusatzangabenPartner(@Nullable JaxFinSitZusatzangabenAppenzell zusatzangabenPartner) {
+		this.zusatzangabenPartner = zusatzangabenPartner;
+	}
+
+	@Nullable
+	public BigDecimal getSteuerbaresEinkommen() {
+		return steuerbaresEinkommen;
+	}
+
+	public void setSteuerbaresEinkommen(@Nullable BigDecimal steuerbaresEinkommen) {
+		this.steuerbaresEinkommen = steuerbaresEinkommen;
+	}
+
+	@Nullable
+	public BigDecimal getSteuerbaresVermoegen() {
+		return steuerbaresVermoegen;
+	}
+
+	public void setSteuerbaresVermoegen(@Nullable BigDecimal steuerbaresVermoegen) {
+		this.steuerbaresVermoegen = steuerbaresVermoegen;
 	}
 }

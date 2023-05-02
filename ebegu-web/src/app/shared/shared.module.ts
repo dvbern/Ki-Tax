@@ -39,6 +39,7 @@ import {
 } from '../core/component/dv-mitteilung-delegation/dv-mitteilung-delegation.component';
 import {DvNavigationXComponent} from '../core/component/dv-navigation-x/dv-navigation-x.component';
 import {DvNgBackDialogComponent} from '../core/component/dv-ng-back-dialog/dv-ng-back-dialog.component';
+import {DvNgCancelDialogComponent} from '../core/component/dv-ng-confirm-dialog/dv-ng-cancel-dialog.component';
 import {DvNgConfirmDialogComponent} from '../core/component/dv-ng-confirm-dialog/dv-ng-confirm-dialog.component';
 import {
     DvNgDisplayObjectDialogComponent
@@ -59,6 +60,9 @@ import {
 } from '../core/component/dv-ng-multi-select-dialog/dv-ng-multi-select-dialog.component';
 import {DvNgOkDialogComponent} from '../core/component/dv-ng-ok-dialog/dv-ng-ok-dialog.component';
 import {DvNgRemoveDialogComponent} from '../core/component/dv-ng-remove-dialog/dv-ng-remove-dialog.component';
+import {
+    DvNgSelectTraegerschaftEmailDialogComponent
+} from '../core/component/dv-ng-select-traegerschaft-email-dialog/dv-ng-select-traegerschaft-email-dialog.component';
 import {
     DvNgSozialdienstDialogComponent
 } from '../core/component/dv-ng-sozialdienst-dialog/dv-ng-sozialdienst-dialog.component';
@@ -119,7 +123,6 @@ import {PreviousPeriodeStrPipe} from './pipe/previous-periode-str.pipe';
 import {MandantService} from './services/mandant.service';
 import {UiViewComponent} from './ui-view/ui-view.component';
 import {QrIbanValidatorDirective} from './validators/qr-iban-validator.directive';
-import {DvNgSelectTraegerschaftEmailDialogComponent} from '../core/component/dv-ng-select-traegerschaft-email-dialog/dv-ng-select-traegerschaft-email-dialog.component';
 
 export function createTranslateLoader(http: HttpClient, mandantService: MandantService): TranslateLoader {
     return new MultiMandantHttpLoader(http, mandantService);
@@ -165,6 +168,7 @@ export function createTranslateLoader(http: HttpClient, mandantService: MandantS
         DvNgDisplayObjectDialogComponent,
         DvNgRemoveDialogComponent,
         DvNgBackDialogComponent,
+        DvNgCancelDialogComponent,
         DvNgMultiSelectDialogComponent,
         DvNgThreeButtonDialogComponent,
         DvNgShowElementDirective,
@@ -249,6 +253,7 @@ export function createTranslateLoader(http: HttpClient, mandantService: MandantS
         DvNgDisplayObjectDialogComponent,
         DvNgRemoveDialogComponent,
         DvNgBackDialogComponent,
+        DvNgCancelDialogComponent,
         DvNgMultiSelectDialogComponent,
         DvNgThreeButtonDialogComponent,
         DvNgShowElementDirective,

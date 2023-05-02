@@ -1,34 +1,33 @@
 /*
- * Ki-Tax: System for the management of external childcare subsidies
- * Copyright (C) 2017 City of Bern Switzerland
+ * Copyright (C) 2023 DV Bern AG, Switzerland
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Affero General Public License for more details.
+ *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
 import {IComponentOptions} from 'angular';
 import * as moment from 'moment';
-import {map} from 'rxjs/operators';
 import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
 import {CONSTANTS} from '../../../app/core/constants/CONSTANTS';
-import {MANDANTS} from '../../../app/core/constants/MANDANTS';
+import {EinschulungTypesVisitor} from '../../../app/core/constants/EinschulungTypesVisitor';
+import {KindGeschlechtVisitor} from '../../../app/core/constants/KindGeschlechtVisitor';
+import {KiBonMandant} from '../../../app/core/constants/MANDANTS';
 import {ErrorService} from '../../../app/core/errors/service/ErrorService';
 import {LogFactory} from '../../../app/core/logging/LogFactory';
 import {MandantService} from '../../../app/shared/services/mandant.service';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {TSAnspruchBeschaeftigungAbhaengigkeitTyp} from '../../../models/enums/TSAnspruchBeschaeftigungAbhaengigkeitTyp';
-import {
-    getTSEinschulungTypValues,
-    getTSEinschulungTypValuesLuzern,
-    TSEinschulungTyp
-} from '../../../models/enums/TSEinschulungTyp';
+import {TSEinschulungTyp} from '../../../models/enums/TSEinschulungTyp';
 import {TSEinstellungKey} from '../../../models/enums/TSEinstellungKey';
 import {TSFachstellenTyp} from '../../../models/enums/TSFachstellenTyp';
 import {TSGeschlecht} from '../../../models/enums/TSGeschlecht';
@@ -96,7 +95,7 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
     public gruendeZusatzleistung: Array<string>;
     public geschlechter: Array<string>;
     public kinderabzugValues: Array<TSKinderabzug>;
-    public einschulungTypValues: Array<TSEinschulungTyp>;
+    public einschulungTypValues: ReadonlyArray<TSEinschulungTyp>;
     public showFachstelle: boolean;
     public showFachstelleGS: boolean;
     public showAusserordentlicherAnspruch: boolean;
@@ -112,10 +111,10 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
     private fachstellenTyp: TSFachstellenTyp;
     public maxPensumAusserordentlicherAnspruch: string;
     // When migrating to ng, use observable in template
-    private isLuzern: boolean;
     public submitted: boolean = false;
     private isSpracheAmtspracheDisabled: boolean;
     private isZemisDeaktiviert: boolean = false;
+    private mandant: KiBonMandant;
 
     public constructor(
         $stateParams: IKindStateParams,
@@ -151,17 +150,19 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
             this.gesuchModelManager.setKindIndex(kindIndex);
         }
         this.allowedRoles = this.TSRoleUtil.getAllRolesButTraegerschaftInstitution();
-        this.mandantService.mandant$.pipe(map(mandant => mandant === MANDANTS.LUZERN)).subscribe(isLuzern => {
-            this.isLuzern = isLuzern;
+        // TODO: Replace with angularX async template pipe during ablösung
+        this.mandantService.mandant$.subscribe(mandant => {
+            this.mandant = mandant;
             this.initViewModel();
         }, err => LOG.error(err));
+
     }
 
     private initViewModel(): void {
         this.gruendeZusatzleistung = EnumEx.getNames(TSGruendeZusatzleistung);
         this.geschlechter = EnumEx.getNames(TSGeschlecht);
         this.kinderabzugValues = getTSKinderabzugValues();
-        this.einschulungTypValues = this.isLuzern ? getTSEinschulungTypValuesLuzern() : getTSEinschulungTypValues();
+        this.einschulungTypValues = new EinschulungTypesVisitor().process(this.mandant);
         this.loadEinstellungenForIntegration();
         this.initFachstelle();
         this.initAusserordentlicherAnspruch();
@@ -603,5 +604,9 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
         if (this.getModel().einschulungTyp !== TSEinschulungTyp.OBLIGATORISCHER_KINDERGARTEN) {
             this.getModel().keinPlatzInSchulhort = false;
         }
+    }
+
+    public isGeschlechtOfKindRequired(): boolean {
+        return new KindGeschlechtVisitor().process(this.mandant);
     }
 }

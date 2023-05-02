@@ -24,7 +24,7 @@ public class BetreuungsgutscheinConfiguratorTest extends AbstractBGRechnerTest {
 			EbeguRuleTestsHelper.getEinstellungenConfiguratorAsiv(gesuchsperiodeOfEvaluator);
 	private final KitaxUebergangsloesungParameter kitaxParams = TestDataUtil.geKitaxUebergangsloesungParameter();
 
-	private static final int ANZAHL_RULES_ASIV = 33;
+	private static final int ANZAHL_RULES_ASIV = 35;
 
 	@Before
 	public void setUp() {

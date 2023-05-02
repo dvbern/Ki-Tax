@@ -80,7 +80,7 @@ public class GeschwisterbonusAbschnittRule extends AbstractAbschnittRule {
 		}
 
 		betreuung.getBetreuungspensumContainers().forEach(betreuungspensumContainer ->
-			createEinZeitabschnittProMonatBisMaximalEndePeriode(
+			createEinZeitabschnittProMonatInnerhalbPeriode(
 					betreuungspensumContainer.getBetreuungspensumJA().getGueltigkeit(),
 					betreuung.extractGesuchsperiode(),
 					verfuegungZeitabschnitts));
@@ -182,11 +182,12 @@ public class GeschwisterbonusAbschnittRule extends AbstractAbschnittRule {
 		return kindOrderedByAge.indexOf(kindToGetNumber);
 	}
 
-	private void createEinZeitabschnittProMonatBisMaximalEndePeriode(
+	private void createEinZeitabschnittProMonatInnerhalbPeriode(
 		DateRange gueltigkeit,
 		Gesuchsperiode gesuchsperiode,
 		List<VerfuegungZeitabschnitt> verfuegungZeitabschnitts) {
-		LocalDate guleitgAb = gueltigkeit.getGueltigAb();
+		LocalDate guleitgAb = gueltigkeit.getGueltigAb().isBefore(gesuchsperiode.getGueltigkeit().getGueltigAb()) ?
+			gesuchsperiode.getGueltigkeit().getGueltigAb() : gueltigkeit.getGueltigAb();
 		LocalDate gueltigBis = gueltigkeit.getGueltigBis().isAfter(gesuchsperiode.getGueltigkeit().getGueltigBis()) ?
 			gesuchsperiode.getGueltigkeit().getGueltigBis() :
 			gueltigkeit.getGueltigBis();

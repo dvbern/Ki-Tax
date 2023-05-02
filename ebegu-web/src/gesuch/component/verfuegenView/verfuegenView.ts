@@ -1,5 +1,4 @@
 /*
-/*
  * Copyright (C) 2023 DV Bern AG, Switzerland
  *
  * This program is free software: you can redistribute it and/or modify
@@ -840,6 +839,10 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
     }
 
     public showAuszahlungAnInstitutionenCol(): boolean {
+        // falls die Auszahlung zuletzt an die Institution gemacht wird, soll die Spalte gezeigt werden.
+        if (!this.getBetreuung().auszahlungAnEltern) {
+            return true;
+        }
         if (EbeguUtil.isNullOrUndefined(this.getVerfuegungZeitabschnitte())) {
             return false;
         }
@@ -890,6 +893,11 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
     }
 
     public showAuszahlungAnElternCol(): boolean {
+        // falls die Auszahlung zuletzt an die Eltern gemacht wird, soll die Spalte gezeigt werden.
+        if (this.getBetreuung().auszahlungAnEltern) {
+            return true;
+        }
+
         if (EbeguUtil.isNullOrUndefined(this.getVerfuegungZeitabschnitte())) {
             return false;
         }
