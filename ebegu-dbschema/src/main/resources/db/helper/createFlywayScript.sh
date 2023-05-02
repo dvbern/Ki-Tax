@@ -6,8 +6,7 @@ year=$(date +'%Y')
 filename="V${timestamp}__${scriptname}.sql"
 filepath="ebegu-dbschema/src/main/resources/db/migration/"
 
-echo "
-/*
+echo "/*
  * Copyright (C) ${year} DV Bern AG, Switzerland
  *
  * This program is free software: you can redistribute it and/or modify
