@@ -15,6 +15,9 @@
 
 import {IComponentOptions, IController, ILogService} from 'angular';
 import {AuthServiceRS} from '../../../../authentication/service/AuthServiceRS.rest';
+import {
+    FinanzielleSituationAppenzellService
+} from '../../../../gesuch/component/finanzielleSituation/appenzell/finanzielle-situation-appenzell.service';
 import {OkHtmlDialogController} from '../../../../gesuch/dialog/OkHtmlDialogController';
 import {RemoveDialogController} from '../../../../gesuch/dialog/RemoveDialogController';
 import {GesuchModelManager} from '../../../../gesuch/service/gesuchModelManager';
@@ -25,6 +28,8 @@ import {TSRole} from '../../../../models/enums/TSRole';
 import {TSDokument} from '../../../../models/TSDokument';
 import {TSDokumentGrund} from '../../../../models/TSDokumentGrund';
 import {TSDownloadFile} from '../../../../models/TSDownloadFile';
+import {TSGesuch} from '../../../../models/TSGesuch';
+import {EbeguUtil} from '../../../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../../../utils/TSRoleUtil';
 import {MAX_FILE_SIZE} from '../../constants/CONSTANTS';
 import {DvDialog} from '../../directive/dv-dialog/dv-dialog';
@@ -288,6 +293,9 @@ export class DVDokumenteListController implements IController {
         if (personNumber === 2 && gesuch.gesuchsteller2) {
             return gesuch.gesuchsteller2.extractFullName();
         }
+        if (personNumber === 2 && this.isAppenzellSpeziallFall(gesuch)) {
+            return this.$translate.instant('GS2_VERHEIRATET');
+        }
         if (personNumber === 1 && gesuch.gesuchsteller1) {
             return gesuch.gesuchsteller1.extractFullName();
         }
@@ -295,6 +303,12 @@ export class DVDokumenteListController implements IController {
             return this.$translate.instant('DOK_GS1_AND_GS2', {
                 gs1: gesuch.gesuchsteller1.extractFullName(),
                 gs2: gesuch.gesuchsteller2.extractFullName()});
+        }
+        if (personNumber === 0 && gesuch.gesuchsteller1 && this.isAppenzellSpeziallFall(gesuch)) {
+            const gs2Name = this.$translate.instant('GS2_VERHEIRATET');
+            return this.$translate.instant('DOK_GS1_AND_GS2', {
+                gs1: gesuch.gesuchsteller1.extractFullName(),
+                gs2: gs2Name});
         }
 
         return '';
@@ -307,5 +321,10 @@ export class DVDokumenteListController implements IController {
 
     public getTableTitleText(): string {
         return this.$translate.instant(this.tableTitle, {basisjahr: this.titleValue});
+    }
+
+    private isAppenzellSpeziallFall(gesuch: TSGesuch): boolean {
+        return FinanzielleSituationAppenzellService.finSitNeedsTwoSeparateAntragsteller(gesuch)
+        && EbeguUtil.isNullOrUndefined(gesuch.gesuchsteller2);
     }
 }

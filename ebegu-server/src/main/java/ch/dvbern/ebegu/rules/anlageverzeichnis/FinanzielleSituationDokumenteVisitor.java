@@ -52,6 +52,6 @@ public class FinanzielleSituationDokumenteVisitor implements FinanzielleSituatio
 
 	@Override
 	public AbstractDokumente<AbstractFinanzielleSituation, Familiensituation> visitFinSitAppenzell() {
-		return new SolothurnFinanzielleSituationDokumente();
+		return new AppenzellFinanzielleSituationDokumente();
 	}
 }
