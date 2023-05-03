@@ -276,10 +276,9 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
                     }
                 }
             }
-
+            this.initEinstellungen();
         });
 
-        this.initEinstellungen();
     }
 
     private initEinstellungen(): void {
