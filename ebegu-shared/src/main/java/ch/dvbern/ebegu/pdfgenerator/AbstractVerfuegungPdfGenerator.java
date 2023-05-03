@@ -76,8 +76,8 @@ public abstract class AbstractVerfuegungPdfGenerator extends DokumentAnFamilieGe
 	protected static final String VERFUEGUNG_TITLE = "PdfGeneration_Verfuegung_Title";
 	private static final String ANGEBOT = "PdfGeneration_Betreuungsangebot";
 	private static final String GEMEINDE = "PdfGeneration_Gemeinde";
-	private static final String VERFUEGUNG_CONTENT_1 = "PdfGeneration_Verfuegung_Content_1";
-	private static final String VERFUEGUNG_CONTENT_2 = "PdfGeneration_Verfuegung_Content_2";
+	protected static final String VERFUEGUNG_CONTENT_1 = "PdfGeneration_Verfuegung_Content_1";
+	protected static final String VERFUEGUNG_CONTENT_2 = "PdfGeneration_Verfuegung_Content_2";
 	private static final String VERFUEGUNG_ERKLAERUNG_FEBR = "PdfGeneration_Verfuegung_Erklaerung_FEBR";
 	private static final String VON = "PdfGeneration_Verfuegung_Von";
 	private static final String BIS = "PdfGeneration_Verfuegung_Bis";
@@ -209,13 +209,8 @@ public abstract class AbstractVerfuegungPdfGenerator extends DokumentAnFamilieGe
 		Kind kind = betreuung.getKind().getKindJA();
 
 		createFusszeileNormaleVerfuegung(generator.getDirectContent());
-		Paragraph paragraphWithSupertext = PdfUtil.createParagraph(translate(
-			VERFUEGUNG_CONTENT_1,
-			kind.getFullName(),
-			Constants.DATE_FORMATTER.format(kind.getGeburtsdatum())), 2);
-		paragraphWithSupertext.add(PdfUtil.createSuperTextInText("1"));
-		paragraphWithSupertext.add(new Chunk(' ' + translate(VERFUEGUNG_CONTENT_2)));
-		document.add(paragraphWithSupertext);
+		Paragraph firstParagraph = createFirstParagraph(kind);
+		document.add(firstParagraph);
 		document.add(createVerfuegungTable());
 
 		// Erklaerungstext zu FEBR: Falls Stadt Bern und das Flag ist noch nicht gesetzt
@@ -225,6 +220,17 @@ public abstract class AbstractVerfuegungPdfGenerator extends DokumentAnFamilieGe
 
 		addBemerkungenIfAvailable(document);
 		addZusatzTextIfAvailable(document);
+	}
+
+	@Nonnull
+	protected Paragraph createFirstParagraph(Kind kind) {
+		Paragraph paragraphWithSupertext = PdfUtil.createParagraph(translate(
+			VERFUEGUNG_CONTENT_1,
+			kind.getFullName(),
+			Constants.DATE_FORMATTER.format(kind.getGeburtsdatum())), 2);
+		paragraphWithSupertext.add(PdfUtil.createSuperTextInText("1"));
+		paragraphWithSupertext.add(new Chunk(' ' + translate(VERFUEGUNG_CONTENT_2)));
+		return paragraphWithSupertext;
 	}
 
 	protected void createDokumentKeinAnspruch(Document document, PdfGenerator generator) {

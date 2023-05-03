@@ -25,13 +25,18 @@ import javax.annotation.Nonnull;
 
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.GemeindeStammdaten;
+import ch.dvbern.ebegu.entities.Kind;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.BetreuungspensumAnzeigeTyp;
+import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.MathUtil;
 import ch.dvbern.lib.invoicegenerator.pdf.PdfGenerator;
 import com.lowagie.text.Document;
+import com.lowagie.text.DocumentException;
 import com.lowagie.text.Element;
 import com.lowagie.text.Font;
+import com.lowagie.text.Paragraph;
+import com.lowagie.text.pdf.PdfContentByte;
 import com.lowagie.text.pdf.PdfPTable;
 import org.jetbrains.annotations.Nullable;
 
@@ -46,6 +51,9 @@ public class VerfuegungPdfGeneratorAppenzell extends AbstractVerfuegungPdfGenera
 
 	protected static final String VERFUEGUNG_NICHT_EINTRETEN_TITLE = "PdfGeneration_Verfuegung_NichtEintreten_Title";
 	private static final String BEITRAGSHOHE_PROZENT = "PdfGeneration_Verfuegung_Beitragshoehe_Prozent";
+	private static final String ZUSATZTEXT_1 = "PdfGeneration_Verfuegung_Zusatztext_AR_1";
+	private static final String ZUSATZTEXT_2 = "PdfGeneration_Verfuegung_Zusatztext_AR_2";
+	private static final String ZUSATZTEXT_3 = "PdfGeneration_Verfuegung_Zusatztext_AR_3";
 
 	public VerfuegungPdfGeneratorAppenzell(
 		@Nonnull Betreuung betreuung,
@@ -204,5 +212,27 @@ public class VerfuegungPdfGeneratorAppenzell extends AbstractVerfuegungPdfGenera
 	@Override
 	protected void removeLeadingZeitabschnitteWithNoPositivBetreuungsPensum(List<VerfuegungZeitabschnitt> result) {
 		//no-op in Appenzell sollen immer alle Zeitabschnitte angezeigt werden
+	}
+
+	@Override
+	protected void createFusszeileNormaleVerfuegung(@Nonnull PdfContentByte dirPdfContentByte) throws
+			DocumentException {
+		//no-op: wird in Solothurn nicht angezeigt
+	}
+
+	@Override
+	protected Paragraph createFirstParagraph(Kind kind) {
+		return PdfUtil.createParagraph(translate(
+				VERFUEGUNG_CONTENT_1,
+				kind.getFullName(),
+				Constants.DATE_FORMATTER.format(kind.getGeburtsdatum())), 2);
+	}
+
+	@Override
+	protected void addZusatzTextIfAvailable(Document document) {
+		document.add(PdfUtil.createParagraph(translate(ZUSATZTEXT_1)));
+		document.add(PdfUtil.createBoldParagraph(translate(ZUSATZTEXT_2), 1));
+		document.add(PdfUtil.createParagraph(translate(ZUSATZTEXT_3), 2));
+		super.addZusatzTextIfAvailable(document);
 	}
 }
