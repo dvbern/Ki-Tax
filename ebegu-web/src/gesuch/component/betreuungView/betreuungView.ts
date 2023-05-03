@@ -283,8 +283,9 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
 
     private initEinstellungen(): void {
         this.loadInfomaZahlungenActive();
+        const gesuchsperiodeId: string = this.gesuchModelManager.getGesuchsperiode().id;
         this.einstellungRS.getAllEinstellungenBySystemCached(
-            this.gesuchModelManager.getGesuchsperiode().id
+            gesuchsperiodeId
         ).subscribe((response: TSEinstellung[]) => {
             response.filter(r => r.key === TSEinstellungKey.FKJV_EINGEWOEHNUNG)
                 .forEach(value => {
@@ -334,7 +335,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         this.einstellungRS.findEinstellung(
             TSEinstellungKey.ZUSCHLAG_BEHINDERUNG_PRO_TG,
             this.gesuchModelManager.getGemeinde().id,
-            this.gesuchModelManager.getGesuchsperiode().id
+            gesuchsperiodeId
         ).subscribe(res => {
             this.zuschlagBehinderungProTag = Number(res.value);
         }, error => LOG.error(error));
@@ -342,7 +343,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         this.einstellungRS.findEinstellung(
             TSEinstellungKey.ZUSCHLAG_BEHINDERUNG_PRO_STD,
             this.gesuchModelManager.getGemeinde().id,
-            this.gesuchModelManager.getGesuchsperiode().id
+            gesuchsperiodeId
         ).subscribe(res => {
             this.zuschlagBehinderungProStd = Number(res.value);
         }, error => LOG.error(error));
