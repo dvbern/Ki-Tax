@@ -66,7 +66,11 @@ public class AppenzellFinanzielleSituationDokumente extends AbstractDokumente<Ab
 		final GesuchstellerContainer gesuchsteller1 = gesuch.getGesuchsteller1();
 		Objects.requireNonNull(gesuchsteller1);
 		addDokumenteGesuchsteller(gesuchsteller1, 1, gesuch, anlageVerzeichnis);
-		addDokumentAppenzellSpezialFall(gesuchsteller1.getFinanzielleSituationContainer(), anlageVerzeichnis);
+
+		Familiensituation familiensituation = gesuch.extractFamiliensituation();
+		if (familiensituation != null && familiensituation.isSpezialFallAR()) {
+			addDokumentAppenzellSpezialFall(gesuchsteller1.getFinanzielleSituationContainer(), anlageVerzeichnis);
+		}
 	}
 
 	private void addDokumentAppenzellSpezialFall(
