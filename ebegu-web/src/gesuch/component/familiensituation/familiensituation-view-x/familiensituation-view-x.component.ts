@@ -420,19 +420,16 @@ export class FamiliensituationViewXComponent extends AbstractFamiliensitutaionVi
         const endDatum: string = this.getFamiliensituation()
                 .getStartKonkubinatEndofMonthPlusMinDauer()
                 .format(CONSTANTS.DATE_FORMAT);
-        if (isNullOrUndefined(this.getGesuch().gesuchsteller2)) {
-            return this.$translate.instant('FAMILIENSITUATION_X_JAHRE_KONKUBINAT_MSG',
-                    {
-                        namegs2: this.$translate.instant('FAMILIENSITUATION_FRAGE_PARTNERIDENTISCH_ANDERER_ELTERNTEIL'),
-                        endeDatum: endDatum
-                    });
-        } else {
-            return this.$translate.instant('FAMILIENSITUATION_X_JAHRE_KONKUBINAT_MSG',
-                    {
-                        namegs2: this.getGesuch().gesuchsteller2.extractFullName(),
-                        endeDatum: endDatum
-                    });
-        }
+
+        const nameGs2 = isNullOrUndefined(this.getGesuch().gesuchsteller2) ?
+                this.$translate.instant('FAMILIENSITUATION_ANDERE_ERZIEHUNGSBERCHTIGTE_PERSION') :
+                this.getGesuch().gesuchsteller2.extractFullName();
+
+        return this.$translate.instant('FAMILIENSITUATION_X_JAHRE_KONKUBINAT_MSG',
+                {
+                    namegs2: nameGs2,
+                    endeDatum: endDatum
+                });
     }
 
     public gesuchstellerKardinalitaetChange(): void {
