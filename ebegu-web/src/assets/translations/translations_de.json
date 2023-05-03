@@ -3131,5 +3131,8 @@
     "INSTITUTION_NOT_FOUND_HINT": "",
     "POPUPTEXT_AFTER_REGISTRIEREN": "",
     "ANSPRUCH_AB_X_MONATEN": "Anspruch ab (in Monaten)",
+    "ANGEBOT_FI_ENABLED": "Angebot Ferieninseln aktiviert",
+    "ANGEBOT_TS_ENABLED": "Angebot Tagesschulen aktiviert",
+    "ANGEBOT_TFO_ENABLED": "Angebot Tagesfamilienorganisationen aktiviert",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }
