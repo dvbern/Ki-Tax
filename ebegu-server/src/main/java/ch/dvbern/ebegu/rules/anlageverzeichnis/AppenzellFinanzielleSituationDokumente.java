@@ -65,7 +65,7 @@ public class AppenzellFinanzielleSituationDokumente extends AbstractDokumente<Ab
 	private void addDokumenteGS1(Gesuch gesuch, Set<DokumentGrund> anlageVerzeichnis) {
 		final GesuchstellerContainer gesuchsteller1 = gesuch.getGesuchsteller1();
 		Objects.requireNonNull(gesuchsteller1);
-		addDokumenteGesuchsteller(gesuchsteller1, 1, gesuch, anlageVerzeichnis);
+		addDokumenteGesuchsteller(gesuchsteller1, 1, anlageVerzeichnis);
 
 		Familiensituation familiensituation = gesuch.extractFamiliensituation();
 		if (familiensituation != null && familiensituation.isSpezialFallAR()) {
@@ -88,13 +88,12 @@ public class AppenzellFinanzielleSituationDokumente extends AbstractDokumente<Ab
 
 	private void addDokumenteGS2(Gesuch gesuch, Set<DokumentGrund> anlageVerzeichnis) {
 		final GesuchstellerContainer gesuchsteller2 = gesuch.getGesuchsteller2();
-		addDokumenteGesuchsteller(gesuchsteller2, 2, gesuch, anlageVerzeichnis);
+		addDokumenteGesuchsteller(gesuchsteller2, 2, anlageVerzeichnis);
 	}
 
 	private void addDokumenteGesuchsteller(
 			@Nullable GesuchstellerContainer gesuchsteller,
 			int gesuchstellerNumber,
-			Gesuch gesuch,
 			Set<DokumentGrund> anlageVerzeichnis) {
 		if (gesuchsteller == null || gesuchsteller.getFinanzielleSituationContainer() == null) {
 			return;
