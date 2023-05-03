@@ -46,6 +46,7 @@ import {TSBenutzerNoDetails} from '../../../models/TSBenutzerNoDetails';
 import {TSGemeinde} from '../../../models/TSGemeinde';
 import {TSMitteilung} from '../../../models/TSMitteilung';
 import {TSMtteilungSearchresultDTO} from '../../../models/TSMitteilungSearchresultDTO';
+import {TSMitteilungVerarbeitunsStatus} from '../../../models/TSMitteilungVerarbeitunsStatus';
 import {EbeguUtil} from '../../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 import {DvNgConfirmDialogComponent} from '../../core/component/dv-ng-confirm-dialog/dv-ng-confirm-dialog.component';
@@ -76,6 +77,8 @@ export class PosteingangViewComponent implements OnInit, OnDestroy, AfterViewIni
     private readonly log: Log = LogFactory.createLog('PosteingangViewComponent');
 
     private readonly unsubscribe$ = new Subject<void>();
+
+    private alleMitteilungenVerarbeitung: Observable<Map<TSMitteilung, TSMitteilungVerarbeitunsStatus>>;
 
     private keyupTimeout: NodeJS.Timeout;
     private readonly timeoutMS = 700;
@@ -508,8 +511,8 @@ export class PosteingangViewComponent implements OnInit, OnDestroy, AfterViewIni
                         },
                         sort: this.sort
                     };
-                    this.mitteilungRS.applyAlleBetreuungsmitteilungen(body).then(
-                        resultList => {
+                    this.alleMitteilungenVerarbeitung = this.mitteilungRS.applyAlleBetreuungsmitteilungen(body);
+                    this.alleMitteilungenVerarbeitung.subscribe(resultList => {
                             dialogConfig.data = resultList;
                             dialogConfig.disableClose = true;
                             this.dialog.open(DvNgMitteilungResultDialogComponent, dialogConfig).afterClosed()
