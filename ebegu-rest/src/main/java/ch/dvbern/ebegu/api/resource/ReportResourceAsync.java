@@ -54,6 +54,7 @@ import ch.dvbern.ebegu.entities.InstitutionStammdaten;
 import ch.dvbern.ebegu.entities.Workjob;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.WorkJobType;
+import ch.dvbern.ebegu.enums.reporting.DatumTyp;
 import ch.dvbern.ebegu.enums.reporting.ReportVorlage;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
@@ -168,7 +169,7 @@ public class ReportResourceAsync {
 	public Response getGesuchZeitraumReportExcel(
 		@QueryParam("dateTimeFrom") @Nonnull String dateTimeFromParam,
 		@QueryParam("dateTimeTo") @Nonnull String dateTimeToParam,
-		@QueryParam("gesuchDatumTyp") @Nonnull @Valid String gesuchDatumTyp,
+		@QueryParam("gesuchDatumTyp") @Nonnull @Valid String gesuchDatumTypParam,
 		@QueryParam("gesuchPeriodeID") @Nullable @Valid JaxId gesuchPeriodIdParam,
 		@Context HttpServletRequest request,
 		@Context UriInfo uriInfo)
@@ -178,8 +179,10 @@ public class ReportResourceAsync {
 
 		Objects.requireNonNull(dateTimeFromParam);
 		Objects.requireNonNull(dateTimeToParam);
+		Objects.requireNonNull(gesuchDatumTypParam);
 		LocalDate dateFrom = DateUtil.parseStringToDateOrReturnNow(dateTimeFromParam);
 		LocalDate dateTo = DateUtil.parseStringToDateOrReturnNow(dateTimeToParam);
+		DatumTyp gesuchDatumTyp = DatumTyp.valueOf(gesuchDatumTypParam);
 
 		if (!dateTo.isAfter(dateFrom)) {
 			throw new EbeguRuntimeException(
@@ -199,6 +202,7 @@ public class ReportResourceAsync {
 				: ReportVorlage.VORLAGE_REPORT_GESUCH_ZEITRAUM_DE,
 			dateFrom,
 			dateTo,
+			gesuchDatumTyp,
 			periodeId,
 			LocaleThreadLocal.get(),
 			Objects.requireNonNull(principalBean.getMandant())

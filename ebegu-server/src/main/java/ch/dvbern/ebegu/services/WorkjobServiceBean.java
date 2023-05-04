@@ -59,6 +59,7 @@ import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.enums.WorkJobConstants;
 import ch.dvbern.ebegu.enums.reporting.BatchJobStatus;
+import ch.dvbern.ebegu.enums.reporting.DatumTyp;
 import ch.dvbern.ebegu.enums.reporting.ReportVorlage;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.errors.KibonLogLevel;
@@ -73,6 +74,7 @@ import org.slf4j.LoggerFactory;
 import static ch.dvbern.ebegu.enums.WorkJobConstants.BETRAG_PRO_KIND;
 import static ch.dvbern.ebegu.enums.WorkJobConstants.DATE_FROM_PARAM;
 import static ch.dvbern.ebegu.enums.WorkJobConstants.DATE_TO_PARAM;
+import static ch.dvbern.ebegu.enums.WorkJobConstants.DATUM_TYP;
 import static ch.dvbern.ebegu.enums.WorkJobConstants.DO_SAVE;
 import static ch.dvbern.ebegu.enums.WorkJobConstants.INKL_BG_GESUCHE;
 import static ch.dvbern.ebegu.enums.WorkJobConstants.INKL_MISCH_GESUCHE;
@@ -158,6 +160,7 @@ public class WorkjobServiceBean extends AbstractBaseService implements WorkjobSe
 			vorlage,
 			datumVon,
 			datumBis,
+			null,
 			gesuchPeriodIdParam,
 			null,
 			inklBgGesuche,
@@ -181,6 +184,7 @@ public class WorkjobServiceBean extends AbstractBaseService implements WorkjobSe
 		@Nonnull ReportVorlage vorlage,
 		@Nullable LocalDate datumVon,
 		@Nullable LocalDate datumBis,
+		@Nullable DatumTyp datumTyp,
 		@Nullable String gesuchPeriodIdParam,
 		@Nullable String stammdatenIdParam,
 		boolean inklBgGesuche,
@@ -211,6 +215,9 @@ public class WorkjobServiceBean extends AbstractBaseService implements WorkjobSe
 			jobParameters.setProperty(DATE_TO_PARAM, datumBisString);
 		}
 
+		if (datumTyp != null) {
+			jobParameters.setProperty(DATUM_TYP, String.valueOf(datumTyp));
+		}
 		jobParameters.setProperty(INKL_BG_GESUCHE, String.valueOf(inklBgGesuche));
 		jobParameters.setProperty(REPORT_MANDANT_ID, mandant.getId());
 		jobParameters.setProperty(INKL_MISCH_GESUCHE, String.valueOf(inklMischGesuche));
@@ -315,6 +322,7 @@ public class WorkjobServiceBean extends AbstractBaseService implements WorkjobSe
 			vorlage,
 			datumVon,
 			datumBis,
+			null,
 			gesuchPeriodIdParam,
 			null,
 			false,
@@ -339,6 +347,7 @@ public class WorkjobServiceBean extends AbstractBaseService implements WorkjobSe
 		return createNewReporting(
 			workJob,
 			vorlage,
+			null,
 			null,
 			null,
 			null,
@@ -372,6 +381,7 @@ public class WorkjobServiceBean extends AbstractBaseService implements WorkjobSe
 			vorlage,
 			null,
 			null,
+			null,
 			gesuchsperiodeId,
 			stammdatenId,
 			false,
@@ -387,6 +397,34 @@ public class WorkjobServiceBean extends AbstractBaseService implements WorkjobSe
 			null,
 			locale,
 			mandant);
+	}
+
+	@Nonnull
+	@Override
+	public Workjob createNewReporting(@Nonnull final Workjob workJob, @Nonnull final ReportVorlage vorlage, @Nullable final LocalDate datumVon, @Nullable final LocalDate datumBis,
+		@Nonnull final DatumTyp datumTyp, @Nullable final String gesuchPeriodIdParam, @Nonnull final Locale locale, @Nonnull final Mandant mandant) {
+		return createNewReporting(
+			workJob,
+			vorlage,
+			datumVon,
+			datumBis,
+			datumTyp,
+			gesuchPeriodIdParam,
+			null,
+			false,
+			false,
+			false,
+			false,
+			null,
+			null,
+			null,
+			null,
+			false,
+			BigDecimal.ZERO,
+			null,
+			locale,
+			mandant
+		);
 	}
 
 	private void setPropertyIfPresent(@Nonnull Properties jobParameters, @Nonnull String paramName, @Nullable String paramValue) {
