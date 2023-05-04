@@ -185,7 +185,7 @@ public class BetreuungsgutscheinEvaluator {
 			// EBEGU-561)
 			List<AbstractPlatz> plaetzeList = new ArrayList<>(kindContainer.getBetreuungen());
 			plaetzeList.addAll(kindContainer.getAnmeldungenTagesschule());
-			plaetzeList.sort(new BetreuungComparatorVisitor().getComparatorForMandant(gesuch.extractGemeinde().getMandant()));
+			plaetzeList.sort(new BetreuungComparatorVisitor().getComparatorForMandant(gesuch.extractMandant()));
 
 			for (AbstractPlatz platz : plaetzeList) {
 
