@@ -16,14 +16,52 @@
 package ch.dvbern.ebegu.util;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Comparator;
 
 import ch.dvbern.ebegu.entities.AbstractPlatz;
+import ch.dvbern.ebegu.entities.Betreuung;
 
 public class BetreuungComparatorAppenzell implements Comparator<AbstractPlatz>, Serializable {
 
+	private static final long serialVersionUID = 3590090321514756785L;
+
 	@Override
 	public int compare(AbstractPlatz platz1, AbstractPlatz platz2) {
-		return 0;
+		// Reihenfolge ist nur fuer Betreuungen relevant für Restanspruch, daher werden nur Betreuungen verglichen.
+		// Anmeldungen Tagesschule beliben immer am gleichen Ort in Relation zu Betreuungen
+		if (!(platz1 instanceof Betreuung && platz2 instanceof Betreuung)) {
+			return 0;
+		}
+
+		Betreuung betreuung1 = (Betreuung) platz1;
+		Betreuung betreuung2 = (Betreuung) platz2;
+
+		BigDecimal durchschnittlicheVollkosten1 = calculateDurchschnittlicheVollkosten(betreuung1);
+		BigDecimal durchschnittlicheVollkosten2 = calculateDurchschnittlicheVollkosten(betreuung2);
+
+		//wenn die durchschnittlichen Vollkosten gleich hoch sind, wird nach der Berner Reger verglichen
+		if (durchschnittlicheVollkosten1.compareTo(durchschnittlicheVollkosten2) == 0) {
+			return new BetreuungComparatorBern().compare(platz1, platz2);
+		}
+
+		return durchschnittlicheVollkosten2.compareTo(durchschnittlicheVollkosten1);
+	}
+
+	private BigDecimal calculateDurchschnittlicheVollkosten(Betreuung betreuung) {
+		BigDecimal anzahlBetreuungsStunden =  betreuung.getBetreuungspensumContainers().stream()
+				.map(betreuungspensumContainer -> betreuungspensumContainer.getBetreuungspensumJA().getPensum())
+				.reduce(BigDecimal.ZERO, BigDecimal::add);
+
+		if (MathUtil.isZero(anzahlBetreuungsStunden)) {
+			return BigDecimal.ZERO;
+		}
+
+		BigDecimal totalVollkosten = betreuung.getBetreuungspensumContainers().stream()
+				.map(betreuungspensumContainer -> betreuungspensumContainer.getBetreuungspensumJA().getMonatlicheBetreuungskosten())
+				.reduce(BigDecimal.ZERO, BigDecimal::add);
+
+
+		return MathUtil.EXACT.divide(totalVollkosten, anzahlBetreuungsStunden);
 	}
 }
