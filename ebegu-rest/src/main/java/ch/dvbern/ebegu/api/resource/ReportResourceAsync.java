@@ -168,6 +168,7 @@ public class ReportResourceAsync {
 	public Response getGesuchZeitraumReportExcel(
 		@QueryParam("dateTimeFrom") @Nonnull String dateTimeFromParam,
 		@QueryParam("dateTimeTo") @Nonnull String dateTimeToParam,
+		@QueryParam("gesuchDatumTyp") @Nonnull @Valid String gesuchDatumTyp,
 		@QueryParam("gesuchPeriodeID") @Nullable @Valid JaxId gesuchPeriodIdParam,
 		@Context HttpServletRequest request,
 		@Context UriInfo uriInfo)

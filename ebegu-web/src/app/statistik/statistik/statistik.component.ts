@@ -214,6 +214,7 @@ export class StatistikComponent implements OnInit, OnDestroy {
             case TSStatistikParameterType.GESUCH_ZEITRAUM:
                 this.reportAsyncRS.getGesuchZeitraumReportExcel(this.statistikParameter.von.format(this.DATE_PARAM_FORMAT),
                     this.statistikParameter.bis.format(this.DATE_PARAM_FORMAT),
+                    this.statistikParameter.gesuchZeitraumDatumTyp,
                     this.statistikParameter.gesuchsperiode ?
                         this.statistikParameter.gesuchsperiode :
                         null)

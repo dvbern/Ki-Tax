@@ -20,6 +20,7 @@ import {TSAbstractMutableEntity} from './TSAbstractMutableEntity';
 import {TSGemeinde} from './TSGemeinde';
 import {TSInstitution} from './TSInstitution';
 import {TSInstitutionStammdaten} from './TSInstitutionStammdaten';
+import {TSDatumTyp} from "./enums/TSDatumTyp";
 
 export class TSStatistikParameter extends TSAbstractMutableEntity {
     private _jahr: number;
@@ -39,6 +40,7 @@ export class TSStatistikParameter extends TSAbstractMutableEntity {
     private _kantonSelbstbehalt: number;
     private _gemeinde: TSGemeinde;
 	private _institution: TSInstitution;
+    private _gesuchZeitraumDatumTyp: TSDatumTyp = TSDatumTyp.VERFUEGUNGSDATUM;
 
     public constructor(gesuchsperiode?: string, stichtag?: moment.Moment,
                        von?: moment.Moment, bis?: moment.Moment
@@ -185,4 +187,12 @@ export class TSStatistikParameter extends TSAbstractMutableEntity {
 	public set institution(value: TSInstitution) {
 		this._institution = value;
 	}
+
+    get gesuchZeitraumDatumTyp(): TSDatumTyp {
+        return this._gesuchZeitraumDatumTyp;
+    }
+
+    set gesuchZeitraumDatumTyp(value: TSDatumTyp) {
+        this._gesuchZeitraumDatumTyp = value;
+    }
 }

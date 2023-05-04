@@ -111,12 +111,28 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="col-xs-3 statistik-button">
-                                        <dv-loading-button [type]="'submit'"
-                                                           style="margin-left:auto;margin-right:auto;width:13rem;">
-                                            <span class="uppercase" translate>GENERIEREN</span>
-                                        </dv-loading-button>
+
+                                    <div class="col-xs-3">
+                                        <div class="form-group">
+                                            <label class="md-no-float" translate>FILTERNNACH</label>
+
+                                            <mat-radio-group name="creationType"
+                                                             [(ngModel)]="statistikParameter.gesuchZeitraumDatumTyp"
+                                                             required>
+
+                                                <mat-radio-button [value]="'VERFUEGUNGSDATUM'">{{'VERFUEGUNGSDATUM'|translate}}</mat-radio-button>
+
+                                                <mat-radio-button [value]="'EINREICHEDATUM'">{{'EINREICHEDATUM'|translate}}</mat-radio-button>
+                                            </mat-radio-group>
+                                        </div>
                                     </div>
+
+                                </div>
+                                <div class="generieren-button statistik-button">
+                                    <dv-loading-button type="submit"
+                                                       style="margin-left:auto;margin-right:auto;width:13rem;">
+                                        <span class="uppercase" translate>GENERIEREN</span>
+                                    </dv-loading-button>
                                 </div>
                             </form>
                         </tab-body>
