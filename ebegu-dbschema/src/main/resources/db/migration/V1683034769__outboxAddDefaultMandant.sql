@@ -1,13 +1,5 @@
-echo script name:
-read -r scriptname
-
-timestamp="$(date +%s)"
-year=$(date +'%Y')
-filename="V${timestamp}__${scriptname}.sql"
-filepath="ebegu-dbschema/src/main/resources/db/migration/"
-
-echo "/*
- * Copyright (C) ${year} DV Bern AG, Switzerland
+/*
+ * Copyright (C) 2023 DV Bern AG, Switzerland
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -21,7 +13,11 @@ echo "/*
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
- */" >> "$filepath$filename"
+ */
 
-
-git add "$filepath$filename"
+update outbox_event
+set avro_schema = REPLACE(
+		avro_schema,
+		'"symbols":["BERN","LUZERN","SOLOTHURN","APPENZELL_AUSSERRHODEN"]',
+		'"symbols":["BERN","LUZERN","SOLOTHURN","APPENZELL_AUSSERRHODEN","UNKNOWN"],"default":"UNKNOWN"'
+	);
