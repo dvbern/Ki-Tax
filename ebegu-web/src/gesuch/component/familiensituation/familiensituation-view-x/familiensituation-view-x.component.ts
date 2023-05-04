@@ -42,6 +42,7 @@ import {
 } from '../../../../models/enums/TSUnterhaltsvereinbarungAnswer';
 import {TSEinstellung} from '../../../../models/TSEinstellung';
 import {TSFamiliensituation} from '../../../../models/TSFamiliensituation';
+import {TSGesuch} from '../../../../models/TSGesuch';
 import {EbeguUtil} from '../../../../utils/EbeguUtil';
 import {BerechnungsManager} from '../../../service/berechnungsManager';
 import {FamiliensituationRS} from '../../../service/familiensituationRS.service';
@@ -359,7 +360,7 @@ export class FamiliensituationViewXComponent extends AbstractFamiliensitutaionVi
             return this.$translate.instant('FAMILIENSITUATION_FRAGE_PARTNERIDENTISCH_WARNBEZ_EHEPARTNER');
         }
         if ((familienstatus === TSFamilienstatus.ALLEINERZIEHEND) ||
-                (familienstatus === TSFamilienstatus.KONKUBINAT_KEIN_KIND && !this.konkubinatIsTwoYearsOld())){
+                (familienstatus === TSFamilienstatus.KONKUBINAT_KEIN_KIND && !this.konkubinatIsXYearsOldInPeriode())){
             return this.$translate.instant('FAMILIENSITUATION_FRAGE_PARTNERIDENTISCH_WARNBEZ_ANDERER_ELTERNTEIL');
         }
         return this.$translate.instant('FAMILIENSITUATION_FRAGE_PARTNERIDENTISCH_WARNBEZ_KONKUBINTASPARTNER');
@@ -378,7 +379,7 @@ export class FamiliensituationViewXComponent extends AbstractFamiliensitutaionVi
             } );
         }
         if ((familienstatus === TSFamilienstatus.ALLEINERZIEHEND) ||
-                (familienstatus === TSFamilienstatus.KONKUBINAT_KEIN_KIND && !this.konkubinatIsTwoYearsOld())){
+                (familienstatus === TSFamilienstatus.KONKUBINAT_KEIN_KIND && !this.konkubinatIsXYearsOldInPeriode())){
             return this.$translate.instant('FAMILIENSITUATION_FRAGE_PARTNERIDENTISCH_ANDERER_ELTERNTEIL', {
                 namegs2: this.getNameGesuchsteller2()
             } );
@@ -388,26 +389,23 @@ export class FamiliensituationViewXComponent extends AbstractFamiliensitutaionVi
         } );
     }
 
-    private konkubinatIsTwoYearsOld(): boolean {
-        const gesuch = this.gesuchModelManager.getGesuch();
+    private konkubinatIsXYearsOldInPeriode(): boolean {
+        const gesuch: TSGesuch = this.gesuchModelManager.getGesuch();
         return gesuch.extractFamiliensituation()
-                .konkubinatGetsLongerThanXYearsBeforeEndOfPeriode(
-                gesuch.gesuchsperiode.gueltigkeit.gueltigBis
-                );
+                .konkubinatGetXYearsInPeriod(this.getGesuch().gesuchsperiode.gueltigkeit);
     }
 
-    public erstAntragWirdBeendet(): boolean {
-        if (this.getGesuch().isMutation()){
+    public antragWirdBeendet(): boolean {
+        if ( !this.konkubinatIsXYearsOldInPeriode()){
             return false;
         }
+
         const isKonkubinatKeinKind: boolean = this.getFamiliensituation().familienstatus
                 === TSFamilienstatus.KONKUBINAT_KEIN_KIND;
         const isGeteilteObhut: boolean = this.getFamiliensituation().geteilteObhut;
         const isUnterhaltsMitAndererPerson: boolean = this.getFamiliensituation().gesuchstellerKardinalitaet
                 === TSGesuchstellerKardinalitaet.ZU_ZWEIT;
-        const konkubinatShorter: boolean = this.getFamiliensituation()
-                .konkubinatIsShorterThanXYearsAtAnyTimeAfterStartOfPeriode(this.gesuchModelManager.getGesuchsperiode());
-        if (isKonkubinatKeinKind && isGeteilteObhut && isUnterhaltsMitAndererPerson && konkubinatShorter) {
+        if (isKonkubinatKeinKind && isGeteilteObhut && isUnterhaltsMitAndererPerson) {
             return true;
         }
         const keineUnterhaltsVereinbarung: boolean = this.getFamiliensituation().unterhaltsvereinbarung

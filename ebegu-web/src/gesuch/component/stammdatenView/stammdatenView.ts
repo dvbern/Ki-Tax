@@ -226,9 +226,7 @@ export class StammdatenViewController extends AbstractGesuchViewController<TSGes
 
         switch (familienstatus) {
             case TSFamilienstatus.KONKUBINAT_KEIN_KIND:
-                if (!tsFamiliensituation
-                    .konkubinatGetsLongerThanXYearsBeforeEndOfPeriode(
-                        this.getGesuch().gesuchsperiode.gueltigkeit.gueltigBis)) {
+                if (tsFamiliensituation.konkubinatGetXYearsInPeriod(this.getGesuch().gesuchsperiode.gueltigkeit)) {
                     return `2 (${this.$translate.instant('ANDERER_ELTERNTEIL')})`;
                 }
                 break;

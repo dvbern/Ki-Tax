@@ -36,7 +36,7 @@
                 </div>
             </div>
         </div>
-		<div class="row" *ngIf="erstAntragWirdBeendet()">
+		<div class="row" *ngIf="antragWirdBeendet()">
 			<div class="col-xs-12">
 				<div class="well well-status-warten minus-margin">
 					<i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
@@ -291,16 +291,6 @@
 							</div>
 						</div>
 					</div>
-
-                    <div class="row" *ngIf="isNotPartnerIdentischMitVorgesuch()">
-                        <div class="col-xs-12">
-                            <div class="well well-status-warten minus-margin">
-                                <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
-                                <span>{{getNotPertnerIdentischMitVorgesuchWarning()}}</span>
-                            </div>
-                        </div>
-                    </div>
-
 				</fieldset>
 				<div class="row">
 					<div class="col-md-12">

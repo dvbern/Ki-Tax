@@ -38,7 +38,8 @@ public class FamiliensituationBeendetAbschnittRule extends AbstractAbschnittRule
 		Familiensituation familiensituation = platz.extractGesuch().extractFamiliensituation();
 		final List<VerfuegungZeitabschnitt> neueZeitabschnitte = new LinkedList<>();
 
-		if (familiensituation.getFamilienstatus().equals(EnumFamilienstatus.KONKUBINAT_KEIN_KIND)) {
+		if (familiensituation != null &&
+				familiensituation.getFamilienstatus().equals(EnumFamilienstatus.KONKUBINAT_KEIN_KIND)) {
 			LocalDate startKonkubinat = familiensituation.getStartKonkubinat();
 			if (null == startKonkubinat) {
 				return neueZeitabschnitte;
@@ -83,6 +84,7 @@ public class FamiliensituationBeendetAbschnittRule extends AbstractAbschnittRule
 				createZeitabschnittWithinValidityPeriodOfRule(new DateRange(
 						zweiJahreKonkubinatNextMonth,
 						gesuch.getGesuchsperiode().getGueltigkeit().getGueltigBis()));
+		abschnittNachJahrenKonkubinat.setGesuchBeendenKonkubinatWirdInPeriodeXJahreAlt(true);
 		neueZeitabschnitte.add(abschnittNachJahrenKonkubinat);
 
 	}

@@ -13,12 +13,9 @@ import ch.dvbern.ebegu.entities.Familiensituation;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.EnumFamilienstatus;
-import ch.dvbern.ebegu.enums.EnumGesuchstellerKardinalitaet;
 import ch.dvbern.ebegu.enums.MsgKey;
-import ch.dvbern.ebegu.enums.UnterhaltsvereinbarungAnswer;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.Constants;
-import ch.dvbern.ebegu.util.EbeguUtil;
 import com.google.common.collect.ImmutableList;
 
 import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.KITA;
@@ -38,76 +35,39 @@ public class FamiliensituationBeendetCalcRule extends AbstractCalcRule {
 	void executeRule(
 			@Nonnull AbstractPlatz platz,
 			@Nonnull BGCalculationInput inputData) {
-		executeGesuchBeendenIfNecessary(platz, inputData);
+		evaluateGesuchBeenden(platz, inputData);
 		executePartnerNotIdentischMitVorgesuch(platz, inputData);
 	}
 
-	private void executeGesuchBeendenIfNecessary(
+	private void evaluateGesuchBeenden(
 			@Nonnull AbstractPlatz platz,
 			@Nonnull BGCalculationInput inputData) {
 
-		Familiensituation familiensituation = platz.extractGesuch().extractFamiliensituation();
-		if (null == familiensituation) {
+		if (inputData.isGesuchBeendenKonkubinatWirdInPeriodeXJahreAlt()) {
+			executeGesuchBeenden(platz, inputData);
 			return;
 		}
-		if (!familiensituation.getFamilienstatus().equals(EnumFamilienstatus.KONKUBINAT_KEIN_KIND)) {
-			return;
-		}
-		LocalDate startKonkubinat = familiensituation.getStartKonkubinat();
-		if (null == startKonkubinat) {
-			return;
-		}
-		LocalDate startKonkubinatPlusMindauer = familiensituation.getStartKonkubinatPlusMindauer(startKonkubinat);
+	}
 
+	private void executeGesuchBeenden(
+			AbstractPlatz platz,
+			BGCalculationInput inputData) {
+		Familiensituation familiensituation = platz.extractGesuch().extractFamiliensituation();
+		LocalDate startKonkubinat = Objects.requireNonNull(familiensituation).getStartKonkubinat();
 		String konkubinatEndOfMonthPlusMinDauerKonkubinat =
-				familiensituation.getStartKonkubinatPlusMindauerEndOfMonth(startKonkubinat)
+				familiensituation.getStartKonkubinatPlusMindauerEndOfMonth(Objects.requireNonNull(startKonkubinat))
 						.format(Constants.DATE_FORMATTER);
 
-		if (sollBeendetWerden(
-				familiensituation,
-				inputData.getParent().getGueltigkeit(),
-				startKonkubinatPlusMindauer)) {
-			inputData.setAnspruchspensumProzent(ZERO);
-			inputData.setAnspruchspensumRest(ZERO);
-			inputData.addBemerkung(
-					MsgKey.FAMILIENSITUATION_X_JAHRE_KONKUBINAT_MSG,
-					getLocale(),
-					getGesuchstellerPartnerName(platz),
-					konkubinatEndOfMonthPlusMinDauerKonkubinat);
-		}
+		inputData.setAnspruchspensumProzent(ZERO);
+		inputData.setAnspruchspensumRest(ZERO);
+		inputData.addBemerkung(
+				MsgKey.FAMILIENSITUATION_X_JAHRE_KONKUBINAT_MSG,
+				getLocale(),
+				getGesuchstellerPartnerName(platz),
+				konkubinatEndOfMonthPlusMinDauerKonkubinat);
 	}
 
-	private boolean sollBeendetWerden(
-			@Nonnull Familiensituation familiensituation,
-			@Nonnull DateRange gueltigkeit,
-			@Nonnull LocalDate startKonkubinatPlusMindauer) {
-		//das x-Jahresdatum liegt in der Periode
-		return isGesuchBeendenNoetig(familiensituation) &&
-				gueltigkeit.isAfter(startKonkubinatPlusMindauer);
-	}
-
-	private boolean isGesuchBeendenNoetig(@Nonnull Familiensituation familiensituation) {
-		if (familiensituation.getFamilienstatus().equals(EnumFamilienstatus.KONKUBINAT_KEIN_KIND) &&
-				EbeguUtil.isNotNullAndTrue(familiensituation.getGeteilteObhut()) &&
-				Objects.requireNonNull(familiensituation.getGesuchstellerKardinalitaet())
-						.equals(EnumGesuchstellerKardinalitaet.ALLEINE)) {
-			//Ja, Konkubinatspartner/in ohne gemeinsames Kind AND
-			//Geteilte Obhut Ja AND
-			//Antrag alleine
-			return false;
-		} else if (EbeguUtil.isNotNullAndFalse(familiensituation.getGeteilteObhut())) {
-			Objects.requireNonNull(familiensituation.getUnterhaltsvereinbarung());
-			// Geteilte Obhut nein AND
-			// Unterhaltsvereinbarung Ja oder nicht-möglich
-			return !familiensituation.getUnterhaltsvereinbarung()
-					.equals(UnterhaltsvereinbarungAnswer.UNTERHALTSVEREINBARUNG_NICHT_MOEGLICH) &&
-					!familiensituation.getUnterhaltsvereinbarung()
-							.equals(UnterhaltsvereinbarungAnswer.JA_UNTERHALTSVEREINBARUNG);
-		}
-		return true;
-	}
-
-		private void executePartnerNotIdentischMitVorgesuch (
+	private void executePartnerNotIdentischMitVorgesuch (
 				@Nonnull AbstractPlatz platz,
 				@Nonnull BGCalculationInput inputData){
 			if (null == inputData.getPartnerIdentischMitVorgesuch() || inputData.getPartnerIdentischMitVorgesuch()) {

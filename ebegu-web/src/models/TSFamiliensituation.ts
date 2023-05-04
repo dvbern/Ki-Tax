@@ -21,6 +21,7 @@ import {TSUnterhaltsvereinbarungAnswer} from './enums/TSUnterhaltsvereinbarungAn
 import {TSAbstractMutableEntity} from './TSAbstractMutableEntity';
 import {TSAdresse} from './TSAdresse';
 import {TSGesuchsperiode} from './TSGesuchsperiode';
+import {TSDateRange} from './types/TSDateRange';
 
 export class TSFamiliensituation extends TSAbstractMutableEntity {
 
@@ -243,8 +244,8 @@ export class TSFamiliensituation extends TSAbstractMutableEntity {
     }
 
     public getStartKonkubinatPlusMinDauer( ): moment.Moment {
-        const konkubinat_start: moment.Moment = this.startKonkubinat.clone();
-        return konkubinat_start.add(this.minDauerKonkubinat, 'years');
+        const konkubinat_start: moment.Moment = moment(this.startKonkubinat.clone());
+        return konkubinat_start.add({years: this.minDauerKonkubinat});
     }
 
     public getStartKonkubinatEndofMonthPlusMinDauer( ): moment.Moment {
@@ -263,8 +264,11 @@ export class TSFamiliensituation extends TSAbstractMutableEntity {
         }
         if(this.familienstatus === TSFamilienstatus.APPENZELL) {
             same = EbeguUtil.areSameOrWithoutValue(this.geteilteObhut, other.geteilteObhut)
-                && EbeguUtil.areSameOrWithoutValue(this.gemeinsamerHaushaltMitObhutsberechtigterPerson, other.gemeinsamerHaushaltMitObhutsberechtigterPerson)
-                && EbeguUtil.areSameOrWithoutValue(this.gemeinsamerHaushaltMitPartner, other.gemeinsamerHaushaltMitPartner);
+                && EbeguUtil.areSameOrWithoutValue(
+                        this.gemeinsamerHaushaltMitObhutsberechtigterPerson,
+                            other.gemeinsamerHaushaltMitObhutsberechtigterPerson)
+                && EbeguUtil.areSameOrWithoutValue(
+                        this.gemeinsamerHaushaltMitPartner, other.gemeinsamerHaushaltMitPartner);
         }
         return same;
     }
@@ -353,5 +357,14 @@ export class TSFamiliensituation extends TSAbstractMutableEntity {
 
     private hasSecondGesuchstellerAppenzell(): boolean {
         return this.geteilteObhut && this.gemeinsamerHaushaltMitObhutsberechtigterPerson;
+    }
+
+    public konkubinatGetXYearsInPeriod(gueltigkeit: TSDateRange): boolean {
+        if(EbeguUtil.isNullOrUndefined(this.startKonkubinat)){
+            return false;
+        }
+        return this.getStartKonkubinatPlusMinDauer().isAfter(gueltigkeit.gueltigAb)
+                && this.getStartKonkubinatPlusMinDauer().isBefore(gueltigkeit.gueltigBis);
+
     }
 }
