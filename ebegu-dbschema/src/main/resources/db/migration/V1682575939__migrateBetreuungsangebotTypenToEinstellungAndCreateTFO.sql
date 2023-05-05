@@ -38,3 +38,6 @@ INSERT IGNORE INTO application_property (id, mandant_id, timestamp_erstellt, tim
 SELECT UNHEX(REPLACE(UUID(), '-', '')), id, NOW(), NOW(), 'flyway', 'flyway', 0, NULL,
 	'ANGEBOT_TFO_ENABLED', 'true'
 FROM mandant;
+
+update application_property set value = 'false'
+where name = 'ANGEBOT_TFO_ENABLED' and mandant_id = (select id from mandant where mandant_identifier = 'APPENZELL_AUSSERRHODEN');
