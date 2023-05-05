@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2021 DV Bern AG, Switzerland
+ * Copyright (C) 2023 DV Bern AG, Switzerland
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -14,9 +14,8 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-
-export enum TSFachstellenTyp {
-    BERN = 'BERN',
-    LUZERN = 'LUZERN',
-    KEINE =  'KEINE'
-}
+UPDATE einstellung
+SET value = 'KEINE'
+WHERE einstellung_key = 'FACHSTELLEN_TYP' AND gesuchsperiode_id in
+ (SELECT id FROM gesuchsperiode where
+    gesuchsperiode.mandant_id = (SELECT id FROM mandant WHERE mandant_identifier = 'APPENZELL_AUSSERRHODEN'));

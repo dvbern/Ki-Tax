@@ -306,7 +306,7 @@
                         <ng-container ng-if="vm.showExtendedKindQuestions()">
 
                             <!--Show Fachstelle?-->
-                            <div class="row">
+                            <div class="row" ng-if="vm.isFachstellenActivated()">
                                 <div class="col-xs-12 dv-input-container-question">
                                     <div class="checkbox checkbox-with-margin"
                                          ng-show="vm.getModel().familienErgaenzendeBetreuung">
