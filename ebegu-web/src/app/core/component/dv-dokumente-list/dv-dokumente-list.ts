@@ -1,22 +1,25 @@
 /*
- * Ki-Tax: System for the management of external childcare subsidies
- * Copyright (C) 2017 City of Bern Switzerland
+ * Copyright (C) 2023 DV Bern AG, Switzerland
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Affero General Public License for more details.
+ *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
 import {IComponentOptions, IController, ILogService} from 'angular';
+import {Subscription} from 'rxjs';
 import {AuthServiceRS} from '../../../../authentication/service/AuthServiceRS.rest';
 import {
-    FinanzielleSituationAppenzellService
+    FinanzielleSituationAppenzellService,
 } from '../../../../gesuch/component/finanzielleSituation/appenzell/finanzielle-situation-appenzell.service';
 import {OkHtmlDialogController} from '../../../../gesuch/dialog/OkHtmlDialogController';
 import {RemoveDialogController} from '../../../../gesuch/dialog/RemoveDialogController';
@@ -31,7 +34,9 @@ import {TSDownloadFile} from '../../../../models/TSDownloadFile';
 import {TSGesuch} from '../../../../models/TSGesuch';
 import {EbeguUtil} from '../../../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../../../utils/TSRoleUtil';
+import {MandantService} from '../../../shared/services/mandant.service';
 import {MAX_FILE_SIZE} from '../../constants/CONSTANTS';
+import {KiBonMandant, MANDANTS} from '../../constants/MANDANTS';
 import {DvDialog} from '../../directive/dv-dialog/dv-dialog';
 import {ApplicationPropertyRS} from '../../rest-services/applicationPropertyRS.rest';
 import {DownloadRS} from '../../service/downloadRS.rest';
@@ -71,7 +76,8 @@ export class DVDokumenteListController implements IController {
         '$log',
         'AuthServiceRS',
         '$translate',
-        'ApplicationPropertyRS'
+        'ApplicationPropertyRS',
+        'MandantService'
     ];
 
     public dokumente: TSDokumentGrund[];
@@ -83,6 +89,8 @@ export class DVDokumenteListController implements IController {
     public onRemove: (attrs: any) => void;
     public sonstige: boolean;
     public allowedMimetypes: string = '';
+    private mandant: KiBonMandant;
+    private subscription: Subscription;
 
     public constructor(
         private readonly uploadRS: UploadRS,
@@ -93,7 +101,8 @@ export class DVDokumenteListController implements IController {
         private readonly $log: ILogService,
         private readonly authServiceRS: AuthServiceRS,
         private readonly $translate: ITranslateService,
-        private readonly applicationPropertyRS: ApplicationPropertyRS
+        private readonly applicationPropertyRS: ApplicationPropertyRS,
+        private readonly mandantService: MandantService
     ) {
 
     }
@@ -104,7 +113,13 @@ export class DVDokumenteListController implements IController {
                 this.allowedMimetypes = response;
             }
         });
+        this.subscription = this.mandantService.mandant$.subscribe(mandant => {
+            this.mandant = mandant;
+        });
+    }
 
+    public $onDestroy(): void {
+        this.subscription.unsubscribe();
     }
 
     public uploadAnhaenge(files: any[], selectDokument: TSDokumentGrund): void {
@@ -324,6 +339,9 @@ export class DVDokumenteListController implements IController {
     }
 
     private isAppenzellSpeziallFall(gesuch: TSGesuch): boolean {
+        if (this.mandant !== MANDANTS.APPENZELL_AUSSERRHODEN) {
+            return false;
+        }
         return FinanzielleSituationAppenzellService.finSitNeedsTwoSeparateAntragsteller(gesuch)
         && EbeguUtil.isNullOrUndefined(gesuch.gesuchsteller2);
     }
