@@ -1419,8 +1419,6 @@ public class JaxBConverter extends AbstractConverter {
 		final JaxMandant jaxMandant = new JaxMandant();
 		convertAbstractVorgaengerFieldsToJAX(persistedMandant, jaxMandant);
 		jaxMandant.setName(persistedMandant.getName());
-		jaxMandant.setAngebotTS(persistedMandant.isAngebotTS());
-		jaxMandant.setAngebotFI(persistedMandant.isAngebotFI());
 		jaxMandant.setMandantIdentifier(persistedMandant.getMandantIdentifier());
 		return jaxMandant;
 	}
@@ -1461,8 +1459,6 @@ public class JaxBConverter extends AbstractConverter {
 		requireNonNull(mandantJAXP);
 		convertAbstractVorgaengerFieldsToEntity(mandantJAXP, mandant);
 		mandant.setName(mandantJAXP.getName());
-		mandant.setAngebotTS(mandantJAXP.isAngebotTS());
-		mandant.setAngebotFI(mandantJAXP.isAngebotFI());
 		return mandant;
 	}
 

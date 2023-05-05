@@ -30,6 +30,7 @@ import {TSAntragSearchresultDTO} from '../../../../models/TSAntragSearchresultDT
 import {TSGesuch} from '../../../../models/TSGesuch';
 import {TestDataUtil} from '../../../../utils/TestDataUtil.spec';
 import {CORE_JS_MODULE} from '../../../core/core.angularjs.module';
+import {ApplicationPropertyRS} from '../../../core/rest-services/applicationPropertyRS.rest';
 import {GesuchsperiodeRS} from '../../../core/service/gesuchsperiodeRS.rest';
 import {InstitutionRS} from '../../../core/service/institutionRS.rest';
 import {DVQuicksearchListController} from './dv-quicksearch-list';
@@ -49,6 +50,7 @@ describe('DVQuicksearchList', () => {
     let wizardStepManager: WizardStepManager;
     let authServiceRS: AuthServiceRS;
     let gemeindeRS: GemeindeRS;
+    let applicationPropertyRS: ApplicationPropertyRS;
 
     beforeEach(angular.mock.module(CORE_JS_MODULE.name));
 
@@ -69,6 +71,7 @@ describe('DVQuicksearchList', () => {
         wizardStepManager = $injector.get('WizardStepManager');
         authServiceRS = $injector.get('AuthServiceRS');
         gemeindeRS = $injector.get('GemeindeRS');
+        gemeindeRS = $injector.get('GemeindeRS');
     }));
 
     describe('API Usage', () => {
@@ -80,7 +83,8 @@ describe('DVQuicksearchList', () => {
                     gesuchsperiodeRS,
                     $state,
                     authServiceRS,
-                    gemeindeRS);
+                    gemeindeRS,
+                    applicationPropertyRS);
                 const list: Array<TSBetreuungsangebotTyp> = [
                     TSBetreuungsangebotTyp.KITA,
                     TSBetreuungsangebotTyp.TAGESFAMILIEN
@@ -94,7 +98,8 @@ describe('DVQuicksearchList', () => {
                     gesuchsperiodeRS,
                     $state,
                     authServiceRS,
-                    gemeindeRS);
+                    gemeindeRS,
+                    applicationPropertyRS);
                 expect(quicksearchListViewController.translateBetreuungsangebotTypList([])).toEqual('');
                 expect(quicksearchListViewController.translateBetreuungsangebotTypList(undefined)).toEqual('');
                 expect(quicksearchListViewController.translateBetreuungsangebotTypList(null)).toEqual('');
@@ -111,7 +116,8 @@ describe('DVQuicksearchList', () => {
                     gesuchsperiodeRS,
                     $state,
                     authServiceRS,
-                    gemeindeRS);
+                    gemeindeRS,
+                    applicationPropertyRS);
 
                 const tsGesuch = new TSGesuch();
                 spyOn(gesuchRS, 'findGesuch').and.returnValue($q.when(tsGesuch));

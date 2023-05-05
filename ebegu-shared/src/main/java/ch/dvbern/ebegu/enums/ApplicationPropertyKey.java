@@ -209,6 +209,21 @@ public enum ApplicationPropertyKey {
 	 * Falls aktiv, können Gemeinden die Institutionen Wahl begrenzen. Nur die Gewaehlte Institutionen sind dann
 	 * im Antrag Prozess waehlbar
 	 */
-	ERLAUBEN_INSTITUTIONEN_ZU_WAEHLEN;
+	ERLAUBEN_INSTITUTIONEN_ZU_WAEHLEN,
+
+	/**
+	 * Ist für den Mandanten das Angebot TS aktiviert
+	 */
+	ANGEBOT_TS_ENABLED,
+
+	/**
+	 * Ist für den Mandanten das Angebot TFO aktiviert
+	 */
+	ANGEBOT_TFO_ENABLED,
+
+	/**
+	 * Ist für den Mandanten das Angebot FI aktiviert
+	 */
+	ANGEBOT_FI_ENABLED;
 
 }

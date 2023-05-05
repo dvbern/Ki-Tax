@@ -21,6 +21,7 @@ import {StateService, UIRouterGlobals} from '@uirouter/core';
 import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
 import {ErrorService} from '../../../app/core/errors/service/ErrorService';
 import {LogFactory} from '../../../app/core/logging/LogFactory';
+import {ApplicationPropertyRS} from '../../../app/core/rest-services/applicationPropertyRS.rest';
 import {GesuchsperiodeRS} from '../../../app/core/service/gesuchsperiodeRS.rest';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {TSAntragTyp} from '../../../models/enums/TSAntragTyp';
@@ -70,7 +71,8 @@ export class FallCreationViewXComponent extends AbstractGesuchViewX<TSGesuch> im
         private readonly uiRouterGlobals: UIRouterGlobals,
         private readonly einstellungService: EinstellungRS,
         private readonly $state: StateService,
-        private readonly gesuchRS: GesuchRS
+        private readonly gesuchRS: GesuchRS,
+        private readonly applicationPropertyRS: ApplicationPropertyRS
     ) {
         super(gesuchModelManager,
             wizardStepManager,
@@ -97,7 +99,9 @@ export class FallCreationViewXComponent extends AbstractGesuchViewX<TSGesuch> im
             this.gesuchsperiodeId = this.gesuchModelManager.getGesuchsperiode().id;
         }
 
-        this.isTagesschuleEnabledForMandant = this.authServiceRS.hasMandantAngebotTS();
+        this.applicationPropertyRS.getPublicPropertiesCached().then(res => {
+            this.isTagesschuleEnabledForMandant = res.angebotTSActivated;
+        });
 
         const dossier = this.gesuchModelManager.getDossier();
         if (!dossier) {
