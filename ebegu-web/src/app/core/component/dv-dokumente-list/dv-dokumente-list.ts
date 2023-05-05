@@ -19,7 +19,7 @@ import {IComponentOptions, IController, ILogService} from 'angular';
 import {Subscription} from 'rxjs';
 import {AuthServiceRS} from '../../../../authentication/service/AuthServiceRS.rest';
 import {
-    FinanzielleSituationAppenzellService,
+    FinanzielleSituationAppenzellService
 } from '../../../../gesuch/component/finanzielleSituation/appenzell/finanzielle-situation-appenzell.service';
 import {OkHtmlDialogController} from '../../../../gesuch/dialog/OkHtmlDialogController';
 import {RemoveDialogController} from '../../../../gesuch/dialog/RemoveDialogController';
