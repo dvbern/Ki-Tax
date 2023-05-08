@@ -20,8 +20,6 @@ import {CONSTANTS} from '../app/core/constants/CONSTANTS';
 export class TSMandant extends TSAbstractMutableEntity {
 
     public name: string;
-    public angebotTS: boolean;
-    public angebotFI: boolean;
     public mandantIdentifier: string;
 
     public constructor(name?: string) {

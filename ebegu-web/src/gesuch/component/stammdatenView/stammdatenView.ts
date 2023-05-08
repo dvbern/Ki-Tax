@@ -122,6 +122,7 @@ export class StammdatenViewController extends AbstractGesuchViewController<TSGes
     public frenchEnabled: boolean;
     private isLuzern: boolean;
     private demoFeature2754: boolean = false;
+    private angebotTS: boolean;
 
     public constructor(
         $stateParams: IStammdatenStateParams,
@@ -483,7 +484,8 @@ export class StammdatenViewController extends AbstractGesuchViewController<TSGes
 
     public showRechnungsadresseCheckbox(): boolean {
         return this.gesuchstellerNumber === 1
-            && this.gesuchModelManager.isAnmeldungTagesschuleEnabledForMandantAndGemeinde()
+            && this.angebotTS
+            && this.gesuchModelManager.isAnmeldungTagesschuleEnabledForGemeinde()
             && this.gesuchModelManager.isAnmeldungenTagesschuleEnabledForGemeindeAndGesuchsperiode();
     }
 
@@ -571,9 +573,9 @@ export class StammdatenViewController extends AbstractGesuchViewController<TSGes
 
     private setFrenchEnabled(): void {
         this.applicationPropertyRS.getPublicPropertiesCached()
-            .then(properties => properties.frenchEnabled)
-            .then(frenchEnabled => {
-                this.frenchEnabled = frenchEnabled;
+            .then(properties => {
+                this.frenchEnabled = properties.frenchEnabled;
+                this.angebotTS = properties.angebotTSActivated;
             });
     }
 

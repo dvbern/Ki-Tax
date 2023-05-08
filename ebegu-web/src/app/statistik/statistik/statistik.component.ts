@@ -164,12 +164,7 @@ export class StatistikComponent implements OnInit, OnDestroy {
             this.lastenausgleichActive = res.lastenausgleichAktiv;
             this.lastenausgleichTagesschulenActive = res.lastenausgleichTagesschulenAktiv;
             this.updateShowKantonStatistik();
-        });
-
-        this.authServiceRS.principal$.subscribe(benutzer => {
-            this.tagesschulenActive = benutzer.mandant.angebotTS;
-        } , err => {
-            LOG.error(err);
+            this.tagesschulenActive = res.angebotTSActivated;
         });
     }
 

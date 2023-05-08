@@ -23,6 +23,7 @@ import {PERMISSIONS} from '../../../app/authorisation/Permissions';
 import {IDVFocusableController} from '../../../app/core/component/IDVFocusableController';
 import {MANDANTS} from '../../../app/core/constants/MANDANTS';
 import {DvDialog} from '../../../app/core/directive/dv-dialog/dv-dialog';
+import {ApplicationPropertyRS} from '../../../app/core/rest-services/applicationPropertyRS.rest';
 import {GesuchsperiodeRS} from '../../../app/core/service/gesuchsperiodeRS.rest';
 import {MitteilungRS} from '../../../app/core/service/mitteilungRS.rest';
 import {SozialdienstRS} from '../../../app/core/service/SozialdienstRS.rest';
@@ -116,7 +117,8 @@ export class DossierToolbarController implements IDVFocusableController {
         'GemeindeRS',
         'SozialdienstRS',
         '$translate',
-        'MandantService'
+        'MandantService',
+        'ApplicationPropertyRS'
     ];
 
     public antragList: Array<TSAntragDTO>;
@@ -143,6 +145,7 @@ export class DossierToolbarController implements IDVFocusableController {
     public erneuernPossibleForCurrentAntrag: boolean = false;
     public neuesteGesuchsperiode: TSGesuchsperiode;
     public amountNewMitteilungenGS: number = 0;
+    private angebotTS: boolean;
 
     public constructor(private readonly ebeguUtil: EbeguUtil,
                        private readonly gesuchRS: GesuchRS,
@@ -159,7 +162,8 @@ export class DossierToolbarController implements IDVFocusableController {
                        private readonly gemeindeRS: GemeindeRS,
                        private readonly sozialdienstRS: SozialdienstRS,
                        private readonly $translate: ITranslateService,
-                       private readonly mandantService: MandantService
+                       private readonly mandantService: MandantService,
+                       private readonly applicationPropertyRS: ApplicationPropertyRS
     ) {
 
     }
@@ -171,6 +175,9 @@ export class DossierToolbarController implements IDVFocusableController {
         if (EbeguUtil.isEmptyStringNullOrUndefined(this.dossierId)) {
             return;
         }
+        this.applicationPropertyRS.getPublicPropertiesCached().then(res => {
+            this.angebotTS = res.angebotTSActivated;
+        });
         this.gesuchsperiodeRS.getActiveGesuchsperiodenForDossier(this.dossierId)
             .then((response: TSGesuchsperiode[]) => {
                 // Die neueste ist zuoberst
@@ -846,5 +853,9 @@ export class DossierToolbarController implements IDVFocusableController {
 
     private sanitizeHtml(altGemeindeKontaktText: string): string {
         return altGemeindeKontaktText;
+    }
+
+    public isTagesschulangebotEnabled(): boolean {
+        return this.angebotTS;
     }
 }

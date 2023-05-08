@@ -51,12 +51,6 @@ public class Mandant extends AbstractMutableEntity implements Displayable {
 	@NotNull
 	private String name;
 
-	@Column(nullable = false)
-	private boolean angebotTS = false;
-
-	@Column(nullable = false)
-	private boolean angebotFI = false;
-
 	@Column()
 	@Enumerated(EnumType.STRING)
 	private MandantIdentifier mandantIdentifier;
@@ -87,22 +81,6 @@ public class Mandant extends AbstractMutableEntity implements Displayable {
 
 	public void setName(@Nonnull String name) {
 		this.name = name;
-	}
-
-	public boolean isAngebotTS() {
-		return angebotTS;
-	}
-
-	public void setAngebotTS(boolean angebotTS) {
-		this.angebotTS = angebotTS;
-	}
-
-	public boolean isAngebotFI() {
-		return angebotFI;
-	}
-
-	public void setAngebotFI(boolean angebotFI) {
-		this.angebotFI = angebotFI;
 	}
 
 	public MandantIdentifier getMandantIdentifier() {

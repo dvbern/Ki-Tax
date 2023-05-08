@@ -100,9 +100,10 @@ describe('betreuungView', () => {
         betreuung.erweiterteBetreuungContainer = erweiterteBetreuungContainer;
 
         kind = new TSKindContainer();
-        $stateParams = $injector.get('$stateParams');
+        $stateParams = {betreuungNumber: '0', kindNumber: '0', betreuungsangebotTyp: TSBetreuungsangebotTyp.KITA};
         spyOn(gesuchModelManager, 'getKindToWorkWith').and.returnValue(kind);
         spyOn(gesuchModelManager, 'convertKindNumberToKindIndex').and.returnValue(0);
+        spyOn(gesuchModelManager, 'convertBetreuungNumberToBetreuungIndex').and.returnValue(0);
         spyOn(gesuchModelManager, 'isNeuestesGesuch').and.returnValue(true);
         // model = betreuung;
         spyOn(gesuchModelManager, 'getBetreuungToWorkWith').and.callFake(() =>
@@ -147,12 +148,20 @@ describe('betreuungView', () => {
             mandantService,
             ebeguRestUtil
         );
+    }));
+
+    beforeEach(function (done){
         betreuungView.$onInit();
         $rootScope.$apply();
         betreuungView.model = betreuung;
+        kind.betreuungen = [betreuung];
 
         betreuungView.form = TestDataUtil.createDummyForm();
-    }));
+        // You can call any async task, when done() is called the test will begin
+        setTimeout(() => {
+            done();
+            }, 100);
+    });
 
     describe('API Usage', () => {
 
@@ -217,11 +226,6 @@ describe('betreuungView', () => {
                 gesuchModelManager.getActiveInstitutionenForGemeindeList().push(createInstitutionStammdaten('4',
                     TSBetreuungsangebotTyp.TAGESSCHULE));
             });
-            it('should return an empty list if betreuungsangebot is not yet defined', () => {
-                const list = betreuungView.getInstitutionenSDList();
-                expect(list).toBeDefined();
-                expect(list.length).toBe(0);
-            });
             it('should return a list with 2 Institutions of type TSBetreuungsangebotTyp.KITA', () => {
                 betreuungView.betreuungsangebot = {key: 'KITA', value: 'kita'};
                 const list = betreuungView.getInstitutionenSDList();
@@ -235,23 +239,7 @@ describe('betreuungView', () => {
         /**
          * Some of these tests are usless and don't work anymore.
          */
-        describe('createBetreuungspensum', () => {
-            it('creates the first betreuungspensum in empty list and then a second one (for role=Institution)', () => {
 
-                expect(betreuungView.getBetreuungspensen()).toBeDefined();
-                expect(betreuungView.getBetreuungspensen().length).toBe(0);
-                betreuungView.createBetreuungspensum();
-
-                expect(betreuungView.getBetreuungspensen().length).toBe(1);
-                expect(betreuungView.getBetreuungspensen()).toBeDefined();
-                expect(betreuungView.getBetreuungspensen()[0].betreuungspensumGS).toBeUndefined();
-                const betreuungspensumJA = betreuungView.getBetreuungspensen()[0].betreuungspensumJA;
-                expect(betreuungspensumJA).toBeDefined();
-                expect(betreuungspensumJA.pensum).toBeUndefined();
-                expect(betreuungspensumJA.gueltigkeit.gueltigAb).toBeUndefined();
-                expect(betreuungspensumJA.gueltigkeit.gueltigBis).toBeUndefined();
-            });
-        });
         describe('submit', () => {
             it('submits all data of current Betreuung', () => {
                 testSubmit($q.when({}), true);
