@@ -34,6 +34,7 @@ import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import javax.management.relation.Role;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
@@ -162,7 +163,7 @@ public class InstitutionResource {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT, ADMIN_TRAEGERSCHAFT,
-		ADMIN_GEMEINDE, ADMIN_TS, SACHBEARBEITER_GEMEINDE, SACHBEARBEITER_GEMEINDE, SACHBEARBEITER_TS })
+		ADMIN_GEMEINDE, ADMIN_BG, ADMIN_TS, SACHBEARBEITER_GEMEINDE, SACHBEARBEITER_GEMEINDE, SACHBEARBEITER_TS })
 	public Response createInstitution(
 		@Nonnull @NotNull JaxInstitution institutionJAXP,
 		@Nonnull @NotNull @Valid @QueryParam("date") String stringDateBeguStart,
@@ -225,6 +226,9 @@ public class InstitutionResource {
 						+ "aber versucht durch: "
 						+ principalBean.getBenutzer().getUsername());
 			}
+		} else if (betreuungsangebot.isSchulamt() && principalBean.isCallerInAnyOfRole(UserRole.ADMIN_BG)) {
+			throw new IllegalStateException(
+				"Ein Admin BG kann keine Tagesschulen oder Ferieninseln erstellen.");
 		}
 	}
 
