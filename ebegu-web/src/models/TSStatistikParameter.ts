@@ -20,7 +20,7 @@ import {TSAbstractMutableEntity} from './TSAbstractMutableEntity';
 import {TSGemeinde} from './TSGemeinde';
 import {TSInstitution} from './TSInstitution';
 import {TSInstitutionStammdaten} from './TSInstitutionStammdaten';
-import {TSDatumTyp} from "./enums/TSDatumTyp";
+import {TSDatumTyp} from './enums/TSDatumTyp';
 
 export class TSStatistikParameter extends TSAbstractMutableEntity {
     private _jahr: number;
@@ -188,11 +188,11 @@ export class TSStatistikParameter extends TSAbstractMutableEntity {
 		this._institution = value;
 	}
 
-    get gesuchZeitraumDatumTyp(): TSDatumTyp {
+    public get gesuchZeitraumDatumTyp(): TSDatumTyp {
         return this._gesuchZeitraumDatumTyp;
     }
 
-    set gesuchZeitraumDatumTyp(value: TSDatumTyp) {
+    public set gesuchZeitraumDatumTyp(value: TSDatumTyp) {
         this._gesuchZeitraumDatumTyp = value;
     }
 }
