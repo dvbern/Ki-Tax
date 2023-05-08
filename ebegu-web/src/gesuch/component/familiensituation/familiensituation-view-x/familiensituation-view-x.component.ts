@@ -406,7 +406,7 @@ export class FamiliensituationViewXComponent extends AbstractFamiliensitutaionVi
         const isUnterhaltsMitAndererPerson: boolean = this.getFamiliensituation().gesuchstellerKardinalitaet
                 === TSGesuchstellerKardinalitaet.ZU_ZWEIT;
         if (isKonkubinatKeinKind && isGeteilteObhut && isUnterhaltsMitAndererPerson) {
-            return true;
+            return false;
         }
         const keineUnterhaltsVereinbarung: boolean = this.getFamiliensituation().unterhaltsvereinbarung
                 === TSUnterhaltsvereinbarungAnswer.NEIN_UNTERHALTSVEREINBARUNG;

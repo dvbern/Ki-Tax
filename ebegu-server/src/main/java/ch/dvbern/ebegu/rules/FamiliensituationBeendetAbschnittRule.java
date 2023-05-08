@@ -8,13 +8,17 @@ import java.util.Locale;
 import java.util.Objects;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import ch.dvbern.ebegu.entities.AbstractPlatz;
 import ch.dvbern.ebegu.entities.Familiensituation;
+import ch.dvbern.ebegu.entities.FamiliensituationContainer;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.EnumFamilienstatus;
+import ch.dvbern.ebegu.enums.EnumGesuchstellerKardinalitaet;
+import ch.dvbern.ebegu.enums.UnterhaltsvereinbarungAnswer;
 import ch.dvbern.ebegu.types.DateRange;
 import com.google.common.collect.ImmutableList;
 
@@ -78,6 +82,11 @@ public class FamiliensituationBeendetAbschnittRule extends AbstractAbschnittRule
 		if (!gesuch.getGesuchsperiode().getGueltigkeit().contains(konkubinatPlusMinDauerKonukubinat)) {
 			return;
 		}
+		//Wechsel von 1 nach 2 -> nicht beenden
+		if (istWechselVon1NachZwei(gesuch)) {
+			return;
+		}
+
 		LocalDate zweiJahreKonkubinatNextMonth = Objects.requireNonNull(gesuch.extractFamiliensituation())
 				.getStartKonkubinatPlusMindauerEndOfMonth(startKonkubinat);
 		VerfuegungZeitabschnitt abschnittNachJahrenKonkubinat =
@@ -87,6 +96,27 @@ public class FamiliensituationBeendetAbschnittRule extends AbstractAbschnittRule
 		abschnittNachJahrenKonkubinat.setGesuchBeendenKonkubinatWirdInPeriodeXJahreAlt(true);
 		neueZeitabschnitte.add(abschnittNachJahrenKonkubinat);
 
+	}
+
+	private boolean istWechselVon1NachZwei(@Nonnull Gesuch gesuch) {
+		FamiliensituationContainer familiensituationContainer = gesuch.getFamiliensituationContainer();
+		Familiensituation familiensituationJA = Objects.requireNonNull(familiensituationContainer).getFamiliensituationJA();
+		if (null == familiensituationJA){
+			return true;
+		}
+		boolean familiensituation_konkubinat_keinKind = familiensituationJA
+				.getFamilienstatus() == EnumFamilienstatus.KONKUBINAT_KEIN_KIND;
+		boolean geteilteObhut = Boolean.TRUE.equals(familiensituationJA.getGeteilteObhut());
+
+		boolean mitAndererErziehungsberechtigtenPerson = familiensituationJA
+				.getGesuchstellerKardinalitaet() == EnumGesuchstellerKardinalitaet.ZU_ZWEIT;
+
+		boolean unterhaltNichtMoeglich = familiensituationJA.getUnterhaltsvereinbarung()
+				== UnterhaltsvereinbarungAnswer.UNTERHALTSVEREINBARUNG_NICHT_MOEGLICH;
+		return (familiensituation_konkubinat_keinKind && geteilteObhut && mitAndererErziehungsberechtigtenPerson) || (
+				familiensituation_konkubinat_keinKind
+						&& !geteilteObhut
+						&& unterhaltNichtMoeglich);
 	}
 
 	private void createZeitabschnitteNachPartnerStatusAenderung(

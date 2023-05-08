@@ -18,9 +18,11 @@ import {map} from 'rxjs/operators';
 import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
 import {CONSTANTS, MAX_FILE_SIZE} from '../../../app/core/constants/CONSTANTS';
 import {MANDANTS} from '../../../app/core/constants/MANDANTS';
+import {TSDemoFeature} from '../../../app/core/directive/dv-hide-feature/TSDemoFeature';
 import {ErrorService} from '../../../app/core/errors/service/ErrorService';
 import {LogFactory} from '../../../app/core/logging/LogFactory';
 import {ApplicationPropertyRS} from '../../../app/core/rest-services/applicationPropertyRS.rest';
+import {DemoFeatureRS} from '../../../app/core/service/demoFeatureRS.rest';
 import {DownloadRS} from '../../../app/core/service/downloadRS.rest';
 import {EwkRS} from '../../../app/core/service/ewkRS.rest';
 import {UploadRS} from '../../../app/core/service/uploadRS.rest';
@@ -32,11 +34,11 @@ import {TSDokumentGrundTyp} from '../../../models/enums/TSDokumentGrundTyp';
 import {TSDokumentTyp} from '../../../models/enums/TSDokumentTyp';
 import {TSEingangsart} from '../../../models/enums/TSEingangsart';
 import {TSEinstellungKey} from '../../../models/enums/TSEinstellungKey';
+import {TSFamilienstatus} from '../../../models/enums/TSFamilienstatus';
 import {TSGeschlecht} from '../../../models/enums/TSGeschlecht';
 import {TSGesuchstellerKardinalitaet} from '../../../models/enums/TSGesuchstellerKardinalitaet';
 import {TSRole} from '../../../models/enums/TSRole';
 import {getTSSpracheValues, TSSprache} from '../../../models/enums/TSSprache';
-import {TSFamilienstatus} from '../../../models/enums/TSFamilienstatus';
 import {TSUnterhaltsvereinbarungAnswer} from '../../../models/enums/TSUnterhaltsvereinbarungAnswer';
 import {TSWizardStepName} from '../../../models/enums/TSWizardStepName';
 import {TSWizardStepStatus} from '../../../models/enums/TSWizardStepStatus';
@@ -59,9 +61,6 @@ import {DokumenteRS} from '../../service/dokumenteRS.rest';
 import {GesuchModelManager} from '../../service/gesuchModelManager';
 import {WizardStepManager} from '../../service/wizardStepManager';
 import {AbstractGesuchViewController} from '../abstractGesuchView';
-import * as moment from 'moment';
-import {TSDemoFeature} from '../../../app/core/directive/dv-hide-feature/TSDemoFeature';
-import {DemoFeatureRS} from '../../../app/core/service/demoFeatureRS.rest';
 import IPromise = angular.IPromise;
 import IQService = angular.IQService;
 import IRootScopeService = angular.IRootScopeService;
@@ -223,11 +222,20 @@ export class StammdatenViewController extends AbstractGesuchViewController<TSGes
             familienstatus= this.getGesuch().extractFamiliensituationErstgesuch().familienstatus;
             tsFamiliensituation = this.getGesuch().extractFamiliensituationErstgesuch();
         }
-
         switch (familienstatus) {
             case TSFamilienstatus.KONKUBINAT_KEIN_KIND:
                 if (tsFamiliensituation.konkubinatGetXYearsInPeriod(this.getGesuch().gesuchsperiode.gueltigkeit)) {
+                    if(this.isObhutNeinUnterhaltNichtmoeglich(tsFamiliensituation) ||
+                            this.isObhutJaMitAndererPerson(tsFamiliensituation)){
+                        return `2 (${this.$translate.instant('GS2_KONKUBINAT_KEIN_KIND')})`;
+                    }
                     return `2 (${this.$translate.instant('ANDERER_ELTERNTEIL')})`;
+                }
+                else {
+                    if(this.isObhutJaMitAndererPerson(tsFamiliensituation)){
+                        return `2 (${this.$translate.instant('ANDERER_ELTERNTEIL')})`;
+                    }
+                    return `2 (${this.$translate.instant('GS2_KONKUBINAT_KEIN_KIND')})`;
                 }
                 break;
             case TSFamilienstatus.ALLEINERZIEHEND:
@@ -581,5 +589,17 @@ export class StammdatenViewController extends AbstractGesuchViewController<TSGes
 
     public showHintMandatoryFields(): boolean {
         return !this.isLuzern || this.gesuchModelManager.getGesuchstellerNumber() === 1;
+    }
+
+    private isObhutNeinUnterhaltNichtmoeglich(tsFamiliensituation: TSFamiliensituation): Boolean {
+        return !tsFamiliensituation.geteilteObhut
+                && tsFamiliensituation.unterhaltsvereinbarung ===
+                TSUnterhaltsvereinbarungAnswer.UNTERHALTSVEREINBARUNG_NICHT_MOEGLICH;
+    }
+
+    private isObhutJaMitAndererPerson(tsFamiliensituation: TSFamiliensituation): Boolean {
+        return tsFamiliensituation.geteilteObhut &&
+                tsFamiliensituation.gesuchstellerKardinalitaet ===
+        TSGesuchstellerKardinalitaet.ZU_ZWEIT;
     }
 }
