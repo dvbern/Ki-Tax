@@ -97,8 +97,8 @@ export class OnboardingComponent implements OnInit, OnDestroy {
         const mandant$ = this.mandantService.mandant$.pipe(takeUntil(this.unsubscribe$));
         const isGerman$ = this.isGerman$().pipe(takeUntil(this.unsubscribe$));
         this.youtubeLink$ = combineLatest([mandant$, isGerman$])
-                .pipe(map(res => {
-                    const url = new YoutubeLinkVisitor(res[1]).process(res[0]);
+                .pipe(map(([mandant, isGerman]) => {
+                    const url = new YoutubeLinkVisitor(isGerman).process(mandant);
                     return this.sanitizer.bypassSecurityTrustResourceUrl(url);
                 }));
     }
