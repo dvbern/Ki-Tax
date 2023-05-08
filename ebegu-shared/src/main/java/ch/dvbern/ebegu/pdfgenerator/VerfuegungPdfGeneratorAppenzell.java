@@ -42,8 +42,7 @@ import org.jetbrains.annotations.Nullable;
 
 public class VerfuegungPdfGeneratorAppenzell extends AbstractVerfuegungPdfGenerator {
 
-	private final float[] COLUMN_WIDTHS_DEFAULT = { 90, 100, 88, 88, 88, 88, 100, 110 };
-	private final float[] COLUMN_WIDTHS_TFO = { 90, 100, 88, 88, 88, 100, 110, 110 };
+	private final float[] COLUMN_WIDTHS = { 90, 100, 88, 88, 88, 100, 110, 110, 110 };
 
 	private static final String GUTSCHEIN_PRO_STUNDE = "PdfGeneration_Verfuegung_GutscheinProStunde";
 
@@ -51,6 +50,7 @@ public class VerfuegungPdfGeneratorAppenzell extends AbstractVerfuegungPdfGenera
 
 	protected static final String VERFUEGUNG_NICHT_EINTRETEN_TITLE = "PdfGeneration_Verfuegung_NichtEintreten_Title";
 	private static final String BEITRAGSHOHE_PROZENT = "PdfGeneration_Verfuegung_Beitragshoehe_Prozent";
+	private static final String SELBSTBEHALT_PROZENT = "PdfGeneration_Verfuegung_Selbstbehalt_Prozent";
 	private static final String ZUSATZTEXT_1 = "PdfGeneration_Verfuegung_Zusatztext_AR_1";
 	private static final String ZUSATZTEXT_2 = "PdfGeneration_Verfuegung_Zusatztext_AR_2";
 	private static final String ZUSATZTEXT_3 = "PdfGeneration_Verfuegung_Zusatztext_AR_3";
@@ -85,7 +85,7 @@ public class VerfuegungPdfGeneratorAppenzell extends AbstractVerfuegungPdfGenera
 
 	@Override
 	protected float[] getVerfuegungColumnWidths() {
-		return this.isBetreuungTagesfamilie ? COLUMN_WIDTHS_TFO : COLUMN_WIDTHS_DEFAULT;
+		return COLUMN_WIDTHS;
 	}
 
 	@Override
@@ -138,7 +138,16 @@ public class VerfuegungPdfGeneratorAppenzell extends AbstractVerfuegungPdfGenera
 	}
 
 	@Override
-	protected void addTitleBeitraghoheInProzent(PdfPTable table) {
+	protected void addTitleBeitraghoheUndSelbstbehaltInProzent(PdfPTable table) {
+		table.addCell(createCell(
+				true,
+				Element.ALIGN_RIGHT,
+				translate(SELBSTBEHALT_PROZENT),
+				Color.LIGHT_GRAY,
+				fontTabelle,
+				2,
+				1));
+
 		table.addCell(createCell(
 				true,
 				Element.ALIGN_RIGHT,
@@ -165,8 +174,18 @@ public class VerfuegungPdfGeneratorAppenzell extends AbstractVerfuegungPdfGenera
 	}
 
 	@Override
-	protected void addValueaBeitraghoheInProzent(PdfPTable table, Integer beitraghoheInProzent) {
+	protected void addValueaBeitraghoheUndSelbstbehaltInProzent(PdfPTable table, Integer beitraghoheInProzent) {
 		BigDecimal beitragHoeheGanzzahl = MathUtil.GANZZAHL.from(beitraghoheInProzent);
+		BigDecimal selbstbehalt = MathUtil.GANZZAHL.subtract(BigDecimal.valueOf(100), beitragHoeheGanzzahl);
+
+		table.addCell(createCell(
+				false,
+				Element.ALIGN_RIGHT,
+				PdfUtil.printPercent(selbstbehalt),
+				Color.LIGHT_GRAY,
+				getBgColorForBetreuungsgutscheinCell(),
+				1,
+				1));
 		table.addCell(createCell(
 				false,
 				Element.ALIGN_RIGHT,

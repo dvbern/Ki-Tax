@@ -437,7 +437,7 @@ public abstract class AbstractVerfuegungPdfGenerator extends DokumentAnFamilieGe
 		table.addCell(createCell(true, Element.ALIGN_CENTER, translate(getPensumTitle()), null, fontTabelle, 1, 3));
 		table.addCell(createCell(true, Element.ALIGN_RIGHT, translate(VOLLKOSTEN), null, fontTabelle, 2, 1));
 
-		addTitleBeitraghoheInProzent(table);
+		addTitleBeitraghoheUndSelbstbehaltInProzent(table);
 		addTitleBerechneterGutschein(table);
 		addTitleBetreuungsGutschein(table);
 		addTitleNrElternBeitrag(table);
@@ -500,7 +500,7 @@ public abstract class AbstractVerfuegungPdfGenerator extends DokumentAnFamilieGe
 				fontTabelle,
 				1,
 				1));
-			addValueaBeitraghoheInProzent(table, abschnitt.getBeitraghoheProzent());
+			addValueaBeitraghoheUndSelbstbehaltInProzent(table, abschnitt.getBeitraghoheProzent());
 			addValueBerechneterGutschein(table, abschnitt.getVerguenstigungOhneBeruecksichtigungVollkosten());
 			addValueBetreuungsGutschein(table, abschnitt.getVerguenstigungOhneBeruecksichtigungMinimalbeitrag());
 			addValueElternBeitrag(table, abschnitt.getMinimalerElternbeitragGekuerzt());
@@ -564,7 +564,7 @@ public abstract class AbstractVerfuegungPdfGenerator extends DokumentAnFamilieGe
 		}
 	}
 
-	protected void addTitleBeitraghoheInProzent(PdfPTable table) {
+	protected void addTitleBeitraghoheUndSelbstbehaltInProzent(PdfPTable table) {
 		//no-op ausser in Appenzell
 	}
 
@@ -640,7 +640,7 @@ public abstract class AbstractVerfuegungPdfGenerator extends DokumentAnFamilieGe
 			1));
 	}
 
-	protected void addValueaBeitraghoheInProzent(PdfPTable table, Integer beitraghoheInProzent) {
+	protected void addValueaBeitraghoheUndSelbstbehaltInProzent(PdfPTable table, Integer beitraghoheInProzent) {
 		//no-op ausser in Appenzell
 	}
 
