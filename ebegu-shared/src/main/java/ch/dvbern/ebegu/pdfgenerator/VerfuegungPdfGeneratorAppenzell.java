@@ -68,19 +68,23 @@ public class VerfuegungPdfGeneratorAppenzell extends AbstractVerfuegungPdfGenera
 	}
 
 	@Override
-	protected String getDocumentTitle() {
-		if (art == Art.NICHT_EINTRETTEN) {
-			return translate(VERFUEGUNG_NICHT_EINTRETEN_TITLE);
-		}
-		return translate(VERFUEGUNG_TITLE);
-	}
-
-	@Override
 	protected void createDokumentNichtEintretten(
 		@Nonnull Document document,
 		@Nonnull PdfGenerator generator) {
+		document.add(createNichtEingetretenParagraph1());
+		document.add(createAntragEingereichtAmParagraph());
+		document.add(createNichtEintretenUnterlagenUnvollstaendigParagraph());
 
-		createDokumentNichtEintrettenDefault(document, generator);
+		document.add(PdfUtil.createParagraph(translate(NICHT_EINTRETEN_CONTENT_4, 2)));
+		document.add(PdfUtil.createParagraph(translate(NICHT_EINTRETEN_CONTENT_5, 2)));
+		document.add(PdfUtil.createParagraph(translate(NICHT_EINTRETEN_CONTENT_6, 2)));
+
+		var eingangsdatum = getEingangsdatum();
+
+		document.add(PdfUtil.createParagraph(translate(
+				NICHT_EINTRETEN_CONTENT_7,
+				Constants.DATE_FORMATTER.format(eingangsdatum)
+		)));
 	}
 
 	@Override

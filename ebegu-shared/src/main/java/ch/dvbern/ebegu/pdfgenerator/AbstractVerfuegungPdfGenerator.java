@@ -104,7 +104,7 @@ public abstract class AbstractVerfuegungPdfGenerator extends DokumentAnFamilieGe
 	protected static final String NICHT_EINTRETEN_CONTENT_4 = "PdfGeneration_NichtEintreten_Content_4";
 	protected static final String NICHT_EINTRETEN_CONTENT_5 = "PdfGeneration_NichtEintreten_Content_5";
 	private static final String NICHT_EINTRETEN_CONTENT_5_FKJV = "PdfGeneration_NichtEintreten_Content_5_FKJV";
-	private static final String NICHT_EINTRETEN_CONTENT_6 = "PdfGeneration_NichtEintreten_Content_6";
+	protected static final String NICHT_EINTRETEN_CONTENT_6 = "PdfGeneration_NichtEintreten_Content_6";
 	protected static final String NICHT_EINTRETEN_CONTENT_7 = "PdfGeneration_NichtEintreten_Content_7";
 	private static final String NICHT_EINTRETEN_CONTENT_8 = "PdfGeneration_NichtEintreten_Content_8";
 	private static final String BEMERKUNGEN = "PdfGeneration_Verfuegung_Bemerkungen";
@@ -323,7 +323,7 @@ public abstract class AbstractVerfuegungPdfGenerator extends DokumentAnFamilieGe
 			Constants.DATE_FORMATTER.format(eingangsdatum)));
 	}
 
-	private LocalDate getEingangsdatum() {
+	protected LocalDate getEingangsdatum() {
 		return gesuch.getEingangsdatum() != null ? gesuch.getEingangsdatum() : LocalDate.now();
 	}
 
