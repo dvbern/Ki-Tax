@@ -86,7 +86,7 @@ public enum EinschulungTyp {
 	}
 
 	public boolean isEingeschultAppenzell() {
-		return this.getOrdinalitaet() >= 3;
+		return this.getOrdinalitaet() >= 1;
 	}
 
 	public boolean isKindergarten() {
