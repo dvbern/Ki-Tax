@@ -120,19 +120,17 @@
                                                              [(ngModel)]="statistikParameter.gesuchZeitraumDatumTyp"
                                                              required>
 
-                                                <mat-radio-button [value]="'VERFUEGUNGSDATUM'">{{'VERFUEGUNGSDATUM'|translate}}</mat-radio-button>
+                                                <mat-radio-button class="filter-radio-button" [value]="'VERFUEGUNGSDATUM'">{{'VERFUEGUNGSDATUM'|translate}}</mat-radio-button>
 
                                                 <mat-radio-button [value]="'EINREICHEDATUM'">{{'EINREICHEDATUM'|translate}}</mat-radio-button>
                                             </mat-radio-group>
                                         </div>
                                     </div>
-
-                                </div>
-                                <div class="generieren-button statistik-button">
-                                    <dv-loading-button type="submit"
-                                                       style="margin-left:auto;margin-right:auto;width:13rem;">
-                                        <span class="uppercase" translate>GENERIEREN</span>
-                                    </dv-loading-button>
+                                    <div class="generieren-button statistik-button">
+                                        <dv-loading-button type="submit">
+                                            <span class="uppercase" translate>GENERIEREN</span>
+                                        </dv-loading-button>
+                                    </div>
                                 </div>
                             </form>
                         </tab-body>
