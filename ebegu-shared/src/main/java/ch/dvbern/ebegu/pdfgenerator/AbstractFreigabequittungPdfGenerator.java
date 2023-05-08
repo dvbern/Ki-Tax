@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018 DV Bern AG, Switzerland
+ * Copyright (C) 2023 DV Bern AG, Switzerland
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -8,11 +8,11 @@
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
 package ch.dvbern.ebegu.pdfgenerator;
@@ -106,19 +106,27 @@ public abstract class AbstractFreigabequittungPdfGenerator extends DokumentAnGem
 			dokumenteParagraph.add(PdfUtil.createListInParagraph(dokumente));
 			document.add(dokumenteParagraph);
 			addZusatzTextIfAvailable(document);
-			List<Element> seite2Paragraphs = Lists.newArrayList();
-			seite2Paragraphs.add(PdfUtil.createSubTitle(translate(EINWILLIGUNG_STEUERDATEN_TITLE)));
-			seite2Paragraphs.add(PdfUtil.createParagraph(
-				translate(EINWILLIGUNG_STEUERDATEN_CONTENT, gesuch.getDossier().getGemeinde().getName())
-			));
-			seite2Paragraphs.add(new Paragraph());
-			seite2Paragraphs.add(PdfUtil.createSubTitle(translate(VOLLSTAENDIGKEIT_TITLE)));
-			seite2Paragraphs.add(PdfUtil.createParagraph(translate(VOLLSTAENDIGKEIT_CONTENT)));
-			createParagraphSofortEinrichten(seite2Paragraphs);
-			seite2Paragraphs.add(createUnterschriftenTable());
-			seite2Paragraphs.add(PdfUtil.createParagraph(translate(EINGEREICHT)));
-			document.add(PdfUtil.createKeepTogetherTable(seite2Paragraphs, 1, 0));
+			createSeite2(document);
 		};
+	}
+
+	protected void createSeite2(@Nonnull Document document) {
+		List<Element> seite2Paragraphs = Lists.newArrayList();
+		seite2Paragraphs.add(PdfUtil.createSubTitle(translate(EINWILLIGUNG_STEUERDATEN_TITLE)));
+		seite2Paragraphs.add(PdfUtil.createParagraph(
+			translate(EINWILLIGUNG_STEUERDATEN_CONTENT, gesuch.getDossier().getGemeinde().getName())
+		));
+		createVollstaendigkeitUndSignatur(seite2Paragraphs);
+		document.add(PdfUtil.createKeepTogetherTable(seite2Paragraphs, 1, 0));
+	}
+
+	protected void createVollstaendigkeitUndSignatur(List<Element> seite2Paragraphs) {
+		seite2Paragraphs.add(new Paragraph());
+		seite2Paragraphs.add(PdfUtil.createSubTitle(translate(VOLLSTAENDIGKEIT_TITLE)));
+		seite2Paragraphs.add(PdfUtil.createParagraph(translate(VOLLSTAENDIGKEIT_CONTENT)));
+		createParagraphSofortEinrichten(seite2Paragraphs);
+		seite2Paragraphs.add(createUnterschriftenTable());
+		seite2Paragraphs.add(PdfUtil.createParagraph(translate(EINGEREICHT)));
 	}
 
 	protected void addZusatzTextIfAvailable(Document document) {
