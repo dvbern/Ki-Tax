@@ -3,7 +3,7 @@
     "FINANZIELLE_SITUATION_STEUERVERANLAGUNG": "Haben Sie eine Steuerveranlagung für das Jahr {{basisjahr}} oder {{basisjahrMinus}} erhalten?" ,
     "FINANZIELLE_SITUATION_STEUERVERANLAGUNG_SELBSTSTAENDIG": "Haben Sie eine Steuerveranlagung für das Jahr {{basisjahr}}, {{basisjahrMinus}} oder {{basisjahrMinus2}} erhalten?" ,
     "MOMENTAN_SELBSTSTAENDIG": "Sind Sie selbstständig erwerbend?",
-    "EKVI_EINKOMMENSVERSCHLECHTERUNG_JA_NEIN": "Wird Ihr massgebendes Familieneinkommen im Jahr {{jahr1periode}} oder {{jahr2periode}} um mehr als {{minAbweichungEkv}}% im Vergleich jenem der letzten Steuerveranlagung abweichen?",
+    "EKVI_EINKOMMENSVERSCHLECHTERUNG_JA_NEIN": "Wird Ihr massgebendes Familieneinkommen im Jahr {{jahr1periode}} oder {{jahr2periode}} um mehr als {{minAbweichungEkv}}% im Vergleich zu jenem der letzten Steuerveranlagung abweichen?",
     "EKVI_EINKOMMENSVERSCHLECHTERUNG_HELP_TEXT": "Wenn Ihr massgebendes Einkommen längerfristig tiefer bleibt als bei jenem der letzten Steuerveranlagung: Setzen Sie das Häckchen bei \"für {{jahr1periode}}\" und \"für {{jahr2periode}}\".",
     "EINKOMMENSVERSCHLECHTERUNG": "Einkommensänderung",
     "MENU_EINKOMMENSVERSCHLECHTERUNG_AENDERUNG": "Einkommensänderung",
