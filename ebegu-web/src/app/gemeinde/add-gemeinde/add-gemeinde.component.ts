@@ -34,6 +34,7 @@ import {EbeguUtil} from '../../../utils/EbeguUtil';
 import {DvNgGesuchstellerDialogComponent} from '../../core/component/dv-ng-gesuchsteller-dialog/dv-ng-gesuchsteller-dialog.component';
 import {ErrorService} from '../../core/errors/service/ErrorService';
 import {Log, LogFactory} from '../../core/logging/LogFactory';
+import {ApplicationPropertyRS} from '../../core/rest-services/applicationPropertyRS.rest';
 import {BenutzerRSX} from '../../core/service/benutzerRSX.rest';
 
 @Component({
@@ -70,7 +71,8 @@ export class AddGemeindeComponent implements OnInit {
         private readonly authServiceRS: AuthServiceRS,
         private readonly benutzerRS: BenutzerRSX,
         private readonly dialog: MatDialog,
-        private readonly cd: ChangeDetectorRef
+        private readonly cd: ChangeDetectorRef,
+        private readonly applicationPropertyRS: ApplicationPropertyRS
     ) {
     }
 
@@ -95,7 +97,9 @@ export class AddGemeindeComponent implements OnInit {
         this.gemeinde.betreuungsgutscheineStartdatum = futureMonthBegin;
         this.gemeinde.tagesschulanmeldungenStartdatum = moment('20200801', 'YYYYMMDD');
         this.gemeinde.ferieninselanmeldungenStartdatum = moment('20200801', 'YYYYMMDD');
-        this.tageschuleEnabledForMandant = this.authServiceRS.hasMandantAngebotTS();
+        this.applicationPropertyRS.getPublicPropertiesCached().then(res => {
+            this.tageschuleEnabledForMandant = res.angebotTSActivated;
+        });
 
         this.initializeFlags();
     }

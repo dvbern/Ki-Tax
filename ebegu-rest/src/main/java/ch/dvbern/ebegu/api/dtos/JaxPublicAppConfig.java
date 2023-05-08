@@ -39,7 +39,6 @@ public class JaxPublicAppConfig {
 	private String logoFileName;
 	private String logoFileNameWhite;
 	private boolean multimandantAktiviert;
-	private boolean angebotTSActivated;
 	private final boolean infomaZahlungen;
 	private boolean frenchEnabled;
 	private boolean geresEnabledForMandant;
@@ -50,6 +49,9 @@ public class JaxPublicAppConfig {
 	private final boolean checkboxAuszahlungInZukunft;
 	private boolean institutionenDurchGemeindenEinladen;
 	private boolean erlaubenInstitutionenZuWaehlen;
+	private boolean angebotTSActivated;
+	private boolean angebotFIActivated;
+	private boolean angebotTFOActivated;
 
 	public JaxPublicAppConfig(
 			String currentNode,
@@ -78,7 +80,6 @@ public class JaxPublicAppConfig {
 			String logoFileName,
 			String logoFileNameWhite,
 			boolean multimandantAktiviert,
-			boolean angebotTSActivated,
 			boolean infomaZahlungen,
 			boolean frenchEnabled,
 			boolean geresEnabled,
@@ -88,7 +89,10 @@ public class JaxPublicAppConfig {
 			String activatedDemoFeatures,
 			boolean checkboxAuszahlungInZukunft,
 			boolean institutionenDurchGemeindenEinladen,
-			boolean erlaubenInstitutionenZuWaehlen
+			boolean erlaubenInstitutionenZuWaehlen,
+			boolean angebotTSActivated,
+			boolean angebotFIActivated,
+			boolean angebotTFOActivated
 		) {
 		this.currentNode = currentNode;
 		this.devmode = devmode;
@@ -127,6 +131,8 @@ public class JaxPublicAppConfig {
 		this.checkboxAuszahlungInZukunft = checkboxAuszahlungInZukunft;
 		this.institutionenDurchGemeindenEinladen = institutionenDurchGemeindenEinladen;
 		this.erlaubenInstitutionenZuWaehlen = erlaubenInstitutionenZuWaehlen;
+		this.angebotFIActivated = angebotFIActivated;
+		this.angebotTFOActivated = angebotTFOActivated;
 	}
 
 	public String getCurrentNode() {
@@ -411,5 +417,21 @@ public class JaxPublicAppConfig {
 
 	public void setErlaubenInstitutionenZuWaehlen(boolean erlaubenInstitutionenZuWaehlen) {
 		this.erlaubenInstitutionenZuWaehlen = erlaubenInstitutionenZuWaehlen;
+	}
+
+	public boolean isAngebotFIActivated() {
+		return angebotFIActivated;
+	}
+
+	public void setAngebotFIActivated(boolean angebotFIActivated) {
+		this.angebotFIActivated = angebotFIActivated;
+	}
+
+	public boolean isAngebotTFOActivated() {
+		return angebotTFOActivated;
+	}
+
+	public void setAngebotTFOActivated(boolean angebotTFOActivated) {
+		this.angebotTFOActivated = angebotTFOActivated;
 	}
 }

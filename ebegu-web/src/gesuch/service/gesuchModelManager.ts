@@ -21,6 +21,7 @@ import {EinstellungRS} from '../../admin/service/einstellungRS.rest';
 import {CONSTANTS} from '../../app/core/constants/CONSTANTS';
 import {ErrorService} from '../../app/core/errors/service/ErrorService';
 import {LogFactory} from '../../app/core/logging/LogFactory';
+import {ApplicationPropertyRS} from '../../app/core/rest-services/applicationPropertyRS.rest';
 import {AntragStatusHistoryRS} from '../../app/core/service/antragStatusHistoryRS.rest';
 import {BetreuungRS} from '../../app/core/service/betreuungRS.rest';
 import {ErwerbspensumRS} from '../../app/core/service/erwerbspensumRS.rest';
@@ -158,8 +159,8 @@ export class GesuchModelManager {
         private readonly gesuchGenerator: GesuchGenerator,
         private readonly gemeindeRS: GemeindeRS,
         private readonly internePendenzenRS: InternePendenzenRS,
-        private readonly einstellungenRS: EinstellungRS
-
+        private readonly einstellungenRS: EinstellungRS,
+        private readonly applicationPropertyRS: ApplicationPropertyRS
     ) {
     }
 
@@ -1793,14 +1794,6 @@ export class GesuchModelManager {
         return this.gesuchRS.isAusserordentlicherAnspruchPossible(this.gesuch.id);
     }
 
-    public isTagesschulangebotEnabled(): boolean {
-        return this.authServiceRS.hasMandantAngebotTS();
-    }
-
-    public isFerieninselangebotEnabled(): boolean {
-        return this.authServiceRS.hasMandantAngebotFI();
-    }
-
     public isSozialhilfeBezueger(): boolean {
         return this.getFamiliensituation() && this.getFamiliensituation().sozialhilfeBezueger;
     }
@@ -1859,11 +1852,7 @@ export class GesuchModelManager {
     /**
      * Entscheidet, ob Tagesschulen sowohl für den Mandanten wie auch für die Gemeinde eingeschaltet sind
      */
-    public isAnmeldungTagesschuleEnabledForMandantAndGemeinde(): boolean {
-        if (!this.isTagesschulangebotEnabled()) {
-            // Tagesschulen sind grundsätzlich auf dem Mandant nicht eingeschaltet
-            return false;
-        }
+    public isAnmeldungTagesschuleEnabledForGemeinde(): boolean {
         const gemeinde = this.getGemeinde();
         const gesuchsperiode = this.getGesuchsperiode();
         return gemeinde
