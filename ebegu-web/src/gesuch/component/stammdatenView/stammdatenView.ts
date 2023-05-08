@@ -591,13 +591,13 @@ export class StammdatenViewController extends AbstractGesuchViewController<TSGes
         return !this.isLuzern || this.gesuchModelManager.getGesuchstellerNumber() === 1;
     }
 
-    private isObhutNeinUnterhaltNichtmoeglich(tsFamiliensituation: TSFamiliensituation): Boolean {
+    private isObhutNeinUnterhaltNichtmoeglich(tsFamiliensituation: TSFamiliensituation): boolean {
         return !tsFamiliensituation.geteilteObhut
                 && tsFamiliensituation.unterhaltsvereinbarung ===
                 TSUnterhaltsvereinbarungAnswer.UNTERHALTSVEREINBARUNG_NICHT_MOEGLICH;
     }
 
-    private isObhutJaMitAndererPerson(tsFamiliensituation: TSFamiliensituation): Boolean {
+    private isObhutJaMitAndererPerson(tsFamiliensituation: TSFamiliensituation): boolean {
         return tsFamiliensituation.geteilteObhut &&
                 tsFamiliensituation.gesuchstellerKardinalitaet ===
         TSGesuchstellerKardinalitaet.ZU_ZWEIT;
