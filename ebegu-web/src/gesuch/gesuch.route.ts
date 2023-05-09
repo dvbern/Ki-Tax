@@ -17,7 +17,7 @@
 
 import {Ng1StateDeclaration, StateParams} from '@uirouter/angularjs';
 import {StateService} from '@uirouter/core';
-import {take} from 'rxjs/operators';
+import {delay, take} from 'rxjs/operators';
 import {FamiliensituationVisitor} from '../app/core/constants/FamiliensituationVisitor';
 import {KindRS} from '../app/core/service/kindRS.rest';
 import {MandantService} from '../app/shared/services/mandant.service';
@@ -225,7 +225,7 @@ export class EbeguFamiliensituationState implements Ng1StateDeclaration {
 redirectToFamiliensituation.$inject = ['MandantService', '$state', '$stateParams'];
 function redirectToFamiliensituation(mandantService: MandantService, $state: StateService, $stateParams: StateParams) {
     mandantService.mandant$
-        .pipe(take(1))
+        .pipe(take(1), delay(1))
         .subscribe((mandant) => {
             const route = new FamiliensituationVisitor().process(mandant);
             $state.transitionTo(route, {gesuchId:$stateParams.gesuchId});
