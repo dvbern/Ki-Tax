@@ -240,7 +240,7 @@ public class VerfuegungPdfGeneratorAppenzell extends AbstractVerfuegungPdfGenera
 	@Override
 	protected void createFusszeileNormaleVerfuegung(@Nonnull PdfContentByte dirPdfContentByte) throws
 			DocumentException {
-		//no-op: wird in Solothurn nicht angezeigt
+		//no-op: wird in Appenzell nicht angezeigt
 	}
 
 	@Override
