@@ -396,7 +396,7 @@ export class FamiliensituationViewXComponent extends AbstractFamiliensitutaionVi
     }
 
     public antragWirdBeendet(): boolean {
-        if ( !this.konkubinatIsXYearsOldInPeriode()){
+        if (!this.konkubinatIsXYearsOldInPeriode()){
             return false;
         }
 
@@ -406,7 +406,7 @@ export class FamiliensituationViewXComponent extends AbstractFamiliensitutaionVi
         const isUnterhaltsMitAndererPerson: boolean = this.getFamiliensituation().gesuchstellerKardinalitaet
                 === TSGesuchstellerKardinalitaet.ZU_ZWEIT;
         if (isKonkubinatKeinKind && isGeteilteObhut && isUnterhaltsMitAndererPerson) {
-            return false;
+            return true;
         }
         const keineUnterhaltsVereinbarung: boolean = this.getFamiliensituation().unterhaltsvereinbarung
                 === TSUnterhaltsvereinbarungAnswer.NEIN_UNTERHALTSVEREINBARUNG;

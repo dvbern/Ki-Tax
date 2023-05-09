@@ -225,13 +225,9 @@ export class StammdatenViewController extends AbstractGesuchViewController<TSGes
         switch (familienstatus) {
             case TSFamilienstatus.KONKUBINAT_KEIN_KIND:
                 if (tsFamiliensituation.konkubinatGetXYearsInPeriod(this.getGesuch().gesuchsperiode.gueltigkeit)) {
-                    if(this.isObhutNeinUnterhaltNichtmoeglich(tsFamiliensituation) ||
-                            this.isObhutJaMitAndererPerson(tsFamiliensituation)){
-                        return `2 (${this.$translate.instant('GS2_KONKUBINAT_KEIN_KIND')})`;
-                    }
-                    return `2 (${this.$translate.instant('ANDERER_ELTERNTEIL')})`;
-                } else {
-                    if(this.isObhutJaMitAndererPerson(tsFamiliensituation)){
+                    if(tsFamiliensituation.gesuchstellerKardinalitaet ===  TSGesuchstellerKardinalitaet.ZU_ZWEIT ||
+                            tsFamiliensituation.unterhaltsvereinbarung ===
+                            TSUnterhaltsvereinbarungAnswer.NEIN_UNTERHALTSVEREINBARUNG){
                         return `2 (${this.$translate.instant('ANDERER_ELTERNTEIL')})`;
                     }
                     return `2 (${this.$translate.instant('GS2_KONKUBINAT_KEIN_KIND')})`;
@@ -588,17 +584,5 @@ export class StammdatenViewController extends AbstractGesuchViewController<TSGes
 
     public showHintMandatoryFields(): boolean {
         return !this.isLuzern || this.gesuchModelManager.getGesuchstellerNumber() === 1;
-    }
-
-    private isObhutNeinUnterhaltNichtmoeglich(tsFamiliensituation: TSFamiliensituation): boolean {
-        return !tsFamiliensituation.geteilteObhut
-                && tsFamiliensituation.unterhaltsvereinbarung ===
-                TSUnterhaltsvereinbarungAnswer.UNTERHALTSVEREINBARUNG_NICHT_MOEGLICH;
-    }
-
-    private isObhutJaMitAndererPerson(tsFamiliensituation: TSFamiliensituation): boolean {
-        return tsFamiliensituation.geteilteObhut &&
-                tsFamiliensituation.gesuchstellerKardinalitaet ===
-        TSGesuchstellerKardinalitaet.ZU_ZWEIT;
     }
 }
