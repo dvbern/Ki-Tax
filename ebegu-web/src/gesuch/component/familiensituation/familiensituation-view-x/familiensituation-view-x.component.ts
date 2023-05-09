@@ -18,6 +18,7 @@
 import {Component, OnInit} from '@angular/core';
 import {MatDialog} from '@angular/material/dialog';
 import {TranslateService} from '@ngx-translate/core';
+import {isNullOrUndefined} from '@uirouter/core';
 import * as moment from 'moment';
 import {EinstellungRS} from '../../../../admin/service/einstellungRS.rest';
 import {
@@ -41,6 +42,7 @@ import {
 } from '../../../../models/enums/TSUnterhaltsvereinbarungAnswer';
 import {TSEinstellung} from '../../../../models/TSEinstellung';
 import {TSFamiliensituation} from '../../../../models/TSFamiliensituation';
+import {TSGesuch} from '../../../../models/TSGesuch';
 import {EbeguUtil} from '../../../../utils/EbeguUtil';
 import {BerechnungsManager} from '../../../service/berechnungsManager';
 import {FamiliensituationRS} from '../../../service/familiensituationRS.service';
@@ -74,7 +76,7 @@ export class FamiliensituationViewXComponent extends AbstractFamiliensitutaionVi
             protected readonly familiensituationRS: FamiliensituationRS,
             private readonly einstellungRS: EinstellungRS,
             protected readonly authService: AuthServiceRS,
-        private readonly demoFeatureRS: DemoFeatureRS
+            private readonly demoFeatureRS: DemoFeatureRS
     ) {
         super(gesuchModelManager, errorService, wizardStepManager, familiensituationRS, authService);
         this.initialFamiliensituation = this.gesuchModelManager.getFamiliensituation();
@@ -87,7 +89,7 @@ export class FamiliensituationViewXComponent extends AbstractFamiliensitutaionVi
 
     public ngOnInit(): void {
         this.einstellungRS.getAllEinstellungenBySystemCached(
-            this.gesuchModelManager.getGesuchsperiode().id
+                this.gesuchModelManager.getGesuchsperiode().id
         ).subscribe((response: TSEinstellung[]) => {
             response.filter(r => r.key === TSEinstellungKey.FKJV_FAMILIENSITUATION_NEU)
                     .forEach(value => {
@@ -109,8 +111,8 @@ export class FamiliensituationViewXComponent extends AbstractFamiliensitutaionVi
             const dialogResult = await this.dialog.open(DvNgRemoveDialogComponent, {
                 data: {
                     title: 'FAMILIENSITUATION_WARNING',
-                        text: descriptionText
-                    }
+                    text: descriptionText
+                }
             }).afterClosed().toPromise();
 
             if (dialogResult) {
@@ -358,7 +360,7 @@ export class FamiliensituationViewXComponent extends AbstractFamiliensitutaionVi
             return this.$translate.instant('FAMILIENSITUATION_FRAGE_PARTNERIDENTISCH_WARNBEZ_EHEPARTNER');
         }
         if ((familienstatus === TSFamilienstatus.ALLEINERZIEHEND) ||
-                (familienstatus === TSFamilienstatus.KONKUBINAT_KEIN_KIND && !this.konkubinatIsTwoYearsOld())){
+                (familienstatus === TSFamilienstatus.KONKUBINAT_KEIN_KIND && !this.konkubinatIsXYearsOldInPeriode())){
             return this.$translate.instant('FAMILIENSITUATION_FRAGE_PARTNERIDENTISCH_WARNBEZ_ANDERER_ELTERNTEIL');
         }
         return this.$translate.instant('FAMILIENSITUATION_FRAGE_PARTNERIDENTISCH_WARNBEZ_KONKUBINTASPARTNER');
@@ -377,7 +379,7 @@ export class FamiliensituationViewXComponent extends AbstractFamiliensitutaionVi
             } );
         }
         if ((familienstatus === TSFamilienstatus.ALLEINERZIEHEND) ||
-                (familienstatus === TSFamilienstatus.KONKUBINAT_KEIN_KIND && !this.konkubinatIsTwoYearsOld())){
+                (familienstatus === TSFamilienstatus.KONKUBINAT_KEIN_KIND && !this.konkubinatIsXYearsOldInPeriode())){
             return this.$translate.instant('FAMILIENSITUATION_FRAGE_PARTNERIDENTISCH_ANDERER_ELTERNTEIL', {
                 namegs2: this.getNameGesuchsteller2()
             } );
@@ -387,11 +389,48 @@ export class FamiliensituationViewXComponent extends AbstractFamiliensitutaionVi
         } );
     }
 
-    private konkubinatIsTwoYearsOld(): boolean {
-        const gesuch = this.gesuchModelManager.getGesuch();
+    private konkubinatIsXYearsOldInPeriode(): boolean {
+        const gesuch: TSGesuch = this.gesuchModelManager.getGesuch();
         return gesuch.extractFamiliensituation()
-                .konkubinatGetsLongerThanXYearsBeforeEndOfPeriode(
-                gesuch.gesuchsperiode.gueltigkeit.gueltigBis
-                );
+                .konkubinatGetXYearsInPeriod(this.getGesuch().gesuchsperiode.gueltigkeit);
+    }
+
+    public antragWirdBeendet(): boolean {
+        if (!this.konkubinatIsXYearsOldInPeriode()){
+            return false;
+        }
+
+        const isKonkubinatKeinKind: boolean = this.getFamiliensituation().familienstatus
+                === TSFamilienstatus.KONKUBINAT_KEIN_KIND;
+        const isGeteilteObhut: boolean = this.getFamiliensituation().geteilteObhut;
+        const isUnterhaltsMitAndererPerson: boolean = this.getFamiliensituation().gesuchstellerKardinalitaet
+                === TSGesuchstellerKardinalitaet.ZU_ZWEIT;
+        if (isKonkubinatKeinKind && isGeteilteObhut && isUnterhaltsMitAndererPerson) {
+            return true;
+        }
+        const keineUnterhaltsVereinbarung: boolean = this.getFamiliensituation().unterhaltsvereinbarung
+                === TSUnterhaltsvereinbarungAnswer.NEIN_UNTERHALTSVEREINBARUNG;
+        return isKonkubinatKeinKind && !isGeteilteObhut && keineUnterhaltsVereinbarung;
+
+    }
+
+    public getAntragStellerZweiAendertWarning(): string {
+        const endDatum: string = this.getFamiliensituation()
+                .getStartKonkubinatEndofMonthPlusMinDauer()
+                .format(CONSTANTS.DATE_FORMAT);
+
+        const nameGs2 = isNullOrUndefined(this.getGesuch().gesuchsteller2) ?
+                this.$translate.instant('FAMILIENSITUATION_ANDERE_ERZIEHUNGSBERCHTIGTE_PERSION') :
+                this.getGesuch().gesuchsteller2.extractFullName();
+
+        return this.$translate.instant('FAMILIENSITUATION_X_JAHRE_KONKUBINAT_MSG',
+                {
+                    namegs2: nameGs2,
+                    endeDatum: endDatum
+                });
+    }
+
+    public gesuchstellerKardinalitaetChange(): void {
+        this.getFamiliensituation().partnerIdentischMitVorgesuch = undefined;
     }
 }

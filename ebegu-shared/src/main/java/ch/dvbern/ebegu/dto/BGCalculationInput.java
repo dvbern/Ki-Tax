@@ -197,6 +197,7 @@ public class BGCalculationInput {
 	private boolean isEkvAccepted = false;
 
 	private boolean requiredAgeForAnspruchNotReached = false;
+	private boolean gesuchBeendenKonkubinatWirdInPeriodeXJahreAlt = false;
 
 	public BGCalculationInput(@Nonnull VerfuegungZeitabschnitt parent, @Nonnull RuleValidity ruleValidity) {
 		this.parent = parent;
@@ -264,6 +265,7 @@ public class BGCalculationInput {
 		this.partnerIdentischMitVorgesuch = toCopy.partnerIdentischMitVorgesuch;
 		this.isEkvAccepted = toCopy.isEkvAccepted;
 		this.requiredAgeForAnspruchNotReached = toCopy.requiredAgeForAnspruchNotReached;
+		this.gesuchBeendenKonkubinatWirdInPeriodeXJahreAlt = toCopy.gesuchBeendenKonkubinatWirdInPeriodeXJahreAlt;
 	}
 
 	@Nonnull
@@ -874,6 +876,7 @@ public class BGCalculationInput {
 		this.kitaPlusZuschlag = this.kitaPlusZuschlag || other.kitaPlusZuschlag;
 		this.besondereBeduerfnisseZuschlag = add(this.getBesondereBeduerfnisseZuschlag(), other.getBesondereBeduerfnisseZuschlag());
 		this.requiredAgeForAnspruchNotReached = this.requiredAgeForAnspruchNotReached || other.requiredAgeForAnspruchNotReached;
+		this.gesuchBeendenKonkubinatWirdInPeriodeXJahreAlt = this.gesuchBeendenKonkubinatWirdInPeriodeXJahreAlt || other.gesuchBeendenKonkubinatWirdInPeriodeXJahreAlt;
 	}
 
 	/**
@@ -1074,7 +1077,8 @@ public class BGCalculationInput {
 			this.isAuszahlungAnEltern == other.isAuszahlungAnEltern &&
 			Objects.equals( this.partnerIdentischMitVorgesuch , other.partnerIdentischMitVorgesuch) &&
 			this.isEkvAccepted == other.isEkvAccepted &&
-			this.requiredAgeForAnspruchNotReached == other.requiredAgeForAnspruchNotReached;
+			this.requiredAgeForAnspruchNotReached == other.requiredAgeForAnspruchNotReached &&
+			this.gesuchBeendenKonkubinatWirdInPeriodeXJahreAlt == other.gesuchBeendenKonkubinatWirdInPeriodeXJahreAlt;
 	}
 
 	@SuppressWarnings("PMD.CompareObjectsWithEquals")
@@ -1234,5 +1238,13 @@ public class BGCalculationInput {
 
 	public void setEkvAccepted(boolean ekvAccepted) {
 		isEkvAccepted = ekvAccepted;
+	}
+
+	public void setGesuchBeendenKonkubinatWirdInPeriodeXJahreAlt(boolean konkubinatWirdInPeriodeXJahreAlt) {
+		this.gesuchBeendenKonkubinatWirdInPeriodeXJahreAlt = konkubinatWirdInPeriodeXJahreAlt;
+	}
+
+	public boolean isGesuchBeendenKonkubinatWirdInPeriodeXJahreAlt() {
+		return gesuchBeendenKonkubinatWirdInPeriodeXJahreAlt;
 	}
 }

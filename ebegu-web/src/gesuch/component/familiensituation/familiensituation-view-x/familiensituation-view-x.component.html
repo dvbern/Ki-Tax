@@ -28,6 +28,22 @@
 			<p *ngIf="showError()" role="alert" translate
 			   class="dv-error-messages">ERROR_DATUM_GESETZT_BEI_MUTATION</p>
 		</div>
+        <div class="row" *ngIf="isNotPartnerIdentischMitVorgesuch()">
+            <div class="col-xs-12">
+                <div class="well well-status-warten minus-margin">
+                    <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
+                    <span>{{getNotPertnerIdentischMitVorgesuchWarning()}}</span>
+                </div>
+            </div>
+        </div>
+		<div class="row" *ngIf="antragWirdBeendet()">
+			<div class="col-xs-12">
+				<div class="well well-status-warten minus-margin">
+					<i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
+					<span>{{getAntragStellerZweiAendertWarning()}}</span>
+				</div>
+			</div>
+		</div>
 	</div>
 	<div class="row">
 		<div class="col-md-12">
@@ -232,6 +248,7 @@
 													 #gesuchstellerKardinalitaet="ngModel"
                                                      name="gesuchstellerKardinalitaet"
 													 class="input-element sp" items="gesuchstellerKardinalitaetValues"
+													 (change)="gesuchstellerKardinalitaetChange()"
 													 [disabled]="!(isFamiliensituationEnabled() && isOneOfRoles(allowedRoles))"
 													 aria-label="{{ 'FAMILIENSITUATION_FRAGE_2' |translate}}"
 													 aria-described-by="gesuchstellerKardinalitaet-error">
@@ -274,16 +291,6 @@
 							</div>
 						</div>
 					</div>
-
-                    <div class="row" *ngIf="isNotPartnerIdentischMitVorgesuch()">
-                        <div class="col-xs-12">
-                            <div class="well well-status-warten minus-margin">
-                                <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
-                                <span>{{getNotPertnerIdentischMitVorgesuchWarning()}}</span>
-                            </div>
-                        </div>
-                    </div>
-
 				</fieldset>
 				<div class="row">
 					<div class="col-md-12">
