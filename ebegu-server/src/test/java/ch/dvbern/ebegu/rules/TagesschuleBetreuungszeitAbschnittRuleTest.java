@@ -35,6 +35,7 @@ import ch.dvbern.ebegu.rechner.AbstractBGRechnerTest;
 import ch.dvbern.ebegu.rechner.TagesschuleBernRechner;
 import ch.dvbern.ebegu.test.TestDataUtil;
 import ch.dvbern.ebegu.util.MathUtil;
+import ch.dvbern.ebegu.util.mandant.MandantIdentifier;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -125,7 +126,7 @@ public class TagesschuleBetreuungszeitAbschnittRuleTest extends AbstractBGRechne
 		// Gesuch 10 Tage nach Beginn der GP eingereicht -> Anspruch beginnt im Folgemonat
 		LocalDate startGP = gesuch.getGesuchsperiode().getGueltigkeit().getGueltigAb();
 		gesuch.setEingangsdatum(startGP.plusDays(10));
-		gesuch.getFall().setMandant(TestDataUtil.createMandantAR());
+		gesuch.getFall().setMandant(TestDataUtil.createMandant(MandantIdentifier.APPENZELL_AUSSERRHODEN));
 
 		List<VerfuegungZeitabschnitt> zeitabschnitte = calculate(100000, FinSitStatus.AKZEPTIERT);
 		Assert.assertEquals(1, zeitabschnitte.size());
@@ -140,7 +141,7 @@ public class TagesschuleBetreuungszeitAbschnittRuleTest extends AbstractBGRechne
 		// Gesuch 45 Tage nach Beginn der GP eingereicht -> Anspruch beginnt nach 15 (45-30) Tagen
 		LocalDate startGP = gesuch.getGesuchsperiode().getGueltigkeit().getGueltigAb();
 		gesuch.setEingangsdatum(startGP.plusDays(45));
-		gesuch.getFall().setMandant(TestDataUtil.createMandantAR());
+		gesuch.getFall().setMandant(TestDataUtil.createMandant(MandantIdentifier.APPENZELL_AUSSERRHODEN));
 
 		List<VerfuegungZeitabschnitt> zeitabschnitte = calculate(100000, FinSitStatus.AKZEPTIERT);
 		Assert.assertEquals(2, zeitabschnitte.size());

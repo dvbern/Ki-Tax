@@ -187,6 +187,7 @@ public class KibonPdfGeneratorTest extends AbstractPDFGeneratorTest {
 		InvoiceGeneratorException {
 		assertNotNull(gesuch.getGesuchsteller1());
 		gesuch.getGesuchsteller1().getGesuchstellerJA().setKorrespondenzSprache(locale);
+		gesuch.getFall().setMandant(TestDataUtil.createMandant(mandant));
 		evaluator.evaluate(gesuch, TestUtils.getParameter(), TestDataUtil.geKitaxUebergangsloesungParameter(), Constants.DEFAULT_LOCALE);
 		for (Betreuung betreuung : gesuch.extractAllBetreuungen()) {
 			Objects.requireNonNull(betreuung.getVerfuegungOrVerfuegungPreview());
