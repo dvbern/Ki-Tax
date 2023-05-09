@@ -77,7 +77,7 @@ public class FinanzielleSituationAppenzellRechner extends AbstractFinanzielleSit
 			vermoegen15PercentGS1
 		);
 
-		finSitResultDTO.setEinkommenGS1(einkommenGS1);
+		finSitResultDTO.setEinkommenGS1(einkommenGS1.add(aufrechnungFaktorenGS1));
 		finSitResultDTO.setVermoegenXPercentAnrechenbarGS1(vermoegen15PercentGS1);
 		finSitResultDTO.setMassgebendesEinkVorAbzFamGrGS1(massgebendesEinkommenGS1);
 
@@ -90,9 +90,15 @@ public class FinanzielleSituationAppenzellRechner extends AbstractFinanzielleSit
 			vermoegen15PercenGS2
 		);
 
-		finSitResultDTO.setEinkommenGS2(einkommenGS2);
+		finSitResultDTO.setEinkommenGS2(einkommenGS2.add(aufrechnungFaktorenGS2));
 		finSitResultDTO.setVermoegenXPercentAnrechenbarGS2(vermoegen15PercenGS2);
 		finSitResultDTO.setMassgebendesEinkVorAbzFamGrGS2(massgebendesEinkommenGS2);
+
+		Objects.requireNonNull(finSitResultDTO.getEinkommenGS1());
+
+		finSitResultDTO.setEinkommenBeiderGesuchsteller(
+			finSitResultDTO.getEinkommenGS1().add(finSitResultDTO.getEinkommenGS2())
+		);
 
 		finSitResultDTO.setMassgebendesEinkVorAbzFamGr(
 			add(finSitResultDTO.getMassgebendesEinkVorAbzFamGrGS1(), finSitResultDTO.getMassgebendesEinkVorAbzFamGrGS2())
