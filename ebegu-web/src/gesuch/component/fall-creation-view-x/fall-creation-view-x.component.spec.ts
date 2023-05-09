@@ -21,6 +21,7 @@ import {StateService, UIRouterGlobals} from '@uirouter/core';
 import {of} from 'rxjs';
 import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
 import {ErrorService} from '../../../app/core/errors/service/ErrorService';
+import {ApplicationPropertyRS} from '../../../app/core/rest-services/applicationPropertyRS.rest';
 import {GesuchsperiodeRS} from '../../../app/core/service/gesuchsperiodeRS.rest';
 import {SharedModule} from '../../../app/shared/shared.module';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
@@ -28,6 +29,7 @@ import {SHARED_MODULE_OVERRIDES} from '../../../hybridTools/mockUpgradedDirectiv
 import {TSAntragTyp} from '../../../models/enums/TSAntragTyp';
 import {TSEinstellung} from '../../../models/TSEinstellung';
 import {TSGesuch} from '../../../models/TSGesuch';
+import {TSPublicAppConfig} from '../../../models/TSPublicAppConfig';
 import {FinanzielleSituationRS} from '../../service/finanzielleSituationRS.rest';
 import {GesuchModelManager} from '../../service/gesuchModelManager';
 import {GesuchRS} from '../../service/gesuchRS.rest';
@@ -54,7 +56,7 @@ describe('FallCreationViewXComponent', () => {
     const errorServiceSpy = jasmine.createSpyObj<ErrorService>(ErrorService.name, ['clearAll']);
     const wizardStepManagerSpy = jasmine.createSpyObj<WizardStepManager>(WizardStepManager.name,
         ['setCurrentStep', 'isNextStepBesucht', 'isNextStepEnabled', 'getCurrentStepName']);
-    const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name, ['principal$', 'isOneOfRoles', 'hasMandantAngebotTS']);
+    const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name, ['principal$', 'isOneOfRoles']);
     const gesuchsperiodeRS = jasmine.createSpyObj<GesuchsperiodeRS>(GesuchsperiodeRS.name, ['getServiceName']);
     const finSitRS = jasmine.createSpyObj<FinanzielleSituationRS>(FinanzielleSituationRS.name,
         ['saveFinanzielleSituation']);
@@ -65,6 +67,9 @@ describe('FallCreationViewXComponent', () => {
         ['go']);
     const gesuchRSSpy = jasmine.createSpyObj<GesuchRS>(GesuchRS.name,
         ['getNeustesVerfuegtesGesuchFuerGesuch']);
+    const applicationPropertyRSSpy = jasmine.createSpyObj<ApplicationPropertyRS>(ApplicationPropertyRS.name,
+        ['getPublicPropertiesCached', 'getInstitutionenDurchGemeindenEinladen']);
+    applicationPropertyRSSpy.getPublicPropertiesCached.and.returnValue(Promise.resolve(new TSPublicAppConfig()));
     const gesuch = new TSGesuch();
     gesuch.typ = TSAntragTyp.ERSTGESUCH;
     gesuchModelManager.getGesuch.and.returnValue(gesuch);
@@ -86,7 +91,8 @@ describe('FallCreationViewXComponent', () => {
                 {provide: UIRouterGlobals, useValue: uiRouterGlobals},
                 {provide: EinstellungRS, useValue: einstellungenRS},
                 {provide: StateService, useValue: stateServiceSpy},
-                {provide: GesuchRS, useValue: gesuchRSSpy}
+                {provide: GesuchRS, useValue: gesuchRSSpy},
+                {provide: ApplicationPropertyRS, useValue: applicationPropertyRSSpy}
             ]
         }).overrideModule(SharedModule, SHARED_MODULE_OVERRIDES)
             .compileComponents();

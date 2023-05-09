@@ -22,6 +22,7 @@ import {PERMISSIONS} from '../../app/authorisation/Permissions';
 import {CONSTANTS} from '../../app/core/constants/CONSTANTS';
 import {KiBonMandant} from '../../app/core/constants/MANDANTS';
 import {LogFactory} from '../../app/core/logging/LogFactory';
+import {ApplicationPropertyRS} from '../../app/core/rest-services/applicationPropertyRS.rest';
 import {BenutzerRSX} from '../../app/core/service/benutzerRSX.rest';
 import {TSAuthEvent} from '../../models/enums/TSAuthEvent';
 import {TSRole} from '../../models/enums/TSRole';
@@ -43,7 +44,8 @@ export class AuthServiceRS {
     public static $inject = [
         '$http', '$q', '$timeout', '$cookies', 'EbeguRestUtil',
         'AuthLifeCycleService',
-        'BenutzerRS'
+        'BenutzerRS',
+        'ApplicationPropertyRS'
     ];
 
     private principal?: TSBenutzer;
@@ -55,6 +57,7 @@ export class AuthServiceRS {
 
     private _principal$: Observable<TSBenutzer | null> = this.principalSubject$.asObservable();
     private portalAccCreationLink: string;
+    private angebotTSEnabled: boolean;
 
     public constructor(
         private readonly $http: IHttpService,
@@ -63,8 +66,12 @@ export class AuthServiceRS {
         private readonly $cookies: ICookiesService,
         private readonly ebeguRestUtil: EbeguRestUtil,
         private readonly authLifeCycleService: AuthLifeCycleService,
-        private readonly benutzerRS: BenutzerRSX
+        private readonly benutzerRS: BenutzerRSX,
+        private readonly applicationPropertyRS: ApplicationPropertyRS
     ) {
+        this.applicationPropertyRS.getPublicPropertiesCached().then(res => {
+            this.angebotTSEnabled = res.angebotTSActivated;
+        });
     }
 
     // Use the observable, when the state must be updated automatically, when the principal changes.
@@ -277,7 +284,7 @@ export class AuthServiceRS {
         if (EbeguUtil.isNullOrUndefined(this.getPrincipal())) {
             return [];
         }
-        const isTagesschuleEnabled = this.getPrincipal().mandant.angebotTS;
+        const isTagesschuleEnabled = this.angebotTSEnabled;
         switch (this.getPrincipalRole()) {
             case TSRole.SUPER_ADMIN:
                 return TSRoleUtil.getAllRolesButAnonymous();
@@ -314,20 +321,6 @@ export class AuthServiceRS {
                 // by default the role of the user itself. the user can always see his role
                 return [this.getPrincipalRole()];
         }
-    }
-
-    public hasMandantAngebotTS(): boolean {
-        if (this.getPrincipal() && this.getPrincipal().mandant) {
-            return this.getPrincipal().mandant.angebotTS;
-        }
-        return false;
-    }
-
-    public hasMandantAngebotFI(): boolean {
-        if (this.getPrincipal() && this.getPrincipal().mandant) {
-            return this.getPrincipal().mandant.angebotFI;
-        }
-        return false;
     }
 
     public setMandant(mandant: KiBonMandant): IPromise<any> {

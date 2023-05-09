@@ -62,7 +62,7 @@ export function getTSEinschulungTypValuesLuzern(): Array<TSEinschulungTyp> {
 export function getTSEinschulungTypValuesAppenzellAusserrhoden(): Array<TSEinschulungTyp> {
     return [
         TSEinschulungTyp.VORSCHULALTER,
-        TSEinschulungTyp.KLASSE1
+        TSEinschulungTyp.KINDERGARTEN1
     ];
 }
 

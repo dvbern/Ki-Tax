@@ -38,6 +38,7 @@ export function getTSBetreuungsangebotTypValuesForMandant(
 
 export function getTSBetreuungsangebotTypValuesForMandantIfTagesschulanmeldungen(
     tagesschuleEnabledForMandant: boolean,
+    tagesfamilieEnabledForMandant: boolean,
     tagesschuleAnmeldungenConfigured: boolean,
     gemeinde: TSGemeinde,
     gesuchsperiode: TSGesuchsperiode
@@ -45,7 +46,9 @@ export function getTSBetreuungsangebotTypValuesForMandantIfTagesschulanmeldungen
     const angebote: Array<TSBetreuungsangebotTyp> = [];
     if (gemeinde.angebotBG && gesuchsperiode.gueltigkeit.gueltigBis.isAfter(gemeinde.betreuungsgutscheineStartdatum)) {
         angebote.push(TSBetreuungsangebotTyp.KITA);
-        angebote.push(TSBetreuungsangebotTyp.TAGESFAMILIEN);
+        if (tagesfamilieEnabledForMandant) {
+            angebote.push(TSBetreuungsangebotTyp.TAGESFAMILIEN);
+        }
     }
     if (tagesschuleEnabledForMandant && tagesschuleAnmeldungenConfigured && gemeinde.angebotTS && !gemeinde.nurLats
         && gesuchsperiode.gueltigkeit.gueltigBis.isAfter(gemeinde.tagesschulanmeldungenStartdatum)) {

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018 DV Bern AG, Switzerland
+ * Copyright (C) 2023 DV Bern AG, Switzerland
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -8,19 +8,20 @@
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, Input, OnDestroy, OnInit} from '@angular/core';
 import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
+import {DomSanitizer, SafeResourceUrl} from '@angular/platform-browser';
 import {TranslateService} from '@ngx-translate/core';
-import {BehaviorSubject, from, Observable} from 'rxjs';
-import {map} from 'rxjs/operators';
-import {MANDANTS} from '../../core/constants/MANDANTS';
+import {BehaviorSubject, combineLatest, from, Observable, Subject} from 'rxjs';
+import {map, takeUntil} from 'rxjs/operators';
+import {YoutubeLinkVisitor} from '../../core/constants/YoutubeLinkVisitor';
 import {ApplicationPropertyRS} from '../../core/rest-services/applicationPropertyRS.rest';
 import {MandantService} from '../../shared/services/mandant.service';
 import {OnboardingHelpDialogComponent} from '../onboarding-help-dialog/onboarding-help-dialog.component';
@@ -31,7 +32,7 @@ import {OnboardingPlaceholderService} from '../service/onboarding-placeholder.se
     templateUrl: './onboarding.component.html',
     styleUrls: ['./onboarding.component.less', '../onboarding.less']
 })
-export class OnboardingComponent implements OnInit {
+export class OnboardingComponent implements OnInit, OnDestroy {
 
     @Input() public showLogin: boolean = true;
 
@@ -43,17 +44,19 @@ export class OnboardingComponent implements OnInit {
     public currentLangDe$: BehaviorSubject<boolean>;
     public isMultimandantEnabled$: Observable<boolean>;
     public isLuzern$: Observable<boolean>;
+    private readonly unsubscribe$ = new Subject<void>();
+    public youtubeLink$: Observable<SafeResourceUrl>;
 
     public constructor(
         private readonly applicationPropertyRS: ApplicationPropertyRS,
         private readonly onboardingPlaceholderService: OnboardingPlaceholderService,
         private readonly translate: TranslateService,
         private readonly dialog: MatDialog,
-        private readonly mandantService: MandantService
+        private readonly mandantService: MandantService,
+        private readonly sanitizer: DomSanitizer
     ) {
         this.isDummyMode$ = from(this.applicationPropertyRS.isDummyMode());
         this.isMultimandantEnabled$ = from(this.applicationPropertyRS.isMultimandantEnabled());
-        this.isLuzern$ = this.mandantService.mandant$.pipe(map(mandant => mandant === MANDANTS.LUZERN));
     }
 
     public ngOnInit(): void {
@@ -68,6 +71,12 @@ export class OnboardingComponent implements OnInit {
         }, (err: any) => {
             console.error(err);
         });
+        this.initYoutubeLink();
+    }
+
+    public ngOnDestroy(): void {
+        this.unsubscribe$.next();
+        this.unsubscribe$.complete();
     }
 
     private currLangIsGerman(): boolean {
@@ -82,5 +91,15 @@ export class OnboardingComponent implements OnInit {
         $event.preventDefault();
         const dialogConfig = new MatDialogConfig();
         this.dialog.open(OnboardingHelpDialogComponent, dialogConfig);
+    }
+
+    private initYoutubeLink(): void {
+        const mandant$ = this.mandantService.mandant$.pipe(takeUntil(this.unsubscribe$));
+        const isGerman$ = this.isGerman$().pipe(takeUntil(this.unsubscribe$));
+        this.youtubeLink$ = combineLatest([mandant$, isGerman$])
+                .pipe(map(([mandant, isGerman]) => {
+                    const url = new YoutubeLinkVisitor(isGerman).process(mandant);
+                    return this.sanitizer.bypassSecurityTrustResourceUrl(url);
+                }));
     }
 }

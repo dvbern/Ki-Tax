@@ -19,6 +19,7 @@ import {TSBenutzer} from '../../../../models/TSBenutzer';
 import {TSBenutzerNoDetails} from '../../../../models/TSBenutzerNoDetails';
 import {TSGesuch} from '../../../../models/TSGesuch';
 import {TSRoleUtil} from '../../../../utils/TSRoleUtil';
+import {ApplicationPropertyRS} from '../../rest-services/applicationPropertyRS.rest';
 import {BenutzerRSX} from '../../service/benutzerRSX.rest';
 import ITranslateService = angular.translate.ITranslateService;
 
@@ -43,19 +44,27 @@ export class DvVerantwortlicherselect implements IDirective {
 
 export class VerantwortlicherselectController implements IController {
 
-    public static $inject: string[] = ['BenutzerRS', 'GesuchModelManager', '$translate'];
+    public static $inject: string[] = ['BenutzerRS', 'GesuchModelManager', '$translate', 'ApplicationPropertyRS'];
 
     public readonly TSRoleUtil = TSRoleUtil;
     public isSchulamt: boolean;
     public gemeindeId: string;
 
     public userList: Array<TSBenutzerNoDetails>;
+    private angebotTS: boolean;
 
     public constructor(
         private readonly benutzerRS: BenutzerRSX,
         private readonly gesuchModelManager: GesuchModelManager,
-        private readonly $translate: ITranslateService
+        private readonly $translate: ITranslateService,
+        private readonly applicationPropertyRS: ApplicationPropertyRS
     ) {
+    }
+
+    public $onInit(): void {
+        this.applicationPropertyRS.getPublicPropertiesCached().then(res => {
+            this.angebotTS = res.angebotTSActivated;
+        });
     }
 
     public $onChanges(changes: any): void {
@@ -65,7 +74,7 @@ export class VerantwortlicherselectController implements IController {
     }
 
     public getTitel(): string {
-        if (!this.gesuchModelManager.isTagesschulangebotEnabled()) {
+        if (!this.angebotTS) {
             return this.$translate.instant('VERANTWORTLICHER');
         }
         return this.$translate.instant(this.isSchulamt ? 'VERANTWORTLICHER_SCHULAMT' : 'VERANTWORTLICHER_JUGENDAMT');

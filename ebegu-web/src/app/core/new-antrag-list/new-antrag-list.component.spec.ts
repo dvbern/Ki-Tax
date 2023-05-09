@@ -28,9 +28,11 @@ import {SearchRS} from '../../../gesuch/service/searchRS.rest';
 import {TSAntragDTO} from '../../../models/TSAntragDTO';
 import {TSBenutzerNoDetails} from '../../../models/TSBenutzerNoDetails';
 import {TSAntragSearchresultDTO} from '../../../models/TSAntragSearchresultDTO';
+import {TSPublicAppConfig} from '../../../models/TSPublicAppConfig';
 import {MaterialModule} from '../../shared/material.module';
 import {StateStoreService} from '../../shared/services/state-store.service';
 import {ErrorService} from '../errors/service/ErrorService';
+import {ApplicationPropertyRS} from '../rest-services/applicationPropertyRS.rest';
 import {BenutzerRSX} from '../service/benutzerRSX.rest';
 import {GesuchsperiodeRS} from '../service/gesuchsperiodeRS.rest';
 import {InstitutionRS} from '../service/institutionRS.rest';
@@ -80,7 +82,7 @@ describe('NewAntragListComponent', () => {
     const gemeindeRSSpy = jasmine.createSpyObj<GemeindeRS>(GemeindeRS.name, ['getGemeindenForPrincipal$']);
     const searchRSSpy = jasmine.createSpyObj<SearchRS>(SearchRS.name, ['searchAntraege', 'countAntraege']);
     const authRSSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name,
-        ['getPrincipalRole', 'hasMandantAngebotTS', 'isOneOfRoles']);
+        ['getPrincipalRole', 'isOneOfRoles']);
     const errorServiceSpy = jasmine.createSpyObj<ErrorService>(ErrorService.name,
         ['addMesageAsError']);
     const benutzerRSSpy = jasmine.createSpyObj<BenutzerRSX>(BenutzerRSX.name,
@@ -91,6 +93,9 @@ describe('NewAntragListComponent', () => {
         ['has', 'get']);
     const uiRouterGlobals = jasmine.createSpyObj<UIRouterGlobals>(UIRouterGlobals.name,
         ['$current']);
+    const appPropRSSpy = jasmine.createSpyObj<ApplicationPropertyRS>(ApplicationPropertyRS.name,
+        ['getPublicPropertiesCached']);
+    appPropRSSpy.getPublicPropertiesCached.and.returnValue(Promise.resolve(new TSPublicAppConfig()));
 
     beforeEach(async(() => {
         TestBed.configureTestingModule({
@@ -106,7 +111,8 @@ describe('NewAntragListComponent', () => {
                 {provide: BenutzerRSX, useValue: benutzerRSSpy},
                 {provide: TransitionService, useValue: transitionServiceSpy},
                 {provide: StateStoreService, useValue: stateStoreServiceSpy},
-                {provide: UIRouterGlobals, useValue: uiRouterGlobals}
+                {provide: UIRouterGlobals, useValue: uiRouterGlobals},
+                {provide: ApplicationPropertyRS, useValue: appPropRSSpy}
             ]
         })
             .compileComponents();
@@ -115,7 +121,6 @@ describe('NewAntragListComponent', () => {
         gesuchPeriodeSpy.getAllGesuchsperioden.and.returnValue(Promise.resolve([]));
         gemeindeRSSpy.getGemeindenForPrincipal$.and.returnValue(of([]));
         authRSSpy.getPrincipalRole.and.returnValue(undefined);
-        authRSSpy.hasMandantAngebotTS.and.returnValue(false);
         const dummySearchResult: TSAntragSearchresultDTO = {
             get antragDTOs(): TSAntragDTO[] {
                 return [];
