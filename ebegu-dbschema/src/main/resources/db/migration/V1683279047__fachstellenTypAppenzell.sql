@@ -14,10 +14,8 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-
-update outbox_event
-set avro_schema = REPLACE(
-		avro_schema,
-		'"symbols":["BERN","LUZERN","SOLOTHURN","APPENZELL_AUSSERRHODEN"]',
-		'"symbols":["BERN","LUZERN","SOLOTHURN","APPENZELL_AUSSERRHODEN","UNKNOWN"],"default":"UNKNOWN"'
-	);
+UPDATE einstellung
+SET value = 'KEINE'
+WHERE einstellung_key = 'FACHSTELLEN_TYP' AND gesuchsperiode_id in
+ (SELECT id FROM gesuchsperiode where
+    gesuchsperiode.mandant_id = (SELECT id FROM mandant WHERE mandant_identifier = 'APPENZELL_AUSSERRHODEN'));

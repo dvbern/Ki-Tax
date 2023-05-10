@@ -1082,5 +1082,9 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
         return vorgaengerBetreuung.verfuegung.zeitabschnitte;
     }
 
+    public calculateSelbstbehaltProzent(beitragshoeheProzent: number): number {
+        return Math.round(100 - beitragshoeheProzent);
+    }
+
 
 }

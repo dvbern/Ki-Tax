@@ -114,6 +114,7 @@
     "VERGUENSTIGUNG_AN_INSTITUTION": "Beitragshöhe in CHF",
     "VERGUENSTIGUNG_AN_ELTERN": "Beitragshöhe in CHF",
     "BEITRAGSHOHE_PROZENT": "Beitragshöhe in %",
+    "SELBSTBEHALT_PROZENT": "Selbstbehalt in %",
     "GESUNDHEITLICHE_EINSCHRAENKUNGEN": "Entlastung der Familie/Wohl des Kindes",
     "KINDERGARTEN1": "Eingeschult",
     "VORSCHULALTER": "Nicht eingeschult",
@@ -144,6 +145,7 @@
     "VERGUENSTIGT_IN_H_HELP": "Enthält die Anzahl Betreuungsstunden, für welche Betreuungsbeiträge zur Auszahlung gelangen.",
     "VOLLKOSTEN_HELP": "Enthält die gesamte Kosten, welche in der Institution für die Betreuung anfallen (inkl. Verpflegungskosten).",
     "BEITRAGSHOHE_PROZENT_HELP": "",
+    "SELBSTBEHALT_PROZENT_HELP": "",
     "VERGUENSTIGUNG_HELP": "Enthält den monatlich ausbezahlten Betreuungsbeitrag.",
     "POPUPTEXT_AFTER_REGISTRIEREN": "<b>Periodensystem in kiBon. Warum ist die Periode 22/23 nur zwei Monate lang?</b><br>Unterstützungsbeiträge werden im Regelfall jeweils für den Zeitraum vom 1. August bis 31. Juli des Folgejahres verfügt. Da das KibeG per 1. Juni 2023 in Kraft tritt, dauert die erste Zeitperiode daher zwei Monate: vom 1. Juni 2023 bis 31. Juli 2023. Für die Periode ab August 2023 muss ein neues Gesuch gestellt werden. Wenn bereits für die zwei Monate Juni und Juli 2023 ein Gesuch gestellt wurde, werden die Daten ins neue Gesuch übernommen (sofern Sie dieses online ausgefüllt haben). <br><br><b>Hinweis:</b> <br>Beim Abschluss des Online-Formulars wird eine Freigabequittung erstellt. Mit dieser erklären Sie sich damit einverstanden, dass die Institutionen monatlich die Anzahl der effektiv bezogenen Betreuungsstunden und deren Kosten an die SOVAR melden und die Betreuungsbeiträge direkt den Institutionen ausbezahlt werden. Auf der Rechnung, welche Sie von der Institution erhalten, sind die Betreuungsbeiträge dann bereits abgezogen.<br><br>Wenn Sie mit diesem Vorgehen nicht einverstanden sind, müssen Sie ein Gesuch in Papierform ausfüllen und einreichen. Ausserdem werden die Beiträge nur ausbezahlt, wenn Sie monatlich Ihre Rechnung der Betreuungskosten einreichen. Das Formular kann unter <a href=\"https://www.sovar.ch/kibeg\" target=\"_blank\">https://www.sovar.ch/kibeg</a> bezogen werden. <br><br><b>Benötigen Sie Hilfe?</b><br>Die SOVAR steht Ihnen unter <a href=\"mailto:kibeg@sovar.ch\">kibeg@sovar.ch</a> und <a href=\"tel:071 354 51 51\">071 354 51 51</a> für Fragen zur Verfügung.",
     "FINANZIELLE_SITUATION_STEK_GEMEINSAM": "Haben Sie Ihre letzte Steuerveranlagung zusammen mit {{namegs2}} erhalten?",
@@ -160,5 +162,6 @@
     "ONBOARDING_INFO_INSTITUTION_LINK": "",
     "ONBOARDING_BG_BEANTRAGEN": "Ich möchte einen Betreuungsbeitrag beantragen",
     "AUSZAHLUNG_AUSSERHALB_KIBON": "Auszahlung ausserhalb von kiBon",
+    "BESONDERE_VOLKSSCHULE_AUSWAEHLEN": "",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }
