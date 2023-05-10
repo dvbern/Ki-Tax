@@ -116,6 +116,8 @@ public class JaxFamiliensituation extends JaxAbstractDTO {
 	@Nullable
 	private Boolean gemeinsamerHaushaltMitPartner;
 
+	private boolean auszahlungAusserhalbVonKibon;
+
 	public static long getSerialVersionUID() {
 		return serialVersionUID;
 	}
@@ -347,5 +349,13 @@ public class JaxFamiliensituation extends JaxAbstractDTO {
 
 	public void setGemeinsamerHaushaltMitPartner(@Nullable Boolean gemeinsamerHaushaltMitPartner) {
 		this.gemeinsamerHaushaltMitPartner = gemeinsamerHaushaltMitPartner;
+	}
+
+	public boolean isAuszahlungAusserhalbVonKibon() {
+		return auszahlungAusserhalbVonKibon;
+	}
+
+	public void setAuszahlungAusserhalbVonKibon(boolean auszahlungAusserhalbVonKibon) {
+		this.auszahlungAusserhalbVonKibon = auszahlungAusserhalbVonKibon;
 	}
 }
