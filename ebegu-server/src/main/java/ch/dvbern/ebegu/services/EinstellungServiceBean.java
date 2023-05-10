@@ -42,7 +42,6 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
-import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Einstellung;
 import ch.dvbern.ebegu.entities.Einstellung_;
 import ch.dvbern.ebegu.entities.Gemeinde;
@@ -194,6 +193,49 @@ public class EinstellungServiceBean extends AbstractBaseService implements Einst
 		return Optional.of(criteriaResults.get(0));
 	}
 
+	private Map<EinstellungKey, Einstellung> mapEinstellungByKey(Collection<Einstellung> einstellungList) {
+		Map<EinstellungKey, Einstellung> einstellungMapedByKey = new HashMap<>();
+
+		einstellungList.forEach(einstellung -> {
+			if (einstellungMapedByKey.containsKey(einstellung.getKey())) {
+				throw new EbeguRuntimeException(
+						"findEinstellungenByMandantGemeindeOrSystemMapedByKey",
+						"For Key " + einstellung.getKey(),
+						ErrorCodeEnum.ERROR_TOO_MANY_RESULTS);
+			}
+
+			einstellungMapedByKey.put(einstellung.getKey(), einstellung);
+		});
+
+		return einstellungMapedByKey;
+	}
+
+	private List<Einstellung> findEinstellungenByMandantGemeindeOrSystem(
+			@Nullable Mandant mandant,
+			@Nullable Gemeinde gemeinde,
+			@Nonnull Gesuchsperiode gesuchsperiode
+	) {
+		final EntityManager em = persistence.getEntityManager();
+		final CriteriaBuilder cb = em.getCriteriaBuilder();
+		final CriteriaQuery<Einstellung> query = cb.createQuery(Einstellung.class);
+
+		Root<Einstellung> root = query.from(Einstellung.class);
+		// MUSS Kriterien
+		final Predicate predicateGesuchsperiode = cb.equal(root.get(Einstellung_.gesuchsperiode), gesuchsperiode);
+		// Gemeinde
+		final Predicate predicateGemeinde = (gemeinde == null) ?
+				cb.isNull(root.get(Einstellung_.gemeinde)) : cb.equal(root.get(Einstellung_.gemeinde), gemeinde);
+		// Mandant
+		final Predicate predicateMandant = (mandant == null) ?
+				cb.isNull(root.get(Einstellung_.mandant)) : cb.equal(root.get(Einstellung_.mandant), mandant);
+
+		query.where(predicateGesuchsperiode, predicateGemeinde, predicateMandant);
+		query.select(root);
+
+		final TypedQuery<Einstellung> query1 = em.createQuery(query);
+		return query1.getResultList();
+	}
+
 	@Override
 	@Nonnull
 	public Collection<Einstellung> getAllEinstellungenBySystem(@Nonnull Gesuchsperiode gesuchsperiode) {
@@ -220,16 +262,61 @@ public class EinstellungServiceBean extends AbstractBaseService implements Einst
 	@Override
 	@Nonnull
 	public Collection<Einstellung> getAllEinstellungenByMandant(@Nonnull Gesuchsperiode gesuchsperiode) {
-
-		final EntityManager entityManager = persistence.getEntityManager();
 		Collection<Einstellung> result = new ArrayList<>();
+
+		// (1) Nach Mandant
+		Map<EinstellungKey, Einstellung> einstellungenByMandant = mapEinstellungByKey(
+				findEinstellungenByMandantGemeindeOrSystem(gesuchsperiode.getMandant(), null, gesuchsperiode));
+
+		// (2) Nach Default des Systems
+		Map<EinstellungKey, Einstellung> einstellungBySystem = mapEinstellungByKey(
+				findEinstellungenByMandantGemeindeOrSystem(null, null, gesuchsperiode));
 
 		// Fuer jeden Key muss die spezifischste Einstellung gesucht werden
 		Arrays.stream(EinstellungKey.values()).forEach(einstellungKey -> {
 			// Nach Mandant oder System
-			Optional<Einstellung> einstellungByMandant = findEinstellungByMandantOrSystem(einstellungKey, gesuchsperiode.getMandant(), gesuchsperiode, entityManager);
-			einstellungByMandant.ifPresent(result::add);
+			Einstellung einstellung = einstellungenByMandant.get(einstellungKey);
+
+			if (einstellung == null) {
+				einstellung = einstellungBySystem.get(einstellungKey);
+			}
+
+			if (einstellung != null) {
+				result.add(einstellung);
+			}
 		});
+		return result;
+	}
+
+	@Nonnull
+	private List<Einstellung> getAllEinstellungenByGemeinde(@Nonnull Gemeinde gemeinde, @Nonnull Gesuchsperiode gesuchsperiode) {
+		List<Einstellung> result = new ArrayList<>();
+		// Wir suchen drei-stufig:
+		// (1) Nach Gemeinde
+		Map<EinstellungKey, Einstellung> einstellungByGemeinde = mapEinstellungByKey(
+				findEinstellungenByMandantGemeindeOrSystem(gemeinde.getMandant(), gemeinde, gesuchsperiode));
+
+		// (2) Nach Mandant oder System-Default
+		Map<EinstellungKey, Einstellung> einstellungByMandantOrSystem = mapEinstellungByKey(
+				getAllEinstellungenByMandant(gesuchsperiode));
+
+		// Fuer jeden Key muss die spezifischste Einstellung gesucht werden
+		Arrays.stream(EinstellungKey.values()).forEach(einstellungKey -> {
+			// (1) Nach Gemeinde
+			Einstellung einstellung = einstellungByGemeinde.get(einstellungKey);
+
+			if (einstellung == null) {
+				// (2) Nach Mandant oder System-Default
+				einstellung = einstellungByMandantOrSystem.get(einstellungKey);
+			}
+
+			if (einstellung == null) {
+				throw new NoEinstellungFoundException(einstellungKey, gemeinde, gesuchsperiode);
+			}
+
+			result.add(einstellung);
+		});
+
 		return result;
 	}
 
@@ -247,24 +334,18 @@ public class EinstellungServiceBean extends AbstractBaseService implements Einst
 	@Nonnull
 	@Override
 	public Map<EinstellungKey, Einstellung> getAllEinstellungenByGemeindeAsMap(@Nonnull Gemeinde gemeinde, @Nonnull Gesuchsperiode gesuchsperiode) {
-		Map<EinstellungKey, Einstellung> result = new HashMap<>();
-		// Fuer jeden Key muss die spezifischste Einstellung gesucht werden
-		Arrays.stream(EinstellungKey.values()).forEach(einstellungKey -> {
-			Einstellung einstellung = findEinstellung(einstellungKey, gemeinde, gesuchsperiode);
-			result.put(einstellungKey, einstellung);
-		});
-		return result;
+		return mapEinstellungByKey(getAllEinstellungenByGemeinde(gemeinde, gesuchsperiode));
 	}
 
 	@Nonnull
 	@Override
 	public Map<EinstellungKey, Einstellung> getGemeindeEinstellungenOnlyAsMap(@Nonnull Gemeinde gemeinde, @Nonnull Gesuchsperiode gesuchsperiode) {
-		Map<EinstellungKey, Einstellung> result = new HashMap<>();
-		// Fuer jeden Key muss die spezifischste Einstellung gesucht werden
-		Arrays.stream(EinstellungKey.values()).filter(EinstellungKey::isGemeindeEinstellung).forEach(einstellungKey -> {
-			Einstellung einstellung = findEinstellung(einstellungKey, gemeinde, gesuchsperiode);
-			result.put(einstellungKey, einstellung);
-		});
+		Map<EinstellungKey, Einstellung> result = getAllEinstellungenByGemeindeAsMap(gemeinde, gesuchsperiode);
+		for (EinstellungKey key : EinstellungKey.values()) {
+			if (!key.isGemeindeEinstellung()) {
+				result.remove(key);
+			}
+		}
 		return result;
 	}
 
@@ -272,15 +353,14 @@ public class EinstellungServiceBean extends AbstractBaseService implements Einst
 	@Override
 	public Map<EinstellungKey, Einstellung> getGemeindeEinstellungenActiveForMandantOnlyAsMap(
 		@Nonnull Gemeinde gemeinde, @Nonnull Gesuchsperiode gesuchsperiode) {
-		Map<EinstellungKey, Einstellung> result = new HashMap<>();
-		// Fuer jeden Key muss die spezifischste Einstellung gesucht werden
-		Arrays.stream(EinstellungKey.values())
-			.filter(EinstellungKey::isGemeindeEinstellung)
-			.filter(einstellungKey -> einstellungKey.isEinstellungActivForMandant(gemeinde.getMandant().getMandantIdentifier()))
-			.forEach(einstellungKey -> {
-				Einstellung einstellung = findEinstellung(einstellungKey, gemeinde, gesuchsperiode);
-				result.put(einstellungKey, einstellung);
-			});
+		Map<EinstellungKey, Einstellung> result = getGemeindeEinstellungenOnlyAsMap(gemeinde, gesuchsperiode);
+
+		for (EinstellungKey key : EinstellungKey.values()) {
+			if (!key.isEinstellungActivForMandant(gemeinde.getMandant().getMandantIdentifier())) {
+				result.remove(key);
+			}
+		}
+
 		return result;
 	}
 
