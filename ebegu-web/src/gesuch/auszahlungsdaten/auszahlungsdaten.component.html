@@ -1,0 +1,71 @@
+<!--
+  ~ Copyright (C) 2021 DV Bern AG, Switzerland
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU Affero General Public License as
+  ~ published by the Free Software Foundation, either version 3 of the
+  ~ License, or (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  ~ GNU Affero General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU Affero General Public License
+  ~ along with this program. If not, see <https://www.gnu.org/licenses/>.
+  -->
+
+<fieldset>
+    <div class="form-group">
+        <div class="row">
+            <div class="col-sm-12 dv-input-container-medium">
+                <!-- IBAN -->
+                <div class="form-group">
+                    <label class="required long-label" for="iban_id">
+                        {{'IBAN_FUER_AUSZAHLUNG_GUTSCHEINE' | translate}}</label>
+                    <input id="iban_id" type="text"
+                           name="iban"
+                           #iban="ngModel"
+                           [(ngModel)]="auszahlungsdaten.iban"
+                           class="form-control"
+                           isNotQrIbanN
+                           [disabled]="isReadOnly()"
+                           required>
+                    <dv-error-messages
+                        [errorObject]="iban.errors"
+                        inputId="iban_id">
+                    </dv-error-messages>
+                    <dv-bisher-x
+                        [showBisher]="isKorrekturModusOrFreigegeben()"
+                        [deklaration]="auszahlungsdatenGS?.iban"
+                        [korrektur]="auszahlungsdaten.iban"></dv-bisher-x>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <!--        LAUTEND AUF-->
+            <div class="col-sm-12 dv-input-container-medium">
+                <div class="form-group">
+                    <label class="required long-label" for="kontoinhaber_id">
+                        {{'MAHLZEITENVERGUENSTIGUNG_KONTOINHABER' | translate}}</label>
+                    <input id="kontoinhaber_id" type="text"
+                           name="kontoinhaber"
+                           #kontoinhaber="ngModel"
+                           [(ngModel)]="auszahlungsdaten.kontoinhaber"
+                           class="form-control"
+                           [disabled]="isReadOnly()"
+                           required>
+                    <dv-error-messages
+                        [errorObject]="kontoinhaber.errors"
+                        inputId="kontoinhaber_id">
+                    </dv-error-messages>
+                    <dv-bisher-x
+                        [showBisher]="isKorrekturModusOrFreigegeben()"
+                        [deklaration]="auszahlungsdatenGS?.kontoinhaber"
+                        [korrektur]="auszahlungsdaten.kontoinhaber"></dv-bisher-x>
+                </div>
+            </div>
+        </div>
+    </div>
+</fieldset>
+

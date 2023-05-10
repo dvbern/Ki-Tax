@@ -33,6 +33,18 @@
             <p class="inline-hint">{{'APPENZELL_FIN_SIT_EINLEITUNG' | translate}}</p>
         </div>
     </div>
+    <div *ngIf="showAuszahlungAusserhalbKibonCheckbox()">
+        <dv-checkbox-x
+            [(model)]="model.familienSituation.auszahlungAusserhalbVonKibon"
+            [label]="'AUSZAHLUNG_AUSSERHALB_KIBON' | translate"
+        ></dv-checkbox-x>
+    </div>
+    <div *ngIf="showAuszahlungsdaten()">
+        <form>
+            <dv-auszahlungsdaten
+                [(auszahlungsdaten)]="model.zahlungsinformationen"></dv-auszahlungsdaten>
+        </form>
+    </div>
     <div class="row" *ngIf="!showWarningAngabenVervollstaendigen()">
         <div class="col-md-12">
             <div class="form-group">
