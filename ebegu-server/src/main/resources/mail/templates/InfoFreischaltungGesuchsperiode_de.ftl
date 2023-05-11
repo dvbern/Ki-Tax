@@ -5,6 +5,7 @@
 <#-- @ftlvariable name="empfaengerMail" type="java.lang.String" -->
 <#-- @ftlvariable name="startDatum" type="java.lang.String" -->
 <#-- @ftlvariable name="gesuchsperiode" type="ch.dvbern.ebegu.entities.Gesuchsperiode" -->
+<#-- @ftlvariable name="gruss" type="ch.dvbern.ebegu.entities.Gesuchsperiode" -->
 From: ${configuration.senderAddress}
 To: <@base64Header>${senderFullName}</@base64Header> <${empfaengerMail}>
 Subject: <@base64Header>kiBon <#if configuration.isDevmode>Testsystem</#if> – Neue Periode freigeschaltet</@base64Header>
@@ -42,7 +43,7 @@ ${templateConfiguration.mailCss}
 		Falls Sie für die Periode ${gesuchsperiode.gesuchsperiodeString} kein Antrag stellen möchten, sind für Sie keine weiteren Schritte notwendig.
 	<p>
 		Freundliche Grüsse <br/>
-		Ihre Gemeinde ${gesuch.dossier.gemeinde.name}
+		${gruss}
 	</p>
 	<p>
 		<#if configuration.isDevmode>

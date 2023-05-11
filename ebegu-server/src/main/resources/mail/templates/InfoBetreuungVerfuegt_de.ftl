@@ -8,6 +8,7 @@
 <#-- @ftlvariable name="templateConfiguration" type="ch.dvbern.ebegu.mail.MailTemplateConfiguration" -->
 <#-- @ftlvariable name="configuration" type="ch.dvbern.ebegu.config.EbeguConfiguration" -->
 <#-- @ftlvariable name="hostname" type="java.lang.String" -->
+<#-- @ftlvariable name="gruss" type="java.lang.String" -->
 From: ${configuration.senderAddress}
 To: <@base64Header>${institution.name}</@base64Header> <${empfaengerMail}>
 Subject: <@base64Header>${institution.name}: kiBon <#if configuration.isDevmode>Testsystem</#if> – Betreuung verfügt</@base64Header>
@@ -61,7 +62,7 @@ ${templateConfiguration.mailCss}
 	</p>
 	<p>
 		Freundliche Grüsse <br/>
-		Ihre Gemeinde ${betreuung.extractGesuch().dossier.gemeinde.name}
+		${gruss}
 	</p>
 	<p>
 		<#if configuration.isDevmode>

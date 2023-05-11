@@ -5,6 +5,7 @@
 <#-- @ftlvariable name="empfaengerMail" type="java.lang.String" -->
 <#-- @ftlvariable name="gesuchsteller" type="ch.dvbern.ebegu.entities.Gesuchsteller" -->
 <#-- @ftlvariable name="isSozialdienst" type="java.lang.Boolean" -->
+<#-- @ftlvariable name="gruss" type="java.lang.Boolean" -->
 <#assign datumGeloescht = .now>
 From: ${configuration.senderAddress}
 To: <@base64Header>${senderFullName}</@base64Header> <${empfaengerMail}>
@@ -35,7 +36,7 @@ ${templateConfiguration.mailCss}
 	</p>
 	<p>
 		Freundliche Grüsse <br/>
-		Ihre Gemeinde ${gesuch.dossier.gemeinde.name}
+		${gruss}
 	</p>
 	<p>
 		<#if configuration.isDevmode>
