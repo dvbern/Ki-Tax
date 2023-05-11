@@ -575,6 +575,12 @@ export class TSRoleUtil {
         ];
     }
 
+    public static getSuperAdminGemeindeOnlyRoles(): ReadonlyArray<TSRole> {
+        return [
+            TSRole.SUPER_ADMIN
+        ].concat(this.getGemeindeOnlyRoles());
+    }
+
     public static getSchulamtOnlyRoles(): ReadonlyArray<TSRole> {
         return [TSRole.SACHBEARBEITER_TS, TSRole.ADMIN_TS];
     }

@@ -21,6 +21,7 @@ import {StateService} from '@uirouter/angular';
 import {Transition} from '@uirouter/core';
 import {ErrorService} from '../../../../../app/core/errors/service/ErrorService';
 import {SharedModule} from '../../../../../app/shared/shared.module';
+import {AuthServiceRS} from '../../../../../authentication/service/AuthServiceRS.rest';
 import {SHARED_MODULE_OVERRIDES} from '../../../../../hybridTools/mockUpgradedDirective';
 import {TSFinanzielleSituationResultateDTO} from '../../../../../models/dto/TSFinanzielleSituationResultateDTO';
 import {TSFamiliensituation} from '../../../../../models/TSFamiliensituation';
@@ -58,6 +59,7 @@ describe('FinanzielleSituationAppenzellViewComponent', () => {
     const stateServiceSpy = jasmine.createSpyObj<StateService>(StateService.name,['go']);
     const errorServiceSpy = jasmine.createSpyObj<ErrorService>(ErrorService.name, ['clearError']);
     const transitionSpy = jasmine.createSpyObj<Transition>(Transition.name, ['params']);
+    const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name, ['isOneOfRoles']);
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
@@ -70,6 +72,7 @@ describe('FinanzielleSituationAppenzellViewComponent', () => {
                 {provide: StateService, useValue: stateServiceSpy},
                 {provide: ErrorService, useValue: errorServiceSpy},
                 {provide: Transition, useValue: transitionSpy},
+                {provide: AuthServiceRS, useValue: authServiceSpy},
                 NgForm
             ],
             imports: [

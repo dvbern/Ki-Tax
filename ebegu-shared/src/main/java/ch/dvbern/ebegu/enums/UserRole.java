@@ -171,6 +171,10 @@ public enum UserRole {
 		return Arrays.asList(SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, ADMIN_TS, SACHBEARBEITER_TS);
 	}
 
+	public static List<UserRole> getSuperadminGemeindeOnlyRoles() {
+		return Arrays.asList(SUPER_ADMIN, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE);
+	}
+
 	public static List<UserRole> getAllGemeindeAdminRoles() {
 		return Arrays.asList(ADMIN_GEMEINDE, ADMIN_BG, ADMIN_TS);
 	}

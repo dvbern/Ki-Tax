@@ -286,7 +286,7 @@ export class FinanzielleSituationAppenzellViewComponent extends AbstractGesuchVi
     }
 
     public showAuszahlungAusserhalbKibonCheckbox(): boolean {
-        return this.authService.isOneOfRoles(TSRoleUtil.getMandantRoles())
+        return this.authService.isOneOfRoles(TSRoleUtil.getSuperAdminGemeindeOnlyRoles())
             && !this.gesuchModelManager.getGesuch().isOnlineGesuch();
     }
 }

@@ -37,6 +37,7 @@
         <dv-checkbox-x
             [(model)]="model.familienSituation.auszahlungAusserhalbVonKibon"
             [label]="'AUSZAHLUNG_AUSSERHALB_KIBON' | translate"
+            [readonly]="isGesuchReadonly()"
         ></dv-checkbox-x>
     </div>
     <div *ngIf="showAuszahlungsdaten()">

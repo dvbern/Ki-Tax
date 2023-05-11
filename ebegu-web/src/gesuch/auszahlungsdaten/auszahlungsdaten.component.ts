@@ -31,7 +31,7 @@ export class AuszahlungsdatenComponent implements OnInit {
     }
 
     public isKorrekturModusOrFreigegeben(): boolean {
-        return this.gesuchsmodelManager.isKorrekturModusJugendamt()
+        return this.gesuchsmodelManager.isKorrekturModusJugendamt();
     }
 
 }

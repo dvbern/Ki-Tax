@@ -1,25 +1,41 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import {ComponentFixture, TestBed} from '@angular/core/testing';
+import {NgForm} from '@angular/forms';
+import {SharedModule} from '../../app/shared/shared.module';
+import {SHARED_MODULE_OVERRIDES} from '../../hybridTools/mockUpgradedDirective';
+import {TSZahlungsinformationen} from '../../models/TSZahlungsinformationen';
+import {GesuchModelManager} from '../service/gesuchModelManager';
 
-import { AuszahlungsdatenComponent } from './auszahlungsdaten.component';
+import {AuszahlungsdatenComponent} from './auszahlungsdaten.component';
 
 describe('AuszahlungsdatenComponent', () => {
-  let component: AuszahlungsdatenComponent;
-  let fixture: ComponentFixture<AuszahlungsdatenComponent>;
+    let component: AuszahlungsdatenComponent;
+    let fixture: ComponentFixture<AuszahlungsdatenComponent>;
+    const gesuchModelManagerSpy =
+        jasmine.createSpyObj<GesuchModelManager>(GesuchModelManager.name,
+            ['openGesuch', 'isGesuchReadonly', 'isKorrekturModusJugendamt']);
+    gesuchModelManagerSpy.isGesuchReadonly.and.returnValue(false);
+    gesuchModelManagerSpy.isKorrekturModusJugendamt.and.returnValue(false);
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      declarations: [ AuszahlungsdatenComponent ]
-    })
-    .compileComponents();
-  });
+    beforeEach(async () => {
+        await TestBed.configureTestingModule({
+            imports: [SharedModule],
+            declarations: [AuszahlungsdatenComponent],
+            providers: [
+                {provide: GesuchModelManager, useValue: gesuchModelManagerSpy},
+                {provide: NgForm, useValue: new NgForm([], [])}
+            ]
+        }).overrideModule(SharedModule, SHARED_MODULE_OVERRIDES)
+            .compileComponents();
+    });
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(AuszahlungsdatenComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+    beforeEach(() => {
+        fixture = TestBed.createComponent(AuszahlungsdatenComponent);
+        component = fixture.componentInstance;
+        component.auszahlungsdaten = new TSZahlungsinformationen();
+        fixture.detectChanges();
+    });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+    it('should create', () => {
+        expect(component).toBeTruthy();
+    });
 });
