@@ -171,7 +171,6 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     private angebotTS: boolean;
     private angebotFI: boolean;
     private angebotTFO: boolean;
-    private direktAnmeldung: boolean = false;
 
     public constructor(
         private readonly $state: StateService,
@@ -361,7 +360,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
                     this.betreuungsangebotValues = new Array<any>();
                     this.betreuungsangebotValues.push(obj);
                     this.betreuungsangebot = obj;
-                    this.direktAnmeldung = true;
+                    this.changedAngebot();
                     return;
                 }
             }
@@ -369,7 +368,8 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
             this.betreuungsangebot = undefined;
         }
 
-        if (this.betreuungsangebotValues.length === 1) {
+        if (!this.hasMandantZusaetzlichesBereuungsangebot() &&
+                this.betreuungsangebotValues.length === 1) {
             this.betreuungsangebot = this.betreuungsangebotValues[0];
         }
     }
@@ -601,10 +601,10 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     }
 
     public enableBetreuungsangebotsTyp(): boolean {
-        return this.betreuungsangebotValues.length > 1
-            && this.model
+        return this.model
             && this.model.isNew()
-            && !this.gesuchModelManager.isGesuchReadonly();
+            && !this.gesuchModelManager.isGesuchReadonly()
+            && this.hasMandantZusaetzlichesBereuungsangebot();
     }
 
     public showInstitutionenList(): boolean {
@@ -1733,7 +1733,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         })
     }
 
-    public hasMoreThanOneBetreuungsangebotTyp(): boolean {
-        return this.direktAnmeldung || this.betreuungsangebotValues?.length > 1;
+    public hasMandantZusaetzlichesBereuungsangebot(): boolean {
+        return this.angebotTS || this.angebotFI || this.angebotTFO;
     }
 }
