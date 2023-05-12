@@ -87,34 +87,17 @@ public class Testfall04_WaltherLaura extends AbstractTestfall {
 		betreuungTagiAaregg.getBetreuungspensumContainers().add(betreuungspensumTagiAaregg);
 
 		// Finanzielle Situation
-		FinanzielleSituationContainer finanzielleSituationGS1 = createFinanzielleSituationContainer();
-		finanzielleSituationGS1.getFinanzielleSituationJA().setNettolohn(MathUtil.DEFAULT.from(EINKOMMEN_GS1));
-		finanzielleSituationGS1.getFinanzielleSituationJA().setBruttovermoegen(Objects.requireNonNull(MathUtil.DEFAULT.from(VERMOEGEN_GS1)));
+		FinanzielleSituationContainer finanzielleSituationGS1 = createFinanzielleSituationContainer(VERMOEGEN_GS1, EINKOMMEN_GS1);
 		finanzielleSituationGS1.getFinanzielleSituationJA().setSchulden(Objects.requireNonNull(MathUtil.DEFAULT.from(451248)));
 		finanzielleSituationGS1.setGesuchsteller(gesuchsteller1);
 		gesuchsteller1.setFinanzielleSituationContainer(finanzielleSituationGS1);
 
-		FinanzielleSituationContainer finanzielleSituationGS2 = createFinanzielleSituationContainer();
-		finanzielleSituationGS2.getFinanzielleSituationJA().setNettolohn(MathUtil.DEFAULT.from(EINKOMMEN_GS2));
+		FinanzielleSituationContainer finanzielleSituationGS2 = createFinanzielleSituationContainer(BigDecimal.ZERO, EINKOMMEN_GS2);
 		finanzielleSituationGS2.getFinanzielleSituationJA().setGeschaeftsgewinnBasisjahr(Objects.requireNonNull(MathUtil.DEFAULT.from(48023)));
 		finanzielleSituationGS2.getFinanzielleSituationJA().setGeschaeftsgewinnBasisjahrMinus1(MathUtil.DEFAULT.from(54871));
 		finanzielleSituationGS2.getFinanzielleSituationJA().setGeschaeftsgewinnBasisjahrMinus2(MathUtil.DEFAULT.from(46017));
 		finanzielleSituationGS2.setGesuchsteller(gesuchsteller2);
 		gesuchsteller2.setFinanzielleSituationContainer(finanzielleSituationGS2);
-
-		// LU
-		TestFaelleUtil.fillInFinSitLuZero(finanzielleSituationGS1);
-		assert finanzielleSituationGS1.getFinanzielleSituationJA().getSelbstdeklaration() != null;
-		finanzielleSituationGS1.getFinanzielleSituationJA().getSelbstdeklaration().setVermoegen(MathUtil.DEFAULT.from(VERMOEGEN_GS1));
-		finanzielleSituationGS1.getFinanzielleSituationJA().getSelbstdeklaration().setEinkunftErwerb(MathUtil.DEFAULT.from(EINKOMMEN_GS1));
-
-		// SO
-		TestFaelleUtil.fillInFinSitSoZero(finanzielleSituationGS1);
-		finanzielleSituationGS1.getFinanzielleSituationJA().setSteuerbaresVermoegen(MathUtil.DEFAULT.from(VERMOEGEN_GS1));
-
-		TestFaelleUtil.fillInFinSitSoZero(finanzielleSituationGS2);
-		finanzielleSituationGS2.getFinanzielleSituationJA().setSteuerbaresVermoegen(MathUtil.DEFAULT.from(VERMOEGEN_GS1));
-
 		createEmptyEKVInfoContainer(gesuch);
 
 		return gesuch;

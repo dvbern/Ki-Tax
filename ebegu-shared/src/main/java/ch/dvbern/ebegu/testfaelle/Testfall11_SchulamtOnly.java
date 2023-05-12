@@ -15,6 +15,7 @@
 
 package ch.dvbern.ebegu.testfaelle;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.Month;
 import java.util.Set;
@@ -94,17 +95,10 @@ public class Testfall11_SchulamtOnly extends AbstractTestfall {
 		// betreuungFerieninselGuarda.getBetreuungspensumContainers().add(betreuungspensumKitaAaregg);
 
 		// Finanzielle Situation
-		FinanzielleSituationContainer finanzielleSituationGS1 = createFinanzielleSituationContainer();
+		FinanzielleSituationContainer finanzielleSituationGS1 = createFinanzielleSituationContainer(BigDecimal.ZERO, BigDecimal.ZERO);
 		finanzielleSituationGS1.setGesuchsteller(gesuchsteller1);
 		gesuchsteller1.setFinanzielleSituationContainer(finanzielleSituationGS1);
-
-		// LU
-		TestFaelleUtil.fillInFinSitLuZero(finanzielleSituationGS1);
-
-		// SO
-		TestFaelleUtil.fillInFinSitSoZero(finanzielleSituationGS1);
-
-		createEmptyEKVInfoContainer(gesuch);
+createEmptyEKVInfoContainer(gesuch);
 
 		return gesuch;
 	}

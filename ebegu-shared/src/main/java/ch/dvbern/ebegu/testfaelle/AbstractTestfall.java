@@ -506,36 +506,14 @@ public abstract class AbstractTestfall {
 		return betreuungspensumContainer;
 	}
 
-	protected FinanzielleSituationContainer createFinanzielleSituationContainer() {
+	protected FinanzielleSituationContainer createFinanzielleSituationContainer(BigDecimal vermoegen, BigDecimal einkommen) {
 		FinanzielleSituationContainer finanzielleSituationContainer = new FinanzielleSituationContainer();
-		FinanzielleSituation finanzielleSituation = new FinanzielleSituation();
-		finanzielleSituation.setSteuerveranlagungErhalten(true);
-		finanzielleSituation.setSteuererklaerungAusgefuellt(true);
-		if (gesuch.getEingangsart().isOnlineGesuch()) {
-			finanzielleSituation.setSteuerdatenZugriff(true);
-		}
-		finanzielleSituation.setAutomatischePruefungErlaubt(true);
-
-		setFinSitDefaultValues(finanzielleSituation);
+		FinanzielleSituation finanzielleSituation = testfallDataProvider.createFinanzielleSituation(vermoegen, einkommen);
 
 		finanzielleSituationContainer.setJahr(gesuchsperiode.getGueltigkeit().getGueltigAb().getYear() - 1);
 		finanzielleSituationContainer.setFinanzielleSituationJA(finanzielleSituation);
 
 		return finanzielleSituationContainer;
-	}
-
-	/**
-	 * Schreibt in alle Felder der finanziellenSituation, die nicht Null sein dürfen, eine 0. Diese kann später in den
-	 * Testfällen überschrieben werden.
-	 */
-	private void setFinSitDefaultValues(@Nonnull FinanzielleSituation finanzielleSituation) {
-		finanzielleSituation.setFamilienzulage(BigDecimal.ZERO);
-		finanzielleSituation.setErsatzeinkommen(BigDecimal.ZERO);
-		finanzielleSituation.setErhalteneAlimente(BigDecimal.ZERO);
-		finanzielleSituation.setGeleisteteAlimente(BigDecimal.ZERO);
-		finanzielleSituation.setNettolohn(BigDecimal.ZERO);
-		finanzielleSituation.setBruttovermoegen(BigDecimal.ZERO);
-		finanzielleSituation.setSchulden(BigDecimal.ZERO);
 	}
 
 	protected EinkommensverschlechterungContainer createEinkommensverschlechterungContainer(

@@ -102,21 +102,12 @@ public class Testfall_DoppelKita_Regel3 extends AbstractTestfall {
 		betreuungKitaBruennen.getBetreuungspensumContainers().add(betreuungspensumKitaBruennen2);
 
 		// Finanzielle Situation
-		FinanzielleSituationContainer finanzielleSituationContainer = createFinanzielleSituationContainer();
-		finanzielleSituationContainer.getFinanzielleSituationJA().setNettolohn(MathUtil.DEFAULT.from(53265));
-		finanzielleSituationContainer.getFinanzielleSituationJA().setBruttovermoegen(MathUtil.DEFAULT.from(12147));
+		FinanzielleSituationContainer finanzielleSituationContainer = createFinanzielleSituationContainer(
+				MathUtil.DEFAULT.from(12147),
+				MathUtil.DEFAULT.from(53265)
+		);
 		finanzielleSituationContainer.setGesuchsteller(gesuchsteller1);
 		gesuchsteller1.setFinanzielleSituationContainer(finanzielleSituationContainer);
-
-		// LU
-		TestFaelleUtil.fillInFinSitLuZero(finanzielleSituationContainer);
-		assert finanzielleSituationContainer.getFinanzielleSituationJA().getSelbstdeklaration() != null;
-		finanzielleSituationContainer.getFinanzielleSituationJA().getSelbstdeklaration().setEinkunftErwerb(MathUtil.DEFAULT.from(EINKOMMEN_GS1));
-		finanzielleSituationContainer.getFinanzielleSituationJA().getSelbstdeklaration().setVermoegen(MathUtil.DEFAULT.from(VERMOEGEN_GS1));
-
-		// SO
-		TestFaelleUtil.fillInFinSitSoZero(finanzielleSituationContainer);
-		finanzielleSituationContainer.getFinanzielleSituationJA().setSteuerbaresVermoegen(MathUtil.DEFAULT.from(VERMOEGEN_GS1));
 
 		createEmptyEKVInfoContainer(gesuch);
 

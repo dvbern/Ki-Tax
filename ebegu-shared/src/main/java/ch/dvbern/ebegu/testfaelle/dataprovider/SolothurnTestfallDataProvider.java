@@ -1,10 +1,14 @@
 package ch.dvbern.ebegu.testfaelle.dataprovider;
 
+import java.math.BigDecimal;
+
 import ch.dvbern.ebegu.entities.Familiensituation;
+import ch.dvbern.ebegu.entities.FinanzielleSituation;
 import ch.dvbern.ebegu.enums.EnumFamilienstatus;
 import ch.dvbern.ebegu.enums.FinanzielleSituationTyp;
 
-public class SolothurnTestfallDataProvider  extends AbstractTestfallDataProvider {
+public class SolothurnTestfallDataProvider extends AbstractTestfallDataProvider {
+
 	@Override
 	public Familiensituation createVerheiratet() {
 		Familiensituation familiensituation = createDefaultFieldsOfFamiliensituation();
@@ -18,6 +22,16 @@ public class SolothurnTestfallDataProvider  extends AbstractTestfallDataProvider
 		Familiensituation familiensituation = createDefaultFieldsOfFamiliensituation();
 		familiensituation.setFamilienstatus(EnumFamilienstatus.ALLEINERZIEHEND);
 		return familiensituation;
+	}
+
+	@Override
+	public FinanzielleSituation createFinanzielleSituation(BigDecimal vermoegen, BigDecimal einkommen) {
+		FinanzielleSituation finanzielleSituation = createDefaultFinanzielleSituation();
+		finanzielleSituation.setNettolohn(einkommen);
+		finanzielleSituation.setSteuerbaresVermoegen(vermoegen);
+		finanzielleSituation.setUnterhaltsBeitraege(BigDecimal.ZERO);
+		finanzielleSituation.setAbzuegeKinderAusbildung(BigDecimal.ZERO);
+		return finanzielleSituation;
 	}
 
 	@Override
