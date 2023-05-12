@@ -2,6 +2,7 @@ package ch.dvbern.ebegu.testfaelle.dataprovider;
 
 import ch.dvbern.ebegu.entities.Familiensituation;
 import ch.dvbern.ebegu.enums.EnumFamilienstatus;
+import ch.dvbern.ebegu.enums.FinanzielleSituationTyp;
 
 public class AppenzellTestfallDataProvider extends AbstractTestfallDataProvider {
 	@Override
@@ -21,5 +22,10 @@ public class AppenzellTestfallDataProvider extends AbstractTestfallDataProvider 
 		familiensituation.setGeteilteObhut(Boolean.FALSE);
 		familiensituation.setGemeinsamerHaushaltMitPartner(Boolean.FALSE);
 		return familiensituation;
+	}
+
+	@Override
+	public FinanzielleSituationTyp getFinanzielleSituationTyp() {
+		return FinanzielleSituationTyp.APPENZELL;
 	}
 }

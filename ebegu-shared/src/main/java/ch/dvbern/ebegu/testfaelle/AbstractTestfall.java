@@ -225,6 +225,7 @@ public abstract class AbstractTestfall {
 		gesuch.setGesuchsperiode(gesuchsperiode);
 		gesuch.setDossier(dossier);
 		gesuch.setEingangsdatum(eingangsdatum);
+		gesuch.setFinSitTyp(testfallDataProvider.getFinanzielleSituationTyp());
 		//noinspection VariableNotUsedInsideIf
 		if (eingangsdatum != null) {
 			gesuch.setStatus(AntragStatus.IN_BEARBEITUNG_JA);
