@@ -2749,10 +2749,10 @@ public final class TestDataUtil {
 		gesuch.setGesuchsteller2(gs2);
 	}
 
-	public static Mandant createMandantAR() {
+	public static Mandant createMandant(MandantIdentifier mandantIdentifier) {
 		Mandant mandant = new Mandant();
-		mandant.setMandantIdentifier(MandantIdentifier.APPENZELL_AUSSERRHODEN);
-		mandant.setName("Appenzell Ausserrhoden");
+		mandant.setMandantIdentifier(mandantIdentifier);
+		mandant.setName("Mandant");
 		mandant.setActivated(true);
 		return mandant;
 	}

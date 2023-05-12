@@ -51,7 +51,7 @@ import ch.dvbern.ebegu.rechner.rules.ZusaetzlicherGutscheinGemeindeRechnerRule;
 import ch.dvbern.ebegu.rules.initalizer.RestanspruchInitializer;
 import ch.dvbern.ebegu.rules.util.BemerkungsMerger;
 import ch.dvbern.ebegu.rules.veraenderung.VeraenderungCalculator;
-import ch.dvbern.ebegu.util.BetreuungComparator;
+import ch.dvbern.ebegu.util.BetreuungComparatorVisitor;
 import ch.dvbern.ebegu.util.KitaxUebergangsloesungParameter;
 import ch.dvbern.ebegu.util.VerfuegungUtil;
 import org.slf4j.Logger;
@@ -185,7 +185,7 @@ public class BetreuungsgutscheinEvaluator {
 			// EBEGU-561)
 			List<AbstractPlatz> plaetzeList = new ArrayList<>(kindContainer.getBetreuungen());
 			plaetzeList.addAll(kindContainer.getAnmeldungenTagesschule());
-			plaetzeList.sort(new BetreuungComparator());
+			plaetzeList.sort(new BetreuungComparatorVisitor().getComparatorForMandant(gesuch.extractMandant()));
 
 			for (AbstractPlatz platz : plaetzeList) {
 

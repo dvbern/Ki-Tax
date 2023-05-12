@@ -884,11 +884,20 @@ public class WizardStepServiceBean extends AbstractBaseService implements Wizard
 			checkStepStatusForKinderOnChangeFamSit(wizardStep);
 		} else if (EbeguUtil.fromOneGSToTwoGS(oldEntity, newEntity, bis)) {
 			updateStatusFromOneGSToTwoGS(wizardStep);
+		} else if (!oldEntity.isSpezialFallAR() && newEntity.isSpezialFallAR()) {
+			updateStepsForWechselToFamiSitSpeziallFallAR(wizardStep);
 			//kann man effektiv sagen dass bei nur einem GS niemals Rote Schritte FinanzielleSituation und EVK
 			// gibt
 		} else if (!newEntity.hasSecondGesuchsteller(bis)
 			&& wizardStep.getGesuch().getGesuchsteller1() != null) { // nur 1 GS
 			updateStatusOnlyOneGS(wizardStep);
+		}
+	}
+
+	private void updateStepsForWechselToFamiSitSpeziallFallAR(WizardStep wizardStep) {
+		if (wizardStep.getWizardStepName().isFinSitWizardStepName() ||
+			wizardStep.getWizardStepName().isEKVWizardStepName()) {
+			setVerguegbarAndNOK(wizardStep);
 		}
 	}
 
