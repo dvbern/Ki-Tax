@@ -78,6 +78,8 @@ import ch.dvbern.ebegu.enums.Kinderabzug;
 import ch.dvbern.ebegu.enums.Land;
 import ch.dvbern.ebegu.enums.Sprache;
 import ch.dvbern.ebegu.enums.Taetigkeit;
+import ch.dvbern.ebegu.testfaelle.dataprovider.AbstractTestfallDataProvider;
+import ch.dvbern.ebegu.testfaelle.dataprovider.TestfallDataProviderVisitor;
 import ch.dvbern.ebegu.testfaelle.institutionStammdatenBuilder.InstitutionStammdatenBuilder;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.Constants;
@@ -118,17 +120,23 @@ public abstract class AbstractTestfall {
 	protected Gemeinde gemeinde = null;
 	protected Dossier dossier = null;
 	protected Gesuch gesuch = null;
+	protected Mandant mandant = null;
 	protected final boolean betreuungenBestaetigt;
 	protected final InstitutionStammdatenBuilder institutionStammdatenBuilder;
+
+	private final AbstractTestfallDataProvider testfallDataProvider;
 
 	protected AbstractTestfall(
 		Gesuchsperiode gesuchsperiode,
 		boolean betreuungenBestaetigt,
 		InstitutionStammdatenBuilder institutionStammdatenBuilder) {
 		this.gesuchsperiode = gesuchsperiode;
+		this.mandant = gesuchsperiode.getMandant();
 		this.institutionStammdatenBuilder = institutionStammdatenBuilder;
 		this.institutionStammdatenList = institutionStammdatenBuilder.buildStammdaten();
 		this.betreuungenBestaetigt = betreuungenBestaetigt;
+		this.testfallDataProvider = new TestfallDataProviderVisitor(this.gesuchsperiode)
+				.getTestDataProvider(this.getMandantOrDefaultMandant());
 	}
 
 	protected AbstractTestfall(
@@ -155,17 +163,25 @@ public abstract class AbstractTestfall {
 
 	public Fall createFall() {
 		fall = new Fall();
-		fall.setMandant(createDefaultMandant());
+		fall.setMandant(getMandantOrDefaultMandant());
 		createDossier(fall);
 		return fall;
 	}
 
+	private Mandant getMandantOrDefaultMandant() {
+		if (mandant == null) {
+			return createDefaultMandant();
+		}
+
+		return mandant;
+	}
 	// Default for Faelle that are not persisted. Will be overwritten otherwise
 	private Mandant createDefaultMandant() {
-		Mandant mandant = new Mandant();
-		mandant.setMandantIdentifier(MandantIdentifier.BERN);
-		mandant.setName("Kanton Bern");
-		return mandant;
+		this.mandant = new Mandant();
+		this.mandant.setMandantIdentifier(MandantIdentifier.BERN);
+		this.mandant.setName("Kanton Bern");
+		this.mandant.setName("Kanton Bern");
+		return this.mandant;
 	}
 
 	private void createDossier(@Nonnull Fall fallParam, @Nullable Benutzer verantwortlicher) {
