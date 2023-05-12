@@ -8,7 +8,7 @@ public class FkjvBernTestfallDataProvider extends BernTestfallDataProvider {
 
 	@Override
 	public Familiensituation createAlleinerziehend() {
-		Familiensituation familiensituation = new Familiensituation();
+		Familiensituation familiensituation = createDefaultFieldsOfFamiliensituation();
 		familiensituation.setFamilienstatus(EnumFamilienstatus.ALLEINERZIEHEND);
 		familiensituation.setGeteilteObhut(Boolean.TRUE);
 		familiensituation.setGesuchstellerKardinalitaet(EnumGesuchstellerKardinalitaet.ALLEINE);
