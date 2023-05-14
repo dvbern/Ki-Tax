@@ -51,6 +51,7 @@ export class TSFamiliensituation extends TSAbstractMutableEntity {
     private _partnerIdentischMitVorgesuch: boolean;
     private _gemeinsamerHaushaltMitObhutsberechtigterPerson: boolean;
     private _gemeinsamerHaushaltMitPartner: boolean;
+    private _auszahlungAusserhalbVonKibon: boolean;
 
     public constructor() {
         super();
@@ -345,6 +346,14 @@ export class TSFamiliensituation extends TSAbstractMutableEntity {
 
     public set gemeinsamerHaushaltMitObhutsberechtigterPerson(value: boolean) {
         this._gemeinsamerHaushaltMitObhutsberechtigterPerson = value;
+    }
+
+    public get auszahlungAusserhalbVonKibon(): boolean {
+        return this._auszahlungAusserhalbVonKibon;
+    }
+
+    public set auszahlungAusserhalbVonKibon(value: boolean) {
+        this._auszahlungAusserhalbVonKibon = value;
     }
 
     private hasSecondGesuchstellerFKJV(): boolean {

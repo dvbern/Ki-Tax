@@ -161,6 +161,7 @@
     "EMAIL_BG": "E-Mail Leitung Institution",
     "ONBOARDING_INFO_INSTITUTION_LINK": "",
     "ONBOARDING_BG_BEANTRAGEN": "Ich möchte einen Betreuungsbeitrag beantragen",
+    "AUSZAHLUNG_AUSSERHALB_KIBON": "Auszahlung ausserhalb von kiBon",
     "BESONDERE_VOLKSSCHULE_AUSWAEHLEN": "",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

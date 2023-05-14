@@ -19,6 +19,7 @@ import {CUSTOM_ELEMENTS_SCHEMA, NgModule} from '@angular/core';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {UpgradeModule} from '@angular/upgrade/static';
 import {SharedModule} from '../app/shared/shared.module';
+import {AuszahlungsdatenComponent} from './auszahlungsdaten/auszahlungsdaten.component';
 import {
     SelbstdeklarationComponent
 } from './component/abstractFinanzielleSituation/luzern/selbstdeklaration/selbstdeklaration.component';
@@ -166,7 +167,8 @@ import {
         FallCreationViewXComponent,
         FamiliensituationViewXComponent,
         FamiliensituationAppenzellViewXComponent,
-        ZahlungsstatusIconComponent
+        ZahlungsstatusIconComponent,
+        AuszahlungsdatenComponent
     ],
     exports: [
         DvSwitchComponent,

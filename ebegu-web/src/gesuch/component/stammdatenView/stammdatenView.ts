@@ -1,16 +1,18 @@
 /*
- * Ki-Tax: System for the management of external childcare subsidies
- * Copyright (C) 2017 City of Bern Switzerland
+ * Copyright (C) 2023 DV Bern AG, Switzerland
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Affero General Public License for more details.
+ *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
 import {IComponentOptions} from 'angular';
@@ -161,8 +163,21 @@ export class StammdatenViewController extends AbstractGesuchViewController<TSGes
     public $onInit(): void {
         super.$onInit();
         this.initViewmodel();
-        this.loadAusweisNachweiseIfNotNewContainer();
+        this.initAusweisNachweis();
         this.setFrenchEnabled();
+    }
+
+    private initAusweisNachweis(): void {
+        this.einstellungRS.findEinstellung(TSEinstellungKey.AUSWEIS_NACHWEIS_REQUIRED,
+                this.gesuchModelManager.getGemeinde().id,
+                this.gesuchModelManager.getGesuchsperiode().id).subscribe(ausweisNachweisRequired => {
+            this.ausweisNachweisRequiredEinstellung = ausweisNachweisRequired.value === 'true';
+
+            if (!this.ausweisNachweisRequiredEinstellung) {
+                return;
+            }
+            this.loadAusweisNachweiseIfNotNewContainer();
+        }, error => LOG.error(error));
     }
 
     private loadAusweisNachweiseIfNotNewContainer(): void {
@@ -195,11 +210,6 @@ export class StammdatenViewController extends AbstractGesuchViewController<TSGes
             this.gesuchModelManager.getGemeinde().id,
             this.gesuchModelManager.getGesuchsperiode().id).subscribe(diplomatenStatusDisabled => {
             this.diplomatenStatusDisabled = diplomatenStatusDisabled.value === 'true';
-        }, error => LOG.error(error));
-        this.einstellungRS.findEinstellung(TSEinstellungKey.AUSWEIS_NACHWEIS_REQUIRED,
-            this.gesuchModelManager.getGemeinde().id,
-            this.gesuchModelManager.getGesuchsperiode().id).subscribe(ausweisNachweisRequired => {
-            this.ausweisNachweisRequiredEinstellung = ausweisNachweisRequired.value === 'true';
         }, error => LOG.error(error));
         this.demoFeatureRS.isDemoFeatureAllowed(TSDemoFeature.KIBON_2754)
             .then(isAllowed => this.demoFeature2754 = isAllowed);
