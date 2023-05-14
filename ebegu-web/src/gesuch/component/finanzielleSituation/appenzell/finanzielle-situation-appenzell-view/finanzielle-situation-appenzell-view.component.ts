@@ -38,9 +38,7 @@ import {TSZahlungsinformationen} from '../../../../../models/TSZahlungsinformati
 import {EbeguUtil} from '../../../../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../../../../utils/TSRoleUtil';
 import {FinanzielleSituationRS} from '../../../../service/finanzielleSituationRS.rest';
-import {
-    FinanzielleSituationSubStepManagerAppenzell,
-} from '../../../../service/finanzielleSituationSubStepManagerAppenzell';
+import {FinanzielleSituationSubStepManagerAppenzell} from '../../../../service/finanzielleSituationSubStepManagerAppenzell';
 import {GesuchModelManager} from '../../../../service/gesuchModelManager';
 import {WizardStepManager} from '../../../../service/wizardStepManager';
 import {AbstractGesuchViewX} from '../../../abstractGesuchViewX';
