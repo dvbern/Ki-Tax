@@ -34,6 +34,7 @@ import {TSFinanzModel} from '../../../../../models/TSFinanzModel';
 import {TSFinSitZusatzangabenAppenzell} from '../../../../../models/TSFinSitZusatzangabenAppenzell';
 import {TSGesuch} from '../../../../../models/TSGesuch';
 import {TSGesuchstellerContainer} from '../../../../../models/TSGesuchstellerContainer';
+import {TSZahlungsinformationen} from '../../../../../models/TSZahlungsinformationen';
 import {EbeguUtil} from '../../../../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../../../../utils/TSRoleUtil';
 import {FinanzielleSituationRS} from '../../../../service/finanzielleSituationRS.rest';
@@ -287,7 +288,18 @@ export class FinanzielleSituationAppenzellViewComponent extends AbstractGesuchVi
     }
 
     public showAuszahlungAusserhalbKibonCheckbox(): boolean {
+        if (this.getSubStepIndex() !== 1) {
+            return false;
+        }
         return this.authService.isOneOfRoles(TSRoleUtil.getGemeindeOrBGRoles().concat(TSRole.SUPER_ADMIN))
             && !this.gesuchModelManager.getGesuch().isOnlineGesuch();
+    }
+
+    public auszahlungAusserhalbKibonChanged(checked: boolean): void {
+        this.model.familienSituation.auszahlungAusserhalbVonKibon = checked;
+        if (checked) {
+            return;
+        }
+        this.model.zahlungsinformationen = new TSZahlungsinformationen();
     }
 }

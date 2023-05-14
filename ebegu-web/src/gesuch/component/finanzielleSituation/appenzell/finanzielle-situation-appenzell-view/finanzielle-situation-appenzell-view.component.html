@@ -35,7 +35,8 @@
     </div>
     <div *ngIf="showAuszahlungAusserhalbKibonCheckbox()">
         <dv-checkbox-x
-            [(model)]="model.familienSituation.auszahlungAusserhalbVonKibon"
+            [model]="model.familienSituation.auszahlungAusserhalbVonKibon"
+            (modelChange)="auszahlungAusserhalbKibonChanged($event)"
             [label]="'AUSZAHLUNG_AUSSERHALB_KIBON' | translate"
             [readonly]="isGesuchReadonly()"
         ></dv-checkbox-x>
