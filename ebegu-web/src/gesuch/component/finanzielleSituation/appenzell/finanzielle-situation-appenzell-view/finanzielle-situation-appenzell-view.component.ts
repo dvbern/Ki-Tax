@@ -25,6 +25,7 @@ import {LogFactory} from '../../../../../app/core/logging/LogFactory';
 import {AuthServiceRS} from '../../../../../authentication/service/AuthServiceRS.rest';
 import {TSFinanzielleSituationResultateDTO} from '../../../../../models/dto/TSFinanzielleSituationResultateDTO';
 import {TSFinanzielleSituationSubStepName} from '../../../../../models/enums/TSFinanzielleSituationSubStepName';
+import {TSRole} from '../../../../../models/enums/TSRole';
 import {TSWizardStepName} from '../../../../../models/enums/TSWizardStepName';
 import {TSWizardStepStatus} from '../../../../../models/enums/TSWizardStepStatus';
 import {TSFinanzielleSituation} from '../../../../../models/TSFinanzielleSituation';
@@ -37,7 +38,7 @@ import {EbeguUtil} from '../../../../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../../../../utils/TSRoleUtil';
 import {FinanzielleSituationRS} from '../../../../service/finanzielleSituationRS.rest';
 import {
-    FinanzielleSituationSubStepManagerAppenzell
+    FinanzielleSituationSubStepManagerAppenzell,
 } from '../../../../service/finanzielleSituationSubStepManagerAppenzell';
 import {GesuchModelManager} from '../../../../service/gesuchModelManager';
 import {WizardStepManager} from '../../../../service/wizardStepManager';
@@ -286,7 +287,7 @@ export class FinanzielleSituationAppenzellViewComponent extends AbstractGesuchVi
     }
 
     public showAuszahlungAusserhalbKibonCheckbox(): boolean {
-        return this.authService.isOneOfRoles(TSRoleUtil.getSuperAdminGemeindeOnlyRoles())
+        return this.authService.isOneOfRoles(TSRoleUtil.getGemeindeOrBGRoles().concat(TSRole.SUPER_ADMIN))
             && !this.gesuchModelManager.getGesuch().isOnlineGesuch();
     }
 }

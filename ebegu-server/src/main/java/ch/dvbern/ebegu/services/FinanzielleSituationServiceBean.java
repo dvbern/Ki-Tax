@@ -170,7 +170,7 @@ public class FinanzielleSituationServiceBean extends AbstractBaseService impleme
 				familiensituation.getAuszahlungsdaten().setInfomaKreditorennummer(finSitStartDTO.getInfomaKreditorennummer());
 				familiensituation.getAuszahlungsdaten().setInfomaBankcode(finSitStartDTO.getInfomaBankcode());
 			}
-			if (principalBean.isCallerInAnyOfRole(UserRole.getSuperadminGemeindeOnlyRoles())) {
+			if (principalBean.isCallerInAnyOfRole(UserRole.getJugendamtSuperadminRoles())) {
 				familiensituation.setAuszahlungAusserhalbVonKibon(finSitStartDTO.isAuszahlungAusserhalbVonKibon());
 			}
 		} else {
