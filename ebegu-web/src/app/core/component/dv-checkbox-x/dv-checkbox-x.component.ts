@@ -46,6 +46,9 @@ export class DvCheckboxXComponent implements OnInit {
     @Input()
     public marginClass: 'no-margin-bottom' | 'default' = 'default';
 
+    @Input()
+    public displayBisher: boolean = true;
+
     @Output()
     public readonly modelChange: EventEmitter<boolean> = new EventEmitter<boolean>();
 
@@ -66,7 +69,8 @@ export class DvCheckboxXComponent implements OnInit {
     }
 
     public showBisher(): boolean {
-        return this.gesuchModelManager.getGesuch()
+        return this.displayBisher
+            && this.gesuchModelManager.getGesuch()
             && isAtLeastFreigegeben(this.gesuchModelManager.getGesuch().status)
             && (TSEingangsart.ONLINE === this.gesuchModelManager.getGesuch().eingangsart);
     }
