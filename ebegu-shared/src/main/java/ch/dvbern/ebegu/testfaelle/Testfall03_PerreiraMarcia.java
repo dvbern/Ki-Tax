@@ -18,6 +18,7 @@ package ch.dvbern.ebegu.testfaelle;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.Month;
+import java.util.Objects;
 
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.BetreuungspensumContainer;
@@ -41,7 +42,6 @@ import ch.dvbern.ebegu.util.MathUtil;
 public class Testfall03_PerreiraMarcia extends AbstractTestfall {
 
 	private final BigDecimal VERMOEGEN_GS1 = MathUtil.DEFAULT.from(15730);
-	private final BigDecimal VERMOEGEN_GS2 = MathUtil.DEFAULT.from(58402);
 	private final BigDecimal EINKOMMEN_GS1 = MathUtil.DEFAULT.from(26861);
 	private final BigDecimal EINKOMMEN_GS2 = MathUtil.DEFAULT.from(65817);
 
@@ -94,7 +94,8 @@ public class Testfall03_PerreiraMarcia extends AbstractTestfall {
 		finanzielleSituationGS1.setGesuchsteller(gesuchsteller1);
 		gesuchsteller1.setFinanzielleSituationContainer(finanzielleSituationGS1);
 
-		FinanzielleSituationContainer finanzielleSituationGS2 = createFinanzielleSituationContainer(VERMOEGEN_GS2, EINKOMMEN_GS2);
+		FinanzielleSituationContainer finanzielleSituationGS2 = createFinanzielleSituationContainer(BigDecimal.ZERO, EINKOMMEN_GS2);
+		finanzielleSituationGS1.getFinanzielleSituationJA().setSchulden(Objects.requireNonNull(MathUtil.DEFAULT.from(58402)));
 		finanzielleSituationGS2.setGesuchsteller(gesuchsteller2);
 		gesuchsteller2.setFinanzielleSituationContainer(finanzielleSituationGS2);
 		createEmptyEKVInfoContainer(gesuch);
