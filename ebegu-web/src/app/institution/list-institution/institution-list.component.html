@@ -37,7 +37,7 @@
                 <span translate>INSTITUTION_HINZUFUEGEN</span>
             </button>
 
-            <button *ngIf="isCreateTSAllowed()" (click)="createInstitutionTS();" class="dv-btn next-button">
+            <button *ngIf="isCreateTSAllowed() && !isAdminBG()" (click)="createInstitutionTS();" class="dv-btn next-button">
                 <span translate>TAGESSCHULE_HINZUFUEGEN</span>
             </button>
 
@@ -45,7 +45,7 @@
                 <span translate>LATS_TAGESSCHULE_HINZUFUEGEN</span>
             </button>
 
-            <button *ngIf="isCreateFIAllowed()" (click)="createInstitutionFI();" class="dv-btn next-button">
+            <button *ngIf="isCreateFIAllowed() && !isAdminBG()" (click)="createInstitutionFI();" class="dv-btn next-button">
                 <span translate>FERIENINSEL_HINZUFUEGEN</span>
             </button>
         </div>

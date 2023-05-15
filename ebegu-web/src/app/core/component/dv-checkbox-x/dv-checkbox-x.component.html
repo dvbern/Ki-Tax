@@ -17,6 +17,7 @@
 
 <div [class]="'checkbox ' + marginClass">
     <mat-checkbox [(ngModel)]="model"
+                  [disabled]="readonly"
                   [name]="uniqueName" [id]="uniqueName + '_id'"
                   [aria-label]="label | translate"
                   (ngModelChange)="change()">

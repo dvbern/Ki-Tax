@@ -32,7 +32,7 @@ import ch.dvbern.ebegu.enums.DokumentGrundPersonType;
 import ch.dvbern.ebegu.enums.DokumentGrundTyp;
 import ch.dvbern.ebegu.enums.DokumentTyp;
 
-public class SolothurnEinkommensverschlechterungDokumente extends AbstractDokumente<AbstractFinanzielleSituation, Familiensituation>  {
+public class AppenzellEinkommensverschlechterungDokumente extends AbstractDokumente<AbstractFinanzielleSituation, Familiensituation>  {
 
 	@Override
 	public void getAllDokumente(
@@ -60,7 +60,9 @@ public class SolothurnEinkommensverschlechterungDokumente extends AbstractDokume
 	private void addDokuemnteEKV(Gesuch gesuch, Set<DokumentGrund> anlageVerzeichnis) {
 		addDokuemnteEKV(1, anlageVerzeichnis);
 
-		if(gesuch.hasSecondGesuchstellerAtAnyTimeOfGesuchsperiode()) {
+		Familiensituation familiensituation = gesuch.extractFamiliensituation();
+		if(gesuch.hasSecondGesuchstellerAtAnyTimeOfGesuchsperiode() ||
+				(familiensituation != null && familiensituation.isSpezialFallAR())) {
 			addDokuemnteEKV(2, anlageVerzeichnis);
 		}
 	}
@@ -68,16 +70,6 @@ public class SolothurnEinkommensverschlechterungDokumente extends AbstractDokume
 	private void addDokuemnteEKV(
 		int personNumber,
 		Set<DokumentGrund> anlageVerzeichnis) {
-
-		add(getDokument
-					(DokumentTyp.NACHWEIS_VERMOEGEN,
-							null,
-							null,
-							DokumentGrundPersonType.GESUCHSTELLER,
-							personNumber,
-							DokumentGrundTyp.EINKOMMENSVERSCHLECHTERUNG),
-				anlageVerzeichnis);
-
 
 		add(getDokument
 				(DokumentTyp.NACHWEIS_LOHNAUSWEIS_1,

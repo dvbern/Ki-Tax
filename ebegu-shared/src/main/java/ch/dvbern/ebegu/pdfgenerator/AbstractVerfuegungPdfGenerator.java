@@ -76,8 +76,8 @@ public abstract class AbstractVerfuegungPdfGenerator extends DokumentAnFamilieGe
 	protected static final String VERFUEGUNG_TITLE = "PdfGeneration_Verfuegung_Title";
 	private static final String ANGEBOT = "PdfGeneration_Betreuungsangebot";
 	private static final String GEMEINDE = "PdfGeneration_Gemeinde";
-	private static final String VERFUEGUNG_CONTENT_1 = "PdfGeneration_Verfuegung_Content_1";
-	private static final String VERFUEGUNG_CONTENT_2 = "PdfGeneration_Verfuegung_Content_2";
+	protected static final String VERFUEGUNG_CONTENT_1 = "PdfGeneration_Verfuegung_Content_1";
+	protected static final String VERFUEGUNG_CONTENT_2 = "PdfGeneration_Verfuegung_Content_2";
 	private static final String VERFUEGUNG_ERKLAERUNG_FEBR = "PdfGeneration_Verfuegung_Erklaerung_FEBR";
 	private static final String VON = "PdfGeneration_Verfuegung_Von";
 	private static final String BIS = "PdfGeneration_Verfuegung_Bis";
@@ -104,7 +104,7 @@ public abstract class AbstractVerfuegungPdfGenerator extends DokumentAnFamilieGe
 	protected static final String NICHT_EINTRETEN_CONTENT_4 = "PdfGeneration_NichtEintreten_Content_4";
 	protected static final String NICHT_EINTRETEN_CONTENT_5 = "PdfGeneration_NichtEintreten_Content_5";
 	private static final String NICHT_EINTRETEN_CONTENT_5_FKJV = "PdfGeneration_NichtEintreten_Content_5_FKJV";
-	private static final String NICHT_EINTRETEN_CONTENT_6 = "PdfGeneration_NichtEintreten_Content_6";
+	protected static final String NICHT_EINTRETEN_CONTENT_6 = "PdfGeneration_NichtEintreten_Content_6";
 	protected static final String NICHT_EINTRETEN_CONTENT_7 = "PdfGeneration_NichtEintreten_Content_7";
 	private static final String NICHT_EINTRETEN_CONTENT_8 = "PdfGeneration_NichtEintreten_Content_8";
 	private static final String BEMERKUNGEN = "PdfGeneration_Verfuegung_Bemerkungen";
@@ -209,13 +209,8 @@ public abstract class AbstractVerfuegungPdfGenerator extends DokumentAnFamilieGe
 		Kind kind = betreuung.getKind().getKindJA();
 
 		createFusszeileNormaleVerfuegung(generator.getDirectContent());
-		Paragraph paragraphWithSupertext = PdfUtil.createParagraph(translate(
-			VERFUEGUNG_CONTENT_1,
-			kind.getFullName(),
-			Constants.DATE_FORMATTER.format(kind.getGeburtsdatum())), 2);
-		paragraphWithSupertext.add(PdfUtil.createSuperTextInText("1"));
-		paragraphWithSupertext.add(new Chunk(' ' + translate(VERFUEGUNG_CONTENT_2)));
-		document.add(paragraphWithSupertext);
+		Paragraph firstParagraph = createFirstParagraph(kind);
+		document.add(firstParagraph);
 		document.add(createVerfuegungTable());
 
 		// Erklaerungstext zu FEBR: Falls Stadt Bern und das Flag ist noch nicht gesetzt
@@ -225,6 +220,17 @@ public abstract class AbstractVerfuegungPdfGenerator extends DokumentAnFamilieGe
 
 		addBemerkungenIfAvailable(document);
 		addZusatzTextIfAvailable(document);
+	}
+
+	@Nonnull
+	protected Paragraph createFirstParagraph(Kind kind) {
+		Paragraph paragraphWithSupertext = PdfUtil.createParagraph(translate(
+			VERFUEGUNG_CONTENT_1,
+			kind.getFullName(),
+			Constants.DATE_FORMATTER.format(kind.getGeburtsdatum())), 2);
+		paragraphWithSupertext.add(PdfUtil.createSuperTextInText("1"));
+		paragraphWithSupertext.add(new Chunk(' ' + translate(VERFUEGUNG_CONTENT_2)));
+		return paragraphWithSupertext;
 	}
 
 	protected void createDokumentKeinAnspruch(Document document, PdfGenerator generator) {
@@ -317,7 +323,7 @@ public abstract class AbstractVerfuegungPdfGenerator extends DokumentAnFamilieGe
 			Constants.DATE_FORMATTER.format(eingangsdatum)));
 	}
 
-	private LocalDate getEingangsdatum() {
+	protected LocalDate getEingangsdatum() {
 		return gesuch.getEingangsdatum() != null ? gesuch.getEingangsdatum() : LocalDate.now();
 	}
 
@@ -388,13 +394,17 @@ public abstract class AbstractVerfuegungPdfGenerator extends DokumentAnFamilieGe
 				Constants.DATE_FORMATTER.format(betreuung.getVorgaengerVerfuegung().getTimestampErstellt()))));
 		}
 		addAngebotToIntro(intro);
-		intro.add(new TableRowLabelValue(BETREUUNG_INSTITUTION, institutionName));
+		addInstitutionToIntro(institutionName, intro);
 		intro.add(new TableRowLabelValue(GEMEINDE, gemeinde));
 		return PdfUtil.createIntroTable(intro, sprache, mandant);
 	}
 
 	protected void addAngebotToIntro(List<TableRowLabelValue> intro) {
 		intro.add(new TableRowLabelValue(ANGEBOT, translateEnumValue(betreuung.getBetreuungsangebotTyp())));
+	}
+
+	protected void addInstitutionToIntro(String institutionName, List<TableRowLabelValue> intro) {
+		intro.add(new TableRowLabelValue(BETREUUNG_INSTITUTION, institutionName));
 	}
 
 	@Nonnull
@@ -431,7 +441,7 @@ public abstract class AbstractVerfuegungPdfGenerator extends DokumentAnFamilieGe
 		table.addCell(createCell(true, Element.ALIGN_CENTER, translate(getPensumTitle()), null, fontTabelle, 1, 3));
 		table.addCell(createCell(true, Element.ALIGN_RIGHT, translate(VOLLKOSTEN), null, fontTabelle, 2, 1));
 
-		addTitleBeitraghoheInProzent(table);
+		addTitleBeitraghoheUndSelbstbehaltInProzent(table);
 		addTitleBerechneterGutschein(table);
 		addTitleBetreuungsGutschein(table);
 		addTitleNrElternBeitrag(table);
@@ -494,7 +504,7 @@ public abstract class AbstractVerfuegungPdfGenerator extends DokumentAnFamilieGe
 				fontTabelle,
 				1,
 				1));
-			addValueaBeitraghoheInProzent(table, abschnitt.getBeitraghoheProzent());
+			addValueaBeitraghoheUndSelbstbehaltInProzent(table, abschnitt.getBeitraghoheProzent());
 			addValueBerechneterGutschein(table, abschnitt.getVerguenstigungOhneBeruecksichtigungVollkosten());
 			addValueBetreuungsGutschein(table, abschnitt.getVerguenstigungOhneBeruecksichtigungMinimalbeitrag());
 			addValueElternBeitrag(table, abschnitt.getMinimalerElternbeitragGekuerzt());
@@ -558,7 +568,7 @@ public abstract class AbstractVerfuegungPdfGenerator extends DokumentAnFamilieGe
 		}
 	}
 
-	protected void addTitleBeitraghoheInProzent(PdfPTable table) {
+	protected void addTitleBeitraghoheUndSelbstbehaltInProzent(PdfPTable table) {
 		//no-op ausser in Appenzell
 	}
 
@@ -634,7 +644,7 @@ public abstract class AbstractVerfuegungPdfGenerator extends DokumentAnFamilieGe
 			1));
 	}
 
-	protected void addValueaBeitraghoheInProzent(PdfPTable table, Integer beitraghoheInProzent) {
+	protected void addValueaBeitraghoheUndSelbstbehaltInProzent(PdfPTable table, Integer beitraghoheInProzent) {
 		//no-op ausser in Appenzell
 	}
 

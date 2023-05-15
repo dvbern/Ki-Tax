@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2023 DV Bern AG, Switzerland
+ * Copyright (C) 2022 DV Bern AG, Switzerland
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -15,9 +15,5 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-update outbox_event
-set avro_schema = REPLACE(
-		avro_schema,
-		'"symbols":["BERN","LUZERN","SOLOTHURN","APPENZELL_AUSSERRHODEN"]',
-		'"symbols":["BERN","LUZERN","SOLOTHURN","APPENZELL_AUSSERRHODEN","UNKNOWN"],"default":"UNKNOWN"'
-	);
+ALTER TABLE familiensituation ADD COLUMN IF NOT EXISTS auszahlung_ausserhalb_von_kibon BIT NOT NULL DEFAULT FALSE;
+ALTER TABLE familiensituation_aud ADD COLUMN IF NOT EXISTS auszahlung_ausserhalb_von_kibon BIT;

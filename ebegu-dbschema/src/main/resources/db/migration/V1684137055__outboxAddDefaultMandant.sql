@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2021 DV Bern AG, Switzerland
+ * Copyright (C) 2023 DV Bern AG, Switzerland
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -15,8 +15,16 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-export enum TSFachstellenTyp {
-    BERN = 'BERN',
-    LUZERN = 'LUZERN',
-    KEINE =  'KEINE'
-}
+update outbox_event
+set avro_schema = REPLACE(
+		avro_schema,
+		'"symbols":["BERN","LUZERN","SOLOTHURN","APPENZELL_AUSSERRHODEN"]',
+		'"symbols":["BERN","LUZERN","SOLOTHURN","APPENZELL_AUSSERRHODEN","UNKNOWN"],"default":"UNKNOWN"'
+	);
+
+update outbox_event
+set avro_schema = REPLACE(
+		avro_schema,
+		'"symbols":["BERN","LUZERN","SOLOTHURN"]',
+		'"symbols":["BERN","LUZERN","SOLOTHURN","APPENZELL_AUSSERRHODEN","UNKNOWN"],"default":"UNKNOWN"'
+	);

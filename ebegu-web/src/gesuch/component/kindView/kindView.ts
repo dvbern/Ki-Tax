@@ -609,4 +609,8 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
     public isGeschlechtOfKindRequired(): boolean {
         return new KindGeschlechtVisitor().process(this.mandant);
     }
+
+    public isFachstellenActivated(): boolean {
+        return this.fachstellenTyp !== TSFachstellenTyp.KEINE;
+    }
 }
