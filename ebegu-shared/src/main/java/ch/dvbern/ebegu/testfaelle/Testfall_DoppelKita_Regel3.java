@@ -102,10 +102,7 @@ public class Testfall_DoppelKita_Regel3 extends AbstractTestfall {
 		betreuungKitaBruennen.getBetreuungspensumContainers().add(betreuungspensumKitaBruennen2);
 
 		// Finanzielle Situation
-		FinanzielleSituationContainer finanzielleSituationContainer = createFinanzielleSituationContainer(
-				MathUtil.DEFAULT.from(12147),
-				MathUtil.DEFAULT.from(53265)
-		);
+		FinanzielleSituationContainer finanzielleSituationContainer = createFinanzielleSituationContainer(VERMOEGEN_GS1, EINKOMMEN_GS1);
 		finanzielleSituationContainer.setGesuchsteller(gesuchsteller1);
 		gesuchsteller1.setFinanzielleSituationContainer(finanzielleSituationContainer);
 
