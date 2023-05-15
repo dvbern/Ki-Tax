@@ -94,8 +94,8 @@ public class Testfall01_WaeltiDagmar extends AbstractTestfall {
 		betreuungKitaBruennen.getBetreuungspensumContainers().add(betreuungspensumKitaBruennen);
 		// Finanzielle Situation
 		FinanzielleSituationContainer finanzielleSituationContainer = createFinanzielleSituationContainer(
-				MathUtil.DEFAULT.from(EINKOMMEN),
-				MathUtil.DEFAULT.from(VERMOEGEN));
+				MathUtil.DEFAULT.from(VERMOEGEN),
+				MathUtil.DEFAULT.from(EINKOMMEN));
 
 		finanzielleSituationContainer.setGesuchsteller(gesuchsteller1);
 		gesuchsteller1.setFinanzielleSituationContainer(finanzielleSituationContainer);
