@@ -242,6 +242,9 @@ export class StammdatenViewController extends AbstractGesuchViewController<TSGes
                         return `2 (${this.$translate.instant('ANDERER_ELTERNTEIL')})`;
                     }
                     return `2 (${this.$translate.instant('GS2_KONKUBINAT_KEIN_KIND')})`;
+                } else if (tsFamiliensituation
+                        .konkubinatIsShorterThanXYearsAtAnyTimeAfterStartOfPeriode(this.getGesuch().gesuchsperiode)) {
+                    return `2 (${this.$translate.instant('ANDERER_ELTERNTEIL')})`;
                 }
                 break;
             case TSFamilienstatus.ALLEINERZIEHEND:
