@@ -1,4 +1,4 @@
-import {Component, OnInit, ChangeDetectionStrategy} from '@angular/core';
+import {ChangeDetectionStrategy, Component, OnInit, ViewEncapsulation} from '@angular/core';
 import {StateService} from '@uirouter/core';
 import {from, Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
@@ -11,7 +11,8 @@ import {ApplicationPropertyRS} from '../../rest-services/applicationPropertyRS.r
     selector: 'dv-pulldown-user-menu',
     templateUrl: './pulldown-user-menu.component.html',
     styleUrls: ['./pulldown-user-menu.component.less'],
-    changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    encapsulation: ViewEncapsulation.None
 })
 export class PulldownUserMenuComponent implements OnInit {
 

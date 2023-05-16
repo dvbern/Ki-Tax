@@ -1,9 +1,9 @@
-<button mat-button [matMenuTriggerFor]="menu">
+<button mat-button [matMenuTriggerFor]="menu" class="user-menu-trigger">
     <span>{{getFullName() | async}}</span>
     <i class="fa fa-angle-down"></i>
 </button>
 
-<mat-menu #menu="matMenu">
+<mat-menu #menu="matMenu" class="pulldown-user-menu">
     <dv-pulldown-user-menu-button [allowedRoles]="getSuperAdminRoles()"
                                   [uiSRef]="'admin.debugging'">{{'DEBUGGING' | translate}}</dv-pulldown-user-menu-button>
     <dv-pulldown-user-menu-button [allowedRoles]="getSuperAdminRoles()"
