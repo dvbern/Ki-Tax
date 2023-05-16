@@ -3058,7 +3058,7 @@
     "GEMEINDE_ANGEBOT_NUR_LATS": "Nur für Lastenausgleich Tagesschule",
     "ALLE_MUTATIONSMELDUNG_AUTOMATISCH_BEARBEITEN": "Alle Mutationsmeldungen automatisch bearbeiten",
     "ALLE_MUTATIONSMELDUNGEN_BEARBEITEN_TITLE": "Wollen Sie wirklich alle Mutationsmeldungen automatisch bearbeiten?",
-    "ALLE_MUTATIONSMELDUNGEN_BEARBEITEN_FRAGE": "<b>Achtung: </b>Alle Mutationsmeldungen, die aktuell in der Liste zu sehen sind, werden automatisch bearbeitet und falls möglich direkt verfügt.",
+    "ALLE_MUTATIONSMELDUNGEN_BEARBEITEN_FRAGE": "<div class=\"well well-status-warten\">Diese Funktion wird aktuell überarbeitet, weil sie bei vielen Mutationsmeldungen zu langen Ladezeiten führen kann.</div><b>Achtung: </b>Alle Mutationsmeldungen, die aktuell in der Liste zu sehen sind, werden automatisch bearbeitet und falls möglich direkt verfügt.",
     "AUTOMATISCHE_BEARBEITETE_MITTEILUNGEN_VERFUEGT": "Mutationsmeldungen, die erfolgreich bearbeitet und verfügt wurden:",
     "AUTOMATISCHE_BEARBEITETE_MITTEILUNGEN_NICHT_VERFUEGT": "Mutationsmeldungen, die erfolgreich bearbeitet wurden und noch manuell verfügt werden müssen (siehe Pendenzen):",
     "NICHT_BEARBEITETE_MITTEILUNGEN": "Mutationsmeldungen, die eine manuelle Überprüfung benötigen (siehe Posteingang):",
