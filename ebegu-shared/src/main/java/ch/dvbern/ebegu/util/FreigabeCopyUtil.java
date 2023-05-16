@@ -519,6 +519,8 @@ public final class FreigabeCopyUtil {
 		copyFinSitZusatzangabenAppenzell(gs, ja);
 	}
 
+	// disable false-positive
+	@SuppressWarnings("PMD.UnusedPrivateMethod")
 	private static void copyFinSitZusatzangabenAppenzell(AbstractFinanzielleSituation gs, AbstractFinanzielleSituation ja) {
 		if (ja.getFinSitZusatzangabenAppenzell() != null) {
 			gs.setFinSitZusatzangabenAppenzell(ja.getFinSitZusatzangabenAppenzell().copyAllValues(new FinSitZusatzangabenAppenzell()));
