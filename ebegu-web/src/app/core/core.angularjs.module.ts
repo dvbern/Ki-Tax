@@ -105,6 +105,7 @@ import {DvSkiplinksComponentConfig} from './component/dv-skiplinks/dv-skiplinks'
 import {DvTooltipComponentConfig} from './component/dv-tooltip/dv-tooltip';
 import {DVVersionComponentConfig} from './component/dv-version/dv-version';
 import {NavbarComponent} from './component/navbar/navbar.component';
+import {PulldownUserMenuComponent} from './component/pulldown-user-menu/pulldown-user-menu.component';
 import {configure} from './config';
 import {CONSTANTS} from './constants/CONSTANTS';
 import {DVRoleElementController} from './controller/DVRoleElementController';
@@ -325,6 +326,7 @@ export const CORE_JS_MODULE = angular
     .directive('dvBenutzer', downgradeComponent({component: BenutzerComponent}))
     .directive('dvSearchList', downgradeComponent({component: DvSearchListComponent}))
     .directive('dvDemoFeatureWrapper', downgradeComponent({component: DvDemoFeatureWrapperComponent}))
+    .directive('dvPulldownUserMenu', downgradeComponent({component: PulldownUserMenuComponent}))
     .service('MahnungRS', MahnungRS)
     .service('ReportRS', ReportRS)
     .service('EwkRS', EwkRS)
