@@ -135,7 +135,7 @@ public class AlleFaelleView {
 	@Column(nullable = true)
 	private String familienName;
 
-	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "alleFaelleView")
+	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "antragId")
 	private Set<AlleFaelleViewKind> kinder = new LinkedHashSet<>();
 
 	@Column(nullable = true)

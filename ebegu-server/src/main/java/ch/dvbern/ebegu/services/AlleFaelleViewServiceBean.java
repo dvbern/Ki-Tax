@@ -168,7 +168,7 @@ public class AlleFaelleViewServiceBean extends AbstractBaseService implements Al
 		AlleFaelleViewKind alleFaelleViewKind = new AlleFaelleViewKind();
 		alleFaelleViewKind.setKindId(kindJA.getId());
 		alleFaelleViewKind.setName(kindJA.getVorname());
-		alleFaelleViewKind.setAlleFaelleView(alleFaelleView);
+		alleFaelleViewKind.setAntragId(alleFaelleView.getAntragId());
 		alleFaelleView.addKind(alleFaelleViewKind);
 	}
 
