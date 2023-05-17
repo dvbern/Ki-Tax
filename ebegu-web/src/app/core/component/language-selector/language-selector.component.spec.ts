@@ -15,28 +15,39 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import {ComponentFixture, TestBed} from '@angular/core/testing';
+import {AuthServiceRS} from '../../../../authentication/service/AuthServiceRS.rest';
+import {TSBrowserLanguage} from '../../../../models/enums/TSBrowserLanguage';
+import {I18nServiceRSRest} from '../../../i18n/services/i18nServiceRS.rest';
 
-import { LanguageSelectorComponent } from './language-selector.component';
+import {LanguageSelectorComponent} from './language-selector.component';
 
 describe('LanguageSelectorComponent', () => {
-  let component: LanguageSelectorComponent;
-  let fixture: ComponentFixture<LanguageSelectorComponent>;
+    let component: LanguageSelectorComponent;
+    let fixture: ComponentFixture<LanguageSelectorComponent>;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      declarations: [ LanguageSelectorComponent ]
-    })
-    .compileComponents();
-  });
+    const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name, ['getPrincipalRole']);
+    const i18nServiceSpy = jasmine.createSpyObj<I18nServiceRSRest>(I18nServiceRSRest.name, ['currentLanguage']);
+    i18nServiceSpy.currentLanguage.and.returnValue(TSBrowserLanguage.DE);
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(LanguageSelectorComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+    beforeEach(async () => {
+        await TestBed.configureTestingModule({
+            declarations: [LanguageSelectorComponent],
+            providers: [
+                {provide: AuthServiceRS, useValue: authServiceSpy},
+                {provide: I18nServiceRSRest, useValue: i18nServiceSpy}
+            ]
+        })
+            .compileComponents();
+    });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+    beforeEach(() => {
+        fixture = TestBed.createComponent(LanguageSelectorComponent);
+        component = fixture.componentInstance;
+        fixture.detectChanges();
+    });
+
+    it('should create', () => {
+        expect(component).toBeTruthy();
+    });
 });

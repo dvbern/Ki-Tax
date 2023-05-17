@@ -15,28 +15,35 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import {ComponentFixture, TestBed} from '@angular/core/testing';
+import {StateService} from '@uirouter/core';
 
-import { PulldownUserMenuButtonComponent } from './pulldown-user-menu-button.component';
+import {PulldownUserMenuButtonComponent} from './pulldown-user-menu-button.component';
 
 describe('PulldownUserMenuButtonComponent', () => {
-  let component: PulldownUserMenuButtonComponent;
-  let fixture: ComponentFixture<PulldownUserMenuButtonComponent>;
+    let component: PulldownUserMenuButtonComponent;
+    let fixture: ComponentFixture<PulldownUserMenuButtonComponent>;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      declarations: [ PulldownUserMenuButtonComponent ]
-    })
-    .compileComponents();
-  });
+    const stateServiceSpy = jasmine.createSpyObj<StateService>(StateService.name, ['href']);
+    stateServiceSpy.href.and.returnValue('');
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(PulldownUserMenuButtonComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+    beforeEach(async () => {
+        await TestBed.configureTestingModule({
+            providers: [
+                {provide: StateService, useValue: stateServiceSpy}
+            ],
+            declarations: [PulldownUserMenuButtonComponent]
+        })
+            .compileComponents();
+    });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+    beforeEach(() => {
+        fixture = TestBed.createComponent(PulldownUserMenuButtonComponent);
+        component = fixture.componentInstance;
+        fixture.detectChanges();
+    });
+
+    it('should create', () => {
+        expect(component).toBeTruthy();
+    });
 });
