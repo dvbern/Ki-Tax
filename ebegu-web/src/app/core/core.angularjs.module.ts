@@ -206,6 +206,7 @@ const calculatedDeps = dependencies.concat(dynamicDependencies());
 export const CORE_JS_MODULE = angular
     .module('ebeguWeb.core', calculatedDeps)
     .run(appRun)
+    // remove in KIBON-2962
     .run(languageEnabledHookRunBlock)
     .config(configure)
     .constant('REST_API', '/ebegu/api/v1/')
