@@ -1,5 +1,8 @@
-<button *dvNgShowElement="true; roles: allowedRoles || allRoles" [uiSrefActive]="'active'" [uiSref]="uiSRef">
-    <a href="#" (click)="buttonClick ? buttonClick.emit($event) : $event.preventDefault()">
-        <ng-content></ng-content>
+<button *dvNgShowElement="true; roles: allowedRoles || allRoles"
+        [uiSrefActive]="'active'"
+        [uiSref]="uiSRef"
+        (click)="buttonClick ? buttonClick.emit($event) : $event.preventDefault()">
+    <a [href]="href">
+        <span><ng-content></ng-content></span>
     </a>
 </button>
