@@ -1,6 +1,6 @@
 import {ChangeDetectionStrategy, Component, OnInit, ViewEncapsulation} from '@angular/core';
 import {StateService} from '@uirouter/core';
-import {from, Observable} from 'rxjs';
+import {Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
 import {AuthServiceRS} from '../../../../authentication/service/AuthServiceRS.rest';
 import {TSRole} from '../../../../models/enums/TSRole';
@@ -16,6 +16,10 @@ import {ApplicationPropertyRS} from '../../rest-services/applicationPropertyRS.r
 })
 export class PulldownUserMenuComponent implements OnInit {
 
+    // Replace with Observable once ApplicationPropertyRS is migrated in KIBON-2963
+    public multimandantAktiv: boolean = false;
+    public frenchEnabled: boolean = false;
+
     public constructor(
         private readonly authService: AuthServiceRS,
         private readonly applicationPropertyRS: ApplicationPropertyRS,
@@ -24,6 +28,8 @@ export class PulldownUserMenuComponent implements OnInit {
     }
 
     public ngOnInit(): void {
+        this.initMandantSwitch();
+        this.initFrenchEnabled();
     }
 
     public getFullName(): Observable<string> {
@@ -62,21 +68,24 @@ export class PulldownUserMenuComponent implements OnInit {
         return TSRoleUtil.getAllRolesForSozialdienst();
     }
 
-    public mandantSwitchVisible(): Observable<boolean> {
-        return from(this.applicationPropertyRS.getPublicPropertiesCached())
-            .pipe(
-                map(publicAppConfig => publicAppConfig.mulitmandantAktiv)
-            );
+    private initMandantSwitch(): void {
+        this.applicationPropertyRS.getPublicPropertiesCached().then(
+            publicAppConfig => publicAppConfig.mulitmandantAktiv
+        ).then(active => {
+            this.multimandantAktiv = active;
+        });
+    }
+
+    private initFrenchEnabled(): void {
+        this.applicationPropertyRS.getPublicPropertiesCached().then(
+            publicAppConfig => publicAppConfig.frenchEnabled
+        ).then(enabled => {
+            this.frenchEnabled = enabled;
+        });
     }
 
     public logout(): void {
         this.state.go('authentication.login', {type: 'logout'});
     }
 
-    public frenchEnabled(): Observable<boolean> {
-        return from(this.applicationPropertyRS.getPublicPropertiesCached())
-            .pipe(
-                map(publicAppConfig => publicAppConfig.frenchEnabled)
-            );
-    }
 }

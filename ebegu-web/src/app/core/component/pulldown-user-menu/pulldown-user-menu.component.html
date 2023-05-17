@@ -31,13 +31,11 @@
                                   [uiSRef]="'gemeinde.list'">{{'GEMEINDEN' | translate}}</dv-pulldown-user-menu-button>
     <dv-pulldown-user-menu-button [allowedRoles]="getAllRolesForSozialdienst()"
                                   [uiSRef]="'sozialdienst.list'">{{'MENU_SOZIALDIENST' | translate}}</dv-pulldown-user-menu-button>
-    <mat-divider></mat-divider>
-    <dv-pulldown-user-menu-button *ngIf="mandantSwitchVisible()"
+    <dv-pulldown-user-menu-button *ngIf="multimandantAktiv"
                                   [allowedRoles]="getSuperAdminRoles()"
                                   [uiSRef]="'onboarding.mandant'">{{'MANDANT_SWITCH' | translate}}</dv-pulldown-user-menu-button>
-    <mat-divider></mat-divider>
     <dv-pulldown-user-menu-button (buttonClick)="logout()">{{'AUSLOGGEN' | translate}}</dv-pulldown-user-menu-button>
 
-    <dv-language-selector *ngIf="frenchEnabled()"></dv-language-selector>
+    <dv-language-selector *ngIf="frenchEnabled"></dv-language-selector>
 
 </mat-menu>
