@@ -47,11 +47,13 @@ public class VerfuegungPdfGeneratorAppenzell extends AbstractVerfuegungPdfGenera
 	private static final String GUTSCHEIN_PRO_STUNDE = "PdfGeneration_Verfuegung_GutscheinProStunde";
 
 	private boolean isBetreuungTagesfamilie = false;
+	private boolean auszahlungAusserhalbKibon = false;
 
 	protected static final String VERFUEGUNG_NICHT_EINTRETEN_TITLE = "PdfGeneration_Verfuegung_NichtEintreten_Title";
 	private static final String BEITRAGSHOHE_PROZENT = "PdfGeneration_Verfuegung_Beitragshoehe_Prozent";
 	private static final String SELBSTBEHALT_PROZENT = "PdfGeneration_Verfuegung_Selbstbehalt_Prozent";
 	private static final String ZUSATZTEXT_1 = "PdfGeneration_Verfuegung_Zusatztext_AR_1";
+	private static final String ZUSATZTEXT_1_AUSSERHALB_KIBON = "PdfGeneration_Verfuegung_Zusatztext_AR_1_AUSSERHALB_KIBON";
 	private static final String ZUSATZTEXT_2 = "PdfGeneration_Verfuegung_Zusatztext_AR_2";
 	private static final String ZUSATZTEXT_3 = "PdfGeneration_Verfuegung_Zusatztext_AR_3";
 
@@ -65,6 +67,7 @@ public class VerfuegungPdfGeneratorAppenzell extends AbstractVerfuegungPdfGenera
 	) {
 		super(betreuung, stammdaten, art, kontingentierungEnabledAndEntwurf, stadtBernAsivConfigured, isFKJVTexte, betreuungspensumAnzeigeTyp);
 		isBetreuungTagesfamilie = betreuung.isAngebotTagesfamilien();
+		auszahlungAusserhalbKibon = betreuung.extractGesuch().getFamiliensituationContainer().getFamiliensituationJA().isAuszahlungAusserhalbVonKibon();
 	}
 
 	@Override
@@ -105,6 +108,14 @@ public class VerfuegungPdfGeneratorAppenzell extends AbstractVerfuegungPdfGenera
 	@Override
 	protected void addAngebotToIntro(List<TableRowLabelValue> intro) {
 		//no-op, wird in Appenzell nicht angezeigt
+	}
+
+	@Override
+	protected void addInstitutionToIntro(String institutionName, List<TableRowLabelValue> intro) {
+		if (auszahlungAusserhalbKibon) {
+			return;
+		}
+		intro.add(new TableRowLabelValue(BETREUUNG_INSTITUTION, institutionName));
 	}
 
 	@Override
@@ -253,7 +264,11 @@ public class VerfuegungPdfGeneratorAppenzell extends AbstractVerfuegungPdfGenera
 
 	@Override
 	protected void addZusatzTextIfAvailable(Document document) {
-		document.add(PdfUtil.createParagraph(translate(ZUSATZTEXT_1)));
+		if (auszahlungAusserhalbKibon) {
+			document.add(PdfUtil.createParagraph(translate(ZUSATZTEXT_1_AUSSERHALB_KIBON)));
+		} else {
+			document.add(PdfUtil.createParagraph(translate(ZUSATZTEXT_1)));
+		}
 		document.add(PdfUtil.createBoldParagraph(translate(ZUSATZTEXT_2), 1));
 		document.add(PdfUtil.createParagraph(translate(ZUSATZTEXT_3), 2));
 		super.addZusatzTextIfAvailable(document);

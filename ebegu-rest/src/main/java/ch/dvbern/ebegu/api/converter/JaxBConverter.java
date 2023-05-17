@@ -771,6 +771,7 @@ public class JaxBConverter extends AbstractConverter {
 		familiensituation.setGemeinsamerHaushaltMitObhutsberechtigterPerson
 			(familiensituationJAXP.getGemeinsamerHaushaltMitObhutsberechtigterPerson());
 		familiensituation.setGemeinsamerHaushaltMitPartner(familiensituationJAXP.getGemeinsamerHaushaltMitPartner());
+		familiensituation.setAuszahlungAusserhalbVonKibon(familiensituationJAXP.isAuszahlungAusserhalbVonKibon());
 		return familiensituation;
 	}
 
@@ -845,6 +846,7 @@ public class JaxBConverter extends AbstractConverter {
 		jaxFamiliensituation.setGemeinsamerHaushaltMitObhutsberechtigterPerson(
 			persistedFamiliensituation.getGemeinsamerHaushaltMitObhutsberechtigterPerson());
 		jaxFamiliensituation.setGemeinsamerHaushaltMitPartner(persistedFamiliensituation.getGemeinsamerHaushaltMitPartner());
+		jaxFamiliensituation.setAuszahlungAusserhalbVonKibon(persistedFamiliensituation.isAuszahlungAusserhalbVonKibon());
 		return jaxFamiliensituation;
 	}
 

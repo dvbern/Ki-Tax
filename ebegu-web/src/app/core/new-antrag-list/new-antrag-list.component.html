@@ -32,6 +32,7 @@
                     [model]="searchInaktivePerioden"
                     [marginClass]="'no-margin-bottom'"
                     (modelChange)="changeSearchInaktivePerioden($event)"
+                    [displayBisher]="false"
                     [label]="'SEARCH_INAKTIVE_PERIODEN' | translate">
                 </dv-checkbox-x>
                 <h3>{{totalItems}}</h3>
