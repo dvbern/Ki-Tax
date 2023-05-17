@@ -2,6 +2,9 @@ package ch.dvbern.ebegu.testfaelle.dataprovider;
 
 import java.math.BigDecimal;
 
+import javax.annotation.Nullable;
+
+import ch.dvbern.ebegu.entities.Auszahlungsdaten;
 import ch.dvbern.ebegu.entities.Familiensituation;
 import ch.dvbern.ebegu.entities.FinSitZusatzangabenAppenzell;
 import ch.dvbern.ebegu.entities.FinanzielleSituation;
@@ -57,5 +60,11 @@ public class AppenzellTestfallDataProvider extends AbstractTestfallDataProvider 
 	@Override
 	public FinanzielleSituationTyp getFinanzielleSituationTyp() {
 		return FinanzielleSituationTyp.APPENZELL;
+	}
+
+	@Override
+	@Nullable
+	protected Auszahlungsdaten createDefaultAuszahlungsdaten() {
+		return null;
 	}
 }
