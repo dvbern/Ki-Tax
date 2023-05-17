@@ -23,7 +23,11 @@ import ch.dvbern.ebegu.entities.Gesuch;
 
 public interface AlleFaelleViewService {
 
-	void updateViewWithFullGesuch(Gesuch gesuch);
+	void createViewForFullGesuch(Gesuch gesuch);
+
+	void updateViewForGesuch(Gesuch gesuch);
+
+	void removeViewForGesuch(Gesuch gesuch);
 
 	Long countAllGesuch();
 
