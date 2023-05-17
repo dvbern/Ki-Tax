@@ -256,6 +256,7 @@ public class FinanzielleSituationResource {
 		Boolean sozialhilfeBezueger = familiensituationJA.getSozialhilfeBezueger();
 		Boolean gemeinsameSteuererklaerung = familiensituationJA.getGemeinsameSteuererklaerung();
 		Boolean verguenstigungGewuenscht = familiensituationJA.getVerguenstigungGewuenscht();
+		boolean auszahlungAusserhalbVonKibon = familiensituationJA.isAuszahlungAusserhalbVonKibon();
 
 		requireNonNull(sozialhilfeBezueger);
 		requireNonNull(gemeinsameSteuererklaerung);
@@ -288,8 +289,8 @@ public class FinanzielleSituationResource {
 				converter.adresseToEntity(familiensituationJA.getZahlungsadresse(), storedAdresse),
 			familiensituationJA.getInfomaKreditorennummer(),
 			familiensituationJA.getInfomaBankcode(),
-			gesuchJAXP.getFinSitAenderungGueltigAbDatum()
-		);
+			gesuchJAXP.getFinSitAenderungGueltigAbDatum(),
+			auszahlungAusserhalbVonKibon);
 
 		Gesuch persistedGesuch = this.finanzielleSituationService.saveFinanzielleSituationStart(
 			convertedFinSitCont,

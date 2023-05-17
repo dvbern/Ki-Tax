@@ -42,6 +42,7 @@ import ch.dvbern.ebegu.util.ServerMessageUtil;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.hibernate.envers.Audited;
+import org.hibernate.envers.NotAudited;
 
 import static ch.dvbern.ebegu.util.Constants.TEN_MB;
 
@@ -73,6 +74,7 @@ public class Gesuchsperiode extends AbstractDateRangedEntity implements HasManda
 	@Column(nullable = true, length = TEN_MB) // 10 megabytes
 	@Lob
 	@Basic(fetch = FetchType.LAZY)
+	@NotAudited
 	private byte[] verfuegungErlaeuterungenDe;
 
 
@@ -80,42 +82,49 @@ public class Gesuchsperiode extends AbstractDateRangedEntity implements HasManda
 	@Column(nullable = true, length = TEN_MB) // 10 megabytes
 	@Lob
 	@Basic(fetch = FetchType.LAZY)
+	@NotAudited
 	private byte[] verfuegungErlaeuterungenFr;
 
 	@Nullable
 	@Column(nullable = true, length = TEN_MB) // 10 megabytes
 	@Lob
 	@Basic(fetch = FetchType.LAZY)
+	@NotAudited
 	private byte[] vorlageMerkblattTsDe;
 
 	@Nullable
 	@Column(nullable = true, length = TEN_MB) // 10 megabytes
 	@Lob
 	@Basic(fetch = FetchType.LAZY)
+	@NotAudited
 	private byte[] vorlageMerkblattTsFr;
 
 	@Nullable
 	@Column(nullable = true, length = TEN_MB) // 10 megabytes
 	@Lob
 	@Basic(fetch = FetchType.LAZY)
+	@NotAudited
 	private byte[] vorlageVerfuegungLatsDe;
 
 	@Nullable
 	@Column(nullable = true, length = TEN_MB) // 10 megabytes
 	@Lob
 	@Basic(fetch = FetchType.LAZY)
+	@NotAudited
 	private byte[] vorlageVerfuegungLatsFr;
 
 	@Nullable
 	@Column(nullable = true, length = TEN_MB) // 10 megabytes
 	@Lob
 	@Basic(fetch = FetchType.LAZY)
+	@NotAudited
 	private byte[] vorlageVerfuegungFerienbetreuungDe;
 
 	@Nullable
 	@Column(nullable = true, length = TEN_MB) // 10 megabytes
 	@Lob
 	@Basic(fetch = FetchType.LAZY)
+	@NotAudited
 	private byte[] vorlageVerfuegungFerienbetreuungFr;
 
 

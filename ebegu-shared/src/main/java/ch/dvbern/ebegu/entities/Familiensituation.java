@@ -106,6 +106,9 @@ public class Familiensituation extends AbstractMutableEntity {
 	@Column(nullable = false)
 	private boolean keineMahlzeitenverguenstigungBeantragtEditable = true;
 
+	@Column(nullable = false)
+	private boolean auszahlungAusserhalbVonKibon = false;
+
 	@Nullable
 	@Valid
 	@OneToOne(optional = true, cascade = CascadeType.ALL, orphanRemoval = true)
@@ -175,6 +178,7 @@ public class Familiensituation extends AbstractMutableEntity {
 			this.fkjvFamSit = that.isFkjvFamSit();
 			this.minDauerKonkubinat = that.getMinDauerKonkubinat();
 			this.unterhaltsvereinbarung = that.getUnterhaltsvereinbarung();
+			this.auszahlungAusserhalbVonKibon = that.isAuszahlungAusserhalbVonKibon();
 		}
 	}
 
@@ -443,6 +447,7 @@ public class Familiensituation extends AbstractMutableEntity {
 		target.setUnterhaltsvereinbarungBemerkung(this.unterhaltsvereinbarungBemerkung);
 		target.setGemeinsamerHaushaltMitPartner(this.getGemeinsamerHaushaltMitPartner());
 		target.setGemeinsamerHaushaltMitObhutsberechtigterPerson(this.getGemeinsamerHaushaltMitObhutsberechtigterPerson());
+		target.setAuszahlungAusserhalbVonKibon(this.isAuszahlungAusserhalbVonKibon());
 		switch (copyType) {
 		case MUTATION:
 			target.setAenderungPer(this.getAenderungPer());
@@ -512,7 +517,8 @@ public class Familiensituation extends AbstractMutableEntity {
 			Objects.equals(getUnterhaltsvereinbarung(), otherFamiliensituation.getUnterhaltsvereinbarung()) &&
 			Objects.equals(getGemeinsamerHaushaltMitPartner(), otherFamiliensituation.getGemeinsamerHaushaltMitPartner()) &&
 			Objects.equals(getGemeinsamerHaushaltMitObhutsberechtigterPerson(),
-				otherFamiliensituation.getGemeinsamerHaushaltMitObhutsberechtigterPerson());
+				otherFamiliensituation.getGemeinsamerHaushaltMitObhutsberechtigterPerson()) &&
+			Objects.equals(isAuszahlungAusserhalbVonKibon(), otherFamiliensituation.isAuszahlungAusserhalbVonKibon());
 	}
 
 	public boolean isSpezialFallAR() {
@@ -525,5 +531,13 @@ public class Familiensituation extends AbstractMutableEntity {
 		var spezialFallNichtGeteilteObhut = EbeguUtil.isNotNullAndFalse(this.geteilteObhut)
 				&& EbeguUtil.isNotNullAndTrue(gemeinsamerHaushaltMitPartner);
 		return spezialFallGeteilteObhut || spezialFallNichtGeteilteObhut;
+	}
+
+	public boolean isAuszahlungAusserhalbVonKibon() {
+		return auszahlungAusserhalbVonKibon;
+	}
+
+	public void setAuszahlungAusserhalbVonKibon(boolean auszahlungAusserhalbVonKibon) {
+		this.auszahlungAusserhalbVonKibon = auszahlungAusserhalbVonKibon;
 	}
 }

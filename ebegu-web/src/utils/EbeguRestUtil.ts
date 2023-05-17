@@ -659,6 +659,7 @@ export class EbeguRestUtil {
             restFamiliensituation.gemeinsamerHaushaltMitObhutsberechtigterPerson =
                 familiensituation.gemeinsamerHaushaltMitObhutsberechtigterPerson;
             restFamiliensituation.gemeinsamerHaushaltMitPartner = familiensituation.gemeinsamerHaushaltMitPartner;
+            restFamiliensituation.auszahlungAusserhalbVonKibon = familiensituation.auszahlungAusserhalbVonKibon;
             return restFamiliensituation;
         }
 
@@ -746,6 +747,7 @@ export class EbeguRestUtil {
             familiensituation.gemeinsamerHaushaltMitObhutsberechtigterPerson =
                 familiensituationFromServer.gemeinsamerHaushaltMitObhutsberechtigterPerson;
             familiensituation.gemeinsamerHaushaltMitPartner = familiensituationFromServer.gemeinsamerHaushaltMitPartner;
+            familiensituation.auszahlungAusserhalbVonKibon = familiensituationFromServer.auszahlungAusserhalbVonKibon;
             return familiensituation;
         }
         return undefined;

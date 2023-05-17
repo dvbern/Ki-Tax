@@ -217,6 +217,7 @@ export class TSFinanzModel {
             this.zahlungsinformationen.keineMahlzeitenverguenstigungBeantragt;
         familiensituation.infomaBankcode = this.zahlungsinformationen.infomaBankcode;
         familiensituation.infomaKreditorennummer = this.zahlungsinformationen.infomaKreditorennummer;
+        familiensituation.auszahlungAusserhalbVonKibon = this.familienSituation.auszahlungAusserhalbVonKibon;
 
         return gesuch;
     }

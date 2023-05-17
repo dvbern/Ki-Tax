@@ -22,8 +22,10 @@ import {Transition} from '@uirouter/core';
 import {IPromise} from 'angular';
 import {Observable, of} from 'rxjs';
 import {LogFactory} from '../../../../../app/core/logging/LogFactory';
+import {AuthServiceRS} from '../../../../../authentication/service/AuthServiceRS.rest';
 import {TSFinanzielleSituationResultateDTO} from '../../../../../models/dto/TSFinanzielleSituationResultateDTO';
 import {TSFinanzielleSituationSubStepName} from '../../../../../models/enums/TSFinanzielleSituationSubStepName';
+import {TSRole} from '../../../../../models/enums/TSRole';
 import {TSWizardStepName} from '../../../../../models/enums/TSWizardStepName';
 import {TSWizardStepStatus} from '../../../../../models/enums/TSWizardStepStatus';
 import {TSFinanzielleSituation} from '../../../../../models/TSFinanzielleSituation';
@@ -32,11 +34,11 @@ import {TSFinanzModel} from '../../../../../models/TSFinanzModel';
 import {TSFinSitZusatzangabenAppenzell} from '../../../../../models/TSFinSitZusatzangabenAppenzell';
 import {TSGesuch} from '../../../../../models/TSGesuch';
 import {TSGesuchstellerContainer} from '../../../../../models/TSGesuchstellerContainer';
+import {TSZahlungsinformationen} from '../../../../../models/TSZahlungsinformationen';
 import {EbeguUtil} from '../../../../../utils/EbeguUtil';
+import {TSRoleUtil} from '../../../../../utils/TSRoleUtil';
 import {FinanzielleSituationRS} from '../../../../service/finanzielleSituationRS.rest';
-import {
-    FinanzielleSituationSubStepManagerAppenzell
-} from '../../../../service/finanzielleSituationSubStepManagerAppenzell';
+import {FinanzielleSituationSubStepManagerAppenzell} from '../../../../service/finanzielleSituationSubStepManagerAppenzell';
 import {GesuchModelManager} from '../../../../service/gesuchModelManager';
 import {WizardStepManager} from '../../../../service/wizardStepManager';
 import {AbstractGesuchViewX} from '../../../abstractGesuchViewX';
@@ -61,7 +63,8 @@ export class FinanzielleSituationAppenzellViewComponent extends AbstractGesuchVi
         private readonly $transition$: Transition,
         private readonly finanzielleSituationService: FinanzielleSituationAppenzellService,
         private readonly translate: TranslateService,
-        private readonly finSitRS: FinanzielleSituationRS
+        private readonly finSitRS: FinanzielleSituationRS,
+        private readonly authService: AuthServiceRS
     ) {
         super(gesuchModelManager, wizardStepManager, TSWizardStepName.FINANZIELLE_SITUATION_APPENZELL);
         this.gesuchstellerNumber = parseInt(this.$transition$.params().gesuchstellerNumber, 10);
@@ -276,5 +279,25 @@ export class FinanzielleSituationAppenzellViewComponent extends AbstractGesuchVi
             return this.finSitRS.saveFinanzielleSituation(this.getGesuch().id, this.getGesuch().gesuchsteller1);
         }
         return this.gesuchModelManager.saveFinanzielleSituation();
+    }
+
+    public showAuszahlungsdaten(): boolean {
+        return this.model.familienSituation?.auszahlungAusserhalbVonKibon;
+    }
+
+    public showAuszahlungAusserhalbKibonCheckbox(): boolean {
+        if (this.getSubStepIndex() !== 1) {
+            return false;
+        }
+        return this.authService.isOneOfRoles(TSRoleUtil.getGemeindeOrBGRoles().concat(TSRole.SUPER_ADMIN))
+            && !this.gesuchModelManager.getGesuch().isOnlineGesuch();
+    }
+
+    public auszahlungAusserhalbKibonChanged(checked: boolean): void {
+        this.model.familienSituation.auszahlungAusserhalbVonKibon = checked;
+        if (checked) {
+            return;
+        }
+        this.model.zahlungsinformationen = new TSZahlungsinformationen();
     }
 }

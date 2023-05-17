@@ -394,13 +394,17 @@ public abstract class AbstractVerfuegungPdfGenerator extends DokumentAnFamilieGe
 				Constants.DATE_FORMATTER.format(betreuung.getVorgaengerVerfuegung().getTimestampErstellt()))));
 		}
 		addAngebotToIntro(intro);
-		intro.add(new TableRowLabelValue(BETREUUNG_INSTITUTION, institutionName));
+		addInstitutionToIntro(institutionName, intro);
 		intro.add(new TableRowLabelValue(GEMEINDE, gemeinde));
 		return PdfUtil.createIntroTable(intro, sprache, mandant);
 	}
 
 	protected void addAngebotToIntro(List<TableRowLabelValue> intro) {
 		intro.add(new TableRowLabelValue(ANGEBOT, translateEnumValue(betreuung.getBetreuungsangebotTyp())));
+	}
+
+	protected void addInstitutionToIntro(String institutionName, List<TableRowLabelValue> intro) {
+		intro.add(new TableRowLabelValue(BETREUUNG_INSTITUTION, institutionName));
 	}
 
 	@Nonnull

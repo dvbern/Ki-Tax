@@ -157,10 +157,11 @@
     "AUSSERORDENTLICHER_ANSPRUCH": "Betreuungsbeitrag gewähren, obwohl die erforderlichen Beschäftigungspensen nicht erreicht werden",
     "AUSSERORDENTLICHER_ANSPRUCH_HINT": "Bei Eltern die die geforderten Mindestpensen nicht erreichen, aber trotzdem dringendst auf eine familienergänzende Betreuung angewiesen sind, kann die SOVAR in begründeten Einzelfällen vom erforderlichen Beschäftigungspensum abweichen. Diese Ausnahmeklausel ist mit grösster Zurückhaltung anzuwenden.",
     "BETREUUNG_HINT_UNTERMONATLICH": "Für die folgenden Angaben gilt: Falls das von- oder bis-Datum der Betreuung nicht auf einer Monatsgrenze liegt, müssen die Werte trotzdem für einen ganzen Monat erfasst werden. <br>&nbsp;",
-    "KITA": "Institution",
+    "KITA": "Kita / TFO / schulergänzendes Angebot",
     "EMAIL_BG": "E-Mail Leitung Institution",
     "ONBOARDING_INFO_INSTITUTION_LINK": "",
     "ONBOARDING_BG_BEANTRAGEN": "Ich möchte einen Betreuungsbeitrag beantragen",
+    "AUSZAHLUNG_AUSSERHALB_KIBON": "Auszahlung ausserhalb von kiBon",
     "BESONDERE_VOLKSSCHULE_AUSWAEHLEN": "",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }
