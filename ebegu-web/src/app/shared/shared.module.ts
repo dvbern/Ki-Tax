@@ -73,6 +73,7 @@ import {DvPosteingangComponent} from '../core/component/dv-posteingang/dv-postei
 import {DvRadioContainerXComponent} from '../core/component/dv-radio-container/dv-radio-container-x.component';
 import {DvRadioInputXComponent} from '../core/component/dv-radio-input-x/dv-radio-input-x.component';
 import {DvValueinputXComponent} from '../core/component/dv-valueinput-x/dv-valueinput-x.component';
+import {LanguageSelectorComponent} from '../core/component/language-selector/language-selector.component';
 import {NavbarComponent} from '../core/component/navbar/navbar.component';
 import {
     PulldownUserMenuButtonComponent
@@ -225,7 +226,8 @@ export function createTranslateLoader(http: HttpClient, mandantService: MandantS
         DvNgEnableElementDirective,
         DvDemoFeatureWrapperComponent,
         PulldownUserMenuComponent,
-        PulldownUserMenuButtonComponent
+        PulldownUserMenuButtonComponent,
+        LanguageSelectorComponent
     ],
     // adding custom elements schema disables Angular's element validation: you can now use transclusion for the
     // dv-accordion-tab with multi-slot transclusion (tab-title & tab-body elements).

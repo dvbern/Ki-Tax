@@ -1,0 +1,8 @@
+<div *ngIf="!hideLanguageSelector()">
+    <button *ngIf="!isLanguage(DE)" (click)="changeLanguage(DE)" translate>
+        CHANGE_DEUTSCH
+    </button>
+    <button *ngIf="!isLanguage(FR)" (click)="changeLanguage(FR)" translate>
+        CHANGE_FRANZOESISCH
+    </button>
+</div>
