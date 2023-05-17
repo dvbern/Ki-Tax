@@ -420,4 +420,5 @@ WHERE (gesuchsperiode.id = :gesuchPeriodeID OR :gesuchPeriodeID IS NULL)
 	<entity class="ch.dvbern.ebegu.entities.GemeindeStammdatenKorrespondenz"/>
 	<entity class="ch.dvbern.ebegu.entities.NeueVeranlagungsMitteilung"/>
 	<entity class="ch.dvbern.ebegu.entities.AlleFaelleView"/>
+	<entity class="ch.dvbern.ebegu.entities.AlleFaelleViewKind"/>
 </entity-mappings>

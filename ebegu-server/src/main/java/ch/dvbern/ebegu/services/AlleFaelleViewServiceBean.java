@@ -39,11 +39,13 @@ import javax.validation.constraints.NotNull;
 
 import ch.dvbern.ebegu.entities.AbstractEntity_;
 import ch.dvbern.ebegu.entities.AlleFaelleView;
+import ch.dvbern.ebegu.entities.AlleFaelleViewKind;
 import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Institution;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten;
+import ch.dvbern.ebegu.entities.Kind;
 import ch.dvbern.ebegu.entities.KindContainer;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
@@ -132,9 +134,7 @@ public class AlleFaelleViewServiceBean extends AbstractBaseService implements Al
 		alleFaelleView.setGemeindeName(gesuch.getDossier().getGemeinde().getName());
 
 		alleFaelleView.setFamilienName(gesuch.extractFamiliennamenString());
-		alleFaelleView.setKinder(gesuch.getKindContainers().stream()
-			.map(kc -> kc.getKindJA().getVorname())
-			.collect(Collectors.joining(", ")));
+		gesuch.getKindContainers().forEach(kindContainer -> createKindView(kindContainer.getKindJA(), alleFaelleView));
 
 		alleFaelleView.setAngebotTypen(gesuch.getKindContainers().stream()
 			.flatMap(kc -> kc.getAllPlaetze().stream())
@@ -162,6 +162,14 @@ public class AlleFaelleViewServiceBean extends AbstractBaseService implements Al
 		alleFaelleView.setInstitutionen(createInstitutionenList(gesuch.getKindContainers()));
 		updateAlleFaelleViewForGesuch(gesuch, alleFaelleView);
 		return alleFaelleView;
+	}
+
+	private void createKindView(Kind kindJA, AlleFaelleView alleFaelleView) {
+		AlleFaelleViewKind alleFaelleViewKind = new AlleFaelleViewKind();
+		alleFaelleViewKind.setKindId(kindJA.getId());
+		alleFaelleViewKind.setName(kindJA.getVorname());
+		alleFaelleViewKind.setAlleFaelleView(alleFaelleView);
+		alleFaelleView.addKind(alleFaelleViewKind);
 	}
 
 	private void updateAlleFaelleViewForGesuch(Gesuch gesuch, AlleFaelleView alleFaelleView) {
