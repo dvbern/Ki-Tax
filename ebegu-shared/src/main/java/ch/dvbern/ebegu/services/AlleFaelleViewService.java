@@ -20,6 +20,7 @@ package ch.dvbern.ebegu.services;
 import java.util.List;
 
 import ch.dvbern.ebegu.entities.Gesuch;
+import ch.dvbern.ebegu.entities.Kind;
 
 public interface AlleFaelleViewService {
 
@@ -28,6 +29,12 @@ public interface AlleFaelleViewService {
 	void updateViewForGesuch(Gesuch gesuch);
 
 	void removeViewForGesuch(Gesuch gesuch);
+
+	void createKindInView(Kind kind, Gesuch gesuch);
+
+	void updateKindInView(Kind kind);
+
+	void removeKindInView(Kind kind);
 
 	Long countAllGesuch();
 

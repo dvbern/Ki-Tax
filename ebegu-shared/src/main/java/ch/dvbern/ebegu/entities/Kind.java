@@ -23,6 +23,7 @@ import javax.annotation.Nullable;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.ForeignKey;
@@ -52,6 +53,7 @@ import org.hibernate.envers.Audited;
 @Table(
 	indexes = @Index(columnList = "geburtsdatum", name = "IX_kind_geburtsdatum")
 )
+@EntityListeners({ AlleFaelleKindListener.class })
 @CheckKinderabzug
 public class Kind extends AbstractPersonEntity {
 

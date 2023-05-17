@@ -88,6 +88,33 @@ public class AlleFaelleViewServiceBean extends AbstractBaseService implements Al
 	}
 
 	@Override
+	public void createKindInView(Kind kind, Gesuch gesuch) {
+		AlleFaelleViewKind alleFaelleViewKind = createKindView(kind, gesuch.getId());
+		persistence.merge(alleFaelleViewKind);
+	}
+
+	@Override
+	public void updateKindInView(Kind kind) {
+		Optional<AlleFaelleViewKind> alleFaelleViewKindToUpdate = findAlleFaelleViewKindByKindId(kind.getId());
+
+		if (alleFaelleViewKindToUpdate.isEmpty()) {
+			//hier wird kein Fehler geworffen, es kann sein dass das KindGS updated werden soll. für dieses
+			//gibt es keinen Eintrag in der AlleFälleListe
+			return;
+		}
+
+		AlleFaelleViewKind alleFaelleViewKind = alleFaelleViewKindToUpdate.get();
+		alleFaelleViewKind.setName(kind.getVorname());
+		persistence.merge(alleFaelleViewKind);
+	}
+
+	@Override
+	public void removeKindInView(Kind kind) {
+		Optional<AlleFaelleViewKind> alleFaelleViewKindToRemove = findAlleFaelleViewKindByKindId(kind.getId());
+		alleFaelleViewKindToRemove.ifPresent(alleFaelleViewKind -> persistence.remove(alleFaelleViewKind));
+	}
+
+	@Override
 	public Long countAllGesuch() {
 		CriteriaBuilder cb = persistence.getCriteriaBuilder();
 		CriteriaQuery query = cb.createQuery(Long.class);
@@ -117,6 +144,11 @@ public class AlleFaelleViewServiceBean extends AbstractBaseService implements Al
 		return Optional.ofNullable(alleFaelleView);
 	}
 
+	private Optional<AlleFaelleViewKind> findAlleFaelleViewKindByKindId(@NotNull String kindId) {
+		AlleFaelleViewKind alleFaelleViewKind =  persistence.find(AlleFaelleViewKind.class, kindId);
+		return Optional.ofNullable(alleFaelleViewKind);
+	}
+
 	private AlleFaelleView createAlleFaelleViewForFullGesuch(Gesuch gesuch) {
 		AlleFaelleView alleFaelleView = new AlleFaelleView();
 		alleFaelleView.setAntragId(gesuch.getId());
@@ -134,7 +166,11 @@ public class AlleFaelleViewServiceBean extends AbstractBaseService implements Al
 		alleFaelleView.setGemeindeName(gesuch.getDossier().getGemeinde().getName());
 
 		alleFaelleView.setFamilienName(gesuch.extractFamiliennamenString());
-		gesuch.getKindContainers().forEach(kindContainer -> createKindView(kindContainer.getKindJA(), alleFaelleView));
+		gesuch.getKindContainers()
+				.forEach(kindContainer -> {
+					AlleFaelleViewKind kind = createKindView(kindContainer.getKindJA(), alleFaelleView.getAntragId());
+					alleFaelleView.addKind(kind);
+				});
 
 		alleFaelleView.setAngebotTypen(gesuch.getKindContainers().stream()
 			.flatMap(kc -> kc.getAllPlaetze().stream())
@@ -164,12 +200,12 @@ public class AlleFaelleViewServiceBean extends AbstractBaseService implements Al
 		return alleFaelleView;
 	}
 
-	private void createKindView(Kind kindJA, AlleFaelleView alleFaelleView) {
+	private AlleFaelleViewKind createKindView(Kind kindJA, String antragId) {
 		AlleFaelleViewKind alleFaelleViewKind = new AlleFaelleViewKind();
 		alleFaelleViewKind.setKindId(kindJA.getId());
 		alleFaelleViewKind.setName(kindJA.getVorname());
-		alleFaelleViewKind.setAntragId(alleFaelleView.getAntragId());
-		alleFaelleView.addKind(alleFaelleViewKind);
+		alleFaelleViewKind.setAntragId(antragId);
+		return alleFaelleViewKind;
 	}
 
 	private void updateAlleFaelleViewForGesuch(Gesuch gesuch, AlleFaelleView alleFaelleView) {
