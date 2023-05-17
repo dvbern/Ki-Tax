@@ -24,6 +24,8 @@ import ch.dvbern.ebegu.entities.Kind;
 
 public interface AlleFaelleViewService {
 
+	boolean isNeueAlleFaelleViewActivated();
+
 	void createViewForFullGesuch(Gesuch gesuch);
 
 	void updateViewForGesuch(Gesuch gesuch);

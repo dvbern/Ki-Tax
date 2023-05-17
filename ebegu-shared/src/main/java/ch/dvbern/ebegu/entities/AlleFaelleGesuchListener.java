@@ -14,16 +14,28 @@ public class AlleFaelleGesuchListener {
 
 	@PostPersist
 	public void createGesuchInAlleFaelleView(Gesuch gesuch) {
+		if (!alleFaelleViewService.isNeueAlleFaelleViewActivated()) {
+			return;
+		}
+
 		alleFaelleViewService.createViewForFullGesuch(gesuch);
 	}
 
 	@PostUpdate
 	public void updateGesuchInAlleFaelleView(Gesuch gesuch) {
+		if (!alleFaelleViewService.isNeueAlleFaelleViewActivated()) {
+			return;
+		}
+
 		alleFaelleViewService.updateViewForGesuch(gesuch);
 	}
 
 	@PostRemove
 	public void removeGesuchInAlleFaelleView(Gesuch gesuch) {
+		if (!alleFaelleViewService.isNeueAlleFaelleViewActivated()) {
+			return;
+		}
+
 		alleFaelleViewService.removeViewForGesuch(gesuch);
 	}
 

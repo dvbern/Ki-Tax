@@ -12,6 +12,10 @@ public class AlleFaelleKindContainerListener {
 
 	@PostPersist
 	public void createKindInAlleFaelleView(KindContainer kindContainer) {
+		if (!alleFaelleViewService.isNeueAlleFaelleViewActivated()) {
+			return;
+		}
+
 		alleFaelleViewService.createKindInView(kindContainer.getKindJA(), kindContainer.getGesuch());
 	}
 

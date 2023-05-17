@@ -61,6 +61,11 @@ public class AlleFaelleViewServiceBean extends AbstractBaseService implements Al
 	private Persistence persistence;
 
 	@Override
+	public boolean isNeueAlleFaelleViewActivated() {
+		return false;
+	}
+
+	@Override
 	public void createViewForFullGesuch(Gesuch gesuch) {
 		AlleFaelleView alleFaelleView = createAlleFaelleViewForFullGesuch(gesuch);
 		persistence.merge(alleFaelleView);

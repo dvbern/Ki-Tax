@@ -5,6 +5,7 @@ import javax.persistence.PostRemove;
 import javax.persistence.PostUpdate;
 
 import ch.dvbern.ebegu.services.AlleFaelleViewService;
+
 public class AlleFaelleKindListener {
 
 	@Inject
@@ -15,11 +16,19 @@ public class AlleFaelleKindListener {
 
 	@PostUpdate
 	public void updateKindInAlleFaelleView(Kind kind) {
+		if (!alleFaelleViewService.isNeueAlleFaelleViewActivated()) {
+			return;
+		}
+
 		alleFaelleViewService.updateKindInView(kind);
 	}
 
 	@PostRemove
 	public void removeKindFromAlleFaelleView(Kind kind) {
+		if (!alleFaelleViewService.isNeueAlleFaelleViewActivated()) {
+			return;
+		}
+
 		alleFaelleViewService.removeKindInView(kind);
 	}
 }
