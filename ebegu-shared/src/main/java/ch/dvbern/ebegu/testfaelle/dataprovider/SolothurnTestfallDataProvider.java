@@ -4,10 +4,15 @@ import java.math.BigDecimal;
 
 import ch.dvbern.ebegu.entities.Familiensituation;
 import ch.dvbern.ebegu.entities.FinanzielleSituation;
+import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.enums.EnumFamilienstatus;
 import ch.dvbern.ebegu.enums.FinanzielleSituationTyp;
 
 public class SolothurnTestfallDataProvider extends AbstractTestfallDataProvider {
+
+	protected SolothurnTestfallDataProvider(Gesuchsperiode gesuchsperiode) {
+		super(gesuchsperiode);
+	}
 
 	@Override
 	public Familiensituation createVerheiratet() {
@@ -27,6 +32,7 @@ public class SolothurnTestfallDataProvider extends AbstractTestfallDataProvider 
 	@Override
 	public FinanzielleSituation createFinanzielleSituation(BigDecimal vermoegen, BigDecimal einkommen) {
 		FinanzielleSituation finanzielleSituation = createDefaultFinanzielleSituation();
+		finanzielleSituation.setMomentanSelbststaendig(true);
 		finanzielleSituation.setNettolohn(einkommen);
 		finanzielleSituation.setSteuerbaresVermoegen(vermoegen);
 		finanzielleSituation.setUnterhaltsBeitraege(BigDecimal.ZERO);
