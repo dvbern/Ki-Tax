@@ -111,7 +111,7 @@ WHERE (gesuchsperiode.id = UNHEX(REPLACE(:gesuchPeriodeID, '-', '')) OR :gesuchP
       AND HEX(fall.mandant_id) = :mandant
 			]]></query>
 		</named-native-query>
-		<named-native-query name="GesuchZeitraumNativeSQLQuery" result-set-mapping="GesuchZeitraumDataRowMapping">
+		<named-native-query name="GesuchZeitraumNativeSQLQueryByEingangsdatum" result-set-mapping="GesuchZeitraumDataRowMapping">
 			<query><![CDATA[
 			SELECT
   CONCAT_WS('.'
@@ -267,6 +267,191 @@ WHERE (gesuchsperiode.id = UNHEX(REPLACE(:gesuchPeriodeID, '-', '')) OR :gesuchP
 	  AND gesuch.status IN ('VERFUEGT', 'NUR_SCHULAMT', 'BESCHWERDE_HAENGIG',
 			'PRUEFUNG_STV', 'IN_BEARBEITUNG_STV', 'GEPRUEFT_STV', 'KEIN_ANGEBOT')
  	  AND gesuch.eingangsdatum BETWEEN :fromDate AND :toDate
+      AND (institution_stammdaten.betreuungsangebot_typ = 'TAGESSCHULE' OR :onlySchulamt = 0)
+	  AND (:allGemeinden = true OR (HEX(dossier.gemeinde_id) IN (:gemeindeIdList)))
+      AND (
+        IFNULL(EingegangeneGesuch.AnzahlGesuchOnline, 0) = 1
+        OR IFNULL(EingegangeneGesuch.AnzahlGesuchPapier, 0) = 1
+        OR IFNULL(EingegangeneGesuch.AnzahlMutationOnline, 0) = 1
+        OR IFNULL(EingegangeneGesuch.AnzahlMutationPapier, 0) = 1
+        OR IFNULL(betreuung.abwesenheit_mutiert, 0) = 1
+        OR IFNULL(betreuung.betreuung_mutiert, 0) = 1
+        OR IFNULL(Mutationen.AnzahlMutationEV, 0) = 1
+        OR IFNULL(Mutationen.AnzahlMutationEwerbspensum, 0) = 1
+        OR IFNULL(Mutationen.AnzahlMutationFamilienSitutation, 0) = 1
+        OR IFNULL(Mutationen.AnzahlMutationFinanzielleSituation, 0) = 1
+        OR IFNULL(Mutationen.AnzahlMutationGesuchsteller, 0) = 1
+        OR IFNULL(kind_container.kind_mutiert, 0) = 1
+        OR IFNULL(Mutationen.AnzahlMutationUmzug, 0) = 1
+        OR IFNULL(Mahnungen.AnzahlMahnungen, 0) = 1
+        OR IFNULL(Statuswechsel.AnzahlSteueramtAusgeloest, 0) = 1
+        OR IFNULL(Statuswechsel.AnzahlSteueramtGeprueft, 0) = 1
+        OR IFNULL(Statuswechsel.AnzahlBeschwerde, 0) = 1
+        OR IFNULL(Verfuegungen.AnzahlVerfuegungen, 0) = 1
+        OR IFNULL(Verfuegungen.kategorie_normal, 0) = 1
+        OR IFNULL(Verfuegungen.kategorie_max_einkommen, 0) = 1
+        OR IFNULL(Verfuegungen.kategorie_kein_pensum, 0) = 1
+        OR IFNULL(Verfuegungen.kategorie_nicht_eintreten, 0) = 1
+      )
+      AND HEX(fall.mandant_id) = :mandant
+		]]></query>
+		</named-native-query>
+		<named-native-query name="GesuchZeitraumNativeSQLQueryByTimestampVerfuegt" result-set-mapping="GesuchZeitraumDataRowMapping">
+			<query><![CDATA[
+			SELECT
+  CONCAT_WS('.'
+  , RIGHT(YEAR(gesuchsperiode.gueltig_ab), 2)
+  , LPAD(fall.fall_nummer, 6, 0)
+  , kind_container.kind_nummer
+  , betreuung.betreuung_nummer
+  )                                                                       AS BGNummer,
+  gemeinde.name                                                           AS gemeinde,
+  gesuch.laufnummer 													  AS gesuchLaufNr,
+  CONCAT(IFNULL(CONCAT(traegerschaft.name, ' - '), ''), institution.name) AS Institution,
+  institution_stammdaten.betreuungsangebot_typ                            AS BetreuungsTyp,
+  CONCAT_WS('/', CAST(YEAR(gesuchsperiode.gueltig_ab) AS CHAR(4))
+  , CAST(
+                YEAR(gesuchsperiode.gueltig_bis) AS CHAR(4))
+  )                                                                       AS Periode,
+  IFNULL(EingegangeneGesuch.AnzahlGesuchOnline, 0)                           AnzahlGesuchOnline,
+  IFNULL(EingegangeneGesuch.AnzahlGesuchPapier, 0)                           AnzahlGesuchPapier,
+  IFNULL(EingegangeneGesuch.AnzahlMutationOnline, 0)                         AnzahlMutationOnline,
+  IFNULL(EingegangeneGesuch.AnzahlMutationPapier, 0)                         AnzahlMutationPapier,
+  IFNULL(betreuung.abwesenheit_mutiert, 0)                                   AnzahlMutationAbwesenheit,
+  IFNULL(betreuung.betreuung_mutiert, 0)                                     AnzahlMutationBetreuung,
+  IFNULL(Mutationen.AnzahlMutationEV, 0)                                     AnzahlMutationEV,
+  IFNULL(Mutationen.AnzahlMutationEwerbspensum, 0)                           AnzahlMutationEwerbspensum,
+  IFNULL(Mutationen.AnzahlMutationFamilienSitutation, 0)                     AnzahlMutationFamilienSitutation,
+  IFNULL(Mutationen.AnzahlMutationFinanzielleSituation, 0)                   AnzahlMutationFinanzielleSituation,
+  IFNULL(Mutationen.AnzahlMutationGesuchsteller, 0)                          AnzahlMutationGesuchsteller,
+  IFNULL(kind_container.kind_mutiert, 0)                                     AnzahlMutationKinder,
+  IFNULL(Mutationen.AnzahlMutationUmzug, 0)                                  AnzahlMutationUmzug,
+  IFNULL(Mahnungen.AnzahlMahnungen, 0)                                       AnzahlMahnungen,
+  IFNULL(Statuswechsel.AnzahlBeschwerde, 0)                                  AnzahlBeschwerde,
+  IFNULL(Statuswechsel.AnzahlSteueramtAusgeloest, 0)						 AnzahlSteueramtAusgeloest,
+  IFNULL(Statuswechsel.AnzahlSteueramtGeprueft, 0)							 AnzahlSteueramtGeprueft,
+  IFNULL(Verfuegungen.AnzahlVerfuegungen, 0)                                 AnzahlVerfuegungen,
+  IFNULL(Verfuegungen.kategorie_normal, 0)                                   AnzahlVerfuegungenNormal,
+  IFNULL(Verfuegungen.kategorie_max_einkommen, 0)                            AnzahlVerfuegungenMaxEinkommen,
+  IFNULL(Verfuegungen.kategorie_kein_pensum, 0)                              AnzahlVerfuegungenKeinPensum,
+  IFNULL(Verfuegungen.kategorie_nicht_eintreten, 0)                          AnzahlVerfuegungenNichtEintreten
+
+FROM kind_container
+  INNER JOIN kind ON kind.id = kind_container.kindja_id
+  INNER JOIN betreuung ON betreuung.kind_id = kind_container.id
+  INNER JOIN institution_stammdaten ON institution_stammdaten.id = betreuung.institution_stammdaten_id
+  INNER JOIN institution ON institution.id = institution_stammdaten.institution_id
+  LEFT OUTER JOIN traegerschaft ON traegerschaft.id = institution.traegerschaft_id
+  INNER JOIN gesuch ON gesuch.id = kind_container.gesuch_id
+  INNER JOIN gesuchsperiode ON gesuchsperiode.id = gesuch.gesuchsperiode_id
+  INNER JOIN dossier ON dossier.id = gesuch.dossier_id
+  INNER JOIN gemeinde ON gemeinde.id = dossier.gemeinde_id
+  INNER JOIN fall ON fall.id = dossier.fall_id
+
+  LEFT OUTER JOIN (
+	SELECT
+	  CASE WHEN eingangsart = 'ONLINE' AND (typ = 'ERSTGESUCH' OR typ = 'ERNEUERUNGSGESUCH')
+		THEN 1 END AnzahlGesuchOnline,
+	  CASE WHEN eingangsart = 'PAPIER' AND (typ = 'ERSTGESUCH' OR typ = 'ERNEUERUNGSGESUCH')
+		THEN 1 END AnzahlGesuchPapier,
+	  CASE WHEN eingangsart = 'ONLINE' AND typ = 'MUTATION'
+		THEN 1 END AnzahlMutationOnline,
+	  CASE WHEN eingangsart = 'PAPIER' AND typ = 'MUTATION'
+		THEN 1 END AnzahlMutationPapier,
+	  gesuch.id AS gesuch_id
+	FROM gesuch
+	 WHERE timestamp_verfuegt BETWEEN :fromDate AND :toDate
+  ) EingegangeneGesuch ON EingegangeneGesuch.gesuch_id = gesuch.id
+
+  LEFT OUTER JOIN
+  (
+  	SELECT
+  	SUM(AnzahlMutationEV) AS AnzahlMutationEV,
+  	SUM(AnzahlMutationEwerbspensum) AS AnzahlMutationEwerbspensum,
+  	SUM(AnzahlMutationFamilienSitutation) AS AnzahlMutationFamilienSitutation,
+  	SUM(AnzahlMutationFinanzielleSituation) AS AnzahlMutationFinanzielleSituation,
+  	SUM(AnzahlMutationGesuchsteller) AS AnzahlMutationGesuchsteller,
+  	SUM(AnzahlMutationUmzug) AS AnzahlMutationUmzug,
+  	gesuch_id
+  	FROM
+		(
+		SELECT
+		  gesuch_id,
+		  CASE WHEN wizard_step_name = 'EINKOMMENSVERSCHLECHTERUNG'
+			THEN 1 END AnzahlMutationEV,
+		  CASE WHEN wizard_step_name = 'ERWERBSPENSUM'
+			THEN 1 END AnzahlMutationEwerbspensum,
+		  CASE WHEN wizard_step_name = 'FAMILIENSITUATION'
+			THEN 1 END AnzahlMutationFamilienSitutation,
+		  CASE WHEN wizard_step_name = 'FINANZIELLE_SITUATION'
+			THEN 1 END AnzahlMutationFinanzielleSituation,
+		  CASE WHEN wizard_step_name = 'GESUCHSTELLER'
+			THEN 1 END AnzahlMutationGesuchsteller,
+		  CASE WHEN wizard_step_name = 'UMZUG'
+			THEN 1 END AnzahlMutationUmzug
+		FROM wizard_step
+		WHERE wizard_step_status = 'MUTIERT'
+		AND wizard_step_name NOT IN ('DOKUMENTE','FREIGABE','GESUCH_ERSTELLEN','VERFUEGEN','ABWESENHEIT','BETREUUNG','KINDER')
+		) WizardSteps
+	GROUP BY gesuch_id
+  ) Mutationen ON Mutationen.gesuch_id = gesuch.id
+
+  LEFT OUTER JOIN (
+                    SELECT DISTINCT
+                      1 AS AnzahlMahnungen,
+                      gesuch_id
+                    FROM mahnung
+                    WHERE timestamp_erstellt BETWEEN :fromDateTime AND :toDateTime
+                          OR timestamp_abgeschlossen BETWEEN :fromDateTime AND :toDateTime
+                          OR (:fromDateTime >= timestamp_erstellt AND
+                              (:toDateTime <= timestamp_abgeschlossen OR timestamp_abgeschlossen IS NULL))
+                  ) Mahnungen ON Mahnungen.gesuch_id = gesuch.id
+
+ LEFT OUTER JOIN (
+ 	SELECT
+ 		SUM(AnzahlSteueramtAusgeloestTmp) AS AnzahlSteueramtAusgeloest,
+		SUM(AnzahlSteueramtGeprueftTmp) AS AnzahlSteueramtGeprueft,
+		SUM(AnzahlBeschwerdeTmp) AS AnzahlBeschwerde,
+		gesuch_id
+	FROM (
+					SELECT
+						CASE WHEN antrag_status_history.status IN ('PRUEFUNG_STV')
+							THEN 1 END AnzahlSteueramtAusgeloestTmp,
+						CASE WHEN antrag_status_history.status IN ('GEPRUEFT_STV')
+							THEN 1 END AnzahlSteueramtGeprueftTmp,
+						case WHEN antrag_status_history.status IN ('BESCHWERDE_HAENGIG')
+							THEN 1 END AnzahlBeschwerdeTmp,
+						gesuch.id AS gesuch_id
+					FROM antrag_status_history
+					INNER JOIN gesuch ON gesuch.id = antrag_status_history.gesuch_id
+					INNER JOIN gesuchsperiode ON gesuchsperiode.id = gesuch.gesuchsperiode_id
+                     WHERE antrag_status_history.status IN ('PRUEFUNG_STV', 'GEPRUEFT_STV', 'BESCHWERDE_HAENGIG')
+                        AND (
+							  timestamp_von BETWEEN :fromDateTime AND :toDateTime
+							  OR timestamp_bis BETWEEN :fromDateTime AND :toDateTime
+							  OR (:fromDateTime >= timestamp_von AND (:toDateTime <= timestamp_bis OR timestamp_bis IS NULL))
+						)
+						GROUP BY gesuch.id, antrag_status_history.status
+				) Result
+				GROUP BY gesuch_id
+  ) Statuswechsel ON Statuswechsel.gesuch_id = gesuch.id
+
+
+  LEFT OUTER JOIN (
+                    SELECT
+                      betreuung_id,
+                      1 AS AnzahlVerfuegungen,
+                      kategorie_normal,
+                      kategorie_max_einkommen,
+                      kategorie_kein_pensum,
+                      kategorie_nicht_eintreten
+                    FROM verfuegung
+                    WHERE timestamp_erstellt BETWEEN :fromDateTime AND :toDateTime
+                  ) Verfuegungen ON Verfuegungen.betreuung_id = betreuung.id
+WHERE (gesuchsperiode.id = UNHEX(REPLACE(:gesuchPeriodeID, '-', '')) OR :gesuchPeriodeID IS NULL)
+	  AND gesuch.status IN ('VERFUEGT', 'NUR_SCHULAMT', 'BESCHWERDE_HAENGIG',
+			'PRUEFUNG_STV', 'IN_BEARBEITUNG_STV', 'GEPRUEFT_STV', 'KEIN_ANGEBOT')
+ 	  AND gesuch.timestamp_verfuegt BETWEEN :fromDate AND :toDate
       AND (institution_stammdaten.betreuungsangebot_typ = 'TAGESSCHULE' OR :onlySchulamt = 0)
 	  AND (:allGemeinden = true OR (HEX(dossier.gemeinde_id) IN (:gemeindeIdList)))
       AND (

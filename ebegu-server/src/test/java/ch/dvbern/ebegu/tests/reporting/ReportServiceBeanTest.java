@@ -31,6 +31,7 @@ import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.enums.BenutzerStatus;
+import ch.dvbern.ebegu.enums.reporting.DatumTyp;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.ebegu.reporting.ReportKinderMitZemisNummerService;
 import ch.dvbern.ebegu.reporting.ReportService;
@@ -129,6 +130,7 @@ public class ReportServiceBeanTest extends AbstractEbeguLoginTest {
 		List<GesuchZeitraumDataRow> reportData = reportService.getReportDataGesuchZeitraum(
 			LocalDate.of(2016, Month.JANUARY, 1),
 			LocalDate.of(2017, Month.DECEMBER, 31),
+			DatumTyp.EINREICHEDATUM,
 			null, getDummySuperadmin().getMandant());
 
 		List<GesuchZeitraumDataRow> rowsSorted = reportData
@@ -247,6 +249,7 @@ public class ReportServiceBeanTest extends AbstractEbeguLoginTest {
 		UploadFileInfo uploadFileInfo = reportService.generateExcelReportGesuchZeitraum(
 			LocalDate.of(2016, Month.JANUARY, 1),
 			LocalDate.of(2017, Month.DECEMBER, 31),
+			DatumTyp.EINREICHEDATUM,
 			null,
 			Constants.DEUTSCH_LOCALE, getDummySuperadmin().getMandant());
 
@@ -259,6 +262,7 @@ public class ReportServiceBeanTest extends AbstractEbeguLoginTest {
 		UploadFileInfo uploadFileInfo = reportService.generateExcelReportGesuchZeitraum(
 			LocalDate.of(2016, Month.JANUARY, 1),
 			LocalDate.of(2017, Month.DECEMBER, 31),
+			DatumTyp.EINREICHEDATUM,
 			null,
 			Constants.FRENCH_LOCALE, getDummySuperadmin().getMandant());
 
