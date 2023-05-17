@@ -1,7 +1,7 @@
 <button *dvNgShowElement="true; roles: allowedRoles || allRoles"
         [uiSrefActive]="'active'"
         [uiSref]="uiSRef"
-        (click)="buttonClick ? buttonClick.emit($event) : $event.preventDefault()">
+        (click)="buttonClick ? buttonClick.emit($event) : $event.preventDefault()" href="">
     <a [href]="href">
         <span><ng-content></ng-content></span>
     </a>

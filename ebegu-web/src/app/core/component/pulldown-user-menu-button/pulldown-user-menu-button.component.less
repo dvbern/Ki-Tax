@@ -1,3 +1,5 @@
+@text-height: 1.4rem;
+
 button {
     &:hover {
         background-color: #CCCCCC
@@ -11,9 +13,16 @@ button {
 }
 
 a {
+    align-items: center;
     color: #000;
-    font-size: 1.4rem;
+    display: flex;
+    font-size: @text-height;
+    height: 100%;
     letter-spacing: normal;
     padding: 0 16px;
     text-decoration: none;
+
+    span {
+        height: @text-height;
+    }
 }
