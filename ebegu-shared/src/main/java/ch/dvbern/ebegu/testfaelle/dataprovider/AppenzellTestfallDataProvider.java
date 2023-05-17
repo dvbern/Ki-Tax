@@ -5,10 +5,15 @@ import java.math.BigDecimal;
 import ch.dvbern.ebegu.entities.Familiensituation;
 import ch.dvbern.ebegu.entities.FinSitZusatzangabenAppenzell;
 import ch.dvbern.ebegu.entities.FinanzielleSituation;
+import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.enums.EnumFamilienstatus;
 import ch.dvbern.ebegu.enums.FinanzielleSituationTyp;
 
 public class AppenzellTestfallDataProvider extends AbstractTestfallDataProvider {
+
+	protected AppenzellTestfallDataProvider(Gesuchsperiode gesuchsperiode) {
+		super(gesuchsperiode);
+	}
 
 	@Override
 	public Familiensituation createVerheiratet() {

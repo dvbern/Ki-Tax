@@ -309,11 +309,7 @@ public abstract class AbstractTestfall {
 
 	protected ErwerbspensumContainer createErwerbspensum(int prozent) {
 		ErwerbspensumContainer erwerbspensumContainer = new ErwerbspensumContainer();
-		Erwerbspensum erwerbspensum = new Erwerbspensum();
-		erwerbspensum.setGueltigkeit(gesuchsperiode.getGueltigkeit());
-		erwerbspensum.setTaetigkeit(Taetigkeit.ANGESTELLT);
-		erwerbspensum.setPensum(prozent);
-		erwerbspensumContainer.setErwerbspensumJA(erwerbspensum);
+		erwerbspensumContainer.setErwerbspensumJA(testfallDataProvider.createErwerbspensum(prozent));
 		return erwerbspensumContainer;
 	}
 

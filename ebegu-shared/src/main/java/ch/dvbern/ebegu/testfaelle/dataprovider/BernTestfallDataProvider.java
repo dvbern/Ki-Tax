@@ -4,9 +4,14 @@ import java.math.BigDecimal;
 
 import ch.dvbern.ebegu.entities.Familiensituation;
 import ch.dvbern.ebegu.entities.FinanzielleSituation;
+import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.enums.EnumFamilienstatus;
 
 public abstract class BernTestfallDataProvider extends AbstractTestfallDataProvider {
+
+	protected BernTestfallDataProvider(Gesuchsperiode gesuchsperiode) {
+		super(gesuchsperiode);
+	}
 
 	@Override
 	public Familiensituation createVerheiratet() {

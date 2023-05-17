@@ -2,15 +2,22 @@ package ch.dvbern.ebegu.testfaelle.dataprovider;
 
 import java.math.BigDecimal;
 
+import ch.dvbern.ebegu.entities.Erwerbspensum;
 import ch.dvbern.ebegu.entities.Familiensituation;
 import ch.dvbern.ebegu.entities.FinanzielleSituation;
 import ch.dvbern.ebegu.entities.FinanzielleSituationSelbstdeklaration;
+import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.enums.EnumFamilienstatus;
 import ch.dvbern.ebegu.enums.FinanzielleSituationTyp;
+import ch.dvbern.ebegu.enums.Taetigkeit;
 import ch.dvbern.ebegu.util.MathUtil;
 import org.jetbrains.annotations.NotNull;
 
 public class LuzernTestfallDataProvider extends AbstractTestfallDataProvider {
+
+	protected LuzernTestfallDataProvider(Gesuchsperiode gesuchsperiode) {
+		super(gesuchsperiode);
+	}
 
 	@Override
 	public Familiensituation createVerheiratet() {
@@ -75,5 +82,16 @@ public class LuzernTestfallDataProvider extends AbstractTestfallDataProvider {
 
 		familiensituation.getAuszahlungsdaten().setInfomaKreditorennummer("0010");
 		familiensituation.getAuszahlungsdaten().setInfomaBankcode("00-1-00");
+	}
+
+	@Override
+	public Erwerbspensum createErwerbspensum(int prozent) {
+		Erwerbspensum erwerbspensum = new Erwerbspensum();
+		erwerbspensum.setGueltigkeit(gesuchsperiode.getGueltigkeit());
+		erwerbspensum.setTaetigkeit(Taetigkeit.ANGESTELLT);
+		erwerbspensum.setPensum(prozent);
+		erwerbspensum.setBezeichnung("Sachbearbeitung");
+		erwerbspensum.setErwerbspensumInstitution("Verwaltung Luzern");
+		return erwerbspensum;
 	}
 }

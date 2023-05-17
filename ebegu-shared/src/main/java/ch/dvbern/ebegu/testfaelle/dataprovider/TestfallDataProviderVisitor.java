@@ -25,24 +25,24 @@ public class TestfallDataProviderVisitor implements MandantVisitor<AbstractTestf
 	@Override
 	public AbstractTestfallDataProvider visitBern() {
 		if (gesuchsperiode.getGueltigkeit().getGueltigAb().isBefore(START_FKJV)) {
-			return new AsivBernTestfallDataProvider();
+			return new AsivBernTestfallDataProvider(gesuchsperiode);
 		}
 
-		return new FkjvBernTestfallDataProvider();
+		return new FkjvBernTestfallDataProvider(gesuchsperiode);
 	}
 
 	@Override
 	public AbstractTestfallDataProvider visitLuzern() {
-		return new LuzernTestfallDataProvider();
+		return new LuzernTestfallDataProvider(gesuchsperiode);
 	}
 
 	@Override
 	public AbstractTestfallDataProvider visitSolothurn() {
-		return new SolothurnTestfallDataProvider();
+		return new SolothurnTestfallDataProvider(gesuchsperiode);
 	}
 
 	@Override
 	public AbstractTestfallDataProvider visitAppenzellAusserrhoden() {
-		return new AppenzellTestfallDataProvider();
+		return new AppenzellTestfallDataProvider(gesuchsperiode);
 	}
 }

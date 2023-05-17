@@ -5,12 +5,21 @@ import java.math.BigDecimal;
 import javax.annotation.Nonnull;
 
 import ch.dvbern.ebegu.entities.Auszahlungsdaten;
+import ch.dvbern.ebegu.entities.Erwerbspensum;
 import ch.dvbern.ebegu.entities.Familiensituation;
 import ch.dvbern.ebegu.entities.FinanzielleSituation;
+import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.enums.FinanzielleSituationTyp;
+import ch.dvbern.ebegu.enums.Taetigkeit;
 import ch.dvbern.oss.lib.beanvalidation.embeddables.IBAN;
 
 public abstract class AbstractTestfallDataProvider {
+
+	protected final Gesuchsperiode gesuchsperiode;
+
+	protected AbstractTestfallDataProvider(Gesuchsperiode gesuchsperiode) {
+		this.gesuchsperiode = gesuchsperiode;
+	}
 
 	public abstract Familiensituation createVerheiratet();
 	public abstract Familiensituation createAlleinerziehend();
@@ -57,5 +66,12 @@ public abstract class AbstractTestfallDataProvider {
 		finanzielleSituation.setSchulden(BigDecimal.ZERO);
 	}
 
+	public Erwerbspensum createErwerbspensum(int prozent) {
+		Erwerbspensum erwerbspensum = new Erwerbspensum();
+		erwerbspensum.setGueltigkeit(gesuchsperiode.getGueltigkeit());
+		erwerbspensum.setTaetigkeit(Taetigkeit.ANGESTELLT);
+		erwerbspensum.setPensum(prozent);
+		return erwerbspensum;
+	}
 }
 

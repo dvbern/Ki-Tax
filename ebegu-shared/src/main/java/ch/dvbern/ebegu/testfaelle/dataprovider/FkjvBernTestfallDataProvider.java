@@ -4,11 +4,16 @@ import java.math.BigDecimal;
 
 import ch.dvbern.ebegu.entities.Familiensituation;
 import ch.dvbern.ebegu.entities.FinanzielleSituation;
+import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.enums.EnumFamilienstatus;
 import ch.dvbern.ebegu.enums.EnumGesuchstellerKardinalitaet;
 import ch.dvbern.ebegu.enums.FinanzielleSituationTyp;
 
 public class FkjvBernTestfallDataProvider extends BernTestfallDataProvider {
+
+	protected FkjvBernTestfallDataProvider(Gesuchsperiode gesuchsperiode) {
+		super(gesuchsperiode);
+	}
 
 	@Override
 	public Familiensituation createAlleinerziehend() {
