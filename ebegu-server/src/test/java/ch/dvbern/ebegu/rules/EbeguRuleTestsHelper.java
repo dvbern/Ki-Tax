@@ -135,6 +135,7 @@ import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_PAUSCHALABZUG_PRO_PERSO
 import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_PENSUM_KITA_MIN;
 import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_PENSUM_TAGESELTERN_MIN;
 import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_PENSUM_TAGESSCHULE_MIN;
+import static ch.dvbern.ebegu.enums.EinstellungKey.PENSUM_ANZEIGE_TYP;
 import static ch.dvbern.ebegu.enums.EinstellungKey.ZUSCHLAG_BEHINDERUNG_PRO_STD;
 import static ch.dvbern.ebegu.enums.EinstellungKey.ZUSCHLAG_BEHINDERUNG_PRO_TG;
 import static ch.dvbern.ebegu.rules.initalizer.RestanspruchInitializer.createInitialenRestanspruch;
@@ -425,6 +426,7 @@ public final class EbeguRuleTestsHelper {
 				"2",
 				gesuchsperiode);
 		einstellungenMap.addEinstellung(GEMEINDE_KEIN_GUTSCHEIN_FUER_SOZIALHILFE_EMPFAENGER, "false", gesuchsperiode);
+		einstellungenMap.addEinstellung(OEFFNUNGSTAGE_KITA, "240", gesuchsperiode);
 		// FKJV
 		einstellungenMap.addEinstellung(FKJV_PAUSCHALE_BEI_ANSPRUCH, "false", gesuchsperiode);
 		einstellungenMap.addEinstellung(FKJV_PAUSCHALE_RUECKWIRKEND, "false", gesuchsperiode);
@@ -442,6 +444,8 @@ public final class EbeguRuleTestsHelper {
 		einstellungenMap.addEinstellung(KITAPLUS_ZUSCHLAG_AKTIVIERT, "false", gesuchsperiode);
 		einstellungenMap.addEinstellung(GESCHWISTERNBONUS_AKTIVIERT, "false", gesuchsperiode);
 		einstellungenMap.addEinstellung(ANSPRUCH_AB_X_MONATEN, "0", gesuchsperiode);
+		// AR
+		einstellungenMap.addEinstellung(PENSUM_ANZEIGE_TYP, "ZEITEINHEIT_UND_PROZENT", gesuchsperiode);
 
 		return einstellungenMap.getEinstellungen();
 	}
