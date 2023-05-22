@@ -10,6 +10,7 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Affero General Public License for more details.
+ *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
@@ -39,7 +40,7 @@ import {
     isAtLeastFreigegeben,
     isAtLeastFreigegebenOrFreigabequittung,
     isStatusVerfuegenVerfuegt,
-    TSAntragStatus
+    TSAntragStatus,
 } from '../../models/enums/TSAntragStatus';
 import {TSAntragTyp} from '../../models/enums/TSAntragTyp';
 import {TSAuthEvent} from '../../models/enums/TSAuthEvent';
@@ -86,7 +87,7 @@ import {TSVerfuegung} from '../../models/TSVerfuegung';
 import {EbeguUtil} from '../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../utils/TSRoleUtil';
 import {
-    FinanzielleSituationAppenzellService
+    FinanzielleSituationAppenzellService,
 } from '../component/finanzielleSituation/appenzell/finanzielle-situation-appenzell.service';
 import {InternePendenzenRS} from '../component/internePendenzenView/internePendenzenRS.rest';
 import {DossierRS} from './dossierRS.rest';
@@ -307,6 +308,9 @@ export class GesuchModelManager {
         if (this.wizardStepManager.getCurrentStepName() === TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_APPENZELL) {
             if (gs === 1) {
                 return this.getEkvFuerBasisJahrPlus(bj);
+            }
+            if (this.gesuch.extractFamiliensituation().gemeinsameSteuererklaerung) {
+                return false;
             }
             // GS 2 Spezialfall
             if (this.isSpezialFallAR()) {
