@@ -85,24 +85,13 @@ public class Testfall_ASIV_10 extends AbstractASIVTestfall {
 		betreuungspensumKitaBruennen.setBetreuung(betreuungKitaBruennen);
 		betreuungKitaBruennen.getBetreuungspensumContainers().add(betreuungspensumKitaBruennen);
 		// Finanzielle Situation
-		FinanzielleSituationContainer finanzielleSituationContainer = createFinanzielleSituationContainer();
-		finanzielleSituationContainer.getFinanzielleSituationJA().setNettolohn(MathUtil.DEFAULT.from(EINKOMMEN_GS1));
+		FinanzielleSituationContainer finanzielleSituationContainer = createFinanzielleSituationContainer(BigDecimal.ZERO, EINKOMMEN_GS1);
 		finanzielleSituationContainer.setGesuchsteller(gesuchsteller1);
 		gesuchsteller1.setFinanzielleSituationContainer(finanzielleSituationContainer);
 
-		FinanzielleSituationContainer finanzielleSituationGS2 = createFinanzielleSituationContainer();
-		finanzielleSituationGS2.getFinanzielleSituationJA().setNettolohn(MathUtil.DEFAULT.from(EINKOMMEN_GS2));
+		FinanzielleSituationContainer finanzielleSituationGS2 = createFinanzielleSituationContainer(BigDecimal.ZERO, EINKOMMEN_GS2);
 		finanzielleSituationGS2.setGesuchsteller(gesuchsteller2);
 		gesuchsteller2.setFinanzielleSituationContainer(finanzielleSituationGS2);
-
-		// LU
-		TestFaelleUtil.fillInFinSitLuZero(finanzielleSituationContainer);
-		assert finanzielleSituationContainer.getFinanzielleSituationJA().getSelbstdeklaration() != null;
-		finanzielleSituationContainer.getFinanzielleSituationJA().getSelbstdeklaration().setEinkunftErwerb(MathUtil.DEFAULT.from(EINKOMMEN_GS1));
-
-		// SO
-		TestFaelleUtil.fillInFinSitSoZero(finanzielleSituationContainer);
-		TestFaelleUtil.fillInFinSitSoZero(finanzielleSituationGS2);
 
 		createEmptyEKVInfoContainer(gesuch);
 

@@ -15,6 +15,7 @@
 
 package ch.dvbern.ebegu.testfaelle;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.Month;
 
@@ -88,15 +89,9 @@ public class Testfall06_BeckerNora extends AbstractTestfall {
 		betreuungKitaAaregg.getBetreuungspensumContainers().add(betreuungspensumKitaAaregg);
 
 		// Finanzielle Situation
-		FinanzielleSituationContainer finanzielleSituationGS1 = createFinanzielleSituationContainer();
+		FinanzielleSituationContainer finanzielleSituationGS1 = createFinanzielleSituationContainer(BigDecimal.ZERO, BigDecimal.ZERO);
 		finanzielleSituationGS1.setGesuchsteller(gesuchsteller1);
 		gesuchsteller1.setFinanzielleSituationContainer(finanzielleSituationGS1);
-
-		// LU
-		TestFaelleUtil.fillInFinSitLuZero(finanzielleSituationGS1);
-
-		// SO
-		TestFaelleUtil.fillInFinSitSoZero(finanzielleSituationGS1);
 
 		createEmptyEKVInfoContainer(gesuch);
 

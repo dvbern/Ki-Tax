@@ -88,7 +88,21 @@ export class AddInstitutionComponent implements OnInit {
 
     public ngOnInit(): void {
         this.betreuungsangebot = this.$transition$.params().betreuungsangebot;
-        this.betreuungsangebote = this.$transition$.params().betreuungsangebote;
+        this.applicationPropertyRS.getPublicPropertiesCached().then(props => {
+            this.betreuungsangebote =
+                this.$transition$.params().betreuungsangebote.filter((angebotTyp: TSBetreuungsangebotTyp) => {
+                    switch (angebotTyp) {
+                        case TSBetreuungsangebotTyp.TAGESFAMILIEN:
+                            return props.angebotTFOActivated;
+                        case TSBetreuungsangebotTyp.FERIENINSEL:
+                            return props.angebotFIActivated;
+                        case TSBetreuungsangebotTyp.TAGESSCHULE:
+                            return props.angebotTSActivated;
+                        default:
+                            return true;
+                    }
+                });
+        });
         this.isLatsInstitution = this.$transition$.params().latsOnly;
 
         // initally we think it is a Betreuungsgutschein Institution

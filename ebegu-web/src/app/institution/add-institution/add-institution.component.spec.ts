@@ -82,7 +82,7 @@ describe('AddInstitutionComponent', () => {
 
         traegerschaftSpy.getAllTraegerschaften.and.returnValue(Promise.resolve([]));
         traegerschaftSpy.getAllActiveTraegerschaften.and.returnValue(Promise.resolve([]));
-        transitionServiceSpy.params.and.returnValue({institutionId: undefined});
+        transitionServiceSpy.params.and.returnValue({institutionId: undefined, betreuungsangebote: []});
         authServiceSpy.getPrincipal.and.returnValue(TestDataUtil.createSuperadmin());
         applicationPropertyRSSpy.getPublicPropertiesCached.and.returnValue(of(new TSPublicAppConfig()).toPromise());
         applicationPropertyRSSpy.getInstitutionenDurchGemeindenEinladen.and.returnValue(of(false).toPromise());
