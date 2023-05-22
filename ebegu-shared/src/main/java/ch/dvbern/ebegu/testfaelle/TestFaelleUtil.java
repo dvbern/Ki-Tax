@@ -58,10 +58,4 @@ public final class TestFaelleUtil {
 		finSitContainerLu.getFinanzielleSituationJA().setSelbstdeklaration(selbstdeklaration);
 
 	}
-
-	public static void fillInFinSitSoZero(FinanzielleSituationContainer finSitSo) {
-		finSitSo.getFinanzielleSituationJA().setUnterhaltsBeitraege(MathUtil.DEFAULT.from(0));
-		finSitSo.getFinanzielleSituationJA().setAbzuegeKinderAusbildung(MathUtil.DEFAULT.from(0));
-		finSitSo.getFinanzielleSituationJA().setSteuerbaresVermoegen(MathUtil.DEFAULT.from(0));
-	}
 }

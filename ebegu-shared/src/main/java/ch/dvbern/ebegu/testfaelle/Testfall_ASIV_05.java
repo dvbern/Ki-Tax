@@ -75,18 +75,9 @@ public class Testfall_ASIV_05 extends AbstractASIVTestfall {
 		betreuungspensumKitaBruennen.setBetreuung(betreuungKitaBruennen);
 		betreuungKitaBruennen.getBetreuungspensumContainers().add(betreuungspensumKitaBruennen);
 		// Finanzielle Situation
-		FinanzielleSituationContainer finanzielleSituationContainer = createFinanzielleSituationContainer();
-		finanzielleSituationContainer.getFinanzielleSituationJA().setNettolohn(EINKOMMEN_GS1);
+		FinanzielleSituationContainer finanzielleSituationContainer = createFinanzielleSituationContainer(BigDecimal.ZERO, EINKOMMEN_GS1);
 		finanzielleSituationContainer.setGesuchsteller(gesuchsteller1);
 		gesuchsteller1.setFinanzielleSituationContainer(finanzielleSituationContainer);
-
-		// LU
-		TestFaelleUtil.fillInFinSitLuZero(finanzielleSituationContainer);
-		assert finanzielleSituationContainer.getFinanzielleSituationJA().getSelbstdeklaration() != null;
-		finanzielleSituationContainer.getFinanzielleSituationJA().getSelbstdeklaration().setEinkunftErwerb(EINKOMMEN_GS1);
-
-		// SO
-		TestFaelleUtil.fillInFinSitSoZero(finanzielleSituationContainer);
 
 		// Einkommensverschlechterug
 		EinkommensverschlechterungContainer ekvContainer = createEinkommensverschlechterungContainer(erstgesuch, true, false);
@@ -105,20 +96,14 @@ public class Testfall_ASIV_05 extends AbstractASIVTestfall {
 		ErwerbspensumContainer erwerbspensum = createErwerbspensum(100);
 		gesuchsteller2.addErwerbspensumContainer(erwerbspensum);
 		// Finanzielle Situation
-		FinanzielleSituationContainer finanzielleSituationContainerGS2 = createFinanzielleSituationContainer();
-		finanzielleSituationContainerGS2.getFinanzielleSituationJA().setNettolohn(MathUtil.DEFAULT.from(30000));
+		FinanzielleSituationContainer finanzielleSituationContainerGS2 =
+				createFinanzielleSituationContainer(BigDecimal.ZERO, MathUtil.DEFAULT.from(30000));
 		finanzielleSituationContainerGS2.setGesuchsteller(gesuchsteller2);
 		gesuchsteller2.setFinanzielleSituationContainer(finanzielleSituationContainerGS2);
 		// Einkommensverschlechterug
 		EinkommensverschlechterungContainer ekvContainerGS2 = createEinkommensverschlechterungContainer(true, false);
 		ekvContainerGS2.getEkvJABasisJahrPlus1().setNettolohn(MathUtil.DEFAULT.from(30000));
 		gesuchsteller2.setEinkommensverschlechterungContainer(ekvContainerGS2);
-		// LU
-		TestFaelleUtil.fillInFinSitLuZero(finanzielleSituationContainerGS2);
-		assert finanzielleSituationContainerGS2.getFinanzielleSituationJA().getSelbstdeklaration() != null;
-		finanzielleSituationContainerGS2.getFinanzielleSituationJA().getSelbstdeklaration().setEinkunftErwerb(MathUtil.DEFAULT.from(30000));
-		// SO
-		TestFaelleUtil.fillInFinSitSoZero(finanzielleSituationContainerGS2);
 		return mutation;
 	}
 
