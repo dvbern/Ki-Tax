@@ -314,7 +314,7 @@ export class GesuchModelManager {
             }
             // GS 2 Spezialfall
             if (this.isSpezialFallAR()) {
-                return true;
+                return this.getEkvFuerBasisJahrPlus(bj);
             }
             // GS 2 Normalfall
             return this.getEkvFuerBasisJahrPlus(bj) && EbeguUtil.isNotNullOrUndefined(this.gesuch.gesuchsteller2);
