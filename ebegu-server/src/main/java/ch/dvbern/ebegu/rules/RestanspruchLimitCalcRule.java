@@ -23,6 +23,7 @@ import javax.annotation.Nonnull;
 import ch.dvbern.ebegu.dto.BGCalculationInput;
 import ch.dvbern.ebegu.entities.AbstractPlatz;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
+import ch.dvbern.ebegu.enums.BetreuungspensumAnzeigeTyp;
 import ch.dvbern.ebegu.enums.MsgKey;
 import ch.dvbern.ebegu.types.DateRange;
 import com.google.common.collect.ImmutableList;
@@ -39,8 +40,13 @@ import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.TAGESFAMILIEN;
  */
 public class RestanspruchLimitCalcRule extends AbstractCalcRule {
 
-	public RestanspruchLimitCalcRule(@Nonnull DateRange validityPeriod, @Nonnull Locale locale) {
+	private final BetreuungspensumAnzeigeTyp betreuungspensumAnzeigeTyp;
+	private final double faktorProzentZuStunde;
+
+	public RestanspruchLimitCalcRule(@Nonnull DateRange validityPeriod, @Nonnull Locale locale, BetreuungspensumAnzeigeTyp betreuungspensumAnzeigeTyp, double faktorProzentZuStunde) {
 		super(RuleKey.RESTANSPRUCH, RuleType.REDUKTIONSREGEL, RuleValidity.ASIV, validityPeriod, locale);
+		this.betreuungspensumAnzeigeTyp = betreuungspensumAnzeigeTyp;
+		this.faktorProzentZuStunde = faktorProzentZuStunde;
 	}
 
 	@Override
@@ -59,11 +65,18 @@ public class RestanspruchLimitCalcRule extends AbstractCalcRule {
 				inputData.addBemerkung(
 					MsgKey.RESTANSPRUCH_MSG,
 					getLocale(),
-					anspruchberechtigtesPensum,
-					verfuegbarerRestanspruch);
+					getTextValueOfAnspruchInPercent(anspruchberechtigtesPensum),
+					getTextValueOfAnspruchInPercent(verfuegbarerRestanspruch));
 			}
 			inputData.setAnspruchspensumProzent(verfuegbarerRestanspruch);
 		}
+	}
+
+	private double getTextValueOfAnspruchInPercent(int percent) {
+		if (betreuungspensumAnzeigeTyp == BetreuungspensumAnzeigeTyp.NUR_STUNDEN) {
+			return percent * faktorProzentZuStunde;
+		}
+		return percent;
 	}
 
 	private boolean addVerfuegungsbemerkungRestanspruch(@Nonnull BGCalculationInput inputData) {
