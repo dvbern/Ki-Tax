@@ -145,6 +145,9 @@ export class AuthServiceRS {
 
     public burnPortalTimeout(): IPromise<any> {
         return this.getPortalAccountCreationPageLink().then((linktext: string) => {
+            if (EbeguUtil.isEmptyStringNullOrUndefined(linktext)) {
+                return Promise.resolve(undefined);
+            }
 
             if (linktext && this.isBeLoginLink(linktext)) {
                 LOG.debug(`Burn BE-Login timeout page at ${  linktext}`);
