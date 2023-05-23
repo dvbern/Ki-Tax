@@ -87,6 +87,14 @@ export class EinkommensverschlechterungAppenzellViewComponent extends AbstractGe
         this.calculateResults();
     }
 
+    public getZusatzangabenAppenzellToWorkWith(): TSFinSitZusatzangabenAppenzell {
+        const finSitZusatzangabenAppenzell = this.getEkvToWorkWith().finSitZusatzangabenAppenzell;
+        if (this.isSpezialFallAR() && this.gesuchstellerNumber === 2) {
+            return finSitZusatzangabenAppenzell.zusatzangabenPartner;
+        }
+        return finSitZusatzangabenAppenzell;
+    }
+
     public getEkvToWorkWith(): TSEinkommensverschlechterung {
         if (this.isSpezialFallAR() && this.gesuchstellerNumber === 2) {
             return this.model.einkommensverschlechterungContainerGS1.getJA(this.model.getBasisJahrPlus());
@@ -94,12 +102,23 @@ export class EinkommensverschlechterungAppenzellViewComponent extends AbstractGe
         return this.model.getEkvToWorkWith();
     }
 
-    public getZusatzangabenAppenzellToWorkWith(): TSFinSitZusatzangabenAppenzell {
-        const finSitZusatzangabenAppenzell = this.getEkvToWorkWith().finSitZusatzangabenAppenzell;
+    public getZusatzangabenAppenzellGSToWorkWith(): TSFinSitZusatzangabenAppenzell {
+        const einkommensverschlechterung = this.getEkvGSToWorkWith();
+        if (EbeguUtil.isNullOrUndefined(einkommensverschlechterung)) {
+            return null;
+        }
+        const finSitZusatzangabenAppenzell = einkommensverschlechterung.finSitZusatzangabenAppenzell;
         if (this.isSpezialFallAR() && this.gesuchstellerNumber === 2) {
             return finSitZusatzangabenAppenzell.zusatzangabenPartner;
         }
         return finSitZusatzangabenAppenzell;
+    }
+
+    private getEkvGSToWorkWith(): TSEinkommensverschlechterung {
+        if (this.isSpezialFallAR() && this.gesuchstellerNumber === 2) {
+            return this.model.einkommensverschlechterungContainerGS1.getGS(this.model.getBasisJahrPlus());
+        }
+        return this.model.getEkvToWorkWith_GS();
     }
 
     public save(onResult: (arg: any) => void): IPromise<TSEinkommensverschlechterungContainer> {

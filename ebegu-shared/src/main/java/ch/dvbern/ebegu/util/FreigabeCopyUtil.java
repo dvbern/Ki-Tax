@@ -479,6 +479,7 @@ public final class FreigabeCopyUtil {
 		gs.setBruttolohnAbrechnung2(ja.getBruttolohnAbrechnung2());
 		gs.setBruttolohnAbrechnung3(ja.getBruttolohnAbrechnung3());
 		gs.setExtraLohn(ja.getExtraLohn());
+		copyFinSitZusatzangabenAppenzell(gs, ja);
 	}
 
 	private static void copyFinanzielleSituationContainer(@Nullable FinanzielleSituationContainer container) {
@@ -515,10 +516,15 @@ public final class FreigabeCopyUtil {
 		gs.setAbzuegeKinderAusbildung(ja.getAbzuegeKinderAusbildung());
 		gs.setBruttoLohn(ja.getBruttoLohn());
 		gs.setMomentanSelbststaendig(ja.getMomentanSelbststaendig());
+		copyFinSitZusatzangabenAppenzell(gs, ja);
+	}
+
+	// disable false-positive
+	@SuppressWarnings("PMD.UnusedPrivateMethod")
+	private static void copyFinSitZusatzangabenAppenzell(AbstractFinanzielleSituation gs, AbstractFinanzielleSituation ja) {
 		if (ja.getFinSitZusatzangabenAppenzell() != null) {
 			gs.setFinSitZusatzangabenAppenzell(ja.getFinSitZusatzangabenAppenzell().copyAllValues(new FinSitZusatzangabenAppenzell()));
 		}
-
 	}
 
 	private static void copyErwerbspensumContainer(@Nullable ErwerbspensumContainer container) {
