@@ -76,7 +76,6 @@ public class EingewoehnungFristRule extends AbstractAbschlussRule {
 		}
 
 		VerfuegungZeitabschnitt eingewoehnung = createEingewoehnungAbschnitt(
-				eingewohenungAbschnittHelper.zeitabschnittOhneAnspruch,
 				eingewohenungAbschnittHelper.zeitabschnittMitAnspruch,
 				gp);
 
@@ -86,10 +85,10 @@ public class EingewoehnungFristRule extends AbstractAbschlussRule {
 	}
 
 	private VerfuegungZeitabschnitt createEingewoehnungAbschnitt(
-		@Nonnull VerfuegungZeitabschnitt baseAbschnitt,
 		@Nonnull VerfuegungZeitabschnitt abschnittMitAnspruch,
 		@Nonnull Gesuchsperiode gesuchsperiode) {
-		VerfuegungZeitabschnitt eingewoehnung = new VerfuegungZeitabschnitt(baseAbschnitt);
+		VerfuegungZeitabschnitt eingewoehnung =
+				new VerfuegungZeitabschnitt(getGultigkeitOfEingewohenungAbschnitt(abschnittMitAnspruch, gesuchsperiode));
 		eingewoehnung.setAnspruchspensumProzentForAsivAndGemeinde(abschnittMitAnspruch.getRelevantBgCalculationInput()
 			.getAnspruchspensumProzent());
 		eingewoehnung.setErwerbspensumGS1ForAsivAndGemeinde(abschnittMitAnspruch.getRelevantBgCalculationInput()
@@ -97,11 +96,8 @@ public class EingewoehnungFristRule extends AbstractAbschlussRule {
 		eingewoehnung.setErwerbspensumGS2ForAsivAndGemeinde(abschnittMitAnspruch.getRelevantBgCalculationInput()
 			.getErwerbspensumGS2());
 		eingewoehnung.getRelevantBgCalculationInput().addBemerkung(MsgKey.ERWERBSPENSUM_EINGEWOEHNUNG, locale);
-		eingewoehnung.getBemerkungenDTOList().removeBemerkungByMsgKey(MsgKey.ERWERBSPENSUM_KEIN_ANSPRUCH);
-		eingewoehnung.setGueltigkeit(getGultigkeitOfEingewohenungAbschnitt(abschnittMitAnspruch, gesuchsperiode));
 		return eingewoehnung;
 	}
-
 	private DateRange getGultigkeitOfEingewohenungAbschnitt(
 			VerfuegungZeitabschnitt abschnittMitAnspruch,
 			Gesuchsperiode gesuchsperiode) {
@@ -115,10 +111,6 @@ public class EingewoehnungFristRule extends AbstractAbschlussRule {
 		}
 
 		return new DateRange(eingewohenungGueltigAb, eingewoehnungGueltigBis);
-	}
-
-	private boolean hasBetreuungAndAnspruch(VerfuegungZeitabschnitt zeitabschnittToCheck) {
-		return !MathUtil.isZero(zeitabschnittToCheck.getRelevantBgCalculationInput().getBgPensumProzent());
 	}
 
 	@Override
