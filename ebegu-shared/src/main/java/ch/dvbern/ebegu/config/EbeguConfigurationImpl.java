@@ -19,6 +19,7 @@ import java.io.Serializable;
 import java.util.Optional;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
@@ -96,7 +97,7 @@ public class EbeguConfigurationImpl extends SystemConfiguration implements Ebegu
 	private static final String EBEGU_LOGIN_API_KEYCLOACK_AUTHSERVER = "ebegu.login.api.keycloack.authserver";
 	private static final String EBEGU_TESTFAELLE_ENABLED = "ebegu.testfaelle.enabled";
 	private static final String EBEGU_ADMINISTRATOR_MAIL = "ebegu.admin.mail";
-	private static final String EBEGU_PORTAL_ACCOUNT_CREATION_LINK = "ebegu.portal.account.creation.link";
+	private static final String EBEGU_PORTAL_ACCOUNT_CREATION_LINK = "ebegu.%s.portal.account.creation.link";
 	private static final String SENTRY_ENVIRONMENT = "sentry.environment"; //use same property as sentry logger
 	private static final String EBEGU_SUPERUSER_MAIL = "ebegu.superuser.mail";
 	private static final String EBEGU_SUPPORT_MAIL = "ebegu.support.mail";
@@ -291,9 +292,13 @@ public class EbeguConfigurationImpl extends SystemConfiguration implements Ebegu
 		return getString(EBEGU_ADMINISTRATOR_MAIL);
 	}
 
+	@Nullable
 	@Override
-	public String getPortalAccountCreationPageLink() {
-		return getString(EBEGU_PORTAL_ACCOUNT_CREATION_LINK, "https://beloginportal-replica.fin.be.ch/emaillogin/gui/registration/createmaillogin");
+	public String getPortalAccountCreationPageLink(@Nullable Mandant mandant) {
+		return getMandantConfiguration(
+			EBEGU_PORTAL_ACCOUNT_CREATION_LINK,
+			mandant,
+			"https://beloginportal-replica.fin.be.ch/emaillogin/gui/registration/createmaillogin");
 	}
 
 	@Override
@@ -535,5 +540,15 @@ public class EbeguConfigurationImpl extends SystemConfiguration implements Ebegu
 	@Override
 	public Boolean isNeueVeranlagungAPIEnabled() {
 		return getBoolean(KIBON_EXCHANGE_NEU_VERANLAGUNG_ENABLED, false);
+	}
+
+	@Nullable
+	private String getMandantConfiguration(String configKey, @Nullable Mandant mandant, @Nullable String defaultValue) {
+		if (mandant == null) {
+			LOG.warn("Required mandant for mandant configuration was not provided, using null as config value");
+			return null;
+		}
+		String mandantKey = String.format(configKey, mandant.getMandantIdentifier());
+		return getString(mandantKey, defaultValue);
 	}
 }

@@ -62,13 +62,12 @@ import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.services.AuthService;
 import ch.dvbern.ebegu.services.BenutzerService;
+import ch.dvbern.ebegu.services.MandantService;
 import ch.dvbern.ebegu.util.mandant.MandantIdentifier;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import static ch.dvbern.ebegu.api.resource.authentication.ConnectorUtil.toConnectorTenant;
 
 /**
  * This resource has functions to login or logout
@@ -104,13 +103,20 @@ public class AuthResource {
 	@Inject
 	private LoginProviderInfoRestService loginProviderInfoRestService;
 
+	@Inject
+	private MandantService mandantService;
+
 	@Path("/portalAccountPage")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.TEXT_PLAIN)
 	@GET
 	@PermitAll
-	public Response getPortalAccountCreationPageLink() {
-		String url = configuration.getPortalAccountCreationPageLink();
+	public Response getPortalAccountCreationPageLink(
+		@CookieParam(AuthConstants.COOKIE_MANDANT) Cookie mandantCookie
+	) {
+		Optional<Mandant> mandant =
+			mandantService.findMandantByIdentifier(convertCookieNameToMandantIdentifier(mandantCookie.getValue()));
+		String url = configuration.getPortalAccountCreationPageLink(mandant.orElse(null));
 		return Response.ok(url).build();
 	}
 
@@ -143,20 +149,32 @@ public class AuthResource {
 			throw new EbeguRuntimeException("findMandantByCookie", ErrorCodeEnum.ERROR_MANDANT_COOKIE_IS_NULL);
 		}
 		var mandantNameDecoded = URLDecoder.decode(mandantCookie.getValue(), StandardCharsets.UTF_8);
+		MandantIdentifier mandantIdentifier = convertCookieNameToMandantIdentifier(mandantNameDecoded);
+
+		return mandantIdentifier.name().toLowerCase(Locale.ROOT);
+	}
+
+	@Nonnull
+	private static MandantIdentifier convertCookieNameToMandantIdentifier(String mandantNameDecoded) {
+		MandantIdentifier mandantIdentifier = null;
 
 		switch (mandantNameDecoded) {
 		case "Stadt Luzern":
-			return MandantIdentifier.LUZERN.name().toLowerCase(Locale.ROOT);
+			mandantIdentifier = MandantIdentifier.LUZERN;
+			break;
 		case "Appenzell Ausserrhoden":
-			return MandantIdentifier.APPENZELL_AUSSERRHODEN.name().toLowerCase(Locale.ROOT);
+			mandantIdentifier = MandantIdentifier.APPENZELL_AUSSERRHODEN;
+			break;
 		case "Kanton Solothurn":
-			return MandantIdentifier.SOLOTHURN.name().toLowerCase(Locale.ROOT);
+			mandantIdentifier = MandantIdentifier.SOLOTHURN;
+			break;
 		case "Kanton Bern":
 		default:
-			return MandantIdentifier.BERN.name().toLowerCase(Locale.ROOT);
+			mandantIdentifier = MandantIdentifier.BERN;
+			break;
 		}
+		return mandantIdentifier;
 	}
-
 
 	@Path("/init-connect-gs-zpv")
 	@Consumes(MediaType.WILDCARD)
