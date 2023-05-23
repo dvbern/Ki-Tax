@@ -422,6 +422,76 @@ public class EingewoehnungFristRuleTest {
 	}
 
 	@Test
+	public void eingewoehungFristRuleErwerbsensumBetreuungNicht30TageVorher() {
+		LocalDate OCT_10 = LocalDate.of(TestDataUtil.START_PERIODE.getYear(), Month.OCTOBER, 10);
+		LocalDate START_EINGEWOEHNUNG = OCT_10.minusDays(30);
+		LocalDate SEP_25 = LocalDate.of(TestDataUtil.START_PERIODE.getYear(), Month.SEPTEMBER, 25);
+
+		Betreuung betreuung = createGesuch(false, true);
+		Gesuch gesuch = betreuung.extractGesuch();
+
+		//Betreuung ab 25.11.
+		betreuung.getBetreuungspensumContainers().stream()
+				.findFirst()
+				.get()
+				.getBetreuungspensumJA()
+				.getGueltigkeit()
+				.setGueltigAb(SEP_25);
+
+		assertNotNull(gesuch.getGesuchsteller1());
+
+		//ewp ab 10.10
+		ErwerbspensumContainer ewp1 = TestDataUtil.createErwerbspensum(OCT_10, TestDataUtil.ENDE_PERIODE, 40);
+		gesuch.getGesuchsteller1().addErwerbspensumContainer(ewp1);
+
+		List<VerfuegungZeitabschnitt> result = calculateMitEingewoehnung(betreuung);
+
+		Assert.assertEquals(6, result.size());
+
+		//01.08-09.09 Anspruch 0%, Betreuung 0%
+		Assert.assertEquals(0, result.get(0).getAnspruchberechtigtesPensum());
+		Assert.assertEquals(0, result.get(0).getBetreuungspensumProzent().intValue());
+		Assert.assertEquals(TestDataUtil.START_PERIODE, result.get(0).getGueltigkeit().getGueltigAb());
+		Assert.assertEquals(START_EINGEWOEHNUNG.minusDays(1),	result.get(0).getGueltigkeit().getGueltigBis());
+		Assert.assertFalse(result.get(0).getBemerkungenDTOList().containsMsgKey(MsgKey.ERWERBSPENSUM_EINGEWOEHNUNG));
+
+		//10.09.-24.09 Anspruch 60%, Eingewöhnung, Betreuung 0%
+		Assert.assertEquals(60, result.get(1).getAnspruchberechtigtesPensum());
+		Assert.assertEquals(0, result.get(1).getBetreuungspensumProzent().intValue());
+		Assert.assertEquals(START_EINGEWOEHNUNG, result.get(1).getGueltigkeit().getGueltigAb());
+		Assert.assertEquals(SEP_25.minusDays(1),	result.get(1).getGueltigkeit().getGueltigBis());
+		Assert.assertTrue(result.get(1).getBemerkungenDTOList().containsMsgKey(MsgKey.ERWERBSPENSUM_EINGEWOEHNUNG));
+
+		//25.09.-30.09. Anspruch 60%, Eingewöhnung, Betreuung 80%
+		Assert.assertEquals(60, result.get(2).getAnspruchberechtigtesPensum());
+		Assert.assertEquals(80, result.get(2).getBetreuungspensumProzent().intValue());
+		Assert.assertEquals(SEP_25, result.get(2).getGueltigkeit().getGueltigAb());
+		Assert.assertEquals(SEP_25.with(TemporalAdjusters.lastDayOfMonth()),	result.get(2).getGueltigkeit().getGueltigBis());
+		Assert.assertTrue(result.get(2).getBemerkungenDTOList().containsMsgKey(MsgKey.ERWERBSPENSUM_EINGEWOEHNUNG));
+
+		//01.10.-09.09. Anspruch 60%, Eingewöhnung, Betreuung 80%
+		Assert.assertEquals(60, result.get(3).getAnspruchberechtigtesPensum());
+		Assert.assertEquals(80, result.get(3).getBetreuungspensumProzent().intValue());
+		Assert.assertEquals(OCT_10.with(TemporalAdjusters.firstDayOfMonth()), result.get(3).getGueltigkeit().getGueltigAb());
+		Assert.assertEquals(OCT_10.minusDays(1),	result.get(3).getGueltigkeit().getGueltigBis());
+		Assert.assertTrue(result.get(3).getBemerkungenDTOList().containsMsgKey(MsgKey.ERWERBSPENSUM_EINGEWOEHNUNG));
+
+		//11.10.-31.10, Anspruch 60, Betreuung 80%
+		Assert.assertEquals(60, result.get(4).getAnspruchberechtigtesPensum());
+		Assert.assertEquals(80, result.get(4).getBetreuungspensumProzent().intValue());
+		Assert.assertEquals(OCT_10, result.get(4).getGueltigkeit().getGueltigAb());
+		Assert.assertEquals(OCT_10.with(TemporalAdjusters.lastDayOfMonth()),	result.get(4).getGueltigkeit().getGueltigBis());
+		Assert.assertFalse(result.get(4).getBemerkungenDTOList().containsMsgKey(MsgKey.ERWERBSPENSUM_EINGEWOEHNUNG));
+
+		//01.11-31.07, Anspruch 60, Betreuung 80%
+		Assert.assertEquals(60, result.get(5).getAnspruchberechtigtesPensum());
+		Assert.assertEquals(80, result.get(5).getBetreuungspensumProzent().intValue());
+		Assert.assertEquals(OCT_10.with(TemporalAdjusters.firstDayOfNextMonth()), result.get(5).getGueltigkeit().getGueltigAb());
+		Assert.assertEquals(TestDataUtil.ENDE_PERIODE,	result.get(5).getGueltigkeit().getGueltigBis());
+		Assert.assertFalse(result.get(5).getBemerkungenDTOList().containsMsgKey(MsgKey.ERWERBSPENSUM_EINGEWOEHNUNG));
+	}
+
+	@Test
 	public void eingewoehungFristRuleBetreuungMitUnterbruchEWPAbZweiterBetreuung() {
 		LocalDate SEP_30 = LocalDate.of(TestDataUtil.START_PERIODE.getYear(), Month.SEPTEMBER, 30);
 		LocalDate NOV_15 = LocalDate.of(TestDataUtil.START_PERIODE.getYear(), Month.NOVEMBER, 15);
