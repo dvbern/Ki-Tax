@@ -36,6 +36,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Konfiguration von kiBon. Liest system Properties aus
+ * Mandantspezfische Konfigurationen müssen ein %s enthalten. Dieses wird durch den MANDANT_IDENTIFIER ersetzt
  */
 @Dependent
 public class EbeguConfigurationImpl extends SystemConfiguration implements EbeguConfiguration, Serializable {
