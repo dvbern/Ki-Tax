@@ -16,6 +16,7 @@
 package ch.dvbern.ebegu.config;
 
 import java.io.Serializable;
+import java.util.Locale;
 import java.util.Optional;
 
 import javax.annotation.Nonnull;
@@ -298,7 +299,7 @@ public class EbeguConfigurationImpl extends SystemConfiguration implements Ebegu
 		return getMandantConfiguration(
 			EBEGU_PORTAL_ACCOUNT_CREATION_LINK,
 			mandant,
-			"https://beloginportal-replica.fin.be.ch/emaillogin/gui/registration/createmaillogin");
+			null);
 	}
 
 	@Override
@@ -548,7 +549,7 @@ public class EbeguConfigurationImpl extends SystemConfiguration implements Ebegu
 			LOG.warn("Required mandant for mandant configuration was not provided, using null as config value");
 			return null;
 		}
-		String mandantKey = String.format(configKey, mandant.getMandantIdentifier());
+		String mandantKey = String.format(configKey, mandant.getMandantIdentifier().name().toLowerCase(Locale.ROOT));
 		return getString(mandantKey, defaultValue);
 	}
 }

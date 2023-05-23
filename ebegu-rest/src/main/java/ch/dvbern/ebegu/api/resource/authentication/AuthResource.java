@@ -114,8 +114,9 @@ public class AuthResource {
 	public Response getPortalAccountCreationPageLink(
 		@CookieParam(AuthConstants.COOKIE_MANDANT) Cookie mandantCookie
 	) {
+		var mandantNameDecoded = URLDecoder.decode(mandantCookie.getValue(), StandardCharsets.UTF_8);
 		Optional<Mandant> mandant =
-			mandantService.findMandantByIdentifier(convertCookieNameToMandantIdentifier(mandantCookie.getValue()));
+			mandantService.findMandantByIdentifier(convertCookieNameToMandantIdentifier(mandantNameDecoded));
 		String url = configuration.getPortalAccountCreationPageLink(mandant.orElse(null));
 		return Response.ok(url).build();
 	}
