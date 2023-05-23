@@ -22,7 +22,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Locale;
-import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
 
@@ -81,37 +80,9 @@ public class EingewoehnungFristRule extends AbstractAbschlussRule {
 				eingewohenungAbschnittHelper.zeitabschnittMitAnspruch,
 				gp);
 
-		removeOverlappingGueltigkeiten(
-				zeitabschnitte,
-				eingewoehnung);
 		zeitabschnitte.add(eingewoehnung);
 
-		return zeitabschnitte
-					   .stream()
-					   //nach Entfernen der Überlappungen, kann es ZAs geben, die ungültig sind
-					   .filter(zeitabschnitt -> zeitabschnitt.getGueltigkeit().isValid())
-					   .sorted()
-					   .collect(Collectors.toList());
-	}
-
-	private void removeOverlappingGueltigkeiten(
-			List<VerfuegungZeitabschnitt> zeitabschnitte,
-			VerfuegungZeitabschnitt eingewoehnung) {
-
-		DateRange gueltigkeitEingewoehnung = eingewoehnung.getGueltigkeit();
-
-		zeitabschnitte.forEach(verfuegungZeitabschnitt -> {
-			//Es dürfen keine Zeitabschnitte mit der Gültigkeit der Eingewöhnung überlappen, wenn sie überlappen...
-			if (verfuegungZeitabschnitt.getGueltigkeit().intersects(gueltigkeitEingewoehnung)) {
-				//...und der überlappende Zeitabschnitt einen Anspruch hat, muss der Eingewöhnungszeitbaschnitt gekürzt werden
-				if (hasBetreuungAndAnspruch(verfuegungZeitabschnitt)) {
-					eingewoehnung.getGueltigkeit().setGueltigAb(verfuegungZeitabschnitt.getGueltigkeit().getGueltigBis().plusDays(1));
-				} else {
-					//... wenn der Zeitabschnitt keinen Anspuch hat, muss dieser gekürzt werden
-					verfuegungZeitabschnitt.getGueltigkeit().setGueltigBis(gueltigkeitEingewoehnung.getGueltigAb().minusDays(1));
-				}
-			}
-		});
+	 	return mergeZeitabschnitte(zeitabschnitte);
 	}
 
 	private VerfuegungZeitabschnitt createEingewoehnungAbschnitt(
