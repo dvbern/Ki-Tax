@@ -260,19 +260,6 @@ public class PlatzbestaetigungEventHandlerTest extends EasyMockSupport {
 		}
 
 		@Test
-		void ignoreEventWhenInvalidPensumInHours() {
-			ZeitabschnittDTO zeitabschnittDTO = defaultZeitabschnittDTO();
-			zeitabschnittDTO.setPensumUnit(Zeiteinheit.HOURS);
-			BetreuungEventDTO dto = createBetreuungEventDTO(zeitabschnittDTO);
-			Betreuung betreuung = betreuungWithSingleContainer();
-			betreuung.getInstitutionStammdaten().setBetreuungsangebotTyp(BetreuungsangebotTyp.KITA);
-
-			expectBetreuungFound(betreuung);
-
-			testIgnored(dto, "Eine Pensum in HOURS kann nur für ein Angebot in einer TFO angegeben werden.");
-		}
-
-		@Test
 		void ignoreEventWhenInvalidPensumInDays() {
 			ZeitabschnittDTO zeitabschnittDTO = defaultZeitabschnittDTO();
 			zeitabschnittDTO.setPensumUnit(Zeiteinheit.DAYS);
@@ -451,8 +438,7 @@ public class PlatzbestaetigungEventHandlerTest extends EasyMockSupport {
 
 		@Test
 		void automaticPlatzbestaetigung() {
-			expect(betreuungService.betreuungPlatzBestaetigen(betreuung, CLIENT_NAME))
-				.andReturn(betreuung);
+			expectPlatzBestaetigung();
 
 			testProcessingSuccess();
 		}
@@ -466,8 +452,7 @@ public class PlatzbestaetigungEventHandlerTest extends EasyMockSupport {
 			Gesuch gesuch = betreuung.extractGesuch();
 			gesuch.setStatus(antragStatus);
 
-			expect(betreuungService.betreuungPlatzBestaetigen(betreuung, CLIENT_NAME))
-				.andReturn(betreuung);
+			expectPlatzBestaetigung();
 
 			testProcessingSuccess();
 		}
@@ -517,6 +502,16 @@ public class PlatzbestaetigungEventHandlerTest extends EasyMockSupport {
 			testProcessingSuccess();
 
 			assertThat(erweiterteBetreuung.isErweiterteBeduerfnisseBestaetigt(), is(confirmation));
+		}
+
+		@Test
+		void allowPensumInHoursForKita() {
+			dto.getZeitabschnitte().get(0).setPensumUnit(Zeiteinheit.HOURS);
+			betreuung.getInstitutionStammdaten().setBetreuungsangebotTyp(BetreuungsangebotTyp.KITA);
+
+			expectPlatzBestaetigung();
+
+			testProcessingSuccess();
 		}
 
 		@Test
