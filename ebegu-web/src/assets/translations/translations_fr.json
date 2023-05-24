@@ -3045,5 +3045,8 @@
     "ANGEBOT_FI_ENABLED": "Angebot Ferieninseln aktiviert",
     "ANGEBOT_TS_ENABLED": "Angebot Tagesschulen aktiviert",
     "ANGEBOT_TFO_ENABLED": "Angebot Tagesfamilienorganisationen aktiviert",
+    "MUTATIONSMELDUNG_BETREFF": "Annonce de changement",
+    "VERARBEITET": "verarbeitet",
+    "FEHLER_BEI_MITTEILUNG_BEARBEITUNG": "Mitteilungen, die durch Fehler nicht bearbeitet werden konnten:",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }
