@@ -1,35 +1,41 @@
 /*
- * Ki-Tax: System for the management of external childcare subsidies
- * Copyright (C) 2017 City of Bern Switzerland
+ * Copyright (C) 2023 DV Bern AG, Switzerland
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
+ *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {forEach, IHttpService, ILogService, IPromise} from 'angular';
-import {BehaviorSubject, Observable} from 'rxjs';
+import {IHttpService, ILogService, IPromise} from 'angular';
+import {from, Observable} from 'rxjs';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {TSMitteilungStatus} from '../../../models/enums/TSMitteilungStatus';
 import {TSBetreuung} from '../../../models/TSBetreuung';
 import {TSBetreuungsmitteilung} from '../../../models/TSBetreuungsmitteilung';
 import {TSBetreuungspensum} from '../../../models/TSBetreuungspensum';
 import {TSDossier} from '../../../models/TSDossier';
+import {TSExceptionReport} from '../../../models/TSExceptionReport';
 import {TSMitteilung} from '../../../models/TSMitteilung';
 import {TSMtteilungSearchresultDTO} from '../../../models/TSMitteilungSearchresultDTO';
-import {TSMitteilungVerarbeitunsStatus} from '../../../models/TSMitteilungVerarbeitunsStatus';
+import {TSMitteilungVerarbeitung} from '../../../models/TSMitteilungVerarbeitung';
+import {TSMitteilungVerarbeitungResult} from '../../../models/TSMitteilungVerarbeitungResult';
 import {EbeguRestUtil} from '../../../utils/EbeguRestUtil';
+import {EbeguUtil} from '../../../utils/EbeguUtil';
+import {ErrorService} from '../errors/service/ErrorService';
 import ITranslateService = angular.translate.ITranslateService;
 
 export class MitteilungRS {
 
-    public static $inject = ['$http', 'REST_API', 'EbeguRestUtil', '$log', 'AuthServiceRS', '$translate'];
+    public static $inject = ['$http', 'REST_API', 'EbeguRestUtil', '$log', 'AuthServiceRS', '$translate', 'ErrorService'];
     public serviceURL: string;
 
     public constructor(
@@ -38,7 +44,8 @@ export class MitteilungRS {
         public ebeguRestUtil: EbeguRestUtil,
         private readonly $log: ILogService,
         private readonly authServiceRS: AuthServiceRS,
-        private readonly $translate: ITranslateService
+        private readonly $translate: ITranslateService,
+        private readonly errorService: ErrorService
     ) {
         this.serviceURL = `${REST_API}mitteilungen`;
     }
@@ -164,41 +171,34 @@ export class MitteilungRS {
             .then(response => this.ebeguRestUtil.parseBetreuungspensumAbweichungen(response.data));
     }
 
-    public applyAlleBetreuungsmitteilungen(antragSearch: any): Observable<Map<TSMitteilung, TSMitteilungVerarbeitunsStatus>> {
-        console.log(antragSearch);
-        const resultMap: Map<TSMitteilung, TSMitteilungVerarbeitunsStatus> = new Map();
-        const searchListResult: BehaviorSubject<Map<TSMitteilung, TSMitteilungVerarbeitunsStatus>>
-                = new BehaviorSubject<Map<TSMitteilung, TSMitteilungVerarbeitunsStatus>>(resultMap);
+    public applyAlleBetreuungsmitteilungen(mitteilungen: TSBetreuungsmitteilung[]): Observable<TSMitteilungVerarbeitungResult> {
+        const verarbeitung = new TSMitteilungVerarbeitung(mitteilungen.length);
 
-        antragSearch.forEach( (x: any) => {
-            this.callapplyAlleBetreuungsmitteilungen(searchListResult, x, resultMap);
+        mitteilungen.forEach(mitteilung => {
+            this.automaticApplyBetreuungsmitteilung(mitteilung).subscribe(appliedMitteilung => {
+                if (EbeguUtil.isEmptyStringNullOrUndefined(appliedMitteilung.errorMessage)) {
+                    verarbeitung.addSuccess(appliedMitteilung);
+                } else {
+                    verarbeitung.addFailure(appliedMitteilung);
+                }
+            }, (errors: TSExceptionReport[]) => {
+                verarbeitung.addError(mitteilung, errors);
+                errors.forEach(error => {
+                    // we want to display it in the dialog, not in the error bar
+                    this.errorService.clearError(error.msgKey);
+                });
+            });
         });
 
-        return searchListResult.asObservable();
+        return verarbeitung.results;
     }
-
-    private callapplyAlleBetreuungsmitteilungen(
-            searchListResult: BehaviorSubject<Map<TSMitteilung, TSMitteilungVerarbeitunsStatus>>, searchUnit: any,
-            resultMap: Map<TSMitteilung, TSMitteilungVerarbeitunsStatus>
-    ){
-        //searchListResult.next("starting... guugs");
-        resultMap.set(searchUnit, TSMitteilungVerarbeitunsStatus.PENDING);
-        searchListResult.next(resultMap);
-
-        resultMap.set(searchUnit, TSMitteilungVerarbeitunsStatus.STARTED);
-        searchListResult.next(resultMap);
-        this.$http.post(
-                 `${this.serviceURL}/applyAlleBetreuungsmitteilungen`, searchUnit)
-                 .then((response: any) => this.ebeguRestUtil.parseMitteilungen(response.data.betreuungsmitteilungen))
-                 .then( (response: any) => resultMap.set(
-                         this.ebeguRestUtil.parseMitteilungen(response.data.betreuungsmitteilungen).pop(),
-                         TSMitteilungVerarbeitunsStatus.SUCESS))
-                 .catch((response: any) => resultMap.set(
-                         this.ebeguRestUtil.parseMitteilungen(response.data.betreuungsmitteilungen).pop(),
-                         TSMitteilungVerarbeitunsStatus.FALIED))
-         ;
-        searchListResult.next(resultMap);
-        //searchListResult.next("finished... guugs");
+    private automaticApplyBetreuungsmitteilung(
+        mitteilung: TSBetreuungsmitteilung
+    ): Observable<TSBetreuungsmitteilung>{
+        return from(
+            this.$http.post<TSBetreuungsmitteilung>(`${this.serviceURL}/applyBetreuungsmitteilung`, this.ebeguRestUtil.betreuungsmitteilungToRestObject({}, mitteilung))
+                .then(res => res.data)
+                .then(restMitteilung => this.ebeguRestUtil.parseBetreuungsmitteilung(new TSBetreuungsmitteilung(), restMitteilung)));
     }
 
     public neueVeranlagungsmitteilungBearbeiten(mitteilungId: string): IPromise<string> {
