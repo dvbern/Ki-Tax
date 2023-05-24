@@ -28,7 +28,6 @@ import javax.annotation.Nonnull;
 
 import ch.dvbern.ebegu.entities.Einstellung;
 import ch.dvbern.ebegu.entities.Gemeinde;
-import ch.dvbern.ebegu.enums.BetreuungspensumAnzeigeTyp;
 import ch.dvbern.ebegu.enums.EinschulungTyp;
 import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.enums.KinderabzugTyp;
@@ -72,13 +71,11 @@ import static ch.dvbern.ebegu.enums.EinstellungKey.MAX_MASSGEBENDES_EINKOMMEN;
 import static ch.dvbern.ebegu.enums.EinstellungKey.MINIMALDAUER_KONKUBINAT;
 import static ch.dvbern.ebegu.enums.EinstellungKey.MIN_ERWERBSPENSUM_EINGESCHULT;
 import static ch.dvbern.ebegu.enums.EinstellungKey.MIN_ERWERBSPENSUM_NICHT_EINGESCHULT;
-import static ch.dvbern.ebegu.enums.EinstellungKey.OEFFNUNGSTAGE_KITA;
 import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_MAX_TAGE_ABWESENHEIT;
 import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_3;
 import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_4;
 import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_5;
 import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_6;
-import static ch.dvbern.ebegu.enums.EinstellungKey.PENSUM_ANZEIGE_TYP;
 
 /**
  * Configurator, welcher die Regeln und ihre Reihenfolge konfiguriert. Als Parameter erhält er den Mandanten sowie
@@ -142,9 +139,7 @@ public class BetreuungsgutscheinConfigurator {
 				FKJV_TEXTE,
 				FACHSTELLEN_TYP,
 				GEMEINDE_KEIN_GUTSCHEIN_FUER_SOZIALHILFE_EMPFAENGER,
-				ANSPRUCH_AB_X_MONATEN,
-				OEFFNUNGSTAGE_KITA,
-				PENSUM_ANZEIGE_TYP
+				ANSPRUCH_AB_X_MONATEN
 		);
 	}
 
@@ -499,13 +494,9 @@ public class BetreuungsgutscheinConfigurator {
 				ruleParameterUtil.getEinstellung(EinstellungKey.ANSPRUCH_AB_X_MONATEN).getValueAsInteger());
 		addToRuleSetIfRelevantForGemeinde(anspruchAbAlterCalcRule, ruleParameterUtil);
 
-		// The hardcoded value of 10 hours per day will be refactored into an Einstellung in KIBON-2967
-		double faktor =
-			ruleParameterUtil.getEinstellung(OEFFNUNGSTAGE_KITA).getValueAsBigDecimal().doubleValue() * 10 / 100 / 12;
-
 		//RESTANSPRUCH REDUKTION limitiert Anspruch auf  minimum(anspruchRest, anspruchPensum)
 		RestanspruchLimitCalcRule restanspruchLimitCalcRule = new RestanspruchLimitCalcRule(defaultGueltigkeit,
-				locale, BetreuungspensumAnzeigeTyp.valueOf(ruleParameterUtil.getEinstellung(PENSUM_ANZEIGE_TYP).getValue()), faktor);
+				locale);
 		addToRuleSetIfRelevantForGemeinde(restanspruchLimitCalcRule, ruleParameterUtil);
 
 		// Verfuegungsbemerkung

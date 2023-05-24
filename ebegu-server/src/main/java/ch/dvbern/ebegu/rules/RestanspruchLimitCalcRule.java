@@ -1,16 +1,18 @@
 /*
- * Ki-Tax: System for the management of external childcare subsidies
- * Copyright (C) 2017 City of Bern Switzerland
+ * Copyright (C) 2023 DV Bern AG, Switzerland
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
+ *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
 package ch.dvbern.ebegu.rules;
@@ -23,7 +25,6 @@ import javax.annotation.Nonnull;
 import ch.dvbern.ebegu.dto.BGCalculationInput;
 import ch.dvbern.ebegu.entities.AbstractPlatz;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
-import ch.dvbern.ebegu.enums.BetreuungspensumAnzeigeTyp;
 import ch.dvbern.ebegu.enums.MsgKey;
 import ch.dvbern.ebegu.types.DateRange;
 import com.google.common.collect.ImmutableList;
@@ -40,13 +41,8 @@ import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.TAGESFAMILIEN;
  */
 public class RestanspruchLimitCalcRule extends AbstractCalcRule {
 
-	private final BetreuungspensumAnzeigeTyp betreuungspensumAnzeigeTyp;
-	private final double faktorProzentZuStunde;
-
-	public RestanspruchLimitCalcRule(@Nonnull DateRange validityPeriod, @Nonnull Locale locale, BetreuungspensumAnzeigeTyp betreuungspensumAnzeigeTyp, double faktorProzentZuStunde) {
+	public RestanspruchLimitCalcRule(@Nonnull DateRange validityPeriod, @Nonnull Locale locale) {
 		super(RuleKey.RESTANSPRUCH, RuleType.REDUKTIONSREGEL, RuleValidity.ASIV, validityPeriod, locale);
-		this.betreuungspensumAnzeigeTyp = betreuungspensumAnzeigeTyp;
-		this.faktorProzentZuStunde = faktorProzentZuStunde;
 	}
 
 	@Override
@@ -65,18 +61,11 @@ public class RestanspruchLimitCalcRule extends AbstractCalcRule {
 				inputData.addBemerkung(
 					MsgKey.RESTANSPRUCH_MSG,
 					getLocale(),
-					getTextValueOfAnspruchInPercent(anspruchberechtigtesPensum),
-					getTextValueOfAnspruchInPercent(verfuegbarerRestanspruch));
+					anspruchberechtigtesPensum,
+					verfuegbarerRestanspruch);
 			}
 			inputData.setAnspruchspensumProzent(verfuegbarerRestanspruch);
 		}
-	}
-
-	private double getTextValueOfAnspruchInPercent(int percent) {
-		if (betreuungspensumAnzeigeTyp == BetreuungspensumAnzeigeTyp.NUR_STUNDEN) {
-			return percent * faktorProzentZuStunde;
-		}
-		return percent;
 	}
 
 	private boolean addVerfuegungsbemerkungRestanspruch(@Nonnull BGCalculationInput inputData) {
