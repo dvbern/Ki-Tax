@@ -8,11 +8,11 @@
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program. If not, see <https://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
 import {
@@ -43,10 +43,10 @@ import {TSRole} from '../../../models/enums/TSRole';
 import {TSVerantwortung} from '../../../models/enums/TSVerantwortung';
 import {TSBenutzer} from '../../../models/TSBenutzer';
 import {TSBenutzerNoDetails} from '../../../models/TSBenutzerNoDetails';
+import {TSBetreuungsmitteilung} from '../../../models/TSBetreuungsmitteilung';
 import {TSGemeinde} from '../../../models/TSGemeinde';
 import {TSMitteilung} from '../../../models/TSMitteilung';
 import {TSMtteilungSearchresultDTO} from '../../../models/TSMitteilungSearchresultDTO';
-import {TSMitteilungVerarbeitunsStatus} from '../../../models/TSMitteilungVerarbeitunsStatus';
 import {EbeguUtil} from '../../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 import {DvNgConfirmDialogComponent} from '../../core/component/dv-ng-confirm-dialog/dv-ng-confirm-dialog.component';
@@ -77,8 +77,6 @@ export class PosteingangViewComponent implements OnInit, OnDestroy, AfterViewIni
     private readonly log: Log = LogFactory.createLog('PosteingangViewComponent');
 
     private readonly unsubscribe$ = new Subject<void>();
-
-    private alleMitteilungenVerarbeitung: Observable<Map<TSMitteilung, TSMitteilungVerarbeitunsStatus>>;
 
     private keyupTimeout: NodeJS.Timeout;
     private readonly timeoutMS = 700;
@@ -125,7 +123,7 @@ export class PosteingangViewComponent implements OnInit, OnDestroy, AfterViewIni
     public page: number = 0;
     public pageSize: any = 20;
     public totalItem: number = 0;
-    public totalResultCount: string = '0';
+    public totalResultCount: number = 0;
     // Muss hier gespeichert werden, damit es fuer den Aufruf ab "Inkl.Erledigt"-Checkbox vorhanden ist
     public myTableFilterState: any;
 
@@ -264,7 +262,7 @@ export class PosteingangViewComponent implements OnInit, OnDestroy, AfterViewIni
         }
         this.displayedCollection.data = [].concat(result.mitteilungen);
         this.totalItem = result.totalResultSize ? result.totalResultSize : 0;
-        this.totalResultCount = this.totalItem.toString();
+        this.totalResultCount = this.totalItem;
         this.updatePagination();
         this.changeDetectorRef.markForCheck();
     }
@@ -511,9 +509,7 @@ export class PosteingangViewComponent implements OnInit, OnDestroy, AfterViewIni
                         },
                         sort: this.sort
                     };
-                    this.alleMitteilungenVerarbeitung = this.mitteilungRS.applyAlleBetreuungsmitteilungen(body);
-                    this.alleMitteilungenVerarbeitung.subscribe(resultList => {
-                            dialogConfig.data = resultList;
+                            dialogConfig.data = this.getTsBetreuungsmitteilungenOfTable();
                             dialogConfig.disableClose = true;
                             this.dialog.open(DvNgMitteilungResultDialogComponent, dialogConfig).afterClosed()
                                 .subscribe(() => {
@@ -526,9 +522,14 @@ export class PosteingangViewComponent implements OnInit, OnDestroy, AfterViewIni
                             ;
                         }
                     );
-                },
-                () => {
-                });
+    }
+
+    private getTsBetreuungsmitteilungenOfTable(): TSBetreuungsmitteilung[] {
+        return this.displayedCollection.data
+            .filter(mitteilung =>
+                mitteilung.subject.includes(this.translate.instant('MUTATIONSMELDUNG_BETREFF'))
+            )
+            .map(mitteilung => mitteilung as TSBetreuungsmitteilung);
     }
 
     public canSeeMutationsmeldungenAutomatischBearbeiten() {
