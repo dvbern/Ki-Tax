@@ -54,7 +54,7 @@
                     <a href="{{getBetreuungUrl(error.mitteilung)}}"
                        target="_blank">{{getRererenceNummer(error.mitteilung)}}</a>:
                     <span *ngFor="let exceptionReport of error.errors">
-                        <i>{{exceptionReport.msgKey}}</i>
+                        <i translate>{{exceptionReport.msgKey}}</i>
                         <br>
                     </span>
                 </li>
