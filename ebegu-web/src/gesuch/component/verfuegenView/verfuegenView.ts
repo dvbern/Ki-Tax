@@ -137,6 +137,8 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
     public readonly demoFeature = TSDemoFeature.VERAENDERUNG_BEI_MUTATION;
     private demoFeatureZahlungsstatusAllowed: boolean = false;
     public vorgaengerZeitabschnitteSchulamt: TSVerfuegungZeitabschnitt[];
+    private minVerguenstigungProTag: string;
+    private minVerguenstigungProStunde: string;
 
     public constructor(
         private readonly $state: StateService,
@@ -210,6 +212,7 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
         });
 
         this.initVorgaengerGebuehren();
+        this.getEinstellungenElternbeitrag();
     }
 
     private initView(): void {
@@ -1080,6 +1083,27 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
             return [];
         }
         return vorgaengerBetreuung.verfuegung.zeitabschnitte;
+    }
+
+    public calculateSelbstbehaltProzent(beitragshoeheProzent: number): number {
+        return Math.round(100 - beitragshoeheProzent);
+    }
+
+    private getEinstellungenElternbeitrag(): void {
+        this.einstellungRS.findEinstellung(
+                TSEinstellungKey.MIN_VERGUENSTIGUNG_PRO_TG,
+                this.gesuchModelManager.getDossier().gemeinde.id,
+                this.gesuchModelManager.getGesuchsperiode().id,
+        ).subscribe(e => {
+            this.minVerguenstigungProTag = e.value
+        });
+        this.einstellungRS.findEinstellung(
+                TSEinstellungKey.MIN_VERGUENSTIGUNG_PRO_STD,
+                this.gesuchModelManager.getDossier().gemeinde.id,
+                this.gesuchModelManager.getGesuchsperiode().id,
+        ).subscribe(e => {
+            this.minVerguenstigungProStunde = e.value
+        });
     }
 
 

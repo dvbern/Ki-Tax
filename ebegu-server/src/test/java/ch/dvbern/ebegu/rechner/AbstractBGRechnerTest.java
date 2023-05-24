@@ -247,6 +247,7 @@ public abstract class AbstractBGRechnerTest {
 		//SET Parameters for AR
 		defaultParameter.setMaxVerguenstigungVorschuleBabyProStd(BigDecimal.valueOf(13.50));
 		defaultParameter.setMaxVerguenstigungVorschuleKindProStd(BigDecimal.valueOf(11.50));
+		defaultParameter.setOeffnungstageKita(BigDecimal.valueOf(240));
 
 		return defaultParameter;
 	}

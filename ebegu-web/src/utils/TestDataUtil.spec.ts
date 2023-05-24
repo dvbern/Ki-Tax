@@ -310,8 +310,6 @@ export class TestDataUtil {
     public static createMandant(): TSMandant {
         const mandant = new TSMandant('myMandant');
         TestDataUtil.setAbstractMutableFieldsUndefined(mandant);
-        mandant.angebotTS = false;
-        mandant.angebotFI = false;
         mandant.mandantIdentifier = 'BERN';
         return mandant;
     }

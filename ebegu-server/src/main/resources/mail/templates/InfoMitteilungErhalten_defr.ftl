@@ -3,6 +3,8 @@
 <#-- @ftlvariable name="configuration" type="ch.dvbern.ebegu.config.EbeguConfiguration" -->
 <#-- @ftlvariable name="empfaengerMail" type="java.lang.String" -->
 <#-- @ftlvariable name="hostname" type="java.lang.String" -->
+<#-- @ftlvariable name="gruss" type="java.lang.String" -->
+<#-- @ftlvariable name="gruss_fr" type="java.lang.String" -->
 From: ${configuration.senderAddress}
 To: <@base64Header>${mitteilung.empfaenger.fullName}</@base64Header> <${empfaengerMail}>
 Subject: <@base64Header>kiBon <#if configuration.isDevmode>Testsystem / Système de test</#if> - Neue Nachricht der Gemeinde ${mitteilung.dossier.gemeinde.name} / Nouveau message de la commune ${mitteilung.dossier.gemeinde.name}</@base64Header>
@@ -30,7 +32,7 @@ ${templateConfiguration.mailCss}
 	</p>
 	<p>
 		Freundliche Grüsse <br/>
-		Ihre Gemeinde ${mitteilung.dossier.gemeinde.name}
+		${gruss}
 	</p>
 	<p>
 		<#if configuration.isDevmode>
@@ -50,7 +52,7 @@ ${templateConfiguration.mailCss}
 	</p>
 	<p>
 		Nous vous présentons nos meilleures salutations.<br/>
-		Votre commune ${mitteilung.dossier.gemeinde.name}
+		${gruss_fr}
 	</p>
 	<p>
 		<#if configuration.isDevmode>

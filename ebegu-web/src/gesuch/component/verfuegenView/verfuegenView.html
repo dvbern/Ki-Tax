@@ -379,6 +379,9 @@
                                     <dv-tooltip text="'VOLLKOSTEN_HELP' | translate"></dv-tooltip>
                                 </td>
                                 <td ng-if="vm.isAppenzell" class="result">
+                                    <dv-tooltip text="'SELBSTBEHALT_PROZENT_HELP' | translate"></dv-tooltip>
+                                </td>
+                                <td ng-if="vm.isAppenzell" class="result">
                                     <dv-tooltip text="'BEITRAGSHOHE_PROZENT_HELP' | translate"></dv-tooltip>
                                 </td>
                                 <td ng-if="!vm.isLuzern && !vm.isAppenzell">
@@ -390,7 +393,7 @@
                                         text="'GUTSCHEIN_OHNE_BERUECKSICHTIGUNG_MINIMALBEITRAG_HELP' | translate"></dv-tooltip>
                                 </td>
                                 <td ng-if="!vm.isLuzern && !vm.isAppenzell" class="result">
-                                    <dv-tooltip text="'MIN_ELTERNBEITRAG_HELP' | translate"></dv-tooltip>
+                                    <dv-tooltip text="'MIN_ELTERNBEITRAG_HELP' | translate : {elternbeitragTag: vm.minVerguenstigungProTag, elternbeitragStunde: vm.minVerguenstigungProStunde}"></dv-tooltip>
                                 </td>
                                 <td ng-if="vm.showGutscheinProStunde()" class="result">
                                     <dv-tooltip text="'GUTSCHEIN_PRO_STUNDE_HELP' | translate"></dv-tooltip>
@@ -424,6 +427,7 @@
                                 <th data-translate="VERGUENSTIGT_IN_H" ng-if="vm.showHours"></th>
                                 <th data-translate="VERGUENSTIGT_IN_D" ng-if="vm.showDays"></th>
                                 <th data-translate="VOLLKOSTEN"></th>
+                                <th ng-if="vm.isAppenzell" data-translate="SELBSTBEHALT_PROZENT" class="result"></th>
                                 <th ng-if="vm.isAppenzell" data-translate="BEITRAGSHOHE_PROZENT" class="result"></th>
                                 <th ng-if="!vm.isLuzern && !vm.isAppenzell" data-translate="GUTSCHEIN_OHNE_BERUECKSICHTIGUNG_VOLLKOSTEN"></th>
                                 <th ng-if="!vm.isLuzern && !vm.isAppenzell" class="result"
@@ -475,6 +479,9 @@
                                 </td>
                                 <!-- Kosten -->
                                 <td ng-bind="verfuegungZeitabschnitt.vollkosten | currency : '' : 2"></td>
+<!--                                selbstbehalt in prozent-->
+                                <td ng-if="vm.isAppenzell" class="result"
+                                    ng-bind="vm.calculateSelbstbehaltProzent(verfuegungZeitabschnitt.beitragshoeheProzent)"></td>
                                 <!-- Beitragshohe in Prozent -->
                                 <td ng-if="vm.isAppenzell" class="result"
                                     ng-bind="verfuegungZeitabschnitt.beitragshoeheProzent"></td>

@@ -55,6 +55,8 @@ public class FinanzielleSituationStartDTO {
 	final private @Nullable
 	LocalDate finSitAenderungGueltigAbDatum;
 
+	final private boolean auszahlungAusserhalbVonKibon;
+
 	public FinanzielleSituationStartDTO(
 		@Nonnull Boolean sozialhilfeBezueger,
 		@Nullable String zustaendigeAmtsstelle,
@@ -68,8 +70,8 @@ public class FinanzielleSituationStartDTO {
 		@Nullable Adresse zahlungsadresse,
 		@Nullable String infomaKreditorennummer,
 		@Nullable String infomaBankcode,
-		@Nullable LocalDate finSitAenderungGueltigAbDatum
-	) {
+		@Nullable LocalDate finSitAenderungGueltigAbDatum,
+		boolean auszahlungAusserhalbVonKibon) {
 		this.sozialhilfeBezueger = sozialhilfeBezueger;
 		this.zustaendigeAmtsstelle = zustaendigeAmtsstelle;
 		this.nameBetreuer = nameBetreuer;
@@ -83,6 +85,7 @@ public class FinanzielleSituationStartDTO {
 		this.infomaKreditorennummer = infomaKreditorennummer;
 		this.infomaBankcode = infomaBankcode;
 		this.finSitAenderungGueltigAbDatum = finSitAenderungGueltigAbDatum;
+		this.auszahlungAusserhalbVonKibon = auszahlungAusserhalbVonKibon;
 	}
 
 	@Nonnull
@@ -145,5 +148,9 @@ public class FinanzielleSituationStartDTO {
 	@Nullable
 	public LocalDate getFinSitAenderungGueltigAbDatum() {
 		return finSitAenderungGueltigAbDatum;
+	}
+
+	public boolean isAuszahlungAusserhalbVonKibon() {
+		return auszahlungAusserhalbVonKibon;
 	}
 }

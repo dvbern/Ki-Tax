@@ -39,6 +39,7 @@ import ch.dvbern.ebegu.rechner.AbstractBGRechnerTest;
 import ch.dvbern.ebegu.rules.EbeguRuleTestsHelper;
 import ch.dvbern.ebegu.test.TestDataUtil;
 import ch.dvbern.ebegu.util.MathUtil;
+import ch.dvbern.ebegu.util.mandant.MandantIdentifier;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -110,7 +111,7 @@ public class AnspruchFristenTest extends AbstractBGRechnerTest {
 	public void erstgesuchErwerbspensumErhoehtRechzeitigAR() {
 		Betreuung betreuung = createErstgesuch(EINREICHUNG_RECHTZEITIG);
 		Gesuch gesuch = betreuung.extractGesuch();
-		gesuch.getFall().setMandant(TestDataUtil.createMandantAR());
+		gesuch.getFall().setMandant(TestDataUtil.createMandant(MandantIdentifier.APPENZELL_AUSSERRHODEN));
 		changeErwerbspensum(gesuch, LocalDate.of(2017,  Month.NOVEMBER, 16), 80);
 
 		List<VerfuegungZeitabschnitt> result = calculateInklAllgemeineRegeln(betreuung);
@@ -178,7 +179,7 @@ public class AnspruchFristenTest extends AbstractBGRechnerTest {
 	public void erstgesuchErwerbspensumErhoehtNach165TagenZuSpaetAR() {
 		Betreuung betreuung = createErstgesuch(EINREICHUNG_ZU_SPAET);
 		Gesuch gesuch = betreuung.extractGesuch();
-		gesuch.getFall().setMandant(TestDataUtil.createMandantAR());
+		gesuch.getFall().setMandant(TestDataUtil.createMandant(MandantIdentifier.APPENZELL_AUSSERRHODEN));
 		changeErwerbspensum(gesuch, LocalDate.of(2017,  Month.NOVEMBER, 16), 80);
 
 		List<VerfuegungZeitabschnitt> result = calculateInklAllgemeineRegeln(betreuung);

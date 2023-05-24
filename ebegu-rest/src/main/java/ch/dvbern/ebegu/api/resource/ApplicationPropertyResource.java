@@ -285,7 +285,6 @@ public class ApplicationPropertyResource {
 		String kitaxHost = ebeguConfiguration.getKitaxHost();
 		String kitaxendpoint = ebeguConfiguration.getKitaxEndpoint();
 		boolean multimandantEnabled = ebeguConfiguration.getMultimandantEnabled();
-		boolean angebotTSEnabled = mandant.isAngebotTS();
 		boolean isEbeguKibonAnfrageTestGuiEnabled = ebeguConfiguration.getEbeguKibonAnfrageTestGuiEnabled();
 
 		EbeguEntityNotFoundException notFound = new EbeguEntityNotFoundException("getPublicProperties", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND);
@@ -377,6 +376,9 @@ public class ApplicationPropertyResource {
 						.orElseThrow(() -> notFound);
 
 		ApplicationProperty erlaubenInstitutionenZuWaehlen = this.applicationPropertyService.readApplicationProperty(ApplicationPropertyKey.ERLAUBEN_INSTITUTIONEN_ZU_WAEHLEN, mandant).orElseThrow(() -> notFound);
+		ApplicationProperty angebotTSEnabled = this.applicationPropertyService.readApplicationProperty(ApplicationPropertyKey.ANGEBOT_TS_ENABLED, mandant).orElseThrow(() -> notFound);
+		ApplicationProperty angebotFIEnabled = this.applicationPropertyService.readApplicationProperty(ApplicationPropertyKey.ANGEBOT_FI_ENABLED, mandant).orElseThrow(() -> notFound);
+		ApplicationProperty angebotTFOEnabled = this.applicationPropertyService.readApplicationProperty(ApplicationPropertyKey.ANGEBOT_TFO_ENABLED, mandant).orElseThrow(() -> notFound);
 
 		String nodeName = "";
 		BigDecimal lastenausgleichTagesschulenAnteilZweitpruefungDeConverted;
@@ -421,7 +423,6 @@ public class ApplicationPropertyResource {
 			logoFileName.getValue(),
 			logoFileNameWhite.getValue(),
 			multimandantEnabled,
-			angebotTSEnabled,
 			stringToBool(infomaZahlungen.getValue()),
 			stringToBool(frenchEnabled.getValue()),
 			stringToBool(geresEnabledForMandant.getValue()),
@@ -431,7 +432,10 @@ public class ApplicationPropertyResource {
 			activatedDemoFeatures.getValue(),
 			stringToBool(checkboxAuszahlungInZukunft.getValue()),
 			stringToBool(institutionenDurchGemeindenEinladen.getValue()),
-			stringToBool(erlaubenInstitutionenZuWaehlen.getValue())
+			stringToBool(erlaubenInstitutionenZuWaehlen.getValue()),
+			stringToBool(angebotTSEnabled.getValue()),
+			stringToBool(angebotFIEnabled.getValue()),
+			stringToBool(angebotTFOEnabled.getValue())
 			);
 		return Response.ok(pubAppConf).build();
 	}

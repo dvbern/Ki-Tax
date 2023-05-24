@@ -34,12 +34,6 @@ import ch.dvbern.ebegu.enums.DokumentTyp;
 
 public class SolothurnEinkommensverschlechterungDokumente extends AbstractDokumente<AbstractFinanzielleSituation, Familiensituation>  {
 
-	private final boolean isDocVermoegensAenderungVerlangt;
-
-	public SolothurnEinkommensverschlechterungDokumente(boolean isDocVermoegensAenderungVerlangt) {
-		this.isDocVermoegensAenderungVerlangt = isDocVermoegensAenderungVerlangt;
-	}
-
 	@Override
 	public void getAllDokumente(
 		@Nonnull Gesuch gesuch,
@@ -75,16 +69,15 @@ public class SolothurnEinkommensverschlechterungDokumente extends AbstractDokume
 		int personNumber,
 		Set<DokumentGrund> anlageVerzeichnis) {
 
-		if (isDocVermoegensAenderungVerlangt) {
-			add(getDokument
-						(DokumentTyp.NACHWEIS_VERMOEGEN,
-								null,
-								null,
-								DokumentGrundPersonType.GESUCHSTELLER,
-								personNumber,
-								DokumentGrundTyp.EINKOMMENSVERSCHLECHTERUNG),
-					anlageVerzeichnis);
-		}
+		add(getDokument
+					(DokumentTyp.NACHWEIS_VERMOEGEN,
+							null,
+							null,
+							DokumentGrundPersonType.GESUCHSTELLER,
+							personNumber,
+							DokumentGrundTyp.EINKOMMENSVERSCHLECHTERUNG),
+				anlageVerzeichnis);
+
 
 		add(getDokument
 				(DokumentTyp.NACHWEIS_LOHNAUSWEIS_1,

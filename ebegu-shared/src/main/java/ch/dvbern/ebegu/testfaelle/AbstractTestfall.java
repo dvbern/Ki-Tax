@@ -30,7 +30,6 @@ import javax.annotation.Nullable;
 
 import ch.dvbern.ebegu.entities.AdresseTyp;
 import ch.dvbern.ebegu.entities.AnmeldungTagesschule;
-import ch.dvbern.ebegu.entities.Auszahlungsdaten;
 import ch.dvbern.ebegu.entities.BelegungTagesschule;
 import ch.dvbern.ebegu.entities.BelegungTagesschuleModul;
 import ch.dvbern.ebegu.entities.Benutzer;
@@ -70,23 +69,21 @@ import ch.dvbern.ebegu.enums.AntragStatus;
 import ch.dvbern.ebegu.enums.BelegungTagesschuleModulIntervall;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
 import ch.dvbern.ebegu.enums.EinschulungTyp;
-import ch.dvbern.ebegu.enums.EnumFamilienstatus;
-import ch.dvbern.ebegu.enums.EnumGesuchstellerKardinalitaet;
 import ch.dvbern.ebegu.enums.GemeindeStatus;
 import ch.dvbern.ebegu.enums.Geschlecht;
 import ch.dvbern.ebegu.enums.Kinderabzug;
 import ch.dvbern.ebegu.enums.Land;
 import ch.dvbern.ebegu.enums.Sprache;
 import ch.dvbern.ebegu.enums.Taetigkeit;
+import ch.dvbern.ebegu.testfaelle.dataprovider.AbstractTestfallDataProvider;
+import ch.dvbern.ebegu.testfaelle.dataprovider.TestfallDataProviderVisitor;
 import ch.dvbern.ebegu.testfaelle.institutionStammdatenBuilder.InstitutionStammdatenBuilder;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.MathUtil;
 import ch.dvbern.ebegu.util.mandant.MandantIdentifier;
-import ch.dvbern.oss.lib.beanvalidation.embeddables.IBAN;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import org.apache.commons.lang.StringUtils;
-import org.jetbrains.annotations.NotNull;
 
 /**
  * Superklasse für Testfaelle des JA
@@ -118,17 +115,23 @@ public abstract class AbstractTestfall {
 	protected Gemeinde gemeinde = null;
 	protected Dossier dossier = null;
 	protected Gesuch gesuch = null;
+	protected Mandant mandant = null;
 	protected final boolean betreuungenBestaetigt;
 	protected final InstitutionStammdatenBuilder institutionStammdatenBuilder;
+
+	private final AbstractTestfallDataProvider testfallDataProvider;
 
 	protected AbstractTestfall(
 		Gesuchsperiode gesuchsperiode,
 		boolean betreuungenBestaetigt,
 		InstitutionStammdatenBuilder institutionStammdatenBuilder) {
 		this.gesuchsperiode = gesuchsperiode;
+		this.mandant = gesuchsperiode.getMandant();
 		this.institutionStammdatenBuilder = institutionStammdatenBuilder;
 		this.institutionStammdatenList = institutionStammdatenBuilder.buildStammdaten();
 		this.betreuungenBestaetigt = betreuungenBestaetigt;
+		this.testfallDataProvider = new TestfallDataProviderVisitor(this.gesuchsperiode)
+				.getTestDataProvider(this.getMandantOrDefaultMandant());
 	}
 
 	protected AbstractTestfall(
@@ -155,17 +158,25 @@ public abstract class AbstractTestfall {
 
 	public Fall createFall() {
 		fall = new Fall();
-		fall.setMandant(createDefaultMandant());
+		fall.setMandant(getMandantOrDefaultMandant());
 		createDossier(fall);
 		return fall;
 	}
 
+	private Mandant getMandantOrDefaultMandant() {
+		if (mandant == null) {
+			return createDefaultMandant();
+		}
+
+		return mandant;
+	}
 	// Default for Faelle that are not persisted. Will be overwritten otherwise
 	private Mandant createDefaultMandant() {
-		Mandant mandant = new Mandant();
-		mandant.setMandantIdentifier(MandantIdentifier.BERN);
-		mandant.setName("Kanton Bern");
-		return mandant;
+		this.mandant = new Mandant();
+		this.mandant.setMandantIdentifier(MandantIdentifier.BERN);
+		this.mandant.setName("Kanton Bern");
+		this.mandant.setName("Kanton Bern");
+		return this.mandant;
 	}
 
 	private void createDossier(@Nonnull Fall fallParam, @Nullable Benutzer verantwortlicher) {
@@ -214,6 +225,7 @@ public abstract class AbstractTestfall {
 		gesuch.setGesuchsperiode(gesuchsperiode);
 		gesuch.setDossier(dossier);
 		gesuch.setEingangsdatum(eingangsdatum);
+		gesuch.setFinSitTyp(testfallDataProvider.getFinanzielleSituationTyp());
 		//noinspection VariableNotUsedInsideIf
 		if (eingangsdatum != null) {
 			gesuch.setStatus(AntragStatus.IN_BEARBEITUNG_JA);
@@ -222,61 +234,25 @@ public abstract class AbstractTestfall {
 		}
 	}
 
-	private void setFinSitFieldsOfFamiliensituation(@Nonnull Familiensituation familiensituation) {
-		// by default verguenstigung gewuenscht
-		familiensituation.setSozialhilfeBezueger(false);
-		familiensituation.setVerguenstigungGewuenscht(true);
-		familiensituation.setKeineMahlzeitenverguenstigungBeantragt(true);
-		familiensituation.setMinDauerKonkubinat(5);
-		// LU
-		setAuszahlungsdatenInforma(familiensituation);
-	}
-
-	private void setAuszahlungsdatenInforma(@NotNull Familiensituation familiensituation) {
-		Auszahlungsdaten auszahlungsdatenInforma = new Auszahlungsdaten();
-		auszahlungsdatenInforma.setIban(new IBAN("CH2089144969768441935"));
-		if (gesuch.getGesuchsteller1() != null) {
-			auszahlungsdatenInforma.setKontoinhaber(gesuch.getGesuchsteller1().extractFullName());
-		} else {
-			auszahlungsdatenInforma.setKontoinhaber("kiBon Test");
-		}
-		auszahlungsdatenInforma.setInfomaKreditorennummer("0010");
-		auszahlungsdatenInforma.setInfomaBankcode("00-1-00");
-		familiensituation.setAuszahlungsdaten(auszahlungsdatenInforma);
-	}
-
 	protected Gesuch createAlleinerziehend() {
-		// Familiensituation
-		Familiensituation familiensituation = new Familiensituation();
-		familiensituation.setFamilienstatus(EnumFamilienstatus.ALLEINERZIEHEND);
 		FamiliensituationContainer familiensituationContainer = new FamiliensituationContainer();
-		familiensituationContainer.setFamiliensituationJA(familiensituation);
-		familiensituation.setGesuchstellerKardinalitaet(EnumGesuchstellerKardinalitaet.ALLEINE);
-		setFinSitFieldsOfFamiliensituation(familiensituation);
+		familiensituationContainer.setFamiliensituationJA(testfallDataProvider.createAlleinerziehend());
 		gesuch.setFamiliensituationContainer(familiensituationContainer);
 		return gesuch;
 	}
 
 	protected Gesuch createVerheiratet() {
-		// Familiensituation
-		Familiensituation familiensituation = new Familiensituation();
-		familiensituation.setFamilienstatus(EnumFamilienstatus.VERHEIRATET);
-		familiensituation.setGemeinsameSteuererklaerung(Boolean.TRUE);
 		FamiliensituationContainer familiensituationContainer = new FamiliensituationContainer();
-		familiensituationContainer.setFamiliensituationJA(familiensituation);
-		setFinSitFieldsOfFamiliensituation(familiensituation);
+		familiensituationContainer.setFamiliensituationJA(testfallDataProvider.createVerheiratet());
 		gesuch.setFamiliensituationContainer(familiensituationContainer);
 		return gesuch;
 	}
 
 	protected Gesuch createVerheiratetMitMVZ() {
 		// Familiensituation
-		Familiensituation familiensituation = new Familiensituation();
-		familiensituation.setFamilienstatus(EnumFamilienstatus.VERHEIRATET);
-		familiensituation.setGemeinsameSteuererklaerung(Boolean.TRUE);
+		Familiensituation familiensituation = testfallDataProvider.createVerheiratet();
 		FamiliensituationContainer familiensituationContainer = new FamiliensituationContainer();
 		familiensituationContainer.setFamiliensituationJA(familiensituation);
-		setFinSitFieldsOfFamiliensituation(familiensituation);
 		// re- set keineMahlzeitverguenstigungBeantragt
 		familiensituation.setKeineMahlzeitenverguenstigungBeantragt(false);
 		gesuch.setFamiliensituationContainer(familiensituationContainer);
@@ -333,11 +309,7 @@ public abstract class AbstractTestfall {
 
 	protected ErwerbspensumContainer createErwerbspensum(int prozent) {
 		ErwerbspensumContainer erwerbspensumContainer = new ErwerbspensumContainer();
-		Erwerbspensum erwerbspensum = new Erwerbspensum();
-		erwerbspensum.setGueltigkeit(gesuchsperiode.getGueltigkeit());
-		erwerbspensum.setTaetigkeit(Taetigkeit.ANGESTELLT);
-		erwerbspensum.setPensum(prozent);
-		erwerbspensumContainer.setErwerbspensumJA(erwerbspensum);
+		erwerbspensumContainer.setErwerbspensumJA(testfallDataProvider.createErwerbspensum(prozent));
 		return erwerbspensumContainer;
 	}
 
@@ -530,36 +502,14 @@ public abstract class AbstractTestfall {
 		return betreuungspensumContainer;
 	}
 
-	protected FinanzielleSituationContainer createFinanzielleSituationContainer() {
+	protected FinanzielleSituationContainer createFinanzielleSituationContainer(BigDecimal vermoegen, BigDecimal einkommen) {
 		FinanzielleSituationContainer finanzielleSituationContainer = new FinanzielleSituationContainer();
-		FinanzielleSituation finanzielleSituation = new FinanzielleSituation();
-		finanzielleSituation.setSteuerveranlagungErhalten(true);
-		finanzielleSituation.setSteuererklaerungAusgefuellt(true);
-		if (gesuch.getEingangsart().isOnlineGesuch()) {
-			finanzielleSituation.setSteuerdatenZugriff(true);
-		}
-		finanzielleSituation.setAutomatischePruefungErlaubt(true);
-
-		setFinSitDefaultValues(finanzielleSituation);
+		FinanzielleSituation finanzielleSituation = testfallDataProvider.createFinanzielleSituation(vermoegen, einkommen);
 
 		finanzielleSituationContainer.setJahr(gesuchsperiode.getGueltigkeit().getGueltigAb().getYear() - 1);
 		finanzielleSituationContainer.setFinanzielleSituationJA(finanzielleSituation);
 
 		return finanzielleSituationContainer;
-	}
-
-	/**
-	 * Schreibt in alle Felder der finanziellenSituation, die nicht Null sein dürfen, eine 0. Diese kann später in den
-	 * Testfällen überschrieben werden.
-	 */
-	private void setFinSitDefaultValues(@Nonnull FinanzielleSituation finanzielleSituation) {
-		finanzielleSituation.setFamilienzulage(BigDecimal.ZERO);
-		finanzielleSituation.setErsatzeinkommen(BigDecimal.ZERO);
-		finanzielleSituation.setErhalteneAlimente(BigDecimal.ZERO);
-		finanzielleSituation.setGeleisteteAlimente(BigDecimal.ZERO);
-		finanzielleSituation.setNettolohn(BigDecimal.ZERO);
-		finanzielleSituation.setBruttovermoegen(BigDecimal.ZERO);
-		finanzielleSituation.setSchulden(BigDecimal.ZERO);
 	}
 
 	protected EinkommensverschlechterungContainer createEinkommensverschlechterungContainer(

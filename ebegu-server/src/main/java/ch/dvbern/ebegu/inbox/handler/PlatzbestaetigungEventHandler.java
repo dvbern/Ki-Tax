@@ -179,10 +179,6 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 			return Processing.failure("Die Betreuung wurde verändert, nachdem das BetreuungEvent generiert wurde.");
 		}
 
-		if (hasZeitabschnittWithPensumUnit(dto, Zeiteinheit.HOURS) && !betreuung.isAngebotTagesfamilien()) {
-			return Processing.failure("Eine Pensum in HOURS kann nur für ein Angebot in einer TFO angegeben werden.");
-		}
-
 		if (hasZeitabschnittWithPensumUnit(dto, Zeiteinheit.DAYS) && !betreuung.isAngebotKita()) {
 			return Processing.failure("Eine Pensum in DAYS kann nur für ein Angebot in einer Kita angegeben werden.");
 		}

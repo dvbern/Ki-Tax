@@ -659,6 +659,7 @@ export class EbeguRestUtil {
             restFamiliensituation.gemeinsamerHaushaltMitObhutsberechtigterPerson =
                 familiensituation.gemeinsamerHaushaltMitObhutsberechtigterPerson;
             restFamiliensituation.gemeinsamerHaushaltMitPartner = familiensituation.gemeinsamerHaushaltMitPartner;
+            restFamiliensituation.auszahlungAusserhalbVonKibon = familiensituation.auszahlungAusserhalbVonKibon;
             return restFamiliensituation;
         }
 
@@ -746,6 +747,7 @@ export class EbeguRestUtil {
             familiensituation.gemeinsamerHaushaltMitObhutsberechtigterPerson =
                 familiensituationFromServer.gemeinsamerHaushaltMitObhutsberechtigterPerson;
             familiensituation.gemeinsamerHaushaltMitPartner = familiensituationFromServer.gemeinsamerHaushaltMitPartner;
+            familiensituation.auszahlungAusserhalbVonKibon = familiensituationFromServer.auszahlungAusserhalbVonKibon;
             return familiensituation;
         }
         return undefined;
@@ -1455,8 +1457,6 @@ export class EbeguRestUtil {
         if (mandant) {
             this.abstractMutableEntityToRestObject(restMandant, mandant);
             restMandant.name = mandant.name;
-            restMandant.angebotTS = mandant.angebotTS;
-            restMandant.angebotFI = mandant.angebotFI;
             restMandant.mandantIdentifier = mandant.mandantIdentifier;
             return restMandant;
         }
@@ -1467,8 +1467,6 @@ export class EbeguRestUtil {
         if (mandantFromServer) {
             this.parseAbstractMutableEntity(mandantTS, mandantFromServer);
             mandantTS.name = mandantFromServer.name;
-            mandantTS.angebotTS = mandantFromServer.angebotTS;
-            mandantTS.angebotFI = mandantFromServer.angebotFI;
             mandantTS.mandantIdentifier = mandantFromServer.mandantIdentifier;
             return mandantTS;
         }
@@ -4544,6 +4542,8 @@ export class EbeguRestUtil {
         publicAppConfigTS.lastenausgleichAktiv = data.lastenausgleichAktiv;
         publicAppConfigTS.mulitmandantAktiv = data.multimandantAktiviert;
         publicAppConfigTS.angebotTSActivated = data.angebotTSActivated;
+        publicAppConfigTS.angebotFIActivated = data.angebotFIActivated;
+        publicAppConfigTS.angebotTFOActivated = data.angebotTFOActivated;
         publicAppConfigTS.infomaZahlungen = data.infomaZahlungen;
         publicAppConfigTS.frenchEnabled = data.frenchEnabled;
         publicAppConfigTS.geresEnabledForMandant = data.geresEnabledForMandant;

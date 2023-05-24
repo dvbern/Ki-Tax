@@ -91,9 +91,10 @@ public class AppenzellRechnerTest extends AbstractBGRechnerTest {
 	public void betreuungsPensumInStundenEingeschult() {
 		VerfuegungZeitabschnitt verfuegungZeitabschnitt = prepareVerfuegungZeitabschnitt(EinschulungTyp.KLASSE1);
 		verfuegungZeitabschnitt.getRelevantBgCalculationInput().setBetreuungspensumProzent(BigDecimal.valueOf(50));
+		verfuegungZeitabschnitt.getRelevantBgCalculationInput().setAnspruchspensumProzent(60);
 		BGCalculationResult result = calculateResult(verfuegungZeitabschnitt);
 		assertEquals(BigDecimal.valueOf(50), result.getBetreuungspensumProzent());
-		assertEquals(BigDecimal.valueOf(79.17), result.getBetreuungspensumZeiteinheit());
+		assertEquals(BigDecimal.valueOf(100), result.getBetreuungspensumZeiteinheit());
 	}
 
 	@Test

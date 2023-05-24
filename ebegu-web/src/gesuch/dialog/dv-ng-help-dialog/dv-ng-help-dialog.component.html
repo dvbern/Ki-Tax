@@ -19,7 +19,7 @@
         <ng-container *ngSwitchCase="mandantTypes.BERN" [ngTemplateOutlet]="be"></ng-container>
         <ng-container *ngSwitchCase="mandantTypes.LUZERN" [ngTemplateOutlet]="lu"></ng-container>
         <ng-container *ngSwitchCase="mandantTypes.SOLOTHURN" [ngTemplateOutlet]="so"></ng-container>
-        <ng-container *ngSwitchCase="mandantTypes.APPENZELL_AUSSERRHODEN" [ngTemplateOutlet]="so"></ng-container>
+        <ng-container *ngSwitchCase="mandantTypes.APPENZELL_AUSSERRHODEN" [ngTemplateOutlet]="ar"></ng-container>
         <ng-container *ngSwitchDefault [ngTemplateOutlet]="be"></ng-container>
     </ng-container>
 </mat-dialog-content>
@@ -111,6 +111,23 @@
         <p><a href="tel:+41 41 208 81 90">+41 41 208 81 90</a></p>
         <p><a href="mailto:betreuungsgutscheine@stadtluzern.ch">betreuungsgutscheine@stadtluzern.ch</a></p>
         <p><a href="https://www.kinderbetreuung.stadtluzern.ch">www.kinderbetreuung.stadtluzern.ch</a></p>
+    </div>
+
+    <div class="margin-top-40">
+        <h2 [textContent]="'SCHNELLHILFE' | translate"></h2>
+        <p>
+            <a href="" (click)="startTour()">
+                <span translate="TOUR_STARTEN"></span>
+            </a>
+        </p>
+    </div>
+</ng-template>
+
+<ng-template #ar>
+    <div class="margin-top-40">
+        <h2 [textContent]="'FACHLICHE_HILFE_BG' | translate"></h2>
+        <p><a href="tel:071 354 51 51">071 354 51 51</a></p>
+        <p><a href="mailto:kibeg@sovar.ch">kibeg@sovar.ch</a></p>
     </div>
 
     <div class="margin-top-40">

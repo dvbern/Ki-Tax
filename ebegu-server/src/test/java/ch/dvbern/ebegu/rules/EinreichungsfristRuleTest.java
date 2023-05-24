@@ -28,6 +28,7 @@ import ch.dvbern.ebegu.rechner.AbstractBGRechnerTest;
 import ch.dvbern.ebegu.test.TestDataUtil;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.MathUtil;
+import ch.dvbern.ebegu.util.mandant.MandantIdentifier;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -74,7 +75,7 @@ public class EinreichungsfristRuleTest extends AbstractBGRechnerTest {
 		Betreuung betreuung = EbeguRuleTestsHelper.createBetreuungWithPensum(TestDataUtil.START_PERIODE, TestDataUtil.ENDE_PERIODE,
 			BetreuungsangebotTyp.KITA, 60, BigDecimal.valueOf(2000));
 		final Gesuch gesuch = betreuung.extractGesuch();
-		gesuch.getFall().setMandant(TestDataUtil.createMandantAR());
+		gesuch.getFall().setMandant(TestDataUtil.createMandant(MandantIdentifier.APPENZELL_AUSSERRHODEN));
 		TestDataUtil.createDefaultAdressenForGS(gesuch, false);
 		Assert.assertNotNull(gesuch.getGesuchsteller1());
 		gesuch.getGesuchsteller1().addErwerbspensumContainer(TestDataUtil.createErwerbspensum(TestDataUtil.START_PERIODE, TestDataUtil.ENDE_PERIODE, 60));
@@ -139,7 +140,7 @@ public class EinreichungsfristRuleTest extends AbstractBGRechnerTest {
 		Betreuung betreuung = EbeguRuleTestsHelper.createBetreuungWithPensum(TestDataUtil.START_PERIODE, TestDataUtil.ENDE_PERIODE,
 			BetreuungsangebotTyp.KITA, 60, BigDecimal.valueOf(2000));
 		final Gesuch gesuch = betreuung.extractGesuch();
-		gesuch.getFall().setMandant(TestDataUtil.createMandantAR());
+		gesuch.getFall().setMandant(TestDataUtil.createMandant(MandantIdentifier.APPENZELL_AUSSERRHODEN));
 		TestDataUtil.createDefaultAdressenForGS(gesuch, false);
 		Assert.assertNotNull(gesuch.getGesuchsteller1());
 		gesuch.getGesuchsteller1().addErwerbspensumContainer(TestDataUtil.createErwerbspensum(TestDataUtil.START_PERIODE, TestDataUtil.ENDE_PERIODE, 60));
@@ -202,7 +203,7 @@ public class EinreichungsfristRuleTest extends AbstractBGRechnerTest {
 		Betreuung betreuung = EbeguRuleTestsHelper.createBetreuungWithPensum(TestDataUtil.START_PERIODE, TestDataUtil.ENDE_PERIODE,
 			BetreuungsangebotTyp.KITA, 60, BigDecimal.valueOf(2000));
 		final Gesuch gesuch = betreuung.extractGesuch();
-		gesuch.getFall().setMandant(TestDataUtil.createMandantAR());
+		gesuch.getFall().setMandant(TestDataUtil.createMandant(MandantIdentifier.APPENZELL_AUSSERRHODEN));
 		TestDataUtil.createDefaultAdressenForGS(gesuch, false);
 		Assert.assertNotNull(gesuch.getGesuchsteller1());
 		gesuch.getGesuchsteller1().addErwerbspensumContainer(TestDataUtil.createErwerbspensum(TestDataUtil.START_PERIODE, TestDataUtil.ENDE_PERIODE, 60));

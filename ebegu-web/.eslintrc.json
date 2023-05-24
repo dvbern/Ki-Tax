@@ -111,7 +111,7 @@
                     "error",
                     "1tbs"
                 ],
-                "comma-dangle": "error",
+                "comma-dangle": "off",
                 "default-case": "error",
                 "eqeqeq": [
                     "error",

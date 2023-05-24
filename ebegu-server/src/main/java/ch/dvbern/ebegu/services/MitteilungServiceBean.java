@@ -575,7 +575,7 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 		Predicate predicateSenderOrEmpfaenger = cb.or(predicateSender, predicateEmpfaenger);
 		predicates.add(predicateSenderOrEmpfaenger);
 
-		query.orderBy(cb.asc(root.get(Mitteilung_.sentDatum)));
+		query.orderBy(cb.desc(root.get(Mitteilung_.sentDatum)));
 		query.where(CriteriaQueryHelper.concatenateExpressions(cb, predicates));
 		List<Mitteilung> mitteilungen = persistence.getCriteriaResults(query);
 		authorizer.checkReadAuthorizationMitteilungen(mitteilungen);

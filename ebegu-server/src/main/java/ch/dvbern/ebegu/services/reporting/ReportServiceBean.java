@@ -124,6 +124,7 @@ import ch.dvbern.ebegu.enums.PensumUnits;
 import ch.dvbern.ebegu.enums.Taetigkeit;
 import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.enums.gemeindeantrag.FerienbetreuungAngabenStatus;
+import ch.dvbern.ebegu.enums.reporting.DatumTyp;
 import ch.dvbern.ebegu.enums.reporting.ReportVorlage;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
@@ -372,6 +373,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 	public List<GesuchZeitraumDataRow> getReportDataGesuchZeitraum(
 		@Nonnull LocalDate dateVon,
 		@Nonnull LocalDate dateBis,
+		@Nonnull DatumTyp datumTyp,
 		@Nullable String gesuchPeriodeID,
 		@Nonnull Mandant mandant) {
 
@@ -386,7 +388,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 
 		//noinspection JpaQueryApiInspection
 		TypedQuery<GesuchZeitraumDataRow> query =
-			em.createNamedQuery("GesuchZeitraumNativeSQLQuery", GesuchZeitraumDataRow.class);
+			em.createNamedQuery(datumTyp.getQueryName(), GesuchZeitraumDataRow.class);
 
 		query.setParameter("fromDateTime", Constants.SQL_DATE_FORMAT.format(dateVon));
 		query.setParameter("fromDate", Constants.SQL_DATE_FORMAT.format(dateVon));
@@ -421,6 +423,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 	public UploadFileInfo generateExcelReportGesuchZeitraum(
 		@Nonnull LocalDate dateVon,
 		@Nonnull LocalDate dateBis,
+		@Nonnull DatumTyp datumTyp,
 		@Nullable String gesuchPeriodeID,
 		@Nonnull Locale locale,
 		@Nonnull Mandant mandant
@@ -439,7 +442,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		) {
 			Sheet sheet = workbook.getSheet(reportVorlage.getDataSheetName());
 
-			List<GesuchZeitraumDataRow> reportData = getReportDataGesuchZeitraum(dateVon, dateBis, gesuchPeriodeID, mandant);
+			List<GesuchZeitraumDataRow> reportData = getReportDataGesuchZeitraum(dateVon, dateBis, datumTyp, gesuchPeriodeID, mandant);
 			ExcelMergerDTO excelMergerDTO = gesuchZeitraumExcelConverter.toExcelMergerDTO(reportData, locale);
 
 			mergeData(sheet, excelMergerDTO, reportVorlage.getMergeFields());

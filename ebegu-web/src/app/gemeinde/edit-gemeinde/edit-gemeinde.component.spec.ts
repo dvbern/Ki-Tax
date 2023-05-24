@@ -23,8 +23,10 @@ import {of} from 'rxjs';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {GemeindeRS} from '../../../gesuch/service/gemeindeRS.rest';
 import {SHARED_MODULE_OVERRIDES} from '../../../hybridTools/mockUpgradedDirective';
+import {TSPublicAppConfig} from '../../../models/TSPublicAppConfig';
 import {TestDataUtil} from '../../../utils/TestDataUtil.spec';
 import {ErrorService} from '../../core/errors/service/ErrorService';
+import {ApplicationPropertyRS} from '../../core/rest-services/applicationPropertyRS.rest';
 import {GesuchsperiodeRS} from '../../core/service/gesuchsperiodeRS.rest';
 import {I18nServiceRSRest} from '../../i18n/services/i18nServiceRS.rest';
 import {MaterialModule} from '../../shared/material.module';
@@ -49,6 +51,9 @@ describe('EditGemeindeComponent', () => {
     const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name, {
         isOneOfRoles: true
     });
+    const appPropRSSpy = jasmine.createSpyObj<ApplicationPropertyRS>(ApplicationPropertyRS.name,
+        ['getPublicPropertiesCached']);
+    appPropRSSpy.getPublicPropertiesCached.and.returnValue(Promise.resolve(new TSPublicAppConfig()));
 
     beforeEach(waitForAsync(() => {
 
@@ -66,7 +71,8 @@ describe('EditGemeindeComponent', () => {
                 {provide: ErrorService, useValue: errorServiceSpy},
                 {provide: GemeindeRS, useValue: gemeindeServiceSpy},
                 {provide: I18nServiceRSRest, useValue: i18nServiceSpy},
-                {provide: AuthServiceRS, useValue: authServiceSpy}
+                {provide: AuthServiceRS, useValue: authServiceSpy},
+                {provide: ApplicationPropertyRS, useValue: appPropRSSpy}
             ],
             declarations: [
             ]

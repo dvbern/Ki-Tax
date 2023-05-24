@@ -37,6 +37,7 @@ import {DateUtil} from '../../../../utils/DateUtil';
 import {EbeguUtil} from '../../../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../../../utils/TSRoleUtil';
 import {ErrorService} from '../../../core/errors/service/ErrorService';
+import {ApplicationPropertyRS} from '../../../core/rest-services/applicationPropertyRS.rest';
 import {GesuchsperiodeRS} from '../../../core/service/gesuchsperiodeRS.rest';
 import {MitteilungRS} from '../../../core/service/mitteilungRS.rest';
 import {IGesuchstellerDashboardStateParams} from '../../gesuchstellerDashboard.route';
@@ -65,7 +66,8 @@ export class GesuchstellerDashboardViewController implements IController {
         'MitteilungRS',
         'GesuchRS',
         'ErrorService',
-        'GemeindeRS'
+        'GemeindeRS',
+        'ApplicationPropertyRS'
     ];
 
     private antragList: Array<TSAntragDTO> = [];
@@ -77,6 +79,8 @@ export class GesuchstellerDashboardViewController implements IController {
     public periodYear: string;
     // In dieser Map wird pro GP die ID des neuesten Gesuchs gespeichert
     public mapOfNewestAntraege: { [key: string]: string } = {};
+    private anmeldungTSEnabled: boolean;
+    private anmeldungFIEnabled: boolean;
 
     public constructor(
         private readonly $state: StateService,
@@ -89,7 +93,8 @@ export class GesuchstellerDashboardViewController implements IController {
         private readonly mitteilungRS: MitteilungRS,
         private readonly gesuchRS: GesuchRS,
         private readonly errorService: ErrorService,
-        private readonly gemeindeRS: GemeindeRS
+        private readonly gemeindeRS: GemeindeRS,
+        private readonly appplicationPropertyRS: ApplicationPropertyRS
     ) {
     }
 
@@ -103,6 +108,10 @@ export class GesuchstellerDashboardViewController implements IController {
 
         this.initViewModel();
         this.loadGemeindeStammdaten();
+        this.appplicationPropertyRS.getPublicPropertiesCached().then(res => {
+            this.anmeldungTSEnabled = res.angebotTSActivated;
+            this.anmeldungFIEnabled = res.angebotFIActivated;
+        });
     }
 
     private initViewModel(): IPromise<TSAntragDTO[]> {
@@ -267,7 +276,7 @@ export class GesuchstellerDashboardViewController implements IController {
 
     private showAnmeldungCreateTS(periode: TSGesuchsperiode): boolean {
         const antrag = this.getAntragForGesuchsperiode(periode);
-        const tsEnabledForMandant = this.authServiceRS.hasMandantAngebotTS();
+        const tsEnabledForMandant = this.anmeldungTSEnabled;
         const tsEnabledForGemeinde = this.loadGemeindeKonfiguration(periode).hasTagesschulenAnmeldung()
             && !this.gemeindeStammdaten.gemeinde.nurLats;
         return tsEnabledForMandant
@@ -280,7 +289,7 @@ export class GesuchstellerDashboardViewController implements IController {
 
     private showAnmeldungCreateFI(periode: TSGesuchsperiode): boolean {
         const antrag = this.getAntragForGesuchsperiode(periode);
-        const fiEnabledForMandant = this.authServiceRS.hasMandantAngebotFI();
+        const fiEnabledForMandant = this.anmeldungFIEnabled;
         const fiEnabledForGemeinde = this.loadGemeindeKonfiguration(periode).hasFerieninseAnmeldung();
         return fiEnabledForMandant
             && fiEnabledForGemeinde

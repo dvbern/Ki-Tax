@@ -212,9 +212,8 @@ public class VerfuegungsBemerkungDTOList {
 			if (messagesMap.containsKey(MsgKey.FACHSTELLE_MSG)) {
 				removeBemerkungForPeriodes(MsgKey.ERWERBSPENSUM_ANSPRUCH, getGueltigkeitenByMessageKey(MsgKey.FACHSTELLE_MSG));
 			}
-			// Es kann sein das, trotz eine eingewoehnung, die minimal Erwerbspenum nicht erreicht ist
-			if (messagesMap.containsKey(MsgKey.ERWERBSPENSUM_KEIN_ANSPRUCH)) {
-				removeBemerkungForPeriodes(MsgKey.ERWERBSPENSUM_EINGEWOEHNUNG, getGueltigkeitenByMessageKey(MsgKey.ERWERBSPENSUM_KEIN_ANSPRUCH));
+			if (messagesMap.containsKey(MsgKey.ERWERBSPENSUM_EINGEWOEHNUNG)) {
+				removeBemerkungForPeriodes(MsgKey.ERWERBSPENSUM_KEIN_ANSPRUCH, getGueltigkeitenByMessageKey(MsgKey.ERWERBSPENSUM_EINGEWOEHNUNG));
 			}
 			if (messagesMap.containsKey(MsgKey.KEINE_ERWEITERTE_BEDUERFNISSE_MSG)) {
 				removeBemerkungForPeriodes(MsgKey.ERWEITERTE_BEDUERFNISSE_MSG, getGueltigkeitenByMessageKey(MsgKey.KEINE_ERWEITERTE_BEDUERFNISSE_MSG));

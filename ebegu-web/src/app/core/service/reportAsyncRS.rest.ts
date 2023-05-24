@@ -63,11 +63,13 @@ export class ReportAsyncRS {
     public getGesuchZeitraumReportExcel(
         dateTimeFrom: string,
         dateTimeTo: string,
+        gesuchDatumTyp: string,
         gesuchPeriodeID: string
     ): Observable<{workjobId: string}> {
         const reportParams = ReportAsyncRS.createParamsFromObject({
             dateTimeFrom,
             dateTimeTo,
+            gesuchDatumTyp,
             gesuchPeriodeID
         });
         return this.http.get<{workjobId: string}>(`${this.serviceURL}/excel/gesuchZeitraum`,

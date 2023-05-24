@@ -38,6 +38,7 @@ import javax.inject.Named;
 
 import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.enums.WorkJobConstants;
+import ch.dvbern.ebegu.enums.reporting.DatumTyp;
 import ch.dvbern.ebegu.enums.reporting.ReportVorlage;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
@@ -60,6 +61,7 @@ import ch.dvbern.oss.lib.excelmerger.ExcelMergeException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static ch.dvbern.ebegu.enums.WorkJobConstants.DATUM_TYP;
 import static ch.dvbern.ebegu.enums.WorkJobConstants.REPORT_VORLAGE_TYPE_PARAM;
 
 @SuppressWarnings("ClassNamePrefixedWithPackageName")
@@ -164,7 +166,10 @@ public class ReportJobGeneratorBatchlet extends AbstractBatchlet {
 			}
 			case VORLAGE_REPORT_GESUCH_ZEITRAUM_DE:
 			case VORLAGE_REPORT_GESUCH_ZEITRAUM_FR: {
-				return this.reportService.generateExcelReportGesuchZeitraum(dateFrom, dateTo, gesuchPeriodeId, locale, mandant);
+				String datumTyp = getParameters().getProperty(DATUM_TYP, DatumTyp.VERFUEGUNGSDATUM.name());
+				DatumTyp datumTypEnum = DatumTyp.valueOf(datumTyp);
+				return this.reportService.generateExcelReportGesuchZeitraum(dateFrom, dateTo, datumTypEnum, gesuchPeriodeId, locale, mandant);
+
 			}
 			case VORLAGE_REPORT_KANTON: {
 				BigDecimal kantonSelbstbehalt = null;

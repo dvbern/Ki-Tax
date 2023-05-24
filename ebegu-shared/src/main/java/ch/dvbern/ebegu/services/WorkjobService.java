@@ -31,6 +31,7 @@ import ch.dvbern.ebegu.entities.Institution;
 import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.entities.Workjob;
 import ch.dvbern.ebegu.enums.reporting.BatchJobStatus;
+import ch.dvbern.ebegu.enums.reporting.DatumTyp;
 import ch.dvbern.ebegu.enums.reporting.ReportVorlage;
 
 /**
@@ -107,6 +108,18 @@ public interface WorkjobService {
 		@Nonnull ReportVorlage vorlage,
 		@Nonnull String stammdatenId,
 		@Nonnull String gesuchsperiodeId,
+		@Nonnull Locale locale,
+		@Nonnull Mandant mandant
+	);
+
+	@Nonnull
+	Workjob createNewReporting(
+		@Nonnull Workjob workJob,
+		@Nonnull ReportVorlage vorlage,
+		@Nullable LocalDate datumVon,
+		@Nullable LocalDate datumBis,
+		@Nonnull DatumTyp datumTyp,
+		@Nullable String gesuchPeriodIdParam,
 		@Nonnull Locale locale,
 		@Nonnull Mandant mandant
 	);
