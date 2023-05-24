@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022 DV Bern AG, Switzerland
+ * Copyright (C) 2023 DV Bern AG, Switzerland
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -15,14 +15,20 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {Component, Inject} from '@angular/core';
+import {Component, Inject, OnInit} from '@angular/core';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 import {StateService} from '@uirouter/core';
 import {TSBetreuungsstatus} from '../../../../models/enums/TSBetreuungsstatus';
+import {TSMitteilungStatus} from '../../../../models/enums/TSMitteilungStatus';
 import {TSBetreuungsmitteilung} from '../../../../models/TSBetreuungsmitteilung';
 import {TSMitteilung} from '../../../../models/TSMitteilung';
+import {TSMitteilungVerarbeitungResult} from '../../../../models/TSMitteilungVerarbeitungResult';
 import {EbeguUtil} from '../../../../utils/EbeguUtil';
+import {ErrorServiceX} from '../../errors/service/ErrorServiceX';
+import {LogFactory} from '../../logging/LogFactory';
+import {MitteilungRS} from '../../service/mitteilungRS.rest';
 
+const LOG = LogFactory.createLog('DvNgMitteilungResultDialogComponent');
 /**
  * Component fuer den zusammenfassung nach man alle Mutationmitteilungen automatisch bearbeiten hast
  * Es zeigt zwei Liste, eine für die erfolgreiche Mutationsmitteilungen und eine mit die die nicht
@@ -33,25 +39,47 @@ import {EbeguUtil} from '../../../../utils/EbeguUtil';
     templateUrl: './dv-ng-mitteilung-result-dialog.template.html',
     styleUrls: ['./dv-ng-mitteilung-result-dialog.template.less']
 })
-export class DvNgMitteilungResultDialogComponent {
+export class DvNgMitteilungResultDialogComponent implements OnInit {
 
-    public betreuungsmitteilungsOkVerfuegt: TSBetreuungsmitteilung[] = [];
-    public betreuungsmitteilungsOkNotVerfuegt: TSBetreuungsmitteilung[] = [];
-    public betreuungsmitteilungsKo: TSBetreuungsmitteilung[] = [];
-
+    public verarbeitung?: TSMitteilungVerarbeitungResult;
     public constructor(
         private readonly dialogRef: MatDialogRef<DvNgMitteilungResultDialogComponent>,
         private readonly $state: StateService,
         private readonly ebeguUtil: EbeguUtil,
-        @Inject(MAT_DIALOG_DATA) data: TSBetreuungsmitteilung[]
+        private readonly mitteilungRS: MitteilungRS,
+        private readonly errorService: ErrorServiceX,
+        @Inject(MAT_DIALOG_DATA) private readonly mitteilungenToProcess: TSBetreuungsmitteilung[]
     ) {
-        if (data) {
-            this.betreuungsmitteilungsOkVerfuegt = data.filter(betreuungsmitteilung => betreuungsmitteilung.applied
-                && TSBetreuungsstatus.VERFUEGT === betreuungsmitteilung.betreuung.betreuungsstatus);
-            this.betreuungsmitteilungsOkNotVerfuegt = data.filter(betreuungsmitteilung => betreuungsmitteilung.applied
-                && TSBetreuungsstatus.VERFUEGT !== betreuungsmitteilung.betreuung.betreuungsstatus);
-            this.betreuungsmitteilungsKo = data.filter(betreuungsmitteilung => !betreuungsmitteilung.applied);
+    }
+
+    public ngOnInit(): void {
+        if (EbeguUtil.isEmptyArrayNullOrUndefined(this.mitteilungenToProcess)) {
+            LOG.warn('No Mitteilungen to process were provided');
+            return;
         }
+        this.mitteilungRS.applyAlleBetreuungsmitteilungen(this.mitteilungenToProcess).subscribe(verarbeitungResult => {
+            this.verarbeitung = verarbeitungResult;
+        }, error =>  {
+            LOG.error(error);
+        });
+    }
+
+    public getVerfuegtSuccessItems(): TSBetreuungsmitteilung[] {
+        if (EbeguUtil.isNullOrUndefined(this.verarbeitung)) {
+            return [];
+        }
+        return this.verarbeitung.successItems.filter(mitteilung =>
+            mitteilung.mitteilungStatus === TSMitteilungStatus.ERLEDIGT
+            && mitteilung.betreuung.betreuungsstatus === TSBetreuungsstatus.VERFUEGT);
+    }
+
+    public getNotVerfuegtSuccessItems(): TSBetreuungsmitteilung[] {
+        if (EbeguUtil.isNullOrUndefined(this.verarbeitung)) {
+            return [];
+        }
+        return this.verarbeitung.successItems.filter(mitteilung =>
+            mitteilung.mitteilungStatus === TSMitteilungStatus.ERLEDIGT
+            && mitteilung.betreuung.betreuungsstatus !== TSBetreuungsstatus.VERFUEGT);
     }
 
     public ok(): void {

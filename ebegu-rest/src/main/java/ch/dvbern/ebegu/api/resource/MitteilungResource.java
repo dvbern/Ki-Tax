@@ -1,16 +1,18 @@
 /*
- * Ki-Tax: System for the management of external childcare subsidies
- * Copyright (C) 2017 City of Bern Switzerland
+ * Copyright (C) 2023 DV Bern AG, Switzerland
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
+ *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
 package ch.dvbern.ebegu.api.resource;
@@ -223,6 +225,39 @@ public class MitteilungResource {
 		}
 		final Gesuch mutiertesGesuch = this.mitteilungService.applyBetreuungsmitteilung(mitteilung.get());
 		return converter.toJaxId(mutiertesGesuch);
+	}
+	@ApiOperation(value = "Uebernimmt eine Betreuungsmitteilung in eine Mutation. Falls aktuell keine Mutation offen"
+		+ " "
+		+ "ist, wird eine neue erstellt. Falls eine Mutation im Status VERFUEGEN vorhanden ist, oder die Mutation im"
+		+ "Status BESCHWERDE ist, wird der Fehler auf der Betreuungsmitteilung gespeichert und kein Fehler geworfen",
+		response = JaxMitteilungSearchresultDTO.class)
+	@Nonnull
+	@POST
+	@Path("/applybetreuungsmitteilungsilently")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, GESUCHSTELLER,
+		ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION, ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT, ADMIN_TS,
+		SACHBEARBEITER_TS, ADMIN_SOZIALDIENST, SACHBEARBEITER_SOZIALDIENST })
+	public JaxBetreuungsmitteilung applyBetreuungsmitteilungSilenty(
+		@Nonnull @NotNull JaxBetreuungsmitteilung jaxBetreuungsmitteilung,
+		@Context UriInfo uriInfo,
+		@Context HttpServletResponse response) {
+
+		Objects.requireNonNull(jaxBetreuungsmitteilung.getId());
+		final Betreuungsmitteilung betreuungsmitteilung =
+			mitteilungService.findBetreuungsmitteilung(jaxBetreuungsmitteilung.getId())
+				.orElseThrow(() -> new EbeguEntityNotFoundException(
+					"applyBetreuungsmitteilung",
+					ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
+					"JaxBetreuungsmitteilungId is invalid: " + jaxBetreuungsmitteilung.getId()));
+
+		String errorMessage = mitteilungService.applyBetreuungsmitteilungIfPossible(betreuungsmitteilung);
+		Betreuungsmitteilung betreuungsmitteilungUpdated =
+			mitteilungService.findAndRefreshBetreuungsmitteilung(betreuungsmitteilung.getId()).get();
+		betreuungsmitteilungUpdated.setErrorMessage(errorMessage);
+
+		return converter.betreuungsmitteilungToJAX(betreuungsmitteilungUpdated);
 	}
 
 	@ApiOperation(value = "Markiert eine Mitteilung als gelesen", response = JaxMitteilung.class)

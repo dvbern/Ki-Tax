@@ -15,33 +15,16 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-.progress-counter {
-    text-align: end;
-    margin-bottom: 2rem;
-    font-weight: bold;
-}
+import {TSBetreuungsmitteilung} from './TSBetreuungsmitteilung';
+import {TSExceptionReport} from './TSExceptionReport';
 
-.verarbeitete-mitteilungen-container {
-    min-height: 65vh;
+export interface TSMitteilungVerarbeitungResult {
+    count: number;
+    errors: {
+        mitteilung: TSBetreuungsmitteilung;
+        errors: TSExceptionReport[];
+    }[];
+    failedItems: TSBetreuungsmitteilung[];
+    successItems: TSBetreuungsmitteilung[];
+    total: number;
 }
-
-ul {
-    list-style: none;
-    padding: 0;
-}
-li {
-    padding-left: 1.3em;
-}
-li:before {
-    display: inline-block;
-    font-family: FontAwesome, sans-serif;
-    margin-left: -1.3em;
-    width: 1.3em;
-}
-.nonapplied:before{
-    content: '\f00d';
-}
-.applied:before {
-    content: '\f00c';
-}
-
