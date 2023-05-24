@@ -175,7 +175,7 @@ export class MitteilungRS {
         const verarbeitung = new TSMitteilungVerarbeitung(mitteilungen.length);
 
         mitteilungen.forEach(mitteilung => {
-            this.automaticApplyBetreuungsmitteilung(mitteilung).subscribe(appliedMitteilung => {
+            this.applyBetreuungsmitteilungSilently(mitteilung).subscribe(appliedMitteilung => {
                 if (EbeguUtil.isEmptyStringNullOrUndefined(appliedMitteilung.errorMessage)) {
                     verarbeitung.addSuccess(appliedMitteilung);
                 } else {
@@ -192,11 +192,11 @@ export class MitteilungRS {
 
         return verarbeitung.results;
     }
-    private automaticApplyBetreuungsmitteilung(
+    private applyBetreuungsmitteilungSilently(
         mitteilung: TSBetreuungsmitteilung
     ): Observable<TSBetreuungsmitteilung>{
         return from(
-            this.$http.post<TSBetreuungsmitteilung>(`${this.serviceURL}/applyBetreuungsmitteilung`, this.ebeguRestUtil.betreuungsmitteilungToRestObject({}, mitteilung))
+            this.$http.post<TSBetreuungsmitteilung>(`${this.serviceURL}/applybetreuungsmitteilungsilently`, this.ebeguRestUtil.betreuungsmitteilungToRestObject({}, mitteilung))
                 .then(res => res.data)
                 .then(restMitteilung => this.ebeguRestUtil.parseBetreuungsmitteilung(new TSBetreuungsmitteilung(), restMitteilung)));
     }
