@@ -2978,7 +2978,7 @@
     "ALLE_MUTATIONSMELDUNG_AUTOMATISCH_BEARBEITEN": "Traiter automatiquement tous les annonces de changement.",
     "ALLE_MUTATIONSMEDLUNG_AUTOMATISCH_BEARBEITEN": "Traiter les annonces de changement automatiquement",
     "ALLE_MUTATIONSMELDUNGEN_BEARBEITEN_TITLE": "Voulez-vous vraiment traiter automatiquement toutes les demandes de changements?",
-    "ALLE_MUTATIONSMELDUNGEN_BEARBEITEN_FRAGE": "<div class=\"well well-status-warten\">Cette fonction est actuellement en cours de révision, car elle peut entraîner de longs temps de chargement en cas de nombreux messages de mutation.</div><b>Attention: </b>toutes les annonces de changement figurant dans la liste sont traitées automatiquement et font l’objet d’une décision immédiate lorsque c’est possible.",
+    "ALLE_MUTATIONSMELDUNGEN_BEARBEITEN_FRAGE": "<b>Attention: </b>toutes les annonces de changement figurant dans la liste sont traitées automatiquement et font l’objet d’une décision immédiate lorsque c’est possible.",
     "AUTOMATISCHE_BEARBEITETE_MITTEILUNGEN_VERFUEGT": "Annonces de changement traitées et décisions rendues :",
     "AUTOMATISCHE_BEARBEITETE_MITTEILUNGEN_NICHT_VERFUEGT": "Annonces de changement traitées. Décisions à rendre (voir cas en suspens) :",
     "NICHT_BEARBEITETE_MITTEILUNGEN": "Annonces de changement nécessitant une vérification (consulter les messages) :",
