@@ -22,7 +22,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Locale;
-import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
 
@@ -77,48 +76,19 @@ public class EingewoehnungFristRule extends AbstractAbschlussRule {
 		}
 
 		VerfuegungZeitabschnitt eingewoehnung = createEingewoehnungAbschnitt(
-				eingewohenungAbschnittHelper.zeitabschnittOhneAnspruch,
 				eingewohenungAbschnittHelper.zeitabschnittMitAnspruch,
 				gp);
 
-		removeOverlappingGueltigkeiten(
-				zeitabschnitte,
-				eingewoehnung);
 		zeitabschnitte.add(eingewoehnung);
 
-		return zeitabschnitte
-					   .stream()
-					   //nach Entfernen der Überlappungen, kann es ZAs geben, die ungültig sind
-					   .filter(zeitabschnitt -> zeitabschnitt.getGueltigkeit().isValid())
-					   .sorted()
-					   .collect(Collectors.toList());
-	}
-
-	private void removeOverlappingGueltigkeiten(
-			List<VerfuegungZeitabschnitt> zeitabschnitte,
-			VerfuegungZeitabschnitt eingewoehnung) {
-
-		DateRange gueltigkeitEingewoehnung = eingewoehnung.getGueltigkeit();
-
-		zeitabschnitte.forEach(verfuegungZeitabschnitt -> {
-			//Es dürfen keine Zeitabschnitte mit der Gültigkeit der Eingewöhnung überlappen, wenn sie überlappen...
-			if (verfuegungZeitabschnitt.getGueltigkeit().intersects(gueltigkeitEingewoehnung)) {
-				//...und der überlappende Zeitabschnitt einen Anspruch hat, muss der Eingewöhnungszeitbaschnitt gekürzt werden
-				if (hasBetreuungAndAnspruch(verfuegungZeitabschnitt)) {
-					eingewoehnung.getGueltigkeit().setGueltigAb(verfuegungZeitabschnitt.getGueltigkeit().getGueltigBis().plusDays(1));
-				} else {
-					//... wenn der Zeitabschnitt keinen Anspuch hat, muss dieser gekürzt werden
-					verfuegungZeitabschnitt.getGueltigkeit().setGueltigBis(gueltigkeitEingewoehnung.getGueltigAb().minusDays(1));
-				}
-			}
-		});
+	 	return mergeZeitabschnitte(zeitabschnitte);
 	}
 
 	private VerfuegungZeitabschnitt createEingewoehnungAbschnitt(
-		@Nonnull VerfuegungZeitabschnitt baseAbschnitt,
 		@Nonnull VerfuegungZeitabschnitt abschnittMitAnspruch,
 		@Nonnull Gesuchsperiode gesuchsperiode) {
-		VerfuegungZeitabschnitt eingewoehnung = new VerfuegungZeitabschnitt(baseAbschnitt);
+		VerfuegungZeitabschnitt eingewoehnung =
+				new VerfuegungZeitabschnitt(getGultigkeitOfEingewohenungAbschnitt(abschnittMitAnspruch, gesuchsperiode));
 		eingewoehnung.setAnspruchspensumProzentForAsivAndGemeinde(abschnittMitAnspruch.getRelevantBgCalculationInput()
 			.getAnspruchspensumProzent());
 		eingewoehnung.setErwerbspensumGS1ForAsivAndGemeinde(abschnittMitAnspruch.getRelevantBgCalculationInput()
@@ -126,11 +96,8 @@ public class EingewoehnungFristRule extends AbstractAbschlussRule {
 		eingewoehnung.setErwerbspensumGS2ForAsivAndGemeinde(abschnittMitAnspruch.getRelevantBgCalculationInput()
 			.getErwerbspensumGS2());
 		eingewoehnung.getRelevantBgCalculationInput().addBemerkung(MsgKey.ERWERBSPENSUM_EINGEWOEHNUNG, locale);
-		eingewoehnung.getBemerkungenDTOList().removeBemerkungByMsgKey(MsgKey.ERWERBSPENSUM_KEIN_ANSPRUCH);
-		eingewoehnung.setGueltigkeit(getGultigkeitOfEingewohenungAbschnitt(abschnittMitAnspruch, gesuchsperiode));
 		return eingewoehnung;
 	}
-
 	private DateRange getGultigkeitOfEingewohenungAbschnitt(
 			VerfuegungZeitabschnitt abschnittMitAnspruch,
 			Gesuchsperiode gesuchsperiode) {
@@ -144,10 +111,6 @@ public class EingewoehnungFristRule extends AbstractAbschlussRule {
 		}
 
 		return new DateRange(eingewohenungGueltigAb, eingewoehnungGueltigBis);
-	}
-
-	private boolean hasBetreuungAndAnspruch(VerfuegungZeitabschnitt zeitabschnittToCheck) {
-		return !MathUtil.isZero(zeitabschnittToCheck.getRelevantBgCalculationInput().getBgPensumProzent());
 	}
 
 	@Override
