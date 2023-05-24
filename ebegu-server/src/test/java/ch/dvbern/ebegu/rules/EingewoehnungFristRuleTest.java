@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2021 DV Bern AG, Switzerland
+ * Copyright (C) 2023 DV Bern AG, Switzerland
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -430,7 +430,7 @@ public class EingewoehnungFristRuleTest {
 		Betreuung betreuung = createGesuch(false, true);
 		Gesuch gesuch = betreuung.extractGesuch();
 
-		//Betreuung ab 25.11.
+		//Betreuung ab 25.9.
 		betreuung.getBetreuungspensumContainers().stream()
 				.findFirst()
 				.get()
@@ -469,7 +469,7 @@ public class EingewoehnungFristRuleTest {
 		Assert.assertEquals(SEP_25.with(TemporalAdjusters.lastDayOfMonth()),	result.get(2).getGueltigkeit().getGueltigBis());
 		Assert.assertTrue(result.get(2).getBemerkungenDTOList().containsMsgKey(MsgKey.ERWERBSPENSUM_EINGEWOEHNUNG));
 
-		//01.10.-09.09. Anspruch 60%, Eingewöhnung, Betreuung 80%
+		//01.10.-09.10. Anspruch 60%, Eingewöhnung, Betreuung 80%
 		Assert.assertEquals(60, result.get(3).getAnspruchberechtigtesPensum());
 		Assert.assertEquals(80, result.get(3).getBetreuungspensumProzent().intValue());
 		Assert.assertEquals(OCT_10.with(TemporalAdjusters.firstDayOfMonth()), result.get(3).getGueltigkeit().getGueltigAb());
