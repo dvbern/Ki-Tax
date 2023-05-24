@@ -16,38 +16,40 @@
   -->
 
 <mat-dialog-content>
-    <nav>
+    <div class="verarbeitete-mitteilungen-container">
         <span *ngIf="!verarbeitung" translate>KEINE_MELDUNGEN_ZU_VERARBEITEN</span>
-        <ul *ngIf="verarbeitung">
+        <div *ngIf="verarbeitung">
             <div class="progress-counter">
                 <i *ngIf="verarbeitung.count !== verarbeitung.total" class="fa fa-circle-o-notch fa-spin fa-fw"></i>
                 {{verarbeitung.count}}/{{verarbeitung.total}} {{'VERARBEITET' | translate}}
             </div>
-            <span>{{'AUTOMATISCHE_BEARBEITETE_MITTEILUNGEN_VERFUEGT' | translate}}</span>
-            <br>
-            <li class="applied" *ngFor="let betreuungsmitteilung of getVerfuegtSuccessItems()">
-                <a href="{{getBetreuungUrl(betreuungsmitteilung)}}" target="_blank">{{getRererenceNummer(betreuungsmitteilung)}}</a>
-            </li>
-            <span *ngIf="getVerfuegtSuccessItems().length === 0">-</span>
-            <br><br>
-            <span>{{'AUTOMATISCHE_BEARBEITETE_MITTEILUNGEN_NICHT_VERFUEGT' | translate}}</span>
-            <br>
-            <li class="applied" *ngFor="let betreuungsmitteilung of getNotVerfuegtSuccessItems()">
-                <a href="{{getBetreuungUrl(betreuungsmitteilung)}}" target="_blank">{{getRererenceNummer(betreuungsmitteilung)}}</a>
-            </li>
-            <span *ngIf="getNotVerfuegtSuccessItems().length === 0">-</span>
-            <br><br>
-            <span>{{'NICHT_BEARBEITETE_MITTEILUNGEN' | translate}}</span>
-            <br>
-            <li class="nonapplied" *ngFor="let betreuungsmitteilung of verarbeitung.failedItems">
-                <a href="{{getBetreuungUrl(betreuungsmitteilung)}}" target="_blank">{{getRererenceNummer(betreuungsmitteilung)}}</a>:
-                <i>{{betreuungsmitteilung.errorMessage}}</i>
-            </li>
-            <span *ngIf="verarbeitung.failedItems.length === 0">-</span>
-            <br><br>
-            <span>{{'FEHLER_BEI_MITTEILUNG_BEARBEITUNG' | translate}}</span>
-            <br>
-            <div *ngIf="verarbeitung.errors.length > 0">
+            <ul>
+                <span>{{'AUTOMATISCHE_BEARBEITETE_MITTEILUNGEN_VERFUEGT' | translate}}</span>
+                <li class="applied" *ngFor="let betreuungsmitteilung of getVerfuegtSuccessItems()">
+                    <a href="{{getBetreuungUrl(betreuungsmitteilung)}}" target="_blank">{{getRererenceNummer(
+                        betreuungsmitteilung)}}</a>
+                </li>
+                <span *ngIf="getVerfuegtSuccessItems().length === 0"><br>-</span>
+            </ul>
+            <ul>
+                <span>{{'AUTOMATISCHE_BEARBEITETE_MITTEILUNGEN_NICHT_VERFUEGT' | translate}}</span>
+                <li class="applied" *ngFor="let betreuungsmitteilung of getNotVerfuegtSuccessItems()">
+                    <a href="{{getBetreuungUrl(betreuungsmitteilung)}}" target="_blank">{{getRererenceNummer(
+                        betreuungsmitteilung)}}</a>
+                </li>
+                <span *ngIf="getNotVerfuegtSuccessItems().length === 0"><br>-</span>
+            </ul>
+            <ul>
+                <p>{{'NICHT_BEARBEITETE_MITTEILUNGEN' | translate}}</p>
+                <li class="nonapplied" *ngFor="let betreuungsmitteilung of verarbeitung.failedItems">
+                    <a href="{{getBetreuungUrl(betreuungsmitteilung)}}" target="_blank">{{getRererenceNummer(
+                        betreuungsmitteilung)}}</a>:
+                    <i>{{betreuungsmitteilung.errorMessage}}</i>
+                </li>
+                <span *ngIf="verarbeitung.failedItems.length === 0">-</span>
+            </ul>
+            <ul>
+                <span>{{'FEHLER_BEI_MITTEILUNG_BEARBEITUNG' | translate}}</span>
                 <li class="errors" *ngFor="let error of verarbeitung.errors">
                     <a href="{{getBetreuungUrl(error.mitteilung)}}"
                        target="_blank">{{getRererenceNummer(error.mitteilung)}}</a>:
@@ -56,9 +58,10 @@
                         <br>
                     </span>
                 </li>
-            </div>
-        </ul>
-    </nav>
+                <span *ngIf="verarbeitung.errors.length === 0"><br>-</span>
+            </ul>
+        </div>
+    </div>
 </mat-dialog-content>
 
 <mat-dialog-actions>
