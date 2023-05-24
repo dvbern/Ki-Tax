@@ -22,7 +22,7 @@ import {
     Component,
     OnDestroy,
     OnInit,
-    ViewChild
+    ViewChild,
 } from '@angular/core';
 import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
 import {PageEvent} from '@angular/material/paginator';
@@ -51,7 +51,7 @@ import {EbeguUtil} from '../../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 import {DvNgConfirmDialogComponent} from '../../core/component/dv-ng-confirm-dialog/dv-ng-confirm-dialog.component';
 import {
-    DvNgMitteilungResultDialogComponent
+    DvNgMitteilungResultDialogComponent,
 } from '../../core/component/dv-ng-mitteilung-result-dialog/dv-ng-mitteilung-result-dialog.component';
 import {TSDemoFeature} from '../../core/directive/dv-hide-feature/TSDemoFeature';
 import {ErrorServiceX} from '../../core/errors/service/ErrorServiceX';
@@ -509,7 +509,7 @@ export class PosteingangViewComponent implements OnInit, OnDestroy, AfterViewIni
                         },
                         sort: this.sort
                     };
-                            dialogConfig.data = this.getTsBetreuungsmitteilungenOfTable();
+                            dialogConfig.data = this.getOpenTsBetreuungsmitteilungenOfTable();
                             dialogConfig.disableClose = true;
                             this.dialog.open(DvNgMitteilungResultDialogComponent, dialogConfig).afterClosed()
                                 .subscribe(() => {
@@ -524,10 +524,11 @@ export class PosteingangViewComponent implements OnInit, OnDestroy, AfterViewIni
                     );
     }
 
-    private getTsBetreuungsmitteilungenOfTable(): TSBetreuungsmitteilung[] {
+    private getOpenTsBetreuungsmitteilungenOfTable(): TSBetreuungsmitteilung[] {
         return this.displayedCollection.data
             .filter(mitteilung =>
                 mitteilung.subject.includes(this.translate.instant('MUTATIONSMELDUNG_BETREFF'))
+                && mitteilung.mitteilungStatus !== TSMitteilungStatus.ERLEDIGT
             )
             .map(mitteilung => mitteilung as TSBetreuungsmitteilung);
     }
