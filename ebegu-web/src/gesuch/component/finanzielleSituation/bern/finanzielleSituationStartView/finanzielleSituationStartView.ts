@@ -308,23 +308,6 @@ export class FinanzielleSituationStartViewController extends AbstractFinSitBernV
             && this.getGesuch() && !this.getGesuch().areThereOnlyFerieninsel();
     }
 
-    public showZahlungsdaten(): boolean {
-        return this.isMahlzeitenverguenstigungEnabled() &&
-            !this.model.zahlungsinformationen.keineMahlzeitenverguenstigungBeantragt;
-    }
-
-    public changeMahlzeitenGewuenscht(): void {
-        // Solang dei Funktion noch mit dem Demofeature ausgeblendet ist, sollen die Auszahlungsdaten reseted werden,
-        // wenn die mahlzeitenvergünsitung nicht mehr beantragt wird
-        // das kann gelöscht werden, sobald wir die funktion permanent aktivieren
-        if (this.model.zahlungsinformationen.keineMahlzeitenverguenstigungBeantragt) {
-            this.model.zahlungsinformationen.iban = undefined;
-            this.model.zahlungsinformationen.kontoinhaber = undefined;
-            this.model.zahlungsinformationen.abweichendeZahlungsadresse = undefined;
-            this.model.zahlungsinformationen.zahlungsadresse = undefined;
-        }
-    }
-
     public isZahlungsangabenRequired(): boolean {
         return (!this.model.zahlungsinformationen.keineMahlzeitenverguenstigungBeantragt && this.isMahlzeitenverguenstigungEnabled())
             || this.zahlungsangabenRequired;
