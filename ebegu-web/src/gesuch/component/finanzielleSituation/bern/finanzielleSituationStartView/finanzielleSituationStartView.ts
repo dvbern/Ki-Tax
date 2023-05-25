@@ -80,8 +80,6 @@ export class FinanzielleSituationStartViewController extends AbstractFinSitBernV
     public laenderList: TSLand[];
     private triedSavingWithoutForm: boolean = false;
 
-    private isAlwaysShowAuszahlungsdatenActivated: boolean = false;
-
     public constructor(
         gesuchModelManager: GesuchModelManager,
         berechnungsManager: BerechnungsManager,
@@ -125,9 +123,6 @@ export class FinanzielleSituationStartViewController extends AbstractFinSitBernV
                                                                                                     // just once
 
         this.gesuchModelManager.setGesuchstellerNumber(1);
-
-        demoFeatureRS.isDemoFeatureAllowed(TSDemoFeature.ALLWAYS_SHOW_ZAHLUNGSDATEN_ON_FINSIT_BERN)
-            .then(isAllowed => this.isAlwaysShowAuszahlungsdatenActivated = isAllowed);
     }
 
     public showSteuerveranlagung(): boolean {
@@ -314,21 +309,15 @@ export class FinanzielleSituationStartViewController extends AbstractFinSitBernV
     }
 
     public showZahlungsdaten(): boolean {
-        return this.isDemofeatureAlwaysShowZahlungsdatenEnabled() ||
-        (this.isMahlzeitenverguenstigungEnabled() &&
-            !this.model.zahlungsinformationen.keineMahlzeitenverguenstigungBeantragt);
-    }
-
-    private isDemofeatureAlwaysShowZahlungsdatenEnabled() {
-        return this.isAlwaysShowAuszahlungsdatenActivated;
+        return this.isMahlzeitenverguenstigungEnabled() &&
+            !this.model.zahlungsinformationen.keineMahlzeitenverguenstigungBeantragt;
     }
 
     public changeMahlzeitenGewuenscht(): void {
         // Solang dei Funktion noch mit dem Demofeature ausgeblendet ist, sollen die Auszahlungsdaten reseted werden,
         // wenn die mahlzeitenvergünsitung nicht mehr beantragt wird
         // das kann gelöscht werden, sobald wir die funktion permanent aktivieren
-        if (this.model.zahlungsinformationen.keineMahlzeitenverguenstigungBeantragt &&
-            !this.isDemofeatureAlwaysShowZahlungsdatenEnabled()) {
+        if (this.model.zahlungsinformationen.keineMahlzeitenverguenstigungBeantragt) {
             this.model.zahlungsinformationen.iban = undefined;
             this.model.zahlungsinformationen.kontoinhaber = undefined;
             this.model.zahlungsinformationen.abweichendeZahlungsadresse = undefined;
