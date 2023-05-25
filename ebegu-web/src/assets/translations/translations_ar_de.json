@@ -162,5 +162,6 @@
     "ONBOARDING_BG_BEANTRAGEN": "Ich möchte einen Betreuungsbeitrag beantragen",
     "AUSZAHLUNG_AUSSERHALB_KIBON": "Auszahlung ausserhalb von kiBon",
     "BESONDERE_VOLKSSCHULE_AUSWAEHLEN": "",
+    "EXISTING_MUTATIONSMELDUNG": "Am {{datumMutationsmeldung}} um {{timeMutationsmeldung}} wurde zu dieser Betreuung eine Mutationsmeldung an die SOVAR gesendet",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }
