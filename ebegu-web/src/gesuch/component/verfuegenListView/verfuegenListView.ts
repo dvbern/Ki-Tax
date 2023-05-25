@@ -109,7 +109,6 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
     private kontingentierungEnabled: boolean = false;
     private readonly ebeguUtil: EbeguUtil;
     private isVerfuegungEingeschriebenSendenAktiv: boolean;
-    public readonly demoFeature = TSDemoFeature.VERAENDERUNG_BEI_MUTATION;
     private letzteIgnorierteGesuchId: string;
 
     public constructor(

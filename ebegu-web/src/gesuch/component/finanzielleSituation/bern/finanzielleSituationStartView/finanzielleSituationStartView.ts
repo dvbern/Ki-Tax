@@ -81,7 +81,6 @@ export class FinanzielleSituationStartViewController extends AbstractFinSitBernV
     private triedSavingWithoutForm: boolean = false;
 
     private isAlwaysShowAuszahlungsdatenActivated: boolean = false;
-    private isMutationIgnorierenActivated: boolean = false;
 
     public constructor(
         gesuchModelManager: GesuchModelManager,
@@ -129,8 +128,6 @@ export class FinanzielleSituationStartViewController extends AbstractFinSitBernV
 
         demoFeatureRS.isDemoFeatureAllowed(TSDemoFeature.ALLWAYS_SHOW_ZAHLUNGSDATEN_ON_FINSIT_BERN)
             .then(isAllowed => this.isAlwaysShowAuszahlungsdatenActivated = isAllowed);
-        demoFeatureRS.isDemoFeatureAllowed(TSDemoFeature.VERAENDERUNG_BEI_MUTATION)
-            .then(isAllowed => this.isMutationIgnorierenActivated = isAllowed);
     }
 
     public showSteuerveranlagung(): boolean {
