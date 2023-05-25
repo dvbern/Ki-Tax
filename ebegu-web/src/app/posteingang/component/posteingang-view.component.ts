@@ -362,19 +362,7 @@ export class PosteingangViewComponent implements OnInit, OnDestroy, AfterViewIni
             {...this.initialFilter};
 
         return of(initial).pipe(
-            mergeMap(filter => this.getDemoFeatureFilter(filter)),
             mergeMap(filter => this.adaptFilterForPrincipal(filter))
-        );
-    }
-
-    private getDemoFeatureFilter(filter: DVPosteingangFilter): Observable<DVPosteingangFilter> {
-        return from(this.demoFeatureRS.isDemoFeatureAllowed(TSDemoFeature.NEUE_VERANLAGUNG_MITTEILUNG)).pipe(
-            map(isAllowed => {
-                if (isAllowed) {
-                    filter.messageTypes.push(TSMitteilungTypes.NEUEVERANLAGUNGMITTEILUNG);
-                }
-                return filter;
-            })
         );
     }
 
