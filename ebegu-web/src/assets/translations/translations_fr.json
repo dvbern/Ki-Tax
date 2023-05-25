@@ -1884,6 +1884,9 @@
     "DOWNLOAD_WINDOW_TITLE": "Fichier de téléchargement",
     "STATISTIKEN_GESUCHE_NACH_STICHTAG_HINT": "La statistique des demandes selon le jour de pointage montre le nombre de demande non validées, les rappels et les recours pendants à un jour précis. Un jour de pointage et, le cas échéant, une période doivent être sélectionnés. ",
     "STATISTIKEN_GESUCHE_NACH_ZEITRAUM_HINT": "La statistique des demandes selon la période montre diverses statistiques concernant le nombre de demandes et de changements par institution et par offre de prise en charge pendant une période donnée. C'est la date de la demande qui fait foi. <br><br>Pour générer la statistique, une date de début et de fin doit être saisie et, le cas échéant, une période doit être sélectionnée.",
+    "FILTERNNACH": "Filtern nach",
+    "VERFUEGUNGSDATUM": "Verfügungsdatum",
+    "EINREICHEDATUM": "Einreichedatum",
     "STATISTIKEN_ZAHLUNGEN_HINT": "Affiche l'ensemble des versements aux institutions pendant la période couverte par la demande. Une période doit être sélectionnée. ",
     "STATISTIKEN_KINDER_HINT": "Affiche une liste contenant des informations détaillées au sujet des enfants ainsi que l'ensemble des tranches temporelles par offre et par institution, frais inclus<br/><br/>Une date de début et de fin doit être indiquée. La période couverte par la demande peut être précisée en option. ",
     "STATISTIKEN_GESUCHSTELLER_HINT": "Affiche une liste contenant des informations détaillées sur les parents, la situation familiale et financière par offre et par institution.<br/><br/>Un jour de pointage doit être saisi.",
@@ -2975,7 +2978,7 @@
     "ALLE_MUTATIONSMELDUNG_AUTOMATISCH_BEARBEITEN": "Traiter automatiquement tous les annonces de changement.",
     "ALLE_MUTATIONSMEDLUNG_AUTOMATISCH_BEARBEITEN": "Traiter les annonces de changement automatiquement",
     "ALLE_MUTATIONSMELDUNGEN_BEARBEITEN_TITLE": "Voulez-vous vraiment traiter automatiquement toutes les demandes de changements?",
-    "ALLE_MUTATIONSMELDUNGEN_BEARBEITEN_FRAGE": "<div class=\"well well-status-warten\">Cette fonction est actuellement en cours de révision, car elle peut entraîner de longs temps de chargement en cas de nombreux messages de mutation.</div><b>Attention: </b>toutes les annonces de changement figurant dans la liste sont traitées automatiquement et font l’objet d’une décision immédiate lorsque c’est possible.",
+    "ALLE_MUTATIONSMELDUNGEN_BEARBEITEN_FRAGE": "<b>Attention: </b>toutes les annonces de changement figurant dans la liste sont traitées automatiquement et font l’objet d’une décision immédiate lorsque c’est possible.",
     "AUTOMATISCHE_BEARBEITETE_MITTEILUNGEN_VERFUEGT": "Annonces de changement traitées et décisions rendues :",
     "AUTOMATISCHE_BEARBEITETE_MITTEILUNGEN_NICHT_VERFUEGT": "Annonces de changement traitées. Décisions à rendre (voir cas en suspens) :",
     "NICHT_BEARBEITETE_MITTEILUNGEN": "Annonces de changement nécessitant une vérification (consulter les messages) :",
@@ -3042,5 +3045,8 @@
     "ANGEBOT_FI_ENABLED": "Angebot Ferieninseln aktiviert",
     "ANGEBOT_TS_ENABLED": "Angebot Tagesschulen aktiviert",
     "ANGEBOT_TFO_ENABLED": "Angebot Tagesfamilienorganisationen aktiviert",
+    "MUTATIONSMELDUNG_BETREFF": "Annonce de changement",
+    "VERARBEITET": "verarbeitet",
+    "FEHLER_BEI_MITTEILUNG_BEARBEITUNG": "Mitteilungen, die durch Fehler nicht bearbeitet werden konnten:",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

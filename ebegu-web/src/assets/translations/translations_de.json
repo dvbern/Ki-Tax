@@ -1955,6 +1955,9 @@
     "DOWNLOAD_WINDOW_TITLE": "Filedownload",
     "STATISTIKEN_GESUCHE_NACH_STICHTAG_HINT": "Die Statistik Anträge nach Stichtag zeigt die Anzahl nicht freigegebener Anträge, die offenen Mahnungen und Beschwerden zu einem bestimmten Stichtag an.<br><br>Zur Generierung muss ein Stichtag und allenfalls eine Periode ausgewählt werden.",
     "STATISTIKEN_GESUCHE_NACH_ZEITRAUM_HINT": "Die Statistik Anträge nach Zeitraum zeigt diverse Statistiken zu Anzahl Anträgen und Mutationen je Institution und Betreuungsangebot über einen Zeitraum an. Relevant ist das Eingangsdatum der Anträge.<br><br>Zur Generierung muss ein von- und bis-Datum eingegeben und allenfalls eine Periode ausgewählt werden.",
+    "FILTERNNACH": "Filtern nach",
+    "VERFUEGUNGSDATUM": "Verfügungsdatum",
+    "EINREICHEDATUM": "Einreichedatum",
     "STATISTIKEN_ZAHLUNGEN_HINT": "Zeigt sämtliche Auszahlungen einer Periode an die Institutionen an. Zur Generierung muss eine Periode ausgewählt werden.",
     "STATISTIKEN_KINDER_HINT": "Zeigt eine Liste mit Detailinformationen zu Kindern sowie sämtlichen Zeitabschnitten je Angebot und Institution, inklusive Kosten.<br><br>Bei der Erstellung muss ein von- und ein bis-Datum sowie optional eine Periode eingegeben werden.",
     "STATISTIKEN_GESUCHSTELLER_HINT": "Zeigt eine Liste mit Detailinformationen zu Antragstellenden, deren Familiensituation und finanziellen Verhältnissen je Angebot und Institution.<br><br>Bei der Erstellung muss ein Stichtag eingegeben werden.",
@@ -3058,7 +3061,7 @@
     "GEMEINDE_ANGEBOT_NUR_LATS": "Nur für Lastenausgleich Tagesschule",
     "ALLE_MUTATIONSMELDUNG_AUTOMATISCH_BEARBEITEN": "Alle Mutationsmeldungen automatisch bearbeiten",
     "ALLE_MUTATIONSMELDUNGEN_BEARBEITEN_TITLE": "Wollen Sie wirklich alle Mutationsmeldungen automatisch bearbeiten?",
-    "ALLE_MUTATIONSMELDUNGEN_BEARBEITEN_FRAGE": "<div class=\"well well-status-warten\">Diese Funktion wird aktuell überarbeitet, weil sie bei vielen Mutationsmeldungen zu langen Ladezeiten führen kann.</div><b>Achtung: </b>Alle Mutationsmeldungen, die aktuell in der Liste zu sehen sind, werden automatisch bearbeitet und falls möglich direkt verfügt.",
+    "ALLE_MUTATIONSMELDUNGEN_BEARBEITEN_FRAGE": "<b>Achtung: </b>Alle Mutationsmeldungen, die aktuell in der Liste zu sehen sind, werden automatisch bearbeitet und falls möglich direkt verfügt.",
     "AUTOMATISCHE_BEARBEITETE_MITTEILUNGEN_VERFUEGT": "Mutationsmeldungen, die erfolgreich bearbeitet und verfügt wurden:",
     "AUTOMATISCHE_BEARBEITETE_MITTEILUNGEN_NICHT_VERFUEGT": "Mutationsmeldungen, die erfolgreich bearbeitet wurden und noch manuell verfügt werden müssen (siehe Pendenzen):",
     "NICHT_BEARBEITETE_MITTEILUNGEN": "Mutationsmeldungen, die eine manuelle Überprüfung benötigen (siehe Posteingang):",
@@ -3140,5 +3143,8 @@
     "ANGEBOT_FI_ENABLED": "Angebot Ferieninseln aktiviert",
     "ANGEBOT_TS_ENABLED": "Angebot Tagesschulen aktiviert",
     "ANGEBOT_TFO_ENABLED": "Angebot Tagesfamilienorganisationen aktiviert",
+    "MUTATIONSMELDUNG_BETREFF": "Mutationsmeldung",
+    "VERARBEITET": "verarbeitet",
+    "FEHLER_BEI_MITTEILUNG_BEARBEITUNG": "Mitteilungen, die durch Fehler nicht bearbeitet werden konnten:",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

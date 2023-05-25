@@ -32,7 +32,6 @@
     "FINANZIELLESITUATION_STEUERVERANLAGUNG": "Aktuellste Steuerveranlagung",
     "EKVI_EINKOMMENSVERSCHLECHTERUNG": "Einkommensänderung",
     "EINKOMMENSVERSCHLECHTERUNG_NACHWEIS_VERMOEGEN": "Nachweis Vermögensänderung",
-    "MANDANT_DIREKTION_BG": "Nino Freuler <br/>Pumag Consulting AG",
     "FACHLICHE_HILFE_BG": "Fachliche Hilfe",
     "IMPRESSUM_TEXT": "<h1>Impressum</h1><h2>Gesamtverantwortung</h2>Kanton Appenzell Ausserrhoden<br>Departement Gesundheit und Soziales<br>Kasernenstrasse 17<br>9102 Herisau<br><br><h2>Vollzugsstelle</h2>Sozialversicherungen Appenzell Ausserrhoden<br>Neue Steig 15<br>9102 Herisau <br><br><h2>Betrieb & Technik</h2>DV Bern<br>Nussbaumstrasse 21<br>CH-3000 Bern 22 · Schweiz",
     "TESTLOGIN_REDIRECT_WARNING_TITLE": "Sie werden jetzt auf das <b>TEST-LOGIN</b> weitergeleitet",
@@ -125,7 +124,7 @@
     "EINSCHULUNG_HINT": "Als eingeschult gelten Kinder ab dem Zeitpunkt, ab welchem sie den Kindergarten besuchen. ",
     "KEIN_VERTRAG": "Ich nutze Kibon zum Testen, ob ich einen Anspruch auf Betreuungsbeiträge habe und gebe darum noch keine Institution an.",
     "INSTITUTION_NOT_FOUND_HINT": "Sie haben Ihre Kinderbetreuungsinstitution nicht gefunden? Bitte melden Sie sich telefonisch bei der SOVAR (<a href=\"mailto:kibeg@sovar.ch\">kibeg@sovar.ch</a>, <a href=\"tel:071 354 51 51\">071 354 51 51</a>)",
-    "BETREUUNGSPENSUM_HELP": "Erfassen Sie hier das monatliche Betreuungspensum in Stunden. Bitte beachten Sie, dass im Vorschulalter <br><ul><li>1 Tag Betreuung / Woche = 40 Stunden / Monat</li><li>½ Tag Betreuung / Woche = 20 Stunden / Monat</li><li>¾ Tag Betreuung / Woche = 28 Stunden / Monat</li></ul>entspricht.<br><br>Pauschalen für einen ½ Tag mit Mittagsbetreuung werden als ¾ Tag angerechnet.",
+    "BETREUUNGSPENSUM_HELP": "Im Vorschulalter werden die Tagespauschalen auf das Anspruchspensum wie folgt berechnet:<br><br><ul><li>1 Tag Betreuung pro Woche = 40 Stunden pro Monat</li><li>½ Tag Betreuung pro Woche = 20 Stunden pro Monat</li><li>¾ Tag Betreuung pro Woche = 28 Stunden pro Monat</li></ul><br>Pauschalen für einen halben Tag mit Mittagsbetreuung werden als dreiviertel Tag angerechnet.",
     "MONATLICHE_BETREUUNGSKOSTEN_HELP": "Erfassen Sie hier die monatlichen Betreuungskosten. Anzugeben sind sämtliche Kosten, die den Erziehungsberechtigten in Rechnung gestellt werden, also zum Beispiel auch Verpflegungskosten.",
     "ERWEITERTE_BEDUERFNISSE": "Hat das Kind einen erhöhten Betreuungsbedarf?",
     "ERWEITERTE_BEDUERFNISSE_HINT": "Legen Sie ein Arztzeugnis bei, welches die medizinische Diagnose der Krankheit Ihres Kindes festhält und den daraus resultierenden erhöhten Betreuungsbedarf bestätigt. ",
@@ -163,5 +162,6 @@
     "ONBOARDING_BG_BEANTRAGEN": "Ich möchte einen Betreuungsbeitrag beantragen",
     "AUSZAHLUNG_AUSSERHALB_KIBON": "Auszahlung ausserhalb von kiBon",
     "BESONDERE_VOLKSSCHULE_AUSWAEHLEN": "",
+    "EXISTING_MUTATIONSMELDUNG": "Am {{datumMutationsmeldung}} um {{timeMutationsmeldung}} wurde zu dieser Betreuung eine Mutationsmeldung an die SOVAR gesendet",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

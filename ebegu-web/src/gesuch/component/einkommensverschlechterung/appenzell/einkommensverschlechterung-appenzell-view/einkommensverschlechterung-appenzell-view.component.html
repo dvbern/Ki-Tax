@@ -34,8 +34,10 @@
                     <dv-fin-sit-felder-appenzell
                         [readOnly]="isGesuchReadonly()"
                         [finanzModel]="model"
+                        [showBisher]="showBisher(getEkvToWorkWith())"
                         [antragstellerNumber]="getAntragstellerNumber()"
                         [finSitZusatzangabenAppenzell]="getZusatzangabenAppenzellToWorkWith()"
+                        [deklaration]="getZusatzangabenAppenzellGSToWorkWith()"
                         (valueChanges)="calculateResults()"
                     ></dv-fin-sit-felder-appenzell>
                 <dv-navigation-x (dvSave)="save($event.onResult)" [dvPrevious]="true" [dvNext]="true"

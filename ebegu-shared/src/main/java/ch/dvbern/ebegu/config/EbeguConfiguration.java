@@ -18,6 +18,7 @@ package ch.dvbern.ebegu.config;
 import java.util.Optional;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.errors.KibonLogLevel;
@@ -186,9 +187,11 @@ public interface EbeguConfiguration {
 
 	/**
 	 *
+	 * @param mandant might be null for a malconfigured Cooki
 	 * @return a full link to the page where users can create new logins for the portal
 	 */
-	String getPortalAccountCreationPageLink();
+	@Nullable
+	String getPortalAccountCreationPageLink(@Nullable Mandant mandant);
 
 	/**
 	 * read sentry env from system properties

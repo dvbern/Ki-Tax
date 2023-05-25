@@ -274,6 +274,12 @@ public final class EbeguUtil {
 				// finsit is gemeinsam for verheiratet in Luzern
 				return true;
 			}
+			if (gesuch.getFinSitTyp() == FinanzielleSituationTyp.APPENZELL && Boolean.TRUE.equals(requireNonNull(
+				requireNonNull(gesuch.getFamiliensituationContainer())
+					.getFamiliensituationJA())
+				.getGemeinsameSteuererklaerung())) {
+				return true;
+			}
 			if (gesuch.getGesuchsteller2() != null &&
 				(gesuch.getGesuchsteller2().getFinanzielleSituationContainer() == null ||
 					(gesuch.getGesuchsteller2().getFinanzielleSituationContainer() != null

@@ -38,6 +38,7 @@ public class AppenzellRechner extends AbstractRechner {
 
 	private static final double MAX_BETREUUNGSSTUNDEN_PRO_JAHR_VORSCHULE = 2400;
 	private static final double MAX_BETREUUNGSSTUNDEN_PRO_JAHR_EINGESCHULT = 1900;
+	private static final double ANZAHL_STUNDEN_PRO_BETREUUNGSTAG = 10;
 	private static final MathUtil EXACT = MathUtil.EXACT;
 	private BGCalculationInput input;
 	private BGRechnerParameterDTO parameter;
@@ -154,15 +155,23 @@ public class AppenzellRechner extends AbstractRechner {
 	}
 
 	private BigDecimal calculateAnspruchpensumInStunden() {
-		return EXACT.multiply(BigDecimal.valueOf(input.getAnspruchspensumProzent()), calculateMaxStundenProMonatAndProzent());
+		return EXACT.multiply(BigDecimal.valueOf(input.getAnspruchspensumProzent()), calculateHoursPerPercentForAnspruch());
 	}
 
 	private BigDecimal calcualteBetreuungspensumInStunden() {
-		return EXACT.multiply(input.getBetreuungspensumProzent(), calculateMaxStundenProMonatAndProzent());
+		return EXACT.multiply(input.getBetreuungspensumProzent(), calculateHoursPerPercent());
 	}
 
-	private BigDecimal calculateMaxStundenProMonatAndProzent() {
-		return BigDecimal.valueOf(getMaxBetreuungsstundenProJahr() / 100 / 12);
+	private BigDecimal calculateHoursPerPercent() {
+		return BigDecimal.valueOf(getBetreuungsstundenProJahr() / 12 / 100);
+	}
+
+	private double getBetreuungsstundenProJahr() {
+		return parameter.getOeffnungstageKita().doubleValue() * ANZAHL_STUNDEN_PRO_BETREUUNGSTAG;
+	}
+
+	private BigDecimal calculateHoursPerPercentForAnspruch() {
+		return BigDecimal.valueOf(getMaxBetreuungsstundenProJahr() / 12 / 100);
 	}
 
 	private double getMaxBetreuungsstundenProJahr() {

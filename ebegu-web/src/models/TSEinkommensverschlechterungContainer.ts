@@ -77,4 +77,10 @@ export class TSEinkommensverschlechterungContainer extends TSAbstractMutableEnti
             this.ekvJABasisJahrPlus2 :
             this.ekvJABasisJahrPlus1;
     }
+
+    public getGS(basisJahrPlus: number): TSEinkommensverschlechterung {
+        return basisJahrPlus === 2 ?
+            this.ekvGSBasisJahrPlus2 :
+            this.ekvGSBasisJahrPlus1;
+    }
 }

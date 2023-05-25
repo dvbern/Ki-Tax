@@ -24,6 +24,7 @@ public final class WorkJobConstants {
 	public static final String REPORT_VORLAGE_TYPE_PARAM = "reportVolageType";
 	public static final String DATE_FROM_PARAM = "dateFrom";
 	public static final String DATE_TO_PARAM = "dateTo";
+	public static final String DATUM_TYP = "datumTyp";
 	public static final String GESUCH_PERIODE_ID_PARAM = "gesuchPeriodeID";
 	public static final String ZAHLUNGSAUFTRAG_ID_PARAM = "zahlungsauftragID";
 	public static final String INKL_BG_GESUCHE = "inklBgGesuche";

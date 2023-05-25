@@ -10,6 +10,7 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Affero General Public License for more details.
+ *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
@@ -308,9 +309,12 @@ export class GesuchModelManager {
             if (gs === 1) {
                 return this.getEkvFuerBasisJahrPlus(bj);
             }
+            if (this.gesuch.extractFamiliensituation().gemeinsameSteuererklaerung) {
+                return false;
+            }
             // GS 2 Spezialfall
             if (this.isSpezialFallAR()) {
-                return true;
+                return this.getEkvFuerBasisJahrPlus(bj);
             }
             // GS 2 Normalfall
             return this.getEkvFuerBasisJahrPlus(bj) && EbeguUtil.isNotNullOrUndefined(this.gesuch.gesuchsteller2);
