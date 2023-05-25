@@ -19,3 +19,12 @@ update einstellung inner join mandant on einstellung.mandant_id = mandant.id
 set value = '20'
 where mandant.mandant_identifier = 'APPENZELL_AUSSERRHODEN'
 		and einstellung_key like 'GEMEINDE_MIN_ERWERBSPENSUM_EINGESCHULT';
+
+
+update einstellung
+set einstellung.value = '20'
+where einstellung.id in (select einstellung.id from gesuchsperiode
+         join einstellung on gesuchsperiode.id = einstellung.gesuchsperiode_id
+where gesuchsperiode.mandant_id = (select id from mandant where mandant_identifier = 'APPENZELL_AUSSERRHODEN')
+		and einstellung_key like 'MIN_ERWERBSPENSUM_EINGESCHULT');
+
