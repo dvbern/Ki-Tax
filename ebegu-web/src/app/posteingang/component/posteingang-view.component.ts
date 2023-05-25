@@ -154,7 +154,6 @@ export class PosteingangViewComponent implements OnInit, OnDestroy, AfterViewIni
     } = {};
 
     public readonly mutationsMeldungDemoFeature = TSDemoFeature.ALLE_MUTATIONSMELDUNGEN_VERFUEGEN;
-    public readonly mitteilungIgnorierenDemoFeature = TSDemoFeature.MITTEILUNG_IGNORIEREN;
 
     public constructor(
         private readonly mitteilungRS: MitteilungRS,

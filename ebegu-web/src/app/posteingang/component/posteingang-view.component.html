@@ -150,12 +150,10 @@
                                 <i class="fa fa-envelope fa-lg" [title]="'MITTEILUNG_UNGELESEN' | translate"></i>
                             </button>
                             <button type="button" class="dv-btn dv-btn-operation" (click)="$event.stopPropagation(); setIgnoriert(element)"
-                                    [dvDemoFeature]="mitteilungIgnorierenDemoFeature"
                                                *ngIf="isSuperAdminOrGemeinde() && canBeIgnored(element)">
                                 <i class="fa fa-eye-slash fa-lg" [title]="'MITTEILUNG_IGNORIEREN' | translate"></i>
                             </button>
                             <button type="button" class="dv-btn dv-btn-operation" (click)="$event.stopPropagation(); setGelesen(element)"
-                                    [dvDemoFeature]="mitteilungIgnorierenDemoFeature"
                                                *ngIf="isSuperAdminOrGemeinde() && canMitteilungStatusBeReverted(element)">
                                 <i class="fa fa-eye fa-lg" [title]="'MITTEILUNG_NICHT_IGNORIEREN' | translate"></i>
                             </button>
