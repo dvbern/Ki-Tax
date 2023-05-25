@@ -82,7 +82,6 @@ export class SteuerabfrageResponseHintsComponent implements OnInit, OnDestroy, O
     private subscription: Subscription;
 
     public geburtstagNotMatching$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
-    public readonly checkboxInformierenDemoFeature = TSDemoFeature.STEUERABFRAGE_NEUE_VERANLAGUNG;
 
     public constructor(
         public readonly gesuchModelManager: GesuchModelManager,
