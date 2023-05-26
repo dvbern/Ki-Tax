@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020 DV Bern AG, Switzerland
+ * Copyright (C) 2023 DV Bern AG, Switzerland
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -198,6 +198,7 @@ public class BGCalculationInput {
 
 	private boolean requiredAgeForAnspruchNotReached = false;
 	private boolean gesuchBeendenKonkubinatWirdInPeriodeXJahreAlt = false;
+	private double bgStundenFaktor = 1.0;
 
 	public BGCalculationInput(@Nonnull VerfuegungZeitabschnitt parent, @Nonnull RuleValidity ruleValidity) {
 		this.parent = parent;
@@ -266,6 +267,7 @@ public class BGCalculationInput {
 		this.isEkvAccepted = toCopy.isEkvAccepted;
 		this.requiredAgeForAnspruchNotReached = toCopy.requiredAgeForAnspruchNotReached;
 		this.gesuchBeendenKonkubinatWirdInPeriodeXJahreAlt = toCopy.gesuchBeendenKonkubinatWirdInPeriodeXJahreAlt;
+		this.bgStundenFaktor = toCopy.bgStundenFaktor;
 	}
 
 	@Nonnull
@@ -877,6 +879,9 @@ public class BGCalculationInput {
 		this.besondereBeduerfnisseZuschlag = add(this.getBesondereBeduerfnisseZuschlag(), other.getBesondereBeduerfnisseZuschlag());
 		this.requiredAgeForAnspruchNotReached = this.requiredAgeForAnspruchNotReached || other.requiredAgeForAnspruchNotReached;
 		this.gesuchBeendenKonkubinatWirdInPeriodeXJahreAlt = this.gesuchBeendenKonkubinatWirdInPeriodeXJahreAlt || other.gesuchBeendenKonkubinatWirdInPeriodeXJahreAlt;
+		if (this.bgStundenFaktor == 1.0 && other.getBgStundenFaktor() != 1.0) {
+			this.setBgStundenFaktor(other.getBgStundenFaktor());
+		}
 	}
 
 	/**
@@ -1078,7 +1083,8 @@ public class BGCalculationInput {
 			Objects.equals( this.partnerIdentischMitVorgesuch , other.partnerIdentischMitVorgesuch) &&
 			this.isEkvAccepted == other.isEkvAccepted &&
 			this.requiredAgeForAnspruchNotReached == other.requiredAgeForAnspruchNotReached &&
-			this.gesuchBeendenKonkubinatWirdInPeriodeXJahreAlt == other.gesuchBeendenKonkubinatWirdInPeriodeXJahreAlt;
+			this.gesuchBeendenKonkubinatWirdInPeriodeXJahreAlt == other.gesuchBeendenKonkubinatWirdInPeriodeXJahreAlt &&
+			this.bgStundenFaktor == other.bgStundenFaktor;
 	}
 
 	@SuppressWarnings("PMD.CompareObjectsWithEquals")
@@ -1246,5 +1252,13 @@ public class BGCalculationInput {
 
 	public boolean isGesuchBeendenKonkubinatWirdInPeriodeXJahreAlt() {
 		return gesuchBeendenKonkubinatWirdInPeriodeXJahreAlt;
+	}
+
+	public void setBgStundenFaktor(double bgStundenFaktor) {
+		this.bgStundenFaktor = bgStundenFaktor;
+	}
+
+	public double getBgStundenFaktor() {
+		return bgStundenFaktor;
 	}
 }

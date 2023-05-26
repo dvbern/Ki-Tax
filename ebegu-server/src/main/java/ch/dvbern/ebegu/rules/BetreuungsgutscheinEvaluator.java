@@ -1,16 +1,18 @@
 /*
- * Ki-Tax: System for the management of external childcare subsidies
- * Copyright (C) 2017 City of Bern Switzerland
+ * Copyright (C) 2023 DV Bern AG, Switzerland
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
+ *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
 package ch.dvbern.ebegu.rules;
@@ -34,6 +36,7 @@ import ch.dvbern.ebegu.entities.Einstellung;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.KindContainer;
+import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.entities.Verfuegung;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.AntragStatus;
@@ -49,9 +52,12 @@ import ch.dvbern.ebegu.rechner.rules.RechnerRule;
 import ch.dvbern.ebegu.rechner.rules.ZusaetzlicherBabyGutscheinRechnerRule;
 import ch.dvbern.ebegu.rechner.rules.ZusaetzlicherGutscheinGemeindeRechnerRule;
 import ch.dvbern.ebegu.rules.initalizer.RestanspruchInitializer;
+import ch.dvbern.ebegu.rules.initalizer.RestanspruchInitializerAR;
+import ch.dvbern.ebegu.rules.initalizer.RestanspruchInitializerVisitor;
 import ch.dvbern.ebegu.rules.util.BemerkungsMerger;
 import ch.dvbern.ebegu.rules.veraenderung.VeraenderungCalculator;
 import ch.dvbern.ebegu.util.BetreuungComparatorVisitor;
+import ch.dvbern.ebegu.util.EinschulungstypBgStundenFaktorVisitor;
 import ch.dvbern.ebegu.util.KitaxUebergangsloesungParameter;
 import ch.dvbern.ebegu.util.VerfuegungUtil;
 import org.slf4j.Logger;
@@ -188,6 +194,7 @@ public class BetreuungsgutscheinEvaluator {
 			plaetzeList.sort(new BetreuungComparatorVisitor().getComparatorForMandant(gesuch.extractMandant()));
 
 			for (AbstractPlatz platz : plaetzeList) {
+				initFaktorBgStunden(kindContainer, restanspruchZeitabschnitte, platz);
 
 				boolean isTagesschule = platz.getBetreuungsangebotTyp().isTagesschule();
 
@@ -270,6 +277,20 @@ public class BetreuungsgutscheinEvaluator {
 				restanspruchZeitabschnitte = executor.executeRestanspruchInitializer(platz, zeitabschnitte);
 			}
 		}
+	}
+
+	private static void initFaktorBgStunden(
+		KindContainer kindContainer,
+		List<VerfuegungZeitabschnitt> restanspruchZeitabschnitte,
+		AbstractPlatz platz) {
+		restanspruchZeitabschnitte.forEach(verfuegungZeitabschnitt -> {
+			final Mandant mandant = platz.extractGesuch().extractMandant();
+			final EinschulungstypBgStundenFaktorVisitor einschulungstypBgStundenFaktorVisitor =
+				new EinschulungstypBgStundenFaktorVisitor(
+					mandant,
+					Objects.requireNonNull(kindContainer.getKindJA().getEinschulungTyp()));
+			verfuegungZeitabschnitt.setBgStundenFaktor(einschulungstypBgStundenFaktorVisitor.getFaktor());
+		});
 	}
 
 	private void calculateVeraenderungen(Verfuegung verfuegungPreview, Verfuegung vorgaengerVerfuegung, boolean isTagesschule) {
@@ -381,7 +402,8 @@ public class BetreuungsgutscheinEvaluator {
 			throw new EbeguRuntimeException("getRestanspruchForVerfuegteBetreung", message);
 		}
 		Objects.requireNonNull(verfuegungForRestanspruch.getBetreuung());
-		RestanspruchInitializer restanspruchInitializer = new RestanspruchInitializer(isDebug);
+		RestanspruchInitializer restanspruchInitializer =
+			new RestanspruchInitializerVisitor(betreuung.extractGesuch().extractMandant(), isDebug).process();
 		restanspruchZeitabschnitte = restanspruchInitializer.executeIfApplicable(
 			verfuegungForRestanspruch.getBetreuung(), verfuegungForRestanspruch.getZeitabschnitte());
 
