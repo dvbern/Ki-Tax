@@ -20,7 +20,6 @@ package ch.dvbern.ebegu.rechner;
 import java.math.BigDecimal;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Objects;
 import java.util.TreeMap;
 
 import javax.annotation.Nonnull;
@@ -153,7 +152,7 @@ public class AppenzellRechner extends AbstractRechner {
 	}
 
 	private BigDecimal calculateAnspruchpensumInStunden() {
-		return EXACT.multiply(BigDecimal.valueOf(input.getAnspruchspensumProzent()), BigDecimal.valueOf(input.getBgStundenFaktor()));
+		return EXACT.multiply(BigDecimal.valueOf(input.getAnspruchspensumProzent()), input.getBgStundenFaktor());
 	}
 
 	private BigDecimal calcualteBetreuungspensumInStunden() {

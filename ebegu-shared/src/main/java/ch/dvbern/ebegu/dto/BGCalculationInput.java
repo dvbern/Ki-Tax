@@ -198,7 +198,7 @@ public class BGCalculationInput {
 
 	private boolean requiredAgeForAnspruchNotReached = false;
 	private boolean gesuchBeendenKonkubinatWirdInPeriodeXJahreAlt = false;
-	private double bgStundenFaktor = 1.0;
+	private BigDecimal bgStundenFaktor = BigDecimal.ONE;
 
 	public BGCalculationInput(@Nonnull VerfuegungZeitabschnitt parent, @Nonnull RuleValidity ruleValidity) {
 		this.parent = parent;
@@ -879,9 +879,8 @@ public class BGCalculationInput {
 		this.besondereBeduerfnisseZuschlag = add(this.getBesondereBeduerfnisseZuschlag(), other.getBesondereBeduerfnisseZuschlag());
 		this.requiredAgeForAnspruchNotReached = this.requiredAgeForAnspruchNotReached || other.requiredAgeForAnspruchNotReached;
 		this.gesuchBeendenKonkubinatWirdInPeriodeXJahreAlt = this.gesuchBeendenKonkubinatWirdInPeriodeXJahreAlt || other.gesuchBeendenKonkubinatWirdInPeriodeXJahreAlt;
-		if (this.bgStundenFaktor == 1.0 && other.getBgStundenFaktor() != 1.0) {
-			this.setBgStundenFaktor(other.getBgStundenFaktor());
-		}
+		//BG-Factor is always the same for all Zeitabschnitte
+		this.setBgStundenFaktor(other.getBgStundenFaktor());
 	}
 
 	/**
@@ -1084,7 +1083,7 @@ public class BGCalculationInput {
 			this.isEkvAccepted == other.isEkvAccepted &&
 			this.requiredAgeForAnspruchNotReached == other.requiredAgeForAnspruchNotReached &&
 			this.gesuchBeendenKonkubinatWirdInPeriodeXJahreAlt == other.gesuchBeendenKonkubinatWirdInPeriodeXJahreAlt &&
-			this.bgStundenFaktor == other.bgStundenFaktor;
+			MathUtil.isSame(this.bgStundenFaktor, other.bgStundenFaktor);
 	}
 
 	@SuppressWarnings("PMD.CompareObjectsWithEquals")
@@ -1254,11 +1253,11 @@ public class BGCalculationInput {
 		return gesuchBeendenKonkubinatWirdInPeriodeXJahreAlt;
 	}
 
-	public void setBgStundenFaktor(double bgStundenFaktor) {
+	public void setBgStundenFaktor(BigDecimal bgStundenFaktor) {
 		this.bgStundenFaktor = bgStundenFaktor;
 	}
 
-	public double getBgStundenFaktor() {
+	public BigDecimal getBgStundenFaktor() {
 		return bgStundenFaktor;
 	}
 }

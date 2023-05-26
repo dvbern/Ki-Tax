@@ -648,7 +648,7 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 		this.getBgCalculationInputGemeinde().setPartnerIdentischMitVorgesuch(partnerIdentischMitVorgesuch);
 	}
 
-	public void setBgStundenFaktor(double bgStundenFaktor){
+	public void setBgStundenFaktor(BigDecimal bgStundenFaktor){
 		this.getBgCalculationInputAsiv().setBgStundenFaktor(bgStundenFaktor);
 		this.getBgCalculationInputGemeinde().setBgStundenFaktor(bgStundenFaktor);
 	}

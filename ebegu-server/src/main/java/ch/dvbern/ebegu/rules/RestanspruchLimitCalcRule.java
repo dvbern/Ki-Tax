@@ -17,6 +17,7 @@
 
 package ch.dvbern.ebegu.rules;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Locale;
 
@@ -27,6 +28,7 @@ import ch.dvbern.ebegu.entities.AbstractPlatz;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.MsgKey;
 import ch.dvbern.ebegu.types.DateRange;
+import ch.dvbern.ebegu.util.MathUtil;
 import com.google.common.collect.ImmutableList;
 
 import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.KITA;
@@ -61,8 +63,8 @@ public class RestanspruchLimitCalcRule extends AbstractCalcRule {
 				inputData.addBemerkung(
 					MsgKey.RESTANSPRUCH_MSG,
 					getLocale(),
-					anspruchberechtigtesPensum * inputData.getBgStundenFaktor(),
-					verfuegbarerRestanspruch * inputData.getBgStundenFaktor());
+						MathUtil.EXACT.multiply(BigDecimal.valueOf(anspruchberechtigtesPensum), inputData.getBgStundenFaktor()),
+						MathUtil.EXACT.multiply(BigDecimal.valueOf(verfuegbarerRestanspruch), inputData.getBgStundenFaktor()));
 			}
 			inputData.setAnspruchspensumProzent(verfuegbarerRestanspruch);
 		}

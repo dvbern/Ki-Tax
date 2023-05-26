@@ -17,42 +17,46 @@
 
 package ch.dvbern.ebegu.util;
 
+import java.math.BigDecimal;
+
 import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.enums.EinschulungTyp;
 import ch.dvbern.ebegu.util.mandant.MandantVisitor;
 
-public class EinschulungstypBgStundenFaktorVisitor implements MandantVisitor<Double> {
+public class EinschulungstypBgStundenFaktorVisitor implements MandantVisitor<BigDecimal> {
 	private final EinschulungTyp einschulungTyp;
 
-	private static final double MAX_BETREUUNGSSTUNDEN_PRO_JAHR_VORSCHULE_AR = 2400;
-	private static final double MAX_BETREUUNGSSTUNDEN_PRO_JAHR_EINGESCHULT_AR = 1900;
+	private static final BigDecimal MAX_BETREUUNGSSTUNDEN_PRO_JAHR_VORSCHULE_AR = BigDecimal.valueOf(2400);
+	private static final BigDecimal MAX_BETREUUNGSSTUNDEN_PRO_JAHR_EINGESCHULT_AR =  BigDecimal.valueOf(1900);
 
 	public EinschulungstypBgStundenFaktorVisitor(EinschulungTyp einschulungTyp) {
 		this.einschulungTyp = einschulungTyp;
 	}
 
-	public double getFaktor(Mandant mandant) {
+	public BigDecimal getFaktor(Mandant mandant) {
 		return mandant.getMandantIdentifier().accept(this);
 	}
 	@Override
-	public Double visitBern() {
-		return 1.0;
+	public BigDecimal visitBern() {
+		return BigDecimal.ONE;
 	}
 
 	@Override
-	public Double visitLuzern() {
-		return 1.0;
+	public BigDecimal visitLuzern() {
+		return BigDecimal.ONE;
 	}
 
 	@Override
-	public Double visitSolothurn() {
-		return 1.0;
+	public BigDecimal visitSolothurn() {
+		return BigDecimal.ONE;
 	}
 
 	@Override
-	public Double visitAppenzellAusserrhoden() {
-		return (einschulungTyp.isEingeschultAppenzell() ?
+	public BigDecimal visitAppenzellAusserrhoden() {
+		BigDecimal bgStundenProJahr =  (einschulungTyp.isEingeschultAppenzell() ?
 			MAX_BETREUUNGSSTUNDEN_PRO_JAHR_EINGESCHULT_AR :
-			MAX_BETREUUNGSSTUNDEN_PRO_JAHR_VORSCHULE_AR) / 12 / 100;
+			MAX_BETREUUNGSSTUNDEN_PRO_JAHR_VORSCHULE_AR);
+
+		return MathUtil.EXACT.divide(MathUtil.EXACT.divide(bgStundenProJahr, BigDecimal.valueOf(12)), BigDecimal.valueOf(100));
 	}
 }
