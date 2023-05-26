@@ -61,8 +61,8 @@ public class RestanspruchLimitCalcRule extends AbstractCalcRule {
 				inputData.addBemerkung(
 					MsgKey.RESTANSPRUCH_MSG,
 					getLocale(),
-					anspruchberechtigtesPensum,
-					verfuegbarerRestanspruch);
+					anspruchberechtigtesPensum * inputData.getBgStundenFaktor(),
+					verfuegbarerRestanspruch * inputData.getBgStundenFaktor());
 			}
 			inputData.setAnspruchspensumProzent(verfuegbarerRestanspruch);
 		}
