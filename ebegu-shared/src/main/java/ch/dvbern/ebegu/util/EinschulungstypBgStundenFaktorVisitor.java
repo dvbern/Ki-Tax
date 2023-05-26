@@ -22,20 +22,17 @@ import ch.dvbern.ebegu.enums.EinschulungTyp;
 import ch.dvbern.ebegu.util.mandant.MandantVisitor;
 
 public class EinschulungstypBgStundenFaktorVisitor implements MandantVisitor<Double> {
-
-	private final Mandant mandant;
 	private final EinschulungTyp einschulungTyp;
 
 	private static final double MAX_BETREUUNGSSTUNDEN_PRO_JAHR_VORSCHULE_AR = 2400;
 	private static final double MAX_BETREUUNGSSTUNDEN_PRO_JAHR_EINGESCHULT_AR = 1900;
 
-	public double getFaktor() {
-		return mandant.getMandantIdentifier().accept(this);
+	public EinschulungstypBgStundenFaktorVisitor(EinschulungTyp einschulungTyp) {
+		this.einschulungTyp = einschulungTyp;
 	}
 
-	public EinschulungstypBgStundenFaktorVisitor(Mandant mandant, EinschulungTyp einschulungTyp) {
-		this.mandant = mandant;
-		this.einschulungTyp = einschulungTyp;
+	public double getFaktor(Mandant mandant) {
+		return mandant.getMandantIdentifier().accept(this);
 	}
 	@Override
 	public Double visitBern() {

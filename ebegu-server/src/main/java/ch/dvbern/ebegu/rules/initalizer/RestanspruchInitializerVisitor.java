@@ -22,17 +22,16 @@ import ch.dvbern.ebegu.util.mandant.MandantVisitor;
 
 public class RestanspruchInitializerVisitor implements MandantVisitor<RestanspruchInitializer> {
 
-	private final Mandant mandant;
 	private final boolean isDebug;
 
-	public RestanspruchInitializer process() {
+	public RestanspruchInitializerVisitor(boolean isDebug) {
+		this.isDebug = isDebug;
+	}
+
+	public RestanspruchInitializer getRestanspruchInitialzier(Mandant mandant) {
 		return mandant.getMandantIdentifier().accept(this);
 	}
 
-	public RestanspruchInitializerVisitor(Mandant mandant, boolean isDebug) {
-		this.mandant = mandant;
-		this.isDebug = isDebug;
-	}
 	@Override
 	public RestanspruchInitializer visitBern() {
 		return new RestanspruchInitializer(isDebug);

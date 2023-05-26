@@ -284,9 +284,8 @@ public class BetreuungsgutscheinEvaluator {
 		restanspruchZeitabschnitte.forEach(verfuegungZeitabschnitt -> {
 			final EinschulungstypBgStundenFaktorVisitor einschulungstypBgStundenFaktorVisitor =
 				new EinschulungstypBgStundenFaktorVisitor(
-					mandant,
 					Objects.requireNonNull(kindContainer.getKindJA().getEinschulungTyp()));
-			verfuegungZeitabschnitt.setBgStundenFaktor(einschulungstypBgStundenFaktorVisitor.getFaktor());
+			verfuegungZeitabschnitt.setBgStundenFaktor(einschulungstypBgStundenFaktorVisitor.getFaktor(mandant));
 		});
 	}
 
@@ -400,7 +399,7 @@ public class BetreuungsgutscheinEvaluator {
 		}
 		Objects.requireNonNull(verfuegungForRestanspruch.getBetreuung());
 		RestanspruchInitializer restanspruchInitializer =
-			new RestanspruchInitializerVisitor(betreuung.extractGesuch().extractMandant(), isDebug).process();
+			new RestanspruchInitializerVisitor(isDebug).getRestanspruchInitialzier(betreuung.extractGesuch().extractMandant());
 		restanspruchZeitabschnitte = restanspruchInitializer.executeIfApplicable(
 			verfuegungForRestanspruch.getBetreuung(), verfuegungForRestanspruch.getZeitabschnitte());
 

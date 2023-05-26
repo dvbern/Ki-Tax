@@ -184,7 +184,7 @@ public class BetreuungsgutscheinExecutor {
 		@Nonnull List<VerfuegungZeitabschnitt> zeitabschnitte
 	) {
 		RestanspruchInitializer restanspruchInitializer =
-			new RestanspruchInitializerVisitor(platz.extractGesuch().extractMandant(), isDebug).process();
+			new RestanspruchInitializerVisitor(isDebug).getRestanspruchInitialzier(platz.extractGesuch().extractMandant());
 		return restanspruchInitializer.executeIfApplicable(platz, zeitabschnitte);
 	}
 }
