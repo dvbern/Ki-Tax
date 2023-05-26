@@ -1,0 +1,58 @@
+<!--
+  ~ Copyright (C) 2023 DV Bern AG, Switzerland
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU Affero General Public License as
+  ~ published by the Free Software Foundation, either version 3 of the
+  ~ License, or (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU Affero General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU Affero General Public License
+  ~ along with this program.  If not, see <https://www.gnu.org/licenses/>.
+  -->
+
+<button mat-button [matMenuTriggerFor]="menu" class="user-menu-trigger">
+    <span>{{getFullName() | async}}</span>
+    <i class="fa fa-angle-down"></i>
+</button>
+
+<mat-menu #menu="matMenu" class="pulldown-user-menu">
+    <dv-pulldown-user-menu-button [allowedRoles]="getSuperAdminRoles()"
+                                  [uiSRef]="'admin.debugging'">{{'DEBUGGING' | translate}}</dv-pulldown-user-menu-button>
+    <dv-pulldown-user-menu-button [allowedRoles]="getSuperAdminRoles()"
+                                  [uiSRef]="'admin.testdaten'">{{'TESTDATEN' | translate}}</dv-pulldown-user-menu-button>
+    <dv-pulldown-user-menu-button [allowedRoles]="getSuperAdminRoles()"
+                                  [uiSRef]="'admin.batchjobTrigger'">{{'BATCHJOBTRIGGER' | translate}}</dv-pulldown-user-menu-button>
+    <dv-pulldown-user-menu-button [allowedRoles]="getSuperAdminRoles()"
+                                  [uiSRef]="'admin.betreuungMonitoring'">{{'MENU_BETREUUNG_MONITORING' | translate}}</dv-pulldown-user-menu-button>
+    <dv-pulldown-user-menu-button [allowedRoles]="getAllAdministratorRevisorRole()"
+                                  [uiSRef]="'admin.benutzerlist'">{{'BENUTZER' | translate}}</dv-pulldown-user-menu-button>
+    <dv-pulldown-user-menu-button [allowedRoles]="getSuperAdminRoles()"
+                                  [uiSRef]="'admin.view'">{{'ADMIN' | translate}}</dv-pulldown-user-menu-button>
+    <dv-pulldown-user-menu-button [allowedRoles]="getSuperAdminRoles()"
+                                  [uiSRef]="'admin.gesuchsperioden'">{{'GESUCHSPERIODEN_MENU' | translate}}</dv-pulldown-user-menu-button>
+    <dv-pulldown-user-menu-button [allowedRoles]="getInstitutionProfilRoles()"
+                                  [uiSRef]="'institution.list'">{{'INSTITUTIONEN' | translate}}</dv-pulldown-user-menu-button>
+    <dv-pulldown-user-menu-button [allowedRoles]="getMandantRoles()"
+                                  [uiSRef]="'traegerschaft.list'">{{'TRAEGERSCHAFTEN' | translate}}</dv-pulldown-user-menu-button>
+    <dv-pulldown-user-menu-button *ngIf="getTraegerschaftId() | async as traegerschaftId"
+                                  [allowedRoles]="getSuperAdminRoles()"
+                                  [uiSRef]="'traegerschaft.edit({traegerschaftId:' + traegerschaftId + '})'">
+        {{'TRAEGERSCHAFT' | translate}}
+    </dv-pulldown-user-menu-button>
+    <dv-pulldown-user-menu-button [allowedRoles]="getAdministratorMandantRevisorRole()"
+                                  [uiSRef]="'gemeinde.list'">{{'GEMEINDEN' | translate}}</dv-pulldown-user-menu-button>
+    <dv-pulldown-user-menu-button [allowedRoles]="getAllRolesForSozialdienst()"
+                                  [uiSRef]="'sozialdienst.list'">{{'MENU_SOZIALDIENST' | translate}}</dv-pulldown-user-menu-button>
+    <dv-pulldown-user-menu-button *ngIf="multimandantAktiv"
+                                  [allowedRoles]="getSuperAdminRoles()"
+                                  [uiSRef]="'onboarding.mandant'">{{'MANDANT_SWITCH' | translate}}</dv-pulldown-user-menu-button>
+    <dv-pulldown-user-menu-button (buttonClick)="logout()">{{'AUSLOGGEN' | translate}}</dv-pulldown-user-menu-button>
+
+    <dv-language-selector *ngIf="frenchEnabled"></dv-language-selector>
+
+</mat-menu>

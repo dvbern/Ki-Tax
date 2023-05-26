@@ -73,7 +73,12 @@ import {DvPosteingangComponent} from '../core/component/dv-posteingang/dv-postei
 import {DvRadioContainerXComponent} from '../core/component/dv-radio-container/dv-radio-container-x.component';
 import {DvRadioInputXComponent} from '../core/component/dv-radio-input-x/dv-radio-input-x.component';
 import {DvValueinputXComponent} from '../core/component/dv-valueinput-x/dv-valueinput-x.component';
+import {LanguageSelectorComponent} from '../core/component/language-selector/language-selector.component';
 import {NavbarComponent} from '../core/component/navbar/navbar.component';
+import {
+    PulldownUserMenuButtonComponent
+} from '../core/component/pulldown-user-menu-button/pulldown-user-menu-button.component';
+import {PulldownUserMenuComponent} from '../core/component/pulldown-user-menu/pulldown-user-menu.component';
 import {DvDemoFeatureDirective} from '../core/directive/dv-hide-feature/dv-demo-feature.directive';
 import {DvLoadingButtonXDirective} from '../core/directive/dv-loading-button/dv-loading-button-x.directive';
 import {DvNgDebounceClickDirective} from '../core/directive/dv-ng-debounce-click/dv-ng-debounce-click.directive';
@@ -219,7 +224,10 @@ export function createTranslateLoader(http: HttpClient, mandantService: MandantS
         DvCheckboxXComponent,
         WarningComponent,
         DvNgEnableElementDirective,
-        DvDemoFeatureWrapperComponent
+        DvDemoFeatureWrapperComponent,
+        PulldownUserMenuComponent,
+        PulldownUserMenuButtonComponent,
+        LanguageSelectorComponent
     ],
     // adding custom elements schema disables Angular's element validation: you can now use transclusion for the
     // dv-accordion-tab with multi-slot transclusion (tab-title & tab-body elements).

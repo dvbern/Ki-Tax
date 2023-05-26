@@ -97,7 +97,6 @@ import {DVLoginButtonConfig} from './component/dv-login-button/dv-login-button';
 import {DvMitteilungDelegationComponent} from './component/dv-mitteilung-delegation/dv-mitteilung-delegation.component';
 import {DVMitteilungListConfig} from './component/dv-mitteilung-list/dv-mitteilung-list';
 import {DvMobileNavigationToggleComponentConfig} from './component/dv-mobile-navigation-toggle/dv-mobile-navigation-toggle';
-import {DvPulldownUserMenuComponentConfig} from './component/dv-pulldown-user-menu/dv-pulldown-user-menu';
 import {DvRadioContainerComponentConfig} from './component/dv-radio-container/dv-radio-container';
 import {DvQuicksearchboxComponentConfig} from './component/dv-search/dv-quicksearchbox/dv-quicksearchbox';
 import {DvSearchResultIconComponentConfig} from './component/dv-search/dv-search-result-icon/dv-search-result-icon';
@@ -105,6 +104,7 @@ import {DvSkiplinksComponentConfig} from './component/dv-skiplinks/dv-skiplinks'
 import {DvTooltipComponentConfig} from './component/dv-tooltip/dv-tooltip';
 import {DVVersionComponentConfig} from './component/dv-version/dv-version';
 import {NavbarComponent} from './component/navbar/navbar.component';
+import {PulldownUserMenuComponent} from './component/pulldown-user-menu/pulldown-user-menu.component';
 import {configure} from './config';
 import {CONSTANTS} from './constants/CONSTANTS';
 import {DVRoleElementController} from './controller/DVRoleElementController';
@@ -205,6 +205,7 @@ const calculatedDeps = dependencies.concat(dynamicDependencies());
 export const CORE_JS_MODULE = angular
     .module('ebeguWeb.core', calculatedDeps)
     .run(appRun)
+    // remove in KIBON-2962
     .run(languageEnabledHookRunBlock)
     .config(configure)
     .constant('REST_API', '/ebegu/api/v1/')
@@ -299,7 +300,6 @@ export const CORE_JS_MODULE = angular
     .component('dvErwerbspensumList', new DVErwerbspensumListConfig())
     .component('dvRadioContainer', new DvRadioContainerComponentConfig())
     .component('dvTooltip', new DvTooltipComponentConfig())
-    .component('dvPulldownUserMenu', new DvPulldownUserMenuComponentConfig())
     .component('dvMobileNavigationToggle', new DvMobileNavigationToggleComponentConfig())
     .component('dvHomeIcon', new DvHomeIconComponentConfig())
     .component('dvSkiplinks', new DvSkiplinksComponentConfig())
@@ -325,6 +325,7 @@ export const CORE_JS_MODULE = angular
     .directive('dvBenutzer', downgradeComponent({component: BenutzerComponent}))
     .directive('dvSearchList', downgradeComponent({component: DvSearchListComponent}))
     .directive('dvDemoFeatureWrapper', downgradeComponent({component: DvDemoFeatureWrapperComponent}))
+    .directive('dvPulldownUserMenu', downgradeComponent({component: PulldownUserMenuComponent}))
     .service('MahnungRS', MahnungRS)
     .service('ReportRS', ReportRS)
     .service('EwkRS', EwkRS)

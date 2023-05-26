@@ -13,12 +13,13 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {enableProdMode, NgZone} from '@angular/core';
+import {enableProdMode, NgModuleRef, NgZone} from '@angular/core';
 import {platformBrowserDynamic} from '@angular/platform-browser-dynamic';
 import {UIRouter, UrlService} from '@uirouter/core';
 import * as angular from 'angular';
 import {APP_JS_MODULE} from './app/app.angularjs.module';
 import {AppModule} from './app/app.module';
+import {I18nServiceRSRest} from './app/i18n/services/i18nServiceRS.rest';
 import {initHooks} from './authentication/state-hooks/init-hooks';
 import {environment} from './environments/environment';
 
@@ -45,10 +46,20 @@ platformBrowserDynamic().bootstrapModule(AppModule).then(platformRef => {
     };
 
     platformRef.injector.get<NgZone>(NgZone).run(startRouter);
-    // TODO: Move to ng-authentication.module once fully migrated
+    // Move to ng-authentication.module once fully migrated in KIBON-2962
     initHooks(platformRef);
+    injectAngularJSTranslateIntoNgService(platformRef);
 })
     .catch(err => console.error('App bootstrap error:', err));
+
+// Workaround to avoid 'AngularJS Injector not set' error
+// Could probably be avoided by cleaning up the modules and i18n service, but this is redundant once the
+// angular js migrations is advanced enough
+// Will be removed in KIBON-2962
+function injectAngularJSTranslateIntoNgService(platformRef: NgModuleRef<AppModule>): void {
+    platformRef.injector.get(I18nServiceRSRest)
+        .setAngularJSTranslateService(platformRef.injector.get('$injector').get('$translate'));
+}
 
 // Show ui-router-visualizer
 // APP_JS_MODULE.run(['$uiRouter', visualizer]);

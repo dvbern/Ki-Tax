@@ -18,10 +18,13 @@
 import {NgModuleRef} from '@angular/core';
 import {TransitionService} from '@uirouter/angular';
 import {AppModule} from '../../app/app.module';
+import {ApplicationPropertyRS} from '../../app/core/rest-services/applicationPropertyRS.rest';
+import {I18nServiceRSRest} from '../../app/i18n/services/i18nServiceRS.rest';
 import {AuthServiceRS} from '../service/AuthServiceRS.rest';
 import {authenticationHookRunBlockX} from './onBefore/authenticationX.hook';
 import {authorisationHookRunBlockX} from './onBefore/authorisationX.hook';
 import {debugHookRunBlock} from './onBefore/debug.hook';
+import {languageEnabledHookRunBlockX} from './onBefore/languageEnabledHookRunBlockX';
 
 export function initHooks(platformRef: NgModuleRef<AppModule>): void {
 
@@ -35,5 +38,10 @@ export function initHooks(platformRef: NgModuleRef<AppModule>): void {
     );
     debugHookRunBlock(
         platformRef.injector.get<TransitionService>(TransitionService)
+    );
+    languageEnabledHookRunBlockX(
+        platformRef.injector.get<TransitionService>(TransitionService),
+        platformRef.injector.get<ApplicationPropertyRS>(ApplicationPropertyRS),
+        platformRef.injector.get<I18nServiceRSRest>(I18nServiceRSRest)
     );
 }
