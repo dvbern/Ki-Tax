@@ -52,7 +52,6 @@ import ch.dvbern.ebegu.rechner.rules.RechnerRule;
 import ch.dvbern.ebegu.rechner.rules.ZusaetzlicherBabyGutscheinRechnerRule;
 import ch.dvbern.ebegu.rechner.rules.ZusaetzlicherGutscheinGemeindeRechnerRule;
 import ch.dvbern.ebegu.rules.initalizer.RestanspruchInitializer;
-import ch.dvbern.ebegu.rules.initalizer.RestanspruchInitializerAR;
 import ch.dvbern.ebegu.rules.initalizer.RestanspruchInitializerVisitor;
 import ch.dvbern.ebegu.rules.util.BemerkungsMerger;
 import ch.dvbern.ebegu.rules.veraenderung.VeraenderungCalculator;
@@ -186,6 +185,7 @@ public class BetreuungsgutscheinEvaluator {
 				RestanspruchInitializer.createInitialenRestanspruch(
 					gesuch.getGesuchsperiode(),
 					!rechnerRulesForGemeinde.isEmpty());
+			initFaktorBgStunden(kindContainer, restanspruchZeitabschnitte, gesuch.extractMandant());
 
 			// Betreuungen werden einzeln berechnet, reihenfolge ist wichtig (sortiert mit comperator gem regel
 			// EBEGU-561)
@@ -194,8 +194,6 @@ public class BetreuungsgutscheinEvaluator {
 			plaetzeList.sort(new BetreuungComparatorVisitor().getComparatorForMandant(gesuch.extractMandant()));
 
 			for (AbstractPlatz platz : plaetzeList) {
-				initFaktorBgStunden(kindContainer, restanspruchZeitabschnitte, platz);
-
 				boolean isTagesschule = platz.getBetreuungsangebotTyp().isTagesschule();
 
 				//initiale Restansprueche vorberechnen
@@ -282,9 +280,8 @@ public class BetreuungsgutscheinEvaluator {
 	private static void initFaktorBgStunden(
 		KindContainer kindContainer,
 		List<VerfuegungZeitabschnitt> restanspruchZeitabschnitte,
-		AbstractPlatz platz) {
+		Mandant mandant) {
 		restanspruchZeitabschnitte.forEach(verfuegungZeitabschnitt -> {
-			final Mandant mandant = platz.extractGesuch().extractMandant();
 			final EinschulungstypBgStundenFaktorVisitor einschulungstypBgStundenFaktorVisitor =
 				new EinschulungstypBgStundenFaktorVisitor(
 					mandant,
