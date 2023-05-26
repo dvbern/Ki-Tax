@@ -53,7 +53,7 @@ export class DvLanguageSelector implements IController {
     }
 
     public changeLanguage(selectedLanguage: TSBrowserLanguage): void {
-        this.i18nServiceRS.changeClientLanguage(selectedLanguage, this.$translate);
+        this.i18nServiceRS.changeClientLanguage(selectedLanguage);
         LOG.info('language changed', selectedLanguage);
     }
 

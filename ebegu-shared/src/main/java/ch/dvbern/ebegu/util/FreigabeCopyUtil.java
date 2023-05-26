@@ -154,6 +154,10 @@ public final class FreigabeCopyUtil {
 		familiensituationGS.setUnterhaltsvereinbarung(familiensituationJA.getUnterhaltsvereinbarung());
 		familiensituationGS.setUnterhaltsvereinbarungBemerkung(familiensituationJA.getUnterhaltsvereinbarungBemerkung());
 		familiensituationGS.setGeteilteObhut(familiensituationJA.getGeteilteObhut());
+		familiensituationGS.setPartnerIdentischMitVorgesuch(familiensituationGS.getPartnerIdentischMitVorgesuch());
+		familiensituationGS.setAuszahlungAusserhalbVonKibon(familiensituationJA.isAuszahlungAusserhalbVonKibon());
+		familiensituationGS.setGemeinsamerHaushaltMitPartner(familiensituationJA.getGemeinsamerHaushaltMitPartner());
+		familiensituationGS.setGemeinsamerHaushaltMitObhutsberechtigterPerson(familiensituationJA.getGemeinsamerHaushaltMitObhutsberechtigterPerson());
 	}
 
 	private static void copyAuszahlungsdaten(Auszahlungsdaten auszahlungsdatenGS, Auszahlungsdaten auszahlungsdatenJA) {

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2021 DV Bern AG, Switzerland
+ * Copyright (C) 2022 DV Bern AG, Switzerland
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -15,21 +15,32 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {TransitionService} from '@uirouter/angular';
-import {HookResult} from '@uirouter/core';
+import {HookResult, TransitionService} from '@uirouter/core';
 import {ApplicationPropertyRS} from '../../../app/core/rest-services/applicationPropertyRS.rest';
 import {I18nServiceRSRest} from '../../../app/i18n/services/i18nServiceRS.rest';
 import {TSBrowserLanguage} from '../../../models/enums/TSBrowserLanguage';
-import ITranslateService = angular.translate.ITranslateService;
 
-languageEnabledHookRunBlock.$inject = ['$transitions', 'ApplicationPropertyRS', 'I18nServiceRSRest'];
+/**
+ * This file contains a Transition Hook which protects a
+ * route that requires authentication.
+ *
+ * This hook redirects to /login when both:
+ * - The user is not authenticated
+ * - The user is navigating to a state that requires authentication
+ */
 
-export function languageEnabledHookRunBlock(
+export function languageEnabledHookRunBlockX(
     $transitions: TransitionService,
     applicationPropertyService: ApplicationPropertyRS,
     i18nService: I18nServiceRSRest
 ): void {
-    $transitions.onBefore({}, async () => changeLanguageIfNotEnabled(applicationPropertyService, i18nService));
+
+    // Register the "requires authentication" hook with the TransitionsService
+    $transitions.onBefore(
+        {},
+        async () =>
+            changeLanguageIfNotEnabled(applicationPropertyService, i18nService)
+    );
 }
 
 async function changeLanguageIfNotEnabled(
