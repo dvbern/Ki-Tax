@@ -185,7 +185,6 @@ public class BetreuungsgutscheinEvaluator {
 				RestanspruchInitializer.createInitialenRestanspruch(
 					gesuch.getGesuchsperiode(),
 					!rechnerRulesForGemeinde.isEmpty());
-			initFaktorBgStunden(kindContainer, restanspruchZeitabschnitte, gesuch.extractMandant());
 
 			// Betreuungen werden einzeln berechnet, reihenfolge ist wichtig (sortiert mit comperator gem regel
 			// EBEGU-561)
@@ -194,6 +193,7 @@ public class BetreuungsgutscheinEvaluator {
 			plaetzeList.sort(new BetreuungComparatorVisitor().getComparatorForMandant(gesuch.extractMandant()));
 
 			for (AbstractPlatz platz : plaetzeList) {
+				initFaktorBgStunden(kindContainer, restanspruchZeitabschnitte, gesuch.extractMandant());
 				boolean isTagesschule = platz.getBetreuungsangebotTyp().isTagesschule();
 
 				//initiale Restansprueche vorberechnen
