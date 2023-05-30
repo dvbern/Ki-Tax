@@ -1908,7 +1908,7 @@
     "KANTONALE_ERZIEHUNGSBERATUNSSTELLE": "Service psychologique pour enfants et adolescents",
     "BESONDERE_BEDUERFNISSE_KRANKHEIT": "Médecins (en cas de maladie physique chronique de l’enfant)",
     "GEMEINDE_FACHSTELLE": "Service spécialisé désigné par la commune",
-    "FACHSTELLE_HELP": "<p><b>Service spécialisé :</b></p><br><p>Selon l’âge de l’enfant et le <b>type de handicap – physique, psychique</b> ou <b>sensoriel, retards </b> ou <b>troubles du développement –</b>, la confirmation est établie par le Service éducatif itinérant du canton de Berne, un service psychologique cantonal pour enfants et adolescents, l’École pour enfants et adolescents aveugles et malvoyants de Zollikofen ou les services du Centre pédagogique de logopédie et d’entraînement auditif de Münchenbuchsee (CPLEAM).</p><br><p>Les enfants souffrant d’une <b>maladie physique chronique</b> peuvent également nécessiter une prise en charge extraordinaire en raison des soins médicaux dont ils ont besoin. En pareil cas, la confirmation est établie par la médecin traitante ou le médecin traitant. Cette personne doit être au bénéfice d’une autorisation d’exercer en Suisse.</p><br><p>Pour toute question, vous pouvez vous adresser à votre commune de domicile.</p>",
+    "FACHSTELLE_HELP": "",
     "TUTORIAL_TITLE": "Tutoriel",
     "TUTORIAL_WILLKOMMEN": "Bienvenue à la formation sur l'utilisation de kiBon",
     "TUTORIAL_INSTITUTION_TEXT": "Veuillez cliquer sur le bouton ci-dessous pour vous connecter à kiBon en tant que collaborateur/-trice spécialisé-e de l'institution-test.",
@@ -3048,5 +3048,6 @@
     "MUTATIONSMELDUNG_BETREFF": "Annonce de changement",
     "VERARBEITET": "verarbeitet",
     "FEHLER_BEI_MITTEILUNG_BEARBEITUNG": "Mitteilungen, die durch Fehler nicht bearbeitet werden konnten:",
+    "ERWEITERTE_BEDUERFNISSE_FACHSTELLE_HINT": "<p><b>Service spécialisé :</b></p><br><p>Selon l’âge de l’enfant et le <b>type de handicap – physique, psychique</b> ou <b>sensoriel, retards </b> ou <b>troubles du développement –</b>, la confirmation est établie par le Service éducatif itinérant du canton de Berne, un service psychologique cantonal pour enfants et adolescents, l’École pour enfants et adolescents aveugles et malvoyants de Zollikofen ou les services du Centre pédagogique de logopédie et d’entraînement auditif de Münchenbuchsee (CPLEAM).</p><br><p>Les enfants souffrant d’une <b>maladie physique chronique</b> peuvent également nécessiter une prise en charge extraordinaire en raison des soins médicaux dont ils ont besoin. En pareil cas, la confirmation est établie par la médecin traitante ou le médecin traitant. Cette personne doit être au bénéfice d’une autorisation d’exercer en Suisse.</p><br><p>Pour toute question, vous pouvez vous adresser à votre commune de domicile.</p>",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

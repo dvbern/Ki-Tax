@@ -25,7 +25,10 @@ import ch.dvbern.ebegu.entities.BGCalculationResult;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.EinschulungTyp;
 import ch.dvbern.ebegu.enums.PensumUnits;
+import ch.dvbern.ebegu.test.TestDataUtil;
 import ch.dvbern.ebegu.types.DateRange;
+import ch.dvbern.ebegu.util.EinschulungstypBgStundenFaktorVisitor;
+import ch.dvbern.ebegu.util.mandant.MandantIdentifier;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -273,6 +276,9 @@ public class AppenzellRechnerTest extends AbstractBGRechnerTest {
 	private VerfuegungZeitabschnitt prepareVerfuegungZeitabschnitt(EinschulungTyp einschulungTyp) {
 		VerfuegungZeitabschnitt zeitabschnitt =  new VerfuegungZeitabschnitt();
 		zeitabschnitt.getRelevantBgCalculationInput().setEinschulungTyp(einschulungTyp);
+		BigDecimal faktor = new EinschulungstypBgStundenFaktorVisitor(einschulungTyp)
+				.getFaktor(TestDataUtil.createMandant(MandantIdentifier.APPENZELL_AUSSERRHODEN));
+		zeitabschnitt.getRelevantBgCalculationInput().setBgStundenFaktor(faktor);
 		return zeitabschnitt;
 	}
 }

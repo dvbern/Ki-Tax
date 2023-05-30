@@ -358,7 +358,9 @@
                     <div ng-if="vm.isFachstelleRequired()">
                         <div class="row" ng-if="vm.getFachstellenList().length">
                             <div class="col-sm-12 dv-input-container-medium form-group">
-                                <label class="md-no-float required" data-translate="FACHSTELLE" for="fachstelle">
+                                <label class="md-no-float required" for="fachstelle">
+                                    <span data-translate="FACHSTELLE"></span>
+                                    <dv-tooltip text="'ERWEITERTE_BEDUERFNISSE_FACHSTELLE_HINT' | translate"></dv-tooltip>
                                 </label>
                                 <div class="dv-select-style">
                                     <select aria-describedby="fachstelle-error"

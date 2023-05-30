@@ -8,11 +8,11 @@
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program. If not, see <https://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
 package ch.dvbern.ebegu.rechner;
@@ -20,7 +20,6 @@ package ch.dvbern.ebegu.rechner;
 import java.math.BigDecimal;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Objects;
 import java.util.TreeMap;
 
 import javax.annotation.Nonnull;
@@ -36,8 +35,6 @@ import static ch.dvbern.ebegu.util.MathUtil.isZero;
 
 public class AppenzellRechner extends AbstractRechner {
 
-	private static final double MAX_BETREUUNGSSTUNDEN_PRO_JAHR_VORSCHULE = 2400;
-	private static final double MAX_BETREUUNGSSTUNDEN_PRO_JAHR_EINGESCHULT = 1900;
 	private static final double ANZAHL_STUNDEN_PRO_BETREUUNGSTAG = 10;
 	private static final MathUtil EXACT = MathUtil.EXACT;
 	private BGCalculationInput input;
@@ -155,7 +152,7 @@ public class AppenzellRechner extends AbstractRechner {
 	}
 
 	private BigDecimal calculateAnspruchpensumInStunden() {
-		return EXACT.multiply(BigDecimal.valueOf(input.getAnspruchspensumProzent()), calculateHoursPerPercentForAnspruch());
+		return EXACT.multiply(BigDecimal.valueOf(input.getAnspruchspensumProzent()), input.getBgStundenFaktor());
 	}
 
 	private BigDecimal calcualteBetreuungspensumInStunden() {
@@ -170,16 +167,4 @@ public class AppenzellRechner extends AbstractRechner {
 		return parameter.getOeffnungstageKita().doubleValue() * ANZAHL_STUNDEN_PRO_BETREUUNGSTAG;
 	}
 
-	private BigDecimal calculateHoursPerPercentForAnspruch() {
-		return BigDecimal.valueOf(getMaxBetreuungsstundenProJahr() / 12 / 100);
-	}
-
-	private double getMaxBetreuungsstundenProJahr() {
-		Objects.requireNonNull(input.getEinschulungTyp());
-
-		if (input.getEinschulungTyp().isEingeschultAppenzell()) {
-			return MAX_BETREUUNGSSTUNDEN_PRO_JAHR_EINGESCHULT;
-		}
-		return MAX_BETREUUNGSSTUNDEN_PRO_JAHR_VORSCHULE;
-	}
 }
