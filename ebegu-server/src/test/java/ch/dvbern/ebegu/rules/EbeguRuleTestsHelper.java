@@ -23,6 +23,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 
 import javax.annotation.Nonnull;
 
@@ -334,7 +335,10 @@ public final class EbeguRuleTestsHelper {
 			result = abschlussNormalizer.execute(platz, result);
 		}
 
-		BemerkungsMerger.prepareGeneratedBemerkungen(result, platz.extractGesuch().extractMandant());
+		Mandant mandant = platz.extractGesuch().extractMandant();
+		BemerkungsMerger.prepareGeneratedBemerkungen(result, mandant);
+		Objects.requireNonNull(platz.getKind().getKindJA().getEinschulungTyp());
+		executorToUse.initFaktorBgStunden(platz.getKind().getKindJA().getEinschulungTyp(), result, mandant);
 		executorToUse.executeRestanspruchInitializer(platz, result);
 		return result;
 	}

@@ -28,6 +28,7 @@ import ch.dvbern.ebegu.entities.Einstellung;
 import ch.dvbern.ebegu.entities.KitaxUebergangsloesungInstitutionOeffnungszeiten;
 import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
+import ch.dvbern.ebegu.enums.EinschulungTyp;
 import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.enums.MsgKey;
 import ch.dvbern.ebegu.rechner.AbstractRechner;
@@ -37,6 +38,7 @@ import ch.dvbern.ebegu.rechner.kitax.EmptyKitaxBernRechner;
 import ch.dvbern.ebegu.rechner.rules.RechnerRule;
 import ch.dvbern.ebegu.rules.initalizer.RestanspruchInitializer;
 import ch.dvbern.ebegu.rules.initalizer.RestanspruchInitializerVisitor;
+import ch.dvbern.ebegu.util.EinschulungstypBgStundenFaktorVisitor;
 import ch.dvbern.ebegu.util.KitaxUebergangsloesungParameter;
 import ch.dvbern.ebegu.util.KitaxUtil;
 import org.slf4j.Logger;
@@ -186,5 +188,16 @@ public class BetreuungsgutscheinExecutor {
 		RestanspruchInitializer restanspruchInitializer =
 			new RestanspruchInitializerVisitor(isDebug).getRestanspruchInitialzier(platz.extractGesuch().extractMandant());
 		return restanspruchInitializer.executeIfApplicable(platz, zeitabschnitte);
+	}
+
+	public static void initFaktorBgStunden(
+			EinschulungTyp einschulungTyp,
+			List<VerfuegungZeitabschnitt> zeitabschnitte,
+			Mandant mandant) {
+		zeitabschnitte.forEach(verfuegungZeitabschnitt -> {
+			final EinschulungstypBgStundenFaktorVisitor einschulungstypBgStundenFaktorVisitor =
+					new EinschulungstypBgStundenFaktorVisitor(einschulungTyp);
+			verfuegungZeitabschnitt.setBgStundenFaktor(einschulungstypBgStundenFaktorVisitor.getFaktor(mandant));
+		});
 	}
 }

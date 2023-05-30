@@ -56,7 +56,6 @@ import ch.dvbern.ebegu.rules.initalizer.RestanspruchInitializerVisitor;
 import ch.dvbern.ebegu.rules.util.BemerkungsMerger;
 import ch.dvbern.ebegu.rules.veraenderung.VeraenderungCalculator;
 import ch.dvbern.ebegu.util.BetreuungComparatorVisitor;
-import ch.dvbern.ebegu.util.EinschulungstypBgStundenFaktorVisitor;
 import ch.dvbern.ebegu.util.KitaxUebergangsloesungParameter;
 import ch.dvbern.ebegu.util.VerfuegungUtil;
 import org.slf4j.Logger;
@@ -127,7 +126,12 @@ public class BetreuungsgutscheinEvaluator {
 			RestanspruchInitializer.createInitialenRestanspruch(gesuch.getGesuchsperiode(), false);
 
 		if (firstBetreuungOfGesuch != null) {
+			Objects.requireNonNull(firstBetreuungOfGesuch.getKind().getKindJA().getEinschulungTyp());
 
+			BetreuungsgutscheinExecutor.initFaktorBgStunden(
+					firstBetreuungOfGesuch.getKind().getKindJA().getEinschulungTyp(),
+					zeitabschnitte,
+					firstBetreuungOfGesuch.extractGesuch().extractMandant());
 			zeitabschnitte = executor.executeRules(rulesToRun, firstBetreuungOfGesuch, zeitabschnitte, true);
 
 			MonatsRule monatsRule = new MonatsRule(isDebug);
@@ -193,7 +197,10 @@ public class BetreuungsgutscheinEvaluator {
 			plaetzeList.sort(new BetreuungComparatorVisitor().getComparatorForMandant(gesuch.extractMandant()));
 
 			for (AbstractPlatz platz : plaetzeList) {
-				initFaktorBgStunden(kindContainer, restanspruchZeitabschnitte, gesuch.extractMandant());
+				BetreuungsgutscheinExecutor.initFaktorBgStunden(
+						Objects.requireNonNull(kindContainer.getKindJA().getEinschulungTyp()),
+						restanspruchZeitabschnitte,
+						gesuch.extractMandant());
 				boolean isTagesschule = platz.getBetreuungsangebotTyp().isTagesschule();
 
 				//initiale Restansprueche vorberechnen
@@ -275,18 +282,6 @@ public class BetreuungsgutscheinEvaluator {
 				restanspruchZeitabschnitte = executor.executeRestanspruchInitializer(platz, zeitabschnitte);
 			}
 		}
-	}
-
-	private static void initFaktorBgStunden(
-		KindContainer kindContainer,
-		List<VerfuegungZeitabschnitt> restanspruchZeitabschnitte,
-		Mandant mandant) {
-		restanspruchZeitabschnitte.forEach(verfuegungZeitabschnitt -> {
-			final EinschulungstypBgStundenFaktorVisitor einschulungstypBgStundenFaktorVisitor =
-				new EinschulungstypBgStundenFaktorVisitor(
-					Objects.requireNonNull(kindContainer.getKindJA().getEinschulungTyp()));
-			verfuegungZeitabschnitt.setBgStundenFaktor(einschulungstypBgStundenFaktorVisitor.getFaktor(mandant));
-		});
 	}
 
 	private void calculateVeraenderungen(Verfuegung verfuegungPreview, Verfuegung vorgaengerVerfuegung, boolean isTagesschule) {
@@ -398,8 +393,15 @@ public class BetreuungsgutscheinEvaluator {
 			throw new EbeguRuntimeException("getRestanspruchForVerfuegteBetreung", message);
 		}
 		Objects.requireNonNull(verfuegungForRestanspruch.getBetreuung());
+		Objects.requireNonNull(verfuegungForRestanspruch.getBetreuung().getKind().getKindJA().getEinschulungTyp());
+
+		Mandant mandant = betreuung.extractGesuch().extractMandant();
+		BetreuungsgutscheinExecutor.initFaktorBgStunden(
+				verfuegungForRestanspruch.getBetreuung().getKind().getKindJA().getEinschulungTyp(),
+				verfuegungForRestanspruch.getZeitabschnitte(),
+				mandant);
 		RestanspruchInitializer restanspruchInitializer =
-			new RestanspruchInitializerVisitor(isDebug).getRestanspruchInitialzier(betreuung.extractGesuch().extractMandant());
+			new RestanspruchInitializerVisitor(isDebug).getRestanspruchInitialzier(mandant);
 		restanspruchZeitabschnitte = restanspruchInitializer.executeIfApplicable(
 			verfuegungForRestanspruch.getBetreuung(), verfuegungForRestanspruch.getZeitabschnitte());
 
