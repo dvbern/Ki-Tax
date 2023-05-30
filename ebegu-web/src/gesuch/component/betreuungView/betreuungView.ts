@@ -94,6 +94,7 @@ export class BetreuungViewComponentConfig implements IComponentOptions {
 const GESUCH_BETREUUNGEN = 'gesuch.betreuungen';
 const PENDENZEN_BETREUUNG = 'pendenzenBetreuungen.list-view';
 const TAGI_ANGEBOT_VALUE = 'TAGI';
+// The hardcoded value of 10 hours per day will be refactored into an Einstellung in KIBON-2967
 const ANZAHL_STUNDEN_KITA_PRO_TAG = 10;
 
 export class BetreuungViewController extends AbstractGesuchViewController<TSBetreuung> {
