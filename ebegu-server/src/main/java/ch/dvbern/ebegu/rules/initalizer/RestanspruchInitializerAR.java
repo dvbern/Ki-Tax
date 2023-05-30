@@ -18,13 +18,12 @@
 package ch.dvbern.ebegu.rules.initalizer;
 
 import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.util.Objects;
 
 import javax.annotation.Nonnull;
 
 import ch.dvbern.ebegu.dto.BGCalculationInput;
 import ch.dvbern.ebegu.entities.BGCalculationResult;
+import ch.dvbern.ebegu.util.MathUtil;
 
 /**
  * Hilfsklasse die nach der eigentlich Evaluation einer Betreuung angewendet wird um den Restanspruch zu uebernehmen fuer die
@@ -57,12 +56,12 @@ public final class RestanspruchInitializerAR extends RestanspruchInitializer {
 			@Nonnull BGCalculationResult sourceZeitabschnitt,
 			@Nonnull BGCalculationInput targetZeitabschnitt
 	) {
-		var faktor = sourceZeitabschnittInput.getBgStundenFaktor();
+		BigDecimal faktor = sourceZeitabschnittInput.getBgStundenFaktor();
 		BigDecimal anspruchberechtigtesPensumInStunden = sourceZeitabschnitt.getAnspruchspensumZeiteinheit();
 		BigDecimal betreuungspensumInStunden = sourceZeitabschnitt.getBetreuungspensumZeiteinheit();
 		if (sourceZeitabschnitt.getAnspruchspensumRest() != null) {
 			// Wir haben einen Restanspruch nach dem neuen System gespeichert
-			final BigDecimal anspruchspensumRestInStunden = sourceZeitabschnitt.getAnspruchspensumRest().multiply(BigDecimal.valueOf(faktor));
+			final BigDecimal anspruchspensumRestInStunden = MathUtil.EXACT.multiply(sourceZeitabschnitt.getAnspruchspensumRest(), faktor);
 			final int restanspruchNeu = calculateRestanspruchInStunden(betreuungspensumInStunden, anspruchberechtigtesPensumInStunden, anspruchspensumRestInStunden, faktor);
 			targetZeitabschnitt.setAnspruchspensumRest(restanspruchNeu);
 		} else {
@@ -74,26 +73,34 @@ public final class RestanspruchInitializerAR extends RestanspruchInitializer {
 			//wenn nicht der ganze anspruch gebraucht wird gibt es einen rest, ansonsten ist rest 0
 			else if (betreuungspensumInStunden.compareTo(anspruchberechtigtesPensumInStunden.add(BigDecimal.valueOf(sourceZeitabschnittInput.getRueckwirkendReduziertesPensumRest()))) < 0) {
 				int rueckwirekndRedPeRe = sourceZeitabschnittInput.getRueckwirkendReduziertesPensumRest();
-				double hours = Math.max(anspruchberechtigtesPensumInStunden.subtract(betreuungspensumInStunden).doubleValue(), 0.0);
-
-				final int anspruchspensumRest = (int) Math.round(hours / faktor);
-				targetZeitabschnitt.setAnspruchspensumRest(anspruchspensumRest);
+				BigDecimal restanpsurchStunden =
+						MathUtil.minimum(anspruchberechtigtesPensumInStunden.subtract(betreuungspensumInStunden), BigDecimal.ZERO);
+				BigDecimal anspruchspensumRest = MathUtil.EXACT.divide(restanpsurchStunden, faktor);
+				targetZeitabschnitt.setAnspruchspensumRest(MathUtil.roundUpToFranken(restanpsurchStunden).intValue()
+						+ rueckwirekndRedPeRe);
 			} else {
 				targetZeitabschnitt.setAnspruchspensumRest(0);
 			}
 		}
 	}
 
-	private int calculateRestanspruchInStunden(BigDecimal betreuungspensumInStunden, BigDecimal anspruchberechtigtesPensumInStunden, BigDecimal anspruchspensumRestInStunden, double faktorProzentToStunden) {
+	private int calculateRestanspruchInStunden(
+			BigDecimal betreuungspensumInStunden,
+			BigDecimal anspruchberechtigtesPensumInStunden,
+			BigDecimal anspruchspensumRestInStunden,
+			BigDecimal faktorProzentToStunden) {
 		//wenn nicht der ganze anspruch gebraucht wird gibt es einen rest, ansonsten ist rest 0
 		if (anspruchberechtigtesPensumInStunden.compareTo(BigDecimal.ZERO) == 0) {
 			// Der Anspruch fuer diese Kita war 0, d.h. der Restanspruch bleibt gleich wie auf der vorherigen Betreuung
-			return anspruchspensumRestInStunden.divide(BigDecimal.valueOf(faktorProzentToStunden), RoundingMode.CEILING).intValue() ;
-		} else if (betreuungspensumInStunden.compareTo(anspruchberechtigtesPensumInStunden) < 0) {
-			return anspruchberechtigtesPensumInStunden.subtract(betreuungspensumInStunden).intValue();
-		} else {
-			return 0;
+			return MathUtil.EXACT.divide(anspruchspensumRestInStunden, faktorProzentToStunden).intValue() ;
 		}
+
+		if (betreuungspensumInStunden.compareTo(anspruchberechtigtesPensumInStunden) < 0) {
+			return MathUtil.EXACT.subtract(anspruchberechtigtesPensumInStunden, betreuungspensumInStunden).intValue();
+		}
+
+		return 0;
+
 	}
 
 }

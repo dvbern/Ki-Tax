@@ -198,7 +198,7 @@ public class BGCalculationInput {
 
 	private boolean requiredAgeForAnspruchNotReached = false;
 	private boolean gesuchBeendenKonkubinatWirdInPeriodeXJahreAlt = false;
-	private BigDecimal bgStundenFaktor = BigDecimal.ONE;
+	private BigDecimal bgStundenFaktor = BigDecimal.ZERO;
 
 	public BGCalculationInput(@Nonnull VerfuegungZeitabschnitt parent, @Nonnull RuleValidity ruleValidity) {
 		this.parent = parent;
@@ -879,8 +879,9 @@ public class BGCalculationInput {
 		this.besondereBeduerfnisseZuschlag = add(this.getBesondereBeduerfnisseZuschlag(), other.getBesondereBeduerfnisseZuschlag());
 		this.requiredAgeForAnspruchNotReached = this.requiredAgeForAnspruchNotReached || other.requiredAgeForAnspruchNotReached;
 		this.gesuchBeendenKonkubinatWirdInPeriodeXJahreAlt = this.gesuchBeendenKonkubinatWirdInPeriodeXJahreAlt || other.gesuchBeendenKonkubinatWirdInPeriodeXJahreAlt;
-		//BG-Factor is always the same for all Zeitabschnitte
-		this.setBgStundenFaktor(other.getBgStundenFaktor());
+		if (MathUtil.isZero(this.bgStundenFaktor) && !MathUtil.isZero(other.getBgStundenFaktor())) {
+			this.setBgStundenFaktor(other.getBgStundenFaktor());
+		}
 	}
 
 	/**
