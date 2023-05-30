@@ -38,6 +38,7 @@ import ch.dvbern.ebegu.entities.Verfuegung;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.finanzielleSituationRechner.AbstractFinanzielleSituationRechner;
 import ch.dvbern.ebegu.pdfgenerator.PdfUtil;
+import ch.dvbern.ebegu.pdfgenerator.TableRowLabelValue;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.EbeguUtil;
 import ch.dvbern.ebegu.util.MathUtil;
@@ -45,6 +46,7 @@ import ch.dvbern.lib.invoicegenerator.pdf.PdfGenerator;
 import com.google.common.collect.Iterables;
 import com.lowagie.text.Document;
 import com.lowagie.text.Element;
+import com.lowagie.text.pdf.PdfPTable;
 
 import static java.util.Objects.requireNonNull;
 
@@ -548,5 +550,13 @@ public class FinanzielleSituationPdfGeneratorAppenzell extends FinanzielleSituat
 				.getFamiliensituationJA()
 				.getGemeinsameSteuererklaerung())
 				|| gesuch.getFamiliensituationContainer().getFamiliensituationJA().isSpezialFallAR();
+	}
+
+	@Nonnull
+	@Override
+	protected PdfPTable createIntroBasisjahr() {
+		List<TableRowLabelValue> introBasisjahr = new ArrayList<>();
+		introBasisjahr.add(new TableRowLabelValue(REFERENZNUMMER, gesuch.getJahrFallAndGemeindenummer()));
+		return PdfUtil.createIntroTable(introBasisjahr, sprache, mandant);
 	}
 }
