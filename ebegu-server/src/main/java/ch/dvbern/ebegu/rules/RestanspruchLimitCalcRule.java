@@ -18,6 +18,7 @@
 package ch.dvbern.ebegu.rules;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.List;
 import java.util.Locale;
 
@@ -63,11 +64,17 @@ public class RestanspruchLimitCalcRule extends AbstractCalcRule {
 				inputData.addBemerkung(
 					MsgKey.RESTANSPRUCH_MSG,
 					getLocale(),
-						MathUtil.EXACT.multiply(BigDecimal.valueOf(anspruchberechtigtesPensum), inputData.getBgStundenFaktor()),
-						MathUtil.EXACT.multiply(BigDecimal.valueOf(verfuegbarerRestanspruch), inputData.getBgStundenFaktor()));
+					multiplyPensumByFaktorAndRound(anspruchberechtigtesPensum, inputData.getBgStundenFaktor()),
+					multiplyPensumByFaktorAndRound(verfuegbarerRestanspruch, inputData.getBgStundenFaktor()));
 			}
 			inputData.setAnspruchspensumProzent(verfuegbarerRestanspruch);
 		}
+	}
+
+	private BigDecimal multiplyPensumByFaktorAndRound(int pensum, BigDecimal faktor) {
+		return MathUtil.EXACT
+				.multiply(BigDecimal.valueOf(pensum), faktor)
+				.setScale(2, RoundingMode.HALF_UP);
 	}
 
 	private boolean addVerfuegungsbemerkungRestanspruch(@Nonnull BGCalculationInput inputData) {

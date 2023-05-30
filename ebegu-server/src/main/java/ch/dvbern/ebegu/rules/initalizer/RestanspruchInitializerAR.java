@@ -18,6 +18,7 @@
 package ch.dvbern.ebegu.rules.initalizer;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 import javax.annotation.Nonnull;
 
@@ -76,7 +77,7 @@ public final class RestanspruchInitializerAR extends RestanspruchInitializer {
 				BigDecimal restanpsurchStunden =
 						MathUtil.minimum(anspruchberechtigtesPensumInStunden.subtract(betreuungspensumInStunden), BigDecimal.ZERO);
 				BigDecimal anspruchspensumRest = MathUtil.EXACT.divide(restanpsurchStunden, faktor);
-				targetZeitabschnitt.setAnspruchspensumRest(MathUtil.roundUpToFranken(restanpsurchStunden).intValue()
+				targetZeitabschnitt.setAnspruchspensumRest(anspruchspensumRest.setScale(0, RoundingMode.HALF_UP).intValue()
 						+ rueckwirekndRedPeRe);
 			} else {
 				targetZeitabschnitt.setAnspruchspensumRest(0);
