@@ -8,11 +8,11 @@
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program. If not, see <https://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
 package ch.dvbern.ebegu.services;
@@ -157,6 +157,9 @@ public class FinanzielleSituationServiceBean extends AbstractBaseService impleme
 		familiensituation.setVerguenstigungGewuenscht(finSitStartDTO.getVerguenstigungGewuenscht());
 		familiensituation.setKeineMahlzeitenverguenstigungBeantragt(finSitStartDTO.isKeineMahlzeitenverguenstigungGewuenscht());
 		familiensituation.setAbweichendeZahlungsadresse(finSitStartDTO.isAbweichendeZahlungsadresse());
+		if (principalBean.isCallerInAnyOfRole(UserRole.getJugendamtSuperadminRoles())) {
+			familiensituation.setAuszahlungAusserhalbVonKibon(finSitStartDTO.isAuszahlungAusserhalbVonKibon());
+		}
 		if (StringUtils.isNotBlank(finSitStartDTO.getIban()) && StringUtils.isNotBlank(finSitStartDTO.getKontoinhaber())) {
 			if (familiensituation.getAuszahlungsdaten() == null) {
 				familiensituation.setAuszahlungsdaten(new Auszahlungsdaten());
@@ -169,9 +172,6 @@ public class FinanzielleSituationServiceBean extends AbstractBaseService impleme
 			if (!principalBean.isCallerInRole(UserRole.GESUCHSTELLER)) {
 				familiensituation.getAuszahlungsdaten().setInfomaKreditorennummer(finSitStartDTO.getInfomaKreditorennummer());
 				familiensituation.getAuszahlungsdaten().setInfomaBankcode(finSitStartDTO.getInfomaBankcode());
-			}
-			if (principalBean.isCallerInAnyOfRole(UserRole.getJugendamtSuperadminRoles())) {
-				familiensituation.setAuszahlungAusserhalbVonKibon(finSitStartDTO.isAuszahlungAusserhalbVonKibon());
 			}
 		} else {
 			// Wenn die IBAN und der Kontoinhaber nicht gesetzt sind, wurden die Auszahlungsdaten resetd
