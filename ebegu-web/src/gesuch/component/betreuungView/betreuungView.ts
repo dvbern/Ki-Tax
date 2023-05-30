@@ -8,11 +8,11 @@
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program. If not, see <https://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
 import {StateService} from '@uirouter/core';
@@ -37,7 +37,7 @@ import {isAnyStatusOfVerfuegt, isVerfuegtOrSTV, TSAntragStatus} from '../../../m
 import {
     getTSBetreuungsangebotTypValuesForMandantIfTagesschulanmeldungen,
     isJugendamt,
-    TSBetreuungsangebotTyp
+    TSBetreuungsangebotTyp,
 } from '../../../models/enums/TSBetreuungsangebotTyp';
 import {TSBetreuungsstatus} from '../../../models/enums/TSBetreuungsstatus';
 import {TSEinstellungKey} from '../../../models/enums/TSEinstellungKey';
@@ -837,7 +837,9 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
             this.errorService.addMesageAsError('Betreuungsmodel ist nicht initialisiert.');
         }
         const tsBetreuungspensum = new TSBetreuungspensum();
-        tsBetreuungspensum.unitForDisplay = TSPensumUnits.PERCENTAGE;
+        tsBetreuungspensum.unitForDisplay = this.betreuungspensumAnzeigeTyp === TSPensumAnzeigeTyp.NUR_STUNDEN ?
+            TSPensumUnits.HOURS :
+            TSPensumUnits.PERCENTAGE;
         tsBetreuungspensum.nichtEingetreten = false;
         tsBetreuungspensum.gueltigkeit = new TSDateRange();
 
