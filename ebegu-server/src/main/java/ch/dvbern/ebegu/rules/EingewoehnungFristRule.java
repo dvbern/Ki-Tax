@@ -18,6 +18,7 @@
 package ch.dvbern.ebegu.rules;
 
 import java.time.LocalDate;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
@@ -75,11 +76,10 @@ public class EingewoehnungFristRule extends AbstractAbschlussRule {
 			return zeitabschnitte;
 		}
 
-		VerfuegungZeitabschnitt eingewoehnung = createEingewoehnungAbschnitt(
-				eingewohenungAbschnittHelper.zeitabschnittMitAnspruch,
-				gp);
+		VerfuegungZeitabschnitt eingewoehnung = createEingewoehnungAbschnitt(eingewohenungAbschnittHelper, gp);
 
 		zeitabschnitte.add(eingewoehnung);
+		Collections.sort(zeitabschnitte);
 
 	 	return mergeZeitabschnitte(zeitabschnitte);
 	}
@@ -90,7 +90,7 @@ public class EingewoehnungFristRule extends AbstractAbschlussRule {
 		VerfuegungZeitabschnitt abschnittMitAnspruch = eingewoehenungAbschnittHelper.zeitabschnittMitAnspruch;
 		VerfuegungZeitabschnitt abschnittOhneAnspruch = eingewoehenungAbschnittHelper.zeitabschnittOhneAnspruch;
 		VerfuegungZeitabschnitt eingewoehnung =
-				new VerfuegungZeitabschnitt(getGultigkeitOfEingewohenungAbschnitt(abschnittMitAnspruch, gesuchsperiode));
+				new VerfuegungZeitabschnitt(getGultigkeitOfEingewohenungAbschnitt(eingewoehenungAbschnittHelper, gesuchsperiode));
 		eingewoehnung.setEinkommensjahrForAsivAndGemeinde(
 				abschnittOhneAnspruch.getRelevantBgCalculationInput().getEinkommensjahr());
 		eingewoehnung.setAnspruchspensumProzentForAsivAndGemeinde(abschnittMitAnspruch.getRelevantBgCalculationInput()
@@ -103,15 +103,21 @@ public class EingewoehnungFristRule extends AbstractAbschlussRule {
 		return eingewoehnung;
 	}
 	private DateRange getGultigkeitOfEingewohenungAbschnitt(
-			VerfuegungZeitabschnitt abschnittMitAnspruch,
+			EingewohenungAbschnittHelper eingewohenungAbschnittHelper,
 			Gesuchsperiode gesuchsperiode) {
 
+		VerfuegungZeitabschnitt abschnittMitAnspruch = eingewohenungAbschnittHelper.zeitabschnittMitAnspruch;
 		//grundsätzlich ist die Eingewöhnung gültig von 1 Monat vor Anspruch bis ein Tag vor Anspruch
 		LocalDate eingewohenungGueltigAb = abschnittMitAnspruch.getGueltigkeit().getGueltigAb().minusMonths(1);
 		LocalDate eingewoehnungGueltigBis = abschnittMitAnspruch.getGueltigkeit().getGueltigAb().minusDays(1);
 
 		if (eingewohenungGueltigAb.isBefore(gesuchsperiode.getGueltigkeit().getGueltigAb())) {
 			eingewohenungGueltigAb = gesuchsperiode.getGueltigkeit().getGueltigAb();
+		}
+
+		if (eingewohenungAbschnittHelper.anspruchGueltigAb != null &&
+			eingewohenungGueltigAb.isBefore(eingewohenungAbschnittHelper.anspruchGueltigAb)) {
+			eingewohenungGueltigAb = eingewohenungAbschnittHelper.anspruchGueltigAb;
 		}
 
 		return new DateRange(eingewohenungGueltigAb, eingewoehnungGueltigBis);
@@ -131,6 +137,8 @@ public class EingewoehnungFristRule extends AbstractAbschlussRule {
 		// Die Gültigkeit des Zeitbaschnittes entspricht nicht der effektven Gültigkeit der Eingewöhnung
 		VerfuegungZeitabschnitt zeitabschnittOhneAnspruch;
 
+		LocalDate anspruchGueltigAb;
+
 		EingewohenungAbschnittHelper(List<VerfuegungZeitabschnitt> zeitabschnitte) {
 			findRelevantZeitabschnitteForEingewohenung(zeitabschnitte);
 		}
@@ -144,6 +152,10 @@ public class EingewoehnungFristRule extends AbstractAbschlussRule {
 			//aber eine Betruung und der zweite ZA Anspruch und Betreuung hat
 			while (iterator.hasNext()) {
 				VerfuegungZeitabschnitt zeitabschnittToCheck = iterator.next();
+
+				if (zeitabschnittToCheck.getRelevantBgCalculationInput().isZuSpaetEingereicht()) {
+					this.anspruchGueltigAb = zeitabschnittToCheck.getGueltigkeit().getGueltigBis().plusDays(1);
+				}
 
 				if (hasBetreuungButNoAnspruch(zeitabschnittToCheck)) {
 					//zeitabschnitt ohne Anspruch gefunden...
