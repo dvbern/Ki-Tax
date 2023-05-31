@@ -113,6 +113,7 @@ public class EingewoehnungFristRuleTest {
 		Assert.assertEquals(TestDataUtil.START_PERIODE, result.get(0).getGueltigkeit().getGueltigAb());
 		Assert.assertEquals(AUG_15.minusDays(1), result.get(0).getGueltigkeit().getGueltigBis());
 		Assert.assertEquals(AUG_15, result.get(1).getGueltigkeit().getGueltigAb());
+		Assert.assertEquals(Integer.valueOf(2016), result.get(0).getEinkommensjahr());
 	}
 
 	@Test
@@ -337,24 +338,36 @@ public class EingewoehnungFristRuleTest {
 		Gesuch gesuch = betreuung.extractGesuch();
 		gesuch.setEingangsdatum(TestDataUtil.START_PERIODE.plusDays(1));
 
+		LocalDate SEP_06 = TestDataUtil.START_PERIODE.plusMonths(1).plusDays(5);
+
 		assertNotNull(gesuch.getGesuchsteller1());
 		gesuch.getGesuchsteller1().addErwerbspensumContainer(TestDataUtil
-			.createErwerbspensum(TestDataUtil.START_PERIODE.plusMonths(1), TestDataUtil.ENDE_PERIODE, 40));
+			.createErwerbspensum(SEP_06, TestDataUtil.ENDE_PERIODE, 40));
 
 		List<VerfuegungZeitabschnitt> result = calculateMitEingewoehnung(betreuung);
 
-		Assert.assertEquals(2, result.size());
-		Assert.assertEquals(0, result.get(0).getAnspruchberechtigtesPensum());
-		Assert.assertEquals(TestDataUtil.START_PERIODE, result.get(0).getGueltigkeit().getGueltigAb());
-		Assert.assertEquals(
-			TestDataUtil.START_PERIODE.plusMonths(1).minusDays(1),
-			result.get(0).getGueltigkeit().getGueltigBis());
+		Assert.assertEquals(4, result.size());
 
-		Assert.assertEquals(60, result.get(1).getAnspruchberechtigtesPensum());
-		Assert.assertEquals(TestDataUtil.START_PERIODE.plusMonths(1), result.get(1).getGueltigkeit().getGueltigAb());
-		Assert.assertEquals(
-			TestDataUtil.ENDE_PERIODE,
-			result.get(1).getGueltigkeit().getGueltigBis());
+		VerfuegungZeitabschnitt za01 = result.get(0);
+		Assert.assertEquals(0, za01.getAnspruchberechtigtesPensum());
+		Assert.assertEquals(TestDataUtil.START_PERIODE, za01.getGueltigkeit().getGueltigAb());
+		Assert.assertEquals(TestDataUtil.START_PERIODE.with(TemporalAdjusters.lastDayOfMonth()),
+				za01.getGueltigkeit().getGueltigBis());
+
+		VerfuegungZeitabschnitt za02 = result.get(1);
+		Assert.assertEquals(60, za02.getAnspruchberechtigtesPensum());
+		Assert.assertEquals(SEP_06.with(TemporalAdjusters.firstDayOfMonth()), za02.getGueltigkeit().getGueltigAb());
+		Assert.assertEquals(SEP_06.minusDays(1), za02.getGueltigkeit().getGueltigBis());
+
+		VerfuegungZeitabschnitt za03 = result.get(2);
+		Assert.assertEquals(60, za03.getAnspruchberechtigtesPensum());
+		Assert.assertEquals(SEP_06, za03.getGueltigkeit().getGueltigAb());
+		Assert.assertEquals(SEP_06.with(TemporalAdjusters.lastDayOfMonth()), za03.getGueltigkeit().getGueltigBis());
+
+		VerfuegungZeitabschnitt za04 = result.get(3);
+		Assert.assertEquals(60, za04.getAnspruchberechtigtesPensum());
+		Assert.assertEquals(SEP_06.with(TemporalAdjusters.firstDayOfNextMonth()), za04.getGueltigkeit().getGueltigAb());
+		Assert.assertEquals(TestDataUtil.ENDE_PERIODE, za04.getGueltigkeit().getGueltigBis());
 	}
 
 	@Test
