@@ -261,7 +261,7 @@ VALUES
 	 @gesuchperiode_20_id, NULL, NULL);
 
 # LONDON
-INSERT IGNORE INTO ebegu.gemeinde_stammdaten_gesuchsperiode_ferieninsel (id, timestamp_erstellt, timestamp_mutiert,
+INSERT IGNORE INTO gemeinde_stammdaten_gesuchsperiode_ferieninsel (id, timestamp_erstellt, timestamp_mutiert,
 																		 user_erstellt, user_mutiert, version,
 																		 vorgaenger_id, anmeldeschluss, ferienname,
 																		 gemeinde_stammdaten_gesuchsperiode_id)
@@ -301,6 +301,6 @@ VALUES (UNHEX(REPLACE(UUID(), '-', '')), '2021-02-15 09:48:18', '2021-02-15 09:4
 		UNHEX(REPLACE('1b1b4208-5394-11ec-98e8-f4390979fa3e', '-', '')));
 
 -- Einstellungen
-UPDATE einstellung SET VALUE='true' WHERE einstellung_key='GEMEINDESPEZIFISCHE_BG_KONFIGURATIONEN' and ebegu.einstellung.mandant_id = @mandant_id_solothurn;
+UPDATE einstellung SET VALUE='true' WHERE einstellung_key='GEMEINDESPEZIFISCHE_BG_KONFIGURATIONEN' and einstellung.mandant_id = @mandant_id_solothurn;
 
-UPDATE ebegu.mandant SET ebegu.mandant.activated=true where id = @mandant_id_solothurn;
+UPDATE mandant SET mandant.activated=true where id = @mandant_id_solothurn;
