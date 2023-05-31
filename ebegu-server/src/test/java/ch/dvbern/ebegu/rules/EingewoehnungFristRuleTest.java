@@ -113,6 +113,7 @@ public class EingewoehnungFristRuleTest {
 		Assert.assertEquals(TestDataUtil.START_PERIODE, result.get(0).getGueltigkeit().getGueltigAb());
 		Assert.assertEquals(AUG_15.minusDays(1), result.get(0).getGueltigkeit().getGueltigBis());
 		Assert.assertEquals(AUG_15, result.get(1).getGueltigkeit().getGueltigAb());
+		Assert.assertEquals(Integer.valueOf(2016), result.get(0).getEinkommensjahr());
 	}
 
 	@Test

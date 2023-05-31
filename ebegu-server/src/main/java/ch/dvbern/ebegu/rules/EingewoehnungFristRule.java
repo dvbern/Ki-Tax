@@ -85,10 +85,14 @@ public class EingewoehnungFristRule extends AbstractAbschlussRule {
 	}
 
 	private VerfuegungZeitabschnitt createEingewoehnungAbschnitt(
-		@Nonnull VerfuegungZeitabschnitt abschnittMitAnspruch,
+		@Nonnull EingewohenungAbschnittHelper eingewoehenungAbschnittHelper,
 		@Nonnull Gesuchsperiode gesuchsperiode) {
+		VerfuegungZeitabschnitt abschnittMitAnspruch = eingewoehenungAbschnittHelper.zeitabschnittMitAnspruch;
+		VerfuegungZeitabschnitt abschnittOhneAnspruch = eingewoehenungAbschnittHelper.zeitabschnittOhneAnspruch;
 		VerfuegungZeitabschnitt eingewoehnung =
 				new VerfuegungZeitabschnitt(getGultigkeitOfEingewohenungAbschnitt(abschnittMitAnspruch, gesuchsperiode));
+		eingewoehnung.setEinkommensjahrForAsivAndGemeinde(
+				abschnittOhneAnspruch.getRelevantBgCalculationInput().getEinkommensjahr());
 		eingewoehnung.setAnspruchspensumProzentForAsivAndGemeinde(abschnittMitAnspruch.getRelevantBgCalculationInput()
 			.getAnspruchspensumProzent());
 		eingewoehnung.setErwerbspensumGS1ForAsivAndGemeinde(abschnittMitAnspruch.getRelevantBgCalculationInput()
