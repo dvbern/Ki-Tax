@@ -3000,6 +3000,7 @@
     "INIT_GS2_ZPVNR_ERKLAERUNG": "Beim Absenden dieses Formulars erhalten Sie eine Einladung mit einem Link. Folgen Sie diesem Link zum BE-Login und melden Sie sich dort an, um das BE-Login mit Ihrem Antrag in kiBon zu verknüpfen.<br><b>Achtung:</b> Bitte verwenden Sie hier die E-Mail-Adresse des BE-Logins, mit dem Sie Ihre Steuererklärung ausgefüllt haben.",
     "SEND_MAIL": "E-Mail senden",
     "ZPV_GS2_SUCCESS": "Sie haben Ihren Account erforgreich mit einem zweiten BE-Login verknüpft. Sie können sich nun wieder mit ihrem primären Account bei kiBon einloggen.",
+    "ZPV_GS_NICHT_VERKNUEPFT": "Der Antrag konnte nicht mit dem BE-Login verknüpft werden. Der ID-Nachweis wurde beim angegebenen BE-Login nicht erbracht. Stellen Sie sicher, dass Sie die E-Mail Adresse des BE-Login angegeben haben, mit dem Sie die Steuererklärung ausgefüllt haben.",
     "ZPV_GS2_WEITERLEITUNG": "Sie werden nun zum BE-Login weitergeleitet",
     "JA_UNTERHALTSVEREINBARUNG": "Ja",
     "NEIN_UNTERHALTSVEREINBARUNG": "Nein, wir wollen keine Unterhaltsvereinbarung abschliessen",

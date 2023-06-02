@@ -60,6 +60,8 @@ public class JaxGesuchsteller extends JaxAbstractPersonDTO {
 	@Nullable
 	private Sprache korrespondenzSprache;
 
+	private boolean hasZpvNummer;
+
 	@Nullable
 	public String getMail() {
 		return mail;
@@ -121,5 +123,13 @@ public class JaxGesuchsteller extends JaxAbstractPersonDTO {
 	@Override
 	public void setGeschlecht(Geschlecht geschlecht) {
 		this.geschlecht = geschlecht;
+	}
+
+	public boolean isHasZpvNummer() {
+		return hasZpvNummer;
+	}
+
+	public void setHasZpvNummer(boolean hasZpvNummer) {
+		this.hasZpvNummer = hasZpvNummer;
 	}
 }
