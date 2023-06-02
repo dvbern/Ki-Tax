@@ -38,4 +38,11 @@ export class ZpvNrSuccessComponent implements OnInit {
 
         return this.gesuchOfGS.gesuchsteller1.id === this.uiRouterGlobals.params.gesuchstellerId ? 1 : 2;
     }
+
+    public getParams(): any {
+        return {
+            gesuchId: this.gesuchOfGS?.id,
+            gesuchstellerNumber: this.getGSNumber()
+        };
+    }
 }

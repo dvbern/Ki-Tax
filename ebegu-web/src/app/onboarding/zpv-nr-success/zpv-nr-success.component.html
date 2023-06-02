@@ -27,7 +27,7 @@
 			</button>
 			<button *ngIf="isAuthenticated"
 					uiSref="gesuch.finanzielleSituation"
-					[uiParams]="{gesuchId: gesuchOfGS?.id, gesuchstellerNumber: getGSNumber()}"
+					[uiParams]="getParams()"
 					[uiOptions]="{location: false}"
 					class="dv-btn onboarding-red-border-button onboarding-login-button-width">
 				<span translate>ONBOARDING_TO_FIN_SIT</span>
