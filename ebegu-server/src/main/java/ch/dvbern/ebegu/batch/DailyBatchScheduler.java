@@ -17,6 +17,7 @@ package ch.dvbern.ebegu.batch;
 
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 
 import javax.annotation.security.RunAs;
 import javax.ejb.Schedule;
@@ -27,6 +28,7 @@ import ch.dvbern.ebegu.enums.UserRoleName;
 import ch.dvbern.ebegu.services.DailyBatch;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.jboss.ejb3.annotation.TransactionTimeout;
 
 @Singleton
 @RunAs(UserRoleName.SUPER_ADMIN)
@@ -95,6 +97,7 @@ public class DailyBatchScheduler {
 	}
 
 	@Schedule(second = "59", minute = "00", hour = "03", persistent = true)
+	@TransactionTimeout(unit = TimeUnit.MINUTES, value = 60)
 	public void runBatchInfoOffenePendenzenNeueMitteilungInstitution() {
 		dailyBatch.runBatchInfoOffenePendenzenNeueMitteilungInstitution();
 	}

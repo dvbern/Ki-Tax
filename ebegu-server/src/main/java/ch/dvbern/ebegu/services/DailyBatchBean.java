@@ -228,7 +228,6 @@ public class DailyBatchBean implements DailyBatch {
 	}
 
 	@Override
-	@TransactionTimeout(unit = TimeUnit.MINUTES, value = 30)
 	public void runBatchInfoOffenePendenzenNeueMitteilungInstitution() {
 		try {
 			LOGGER.info("Starting Job InfoOffenePendenzenNeueMitteilungInstitution...");
