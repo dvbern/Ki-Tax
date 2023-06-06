@@ -323,9 +323,7 @@ public class ZahlungServiceBean extends AbstractBaseService implements ZahlungSe
 		for (VerfuegungZeitabschnitt zeitabschnitt : verfuegungsZeitabschnitte) {
 			// Zu behandeln sind alle, die NEU, VERRECHNEND oder IGNORIEREND sind
 			if (zahlungslaufHelper.isAuszuzahlen(zeitabschnitt)
-				&& (zahlungslaufHelper.getZahlungsstatus(zeitabschnitt).isZuBehandelnInZahlungslauf()
-				|| zahlungslaufHelper.getZahlungsstatus(zeitabschnitt)
-				== VerfuegungsZeitabschnittZahlungsstatus.IGNORIERT)) {
+				&& zahlungslaufHelper.getZahlungsstatus(zeitabschnitt).isZuBehandelnInZahlungslauf()) {
 				createZahlungspositionenKorrekturUndNachzahlung(
 					zahlungslaufHelper,
 					zeitabschnitt,
