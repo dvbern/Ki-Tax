@@ -205,7 +205,19 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     // eslint-disable-next-line
     public $onInit(): void {
         super.$onInit();
-        this.initApplicationProperties().then(() => {
+        this.initApplicationProperties()
+            .then(() => {
+                const gesuchsperiodeId: string = this.gesuchModelManager.getGesuchsperiode().id;
+                return this.einstellungRS.getAllEinstellungenBySystemCached(
+                    gesuchsperiodeId
+                ).toPromise().then((response: TSEinstellung[]) => {
+                    response.filter(r => r.key === TSEinstellungKey.PENSUM_ANZEIGE_TYP)
+                        .forEach(einstellung => {
+                            this.loadPensumAnzeigeTyp(einstellung);
+                        });
+                }, error => LOG.error(error));
+            })
+            .then(() => {
             this.mutationsmeldungModel = undefined;
             this.isMutationsmeldungStatus = false;
             const kindNumber = parseInt(this.$stateParams.kindNumber, 10);
@@ -325,10 +337,6 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
             response.filter(r => r.key === TSEinstellungKey.OEFFNUNGSSTUNDEN_TFO)
                 .forEach(einstellung => {
                     this.oeffnungsstundenTFO = parseInt(einstellung.value, 10);
-                });
-            response.filter(r => r.key === TSEinstellungKey.PENSUM_ANZEIGE_TYP)
-                .forEach(einstellung => {
-                    this.loadPensumAnzeigeTyp(einstellung);
                 });
         }, error => LOG.error(error));
 
