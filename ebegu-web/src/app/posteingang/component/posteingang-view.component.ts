@@ -62,6 +62,7 @@ import {MitteilungRS} from '../../core/service/mitteilungRS.rest';
 import {DVPosteingangFilter} from '../../shared/interfaces/DVPosteingangFilter';
 import {StateStoreService} from '../../shared/services/state-store.service';
 import {PosteingangService} from '../service/posteingang.service';
+import {TSMitteilungTyp} from "../../../models/enums/TSMitteilungTyp";
 
 const LOG = LogFactory.createLog('PosteingangViewComponent');
 
@@ -527,7 +528,7 @@ export class PosteingangViewComponent implements OnInit, OnDestroy, AfterViewIni
     private getOpenTsBetreuungsmitteilungenOfTable(): TSBetreuungsmitteilung[] {
         return this.displayedCollection.data
             .filter(mitteilung =>
-                mitteilung.subject.includes(this.translate.instant('MUTATIONSMELDUNG_BETREFF'))
+                mitteilung.mitteilungTyp === TSMitteilungTyp.BETREUUNGSMITTEILUNG
                 && mitteilung.mitteilungStatus !== TSMitteilungStatus.ERLEDIGT
             )
             .map(mitteilung => mitteilung as TSBetreuungsmitteilung);

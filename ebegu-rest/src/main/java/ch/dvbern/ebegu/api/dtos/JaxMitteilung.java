@@ -17,7 +17,12 @@
 
 package ch.dvbern.ebegu.api.dtos;
 
-import java.time.LocalDateTime;
+import ch.dvbern.ebegu.api.dtos.finanziellesituation.JaxFinanzielleSituation;
+import ch.dvbern.ebegu.enums.MitteilungStatus;
+import ch.dvbern.ebegu.enums.MitteilungTeilnehmerTyp;
+import ch.dvbern.ebegu.enums.MitteilungTyp;
+import ch.dvbern.ebegu.util.Constants;
+import ch.dvbern.lib.date.converters.LocalDateTimeXMLConverter;
 
 import javax.annotation.Nullable;
 import javax.validation.constraints.NotNull;
@@ -26,12 +31,7 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-
-import ch.dvbern.ebegu.api.dtos.finanziellesituation.JaxFinanzielleSituation;
-import ch.dvbern.ebegu.enums.MitteilungStatus;
-import ch.dvbern.ebegu.enums.MitteilungTeilnehmerTyp;
-import ch.dvbern.ebegu.util.Constants;
-import ch.dvbern.lib.date.converters.LocalDateTimeXMLConverter;
+import java.time.LocalDateTime;
 
 /**
  * DTO fuer Stammdaten der Mitteilungen
@@ -80,6 +80,9 @@ public class JaxMitteilung extends JaxAbstractDTO {
 
 	@Nullable
 	private JaxInstitution institution;
+
+	@Nullable
+	private MitteilungTyp mitteilungTyp;
 
 	@Nullable
 	public JaxDossier getDossier() {
@@ -186,5 +189,14 @@ public class JaxMitteilung extends JaxAbstractDTO {
 
 	public void setInstitution(@Nullable JaxInstitution institution) {
 		this.institution = institution;
+	}
+
+	@Nullable
+	public MitteilungTyp getMitteilungTyp() {
+		return mitteilungTyp;
+	}
+
+	public void setMitteilungTyp(@Nullable MitteilungTyp mitteilungTyp) {
+		this.mitteilungTyp = mitteilungTyp;
 	}
 }
