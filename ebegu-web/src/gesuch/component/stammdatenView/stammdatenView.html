@@ -286,7 +286,7 @@
                     <div class="row">
                         <div class="col-sm-12 dv-input-container-medium">
                             <dv-input-container class="form-group">
-                                <label class="md-no-float required">
+                                <label class="md-no-float" ng-class="vm.getMailRequiredCssClass()">
                                        <span data-translate="EMAIL"
                                              for="email_ID"></span>
                                        <dv-tooltip input-id="email_ID"
@@ -320,12 +320,12 @@
                                 </label>
                                 <input aria-describedby="mobile_ID-error"
                                        id="mobile_ID"
-                                       type="text"
+                                       type="number"
                                        name="mobile"
                                        ng-model="vm.getModelJA().mobile"
                                        dv-max-length
                                        class="form-control"
-                                       placeholder="e.g: +41 79 123 44 55"
+                                       placeholder="e.g: 079 123 44 55"
                                        ng-pattern="vm.CONSTANTS.PATTERN_MOBILE"
                                        autocomplete="mobile">
                                 <dv-bisher gs="vm.getModel().gesuchstellerGS.mobile"
@@ -341,12 +341,12 @@
                                 </label>
                                 <input aria-describedby="tel_ID-error"
                                        id="tel_ID"
-                                       type="text"
+                                       type="number"
                                        name="telefon"
                                        ng-model="vm.getModelJA().telefon"
                                        dv-max-length
                                        class="form-control"
-                                       placeholder="e.g: +41 33 123 45 67"
+                                       placeholder="e.g: 033 123 45 67"
                                        ng-pattern="vm.CONSTANTS.PATTERN_PHONE"
                                        autocomplete="home tel">
                                 <dv-bisher gs="vm.getModel().gesuchstellerGS.telefon"
@@ -364,7 +364,7 @@
                             <dv-input-container class="form-group">
                                 <label class="md-no-float" data-translate="TELEFON_AUSLAND" for="ausl_tel">
                                 </label>
-                                <input aria-describedby="ausl_tel-error" id="ausl_tel" type="text" name="telefonAusland"
+                                <input aria-describedby="ausl_tel-error" id="ausl_tel" type="number" name="telefonAusland"
                                        ng-model="vm.getModelJA().telefonAusland" autocomplete="tel"
                                        dv-max-length class="form-control">
                                 <dv-bisher gs="vm.getModel().gesuchstellerGS.telefonAusland"

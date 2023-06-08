@@ -185,7 +185,7 @@ export class TestdatenViewComponent implements OnInit {
 
     public removeGesucheGS(): void {
         this.testFaelleRS.removeFaelleOfGS(this.selectedBesitzer.username).subscribe(() => {
-            this.errorService.addMesageAsInfo(`Gesuche entfernt fuer ${this.selectedBesitzer.username}`);
+            this.errorService.addMesageAsInfo(`Gesuche entfernt für ${this.selectedBesitzer.username}`);
         }, err => LOG.error(err));
     }
 
