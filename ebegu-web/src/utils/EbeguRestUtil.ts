@@ -5310,6 +5310,8 @@ export class EbeguRestUtil {
                 angabenInstitutionFromServer.anzahlEingeschriebeneKinderMitBesonderenBeduerfnissen;
             angabenInstitutionTS.anzahlEingeschriebeneKinderVolksschulangebot =
                 angabenInstitutionFromServer.anzahlEingeschriebeneKinderVolksschulangebot;
+            angabenInstitutionTS.anzahlEingeschriebeneKinderBasisstufe =
+                angabenInstitutionFromServer.anzahlEingeschriebeneKinderBasisstufe;
             angabenInstitutionTS.durchschnittKinderProTagFruehbetreuung =
                 angabenInstitutionFromServer.durchschnittKinderProTagFruehbetreuung;
             angabenInstitutionTS.durchschnittKinderProTagMittag =
@@ -5382,6 +5384,8 @@ export class EbeguRestUtil {
                 tsAngabenInstitution.anzahlEingeschriebeneKinderMitBesonderenBeduerfnissen;
             restAngabenInstitution.anzahlEingeschriebeneKinderVolksschulangebot =
                 tsAngabenInstitution.anzahlEingeschriebeneKinderVolksschulangebot;
+            restAngabenInstitution.anzahlEingeschriebeneKinderBasisstufe =
+                tsAngabenInstitution.anzahlEingeschriebeneKinderBasisstufe;
             restAngabenInstitution.durchschnittKinderProTagFruehbetreuung =
                 tsAngabenInstitution.durchschnittKinderProTagFruehbetreuung;
             restAngabenInstitution.durchschnittKinderProTagMittag = tsAngabenInstitution.durchschnittKinderProTagMittag;

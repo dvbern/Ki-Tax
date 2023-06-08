@@ -31,6 +31,7 @@ export class TSLastenausgleichTagesschuleAngabenInstitution extends TSAbstractEn
     public anzahlEingeschriebeneKinderPrimarstufe: number;
     public anzahlEingeschriebeneKinderMitBesonderenBeduerfnissen: number;
     public anzahlEingeschriebeneKinderVolksschulangebot: number;
+    public anzahlEingeschriebeneKinderBasisstufe: number;
     public durchschnittKinderProTagFruehbetreuung: number;
     public durchschnittKinderProTagMittag: number;
     public durchschnittKinderProTagNachmittag1: number;

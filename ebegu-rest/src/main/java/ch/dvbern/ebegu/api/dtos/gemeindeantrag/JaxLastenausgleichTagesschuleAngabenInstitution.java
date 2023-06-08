@@ -17,13 +17,12 @@
 
 package ch.dvbern.ebegu.api.dtos.gemeindeantrag;
 
-import java.math.BigDecimal;
-import java.util.List;
-
-import javax.annotation.Nullable;
-
 import ch.dvbern.ebegu.api.dtos.JaxAbstractDTO;
 import ch.dvbern.ebegu.dto.gemeindeantrag.OeffnungszeitenTagesschuleDTO;
+
+import javax.annotation.Nullable;
+import java.math.BigDecimal;
+import java.util.List;
 
 public class JaxLastenausgleichTagesschuleAngabenInstitution extends JaxAbstractDTO {
 
@@ -53,6 +52,9 @@ public class JaxLastenausgleichTagesschuleAngabenInstitution extends JaxAbstract
 
 	@Nullable
 	private BigDecimal anzahlEingeschriebeneKinderVolksschulangebot;
+
+	@Nullable
+	private BigDecimal anzahlEingeschriebeneKinderBasisstufe;
 
 	@Nullable
 	private BigDecimal durchschnittKinderProTagFruehbetreuung;
@@ -266,5 +268,14 @@ public class JaxLastenausgleichTagesschuleAngabenInstitution extends JaxAbstract
 
 	public void setOeffnungszeiten(@Nullable  List<OeffnungszeitenTagesschuleDTO> oeffnungszeiten) {
 		this.oeffnungszeiten = oeffnungszeiten;
+	}
+
+	@Nullable
+	public BigDecimal getAnzahlEingeschriebeneKinderBasisstufe() {
+		return anzahlEingeschriebeneKinderBasisstufe;
+	}
+
+	public void setAnzahlEingeschriebeneKinderBasisstufe(@Nullable BigDecimal anzahlEingeschriebeneKinderBasisstufe) {
+		this.anzahlEingeschriebeneKinderBasisstufe = anzahlEingeschriebeneKinderBasisstufe;
 	}
 }
