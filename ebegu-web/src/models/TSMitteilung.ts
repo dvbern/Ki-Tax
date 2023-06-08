@@ -24,7 +24,7 @@ import {TSBetreuung} from './TSBetreuung';
 import {TSDossier} from './TSDossier';
 import {TSFinanzielleSituation} from './TSFinanzielleSituation';
 import {TSInstitution} from './TSInstitution';
-import {TSMitteilungTyp} from "./enums/TSMitteilungTyp";
+import {TSMitteilungTyp} from './enums/TSMitteilungTyp';
 
 export class TSMitteilung extends TSAbstractMutableEntity {
 

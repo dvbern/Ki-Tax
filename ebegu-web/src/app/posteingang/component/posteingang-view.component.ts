@@ -62,7 +62,7 @@ import {MitteilungRS} from '../../core/service/mitteilungRS.rest';
 import {DVPosteingangFilter} from '../../shared/interfaces/DVPosteingangFilter';
 import {StateStoreService} from '../../shared/services/state-store.service';
 import {PosteingangService} from '../service/posteingang.service';
-import {TSMitteilungTyp} from "../../../models/enums/TSMitteilungTyp";
+import {TSMitteilungTyp} from '../../../models/enums/TSMitteilungTyp';
 
 const LOG = LogFactory.createLog('PosteingangViewComponent');
 
