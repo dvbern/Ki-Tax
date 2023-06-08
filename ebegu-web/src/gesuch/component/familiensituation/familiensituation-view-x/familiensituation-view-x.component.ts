@@ -335,8 +335,7 @@ export class FamiliensituationViewXComponent extends AbstractFamiliensitutaionVi
     }
 
     private getDatumEndOfMonthAfterAenderungPer(): string {
-        return this.getFamiliensituation()
-                .aenderungPer.endOf('month')
+        return  moment(this.getFamiliensituation().aenderungPer).endOf('month')
                 .format(CONSTANTS.DATE_FORMAT);
     }
 
