@@ -972,10 +972,15 @@ public class Gesuch extends AbstractMutableEntity implements Searchable {
 			target.setMarkiertFuerKontroll(this.markiertFuerKontroll);
 			break;
 		case ERNEUERUNG:
-		case ERNEUERUNG_AR_2023:
 		case ERNEUERUNG_NEUES_DOSSIER:
 			target.setLaufnummer(0); // Wir fangen für die neue Periode wieder mit 0 an
 			copyGesuchsteller2IfStillNeeded(target, copyType);
+			break;
+		case ERNEUERUNG_AR_2023:
+			target.setLaufnummer(0); // Wir fangen für die neue Periode wieder mit 0 an
+			copyGesuchsteller2IfStillNeeded(target, copyType);
+			copyEinkommensverschlechterungInfoContainer(target, copyType);
+			copyDokumentGruende(target, copyType);
 			break;
 		case MUTATION_NEUES_DOSSIER:
 			target.setLaufnummer(0); // Wir fangen für das neue Dossier wieder mit 0 an

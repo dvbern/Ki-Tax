@@ -15,26 +15,18 @@
 
 package ch.dvbern.ebegu.entities;
 
-import java.util.Objects;
-
-import javax.annotation.Nonnull;
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.ForeignKey;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
-import javax.persistence.UniqueConstraint;
-import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
-
 import ch.dvbern.ebegu.enums.AntragCopyType;
 import ch.dvbern.ebegu.util.EbeguUtil;
 import ch.dvbern.ebegu.validationgroups.AntragCompleteValidationGroup;
 import ch.dvbern.ebegu.validators.CheckFinanzielleSituationContainerComplete;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.hibernate.envers.Audited;
+
+import javax.annotation.Nonnull;
+import javax.persistence.*;
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
+import java.util.Objects;
 
 /**
  * Container-Entity für die Finanzielle Situation: Diese muss für jeden Benutzertyp (GS, JA, SV) einzeln geführt werden,
@@ -111,13 +103,13 @@ public class FinanzielleSituationContainer extends AbstractMutableEntity {
 		switch (copyType) {
 		case MUTATION:
 		case MUTATION_NEUES_DOSSIER:
+		case ERNEUERUNG_AR_2023:
 			target.setGesuchsteller(targetGesuchstellerContainer);
 			target.setJahr(this.getJahr());
 			target.setFinanzielleSituationGS(null);
 			target.setFinanzielleSituationJA(this.getFinanzielleSituationJA().copyFinanzielleSituation(new FinanzielleSituation(), copyType));
 			break;
 		case ERNEUERUNG:
-		case ERNEUERUNG_AR_2023:
 		case ERNEUERUNG_NEUES_DOSSIER:
 			break;
 		}

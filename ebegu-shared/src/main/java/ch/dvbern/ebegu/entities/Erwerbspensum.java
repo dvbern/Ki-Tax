@@ -15,21 +15,6 @@
 
 package ch.dvbern.ebegu.entities;
 
-import java.util.Locale;
-import java.util.Objects;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.ForeignKey;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
-import javax.validation.constraints.NotNull;
-
 import ch.dvbern.ebegu.enums.AntragCopyType;
 import ch.dvbern.ebegu.enums.Taetigkeit;
 import ch.dvbern.ebegu.util.Constants;
@@ -39,6 +24,13 @@ import ch.dvbern.ebegu.validators.CheckUnbezahlterUrlaub;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.hibernate.envers.Audited;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+import java.util.Locale;
+import java.util.Objects;
 
 /**
  * Erwerbspensum eines Gesuchstellers
@@ -160,13 +152,13 @@ public class Erwerbspensum extends AbstractIntegerPensum {
 		switch (copyType) {
 		case MUTATION:
 		case MUTATION_NEUES_DOSSIER:
+		case ERNEUERUNG_AR_2023:
 			target.setTaetigkeit(this.getTaetigkeit());
 			target.setBezeichnung(this.getBezeichnung());
 			target.setErwerbspensumInstitution(this.getErwerbspensumInstitution());
 			copyUnbezahlterUrlaub(target, copyType);
 			break;
 		case ERNEUERUNG:
-		case ERNEUERUNG_AR_2023:
 		case ERNEUERUNG_NEUES_DOSSIER:
 			break;
 		}

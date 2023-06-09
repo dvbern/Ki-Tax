@@ -15,20 +15,16 @@
 
 package ch.dvbern.ebegu.entities;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.ForeignKey;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
-import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
-
 import ch.dvbern.ebegu.enums.AntragCopyType;
 import ch.dvbern.ebegu.util.EbeguUtil;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.hibernate.envers.Audited;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.persistence.*;
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 
 /**
  * Entity für die Erfassung von Einkommensverschlechterungen für das Gesuch
@@ -111,6 +107,7 @@ public class EinkommensverschlechterungInfoContainer extends AbstractMutableEnti
 		super.copyAbstractEntity(target, copyType);
 		switch (copyType) {
 		case MUTATION:
+		case ERNEUERUNG_AR_2023:
 		case MUTATION_NEUES_DOSSIER:
 			target.setGesuch(targetGesuch);
 			target.setEinkommensverschlechterungInfoGS(null);
@@ -118,7 +115,6 @@ public class EinkommensverschlechterungInfoContainer extends AbstractMutableEnti
 				new EinkommensverschlechterungInfo(), copyType));
 			break;
 		case ERNEUERUNG:
-		case ERNEUERUNG_AR_2023:
 		case ERNEUERUNG_NEUES_DOSSIER:
 			break;
 		}

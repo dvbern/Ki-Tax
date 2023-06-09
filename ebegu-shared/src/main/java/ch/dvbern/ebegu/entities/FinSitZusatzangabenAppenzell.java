@@ -17,18 +17,13 @@
 
 package ch.dvbern.ebegu.entities;
 
-import java.math.BigDecimal;
-import java.util.Objects;
-
-import javax.annotation.Nullable;
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
-
 import ch.dvbern.ebegu.enums.AntragCopyType;
 import org.hibernate.envers.Audited;
+
+import javax.annotation.Nullable;
+import javax.persistence.*;
+import java.math.BigDecimal;
+import java.util.Objects;
 
 @Audited
 @Entity
@@ -212,6 +207,7 @@ public class FinSitZusatzangabenAppenzell extends AbstractMutableEntity {
 		switch (copyType) {
 		case MUTATION:
 		case MUTATION_NEUES_DOSSIER:
+		case ERNEUERUNG_AR_2023:
 			return copyAllValues(target);
 		default:
 			break;

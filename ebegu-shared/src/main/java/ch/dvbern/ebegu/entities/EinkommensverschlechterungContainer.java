@@ -15,22 +15,16 @@
 
 package ch.dvbern.ebegu.entities;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.ForeignKey;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
-import javax.persistence.UniqueConstraint;
-import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
-
 import ch.dvbern.ebegu.enums.AntragCopyType;
 import ch.dvbern.ebegu.util.EbeguUtil;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.hibernate.envers.Audited;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.persistence.*;
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 
 /**
  * Container-Entity für dieEinkommensverschlechterung: Diese muss für jeden
@@ -129,6 +123,7 @@ public class EinkommensverschlechterungContainer extends AbstractMutableEntity {
 		switch (copyType) {
 		case MUTATION:
 		case MUTATION_NEUES_DOSSIER:
+		case ERNEUERUNG_AR_2023:
 			target.setGesuchsteller(targetGesuchstellerContainer);
 			target.setEkvGSBasisJahrPlus1(null);
 			target.setEkvGSBasisJahrPlus2(null);
@@ -140,7 +135,6 @@ public class EinkommensverschlechterungContainer extends AbstractMutableEntity {
 			}
 			break;
 		case ERNEUERUNG:
-		case ERNEUERUNG_AR_2023:
 		case ERNEUERUNG_NEUES_DOSSIER:
 			break;
 		}

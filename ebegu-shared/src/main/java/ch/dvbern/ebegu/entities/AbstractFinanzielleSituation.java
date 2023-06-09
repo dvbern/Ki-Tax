@@ -379,6 +379,7 @@ public abstract class AbstractFinanzielleSituation extends AbstractMutableEntity
 		switch (copyType) {
 		case MUTATION:
 		case MUTATION_NEUES_DOSSIER:
+		case ERNEUERUNG_AR_2023:
 			target.setNettolohn(this.getNettolohn());
 			target.setFamilienzulage(this.getFamilienzulage());
 			target.setErsatzeinkommen(this.getErsatzeinkommen());
@@ -407,7 +408,6 @@ public abstract class AbstractFinanzielleSituation extends AbstractMutableEntity
 			}
 			break;
 		case ERNEUERUNG:
-		case ERNEUERUNG_AR_2023:
 		case ERNEUERUNG_NEUES_DOSSIER:
 			break;
 		}

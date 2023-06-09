@@ -15,24 +15,6 @@
 
 package ch.dvbern.ebegu.entities;
 
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.ForeignKey;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
-import javax.validation.Valid;
-
 import ch.dvbern.ebegu.dto.suchfilter.lucene.Searchable;
 import ch.dvbern.ebegu.enums.AntragCopyType;
 import ch.dvbern.ebegu.enums.Taetigkeit;
@@ -47,6 +29,13 @@ import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Analyzer;
 import org.hibernate.search.annotations.Indexed;
 import org.hibernate.search.annotations.IndexedEmbedded;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.persistence.*;
+import javax.validation.Valid;
+import java.time.LocalDate;
+import java.util.*;
 
 /**
  * Entitaet zum Speichern von GesuchContainer in der Datenbank.
@@ -267,11 +256,11 @@ public class GesuchstellerContainer extends AbstractMutableEntity implements Sea
 			copyErwerbspensen(target, copyType);
 			break;
 		case ERNEUERUNG:
-		case ERNEUERUNG_AR_2023:
 		case ERNEUERUNG_NEUES_DOSSIER:
 			copyAdressenAktuellUndZukuenftig(target, copyType);
 			break;
 		case MUTATION_NEUES_DOSSIER:
+		case ERNEUERUNG_AR_2023:
 			copyAdressenAktuellUndZukuenftig(target, copyType);
 			copyFinanzen(target, copyType);
 			copyErwerbspensen(target, copyType);
