@@ -2556,6 +2556,7 @@
     "LATS_ANZAHL_EINGESCHRIEBENE_KINDER": "Nombre total d'élèves inscrits dans la semaine du {{datum}}",
     "LATS_ANZAHL_EINGESCHRIEBENE_KINDER_INFO": "Chaque élève compte une fois, même s'il fréquente l'école à journée continue plusieurs jours par semaine.",
     "LATS_DAVON_KINDERGARTEN": "   -  dont élèves de l'école enfantine",
+    "LATS_DAVON_BASISSTUFE": "   -  davon Anzahl Kinder Basisstufe",
     "LATS_DAVON_PRIMARSTUFE": "   -  dont élèves du degré primaire",
     "LATS_DAVON_SEKUNDARSTUFE": "   -  dont élèves du degré secondaire I (de la 9<sup>e</sup> à la 11<sup>e</sup>)",
     "LATS_ANZAHL_KINDER_BESONDERE_ANFORDERUNGEN": "Nombre total des élèves inscrits nécessitant un encadrement particulier",

@@ -267,6 +267,10 @@ export class TagesschulenAngabenComponent implements OnInit {
                 latsAngabenInstiution?.anzahlEingeschriebeneKinderKindergarten,
                 numberValidator(ValidationType.POSITIVE_INTEGER)
             ],
+            anzahlEingeschriebeneKinderBasisstufe: [
+                latsAngabenInstiution?.anzahlEingeschriebeneKinderBasisstufe,
+                numberValidator(ValidationType.POSITIVE_INTEGER)
+            ],
             anzahlEingeschriebeneKinderSekundarstufe: [
                 latsAngabenInstiution?.anzahlEingeschriebeneKinderSekundarstufe,
                 numberValidator(ValidationType.POSITIVE_INTEGER)
