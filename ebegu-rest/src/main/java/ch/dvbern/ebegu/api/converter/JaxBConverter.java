@@ -6095,6 +6095,7 @@ public class JaxBConverter extends AbstractConverter {
 		jaxAngabenGemeinde.setDavonStundenZuNormlohnMehrAls50ProzentAusgebildete(angabenGemeinde.getDavonStundenZuNormlohnMehrAls50ProzentAusgebildete());
 		jaxAngabenGemeinde.setDavonStundenZuNormlohnWenigerAls50ProzentAusgebildete(angabenGemeinde.getDavonStundenZuNormlohnWenigerAls50ProzentAusgebildete());
 		jaxAngabenGemeinde.setEinnahmenElterngebuehren(angabenGemeinde.getEinnahmenElterngebuehren());
+		jaxAngabenGemeinde.setEinnahmenElterngebuehrenVolksschulangebot(angabenGemeinde.getEinnahmenElterngebuehrenVolksschulangebot());
 		jaxAngabenGemeinde.setTagesschuleTeilweiseGeschlossen(angabenGemeinde.getTagesschuleTeilweiseGeschlossen());
 		jaxAngabenGemeinde.setRueckerstattungenElterngebuehrenSchliessung(angabenGemeinde.getRueckerstattungenElterngebuehrenSchliessung());
 		jaxAngabenGemeinde.setErsteRateAusbezahlt(angabenGemeinde.getErsteRateAusbezahlt());
@@ -6160,6 +6161,7 @@ public class JaxBConverter extends AbstractConverter {
 		angabenGemeinde.setDavonStundenZuNormlohnMehrAls50ProzentAusgebildete(jaxAngabenGemeinde.getDavonStundenZuNormlohnMehrAls50ProzentAusgebildete());
 		angabenGemeinde.setDavonStundenZuNormlohnWenigerAls50ProzentAusgebildete(jaxAngabenGemeinde.getDavonStundenZuNormlohnWenigerAls50ProzentAusgebildete());
 		angabenGemeinde.setEinnahmenElterngebuehren(jaxAngabenGemeinde.getEinnahmenElterngebuehren());
+		angabenGemeinde.setEinnahmenElterngebuehrenVolksschulangebot(jaxAngabenGemeinde.getEinnahmenElterngebuehrenVolksschulangebot());
 		angabenGemeinde.setTagesschuleTeilweiseGeschlossen(jaxAngabenGemeinde.getTagesschuleTeilweiseGeschlossen());
 		angabenGemeinde.setRueckerstattungenElterngebuehrenSchliessung(jaxAngabenGemeinde.getRueckerstattungenElterngebuehrenSchliessung());
 		angabenGemeinde.setErsteRateAusbezahlt(jaxAngabenGemeinde.getErsteRateAusbezahlt());

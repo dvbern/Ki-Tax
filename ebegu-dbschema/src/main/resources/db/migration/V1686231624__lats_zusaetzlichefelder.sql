@@ -16,7 +16,13 @@
  */
 
 alter table lastenausgleich_tagesschule_angaben_institution
-    add column anzahl_eingeschriebene_kinder_basisstufe decimal(19,2) default 0;
+    add column if not exists anzahl_eingeschriebene_kinder_basisstufe decimal(19,2) default 0;
 
 alter table lastenausgleich_tagesschule_angaben_institution_aud
-    add column anzahl_eingeschriebene_kinder_basisstufe decimal(19,2);
+    add column if not exists anzahl_eingeschriebene_kinder_basisstufe decimal(19,2);
+
+ALTER TABLE lastenausgleich_tagesschule_angaben_gemeinde ADD COLUMN IF NOT EXISTS
+    einnahmen_elterngebuehren_volksschulangebot decimal(19,2);
+
+ALTER TABLE lastenausgleich_tagesschule_angaben_gemeinde_aud ADD COLUMN IF NOT EXISTS
+    einnahmen_elterngebuehren_volksschulangebot decimal(19,2);
