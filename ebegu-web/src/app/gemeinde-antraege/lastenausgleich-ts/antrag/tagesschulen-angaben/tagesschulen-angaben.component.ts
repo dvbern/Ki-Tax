@@ -349,10 +349,13 @@ export class TagesschulenAngabenComponent implements OnInit {
                     .pipe(startWith(angaben?.anzahlEingeschriebeneKinderPrimarstufe || 0)),
                 this.form.get('anzahlEingeschriebeneKinderSekundarstufe')
                     .valueChanges
-                    .pipe(startWith(angaben?.anzahlEingeschriebeneKinderSekundarstufe || 0))
+                    .pipe(startWith(angaben?.anzahlEingeschriebeneKinderSekundarstufe || 0)),
+                this.form.get('anzahlEingeschriebeneKinderBasisstufe')
+                    .valueChanges
+                    .pipe(startWith(angaben?.anzahlEingeschriebeneKinderBasisstufe || 0))
             ]
         ).subscribe(values => {
-            this.abweichungenAnzahlKinder = values[0] - values[1] - values[2] - values[3];
+            this.abweichungenAnzahlKinder = values[0] - values[1] - values[2] - values[3] - values[4];
             this.cd.markForCheck();
         }, () => {
             this.errorService.addMesageAsError('BAD_NUMBER_ERROR');
@@ -716,7 +719,8 @@ export class TagesschulenAngabenComponent implements OnInit {
     }
 
     public allAnzahlFieldsFilledOut(): boolean {
-        return this.form?.get('anzahlEingeschriebeneKinder').value?.toString().length > 0 &&
+        return this.form?.get('anzahlEingeschriebeneKinderBasisstufe').value?.toString().length > 0 &&
+            this.form?.get('anzahlEingeschriebeneKinder').value?.toString().length > 0 &&
             this.form?.get('anzahlEingeschriebeneKinderKindergarten').value?.toString().length > 0 &&
             this.form?.get('anzahlEingeschriebeneKinderPrimarstufe').value?.toString().length > 0 &&
             this.form?.get('anzahlEingeschriebeneKinderSekundarstufe').value?.toString().length > 0;
