@@ -920,6 +920,7 @@ public class Gesuch extends AbstractMutableEntity implements Searchable {
 		familiensituationContainer.setFamiliensituationJA(new Familiensituation());
 	}
 
+	@SuppressWarnings("PMD.NcssMethodCount")
 	@Nonnull
 	public Gesuch copyGesuch(
 		@Nonnull Gesuch target,
