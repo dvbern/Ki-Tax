@@ -230,6 +230,12 @@ export class GemeindeAngabenComponent implements OnInit, OnDestroy {
                     Validators.pattern(CONSTANTS.PATTERN_TWO_DECIMALS)
                 ])
             ],
+            einnahmenElterngebuehrenVolksschulangebot: [
+                initialGemeindeAngaben?.einnahmenElterngebuehrenVolksschulangebot, Validators.compose([
+                    this.numberValidator(),
+                    Validators.pattern(CONSTANTS.PATTERN_TWO_DECIMALS)
+                ])
+            ],
             ersteRateAusbezahlt: [
                 initialGemeindeAngaben?.ersteRateAusbezahlt,
                 numberValidator(ValidationType.POSITIVE_INTEGER)

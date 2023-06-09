@@ -412,6 +412,29 @@
                     </mat-form-field>
                 </dv-input-container-x>
 
+                <dv-input-container-x>
+                    <label [ngClass]="{'label-required-error': abschliessenValidationActive && angabenForm.get('einnahmenElterngebuehrenVolksschulangebot').errors}">
+                        {{'LATS_EINNAHMEN_ELTERNGEBUEHREN_VOLKSSCHALANGEBOT' | translate:{jahr: lATSAngabenGemeindeContainer.gesuchsperiode?.gesuchsperiodeString} }}
+                        <dv-tooltip [text]="'LATS_EINNAHMEN_ELTERNGEBUEHREN_VOLKSSCHALANGEBOT_INFO' | translate"></dv-tooltip>
+                    </label>
+                    <mat-form-field floatLabel="always">
+                        <input matInput formControlName="einnahmenElterngebuehrenVolksschulangebot" class="form-control dv-input"/>
+                        <mat-error *ngIf="angabenForm.get('einnahmenElterngebuehrenVolksschulangebot').errors?.noNumberError"
+                                   translate>ERROR_NUMBER
+                        </mat-error>
+                        <mat-error
+                            *ngIf="angabenForm.get('einnahmenElterngebuehrenVolksschulangebot').errors?.pattern && !angabenForm.get('einnahmenElterngebuehrenVolksschulangebot').errors?.noNumberError">
+                            {{'ERROR_STEP' | translate:{value: 0.01} }}
+                        </mat-error>
+                        <dv-bisher-x
+                            [deklaration]="lATSAngabenGemeindeContainer?.angabenDeklaration?.einnahmenElterngebuehrenVolksschulangebot"
+                            [korrektur]="angabenForm.get('einnahmenElterngebuehrenVolksschulangebot').value"
+                            [showBisher]="lATSAngabenGemeindeContainer.isAtLeastInBearbeitungKantonOrZurueckgegeben()"
+                            [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
+                        </dv-bisher-x>
+                    </mat-form-field>
+                </dv-input-container-x>
+
                 <dv-input-container-x *ngIf="showCornonaFrage()">
                     <label required
                            [ngClass]="{'label-required-error': abschliessenValidationActive && angabenForm.get('tagesschuleTeilweiseGeschlossen').errors}">
