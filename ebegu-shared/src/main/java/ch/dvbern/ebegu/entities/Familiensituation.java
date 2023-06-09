@@ -482,6 +482,7 @@ public class Familiensituation extends AbstractMutableEntity {
 			target.setPartnerIdentischMitVorgesuch(this.partnerIdentischMitVorgesuch);
 			break;
 		case ERNEUERUNG:
+		case ERNEUERUNG_AR_2023:
 		case ERNEUERUNG_NEUES_DOSSIER:
 			if (this.getAuszahlungsdaten() != null) {
 				target.setAuszahlungsdaten(this.getAuszahlungsdaten().copyAuszahlungsdaten(new Auszahlungsdaten(), copyType));

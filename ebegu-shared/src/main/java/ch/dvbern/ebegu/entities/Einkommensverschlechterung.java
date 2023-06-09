@@ -149,6 +149,7 @@ public class Einkommensverschlechterung extends AbstractFinanzielleSituation {
 			}
 			break;
 		case ERNEUERUNG:
+		case ERNEUERUNG_AR_2023:
 		case ERNEUERUNG_NEUES_DOSSIER:
 			break;
 		}

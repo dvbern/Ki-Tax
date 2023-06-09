@@ -125,6 +125,7 @@ public class EinkommensverschlechterungInfo extends AbstractMutableEntity {
 			target.setEkvBasisJahrPlus2Annulliert(this.getEkvBasisJahrPlus2Annulliert());
 			break;
 		case ERNEUERUNG:
+		case ERNEUERUNG_AR_2023:
 		case ERNEUERUNG_NEUES_DOSSIER:
 			break;
 		}

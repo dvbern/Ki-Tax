@@ -24,13 +24,16 @@ public enum AntragCopyType {
 	MUTATION, // entspricht einer Mutation im selben Dossier/Gemeinde
 	ERNEUERUNG, // Erneuerungsgesuch im selben Dossier/Gemeinde
 	MUTATION_NEUES_DOSSIER, // Antrag in einem neuen Dossier/Gemeinde in der selben Gesuchsperiode
-	ERNEUERUNG_NEUES_DOSSIER; // Erneuerungsgesuch in einem neuen Dossier/Gemeinde
+	ERNEUERUNG_NEUES_DOSSIER, // Erneuerungsgesuch in einem neuen Dossier/Gemeinde
+	ERNEUERUNG_AR_2023;  //Speziallfall Erneuerunggesuch in Appenzell von der Periode 22/23 zu Periode 23/24
 
 	public boolean isNeuesDossier() {
 		return EnumUtil.isOneOf(this, MUTATION_NEUES_DOSSIER, ERNEUERUNG_NEUES_DOSSIER);
 	}
 
 	public boolean isGleichesDossier() {
-		return EnumUtil.isOneOf(this, MUTATION, ERNEUERUNG);
+		return EnumUtil.isOneOf(this, MUTATION, ERNEUERUNG, ERNEUERUNG_AR_2023);
 	}
+
+	public boolean isErneuerung() {return EnumUtil.isOneOf(this, ERNEUERUNG, ERNEUERUNG_AR_2023);}
 }

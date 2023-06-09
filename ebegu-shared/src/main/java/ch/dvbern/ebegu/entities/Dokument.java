@@ -91,6 +91,7 @@ public class Dokument extends FileMetadata {
 			target.setTimestampUpload(getTimestampUpload());
 			break;
 		case ERNEUERUNG:
+		case ERNEUERUNG_AR_2023:
 		case ERNEUERUNG_NEUES_DOSSIER:
 			break;
 		}

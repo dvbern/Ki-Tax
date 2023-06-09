@@ -123,6 +123,7 @@ public abstract class FileMetadata extends AbstractMutableEntity {
 			target.setFilesize(this.getFilesize());
 			break;
 		case ERNEUERUNG:
+		case ERNEUERUNG_AR_2023:
 		case ERNEUERUNG_NEUES_DOSSIER:
 			break;
 		}

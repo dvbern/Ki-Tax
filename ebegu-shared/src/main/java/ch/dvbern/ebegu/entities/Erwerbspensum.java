@@ -166,6 +166,7 @@ public class Erwerbspensum extends AbstractIntegerPensum {
 			copyUnbezahlterUrlaub(target, copyType);
 			break;
 		case ERNEUERUNG:
+		case ERNEUERUNG_AR_2023:
 		case ERNEUERUNG_NEUES_DOSSIER:
 			break;
 		}

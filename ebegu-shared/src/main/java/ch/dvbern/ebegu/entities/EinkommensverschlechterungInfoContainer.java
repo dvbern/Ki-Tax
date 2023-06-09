@@ -118,6 +118,7 @@ public class EinkommensverschlechterungInfoContainer extends AbstractMutableEnti
 				new EinkommensverschlechterungInfo(), copyType));
 			break;
 		case ERNEUERUNG:
+		case ERNEUERUNG_AR_2023:
 		case ERNEUERUNG_NEUES_DOSSIER:
 			break;
 		}

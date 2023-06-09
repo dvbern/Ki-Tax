@@ -117,6 +117,7 @@ public class FinanzielleSituationContainer extends AbstractMutableEntity {
 			target.setFinanzielleSituationJA(this.getFinanzielleSituationJA().copyFinanzielleSituation(new FinanzielleSituation(), copyType));
 			break;
 		case ERNEUERUNG:
+		case ERNEUERUNG_AR_2023:
 		case ERNEUERUNG_NEUES_DOSSIER:
 			break;
 		}

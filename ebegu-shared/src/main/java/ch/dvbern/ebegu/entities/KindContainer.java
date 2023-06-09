@@ -244,6 +244,7 @@ public class KindContainer extends AbstractMutableEntity implements Comparable<K
 			target.setKeinSelbstbehaltDurchGemeinde(this.getKeinSelbstbehaltDurchGemeinde());
 			break;
 		case ERNEUERUNG:
+		case ERNEUERUNG_AR_2023:
 		case MUTATION_NEUES_DOSSIER:
 		case ERNEUERUNG_NEUES_DOSSIER:
 			target.setNextNumberBetreuung(1); // Betreuungen werden wieder ab 1 durchnummeriert

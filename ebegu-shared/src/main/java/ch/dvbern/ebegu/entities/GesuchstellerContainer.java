@@ -267,6 +267,7 @@ public class GesuchstellerContainer extends AbstractMutableEntity implements Sea
 			copyErwerbspensen(target, copyType);
 			break;
 		case ERNEUERUNG:
+		case ERNEUERUNG_AR_2023:
 		case ERNEUERUNG_NEUES_DOSSIER:
 			copyAdressenAktuellUndZukuenftig(target, copyType);
 			break;

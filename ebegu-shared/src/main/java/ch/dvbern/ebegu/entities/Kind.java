@@ -376,6 +376,7 @@ public class Kind extends AbstractPersonEntity {
 			// Dieser liegt ja in der Kompetenz der Gemeinde und kann nicht uebernommen werden
 			break;
 		case ERNEUERUNG:
+		case ERNEUERUNG_AR_2023:
 		case ERNEUERUNG_NEUES_DOSSIER:
 			target.inPruefung = true;
 			// Ausserordentlicher Anspruch wird nicht kopiert, auch wenn er noch gueltig waere.

@@ -160,6 +160,7 @@ public class BetreuungspensumContainer extends AbstractMutableEntity
 			target.setBetreuungspensumJA(this.getBetreuungspensumJA().copyBetreuungspensum(new Betreuungspensum(), copyType));
 			break;
 		case ERNEUERUNG:
+		case ERNEUERUNG_AR_2023:
 		case MUTATION_NEUES_DOSSIER:
 		case ERNEUERUNG_NEUES_DOSSIER:
 			break;
