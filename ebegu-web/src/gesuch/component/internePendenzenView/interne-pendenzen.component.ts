@@ -38,8 +38,6 @@ export class InternePendenzenComponent implements OnInit {
 
     public internePendenzen: TSInternePendenz[] = [];
 
-    public readonly demoFeature = TSDemoFeature.STEUERABFRAGE_NEUE_VERANLAGUNG;
-
     public constructor(
         private readonly location: Location,
         private readonly dialog: MatDialog,

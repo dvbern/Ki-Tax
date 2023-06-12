@@ -80,9 +80,6 @@ export class FinanzielleSituationStartViewController extends AbstractFinSitBernV
     public laenderList: TSLand[];
     private triedSavingWithoutForm: boolean = false;
 
-    private isAlwaysShowAuszahlungsdatenActivated: boolean = false;
-    private isMutationIgnorierenActivated: boolean = false;
-
     public constructor(
         gesuchModelManager: GesuchModelManager,
         berechnungsManager: BerechnungsManager,
@@ -126,11 +123,6 @@ export class FinanzielleSituationStartViewController extends AbstractFinSitBernV
                                                                                                     // just once
 
         this.gesuchModelManager.setGesuchstellerNumber(1);
-
-        demoFeatureRS.isDemoFeatureAllowed(TSDemoFeature.ALLWAYS_SHOW_ZAHLUNGSDATEN_ON_FINSIT_BERN)
-            .then(isAllowed => this.isAlwaysShowAuszahlungsdatenActivated = isAllowed);
-        demoFeatureRS.isDemoFeatureAllowed(TSDemoFeature.VERAENDERUNG_BEI_MUTATION)
-            .then(isAllowed => this.isMutationIgnorierenActivated = isAllowed);
     }
 
     public showSteuerveranlagung(): boolean {
@@ -314,29 +306,6 @@ export class FinanzielleSituationStartViewController extends AbstractFinSitBernV
         return this.gesuchModelManager.isMahlzeitenverguenstigungEnabled() &&
             (this.model.familienSituation.sozialhilfeBezueger || this.model.familienSituation.verguenstigungGewuenscht)
             && this.getGesuch() && !this.getGesuch().areThereOnlyFerieninsel();
-    }
-
-    public showZahlungsdaten(): boolean {
-        return this.isDemofeatureAlwaysShowZahlungsdatenEnabled() ||
-        (this.isMahlzeitenverguenstigungEnabled() &&
-            !this.model.zahlungsinformationen.keineMahlzeitenverguenstigungBeantragt);
-    }
-
-    private isDemofeatureAlwaysShowZahlungsdatenEnabled() {
-        return this.isAlwaysShowAuszahlungsdatenActivated;
-    }
-
-    public changeMahlzeitenGewuenscht(): void {
-        // Solang dei Funktion noch mit dem Demofeature ausgeblendet ist, sollen die Auszahlungsdaten reseted werden,
-        // wenn die mahlzeitenvergünsitung nicht mehr beantragt wird
-        // das kann gelöscht werden, sobald wir die funktion permanent aktivieren
-        if (this.model.zahlungsinformationen.keineMahlzeitenverguenstigungBeantragt &&
-            !this.isDemofeatureAlwaysShowZahlungsdatenEnabled()) {
-            this.model.zahlungsinformationen.iban = undefined;
-            this.model.zahlungsinformationen.kontoinhaber = undefined;
-            this.model.zahlungsinformationen.abweichendeZahlungsadresse = undefined;
-            this.model.zahlungsinformationen.zahlungsadresse = undefined;
-        }
     }
 
     public isZahlungsangabenRequired(): boolean {

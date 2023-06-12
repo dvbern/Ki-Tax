@@ -97,13 +97,6 @@ export class FinanzielleSituationResultateViewController extends AbstractGesuchV
     }
 
     private async initFinSitVorMutation(): Promise<void> {
-
-        const allowed = await this.demoFeatureRS
-            .isDemoFeatureAllowed(TSDemoFeature.STEUERABFRAGE_ERNEUT_DURCHFUEHREN_IN_MUTATION);
-
-        if (!allowed) {
-            return;
-        }
         // beim Erstgesuch macht dies keinen Sinn
         if (EbeguUtil.isNullOrUndefined(this.getGesuch().vorgaengerId)) {
             return;

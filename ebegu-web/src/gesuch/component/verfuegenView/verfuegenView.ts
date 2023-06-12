@@ -133,8 +133,6 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
 
     private showAuszahlungAnInstitutionen: boolean;
     private showAuszahlungAnEltern: boolean;
-
-    public readonly demoFeature = TSDemoFeature.VERAENDERUNG_BEI_MUTATION;
     private demoFeatureZahlungsstatusAllowed: boolean = false;
     public vorgaengerZeitabschnitteSchulamt: TSVerfuegungZeitabschnitt[];
     private minVerguenstigungProTag: string;
