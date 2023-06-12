@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020 DV Bern AG, Switzerland
+ * Copyright (C) 2023 DV Bern AG, Switzerland
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -8,11 +8,11 @@
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program. If not, see <https://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
 import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnInit, ViewEncapsulation} from '@angular/core';
@@ -27,23 +27,23 @@ import {EinstellungRS} from '../../../../../admin/service/einstellungRS.rest';
 import {AuthServiceRS} from '../../../../../authentication/service/AuthServiceRS.rest';
 import {TSEinstellungKey} from '../../../../../models/enums/TSEinstellungKey';
 import {
-    TSLastenausgleichTagesschuleAngabenGemeindeStatus
+    TSLastenausgleichTagesschuleAngabenGemeindeStatus,
 } from '../../../../../models/enums/TSLastenausgleichTagesschuleAngabenGemeindeStatus';
 import {
-    TSLastenausgleichTagesschuleAngabenInstitutionStatus
+    TSLastenausgleichTagesschuleAngabenInstitutionStatus,
 } from '../../../../../models/enums/TSLastenausgleichTagesschuleAngabenInstitutionStatus';
 import {TSRole} from '../../../../../models/enums/TSRole';
 import {TSWizardStepXTyp} from '../../../../../models/enums/TSWizardStepXTyp';
 import {TSAnzahlEingeschriebeneKinder} from '../../../../../models/gemeindeantrag/TSAnzahlEingeschriebeneKinder';
 import {TSDurchschnittKinderProTag} from '../../../../../models/gemeindeantrag/TSDurchschnittKinderProTag';
 import {
-    TSLastenausgleichTagesschuleAngabenGemeindeContainer
+    TSLastenausgleichTagesschuleAngabenGemeindeContainer,
 } from '../../../../../models/gemeindeantrag/TSLastenausgleichTagesschuleAngabenGemeindeContainer';
 import {
-    TSLastenausgleichTagesschuleAngabenInstitution
+    TSLastenausgleichTagesschuleAngabenInstitution,
 } from '../../../../../models/gemeindeantrag/TSLastenausgleichTagesschuleAngabenInstitution';
 import {
-    TSLastenausgleichTagesschuleAngabenInstitutionContainer
+    TSLastenausgleichTagesschuleAngabenInstitutionContainer,
 } from '../../../../../models/gemeindeantrag/TSLastenausgleichTagesschuleAngabenInstitutionContainer';
 import {TSOeffnungszeitenTagesschule} from '../../../../../models/gemeindeantrag/TSOeffnungszeitenTagesschule';
 import {TSOeffnungszeitenTagesschuleTyp} from '../../../../../models/gemeindeantrag/TSOeffnungszeitenTagesschuleTyp';
@@ -53,7 +53,7 @@ import {TSGesuchsperiode} from '../../../../../models/TSGesuchsperiode';
 import {EbeguUtil} from '../../../../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../../../../utils/TSRoleUtil';
 import {
-    DvNgConfirmDialogComponent
+    DvNgConfirmDialogComponent,
 } from '../../../../core/component/dv-ng-confirm-dialog/dv-ng-confirm-dialog.component';
 import {CONSTANTS} from '../../../../core/constants/CONSTANTS';
 import {ErrorService} from '../../../../core/errors/service/ErrorService';
@@ -490,6 +490,8 @@ export class TagesschulenAngabenComponent implements OnInit {
         this.form.get('anzahlEingeschriebeneKinder')
             .setValidators([Validators.required, numberValidator(ValidationType.POSITIVE_INTEGER)]);
         this.form.get('anzahlEingeschriebeneKinderKindergarten')
+            .setValidators([Validators.required, numberValidator(ValidationType.POSITIVE_INTEGER)]);
+        this.form.get('anzahlEingeschriebeneKinderBasisstufe')
             .setValidators([Validators.required, numberValidator(ValidationType.POSITIVE_INTEGER)]);
         this.form.get('anzahlEingeschriebeneKinderSekundarstufe')
             .setValidators([Validators.required, numberValidator(ValidationType.POSITIVE_INTEGER)]);
