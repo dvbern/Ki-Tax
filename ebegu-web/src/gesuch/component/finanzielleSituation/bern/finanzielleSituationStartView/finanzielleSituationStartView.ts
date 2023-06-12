@@ -341,7 +341,7 @@ export class FinanzielleSituationStartViewController extends AbstractFinSitBernV
 
     public isZahlungsangabenRequired(): boolean {
         return (!this.model.zahlungsinformationen.keineMahlzeitenverguenstigungBeantragt && this.isMahlzeitenverguenstigungEnabled())
-            || this.zahlungsangabenRequired;
+            || (this.zahlungsangabenRequired && this.gesuchModelManager.getGesuch().isOnlineGesuch());
     }
 
     public areZahlungsdatenEditable(): boolean {
