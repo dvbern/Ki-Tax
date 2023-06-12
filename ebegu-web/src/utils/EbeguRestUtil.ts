@@ -3879,6 +3879,7 @@ export class EbeguRestUtil {
             tsMitteilung.message = mitteilungFromServer.message;
             tsMitteilung.mitteilungStatus = mitteilungFromServer.mitteilungStatus;
             tsMitteilung.sentDatum = DateUtil.localDateTimeToMoment(mitteilungFromServer.sentDatum);
+            tsMitteilung.mitteilungTyp = mitteilungFromServer.mitteilungTyp;
             return tsMitteilung;
         }
         return undefined;
