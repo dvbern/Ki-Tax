@@ -5045,6 +5045,8 @@ export class EbeguRestUtil {
                 gemeindeFromServer.davonStundenZuNormlohnWenigerAls50ProzentAusgebildete;
             gemeindeTS.einnahmenElterngebuehren =
                 gemeindeFromServer.einnahmenElterngebuehren;
+            gemeindeTS.einnahmenElterngebuehrenVolksschulangebot =
+                gemeindeFromServer.einnahmenElterngebuehrenVolksschulangebot;
             gemeindeTS.ersteRateAusbezahlt =
                 gemeindeFromServer.ersteRateAusbezahlt;
             gemeindeTS.tagesschuleTeilweiseGeschlossen =
@@ -5147,6 +5149,8 @@ export class EbeguRestUtil {
                 tsAngabenGemeinde.davonStundenZuNormlohnWenigerAls50ProzentAusgebildete;
             restAngabenGemeinde.einnahmenElterngebuehren =
                 tsAngabenGemeinde.einnahmenElterngebuehren;
+            restAngabenGemeinde.einnahmenElterngebuehrenVolksschulangebot =
+                tsAngabenGemeinde.einnahmenElterngebuehrenVolksschulangebot;
             restAngabenGemeinde.tagesschuleTeilweiseGeschlossen =
                 tsAngabenGemeinde.tagesschuleTeilweiseGeschlossen;
             restAngabenGemeinde.rueckerstattungenElterngebuehrenSchliessung =
@@ -5310,6 +5314,8 @@ export class EbeguRestUtil {
                 angabenInstitutionFromServer.anzahlEingeschriebeneKinderMitBesonderenBeduerfnissen;
             angabenInstitutionTS.anzahlEingeschriebeneKinderVolksschulangebot =
                 angabenInstitutionFromServer.anzahlEingeschriebeneKinderVolksschulangebot;
+            angabenInstitutionTS.anzahlEingeschriebeneKinderBasisstufe =
+                angabenInstitutionFromServer.anzahlEingeschriebeneKinderBasisstufe;
             angabenInstitutionTS.durchschnittKinderProTagFruehbetreuung =
                 angabenInstitutionFromServer.durchschnittKinderProTagFruehbetreuung;
             angabenInstitutionTS.durchschnittKinderProTagMittag =
@@ -5382,6 +5388,8 @@ export class EbeguRestUtil {
                 tsAngabenInstitution.anzahlEingeschriebeneKinderMitBesonderenBeduerfnissen;
             restAngabenInstitution.anzahlEingeschriebeneKinderVolksschulangebot =
                 tsAngabenInstitution.anzahlEingeschriebeneKinderVolksschulangebot;
+            restAngabenInstitution.anzahlEingeschriebeneKinderBasisstufe =
+                tsAngabenInstitution.anzahlEingeschriebeneKinderBasisstufe;
             restAngabenInstitution.durchschnittKinderProTagFruehbetreuung =
                 tsAngabenInstitution.durchschnittKinderProTagFruehbetreuung;
             restAngabenInstitution.durchschnittKinderProTagMittag = tsAngabenInstitution.durchschnittKinderProTagMittag;

@@ -17,14 +17,13 @@
 
 package ch.dvbern.ebegu.api.dtos.gemeindeantrag;
 
-import java.math.BigDecimal;
+import ch.dvbern.ebegu.api.dtos.JaxAbstractDTO;
+import ch.dvbern.ebegu.enums.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeFormularStatus;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.validation.constraints.NotNull;
-
-import ch.dvbern.ebegu.api.dtos.JaxAbstractDTO;
-import ch.dvbern.ebegu.enums.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeFormularStatus;
+import java.math.BigDecimal;
 
 public class JaxLastenausgleichTagesschuleAngabenGemeinde extends JaxAbstractDTO {
 
@@ -66,6 +65,9 @@ public class JaxLastenausgleichTagesschuleAngabenGemeinde extends JaxAbstractDTO
 
 	@NotNull @Nonnull
 	private BigDecimal einnahmenElterngebuehren;
+
+	@Nullable
+	private BigDecimal einnahmenElterngebuehrenVolksschulangebot;
 
 	@Nullable
 	private Boolean tagesschuleTeilweiseGeschlossen;
@@ -556,5 +558,14 @@ public class JaxLastenausgleichTagesschuleAngabenGemeinde extends JaxAbstractDTO
 		@Nonnull BigDecimal geleisteteBetreuungsstundenBesondereVolksschulangebot) {
 		this.geleisteteBetreuungsstundenBesondereVolksschulangebot =
 			geleisteteBetreuungsstundenBesondereVolksschulangebot;
+	}
+
+	@Nullable
+	public BigDecimal getEinnahmenElterngebuehrenVolksschulangebot() {
+		return einnahmenElterngebuehrenVolksschulangebot;
+	}
+
+	public void setEinnahmenElterngebuehrenVolksschulangebot(@Nullable BigDecimal einnahmenElterngebuehrenVolksschulangebot) {
+		this.einnahmenElterngebuehrenVolksschulangebot = einnahmenElterngebuehrenVolksschulangebot;
 	}
 }

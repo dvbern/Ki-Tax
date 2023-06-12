@@ -100,6 +100,32 @@
 
             <dv-input-container-x>
                 <label required
+                       [ngClass]="{'label-required-error': formFreigebenTriggered && form.get('anzahlEingeschriebeneKinderBasisstufe').errors}">
+                    {{'LATS_DAVON_BASISSTUFE' | translate}}
+                </label>
+                <mat-form-field floatLabel="always">
+                    <input matInput
+                           formControlName="anzahlEingeschriebeneKinderBasisstufe"
+                           class="form-control dv-input"/>
+                    <mat-error
+                        *ngIf="formFreigebenTriggered && form.get('anzahlEingeschriebeneKinderBasisstufe').errors?.required"
+                        translate>ERROR_REQUIRED
+                    </mat-error>
+                    <mat-error
+                        *ngIf="form.get('anzahlEingeschriebeneKinderBasisstufe').errors?.isNotPositiveInteger"
+                        translate>ERROR_POSITIVE_NUMBER
+                    </mat-error>
+                    <dv-bisher-x
+                        [deklaration]="latsAngabenInstitutionContainer?.angabenDeklaration?.anzahlEingeschriebeneKinderBasisstufe"
+                        [korrektur]="form.get('anzahlEingeschriebeneKinderBasisstufe').value"
+                        [showBisher]="latsAngabenInstitutionContainer?.isAtLeastInBearbeitungGemeinde()"
+                        [specificBisherLabel]="'LATS_BISHER_LABEL_INSTITUTION' | translate">
+                    </dv-bisher-x>
+                </mat-form-field>
+            </dv-input-container-x>
+
+            <dv-input-container-x>
+                <label required
                     [ngClass]="{'label-required-error': formFreigebenTriggered && form.get('anzahlEingeschriebeneKinderKindergarten').errors}">
                     {{'LATS_DAVON_KINDERGARTEN' | translate}}
                 </label>
