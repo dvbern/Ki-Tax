@@ -9,7 +9,6 @@ import {EbeguUtil} from '../../../utils/EbeguUtil';
     selector: 'dv-zpv-nr-success',
     templateUrl: './zpv-nr-success.component.html',
     styleUrls: ['./zpv-nr-success.component.less'],
-    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ZpvNrSuccessComponent implements OnInit {
 
@@ -29,6 +28,14 @@ export class ZpvNrSuccessComponent implements OnInit {
             this.gesuchRS.findGesuchOfGesuchsteller(this.uiRouterGlobals.params.gesuchstellerId)
                 .then(gesuch => this.gesuchOfGS = gesuch);
         }
+    }
+
+    public isZpvNummerVerknuepft() {
+        if (this.getGSNumber() === 2) {
+            return this.gesuchOfGS?.gesuchsteller2.gesuchstellerJA.hasZpvNummer;
+        }
+
+        return this.gesuchOfGS?.gesuchsteller1.gesuchstellerJA.hasZpvNummer;
     }
 
     public getGSNumber(): number {
