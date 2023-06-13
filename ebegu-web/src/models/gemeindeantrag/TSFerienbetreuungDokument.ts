@@ -15,18 +15,7 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import * as moment from 'moment';
-import {TSFile} from '../TSFile';
+import {TSUploadFile} from '../TSUploadFile';
 
-export class TSFerienbetreuungDokument extends TSFile {
-
-    private _timestampUpload: moment.Moment;
-
-    public get timestampUpload(): moment.Moment {
-        return this._timestampUpload;
-    }
-
-    public set timestampUpload(value: moment.Moment) {
-        this._timestampUpload = value;
-    }
+export class TSFerienbetreuungDokument extends TSUploadFile {
 }

@@ -17,37 +17,12 @@
 
 package ch.dvbern.ebegu.api.converter;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.stream.Collectors;
-
-import javax.annotation.Nonnull;
-import javax.enterprise.context.RequestScoped;
-import javax.inject.Inject;
-import javax.ws.rs.ForbiddenException;
-import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.core.Response.Status;
-
 import ch.dvbern.ebegu.api.dtos.JaxAdresse;
-import ch.dvbern.ebegu.api.dtos.gemeindeantrag.JaxFerienbetreuungAngaben;
-import ch.dvbern.ebegu.api.dtos.gemeindeantrag.JaxFerienbetreuungAngabenAngebot;
-import ch.dvbern.ebegu.api.dtos.gemeindeantrag.JaxFerienbetreuungAngabenContainer;
-import ch.dvbern.ebegu.api.dtos.gemeindeantrag.JaxFerienbetreuungAngabenKostenEinnahmen;
-import ch.dvbern.ebegu.api.dtos.gemeindeantrag.JaxFerienbetreuungAngabenNutzung;
-import ch.dvbern.ebegu.api.dtos.gemeindeantrag.JaxFerienbetreuungAngabenStammdaten;
-import ch.dvbern.ebegu.api.dtos.gemeindeantrag.JaxFerienbetreuungBerechnungen;
-import ch.dvbern.ebegu.api.dtos.gemeindeantrag.JaxFerienbetreuungDokument;
+import ch.dvbern.ebegu.api.dtos.gemeindeantrag.*;
 import ch.dvbern.ebegu.authentication.PrincipalBean;
 import ch.dvbern.ebegu.entities.Adresse;
 import ch.dvbern.ebegu.entities.Auszahlungsdaten;
-import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungAngaben;
-import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungAngabenAngebot;
-import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungAngabenContainer;
-import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungAngabenKostenEinnahmen;
-import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungAngabenNutzung;
-import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungAngabenStammdaten;
-import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungBerechnungen;
-import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungDokument;
+import ch.dvbern.ebegu.entities.gemeindeantrag.*;
 import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.services.BenutzerService;
 import ch.dvbern.ebegu.services.GemeindeService;
@@ -55,6 +30,16 @@ import ch.dvbern.lib.cdipersistence.Persistence;
 import ch.dvbern.oss.lib.beanvalidation.embeddables.IBAN;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import org.hibernate.StaleObjectStateException;
+
+import javax.annotation.Nonnull;
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
+import javax.ws.rs.ForbiddenException;
+import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.Response.Status;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import static java.util.Objects.requireNonNull;
 
@@ -601,7 +586,7 @@ public class JaxFerienbetreuungConverter extends AbstractConverter {
 		);
 		convertFileToJax(ferienbetreuungDokument, jaxFerienbetreuungDokument);
 
-		jaxFerienbetreuungDokument.setTimestampUpload(jaxFerienbetreuungDokument.getTimestampUpload());
+		jaxFerienbetreuungDokument.setTimestampUpload(ferienbetreuungDokument.getTimestampUpload());
 
 		return jaxFerienbetreuungDokument;
 	}

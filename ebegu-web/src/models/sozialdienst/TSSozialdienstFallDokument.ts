@@ -1,5 +1,6 @@
 import * as moment from 'moment';
 import {TSFile} from '../TSFile';
+import {TSUploadFile} from '../TSUploadFile';
 /*
  * Copyright (C) 2021 DV Bern AG, Switzerland
  *
@@ -17,15 +18,5 @@ import {TSFile} from '../TSFile';
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-export class TSSozialdienstFallDokument extends TSFile {
-
-private _timestampUpload: moment.Moment;
-
-public get timestampUpload(): moment.Moment {
-        return this._timestampUpload;
-    }
-
-public set timestampUpload(value: moment.Moment) {
-        this._timestampUpload = value;
-    }
+export class TSSozialdienstFallDokument extends TSUploadFile {
 }
