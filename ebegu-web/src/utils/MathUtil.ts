@@ -20,8 +20,8 @@ export abstract class MathUtil {
         return parseFloat((value - toSubtract).toFixed(decimalPrecision));
     }
 
-    public static addFloatPrecisionSafe(value: number, toSubtract: number, decimalPrecision = 2): number {
-        return parseFloat((value + toSubtract).toFixed(decimalPrecision));
+    public static addFloatPrecisionSafe(value: number, toAdd: number, decimalPrecision = 2): number {
+        return parseFloat((value + toAdd).toFixed(decimalPrecision));
     }
 
     public static subtractArrayFloatPrecisionSafe(value: number, toSubtract: number[], decimalPrecision = 2): number {
