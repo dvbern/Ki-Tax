@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020 DV Bern AG, Switzerland
+ * Copyright (C) 2023 DV Bern AG, Switzerland
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -8,11 +8,11 @@
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program. If not, see <https://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
 import {
@@ -52,6 +52,7 @@ import {TSBenutzer} from '../../../../../models/TSBenutzer';
 import {TSEinstellung} from '../../../../../models/TSEinstellung';
 import {TSExceptionReport} from '../../../../../models/TSExceptionReport';
 import {EbeguUtil} from '../../../../../utils/EbeguUtil';
+import {MathUtil} from '../../../../../utils/MathUtil';
 import {TSRoleUtil} from '../../../../../utils/TSRoleUtil';
 import {
     DvNgConfirmDialogComponent
@@ -470,8 +471,10 @@ export class GemeindeAngabenComponent implements OnInit, OnDestroy {
 
     private plausibilisierungAddition(): ValidatorFn {
         return control => parseFloat(this.angabenForm.get('lastenausgleichberechtigteBetreuungsstunden').value) ===
-            parseFloat(this.angabenForm.get('davonStundenZuNormlohnWenigerAls50ProzentAusgebildete').value) +
-            parseFloat(this.angabenForm.get('davonStundenZuNormlohnMehrAls50ProzentAusgebildete').value) ? null : {
+            MathUtil.addFloatPrecisionSafe(
+                parseFloat(this.angabenForm.get('davonStundenZuNormlohnWenigerAls50ProzentAusgebildete').value),
+                parseFloat(this.angabenForm.get('davonStundenZuNormlohnMehrAls50ProzentAusgebildete').value)
+            ) ? null : {
                 plausibilisierungAdditionError: control.value
             };
     }
@@ -527,8 +530,10 @@ export class GemeindeAngabenComponent implements OnInit, OnDestroy {
             ]
         ).subscribe(formValues => {
             this.angabenForm.get('lastenausgleichberechtigteBetreuungsstunden')
-                .setValue(parseFloat(formValues[0] || 0) + parseFloat(formValues[1] || 0)
-                    + parseFloat(formValues[2] || 0));
+                .setValue(
+                    MathUtil.addArrayFloatPrecisionSafe(formValues[0] || 0,
+                        [formValues[1] || 0, formValues[2] || 0]),
+                );
             this.angabenForm.get('davonStundenZuNormlohnWenigerAls50ProzentAusgebildete').updateValueAndValidity();
             this.angabenForm.get('davonStundenZuNormlohnMehrAls50ProzentAusgebildete').updateValueAndValidity();
             this.angabenForm.get('lastenausgleichberechtigteBetreuungsstunden')
@@ -594,16 +599,18 @@ export class GemeindeAngabenComponent implements OnInit, OnDestroy {
                 .valueChanges
                 .pipe(
                     startWith(gemeindeAngabenFromServer?.einnahmenElterngebuehren || 0),
-                    map(value => this.parseFloatSafe(value))
-                )
+                    map(value => this.parseFloatSafe(value)),
+                ),
         ]).subscribe(values => {
+                const result = MathUtil.subtractFloatPrecisionSafe(values[0], values[1]);
+                // round to next Franken
+                const roundedResult = Math.ceil(result).toFixed(2);
                 this.angabenForm.get('lastenausgleichsberechtigerBetrag').setValue(
-                    // round to next Franken
-                    Math.ceil(values[0] - values[1]).toFixed(2)
+                    roundedResult,
                 );
                 this.angabenForm.get('lastenausgleichsberechtigerBetragRO').setValue(
                     // round to next Franken
-                    Math.ceil(values[0] - values[1]).toFixed(2)
+                    roundedResult,
                 );
             },
             () => this.errorService.addMesageAsError(this.translateService.instant('LATS_CALCULATION_ERROR'))
@@ -631,7 +638,8 @@ export class GemeindeAngabenComponent implements OnInit, OnDestroy {
                 .valueChanges
                 .pipe(startWith(gemeindeAngabenFromServer?.einnahmenSubventionenDritter || 0))
         ]).subscribe(values => {
-                const gemeindeBeitragOderUeberschuss = (values[0] - values[1] - values[2] - values[3] - values[4]).toFixed(2);
+                const gemeindeBeitragOderUeberschuss = MathUtil.subtractArrayFloatPrecisionSafe(values[0],
+                    values.slice(1, 4));
                 if (+gemeindeBeitragOderUeberschuss < 0) {
                     this.angabenForm.get('kostenueberschussGemeinde')
                         .setValue(gemeindeBeitragOderUeberschuss);
@@ -657,13 +665,13 @@ export class GemeindeAngabenComponent implements OnInit, OnDestroy {
             [
                 this.angabenForm.get('davonStundenZuNormlohnWenigerAls50ProzentAusgebildeteBerechnet')
                     .valueChanges
-                    .pipe(startWith(0)),
+                    .pipe(startWith(0), map (formValue => parseFloat(formValue))),
                 this.angabenForm.get('davonStundenZuNormlohnMehrAls50ProzentAusgebildeteBerechnet')
                     .valueChanges
-                    .pipe(startWith(0))
+                    .pipe(startWith(0), map (formValue => parseFloat(formValue)))
             ]
         ).subscribe(value => {
-                const normlohnkostenExact = parseFloat(value[0] || 0) + parseFloat(value[1] || 0);
+                const normlohnkostenExact = MathUtil.addFloatPrecisionSafe(value[0], value[1]);
                 const normlohnkostenRounded = EbeguUtil.ceilToFiveRappen(normlohnkostenExact);
                 this.angabenForm.get('normlohnkostenBetreuungBerechnet')
                     .setValue(normlohnkostenRounded.toFixed(2));
