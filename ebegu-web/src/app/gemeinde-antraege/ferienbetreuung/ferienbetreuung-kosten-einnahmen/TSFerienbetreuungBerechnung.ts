@@ -16,6 +16,7 @@
  */
 
 import {EbeguUtil} from '../../../../utils/EbeguUtil';
+import {MathUtil} from '../../../../utils/MathUtil';
 
 export class TSFerienbetreuungBerechnung {
 
@@ -56,6 +57,7 @@ export class TSFerienbetreuungBerechnung {
 
     private _beitragFuerKinderDerAnbietendenGemeinde: number;
     private _beteiligungDurchAnbietendeGemeinde: number;
+    private _vorausschlicherKantonsbetrag: number;
     private _beteiligungZuTief = false;
 
     public constructor(pauschale: number, pauschaleSonderschueler: number) {
@@ -161,6 +163,15 @@ export class TSFerienbetreuungBerechnung {
 
         this._beteiligungDurchAnbietendeGemeinde = this.calculateBeteiligungDurchAnbietendeGemeinde();
         this._beteiligungZuTief = this._beteiligungDurchAnbietendeGemeinde < this._beitragFuerKinderDerAnbietendenGemeinde;
+
+        if (this._beteiligungZuTief) {
+            this._vorausschlicherKantonsbetrag = 0;
+        } else {
+            this._vorausschlicherKantonsbetrag = MathUtil.subtractFloatPrecisionSafe(
+                this._beitragFuerKinderDerAnbietendenGemeinde,
+                this._beteiligungDurchAnbietendeGemeinde,
+                2);
+        }
     }
 
     private calculateBeteiligungDurchAnbietendeGemeinde(): number {
@@ -332,6 +343,10 @@ export class TSFerienbetreuungBerechnung {
 
     public get beteiligungZuTief(): boolean {
         return this._beteiligungZuTief;
+    }
+
+    public get vorausschlicherKantonsbetrag(): number {
+        return this._vorausschlicherKantonsbetrag;
     }
 
     private convertPossibleStringToNumber(val: any): number {
