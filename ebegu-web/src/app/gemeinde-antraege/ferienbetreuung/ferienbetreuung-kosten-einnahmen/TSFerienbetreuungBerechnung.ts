@@ -57,7 +57,6 @@ export class TSFerienbetreuungBerechnung {
 
     private _beitragFuerKinderDerAnbietendenGemeinde: number;
     private _beteiligungDurchAnbietendeGemeinde: number;
-    private _vorausschlicherKantonsbetrag: number;
     private _beteiligungZuTief = false;
 
     public constructor(pauschale: number, pauschaleSonderschueler: number) {
@@ -163,15 +162,6 @@ export class TSFerienbetreuungBerechnung {
 
         this._beteiligungDurchAnbietendeGemeinde = this.calculateBeteiligungDurchAnbietendeGemeinde();
         this._beteiligungZuTief = this._beteiligungDurchAnbietendeGemeinde < this._beitragFuerKinderDerAnbietendenGemeinde;
-
-        if (this._beteiligungZuTief) {
-            this._vorausschlicherKantonsbetrag = 0;
-        } else {
-            this._vorausschlicherKantonsbetrag = MathUtil.subtractFloatPrecisionSafe(
-                this._beitragFuerKinderDerAnbietendenGemeinde,
-                this._beteiligungDurchAnbietendeGemeinde,
-                2);
-        }
     }
 
     private calculateBeteiligungDurchAnbietendeGemeinde(): number {
@@ -345,8 +335,12 @@ export class TSFerienbetreuungBerechnung {
         return this._beteiligungZuTief;
     }
 
-    public get vorausschlicherKantonsbetrag(): number {
-        return this._vorausschlicherKantonsbetrag;
+    public getVorausschlicherKantonsbetrag(): number {
+        if (this._beteiligungZuTief) {
+            return 0;
+        }
+
+        return this._totalKantonsbeitrag;
     }
 
     private convertPossibleStringToNumber(val: any): number {
