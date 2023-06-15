@@ -19,7 +19,6 @@ package ch.dvbern.ebegu.api.converter;
 
 import ch.dvbern.ebegu.api.dtos.JaxAdresse;
 import ch.dvbern.ebegu.api.dtos.gemeindeantrag.*;
-import ch.dvbern.ebegu.authentication.PrincipalBean;
 import ch.dvbern.ebegu.entities.Adresse;
 import ch.dvbern.ebegu.entities.Auszahlungsdaten;
 import ch.dvbern.ebegu.entities.gemeindeantrag.*;
@@ -46,9 +45,6 @@ public class JaxFerienbetreuungConverter extends AbstractConverter {
 
 	@Inject
 	private Persistence persistence;
-
-	@Inject
-	private PrincipalBean principal;
 
 	@Inject
 	private JaxBConverter jaxBConverter;
