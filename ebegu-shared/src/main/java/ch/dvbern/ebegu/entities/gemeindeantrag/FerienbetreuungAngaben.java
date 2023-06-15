@@ -58,7 +58,7 @@ public class FerienbetreuungAngaben extends AbstractEntity {
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_ferienbetreuung_kosten_einnahmen_ferienbetreuung"), nullable = false)
 	private FerienbetreuungAngabenKostenEinnahmen ferienbetreuungAngabenKostenEinnahmen = new FerienbetreuungAngabenKostenEinnahmen();
 
-	@Nullable
+	@Nonnull
 	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_ferienbetreuung_berechnungen_ferienbetreuung"), nullable = true)
 	private FerienbetreuungBerechnungen ferienbetreuungBerechnungen = new FerienbetreuungBerechnungen();
@@ -146,12 +146,12 @@ public class FerienbetreuungAngaben extends AbstractEntity {
 			&& ferienbetreuungAngabenKostenEinnahmen.isReadyForFreigeben();
 	}
 
-	@Nullable
+	@Nonnull
 	public FerienbetreuungBerechnungen getFerienbetreuungBerechnungen() {
 		return ferienbetreuungBerechnungen;
 	}
 
-	public void setFerienbetreuungBerechnungen(@Nullable FerienbetreuungBerechnungen ferienbetreuungBerechnungen) {
+	public void setFerienbetreuungBerechnungen(@Nonnull FerienbetreuungBerechnungen ferienbetreuungBerechnungen) {
 		this.ferienbetreuungBerechnungen = ferienbetreuungBerechnungen;
 	}
 

@@ -72,7 +72,8 @@ export class FerienbetreuungBerechnungComponent implements OnInit, OnDestroy, On
                 }),
                 mergeMap(() => this.einstellungRS.getPauschalbetraegeFerienbetreuung(this.container))
             ).subscribe(([pauschale, pauschaleSonderschueler]) => {
-                this.berechnung = new TSFerienbetreuungBerechnung(pauschale, pauschaleSonderschueler);
+                this.berechnung = this.getAngabenForStatus().berechnungen;
+                this.setUpValuesPauschalbetraege(pauschale, pauschaleSonderschueler);
                 this.setUpValuesFromContainer();
                 this.setUpValuesFromForm();
             }, error => {
@@ -168,5 +169,10 @@ export class FerienbetreuungBerechnungComponent implements OnInit, OnDestroy, On
     private calculate(): void {
         this.berechnung.calculate();
         this.cd.markForCheck();
+    }
+
+    private setUpValuesPauschalbetraege(pauschale: number, pauschaleSonderschueler: number): void {
+        this.berechnung.pauschaleBetreuungstag = pauschale;
+        this.berechnung.pauschaleBetreuungstagSonderschueler = pauschaleSonderschueler;
     }
 }
