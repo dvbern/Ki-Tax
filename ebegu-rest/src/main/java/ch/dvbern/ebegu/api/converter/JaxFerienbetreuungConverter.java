@@ -403,7 +403,7 @@ public class JaxFerienbetreuungConverter extends AbstractConverter {
 
 	}
 
-	private JaxFerienbetreuungBerechnungen ferienbetreuungBerechnungenToJax(FerienbetreuungBerechnungen ferienbetreuungBerechnungen) {
+	public JaxFerienbetreuungBerechnungen ferienbetreuungBerechnungenToJax(FerienbetreuungBerechnungen ferienbetreuungBerechnungen) {
 		flush();
 
 		JaxFerienbetreuungBerechnungen jaxBerechnungen = new JaxFerienbetreuungBerechnungen();

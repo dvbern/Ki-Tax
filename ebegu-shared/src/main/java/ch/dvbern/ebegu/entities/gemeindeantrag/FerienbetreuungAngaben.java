@@ -17,20 +17,13 @@
 
 package ch.dvbern.ebegu.entities.gemeindeantrag;
 
-import java.math.BigDecimal;
+import ch.dvbern.ebegu.entities.AbstractEntity;
+import org.hibernate.envers.Audited;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.ForeignKey;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
-
-import ch.dvbern.ebegu.entities.AbstractEntity;
-import org.hibernate.envers.Audited;
+import javax.persistence.*;
+import java.math.BigDecimal;
 
 @Entity
 @Audited
