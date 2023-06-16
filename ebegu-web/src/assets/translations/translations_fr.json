@@ -2727,6 +2727,8 @@
     "FERIENBETREUUNG_BERECHNUNG_BETEILIGUNG_DEFIZIT": "Participation par la commune prestataire (déficit)",
     "FERIENBETREUUNG_FAZIT": "Bilan",
     "FERIENBETREUUNG_FAZIT_ZU_TIEF": "La participation de la commune est trop faible.",
+    "FERIENBETREUUNG_FAZIT_ZU_TIEF_WARNUNG": "Die Kostenbeteiligung der Gemeinde ist zu tief. Es besteht kein Anspruch auf Kantonsbeiträge, siehe Kosten und Einnahmen {{link}}. Wollen Sie das Gesuch trotzdem einreichen?",
+    "FERIENBETREUUNG_FAZIT_VORAUSSICHTLICHER_BEITRAG": "Voraussichtlicher Kantonsbetrag aufgrund der Kosten und Einnahmen",
     "FERIENBETREUUNG_FAZIT_AUSREICHEND": "La participation de la commune est suffisante.",
     "30_CHF": "CHF 30",
     "60_CHF": "CHF 60",
