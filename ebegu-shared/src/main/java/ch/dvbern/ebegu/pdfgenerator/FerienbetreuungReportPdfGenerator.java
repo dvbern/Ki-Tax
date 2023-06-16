@@ -17,16 +17,7 @@
 
 package ch.dvbern.ebegu.pdfgenerator;
 
-import java.util.Objects;
-
-import javax.annotation.Nonnull;
-
-import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungAngaben;
-import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungAngabenAngebot;
-import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungAngabenContainer;
-import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungAngabenKostenEinnahmen;
-import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungAngabenNutzung;
-import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungAngabenStammdaten;
+import ch.dvbern.ebegu.entities.gemeindeantrag.*;
 import ch.dvbern.ebegu.enums.Sprache;
 import ch.dvbern.ebegu.pdfgenerator.PdfGenerator.CustomGenerator;
 import ch.dvbern.ebegu.pdfgenerator.pdfTable.SimplePDFTable;
@@ -36,6 +27,10 @@ import com.lowagie.text.Element;
 import com.lowagie.text.Paragraph;
 import com.lowagie.text.pdf.PdfPTable;
 import org.apache.commons.lang.StringUtils;
+
+import javax.annotation.Nonnull;
+import java.math.BigDecimal;
+import java.util.Objects;
 
 public class FerienbetreuungReportPdfGenerator extends GemeindeAntragReportPdfGenerator {
 
@@ -114,6 +109,13 @@ public class FerienbetreuungReportPdfGenerator extends GemeindeAntragReportPdfGe
 	protected static final String BEITRAEGE_NACH_ANMELDUNGEN = "PdfGeneration_beitraegeNachAnmeldungen";
 	protected static final String VORFINANZIERTE_KANTONSBEITRAEGE = "PdfGeneration_vorfinanzierteKantonsbeitraege";
 	protected static final String EIGENLEISTUNGEN_GEMEINDE= "PdfGeneration_eigenleistungenGemeinde";
+	protected static final String BERECHNUNG_TITEL= "PdfGeneration_berechnungTitel";
+	protected static final String KANTONSBEITRAG_TOTAL= "PdfGeneration_total";
+	protected static final String VORAUSSICHTLICHER_KANTONSBEITRAG = "PdfGeneration_vorsaussichtlicherKantonsbeitrag";
+	protected static final String KANTONSBEITRAG_ANBIETENDE_GEMEINDE = "PdfGeneration_anbietendeGemeide";
+	protected static final String GEMEINDE_BETEILIGUNG= "PdfGeneration_gemeindeBeteiligung" ;
+	protected static final String VORAUSSICHTLICHER_KANONSBEITRAG_KOSTEN= "PdfGeneration_vorsaussichtlicherKantonsbeitragKosten" ;
+
 
 	private static final int IDENT_LEVEL_1 = 10;
 	private static final int IDENT_LEVEL_2 = 20;
@@ -168,7 +170,6 @@ public class FerienbetreuungReportPdfGenerator extends GemeindeAntragReportPdfGe
 			document.add(this.createTableKostenEinnahmen());
 		};
 	}
-
 	@Nonnull
 	private Element createStatus() {
 		Paragraph paragraph = new Paragraph(translate("FerienbetreuungAngabenStatus_" + this.ferienbetreuungAngabenContainer.getStatusString(), mandant));
@@ -426,6 +427,26 @@ public class FerienbetreuungReportPdfGenerator extends GemeindeAntragReportPdfGe
 		if (angebot.isDelegationsmodell()) {
 			createTableLeistungenGemeinde(table, kostenEinnahmen);
 		}
+
+		FerienbetreuungBerechnungen berechnungen = angaben.getFerienbetreuungBerechnungen();
+
+		table.addHeaderRow(translate(BERECHNUNG_TITEL, mandant), "");
+		table.addRow(
+			translate(VORAUSSICHTLICHER_KANTONSBEITRAG, mandant),
+			berechnungen.getTotalKantonsbeitrag());
+
+		table.addRow(
+			translate(KANTONSBEITRAG_ANBIETENDE_GEMEINDE, mandant),
+			berechnungen.getBeitragKinderAnbietendenGemeinde());
+		table.addRow(
+			translate(GEMEINDE_BETEILIGUNG, mandant),
+			berechnungen.getBeteiligungAnbietendenGemeinde());
+
+		BigDecimal kantonsBeitragAufgrundKosten = Boolean.TRUE.equals(berechnungen.getBeteiligungZuTief()) ?
+			BigDecimal.ZERO : berechnungen.getTotalKantonsbeitrag();
+		table.addRow(
+			translate(VORAUSSICHTLICHER_KANONSBEITRAG_KOSTEN, mandant),
+			kantonsBeitragAufgrundKosten);
 
 		PdfPTable pdfPTable = table.createTable();
 		pdfPTable.setSpacingAfter(TABLE_SPACING_AFTER);
