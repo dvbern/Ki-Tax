@@ -77,5 +77,6 @@
     "ZAHLUNG_AN_ELTERN": "Zahlung Eltern",
     "BESONDERE_VOLKSSCHULE_AUSWAEHLEN": "",
     "ERWEITERTE_BEDUERFNISSE_FACHSTELLE_HINT": "",
+    "FINANZIELLE_SITUATION_UNTERHALTSBEITRAEGE_HINT": "Tragen Sie hier den Betrag aus Ziffer 521 der Staatssteuerveranlagung ein. Dieser Betrag wird zum Nettoeinkommen dazu gezählt.",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }
