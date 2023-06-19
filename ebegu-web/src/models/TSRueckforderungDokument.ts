@@ -18,25 +18,15 @@
 import * as moment from 'moment';
 import {TSRueckforderungDokumentTyp} from './enums/TSRueckforderungDokumentTyp';
 
-import {TSFile} from './TSFile';
+import {TSUploadFile} from './TSUploadFile';
 
-export class TSRueckforderungDokument extends TSFile {
+export class TSRueckforderungDokument extends TSUploadFile {
 
-    private _timestampUpload: moment.Moment;
     private _rueckforderungDokumentTyp: TSRueckforderungDokumentTyp;
 
     public constructor(timestampUpload?: moment.Moment, rueckforderungDokumentTyp?: TSRueckforderungDokumentTyp) {
-        super();
-        this._timestampUpload = timestampUpload;
+        super(timestampUpload);
         this._rueckforderungDokumentTyp = rueckforderungDokumentTyp;
-    }
-
-    public get timestampUpload(): moment.Moment {
-        return this._timestampUpload;
-    }
-
-    public set timestampUpload(value: moment.Moment) {
-        this._timestampUpload = value;
     }
 
     public get rueckforderungDokumentTyp(): TSRueckforderungDokumentTyp {
