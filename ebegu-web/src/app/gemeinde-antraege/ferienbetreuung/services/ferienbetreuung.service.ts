@@ -27,6 +27,7 @@ import {TSFerienbetreuungAngabenStammdaten} from '../../../../models/gemeindeant
 import {EbeguRestUtil} from '../../../../utils/EbeguRestUtil';
 import {CONSTANTS, HTTP_CODES} from '../../../core/constants/CONSTANTS';
 import {LogFactory} from '../../../core/logging/LogFactory';
+import {TSFerienbetreuungBerechnung} from '../ferienbetreuung-kosten-einnahmen/TSFerienbetreuungBerechnung';
 
 const LOG = LogFactory.createLog('FerienbetreuungService');
 
@@ -157,6 +158,15 @@ export class FerienbetreuungService {
             `${this.API_BASE_URL}/${encodeURIComponent(containerId)}/kostenEinnahmen/save`,
             this.ebeguRestUtil.ferienbetreuungKostenEinnahmenToRestObject({}, kostenEinnahmen)
         ).pipe(map(restKostenEinnahmen => this.parseRestKostenEinnahmen(restKostenEinnahmen)));
+    }
+
+    public saveBerechnung(containerId: string, berechnung: TSFerienbetreuungBerechnung):
+        Observable<TSFerienbetreuungBerechnung> {
+
+        return this.http.put<any>(
+            `${this.API_BASE_URL}/${encodeURIComponent(containerId)}/berechnung/save`,
+            this.ebeguRestUtil.parseFerienbetreuungBerechnungenToRestObject({}, berechnung)
+        ).pipe(map(berechnungen => this.parseRestBerechnung(berechnungen)));
     }
 
     private parseRestKostenEinnahmen(restKostenEinnahmen: any): TSFerienbetreuungAngabenKostenEinnahmen {
@@ -355,5 +365,12 @@ export class FerienbetreuungService {
 
     public generateFerienbetreuungReport(container: TSFerienbetreuungAngabenContainer): Observable<BlobPart> {
         return this.http.get(`${this.API_BASE_URL}/${container.id}/report`, {responseType: 'blob'});
+    }
+
+    private parseRestBerechnung(berechnungen: any): TSFerienbetreuungBerechnung {
+        return this.ebeguRestUtil.parseFerienbetreuungBerechnung(
+            new TSFerienbetreuungBerechnung(),
+            berechnungen
+        );
     }
 }

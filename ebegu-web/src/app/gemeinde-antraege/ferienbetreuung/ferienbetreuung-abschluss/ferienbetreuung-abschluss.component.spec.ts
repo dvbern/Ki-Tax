@@ -29,6 +29,7 @@ import {SharedModule} from '../../../shared/shared.module';
 import {FerienbetreuungService} from '../services/ferienbetreuung.service';
 
 import {FerienbetreuungAbschlussComponent} from './ferienbetreuung-abschluss.component';
+import {TSFerienbetreuungAngaben} from '../../../../models/gemeindeantrag/TSFerienbetreuungAngaben';
 
 describe('FerienbetreuungAbschlussComponent', () => {
     let component: FerienbetreuungAbschlussComponent;
@@ -55,7 +56,7 @@ describe('FerienbetreuungAbschlussComponent', () => {
         ['openDownload']);
 
     const container = new TSFerienbetreuungAngabenContainer();
-    container.angabenDeklaration = null;
+    container.angabenDeklaration = new TSFerienbetreuungAngaben();
     authServiceSpy.principal$ = of(dummyUser);
 
     beforeEach(async () => {

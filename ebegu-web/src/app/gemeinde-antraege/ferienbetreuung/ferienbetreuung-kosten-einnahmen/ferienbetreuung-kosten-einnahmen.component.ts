@@ -32,6 +32,7 @@ import {numberValidator, ValidationType} from '../../../shared/validators/number
 import {UnsavedChangesService} from '../../services/unsaved-changes.service';
 import {AbstractFerienbetreuungFormular} from '../abstract.ferienbetreuung-formular';
 import {FerienbetreuungService} from '../services/ferienbetreuung.service';
+import {TSFerienbetreuungAngaben} from '../../../../models/gemeindeantrag/TSFerienbetreuungAngaben';
 
 const LOG = LogFactory.createLog('FerienbetreuungKostenEinnahmenComponent');
 
@@ -205,18 +206,31 @@ export class FerienbetreuungKostenEinnahmenComponent extends AbstractFerienbetre
             this.showValidierungFehlgeschlagenErrorMessage();
             return;
         }
-        this.ferienbetreuungService.saveKostenEinnahmen(this.container.id, this.extractFormValues())
+        this.ferienbetreuungService.saveBerechnung(this.container.id, this.getAngabenForStatus().berechnungen)
             .subscribe(() => {
-                this.ferienbetreuungService.updateFerienbetreuungContainerStores(this.container.id);
-                this.errorService.clearAll();
-                this.errorService.addMesageAsInfo(this.translate.instant('SPEICHERN_ERFOLGREICH'));
-            }, err => this.handleSaveErrors(err));
+                this.ferienbetreuungService.saveKostenEinnahmen(this.container.id, this.extractFormValues())
+                    .subscribe(() => {
+                        this.ferienbetreuungService.updateFerienbetreuungContainerStores(this.container.id);
+                        this.errorService.clearAll();
+                        this.errorService.addMesageAsInfo(this.translate.instant('SPEICHERN_ERFOLGREICH'));
+                    }, err => this.handleSaveErrors(err));
+            });
+    }
+
+    private getAngabenForStatus(): TSFerienbetreuungAngaben {
+        return this.container?.isAtLeastInPruefungKantonOrZurueckgegeben() ?
+            this.container?.angabenKorrektur :
+            this.container?.angabenDeklaration;
     }
 
     public async onAbschliessen(): Promise<void> {
         if (await this.checkReadyForAbschliessen()) {
-            this.ferienbetreuungService.kostenEinnahmenAbschliessen(this.container.id, this.form.value)
-                .subscribe(() => this.handleSaveSuccess(), error => this.handleSaveErrors(error));
+            this.ferienbetreuungService.saveBerechnung(this.container.id, this.getAngabenForStatus().berechnungen)
+                .subscribe(() =>
+                        this.ferienbetreuungService.kostenEinnahmenAbschliessen(this.container.id, this.form.value)
+                    .subscribe(() => this.handleSaveSuccess(), error => this.handleSaveErrors(error)),
+                        error => this.handleSaveErrors(error));
+
         }
     }
 

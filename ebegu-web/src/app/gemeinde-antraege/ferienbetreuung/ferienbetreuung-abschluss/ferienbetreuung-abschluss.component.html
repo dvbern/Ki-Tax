@@ -33,6 +33,11 @@
     <span translate>FERIENBETREUUNG_DOKUMENT_ERSTELLEN_FR</span>
 </button>
 
+<div *ngIf="isBeteiligungGemeindeZuTief()" class="well well-status-warten">
+    <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
+    <span [innerHTML]="'FERIENBETREUUNG_FAZIT_ZU_TIEF_WARNUNG' | translate:{link: getKostenEinnahmenLink()}"></span>
+</div>
+
 
 <div class="actions">
     <dv-loading-button

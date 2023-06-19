@@ -131,7 +131,10 @@ export class TSFerienbetreuungAngabenContainer extends TSAbstractEntity {
         if (this.angabenKorrektur === null) {
             throw new Error('Angaben Korrektur must not be null to complete the calculations');
         }
-        const berechnungen = new TSFerienbetreuungBerechnung(pauschale, pauschaleSonderschueler);
+        const berechnungen = this.angabenKorrektur.berechnungen;
+        berechnungen.pauschaleBetreuungstag = pauschale;
+        berechnungen.pauschaleBetreuungstagSonderschueler = pauschaleSonderschueler;
+
         if (!this.angabenKorrektur.kostenEinnahmen.isAbgeschlossen()) {
             throw new Error('Kosten Einnahmen müssen abgeschlossen sein um die Berchnungen durchzuführen');
         }
@@ -167,7 +170,5 @@ export class TSFerienbetreuungAngabenContainer extends TSAbstractEntity {
         berechnungen.weitereEinnahmen = kostenEinnahmen.weitereEinnahmen;
 
         berechnungen.calculate();
-
-        this.angabenKorrektur.berechnungen = berechnungen;
     }
 }
