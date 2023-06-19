@@ -45,6 +45,7 @@ import javax.persistence.criteria.Root;
 import ch.dvbern.ebegu.authentication.PrincipalBean;
 import ch.dvbern.ebegu.entities.AbstractDateRangedEntity_;
 import ch.dvbern.ebegu.entities.AbstractEntity_;
+import ch.dvbern.ebegu.entities.AnmeldungTagesschule;
 import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Berechtigung;
 import ch.dvbern.ebegu.entities.BerechtigungHistory;
@@ -110,6 +111,9 @@ public class InstitutionServiceBean extends AbstractBaseService implements Insti
 
 	@Inject
 	private GesuchService gesuchService;
+
+	@Inject
+	private BetreuungService betreuungService;
 
 	@Nonnull
 	@Override
@@ -425,6 +429,7 @@ public class InstitutionServiceBean extends AbstractBaseService implements Insti
 		authorizer.checkWriteAuthorizationInstitution(institution);
 
 		checkForLinkedBerechtigungen(institution);
+		checkForLinkedAnmeldungenTagesschule(institution);
 		removeInstitutionFromBerechtigungHistory(institution);
 
 		institutionStammdatenService.removeInstitutionStammdatenByInstitution(institutionId);
@@ -515,6 +520,14 @@ public class InstitutionServiceBean extends AbstractBaseService implements Insti
 		final Collection<Berechtigung> linkedBerechtigungen = findBerechtigungByInstitution(institution);
 		if (!linkedBerechtigungen.isEmpty()) {
 			throw new EbeguRuntimeException("removeInstitution", ErrorCodeEnum.ERROR_LINKED_BERECHTIGUNGEN,
+				institution.getId());
+		}
+	}
+
+	private void checkForLinkedAnmeldungenTagesschule(Institution institution) {
+		final Collection<AnmeldungTagesschule> linkedAnmeldungenTagesschule = betreuungService.findAnmeldungenTagesschuleByInstitution(institution);
+		if (!linkedAnmeldungenTagesschule.isEmpty()) {
+			throw new EbeguRuntimeException("removeInstitution", ErrorCodeEnum.ERROR_LINKED_ANMELDUNG_TAGESSCHULE, institution.getName(),
 				institution.getId());
 		}
 	}
