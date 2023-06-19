@@ -6123,6 +6123,7 @@ public class JaxBConverter extends AbstractConverter {
 		jaxAngabenGemeinde.setAusbildungenMitarbeitendeBelegtBemerkung(angabenGemeinde.getAusbildungenMitarbeitendeBelegtBemerkung());
 		// Bemerkungen
 		jaxAngabenGemeinde.setBemerkungen(angabenGemeinde.getBemerkungen());
+		jaxAngabenGemeinde.setBemerkungStarkeVeraenderung(angabenGemeinde.getBemerkungStarkeVeraenderung());
 		// Berechnungen
 		jaxAngabenGemeinde.setLastenausgleichberechtigteBetreuungsstunden(angabenGemeinde.getLastenausgleichberechtigteBetreuungsstunden());
 		jaxAngabenGemeinde.setDavonStundenZuNormlohnMehrAls50ProzentAusgebildeteBerechnet(angabenGemeinde.getDavonStundenZuNormlohnMehrAls50ProzentAusgebildeteBerechnet());
@@ -6189,6 +6190,7 @@ public class JaxBConverter extends AbstractConverter {
 		angabenGemeinde.setAusbildungenMitarbeitendeBelegtBemerkung(jaxAngabenGemeinde.getAusbildungenMitarbeitendeBelegtBemerkung());
 		// Bemerkungen
 		angabenGemeinde.setBemerkungen(jaxAngabenGemeinde.getBemerkungen());
+		angabenGemeinde.setBemerkungStarkeVeraenderung(jaxAngabenGemeinde.getBemerkungStarkeVeraenderung());
 		// Berechnungen
 		angabenGemeinde.setLastenausgleichberechtigteBetreuungsstunden(jaxAngabenGemeinde.getLastenausgleichberechtigteBetreuungsstunden());
 		angabenGemeinde.setDavonStundenZuNormlohnMehrAls50ProzentAusgebildeteBerechnet(jaxAngabenGemeinde.getDavonStundenZuNormlohnMehrAls50ProzentAusgebildeteBerechnet());
