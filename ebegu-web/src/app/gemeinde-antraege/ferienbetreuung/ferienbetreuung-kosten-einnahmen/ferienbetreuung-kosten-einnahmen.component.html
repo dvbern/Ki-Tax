@@ -1,5 +1,5 @@
 <!--
-  ~ Copyright (C) 2021 DV Bern AG, Switzerland
+  ~ Copyright (C) 2023 DV Bern AG, Switzerland
   ~
   ~ This program is free software: you can redistribute it and/or modify
   ~ it under the terms of the GNU Affero General Public License as
@@ -8,11 +8,11 @@
   ~
   ~ This program is distributed in the hope that it will be useful,
   ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
-  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
   ~ GNU Affero General Public License for more details.
   ~
   ~ You should have received a copy of the GNU Affero General Public License
-  ~ along with this program. If not, see <https://www.gnu.org/licenses/>.
+  ~ along with this program.  If not, see <https://www.gnu.org/licenses/>.
   -->
 
 <div class="ferienbetreuung-nutzung">
@@ -69,11 +69,11 @@
                     </dv-bisher-x>
                 </mat-form-field>
             </dv-input-container-x>
-            <div class="flex-row-start-center margin-bottom-3rem margin-left-10">
-                <span *ngIf="(vorgaenger$ | async) as vorgaenger"
-                      class="inline-hint">{{'ANGABEN_VORJAHR' | translate:{gp: vorgaenger.gesuchsperiode?.gesuchsperiodeString} }}
-                    : {{vorgaenger.angabenKorrektur.kostenEinnahmen?.personalkosten}}</span>
-            </div>
+            <dv-ferienbetreuung-last-year-value
+                *ngIf="(vorgaenger$ | async) as vorgaenger"
+                [gesuchsperiode]="vorgaenger.gesuchsperiode?.gesuchsperiodeString"
+                [value]="vorgaenger.angabenKorrektur.kostenEinnahmen?.personalkosten"
+            ></dv-ferienbetreuung-last-year-value>
         </div>
 
         <div class="flex-row">
@@ -98,12 +98,11 @@
                     </dv-bisher-x>
                 </mat-form-field>
             </dv-input-container-x>
-            <div class="flex-row-start-center margin-bottom-3rem margin-left-10"
-                 *ngIf="(vorgaenger$ | async) as vorgaenger">
-                <span *ngIf="vorgaenger.angabenKorrektur.kostenEinnahmen?.personalkostenLeitungAdmin"
-                      class="inline-hint">{{'ANGABEN_VORJAHR' | translate:{gp: vorgaenger.gesuchsperiode?.gesuchsperiodeString} }}
-                    : {{vorgaenger.angabenKorrektur.kostenEinnahmen?.personalkostenLeitungAdmin}}</span>
-            </div>
+            <dv-ferienbetreuung-last-year-value
+                *ngIf="(vorgaenger$ | async) as vorgaenger"
+                [gesuchsperiode]="vorgaenger.gesuchsperiode?.gesuchsperiodeString"
+                [value]="vorgaenger.angabenKorrektur.kostenEinnahmen?.personalkostenLeitungAdmin"
+            ></dv-ferienbetreuung-last-year-value>
         </div>
 
         <div class="flex-row">
@@ -135,11 +134,11 @@
                     </dv-bisher-x>
                 </mat-form-field>
             </dv-input-container-x>
-            <div class="flex-row-start-center margin-bottom-3rem margin-left-10">
-                <span *ngIf="(vorgaenger$ | async) as vorgaenger"
-                      class="inline-hint">{{'ANGABEN_VORJAHR' | translate:{gp: vorgaenger.gesuchsperiode?.gesuchsperiodeString} }}
-                    : {{vorgaenger.angabenKorrektur.kostenEinnahmen?.sachkosten}}</span>
-            </div>
+            <dv-ferienbetreuung-last-year-value
+                *ngIf="(vorgaenger$ | async) as vorgaenger"
+                [gesuchsperiode]="vorgaenger.gesuchsperiode?.gesuchsperiodeString"
+                [value]="vorgaenger.angabenKorrektur.kostenEinnahmen?.sachkosten"
+            ></dv-ferienbetreuung-last-year-value>
         </div>
 
         <div class="flex-row">
@@ -167,12 +166,11 @@
                     </dv-bisher-x>
                 </mat-form-field>
             </dv-input-container-x>
-            <div class="flex-row-start-center margin-bottom-3rem margin-left-10"
-                 *ngIf="(vorgaenger$ | async) as vorgaenger">
-                <span *ngIf="vorgaenger.angabenKorrektur.kostenEinnahmen?.verpflegungskosten"
-                      class="inline-hint">{{'ANGABEN_VORJAHR' | translate:{gp: vorgaenger.gesuchsperiode?.gesuchsperiodeString} }}
-                    : {{vorgaenger.angabenKorrektur.kostenEinnahmen?.verpflegungskosten}}</span>
-            </div>
+            <dv-ferienbetreuung-last-year-value
+                *ngIf="(vorgaenger$ | async) as vorgaenger"
+                [gesuchsperiode]="vorgaenger.gesuchsperiode?.gesuchsperiodeString"
+                [value]="vorgaenger.angabenKorrektur.kostenEinnahmen?.verpflegungskosten"
+            ></dv-ferienbetreuung-last-year-value>
         </div>
 
 
@@ -198,12 +196,11 @@
                     </dv-bisher-x>
                 </mat-form-field>
             </dv-input-container-x>
-            <div class="flex-row-start-center margin-bottom-3rem margin-left-10"
-                 *ngIf="(vorgaenger$ | async) as vorgaenger">
-                <span *ngIf="vorgaenger.angabenKorrektur.kostenEinnahmen?.weitereKosten"
-                      class="inline-hint">{{'ANGABEN_VORJAHR' | translate:{gp: vorgaenger.gesuchsperiode?.gesuchsperiodeString} }}
-                    : {{vorgaenger.angabenKorrektur.kostenEinnahmen?.weitereKosten}}</span>
-            </div>
+            <dv-ferienbetreuung-last-year-value
+                *ngIf="(vorgaenger$ | async) as vorgaenger"
+                [gesuchsperiode]="vorgaenger.gesuchsperiode?.gesuchsperiodeString"
+                [value]="vorgaenger.angabenKorrektur.kostenEinnahmen?.weitereKosten"
+            ></dv-ferienbetreuung-last-year-value>
         </div>
 
         <div class="flex-row">
@@ -224,12 +221,11 @@
                     </dv-bisher-x>
                 </mat-form-field>
             </dv-input-container-x>
-            <div class="flex-row-start-center margin-bottom-3rem margin-left-10"
-                 *ngIf="(vorgaenger$ | async) as vorgaenger">
-                <span *ngIf="vorgaenger.angabenKorrektur.kostenEinnahmen?.bemerkungenKosten"
-                      class="inline-hint">{{'ANGABEN_VORJAHR' | translate:{gp: vorgaenger.gesuchsperiode?.gesuchsperiodeString} }}
-                    : {{vorgaenger.angabenKorrektur.kostenEinnahmen?.bemerkungenKosten}}</span>
-            </div>
+            <dv-ferienbetreuung-last-year-value
+                *ngIf="(vorgaenger$ | async) as vorgaenger"
+                [gesuchsperiode]="vorgaenger.gesuchsperiode?.gesuchsperiodeString"
+                [value]="vorgaenger.angabenKorrektur.kostenEinnahmen?.bemerkungenKosten"
+            ></dv-ferienbetreuung-last-year-value>
         </div>
 
         <mat-divider></mat-divider>
@@ -267,11 +263,11 @@
                     </dv-bisher-x>
                 </mat-form-field>
             </dv-input-container-x>
-            <div class="flex-row-start-center margin-bottom-3rem margin-left-10">
-                <span *ngIf="(vorgaenger$ | async) as vorgaenger"
-                      class="inline-hint">{{'ANGABEN_VORJAHR' | translate:{gp: vorgaenger.gesuchsperiode?.gesuchsperiodeString} }}
-                    : {{vorgaenger.angabenKorrektur.kostenEinnahmen?.elterngebuehren}}</span>
-            </div>
+            <dv-ferienbetreuung-last-year-value
+                *ngIf="(vorgaenger$ | async) as vorgaenger"
+                [gesuchsperiode]="vorgaenger.gesuchsperiode?.gesuchsperiodeString"
+                [value]="vorgaenger.angabenKorrektur.kostenEinnahmen?.elterngebuehren"
+            ></dv-ferienbetreuung-last-year-value>
         </div>
 
         <div class="flex-row">
@@ -303,11 +299,11 @@
                     </dv-bisher-x>
                 </mat-form-field>
             </dv-input-container-x>
-            <div class="flex-row-start-center margin-bottom-3rem margin-left-10">
-                <span *ngIf="(vorgaenger$ | async) as vorgaenger"
-                      class="inline-hint">{{'ANGABEN_VORJAHR' | translate:{gp: vorgaenger.gesuchsperiode?.gesuchsperiodeString} }}
-                    : {{vorgaenger.angabenKorrektur.kostenEinnahmen?.weitereEinnahmen}}</span>
-            </div>
+            <dv-ferienbetreuung-last-year-value
+                *ngIf="(vorgaenger$ | async) as vorgaenger"
+                [gesuchsperiode]="vorgaenger.gesuchsperiode?.gesuchsperiodeString"
+                [value]="vorgaenger.angabenKorrektur.kostenEinnahmen?.weitereEinnahmen"
+            ></dv-ferienbetreuung-last-year-value>
         </div>
 
 
@@ -344,12 +340,11 @@
                         </dv-bisher-x>
                     </mat-form-field>
                 </dv-input-container-x>
-                <div class="flex-row-start-center margin-bottom-3rem margin-left-10"
-                     *ngIf="(vorgaenger$ | async) as vorgaenger">
-                <span *ngIf="vorgaenger.angabenKorrektur.kostenEinnahmen?.sockelbeitrag"
-                      class="inline-hint">{{'ANGABEN_VORJAHR' | translate:{gp: vorgaenger.gesuchsperiode?.gesuchsperiodeString} }}
-                    : {{vorgaenger.angabenKorrektur.kostenEinnahmen?.sockelbeitrag}}</span>
-                </div>
+                <dv-ferienbetreuung-last-year-value
+                    *ngIf="(vorgaenger$ | async) as vorgaenger"
+                    [gesuchsperiode]="vorgaenger.gesuchsperiode?.gesuchsperiodeString"
+                    [value]="vorgaenger.angabenKorrektur.kostenEinnahmen?.sockelbeitrag"
+                ></dv-ferienbetreuung-last-year-value>
             </div>
             <div class="flex-row">
                 <dv-input-container-x class="max-width-container-750">
@@ -377,12 +372,11 @@
                         </dv-bisher-x>
                     </mat-form-field>
                 </dv-input-container-x>
-                <div class="flex-row-start-center margin-bottom-3rem margin-left-10"
-                     *ngIf="(vorgaenger$ | async) as vorgaenger">
-                <span *ngIf="vorgaenger.angabenKorrektur.kostenEinnahmen?.beitraegeNachAnmeldungen"
-                      class="inline-hint">{{'ANGABEN_VORJAHR' | translate:{gp: vorgaenger.gesuchsperiode?.gesuchsperiodeString} }}
-                    : {{vorgaenger.angabenKorrektur.kostenEinnahmen?.beitraegeNachAnmeldungen}}</span>
-                </div>
+                <dv-ferienbetreuung-last-year-value
+                    *ngIf="(vorgaenger$ | async) as vorgaenger"
+                    [gesuchsperiode]="vorgaenger.gesuchsperiode?.gesuchsperiodeString"
+                    [value]="vorgaenger.angabenKorrektur.kostenEinnahmen?.beitraegeNachAnmeldungen"
+                ></dv-ferienbetreuung-last-year-value>
             </div>
             <div class="flex-row">
                 <dv-input-container-x class="max-width-container-750">
@@ -414,12 +408,11 @@
                         </dv-bisher-x>
                     </mat-form-field>
                 </dv-input-container-x>
-                <div class="flex-row-start-center margin-bottom-3rem margin-left-10"
-                     *ngIf="(vorgaenger$ | async) as vorgaenger">
-                <span *ngIf="vorgaenger.angabenKorrektur.kostenEinnahmen?.vorfinanzierteKantonsbeitraege"
-                      class="inline-hint">{{'ANGABEN_VORJAHR' | translate:{gp: vorgaenger.gesuchsperiode?.gesuchsperiodeString} }}
-                    : {{vorgaenger.angabenKorrektur.kostenEinnahmen?.vorfinanzierteKantonsbeitraege}}</span>
-                </div>
+                <dv-ferienbetreuung-last-year-value
+                    *ngIf="(vorgaenger$ | async) as vorgaenger"
+                    [gesuchsperiode]="vorgaenger.gesuchsperiode?.gesuchsperiodeString"
+                    [value]="vorgaenger.angabenKorrektur.kostenEinnahmen?.vorfinanzierteKantonsbeitraege"
+                ></dv-ferienbetreuung-last-year-value>
             </div>
             <div class="flex-row">
                 <dv-input-container-x class="max-width-container-750">
@@ -450,12 +443,11 @@
                         </dv-bisher-x>
                     </mat-form-field>
                 </dv-input-container-x>
-                <div class="flex-row-start-center margin-bottom-3rem margin-left-10"
-                     *ngIf="(vorgaenger$ | async) as vorgaenger">
-                <span *ngIf="vorgaenger.angabenKorrektur.kostenEinnahmen?.eigenleistungenGemeinde"
-                      class="inline-hint">{{'ANGABEN_VORJAHR' | translate:{gp: vorgaenger.gesuchsperiode?.gesuchsperiodeString} }}
-                    : {{vorgaenger.angabenKorrektur.kostenEinnahmen?.eigenleistungenGemeinde}}</span>
-                </div>
+                <dv-ferienbetreuung-last-year-value
+                    *ngIf="(vorgaenger$ | async) as vorgaenger"
+                    [gesuchsperiode]="vorgaenger.gesuchsperiode?.gesuchsperiodeString"
+                    [value]="vorgaenger.angabenKorrektur.kostenEinnahmen?.eigenleistungenGemeinde"
+                ></dv-ferienbetreuung-last-year-value>
             </div>
         </div>
 
