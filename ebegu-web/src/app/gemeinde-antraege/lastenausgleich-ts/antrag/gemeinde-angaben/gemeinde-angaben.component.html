@@ -186,7 +186,7 @@
             <div class="max-width-container-750">
 
                 <h3 class="uppercase">{{'LATS_ABRECHNUNG' | translate}}</h3>
-                <p class="italic">{{'LATS_EXPLANATION_SUB_HEADER_ABRECHNUNG' | translate}}</p>
+                <p class="italic margin-bottom-20">{{'LATS_EXPLANATION_SUB_HEADER_ABRECHNUNG' | translate}}</p>
                 <dv-input-container-x>
                     <label required
                            [ngClass]="{'label-required-error': abschliessenValidationActive && angabenForm.get('geleisteteBetreuungsstundenOhneBesondereBeduerfnisse').errors}">
@@ -1134,13 +1134,13 @@
             </span>
         </div>
 
-        <div class="row" *ngIf="falscheAngabenVisible | async">
-            <div class="col-md-12">
-                <a class="pointer-cursor" (click)="onFalscheAngaben()" translate>FERIENBETREUUNG_ANGABEN_KORRIGIEREN</a>
-            </div>
-        </div>
-
         <div class="actions">
+            <button class="dv-btn cancel-button uppercase"
+                    type="button"
+                    *ngIf="falscheAngabenVisible | async"
+                    (click)="onFalscheAngaben()">
+                <span translate>FERIENBETREUUNG_ANGABEN_KORRIGIEREN</span>
+            </button>
             <dv-loading-button
                 class="uppercase"
                 type="button"

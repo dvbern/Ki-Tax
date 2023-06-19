@@ -469,13 +469,12 @@
 
     </form>
 
-    <div class="row margin-top-20" *ngIf="canSeeFalscheAngaben | async">
-        <div class="col-md-12">
-            <a class="pointer-cursor" (click)="onFalscheAngaben()" translate>FERIENBETREUUNG_ANGABEN_KORRIGIEREN</a>
-        </div>
-    </div>
-
     <div class="actions">
+        <button type="button" class="dv-btn cancel-button"
+                *ngIf="canSeeFalscheAngaben | async"
+                (click)="onFalscheAngaben()"
+                [textContent]="'FERIENBETREUUNG_ANGABEN_KORRIGIEREN' | translate"
+        ></button>
         <button type="button" class="dv-btn cancel-button"
                 *ngIf="canSeeSave | async"
                 (click)="save()"
