@@ -1041,6 +1041,7 @@ export class GemeindeAngabenComponent implements OnInit, OnDestroy {
             this.previousAntrag = results[0];
             this.erwarteteBetreuungsstunden = results[1];
             this.controllingCalculator = new TSControllingCalculator(this.angabenForm, results[0]);
+            this.calculateStarkeVeraenderung();
             this.cd.markForCheck();
         }, err => {
             LOG.error(err);
@@ -1054,5 +1055,14 @@ export class GemeindeAngabenComponent implements OnInit, OnDestroy {
         }
 
         this.angabenForm.get(formFieldToClear).setValue(undefined);
+    }
+
+    private calculateStarkeVeraenderung(): void {
+        const starkeVeraenderungAb = 0.2; //veranderung Betreuungsstunden +/- 20% = Starke Veranderung
+        this.controllingCalculator.veraenderungBetreuungsstundenAsNumber$
+            .subscribe(value => {
+                this.hasStarkeVeraenderung = Math.abs(value) >= starkeVeraenderungAb;
+                this.cd.markForCheck();
+            });
     }
 }
