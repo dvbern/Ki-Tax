@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022 DV Bern AG, Switzerland
+ * Copyright (C) 2023 DV Bern AG, Switzerland
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -15,30 +15,20 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.dvbern.ebegu.services;
+CREATE TABLE IF NOT EXISTS alle_faelle_view_kind (
+    kind_id BINARY(16) NOT NULL,
+	antrag_id BINARY(16) NOT NULL,
+    name VARCHAR(255) NOT NULL,
+    PRIMARY KEY (kind_id)
+);
 
-import java.util.List;
+ALTER TABLE alle_faelle_view_kind
+	ADD CONSTRAINT FK_alle_faelle_view_kind_antrag_id
+		FOREIGN KEY (antrag_id)
+			REFERENCES alle_faelle_view(antrag_id);
 
-import ch.dvbern.ebegu.entities.Gesuch;
-import ch.dvbern.ebegu.entities.Kind;
 
-public interface AlleFaelleViewService {
+CREATE INDEX IX_alle_faelle_view_kind_kind_id ON alle_faelle_view_kind(kind_id);
 
-	boolean isNeueAlleFaelleViewActivated();
-
-	void createViewForFullGesuch(Gesuch gesuch);
-
-	void updateViewForGesuch(Gesuch gesuch);
-
-	void removeViewForGesuch(Gesuch gesuch);
-
-	void createKindInView(Kind kind, Gesuch gesuch);
-
-	void updateKindInView(Kind kind);
-
-	void removeKindInView(Kind kind);
-
-	Long countAllGesuch();
-
-	List<String> searchAllGesuchIds(int start, int size);
-}
+alter table alle_faelle_view
+drop column kinder;

@@ -54,7 +54,7 @@ import java.util.stream.Collectors;
 @Entity
 @Indexed
 @Analyzer(definition = "EBEGUGermanAnalyzer")
-@EntityListeners({ GesuchStatusListener.class, GesuchGueltigListener.class })
+@EntityListeners({ GesuchStatusListener.class, GesuchGueltigListener.class, AlleFaelleGesuchListener.class })
 @Table(
 	uniqueConstraints = { @UniqueConstraint(columnNames = { "dossier_id", "gesuchsperiode_id", "gueltig" },
 		name = "UK_gueltiges_gesuch"),

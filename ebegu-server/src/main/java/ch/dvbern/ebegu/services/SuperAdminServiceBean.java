@@ -160,7 +160,7 @@ public class SuperAdminServiceBean implements SuperAdminService {
 					try {
 						for (String gesuchId : foundAntraege) {
 							Gesuch gesuch = persistence.find(Gesuch.class, gesuchId);
-							alleFaelleViewService.updateViewWithFullGesuch(gesuch);
+							alleFaelleViewService.createViewForFullGesuch(gesuch);
 						}
 					} catch (Exception e) {
 						LOG.error(
