@@ -100,6 +100,7 @@ export class GemeindeAngabenComponent implements OnInit, OnDestroy {
 
     private readonly kostenbeitragGemeinde = 0.2;
     private readonly WIZARD_TYPE: TSWizardStepXTyp = TSWizardStepXTyp.LASTENAUSGLEICH_TAGESSCHULEN;
+    public hasStarkeVeraenderung: boolean = false;
 
     public constructor(
         private readonly fb: FormBuilder,
@@ -302,6 +303,7 @@ export class GemeindeAngabenComponent implements OnInit, OnDestroy {
             ],
             // Bemerkungen
             bemerkungen: [initialGemeindeAngaben?.bemerkungen],
+            bemerkungStarkeVeraenderung: [initialGemeindeAngaben?.bemerkungStarkeVeraenderung],
             // calculated values
             lastenausgleichberechtigteBetreuungsstunden: [{value: ''}],
             davonStundenZuNormlohnWenigerAls50ProzentAusgebildeteBerechnet: [{value: '', disabled: true}],
@@ -1032,9 +1034,6 @@ export class GemeindeAngabenComponent implements OnInit, OnDestroy {
     }
 
     private initControlling(): void {
-        if (!this.controllingActive()) {
-            return;
-        }
         combineLatest([
             this.lastenausgleichTSService.findAntragOfPreviousPeriode(this.lATSAngabenGemeindeContainer),
             this.lastenausgleichTSService.getErwarteteBetreuungsstunden(this.lATSAngabenGemeindeContainer)

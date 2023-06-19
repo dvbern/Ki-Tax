@@ -53,6 +53,10 @@ export class TSControllingCalculator {
         return this._veraenderungBetreuungsstunden.asObservable();
     }
 
+    public get veraenderungBetreuungsstundenAsNumber$(): Observable<number> {
+        return this._veraenderungBetreuungsstundenAsNumber.asObservable();
+    }
+
     public get anteilStundenBesondereBeduerfnisseCurrentPeriode$(): Observable<string> {
         return this._anteilStundenBesondereBeduerfnisseCurrentPeriode.asObservable();
     }
