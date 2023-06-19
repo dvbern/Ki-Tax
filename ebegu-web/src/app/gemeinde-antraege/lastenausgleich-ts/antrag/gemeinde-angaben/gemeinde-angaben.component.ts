@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020 DV Bern AG, Switzerland
+ * Copyright (C) 2023 DV Bern AG, Switzerland
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -8,11 +8,11 @@
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program. If not, see <https://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
 import {
@@ -435,7 +435,6 @@ export class GemeindeAngabenComponent implements OnInit, OnDestroy {
             () => this.errorService.addMesageAsError(this.translateService.instant(
                 'einkommenElternBelegtBemerkung ValueChanges error')));
 
-        this.angabenForm.get('maximalTarif').setValidators([Validators.required]);
         this.angabenForm.get('maximalTarif').valueChanges.subscribe(value => {
             this.setValidatorRequiredIfFalse('maximalTarifBemerkung', value);
         }, () => this.errorService.addMesageAsError(this.translateService.instant('Maximal Tarif ValueChanges error')));
@@ -556,7 +555,7 @@ export class GemeindeAngabenComponent implements OnInit, OnDestroy {
     }
 
     private setValidatorRequiredIfFalse(fieldname: string, value: boolean): void {
-        if (!value) {
+        if (value === false) {
             this.angabenForm.get(fieldname).setValidators([Validators.required]);
         } else {
             this.angabenForm.get(fieldname).setValidators(null);
