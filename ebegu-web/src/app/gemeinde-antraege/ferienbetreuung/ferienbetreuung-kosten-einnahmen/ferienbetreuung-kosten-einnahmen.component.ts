@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2021 DV Bern AG, Switzerland
+ * Copyright (C) 2023 DV Bern AG, Switzerland
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -8,11 +8,11 @@
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program. If not, see <https://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
 import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit} from '@angular/core';
@@ -71,10 +71,9 @@ export class FerienbetreuungKostenEinnahmenComponent extends AbstractFerienbetre
         ]).pipe(takeUntil(this.unsubscribe$))
             .subscribe(([container, principal]) => {
             this.container = container;
-            this.kostenEinnahmen = container.isAtLeastInPruefungKantonOrZurueckgegeben() ?
-                container.angabenKorrektur?.kostenEinnahmen : container.angabenDeklaration?.kostenEinnahmen;
-            const angaben = container.isAtLeastInPruefungKanton() ?
-                container.angabenKorrektur : container.angabenDeklaration;
+                const angaben = container.isAtLeastInPruefungKantonOrZurueckgegeben() ?
+                    container.angabenKorrektur : container.angabenDeklaration;
+                this.kostenEinnahmen = angaben?.kostenEinnahmen;
             this.isDelegationsmodell = angaben?.isDelegationsmodell();
             this.setupFormAndPermissions(container, this.kostenEinnahmen, principal);
             this.unsavedChangesService.registerForm(this.form);
