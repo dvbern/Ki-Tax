@@ -277,4 +277,7 @@ export class FerienbetreuungAbschlussComponent implements OnInit, OnDestroy {
             this.container?.angabenDeklaration;
     }
 
+    public getKostenEinnahmenLink(): string {
+        return this.stateService.href('FERIENBETREUUNG.KOSTEN_EINNAHMEN', {}, {absolute: true});
+    }
 }
