@@ -287,6 +287,7 @@ public class LastenausgleichTagesschuleAngabenGemeinde extends AbstractEntity {
 		this.ausbildungenMitarbeitendeBelegtBemerkung = source.ausbildungenMitarbeitendeBelegtBemerkung;
 		// Bemerkungen
 		this.bemerkungen = source.bemerkungen;
+		this.bemerkungStarkeVeraenderung = source.bemerkungStarkeVeraenderung;
 	}
 
 	@Nullable
