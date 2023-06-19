@@ -554,8 +554,8 @@ export class GemeindeAngabenComponent implements OnInit, OnDestroy {
         }, () => this.errorService.addMesageAsError(this.translateService.instant('LATS_CALCULATION_ERROR')));
     }
 
-    private setValidatorRequiredIfFalse(fieldname: string, value: boolean): void {
-        if (value === false) {
+    private setValidatorRequiredIfFalse(fieldname: string, value: undefined | boolean): void {
+        if (EbeguUtil.isNotNullAndFalse(value)) {
             this.angabenForm.get(fieldname).setValidators([Validators.required]);
         } else {
             this.angabenForm.get(fieldname).setValidators(null);
