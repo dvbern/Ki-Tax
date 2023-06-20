@@ -26,6 +26,7 @@ const LOG = LogFactory.createLog('TSControllingCalculator');
 export class TSControllingCalculator {
 
     private readonly _veraenderungBetreuungsstunden: BehaviorSubject<string> = new BehaviorSubject<string>(undefined);
+    private readonly _veraenderungBetreuungsstundenAsNumber: BehaviorSubject<number> = new BehaviorSubject<number>(undefined);
     private readonly _anteilStundenBesondereBeduerfnisseCurrentPeriode: BehaviorSubject<string> =
         new BehaviorSubject<string>(undefined);
     private readonly _anteilStundenBesondereBeduerfnissePreviousPeriode: BehaviorSubject<string> =
@@ -51,6 +52,10 @@ export class TSControllingCalculator {
 
     public get veraenderungBetreuungsstunden$(): Observable<string> {
         return this._veraenderungBetreuungsstunden.asObservable();
+    }
+
+    public get veraenderungBetreuungsstundenAsNumber$(): Observable<number> {
+        return this._veraenderungBetreuungsstundenAsNumber.asObservable();
     }
 
     public get anteilStundenBesondereBeduerfnisseCurrentPeriode$(): Observable<string> {
@@ -100,6 +105,7 @@ export class TSControllingCalculator {
                 let veraenderung =
                     value / this._previousAntrag.angabenKorrektur.lastenausgleichberechtigteBetreuungsstunden;
                 veraenderung -= 1;
+                this._veraenderungBetreuungsstundenAsNumber.next(veraenderung);
                 this._veraenderungBetreuungsstunden.next(this.toPercent(veraenderung));
             }, err => this.handleError(err));
     }

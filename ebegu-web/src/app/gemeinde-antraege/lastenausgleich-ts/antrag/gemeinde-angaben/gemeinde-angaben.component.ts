@@ -100,6 +100,7 @@ export class GemeindeAngabenComponent implements OnInit, OnDestroy {
 
     private readonly kostenbeitragGemeinde = 0.2;
     private readonly WIZARD_TYPE: TSWizardStepXTyp = TSWizardStepXTyp.LASTENAUSGLEICH_TAGESSCHULEN;
+    public hasStarkeVeraenderung: boolean = false;
 
     public constructor(
         private readonly fb: FormBuilder,
@@ -302,6 +303,7 @@ export class GemeindeAngabenComponent implements OnInit, OnDestroy {
             ],
             // Bemerkungen
             bemerkungen: [initialGemeindeAngaben?.bemerkungen],
+            bemerkungStarkeVeraenderung: [initialGemeindeAngaben?.bemerkungStarkeVeraenderung],
             // calculated values
             lastenausgleichberechtigteBetreuungsstunden: [{value: ''}],
             davonStundenZuNormlohnWenigerAls50ProzentAusgebildeteBerechnet: [{value: '', disabled: true}],
@@ -1032,9 +1034,6 @@ export class GemeindeAngabenComponent implements OnInit, OnDestroy {
     }
 
     private initControlling(): void {
-        if (!this.controllingActive()) {
-            return;
-        }
         combineLatest([
             this.lastenausgleichTSService.findAntragOfPreviousPeriode(this.lATSAngabenGemeindeContainer),
             this.lastenausgleichTSService.getErwarteteBetreuungsstunden(this.lATSAngabenGemeindeContainer)
@@ -1042,6 +1041,7 @@ export class GemeindeAngabenComponent implements OnInit, OnDestroy {
             this.previousAntrag = results[0];
             this.erwarteteBetreuungsstunden = results[1];
             this.controllingCalculator = new TSControllingCalculator(this.angabenForm, results[0]);
+            this.calculateStarkeVeraenderung();
             this.cd.markForCheck();
         }, err => {
             LOG.error(err);
@@ -1055,5 +1055,14 @@ export class GemeindeAngabenComponent implements OnInit, OnDestroy {
         }
 
         this.angabenForm.get(formFieldToClear).setValue(undefined);
+    }
+
+    private calculateStarkeVeraenderung(): void {
+        const starkeVeraenderungAb = 0.2; //veranderung Betreuungsstunden +/- 20% = Starke Veranderung
+        this.controllingCalculator.veraenderungBetreuungsstundenAsNumber$
+            .subscribe(value => {
+                this.hasStarkeVeraenderung = Math.abs(value) >= starkeVeraenderungAb;
+                this.cd.markForCheck();
+            });
     }
 }

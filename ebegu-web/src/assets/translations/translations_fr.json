@@ -2544,6 +2544,8 @@
     "LATS_NICHT_ALLE_INSTITUTIONEN_ABGESCHLOSSEN": "Les données des institutions ne sont pas toutes libérées et vérifiées",
     "LATS_FRAGE_GEMEINDE_ANTRAG_FREIGABE": "Voulez-vous vraiment libérer le formulaire pour la vérification par le canton ?",
     "LATS_FRAGE_GEMEINDE_ANTRAG_FREIGABE_GEPRUEFT": "Voulez-vous vraiment marquer le formulaire comme \"Vérifié\"?",
+    "LATS_WARNUNG_STARKE_VERAENDERUNG": "Die Betreuungsstunden sind um {{prozent}} höher / tiefer als im Vorjahr. Bitte überprüfen Sie die Angabe und erfassen Sie allenfalls im Bemerkungsfeld eine Begründung für die starke Veränderung.",
+    "LATS_BEGRUENDUNG_STARKE_VERAENDERUNG": "Begründung für die starke Veränderung",
     "ERROR_LATS_PLAUSIBLISIERUNG_ADDITION": "Les champs \"formé à plus de 50% \" et \"formé à moins de 50%\" doivent correspondre aux heures d'encadrement admises à la compensation des charges",
     "ERROR_LATS_PLAUSIBLISIERUNG_TAGESSCHULEN_STUNDEN": "Les heures d'encadrement admises à la compensation des charges ne correspondent pas aux heures d'encadrement des différentes écoles à journée continue. Veuillez contrôler les données",
     "ERROR_LATS_PLAUSIBLISIERUNG_TAGESSCHULEN": "Les heures d’encadrement admises à la compensation des charges ne correspondent pas aux heures indiquées dans le formulaire suivant « Données des écoles à journée continue ». Veuillez poursuivre le remplissage de vos données ou vérifier les informations complétées.",

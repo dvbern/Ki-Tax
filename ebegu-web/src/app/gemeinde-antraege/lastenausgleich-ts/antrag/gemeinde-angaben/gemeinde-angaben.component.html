@@ -491,7 +491,7 @@
                 </dv-input-container-x>
 
             </div>
-            <div class="controlling-box" *ngIf="controllingCalculator">
+            <div class="controlling-box" *ngIf="controllingActive()">
                 <table class="besondere-beduerfnisse-controlling">
                     <tr>
                         <td>{{'LATS_CONTROLLING_ANTEIL_BETRSONDERE_BEDUERFNISSE' | translate}} {{lATSAngabenGemeindeContainer?.gesuchsperiode.gesuchsperiodeString}}</td>
@@ -780,7 +780,7 @@
                 </div>
 
             </div>
-            <div class="controlling-box" *ngIf="controllingCalculator">
+            <div class="controlling-box" *ngIf="controllingActive()">
                 <table class="kostenbeitrag-controlling">
                     <tr>
                         <td>{{ 'LATS_CONTROLLING_KOSTENANTEIL' | translate }}</td>
@@ -1125,6 +1125,28 @@
                 </mat-form-field>
             </dv-input-container-x>
 
+        </div>
+
+        <div class="max-width-container-750" *ngIf="hasStarkeVeraenderung">
+
+            <div class="well well-status-warten">
+                <i class="fa fa-exclamation" aria-hidden="true"></i>
+                <span>{{'LATS_WARNUNG_STARKE_VERAENDERUNG' | translate:
+                    {prozent: controllingCalculator.veraenderungBetreuungsstunden$ | async }
+                    }}</span>
+            </div>
+
+
+            <h3 class="uppercase">{{'LATS_BEGRUENDUNG_STARKE_VERAENDERUNG' | translate}}</h3>
+
+            <dv-input-container-x [verticalAlign]="true">
+                <mat-form-field floatLabel="always" class="no-margin-left">
+                    <textarea matInput
+                              required
+                              formControlName="bemerkungStarkeVeraenderung"
+                              class="form-control dv-input"></textarea>
+                </mat-form-field>
+            </dv-input-container-x>
         </div>
 
         <div class="well well-status-warten"

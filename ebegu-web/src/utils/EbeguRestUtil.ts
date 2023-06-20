@@ -5097,6 +5097,8 @@ export class EbeguRestUtil {
             // Bemerkungen
             gemeindeTS.bemerkungen =
                 gemeindeFromServer.bemerkungen;
+            gemeindeTS.bemerkungStarkeVeraenderung =
+                gemeindeFromServer.bemerkungStarkeVeraenderung;
             // Berechnungen
             gemeindeTS.lastenausgleichberechtigteBetreuungsstunden =
                 gemeindeFromServer.lastenausgleichberechtigteBetreuungsstunden;
@@ -5201,6 +5203,8 @@ export class EbeguRestUtil {
             // Bemerkungen
             restAngabenGemeinde.bemerkungen =
                 tsAngabenGemeinde.bemerkungen;
+            restAngabenGemeinde.bemerkungStarkeVeraenderung =
+                tsAngabenGemeinde.bemerkungStarkeVeraenderung;
             // Berechnungen
             restAngabenGemeinde.lastenausgleichberechtigteBetreuungsstunden =
                 tsAngabenGemeinde.lastenausgleichberechtigteBetreuungsstunden;

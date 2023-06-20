@@ -17,11 +17,15 @@
 
 export abstract class MathUtil {
     public static subtractFloatPrecisionSafe(value: number, toSubtract: number, decimalPrecision = 2): number {
-        return parseFloat((value - toSubtract).toFixed(decimalPrecision));
+        const numToSub: number  = +toSubtract; //convert to number
+        const valueToSub: number  = +value; //convert to number
+        return parseFloat((valueToSub - numToSub).toFixed(decimalPrecision));
     }
 
     public static addFloatPrecisionSafe(value: number, toAdd: number, decimalPrecision = 2): number {
-        return parseFloat((value + toAdd).toFixed(decimalPrecision));
+        const numToAdd: number  = +toAdd; //convert to number
+        const valueToAdd: number = +value; //convert to number
+        return parseFloat((valueToAdd + numToAdd).toFixed(decimalPrecision));
     }
 
     public static subtractArrayFloatPrecisionSafe(value: number, toSubtract: number[], decimalPrecision = 2): number {

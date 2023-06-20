@@ -146,6 +146,9 @@ public class JaxLastenausgleichTagesschuleAngabenGemeinde extends JaxAbstractDTO
 	@Nullable
 	private String bemerkungen;
 
+	@Nullable
+	private String bemerkungStarkeVeraenderung;
+
 	// Berechnungen
 	@Nullable
 	private BigDecimal lastenausgleichberechtigteBetreuungsstunden;
@@ -567,5 +570,14 @@ public class JaxLastenausgleichTagesschuleAngabenGemeinde extends JaxAbstractDTO
 
 	public void setEinnahmenElterngebuehrenVolksschulangebot(@Nullable BigDecimal einnahmenElterngebuehrenVolksschulangebot) {
 		this.einnahmenElterngebuehrenVolksschulangebot = einnahmenElterngebuehrenVolksschulangebot;
+	}
+
+	@Nullable
+	public String getBemerkungStarkeVeraenderung() {
+		return bemerkungStarkeVeraenderung;
+	}
+
+	public void setBemerkungStarkeVeraenderung(@Nullable String bemerkungStarkeVeraenderung) {
+		this.bemerkungStarkeVeraenderung = bemerkungStarkeVeraenderung;
 	}
 }

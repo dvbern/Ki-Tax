@@ -66,6 +66,7 @@ export class TSLastenausgleichTagesschuleAngabenGemeinde extends TSAbstractEntit
 
     // Bemerkungen
     public bemerkungen: string;
+    public bemerkungStarkeVeraenderung: string;
 
     // Berechnungen
     public lastenausgleichberechtigteBetreuungsstunden: number;
