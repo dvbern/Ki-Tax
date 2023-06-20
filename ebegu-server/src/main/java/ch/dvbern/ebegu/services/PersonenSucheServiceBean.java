@@ -15,11 +15,21 @@
 
 package ch.dvbern.ebegu.services;
 
-import java.time.LocalDate;
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
+import ch.dvbern.ebegu.cdi.Dummy;
+import ch.dvbern.ebegu.cdi.Geres;
+import ch.dvbern.ebegu.cdi.Prod;
+import ch.dvbern.ebegu.config.EbeguConfiguration;
+import ch.dvbern.ebegu.dto.personensuche.EWKAdresse;
+import ch.dvbern.ebegu.dto.personensuche.EWKPerson;
+import ch.dvbern.ebegu.dto.personensuche.EWKResultat;
+import ch.dvbern.ebegu.entities.*;
+import ch.dvbern.ebegu.enums.Geschlecht;
+import ch.dvbern.ebegu.errors.PersonenSucheServiceBusinessException;
+import ch.dvbern.ebegu.errors.PersonenSucheServiceException;
+import ch.dvbern.ebegu.ws.ewk.IEWKWebService;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -31,27 +41,11 @@ import javax.enterprise.inject.Default;
 import javax.enterprise.inject.Instance;
 import javax.enterprise.util.AnnotationLiteral;
 import javax.inject.Inject;
-
-import ch.dvbern.ebegu.cdi.Dummy;
-import ch.dvbern.ebegu.cdi.Geres;
-import ch.dvbern.ebegu.cdi.Prod;
-import ch.dvbern.ebegu.config.EbeguConfiguration;
-import ch.dvbern.ebegu.dto.personensuche.EWKAdresse;
-import ch.dvbern.ebegu.dto.personensuche.EWKPerson;
-import ch.dvbern.ebegu.dto.personensuche.EWKResultat;
-import ch.dvbern.ebegu.entities.Gesuch;
-import ch.dvbern.ebegu.entities.Gesuchsperiode;
-import ch.dvbern.ebegu.entities.Gesuchsteller;
-import ch.dvbern.ebegu.entities.GesuchstellerContainer;
-import ch.dvbern.ebegu.entities.Kind;
-import ch.dvbern.ebegu.entities.KindContainer;
-import ch.dvbern.ebegu.enums.Geschlecht;
-import ch.dvbern.ebegu.errors.PersonenSucheServiceBusinessException;
-import ch.dvbern.ebegu.errors.PersonenSucheServiceException;
-import ch.dvbern.ebegu.ws.ewk.IEWKWebService;
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.time.LocalDate;
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * Service fuer die Personensuche
@@ -163,7 +157,10 @@ public class PersonenSucheServiceBean extends AbstractBaseService implements Per
 		Objects.requireNonNull(geschlecht, "geschlecht darf nicht null sein");
 		// versuche die gesuchte person zu matchen. wenn gefunde
 			List<EWKPerson> personenInHaushalt = resultat.getPersonen().stream()
-				.filter(person -> geburtsdatum.isEqual(person.getGeburtsdatum()) && name.equals(person.getNachname()))
+				.filter(person ->
+					geburtsdatum.isEqual(person.getGeburtsdatum())
+						&& name.equals(person.getNachname())
+				        && vorname.equals(person.getVorname()))
 				.peek(person->{
 					person.setGesuchsteller(isGesuchsteller);
 					person.setKind(isKind);
