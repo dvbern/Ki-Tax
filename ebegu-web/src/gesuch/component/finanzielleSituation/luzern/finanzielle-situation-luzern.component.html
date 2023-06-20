@@ -70,7 +70,7 @@
 
                 <dv-finanzielle-situation-require-x [hideVerguenstigungGewunscht]="true"
                                                     [hideSozialhilfeQuestion]="!isGS1()"
-                                                    [sozialhilfeBezuegerQuestionDisabled]="isFinSitReadonly()"
+                                                    [disabled]="isFinSitReadonly()"
                                                     [(sozialhilfeBezueger)]="model.familienSituation.sozialhilfeBezueger"
                                                     (sozialhilfeBezuegerChange)="sozialhilfeBezuegerChange()">
                 </dv-finanzielle-situation-require-x>

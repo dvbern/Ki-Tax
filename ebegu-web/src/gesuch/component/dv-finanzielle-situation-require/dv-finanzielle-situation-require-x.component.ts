@@ -61,7 +61,7 @@ export class DvFinanzielleSituationRequireXComponent implements OnInit {
     public hideSozialhilfeQuestion: boolean = false;
 
     @Input()
-    public sozialhilfeBezuegerQuestionDisabled = false;
+    public disabled = false;
 
     private maxMassgebendesEinkommen: number;
     private isFinSitTypFkjv: boolean = false;
