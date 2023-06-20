@@ -30,7 +30,7 @@
                             dvEnableElement
                             #sozialhilfebezueger="ngModel"
                             [allowedRoles]="allowedRoles"
-                            [enableExpression]="!isGesuchReadonly() && !isKorrekturModusJugendamt()"
+                            [enableExpression]="!isGesuchReadonly() && !isKorrekturModusJugendamt() && !sozialhilfeBezuegerQuestionDisabled"
                             [(ngModel)]="sozialhilfeBezueger"
                             (ngModelChange)="updateSozialhilfeBezueger($event)">
                         <mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
@@ -64,7 +64,7 @@
                             required
                             dvEnableElement
                             #verguenstigunggewuenscht="ngModel"
-                            [enableExpression]="!isGesuchReadonly() && !isKorrekturModusJugendamt()"
+                            [enableExpression]="!isGesuchReadonly() && !isKorrekturModusJugendamt() && !sozialhilfeBezuegerQuestionDisabled"
                             [(ngModel)]="verguenstigungGewuenscht"
                             (ngModelChange)="updateVerguenstigungGewuenscht($event)">
                         <mat-radio-button [value]="true">{{'FINANZIELLE_SITUATION_VERGUENSTIGUNG_GEWUENSCHT_JA' | translate }}</mat-radio-button>
