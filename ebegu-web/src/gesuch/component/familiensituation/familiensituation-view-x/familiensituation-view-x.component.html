@@ -28,7 +28,7 @@
 			<p *ngIf="showError()" role="alert" translate
 			   class="dv-error-messages">ERROR_DATUM_GESETZT_BEI_MUTATION</p>
 		</div>
-        <div class="row" *ngIf="isNotPartnerIdentischMitVorgesuch()">
+        <div class="row" *ngIf="isNotPartnerIdentischMitVorgesuch()" [dvDemoFeature]="gesuchBeendenDemoFeature">
             <div class="col-xs-12">
                 <div class="well well-status-warten minus-margin">
                     <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
@@ -36,7 +36,7 @@
                 </div>
             </div>
         </div>
-		<div class="row" *ngIf="antragWirdBeendet()">
+		<div class="row" *ngIf="antragWirdBeendet()" [dvDemoFeature]="gesuchBeendenDemoFeature">
 			<div class="col-xs-12">
 				<div class="well well-status-warten minus-margin">
 					<i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
