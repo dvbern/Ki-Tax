@@ -372,6 +372,8 @@ public class GemeindeAntragResource {
 				case IN_PRUEFUNG_GEMEINDE:
 					return principal.isCallerInAnyOfRole(
 						UserRole.SUPER_ADMIN,
+						UserRole.ADMIN_MANDANT,
+						UserRole.SACHBEARBEITER_MANDANT,
 						UserRole.ADMIN_GEMEINDE,
 						UserRole.SACHBEARBEITER_GEMEINDE,
 						UserRole.ADMIN_TS,
