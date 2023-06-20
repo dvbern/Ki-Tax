@@ -645,7 +645,6 @@
                 class="uppercase"
                 *ngIf="canSeeFreigeben | async"
                 type="button"
-                [buttonDisabled]="actionButtonsDisabled()"
                 (buttonClick)="onFreigeben()">
                 <span translate>FREIGEBEN</span>
             </dv-loading-button>
@@ -654,7 +653,6 @@
                 class="uppercase"
                 *ngIf="canSeeAbschliessen | async"
                 type="button"
-                [buttonDisabled]="actionButtonsDisabled()"
                 (buttonClick)="onGeprueft()">
                 <span translate>GEPRUEFT</span>
             </dv-loading-button>
@@ -662,7 +660,6 @@
             <button class="dv-btn cancel-button uppercase"
                     type="button"
                     *ngIf="canSeeSave | async"
-                    [disabled]="actionButtonsDisabled()"
                     (click)="onFormSubmit()">
                 <span translate>SAVE</span>
             </button>
