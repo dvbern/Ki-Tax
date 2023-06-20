@@ -16,6 +16,8 @@
  */
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import {SHARED_MODULE_OVERRIDES} from '../../../../hybridTools/mockUpgradedDirective';
+import {SharedModule} from '../../../shared/shared.module';
 
 import { FerienbetreuungLastYearValueComponent } from './ferienbetreuung-last-year-value.component';
 
@@ -25,8 +27,10 @@ describe('FerienbetreuungLastYearValueComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
+      imports: [SharedModule],
       declarations: [ FerienbetreuungLastYearValueComponent ]
     })
+    .overrideModule(SharedModule, SHARED_MODULE_OVERRIDES)
     .compileComponents();
   });
 
