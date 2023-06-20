@@ -1,19 +1,6 @@
 package ch.dvbern.ebegu.rules;
 
-import java.time.LocalDate;
-import java.time.temporal.TemporalAdjusters;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Locale;
-import java.util.Objects;
-
-import javax.annotation.Nonnull;
-
-import ch.dvbern.ebegu.entities.AbstractPlatz;
-import ch.dvbern.ebegu.entities.Familiensituation;
-import ch.dvbern.ebegu.entities.FamiliensituationContainer;
-import ch.dvbern.ebegu.entities.Gesuch;
-import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
+import ch.dvbern.ebegu.entities.*;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.EnumFamilienstatus;
 import ch.dvbern.ebegu.enums.EnumGesuchstellerKardinalitaet;
@@ -21,26 +8,40 @@ import ch.dvbern.ebegu.enums.UnterhaltsvereinbarungAnswer;
 import ch.dvbern.ebegu.types.DateRange;
 import com.google.common.collect.ImmutableList;
 
-import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.KITA;
-import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.TAGESFAMILIEN;
-import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.TAGESSCHULE;
+import javax.annotation.Nonnull;
+import java.time.LocalDate;
+import java.time.temporal.TemporalAdjusters;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Locale;
+import java.util.Objects;
+
+import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.*;
 
 public class FamiliensituationBeendetAbschnittRule extends AbstractAbschnittRule {
 	public static final int ZERO = 0;
 
+	private boolean familiensituationBeendenActivated;
+
 	protected FamiliensituationBeendetAbschnittRule(
 			@Nonnull DateRange validityPeriod,
-			@Nonnull Locale locale) {
+			@Nonnull Locale locale,
+			@Nonnull boolean familiensituationBeendenActivated) {
 		super(RuleKey.FAMILIENSITUATION, RuleType.REDUKTIONSREGEL, RuleValidity.ASIV, validityPeriod, locale);
+		this.familiensituationBeendenActivated = familiensituationBeendenActivated;
 	}
 
 	@Nonnull
 	@Override
 	List<VerfuegungZeitabschnitt> createVerfuegungsZeitabschnitte(@Nonnull AbstractPlatz platz) {
-		Gesuch gesuch = platz.extractGesuch();
-		Familiensituation familiensituation = platz.extractGesuch().extractFamiliensituation();
 		final List<VerfuegungZeitabschnitt> neueZeitabschnitte = new LinkedList<>();
 
+		if (!this.familiensituationBeendenActivated) {
+			return neueZeitabschnitte;
+		}
+
+		Gesuch gesuch = platz.extractGesuch();
+		Familiensituation familiensituation = platz.extractGesuch().extractFamiliensituation();
 		if (familiensituation != null &&
 			familiensituation.getFamilienstatus() == EnumFamilienstatus.KONKUBINAT_KEIN_KIND) {
 			LocalDate startKonkubinat = familiensituation.getStartKonkubinat();
