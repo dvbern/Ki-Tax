@@ -1,5 +1,5 @@
 package ch.dvbern.ebegu.enums;
 
 public enum DemoFeatureTyp {
-	NEUE_UMZUGSTREGEL;
+	GESUCH_BEENDEN_FAMSIT;
 }
