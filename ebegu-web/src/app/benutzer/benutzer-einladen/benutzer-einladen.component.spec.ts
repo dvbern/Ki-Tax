@@ -134,5 +134,11 @@ describe('BenutzerEinladenComponent', () => {
             const validationCheck = pattern.test(invalidEmail);
             expect(validationCheck).toBeFalsy();
         });
+
+        it('should check valid email with .email top-level domain', () => {
+            const valid = 'test.test@dvbern.email';
+            const validationCheck = pattern.test(valid);
+            expect(validationCheck).toBeTruthy();
+        });
     });
 });
