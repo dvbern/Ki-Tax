@@ -301,7 +301,10 @@
                     <div
                         *ngIf="abschliessenValidationActive && angabenForm.get('davonStundenZuNormlohnMehrAls50ProzentAusgebildete').errors?.plausibilisierungAdditionError">
                         <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
-                        <span translate>ERROR_LATS_PLAUSIBLISIERUNG_ADDITION</span>
+                        <span>{{'ERROR_LATS_PLAUSIBLISIERUNG_ADDITION' | translate:{
+                            normlohnkostenHoch: (lohnnormkostenSettingMoreThanFifty$ | async)?.value | number:'1.2-2',
+                            normlohnkostenTief: (lohnnormkostenSettingLessThanFifty$ | async)?.value | number:'1.2-2'
+                        } }}</span>
                     </div>
                     <div
                         *ngIf="abschliessenValidationActive && angabenForm.get('davonStundenZuNormlohnWenigerAls50ProzentAusgebildete').errors?.plausibilisierungTagesschulenStundenError">
