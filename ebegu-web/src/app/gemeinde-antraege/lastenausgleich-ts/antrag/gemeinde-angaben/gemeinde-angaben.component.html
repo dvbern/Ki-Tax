@@ -392,6 +392,7 @@
                     <label required
                            [ngClass]="{'label-required-error': abschliessenValidationActive && angabenForm.get('einnahmenElterngebuehren').errors}">
                         {{'LATS_TATSACHLICHE_EINNAHMEN_ELTERNGEBUHREN' | translate:{jahr: lATSAngabenGemeindeContainer.gesuchsperiode?.gesuchsperiodeString} }}
+                        <dv-tooltip [text]="'LATS_TATSACHLICHE_EINNAHMEN_ELTERNGEBUHREN_INFO' | translate"></dv-tooltip>
                     </label>
                     <mat-form-field floatLabel="always">
                         <input matInput formControlName="einnahmenElterngebuehren" class="form-control dv-input"/>
