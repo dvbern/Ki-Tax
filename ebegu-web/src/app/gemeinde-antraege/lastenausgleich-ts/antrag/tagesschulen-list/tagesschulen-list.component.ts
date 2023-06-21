@@ -101,8 +101,8 @@ export class TagesschulenListComponent implements OnInit {
             });
     }
 
-    public isGemeindeMandantOrSuperadmin(): boolean {
-        return this.authService.isOneOfRoles(TSRoleUtil.getGemeindeRoles().concat(TSRoleUtil.getMandantOnlyRoles()));
+    public isGemeindeOrSuperadmin(): boolean {
+        return this.authService.isOneOfRoles(TSRoleUtil.getGemeindeRoles());
     }
 
     private initTableColumns(): void {

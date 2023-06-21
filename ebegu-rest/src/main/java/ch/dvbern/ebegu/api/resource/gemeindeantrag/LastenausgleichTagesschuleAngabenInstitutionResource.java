@@ -201,7 +201,7 @@ public class LastenausgleichTagesschuleAngabenInstitutionResource {
 	@Path("/gemeinde-falsche-angaben")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	@RolesAllowed({ SUPER_ADMIN,
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT,
 		ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_TS, SACHBEARBEITER_TS })
 	public JaxLastenausgleichTagesschuleAngabenInstitutionContainer falscheAngabenGemeinde(
 		@Nonnull @NotNull @Valid JaxLastenausgleichTagesschuleAngabenInstitutionContainer latsInstitutionContainerJax

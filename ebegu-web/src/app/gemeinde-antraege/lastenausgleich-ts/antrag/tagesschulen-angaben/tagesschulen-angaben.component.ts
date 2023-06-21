@@ -193,65 +193,61 @@ export class TagesschulenAngabenComponent implements OnInit {
         angaben: TSLastenausgleichTagesschuleAngabenInstitutionContainer,
         principal: TSBenutzer
     ): void {
-        if (container.isAtLeastInBearbeitungKanton()) {
-            this.canSeeDurchKibonAusfuellen.next(false);
-            this.canSeeAbschliessen.next(false);
-            this.canSeeFalscheAngaben.next(false);
-            this.canSeeFreigeben.next(false);
-            this.canSeeSave.next(false);
-        } else {
+        let canSeeDurchKibonAusfuellen = false;
+        let canSeeGeprueft = false;
+        let canSeeFalscheAngaben = false;
+        let canSeeFreigeben = false;
+        let canSeeSave = false;
+
+        if (container.isInBearbeitungGemeinde()) {
             if (angaben.isInBearbeitungInstitution()) {
-                this.canSeeDurchKibonAusfuellen.next(true);
-                this.canSeeSave.next(true);
-                this.canSeeAbschliessen.next(false);
-                this.canSeeFreigeben.next(true);
-                this.canSeeFalscheAngaben.next(false);
+                canSeeFreigeben = principal.hasOneOfRoles(TSRoleUtil.getTraegerschaftInstitutionRoles()) ||
+                    principal.hasOneOfRoles(TSRoleUtil.getGemeindeRoles());
+                canSeeSave = principal.hasOneOfRoles(TSRoleUtil.getTraegerschaftInstitutionRoles()) ||
+                    principal.hasOneOfRoles(TSRoleUtil.getGemeindeRoles());
+                canSeeDurchKibonAusfuellen = principal.hasOneOfRoles(TSRoleUtil.getTraegerschaftInstitutionRoles()) ||
+                    principal.hasOneOfRoles(TSRoleUtil.getGemeindeRoles());
             }
             if (angaben.isInPruefungGemeinde()) {
-                if (principal.hasOneOfRoles(TSRoleUtil.getTraegerschaftInstitutionOnlyRoles())) {
-                    this.canSeeDurchKibonAusfuellen.next(false);
-                    this.canSeeSave.next(false);
-                    this.canSeeAbschliessen.next(false);
-                    this.canSeeFreigeben.next(false);
-                    this.canSeeFalscheAngaben.next(true);
-                }
-                if (principal.hasOneOfRoles(TSRoleUtil.getGemeindeRoles())) {
-                    this.canSeeDurchKibonAusfuellen.next(true);
-                    this.canSeeSave.next(true);
-                    this.canSeeAbschliessen.next(true);
-                    this.canSeeFreigeben.next(false);
-                    if (principal.hasRole(TSRole.SUPER_ADMIN)) {
-                        this.canSeeFalscheAngaben.next(true);
-                    } else {
-                        this.canSeeFalscheAngaben.next(false);
-                    }
-                }
+                canSeeFalscheAngaben = principal.hasOneOfRoles(TSRoleUtil.getGemeindeRoles());
+                canSeeSave = principal.hasOneOfRoles(TSRoleUtil.getGemeindeRoles());
+                canSeeGeprueft = principal.hasOneOfRoles(TSRoleUtil.getGemeindeRoles());
             }
             if (angaben.isGeprueftGemeinde()) {
-                this.canSeeDurchKibonAusfuellen.next(false);
-                if (principal.hasOneOfRoles(TSRoleUtil.getTraegerschaftInstitutionOnlyRoles())) {
-                    this.canSeeSave.next(false);
-                    this.canSeeAbschliessen.next(false);
-                    this.canSeeFreigeben.next(false);
-                    this.canSeeFalscheAngaben.next(false);
-                }
-                if (principal.hasOneOfRoles(TSRoleUtil.getGemeindeRoles())) {
-                    this.canSeeSave.next(false);
-                    this.canSeeAbschliessen.next(false);
-                    this.canSeeFreigeben.next(false);
-                    this.canSeeFalscheAngaben.next(true);
-                }
+                canSeeFalscheAngaben = principal.hasOneOfRoles(TSRoleUtil.getGemeindeRoles());
             }
         }
+
+        if (container.isinPruefungKanton()) {
+            if (angaben.isInPruefungGemeinde()) {
+                canSeeSave = principal.hasOneOfRoles(TSRoleUtil.getMandantRoles());
+                canSeeGeprueft = principal.hasOneOfRoles(TSRoleUtil.getMandantRoles());
+            }
+            if (angaben.isGeprueftGemeinde()) {
+                canSeeFalscheAngaben = principal.hasOneOfRoles(TSRoleUtil.getMandantRoles());
+            }
+        }
+
+        this.canSeeDurchKibonAusfuellen.next(canSeeDurchKibonAusfuellen);
+        this.canSeeSave.next(canSeeSave);
+        this.canSeeFreigeben.next(canSeeFreigeben);
+        this.canSeeAbschliessen.next(canSeeGeprueft);
+        this.canSeeFalscheAngaben.next(canSeeFalscheAngaben);
     }
 
     public canEditForm(): boolean {
-        return !this.authService.isOneOfRoles(TSRoleUtil.getMandantOnlyRoles()) && (
+        const angaben = this.latsAngabenInstitutionContainer;
+        if (EbeguUtil.isNullOrUndefined(angaben)) {
+            return false;
+        }
+        return (this.authService.isOneOfRoles(TSRoleUtil.getTraegerschaftInstitutionOnlyRoles()) &&
+                angaben.isInBearbeitungInstitution()) ||
             (this.authService.isOneOfRoles(TSRoleUtil.getGemeindeRoles()) &&
-                this.latsAngabenInstitutionContainer?.status !== TSLastenausgleichTagesschuleAngabenInstitutionStatus.GEPRUEFT) ||
-            (this.authService.isOneOfRoles(TSRoleUtil.getTraegerschaftInstitutionOnlyRoles()) &&
-                this.latsAngabenInstitutionContainer?.status === TSLastenausgleichTagesschuleAngabenInstitutionStatus.OFFEN)
-        );
+                !this.gemeindeAntragContainer.isinPruefungKanton() &&
+                (angaben.isInBearbeitungInstitution() || angaben.isInPruefungGemeinde())) ||
+            (this.authService.isOneOfRoles(TSRoleUtil.getMandantRoles()) &&
+                this.gemeindeAntragContainer.isinPruefungKanton() &&
+                angaben.isInPruefungGemeinde());
     }
 
     private setupForm(latsAngabenInstiution: TSLastenausgleichTagesschuleAngabenInstitution): FormGroup {
@@ -543,28 +539,6 @@ export class TagesschulenAngabenComponent implements OnInit {
         }
         this.form.updateValueAndValidity();
     }
-
-    public actionButtonsDisabled(): boolean {
-        return this.authService.isOneOfRoles(TSRoleUtil.getMandantOnlyRoles()) ||
-            (this.authService.isOneOfRoles(TSRoleUtil.getGemeindeRoles()) &&
-                this.latsAngabenInstitutionContainer?.status === TSLastenausgleichTagesschuleAngabenInstitutionStatus.GEPRUEFT) ||
-            (this.authService.isOneOfRoles(TSRoleUtil.getTraegerschaftInstitutionOnlyRoles()) &&
-                this.latsAngabenInstitutionContainer?.status !== TSLastenausgleichTagesschuleAngabenInstitutionStatus.OFFEN);
-    }
-
-    public canSeeFreigebenButton(): boolean {
-        return this.authService.isOneOfRoles(TSRoleUtil.getTraegerschaftInstitutionOnlyRoles()) ||
-            (this.authService.isOneOfRoles(TSRoleUtil.getGemeindeRoles()) && !this.latsAngabenInstitutionContainer?.isAtLeastInBearbeitungGemeinde());
-    }
-
-    public canSeeGeprueftButton(): boolean {
-        return this.authService.isOneOfRoles(TSRoleUtil.getGemeindeRoles()) && this.latsAngabenInstitutionContainer?.isAtLeastInBearbeitungGemeinde();
-    }
-
-    public canSeeSaveButton(): boolean {
-        return !this.authService.isOneOfRoles(TSRoleUtil.getMandantOnlyRoles());
-    }
-
     public async onFalscheAngaben(): Promise<void> {
 
         const gemeindeMustBeReopenedCheckRequired = !this.isInstiUser &&
@@ -591,16 +565,6 @@ export class TagesschulenAngabenComponent implements OnInit {
             }
             this.manageSaveErrorCodes(error);
         });
-    }
-
-    public falscheAngabenVisible(): boolean {
-        return this.gemeindeAntragContainer?.status ===
-            TSLastenausgleichTagesschuleAngabenGemeindeStatus.IN_BEARBEITUNG_GEMEINDE && (
-                this.authService.isOneOfRoles(TSRoleUtil.getTraegerschaftInstitutionOnlyRoles()) &&
-                this.latsAngabenInstitutionContainer?.status ===
-                TSLastenausgleichTagesschuleAngabenInstitutionStatus.IN_PRUEFUNG_GEMEINDE ||
-                this.authService.isOneOfRoles(TSRoleUtil.getGemeindeRoles()) &&
-                this.latsAngabenInstitutionContainer?.status === TSLastenausgleichTagesschuleAngabenInstitutionStatus.GEPRUEFT);
     }
 
     public navigateBack($event?: MouseEvent): void {

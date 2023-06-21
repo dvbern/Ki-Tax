@@ -17,6 +17,7 @@
 
 package ch.dvbern.ebegu.services.gemeindeantrag;
 
+import ch.dvbern.ebegu.authentication.PrincipalBean;
 import ch.dvbern.ebegu.entities.*;
 import ch.dvbern.ebegu.entities.gemeindeantrag.*;
 import ch.dvbern.ebegu.enums.*;
@@ -67,6 +68,9 @@ public class LastenausgleichTagesschuleAngabenInstitutionServiceBean extends Abs
 
 	@Inject
 	private EinstellungService einstellungService;
+
+	@Inject
+	private PrincipalBean principalBean;
 
 	private static final Logger LOG =
 		LoggerFactory.getLogger(LastenausgleichTagesschuleAngabenInstitutionServiceBean.class);
@@ -246,8 +250,9 @@ public class LastenausgleichTagesschuleAngabenInstitutionServiceBean extends Abs
 		authorizer.checkWriteAuthorization(fallContainer.getAngabenGemeinde());
 
 		Preconditions.checkState(
-			fallContainer.getAngabenGemeinde().isInBearbeitungGemeinde(),
-			"LastenausgleichTagesschuleAngabenGemeindeContainer muss in Bearbeitung Gemeinde sein"
+			fallContainer.getAngabenGemeinde().isInBearbeitungGemeinde() ||
+			fallContainer.getAngabenGemeinde().isInPruefungKanton() && principalBean.isCallerInAnyOfRole(UserRole.getMandantSuperadminRoles()) ,
+			"LastenausgleichTagesschuleAngabenGemeindeContainer muss in Bearbeitung Gemeinde sein oder vom Kanton bearbeitet werden"
 		);
 
 		Preconditions.checkState(

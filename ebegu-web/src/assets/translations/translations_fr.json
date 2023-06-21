@@ -2473,7 +2473,7 @@
     "KIND_WARNING_ZUNKUNFTIGE_GEBURTSDATUM": "Attention: la date de naissance de votre enfant se trouve dans le future. Cette demande devra être changée après la naissance de votre enfant.",
     "LATS_STATUS_OFFEN": "Ouvert",
     "LATS_STATUS_GEPRUEFT": "Vérifié",
-    "LATS_STATUS_IN_PRUEFUNG_GEMEINDE": "En traitement par la commune",
+    "LATS_STATUS_IN_PRUEFUNG_GEMEINDE": "En traitement",
     "LATS_ANGABEN_TAGESSCHULEN": "Données pour les écoles à journée continue",
     "GEMEINDE_ANTRAG_EXISTS_ERROR": "Il existe déjà une demande de ce type pour cette période",
     "ERROR_LATS_KOMMENTAR_SAVE": "Il y a eu un problème lors de la sauvegarde du commentaire",
