@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020 DV Bern AG, Switzerland
+ * Copyright (C) 2023 DV Bern AG, Switzerland
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -322,9 +322,6 @@ public class LastenausgleichTagesschuleAngabenGemeindeContainer extends Abstract
 			return false;
 		}
 		if (Objects.isNull(deklaration.getEinkommenElternBelegt())) {
-			return false;
-		}
-		if (Objects.isNull(deklaration.getMaximalTarif())) {
 			return false;
 		}
 		if (Objects.isNull(deklaration.getMindestens50ProzentBetreuungszeitDurchAusgebildetesPersonal())) {

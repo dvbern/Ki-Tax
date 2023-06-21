@@ -33,6 +33,7 @@ import {FerienbetreuungUploadComponent} from './ferienbetreuung-upload/ferienbet
 import {FerienbetreuungComponent} from './ferienbetreuung/ferienbetreuung.component';
 import {FerienbetreuungDokumentService} from './services/ferienbetreuung-dokument.service';
 import {FerienbetreuungService} from './services/ferienbetreuung.service';
+import { FerienbetreuungLastYearValueComponent } from './ferienbetreuung-last-year-value/ferienbetreuung-last-year-value.component';
 
 @NgModule({
     declarations: [
@@ -45,7 +46,8 @@ import {FerienbetreuungService} from './services/ferienbetreuung.service';
         FerienbetreuungUploadComponent,
         FerienbetreuungFreigabeComponent,
         FerienbetreuungAbschlussComponent,
-        FerienbetreuungBerechnungComponent
+        FerienbetreuungBerechnungComponent,
+        FerienbetreuungLastYearValueComponent
     ],
     imports: [
         CommonModule,

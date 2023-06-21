@@ -438,7 +438,6 @@ export class GemeindeAngabenComponent implements OnInit, OnDestroy {
             () => this.errorService.addMesageAsError(this.translateService.instant(
                 'einkommenElternBelegtBemerkung ValueChanges error')));
 
-        this.angabenForm.get('maximalTarif').setValidators([Validators.required]);
         this.angabenForm.get('maximalTarif').valueChanges.subscribe(value => {
             this.setValidatorRequiredIfFalse('maximalTarifBemerkung', value);
         }, () => this.errorService.addMesageAsError(this.translateService.instant('Maximal Tarif ValueChanges error')));
@@ -562,8 +561,8 @@ export class GemeindeAngabenComponent implements OnInit, OnDestroy {
         }, () => this.errorService.addMesageAsError(this.translateService.instant('LATS_CALCULATION_ERROR')));
     }
 
-    private setValidatorRequiredIfFalse(fieldname: string, value: boolean): void {
-        if (!value) {
+    private setValidatorRequiredIfFalse(fieldname: string, value: undefined | boolean): void {
+        if (EbeguUtil.isNotNullAndFalse(value)) {
             this.angabenForm.get(fieldname).setValidators([Validators.required]);
         } else {
             this.angabenForm.get(fieldname).setValidators(null);
