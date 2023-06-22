@@ -235,12 +235,13 @@ public class FerienbetreuungResource {
 					containerId.getId()));
 
 		authorizer.checkWriteAuthorization(container);
+		Objects.requireNonNull(container.getAngabenKorrektur());
 
 		FerienbetreuungBerechnungen berechnungen =
 				converter.ferienbetreuungBerechnungentoEntity(jaxFerienbetreuungContainer.getAngabenKorrektur()
-						.getBerechnungen(), new FerienbetreuungBerechnungen());
+						.getBerechnungen(), container.getAngabenKorrektur().getFerienbetreuungBerechnungen());
 
-		Objects.requireNonNull(container.getAngabenKorrektur()).setFerienbetreuungBerechnungen(berechnungen);
+		container.getAngabenKorrektur().setFerienbetreuungBerechnungen(berechnungen);
 
 		FerienbetreuungAngabenContainer persisted =
 			ferienbetreuungService.ferienbetreuungAngabenGeprueft(container);
