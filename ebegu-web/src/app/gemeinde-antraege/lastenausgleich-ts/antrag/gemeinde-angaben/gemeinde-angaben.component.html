@@ -248,7 +248,7 @@
                     <label required
                            [ngClass]="{'label-required-error': abschliessenValidationActive && angabenForm.get('geleisteteBetreuungsstundenBesondereVolksschulangebot').errors}">
                     <span
-                        [innerHtml]="'LATS_BETREUUNGSSTUNDEN_BESONDERE_VOLKSSCHULANGEBOT' | translate: {jahr: lATSAngabenGemeindeContainer.gesuchsperiode?.getBasisJahrPlus2()}"></span>
+                        [innerHtml]="'LATS_BETREUUNGSSTUNDEN_BESONDERE_VOLKSSCHULANGEBOT' | translate: {jahr: lATSAngabenGemeindeContainer.gesuchsperiode?.gesuchsperiodeString}"></span>
                         <dv-tooltip [text]="'LATS_BETREUUNGSSTUNDEN_BESONDERE_VOLKSSCHULANGEBOT_INFO' | translate: {jahr: lATSAngabenGemeindeContainer.gesuchsperiode?.getBasisJahrPlus2(), jahrBis: lATSAngabenGemeindeContainer.gesuchsperiode?.getBasisJahrPlus1()}"></dv-tooltip>
                     </label>
 
@@ -301,7 +301,10 @@
                     <div
                         *ngIf="abschliessenValidationActive && angabenForm.get('davonStundenZuNormlohnMehrAls50ProzentAusgebildete').errors?.plausibilisierungAdditionError">
                         <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
-                        <span translate>ERROR_LATS_PLAUSIBLISIERUNG_ADDITION</span>
+                        <span>{{'ERROR_LATS_PLAUSIBLISIERUNG_ADDITION' | translate:{
+                            normlohnkostenHoch: (lohnnormkostenSettingMoreThanFifty$ | async)?.value | number:'1.2-2',
+                            normlohnkostenTief: (lohnnormkostenSettingLessThanFifty$ | async)?.value | number:'1.2-2'
+                        } }}</span>
                     </div>
                     <div
                         *ngIf="abschliessenValidationActive && angabenForm.get('davonStundenZuNormlohnWenigerAls50ProzentAusgebildete').errors?.plausibilisierungTagesschulenStundenError">
@@ -389,6 +392,7 @@
                     <label required
                            [ngClass]="{'label-required-error': abschliessenValidationActive && angabenForm.get('einnahmenElterngebuehren').errors}">
                         {{'LATS_TATSACHLICHE_EINNAHMEN_ELTERNGEBUHREN' | translate:{jahr: lATSAngabenGemeindeContainer.gesuchsperiode?.gesuchsperiodeString} }}
+                        <dv-tooltip [text]="'LATS_TATSACHLICHE_EINNAHMEN_ELTERNGEBUHREN_INFO' | translate"></dv-tooltip>
                     </label>
                     <mat-form-field floatLabel="always">
                         <input matInput formControlName="einnahmenElterngebuehren" class="form-control dv-input"/>
