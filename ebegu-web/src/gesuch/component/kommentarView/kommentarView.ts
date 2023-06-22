@@ -41,6 +41,7 @@ import {GlobalCacheService} from '../../service/globalCacheService';
 import {WizardStepManager} from '../../service/wizardStepManager';
 import ISidenavService = angular.material.ISidenavService;
 import ITranslateService = angular.translate.ITranslateService;
+import {TSDemoFeature} from "../../../app/core/directive/dv-hide-feature/TSDemoFeature";
 
 const okHtmlDialogTempl = require('../../../gesuch/dialog/okHtmlDialogTemplate.html');
 const removeDialogTempl = require('../../dialog/removeDialogTemplate.html');
@@ -77,6 +78,7 @@ export class KommentarViewController implements IController {
     public form: IFormController;
     public dokumentePapiergesuch: TSDokumentGrund;
     public readonly TSRoleUtil = TSRoleUtil;
+    public readonly demoFeature = TSDemoFeature.BEMERKUNGEN_FALLUEBERGREIFEND;
     public isPersonensucheDisabled: boolean = true;
 
     public constructor(
