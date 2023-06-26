@@ -205,7 +205,7 @@ public class AlleFaelleViewServiceBean extends AbstractBaseService implements Al
 			null);
 
 		alleFaelleView.setGesuchsperiodeId(gesuch.getGesuchsperiode().getId());
-		alleFaelleView.setGesuchsperiodeString(gesuch.getGesuchsperiode().getGesuchsperiodeString());
+		alleFaelleView.setGesuchsperiodeString(gesuch.getGesuchsperiode().getGesuchsperiodeStringShort());
 
 		Benutzer verantwortlicherBG = gesuch.getDossier().getVerantwortlicherBG();
 		if (verantwortlicherBG != null) {
