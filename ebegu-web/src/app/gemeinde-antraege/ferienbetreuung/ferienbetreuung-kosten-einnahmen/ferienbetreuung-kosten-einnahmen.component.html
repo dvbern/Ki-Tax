@@ -72,7 +72,7 @@
             <dv-ferienbetreuung-last-year-value
                 *ngIf="(vorgaenger$ | async) as vorgaenger"
                 [gesuchsperiode]="vorgaenger.gesuchsperiode?.gesuchsperiodeString"
-                [value]="vorgaenger.angabenKorrektur.kostenEinnahmen?.personalkosten"
+                [value]="vorgaenger.angabenKorrektur?.kostenEinnahmen?.personalkosten"
             ></dv-ferienbetreuung-last-year-value>
         </div>
 
@@ -101,7 +101,7 @@
             <dv-ferienbetreuung-last-year-value
                 *ngIf="(vorgaenger$ | async) as vorgaenger"
                 [gesuchsperiode]="vorgaenger.gesuchsperiode?.gesuchsperiodeString"
-                [value]="vorgaenger.angabenKorrektur.kostenEinnahmen?.personalkostenLeitungAdmin"
+                [value]="vorgaenger.angabenKorrektur?.kostenEinnahmen?.personalkostenLeitungAdmin"
             ></dv-ferienbetreuung-last-year-value>
         </div>
 
@@ -137,7 +137,7 @@
             <dv-ferienbetreuung-last-year-value
                 *ngIf="(vorgaenger$ | async) as vorgaenger"
                 [gesuchsperiode]="vorgaenger.gesuchsperiode?.gesuchsperiodeString"
-                [value]="vorgaenger.angabenKorrektur.kostenEinnahmen?.sachkosten"
+                [value]="vorgaenger.angabenKorrektur?.kostenEinnahmen?.sachkosten"
             ></dv-ferienbetreuung-last-year-value>
         </div>
 
@@ -169,7 +169,7 @@
             <dv-ferienbetreuung-last-year-value
                 *ngIf="(vorgaenger$ | async) as vorgaenger"
                 [gesuchsperiode]="vorgaenger.gesuchsperiode?.gesuchsperiodeString"
-                [value]="vorgaenger.angabenKorrektur.kostenEinnahmen?.verpflegungskosten"
+                [value]="vorgaenger.angabenKorrektur?.kostenEinnahmen?.verpflegungskosten"
             ></dv-ferienbetreuung-last-year-value>
         </div>
 
@@ -199,7 +199,7 @@
             <dv-ferienbetreuung-last-year-value
                 *ngIf="(vorgaenger$ | async) as vorgaenger"
                 [gesuchsperiode]="vorgaenger.gesuchsperiode?.gesuchsperiodeString"
-                [value]="vorgaenger.angabenKorrektur.kostenEinnahmen?.weitereKosten"
+                [value]="vorgaenger.angabenKorrektur?.kostenEinnahmen?.weitereKosten"
             ></dv-ferienbetreuung-last-year-value>
         </div>
 
@@ -224,7 +224,7 @@
             <dv-ferienbetreuung-last-year-value
                 *ngIf="(vorgaenger$ | async) as vorgaenger"
                 [gesuchsperiode]="vorgaenger.gesuchsperiode?.gesuchsperiodeString"
-                [value]="vorgaenger.angabenKorrektur.kostenEinnahmen?.bemerkungenKosten"
+                [value]="vorgaenger.angabenKorrektur?.kostenEinnahmen?.bemerkungenKosten"
             ></dv-ferienbetreuung-last-year-value>
         </div>
 
@@ -266,7 +266,7 @@
             <dv-ferienbetreuung-last-year-value
                 *ngIf="(vorgaenger$ | async) as vorgaenger"
                 [gesuchsperiode]="vorgaenger.gesuchsperiode?.gesuchsperiodeString"
-                [value]="vorgaenger.angabenKorrektur.kostenEinnahmen?.elterngebuehren"
+                [value]="vorgaenger.angabenKorrektur?.kostenEinnahmen?.elterngebuehren"
             ></dv-ferienbetreuung-last-year-value>
         </div>
 
@@ -302,7 +302,7 @@
             <dv-ferienbetreuung-last-year-value
                 *ngIf="(vorgaenger$ | async) as vorgaenger"
                 [gesuchsperiode]="vorgaenger.gesuchsperiode?.gesuchsperiodeString"
-                [value]="vorgaenger.angabenKorrektur.kostenEinnahmen?.weitereEinnahmen"
+                [value]="vorgaenger.angabenKorrektur?.kostenEinnahmen?.weitereEinnahmen"
             ></dv-ferienbetreuung-last-year-value>
         </div>
 
@@ -343,7 +343,7 @@
                 <dv-ferienbetreuung-last-year-value
                     *ngIf="(vorgaenger$ | async) as vorgaenger"
                     [gesuchsperiode]="vorgaenger.gesuchsperiode?.gesuchsperiodeString"
-                    [value]="vorgaenger.angabenKorrektur.kostenEinnahmen?.sockelbeitrag"
+                    [value]="vorgaenger.angabenKorrektur?.kostenEinnahmen?.sockelbeitrag"
                 ></dv-ferienbetreuung-last-year-value>
             </div>
             <div class="flex-row">
@@ -375,7 +375,7 @@
                 <dv-ferienbetreuung-last-year-value
                     *ngIf="(vorgaenger$ | async) as vorgaenger"
                     [gesuchsperiode]="vorgaenger.gesuchsperiode?.gesuchsperiodeString"
-                    [value]="vorgaenger.angabenKorrektur.kostenEinnahmen?.beitraegeNachAnmeldungen"
+                    [value]="vorgaenger.angabenKorrektur?.kostenEinnahmen?.beitraegeNachAnmeldungen"
                 ></dv-ferienbetreuung-last-year-value>
             </div>
             <div class="flex-row">
@@ -411,7 +411,7 @@
                 <dv-ferienbetreuung-last-year-value
                     *ngIf="(vorgaenger$ | async) as vorgaenger"
                     [gesuchsperiode]="vorgaenger.gesuchsperiode?.gesuchsperiodeString"
-                    [value]="vorgaenger.angabenKorrektur.kostenEinnahmen?.vorfinanzierteKantonsbeitraege"
+                    [value]="vorgaenger.angabenKorrektur?.kostenEinnahmen?.vorfinanzierteKantonsbeitraege"
                 ></dv-ferienbetreuung-last-year-value>
             </div>
             <div class="flex-row">
@@ -446,7 +446,7 @@
                 <dv-ferienbetreuung-last-year-value
                     *ngIf="(vorgaenger$ | async) as vorgaenger"
                     [gesuchsperiode]="vorgaenger.gesuchsperiode?.gesuchsperiodeString"
-                    [value]="vorgaenger.angabenKorrektur.kostenEinnahmen?.eigenleistungenGemeinde"
+                    [value]="vorgaenger.angabenKorrektur?.kostenEinnahmen?.eigenleistungenGemeinde"
                 ></dv-ferienbetreuung-last-year-value>
             </div>
         </div>
