@@ -20,6 +20,7 @@ import {TSBetreuungsangebotTyp} from './enums/TSBetreuungsangebotTyp';
 import {TSEingangsart} from './enums/TSEingangsart';
 import {TSGesuchBetreuungenStatus} from './enums/TSGesuchBetreuungenStatus';
 import {TSAbstractAntragDTO} from './TSAbstractAntragDTO';
+import {EbeguUtil} from '../utils/EbeguUtil';
 
 export class TSAntragDTO extends TSAbstractAntragDTO {
     private static readonly YEAR_2000 = 2000;
@@ -54,6 +55,7 @@ export class TSAntragDTO extends TSAbstractAntragDTO {
     private _gemeindeId: string;
     private _isSozialdienst: boolean;
     private _begruendungMutation: string;
+    private _gesuchsperiodeString: string;
 
     public constructor() {
         super();
@@ -196,9 +198,17 @@ export class TSAntragDTO extends TSAbstractAntragDTO {
     }
 
     public get gesuchsperiodeString(): string {
+        if (EbeguUtil.isNotNullOrUndefined(this._gesuchsperiodeString)) {
+            return this._gesuchsperiodeString;
+        }
+
         return this._gesuchsperiodeGueltigAb && this._gesuchsperiodeGueltigBis ?
             `${this._gesuchsperiodeGueltigAb.year()}/${this._gesuchsperiodeGueltigBis.year() - TSAntragDTO.YEAR_2000}` :
             undefined;
+    }
+
+    public set gesuchsperiodeString(value: string) {
+        this._gesuchsperiodeString = value;
     }
 
     public get eingangsart(): TSEingangsart {
