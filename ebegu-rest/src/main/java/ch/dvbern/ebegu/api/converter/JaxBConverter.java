@@ -4579,21 +4579,21 @@ public class JaxBConverter extends AbstractConverter {
 		antrag.setEingangsdatumSTV(alleFaelleView.getEingangsdatumSTV());
 		antrag.setAenderungsdatum(alleFaelleView.getAenderungsdatum());
 		antrag.setAntragTyp(alleFaelleView.getAntragTyp());
-		//antrag.setStatus(AntragStatusConverterUtil.convertStatusToDTO(alleFaelleView, alleFaelleView.getStatus()));
+		antrag.setStatus(AntragStatusConverterUtil.convertStatusToDTO(
+			alleFaelleView.getAntragStatus(),
+			alleFaelleView.getGesuchBetreuungenStatus(),
+			alleFaelleView.getAntragId()));
 		antrag.setGesuchsperiodeString(alleFaelleView.getGesuchsperiodeString());
 		antrag.setGemeinde(alleFaelleView.getGemeindeName());
 
 		antrag.setVerantwortlicherTS(alleFaelleView.getVerantwortlicherTS());
-		//antrag.setVerantwortlicherUsernameTS(verantwortlicherTS.getUsername());
 		antrag.setVerantwortlicherBG(getStringValueOrEmptyString(alleFaelleView.getVerantwortlicherBG()));
-		//antrag.setVerantwortlicherUsernameBG(verantwortlicherTS.getUsername());
 
 		antrag.setVerfuegt(alleFaelleView.getAntragStatus().isAnyStatusOfVerfuegt());
 		antrag.setBeschwerdeHaengig(alleFaelleView.getAntragStatus() == AntragStatus.BESCHWERDE_HAENGIG);
 		antrag.setLaufnummer(alleFaelleView.getLaufnummer());
 		antrag.setEingangsart(alleFaelleView.getEingangsart());
 		antrag.setBesitzerUsername(alleFaelleView.getBesitzerUsername());
-		//antrag.setGesuchBetreuungenStatus(alleFaelleView.getGesuchBetreuungenStatus());
 		antrag.setDokumenteHochgeladen(alleFaelleView.getDokumenteHochgeladen());
 		antrag.setFallId(alleFaelleView.getFallId());
 		antrag.setGemeindeId(alleFaelleView.getGemeindeId());
