@@ -4533,6 +4533,92 @@ public class JaxBConverter extends AbstractConverter {
 		antrag.setVerantwortlicherUsernameBG(verantwortlicherBG.getUsername());
 	}
 
+	/**
+	 * transformiert ein gesuch in ein JaxAntragDTO unter beruecksichtigung der rollen und erlaubten institutionen
+	 * - Fuer die Rolle Steueramt werden saemtlichen Daten von den Kindern nicht geladen
+	 * - Fuer die Rolle Institution/Traegerschaft werden nur die relevanten Institutionen und Angebote geladen
+	 */
+	public JaxAntragDTO alleFaelleToAntragDTO(
+		AlleFaelleView alleFaelleView,
+		@Nullable UserRole userRole,
+		Collection<Institution> allowedInst) {
+
+		JaxAntragDTO antrag = gesuchToAntragDTOBasic(alleFaelleView);
+
+		/*if (userRole != STEUERAMT) {
+			for (final KindContainer kind : gesuch.getKindContainers()) {
+				jaxKindContainers.add(kindContainerToJAX(kind));
+			}
+			antrag.setKinder(createKinderList(jaxKindContainers));
+		}*/
+
+//		if (EnumUtil.isOneOf(
+//			userRole,
+//			ADMIN_TRAEGERSCHAFT,
+//			SACHBEARBEITER_TRAEGERSCHAFT,
+//			ADMIN_INSTITUTION,
+//			SACHBEARBEITER_INSTITUTION)) {
+//			RestUtil.purgeKinderAndBetreuungenOfInstitutionen(jaxKindContainers, allowedInst);
+//		}
+
+//		disguiseStatus(gesuch, antrag, userRole);
+
+/*		if (userRole != STEUERAMT) {
+			antrag.setAngebote(alleFaelleView.getAngebotTypen());
+			antrag.setInstitutionen(createInstitutionenList(jaxKindContainers));
+		}*/
+
+		return antrag;
+	}
+
+	@Nonnull
+	private JaxAntragDTO gesuchToAntragDTOBasic(@Nonnull AlleFaelleView alleFaelleView) {
+		JaxAntragDTO antrag = new JaxAntragDTO();
+		antrag.setAntragId(alleFaelleView.getAntragId());
+		antrag.setFallNummer(Long.parseLong(alleFaelleView.getFallNummer())); //TODO Remove parsing as soon as converted
+		antrag.setDossierId(alleFaelleView.getDossierId());
+		antrag.setFamilienName(getStringValueOrEmptyString(alleFaelleView.getFamilienName()));
+		antrag.setEingangsdatum(alleFaelleView.getEingangsdatum());
+		antrag.setEingangsdatumSTV(alleFaelleView.getEingangsdatumSTV());
+		antrag.setAenderungsdatum(alleFaelleView.getAenderungsdatum());
+		antrag.setAntragTyp(alleFaelleView.getAntragTyp());
+		//antrag.setStatus(AntragStatusConverterUtil.convertStatusToDTO(alleFaelleView, alleFaelleView.getStatus()));
+		antrag.setGesuchsperiodeString(alleFaelleView.getGesuchsperiodeString());
+		antrag.setGemeinde(alleFaelleView.getGemeindeName());
+
+		antrag.setVerantwortlicherTS(alleFaelleView.getVerantwortlicherTS());
+		//antrag.setVerantwortlicherUsernameTS(verantwortlicherTS.getUsername());
+		antrag.setVerantwortlicherBG(getStringValueOrEmptyString(alleFaelleView.getVerantwortlicherBG()));
+		//antrag.setVerantwortlicherUsernameBG(verantwortlicherTS.getUsername());
+
+		antrag.setVerfuegt(alleFaelleView.getAntragStatus().isAnyStatusOfVerfuegt());
+		antrag.setBeschwerdeHaengig(alleFaelleView.getAntragStatus() == AntragStatus.BESCHWERDE_HAENGIG);
+		antrag.setLaufnummer(alleFaelleView.getLaufnummer());
+		antrag.setEingangsart(alleFaelleView.getEingangsart());
+		antrag.setBesitzerUsername(alleFaelleView.getBesitzerUsername());
+		//antrag.setGesuchBetreuungenStatus(alleFaelleView.getGesuchBetreuungenStatus());
+		antrag.setDokumenteHochgeladen(alleFaelleView.getDokumenteHochgeladen());
+		antrag.setFallId(alleFaelleView.getFallId());
+		antrag.setGemeindeId(alleFaelleView.getGemeindeId());
+		antrag.setSozialdienst(alleFaelleView.getSozialdienst());
+		antrag.setInternePendenz(alleFaelleView.getInternePendenz());
+		antrag.setKinder(Collections.emptySet());
+//		if (antrag.hasInternePendenz()) {
+//			antrag.setInternePendenzAbgelaufen(internePendenzService.hasGesuchAbgelaufeneInternePendenzen(alleFaelleView));
+//		} else {
+//			antrag.setInternePendenzAbgelaufen(false);
+//		}
+
+		return antrag;
+	}
+
+	private String getStringValueOrEmptyString(@Nullable String string) {
+		if (string == null) {
+			return "";
+		}
+
+		return string;
+	}
 	public Mahnung mahnungToEntity(@Nonnull final JaxMahnung jaxMahnung, @Nonnull final Mahnung mahnung) {
 		requireNonNull(mahnung);
 		requireNonNull(jaxMahnung);

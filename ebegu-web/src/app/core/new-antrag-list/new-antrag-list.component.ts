@@ -454,7 +454,7 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges, Aft
         };
         const dataToLoad$: Observable<DVAntragListItem[]> = this.data$ ?
             this.data$ :
-            this.searchRS.searchAntraege(body).pipe(map((result: TSAntragSearchresultDTO) => result.antragDTOs.map(antragDto => ({
+            this.searchRS.searchAntraegeInAlleFaelleView(body).pipe(map((result: TSAntragSearchresultDTO) => result.antragDTOs.map(antragDto => ({
                         fallNummer: antragDto.fallNummer,
                         dossierId: antragDto.dossierId,
                         antragId: antragDto.antragId,

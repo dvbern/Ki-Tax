@@ -17,12 +17,18 @@
 
 package ch.dvbern.ebegu.services;
 
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
+import ch.dvbern.ebegu.dto.suchfilter.smarttable.AntragTableFilterDTO;
+import ch.dvbern.ebegu.entities.*;
+import ch.dvbern.ebegu.enums.AntragStatus;
+import ch.dvbern.ebegu.enums.ErrorCodeEnum;
+import ch.dvbern.ebegu.enums.UserRole;
+import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
+import ch.dvbern.ebegu.errors.EbeguRuntimeException;
+import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
+import ch.dvbern.ebegu.services.util.SearchUtil;
+import ch.dvbern.lib.cdipersistence.Persistence;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.annotation.security.PermitAll;
 import javax.ejb.Local;
@@ -57,8 +63,13 @@ import ch.dvbern.lib.cdipersistence.Persistence;
 @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 public class AlleFaelleViewServiceBean extends AbstractBaseService implements AlleFaelleViewService {
 
+	private static final Logger LOG = LoggerFactory.getLogger(AlleFaelleViewServiceBean.class.getSimpleName());
+
 	@Inject
 	private Persistence persistence;
+
+	@Inject
+	private BenutzerService benutzerService;
 
 	@Override
 	public boolean isNeueAlleFaelleViewActivated() {
@@ -141,6 +152,13 @@ public class AlleFaelleViewServiceBean extends AbstractBaseService implements Al
 		typedQuery.setMaxResults(size);
 		typedQuery.setFirstResult(start);
 		return typedQuery.getResultList();
+	}
+
+	private Set<AntragStatus> getAntragStatuses(boolean searchForPendenzen, UserRole role) {
+		if (searchForPendenzen) {
+			return AntragStatus.pendenzenForRole(role);
+		}
+		return AntragStatus.allowedforRole(role);
 	}
 
 
@@ -233,5 +251,219 @@ public class AlleFaelleViewServiceBean extends AbstractBaseService implements Al
 			.map(InstitutionStammdaten::getInstitution)
 			.distinct()
 			.collect(Collectors.toList());
+	}
+
+	@Override
+	public List<AlleFaelleView> searchAntrage(
+		AntragTableFilterDTO antragTableFilterDTO,
+		boolean searchForPendenzen) {
+		//TODO SearchForPendenzen
+		//TODO onlySearchFaelleInActivePreiode
+		//TODO rolebasedPerdicates
+
+		Benutzer user = benutzerService.getCurrentBenutzer()
+			.orElseThrow(() -> new EbeguRuntimeException("searchAllAntraege", "No User is logged in"));
+
+		Set<AntragStatus> allowedAntragStatus = getAntragStatuses(searchForPendenzen, user.getRole());
+
+		if (allowedAntragStatus.isEmpty()) {
+			return Collections.emptyList();
+		}
+
+		CriteriaBuilder cb = persistence.getCriteriaBuilder();
+		CriteriaQuery<String> query = cb.createQuery(String.class);
+		Root<AlleFaelleView> root = query.from(AlleFaelleView.class);
+
+		List<Predicate> predicates = new ArrayList<>();
+
+		Predicate inClauseStatus = root.get(AlleFaelleView_.ANTRAG_STATUS).in(allowedAntragStatus);
+		predicates.add(inClauseStatus);
+		Predicate mandantPredicate = cb.equal(root.get(AlleFaelleView_.MANDANT_ID), user.getMandant().getId());
+		predicates.add(mandantPredicate);
+		getGemeindePredicateForCurrentUser(user, root).ifPresent(predicates::add);
+		getRoleBasedPredicate(user, cb, root).ifPresent(predicates::add);
+
+
+		query.select(root.get(AlleFaelleView_.ANTRAG_ID))
+			.where(CriteriaQueryHelper.concatenateExpressions(cb, predicates));
+		query.orderBy(cb.desc(root.get(AlleFaelleView_.aenderungsdatum)));
+
+		List<String> alleFaelleViewIds = persistence.getCriteriaResults(query); //select all ids in order, may contain duplicates
+		List<AlleFaelleView> pagedResult;
+
+		if (antragTableFilterDTO.getPagination() != null) {
+			int firstIndex = antragTableFilterDTO.getPagination().getStart();
+			Integer maxresults = antragTableFilterDTO.getPagination().getNumber();
+			List<String> orderedIdsToLoad =
+				SearchUtil.determineDistinctIdsToLoad(alleFaelleViewIds, firstIndex, maxresults);
+			pagedResult = findAlleFaelleViewByIds(orderedIdsToLoad);
+		} else {
+			pagedResult = findAlleFaelleViewByIds(alleFaelleViewIds);
+		}
+
+		//pagedResult.forEach(authorizer::checkReadAuthorization);
+		return pagedResult;
+	}
+
+	private List<AlleFaelleView> findAlleFaelleViewByIds(@NotNull List<String> ids) {
+		if (ids.isEmpty()) {
+			return Collections.emptyList();
+		}
+
+		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
+		final CriteriaQuery<AlleFaelleView> query = cb.createQuery(AlleFaelleView.class);
+		Root<AlleFaelleView> root = query.from(AlleFaelleView.class);
+		Predicate predicate = root.get(AlleFaelleView_.ANTRAG_ID).in(ids);
+		query.where(predicate);
+		query.orderBy(cb.desc(root.get(AlleFaelleView_.aenderungsdatum)));
+		return persistence.getCriteriaResults(query);
+	}
+
+	private Optional<Predicate> getRoleBasedPredicate(Benutzer currentBenutzer, CriteriaBuilder cb, Root<AlleFaelleView> root) {
+		Optional<Predicate> optionalPredicate =  Optional.empty();
+		switch (currentBenutzer.getRole()) {
+			case SUPER_ADMIN:
+			case ADMIN_GEMEINDE:
+			case SACHBEARBEITER_GEMEINDE:
+				// Diese Rollen haben keine (rollenspezifischen) Einschränkungen!
+				break;
+			case SACHBEARBEITER_BG:
+			case ADMIN_BG:
+			case REVISOR:
+			case JURIST:
+			case ADMIN_MANDANT:
+			case SACHBEARBEITER_MANDANT:
+				//TODO Search for Pendenzen
+				/*if (searchForPendenzen) {
+					Predicate jaOrMischGesuche = createPredicateJAOrMischGesuche(cb, joinDossier);
+					if (!internePendenzGesuchIds.isEmpty()) {
+						Predicate gesuchsIds = root.get(AbstractEntity_.id).in(internePendenzGesuchIds);
+						predicates.add(cb.and(cb.or(jaOrMischGesuche, gesuchsIds)));
+					} else {
+						predicates.add(jaOrMischGesuche);
+					}
+				}*/
+				break;
+			case STEUERAMT:
+				break;
+			case ADMIN_SOZIALDIENST:
+			case SACHBEARBEITER_SOZIALDIENST:
+				Objects.requireNonNull(currentBenutzer.getSozialdienst());
+				Predicate sozialDienstPredicate =
+					cb.equal(root.get(AlleFaelleView_.sozialdienstId), currentBenutzer.getSozialdienst().getId());
+				optionalPredicate = Optional.of(sozialDienstPredicate);
+				break;
+			case ADMIN_TRAEGERSCHAFT:
+			case SACHBEARBEITER_TRAEGERSCHAFT:
+				/*if (predicateObjectDto != null && predicateObjectDto.getAngebote() != null) {
+					switch (BetreuungsangebotTyp.valueOf(predicateObjectDto.getAngebote())) {
+						case KITA:
+						case TAGESFAMILIEN:
+							predicates.add(cb.equal(
+								joinInstitutionBetreuungen.get(Institution_.traegerschaft),
+								user.getTraegerschaft()));
+							break;
+						case TAGESSCHULE:
+							predicates.add(cb.equal(
+								joinInstitutionFerieninsel.get(Institution_.traegerschaft),
+								user.getTraegerschaft()));
+							break;
+						case FERIENINSEL:
+							predicates.add(cb.equal(
+								joinInstitutionTagesschule.get(Institution_.traegerschaft),
+								user.getTraegerschaft()));
+							break;
+						default:
+							throw new EbeguRuntimeException(
+								"searchAntraege",
+								"BetreuungsangebotTyp nicht gefunden: "
+									+ BetreuungsangebotTyp.valueOf(predicateObjectDto.getAngebote()));
+					}*/
+//				} else {
+//					predicates.add(
+//						cb.or(
+//							cb.equal(joinInstitutionBetreuungen.get(Institution_.traegerschaft), user.getTraegerschaft()),
+//							cb.equal(joinInstitutionFerieninsel.get(Institution_.traegerschaft), user.getTraegerschaft()),
+//							cb.equal(joinInstitutionTagesschule.get(Institution_.traegerschaft), user.getTraegerschaft())
+//						));
+//				}
+//				predicates.add(createPredicateAusgeloesteSCHJAAngebote(
+//					cb,
+//					joinAnmeldungTagesschule,
+//					joinAnmeldungFerieninsel,
+//					joinInstitutionstammdatenBetreuungen,
+//					joinInstitutionstammdatenTagesschule,
+//					joinInstitutionstammdatenFerieninsel));
+//				break;
+			case ADMIN_INSTITUTION:
+			case SACHBEARBEITER_INSTITUTION:
+				// es geht hier nicht um die joinInstitution des zugewiesenen benutzers sondern um die joinInstitution des
+				// eingeloggten benutzers
+//				if (predicateObjectDto != null && predicateObjectDto.getAngebote() != null) {
+//					switch (BetreuungsangebotTyp.valueOf(predicateObjectDto.getAngebote())) {
+//						case KITA:
+//						case TAGESFAMILIEN:
+//							predicates.add(cb.equal(joinInstitutionBetreuungen, user.getInstitution()));
+//							break;
+//						case TAGESSCHULE:
+//							predicates.add(cb.equal(joinInstitutionTagesschule, user.getInstitution()));
+//							break;
+//						case FERIENINSEL:
+//							predicates.add(cb.equal(joinInstitutionFerieninsel, user.getInstitution()));
+//							break;
+//						default:
+//							throw new EbeguRuntimeException(
+//								"searchAntraege",
+//								"BetreuungsangebotTyp nicht gefunden: "
+//									+ BetreuungsangebotTyp.valueOf(predicateObjectDto.getAngebote()));
+//					}
+//				} else {
+//					predicates.add(
+//						cb.or(
+//							cb.equal(joinInstitutionBetreuungen, user.getInstitution()),
+//							cb.equal(joinInstitutionFerieninsel, user.getInstitution()),
+//							cb.equal(joinInstitutionTagesschule, user.getInstitution())
+//						));
+//				}
+//				predicates.add(createPredicateAusgeloesteSCHJAAngebote(
+//					cb,
+//					joinAnmeldungTagesschule,
+//					joinAnmeldungFerieninsel,
+//					joinInstitutionstammdatenBetreuungen,
+//					joinInstitutionstammdatenTagesschule,
+//					joinInstitutionstammdatenFerieninsel));
+				break;
+			case SACHBEARBEITER_TS:
+			case ADMIN_TS:
+//				if (searchForPendenzen) {
+//					Predicate schOrMischGesuche = createPredicateSCHOrMischGesuche(cb, root, joinDossier);
+//					if (!internePendenzGesuchIds.isEmpty()) {
+//						Predicate gesuchsIds = root.get(AbstractEntity_.id).in(internePendenzGesuchIds);
+//						predicates.add(cb.and(cb.or(schOrMischGesuche, gesuchsIds)));
+//					} else {
+//						predicates.add(schOrMischGesuche);
+//					}
+//				}
+				break;
+			default:
+				LOG.warn("antragSearch can not be performed by users in role {}", currentBenutzer.getRole());
+				Predicate impossiblePredict = cb.isFalse(cb.literal(Boolean.TRUE)); // impossible predicate
+				optionalPredicate = Optional.of(impossiblePredict);
+				break;
+		}
+		return optionalPredicate;
+	}
+
+	private Optional<Predicate> getGemeindePredicateForCurrentUser(Benutzer currentBenutzer, Root<AlleFaelleView> root) {
+		if (currentBenutzer.getCurrentBerechtigung().getRole().isRoleGemeindeabhaengig()) {
+			Collection<String> gemeindenForBenutzer =
+				currentBenutzer.extractGemeindenForUser()
+					.stream()
+					.map(AbstractEntity::getId)
+					.collect(Collectors.toList());
+			return Optional.of(root.get(AlleFaelleView_.GEMEINDE_ID).in(gemeindenForBenutzer));
+		}
+
+		return Optional.empty();
 	}
 }
