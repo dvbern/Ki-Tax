@@ -4545,12 +4545,9 @@ public class JaxBConverter extends AbstractConverter {
 
 		JaxAntragDTO antrag = gesuchToAntragDTOBasic(alleFaelleView);
 
-		/*if (userRole != STEUERAMT) {
-			for (final KindContainer kind : gesuch.getKindContainers()) {
-				jaxKindContainers.add(kindContainerToJAX(kind));
-			}
-			antrag.setKinder(createKinderList(jaxKindContainers));
-		}*/
+		if (userRole != STEUERAMT) {
+			antrag.setKinder(createKinderList(alleFaelleView));
+		}
 
 //		if (EnumUtil.isOneOf(
 //			userRole,
@@ -4602,7 +4599,6 @@ public class JaxBConverter extends AbstractConverter {
 		antrag.setGemeindeId(alleFaelleView.getGemeindeId());
 		antrag.setSozialdienst(alleFaelleView.getSozialdienst());
 		antrag.setInternePendenz(alleFaelleView.getInternePendenz());
-		antrag.setKinder(Collections.emptySet());
 //		if (antrag.hasInternePendenz()) {
 //			antrag.setInternePendenzAbgelaufen(internePendenzService.hasGesuchAbgelaufeneInternePendenzen(alleFaelleView));
 //		} else {
@@ -4610,6 +4606,18 @@ public class JaxBConverter extends AbstractConverter {
 //		}
 
 		return antrag;
+	}
+
+	@Nonnull
+	private Set<String> createKinderList(AlleFaelleView alleFaelleView) {
+		if (alleFaelleView.getKinder() == null) {
+			return Collections.emptySet();
+		}
+
+		return alleFaelleView.getKinder()
+			.stream()
+			.map(AlleFaelleViewKind::getName)
+			.collect(Collectors.toSet());
 	}
 
 	private String getStringValueOrEmptyString(@Nullable String string) {

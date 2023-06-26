@@ -301,7 +301,7 @@ public class AlleFaelleViewServiceBean extends AbstractBaseService implements Al
 			pagedResult = findAlleFaelleViewByIds(alleFaelleViewIds);
 		}
 
-		//pagedResult.forEach(authorizer::checkReadAuthorization);
+//		pagedResult.forEach(authorizer::checkReadAuthorization);
 		return pagedResult;
 	}
 
@@ -314,6 +314,9 @@ public class AlleFaelleViewServiceBean extends AbstractBaseService implements Al
 		final CriteriaQuery<AlleFaelleView> query = cb.createQuery(AlleFaelleView.class);
 		Root<AlleFaelleView> root = query.from(AlleFaelleView.class);
 		Predicate predicate = root.get(AlleFaelleView_.ANTRAG_ID).in(ids);
+		Fetch<AlleFaelleView, AlleFaelleViewKind> alleFaelleViewKindFetch =
+			root.fetch(AlleFaelleView_.kinder, JoinType.LEFT);
+
 		query.where(predicate);
 		query.orderBy(cb.desc(root.get(AlleFaelleView_.aenderungsdatum)));
 		return persistence.getCriteriaResults(query);
