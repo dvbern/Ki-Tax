@@ -17,6 +17,7 @@
 
 import {Component, OnInit, ChangeDetectionStrategy, Input} from '@angular/core';
 import {ControlContainer, NgForm} from '@angular/forms';
+import {EbeguUtil} from '../../../../utils/EbeguUtil';
 
 @Component({
     selector: 'dv-ferienbetreuung-last-year-value',
@@ -32,5 +33,9 @@ export class FerienbetreuungLastYearValueComponent {
 
     @Input()
     public value: any;
+
+    public isNotNullOrUndefined(value: any) {
+        return EbeguUtil.isNotNullOrUndefined(value);
+    }
 
 }

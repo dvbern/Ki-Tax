@@ -15,9 +15,9 @@
   ~ along with this program.  If not, see <https://www.gnu.org/licenses/>.
   -->
 
-<div class="flex-row-start-center  fb-last-year-column-wrapper">
+<div class="flex-row-start-center  fb-last-year-column-wrapper" >
     <div class="last-year">
-                <span
+                <span *ngIf="isNotNullOrUndefined(value)"
                     class="inline-hint">{{'ANGABEN_VORJAHR' | translate:{gp: gesuchsperiode} }}
                     : {{value}}</span>
     </div>
