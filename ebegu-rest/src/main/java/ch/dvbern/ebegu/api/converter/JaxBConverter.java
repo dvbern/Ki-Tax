@@ -4572,7 +4572,7 @@ public class JaxBConverter extends AbstractConverter {
 	private JaxAntragDTO gesuchToAntragDTOBasic(@Nonnull AlleFaelleView alleFaelleView) {
 		JaxAntragDTO antrag = new JaxAntragDTO();
 		antrag.setAntragId(alleFaelleView.getAntragId());
-		antrag.setFallNummer(Long.parseLong(alleFaelleView.getFallNummer())); //TODO Remove parsing as soon as converted
+		antrag.setFallNummer(alleFaelleView.getFallNummer());
 		antrag.setDossierId(alleFaelleView.getDossierId());
 		antrag.setFamilienName(getStringValueOrEmptyString(alleFaelleView.getFamilienName()));
 		antrag.setEingangsdatum(alleFaelleView.getEingangsdatum());
