@@ -17,9 +17,7 @@
 
 package ch.dvbern.ebegu.entities;
 
-import ch.dvbern.ebegu.enums.AntragStatus;
-import ch.dvbern.ebegu.enums.AntragTyp;
-import ch.dvbern.ebegu.enums.Eingangsart;
+import ch.dvbern.ebegu.enums.*;
 import ch.dvbern.ebegu.util.Constants;
 import org.hibernate.annotations.Type;
 
@@ -98,6 +96,11 @@ public class AlleFaelleView {
 	@Column(nullable = false)
 	@Enumerated(EnumType.STRING)
 	private AntragStatus antragStatus;
+
+	@Nullable
+	@Column(nullable = false)
+	@Enumerated(EnumType.STRING)
+	private GesuchBetreuungenStatus gesuchBetreuungenStatus;
 
 	@NotNull
 	@Column(nullable = false)
@@ -529,5 +532,14 @@ public class AlleFaelleView {
 
 	public void setSozialdienstId(@Nullable String sozialdienstId) {
 		this.sozialdienstId = sozialdienstId;
+	}
+
+	@Nullable
+	public GesuchBetreuungenStatus getGesuchBetreuungenStatus() {
+		return gesuchBetreuungenStatus;
+	}
+
+	public void setGesuchBetreuungenStatus(@Nullable GesuchBetreuungenStatus betreuungsstatus) {
+		this.gesuchBetreuungenStatus = betreuungsstatus;
 	}
 }

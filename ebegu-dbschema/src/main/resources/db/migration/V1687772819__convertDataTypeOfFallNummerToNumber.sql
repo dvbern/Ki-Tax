@@ -17,3 +17,6 @@
 
 alter table alle_faelle_view
 modify column fall_nummer BIGINT NOT NULL;
+
+alter table  alle_faelle_view
+add column gesuch_betreuungen_status VARCHAR(255);

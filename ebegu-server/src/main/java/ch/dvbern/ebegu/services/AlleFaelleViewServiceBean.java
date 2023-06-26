@@ -233,6 +233,7 @@ public class AlleFaelleViewServiceBean extends AbstractBaseService implements Al
 
 	private void updateAlleFaelleViewForGesuch(Gesuch gesuch, AlleFaelleView alleFaelleView) {
 		alleFaelleView.setAntragStatus(gesuch.getStatus());
+		alleFaelleView.setGesuchBetreuungenStatus(gesuch.getGesuchBetreuungenStatus());
 		alleFaelleView.setAntragTyp(gesuch.getTyp());
 		alleFaelleView.setEingangsart(gesuch.getEingangsart());
 		alleFaelleView.setLaufnummer(gesuch.getLaufnummer());
