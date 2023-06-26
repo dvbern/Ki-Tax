@@ -8,11 +8,11 @@
   ~
   ~ This program is distributed in the hope that it will be useful,
   ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
-  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
   ~ GNU Affero General Public License for more details.
   ~
   ~ You should have received a copy of the GNU Affero General Public License
-  ~ along with this program.  If not, see <https://www.gnu.org/licenses/>.
+  ~ along with this program. If not, see <https://www.gnu.org/licenses/>.
   -->
 
 <div class="gemeinde-angaben">
@@ -1115,7 +1115,7 @@
             <h3 class="uppercase">{{'LATS_ANGABEN_GEMEINDE_BEMERKUNGEN' | translate}}</h3>
 
             <dv-input-container-x [verticalAlign]="true">
-                <mat-form-field floatLabel="always" class="no-margin-left">
+                <mat-form-field floatLabel="always">
                     <textarea matInput
                               formControlName="bemerkungen"
                               class="form-control dv-input"></textarea>
@@ -1130,7 +1130,7 @@
 
         </div>
 
-        <div class="max-width-container-750" *ngIf="hasStarkeVeraenderung">
+        <div *ngIf="hasStarkeVeraenderung">
 
             <div class="well well-status-warten">
                 <i class="fa fa-exclamation" aria-hidden="true"></i>
@@ -1142,14 +1142,16 @@
 
             <h3 class="uppercase">{{'LATS_BEGRUENDUNG_STARKE_VERAENDERUNG' | translate}}</h3>
 
-            <dv-input-container-x [verticalAlign]="true">
-                <mat-form-field floatLabel="always" class="no-margin-left">
+            <div class="max-width-container-750">
+                <dv-input-container-x [verticalAlign]="true">
+                    <mat-form-field floatLabel="always">
                     <textarea matInput
                               required
                               formControlName="bemerkungStarkeVeraenderung"
                               class="form-control dv-input"></textarea>
-                </mat-form-field>
-            </dv-input-container-x>
+                    </mat-form-field>
+                </dv-input-container-x>
+            </div>
         </div>
 
         <div class="well well-status-warten"

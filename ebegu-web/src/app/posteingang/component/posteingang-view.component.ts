@@ -8,11 +8,11 @@
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
 import {
@@ -38,6 +38,7 @@ import {GemeindeRS} from '../../../gesuch/service/gemeindeRS.rest';
 import {TSPagination} from '../../../models/dto/TSPagination';
 import {DVErrorMessageCallback} from '../../../models/DVErrorMessageCallback';
 import {getTSMitteilungsStatusForFilter, TSMitteilungStatus} from '../../../models/enums/TSMitteilungStatus';
+import {TSMitteilungTyp} from '../../../models/enums/TSMitteilungTyp';
 import {TSMitteilungTypes} from '../../../models/enums/TSMitteilungTypes';
 import {TSRole} from '../../../models/enums/TSRole';
 import {TSVerantwortung} from '../../../models/enums/TSVerantwortung';
@@ -62,7 +63,6 @@ import {MitteilungRS} from '../../core/service/mitteilungRS.rest';
 import {DVPosteingangFilter} from '../../shared/interfaces/DVPosteingangFilter';
 import {StateStoreService} from '../../shared/services/state-store.service';
 import {PosteingangService} from '../service/posteingang.service';
-import {TSMitteilungTyp} from '../../../models/enums/TSMitteilungTyp';
 
 const LOG = LogFactory.createLog('PosteingangViewComponent');
 
@@ -136,14 +136,18 @@ export class PosteingangViewComponent implements OnInit, OnDestroy, AfterViewIni
     public paginationItems: number[];
     public initialEmpfaenger: TSBenutzerNoDetails;
     public filterPredicate: DVPosteingangFilter = {
-        messageTypes: [TSMitteilungTypes.BETREUUNGSMITTEILUNG, TSMitteilungTypes.MITTEILUNG]
+        messageTypes: [TSMitteilungTypes.BETREUUNGSMITTEILUNG,
+            TSMitteilungTypes.MITTEILUNG,
+            TSMitteilungTypes.NEUEVERANLAGUNGMITTEILUNG
+        ]
     };
 
     // StateStore Properties
     public initialFilter: DVPosteingangFilter = {
         messageTypes: [
             TSMitteilungTypes.BETREUUNGSMITTEILUNG,
-            TSMitteilungTypes.MITTEILUNG
+            TSMitteilungTypes.MITTEILUNG,
+            TSMitteilungTypes.NEUEVERANLAGUNGMITTEILUNG
         ]
     };
     public readonly stateStoreId: string = 'posteingangId';
