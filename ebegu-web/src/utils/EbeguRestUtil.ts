@@ -542,7 +542,6 @@ export class EbeguRestUtil {
             gesuchstellerTS.telefonAusland = gesuchstellerFromServer.telefonAusland;
             gesuchstellerTS.diplomatenstatus = gesuchstellerFromServer.diplomatenstatus;
             gesuchstellerTS.korrespondenzSprache = gesuchstellerFromServer.korrespondenzSprache;
-            gesuchstellerTS.hasZpvNummer = gesuchstellerFromServer.hasZpvNummer;
             return gesuchstellerTS;
         }
         return undefined;
