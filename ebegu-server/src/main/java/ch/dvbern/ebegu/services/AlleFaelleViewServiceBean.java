@@ -258,9 +258,6 @@ public class AlleFaelleViewServiceBean extends AbstractBaseService implements Al
 	public List<AlleFaelleView> searchAntrage(
 		AntragTableFilterDTO antragTableFilterDTO,
 		boolean searchForPendenzen) {
-		//TODO SearchForPendenzen
-		//TODO onlySearchFaelleInActivePreiode
-		//TODO rolebasedPerdicates
 
 		Benutzer user = benutzerService.getCurrentBenutzer()
 			.orElseThrow(() -> new EbeguRuntimeException("searchAllAntraege", "No User is logged in"));
@@ -337,7 +334,6 @@ public class AlleFaelleViewServiceBean extends AbstractBaseService implements Al
 			case JURIST:
 			case ADMIN_MANDANT:
 			case SACHBEARBEITER_MANDANT:
-				//TODO Search for Pendenzen
 				/*if (searchForPendenzen) {
 					Predicate jaOrMischGesuche = createPredicateJAOrMischGesuche(cb, joinDossier);
 					if (!internePendenzGesuchIds.isEmpty()) {
