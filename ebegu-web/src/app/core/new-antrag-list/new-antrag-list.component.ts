@@ -36,7 +36,7 @@ import {TranslateService} from '@ngx-translate/core';
 import {TransitionService} from '@uirouter/angular';
 import {UIRouterGlobals} from '@uirouter/core';
 import {BehaviorSubject, forkJoin, Observable, of, Subject, Subscription} from 'rxjs';
-import {map, takeUntil} from 'rxjs/operators';
+import {map, mergeMap, mergeMapTo, takeUntil} from 'rxjs/operators';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {GemeindeRS} from '../../../gesuch/service/gemeindeRS.rest';
 import {SearchRS} from '../../../gesuch/service/searchRS.rest';
@@ -65,6 +65,9 @@ import {ApplicationPropertyRS} from '../rest-services/applicationPropertyRS.rest
 import {BenutzerRSX} from '../service/benutzerRSX.rest';
 import {GesuchsperiodeRS} from '../service/gesuchsperiodeRS.rest';
 import {InstitutionRS} from '../service/institutionRS.rest';
+import {TSDemoFeature} from '../directive/dv-hide-feature/TSDemoFeature';
+import {DemoFeatureRS} from '../service/demoFeatureRS.rest';
+import {fromPromise} from 'rxjs/internal-compatibility';
 
 const LOG = LogFactory.createLog('DVAntragListController');
 
@@ -296,7 +299,8 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges, Aft
         private readonly stateStore: StateStoreService,
         private readonly uiRouterGlobals: UIRouterGlobals,
         private readonly benutzerRS: BenutzerRSX,
-        private readonly applicationPropertyRS: ApplicationPropertyRS
+        private readonly applicationPropertyRS: ApplicationPropertyRS,
+        private readonly demofeatureRS: DemoFeatureRS
     ) {
     }
 
@@ -454,7 +458,7 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges, Aft
         };
         const dataToLoad$: Observable<DVAntragListItem[]> = this.data$ ?
             this.data$ :
-            this.searchRS.searchAntraegeInAlleFaelleView(body).pipe(map((result: TSAntragSearchresultDTO) => result.antragDTOs.map(antragDto => ({
+            this.searchAntraege(body).pipe(map((result: TSAntragSearchresultDTO) => result.antragDTOs.map(antragDto => ({
                         fallNummer: antragDto.fallNummer,
                         dossierId: antragDto.dossierId,
                         antragId: antragDto.antragId,
@@ -490,6 +494,17 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges, Aft
         });
 
         this.loadTotalCount(body);
+    }
+
+    private searchAntraege(body: any): Observable<TSAntragSearchresultDTO> {
+        return fromPromise(this.demofeatureRS.isDemoFeatureAllowed(TSDemoFeature.ALLE_FAELLE_SUCHE_NEU))
+            .pipe(mergeMap((alleFaelleViewNeuAktiv: boolean) => {
+                if (alleFaelleViewNeuAktiv) {
+                    return this.searchRS.searchAntraegeInAlleFaelleView(body);
+                }
+
+                return this.searchRS.searchAntraege(body);
+            }));
     }
 
     // TODO: Doctor: Refactor totalItems into Observable for smoother subscription handling
