@@ -4402,7 +4402,7 @@ public class JaxBConverter extends AbstractConverter {
 	/**
 	 * Using the existing GesuchStatus and the UserRole it will translate the Status into the right one for this role.
 	 */
-	public void disguiseStatus(Gesuch gesuch, JaxAntragDTO antrag, @Nullable UserRole userRole) {
+	public void disguiseStatus(AntragStatus status, JaxAntragDTO antrag, @Nullable UserRole userRole) {
 		if (userRole != null) {
 			switch (userRole) {
 			case GESUCHSTELLER:
@@ -4410,7 +4410,7 @@ public class JaxBConverter extends AbstractConverter {
 			case SACHBEARBEITER_INSTITUTION:
 			case ADMIN_TRAEGERSCHAFT:
 			case SACHBEARBEITER_TRAEGERSCHAFT:
-				switch (gesuch.getStatus()) {
+				switch (status) {
 				case PRUEFUNG_STV:
 				case GEPRUEFT_STV:
 				case IN_BEARBEITUNG_STV:
@@ -4456,7 +4456,7 @@ public class JaxBConverter extends AbstractConverter {
 			RestUtil.purgeKinderAndBetreuungenOfInstitutionen(jaxKindContainers, allowedInst);
 		}
 
-		disguiseStatus(gesuch, antrag, userRole);
+		disguiseStatus(gesuch.getStatus(), antrag, userRole);
 
 		if (userRole != STEUERAMT) {
 			antrag.setAngebote(createAngeboteList(jaxKindContainers));
@@ -4471,7 +4471,7 @@ public class JaxBConverter extends AbstractConverter {
 		antrag.setKinder(createKinderList(gesuch.getKindContainers()));
 		antrag.setAngebote(createAngeboteList(gesuch.getKindContainers()));
 		antrag.setInstitutionen(createInstitutionenList(gesuch.getKindContainers()));
-		disguiseStatus(gesuch, antrag, userRole);
+		disguiseStatus(gesuch.getStatus(), antrag, userRole);
 		return antrag;
 	}
 
@@ -4558,7 +4558,7 @@ public class JaxBConverter extends AbstractConverter {
 //			RestUtil.purgeKinderAndBetreuungenOfInstitutionen(jaxKindContainers, allowedInst);
 //		}
 
-//		disguiseStatus(gesuch, antrag, userRole);
+		disguiseStatus(alleFaelleView.getAntragStatus(), antrag, userRole);
 
 /*		if (userRole != STEUERAMT) {
 			antrag.setAngebote(alleFaelleView.getAngebotTypen());
