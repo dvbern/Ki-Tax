@@ -1297,4 +1297,21 @@ public class GesuchResource {
 		return converter.gesuchToJAX(vorgangerGesuch);
 	}
 
+	@ApiOperation(value = "Gibt zurück ob der Gesuchsteller erfolgreich mit einer ZPV Nummer verknuepft wurde",
+		response = Boolean.class)
+	@GET
+	@Path("/zpvNummerSuccess/{gesuchstellerId}")
+	@Consumes(MediaType.WILDCARD)
+	@Produces(MediaType.APPLICATION_JSON)
+	@PermitAll
+	public boolean zpvNummerSuccess(@Nonnull @PathParam("gesuchstellerId") JaxId gesuchstellerJAXPId) {
+
+		Objects.requireNonNull(gesuchstellerJAXPId.getId());
+		String gesuchstellerID = converter.toEntityId(gesuchstellerJAXPId);
+		GesuchstellerContainer gesuchsteller = gesuchstellerService.findGesuchsteller(gesuchstellerID)
+			.orElseThrow(() -> new EbeguEntityNotFoundException("zpvNummerSuccess", gesuchstellerID));
+
+		return StringUtils.isNotEmpty(gesuchsteller.getGesuchstellerJA().getZpvNummer());
+	}
+
 }
