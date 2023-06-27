@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {FormGroup} from '@angular/forms';
+import {UntypedFormGroup} from '@angular/forms';
 import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
 import {TransitionService} from '@uirouter/core';
 import {Observable, of} from 'rxjs';
@@ -11,7 +11,7 @@ import {DvNgBackDialogComponent} from '../../core/component/dv-ng-back-dialog/dv
 })
 export class UnsavedChangesService {
 
-    private formGroup: FormGroup;
+    private formGroup: UntypedFormGroup;
 
     public constructor(
         private readonly $transition: TransitionService,
@@ -25,7 +25,7 @@ export class UnsavedChangesService {
             }));
     }
 
-    public registerForm(formGroup: FormGroup): void {
+    public registerForm(formGroup: UntypedFormGroup): void {
         this.formGroup = formGroup;
     }
 

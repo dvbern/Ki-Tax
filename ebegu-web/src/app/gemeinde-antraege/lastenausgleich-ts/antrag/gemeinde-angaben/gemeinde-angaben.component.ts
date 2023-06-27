@@ -24,7 +24,7 @@ import {
     OnInit,
     ViewEncapsulation
 } from '@angular/core';
-import {AbstractControl, FormBuilder, FormGroup, ValidatorFn, Validators} from '@angular/forms';
+import {AbstractControl, UntypedFormBuilder, UntypedFormGroup, ValidatorFn, Validators} from '@angular/forms';
 import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
 import {MatRadioChange} from '@angular/material/radio';
 import {TranslateService} from '@ngx-translate/core';
@@ -82,9 +82,9 @@ export class GemeindeAngabenComponent implements OnInit, OnDestroy {
     @Input() public lastenausgleichID: string;
     @Input() public triggerValidationOnInit = false;
 
-    public angabenForm: FormGroup;
+    public angabenForm: UntypedFormGroup;
     public lATSAngabenGemeindeContainer: TSLastenausgleichTagesschuleAngabenGemeindeContainer;
-    public formularInitForm: FormGroup;
+    public formularInitForm: UntypedFormGroup;
     private subscription: Subscription;
     public abschliessenValidationActive = false;
     public lohnnormkostenSettingMoreThanFifty$: Subject<TSEinstellung> = new Subject<TSEinstellung>();
@@ -103,7 +103,7 @@ export class GemeindeAngabenComponent implements OnInit, OnDestroy {
     public hasStarkeVeraenderung: boolean = false;
 
     public constructor(
-        private readonly fb: FormBuilder,
+        private readonly fb: UntypedFormBuilder,
         private readonly gemeindeAntraegeService: GemeindeAntragService,
         private readonly cd: ChangeDetectorRef,
         private readonly authServiceRS: AuthServiceRS,

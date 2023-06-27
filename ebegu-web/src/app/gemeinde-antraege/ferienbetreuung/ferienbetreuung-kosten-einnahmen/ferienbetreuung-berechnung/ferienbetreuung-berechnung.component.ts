@@ -25,7 +25,7 @@ import {
     OnInit,
     SimpleChanges
 } from '@angular/core';
-import {FormGroup} from '@angular/forms';
+import {UntypedFormGroup} from '@angular/forms';
 import {combineLatest, Subscription} from 'rxjs';
 import {mergeMap, startWith, tap} from 'rxjs/operators';
 import {EinstellungRS} from '../../../../../admin/service/einstellungRS.rest';
@@ -48,7 +48,7 @@ const LOG = LogFactory.createLog('FerienbetreuungBerechnungComponent');
 export class FerienbetreuungBerechnungComponent implements OnInit, OnDestroy, OnChanges {
 
     @Input()
-    private readonly form: FormGroup;
+    private readonly form: UntypedFormGroup;
 
     @Input()
     private container: TSFerienbetreuungAngabenContainer;

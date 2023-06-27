@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 import {ChangeDetectionStrategy, Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
-import {FormBuilder, NgForm} from '@angular/forms';
+import {UntypedFormBuilder, NgForm} from '@angular/forms';
 import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
 import {MatRadioChange} from '@angular/material/radio';
 import {TranslateService} from '@ngx-translate/core';
@@ -57,7 +57,7 @@ export class GemeindeKennzahlenFormularComponent implements OnInit, OnDestroy {
     public constructor(
         private readonly gemeindeKennzahlenService: GemeindeKennzahlenService,
         private readonly authService: AuthServiceRS,
-        private readonly fb: FormBuilder,
+        private readonly fb: UntypedFormBuilder,
         private readonly errorService: ErrorServiceX,
         private readonly translate: TranslateService,
         private readonly dialog: MatDialog

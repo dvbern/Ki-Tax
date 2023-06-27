@@ -17,7 +17,7 @@
 
 import {HttpErrorResponse} from '@angular/common/http';
 import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit} from '@angular/core';
-import {FormControl, FormGroup} from '@angular/forms';
+import {UntypedFormControl, UntypedFormGroup} from '@angular/forms';
 import {TranslateService} from '@ngx-translate/core';
 import {ReplaySubject, Subscription} from 'rxjs';
 import {TSFerienbetreuungAngabenContainer} from '../../../../models/gemeindeantrag/TSFerienbetreuungAngabenContainer';
@@ -37,9 +37,9 @@ const LOG = LogFactory.createLog('FerienbetreuungKommantarComponent');
 })
 export class FerienbetreuungKommantarComponent implements OnInit, OnDestroy {
 
-    public form: FormGroup;
+    public form: UntypedFormGroup;
     public saving$ = new ReplaySubject(1);
-    private kommentarControl: FormControl;
+    private kommentarControl: UntypedFormControl;
     private subscription: Subscription;
     private ferienbetreuungContainer: TSFerienbetreuungAngabenContainer;
 
@@ -84,11 +84,11 @@ export class FerienbetreuungKommantarComponent implements OnInit, OnDestroy {
     }
 
     private initForm(): void {
-        this.kommentarControl = new FormControl({
+        this.kommentarControl = new UntypedFormControl({
                 value: this.ferienbetreuungContainer?.internerKommentar,
                 disabled: this.ferienbetreuungContainer?.isAbgeschlossen()
         });
-        this.form = new FormGroup({
+        this.form = new UntypedFormGroup({
             kommentar: this.kommentarControl
         });
 

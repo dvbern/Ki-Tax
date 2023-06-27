@@ -16,7 +16,7 @@
  */
 
 import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit} from '@angular/core';
-import {FormBuilder, ValidatorFn, Validators} from '@angular/forms';
+import {UntypedFormBuilder, ValidatorFn, Validators} from '@angular/forms';
 import {MAT_DATE_FORMATS} from '@angular/material/core';
 import {MatDatepicker} from '@angular/material/datepicker';
 import {MatDialog} from '@angular/material/dialog';
@@ -80,7 +80,7 @@ export class FerienbetreuungStammdatenGemeindeComponent extends AbstractFerienbe
         protected readonly uiRouterGlobals: UIRouterGlobals,
         protected readonly wizardRS: WizardStepXRS,
         private readonly ferienbetreuungService: FerienbetreuungService,
-        private readonly fb: FormBuilder,
+        private readonly fb: UntypedFormBuilder,
         private readonly gemeindeRS: GemeindeRS,
         private readonly authServiceRS: AuthServiceRS,
         private readonly unsavedChangesService: UnsavedChangesService

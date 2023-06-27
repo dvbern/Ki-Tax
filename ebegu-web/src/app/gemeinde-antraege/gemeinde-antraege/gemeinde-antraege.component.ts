@@ -22,7 +22,7 @@ import {
     ViewChild,
     ViewEncapsulation
 } from '@angular/core';
-import {FormBuilder, FormGroup, NgForm, Validators} from '@angular/forms';
+import {UntypedFormBuilder, UntypedFormGroup, NgForm, Validators} from '@angular/forms';
 import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
 import {TranslateService} from '@ngx-translate/core';
 import {StateService} from '@uirouter/core';
@@ -87,7 +87,7 @@ export class GemeindeAntraegeComponent implements OnInit {
     public antragList$: Observable<DVAntragListItem[]>;
     public gesuchsperioden: TSGesuchsperiode[];
     public gesuchsperiodenFiltered: TSGesuchsperiode[];
-    public formGroup: FormGroup;
+    public formGroup: UntypedFormGroup;
     public totalItems = 0;
     public gemeinden: TSGemeinde[];
 
@@ -113,7 +113,7 @@ export class GemeindeAntraegeComponent implements OnInit {
     public constructor(
         private readonly gemeindeAntragService: GemeindeAntragService,
         private readonly gesuchsperiodenService: GesuchsperiodeRS,
-        private readonly fb: FormBuilder,
+        private readonly fb: UntypedFormBuilder,
         private readonly $state: StateService,
         private readonly errorService: ErrorServiceX,
         private readonly translate: TranslateService,

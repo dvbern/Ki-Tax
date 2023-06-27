@@ -16,7 +16,7 @@
  */
 
 import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit} from '@angular/core';
-import {FormBuilder, Validators} from '@angular/forms';
+import {UntypedFormBuilder, Validators} from '@angular/forms';
 import {MatDialog} from '@angular/material/dialog';
 import {TranslateService} from '@ngx-translate/core';
 import {UIRouterGlobals} from '@uirouter/core';
@@ -55,7 +55,7 @@ export class FerienbetreuungNutzungComponent extends AbstractFerienbetreuungForm
         protected readonly cd: ChangeDetectorRef,
         protected readonly wizardRS: WizardStepXRS,
         protected readonly uiRouterGlobals: UIRouterGlobals,
-        private readonly fb: FormBuilder,
+        private readonly fb: UntypedFormBuilder,
         private readonly authService: AuthServiceRS,
         private readonly unsavedChangesService: UnsavedChangesService
     ) {

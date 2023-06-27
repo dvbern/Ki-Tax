@@ -16,7 +16,7 @@
  */
 
 import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnInit, ViewEncapsulation} from '@angular/core';
-import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {UntypedFormBuilder, UntypedFormGroup, Validators} from '@angular/forms';
 import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
 import {TranslateService} from '@ngx-translate/core';
 import {StateService, UIRouterGlobals} from '@uirouter/core';
@@ -78,7 +78,7 @@ export class TagesschulenAngabenComponent implements OnInit {
     @Input() public lastenausgleichID: string;
     @Input() public institutionContainerId: string;
 
-    public form: FormGroup;
+    public form: UntypedFormGroup;
 
     private subscription: Subscription;
     // TODO: refactor this to store
@@ -110,7 +110,7 @@ export class TagesschulenAngabenComponent implements OnInit {
     public constructor(
         private readonly lastenausgleichTSService: LastenausgleichTSService,
         private readonly tagesschulenAngabenRS: TagesschuleAngabenRS,
-        private readonly fb: FormBuilder,
+        private readonly fb: UntypedFormBuilder,
         private readonly cd: ChangeDetectorRef,
         private readonly errorService: ErrorService,
         private readonly translate: TranslateService,
@@ -250,7 +250,7 @@ export class TagesschulenAngabenComponent implements OnInit {
                 angaben.isInPruefungGemeinde());
     }
 
-    private setupForm(latsAngabenInstiution: TSLastenausgleichTagesschuleAngabenInstitution): FormGroup {
+    private setupForm(latsAngabenInstiution: TSLastenausgleichTagesschuleAngabenInstitution): UntypedFormGroup {
         const form = this.fb.group({
             // A
             isLehrbetrieb: latsAngabenInstiution?.isLehrbetrieb,
