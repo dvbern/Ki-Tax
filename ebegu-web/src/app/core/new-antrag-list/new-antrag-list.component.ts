@@ -35,7 +35,7 @@ import {MatTable, MatTableDataSource} from '@angular/material/table';
 import {TranslateService} from '@ngx-translate/core';
 import {TransitionService} from '@uirouter/angular';
 import {UIRouterGlobals} from '@uirouter/core';
-import {BehaviorSubject, forkJoin, Observable, of, Subject, Subscription} from 'rxjs';
+import {BehaviorSubject, forkJoin, Observable, of, Subject, Subscription, from} from 'rxjs';
 import {map, mergeMap, mergeMapTo, takeUntil} from 'rxjs/operators';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {GemeindeRS} from '../../../gesuch/service/gemeindeRS.rest';
@@ -67,7 +67,6 @@ import {GesuchsperiodeRS} from '../service/gesuchsperiodeRS.rest';
 import {InstitutionRS} from '../service/institutionRS.rest';
 import {TSDemoFeature} from '../directive/dv-hide-feature/TSDemoFeature';
 import {DemoFeatureRS} from '../service/demoFeatureRS.rest';
-import {fromPromise} from 'rxjs/internal-compatibility';
 
 const LOG = LogFactory.createLog('DVAntragListController');
 
@@ -497,7 +496,7 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges, Aft
     }
 
     private searchAntraege(body: any): Observable<TSAntragSearchresultDTO> {
-        return fromPromise(this.demofeatureRS.isDemoFeatureAllowed(TSDemoFeature.ALLE_FAELLE_SUCHE_NEU))
+        return from(this.demofeatureRS.isDemoFeatureAllowed(TSDemoFeature.ALLE_FAELLE_SUCHE_NEU))
             .pipe(mergeMap((alleFaelleViewNeuAktiv: boolean) => {
                 if (alleFaelleViewNeuAktiv) {
                     return this.searchRS.searchAntraegeInAlleFaelleView(body);
