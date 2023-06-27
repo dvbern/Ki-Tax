@@ -42,7 +42,7 @@
     "@angular-eslint/builder": "13.5.0",
     "@angular-eslint/eslint-plugin": "13.5.0",
     "@angular-eslint/eslint-plugin-template": "13.5.0",
-    "@angular-eslint/schematics": "13.5.0",
+    "@angular-eslint/schematics": "^14.4.0",
     "@angular-eslint/template-parser": "13.5.0",
     "@angular/cli": "^14.2.11",
     "@angular/compiler-cli": "^14.3.0",
@@ -147,8 +147,10 @@
     "angular-utf8-base64": "0.0.5",
     "bootstrap": "~3.4.1",
     "core-js": "~2.5.5",
+    "detect-browser": "^5.0.0",
     "iban": "0.0.14",
     "ibantools": "^3.3.1",
+    "jquery": "^3.5.1",
     "moment": "^2.24.0",
     "ng-file-upload": "~12.2.8",
     "ngx-cookie-service": "^12.0.3",
@@ -159,8 +161,6 @@
     "raven-js": "^3.27.2",
     "rxjs": "^6.6.3",
     "tslib": "^2.0.0",
-    "zone.js": "~0.11.4",
-    "detect-browser": "^5.0.0",
-    "jquery": "^3.5.1"
+    "zone.js": "~0.11.4"
   }
 }
