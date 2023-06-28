@@ -16,21 +16,11 @@
  */
 package ch.dvbern.ebegu.enums.reporting;
 
+import ch.dvbern.oss.lib.excelmerger.mergefields.*;
+
 import javax.annotation.Nonnull;
 
-import ch.dvbern.oss.lib.excelmerger.mergefields.MergeField;
-import ch.dvbern.oss.lib.excelmerger.mergefields.MergeFieldProvider;
-import ch.dvbern.oss.lib.excelmerger.mergefields.RepeatColMergeField;
-import ch.dvbern.oss.lib.excelmerger.mergefields.RepeatRowMergeField;
-import ch.dvbern.oss.lib.excelmerger.mergefields.RepeatValMergeField;
-import ch.dvbern.oss.lib.excelmerger.mergefields.SimpleMergeField;
-
-import static ch.dvbern.oss.lib.excelmerger.converters.StandardConverters.BIGDECIMAL_CONVERTER;
-import static ch.dvbern.oss.lib.excelmerger.converters.StandardConverters.BOOLEAN_X_CONVERTER;
-import static ch.dvbern.oss.lib.excelmerger.converters.StandardConverters.DATE_CONVERTER;
-import static ch.dvbern.oss.lib.excelmerger.converters.StandardConverters.INTEGER_CONVERTER;
-import static ch.dvbern.oss.lib.excelmerger.converters.StandardConverters.PERCENT_CONVERTER;
-import static ch.dvbern.oss.lib.excelmerger.converters.StandardConverters.STRING_CONVERTER;
+import static ch.dvbern.oss.lib.excelmerger.converters.StandardConverters.*;
 
 public enum MergeFieldGesuchstellerKinderBetreuung implements MergeFieldProvider {
 
@@ -45,6 +35,10 @@ public enum MergeFieldGesuchstellerKinderBetreuung implements MergeFieldProvider
 	vornameTitle(new SimpleMergeField<>("vornameTitle", STRING_CONVERTER)),
 	verfuegungsdatumTitle(new SimpleMergeField<>("verfuegungsdatumTitle", STRING_CONVERTER)),
 	gemeindeTitle(new SimpleMergeField<>("gemeindeTitle", STRING_CONVERTER)),
+
+	auszahlungTitle(new SimpleMergeField<>("auszahlungsdatenGSTitel", STRING_CONVERTER)),
+	ibanTitle(new SimpleMergeField<>("ibanTitel", STRING_CONVERTER)),
+	kontoInhaberTitle(new SimpleMergeField<>("lautendAufTitel", STRING_CONVERTER)),
 	fallIdTitle(new SimpleMergeField<>("fallIdTitle", STRING_CONVERTER)),
 	gesuchsteller1Title(new SimpleMergeField<>("gesuchsteller1Title", STRING_CONVERTER)),
 	gesuchsteller2Title(new SimpleMergeField<>("gesuchsteller2Title", STRING_CONVERTER)),
@@ -137,6 +131,9 @@ public enum MergeFieldGesuchstellerKinderBetreuung implements MergeFieldProvider
 	verfuegungsdatum(new SimpleMergeField<>("verfuegungsdatum", DATE_CONVERTER)),
 	fallId(new SimpleMergeField<>("fallId", INTEGER_CONVERTER)),
 	gemeinde(new SimpleMergeField<>("gemeinde", STRING_CONVERTER)),
+
+	iban(new SimpleMergeField<>("iban", STRING_CONVERTER)),
+	kontoInhaber(new SimpleMergeField<>("lautendAuf", STRING_CONVERTER)),
 
 	gs1Name(new SimpleMergeField<>("gs1Name", STRING_CONVERTER)),
 	gs1Vorname(new SimpleMergeField<>("gs1Vorname", STRING_CONVERTER)),

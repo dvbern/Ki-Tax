@@ -16,28 +16,23 @@
  */
 package ch.dvbern.ebegu.reporting.gesuchstellerKinderBetreuung;
 
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.enterprise.context.Dependent;
-
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.enums.reporting.MergeFieldGesuchstellerKinderBetreuung;
 import ch.dvbern.ebegu.util.MathUtil;
 import ch.dvbern.ebegu.util.ServerMessageUtil;
-import ch.dvbern.oss.lib.excelmerger.ExcelConverter;
-import ch.dvbern.oss.lib.excelmerger.ExcelMergeException;
-import ch.dvbern.oss.lib.excelmerger.ExcelMerger;
-import ch.dvbern.oss.lib.excelmerger.ExcelMergerDTO;
-import ch.dvbern.oss.lib.excelmerger.RowFiller;
+import ch.dvbern.oss.lib.excelmerger.*;
 import ch.dvbern.oss.lib.excelmerger.mergefields.MergeField;
 import org.apache.poi.ss.usermodel.Sheet;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.enterprise.context.Dependent;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static java.util.Objects.requireNonNull;
@@ -126,6 +121,9 @@ public class GesuchstellerKinderBetreuungExcelConverter implements ExcelConverte
 			excelRowGroup.addValue(MergeFieldGesuchstellerKinderBetreuung.fallId, dataRow.getFallId());
 
 			excelRowGroup.addValue(MergeFieldGesuchstellerKinderBetreuung.gemeinde, dataRow.getGemeinde());
+
+			excelRowGroup.addValue(MergeFieldGesuchstellerKinderBetreuung.iban, dataRow.getIban());
+			excelRowGroup.addValue(MergeFieldGesuchstellerKinderBetreuung.kontoInhaber, dataRow.getKontoInhaber());
 
 			excelRowGroup.addValue(MergeFieldGesuchstellerKinderBetreuung.gs1Name, dataRow.getGs1Name());
 			excelRowGroup.addValue(MergeFieldGesuchstellerKinderBetreuung.gs1Vorname, dataRow.getGs1Vorname());
@@ -266,6 +264,15 @@ public class GesuchstellerKinderBetreuungExcelConverter implements ExcelConverte
 
 		mergeFields.add(MergeFieldGesuchstellerKinderBetreuung.gemeindeTitle.getMergeField());
 		mergerDTO.addValue(MergeFieldGesuchstellerKinderBetreuung.gemeindeTitle, ServerMessageUtil.getMessage("Reports_gemeindeTitle",locale, mandant));
+
+		mergeFields.add(MergeFieldGesuchstellerKinderBetreuung.auszahlungTitle.getMergeField());
+		mergerDTO.addValue(MergeFieldGesuchstellerKinderBetreuung.auszahlungTitle, ServerMessageUtil.getMessage("Reports_auszahlungTitle",locale, mandant));
+
+		mergeFields.add(MergeFieldGesuchstellerKinderBetreuung.ibanTitle.getMergeField());
+		mergerDTO.addValue(MergeFieldGesuchstellerKinderBetreuung.ibanTitle, ServerMessageUtil.getMessage("Reports_ibanTitle",locale, mandant));
+
+		mergeFields.add(MergeFieldGesuchstellerKinderBetreuung.kontoInhaberTitle.getMergeField());
+		mergerDTO.addValue(MergeFieldGesuchstellerKinderBetreuung.kontoInhaberTitle, ServerMessageUtil.getMessage("Reports_kontoinhaberTitle",locale, mandant));
 
 		mergeFields.add(MergeFieldGesuchstellerKinderBetreuung.gesuchsteller1Title.getMergeField());
 		mergerDTO.addValue(MergeFieldGesuchstellerKinderBetreuung.gesuchsteller1Title, ServerMessageUtil.getMessage("Reports_gesuchsteller1Title",locale, mandant));
