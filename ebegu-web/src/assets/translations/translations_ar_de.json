@@ -173,5 +173,6 @@
     "MASSENVERSAND": "Betreuungsbeitrag: Kontaktdaten für Serienbriefe",
     "STATISTIK_SERIENBRIEFE_HINT": "Zeigt die Kontaktdaten der Antragstellenden einer bestimmte Periode an. Zusätzlich können weitere Parameter gesetzt werden:<br> <ul> \t<li><b>Auswahl Verantwortlichkeit: </b>Wird z.B. die Checkbox \"Betreuungsbeitrag-Anträge\" aktiviert, erscheinen nur die Antragstellenden in der Statistik, die einen reinen Betreuungsbeitrag Antrag in der gewählten Periode gestellt haben. Diese Optionen können kombiniert werden.</li><li><b>Von/Bis: </b>Massgebend für das Datum \"von\" und \"bis\" ist bei Online Anträgen der Zeitpunkt, an dem der Antrag freigegeben wurde und bei Papieranträgen der Zeitpunkt, an dem der Antrag geprüft wurde.</li><li><b>Auswahl Folgeaufträge: </b>Wird diese Checkbox aktiviert, werden nur die Antragstellenden in der Statistik angezeigt, welche in der nachfolgenden Periode noch keinen Antrag gestellt haben</li></ul>",
     "MASSENVERSAND_BG_GESUCHE": "Betreuungsbeitrag-Anträge",
+    "BETREUUNGSANGEBOT_NUMBER": "{{kindname}}, {{geburtsdatum}}",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }
