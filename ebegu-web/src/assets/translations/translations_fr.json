@@ -560,7 +560,7 @@
     "KEIN_VERTRAG":  "Le nom de l'institution n'est pas encore connu.",
     "ERWEITERTE_BEDUERFNISSE": "Votre enfant présente-t-il des besoins particuliers entraînant des frais de garde extraordinaires ?",
     "ERWEITERTE_BEDUERFNISSE_HINT": "<p>Présentent des besoins particuliers les enfants atteints de :</p><br><ul>\t<li><p>handicap physique</p></li>\t<li><p>handicap sensoriel</p></li>\t<li><p>handicap mental</p></li>\t<li><p>trouble ou retard de développement</p></li>\t<li><p>maladie physique chronique (p. ex. épilepsie)</p></li></ul><br><p>Pour les enfants présentant des besoins particuliers entraînant des frais de garde plus élevés, une demande de forfait pour frais d’accueil ou d’encouragement extraordinaires peut être déposée. Pour ce faire, l’enfant doit être suivi par une ou un pédagogue en éducation précoce spécialisée exerçant à titre indépendant ou par un service spécialisé qualifié en raison de ses besoins particuliers. Un service spécialisé doit établir une confirmation de ces besoins.</p>",
-    "KEINE_KESB_PLATZIERUNG": "Est-ce que la prise en charge a été ordonnée par une APEA?",
+    "KEINE_KESB_PLATZIERUNG": "Est-ce que l'encadrement a été ordonné par l'autorité de protection de l'enfant et de l'adulte (APEA)?",
     "KEINE_KESB_PLATZIERUNG_POPUP_TEXT": "En cas de placement ordonné par l'APEA, aucun bon de garde n'est émis.  L'APEA assume les frais de prise en charge.",
     "BESCHREIBUNG_KEINE_KESB_PLATZIERUNG_POPUP_TEXT": "Voulez-vous quand même enregistrer la prise en charge ? ",
     "BESONDERE_BEDUERFNISSE_KITA_PLUS_ZUSCHLAG": "Est-ce que votre enfant a des besoins particuliers et profite du supplément KITAplus?",
