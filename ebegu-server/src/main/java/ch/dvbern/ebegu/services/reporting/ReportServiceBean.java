@@ -1779,7 +1779,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		}
 
 		row.setIban(familiensituation.getAuszahlungsdaten().extractIbanAsString());
-		row.setKontoInhaber(familiensituation.getAuszahlungsdaten().getKontoinhaber());
+		row.setKontoinhaber(familiensituation.getAuszahlungsdaten().getKontoinhaber());
 	}
 
 	@Override

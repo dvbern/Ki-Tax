@@ -123,7 +123,7 @@ public class GesuchstellerKinderBetreuungExcelConverter implements ExcelConverte
 			excelRowGroup.addValue(MergeFieldGesuchstellerKinderBetreuung.gemeinde, dataRow.getGemeinde());
 
 			excelRowGroup.addValue(MergeFieldGesuchstellerKinderBetreuung.iban, dataRow.getIban());
-			excelRowGroup.addValue(MergeFieldGesuchstellerKinderBetreuung.kontoInhaber, dataRow.getKontoInhaber());
+			excelRowGroup.addValue(MergeFieldGesuchstellerKinderBetreuung.kontoInhaber, dataRow.getKontoinhaber());
 
 			excelRowGroup.addValue(MergeFieldGesuchstellerKinderBetreuung.gs1Name, dataRow.getGs1Name());
 			excelRowGroup.addValue(MergeFieldGesuchstellerKinderBetreuung.gs1Vorname, dataRow.getGs1Vorname());

@@ -123,7 +123,7 @@ public class GesuchstellerKinderBetreuungDataRow {
 	@Nullable private BigDecimal ausserordentlicherAnspruch;
 
 	@Nullable private String iban;
-	@Nullable private String kontoInhaber;
+	@Nullable private String kontoinhaber;
 
 	public GesuchstellerKinderBetreuungDataRow() {
 	}
@@ -852,11 +852,11 @@ public class GesuchstellerKinderBetreuungDataRow {
 	}
 
 	@Nullable
-	public String getKontoInhaber() {
-		return kontoInhaber;
+	public String getKontoinhaber() {
+		return kontoinhaber;
 	}
 
-	public void setKontoInhaber(@Nullable String kontoInhaber) {
-		this.kontoInhaber = kontoInhaber;
+	public void setKontoinhaber(@Nullable String kontoinhaber) {
+		this.kontoinhaber = kontoinhaber;
 	}
 }
