@@ -182,6 +182,8 @@
     "ANSPRUCH_MONATSWEISE": "Anspruchsberechnung monatsweise",
     "MUTATION_KORREKTUR_AUSBEZAHLT_RUECKFORDERUNG_ELTERN": "Diese Verfügung führt zu einer Rückforderung der Auszahlung an die Eltern von {{betrag}} CHF.",
     "MUTATION_KORREKTUR_AUSBEZAHLT_RUECKZAHLUNG_ELTERN": "Diese Verfügung führt zu einer zusätzlichen Auszahlung an die Eltern von {{betrag}} CHF.",
+    "MUTATION_KORREKTUR_AUSBEZAHLT_AUSSERHALB_KIBON_RUECKFORDERUNG_ELTERN": "Diese Verfügung führt zu einer Rückerstattung. Für die bereits ausbezahlten Betreuungsgutscheine ergibt sich eine Differenz von CHF {{betrag}}. Die Gemeinde fordert den Betrag direkt bei den Antragsstellenden zurück. Die Rechnungen vom Leistungserbringer werden nicht rückwirkend angepasst.",
+    "MUTATION_KORREKTUR_AUSBEZAHLT_AUSSERHALB_KIBON_RUECKZAHLUNG_ELTERN": "Diese Verfügung führt zu einer rückwirkenden Auszahlung. Für die markierten Monate ergibt sich eine Differenz von CHF {{betrag}}. Die Gemeinde zahlt den Betrag direkt an die Antragsstellenden aus. Die Rechnungen vom Leistungserbringer werden nicht rückwirkend angepasst.",
     "FREIGABEQUITTUNG_MUTATION_TEXT": "Wir haben die Freigabequittung bereits erhalten. Bei einer Mutation muss diese nicht erneut eingereicht werden. <br>Über die untenstehende Schaltfläche müssen Sie die Mutation aber noch freigeben.",
     "FREIGABEQUITTUNG_AUSSTEHEND_TEXT": "",
     "FREIGABEQUITTUNG_WARNUNG": "Bitte beachten Sie, dass die unterzeichnete Freigabequittung umgehend per Mail oder Post eingereicht werden muss. Andernfalls gilt Ihr Antrag als unvollständig und kann von der Gemeinde nicht weiter bearbeitet werden.",

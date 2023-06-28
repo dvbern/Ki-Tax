@@ -1016,7 +1016,7 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
 
     private getTextForKorrekturAuszahlung(keyPostFix: string, betrag: number, isZahlungIgnored: boolean) : string {
         if (this.getBetreuungsstatus() === TSBetreuungsstatus.VERFUEGT && isZahlungIgnored) {
-            return this.getTextKorrekturForVerfuegteBetreuungAndIgnored(betrag);
+            return this.getTextKorrekturForVerfuegteBetreuungAndIgnored(keyPostFix, betrag);
         }
 
         let text = '';
@@ -1036,12 +1036,12 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
         return text.trim();
     }
 
-    private getTextKorrekturForVerfuegteBetreuungAndIgnored(betrag: number) : string {
+    private getTextKorrekturForVerfuegteBetreuungAndIgnored(keyPostFix: string, betrag: number) : string {
         if (betrag < 0) {
-            return this.$translate.instant('MUTATION_KORREKTUR_AUSBEZAHLT_AUSSERHALB_KIBON_RUECKZAHLUNG',
+            return this.$translate.instant('MUTATION_KORREKTUR_AUSBEZAHLT_AUSSERHALB_KIBON_RUECKZAHLUNG_' + keyPostFix,
                 {betrag: Math.abs(betrag).toFixed(2)});
         } else {
-            return this.$translate.instant('MUTATION_KORREKTUR_AUSBEZAHLT_AUSSERHALB_KIBON_RUECKFORDERUNG',
+            return this.$translate.instant('MUTATION_KORREKTUR_AUSBEZAHLT_AUSSERHALB_KIBON_RUECKFORDERUNG_' + keyPostFix,
                 {betrag: betrag.toFixed(2)});
         }
     }
