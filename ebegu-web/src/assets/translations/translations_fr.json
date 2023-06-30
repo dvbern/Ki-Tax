@@ -1306,7 +1306,7 @@
     "SEARCH_LIST": "Tous les résultats de la recherche",
     "GENERIEREN": "Générer",
     "STATISTIK_GESUCHSTELLER": "Bons de garde: auteur-e de la demande",
-    "STATISTIK_LASTENAUSGLEICH_BG": "Bons de  garde: Compensation des charges: statistique détaillé",
+    "STATISTIK_LASTENAUSGLEICH_BG": "Bons de  garde: Données de la compensation des charges concernant les bons de garde",
     "STATISTIK_LASTENAUSGLEICH_BG_HINT": "Montre toutes les tranches temporelles, qui ont été pris en compte pour le calcul de la compensation des charges pour les bons de gardes par commune.\nDiese Daten sind erst ab dem Lastenausgleichjahr 2022 vorhanden. Zahlen zu früheren Lastenausgleichen und Korrekturen können nicht angezeigt werden.",
     "STATISTIK_ZAHLUNGEN": "Betreuungsgutscheine: Zahlungen",
     "STATISTIK_ZAHLUNGEN_HINT": "Zeigt alle Zahlungsläufe für einen gewählten Zeitraum",
