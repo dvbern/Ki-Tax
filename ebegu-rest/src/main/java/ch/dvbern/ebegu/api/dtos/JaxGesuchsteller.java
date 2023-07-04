@@ -15,16 +15,16 @@
 
 package ch.dvbern.ebegu.api.dtos;
 
+import ch.dvbern.ebegu.enums.Geschlecht;
+import ch.dvbern.ebegu.enums.Sprache;
+import ch.dvbern.ebegu.util.Constants;
+
 import javax.annotation.Nullable;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
-
-import ch.dvbern.ebegu.enums.Geschlecht;
-import ch.dvbern.ebegu.enums.Sprache;
-import ch.dvbern.ebegu.util.Constants;
 
 import static ch.dvbern.ebegu.util.Constants.DB_DEFAULT_MAX_LENGTH;
 
@@ -59,8 +59,6 @@ public class JaxGesuchsteller extends JaxAbstractPersonDTO {
 
 	@Nullable
 	private Sprache korrespondenzSprache;
-
-	private boolean hasZpvNummer;
 
 	@Nullable
 	public String getMail() {
@@ -123,13 +121,5 @@ public class JaxGesuchsteller extends JaxAbstractPersonDTO {
 	@Override
 	public void setGeschlecht(Geschlecht geschlecht) {
 		this.geschlecht = geschlecht;
-	}
-
-	public boolean isHasZpvNummer() {
-		return hasZpvNummer;
-	}
-
-	public void setHasZpvNummer(boolean hasZpvNummer) {
-		this.hasZpvNummer = hasZpvNummer;
 	}
 }

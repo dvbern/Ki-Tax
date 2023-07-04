@@ -25,7 +25,6 @@ export class TSGesuchsteller extends TSAbstractPersonEntity {
     private _diplomatenstatus: boolean;
     private _korrespondenzSprache: TSSprache;
     private _notfallnummer: string;
-    private _hasZpvNummer: boolean;
 
     public constructor() {
         super();
@@ -85,14 +84,6 @@ export class TSGesuchsteller extends TSAbstractPersonEntity {
 
     public set notfallnummer(value: string) {
         this._notfallnummer = value;
-    }
-
-    public get hasZpvNummer(): boolean {
-        return this._hasZpvNummer;
-    }
-
-    public set hasZpvNummer(value: boolean) {
-        this._hasZpvNummer = value;
     }
 
     public getPhone(): string {

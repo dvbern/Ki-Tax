@@ -475,7 +475,6 @@ public class JaxBConverter extends AbstractConverter {
 		jaxGesuchsteller.setTelefonAusland(persistedGesuchsteller.getTelefonAusland());
 		jaxGesuchsteller.setDiplomatenstatus(persistedGesuchsteller.isDiplomatenstatus());
 		jaxGesuchsteller.setKorrespondenzSprache(persistedGesuchsteller.getKorrespondenzSprache());
-		jaxGesuchsteller.setHasZpvNummer(StringUtils.isNotEmpty(persistedGesuchsteller.getZpvNummer()));
 
 		return jaxGesuchsteller;
 	}

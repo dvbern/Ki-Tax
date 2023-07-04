@@ -14,6 +14,7 @@ export class ZpvNrSuccessComponent implements OnInit {
 
     public isAuthenticated: boolean;
     public gesuchOfGS: TSGesuch;
+    public isZpvNummerErfolgreichVerknuepft: boolean;
 
     public constructor(
         private readonly authService: AuthServiceRS,
@@ -28,14 +29,9 @@ export class ZpvNrSuccessComponent implements OnInit {
             this.gesuchRS.findGesuchOfGesuchsteller(this.uiRouterGlobals.params.gesuchstellerId)
                 .then(gesuch => this.gesuchOfGS = gesuch);
         }
-    }
 
-    public isZpvNummerVerknuepft() {
-        if (this.getGSNumber() === 2) {
-            return this.gesuchOfGS?.gesuchsteller2.gesuchstellerJA.hasZpvNummer;
-        }
-
-        return this.gesuchOfGS?.gesuchsteller1.gesuchstellerJA.hasZpvNummer;
+        this.gesuchRS.zpvNummerErfolgreichVerknuepft(this.uiRouterGlobals.params.gesuchstellerId)
+            .then(isErfolgreich => this.isZpvNummerErfolgreichVerknuepft = isErfolgreich);
     }
 
     public getGSNumber(): number {
