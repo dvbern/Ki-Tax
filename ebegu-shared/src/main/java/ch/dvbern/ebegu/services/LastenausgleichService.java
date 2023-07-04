@@ -38,7 +38,7 @@ public interface LastenausgleichService {
 	 * Gibt alle vorhandenen Lastenausgleiche zurück.
 	 */
 	@Nonnull
-	Collection<Lastenausgleich> getAllLastenausgleiche();
+	Collection<Lastenausgleich> getAllLastenausgleiche(@Nonnull Mandant mandant);
 
 	/**
 	 * Gibt alle Lastenausgleiche für die Gemeinden zurück. Die LastenausgleichDetails mit Gemeinden, die nicht in
@@ -46,7 +46,7 @@ public interface LastenausgleichService {
 	 * persistiert.
 	 */
 	@Nonnull
-	Collection<Lastenausgleich> getLastenausgleicheForGemeinden(@Nonnull Set<Gemeinde> gemeinden);
+	Collection<Lastenausgleich> getLastenausgleicheForGemeinden(@Nonnull Set<Gemeinde> gemeinden, @Nonnull Mandant mandant);
 
 	/**
 	 * Alte Lastenausgleich Berechung.

@@ -29,7 +29,7 @@ import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
 import {MatRadioChange} from '@angular/material/radio';
 import {TranslateService} from '@ngx-translate/core';
 import {StateService, UIRouterGlobals} from '@uirouter/core';
-import {BehaviorSubject, combineLatest, Subject, Subscription} from 'rxjs';
+import {BehaviorSubject, combineLatest, ReplaySubject, Subject, Subscription} from 'rxjs';
 import {map, startWith} from 'rxjs/operators';
 import {EinstellungRS} from '../../../../../admin/service/einstellungRS.rest';
 import {AuthServiceRS} from '../../../../../authentication/service/AuthServiceRS.rest';
@@ -87,8 +87,8 @@ export class GemeindeAngabenComponent implements OnInit, OnDestroy {
     public formularInitForm: FormGroup;
     private subscription: Subscription;
     public abschliessenValidationActive = false;
-    public lohnnormkostenSettingMoreThanFifty$: Subject<TSEinstellung> = new Subject<TSEinstellung>();
-    public lohnnormkostenSettingLessThanFifty$: Subject<TSEinstellung> = new Subject<TSEinstellung>();
+    public lohnnormkostenSettingMoreThanFifty$: Subject<TSEinstellung> = new ReplaySubject<TSEinstellung>(1);
+    public lohnnormkostenSettingLessThanFifty$: Subject<TSEinstellung> = new ReplaySubject<TSEinstellung>(1);
 
     public saveVisible: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
     public abschliessenVisible: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
