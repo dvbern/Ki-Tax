@@ -2928,7 +2928,7 @@
     "INIT_GS2_ZPVNR_ERKLAERUNG": "Une fois le présent formulaire envoyé, vous recevrez une invitation contenant un lien. Cliquez sur ce lien et connectez-vous à BE-Login afin de relier votre compte à votre demande dans kiBon. <br><b>Attention</b>: veuillez utiliser la même adresse électronique BE-Login que celle que vous avez utilisée pour remplir la déclaration d’impôt. ",
     "SEND_MAIL": "Envoyer un courriel",
     "ZPV_GS2_SUCCESS": "Vous avez lié avec succès votre compte avec un deuxième BE-Login. Vous pouvez vous identifier à nouveau, dans kiBon, avec votre compte principal.",
-    "ZPV_GS_NICHT_VERKNUEPFT": "Der Antrag konnte nicht mit dem BE-Login verknüpft werden. Der ID-Nachweis wurde beim angegebenen BE-Login nicht erbracht. Stellen Sie sicher, dass Sie die E-Mail Adresse des BE-Login angegeben haben, mit dem Sie die Steuererklärung ausgefüllt haben.",
+    "ZPV_GS_NICHT_VERKNUEPFT": "La demande n'a pas pu être associée au login BE. La preuve de l'identité n'a pas été fournie pour le login BE-Login. Assurez-vous d'avoir indiqué l'adresse e-mail du BE-Login avec lequel vous avez rempli la déclaration d'impôts.",
     "ZPV_GS2_WEITERLEITUNG": "Vous allez être redirigé(e) vers le BE-Login",
     "NEIN_UNTERHALTSVEREINBARUNG": "Non, nous ne souhaitons pas conclure de convention d’entretien.",
     "JA_UNTERHALTSVEREINBARUNG": "Oui",
