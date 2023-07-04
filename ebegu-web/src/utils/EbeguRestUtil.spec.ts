@@ -618,7 +618,6 @@ describe('EbeguRestUtil', () => {
         myGesuchsteller.telefonAusland = undefined;
         myGesuchsteller.diplomatenstatus = false;
         myGesuchsteller.korrespondenzSprache = undefined;
-        myGesuchsteller.hasZpvNummer = undefined;
         myGesuchstellerCont.korrespondenzAdresse = undefined;
         myGesuchstellerCont.rechnungsAdresse = undefined;
         myGesuchstellerCont.adressen = [];
