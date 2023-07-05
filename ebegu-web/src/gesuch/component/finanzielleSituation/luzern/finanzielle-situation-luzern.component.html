@@ -35,8 +35,11 @@
                 <div class="row" *ngIf="showInfomaFields()">
                     <div class="col-md-12 margin-bottom-20">
                         <h3 translate class="uppercase ebegu-h1">ZAHLUNGSINFORMATIONEN</h3>
-                        <div class="margin-top-10 margin-bottom-30">
+                        <div class="margin-top-10">
                             <p class="italic" translate>ANGABEN_ZAHLUNGSINFORMATIONEN</p>
+                        </div>
+                        <div class="margin-top-10 margin-bottom-30" *ngIf="isMutation()">
+                            <p class="italic" translate>MUTATION_AENDERUNG_AUSZAHLUNGSKONTO</p>
                         </div>
                     </div>
                     <div class="col-md-12">
