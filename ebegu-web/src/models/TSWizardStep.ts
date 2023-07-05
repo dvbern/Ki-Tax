@@ -24,6 +24,7 @@ export class TSWizardStep extends TSAbstractMutableEntity {
     private _wizardStepStatus: TSWizardStepStatus;
     private _bemerkungen: string;
     private _verfuegbar: boolean;
+    private _bemerkungenDossier: string;
 
     public constructor() {
         super();
@@ -67,5 +68,13 @@ export class TSWizardStep extends TSAbstractMutableEntity {
 
     public set verfuegbar(value: boolean) {
         this._verfuegbar = value;
+    }
+
+    get bemerkungenDossier(): string {
+        return this._bemerkungenDossier;
+    }
+
+    set bemerkungenDossier(value: string) {
+        this._bemerkungenDossier = value;
     }
 }

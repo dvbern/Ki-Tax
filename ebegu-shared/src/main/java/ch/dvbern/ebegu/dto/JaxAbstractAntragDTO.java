@@ -17,6 +17,7 @@ package ch.dvbern.ebegu.dto;
 
 import java.io.Serializable;
 
+import javax.annotation.Nullable;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -44,6 +45,8 @@ public class JaxAbstractAntragDTO implements Serializable {
 	private String fallId;
 
 	private String clazz;
+
+	private String BemerkungenDossier;
 
 	public JaxAbstractAntragDTO(String clazz) {
 		this.clazz = clazz;
@@ -87,5 +90,13 @@ public class JaxAbstractAntragDTO implements Serializable {
 
 	public void setFallId(String fallId) {
 		this.fallId = fallId;
+	}
+
+	public String getBemerkungenDossier() {
+		return BemerkungenDossier;
+	}
+
+	public void setBemerkungenDossier(final String bemerkungenDossier) {
+		BemerkungenDossier = bemerkungenDossier;
 	}
 }

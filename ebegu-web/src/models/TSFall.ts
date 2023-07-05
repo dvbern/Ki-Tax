@@ -23,6 +23,7 @@ export class TSFall extends TSAbstractMutableEntity {
     private _nextNumberKind: number;
     private _besitzer: TSBenutzer;
     private _sozialdienstFall: TSSozialdienstFall;
+    private _bemerkungenDossier: string;
 
     public constructor(fallNummer?: number, nextNumberKind?: number, besitzer?: TSBenutzer) {
         super();
@@ -65,5 +66,12 @@ export class TSFall extends TSAbstractMutableEntity {
 
     public isSozialdienstFall(): boolean {
         return EbeguUtil.isNotNullOrUndefined(this._sozialdienstFall);
+    }
+
+    public get bemerkungenDossier(): string {
+        return this._bemerkungenDossier;
+    }
+    public set bemerkungenDossier(value: string) {
+        this._bemerkungenDossier = value;
     }
 }

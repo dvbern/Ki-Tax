@@ -42,6 +42,8 @@ import {WizardStepManager} from '../../service/wizardStepManager';
 import ISidenavService = angular.material.ISidenavService;
 import ITranslateService = angular.translate.ITranslateService;
 import {TSDemoFeature} from "../../../app/core/directive/dv-hide-feature/TSDemoFeature";
+import {TSFall} from "../../../models/TSFall";
+import {FallRS} from "../../service/fallRS.rest";
 
 const okHtmlDialogTempl = require('../../../gesuch/dialog/okHtmlDialogTemplate.html');
 const removeDialogTempl = require('../../dialog/removeDialogTemplate.html');
@@ -62,6 +64,7 @@ export class KommentarViewController implements IController {
         '$log',
         'GesuchModelManager',
         'GesuchRS',
+        'FallRS',
         'DokumenteRS',
         'DownloadRS',
         'UploadRS',
@@ -85,6 +88,7 @@ export class KommentarViewController implements IController {
         private readonly $log: ILogService,
         private readonly gesuchModelManager: GesuchModelManager,
         private readonly gesuchRS: GesuchRS,
+        private readonly fallRS: FallRS,
         private readonly dokumenteRS: DokumenteRS,
         private readonly downloadRS: DownloadRS,
         private readonly uploadRS: UploadRS,
@@ -312,5 +316,13 @@ export class KommentarViewController implements IController {
         return TSRoleUtil.getGemeindeRoles().filter(role => role !== TSRole.REVISOR
             && role !== TSRole.JURIST
             && role !== TSRole.STEUERAMT);
+    }
+
+    public getFall(): TSFall {
+        return this.getGesuch().dossier.fall;
+    }
+
+    public saveBemerkungenDossier(): void {
+        this.fallRS.updateBemerkungenDossier(this.getFall().id, this.getFall().bemerkungenDossier);
     }
 }
