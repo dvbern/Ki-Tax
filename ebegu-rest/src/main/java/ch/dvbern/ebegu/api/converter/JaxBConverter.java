@@ -751,6 +751,7 @@ public class JaxBConverter extends AbstractConverter {
 				fallJAXP.getSozialdienstFall(),
 				sozialdienstFall));
 		}
+		fall.setBemerkungenDossier(fallJAXP.getBemerkungenDossier());
 		return fall;
 	}
 
