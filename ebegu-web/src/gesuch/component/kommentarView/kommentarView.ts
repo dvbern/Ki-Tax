@@ -41,9 +41,9 @@ import {GlobalCacheService} from '../../service/globalCacheService';
 import {WizardStepManager} from '../../service/wizardStepManager';
 import ISidenavService = angular.material.ISidenavService;
 import ITranslateService = angular.translate.ITranslateService;
-import {TSDemoFeature} from "../../../app/core/directive/dv-hide-feature/TSDemoFeature";
-import {TSFall} from "../../../models/TSFall";
-import {FallRS} from "../../service/fallRS.rest";
+import {TSDemoFeature} from '../../../app/core/directive/dv-hide-feature/TSDemoFeature';
+import {TSFall} from '../../../models/TSFall';
+import {FallRS} from '../../service/fallRS.rest';
 
 const okHtmlDialogTempl = require('../../../gesuch/dialog/okHtmlDialogTemplate.html');
 const removeDialogTempl = require('../../dialog/removeDialogTemplate.html');

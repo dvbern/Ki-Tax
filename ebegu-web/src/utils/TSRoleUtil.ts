@@ -800,6 +800,6 @@ export class TSRoleUtil {
             TSRole.SACHBEARBEITER_BG,
             TSRole.ADMIN_TS,
             TSRole.SACHBEARBEITER_TS
-        ]
+        ];
     }
 }

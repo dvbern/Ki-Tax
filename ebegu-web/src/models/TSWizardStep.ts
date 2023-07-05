@@ -70,11 +70,11 @@ export class TSWizardStep extends TSAbstractMutableEntity {
         this._verfuegbar = value;
     }
 
-    get bemerkungenDossier(): string {
+    public get bemerkungenDossier(): string {
         return this._bemerkungenDossier;
     }
 
-    set bemerkungenDossier(value: string) {
+    public set bemerkungenDossier(value: string) {
         this._bemerkungenDossier = value;
     }
 }
