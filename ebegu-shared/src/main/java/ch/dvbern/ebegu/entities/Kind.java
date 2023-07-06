@@ -23,6 +23,7 @@ import javax.annotation.Nullable;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.ForeignKey;
@@ -52,6 +53,7 @@ import org.hibernate.envers.Audited;
 @Table(
 	indexes = @Index(columnList = "geburtsdatum", name = "IX_kind_geburtsdatum")
 )
+@EntityListeners({ AlleFaelleKindListener.class })
 @CheckKinderabzug
 public class Kind extends AbstractPersonEntity {
 
@@ -376,6 +378,7 @@ public class Kind extends AbstractPersonEntity {
 			// Dieser liegt ja in der Kompetenz der Gemeinde und kann nicht uebernommen werden
 			break;
 		case ERNEUERUNG:
+		case ERNEUERUNG_AR_2023:
 		case ERNEUERUNG_NEUES_DOSSIER:
 			target.inPruefung = true;
 			// Ausserordentlicher Anspruch wird nicht kopiert, auch wenn er noch gueltig waere.

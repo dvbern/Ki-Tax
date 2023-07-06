@@ -8,11 +8,11 @@
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
 import {
@@ -38,6 +38,7 @@ import {GemeindeRS} from '../../../gesuch/service/gemeindeRS.rest';
 import {TSPagination} from '../../../models/dto/TSPagination';
 import {DVErrorMessageCallback} from '../../../models/DVErrorMessageCallback';
 import {getTSMitteilungsStatusForFilter, TSMitteilungStatus} from '../../../models/enums/TSMitteilungStatus';
+import {TSMitteilungTyp} from '../../../models/enums/TSMitteilungTyp';
 import {TSMitteilungTypes} from '../../../models/enums/TSMitteilungTypes';
 import {TSRole} from '../../../models/enums/TSRole';
 import {TSVerantwortung} from '../../../models/enums/TSVerantwortung';
@@ -135,14 +136,18 @@ export class PosteingangViewComponent implements OnInit, OnDestroy, AfterViewIni
     public paginationItems: number[];
     public initialEmpfaenger: TSBenutzerNoDetails;
     public filterPredicate: DVPosteingangFilter = {
-        messageTypes: [TSMitteilungTypes.BETREUUNGSMITTEILUNG, TSMitteilungTypes.MITTEILUNG]
+        messageTypes: [TSMitteilungTypes.BETREUUNGSMITTEILUNG,
+            TSMitteilungTypes.MITTEILUNG,
+            TSMitteilungTypes.NEUEVERANLAGUNGMITTEILUNG
+        ]
     };
 
     // StateStore Properties
     public initialFilter: DVPosteingangFilter = {
         messageTypes: [
             TSMitteilungTypes.BETREUUNGSMITTEILUNG,
-            TSMitteilungTypes.MITTEILUNG
+            TSMitteilungTypes.MITTEILUNG,
+            TSMitteilungTypes.NEUEVERANLAGUNGMITTEILUNG
         ]
     };
     public readonly stateStoreId: string = 'posteingangId';
@@ -154,7 +159,6 @@ export class PosteingangViewComponent implements OnInit, OnDestroy, AfterViewIni
     } = {};
 
     public readonly mutationsMeldungDemoFeature = TSDemoFeature.ALLE_MUTATIONSMELDUNGEN_VERFUEGEN;
-    public readonly mitteilungIgnorierenDemoFeature = TSDemoFeature.MITTEILUNG_IGNORIEREN;
 
     public constructor(
         private readonly mitteilungRS: MitteilungRS,
@@ -363,19 +367,7 @@ export class PosteingangViewComponent implements OnInit, OnDestroy, AfterViewIni
             {...this.initialFilter};
 
         return of(initial).pipe(
-            mergeMap(filter => this.getDemoFeatureFilter(filter)),
             mergeMap(filter => this.adaptFilterForPrincipal(filter))
-        );
-    }
-
-    private getDemoFeatureFilter(filter: DVPosteingangFilter): Observable<DVPosteingangFilter> {
-        return from(this.demoFeatureRS.isDemoFeatureAllowed(TSDemoFeature.NEUE_VERANLAGUNG_MITTEILUNG)).pipe(
-            map(isAllowed => {
-                if (isAllowed) {
-                    filter.messageTypes.push(TSMitteilungTypes.NEUEVERANLAGUNGMITTEILUNG);
-                }
-                return filter;
-            })
         );
     }
 
@@ -527,7 +519,7 @@ export class PosteingangViewComponent implements OnInit, OnDestroy, AfterViewIni
     private getOpenTsBetreuungsmitteilungenOfTable(): TSBetreuungsmitteilung[] {
         return this.displayedCollection.data
             .filter(mitteilung =>
-                mitteilung.subject.includes(this.translate.instant('MUTATIONSMELDUNG_BETREFF'))
+                mitteilung.mitteilungTyp === TSMitteilungTyp.BETREUUNGSMITTEILUNG
                 && mitteilung.mitteilungStatus !== TSMitteilungStatus.ERLEDIGT
             )
             .map(mitteilung => mitteilung as TSBetreuungsmitteilung);

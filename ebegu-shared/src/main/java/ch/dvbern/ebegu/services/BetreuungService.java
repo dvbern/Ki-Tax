@@ -36,6 +36,7 @@ import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.BetreuungsmitteilungPensum;
 import ch.dvbern.ebegu.entities.Dossier;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
+import ch.dvbern.ebegu.entities.Institution;
 import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.types.DateRange;
 
@@ -275,4 +276,7 @@ public interface BetreuungService {
 	 */
 	@Nonnull
 	AbstractAnmeldung findVorgaengerAnmeldungNotIgnoriert(AbstractAnmeldung betreuung);
+
+	@Nonnull
+	List<AnmeldungTagesschule> findAnmeldungenTagesschuleByInstitution(@Nonnull Institution institution);
 }

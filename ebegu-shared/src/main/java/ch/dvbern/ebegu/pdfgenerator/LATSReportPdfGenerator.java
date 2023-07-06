@@ -17,12 +17,6 @@
 
 package ch.dvbern.ebegu.pdfgenerator;
 
-import java.math.BigDecimal;
-import java.util.Objects;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
 import ch.dvbern.ebegu.entities.Einstellung;
 import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeinde;
 import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeContainer;
@@ -34,6 +28,11 @@ import com.lowagie.text.Element;
 import com.lowagie.text.Paragraph;
 import com.lowagie.text.Phrase;
 import com.lowagie.text.pdf.PdfPTable;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.math.BigDecimal;
+import java.util.Objects;
 
 public class LATSReportPdfGenerator extends GemeindeAntragReportPdfGenerator {
 
@@ -60,6 +59,9 @@ public class LATSReportPdfGenerator extends GemeindeAntragReportPdfGenerator {
 	protected static final String NORMLOHNKOSTEN_BETREUUNG = "PdfGeneration_normlohnkostenBetreuung";
 	protected static final String TATSACHLICHE_EINNAHMEN_ELTERNGEBUEHREN =
 			"PdfGeneration_tatsachlicheEinnahmenElterngebuehren";
+
+	protected static final String TATSACHLICHE_EINNAHMEN_ELTERNGEBUEHREN_VOLKSSCHULANGEBOT =
+		"PdfGeneration_tatsachlicheEinnahmenElterngebuehrenVolksschulangebot";
 
 	protected static final String LATS_BETRAG = "PdfGeneration_latsBetrag";
 	protected static final String ERSTE_RATE = "PdfGeneration_ersteRate";
@@ -219,6 +221,9 @@ public class LATSReportPdfGenerator extends GemeindeAntragReportPdfGenerator {
 		table.addRow(
 				translate(TATSACHLICHE_EINNAHMEN_ELTERNGEBUEHREN, mandant, getSchuljahrAsString()),
 				angabenGemeinde.getEinnahmenElterngebuehren());
+		table.addRow(
+			translate(TATSACHLICHE_EINNAHMEN_ELTERNGEBUEHREN_VOLKSSCHULANGEBOT, mandant, getSchuljahrAsString()),
+			angabenGemeinde.getEinnahmenElterngebuehrenVolksschulangebot());
 
 		table.addRow(
 				translate(LATS_BETRAG, mandant, getSchuljahrAsString()),

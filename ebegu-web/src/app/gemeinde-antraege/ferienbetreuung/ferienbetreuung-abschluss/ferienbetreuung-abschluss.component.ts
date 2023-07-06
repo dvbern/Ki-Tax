@@ -35,6 +35,7 @@ import {DownloadRS} from '../../../core/service/downloadRS.rest';
 import {WizardStepXRS} from '../../../core/service/wizardStepXRS.rest';
 import {FerienbetreuungDokumentService} from '../services/ferienbetreuung-dokument.service';
 import {FerienbetreuungService} from '../services/ferienbetreuung.service';
+import {TSFerienbetreuungAngaben} from '../../../../models/gemeindeantrag/TSFerienbetreuungAngaben';
 
 const LOG = LogFactory.createLog('FerienbetreuungAbschlussComponent');
 
@@ -264,5 +265,19 @@ export class FerienbetreuungAbschlussComponent implements OnInit, OnDestroy {
 
     public abgeschlossen(): boolean {
         return this.container?.isAbgeschlossen();
+    }
+
+    public isBeteiligungGemeindeZuTief(): boolean {
+        return this.getAngabenForStatus().berechnungen?.beteiligungZuTief;
+    }
+
+    private getAngabenForStatus(): TSFerienbetreuungAngaben {
+        return this.container?.isAtLeastInPruefungKantonOrZurueckgegeben() ?
+            this.container?.angabenKorrektur :
+            this.container?.angabenDeklaration;
+    }
+
+    public getKostenEinnahmenLink(): string {
+        return this.stateService.href('FERIENBETREUUNG.KOSTEN_EINNAHMEN', {}, {absolute: true});
     }
 }

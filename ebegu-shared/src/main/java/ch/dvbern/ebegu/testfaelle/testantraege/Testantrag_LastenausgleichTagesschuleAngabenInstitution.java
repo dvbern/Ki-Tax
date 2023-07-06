@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2021 DV Bern AG, Switzerland
+ * Copyright (C) 2023 DV Bern AG, Switzerland
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -33,6 +33,7 @@ public class Testantrag_LastenausgleichTagesschuleAngabenInstitution {
 		// B
 		this.angabenInstitution.setAnzahlEingeschriebeneKinder(new BigDecimal(25));
 		this.angabenInstitution.setAnzahlEingeschriebeneKinderKindergarten(BigDecimal.TEN);
+		this.angabenInstitution.setAnzahlEingeschriebeneKinder(BigDecimal.ZERO);
 		this.angabenInstitution.setAnzahlEingeschriebeneKinderSekundarstufe(BigDecimal.TEN);
 		this.angabenInstitution.setAnzahlEingeschriebeneKinderPrimarstufe(new BigDecimal(5));
 		this.angabenInstitution.setAnzahlEingeschriebeneKinderMitBesonderenBeduerfnissen(new BigDecimal(5));

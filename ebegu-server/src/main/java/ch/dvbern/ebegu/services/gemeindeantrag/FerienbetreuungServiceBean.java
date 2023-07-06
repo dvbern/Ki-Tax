@@ -17,64 +17,32 @@
 
 package ch.dvbern.ebegu.services.gemeindeantrag;
 
-import java.time.LocalDate;
-import java.time.format.DateTimeParseException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
+import ch.dvbern.ebegu.authentication.PrincipalBean;
+import ch.dvbern.ebegu.config.EbeguConfiguration;
+import ch.dvbern.ebegu.entities.*;
+import ch.dvbern.ebegu.entities.gemeindeantrag.*;
+import ch.dvbern.ebegu.enums.ErrorCodeEnum;
+import ch.dvbern.ebegu.enums.Sprache;
+import ch.dvbern.ebegu.enums.UserRole;
+import ch.dvbern.ebegu.enums.gemeindeantrag.FerienbetreuungAngabenStatus;
+import ch.dvbern.ebegu.enums.gemeindeantrag.FerienbetreuungFormularStatus;
+import ch.dvbern.ebegu.errors.*;
+import ch.dvbern.ebegu.services.*;
+import ch.dvbern.ebegu.services.util.PredicateHelper;
+import ch.dvbern.ebegu.util.Constants;
+import ch.dvbern.ebegu.util.EnumUtil;
+import ch.dvbern.lib.cdipersistence.Persistence;
+import com.google.common.base.Preconditions;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Expression;
-import javax.persistence.criteria.JoinType;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
-
-import ch.dvbern.ebegu.authentication.PrincipalBean;
-import ch.dvbern.ebegu.config.EbeguConfiguration;
-import ch.dvbern.ebegu.entities.Benutzer;
-import ch.dvbern.ebegu.entities.Gemeinde;
-import ch.dvbern.ebegu.entities.GemeindeStammdaten;
-import ch.dvbern.ebegu.entities.Gemeinde_;
-import ch.dvbern.ebegu.entities.Gesuchsperiode;
-import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungAngaben;
-import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungAngabenAngebot;
-import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungAngabenContainer;
-import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungAngabenContainer_;
-import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungAngabenKostenEinnahmen;
-import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungAngabenNutzung;
-import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungAngabenStammdaten;
-import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungDokument;
-import ch.dvbern.ebegu.enums.ErrorCodeEnum;
-import ch.dvbern.ebegu.enums.Sprache;
-import ch.dvbern.ebegu.enums.UserRole;
-import ch.dvbern.ebegu.enums.gemeindeantrag.FerienbetreuungAngabenStatus;
-import ch.dvbern.ebegu.enums.gemeindeantrag.FerienbetreuungFormularStatus;
-import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
-import ch.dvbern.ebegu.errors.EbeguRuntimeException;
-import ch.dvbern.ebegu.errors.EntityExistsException;
-import ch.dvbern.ebegu.errors.KibonLogLevel;
-import ch.dvbern.ebegu.errors.MergeDocException;
-import ch.dvbern.ebegu.services.AbstractBaseService;
-import ch.dvbern.ebegu.services.Authorizer;
-import ch.dvbern.ebegu.services.BenutzerService;
-import ch.dvbern.ebegu.services.GemeindeService;
-import ch.dvbern.ebegu.services.GesuchsperiodeService;
-import ch.dvbern.ebegu.services.PDFService;
-import ch.dvbern.ebegu.services.util.PredicateHelper;
-import ch.dvbern.ebegu.util.Constants;
-import ch.dvbern.ebegu.util.EnumUtil;
-import ch.dvbern.lib.cdipersistence.Persistence;
-import com.google.common.base.Preconditions;
+import javax.persistence.criteria.*;
+import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
+import java.util.*;
 
 /**
  * Service fuer die Ferienbetreuungen
@@ -400,6 +368,16 @@ public class FerienbetreuungServiceBean extends AbstractBaseService
 
 	@Nonnull
 	@Override
+	public Optional<FerienbetreuungBerechnungen> findFerienbetreuungBerechnung(@Nonnull String berechnungId) {
+		Objects.requireNonNull(berechnungId, ID_MUSS_GESETZT_SEIN);
+
+		FerienbetreuungBerechnungen berechnungen = persistence.find(FerienbetreuungBerechnungen.class, berechnungId);
+
+		return Optional.ofNullable(berechnungen);
+	}
+
+	@Nonnull
+	@Override
 	public FerienbetreuungAngabenStammdaten saveFerienbetreuungAngabenStammdaten(
 		@Nonnull FerienbetreuungAngabenStammdaten stammdaten) {
 		return persistence.merge(stammdaten);
@@ -424,6 +402,12 @@ public class FerienbetreuungServiceBean extends AbstractBaseService
 	public FerienbetreuungAngabenKostenEinnahmen saveFerienbetreuungAngabenKostenEinnahmen(
 		@Nonnull FerienbetreuungAngabenKostenEinnahmen kostenEinnahmen) {
 		return persistence.merge(kostenEinnahmen);
+	}
+
+	@Nonnull
+	@Override
+	public FerienbetreuungBerechnungen saveFerienbetreuungBerechnungen(@Nonnull FerienbetreuungBerechnungen berechnungen) {
+		return persistence.merge(berechnungen);
 	}
 
 	@Nonnull

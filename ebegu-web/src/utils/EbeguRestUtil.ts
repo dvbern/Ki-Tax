@@ -3879,6 +3879,7 @@ export class EbeguRestUtil {
             tsMitteilung.message = mitteilungFromServer.message;
             tsMitteilung.mitteilungStatus = mitteilungFromServer.mitteilungStatus;
             tsMitteilung.sentDatum = DateUtil.localDateTimeToMoment(mitteilungFromServer.sentDatum);
+            tsMitteilung.mitteilungTyp = mitteilungFromServer.mitteilungTyp;
             return tsMitteilung;
         }
         return undefined;
@@ -5045,6 +5046,8 @@ export class EbeguRestUtil {
                 gemeindeFromServer.davonStundenZuNormlohnWenigerAls50ProzentAusgebildete;
             gemeindeTS.einnahmenElterngebuehren =
                 gemeindeFromServer.einnahmenElterngebuehren;
+            gemeindeTS.einnahmenElterngebuehrenVolksschulangebot =
+                gemeindeFromServer.einnahmenElterngebuehrenVolksschulangebot;
             gemeindeTS.ersteRateAusbezahlt =
                 gemeindeFromServer.ersteRateAusbezahlt;
             gemeindeTS.tagesschuleTeilweiseGeschlossen =
@@ -5093,6 +5096,8 @@ export class EbeguRestUtil {
             // Bemerkungen
             gemeindeTS.bemerkungen =
                 gemeindeFromServer.bemerkungen;
+            gemeindeTS.bemerkungStarkeVeraenderung =
+                gemeindeFromServer.bemerkungStarkeVeraenderung;
             // Berechnungen
             gemeindeTS.lastenausgleichberechtigteBetreuungsstunden =
                 gemeindeFromServer.lastenausgleichberechtigteBetreuungsstunden;
@@ -5147,6 +5152,8 @@ export class EbeguRestUtil {
                 tsAngabenGemeinde.davonStundenZuNormlohnWenigerAls50ProzentAusgebildete;
             restAngabenGemeinde.einnahmenElterngebuehren =
                 tsAngabenGemeinde.einnahmenElterngebuehren;
+            restAngabenGemeinde.einnahmenElterngebuehrenVolksschulangebot =
+                tsAngabenGemeinde.einnahmenElterngebuehrenVolksschulangebot;
             restAngabenGemeinde.tagesschuleTeilweiseGeschlossen =
                 tsAngabenGemeinde.tagesschuleTeilweiseGeschlossen;
             restAngabenGemeinde.rueckerstattungenElterngebuehrenSchliessung =
@@ -5195,6 +5202,8 @@ export class EbeguRestUtil {
             // Bemerkungen
             restAngabenGemeinde.bemerkungen =
                 tsAngabenGemeinde.bemerkungen;
+            restAngabenGemeinde.bemerkungStarkeVeraenderung =
+                tsAngabenGemeinde.bemerkungStarkeVeraenderung;
             // Berechnungen
             restAngabenGemeinde.lastenausgleichberechtigteBetreuungsstunden =
                 tsAngabenGemeinde.lastenausgleichberechtigteBetreuungsstunden;
@@ -5310,6 +5319,8 @@ export class EbeguRestUtil {
                 angabenInstitutionFromServer.anzahlEingeschriebeneKinderMitBesonderenBeduerfnissen;
             angabenInstitutionTS.anzahlEingeschriebeneKinderVolksschulangebot =
                 angabenInstitutionFromServer.anzahlEingeschriebeneKinderVolksschulangebot;
+            angabenInstitutionTS.anzahlEingeschriebeneKinderBasisstufe =
+                angabenInstitutionFromServer.anzahlEingeschriebeneKinderBasisstufe;
             angabenInstitutionTS.durchschnittKinderProTagFruehbetreuung =
                 angabenInstitutionFromServer.durchschnittKinderProTagFruehbetreuung;
             angabenInstitutionTS.durchschnittKinderProTagMittag =
@@ -5382,6 +5393,8 @@ export class EbeguRestUtil {
                 tsAngabenInstitution.anzahlEingeschriebeneKinderMitBesonderenBeduerfnissen;
             restAngabenInstitution.anzahlEingeschriebeneKinderVolksschulangebot =
                 tsAngabenInstitution.anzahlEingeschriebeneKinderVolksschulangebot;
+            restAngabenInstitution.anzahlEingeschriebeneKinderBasisstufe =
+                tsAngabenInstitution.anzahlEingeschriebeneKinderBasisstufe;
             restAngabenInstitution.durchschnittKinderProTagFruehbetreuung =
                 tsAngabenInstitution.durchschnittKinderProTagFruehbetreuung;
             restAngabenInstitution.durchschnittKinderProTagMittag = tsAngabenInstitution.durchschnittKinderProTagMittag;
@@ -5529,10 +5542,9 @@ export class EbeguRestUtil {
         restFerienbetreuung.nutzung = this.ferienbetreuungNutzungToRestObject({}, ferienbetreuungTS.nutzung);
         restFerienbetreuung.kostenEinnahmen =
             this.ferienbetreuungKostenEinnahmenToRestObject({}, ferienbetreuungTS.kostenEinnahmen);
-        if (ferienbetreuungTS.berechnungen) {
-            restFerienbetreuung.berechnungen =
-                this.ferienbetreuungBerechnungenToRestObject({}, ferienbetreuungTS.berechnungen);
-        }
+        restFerienbetreuung.berechnungen =
+            this.parseFerienbetreuungBerechnungenToRestObject({}, ferienbetreuungTS.berechnungen);
+
         return restFerienbetreuung;
         // never send kantonsbeitrag and gemeindebeitrag to server
     }
@@ -5693,6 +5705,10 @@ export class EbeguRestUtil {
             new TSFerienbetreuungAngabenKostenEinnahmen(),
             ferienbetreuungFromServer.kostenEinnahmen
         );
+        ferienbetreuungTS.berechnungen = this.parseFerienbetreuungBerechnung(
+            new TSFerienbetreuungBerechnung(),
+            ferienbetreuungFromServer.berechnungen
+        );
         ferienbetreuungTS.kantonsbeitrag = ferienbetreuungFromServer.kantonsbeitrag;
         ferienbetreuungTS.gemeindebeitrag = ferienbetreuungFromServer.gemeindebeitrag;
         return ferienbetreuungTS;
@@ -5820,7 +5836,31 @@ export class EbeguRestUtil {
         return kostenEinnahmenTS;
     }
 
-    private ferienbetreuungBerechnungenToRestObject(restBerechnung: any, berechnung: TSFerienbetreuungBerechnung): any {
+    public parseFerienbetreuungBerechnung(
+        berechnungTS: TSFerienbetreuungBerechnung,
+        berechnungFromServer: any
+    ): TSFerienbetreuungBerechnung | undefined {
+
+        if (!berechnungFromServer) {
+            return undefined;
+        }
+
+        this.parseAbstractEntity(berechnungTS, berechnungFromServer);
+        berechnungTS.totalKosten = berechnungFromServer.totalKosten;
+        berechnungTS.totalLeistungenLeistungsvertrag = berechnungFromServer.totalLeistungenLeistungsvertrag;
+        berechnungTS.betreuungstageKinderDieserGemeindeMinusSonderschueler =
+            berechnungFromServer.betreuungstageKinderDieserGemeindeMinusSonderschueler;
+        berechnungTS.betreuungstageKinderAndererGemeindeMinusSonderschueler =
+            berechnungFromServer._betreuungstageKinderAndererGemeindeMinusSonderschueler;
+        berechnungTS.totalKantonsbeitrag = berechnungFromServer.totalKantonsbeitrag;
+        berechnungTS.beitragFuerKinderDerAnbietendenGemeinde =
+            berechnungFromServer.beitragFuerKinderDerAnbietendenGemeinde;
+        berechnungTS.beteiligungZuTief = berechnungFromServer.beteiligungZuTief;
+        return berechnungTS;
+    }
+
+    public parseFerienbetreuungBerechnungenToRestObject(restBerechnung: any, berechnung: TSFerienbetreuungBerechnung): any {
+        this.abstractEntityToRestObject(restBerechnung, berechnung);
         restBerechnung.totalKosten = berechnung.totalKosten;
         restBerechnung.betreuungstageKinderDieserGemeindeMinusSonderschueler =
             berechnung.betreuungstageKinderDieserGemeindeMinusSonderschueler;

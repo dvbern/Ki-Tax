@@ -62,6 +62,7 @@ public abstract class AbstractMutableEntity extends AbstractEntity {
 			target.setVorgaengerId(this.getId());
 			break;
 		case ERNEUERUNG:
+		case ERNEUERUNG_AR_2023:
 		case MUTATION_NEUES_DOSSIER:
 		case ERNEUERUNG_NEUES_DOSSIER:
 			target.setVorgaengerId(null);

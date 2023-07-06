@@ -9,12 +9,12 @@ import {EbeguUtil} from '../../../utils/EbeguUtil';
     selector: 'dv-zpv-nr-success',
     templateUrl: './zpv-nr-success.component.html',
     styleUrls: ['./zpv-nr-success.component.less'],
-    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ZpvNrSuccessComponent implements OnInit {
 
     public isAuthenticated: boolean;
     public gesuchOfGS: TSGesuch;
+    public isZpvNummerErfolgreichVerknuepft: boolean;
 
     public constructor(
         private readonly authService: AuthServiceRS,
@@ -29,6 +29,9 @@ export class ZpvNrSuccessComponent implements OnInit {
             this.gesuchRS.findGesuchOfGesuchsteller(this.uiRouterGlobals.params.gesuchstellerId)
                 .then(gesuch => this.gesuchOfGS = gesuch);
         }
+
+        this.gesuchRS.zpvNummerErfolgreichVerknuepft(this.uiRouterGlobals.params.gesuchstellerId)
+            .then(isErfolgreich => this.isZpvNummerErfolgreichVerknuepft = isErfolgreich);
     }
 
     public getGSNumber(): number {

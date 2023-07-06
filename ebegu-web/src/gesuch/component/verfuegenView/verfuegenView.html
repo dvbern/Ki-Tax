@@ -577,11 +577,9 @@
                     </div>
 
                     <!-- Info über Korrektur Betrag in Mutation -->
-                    <dv-demo-feature-wrapper  demo-feature="{{vm.demoFeature}}">
-                        <div ng-if="vm.showInfoUeberKorrekutren()" class="well margin-top-20">
-                            <div ng-bind-html="vm.getKorrekturenString()" class="white-space-pre-wrap"></div>
-                        </div>
-                    </dv-demo-feature-wrapper>
+                    <div ng-if="vm.showInfoUeberKorrekutren()" class="well margin-top-20">
+                        <div ng-bind-html="vm.getKorrekturenString()" class="white-space-pre-wrap"></div>
+                    </div>
 
                     <!--VerfuegungPDF anzeigen-->
                     <div class="row margin-top-20 text-left">

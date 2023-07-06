@@ -160,6 +160,9 @@ type LogHandler = (level: LogLevel, args: any[], moduleName: string, backgroundC
  * The classic logger interface...
  */
 export class Log {
+
+    private readonly formatter = new Intl.DateTimeFormat('de-ch', { dateStyle: 'short',timeStyle: 'long'});
+
     public constructor(
         private readonly logHandler: LogHandler,
         public readonly name: string,
@@ -169,18 +172,22 @@ export class Log {
     }
 
     public error(...args: any[]): void {
+        args.unshift(this.formatter.format(new Date()));
         this.logHandler(LogLevel.ERROR, args, this.name, this.backgroundColor);
     }
 
     public warn(...args: any[]): void {
+        args.unshift(this.formatter.format(new Date()));
         this.logHandler(LogLevel.WARN, args, this.name, this.backgroundColor);
     }
 
     public info(...args: any[]): void {
+        args.unshift(this.formatter.format(new Date()));
         this.logHandler(LogLevel.INFO, args, this.name, this.backgroundColor);
     }
 
     public debug(...args: any[]): void {
+        args.unshift(this.formatter.format(new Date()));
         this.logHandler(LogLevel.DEBUG, args, this.name, this.backgroundColor);
     }
 

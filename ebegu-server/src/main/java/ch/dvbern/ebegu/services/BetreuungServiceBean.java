@@ -574,6 +574,19 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 		return vorgaenger;
 	}
 
+	@Nonnull
+	@Override
+	public List<AnmeldungTagesschule> findAnmeldungenTagesschuleByInstitution(@Nonnull final Institution institution) {
+		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
+		final CriteriaQuery<AnmeldungTagesschule> query = cb.createQuery(AnmeldungTagesschule.class);
+
+		Root<AnmeldungTagesschule> root = query.from(AnmeldungTagesschule.class);
+		final Join<AnmeldungTagesschule, InstitutionStammdaten> stammdatenJoin = root.join(AbstractPlatz_.INSTITUTION_STAMMDATEN, JoinType.LEFT);
+		Predicate predicate = cb.equal(stammdatenJoin.get(InstitutionStammdaten_.INSTITUTION), institution);
+		query.where(predicate);
+		return persistence.getCriteriaResults(query);
+	}
+
 	/**
 	 * Generiert das Anmeldebestaetigungsdokument.
 	 *

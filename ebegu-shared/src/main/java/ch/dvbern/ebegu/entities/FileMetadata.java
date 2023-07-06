@@ -15,7 +15,11 @@
 
 package ch.dvbern.ebegu.entities;
 
-import java.util.Objects;
+import ch.dvbern.ebegu.enums.AntragCopyType;
+import ch.dvbern.ebegu.util.UploadFileInfo;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.hibernate.envers.Audited;
 
 import javax.annotation.Nonnull;
 import javax.persistence.Column;
@@ -24,12 +28,7 @@ import javax.persistence.InheritanceType;
 import javax.persistence.MappedSuperclass;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-
-import ch.dvbern.ebegu.enums.AntragCopyType;
-import ch.dvbern.ebegu.util.UploadFileInfo;
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.hibernate.envers.Audited;
+import java.util.Objects;
 
 import static ch.dvbern.ebegu.util.Constants.DB_DEFAULT_MAX_LENGTH;
 import static ch.dvbern.ebegu.util.Constants.DB_TEXTAREA_LENGTH;
@@ -118,6 +117,7 @@ public abstract class FileMetadata extends AbstractMutableEntity {
 		switch (copyType) {
 		case MUTATION:
 		case MUTATION_NEUES_DOSSIER:
+		case ERNEUERUNG_AR_2023:
 			target.setFilename(this.getFilename());
 			target.setFilepfad(this.getFilepfad());
 			target.setFilesize(this.getFilesize());

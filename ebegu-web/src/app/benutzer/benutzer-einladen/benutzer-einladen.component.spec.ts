@@ -112,14 +112,14 @@ describe('BenutzerEinladenComponent', () => {
         });
 
         it('should check valid email with specialchar', () => {
-            const invalidEmail = 'test.te#s*t@dvbern.ch';
-            const validationCheck = pattern.test(invalidEmail);
+            const valid = 'test.te#s*t@dvbern.ch';
+            const validationCheck = pattern.test(valid);
             expect(validationCheck).toBeTruthy();
         });
 
         it('should check valid email with hyphen after @', () => {
-            const invalidEmail = 'test.test@dv-bern.ch';
-            const validationCheck = pattern.test(invalidEmail);
+            const valid = 'test.test@dv-bern.ch';
+            const validationCheck = pattern.test(valid);
             expect(validationCheck).toBeTruthy();
         });
 
@@ -133,6 +133,12 @@ describe('BenutzerEinladenComponent', () => {
             const invalidEmail = 'test.test@dvbern.ch)';
             const validationCheck = pattern.test(invalidEmail);
             expect(validationCheck).toBeFalsy();
+        });
+
+        it('should check valid email with .email top-level domain', () => {
+            const valid = 'test.test@dvbern.email';
+            const validationCheck = pattern.test(valid);
+            expect(validationCheck).toBeTruthy();
         });
     });
 });

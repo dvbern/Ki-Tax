@@ -317,7 +317,7 @@ export class FerienbetreuungAngebotComponent extends AbstractFerienbetreuungForm
         if (!this.container) {
             return of().toPromise();
         }
-        const angaben = this.container.isAtLeastInPruefungKanton()
+        const angaben = this.container.isAtLeastInPruefungKantonOrZurueckgegeben()
             ? this.container.angabenKorrektur
             : this.container.angabenDeklaration;
         if (!angaben.kostenEinnahmen) {

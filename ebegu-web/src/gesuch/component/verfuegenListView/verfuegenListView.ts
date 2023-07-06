@@ -109,9 +109,8 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
     private kontingentierungEnabled: boolean = false;
     private readonly ebeguUtil: EbeguUtil;
     private isVerfuegungEingeschriebenSendenAktiv: boolean;
-    public readonly demoFeature = TSDemoFeature.VERAENDERUNG_BEI_MUTATION;
     private letzteIgnorierteGesuchId: string;
-
+    public finSitStatusUpdateIsRunning: boolean = false;
     public constructor(
         private readonly $state: StateService,
         gesuchModelManager: GesuchModelManager,
@@ -407,7 +406,12 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
             deleteText: 'BESCHREIBUNG_GESUCH_STATUS_WECHSELN',
             parentController: undefined,
             elementID: undefined
-        }).then(() => {
+        }).then(async () => {
+
+            //gesuchstatus darf erst updated werden, wenn der finSitStatusRequest fertig ist
+            while (this.finSitStatusUpdateIsRunning) {
+                await new Promise(resolve => setTimeout(resolve, 100));
+            }
             const antragStatus = this.setGesuchStatus(TSAntragStatus.GEPRUEFT);
             this.refreshKinderListe();
             return antragStatus;
@@ -809,13 +813,13 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
         if (!this.getGesuch().finSitStatus) {
             return;
         }
-
+        this.finSitStatusUpdateIsRunning = true;
         this.gesuchRS.changeFinSitStatus(this.getGesuch().id,
             this.getGesuch().finSitStatus).then(() => {
-            this.gesuchModelManager.setGesuch(this.getGesuch());
             // Die Berechnungen neu ausführen, da der FinSit-Status (zumindest bei TS) Einfluss hat auf den Tarif
             this.refreshKinderListe();
             this.form.$setPristine();
+            this.finSitStatusUpdateIsRunning = false;
         });
     }
 

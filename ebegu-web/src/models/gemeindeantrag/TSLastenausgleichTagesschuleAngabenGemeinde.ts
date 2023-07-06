@@ -35,6 +35,7 @@ export class TSLastenausgleichTagesschuleAngabenGemeinde extends TSAbstractEntit
     public davonStundenZuNormlohnMehrAls50ProzentAusgebildete: number;
     public davonStundenZuNormlohnWenigerAls50ProzentAusgebildete: number;
     public einnahmenElterngebuehren: number;
+    public einnahmenElterngebuehrenVolksschulangebot: number;
     public tagesschuleTeilweiseGeschlossen: boolean;
     public rueckerstattungenElterngebuehrenSchliessung: number;
     public ersteRateAusbezahlt: number;
@@ -65,6 +66,7 @@ export class TSLastenausgleichTagesschuleAngabenGemeinde extends TSAbstractEntit
 
     // Bemerkungen
     public bemerkungen: string;
+    public bemerkungStarkeVeraenderung: string;
 
     // Berechnungen
     public lastenausgleichberechtigteBetreuungsstunden: number;

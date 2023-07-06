@@ -31,12 +31,15 @@
 			  class="col-md-12"
               #form="ngForm"
 			  novalidate>
-            <fieldset [disabled]="isGesuchReadonly()">
+            <fieldset [disabled]="isFinSitReadonly()">
                 <div class="row" *ngIf="showInfomaFields()">
                     <div class="col-md-12 margin-bottom-20">
                         <h3 translate class="uppercase ebegu-h1">ZAHLUNGSINFORMATIONEN</h3>
-                        <div class="margin-top-10 margin-bottom-30">
+                        <div class="margin-top-10">
                             <p class="italic" translate>ANGABEN_ZAHLUNGSINFORMATIONEN</p>
+                        </div>
+                        <div class="margin-top-10 margin-bottom-30" *ngIf="isMutation()">
+                            <p class="italic" translate>MUTATION_AENDERUNG_AUSZAHLUNGSKONTO</p>
                         </div>
                     </div>
                     <div class="col-md-12">
@@ -70,6 +73,7 @@
 
                 <dv-finanzielle-situation-require-x [hideVerguenstigungGewunscht]="true"
                                                     [hideSozialhilfeQuestion]="!isGS1()"
+                                                    [disabled]="isFinSitReadonly()"
                                                     [(sozialhilfeBezueger)]="model.familienSituation.sozialhilfeBezueger"
                                                     (sozialhilfeBezuegerChange)="sozialhilfeBezuegerChange()">
                 </dv-finanzielle-situation-require-x>
@@ -88,7 +92,7 @@
                                        [(ngModel)]="model.familienSituation.zustaendigeAmtsstelle"
                                        class="form-control"
                                        [maxlength]="255"
-                                       [disabled]="isGesuchReadonly()"
+                                       [disabled]="isFinSitReadonly()"
                                        required>
                                 <dv-error-messages
                                     [errorObject]="zustaendigeAmtsstelle.errors"
@@ -108,7 +112,7 @@
                                        [(ngModel)]="model.familienSituation.nameBetreuer"
                                        class="form-control"
                                        [maxlength]="255"
-                                       [disabled]="isGesuchReadonly()"
+                                       [disabled]="isFinSitReadonly()"
                                        required>
                                 <dv-error-messages
                                     [errorObject]="nameBetreuer.errors"
@@ -134,7 +138,7 @@
                                 name="quellenbesteuert"
                                 id="quellenbesteuert_id"
                                 #quellenbesteuert="ngModel"
-                                [disabled]="isGesuchReadonly()"
+                                [disabled]="isFinSitReadonly()"
                                 required>
                                 <mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
                                 <mat-radio-button [value]="false">{{'LABEL_NEIN' | translate }}</mat-radio-button>
@@ -158,7 +162,7 @@
                                 name="gemeinsameSteuererklaerung"
                                 id="gemeinsameSteuererklaerung_id"
                                 #gemeinsameSteuererklaerung="ngModel"
-                                [disabled]="isGesuchReadonly()"
+                                [disabled]="isFinSitReadonly()"
                                 required>
                                 <mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
                                 <mat-radio-button [value]="false">{{'LABEL_NEIN' | translate }}</mat-radio-button>
@@ -180,7 +184,7 @@
                                 name="alleinigeStekVorjahr"
                                 id="alleinigeStekVorjahr_id"
                                 #alleinigeStekVorjahr="ngModel"
-                                [disabled]="isGesuchReadonly()"
+                                [disabled]="isFinSitReadonly()"
                                 required>
                                 <mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
                                 <mat-radio-button [value]="false">{{'LABEL_NEIN' | translate }}</mat-radio-button>
@@ -202,7 +206,7 @@
                                 #veranlagt="ngModel"
                                 [(ngModel)]="getModel().finanzielleSituationJA.veranlagt"
                                 (change)="veranlagtChange()"
-                                [disabled]="isGesuchReadonly()"
+                                [disabled]="isFinSitReadonly()"
                                 required>
                                 <mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
                                 <mat-radio-button [value]="false">{{'LABEL_NEIN' | translate }}</mat-radio-button>
@@ -226,7 +230,7 @@
                                 #veranlagtVorjahr="ngModel"
                                 [(ngModel)]="getModel().finanzielleSituationJA.veranlagtVorjahr"
                                 (change)="veranlagtVorjahrChange()"
-                                [disabled]="isGesuchReadonly()"
+                                [disabled]="isFinSitReadonly()"
                                 required>
                                 <mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
                                 <mat-radio-button [value]="false">{{'LABEL_NEIN' | translate }}</mat-radio-button>
@@ -242,7 +246,7 @@
                                           [antragstellerNummer]="getAntragstellerNummer()"
                                           [isGemeinsam]="isGemeinsam()"
                                           [basisJahr]="getYearForSelbstdeklaration()"
-                                          [readOnly]="isGesuchReadonly()"
+                                          [readOnly]="isFinSitReadonly()"
                                           [finanzModel]="model"
                                           [model]="getModel().finanzielleSituationJA"
                                           [isKorrekturModusJungendamtOrFreigegeben]="this.isKorrekturModusJugendamtOrFreigegeben()"
@@ -254,7 +258,7 @@
                                     [year]="getYearForVeranlagung()"
                                     [model]="getModel()"
                                     [finanzModel]="model"
-                                    [readOnly]="isGesuchReadonly()"
+                                    [readOnly]="isFinSitReadonly()"
                     ></dv-veranlagung>
                     <dv-resultat *ngIf="showSelbstdeklaration() || showVeranlagung()"
                                  [isGemeinsam]="isGemeinsam()"

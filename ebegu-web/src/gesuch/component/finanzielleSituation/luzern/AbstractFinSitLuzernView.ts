@@ -34,6 +34,7 @@ import {GesuchModelManager} from '../../../service/gesuchModelManager';
 import {WizardStepManager} from '../../../service/wizardStepManager';
 import {AbstractGesuchViewX} from '../../abstractGesuchViewX';
 import {FinanzielleSituationLuzernService} from './finanzielle-situation-luzern.service';
+import {TSRole} from '../../../../models/enums/TSRole';
 
 export abstract class AbstractFinSitLuzernView extends AbstractGesuchViewX<TSFinanzModel> {
 
@@ -202,8 +203,9 @@ export abstract class AbstractFinSitLuzernView extends AbstractGesuchViewX<TSFin
         return this.gesuchModelManager.getGesuch();
     }
 
-    public isGesuchReadonly(): boolean {
-        return this.gesuchModelManager.isGesuchReadonly();
+    public isFinSitReadonly(): boolean {
+        return this.isGesuchReadonly()
+           ||  (this.getGesuch().isMutation() && this.authServiceRS.isRole(TSRole.GESUCHSTELLER));
     }
 
     public showInfomaFields(): boolean {

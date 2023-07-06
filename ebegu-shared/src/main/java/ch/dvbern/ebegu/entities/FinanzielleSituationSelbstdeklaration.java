@@ -17,17 +17,16 @@
 
 package ch.dvbern.ebegu.entities;
 
-import java.math.BigDecimal;
+import ch.dvbern.ebegu.enums.AntragCopyType;
+import ch.dvbern.ebegu.util.MathUtil;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import org.hibernate.envers.Audited;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-
-import ch.dvbern.ebegu.enums.AntragCopyType;
-import ch.dvbern.ebegu.util.MathUtil;
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-import org.hibernate.envers.Audited;
+import java.math.BigDecimal;
 
 @Audited
 @Entity
@@ -350,6 +349,7 @@ public class FinanzielleSituationSelbstdeklaration extends AbstractMutableEntity
 		switch (copyType) {
 		case MUTATION:
 		case MUTATION_NEUES_DOSSIER:
+		case ERNEUERUNG_AR_2023:
 			target.setEinkunftErwerb(this.getEinkunftErwerb());
 			target.setEinkunftVersicherung(this.getEinkunftVersicherung());
 			target.setEinkunftWertschriften(this.getEinkunftWertschriften());

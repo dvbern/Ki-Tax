@@ -15,20 +15,15 @@
 
 package ch.dvbern.ebegu.entities;
 
-import java.time.LocalDateTime;
-
-import javax.annotation.Nonnull;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.ForeignKey;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.validation.constraints.NotNull;
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-
 import ch.dvbern.ebegu.enums.AntragCopyType;
 import ch.dvbern.lib.date.converters.LocalDateTimeXMLConverter;
 import org.hibernate.envers.Audited;
+
+import javax.annotation.Nonnull;
+import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+import java.time.LocalDateTime;
 
 /**
  * Entitaet zum Speichern von Dokumente in der Datenbank.
@@ -87,6 +82,7 @@ public class Dokument extends FileMetadata {
 		switch (copyType) {
 		case MUTATION:
 		case MUTATION_NEUES_DOSSIER:
+		case ERNEUERUNG_AR_2023:
 			target.setDokumentGrund(targetDokumentGrund);
 			target.setTimestampUpload(getTimestampUpload());
 			break;

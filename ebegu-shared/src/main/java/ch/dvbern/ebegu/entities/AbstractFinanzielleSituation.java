@@ -15,26 +15,17 @@
 
 package ch.dvbern.ebegu.entities;
 
-import java.math.BigDecimal;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.FetchType;
-import javax.persistence.Inheritance;
-import javax.persistence.InheritanceType;
-import javax.persistence.JoinColumn;
-import javax.persistence.MappedSuperclass;
-import javax.persistence.OneToOne;
-import javax.persistence.Transient;
-
 import ch.dvbern.ebegu.enums.AntragCopyType;
 import ch.dvbern.ebegu.enums.FinanzielleSituationTyp;
 import ch.dvbern.ebegu.enums.SteuerdatenAnfrageStatus;
 import ch.dvbern.ebegu.util.MathUtil;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.hibernate.envers.Audited;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.persistence.*;
+import java.math.BigDecimal;
 
 /**
  * Gemeinsame Basisklasse für FinanzielleSituation und Einkommensverschlechterung
@@ -388,6 +379,7 @@ public abstract class AbstractFinanzielleSituation extends AbstractMutableEntity
 		switch (copyType) {
 		case MUTATION:
 		case MUTATION_NEUES_DOSSIER:
+		case ERNEUERUNG_AR_2023:
 			target.setNettolohn(this.getNettolohn());
 			target.setFamilienzulage(this.getFamilienzulage());
 			target.setErsatzeinkommen(this.getErsatzeinkommen());

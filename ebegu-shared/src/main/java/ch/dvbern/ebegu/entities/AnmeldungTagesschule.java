@@ -179,6 +179,7 @@ public class AnmeldungTagesschule extends AbstractAnmeldung {
 
 			break;
 		case ERNEUERUNG:
+		case ERNEUERUNG_AR_2023:
 		case MUTATION_NEUES_DOSSIER:
 		case ERNEUERUNG_NEUES_DOSSIER:
 			break;

@@ -112,23 +112,21 @@
                 <div class="row" dv-show-element
                      dv-show-allowed-roles="vm.TSRoleUtil.getAdministratorJugendamtRole()">
                     <!-- Veränderung der BGs und TS Tarife in Mutationen -->
-                    <dv-demo-feature-wrapper  demo-feature="{{vm.demoFeature}}">
-                        <div ng-if="vm.showSimulationVeranderung()">
-                            <div ng-if="vm.hasMutationVeranderung() && !vm.hasAnyNewOrStornierteBetreuung" class="well margin-top-20">
-                                <span translate>MUTATION_VERAENDERUNG_1</span>
-                                <ul>
-                                    <li ng-if="vm.veraenderungBG !== 0"><span>{{vm.getVeraenderungBgString()}}</span></li>
-                                    <li ng-if="vm.veraenderungTS !== 0"><span>{{vm.getVeraenderungTsString()}}</span></li>
-                                </ul>
-                            </div>
-                            <div ng-if="!vm.hasMutationVeranderung() && !vm.hasAnyNewOrStornierteBetreuung" class="well margin-top-20">
-                                <span translate>MUTATION_KEINE_VERAENDERUNG</span>
-                            </div>
-                            <div ng-if="vm.hasAnyNewOrStornierteBetreuung" class="well margin-top-20">
-                                <span translate>MUTATION_VERAENDERUNG_NICHT_MOEGLICH</span>
-                            </div>
+                    <div ng-if="vm.showSimulationVeranderung()">
+                        <div ng-if="vm.hasMutationVeranderung() && !vm.hasAnyNewOrStornierteBetreuung" class="well margin-top-20">
+                            <span translate>MUTATION_VERAENDERUNG_1</span>
+                            <ul>
+                                <li ng-if="vm.veraenderungBG !== 0"><span>{{vm.getVeraenderungBgString()}}</span></li>
+                                <li ng-if="vm.veraenderungTS !== 0"><span>{{vm.getVeraenderungTsString()}}</span></li>
+                            </ul>
                         </div>
-                    </dv-demo-feature-wrapper>
+                        <div ng-if="!vm.hasMutationVeranderung() && !vm.hasAnyNewOrStornierteBetreuung" class="well margin-top-20">
+                            <span translate>MUTATION_KEINE_VERAENDERUNG</span>
+                        </div>
+                        <div ng-if="vm.hasAnyNewOrStornierteBetreuung" class="well margin-top-20">
+                            <span translate>MUTATION_VERAENDERUNG_NICHT_MOEGLICH</span>
+                        </div>
+                    </div>
                     <!-- Bei ignorierte Gesuchen einen Info zeigen -->
                     <div ng-if="vm.isGesuchIgnoriert()" class="well">
                         <span>{{"GESUCH_IGNORIERT"|translate}}
@@ -261,14 +259,12 @@
               <span class="ie11-fix" dv-show-element
                     dv-show-allowed-roles="vm.TSRoleUtil.getAdministratorOrAmtRole()"
                     dv-show-expression="!vm.gesuchModelManager.isGesuchsperiodeReadonly()">
-                <dv-demo-feature-wrapper demo-feature="{{vm.demoFeature}}">
-                    <button type="button" class="dv-btn cancel-button"
-                            id="button_mutationIgnorieren" ng-click="vm.setMutationIgnorieren()"
-                            aria-label="{{'MUTATION_IGNORIEREN' | translate}}"
-                            ng-if="vm.showIgnoreMutation()">
-                        <span class="uppercase" data-translate="MUTATION_IGNORIEREN"></span>
-                    </button>
-                </dv-demo-feature-wrapper>
+                <button type="button" class="dv-btn cancel-button"
+                        id="button_mutationIgnorieren" ng-click="vm.setMutationIgnorieren()"
+                        aria-label="{{'MUTATION_IGNORIEREN' | translate}}"
+                        ng-if="vm.showIgnoreMutation()">
+                    <span class="uppercase" data-translate="MUTATION_IGNORIEREN"></span>
+                </button>
               </span>
             <span class="ie11-fix" dv-show-element
                   dv-show-allowed-roles="vm.TSRoleUtil.getAdministratorJugendamtRole()"

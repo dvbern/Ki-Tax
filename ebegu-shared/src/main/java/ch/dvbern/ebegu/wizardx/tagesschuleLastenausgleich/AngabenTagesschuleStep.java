@@ -68,6 +68,11 @@ public class AngabenTagesschuleStep implements WizardStep<TagesschuleWizard> {
 			return userInstitutionsAbgeschlossen? WizardStateEnum.OK : WizardStateEnum.IN_BEARBEITUNG;
 		}
 
+		if (wizard.getRole().isRoleGemeindeOrTS() &&
+			wizard.getLastenausgleichTagesschuleAngabenGemeindeContainer().isInPruefungKanton()) {
+			return WizardStateEnum.OK;
+		}
+
 		return wizard.getLastenausgleichTagesschuleAngabenGemeindeContainer().allInstitutionenGeprueft() ?
 			WizardStateEnum.OK :
 			WizardStateEnum.IN_BEARBEITUNG;

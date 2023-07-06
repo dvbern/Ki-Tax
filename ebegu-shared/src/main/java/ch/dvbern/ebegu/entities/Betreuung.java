@@ -416,6 +416,7 @@ public class Betreuung extends AbstractPlatz {
 			target.setEingewoehnung(this.isEingewoehnung());
 			break;
 		case ERNEUERUNG:
+		case ERNEUERUNG_AR_2023:
 		case MUTATION_NEUES_DOSSIER:
 		case ERNEUERUNG_NEUES_DOSSIER:
 			break;

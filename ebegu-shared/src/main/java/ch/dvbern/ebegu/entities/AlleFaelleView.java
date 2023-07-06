@@ -20,26 +20,25 @@ package ch.dvbern.ebegu.entities;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.EnumSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import javax.persistence.CollectionTable;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
-import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
 import javax.persistence.ForeignKey;
 import javax.persistence.Id;
 import javax.persistence.Index;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
@@ -47,13 +46,9 @@ import javax.validation.constraints.Size;
 
 import ch.dvbern.ebegu.enums.AntragStatus;
 import ch.dvbern.ebegu.enums.AntragTyp;
-import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.Eingangsart;
 import ch.dvbern.ebegu.util.Constants;
 import org.hibernate.annotations.Type;
-import org.hibernate.search.annotations.Field;
-import org.hibernate.search.annotations.FieldBridge;
-import org.hibernate.search.bridge.builtin.LongBridge;
 
 @Entity
 @Table(indexes = {
@@ -140,9 +135,8 @@ public class AlleFaelleView {
 	@Column(nullable = true)
 	private String familienName;
 
-	@Nullable
-	@Column(nullable = true)
-	private String kinder;
+	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "antragId")
+	private Set<AlleFaelleViewKind> kinder = new LinkedHashSet<>();
 
 	@Column(nullable = true)
 	@Nullable
@@ -412,12 +406,16 @@ public class AlleFaelleView {
 	}
 
 	@Nullable
-	public String getKinder() {
+	public Set<AlleFaelleViewKind> getKinder() {
 		return kinder;
 	}
 
-	public void setKinder(@Nullable String kinder) {
+	public void setKinder(@NotNull Set<AlleFaelleViewKind> kinder) {
 		this.kinder = kinder;
+	}
+
+	public void addKind(@NotNull AlleFaelleViewKind kind) {
+		this.kinder.add(kind);
 	}
 
 	@Nullable

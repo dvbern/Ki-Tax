@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2021 DV Bern AG, Switzerland
+ * Copyright (C) 2023 DV Bern AG, Switzerland
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -72,6 +72,7 @@ public class Testantrag_LastenausgleichTagesschuleAngabenGemeinde {
 				DAVON_ZU_WENIGER_ALS_50_PROZENT_NORMLOHN));
 		}
 		this.angaben.setEinnahmenElterngebuehren(new BigDecimal(500));
+		this.angaben.setEinnahmenElterngebuehrenVolksschulangebot(BigDecimal.ZERO);
 		this.angaben.setTagesschuleTeilweiseGeschlossen(false);
 		this.angaben.setErsteRateAusbezahlt(new BigDecimal(350));
 		this.angaben.setGeleisteteBetreuungsstundenBesondereVolksschulangebot(BigDecimal.ZERO);

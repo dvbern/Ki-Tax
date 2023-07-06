@@ -63,6 +63,7 @@
 			<url-pattern>/api/v1/mandanten/id/*</url-pattern>
 			<url-pattern>/api/v1/mandanten/all</url-pattern>
 			<url-pattern>/api/v1/gemeinde/activeAndSchulverbund</url-pattern>
+			<url-pattern>/api/v1/gesuche/zpvNummerSuccess/*</url-pattern>
 		</web-resource-collection>
 	</security-constraint>
 	<security-role>
