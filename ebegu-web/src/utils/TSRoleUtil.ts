@@ -790,4 +790,11 @@ export class TSRoleUtil {
             TSRole.ADMIN_TS
         ];
     }
+
+    public static getOnlyInstitutionRoles(): ReadonlyArray<TSRole> {
+        return [
+            TSRole.ADMIN_INSTITUTION,
+            TSRole.SACHBEARBEITER_INSTITUTION
+        ]
+    }
 }
