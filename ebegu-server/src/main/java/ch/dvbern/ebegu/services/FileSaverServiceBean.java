@@ -66,7 +66,11 @@ public class FileSaverServiceBean implements FileSaverService {
 		String ending = getFileNameEnding(uploadFileInfo.getFilename());
 
 		// Wir speichern der Name des Files nicht im FS. Kann sonst Probleme mit Umlauten geben
-		final String absoluteFilePath = ebeguConfiguration.getDocumentFilePath() + '/' + folderName + '/' + uuid + '.' + ending;
+		final String tmpFilePath = ebeguConfiguration.getDocumentFilePath() + '/' + folderName + '/' + uuid + '.' + ending;
+		String absoluteFilePath = FilenameUtils.normalize(tmpFilePath);
+		if (!absoluteFilePath.startsWith(ebeguConfiguration.getDocumentFilePath())) {
+			throw new EbeguRuntimeException("save file", "illegal document path");
+		}
 		uploadFileInfo.setPath(absoluteFilePath);
 		uploadFileInfo.setActualFilename(uuid + "." + ending);
 
