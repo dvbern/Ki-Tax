@@ -354,7 +354,7 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges, Aft
                 this.hiddenColumns.push('verantwortlicherGemeindeantraege');
             }
             if (this.authServiceRS.isOneOfRoles(TSRoleUtil.getOnlyInstitutionRoles())) {
-                this.hiddenColumns.push('internePendenz')
+                this.hiddenColumns.push('internePendenz');
             }
         }
         this.updateColumns();

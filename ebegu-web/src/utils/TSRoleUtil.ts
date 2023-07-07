@@ -795,6 +795,6 @@ export class TSRoleUtil {
         return [
             TSRole.ADMIN_INSTITUTION,
             TSRole.SACHBEARBEITER_INSTITUTION
-        ]
+        ];
     }
 }
