@@ -15,23 +15,6 @@
 
 package ch.dvbern.ebegu.services;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.util.Objects;
-import java.util.UUID;
-
-import javax.activation.MimeType;
-import javax.activation.MimeTypeParseException;
-import javax.annotation.Nonnull;
-import javax.ejb.Local;
-import javax.ejb.Stateless;
-import javax.inject.Inject;
-
 import ch.dvbern.ebegu.config.EbeguConfiguration;
 import ch.dvbern.ebegu.entities.FileMetadata;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
@@ -42,6 +25,22 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.activation.MimeType;
+import javax.activation.MimeTypeParseException;
+import javax.annotation.Nonnull;
+import javax.ejb.Local;
+import javax.ejb.Stateless;
+import javax.inject.Inject;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.Objects;
+import java.util.UUID;
 
 /**
  * Service zum Speichern von Files auf dem File-System
@@ -66,11 +65,8 @@ public class FileSaverServiceBean implements FileSaverService {
 		String ending = getFileNameEnding(uploadFileInfo.getFilename());
 
 		// Wir speichern der Name des Files nicht im FS. Kann sonst Probleme mit Umlauten geben
-		final String tmpFilePath = ebeguConfiguration.getDocumentFilePath() + '/' + folderName + '/' + uuid + '.' + ending;
-		String absoluteFilePath = FilenameUtils.normalize(tmpFilePath);
-		if (!absoluteFilePath.startsWith(ebeguConfiguration.getDocumentFilePath())) {
-			throw new EbeguRuntimeException("save file", "illegal document path");
-		}
+		final String path = '/' + folderName + '/' + uuid + '.' + ending;
+		final String absoluteFilePath = getDocumentFilePathValidated(path);
 		uploadFileInfo.setPath(absoluteFilePath);
 		uploadFileInfo.setActualFilename(uuid + "." + ending);
 
@@ -108,7 +104,8 @@ public class FileSaverServiceBean implements FileSaverService {
 		Objects.requireNonNull(uploadFileInfo);
 		Objects.requireNonNull(uploadFileInfo.getFilename());
 
-		final String absoluteFilePath = ebeguConfiguration.getDocumentFilePath() + "/auftraege/" + filenameWithEnding;
+		final String path = "/auftraege/" + filenameWithEnding;
+		final String absoluteFilePath = getDocumentFilePathValidated(path);
 		uploadFileInfo.setPath(absoluteFilePath);
 		uploadFileInfo.setActualFilename(filenameWithEnding);
 
@@ -144,8 +141,10 @@ public class FileSaverServiceBean implements FileSaverService {
 		UUID uuid = UUID.randomUUID();
 		String ending = getFileNameEnding(fileToCopy.getFilename());
 
+
 		// Wir speichern der Name des Files nicht im FS. Kann sonst Probleme mit Umlauten geben
-		final String absoluteFilePath = ebeguConfiguration.getDocumentFilePath() + '/' + folderName + '/' + uuid + '.' + ending;
+		final String path = '/' + folderName + '/' + uuid + '.' + ending;
+		final String absoluteFilePath = getDocumentFilePathValidated(path);
 		fileToCopy.setFilepfad(absoluteFilePath);
 
 		Path newfile = Paths.get(absoluteFilePath);
@@ -184,7 +183,8 @@ public class FileSaverServiceBean implements FileSaverService {
 
 	@Override
 	public boolean removeAllFromSubfolder(@Nonnull String subfolder) {
-		final String absoluteFilePath = ebeguConfiguration.getDocumentFilePath() + '/' + subfolder + '/';
+		final String path = '/' + subfolder + '/';
+		final String absoluteFilePath = getDocumentFilePathValidated(path);
 		Path file = Paths.get(absoluteFilePath);
 		try {
 			if (Files.exists(file) && Files.isDirectory(file)) {
@@ -210,7 +210,8 @@ public class FileSaverServiceBean implements FileSaverService {
 	}
 
 	private void deleteAllFilesInTempFolder(@Nonnull String folder) {
-		final String absoluteFilePath = ebeguConfiguration.getDocumentFilePath() + '/' + folder;
+		final String path = '/' + folder;
+		final String absoluteFilePath = getDocumentFilePathValidated(path);
 		Path tempFolder = Paths.get(absoluteFilePath);
 		try {
 			if (Files.exists(tempFolder) && Files.isDirectory(tempFolder)) {
@@ -234,5 +235,14 @@ public class FileSaverServiceBean implements FileSaverService {
 				LOG.error("Can't delete file in FileSystem: {}", path.getFileName(), e);
 			}
 		}
+	}
+
+	private String getDocumentFilePathValidated(@Nonnull String path) {
+		String tmpFilePath = ebeguConfiguration.getDocumentFilePath() + path;
+		String absoluteFilePath = FilenameUtils.normalize(tmpFilePath);
+		if (!absoluteFilePath.startsWith(ebeguConfiguration.getDocumentFilePath())) {
+			throw new EbeguRuntimeException("save file", "illegal document path");
+		}
+		return absoluteFilePath;
 	}
 }
