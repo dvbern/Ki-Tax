@@ -187,7 +187,7 @@ public class UploadResource {
 
 		// Get GesuchId from header
 		String gesuchId = request.getHeader(GESUCHID_HEADER);
-		UUID gesuchUUID = UUID.fromString(gesuchId); //will throw illegalArgumentException if no valid UUID
+		UUID.fromString(gesuchId); //will throw illegalArgumentException if no valid UUID
 		if (StringUtils.isEmpty(gesuchId)) {
 			final String problemString = "a valid gesuchID must be given";
 			LOG.error(problemString);
