@@ -29,6 +29,7 @@ import ch.dvbern.ebegu.api.resource.util.MultipartFormToFileConverter;
 import ch.dvbern.ebegu.api.resource.util.TransferFile;
 import ch.dvbern.ebegu.api.util.RestUtil;
 import ch.dvbern.ebegu.authentication.PrincipalBean;
+import ch.dvbern.ebegu.config.EbeguConfiguration;
 import ch.dvbern.ebegu.entities.*;
 import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungAngabenContainer;
 import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungDokument;
@@ -150,6 +151,9 @@ public class UploadResource {
 	@Inject
 	private PrincipalBean principal;
 
+	@Inject
+	private EbeguConfiguration ebeguConfiguration;
+
 	private static final String PART_FILE = "file";
 	private static final String PART_DOKUMENT_GRUND = "dokumentGrund";
 
@@ -220,8 +224,9 @@ public class UploadResource {
 			final String problemString = "\"Can't parse DokumentGrund from Jax to object";
 			LOG.error(problemString);
 			return Response.serverError().entity(problemString).build();
-
 		}
+
+		jaxDokumentGrund.getDokumente().forEach(dokument -> validateFilePath(dokument.getFilepfad()));
 
 		// jaxDokumentGrund ist jetzt u.U. noch in einem falschen Zustand. Wir müssen es neu von der Datenbank lesen
 		// Die neu hochgeladenen Files gehen nicht verloren, sie befinden sich im "input"
@@ -754,5 +759,11 @@ public class UploadResource {
 		dokument.setFilesize(uploadFileInfo.getSizeString());
 		jaxDokumentGrund.getDokumente().add(dokument);
 		LOG.info("Add on {} file {}", jaxDokumentGrund.getDokumentTyp(), uploadFileInfo.getFilename());
+	}
+
+	private void validateFilePath(@Nonnull String path) {
+		if (!path.startsWith(ebeguConfiguration.getDocumentFilePath())) {
+			throw new EbeguRuntimeException("save file", "illegal document path");
+		}
 	}
 }
