@@ -1731,6 +1731,8 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 				zeitabschnitt,
 				familiensituationContainer,
 				familiensituation));
+			// Auszahlungsdaten
+			addAuszahlungsdaten(row,familiensituation);
 		}
 		row.setFamiliengroesse(zeitabschnitt.getFamGroesse());
 		row.setMassgEinkVorFamilienabzug(zeitabschnitt.getMassgebendesEinkommenVorAbzFamgr());
@@ -1769,6 +1771,15 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		// Kind
 		addKindToGesuchstellerKinderBetreuungDataRow(row, gueltigeBetreuung, locale);
 		return row;
+	}
+
+	private void addAuszahlungsdaten(GesuchstellerKinderBetreuungDataRow row, Familiensituation familiensituation) {
+		if (familiensituation.getAuszahlungsdaten() == null) {
+			return;
+		}
+
+		row.setIban(familiensituation.getAuszahlungsdaten().extractIbanAsString());
+		row.setKontoinhaber(familiensituation.getAuszahlungsdaten().getKontoinhaber());
 	}
 
 	@Override
