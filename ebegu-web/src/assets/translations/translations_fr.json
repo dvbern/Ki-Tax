@@ -2999,7 +2999,7 @@
     "MUTATION_VERAENDERUNG_1": "La modification entraîne un changement:<ul>",
     "MUTATION_VERAENDERUNG_NICHT_MOEGLICH": "Ce changement modifie le droit au bon de garde ou son montant.",
     "MUTATION_KORREKTUR_AUSBEZAHLT_RUECKFORDERUNG_INSTITUTION": "Cette décision entraîne un remboursement. Il en découle une différence de CHF {{betrag}} par rapport aux bons de garde déjà payés.",
-    "MUTATION_KORREKTUR_AUSBEZAHLT_RUECKZAHLUNG_INSTITUTION": "Cette décision entraîne un versement a posteriori. Il en découle une différence de CHF {{betrag}} en faveur de la commune par rapport aux bons de garde déjà payés.",
+    "MUTATION_KORREKTUR_AUSBEZAHLT_RUECKZAHLUNG_INSTITUTION": "Cette décision entraîne un versement a posteriori. Il en découle une différence de CHF {{betrag}} par rapport aux bons de garde déjà payés.",
     "MUTATION_KORREKTUR_AUSBEZAHLT_RUECKFORDERUNG_ELTERN": "Cette décision nous mène a une réduction rétroactive des coûts de repas de {{betrag}} CHF.",
     "MUTATION_KORREKTUR_AUSBEZAHLT_RUECKZAHLUNG_ELTERN": "Cette décision nous mène a une augmentation rétroactive des coûts de repas de {{betrag}} CHF.",
     "MUTATION_KORREKTUR_AUSBEZAHLT_AUSSERHALB_KIBON_RUECKFORDERUNG": "Cette décision entraîne un remboursement. Il en découle une différence de CHF {{betrag}} en faveur de la commune par rapport aux bons de garde déjà payés. Celle-ci exige le montant directement auprès des personnes qui ont déposé la demande. Les factures du fournisseur de prestations ne sont pas rectifiées rétroactivement.",
