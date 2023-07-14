@@ -89,7 +89,7 @@ public class AbschlussStep implements WizardStep<FerienbetreuungWizard> {
 		}
 		if (wizard.getRole().isRoleGemeindeabhaengig() ||
 			(wizard.getRole().isSuperadmin() && wizard.getFerienbetreuungAngabenContainer()
-				.isInBearbeitungGemeinde())) {
+				.isInBearbeitungOrZurueckAnGemeinde())) {
 			return wizard.getFerienbetreuungAngabenContainer().getDokumente() == null ||
 				wizard.getFerienbetreuungAngabenContainer().getDokumente().isEmpty() ||
 				!isReadyForFreigeben(wizard);

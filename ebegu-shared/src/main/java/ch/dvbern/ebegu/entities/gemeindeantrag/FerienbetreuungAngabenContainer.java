@@ -232,6 +232,10 @@ public class FerienbetreuungAngabenContainer extends AbstractEntity implements G
 		return status == FerienbetreuungAngabenStatus.IN_BEARBEITUNG_GEMEINDE;
 	}
 
+	public boolean isInBearbeitungOrZurueckAnGemeinde() {
+		return this.isInBearbeitungGemeinde() || status == FerienbetreuungAngabenStatus.ZURUECK_AN_GEMEINDE;
+	}
+
 	public void copyForErneuerung(FerienbetreuungAngabenContainer target) {
 		final FerienbetreuungAngaben angabenVorjahr = isAtLeastInPruefungKantonOrZurueckAnGemeinde()
 			? getAngabenKorrektur()
