@@ -273,7 +273,7 @@ export class FerienbetreuungAbschlussComponent implements OnInit, OnDestroy {
     }
 
     public isBeteiligungGemeindeZuTief(): boolean {
-        return this.getAngabenForStatus().berechnungen?.beteiligungZuTief;
+        return this.getAngabenForStatus()?.berechnungen?.beteiligungZuTief;
     }
 
     private getAngabenForStatus(): TSFerienbetreuungAngaben {
