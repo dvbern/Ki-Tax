@@ -386,6 +386,16 @@ public class Gesuchsperiode extends AbstractDateRangedEntity implements HasManda
 			+ gueltigkeit.getGueltigBis().getYear();
 	}
 
+	/**
+	 * Gibt den GesuchsperiodenString im Format 2022/23 zurück
+	 */
+	public String getGesuchsperiodeStringShort() {
+		DateRange gueltigkeit = this.getGueltigkeit();
+		int year2000 = 2000;
+		return gueltigkeit.getGueltigAb().getYear() + "/"
+			+ (gueltigkeit.getGueltigBis().getYear()-year2000);
+	}
+
 	public String getGesuchsperiodeDisplayName(@Nonnull Locale locale) {
 		DateRange gueltigkeit = this.getGueltigkeit();
 

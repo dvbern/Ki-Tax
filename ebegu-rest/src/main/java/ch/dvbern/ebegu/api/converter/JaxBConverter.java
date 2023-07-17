@@ -4401,7 +4401,7 @@ public class JaxBConverter extends AbstractConverter {
 	/**
 	 * Using the existing GesuchStatus and the UserRole it will translate the Status into the right one for this role.
 	 */
-	public void disguiseStatus(Gesuch gesuch, JaxAntragDTO antrag, @Nullable UserRole userRole) {
+	public void disguiseStatus(AntragStatus status, JaxAntragDTO antrag, @Nullable UserRole userRole) {
 		if (userRole != null) {
 			switch (userRole) {
 			case GESUCHSTELLER:
@@ -4409,7 +4409,7 @@ public class JaxBConverter extends AbstractConverter {
 			case SACHBEARBEITER_INSTITUTION:
 			case ADMIN_TRAEGERSCHAFT:
 			case SACHBEARBEITER_TRAEGERSCHAFT:
-				switch (gesuch.getStatus()) {
+				switch (status) {
 				case PRUEFUNG_STV:
 				case GEPRUEFT_STV:
 				case IN_BEARBEITUNG_STV:
@@ -4455,7 +4455,7 @@ public class JaxBConverter extends AbstractConverter {
 			RestUtil.purgeKinderAndBetreuungenOfInstitutionen(jaxKindContainers, allowedInst);
 		}
 
-		disguiseStatus(gesuch, antrag, userRole);
+		disguiseStatus(gesuch.getStatus(), antrag, userRole);
 
 		if (userRole != STEUERAMT) {
 			antrag.setAngebote(createAngeboteList(jaxKindContainers));
@@ -4470,7 +4470,7 @@ public class JaxBConverter extends AbstractConverter {
 		antrag.setKinder(createKinderList(gesuch.getKindContainers()));
 		antrag.setAngebote(createAngeboteList(gesuch.getKindContainers()));
 		antrag.setInstitutionen(createInstitutionenList(gesuch.getKindContainers()));
-		disguiseStatus(gesuch, antrag, userRole);
+		disguiseStatus(gesuch.getStatus(), antrag, userRole);
 		return antrag;
 	}
 
@@ -4532,6 +4532,100 @@ public class JaxBConverter extends AbstractConverter {
 		antrag.setVerantwortlicherUsernameBG(verantwortlicherBG.getUsername());
 	}
 
+	/**
+	 * transformiert ein gesuch in ein JaxAntragDTO unter beruecksichtigung der rollen und erlaubten institutionen
+	 * - Fuer die Rolle Steueramt werden saemtlichen Daten von den Kindern nicht geladen
+	 * - Fuer die Rolle Institution/Traegerschaft werden nur die relevanten Institutionen und Angebote geladen
+	 */
+	public JaxAntragDTO alleFaelleToAntragDTO(
+		AlleFaelleView alleFaelleView,
+		@Nullable UserRole userRole,
+		Collection<Institution> allowedInst) {
+
+		JaxAntragDTO antrag = gesuchToAntragDTOBasic(alleFaelleView);
+
+		if (userRole != STEUERAMT) {
+			antrag.setKinder(createKinderList(alleFaelleView));
+		}
+
+//		if (EnumUtil.isOneOf(
+//			userRole,
+//			ADMIN_TRAEGERSCHAFT,
+//			SACHBEARBEITER_TRAEGERSCHAFT,
+//			ADMIN_INSTITUTION,
+//			SACHBEARBEITER_INSTITUTION)) {
+//			RestUtil.purgeKinderAndBetreuungenOfInstitutionen(jaxKindContainers, allowedInst);
+//		}
+
+		disguiseStatus(alleFaelleView.getAntragStatus(), antrag, userRole);
+
+/*		if (userRole != STEUERAMT) {
+			antrag.setAngebote(alleFaelleView.getAngebotTypen());
+			antrag.setInstitutionen(createInstitutionenList(jaxKindContainers));
+		}*/
+
+		return antrag;
+	}
+
+	@Nonnull
+	private JaxAntragDTO gesuchToAntragDTOBasic(@Nonnull AlleFaelleView alleFaelleView) {
+		JaxAntragDTO antrag = new JaxAntragDTO();
+		antrag.setAntragId(alleFaelleView.getAntragId());
+		antrag.setFallNummer(alleFaelleView.getFallNummer());
+		antrag.setDossierId(alleFaelleView.getDossierId());
+		antrag.setFamilienName(getStringValueOrEmptyString(alleFaelleView.getFamilienName()));
+		antrag.setEingangsdatum(alleFaelleView.getEingangsdatum());
+		antrag.setEingangsdatumSTV(alleFaelleView.getEingangsdatumSTV());
+		antrag.setAenderungsdatum(alleFaelleView.getAenderungsdatum());
+		antrag.setAntragTyp(alleFaelleView.getAntragTyp());
+		antrag.setStatus(AntragStatusConverterUtil.convertStatusToDTO(
+			alleFaelleView.getAntragStatus(),
+			alleFaelleView.getGesuchBetreuungenStatus(),
+			alleFaelleView.getAntragId()));
+		antrag.setGesuchsperiodeString(alleFaelleView.getGesuchsperiodeString());
+		antrag.setGemeinde(alleFaelleView.getGemeindeName());
+
+		antrag.setVerantwortlicherTS(alleFaelleView.getVerantwortlicherTS());
+		antrag.setVerantwortlicherBG(getStringValueOrEmptyString(alleFaelleView.getVerantwortlicherBG()));
+
+		antrag.setVerfuegt(alleFaelleView.getAntragStatus().isAnyStatusOfVerfuegt());
+		antrag.setBeschwerdeHaengig(alleFaelleView.getAntragStatus() == AntragStatus.BESCHWERDE_HAENGIG);
+		antrag.setLaufnummer(alleFaelleView.getLaufnummer());
+		antrag.setEingangsart(alleFaelleView.getEingangsart());
+		antrag.setBesitzerUsername(alleFaelleView.getBesitzerUsername());
+		antrag.setDokumenteHochgeladen(alleFaelleView.getDokumenteHochgeladen());
+		antrag.setFallId(alleFaelleView.getFallId());
+		antrag.setGemeindeId(alleFaelleView.getGemeindeId());
+		antrag.setSozialdienst(alleFaelleView.getSozialdienst());
+		antrag.setInternePendenz(alleFaelleView.getInternePendenz());
+//		if (antrag.hasInternePendenz()) {
+//			antrag.setInternePendenzAbgelaufen(internePendenzService.hasGesuchAbgelaufeneInternePendenzen(alleFaelleView));
+//		} else {
+//			antrag.setInternePendenzAbgelaufen(false);
+//		}
+
+		return antrag;
+	}
+
+	@Nonnull
+	private Set<String> createKinderList(AlleFaelleView alleFaelleView) {
+		if (alleFaelleView.getKinder() == null) {
+			return Collections.emptySet();
+		}
+
+		return alleFaelleView.getKinder()
+			.stream()
+			.map(AlleFaelleViewKind::getName)
+			.collect(Collectors.toSet());
+	}
+
+	private String getStringValueOrEmptyString(@Nullable String string) {
+		if (string == null) {
+			return "";
+		}
+
+		return string;
+	}
 	public Mahnung mahnungToEntity(@Nonnull final JaxMahnung jaxMahnung, @Nonnull final Mahnung mahnung) {
 		requireNonNull(mahnung);
 		requireNonNull(jaxMahnung);

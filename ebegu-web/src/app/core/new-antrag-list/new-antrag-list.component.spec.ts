@@ -20,7 +20,7 @@ import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {UpgradeModule} from '@angular/upgrade/static';
 import {TranslateModule} from '@ngx-translate/core';
 import {TransitionService} from '@uirouter/angular';
-import {UIRouterGlobals} from '@uirouter/core';
+import {$q, UIRouterGlobals} from '@uirouter/core';
 import {of} from 'rxjs';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {GemeindeRS} from '../../../gesuch/service/gemeindeRS.rest';
@@ -38,6 +38,7 @@ import {GesuchsperiodeRS} from '../service/gesuchsperiodeRS.rest';
 import {InstitutionRS} from '../service/institutionRS.rest';
 
 import {NewAntragListComponent} from './new-antrag-list.component';
+import {DemoFeatureRS} from '../service/demoFeatureRS.rest';
 
 // We mock the user select directive to make the setup easier since these are unit tests
 @Directive({
@@ -94,8 +95,11 @@ describe('NewAntragListComponent', () => {
     const uiRouterGlobals = jasmine.createSpyObj<UIRouterGlobals>(UIRouterGlobals.name,
         ['$current']);
     const appPropRSSpy = jasmine.createSpyObj<ApplicationPropertyRS>(ApplicationPropertyRS.name,
-        ['getPublicPropertiesCached']);
+        ['getPublicPropertiesCached', 'getActivatedDemoFeatures']);
     appPropRSSpy.getPublicPropertiesCached.and.returnValue(Promise.resolve(new TSPublicAppConfig()));
+    appPropRSSpy.getActivatedDemoFeatures.and.returnValue($q.when(''));
+    const demofeatureRSSpy = jasmine.createSpyObj<DemoFeatureRS>(DemoFeatureRS.name, ['isDemoFeatureAllowed']);
+    demofeatureRSSpy.isDemoFeatureAllowed.and.returnValue(Promise.resolve(false));
 
     beforeEach(async(() => {
         TestBed.configureTestingModule({

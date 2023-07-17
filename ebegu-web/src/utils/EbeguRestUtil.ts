@@ -3116,6 +3116,7 @@ export class EbeguRestUtil {
         antragTS.gemeindeId = antragFromServer.gemeindeId;
         antragTS.isSozialdienst = antragFromServer.isSozialdienst;
         antragTS.begruendungMutation = antragFromServer.begruendungMutation;
+        antragTS.gesuchsperiodeString = antragFromServer.gesuchsperiodeString;
         return antragTS;
     }
 
