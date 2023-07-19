@@ -22,6 +22,7 @@ import java.util.Collection;
 import java.util.EnumSet;
 import java.util.Set;
 
+
 /**
  * Enum fuer den Status vom Gesuch.
  */
@@ -272,22 +273,22 @@ public enum AntragStatus {
 		case ADMIN_TS:
 		case ADMIN_GEMEINDE:
 		case SACHBEARBEITER_GEMEINDE:
-			return FOR_ADMIN_ROLE;
+			return EnumSet.copyOf(FOR_ADMIN_ROLE);
 		case JURIST:
 		case REVISOR:
 		case ADMIN_MANDANT:
 		case SACHBEARBEITER_MANDANT:
-			return FOR_JURIST_REVISOR_ROLE;
+			return EnumSet.copyOf(FOR_JURIST_REVISOR_ROLE);
 		case ADMIN_INSTITUTION:
 		case SACHBEARBEITER_INSTITUTION:
 		case ADMIN_TRAEGERSCHAFT:
 		case SACHBEARBEITER_TRAEGERSCHAFT:
-			return FOR_INSTITUTION_ROLE;
+			return EnumSet.copyOf(FOR_INSTITUTION_ROLE);
 		case STEUERAMT:
-			return FOR_STEUERAMT_ROLE;
+			return EnumSet.copyOf(FOR_STEUERAMT_ROLE);
 		case ADMIN_SOZIALDIENST:
 		case SACHBEARBEITER_SOZIALDIENST:
-			return FOR_SOZIALDIENST_ROLE;
+			return EnumSet.copyOf(FOR_SOZIALDIENST_ROLE);
 		case GESUCHSTELLER:
 		default:
 			return EnumSet.noneOf(AntragStatus.class);
@@ -306,13 +307,13 @@ public enum AntragStatus {
 		case SACHBEARBEITER_GEMEINDE:
 		case ADMIN_MANDANT:
 		case SACHBEARBEITER_MANDANT:
-			return FOR_SACHBEARBEITER_JUGENDAMT_PENDENZEN;
+			return EnumSet.copyOf(FOR_SACHBEARBEITER_JUGENDAMT_PENDENZEN);
 		case SACHBEARBEITER_TS:
 		case ADMIN_TS:
-			return FOR_SACHBEARBEITER_SCHULAMT_PENDENZEN;
+			return EnumSet.copyOf(FOR_SACHBEARBEITER_SCHULAMT_PENDENZEN);
 		case ADMIN_SOZIALDIENST:
 		case SACHBEARBEITER_SOZIALDIENST:
-			return FOR_SOZIALDIENST_PENDENZEN;
+			return EnumSet.copyOf(FOR_SOZIALDIENST_PENDENZEN);
 		case STEUERAMT:
 		case GESUCHSTELLER:
 		default:
@@ -331,19 +332,19 @@ public enum AntragStatus {
 		case SACHBEARBEITER_GEMEINDE:
 		case SACHBEARBEITER_TS:
 		case ADMIN_TS:
-			return FOR_ADMIN_ROLE_WRITE;
+			return EnumSet.copyOf(FOR_ADMIN_ROLE_WRITE);
 		case GESUCHSTELLER:
-			return FOR_GESUCHSTELLER_ROLE_WRITE;
+			return EnumSet.copyOf(FOR_GESUCHSTELLER_ROLE_WRITE);
 		case ADMIN_INSTITUTION:
 		case SACHBEARBEITER_INSTITUTION:
 		case ADMIN_TRAEGERSCHAFT:
 		case SACHBEARBEITER_TRAEGERSCHAFT:
-			return FOR_INSTITUTION_ROLE_WRITE;
+			return EnumSet.copyOf(FOR_INSTITUTION_ROLE_WRITE);
 		case STEUERAMT:
-			return FOR_STEUERAMT_ROLE_WRITE;
+			return EnumSet.copyOf(FOR_STEUERAMT_ROLE_WRITE);
 		case ADMIN_SOZIALDIENST:
 		case SACHBEARBEITER_SOZIALDIENST:
-			return FOR_SOZIALDIENSTE_ROLE_WRITE;
+			return EnumSet.copyOf(FOR_SOZIALDIENSTE_ROLE_WRITE);
 		default:
 			return EnumSet.noneOf(AntragStatus.class);
 		}
