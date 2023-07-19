@@ -69,7 +69,7 @@ public enum AntragStatus {
 		IGNORIERT
 	);
 
-	public static final Set<AntragStatus> FOR_INSTITUTION_ROLE = EnumSet.of(
+	private static final Set<AntragStatus> FOR_INSTITUTION_ROLE = EnumSet.of(
 		IN_BEARBEITUNG_GS,
 		FREIGABEQUITTUNG,
 		// = GS hat Freigabequittung gedruckt, bzw. den Antrag freigegeben (auch wenn keine Freigabequittung notwendig
@@ -92,11 +92,11 @@ public enum AntragStatus {
 		GEPRUEFT_STV,
 		IGNORIERT);
 
-	public static final Set<AntragStatus> FOR_STEUERAMT_ROLE = EnumSet.of(
+	private static final Set<AntragStatus> FOR_STEUERAMT_ROLE = EnumSet.of(
 		PRUEFUNG_STV,
 		IN_BEARBEITUNG_STV);
 
-	public static final Set<AntragStatus> FOR_JURIST_REVISOR_ROLE = EnumSet.of(
+	private static final Set<AntragStatus> FOR_JURIST_REVISOR_ROLE = EnumSet.of(
 		NUR_SCHULAMT,
 		FREIGEGEBEN,        // Freigabequittung im Jugendamt eingelesen ODER keine Quittung notwendig
 		IN_BEARBEITUNG_JA,
@@ -115,7 +115,7 @@ public enum AntragStatus {
 		GEPRUEFT_STV,
 		IGNORIERT);
 
-	public static final Set<AntragStatus> FOR_SOZIALDIENST_ROLE = EnumSet.of(
+	private static final Set<AntragStatus> FOR_SOZIALDIENST_ROLE = EnumSet.of(
 		FREIGABEQUITTUNG,
 		FREIGEGEBEN,
 		IN_BEARBEITUNG_JA,
@@ -144,7 +144,7 @@ public enum AntragStatus {
 	// Ausserdem kann man
 	// kein range mit Ausnahmen machen. In diesem Fall ist es deshalb besser ein .of zu benutzen
 
-	public static final Set<AntragStatus> FOR_SACHBEARBEITER_JUGENDAMT_PENDENZEN = EnumSet.of(
+	private static final Set<AntragStatus> FOR_SACHBEARBEITER_JUGENDAMT_PENDENZEN = EnumSet.of(
 		FREIGEGEBEN,
 		IN_BEARBEITUNG_JA,
 		ERSTE_MAHNUNG,
@@ -156,7 +156,7 @@ public enum AntragStatus {
 		BESCHWERDE_HAENGIG,
 		GEPRUEFT_STV);
 
-	public static final Set<AntragStatus> FOR_SACHBEARBEITER_SCHULAMT_PENDENZEN = EnumSet.of(
+	private static final Set<AntragStatus> FOR_SACHBEARBEITER_SCHULAMT_PENDENZEN = EnumSet.of(
 		FREIGEGEBEN,
 		IN_BEARBEITUNG_JA,
 		ERSTE_MAHNUNG,
@@ -186,7 +186,7 @@ public enum AntragStatus {
 
 	private static final Set<AntragStatus> inBearbeitung = EnumSet.range(IN_BEARBEITUNG_GS, IN_BEARBEITUNG_JA);
 
-	public static final Set<AntragStatus> FOR_ADMIN_ROLE_WRITE = EnumSet.of(
+	private static final Set<AntragStatus> FOR_ADMIN_ROLE_WRITE = EnumSet.of(
 		FREIGABEQUITTUNG,
 		FREIGEGEBEN,        // Freigabequittung im Jugendamt eingelesen ODER keine Quittung notwendig
 		IN_BEARBEITUNG_JA,
@@ -206,7 +206,7 @@ public enum AntragStatus {
 		NUR_SCHULAMT,
 		IGNORIERT);
 
-	public static final Set<AntragStatus> FOR_INSTITUTION_ROLE_WRITE = EnumSet.of(
+	private static final Set<AntragStatus> FOR_INSTITUTION_ROLE_WRITE = EnumSet.of(
 		IN_BEARBEITUNG_GS,
 		FREIGABEQUITTUNG,
 		// = GS hat Freigabequittung gedruckt, bzw. den Antrag freigegeben (auch wenn keine Freigabequittung notwendig
@@ -222,7 +222,7 @@ public enum AntragStatus {
 		KEIN_KONTINGENT,
 		VERFUEGEN);
 
-	public static final Set<AntragStatus> FOR_GESUCHSTELLER_ROLE_WRITE = EnumSet.of(
+	private static final Set<AntragStatus> FOR_GESUCHSTELLER_ROLE_WRITE = EnumSet.of(
 		IN_BEARBEITUNG_GS,
 		NUR_SCHULAMT, // Damit eine Mutation erstellt werden kann
 		FREIGABEQUITTUNG,
@@ -235,7 +235,7 @@ public enum AntragStatus {
 		IGNORIERT // Damit eine Mutation erstellt werden kann
 	);
 
-	public static final Set<AntragStatus> FOR_STEUERAMT_ROLE_WRITE = EnumSet.of(
+	private static final Set<AntragStatus> FOR_STEUERAMT_ROLE_WRITE = EnumSet.of(
 		PRUEFUNG_STV,
 		IN_BEARBEITUNG_STV,
 		GEPRUEFT_STV
@@ -243,7 +243,7 @@ public enum AntragStatus {
 		// Status entfernt werden
 	);
 
-	public static final Set<AntragStatus> FOR_SOZIALDIENSTE_ROLE_WRITE = EnumSet.of(
+	private static final Set<AntragStatus> FOR_SOZIALDIENSTE_ROLE_WRITE = EnumSet.of(
 		IN_BEARBEITUNG_SOZIALDIENST,
 		NUR_SCHULAMT, // Damit eine Mutation erstellt werden kann
 		FREIGABEQUITTUNG,
