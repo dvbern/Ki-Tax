@@ -147,7 +147,7 @@ public final class DokumenteUtil {
 	}
 
 	public static void validateDokumentDirectory(String filePath, String directoryPath) throws EbeguRuntimeException {
-		if (!filePath.startsWith(directoryPath)) {
+		if (!filePath.startsWith(directoryPath) || filePath.contains("..")) {
 			throw new EbeguRuntimeException("validate file path", "illegal document path");
 		}
 	}
