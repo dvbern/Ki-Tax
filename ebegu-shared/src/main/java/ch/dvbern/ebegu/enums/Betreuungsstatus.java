@@ -43,8 +43,6 @@ public enum Betreuungsstatus {
 	SCHULAMT_ANMELDUNG_STORNIERT,
 	SCHULAMT_MUTATION_IGNORIERT;
 
-	private static final Set<Betreuungsstatus> all = EnumSet.allOf(Betreuungsstatus.class);
-	private static final Set<Betreuungsstatus> none = EnumSet.noneOf(Betreuungsstatus.class);
 
 	public static final Set<Betreuungsstatus> hasVerfuegung = EnumSet.of(VERFUEGT, NICHT_EINGETRETEN, UNBEKANNTE_INSTITUTION);
 	public static final Set<Betreuungsstatus> forPendenzInstitution = EnumSet.of(WARTEN, SCHULAMT_ANMELDUNG_AUSGELOEST);
@@ -131,9 +129,9 @@ public enum Betreuungsstatus {
 		case STEUERAMT:
 		case ADMIN_MANDANT:
 		case SACHBEARBEITER_MANDANT:
-			return all;
+			return EnumSet.allOf(Betreuungsstatus.class);
 		default:
-			return none;
+			return EnumSet.noneOf(Betreuungsstatus.class);
 		}
 	}
 }
