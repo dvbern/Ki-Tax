@@ -1217,10 +1217,16 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 			.get(Gesuchsperiode_.status)
 			.in(GesuchsperiodeStatus.AKTIV, GesuchsperiodeStatus.INAKTIV));
 
-		if (role.isRoleGemeindeOrTS()) {
+		if (role.isRoleGemeinde()) {
 			// SCH darf nur Gesuche sehen, die bereits freigegebn wurden
 			predicates.add(root.get(AbstractPlatz_.kind).get(KindContainer_.gesuch).get(Gesuch_.status).in
-				(AntragStatus.FOR_ADMIN_ROLE));
+				(AntragStatus.allowedforRole(UserRole.SACHBEARBEITER_GEMEINDE)));
+		}
+
+		if (role.isRoleTsOnly()) {
+			// SCH darf nur Gesuche sehen, die bereits freigegebn wurden
+			predicates.add(root.get(AbstractPlatz_.kind).get(KindContainer_.gesuch).get(Gesuch_.status).in
+				(AntragStatus.allowedforRole(UserRole.SACHBEARBEITER_TS)));
 		}
 
 		if (role.isRoleGemeindeabhaengig()) {
@@ -1283,10 +1289,16 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 			.get(Gesuchsperiode_.status)
 			.in(GesuchsperiodeStatus.AKTIV, GesuchsperiodeStatus.INAKTIV));
 
-		if (role.isRoleGemeindeOrTS()) {
+		if (role.isRoleGemeinde()) {
 			// SCH darf nur Gesuche sehen, die bereits freigegebn wurden
 			predicates.add(root.get(AbstractPlatz_.kind).get(KindContainer_.gesuch).get(Gesuch_.status).in
-				(AntragStatus.FOR_ADMIN_ROLE));
+				(AntragStatus.allowedforRole(UserRole.SACHBEARBEITER_GEMEINDE)));
+		}
+
+		if (role.isRoleTsOnly()) {
+			// SCH darf nur Gesuche sehen, die bereits freigegebn wurden
+			predicates.add(root.get(AbstractPlatz_.kind).get(KindContainer_.gesuch).get(Gesuch_.status).in
+				(AntragStatus.allowedforRole(UserRole.SACHBEARBEITER_TS)));
 		}
 
 		if (role.isRoleGemeindeabhaengig()) {

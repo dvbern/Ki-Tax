@@ -49,7 +49,7 @@ public enum AntragStatus {
 	GEPRUEFT_STV,
 	IGNORIERT;
 
-	public static final Set<AntragStatus> FOR_ADMIN_ROLE = EnumSet.of(
+	private static final Set<AntragStatus> FOR_ADMIN_ROLE = EnumSet.of(
 		FREIGEGEBEN,        // Freigabequittung im Jugendamt eingelesen ODER keine Quittung notwendig
 		IN_BEARBEITUNG_JA,
 		ERSTE_MAHNUNG,
