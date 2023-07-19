@@ -137,7 +137,6 @@ public enum AntragStatus {
 		IGNORIERT
 	);
 
-	public static final Set<AntragStatus> FIRST_STATUS_OF_VERFUEGT = EnumSet.of(VERFUEGT, NUR_SCHULAMT, KEIN_ANGEBOT);
 
 
 	// range ist etwas gefaehrlich, da man sehr vorsichtig sein muss, in welcher Reihenfolge man die Werte schreibt.
@@ -166,23 +165,6 @@ public enum AntragStatus {
 		GEPRUEFT,
 		BESCHWERDE_HAENGIG,
 		GEPRUEFT_STV);
-
-	public static final Set<AntragStatus> FOR_KIND_DUBLETTEN = EnumSet.of(
-		NUR_SCHULAMT,
-		FREIGEGEBEN,
-		IN_BEARBEITUNG_JA,
-		ERSTE_MAHNUNG,
-		ERSTE_MAHNUNG_ABGELAUFEN,
-		ZWEITE_MAHNUNG,
-		ZWEITE_MAHNUNG_ABGELAUFEN,
-		GEPRUEFT,
-		VERFUEGEN,
-		VERFUEGT,
-		KEIN_ANGEBOT,
-		BESCHWERDE_HAENGIG,
-		IGNORIERT);
-
-	public static final Set<AntragStatus> ERLEDIGTE_PENDENZ = EnumSet.of(VERFUEGT, NUR_SCHULAMT, KEIN_ANGEBOT, IGNORIERT);
 
 	private static final Set<AntragStatus> inBearbeitung = EnumSet.range(IN_BEARBEITUNG_GS, IN_BEARBEITUNG_JA);
 
@@ -404,6 +386,30 @@ public enum AntragStatus {
 			GEPRUEFT_STV,
 			IGNORIERT
 		);
+	}
+
+	public static Set<AntragStatus> getAllErledigtePendenzStatus() {
+		return EnumSet.of(VERFUEGT, NUR_SCHULAMT, KEIN_ANGEBOT, IGNORIERT);
+	}
+	public static Set<AntragStatus> getFirstStatusOfVerfuegt() {
+		return EnumSet.of(VERFUEGT, NUR_SCHULAMT, KEIN_ANGEBOT);
+	}
+
+	public static Set<AntragStatus> getForKindDubletten() {
+		return EnumSet.of(
+			NUR_SCHULAMT,
+			FREIGEGEBEN,
+			IN_BEARBEITUNG_JA,
+			ERSTE_MAHNUNG,
+			ERSTE_MAHNUNG_ABGELAUFEN,
+			ZWEITE_MAHNUNG,
+			ZWEITE_MAHNUNG_ABGELAUFEN,
+			GEPRUEFT,
+			VERFUEGEN,
+			VERFUEGT,
+			KEIN_ANGEBOT,
+			BESCHWERDE_HAENGIG,
+			IGNORIERT);
 	}
 
 	public static final Set<AntragStatus> FOR_SOZIALDIENST_PENDENZEN = EnumSet.of(
