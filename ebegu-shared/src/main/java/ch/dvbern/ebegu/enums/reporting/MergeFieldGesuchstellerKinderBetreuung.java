@@ -35,7 +35,6 @@ public enum MergeFieldGesuchstellerKinderBetreuung implements MergeFieldProvider
 	vornameTitle(new SimpleMergeField<>("vornameTitle", STRING_CONVERTER)),
 	verfuegungsdatumTitle(new SimpleMergeField<>("verfuegungsdatumTitle", STRING_CONVERTER)),
 	gemeindeTitle(new SimpleMergeField<>("gemeindeTitle", STRING_CONVERTER)),
-
 	auszahlungTitle(new SimpleMergeField<>("auszahlungsdatenGSTitel", STRING_CONVERTER)),
 	ibanTitle(new SimpleMergeField<>("ibanTitel", STRING_CONVERTER)),
 	kontoInhaberTitle(new SimpleMergeField<>("lautendAufTitel", STRING_CONVERTER)),
