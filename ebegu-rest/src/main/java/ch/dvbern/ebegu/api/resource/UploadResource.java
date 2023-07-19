@@ -227,11 +227,6 @@ public class UploadResource {
 			return Response.serverError().entity(problemString).build();
 		}
 
-		jaxDokumentGrund.getDokumente()
-			.forEach(dokument -> DokumenteUtil.validateDokumentDirectory(
-				dokument.getFilepfad(),
-				ebeguConfiguration.getDocumentFilePath()));
-
 		// jaxDokumentGrund ist jetzt u.U. noch in einem falschen Zustand. Wir müssen es neu von der Datenbank lesen
 		// Die neu hochgeladenen Files gehen nicht verloren, sie befinden sich im "input"
 		DokumentGrund dokumentGrundToMerge = new DokumentGrund();
@@ -257,6 +252,11 @@ public class UploadResource {
 			LOG.error(problemString);
 			return Response.serverError().entity(problemString).build();
 		}
+
+		jaxDokumentGrund.getDokumente()
+			.forEach(dokument -> DokumenteUtil.validateDokumentDirectory(
+				dokument.getFilepfad(),
+				ebeguConfiguration.getDocumentFilePath()));
 
 		DokumentGrund convertedDokumentGrund = converter.dokumentGrundToEntity(jaxDokumentGrund, dokumentGrundToMerge);
 		convertedDokumentGrund.setGesuch(gesuch.get());
