@@ -1882,7 +1882,16 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 		}
 
 		Gesuch erstGesuch = gesuchService.findErstgesuchForGesuch(mutation);
-		return erstGesuch.getEingangsart().isOnlineGesuch();
+		Gesuch vorgaenger = gesuchService.findVorgaengerGesuchNotIgnoriert(requireNonNull(mutation.getVorgaengerId()));
+		return erstGesuch.getEingangsart().isOnlineGesuch() && !hasNichtEintretenBetreuung(vorgaenger);
+	}
+
+	private static boolean hasNichtEintretenBetreuung(Gesuch vorgaenger) {
+		return vorgaenger.getKindContainers()
+			.stream()
+			.anyMatch(kindContainer -> kindContainer.getBetreuungen()
+				.stream()
+				.anyMatch(betreuung -> betreuung.getBetreuungsstatus() == Betreuungsstatus.NICHT_EINGETRETEN));
 	}
 
 	private void acceptFinSit(Gesuch mutation) {
