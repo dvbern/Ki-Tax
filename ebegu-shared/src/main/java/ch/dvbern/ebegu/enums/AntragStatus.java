@@ -166,7 +166,7 @@ public enum AntragStatus {
 		BESCHWERDE_HAENGIG,
 		GEPRUEFT_STV);
 
-	private static final Set<AntragStatus> inBearbeitung = EnumSet.range(IN_BEARBEITUNG_GS, IN_BEARBEITUNG_JA);
+	private static final Set<AntragStatus> IN_BEARBEITUNG = EnumSet.range(IN_BEARBEITUNG_GS, IN_BEARBEITUNG_JA);
 
 	private static final Set<AntragStatus> FOR_ADMIN_ROLE_WRITE = EnumSet.of(
 		FREIGABEQUITTUNG,
@@ -432,7 +432,7 @@ public enum AntragStatus {
 	}
 
 	public boolean inBearbeitung() {
-		return inBearbeitung.contains(this);
+		return IN_BEARBEITUNG.contains(this);
 	}
 
 	public boolean isAnyOfInBearbeitungGSOrSZD() {
