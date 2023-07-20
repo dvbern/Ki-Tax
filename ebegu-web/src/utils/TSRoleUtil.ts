@@ -797,4 +797,16 @@ export class TSRoleUtil {
             TSRole.SACHBEARBEITER_INSTITUTION
         ];
     }
+
+    public static getEditBemerkungenDossierRoles(): ReadonlyArray<TSRole> {
+        return [
+            TSRole.SUPER_ADMIN,
+            TSRole.ADMIN_GEMEINDE,
+            TSRole.SACHBEARBEITER_GEMEINDE,
+            TSRole.ADMIN_BG,
+            TSRole.SACHBEARBEITER_BG,
+            TSRole.ADMIN_TS,
+            TSRole.SACHBEARBEITER_TS
+        ];
+    }
 }

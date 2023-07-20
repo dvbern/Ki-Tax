@@ -8,19 +8,14 @@
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program. If not, see <https://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-export enum TSDemoFeature {
-    ALLE_MUTATIONSMELDUNGEN_VERFUEGEN = 'ALLE_MUTATIONSMELDUNGEN_VERFUEGEN',
-    KIBON_2754 = 'KIBON_2754',
-    GESUCH_BEENDEN_FAMSIT = 'GESUCH_BEENDEN_FAMSIT',
-    ZAHLUNGSSTATUS = 'ZAHLUNGSSTATUS',
-    ZAHLUNGEN_STATISTIK = 'ZAHLUNGEN_STATISTIK',
-    ALLE_FAELLE_SUCHE_NEU = 'ALLE_FAELLE_SUCHE_NEU',
-    BEMERKUNGEN_FALLUEBERGREIFEND = 'BEMERKUNGEN_FALLUEBERGREIFEND'
-}
+/*tabelle fall & fall_aud */
+ALTER TABLE fall ADD COLUMN IF NOT EXISTS bemerkungen_dossier varchar(4000);
+ALTER TABLE fall_aud ADD COLUMN IF NOT EXISTS bemerkungen_dossier varchar(4000);
+
