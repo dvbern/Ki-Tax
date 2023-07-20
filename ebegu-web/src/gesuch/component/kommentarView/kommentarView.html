@@ -58,6 +58,22 @@
             </div>
         </div>
 
+        <div dv-show-element dv-show-allowed-roles="vm.TSRoleUtil.getJugendamtAndSchulamtRole()"
+             class="kommentar-padding">
+            <dv-demo-feature-wrapper [demo-feature]="vm.demoFeature">
+                <div class="kommentarTop">
+                    <dv-input-container class="form-group kommentar-feld">
+                        <label class="md-no-float" for="bemerkungenDossiser" data-translate="BEMERKUNGEN_DOSSIER"></label>
+                        <textarea md-no-autogrow class="form-control" rows="6" id="bemerkungenDossiser"
+                                  ng-blur="vm.saveBemerkungenDossier()" name="bemerkungenDossiser"
+                                  ng-model="vm.getFall().bemerkungenDossier" maxlength="4000"
+                                  dv-enable-element dv-enable-allowed-roles="vm.TSRoleUtil.getEditBemerkungenDossierRoles()">
+                        </textarea>
+                    </dv-input-container>
+                </div>
+            </dv-demo-feature-wrapper>
+        </div>
+
         <div dv-show-element dv-show-allowed-roles="vm.TSRoleUtil.getSteueramtOnlyRoles()">
             <div class="kommentar-padding">
                 <dv-input-container class="form-group kommentar-feld">
