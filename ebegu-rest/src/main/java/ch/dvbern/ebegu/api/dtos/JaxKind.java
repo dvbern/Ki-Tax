@@ -15,6 +15,8 @@
 
 package ch.dvbern.ebegu.api.dtos;
 
+import java.util.Collection;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.validation.constraints.NotNull;
@@ -78,8 +80,8 @@ public class JaxKind extends JaxAbstractPersonDTO {
 	@Nonnull
 	private Boolean keinPlatzInSchulhort = false;
 
-	@Nullable
-	private JaxPensumFachstelle pensumFachstelle;
+	@Nonnull
+	private Collection<JaxPensumFachstelle> pensumFachstellen;
 
 	@Nullable
 	private JaxPensumAusserordentlicherAnspruch pensumAusserordentlicherAnspruch;
@@ -203,13 +205,13 @@ public class JaxKind extends JaxAbstractPersonDTO {
 		this.sprichtAmtssprache = sprichtAmtssprache;
 	}
 
-	@Nullable
-	public JaxPensumFachstelle getPensumFachstelle() {
-		return pensumFachstelle;
+
+	public Collection<JaxPensumFachstelle> getPensumFachstellen() {
+		return pensumFachstellen;
 	}
 
-	public void setPensumFachstelle(@Nullable JaxPensumFachstelle pensumFachstelle) {
-		this.pensumFachstelle = pensumFachstelle;
+	public void setPensumFachstellen(Collection<JaxPensumFachstelle> pensumFachstellen) {
+		this.pensumFachstellen = pensumFachstellen;
 	}
 
 	@Nullable

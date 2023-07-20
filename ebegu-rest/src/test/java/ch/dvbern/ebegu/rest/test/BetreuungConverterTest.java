@@ -81,7 +81,7 @@ public class BetreuungConverterTest extends AbstractEbeguRestLoginTest {
 		Assert.assertNotNull(kind.getKindJA().getPensumFachstelle());
 		Assert.assertEquals(Constants.END_OF_TIME, kind.getKindJA().getPensumFachstelle().getGueltigkeit().getGueltigBis());
 
-		JaxPensumFachstelle jaxPenFachstelle = converter.pensumFachstelleToJax(kind.getKindJA().getPensumFachstelle());
+		JaxPensumFachstelle jaxPenFachstelle = converter.pensumFachstellenListToJax(kind.getKindJA().getPensumFachstelle());
 		Assert.assertNotNull("Es darf nicht null sein", jaxPenFachstelle);
 		Assert.assertNull("Gueltig bis wird nicht transformiert", jaxPenFachstelle.getGueltigBis());
 

@@ -2117,7 +2117,7 @@ public class JaxBConverter extends AbstractConverter {
 		jaxKind.setZemisNummer(persistedKind.getZemisNummer());
 		jaxKind.setEinschulungTyp(persistedKind.getEinschulungTyp());
 		jaxKind.setKeinPlatzInSchulhort(persistedKind.getKeinPlatzInSchulhort());
-		jaxKind.setPensumFachstelle(pensumFachstelleToJax(persistedKind.getPensumFachstelle()));
+		jaxKind.setPensumFachstellen(pensumFachstellenListToJax(persistedKind.getPensumFachstelle()));
 		jaxKind.setPensumAusserordentlicherAnspruch(pensumAusserordentlicherAnspruchToJax(
 			persistedKind.getPensumAusserordentlicherAnspruch()));
 		jaxKind.setZukunftigeGeburtsdatum(persistedKind.getZukunftigeGeburtsdatum());
@@ -2125,19 +2125,19 @@ public class JaxBConverter extends AbstractConverter {
 		return jaxKind;
 	}
 
-	@Nullable
-	public JaxPensumFachstelle pensumFachstelleToJax(@Nullable final PensumFachstelle persistedPensumFachstelle) {
-		if (persistedPensumFachstelle == null) {
-			return null;
+	public Collection<JaxPensumFachstelle> pensumFachstellenListToJax(final Collection<PensumFachstelle> persistedPensumFachstellenList) {
+		final Collection<JaxPensumFachstelle> jaxPensumFachstellenSet = new HashSet<>();
+		for (PensumFachstelle pensumFachstelle : persistedPensumFachstellenList) {
+
+			final JaxPensumFachstelle jaxPensumFachstelle = new JaxPensumFachstelle();
+			convertAbstractPensumFieldsToJAX(pensumFachstelle, jaxPensumFachstelle);
+			if (pensumFachstelle.getFachstelle() != null) {
+				jaxPensumFachstelle.setFachstelle(fachstelleToJAX(pensumFachstelle.getFachstelle()));
+			}
+			jaxPensumFachstelle.setIntegrationTyp(pensumFachstelle.getIntegrationTyp());
+			jaxPensumFachstelle.setGruendeZusatzleistung(pensumFachstelle.getGruendeZusatzleistung());
 		}
-		final JaxPensumFachstelle jaxPensumFachstelle = new JaxPensumFachstelle();
-		convertAbstractPensumFieldsToJAX(persistedPensumFachstelle, jaxPensumFachstelle);
-		if (persistedPensumFachstelle.getFachstelle() != null) {
-			jaxPensumFachstelle.setFachstelle(fachstelleToJAX(persistedPensumFachstelle.getFachstelle()));
-		}
-		jaxPensumFachstelle.setIntegrationTyp(persistedPensumFachstelle.getIntegrationTyp());
-		jaxPensumFachstelle.setGruendeZusatzleistung(persistedPensumFachstelle.getGruendeZusatzleistung());
-		return jaxPensumFachstelle;
+		return jaxPensumFachstellenSet;
 	}
 
 	public PensumFachstelle pensumFachstelleToEntity(
@@ -2166,21 +2166,26 @@ public class JaxBConverter extends AbstractConverter {
 		return pensumFachstelle;
 	}
 
-	public PensumFachstelle toStorablePensumFachstelle(@Nonnull final JaxPensumFachstelle pensumFsToSave) {
-		PensumFachstelle pensumToMergeWith = new PensumFachstelle();
-		if (pensumFsToSave.getId() != null) {
-			final Optional<PensumFachstelle> pensumFachstelleOpt =
-				pensumFachstelleService.findPensumFachstelle(pensumFsToSave.getId());
-			if (pensumFachstelleOpt.isPresent()) {
-				pensumToMergeWith = pensumFachstelleOpt.get();
+	public Collection<PensumFachstelle> toStorablePensumFachstelle(
+		Collection<PensumFachstelle> existingPensumFachstelleList,
+		final Collection<JaxPensumFachstelle> pensumFsToSave) {
+		final Collection<PensumFachstelle> pensumFachstellenList = new HashSet<>();
+		for (JaxPensumFachstelle jaxPensumFachstelle : pensumFsToSave) {
+			if (jaxPensumFachstelle.getId() != null) {
+				final PensumFachstelle pensumFachstelleToMergeWith = existingPensumFachstelleList.stream()
+					.filter(existingPensumFachstelle -> existingPensumFachstelle.getId()
+						.equals(jaxPensumFachstelle.getId()))
+					.findFirst()
+					.orElseThrow(() -> new EbeguEntityNotFoundException(
+						"toStorablePensumFachstelle",
+						ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
+						jaxPensumFachstelle.getId()));
+				pensumFachstellenList.add(pensumFachstelleToEntity(jaxPensumFachstelle, pensumFachstelleToMergeWith));
 			} else {
-				throw new EbeguEntityNotFoundException(
-					"toStorablePensumFachstelle",
-					ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
-					pensumFsToSave.getId());
+				pensumFachstellenList.add(pensumFachstelleToEntity(jaxPensumFachstelle, new PensumFachstelle()));
 			}
 		}
-		return pensumFachstelleToEntity(pensumFsToSave, pensumToMergeWith);
+		return pensumFachstellenList;
 	}
 
 	@Nullable
@@ -2271,9 +2276,9 @@ public class JaxBConverter extends AbstractConverter {
 		kind.setEinschulungTyp(kindJAXP.getEinschulungTyp());
 		kind.setKeinPlatzInSchulhort(kindJAXP.getKeinPlatzInSchulhort());
 
-		PensumFachstelle updtPensumFachstelle = null;
-		if (kindJAXP.getPensumFachstelle() != null) {
-			updtPensumFachstelle = toStorablePensumFachstelle(kindJAXP.getPensumFachstelle());
+		Collection<PensumFachstelle> updtPensumFachstelle = new HashSet<>();
+		if (kindJAXP.getPensumFachstellen() != null) {
+			updtPensumFachstelle = toStorablePensumFachstelle(kind.getPensumFachstelle(), kindJAXP.getPensumFachstellen());
 		}
 		kind.setPensumFachstelle(updtPensumFachstelle);
 
