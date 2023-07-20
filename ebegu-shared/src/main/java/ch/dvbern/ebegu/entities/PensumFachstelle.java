@@ -57,6 +57,11 @@ public class PensumFachstelle extends AbstractIntegerPensum {
 	@Column(nullable = true)
 	private GruendeZusatzleistung gruendeZusatzleistung;
 
+	@NotNull
+	@ManyToOne(optional = false)
+	@JoinColumn(foreignKey = @ForeignKey(name = "FK_pensum_fachstelle_kind_id"))
+	private Kind kind;
+
 	public PensumFachstelle() {
 	}
 
@@ -104,6 +109,14 @@ public class PensumFachstelle extends AbstractIntegerPensum {
 
 	public void setIntegrationTyp(IntegrationTyp integrationTyp) {
 		this.integrationTyp = integrationTyp;
+	}
+
+	public Kind getKind() {
+		return this.kind;
+	}
+
+	public void setKind(@Nonnull Kind kind) {
+		this.kind = kind;
 	}
 
 	@Nullable
