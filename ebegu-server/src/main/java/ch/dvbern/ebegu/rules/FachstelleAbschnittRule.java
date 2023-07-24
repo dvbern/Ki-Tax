@@ -52,9 +52,10 @@ public class FachstelleAbschnittRule extends AbstractAbschnittRule {
 	@Override
 	protected List<VerfuegungZeitabschnitt> createVerfuegungsZeitabschnitte(@Nonnull AbstractPlatz platz) {
 		List<VerfuegungZeitabschnitt> betreuungspensumAbschnitte = new ArrayList<>();
-		PensumFachstelle pensumFachstelle = platz.getKind().getKindJA().getPensumFachstelle();
-		if (pensumFachstelle != null) {
-			betreuungspensumAbschnitte.add(toVerfuegungZeitabschnitt(pensumFachstelle));
+		for (PensumFachstelle pensumFachstelle : platz.getKind().getKindJA().getPensumFachstelle()) {
+			if (pensumFachstelle != null) {
+				betreuungspensumAbschnitte.add(toVerfuegungZeitabschnitt(pensumFachstelle));
+			}
 		}
 		return betreuungspensumAbschnitte;
 	}

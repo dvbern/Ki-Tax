@@ -16,6 +16,7 @@
 package ch.dvbern.ebegu.rules;
 
 import java.math.BigDecimal;
+import java.util.HashSet;
 import java.util.List;
 
 import ch.dvbern.ebegu.entities.Betreuung;
@@ -32,6 +33,8 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import static ch.dvbern.ebegu.util.Constants.ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS;
+import static org.hamcrest.MatcherAssert.*;
+import static org.hamcrest.Matchers.*;
 
 /**
  * Tests für Fachstellen-Regel
@@ -44,11 +47,11 @@ public class FachstelleRuleTest {
 			BetreuungsangebotTyp.KITA, 60, new BigDecimal(2000));
 		final Gesuch gesuch = betreuung.extractGesuch();
 		TestDataUtil.createDefaultAdressenForGS(gesuch, false);
-		betreuung.getKind().getKindJA().setPensumFachstelle(new PensumFachstelle());
-		Assert.assertNotNull(betreuung.getKind().getKindJA().getPensumFachstelle());
+		final PensumFachstelle pensumFachstelle = new PensumFachstelle();
+		pensumFachstelle.setPensum(40);
+		pensumFachstelle.setGueltigkeit(new DateRange(TestDataUtil.START_PERIODE, TestDataUtil.ENDE_PERIODE));
+		betreuung.getKind().getKindJA().getPensumFachstelle().add(pensumFachstelle);
 		Assert.assertNotNull(betreuung.getKind().getGesuch().getGesuchsteller1());
-		betreuung.getKind().getKindJA().getPensumFachstelle().setPensum(40);
-		betreuung.getKind().getKindJA().getPensumFachstelle().setGueltigkeit(new DateRange(TestDataUtil.START_PERIODE, TestDataUtil.ENDE_PERIODE));
 		betreuung.getKind().getGesuch().getGesuchsteller1().addErwerbspensumContainer(TestDataUtil.createErwerbspensum(TestDataUtil.START_PERIODE, TestDataUtil.ENDE_PERIODE, 80));
 		List<VerfuegungZeitabschnitt> result = EbeguRuleTestsHelper.calculate(betreuung);
 
@@ -69,11 +72,11 @@ public class FachstelleRuleTest {
 			BetreuungsangebotTyp.KITA, 60, new BigDecimal(2000));
 		final Gesuch gesuch = betreuung.extractGesuch();
 		TestDataUtil.createDefaultAdressenForGS(gesuch, false);
-		betreuung.getKind().getKindJA().setPensumFachstelle(new PensumFachstelle());
-		Assert.assertNotNull(betreuung.getKind().getKindJA().getPensumFachstelle());
+		final PensumFachstelle pensumFachstelle = new PensumFachstelle();
+		pensumFachstelle.setPensum(100);
+		pensumFachstelle.setGueltigkeit(new DateRange(TestDataUtil.START_PERIODE, TestDataUtil.ENDE_PERIODE));
+		betreuung.getKind().getKindJA().getPensumFachstelle().add(pensumFachstelle);
 		Assert.assertNotNull(betreuung.getKind().getGesuch().getGesuchsteller1());
-		betreuung.getKind().getKindJA().getPensumFachstelle().setPensum(100);
-		betreuung.getKind().getKindJA().getPensumFachstelle().setGueltigkeit(new DateRange(TestDataUtil.START_PERIODE, TestDataUtil.ENDE_PERIODE));
 		betreuung.getKind().getGesuch().getGesuchsteller1().addErwerbspensumContainer(TestDataUtil.createErwerbspensum(TestDataUtil.START_PERIODE, TestDataUtil.ENDE_PERIODE, 80));
 		List<VerfuegungZeitabschnitt> result = EbeguRuleTestsHelper.calculate(betreuung);
 
@@ -96,14 +99,18 @@ public class FachstelleRuleTest {
 		final Gesuch gesuch = betreuung.extractGesuch();
 		TestDataUtil.createDefaultAdressenForGS(gesuch, false);
 
+		betreuung.getKind().getKindJA().setPensumFachstelle(new HashSet<>());
+
 		final PensumFachstelle pensumFachstelle = new PensumFachstelle();
-		pensumFachstelle.setFachstelle(new Fachstelle());
+		final Fachstelle fachstelle = new Fachstelle();
+		fachstelle.setMandant(TestDataUtil.createDefaultMandant());
+		pensumFachstelle.setFachstelle(fachstelle);
 		pensumFachstelle.setPensum(80);
 		pensumFachstelle.setIntegrationTyp(IntegrationTyp.SOZIALE_INTEGRATION);
 		pensumFachstelle.setGueltigkeit(new DateRange(TestDataUtil.START_PERIODE, TestDataUtil.ENDE_PERIODE));
-		betreuung.getKind().getKindJA().setPensumFachstelle(pensumFachstelle);
+		betreuung.getKind().getKindJA().getPensumFachstelle().add(pensumFachstelle);
 
-		Assert.assertNotNull(betreuung.getKind().getKindJA().getPensumFachstelle());
+		assertThat(betreuung.getKind().getKindJA().getPensumFachstelle().size(), is(1));
 		Assert.assertNotNull(betreuung.getKind().getGesuch().getGesuchsteller1());
 		betreuung.getKind().getGesuch().getGesuchsteller1().addErwerbspensumContainer(TestDataUtil.createErwerbspensum(TestDataUtil.START_PERIODE, TestDataUtil.ENDE_PERIODE, 40));
 		List<VerfuegungZeitabschnitt> result = EbeguRuleTestsHelper.calculate(betreuung);
