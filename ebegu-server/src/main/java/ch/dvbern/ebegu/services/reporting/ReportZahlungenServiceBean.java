@@ -246,10 +246,6 @@ public class ReportZahlungenServiceBean extends AbstractReportServiceBean implem
 		row.setKorrektur(ZahlungspositionStatus.NORMAL != zahlungsposition.getStatus());
 		row.setIgnorieren(zahlungsposition.isIgnoriert());
 
-		// auszahlungsdaten nur bei ignorierten zeitabschnitten zeigen
-		if (!zahlungsposition.isIgnoriert()) {
-			return row;
-		}
 
 		var famSitContainer = zahlungsposition
 			.getVerfuegungZeitabschnitt()
@@ -268,6 +264,11 @@ public class ReportZahlungenServiceBean extends AbstractReportServiceBean implem
 		var auszahlungsdaten = famSitContainer
 			.getFamiliensituationJA()
 			.getAuszahlungsdaten();
+
+		// auszahlungsdaten nur bei ignorierten zeitabschnitten zeigen
+		if (!zahlungsposition.isIgnoriert() && !famSitContainer.getFamiliensituationJA().isAuszahlungAusserhalbVonKibon()) {
+			return row;
+		}
 
 		if (auszahlungsdaten.getIban() != null) {
 			row.setIbanEltern(auszahlungsdaten.getIban().getIban());
