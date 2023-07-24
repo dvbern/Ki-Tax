@@ -28,6 +28,7 @@ import ch.dvbern.ebegu.entities.Fall;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.KindContainer;
+import ch.dvbern.ebegu.entities.PensumFachstelle;
 import ch.dvbern.ebegu.entities.WizardStep;
 import ch.dvbern.ebegu.enums.AntragStatus;
 import ch.dvbern.ebegu.enums.WizardStepName;
@@ -176,8 +177,14 @@ public class KindServiceBeanTest extends AbstractEbeguLoginTest {
 		assertNotNull(kindContainer.getKindGS());
 		assertNotNull(kindContainer.getKindGS().getPensumFachstelle());
 		assertNotNull(kindContainer.getKindJA().getPensumFachstelle());
-		TestDataUtil.persistFachstelle(persistence, kindContainer.getKindGS().getPensumFachstelle().getFachstelle());
-		TestDataUtil.persistFachstelle(persistence, kindContainer.getKindJA().getPensumFachstelle().getFachstelle());
+		for (PensumFachstelle pensumFachstelle : kindContainer.getKindGS().getPensumFachstelle()) {
+			assertNotNull(pensumFachstelle.getFachstelle());
+			TestDataUtil.persistFachstelle(persistence, pensumFachstelle.getFachstelle());
+		}
+		for (PensumFachstelle pensumFachstelle : kindContainer.getKindJA().getPensumFachstelle()) {
+			assertNotNull(pensumFachstelle.getFachstelle());
+			TestDataUtil.persistFachstelle(persistence, pensumFachstelle.getFachstelle());
+		}
 		persistence.persist(kindContainer.getKindGS());
 		persistence.persist(kindContainer.getKindJA());
 
