@@ -206,11 +206,12 @@ public class JaxKind extends JaxAbstractPersonDTO {
 	}
 
 
+	@Nonnull
 	public Collection<JaxPensumFachstelle> getPensumFachstellen() {
 		return pensumFachstellen;
 	}
 
-	public void setPensumFachstellen(Collection<JaxPensumFachstelle> pensumFachstellen) {
+	public void setPensumFachstellen(@Nonnull Collection<JaxPensumFachstelle> pensumFachstellen) {
 		this.pensumFachstellen = pensumFachstellen;
 	}
 
