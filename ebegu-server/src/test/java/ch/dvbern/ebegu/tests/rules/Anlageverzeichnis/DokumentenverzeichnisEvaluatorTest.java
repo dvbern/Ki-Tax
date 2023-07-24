@@ -148,9 +148,9 @@ public class DokumentenverzeichnisEvaluatorTest extends EasyMockSupport {
 			final PensumFachstelle defaultPensumFachstelle = TestDataUtil.createDefaultPensumFachstelle();
 			defaultPensumFachstelle.getFachstelle().setName(fachstellename);
 			defaultPensumFachstelle.setIntegrationTyp(integrationTyp);
-			kindContainer.getKindJA().setPensumFachstelle(defaultPensumFachstelle);
+			kindContainer.getKindJA().getPensumFachstelle().add(defaultPensumFachstelle);
 		} else {
-			kindContainer.getKindJA().setPensumFachstelle(null);
+			kindContainer.getKindJA().setPensumFachstelle(new HashSet());
 		}
 
 		gesuch.getKindContainers().add(kindContainer);

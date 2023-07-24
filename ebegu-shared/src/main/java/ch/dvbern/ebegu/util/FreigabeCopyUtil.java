@@ -231,13 +231,13 @@ public final class FreigabeCopyUtil {
 		kindGS.setVorname(kindJA.getVorname());
 		kindGS.setGeschlecht(kindJA.getGeschlecht());
 
-		if (kindJA.getPensumFachstelle() != null) {
-			kindGS.setPensumFachstelle(new PensumFachstelle());
-			Objects.requireNonNull(kindGS.getPensumFachstelle());
-			kindGS.getPensumFachstelle().setFachstelle(kindJA.getPensumFachstelle().getFachstelle());
-			kindGS.getPensumFachstelle().setIntegrationTyp(kindJA.getPensumFachstelle().getIntegrationTyp());
-			kindGS.getPensumFachstelle().setPensum(kindJA.getPensumFachstelle().getPensum());
-			kindGS.getPensumFachstelle().setGueltigkeit(kindJA.getPensumFachstelle().getGueltigkeit());
+		for (PensumFachstelle pensumFachstelle : kindJA.getPensumFachstelle()) {
+			PensumFachstelle copiedPensumFachstelle = new PensumFachstelle();
+			copiedPensumFachstelle.setIntegrationTyp(pensumFachstelle.getIntegrationTyp());
+			copiedPensumFachstelle.setPensum(pensumFachstelle.getPensum());
+			copiedPensumFachstelle.setFachstelle(pensumFachstelle.getFachstelle());
+			copiedPensumFachstelle.setGueltigkeit(pensumFachstelle.getGueltigkeit());
+			kindGS.getPensumFachstelle().add(copiedPensumFachstelle);
 		}
 		kindGS.setKinderabzugErstesHalbjahr(kindJA.getKinderabzugErstesHalbjahr());
 		kindGS.setKinderabzugZweitesHalbjahr(kindJA.getKinderabzugZweitesHalbjahr());

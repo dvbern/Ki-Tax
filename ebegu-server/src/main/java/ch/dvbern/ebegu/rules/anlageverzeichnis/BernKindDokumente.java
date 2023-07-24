@@ -25,6 +25,7 @@ import ch.dvbern.ebegu.entities.DokumentGrund;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Kind;
 import ch.dvbern.ebegu.entities.KindContainer;
+import ch.dvbern.ebegu.entities.PensumFachstelle;
 import ch.dvbern.ebegu.enums.DokumentGrundPersonType;
 import ch.dvbern.ebegu.enums.DokumentGrundTyp;
 import ch.dvbern.ebegu.enums.DokumentTyp;
@@ -53,17 +54,20 @@ public class BernKindDokumente extends AbstractDokumente<Kind, Object> {
 		for (KindContainer kindContainer : kindContainers) {
 			final Kind kindJA = kindContainer.getKindJA();
 
-			add(getDokumentFachstellenbestaetigung(kindContainer, kindJA), anlageVerzeichnis);
+			for (PensumFachstelle pensumFachstelle : kindJA.getPensumFachstelle()) {
+				add(getDokumentFachstellenbestaetigung(kindContainer, kindJA, pensumFachstelle), anlageVerzeichnis);
+			}
 			add(getDokumentAbsageschreibenHortplatz(kindContainer, kindJA), anlageVerzeichnis);
 		}
 	}
 
 	@Nullable
-	private DokumentGrund getDokumentFachstellenbestaetigung(KindContainer kindContainer, @Nonnull Kind kindJA) {
+	private DokumentGrund getDokumentFachstellenbestaetigung(KindContainer kindContainer, @Nonnull Kind kindJA,
+		PensumFachstelle pensumFachstelle) {
 		return getDokument(
 			DokumentTyp.FACHSTELLENBESTAETIGUNG,
 			kindJA,
-			kindJA.getFullName(),
+			pensumFachstelle,
 			null,
 			DokumentGrundPersonType.KIND,
 			kindContainer.getKindNummer(),
@@ -89,7 +93,7 @@ public class BernKindDokumente extends AbstractDokumente<Kind, Object> {
 	public boolean isDokumentNeeded(@Nonnull DokumentTyp dokumentTyp, @Nullable Kind kind) {
 		switch (dokumentTyp) {
 		case FACHSTELLENBESTAETIGUNG:
-			return kind != null && kind.getPensumFachstelle() != null;
+			return kind != null && !kind.getPensumFachstelle().isEmpty();
 		case ABSAGESCHREIBEN_HORTPLATZ:
 			return kind != null && kind.getKeinPlatzInSchulhort();
 		default:
