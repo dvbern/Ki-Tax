@@ -24,10 +24,12 @@ import javax.validation.ValidatorFactory;
 
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.KindContainer;
+import ch.dvbern.ebegu.entities.PensumFachstelle;
 import ch.dvbern.ebegu.enums.IntegrationTyp;
 import ch.dvbern.ebegu.test.TestDataUtil;
 import ch.dvbern.ebegu.validators.CheckPensumFachstelle;
-import org.junit.Assert;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -143,18 +145,17 @@ public class CheckPensumFachstelleValidatorTest {
 		KindContainer kind = TestDataUtil.createDefaultKindContainer();
 		kind.setGesuch(gesuch);
 
-		Assert.assertNotNull(kind.getKindJA().getPensumFachstelle());
-		kind.getKindJA().getPensumFachstelle().setIntegrationTyp(integrationTyp);
-		kind.getKindJA().getPensumFachstelle().setPensum(pensum);
+		MatcherAssert.assertThat(kind.getKindJA().getPensumFachstelle().size(), Matchers.is(1));
+		PensumFachstelle pensumFachstelle = kind.getKindJA().getPensumFachstelle().stream().findFirst().orElseThrow();
+		pensumFachstelle.setIntegrationTyp(integrationTyp);
+		pensumFachstelle.setPensum(pensum);
 
 		return kind;
 	}
 
 	@Nonnull
 	private KindContainer createKindWithoutPensumFachstelle() {
-		KindContainer kind = TestDataUtil.createDefaultKindContainer();
-
-		kind.getKindJA().setPensumFachstelle(null);
+		KindContainer kind = TestDataUtil.createKindContainerWithoutFachstelle();
 
 		return kind;
 	}

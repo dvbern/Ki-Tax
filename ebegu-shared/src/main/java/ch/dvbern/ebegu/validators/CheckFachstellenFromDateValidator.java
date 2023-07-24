@@ -41,17 +41,19 @@ public class CheckFachstellenFromDateValidator implements ConstraintValidator<Ch
 	@Override
 	public boolean isValid(@Nonnull KindContainer kindContainer, ConstraintValidatorContext context) {
 		if (kindContainer.getKindJA() == null
-			|| kindContainer.getKindJA().getPensumFachstelle() == null
-			|| kindContainer.getKindJA().getPensumFachstelle().getFachstelle() == null
+			|| kindContainer.getKindJA().getPensumFachstelle().isEmpty()
 		) {
 			// Kein PensumFachstelle
 			return true;
 		}
-		final PensumFachstelle pensumFachstelle = kindContainer.getKindJA().getPensumFachstelle();
-		if (pensumFachstelle.getIntegrationTyp() == IntegrationTyp.SPRACHLICHE_INTEGRATION) {
-			final LocalDate geburtsdatumPlusMinAge = kindContainer.getKindJA().getGeburtsdatum().plusYears(2);
-			final LocalDate fachstelleFrom = pensumFachstelle.getGueltigkeit().getGueltigAb();
-			return !fachstelleFrom.isBefore(geburtsdatumPlusMinAge);
+		for (PensumFachstelle pensumFachstelle : kindContainer.getKindJA().getPensumFachstelle()) {
+			if (pensumFachstelle.getIntegrationTyp() == IntegrationTyp.SPRACHLICHE_INTEGRATION) {
+				final LocalDate geburtsdatumPlusMinAge = kindContainer.getKindJA().getGeburtsdatum().plusYears(2);
+				final LocalDate fachstelleFrom = pensumFachstelle.getGueltigkeit().getGueltigAb();
+				if (fachstelleFrom.isBefore(geburtsdatumPlusMinAge)) {
+					return false;
+				}
+			}
 		}
 		return true;
 	}

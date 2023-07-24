@@ -148,7 +148,7 @@ public class CheckFachstellenValidatorTest extends EasyMockSupport {
 		fall.setMandant(mandant);
 		pensumFachstelle.setFachstelle(fachstelle);
 		pensumFachstelle.setIntegrationTyp(integrationTyp);
-		kind.setPensumFachstelle(pensumFachstelle);
+		kind.getPensumFachstelle().add(pensumFachstelle);
 		kind.setEinschulungTyp(einschulungTyp);
 		kindContainer.setKindJA(kind);
 		gesuch.setDossier(dossier);
