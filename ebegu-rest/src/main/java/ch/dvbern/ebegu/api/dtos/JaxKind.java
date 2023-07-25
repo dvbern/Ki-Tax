@@ -16,6 +16,7 @@
 package ch.dvbern.ebegu.api.dtos;
 
 import java.util.Collection;
+import java.util.LinkedHashSet;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -81,7 +82,7 @@ public class JaxKind extends JaxAbstractPersonDTO {
 	private Boolean keinPlatzInSchulhort = false;
 
 	@Nonnull
-	private Collection<JaxPensumFachstelle> pensumFachstellen;
+	private Collection<JaxPensumFachstelle> pensumFachstellen = new LinkedHashSet<>();
 
 	@Nullable
 	private JaxPensumAusserordentlicherAnspruch pensumAusserordentlicherAnspruch;

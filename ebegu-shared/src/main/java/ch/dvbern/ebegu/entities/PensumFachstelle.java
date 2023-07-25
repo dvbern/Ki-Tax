@@ -65,6 +65,10 @@ public class PensumFachstelle extends AbstractIntegerPensum {
 	public PensumFachstelle() {
 	}
 
+	public PensumFachstelle(Kind kind) {
+		this.kind = kind;
+	}
+
 	@Nonnull
 	public PensumFachstelle copyPensumFachstelle(@Nonnull PensumFachstelle target, @Nonnull AntragCopyType copyType) {
 		super.copyAbstractPensumEntity(target, copyType);

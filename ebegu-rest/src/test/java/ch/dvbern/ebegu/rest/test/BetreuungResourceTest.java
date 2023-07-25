@@ -264,7 +264,7 @@ public class BetreuungResourceTest extends AbstractEbeguRestLoginTest {
 			persistence.persist(converter.fachstelleToEntity(jaxPensumFachstelle.getFachstelle(), new Fachstelle()));
 			jaxPensumFachstelle.setFachstelle(jaxPensumFachstelle.getFachstelle());
 			PensumFachstelle returnedPensumFachstelle = persistence.merge(
-				converter.pensumFachstelleToEntity(jaxPensumFachstelle, new PensumFachstelle()));
+				converter.jaxPensumFachstelleToEntity(jaxPensumFachstelle, new PensumFachstelle()));
 			pensumFachstellenSet.add(returnedPensumFachstelle);
 		}
 		Collection<JaxPensumFachstelle> convertedPensumFachstelle = converter.pensumFachstellenListToJax(pensumFachstellenSet);
