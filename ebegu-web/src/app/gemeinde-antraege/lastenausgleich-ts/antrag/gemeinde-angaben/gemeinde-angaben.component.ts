@@ -22,7 +22,7 @@ import {
     Input,
     OnDestroy,
     OnInit,
-    ViewEncapsulation
+    ViewEncapsulation,
 } from '@angular/core';
 import {AbstractControl, FormBuilder, FormGroup, ValidatorFn, Validators} from '@angular/forms';
 import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
@@ -35,18 +35,18 @@ import {EinstellungRS} from '../../../../../admin/service/einstellungRS.rest';
 import {AuthServiceRS} from '../../../../../authentication/service/AuthServiceRS.rest';
 import {TSEinstellungKey} from '../../../../../models/enums/TSEinstellungKey';
 import {
-    TSLastenausgleichTagesschuleAngabenGemeindeFormularStatus
+    TSLastenausgleichTagesschuleAngabenGemeindeFormularStatus,
 } from '../../../../../models/enums/TSLastenausgleichTagesschuleAngabenGemeindeFormularStatus';
 import {
-    TSLastenausgleichTagesschuleAngabenGemeindeStatus
+    TSLastenausgleichTagesschuleAngabenGemeindeStatus,
 } from '../../../../../models/enums/TSLastenausgleichTagesschuleAngabenGemeindeStatus';
 import {TSRole} from '../../../../../models/enums/TSRole';
 import {TSWizardStepXTyp} from '../../../../../models/enums/TSWizardStepXTyp';
 import {
-    TSLastenausgleichTagesschuleAngabenGemeinde
+    TSLastenausgleichTagesschuleAngabenGemeinde,
 } from '../../../../../models/gemeindeantrag/TSLastenausgleichTagesschuleAngabenGemeinde';
 import {
-    TSLastenausgleichTagesschuleAngabenGemeindeContainer
+    TSLastenausgleichTagesschuleAngabenGemeindeContainer,
 } from '../../../../../models/gemeindeantrag/TSLastenausgleichTagesschuleAngabenGemeindeContainer';
 import {TSBenutzer} from '../../../../../models/TSBenutzer';
 import {TSEinstellung} from '../../../../../models/TSEinstellung';
@@ -55,7 +55,7 @@ import {EbeguUtil} from '../../../../../utils/EbeguUtil';
 import {MathUtil} from '../../../../../utils/MathUtil';
 import {TSRoleUtil} from '../../../../../utils/TSRoleUtil';
 import {
-    DvNgConfirmDialogComponent
+    DvNgConfirmDialogComponent,
 } from '../../../../core/component/dv-ng-confirm-dialog/dv-ng-confirm-dialog.component';
 import {DvNgOkDialogComponent} from '../../../../core/component/dv-ng-ok-dialog/dv-ng-ok-dialog.component';
 import {CONSTANTS} from '../../../../core/constants/CONSTANTS';
@@ -441,17 +441,6 @@ export class GemeindeAngabenComponent implements OnInit, OnDestroy {
         this.angabenForm.get('maximalTarif').valueChanges.subscribe(value => {
             this.setValidatorRequiredIfFalse('maximalTarifBemerkung', value);
         }, () => this.errorService.addMesageAsError(this.translateService.instant('Maximal Tarif ValueChanges error')));
-
-        this.angabenForm.get('mindestens50ProzentBetreuungszeitDurchAusgebildetesPersonal')
-            .setValidators([Validators.required]);
-        this.angabenForm.get('mindestens50ProzentBetreuungszeitDurchAusgebildetesPersonal')
-            .valueChanges
-            .subscribe(value => {
-                    this.setValidatorRequiredIfFalse('mindestens50ProzentBetreuungszeitDurchAusgebildetesPersonalBemerkung',
-                        value);
-                },
-                () => this.errorService.addMesageAsError(this.translateService.instant(
-                    'mindestens50ProzentBetreuungszeitDurchAusgebildetesPersonal ValueChanges error')));
 
         this.angabenForm.get('ausbildungenMitarbeitendeBelegt').setValidators([Validators.required]);
         this.angabenForm.get('ausbildungenMitarbeitendeBelegt').valueChanges.subscribe(value => {
