@@ -85,7 +85,7 @@ public class LATSReportPdfGenerator extends GemeindeAntragReportPdfGenerator {
 
 	protected static final String KONTROLLFRAGEN = "PdfGeneration_kontrollfragen";
 	protected static final String BETREUUNGSSTUNDEN_DOKUMENTIERT = "PdfGeneration_betreuungsstundenDokumentiert";
-	protected static final String BEMERKUNG = "PdfGeneration_bemerkung";
+	protected static final String BEMERKUNG = "PdfGeneration_Bemerkung";
 	protected static final String ELTERNGEBUHREN_GEMAESS_TSVERORDNUNG =
 			"PdfGeneration_elterngebuhrenGemaessTSVerordnung";
 	protected static final String ELTERN_BELEGE = "PdfGeneration_elternBelege";
