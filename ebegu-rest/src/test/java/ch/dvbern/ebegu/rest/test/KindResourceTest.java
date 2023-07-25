@@ -119,7 +119,7 @@ public class KindResourceTest extends AbstractEbeguRestLoginTest {
 			final Fachstelle fachstelle = persistence.persist(converter.fachstelleToEntity(jaxPensumFachstelle.getFachstelle(), new Fachstelle()));
 			jaxPensumFachstelle.setFachstelle(converter.fachstelleToJAX(fachstelle));
 			PensumFachstelle returnedPensumFachstelle = persistence.merge(
-				converter.pensumFachstelleToEntity(jaxPensumFachstelle, new PensumFachstelle()));
+				converter.jaxPensumFachstelleToEntity(jaxPensumFachstelle, new PensumFachstelle()));
 			pensumFachstellenSet.add(returnedPensumFachstelle);
 		}
 		Collection<JaxPensumFachstelle> convertedPensumFachstelle = converter.pensumFachstellenListToJax(pensumFachstellenSet);
