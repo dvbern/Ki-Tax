@@ -88,7 +88,7 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
         'AuthServiceRS',
         'EbeguRestUtil',
         'MandantService',
-        'FjkvKinderabzugExchangeService'
+        'FjkvKinderabzugExchangeService',
     ];
 
     public readonly CONSTANTS: any = CONSTANTS;
@@ -129,7 +129,7 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
         private readonly authServiceRS: AuthServiceRS,
         private readonly ebeguRestUtil: EbeguRestUtil,
         private readonly mandantService: MandantService,
-        private readonly fjkvKinderabzugExchangeService: FjkvKinderabzugExchangeService
+        private readonly fjkvKinderabzugExchangeService: FjkvKinderabzugExchangeService,
     ) {
         super(gesuchModelManager, berechnungsManager, wizardStepManager, $scope, TSWizardStepName.KINDER, $timeout);
         if ($stateParams.kindNumber) {
@@ -179,7 +179,7 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
         return this.$translate.instant('SPRICHT_AMTSSPRACHE',
             {
                 amtssprache: EbeguUtil
-                    .getAmtsspracheAsString(this.gesuchModelManager.gemeindeStammdaten, this.$translate)
+                    .getAmtsspracheAsString(this.gesuchModelManager.gemeindeStammdaten, this.$translate),
             });
     }
 
@@ -251,12 +251,20 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
 
     public showFachstelleClicked(): void {
         if (this.showFachstelle) {
-            const pensumFachstelle: TSPensumFachstelle = new TSPensumFachstelle();
-            pensumFachstelle.gueltigkeit = new TSDateRange();
-            this.getModel().pensumFachstellen.push(pensumFachstelle);
+            this.addNewPensumFachstelle();
         } else {
             this.resetPensumFachstellen();
         }
+    }
+
+    public addNewPensumFachstelle(): void {
+        const pensumFachstelle: TSPensumFachstelle = new TSPensumFachstelle();
+        pensumFachstelle.gueltigkeit = new TSDateRange();
+        this.getPensumFachstellen()?.push(pensumFachstelle);
+    }
+
+    public removePensumFachstelle(index: number): void {
+        this.getPensumFachstellen().splice(index, 1);
     }
 
     public showAusserordentlicherAnspruchCheckbox(): boolean {
@@ -531,7 +539,4 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
         return this.fachstellenTyp !== TSFachstellenTyp.KEINE;
     }
 
-    public getPensumFachstelleGSAt(index: number): TSPensumFachstelle | undefined {
-        return this.getContainer().kindGS?.pensumFachstellen[index];
-    }
 }

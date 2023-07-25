@@ -327,9 +327,34 @@
                                 </div>
                             </div>
                             <div ng-if="vm.isFachstelleRequired()">
-                                <div ng-repeat="pensumFachstelle in vm.getPensumFachstellen()">
+                                <div ng-repeat="pensumFachstelle in vm.getPensumFachstellen() track by $index">
                                     <dv-kind-fachstelle [pensum-fachstelle]="pensumFachstelle" [submitted]="vm.submitted"
                                     ></dv-kind-fachstelle>
+                                    <div class="row margin-bottom-60 dv-input-container-medium"
+                                         ng-if="($index > 0) || (vm.getPensumFachstellen().length > 1)">
+                                        <div class="col-md-12">
+                                            <dv-loading-button type="button"
+                                                               button-click="vm.removePensumFachstelle($index)"
+                                                               button-class="dv-btn-operation"
+                                                               button-disabled="vm.isGesuchReadonly()">
+                                                <i class="fa fa-lg fa-trash-o"
+                                                   title="{{'BETREUUNGSPENSUM_DELETE' | translate}}"
+                                                   aria-label="{{'BETREUUNGSPENSUM_DELETE' | translate}}"></i>
+                                                <span data-translate="BETREUUNGSPENSUM_ENTFERNEN_INDEX"
+                                                      data-translate-value-betreuungspensumnumber="{{$index + 1}}"></span>
+                                            </dv-loading-button>
+                                            <hr class="header"/>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-12">
+                                    <dv-loading-button type="button" button-click="vm.addNewPensumFachstelle()"
+                                                       delay="0"
+                                                       button-class="dv-btn-operation">
+                                        <i class="fa fa-lg fa-plus-circle"></i>
+                                        <span data-translate="PENSUM_FACHSTELLE_ERFASSEN"></span>
+                                    </dv-loading-button>
                                 </div>
                             </div>
                             <!--Asylwesen?-->
