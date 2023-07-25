@@ -40,7 +40,7 @@
                 <span [textContent]="nameGs" class="fall-toolbar-symbol-padding"></span>
                 <span [textContent]="fallNummer" class="fall-toolbar-symbol-padding"></span>
                 <span class="kitax-link" *ngIf="kitaxResponse && isGemeindeUserOrSuperAdmin()">
-                    (<a target="_blank" [href]="kitaxHost + kitaxResponse.url">Ki-Tax {{kitaxResponse.fallNummer}}</a>)
+                    (<a target="_blank" rel="noopener noreferrer" [href]="kitaxHost + kitaxResponse.url">Ki-Tax {{kitaxResponse.fallNummer}}</a>)
                 </span>
                 <i *dvNgShowElement="true; roles: TSRoleUtil.getAllRolesButGesuchsteller()"
                    class="fa"

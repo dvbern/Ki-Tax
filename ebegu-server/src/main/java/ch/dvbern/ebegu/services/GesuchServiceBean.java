@@ -1893,7 +1893,7 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 		Root<Gesuch> root = query.from(Gesuch.class);
 
 		// Status verfuegt
-		Predicate predicateStatus = root.get(Gesuch_.status).in(AntragStatus.ERLEDIGTE_PENDENZ).not();
+		Predicate predicateStatus = root.get(Gesuch_.status).in(AntragStatus.getAllErledigtePendenzStatus()).not();
 		// Gesuchsperiode
 		final Predicate predicateGesuchsperiode = cb.equal(root.get(Gesuch_.gesuchsperiode), gesuchsperiode);
 
@@ -2120,7 +2120,7 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 	public void postGesuchVerfuegen(@Nonnull Gesuch gesuch) {
 		Optional<Gesuch> neustesVerfuegtesGesuchFuerGesuch =
 			getNeustesVerfuegtesGesuchFuerGesuch(gesuch.getGesuchsperiode(), gesuch.getDossier(), false);
-		if (AntragStatus.FIRST_STATUS_OF_VERFUEGT.contains(gesuch.getStatus())
+		if (AntragStatus.getFirstStatusOfVerfuegt().contains(gesuch.getStatus())
 			&& gesuch.getTimestampVerfuegt() == null) {
 			// Status ist neuerdings verfuegt, aber das Datum noch nicht gesetzt -> dies war der Statuswechsel
 			gesuch.setTimestampVerfuegt(LocalDateTime.now());

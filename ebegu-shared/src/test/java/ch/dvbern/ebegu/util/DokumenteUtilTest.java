@@ -26,8 +26,8 @@ import ch.dvbern.ebegu.enums.DokumentGrundPersonType;
 import ch.dvbern.ebegu.enums.DokumentGrundTyp;
 import ch.dvbern.ebegu.enums.DokumentTyp;
 import ch.dvbern.ebegu.enums.GeneratedDokumentTyp;
+import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.util.mandant.MandantIdentifier;
-import org.apache.commons.math3.stat.inference.TestUtils;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -148,6 +148,38 @@ public class DokumenteUtilTest {
 			DokumentGrundPersonType.GESUCHSTELLER, 1, DokumentTyp.BESTAETIGUNG_ARZT);
 		int result = DokumenteUtil.compareDokumentGrunds(persistedDok, neededDok);
 		Assert.assertNotEquals(0, result);
+	}
+
+	@Test(expected = EbeguRuntimeException.class)
+	public void pathWithTraversalStartShouldNotBeValid() {
+		String directoryPath = "/server/data/uploads";
+		String pathWithTraversalStart = "/server/data/uploads/./../filename";
+
+		DokumenteUtil.validateDokumentDirectory(pathWithTraversalStart, directoryPath);
+	}
+
+	@Test(expected = EbeguRuntimeException.class)
+	public void pathWithTraversalShouldNotBeValid() {
+		String directoryPath = "/server/data/uploads";
+		String pathWithTraversalStart = "/server/data/uploads/../filename";
+
+		DokumenteUtil.validateDokumentDirectory(pathWithTraversalStart, directoryPath);
+	}
+
+	@Test(expected = EbeguRuntimeException.class)
+	public void pathWithMultipleTraversalShouldNotBeValid() {
+		String directoryPath = "/server/data/uploads";
+		String pathWithTraversalStart = "/server/data/uploads/../../../../filename";
+
+		DokumenteUtil.validateDokumentDirectory(pathWithTraversalStart, directoryPath);
+	}
+
+	@Test()
+	public void pathWithoutTraversalStartingWithShouldBeValid() {
+		String directoryPath = "/server/data/uploads";
+		String pathWithTraversalStart = "/server/data/uploads/filename";
+
+		DokumenteUtil.validateDokumentDirectory(pathWithTraversalStart, directoryPath);
 	}
 
 	private Set<Dokument> getByDokumentType(Set<DokumentGrund> dokumentGrunds, DokumentTyp dokumentTyp) {
