@@ -43,6 +43,7 @@ import {TSKind} from '../../../models/TSKind';
 import {TSKindContainer} from '../../../models/TSKindContainer';
 import {TSPensumAusserordentlicherAnspruch} from '../../../models/TSPensumAusserordentlicherAnspruch';
 import {TSPensumFachstelle} from '../../../models/TSPensumFachstelle';
+import {TSDateRange} from '../../../models/types/TSDateRange';
 import {DateUtil} from '../../../utils/DateUtil';
 import {EbeguRestUtil} from '../../../utils/EbeguRestUtil';
 import {EbeguUtil} from '../../../utils/EbeguUtil';
@@ -100,10 +101,7 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
     public showFachstelleGS: boolean;
     public showAusserordentlicherAnspruch: boolean;
     // der ausgewaehlte fachstelleId wird hier gespeichert und dann in die entsprechende Fachstelle umgewandert
-    public fachstelleId: string;
     public allowedRoles: ReadonlyArray<TSRole>;
-    public minValueAllowed: number = 0;
-    public maxValueAllowed: number = 100;
     public kontingentierungEnabled: boolean;
     public anspruchUnabhaengingVomBeschaeftigungspensum: boolean;
 
@@ -163,7 +161,6 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
         this.geschlechter = EnumEx.getNames(TSGeschlecht);
         this.kinderabzugValues = getTSKinderabzugValues();
         this.einschulungTypValues = new EinschulungTypesVisitor().process(this.mandant);
-        this.loadEinstellungenForIntegration();
         this.initFachstelle();
         this.initAusserordentlicherAnspruch();
         this.getEinstellungKontingentierung();
@@ -187,70 +184,8 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
     }
 
     private initFachstelle(): void {
-        this.showFachstelle = !!(this.model.kindJA.pensumFachstelle);
-        this.showFachstelleGS = !!(this.model.kindGS && this.model.kindGS.pensumFachstelle);
-        if (this.getPensumFachstelle() && this.getPensumFachstelle().fachstelle) {
-            this.fachstelleId = this.getPensumFachstelle().fachstelle.id;
-        }
-        if (!this.gesuchModelManager.getFachstellenAnspruchList()
-            || this.gesuchModelManager.getFachstellenAnspruchList().length <= 0) {
-            this.gesuchModelManager.updateFachstellenAnspruchList();
-        }
-    }
-
-    private getEinstellungenFachstelle(
-        minValueEinstellungKey: TSEinstellungKey,
-        maxValueEinstellungKey: TSEinstellungKey
-    ): void {
-        this.einstellungRS.getAllEinstellungenBySystemCached(
-            this.gesuchModelManager.getGesuchsperiode().id
-        ).subscribe((response: TSEinstellung[]) => {
-            response.filter(r => r.key === minValueEinstellungKey)
-                .forEach(value => {
-                    this.minValueAllowed = Number(value.value);
-                });
-            response.filter(r => r.key === maxValueEinstellungKey)
-                .forEach(value => {
-                    this.maxValueAllowed = Number(value.value);
-                });
-
-            if (this.isOnlyOneValueAllowed()) {
-                this.getModel().pensumFachstelle.pensum = this.minValueAllowed;
-            }
-        }, error => LOG.error(error));
-    }
-
-    private isOnlyOneValueAllowed(): boolean {
-        return this.minValueAllowed === this.maxValueAllowed;
-    }
-
-    public loadEinstellungenForIntegration(): void {
-        if (!this.model.extractPensumFachstelle()) {
-            return;
-        }
-        if (this.isFachstellenTypLuzern()) {
-            this.model.extractPensumFachstelle().pensum = 100;
-        }
-        if (this.model.extractPensumFachstelle().integrationTyp === TSIntegrationTyp.SOZIALE_INTEGRATION) {
-            this.getEinstellungenFachstelle(
-                TSEinstellungKey.FACHSTELLE_MIN_PENSUM_SOZIALE_INTEGRATION,
-                TSEinstellungKey.FACHSTELLE_MAX_PENSUM_SOZIALE_INTEGRATION
-            );
-            this.resetGruendeZusatzleistung();
-        } else if (this.model.extractPensumFachstelle().integrationTyp === TSIntegrationTyp.SPRACHLICHE_INTEGRATION) {
-            this.getEinstellungenFachstelle(
-                TSEinstellungKey.FACHSTELLE_MIN_PENSUM_SPRACHLICHE_INTEGRATION,
-                TSEinstellungKey.FACHSTELLE_MAX_PENSUM_SPRACHLICHE_INTEGRATION
-            );
-            this.resetGruendeZusatzleistung();
-            // eslint-disable-next-line max-len
-        } else if (this.model.extractPensumFachstelle().integrationTyp === TSIntegrationTyp.ZUSATZLEISTUNG_INTEGRATION) {
-            this.model.extractPensumFachstelle().pensum = 100;
-        }
-    }
-
-    private resetGruendeZusatzleistung(): void {
-        this.model.extractPensumFachstelle().gruendeZusatzleistung = undefined;
+        this.showFachstelle = this.model.kindJA.pensumFachstellen.length > 0;
+        this.showFachstelleGS = this.model.kindGS?.pensumFachstellen.length > 0;
     }
 
     private initAusserordentlicherAnspruch(): void {
@@ -258,12 +193,17 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
     }
 
     public save(): IPromise<TSKindContainer> {
+        this.submitted = true;
         if (!this.isGesuchValid()) {
             return undefined;
         }
         if (this.fjkvKinderabzugExchangeService.form && !this.fjkvKinderabzugExchangeService.form.valid) {
             this.fjkvKinderabzugExchangeService.form.onSubmit(null);
             this.fjkvKinderabzugExchangeService.triggerFormValidation();
+            return undefined;
+        }
+
+        if (!this.getPensumFachstellen().reduce((prev, cur) => prev && cur.isComplete(this.fachstellenTyp), true)) {
             return undefined;
         }
 
@@ -309,19 +249,13 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
         }
     }
 
-    public setSelectedFachsstelle(): void {
-        const fachstellenList = this.getFachstellenList();
-        const found = fachstellenList.find(f => f.id === this.fachstelleId);
-        if (found) {
-            this.getModel().pensumFachstelle.fachstelle = found;
-        }
-    }
-
     public showFachstelleClicked(): void {
         if (this.showFachstelle) {
-            this.getModel().pensumFachstelle = new TSPensumFachstelle();
+            const pensumFachstelle: TSPensumFachstelle = new TSPensumFachstelle();
+            pensumFachstelle.gueltigkeit = new TSDateRange();
+            this.getModel().pensumFachstellen.push(pensumFachstelle);
         } else {
-            this.resetFachstelleFields();
+            this.resetPensumFachstellen();
         }
     }
 
@@ -346,23 +280,12 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
     public familienErgaenzendeBetreuungClicked(): void {
         if (!this.getModel().familienErgaenzendeBetreuung) {
             this.showFachstelle = false;
-            this.resetFachstelleFields();
+            this.resetPensumFachstellen();
         }
     }
 
-    private resetFachstelleFields(): void {
-        this.fachstelleId = undefined;
-        this.getModel().pensumFachstelle = undefined;
-    }
-
-    public getFachstellenList(): Array<TSFachstelle> {
-        const fachstellen = this.gesuchModelManager.getFachstellenAnspruchList();
-        if (this.getModel().pensumFachstelle !== null
-            && this.getModel().pensumFachstelle.fachstelle
-            && this.getModel().pensumFachstelle.fachstelle.name.toString() === 'KINDES_ERWACHSENEN_SCHUTZBEHOERDE') {
-            return fachstellen.concat(this.getModel().pensumFachstelle.fachstelle);
-        }
-        return fachstellen;
+    private resetPensumFachstellen(): void {
+        this.getModel().pensumFachstellen = [];
     }
 
     public getModel(): TSKind {
@@ -379,9 +302,9 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
         return undefined;
     }
 
-    public getPensumFachstelle(): TSPensumFachstelle {
+    public getPensumFachstellen(): TSPensumFachstelle[] {
         if (this.getModel()) {
-            return this.getModel().pensumFachstelle;
+            return this.getModel().pensumFachstellen;
         }
         return undefined;
     }
@@ -441,24 +364,23 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
     }
 
     public getTextFachstelleKorrekturJA(): string {
-        if (this.getContainer().kindGS && this.getContainer().kindGS.pensumFachstelle) {
-            const fachstelle = this.getContainer().kindGS.pensumFachstelle;
-            const vonText = DateUtil.momentToLocalDateFormat(fachstelle.gueltigkeit.gueltigAb, 'DD.MM.YYYY');
-            const bisText = fachstelle.gueltigkeit.gueltigBis ?
-                DateUtil.momentToLocalDateFormat(fachstelle.gueltigkeit.gueltigBis, 'DD.MM.YYYY') :
-                CONSTANTS.END_OF_TIME_STRING;
-            const integrationTyp = this.$translate.instant(fachstelle.integrationTyp);
-            const fachstellenname = fachstelle.fachstelle ? fachstelle.fachstelle.name : '';
-            return this.$translate.instant('JA_KORREKTUR_FACHSTELLE', {
-                name: fachstellenname,
-                integration: integrationTyp,
-                pensum: fachstelle.pensum,
-                von: vonText,
-                bis: bisText
-            });
-        }
+        return this.getContainer().kindGS?.pensumFachstellen.map(fachstelle => {
+                const vonText = DateUtil.momentToLocalDateFormat(fachstelle.gueltigkeit.gueltigAb, 'DD.MM.YYYY');
+                const bisText = fachstelle.gueltigkeit.gueltigBis ?
+                    DateUtil.momentToLocalDateFormat(fachstelle.gueltigkeit.gueltigBis, 'DD.MM.YYYY') :
+                    CONSTANTS.END_OF_TIME_STRING;
+                const integrationTyp = this.$translate.instant(fachstelle.integrationTyp);
+                const fachstellenname = fachstelle.fachstelle ? fachstelle.fachstelle.name : '';
+                return this.$translate.instant('JA_KORREKTUR_FACHSTELLE', {
+                    name: fachstellenname,
+                    integration: integrationTyp,
+                    pensum: fachstelle.pensum,
+                    von: vonText,
+                    bis: bisText,
+                });
+            }).reduce((previousValue, currentValue) => previousValue.concat('\n', currentValue), '')
+            || this.$translate.instant('LABEL_KEINE_ANGABE');
 
-        return this.$translate.instant('LABEL_KEINE_ANGABE');
     }
 
     private initEmptyKind(kindNumber: number): TSKindContainer {
@@ -522,11 +444,6 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
 
     private getEinstellungKontingentierung(): void {
         this.kontingentierungEnabled = this.gesuchModelManager.gemeindeKonfiguration.konfigKontingentierung;
-    }
-
-    public gruendeZusatzleistungRequired(): boolean {
-        return this.getModel().pensumFachstelle.integrationTyp === TSIntegrationTyp.ZUSATZLEISTUNG_INTEGRATION
-            && this.authServiceRS.isOneOfRoles(TSRoleUtil.getGemeindeRoles());
     }
 
     public geburtsdatumChanged(): void {
@@ -612,5 +529,9 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
 
     public isFachstellenActivated(): boolean {
         return this.fachstellenTyp !== TSFachstellenTyp.KEINE;
+    }
+
+    public getPensumFachstelleGSAt(index: number): TSPensumFachstelle | undefined {
+        return this.getContainer().kindGS?.pensumFachstellen[index];
     }
 }
