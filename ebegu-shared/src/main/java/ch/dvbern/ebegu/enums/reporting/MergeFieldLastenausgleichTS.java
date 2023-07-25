@@ -78,7 +78,7 @@ public enum MergeFieldLastenausgleichTS implements MergeFieldProvider {
 	betreuungsstundenPrognose(new SimpleMergeField<>("betreuungsstundenPrognose", BIGDECIMAL_CONVERTER)),
 	betreuungsstundenPrognoseKibon(new SimpleMergeField<>("betreuungsstundenPrognoseKibon", STRING_CONVERTER)),
 	betreuungsstundenPrognoseBemerkungen(new SimpleMergeField<>("betreuungsstundenPrognoseBemerkungen", STRING_CONVERTER)),
-	bemerkungMindestens50ProzentAusgebildet(new SimpleMergeField<>("bemerkungMindestens50ProzentAusgebildet", STRING_CONVERTER)),
+	bemerkungMindestens50ProzentAusgebildet(new SimpleMergeField<>("bemerkungMindestensFuenfzigProzentAusgebildet", STRING_CONVERTER)),
 
 	// Tagesschulen
 	gemeindeFallnummerTS(new SimpleMergeField<>("gemeindeFallnummerTS", STRING_CONVERTER)),
