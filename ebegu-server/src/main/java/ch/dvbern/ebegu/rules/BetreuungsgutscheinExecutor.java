@@ -28,6 +28,7 @@ import ch.dvbern.ebegu.entities.Einstellung;
 import ch.dvbern.ebegu.entities.KitaxUebergangsloesungInstitutionOeffnungszeiten;
 import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
+import ch.dvbern.ebegu.enums.EingewoehnungTyp;
 import ch.dvbern.ebegu.enums.EinschulungTyp;
 import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.enums.MsgKey;
@@ -99,8 +100,8 @@ public class BetreuungsgutscheinExecutor {
 		@Nonnull List<VerfuegungZeitabschnitt> zeitabschnitte,
 		@Nonnull Locale locale
 	) {
-		Boolean eingewoehnungAktiviert = kibonAbschlussRulesParameters.get(EinstellungKey.EINGEWOEHNUNG_TYP).getValueAsBoolean();
-		EingewoehnungFristRule eingewoehnungFristRule = new EingewoehnungFristRule(locale, isDebug, eingewoehnungAktiviert);
+		EingewoehnungTyp eingewoehnungTyp = EingewoehnungTyp.valueOf(kibonAbschlussRulesParameters.get(EinstellungKey.EINGEWOEHNUNG_TYP).getValue());
+		EingewoehnungFristRule eingewoehnungFristRule = new EingewoehnungFristRule(locale, isDebug, eingewoehnungTyp);
 		AnspruchFristRule anspruchFristRule = new AnspruchFristRule(isDebug);
 		AbschlussNormalizer abschlussNormalizerOhneMonate = new AbschlussNormalizer(false, isDebug);
 		MonatsRule monatsRule = new MonatsRule(isDebug);

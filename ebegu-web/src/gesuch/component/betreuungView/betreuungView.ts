@@ -40,6 +40,7 @@ import {
     TSBetreuungsangebotTyp,
 } from '../../../models/enums/TSBetreuungsangebotTyp';
 import {TSBetreuungsstatus} from '../../../models/enums/TSBetreuungsstatus';
+import {stringEingewoehnungTyp, TSEingewoehnungTyp} from '../../../models/enums/TSEingewoehnungTyp';
 import {TSEinstellungKey} from '../../../models/enums/TSEinstellungKey';
 import {TSFachstellenTyp} from '../../../models/enums/TSFachstellenTyp';
 import {TSInstitutionStatus} from '../../../models/enums/TSInstitutionStatus';
@@ -149,7 +150,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     public searchQuery: string = '';
     public allowedRoles: ReadonlyArray<TSRole>;
     public isKesbPlatzierung: boolean;
-    private eingewoehnungAktiviert: boolean = false;
+    private eingewoehnungTyp: TSEingewoehnungTyp = TSEingewoehnungTyp.KEINE;
     private kitaPlusZuschlagAktiviert: boolean = false;
     private besondereBeduerfnisseAufwandKonfigurierbar: boolean = false;
     private fachstellenTyp: TSFachstellenTyp;
@@ -301,7 +302,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         ).subscribe((response: TSEinstellung[]) => {
             response.filter(r => r.key === TSEinstellungKey.EINGEWOEHNUNG_TYP)
                 .forEach(value => {
-                    this.eingewoehnungAktiviert = value.getValueAsBoolean();
+                    this.eingewoehnungTyp = stringEingewoehnungTyp(value.value);
                 });
             response.filter(r => r.key === TSEinstellungKey.KITAPLUS_ZUSCHLAG_AKTIVIERT)
                 .forEach(value => {
