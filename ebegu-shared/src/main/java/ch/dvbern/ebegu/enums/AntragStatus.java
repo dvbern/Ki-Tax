@@ -208,7 +208,6 @@ public enum AntragStatus {
 		IN_BEARBEITUNG_GS,
 		NUR_SCHULAMT, // Damit eine Mutation erstellt werden kann
 		FREIGABEQUITTUNG,
-		NUR_SCHULAMT, // damit eine Mutation erstellt werden kann
 		ERSTE_MAHNUNG,
 		ERSTE_MAHNUNG_ABGELAUFEN,
 		ZWEITE_MAHNUNG,
@@ -229,7 +228,6 @@ public enum AntragStatus {
 		IN_BEARBEITUNG_SOZIALDIENST,
 		NUR_SCHULAMT, // Damit eine Mutation erstellt werden kann
 		FREIGABEQUITTUNG,
-		NUR_SCHULAMT, // damit eine Mutation erstellt werden kann
 		ERSTE_MAHNUNG,
 		ERSTE_MAHNUNG_ABGELAUFEN,
 		ZWEITE_MAHNUNG,
