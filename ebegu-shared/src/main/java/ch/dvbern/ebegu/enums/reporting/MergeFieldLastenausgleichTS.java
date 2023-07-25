@@ -57,6 +57,7 @@ public enum MergeFieldLastenausgleichTS implements MergeFieldProvider {
 	betreuungsstundenPaed(new SimpleMergeField<>("betreuungsstundenPaed", BIGDECIMAL_CONVERTER)),
 	betreuungsstundenNichtPaed(new SimpleMergeField<>("betreuungsstundenNichtPaed", BIGDECIMAL_CONVERTER)),
 	elterngebuehrenBetreuung(new SimpleMergeField<>("elterngebuehrenBetreuung", BIGDECIMAL_CONVERTER)),
+	elterngebuehrenVolksschulangebot(new SimpleMergeField<>("elterngebuehrenVolksschulangebot", BIGDECIMAL_CONVERTER)),
 	schliessungCovid(new SimpleMergeField<>("schliessungCovid", BOOLEAN_X_CONVERTER)),
 	elterngebuehrenCovid(new SimpleMergeField<>("elterngebuehrenCovid", BIGDECIMAL_CONVERTER)),
 	ersteRate(new SimpleMergeField<>("ersteRate", BIGDECIMAL_CONVERTER)),
@@ -73,9 +74,11 @@ public enum MergeFieldLastenausgleichTS implements MergeFieldProvider {
 	betreuungPaedagogisch(new SimpleMergeField<>("betreuungPaedagogisch", BOOLEAN_X_CONVERTER)),
 	ausbildungBelegt(new SimpleMergeField<>("ausbildungBelegt", BOOLEAN_X_CONVERTER)),
 	bemerkungenGemeinde(new SimpleMergeField<>("bemerkungenGemeinde", STRING_CONVERTER)),
+	bemerkungStarkeVeraenderung(new SimpleMergeField<>("bemerkungStarkeVeraenderung", STRING_CONVERTER)),
 	betreuungsstundenPrognose(new SimpleMergeField<>("betreuungsstundenPrognose", BIGDECIMAL_CONVERTER)),
 	betreuungsstundenPrognoseKibon(new SimpleMergeField<>("betreuungsstundenPrognoseKibon", STRING_CONVERTER)),
 	betreuungsstundenPrognoseBemerkungen(new SimpleMergeField<>("betreuungsstundenPrognoseBemerkungen", STRING_CONVERTER)),
+	bemerkungMindestens50ProzentAusgebildet(new SimpleMergeField<>("bemerkungMindestens50ProzentAusgebildet", STRING_CONVERTER)),
 
 	// Tagesschulen
 	gemeindeFallnummerTS(new SimpleMergeField<>("gemeindeFallnummerTS", STRING_CONVERTER)),
@@ -92,6 +95,7 @@ public enum MergeFieldLastenausgleichTS implements MergeFieldProvider {
 	kinderMittag(new SimpleMergeField<>("kinderMittag", BIGDECIMAL_CONVERTER)),
 	kinderNachmittag1(new SimpleMergeField<>("kinderNachmittag1", BIGDECIMAL_CONVERTER)),
 	kinderNachmittag2(new SimpleMergeField<>("kinderNachmittag2", BIGDECIMAL_CONVERTER)),
+	kinderBasisstufe(new SimpleMergeField<>("kinderBasisstufe", BIGDECIMAL_CONVERTER)),
 	betreuungsstundenTagesschule(new SimpleMergeField<>("betreuungsstundenTagesschule", BIGDECIMAL_CONVERTER)),
 	konzeptOrganisatorisch(new SimpleMergeField<>("konzeptOrganisatorisch", BOOLEAN_X_CONVERTER)),
 	konzeptPaedagogisch(new SimpleMergeField<>("konzeptPaedagogisch", BOOLEAN_X_CONVERTER)),

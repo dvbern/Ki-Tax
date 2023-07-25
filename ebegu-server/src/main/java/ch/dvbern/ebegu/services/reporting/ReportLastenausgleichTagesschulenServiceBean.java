@@ -181,6 +181,7 @@ public class ReportLastenausgleichTagesschulenServiceBean extends AbstractReport
 		dataRow.setKinderMittag(angabenTagesschuleKorrektur.getDurchschnittKinderProTagMittag());
 		dataRow.setKinderNachmittag1(angabenTagesschuleKorrektur.getDurchschnittKinderProTagNachmittag1());
 		dataRow.setKinderNachmittag2(angabenTagesschuleKorrektur.getDurchschnittKinderProTagNachmittag2());
+		dataRow.setKinderBasisstufe(angabenTagesschuleKorrektur.getAnzahlEingeschriebeneKinderBasisstufe());
 		dataRow.setBetreuungsstundenTagesschule(angabenTagesschuleKorrektur.getBetreuungsstundenEinschliesslichBesondereBeduerfnisse());
 		dataRow.setKonzeptOrganisatorisch(angabenTagesschuleKorrektur.getSchuleAufBasisOrganisatorischesKonzept());
 		dataRow.setKonzeptPaedagogisch(angabenTagesschuleKorrektur.getSchuleAufBasisPaedagogischesKonzept());
@@ -268,6 +269,7 @@ public class ReportLastenausgleichTagesschulenServiceBean extends AbstractReport
 		dataRow.setBetreuungsstundenNichtPaed(angabenGemeinde.getDavonStundenZuNormlohnWenigerAls50ProzentAusgebildete());
 
 		dataRow.setElterngebuehrenBetreuung(angabenGemeinde.getEinnahmenElterngebuehren());
+		dataRow.setElterngebuehrenVolksschulangebot(angabenGemeinde.getEinnahmenElterngebuehrenVolksschulangebot());
 		dataRow.setSchliessungCovid(angabenGemeinde.getTagesschuleTeilweiseGeschlossen());
 		dataRow.setElterngebuehrenCovid(angabenGemeinde.getRueckerstattungenElterngebuehrenSchliessung());
 		dataRow.setErsteRate(angabenGemeinde.getErsteRateAusbezahlt());
@@ -286,6 +288,8 @@ public class ReportLastenausgleichTagesschulenServiceBean extends AbstractReport
 		dataRow.setBetreuungPaedagogisch(angabenGemeinde.getMindestens50ProzentBetreuungszeitDurchAusgebildetesPersonal());
 		dataRow.setAusbildungBelegt(angabenGemeinde.getAusbildungenMitarbeitendeBelegt());
 		dataRow.setBemerkungenGemeinde(angabenGemeinde.getBemerkungen());
+		dataRow.setBemerkungStarkeVeraenderung(angabenGemeinde.getBemerkungStarkeVeraenderung());
+		dataRow.setBemerkungMindestens50ProzentAusgebildet(angabenGemeinde.getMindestens50ProzentBetreuungszeitDurchAusgebildetesPersonalBemerkung());
 
 		// dataRow.setBetreuungsstundenPrognoseKibon(); berechnete Wert
 	}

@@ -66,6 +66,9 @@ public class LastenausgleichTagesschulenDataRow {
 	private BigDecimal kinderNachmittag2;
 
 	@Nullable
+	private BigDecimal kinderBasisstufe;
+
+	@Nullable
 	private BigDecimal betreuungsstundenTagesschule;
 
 	@Nullable
@@ -270,6 +273,15 @@ public class LastenausgleichTagesschulenDataRow {
 
 	public void setKinderNachmittag2(@Nullable BigDecimal kinderNachmittag2) {
 		this.kinderNachmittag2 = kinderNachmittag2;
+	}
+
+	@Nullable
+	public BigDecimal getKinderBasisstufe() {
+		return kinderBasisstufe;
+	}
+
+	public void setKinderBasisstufe(@Nullable BigDecimal kinderBasisstufe) {
+		this.kinderBasisstufe = kinderBasisstufe;
 	}
 
 	@Nullable
