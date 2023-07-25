@@ -17,6 +17,12 @@
 
 package ch.dvbern.ebegu.pdfgenerator;
 
+import java.math.BigDecimal;
+import java.util.Objects;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import ch.dvbern.ebegu.entities.Einstellung;
 import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeinde;
 import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeContainer;
@@ -28,11 +34,6 @@ import com.lowagie.text.Element;
 import com.lowagie.text.Paragraph;
 import com.lowagie.text.Phrase;
 import com.lowagie.text.pdf.PdfPTable;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import java.math.BigDecimal;
-import java.util.Objects;
 
 public class LATSReportPdfGenerator extends GemeindeAntragReportPdfGenerator {
 
@@ -198,7 +199,7 @@ public class LATSReportPdfGenerator extends GemeindeAntragReportPdfGenerator {
 		SimplePDFTable table = new SimplePDFTable(getPdfGenerator().getConfiguration(), false);
 		table.addHeaderRow(translate(ABRECHNUNG, mandant), "");
 		table.addRow(
-				translate(BETREUUNGSSTUNDEN_OHNE_BESONDERE_ANFORDERUNGEN, mandant, getSchuljahrAsString(),getSchuljahrBasisjahrPlus1AsString()),
+				translate(BETREUUNGSSTUNDEN_OHNE_BESONDERE_ANFORDERUNGEN, mandant, getSchuljahrAsString()),
 				getIntValueNullSafe(angabenGemeinde.getGeleisteteBetreuungsstundenOhneBesondereBeduerfnisse()));
 		table.addRow(
 				translate(BETREUUNGSSTUNDEN_MIT_BESONDERE_ANFORDERUNGEN, mandant, getSchuljahrAsString()),
