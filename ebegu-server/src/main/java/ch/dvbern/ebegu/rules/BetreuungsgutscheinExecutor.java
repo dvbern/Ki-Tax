@@ -99,7 +99,7 @@ public class BetreuungsgutscheinExecutor {
 		@Nonnull List<VerfuegungZeitabschnitt> zeitabschnitte,
 		@Nonnull Locale locale
 	) {
-		Boolean eingewoehnungAktiviert = kibonAbschlussRulesParameters.get(EinstellungKey.FKJV_EINGEWOEHNUNG).getValueAsBoolean();
+		Boolean eingewoehnungAktiviert = kibonAbschlussRulesParameters.get(EinstellungKey.EINGEWOEHNUNG_TYP).getValueAsBoolean();
 		EingewoehnungFristRule eingewoehnungFristRule = new EingewoehnungFristRule(locale, isDebug, eingewoehnungAktiviert);
 		AnspruchFristRule anspruchFristRule = new AnspruchFristRule(isDebug);
 		AbschlussNormalizer abschlussNormalizerOhneMonate = new AbschlussNormalizer(false, isDebug);

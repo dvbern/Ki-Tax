@@ -299,7 +299,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         this.einstellungRS.getAllEinstellungenBySystemCached(
             gesuchsperiodeId
         ).subscribe((response: TSEinstellung[]) => {
-            response.filter(r => r.key === TSEinstellungKey.FKJV_EINGEWOEHNUNG)
+            response.filter(r => r.key === TSEinstellungKey.EINGEWOEHNUNG_TYP)
                 .forEach(value => {
                     this.eingewoehnungAktiviert = value.getValueAsBoolean();
                 });

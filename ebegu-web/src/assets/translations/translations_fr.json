@@ -2845,7 +2845,7 @@
     "BENUTZENDE_EINGEBEN": "Entrer l'utilisateur/-trice",
     "GEMEINDEN_STATISTIK": "Communes",
     "FERIENBETREUUNG_STATISTIK": "Accueil pendant les vacances",
-    "FKJV_EINGEWOEHNUNG": "FKJV: acclimatation activée",
+    "EINGEWOEHNUNG_TYP": "Typ der Eingewöhung (FKJV, LUZERN)",
     "FKJV_MAX_DIFFERENZ_BESCHAEFTIGUNGSPENSUM": "FKJV: différence maximale entre Maximale entre le taux d'activité effectif et requis pour le taux d'activité minimal (en %)",
     "FKJV_SOZIALE_INTEGRATION_BIS_SCHULSTUFE": "FKJV: insertion sociale jusqu'à l'âge scolaire compris",
     "SPRACHLICHE_INTEGRATION_BIS_SCHULSTUFE": "Insertion linguistique jusqu'à l'âge scolaire compris",
