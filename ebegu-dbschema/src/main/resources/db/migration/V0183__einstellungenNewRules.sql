@@ -23,7 +23,7 @@ INSERT INTO einstellung (id, timestamp_erstellt, timestamp_mutiert, user_erstell
             'ebegu' as user_erstellt,
             'ebegu' as user_mutiert,
             '0' as version,
-            'EINGEWOEHNUNG_TYP' as einstellungkey,
+            'FKJV_EINGEWOEHNUNG' as einstellungkey,
             'false' as value,
             id as gesuchsperiode_id
         FROM gesuchsperiode
