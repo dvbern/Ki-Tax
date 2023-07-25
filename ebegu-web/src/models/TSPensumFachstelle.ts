@@ -13,6 +13,8 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import {EbeguUtil} from '../utils/EbeguUtil';
+import {TSFachstellenTyp} from './enums/TSFachstellenTyp';
 import {TSGruendeZusatzleistung} from './enums/TSGruendeZusatzleistung';
 import {TSIntegrationTyp} from './enums/TSIntegrationTyp';
 import {TSAbstractIntegerPensumEntity} from './TSAbstractIntegerPensumEntity';
@@ -50,5 +52,19 @@ export class TSPensumFachstelle extends TSAbstractIntegerPensumEntity {
 
     public set gruendeZusatzleistung(value: TSGruendeZusatzleistung) {
         this._gruendeZusatzleistung = value;
+    }
+
+    public isComplete(fachstellenTyp: TSFachstellenTyp): boolean {
+        if (fachstellenTyp !== TSFachstellenTyp.LUZERN && EbeguUtil.isNullOrUndefined(this.pensum)) {
+            return false;
+        }
+        if (this.integrationTyp
+            === TSIntegrationTyp.ZUSATZLEISTUNG_INTEGRATION
+            && EbeguUtil.isNullOrUndefined(this.gruendeZusatzleistung)) {
+            return false;
+        }
+        return EbeguUtil.isNotNullOrUndefined(this.fachstelle)
+            && EbeguUtil.isNotNullOrUndefined(this.integrationTyp)
+            && EbeguUtil.isNotNullOrUndefined(this.gueltigkeit.gueltigAb);
     }
 }

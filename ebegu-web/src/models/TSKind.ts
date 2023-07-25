@@ -36,7 +36,7 @@ export class TSKind extends TSAbstractPersonEntity {
     private _sprichtAmtssprache: boolean;
     private _einschulungTyp: TSEinschulungTyp;
     private _keinPlatzInSchulhort: boolean;
-    private _pensumFachstelle: TSPensumFachstelle;
+    private _pensumFachstellen: TSPensumFachstelle[];
     private _pensumAusserordentlicherAnspruch: TSPensumAusserordentlicherAnspruch;
     private _ausAsylwesen: boolean;
     private _zemisNummer: string; // ZEMIS-Nummer in Format 12345678.9 | 012345678.9 | 012.345.678.9 | 012.345.678-9
@@ -144,12 +144,12 @@ export class TSKind extends TSAbstractPersonEntity {
         this._sprichtAmtssprache = value;
     }
 
-    public get pensumFachstelle(): TSPensumFachstelle {
-        return this._pensumFachstelle;
+    public get pensumFachstellen(): TSPensumFachstelle[] {
+        return this._pensumFachstellen;
     }
 
-    public set pensumFachstelle(value: TSPensumFachstelle) {
-        this._pensumFachstelle = value;
+    public set pensumFachstellen(value: TSPensumFachstelle[]) {
+        this._pensumFachstellen = value;
     }
 
     public get einschulungTyp(): TSEinschulungTyp {
