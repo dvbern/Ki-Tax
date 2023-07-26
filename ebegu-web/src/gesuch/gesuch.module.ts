@@ -221,7 +221,7 @@ export const GESUCH_JS_MODULE =
         }))
         .directive('dvKindFachstelle', downgradeComponent({
             component: KindFachstelleComponent,
-            inputs: ['pensumFachstelle', 'submitted']
+            inputs: ['pensumFachstelle', 'submitted', 'index']
         }))
         .directive('dvFinanzielleSituationAufteilung', downgradeComponent({
             component: FinanzielleSituationAufteilungComponent,

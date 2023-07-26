@@ -328,7 +328,10 @@
                             </div>
                             <div ng-if="vm.isFachstelleRequired()">
                                 <div ng-repeat="pensumFachstelle in vm.getPensumFachstellen() track by $index">
-                                    <dv-kind-fachstelle [pensum-fachstelle]="pensumFachstelle" [submitted]="vm.submitted"
+                                    <dv-kind-fachstelle
+                                        [pensum-fachstelle]="pensumFachstelle"
+                                        [submitted]="vm.submitted"
+                                        [index]="$index"
                                     ></dv-kind-fachstelle>
                                     <div class="row margin-bottom-60 dv-input-container-medium"
                                          ng-if="($index > 0) || (vm.getPensumFachstellen().length > 1)">

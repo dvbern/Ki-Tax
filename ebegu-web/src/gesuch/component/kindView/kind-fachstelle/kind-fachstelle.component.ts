@@ -38,6 +38,9 @@ export class KindFachstelleComponent implements OnInit, OnChanges {
     @Input()
     public submitted: boolean;
 
+    @Input()
+    public index: number = 0;
+
     @ViewChild(NgForm) private readonly form: NgForm;
 
     public fachstellenTyp: TSFachstellenTyp;
