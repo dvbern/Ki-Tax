@@ -1,4 +1,5 @@
 import {ComponentFixture, TestBed} from '@angular/core/testing';
+import {of} from 'rxjs';
 import {SharedModule} from '../../../../app/shared/shared.module';
 import {AuthServiceRS} from '../../../../authentication/service/AuthServiceRS.rest';
 import {SHARED_MODULE_OVERRIDES} from '../../../../hybridTools/mockUpgradedDirective';
@@ -14,14 +15,12 @@ describe('KindFachstelleComponent', () => {
     let component: KindFachstelleComponent;
     let fixture: ComponentFixture<KindFachstelleComponent>;
     const gesuchModelManagerSpy = jasmine.createSpyObj<GesuchModelManager>(GesuchModelManager.name,
-        ['isGesuchReadonly', 'getGesuchsperiode']);
+        ['isGesuchReadonly', 'getGesuchsperiode', 'getFachstellenAnspruchList']);
     gesuchModelManagerSpy.getGesuchsperiode.and.returnValue(new TSGesuchsperiode());
     gesuchModelManagerSpy.isGesuchReadonly.and.returnValue(false);
-    const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name, ['principal$']);
-
-    component.pensumFachstelle = new TSPensumFachstelle();
-    component.pensumFachstelle.fachstelle = new TSFachstelle();
-    component.pensumFachstelle.gueltigkeit = new TSDateRange();
+    gesuchModelManagerSpy.getFachstellenAnspruchList.and.returnValue(of([]));
+    const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name, ['principal$', 'isOneOfRoles']);
+    authServiceSpy.isOneOfRoles.and.returnValue(true);
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
@@ -45,6 +44,9 @@ describe('KindFachstelleComponent', () => {
     beforeEach(() => {
         fixture = TestBed.createComponent(KindFachstelleComponent);
         component = fixture.componentInstance;
+        component.pensumFachstelle = new TSPensumFachstelle();
+        component.pensumFachstelle.fachstelle = new TSFachstelle();
+        component.pensumFachstelle.gueltigkeit = new TSDateRange();
         fixture.detectChanges();
     });
 
