@@ -108,8 +108,6 @@ public class CheckPensumFachstelleValidator implements ConstraintValidator<Check
 				getMaxValueParamFromIntegrationTyp(pensumFachstelle.getIntegrationTyp()),
 				gemeinde, gesuchsperiode, em);
 
-			closeEntityManager(em);
-
 			if (!Range.between(minValueAllowed, maxValueAllowed).contains(pensumFachstelle.getPensum())) {
 				createConstraintViolation(
 					minValueAllowed,
@@ -120,6 +118,8 @@ public class CheckPensumFachstelleValidator implements ConstraintValidator<Check
 				return false;
 			}
 		}
+
+		closeEntityManager(em);
 
 		return true;
 	}
