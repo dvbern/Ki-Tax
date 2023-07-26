@@ -20,6 +20,7 @@ import java.util.LinkedHashSet;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -82,7 +83,7 @@ public class JaxKind extends JaxAbstractPersonDTO {
 	private Boolean keinPlatzInSchulhort = false;
 
 	@Nonnull
-	private Collection<JaxPensumFachstelle> pensumFachstellen = new LinkedHashSet<>();
+	private Collection<@Valid JaxPensumFachstelle> pensumFachstellen = new LinkedHashSet<>();
 
 	@Nullable
 	private JaxPensumAusserordentlicherAnspruch pensumAusserordentlicherAnspruch;
