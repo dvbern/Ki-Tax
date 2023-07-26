@@ -63,7 +63,7 @@ public class CheckFachstellenValidatorTest extends EasyMockSupport {
 	@Test
 	public void checkKindWithoutFachstelleIsValid() {
 		var kindContainer = createKindContainer(false, EinschulungTyp.KINDERGARTEN2, IntegrationTyp.SOZIALE_INTEGRATION);
-		createEinstellungMock(kindContainer, FKJV_SOZIALE_INTEGRATION_BIS_SCHULSTUFE, "KINDERGARTEN2");
+		createEinstellungMock(kindContainer, FKJV_SOZIALE_INTEGRATION_BIS_SCHULSTUFE, "KINDERGARTEN2", 1);
 		replayAll();
 		var isValid = validator.isValid(kindContainer, null);
 		Assertions.assertTrue(isValid);
@@ -72,7 +72,17 @@ public class CheckFachstellenValidatorTest extends EasyMockSupport {
 	@Test
 	public void checkMaxFachstelleEinstellungOk() {
 		var kindContainer = createKindContainer(true, EinschulungTyp.KINDERGARTEN2, IntegrationTyp.SOZIALE_INTEGRATION);
-		createEinstellungMock(kindContainer, FKJV_SOZIALE_INTEGRATION_BIS_SCHULSTUFE, "KINDERGARTEN2");
+		createEinstellungMock(kindContainer, FKJV_SOZIALE_INTEGRATION_BIS_SCHULSTUFE, "KINDERGARTEN2", 1);
+		replayAll();
+		var isValid = validator.isValid(kindContainer, null);
+		Assertions.assertTrue(isValid);
+	}
+
+	@Test
+	public void checkMaxFachstelleEinstellungOkTwoOfTwo() {
+		var kindContainer = createKindContainer(true, EinschulungTyp.KINDERGARTEN2, IntegrationTyp.SOZIALE_INTEGRATION);
+		kindContainer.getKindJA().getPensumFachstelle().add(createPensumFachstelleWithIntegrationTyp(IntegrationTyp.SOZIALE_INTEGRATION));
+		createEinstellungMock(kindContainer, FKJV_SOZIALE_INTEGRATION_BIS_SCHULSTUFE, "KINDERGARTEN2", 2);
 		replayAll();
 		var isValid = validator.isValid(kindContainer, null);
 		Assertions.assertTrue(isValid);
@@ -81,16 +91,44 @@ public class CheckFachstellenValidatorTest extends EasyMockSupport {
 	@Test
 	public void checkMaxFachstelleEinstellungNotOk() {
 		var kindContainer = createKindContainer(true, EinschulungTyp.KINDERGARTEN2, IntegrationTyp.SOZIALE_INTEGRATION);
-		createEinstellungMock(kindContainer, FKJV_SOZIALE_INTEGRATION_BIS_SCHULSTUFE, "KINDERGARTEN1");
+		createEinstellungMock(kindContainer, FKJV_SOZIALE_INTEGRATION_BIS_SCHULSTUFE, "KINDERGARTEN1", 1);
 		replayAll();
 		var isValid = validator.isValid(kindContainer, null);
 		Assertions.assertFalse(isValid);
 	}
 
+	@Test
+	public void checkMaxFachstelleEinstellungNotOkTwoOfTwo() {
+		var kindContainer = createKindContainer(true, EinschulungTyp.KINDERGARTEN2, IntegrationTyp.SOZIALE_INTEGRATION);
+		kindContainer.getKindJA().getPensumFachstelle().add(createPensumFachstelleWithIntegrationTyp(IntegrationTyp.SOZIALE_INTEGRATION));
+		createEinstellungMock(kindContainer, FKJV_SOZIALE_INTEGRATION_BIS_SCHULSTUFE, "KINDERGARTEN1", 1);
+		replayAll();
+		var isValid = validator.isValid(kindContainer, null);
+		Assertions.assertFalse(isValid);
+	}
+
+	@Test
+	public void checkMaxFachstelleEinstellungNotOkOneOfTwo() {
+		var kindContainer = createKindContainer(true, EinschulungTyp.KINDERGARTEN2, IntegrationTyp.SOZIALE_INTEGRATION);
+		kindContainer.getKindJA().getPensumFachstelle().add(createPensumFachstelleWithIntegrationTyp(IntegrationTyp.SPRACHLICHE_INTEGRATION));
+		createEinstellungMock(kindContainer, FKJV_SOZIALE_INTEGRATION_BIS_SCHULSTUFE, "KINDERGARTEN1", 1);
+		createEinstellungMock(kindContainer, SPRACHLICHE_INTEGRATION_BIS_SCHULSTUFE, "KINDERGARTEN1", 1);
+		replayAll();
+		var isValid = validator.isValid(kindContainer, null);
+		Assertions.assertFalse(isValid);
+	}
+
+	private static PensumFachstelle createPensumFachstelleWithIntegrationTyp(IntegrationTyp integrationTyp) {
+		PensumFachstelle pensumFachstelle = new PensumFachstelle();
+		pensumFachstelle.setFachstelle(new Fachstelle());
+		pensumFachstelle.setIntegrationTyp(integrationTyp);
+		return pensumFachstelle;
+	}
+
 	@Test()
 	public void checkWrongEinstellung() {
 		var kindContainer = createKindContainer(true, EinschulungTyp.KINDERGARTEN2, IntegrationTyp.SOZIALE_INTEGRATION);
-		createEinstellungMock(kindContainer, FKJV_SOZIALE_INTEGRATION_BIS_SCHULSTUFE,"wrong");
+		createEinstellungMock(kindContainer, FKJV_SOZIALE_INTEGRATION_BIS_SCHULSTUFE,"wrong", 1);
 		replayAll();
 		Assertions.assertThrows(EbeguRuntimeException.class, () -> {
 			validator.isValid(kindContainer, null);
@@ -100,7 +138,7 @@ public class CheckFachstellenValidatorTest extends EasyMockSupport {
 	@Test()
 	public void sprachlicheIntegrationVorschulalterValid() {
 		var kindContainer = createKindContainer(true, EinschulungTyp.VORSCHULALTER, IntegrationTyp.SPRACHLICHE_INTEGRATION);
-		createEinstellungMock(kindContainer, SPRACHLICHE_INTEGRATION_BIS_SCHULSTUFE,"VORSCHULALTER");
+		createEinstellungMock(kindContainer, SPRACHLICHE_INTEGRATION_BIS_SCHULSTUFE,"VORSCHULALTER", 1);
 		replayAll();
 		var isValid = validator.isValid(kindContainer, null);
 		Assertions.assertTrue(isValid);
@@ -109,13 +147,13 @@ public class CheckFachstellenValidatorTest extends EasyMockSupport {
 	@Test()
 	public void sprachlicheIntegrationVorschulalterNotValid() {
 		var kindContainer = createKindContainer(true, EinschulungTyp.KINDERGARTEN1, IntegrationTyp.SPRACHLICHE_INTEGRATION);
-		createEinstellungMock(kindContainer, SPRACHLICHE_INTEGRATION_BIS_SCHULSTUFE,"VORSCHULALTER");
+		createEinstellungMock(kindContainer, SPRACHLICHE_INTEGRATION_BIS_SCHULSTUFE,"VORSCHULALTER", 1);
 		replayAll();
 		var isValid = validator.isValid(kindContainer, null);
 		Assertions.assertFalse(isValid);
 	}
 
-	private void createEinstellungMock(KindContainer kindContainer, EinstellungKey key, String stufe) {
+	private void createEinstellungMock(KindContainer kindContainer, EinstellungKey key, String stufe, int times) {
 		expect(einstellungServiceMock.findEinstellung(
 			key,
 			kindContainer.getGesuch().extractGemeinde(),
@@ -126,7 +164,7 @@ public class CheckFachstellenValidatorTest extends EasyMockSupport {
 				key,
 				stufe,
 				kindContainer.getGesuch().getGesuchsperiode()
-			));
+			)).times(times) ;
 	}
 
 	private KindContainer createKindContainer(
