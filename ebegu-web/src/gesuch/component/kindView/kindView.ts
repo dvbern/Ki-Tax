@@ -56,6 +56,7 @@ import {GlobalCacheService} from '../../service/globalCacheService';
 import {WizardStepManager} from '../../service/wizardStepManager';
 import {AbstractGesuchViewController} from '../abstractGesuchView';
 import {FjkvKinderabzugExchangeService} from './fkjv-kinderabzug/fjkv-kinderabzug-exchange.service';
+import {HybridFormBridgeService} from '../../service/hybrid-form-bridge.service';
 import IPromise = angular.IPromise;
 import IQService = angular.IQService;
 import IScope = angular.IScope;
@@ -89,6 +90,7 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
         'EbeguRestUtil',
         'MandantService',
         'FjkvKinderabzugExchangeService',
+        'HybridFormBridgeService',
     ];
 
     public readonly CONSTANTS: any = CONSTANTS;
@@ -130,6 +132,7 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
         private readonly ebeguRestUtil: EbeguRestUtil,
         private readonly mandantService: MandantService,
         private readonly fjkvKinderabzugExchangeService: FjkvKinderabzugExchangeService,
+        private readonly hybridFormBridgeService: HybridFormBridgeService,
     ) {
         super(gesuchModelManager, berechnungsManager, wizardStepManager, $scope, TSWizardStepName.KINDER, $timeout);
         if ($stateParams.kindNumber) {
@@ -200,6 +203,10 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
         if (this.fjkvKinderabzugExchangeService.form && !this.fjkvKinderabzugExchangeService.form.valid) {
             this.fjkvKinderabzugExchangeService.form.onSubmit(null);
             this.fjkvKinderabzugExchangeService.triggerFormValidation();
+            return undefined;
+        }
+
+        if (!this.hybridFormBridgeService.form?.valid) {
             return undefined;
         }
 

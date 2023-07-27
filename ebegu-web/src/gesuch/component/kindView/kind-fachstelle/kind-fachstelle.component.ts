@@ -1,4 +1,13 @@
-import {ChangeDetectionStrategy, Component, Input, OnChanges, OnInit, SimpleChanges, ViewChild} from '@angular/core';
+import {
+    AfterViewInit,
+    ChangeDetectionStrategy,
+    Component,
+    Input,
+    OnChanges,
+    OnInit,
+    SimpleChanges,
+    ViewChild,
+} from '@angular/core';
 import {NgForm} from '@angular/forms';
 import {Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
@@ -20,6 +29,7 @@ import {EbeguUtil} from '../../../../utils/EbeguUtil';
 import {EnumEx} from '../../../../utils/EnumEx';
 import {TSRoleUtil} from '../../../../utils/TSRoleUtil';
 import {GesuchModelManager} from '../../../service/gesuchModelManager';
+import {HybridFormBridgeService} from '../../../service/hybrid-form-bridge.service';
 
 const LOG = LogFactory.createLog('KindFachstelleComponennt');
 
@@ -29,7 +39,7 @@ const LOG = LogFactory.createLog('KindFachstelleComponennt');
     styleUrls: ['./kind-fachstelle.component.less'],
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class KindFachstelleComponent implements OnInit, OnChanges {
+export class KindFachstelleComponent implements OnInit, OnChanges, AfterViewInit {
     @Input()
     public pensumFachstelle: TSPensumFachstelle;
 
@@ -51,17 +61,25 @@ export class KindFachstelleComponent implements OnInit, OnChanges {
     public readonly allowedRoles: ReadonlyArray<TSRole> = TSRoleUtil.getAllRolesButTraegerschaftInstitution();
     public readonly gruendeZusatzleistung = EnumEx.getNames(TSGruendeZusatzleistung);
     public readonly PATTERN_PERCENTAGE = CONSTANTS.PATTERN_PERCENTAGE;
+
     public constructor(
         private readonly einstellungRS: EinstellungRS,
         private readonly gesuchModelManager: GesuchModelManager,
         private readonly authService: AuthServiceRS,
+        private readonly formBridgeService: HybridFormBridgeService,
     ) {
     }
+
     public ngOnInit(): void {
         this.einstellungRS.getAllEinstellungenBySystemCached(this.gesuchModelManager.getGesuchsperiode().id)
             .subscribe(einstellungen => {
                 this.loadEinstellungFachstellenTyp(einstellungen);
             });
+        this.loadEinstellungenForIntegration();
+    }
+
+    public ngAfterViewInit(): void {
+        this.formBridgeService.form = this.form;
     }
 
     public ngOnChanges(changes: SimpleChanges): void {
@@ -153,7 +171,7 @@ export class KindFachstelleComponent implements OnInit, OnChanges {
                         fachstellen.concat(this.pensumFachstelle.fachstelle);
                     }
                     return fachstellen;
-                })
+                }),
             );
     }
 
