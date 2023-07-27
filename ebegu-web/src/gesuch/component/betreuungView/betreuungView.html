@@ -531,7 +531,7 @@
                                              name="eingewoehnung"
                                              aria-label="{{'EINGEWOEHNUNG'| translate}}"
                                              ng-disabled="!vm.isEingewoehnungEnabled()">
-                                    <span data-translate="EINGEWOEHNUNG"></span>
+                                    <span>{{vm.getEingewoehnungLabel()}}</span>
                                 </md-checkbox>
                                 <dv-tooltip input-id="eingewoehnung"
                                             text="'EINGEWOEHNUNG_HELP' | translate"></dv-tooltip>

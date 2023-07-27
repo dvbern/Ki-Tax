@@ -1789,4 +1789,11 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     public hasMandantZusaetzlichesBereuungsangebot(): boolean {
         return this.angebotTS || this.angebotFI || this.angebotTFO;
     }
+
+    public getEingewoehnungLabel(): string {
+        if (this.eingewoehnungTyp === TSEingewoehnungTyp.FKJV) {
+            return this.$translate.instant('EINGEWOEHNUNG_FKJV');
+        }
+        return this.$translate.instant('EINGEWOEHNUNG');
+    }
 }
