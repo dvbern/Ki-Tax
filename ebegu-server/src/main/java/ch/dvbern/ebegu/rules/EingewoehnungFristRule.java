@@ -18,11 +18,14 @@
 package ch.dvbern.ebegu.rules;
 
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Locale;
+import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
 
@@ -79,7 +82,38 @@ public class EingewoehnungFristRule extends AbstractAbschlussRule {
 
 		VerfuegungZeitabschnitt eingewoehnung = createEingewoehnungAbschnitt(eingewohenungAbschnittHelper, gp);
 
-		zeitabschnitte.add(eingewoehnung);
+		Collections.sort(zeitabschnitte);
+
+		List<VerfuegungZeitabschnitt> eingewoehnungIntersections = zeitabschnitte.stream()
+			.filter(zeitabschnitt -> zeitabschnitt.getGueltigkeit().intersects(eingewoehnung.getGueltigkeit()))
+			.collect(Collectors.toList());
+
+		ArrayList<VerfuegungZeitabschnitt> eingewoehnungStueckelungen = new ArrayList<>(List.of(eingewoehnung));
+
+		for (VerfuegungZeitabschnitt zeitabschnitt : eingewoehnungIntersections) {
+			if (eingewoehnung.getBgCalculationInputAsiv().getAnspruchspensumProzent() <= zeitabschnitt.getBgCalculationInputAsiv().getAnspruchspensumProzent()) {
+				// Wir müssen den Eingewöhnungsabschnitt anpassen
+				if (zeitabschnitt.getGueltigkeit().startsAfter(eingewoehnung.getGueltigkeit().getGueltigAb())) {
+					// Wir müssen den Eingewöhnungsabschnitt stückeln, wir behalten die abgespaltenen Teile in einer Liste
+					VerfuegungZeitabschnitt eingewoehnungBefore = new VerfuegungZeitabschnitt(eingewoehnung);
+					eingewoehnungBefore.getGueltigkeit().setGueltigBis(zeitabschnitt.getGueltigkeit().getGueltigAb().minusDays(1));
+					eingewoehnungStueckelungen.add(eingewoehnungBefore);
+				}
+				eingewoehnung.getGueltigkeit().setGueltigAb(zeitabschnitt.getGueltigkeit().getGueltigBis().plus(1, ChronoUnit.DAYS));
+
+				if (!eingewoehnung.getGueltigkeit().isValid()) {
+					break;
+				}
+			} else {
+				// TODO: this makes tests fail, check
+				zeitabschnitt.getGueltigkeit().setGueltigBis(eingewoehnung.getGueltigkeit().getGueltigAb().minusDays(1));
+				if (!zeitabschnitt.getGueltigkeit().isValid()) {
+					zeitabschnitte.remove(zeitabschnitt);
+				}
+			}
+		}
+
+		zeitabschnitte.addAll(eingewoehnungStueckelungen);
 		Collections.sort(zeitabschnitte);
 
 	 	return mergeZeitabschnitte(zeitabschnitte);
