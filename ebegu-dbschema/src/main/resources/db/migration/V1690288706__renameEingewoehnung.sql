@@ -21,16 +21,17 @@ WHERE einstellung.einstellung_key = 'FKJV_EINGEWOEHNUNG';
 
 UPDATE einstellung
 SET einstellung.value = 'KEINE'
-WHERE einstellung.value = 'false';
+WHERE einstellung.value = 'false' AND einstellung.einstellung_key = 'EINGEWOEHNUNG_TYP';
 
 UPDATE einstellung
 	INNER JOIN ebegu.gesuchsperiode ON einstellung.gesuchsperiode_id = gesuchsperiode.id
 	INNER JOIN mandant ON gesuchsperiode.mandant_id = mandant.id
 SET einstellung.value = 'FKJV'
-WHERE einstellung.value = 'true' AND mandant_identifier = 'BERN';
+WHERE einstellung.value = 'true' AND mandant_identifier = 'BERN' AND einstellung.einstellung_key = 'EINGEWOEHNUNG_TYP';
 
 UPDATE einstellung
 	INNER JOIN ebegu.gesuchsperiode ON einstellung.gesuchsperiode_id = gesuchsperiode.id
 	INNER JOIN mandant ON gesuchsperiode.mandant_id = mandant.id
 SET einstellung.value = 'LUZERN'
-WHERE einstellung.value = 'true' AND mandant_identifier = 'LUZERN';
+WHERE einstellung.value = 'true' AND mandant_identifier = 'LUZERN' AND
+	  einstellung.einstellung_key = 'EINGEWOEHNUNG_TYP';
