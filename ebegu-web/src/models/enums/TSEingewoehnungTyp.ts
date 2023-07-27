@@ -22,7 +22,7 @@ export enum TSEingewoehnungTyp {
 }
 
 export function stringEingewoehnungTyp(typStr: string) {
-    if (Object.values(TSEingewoehnungTyp).indexOf(typStr as TSEingewoehnungTyp)) {
+    if (Object.values(TSEingewoehnungTyp).indexOf(typStr as TSEingewoehnungTyp) > -1) {
         return typStr as TSEingewoehnungTyp;
     }
     throw new Error(`Invalid value '${typStr}' for enum TSEingewoehnungTyp'`);

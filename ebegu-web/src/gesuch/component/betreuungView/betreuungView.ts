@@ -1344,7 +1344,48 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     }
 
     public showEingewoehnung(): boolean {
-        return this.eingewoehnungAktiviert;
+        if (this.isSchulamt()) {
+            return false;
+        }
+        switch (this.eingewoehnungTyp) {
+            case TSEingewoehnungTyp.KEINE:
+                return false;
+            case TSEingewoehnungTyp.FKJV:
+                return this.showEingewohenungFKJV();
+            case TSEingewoehnungTyp.LUZERN:
+                return true;
+            default: {
+                const errorMsg = `not implemented eingewoehnungTyp ${this.eingewoehnungTyp}`;
+                LOG.error(errorMsg);
+                throw new Error(errorMsg);
+            }
+        }
+    }
+
+    private showEingewohenungFKJV(): boolean {
+        if (this.isBetreuungsstatusAusstehend()) {
+            return false;
+        }
+        if (this.isBetreuungsstatusWarten()) {
+            return this.authServiceRS.isOneOfRoles(TSRoleUtil.getTraegerschaftInstitutionRoles());
+        }
+        return true;
+    }
+
+    public isEingewoehnungEnabled(): boolean {
+        if (this.isGesuchReadonly()) {
+            return false;
+        }
+        if (this.eingewoehnungTyp === TSEingewoehnungTyp.FKJV) {
+            // bei FKJV darf nur die Institution die Checkbox bearbeiten
+            return this.authServiceRS.isOneOfRoles(TSRoleUtil.getTraegerschaftInstitutionRoles())
+            && this.isBetreuungsstatusWarten();
+        }
+        if (this.eingewoehnungTyp === TSEingewoehnungTyp.LUZERN) {
+            // bei luzern immer editierbar, falls das Gesuch nicht readonly ist.
+            return true;
+        }
+        return false;
     }
 
     private checkIfGemeindeOrBetreuungHasTSAnmeldung(): boolean {
@@ -1717,7 +1758,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     }
 
     private showHintUntermonatlich(): boolean {
-        return this.getBetreuungspensen().length > 0 && this.mandant !== MANDANTS.LUZERN;
+        return this.getBetreuungspensen()?.length > 0 && this.mandant !== MANDANTS.LUZERN;
     }
 
     private showHintEingewoehnung(): boolean {
