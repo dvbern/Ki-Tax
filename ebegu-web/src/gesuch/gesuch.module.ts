@@ -15,7 +15,7 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {downgradeComponent} from '@angular/upgrade/static';
+import {downgradeComponent, downgradeInjectable} from '@angular/upgrade/static';
 import * as angular from 'angular';
 import {CORE_JS_MODULE} from '../app/core/core.angularjs.module';
 import {MultipleFileUploadComponent} from '../app/shared/component/multpile-file-upload/multiple-file-upload.component';
@@ -121,6 +121,7 @@ import {
 import {InternePendenzenComponent} from './component/internePendenzenView/interne-pendenzen.component';
 import {KinderListViewComponentConfig} from './component/kinderListView/kinderListView';
 import {FkjvKinderabzugComponent} from './component/kindView/fkjv-kinderabzug/fkjv-kinderabzug.component';
+import {HybridFormBridgeService} from './service/hybrid-form-bridge.service';
 import {KindFachstelleComponent} from './component/kindView/kind-fachstelle/kind-fachstelle.component';
 import {KindViewComponentConfig} from './component/kindView/kindView';
 import {KommentarViewComponentConfig} from './component/kommentarView/kommentarView';
@@ -201,6 +202,7 @@ export const GESUCH_JS_MODULE =
         .component('betreuungFerieninselView', new BetreuungFerieninselViewComponentConfig())
         .component('sozialhilfeZeitraumListView', new SozialhilfeZeitraumListViewComponentConfig())
         .component('sozialhilfeZeitraumView', new SozialhilfeZeitraumViewComponentConfig())
+        .factory('HybridFormBridgeService', downgradeInjectable(HybridFormBridgeService as any))
         .directive('dvFallToolbar', downgradeComponent({component: FallToolbarComponent}))
         .component('dvBetreuungInput', new BetreuungInputConfig())
         .directive('dvEingabeHint', downgradeComponent({component: DvEingabeHintComponent}))
