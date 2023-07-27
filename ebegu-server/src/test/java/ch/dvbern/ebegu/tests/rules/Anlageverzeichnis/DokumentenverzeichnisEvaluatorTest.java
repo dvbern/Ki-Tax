@@ -145,7 +145,9 @@ public class DokumentenverzeichnisEvaluatorTest extends EasyMockSupport {
 		kindContainer.getKindJA().setKinderabzugZweitesHalbjahr(ganzerAbzug);
 
 		if (fachstellename != null) {
+			kindContainer.getKindJA().getPensumFachstelle().clear();
 			final PensumFachstelle defaultPensumFachstelle = TestDataUtil.createDefaultPensumFachstelle();
+			assert defaultPensumFachstelle.getFachstelle() != null;
 			defaultPensumFachstelle.getFachstelle().setName(fachstellename);
 			defaultPensumFachstelle.setIntegrationTyp(integrationTyp);
 			kindContainer.getKindJA().getPensumFachstelle().add(defaultPensumFachstelle);
@@ -270,7 +272,9 @@ public class DokumentenverzeichnisEvaluatorTest extends EasyMockSupport {
 		final String kindName = "Jan";
 		Kind kind = createKind(testgesuchLuzern, kindName, Kinderabzug.GANZER_ABZUG, FachstelleName.ERZIEHUNGSBERATUNG, IntegrationTyp.SPRACHLICHE_INTEGRATION);
 
-		Assert.assertFalse(luzernKindDokumente.isDokumentNeeded(DokumentTyp.FACHSTELLENBESTAETIGUNG, kind));
+		kind.getPensumFachstelle().forEach(pensumFachstelle -> {
+			Assert.assertFalse(luzernKindDokumente.isDokumentNeeded(DokumentTyp.FACHSTELLENBESTAETIGUNG, kind, pensumFachstelle, LocalDate.MIN));
+		});
 	}
 
 	@Test
