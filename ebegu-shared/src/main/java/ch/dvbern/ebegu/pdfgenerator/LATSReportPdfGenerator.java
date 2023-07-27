@@ -199,7 +199,7 @@ public class LATSReportPdfGenerator extends GemeindeAntragReportPdfGenerator {
 		SimplePDFTable table = new SimplePDFTable(getPdfGenerator().getConfiguration(), false);
 		table.addHeaderRow(translate(ABRECHNUNG, mandant), "");
 		table.addRow(
-				translate(BETREUUNGSSTUNDEN_OHNE_BESONDERE_ANFORDERUNGEN, mandant, getSchuljahrAsString()),
+				translate(BETREUUNGSSTUNDEN_OHNE_BESONDERE_ANFORDERUNGEN, mandant, getSchuljahrAsString(), getSchuljahrBasisjahrPlus1AsString()),
 				getIntValueNullSafe(angabenGemeinde.getGeleisteteBetreuungsstundenOhneBesondereBeduerfnisse()));
 		table.addRow(
 				translate(BETREUUNGSSTUNDEN_MIT_BESONDERE_ANFORDERUNGEN, mandant, getSchuljahrAsString()),
