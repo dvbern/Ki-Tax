@@ -523,15 +523,15 @@
                     </div>
 
                     <!--Eingewoehnung Periode-->
-                    <div class="row" ng-if="vm.showEingewoehnung() && !vm.isSchulamt()">
+                    <div class="row" ng-if="vm.showEingewoehnung()">
                         <div class="col-xs-12 dv-input-container-question">
                             <div class="checkbox">
                                 <md-checkbox ng-model="vm.getBetreuungModel().eingewoehnung"
                                              id="eingewoehnung"
                                              name="eingewoehnung"
                                              aria-label="{{'EINGEWOEHNUNG'| translate}}"
-                                             ng-disabled="vm.isGesuchReadonly()">
-                                    <span data-translate="EINGEWOEHNUNG"></span>
+                                             ng-disabled="!vm.isEingewoehnungEnabled()">
+                                    <span>{{vm.getEingewoehnungLabel()}}</span>
                                 </md-checkbox>
                                 <dv-tooltip input-id="eingewoehnung"
                                             text="'EINGEWOEHNUNG_HELP' | translate"></dv-tooltip>
