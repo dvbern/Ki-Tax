@@ -78,6 +78,9 @@ public class LastenausgleichGemeindenDataRow {
 	private BigDecimal elterngebuehrenBetreuung;
 
 	@Nullable
+	private BigDecimal elterngebuehrenVolksschulangebot;
+
+	@Nullable
 	private Boolean schliessungCovid;
 
 	@Nullable
@@ -124,6 +127,12 @@ public class LastenausgleichGemeindenDataRow {
 
 	@Nullable
 	private String bemerkungenGemeinde;
+
+	@Nullable
+	private String bemerkungStarkeVeraenderung;
+
+	@Nullable
+	private String bemerkungMindestens50ProzentAusgebildet;
 
 	@Nullable
 	private String betreuungsstundenPrognoseKibon;
@@ -290,6 +299,15 @@ public class LastenausgleichGemeindenDataRow {
 	}
 
 	@Nullable
+	public BigDecimal getElterngebuehrenVolksschulangebot() {
+		return elterngebuehrenVolksschulangebot;
+	}
+
+	public void setElterngebuehrenVolksschulangebot(@Nullable BigDecimal elterngebuehrenVolksschulangebot) {
+		this.elterngebuehrenVolksschulangebot = elterngebuehrenVolksschulangebot;
+	}
+
+	@Nullable
 	public Boolean getSchliessungCovid() {
 		return schliessungCovid;
 	}
@@ -431,6 +449,24 @@ public class LastenausgleichGemeindenDataRow {
 
 	public void setBemerkungenGemeinde(@Nullable String bemerkungenGemeinde) {
 		this.bemerkungenGemeinde = bemerkungenGemeinde;
+	}
+
+	@Nullable
+	public String getBemerkungStarkeVeraenderung() {
+		return bemerkungStarkeVeraenderung;
+	}
+
+	public void setBemerkungStarkeVeraenderung(@Nullable String bemerkungStarkeVeraenderung) {
+		this.bemerkungStarkeVeraenderung = bemerkungStarkeVeraenderung;
+	}
+
+	@Nullable
+	public String getBemerkungMindestens50ProzentAusgebildet() {
+		return bemerkungMindestens50ProzentAusgebildet;
+	}
+
+	public void setBemerkungMindestens50ProzentAusgebildet(@Nullable String bemerkungMindestens50ProzentAusgebildet) {
+		this.bemerkungMindestens50ProzentAusgebildet = bemerkungMindestens50ProzentAusgebildet;
 	}
 
 	@Nullable

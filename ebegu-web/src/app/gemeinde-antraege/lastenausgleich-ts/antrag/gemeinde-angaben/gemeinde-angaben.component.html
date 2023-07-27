@@ -191,7 +191,7 @@
                     <label required
                            [ngClass]="{'label-required-error': abschliessenValidationActive && angabenForm.get('geleisteteBetreuungsstundenOhneBesondereBeduerfnisse').errors}">
                     <span
-                        [innerHTML]="'LATS_GELEISTETE_BETREUUNGSSTUNDEN_SCHULJAHR' | translate: {jahr: lATSAngabenGemeindeContainer.gesuchsperiode?.gesuchsperiodeString, jahrPlus: lATSAngabenGemeindeContainer.gesuchsperiode?.getBasisJahrPlus2()}"></span>
+                        [innerHTML]="'LATS_GELEISTETE_BETREUUNGSSTUNDEN_SCHULJAHR' | translate: {jahr: lATSAngabenGemeindeContainer.gesuchsperiode?.gesuchsperiodeString}"></span>
                         <dv-tooltip [text]="'LATS_GELEISTETE_BETREUUNGSSTUNDEN_SCHULJAHR_INFO' | translate"></dv-tooltip>
                     </label>
                     <mat-form-field floatLabel="always">
@@ -249,7 +249,7 @@
                            [ngClass]="{'label-required-error': abschliessenValidationActive && angabenForm.get('geleisteteBetreuungsstundenBesondereVolksschulangebot').errors}">
                     <span
                         [innerHtml]="'LATS_BETREUUNGSSTUNDEN_BESONDERE_VOLKSSCHULANGEBOT' | translate: {jahr: lATSAngabenGemeindeContainer.gesuchsperiode?.gesuchsperiodeString}"></span>
-                        <dv-tooltip [text]="'LATS_BETREUUNGSSTUNDEN_BESONDERE_VOLKSSCHULANGEBOT_INFO' | translate: {jahr: lATSAngabenGemeindeContainer.gesuchsperiode?.getBasisJahrPlus2(), jahrBis: lATSAngabenGemeindeContainer.gesuchsperiode?.getBasisJahrPlus1()}"></dv-tooltip>
+                        <dv-tooltip [text]="'LATS_BETREUUNGSSTUNDEN_BESONDERE_VOLKSSCHULANGEBOT_INFO' | translate"></dv-tooltip>
                     </label>
 
                     <mat-form-field floatLabel="always">
@@ -1050,7 +1050,7 @@
             <dv-input-container-x [verticalAlign]="true"
                                   *ngIf="angabenForm.get('mindestens50ProzentBetreuungszeitDurchAusgebildetesPersonal').value === false">
                 <mat-form-field floatLabel="always">
-                    <label required>{{'LATS_ANGABEN_GEMEINDE_BEMERKUNG' | translate}}</label>
+                    <label>{{'LATS_ANGABEN_GEMEINDE_BEMERKUNG' | translate}}</label>
                     <textarea matInput
                               formControlName="mindestens50ProzentBetreuungszeitDurchAusgebildetesPersonalBemerkung"
                               class="form-control dv-input"></textarea>
@@ -1140,7 +1140,7 @@
             </div>
 
 
-            <h3 class="uppercase">{{'LATS_BEGRUENDUNG_STARKE_VERAENDERUNG' | translate}}</h3>
+            <h3>{{'LATS_BEGRUENDUNG_STARKE_VERAENDERUNG' | translate}}</h3>
 
             <div class="max-width-container-750">
                 <dv-input-container-x [verticalAlign]="true">
