@@ -1883,7 +1883,10 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 
 		Gesuch erstGesuch = gesuchService.findErstgesuchForGesuch(mutation);
 		Gesuch vorgaenger = gesuchService.findVorgaengerGesuchNotIgnoriert(requireNonNull(mutation.getVorgaengerId()));
-		return erstGesuch.getEingangsart().isOnlineGesuch() && !hasNichtEintretenBetreuung(vorgaenger);
+		if (hasNichtEintretenBetreuung(vorgaenger)) {
+			return false;
+		}
+		return erstGesuch.getEingangsart().isOnlineGesuch();
 	}
 
 	private static boolean hasNichtEintretenBetreuung(Gesuch vorgaenger) {
