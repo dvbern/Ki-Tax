@@ -3162,5 +3162,6 @@
     "ERWEITERTE_BEDUERFNISSE_FACHSTELLE_HINT": "<p><b>Begleitende Dienst- und beurteilende Fachstelle:</b></p><br><p>Bei Kindern mit einer <b>körperlichen oder geistigen Beeinträchtigung</b>, einer <b>Sinnesbeeinträchtigung</b> oder einer <b>Entwicklungsauffälligkeit oder -verzögerung</b> wird die Fachstellenbestätigung je nach Alter und Indikation entweder vom Früherziehungsdienst des Kantons Bern, einer kantonalen Erziehungsberatungsstelle, der heilpädagogischen Früherziehung für blinde und sehbehinderte Kinder der Blindenschule Zollikofen oder den Diensten des Pädagogischen Zentrums für Hören und Sprache HSM ausgestellt.</p><br><p>Bei Kindern mit <b>chronischen physischen Krankheiten</b> kann die behandelnde Ärztin oder der behandelnde Arzt die Fachstellenbestätigung ausstellen. Die behandelnden Ärztinnen und Ärzte, welche eine Bestätigung ausstellen, müssen in der Schweiz zur Berufsausübung zugelassen sein.</p><br><p>Bei weiteren Fragen können Sie sich an Ihre Wohngemeinde wenden.</p>",
     "PENSUM_FACHSTELLE_ERFASSEN": "Zusätzliches Fachstellenpensum erfassen",
     "PENSUM_FACHSTELLE_ENTFERNEN": "Fachstellenpensum {{fachstellennummer}} entfernen",
+    "ZEITRAUM": "Zeitraum",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

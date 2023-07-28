@@ -25,10 +25,13 @@ import ch.dvbern.ebegu.entities.DokumentGrund;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Kind;
 import ch.dvbern.ebegu.entities.KindContainer;
+import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.entities.PensumFachstelle;
 import ch.dvbern.ebegu.enums.DokumentGrundPersonType;
 import ch.dvbern.ebegu.enums.DokumentGrundTyp;
 import ch.dvbern.ebegu.enums.DokumentTyp;
+import ch.dvbern.ebegu.util.Constants;
+import ch.dvbern.ebegu.util.ServerMessageUtil;
 
 /**
  * Dokumente für Kinder:
@@ -46,6 +49,7 @@ public class BernKindDokumente extends AbstractDokumente<Kind, Object> {
 		@Nonnull Set<DokumentGrund> anlageVerzeichnis,
 		@Nonnull Locale locale
 	) {
+		var mandant = gesuch.extractMandant();
 		final Set<KindContainer> kindContainers = gesuch.getKindContainers();
 		if (kindContainers == null || kindContainers.isEmpty()) {
 			return;
@@ -55,7 +59,7 @@ public class BernKindDokumente extends AbstractDokumente<Kind, Object> {
 			final Kind kindJA = kindContainer.getKindJA();
 
 			for (PensumFachstelle pensumFachstelle : kindJA.getPensumFachstelle()) {
-				add(getDokumentFachstellenbestaetigung(kindContainer, kindJA, pensumFachstelle), anlageVerzeichnis);
+				add(getDokumentFachstellenbestaetigung(kindContainer, kindJA, pensumFachstelle, locale, mandant), anlageVerzeichnis);
 			}
 			add(getDokumentAbsageschreibenHortplatz(kindContainer, kindJA), anlageVerzeichnis);
 		}
@@ -63,16 +67,26 @@ public class BernKindDokumente extends AbstractDokumente<Kind, Object> {
 
 	@Nullable
 	private DokumentGrund getDokumentFachstellenbestaetigung(KindContainer kindContainer, @Nonnull Kind kindJA,
-		PensumFachstelle pensumFachstelle) {
+		PensumFachstelle pensumFachstelle, @Nonnull Locale locale, @Nonnull Mandant mandant) {
 		return getDokument(
 			DokumentTyp.FACHSTELLENBESTAETIGUNG,
 			kindJA,
 			pensumFachstelle,
-			null,
+			getPensumFachstelleTag(pensumFachstelle, locale, mandant),
 			DokumentGrundPersonType.KIND,
 			kindContainer.getKindNummer(),
 			DokumentGrundTyp.KINDER,
 			null);
+	}
+
+	private String getPensumFachstelleTag(@Nonnull PensumFachstelle pensumFachstelle, @Nonnull Locale locale,
+			@Nonnull Mandant mandant) {
+		var gueltigAbStr = pensumFachstelle.getGueltigkeit().getGueltigAb().format(Constants.DATE_FORMATTER);
+		var gueltigBis = pensumFachstelle.getGueltigkeit().getGueltigBis();
+		if (gueltigBis.equals(Constants.END_OF_TIME))  {
+			return ServerMessageUtil.getMessage("Ab", locale, mandant) + ' ' + gueltigAbStr;
+		}
+		return gueltigBis.format(Constants.DATE_FORMATTER) + " - " + gueltigBis.format(Constants.DATE_FORMATTER);
 	}
 
 	@Nullable
