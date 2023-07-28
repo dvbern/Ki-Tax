@@ -15,28 +15,4 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.dvbern.ebegu.services;
-
-import javax.annotation.Nonnull;
-
-import org.apache.commons.io.FilenameUtils;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.CsvSource;
-
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
-
-class FileSaverServiceBeanTest {
-
-	@ParameterizedTest
-	@CsvSource({
-		"/app/foo.bar, /app/foo.bar",
-		"/app/nested/foo.bar, /app/nested/foo.bar",
-		"/app/../breakout/foo.bar, /breakout/foo.bar"
-	})
-	void fileNameNormalizer(@Nonnull String fileName, @Nonnull String expected) {
-		String normalize = FilenameUtils.normalize(fileName, true);
-
-		assertThat(normalize, is(expected));
-	}
-}
+UPDATE einstellung SET einstellung.value = 'LUZERN' WHERE einstellung.value = 'FKJV' AND einstellung_key = 'EINGEWOEHNUNG_TYP';

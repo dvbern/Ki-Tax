@@ -15,6 +15,7 @@
 
 package ch.dvbern.ebegu.util;
 
+import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Locale;
@@ -25,6 +26,7 @@ import javax.annotation.Nonnull;
 import ch.dvbern.ebegu.entities.DokumentGrund;
 import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.enums.GeneratedDokumentTyp;
+import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import org.apache.commons.lang3.builder.CompareToBuilder;
 
 /**
@@ -141,6 +143,12 @@ public final class DokumenteUtil {
 				locale, mandant, identificationNumber);
 		default:
 			return "file.pdf";
+		}
+	}
+
+	public static void validateDokumentDirectory(String filePath, String directoryPath) throws EbeguRuntimeException {
+		if (!filePath.startsWith(directoryPath) || filePath.contains("..")) {
+			throw new EbeguRuntimeException("validate file path", "illegal document path");
 		}
 	}
 }

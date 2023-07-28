@@ -791,13 +791,6 @@ export class TSRoleUtil {
         ];
     }
 
-    public static getOnlyInstitutionRoles(): ReadonlyArray<TSRole> {
-        return [
-            TSRole.ADMIN_INSTITUTION,
-            TSRole.SACHBEARBEITER_INSTITUTION
-        ];
-    }
-
     public static getEditBemerkungenDossierRoles(): ReadonlyArray<TSRole> {
         return [
             TSRole.SUPER_ADMIN,

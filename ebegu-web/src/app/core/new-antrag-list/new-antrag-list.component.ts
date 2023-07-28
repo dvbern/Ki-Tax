@@ -27,7 +27,7 @@ import {
     Output,
     SimpleChanges,
     ViewChild,
-    ViewEncapsulation
+    ViewEncapsulation,
 } from '@angular/core';
 import {MatPaginator, PageEvent} from '@angular/material/paginator';
 import {MatSort, MatSortHeader, Sort} from '@angular/material/sort';
@@ -35,8 +35,8 @@ import {MatTable, MatTableDataSource} from '@angular/material/table';
 import {TranslateService} from '@ngx-translate/core';
 import {TransitionService} from '@uirouter/angular';
 import {UIRouterGlobals} from '@uirouter/core';
-import {BehaviorSubject, forkJoin, Observable, of, Subject, Subscription, from} from 'rxjs';
-import {map, mergeMap, mergeMapTo, takeUntil} from 'rxjs/operators';
+import {BehaviorSubject, forkJoin, from, Observable, of, Subject, Subscription} from 'rxjs';
+import {map, mergeMap, takeUntil} from 'rxjs/operators';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {GemeindeRS} from '../../../gesuch/service/gemeindeRS.rest';
 import {SearchRS} from '../../../gesuch/service/searchRS.rest';
@@ -44,7 +44,7 @@ import {getTSAntragStatusValuesByRole, TSAntragStatus} from '../../../models/enu
 import {getNormalizedTSAntragTypValues, TSAntragTyp} from '../../../models/enums/TSAntragTyp';
 import {
     getTSBetreuungsangebotTypValuesForMandant,
-    TSBetreuungsangebotTyp
+    TSBetreuungsangebotTyp,
 } from '../../../models/enums/TSBetreuungsangebotTyp';
 import {TSAntragDTO} from '../../../models/TSAntragDTO';
 import {TSAntragSearchresultDTO} from '../../../models/TSAntragSearchresultDTO';
@@ -59,14 +59,14 @@ import {DVAntragListItem} from '../../shared/interfaces/DVAntragListItem';
 import {DVPaginationEvent} from '../../shared/interfaces/DVPaginationEvent';
 import {StateStoreService} from '../../shared/services/state-store.service';
 import {CONSTANTS} from '../constants/CONSTANTS';
+import {TSDemoFeature} from '../directive/dv-hide-feature/TSDemoFeature';
 import {ErrorService} from '../errors/service/ErrorService';
 import {LogFactory} from '../logging/LogFactory';
 import {ApplicationPropertyRS} from '../rest-services/applicationPropertyRS.rest';
 import {BenutzerRSX} from '../service/benutzerRSX.rest';
+import {DemoFeatureRS} from '../service/demoFeatureRS.rest';
 import {GesuchsperiodeRS} from '../service/gesuchsperiodeRS.rest';
 import {InstitutionRS} from '../service/institutionRS.rest';
-import {TSDemoFeature} from '../directive/dv-hide-feature/TSDemoFeature';
-import {DemoFeatureRS} from '../service/demoFeatureRS.rest';
 
 const LOG = LogFactory.createLog('DVAntragListController');
 
@@ -356,7 +356,7 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges, Aft
             if (!this.authServiceRS.isOneOfRoles(TSRoleUtil.getMandantRoles())) {
                 this.hiddenColumns.push('verantwortlicherGemeindeantraege');
             }
-            if (this.authServiceRS.isOneOfRoles(TSRoleUtil.getOnlyInstitutionRoles())) {
+            if (this.authServiceRS.isOneOfRoles(TSRoleUtil.getTraegerschaftInstitutionOnlyRoles())) {
                 this.hiddenColumns.push('internePendenz');
             }
         }

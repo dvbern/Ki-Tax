@@ -774,7 +774,7 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 
 		Predicate predBetreuungNummer = cb.equal(root.get(AbstractAnmeldung_.betreuungNummer), betreuungNummer);
 		Predicate predBetreuungAusgeloest =
-			root.get(AbstractAnmeldung_.betreuungsstatus).in(Betreuungsstatus.anmeldungsstatusAusgeloestNotStorniert);
+			root.get(AbstractAnmeldung_.betreuungsstatus).in(Betreuungsstatus.getBetreuungsstatusForAnmeldungsstatusAusgeloestNotStorniert());
 		Predicate predKindNummer = cb.equal(kindjoin.get(KindContainer_.kindNummer), kindNummer);
 		Predicate predFallNummer = cb.equal(gesuchFallJoin.get(Fall_.fallNummer), fallnummer);
 		Predicate predGesuchsperiode = cb.equal(kindContainerGesuchJoin.get(Gesuch_.gesuchsperiode), gesuchsperiode);
@@ -1096,7 +1096,7 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 			cb.equal(root.get(Betreuung_.kind).get(KindContainer_.gesuch).get(Gesuch_.dossier), dossier);
 		predicatesToUse.add(fallPredicate);
 
-		Predicate predicateBetreuung = root.get(Betreuung_.betreuungsstatus).in(Betreuungsstatus.hasVerfuegung);
+		Predicate predicateBetreuung = root.get(Betreuung_.betreuungsstatus).in(Betreuungsstatus.getBetreuungsstatusWithVerfuegung());
 		predicatesToUse.add(predicateBetreuung);
 
 		Predicate verfuegungPredicate = cb.isNotNull(root.get(Betreuung_.verfuegung));
@@ -1140,10 +1140,10 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 
 		if (role.isRoleGemeindeOrTS()) {
 			predicates.add(root.get(Betreuung_.betreuungsstatus)
-				.in(Collections.singletonList(Betreuungsstatus.forPendenzSchulamt)));
+				.in(Collections.singletonList(Betreuungsstatus.getBetreuungsstatusForPendenzSchulamt())));
 		} else { // for Institution or Traegerschaft. by default
 			predicates.add(root.get(Betreuung_.betreuungsstatus)
-				.in(Collections.singletonList(Betreuungsstatus.forPendenzInstitution)));
+				.in(Collections.singletonList(Betreuungsstatus.getBetreuungsstatusForPendenzInstitution())));
 		}
 
 		// Institution
@@ -1192,10 +1192,10 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 
 		if (role.isRoleGemeindeOrTS()) {
 			predicates.add(root.get(AbstractAnmeldung_.betreuungsstatus)
-				.in(Collections.singletonList(Betreuungsstatus.forPendenzSchulamt)));
+				.in(Collections.singletonList(Betreuungsstatus.getBetreuungsstatusForPendenzSchulamt())));
 		} else { // for Institution or Traegerschaft. by default
 			predicates.add(root.get(AbstractAnmeldung_.betreuungsstatus)
-				.in(Collections.singletonList(Betreuungsstatus.forPendenzInstitution)));
+				.in(Collections.singletonList(Betreuungsstatus.getBetreuungsstatusForPendenzInstitution())));
 		}
 
 		// nur Aktuelle Anmeldungen
@@ -1217,10 +1217,16 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 			.get(Gesuchsperiode_.status)
 			.in(GesuchsperiodeStatus.AKTIV, GesuchsperiodeStatus.INAKTIV));
 
-		if (role.isRoleGemeindeOrTS()) {
+		if (role.isRoleGemeinde()) {
 			// SCH darf nur Gesuche sehen, die bereits freigegebn wurden
 			predicates.add(root.get(AbstractPlatz_.kind).get(KindContainer_.gesuch).get(Gesuch_.status).in
-				(AntragStatus.FOR_ADMIN_ROLE));
+				(AntragStatus.allowedforRole(UserRole.SACHBEARBEITER_GEMEINDE)));
+		}
+
+		if (role.isRoleTsOnly()) {
+			// SCH darf nur Gesuche sehen, die bereits freigegebn wurden
+			predicates.add(root.get(AbstractPlatz_.kind).get(KindContainer_.gesuch).get(Gesuch_.status).in
+				(AntragStatus.allowedforRole(UserRole.SACHBEARBEITER_TS)));
 		}
 
 		if (role.isRoleGemeindeabhaengig()) {
@@ -1258,10 +1264,10 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 
 		if (role.isRoleGemeindeOrTS()) {
 			predicates.add(root.get(AbstractAnmeldung_.betreuungsstatus)
-				.in(Collections.singletonList(Betreuungsstatus.forPendenzSchulamt)));
+				.in(Collections.singletonList(Betreuungsstatus.getBetreuungsstatusForPendenzSchulamt())));
 		} else { // for Institution or Traegerschaft. by default
 			predicates.add(root.get(AbstractAnmeldung_.betreuungsstatus)
-				.in(Collections.singletonList(Betreuungsstatus.forPendenzInstitution)));
+				.in(Collections.singletonList(Betreuungsstatus.getBetreuungsstatusForPendenzInstitution())));
 		}
 
 		// nur Aktuelle Anmeldungen
@@ -1283,10 +1289,16 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 			.get(Gesuchsperiode_.status)
 			.in(GesuchsperiodeStatus.AKTIV, GesuchsperiodeStatus.INAKTIV));
 
-		if (role.isRoleGemeindeOrTS()) {
+		if (role.isRoleGemeinde()) {
 			// SCH darf nur Gesuche sehen, die bereits freigegebn wurden
 			predicates.add(root.get(AbstractPlatz_.kind).get(KindContainer_.gesuch).get(Gesuch_.status).in
-				(AntragStatus.FOR_ADMIN_ROLE));
+				(AntragStatus.allowedforRole(UserRole.SACHBEARBEITER_GEMEINDE)));
+		}
+
+		if (role.isRoleTsOnly()) {
+			// SCH darf nur Gesuche sehen, die bereits freigegebn wurden
+			predicates.add(root.get(AbstractPlatz_.kind).get(KindContainer_.gesuch).get(Gesuch_.status).in
+				(AntragStatus.allowedforRole(UserRole.SACHBEARBEITER_TS)));
 		}
 
 		if (role.isRoleGemeindeabhaengig()) {
