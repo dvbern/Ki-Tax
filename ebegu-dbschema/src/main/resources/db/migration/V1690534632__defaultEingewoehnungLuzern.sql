@@ -15,4 +15,4 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-UPDATE einstellung SET einstellung.value = 'LUZERN' WHERE einstellung.value = 'FKJV';
+UPDATE einstellung SET einstellung.value = 'LUZERN' WHERE einstellung.value = 'FKJV' AND einstellung_key = 'EINGEWOEHNUNG_TYP';
