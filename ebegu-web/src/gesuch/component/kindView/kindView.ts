@@ -22,6 +22,7 @@ import {CONSTANTS} from '../../../app/core/constants/CONSTANTS';
 import {EinschulungTypesVisitor} from '../../../app/core/constants/EinschulungTypesVisitor';
 import {KindGeschlechtVisitor} from '../../../app/core/constants/KindGeschlechtVisitor';
 import {KiBonMandant} from '../../../app/core/constants/MANDANTS';
+import {TSDemoFeature} from '../../../app/core/directive/dv-hide-feature/TSDemoFeature';
 import {ErrorService} from '../../../app/core/errors/service/ErrorService';
 import {LogFactory} from '../../../app/core/logging/LogFactory';
 import {MandantService} from '../../../app/shared/services/mandant.service';
@@ -38,7 +39,6 @@ import {isKinderabzugTypFKJV, TSKinderabzugTyp} from '../../../models/enums/TSKi
 import {TSRole} from '../../../models/enums/TSRole';
 import {TSWizardStepName} from '../../../models/enums/TSWizardStepName';
 import {TSEinstellung} from '../../../models/TSEinstellung';
-import {TSFachstelle} from '../../../models/TSFachstelle';
 import {TSKind} from '../../../models/TSKind';
 import {TSKindContainer} from '../../../models/TSKindContainer';
 import {TSPensumAusserordentlicherAnspruch} from '../../../models/TSPensumAusserordentlicherAnspruch';
@@ -53,10 +53,10 @@ import {IKindStateParams} from '../../gesuch.route';
 import {BerechnungsManager} from '../../service/berechnungsManager';
 import {GesuchModelManager} from '../../service/gesuchModelManager';
 import {GlobalCacheService} from '../../service/globalCacheService';
+import {HybridFormBridgeService} from '../../service/hybrid-form-bridge.service';
 import {WizardStepManager} from '../../service/wizardStepManager';
 import {AbstractGesuchViewController} from '../abstractGesuchView';
 import {FjkvKinderabzugExchangeService} from './fkjv-kinderabzug/fjkv-kinderabzug-exchange.service';
-import {HybridFormBridgeService} from '../../service/hybrid-form-bridge.service';
 import IPromise = angular.IPromise;
 import IQService = angular.IQService;
 import IScope = angular.IScope;
@@ -115,6 +115,7 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
     private isSpracheAmtspracheDisabled: boolean;
     private isZemisDeaktiviert: boolean = false;
     private mandant: KiBonMandant;
+    public readonly demoFeature = TSDemoFeature.MEHRERE_FACHSTELLEN;
 
     public constructor(
         $stateParams: IKindStateParams,

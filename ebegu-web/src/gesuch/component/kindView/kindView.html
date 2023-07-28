@@ -351,16 +351,18 @@
                                     </div>
                                 </div>
 
-                                <div class="row margin-bottom-50">
-                                    <div class="col-md-12">
-                                        <dv-loading-button type="button" button-click="vm.addNewPensumFachstelle()"
-                                                           delay="0"
-                                                           button-class="dv-btn-operation">
-                                            <i class="fa fa-lg fa-plus-circle"></i>
-                                            <span data-translate="PENSUM_FACHSTELLE_ERFASSEN"></span>
-                                        </dv-loading-button>
+                                <dv-demo-feature-wrapper [demo-feature]="vm.demoFeature">
+                                    <div class="row margin-bottom-50">
+                                        <div class="col-md-12">
+                                            <dv-loading-button type="button" button-click="vm.addNewPensumFachstelle()"
+                                                               delay="0"
+                                                               button-class="dv-btn-operation">
+                                                <i class="fa fa-lg fa-plus-circle"></i>
+                                                <span data-translate="PENSUM_FACHSTELLE_ERFASSEN"></span>
+                                            </dv-loading-button>
+                                        </div>
                                     </div>
-                                </div>
+                                </dv-demo-feature-wrapper>
                             </div>
                             <!--Asylwesen?-->
                             <div class="row" ng-if="vm.showAusAsylwesen()">
