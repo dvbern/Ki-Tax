@@ -341,23 +341,25 @@
                                                                button-class="dv-btn-operation"
                                                                button-disabled="vm.isGesuchReadonly()">
                                                 <i class="fa fa-lg fa-trash-o"
-                                                   title="{{'BETREUUNGSPENSUM_DELETE' | translate}}"
-                                                   aria-label="{{'BETREUUNGSPENSUM_DELETE' | translate}}"></i>
-                                                <span data-translate="BETREUUNGSPENSUM_ENTFERNEN_INDEX"
-                                                      data-translate-value-betreuungspensumnumber="{{$index + 1}}"></span>
+                                                   title="{{'PENSUM_FACHSTELLE_ENTFERNEN' | translate}}"
+                                                   aria-label="{{'PENSUM_FACHSTELLE_ENTFERNEN' | translate}}"></i>
+                                                <span data-translate="PENSUM_FACHSTELLE_ENTFERNEN"
+                                                      data-translate-value-fachstellennummer="{{$index + 1}}"></span>
                                             </dv-loading-button>
                                             <hr class="header"/>
                                         </div>
                                     </div>
                                 </div>
 
-                                <div class="col-md-12">
-                                    <dv-loading-button type="button" button-click="vm.addNewPensumFachstelle()"
-                                                       delay="0"
-                                                       button-class="dv-btn-operation">
-                                        <i class="fa fa-lg fa-plus-circle"></i>
-                                        <span data-translate="PENSUM_FACHSTELLE_ERFASSEN"></span>
-                                    </dv-loading-button>
+                                <div class="row margin-bottom-50">
+                                    <div class="col-md-12">
+                                        <dv-loading-button type="button" button-click="vm.addNewPensumFachstelle()"
+                                                           delay="0"
+                                                           button-class="dv-btn-operation">
+                                            <i class="fa fa-lg fa-plus-circle"></i>
+                                            <span data-translate="PENSUM_FACHSTELLE_ERFASSEN"></span>
+                                        </dv-loading-button>
+                                    </div>
                                 </div>
                             </div>
                             <!--Asylwesen?-->
