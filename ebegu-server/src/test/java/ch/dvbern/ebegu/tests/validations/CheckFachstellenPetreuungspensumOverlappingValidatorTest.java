@@ -108,6 +108,14 @@ public class CheckFachstellenPetreuungspensumOverlappingValidatorTest {
 		Assertions.assertTrue(validator.isValid(kindContainer, contextMock));
 	}
 
+	@Test
+	public void testCheckPensumFachstellenTwoDateSameOverlapping() {
+		DateRange augTilOct = new DateRange(AUGUST_FIRST, OCTOBER_31);
+		DateRange novTilJan = new DateRange(AUGUST_FIRST, OCTOBER_31);
+		KindContainer kindContainer = createBetreuungWithFachstellenFachstellen(augTilOct, novTilJan); // not overlapping
+		Assertions.assertFalse(validator.isValid(kindContainer, contextMock));
+	}
+
 	@Nonnull
 	private KindContainer createBetreuungWithFachstellenFachstellen(DateRange ... gueltigkeiten) {
 		Betreuung betreuung = TestDataUtil.createDefaultBetreuung();

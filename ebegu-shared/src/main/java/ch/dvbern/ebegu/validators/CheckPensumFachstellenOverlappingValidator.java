@@ -56,7 +56,8 @@ public class CheckPensumFachstellenOverlappingValidator
 
 	private boolean overlapsAnyOtherGueltigkeit(DateRange gueltigkeit, Collection<DateRange> allGueltigkeiten) {
 		return allGueltigkeiten.stream()
-			.anyMatch(g2 -> !gueltigkeit.equals(g2) && gueltigkeit.intersects(g2));
+			.filter(gueltigkeit::intersects)
+			.count() > 1;
 	}
 
 }
