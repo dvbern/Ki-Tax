@@ -3,7 +3,7 @@ import {
     ChangeDetectionStrategy,
     Component,
     Input,
-    OnChanges,
+    OnChanges, OnDestroy,
     OnInit,
     SimpleChanges,
     ViewChild,
@@ -39,7 +39,7 @@ const LOG = LogFactory.createLog('KindFachstelleComponennt');
     styleUrls: ['./kind-fachstelle.component.less'],
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class KindFachstelleComponent implements OnInit, OnChanges, AfterViewInit {
+export class KindFachstelleComponent implements OnInit, OnChanges, AfterViewInit, OnDestroy {
     @Input()
     public pensumFachstelle: TSPensumFachstelle;
 
@@ -79,7 +79,11 @@ export class KindFachstelleComponent implements OnInit, OnChanges, AfterViewInit
     }
 
     public ngAfterViewInit(): void {
-        this.formBridgeService.form = this.form;
+        this.formBridgeService.register(this.form);
+    }
+
+    public ngOnDestroy(): void  {
+        this.formBridgeService.unregister(this.form);
     }
 
     public ngOnChanges(changes: SimpleChanges): void {
