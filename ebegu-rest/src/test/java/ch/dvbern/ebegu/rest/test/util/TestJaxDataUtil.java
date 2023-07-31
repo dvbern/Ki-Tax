@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 import javax.annotation.Nullable;
 
@@ -259,7 +260,7 @@ public final class TestJaxDataUtil {
 		jaxKind.setVorname("Kind_Max");
 		jaxKind.setGeburtsdatum(LocalDate.now().minusYears(18));
 		jaxKind.setGeschlecht(Geschlecht.WEIBLICH);
-		jaxKind.setPensumFachstelle(createTestJaxPensumFachstelle());
+		jaxKind.setPensumFachstellen(createTestJaxPensumFachstellenSet());
 		jaxKind.setSprichtAmtssprache(false);
 		jaxKind.setEinschulungTyp(EinschulungTyp.VORSCHULALTER);
 		jaxKind.setFamilienErgaenzendeBetreuung(true);
@@ -268,14 +269,14 @@ public final class TestJaxDataUtil {
 		return jaxKind;
 	}
 
-	public static JaxPensumFachstelle createTestJaxPensumFachstelle() {
+	public static Collection<JaxPensumFachstelle> createTestJaxPensumFachstellenSet() {
 		JaxPensumFachstelle jaxPensumFachstelle = new JaxPensumFachstelle();
 		jaxPensumFachstelle.setGueltigBis(LocalDate.now().plusMonths(1));
 		jaxPensumFachstelle.setGueltigAb(LocalDate.now());
 		jaxPensumFachstelle.setPensum(50);
 		jaxPensumFachstelle.setIntegrationTyp(IntegrationTyp.SOZIALE_INTEGRATION);
 		jaxPensumFachstelle.setFachstelle(createTestJaxFachstelle());
-		return jaxPensumFachstelle;
+		return Set.of(jaxPensumFachstelle);
 	}
 
 	public static JaxKindContainer createTestJaxKindContainer() {

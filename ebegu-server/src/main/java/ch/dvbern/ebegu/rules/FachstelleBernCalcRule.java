@@ -26,9 +26,11 @@ import ch.dvbern.ebegu.dto.BGCalculationInput;
 import ch.dvbern.ebegu.entities.AbstractPlatz;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Einstellung;
+import ch.dvbern.ebegu.entities.PensumFachstelle;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.enums.FachstellenTyp;
+import ch.dvbern.ebegu.enums.IntegrationTyp;
 import ch.dvbern.ebegu.enums.MsgKey;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.MathUtil;
@@ -62,24 +64,26 @@ public class FachstelleBernCalcRule extends AbstractFachstellenCalcRule {
 	) {
 		// Ohne Fachstelle: Wird in einer separaten Rule behandelt
 		Betreuung betreuung = (Betreuung) platz;
-		int pensumFachstelle = inputData.getFachstellenpensum();
+		int pensum = inputData.getFachstellenpensum();
 		boolean betreuungspensumMustBeAtLeastFachstellenpensum = inputData.isBetreuungspensumMustBeAtLeastFachstellenpensum();
 		BigDecimal pensumBetreuung = inputData.getBetreuungspensumProzent();
 		int pensumAnspruch = inputData.getAnspruchspensumProzent();
 
 		// Das Fachstellen-Pensum wird immer auf 5-er Schritte gerundet
-		int roundedPensumFachstelle = MathUtil.roundIntToFives(pensumFachstelle);
+		int roundedPensumFachstelle = MathUtil.roundIntToFives(pensum);
 		if (roundedPensumFachstelle > 0 && roundedPensumFachstelle > pensumAnspruch) {
 			if (!betreuungspensumMustBeAtLeastFachstellenpensum
 				|| pensumBetreuung.compareTo(BigDecimal.valueOf(roundedPensumFachstelle)) >= 0) {
-
 				// Anspruch ist immer mindestens das Pensum der Fachstelle, ausser das Restpensum lässt dies nicht mehr zu
 				inputData.setAnspruchspensumProzent(roundedPensumFachstelle);
+				PensumFachstelle pensumFachstelle =
+					findPensumFachstelleForGueltigkeit(betreuung.getKind().getKindJA(), inputData.getParent().getGueltigkeit());
 				inputData.addBemerkung(
 					MsgKey.FACHSTELLE_MSG,
 					getLocale(),
-					getIndikation(betreuung),
-					getFachstelle(betreuung));
+					getIndikationName(pensumFachstelle, betreuung),
+					getFachstelleName(pensumFachstelle.getFachstelle())
+				);
 			} else {
 				// Es gibt ein Fachstelle Pensum, aber das Betreuungspensum ist zu tief. Wir muessen uns das Fachstelle Pensum als
 				// Restanspruch merken, damit es für eine eventuelle andere Betreuung dieses Kindes noch gilt!

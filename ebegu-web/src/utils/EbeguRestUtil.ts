@@ -2422,8 +2422,8 @@ export class EbeguRestUtil {
         restKind.familienErgaenzendeBetreuung = kind.familienErgaenzendeBetreuung;
         restKind.zukunftigeGeburtsdatum = kind.zukunftigeGeburtsdatum;
         restKind.inPruefung = kind.inPruefung;
-        if (kind.pensumFachstelle) {
-            restKind.pensumFachstelle = this.pensumFachstelleToRestObject({}, kind.pensumFachstelle);
+        if (kind.pensumFachstellen) {
+            restKind.pensumFachstellen = this.pensumFachstellenToRestObject(kind.pensumFachstellen);
         }
         if (kind.pensumAusserordentlicherAnspruch) {
             restKind.pensumAusserordentlicherAnspruch = this.pensumAusserordentlicherAnspruchToRestObject(
@@ -2497,9 +2497,9 @@ export class EbeguRestUtil {
             kindTS.familienErgaenzendeBetreuung = kindFromServer.familienErgaenzendeBetreuung;
             kindTS.zukunftigeGeburtsdatum = kindFromServer.zukunftigeGeburtsdatum;
             kindTS.inPruefung = kindFromServer.inPruefung;
-            if (kindFromServer.pensumFachstelle) {
-                kindTS.pensumFachstelle =
-                    this.parsePensumFachstelle(new TSPensumFachstelle(), kindFromServer.pensumFachstelle);
+            if (kindFromServer.pensumFachstellen) {
+                kindTS.pensumFachstellen =
+                    this.parsePensumFachstellen(kindFromServer.pensumFachstellen);
             }
             if (kindFromServer.pensumAusserordentlicherAnspruch) {
                 kindTS.pensumAusserordentlicherAnspruch =
@@ -2511,6 +2511,10 @@ export class EbeguRestUtil {
         return undefined;
     }
 
+    private pensumFachstellenToRestObject(pensumFachstellen: TSPensumFachstelle[]): any {
+        return pensumFachstellen.map(pensumFachstelle => this.pensumFachstelleToRestObject({}, pensumFachstelle));
+    }
+
     private pensumFachstelleToRestObject(restPensumFachstelle: any, pensumFachstelle: TSPensumFachstelle): any {
         this.abstractDateRangeEntityToRestObject(restPensumFachstelle, pensumFachstelle);
         restPensumFachstelle.pensum = pensumFachstelle.pensum;
@@ -2520,6 +2524,15 @@ export class EbeguRestUtil {
             restPensumFachstelle.fachstelle = this.fachstelleToRestObject({}, pensumFachstelle.fachstelle);
         }
         return restPensumFachstelle;
+    }
+
+    private parsePensumFachstellen(
+        pensumFachstellenFromServer: any[]
+    ): TSPensumFachstelle[] {
+        return pensumFachstellenFromServer ?
+            pensumFachstellenFromServer.map(pensumFachstelleFromServer => this.parsePensumFachstelle(new TSPensumFachstelle(),
+                pensumFachstelleFromServer)) :
+            [];
     }
 
     private parsePensumFachstelle(

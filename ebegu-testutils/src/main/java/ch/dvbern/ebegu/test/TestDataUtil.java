@@ -970,7 +970,7 @@ public final class TestDataUtil {
 		kind.setKinderabzugErstesHalbjahr(Kinderabzug.GANZER_ABZUG);
 		kind.setKinderabzugZweitesHalbjahr(Kinderabzug.GANZER_ABZUG);
 		if (addFachstelle) {
-			kind.setPensumFachstelle(createDefaultPensumFachstelle());
+			kind.getPensumFachstelle().add(createDefaultPensumFachstelle());
 		}
 		kind.setFamilienErgaenzendeBetreuung(true);
 		kind.setSprichtAmtssprache(true);
@@ -1651,8 +1651,10 @@ public final class TestDataUtil {
 			for (Betreuung betreuung : kindContainer.getBetreuungen()) {
 				InstitutionStammdaten institutionStammdaten = betreuung.getInstitutionStammdaten();
 				saveInstitutionStammdatenIfNecessary(persistence, institutionStammdaten);
-				if (betreuung.getKind().getKindJA().getPensumFachstelle() != null) {
-					persistence.merge(betreuung.getKind().getKindJA().getPensumFachstelle().getFachstelle());
+				if (!betreuung.getKind().getKindJA().getPensumFachstelle().isEmpty()) {
+					for (PensumFachstelle pensumFachstelle : betreuung.getKind().getKindJA().getPensumFachstelle()) {
+						persistence.merge(pensumFachstelle.getFachstelle());
+					}
 				}
 			}
 			for(AnmeldungTagesschule anmeldungTagesschule: kindContainer.getAnmeldungenTagesschule()){
@@ -1786,12 +1788,16 @@ public final class TestDataUtil {
 		kind.setBetreuungen(betreuungen);
 
 		Objects.requireNonNull(kind.getKindGS());
-		Objects.requireNonNull(kind.getKindGS().getPensumFachstelle());
-		TestDataUtil.saveMandantIfNecessary(persistence, kind.getKindGS().getPensumFachstelle().getFachstelle().getMandant());
-		persistence.persist(kind.getKindGS().getPensumFachstelle().getFachstelle());
-		Objects.requireNonNull(kind.getKindJA().getPensumFachstelle());
-		TestDataUtil.saveMandantIfNecessary(persistence, kind.getKindJA().getPensumFachstelle().getFachstelle().getMandant());
-		persistence.persist(kind.getKindJA().getPensumFachstelle().getFachstelle());
+		for (PensumFachstelle pensumFachstelle : kind.getKindGS().getPensumFachstelle()) {
+			Objects.requireNonNull(pensumFachstelle.getFachstelle());
+			TestDataUtil.saveMandantIfNecessary(persistence, pensumFachstelle.getFachstelle().getMandant());
+			persistence.persist(pensumFachstelle.getFachstelle());
+		}
+		for (PensumFachstelle pensumFachstelle : kind.getKindJA().getPensumFachstelle()) {
+			Objects.requireNonNull(pensumFachstelle.getFachstelle());
+			TestDataUtil.saveMandantIfNecessary(persistence, pensumFachstelle.getFachstelle().getMandant());
+			persistence.persist(pensumFachstelle.getFachstelle());
+		}
 		kind.setGesuch(gesuch);
 		kindContainers.add(kind);
 		gesuch.setKindContainers(kindContainers);
@@ -2410,12 +2416,17 @@ public final class TestDataUtil {
 		}
 		saveInstitutionStammdatenIfNecessary(persistence, betreuung.getInstitutionStammdaten());
 		Objects.requireNonNull(betreuung.getKind().getKindGS());
-		Objects.requireNonNull(betreuung.getKind().getKindGS().getPensumFachstelle());
-		Objects.requireNonNull(betreuung.getKind().getKindJA().getPensumFachstelle());
-		saveMandantIfNecessary(persistence, betreuung.getKind().getKindGS().getPensumFachstelle().getFachstelle().getMandant());
-		saveMandantIfNecessary(persistence, betreuung.getKind().getKindJA().getPensumFachstelle().getFachstelle().getMandant());
-		persistence.persist(betreuung.getKind().getKindGS().getPensumFachstelle().getFachstelle());
-		persistence.persist(betreuung.getKind().getKindJA().getPensumFachstelle().getFachstelle());
+
+		for (PensumFachstelle pensumFachstelle : betreuung.getKind().getKindGS().getPensumFachstelle()) {
+			Objects.requireNonNull(pensumFachstelle.getFachstelle());
+			TestDataUtil.saveMandantIfNecessary(persistence, pensumFachstelle.getFachstelle().getMandant());
+			persistence.persist(pensumFachstelle.getFachstelle());
+		}
+		for (PensumFachstelle pensumFachstelle : betreuung.getKind().getKindJA().getPensumFachstelle()) {
+			Objects.requireNonNull(pensumFachstelle.getFachstelle());
+			TestDataUtil.saveMandantIfNecessary(persistence, pensumFachstelle.getFachstelle().getMandant());
+			persistence.persist(pensumFachstelle.getFachstelle());
+		}
 
 		Gesuch gesuch = TestDataUtil.createAndPersistGesuch(persistence, null, null, gesuchsperiode);
 		betreuung.getKind().setGesuch(gesuch);
@@ -2467,10 +2478,16 @@ public final class TestDataUtil {
 
 		saveInstitutionStammdatenIfNecessary(persistence, betreuung.getInstitutionStammdaten());
 		Objects.requireNonNull(betreuung.getKind().getKindGS());
-		Objects.requireNonNull(betreuung.getKind().getKindGS().getPensumFachstelle());
-		Objects.requireNonNull(betreuung.getKind().getKindJA().getPensumFachstelle());
-		TestDataUtil.persistFachstelle(persistence, betreuung.getKind().getKindGS().getPensumFachstelle().getFachstelle());
-		TestDataUtil.persistFachstelle(persistence, betreuung.getKind().getKindJA().getPensumFachstelle().getFachstelle());
+		for (PensumFachstelle pensumFachstelle : betreuung.getKind().getKindGS().getPensumFachstelle()) {
+			Objects.requireNonNull(pensumFachstelle.getFachstelle());
+			TestDataUtil.saveMandantIfNecessary(persistence, pensumFachstelle.getFachstelle().getMandant());
+			persistence.persist(pensumFachstelle.getFachstelle());
+		}
+		for (PensumFachstelle pensumFachstelle : betreuung.getKind().getKindJA().getPensumFachstelle()) {
+			Objects.requireNonNull(pensumFachstelle.getFachstelle());
+			TestDataUtil.saveMandantIfNecessary(persistence, pensumFachstelle.getFachstelle().getMandant());
+			persistence.persist(pensumFachstelle.getFachstelle());
+		}
 
 		KindContainer kindContainer = betreuung.getKind();
 		kindContainer.getBetreuungen().add(betreuung);

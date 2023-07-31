@@ -15,9 +15,7 @@
 
 import {TSAbstractMutableEntity} from './TSAbstractMutableEntity';
 import {TSBetreuung} from './TSBetreuung';
-import {TSFachstelle} from './TSFachstelle';
 import {TSKind} from './TSKind';
-import {TSPensumFachstelle} from './TSPensumFachstelle';
 
 export class TSKindContainer extends TSAbstractMutableEntity {
 
@@ -96,21 +94,7 @@ export class TSKindContainer extends TSAbstractMutableEntity {
     }
 
     public hasPensumFachstelle(): boolean {
-        return this.kindJA !== null && this.kindJA !== undefined
-            && this.kindJA.pensumFachstelle !== null && this.kindJA.pensumFachstelle !== undefined;
+        return this.kindJA?.pensumFachstellen.length > 0;
     }
 
-    public extractFachstelle(): TSFachstelle {
-        if (this.hasPensumFachstelle()) {
-            return this.kindJA.pensumFachstelle.fachstelle;
-        }
-        return undefined;
-    }
-
-    public extractPensumFachstelle(): TSPensumFachstelle {
-        if (this.hasPensumFachstelle()) {
-            return this.kindJA.pensumFachstelle;
-        }
-        return undefined;
-    }
 }
