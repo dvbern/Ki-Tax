@@ -188,8 +188,8 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
     }
 
     private initFachstelle(): void {
-        this.showFachstelle = this.model.kindJA.pensumFachstellen.length > 0;
-        this.showFachstelleGS = this.model.kindGS?.pensumFachstellen.length > 0;
+        this.showFachstelle = this.model.kindJA.pensumFachstellen?.length > 0;
+        this.showFachstelleGS = this.model.kindGS?.pensumFachstellen?.length > 0;
     }
 
     private initAusserordentlicherAnspruch(): void {
@@ -207,7 +207,7 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
             return undefined;
         }
 
-        if (!this.hybridFormBridgeService.form?.valid) {
+        if (!this.hybridFormBridgeService.forms.reduce((prev, cur) => cur.valid && prev, true)) {
             return undefined;
         }
 
