@@ -26,7 +26,7 @@
             <ul>
                 <span>{{'AUTOMATISCHE_BEARBEITETE_MITTEILUNGEN_VERFUEGT' | translate}}</span>
                 <li class="applied" *ngFor="let betreuungsmitteilung of getVerfuegtSuccessItems()">
-                    <a href="{{getBetreuungUrl(betreuungsmitteilung)}}" target="_blank">{{getRererenceNummer(
+                    <a href="{{getBetreuungUrl(betreuungsmitteilung)}}" target="_blank" rel="noopener noreferrer">{{getRererenceNummer(
                         betreuungsmitteilung)}}</a>
                 </li>
                 <span *ngIf="getVerfuegtSuccessItems().length === 0"><br>-</span>
@@ -34,7 +34,7 @@
             <ul>
                 <span>{{'AUTOMATISCHE_BEARBEITETE_MITTEILUNGEN_NICHT_VERFUEGT' | translate}}</span>
                 <li class="applied" *ngFor="let betreuungsmitteilung of getNotVerfuegtSuccessItems()">
-                    <a href="{{getBetreuungUrl(betreuungsmitteilung)}}" target="_blank">{{getRererenceNummer(
+                    <a href="{{getBetreuungUrl(betreuungsmitteilung)}}" target="_blank" rel="noopener noreferrer">{{getRererenceNummer(
                         betreuungsmitteilung)}}</a>
                 </li>
                 <span *ngIf="getNotVerfuegtSuccessItems().length === 0"><br>-</span>
@@ -42,7 +42,7 @@
             <ul>
                 <p>{{'NICHT_BEARBEITETE_MITTEILUNGEN' | translate}}</p>
                 <li class="nonapplied" *ngFor="let betreuungsmitteilung of verarbeitung.failedItems">
-                    <a href="{{getBetreuungUrl(betreuungsmitteilung)}}" target="_blank">{{getRererenceNummer(
+                    <a href="{{getBetreuungUrl(betreuungsmitteilung)}}" target="_blank" rel="noopener noreferrer">{{getRererenceNummer(
                         betreuungsmitteilung)}}</a>:
                     <i>{{betreuungsmitteilung.errorMessage}}</i>
                 </li>
@@ -52,7 +52,7 @@
                 <span>{{'FEHLER_BEI_MITTEILUNG_BEARBEITUNG' | translate}}</span>
                 <li class="errors" *ngFor="let error of verarbeitung.errors">
                     <a href="{{getBetreuungUrl(error.mitteilung)}}"
-                       target="_blank">{{getRererenceNummer(error.mitteilung)}}</a>:
+                       target="_blank" rel="noopener noreferrer">{{getRererenceNummer(error.mitteilung)}}</a>:
                     <span *ngFor="let exceptionReport of error.errors">
                         <i translate>{{exceptionReport.msgKey}}</i>
                         <br>

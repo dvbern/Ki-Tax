@@ -1,0 +1,132 @@
+<form #form='ngForm' class="gesuch">
+    <!--integration-->
+    <div class="row">
+        <div class="col-xs-12 dv-input-container-question">
+            <div class="form-group">
+                <label class="md-no-float required" id="integration"
+                       translate>INTEGRATION</label>
+                <dv-input-container-x [verticalAlign]="true" [noMargin]="true">
+                    <dv-radio-container-x>
+                        <mat-radio-group
+                            dvNgEnableElement
+                            [dvEnabled]="!isGesuchReadonly()"
+                            [dvEnableAllowedRoles]="allowedRoles"
+                            [name]="'integration-' + index"
+                            #integration='ngModel'
+                            [required]="submitted || integration.touched"
+                            [disabled]="isGesuchReadonly()"
+                            [(ngModel)]="pensumFachstelle.integrationTyp"
+                            (ngModelChange)="loadEinstellungenForIntegration()">
+                            <mat-radio-button *ngFor="let integrationType of integrationTypes"
+                                              [value]="integrationType">
+                                {{integrationType | translate}}
+                            </mat-radio-button>
+                        </mat-radio-group>
+                    </dv-radio-container-x>
+                </dv-input-container-x>
+                <dv-error-messages [inputId]="'integration'"
+                                   [errorObject]="integration.errors"></dv-error-messages>
+            </div>
+        </div>
+    </div>
+
+    <!--Gruende Zusatzleistung-->
+    <div *ngIf="gruendeZusatzleistungRequired()" class="row">
+        <div class="col-xs-12 dv-input-container-question">
+            <div class="form-group">
+                <label class="md-no-float required" id="gruendeZusatzleistung" translate>GRUENDE_ZUSATZLESITUNG</label>
+                <dv-input-container-x [noMargin]="true">
+                    <dv-radio-container-x>
+                        <mat-radio-group
+                            [name]="'grundZusatzleistung-' + index"
+                            dvNgEnableElement
+                            #grundZusatzleistung='ngModel'
+                            [(ngModel)]="pensumFachstelle.gruendeZusatzleistung"
+                            [dvEnabled]="!isGesuchReadonly()"
+                            [required]="submitted || integration.touched"
+                            [dvEnableAllowedRoles]="allowedRoles">
+                            <mat-radio-button *ngFor="let grundZusatzleisung of gruendeZusatzleistung"
+                                              [value]="grundZusatzleisung">
+                                {{grundZusatzleisung | translate}}
+                            </mat-radio-button>
+                        </mat-radio-group>
+                    </dv-radio-container-x>
+                </dv-input-container-x>
+                <dv-error-messages [inputId]="'gruendeZusatzleistung'"
+                                   [errorObject]="grundZusatzleistung.errors"
+                ></dv-error-messages>
+            </div>
+        </div>
+    </div>
+
+    <!--fachstelle-->
+    <div class="row">
+        <div class="col-sm-12 dv-input-container-medium form-group">
+            <label class="md-no-float required">
+                <span translate>FACHSTELLE</span>
+                <dv-tooltip [inputId]="'fachstelle'"
+                            [text]="'FACHSTELLE_HELP' | translate"></dv-tooltip>
+            </label>
+            <dv-input-container-x [noMargin]="true" [verticalAlign]="true">
+                <div class="dv-select-style">
+                    <select [name]="'fachstelle-' + index"
+                            [id]="'fachstelle-' + index"
+                            [(ngModel)]="pensumFachstelle.fachstelle"
+                            #fachstelle='ngModel'
+                            [required]="submitted || fachstelle.touched"
+                            [compareWith]="compareByID"
+                            >
+                        <option class="hidden" [ngValue]="null"></option>
+                        <option *ngFor="let fachstelle of getFachstellenList$() | async"
+                                [ngValue]="fachstelle">{{fachstelle.name.toString() | translate}}</option>
+                    </select>
+                </div>
+                <dv-error-messages [inputId]="'fachstelle'"
+                                   [errorObject]="fachstelle.errors"
+                                   class="error"></dv-error-messages>
+            </dv-input-container-x>
+        </div>
+    </div>
+
+    <!--betreuungspensumFachstelle-->
+    <div *ngIf="!isFachstellenTypLuzern()" class="row">
+        <dv-input-container-x [noMargin]="true">
+            <div class="col-sm-12 dv-input-container-small">
+                <label class="md-no-float"
+                       for="betreuungspensumFachstelle" required translate>BETREUUNGSPENSUM_FACHSTELLE</label>
+                <input aria-describedby="betreuungspensumFachstelle-error"
+                       id="betreuungspensumFachstelle"
+                       type="number"
+                       [name]="'betreuungspensumFachstelle-' + index"
+                       [(ngModel)]="pensumFachstelle.pensum"
+                       #betreuungspensumFachstelle='ngModel'
+                       [min]="minValueAllowed"
+                       [max]="maxValueAllowed"
+                       [pattern]="PATTERN_PERCENTAGE"
+                       [required]="submitted || betreuungspensumFachstelle.touched"
+                       [disabled]="isOnlyOneValueAllowed()"
+                       [placeholder]="'PERCENTAGE_PLACEHOLDER' | translate">
+                <dv-error-messages [inputId]="'betreuungspensumFachstelle'"
+                                   [errorObject]="betreuungspensumFachstelle.errors"></dv-error-messages>
+            </div>
+        </dv-input-container-x>
+    </div>
+
+    <div class="row">
+        <!-- gueltig ab / gueltig bis -->
+        <div class="col-sm-12 dv-input-container-small">
+            <dv-date-picker-x
+                [label]="'VON'"
+                [(date)]="pensumFachstelle.gueltigkeit.gueltigAb"
+                [required]="true">
+            </dv-date-picker-x>
+        </div>
+
+        <div class="col-sm-12 dv-input-container-small">
+            <dv-date-picker-x
+                [label]="'BIS'"
+                [(date)]="pensumFachstelle.gueltigkeit.gueltigBis"
+            ></dv-date-picker-x>
+        </div>
+    </div>
+</form>

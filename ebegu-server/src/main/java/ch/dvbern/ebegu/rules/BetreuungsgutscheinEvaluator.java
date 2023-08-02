@@ -62,7 +62,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static ch.dvbern.ebegu.enums.EinstellungKey.ANSPRUCH_MONATSWEISE;
-import static ch.dvbern.ebegu.enums.EinstellungKey.FKJV_EINGEWOEHNUNG;
+import static ch.dvbern.ebegu.enums.EinstellungKey.EINGEWOEHNUNG_TYP;
 import static ch.dvbern.ebegu.enums.EinstellungKey.FKJV_PAUSCHALE_RUECKWIRKEND;
 
 /**
@@ -303,7 +303,7 @@ public class BetreuungsgutscheinEvaluator {
 	public static Set<EinstellungKey> getRequiredParametersForAbschlussRules() {
 		return EnumSet.of(
 			FKJV_PAUSCHALE_RUECKWIRKEND,
-			FKJV_EINGEWOEHNUNG,
+			EINGEWOEHNUNG_TYP,
 			ANSPRUCH_MONATSWEISE
 		);
 	}

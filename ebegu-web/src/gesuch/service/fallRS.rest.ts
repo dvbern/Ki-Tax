@@ -93,4 +93,9 @@ export class FallRS {
                 return this.ebeguRestUtil.parseFall(new TSFall(), response.data);
             });
     }
+
+    public updateBemerkungenDossier(fallID: string, bemerkungenDossier: string): IHttpPromise<any> {
+        return this.$http.put(`${this.serviceURL}/bemerkungenDossier/${encodeURIComponent(fallID)}`,
+            bemerkungenDossier);
+    }
 }

@@ -39,6 +39,11 @@ export class SearchRS {
             .pipe(map(response => this.toAntragSearchresult(response)));
     }
 
+    public searchAntraegeInAlleFaelleView(antragSearch: any): Observable<TSAntragSearchresultDTO> {
+        return this.http.post(`${this.serviceURL}/alleFaelleView/search`, antragSearch)
+            .pipe(map(response => this.toAntragSearchresult(response)));
+    }
+
     public countAntraege(antragSearch: any): Observable<number> {
         return this.http.post<number>(`${this.serviceURL}/search/count`, antragSearch);
     }

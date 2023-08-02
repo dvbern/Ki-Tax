@@ -15,6 +15,8 @@
 
 package ch.dvbern.ebegu.rest.test;
 
+import java.util.HashSet;
+
 import javax.inject.Inject;
 
 import ch.dvbern.ebegu.api.converter.JaxBConverter;
@@ -25,6 +27,7 @@ import ch.dvbern.ebegu.entities.Fachstelle;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten;
+import ch.dvbern.ebegu.entities.Kind;
 import ch.dvbern.ebegu.entities.KindContainer;
 import ch.dvbern.ebegu.entities.PensumFachstelle;
 import ch.dvbern.ebegu.test.IntegrationTest;
@@ -79,22 +82,26 @@ public class BetreuungConverterTest extends AbstractEbeguRestLoginTest {
 		Betreuung betreuung = insertNewEntity(true);
 		KindContainer kind = betreuung.getKind();
 		Assert.assertNotNull(kind.getKindJA().getPensumFachstelle());
-		Assert.assertEquals(Constants.END_OF_TIME, kind.getKindJA().getPensumFachstelle().getGueltigkeit().getGueltigBis());
+		Assert.assertEquals(Constants.END_OF_TIME, getFirstPensumFachstelle(kind.getKindJA()).getGueltigkeit().getGueltigBis());
 
-		JaxPensumFachstelle jaxPenFachstelle = converter.pensumFachstelleToJax(kind.getKindJA().getPensumFachstelle());
+		JaxPensumFachstelle jaxPenFachstelle = converter.pensumFachstelleToJax(getFirstPensumFachstelle(kind.getKindJA()));
 		Assert.assertNotNull("Es darf nicht null sein", jaxPenFachstelle);
 		Assert.assertNull("Gueltig bis wird nicht transformiert", jaxPenFachstelle.getGueltigBis());
 
-		PensumFachstelle reconvertedPensum = converter.pensumFachstelleToEntity(jaxPenFachstelle, new PensumFachstelle());
+		PensumFachstelle reconvertedPensum = converter.jaxPensumFachstelleToEntity(jaxPenFachstelle, new PensumFachstelle());
 		Assert.assertEquals(Constants.END_OF_TIME, reconvertedPensum.getGueltigkeit().getGueltigBis());
+	}
+
+	private PensumFachstelle getFirstPensumFachstelle(Kind kind) {
+		return kind.getPensumFachstelle().stream().findFirst().orElseThrow();
 	}
 
 	private Betreuung insertNewEntity(boolean createFachstelle) {
 		Betreuung betreuung = TestDataUtil.createDefaultBetreuung();
 		KindContainer kind = TestDataUtil.createDefaultKindContainer();
-		kind.getKindJA().setPensumFachstelle(null);
+		kind.getKindJA().setPensumFachstelle(new HashSet<>());
 		Assert.assertNotNull(kind.getKindGS());
-		kind.getKindGS().setPensumFachstelle(null);
+		kind.getKindGS().setPensumFachstelle(new HashSet<>());
 
 		InstitutionStammdaten instStammdaten = TestDataUtil.createDefaultInstitutionStammdaten();
 		TestDataUtil.saveMandantIfNecessary(persistence, instStammdaten.getInstitution().getMandant());
@@ -113,8 +120,8 @@ public class BetreuungConverterTest extends AbstractEbeguRestLoginTest {
 			pensumFachstelle2.setPensum(50);
 			pensumFachstelle2.setFachstelle(fachstelle);
 
-			kind.getKindGS().setPensumFachstelle(pensumFachstelle);
-			kind.getKindJA().setPensumFachstelle(pensumFachstelle2);
+			kind.getKindGS().getPensumFachstelle().add(pensumFachstelle);
+			kind.getKindJA().getPensumFachstelle().add(pensumFachstelle2);
 		}
 
 		Gesuch gesuch = TestDataUtil.createAndPersistGesuch(

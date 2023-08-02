@@ -17,6 +17,7 @@ package ch.dvbern.ebegu.tests;
 
 import java.time.LocalDate;
 import java.util.Collection;
+import java.util.Objects;
 import java.util.Optional;
 
 import javax.inject.Inject;
@@ -189,8 +190,8 @@ public class ErwerbspensumServiceBeanTest extends AbstractEbeguLoginTest {
 			gesuchsperiode);
 		final KindContainer kind = gesuch.getKindContainers().iterator().next();
 		final PensumFachstelle pensumFachstelle = TestDataUtil.createDefaultPensumFachstelle();
-		TestDataUtil.saveMandantIfNecessary(persistence, pensumFachstelle.getFachstelle().getMandant());
-		kind.getKindJA().setPensumFachstelle(pensumFachstelle);
+		TestDataUtil.saveMandantIfNecessary(persistence, Objects.requireNonNull(pensumFachstelle.getFachstelle()).getMandant());
+		kind.getKindJA().getPensumFachstelle().add(pensumFachstelle);
 		persistence.persist(pensumFachstelle.getFachstelle());
 		persistence.persist(pensumFachstelle);
 

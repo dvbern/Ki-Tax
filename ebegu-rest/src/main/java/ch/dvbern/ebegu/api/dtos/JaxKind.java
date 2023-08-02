@@ -15,8 +15,12 @@
 
 package ch.dvbern.ebegu.api.dtos;
 
+import java.util.Collection;
+import java.util.LinkedHashSet;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -78,8 +82,8 @@ public class JaxKind extends JaxAbstractPersonDTO {
 	@Nonnull
 	private Boolean keinPlatzInSchulhort = false;
 
-	@Nullable
-	private JaxPensumFachstelle pensumFachstelle;
+	@Nonnull
+	private Collection<@Valid JaxPensumFachstelle> pensumFachstellen = new LinkedHashSet<>();
 
 	@Nullable
 	private JaxPensumAusserordentlicherAnspruch pensumAusserordentlicherAnspruch;
@@ -203,13 +207,14 @@ public class JaxKind extends JaxAbstractPersonDTO {
 		this.sprichtAmtssprache = sprichtAmtssprache;
 	}
 
-	@Nullable
-	public JaxPensumFachstelle getPensumFachstelle() {
-		return pensumFachstelle;
+
+	@Nonnull
+	public Collection<JaxPensumFachstelle> getPensumFachstellen() {
+		return pensumFachstellen;
 	}
 
-	public void setPensumFachstelle(@Nullable JaxPensumFachstelle pensumFachstelle) {
-		this.pensumFachstelle = pensumFachstelle;
+	public void setPensumFachstellen(@Nonnull Collection<JaxPensumFachstelle> pensumFachstellen) {
+		this.pensumFachstellen = pensumFachstellen;
 	}
 
 	@Nullable

@@ -15,9 +15,9 @@
 
 package ch.dvbern.ebegu.dto;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.Set;
+import ch.dvbern.ebegu.enums.*;
+import ch.dvbern.lib.date.converters.LocalDateTimeXMLConverter;
+import ch.dvbern.lib.date.converters.LocalDateXMLConverter;
 
 import javax.annotation.Nullable;
 import javax.validation.constraints.NotNull;
@@ -25,16 +25,9 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-
-import ch.dvbern.ebegu.enums.AntragStatus;
-import ch.dvbern.ebegu.enums.AntragStatusDTO;
-import ch.dvbern.ebegu.enums.AntragTyp;
-import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
-import ch.dvbern.ebegu.enums.Eingangsart;
-import ch.dvbern.ebegu.enums.FinSitStatus;
-import ch.dvbern.ebegu.enums.GesuchBetreuungenStatus;
-import ch.dvbern.lib.date.converters.LocalDateTimeXMLConverter;
-import ch.dvbern.lib.date.converters.LocalDateXMLConverter;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.Set;
 
 /**
  * DTO fuer Pendenzen
@@ -173,6 +166,9 @@ public class JaxAntragDTO extends JaxAbstractAntragDTO {
 
 	@Nullable
 	private String begruendungMutation;
+
+	@Nullable
+	private String gesuchsperiodeString;
 
 	public String getAntragId() {
 		return antragId;
@@ -422,5 +418,14 @@ public class JaxAntragDTO extends JaxAbstractAntragDTO {
 
 	public void setBegruendungMutation(@Nullable String begruendungMutation) {
 		this.begruendungMutation = begruendungMutation;
+	}
+
+	@Nullable
+	public String getGesuchsperiodeString() {
+		return gesuchsperiodeString;
+	}
+
+	public void setGesuchsperiodeString(@Nullable String gesuchsperiodeString) {
+		this.gesuchsperiodeString = gesuchsperiodeString;
 	}
 }

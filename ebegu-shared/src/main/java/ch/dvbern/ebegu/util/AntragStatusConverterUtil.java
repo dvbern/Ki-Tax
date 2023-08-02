@@ -15,17 +15,15 @@
 
 package ch.dvbern.ebegu.util;
 
-import java.util.ArrayList;
-import java.util.Collection;
+import ch.dvbern.ebegu.entities.Gesuch;
+import ch.dvbern.ebegu.enums.*;
+import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 
 import javax.annotation.Nonnull;
-
-import ch.dvbern.ebegu.entities.Gesuch;
-import ch.dvbern.ebegu.enums.AntragStatus;
-import ch.dvbern.ebegu.enums.AntragStatusDTO;
-import ch.dvbern.ebegu.enums.ErrorCodeEnum;
-import ch.dvbern.ebegu.enums.UserRole;
-import ch.dvbern.ebegu.errors.EbeguRuntimeException;
+import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Objects;
 
 /**
  * Diese Klasse enthaelt Methoden, um den AntragStatus von DB in DTO umzuwandeln.
@@ -47,6 +45,22 @@ public final class AntragStatusConverterUtil {
 	@SuppressWarnings("checkstyle:CyclomaticComplexity")
 	@Nonnull
 	public static AntragStatusDTO convertStatusToDTO(Gesuch antrag, AntragStatus status) {
+		return convertStatusToDTO(status, antrag.getGesuchBetreuungenStatus(), antrag.getId());
+	}
+
+	/**
+	 * In dieser Methode wird der Status umgewandelt. Alle relevanten Daten werden geprueft und dadurch den entsprechenden
+	 * AntragStatusDTO zurueckgeliefert
+	 *
+	 * @param status Der AntragStatus vom Entity
+	 * @return Der AntragStatusDTO, der zum Client geschickt wird
+	 */
+	@SuppressWarnings("checkstyle:CyclomaticComplexity")
+	@Nonnull
+	public static AntragStatusDTO convertStatusToDTO(
+		AntragStatus status,
+		@Nullable GesuchBetreuungenStatus betreuungenStatus,
+		String gesuchId) {
 		switch (status) {
 		case IN_BEARBEITUNG_SOZIALDIENST:
 			return AntragStatusDTO.IN_BEARBEITUNG_SOZIALDIENST;
@@ -69,7 +83,8 @@ public final class AntragStatusConverterUtil {
 		case ZWEITE_MAHNUNG_ABGELAUFEN:
 			return AntragStatusDTO.ZWEITE_MAHNUNG_ABGELAUFEN;
 		case GEPRUEFT:
-			return convertGeprueftStatusToDTO(antrag);
+			Objects.requireNonNull(betreuungenStatus);
+			return convertGeprueftStatusToDTO(betreuungenStatus);
 		case KEIN_KONTINGENT:
 			return AntragStatusDTO.KEIN_KONTINGENT;
 		case VERFUEGEN:
@@ -89,7 +104,7 @@ public final class AntragStatusConverterUtil {
 		case IGNORIERT:
 			return  AntragStatusDTO.IGNORIERT;
 		default:
-			throw new IllegalStateException("Unbekannter Status: " + status + " in Gesuch " + antrag.getId());
+			throw new IllegalStateException("Unbekannter Status: " + status + " in Gesuch " + gesuchId);
 		}
 	}
 
@@ -99,8 +114,8 @@ public final class AntragStatusConverterUtil {
 	 * Beim Fehler oder Zweifelnfall ist der Status einfach GEPRUEFT
 	 */
 	@Nonnull
-	private static AntragStatusDTO convertGeprueftStatusToDTO(Gesuch antrag) {
-		switch (antrag.getGesuchBetreuungenStatus()) {
+	private static AntragStatusDTO convertGeprueftStatusToDTO(GesuchBetreuungenStatus status) {
+		switch (status) {
 		case WARTEN:
 			return AntragStatusDTO.PLATZBESTAETIGUNG_WARTEN;
 		case ABGEWIESEN:

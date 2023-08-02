@@ -33,6 +33,7 @@ import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.KindContainer;
 import ch.dvbern.ebegu.entities.Mandant;
+import ch.dvbern.ebegu.entities.PensumFachstelle;
 import ch.dvbern.ebegu.enums.EinschulungTyp;
 import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.enums.IntegrationTyp;
@@ -73,15 +74,23 @@ public class CheckFachstellenValidator implements ConstraintValidator<CheckFachs
 	@Override
 	public boolean isValid(@Nonnull KindContainer kindContainer, ConstraintValidatorContext context) {
 		if (kindContainer.getKindJA() == null
-			|| kindContainer.getKindJA().getPensumFachstelle() == null
+			|| kindContainer.getKindJA().getPensumFachstelle().isEmpty()
 		) {
 			// Kein PensumFachstelle
 			return true;
 		}
-		if (kindContainer.getKindJA().getPensumFachstelle().getIntegrationTyp() == IntegrationTyp.SOZIALE_INTEGRATION) {
-			return validateSozialeIndikation(kindContainer, context);
+		for (PensumFachstelle pensumFachstelle: kindContainer.getKindJA().getPensumFachstelle()) {
+			if (pensumFachstelle.getIntegrationTyp() == IntegrationTyp.SOZIALE_INTEGRATION) {
+				if (!validateSozialeIndikation(kindContainer, context)) {
+					return false;
+				}
+			} else {
+				if (!validateSprachlicheIndikation(kindContainer, context)) {
+					return  false;
+				}
+			}
 		}
-		return validateSprachlicheIndikation(kindContainer, context);
+		return true;
 	}
 
 	private boolean validateSozialeIndikation(@Nonnull KindContainer kindContainer, @Nonnull ConstraintValidatorContext context) {

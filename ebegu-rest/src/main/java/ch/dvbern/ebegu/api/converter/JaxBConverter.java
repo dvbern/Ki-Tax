@@ -750,6 +750,7 @@ public class JaxBConverter extends AbstractConverter {
 				fallJAXP.getSozialdienstFall(),
 				sozialdienstFall));
 		}
+		fall.setBemerkungenDossier(fallJAXP.getBemerkungenDossier());
 		return fall;
 	}
 
@@ -758,6 +759,7 @@ public class JaxBConverter extends AbstractConverter {
 		convertAbstractVorgaengerFieldsToJAX(persistedFall, jaxFall);
 		jaxFall.setFallNummer(persistedFall.getFallNummer());
 		jaxFall.setNextNumberKind(persistedFall.getNextNumberKind());
+		jaxFall.setBemerkungenDossier(persistedFall.getBemerkungenDossier());
 		if (persistedFall.getBesitzer() != null) {
 			jaxFall.setBesitzer(benutzerToJaxBenutzer(persistedFall.getBesitzer()));
 		}
@@ -2115,7 +2117,7 @@ public class JaxBConverter extends AbstractConverter {
 		jaxKind.setZemisNummer(persistedKind.getZemisNummer());
 		jaxKind.setEinschulungTyp(persistedKind.getEinschulungTyp());
 		jaxKind.setKeinPlatzInSchulhort(persistedKind.getKeinPlatzInSchulhort());
-		jaxKind.setPensumFachstelle(pensumFachstelleToJax(persistedKind.getPensumFachstelle()));
+		jaxKind.setPensumFachstellen(pensumFachstellenListToJax(persistedKind.getPensumFachstelle()));
 		jaxKind.setPensumAusserordentlicherAnspruch(pensumAusserordentlicherAnspruchToJax(
 			persistedKind.getPensumAusserordentlicherAnspruch()));
 		jaxKind.setZukunftigeGeburtsdatum(persistedKind.getZukunftigeGeburtsdatum());
@@ -2123,28 +2125,33 @@ public class JaxBConverter extends AbstractConverter {
 		return jaxKind;
 	}
 
-	@Nullable
-	public JaxPensumFachstelle pensumFachstelleToJax(@Nullable final PensumFachstelle persistedPensumFachstelle) {
-		if (persistedPensumFachstelle == null) {
-			return null;
+	public Collection<JaxPensumFachstelle> pensumFachstellenListToJax(final Collection<PensumFachstelle> persistedPensumFachstellenList) {
+		final Collection<JaxPensumFachstelle> jaxPensumFachstellenSet = new HashSet<>();
+		for (PensumFachstelle pensumFachstelle : persistedPensumFachstellenList) {
+			jaxPensumFachstellenSet.add(pensumFachstelleToJax(pensumFachstelle));
 		}
+		return jaxPensumFachstellenSet;
+	}
+
+	@Nonnull
+	public JaxPensumFachstelle pensumFachstelleToJax(PensumFachstelle pensumFachstelle) {
 		final JaxPensumFachstelle jaxPensumFachstelle = new JaxPensumFachstelle();
-		convertAbstractPensumFieldsToJAX(persistedPensumFachstelle, jaxPensumFachstelle);
-		if (persistedPensumFachstelle.getFachstelle() != null) {
-			jaxPensumFachstelle.setFachstelle(fachstelleToJAX(persistedPensumFachstelle.getFachstelle()));
+		convertAbstractPensumFieldsToJAX(pensumFachstelle, jaxPensumFachstelle);
+		if (pensumFachstelle.getFachstelle() != null) {
+			jaxPensumFachstelle.setFachstelle(fachstelleToJAX(pensumFachstelle.getFachstelle()));
 		}
-		jaxPensumFachstelle.setIntegrationTyp(persistedPensumFachstelle.getIntegrationTyp());
-		jaxPensumFachstelle.setGruendeZusatzleistung(persistedPensumFachstelle.getGruendeZusatzleistung());
+		jaxPensumFachstelle.setIntegrationTyp(pensumFachstelle.getIntegrationTyp());
+		jaxPensumFachstelle.setGruendeZusatzleistung(pensumFachstelle.getGruendeZusatzleistung());
 		return jaxPensumFachstelle;
 	}
 
-	public PensumFachstelle pensumFachstelleToEntity(
+	public PensumFachstelle jaxPensumFachstelleToEntity(
 		final JaxPensumFachstelle pensumFachstelleJAXP,
-		final PensumFachstelle pensumFachstelle
-	) {
+		final PensumFachstelle pensumFachstelle) {
 		convertAbstractPensumFieldsToEntity(pensumFachstelleJAXP, pensumFachstelle);
 
 		if (pensumFachstelleJAXP.getFachstelle() != null) {
+			assert pensumFachstelleJAXP.getFachstelle().getId() != null;
 			final Optional<Fachstelle> fachstelleFromDB =
 				fachstelleService.findFachstelle(pensumFachstelleJAXP.getFachstelle().getId());
 			if (fachstelleFromDB.isPresent()) {
@@ -2164,21 +2171,27 @@ public class JaxBConverter extends AbstractConverter {
 		return pensumFachstelle;
 	}
 
-	public PensumFachstelle toStorablePensumFachstelle(@Nonnull final JaxPensumFachstelle pensumFsToSave) {
-		PensumFachstelle pensumToMergeWith = new PensumFachstelle();
-		if (pensumFsToSave.getId() != null) {
-			final Optional<PensumFachstelle> pensumFachstelleOpt =
-				pensumFachstelleService.findPensumFachstelle(pensumFsToSave.getId());
-			if (pensumFachstelleOpt.isPresent()) {
-				pensumToMergeWith = pensumFachstelleOpt.get();
+	public void pensumFachstellenToEntity(
+		final Kind kind,
+		final Collection<JaxPensumFachstelle> pensumFsToSave) {
+		final Collection<PensumFachstelle> transformedKindPensumFachstellen = new HashSet<>();
+		for (JaxPensumFachstelle jaxPensumFachstelle : pensumFsToSave) {
+			if (jaxPensumFachstelle.getId() != null) {
+				final PensumFachstelle pensumFachstelleToMergeWith = kind.getPensumFachstelle().stream()
+					.filter(existingPensumFachstelle -> existingPensumFachstelle.getId()
+						.equals(jaxPensumFachstelle.getId()))
+					.findFirst()
+					.orElseThrow(() -> new EbeguEntityNotFoundException(
+						"toStorablePensumFachstelle",
+						ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
+						jaxPensumFachstelle.getId()));
+				transformedKindPensumFachstellen.add(jaxPensumFachstelleToEntity(jaxPensumFachstelle, pensumFachstelleToMergeWith));
 			} else {
-				throw new EbeguEntityNotFoundException(
-					"toStorablePensumFachstelle",
-					ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
-					pensumFsToSave.getId());
+				transformedKindPensumFachstellen.add(jaxPensumFachstelleToEntity(jaxPensumFachstelle, new PensumFachstelle(kind)));
 			}
 		}
-		return pensumFachstelleToEntity(pensumFsToSave, pensumToMergeWith);
+		kind.getPensumFachstelle().clear();
+		kind.getPensumFachstelle().addAll(transformedKindPensumFachstellen);
 	}
 
 	@Nullable
@@ -2269,11 +2282,7 @@ public class JaxBConverter extends AbstractConverter {
 		kind.setEinschulungTyp(kindJAXP.getEinschulungTyp());
 		kind.setKeinPlatzInSchulhort(kindJAXP.getKeinPlatzInSchulhort());
 
-		PensumFachstelle updtPensumFachstelle = null;
-		if (kindJAXP.getPensumFachstelle() != null) {
-			updtPensumFachstelle = toStorablePensumFachstelle(kindJAXP.getPensumFachstelle());
-		}
-		kind.setPensumFachstelle(updtPensumFachstelle);
+		pensumFachstellenToEntity(kind, kindJAXP.getPensumFachstellen());
 
 		PensumAusserordentlicherAnspruch updtPensumAusserordentlicherAnspruch = null;
 		if (kindJAXP.getPensumAusserordentlicherAnspruch() != null) {
@@ -4401,7 +4410,7 @@ public class JaxBConverter extends AbstractConverter {
 	/**
 	 * Using the existing GesuchStatus and the UserRole it will translate the Status into the right one for this role.
 	 */
-	public void disguiseStatus(Gesuch gesuch, JaxAntragDTO antrag, @Nullable UserRole userRole) {
+	public void disguiseStatus(AntragStatus status, JaxAntragDTO antrag, @Nullable UserRole userRole) {
 		if (userRole != null) {
 			switch (userRole) {
 			case GESUCHSTELLER:
@@ -4409,7 +4418,7 @@ public class JaxBConverter extends AbstractConverter {
 			case SACHBEARBEITER_INSTITUTION:
 			case ADMIN_TRAEGERSCHAFT:
 			case SACHBEARBEITER_TRAEGERSCHAFT:
-				switch (gesuch.getStatus()) {
+				switch (status) {
 				case PRUEFUNG_STV:
 				case GEPRUEFT_STV:
 				case IN_BEARBEITUNG_STV:
@@ -4455,7 +4464,7 @@ public class JaxBConverter extends AbstractConverter {
 			RestUtil.purgeKinderAndBetreuungenOfInstitutionen(jaxKindContainers, allowedInst);
 		}
 
-		disguiseStatus(gesuch, antrag, userRole);
+		disguiseStatus(gesuch.getStatus(), antrag, userRole);
 
 		if (userRole != STEUERAMT) {
 			antrag.setAngebote(createAngeboteList(jaxKindContainers));
@@ -4470,7 +4479,7 @@ public class JaxBConverter extends AbstractConverter {
 		antrag.setKinder(createKinderList(gesuch.getKindContainers()));
 		antrag.setAngebote(createAngeboteList(gesuch.getKindContainers()));
 		antrag.setInstitutionen(createInstitutionenList(gesuch.getKindContainers()));
-		disguiseStatus(gesuch, antrag, userRole);
+		disguiseStatus(gesuch.getStatus(), antrag, userRole);
 		return antrag;
 	}
 
@@ -4479,6 +4488,7 @@ public class JaxBConverter extends AbstractConverter {
 		JaxAntragDTO antrag = new JaxAntragDTO();
 		antrag.setAntragId(gesuch.getId());
 		antrag.setFallNummer(gesuch.getFall().getFallNummer());
+		antrag.setBemerkungenDossier(gesuch.getFall().getBemerkungenDossier());
 		antrag.setDossierId(gesuch.getDossier().getId());
 		antrag.setFamilienName(gesuch.extractFamiliennamenString());
 		antrag.setEingangsdatum(gesuch.getEingangsdatum());
@@ -4532,6 +4542,100 @@ public class JaxBConverter extends AbstractConverter {
 		antrag.setVerantwortlicherUsernameBG(verantwortlicherBG.getUsername());
 	}
 
+	/**
+	 * transformiert ein gesuch in ein JaxAntragDTO unter beruecksichtigung der rollen und erlaubten institutionen
+	 * - Fuer die Rolle Steueramt werden saemtlichen Daten von den Kindern nicht geladen
+	 * - Fuer die Rolle Institution/Traegerschaft werden nur die relevanten Institutionen und Angebote geladen
+	 */
+	public JaxAntragDTO alleFaelleToAntragDTO(
+		AlleFaelleView alleFaelleView,
+		@Nullable UserRole userRole,
+		Collection<Institution> allowedInst) {
+
+		JaxAntragDTO antrag = gesuchToAntragDTOBasic(alleFaelleView);
+
+		if (userRole != STEUERAMT) {
+			antrag.setKinder(createKinderList(alleFaelleView));
+		}
+
+//		if (EnumUtil.isOneOf(
+//			userRole,
+//			ADMIN_TRAEGERSCHAFT,
+//			SACHBEARBEITER_TRAEGERSCHAFT,
+//			ADMIN_INSTITUTION,
+//			SACHBEARBEITER_INSTITUTION)) {
+//			RestUtil.purgeKinderAndBetreuungenOfInstitutionen(jaxKindContainers, allowedInst);
+//		}
+
+		disguiseStatus(alleFaelleView.getAntragStatus(), antrag, userRole);
+
+/*		if (userRole != STEUERAMT) {
+			antrag.setAngebote(alleFaelleView.getAngebotTypen());
+			antrag.setInstitutionen(createInstitutionenList(jaxKindContainers));
+		}*/
+
+		return antrag;
+	}
+
+	@Nonnull
+	private JaxAntragDTO gesuchToAntragDTOBasic(@Nonnull AlleFaelleView alleFaelleView) {
+		JaxAntragDTO antrag = new JaxAntragDTO();
+		antrag.setAntragId(alleFaelleView.getAntragId());
+		antrag.setFallNummer(alleFaelleView.getFallNummer());
+		antrag.setDossierId(alleFaelleView.getDossierId());
+		antrag.setFamilienName(getStringValueOrEmptyString(alleFaelleView.getFamilienName()));
+		antrag.setEingangsdatum(alleFaelleView.getEingangsdatum());
+		antrag.setEingangsdatumSTV(alleFaelleView.getEingangsdatumSTV());
+		antrag.setAenderungsdatum(alleFaelleView.getAenderungsdatum());
+		antrag.setAntragTyp(alleFaelleView.getAntragTyp());
+		antrag.setStatus(AntragStatusConverterUtil.convertStatusToDTO(
+			alleFaelleView.getAntragStatus(),
+			alleFaelleView.getGesuchBetreuungenStatus(),
+			alleFaelleView.getAntragId()));
+		antrag.setGesuchsperiodeString(alleFaelleView.getGesuchsperiodeString());
+		antrag.setGemeinde(alleFaelleView.getGemeindeName());
+
+		antrag.setVerantwortlicherTS(alleFaelleView.getVerantwortlicherTS());
+		antrag.setVerantwortlicherBG(getStringValueOrEmptyString(alleFaelleView.getVerantwortlicherBG()));
+
+		antrag.setVerfuegt(alleFaelleView.getAntragStatus().isAnyStatusOfVerfuegt());
+		antrag.setBeschwerdeHaengig(alleFaelleView.getAntragStatus() == AntragStatus.BESCHWERDE_HAENGIG);
+		antrag.setLaufnummer(alleFaelleView.getLaufnummer());
+		antrag.setEingangsart(alleFaelleView.getEingangsart());
+		antrag.setBesitzerUsername(alleFaelleView.getBesitzerUsername());
+		antrag.setDokumenteHochgeladen(alleFaelleView.getDokumenteHochgeladen());
+		antrag.setFallId(alleFaelleView.getFallId());
+		antrag.setGemeindeId(alleFaelleView.getGemeindeId());
+		antrag.setSozialdienst(alleFaelleView.getSozialdienst());
+		antrag.setInternePendenz(alleFaelleView.getInternePendenz());
+//		if (antrag.hasInternePendenz()) {
+//			antrag.setInternePendenzAbgelaufen(internePendenzService.hasGesuchAbgelaufeneInternePendenzen(alleFaelleView));
+//		} else {
+//			antrag.setInternePendenzAbgelaufen(false);
+//		}
+
+		return antrag;
+	}
+
+	@Nonnull
+	private Set<String> createKinderList(AlleFaelleView alleFaelleView) {
+		if (alleFaelleView.getKinder() == null) {
+			return Collections.emptySet();
+		}
+
+		return alleFaelleView.getKinder()
+			.stream()
+			.map(AlleFaelleViewKind::getName)
+			.collect(Collectors.toSet());
+	}
+
+	private String getStringValueOrEmptyString(@Nullable String string) {
+		if (string == null) {
+			return "";
+		}
+
+		return string;
+	}
 	public Mahnung mahnungToEntity(@Nonnull final JaxMahnung jaxMahnung, @Nonnull final Mahnung mahnung) {
 		requireNonNull(mahnung);
 		requireNonNull(jaxMahnung);

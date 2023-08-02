@@ -68,4 +68,5 @@ export class TSWizardStep extends TSAbstractMutableEntity {
     public set verfuegbar(value: boolean) {
         this._verfuegbar = value;
     }
+
 }

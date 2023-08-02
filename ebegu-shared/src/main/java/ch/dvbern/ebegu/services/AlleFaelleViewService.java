@@ -17,10 +17,12 @@
 
 package ch.dvbern.ebegu.services;
 
-import java.util.List;
-
+import ch.dvbern.ebegu.dto.suchfilter.smarttable.AntragTableFilterDTO;
+import ch.dvbern.ebegu.entities.AlleFaelleView;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Kind;
+
+import java.util.List;
 
 public interface AlleFaelleViewService {
 
@@ -41,4 +43,6 @@ public interface AlleFaelleViewService {
 	Long countAllGesuch();
 
 	List<String> searchAllGesuchIds(int start, int size);
+
+	List<AlleFaelleView> searchAntrage(AntragTableFilterDTO antragTableFilterDTO, boolean searchForPendenzen);
 }

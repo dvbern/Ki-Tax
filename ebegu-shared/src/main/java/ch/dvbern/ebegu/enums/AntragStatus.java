@@ -22,6 +22,7 @@ import java.util.Collection;
 import java.util.EnumSet;
 import java.util.Set;
 
+
 /**
  * Enum fuer den Status vom Gesuch.
  */
@@ -48,7 +49,7 @@ public enum AntragStatus {
 	GEPRUEFT_STV,
 	IGNORIERT;
 
-	public static final Set<AntragStatus> FOR_ADMIN_ROLE = EnumSet.of(
+	private static final Set<AntragStatus> FOR_ADMIN_ROLE = EnumSet.of(
 		FREIGEGEBEN,        // Freigabequittung im Jugendamt eingelesen ODER keine Quittung notwendig
 		IN_BEARBEITUNG_JA,
 		ERSTE_MAHNUNG,
@@ -68,7 +69,7 @@ public enum AntragStatus {
 		IGNORIERT
 	);
 
-	public static final Set<AntragStatus> FOR_INSTITUTION_ROLE = EnumSet.of(
+	private static final Set<AntragStatus> FOR_INSTITUTION_ROLE = EnumSet.of(
 		IN_BEARBEITUNG_GS,
 		FREIGABEQUITTUNG,
 		// = GS hat Freigabequittung gedruckt, bzw. den Antrag freigegeben (auch wenn keine Freigabequittung notwendig
@@ -91,11 +92,11 @@ public enum AntragStatus {
 		GEPRUEFT_STV,
 		IGNORIERT);
 
-	public static final Set<AntragStatus> FOR_STEUERAMT_ROLE = EnumSet.of(
+	private static final Set<AntragStatus> FOR_STEUERAMT_ROLE = EnumSet.of(
 		PRUEFUNG_STV,
 		IN_BEARBEITUNG_STV);
 
-	public static final Set<AntragStatus> FOR_JURIST_REVISOR_ROLE = EnumSet.of(
+	private static final Set<AntragStatus> FOR_JURIST_REVISOR_ROLE = EnumSet.of(
 		NUR_SCHULAMT,
 		FREIGEGEBEN,        // Freigabequittung im Jugendamt eingelesen ODER keine Quittung notwendig
 		IN_BEARBEITUNG_JA,
@@ -114,7 +115,7 @@ public enum AntragStatus {
 		GEPRUEFT_STV,
 		IGNORIERT);
 
-	public static final Set<AntragStatus> FOR_SOZIALDIENST_ROLE = EnumSet.of(
+	private static final Set<AntragStatus> FOR_SOZIALDIENST_ROLE = EnumSet.of(
 		FREIGABEQUITTUNG,
 		FREIGEGEBEN,
 		IN_BEARBEITUNG_JA,
@@ -136,31 +137,13 @@ public enum AntragStatus {
 		IGNORIERT
 	);
 
-	public static final Set<AntragStatus> FIRST_STATUS_OF_VERFUEGT = EnumSet.of(VERFUEGT, NUR_SCHULAMT, KEIN_ANGEBOT);
 
-	private static final Set<AntragStatus> all = EnumSet.allOf(AntragStatus.class);
-	private static final Set<AntragStatus> none = EnumSet.noneOf(AntragStatus.class);
-	private static final Set<AntragStatus> forAdminRole = FOR_ADMIN_ROLE;
-	private static final Set<AntragStatus> forAdminInstitutionRole = FOR_INSTITUTION_ROLE;
-	private static final Set<AntragStatus> forAdminTraegerschaftRole = FOR_INSTITUTION_ROLE;
-	private static final Set<AntragStatus> forSachbearbeiterInstitutionRole = FOR_INSTITUTION_ROLE;
-	private static final Set<AntragStatus> forSachbearbeiterTraegerschaftRole = FOR_INSTITUTION_ROLE;
-	private static final Set<AntragStatus> forSachbearbeiterJugendamtRole = FOR_ADMIN_ROLE;
-	private static final Set<AntragStatus> forSchulamtRole = FOR_ADMIN_ROLE;
-	private static final Set<AntragStatus> forAdminGemeindeRole = FOR_ADMIN_ROLE;
-	private static final Set<AntragStatus> forSachbearbeiterGemeindeRole = FOR_ADMIN_ROLE;
-	private static final Set<AntragStatus> forJuristRole = FOR_JURIST_REVISOR_ROLE;
-	private static final Set<AntragStatus> forRevisorRole = FOR_JURIST_REVISOR_ROLE;
-	private static final Set<AntragStatus> forSteueramt = FOR_STEUERAMT_ROLE;
-	private static final Set<AntragStatus> forAdminMandantRole = FOR_JURIST_REVISOR_ROLE;
-	private static final Set<AntragStatus> forSachbearbeiterMandantRole = FOR_JURIST_REVISOR_ROLE;
-	private static final Set<AntragStatus> forSozialdienstRole = FOR_SOZIALDIENST_ROLE;
 
 	// range ist etwas gefaehrlich, da man sehr vorsichtig sein muss, in welcher Reihenfolge man die Werte schreibt.
 	// Ausserdem kann man
 	// kein range mit Ausnahmen machen. In diesem Fall ist es deshalb besser ein .of zu benutzen
 
-	public static final Set<AntragStatus> FOR_SACHBEARBEITER_JUGENDAMT_PENDENZEN = EnumSet.of(
+	private static final Set<AntragStatus> FOR_SACHBEARBEITER_JUGENDAMT_PENDENZEN = EnumSet.of(
 		FREIGEGEBEN,
 		IN_BEARBEITUNG_JA,
 		ERSTE_MAHNUNG,
@@ -172,7 +155,7 @@ public enum AntragStatus {
 		BESCHWERDE_HAENGIG,
 		GEPRUEFT_STV);
 
-	public static final Set<AntragStatus> FOR_SACHBEARBEITER_SCHULAMT_PENDENZEN = EnumSet.of(
+	private static final Set<AntragStatus> FOR_SACHBEARBEITER_SCHULAMT_PENDENZEN = EnumSet.of(
 		FREIGEGEBEN,
 		IN_BEARBEITUNG_JA,
 		ERSTE_MAHNUNG,
@@ -183,26 +166,9 @@ public enum AntragStatus {
 		BESCHWERDE_HAENGIG,
 		GEPRUEFT_STV);
 
-	public static final Set<AntragStatus> FOR_KIND_DUBLETTEN = EnumSet.of(
-		NUR_SCHULAMT,
-		FREIGEGEBEN,
-		IN_BEARBEITUNG_JA,
-		ERSTE_MAHNUNG,
-		ERSTE_MAHNUNG_ABGELAUFEN,
-		ZWEITE_MAHNUNG,
-		ZWEITE_MAHNUNG_ABGELAUFEN,
-		GEPRUEFT,
-		VERFUEGEN,
-		VERFUEGT,
-		KEIN_ANGEBOT,
-		BESCHWERDE_HAENGIG,
-		IGNORIERT);
+	private static final Set<AntragStatus> IN_BEARBEITUNG = EnumSet.range(IN_BEARBEITUNG_GS, IN_BEARBEITUNG_JA);
 
-	public static final Set<AntragStatus> ERLEDIGTE_PENDENZ = EnumSet.of(VERFUEGT, NUR_SCHULAMT, KEIN_ANGEBOT, IGNORIERT);
-
-	private static final Set<AntragStatus> inBearbeitung = EnumSet.range(IN_BEARBEITUNG_GS, IN_BEARBEITUNG_JA);
-
-	public static final Set<AntragStatus> FOR_ADMIN_ROLE_WRITE = EnumSet.of(
+	private static final Set<AntragStatus> FOR_ADMIN_ROLE_WRITE = EnumSet.of(
 		FREIGABEQUITTUNG,
 		FREIGEGEBEN,        // Freigabequittung im Jugendamt eingelesen ODER keine Quittung notwendig
 		IN_BEARBEITUNG_JA,
@@ -222,7 +188,7 @@ public enum AntragStatus {
 		NUR_SCHULAMT,
 		IGNORIERT);
 
-	public static final Set<AntragStatus> FOR_INSTITUTION_ROLE_WRITE = EnumSet.of(
+	private static final Set<AntragStatus> FOR_INSTITUTION_ROLE_WRITE = EnumSet.of(
 		IN_BEARBEITUNG_GS,
 		FREIGABEQUITTUNG,
 		// = GS hat Freigabequittung gedruckt, bzw. den Antrag freigegeben (auch wenn keine Freigabequittung notwendig
@@ -238,11 +204,10 @@ public enum AntragStatus {
 		KEIN_KONTINGENT,
 		VERFUEGEN);
 
-	public static final Set<AntragStatus> FOR_GESUCHSTELLER_ROLE_WRITE = EnumSet.of(
+	private static final Set<AntragStatus> FOR_GESUCHSTELLER_ROLE_WRITE = EnumSet.of(
 		IN_BEARBEITUNG_GS,
 		NUR_SCHULAMT, // Damit eine Mutation erstellt werden kann
 		FREIGABEQUITTUNG,
-		NUR_SCHULAMT, // damit eine Mutation erstellt werden kann
 		ERSTE_MAHNUNG,
 		ERSTE_MAHNUNG_ABGELAUFEN,
 		ZWEITE_MAHNUNG,
@@ -251,7 +216,7 @@ public enum AntragStatus {
 		IGNORIERT // Damit eine Mutation erstellt werden kann
 	);
 
-	public static final Set<AntragStatus> FOR_STEUERAMT_ROLE_WRITE = EnumSet.of(
+	private static final Set<AntragStatus> FOR_STEUERAMT_ROLE_WRITE = EnumSet.of(
 		PRUEFUNG_STV,
 		IN_BEARBEITUNG_STV,
 		GEPRUEFT_STV
@@ -259,11 +224,10 @@ public enum AntragStatus {
 		// Status entfernt werden
 	);
 
-	public static final Set<AntragStatus> FOR_SOZIALDIENSTE_ROLE_WRITE = EnumSet.of(
+	private static final Set<AntragStatus> FOR_SOZIALDIENSTE_ROLE_WRITE = EnumSet.of(
 		IN_BEARBEITUNG_SOZIALDIENST,
 		NUR_SCHULAMT, // Damit eine Mutation erstellt werden kann
 		FREIGABEQUITTUNG,
-		NUR_SCHULAMT, // damit eine Mutation erstellt werden kann
 		ERSTE_MAHNUNG,
 		ERSTE_MAHNUNG_ABGELAUFEN,
 		ZWEITE_MAHNUNG,
@@ -282,44 +246,32 @@ public enum AntragStatus {
 	public static Set<AntragStatus> allowedforRole(UserRole userRole) {
 		switch (userRole) {
 		case SUPER_ADMIN:
-			return all;
+			return EnumSet.allOf(AntragStatus.class);
 		case ADMIN_BG:
-			return forAdminRole;
-		case GESUCHSTELLER:
-			return none;
-		case JURIST:
-			return forJuristRole;
-		case REVISOR:
-			return forRevisorRole;
-		case ADMIN_INSTITUTION:
-			return forAdminInstitutionRole;
-		case SACHBEARBEITER_INSTITUTION:
-			return forSachbearbeiterInstitutionRole;
 		case SACHBEARBEITER_BG:
-			return forSachbearbeiterJugendamtRole;
-		case ADMIN_TRAEGERSCHAFT:
-			return forAdminTraegerschaftRole;
-		case SACHBEARBEITER_TRAEGERSCHAFT:
-			return forSachbearbeiterTraegerschaftRole;
 		case SACHBEARBEITER_TS:
-			return forSchulamtRole;
 		case ADMIN_TS:
-			return forSchulamtRole;
-		case STEUERAMT:
-			return forSteueramt;
 		case ADMIN_GEMEINDE:
-			return forAdminGemeindeRole;
 		case SACHBEARBEITER_GEMEINDE:
-			return forSachbearbeiterGemeindeRole;
+			return EnumSet.copyOf(FOR_ADMIN_ROLE);
+		case JURIST:
+		case REVISOR:
 		case ADMIN_MANDANT:
-			return forAdminMandantRole;
 		case SACHBEARBEITER_MANDANT:
-			return forSachbearbeiterMandantRole;
+			return EnumSet.copyOf(FOR_JURIST_REVISOR_ROLE);
+		case ADMIN_INSTITUTION:
+		case SACHBEARBEITER_INSTITUTION:
+		case ADMIN_TRAEGERSCHAFT:
+		case SACHBEARBEITER_TRAEGERSCHAFT:
+			return EnumSet.copyOf(FOR_INSTITUTION_ROLE);
+		case STEUERAMT:
+			return EnumSet.copyOf(FOR_STEUERAMT_ROLE);
 		case ADMIN_SOZIALDIENST:
 		case SACHBEARBEITER_SOZIALDIENST:
-			return forSozialdienstRole;
+			return EnumSet.copyOf(FOR_SOZIALDIENST_ROLE);
+		case GESUCHSTELLER:
 		default:
-			return none;
+			return EnumSet.noneOf(AntragStatus.class);
 		}
 	}
 
@@ -335,17 +287,17 @@ public enum AntragStatus {
 		case SACHBEARBEITER_GEMEINDE:
 		case ADMIN_MANDANT:
 		case SACHBEARBEITER_MANDANT:
-			return FOR_SACHBEARBEITER_JUGENDAMT_PENDENZEN;
+			return EnumSet.copyOf(FOR_SACHBEARBEITER_JUGENDAMT_PENDENZEN);
 		case SACHBEARBEITER_TS:
 		case ADMIN_TS:
-			return FOR_SACHBEARBEITER_SCHULAMT_PENDENZEN;
+			return EnumSet.copyOf(FOR_SACHBEARBEITER_SCHULAMT_PENDENZEN);
 		case ADMIN_SOZIALDIENST:
 		case SACHBEARBEITER_SOZIALDIENST:
-			return FOR_SOZIALDIENST_PENDENZEN;
+			return EnumSet.copyOf(FOR_SOZIALDIENST_PENDENZEN);
 		case STEUERAMT:
 		case GESUCHSTELLER:
 		default:
-			return none;
+			return EnumSet.noneOf(AntragStatus.class);
 		}
 	}
 
@@ -353,29 +305,28 @@ public enum AntragStatus {
 	public static Set<AntragStatus> writeAllowedForRole(UserRole userRole) {
 		switch (userRole) {
 		case SUPER_ADMIN:
-			return all;
+			return EnumSet.allOf(AntragStatus.class);
 		case ADMIN_BG:
 		case SACHBEARBEITER_BG:
 		case ADMIN_GEMEINDE:
 		case SACHBEARBEITER_GEMEINDE:
-			return FOR_ADMIN_ROLE_WRITE;
+		case SACHBEARBEITER_TS:
+		case ADMIN_TS:
+			return EnumSet.copyOf(FOR_ADMIN_ROLE_WRITE);
 		case GESUCHSTELLER:
-			return FOR_GESUCHSTELLER_ROLE_WRITE;
+			return EnumSet.copyOf(FOR_GESUCHSTELLER_ROLE_WRITE);
 		case ADMIN_INSTITUTION:
 		case SACHBEARBEITER_INSTITUTION:
 		case ADMIN_TRAEGERSCHAFT:
 		case SACHBEARBEITER_TRAEGERSCHAFT:
-			return FOR_INSTITUTION_ROLE_WRITE;
+			return EnumSet.copyOf(FOR_INSTITUTION_ROLE_WRITE);
 		case STEUERAMT:
-			return FOR_STEUERAMT_ROLE_WRITE;
-		case SACHBEARBEITER_TS:
-		case ADMIN_TS:
-			return FOR_ADMIN_ROLE_WRITE;
+			return EnumSet.copyOf(FOR_STEUERAMT_ROLE_WRITE);
 		case ADMIN_SOZIALDIENST:
 		case SACHBEARBEITER_SOZIALDIENST:
-			return FOR_SOZIALDIENSTE_ROLE_WRITE;
+			return EnumSet.copyOf(FOR_SOZIALDIENSTE_ROLE_WRITE);
 		default:
-			return none;
+			return EnumSet.noneOf(AntragStatus.class);
 		}
 	}
 
@@ -435,6 +386,30 @@ public enum AntragStatus {
 		);
 	}
 
+	public static Set<AntragStatus> getAllErledigtePendenzStatus() {
+		return EnumSet.of(VERFUEGT, NUR_SCHULAMT, KEIN_ANGEBOT, IGNORIERT);
+	}
+	public static Set<AntragStatus> getFirstStatusOfVerfuegt() {
+		return EnumSet.of(VERFUEGT, NUR_SCHULAMT, KEIN_ANGEBOT);
+	}
+
+	public static Set<AntragStatus> getForKindDubletten() {
+		return EnumSet.of(
+			NUR_SCHULAMT,
+			FREIGEGEBEN,
+			IN_BEARBEITUNG_JA,
+			ERSTE_MAHNUNG,
+			ERSTE_MAHNUNG_ABGELAUFEN,
+			ZWEITE_MAHNUNG,
+			ZWEITE_MAHNUNG_ABGELAUFEN,
+			GEPRUEFT,
+			VERFUEGEN,
+			VERFUEGT,
+			KEIN_ANGEBOT,
+			BESCHWERDE_HAENGIG,
+			IGNORIERT);
+	}
+
 	public static final Set<AntragStatus> FOR_SOZIALDIENST_PENDENZEN = EnumSet.of(
 		IN_BEARBEITUNG_SOZIALDIENST, ERSTE_MAHNUNG, ZWEITE_MAHNUNG);
 
@@ -455,7 +430,7 @@ public enum AntragStatus {
 	}
 
 	public boolean inBearbeitung() {
-		return inBearbeitung.contains(this);
+		return IN_BEARBEITUNG.contains(this);
 	}
 
 	public boolean isAnyOfInBearbeitungGSOrSZD() {
@@ -483,19 +458,19 @@ public enum AntragStatus {
 	 */
 	public boolean isReadableBySteueramt() {
 		// GEPRUEFT_STV ist dabei, weil es beim Freigeben schon in diesem Status ist
-		return forSteueramt.contains(this) || this == GEPRUEFT_STV;
+		return FOR_STEUERAMT_ROLE.contains(this) || this == GEPRUEFT_STV;
 	}
 
 	public boolean isReadableByJurist() {
-		return forJuristRole.contains(this);
+		return FOR_JURIST_REVISOR_ROLE.contains(this);
 	}
 
 	public boolean isReadableByRevisor() {
-		return forRevisorRole.contains(this);
+		return FOR_JURIST_REVISOR_ROLE.contains(this);
 	}
 
 	public boolean isReadableByMandantUser() {
-		return forAdminMandantRole.contains(this);
+		return FOR_JURIST_REVISOR_ROLE.contains(this);
 	}
 
 }
