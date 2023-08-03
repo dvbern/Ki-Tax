@@ -17,26 +17,10 @@
 
 package ch.dvbern.ebegu.services.reporting;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-import java.util.Objects;
-import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
-
-import javax.annotation.Nonnull;
-import javax.ejb.Local;
-import javax.ejb.Stateless;
-import javax.ejb.TransactionAttribute;
-import javax.ejb.TransactionAttributeType;
-import javax.inject.Inject;
-
 import ch.dvbern.ebegu.authentication.PrincipalBean;
 import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Gesuch;
+import ch.dvbern.ebegu.entities.KindContainer;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.reporting.ReportVorlage;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
@@ -44,11 +28,7 @@ import ch.dvbern.ebegu.errors.MailException;
 import ch.dvbern.ebegu.reporting.ReportKinderMitZemisNummerService;
 import ch.dvbern.ebegu.reporting.lastenausgleich.KindMitZemisNummerDataRow;
 import ch.dvbern.ebegu.reporting.lastenausgleich.KinderMitZemisNummerExcelConverter;
-import ch.dvbern.ebegu.services.BenutzerService;
-import ch.dvbern.ebegu.services.FileSaverService;
-import ch.dvbern.ebegu.services.GesuchService;
-import ch.dvbern.ebegu.services.KindService;
-import ch.dvbern.ebegu.services.MailService;
+import ch.dvbern.ebegu.services.*;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.ServerMessageUtil;
 import ch.dvbern.ebegu.util.UploadFileInfo;
@@ -59,6 +39,19 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.jboss.ejb3.annotation.TransactionTimeout;
+
+import javax.annotation.Nonnull;
+import javax.ejb.Local;
+import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
+import javax.inject.Inject;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.*;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 @Stateless
 @Local(ReportKinderMitZemisNummerService.class)
@@ -134,18 +127,13 @@ public class ReportKinderMitZemisNummerServiceBean extends AbstractReportService
 				for (Row row : sheet) {
 					rowNumber = row.getRowNum();
 					if (rowNumber >= firstRelevantRow) {
-						int fallNummer = (int) row.getCell(0).getNumericCellValue();
-						int kindNummer = (int) row.getCell(5).getNumericCellValue();
+						Collection<KindContainer> kindContainerToUpdate = getKindContainerToUpdate(row);
 						boolean keinSelbstbehaltFuerGemeinde = row.getCell(8).getBooleanCellValue();
-						String gesuchsperiodeStr = row.getCell(1).getStringCellValue();
-						int gesuchsperiodeStartJahr = Integer.parseInt(gesuchsperiodeStr.split("/")[0]);
-						kindService.updateKeinSelbstbehaltFuerGemeinde(
-							fallNummer,
-							kindNummer,
-							gesuchsperiodeStartJahr,
-							keinSelbstbehaltFuerGemeinde
-						);
+
+						kindService.updateKeinSelbstbehaltFuerGemeinde(kindContainerToUpdate, keinSelbstbehaltFuerGemeinde);
+						fireUpdateKeinSelbstbehaltFuerGemeindeEvent(kindContainerToUpdate, keinSelbstbehaltFuerGemeinde);
 					}
+
 				}
 				sendMail("ZEMIS Excel verarbeitet", "Die Verarbeitung des ZEMIS Excels wurde "
 					+ "erfolgreich abgeschlossen");
@@ -156,6 +144,21 @@ public class ReportKinderMitZemisNummerServiceBean extends AbstractReportService
 				throw new EbeguRuntimeException("setFlagAndSaveZemisExcel", ErrorCodeEnum.ERROR_WRONG_FORMAT_ZEMIS, e, rowNumber+1);
 			}
 		}
+	}
+
+	private void fireUpdateKeinSelbstbehaltFuerGemeindeEvent(
+		Collection<KindContainer> kindContainerToUpdate,
+		boolean keinSelbstbehaltFuerGemeinde) {
+
+	}
+
+	private Collection<KindContainer> getKindContainerToUpdate(Row row) {
+		int fallNummer = (int) row.getCell(0).getNumericCellValue();
+		int kindNummer = (int) row.getCell(5).getNumericCellValue();
+		String gesuchsperiodeStr = row.getCell(1).getStringCellValue();
+		int gesuchsperiodeStartJahr = Integer.parseInt(gesuchsperiodeStr.split("/")[0]);
+
+		return kindService.findKinder(fallNummer, kindNummer, gesuchsperiodeStartJahr);
 	}
 
 	private void sendMail(@Nonnull String subject, @Nonnull String message) throws MailException {
