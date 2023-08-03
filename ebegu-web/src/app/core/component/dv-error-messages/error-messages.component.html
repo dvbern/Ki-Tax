@@ -26,8 +26,8 @@
         <ng-container *ngSwitchCase="'pattern'">{{'ERROR_FORMAT' | translate}}</ng-container>
         <ng-container *ngSwitchCase="'date'">{{'ERROR_DATE' | translate}}</ng-container>
         <ng-container *ngSwitchCase="'moment'">{{'ERROR_FORMAT' | translate}}</ng-container>
-        <ng-container *ngSwitchCase="'min'">{{'ERROR_MIN_SIMPLE' | translate}}</ng-container>
-        <ng-container *ngSwitchCase="'max'">{{'ERROR_MAX_SIMPLE' | translate}}</ng-container>
+        <ng-container *ngSwitchCase="'min'">{{'ERROR_MIN' | translate:{ value: errorObject.min.min} }}</ng-container>
+        <ng-container *ngSwitchCase="'max'">{{'ERROR_MAX' | translate: { value: errorObject.max.max} }}</ng-container>
         <ng-container *ngSwitchCase="'valueinput'">{{'ERROR_VALUE' | translate}}</ng-container>
         <ng-container *ngSwitchCase="'dvMinDate'">{{'ERROR_MIN_DATE' | translate}}</ng-container>
         <ng-container *ngSwitchCase="'matDatepickerMin'">{{'ERROR_MIN_DATE' | translate}}</ng-container>

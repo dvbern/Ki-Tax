@@ -17,6 +17,14 @@
 
 package ch.dvbern.ebegu.rules;
 
+import ch.dvbern.ebegu.entities.*;
+import ch.dvbern.ebegu.enums.*;
+import ch.dvbern.ebegu.test.TestDataUtil;
+import ch.dvbern.ebegu.types.DateRange;
+import org.junit.Assert;
+import org.junit.jupiter.api.Test;
+
+import javax.annotation.Nonnull;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.Month;
@@ -25,29 +33,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
-import javax.annotation.Nonnull;
-
-import ch.dvbern.ebegu.entities.Betreuung;
-import ch.dvbern.ebegu.entities.Betreuungspensum;
-import ch.dvbern.ebegu.entities.BetreuungspensumContainer;
-import ch.dvbern.ebegu.entities.Einstellung;
-import ch.dvbern.ebegu.entities.ErwerbspensumContainer;
-import ch.dvbern.ebegu.entities.Gesuch;
-import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
-import ch.dvbern.ebegu.enums.AntragCopyType;
-import ch.dvbern.ebegu.enums.EinstellungKey;
-import ch.dvbern.ebegu.enums.MsgKey;
-import ch.dvbern.ebegu.enums.Taetigkeit;
-import ch.dvbern.ebegu.test.TestDataUtil;
-import ch.dvbern.ebegu.types.DateRange;
-import org.hamcrest.MatcherAssert;
-import org.hamcrest.Matchers;
-import org.junit.Assert;
-import org.junit.jupiter.api.Test;
-
-import static ch.dvbern.ebegu.enums.EinstellungKey.FKJV_EINGEWOEHNUNG;
-import static org.hamcrest.MatcherAssert.*;
-import static org.hamcrest.Matchers.*;
+import static ch.dvbern.ebegu.enums.EinstellungKey.EINGEWOEHNUNG_TYP;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertNotNull;
 
 public class EingewoehnungFristRuleTest {
@@ -218,7 +207,7 @@ public class EingewoehnungFristRuleTest {
 		gesuch.getGesuchsteller1().addErwerbspensumContainer(TestDataUtil
 			.createErwerbspensum(TestDataUtil.START_PERIODE.plusMonths(2), TestDataUtil.ENDE_PERIODE, 40));
 		Map<EinstellungKey, Einstellung> einstellungenMap = EbeguRuleTestsHelper.getAllEinstellungen(betreuung.extractGesuchsperiode());
-		einstellungenMap.get(FKJV_EINGEWOEHNUNG).setValue("true");
+		einstellungenMap.get(EINGEWOEHNUNG_TYP).setValue(EingewoehnungTyp.FKJV.toString());
 		List<VerfuegungZeitabschnitt> result =
 			EbeguRuleTestsHelper.calculate(betreuung, EbeguRuleTestsHelper.getEinstellungenRulesParis(
 				gesuch.getGesuchsperiode()), einstellungenMap);
@@ -747,7 +736,7 @@ public class EingewoehnungFristRuleTest {
 
 	private List<VerfuegungZeitabschnitt> calculateMitEingewoehnung(@Nonnull Betreuung betreuung) {
 		Map<EinstellungKey, Einstellung> einstellungenMap = EbeguRuleTestsHelper.getAllEinstellungen(betreuung.extractGesuchsperiode());
-		einstellungenMap.get(FKJV_EINGEWOEHNUNG).setValue("true");
+		einstellungenMap.get(EINGEWOEHNUNG_TYP).setValue(EingewoehnungTyp.FKJV.toString());
 		return EbeguRuleTestsHelper.calculate(betreuung, EbeguRuleTestsHelper.getAllEinstellungen(betreuung.extractGesuchsperiode()), einstellungenMap);
 	}
 }
