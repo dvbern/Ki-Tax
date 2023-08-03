@@ -45,6 +45,9 @@ import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 
 import static ch.dvbern.ebegu.enums.EinstellungKey.EINGEWOEHNUNG_TYP;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertNotNull;
 
 public class EingewoehnungFristRuleTest {
@@ -552,13 +555,13 @@ public class EingewoehnungFristRuleTest {
 
 		Assert.assertEquals(5, result.size());
 
-		//01.08-30.9, Betreuung, Anspruch 0
+		//01.08-30.9, Betreuung 80, Anspruch 0
 		Assert.assertEquals(0, result.get(0).getAnspruchberechtigtesPensum());
 		Assert.assertEquals(80, result.get(0).getBetreuungspensumProzent().intValue());
 		Assert.assertEquals(betreuung.extractGesuchsperiode().getGueltigkeit().getGueltigAb(), result.get(0).getGueltigkeit().getGueltigAb());
 		Assert.assertEquals(SEP_30, result.get(0).getGueltigkeit().getGueltigBis());
 
-		//01.08-30.9, Betreuung, Anspruch 0
+		//30.9 - 14.11., Betreuung 0, Anspruch 0
 		Assert.assertEquals(0, result.get(1).getAnspruchberechtigtesPensum());
 		Assert.assertEquals(0, result.get(1).getBetreuungspensumProzent().intValue());
 		Assert.assertEquals(SEP_30.plusDays(1), result.get(1).getGueltigkeit().getGueltigAb());
@@ -580,6 +583,152 @@ public class EingewoehnungFristRuleTest {
 		Assert.assertEquals(60, result.get(4).getAnspruchberechtigtesPensum());
 		Assert.assertEquals(DEC_15.with(TemporalAdjusters.firstDayOfNextMonth()), result.get(4).getGueltigkeit().getGueltigAb());
 		Assert.assertEquals(TestDataUtil.ENDE_PERIODE,result.get(4).getGueltigkeit().getGueltigBis());
+	}
+
+
+	@Test
+	public void eingewoehungFristRuleAnspruchOverlappingEingewoehnungAndMonthStartPensumSteigend() {
+		LocalDate SEP_30 = LocalDate.of(TestDataUtil.START_PERIODE.getYear(), Month.SEPTEMBER, 30);
+		LocalDate DEC_8 = LocalDate.of(TestDataUtil.START_PERIODE.getYear(), Month.DECEMBER, 8);
+		LocalDate DEC_15 = LocalDate.of(TestDataUtil.START_PERIODE.getYear(), Month.DECEMBER, 15);
+		LocalDate DEC_22 = LocalDate.of(TestDataUtil.START_PERIODE.getYear(), Month.DECEMBER, 22);
+
+		Betreuung betreuung = createGesuch(false, true);
+		Gesuch gesuch = betreuung.extractGesuch();
+
+		final BetreuungspensumContainer firstPensum = betreuung.getBetreuungspensumContainers().stream()
+			.findFirst()
+			.orElseThrow();
+
+		// BetreuungsPensum 15.12. - 31.7.
+		firstPensum
+			.getBetreuungspensumJA()
+			.getGueltigkeit()
+			.setGueltigAb(DEC_15);
+		firstPensum
+			.getBetreuungspensumJA()
+			.getGueltigkeit()
+			.setGueltigBis(TestDataUtil.ENDE_PERIODE);
+
+
+		var betreuungsPensen = new HashSet<BetreuungspensumContainer>();
+		betreuungsPensen.add(firstPensum);
+		betreuung.setBetreuungspensumContainers(betreuungsPensen);
+
+		assertThat(gesuch.getGesuchsteller1(), notNullValue());
+
+		gesuch.getGesuchsteller1().getErwerbspensenContainers().clear();
+		//ewp 1.8. - 8.12.
+		ErwerbspensumContainer ewp = TestDataUtil.createErwerbspensum(TestDataUtil.START_PERIODE, DEC_8, 40);
+		gesuch.getGesuchsteller1().addErwerbspensumContainer(ewp);
+		//ewp 22.12 -
+		ErwerbspensumContainer ewp2 = TestDataUtil.createErwerbspensum(DEC_22, TestDataUtil.ENDE_PERIODE, 60);
+		gesuch.getGesuchsteller1().addErwerbspensumContainer(ewp2);
+
+		List<VerfuegungZeitabschnitt> result = calculateMitEingewoehnung(betreuung);
+
+		assertThat(result.size(), is(6));
+
+		//01.08- 21.11., Betreuung 0, Anspruch 60
+		assertThat(result.get(0).getAnspruchberechtigtesPensum(), is(60));
+		assertThat(result.get(0).getBetreuungspensumProzent().intValue(), is(0));
+		assertThat(result.get(0).getGueltigkeit().getGueltigAb(), is(TestDataUtil.START_PERIODE));
+		assertThat(result.get(0).getGueltigkeit().getGueltigBis(), is(DEC_22.minusMonths(1).minusDays(1)));
+
+		//22.11. - 8.12.  Betreuung 0, Anspruch 60 Eingewoehnung Anspruch 80
+		assertThat(result.get(1).getAnspruchberechtigtesPensum(), is(80));
+		assertThat(result.get(1).getBetreuungspensumProzent().intValue(), is(0));
+		assertThat(result.get(1).getGueltigkeit().getGueltigAb(), is(DEC_22.minusMonths(1)));
+		assertThat(result.get(1).getGueltigkeit().getGueltigBis(), is(DEC_8));
+		Assert.assertTrue(result.get(1).getBemerkungenDTOList().containsMsgKey(MsgKey.ERWERBSPENSUM_EINGEWOEHNUNG));
+
+		//9.12 - 14.12., kein Anspruch Eingewöhnung Anspruch 80, Betreuung 0
+		assertThat(result.get(2).getAnspruchberechtigtesPensum(), is(80));
+		assertThat(result.get(2).getGueltigkeit().getGueltigAb(), is(DEC_8.plusDays(1)));
+		assertThat(result.get(2).getGueltigkeit().getGueltigBis(), is(DEC_15.minusDays(1)));
+		Assert.assertTrue(result.get(2).getBemerkungenDTOList().containsMsgKey(MsgKey.ERWERBSPENSUM_EINGEWOEHNUNG));
+		Assert.assertTrue(result.get(2).getBemerkungenDTOList().containsMsgKey(MsgKey.ERWERBSPENSUM_KEIN_ANSPRUCH));
+
+		//15.12 - 21.12, kein Anspruch Eingewöhnung Anspruch 80, Betreuung 60
+		assertThat(result.get(3).getAnspruchberechtigtesPensum(), is(80));
+		assertThat(result.get(3).getGueltigkeit().getGueltigAb(), is(DEC_15));
+		assertThat(result.get(3).getGueltigkeit().getGueltigBis(), is(DEC_22.minusDays(1)));
+		Assert.assertTrue(result.get(3).getBemerkungenDTOList().containsMsgKey(MsgKey.ERWERBSPENSUM_EINGEWOEHNUNG));
+		Assert.assertTrue(result.get(3).getBemerkungenDTOList().containsMsgKey(MsgKey.ERWERBSPENSUM_KEIN_ANSPRUCH));
+
+		// 22.12. Anspruch 80, Betreuung 60
+		assertThat(result.get(4).getAnspruchberechtigtesPensum(), is(80));
+		assertThat(result.get(4).getGueltigkeit().getGueltigAb(), is(DEC_22));
+		assertThat(result.get(4).getGueltigkeit().getGueltigBis(), is(DEC_15.with(TemporalAdjusters.lastDayOfMonth())));
+	}
+
+
+	@Test
+	public void eingewoehungFristRuleAnspruchOverlappingEingewoehnungAndMonthStartPensumSinkend() {
+		LocalDate SEP_30 = LocalDate.of(TestDataUtil.START_PERIODE.getYear(), Month.SEPTEMBER, 30);
+		LocalDate DEC_8 = LocalDate.of(TestDataUtil.START_PERIODE.getYear(), Month.DECEMBER, 8);
+		LocalDate DEC_15 = LocalDate.of(TestDataUtil.START_PERIODE.getYear(), Month.DECEMBER, 15);
+		LocalDate DEC_22 = LocalDate.of(TestDataUtil.START_PERIODE.getYear(), Month.DECEMBER, 22);
+
+		Betreuung betreuung = createGesuch(false, true);
+		Gesuch gesuch = betreuung.extractGesuch();
+
+		final BetreuungspensumContainer firstPensum = betreuung.getBetreuungspensumContainers().stream()
+			.findFirst()
+			.orElseThrow();
+
+		// BetreuungsPensum 15.12. - 31.7.
+		firstPensum
+			.getBetreuungspensumJA()
+			.getGueltigkeit()
+			.setGueltigAb(DEC_15);
+		firstPensum
+			.getBetreuungspensumJA()
+			.getGueltigkeit()
+			.setGueltigBis(TestDataUtil.ENDE_PERIODE);
+
+
+		var betreuungsPensen = new HashSet<BetreuungspensumContainer>();
+		betreuungsPensen.add(firstPensum);
+		betreuung.setBetreuungspensumContainers(betreuungsPensen);
+
+		assertThat(gesuch.getGesuchsteller1(), notNullValue());
+
+		gesuch.getGesuchsteller1().getErwerbspensenContainers().clear();
+		//ewp 1.8. - 8.12.
+		ErwerbspensumContainer ewp = TestDataUtil.createErwerbspensum(TestDataUtil.START_PERIODE, DEC_8, 80);
+		gesuch.getGesuchsteller1().addErwerbspensumContainer(ewp);
+		//ewp 22.12 -
+		ErwerbspensumContainer ewp2 = TestDataUtil.createErwerbspensum(DEC_22, TestDataUtil.ENDE_PERIODE, 60);
+		gesuch.getGesuchsteller1().addErwerbspensumContainer(ewp2);
+
+		List<VerfuegungZeitabschnitt> result = calculateMitEingewoehnung(betreuung);
+
+		assertThat(result.size(), is(4));
+
+		//01.08- 14.12., Betreuung 0, Anspruch 100
+		assertThat(result.get(0).getAnspruchberechtigtesPensum(), is(100));
+		assertThat(result.get(0).getBetreuungspensumProzent().intValue(), is(0));
+		assertThat(result.get(0).getGueltigkeit().getGueltigAb(), is(TestDataUtil.START_PERIODE));
+		assertThat(result.get(0).getGueltigkeit().getGueltigBis(), is(DEC_22.minusMonths(1).minusDays(1)));
+
+		//22.11. - 8.12.  Betreuung 0, Anspruch 100 Eingewoehnung Anspruch 80
+		assertThat(result.get(1).getAnspruchberechtigtesPensum(), is(100));
+		assertThat(result.get(1).getBetreuungspensumProzent().intValue(), is(0));
+		assertThat(result.get(1).getGueltigkeit().getGueltigAb(), is(DEC_22.minusMonths(1)));
+		assertThat(result.get(1).getGueltigkeit().getGueltigBis(), is(DEC_15.minusDays(1)));
+		Assert.assertTrue(result.get(1).getBemerkungenDTOList().containsMsgKey(MsgKey.ERWERBSPENSUM_EINGEWOEHNUNG));
+
+		//15.12 - 31.12, Anspruch 100 Eingewöhnung Anspruch 80, Betreuung 60
+		assertThat(result.get(2).getAnspruchberechtigtesPensum(), is(100));
+		assertThat(result.get(2).getGueltigkeit().getGueltigAb(), is(DEC_15));
+		assertThat(result.get(2).getGueltigkeit().getGueltigBis(), is(DEC_22.with(TemporalAdjusters.lastDayOfYear())));
+		Assert.assertTrue(result.get(2).getBemerkungenDTOList().containsMsgKey(MsgKey.ERWERBSPENSUM_EINGEWOEHNUNG));
+
+		// 1.1. - 31.7. Anspruch 80, Betreuung 60
+		assertThat(result.get(3).getAnspruchberechtigtesPensum(), is(80));
+		assertThat(result.get(3).getGueltigkeit().getGueltigAb(), is(DEC_22.with(TemporalAdjusters.lastDayOfYear()).plusDays(1)));
+		assertThat(result.get(3).getGueltigkeit().getGueltigBis(), is(TestDataUtil.ENDE_PERIODE));
 	}
 
 	private Betreuung createGesuch(final boolean gs2, final boolean eingewoehnung) {
