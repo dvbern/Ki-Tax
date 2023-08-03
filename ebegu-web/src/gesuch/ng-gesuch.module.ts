@@ -110,6 +110,7 @@ import {
 } from './component/internePendenzenView/interne-pendenzen-table/interne-pendenzen-table.component';
 import {InternePendenzenComponent} from './component/internePendenzenView/interne-pendenzen.component';
 import {FkjvKinderabzugComponent} from './component/kindView/fkjv-kinderabzug/fkjv-kinderabzug.component';
+import {KindFachstelleComponent} from './component/kindView/kind-fachstelle/kind-fachstelle.component';
 import {ZahlungsstatusIconComponent} from './component/zahlungsstatus-icon/zahlungsstatus-icon.component';
 import {
     EinkommensverschlechterungAppenzellViewComponent
@@ -168,7 +169,8 @@ import {
         FamiliensituationViewXComponent,
         FamiliensituationAppenzellViewXComponent,
         ZahlungsstatusIconComponent,
-        AuszahlungsdatenComponent
+        AuszahlungsdatenComponent,
+        KindFachstelleComponent
     ],
     exports: [
         DvSwitchComponent,

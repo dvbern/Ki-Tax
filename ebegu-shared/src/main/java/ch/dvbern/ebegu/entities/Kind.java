@@ -16,6 +16,8 @@
 package ch.dvbern.ebegu.entities;
 
 import java.time.LocalDate;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.Objects;
 
 import javax.annotation.Nonnull;
@@ -29,6 +31,7 @@ import javax.persistence.Enumerated;
 import javax.persistence.ForeignKey;
 import javax.persistence.Index;
 import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.Valid;
@@ -124,10 +127,9 @@ public class Kind extends AbstractPersonEntity {
 	private Boolean keinPlatzInSchulhort = false;
 
 	@Valid
-	@Nullable
-	@OneToOne(optional = true, cascade = CascadeType.ALL, orphanRemoval = true)
-	@JoinColumn(foreignKey = @ForeignKey(name = "FK_kind_pensum_fachstelle_id"), nullable = true)
-	private PensumFachstelle pensumFachstelle;
+	@Nonnull
+	@OneToMany(mappedBy = "kind", cascade = CascadeType.ALL, orphanRemoval = true)
+	private Collection<PensumFachstelle> pensumFachstelle = new HashSet<>();
 
 	@Valid
 	@Nullable
@@ -283,13 +285,17 @@ public class Kind extends AbstractPersonEntity {
 		this.einschulungTyp = einschulungTyp;
 	}
 
-	@Nullable
-	public PensumFachstelle getPensumFachstelle() {
+	@Nonnull
+	public Collection<PensumFachstelle> getPensumFachstelle() {
 		return pensumFachstelle;
 	}
 
-	public void setPensumFachstelle(@Nullable PensumFachstelle pensumFachstelle) {
+	public void setPensumFachstelle(@Nonnull Collection<PensumFachstelle> pensumFachstelle) {
 		this.pensumFachstelle = pensumFachstelle;
+	}
+
+	public void addPensumFachstelle(@Nonnull PensumFachstelle pensumFachstelle) {
+		this.pensumFachstelle.add(pensumFachstelle);
 	}
 
 	@Nullable
@@ -389,9 +395,8 @@ public class Kind extends AbstractPersonEntity {
 	}
 
 	private void copyFachstelle(@Nonnull Kind target, @Nonnull AntragCopyType copyType) {
-		if (this.getPensumFachstelle() != null) {
-			target.setPensumFachstelle(this.getPensumFachstelle()
-				.copyPensumFachstelle(new PensumFachstelle(), copyType));
+		for (PensumFachstelle pensumFachstelle1 : this.getPensumFachstelle()) {
+			copyFachstellePensum(target, copyType, pensumFachstelle1);
 		}
 	}
 
@@ -400,12 +405,23 @@ public class Kind extends AbstractPersonEntity {
 		@Nonnull AntragCopyType copyType,
 		@Nonnull Gesuchsperiode gesuchsperiode) {
 		// Fachstelle nur kopieren, wenn sie noch gueltig ist
-		if (this.getPensumFachstelle() != null && !this.getPensumFachstelle()
-			.getGueltigkeit()
-			.endsBefore(gesuchsperiode.getGueltigkeit().getGueltigAb())) {
-			target.setPensumFachstelle(this.getPensumFachstelle()
-				.copyPensumFachstelle(new PensumFachstelle(), copyType));
+		for (PensumFachstelle pensumFachstelle1 : this.getPensumFachstelle()) {
+			if (pensumFachstelle1
+				.getGueltigkeit()
+				.endsBefore(gesuchsperiode.getGueltigkeit().getGueltigAb())) {
+				copyFachstellePensum(target, copyType, pensumFachstelle1);
+			}
 		}
+
+	}
+
+	private static void copyFachstellePensum(
+		@Nonnull Kind target,
+		@Nonnull AntragCopyType copyType,
+		PensumFachstelle pensumFachstelle1) {
+		PensumFachstelle pensumFachstelleCopy = pensumFachstelle1.copyPensumFachstelle(new PensumFachstelle(), copyType);
+		pensumFachstelleCopy.setKind(target);
+		target.addPensumFachstelle(pensumFachstelleCopy);
 	}
 
 	private void copyAusserordentlicherAnspruch(@Nonnull Kind target, @Nonnull AntragCopyType copyType) {
@@ -430,15 +446,30 @@ public class Kind extends AbstractPersonEntity {
 			return false;
 		}
 		final Kind otherKind = (Kind) other;
+		boolean sameFachstellen = isSameFachstellen(otherKind);
 		return getKinderabzugErstesHalbjahr() == otherKind.getKinderabzugErstesHalbjahr() &&
 			getKinderabzugZweitesHalbjahr() == otherKind.getKinderabzugZweitesHalbjahr() &&
 			Objects.equals(getFamilienErgaenzendeBetreuung(), otherKind.getFamilienErgaenzendeBetreuung()) &&
 			Objects.equals(getSprichtAmtssprache(), otherKind.getSprichtAmtssprache()) &&
 			getEinschulungTyp() == otherKind.getEinschulungTyp() &&
-			EbeguUtil.isSame(getPensumFachstelle(), otherKind.getPensumFachstelle()) &&
+			sameFachstellen &&
 			EbeguUtil.isSame(
 				getPensumAusserordentlicherAnspruch(),
 				otherKind.getPensumAusserordentlicherAnspruch());
+	}
+
+	private boolean isSameFachstellen(Kind otherKind) {
+		boolean sameFachstellen = true;
+		if (getPensumFachstelle().size() != otherKind.getPensumFachstelle().size()) {
+			sameFachstellen = false;
+		}
+		for (PensumFachstelle pensumFachstelle1 : pensumFachstelle) {
+			if (!otherKind.getPensumFachstelle().contains(pensumFachstelle1)) {
+				sameFachstellen = false;
+				break;
+			}
+		}
+		return sameFachstellen;
 	}
 
 	public boolean isGeprueft() {

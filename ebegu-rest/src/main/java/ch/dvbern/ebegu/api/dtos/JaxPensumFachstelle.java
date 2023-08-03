@@ -27,7 +27,7 @@ import ch.dvbern.ebegu.enums.IntegrationTyp;
  * DTO fuer Stammdaten der PensumFachstelle. Definiert ein bestimmtes Pensum und eine bestimmte Fachstelle und wird einem
  * Kind zugewiesen
  */
-@XmlRootElement(name = "pensumFachstelle")
+@XmlRootElement(name = "pensumFachstellen")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class JaxPensumFachstelle extends JaxAbstractIntegerPensumDTO {
 

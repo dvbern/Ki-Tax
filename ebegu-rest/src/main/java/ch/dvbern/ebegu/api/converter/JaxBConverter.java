@@ -2117,7 +2117,7 @@ public class JaxBConverter extends AbstractConverter {
 		jaxKind.setZemisNummer(persistedKind.getZemisNummer());
 		jaxKind.setEinschulungTyp(persistedKind.getEinschulungTyp());
 		jaxKind.setKeinPlatzInSchulhort(persistedKind.getKeinPlatzInSchulhort());
-		jaxKind.setPensumFachstelle(pensumFachstelleToJax(persistedKind.getPensumFachstelle()));
+		jaxKind.setPensumFachstellen(pensumFachstellenListToJax(persistedKind.getPensumFachstelle()));
 		jaxKind.setPensumAusserordentlicherAnspruch(pensumAusserordentlicherAnspruchToJax(
 			persistedKind.getPensumAusserordentlicherAnspruch()));
 		jaxKind.setZukunftigeGeburtsdatum(persistedKind.getZukunftigeGeburtsdatum());
@@ -2125,28 +2125,33 @@ public class JaxBConverter extends AbstractConverter {
 		return jaxKind;
 	}
 
-	@Nullable
-	public JaxPensumFachstelle pensumFachstelleToJax(@Nullable final PensumFachstelle persistedPensumFachstelle) {
-		if (persistedPensumFachstelle == null) {
-			return null;
+	public Collection<JaxPensumFachstelle> pensumFachstellenListToJax(final Collection<PensumFachstelle> persistedPensumFachstellenList) {
+		final Collection<JaxPensumFachstelle> jaxPensumFachstellenSet = new HashSet<>();
+		for (PensumFachstelle pensumFachstelle : persistedPensumFachstellenList) {
+			jaxPensumFachstellenSet.add(pensumFachstelleToJax(pensumFachstelle));
 		}
+		return jaxPensumFachstellenSet;
+	}
+
+	@Nonnull
+	public JaxPensumFachstelle pensumFachstelleToJax(PensumFachstelle pensumFachstelle) {
 		final JaxPensumFachstelle jaxPensumFachstelle = new JaxPensumFachstelle();
-		convertAbstractPensumFieldsToJAX(persistedPensumFachstelle, jaxPensumFachstelle);
-		if (persistedPensumFachstelle.getFachstelle() != null) {
-			jaxPensumFachstelle.setFachstelle(fachstelleToJAX(persistedPensumFachstelle.getFachstelle()));
+		convertAbstractPensumFieldsToJAX(pensumFachstelle, jaxPensumFachstelle);
+		if (pensumFachstelle.getFachstelle() != null) {
+			jaxPensumFachstelle.setFachstelle(fachstelleToJAX(pensumFachstelle.getFachstelle()));
 		}
-		jaxPensumFachstelle.setIntegrationTyp(persistedPensumFachstelle.getIntegrationTyp());
-		jaxPensumFachstelle.setGruendeZusatzleistung(persistedPensumFachstelle.getGruendeZusatzleistung());
+		jaxPensumFachstelle.setIntegrationTyp(pensumFachstelle.getIntegrationTyp());
+		jaxPensumFachstelle.setGruendeZusatzleistung(pensumFachstelle.getGruendeZusatzleistung());
 		return jaxPensumFachstelle;
 	}
 
-	public PensumFachstelle pensumFachstelleToEntity(
+	public PensumFachstelle jaxPensumFachstelleToEntity(
 		final JaxPensumFachstelle pensumFachstelleJAXP,
-		final PensumFachstelle pensumFachstelle
-	) {
+		final PensumFachstelle pensumFachstelle) {
 		convertAbstractPensumFieldsToEntity(pensumFachstelleJAXP, pensumFachstelle);
 
 		if (pensumFachstelleJAXP.getFachstelle() != null) {
+			assert pensumFachstelleJAXP.getFachstelle().getId() != null;
 			final Optional<Fachstelle> fachstelleFromDB =
 				fachstelleService.findFachstelle(pensumFachstelleJAXP.getFachstelle().getId());
 			if (fachstelleFromDB.isPresent()) {
@@ -2166,21 +2171,27 @@ public class JaxBConverter extends AbstractConverter {
 		return pensumFachstelle;
 	}
 
-	public PensumFachstelle toStorablePensumFachstelle(@Nonnull final JaxPensumFachstelle pensumFsToSave) {
-		PensumFachstelle pensumToMergeWith = new PensumFachstelle();
-		if (pensumFsToSave.getId() != null) {
-			final Optional<PensumFachstelle> pensumFachstelleOpt =
-				pensumFachstelleService.findPensumFachstelle(pensumFsToSave.getId());
-			if (pensumFachstelleOpt.isPresent()) {
-				pensumToMergeWith = pensumFachstelleOpt.get();
+	public void pensumFachstellenToEntity(
+		final Kind kind,
+		final Collection<JaxPensumFachstelle> pensumFsToSave) {
+		final Collection<PensumFachstelle> transformedKindPensumFachstellen = new HashSet<>();
+		for (JaxPensumFachstelle jaxPensumFachstelle : pensumFsToSave) {
+			if (jaxPensumFachstelle.getId() != null) {
+				final PensumFachstelle pensumFachstelleToMergeWith = kind.getPensumFachstelle().stream()
+					.filter(existingPensumFachstelle -> existingPensumFachstelle.getId()
+						.equals(jaxPensumFachstelle.getId()))
+					.findFirst()
+					.orElseThrow(() -> new EbeguEntityNotFoundException(
+						"toStorablePensumFachstelle",
+						ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
+						jaxPensumFachstelle.getId()));
+				transformedKindPensumFachstellen.add(jaxPensumFachstelleToEntity(jaxPensumFachstelle, pensumFachstelleToMergeWith));
 			} else {
-				throw new EbeguEntityNotFoundException(
-					"toStorablePensumFachstelle",
-					ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
-					pensumFsToSave.getId());
+				transformedKindPensumFachstellen.add(jaxPensumFachstelleToEntity(jaxPensumFachstelle, new PensumFachstelle(kind)));
 			}
 		}
-		return pensumFachstelleToEntity(pensumFsToSave, pensumToMergeWith);
+		kind.getPensumFachstelle().clear();
+		kind.getPensumFachstelle().addAll(transformedKindPensumFachstellen);
 	}
 
 	@Nullable
@@ -2271,11 +2282,7 @@ public class JaxBConverter extends AbstractConverter {
 		kind.setEinschulungTyp(kindJAXP.getEinschulungTyp());
 		kind.setKeinPlatzInSchulhort(kindJAXP.getKeinPlatzInSchulhort());
 
-		PensumFachstelle updtPensumFachstelle = null;
-		if (kindJAXP.getPensumFachstelle() != null) {
-			updtPensumFachstelle = toStorablePensumFachstelle(kindJAXP.getPensumFachstelle());
-		}
-		kind.setPensumFachstelle(updtPensumFachstelle);
+		pensumFachstellenToEntity(kind, kindJAXP.getPensumFachstellen());
 
 		PensumAusserordentlicherAnspruch updtPensumAusserordentlicherAnspruch = null;
 		if (kindJAXP.getPensumAusserordentlicherAnspruch() != null) {

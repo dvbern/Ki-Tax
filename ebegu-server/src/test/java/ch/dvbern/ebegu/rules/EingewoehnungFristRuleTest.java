@@ -35,6 +35,7 @@ import ch.dvbern.ebegu.entities.ErwerbspensumContainer;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.AntragCopyType;
+import ch.dvbern.ebegu.enums.EingewoehnungTyp;
 import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.enums.MsgKey;
 import ch.dvbern.ebegu.enums.Taetigkeit;
@@ -48,6 +49,7 @@ import org.junit.jupiter.api.Test;
 import static ch.dvbern.ebegu.enums.EinstellungKey.FKJV_EINGEWOEHNUNG;
 import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.*;
+import static ch.dvbern.ebegu.enums.EinstellungKey.EINGEWOEHNUNG_TYP;
 import static org.junit.Assert.assertNotNull;
 
 public class EingewoehnungFristRuleTest {
@@ -218,7 +220,7 @@ public class EingewoehnungFristRuleTest {
 		gesuch.getGesuchsteller1().addErwerbspensumContainer(TestDataUtil
 			.createErwerbspensum(TestDataUtil.START_PERIODE.plusMonths(2), TestDataUtil.ENDE_PERIODE, 40));
 		Map<EinstellungKey, Einstellung> einstellungenMap = EbeguRuleTestsHelper.getAllEinstellungen(betreuung.extractGesuchsperiode());
-		einstellungenMap.get(FKJV_EINGEWOEHNUNG).setValue("true");
+		einstellungenMap.get(EINGEWOEHNUNG_TYP).setValue(EingewoehnungTyp.FKJV.toString());
 		List<VerfuegungZeitabschnitt> result =
 			EbeguRuleTestsHelper.calculate(betreuung, EbeguRuleTestsHelper.getEinstellungenRulesParis(
 				gesuch.getGesuchsperiode()), einstellungenMap);
@@ -747,7 +749,7 @@ public class EingewoehnungFristRuleTest {
 
 	private List<VerfuegungZeitabschnitt> calculateMitEingewoehnung(@Nonnull Betreuung betreuung) {
 		Map<EinstellungKey, Einstellung> einstellungenMap = EbeguRuleTestsHelper.getAllEinstellungen(betreuung.extractGesuchsperiode());
-		einstellungenMap.get(FKJV_EINGEWOEHNUNG).setValue("true");
+		einstellungenMap.get(EINGEWOEHNUNG_TYP).setValue(EingewoehnungTyp.FKJV.toString());
 		return EbeguRuleTestsHelper.calculate(betreuung, EbeguRuleTestsHelper.getAllEinstellungen(betreuung.extractGesuchsperiode()), einstellungenMap);
 	}
 }

@@ -40,6 +40,7 @@ import {
     TSBetreuungsangebotTyp,
 } from '../../../models/enums/TSBetreuungsangebotTyp';
 import {TSBetreuungsstatus} from '../../../models/enums/TSBetreuungsstatus';
+import {stringEingewoehnungTyp, TSEingewoehnungTyp} from '../../../models/enums/TSEingewoehnungTyp';
 import {TSEinstellungKey} from '../../../models/enums/TSEinstellungKey';
 import {TSFachstellenTyp} from '../../../models/enums/TSFachstellenTyp';
 import {TSInstitutionStatus} from '../../../models/enums/TSInstitutionStatus';
@@ -149,7 +150,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     public searchQuery: string = '';
     public allowedRoles: ReadonlyArray<TSRole>;
     public isKesbPlatzierung: boolean;
-    private eingewoehnungAktiviert: boolean = false;
+    private eingewoehnungTyp: TSEingewoehnungTyp = TSEingewoehnungTyp.KEINE;
     private kitaPlusZuschlagAktiviert: boolean = false;
     private besondereBeduerfnisseAufwandKonfigurierbar: boolean = false;
     private fachstellenTyp: TSFachstellenTyp;
@@ -299,9 +300,9 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         this.einstellungRS.getAllEinstellungenBySystemCached(
             gesuchsperiodeId
         ).subscribe((response: TSEinstellung[]) => {
-            response.filter(r => r.key === TSEinstellungKey.FKJV_EINGEWOEHNUNG)
+            response.filter(r => r.key === TSEinstellungKey.EINGEWOEHNUNG_TYP)
                 .forEach(value => {
-                    this.eingewoehnungAktiviert = value.getValueAsBoolean();
+                    this.eingewoehnungTyp = stringEingewoehnungTyp(value.value);
                 });
             response.filter(r => r.key === TSEinstellungKey.KITAPLUS_ZUSCHLAG_AKTIVIERT)
                 .forEach(value => {
@@ -1343,7 +1344,48 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     }
 
     public showEingewoehnung(): boolean {
-        return this.eingewoehnungAktiviert;
+        if (this.isSchulamt()) {
+            return false;
+        }
+        switch (this.eingewoehnungTyp) {
+            case TSEingewoehnungTyp.KEINE:
+                return false;
+            case TSEingewoehnungTyp.FKJV:
+                return this.showEingewohenungFKJV();
+            case TSEingewoehnungTyp.LUZERN:
+                return true;
+            default: {
+                const errorMsg = `not implemented eingewoehnungTyp ${this.eingewoehnungTyp}`;
+                LOG.error(errorMsg);
+                throw new Error(errorMsg);
+            }
+        }
+    }
+
+    private showEingewohenungFKJV(): boolean {
+        if (this.isBetreuungsstatusAusstehend()) {
+            return false;
+        }
+        if (this.isBetreuungsstatusWarten()) {
+            return this.authServiceRS.isOneOfRoles(TSRoleUtil.getTraegerschaftInstitutionRoles());
+        }
+        return true;
+    }
+
+    public isEingewoehnungEnabled(): boolean {
+        if (this.isGesuchReadonly()) {
+            return false;
+        }
+        if (this.eingewoehnungTyp === TSEingewoehnungTyp.FKJV) {
+            // bei FKJV darf nur die Institution die Checkbox bearbeiten
+            return this.authServiceRS.isOneOfRoles(TSRoleUtil.getTraegerschaftInstitutionRoles())
+            && this.isBetreuungsstatusWarten();
+        }
+        if (this.eingewoehnungTyp === TSEingewoehnungTyp.LUZERN) {
+            // bei luzern immer editierbar, falls das Gesuch nicht readonly ist.
+            return true;
+        }
+        return false;
     }
 
     private checkIfGemeindeOrBetreuungHasTSAnmeldung(): boolean {
@@ -1716,7 +1758,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     }
 
     private showHintUntermonatlich(): boolean {
-        return this.getBetreuungspensen().length > 0 && this.mandant !== MANDANTS.LUZERN;
+        return this.getBetreuungspensen()?.length > 0 && this.mandant !== MANDANTS.LUZERN;
     }
 
     private showHintEingewoehnung(): boolean {
@@ -1746,5 +1788,12 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
 
     public hasMandantZusaetzlichesBereuungsangebot(): boolean {
         return this.angebotTS || this.angebotFI || this.angebotTFO;
+    }
+
+    public getEingewoehnungLabel(): string {
+        if (this.eingewoehnungTyp === TSEingewoehnungTyp.FKJV) {
+            return this.$translate.instant('EINGEWOEHNUNG_FKJV');
+        }
+        return this.$translate.instant('EINGEWOEHNUNG');
     }
 }

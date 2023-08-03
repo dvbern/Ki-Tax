@@ -33,6 +33,7 @@ import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
+import ch.dvbern.ebegu.enums.EingewoehnungTyp;
 import ch.dvbern.ebegu.enums.MsgKey;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.MathUtil;
@@ -43,13 +44,13 @@ import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.TAGESFAMILIEN;
 
 public class EingewoehnungFristRule extends AbstractAbschlussRule {
 
-	private Locale locale;
-	private Boolean eingewoehnungAktiviert;
+	private final Locale locale;
+	private final Boolean eingewoehnungAktiviert;
 
-	protected EingewoehnungFristRule(@Nonnull Locale locale, boolean isDebug, Boolean eingewoehnungAktiviert) {
+	protected EingewoehnungFristRule(@Nonnull Locale locale, boolean isDebug, EingewoehnungTyp eingewoehnungTyp) {
 		super(isDebug);
 		this.locale = locale;
-		this.eingewoehnungAktiviert = eingewoehnungAktiviert;
+		this.eingewoehnungAktiviert = eingewoehnungTyp.eingewoehnungAktiviert();
 	}
 
 	@Nonnull

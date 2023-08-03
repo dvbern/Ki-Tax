@@ -2917,7 +2917,7 @@
     "BENUTZENDE_EINGEBEN": "Benutzende eingeben",
     "GEMEINDEN_STATISTIK": "Gemeinden",
     "FERIENBETREUUNG_STATISTIK": "Ferienbetreuung",
-    "FKJV_EINGEWOEHNUNG": "FKJV: Eingewöhnung aktiviert",
+    "EINGEWOEHNUNG_TYP": "Typ der Eingewöhung (FKJV, LUZERN, KEINE)",
     "FKJV_MAX_DIFFERENZ_BESCHAEFTIGUNGSPENSUM": "FKJV: Maximale Differenz zwischen erforderlichem und effektivem Beschäftigungspensum für ausserordentlicher Anspruch (in %)",
     "FKJV_SOZIALE_INTEGRATION_BIS_SCHULSTUFE": "FKJV: Soziale Integration bis und mit Schulstufe",
     "SPRACHLICHE_INTEGRATION_BIS_SCHULSTUFE": "Sprachliche Integration bis und mit Schulstufe",
@@ -2993,6 +2993,7 @@
     "KINDERABZUG_ALIMENTE_BEZAHLEN": "Zahlen Sie Unterhaltsbeiträge für das Kind?",
     "NETTO_VERMOEGEN_STAND": "Nettovermögen Stand 31.12.{{year}}",
     "EINGEWOEHNUNG": "Findet eine Eingewöhnung bei der Institution statt, bevor Sie mit Ihrer Beschäftigung beginnen?",
+    "EINGEWOEHNUNG_FKJV": "Das Kind wird im Zeitraum, für die diese Platzbestätigung gilt, zuerst eingewöhnt",
     "EINGEWOEHNUNG_HELP": "Sie haben Bedarf nach einem Betreuungsgutschein, wenn: <ul><li>Sie erwerbstätig sind,</li><li>Sie nach Arbeit suchen und vermittlungsfähig sind,</li><li>Sie sich in einer Ausbildung der Sekundarstufe II oder einer berufsorientierten Aus- oder Weiterbildung befinden,</li><li>Sie an einem qualifizierenden Integrations- oder Beschäftigungsprogramm teilnehmen,</li><li>gesundheitliche Gründe verhindern, dass die Kinderbetreuung im eigenen Haushalt wahrgenommen wird Sie erwerbstätig sind und das minimale Beschäftigungspensum erreicht wird</li><li>oder wenn Ihr Kind eine soziale oder sprachliche Indikation aufweist</li></ul> </br> Wenn vor dem Start Ihrer Beschäftigung das Kind in die Kita oder Tagesfamilie eingewöhnt wird, wird der Bedarf in diesen Fällen <b>einen Monat früher</b> anerkannt. Das heisst Sie können für die Dauer der Eingewöhnung einen Betreuungsgutschein beantragen.<br><br>Eine soziale oder sprachliche Indikation gilt nicht als Beschäftigung. Hier gilt der Anspruch ab dem Zeitpunkt, wo die Fachstellenbestätigung vorliegt.",
     "FRENCH_ENABLED": "Französische Übersetzungen aktiviert",
     "DIPLOMATENSTATUS_DEAKTIVIERT": "Luzern: Frage Diplomatenstatus deaktiviert",
@@ -3159,5 +3160,8 @@
     "VERARBEITET": "verarbeitet",
     "FEHLER_BEI_MITTEILUNG_BEARBEITUNG": "Mitteilungen, die durch Fehler nicht bearbeitet werden konnten:",
     "ERWEITERTE_BEDUERFNISSE_FACHSTELLE_HINT": "<p><b>Begleitende Dienst- und beurteilende Fachstelle:</b></p><br><p>Bei Kindern mit einer <b>körperlichen oder geistigen Beeinträchtigung</b>, einer <b>Sinnesbeeinträchtigung</b> oder einer <b>Entwicklungsauffälligkeit oder -verzögerung</b> wird die Fachstellenbestätigung je nach Alter und Indikation entweder vom Früherziehungsdienst des Kantons Bern, einer kantonalen Erziehungsberatungsstelle, der heilpädagogischen Früherziehung für blinde und sehbehinderte Kinder der Blindenschule Zollikofen oder den Diensten des Pädagogischen Zentrums für Hören und Sprache HSM ausgestellt.</p><br><p>Bei Kindern mit <b>chronischen physischen Krankheiten</b> kann die behandelnde Ärztin oder der behandelnde Arzt die Fachstellenbestätigung ausstellen. Die behandelnden Ärztinnen und Ärzte, welche eine Bestätigung ausstellen, müssen in der Schweiz zur Berufsausübung zugelassen sein.</p><br><p>Bei weiteren Fragen können Sie sich an Ihre Wohngemeinde wenden.</p>",
+    "PENSUM_FACHSTELLE_ERFASSEN": "Zusätzliches Fachstellenpensum erfassen",
+    "PENSUM_FACHSTELLE_ENTFERNEN": "Fachstellenpensum {{fachstellennummer}} entfernen",
+    "ZEITRAUM": "Zeitraum",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

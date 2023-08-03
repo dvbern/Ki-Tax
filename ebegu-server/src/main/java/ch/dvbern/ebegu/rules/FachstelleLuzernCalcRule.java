@@ -25,6 +25,7 @@ import ch.dvbern.ebegu.dto.BGCalculationInput;
 import ch.dvbern.ebegu.entities.AbstractPlatz;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Einstellung;
+import ch.dvbern.ebegu.entities.PensumFachstelle;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.enums.FachstellenTyp;
@@ -52,18 +53,19 @@ public class FachstelleLuzernCalcRule extends AbstractFachstellenCalcRule {
 		@Nonnull AbstractPlatz platz,
 		@Nonnull BGCalculationInput inputData
 	) {
-		int pensumFachstelle = inputData.getFachstellenpensum();
+		int pensum = inputData.getFachstellenpensum();
 		Betreuung betreuung = (Betreuung) platz;
 
-		if(pensumFachstelle > 0) {
-			int beteruungspensumIntValue = MathUtil.GANZZAHL.from(pensumFachstelle).intValue();
-
+		if(pensum > 0) {
+			int beteruungspensumIntValue = MathUtil.GANZZAHL.from(pensum).intValue();
+			PensumFachstelle pensumFachstelle = findPensumFachstelleForGueltigkeit(platz.getKind().getKindJA(), inputData.getParent().getGueltigkeit());
 			inputData.setAnspruchspensumProzent(beteruungspensumIntValue);
 			inputData.addBemerkung(
 				MsgKey.FACHSTELLE_MSG,
 				getLocale(),
-				getIndikation(betreuung),
-				getFachstelle(betreuung));
+				getIndikationName(pensumFachstelle, betreuung),
+				getFachstelleName(pensumFachstelle.getFachstelle())
+			);
 		}
 	}
 
