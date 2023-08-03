@@ -25,7 +25,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Locale;
-import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
 
@@ -81,42 +80,23 @@ public class EingewoehnungFristRule extends AbstractAbschlussRule {
 		}
 
 		VerfuegungZeitabschnitt eingewoehnung = createEingewoehnungAbschnitt(eingewohenungAbschnittHelper, gp);
-
+		zeitabschnitte.add(eingewoehnung);
 		Collections.sort(zeitabschnitte);
 
-		List<VerfuegungZeitabschnitt> eingewoehnungIntersections = zeitabschnitte.stream()
-			.filter(zeitabschnitt -> zeitabschnitt.getGueltigkeit().intersects(eingewoehnung.getGueltigkeit()))
-			.collect(Collectors.toList());
+		final List<VerfuegungZeitabschnitt> mergedZeitabschnitte = mergeZeitabschnitte(zeitabschnitte);
 
-		ArrayList<VerfuegungZeitabschnitt> eingewoehnungStueckelungen = new ArrayList<>(List.of(eingewoehnung));
+		for (VerfuegungZeitabschnitt merged : mergedZeitabschnitte) {
+			if (merged.getGueltigkeit().intersects(eingewoehnung.getGueltigkeit())){
+				final int eingewoehnungAnspruchspensumProzent =
+					eingewoehnung.getRelevantBgCalculationInput().getAnspruchspensumProzent();
 
-		for (VerfuegungZeitabschnitt zeitabschnitt : eingewoehnungIntersections) {
-			if (eingewoehnung.getBgCalculationInputAsiv().getAnspruchspensumProzent() <= zeitabschnitt.getBgCalculationInputAsiv().getAnspruchspensumProzent()) {
-				// Wir müssen den Eingewöhnungsabschnitt anpassen
-				if (zeitabschnitt.getGueltigkeit().startsAfter(eingewoehnung.getGueltigkeit().getGueltigAb())) {
-					// Wir müssen den Eingewöhnungsabschnitt stückeln, wir behalten die abgespaltenen Teile in einer Liste
-					VerfuegungZeitabschnitt eingewoehnungBefore = new VerfuegungZeitabschnitt(eingewoehnung);
-					eingewoehnungBefore.getGueltigkeit().setGueltigBis(zeitabschnitt.getGueltigkeit().getGueltigAb().minusDays(1));
-					eingewoehnungStueckelungen.add(eingewoehnungBefore);
-				}
-				eingewoehnung.getGueltigkeit().setGueltigAb(zeitabschnitt.getGueltigkeit().getGueltigBis().plus(1, ChronoUnit.DAYS));
+				int originalAnspruch = merged.getRelevantBgCalculationInput().getAnspruchspensumProzent() - eingewoehnungAnspruchspensumProzent;
 
-				if (!eingewoehnung.getGueltigkeit().isValid()) {
-					break;
-				}
-			} else {
-				// TODO: this makes tests fail, check
-				zeitabschnitt.getGueltigkeit().setGueltigBis(eingewoehnung.getGueltigkeit().getGueltigAb().minusDays(1));
-				if (!zeitabschnitt.getGueltigkeit().isValid()) {
-					zeitabschnitte.remove(zeitabschnitt);
-				}
+				merged.setAnspruchspensumProzentForAsivAndGemeinde(Math.max(originalAnspruch, eingewoehnungAnspruchspensumProzent));
 			}
 		}
 
-		zeitabschnitte.addAll(eingewoehnungStueckelungen);
-		Collections.sort(zeitabschnitte);
-
-	 	return mergeZeitabschnitte(zeitabschnitte);
+	 	return mergedZeitabschnitte;
 	}
 
 	private VerfuegungZeitabschnitt createEingewoehnungAbschnitt(
