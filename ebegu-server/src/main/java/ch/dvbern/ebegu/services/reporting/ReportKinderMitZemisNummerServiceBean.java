@@ -25,6 +25,8 @@ import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.reporting.ReportVorlage;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.errors.MailException;
+import ch.dvbern.ebegu.outbox.ExportedEvent;
+import ch.dvbern.ebegu.outbox.verfuegungselbstbehaltgemeinde.GemeindeSelbstbehaltEventConverter;
 import ch.dvbern.ebegu.reporting.ReportKinderMitZemisNummerService;
 import ch.dvbern.ebegu.reporting.lastenausgleich.KindMitZemisNummerDataRow;
 import ch.dvbern.ebegu.reporting.lastenausgleich.KinderMitZemisNummerExcelConverter;
@@ -45,6 +47,7 @@ import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
+import javax.enterprise.event.Event;
 import javax.inject.Inject;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -76,6 +79,15 @@ public class ReportKinderMitZemisNummerServiceBean extends AbstractReportService
 
 	@Inject
 	private PrincipalBean principalBean;
+
+	@Inject
+	private GemeindeSelbstbehaltEventConverter gemeindeSelbstbehaltEventConverter;
+
+	@Inject
+	private Event<ExportedEvent> event;
+
+	@Inject
+	private ApplicationPropertyService applicationPropertyService;
 
 	@Nonnull
 	@Override
@@ -131,7 +143,7 @@ public class ReportKinderMitZemisNummerServiceBean extends AbstractReportService
 						boolean keinSelbstbehaltFuerGemeinde = row.getCell(8).getBooleanCellValue();
 
 						kindService.updateKeinSelbstbehaltFuerGemeinde(kindContainerToUpdate, keinSelbstbehaltFuerGemeinde);
-						fireUpdateKeinSelbstbehaltFuerGemeindeEvent(kindContainerToUpdate, keinSelbstbehaltFuerGemeinde);
+						fireGemeindeSelbstbehaltChangedEvent(kindContainerToUpdate, keinSelbstbehaltFuerGemeinde);
 					}
 
 				}
@@ -146,10 +158,21 @@ public class ReportKinderMitZemisNummerServiceBean extends AbstractReportService
 		}
 	}
 
-	private void fireUpdateKeinSelbstbehaltFuerGemeindeEvent(
+	private void fireGemeindeSelbstbehaltChangedEvent(
 		Collection<KindContainer> kindContainerToUpdate,
 		boolean keinSelbstbehaltFuerGemeinde) {
+		if (kindContainerToUpdate.isEmpty()) {
+			return;
+		}
 
+		if (!applicationPropertyService.isPublishSchnittstelleEventsAktiviert(
+				kindContainerToUpdate.stream().findFirst().get().getGesuch().extractMandant())) {
+			return;
+		}
+
+		kindContainerToUpdate.forEach(kindContainer ->
+			kindContainer.getAllPlaetze().forEach(platz ->
+				event.fire(gemeindeSelbstbehaltEventConverter.of(platz, keinSelbstbehaltFuerGemeinde))));
 	}
 
 	private Collection<KindContainer> getKindContainerToUpdate(Row row) {
