@@ -15,50 +15,11 @@
 
 package ch.dvbern.ebegu.rest.test;
 
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-
-import javax.inject.Inject;
-
 import ch.dvbern.ebegu.api.converter.JaxBConverter;
-import ch.dvbern.ebegu.api.dtos.JaxAbstractDateRangedDTO;
-import ch.dvbern.ebegu.api.dtos.JaxAbwesenheit;
-import ch.dvbern.ebegu.api.dtos.JaxAbwesenheitContainer;
-import ch.dvbern.ebegu.api.dtos.JaxBetreuung;
-import ch.dvbern.ebegu.api.dtos.JaxBetreuungspensumContainer;
-import ch.dvbern.ebegu.api.dtos.JaxDossier;
-import ch.dvbern.ebegu.api.dtos.JaxFall;
-import ch.dvbern.ebegu.api.dtos.JaxGemeinde;
-import ch.dvbern.ebegu.api.dtos.JaxGesuch;
-import ch.dvbern.ebegu.api.dtos.JaxId;
-import ch.dvbern.ebegu.api.dtos.JaxKindContainer;
-import ch.dvbern.ebegu.api.dtos.JaxPensumFachstelle;
-import ch.dvbern.ebegu.api.resource.BetreuungResource;
-import ch.dvbern.ebegu.api.resource.DossierResource;
-import ch.dvbern.ebegu.api.resource.FachstelleResource;
-import ch.dvbern.ebegu.api.resource.FallResource;
-import ch.dvbern.ebegu.api.resource.GesuchResource;
-import ch.dvbern.ebegu.api.resource.GesuchstellerResource;
-import ch.dvbern.ebegu.api.resource.KindResource;
+import ch.dvbern.ebegu.api.dtos.*;
+import ch.dvbern.ebegu.api.resource.*;
 import ch.dvbern.ebegu.api.resource.util.BetreuungUtil;
-import ch.dvbern.ebegu.entities.AbwesenheitContainer;
-import ch.dvbern.ebegu.entities.AnmeldungFerieninsel;
-import ch.dvbern.ebegu.entities.BelegungFerieninsel;
-import ch.dvbern.ebegu.entities.Benutzer;
-import ch.dvbern.ebegu.entities.Betreuung;
-import ch.dvbern.ebegu.entities.Fachstelle;
-import ch.dvbern.ebegu.entities.Gemeinde;
-import ch.dvbern.ebegu.entities.Gesuchsperiode;
-import ch.dvbern.ebegu.entities.InstitutionStammdaten;
-import ch.dvbern.ebegu.entities.KindContainer;
-import ch.dvbern.ebegu.entities.Mandant;
-import ch.dvbern.ebegu.entities.PensumFachstelle;
+import ch.dvbern.ebegu.entities.*;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
 import ch.dvbern.ebegu.enums.Ferienname;
@@ -78,6 +39,10 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
+
+import javax.inject.Inject;
+import java.time.LocalDate;
+import java.util.*;
 
 /**
  * Testet BetreuungResource
@@ -257,7 +222,7 @@ public class BetreuungResourceTest extends AbstractEbeguRestLoginTest {
 		returnedKind.setKindNummer(1);
 		JaxKindContainer jaxKind = converter.kindContainerToJAX(returnedKind);
 		Collection<JaxPensumFachstelle> jaxPensumFachstelleSet = jaxKind.getKindGS().getPensumFachstellen();
-		Collection<PensumFachstelle> pensumFachstellenSet = new HashSet<>();
+		Set<PensumFachstelle> pensumFachstellenSet = new TreeSet<>();
 		for (JaxPensumFachstelle jaxPensumFachstelle : jaxPensumFachstelleSet) {
 			Assert.assertNotNull(jaxPensumFachstelle);
 			Assert.assertNotNull(jaxPensumFachstelle.getFachstelle());

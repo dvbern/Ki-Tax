@@ -15,30 +15,25 @@
 
 package ch.dvbern.ebegu.entities;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.ForeignKey;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.validation.constraints.NotNull;
-
 import ch.dvbern.ebegu.enums.AntragCopyType;
 import ch.dvbern.ebegu.enums.GruendeZusatzleistung;
 import ch.dvbern.ebegu.enums.IntegrationTyp;
 import ch.dvbern.ebegu.util.EbeguUtil;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import org.apache.commons.lang3.builder.CompareToBuilder;
 import org.hibernate.envers.Audited;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 
 /**
  * Entity fuer PensumFachstelle.
  */
 @Audited
 @Entity
-public class PensumFachstelle extends AbstractIntegerPensum {
+public class PensumFachstelle extends AbstractIntegerPensum implements Comparable<PensumFachstelle> {
 
 	private static final long serialVersionUID = -9132257320978374570L;
 
@@ -130,5 +125,13 @@ public class PensumFachstelle extends AbstractIntegerPensum {
 
 	public void setGruendeZusatzleistung(@Nullable GruendeZusatzleistung gruendeZusatzleistung) {
 		this.gruendeZusatzleistung = gruendeZusatzleistung;
+	}
+
+	@Override
+	public int compareTo(@Nonnull PensumFachstelle o) {
+		CompareToBuilder builder = new CompareToBuilder();
+		builder.append(this.getGueltigkeit().getGueltigAb(), o.getGueltigkeit().getGueltigAb());
+		builder.append(this.getId(), o.getId());
+		return builder.toComparison();
 	}
 }
