@@ -17,15 +17,6 @@
 
 package ch.dvbern.ebegu.rules;
 
-import java.time.LocalDate;
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.ListIterator;
-import java.util.Locale;
-
-import javax.annotation.Nonnull;
-
 import ch.dvbern.ebegu.entities.AbstractPlatz;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
@@ -36,6 +27,10 @@ import ch.dvbern.ebegu.enums.MsgKey;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.MathUtil;
 import com.google.common.collect.ImmutableList;
+
+import javax.annotation.Nonnull;
+import java.time.LocalDate;
+import java.util.*;
 
 import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.KITA;
 import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.TAGESFAMILIEN;
@@ -78,11 +73,23 @@ public class EingewoehnungFristRule extends AbstractAbschlussRule {
 		}
 
 		VerfuegungZeitabschnitt eingewoehnung = createEingewoehnungAbschnitt(eingewohenungAbschnittHelper, gp);
-
 		zeitabschnitte.add(eingewoehnung);
 		Collections.sort(zeitabschnitte);
 
-	 	return mergeZeitabschnitte(zeitabschnitte);
+		final List<VerfuegungZeitabschnitt> mergedZeitabschnitte = mergeZeitabschnitte(zeitabschnitte);
+
+		for (VerfuegungZeitabschnitt merged : mergedZeitabschnitte) {
+			if (merged.getGueltigkeit().intersects(eingewoehnung.getGueltigkeit())){
+				final int eingewoehnungAnspruchspensumProzent =
+					eingewoehnung.getRelevantBgCalculationInput().getAnspruchspensumProzent();
+
+				int originalAnspruch = merged.getRelevantBgCalculationInput().getAnspruchspensumProzent() - eingewoehnungAnspruchspensumProzent;
+
+				merged.setAnspruchspensumProzentForAsivAndGemeinde(Math.max(originalAnspruch, eingewoehnungAnspruchspensumProzent));
+			}
+		}
+
+	 	return mergedZeitabschnitte;
 	}
 
 	private VerfuegungZeitabschnitt createEingewoehnungAbschnitt(
