@@ -24,7 +24,7 @@ public class GemeindeSelbstbehaltEvent implements ExportedEvent {
 		@Nonnull Schema schema
 	) {
 		this.platzId = platzId;
-		this.gemeindeSelbstbehalt = gemeindeSelbstbehalt;
+		this.gemeindeSelbstbehalt =  Arrays.copyOf(gemeindeSelbstbehalt, gemeindeSelbstbehalt.length);
 		this.schema = schema;
 	}
 
