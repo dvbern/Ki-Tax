@@ -22,7 +22,7 @@ import {
     ViewChild,
     ViewEncapsulation
 } from '@angular/core';
-import {UntypedFormBuilder, UntypedFormGroup, NgForm, Validators} from '@angular/forms';
+import {FormBuilder, NgForm, Validators} from '@angular/forms';
 import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
 import {TranslateService} from '@ngx-translate/core';
 import {StateService} from '@uirouter/core';
@@ -87,7 +87,11 @@ export class GemeindeAntraegeComponent implements OnInit {
     public antragList$: Observable<DVAntragListItem[]>;
     public gesuchsperioden: TSGesuchsperiode[];
     public gesuchsperiodenFiltered: TSGesuchsperiode[];
-    public formGroup: UntypedFormGroup;
+    public formGroup = this.fb.group({
+        periode: ['', Validators.required],
+        antragTyp: [<TSGemeindeAntragTyp | null> null, Validators.required],
+        gemeinde: [''],
+    });
     public totalItems = 0;
     public gemeinden: TSGemeinde[];
 
@@ -113,7 +117,7 @@ export class GemeindeAntraegeComponent implements OnInit {
     public constructor(
         private readonly gemeindeAntragService: GemeindeAntragService,
         private readonly gesuchsperiodenService: GesuchsperiodeRS,
-        private readonly fb: UntypedFormBuilder,
+        private readonly fb: FormBuilder,
         private readonly $state: StateService,
         private readonly errorService: ErrorServiceX,
         private readonly translate: TranslateService,
@@ -127,11 +131,6 @@ export class GemeindeAntraegeComponent implements OnInit {
     }
 
     public ngOnInit(): void {
-        this.formGroup = this.fb.group({
-            periode: ['', Validators.required],
-            antragTyp: ['', Validators.required],
-            gemeinde: ['']
-        });
         this.loadAntragList();
         this.loadGemeindeList();
         if (this.authService.isOneOfRoles(TSRoleUtil.getMandantRoles())) {
@@ -182,7 +181,7 @@ export class GemeindeAntraegeComponent implements OnInit {
                     this.gemeinden = gemeinden;
                     // select gemeinde if only one is returned
                     if (gemeinden.length === 1) {
-                        this.formGroup.get('gemeinde').setValue(gemeinden[0].id);
+                        this.formGroup.controls.gemeinde.setValue(gemeinden[0].id);
                     }
                 },
                 err => {
@@ -238,14 +237,15 @@ export class GemeindeAntraegeComponent implements OnInit {
 
         }
         this.errorService.clearAll();
-        this.gemeindeAntragService.createAllAntrage(this.formGroup.value, gemeindeSelection).subscribe(result => {
-            this.loadAntragList();
-            this.loadGemeindenWithPreexistingLatsList();
-            this.cd.markForCheck();
-            this.errorService.addMesageAsInfo(this.translate.instant('ANTRAEGE_ERSTELLT', {amount: result.length}));
-        }, (err: TSExceptionReport[]) => {
-            this.handleCreateAntragErrors(err);
-        });
+        this.gemeindeAntragService.createAllAntrage(this.formGroup.getRawValue(), gemeindeSelection)
+            .subscribe(result => {
+                this.loadAntragList();
+                this.loadGemeindenWithPreexistingLatsList();
+                this.cd.markForCheck();
+                this.errorService.addMesageAsInfo(this.translate.instant('ANTRAEGE_ERSTELLT', {amount: result.length}));
+            }, (err: TSExceptionReport[]) => {
+                this.handleCreateAntragErrors(err);
+            });
     }
 
     private hasGemeindeAlreadyAntrag(gemeinde: TSGemeinde): boolean {
@@ -331,7 +331,7 @@ export class GemeindeAntraegeComponent implements OnInit {
                 this.types = this.getFilterAntragTypes(data[1]);
                 this.creatableTypes = this.getCreatableAntragTypes(data[1]);
                 if (this.creatableTypes.length === 1) {
-                    this.formGroup.get('antragTyp').setValue(this.creatableTypes[0]);
+                    this.formGroup.controls.antragTyp.setValue(this.creatableTypes[0]);
                 }
             }, error => {
                 LOG.error(error);
@@ -381,12 +381,12 @@ export class GemeindeAntraegeComponent implements OnInit {
         }
 
         if (this.isSelectedGesuchsperiodeBefore(startDatePeriode2020)) {
-            this.formGroup.get('periode').setValue(null);
+            this.formGroup.controls.periode.setValue(null);
         }
     }
 
     private isSelectedGesuchsperiodeBefore(date: moment.Moment): boolean {
-        const selectedGesuchsperiodeId = this.formGroup?.get('periode').value;
+        const selectedGesuchsperiodeId = this.formGroup.controls.periode.value;
 
         if (!selectedGesuchsperiodeId) {
             return false;
@@ -404,7 +404,7 @@ export class GemeindeAntraegeComponent implements OnInit {
         }
         this.errorService.clearAll();
         // eslint-disable-next-line
-        this.gemeindeAntragService.createAntrag(this.formGroup.value).subscribe(() => {
+        this.gemeindeAntragService.createAntrag(this.formGroup.getRawValue()).subscribe(() => {
             this.loadAntragList();
             this.cd.markForCheck();
             this.errorService.addMesageAsInfo(this.translate.instant('ANTRAG_ERSTELLT'));
@@ -446,7 +446,7 @@ export class GemeindeAntraegeComponent implements OnInit {
     }
 
     public ferienBetreuungSelected(): boolean {
-        return this.formGroup?.get('antragTyp').value === TSGemeindeAntragTyp.FERIENBETREUUNG;
+        return this.formGroup.controls.antragTyp.value === TSGemeindeAntragTyp.FERIENBETREUUNG;
     }
 
     public isMandant(): Observable<boolean> {
@@ -457,7 +457,7 @@ export class GemeindeAntraegeComponent implements OnInit {
     }
 
     public onAntragTypChange(): void {
-        const gemeindeControl = this.formGroup.get('gemeinde');
+        const gemeindeControl = this.formGroup.controls.gemeinde;
         if (this.ferienBetreuungSelected()) {
             gemeindeControl.setValidators([Validators.required]);
             this.updateGesuchsperioden();
