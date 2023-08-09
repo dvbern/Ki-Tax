@@ -15,30 +15,11 @@
 
 package ch.dvbern.ebegu.tests;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.Month;
-import java.util.List;
-import java.util.Optional;
-
-import javax.annotation.Nonnull;
-import javax.inject.Inject;
-
-import ch.dvbern.ebegu.entities.Fall;
-import ch.dvbern.ebegu.entities.Gesuch;
-import ch.dvbern.ebegu.entities.Gesuchsperiode;
-import ch.dvbern.ebegu.entities.KindContainer;
-import ch.dvbern.ebegu.entities.PensumFachstelle;
-import ch.dvbern.ebegu.entities.WizardStep;
+import ch.dvbern.ebegu.entities.*;
 import ch.dvbern.ebegu.enums.AntragStatus;
 import ch.dvbern.ebegu.enums.WizardStepName;
 import ch.dvbern.ebegu.enums.WizardStepStatus;
-import ch.dvbern.ebegu.services.FallService;
-import ch.dvbern.ebegu.services.GesuchService;
-import ch.dvbern.ebegu.services.InstitutionService;
-import ch.dvbern.ebegu.services.KindService;
-import ch.dvbern.ebegu.services.TestfaelleService;
-import ch.dvbern.ebegu.services.WizardStepService;
+import ch.dvbern.ebegu.services.*;
 import ch.dvbern.ebegu.test.IntegrationTest;
 import ch.dvbern.ebegu.test.TestDataUtil;
 import ch.dvbern.lib.cdipersistence.Persistence;
@@ -51,10 +32,15 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import javax.annotation.Nonnull;
+import javax.inject.Inject;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.Month;
+import java.util.List;
+import java.util.Optional;
+
+import static org.junit.Assert.*;
 
 /**
  * Tests fuer die Klasse KindService
@@ -175,16 +161,8 @@ public class KindServiceBeanTest extends AbstractEbeguLoginTest {
 		KindContainer kindContainer = TestDataUtil.createDefaultKindContainer();
 		kindContainer.setGesuch(gesuch);
 		assertNotNull(kindContainer.getKindGS());
-		assertNotNull(kindContainer.getKindGS().getPensumFachstelle());
-		assertNotNull(kindContainer.getKindJA().getPensumFachstelle());
-		for (PensumFachstelle pensumFachstelle : kindContainer.getKindGS().getPensumFachstelle()) {
-			assertNotNull(pensumFachstelle.getFachstelle());
-			TestDataUtil.persistFachstelle(persistence, pensumFachstelle.getFachstelle());
-		}
-		for (PensumFachstelle pensumFachstelle : kindContainer.getKindJA().getPensumFachstelle()) {
-			assertNotNull(pensumFachstelle.getFachstelle());
-			TestDataUtil.persistFachstelle(persistence, pensumFachstelle.getFachstelle());
-		}
+		assertNotNull(kindContainer.getKindJA());
+
 		persistence.persist(kindContainer.getKindGS());
 		persistence.persist(kindContainer.getKindJA());
 
