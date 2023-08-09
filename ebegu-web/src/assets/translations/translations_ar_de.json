@@ -164,5 +164,17 @@
     "BESONDERE_VOLKSSCHULE_AUSWAEHLEN": "",
     "EXISTING_MUTATIONSMELDUNG": "Am {{datumMutationsmeldung}} um {{timeMutationsmeldung}} wurde zu dieser Betreuung eine Mutationsmeldung an die SOVAR gesendet",
     "ERWEITERTE_BEDUERFNISSE_FACHSTELLE_HINT": "",
+    "STATISTIK_GESUCHSTELLER": "Betreuungsbeitrag: Antragsteller/in",
+    "GESUCHE_NACH_STICHTAG": "Betreuungsbeitrag: Anträge nach Stichtag",
+    "GESUCHE_NACH_ZEITRAUM": "Betreuungsbeitrag: Verfügte Anträge und Mutationen nach Zeitraum",
+    "ZAHLUNGEN_NACH_PERIODE": "Betreuungsbeitrag: Zahlungen nach Periode",
+    "STATISTIK_KINDER": "Betreuungsbeitrag: Kinder",
+    "GESUCHSTELLER_KINDER_BETREUUNG": "Betreuungsbeitrag: Antragsstellende-Kinder-Betreuung",
+    "MASSENVERSAND": "Betreuungsbeitrag: Kontaktdaten für Serienbriefe",
+    "STATISTIK_SERIENBRIEFE_HINT": "Zeigt die Kontaktdaten der Antragstellenden einer bestimmte Periode an. Zusätzlich können weitere Parameter gesetzt werden:<br> <ul> \t<li><b>Auswahl Verantwortlichkeit: </b>Wird z.B. die Checkbox \"Betreuungsbeitrag-Anträge\" aktiviert, erscheinen nur die Antragstellenden in der Statistik, die einen reinen Betreuungsbeitrag Antrag in der gewählten Periode gestellt haben. Diese Optionen können kombiniert werden.</li><li><b>Von/Bis: </b>Massgebend für das Datum \"von\" und \"bis\" ist bei Online Anträgen der Zeitpunkt, an dem der Antrag freigegeben wurde und bei Papieranträgen der Zeitpunkt, an dem der Antrag geprüft wurde.</li><li><b>Auswahl Folgeaufträge: </b>Wird diese Checkbox aktiviert, werden nur die Antragstellenden in der Statistik angezeigt, welche in der nachfolgenden Periode noch keinen Antrag gestellt haben</li></ul>",
+    "MASSENVERSAND_BG_GESUCHE": "Betreuungsbeitrag-Anträge",
+    "BETREUUNGSANGEBOT_NUMBER": "{{kindname}}, {{geburtsdatum}}",
+    "MUTATION_KORREKTUR_AUSBEZAHLT_AUSSERHALB_KIBON_RUECKFORDERUNG_ELTERN": "Diese Verfügung führt zu einer Rückerstattung. Für die bereits ausbezahlten Betreuungsgutscheine ergibt sich eine Differenz von CHF {{betrag}}. Die Gemeinde fordert den Betrag direkt bei den Antragsstellenden zurück. Die Rechnungen vom Leistungserbringer werden nicht rückwirkend angepasst.",
+    "MUTATION_KORREKTUR_AUSBEZAHLT_AUSSERHALB_KIBON_RUECKZAHLUNG_ELTERN": "Diese Verfügung führt zu einer rückwirkenden Auszahlung. Für die markierten Monate ergibt sich eine Differenz von CHF {{betrag}}. Die Gemeinde zahlt den Betrag direkt an die Antragsstellenden aus. Die Rechnungen vom Leistungserbringer werden nicht rückwirkend angepasst.",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

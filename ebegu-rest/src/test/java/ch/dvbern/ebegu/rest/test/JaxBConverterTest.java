@@ -17,6 +17,7 @@ package ch.dvbern.ebegu.rest.test;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Set;
 
 import javax.inject.Inject;
 
@@ -251,12 +252,13 @@ public class JaxBConverterTest extends AbstractEbeguRestLoginTest {
 		pensumFachstelle.setFachstelle(fachstelle);
 		pensumFachstelle.setPensum(50);
 		pensumFachstelle.setIntegrationTyp(IntegrationTyp.SOZIALE_INTEGRATION);
-		kindContainer.getKindJA().setPensumFachstelle(pensumFachstelle);
+		kindContainer.getKindJA().setPensumFachstelle(Set.of(pensumFachstelle));
 		kindContainer = persistence.merge(kindContainer);
 		JaxKindContainer jaxKindContainer = converter.kindContainerToJAX(kindContainer);
-		assertNotNull(jaxKindContainer.getKindJA().getPensumFachstelle());
+		assertNotNull(jaxKindContainer.getKindJA().getPensumFachstellen());
 		jaxKindContainer.getKindJA()
-			.getPensumFachstelle()
+			.getPensumFachstellen()
+			.stream().findFirst().orElseThrow()
 			.getFachstelle()
 			.setName(FachstelleName.DIENST_ZENTRUM_HOEREN_SPRACHE);
 		kindResource.saveKind(converter.toJaxId(gesuch), jaxKindContainer, DUMMY_URIINFO, DUMMY_RESPONSE);

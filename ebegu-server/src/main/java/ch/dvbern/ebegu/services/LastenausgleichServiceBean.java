@@ -95,14 +95,19 @@ public class LastenausgleichServiceBean extends AbstractBaseService implements L
 
 	@Nonnull
 	@Override
-	public Collection<Lastenausgleich> getAllLastenausgleiche() {
-		return criteriaQueryHelper.getAll(Lastenausgleich.class);
+	public Collection<Lastenausgleich> getAllLastenausgleiche(@Nonnull Mandant mandant) {
+		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
+		final CriteriaQuery<Lastenausgleich> query = cb.createQuery(Lastenausgleich.class);
+		Root<Lastenausgleich> root = query.from(Lastenausgleich.class);
+		var mandantPredicate = cb.equal(root.get(Lastenausgleich_.mandant), mandant);
+		query.where(mandantPredicate);
+		return persistence.getCriteriaResults(query);
 	}
 
 	@Nonnull
 	@Override
-	public Collection<Lastenausgleich> getLastenausgleicheForGemeinden(@Nonnull Set<Gemeinde> gemeinden) {
-		return this.getAllLastenausgleiche().stream().map(lastenausgleich -> {
+	public Collection<Lastenausgleich> getLastenausgleicheForGemeinden(@Nonnull Set<Gemeinde> gemeinden, @Nonnull Mandant mandant) {
+		return this.getAllLastenausgleiche(mandant).stream().map(lastenausgleich -> {
 			Lastenausgleich clone = new Lastenausgleich();
 			// filter gemeinden that are not in the list
 			clone.setLastenausgleichDetails(

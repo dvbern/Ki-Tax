@@ -236,10 +236,11 @@ public class BetreuungsgutscheinEvaluatorTest extends AbstractBGRechnerTest {
 		TestDataUtil.createDefaultAdressenForGS(gesuch, false);
 		// Kind 1
 		Betreuung betreuungKind1 = createBetreuungWithPensum(gesuch, gesuchsperiode);
-		betreuungKind1.getKind().getKindJA().setPensumFachstelle(new PensumFachstelle());
+		final PensumFachstelle pensumFachstelle = new PensumFachstelle();
+		pensumFachstelle.setGueltigkeit(fachstelleGueltigkeit);
+		pensumFachstelle.setPensum(80);
+		betreuungKind1.getKind().getKindJA().getPensumFachstelle().add(pensumFachstelle);
 		assertNotNull(betreuungKind1.getKind().getKindJA().getPensumFachstelle());
-		betreuungKind1.getKind().getKindJA().getPensumFachstelle().setGueltigkeit(fachstelleGueltigkeit);
-		betreuungKind1.getKind().getKindJA().getPensumFachstelle().setPensum(80);
 		betreuungKind1.getKind().getKindJA().setEinschulungTyp(EinschulungTyp.VORSCHULALTER);
 		TestDataUtil.calculateFinanzDaten(gesuch, new FinanzielleSituationBernRechner());
 

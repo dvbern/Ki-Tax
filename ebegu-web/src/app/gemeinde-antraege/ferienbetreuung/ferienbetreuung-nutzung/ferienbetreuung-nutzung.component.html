@@ -233,8 +233,8 @@
 		<div class="flex-row">
 			<dv-input-container-x class="max-width-container-750">
 				<label for="anzahlBetreuteKinder_id"
-					   [ngClass]="{'label-error': form && this.form.controls.anzahlBetreuteKinder.errors}"
-					   [innerHTML]="'FERIENBETREUUNG_ANZAHL_BETREUTE_KINDER' | translate">
+					   [ngClass]="{'label-error': form && this.form.controls.anzahlBetreuteKinder.errors}">
+					<span [innerHTML]="'FERIENBETREUUNG_ANZAHL_BETREUTE_KINDER' | translate"></span>
 					<dv-tooltip inputId="anzahlBetreuteKinder_id"
 								[text]="'FERIENBETREUUNG_ANZAHL_BETREUTE_KINDER_HINT' | translate">
 					</dv-tooltip>

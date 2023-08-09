@@ -108,8 +108,8 @@ export class HttpErrorInterceptor implements IHttpInterceptor {
                 'ERROR_UNKNOWN_HOST',
                 response.data));
         } else {
-            this.$log.error(`ErrorStatus: "${response.status}" StatusText: "${response.statusText}"`);
-            this.$log.error(`ResponseData:${  JSON.stringify(response.data)}`);
+            this.$log.error(`${new Date().toLocaleString('de-CH')} ErrorStatus: "${response.status}" StatusText: "${response.statusText}"`);
+            this.$log.error(`ResponseData:${JSON.stringify(response.data)}`);
             // the error objects is neither a ViolationReport nor a ExceptionReport. Create a generic error msg
             errors = [];
             errors.push(new TSExceptionReport(TSErrorType.INTERNAL,

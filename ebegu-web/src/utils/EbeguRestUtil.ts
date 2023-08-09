@@ -18,7 +18,7 @@
 import * as moment from 'moment';
 import {BenutzerListFilter} from '../admin/component/benutzerListView/dv-benutzer-list/BenutzerListFilter';
 import {
-    TSFerienbetreuungBerechnung
+    TSFerienbetreuungBerechnung,
 } from '../app/gemeinde-antraege/ferienbetreuung/ferienbetreuung-kosten-einnahmen/TSFerienbetreuungBerechnung';
 import {TSBenutzerTableFilterDTO} from '../models/dto/TSBenutzerTableFilterDTO';
 import {TSDokumenteDTO} from '../models/dto/TSDokumenteDTO';
@@ -42,26 +42,26 @@ import {TSFerienbetreuungAngaben} from '../models/gemeindeantrag/TSFerienbetreuu
 import {TSFerienbetreuungAngabenAngebot} from '../models/gemeindeantrag/TSFerienbetreuungAngabenAngebot';
 import {TSFerienbetreuungAngabenContainer} from '../models/gemeindeantrag/TSFerienbetreuungAngabenContainer';
 import {
-    TSFerienbetreuungAngabenKostenEinnahmen
+    TSFerienbetreuungAngabenKostenEinnahmen,
 } from '../models/gemeindeantrag/TSFerienbetreuungAngabenKostenEinnahmen';
 import {TSFerienbetreuungAngabenNutzung} from '../models/gemeindeantrag/TSFerienbetreuungAngabenNutzung';
 import {TSFerienbetreuungAngabenStammdaten} from '../models/gemeindeantrag/TSFerienbetreuungAngabenStammdaten';
 import {TSFerienbetreuungDokument} from '../models/gemeindeantrag/TSFerienbetreuungDokument';
 import {TSGemeindeAntrag} from '../models/gemeindeantrag/TSGemeindeAntrag';
 import {
-    TSLastenausgleichTagesschuleAngabenGemeinde
+    TSLastenausgleichTagesschuleAngabenGemeinde,
 } from '../models/gemeindeantrag/TSLastenausgleichTagesschuleAngabenGemeinde';
 import {
-    TSLastenausgleichTagesschuleAngabenGemeindeContainer
+    TSLastenausgleichTagesschuleAngabenGemeindeContainer,
 } from '../models/gemeindeantrag/TSLastenausgleichTagesschuleAngabenGemeindeContainer';
 import {
-    TSLastenausgleichTagesschuleAngabenInstitution
+    TSLastenausgleichTagesschuleAngabenInstitution,
 } from '../models/gemeindeantrag/TSLastenausgleichTagesschuleAngabenInstitution';
 import {
-    TSLastenausgleichTagesschuleAngabenInstitutionContainer
+    TSLastenausgleichTagesschuleAngabenInstitutionContainer,
 } from '../models/gemeindeantrag/TSLastenausgleichTagesschuleAngabenInstitutionContainer';
 import {
-    TSLastenausgleichTagesschulenStatusHistory
+    TSLastenausgleichTagesschulenStatusHistory,
 } from '../models/gemeindeantrag/TSLastenausgleichTagesschulenStatusHistory';
 import {TSOeffnungszeitenTagesschule} from '../models/gemeindeantrag/TSOeffnungszeitenTagesschule';
 import {TSKibonAnfrage} from '../models/neskovanp/TSKibonAnfrage';
@@ -542,7 +542,6 @@ export class EbeguRestUtil {
             gesuchstellerTS.telefonAusland = gesuchstellerFromServer.telefonAusland;
             gesuchstellerTS.diplomatenstatus = gesuchstellerFromServer.diplomatenstatus;
             gesuchstellerTS.korrespondenzSprache = gesuchstellerFromServer.korrespondenzSprache;
-            gesuchstellerTS.hasZpvNummer = gesuchstellerFromServer.hasZpvNummer;
             return gesuchstellerTS;
         }
         return undefined;
@@ -915,6 +914,7 @@ export class EbeguRestUtil {
             restFall.fallNummer = fall.fallNummer;
             restFall.besitzer = this.userToRestObject({}, fall.besitzer);
             restFall.sozialdienstFall = this.sozialdienstFallToRestObject({}, fall.sozialdienstFall);
+            restFall.bemerkungenDossier = fall.bemerkungenDossier;
             return restFall;
         }
         return undefined;
@@ -925,6 +925,7 @@ export class EbeguRestUtil {
         if (fallFromServer) {
             this.parseAbstractMutableEntity(fallTS, fallFromServer);
             fallTS.fallNummer = fallFromServer.fallNummer;
+            fallTS.bemerkungenDossier = fallFromServer.bemerkungenDossier;
             fallTS.nextNumberKind = fallFromServer.nextNumberKind;
             fallTS.besitzer = this.parseUser(new TSBenutzer(), fallFromServer.besitzer);
             fallTS.sozialdienstFall =
@@ -2421,8 +2422,8 @@ export class EbeguRestUtil {
         restKind.familienErgaenzendeBetreuung = kind.familienErgaenzendeBetreuung;
         restKind.zukunftigeGeburtsdatum = kind.zukunftigeGeburtsdatum;
         restKind.inPruefung = kind.inPruefung;
-        if (kind.pensumFachstelle) {
-            restKind.pensumFachstelle = this.pensumFachstelleToRestObject({}, kind.pensumFachstelle);
+        if (kind.pensumFachstellen) {
+            restKind.pensumFachstellen = this.pensumFachstellenToRestObject(kind.pensumFachstellen);
         }
         if (kind.pensumAusserordentlicherAnspruch) {
             restKind.pensumAusserordentlicherAnspruch = this.pensumAusserordentlicherAnspruchToRestObject(
@@ -2496,9 +2497,9 @@ export class EbeguRestUtil {
             kindTS.familienErgaenzendeBetreuung = kindFromServer.familienErgaenzendeBetreuung;
             kindTS.zukunftigeGeburtsdatum = kindFromServer.zukunftigeGeburtsdatum;
             kindTS.inPruefung = kindFromServer.inPruefung;
-            if (kindFromServer.pensumFachstelle) {
-                kindTS.pensumFachstelle =
-                    this.parsePensumFachstelle(new TSPensumFachstelle(), kindFromServer.pensumFachstelle);
+            if (kindFromServer.pensumFachstellen) {
+                kindTS.pensumFachstellen =
+                    this.parsePensumFachstellen(kindFromServer.pensumFachstellen);
             }
             if (kindFromServer.pensumAusserordentlicherAnspruch) {
                 kindTS.pensumAusserordentlicherAnspruch =
@@ -2510,6 +2511,10 @@ export class EbeguRestUtil {
         return undefined;
     }
 
+    private pensumFachstellenToRestObject(pensumFachstellen: TSPensumFachstelle[]): any {
+        return pensumFachstellen.map(pensumFachstelle => this.pensumFachstelleToRestObject({}, pensumFachstelle));
+    }
+
     private pensumFachstelleToRestObject(restPensumFachstelle: any, pensumFachstelle: TSPensumFachstelle): any {
         this.abstractDateRangeEntityToRestObject(restPensumFachstelle, pensumFachstelle);
         restPensumFachstelle.pensum = pensumFachstelle.pensum;
@@ -2519,6 +2524,15 @@ export class EbeguRestUtil {
             restPensumFachstelle.fachstelle = this.fachstelleToRestObject({}, pensumFachstelle.fachstelle);
         }
         return restPensumFachstelle;
+    }
+
+    private parsePensumFachstellen(
+        pensumFachstellenFromServer: any[]
+    ): TSPensumFachstelle[] {
+        return pensumFachstellenFromServer ?
+            pensumFachstellenFromServer.map(pensumFachstelleFromServer => this.parsePensumFachstelle(new TSPensumFachstelle(),
+                pensumFachstelleFromServer)) :
+            [];
     }
 
     private parsePensumFachstelle(
@@ -3117,6 +3131,7 @@ export class EbeguRestUtil {
         antragTS.gemeindeId = antragFromServer.gemeindeId;
         antragTS.isSozialdienst = antragFromServer.isSozialdienst;
         antragTS.begruendungMutation = antragFromServer.begruendungMutation;
+        antragTS.gesuchsperiodeString = antragFromServer.gesuchsperiodeString;
         return antragTS;
     }
 
@@ -5764,6 +5779,7 @@ export class EbeguRestUtil {
         angebotTS.anzahlStundenProBetreuungstag = angebotFromServer.anzahlStundenProBetreuungstag;
         angebotTS.betreuungErfolgtTagsueber = angebotFromServer.betreuungErfolgtTagsueber;
         angebotTS.bemerkungenOeffnungszeiten = angebotFromServer.bemerkungenOeffnungszeiten;
+        angebotFromServer.finanziellBeteiligteGemeinden.sort();
         angebotTS.finanziellBeteiligteGemeinden = angebotFromServer.finanziellBeteiligteGemeinden;
         angebotTS.gemeindeFuehrtAngebotSelber = angebotFromServer.gemeindeFuehrtAngebotSelber;
         angebotTS.gemeindeFuehrtAngebotInKooperation = angebotFromServer.gemeindeFuehrtAngebotInKooperation;

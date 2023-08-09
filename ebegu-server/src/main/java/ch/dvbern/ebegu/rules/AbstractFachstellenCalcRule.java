@@ -22,13 +22,16 @@ import java.util.Map;
 import java.util.Objects;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Einstellung;
-import ch.dvbern.ebegu.entities.Mandant;
+import ch.dvbern.ebegu.entities.Fachstelle;
+import ch.dvbern.ebegu.entities.Kind;
 import ch.dvbern.ebegu.entities.PensumFachstelle;
 import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.enums.FachstellenTyp;
+import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.ServerMessageUtil;
 
@@ -43,24 +46,28 @@ public abstract class AbstractFachstellenCalcRule  extends AbstractCalcRule {
 		super(ruleKey, ruleType, ruleValidity, validityPeriod, locale);
 	}
 
-	protected String getIndikation(@Nonnull Betreuung betreuung) {
-		if (betreuung.getKind().getKindJA().getPensumFachstelle() == null) {
-			return "";
-		}
-		// we cannot translate the Enum directly because we need another translation specific for this Bemerkung
-		final Mandant mandant = Objects.requireNonNull(betreuung.extractGesuch().getFall().getMandant());
 
-		return betreuung.getKind().getKindJA().getPensumFachstelle().getIntegrationTyp().getIndikationMessage(getLocale(), mandant);
+	protected PensumFachstelle findPensumFachstelleForGueltigkeit(Kind kind, DateRange gueltigkeit) {
+		for (PensumFachstelle pensumFachstelle : kind.getPensumFachstelle()) {
+			if (gueltigkeit.intersects(pensumFachstelle.getGueltigkeit())) {
+				return pensumFachstelle;
+			}
+		}
+		throw new EbeguRuntimeException("findPensumFachstelleForGueltigkeit", "PensumFachstelle for gueltigkeit not found");
 	}
 
-	protected String getFachstelle(@Nonnull Betreuung betreuung) {
-		PensumFachstelle pensumFachstelle = betreuung.getKind().getKindJA().getPensumFachstelle();
-		if (pensumFachstelle == null || pensumFachstelle.getFachstelle() == null) {
+	protected String getFachstelleName(@Nullable Fachstelle fachstelle) {
+		if (fachstelle == null) {
 			return "";
 		}
 		return ServerMessageUtil.translateEnumValue(
-			pensumFachstelle.getFachstelle().getName(),
-			getLocale(), Objects.requireNonNull(betreuung.extractGemeinde().getMandant()));
+			fachstelle.getName(),
+			getLocale(), Objects.requireNonNull(fachstelle.getMandant()));
+	}
+
+	protected String getIndikationName(@Nonnull PensumFachstelle pensumFachstelle, @Nonnull Betreuung betreuung) {
+		return pensumFachstelle.getIntegrationTyp().getIndikationMessage(getLocale(), betreuung.extractGesuch()
+			.extractMandant());
 	}
 
 	protected FachstellenTyp getFachstellenTypFromEinstellungen(@Nonnull Map<EinstellungKey, Einstellung> einstellungMap) {

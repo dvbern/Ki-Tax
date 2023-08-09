@@ -222,7 +222,7 @@ public class KindServiceBean extends AbstractBaseService implements KindService 
 		// Aber nicht vom selben Dossier
 		predicates.add(cb.notEqual(joinGesuch.get(Gesuch_.dossier), kindContainer.getGesuch().getDossier()));
 		// Nur das zuletzt gueltige Gesuch
-		predicates.add(joinGesuch.get(Gesuch_.status).in(AntragStatus.FOR_KIND_DUBLETTEN));
+		predicates.add(joinGesuch.get(Gesuch_.status).in(AntragStatus.getForKindDubletten()));
 
 		// Eingeloggter Benutzer muss Berechtigung für die Gemeinde haben
 		// Superadmin und Mandant können alle Gemeinden sehen

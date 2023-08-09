@@ -17,37 +17,8 @@
 
 package ch.dvbern.ebegu.pdfgenerator;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
-
-import javax.annotation.Nonnull;
-
-import ch.dvbern.ebegu.entities.AnmeldungTagesschule;
-import ch.dvbern.ebegu.entities.Benutzer;
-import ch.dvbern.ebegu.entities.Betreuung;
-import ch.dvbern.ebegu.entities.DokumentGrund;
-import ch.dvbern.ebegu.entities.GemeindeStammdaten;
-import ch.dvbern.ebegu.entities.Gesuch;
-import ch.dvbern.ebegu.entities.KindContainer;
-import ch.dvbern.ebegu.entities.Mahnung;
-import ch.dvbern.ebegu.entities.Verfuegung;
-import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
-import ch.dvbern.ebegu.enums.BetreuungspensumAnzeigeTyp;
-import ch.dvbern.ebegu.enums.DokumentGrundTyp;
-import ch.dvbern.ebegu.enums.DokumentTyp;
-import ch.dvbern.ebegu.enums.FinanzielleSituationTyp;
-import ch.dvbern.ebegu.enums.KorrespondenzSpracheTyp;
-import ch.dvbern.ebegu.enums.MahnungTyp;
-import ch.dvbern.ebegu.enums.Sprache;
+import ch.dvbern.ebegu.entities.*;
+import ch.dvbern.ebegu.enums.*;
 import ch.dvbern.ebegu.finanzielleSituationRechner.FinanzielleSituationBernRechner;
 import ch.dvbern.ebegu.pdfgenerator.AbstractVerfuegungPdfGenerator.Art;
 import ch.dvbern.ebegu.pdfgenerator.finanzielleSituation.FinanzielleSituationPdfGeneratorBern;
@@ -55,8 +26,8 @@ import ch.dvbern.ebegu.rechner.TagesschuleBernRechner;
 import ch.dvbern.ebegu.rules.EbeguRuleTestsHelper;
 import ch.dvbern.ebegu.test.TestDataUtil;
 import ch.dvbern.ebegu.util.Constants;
-import ch.dvbern.ebegu.util.mandant.MandantIdentifier;
 import ch.dvbern.ebegu.util.TestUtils;
+import ch.dvbern.ebegu.util.mandant.MandantIdentifier;
 import ch.dvbern.lib.invoicegenerator.errors.InvoiceGeneratorException;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
@@ -64,6 +35,15 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 import org.junit.jupiter.params.provider.EnumSource.Mode;
+
+import javax.annotation.Nonnull;
+import java.io.*;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
@@ -271,19 +251,21 @@ public class KibonPdfGeneratorTest extends AbstractPDFGeneratorTest {
 
 	@ParameterizedTest
 	@EnumSource(value = MandantIdentifier.class, mode = Mode.MATCH_ALL)
-	public void mahnung1Test(@Nonnull MandantIdentifier mandant) throws InvoiceGeneratorException, IOException {
+	public void mahnung1Test(@Nonnull MandantIdentifier mandantIdentifier) throws InvoiceGeneratorException, IOException {
+		Mandant mandant = TestDataUtil.createMandant(mandantIdentifier);
 		createMahnung1(mandant, mahnung_1_Alleinstehend, Sprache.DEUTSCH, "Mahnung1_alleinstehend_de.pdf");
 		createMahnung1(mandant, mahnung_1_Alleinstehend, Sprache.FRANZOESISCH, "Mahnung1_alleinstehend_fr.pdf");
 		createMahnung1(mandant, mahnung_1_Verheiratet, Sprache.DEUTSCH, "Mahnung1_verheiratet_de.pdf");
 		createMahnung1(mandant, mahnung_1_Verheiratet, Sprache.FRANZOESISCH, "Mahnung1_verheiratet_fr.pdf");
 	}
 
-	private void createMahnung1(@Nonnull MandantIdentifier mandant, @Nonnull Mahnung mahnung, @Nonnull Sprache locale, @Nonnull String dokumentname) throws FileNotFoundException,
+	private void createMahnung1(@Nonnull Mandant mandant, @Nonnull Mahnung mahnung, @Nonnull Sprache locale, @Nonnull String dokumentname) throws FileNotFoundException,
 		InvoiceGeneratorException {
 		assertNotNull(mahnung.getGesuch().getGesuchsteller1());
 		mahnung.getGesuch().getGesuchsteller1().getGesuchstellerJA().setKorrespondenzSprache(locale);
-		final MahnungPdfGenerator generator = new ErsteMahnungPdfGenerator(mahnung, stammdaten);
-		generateTestDocument(generator, mandant, dokumentname);
+		final MahnungPdfGenerator generator = new ErsteMahnungPdfGeneratorVisitor(mahnung, stammdaten)
+			.getErsteMahnungPdfGeneratorForMandant(mandant);
+		generateTestDocument(generator, mandant.getMandantIdentifier(), dokumentname);
 	}
 
 	@ParameterizedTest

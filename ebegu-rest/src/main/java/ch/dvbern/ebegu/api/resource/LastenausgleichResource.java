@@ -121,11 +121,11 @@ public class LastenausgleichResource {
 		if (principalBean.isCallerInAnyOfRole(SACHBEARBEITER_GEMEINDE, ADMIN_GEMEINDE, SACHBEARBEITER_BG, ADMIN_BG)) {
 			Set<Gemeinde> gemeindeList = principalBean.getBenutzer().getCurrentBerechtigung().getGemeindeList();
 
-			return lastenausgleichService.getLastenausgleicheForGemeinden(gemeindeList).stream()
+			return lastenausgleichService.getLastenausgleicheForGemeinden(gemeindeList, principalBean.getMandant()).stream()
 				.map(lastenausgleich -> converter.lastenausgleichToJAX(lastenausgleich))
 				.collect(Collectors.toList());
 		}
-		return lastenausgleichService.getAllLastenausgleiche().stream()
+		return lastenausgleichService.getAllLastenausgleiche(principalBean.getMandant()).stream()
 			.map(lastenausgleich -> converter.lastenausgleichToJAX(lastenausgleich))
 			.collect(Collectors.toList());
 	}

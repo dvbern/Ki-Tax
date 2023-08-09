@@ -441,7 +441,7 @@ export class DVMitteilungListController implements IOnInit {
     }
 
     public canErledigenNeueVeranlagungsmitteilung(_mitteilung: TSMitteilung): boolean {
-        return this.authServiceRS.isOneOfRoles(TSRoleUtil.getAdministratorJugendamtRole());
+        return this.authServiceRS.isOneOfRoles(TSRoleUtil.getAdministratorOrAmtRole());
     }
 
     public showNeueVeranlagungsmitteilungApply(mitteilung: TSMitteilung): boolean {

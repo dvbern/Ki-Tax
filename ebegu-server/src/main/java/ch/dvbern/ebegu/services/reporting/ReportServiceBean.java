@@ -100,6 +100,7 @@ import ch.dvbern.ebegu.entities.Kind;
 import ch.dvbern.ebegu.entities.KindContainer;
 import ch.dvbern.ebegu.entities.KindContainer_;
 import ch.dvbern.ebegu.entities.Mandant;
+import ch.dvbern.ebegu.entities.PensumFachstelle;
 import ch.dvbern.ebegu.entities.SozialhilfeZeitraum;
 import ch.dvbern.ebegu.entities.SozialhilfeZeitraumContainer;
 import ch.dvbern.ebegu.entities.Verfuegung;
@@ -165,6 +166,7 @@ import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.types.DateRange_;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.EnumUtil;
+import ch.dvbern.ebegu.util.Gueltigkeit;
 import ch.dvbern.ebegu.util.MathUtil;
 import ch.dvbern.ebegu.util.ServerMessageUtil;
 import ch.dvbern.ebegu.util.UploadFileInfo;
@@ -1427,7 +1429,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 
 	private void addKindToGesuchstellerKinderBetreuungDataRow(
 		GesuchstellerKinderBetreuungDataRow row,
-		Betreuung betreuung, Locale locale) {
+		VerfuegungZeitabschnitt zeitabschnitt, Betreuung betreuung, Locale locale) {
 
 		Kind kind = betreuung.getKind().getKindJA();
 		row.setKindName(kind.getNachname());
@@ -1436,14 +1438,17 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		if (row.getKindGeburtsdatum() == null || row.getKindGeburtsdatum().isBefore(MIN_DATE)) {
 			row.setKindGeburtsdatum(MIN_DATE);
 		}
-		row.setKindFachstelle(kind.getPensumFachstelle() != null && kind.getPensumFachstelle().getFachstelle() != null
-			? String.valueOf(kind.getPensumFachstelle().getFachstelle().getName())
-			: StringUtils.EMPTY);
+		final PensumFachstelle pensumFachstelle =
+			getPensumFachstelleForGueltigkeit(kind, zeitabschnitt.getGueltigkeit());
 
-		row.setKindIntegration(kind.getPensumFachstelle() != null
-			? ServerMessageUtil.translateEnumValue(kind.getPensumFachstelle().getIntegrationTyp(), locale,
-				requireNonNull(betreuung.extractGemeinde().getMandant()))
-			: StringUtils.EMPTY);
+		row.setKindFachstelle(kind.getPensumFachstelle().isEmpty() || pensumFachstelle == null || pensumFachstelle.getFachstelle() == null
+			? StringUtils.EMPTY
+			: String.valueOf(pensumFachstelle.getFachstelle().getName()));
+
+		row.setKindIntegration(kind.getPensumFachstelle().isEmpty() || pensumFachstelle == null
+			? StringUtils.EMPTY
+			: ServerMessageUtil.translateEnumValue(pensumFachstelle.getIntegrationTyp(), locale,
+			requireNonNull(betreuung.extractGemeinde().getMandant())));
 
 		row.setKindErwBeduerfnisse(betreuung.hasErweiterteBetreuung());
 		row.setKindSprichtAmtssprache(kind.getSprichtAmtssprache());
@@ -1452,6 +1457,17 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		if (kind.getPensumAusserordentlicherAnspruch() != null) {
 			row.setAusserordentlicherAnspruch(BigDecimal.valueOf(kind.getPensumAusserordentlicherAnspruch().getPensum()));
 		}
+	}
+
+
+	@Nullable
+	private PensumFachstelle getPensumFachstelleForGueltigkeit(Kind kind, DateRange gueltigkeit) {
+		for (PensumFachstelle pensumFachstelle : kind.getPensumFachstelle()) {
+			if (pensumFachstelle.getGueltigkeit().intersects(gueltigkeit)) {
+				return pensumFachstelle;
+			}
+		}
+		return null;
 	}
 
 	private void addBetreuungToGesuchstellerKinderBetreuungDataRow(
@@ -1731,6 +1747,8 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 				zeitabschnitt,
 				familiensituationContainer,
 				familiensituation));
+			// Auszahlungsdaten
+			addAuszahlungsdaten(row,familiensituation);
 		}
 		row.setFamiliengroesse(zeitabschnitt.getFamGroesse());
 		row.setMassgEinkVorFamilienabzug(zeitabschnitt.getMassgebendesEinkommenVorAbzFamgr());
@@ -1767,8 +1785,17 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		}
 
 		// Kind
-		addKindToGesuchstellerKinderBetreuungDataRow(row, gueltigeBetreuung, locale);
+		addKindToGesuchstellerKinderBetreuungDataRow(row, zeitabschnitt, gueltigeBetreuung, locale);
 		return row;
+	}
+
+	private void addAuszahlungsdaten(GesuchstellerKinderBetreuungDataRow row, Familiensituation familiensituation) {
+		if (familiensituation.getAuszahlungsdaten() == null) {
+			return;
+		}
+
+		row.setIban(familiensituation.getAuszahlungsdaten().extractIbanAsString());
+		row.setKontoinhaber(familiensituation.getAuszahlungsdaten().getKontoinhaber());
 	}
 
 	@Override
@@ -1916,7 +1943,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		}
 
 		// Kind
-		addKindToGesuchstellerKinderBetreuungDataRow(row, gueltigeBetreuung, locale);
+		addKindToGesuchstellerKinderBetreuungDataRow(row, zeitabschnitt, gueltigeBetreuung, locale);
 
 		// Betreuung
 		addBetreuungToGesuchstellerKinderBetreuungDataRow(row, zeitabschnitt, gueltigeBetreuung, locale);

@@ -17,15 +17,14 @@
 
 package ch.dvbern.ebegu.reporting.gesuchstellerKinderBetreuung;
 
-import java.math.BigDecimal;
-import java.time.LocalDate;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.EinschulungTyp;
 import ch.dvbern.ebegu.enums.EnumFamilienstatus;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.math.BigDecimal;
+import java.time.LocalDate;
 
 public class GesuchstellerKinderBetreuungDataRow {
 
@@ -122,6 +121,9 @@ public class GesuchstellerKinderBetreuungDataRow {
 	@Nullable private BigDecimal verguenstigungTotal;
 
 	@Nullable private BigDecimal ausserordentlicherAnspruch;
+
+	@Nullable private String iban;
+	@Nullable private String kontoinhaber;
 
 	public GesuchstellerKinderBetreuungDataRow() {
 	}
@@ -838,5 +840,23 @@ public class GesuchstellerKinderBetreuungDataRow {
 
 	public void setMzvBeantragt(@Nullable Boolean mzvBeantragt) {
 		this.mzvBeantragt = mzvBeantragt;
+	}
+
+	@Nullable
+	public String getIban() {
+		return iban;
+	}
+
+	public void setIban(@Nullable String iban) {
+		this.iban = iban;
+	}
+
+	@Nullable
+	public String getKontoinhaber() {
+		return kontoinhaber;
+	}
+
+	public void setKontoinhaber(@Nullable String kontoinhaber) {
+		this.kontoinhaber = kontoinhaber;
 	}
 }

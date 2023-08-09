@@ -22,31 +22,31 @@ import {
     Input,
     OnDestroy,
     OnInit,
-    ViewEncapsulation
+    ViewEncapsulation,
 } from '@angular/core';
 import {AbstractControl, FormBuilder, FormControl, FormGroup, ValidatorFn, Validators} from '@angular/forms';
 import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
 import {MatRadioChange} from '@angular/material/radio';
 import {TranslateService} from '@ngx-translate/core';
 import {StateService, UIRouterGlobals} from '@uirouter/core';
-import {BehaviorSubject, combineLatest, Subject, Subscription} from 'rxjs';
+import {BehaviorSubject, combineLatest, ReplaySubject, Subject, Subscription} from 'rxjs';
 import {startWith} from 'rxjs/operators';
 import {EinstellungRS} from '../../../../../admin/service/einstellungRS.rest';
 import {AuthServiceRS} from '../../../../../authentication/service/AuthServiceRS.rest';
 import {TSEinstellungKey} from '../../../../../models/enums/TSEinstellungKey';
 import {
-    TSLastenausgleichTagesschuleAngabenGemeindeFormularStatus
+    TSLastenausgleichTagesschuleAngabenGemeindeFormularStatus,
 } from '../../../../../models/enums/TSLastenausgleichTagesschuleAngabenGemeindeFormularStatus';
 import {
-    TSLastenausgleichTagesschuleAngabenGemeindeStatus
+    TSLastenausgleichTagesschuleAngabenGemeindeStatus,
 } from '../../../../../models/enums/TSLastenausgleichTagesschuleAngabenGemeindeStatus';
 import {TSRole} from '../../../../../models/enums/TSRole';
 import {TSWizardStepXTyp} from '../../../../../models/enums/TSWizardStepXTyp';
 import {
-    TSLastenausgleichTagesschuleAngabenGemeinde
+    TSLastenausgleichTagesschuleAngabenGemeinde,
 } from '../../../../../models/gemeindeantrag/TSLastenausgleichTagesschuleAngabenGemeinde';
 import {
-    TSLastenausgleichTagesschuleAngabenGemeindeContainer
+    TSLastenausgleichTagesschuleAngabenGemeindeContainer,
 } from '../../../../../models/gemeindeantrag/TSLastenausgleichTagesschuleAngabenGemeindeContainer';
 import {TSBenutzer} from '../../../../../models/TSBenutzer';
 import {TSEinstellung} from '../../../../../models/TSEinstellung';
@@ -55,7 +55,7 @@ import {EbeguUtil} from '../../../../../utils/EbeguUtil';
 import {MathUtil} from '../../../../../utils/MathUtil';
 import {TSRoleUtil} from '../../../../../utils/TSRoleUtil';
 import {
-    DvNgConfirmDialogComponent
+    DvNgConfirmDialogComponent,
 } from '../../../../core/component/dv-ng-confirm-dialog/dv-ng-confirm-dialog.component';
 import {DvNgOkDialogComponent} from '../../../../core/component/dv-ng-ok-dialog/dv-ng-ok-dialog.component';
 import {CONSTANTS} from '../../../../core/constants/CONSTANTS';
@@ -143,8 +143,8 @@ export class GemeindeAngabenComponent implements OnInit, OnDestroy {
     public formularInitForm: FormGroup<{alleAngabenInKibonErfasst: FormControl<boolean>}>;
     private subscription: Subscription;
     public abschliessenValidationActive = false;
-    public lohnnormkostenSettingMoreThanFifty$: Subject<TSEinstellung> = new Subject<TSEinstellung>();
-    public lohnnormkostenSettingLessThanFifty$: Subject<TSEinstellung> = new Subject<TSEinstellung>();
+    public lohnnormkostenSettingMoreThanFifty$: Subject<TSEinstellung> = new ReplaySubject<TSEinstellung>(1);
+    public lohnnormkostenSettingLessThanFifty$: Subject<TSEinstellung> = new ReplaySubject<TSEinstellung>(1);
 
     public saveVisible: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
     public abschliessenVisible: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
@@ -366,15 +366,6 @@ export class GemeindeAngabenComponent implements OnInit, OnDestroy {
         this.angabenForm.controls.maximalTarif.valueChanges.subscribe(value => {
             this.setValidatorRequiredIfFalse('maximalTarifBemerkung', value);
         }, () => this.errorService.addMesageAsError(this.translateService.instant('Maximal Tarif ValueChanges error')));
-
-        this.angabenForm.controls.mindestens50ProzentBetreuungszeitDurchAusgebildetesPersonal
-            .setValidators([Validators.required]);
-        this.angabenForm.controls.mindestens50ProzentBetreuungszeitDurchAusgebildetesPersonal.valueChanges.subscribe(value => {
-                    this.setValidatorRequiredIfFalse('mindestens50ProzentBetreuungszeitDurchAusgebildetesPersonalBemerkung',
-                        value);
-                },
-                () => this.errorService.addMesageAsError(this.translateService.instant(
-                    'mindestens50ProzentBetreuungszeitDurchAusgebildetesPersonal ValueChanges error')));
 
         this.angabenForm.controls.ausbildungenMitarbeitendeBelegt.setValidators([Validators.required]);
         this.angabenForm.controls.ausbildungenMitarbeitendeBelegt.valueChanges.subscribe(value => {
