@@ -28,13 +28,13 @@
 		</div>
 	</div>
 
-	<form *ngIf="form" [formGroup]="form">
+	<form *ngIf="container" [formGroup]="form">
 
 		<div class="max-width-container-750">
 
 			<dv-input-container-x [verticalAlign]="true">
 				<label required
-					   [ngClass]="{'label-required-error': form && form.get('angebot').errors}"
+					   [ngClass]="{'label-required-error': form && form.controls.angebot.errors}"
 					   for="angebot_id">
 					{{'FERIENBETREUUNG_NAME_ANGEBOT' | translate}}
 					<dv-tooltip inputId="angebot_id"
@@ -47,12 +47,12 @@
 						   formControlName="angebot"
 						   id="angebot_id"
 						   class="form-control dv-input"/>
-					<mat-error *ngIf="form && form.get('angebot').errors?.required"
+					<mat-error *ngIf="form && form.controls.angebot.errors?.required"
 							   translate>ERROR_REQUIRED
 					</mat-error>
 					<dv-bisher-x
 							[deklaration]="container?.angabenDeklaration?.angebot?.angebot"
-							[korrektur]="form.get('angebot').value"
+							[korrektur]="form.value.angebot"
 							[showBisher]="container.isAtLeastInPruefungKantonOrZurueckgegeben()"
 							[specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
 					</dv-bisher-x>
@@ -72,7 +72,7 @@
 					<dv-input-container-x [verticalAlign]="true" class="col-xs-6">
 						<label required
 							   for="angebotKontaktpersonVorname_id"
-							   [ngClass]="{'label-required-error': form && form.get('angebotAdresse').get('kontaktpersonVorname').errors}">
+							   [ngClass]="{'label-required-error': form && form.controls.angebotAdresse.controls.kontaktpersonVorname.errors}">
 							{{'VORNAME' | translate}}
 						</label>
 						<mat-form-field floatLabel="always">
@@ -82,12 +82,12 @@
 								   formControlName="kontaktpersonVorname"
 								   class="form-control dv-input"/>
 							<mat-error
-									*ngIf="form && form.get('angebotAdresse').get('kontaktpersonVorname').errors?.required"
+									*ngIf="form && form.controls.angebotAdresse.controls.kontaktpersonVorname.errors?.required"
 									translate>ERROR_REQUIRED
 							</mat-error>
 							<dv-bisher-x
 									[deklaration]="container?.angabenDeklaration?.angebot?.angebotKontaktpersonVorname"
-									[korrektur]="form.get('angebotAdresse').get('kontaktpersonVorname').value"
+									[korrektur]="form.value.angebotAdresse?.kontaktpersonVorname"
 									[showBisher]="container.isAtLeastInPruefungKantonOrZurueckgegeben()"
 									[specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
 							</dv-bisher-x>
@@ -97,7 +97,7 @@
 					<dv-input-container-x [verticalAlign]="true" class="col-xs-6">
 						<label required
 							   for="angebotKontaktpersonNachname_id"
-							   [ngClass]="{'label-required-error': form && form.get('angebotAdresse').get('kontaktpersonNachname').errors}">
+							   [ngClass]="{'label-required-error': form && form.controls.angebotAdresse.controls.kontaktpersonNachname.errors}">
 							{{'NAME' | translate}}
 						</label>
 						<mat-form-field floatLabel="always">
@@ -107,12 +107,12 @@
 								   formControlName="kontaktpersonNachname"
 								   class="form-control dv-input"/>
 							<mat-error
-									*ngIf="form && form.get('angebotAdresse').get('kontaktpersonNachname').errors?.required"
+									*ngIf="form && form.controls.angebotAdresse.controls.kontaktpersonNachname.errors?.required"
 									translate>ERROR_REQUIRED
 							</mat-error>
 							<dv-bisher-x
 									[deklaration]="container?.angabenDeklaration?.angebot?.angebotKontaktpersonNachname"
-									[korrektur]="form.get('angebotAdresse').get('kontaktpersonNachname').value"
+									[korrektur]="form.value.angebotAdresse?.kontaktpersonNachname"
 									[showBisher]="container.isAtLeastInPruefungKantonOrZurueckgegeben()"
 									[specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
 							</dv-bisher-x>
@@ -125,7 +125,7 @@
 					<dv-input-container-x [verticalAlign]="true" class="col-xs-10">
 						<label required
 							   for="strasse_id"
-							   [ngClass]="{'label-required-error': form && form.get('angebotAdresse').get('strasse').errors}">
+							   [ngClass]="{'label-required-error': form && form.controls.angebotAdresse.controls.strasse.errors}">
 							{{'ADRESSE_STRASSE' | translate}}
 						</label>
 						<mat-form-field floatLabel="always">
@@ -134,12 +134,12 @@
 								   matInput
 								   formControlName="strasse"
 								   class="form-control dv-input"/>
-							<mat-error *ngIf="form && form.get('angebotAdresse').get('strasse').errors?.required"
+							<mat-error *ngIf="form && form.controls.angebotAdresse.controls.strasse.errors?.required"
 									   translate>ERROR_REQUIRED
 							</mat-error>
 							<dv-bisher-x
 									[deklaration]="container?.angabenDeklaration?.angebot?.angebotAdresse?.strasse"
-									[korrektur]="form.get('angebotAdresse').get('strasse').value"
+									[korrektur]="form.value.angebotAdresse?.strasse"
 									[showBisher]="container.isAtLeastInPruefungKantonOrZurueckgegeben()"
 									[specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
 							</dv-bisher-x>
@@ -159,7 +159,7 @@
 						</mat-form-field>
 						<dv-bisher-x
 								[deklaration]="container?.angabenDeklaration?.angebot?.angebotAdresse?.hausnummer"
-								[korrektur]="form.get('angebotAdresse').get('hausnummer').value"
+								[korrektur]="form.value.angebotAdresse?.hausnummer"
 								[showBisher]="container.isAtLeastInPruefungKantonOrZurueckgegeben()"
 								[specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
 						</dv-bisher-x>
@@ -178,7 +178,7 @@
 							   class="form-control dv-input"/>
 						<dv-bisher-x
 								[deklaration]="container?.angabenDeklaration?.angebot?.angebotAdresse?.zusatzzeile"
-								[korrektur]="form.get('angebotAdresse').get('zusatzzeile').value"
+								[korrektur]="form.value.angebotAdresse?.zusatzzeile"
 								[showBisher]="container.isAtLeastInPruefungKantonOrZurueckgegeben()"
 								[specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
 						</dv-bisher-x>
@@ -189,7 +189,7 @@
 					<dv-input-container-x [verticalAlign]="true" class="col-xs-2">
 						<label required
 							   for="plz_id"
-							   [ngClass]="{'label-required-error': form && form.get('angebotAdresse').get('plz').errors}">
+							   [ngClass]="{'label-required-error': form && form.controls.angebotAdresse.controls.plz.errors}">
 							{{'ADRESSE_PLZ' | translate}}
 						</label>
 						<mat-form-field floatLabel="always">
@@ -198,12 +198,12 @@
 								   matInput
 								   formControlName="plz"
 								   class="form-control dv-input"/>
-							<mat-error *ngIf="form && form.get('angebotAdresse').get('plz').errors?.required"
+							<mat-error *ngIf="form && form.controls.angebotAdresse.controls.plz.errors?.required"
 									   translate>ERROR_REQUIRED
 							</mat-error>
 							<dv-bisher-x
 									[deklaration]="container?.angabenDeklaration?.angebot?.angebotAdresse?.plz"
-									[korrektur]="form.get('angebotAdresse').get('plz').value"
+									[korrektur]="form.value.angebotAdresse?.plz"
 									[showBisher]="container.isAtLeastInPruefungKantonOrZurueckgegeben()"
 									[specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
 							</dv-bisher-x>
@@ -213,7 +213,7 @@
 					<dv-input-container-x [verticalAlign]="true" class="col-xs-10">
 						<label required
 							   for="ort_id"
-							   [ngClass]="{'label-required-error': form && form.get('angebotAdresse').get('ort').errors}">
+							   [ngClass]="{'label-required-error': form && form.controls.angebotAdresse.controls.ort.errors}">
 							{{'ADRESSE_ORT' | translate}}
 						</label>
 						<mat-form-field floatLabel="always">
@@ -222,12 +222,12 @@
 								   matInput
 								   formControlName="ort"
 								   class="form-control dv-input"/>
-							<mat-error *ngIf="form && form.get('angebotAdresse').get('ort').errors?.required"
+							<mat-error *ngIf="form && form.controls.angebotAdresse.controls.ort.errors?.required"
 									   translate>ERROR_REQUIRED
 							</mat-error>
 							<dv-bisher-x
 									[deklaration]="container?.angabenDeklaration?.angebot?.angebotAdresse?.ort"
-									[korrektur]="form.get('angebotAdresse').get('ort').value"
+									[korrektur]="form.value.angebotAdresse?.ort"
 									[showBisher]="container.isAtLeastInPruefungKantonOrZurueckgegeben()"
 									[specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
 							</dv-bisher-x>
@@ -250,7 +250,7 @@
 			<dv-input-container-x class="max-width-container-750">
 				<label required
 					   for="anzahl_ferienwoche_herbst_id"
-					   [ngClass]="{'label-required-error': form && form.get('anzahlFerienwochenHerbstferien').errors}">
+					   [ngClass]="{'label-required-error': form && form.controls.anzahlFerienwochenHerbstferien.errors}">
 					{{'FERIENBETREUUNG_ANZAHL_FERIENWOCHEN_HERBST' | translate }}
 				</label>
 				<mat-form-field floatLabel="always">
@@ -259,15 +259,15 @@
 						   id="anzahl_ferienwoche_herbst_id"
 						   formControlName="anzahlFerienwochenHerbstferien"
 						   class="form-control dv-input"/>
-					<mat-error *ngIf="form && form.get('anzahlFerienwochenHerbstferien').errors?.required"
+					<mat-error *ngIf="form && form.controls.anzahlFerienwochenHerbstferien.errors?.required"
 							   translate>ERROR_REQUIRED
 					</mat-error>
-					<mat-error *ngIf="form && form.get('anzahlFerienwochenHerbstferien').errors?.isNotInteger"
+					<mat-error *ngIf="form && form.controls.anzahlFerienwochenHerbstferien.errors?.isNotInteger"
 							   translate>ERROR_NOT_INTEGER
 					</mat-error>
 					<dv-bisher-x
 							[deklaration]="container?.angabenDeklaration?.angebot?.anzahlFerienwochenHerbstferien"
-							[korrektur]="form.get('anzahlFerienwochenHerbstferien').value"
+							[korrektur]="form.value.anzahlFerienwochenHerbstferien"
 							[showBisher]="container.isAtLeastInPruefungKantonOrZurueckgegeben()"
 							[specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
 					</dv-bisher-x>
@@ -285,7 +285,7 @@
 			<dv-input-container-x class="max-width-container-750">
 				<label required
 					   for="anzahl_ferienwoche_winter_id"
-					   [ngClass]="{'label-required-error': form && form.get('anzahlFerienwochenWinterferien').errors}">
+					   [ngClass]="{'label-required-error': form && form.controls.anzahlFerienwochenWinterferien.errors}">
 					{{'FERIENBETREUUNG_ANZAHL_FERIENWOCHEN_WINTER' | translate }}
 				</label>
 				<mat-form-field floatLabel="always">
@@ -293,15 +293,15 @@
 						   id="anzahl_ferienwoche_winter_id"
 						   formControlName="anzahlFerienwochenWinterferien"
 						   class="form-control dv-input"/>
-					<mat-error *ngIf="form && form.get('anzahlFerienwochenWinterferien').errors?.required"
+					<mat-error *ngIf="form && form.controls.anzahlFerienwochenWinterferien.errors?.required"
 							   translate>ERROR_REQUIRED
 					</mat-error>
-					<mat-error *ngIf="form && form.get('anzahlFerienwochenWinterferien').errors?.isNotInteger"
+					<mat-error *ngIf="form && form.controls.anzahlFerienwochenWinterferien.errors?.isNotInteger"
 							   translate>ERROR_NOT_INTEGER
 					</mat-error>
 					<dv-bisher-x
 							[deklaration]="container?.angabenDeklaration?.angebot?.anzahlFerienwochenWinterferien"
-							[korrektur]="form.get('anzahlFerienwochenWinterferien').value"
+							[korrektur]="form.value.anzahlFerienwochenWinterferien"
 							[showBisher]="container.isAtLeastInPruefungKantonOrZurueckgegeben()"
 							[specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
 					</dv-bisher-x>
@@ -318,7 +318,7 @@
 			<dv-input-container-x class="max-width-container-750">
 				<label required
 					   for="anzahl_ferienwoche_sport_id"
-					   [ngClass]="{'label-required-error': form && form.get('anzahlFerienwochenSportferien').errors}">
+					   [ngClass]="{'label-required-error': form && form.controls.anzahlFerienwochenSportferien.errors}">
 					{{'FERIENBETREUUNG_ANZAHL_FERIENWOCHEN_SPORT' | translate }}
 				</label>
 				<mat-form-field floatLabel="always">
@@ -326,10 +326,10 @@
 						   id="anzahl_ferienwoche_sport_id"
 						   formControlName="anzahlFerienwochenSportferien"
 						   class="form-control dv-input"/>
-					<mat-error *ngIf="form && form.get('anzahlFerienwochenSportferien').errors?.required"
+					<mat-error *ngIf="form && form.controls.anzahlFerienwochenSportferien.errors?.required"
 							   translate>ERROR_REQUIRED
 					</mat-error>
-					<mat-error *ngIf="form && form.get('anzahlFerienwochenSportferien').errors?.isNotInteger"
+					<mat-error *ngIf="form && form.controls.anzahlFerienwochenSportferien.errors?.isNotInteger"
 							   translate>ERROR_NOT_INTEGER
 					</mat-error>
 				</mat-form-field>
@@ -345,7 +345,7 @@
 			<dv-input-container-x class="max-width-container-750">
 				<label required
 					   for="anzahl_ferienwoche_fruehling_id"
-					   [ngClass]="{'label-required-error': form && form.get('anzahlFerienwochenFruehlingsferien').errors}">
+					   [ngClass]="{'label-required-error': form && form.controls.anzahlFerienwochenFruehlingsferien.errors}">
 					{{'FERIENBETREUUNG_ANZAHL_FERIENWOCHEN_FRUEHLING' | translate }}
 				</label>
 				<mat-form-field floatLabel="always">
@@ -353,15 +353,15 @@
 						   id="anzahl_ferienwoche_fruehling_id"
 						   formControlName="anzahlFerienwochenFruehlingsferien"
 						   class="form-control dv-input"/>
-					<mat-error *ngIf="form && form.get('anzahlFerienwochenFruehlingsferien').errors?.required"
+					<mat-error *ngIf="form && form.controls.anzahlFerienwochenFruehlingsferien.errors?.required"
 							   translate>ERROR_REQUIRED
 					</mat-error>
-					<mat-error *ngIf="form && form.get('anzahlFerienwochenFruehlingsferien').errors?.isNotInteger"
+					<mat-error *ngIf="form && form.controls.anzahlFerienwochenFruehlingsferien.errors?.isNotInteger"
 							   translate>ERROR_NOT_INTEGER
 					</mat-error>
 					<dv-bisher-x
 							[deklaration]="container?.angabenDeklaration?.angebot?.anzahlFerienwochenFruehlingsferien"
-							[korrektur]="form.get('anzahlFerienwochenFruehlingsferien').value"
+							[korrektur]="form.value.anzahlFerienwochenFruehlingsferien"
 							[showBisher]="container.isAtLeastInPruefungKantonOrZurueckgegeben()"
 							[specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
 					</dv-bisher-x>
@@ -378,7 +378,7 @@
 			<dv-input-container-x class="max-width-container-750">
 				<label required
 					   for="anzahl_ferienwoche_sommer_id"
-					   [ngClass]="{'label-required-error': form && form.get('anzahlFerienwochenSommerferien').errors}">
+					   [ngClass]="{'label-required-error': form && form.controls.anzahlFerienwochenSommerferien.errors}">
 					{{'FERIENBETREUUNG_ANZAHL_FERIENWOCHEN_SOMMER' | translate }}
 				</label>
 				<mat-form-field floatLabel="always">
@@ -386,15 +386,15 @@
 						   id="anzahl_ferienwoche_sommer_id"
 						   formControlName="anzahlFerienwochenSommerferien"
 						   class="form-control dv-input"/>
-					<mat-error *ngIf="form && form.get('anzahlFerienwochenSommerferien').errors?.required"
+					<mat-error *ngIf="form && form.controls.anzahlFerienwochenSommerferien.errors?.required"
 							   translate>ERROR_REQUIRED
 					</mat-error>
-					<mat-error *ngIf="form && form.get('anzahlFerienwochenSommerferien').errors?.isNotInteger"
+					<mat-error *ngIf="form && form.controls.anzahlFerienwochenSommerferien.errors?.isNotInteger"
 							   translate>ERROR_NOT_INTEGER
 					</mat-error>
 					<dv-bisher-x
 							[deklaration]="container?.angabenDeklaration?.angebot?.anzahlFerienwochenSommerferien"
-							[korrektur]="form.get('anzahlFerienwochenSommerferien').value"
+							[korrektur]="form.value.anzahlFerienwochenSommerferien"
 							[showBisher]="container.isAtLeastInPruefungKantonOrZurueckgegeben()"
 							[specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
 					</dv-bisher-x>
@@ -411,7 +411,7 @@
 			<dv-input-container-x class="max-width-container-750">
 				<label required
 					   for="anzahl_tage_id"
-					   [ngClass]="{'label-required-error': form && form.get('anzahlTage').errors}">
+					   [ngClass]="{'label-required-error': form && form.controls.anzahlTage.errors}">
 					{{'FERIENBETREUUNG_ANZAHL_TAGE' | translate }}
 				</label>
 				<mat-form-field floatLabel="always">
@@ -419,15 +419,15 @@
 						   id="anzahl_tage_id"
 						   formControlName="anzahlTage"
 						   class="form-control dv-input"/>
-					<mat-error *ngIf="form && form.get('anzahlTage').errors?.required"
+					<mat-error *ngIf="form && form.controls.anzahlTage.errors?.required"
 							   translate>ERROR_REQUIRED
 					</mat-error>
-					<mat-error *ngIf="form && form.get('anzahlTage').errors?.isNotInteger"
+					<mat-error *ngIf="form && form.controls.anzahlTage.errors?.isNotInteger"
 							   translate>ERROR_NOT_INTEGER
 					</mat-error>
 					<dv-bisher-x
 							[deklaration]="container?.angabenDeklaration?.angebot?.anzahlTage"
-							[korrektur]="form.get('anzahlTage').value"
+							[korrektur]="form.value.anzahlTage"
 							[showBisher]="container.isAtLeastInPruefungKantonOrZurueckgegeben()"
 							[specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
 					</dv-bisher-x>
@@ -452,7 +452,7 @@
 						  class="form-control dv-input"></textarea>
 					<dv-bisher-x
 							[deklaration]="container?.angabenDeklaration?.angebot?.bemerkungenAnzahlFerienwochen"
-							[korrektur]="form.get('bemerkungenAnzahlFerienwochen').value"
+							[korrektur]="form.value.bemerkungenAnzahlFerienwochen"
 							[showBisher]="container.isAtLeastInPruefungKantonOrZurueckgegeben()"
 							[specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
 					</dv-bisher-x>
@@ -476,7 +476,7 @@
 			<dv-input-container-x class="max-width-container-750">
 				<label required
 					   for="anzahl_stunden_betreuungstag_id"
-					   [ngClass]="{'label-required-error': form && form.get('anzahlStundenProBetreuungstag').errors}">
+					   [ngClass]="{'label-required-error': form && form.controls.anzahlStundenProBetreuungstag.errors}">
 					{{'FERIENBETREUUNG_ANZAHL_STUNDEN_BETREUUNGSTAG' | translate }}
 				</label>
 				<mat-form-field floatLabel="always">
@@ -484,15 +484,15 @@
 						   id="anzahl_stunden_betreuungstag_id"
 						   formControlName="anzahlStundenProBetreuungstag"
 						   class="form-control dv-input"/>
-					<mat-error *ngIf="form && form.get('anzahlStundenProBetreuungstag').errors?.required"
+					<mat-error *ngIf="form && form.controls.anzahlStundenProBetreuungstag.errors?.required"
 							   translate>ERROR_REQUIRED
 					</mat-error>
-					<mat-error *ngIf="form && form.get('anzahlStundenProBetreuungstag').errors?.isNotHalf"
+					<mat-error *ngIf="form && form.controls.anzahlStundenProBetreuungstag.errors?.isNotHalf"
 							   translate>ERROR_NOT_HALF
 					</mat-error>
 					<dv-bisher-x
 							[deklaration]="container?.angabenDeklaration?.angebot?.anzahlStundenProBetreuungstag"
-							[korrektur]="form.get('anzahlStundenProBetreuungstag').value"
+							[korrektur]="form.value.anzahlStundenProBetreuungstag"
 							[showBisher]="container.isAtLeastInPruefungKantonOrZurueckgegeben()"
 							[specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
 					</dv-bisher-x>
@@ -508,7 +508,7 @@
 		<div class="flex-row">
 			<dv-input-container-x class="max-width-container-750">
 				<label required
-					   [ngClass]="{'label-required-error': formValidationTriggered && form.get('betreuungErfolgtTagsueber').errors}"
+					   [ngClass]="{'label-required-error': formValidationTriggered && form.controls.betreuungErfolgtTagsueber.errors}"
 					   id="betreuungErfolgtTagsueber_id">
 					{{'FERIENBETREUUNG_BETREUUNG_ERFOLGT_TAGSUEBER' | translate}}
 				</label>
@@ -518,14 +518,13 @@
 							class=""
 							name="betreuungErfolgtTagsueber"
 							horizontal
-							[disabled]="form.get('betreuungErfolgtTagsueber').disabled"
 							formControlName="betreuungErfolgtTagsueber">
 						<mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
 						<mat-radio-button [value]="false">{{'LABEL_NEIN' | translate }}</mat-radio-button>
 					</mat-radio-group>
 					<dv-bisher-x
 							[deklaration]="container?.angabenDeklaration?.angebot?.betreuungErfolgtTagsueber"
-							[korrektur]="form.get('betreuungErfolgtTagsueber').value"
+							[korrektur]="form.value.betreuungErfolgtTagsueber"
 							[showBisher]="container.isAtLeastInPruefungKantonOrZurueckgegeben()"
 							[specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
 					</dv-bisher-x>
@@ -545,7 +544,7 @@
 						  class="form-control dv-input"></textarea>
 					<dv-bisher-x
 							[deklaration]="container?.angabenDeklaration?.angebot?.bemerkungenOeffnungszeiten"
-							[korrektur]="form.get('bemerkungenOeffnungszeiten').value"
+							[korrektur]="form.value.bemerkungenOeffnungszeiten"
 							[showBisher]="container.isAtLeastInPruefungKantonOrZurueckgegeben()"
 							[specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
 					</dv-bisher-x>
@@ -576,7 +575,6 @@
 								formControlName="finanziellBeteiligteGemeinden"
 								name="finanziellBeteiligteGemeinden"
 								id="am-angebot-beteiligte-gemeinden"
-								[disabled]="form.get('finanziellBeteiligteGemeinden').disabled"
 								[multiple]="true">
 						<mat-option *ngFor="let gemeinde of bfsGemeinden"
 									[value]="gemeinde.name">
@@ -585,7 +583,7 @@
 					</mat-select>
 					<dv-bisher-x
 							[deklaration]="container?.angabenDeklaration?.angebot?.finanziellBeteiligteGemeinden?.join(', ')"
-							[korrektur]="form.get('finanziellBeteiligteGemeinden').value?.sort().join(', ')"
+							[korrektur]="form.value.finanziellBeteiligteGemeinden?.sort().join(', ')"
 							[showBisher]="container.isAtLeastInPruefungKantonOrZurueckgegeben()"
 							[specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
 					</dv-bisher-x>
@@ -596,7 +594,7 @@
 
 			<dv-input-container-x>
 				<label required
-                       [ngClass]="{'label-required-error': formValidationTriggered && form.get('gemeindeFuehrtAngebotSelber').errors}">
+                       [ngClass]="{'label-required-error': formValidationTriggered && form.controls.gemeindeFuehrtAngebotSelber.errors}">
 					{{'FERIENBETREUUNG_GEMEINDE_FUEHRT_ANGEBOT_SELBER' | translate}}
 				</label>
 				<dv-radio-container-x>
@@ -604,14 +602,13 @@
 							class=""
 							name="gemeindeFuehrtAngebotSelber"
 							horizontal
-							[disabled]="form.get('gemeindeFuehrtAngebotSelber').disabled"
 							formControlName="gemeindeFuehrtAngebotSelber">
 						<mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
 						<mat-radio-button [value]="false">{{'LABEL_NEIN' | translate }}</mat-radio-button>
 					</mat-radio-group>
 					<dv-bisher-x
 							[deklaration]="container?.angabenDeklaration?.angebot?.gemeindeFuehrtAngebotSelber"
-							[korrektur]="form.get('gemeindeFuehrtAngebotSelber').value"
+							[korrektur]="form.value.gemeindeFuehrtAngebotSelber"
 							[showBisher]="container.isAtLeastInPruefungKantonOrZurueckgegeben()"
 							[specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
 					</dv-bisher-x>
@@ -627,14 +624,13 @@
 							class=""
 							name="gemeindeFuehrtAngebotInKooperation"
 							horizontal
-							[disabled]="form.get('gemeindeFuehrtAngebotInKooperation').disabled"
 							formControlName="gemeindeFuehrtAngebotInKooperation">
 						<mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
 						<mat-radio-button [value]="false">{{'LABEL_NEIN' | translate }}</mat-radio-button>
 					</mat-radio-group>
                     <dv-bisher-x
                         [deklaration]="container?.angabenDeklaration?.angebot?.gemeindeFuehrtAngebotInKooperation"
-                        [korrektur]="form.get('gemeindeFuehrtAngebotInKooperation').value"
+                        [korrektur]="form.value.gemeindeFuehrtAngebotInKooperation"
                         [showBisher]="container.isAtLeastInPruefungKanton()"
                         [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
                     </dv-bisher-x>
@@ -643,7 +639,7 @@
 
 			<dv-input-container-x>
 				<label required
-                       [ngClass]="{'label-required-error': formValidationTriggered && form.get('gemeindeBeauftragtExterneAnbieter').errors}">
+                       [ngClass]="{'label-required-error': formValidationTriggered && form.controls.gemeindeBeauftragtExterneAnbieter.errors}">
 					{{'FERIENBETREUUNG_GEMEINDE_BEAUFTRAGT_EXTERNE_ANBIETER' | translate}}
 				</label>
 				<dv-radio-container-x>
@@ -651,14 +647,13 @@
 							class=""
 							name="gemeindeBeauftragtExterneAnbieter"
 							horizontal
-							[disabled]="form.get('gemeindeBeauftragtExterneAnbieter').disabled"
 							formControlName="gemeindeBeauftragtExterneAnbieter">
 						<mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
 						<mat-radio-button [value]="false">{{'LABEL_NEIN' | translate }}</mat-radio-button>
 					</mat-radio-group>
 					<dv-bisher-x
 							[deklaration]="container?.angabenDeklaration?.angebot?.gemeindeBeauftragtExterneAnbieter"
-							[korrektur]="form.get('gemeindeBeauftragtExterneAnbieter').value"
+							[korrektur]="form.value.gemeindeBeauftragtExterneAnbieter"
 							[showBisher]="container.isAtLeastInPruefungKantonOrZurueckgegeben()"
 							[specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
 					</dv-bisher-x>
@@ -674,14 +669,13 @@
 							class=""
 							name="angebotVereineUndPrivateIntegriert"
 							horizontal
-							[disabled]="form.get('angebotVereineUndPrivateIntegriert').disabled"
 							formControlName="angebotVereineUndPrivateIntegriert">
 						<mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
 						<mat-radio-button [value]="false">{{'LABEL_NEIN' | translate }}</mat-radio-button>
 					</mat-radio-group>
 					<dv-bisher-x
 							[deklaration]="container?.angabenDeklaration?.angebot?.angebotVereineUndPrivateIntegriert"
-							[korrektur]="form.get('angebotVereineUndPrivateIntegriert').value"
+							[korrektur]="form.value.angebotVereineUndPrivateIntegriert"
 							[showBisher]="container.isAtLeastInPruefungKantonOrZurueckgegeben()"
 							[specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
 					</dv-bisher-x>
@@ -699,7 +693,7 @@
 						  class="form-control dv-input"></textarea>
 					<dv-bisher-x
 							[deklaration]="container?.angabenDeklaration?.angebot?.bemerkungenKooperation"
-							[korrektur]="form.get('bemerkungenKooperation').value"
+							[korrektur]="form.value.bemerkungenKooperation"
 							[showBisher]="container.isAtLeastInPruefungKantonOrZurueckgegeben()"
 							[specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
 					</dv-bisher-x>
@@ -718,7 +712,7 @@
 
 			<dv-input-container-x>
 				<label required
-					   [ngClass]="{'label-required-error': formValidationTriggered && form.get('leitungDurchPersonMitAusbildung').errors}">
+					   [ngClass]="{'label-required-error': formValidationTriggered && form.controls.leitungDurchPersonMitAusbildung.errors}">
 					{{'FERIENBETREUUNG_LEITUNG_DURCH_PERSON_MIT_AUSBILDUNG' | translate}}
 				</label>
 				<dv-radio-container-x>
@@ -726,14 +720,13 @@
 							class=""
 							name="leitungDurchPersonMitAusbildung"
 							horizontal
-							[disabled]="form.get('leitungDurchPersonMitAusbildung').disabled"
 							formControlName="leitungDurchPersonMitAusbildung">
 						<mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
 						<mat-radio-button [value]="false">{{'LABEL_NEIN' | translate }}</mat-radio-button>
 					</mat-radio-group>
 					<dv-bisher-x
 							[deklaration]="container?.angabenDeklaration?.angebot?.leitungDurchPersonMitAusbildung"
-							[korrektur]="form.get('leitungDurchPersonMitAusbildung').value"
+							[korrektur]="form.value.leitungDurchPersonMitAusbildung"
 							[showBisher]="container.isAtLeastInPruefungKantonOrZurueckgegeben()"
 							[specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
 					</dv-bisher-x>
@@ -742,7 +735,7 @@
 
 			<dv-input-container-x>
 				<label required
-					   [ngClass]="{'label-required-error': formValidationTriggered && form.get('betreuungDurchPersonenMitErfahrung').errors}">
+					   [ngClass]="{'label-required-error': formValidationTriggered && form.controls.betreuungDurchPersonenMitErfahrung.errors}">
 					{{'FERIENBETREUUNG_LEITUNG_DURCH_PERSON_MIT_ERFAHRUNG' | translate}}
 				</label>
 				<dv-radio-container-x>
@@ -750,14 +743,13 @@
 							class=""
 							name="betreuungDurchPersonenMitErfahrung"
 							horizontal
-							[disabled]="form.get('betreuungDurchPersonenMitErfahrung').disabled"
 							formControlName="betreuungDurchPersonenMitErfahrung">
 						<mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
 						<mat-radio-button [value]="false">{{'LABEL_NEIN' | translate }}</mat-radio-button>
 					</mat-radio-group>
 					<dv-bisher-x
 							[deklaration]="container?.angabenDeklaration?.angebot?.betreuungDurchPersonenMitErfahrung"
-							[korrektur]="form.get('betreuungDurchPersonenMitErfahrung').value"
+							[korrektur]="form.value.betreuungDurchPersonenMitErfahrung"
 							[showBisher]="container.isAtLeastInPruefungKantonOrZurueckgegeben()"
 							[specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
 					</dv-bisher-x>
@@ -766,7 +758,7 @@
 
 			<dv-input-container-x>
 				<label required
-					   [ngClass]="{'label-required-error': formValidationTriggered && form.get('anzahlKinderAngemessen').errors}">
+					   [ngClass]="{'label-required-error': formValidationTriggered && form.controls.anzahlKinderAngemessen.errors}">
 					{{'FERIENBETREUUNG_ANZAHL_KINDER_ANGEMESSEN' | translate}}
 					<dv-tooltip [text]="'FERIENBETREUUNG_ANZAHL_KINDER_ANGEMESSEN_HINT' | translate"></dv-tooltip>
 				</label>
@@ -775,14 +767,13 @@
 							class=""
 							name="anzahlKinderAngemessen"
 							horizontal
-							[disabled]="form.get('anzahlKinderAngemessen').disabled"
 							formControlName="anzahlKinderAngemessen">
 						<mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
 						<mat-radio-button [value]="false">{{'LABEL_NEIN' | translate }}</mat-radio-button>
 					</mat-radio-group>
 					<dv-bisher-x
 							[deklaration]="container?.angabenDeklaration?.angebot?.anzahlKinderAngemessen"
-							[korrektur]="form.get('anzahlKinderAngemessen').value"
+							[korrektur]="form.value.anzahlKinderAngemessen"
 							[showBisher]="container.isAtLeastInPruefungKantonOrZurueckgegeben()"
 							[specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
 					</dv-bisher-x>
@@ -795,7 +786,7 @@
 			<dv-input-container-x class="max-width-container-750">
 				<label for="betreuungsschluessel_id"
 					   required
-					   [ngClass]="{'label-required-error': form && form.get('betreuungsschluessel').errors}">
+					   [ngClass]="{'label-required-error': form && form.controls.betreuungsschluessel.errors}">
 					{{'FERIENBETREUUNG_BETREUUNGSSCHLUESSEL' | translate }}
 				</label>
 				<mat-form-field floatLabel="always">
@@ -803,15 +794,15 @@
 						   id="betreuungsschluessel_id"
 						   formControlName="betreuungsschluessel"
 						   class="form-control dv-input"/>
-					<mat-error *ngIf="form && form.get('betreuungsschluessel').errors?.required"
+					<mat-error *ngIf="form && form.controls.betreuungsschluessel.errors?.required"
 							   translate>ERROR_REQUIRED
 					</mat-error>
-					<mat-error *ngIf="form && form.get('betreuungsschluessel').errors?.isNotInteger"
+					<mat-error *ngIf="form && form.controls.betreuungsschluessel.errors?.isNotInteger"
 							   translate>ERROR_NOT_INTEGER
 					</mat-error>
 					<dv-bisher-x
 							[deklaration]="container?.angabenDeklaration?.angebot?.betreuungsschluessel"
-							[korrektur]="form.get('betreuungsschluessel').value"
+							[korrektur]="form.value.betreuungsschluessel"
 							[showBisher]="container.isAtLeastInPruefungKantonOrZurueckgegeben()"
 							[specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
 					</dv-bisher-x>
@@ -836,7 +827,7 @@
 						  class="form-control dv-input"></textarea>
 					<dv-bisher-x
 							[deklaration]="container?.angabenDeklaration?.angebot?.bemerkungenPersonal"
-							[korrektur]="form.get('bemerkungenPersonal').value"
+							[korrektur]="form.value.bemerkungenPersonal"
 							[showBisher]="container.isAtLeastInPruefungKantonOrZurueckgegeben()"
 							[specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
 					</dv-bisher-x>
@@ -862,14 +853,13 @@
 							class=""
 							name="fixerTarifKinderDerGemeinde"
 							horizontal
-							[disabled]="form.get('fixerTarifKinderDerGemeinde').disabled"
 							formControlName="fixerTarifKinderDerGemeinde">
 						<mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
 						<mat-radio-button [value]="false">{{'LABEL_NEIN' | translate }}</mat-radio-button>
 					</mat-radio-group>
 					<dv-bisher-x
 							[deklaration]="container?.angabenDeklaration?.angebot?.fixerTarifKinderDerGemeinde"
-							[korrektur]="form.get('fixerTarifKinderDerGemeinde').value"
+							[korrektur]="form.value.fixerTarifKinderDerGemeinde"
 							[showBisher]="container.isAtLeastInPruefungKantonOrZurueckgegeben()"
 							[specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
 					</dv-bisher-x>
@@ -885,14 +875,13 @@
 							class=""
 							name="einkommensabhaengigerTarifKinderDerGemeinde"
 							horizontal
-							[disabled]="form.get('einkommensabhaengigerTarifKinderDerGemeinde').disabled"
 							formControlName="einkommensabhaengigerTarifKinderDerGemeinde">
 						<mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
 						<mat-radio-button [value]="false">{{'LABEL_NEIN' | translate }}</mat-radio-button>
 					</mat-radio-group>
 					<dv-bisher-x
 							[deklaration]="container?.angabenDeklaration?.angebot?.einkommensabhaengigerTarifKinderDerGemeinde"
-							[korrektur]="form.get('einkommensabhaengigerTarifKinderDerGemeinde').value"
+							[korrektur]="form.value.einkommensabhaengigerTarifKinderDerGemeinde"
 							[showBisher]="container.isAtLeastInPruefungKantonOrZurueckgegeben()"
 							[specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
 					</dv-bisher-x>
@@ -908,14 +897,13 @@
 							class=""
 							name="tagesschuleTarifGiltFuerFerienbetreuung"
 							horizontal
-							[disabled]="form.get('tagesschuleTarifGiltFuerFerienbetreuung').disabled"
 							formControlName="tagesschuleTarifGiltFuerFerienbetreuung">
 						<mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
 						<mat-radio-button [value]="false">{{'LABEL_NEIN' | translate }}</mat-radio-button>
 					</mat-radio-group>
 					<dv-bisher-x
 							[deklaration]="container?.angabenDeklaration?.angebot?.tagesschuleTarifGiltFuerFerienbetreuung"
-							[korrektur]="form.get('tagesschuleTarifGiltFuerFerienbetreuung').value"
+							[korrektur]="form.value.tagesschuleTarifGiltFuerFerienbetreuung"
 							[showBisher]="container.isAtLeastInPruefungKantonOrZurueckgegeben()"
 							[specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
 					</dv-bisher-x>
@@ -931,14 +919,13 @@
 							class=""
 							name="ferienbetreuungTarifWirdAusTagesschuleTarifAbgeleitet"
 							horizontal
-							[disabled]="form.get('ferienbetreuungTarifWirdAusTagesschuleTarifAbgeleitet').disabled"
 							formControlName="ferienbetreuungTarifWirdAusTagesschuleTarifAbgeleitet">
 						<mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
 						<mat-radio-button [value]="false">{{'LABEL_NEIN' | translate }}</mat-radio-button>
 					</mat-radio-group>
 					<dv-bisher-x
 							[deklaration]="container?.angabenDeklaration?.angebot?.ferienbetreuungTarifWirdAusTagesschuleTarifAbgeleitet"
-							[korrektur]="form.get('ferienbetreuungTarifWirdAusTagesschuleTarifAbgeleitet').value"
+							[korrektur]="form.value.ferienbetreuungTarifWirdAusTagesschuleTarifAbgeleitet"
 							[showBisher]="container.isAtLeastInPruefungKantonOrZurueckgegeben()"
 							[specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
 					</dv-bisher-x>
@@ -954,7 +941,6 @@
 								formControlName="kinderAusAnderenGemeindenZahlenAnderenTarif"
 								name="kinderAusAnderenGemeindenZahlenAnderenTarif"
 								id="kinder-aus-anderen-gemeinden-zahlen-anderen-tarif"
-								[disabled]="form.get('kinderAusAnderenGemeindenZahlenAnderenTarif').disabled"
 								[multiple]="false">
 						<mat-option value="JA">
 							{{'LABEL_JA' | translate}}
@@ -968,7 +954,7 @@
 					</mat-select>
 					<dv-bisher-x
 							[deklaration]="container?.angabenDeklaration?.angebot?.kinderAusAnderenGemeindenZahlenAnderenTarif"
-							[korrektur]="form.get('kinderAusAnderenGemeindenZahlenAnderenTarif').value"
+							[korrektur]="form.value.kinderAusAnderenGemeindenZahlenAnderenTarif"
 							[showBisher]="container.isAtLeastInPruefungKantonOrZurueckgegeben()"
 							[specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
 					</dv-bisher-x>
@@ -986,7 +972,7 @@
 						  class="form-control dv-input"></textarea>
 					<dv-bisher-x
 							[deklaration]="container?.angabenDeklaration?.angebot?.bemerkungenTarifsystem"
-							[korrektur]="form.get('bemerkungenTarifsystem').value"
+							[korrektur]="form.value.bemerkungenTarifsystem"
 							[showBisher]="container.isAtLeastInPruefungKantonOrZurueckgegeben()"
 							[specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
 					</dv-bisher-x>
