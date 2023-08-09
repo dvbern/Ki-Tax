@@ -17,7 +17,7 @@
 
 import {HttpErrorResponse} from '@angular/common/http';
 import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit} from '@angular/core';
-import {UntypedFormControl, UntypedFormGroup} from '@angular/forms';
+import {FormControl, FormGroup} from '@angular/forms';
 import {TranslateService} from '@ngx-translate/core';
 import {StateService} from '@uirouter/core';
 import {ReplaySubject, Subscription} from 'rxjs';
@@ -39,8 +39,8 @@ const LOG = LogFactory.createLog('LastenausgleichTsKommentarComponent');
 export class LastenausgleichTsKommentarComponent implements OnInit, OnDestroy {
 
     public lATSAngabenGemeindeContainer: TSLastenausgleichTagesschuleAngabenGemeindeContainer;
-    public form: UntypedFormGroup;
-    private kommentarControl: UntypedFormControl;
+    public form: FormGroup;
+    private kommentarControl: FormControl;
     public saving$ = new ReplaySubject(1);
     private subscription: Subscription;
 
@@ -83,10 +83,10 @@ export class LastenausgleichTsKommentarComponent implements OnInit, OnDestroy {
     }
 
     private initForm(): void {
-        this.kommentarControl = new UntypedFormControl(
+        this.kommentarControl = new FormControl(
             this.lATSAngabenGemeindeContainer?.internerKommentar
         );
-        this.form = new UntypedFormGroup({
+        this.form = new FormGroup({
             kommentar: this.kommentarControl
         });
         if (this.lATSAngabenGemeindeContainer?.isAbgeschlossen()) {
