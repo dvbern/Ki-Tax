@@ -15,23 +15,7 @@
 
 package ch.dvbern.ebegu.services;
 
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Objects;
-import java.util.Optional;
-
-import javax.annotation.Nonnull;
-import javax.ejb.Local;
-import javax.ejb.Stateless;
-import javax.inject.Inject;
-import javax.validation.constraints.NotNull;
-
-import ch.dvbern.ebegu.entities.Familiensituation;
-import ch.dvbern.ebegu.entities.FamiliensituationContainer;
-import ch.dvbern.ebegu.entities.FinanzielleSituationContainer;
-import ch.dvbern.ebegu.entities.Gesuch;
-import ch.dvbern.ebegu.entities.SozialhilfeZeitraumContainer;
+import ch.dvbern.ebegu.entities.*;
 import ch.dvbern.ebegu.enums.EnumFamilienstatus;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.FinanzielleSituationTyp;
@@ -40,6 +24,17 @@ import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.ebegu.util.EbeguUtil;
 import ch.dvbern.lib.cdipersistence.Persistence;
+
+import javax.annotation.Nonnull;
+import javax.ejb.Local;
+import javax.ejb.Stateless;
+import javax.inject.Inject;
+import javax.validation.constraints.NotNull;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Objects;
+import java.util.Optional;
 
 /**
  * Service fuer familiensituation
@@ -129,7 +124,8 @@ public class FamiliensituationServiceBean extends AbstractBaseService implements
 		//bei änderung der Familiensituation müssen die Fragen zum Kinderabzug im FKJV resetet werden
 		if (gesuch.getFinSitTyp() == FinanzielleSituationTyp.BERN_FKJV &&
 			oldFamiliensituation != null &&
-			oldFamiliensituation.getFamilienstatus() != newFamiliensituation.getFamilienstatus()) {
+			oldFamiliensituation.getFamilienstatus() != newFamiliensituation.getFamilienstatus() &&
+			!Objects.equals(newFamiliensituation.getPartnerIdentischMitVorgesuch(), Boolean.FALSE)) {
 			resetFragenKinderabzugAndSetToUeberpruefen(gesuch);
 		}
 
