@@ -826,8 +826,8 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 		} catch (EbeguException e) {
 			throw new EbeguRuntimeException("neueVeranlagungssmitteilungBearbeiten",
 					"error while applying neueVeranlagungsmitteilungen",
-					e.getErrorCodeEnum(),
-					e);
+					e,
+					e.getErrorCodeEnum());
 		}
 	}
 
@@ -872,7 +872,7 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 						ErrorCodeEnum.ERROR_MUTATIONSMELDUNG_STATUS_VERFUEGEN,
 						neustesGesuch.getId());
 			}
-			if (!AntragStatus.getVerfuegtIgnoriertAndSTVStates().contains(neustesGesuch.getStatus())
+			if (!AntragStatus.getVerfuegtAbgeschlossenIgnoriertAndSTVStates().contains(neustesGesuch.getStatus())
 					&& neustesGesuch.isMutation()) {
 				// veranlagungsmitteilungen dürfen nicht zu bestehender Mutation hinzugefügt werden
 				if (mitteilung instanceof NeueVeranlagungsMitteilung) {
@@ -886,9 +886,7 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 				applyMitteilungToMutation(neustesGesuch, mitteilung);
 				return neustesGesuch;
 			}
-			if (AntragStatus.getVerfuegtIgnoriertAndSTVStates().contains(neustesGesuch.getStatus())
-					|| mitteilung instanceof NeueVeranlagungsMitteilung
-					&& neustesGesuch.getStatus() == AntragStatus.NUR_SCHULAMT) {
+			if (AntragStatus.getVerfuegtAbgeschlossenIgnoriertAndSTVStates().contains(neustesGesuch.getStatus())) {
 				// create Mutation if there is currently no Mutation
 				Gesuch mutation =
 						Gesuch.createMutation(gesuch.getDossier(), neustesGesuch.getGesuchsperiode(), LocalDate.now());
