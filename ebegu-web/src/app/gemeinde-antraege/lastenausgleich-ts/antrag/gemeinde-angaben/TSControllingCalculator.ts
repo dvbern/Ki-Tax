@@ -15,7 +15,7 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {UntypedFormGroup} from '@angular/forms';
+import {FormGroup} from '@angular/forms';
 import {BehaviorSubject, combineLatest, Observable} from 'rxjs';
 import {map, startWith} from 'rxjs/operators';
 import {TSLastenausgleichTagesschuleAngabenGemeindeContainer} from '../../../../../models/gemeindeantrag/TSLastenausgleichTagesschuleAngabenGemeindeContainer';
@@ -38,11 +38,11 @@ export class TSControllingCalculator {
     private readonly _anteilElternbeitraegeCurrentPeriode: BehaviorSubject<string> = new BehaviorSubject<string>(undefined);
     private readonly _anteilElternbeitraegePreviousPeriode: BehaviorSubject<string> = new BehaviorSubject<string>(undefined);
 
-    private readonly _angabenForm: UntypedFormGroup;
+    private readonly _angabenForm: FormGroup;
     private readonly _previousAntrag: TSLastenausgleichTagesschuleAngabenGemeindeContainer;
 
     public constructor(
-        angabenForm: UntypedFormGroup,
+        angabenForm: FormGroup,
         previousAntrag: TSLastenausgleichTagesschuleAngabenGemeindeContainer
     ) {
         this._angabenForm = angabenForm;
