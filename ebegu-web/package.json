@@ -34,7 +34,7 @@
     "docs": "npm run typedoc -- --options typedoc.json --exclude '**/*.spec.ts' ./src/",
     "start": "npm run server",
     "set-version": "node scripts/version-from-pom.js",
-    "postinstall": "ngcc && npm run set-version && npm rebuild node-sass && mkdirp build"
+    "postinstall": "ngcc && npm run set-version && mkdirp build"
   },
   "devDependencies": {
     "@angular-builders/custom-webpack": "^14.0.0",
