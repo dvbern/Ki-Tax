@@ -22,6 +22,7 @@ import java.util.Locale;
 import javax.annotation.Nonnull;
 
 import ch.dvbern.ebegu.entities.AbstractPlatz;
+import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.PensumFachstelle;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
@@ -54,18 +55,40 @@ public class FachstelleAbschnittRule extends AbstractAbschnittRule {
 		List<VerfuegungZeitabschnitt> betreuungspensumAbschnitte = new ArrayList<>();
 		for (PensumFachstelle pensumFachstelle : platz.getKind().getKindJA().getPensumFachstelle()) {
 			if (pensumFachstelle != null) {
-				betreuungspensumAbschnitte.add(toVerfuegungZeitabschnitt(pensumFachstelle));
+				betreuungspensumAbschnitte.add(toVerfuegungZeitabschnitt(pensumFachstelle, platz));
 			}
 		}
 		return betreuungspensumAbschnitte;
 	}
 
 	@Nonnull
-	private VerfuegungZeitabschnitt toVerfuegungZeitabschnitt(@Nonnull PensumFachstelle pensumFachstelle) {
+	private VerfuegungZeitabschnitt toVerfuegungZeitabschnitt(@Nonnull PensumFachstelle pensumFachstelle,
+			@Nonnull AbstractPlatz platz) {
 		VerfuegungZeitabschnitt zeitabschnitt = createZeitabschnittWithinValidityPeriodOfRule(pensumFachstelle.getGueltigkeit());
 		zeitabschnitt.setFachstellenpensumForAsivAndGemeinde(pensumFachstelle.getPensum());
-		zeitabschnitt.setBetreuungspensumMustBeAtLeastFachstellenpensumForAsivAndGemeinde(pensumFachstelle.getIntegrationTyp()
-			== IntegrationTyp.SPRACHLICHE_INTEGRATION);
+		zeitabschnitt.setBetreuungspensumMustBeAtLeastFachstellenpensumForAsivAndGemeinde(
+				betreuungspensumMustBeAtLeastFachstellenpensum(pensumFachstelle.getIntegrationTyp(), platz)
+		);
 		return zeitabschnitt;
+	}
+
+	private boolean betreuungspensumMustBeAtLeastFachstellenpensum(
+			@Nonnull IntegrationTyp integrationTyp,
+			@Nonnull AbstractPlatz platz
+	) {
+		// nur bei sprachlicher integration relevant
+		if (integrationTyp != IntegrationTyp.SPRACHLICHE_INTEGRATION) {
+			return false;
+		}
+		// diese Regel ist nur anwendbar für Betreuungen. Siehe getAnwendbareAngebote(). Hier wird eine Exception geworfen,
+		// falls nicht zu einer Betreuung gecastet werden kann.
+		var betreuung = (Betreuung) platz;
+		if (betreuung.getErweiterteBetreuungContainer().getErweiterteBetreuungJA() == null) {
+			return false;
+		}
+		// gemeinde kann manuell bestätigen, dass der BG ausbezahlt wird, auch wenn das fachstellenpensum unterschritten ist.
+		return !betreuung.getErweiterteBetreuungContainer()
+				.getErweiterteBetreuungJA()
+				.isAnspruchFachstelleWennPensumUnterschritten();
 	}
 }

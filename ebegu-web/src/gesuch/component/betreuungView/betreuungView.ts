@@ -1421,7 +1421,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         }
     }
 
-    public enableErweiterteBeduerfnisse(): boolean {
+    public enableFieldsEditedByGemeinde(): boolean {
         if (this.isDuplicated) {
             return true;
         }
