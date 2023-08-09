@@ -41,7 +41,7 @@ export class DvNgGesuchstellerDialogComponent {
     public constructor(
         private readonly dialogRef: MatDialogRef<DvNgGesuchstellerDialogComponent>,
         private readonly translate: TranslateService,
-        @Inject(MAT_DIALOG_DATA) data: any
+        @Inject(MAT_DIALOG_DATA) private readonly data: any
     ) {
         this.emailAdresse = data.emailAdresse;
         this.administratorRolle = this.translate.instant(data.administratorRolle);

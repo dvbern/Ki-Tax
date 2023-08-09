@@ -16,7 +16,7 @@
  */
 
 import {Component, Inject} from '@angular/core';
-import {UntypedFormControl} from '@angular/forms';
+import {FormControl} from '@angular/forms';
 import {MAT_DIALOG_DATA, MatDialog, MatDialogRef} from '@angular/material/dialog';
 import {Observable} from 'rxjs';
 import {map, startWith} from 'rxjs/operators';
@@ -40,14 +40,14 @@ export class DvNgMitteilungDelegationDialogComponent {
     public filteredBenutzerList$: Observable<TSBenutzer[]>;
     public selectedBenutzer: TSBenutzer;
     public mitteilungId: string;
-    public myControl = new UntypedFormControl();
+    public myControl = new FormControl<TSBenutzer>(null);
 
     public constructor(
         private readonly dialogRef: MatDialogRef<DvNgMitteilungDelegationDialogComponent>,
         private readonly dialogSupport: MatDialog,
         private readonly mitteilungRS: MitteilungRS,
         private readonly benutzerRS: BenutzerRSX,
-        @Inject(MAT_DIALOG_DATA) data: any
+        @Inject(MAT_DIALOG_DATA) private readonly data: any
     ) {
         this.mitteilungId = data.mitteilungId;
         this.selectedBenutzer = null;
