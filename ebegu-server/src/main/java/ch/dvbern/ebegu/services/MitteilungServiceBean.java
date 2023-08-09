@@ -825,9 +825,8 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 					e.getGesuchperiodeId());
 		} catch (EbeguException e) {
 			throw new EbeguRuntimeException("neueVeranlagungssmitteilungBearbeiten",
-					"error while applying neueVeranlagungsmitteilungen",
-					e,
-					e.getErrorCodeEnum());
+					e.getErrorCodeEnum(),
+					e);
 		}
 	}
 
