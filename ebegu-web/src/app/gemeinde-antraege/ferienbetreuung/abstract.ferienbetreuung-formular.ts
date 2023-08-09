@@ -16,7 +16,7 @@
  */
 
 import {ChangeDetectorRef} from '@angular/core';
-import {UntypedFormGroup} from '@angular/forms';
+import {FormGroup} from '@angular/forms';
 import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
 import {TranslateService} from '@ngx-translate/core';
 import {UIRouterGlobals} from '@uirouter/core';
@@ -35,7 +35,7 @@ import {WizardStepXRS} from '../../core/service/wizardStepXRS.rest';
 
 export abstract class AbstractFerienbetreuungFormular {
 
-    public form: UntypedFormGroup;
+    public form: FormGroup;
     public formValidationTriggered = false;
     public formAbschliessenTriggered = false;
 
