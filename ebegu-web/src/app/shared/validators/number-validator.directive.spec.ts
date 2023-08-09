@@ -15,52 +15,52 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {UntypedFormControl} from '@angular/forms';
+import {FormControl} from '@angular/forms';
 import {numberValidator, ValidationType} from './number-validator.directive';
 
 describe('numberValidator', () => {
     it('should return an error if 1.5 ist tested for an integer', () => {
-        const test = numberValidator(ValidationType.INTEGER)(new UntypedFormControl('1.5'));
+        const test = numberValidator(ValidationType.INTEGER)(new FormControl('1.5'));
         expect(test).toEqual({isNotInteger: {value: '1.5'}});
     });
     it('should NOT return an error if 2 ist tested for an integer', () => {
-        const test = numberValidator(ValidationType.INTEGER)(new UntypedFormControl('2'));
+        const test = numberValidator(ValidationType.INTEGER)(new FormControl('2'));
         expect(test).toEqual(null);
     });
     it('should return an error if 1.2 ist tested for half number', () => {
-        const test = numberValidator(ValidationType.HALF)(new UntypedFormControl('1.2'));
+        const test = numberValidator(ValidationType.HALF)(new FormControl('1.2'));
         expect(test).toEqual({isNotHalf: {value: '1.2'}});
     });
     it('should NOT return an error if 1.5 ist tested for half number', () => {
-        const test = numberValidator(ValidationType.HALF)(new UntypedFormControl('1.5'));
+        const test = numberValidator(ValidationType.HALF)(new FormControl('1.5'));
         expect(test).toEqual(null);
     });
     it('should return an error if "abc" ist tested for half number', () => {
-        const test = numberValidator(ValidationType.HALF)(new UntypedFormControl('abc'));
+        const test = numberValidator(ValidationType.HALF)(new FormControl('abc'));
         expect(test).toEqual({isNotHalf: {value: 'abc'}});
     });
     it('should return an error if "abc" ist tested for integer', () => {
-        const test = numberValidator(ValidationType.INTEGER)(new UntypedFormControl('abc'));
+        const test = numberValidator(ValidationType.INTEGER)(new FormControl('abc'));
         expect(test).toEqual({isNotInteger: {value: 'abc'}});
     });
     it('should return an error if "-1" ist tested for positive integer', () => {
-        const test = numberValidator(ValidationType.POSITIVE_INTEGER)(new UntypedFormControl('-1'));
+        const test = numberValidator(ValidationType.POSITIVE_INTEGER)(new FormControl('-1'));
         expect(test).toEqual({isNotPositiveInteger: {value: '-1'}});
     });
     it('should return an error if 1.5 ist tested for a positive integer', () => {
-        const test = numberValidator(ValidationType.POSITIVE_INTEGER)(new UntypedFormControl('1.5'));
+        const test = numberValidator(ValidationType.POSITIVE_INTEGER)(new FormControl('1.5'));
         expect(test).toEqual({isNotPositiveInteger: {value: '1.5'}});
     });
     it('should return an error if -1.5 ist tested for a positive integer', () => {
-        const test = numberValidator(ValidationType.POSITIVE_INTEGER)(new UntypedFormControl('-1.5'));
+        const test = numberValidator(ValidationType.POSITIVE_INTEGER)(new FormControl('-1.5'));
         expect(test).toEqual({isNotPositiveInteger: {value: '-1.5'}});
     });
     it('should NOT return an error if 2 ist tested for a positive integer', () => {
-        const test = numberValidator(ValidationType.POSITIVE_INTEGER)(new UntypedFormControl('2'));
+        const test = numberValidator(ValidationType.POSITIVE_INTEGER)(new FormControl('2'));
         expect(test).toEqual(null);
     });
     it('should return an error if "abc" ist tested for positive integer', () => {
-        const test = numberValidator(ValidationType.POSITIVE_INTEGER)(new UntypedFormControl('abc'));
+        const test = numberValidator(ValidationType.POSITIVE_INTEGER)(new FormControl('abc'));
         expect(test).toEqual({isNotPositiveInteger: {value: 'abc'}});
     });
 });
