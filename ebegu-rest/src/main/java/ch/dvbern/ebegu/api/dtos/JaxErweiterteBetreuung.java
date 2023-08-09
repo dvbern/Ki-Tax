@@ -52,6 +52,9 @@ public class JaxErweiterteBetreuung extends JaxAbstractDTO {
 	@Nullable
 	private BigDecimal erweitereteBeduerfnisseBetrag;
 
+	@NotNull
+	private Boolean anspruchFachstelleWennPensumUnterschritten;
+
 	@Nullable
 	public Boolean getBetreuungInGemeinde() {
 		return betreuungInGemeinde;
@@ -119,5 +122,13 @@ public class JaxErweiterteBetreuung extends JaxAbstractDTO {
 
 	public void setKitaPlusZuschlagBestaetigt(Boolean kitaPlusZuschlagBestaetigt) {
 		this.kitaPlusZuschlagBestaetigt = kitaPlusZuschlagBestaetigt;
+	}
+
+	public Boolean getAnspruchFachstelleWennPensumUnterschritten() {
+		return anspruchFachstelleWennPensumUnterschritten;
+	}
+
+	public void setAnspruchFachstelleWennPensumUnterschritten(Boolean anspruchFachstelleWennPensumUnterschritten) {
+		this.anspruchFachstelleWennPensumUnterschritten = anspruchFachstelleWennPensumUnterschritten;
 	}
 }
