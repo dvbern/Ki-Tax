@@ -3163,5 +3163,6 @@
     "PENSUM_FACHSTELLE_ERFASSEN": "Zusätzliches Fachstellenpensum erfassen",
     "PENSUM_FACHSTELLE_ENTFERNEN": "Fachstellenpensum {{fachstellennummer}} entfernen",
     "ZEITRAUM": "Zeitraum",
+    "ANSPRUCH_FACHSTELLE_WENN_PENSUM_UNTERSCHRITTEN": "Anspruch gewähren, auch wenn das Pensum für die gewählte Fachstelle zu tief ist",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }
