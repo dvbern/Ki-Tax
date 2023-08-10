@@ -15,7 +15,21 @@
 
 package ch.dvbern.ebegu.tests;
 
-import ch.dvbern.ebegu.entities.*;
+import java.time.LocalDate;
+import java.util.Collection;
+import java.util.Objects;
+import java.util.Optional;
+
+import javax.inject.Inject;
+
+import ch.dvbern.ebegu.entities.Betreuung;
+import ch.dvbern.ebegu.entities.ErweiterteBetreuung;
+import ch.dvbern.ebegu.entities.ErwerbspensumContainer;
+import ch.dvbern.ebegu.entities.Gesuch;
+import ch.dvbern.ebegu.entities.Gesuchsperiode;
+import ch.dvbern.ebegu.entities.GesuchstellerContainer;
+import ch.dvbern.ebegu.entities.KindContainer;
+import ch.dvbern.ebegu.entities.PensumFachstelle;
 import ch.dvbern.ebegu.enums.AntragStatus;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
@@ -34,12 +48,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
-
-import javax.inject.Inject;
-import java.time.LocalDate;
-import java.util.Collection;
-import java.util.Objects;
-import java.util.Optional;
 
 /**
  * Test fuer Erwerbspensum Service
@@ -184,6 +192,8 @@ public class ErwerbspensumServiceBeanTest extends AbstractEbeguLoginTest {
 		final PensumFachstelle pensumFachstelle = TestDataUtil.createDefaultPensumFachstelle();
 		TestDataUtil.saveMandantIfNecessary(persistence, Objects.requireNonNull(pensumFachstelle.getFachstelle()).getMandant());
 		kind.getKindJA().getPensumFachstelle().add(pensumFachstelle);
+		persistence.persist(pensumFachstelle.getFachstelle());
+		persistence.persist(pensumFachstelle);
 
 		Assert.assertFalse(erwerbspensumService.isErwerbspensumRequired(gesuch));
 	}
