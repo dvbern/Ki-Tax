@@ -35,7 +35,7 @@ public enum MergeFieldZahlungen implements MergeFieldProvider {
 
     repeatRow(new RepeatRowMergeField("repeatRow")),
     zahlungslaufTitle(new SimpleMergeField<>("zahlungslaufTitle", STRING_CONVERTER)),
-    faelligkeitsDatum(new SimpleMergeField<>("faellikeitsDatum", DATE_CONVERTER)),
+    faelligkeitsDatum(new SimpleMergeField<>("faelligkeitsDatum", DATE_CONVERTER)),
     gemeinde(new SimpleMergeField<>("gemeinde", STRING_CONVERTER)),
     institution(new SimpleMergeField<>("institution", STRING_CONVERTER)),
     timestampZahlungslauf(new SimpleMergeField<>("timestampZahlungslauf", DATETIME_CONVERTER)),
