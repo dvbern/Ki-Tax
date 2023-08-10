@@ -330,7 +330,7 @@ public class GeresWebService implements IGeresWebService {
 
 	@Nonnull
 	@Override
-	public EWKResultat suchePersonenInHaushalt(long wohnungsId, long gebaeudeId) throws PersonenSucheServiceException, PersonenSucheServiceBusinessException {
+	public EWKResultat suchePersonenInHaushalt(Long wohnungsId, Long gebaeudeId) throws PersonenSucheServiceException, PersonenSucheServiceBusinessException {
 		ResidentInfoParametersType parameters = new ResidentInfoParametersType();
 		parameters.setEgid(gebaeudeId);
 		parameters.setEwid(wohnungsId);
