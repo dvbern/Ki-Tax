@@ -15,53 +15,9 @@
 
 package ch.dvbern.ebegu.tests.rules.Anlageverzeichnis;
 
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Set;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
-import ch.dvbern.ebegu.entities.DokumentGrund;
-import ch.dvbern.ebegu.entities.Dossier;
-import ch.dvbern.ebegu.entities.Einkommensverschlechterung;
-import ch.dvbern.ebegu.entities.EinkommensverschlechterungContainer;
-import ch.dvbern.ebegu.entities.EinkommensverschlechterungInfoContainer;
-import ch.dvbern.ebegu.entities.Einstellung;
-import ch.dvbern.ebegu.entities.Erwerbspensum;
-import ch.dvbern.ebegu.entities.ErwerbspensumContainer;
-import ch.dvbern.ebegu.entities.Fall;
-import ch.dvbern.ebegu.entities.Familiensituation;
-import ch.dvbern.ebegu.entities.FamiliensituationContainer;
-import ch.dvbern.ebegu.entities.FinanzielleSituation;
-import ch.dvbern.ebegu.entities.FinanzielleSituationContainer;
-import ch.dvbern.ebegu.entities.Gesuch;
-import ch.dvbern.ebegu.entities.Gesuchsperiode;
-import ch.dvbern.ebegu.entities.GesuchstellerContainer;
-import ch.dvbern.ebegu.entities.Kind;
-import ch.dvbern.ebegu.entities.KindContainer;
-import ch.dvbern.ebegu.entities.Mandant;
-import ch.dvbern.ebegu.entities.PensumFachstelle;
-import ch.dvbern.ebegu.enums.AnspruchBeschaeftigungAbhaengigkeitTyp;
-import ch.dvbern.ebegu.enums.DokumentGrundPersonType;
-import ch.dvbern.ebegu.enums.DokumentGrundTyp;
-import ch.dvbern.ebegu.enums.DokumentTyp;
-import ch.dvbern.ebegu.enums.EinschulungTyp;
-import ch.dvbern.ebegu.enums.EinstellungKey;
-import ch.dvbern.ebegu.enums.EnumFamilienstatus;
-import ch.dvbern.ebegu.enums.FachstelleName;
-import ch.dvbern.ebegu.enums.FinanzielleSituationTyp;
-import ch.dvbern.ebegu.enums.IntegrationTyp;
-import ch.dvbern.ebegu.enums.Kinderabzug;
-import ch.dvbern.ebegu.enums.SteuerdatenAnfrageStatus;
-import ch.dvbern.ebegu.enums.Taetigkeit;
-import ch.dvbern.ebegu.rules.anlageverzeichnis.BernErwerbspensumDokumente;
-import ch.dvbern.ebegu.rules.anlageverzeichnis.BernKindDokumente;
-import ch.dvbern.ebegu.rules.anlageverzeichnis.DokumentenverzeichnisEvaluator;
-import ch.dvbern.ebegu.rules.anlageverzeichnis.LuzernErwerbspensumDokumente;
-import ch.dvbern.ebegu.rules.anlageverzeichnis.LuzernKindDokumente;
+import ch.dvbern.ebegu.entities.*;
+import ch.dvbern.ebegu.enums.*;
+import ch.dvbern.ebegu.rules.anlageverzeichnis.*;
 import ch.dvbern.ebegu.services.EinstellungService;
 import ch.dvbern.ebegu.test.TestDataUtil;
 import ch.dvbern.ebegu.types.DateRange;
@@ -75,6 +31,14 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.Objects;
+import java.util.Set;
 
 import static org.easymock.EasyMock.expect;
 
@@ -146,7 +110,7 @@ public class DokumentenverzeichnisEvaluatorTest extends EasyMockSupport {
 
 		if (fachstellename != null) {
 			kindContainer.getKindJA().getPensumFachstelle().clear();
-			final PensumFachstelle defaultPensumFachstelle = TestDataUtil.createDefaultPensumFachstelle();
+			final PensumFachstelle defaultPensumFachstelle = TestDataUtil.createDefaultPensumFachstelle(kindContainer.getKindJA());
 			assert defaultPensumFachstelle.getFachstelle() != null;
 			defaultPensumFachstelle.getFachstelle().setName(fachstellename);
 			defaultPensumFachstelle.setIntegrationTyp(integrationTyp);

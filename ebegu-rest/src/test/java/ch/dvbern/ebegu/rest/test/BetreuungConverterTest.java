@@ -15,21 +15,10 @@
 
 package ch.dvbern.ebegu.rest.test;
 
-import java.util.HashSet;
-
-import javax.inject.Inject;
-
 import ch.dvbern.ebegu.api.converter.JaxBConverter;
 import ch.dvbern.ebegu.api.dtos.JaxBetreuung;
 import ch.dvbern.ebegu.api.dtos.JaxPensumFachstelle;
-import ch.dvbern.ebegu.entities.Betreuung;
-import ch.dvbern.ebegu.entities.Fachstelle;
-import ch.dvbern.ebegu.entities.Gesuch;
-import ch.dvbern.ebegu.entities.Gesuchsperiode;
-import ch.dvbern.ebegu.entities.InstitutionStammdaten;
-import ch.dvbern.ebegu.entities.Kind;
-import ch.dvbern.ebegu.entities.KindContainer;
-import ch.dvbern.ebegu.entities.PensumFachstelle;
+import ch.dvbern.ebegu.entities.*;
 import ch.dvbern.ebegu.test.IntegrationTest;
 import ch.dvbern.ebegu.test.TestDataUtil;
 import ch.dvbern.ebegu.util.Constants;
@@ -43,6 +32,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
+
+import javax.inject.Inject;
+import java.util.HashSet;
 
 /**
  * Tests der die Konvertierung von Betreuungen prueft
@@ -113,10 +105,10 @@ public class BetreuungConverterTest extends AbstractEbeguRestLoginTest {
 			Fachstelle fachstelle = TestDataUtil.createDefaultFachstelle();
 			TestDataUtil.persistFachstelle(persistence, fachstelle);
 
-			PensumFachstelle pensumFachstelle = TestDataUtil.createDefaultPensumFachstelle();
+			PensumFachstelle pensumFachstelle = TestDataUtil.createDefaultPensumFachstelle(kind.getKindGS());
 			pensumFachstelle.setFachstelle(fachstelle);
 
-			PensumFachstelle pensumFachstelle2 = TestDataUtil.createDefaultPensumFachstelle();
+			PensumFachstelle pensumFachstelle2 = TestDataUtil.createDefaultPensumFachstelle(kind.getKindJA());
 			pensumFachstelle2.setPensum(50);
 			pensumFachstelle2.setFachstelle(fachstelle);
 

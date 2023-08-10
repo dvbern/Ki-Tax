@@ -15,10 +15,6 @@
 
 package ch.dvbern.ebegu.tests;
 
-import java.util.Optional;
-
-import javax.inject.Inject;
-
 import ch.dvbern.ebegu.entities.PensumFachstelle;
 import ch.dvbern.ebegu.services.PensumFachstelleService;
 import ch.dvbern.ebegu.test.IntegrationTest;
@@ -31,6 +27,9 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
+
+import javax.inject.Inject;
+import java.util.Optional;
 
 /**
  * Tests fuer die Klasse PensumFachstelle
@@ -80,7 +79,7 @@ public class PensumFachstelleServiceTest extends AbstractEbeguLoginTest {
 	// HELP METHODS
 
 	private PensumFachstelle insertInstitutionStammdaten() {
-		PensumFachstelle pensumFachstelle = TestDataUtil.createDefaultPensumFachstelle();
+		PensumFachstelle pensumFachstelle = TestDataUtil.createDefaultPensumFachstelle(null);
 		TestDataUtil.persistFachstelle(persistence, pensumFachstelle.getFachstelle());
 		return persistence.merge(pensumFachstelle);
 	}
