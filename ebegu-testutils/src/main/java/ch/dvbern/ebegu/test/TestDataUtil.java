@@ -746,6 +746,7 @@ public final class TestDataUtil {
 		pensumFachstelle.setFachstelle(createDefaultFachstelle());
 		pensumFachstelle.setIntegrationTyp(IntegrationTyp.SOZIALE_INTEGRATION);
 		pensumFachstelle.setKind(Objects.requireNonNullElseGet(kind, () -> createDefaultKind(false)));
+		pensumFachstelle.getKind().getPensumFachstelle().add(pensumFachstelle);
 		return pensumFachstelle;
 	}
 
