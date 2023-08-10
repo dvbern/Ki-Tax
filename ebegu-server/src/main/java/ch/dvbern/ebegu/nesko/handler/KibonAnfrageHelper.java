@@ -55,6 +55,11 @@ public class KibonAnfrageHelper {
 			kibonAnfrageContext.setSteuerdatenAnfrageStatus(SteuerdatenAnfrageStatus.FAILED_PARTNER_NICHT_GEMEINSAM);
 			return;
 		}
+		if (steuerdatenResponse.getUnregelmaessigkeitInDerVeranlagung() != null
+				&& steuerdatenResponse.getUnregelmaessigkeitInDerVeranlagung()) {
+			kibonAnfrageContext.setSteuerdatenAnfrageStatus(SteuerdatenAnfrageStatus.FAILED_UNREGELMAESSIGKEIT);
+			return;
+		}
 		setVeranlagungsstand(kibonAnfrageContext, steuerdatenResponse);
 		KibonAnfrageHelper.updateFinSitSteuerdatenAbfrageStatusOk(
 				kibonAnfrageContext.getFinanzielleSituationJAToUse(),
