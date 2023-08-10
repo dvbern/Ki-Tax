@@ -46,7 +46,7 @@ public class JaxAbstractAntragDTO implements Serializable {
 
 	private String clazz;
 
-	private String BemerkungenDossier;
+	private String Bemerkungen;
 
 	public JaxAbstractAntragDTO(String clazz) {
 		this.clazz = clazz;
@@ -92,11 +92,11 @@ public class JaxAbstractAntragDTO implements Serializable {
 		this.fallId = fallId;
 	}
 
-	public String getBemerkungenDossier() {
-		return BemerkungenDossier;
+	public String getBemerkungen() {
+		return Bemerkungen;
 	}
 
-	public void setBemerkungenDossier(final String bemerkungenDossier) {
-		BemerkungenDossier = bemerkungenDossier;
+	public void setBemerkungen(final String bemerkungen) {
+		Bemerkungen = bemerkungen;
 	}
 }

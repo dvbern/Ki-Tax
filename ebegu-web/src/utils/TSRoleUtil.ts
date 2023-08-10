@@ -791,7 +791,7 @@ export class TSRoleUtil {
         ];
     }
 
-    public static getEditBemerkungenDossierRoles(): ReadonlyArray<TSRole> {
+    public static getEditBemerkungenRoles(): ReadonlyArray<TSRole> {
         return [
             TSRole.SUPER_ADMIN,
             TSRole.ADMIN_GEMEINDE,

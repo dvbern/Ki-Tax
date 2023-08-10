@@ -914,7 +914,6 @@ export class EbeguRestUtil {
             restFall.fallNummer = fall.fallNummer;
             restFall.besitzer = this.userToRestObject({}, fall.besitzer);
             restFall.sozialdienstFall = this.sozialdienstFallToRestObject({}, fall.sozialdienstFall);
-            restFall.bemerkungenDossier = fall.bemerkungenDossier;
             return restFall;
         }
         return undefined;
@@ -925,7 +924,6 @@ export class EbeguRestUtil {
         if (fallFromServer) {
             this.parseAbstractMutableEntity(fallTS, fallFromServer);
             fallTS.fallNummer = fallFromServer.fallNummer;
-            fallTS.bemerkungenDossier = fallFromServer.bemerkungenDossier;
             fallTS.nextNumberKind = fallFromServer.nextNumberKind;
             fallTS.besitzer = this.parseUser(new TSBenutzer(), fallFromServer.besitzer);
             fallTS.sozialdienstFall =
@@ -1306,6 +1304,7 @@ export class EbeguRestUtil {
             restDossier.gemeinde = this.gemeindeToRestObject({}, dossier.gemeinde);
             restDossier.verantwortlicherBG = this.benutzerNoDetailsToRestObject({}, dossier.verantwortlicherBG);
             restDossier.verantwortlicherTS = this.benutzerNoDetailsToRestObject({}, dossier.verantwortlicherTS);
+            restDossier.bemerkungen = dossier.bemerkungen;
             return restDossier;
         }
         return undefined;
@@ -1329,6 +1328,7 @@ export class EbeguRestUtil {
                 this.parseUserNoDetails(new TSBenutzerNoDetails(), dossierFromServer.verantwortlicherBG);
             dossierTS.verantwortlicherTS =
                 this.parseUserNoDetails(new TSBenutzerNoDetails(), dossierFromServer.verantwortlicherTS);
+            dossierTS.bemerkungen = dossierFromServer.bemerkungen;
             return dossierTS;
         }
         return undefined;

@@ -19,6 +19,7 @@ import java.util.Objects;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.ForeignKey;
 import javax.persistence.Index;
@@ -27,8 +28,10 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 import ch.dvbern.ebegu.dto.suchfilter.lucene.Searchable;
+import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.validationgroups.ChangeVerantwortlicherBGValidationGroup;
 import ch.dvbern.ebegu.validationgroups.ChangeVerantwortlicherTSValidationGroup;
 import ch.dvbern.ebegu.validators.CheckVerantwortlicherBG;
@@ -76,6 +79,11 @@ public class Dossier extends AbstractMutableEntity implements Searchable {
 	@ManyToOne(optional = true)
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_dossier_verantwortlicher_ts_id"))
 	private Benutzer verantwortlicherTS = null; // Mitarbeiter des SCH
+
+	@Size(max = Constants.DB_TEXTAREA_LENGTH)
+	@Nullable
+	@Column(nullable = true, length = Constants.DB_TEXTAREA_LENGTH)
+	private String bemerkungen;
 
 	@Nonnull
 	public Fall getFall() {
@@ -173,5 +181,14 @@ public class Dossier extends AbstractMutableEntity implements Searchable {
 	public String getMessageForAccessException() {
 		return "gemeinde: " + this.getGemeinde().getName()
 			+ ", fallNummer: " + this.getFall().getPaddedFallnummer();
+	}
+
+	@Nullable
+	public String getBemerkungen() {
+		return bemerkungen;
+	}
+
+	public void setBemerkungen(@Nullable String bemerkungen) {
+		this.bemerkungen = bemerkungen;
 	}
 }

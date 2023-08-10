@@ -24,6 +24,7 @@ export class TSDossier extends TSAbstractMutableEntity {
     private _gemeinde: TSGemeinde;
     private _verantwortlicherBG: TSBenutzerNoDetails;
     private _verantwortlicherTS: TSBenutzerNoDetails;
+    private _bemerkungen: string;
 
     public get fall(): TSFall {
         return this._fall;
@@ -70,5 +71,13 @@ export class TSDossier extends TSAbstractMutableEntity {
 
     public extractGemeindeName(): string {
         return this.gemeinde ? this.gemeinde.name : '';
+    }
+
+    public get bemerkungen(): string {
+        return this._bemerkungen;
+    }
+
+    public set bemerkungen(value: string) {
+        this._bemerkungen = value;
     }
 }

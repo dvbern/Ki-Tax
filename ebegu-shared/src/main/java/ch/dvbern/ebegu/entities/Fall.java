@@ -32,7 +32,6 @@ import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 
 import ch.dvbern.ebegu.entities.sozialdienst.SozialdienstFall;
 import ch.dvbern.ebegu.util.Constants;
@@ -85,11 +84,6 @@ public class Fall extends AbstractMutableEntity implements HasMandant {
 	@OneToOne(optional = true, cascade = CascadeType.ALL, orphanRemoval = true)
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_fall_sozialdienst_fall_id"), nullable = true)
 	private SozialdienstFall sozialdienstFall;
-
-	@Size(max = Constants.DB_TEXTAREA_LENGTH)
-	@Nullable
-	@Column(nullable = true, length = Constants.DB_TEXTAREA_LENGTH)
-	private String bemerkungenDossier;
 
 	/**
 	 * nextNumberKind ist die Nummer, die das naechste Kind bekommen wird. Aus diesem Grund ist es by default 1
@@ -176,14 +170,5 @@ public class Fall extends AbstractMutableEntity implements HasMandant {
 
 	public boolean isSozialdienstFall() {
 		return this.sozialdienstFall != null;
-	}
-
-	@Nullable
-	public String getBemerkungenDossier() {
-		return bemerkungenDossier;
-	}
-
-	public void setBemerkungenDossier(@Nullable String bemerkungenDossier) {
-		this.bemerkungenDossier = bemerkungenDossier;
 	}
 }

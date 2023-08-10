@@ -85,8 +85,6 @@ import static java.util.Objects.requireNonNull;
 @DenyAll // Absichtlich keine Rolle zugelassen, erzwingt, dass es für neue Methoden definiert werden muss
 public class FallResource {
 
-	public static final String FALL_ID_INVALID = "FallId invalid: ";
-
 	@Inject
 	private FallService fallService;
 
@@ -243,30 +241,5 @@ public class FallResource {
 
 		Fall persistedFall = this.fallService.saveFall(fall);
 		return converter.fallToJAX(persistedFall);
-	}
-
-	@ApiOperation("Text")
-	@Nullable
-	@PUT
-	@Path("/bemerkungenDossier/{fallId}")
-	@Consumes(MediaType.APPLICATION_JSON)
-	@Produces(MediaType.APPLICATION_JSON)
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_TS, SACHBEARBEITER_TS })
-	public Response updateBemerkungenDossier(
-		@Nonnull @NotNull @PathParam("fallId") JaxId fallJAXPId,
-		@Nonnull @NotNull String bemerkungenDossier,
-		@Context UriInfo uriInfo,
-		@Context HttpServletResponse response) {
-
-		Objects.requireNonNull(fallJAXPId.getId());
-		Fall fall = fallService.findFall(converter.toEntityId(fallJAXPId)).orElseThrow(() -> new EbeguEntityNotFoundException("updateBemerkungenDossier", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
-			FALL_ID_INVALID + fallJAXPId.getId()));
-
-		fall.setBemerkungenDossier(bemerkungenDossier);
-
-		fallService.saveFall(fall);
-
-		return Response.ok().build();
-
 	}
 }

@@ -15,6 +15,7 @@
 
 package ch.dvbern.ebegu.api.dtos;
 
+import javax.annotation.Nullable;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -36,6 +37,8 @@ public class JaxDossier extends JaxAbstractDTO {
 
 	private JaxBenutzerNoDetails verantwortlicherTS;
 
+	@Nullable
+	private String bemerkungen;
 
 	public JaxFall getFall() {
 		return fall;
@@ -67,5 +70,14 @@ public class JaxDossier extends JaxAbstractDTO {
 
 	public void setVerantwortlicherTS(JaxBenutzerNoDetails verantwortlicherTS) {
 		this.verantwortlicherTS = verantwortlicherTS;
+	}
+
+	@Nullable
+	public String getBemerkungen() {
+		return bemerkungen;
+	}
+
+	public void setBemerkungen(@Nullable final String bemerkungen) {
+		this.bemerkungen = bemerkungen;
 	}
 }

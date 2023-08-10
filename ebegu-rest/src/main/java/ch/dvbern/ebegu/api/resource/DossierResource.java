@@ -82,6 +82,8 @@ import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
 @PermitAll // Grundsaetzliche fuer alle Rollen: Datenabhaengig. -> Authorizer
 public class DossierResource {
 
+	public static final String DOSSIER_ID_INVALID = "DossierId invalid: ";
+
 	@Inject
 	private DossierService dossierService;
 
@@ -276,6 +278,28 @@ public class DossierResource {
 			this.dossierService.setVerantwortlicherTS(dossier.getId(), benutzer);
 
 		}
+		return Response.ok().build();
+	}
+
+	@ApiOperation("Text")
+	@Nullable
+	@PUT
+	@Path("/bemerkungen/{dossierId}")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_TS, SACHBEARBEITER_TS})
+	public Response updateBemerkungen(
+		@Nonnull @NotNull @PathParam("dossierId") JaxId dossierJAXPId,
+		@Nonnull @NotNull String bemerkungen,
+		@Context UriInfo uriInfo,
+		@Context HttpServletResponse response) {
+
+		Objects.requireNonNull(dossierJAXPId.getId());
+		Dossier dossier = dossierService.findDossier(converter.toEntityId(dossierJAXPId)).orElseThrow(() -> new EbeguEntityNotFoundException("updateBemerkungen", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
+			DOSSIER_ID_INVALID + dossierJAXPId.getId()));
+
+		dossierService.saveDossier(dossier);
+
 		return Response.ok().build();
 	}
 }
