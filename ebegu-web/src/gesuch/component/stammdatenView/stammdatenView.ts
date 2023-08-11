@@ -518,9 +518,9 @@ export class StammdatenViewController extends AbstractGesuchViewController<TSGes
 
     public getMailRequiredCssClass(): string {
         if (this.isMailRequired()) {
-            return "required";
+            return 'required';
         }
-        return "";
+        return '';
     }
 
     public isLastStepOfSteueramt(): boolean {
