@@ -72,21 +72,10 @@ public class AnmeldungTagesschuleEventGenerator {
 		CriteriaBuilder cb = persistence.getCriteriaBuilder();
 		CriteriaQuery<AnmeldungTagesschule> query = cb.createQuery(AnmeldungTagesschule.class);
 		Root<AnmeldungTagesschule> root = query.from(AnmeldungTagesschule.class);
-		List<Predicate> predicates = new ArrayList<>();
-
-		//Institution Stammdaten Join and check angebot Typ, muss Kita oder TFO sein
-		Join<AnmeldungTagesschule, InstitutionStammdaten> institutionStammdatenJoin =
-			root.join(AnmeldungTagesschule_.institutionStammdaten);
-		Predicate isKitaOderTFO =
-			institutionStammdatenJoin.get(InstitutionStammdaten_.betreuungsangebotTyp)
-				.in(BetreuungsangebotTyp.getBetreuungsgutscheinTypes());
-		predicates.add(isKitaOderTFO);
 
 		//Event muss noch nicht plubliziert sein
 		Predicate isNotPublished = cb.isFalse(root.get(AnmeldungTagesschule_.eventPublished));
-		predicates.add(isNotPublished);
-
-		query.where(predicates.toArray(NEW));
+		query.where(isNotPublished);
 
 		List<AnmeldungTagesschule> anmeldungTagesschuleList = persistence.getEntityManager().createQuery(query)
 			.getResultList();
