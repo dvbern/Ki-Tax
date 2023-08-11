@@ -2244,11 +2244,13 @@ public final class TestDataUtil {
 			Objects.requireNonNull(pensumFachstelle.getFachstelle());
 			TestDataUtil.saveMandantIfNecessary(persistence, pensumFachstelle.getFachstelle().getMandant());
 			persistence.persist(pensumFachstelle.getFachstelle());
+			pensumFachstelle.setKind(betreuung.getKind().getKindGS());
 		}
 		for (PensumFachstelle pensumFachstelle : betreuung.getKind().getKindJA().getPensumFachstelle()) {
 			Objects.requireNonNull(pensumFachstelle.getFachstelle());
 			TestDataUtil.saveMandantIfNecessary(persistence, pensumFachstelle.getFachstelle().getMandant());
 			persistence.persist(pensumFachstelle.getFachstelle());
+			pensumFachstelle.setKind(betreuung.getKind().getKindJA());
 		}
 
 		KindContainer kindContainer = betreuung.getKind();
