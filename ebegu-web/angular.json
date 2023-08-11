@@ -152,7 +152,6 @@
       }
     }
   },
-  "defaultProject": "ebegu",
   "schematics": {
     "@schematics/angular:component": {
       "prefix": "dv",
@@ -164,6 +163,8 @@
     }
   },
   "cli": {
-    "defaultCollection": "@angular-eslint/schematics"
+    "schematicCollections": [
+      "@angular-eslint/schematics"
+    ]
   }
 }

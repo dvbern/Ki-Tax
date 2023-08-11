@@ -32,14 +32,14 @@
                                translate>GESUCHSPERIODEN</label>
                         <select aria-describedby="gemeindeantragtyp-error" name="gemeindeantragperiode"
                                 id="gemeindeantragperiode"
-                                formControlName="periode"
+                                [formControl]="formGroup.controls.periode"
                                 class="form-control">
                             <option value="" style="display: none;"></option>
                             <option *ngFor="let periode of getGesuchsperiodenOptions()"
                                     [value]="periode.id">{{periode.gesuchsperiodeString}}</option>
                         </select>
                         <div class="dv-error-messages">
-                            <div *ngIf="(formGroup?.get('periode').touched || triedSending) && formGroup?.get('periode')?.errors?.required" class="error" translate>ERROR_REQUIRED</div>
+                            <div *ngIf="(formGroup.controls.periode.touched || triedSending) && formGroup.controls.periode.errors?.required" class="error" translate>ERROR_REQUIRED</div>
                         </div>
                     </div>
 
@@ -51,14 +51,14 @@
                                    translate>TYP</label>
                             <select aria-describedby="gemeindeantragtyp-error" name="gemeindeantragtyp"
                                     id="gemeindeantragtyp"
-                                    formControlName="antragTyp"
+                                    [formControl]="formGroup.controls.antragTyp"
                                     (change)="onAntragTypChange()"
                                     class="form-control">
                                 <option *ngFor="let typ of creatableTypes"
                                         [value]="typ" translate>{{typ}}</option>
                             </select>
                             <div class="dv-error-messages">
-                                <div *ngIf="(formGroup?.get('antragTyp').touched || triedSending) && formGroup?.get('antragTyp')?.errors?.required" class="error" translate>ERROR_REQUIRED</div>
+                                <div *ngIf="(formGroup.controls.antragTyp.touched || triedSending) && formGroup.controls.antragTyp.errors?.required" class="error" translate>ERROR_REQUIRED</div>
                             </div>
                         </div>
 
@@ -73,13 +73,13 @@
                                    translate>GEMEINDE</label>
                             <select aria-describedby="select-gemeinde-error" name="gemeinde"
                                     id="select-gemeinde"
-                                    formControlName="gemeinde"
+                                    [formControl]="formGroup.controls.gemeinde"
                                     class="form-control">
                                 <option *ngFor="let gemeinde of gemeinden"
                                         [value]="gemeinde.id">{{gemeinde.name}}</option>
                             </select>
                             <div class="dv-error-messages">
-                                <div *ngIf="(formGroup?.get('gemeinde').touched || triedSending) && formGroup?.get('gemeinde')?.errors?.required" class="error" translate>ERROR_REQUIRED</div>
+                                <div *ngIf="(formGroup.controls.gemeinde.touched || triedSending) && formGroup.controls.gemeinde.errors?.required" class="error" translate>ERROR_REQUIRED</div>
                             </div>
                         </div>
                     </div>

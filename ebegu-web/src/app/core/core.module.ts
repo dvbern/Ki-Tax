@@ -97,7 +97,7 @@ export function initMandantCookie(mandantService: MandantService): () => Promise
 })
 export class CoreModule {
 
-    public constructor(@Optional() @SkipSelf() parentModule: CoreModule) {
+    public constructor(@Optional() @SkipSelf() private readonly parentModule: CoreModule) {
         if (parentModule) {
             throw new Error('CoreModule has already been loaded. Import Core modules in the AppModule only.');
         }

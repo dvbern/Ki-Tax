@@ -16,7 +16,7 @@
  */
 
 import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnInit, ViewEncapsulation} from '@angular/core';
-import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {FormBuilder, Validators} from '@angular/forms';
 import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
 import {TranslateService} from '@ngx-translate/core';
 import {StateService, UIRouterGlobals} from '@uirouter/core';
@@ -32,7 +32,6 @@ import {
 import {
     TSLastenausgleichTagesschuleAngabenInstitutionStatus,
 } from '../../../../../models/enums/TSLastenausgleichTagesschuleAngabenInstitutionStatus';
-import {TSRole} from '../../../../../models/enums/TSRole';
 import {TSWizardStepXTyp} from '../../../../../models/enums/TSWizardStepXTyp';
 import {TSAnzahlEingeschriebeneKinder} from '../../../../../models/gemeindeantrag/TSAnzahlEingeschriebeneKinder';
 import {TSDurchschnittKinderProTag} from '../../../../../models/gemeindeantrag/TSDurchschnittKinderProTag';
@@ -78,8 +77,80 @@ export class TagesschulenAngabenComponent implements OnInit {
     @Input() public lastenausgleichID: string;
     @Input() public institutionContainerId: string;
 
-    public form: FormGroup;
-
+    public form = this.fb.group({
+        // A
+        isLehrbetrieb: <null | boolean>null,
+        // B
+        anzahlEingeschriebeneKinder: [
+            <null | number>null,
+            numberValidator(ValidationType.POSITIVE_INTEGER),
+        ],
+        anzahlEingeschriebeneKinderKindergarten: [
+            <null | number>null,
+            numberValidator(ValidationType.POSITIVE_INTEGER),
+        ],
+        anzahlEingeschriebeneKinderBasisstufe: [
+            <null | number>null,
+            numberValidator(ValidationType.POSITIVE_INTEGER),
+        ],
+        anzahlEingeschriebeneKinderSekundarstufe: [
+            <null | number>null,
+            numberValidator(ValidationType.POSITIVE_INTEGER),
+        ],
+        anzahlEingeschriebeneKinderPrimarstufe: [
+            <null | number>null,
+            numberValidator(ValidationType.POSITIVE_INTEGER),
+        ],
+        anzahlEingeschriebeneKinderMitBesonderenBeduerfnissen: [
+            <null | number>null,
+            numberValidator(ValidationType.POSITIVE_INTEGER),
+        ],
+        anzahlEingeschriebeneKinderVolksschulangebot: [
+            <null | number>null,
+            numberValidator(ValidationType.POSITIVE_INTEGER),
+        ],
+        durchschnittKinderProTagFruehbetreuung: [
+            <null | number>null,
+            Validators.compose([
+                numberValidator(ValidationType.ANY_NUMBER),
+                Validators.pattern(CONSTANTS.PATTERN_TWO_DECIMALS),
+            ]),
+        ],
+        durchschnittKinderProTagMittag: [
+            <null | number>null,
+            Validators.compose([
+                numberValidator(ValidationType.ANY_NUMBER),
+                Validators.pattern(CONSTANTS.PATTERN_TWO_DECIMALS),
+            ]),
+        ],
+        durchschnittKinderProTagNachmittag1: [
+            <null | number>null,
+            Validators.compose([
+                numberValidator(ValidationType.ANY_NUMBER),
+                Validators.pattern(CONSTANTS.PATTERN_TWO_DECIMALS),
+            ]),
+        ],
+        durchschnittKinderProTagNachmittag2: [
+            <null | number>null,
+            Validators.compose([
+                numberValidator(ValidationType.ANY_NUMBER),
+                Validators.pattern(CONSTANTS.PATTERN_TWO_DECIMALS),
+            ]),
+        ],
+        betreuungsstundenEinschliesslichBesondereBeduerfnisse:
+            [
+                <null | number>null,
+                numberValidator(ValidationType.POSITIVE_INTEGER),
+            ],
+        // C
+        schuleAufBasisOrganisatorischesKonzept: <null | boolean>null,
+        schuleAufBasisPaedagogischesKonzept: <null | boolean>null,
+        raeumlicheVoraussetzungenEingehalten: <null | boolean>null,
+        betreuungsverhaeltnisEingehalten: <null | boolean>null,
+        ernaehrungsGrundsaetzeEingehalten: <null | boolean>null,
+        // Bemerkungen
+        bemerkungen: <null | string>null
+    });
     private subscription: Subscription;
     // TODO: refactor this to store
     public latsAngabenInstitutionContainer: TSLastenausgleichTagesschuleAngabenInstitutionContainer;
@@ -137,7 +208,7 @@ export class TagesschulenAngabenComponent implements OnInit {
                 this.latsAngabenInstitutionContainer?.angabenDeklaration :
                 this.latsAngabenInstitutionContainer?.angabenKorrektur;
             this.angabenAusKibon = container.alleAngabenInKibonErfasst;
-            this.form = this.setupForm(angaben);
+            this.form.patchValue(angaben);
             if (container.status === TSLastenausgleichTagesschuleAngabenGemeindeStatus.NEU || !this.canEditForm()) {
                 this.form.disable();
             }
@@ -250,104 +321,18 @@ export class TagesschulenAngabenComponent implements OnInit {
                 angaben.isInPruefungGemeinde());
     }
 
-    private setupForm(latsAngabenInstiution: TSLastenausgleichTagesschuleAngabenInstitution): FormGroup {
-        const form = this.fb.group({
-            // A
-            isLehrbetrieb: latsAngabenInstiution?.isLehrbetrieb,
-            // B
-            anzahlEingeschriebeneKinder: [
-                latsAngabenInstiution?.anzahlEingeschriebeneKinder,
-                numberValidator(ValidationType.POSITIVE_INTEGER)
-            ],
-            anzahlEingeschriebeneKinderKindergarten: [
-                latsAngabenInstiution?.anzahlEingeschriebeneKinderKindergarten,
-                numberValidator(ValidationType.POSITIVE_INTEGER)
-            ],
-            anzahlEingeschriebeneKinderBasisstufe: [
-                latsAngabenInstiution?.anzahlEingeschriebeneKinderBasisstufe,
-                numberValidator(ValidationType.POSITIVE_INTEGER)
-            ],
-            anzahlEingeschriebeneKinderSekundarstufe: [
-                latsAngabenInstiution?.anzahlEingeschriebeneKinderSekundarstufe,
-                numberValidator(ValidationType.POSITIVE_INTEGER)
-            ],
-            anzahlEingeschriebeneKinderPrimarstufe: [
-                latsAngabenInstiution?.anzahlEingeschriebeneKinderPrimarstufe,
-                numberValidator(ValidationType.POSITIVE_INTEGER)
-            ],
-            anzahlEingeschriebeneKinderMitBesonderenBeduerfnissen: [
-                latsAngabenInstiution?.anzahlEingeschriebeneKinderMitBesonderenBeduerfnissen,
-                numberValidator(ValidationType.POSITIVE_INTEGER)
-            ],
-            anzahlEingeschriebeneKinderVolksschulangebot: [
-                latsAngabenInstiution?.anzahlEingeschriebeneKinderVolksschulangebot,
-                numberValidator(ValidationType.POSITIVE_INTEGER)
-            ],
-            durchschnittKinderProTagFruehbetreuung: [
-                latsAngabenInstiution?.durchschnittKinderProTagFruehbetreuung,
-                Validators.compose([
-                    numberValidator(ValidationType.ANY_NUMBER),
-                    Validators.pattern(CONSTANTS.PATTERN_TWO_DECIMALS)
-                ])
-            ],
-            durchschnittKinderProTagMittag: [
-                latsAngabenInstiution?.durchschnittKinderProTagMittag,
-                Validators.compose([
-                    numberValidator(ValidationType.ANY_NUMBER),
-                    Validators.pattern(CONSTANTS.PATTERN_TWO_DECIMALS)
-                ])
-            ],
-            durchschnittKinderProTagNachmittag1: [
-                latsAngabenInstiution?.durchschnittKinderProTagNachmittag1,
-                Validators.compose([
-                    numberValidator(ValidationType.ANY_NUMBER),
-                    Validators.pattern(CONSTANTS.PATTERN_TWO_DECIMALS)
-                ])
-            ],
-            durchschnittKinderProTagNachmittag2: [
-                latsAngabenInstiution?.durchschnittKinderProTagNachmittag2,
-                Validators.compose([
-                    numberValidator(ValidationType.ANY_NUMBER),
-                    Validators.pattern(CONSTANTS.PATTERN_TWO_DECIMALS)
-                ])
-            ],
-            betreuungsstundenEinschliesslichBesondereBeduerfnisse:
-                [
-                    latsAngabenInstiution?.betreuungsstundenEinschliesslichBesondereBeduerfnisse,
-                    numberValidator(ValidationType.POSITIVE_INTEGER)
-                ],
-            // C
-            schuleAufBasisOrganisatorischesKonzept: latsAngabenInstiution?.schuleAufBasisOrganisatorischesKonzept,
-            schuleAufBasisPaedagogischesKonzept: latsAngabenInstiution?.schuleAufBasisPaedagogischesKonzept,
-            raeumlicheVoraussetzungenEingehalten: latsAngabenInstiution?.raeumlicheVoraussetzungenEingehalten,
-            betreuungsverhaeltnisEingehalten: latsAngabenInstiution?.betreuungsverhaeltnisEingehalten,
-            ernaehrungsGrundsaetzeEingehalten: latsAngabenInstiution?.ernaehrungsGrundsaetzeEingehalten,
-            // Bemerkungen
-            bemerkungen: latsAngabenInstiution?.bemerkungen,
-            // hidden fields
-            version: latsAngabenInstiution?.version
-        });
-
-        return form;
-    }
-
     private setupCalculation(angaben: TSLastenausgleichTagesschuleAngabenInstitution): void {
         combineLatest(
             [
-                this.form.get('anzahlEingeschriebeneKinder')
-                    .valueChanges
+                this.form.controls.anzahlEingeschriebeneKinder.valueChanges
                     .pipe(startWith(angaben?.anzahlEingeschriebeneKinder || 0)),
-                this.form.get('anzahlEingeschriebeneKinderKindergarten')
-                    .valueChanges
+                this.form.controls.anzahlEingeschriebeneKinderKindergarten.valueChanges
                     .pipe(startWith(angaben?.anzahlEingeschriebeneKinderKindergarten || 0)),
-                this.form.get('anzahlEingeschriebeneKinderPrimarstufe')
-                    .valueChanges
+                this.form.controls.anzahlEingeschriebeneKinderPrimarstufe.valueChanges
                     .pipe(startWith(angaben?.anzahlEingeschriebeneKinderPrimarstufe || 0)),
-                this.form.get('anzahlEingeschriebeneKinderSekundarstufe')
-                    .valueChanges
+                this.form.controls.anzahlEingeschriebeneKinderSekundarstufe.valueChanges
                     .pipe(startWith(angaben?.anzahlEingeschriebeneKinderSekundarstufe || 0)),
-                this.form.get('anzahlEingeschriebeneKinderBasisstufe')
-                    .valueChanges
+                this.form.controls.anzahlEingeschriebeneKinderBasisstufe.valueChanges
                     .pipe(startWith(angaben?.anzahlEingeschriebeneKinderBasisstufe || 0))
             ]
         ).subscribe(values => {
@@ -369,8 +354,10 @@ export class TagesschulenAngabenComponent implements OnInit {
         this.setFormValuesToAngaben();
         this.errorService.clearAll();
         this.tagesschulenAngabenRS.saveTagesschuleAngaben(this.latsAngabenInstitutionContainer).subscribe(result => {
-            this.form = this.setupForm(result?.status === TSLastenausgleichTagesschuleAngabenInstitutionStatus.OFFEN ?
-                result?.angabenDeklaration : result?.angabenKorrektur);
+            this.form.patchValue(
+                result?.status === TSLastenausgleichTagesschuleAngabenInstitutionStatus.OFFEN ?
+                    result?.angabenDeklaration :
+                    result?.angabenKorrektur);
             this.errorService.addMesageAsInfo(this.translate.instant('SAVED'));
             this.form.markAsPristine();
             this.unsavedChangesService.registerForm(this.form);
@@ -397,12 +384,12 @@ export class TagesschulenAngabenComponent implements OnInit {
     }
 
     private setFormValuesToAngabenKorrektur(): void {
-        this.latsAngabenInstitutionContainer.angabenKorrektur = this.form.value;
+        this.writeBackForm(this.latsAngabenInstitutionContainer.angabenKorrektur);
         this.latsAngabenInstitutionContainer.angabenKorrektur.oeffnungszeiten = this.getOeffnungszeitenArray();
     }
 
     private setFormValuesToAngabenDeklaration(): void {
-        this.latsAngabenInstitutionContainer.angabenDeklaration = this.form.value;
+        this.writeBackForm(this.latsAngabenInstitutionContainer.angabenDeklaration);
         this.latsAngabenInstitutionContainer.angabenDeklaration.oeffnungszeiten = this.getOeffnungszeitenArray();
     }
 
@@ -481,51 +468,47 @@ export class TagesschulenAngabenComponent implements OnInit {
 
     private enableFormValidation(): void {
         // A
-        this.form.get('isLehrbetrieb').setValidators([Validators.required]);
+        this.form.controls.isLehrbetrieb.setValidators([Validators.required]);
         // B
-        this.form.get('anzahlEingeschriebeneKinder')
+        this.form.controls.anzahlEingeschriebeneKinder
             .setValidators([Validators.required, numberValidator(ValidationType.POSITIVE_INTEGER)]);
-        this.form.get('anzahlEingeschriebeneKinderKindergarten')
+        this.form.controls.anzahlEingeschriebeneKinderKindergarten
             .setValidators([Validators.required, numberValidator(ValidationType.POSITIVE_INTEGER)]);
-        this.form.get('anzahlEingeschriebeneKinderBasisstufe')
+        this.form.controls.anzahlEingeschriebeneKinderBasisstufe
             .setValidators([Validators.required, numberValidator(ValidationType.POSITIVE_INTEGER)]);
-        this.form.get('anzahlEingeschriebeneKinderSekundarstufe')
+        this.form.controls.anzahlEingeschriebeneKinderSekundarstufe
             .setValidators([Validators.required, numberValidator(ValidationType.POSITIVE_INTEGER)]);
-        this.form.get('anzahlEingeschriebeneKinderPrimarstufe')
+        this.form.controls.anzahlEingeschriebeneKinderPrimarstufe
             .setValidators([Validators.required, numberValidator(ValidationType.POSITIVE_INTEGER)]);
-        this.form.get('durchschnittKinderProTagFruehbetreuung')
-            .setValidators([
+        this.form.controls.durchschnittKinderProTagFruehbetreuung.setValidators([
                 Validators.required, numberValidator(ValidationType.ANY_NUMBER),
                 Validators.pattern(CONSTANTS.PATTERN_TWO_DECIMALS)
             ]);
-        this.form.get('durchschnittKinderProTagMittag')
-            .setValidators([
+        this.form.controls.durchschnittKinderProTagMittag.setValidators([
                 Validators.required, numberValidator(ValidationType.ANY_NUMBER),
                 Validators.pattern(CONSTANTS.PATTERN_TWO_DECIMALS)
             ]);
-        this.form.get('durchschnittKinderProTagNachmittag1')
-            .setValidators([
+        this.form.controls.durchschnittKinderProTagNachmittag1.setValidators([
                 Validators.required, numberValidator(ValidationType.ANY_NUMBER),
                 Validators.pattern(CONSTANTS.PATTERN_TWO_DECIMALS)
             ]);
-        this.form.get('durchschnittKinderProTagNachmittag2')
-            .setValidators([
+        this.form.controls.durchschnittKinderProTagNachmittag2.setValidators([
                 Validators.required, numberValidator(ValidationType.ANY_NUMBER),
                 Validators.pattern(CONSTANTS.PATTERN_TWO_DECIMALS)
             ]);
-        this.form.get('betreuungsstundenEinschliesslichBesondereBeduerfnisse')
+        this.form.controls.betreuungsstundenEinschliesslichBesondereBeduerfnisse
             .setValidators([Validators.required, numberValidator(ValidationType.POSITIVE_INTEGER)]);
-        this.form.get('anzahlEingeschriebeneKinderMitBesonderenBeduerfnissen')
+        this.form.controls.anzahlEingeschriebeneKinderMitBesonderenBeduerfnissen
             .setValidators([Validators.required, numberValidator(ValidationType.POSITIVE_INTEGER)]);
-        this.form.get('anzahlEingeschriebeneKinderVolksschulangebot')
+        this.form.controls.anzahlEingeschriebeneKinderVolksschulangebot
             .setValidators([Validators.required, numberValidator(ValidationType.POSITIVE_INTEGER)]);
 
         // C
-        this.form.get('schuleAufBasisOrganisatorischesKonzept').setValidators([Validators.required]);
-        this.form.get('schuleAufBasisPaedagogischesKonzept').setValidators([Validators.required]);
-        this.form.get('raeumlicheVoraussetzungenEingehalten').setValidators([Validators.required]);
-        this.form.get('betreuungsverhaeltnisEingehalten').setValidators([Validators.required]);
-        this.form.get('ernaehrungsGrundsaetzeEingehalten').setValidators([Validators.required]);
+        this.form.controls.schuleAufBasisOrganisatorischesKonzept.setValidators([Validators.required]);
+        this.form.controls.schuleAufBasisPaedagogischesKonzept.setValidators([Validators.required]);
+        this.form.controls.raeumlicheVoraussetzungenEingehalten.setValidators([Validators.required]);
+        this.form.controls.betreuungsverhaeltnisEingehalten.setValidators([Validators.required]);
+        this.form.controls.ernaehrungsGrundsaetzeEingehalten.setValidators([Validators.required]);
 
         this.triggerFormValidation();
     }
@@ -579,40 +562,36 @@ export class TagesschulenAngabenComponent implements OnInit {
 
     private resetBasicValidation(): void {
         if (!this.angabenAusKibon) {
-            this.form.get('anzahlEingeschriebeneKinder')
+            this.form.controls.anzahlEingeschriebeneKinder
                 .setValidators([numberValidator(ValidationType.POSITIVE_INTEGER)]);
-            this.form.get('anzahlEingeschriebeneKinderKindergarten')
+            this.form.controls.anzahlEingeschriebeneKinderKindergarten
                 .setValidators([numberValidator(ValidationType.POSITIVE_INTEGER)]);
-            this.form.get('anzahlEingeschriebeneKinderSekundarstufe')
+            this.form.controls.anzahlEingeschriebeneKinderSekundarstufe
                 .setValidators([numberValidator(ValidationType.POSITIVE_INTEGER)]);
-            this.form.get('anzahlEingeschriebeneKinderPrimarstufe')
+            this.form.controls.anzahlEingeschriebeneKinderPrimarstufe
                 .setValidators([numberValidator(ValidationType.POSITIVE_INTEGER)]);
-            this.form.get('durchschnittKinderProTagFruehbetreuung')
-                .setValidators([
+            this.form.controls.durchschnittKinderProTagFruehbetreuung.setValidators([
                     numberValidator(ValidationType.ANY_NUMBER),
                     Validators.pattern(CONSTANTS.PATTERN_TWO_DECIMALS)
                 ]);
-            this.form.get('durchschnittKinderProTagMittag')
-                .setValidators([
+            this.form.controls.durchschnittKinderProTagMittag.setValidators([
                     numberValidator(ValidationType.ANY_NUMBER),
                     Validators.pattern(CONSTANTS.PATTERN_TWO_DECIMALS)
                 ]);
-            this.form.get('durchschnittKinderProTagNachmittag1')
-                .setValidators([
+            this.form.controls.durchschnittKinderProTagNachmittag1.setValidators([
                     numberValidator(ValidationType.ANY_NUMBER),
                     Validators.pattern(CONSTANTS.PATTERN_TWO_DECIMALS)
                 ]);
-            this.form.get('durchschnittKinderProTagNachmittag2')
-                .setValidators([
+            this.form.controls.durchschnittKinderProTagNachmittag2.setValidators([
                     numberValidator(ValidationType.ANY_NUMBER),
                     Validators.pattern(CONSTANTS.PATTERN_TWO_DECIMALS)
                 ]);
-            this.form.get('betreuungsstundenEinschliesslichBesondereBeduerfnisse')
+            this.form.controls.betreuungsstundenEinschliesslichBesondereBeduerfnisse
                 .setValidators([numberValidator(ValidationType.POSITIVE_INTEGER)]);
         }
-        this.form.get('anzahlEingeschriebeneKinderMitBesonderenBeduerfnissen')
+        this.form.controls.anzahlEingeschriebeneKinderMitBesonderenBeduerfnissen
             .setValidators([numberValidator(ValidationType.POSITIVE_INTEGER)]);
-        this.form.get('anzahlEingeschriebeneKinderVolksschulangebot')
+        this.form.controls.anzahlEingeschriebeneKinderVolksschulangebot
             .setValidators([numberValidator(ValidationType.POSITIVE_INTEGER)]);
 
         this.form.get('schuleAufBasisOrganisatorischesKonzept').clearValidators();
@@ -628,21 +607,19 @@ export class TagesschulenAngabenComponent implements OnInit {
         if (!await this.confirmDialog('LATS_WARN_FILL_OUT_FROM_KIBON')) {
             return;
         }
-        this.form.get('anzahlEingeschriebeneKinder')
-            .setValue(this.anzahlEingeschriebeneKinder?.overall);
-        this.form.get('anzahlEingeschriebeneKinderKindergarten')
+        this.form.controls.anzahlEingeschriebeneKinder.setValue(this.anzahlEingeschriebeneKinder?.overall);
+        this.form.controls.anzahlEingeschriebeneKinderKindergarten
             .setValue(this.anzahlEingeschriebeneKinder?.kindergarten);
-        this.form.get('anzahlEingeschriebeneKinderPrimarstufe')
+        this.form.controls.anzahlEingeschriebeneKinderPrimarstufe
             .setValue(this.anzahlEingeschriebeneKinder?.primarstufe);
-        this.form.get('anzahlEingeschriebeneKinderSekundarstufe')
+        this.form.controls.anzahlEingeschriebeneKinderSekundarstufe
             .setValue(this.anzahlEingeschriebeneKinder?.sekundarstufe);
-        this.form.get('durchschnittKinderProTagFruehbetreuung')
+        this.form.controls.durchschnittKinderProTagFruehbetreuung
             .setValue(this.durchschnittKinderProTag?.fruehbetreuung);
-        this.form.get('durchschnittKinderProTagMittag')
-            .setValue(this.durchschnittKinderProTag?.mittagsbetreuung);
-        this.form.get('durchschnittKinderProTagNachmittag1')
+        this.form.controls.durchschnittKinderProTagMittag.setValue(this.durchschnittKinderProTag?.mittagsbetreuung);
+        this.form.controls.durchschnittKinderProTagNachmittag1
             .setValue(this.durchschnittKinderProTag?.nachmittagsbetreuung1);
-        this.form.get('durchschnittKinderProTagNachmittag2')
+        this.form.controls.durchschnittKinderProTagNachmittag2
             .setValue(this.durchschnittKinderProTag?.nachmittagsbetreuung2);
 
         this.autoFilled = true;
@@ -685,10 +662,39 @@ export class TagesschulenAngabenComponent implements OnInit {
     }
 
     public allAnzahlFieldsFilledOut(): boolean {
-        return this.form?.get('anzahlEingeschriebeneKinderBasisstufe').value?.toString().length > 0 &&
-            this.form?.get('anzahlEingeschriebeneKinder').value?.toString().length > 0 &&
-            this.form?.get('anzahlEingeschriebeneKinderKindergarten').value?.toString().length > 0 &&
-            this.form?.get('anzahlEingeschriebeneKinderPrimarstufe').value?.toString().length > 0 &&
-            this.form?.get('anzahlEingeschriebeneKinderSekundarstufe').value?.toString().length > 0;
+        return this.form.value.anzahlEingeschriebeneKinderBasisstufe?.toString().length > 0 &&
+            this.form.value.anzahlEingeschriebeneKinder?.toString().length > 0 &&
+            this.form.value.anzahlEingeschriebeneKinderKindergarten?.toString().length > 0 &&
+            this.form.value.anzahlEingeschriebeneKinderPrimarstufe?.toString().length > 0 &&
+            this.form.value.anzahlEingeschriebeneKinderSekundarstufe?.toString().length > 0;
+    }
+
+    private writeBackForm(angabenKorrektur: TSLastenausgleichTagesschuleAngabenInstitution): void {
+        const values = this.form.getRawValue();
+        angabenKorrektur.isLehrbetrieb = values.isLehrbetrieb;
+        // B
+        angabenKorrektur.anzahlEingeschriebeneKinder = values.anzahlEingeschriebeneKinder;
+        angabenKorrektur.anzahlEingeschriebeneKinderKindergarten = values.anzahlEingeschriebeneKinderKindergarten;
+        angabenKorrektur.anzahlEingeschriebeneKinderBasisstufe = values.anzahlEingeschriebeneKinderBasisstufe;
+        angabenKorrektur.anzahlEingeschriebeneKinderSekundarstufe = values.anzahlEingeschriebeneKinderSekundarstufe;
+        angabenKorrektur.anzahlEingeschriebeneKinderPrimarstufe = values.anzahlEingeschriebeneKinderPrimarstufe;
+        angabenKorrektur.anzahlEingeschriebeneKinderMitBesonderenBeduerfnissen =
+            values.anzahlEingeschriebeneKinderMitBesonderenBeduerfnissen;
+        angabenKorrektur.anzahlEingeschriebeneKinderVolksschulangebot =
+            values.anzahlEingeschriebeneKinderVolksschulangebot;
+        angabenKorrektur.durchschnittKinderProTagFruehbetreuung = values.durchschnittKinderProTagFruehbetreuung;
+        angabenKorrektur.durchschnittKinderProTagMittag = values.durchschnittKinderProTagMittag;
+        angabenKorrektur.durchschnittKinderProTagNachmittag1 = values.durchschnittKinderProTagNachmittag1;
+        angabenKorrektur.durchschnittKinderProTagNachmittag2 = values.durchschnittKinderProTagNachmittag2;
+        angabenKorrektur.betreuungsstundenEinschliesslichBesondereBeduerfnisse =
+            values.betreuungsstundenEinschliesslichBesondereBeduerfnisse;
+        // C
+        angabenKorrektur.schuleAufBasisOrganisatorischesKonzept = values.schuleAufBasisOrganisatorischesKonzept;
+        angabenKorrektur.schuleAufBasisPaedagogischesKonzept = values.schuleAufBasisPaedagogischesKonzept;
+        angabenKorrektur.raeumlicheVoraussetzungenEingehalten = values.raeumlicheVoraussetzungenEingehalten;
+        angabenKorrektur.ernaehrungsGrundsaetzeEingehalten = values.ernaehrungsGrundsaetzeEingehalten;
+        angabenKorrektur.betreuungsverhaeltnisEingehalten = values.ernaehrungsGrundsaetzeEingehalten;
+        // Bemerkungen
+        angabenKorrektur.bemerkungen = values.bemerkungen;
     }
 }

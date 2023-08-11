@@ -38,7 +38,7 @@ export class SendNotrechtMitteilungComponent implements OnInit {
     public constructor(
         private readonly dialogRef: MatDialogRef<SendNotrechtMitteilungComponent>,
         private readonly translate: TranslateService,
-        @Inject(MAT_DIALOG_DATA) data: any
+        @Inject(MAT_DIALOG_DATA) private readonly data: any
     ) {
         this.isEinladung = data.isEinladung;
     }

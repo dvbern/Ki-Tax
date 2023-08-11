@@ -17,13 +17,18 @@
 
 import {HttpClientModule} from '@angular/common/http';
 import {ComponentFixture, TestBed} from '@angular/core/testing';
+import {ReactiveFormsModule} from '@angular/forms';
 import {TranslateService} from '@ngx-translate/core';
+import {of} from 'rxjs';
 import {EinstellungRS} from '../../../../admin/service/einstellungRS.rest';
 import {AuthServiceRS} from '../../../../authentication/service/AuthServiceRS.rest';
 import {SHARED_MODULE_OVERRIDES} from '../../../../hybridTools/mockUpgradedDirective';
+import {TSFerienbetreuungAngaben} from '../../../../models/gemeindeantrag/TSFerienbetreuungAngaben';
+import {TSFerienbetreuungAngabenContainer} from '../../../../models/gemeindeantrag/TSFerienbetreuungAngabenContainer';
 import {ErrorService} from '../../../core/errors/service/ErrorService';
 import {BenutzerRSX} from '../../../core/service/benutzerRSX.rest';
 import {SharedModule} from '../../../shared/shared.module';
+import {FerienbetreuungService} from '../services/ferienbetreuung.service';
 import {FerienbetreuungKommantarComponent} from './ferienbetreuung-kommantar.component';
 
 const authServiceRSSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name,
@@ -32,14 +37,19 @@ const authServiceRSSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name,
 const errorServiceSpy = jasmine.createSpyObj<ErrorService>(ErrorService.name,
     ['addMesageAsError']);
 
-const translateServiceSpy = jasmine.createSpyObj<TranslateService>(TranslateService.name,
-    ['instant']);
-
 const einstellungRSSpy = jasmine.createSpyObj<EinstellungRS>(EinstellungRS.name,
     ['getPauschalbetraegeFerienbetreuung']);
 
 const benuzerRSSpy = jasmine.createSpyObj<BenutzerRSX>(BenutzerRSX.name,
     ['getAllActiveBenutzerMandant']);
+
+const fbServiceSpy = jasmine.createSpyObj<FerienbetreuungService>(FerienbetreuungService.name,
+    ['getFerienbetreuungContainer']);
+
+const tsFerienbetreuungAngabenContainer: TSFerienbetreuungAngabenContainer = new TSFerienbetreuungAngabenContainer();
+tsFerienbetreuungAngabenContainer.angabenDeklaration = new TSFerienbetreuungAngaben();
+tsFerienbetreuungAngabenContainer.angabenKorrektur = new TSFerienbetreuungAngaben();
+fbServiceSpy.getFerienbetreuungContainer.and.returnValue(of(tsFerienbetreuungAngabenContainer));
 
 describe('FerienbetreuungKommantarComponent', () => {
     let component: FerienbetreuungKommantarComponent;
@@ -51,11 +61,12 @@ describe('FerienbetreuungKommantarComponent', () => {
             providers: [
                 {provide: AuthServiceRS, useValue: authServiceRSSpy},
                 {provide: ErrorService, useValue: errorServiceSpy},
-                {provide: TranslateService, useValue: translateServiceSpy},
                 {provide: EinstellungRS, useValue: einstellungRSSpy},
                 {provide: BenutzerRSX, useValue: benuzerRSSpy}
             ],
             imports: [
+                ReactiveFormsModule,
+                SharedModule,
                 HttpClientModule
             ]
         })
