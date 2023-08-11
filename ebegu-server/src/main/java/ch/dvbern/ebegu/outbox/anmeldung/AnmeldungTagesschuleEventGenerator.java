@@ -18,30 +18,29 @@
 
 package ch.dvbern.ebegu.outbox.anmeldung;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.ejb.Schedule;
-import javax.enterprise.event.Event;
-import javax.inject.Inject;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Join;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
-
 import ch.dvbern.ebegu.config.EbeguConfiguration;
 import ch.dvbern.ebegu.entities.AnmeldungTagesschule;
 import ch.dvbern.ebegu.entities.AnmeldungTagesschule_;
-import ch.dvbern.ebegu.entities.InstitutionStammdaten;
-import ch.dvbern.ebegu.entities.InstitutionStammdaten_;
-import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
+import ch.dvbern.ebegu.enums.UserRoleName;
 import ch.dvbern.ebegu.outbox.ExportedEvent;
 import ch.dvbern.ebegu.services.ApplicationPropertyService;
 import ch.dvbern.lib.cdipersistence.Persistence;
 
-import static ch.dvbern.ebegu.services.util.PredicateHelper.NEW;
+import javax.annotation.security.RunAs;
+import javax.ejb.Schedule;
+import javax.ejb.Singleton;
+import javax.ejb.Startup;
+import javax.enterprise.event.Event;
+import javax.inject.Inject;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+import java.util.List;
 
+@Startup
+@Singleton
+@RunAs(UserRoleName.SUPER_ADMIN)
 public class AnmeldungTagesschuleEventGenerator {
 
 	@Inject
@@ -73,21 +72,10 @@ public class AnmeldungTagesschuleEventGenerator {
 		CriteriaBuilder cb = persistence.getCriteriaBuilder();
 		CriteriaQuery<AnmeldungTagesschule> query = cb.createQuery(AnmeldungTagesschule.class);
 		Root<AnmeldungTagesschule> root = query.from(AnmeldungTagesschule.class);
-		List<Predicate> predicates = new ArrayList<>();
-
-		//Institution Stammdaten Join and check angebot Typ, muss Kita oder TFO sein
-		Join<AnmeldungTagesschule, InstitutionStammdaten> institutionStammdatenJoin =
-			root.join(AnmeldungTagesschule_.institutionStammdaten);
-		Predicate isKitaOderTFO =
-			institutionStammdatenJoin.get(InstitutionStammdaten_.betreuungsangebotTyp)
-				.in(BetreuungsangebotTyp.getBetreuungsgutscheinTypes());
-		predicates.add(isKitaOderTFO);
 
 		//Event muss noch nicht plubliziert sein
 		Predicate isNotPublished = cb.isFalse(root.get(AnmeldungTagesschule_.eventPublished));
-		predicates.add(isNotPublished);
-
-		query.where(predicates.toArray(NEW));
+		query.where(isNotPublished);
 
 		List<AnmeldungTagesschule> anmeldungTagesschuleList = persistence.getEntityManager().createQuery(query)
 			.getResultList();
