@@ -48,7 +48,7 @@ public class PensumFachstelleServiceTest extends AbstractEbeguLoginTest {
 	@Test
 	public void createPersonInstitutionStammdatenTest() {
 		Assert.assertNotNull(pensumFachstelleService);
-		PensumFachstelle insertedPensumFachstelle = insertInstitutionStammdaten();
+		PensumFachstelle insertedPensumFachstelle = insertPensumFachstelle();
 
 		Optional<PensumFachstelle> returnedPensumFachstelle = pensumFachstelleService.findPensumFachstelle(insertedPensumFachstelle.getId());
 		Assert.assertTrue(returnedPensumFachstelle.isPresent());
@@ -62,7 +62,7 @@ public class PensumFachstelleServiceTest extends AbstractEbeguLoginTest {
 	@Test
 	public void updateInstitutionStammdatenTest() {
 		Assert.assertNotNull(pensumFachstelleService);
-		PensumFachstelle insertedPensumFachstelle = insertInstitutionStammdaten();
+		PensumFachstelle insertedPensumFachstelle = insertPensumFachstelle();
 
 		Optional<PensumFachstelle> returnedPensumFachstelle = pensumFachstelleService.findPensumFachstelle(insertedPensumFachstelle.getId());
 		Assert.assertTrue(returnedPensumFachstelle.isPresent());
@@ -78,9 +78,10 @@ public class PensumFachstelleServiceTest extends AbstractEbeguLoginTest {
 
 	// HELP METHODS
 
-	private PensumFachstelle insertInstitutionStammdaten() {
+	private PensumFachstelle insertPensumFachstelle() {
 		PensumFachstelle pensumFachstelle = TestDataUtil.createDefaultPensumFachstelle(null);
 		TestDataUtil.persistFachstelle(persistence, pensumFachstelle.getFachstelle());
+		persistence.persist(pensumFachstelle.getKind());
 		return persistence.merge(pensumFachstelle);
 	}
 
