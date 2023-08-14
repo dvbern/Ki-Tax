@@ -354,6 +354,7 @@ export class TagesschulenAngabenComponent implements OnInit {
         this.setFormValuesToAngaben();
         this.errorService.clearAll();
         this.tagesschulenAngabenRS.saveTagesschuleAngaben(this.latsAngabenInstitutionContainer).subscribe(result => {
+            this.latsAngabenInstitutionContainer = result;
             this.form.patchValue(
                 result?.status === TSLastenausgleichTagesschuleAngabenInstitutionStatus.OFFEN ?
                     result?.angabenDeklaration :
