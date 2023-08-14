@@ -243,7 +243,9 @@ export class GemeindeAngabenComponent implements OnInit, OnDestroy {
     private setupForm(initialGemeindeAngaben: TSLastenausgleichTagesschuleAngabenGemeinde): void {
         this.angabenForm.patchValue(initialGemeindeAngaben);
 
-        if (!this.lATSAngabenGemeindeContainer.isGemeindeFormularInBearbeitungForRole(this.authServiceRS.getPrincipalRole())) {
+        if (this.lATSAngabenGemeindeContainer.isGemeindeFormularInBearbeitungForRole(this.authServiceRS.getPrincipalRole())) {
+            this.angabenForm.enable();
+        } else {
             this.angabenForm.disable();
         }
     }

@@ -332,6 +332,12 @@
 					<mat-error *ngIf="form && form.controls.anzahlFerienwochenSportferien.errors?.isNotInteger"
 							   translate>ERROR_NOT_INTEGER
 					</mat-error>
+					<dv-bisher-x
+							[deklaration]="container?.angabenDeklaration?.angebot?.anzahlFerienwochenSportferien"
+							[korrektur]="form.value.anzahlFerienwochenSportferien"
+							[showBisher]="container.isAtLeastInPruefungKantonOrZurueckgegeben()"
+							[specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
+					</dv-bisher-x>
 				</mat-form-field>
 			</dv-input-container-x>
             <dv-ferienbetreuung-last-year-value
