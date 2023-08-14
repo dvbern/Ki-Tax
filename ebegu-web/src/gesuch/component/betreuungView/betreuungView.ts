@@ -26,6 +26,7 @@ import {UnknownKitaIdVisitor} from '../../../app/core/constants/UnknownKitaIdVis
 import {UnknownTagesschuleIdVisitor} from '../../../app/core/constants/UnknownTagesschuleIdVisitor';
 import {UnknownTFOIdVisitor} from '../../../app/core/constants/UnknownTFOIdVisitor';
 import {DvDialog} from '../../../app/core/directive/dv-dialog/dv-dialog';
+import {TSDemoFeature} from '../../../app/core/directive/dv-hide-feature/TSDemoFeature';
 import {ErrorService} from '../../../app/core/errors/service/ErrorService';
 import {LogFactory} from '../../../app/core/logging/LogFactory';
 import {ApplicationPropertyRS} from '../../../app/core/rest-services/applicationPropertyRS.rest';
@@ -173,6 +174,8 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     private angebotTS: boolean;
     private angebotFI: boolean;
     private angebotTFO: boolean;
+
+    public readonly demoFeature = TSDemoFeature.FACHSTELLEN_UEBERGANGSLOESUNG;
 
     public constructor(
         private readonly $state: StateService,

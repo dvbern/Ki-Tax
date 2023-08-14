@@ -17,8 +17,6 @@
 
 package ch.dvbern.ebegu.util;
 
-import java.util.Objects;
-
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
@@ -223,6 +221,9 @@ public final class FreigabeCopyUtil {
 		erweiterteBetreuungGS.setErweiterteBeduerfnisse(erweiterteBetreuungJA.getErweiterteBeduerfnisse());
 		erweiterteBetreuungGS.setFachstelle(erweiterteBetreuungJA.getFachstelle());
 		erweiterteBetreuungGS.setKeineKesbPlatzierung(erweiterteBetreuungJA.getKeineKesbPlatzierung());
+		erweiterteBetreuungGS.setAnspruchFachstelleWennPensumUnterschritten(
+				erweiterteBetreuungJA.isAnspruchFachstelleWennPensumUnterschritten()
+		);
 	}
 
 	private static void copyKind(@Nonnull Kind kindGS, @Nonnull Kind kindJA) {
