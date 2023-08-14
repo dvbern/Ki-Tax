@@ -15,46 +15,8 @@
 
 package ch.dvbern.ebegu.services;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
-
-import javax.annotation.Nonnull;
-import javax.ejb.Local;
-import javax.ejb.Stateless;
-import javax.inject.Inject;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Expression;
-import javax.persistence.criteria.Join;
-import javax.persistence.criteria.JoinType;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
-import javax.validation.ConstraintViolation;
-import javax.validation.ConstraintViolationException;
-import javax.validation.Validator;
-import javax.validation.ValidatorFactory;
-
 import ch.dvbern.ebegu.dto.KindDubletteDTO;
-import ch.dvbern.ebegu.entities.AbstractEntity_;
-import ch.dvbern.ebegu.entities.AbstractPersonEntity_;
-import ch.dvbern.ebegu.entities.Benutzer;
-import ch.dvbern.ebegu.entities.Dossier;
-import ch.dvbern.ebegu.entities.Dossier_;
-import ch.dvbern.ebegu.entities.Fall;
-import ch.dvbern.ebegu.entities.Fall_;
-import ch.dvbern.ebegu.entities.Gemeinde;
-import ch.dvbern.ebegu.entities.Gesuch;
-import ch.dvbern.ebegu.entities.Gesuch_;
-import ch.dvbern.ebegu.entities.Gesuchsperiode;
-import ch.dvbern.ebegu.entities.Gesuchsperiode_;
-import ch.dvbern.ebegu.entities.Kind;
-import ch.dvbern.ebegu.entities.KindContainer;
-import ch.dvbern.ebegu.entities.KindContainer_;
+import ch.dvbern.ebegu.entities.*;
 import ch.dvbern.ebegu.enums.AntragStatus;
 import ch.dvbern.ebegu.enums.AntragTyp;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
@@ -66,6 +28,17 @@ import ch.dvbern.ebegu.types.DateRange_;
 import ch.dvbern.lib.cdipersistence.Persistence;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.annotation.Nonnull;
+import javax.ejb.Local;
+import javax.ejb.Stateless;
+import javax.inject.Inject;
+import javax.persistence.criteria.*;
+import javax.validation.ConstraintViolation;
+import javax.validation.ConstraintViolationException;
+import javax.validation.Validator;
+import javax.validation.ValidatorFactory;
+import java.util.*;
 
 /**
  * Service fuer Kind
@@ -242,13 +215,9 @@ public class KindServiceBean extends AbstractBaseService implements KindService 
 		return persistence.getCriteriaResults(query);
 	}
 
+	@Nonnull
 	@Override
-	public void updateKeinSelbstbehaltFuerGemeinde(
-		@Nonnull Integer fallNummer,
-		@Nonnull Integer kindNummer,
-		int gesuchsperiodeStartJahr,
-		@Nonnull Boolean keinSelbstbehaltFuerGemeinde)
-	{
+	public Collection<KindContainer> findKinder(@Nonnull Integer fallNummer, @Nonnull Integer kindNummer, int gesuchsperiodeStartJahr) {
 		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
 		final CriteriaQuery<KindContainer> query = cb.createQuery(KindContainer.class);
 
@@ -266,23 +235,28 @@ public class KindServiceBean extends AbstractBaseService implements KindService 
 			.get(DateRange_.gueltigAb)
 		);
 		Predicate predicatePeriode = cb.equal(yearExp, gesuchsperiodeStartJahr);
-
 		query.where(predicateFallNummer, predicateKindNummer, predicatePeriode);
 
-		// Bei Mutationen innerhalb einer Gesuchsperiode gibt es mehrere Kinder mit der gleichen
-		// Fallnummer, Kindnummer und Gesuchsperiode. Wir updaten alle
-		Collection<KindContainer> kindContainers = persistence.getCriteriaResults(query);
+		return persistence.getCriteriaResults(query);
+	}
+
+	@Override
+	public void updateKeinSelbstbehaltFuerGemeinde(
+		Collection<KindContainer> kindContainers,
+		@Nonnull Boolean keinSelbstbehaltFuerGemeinde)
+	{
 		kindContainers.forEach(kindContainer -> {
+			long fallNummer = kindContainer.getGesuch().getFall().getFallNummer();
 			// Flag nur setzen, falls das Kind immer noch die Checkbox kindAusAsylwesen aktiviert hat
 			if (overrideAllowed(kindContainer)) {
 				kindContainer.setKeinSelbstbehaltDurchGemeinde(keinSelbstbehaltFuerGemeinde);
 				LOGGER.info("Updating KindContainer with id " + kindContainer.getId() +
-					", Fallnummer " + fallNummer + " and Kindnummer " + kindNummer +
+					", Fallnummer " + fallNummer + " and Kindnummer " + kindContainer.getKindNummer() +
 					". Set keinSelbstbehaltFuerGemeinde = " + keinSelbstbehaltFuerGemeinde);
 				persistence.persist(kindContainer);
 			} else {
 				LOGGER.info("KindContainer with id " + kindContainer.getId() +
-					", Fallnummer " + fallNummer + " and Kindnummer " + kindNummer +
+					", Fallnummer " + fallNummer + " and Kindnummer " + kindContainer.getKindNummer() +
 					" has kindAusAsylwesen == false or has wrong Gesuchstatus. Not setting keinSelbstbehaltFuerGemeinde");
 			}
 		});
