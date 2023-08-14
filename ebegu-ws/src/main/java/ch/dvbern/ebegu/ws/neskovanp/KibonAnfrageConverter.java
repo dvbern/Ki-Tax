@@ -42,7 +42,7 @@ public class KibonAnfrageConverter {
 		steuerdatenResponse.setSynchroneAntwort(steuerdatenResponseType.isSynchroneAntwort());
 		steuerdatenResponse.setVeranlagungsstand(Veranlagungsstand.valueOf(steuerdatenResponseType.getVeranlagungsstand().value()));
 		steuerdatenResponse.setUnterjaehrigerFall(steuerdatenResponseType.isUnterjaehrigerFall());
-		steuerdatenResponse.setUnregelmaessigkeitInDerVeranlagung(true);
+		steuerdatenResponse.setUnregelmaessigkeitInDerVeranlagung(steuerdatenResponseType.isUnregelmaessigkeitInDerVeranlagung());
 		steuerdatenResponse.setVeraendertePartnerschaft(steuerdatenResponseType.isVeraendertePartnerschaft());
 
 		if (steuerdatenResponseType.getErwerbseinkommenUnselbstaendigkeitDossiertraeger() != null) {
