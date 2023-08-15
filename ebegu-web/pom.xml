@@ -37,6 +37,7 @@
         <sonar.testExecutionReportPaths>build/sonar-report.xml</sonar.testExecutionReportPaths>
         <sonar.typescript.lcov.reportPaths>build/coverage/lcov.info</sonar.typescript.lcov.reportPaths>
         <sonar.typescript.tsconfigPath>src/tsconfig.app.json</sonar.typescript.tsconfigPath>
+        <npm.preinit.arg>-v</npm.init.arg>
         <npm.init.arg>install</npm.init.arg>
     </properties>
 
@@ -44,7 +45,8 @@
         <profile>
             <id>ci</id>
             <properties>
-                <npm.init.arg>ci --force</npm.init.arg>
+                <npm.preinit.arg>install -g esbuild-linux-64@0.15.5</npm.init.arg>
+                <npm.init.arg>ci --legacy-peer-deps</npm.init.arg>
             </properties>
         </profile>
 
@@ -79,6 +81,17 @@
                                     <npmVersion>6.14.13</npmVersion>
                                     <nodeDownloadRoot>https://nodejs.org/dist/</nodeDownloadRoot>
                                     <npmDownloadRoot>https://registry.npmjs.org/npm/-/</npmDownloadRoot>
+                                </configuration>
+                            </execution>
+
+                            <execution>
+                                <id>npm prepare</id>
+                                <phase>initialize</phase>
+                                <goals>
+                                    <goal>npm</goal>
+                                </goals>
+                                <configuration>
+                                    <arguments>${npm.preinit.arg}</arguments>
                                 </configuration>
                             </execution>
 
