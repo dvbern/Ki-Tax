@@ -15,12 +15,37 @@
 
 package ch.dvbern.ebegu.entities;
 
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
+import java.util.TreeSet;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
+import javax.persistence.ForeignKey;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
+import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
+import javax.validation.Valid;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
+
 import ch.dvbern.ebegu.dto.suchfilter.lucene.Searchable;
 import ch.dvbern.ebegu.enums.AntragCopyType;
 import ch.dvbern.ebegu.util.EbeguUtil;
 import ch.dvbern.ebegu.validators.CheckFachstellen;
 import ch.dvbern.ebegu.validators.CheckFachstellenFromDate;
 import ch.dvbern.ebegu.validators.CheckPensumFachstelle;
+import ch.dvbern.ebegu.validators.CheckPensumFachstellenOverlapping;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.commons.lang3.builder.CompareToBuilder;
 import org.hibernate.annotations.SortNatural;
@@ -29,20 +54,12 @@ import org.hibernate.search.annotations.Analyzer;
 import org.hibernate.search.annotations.Indexed;
 import org.hibernate.search.annotations.IndexedEmbedded;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.persistence.*;
-import javax.validation.Valid;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotNull;
-import java.time.LocalDate;
-import java.util.*;
-
 /**
  * Container-Entity fuer die Kinder: Diese muss für jeden Benutzertyp (GS, JA) einzeln gefuehrt werden,
  * damit die Veraenderungen / Korrekturen angezeigt werden koennen.
  */
 @CheckPensumFachstelle
+@CheckPensumFachstellenOverlapping
 @CheckFachstellenFromDate
 @CheckFachstellen
 @Audited
