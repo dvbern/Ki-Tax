@@ -104,6 +104,13 @@ public enum Betreuungsstatus {
 			SCHULAMT_ANMELDUNG_UEBERNOMMEN, SCHULAMT_ANMELDUNG_ABGELEHNT, SCHULAMT_FALSCHE_INSTITUTION, SCHULAMT_MODULE_AKZEPTIERT);
 	}
 
+	public static Set<Betreuungsstatus> getBetreuungsstatusForFireAnmeldungTagesschuleEvent() {
+		return EnumSet.of(
+			Betreuungsstatus.SCHULAMT_ANMELDUNG_AUSGELOEST,
+			Betreuungsstatus.SCHULAMT_MODULE_AKZEPTIERT,
+			Betreuungsstatus.SCHULAMT_ANMELDUNG_UEBERNOMMEN);
+	}
+
 	public boolean isSchulamtAnmeldungUebernommen() {
 		return SCHULAMT_ANMELDUNG_UEBERNOMMEN == this;
 	}
