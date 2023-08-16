@@ -56,6 +56,7 @@ public class AnmeldungTagesschuleEventAsyncHelper {
 
 		this.event.fire(anmeldungTagesschuleEventConverter.of(anmeldung));
 		anmeldung.setEventPublished(true);
+		anmeldung.setSkipPreUpdate(true);
 		persistence.merge(anmeldung);
 	}
 }
