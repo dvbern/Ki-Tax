@@ -30,7 +30,6 @@ dv-input-container-x {
         &.vertical-align {
             flex-direction: column;
             margin-bottom: 4rem;
-            align-items: start;
             > label, dv-radio-container-x, mat-form-field, .flex-whitespace-item {
                 flex-grow: 1;
                 margin: 0 2rem;
@@ -129,6 +128,11 @@ dv-input-container-x {
 
 .gesuch dv-input-container-x {
 
+    .dv-input-container {
+        &.vertical-align {
+            align-items: start;
+        }
+    }
     input.ng-invalid, select.ng-invalid, mat-radio-group.ng-invalid {
         background-color: @background-error-color;
     }
