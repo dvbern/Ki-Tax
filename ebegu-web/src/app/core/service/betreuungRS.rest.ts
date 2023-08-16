@@ -83,7 +83,8 @@ export class BetreuungRS {
     }
 
     private parseBetreuung(response: any, gesuchId: string): IPromise<TSBetreuung> {
-        return this.wizardStepManager.findStepsFromGesuch(gesuchId).then(() => this.ebeguRestUtil.parseBetreuung(new TSBetreuung(), response.data));
+        return this.wizardStepManager.findStepsFromGesuch(gesuchId)
+            .then(() => this.ebeguRestUtil.parseBetreuung(new TSBetreuung(), response.data));
     }
 
     public anmeldungSchulamtFalscheInstitution(

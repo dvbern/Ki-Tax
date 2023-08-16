@@ -131,7 +131,8 @@ export class EditInstitutionComponent implements OnInit {
     }
 
     public static hasGueltigkeitDecreased(preEditGueltigkeit: TSDateRange, gueltigkeit: TSDateRange): boolean {
-        return EbeguUtil.isNullOrUndefined(preEditGueltigkeit.gueltigBis) && EbeguUtil.isNotNullOrUndefined(gueltigkeit.gueltigBis) ||
+        return EbeguUtil.isNullOrUndefined(preEditGueltigkeit.gueltigBis)
+            && EbeguUtil.isNotNullOrUndefined(gueltigkeit.gueltigBis) ||
             gueltigkeit.gueltigBis?.isBefore(preEditGueltigkeit.gueltigBis) ||
             gueltigkeit.gueltigAb?.isAfter(preEditGueltigkeit.gueltigAb);
     }
@@ -191,11 +192,13 @@ export class EditInstitutionComponent implements OnInit {
     ): Observable<TSInstitutionStammdaten> {
 
         if (optionalStammdaten) {
-            this.preEditGueltigkeit = new TSDateRange(optionalStammdaten.gueltigkeit.gueltigAb, optionalStammdaten.gueltigkeit.gueltigBis);
+            this.preEditGueltigkeit =
+                new TSDateRange(optionalStammdaten.gueltigkeit.gueltigAb, optionalStammdaten.gueltigkeit.gueltigBis);
             return of(optionalStammdaten);
         }
 
-        return this.institutionRS.findInstitution(institutionId).pipe(map(institution => EditInstitutionComponent.createInstitutionStammdaten(institution)));
+        return this.institutionRS.findInstitution(institutionId)
+            .pipe(map(institution => EditInstitutionComponent.createInstitutionStammdaten(institution)));
     }
 
     private initModel(stammdaten: TSInstitutionStammdaten): void {
@@ -413,12 +416,15 @@ export class EditInstitutionComponent implements OnInit {
      */
     private isEquivalent(a: TSInstitutionExternalClient, b: TSInstitutionExternalClient): boolean {
         return a.externalClient.id === b.externalClient.id
-            && ((EbeguUtil.isNotNullOrUndefined(a.gueltigkeit.gueltigAb) && EbeguUtil.isNotNullOrUndefined(b.gueltigkeit.gueltigAb)
+            && ((EbeguUtil.isNotNullOrUndefined(a.gueltigkeit.gueltigAb)
+                    && EbeguUtil.isNotNullOrUndefined(b.gueltigkeit.gueltigAb)
                 && a.gueltigkeit.gueltigAb.isSame(b.gueltigkeit.gueltigAb))
                 || (EbeguUtil.isNullOrUndefined(a.gueltigkeit.gueltigAb) && EbeguUtil.isNullOrUndefined(b.gueltigkeit.gueltigAb)))
-            && ((EbeguUtil.isNotNullOrUndefined(a.gueltigkeit.gueltigBis) && EbeguUtil.isNotNullOrUndefined(b.gueltigkeit.gueltigBis)
+            && ((EbeguUtil.isNotNullOrUndefined(a.gueltigkeit.gueltigBis) &&
+                    EbeguUtil.isNotNullOrUndefined(b.gueltigkeit.gueltigBis)
                 && a.gueltigkeit.gueltigBis.isSame(b.gueltigkeit.gueltigBis))
-                || (EbeguUtil.isNullOrUndefined(a.gueltigkeit.gueltigBis) && EbeguUtil.isNullOrUndefined(b.gueltigkeit.gueltigBis)));
+                || (EbeguUtil.isNullOrUndefined(a.gueltigkeit.gueltigBis)
+                    && EbeguUtil.isNullOrUndefined(b.gueltigkeit.gueltigBis)));
     }
 
     private getTraegerschaftsUpdate(): string | null {

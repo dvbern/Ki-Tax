@@ -63,8 +63,10 @@ const finanzielleSituationRSSpy = jasmine.createSpyObj<FinanzielleSituationRS>(F
 const transitionSpy = jasmine.createSpyObj<Transition>(Transition.name, ['params']);
 const berechnungsManagerSpy = jasmine.createSpyObj<BerechnungsManager>(BerechnungsManager.name,
     ['calculateFinanzielleSituation', 'calculateFinanzielleSituationTemp', 'calculateEinkommensverschlechterungTemp']);
-berechnungsManagerSpy.calculateEinkommensverschlechterungTemp.and.returnValue(Promise.resolve(new TSFinanzielleSituationResultateDTO()));
-berechnungsManagerSpy.calculateFinanzielleSituationTemp.and.returnValue(Promise.resolve(new TSFinanzielleSituationResultateDTO()));
+berechnungsManagerSpy.calculateEinkommensverschlechterungTemp.and
+    .returnValue(Promise.resolve(new TSFinanzielleSituationResultateDTO()));
+berechnungsManagerSpy.calculateFinanzielleSituationTemp.and
+    .returnValue(Promise.resolve(new TSFinanzielleSituationResultateDTO()));
 
 const stateServiceSpy = jasmine.createSpyObj<StateService>(StateService.name,
     ['go']);

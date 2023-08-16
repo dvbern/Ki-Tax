@@ -226,7 +226,8 @@ export class AbstractGesuchViewController<T> implements IController {
     }
 
     public isFKJV(): boolean {
-        return EbeguUtil.isNotNullOrUndefined(this.getGesuch()) && this.getGesuch().finSitTyp === TSFinanzielleSituationTyp.BERN_FKJV;
+        return EbeguUtil.isNotNullOrUndefined(this.getGesuch())
+            && this.getGesuch().finSitTyp === TSFinanzielleSituationTyp.BERN_FKJV;
     }
 
     private getBasisjahrPlus(nbr: number): number | undefined {

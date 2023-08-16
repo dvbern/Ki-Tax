@@ -125,7 +125,8 @@ describe('mitteilungenView', () => {
         it('should create an empty TSMItteilung for JA', () => {
             const sachbearbeiterBG = new TSBenutzer();
             sachbearbeiterBG.currentBerechtigung.role = TSRole.SACHBEARBEITER_BG;
-            spyOn(authServiceRS, 'isOneOfRoles').and.callFake((roles: Array<TSRole>) => roles.indexOf(TSRole.SACHBEARBEITER_BG) >= 0);
+            spyOn(authServiceRS, 'isOneOfRoles').and
+                .callFake((roles: Array<TSRole>) => roles.indexOf(TSRole.SACHBEARBEITER_BG) >= 0);
 
             createMitteilungForUser(sachbearbeiterBG);
 
@@ -135,7 +136,8 @@ describe('mitteilungenView', () => {
         it('should create an empty TSMItteilung for Institution', () => {
             const sachbearbeiterInst = new TSBenutzer();
             sachbearbeiterInst.currentBerechtigung.role = TSRole.SACHBEARBEITER_INSTITUTION;
-            spyOn(authServiceRS, 'isOneOfRoles').and.callFake((roles: Array<TSRole>) => roles.indexOf(TSRole.SACHBEARBEITER_INSTITUTION) >= 0);
+            spyOn(authServiceRS, 'isOneOfRoles').and
+                .callFake((roles: Array<TSRole>) => roles.indexOf(TSRole.SACHBEARBEITER_INSTITUTION) >= 0);
 
             createMitteilungForUser(sachbearbeiterInst);
 

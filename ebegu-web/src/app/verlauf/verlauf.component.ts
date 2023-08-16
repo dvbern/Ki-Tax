@@ -45,7 +45,9 @@ export class VerlaufComponent implements OnInit {
     public gs1Name: string;
     public readonly tableColumns: DvSimpleTableColumnDefinition[] = [
         {
-            displayedName: 'DATUM', attributeName: 'timestampVon', displayFunction: (d: any) => moment(d).format(CONSTANTS.DATE_FORMAT)
+            displayedName: 'DATUM',
+            attributeName: 'timestampVon',
+            displayFunction: (d: any) => moment(d).format(CONSTANTS.DATE_FORMAT)
         },
         {displayedName: 'VERSION', attributeName: 'version'},
         {displayedName: 'AKTION', attributeName: 'status'},

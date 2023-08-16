@@ -291,8 +291,8 @@ export class TSGesuch extends TSAbstractAntragEntity {
         }
         for (const kind of kinderWithBetreuungList) {
             for (const betreuung of kind.betreuungen) {
-                if (betreuung.institutionStammdaten && !isOfAnyBetreuungsangebotTyp(betreuung.institutionStammdaten.betreuungsangebotTyp,
-                    types)) {
+                if (betreuung.institutionStammdaten &&
+                    !isOfAnyBetreuungsangebotTyp(betreuung.institutionStammdaten.betreuungsangebotTyp, types)) {
                     return false;
                 }
             }

@@ -90,7 +90,10 @@ export class BerechnungsManager {
             .then(finSitContRespo => this.setEinkommensverschlechterung(basisJahrPlus, finSitContRespo));
     }
 
-    private setEinkommensverschlechterung(basisJahrPlus: number, finSitContRespo: TSFinanzielleSituationResultateDTO): TSFinanzielleSituationResultateDTO {
+    private setEinkommensverschlechterung(
+        basisJahrPlus: number,
+        finSitContRespo: TSFinanzielleSituationResultateDTO
+    ): TSFinanzielleSituationResultateDTO {
 
         if (basisJahrPlus === 2) {
             this.einkommensverschlechterungResultateBjP2 = finSitContRespo;

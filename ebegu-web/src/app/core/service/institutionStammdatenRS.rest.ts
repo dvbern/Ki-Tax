@@ -57,7 +57,8 @@ export class InstitutionStammdatenRS {
         restInstitutionStammdaten =
             this.ebeguRestUtil.institutionStammdatenToRestObject(restInstitutionStammdaten, institutionStammdaten);
 
-        return this.$http.put(this.serviceURL, restInstitutionStammdaten).then((response: any) => this.ebeguRestUtil.parseInstitutionStammdaten(new TSInstitutionStammdaten(), response.data)
+        return this.$http.put(this.serviceURL, restInstitutionStammdaten)
+            .then((response: any) => this.ebeguRestUtil.parseInstitutionStammdaten(new TSInstitutionStammdaten(), response.data)
         );
     }
 

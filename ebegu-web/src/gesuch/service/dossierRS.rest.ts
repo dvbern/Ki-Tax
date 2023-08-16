@@ -30,7 +30,8 @@ export class DossierRS implements IEntityRS {
     public createDossier(dossier: TSDossier): IPromise<TSDossier> {
         let sentDossier = {};
         sentDossier = this.ebeguRestUtil.dossierToRestObject(sentDossier, dossier);
-        return this.$http.post(this.serviceURL, sentDossier).then((response: any) => this.ebeguRestUtil.parseDossier(new TSDossier(), response.data));
+        return this.$http.post(this.serviceURL, sentDossier)
+            .then((response: any) => this.ebeguRestUtil.parseDossier(new TSDossier(), response.data));
     }
 
     public findDossier(dossierId: string): IPromise<TSDossier> {

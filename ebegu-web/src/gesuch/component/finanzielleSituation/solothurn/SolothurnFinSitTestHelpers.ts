@@ -44,7 +44,14 @@ export class SolothurnFinSitTestHelpers {
     public static getMockProvidersExceptGesuchModelManager(): { provide: any; useValue: any }[] {
         const wizardStepManagerSpy = jasmine.createSpyObj<WizardStepManager>(
             WizardStepManager.name,
-            ['getCurrentStep', 'setCurrentStep', 'isNextStepBesucht', 'isNextStepEnabled', 'getCurrentStepName', 'updateCurrentWizardStepStatusSafe']);
+            [
+                'getCurrentStep',
+                'setCurrentStep',
+                'isNextStepBesucht',
+                'isNextStepEnabled',
+                'getCurrentStepName',
+                'updateCurrentWizardStepStatusSafe'
+            ]);
         const finanzielleSituationRSSpy = jasmine.createSpyObj<FinanzielleSituationRS>(FinanzielleSituationRS.name,
             ['saveFinanzielleSituationStart', 'getFinanzielleSituationTyp']);
         const stateServiceSpy = jasmine.createSpyObj<StateService>(StateService.name,

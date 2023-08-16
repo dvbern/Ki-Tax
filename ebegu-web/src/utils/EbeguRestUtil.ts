@@ -2096,7 +2096,8 @@ export class EbeguRestUtil {
         restFinanzielleVerhaeltnisse.steuerbaresVermoegen = finanzielleVerhaeltnisse.steuerbaresVermoegen;
         restFinanzielleVerhaeltnisse.steuerbaresEinkommen = finanzielleVerhaeltnisse.steuerbaresEinkommen;
         if (EbeguUtil.isNotNullOrUndefined(finanzielleVerhaeltnisse.zusatzangabenPartner)) {
-            restFinanzielleVerhaeltnisse.zusatzangabenPartner = this.finSitZusatzangabenAppenzellToRestObject({}, finanzielleVerhaeltnisse.zusatzangabenPartner);
+            restFinanzielleVerhaeltnisse.zusatzangabenPartner =
+                this.finSitZusatzangabenAppenzellToRestObject({}, finanzielleVerhaeltnisse.zusatzangabenPartner);
         }
         return restFinanzielleVerhaeltnisse;
     }
@@ -2238,7 +2239,8 @@ export class EbeguRestUtil {
             tsFinSitZusatzangabenAppenzell.liegenschaftsaufwand = finSitZusatzangabenAppenzellFromServer.liegenschaftsaufwand;
             tsFinSitZusatzangabenAppenzell.vorjahresverluste = finSitZusatzangabenAppenzellFromServer.vorjahresverluste;
             tsFinSitZusatzangabenAppenzell.politischeParteiSpende = finSitZusatzangabenAppenzellFromServer.politischeParteiSpende;
-            tsFinSitZusatzangabenAppenzell.leistungAnJuristischePersonen = finSitZusatzangabenAppenzellFromServer.leistungAnJuristischePersonen;
+            tsFinSitZusatzangabenAppenzell.leistungAnJuristischePersonen =
+                finSitZusatzangabenAppenzellFromServer.leistungAnJuristischePersonen;
             tsFinSitZusatzangabenAppenzell.steuerbaresEinkommen = finSitZusatzangabenAppenzellFromServer.steuerbaresEinkommen;
             tsFinSitZusatzangabenAppenzell.steuerbaresVermoegen = finSitZusatzangabenAppenzellFromServer.steuerbaresVermoegen;
             if (EbeguUtil.isNotNullOrUndefined(finSitZusatzangabenAppenzellFromServer.zusatzangabenPartner)) {
@@ -2641,7 +2643,8 @@ export class EbeguRestUtil {
         if (abweichungen) {
             restAbweichungen = [];
             // only send Abweichungen with actual Abweichungen
-            const filteredAbweichungen = abweichungen.filter(element => element.status !== TSBetreuungspensumAbweichungStatus.NONE);
+            const filteredAbweichungen =
+                abweichungen.filter(element => element.status !== TSBetreuungspensumAbweichungStatus.NONE);
 
             filteredAbweichungen.forEach((abweichung: TSBetreuungspensumAbweichung) => {
                 restAbweichungen.push(this.betreuungspensumAbweichungToRestObject({},
@@ -2805,7 +2808,8 @@ export class EbeguRestUtil {
             betreuungTS.eingewoehnung = betreuungFromServer.eingewoehnung;
             betreuungTS.auszahlungAnEltern = betreuungFromServer.auszahlungAnEltern;
             betreuungTS.begruendungAuszahlungAnInstitution = betreuungFromServer.begruendungAuszahlungAnInstitution;
-            betreuungTS.finSitRueckwirkendKorrigiertInThisMutation = betreuungFromServer.finSitRueckwirkendKorrigiertInThisMutation;
+            betreuungTS.finSitRueckwirkendKorrigiertInThisMutation =
+                betreuungFromServer.finSitRueckwirkendKorrigiertInThisMutation;
             return betreuungTS;
         }
         return undefined;
@@ -2996,7 +3000,8 @@ export class EbeguRestUtil {
         restErweiterteBetreuung.kitaPlusZuschlag = erweiterteBetreuung.kitaPlusZuschlag;
         restErweiterteBetreuung.kitaPlusZuschlagBestaetigt = erweiterteBetreuung.kitaPlusZuschlagBestaetigt;
         restErweiterteBetreuung.erweitereteBeduerfnisseBetrag = erweiterteBetreuung.erweitereteBeduerfnisseBetrag;
-        restErweiterteBetreuung.anspruchFachstelleWennPensumUnterschritten = erweiterteBetreuung.anspruchFachstelleWennPensumUnterschritten;
+        restErweiterteBetreuung.anspruchFachstelleWennPensumUnterschritten =
+            erweiterteBetreuung.anspruchFachstelleWennPensumUnterschritten;
         if (erweiterteBetreuung.fachstelle) {
             restErweiterteBetreuung.fachstelle = this.fachstelleToRestObject({}, erweiterteBetreuung.fachstelle);
         }
@@ -3016,7 +3021,8 @@ export class EbeguRestUtil {
             erweiterteBetreuungTS.kitaPlusZuschlag = erweiterteBetreuungFromServer.kitaPlusZuschlag;
             erweiterteBetreuungTS.kitaPlusZuschlagBestaetigt = erweiterteBetreuungFromServer.kitaPlusZuschlagBestaetigt;
             erweiterteBetreuungTS.betreuungInGemeinde = erweiterteBetreuungFromServer.betreuungInGemeinde;
-            erweiterteBetreuungTS.anspruchFachstelleWennPensumUnterschritten = erweiterteBetreuungFromServer.anspruchFachstelleWennPensumUnterschritten;
+            erweiterteBetreuungTS.anspruchFachstelleWennPensumUnterschritten =
+                erweiterteBetreuungFromServer.anspruchFachstelleWennPensumUnterschritten;
             erweiterteBetreuungTS.erweitereteBeduerfnisseBetrag =
                 erweiterteBetreuungFromServer.erweitereteBeduerfnisseBetrag;
             if (erweiterteBetreuungFromServer.fachstelle) {
@@ -3479,7 +3485,8 @@ export class EbeguRestUtil {
             verfuegungTS.kategorieMaxEinkommen = verfuegungFromServer.kategorieMaxEinkommen;
             verfuegungTS.kategorieNichtEintreten = verfuegungFromServer.kategorieNichtEintreten;
             verfuegungTS.kategorieNormal = verfuegungFromServer.kategorieNormal;
-            verfuegungTS.veraenderungVerguenstigungGegenueberVorgaenger = verfuegungFromServer.veraenderungVerguenstigungGegenueberVorgaenger;
+            verfuegungTS.veraenderungVerguenstigungGegenueberVorgaenger =
+                verfuegungFromServer.veraenderungVerguenstigungGegenueberVorgaenger;
             verfuegungTS.ignorable = verfuegungFromServer.ignorable;
             verfuegungTS.korrekturAusbezahltEltern = verfuegungFromServer.korrekturAusbezahltEltern;
             verfuegungTS.korrekturAusbezahltInstitution = verfuegungFromServer.korrekturAusbezahltInstitution;
@@ -4909,7 +4916,8 @@ export class EbeguRestUtil {
     }
 
     public parseInstitutionExternalClient(data: any): TSInstitutionExternalClient {
-        const tsInstitutionExternalClient = new TSInstitutionExternalClient(this.parseExternalClient(data.externalClient));
+        const tsInstitutionExternalClient =
+            new TSInstitutionExternalClient(this.parseExternalClient(data.externalClient));
         const ab = DateUtil.localDateToMoment(data.gueltigAb);
         const bis = DateUtil.localDateToMoment(data.gueltigBis);
         tsInstitutionExternalClient.gueltigkeit = new TSDateRange(ab, bis);
@@ -4994,7 +5002,9 @@ export class EbeguRestUtil {
                 this.parseLastenausgleichTagesschuleAngabenGemeinde(
                     new TSLastenausgleichTagesschuleAngabenGemeinde(), gemeindeContainerFromServer.angabenKorrektur);
             gemeindeContainerTS.angabenInstitutionContainers =
-                this.parseLastenausgleichTagesschuleAngabenInstitutionContainerList(gemeindeContainerFromServer.angabenInstitutionContainers);
+                this.parseLastenausgleichTagesschuleAngabenInstitutionContainerList(
+                    gemeindeContainerFromServer.angabenInstitutionContainers
+                );
             gemeindeContainerTS.verantwortlicher =
                 this.parseUserNoDetails(new TSBenutzerNoDetails(), gemeindeContainerFromServer.verantwortlicher);
             gemeindeContainerTS.betreuungsstundenPrognose = gemeindeContainerFromServer.betreuungsstundenPrognose;
@@ -5246,18 +5256,22 @@ export class EbeguRestUtil {
         return undefined;
     }
 
-    public parseLastenausgleichTagesschuleAngabenInstitutionContainerList(data: Array<any>): TSLastenausgleichTagesschuleAngabenInstitutionContainer[] {
+    public parseLastenausgleichTagesschuleAngabenInstitutionContainerList(
+        data: Array<any>
+    ): TSLastenausgleichTagesschuleAngabenInstitutionContainer[] {
         if (!data) {
             return [];
         }
         return Array.isArray(data)
             ?
             data.map(
-                item => this.parseLastenausgleichTagesschuleAngabenInstitutionContainer(new TSLastenausgleichTagesschuleAngabenInstitutionContainer(),
+                item => this.parseLastenausgleichTagesschuleAngabenInstitutionContainer(
+                    new TSLastenausgleichTagesschuleAngabenInstitutionContainer(),
                     item))
             :
             [
-                this.parseLastenausgleichTagesschuleAngabenInstitutionContainer(new TSLastenausgleichTagesschuleAngabenInstitutionContainer(),
+                this.parseLastenausgleichTagesschuleAngabenInstitutionContainer(
+                    new TSLastenausgleichTagesschuleAngabenInstitutionContainer(),
                     data)
             ];
     }

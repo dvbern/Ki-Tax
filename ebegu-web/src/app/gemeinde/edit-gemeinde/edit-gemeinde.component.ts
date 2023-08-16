@@ -174,7 +174,8 @@ export class EditGemeindeComponent implements OnInit {
 
     private loadGemeindenList(): void {
         this.gemeindeList$ = from(
-            this.gemeindeRS.getAktiveGueltigeGemeinden().then(response => response.filter(gemeinde => gemeinde.id !== this.gemeindeId)
+            this.gemeindeRS.getAktiveGueltigeGemeinden()
+                .then(response => response.filter(gemeinde => gemeinde.id !== this.gemeindeId)
                     .sort((a, b) => a.name.localeCompare(b.name))));
 
     }

@@ -78,8 +78,9 @@ export class RemoveDialogController {
             this.params.parentController.setFocusBack(this.params.elementID);
         }
 
-        /*Es kann sein, dass die DialogBox durch einen Button mit Type submit ausgelösst wird. Wenn wir in der DialogBox jedoch auf
-         * cancel drücken, müssen wir die form wieder auf dirty setzen, um Randeffekte zu umgehen. See EBEGU-1557*/
+        /* Es kann sein, dass die DialogBox durch einen Button mit Type submit ausgelösst wird.
+          Wenn wir in der DialogBox jedoch auf cancel drücken, müssen wir die form wieder auf dirty setzen,
+          um Randeffekte zu umgehen. See EBEGU-1557 */
         if (this.params.form) {
             this.params.form.$setDirty();
         } else {

@@ -227,7 +227,8 @@ export class ErwerbspensumViewController extends AbstractGesuchViewController<TS
     }
 
     public isErwerbspensumInstitutionRequired(): boolean {
-        return this.isLuzern && (this.isAngestellt() || this.isInAusildungWeiterbildung() || this.isInIntegrationBeschaeftigung());
+        return this.isLuzern &&
+            (this.isAngestellt() || this.isInAusildungWeiterbildung() || this.isInIntegrationBeschaeftigung());
     }
 
     private isAngestellt(): boolean {

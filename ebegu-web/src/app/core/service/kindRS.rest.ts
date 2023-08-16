@@ -50,7 +50,8 @@ export class KindRS {
     public saveKind(kindContainer: TSKindContainer, gesuchId: string): IPromise<TSKindContainer> {
         let restKind = {};
         restKind = this.ebeguRestUtil.kindContainerToRestObject(restKind, kindContainer);
-        return this.$http.put(`${this.serviceURL}/${encodeURIComponent(gesuchId)}`, restKind).then((response: any) => this.wizardStepManager.findStepsFromGesuch(gesuchId).then(() => {
+        return this.$http.put(`${this.serviceURL}/${encodeURIComponent(gesuchId)}`, restKind)
+            .then((response: any) => this.wizardStepManager.findStepsFromGesuch(gesuchId).then(() => {
                 this.$log.debug('PARSING KindContainer REST object ', response.data);
                 return this.ebeguRestUtil.parseKindContainer(new TSKindContainer(), response.data);
             }));

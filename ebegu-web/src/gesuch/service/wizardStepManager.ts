@@ -243,14 +243,16 @@ export class WizardStepManager {
             if (this.needNewStatusSave(step.wizardStepStatus, newStepStatus)) {
                 // nur wenn der Status sich geaendert hat updaten und steps laden
                 step.wizardStepStatus = newStepStatus;
-                return this.wizardStepRS.updateWizardStep(step).then((response: TSWizardStep) => this.findStepsFromGesuch(response.gesuchId));
+                return this.wizardStepRS.updateWizardStep(step)
+                    .then((response: TSWizardStep) => this.findStepsFromGesuch(response.gesuchId));
             }
         }
         return this.$q.when();
     }
 
     public updateCurrentWizardStepStatusMutiert(): IPromise<void> {
-        return this.wizardStepRS.setWizardStepMutiert(this.getCurrentStep().id).then((response: TSWizardStep) => this.findStepsFromGesuch(response.gesuchId));
+        return this.wizardStepRS.setWizardStepMutiert(this.getCurrentStep().id)
+            .then((response: TSWizardStep) => this.findStepsFromGesuch(response.gesuchId));
     }
 
     private needNewStatusSave(oldStepStatus: TSWizardStepStatus, newStepStatus: TSWizardStepStatus): boolean {
@@ -292,7 +294,8 @@ export class WizardStepManager {
      * Just updates the current step as is
      */
     public updateCurrentWizardStep(): IPromise<void> {
-        return this.wizardStepRS.updateWizardStep(this.getCurrentStep()).then((response: TSWizardStep) => this.findStepsFromGesuch(response.gesuchId));
+        return this.wizardStepRS.updateWizardStep(this.getCurrentStep())
+            .then((response: TSWizardStep) => this.findStepsFromGesuch(response.gesuchId));
     }
 
     /**

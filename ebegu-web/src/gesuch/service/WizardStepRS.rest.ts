@@ -33,7 +33,8 @@ export class WizardStepRS {
     public updateWizardStep(wizardStep: TSWizardStep): IPromise<TSWizardStep> {
         const wizardStepObject = this.ebeguRestUtil.wizardStepToRestObject({}, wizardStep);
 
-        return this.$http.post(this.serviceURL, wizardStepObject).then((response: any) => this.ebeguRestUtil.parseWizardStep(new TSWizardStep(), response.data));
+        return this.$http.post(this.serviceURL, wizardStepObject)
+            .then((response: any) => this.ebeguRestUtil.parseWizardStep(new TSWizardStep(), response.data));
     }
 
     public findWizardStepsFromGesuch(gesuchID: string): IPromise<TSWizardStep[]> {

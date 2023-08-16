@@ -83,13 +83,15 @@ export abstract class AbstractFinSitsolothurnView extends AbstractGesuchViewX<TS
     }
 
     public gemeinsameStekChange(newGemeinsameStek: MatRadioChange): void {
-        if (newGemeinsameStek.value === false && EbeguUtil.isNullOrFalse(this.getModel().finanzielleSituationJA.alleinigeStekVorjahr)) {
+        if (newGemeinsameStek.value === false &&
+            EbeguUtil.isNullOrFalse(this.getModel().finanzielleSituationJA.alleinigeStekVorjahr)) {
             this.getModel().finanzielleSituationJA.veranlagt = undefined;
         }
     }
 
     public alleinigeStekVorjahrChange(newAlleinigeStekVorjahr: MatRadioChange): void {
-        if (newAlleinigeStekVorjahr.value === false && EbeguUtil.isNullOrFalse(this.model.familienSituation.gemeinsameSteuererklaerung)) {
+        if (newAlleinigeStekVorjahr.value === false &&
+            EbeguUtil.isNullOrFalse(this.model.familienSituation.gemeinsameSteuererklaerung)) {
             this.getModel().finanzielleSituationJA.veranlagt = undefined;
         }
     }
@@ -260,7 +262,8 @@ export abstract class AbstractFinSitsolothurnView extends AbstractGesuchViewX<TS
     public isSelbststaendigErwerbendAnswered(): boolean {
         if (this.gesuchstellerNumber === 2 && this.isSteuerveranlagungGemeinsam()) {
             // this is only saved on the primary GS for Solothurn
-            return EbeguUtil.isNotNullOrUndefined(this.getGesuch().gesuchsteller1.finanzielleSituationContainer.finanzielleSituationJA.momentanSelbststaendig);
+            return EbeguUtil.isNotNullOrUndefined(
+                this.getGesuch().gesuchsteller1.finanzielleSituationContainer.finanzielleSituationJA.momentanSelbststaendig);
         }
         return EbeguUtil.isNotNullOrUndefined(this.getModel().finanzielleSituationJA.momentanSelbststaendig);
     }

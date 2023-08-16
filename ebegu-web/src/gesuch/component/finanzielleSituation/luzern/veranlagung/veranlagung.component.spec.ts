@@ -33,9 +33,14 @@ import {VeranlagungComponent} from './veranlagung.component';
 describe('VeranlagungComponent', () => {
     let component: VeranlagungComponent;
     let fixture: ComponentFixture<VeranlagungComponent>;
-    const berechnungsManagerSpy = jasmine.createSpyObj<BerechnungsManager>(BerechnungsManager.name, ['calculateFinanzielleSituation', 'calculateFinanzielleSituationTemp']);
-    berechnungsManagerSpy.calculateFinanzielleSituationTemp.and.returnValue(Promise.resolve(new TSFinanzielleSituationResultateDTO()));
-    const gesuchModelManagerSpy = jasmine.createSpyObj<GesuchModelManager>(GesuchModelManager.name, ['getGesuch']);
+    const berechnungsManagerSpy =
+        jasmine.createSpyObj<BerechnungsManager>(
+            BerechnungsManager.name,
+            ['calculateFinanzielleSituation', 'calculateFinanzielleSituationTemp']);
+    berechnungsManagerSpy.calculateFinanzielleSituationTemp.and
+        .returnValue(Promise.resolve(new TSFinanzielleSituationResultateDTO()));
+    const gesuchModelManagerSpy =
+        jasmine.createSpyObj<GesuchModelManager>(GesuchModelManager.name, ['getGesuch']);
     gesuchModelManagerSpy.getGesuch.and.returnValue(createGesuch());
 
     beforeEach(async () => {

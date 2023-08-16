@@ -55,7 +55,9 @@ export class TagesschulenListComponent implements OnInit {
     ) {
     }
 
-    private static areKontrollfragenOk(latsInstitutionContainer: TSLastenausgleichTagesschuleAngabenInstitutionContainer): boolean | null {
+    private static areKontrollfragenOk(
+        latsInstitutionContainer: TSLastenausgleichTagesschuleAngabenInstitutionContainer
+    ): boolean | null {
         const latsInstiAngaben = latsInstitutionContainer.isAtLeastInBearbeitungGemeinde() ?
             latsInstitutionContainer.angabenKorrektur :
             latsInstitutionContainer.angabenDeklaration;

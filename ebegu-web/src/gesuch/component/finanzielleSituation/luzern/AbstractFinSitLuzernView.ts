@@ -118,7 +118,8 @@ export abstract class AbstractFinSitLuzernView extends AbstractGesuchViewX<TSFin
     }
 
     public gemeinsameStekChange(newGemeinsameStek: MatRadioChange): void {
-        if (newGemeinsameStek.value === false && EbeguUtil.isNullOrFalse(this.getModel().finanzielleSituationJA.alleinigeStekVorjahr)) {
+        if (newGemeinsameStek.value === false &&
+            EbeguUtil.isNullOrFalse(this.getModel().finanzielleSituationJA.alleinigeStekVorjahr)) {
             this.getModel().finanzielleSituationJA.veranlagt = undefined;
             this.getModel().finanzielleSituationJA.veranlagtVorjahr = undefined;
         }
@@ -126,7 +127,8 @@ export abstract class AbstractFinSitLuzernView extends AbstractGesuchViewX<TSFin
     }
 
     public alleinigeStekVorjahrChange(newAlleinigeStekVorjahr: MatRadioChange): void {
-        if (newAlleinigeStekVorjahr.value === false && EbeguUtil.isNullOrFalse(this.getModel().finanzielleSituationJA.gemeinsameStekVorjahr)) {
+        if (newAlleinigeStekVorjahr.value === false &&
+            EbeguUtil.isNullOrFalse(this.getModel().finanzielleSituationJA.gemeinsameStekVorjahr)) {
             this.getModel().finanzielleSituationJA.veranlagt = undefined;
             this.getModel().finanzielleSituationJA.veranlagtVorjahr = undefined;
         }
