@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2021 DV Bern AG, Switzerland
+ * Copyright (C) 2023 DV Bern AG, Switzerland
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -14,15 +14,9 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
+#  add field to erweiterte_betreuung
+ALTER TABLE erweiterte_betreuung
+	ADD COLUMN anspruch_fachstelle_wenn_pensum_unterschritten BIT NOT NULL DEFAULT false;
 
-import {NgModule} from '@angular/core';
-import {UIRouterModule} from '@uirouter/angular';
-import {SharedModule} from '../shared/shared.module';
-import {PendenzenListViewComponent} from './default/component/pendenzenListView/pendenzen-list-view.component';
-
-@NgModule({
-    imports: [SharedModule, UIRouterModule],
-    declarations: [PendenzenListViewComponent],
-    exports: [PendenzenListViewComponent]
-})
-export class PendenzenXModule {}
+ALTER TABLE erweiterte_betreuung_aud
+	ADD COLUMN anspruch_fachstelle_wenn_pensum_unterschritten BIT;

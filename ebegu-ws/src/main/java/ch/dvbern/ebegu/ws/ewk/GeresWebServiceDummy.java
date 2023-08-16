@@ -75,7 +75,7 @@ public class GeresWebServiceDummy implements IEWKWebService {
 
 	@Nonnull
 	@Override
-	public EWKResultat suchePersonenInHaushalt(long wohnungsId, long gebaeudeId) throws PersonenSucheServiceException, PersonenSucheServiceBusinessException {
+	public EWKResultat suchePersonenInHaushalt(Long wohnungsId, Long gebaeudeId) throws PersonenSucheServiceException, PersonenSucheServiceBusinessException {
 		return suchePerson("Muster", "Max", LocalDate.now(), Geschlecht.WEIBLICH, 351L);
 	}
 

@@ -38,7 +38,9 @@ import {TSZahlungsinformationen} from '../../../../../models/TSZahlungsinformati
 import {EbeguUtil} from '../../../../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../../../../utils/TSRoleUtil';
 import {FinanzielleSituationRS} from '../../../../service/finanzielleSituationRS.rest';
-import {FinanzielleSituationSubStepManagerAppenzell} from '../../../../service/finanzielleSituationSubStepManagerAppenzell';
+import {
+    FinanzielleSituationSubStepManagerAppenzell
+} from '../../../../service/finanzielleSituationSubStepManagerAppenzell';
 import {GesuchModelManager} from '../../../../service/gesuchModelManager';
 import {WizardStepManager} from '../../../../service/wizardStepManager';
 import {AbstractGesuchViewX} from '../../../abstractGesuchViewX';
@@ -157,7 +159,7 @@ export class FinanzielleSituationAppenzellViewComponent extends AbstractGesuchVi
                 onResult(finanzielleSituationContainer);
                 return finanzielleSituationContainer;
             }).catch(error => {
-                throw(error);
+                throw (error);
             }) as Promise<TSFinanzielleSituationContainer>;
     }
 
@@ -228,7 +230,7 @@ export class FinanzielleSituationAppenzellViewComponent extends AbstractGesuchVi
             return undefined;
         }
 
-        if (this.showQuestionGemeinsameSteuererklaerung() ) {
+        if (this.showQuestionGemeinsameSteuererklaerung()) {
             return this.gesuchModelManager.removeFinanzielleSitautionFromGesuchsteller2();
         }
 
@@ -281,16 +283,22 @@ export class FinanzielleSituationAppenzellViewComponent extends AbstractGesuchVi
         return this.gesuchModelManager.saveFinanzielleSituation();
     }
 
+    private hasRolesForAuszahlungsdaten(): boolean {
+        return this.authService.isOneOfRoles(
+            TSRoleUtil.getGemeindeOrBGRoles()
+                .concat(TSRole.SUPER_ADMIN));
+    }
+
     public showAuszahlungsdaten(): boolean {
-        return this.model.familienSituation?.auszahlungAusserhalbVonKibon;
+        return (this.model.familienSituation?.auszahlungAusserhalbVonKibon
+            && this.hasRolesForAuszahlungsdaten());
     }
 
     public showAuszahlungAusserhalbKibonCheckbox(): boolean {
         if (this.getSubStepIndex() !== 1) {
             return false;
         }
-        return this.authService.isOneOfRoles(TSRoleUtil.getGemeindeOrBGRoles().concat(TSRole.SUPER_ADMIN))
-            && !this.gesuchModelManager.getGesuch().isOnlineGesuch();
+        return this.hasRolesForAuszahlungsdaten();
     }
 
     public auszahlungAusserhalbKibonChanged(checked: boolean): void {

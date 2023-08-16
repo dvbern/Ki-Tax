@@ -2996,6 +2996,7 @@ export class EbeguRestUtil {
         restErweiterteBetreuung.kitaPlusZuschlag = erweiterteBetreuung.kitaPlusZuschlag;
         restErweiterteBetreuung.kitaPlusZuschlagBestaetigt = erweiterteBetreuung.kitaPlusZuschlagBestaetigt;
         restErweiterteBetreuung.erweitereteBeduerfnisseBetrag = erweiterteBetreuung.erweitereteBeduerfnisseBetrag;
+        restErweiterteBetreuung.anspruchFachstelleWennPensumUnterschritten = erweiterteBetreuung.anspruchFachstelleWennPensumUnterschritten;
         if (erweiterteBetreuung.fachstelle) {
             restErweiterteBetreuung.fachstelle = this.fachstelleToRestObject({}, erweiterteBetreuung.fachstelle);
         }
@@ -3015,6 +3016,7 @@ export class EbeguRestUtil {
             erweiterteBetreuungTS.kitaPlusZuschlag = erweiterteBetreuungFromServer.kitaPlusZuschlag;
             erweiterteBetreuungTS.kitaPlusZuschlagBestaetigt = erweiterteBetreuungFromServer.kitaPlusZuschlagBestaetigt;
             erweiterteBetreuungTS.betreuungInGemeinde = erweiterteBetreuungFromServer.betreuungInGemeinde;
+            erweiterteBetreuungTS.anspruchFachstelleWennPensumUnterschritten = erweiterteBetreuungFromServer.anspruchFachstelleWennPensumUnterschritten;
             erweiterteBetreuungTS.erweitereteBeduerfnisseBetrag =
                 erweiterteBetreuungFromServer.erweitereteBeduerfnisseBetrag;
             if (erweiterteBetreuungFromServer.fachstelle) {

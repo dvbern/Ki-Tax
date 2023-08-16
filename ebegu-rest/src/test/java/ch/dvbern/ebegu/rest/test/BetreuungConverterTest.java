@@ -105,10 +105,10 @@ public class BetreuungConverterTest extends AbstractEbeguRestLoginTest {
 			Fachstelle fachstelle = TestDataUtil.createDefaultFachstelle();
 			TestDataUtil.persistFachstelle(persistence, fachstelle);
 
-			PensumFachstelle pensumFachstelle = TestDataUtil.createDefaultPensumFachstelle();
+			PensumFachstelle pensumFachstelle = TestDataUtil.createDefaultPensumFachstelle(kind.getKindGS());
 			pensumFachstelle.setFachstelle(fachstelle);
 
-			PensumFachstelle pensumFachstelle2 = TestDataUtil.createDefaultPensumFachstelle();
+			PensumFachstelle pensumFachstelle2 = TestDataUtil.createDefaultPensumFachstelle(kind.getKindJA());
 			pensumFachstelle2.setPensum(50);
 			pensumFachstelle2.setFachstelle(fachstelle);
 

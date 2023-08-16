@@ -34,7 +34,7 @@
         </div>
     </div>
 
-    <form *ngIf="form" [formGroup]="form">
+    <form *ngIf="container" [formGroup]="form">
 
         <h3 class="uppercase">
             {{'FERIENBETREUUNG_KOSTEN_SCHULJAHR' | translate }} {{container?.gesuchsperiode?.gesuchsperiodeString}}
@@ -44,7 +44,7 @@
             <dv-input-container-x class="max-width-container-750">
                 <label for="personalkosten_id"
                        required
-                       [ngClass]="{'label-required-error': form && form.get('personalkosten').errors}">
+                       [ngClass]="{'label-required-error': form && form.controls.personalkosten.errors}">
                     {{'FERIENBETREUUNG_PERSONALKOSTEN_INSGESAMT' | translate }}
                     <dv-tooltip inputId="personalkosten_id"
                                 [text]="'FERIENBETREUUNG_PERSONALKOSTEN_INSGESAMT_HINT' | translate">
@@ -55,15 +55,15 @@
                            id="personalkosten_id"
                            formControlName="personalkosten"
                            class="form-control dv-input"/>
-                    <mat-error *ngIf="form && form.get('personalkosten').errors?.required"
+                    <mat-error *ngIf="form && form.controls.personalkosten.errors?.required"
                                translate>ERROR_REQUIRED
                     </mat-error>
-                    <mat-error *ngIf="form && form.get('personalkosten').errors?.isNotInteger"
+                    <mat-error *ngIf="form?.controls.personalkosten?.errors?.isNotInteger"
                                translate>ERROR_NOT_INTEGER
                     </mat-error>
                     <dv-bisher-x
                         [deklaration]="container?.angabenDeklaration?.kostenEinnahmen?.personalkosten"
-                        [korrektur]="form.get('personalkosten').value"
+                        [korrektur]="form.value.personalkosten"
                         [showBisher]="container.isAtLeastInPruefungKantonOrZurueckgegeben()"
                         [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
                     </dv-bisher-x>
@@ -87,12 +87,12 @@
                            id="personalkosten_leitung_admin_id"
                            formControlName="personalkostenLeitungAdmin"
                            class="form-control dv-input"/>
-                    <mat-error *ngIf="form && form.get('personalkostenLeitungAdmin').errors?.isNotInteger"
+                    <mat-error *ngIf="form && form.controls.personalkostenLeitungAdmin.errors?.isNotInteger"
                                translate>ERROR_NOT_INTEGER
                     </mat-error>
                     <dv-bisher-x
                         [deklaration]="container?.angabenDeklaration?.kostenEinnahmen?.personalkostenLeitungAdmin"
-                        [korrektur]="form.get('personalkostenLeitungAdmin').value"
+                        [korrektur]="form.value.personalkostenLeitungAdmin"
                         [showBisher]="container.isAtLeastInPruefungKantonOrZurueckgegeben()"
                         [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
                     </dv-bisher-x>
@@ -109,7 +109,7 @@
             <dv-input-container-x class="max-width-container-750">
                 <label for="sachkosten_id"
                        required
-                       [ngClass]="{'label-required-error': form && form.get('sachkosten').errors}">
+                       [ngClass]="{'label-required-error': form && form.controls.sachkosten.errors}">
                     {{'FERIENBETREUUNG_SACHKOSTEN_INSGESAMT' | translate }}
                     <dv-tooltip inputId="sachkosten_id"
                                 [text]="'FERIENBETREUUNG_SACHKOSTEN_INSGESAMT_HINT' | translate">
@@ -120,15 +120,15 @@
                            id="sachkosten_id"
                            formControlName="sachkosten"
                            class="form-control dv-input"/>
-                    <mat-error *ngIf="form && form.get('sachkosten').errors?.required"
+                    <mat-error *ngIf="form && form.controls.sachkosten.errors?.required"
                                translate>ERROR_REQUIRED
                     </mat-error>
-                    <mat-error *ngIf="form && form.get('sachkosten').errors?.isNotInteger"
+                    <mat-error *ngIf="form && form.controls.sachkosten.errors?.isNotInteger"
                                translate>ERROR_NOT_INTEGER
                     </mat-error>
                     <dv-bisher-x
                         [deklaration]="container?.angabenDeklaration?.kostenEinnahmen?.sachkosten"
-                        [korrektur]="form.get('sachkosten').value"
+                        [korrektur]="form.value.sachkosten"
                         [showBisher]="container.isAtLeastInPruefungKantonOrZurueckgegeben()"
                         [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
                     </dv-bisher-x>
@@ -144,7 +144,7 @@
         <div class="flex-row">
             <dv-input-container-x class="max-width-container-750">
                 <label for="verpflegungskosten_id"
-                       [ngClass]="{'label-required-error': form && form.get('verpflegungskosten').errors}">
+                       [ngClass]="{'label-required-error': form && form.controls.verpflegungskosten.errors}">
                     {{'FERIENBETREUUNG_VERPFLEGUNGSKOSTEN_INSGESAMT' | translate }}
                 </label>
                 <mat-form-field floatLabel="always">
@@ -152,15 +152,15 @@
                            id="verpflegungskosten_id"
                            formControlName="verpflegungskosten"
                            class="form-control dv-input"/>
-                    <mat-error *ngIf="form && form.get('verpflegungskosten').errors?.required"
+                    <mat-error *ngIf="form && form.controls.verpflegungskosten.errors?.required"
                                translate>ERROR_REQUIRED
                     </mat-error>
-                    <mat-error *ngIf="form && form.get('verpflegungskosten').errors?.isNotInteger"
+                    <mat-error *ngIf="form && form.controls.verpflegungskosten.errors?.isNotInteger"
                                translate>ERROR_NOT_INTEGER
                     </mat-error>
                     <dv-bisher-x
                         [deklaration]="container?.angabenDeklaration?.kostenEinnahmen?.verpflegungskosten"
-                        [korrektur]="form.get('verpflegungskosten').value"
+                        [korrektur]="form.value.verpflegungskosten"
                         [showBisher]="container.isAtLeastInPruefungKantonOrZurueckgegeben()"
                         [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
                     </dv-bisher-x>
@@ -185,12 +185,12 @@
                            id="weitere_kosten_id"
                            formControlName="weitereKosten"
                            class="form-control dv-input"/>
-                    <mat-error *ngIf="form && form.get('weitereKosten').errors?.isNotInteger"
+                    <mat-error *ngIf="form && form.controls.weitereKosten.errors?.isNotInteger"
                                translate>ERROR_NOT_INTEGER
                     </mat-error>
                     <dv-bisher-x
                         [deklaration]="container?.angabenDeklaration?.kostenEinnahmen?.weitereKosten"
-                        [korrektur]="form.get('weitereKosten').value"
+                        [korrektur]="form.value.weitereKosten"
                         [showBisher]="container.isAtLeastInPruefungKantonOrZurueckgegeben()"
                         [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
                     </dv-bisher-x>
@@ -215,7 +215,7 @@
                           class="form-control dv-input"></textarea>
                     <dv-bisher-x
                         [deklaration]="container?.angabenDeklaration?.kostenEinnahmen?.bemerkungenKosten"
-                        [korrektur]="form.get('bemerkungenKosten').value"
+                        [korrektur]="form.value.bemerkungenKosten"
                         [showBisher]="container.isAtLeastInPruefungKantonOrZurueckgegeben()"
                         [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
                     </dv-bisher-x>
@@ -238,7 +238,7 @@
             <dv-input-container-x class="max-width-container-750">
                 <label for="elterngebuehren_id"
                        required
-                       [ngClass]="{'label-required-error': form && form.get('elterngebuehren').errors}">
+                       [ngClass]="{'label-required-error': form && form.controls.elterngebuehren.errors}">
                     {{'FERIENBETREUUNG_EINNAHMEN_AUS_ELTERNBEITRAEGEN' | translate }}
                     <dv-tooltip inputId="elterngebuehren_id"
                                 [text]="'FERIENBETREUUNG_EINNAHMEN_AUS_ELTERNBEITRAEGEN_HINT' | translate">
@@ -249,15 +249,15 @@
                            id="elterngebuehren_id"
                            formControlName="elterngebuehren"
                            class="form-control dv-input"/>
-                    <mat-error *ngIf="form && form.get('elterngebuehren').errors?.required"
+                    <mat-error *ngIf="form && form.controls.elterngebuehren.errors?.required"
                                translate>ERROR_REQUIRED
                     </mat-error>
-                    <mat-error *ngIf="form && form.get('elterngebuehren').errors?.isNotInteger"
+                    <mat-error *ngIf="form && form.controls.elterngebuehren.errors?.isNotInteger"
                                translate>ERROR_NOT_INTEGER
                     </mat-error>
                     <dv-bisher-x
                         [deklaration]="container?.angabenDeklaration?.kostenEinnahmen?.elterngebuehren"
-                        [korrektur]="form.get('elterngebuehren').value"
+                        [korrektur]="form.value.elterngebuehren"
                         [showBisher]="container.isAtLeastInPruefungKantonOrZurueckgegeben()"
                         [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
                     </dv-bisher-x>
@@ -274,7 +274,7 @@
             <dv-input-container-x class="max-width-container-750">
                 <label for="weitereEinnahmen_id"
                        required
-                       [ngClass]="{'label-required-error': form && form.get('weitereEinnahmen').errors}">
+                       [ngClass]="{'label-required-error': form && form.controls.weitereEinnahmen.errors}">
                     {{'FERIENBETREUUNG_WEITERE_EINNAHMEN' | translate }}
                     <dv-tooltip inputId="weitereEinnahmen_id"
                                 [text]="'FERIENBETREUUNG_WEITERE_EINNAHMEN_HINT' | translate">
@@ -285,15 +285,15 @@
                            id="weitereEinnahmen_id"
                            formControlName="weitereEinnahmen"
                            class="form-control dv-input"/>
-                    <mat-error *ngIf="form && form.get('weitereEinnahmen').errors?.required"
+                    <mat-error *ngIf="form && form.controls.weitereEinnahmen.errors?.required"
                                translate>ERROR_REQUIRED
                     </mat-error>
-                    <mat-error *ngIf="form && form.get('weitereEinnahmen').errors?.isNotInteger"
+                    <mat-error *ngIf="form && form.controls.weitereEinnahmen.errors?.isNotInteger"
                                translate>ERROR_NOT_INTEGER
                     </mat-error>
                     <dv-bisher-x
                         [deklaration]="container?.angabenDeklaration?.kostenEinnahmen?.weitereEinnahmen"
-                        [korrektur]="form.get('weitereEinnahmen').value"
+                        [korrektur]="form.value.weitereEinnahmen"
                         [showBisher]="container.isAtLeastInPruefungKantonOrZurueckgegeben()"
                         [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
                     </dv-bisher-x>
@@ -318,7 +318,7 @@
                 <dv-input-container-x class="max-width-container-750">
                     <label for="sockelbeitrag_id"
                            required
-                           [ngClass]="{'label-required-error': form && form.get('sockelbeitrag').errors}">
+                           [ngClass]="{'label-required-error': form && form.controls.sockelbeitrag.errors}">
                         {{'FERIENBETREUUNG_SOCKELBEITRAG' | translate }}
                     </label>
                     <mat-form-field floatLabel="always">
@@ -326,15 +326,15 @@
                                id="sockelbeitrag_id"
                                formControlName="sockelbeitrag"
                                class="form-control dv-input"/>
-                        <mat-error *ngIf="form && form.get('sockelbeitrag').errors?.required"
+                        <mat-error *ngIf="form && form.controls.sockelbeitrag.errors?.required"
                                    translate>ERROR_REQUIRED
                         </mat-error>
-                        <mat-error *ngIf="form && form.get('sockelbeitrag').errors?.isNotInteger"
+                        <mat-error *ngIf="form && form.controls.sockelbeitrag.errors?.isNotInteger"
                                    translate>ERROR_NOT_INTEGER
                         </mat-error>
                         <dv-bisher-x
                             [deklaration]="container?.angabenDeklaration?.kostenEinnahmen?.sockelbeitrag"
-                            [korrektur]="form.get('sockelbeitrag').value"
+                            [korrektur]="form.value.sockelbeitrag"
                             [showBisher]="container.isAtLeastInPruefungKanton()"
                             [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
                         </dv-bisher-x>
@@ -350,7 +350,7 @@
                 <dv-input-container-x class="max-width-container-750">
                     <label for="beitraegeNachAnmeldungen_id"
                            required
-                           [ngClass]="{'label-required-error': form && form.get('beitraegeNachAnmeldungen').errors}">
+                           [ngClass]="{'label-required-error': form && form.controls.beitraegeNachAnmeldungen.errors}">
                         {{'FERIENBETREUUNG_BEITRAEGE_NACH_ANMELDUNGEN' | translate }}
                     </label>
                     <mat-form-field floatLabel="always">
@@ -358,15 +358,15 @@
                                id="beitraegeNachAnmeldungen_id"
                                formControlName="beitraegeNachAnmeldungen"
                                class="form-control dv-input"/>
-                        <mat-error *ngIf="form && form.get('beitraegeNachAnmeldungen').errors?.required"
+                        <mat-error *ngIf="form && form.controls.beitraegeNachAnmeldungen.errors?.required"
                                    translate>ERROR_REQUIRED
                         </mat-error>
-                        <mat-error *ngIf="form && form.get('beitraegeNachAnmeldungen').errors?.isNotInteger"
+                        <mat-error *ngIf="form && form.controls.beitraegeNachAnmeldungen.errors?.isNotInteger"
                                    translate>ERROR_NOT_INTEGER
                         </mat-error>
                         <dv-bisher-x
                             [deklaration]="container?.angabenDeklaration?.kostenEinnahmen?.beitraegeNachAnmeldungen"
-                            [korrektur]="form.get('beitraegeNachAnmeldungen').value"
+                            [korrektur]="form.value.beitraegeNachAnmeldungen"
                             [showBisher]="container.isAtLeastInPruefungKanton()"
                             [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
                         </dv-bisher-x>
@@ -383,7 +383,7 @@
                     <label for="vorfinanzierteKantonsbeitraege_id"
                            class="padding-left-20"
                            required
-                           [ngClass]="{'label-required-error': form && form.get('vorfinanzierteKantonsbeitraege').errors}">
+                           [ngClass]="{'label-required-error': form && form.controls.vorfinanzierteKantonsbeitraege.errors}">
                         {{'FERIENBETREUUNG_VORFINANZIERTE_KANTONSBEITRAEGE' | translate }}
                         <dv-tooltip inputId="vorfinanzierteKantonsbeitraege_id"
                                     [text]="'FERIENBETREUUNG_VORFINANZIERTE_KANTONSBEITRAEGE_HINT' | translate">
@@ -394,15 +394,15 @@
                                id="vorfinanzierteKantonsbeitraege_id"
                                formControlName="vorfinanzierteKantonsbeitraege"
                                class="form-control dv-input"/>
-                        <mat-error *ngIf="form && form.get('vorfinanzierteKantonsbeitraege').errors?.required"
+                        <mat-error *ngIf="form && form.controls.vorfinanzierteKantonsbeitraege.errors?.required"
                                    translate>ERROR_REQUIRED
                         </mat-error>
-                        <mat-error *ngIf="form && form.get('vorfinanzierteKantonsbeitraege').errors?.isNotInteger"
+                        <mat-error *ngIf="form && form.controls.vorfinanzierteKantonsbeitraege.errors?.isNotInteger"
                                    translate>ERROR_NOT_INTEGER
                         </mat-error>
                         <dv-bisher-x
                             [deklaration]="container?.angabenDeklaration?.kostenEinnahmen?.vorfinanzierteKantonsbeitraege"
-                            [korrektur]="form.get('vorfinanzierteKantonsbeitraege').value"
+                            [korrektur]="form.value.vorfinanzierteKantonsbeitraege"
                             [showBisher]="container.isAtLeastInPruefungKanton()"
                             [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
                         </dv-bisher-x>
@@ -418,7 +418,7 @@
                 <dv-input-container-x class="max-width-container-750">
                     <label for="eigenleistungenGemeinde_id"
                            required
-                           [ngClass]="{'label-required-error': form && form.get('eigenleistungenGemeinde').errors}">
+                           [ngClass]="{'label-required-error': form && form.controls.eigenleistungenGemeinde.errors}">
                         {{'FERIENBETREUUNG_EIGENLEISTUNGEN_GEMEINDE' | translate }}
                         <dv-tooltip inputId="eigenleistungenGemeinde_id"
                                     [text]="'FERIENBETREUUNG_EIGENLEISTUNGEN_GEMEINDE_HINT' | translate">
@@ -429,15 +429,15 @@
                                id="eigenleistungenGemeinde_id"
                                formControlName="eigenleistungenGemeinde"
                                class="form-control dv-input"/>
-                        <mat-error *ngIf="form && form.get('eigenleistungenGemeinde').errors?.required"
+                        <mat-error *ngIf="form && form.controls.eigenleistungenGemeinde.errors?.required"
                                    translate>ERROR_REQUIRED
                         </mat-error>
-                        <mat-error *ngIf="form && form.get('eigenleistungenGemeinde').errors?.isNotInteger"
+                        <mat-error *ngIf="form && form.controls.eigenleistungenGemeinde.errors?.isNotInteger"
                                    translate>ERROR_NOT_INTEGER
                         </mat-error>
                         <dv-bisher-x
                             [deklaration]="container?.angabenDeklaration?.kostenEinnahmen?.eigenleistungenGemeinde"
-                            [korrektur]="form.get('eigenleistungenGemeinde').value"
+                            [korrektur]="form.value.eigenleistungenGemeinde"
                             [showBisher]="container.isAtLeastInPruefungKanton()"
                             [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
                         </dv-bisher-x>

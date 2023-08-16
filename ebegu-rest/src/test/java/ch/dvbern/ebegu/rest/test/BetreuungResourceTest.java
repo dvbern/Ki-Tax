@@ -28,6 +28,7 @@ import ch.dvbern.ebegu.rest.test.util.TestJaxDataUtil;
 import ch.dvbern.ebegu.services.BenutzerService;
 import ch.dvbern.ebegu.services.BetreuungService;
 import ch.dvbern.ebegu.services.GesuchService;
+import ch.dvbern.ebegu.services.KindService;
 import ch.dvbern.ebegu.test.IntegrationTest;
 import ch.dvbern.ebegu.test.TestDataUtil;
 import ch.dvbern.lib.cdipersistence.Persistence;
@@ -39,6 +40,13 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
+
+import javax.inject.Inject;
+import java.time.LocalDate;
+import java.util.*;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.notNullValue;
 
 import javax.inject.Inject;
 import java.time.LocalDate;
@@ -79,6 +87,9 @@ public class BetreuungResourceTest extends AbstractEbeguRestLoginTest {
 	private GesuchstellerResource gesuchstellerResource;
 	@Inject
 	private GesuchService gesuchService;
+
+	@Inject
+	private KindService kindService;
 
 	@Test
 	public void createBetreuung() {
@@ -218,29 +229,27 @@ public class BetreuungResourceTest extends AbstractEbeguRestLoginTest {
 		returnedGesuch = gesuchResource.update(returnedGesuch, DUMMY_URIINFO, DUMMY_RESPONSE);
 
 
-		KindContainer returnedKind = TestDataUtil.createDefaultKindContainer();
-		returnedKind.setKindNummer(1);
-		JaxKindContainer jaxKind = converter.kindContainerToJAX(returnedKind);
-		Collection<JaxPensumFachstelle> jaxPensumFachstelleSet = jaxKind.getKindGS().getPensumFachstellen();
-		Set<PensumFachstelle> pensumFachstellenSet = new TreeSet<>();
-		for (JaxPensumFachstelle jaxPensumFachstelle : jaxPensumFachstelleSet) {
-			Assert.assertNotNull(jaxPensumFachstelle);
-			Assert.assertNotNull(jaxPensumFachstelle.getFachstelle());
-			persistence.persist(converter.fachstelleToEntity(jaxPensumFachstelle.getFachstelle(), new Fachstelle()));
-			jaxPensumFachstelle.setFachstelle(jaxPensumFachstelle.getFachstelle());
-			PensumFachstelle returnedPensumFachstelle = persistence.merge(
-				converter.jaxPensumFachstelleToEntity(jaxPensumFachstelle, new PensumFachstelle()));
-			pensumFachstellenSet.add(returnedPensumFachstelle);
-		}
-		Collection<JaxPensumFachstelle> convertedPensumFachstelle = converter.pensumFachstellenListToJax(pensumFachstellenSet);
-		jaxKind.getKindGS().setPensumFachstellen(convertedPensumFachstelle);
-		jaxKind.getKindJA().setPensumFachstellen(convertedPensumFachstelle);
+		JaxKindContainer jaxKind = TestJaxDataUtil.createTestJaxKindContainer();;
+		jaxKind.setKindNummer(1);
+
+		jaxKind.getKindGS().getPensumFachstellen().forEach(fachstellenPensum -> {
+			assertThat(fachstellenPensum.getFachstelle(), notNullValue());
+			final Fachstelle fachstelle = persistence.persist(converter.fachstelleToEntity(fachstellenPensum.getFachstelle(), new Fachstelle()));
+			fachstellenPensum.setFachstelle(converter.fachstelleToJAX(fachstelle));
+		});
+		jaxKind.getKindJA().getPensumFachstellen().forEach(fachstellenPensum -> {
+			assertThat(fachstellenPensum.getFachstelle(), notNullValue());
+			final Fachstelle fachstelle = persistence.persist(converter.fachstelleToEntity(fachstellenPensum.getFachstelle(), new Fachstelle()));
+			fachstellenPensum.setFachstelle(converter.fachstelleToJAX(fachstelle));
+		});
 
 		assert returnedGesuch != null;
-		kindResource.saveKind(converter.toJaxId(returnedGesuch), jaxKind, DUMMY_URIINFO, DUMMY_RESPONSE);
-		assert returnedGesuch.getId() != null;
-		returnedKind.setGesuch(gesuchService.findGesuch(returnedGesuch.getId()).get());
-		return returnedKind;
+		JaxKindContainer savedKindContainer = kindResource.saveKind(converter.toJaxId(returnedGesuch), jaxKind, DUMMY_URIINFO, DUMMY_RESPONSE);
+		assert savedKindContainer != null;
+		assert savedKindContainer.getId() != null;
+		Optional<KindContainer> savedKind = kindService.findKind(savedKindContainer.getId());
+	    assert savedKind.isPresent();
+		return savedKind.get();
 	}
 
 	private Betreuung storeInitialBetreung() {

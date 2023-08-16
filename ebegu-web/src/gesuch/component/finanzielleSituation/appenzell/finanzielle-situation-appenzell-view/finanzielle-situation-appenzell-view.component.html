@@ -39,11 +39,13 @@
             (modelChange)="auszahlungAusserhalbKibonChanged($event)"
             [label]="'AUSZAHLUNG_AUSSERHALB_KIBON' | translate"
             [readonly]="isGesuchReadonly()"
+            [displayBisher]="false"
         ></dv-checkbox-x>
     </div>
     <div *ngIf="showAuszahlungsdaten()">
         <form>
             <dv-auszahlungsdaten
+                [auszahlungsdatenGS]="model.zahlungsinformationen"
                 [(auszahlungsdaten)]="model.zahlungsinformationen"></dv-auszahlungsdaten>
         </form>
     </div>
