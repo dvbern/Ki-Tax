@@ -93,7 +93,7 @@ export class StatistikComponent implements OnInit, OnDestroy {
     public constructor(
         private readonly gesuchsperiodeRS: GesuchsperiodeRS,
         private readonly institutionStammdatenRS: InstitutionStammdatenRS,
-		private readonly institutionRS: InstitutionRS,
+        private readonly institutionRS: InstitutionRS,
         private readonly reportAsyncRS: ReportAsyncRS,
         private readonly downloadRS: DownloadRS,
         private readonly batchJobRS: BatchJobRS,
@@ -148,7 +148,7 @@ export class StatistikComponent implements OnInit, OnDestroy {
             this.lastenausgleichRS.getAllLastenausgleiche().subscribe(lastenausgleiche => {
                 this.lastenausgleichYears = lastenausgleiche.map(l => l.jahr)
                     .filter(y => y >= CONSTANTS.FIRST_YEAR_LASTENAUSGLEICH_WITHOUT_SELBSTBEHALT)
-                    .sort((a,b) => a - b);
+                    .sort((a, b) => a - b);
                 this.cd.markForCheck();
             }, err => {
                 LOG.error(err);
@@ -202,7 +202,7 @@ export class StatistikComponent implements OnInit, OnDestroy {
                     this.statistikParameter.gesuchsperiode ?
                         this.statistikParameter.gesuchsperiode :
                         null)
-                    .subscribe((res: {workjobId: string}) => {
+                    .subscribe((res: { workjobId: string }) => {
                         this.informReportGenerationStarted(res);
                     }, StatistikComponent.handleError);
                 return;
@@ -213,7 +213,7 @@ export class StatistikComponent implements OnInit, OnDestroy {
                     this.statistikParameter.gesuchsperiode ?
                         this.statistikParameter.gesuchsperiode :
                         null)
-                    .subscribe((res: {workjobId: string}) => {
+                    .subscribe((res: { workjobId: string }) => {
                         this.informReportGenerationStarted(res);
                     }, StatistikComponent.handleError);
                 return;
@@ -224,13 +224,13 @@ export class StatistikComponent implements OnInit, OnDestroy {
                     this.statistikParameter.gesuchsperiode ?
                         this.statistikParameter.gesuchsperiode :
                         null)
-                    .subscribe((res: {workjobId: string}) => {
+                    .subscribe((res: { workjobId: string }) => {
                         this.informReportGenerationStarted(res);
                     }, StatistikComponent.handleError);
                 break;
             case TSStatistikParameterType.GESUCHSTELLER:
                 this.reportAsyncRS.getGesuchstellerReportExcel(stichtag)
-                    .subscribe((res: {workjobId: string}) => {
+                    .subscribe((res: { workjobId: string }) => {
                         this.informReportGenerationStarted(res);
                     }, StatistikComponent.handleError);
                 return;
@@ -238,20 +238,20 @@ export class StatistikComponent implements OnInit, OnDestroy {
                 this.reportAsyncRS.getKantonReportExcel(this.statistikParameter.von.format(this.DATE_PARAM_FORMAT),
                     this.statistikParameter.bis.format(this.DATE_PARAM_FORMAT),
                     this.statistikParameter.kantonSelbstbehalt)
-                    .subscribe((res: {workjobId: string}) => {
+                    .subscribe((res: { workjobId: string }) => {
                         this.informReportGenerationStarted(res);
                     }, StatistikComponent.handleError);
                 break;
             case TSStatistikParameterType.MITARBEITERINNEN:
                 this.reportAsyncRS.getMitarbeiterinnenReportExcel(this.statistikParameter.von.format(this.DATE_PARAM_FORMAT),
                     this.statistikParameter.bis.format(this.DATE_PARAM_FORMAT))
-                    .subscribe((res: {workjobId: string}) => {
+                    .subscribe((res: { workjobId: string }) => {
                         this.informReportGenerationStarted(res);
                     }, StatistikComponent.handleError);
                 return;
             case TSStatistikParameterType.BENUTZER:
                 this.reportAsyncRS.getBenutzerReportExcel()
-                    .subscribe((res: {workjobId: string}) => {
+                    .subscribe((res: { workjobId: string }) => {
                         this.informReportGenerationStarted(res);
                     }, StatistikComponent.handleError);
                 break;
@@ -262,7 +262,7 @@ export class StatistikComponent implements OnInit, OnDestroy {
                     this.statistikParameter.gesuchsperiode ?
                         this.statistikParameter.gesuchsperiode :
                         null)
-                    .subscribe((res: {workjobId: string}) => {
+                    .subscribe((res: { workjobId: string }) => {
                         this.informReportGenerationStarted(res);
                     }, () => {
                         LOG.error('An error occurred downloading the document, closing download window.');
@@ -272,7 +272,7 @@ export class StatistikComponent implements OnInit, OnDestroy {
                 if (this.statistikParameter.gesuchsperiode) {
                     this.reportAsyncRS.getZahlungPeriodeReportExcel(
                         this.statistikParameter.gesuchsperiode)
-                        .subscribe((res: {workjobId: string}) => {
+                        .subscribe((res: { workjobId: string }) => {
                             this.informReportGenerationStarted(res);
                             const startmsg = this.translate.instant('STARTED_GENERATION');
                             this.errorService.addMesageAsInfo(startmsg);
@@ -295,14 +295,14 @@ export class StatistikComponent implements OnInit, OnDestroy {
                 return;
             case TSStatistikParameterType.INSTITUTIONEN:
                 this.reportAsyncRS.getInstitutionenReportExcel()
-                    .subscribe((res: {workjobId: string}) => {
+                    .subscribe((res: { workjobId: string }) => {
                         this.informReportGenerationStarted(res);
                     }, StatistikComponent.handleError);
                 return;
             case TSStatistikParameterType.VERRECHNUNG_KIBON:
                 this.reportAsyncRS.getVerrechnungKibonReportExcel(
                     this.statistikParameter.doSave, this.statistikParameter.betragProKind)
-                    .subscribe((res: {workjobId: string}) => {
+                    .subscribe((res: { workjobId: string }) => {
                         this.informReportGenerationStarted(res);
                     }, StatistikComponent.handleError);
                 break;
@@ -310,20 +310,20 @@ export class StatistikComponent implements OnInit, OnDestroy {
                 this.reportAsyncRS.getTagesschuleAnmeldungenReportExcel(
                     this.statistikParameter.tagesschuleAnmeldungen.id,
                     this.statistikParameter.gesuchsperiode)
-                    .subscribe((res: {workjobId: string}) => {
+                    .subscribe((res: { workjobId: string }) => {
                         this.informReportGenerationStarted(res);
                     }, StatistikComponent.handleError);
                 break;
             case TSStatistikParameterType.TAGESSCHULE_RECHNUNGSSTELLUNG:
                 this.reportAsyncRS.getTagesschuleRechnungsstellungReportExcel()
-                    .subscribe((res: {workjobId: string}) => {
+                    .subscribe((res: { workjobId: string }) => {
                         this.informReportGenerationStarted(res);
                     }, StatistikComponent.handleError);
                 break;
             case TSStatistikParameterType.NOTRECHT:
                 this.reportAsyncRS.getNotrechtReportExcel(
                     this.statistikParameter.doSave)
-                    .subscribe((res: {workjobId: string}) => {
+                    .subscribe((res: { workjobId: string }) => {
                         this.informReportGenerationStarted(res);
                     }, StatistikComponent.handleError);
                 break;
@@ -332,7 +332,7 @@ export class StatistikComponent implements OnInit, OnDestroy {
                     this.statistikParameter.von.format(this.DATE_PARAM_FORMAT),
                     this.statistikParameter.bis.format(this.DATE_PARAM_FORMAT),
                     this.statistikParameter.gemeindeMahlzeitenverguenstigungen)
-                    .subscribe((res: {workjobId: string}) => {
+                    .subscribe((res: { workjobId: string }) => {
                         this.informReportGenerationStarted(res);
                     }, StatistikComponent.handleError);
                 return;
@@ -349,8 +349,8 @@ export class StatistikComponent implements OnInit, OnDestroy {
             case TSStatistikParameterType.LASTENAUSGLEICH_TAGESSCHULEN:
                 this.reportAsyncRS.getLastenausgleichTagesschulenReportExcel(this.statistikParameter.gesuchsperiode)
                     .subscribe((res: { workjobId: string }) => {
-                    this.informReportGenerationStarted(res);
-                }, StatistikComponent.handleError);
+                        this.informReportGenerationStarted(res);
+                    }, StatistikComponent.handleError);
                 return;
             case TSStatistikParameterType.LASTENAUSGLEICH_BG:
                 this.reportAsyncRS.getLastenausgleichBGReportExcel(
@@ -359,8 +359,8 @@ export class StatistikComponent implements OnInit, OnDestroy {
                     this.statistikParameter.von?.format(this.DATE_PARAM_FORMAT),
                     this.statistikParameter.bis?.format(this.DATE_PARAM_FORMAT))
                     .subscribe((res: { workjobId: string }) => {
-                    this.informReportGenerationStarted(res);
-                }, StatistikComponent.handleError);
+                        this.informReportGenerationStarted(res);
+                    }, StatistikComponent.handleError);
                 return;
             case TSStatistikParameterType.ZAHLUNGEN:
                 // falls der eingeloggte benutzer eine institution ist, wird das Dropdown mit den Institutinen
@@ -371,8 +371,8 @@ export class StatistikComponent implements OnInit, OnDestroy {
                 }
                 this.reportAsyncRS.getZahlungenReportExcel(
                     this.statistikParameter.gesuchsperiode,
-					this.statistikParameter.gemeinde,
-					this.statistikParameter.institution
+                    this.statistikParameter.gemeinde,
+                    this.statistikParameter.institution
                 ).subscribe((res: { workjobId: string }) => {
                     this.informReportGenerationStarted(res);
                 }, StatistikComponent.handleError);
@@ -402,15 +402,15 @@ export class StatistikComponent implements OnInit, OnDestroy {
             this.statistikParameter.tsGesuche,
             this.statistikParameter.ohneFolgegesuche,
             this.statistikParameter.text)
-            .subscribe((res: {workjobId: string}) => {
+            .subscribe((res: { workjobId: string }) => {
                 this.informReportGenerationStarted(res);
             }, () => {
                 LOG.error('An error occurred downloading the document, closing download window.');
             });
     }
 
-    private informReportGenerationStarted(res: {workjobId: string}): void {
-        LOG.debug(`executionID: ${  res.workjobId}`);
+    private informReportGenerationStarted(res: { workjobId: string }): void {
+        LOG.debug(`executionID: ${res.workjobId}`);
         const startmsg = this.translate.instant('STARTED_GENERATION');
         this.errorService.addMesageAsInfo(startmsg);
         this.refreshUserJobs();
@@ -443,7 +443,7 @@ export class StatistikComponent implements OnInit, OnDestroy {
         }
 
         const win = this.downloadRS.prepareDownloadWindow();
-        LOG.debug(`accessToken: ${  row.resultData}`);
+        LOG.debug(`accessToken: ${row.resultData}`);
         this.downloadRS.startDownload(row.resultData, 'report.xlsx', false, win);
     }
 
@@ -644,15 +644,15 @@ export class StatistikComponent implements OnInit, OnDestroy {
 
     public showBenutzerStatistik(): boolean {
         return this.authServiceRS.isOneOfRoles([
-                TSRole.ADMIN_BG,
-                TSRole.ADMIN_TS,
-                TSRole.ADMIN_GEMEINDE,
-                TSRole.SUPER_ADMIN,
-                TSRole.REVISOR,
-                TSRole.ADMIN_TRAEGERSCHAFT,
-                TSRole.ADMIN_INSTITUTION,
-                TSRole.ADMIN_MANDANT,
-                TSRole.SACHBEARBEITER_MANDANT
+            TSRole.ADMIN_BG,
+            TSRole.ADMIN_TS,
+            TSRole.ADMIN_GEMEINDE,
+            TSRole.SUPER_ADMIN,
+            TSRole.REVISOR,
+            TSRole.ADMIN_TRAEGERSCHAFT,
+            TSRole.ADMIN_INSTITUTION,
+            TSRole.ADMIN_MANDANT,
+            TSRole.SACHBEARBEITER_MANDANT
         ]);
     }
 
@@ -755,15 +755,23 @@ export class StatistikComponent implements OnInit, OnDestroy {
         ) && this.bgInstitutionen?.length > 0;
     }
 
-	public gemeindenVisibleZahlungenStatistik(): boolean {
-		return !this.authServiceRS.isOneOfRoles(
-			TSRoleUtil.getTraegerschaftInstitutionOnlyRoles()
-		);
-	}
+    public gemeindenVisibleZahlungenStatistik(): boolean {
+        return !this.authServiceRS.isOneOfRoles(
+            TSRoleUtil.getTraegerschaftInstitutionOnlyRoles()
+        );
+    }
 
-	public institutionenVisibleZahlungenStatistik(): boolean {
-		return !this.authServiceRS.isOneOfRoles(
-			TSRoleUtil.getInstitutionOnlyRoles()
-		);
-	}
+    public institutionenVisibleZahlungenStatistik(): boolean {
+        return !this.authServiceRS.isOneOfRoles(
+            TSRoleUtil.getInstitutionOnlyRoles()
+        );
+    }
+
+    public requiredIfAlleGemeinden(): boolean {
+        return EbeguUtil.isNullOrUndefined(this.statistikParameter.gemeinde);
+    }
+
+    public requiredIfAlleInstitutionen(): boolean {
+        return EbeguUtil.isNullOrUndefined(this.statistikParameter.institution);
+    }
 }

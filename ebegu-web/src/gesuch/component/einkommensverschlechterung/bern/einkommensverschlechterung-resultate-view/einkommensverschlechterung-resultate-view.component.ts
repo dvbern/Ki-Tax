@@ -16,7 +16,6 @@
  */
 
 import {ChangeDetectionStrategy, ChangeDetectorRef, Component, ViewChild} from '@angular/core';
-import {NgForm} from '@angular/forms';
 import {Transition} from '@uirouter/core';
 import {IPromise} from 'angular';
 import {ErrorService} from '../../../../../app/core/errors/service/ErrorService';

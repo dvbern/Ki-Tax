@@ -35,6 +35,7 @@ import {TSKindContainer} from '../../../../models/TSKindContainer';
 import {EbeguUtil} from '../../../../utils/EbeguUtil';
 import {GesuchModelManager} from '../../../service/gesuchModelManager';
 import {FjkvKinderabzugExchangeService} from './fjkv-kinderabzug-exchange.service';
+import {TSFamiliensituation} from '../../../../models/TSFamiliensituation';
 
 const LOG = LogFactory.createLog('FkjvKinderabzugComponent');
 
@@ -173,7 +174,7 @@ export class FkjvKinderabzugComponent implements OnInit, AfterViewInit, OnDestro
     }
 
     private isAlleinerziehenOrShortKonkubinat(): boolean {
-        return this.gesuchModelManager.getFamiliensituation().familienstatus === TSFamilienstatus.ALLEINERZIEHEND ||
+        return this.getFamiliensituationToUse().familienstatus === TSFamilienstatus.ALLEINERZIEHEND ||
             this.isShortKonkubinat();
     }
 
@@ -182,11 +183,22 @@ export class FkjvKinderabzugComponent implements OnInit, AfterViewInit, OnDestro
     }
 
     private isShortKonkubinat(): boolean {
-        if (this.gesuchModelManager.getFamiliensituation().familienstatus !== TSFamilienstatus.KONKUBINAT_KEIN_KIND) {
+        if (this.getFamiliensituationToUse().familienstatus !== TSFamilienstatus.KONKUBINAT_KEIN_KIND) {
             return false;
         }
 
-        return this.gesuchModelManager.getFamiliensituation()
+        return this.getFamiliensituationToUse()
             .konkubinatIsShorterThanXYearsAtAnyTimeAfterStartOfPeriode(this.gesuchModelManager.getGesuchsperiode());
+    }
+
+    private getFamiliensituationToUse(): TSFamiliensituation {
+        //wenn mutation und partner nicht identisch mit vorgesuch dann ist FamSit des Erstantrages relevant
+        if (this.gesuchModelManager.getGesuch().isMutation() &&
+            EbeguUtil.isNotNullOrUndefined(this.gesuchModelManager.getFamiliensituation().partnerIdentischMitVorgesuch) &&
+            !this.gesuchModelManager.getFamiliensituation().partnerIdentischMitVorgesuch) {
+            return this.gesuchModelManager.getFamiliensituationErstgesuch();
+        }
+
+        return this.gesuchModelManager.getFamiliensituation();
     }
 }

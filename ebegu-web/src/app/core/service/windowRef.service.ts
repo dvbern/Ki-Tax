@@ -53,7 +53,7 @@ export class WindowRef {
         return getWindowObject().localStorage;
     }
 
-    public constructor(@Inject(PLATFORM_ID) platformId: any) {
+    public constructor(@Inject(PLATFORM_ID) private readonly platformId: any) {
         this.isBrowser = isPlatformBrowser(platformId);
     }
 }

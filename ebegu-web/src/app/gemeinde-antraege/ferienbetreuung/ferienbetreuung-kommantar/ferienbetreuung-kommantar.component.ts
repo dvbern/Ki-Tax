@@ -17,7 +17,7 @@
 
 import {HttpErrorResponse} from '@angular/common/http';
 import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit} from '@angular/core';
-import {FormControl, FormGroup} from '@angular/forms';
+import {FormBuilder} from '@angular/forms';
 import {TranslateService} from '@ngx-translate/core';
 import {ReplaySubject, Subscription} from 'rxjs';
 import {TSFerienbetreuungAngabenContainer} from '../../../../models/gemeindeantrag/TSFerienbetreuungAngabenContainer';
@@ -37,11 +37,15 @@ const LOG = LogFactory.createLog('FerienbetreuungKommantarComponent');
 })
 export class FerienbetreuungKommantarComponent implements OnInit, OnDestroy {
 
-    public form: FormGroup;
+    public form = this.fb.group({
+        kommentar: this.fb.control({
+            value: <null | string> null,
+            disabled: true,
+        }),
+    });
     public saving$ = new ReplaySubject(1);
-    private kommentarControl: FormControl;
     private subscription: Subscription;
-    private ferienbetreuungContainer: TSFerienbetreuungAngabenContainer;
+    public ferienbetreuungContainer: TSFerienbetreuungAngabenContainer;
 
     public userList: Array<TSBenutzerNoDetails>;
 
@@ -50,7 +54,8 @@ export class FerienbetreuungKommantarComponent implements OnInit, OnDestroy {
         private readonly ref: ChangeDetectorRef,
         private readonly errorService: ErrorService,
         private readonly translate: TranslateService,
-        private readonly benutzerRS: BenutzerRSX
+        private readonly benutzerRS: BenutzerRSX,
+        private readonly fb: FormBuilder
     ) {}
 
     public ngOnInit(): void {
@@ -67,13 +72,13 @@ export class FerienbetreuungKommantarComponent implements OnInit, OnDestroy {
     }
 
     public saveKommentar(): void {
-        if (!this.kommentarControl.valid) {
+        if (!this.form.valid) {
             return;
         }
         this.saving$.next(true);
         this.ferienbetreuungService.saveKommentar(
             this.ferienbetreuungContainer.id,
-            this.kommentarControl.value
+            this.form.getRawValue().kommentar
         ).subscribe(() => {
             this.saving$.next(false);
         }, (error: HttpErrorResponse) => {
@@ -84,14 +89,6 @@ export class FerienbetreuungKommantarComponent implements OnInit, OnDestroy {
     }
 
     private initForm(): void {
-        this.kommentarControl = new FormControl({
-                value: this.ferienbetreuungContainer?.internerKommentar,
-                disabled: this.ferienbetreuungContainer?.isAbgeschlossen()
-        });
-        this.form = new FormGroup({
-            kommentar: this.kommentarControl
-        });
-
         this.loadUserList();
     }
 

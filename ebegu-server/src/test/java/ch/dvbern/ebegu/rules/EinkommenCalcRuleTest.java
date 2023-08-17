@@ -370,6 +370,7 @@ public class EinkommenCalcRuleTest {
 			erweiterteBetreuungJA.setFachstelle(new Fachstelle());
 			erweiterteBetreuungJA.setErweiterteBeduerfnisseBestaetigt(true);
 			erweiterteBetreuungJA.setKeineKesbPlatzierung(true);
+			erweiterteBetreuungJA.setAnspruchFachstelleWennPensumUnterschritten(false);
 		}
 		return betreuung;
 	}
