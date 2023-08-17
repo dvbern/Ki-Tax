@@ -17,7 +17,6 @@ package ch.dvbern.ebegu.dto;
 
 import java.io.Serializable;
 
-import javax.annotation.Nullable;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;

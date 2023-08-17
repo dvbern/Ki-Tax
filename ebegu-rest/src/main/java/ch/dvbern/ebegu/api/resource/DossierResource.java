@@ -82,8 +82,6 @@ import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
 @PermitAll // Grundsaetzliche fuer alle Rollen: Datenabhaengig. -> Authorizer
 public class DossierResource {
 
-	public static final String DOSSIER_ID_INVALID = "DossierId invalid: ";
-
 	@Inject
 	private DossierService dossierService;
 
@@ -281,7 +279,7 @@ public class DossierResource {
 		return Response.ok().build();
 	}
 
-	@ApiOperation("Text")
+	@ApiOperation("Dossier finden mit dossierJAXPId")
 	@Nullable
 	@PUT
 	@Path("/bemerkungen/{dossierId}")
@@ -295,8 +293,10 @@ public class DossierResource {
 		@Context HttpServletResponse response) {
 
 		Objects.requireNonNull(dossierJAXPId.getId());
-		Dossier dossier = dossierService.findDossier(converter.toEntityId(dossierJAXPId)).orElseThrow(() -> new EbeguEntityNotFoundException("updateBemerkungen", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
-			DOSSIER_ID_INVALID + dossierJAXPId.getId()));
+		Dossier dossier = dossierService.findDossier(converter.toEntityId(dossierJAXPId)).orElseThrow(() -> new EbeguEntityNotFoundException("updateBemerkungen",
+			ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, dossierJAXPId.getId()));
+
+		dossier.setBemerkungen(bemerkungen);
 
 		dossierService.saveDossier(dossier);
 
