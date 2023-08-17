@@ -76,8 +76,8 @@
                                     <goal>install-node-and-npm</goal>
                                 </goals>
                                 <configuration>
-                                    <nodeVersion>v18.10.0</nodeVersion>
-                                    <npmVersion>8.19.2</npmVersion>
+                                    <nodeVersion>v16.20.2</nodeVersion>
+                                    <npmVersion>8.19.4</npmVersion>
                                     <nodeDownloadRoot>https://nodejs.org/dist/</nodeDownloadRoot>
                                     <npmDownloadRoot>https://registry.npmjs.org/npm/-/</npmDownloadRoot>
                                 </configuration>
