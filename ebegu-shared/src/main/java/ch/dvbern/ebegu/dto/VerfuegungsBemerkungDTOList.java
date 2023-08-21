@@ -17,27 +17,18 @@
 
 package ch.dvbern.ebegu.dto;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
 import ch.dvbern.ebegu.enums.MsgKey;
 import ch.dvbern.ebegu.rules.RuleValidity;
 import ch.dvbern.ebegu.types.DateRange;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.map.MultiKeyMap;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * DTO für eine Verfügungsbemerkung
@@ -231,6 +222,28 @@ public class VerfuegungsBemerkungDTOList {
 			if (messagesMap.containsKey(MsgKey.FIN_SIT_RUECKWIRKEND_ANGEPASST)) {
 				removeBemerkungForPeriodes(MsgKey.EINKOMMENSVERSCHLECHTERUNG_ACCEPT_MSG, getGueltigkeitenByMessageKey(MsgKey.FIN_SIT_RUECKWIRKEND_ANGEPASST));
 			}
+			Optional<MsgKey> msgKeySchulstufe = getOptionalMsgKeySchulstufe();
+			msgKeySchulstufe.ifPresent(msgKey -> removeBemerkungForPeriodes(MsgKey.FACHSTELLE_MSG, getGueltigkeitenByMessageKey(msgKey)));
+		}
+
+		private Optional<MsgKey> getOptionalMsgKeySchulstufe() {
+			if (messagesMap.containsKey(MsgKey.SCHULSTUFE_VORSCHULE_MSG)) {
+				return Optional.of(MsgKey.SCHULSTUFE_VORSCHULE_MSG);
+			}
+
+			if (messagesMap.containsKey(MsgKey.SCHULSTUFE_KINDERGARTEN_1_MSG)) {
+				return Optional.of(MsgKey.SCHULSTUFE_KINDERGARTEN_1_MSG);
+			}
+
+			if (messagesMap.containsKey(MsgKey.SCHULSTUFE_FREIWILLIGER_KINDERGARTEN_MSG)) {
+				return Optional.of(MsgKey.SCHULSTUFE_FREIWILLIGER_KINDERGARTEN_MSG);
+			}
+
+			if (messagesMap.containsKey(MsgKey.SCHULSTUFE_KINDERGARTEN_2_MSG)) {
+				return Optional.of(MsgKey.SCHULSTUFE_KINDERGARTEN_2_MSG);
+			}
+
+			return Optional.empty();
 		}
 
 		/**
