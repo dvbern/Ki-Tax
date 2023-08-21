@@ -105,7 +105,8 @@
                        [pattern]="PATTERN_PERCENTAGE"
                        [required]="submitted || betreuungspensumFachstelle.touched"
                        [disabled]="isOnlyOneValueAllowed()"
-                       [placeholder]="'PERCENTAGE_PLACEHOLDER' | translate">
+                       [placeholder]="'PERCENTAGE_PLACEHOLDER' | translate"
+                       (change)="validatePensumOverlaps()" >
                 <dv-error-messages [inputId]="'betreuungspensumFachstelle'"
                                    [errorObject]="betreuungspensumFachstelle.errors"></dv-error-messages>
             </div>
@@ -118,7 +119,8 @@
             <dv-date-picker-x
                 [label]="'VON'"
                 [(date)]="pensumFachstelle.gueltigkeit.gueltigAb"
-                [required]="true">
+                [required]="true"
+                (dateChange)="validatePensumOverlaps()">
             </dv-date-picker-x>
         </div>
 
@@ -126,6 +128,7 @@
             <dv-date-picker-x
                 [label]="'BIS'"
                 [(date)]="pensumFachstelle.gueltigkeit.gueltigBis"
+                (dateChange)="validatePensumOverlaps()"
             ></dv-date-picker-x>
         </div>
     </div>

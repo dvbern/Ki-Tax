@@ -3065,5 +3065,7 @@
     "PENSUM_FACHSTELLE_ENTFERNEN": "Fachstellenpensum {{fachstellennummer}} entfernen",
     "ZEITRAUM": "Période",
     "ANSPRUCH_FACHSTELLE_WENN_PENSUM_UNTERSCHRITTEN": "",
+    "PENSUM_FACHSTELLE_WARN_OVERLAP_HOEHER": "Der Betreuungsumfang in der <b>neueren</b> Fachstellenbestätigung ist <b>höher</b>: Tragen Sie beim von-Datum der neueren Indikation das von-Datum der neueren Fachstellenbestätigung ein. Ändern Sie das bis-Datum der älteren Indikation und tragen Sie dort den Vortag ein. Beispiel: Bisherige Indikation bis 31.12. Neue Indikation ist höher und startet am 1.12. -> das bis-Datum der älteren Indikation wird auf den 30.11 abgeändert. ",
+    "PENSUM_FACHSTELLE_WARN_OVERLAP_TIEFER": "Der Betreuungsumfang in der <b>neueren</b> Fachstellenbestätigung ist <b>tiefer</b> oder <b>gleich hoch</b>: Tragen Sie beim von-Datum der neueren Indikation den Folgetag des bis-Datums der älteren Indikation ein. Beispiel: Bisherige Indikation bis 31.12. Neue Indikation ist tiefer und startet am 1.12. -> das von-Datum der neueren Indikation wird auf den 1.1. gesetzt.",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }
