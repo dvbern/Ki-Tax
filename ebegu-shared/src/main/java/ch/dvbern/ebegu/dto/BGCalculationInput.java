@@ -17,26 +17,17 @@
 
 package ch.dvbern.ebegu.dto;
 
-import java.math.BigDecimal;
-import java.util.HashSet;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
+import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
+import ch.dvbern.ebegu.enums.*;
+import ch.dvbern.ebegu.rules.RuleValidity;
+import ch.dvbern.ebegu.util.MathUtil;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
-
-import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
-import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
-import ch.dvbern.ebegu.enums.EinschulungTyp;
-import ch.dvbern.ebegu.enums.MsgKey;
-import ch.dvbern.ebegu.enums.PensumUnits;
-import ch.dvbern.ebegu.enums.Taetigkeit;
-import ch.dvbern.ebegu.rules.RuleValidity;
-import ch.dvbern.ebegu.util.MathUtil;
+import java.math.BigDecimal;
+import java.util.*;
 
 public class BGCalculationInput {
 
@@ -200,6 +191,8 @@ public class BGCalculationInput {
 	private boolean gesuchBeendenKonkubinatWirdInPeriodeXJahreAlt = false;
 	private BigDecimal bgStundenFaktor = BigDecimal.ZERO;
 
+	private boolean keineVerguenstigungGewuenscht = false;
+
 	public BGCalculationInput(@Nonnull VerfuegungZeitabschnitt parent, @Nonnull RuleValidity ruleValidity) {
 		this.parent = parent;
 		this.ruleValidity = ruleValidity;
@@ -268,6 +261,7 @@ public class BGCalculationInput {
 		this.requiredAgeForAnspruchNotReached = toCopy.requiredAgeForAnspruchNotReached;
 		this.gesuchBeendenKonkubinatWirdInPeriodeXJahreAlt = toCopy.gesuchBeendenKonkubinatWirdInPeriodeXJahreAlt;
 		this.bgStundenFaktor = toCopy.bgStundenFaktor;
+		this.keineVerguenstigungGewuenscht = toCopy.keineVerguenstigungGewuenscht;
 	}
 
 	@Nonnull
@@ -882,6 +876,7 @@ public class BGCalculationInput {
 		if (MathUtil.isZero(this.bgStundenFaktor) && !MathUtil.isZero(other.getBgStundenFaktor())) {
 			this.setBgStundenFaktor(other.getBgStundenFaktor());
 		}
+		this.keineVerguenstigungGewuenscht = this.keineVerguenstigungGewuenscht || other.keineVerguenstigungGewuenscht;
 	}
 
 	/**
@@ -1084,7 +1079,8 @@ public class BGCalculationInput {
 			this.isEkvAccepted == other.isEkvAccepted &&
 			this.requiredAgeForAnspruchNotReached == other.requiredAgeForAnspruchNotReached &&
 			this.gesuchBeendenKonkubinatWirdInPeriodeXJahreAlt == other.gesuchBeendenKonkubinatWirdInPeriodeXJahreAlt &&
-			MathUtil.isSame(this.bgStundenFaktor, other.bgStundenFaktor);
+			MathUtil.isSame(this.bgStundenFaktor, other.bgStundenFaktor) &&
+			this.keineVerguenstigungGewuenscht == other.keineVerguenstigungGewuenscht;
 	}
 
 	@SuppressWarnings("PMD.CompareObjectsWithEquals")
@@ -1260,5 +1256,13 @@ public class BGCalculationInput {
 
 	public BigDecimal getBgStundenFaktor() {
 		return bgStundenFaktor;
+	}
+
+	public boolean isKeineVerguenstigungGewuenscht() {
+		return keineVerguenstigungGewuenscht;
+	}
+
+	public void setKeineVerguenstigungGewuenscht(boolean keineVerguenstigungGewuenscht) {
+		this.keineVerguenstigungGewuenscht = keineVerguenstigungGewuenscht;
 	}
 }
