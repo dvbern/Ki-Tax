@@ -52,7 +52,7 @@ export class KindFachstelleComponent implements OnInit, OnChanges, AfterViewInit
     public index: number = 0;
 
     @Input()
-    public pensumFachstellenList: TSPensumFachstelle[]
+    public pensumFachstellenList: TSPensumFachstelle[];
 
     @Output()
     public readonly onPensumFachstellenOverlaps = new EventEmitter<string>();
