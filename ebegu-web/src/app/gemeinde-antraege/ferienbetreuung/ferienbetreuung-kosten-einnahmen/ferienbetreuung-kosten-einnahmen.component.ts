@@ -174,9 +174,12 @@ export class FerienbetreuungKostenEinnahmenComponent extends AbstractFerienbetre
         // eslint-disable-next-line
         if (this.isDelegationsmodell) {
             this.form.controls.sockelbeitrag.setValidators([Validators.required, numberValidator(ValidationType.INTEGER)]);
-            this.form.controls.beitraegeNachAnmeldungen.setValidators([Validators.required, numberValidator(ValidationType.INTEGER)]);
-            this.form.controls.vorfinanzierteKantonsbeitraege.setValidators([Validators.required, numberValidator(ValidationType.INTEGER)]);
-            this.form.controls.eigenleistungenGemeinde.setValidators([Validators.required, numberValidator(ValidationType.INTEGER)]);
+            this.form.controls.beitraegeNachAnmeldungen.setValidators(
+                [Validators.required, numberValidator(ValidationType.INTEGER)]);
+            this.form.controls.vorfinanzierteKantonsbeitraege.setValidators(
+                [Validators.required, numberValidator(ValidationType.INTEGER)]);
+            this.form.controls.eigenleistungenGemeinde.setValidators(
+                [Validators.required, numberValidator(ValidationType.INTEGER)]);
         }
     }
 

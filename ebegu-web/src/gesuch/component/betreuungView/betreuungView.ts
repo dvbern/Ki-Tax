@@ -1571,7 +1571,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         this.provisorischeBetreuung = false;
 
         // init prov. betreuung
-        if (this.model.vertrag === false) { // eslint-disable-line @typescript-eslint/no-unnecessary-boolean-literal-compare
+        if (this.model.vertrag === false) {
             this.provisorischeBetreuung = true;
             this.createProvisorischeBetreuung();
         }

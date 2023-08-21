@@ -40,17 +40,32 @@ import {FinanzielleSituationStartViewLuzernComponent} from './finanzielle-situat
 
 const gesuchModelManagerSpy = jasmine.createSpyObj<GesuchModelManager>(
     GesuchModelManager.name,
-    ['areThereOnlyFerieninsel', 'getBasisjahr', 'getBasisjahrPlus', 'getGesuch', 'isGesuchsteller2Required', 'isGesuchReadonly', 'getGesuchsperiode', 'getGemeinde', 'setGesuchstellerNumber']);
+    [
+        'areThereOnlyFerieninsel',
+        'getBasisjahr',
+        'getBasisjahrPlus',
+        'getGesuch',
+        'isGesuchsteller2Required',
+        'isGesuchReadonly',
+        'getGesuchsperiode',
+        'getGemeinde',
+        'setGesuchstellerNumber'
+    ]);
 const wizardStepMangerSpy = jasmine.createSpyObj<WizardStepManager>(
     WizardStepManager.name, ['getCurrentStep', 'setCurrentStep', 'isNextStepBesucht', 'isNextStepEnabled',
         'getCurrentStepName', 'updateCurrentWizardStepStatusSafe']);
-const finanzielleSituationRSSpy = jasmine.createSpyObj<FinanzielleSituationRS>(FinanzielleSituationRS.name, ['saveFinanzielleSituationStart', 'getFinanzielleSituationTyp']);
+const finanzielleSituationRSSpy =
+    jasmine.createSpyObj<FinanzielleSituationRS>(FinanzielleSituationRS.name,
+        ['saveFinanzielleSituationStart', 'getFinanzielleSituationTyp']);
 const stateServiceSpy = jasmine.createSpyObj<StateService>(StateService.name,
     ['go']);
 const errorServiceSpy = jasmine.createSpyObj<ErrorService>(ErrorService.name, ['clearError']);
-const berechnungsManagerSpy = jasmine.createSpyObj<BerechnungsManager>(BerechnungsManager.name, ['calculateFinanzielleSituation', 'calculateFinanzielleSituationTemp']);
+const berechnungsManagerSpy =
+    jasmine.createSpyObj<BerechnungsManager>(BerechnungsManager.name,
+        ['calculateFinanzielleSituation', 'calculateFinanzielleSituationTemp']);
 const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name, ['isOneOfRoles']);
-berechnungsManagerSpy.calculateFinanzielleSituationTemp.and.returnValue(Promise.resolve(new TSFinanzielleSituationResultateDTO()));
+berechnungsManagerSpy.calculateFinanzielleSituationTemp.and
+    .returnValue(Promise.resolve(new TSFinanzielleSituationResultateDTO()));
 
 FinanzielleSituationLuzernService.finSitNeedsTwoSeparateAntragsteller = () => false;
 

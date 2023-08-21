@@ -35,18 +35,24 @@ export function customTranslateLoader(
         ).subscribe(mandant => {
             let translationFiles: IPromise<IHttpResponse<object>[]>;
             if (mandant === MANDANTS.NONE || mandant === MANDANTS.BERN) {
-                translationFiles = Promise.all([$http.get<object>(`./assets/translations/translations_${options.key}.json?t=${Date.now()}`)]);
+                translationFiles = Promise.all([
+                    $http.get<object>(`./assets/translations/translations_${options.key}.json?t=${Date.now()}`)
+                ]);
             } else {
                 translationFiles = Promise.all(
                     [
                         $http.get<object>(`./assets/translations/translations_${options.key}.json?t=${Date.now()}`),
-                        $http.get<object>(`./assets/translations/translations_${mandant.hostname}_${options.key}.json?t=${Date.now()}`)
+                        $http.get<object>(
+                            `./assets/translations/translations_${mandant.hostname}_${options.key}.json?t=${Date.now()}`
+                        )
                     ]
                 );
             }
 
             translationFiles.then(loadadResorces => loadadResorces.map(resource => resource.data))
-                .then(loadedResources => loadedResources.reduce((defaultResource, resource) => ({...defaultResource, ...resource}))).then(merged => defered.resolve(merged));
+                .then(loadedResources => loadedResources.reduce(
+                    (defaultResource, resource) => ({...defaultResource, ...resource})))
+                .then(merged => defered.resolve(merged));
         }, err => LOG.error(err));
 
         return defered.promise as Promise<object>;

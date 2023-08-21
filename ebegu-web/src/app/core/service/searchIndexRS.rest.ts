@@ -45,6 +45,8 @@ export class SearchIndexRS {
     }
 
     private search(url: string): IPromise<TSQuickSearchResult> {
-        return this.http.get(url).then((response: IHttpResponse<TSQuickSearchResult>) => this.ebeguRestUtil.parseQuickSearchResult(response.data));
+        return this.http.get(url)
+            .then((response: IHttpResponse<TSQuickSearchResult>) =>
+                this.ebeguRestUtil.parseQuickSearchResult(response.data));
     }
 }

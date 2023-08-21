@@ -143,17 +143,20 @@ export class BenutzerRSX {
 
     public inactivateBenutzer(user: TSBenutzer): Promise<TSBenutzer> {
         const userRest = this.ebeguRestUtil.userToRestObject({}, user);
-        return this.$http.put(`${this.serviceURL}/inactivate/`, userRest).pipe(map((response: any) => this.ebeguRestUtil.parseUser(new TSBenutzer(), response))).toPromise();
+        return this.$http.put(`${this.serviceURL}/inactivate/`, userRest)
+            .pipe(map((response: any) => this.ebeguRestUtil.parseUser(new TSBenutzer(), response))).toPromise();
     }
 
     public reactivateBenutzer(benutzer: TSBenutzer): Promise<TSBenutzer> {
         const benutzerRest = this.ebeguRestUtil.userToRestObject({}, benutzer);
-        return this.$http.put(`${this.serviceURL}/reactivate/`, benutzerRest).pipe(map((response: any) => this.ebeguRestUtil.parseUser(new TSBenutzer(), response))).toPromise();
+        return this.$http.put(`${this.serviceURL}/reactivate/`, benutzerRest)
+            .pipe(map((response: any) => this.ebeguRestUtil.parseUser(new TSBenutzer(), response))).toPromise();
     }
 
     public einladen(benutzer: TSBenutzer): Promise<TSBenutzer> {
         const benutzerRest = this.ebeguRestUtil.userToRestObject({}, benutzer);
-        return this.$http.post(`${this.serviceURL}/einladen/`, benutzerRest).pipe(map((response: any) => this.ebeguRestUtil.parseUser(new TSBenutzer(), response))).toPromise();
+        return this.$http.post(`${this.serviceURL}/einladen/`, benutzerRest)
+            .pipe(map((response: any) => this.ebeguRestUtil.parseUser(new TSBenutzer(), response))).toPromise();
     }
 
     public erneutEinladen(benutzer: TSBenutzer): Promise<any> {

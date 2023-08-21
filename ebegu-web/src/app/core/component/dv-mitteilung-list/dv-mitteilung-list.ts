@@ -445,7 +445,8 @@ export class DVMitteilungListController implements IOnInit {
     }
 
     public showNeueVeranlagungsmitteilungApply(mitteilung: TSMitteilung): boolean {
-        return this.canErledigenNeueVeranlagungsmitteilung(mitteilung) && this.isNeueVeranlagungsmitteilungNotErledigt(mitteilung);
+        return this.canErledigenNeueVeranlagungsmitteilung(mitteilung)
+            && this.isNeueVeranlagungsmitteilungNotErledigt(mitteilung);
     }
 
     public $postLink(): void {

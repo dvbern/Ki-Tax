@@ -106,7 +106,8 @@ export class FerienbetreuungAbschlussComponent implements OnInit, OnDestroy {
                 takeUntil(this.unsubscribe)
             ), this.authService.principal$
         ]).pipe(
-            map(([alLeastInPruefungKanton, principal]) => principal.hasOneOfRoles(TSRoleUtil.getMandantRoles()) && alLeastInPruefungKanton)
+            map(([alLeastInPruefungKanton, principal]) =>
+                principal.hasOneOfRoles(TSRoleUtil.getMandantRoles()) && alLeastInPruefungKanton)
         );
     }
 

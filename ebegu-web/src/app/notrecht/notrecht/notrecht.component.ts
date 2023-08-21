@@ -136,7 +136,8 @@ export class NotrechtComponent implements OnInit {
     }
 
     private initFilter(): void {
-        this.rueckforderungFormulareSource.filterPredicate = (data, filter) => EbeguUtil.hasTextCaseInsensitive(data.institutionStammdaten.institution.name, filter)
+        this.rueckforderungFormulareSource.filterPredicate = (data, filter) =>
+            EbeguUtil.hasTextCaseInsensitive(data.institutionStammdaten.institution.name, filter)
                 || EbeguUtil.hasTextCaseInsensitive(this.translateRueckforderungStatus(data.status), filter)
                 || EbeguUtil.hasTextCaseInsensitive(data.institutionStammdaten.betreuungsangebotTyp, filter)
                 || EbeguUtil.hasTextCaseInsensitive(this.getZahlungAusgeloest(data.stufe1FreigabeAusbezahltAm), filter)

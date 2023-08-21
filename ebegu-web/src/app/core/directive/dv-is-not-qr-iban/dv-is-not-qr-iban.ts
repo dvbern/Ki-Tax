@@ -30,7 +30,8 @@ export class DvIsNotQrIban implements IDirective {
                 return;
             }
 
-            ctrl.$validators.qrIban = (_modelValue: any, viewValue: any) => ctrl.$isEmpty(viewValue) || !this.isQrIbanLike(viewValue);
+            ctrl.$validators.qrIban = (_modelValue: any, viewValue: any) =>
+                ctrl.$isEmpty(viewValue) || !this.isQrIbanLike(viewValue);
         };
     }
 

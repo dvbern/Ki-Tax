@@ -125,7 +125,8 @@ export class SozialhilfeZeitraumViewController extends AbstractGesuchViewControl
         if (sozialhilfeZeitraum.id) {
             return this.sozialhilfeZeitraumRS.saveSozialhilfeZeitraum(sozialhilfeZeitraum, familiensituation.id)
                 .then((response: TSSozialhilfeZeitraumContainer) => {
-                    const i = EbeguUtil.getIndexOfElementwithID(sozialhilfeZeitraum, familiensituation.sozialhilfeZeitraumContainers);
+                    const i =
+                        EbeguUtil.getIndexOfElementwithID(sozialhilfeZeitraum, familiensituation.sozialhilfeZeitraumContainers);
                     if (i >= 0) {
                         familiensituation.sozialhilfeZeitraumContainers[i] = sozialhilfeZeitraum;
                     }

@@ -320,7 +320,7 @@ export class EbeguUtil {
         sozialhilfeBezueger: boolean,
         verguenstigungGewuenscht: boolean
     ): boolean {
-        return sozialhilfeBezueger === false && verguenstigungGewuenscht === true; // eslint-disable-line @typescript-eslint/no-unnecessary-boolean-literal-compare
+        return sozialhilfeBezueger === false && verguenstigungGewuenscht === true;
     }
 
     public static getAmtsspracheAsString(

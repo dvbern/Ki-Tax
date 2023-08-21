@@ -15,15 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {
-    ChangeDetectionStrategy,
-    ChangeDetectorRef,
-    Component,
-    Input,
-    OnDestroy,
-    OnInit,
-    ViewEncapsulation,
-} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnDestroy, OnInit, ViewEncapsulation} from '@angular/core';
 import {AbstractControl, FormBuilder, FormControl, FormGroup, ValidatorFn, Validators} from '@angular/forms';
 import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
 import {MatRadioChange} from '@angular/material/radio';
@@ -54,9 +46,7 @@ import {TSExceptionReport} from '../../../../../models/TSExceptionReport';
 import {EbeguUtil} from '../../../../../utils/EbeguUtil';
 import {MathUtil} from '../../../../../utils/MathUtil';
 import {TSRoleUtil} from '../../../../../utils/TSRoleUtil';
-import {
-    DvNgConfirmDialogComponent,
-} from '../../../../core/component/dv-ng-confirm-dialog/dv-ng-confirm-dialog.component';
+import {DvNgConfirmDialogComponent} from '../../../../core/component/dv-ng-confirm-dialog/dv-ng-confirm-dialog.component';
 import {DvNgOkDialogComponent} from '../../../../core/component/dv-ng-ok-dialog/dv-ng-ok-dialog.component';
 import {CONSTANTS} from '../../../../core/constants/CONSTANTS';
 import {ErrorService} from '../../../../core/errors/service/ErrorService';
@@ -92,20 +82,28 @@ export class GemeindeAngabenComponent implements OnInit, OnDestroy {
         bedarfBeiElternAbgeklaert: [<null|boolean>null],
         angebotFuerFerienbetreuungVorhanden: [<null|boolean>null],
         // B
-        geleisteteBetreuungsstundenOhneBesondereBeduerfnisse: [<null|number>null, numberValidator(ValidationType.POSITIVE_INTEGER)],
+        geleisteteBetreuungsstundenOhneBesondereBeduerfnisse:
+            [<null|number>null, numberValidator(ValidationType.POSITIVE_INTEGER)],
         geleisteteBetreuungsstundenBesondereBeduerfnisse: [<null|number>null,  numberValidator(ValidationType.POSITIVE_INTEGER)],
-        geleisteteBetreuungsstundenBesondereVolksschulangebot: [<null|number>null, numberValidator(ValidationType.POSITIVE_INTEGER)],
+        geleisteteBetreuungsstundenBesondereVolksschulangebot:
+            [<null|number>null, numberValidator(ValidationType.POSITIVE_INTEGER)],
         davonStundenZuNormlohnMehrAls50ProzentAusgebildete: [<null|number>null, numberValidator(ValidationType.POSITIVE_INTEGER)],
-        davonStundenZuNormlohnWenigerAls50ProzentAusgebildete: [<null|number>null, numberValidator(ValidationType.POSITIVE_INTEGER)],
-        einnahmenElterngebuehren: [<null|number>null, [this.numberValidator(), Validators.pattern(CONSTANTS.PATTERN_TWO_DECIMALS)]],
-        einnahmenElterngebuehrenVolksschulangebot: [<null|number>null,[this.numberValidator(), Validators.pattern(CONSTANTS.PATTERN_TWO_DECIMALS)]],
+        davonStundenZuNormlohnWenigerAls50ProzentAusgebildete:
+            [<null|number>null, numberValidator(ValidationType.POSITIVE_INTEGER)],
+        einnahmenElterngebuehren:
+            [<null|number>null, [this.numberValidator(), Validators.pattern(CONSTANTS.PATTERN_TWO_DECIMALS)]],
+        einnahmenElterngebuehrenVolksschulangebot:
+            [<null|number>null,[this.numberValidator(), Validators.pattern(CONSTANTS.PATTERN_TWO_DECIMALS)]],
         ersteRateAusbezahlt: [<null|number>null, numberValidator(ValidationType.POSITIVE_INTEGER)],
         tagesschuleTeilweiseGeschlossen: [<null|boolean>null],
-        rueckerstattungenElterngebuehrenSchliessung: [<null|number>null,[this.numberValidator(), Validators.pattern(CONSTANTS.PATTERN_TWO_DECIMALS)]],
+        rueckerstattungenElterngebuehrenSchliessung:
+            [<null|number>null,[this.numberValidator(), Validators.pattern(CONSTANTS.PATTERN_TWO_DECIMALS)]],
         // C
-        gesamtKostenTagesschule: [<null|number>null, [this.numberValidator(), Validators.pattern(CONSTANTS.PATTERN_TWO_DECIMALS)]],
+        gesamtKostenTagesschule:
+            [<null|number>null, [this.numberValidator(), Validators.pattern(CONSTANTS.PATTERN_TWO_DECIMALS)]],
         einnnahmenVerpflegung: [<null|number>null, [this.numberValidator(), Validators.pattern(CONSTANTS.PATTERN_TWO_DECIMALS)]],
-        einnahmenSubventionenDritter: [<null|number>null, [this.numberValidator(), Validators.pattern(CONSTANTS.PATTERN_TWO_DECIMALS)]],
+        einnahmenSubventionenDritter:
+            [<null|number>null, [this.numberValidator(), Validators.pattern(CONSTANTS.PATTERN_TWO_DECIMALS)]],
         ueberschussErzielt: [<null|boolean>null],
         ueberschussVerwendung: [<null|string>null],
         // D
@@ -232,8 +230,8 @@ export class GemeindeAngabenComponent implements OnInit, OnDestroy {
                 ]
             });
         }
-        if (principal.hasOneOfRoles(TSRoleUtil.getGemeindeOrBGOrTSRoles()
-            .concat(TSRole.SUPER_ADMIN)) && container.isInBearbeitungGemeinde() && container.angabenDeklaration.isInBearbeitung()) {
+        if (principal.hasOneOfRoles(TSRoleUtil.getGemeindeOrBGOrTSRoles().concat(TSRole.SUPER_ADMIN))
+            && container.isInBearbeitungGemeinde() && container.angabenDeklaration.isInBearbeitung()) {
             this.formularInitForm.enable();
         } else {
             this.formularInitForm.disable();
@@ -525,11 +523,16 @@ export class GemeindeAngabenComponent implements OnInit, OnDestroy {
     // eslint-disable-next-line max-len
     private setupKostenGemeindeCalculations(gemeindeAngabenFromServer: TSLastenausgleichTagesschuleAngabenGemeinde): void {
         combineLatest([
-            this.angabenForm.controls.gesamtKostenTagesschule.valueChanges.pipe(startWith(gemeindeAngabenFromServer?.gesamtKostenTagesschule || 0)),
-            this.angabenForm.controls.lastenausgleichsberechtigerBetrag.valueChanges.pipe(startWith(0)),
-            this.angabenForm.controls.einnahmenElterngebuehren.valueChanges.pipe(startWith(gemeindeAngabenFromServer?.einnahmenElterngebuehren || 0)),
-            this.angabenForm.controls.einnnahmenVerpflegung.valueChanges.pipe(startWith(gemeindeAngabenFromServer?.einnnahmenVerpflegung || 0)),
-            this.angabenForm.controls.einnahmenSubventionenDritter.valueChanges.pipe(startWith(gemeindeAngabenFromServer?.einnahmenSubventionenDritter || 0))
+            this.angabenForm.controls.gesamtKostenTagesschule.valueChanges
+                .pipe(startWith(gemeindeAngabenFromServer?.gesamtKostenTagesschule || 0)),
+            this.angabenForm.controls.lastenausgleichsberechtigerBetrag.valueChanges
+                .pipe(startWith(0)),
+            this.angabenForm.controls.einnahmenElterngebuehren.valueChanges
+                .pipe(startWith(gemeindeAngabenFromServer?.einnahmenElterngebuehren || 0)),
+            this.angabenForm.controls.einnnahmenVerpflegung.valueChanges
+                .pipe(startWith(gemeindeAngabenFromServer?.einnnahmenVerpflegung || 0)),
+            this.angabenForm.controls.einnahmenSubventionenDritter.valueChanges
+                .pipe(startWith(gemeindeAngabenFromServer?.einnahmenSubventionenDritter || 0))
         ]).subscribe(values => {
                 const gemeindeBeitragOderUeberschuss = MathUtil.subtractArrayFloatPrecisionSafe(values[0],
                     values.slice(1, 4));
@@ -553,8 +556,10 @@ export class GemeindeAngabenComponent implements OnInit, OnDestroy {
     private setupNormlohnkostenBetreuungBerechnetCalculations(): void {
         combineLatest(
             [
-                this.angabenForm.controls.davonStundenZuNormlohnWenigerAls50ProzentAusgebildeteBerechnet.valueChanges.pipe(startWith(0)),
-                this.angabenForm.controls.davonStundenZuNormlohnMehrAls50ProzentAusgebildeteBerechnet.valueChanges.pipe(startWith(0))
+                this.angabenForm.controls.davonStundenZuNormlohnWenigerAls50ProzentAusgebildeteBerechnet.valueChanges
+                    .pipe(startWith(0)),
+                this.angabenForm.controls.davonStundenZuNormlohnMehrAls50ProzentAusgebildeteBerechnet.valueChanges
+                    .pipe(startWith(0))
             ]
         ).subscribe(value => {
                 const normlohnkostenExact = MathUtil.addFloatPrecisionSafe(value[0], value[1]);
@@ -741,10 +746,16 @@ export class GemeindeAngabenComponent implements OnInit, OnDestroy {
 
     public formularNotEditable(): boolean {
         return this.lATSAngabenGemeindeContainer.isInBearbeitungGemeinde() && // eslint-disable-next-line max-len
-            this.lATSAngabenGemeindeContainer.angabenDeklaration.status === TSLastenausgleichTagesschuleAngabenGemeindeFormularStatus.ABGESCHLOSSEN ||
-            this.authServiceRS.isOneOfRoles(TSRoleUtil.getGemeindeOnlyRoles()) && this.lATSAngabenGemeindeContainer.isAtLeastInBearbeitungKanton() ||
-            this.authServiceRS.isOneOfRoles(TSRoleUtil.getMandantRoles()) && this.lATSAngabenGemeindeContainer.isAtLeastInBearbeitungKanton() && // eslint-disable-next-line max-len
-            this.lATSAngabenGemeindeContainer.angabenKorrektur.status === TSLastenausgleichTagesschuleAngabenGemeindeFormularStatus.ABGESCHLOSSEN;
+            this.isAbgeschlossen(this.lATSAngabenGemeindeContainer.angabenDeklaration.status)
+            || this.authServiceRS.isOneOfRoles(TSRoleUtil.getGemeindeOnlyRoles())
+            && this.lATSAngabenGemeindeContainer.isAtLeastInBearbeitungKanton()
+            || this.authServiceRS.isOneOfRoles(TSRoleUtil.getMandantRoles())
+            && this.lATSAngabenGemeindeContainer.isAtLeastInBearbeitungKanton()
+            && this.isAbgeschlossen(this.lATSAngabenGemeindeContainer.angabenKorrektur.status);
+    }
+
+    private isAbgeschlossen(status: TSLastenausgleichTagesschuleAngabenGemeindeFormularStatus): boolean {
+        return status === TSLastenausgleichTagesschuleAngabenGemeindeFormularStatus.ABGESCHLOSSEN;
     }
 
     public onFalscheAngaben(): void {
@@ -890,11 +901,11 @@ export class GemeindeAngabenComponent implements OnInit, OnDestroy {
                 this.falscheAngabenVisible.next(!container.angabenKorrektur.isInBearbeitung());
             }
         }
-        // eslint-disable-next-line
         if (principal.hasOneOfRoles(TSRoleUtil.getGemeindeOrBGOrTSRoles())) {
             if (container.isInBearbeitungGemeinde()) {
                 this.saveVisible.next(container.angabenDeklaration.isInBearbeitung());
-                this.abschliessenVisible.next(container.angabenDeklaration.isInBearbeitung() && container.allAngabenInstitutionContainersGeprueft());
+                this.abschliessenVisible.next
+                (container.angabenDeklaration.isInBearbeitung() && container.allAngabenInstitutionContainersGeprueft());
                 this.falscheAngabenVisible.next(!container.angabenDeklaration.isInBearbeitung());
             } else {
                 this.saveVisible.next(false);

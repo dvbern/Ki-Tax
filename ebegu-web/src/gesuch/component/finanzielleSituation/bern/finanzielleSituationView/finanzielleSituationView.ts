@@ -18,7 +18,6 @@
 import {IComponentOptions} from 'angular';
 import {EinstellungRS} from '../../../../../admin/service/einstellungRS.rest';
 import {DvDialog} from '../../../../../app/core/directive/dv-dialog/dv-dialog';
-import {TSDemoFeature} from '../../../../../app/core/directive/dv-hide-feature/TSDemoFeature';
 import {ErrorService} from '../../../../../app/core/errors/service/ErrorService';
 import {ApplicationPropertyRS} from '../../../../../app/core/rest-services/applicationPropertyRS.rest';
 import {DemoFeatureRS} from '../../../../../app/core/service/demoFeatureRS.rest';
@@ -183,12 +182,15 @@ export class FinanzielleSituationViewController extends AbstractFinSitBernView {
         }
 
         // bei einem Papiergesuch muss man es anzeigen, die Steuerdatenzugriff Frage ist nicht gestellt
-        if (!this.gesuchModelManager.getGesuch().isOnlineGesuch() || (!this.authServiceRS.isRole(TSRole.GESUCHSTELLER) && EbeguUtil.isNullOrUndefined(this.model.getFiSiConToWorkWith().finanzielleSituationGS))) {
+        if (!this.gesuchModelManager.getGesuch().isOnlineGesuch()
+            || (!this.authServiceRS.isRole(TSRole.GESUCHSTELLER)
+                && EbeguUtil.isNullOrUndefined(this.model.getFiSiConToWorkWith().finanzielleSituationGS))) {
             return true;
         }
         // falls steuerschnittstelle aktiv, aber zugriffserlaubnis noch nicht beantwortet, dann zeigen wir die Frage
         // nicht
-        if (this.steuerSchnittstelleAktivForPeriode && EbeguUtil.isNullOrUndefined(this.getModel().finanzielleSituationJA.steuerdatenZugriff)) {
+        if (this.steuerSchnittstelleAktivForPeriode &&
+            EbeguUtil.isNullOrUndefined(this.getModel().finanzielleSituationJA.steuerdatenZugriff)) {
             return false;
         }
         // falls Zugriffserlaubnis nicht gegeben, dann zeigen wir die Frage
@@ -287,7 +289,9 @@ export class FinanzielleSituationViewController extends AbstractFinSitBernView {
             return true;
         }
         // bei einem Papiergesuch ebenfalls
-        if (!this.gesuchModelManager.getGesuch().isOnlineGesuch() || (!this.authServiceRS.isRole(TSRole.GESUCHSTELLER) && EbeguUtil.isNullOrUndefined(this.model.getFiSiConToWorkWith().finanzielleSituationGS))) {
+        if (!this.gesuchModelManager.getGesuch().isOnlineGesuch()
+            || (!this.authServiceRS.isRole(TSRole.GESUCHSTELLER)
+                && EbeguUtil.isNullOrUndefined(this.model.getFiSiConToWorkWith().finanzielleSituationGS))) {
             return true;
         }
         // wenn es sich um ein sozialdienstfall handelt ebenfalls
@@ -295,7 +299,8 @@ export class FinanzielleSituationViewController extends AbstractFinSitBernView {
             return true;
         }
         // falls die Frage bei nicht gmeinsamer stek noch nicht beantwortet wurde, zeigen wir das Formular noch nicht
-        if (EbeguUtil.isNotNullAndFalse(this.model.familienSituation.gemeinsameSteuererklaerung) && EbeguUtil.isNullOrUndefined(this.getModel().finanzielleSituationJA.steuerdatenZugriff)) {
+        if (EbeguUtil.isNotNullAndFalse(this.model.familienSituation.gemeinsameSteuererklaerung)
+            && EbeguUtil.isNullOrUndefined(this.getModel().finanzielleSituationJA.steuerdatenZugriff)) {
             return false;
         }
         // falls die Frage mit ja beantwortet wurde, die Abfrage aber noch nicht gemacht wurde,

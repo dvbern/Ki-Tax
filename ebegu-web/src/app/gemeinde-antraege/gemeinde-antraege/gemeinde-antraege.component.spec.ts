@@ -55,13 +55,15 @@ const controlContainerSpy = jasmine.createSpyObj<ControlContainer>(ControlContai
 const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name,
     ['isOneOfRoles', 'principal$', 'isRole']);
 
-const gemeindeAntragServiceSpy = jasmine.createSpyObj<GemeindeAntragService>(GemeindeAntragService.name, ['getFilterableTypesForRole', 'getCreatableTypesForRole']);
+const gemeindeAntragServiceSpy = jasmine.createSpyObj<GemeindeAntragService>(GemeindeAntragService.name,
+        ['getFilterableTypesForRole', 'getCreatableTypesForRole']);
 
 const user = new TSBenutzer();
 user.currentBerechtigung = new TSBerechtigung();
 user.currentBerechtigung.role = TSRole.ADMIN_MANDANT;
 
-const gemeindeRSSpy = jasmine.createSpyObj<GemeindeRS>(GemeindeRS.name, ['getGemeindenForPrincipal$', 'getGemeindenWithPreExistingLATS']);
+const gemeindeRSSpy =
+    jasmine.createSpyObj<GemeindeRS>(GemeindeRS.name, ['getGemeindenForPrincipal$', 'getGemeindenWithPreExistingLATS']);
 
 const applicationPropertyRSSpy = jasmine.createSpyObj<ApplicationPropertyRS>(
     ApplicationPropertyRS.name,

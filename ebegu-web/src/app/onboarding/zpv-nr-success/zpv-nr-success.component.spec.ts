@@ -14,7 +14,8 @@ describe('ZpvNrSuccessComponent', () => {
     let fixture: ComponentFixture<ZpvNrSuccessComponent>;
 
     const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name, ['getPrincipal']);
-    const gesuchRSSpy = jasmine.createSpyObj<GesuchRS>(GesuchRS.name, ['findGesuchOfGesuchsteller', 'zpvNummerErfolgreichVerknuepft']);
+    const gesuchRSSpy = jasmine.createSpyObj<GesuchRS>(GesuchRS.name,
+        ['findGesuchOfGesuchsteller', 'zpvNummerErfolgreichVerknuepft']);
     const uiRouterGlobalsSpy = jasmine.createSpyObj<UIRouterGlobals>(UIRouterGlobals.name,
         ['params']);
 

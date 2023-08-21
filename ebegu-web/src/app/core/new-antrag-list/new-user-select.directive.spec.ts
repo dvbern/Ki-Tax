@@ -34,7 +34,8 @@ import {bootstrap, html} from './test_helpers';
 class TestComponent {
 }
 
-const benutzerRSSpy = jasmine.createSpyObj<BenutzerRSX>(BenutzerRSX.name, ['getBenutzerBgOrGemeindeForGemeinde', 'getAllBenutzerBgOrGemeinde']);
+const benutzerRSSpy =
+    jasmine.createSpyObj<BenutzerRSX>(BenutzerRSX.name, ['getBenutzerBgOrGemeindeForGemeinde', 'getAllBenutzerBgOrGemeinde']);
 const authRSSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name, ['loginRequest']);
 
 benutzerRSSpy.getAllBenutzerBgOrGemeinde.and.returnValue(Promise.resolve([]));

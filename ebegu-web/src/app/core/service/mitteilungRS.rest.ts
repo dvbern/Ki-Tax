@@ -57,27 +57,33 @@ export class MitteilungRS {
     public sendMitteilung(mitteilung: TSMitteilung): IPromise<TSMitteilung> {
         let restMitteilung = {};
         restMitteilung = this.ebeguRestUtil.mitteilungToRestObject(restMitteilung, mitteilung);
-        return this.$http.put(`${this.serviceURL}/send`, restMitteilung).then((response: any) => this.ebeguRestUtil.parseMitteilung(new TSMitteilung(), response.data));
+        return this.$http.put(`${this.serviceURL}/send`, restMitteilung)
+            .then((response: any) => this.ebeguRestUtil.parseMitteilung(new TSMitteilung(), response.data));
     }
 
     public setMitteilungGelesen(mitteilungId: string): IPromise<TSMitteilung> {
-        return this.$http.put(`${this.serviceURL}/setgelesen/${mitteilungId}`, null).then((response: any) => this.ebeguRestUtil.parseMitteilung(new TSMitteilung(), response.data));
+        return this.$http.put(`${this.serviceURL}/setgelesen/${mitteilungId}`, null)
+            .then((response: any) => this.ebeguRestUtil.parseMitteilung(new TSMitteilung(), response.data));
     }
 
     public setMitteilungErledigt(mitteilungId: string): IPromise<TSMitteilung> {
-        return this.$http.put(`${this.serviceURL}/seterledigt/${mitteilungId}`, null).then((response: any) => this.ebeguRestUtil.parseMitteilung(new TSMitteilung(), response.data));
+        return this.$http.put(`${this.serviceURL}/seterledigt/${mitteilungId}`, null)
+            .then((response: any) => this.ebeguRestUtil.parseMitteilung(new TSMitteilung(), response.data));
     }
 
     public setMitteilungUngelesen(mitteilungId: string): IPromise<TSMitteilung> {
-        return this.$http.put(`${this.serviceURL}/setneu/${mitteilungId}`, null).then((response: any) => this.ebeguRestUtil.parseMitteilung(new TSMitteilung(), response.data));
+        return this.$http.put(`${this.serviceURL}/setneu/${mitteilungId}`, null)
+            .then((response: any) => this.ebeguRestUtil.parseMitteilung(new TSMitteilung(), response.data));
     }
 
     public setMitteilungIgnoriert(mitteilungId: string): IPromise<TSMitteilung> {
-        return this.$http.put(`${this.serviceURL}/setignoriert/${mitteilungId}`, null).then((response: any) => this.ebeguRestUtil.parseMitteilung(new TSMitteilung(), response.data));
+        return this.$http.put(`${this.serviceURL}/setignoriert/${mitteilungId}`, null)
+            .then((response: any) => this.ebeguRestUtil.parseMitteilung(new TSMitteilung(), response.data));
     }
 
     public getEntwurfOfDossierForCurrentRolle(dossierId: string): IPromise<TSMitteilung> {
-        return this.$http.get(`${this.serviceURL}/entwurf/dossier/${dossierId}`).then((response: any) => this.ebeguRestUtil.parseMitteilung(new TSMitteilung(), response.data));
+        return this.$http.get(`${this.serviceURL}/entwurf/dossier/${dossierId}`)
+            .then((response: any) => this.ebeguRestUtil.parseMitteilung(new TSMitteilung(), response.data));
     }
 
     public getMitteilungenOfDossierForCurrentRolle(dossierId: string): IPromise<Array<TSMitteilung>> {
@@ -129,7 +135,8 @@ export class MitteilungRS {
     }
 
     public mitteilungWeiterleiten(mitteilungId: string, userName: string): IPromise<TSMitteilung> {
-        return this.$http.get(`${this.serviceURL}/weiterleiten/${mitteilungId}/${userName}`).then((response: any) => this.ebeguRestUtil.parseMitteilung(new TSMitteilung(), response.data));
+        return this.$http.get(`${this.serviceURL}/weiterleiten/${mitteilungId}/${userName}`)
+            .then((response: any) => this.ebeguRestUtil.parseMitteilung(new TSMitteilung(), response.data));
     }
 
     public searchMitteilungen(antragSearch: any, includeClosed: boolean): IPromise<TSMtteilungSearchresultDTO> {
@@ -196,9 +203,12 @@ export class MitteilungRS {
         mitteilung: TSBetreuungsmitteilung
     ): Observable<TSBetreuungsmitteilung>{
         return from(
-            this.$http.post<TSBetreuungsmitteilung>(`${this.serviceURL}/applybetreuungsmitteilungsilently`, this.ebeguRestUtil.betreuungsmitteilungToRestObject({}, mitteilung))
+            this.$http.post<TSBetreuungsmitteilung>(
+                `${this.serviceURL}/applybetreuungsmitteilungsilently`,
+                this.ebeguRestUtil.betreuungsmitteilungToRestObject({}, mitteilung))
                 .then(res => res.data)
-                .then(restMitteilung => this.ebeguRestUtil.parseBetreuungsmitteilung(new TSBetreuungsmitteilung(), restMitteilung)));
+                .then(restMitteilung =>
+                    this.ebeguRestUtil.parseBetreuungsmitteilung(new TSBetreuungsmitteilung(), restMitteilung)));
     }
 
     public neueVeranlagungsmitteilungBearbeiten(mitteilungId: string): IPromise<string> {

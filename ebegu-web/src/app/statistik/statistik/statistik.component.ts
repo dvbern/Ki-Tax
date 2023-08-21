@@ -478,7 +478,9 @@ export class StatistikComponent implements OnInit, OnDestroy {
     }
 
     public getGesuchsperiodenForTagesschule(stammdaten: TSInstitutionStammdaten): TSGesuchsperiode[] {
-        return stammdaten.institutionStammdatenTagesschule.einstellungenTagesschule.map(d => d.gesuchsperiode).sort((a, b) => b.gesuchsperiodeString.localeCompare(a.gesuchsperiodeString));
+        return stammdaten.institutionStammdatenTagesschule.einstellungenTagesschule
+            .map(d => d.gesuchsperiode)
+            .sort((a, b) => b.gesuchsperiodeString.localeCompare(a.gesuchsperiodeString));
     }
 
     public showMahlzeitenverguenstigungStatistik(): boolean {

@@ -15,6 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+/* eslint-disable max-len */
 export enum TSEinstellungKey {
     GEMEINDE_KONTINGENTIERUNG_ENABLED = 'GEMEINDE_KONTINGENTIERUNG_ENABLED' as any,
     GEMEINDE_BG_BIS_UND_MIT_SCHULSTUFE = 'GEMEINDE_BG_BIS_UND_MIT_SCHULSTUFE' as any,

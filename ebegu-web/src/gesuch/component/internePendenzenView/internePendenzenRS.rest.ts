@@ -58,7 +58,9 @@ export class InternePendenzenRS {
     public findInternePendenzenForGesuch(gesuch: TSGesuch): Observable<TSInternePendenz[]> {
         return this.$http.get<any[]>(
             `${this.serviceURL}/all/${gesuch.id}`
-        ).pipe(map(pendenzenFromServer => pendenzenFromServer.map(pendenzFromServer => this.ebeguRestUtil.parseInternePendenz(new TSInternePendenz(), pendenzFromServer))));
+        ).pipe(map(pendenzenFromServer =>
+            pendenzenFromServer.map(pendenzFromServer =>
+                this.ebeguRestUtil.parseInternePendenz(new TSInternePendenz(), pendenzFromServer))));
     }
 
     public countInternePendenzenForGesuch(gesuch: TSGesuch): Observable<number> {

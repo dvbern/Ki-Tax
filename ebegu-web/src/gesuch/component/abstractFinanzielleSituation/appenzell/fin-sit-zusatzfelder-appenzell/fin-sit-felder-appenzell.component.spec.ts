@@ -33,9 +33,12 @@ import {FinSitFelderAppenzellComponent} from './fin-sit-felder-appenzell.compone
 describe('FinanzielleVerhaeltnisseComponent', () => {
     let component: FinSitFelderAppenzellComponent;
     let fixture: ComponentFixture<FinSitFelderAppenzellComponent>;
-    const berechnungsManagerSpy = jasmine.createSpyObj<BerechnungsManager>(BerechnungsManager.name, ['calculateFinanzielleSituation', 'calculateFinanzielleSituationTemp']);
-    berechnungsManagerSpy.calculateFinanzielleSituationTemp.and.returnValue(Promise.resolve(new TSFinanzielleSituationResultateDTO()));
-    const gesuchModelManagerSpy = jasmine.createSpyObj<GesuchModelManager>(GesuchModelManager.name, ['getGesuch', 'getBasisjahr']);
+    const berechnungsManagerSpy = jasmine.createSpyObj<BerechnungsManager>(BerechnungsManager.name,
+        ['calculateFinanzielleSituation', 'calculateFinanzielleSituationTemp']);
+    berechnungsManagerSpy.calculateFinanzielleSituationTemp.and
+        .returnValue(Promise.resolve(new TSFinanzielleSituationResultateDTO()));
+    const gesuchModelManagerSpy = jasmine.createSpyObj<GesuchModelManager>(GesuchModelManager.name,
+        ['getGesuch', 'getBasisjahr']);
     gesuchModelManagerSpy.getGesuch.and.returnValue(createGesuch());
 
     beforeEach(async () => {

@@ -106,7 +106,8 @@ export class PendenzenListViewComponent implements OnInit, OnDestroy {
     private loadData(): void {
         // cancel previous subscription if not closed
         this.dataLoadingSubscription?.unsubscribe();
-        this.dataLoadingSubscription = this.searchRS.getPendenzenList({pagination: this.pagination, search: this.search, sort: this.sort})
+        this.dataLoadingSubscription = this.searchRS.getPendenzenList(
+            {pagination: this.pagination, search: this.search, sort: this.sort})
             .subscribe(response => {
                 // we lose the "this" if we don't map here
                 this.data$.next(response.antragDTOs.map(antragDto => ({

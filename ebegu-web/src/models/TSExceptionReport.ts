@@ -159,7 +159,13 @@ export class TSExceptionReport {
      * @param args anything
      * @param errorCallback a text and a Function that can be used in the error message to provide user interaction
      */
-    public constructor(type: TSErrorType, severity: TSErrorLevel, msgKey: string, args: any, errorCallback?: DVErrorMessageCallback) {
+    public constructor(
+        type: TSErrorType,
+        severity: TSErrorLevel,
+        msgKey: string,
+        args: any,
+        errorCallback?: DVErrorMessageCallback
+    ) {
         this._errorMessageCallback = errorCallback;
         this._type = type || null;
         this._severity = severity || null;

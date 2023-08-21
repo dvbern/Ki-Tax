@@ -202,9 +202,11 @@ export class TagesschulenAngabenComponent implements OnInit {
         ]).subscribe(([container, principal]) => {
             this.gemeindeAntragContainer = container;
             this.latsAngabenInstitutionContainer =
-                container.angabenInstitutionContainers?.find(institutionContainer => institutionContainer.id === this.institutionContainerId);
+                container.angabenInstitutionContainers?.find(institutionContainer =>
+                    institutionContainer.id === this.institutionContainerId);
             this.gesuchsPeriode = container.gesuchsperiode;
-            const angaben = this.latsAngabenInstitutionContainer?.status === TSLastenausgleichTagesschuleAngabenInstitutionStatus.OFFEN ?
+            const angaben =
+                this.latsAngabenInstitutionContainer?.status === TSLastenausgleichTagesschuleAngabenInstitutionStatus.OFFEN ?
                 this.latsAngabenInstitutionContainer?.angabenDeklaration :
                 this.latsAngabenInstitutionContainer?.angabenKorrektur;
             this.angabenAusKibon = container.alleAngabenInKibonErfasst;
@@ -225,13 +227,17 @@ export class TagesschulenAngabenComponent implements OnInit {
             this.angabenAusKibon = container.alleAngabenInKibonErfasst;
             this.unsavedChangesService.registerForm(this.form);
             this.fruehbetreuungOeffnungszeiten =
-                angaben.oeffnungszeiten.find(oeffnungszeit => oeffnungszeit.type === TSOeffnungszeitenTagesschuleTyp.FRUEHBETREUUNG);
+                angaben.oeffnungszeiten.find(oeffnungszeit =>
+                    oeffnungszeit.type === TSOeffnungszeitenTagesschuleTyp.FRUEHBETREUUNG);
             this.mittagsbetreuungOeffnungszeiten =
-                angaben.oeffnungszeiten.find(oeffnungszeit => oeffnungszeit.type === TSOeffnungszeitenTagesschuleTyp.MITTAGSBETREUUNG);
+                angaben.oeffnungszeiten.find(oeffnungszeit =>
+                    oeffnungszeit.type === TSOeffnungszeitenTagesschuleTyp.MITTAGSBETREUUNG);
             this.nachmittagsbetreuung1Oeffnungszeiten =
-                angaben.oeffnungszeiten.find(oeffnungszeit => oeffnungszeit.type === TSOeffnungszeitenTagesschuleTyp.NACHMITTAGSBETREUUNG_1);
+                angaben.oeffnungszeiten.find(oeffnungszeit =>
+                    oeffnungszeit.type === TSOeffnungszeitenTagesschuleTyp.NACHMITTAGSBETREUUNG_1);
             this.nachmittagsbetreuung2Oeffnungszeiten =
-                angaben.oeffnungszeiten.find(oeffnungszeit => oeffnungszeit.type === TSOeffnungszeitenTagesschuleTyp.NACHMITTAGSBETREUUNG_2);
+                angaben.oeffnungszeiten.find(oeffnungszeit =>
+                    oeffnungszeit.type === TSOeffnungszeitenTagesschuleTyp.NACHMITTAGSBETREUUNG_2);
             this.initOeffnungszeiten();
             this.cd.markForCheck();
         }, () => {
