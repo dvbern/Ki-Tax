@@ -18,46 +18,39 @@
 
 package ch.dvbern.ebegu.outbox.anmeldung;
 
-import java.util.ArrayList;
-import java.util.List;
+import ch.dvbern.ebegu.config.EbeguConfiguration;
+import ch.dvbern.ebegu.entities.AbstractEntity_;
+import ch.dvbern.ebegu.entities.AbstractPlatz_;
+import ch.dvbern.ebegu.entities.AnmeldungTagesschule;
+import ch.dvbern.ebegu.entities.AnmeldungTagesschule_;
+import ch.dvbern.ebegu.enums.Betreuungsstatus;
+import ch.dvbern.ebegu.enums.UserRoleName;
+import ch.dvbern.lib.cdipersistence.Persistence;
+import org.jboss.ejb3.annotation.TransactionTimeout;
 
+import javax.annotation.security.RunAs;
 import javax.ejb.Schedule;
-import javax.enterprise.event.Event;
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Join;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
 
-import ch.dvbern.ebegu.config.EbeguConfiguration;
-import ch.dvbern.ebegu.entities.AnmeldungTagesschule;
-import ch.dvbern.ebegu.entities.AnmeldungTagesschule_;
-import ch.dvbern.ebegu.entities.InstitutionStammdaten;
-import ch.dvbern.ebegu.entities.InstitutionStammdaten_;
-import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
-import ch.dvbern.ebegu.outbox.ExportedEvent;
-import ch.dvbern.ebegu.services.ApplicationPropertyService;
-import ch.dvbern.lib.cdipersistence.Persistence;
-
-import static ch.dvbern.ebegu.services.util.PredicateHelper.NEW;
-
+@Stateless
+@RunAs(UserRoleName.SUPER_ADMIN)
 public class AnmeldungTagesschuleEventGenerator {
 
 	@Inject
 	private Persistence persistence;
 
 	@Inject
-	private Event<ExportedEvent> event;
-
-	@Inject
-	private AnmeldungTagesschuleEventConverter anmeldungTagesschuleEventConverter;
-
-	@Inject
 	private EbeguConfiguration ebeguConfiguration;
 
 	@Inject
-	private ApplicationPropertyService applicationPropertyService;
+	private AnmeldungTagesschuleEventAsyncHelper asyncHelper;
 
 	/**
 	 * This is a job starting every night and exports all anmeldungen for which event_published
@@ -65,40 +58,27 @@ public class AnmeldungTagesschuleEventGenerator {
 	 */
 	@Schedule(info = "Migration-aid, pushes Anmeldungen waiting for confirmation and not yet published",
 		hour = "5")
+	@TransactionTimeout(value = 3, unit = TimeUnit.HOURS)
 	public void publishWartendeAnmeldungen() {
 		if (!ebeguConfiguration.isAnmeldungTagesschuleApiEnabled()) {
 			return;
 		}
 
 		CriteriaBuilder cb = persistence.getCriteriaBuilder();
-		CriteriaQuery<AnmeldungTagesschule> query = cb.createQuery(AnmeldungTagesschule.class);
+		CriteriaQuery<String> query = cb.createQuery(String.class);
 		Root<AnmeldungTagesschule> root = query.from(AnmeldungTagesschule.class);
-		List<Predicate> predicates = new ArrayList<>();
-
-		//Institution Stammdaten Join and check angebot Typ, muss Kita oder TFO sein
-		Join<AnmeldungTagesschule, InstitutionStammdaten> institutionStammdatenJoin =
-			root.join(AnmeldungTagesschule_.institutionStammdaten);
-		Predicate isKitaOderTFO =
-			institutionStammdatenJoin.get(InstitutionStammdaten_.betreuungsangebotTyp)
-				.in(BetreuungsangebotTyp.getBetreuungsgutscheinTypes());
-		predicates.add(isKitaOderTFO);
 
 		//Event muss noch nicht plubliziert sein
 		Predicate isNotPublished = cb.isFalse(root.get(AnmeldungTagesschule_.eventPublished));
-		predicates.add(isNotPublished);
+		Predicate isInStatusToFireEvent = root.get(AbstractPlatz_.betreuungsstatus)
+			.in(Betreuungsstatus.getBetreuungsstatusForFireAnmeldungTagesschuleEvent());
 
-		query.where(predicates.toArray(NEW));
+		query.where(isNotPublished, isInStatusToFireEvent);
+		query.select(root.get(AbstractEntity_.ID));
 
-		List<AnmeldungTagesschule> anmeldungTagesschuleList = persistence.getEntityManager().createQuery(query)
+		List<String> anmeldungTagesschuleList = persistence.getEntityManager().createQuery(query)
 			.getResultList();
 
-		anmeldungTagesschuleList.stream()
-			.filter(anmeldungTagesschule -> applicationPropertyService.isPublishSchnittstelleEventsAktiviert(
-				anmeldungTagesschule.extractGesuch().extractMandant()))
-			.forEach(anmeldungTagesschule -> {
-				event.fire(anmeldungTagesschuleEventConverter.of(anmeldungTagesschule));
-				anmeldungTagesschule.setEventPublished(true);
-				persistence.merge(anmeldungTagesschule);
-			});
+		anmeldungTagesschuleList.forEach(anmeldung -> asyncHelper.convert(anmeldung));
 	}
 }

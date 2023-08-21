@@ -56,10 +56,9 @@ describe('NewUserSelectDirective', () => {
                 .directive('ng2', downgradeComponent({component: TestComponent}));
 
             @NgModule({
-                declarations: [NewUserSelectDirective, TestComponent],
-                entryComponents: [TestComponent],
-                imports: [BrowserModule, UpgradeModule, TranslateModule.forRoot()]
-            })
+    declarations: [NewUserSelectDirective, TestComponent],
+    imports: [BrowserModule, UpgradeModule, TranslateModule.forRoot()]
+})
             class Ng2Module implements DoBootstrap {
                 public ngDoBootstrap(): void {
                 }

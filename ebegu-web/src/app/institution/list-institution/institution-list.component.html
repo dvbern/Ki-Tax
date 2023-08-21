@@ -41,7 +41,7 @@
                 <span translate>TAGESSCHULE_HINZUFUEGEN</span>
             </button>
 
-            <button *ngIf="isCreateLATSTSAllowed()" (click)="createLATSInstitutionTS();" class="dv-btn next-button">
+            <button *ngIf="isCreateLATSTSAllowed() && !isBGRole()" (click)="createLATSInstitutionTS();" class="dv-btn next-button">
                 <span translate>LATS_TAGESSCHULE_HINZUFUEGEN</span>
             </button>
 

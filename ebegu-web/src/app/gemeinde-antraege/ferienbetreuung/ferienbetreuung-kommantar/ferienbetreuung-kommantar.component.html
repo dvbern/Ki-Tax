@@ -33,7 +33,7 @@
   -->
 
 <div class="kommentar-view">
-    <form *ngIf="form" role="form" [formGroup]="form" class="" layout="column">
+    <form *ngIf="ferienbetreuungContainer" role="form" [formGroup]="form" class="" layout="column">
         <div class="kommentar-padding">
             <div class="kommentarTop">
                 <div class="form-group kommentar-feld">
@@ -43,7 +43,7 @@
                         rows="10"
                         id="kommmentar"
                         maxlength="4000"
-                        formControlName="kommentar"
+                        [formControl]="form.controls.kommentar"
                         (blur)="saveKommentar()"
                     ></textarea>
                     <dv-saving-info [saving$]="saving$"></dv-saving-info>

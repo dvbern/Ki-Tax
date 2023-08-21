@@ -32,7 +32,7 @@
         </button>
     </div>
 
-    <form *ngIf="form" [formGroup]="form" class="tagesschule-angaben-wrapper" (ngSubmit)="onFormSubmit()">
+    <form *ngIf="latsAngabenInstitutionContainer" [formGroup]="form" class="tagesschule-angaben-wrapper" (ngSubmit)="onFormSubmit()">
 
         <div class="max-width-container-750">
 
@@ -40,7 +40,7 @@
 
             <dv-input-container-x>
                 <label required
-                       [ngClass]="{'label-required-error': formFreigebenTriggered && form.get('isLehrbetrieb').errors}"
+                       [ngClass]="{'label-required-error': formFreigebenTriggered && form.controls.isLehrbetrieb.errors}"
                        id="isLehrbetrieb-radio-group">
                     {{'LATS_IST_LEHRBETRIEB' | translate:{periode: gesuchsPeriode | nextPeriodeStr} }}
                 </label>
@@ -51,14 +51,14 @@
                         class=""
                         name="isLehrbetrieb"
                         horizontal
-                        [disabled]="form.get('isLehrbetrieb').disabled"
+                        [disabled]="form.controls.isLehrbetrieb.disabled"
                         formControlName="isLehrbetrieb">
                         <mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
                         <mat-radio-button [value]="false">{{'LABEL_NEIN' | translate }}</mat-radio-button>
                     </mat-radio-group>
                     <dv-bisher-x
                         [deklaration]="latsAngabenInstitutionContainer?.angabenDeklaration?.isLehrbetrieb"
-                        [korrektur]="form.get('isLehrbetrieb').value"
+                        [korrektur]="form.value.isLehrbetrieb"
                         [showBisher]="latsAngabenInstitutionContainer?.isAtLeastInBearbeitungGemeinde()"
                         [specificBisherLabel]="'LATS_BISHER_LABEL_INSTITUTION' | translate">
                     </dv-bisher-x>
@@ -74,7 +74,7 @@
             <h3 class="uppercase">{{'LATS_QUANTITATIVE_ANGABEN' | translate}}</h3>
 
             <dv-input-container-x>
-                <label required [ngClass]="{'label-required-error': formFreigebenTriggered && form.get('anzahlEingeschriebeneKinder').errors}">
+                <label required [ngClass]="{'label-required-error': formFreigebenTriggered && form.controls.anzahlEingeschriebeneKinder.errors}">
                     {{'LATS_ANZAHL_EINGESCHRIEBENE_KINDER' | translate: {datum: (stichtag | async)} }}
                     <dv-tooltip [text]="'LATS_ANZAHL_EINGESCHRIEBENE_KINDER_INFO' | translate"></dv-tooltip>
                 </label>
@@ -83,15 +83,15 @@
                     <input matInput
                            formControlName="anzahlEingeschriebeneKinder"
                            class="form-control dv-input"/>
-                    <mat-error *ngIf="formFreigebenTriggered && form.get('anzahlEingeschriebeneKinder').errors?.required"
+                    <mat-error *ngIf="formFreigebenTriggered && form.controls.anzahlEingeschriebeneKinder.errors?.required"
                                translate>ERROR_REQUIRED
                     </mat-error>
-                    <mat-error *ngIf="form.get('anzahlEingeschriebeneKinder').errors?.isNotPositiveInteger"
+                    <mat-error *ngIf="form.controls.anzahlEingeschriebeneKinder.errors?.isNotPositiveInteger"
                                translate>ERROR_POSITIVE_NUMBER
                     </mat-error>
                     <dv-bisher-x
                         [deklaration]="latsAngabenInstitutionContainer?.angabenDeklaration?.anzahlEingeschriebeneKinder"
-                        [korrektur]="form.get('anzahlEingeschriebeneKinder').value"
+                        [korrektur]="form.value.anzahlEingeschriebeneKinder"
                         [showBisher]="latsAngabenInstitutionContainer?.isAtLeastInBearbeitungGemeinde()"
                         [specificBisherLabel]="'LATS_BISHER_LABEL_INSTITUTION' | translate">
                     </dv-bisher-x>
@@ -100,7 +100,7 @@
 
             <dv-input-container-x>
                 <label required
-                       [ngClass]="{'label-required-error': formFreigebenTriggered && form.get('anzahlEingeschriebeneKinderBasisstufe').errors}">
+                       [ngClass]="{'label-required-error': formFreigebenTriggered && form.controls.anzahlEingeschriebeneKinderBasisstufe.errors}">
                     {{'LATS_DAVON_BASISSTUFE' | translate}}
                 </label>
                 <mat-form-field floatLabel="always">
@@ -108,16 +108,16 @@
                            formControlName="anzahlEingeschriebeneKinderBasisstufe"
                            class="form-control dv-input"/>
                     <mat-error
-                        *ngIf="formFreigebenTriggered && form.get('anzahlEingeschriebeneKinderBasisstufe').errors?.required"
+                        *ngIf="formFreigebenTriggered && form.controls.anzahlEingeschriebeneKinderBasisstufe.errors?.required"
                         translate>ERROR_REQUIRED
                     </mat-error>
                     <mat-error
-                        *ngIf="form.get('anzahlEingeschriebeneKinderBasisstufe').errors?.isNotPositiveInteger"
+                        *ngIf="form.controls.anzahlEingeschriebeneKinderBasisstufe.errors?.isNotPositiveInteger"
                         translate>ERROR_POSITIVE_NUMBER
                     </mat-error>
                     <dv-bisher-x
                         [deklaration]="latsAngabenInstitutionContainer?.angabenDeklaration?.anzahlEingeschriebeneKinderBasisstufe"
-                        [korrektur]="form.get('anzahlEingeschriebeneKinderBasisstufe').value"
+                        [korrektur]="form.value.anzahlEingeschriebeneKinderBasisstufe"
                         [showBisher]="latsAngabenInstitutionContainer?.isAtLeastInBearbeitungGemeinde()"
                         [specificBisherLabel]="'LATS_BISHER_LABEL_INSTITUTION' | translate">
                     </dv-bisher-x>
@@ -126,7 +126,7 @@
 
             <dv-input-container-x>
                 <label required
-                    [ngClass]="{'label-required-error': formFreigebenTriggered && form.get('anzahlEingeschriebeneKinderKindergarten').errors}">
+                    [ngClass]="{'label-required-error': formFreigebenTriggered && form.controls.anzahlEingeschriebeneKinderKindergarten.errors}">
                     {{'LATS_DAVON_KINDERGARTEN' | translate}}
                 </label>
                 <mat-form-field floatLabel="always">
@@ -134,16 +134,16 @@
                            formControlName="anzahlEingeschriebeneKinderKindergarten"
                            class="form-control dv-input"/>
                     <mat-error
-                        *ngIf="formFreigebenTriggered && form.get('anzahlEingeschriebeneKinderKindergarten').errors?.required"
+                        *ngIf="formFreigebenTriggered && form.controls.anzahlEingeschriebeneKinderKindergarten.errors?.required"
                         translate>ERROR_REQUIRED
                     </mat-error>
                     <mat-error
-                        *ngIf="form.get('anzahlEingeschriebeneKinderKindergarten').errors?.isNotPositiveInteger"
+                        *ngIf="form.controls.anzahlEingeschriebeneKinderKindergarten.errors?.isNotPositiveInteger"
                         translate>ERROR_POSITIVE_NUMBER
                     </mat-error>
                     <dv-bisher-x
                         [deklaration]="latsAngabenInstitutionContainer?.angabenDeklaration?.anzahlEingeschriebeneKinderKindergarten"
-                        [korrektur]="form.get('anzahlEingeschriebeneKinderKindergarten').value"
+                        [korrektur]="form.value.anzahlEingeschriebeneKinderKindergarten"
                         [showBisher]="latsAngabenInstitutionContainer?.isAtLeastInBearbeitungGemeinde()"
                         [specificBisherLabel]="'LATS_BISHER_LABEL_INSTITUTION' | translate">
                     </dv-bisher-x>
@@ -152,7 +152,7 @@
 
             <dv-input-container-x>
                 <label required
-                    [ngClass]="{'label-required-error': formFreigebenTriggered && form.get('anzahlEingeschriebeneKinderPrimarstufe').errors}">
+                    [ngClass]="{'label-required-error': formFreigebenTriggered && form.controls.anzahlEingeschriebeneKinderPrimarstufe.errors}">
                     {{'LATS_DAVON_PRIMARSTUFE' | translate}}
                 </label>
                 <mat-form-field floatLabel="always">
@@ -160,16 +160,16 @@
                            formControlName="anzahlEingeschriebeneKinderPrimarstufe"
                            class="form-control dv-input"/>
                     <mat-error
-                        *ngIf="formFreigebenTriggered && form.get('anzahlEingeschriebeneKinderPrimarstufe').errors?.required"
+                        *ngIf="formFreigebenTriggered && form.controls.anzahlEingeschriebeneKinderPrimarstufe.errors?.required"
                         translate>ERROR_REQUIRED
                     </mat-error>
                     <mat-error
-                        *ngIf="form.get('anzahlEingeschriebeneKinderPrimarstufe').errors?.isNotPositiveInteger"
+                        *ngIf="form.controls.anzahlEingeschriebeneKinderPrimarstufe.errors?.isNotPositiveInteger"
                         translate>ERROR_POSITIVE_NUMBER
                     </mat-error>
                     <dv-bisher-x
                         [deklaration]="latsAngabenInstitutionContainer?.angabenDeklaration?.anzahlEingeschriebeneKinderPrimarstufe"
-                        [korrektur]="form.get('anzahlEingeschriebeneKinderPrimarstufe').value"
+                        [korrektur]="form.value.anzahlEingeschriebeneKinderPrimarstufe"
                         [showBisher]="latsAngabenInstitutionContainer?.isAtLeastInBearbeitungGemeinde()"
                         [specificBisherLabel]="'LATS_BISHER_LABEL_INSTITUTION' | translate">
                     </dv-bisher-x>
@@ -177,22 +177,22 @@
             </dv-input-container-x>
 
             <dv-input-container-x>
-                <label required [ngClass]="{'label-required-error': formFreigebenTriggered && form.get('anzahlEingeschriebeneKinderSekundarstufe').errors}"
+                <label required [ngClass]="{'label-required-error': formFreigebenTriggered && form.controls.anzahlEingeschriebeneKinderSekundarstufe.errors}"
                 [innerHTML]="'LATS_DAVON_SEKUNDARSTUFE' | translate">
                 </label>
                 <mat-form-field floatLabel="always">
                     <input matInput
                            formControlName="anzahlEingeschriebeneKinderSekundarstufe"
                            class="form-control dv-input"/>
-                    <mat-error *ngIf="formFreigebenTriggered && form.get('anzahlEingeschriebeneKinderSekundarstufe').errors?.required"
+                    <mat-error *ngIf="formFreigebenTriggered && form.controls.anzahlEingeschriebeneKinderSekundarstufe.errors?.required"
                                translate>ERROR_REQUIRED
                     </mat-error>
-                    <mat-error *ngIf="form.get('anzahlEingeschriebeneKinderSekundarstufe').errors?.isNotPositiveInteger"
+                    <mat-error *ngIf="form.controls.anzahlEingeschriebeneKinderSekundarstufe.errors?.isNotPositiveInteger"
                                translate>ERROR_POSITIVE_NUMBER
                     </mat-error>
                     <dv-bisher-x
                         [deklaration]="latsAngabenInstitutionContainer?.angabenDeklaration?.anzahlEingeschriebeneKinderSekundarstufe"
-                        [korrektur]="form.get('anzahlEingeschriebeneKinderSekundarstufe').value"
+                        [korrektur]="form.value.anzahlEingeschriebeneKinderSekundarstufe"
                         [showBisher]="latsAngabenInstitutionContainer?.isAtLeastInBearbeitungGemeinde()"
                         [specificBisherLabel]="'LATS_BISHER_LABEL_INSTITUTION' | translate">
                     </dv-bisher-x>
@@ -215,7 +215,7 @@
             <dv-input-container-x>
                 <label
                     required
-                    [ngClass]="{'label-required-error': formFreigebenTriggered && form.get('anzahlEingeschriebeneKinderMitBesonderenBeduerfnissen').errors}">
+                    [ngClass]="{'label-required-error': formFreigebenTriggered && form.controls.anzahlEingeschriebeneKinderMitBesonderenBeduerfnissen.errors}">
                     {{'LATS_ANZAHL_KINDER_BESONDERE_ANFORDERUNGEN' | translate}}
                     <dv-tooltip [text]="'LATS_ANZAHL_KINDER_BESONDERE_ANFORDERUNGEN_INFO' | translate"></dv-tooltip>
                 </label>
@@ -224,16 +224,16 @@
                            formControlName="anzahlEingeschriebeneKinderMitBesonderenBeduerfnissen"
                            class="form-control dv-input"/>
                     <mat-error
-                        *ngIf="formFreigebenTriggered && form.get('anzahlEingeschriebeneKinderMitBesonderenBeduerfnissen').errors?.required"
+                        *ngIf="formFreigebenTriggered && form.controls.anzahlEingeschriebeneKinderMitBesonderenBeduerfnissen.errors?.required"
                         translate>ERROR_REQUIRED
                     </mat-error>
                     <mat-error
-                        *ngIf="form.get('anzahlEingeschriebeneKinderMitBesonderenBeduerfnissen').errors?.isNotPositiveInteger"
+                        *ngIf="form.controls.anzahlEingeschriebeneKinderMitBesonderenBeduerfnissen.errors?.isNotPositiveInteger"
                         translate>ERROR_POSITIVE_NUMBER
                     </mat-error>
                     <dv-bisher-x
                         [deklaration]="latsAngabenInstitutionContainer?.angabenDeklaration?.anzahlEingeschriebeneKinderMitBesonderenBeduerfnissen"
-                        [korrektur]="form.get('anzahlEingeschriebeneKinderMitBesonderenBeduerfnissen').value"
+                        [korrektur]="form.value.anzahlEingeschriebeneKinderMitBesonderenBeduerfnissen"
                         [showBisher]="latsAngabenInstitutionContainer?.isAtLeastInBearbeitungGemeinde()"
                         [specificBisherLabel]="'LATS_BISHER_LABEL_INSTITUTION' | translate">
                     </dv-bisher-x>
@@ -243,7 +243,7 @@
             <dv-input-container-x>
                 <label
                     required
-                    [ngClass]="{'label-required-error': formFreigebenTriggered && form.get('anzahlEingeschriebeneKinderVolksschulangebot').errors}">
+                    [ngClass]="{'label-required-error': formFreigebenTriggered && form.controls.anzahlEingeschriebeneKinderVolksschulangebot.errors}">
                     {{'LATS_ANZAHL_KINDER_BESONDERE_VOLKSSCHULANGEBOT' | translate}}
                     <dv-tooltip [text]="'LATS_ANZAHL_KINDER_BESONDERE_VOLKSSCHULANGEBOT_INFO' | translate"></dv-tooltip>
                 </label>
@@ -252,16 +252,16 @@
                            formControlName="anzahlEingeschriebeneKinderVolksschulangebot"
                            class="form-control dv-input"/>
                     <mat-error
-                        *ngIf="formFreigebenTriggered && form.get('anzahlEingeschriebeneKinderVolksschulangebot').errors?.required"
+                        *ngIf="formFreigebenTriggered && form.controls.anzahlEingeschriebeneKinderVolksschulangebot.errors?.required"
                         translate>ERROR_REQUIRED
                     </mat-error>
                     <mat-error
-                        *ngIf="form.get('anzahlEingeschriebeneKinderVolksschulangebot').errors?.isNotPositiveInteger"
+                        *ngIf="form.controls.anzahlEingeschriebeneKinderVolksschulangebot.errors?.isNotPositiveInteger"
                         translate>ERROR_POSITIVE_NUMBER
                     </mat-error>
                     <dv-bisher-x
                         [deklaration]="latsAngabenInstitutionContainer?.angabenDeklaration?.anzahlEingeschriebeneKinderVolksschulangebot"
-                        [korrektur]="form.get('anzahlEingeschriebeneKinderVolksschulangebot').value"
+                        [korrektur]="form.value.anzahlEingeschriebeneKinderVolksschulangebot"
                         [showBisher]="latsAngabenInstitutionContainer?.isAtLeastInBearbeitungGemeinde()"
                         [specificBisherLabel]="'LATS_BISHER_LABEL_INSTITUTION' | translate">
                     </dv-bisher-x>
@@ -278,26 +278,26 @@
             </dv-input-container-x>
 
             <dv-input-container-x>
-                <label required [ngClass]="{'label-required-error': formFreigebenTriggered && form.get('durchschnittKinderProTagFruehbetreuung').errors}">
+                <label required [ngClass]="{'label-required-error': formFreigebenTriggered && form.controls.durchschnittKinderProTagFruehbetreuung.errors}">
                     {{'LATS_IN_FRUEH_BETREUUNG' | translate}}
                 </label>
                 <mat-form-field floatLabel="always">
                     <input matInput
                            formControlName="durchschnittKinderProTagFruehbetreuung"
                            class="form-control dv-input"/>
-                    <mat-error *ngIf="formFreigebenTriggered && form.get('durchschnittKinderProTagFruehbetreuung').errors?.required"
+                    <mat-error *ngIf="formFreigebenTriggered && form.controls.durchschnittKinderProTagFruehbetreuung.errors?.required"
                                translate>ERROR_REQUIRED
                     </mat-error>
-                    <mat-error *ngIf="form.get('durchschnittKinderProTagFruehbetreuung').errors?.isNotFloat"
+                    <mat-error *ngIf="form.controls.durchschnittKinderProTagFruehbetreuung.errors?.isNotFloat"
                                translate>ERROR_NUMBER
                     </mat-error>
                     <mat-error
-                        *ngIf="form.get('durchschnittKinderProTagFruehbetreuung').errors?.pattern && !form.get('durchschnittKinderProTagFruehbetreuung').errors?.isNotFloat">
+                        *ngIf="form.controls.durchschnittKinderProTagFruehbetreuung.errors?.pattern && !form.controls.durchschnittKinderProTagFruehbetreuung.errors?.isNotFloat">
                         {{'ERROR_STEP' | translate:{value: 0.01} }}
                     </mat-error>
                     <dv-bisher-x
                         [deklaration]="latsAngabenInstitutionContainer?.angabenDeklaration?.durchschnittKinderProTagFruehbetreuung"
-                        [korrektur]="form.get('durchschnittKinderProTagFruehbetreuung').value"
+                        [korrektur]="form.value.durchschnittKinderProTagFruehbetreuung"
                         [showBisher]="latsAngabenInstitutionContainer?.isAtLeastInBearbeitungGemeinde()"
                         [specificBisherLabel]="'LATS_BISHER_LABEL_INSTITUTION' | translate">
                     </dv-bisher-x>
@@ -305,7 +305,7 @@
             </dv-input-container-x>
 
             <dv-input-container-x>
-                <label required [ngClass]="{'label-required-error': formFreigebenTriggered && form.get('durchschnittKinderProTagMittag').errors}">
+                <label required [ngClass]="{'label-required-error': formFreigebenTriggered && form.controls.durchschnittKinderProTagMittag.errors}">
                     {{'LATS_ANZAHL_IN_MITTAGSBETREUUNG' | translate}}
                 </label>
 
@@ -313,19 +313,19 @@
                     <input matInput
                            formControlName="durchschnittKinderProTagMittag"
                            class="form-control dv-input"/>
-                    <mat-error *ngIf="formFreigebenTriggered && form.get('durchschnittKinderProTagMittag').errors?.required"
+                    <mat-error *ngIf="formFreigebenTriggered && form.controls.durchschnittKinderProTagMittag.errors?.required"
                                translate>ERROR_REQUIRED
                     </mat-error>
-                    <mat-error *ngIf="form.get('durchschnittKinderProTagMittag').errors?.isNotFloat"
+                    <mat-error *ngIf="form.controls.durchschnittKinderProTagMittag.errors?.isNotFloat"
                                translate>ERROR_NUMBER
                     </mat-error>
                     <mat-error
-                        *ngIf="form.get('durchschnittKinderProTagMittag').errors?.pattern && !form.get('durchschnittKinderProTagMittag').errors?.isNotFloat">
+                        *ngIf="form.controls.durchschnittKinderProTagMittag.errors?.pattern && !form.controls.durchschnittKinderProTagMittag.errors?.isNotFloat">
                         {{'ERROR_STEP' | translate:{value: 0.01} }}
                     </mat-error>
                     <dv-bisher-x
                         [deklaration]="latsAngabenInstitutionContainer?.angabenDeklaration?.durchschnittKinderProTagMittag"
-                        [korrektur]="form.get('durchschnittKinderProTagMittag').value"
+                        [korrektur]="form.value.durchschnittKinderProTagMittag"
                         [showBisher]="latsAngabenInstitutionContainer?.isAtLeastInBearbeitungGemeinde()"
                         [specificBisherLabel]="'LATS_BISHER_LABEL_INSTITUTION' | translate">
                     </dv-bisher-x>
@@ -333,7 +333,7 @@
             </dv-input-container-x>
 
             <dv-input-container-x>
-                <label required [ngClass]="{'label-required-error': formFreigebenTriggered && form.get('durchschnittKinderProTagNachmittag1').errors}"
+                <label required [ngClass]="{'label-required-error': formFreigebenTriggered && form.controls.durchschnittKinderProTagNachmittag1.errors}"
                 [innerHTML]="'LATS_ANZAHL_NACHMITTAG_1' | translate">
                 </label>
 
@@ -341,19 +341,19 @@
                     <input matInput
                            formControlName="durchschnittKinderProTagNachmittag1"
                            class="form-control dv-input"/>
-                    <mat-error *ngIf="formFreigebenTriggered && form.get('durchschnittKinderProTagNachmittag1').errors?.required"
+                    <mat-error *ngIf="formFreigebenTriggered && form.controls.durchschnittKinderProTagNachmittag1.errors?.required"
                                translate>ERROR_REQUIRED
                     </mat-error>
-                    <mat-error *ngIf="form.get('durchschnittKinderProTagNachmittag1').errors?.isNotFloat"
+                    <mat-error *ngIf="form.controls.durchschnittKinderProTagNachmittag1.errors?.isNotFloat"
                                translate>ERROR_NUMBER
                     </mat-error>
                     <mat-error
-                        *ngIf="form.get('durchschnittKinderProTagNachmittag1').errors?.pattern && !form.get('durchschnittKinderProTagNachmittag1').errors?.isNotFloat">
+                        *ngIf="form.controls.durchschnittKinderProTagNachmittag1.errors?.pattern && !form.controls.durchschnittKinderProTagNachmittag1.errors?.isNotFloat">
                         {{'ERROR_STEP' | translate:{value: 0.01} }}
                     </mat-error>
                     <dv-bisher-x
                         [deklaration]="latsAngabenInstitutionContainer?.angabenDeklaration?.durchschnittKinderProTagNachmittag1"
-                        [korrektur]="form.get('durchschnittKinderProTagNachmittag1').value"
+                        [korrektur]="form.value.durchschnittKinderProTagNachmittag1"
                         [showBisher]="latsAngabenInstitutionContainer?.isAtLeastInBearbeitungGemeinde()"
                         [specificBisherLabel]="'LATS_BISHER_LABEL_INSTITUTION' | translate">
                     </dv-bisher-x>
@@ -361,7 +361,7 @@
             </dv-input-container-x>
 
             <dv-input-container-x>
-                <label required [ngClass]="{'label-required-error': formFreigebenTriggered && form.get('durchschnittKinderProTagNachmittag2').errors}"
+                <label required [ngClass]="{'label-required-error': formFreigebenTriggered && form.controls.durchschnittKinderProTagNachmittag2.errors}"
                     [innerHTML]="'LATS_ANZAHL_NACHMITTAG_2' | translate">
                 </label>
 
@@ -369,19 +369,19 @@
                     <input matInput
                            formControlName="durchschnittKinderProTagNachmittag2"
                            class="form-control dv-input"/>
-                    <mat-error *ngIf="formFreigebenTriggered && form.get('durchschnittKinderProTagNachmittag2').errors?.required"
+                    <mat-error *ngIf="formFreigebenTriggered && form.controls.durchschnittKinderProTagNachmittag2.errors?.required"
                                translate>ERROR_REQUIRED
                     </mat-error>
-                    <mat-error *ngIf="form.get('durchschnittKinderProTagNachmittag2').errors?.isNotFloat"
+                    <mat-error *ngIf="form.controls.durchschnittKinderProTagNachmittag2.errors?.isNotFloat"
                                translate>ERROR_NUMBER
                     </mat-error>
                     <mat-error
-                        *ngIf="form.get('durchschnittKinderProTagNachmittag2').errors?.pattern && !form.get('durchschnittKinderProTagNachmittag2').errors?.isNotFloat">
+                        *ngIf="form.controls.durchschnittKinderProTagNachmittag2.errors?.pattern && !form.controls.durchschnittKinderProTagNachmittag2.errors?.isNotFloat">
                         {{'ERROR_STEP' | translate:{value: 0.01} }}
                     </mat-error>
                     <dv-bisher-x
                         [deklaration]="latsAngabenInstitutionContainer?.angabenDeklaration?.durchschnittKinderProTagNachmittag2"
-                        [korrektur]="form.get('durchschnittKinderProTagNachmittag2').value"
+                        [korrektur]="form.value.durchschnittKinderProTagNachmittag2"
                         [showBisher]="latsAngabenInstitutionContainer?.isAtLeastInBearbeitungGemeinde()"
                         [specificBisherLabel]="'LATS_BISHER_LABEL_INSTITUTION' | translate">
                     </dv-bisher-x>
@@ -390,7 +390,7 @@
 
             <dv-input-container-x>
                 <label
-                    [ngClass]="{'label-required-error': formFreigebenTriggered && form.get('betreuungsstundenEinschliesslichBesondereBeduerfnisse').errors}"
+                    [ngClass]="{'label-required-error': formFreigebenTriggered && form.controls.betreuungsstundenEinschliesslichBesondereBeduerfnisse.errors}"
                 required>
                     {{'LATS_BETREUUNGSSTUNDEN_EINSCHLIESSLICH_BESONDERE_BEDUERFNISSE' | translate:{schuljahr: gesuchsPeriode?.gesuchsperiodeString} }}
                     <dv-tooltip
@@ -401,16 +401,16 @@
                            formControlName="betreuungsstundenEinschliesslichBesondereBeduerfnisse"
                            class="form-control dv-input"/>
                     <mat-error
-                        *ngIf="formFreigebenTriggered && form.get('betreuungsstundenEinschliesslichBesondereBeduerfnisse').errors?.required"
+                        *ngIf="formFreigebenTriggered && form.controls.betreuungsstundenEinschliesslichBesondereBeduerfnisse.errors?.required"
                         translate>ERROR_REQUIRED
                     </mat-error>
                     <mat-error
-                        *ngIf="form.get('betreuungsstundenEinschliesslichBesondereBeduerfnisse').errors?.isNotPositiveInteger"
+                        *ngIf="form.controls.betreuungsstundenEinschliesslichBesondereBeduerfnisse.errors?.isNotPositiveInteger"
                         translate>ERROR_POSITIVE_NUMBER
                     </mat-error>
                     <dv-bisher-x
                         [deklaration]="latsAngabenInstitutionContainer?.angabenDeklaration?.betreuungsstundenEinschliesslichBesondereBeduerfnisse"
-                        [korrektur]="form.get('betreuungsstundenEinschliesslichBesondereBeduerfnisse').value"
+                        [korrektur]="form.value.betreuungsstundenEinschliesslichBesondereBeduerfnisse"
                         [showBisher]="latsAngabenInstitutionContainer?.isAtLeastInBearbeitungGemeinde()"
                         [specificBisherLabel]="'LATS_BISHER_LABEL_INSTITUTION' | translate">
                     </dv-bisher-x>
@@ -427,7 +427,7 @@
 
             <dv-input-container-x>
                 <label required
-                       [ngClass]="{'label-required-error': formFreigebenTriggered && form.get('schuleAufBasisOrganisatorischesKonzept').errors}"
+                       [ngClass]="{'label-required-error': formFreigebenTriggered && form.controls.schuleAufBasisOrganisatorischesKonzept.errors}"
                        id="schuleAufBasisOrganisatorischesKonzept-radio-group">
                     {{'LATS_AUF_BASIS_ORG_KONZEPT' | translate}}
                 </label>
@@ -438,14 +438,14 @@
                         class=""
                         name="schuleAufBasisOrganisatorischesKonzept"
                         horizontal
-                        [disabled]="form.get('schuleAufBasisOrganisatorischesKonzept').disabled"
+                        [disabled]="form.controls.schuleAufBasisOrganisatorischesKonzept.disabled"
                         formControlName="schuleAufBasisOrganisatorischesKonzept">
                         <mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
                         <mat-radio-button [value]="false">{{'LABEL_NEIN' | translate }}</mat-radio-button>
                     </mat-radio-group>
                     <dv-bisher-x
                         [deklaration]="latsAngabenInstitutionContainer?.angabenDeklaration?.schuleAufBasisOrganisatorischesKonzept"
-                        [korrektur]="form.get('schuleAufBasisOrganisatorischesKonzept').value"
+                        [korrektur]="form.value.schuleAufBasisOrganisatorischesKonzept"
                         [showBisher]="latsAngabenInstitutionContainer?.isAtLeastInBearbeitungGemeinde()"
                         [specificBisherLabel]="'LATS_BISHER_LABEL_INSTITUTION' | translate">
                     </dv-bisher-x>
@@ -454,7 +454,7 @@
 
             <dv-input-container-x>
                 <label required
-                       [ngClass]="{'label-required-error': formFreigebenTriggered && form.get('schuleAufBasisPaedagogischesKonzept').errors}"
+                       [ngClass]="{'label-required-error': formFreigebenTriggered && form.controls.schuleAufBasisPaedagogischesKonzept.errors}"
                        id="schuleAufBasisPaedagogischesKonzept-radio-group">
                     {{'LATS_AUF_BASIS_PAEDAGOGISCH_KONZEPT' | translate}}
                 </label>
@@ -465,14 +465,14 @@
                         class=""
                         name="schuleAufBasisPaedagogischesKonzept"
                         horizontal
-                        [disabled]="form.get('schuleAufBasisPaedagogischesKonzept').disabled"
+                        [disabled]="form.controls.schuleAufBasisPaedagogischesKonzept.disabled"
                         formControlName="schuleAufBasisPaedagogischesKonzept">
                         <mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
                         <mat-radio-button [value]="false">{{'LABEL_NEIN' | translate }}</mat-radio-button>
                     </mat-radio-group>
                     <dv-bisher-x
                         [deklaration]="latsAngabenInstitutionContainer?.angabenDeklaration?.schuleAufBasisPaedagogischesKonzept"
-                        [korrektur]="form.get('schuleAufBasisPaedagogischesKonzept').value"
+                        [korrektur]="form.value.schuleAufBasisPaedagogischesKonzept"
                         [showBisher]="latsAngabenInstitutionContainer?.isAtLeastInBearbeitungGemeinde()"
                         [specificBisherLabel]="'LATS_BISHER_LABEL_INSTITUTION' | translate">
                     </dv-bisher-x>
@@ -481,7 +481,7 @@
 
             <dv-input-container-x>
                 <label required
-                       [ngClass]="{'label-required-error': formFreigebenTriggered && form.get('raeumlicheVoraussetzungenEingehalten').errors}"
+                       [ngClass]="{'label-required-error': formFreigebenTriggered && form.controls.raeumlicheVoraussetzungenEingehalten.errors}"
                        id="raeumlicheVoraussetzungenEingehalten-radio-group">
                     {{'LATS_RAEULICHE_VORAUSSETZUNGEN_EINGEHALTEN' | translate}}
                 </label>
@@ -492,14 +492,14 @@
                         class=""
                         name="raeumlicheVoraussetzungenEingehalten"
                         horizontal
-                        [disabled]="form.get('raeumlicheVoraussetzungenEingehalten').disabled"
+                        [disabled]="form.controls.raeumlicheVoraussetzungenEingehalten.disabled"
                         formControlName="raeumlicheVoraussetzungenEingehalten">
                         <mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
                         <mat-radio-button [value]="false">{{'LABEL_NEIN' | translate }}</mat-radio-button>
                     </mat-radio-group>
                     <dv-bisher-x
                         [deklaration]="latsAngabenInstitutionContainer?.angabenDeklaration?.raeumlicheVoraussetzungenEingehalten"
-                        [korrektur]="form.get('raeumlicheVoraussetzungenEingehalten').value"
+                        [korrektur]="form.value.raeumlicheVoraussetzungenEingehalten"
                         [showBisher]="latsAngabenInstitutionContainer?.isAtLeastInBearbeitungGemeinde()"
                         [specificBisherLabel]="'LATS_BISHER_LABEL_INSTITUTION' | translate">
                     </dv-bisher-x>
@@ -508,7 +508,7 @@
 
             <dv-input-container-x>
                 <label required
-                       [ngClass]="{'label-required-error': formFreigebenTriggered && form.get('betreuungsverhaeltnisEingehalten').errors}"
+                       [ngClass]="{'label-required-error': formFreigebenTriggered && form.controls.betreuungsverhaeltnisEingehalten.errors}"
                        id="betreuungsverhaeltnisEingehalten-radio-group">
                     {{'LATS_BETREUUNGSVERHAELTNIS_EINGEHALTEN' | translate}}
                 </label>
@@ -519,14 +519,14 @@
                         class=""
                         name="betreuungsverhaeltnisEingehalten"
                         horizontal
-                        [disabled]="form.get('betreuungsverhaeltnisEingehalten').disabled"
+                        [disabled]="form.controls.betreuungsverhaeltnisEingehalten.disabled"
                         formControlName="betreuungsverhaeltnisEingehalten">
                         <mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
                         <mat-radio-button [value]="false">{{'LABEL_NEIN' | translate }}</mat-radio-button>
                     </mat-radio-group>
                     <dv-bisher-x
                         [deklaration]="latsAngabenInstitutionContainer?.angabenDeklaration?.betreuungsverhaeltnisEingehalten"
-                        [korrektur]="form.get('betreuungsverhaeltnisEingehalten').value"
+                        [korrektur]="form.value.betreuungsverhaeltnisEingehalten"
                         [showBisher]="latsAngabenInstitutionContainer?.isAtLeastInBearbeitungGemeinde()"
                         [specificBisherLabel]="'LATS_BISHER_LABEL_INSTITUTION' | translate">
                     </dv-bisher-x>
@@ -535,7 +535,7 @@
 
             <dv-input-container-x>
                 <label required
-                       [ngClass]="{'label-required-error': formFreigebenTriggered && form.get('ernaehrungsGrundsaetzeEingehalten').errors}"
+                       [ngClass]="{'label-required-error': formFreigebenTriggered && form.controls.ernaehrungsGrundsaetzeEingehalten.errors}"
                        id="ernaehrungsGrundsaetzeEingehalten-radio-group">
                     {{'LATS_ERNAEHRUNGS_GRUNDSAETZE_EINGEHALTEN' | translate}}
                 </label>
@@ -546,14 +546,14 @@
                         class=""
                         name="ernaehrungsGrundsaetzeEingehalten"
                         horizontal
-                        [disabled]="form.get('ernaehrungsGrundsaetzeEingehalten').disabled"
+                        [disabled]="form.controls.ernaehrungsGrundsaetzeEingehalten.disabled"
                         formControlName="ernaehrungsGrundsaetzeEingehalten">
                         <mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
                         <mat-radio-button [value]="false">{{'LABEL_NEIN' | translate }}</mat-radio-button>
                     </mat-radio-group>
                     <dv-bisher-x
                         [deklaration]="latsAngabenInstitutionContainer?.angabenDeklaration?.ernaehrungsGrundsaetzeEingehalten"
-                        [korrektur]="form.get('ernaehrungsGrundsaetzeEingehalten').value"
+                        [korrektur]="form.value.ernaehrungsGrundsaetzeEingehalten"
                         [showBisher]="latsAngabenInstitutionContainer?.isAtLeastInBearbeitungGemeinde()"
                         [specificBisherLabel]="'LATS_BISHER_LABEL_INSTITUTION' | translate">
                     </dv-bisher-x>
@@ -573,7 +573,7 @@
                               class="form-control dv-input"></textarea>
                     <dv-bisher-x
                         [deklaration]="latsAngabenInstitutionContainer?.angabenDeklaration?.bemerkungen"
-                        [korrektur]="form.get('bemerkungen').value"
+                        [korrektur]="form.value.bemerkungen"
                         [showBisher]="latsAngabenInstitutionContainer?.isAtLeastInBearbeitungGemeinde()"
                         [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
                     </dv-bisher-x>

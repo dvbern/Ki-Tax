@@ -340,8 +340,8 @@ public enum AntragStatus {
 			PRUEFUNG_STV, IN_BEARBEITUNG_STV, GEPRUEFT_STV, KEIN_ANGEBOT);
 	}
 
-	public static Collection<AntragStatus> getVerfuegtIgnoriertAndSTVStates() {
-		return Arrays.asList(VERFUEGT, PRUEFUNG_STV, IN_BEARBEITUNG_STV, GEPRUEFT_STV, IGNORIERT);
+	public static Collection<AntragStatus> getVerfuegtAbgeschlossenIgnoriertAndSTVStates() {
+		return Arrays.asList(VERFUEGT, NUR_SCHULAMT, PRUEFUNG_STV, IN_BEARBEITUNG_STV, GEPRUEFT_STV, IGNORIERT);
 	}
 
 	public static Collection<AntragStatus> getInBearbeitungGSStates() {

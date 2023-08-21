@@ -46,5 +46,5 @@ public interface IEWKWebService {
 	 * Sucht alle Personen in einem Haushalt
 	 */
 	@Nonnull
-	EWKResultat suchePersonenInHaushalt(long wohnungsId, long gebaeudeId) throws PersonenSucheServiceException, PersonenSucheServiceBusinessException;
+	EWKResultat suchePersonenInHaushalt(Long wohnungsId, Long gebaeudeId) throws PersonenSucheServiceException, PersonenSucheServiceBusinessException;
 }

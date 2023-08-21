@@ -84,6 +84,14 @@ export class TSAdresse extends TSAbstractDateRangedEntity {
         this._plz = value;
     }
 
+    public get plzNumber(): number {
+        return +this._plz;
+    }
+
+    public set plzNumber(value: number) {
+        this._plz = value.toString();
+    }
+
     public get ort(): string {
         return this._ort;
     }

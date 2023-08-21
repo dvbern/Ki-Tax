@@ -38,7 +38,7 @@ export class DialogImportFromOtherInstitutionComponent implements OnInit {
     public constructor(
         private readonly dialogRef: MatDialogRef<DialogImportFromOtherInstitutionComponent>,
         private readonly institutionStammdatenRS: InstitutionStammdatenRS,
-        @Inject(MAT_DIALOG_DATA) data: any
+        @Inject(MAT_DIALOG_DATA) private readonly data: any
     ) {
         this.institutionStammdatenList = data.institutionList;
     }

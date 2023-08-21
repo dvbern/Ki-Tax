@@ -32,7 +32,7 @@ export class DvNgSelectTraegerschaftEmailDialogComponent {
     public constructor(
         private readonly dialogRef: MatDialogRef<DvNgSelectTraegerschaftEmailDialogComponent>,
         private readonly translate: TranslateService,
-        @Inject(MAT_DIALOG_DATA) data: any
+        @Inject(MAT_DIALOG_DATA) private readonly data: any
     ) {
         this.adminMails = data;
     }

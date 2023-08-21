@@ -17,6 +17,9 @@
 
 package ch.dvbern.ebegu.reporting.zahlungen;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -24,140 +27,55 @@ import java.time.LocalDateTime;
 /**
  * DTO für den Lastenausgleich von KiBon
  */
+@Getter
+@Setter
 public class ZahlungenDataRow {
-	private String zahlungslaufTitle;
-	private String gemeinde;
-	private String institution;
-	private LocalDateTime timestampZahlungslauf;
-	private String kindVorname;
-	private String kindNachname;
-	private String referenznummer;
-	private LocalDate zeitabschnittVon;
-	private LocalDate zeitabschnittBis;
-	private BigDecimal bgPensum;
-	private BigDecimal betrag;
-	private Boolean korrektur;
-	private Boolean ignorieren;
-	private String ibanEltern;
-	private String kontoEltern;
+    @Setter
+    private String zahlungslaufTitle;
+    @Getter
+    @Setter
+    private LocalDate zahlungsFaelligkeitsDatum;
+    @Getter
+    @Setter
+    private String gemeinde;
+    @Getter
+    @Setter
+    private String institution;
+    @Getter
+    @Setter
+    private LocalDateTime timestampZahlungslauf;
+    @Getter
+    @Setter
+    private String kindVorname;
+    @Getter
+    @Setter
+    private String kindNachname;
+    @Getter
+    @Setter
+    private String referenznummer;
+    @Getter
+    @Setter
+    private LocalDate zeitabschnittVon;
+    @Getter
+    @Setter
+    private LocalDate zeitabschnittBis;
+    @Getter
+    @Setter
+    private BigDecimal bgPensum;
+    @Getter
+    @Setter
+    private BigDecimal betrag;
+    @Getter
+    @Setter
+    private Boolean korrektur;
+    @Getter
+    @Setter
+    private Boolean ignorieren;
+    @Getter
+    @Setter
+    private String ibanEltern;
+    @Getter
+    @Setter
+    private String kontoEltern;
 
-	public String getZahlungslaufTitle() {
-		return zahlungslaufTitle;
-	}
-
-	public void setZahlungslaufTitle(String zahlungslaufTitle) {
-		this.zahlungslaufTitle = zahlungslaufTitle;
-	}
-
-	public String getGemeinde() {
-		return gemeinde;
-	}
-
-	public void setGemeinde(String gemeinde) {
-		this.gemeinde = gemeinde;
-	}
-
-	public String getInstitution() {
-		return institution;
-	}
-
-	public void setInstitution(String institution) {
-		this.institution = institution;
-	}
-
-	public LocalDateTime getTimestampZahlungslauf() {
-		return timestampZahlungslauf;
-	}
-
-	public void setTimestampZahlungslauf(LocalDateTime timestampZahlungslauf) {
-		this.timestampZahlungslauf = timestampZahlungslauf;
-	}
-
-	public String getKindVorname() {
-		return kindVorname;
-	}
-
-	public void setKindVorname(String kindVorname) {
-		this.kindVorname = kindVorname;
-	}
-
-	public String getKindNachname() {
-		return kindNachname;
-	}
-
-	public void setKindNachname(String kindNachname) {
-		this.kindNachname = kindNachname;
-	}
-
-	public String getReferenznummer() {
-		return referenznummer;
-	}
-
-	public void setReferenznummer(String referenznummer) {
-		this.referenznummer = referenznummer;
-	}
-
-	public LocalDate getZeitabschnittVon() {
-		return zeitabschnittVon;
-	}
-
-	public void setZeitabschnittVon(LocalDate zeitabschnittVon) {
-		this.zeitabschnittVon = zeitabschnittVon;
-	}
-
-	public LocalDate getZeitabschnittBis() {
-		return zeitabschnittBis;
-	}
-
-	public void setZeitabschnittBis(LocalDate zeitabschnittBis) {
-		this.zeitabschnittBis = zeitabschnittBis;
-	}
-
-	public BigDecimal getBgPensum() {
-		return bgPensum;
-	}
-
-	public void setBgPensum(BigDecimal bgPensum) {
-		this.bgPensum = bgPensum;
-	}
-
-	public BigDecimal getBetrag() {
-		return betrag;
-	}
-
-	public void setBetrag(BigDecimal betrag) {
-		this.betrag = betrag;
-	}
-
-	public Boolean getKorrektur() {
-		return korrektur;
-	}
-
-	public void setKorrektur(Boolean korrektur) {
-		this.korrektur = korrektur;
-	}
-
-	public Boolean getIgnorieren() {
-		return ignorieren;
-	}
-
-	public void setIgnorieren(Boolean ignorieren) {
-		this.ignorieren = ignorieren;
-	}
-
-	public String getIbanEltern() {
-		return ibanEltern;
-	}
-
-	public void setIbanEltern(String ibanEltern) {
-		this.ibanEltern = ibanEltern;
-	}
-
-	public String getKontoEltern() {
-		return kontoEltern;
-	}
-
-	public void setKontoEltern(String kontoEltern) {
-		this.kontoEltern = kontoEltern;
-	}
 }

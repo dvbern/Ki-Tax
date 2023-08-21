@@ -18,7 +18,6 @@
 import {ClipboardModule} from '@angular/cdk/clipboard';
 import {CUSTOM_ELEMENTS_SCHEMA, NgModule} from '@angular/core';
 import {NgxIbanModule} from 'ngx-iban';
-import {NgxMaterialTimepickerModule} from 'ngx-material-timepicker';
 import {MaterialModule} from '../shared/material.module';
 import {SharedModule} from '../shared/shared.module';
 import {AddInstitutionComponent} from './add-institution/add-institution.component';
@@ -39,7 +38,6 @@ import {InstitutionListComponent} from './list-institution/institution-list.comp
         InstitutionRoutingModule,
         MaterialModule,
         NgxIbanModule,
-        NgxMaterialTimepickerModule,
         ClipboardModule
     ],
     // adding custom elements schema disables Angular's element validation: you can now use transclusion for the

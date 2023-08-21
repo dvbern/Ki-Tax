@@ -15,42 +15,22 @@
 
 package ch.dvbern.ebegu.tests;
 
-import java.time.LocalDate;
-import java.time.Month;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Objects;
-import java.util.Set;
-import java.util.TreeSet;
-
-import ch.dvbern.ebegu.entities.Dossier;
-import ch.dvbern.ebegu.entities.Gesuch;
-import ch.dvbern.ebegu.entities.Gesuchsperiode;
-import ch.dvbern.ebegu.entities.GesuchstellerAdresseContainer;
-import ch.dvbern.ebegu.entities.InstitutionStammdaten;
-import ch.dvbern.ebegu.entities.Kind;
-import ch.dvbern.ebegu.entities.KindContainer;
-import ch.dvbern.ebegu.entities.PensumFachstelle;
-import ch.dvbern.ebegu.enums.AntragStatus;
-import ch.dvbern.ebegu.enums.AntragTyp;
-import ch.dvbern.ebegu.enums.Eingangsart;
-import ch.dvbern.ebegu.enums.EinschulungTyp;
-import ch.dvbern.ebegu.enums.EnumFamilienstatus;
+import ch.dvbern.ebegu.entities.*;
+import ch.dvbern.ebegu.enums.*;
+import ch.dvbern.ebegu.test.TestDataUtil;
 import ch.dvbern.ebegu.test.util.TestDataInstitutionStammdatenBuilder;
 import ch.dvbern.ebegu.testfaelle.Testfall01_WaeltiDagmar;
-import ch.dvbern.ebegu.test.TestDataUtil;
 import ch.dvbern.ebegu.util.MathUtil;
-import org.hamcrest.MatcherAssert;
-import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.hamcrest.MatcherAssert.*;
-import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import java.time.LocalDate;
+import java.time.Month;
+import java.util.*;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.*;
 
 /**
  * Test copy entities for Mutation, Erneuerung, neues Dossier
@@ -96,7 +76,7 @@ public class CopyTest {
 		erstgesuch.getGesuchsteller1().getAdressen().add(adresseZukuenftig);
 		// Fachstelle, welche während der Gesuchsperiode abläuft
 		Kind kind = erstgesuch.getKindContainers().iterator().next().getKindJA();
-		final PensumFachstelle defaultPensumFachstelle = TestDataUtil.createDefaultPensumFachstelle();
+		final PensumFachstelle defaultPensumFachstelle = TestDataUtil.createDefaultPensumFachstelle(kind);
 		defaultPensumFachstelle.getGueltigkeit().setGueltigBis(datumAblauf);
 		kind.setPensumFachstelle(Set.of(defaultPensumFachstelle));
 

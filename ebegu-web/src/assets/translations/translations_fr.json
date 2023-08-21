@@ -768,7 +768,7 @@
     "BETREUUNG_MUTATION_WARNUNG": "Attention: cette donnée change le taux de prise en charge ainsi que le bon de garde dans le passé et conduit éventuellement à des corrections de versements!\nSi vous ne désirez pas changer le taux de prise en charge dans le passé, mais plutôt effectuer un changement pour la garde à venir, veuillez entrer un nouveau taux de prise en charge.",
     "BETREUUNG_BESTAETIGT_TEXT": "Cette offre de prise en charge a été confirmée le {{date}}.",
     "BETREUUNG_STORNIERT_TEXT": "Cette offre de prise en charge a été annulée.",
-    "BETREUUNG_NICHT_EINGETRETEN_TEXT": "Le statut de cette offre de prise en charge a changé le {{date}} et est devenu \"sans objet\".",
+    "BETREUUNG_NICHT_EINGETRETEN_TEXT": "Cette prise en charge a été confirmée le {{date}} puis décidée comme \"non entrée en matière\".",
     "BETREUUNG_ABGEWIESEN_TEXT": "Cette offre de prise en charge a été rejetée le {{date}}.<p>Motif<p>",
     "GRUND_ABLEHNUNG": "Raison du rejet",
     "ANGESTELLT": "Employé-e",
@@ -3064,5 +3064,6 @@
     "PENSUM_FACHSTELLE_ERFASSEN": "Zusätzliches Fachstellenpensum erfassen",
     "PENSUM_FACHSTELLE_ENTFERNEN": "Fachstellenpensum {{fachstellennummer}} entfernen",
     "ZEITRAUM": "Période",
+    "ANSPRUCH_FACHSTELLE_WENN_PENSUM_UNTERSCHRITTEN": "",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

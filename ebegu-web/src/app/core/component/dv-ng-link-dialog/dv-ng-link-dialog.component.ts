@@ -30,7 +30,7 @@ export class DvNgLinkDialogComponent {
 
     public constructor(
         private readonly dialogRef: MatDialogRef<DvNgLinkDialogComponent>,
-        @Inject(MAT_DIALOG_DATA) data: any
+        @Inject(MAT_DIALOG_DATA) private readonly data: any
     ) {
 
         if (data) {

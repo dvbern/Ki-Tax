@@ -37,7 +37,7 @@ export class InfoSchnittstelleDialogComponent implements OnInit {
 
     public constructor(
         private readonly dialogRef: MatDialogRef<InfoSchnittstelleDialogComponent>,
-        @Inject(MAT_DIALOG_DATA) data: any,
+        @Inject(MAT_DIALOG_DATA) private readonly data: any,
         private readonly clipboard: Clipboard
     ) {
         this.modulTagesschuleGroup = data.modulTagesschuleGroup;
