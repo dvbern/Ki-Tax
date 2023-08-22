@@ -279,7 +279,7 @@ public class DossierResource {
 		return Response.ok().build();
 	}
 
-	@ApiOperation("Dossier finden mit dossierJAXPId")
+	@ApiOperation("Bemerkung auf dem Dossier Speichern")
 	@Nullable
 	@PUT
 	@Path("/bemerkungen/{dossierId}")
