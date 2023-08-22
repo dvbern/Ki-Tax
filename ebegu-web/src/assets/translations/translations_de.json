@@ -3164,5 +3164,6 @@
     "PENSUM_FACHSTELLE_ENTFERNEN": "Fachstellenpensum {{fachstellennummer}} entfernen",
     "ZEITRAUM": "Zeitraum",
     "ANSPRUCH_FACHSTELLE_WENN_PENSUM_UNTERSCHRITTEN": "Anspruch gewähren, auch wenn das Pensum für die gewählte Fachstelle zu tief ist",
+    "KITA_STUNDEN_PRO_TAG": "Kita Stunden pro Tag",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

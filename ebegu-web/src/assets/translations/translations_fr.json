@@ -3065,5 +3065,6 @@
     "PENSUM_FACHSTELLE_ENTFERNEN": "Fachstellenpensum {{fachstellennummer}} entfernen",
     "ZEITRAUM": "Période",
     "ANSPRUCH_FACHSTELLE_WENN_PENSUM_UNTERSCHRITTEN": "",
+    "KITA_STUNDEN_PRO_TAG": "Kita Stunden pro Tag",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }
