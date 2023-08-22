@@ -49,7 +49,7 @@ export class DvNgGemeindeDialogComponent {
     public constructor(
         private readonly authServiceRS: AuthServiceRS,
         private readonly dialogRef: MatDialogRef<DvNgGemeindeDialogComponent>,
-        @Inject(MAT_DIALOG_DATA) data: any
+        @Inject(MAT_DIALOG_DATA) private readonly data: any
     ) {
         this.isUserSozialdienst = authServiceRS.isOneOfRoles(TSRoleUtil.getSozialdienstRolle());
         this.allGemeinden = data.gemeindeList;

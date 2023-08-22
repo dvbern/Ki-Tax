@@ -802,4 +802,11 @@ export class TSRoleUtil {
             TSRole.SACHBEARBEITER_TS
         ];
     }
+
+    public static getBGOnly(): ReadonlyArray<TSRole> {
+        return [
+            TSRole.ADMIN_BG,
+            TSRole.SACHBEARBEITER_BG
+        ];
+    }
 }

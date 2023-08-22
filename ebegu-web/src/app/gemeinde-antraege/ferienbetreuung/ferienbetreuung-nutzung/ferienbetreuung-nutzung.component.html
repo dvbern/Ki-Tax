@@ -28,7 +28,7 @@
 		</div>
 	</div>
 
-	<form *ngIf="form" [formGroup]="form">
+	<form *ngIf="container" [formGroup]="form">
 
 
 		<h3 translate class="uppercase">FERIENBETREUUNG_BETREUUNGSTAGE</h3>
@@ -37,7 +37,7 @@
 			<dv-input-container-x class="max-width-container-750">
 				<label required
 					   for="anzahlBetreuungstageKinderBern_id"
-					   [ngClass]="{'label-error': form && form.get('anzahlBetreuungstageKinderBern').errors}">
+					   [ngClass]="{'label-error': form && this.form.controls.anzahlBetreuungstageKinderBern.errors}">
 					{{'FERIENBETREUUNG_ANZAHL_BETREUUNGTAGE_KINDER_BERN' | translate }}
 					<dv-tooltip inputId="anzahlBetreuungstageKinderBern_id"
 								[text]="'FERIENBETREUUNG_ANZAHL_BETREUUNGTAGE_KINDER_BERN_HINT' | translate">
@@ -48,15 +48,15 @@
 						   id="anzahlBetreuungstageKinderBern_id"
 						   formControlName="anzahlBetreuungstageKinderBern"
 						   class="form-control dv-input"/>
-					<mat-error *ngIf="form && form.get('anzahlBetreuungstageKinderBern').errors?.required"
+					<mat-error *ngIf="form && this.form.controls.anzahlBetreuungstageKinderBern.errors?.required"
 							   translate>ERROR_REQUIRED
 					</mat-error>
-					<mat-error *ngIf="form && form.get('anzahlBetreuungstageKinderBern').errors?.isNotHalf"
+					<mat-error *ngIf="form && this.form.controls.anzahlBetreuungstageKinderBern.errors?.isNotHalf"
 							   translate>ERROR_NOT_HALF
 					</mat-error>
 					<dv-bisher-x
 							[deklaration]="container?.angabenDeklaration?.nutzung?.anzahlBetreuungstageKinderBern"
-							[korrektur]="form.get('anzahlBetreuungstageKinderBern').value"
+							[korrektur]="this.form.value.anzahlBetreuungstageKinderBern"
 							[showBisher]="container.isAtLeastInPruefungKantonOrZurueckgegeben()"
 							[specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
 					</dv-bisher-x>
@@ -70,7 +70,7 @@
 		</div>
 
 		<div class="custom-errors">
-			<div *ngIf="form && form.get('anzahlBetreuungstageKinderBern').errors?.betreuungstageError">
+			<div *ngIf="form && this.form.controls.anzahlBetreuungstageKinderBern.errors?.betreuungstageError">
 				<i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
 				<span translate>ERROR_FB_BETREUUNGSTAGE</span>
 			</div>
@@ -81,7 +81,7 @@
 				<label for="betreuungstageKinderDieserGemeinde_id"
 					   class="padding-left-20"
 					   required
-					   [ngClass]="{'label-error': form && form.get('betreuungstageKinderDieserGemeinde').errors}"
+					   [ngClass]="{'label-error': form && this.form.controls.betreuungstageKinderDieserGemeinde.errors}"
 					   [innerHTML]="'FERIENBETREUUNG_BETREUUNGSTAGE_KINDER_DIESER_GEMEINDE' | translate">
 					<dv-tooltip inputId="betreuungstageKinderDieserGemeinde_id"
 								[text]="'FERIENBETREUUNG_BETREUUNGSTAGE_KINDER_DIESER_GEMEINDE_HINT' | translate">
@@ -92,15 +92,15 @@
 						   id="betreuungstageKinderDieserGemeinde_id"
 						   formControlName="betreuungstageKinderDieserGemeinde"
 						   class="form-control dv-input"/>
-					<mat-error *ngIf="form && form.get('betreuungstageKinderDieserGemeinde').errors?.required"
+					<mat-error *ngIf="form && this.form.controls.betreuungstageKinderDieserGemeinde.errors?.required"
 							   translate>ERROR_REQUIRED
 					</mat-error>
-					<mat-error *ngIf="form && form.get('betreuungstageKinderDieserGemeinde').errors?.isNotHalf"
+					<mat-error *ngIf="form && this.form.controls.betreuungstageKinderDieserGemeinde.errors?.isNotHalf"
 							   translate>ERROR_NOT_HALF
 					</mat-error>
 					<dv-bisher-x
 							[deklaration]="container?.angabenDeklaration?.nutzung?.betreuungstageKinderDieserGemeinde"
-							[korrektur]="form.get('betreuungstageKinderDieserGemeinde').value"
+							[korrektur]="this.form.value.betreuungstageKinderDieserGemeinde"
 							[showBisher]="container.isAtLeastInPruefungKantonOrZurueckgegeben()"
 							[specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
 					</dv-bisher-x>
@@ -117,7 +117,7 @@
 			<dv-input-container-x class="max-width-container-750">
 				<label for="betreuungstageKinderDieserGemeindeSonderschueler_id"
 					   class="padding-left-50"
-					   [ngClass]="{'label-error': form && form.get('betreuungstageKinderDieserGemeindeSonderschueler').errors}"
+					   [ngClass]="{'label-error': form && this.form.controls.betreuungstageKinderDieserGemeindeSonderschueler.errors}"
 					   [innerHTML]="'FERIENBETREUUNG_BETREUUNGSTAGE_SONDERSCHUELER' | translate">
 				</label>
 				<mat-form-field floatLabel="always">
@@ -126,12 +126,12 @@
 						   formControlName="betreuungstageKinderDieserGemeindeSonderschueler"
 						   class="form-control dv-input"/>
 					<mat-error
-							*ngIf="form && form.get('betreuungstageKinderDieserGemeindeSonderschueler').errors?.isNotHalf"
+							*ngIf="form && this.form.controls.betreuungstageKinderDieserGemeindeSonderschueler.errors?.isNotHalf"
 							translate>ERROR_NOT_HALF
 					</mat-error>
 					<dv-bisher-x
 							[deklaration]="container?.angabenDeklaration?.nutzung?.betreuungstageKinderDieserGemeindeSonderschueler"
-							[korrektur]="form.get('betreuungstageKinderDieserGemeindeSonderschueler').value"
+							[korrektur]="this.form.value.betreuungstageKinderDieserGemeindeSonderschueler"
 							[showBisher]="container.isAtLeastInPruefungKantonOrZurueckgegeben()"
 							[specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
 					</dv-bisher-x>
@@ -146,7 +146,7 @@
 
 		<div class="custom-errors">
 			<div
-					*ngIf="form && form.get('betreuungstageKinderDieserGemeindeSonderschueler').errors?.sonderschuelerError"
+					*ngIf="form && this.form.controls.betreuungstageKinderDieserGemeindeSonderschueler.errors?.sonderschuelerError"
 					translate>
 				<i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
 				<span translate>ERROR_FB_SONDERSCHUELER</span>
@@ -158,7 +158,7 @@
 				<label required
 					   class="padding-left-20"
 					   for="davonBetreuungstageKinderAndererGemeinden"
-					   [ngClass]="{'label-error': form && form.get('davonBetreuungstageKinderAndererGemeinden').errors}"
+					   [ngClass]="{'label-error': form && this.form.controls.davonBetreuungstageKinderAndererGemeinden.errors}"
 					   [innerHTML]="'FERIENBETREUUNG_DAVON_BETREUUNGSTAGE_KINDER_ANDERER_GEMEINDEN' | translate">
 				</label>
 				<mat-form-field floatLabel="always">
@@ -166,15 +166,15 @@
 						   id="davonBetreuungstageKinderAndererGemeinden"
 						   formControlName="davonBetreuungstageKinderAndererGemeinden"
 						   class="form-control dv-input"/>
-					<mat-error *ngIf="form && form.get('davonBetreuungstageKinderAndererGemeinden').errors?.required"
+					<mat-error *ngIf="form && this.form.controls.davonBetreuungstageKinderAndererGemeinden.errors?.required"
 							   translate>ERROR_REQUIRED
 					</mat-error>
-					<mat-error *ngIf="form && form.get('davonBetreuungstageKinderAndererGemeinden').errors?.isNotHalf"
+					<mat-error *ngIf="form && this.form.controls.davonBetreuungstageKinderAndererGemeinden.errors?.isNotHalf"
 							   translate>ERROR_NOT_HALF
 					</mat-error>
 					<dv-bisher-x
 							[deklaration]="container?.angabenDeklaration?.nutzung?.davonBetreuungstageKinderAndererGemeinden"
-							[korrektur]="form.get('davonBetreuungstageKinderAndererGemeinden').value"
+							[korrektur]="this.form.value.davonBetreuungstageKinderAndererGemeinden"
 							[showBisher]="container.isAtLeastInPruefungKantonOrZurueckgegeben()"
 							[specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
 					</dv-bisher-x>
@@ -191,7 +191,7 @@
 			<dv-input-container-x class="max-width-container-750">
 				<label for="davonBetreuungstageKinderAndererGemeindenSonderschueler_id"
 					   class="padding-left-50"
-					   [ngClass]="{'label-error': form && form.get('davonBetreuungstageKinderAndererGemeindenSonderschueler').errors}"
+					   [ngClass]="{'label-error': form && this.form.controls.davonBetreuungstageKinderAndererGemeindenSonderschueler.errors}"
 					   [innerHTML]="'FERIENBETREUUNG_BETREUUNGSTAGE_SONDERSCHUELER' | translate">
 				</label>
 				<mat-form-field floatLabel="always">
@@ -200,12 +200,12 @@
 						   formControlName="davonBetreuungstageKinderAndererGemeindenSonderschueler"
 						   class="form-control dv-input"/>
 					<mat-error
-							*ngIf="form && form.get('davonBetreuungstageKinderAndererGemeindenSonderschueler').errors?.isNotHalf"
+							*ngIf="form && this.form.controls.davonBetreuungstageKinderAndererGemeindenSonderschueler.errors?.isNotHalf"
 							translate>ERROR_NOT_HALF
 					</mat-error>
 					<dv-bisher-x
 							[deklaration]="container?.angabenDeklaration?.nutzung?.davonBetreuungstageKinderAndererGemeindenSonderschueler"
-							[korrektur]="form.get('davonBetreuungstageKinderAndererGemeindenSonderschueler').value"
+							[korrektur]="this.form.value.davonBetreuungstageKinderAndererGemeindenSonderschueler"
 							[showBisher]="container.isAtLeastInPruefungKantonOrZurueckgegeben()"
 							[specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
 					</dv-bisher-x>
@@ -218,7 +218,7 @@
             ></dv-ferienbetreuung-last-year-value>
 		</div>
 		<div class="custom-errors">
-			<div *ngIf="form && form.get('davonBetreuungstageKinderAndererGemeindenSonderschueler').errors?.sonderschuelerError"
+			<div *ngIf="form && this.form.controls.davonBetreuungstageKinderAndererGemeindenSonderschueler.errors?.sonderschuelerError"
 					translate>
 				<i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
 				<span translate>ERROR_FB_SONDERSCHUELER</span>
@@ -233,7 +233,7 @@
 		<div class="flex-row">
 			<dv-input-container-x class="max-width-container-750">
 				<label for="anzahlBetreuteKinder_id"
-					   [ngClass]="{'label-error': form && form.get('anzahlBetreuteKinder').errors}">
+					   [ngClass]="{'label-error': form && this.form.controls.anzahlBetreuteKinder.errors}">
 					<span [innerHTML]="'FERIENBETREUUNG_ANZAHL_BETREUTE_KINDER' | translate"></span>
 					<dv-tooltip inputId="anzahlBetreuteKinder_id"
 								[text]="'FERIENBETREUUNG_ANZAHL_BETREUTE_KINDER_HINT' | translate">
@@ -245,12 +245,12 @@
 						   formControlName="anzahlBetreuteKinder"
 						   class="form-control dv-input"/>
 					<mat-error
-							*ngIf="form && form.get('anzahlBetreuteKinder').errors?.isNotInteger"
+							*ngIf="form && this.form.controls.anzahlBetreuteKinder.errors?.isNotInteger"
 							translate>ERROR_NOT_INTEGER
 					</mat-error>
 					<dv-bisher-x
 							[deklaration]="container?.angabenDeklaration?.nutzung?.anzahlBetreuteKinder"
-							[korrektur]="form.get('anzahlBetreuteKinder').value"
+							[korrektur]="this.form.value.anzahlBetreuteKinder"
 							[showBisher]="container.isAtLeastInPruefungKantonOrZurueckgegeben()"
 							[specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
 					</dv-bisher-x>
@@ -267,7 +267,7 @@
 			<dv-input-container-x class="max-width-container-750">
 				<label for="anzahl_betreute_kinder_sonderschueler_id"
 					   class="padding-left-20"
-					   [ngClass]="{'label-error': form && form.get('anzahlBetreuteKinderSonderschueler').errors}"
+					   [ngClass]="{'label-error': form && this.form.controls.anzahlBetreuteKinderSonderschueler.errors}"
 					   [innerHTML]="'FERIENBETREUUNG_ANZAHL_BETREUTE_KINDER_SONDERSCHUELER' | translate">
 				</label>
 				<mat-form-field floatLabel="always">
@@ -276,12 +276,12 @@
 						   formControlName="anzahlBetreuteKinderSonderschueler"
 						   class="form-control dv-input"/>
 					<mat-error
-							*ngIf="form && form.get('anzahlBetreuteKinderSonderschueler').errors?.isNotInteger"
+							*ngIf="form && this.form.controls.anzahlBetreuteKinderSonderschueler.errors?.isNotInteger"
 							translate>ERROR_NOT_INTEGER
 					</mat-error>
 					<dv-bisher-x
 							[deklaration]="container?.angabenDeklaration?.nutzung?.anzahlBetreuteKinderSonderschueler"
-							[korrektur]="form.get('anzahlBetreuteKinderSonderschueler').value"
+							[korrektur]="this.form.value.anzahlBetreuteKinderSonderschueler"
 							[showBisher]="container.isAtLeastInPruefungKantonOrZurueckgegeben()"
 							[specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
 					</dv-bisher-x>
@@ -298,7 +298,7 @@
 			<dv-input-container-x class="max-width-container-750">
 				<label for="anzahlBetreuteKinder1Zyklus_id"
 					   class="padding-left-20"
-					   [ngClass]="{'label-error': form && form.get('anzahlBetreuteKinder1Zyklus').errors}">
+					   [ngClass]="{'label-error': form && this.form.controls.anzahlBetreuteKinder1Zyklus.errors}">
 					<span [innerHTML]="'FERIENBETREUUNG_DAVON_KINDER_IM_1_ZYKLUS' | translate"></span>
 					<dv-tooltip inputId="anzahlBetreuteKinder1Zyklus_id"
 								[text]="'FERIENBETREUUNG_DAVON_KINDER_IM_ZYKLUS_HINT' | translate">
@@ -310,12 +310,12 @@
 						   formControlName="anzahlBetreuteKinder1Zyklus"
 						   class="form-control dv-input"/>
 					<mat-error
-							*ngIf="form && form.get('anzahlBetreuteKinder1Zyklus').errors?.isNotInteger"
+							*ngIf="form && this.form.controls.anzahlBetreuteKinder1Zyklus.errors?.isNotInteger"
 							translate>ERROR_NOT_INTEGER
 					</mat-error>
 					<dv-bisher-x
 							[deklaration]="container?.angabenDeklaration?.nutzung?.anzahlBetreuteKinder1Zyklus"
-							[korrektur]="form.get('anzahlBetreuteKinder1Zyklus').value"
+							[korrektur]="this.form.value.anzahlBetreuteKinder1Zyklus"
 							[showBisher]="container.isAtLeastInPruefungKantonOrZurueckgegeben()"
 							[specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
 					</dv-bisher-x>
@@ -332,7 +332,7 @@
 			<dv-input-container-x class="max-width-container-750">
 				<label for="anzahlBetreuteKinder2Zyklus_id"
 					   class="padding-left-20"
-					   [ngClass]="{'label-error': form && form.get('anzahlBetreuteKinder2Zyklus').errors}">
+					   [ngClass]="{'label-error': form && this.form.controls.anzahlBetreuteKinder2Zyklus.errors}">
 					<span [innerHTML]="'FERIENBETREUUNG_DAVON_KINDER_IM_2_ZYKLUS' | translate"></span>
 					<dv-tooltip inputId="anzahlBetreuteKinder2Zyklus_id"
 								[text]="'FERIENBETREUUNG_DAVON_KINDER_IM_ZYKLUS_HINT' | translate">
@@ -344,12 +344,12 @@
 						   formControlName="anzahlBetreuteKinder2Zyklus"
 						   class="form-control dv-input"/>
 					<mat-error
-							*ngIf="form && form.get('anzahlBetreuteKinder2Zyklus').errors?.isNotInteger"
+							*ngIf="form && this.form.controls.anzahlBetreuteKinder2Zyklus.errors?.isNotInteger"
 							translate>ERROR_NOT_INTEGER
 					</mat-error>
 					<dv-bisher-x
 							[deklaration]="container?.angabenDeklaration?.nutzung?.anzahlBetreuteKinder2Zyklus"
-							[korrektur]="form.get('anzahlBetreuteKinder2Zyklus').value"
+							[korrektur]="this.form.value.anzahlBetreuteKinder2Zyklus"
 							[showBisher]="container.isAtLeastInPruefungKantonOrZurueckgegeben()"
 							[specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
 					</dv-bisher-x>
@@ -366,7 +366,7 @@
 			<dv-input-container-x class="max-width-container-750">
 				<label for="anzahlBetreuteKinder3Zyklus_id"
 					   class="padding-left-20"
-					   [ngClass]="{'label-error': form && form.get('anzahlBetreuteKinder3Zyklus').errors}">
+					   [ngClass]="{'label-error': form && this.form.controls.anzahlBetreuteKinder3Zyklus.errors}">
 					<span [innerHTML]="'FERIENBETREUUNG_DAVON_KINDER_IM_3_ZYKLUS' | translate"></span>
 					<dv-tooltip inputId="anzahlBetreuteKinder3Zyklus_id"
 								[text]="'FERIENBETREUUNG_DAVON_KINDER_IM_ZYKLUS_HINT' | translate">
@@ -378,12 +378,12 @@
 						   formControlName="anzahlBetreuteKinder3Zyklus"
 						   class="form-control dv-input"/>
 					<mat-error
-							*ngIf="form && form.get('anzahlBetreuteKinder3Zyklus').errors?.isNotInteger"
+							*ngIf="form && this.form.controls.anzahlBetreuteKinder3Zyklus.errors?.isNotInteger"
 							translate>ERROR_NOT_INTEGER
 					</mat-error>
 					<dv-bisher-x
 							[deklaration]="container?.angabenDeklaration?.nutzung?.anzahlBetreuteKinder3Zyklus"
-							[korrektur]="form.get('anzahlBetreuteKinder3Zyklus').value"
+							[korrektur]="this.form.value.anzahlBetreuteKinder3Zyklus"
 							[showBisher]="container.isAtLeastInPruefungKantonOrZurueckgegeben()"
 							[specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
 					</dv-bisher-x>

@@ -42,7 +42,7 @@ export class ModulTagesschuleDialogComponent implements OnInit {
 
     public constructor(
         private readonly dialogRef: MatDialogRef<ModulTagesschuleDialogComponent>,
-        @Inject(MAT_DIALOG_DATA) data: any
+        @Inject(MAT_DIALOG_DATA) private readonly data: any
     ) {
         this.modulTagesschuleGroup = data.modulTagesschuleGroup;
     }

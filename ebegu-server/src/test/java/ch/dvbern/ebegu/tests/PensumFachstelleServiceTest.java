@@ -15,10 +15,6 @@
 
 package ch.dvbern.ebegu.tests;
 
-import java.util.Optional;
-
-import javax.inject.Inject;
-
 import ch.dvbern.ebegu.entities.PensumFachstelle;
 import ch.dvbern.ebegu.services.PensumFachstelleService;
 import ch.dvbern.ebegu.test.IntegrationTest;
@@ -31,6 +27,9 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
+
+import javax.inject.Inject;
+import java.util.Optional;
 
 /**
  * Tests fuer die Klasse PensumFachstelle
@@ -49,7 +48,7 @@ public class PensumFachstelleServiceTest extends AbstractEbeguLoginTest {
 	@Test
 	public void createPersonInstitutionStammdatenTest() {
 		Assert.assertNotNull(pensumFachstelleService);
-		PensumFachstelle insertedPensumFachstelle = insertInstitutionStammdaten();
+		PensumFachstelle insertedPensumFachstelle = insertPensumFachstelle();
 
 		Optional<PensumFachstelle> returnedPensumFachstelle = pensumFachstelleService.findPensumFachstelle(insertedPensumFachstelle.getId());
 		Assert.assertTrue(returnedPensumFachstelle.isPresent());
@@ -63,7 +62,7 @@ public class PensumFachstelleServiceTest extends AbstractEbeguLoginTest {
 	@Test
 	public void updateInstitutionStammdatenTest() {
 		Assert.assertNotNull(pensumFachstelleService);
-		PensumFachstelle insertedPensumFachstelle = insertInstitutionStammdaten();
+		PensumFachstelle insertedPensumFachstelle = insertPensumFachstelle();
 
 		Optional<PensumFachstelle> returnedPensumFachstelle = pensumFachstelleService.findPensumFachstelle(insertedPensumFachstelle.getId());
 		Assert.assertTrue(returnedPensumFachstelle.isPresent());
@@ -79,9 +78,10 @@ public class PensumFachstelleServiceTest extends AbstractEbeguLoginTest {
 
 	// HELP METHODS
 
-	private PensumFachstelle insertInstitutionStammdaten() {
-		PensumFachstelle pensumFachstelle = TestDataUtil.createDefaultPensumFachstelle();
+	private PensumFachstelle insertPensumFachstelle() {
+		PensumFachstelle pensumFachstelle = TestDataUtil.createDefaultPensumFachstelle(null);
 		TestDataUtil.persistFachstelle(persistence, pensumFachstelle.getFachstelle());
+		persistence.persist(pensumFachstelle.getKind());
 		return persistence.merge(pensumFachstelle);
 	}
 
