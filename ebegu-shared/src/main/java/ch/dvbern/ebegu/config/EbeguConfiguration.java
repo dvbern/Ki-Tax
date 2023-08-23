@@ -15,14 +15,13 @@
 
 package ch.dvbern.ebegu.config;
 
-import java.util.Optional;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
 import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.errors.KibonLogLevel;
 import ch.dvbern.ebegu.util.mandant.MandantIdentifier;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.Optional;
 
 /**
  * Konfiguration von kiBon
@@ -360,6 +359,12 @@ public interface EbeguConfiguration {
 	String getEbeguKibonAnfrageSTSKeystorePW();
 
 	String getEbeguKibonAnfrageSTSKeystorePath();
+
+	String getEbeguKibonAnfrageOIDCClientId();
+
+	String getEbeguKibonAnfrageOIDCSecret();
+
+	String getEbeguKibonAnfrageOIDCEndpoint();
 
 	String getEbeguKibonAnfrageSTSPrivateKeyPW();
 
