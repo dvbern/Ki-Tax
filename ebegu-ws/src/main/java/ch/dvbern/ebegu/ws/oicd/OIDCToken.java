@@ -31,6 +31,7 @@ public class OIDCToken {
 	private void calculateExpiringTime() {
 		if (requestTime == null || StringUtils.isBlank(expiresIn)) {
 			expiersAt = LocalDateTime.now();
+			return;
 		}
 
 		expiersAt = requestTime.plusSeconds(Integer.parseInt(expiresIn));
