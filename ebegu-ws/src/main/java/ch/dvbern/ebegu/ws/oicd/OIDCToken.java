@@ -13,17 +13,8 @@ public class OIDCToken {
 	@JsonProperty("expires_in")
 	private String expiresIn;
 
-	@JsonProperty("refresh_expires_in")
-	private String refreshExpiresIn;
-
 	@JsonProperty("token_type")
 	private String tokenType;
-
-	@JsonProperty("not-before-policy")
-	private String notBeforePolicy;
-
-	@JsonProperty("scope")
-	private String scope;
 
 	private LocalDateTime expiersAt;
 
