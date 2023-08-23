@@ -27,7 +27,6 @@ import ch.dvbern.ebegu.enums.SteuerdatenAnfrageStatus;
 import ch.dvbern.ebegu.errors.KiBonAnfrageServiceException;
 import ch.dvbern.ebegu.services.SteuerdatenAnfrageLogService;
 import ch.dvbern.ebegu.ws.neskovanp.oicd.OIDCTokenManagerBean;
-import ch.dvbern.ebegu.ws.neskovanp.sts.WSSSecurityKibonAnfrageAssertionOutboundHandler;
 import ch.dvbern.ebegu.ws.oicd.OIDCToken;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpHeaders;
@@ -53,9 +52,6 @@ public class KibonAnfrageWebService implements IKibonAnfrageWebService {
 	private static final String SERVICE_NAME = "KiBonAnfrageService";
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(KibonAnfrageWebService.class.getSimpleName());
-
-	@Inject
-	private WSSSecurityKibonAnfrageAssertionOutboundHandler wssUsernameTokenSecurityHandler;
 
 	@Inject
 	private OIDCTokenManagerBean OIDCTokenManagerBean;

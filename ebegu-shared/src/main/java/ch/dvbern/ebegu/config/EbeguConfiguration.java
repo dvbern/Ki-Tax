@@ -354,27 +354,11 @@ public interface EbeguConfiguration {
 
 	String getKibonAnfrageEndpoint();
 
-	String getEbeguKibonAnfrageSTSPrivateKeyAlias();
-
-	String getEbeguKibonAnfrageSTSKeystorePW();
-
-	String getEbeguKibonAnfrageSTSKeystorePath();
-
 	String getEbeguKibonAnfrageOIDCClientId();
 
 	String getEbeguKibonAnfrageOIDCSecret();
 
 	String getEbeguKibonAnfrageOIDCEndpoint();
-
-	String getEbeguKibonAnfrageSTSPrivateKeyPW();
-
-	String getEbeguKibonAnfrageSTSBasePath();
-
-	String getEbeguKibonAnfrageSTSEndpoint();
-
-	String getEbeguKibonAnfrageSTSWsdl();
-
-	String getEbeguKibonAnfrageSTSRenewalAssertionEndpoint();
 
 	String getKibonAnfrageTestUuid();
 
