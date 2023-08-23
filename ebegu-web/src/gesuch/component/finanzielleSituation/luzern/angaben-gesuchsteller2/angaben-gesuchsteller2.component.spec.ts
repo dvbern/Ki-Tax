@@ -61,8 +61,11 @@ const errorServiceSpy = jasmine.createSpyObj<ErrorService>(ErrorService.name, ['
 const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name,
     ['isOneOfRoles']);
 
-const berechnungsManagerSpy = jasmine.createSpyObj<BerechnungsManager>(BerechnungsManager.name, ['calculateFinanzielleSituation', 'calculateFinanzielleSituationTemp']);
-berechnungsManagerSpy.calculateFinanzielleSituationTemp.and.returnValue(Promise.resolve(new TSFinanzielleSituationResultateDTO()));
+const berechnungsManagerSpy =
+    jasmine.createSpyObj<BerechnungsManager>(BerechnungsManager.name,
+        ['calculateFinanzielleSituation', 'calculateFinanzielleSituationTemp']);
+berechnungsManagerSpy.calculateFinanzielleSituationTemp.and
+    .returnValue(Promise.resolve(new TSFinanzielleSituationResultateDTO()));
 
 describe('AngabenGesuchsteller2Component', () => {
     let component: AngabenGesuchsteller2Component;

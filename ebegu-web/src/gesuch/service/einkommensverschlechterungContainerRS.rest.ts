@@ -50,7 +50,8 @@ export class EinkommensverschlechterungContainerRS {
                 einkommensverschlechterungContainer);
         const url = `${this.serviceURL}/${gesuchstellerId}/${encodeURIComponent(gesuchId)}`;
 
-        return this.$http.put(url, returnedEinkommensverschlechterungContainer).then(r => this.wizardStepManager.findStepsFromGesuch(gesuchId)
+        return this.$http.put(url, returnedEinkommensverschlechterungContainer)
+            .then(r => this.wizardStepManager.findStepsFromGesuch(gesuchId)
                 .then(() => this.toEinkommensverschlechterung(r)));
     }
 

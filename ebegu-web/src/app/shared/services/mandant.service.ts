@@ -166,7 +166,8 @@ export class MandantService {
         const host = this.removeMandantEnvironmentFromCompleteHost();
         const environment = this.getEnvironmentFromCompleteHost();
         const environmentWithMandant = environment.length > 0 ? `${environment}-${mandant.hostname}` : mandant.hostname;
-        this.windowRef.nativeWindow.open(`${this.windowRef.nativeWindow.location.protocol}//${environmentWithMandant}.${host}/${url}`,
+        this.windowRef.nativeWindow.open(
+            `${this.windowRef.nativeWindow.location.protocol}//${environmentWithMandant}.${host}/${url}`,
             '_self');
     }
 

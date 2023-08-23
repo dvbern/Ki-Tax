@@ -40,7 +40,8 @@ export function authenticationHookRunBlockX($transitions: TransitionService, aut
     };
 
     // Register the "requires authentication" hook with the TransitionsService
-    $transitions.onBefore(requiresAuthCriteria, transition => redirectToLogin(transition, authService), {priority: OnBeforePriorities.AUTHENTICATION});
+    $transitions.onBefore(requiresAuthCriteria, transition =>
+        redirectToLogin(transition, authService), {priority: OnBeforePriorities.AUTHENTICATION});
 }
 
 // Function that returns a redirect for the current transition to the login state

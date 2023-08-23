@@ -15,7 +15,7 @@
 
 import {
     getZahlungsstatusIgnorieren,
-    TSVerfuegungZeitabschnittZahlungsstatus
+    TSVerfuegungZeitabschnittZahlungsstatus,
 } from './enums/TSVerfuegungZeitabschnittZahlungsstatus';
 import {TSAbstractMutableEntity} from './TSAbstractMutableEntity';
 import {TSVerfuegungZeitabschnitt} from './TSVerfuegungZeitabschnitt';
@@ -150,8 +150,8 @@ export class TSVerfuegung extends TSAbstractMutableEntity {
             // eslint-disable-next-line
             if (zeitabschnitt.zahlungsstatusInstitution !== TSVerfuegungZeitabschnittZahlungsstatus.NEU
                     && !zeitabschnitt.sameAusbezahlteVerguenstigung) {
-                if (showIfVerrechnetAberKeineBetreuung
-                    || zeitabschnitt.zahlungsstatusInstitution !== TSVerfuegungZeitabschnittZahlungsstatus.VERRECHNET_KEINE_BETREUUNG) {
+                if (showIfVerrechnetAberKeineBetreuung ||
+                    this.isNotVerrechnetKeineBetreuung(zeitabschnitt.zahlungsstatusInstitution)) {
                     // Sobald es mindestens an einem verrechneten Abschnitt eine Aenderung gibt, muss die Frage
                     // gestellt werden
                     return true;
@@ -159,6 +159,10 @@ export class TSVerfuegung extends TSAbstractMutableEntity {
             }
         }
         return false;
+    }
+
+    private isNotVerrechnetKeineBetreuung(status: TSVerfuegungZeitabschnittZahlungsstatus): boolean {
+        return status !== TSVerfuegungZeitabschnittZahlungsstatus.VERRECHNET_KEINE_BETREUUNG;
     }
 
     public fragenObIgnorierenMahlzeiten(): boolean {

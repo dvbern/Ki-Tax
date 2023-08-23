@@ -402,7 +402,10 @@ export class TSFinanzModel {
      * Indicates whether FinSit must be filled out or not. It supposes that it is enabled.
      */
     public isFinanzielleSituationRequired(): boolean {
-        return EbeguUtil.isFinanzielleSituationRequired(this.familienSituation.sozialhilfeBezueger, this.familienSituation.verguenstigungGewuenscht);
+        return EbeguUtil.isFinanzielleSituationRequired(
+            this.familienSituation.sozialhilfeBezueger,
+            this.familienSituation.verguenstigungGewuenscht
+        );
     }
 
     public get finanzielleSituationVorMutationGS1(): TSFinanzielleSituation {

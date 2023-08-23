@@ -20,7 +20,7 @@
     <parent>
         <artifactId>ebegu</artifactId>
         <groupId>ch.dvbern.ebegu</groupId>
-        <version>2023.12.0-SNAPSHOT</version>
+        <version>2023.13.0-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -45,7 +45,6 @@
         <profile>
             <id>ci</id>
             <properties>
-                <npm.preinit.arg>install -g esbuild-linux-64@0.15.5</npm.preinit.arg>
                 <npm.init.arg>ci --legacy-peer-deps</npm.init.arg>
             </properties>
         </profile>
@@ -77,21 +76,10 @@
                                     <goal>install-node-and-npm</goal>
                                 </goals>
                                 <configuration>
-                                    <nodeVersion>v14.17.0</nodeVersion>
-                                    <npmVersion>6.14.13</npmVersion>
+                                    <nodeVersion>v16.20.2</nodeVersion>
+                                    <npmVersion>8.19.4</npmVersion>
                                     <nodeDownloadRoot>https://nodejs.org/dist/</nodeDownloadRoot>
                                     <npmDownloadRoot>https://registry.npmjs.org/npm/-/</npmDownloadRoot>
-                                </configuration>
-                            </execution>
-
-                            <execution>
-                                <id>npm prepare</id>
-                                <phase>initialize</phase>
-                                <goals>
-                                    <goal>npm</goal>
-                                </goals>
-                                <configuration>
-                                    <arguments>${npm.preinit.arg}</arguments>
                                 </configuration>
                             </execution>
 

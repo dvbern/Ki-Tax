@@ -43,7 +43,8 @@ const LOG = LogFactory.createLog('DVFinanzielleSituationRequireController');
 
 export class DVFinanzielleSituationRequireController implements IController {
 
-    public static $inject: ReadonlyArray<string> = ['EinstellungRS', 'GesuchModelManager', '$translate', 'FinanzielleSituationRS'];
+    public static $inject: ReadonlyArray<string> =
+        ['EinstellungRS', 'GesuchModelManager', '$translate', 'FinanzielleSituationRS'];
 
     public finanzielleSituationRequired: boolean;
     public sozialhilfeBezueger: boolean;
@@ -127,7 +128,10 @@ export class DVFinanzielleSituationRequireController implements IController {
     }
 
     public getLabel(): string {
-        const key = this.gesuchModelManager.isFKJVTexte ? 'FINANZIELLE_SITUATION_VERGUENSTIGUNG_GEWUENSCHT_FKJV' : 'FINANZIELLE_SITUATION_VERGUENSTIGUNG_GEWUENSCHT';
+        const key =
+            this.gesuchModelManager.isFKJVTexte ?
+                'FINANZIELLE_SITUATION_VERGUENSTIGUNG_GEWUENSCHT_FKJV' :
+                'FINANZIELLE_SITUATION_VERGUENSTIGUNG_GEWUENSCHT';
         return this.$translate.instant(key,
             {maxEinkommen: this.maxMassgebendesEinkommen});
     }

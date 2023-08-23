@@ -24,10 +24,12 @@ describe('ZahlungsauftragViewXComponent', () => {
     const zahlungRSSpy = jasmine.createSpyObj(ZahlungRS.name, ['getAllZahlungsauftraege']);
     const stateServiceSpy = jasmine.createSpyObj(StateService.name, ['go']);
     const downloadResSpy = jasmine.createSpyObj(DownloadRS.name, ['getAccessTokenDokument']);
-    const appPropSpy = jasmine.createSpyObj<ApplicationPropertyRS>(ApplicationPropertyRS.name, ['getAllowedMimetypes', 'isZahlungenTestMode']);
+    const appPropSpy = jasmine.createSpyObj<ApplicationPropertyRS>(ApplicationPropertyRS.name,
+        ['getAllowedMimetypes', 'isZahlungenTestMode']);
     const reportRSSpy = jasmine.createSpyObj(ReportRS.name, ['getZahlungsauftragReportExcel']);
     const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name, ['principal$', 'isOneOfRoles']);
-    const gemeindeRSSpy = jasmine.createSpyObj<GemeindeRS>(GemeindeRS.name, ['getGemeindenForPrincipal$', 'getGemeindenWithMahlzeitenverguenstigungForBenutzer']);
+    const gemeindeRSSpy = jasmine.createSpyObj<GemeindeRS>(GemeindeRS.name,
+        ['getGemeindenForPrincipal$', 'getGemeindenWithMahlzeitenverguenstigungForBenutzer']);
     const stateStoreSpy = jasmine.createSpyObj<StateStoreService>(StateStoreService.name, ['get', 'has']);
     const uiRouterGlobalsSpy = jasmine.createSpyObj<UIRouterGlobals>(UIRouterGlobals.name, ['params']);
     const transitionSpy = jasmine.createSpyObj<TransitionService>(TransitionService.name, ['onStart']);

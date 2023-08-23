@@ -301,10 +301,12 @@ export class TestdatenViewComponent implements OnInit {
             this.gemeindeAntragStatus).subscribe(response => {
             this.errorService.clearAll();
             if (this.ferienbetreuungSelected()) {
-                this.createAndOpenLinkDialog$(`Ferienbetreuung für ${this.gemeindeForGemeindeAntrag.name} ${this.gesuchsperiodeGemeindeAntrag.gesuchsperiodeString} erstellt`,
+                this.createAndOpenLinkDialog$(
+                  `Ferienbetreuung für ${this.gemeindeForGemeindeAntrag.name} ${this.gesuchsperiodeGemeindeAntrag.gesuchsperiodeString} erstellt`,
                     `#/ferienbetreuung/${response}/stammdaten-gemeinde`);
             } else if (this.gemeindeForGemeindeAntrag) {
-                this.createAndOpenLinkDialog$(`LATS für ${this.gemeindeForGemeindeAntrag.name} ${this.gesuchsperiodeGemeindeAntrag.gesuchsperiodeString} erstellt`,
+                this.createAndOpenLinkDialog$(
+                    `LATS für ${this.gemeindeForGemeindeAntrag.name} ${this.gesuchsperiodeGemeindeAntrag.gesuchsperiodeString} erstellt`,
                     `#/lastenausgleich-ts/${response}/angaben-gemeinde`);
             } else {
                 this.errorService.addMesageAsInfo('Anträge für Periode erstellt');

@@ -152,7 +152,9 @@ export class DvFinanzielleSituationRequireXComponent implements OnInit {
     }
 
     public getLabel(): string {
-        const key = this.gesuchModelManager.isFKJVTexte ? 'FINANZIELLE_SITUATION_VERGUENSTIGUNG_GEWUENSCHT_FKJV' : 'FINANZIELLE_SITUATION_VERGUENSTIGUNG_GEWUENSCHT';
+        const key =
+            this.gesuchModelManager.isFKJVTexte ?
+                'FINANZIELLE_SITUATION_VERGUENSTIGUNG_GEWUENSCHT_FKJV' : 'FINANZIELLE_SITUATION_VERGUENSTIGUNG_GEWUENSCHT';
         const pipe = new EbeguNumberPipe();
         return this.translate.instant(key,
             {maxEinkommen: pipe.transform(this.maxMassgebendesEinkommen)});

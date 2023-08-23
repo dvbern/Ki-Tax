@@ -130,10 +130,12 @@
                 ],
                 "import/no-unassigned-import": "error",
                 "max-len": [
-                    "warn",
+                    "error",
                     {
-                        "ignorePattern": "^import .*|^require\\(.*\\)|^export.*",
-                        "code": 120
+                        // ignore import, require, exports, multiline imports and lines that are only one long template string
+                        "ignorePattern": "^import .*|^require\\(.*\\)|^export.*|\\}\\s*from.*|^\\s*`.*`(,|;)?$",
+                        "code": 130,
+                        "ignoreUrls": true
                     }
                 ],
                 "no-duplicate-case": "error",

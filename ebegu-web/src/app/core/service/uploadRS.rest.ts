@@ -66,7 +66,8 @@ export class UploadRS {
                 file: files,
                 dokumentGrund: restDokumentString
             }
-        }).then((response: any) => this.ebeguRestUtil.parseDokumentGrund(new TSDokumentGrund(), response.data), (response: any) => {
+        }).then((response: any) =>
+            this.ebeguRestUtil.parseDokumentGrund(new TSDokumentGrund(), response.data), (response: any) => {
             console.log(this.NOT_SUCCESS);
             return this.q.reject(response);
         }, (evt: any) => {
@@ -79,7 +80,8 @@ export class UploadRS {
     ): IPromise<TSRueckforderungDokument[]> {
         const names = this.encodeFileNames(files);
         return this.upload.upload({
-            url: `${this.serviceURL}/uploadRueckforderungsDokument/${encodeURIComponent(rueckforderungFormularId)}/${rueckforderungDokumentTyp}`,
+            url:
+                `${this.serviceURL}/uploadRueckforderungsDokument/${encodeURIComponent(rueckforderungFormularId)}/${rueckforderungDokumentTyp}`,
             method: 'POST',
             headers: {
                 'x-filename': names.join(';')

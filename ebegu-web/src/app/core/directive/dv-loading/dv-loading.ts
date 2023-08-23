@@ -71,7 +71,11 @@ export class DVLoadingController {
 
     public isLoading: () => {};
 
-    public constructor(private readonly $http: IHttpService, public $timeout: ITimeoutService, private readonly httpPendingService: HttpPendingService) {
+    public constructor(
+        private readonly $http: IHttpService,
+        public $timeout: ITimeoutService,
+        private readonly httpPendingService: HttpPendingService
+    ) {
         this.isLoading = (): boolean => this.$http.pendingRequests.length > 0 || this.httpPendingService.hasPendingRequests();
     }
 }

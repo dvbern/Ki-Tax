@@ -874,7 +874,9 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
                 }
 
                 if (betreuung.isAngebotTagesschule()) {
-                    this.veraenderungTS = this.findAbsoultMax(this.veraenderungTS, betreuung.verfuegung.veraenderungVerguenstigungGegenueberVorgaenger);
+                    this.veraenderungTS = this.findAbsoultMax(
+                        this.veraenderungTS,
+                        betreuung.verfuegung.veraenderungVerguenstigungGegenueberVorgaenger);
                 } else {
                     this.veraenderungBG += betreuung.verfuegung.veraenderungVerguenstigungGegenueberVorgaenger;
                 }

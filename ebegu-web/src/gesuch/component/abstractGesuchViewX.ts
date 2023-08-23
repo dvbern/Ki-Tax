@@ -114,7 +114,8 @@ export class AbstractGesuchViewX<T> implements AfterViewInit {
     }
 
     public isFKJV(): boolean {
-        return EbeguUtil.isNotNullOrUndefined(this.getGesuch()) && this.getGesuch().finSitTyp === TSFinanzielleSituationTyp.BERN_FKJV;
+        return EbeguUtil.isNotNullOrUndefined(this.getGesuch())
+            && this.getGesuch().finSitTyp === TSFinanzielleSituationTyp.BERN_FKJV;
     }
 
     public showBisher(abstractFinanzielleSituation: TSAbstractFinanzielleSituation): boolean {

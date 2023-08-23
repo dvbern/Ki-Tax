@@ -44,7 +44,8 @@ const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name,
     ['getPrincipal', 'isOneOfRoles']);
 
 authServiceSpy.principal$ = of(new TSBenutzer());
-const applicationPropertyRSSpy = jasmine.createSpyObj<ApplicationPropertyRS>(ApplicationPropertyRS.name, ['isDevMode', 'getAllowedMimetypes']);
+const applicationPropertyRSSpy =
+    jasmine.createSpyObj<ApplicationPropertyRS>(ApplicationPropertyRS.name, ['isDevMode', 'getAllowedMimetypes']);
 const authServiceRSSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name,
     ['isOneOfRoles']);
 

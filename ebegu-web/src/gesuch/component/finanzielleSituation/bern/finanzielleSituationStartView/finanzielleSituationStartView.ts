@@ -18,7 +18,6 @@
 import {IComponentOptions} from 'angular';
 import {EinstellungRS} from '../../../../../admin/service/einstellungRS.rest';
 import {DvDialog} from '../../../../../app/core/directive/dv-dialog/dv-dialog';
-import {TSDemoFeature} from '../../../../../app/core/directive/dv-hide-feature/TSDemoFeature';
 import {ErrorService} from '../../../../../app/core/errors/service/ErrorService';
 import {ApplicationPropertyRS} from '../../../../../app/core/rest-services/applicationPropertyRS.rest';
 import {DemoFeatureRS} from '../../../../../app/core/service/demoFeatureRS.rest';
@@ -145,7 +144,8 @@ export class FinanzielleSituationStartViewController extends AbstractFinSitBernV
         }
         // falls steuerschnittstelle aktiv, aber zugriffserlaubnis noch nicht beantwortet, dann zeigen wir die Frage
         // nicht
-        if (this.steuerSchnittstelleAktivForPeriode && EbeguUtil.isNullOrUndefined(this.getModel().finanzielleSituationJA.steuerdatenZugriff)) {
+        if (this.steuerSchnittstelleAktivForPeriode &&
+            EbeguUtil.isNullOrUndefined(this.getModel().finanzielleSituationJA.steuerdatenZugriff)) {
             return false;
         }
         // falls Zugriffserlaubnis nicht gegeben, dann zeigen wir die Frage
@@ -234,7 +234,9 @@ export class FinanzielleSituationStartViewController extends AbstractFinSitBernV
     }
 
     public gemeinsameStekClicked(): void {
-        if (!this.model.familienSituation.gemeinsameSteuererklaerung && this.model.finanzielleSituationContainerGS1 && !this.model.finanzielleSituationContainerGS1.isNew()) {
+        if (!this.model.familienSituation.gemeinsameSteuererklaerung
+            && this.model.finanzielleSituationContainerGS1
+            && !this.model.finanzielleSituationContainerGS1.isNew()) {
             // Wenn neu NEIN und schon was eingegeben -> Fragen mal auf false setzen und Status auf nok damit man
             // sicher noch weiter muss!
             this.initSteuerFragen();
@@ -309,7 +311,8 @@ export class FinanzielleSituationStartViewController extends AbstractFinSitBernV
     }
 
     public isZahlungsangabenRequired(): boolean {
-        return (!this.model.zahlungsinformationen.keineMahlzeitenverguenstigungBeantragt && this.isMahlzeitenverguenstigungEnabled())
+        return (!this.model.zahlungsinformationen.keineMahlzeitenverguenstigungBeantragt
+                && this.isMahlzeitenverguenstigungEnabled())
             || (this.zahlungsangabenRequired && this.gesuchModelManager.getGesuch().isOnlineGesuch());
     }
 
@@ -391,7 +394,8 @@ export class FinanzielleSituationStartViewController extends AbstractFinSitBernV
 
     protected resetKiBonAnfrageFinSit(): void {
         this.model.copyFinSitDataToGesuch(this.gesuchModelManager.getGesuch());
-        this.gesuchModelManager.resetKiBonAnfrageFinSit(EbeguUtil.isNotNullOrUndefined(this.model.finanzielleSituationContainerGS2))
+        this.gesuchModelManager.resetKiBonAnfrageFinSit(
+            EbeguUtil.isNotNullOrUndefined(this.model.finanzielleSituationContainerGS2))
             .then(() => {
                 this.wizardStepManager.updateCurrentWizardStepStatusSafe(
                         TSWizardStepName.FINANZIELLE_SITUATION,

@@ -377,7 +377,10 @@ export class EinkommensverschlechterungInfoViewController
             this.maxAllowedEinkommenForEKV = einkommensverschlechterungBis;
             this.currentMinEinkommenEKV = minMassgebendenEinkommen;
         }, error => LOG.error(error));
-        this.einstellungRS.findEinstellung(TSEinstellungKey.PARAM_GRENZWERT_EINKOMMENSVERSCHLECHTERUNG, this.gesuchModelManager.getGemeinde().id, this.gesuchModelManager.getGesuchsperiode().id)
+        this.einstellungRS.findEinstellung(
+            TSEinstellungKey.PARAM_GRENZWERT_EINKOMMENSVERSCHLECHTERUNG,
+            this.gesuchModelManager.getGemeinde().id,
+            this.gesuchModelManager.getGesuchsperiode().id)
             .pipe(
                 map(einstellung => parseInt(einstellung.value, 10))
             ).subscribe(value => {

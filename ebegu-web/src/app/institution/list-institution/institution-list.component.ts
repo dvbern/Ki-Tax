@@ -255,4 +255,8 @@ export class InstitutionListComponent extends AbstractAdminViewX implements OnIn
     public isAdminBG(): boolean {
         return this.authServiceRS.isRole(TSRole.ADMIN_BG);
     }
+
+    public isBGRole(): boolean {
+        return this.authServiceRS.isOneOfRoles(TSRoleUtil.getBGOnly());
+    }
 }

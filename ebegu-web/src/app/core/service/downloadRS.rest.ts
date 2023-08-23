@@ -174,7 +174,8 @@ export class DownloadRS {
     }
 
     public prepareDownloadWindow(): Window {
-        return this.$window.open(`assets/downloadWindow/downloadWindow.html?spinnerTextLoading=${encodeURIComponent(this.$translate.instant('DOWNLOAD_WINDOW_LOADING_TEXT'))}&spinnerTitle=${encodeURIComponent(this.$translate.instant('DOWNLOAD_WINDOW_TITLE'))}`,
+        return this.$window.open(
+            `assets/downloadWindow/downloadWindow.html?spinnerTextLoading=${encodeURIComponent(this.$translate.instant('DOWNLOAD_WINDOW_LOADING_TEXT'))}&spinnerTitle=${encodeURIComponent(this.$translate.instant('DOWNLOAD_WINDOW_TITLE'))}`,
             EbeguUtil.generateRandomName(5));
     }
 
@@ -246,7 +247,8 @@ export class DownloadRS {
         const dokumentTypEnc = encodeURIComponent(TSGeneratedDokumentTyp[TSGeneratedDokumentTyp.ANMELDEBESTAETIGUNG]);
         const gesuchIdEnc = encodeURIComponent(gesuchId);
         const anmeldungIdEnc = encodeURIComponent(anmeldungId);
-        const url = `${this.serviceURL}/${gesuchIdEnc}/${anmeldungIdEnc}/${dokumentTypEnc}/${forceCreation}/${mitTarif}/generated`;
+        const url =
+            `${this.serviceURL}/${gesuchIdEnc}/${anmeldungIdEnc}/${dokumentTypEnc}/${forceCreation}/${mitTarif}/generated`;
 
         return this.http.get(url)
             .then((response: any) => this.ebeguRestUtil.parseDownloadFile(new TSDownloadFile(), response.data));

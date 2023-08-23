@@ -1,14 +1,22 @@
 # http://editorconfig.org
 root = true
 
-[*.{java,xml}]
-indent_style = tab
-indent_size = 4
+[*]
+max_line_length = 130
 end_of_line = lf
 charset = utf-8
+indent_size = 4
 trim_trailing_whitespace = true
 insert_final_newline = true
+
+[*.{java,xml}]
+indent_style = tab
 
 # Kompatibility zu maven-dependency-plugin/maven-release-plugin... und damit zu jgitflow
 [pom.xml]
 indent_style = space
+
+[*.xml]
+# automatisches Umbrechen/Trimmen kann die Semantik vom Inhalt ändern
+max_line_length = off
+trim_trailing_whitespace = false

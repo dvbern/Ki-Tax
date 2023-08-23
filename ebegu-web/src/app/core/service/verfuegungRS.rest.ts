@@ -58,7 +58,9 @@ export class VerfuegungRS {
         const betreuungIdEnc = encodeURIComponent(betreuungId);
         const url = `${this.serviceURL}/verfuegen/${gesuchIdEnc}/${betreuungIdEnc}/${ignorieren}/${ignorierenMahlzeiten}`;
 
-        return this.http.put(url, verfuegungManuelleBemerkungen).then((response: any) => this.wizardStepManager.findStepsFromGesuch(gesuchId).then(() => this.ebeguRestUtil.parseVerfuegung(new TSVerfuegung(), response.data)));
+        return this.http.put(url, verfuegungManuelleBemerkungen)
+            .then((response: any) => this.wizardStepManager.findStepsFromGesuch(gesuchId)
+                .then(() => this.ebeguRestUtil.parseVerfuegung(new TSVerfuegung(), response.data)));
     }
 
     public verfuegungSchliessenOhneVerfuegen(gesuchId: string, betreuungId: string): IPromise<void> {
