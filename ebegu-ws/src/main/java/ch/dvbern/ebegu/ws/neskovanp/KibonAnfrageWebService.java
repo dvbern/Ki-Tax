@@ -17,26 +17,8 @@
 
 package ch.dvbern.ebegu.ws.neskovanp;
 
-import java.net.URL;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.Collections;
-import java.util.Objects;
-
-import javax.annotation.Nullable;
-import javax.enterprise.context.Dependent;
-import javax.inject.Inject;
-import javax.xml.namespace.QName;
-import javax.xml.ws.BindingProvider;
-import javax.xml.ws.Service;
-
 import ch.be.fin.sv.schemas.base._20070131.exceptioninfo.FaultBase;
-import ch.be.fin.sv.schemas.neskovanp._20211119.kibonanfrageservice.BusinessFault;
-import ch.be.fin.sv.schemas.neskovanp._20211119.kibonanfrageservice.InfrastructureFault;
-import ch.be.fin.sv.schemas.neskovanp._20211119.kibonanfrageservice.InvalidArgumentsFault;
-import ch.be.fin.sv.schemas.neskovanp._20211119.kibonanfrageservice.KiBonAnfragePort;
-import ch.be.fin.sv.schemas.neskovanp._20211119.kibonanfrageservice.PermissionDeniedFault;
-import ch.be.fin.sv.schemas.neskovanp._20211119.kibonanfrageservice.SteuerDatenResponseType;
+import ch.be.fin.sv.schemas.neskovanp._20211119.kibonanfrageservice.*;
 import ch.dvbern.ebegu.config.EbeguConfiguration;
 import ch.dvbern.ebegu.entities.SteuerdatenAnfrageLog;
 import ch.dvbern.ebegu.entities.SteuerdatenRequest;
@@ -44,10 +26,25 @@ import ch.dvbern.ebegu.entities.SteuerdatenResponse;
 import ch.dvbern.ebegu.enums.SteuerdatenAnfrageStatus;
 import ch.dvbern.ebegu.errors.KiBonAnfrageServiceException;
 import ch.dvbern.ebegu.services.SteuerdatenAnfrageLogService;
+import ch.dvbern.ebegu.ws.neskovanp.oicd.OIDCTokenManagerBean;
 import ch.dvbern.ebegu.ws.neskovanp.sts.WSSSecurityKibonAnfrageAssertionOutboundHandler;
+import ch.dvbern.ebegu.ws.oicd.OIDCToken;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.http.HttpHeaders;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.annotation.Nullable;
+import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
+import javax.xml.namespace.QName;
+import javax.xml.ws.BindingProvider;
+import javax.xml.ws.Service;
+import javax.xml.ws.handler.MessageContext;
+import java.net.URL;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.*;
 
 @Dependent
 public class KibonAnfrageWebService implements IKibonAnfrageWebService {
@@ -59,6 +56,9 @@ public class KibonAnfrageWebService implements IKibonAnfrageWebService {
 
 	@Inject
 	private WSSSecurityKibonAnfrageAssertionOutboundHandler wssUsernameTokenSecurityHandler;
+
+	@Inject
+	private OIDCTokenManagerBean OIDCTokenManagerBean;
 
 	@Inject
 	private EbeguConfiguration config;
@@ -145,6 +145,7 @@ public class KibonAnfrageWebService implements IKibonAnfrageWebService {
 		if (port == null) {
 			initKiBonAnfragePort();
 		}
+		initAuthorizationForKibonAnfrageService();
 		return port;
 	}
 
@@ -170,7 +171,6 @@ public class KibonAnfrageWebService implements IKibonAnfrageWebService {
 				final QName qname = new QName(TARGET_NAME_SPACE, SERVICE_NAME);
 				LOGGER.info("KibonAnfrageService QName: {}", qname);
 				final Service service = Service.create(url, qname);
-				service.setHandlerResolver(portInfo -> Collections.singletonList(wssUsernameTokenSecurityHandler)); // handler that adds assertion to header, we need to check how it need to be apadted for this interface
 				LOGGER.info("KibonAnfrageService created: {}", service);
 				port = service.getPort(KiBonAnfragePort.class);
 				LOGGER.info("KibonAnfrageService Port created: {}", port);
@@ -184,6 +184,25 @@ public class KibonAnfrageWebService implements IKibonAnfrageWebService {
 		}
 		LOGGER.info("KibonAnfrageService erfolgreich initialisiert");
 	}
+
+	private void initAuthorizationForKibonAnfrageService() throws KiBonAnfrageServiceException {
+		try {
+			OIDCToken authToken = OIDCTokenManagerBean.getValidOICDToken();
+			Map<String, List<String>> requestHeaders = new HashMap<>();
+			requestHeaders.put(HttpHeaders.AUTHORIZATION, Collections.singletonList(authToken.getAuthToken()));
+
+			final BindingProvider bp = (BindingProvider) port;
+			bp.getRequestContext().put(MessageContext.HTTP_REQUEST_HEADERS, requestHeaders);
+		} catch (Exception e) {
+			port = null;
+			LOGGER.error("Could not initialze the Autorziation Token for KibonAnfrage Serivce", e);
+			throw new KiBonAnfrageServiceException(
+				"initAuthorizationForKibonAnfrageService",
+				"Could not initialze the Autorziation Token for KibonAnfrage Serivce",
+				e);
+		}
+	}
+
 
 	private String createFaultLogmessage(String exceptionName, String methodName, String message, FaultBase fault) {
 		return String.format("Call to %s failed with %s Fault '%s', user-message '%s', technical-message '%s', error-code: '%s'",
