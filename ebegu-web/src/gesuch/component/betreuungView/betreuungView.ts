@@ -96,8 +96,6 @@ export class BetreuungViewComponentConfig implements IComponentOptions {
 const GESUCH_BETREUUNGEN = 'gesuch.betreuungen';
 const PENDENZEN_BETREUUNG = 'pendenzenBetreuungen.list-view';
 const TAGI_ANGEBOT_VALUE = 'TAGI';
-// The hardcoded value of 10 hours per day will be refactored into an Einstellung in KIBON-2967
-const ANZAHL_STUNDEN_KITA_PRO_TAG = 10;
 
 export class BetreuungViewController extends AbstractGesuchViewController<TSBetreuung> {
 
@@ -162,6 +160,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     private oeffnungstageKita: number;
     private oeffnungstageTFO: number;
     private oeffnungsstundenTFO: number;
+    private kitastundenprotag: number;
 
     private multiplierKita: number;
     private multiplierTFO: number;
@@ -341,6 +340,10 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
             response.filter(r => r.key === TSEinstellungKey.OEFFNUNGSSTUNDEN_TFO)
                 .forEach(einstellung => {
                     this.oeffnungsstundenTFO = parseInt(einstellung.value, 10);
+                });
+            response.filter(r => r.key === TSEinstellungKey.KITA_STUNDEN_PRO_TAG)
+                .forEach(einstellung => {
+                    this.kitastundenprotag = parseInt(einstellung.value, 10);
                 });
         }, error => LOG.error(error));
 
@@ -1726,7 +1729,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
 
     private calculateMuliplyerKita(): void {
         if (this.betreuungspensumAnzeigeTyp === TSPensumAnzeigeTyp.NUR_STUNDEN) {
-            this.multiplierKita = this.oeffnungstageKita * ANZAHL_STUNDEN_KITA_PRO_TAG / 12 / 100;
+            this.multiplierKita = this.oeffnungstageKita * this.kitastundenprotag / 12 / 100;
             return;
         }
         // Beispiel: 240 Tage Pro Jahr: 240 / 12 = 20 Tage Pro Monat. 100% = 20 days => 1% = 0.2 tage

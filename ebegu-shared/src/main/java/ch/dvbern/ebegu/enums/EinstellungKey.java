@@ -335,8 +335,9 @@ public enum EinstellungKey {
 	ZAHLUNGSANGABEN_ANTRAGSTELLER_REQUIRED(MandantIdentifier.BERN),
 
 	// Ab welchem Alter in Monaten kann ein Kind Anspruch haben (davor ist der Anspruch 0)
-	ANSPRUCH_AB_X_MONATEN(MandantIdentifier.getAll());
+	ANSPRUCH_AB_X_MONATEN(MandantIdentifier.getAll()),
 
+	KITA_STUNDEN_PRO_TAG(MandantIdentifier.getAll());
 
 	private EinstellungTyp typ;
 	private List<MandantIdentifier> activeForMandant;

@@ -3166,5 +3166,6 @@
     "PENSUM_FACHSTELLE_WARN_OVERLAP_TIEFER": "Die eingegebenen Pensen für die Fachstellen dürfen sich nicht überlappen<br>Der Betreuungsumfang in der <b>neueren</b> Fachstellenbestätigung ist <b>tiefer</b> oder <b>gleich hoch</b>: Tragen Sie beim von-Datum der neueren Indikation den Folgetag des bis-Datums der älteren Indikation ein. Beispiel: Bisherige Indikation bis 31.12. Neue Indikation ist tiefer und startet am 1.12. &rarr; das von-Datum der neueren Indikation wird auf den 1.1. gesetzt.",
     "ZEITRAUM": "Zeitraum",
     "ANSPRUCH_FACHSTELLE_WENN_PENSUM_UNTERSCHRITTEN": "Anspruch gewähren, auch wenn das Pensum für die gewählte Fachstelle zu tief ist",
+    "KITA_STUNDEN_PRO_TAG": "Kita Stunden pro Tag",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }
