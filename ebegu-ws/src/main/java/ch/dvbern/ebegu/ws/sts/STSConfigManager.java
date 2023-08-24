@@ -17,10 +17,10 @@
 
 package ch.dvbern.ebegu.ws.sts;
 
+import ch.dvbern.ebegu.config.EbeguConfiguration;
+
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
-
-import ch.dvbern.ebegu.config.EbeguConfiguration;
 
 @Dependent
 public class STSConfigManager {
@@ -28,32 +28,32 @@ public class STSConfigManager {
 	@Inject
 	private EbeguConfiguration config;
 
-	public String getEbeguSTSPrivateKeyAlias(WebserviceType webserviceType) {
-		return webserviceType.equals(WebserviceType.GERES) ? config.getEbeguPersonensucheSTSPrivateKeyAlias() : config.getEbeguKibonAnfrageSTSPrivateKeyAlias();
+	public String getEbeguSTSPrivateKeyAlias() {
+		return config.getEbeguPersonensucheSTSPrivateKeyAlias();
 	}
 
-	public String getEbeguSTSPrivateKeyPW(WebserviceType webserviceType) {
-		return webserviceType.equals(WebserviceType.GERES) ? config.getEbeguPersonensucheSTSPrivateKeyPW() : config.getEbeguKibonAnfrageSTSPrivateKeyPW();
+	public String getEbeguSTSPrivateKeyPW() {
+		return  config.getEbeguPersonensucheSTSPrivateKeyPW();
 	}
 
-	public String getEbeguSTSKeystorePW(WebserviceType webserviceType) {
-		return webserviceType.equals(WebserviceType.GERES) ? config.getEbeguPersonensucheSTSKeystorePW() : config.getEbeguKibonAnfrageSTSKeystorePW();
+	public String getEbeguSTSKeystorePW() {
+		return  config.getEbeguPersonensucheSTSKeystorePW();
 	}
 
-	public String getEbeguSTSKeystorePath(WebserviceType webserviceType) {
-		return webserviceType.equals(WebserviceType.GERES) ? config.getEbeguPersonensucheSTSKeystorePath() : config.getEbeguKibonAnfrageSTSKeystorePath();
+	public String getEbeguSTSKeystorePath() {
+		return config.getEbeguPersonensucheSTSKeystorePath();
 
 	}
 
-	public String getEbeguSTSEndpoint(WebserviceType webserviceType) {
-		return webserviceType.equals(WebserviceType.GERES) ? config.getEbeguPersonensucheSTSEndpoint() : config.getEbeguKibonAnfrageSTSEndpoint();
+	public String getEbeguSTSEndpoint() {
+		return config.getEbeguPersonensucheSTSEndpoint();
 	}
 
-	public String getEbeguSTSWsdl(WebserviceType webserviceType) {
-		return webserviceType.equals(WebserviceType.GERES) ? config.getEbeguPersonensucheSTSWsdl() : config.getEbeguKibonAnfrageSTSWsdl();
+	public String getEbeguSTSWsdl() {
+		return config.getEbeguPersonensucheSTSWsdl();
 	}
 
-	public String getEbeguSTSRenewalAssertionEndpoint(WebserviceType webserviceType) {
-		return webserviceType.equals(WebserviceType.GERES) ? config.getEbeguPersonensucheSTSRenewalAssertionEndpoint() : config.getEbeguKibonAnfrageSTSRenewalAssertionEndpoint();
+	public String getEbeguSTSRenewalAssertionEndpoint() {
+		return config.getEbeguPersonensucheSTSRenewalAssertionEndpoint();
 	}
 }

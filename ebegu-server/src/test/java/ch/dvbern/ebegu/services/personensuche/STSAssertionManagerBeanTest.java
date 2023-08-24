@@ -17,28 +17,23 @@
 
 package ch.dvbern.ebegu.services.personensuche;
 
-import javax.inject.Inject;
-import javax.xml.soap.SOAPElement;
-import javax.xml.transform.TransformerException;
-
 import ch.dvbern.ebegu.errors.PersonenSucheServiceException;
 import ch.dvbern.ebegu.errors.STSZertifikatServiceException;
 import ch.dvbern.ebegu.test.IntegrationTest;
 import ch.dvbern.ebegu.tests.AbstractEbeguLoginTest;
 import ch.dvbern.ebegu.ws.sts.SAMLAuthenticationUtil;
 import ch.dvbern.ebegu.ws.sts.STSAssertionManager;
-import ch.dvbern.ebegu.ws.sts.WebserviceType;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.persistence.UsingDataSet;
 import org.jboss.arquillian.transaction.api.annotation.TransactionMode;
 import org.jboss.arquillian.transaction.api.annotation.Transactional;
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.*;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
+
+import javax.inject.Inject;
+import javax.xml.soap.SOAPElement;
+import javax.xml.transform.TransformerException;
 
 /**
  * User: homa
@@ -76,8 +71,7 @@ public class STSAssertionManagerBeanTest  extends AbstractEbeguLoginTest {
 
 	@Test
 	public void getValidSTSAssertionForPersonensucheTest() throws STSZertifikatServiceException, PersonenSucheServiceException, TransformerException {
-		final SOAPElement validSTSAssertionForPersonensuche = stsAssertionManager.getValidSTSAssertionForWebserviceType(
-			WebserviceType.GERES);
+		final SOAPElement validSTSAssertionForPersonensuche = stsAssertionManager.getValidSTSAssertionForWebserviceType();
 		Assert.assertNotNull(validSTSAssertionForPersonensuche);
 		String s = SAMLAuthenticationUtil.nodeToString(validSTSAssertionForPersonensuche);
 		Assert.assertTrue(s.contains(":ds=\"http://www.w3.org/2000/09/xmldsig#"));
@@ -86,18 +80,18 @@ public class STSAssertionManagerBeanTest  extends AbstractEbeguLoginTest {
 
 	@Test
 	public void forceRenewalTest() throws STSZertifikatServiceException, PersonenSucheServiceException {
-		final SOAPElement validSTSAssertionForPersonensuche = stsAssertionManager.getValidSTSAssertionForWebserviceType(WebserviceType.GERES);
+		final SOAPElement validSTSAssertionForPersonensuche = stsAssertionManager.getValidSTSAssertionForWebserviceType();
 		Assert.assertNotNull(validSTSAssertionForPersonensuche);
-		SOAPElement renewdAssertion = stsAssertionManager.forceRenewalOfCurrentAssertion(WebserviceType.GERES);
+		SOAPElement renewdAssertion = stsAssertionManager.forceRenewalOfCurrentAssertion();
 		Assert.assertNotNull(validSTSAssertionForPersonensuche);
 		Assert.assertNotSame(validSTSAssertionForPersonensuche, renewdAssertion);
 
 	}
 	@Test
 	public void forceReinitializationOfAssertionTest() throws STSZertifikatServiceException, PersonenSucheServiceException {
-		final SOAPElement validSTSAssertionForPersonensuche = stsAssertionManager.getValidSTSAssertionForWebserviceType(WebserviceType.GERES);
+		final SOAPElement validSTSAssertionForPersonensuche = stsAssertionManager.getValidSTSAssertionForWebserviceType();
 		Assert.assertNotNull(validSTSAssertionForPersonensuche);
-		SOAPElement anotherAssertion = stsAssertionManager.forceReinitializationOfCurrentAssertion(WebserviceType.GERES);
+		SOAPElement anotherAssertion = stsAssertionManager.forceReinitializationOfCurrentAssertion();
 		Assert.assertNotNull(validSTSAssertionForPersonensuche);
 		Assert.assertNotSame(validSTSAssertionForPersonensuche, anotherAssertion);
 //		Assert.assertNotEquals(validSTSAssertionForPersonensuche.getAssertionID(), anotherAssertion.getAssertionID());

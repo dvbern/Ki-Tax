@@ -15,15 +15,6 @@
 
 package ch.dvbern.ebegu.config;
 
-import java.io.Serializable;
-import java.util.Locale;
-import java.util.Optional;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.enterprise.context.Dependent;
-import javax.inject.Inject;
-
 import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.enums.ApplicationPropertyKey;
 import ch.dvbern.ebegu.errors.KibonLogLevel;
@@ -33,6 +24,14 @@ import org.apache.commons.configuration.SystemConfiguration;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
+import java.io.Serializable;
+import java.util.Locale;
+import java.util.Optional;
 
 /**
  * Konfiguration von kiBon. Liest system Properties aus
@@ -76,15 +75,9 @@ public class EbeguConfigurationImpl extends SystemConfiguration implements Ebegu
 	public static final String EBEGU_GEOADMIN_SEARCHSERVER_URL = "ebegu.geoadmin.searchserver.url";
 	public static final String EBEGU_GEOADMIN_MAPSERVER_URL = "ebegu.geoadmin.mapserver.url";
 
-	public static final String EBEGU_KIBON_ANFRAGE_STS_KEYSTORE_PATH = "ebegu.kibonanfrage.sts.keystore.path";
-	public static final String EBEGU_KIBON_ANFRAGE_STS_KEYSTORE_PW = "ebegu.kibonanfrage.sts.keystore.pw";
-	public static final String EBEGU_KIBON_ANFRAGE_STS_PRIVATE_KEY_ALIAS = "ebegu.kibonanfrage.sts.private.key.alias";
-
-	public static final String EBEGU_KIBON_ANFRAGE_STS_BASE_PATH = "ebegu.kibonanfrage.sts.base.path";
-	public static final String EBEGU_KIBON_ANFRAGE_STS_WSDL = "ebegu.kibonanfrage.sts.wsdl";
-	public static final String EBEGU_KIBON_ANFRAGE_STS_ENDPOINT = "ebegu.kibonanfrage.sts.endpoint";
-	public static final String EBEGU_KIBON_ANFRAGE_STS_RENEWAL_ASSERTION_WSDL = "ebegu.kibonanfrage.sts.renewal.assertion.wsdl";
-	public static final String EBEGU_KIBON_ANFRAGE_STS_RENEWAL_ASSERTION_ENDPOINT = "ebegu.kibonanfrage.sts.renewal.assertion.endpoint";
+	public static final String EBEGU_KIBON_ANFRAGE_OIDC_CLIENT_ID = "ebegu.kibonanfrage.oidc.client.id";
+	public static final String EBEGU_KIBON_ANFRAGE_OIDC_CLIENT_SECRET = "ebegu.kibonanfrage.oidc.client.secret";
+	public static final String EBEGU_KIBON_ANFRAGE_OIDC_CLIENT_ENDPOINT = "ebegu.kibonanfrage.oidc.endpoint";
 
 	public static final String EBEGU_KITAX_HOST = "ebegu.kitax.host";
 	public static final String EBEGU_KITAX_ENDPOINT = "ebegu.kitax.endpoint";
@@ -497,46 +490,18 @@ public class EbeguConfigurationImpl extends SystemConfiguration implements Ebegu
 	}
 
 	@Override
-	public String getEbeguKibonAnfrageSTSPrivateKeyAlias() {
-		return getString(EBEGU_KIBON_ANFRAGE_STS_PRIVATE_KEY_ALIAS, "rbr1");
+	public String getEbeguKibonAnfrageOIDCClientId() {
+		return getString(EBEGU_KIBON_ANFRAGE_OIDC_CLIENT_ID);
 	}
 
 	@Override
-	public String getEbeguKibonAnfrageSTSKeystorePW() {
-		return getString(EBEGU_KIBON_ANFRAGE_STS_KEYSTORE_PW);
+	public String getEbeguKibonAnfrageOIDCSecret() {
+		return getString(EBEGU_KIBON_ANFRAGE_OIDC_CLIENT_SECRET);
 	}
 
 	@Override
-	public String getEbeguKibonAnfrageSTSKeystorePath() {
-		String jbossHome =  System.getProperty("jboss.home.dir");
-		String defaultPathToJKS =  jbossHome + "/rbr1-svbern-sts-ks-t.jks";
-
-		return getString(EBEGU_KIBON_ANFRAGE_STS_KEYSTORE_PATH, defaultPathToJKS);
-	}
-
-	@Override
-	public String getEbeguKibonAnfrageSTSPrivateKeyPW() {
-		return getEbeguKibonAnfrageSTSKeystorePW();
-	}
-
-	@Override
-	public String getEbeguKibonAnfrageSTSBasePath() {
-		return getString(EBEGU_KIBON_ANFRAGE_STS_BASE_PATH, "https://nesko-replica.sv.fin.be.ch/securityService"); //test
-	}
-
-	@Override
-	public String getEbeguKibonAnfrageSTSEndpoint() {
-		return getString(EBEGU_KIBON_ANFRAGE_STS_ENDPOINT, getEbeguKibonAnfrageSTSBasePath() +  "/zertsts/services/ZertSTSWebservice");
-	}
-
-	@Override
-	public String getEbeguKibonAnfrageSTSWsdl() {
-		return getString(EBEGU_KIBON_ANFRAGE_STS_WSDL);
-	}
-
-	@Override
-	public String getEbeguKibonAnfrageSTSRenewalAssertionEndpoint() {
-		return getString(EBEGU_KIBON_ANFRAGE_STS_RENEWAL_ASSERTION_ENDPOINT, getEbeguKibonAnfrageSTSBasePath() +  "/samlrenew/services/RenewAssertionWebService");
+	public String getEbeguKibonAnfrageOIDCEndpoint() {
+		return getString(EBEGU_KIBON_ANFRAGE_OIDC_CLIENT_ENDPOINT);
 	}
 
 	@Override
