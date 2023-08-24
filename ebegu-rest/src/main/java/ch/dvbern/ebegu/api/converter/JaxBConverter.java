@@ -2390,12 +2390,10 @@ public class JaxBConverter extends AbstractConverter {
 		return jaxKind;
 	}
 
-	public Collection<JaxPensumFachstelle> pensumFachstellenListToJax(final Collection<PensumFachstelle> persistedPensumFachstellenList) {
-		final Collection<JaxPensumFachstelle> jaxPensumFachstellenSet = new HashSet<>();
-		for (PensumFachstelle pensumFachstelle : persistedPensumFachstellenList) {
-			jaxPensumFachstellenSet.add(pensumFachstelleToJax(pensumFachstelle));
-		}
-		return jaxPensumFachstellenSet;
+	public Collection<JaxPensumFachstelle> pensumFachstellenListToJax(final Set<PensumFachstelle> persistedPensumFachstellenList) {
+		return persistedPensumFachstellenList.stream()
+			.map(this::pensumFachstelleToJax)
+			.collect(Collectors.toList());
 	}
 
 	@Nonnull
@@ -2439,7 +2437,7 @@ public class JaxBConverter extends AbstractConverter {
 	public void pensumFachstellenToEntity(
 		final Kind kind,
 		final Collection<JaxPensumFachstelle> pensumFsToSave) {
-		final Collection<PensumFachstelle> transformedKindPensumFachstellen = new HashSet<>();
+		final Set<PensumFachstelle> transformedKindPensumFachstellen = new TreeSet<>();
 		for (JaxPensumFachstelle jaxPensumFachstelle : pensumFsToSave) {
 			if (jaxPensumFachstelle.getId() != null) {
 				final PensumFachstelle pensumFachstelleToMergeWith = kind.getPensumFachstelle().stream()
@@ -3981,7 +3979,6 @@ public class JaxBConverter extends AbstractConverter {
 		jaxZeitabschn.setErwerbspensumGS1(zeitabschnitt.getRelevantBgCalculationInput().getErwerbspensumGS1());
 		jaxZeitabschn.setErwerbspensumGS2(zeitabschnitt.getRelevantBgCalculationInput().getErwerbspensumGS2());
 		jaxZeitabschn.setBetreuungspensumProzent(zeitabschnitt.getBetreuungspensumProzent());
-		jaxZeitabschn.setFachstellenpensum(zeitabschnitt.getRelevantBgCalculationInput().getFachstellenpensum());
 		jaxZeitabschn.setAnspruchspensumRest(zeitabschnitt.getRelevantBgCalculationInput().getAnspruchspensumRest());
 		jaxZeitabschn.setBgPensum(zeitabschnitt.getBgPensum());
 		jaxZeitabschn.setAnspruchspensumProzent(zeitabschnitt.getAnspruchberechtigtesPensum());

@@ -48,6 +48,10 @@ import java.util.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.notNullValue;
 
+import javax.inject.Inject;
+import java.time.LocalDate;
+import java.util.*;
+
 /**
  * Testet BetreuungResource
  */

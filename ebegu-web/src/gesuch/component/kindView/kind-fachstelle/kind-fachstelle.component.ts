@@ -1,10 +1,10 @@
 import {
     AfterViewInit,
     ChangeDetectionStrategy,
-    Component,
+    Component, EventEmitter,
     Input,
     OnChanges, OnDestroy,
-    OnInit,
+    OnInit, Output,
     SimpleChanges,
     ViewChild,
 } from '@angular/core';
@@ -50,6 +50,12 @@ export class KindFachstelleComponent implements OnInit, OnChanges, AfterViewInit
 
     @Input()
     public index: number = 0;
+
+    @Input()
+    public pensumFachstellenList: TSPensumFachstelle[];
+
+    @Output()
+    public readonly onPensumFachstellenOverlaps = new EventEmitter<string>();
 
     @ViewChild(NgForm) private readonly form: NgForm;
 
@@ -185,6 +191,45 @@ export class KindFachstelleComponent implements OnInit, OnChanges, AfterViewInit
 
     public compareByID(fachstelle1: TSFachstelle, fachstelle2: TSFachstelle) {
         return fachstelle1?.id === fachstelle2?.id;
+    }
+
+    public validatePensumOverlaps(): void {
+        if (!this.form.valid) {
+            return;
+        }
+
+        if (this.pensumFachstellenList.length <= 1) {
+            this.onPensumFachstellenOverlaps.emit(null);
+            return;
+        }
+
+        this.onPensumFachstellenOverlaps.emit(this.getWarningIfFachstelleOverlaps());
+        return;
+    }
+
+    private getWarningIfFachstelleOverlaps(): string {
+        const sortedFachstellenList = this.pensumFachstellenList
+            .slice()
+            .sort((p1, p2) =>
+                p1.gueltigkeit.gueltigAb.valueOf() - p2.gueltigkeit.gueltigAb.valueOf());
+
+        for (const [index, pensum] of sortedFachstellenList.entries()) {
+            if (index === sortedFachstellenList.length - 1) {
+                return null;
+            }
+
+            const nextPensum = sortedFachstellenList[index+1];
+
+            if (pensum.gueltigkeit.isInDateRange(nextPensum.gueltigkeit.gueltigAb) ||
+               (EbeguUtil.isNotNullOrUndefined(nextPensum.gueltigkeit.gueltigBis) &&
+                pensum.gueltigkeit.isInDateRange(nextPensum.gueltigkeit.gueltigBis))) {
+                return (nextPensum.pensum > pensum.pensum) ?
+                    'PENSUM_FACHSTELLE_WARN_OVERLAP_HOEHER' :
+                    'PENSUM_FACHSTELLE_WARN_OVERLAP_TIEFER';
+            }
+        }
+
+        return null;
     }
 
 }

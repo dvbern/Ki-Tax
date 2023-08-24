@@ -15,16 +15,7 @@
 
 package ch.dvbern.ebegu.rules;
 
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.util.HashSet;
-import java.util.List;
-
-import ch.dvbern.ebegu.entities.Betreuung;
-import ch.dvbern.ebegu.entities.Fachstelle;
-import ch.dvbern.ebegu.entities.Gesuch;
-import ch.dvbern.ebegu.entities.PensumFachstelle;
-import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
+import ch.dvbern.ebegu.entities.*;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.IntegrationTyp;
 import ch.dvbern.ebegu.test.TestDataUtil;
@@ -33,9 +24,14 @@ import ch.dvbern.ebegu.util.MathUtil;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.List;
+import java.util.TreeSet;
+
 import static ch.dvbern.ebegu.util.Constants.ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS;
-import static org.hamcrest.MatcherAssert.*;
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
 
 /**
  * Tests für Fachstellen-Regel
@@ -303,7 +299,7 @@ public class FachstelleRuleTest {
 		final Gesuch gesuch = betreuung.extractGesuch();
 		TestDataUtil.createDefaultAdressenForGS(gesuch, false);
 
-		betreuung.getKind().getKindJA().setPensumFachstelle(new HashSet<>());
+		betreuung.getKind().getKindJA().setPensumFachstelle(new TreeSet<>());
 
 		final PensumFachstelle pensumFachstelle = new PensumFachstelle();
 		final Fachstelle fachstelle = new Fachstelle();
