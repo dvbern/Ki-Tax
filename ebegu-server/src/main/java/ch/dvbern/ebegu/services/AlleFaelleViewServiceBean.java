@@ -17,19 +17,21 @@
 
 package ch.dvbern.ebegu.services;
 
+import ch.dvbern.ebegu.dto.suchfilter.smarttable.AntragPredicateObjectDTO;
 import ch.dvbern.ebegu.dto.suchfilter.smarttable.AntragTableFilterDTO;
 import ch.dvbern.ebegu.entities.*;
-import ch.dvbern.ebegu.enums.AntragStatus;
-import ch.dvbern.ebegu.enums.ErrorCodeEnum;
-import ch.dvbern.ebegu.enums.UserRole;
+import ch.dvbern.ebegu.enums.*;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.ebegu.services.util.SearchUtil;
+import ch.dvbern.ebegu.util.AntragStatusConverterUtil;
+import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.lib.cdipersistence.Persistence;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.annotation.Nullable;
 import javax.annotation.security.PermitAll;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
@@ -39,7 +41,9 @@ import javax.inject.Inject;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.*;
 import javax.validation.constraints.NotNull;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeParseException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -191,6 +195,7 @@ public class AlleFaelleViewServiceBean extends AbstractBaseService implements Al
 			null);
 
 		alleFaelleView.setGesuchsperiodeId(gesuch.getGesuchsperiode().getId());
+		alleFaelleView.setGesuchsperiodeStatus(gesuch.getGesuchsperiode().getStatus());
 		alleFaelleView.setGesuchsperiodeString(gesuch.getGesuchsperiode().getGesuchsperiodeStringShort());
 
 		Benutzer verantwortlicherBG = gesuch.getDossier().getVerantwortlicherBG();
@@ -266,6 +271,7 @@ public class AlleFaelleViewServiceBean extends AbstractBaseService implements Al
 		predicates.add(mandantPredicate);
 		getGemeindePredicateForCurrentUser(user, root).ifPresent(predicates::add);
 		getRoleBasedPredicate(user, cb, root).ifPresent(predicates::add);
+		getOnlyAktivePeriodenPredicate(cb, root, antragTableFilterDTO.isOnlyAktivePerioden()).ifPresent(predicates::add);
 
 
 		query.select(root.get(AlleFaelleView_.ANTRAG_ID))
@@ -287,6 +293,17 @@ public class AlleFaelleViewServiceBean extends AbstractBaseService implements Al
 
 //		pagedResult.forEach(authorizer::checkReadAuthorization);
 		return pagedResult;
+	}
+
+	private Optional<Predicate> getOnlyAktivePeriodenPredicate(
+		CriteriaBuilder cb,
+		Root<AlleFaelleView> root,
+		@Nullable Boolean onlyAktivePerioden) {
+		if (onlyAktivePerioden == null || !onlyAktivePerioden) {
+			return Optional.empty();
+		}
+
+		return Optional.of(cb.equal(root.get(AlleFaelleView_.gesuchsperiodeStatus), GesuchsperiodeStatus.AKTIV));
 	}
 
 	private List<AlleFaelleView> findAlleFaelleViewByIds(@NotNull List<String> ids) {
