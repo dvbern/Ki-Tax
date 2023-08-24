@@ -61,6 +61,8 @@ public class BGCalculationInput {
 
 	private int fachstellenpensum;
 
+	private IntegrationTyp integrationTypFachstellenPensum;
+
 	private boolean betreuungspensumMustBeAtLeastFachstellenpensum = false;
 
 	private int ausserordentlicherAnspruch;
@@ -262,6 +264,7 @@ public class BGCalculationInput {
 		this.gesuchBeendenKonkubinatWirdInPeriodeXJahreAlt = toCopy.gesuchBeendenKonkubinatWirdInPeriodeXJahreAlt;
 		this.bgStundenFaktor = toCopy.bgStundenFaktor;
 		this.keineVerguenstigungGewuenscht = toCopy.keineVerguenstigungGewuenscht;
+		this.integrationTypFachstellenPensum = toCopy.integrationTypFachstellenPensum;
 	}
 
 	@Nonnull
@@ -877,6 +880,10 @@ public class BGCalculationInput {
 			this.setBgStundenFaktor(other.getBgStundenFaktor());
 		}
 		this.keineVerguenstigungGewuenscht = this.keineVerguenstigungGewuenscht || other.keineVerguenstigungGewuenscht;
+
+		//integrations Typ kann nicht ändern wenn zwei Fachstellen zusammengezählt werde
+		this.integrationTypFachstellenPensum = this.integrationTypFachstellenPensum == null ?
+			other.integrationTypFachstellenPensum : this.integrationTypFachstellenPensum;
 	}
 
 	/**
@@ -1080,7 +1087,8 @@ public class BGCalculationInput {
 			this.requiredAgeForAnspruchNotReached == other.requiredAgeForAnspruchNotReached &&
 			this.gesuchBeendenKonkubinatWirdInPeriodeXJahreAlt == other.gesuchBeendenKonkubinatWirdInPeriodeXJahreAlt &&
 			MathUtil.isSame(this.bgStundenFaktor, other.bgStundenFaktor) &&
-			this.keineVerguenstigungGewuenscht == other.keineVerguenstigungGewuenscht;
+			this.keineVerguenstigungGewuenscht == other.keineVerguenstigungGewuenscht &&
+			this.integrationTypFachstellenPensum == other.integrationTypFachstellenPensum;
 	}
 
 	@SuppressWarnings("PMD.CompareObjectsWithEquals")
@@ -1264,5 +1272,13 @@ public class BGCalculationInput {
 
 	public void setKeineVerguenstigungGewuenscht(boolean keineVerguenstigungGewuenscht) {
 		this.keineVerguenstigungGewuenscht = keineVerguenstigungGewuenscht;
+	}
+
+	public IntegrationTyp getIntegrationTypFachstellenPensum() {
+		return integrationTypFachstellenPensum;
+	}
+
+	public void setIntegrationTypFachstellenPensum(IntegrationTyp integrationTypFachstellenPensum) {
+		this.integrationTypFachstellenPensum = integrationTypFachstellenPensum;
 	}
 }

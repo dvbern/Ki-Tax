@@ -34,7 +34,7 @@ import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 
 import javax.inject.Inject;
-import java.util.HashSet;
+import java.util.TreeSet;
 
 /**
  * Tests der die Konvertierung von Betreuungen prueft
@@ -91,9 +91,9 @@ public class BetreuungConverterTest extends AbstractEbeguRestLoginTest {
 	private Betreuung insertNewEntity(boolean createFachstelle) {
 		Betreuung betreuung = TestDataUtil.createDefaultBetreuung();
 		KindContainer kind = TestDataUtil.createDefaultKindContainer();
-		kind.getKindJA().setPensumFachstelle(new HashSet<>());
+		kind.getKindJA().setPensumFachstelle(new TreeSet<>());
 		Assert.assertNotNull(kind.getKindGS());
-		kind.getKindGS().setPensumFachstelle(new HashSet<>());
+		kind.getKindGS().setPensumFachstelle(new TreeSet<>());
 
 		InstitutionStammdaten instStammdaten = TestDataUtil.createDefaultInstitutionStammdaten();
 		TestDataUtil.saveMandantIfNecessary(persistence, instStammdaten.getInstitution().getMandant());

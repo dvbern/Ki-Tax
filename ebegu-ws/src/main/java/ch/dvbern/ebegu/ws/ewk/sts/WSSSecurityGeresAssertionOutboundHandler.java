@@ -17,29 +17,23 @@
 
 package ch.dvbern.ebegu.ws.ewk.sts;
 
-import java.util.Set;
-import java.util.TreeSet;
-
-import javax.ejb.LocalBean;
-import javax.ejb.Stateless;
-import javax.inject.Inject;
-import javax.xml.namespace.QName;
-import javax.xml.soap.SOAPElement;
-import javax.xml.soap.SOAPEnvelope;
-import javax.xml.soap.SOAPException;
-import javax.xml.soap.SOAPFactory;
-import javax.xml.soap.SOAPHeader;
-import javax.xml.ws.handler.MessageContext;
-import javax.xml.ws.handler.soap.SOAPHandler;
-import javax.xml.ws.handler.soap.SOAPMessageContext;
-
 import ch.dvbern.ebegu.errors.STSZertifikatServiceException;
-import ch.dvbern.ebegu.ws.sts.WebserviceType;
 import ch.dvbern.ebegu.ws.tools.WSUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Node;
+
+import javax.ejb.LocalBean;
+import javax.ejb.Stateless;
+import javax.inject.Inject;
+import javax.xml.namespace.QName;
+import javax.xml.soap.*;
+import javax.xml.ws.handler.MessageContext;
+import javax.xml.ws.handler.soap.SOAPHandler;
+import javax.xml.ws.handler.soap.SOAPMessageContext;
+import java.util.Set;
+import java.util.TreeSet;
 
 @Stateless
 @LocalBean
@@ -70,7 +64,7 @@ public class WSSSecurityGeresAssertionOutboundHandler implements SOAPHandler<SOA
 
 				SOAPHeader header = envelope.addHeader();
 
-				Node assertionNode = stsAssertionManager.getValidSTSAssertionForWebserviceType(WebserviceType.GERES);
+				Node assertionNode = stsAssertionManager.getValidSTSAssertionForWebserviceType();
 
 				Node importedAssertionNode = securityElem.getOwnerDocument().importNode(assertionNode, true);
 				if (importedAssertionNode.getNodeType() == Node.DOCUMENT_NODE) {

@@ -62,6 +62,7 @@ import IQService = angular.IQService;
 import IScope = angular.IScope;
 import ITimeoutService = angular.ITimeoutService;
 import ITranslateService = angular.translate.ITranslateService;
+import {TSEinkommensverschlechterungContainer} from '../../../models/TSEinkommensverschlechterungContainer';
 
 const LOG = LogFactory.createLog('KindViewController');
 
@@ -116,6 +117,7 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
     private isZemisDeaktiviert: boolean = false;
     private mandant: KiBonMandant;
     public readonly demoFeature = TSDemoFeature.MEHRERE_FACHSTELLEN;
+    private fachstellenPensumOverlapsMessageKey: string = undefined;
 
     public constructor(
         $stateParams: IKindStateParams,
@@ -468,6 +470,18 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
 
     public isFachstellenTypLuzern(): boolean {
         return this.fachstellenTyp === TSFachstellenTyp.LUZERN;
+    }
+
+    public getMessageKeyWarnFachstellenPensumOverlap(): string {
+        return this.fachstellenPensumOverlapsMessageKey;
+    }
+
+    public setFachstellenPensumOverlaps(messageKeyWarn: string): void {
+        this.fachstellenPensumOverlapsMessageKey = messageKeyWarn;
+    }
+
+    public showWarningPensumOverlaps(): boolean {
+        return EbeguUtil.isNotNullOrUndefined(this.fachstellenPensumOverlapsMessageKey);
     }
 
     private loadEinstellungen(): void {

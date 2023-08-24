@@ -15,29 +15,6 @@
 
 package ch.dvbern.ebegu.entities;
 
-import java.time.LocalDate;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Objects;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EntityListeners;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.ForeignKey;
-import javax.persistence.Index;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
-import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
-
 import ch.dvbern.ebegu.enums.AntragCopyType;
 import ch.dvbern.ebegu.enums.EinschulungTyp;
 import ch.dvbern.ebegu.enums.Geschlecht;
@@ -46,7 +23,19 @@ import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.EbeguUtil;
 import ch.dvbern.ebegu.validators.CheckKinderabzug;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import org.hibernate.annotations.SortNatural;
 import org.hibernate.envers.Audited;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.persistence.*;
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
+import java.time.LocalDate;
+import java.util.Objects;
+import java.util.Set;
+import java.util.TreeSet;
 
 /**
  * Entity fuer Kinder.
@@ -129,7 +118,8 @@ public class Kind extends AbstractPersonEntity {
 	@Valid
 	@Nonnull
 	@OneToMany(mappedBy = "kind", cascade = CascadeType.ALL, orphanRemoval = true)
-	private Collection<PensumFachstelle> pensumFachstelle = new HashSet<>();
+	@SortNatural
+	private Set<PensumFachstelle> pensumFachstelle = new TreeSet<>();
 
 	@Valid
 	@Nullable
@@ -286,11 +276,11 @@ public class Kind extends AbstractPersonEntity {
 	}
 
 	@Nonnull
-	public Collection<PensumFachstelle> getPensumFachstelle() {
+	public Set<PensumFachstelle> getPensumFachstelle() {
 		return pensumFachstelle;
 	}
 
-	public void setPensumFachstelle(@Nonnull Collection<PensumFachstelle> pensumFachstelle) {
+	public void setPensumFachstelle(@Nonnull Set<PensumFachstelle> pensumFachstelle) {
 		this.pensumFachstelle = pensumFachstelle;
 	}
 
