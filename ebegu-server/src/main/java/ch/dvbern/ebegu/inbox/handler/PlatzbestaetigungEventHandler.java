@@ -17,71 +17,35 @@
 
 package ch.dvbern.ebegu.inbox.handler;
 
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Locale;
-import java.util.Optional;
-import java.util.Set;
-import java.util.function.BiFunction;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-
-import ch.dvbern.ebegu.entities.AbstractDecimalPensum;
-import ch.dvbern.ebegu.entities.AbstractEntity;
-import ch.dvbern.ebegu.entities.AbstractMahlzeitenPensum;
-import ch.dvbern.ebegu.entities.Betreuung;
-import ch.dvbern.ebegu.entities.Betreuungsmitteilung;
-import ch.dvbern.ebegu.entities.BetreuungsmitteilungPensum;
-import ch.dvbern.ebegu.entities.BetreuungspensumContainer;
-import ch.dvbern.ebegu.entities.ErweiterteBetreuung;
-import ch.dvbern.ebegu.entities.ErweiterteBetreuungContainer;
-import ch.dvbern.ebegu.entities.Gemeinde;
-import ch.dvbern.ebegu.entities.Gesuch;
-import ch.dvbern.ebegu.entities.Gesuchsperiode;
-import ch.dvbern.ebegu.entities.InstitutionExternalClient;
-import ch.dvbern.ebegu.entities.Mandant;
-import ch.dvbern.ebegu.entities.Mitteilung;
-import ch.dvbern.ebegu.enums.AntragStatus;
-import ch.dvbern.ebegu.enums.Betreuungsstatus;
-import ch.dvbern.ebegu.enums.EinstellungKey;
-import ch.dvbern.ebegu.enums.GesuchsperiodeStatus;
-import ch.dvbern.ebegu.enums.MitteilungStatus;
-import ch.dvbern.ebegu.enums.MitteilungTeilnehmerTyp;
+import ch.dvbern.ebegu.entities.*;
+import ch.dvbern.ebegu.enums.*;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.errors.KibonLogLevel;
 import ch.dvbern.ebegu.inbox.services.BetreuungEventHelper;
 import ch.dvbern.ebegu.kafka.BaseEventHandler;
 import ch.dvbern.ebegu.kafka.EventType;
-import ch.dvbern.ebegu.services.BetreuungMonitoringService;
-import ch.dvbern.ebegu.services.BetreuungService;
-import ch.dvbern.ebegu.services.EinstellungService;
-import ch.dvbern.ebegu.services.GemeindeService;
-import ch.dvbern.ebegu.services.MitteilungService;
+import ch.dvbern.ebegu.services.*;
 import ch.dvbern.ebegu.types.DateRange;
-import ch.dvbern.ebegu.util.EbeguUtil;
-import ch.dvbern.ebegu.util.Gueltigkeit;
-import ch.dvbern.ebegu.util.GueltigkeitsUtil;
-import ch.dvbern.ebegu.util.MathUtil;
-import ch.dvbern.ebegu.util.ServerMessageUtil;
+import ch.dvbern.ebegu.util.*;
 import ch.dvbern.kibon.exchange.commons.platzbestaetigung.BetreuungEventDTO;
 import ch.dvbern.kibon.exchange.commons.types.Zeiteinheit;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_MAHLZEITENVERGUENSTIGUNG_ENABLED;
-import static ch.dvbern.ebegu.enums.EinstellungKey.OEFFNUNGSSTUNDEN_TFO;
-import static ch.dvbern.ebegu.enums.EinstellungKey.OEFFNUNGSTAGE_KITA;
-import static ch.dvbern.ebegu.enums.EinstellungKey.OEFFNUNGSTAGE_TFO;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.*;
+import java.util.function.BiFunction;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+
+import static ch.dvbern.ebegu.enums.EinstellungKey.*;
 import static ch.dvbern.ebegu.util.EbeguUtil.collectionComparator;
 
 @ApplicationScoped
@@ -137,6 +101,16 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 		String refnr = dto.getRefnr();
 		EventMonitor eventMonitor = new EventMonitor(betreuungMonitoringService, eventTime, refnr, clientName);
 		Processing processing = attemptProcessing(eventMonitor, dto);
+
+		if (processing.isProcessingIgnored()) {
+			String message = processing.getMessage();
+			LOG.info(
+				"Platzbestaetigung Event für Betreuung mit RefNr: {} wurde ignoriert und nicht verarbeitet: {}",
+				refnr,
+				message);
+			eventMonitor.record("Eine Platzbestaetigung Event wurde ignoriert: " + message);
+			return;
+		}
 
 		if (!processing.isProcessingSuccess()) {
 			String message = processing.getMessage();
@@ -408,7 +382,7 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 		Betreuung betreuung = ctx.getBetreuung();
 
 		if (!mitteilungService.isBetreuungGueltigForMutation(betreuung)) {
-			return Processing.failure(
+			return Processing.ignore(
 				"Die Betreuung wurde storniert und es gibt eine neuere Betreuung für dieses Kind und Institution");
 		}
 
@@ -420,12 +394,11 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 		Betreuungsmitteilung betreuungsmitteilung = createBetreuungsmitteilung(ctx, latest.orElse(null));
 
 		if (latest.filter(l -> MITTEILUNG_COMPARATOR.compare(l, betreuungsmitteilung) == 0).isPresent()) {
-			return Processing.failure(
-				"Die Betreuungsmeldung ist identisch mit der neusten offenen Betreuungsmeldung.");
+			return Processing.ignore("Die Betreuungsmeldung ist identisch mit der neusten offenen Betreuungsmeldung.");
 		}
 
 		if (latest.isEmpty() && isSame(betreuungsmitteilung, betreuung)) {
-			return Processing.failure("Die Betreuungsmeldung und die Betreuung sind identisch.");
+			return Processing.ignore("Die Betreuungsmeldung und die Betreuung sind identisch.");
 		}
 
 		mitteilungService.replaceBetreungsmitteilungen(betreuungsmitteilung);
