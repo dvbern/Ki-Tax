@@ -1,4 +1,5 @@
 import {ComponentFixture, TestBed} from '@angular/core/testing';
+import * as moment from 'moment';
 import {of} from 'rxjs';
 import {SharedModule} from '../../../../app/shared/shared.module';
 import {AuthServiceRS} from '../../../../authentication/service/AuthServiceRS.rest';
@@ -52,5 +53,23 @@ describe('KindFachstelleComponent', () => {
 
     it('should create', () => {
         expect(component).toBeTruthy();
+    });
+
+    it('should test pensen overlaps', () => {
+        const dateRange = new TSDateRange(moment('2023-08-01'), moment('2024-07-31'));
+        const dateA = moment('2023-08-15');
+        const dateB = moment('2023-08-01');
+        const dateC = moment('2024-07-31');
+
+        expect(dateRange.isInDateRange(dateA)).toBeTruthy();
+        expect(dateRange.isInDateRange(dateB)).toBeTruthy();
+        expect(dateRange.isInDateRange(dateC)).toBeTruthy();
+
+        // not in date range
+        const dateD = moment('2024-08-01');
+        const dateE = moment('2023-07-31');
+
+        expect(dateRange.isInDateRange(dateD)).toBeFalsy();
+        expect(dateRange.isInDateRange(dateE)).toBeFalsy();
     });
 });
