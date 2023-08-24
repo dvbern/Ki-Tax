@@ -1,16 +1,17 @@
 package ch.dvbern.ebegu.rules;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.Locale;
+
+import javax.annotation.Nonnull;
+
 import ch.dvbern.ebegu.dto.BGCalculationInput;
 import ch.dvbern.ebegu.dto.FinanzDatenDTO;
 import ch.dvbern.ebegu.entities.AbstractPlatz;
 import ch.dvbern.ebegu.entities.BGCalculationResult;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.enums.MsgKey;
-
-import javax.annotation.Nonnull;
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.util.Locale;
 
 public class MutationsMergerFinanzielleSituationBernFKJV extends MutationsMergerFinanzielleSituationBern {
 
@@ -52,6 +53,10 @@ public class MutationsMergerFinanzielleSituationBernFKJV extends MutationsMerger
 
 		if (isFinSitRueckwirkendAnzupassen(inputData, massgebendesEinkommenFinSit, resultVorgaenger)) {
 			finsitRueckwirkendAnpassen(inputData, massgebendesEinkommenFinSit, platz);
+			return;
+		}
+		if (massgebendesEinkommenFinSit.compareTo(resultVorgaenger.getMassgebendesEinkommenVorAbzugFamgr()) < 0) {
+			inputData.addBemerkung(MsgKey.ANSPRUCHSAENDERUNG_MSG, getLocale());
 		}
 	}
 
