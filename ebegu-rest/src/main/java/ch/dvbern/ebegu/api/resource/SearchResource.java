@@ -25,6 +25,7 @@ import ch.dvbern.ebegu.dto.suchfilter.smarttable.AntragTableFilterDTO;
 import ch.dvbern.ebegu.dto.suchfilter.smarttable.PaginationDTO;
 import ch.dvbern.ebegu.entities.*;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
+import ch.dvbern.ebegu.enums.DemoFeatureTyp;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
@@ -88,6 +89,9 @@ public class SearchResource {
 
 	@Inject
 	private AlleFaelleViewService alleFaelleViewService;
+
+	@Inject
+	private ApplicationPropertyService applicationPropertyService;
 
 	/**
 	 * Gibt eine Liste mit allen Pendenzen des Jugendamtes zurueck.
@@ -272,6 +276,11 @@ public class SearchResource {
 		@Context UriInfo uriInfo,
 		@Context HttpServletResponse response) {
 
+		if (!isAlleFaelleViewDemoFeatureActiv()) {
+			return Response.status(Response.Status.FORBIDDEN).build();
+		}
+
+
 		return MonitoringUtil.monitor(GesuchResource.class, "searchAntraegeAlleFaelle", () -> {
 			List<AlleFaelleView> foundAntraege = alleFaelleViewService.searchAntrage(antragSearch, false);
 
@@ -279,6 +288,11 @@ public class SearchResource {
 			JaxAntragSearchresultDTO resultDTO = buildResultDTO(antragSearch, antragDTOList);
 			return Response.ok(resultDTO).build();
 		});
+	}
+
+	private boolean isAlleFaelleViewDemoFeatureActiv() {
+		List<DemoFeatureTyp> activedDemoFeatures = applicationPropertyService.getActivatedDemoFeatures(principalBean.getMandant());
+		return activedDemoFeatures.contains(DemoFeatureTyp.ALLE_FAELLE_SUCHE_NEU);
 	}
 
 	@ApiOperation(value = "Build der Alle Faelle Sicht von scratch")
