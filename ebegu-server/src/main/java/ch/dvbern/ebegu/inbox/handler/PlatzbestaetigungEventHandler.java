@@ -102,6 +102,16 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 		EventMonitor eventMonitor = new EventMonitor(betreuungMonitoringService, eventTime, refnr, clientName);
 		Processing processing = attemptProcessing(eventMonitor, dto);
 
+		if (processing.isProcessingIgnored()) {
+			String message = processing.getMessage();
+			LOG.info(
+				"Platzbestaetigung Event für Betreuung mit RefNr: {} wurde ignoriert und nicht verarbeitet: {}",
+				refnr,
+				message);
+			eventMonitor.record("Eine Platzbestaetigung Event wurde ignoriert: " + message);
+			return;
+		}
+
 		if (!processing.isProcessingSuccess()) {
 			String message = processing.getMessage();
 			LOG.warn(
@@ -372,8 +382,8 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 		Betreuung betreuung = ctx.getBetreuung();
 
 		if (!mitteilungService.isBetreuungGueltigForMutation(betreuung)) {
-			ctx.getEventMonitor().record("Die Betreuung wurde storniert und es gibt eine neuere Betreuung für dieses Kind und Institution");
-			return Processing.success();
+			return Processing.ignore(
+				"Die Betreuung wurde storniert und es gibt eine neuere Betreuung für dieses Kind und Institution");
 		}
 
 		Collection<Betreuungsmitteilung> open =
@@ -384,13 +394,11 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 		Betreuungsmitteilung betreuungsmitteilung = createBetreuungsmitteilung(ctx, latest.orElse(null));
 
 		if (latest.filter(l -> MITTEILUNG_COMPARATOR.compare(l, betreuungsmitteilung) == 0).isPresent()) {
-			ctx.getEventMonitor().record("Die Betreuungsmeldung ist identisch mit der neusten offenen Betreuungsmeldung.");
-			return Processing.success();
+			return Processing.ignore("Die Betreuungsmeldung ist identisch mit der neusten offenen Betreuungsmeldung.");
 		}
 
 		if (latest.isEmpty() && isSame(betreuungsmitteilung, betreuung)) {
-			ctx.getEventMonitor().record("Die Betreuungsmeldung und die Betreuung sind identisch.");
-			return Processing.success();
+			return Processing.ignore("Die Betreuungsmeldung und die Betreuung sind identisch.");
 		}
 
 		mitteilungService.replaceBetreungsmitteilungen(betreuungsmitteilung);

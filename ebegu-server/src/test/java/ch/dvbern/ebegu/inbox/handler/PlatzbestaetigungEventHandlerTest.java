@@ -17,48 +17,10 @@
 
 package ch.dvbern.ebegu.inbox.handler;
 
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.Month;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
-import java.util.concurrent.atomic.AtomicInteger;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
-import ch.dvbern.ebegu.entities.AbstractMahlzeitenPensum;
-import ch.dvbern.ebegu.entities.Benutzer;
-import ch.dvbern.ebegu.entities.Betreuung;
-import ch.dvbern.ebegu.entities.Betreuungsmitteilung;
-import ch.dvbern.ebegu.entities.BetreuungsmitteilungPensum;
-import ch.dvbern.ebegu.entities.Betreuungspensum;
-import ch.dvbern.ebegu.entities.BetreuungspensumContainer;
-import ch.dvbern.ebegu.entities.Dossier;
-import ch.dvbern.ebegu.entities.Einstellung;
-import ch.dvbern.ebegu.entities.ErweiterteBetreuung;
-import ch.dvbern.ebegu.entities.ExternalClient;
-import ch.dvbern.ebegu.entities.Gemeinde;
-import ch.dvbern.ebegu.entities.Gesuch;
-import ch.dvbern.ebegu.entities.Gesuchsperiode;
-import ch.dvbern.ebegu.entities.InstitutionExternalClient;
-import ch.dvbern.ebegu.entities.Mandant;
-import ch.dvbern.ebegu.enums.AntragStatus;
-import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
-import ch.dvbern.ebegu.enums.Betreuungsstatus;
-import ch.dvbern.ebegu.enums.GesuchsperiodeStatus;
-import ch.dvbern.ebegu.enums.MitteilungStatus;
-import ch.dvbern.ebegu.enums.MitteilungTeilnehmerTyp;
+import ch.dvbern.ebegu.entities.*;
+import ch.dvbern.ebegu.enums.*;
 import ch.dvbern.ebegu.inbox.services.BetreuungEventHelper;
-import ch.dvbern.ebegu.services.BetreuungMonitoringService;
-import ch.dvbern.ebegu.services.BetreuungService;
-import ch.dvbern.ebegu.services.EinstellungService;
-import ch.dvbern.ebegu.services.GemeindeService;
-import ch.dvbern.ebegu.services.MitteilungService;
+import ch.dvbern.ebegu.services.*;
 import ch.dvbern.ebegu.test.TestDataUtil;
 import ch.dvbern.ebegu.test.util.TestDataInstitutionStammdatenBuilder;
 import ch.dvbern.ebegu.testfaelle.Testfall01_WaeltiDagmar;
@@ -68,13 +30,7 @@ import ch.dvbern.kibon.exchange.commons.platzbestaetigung.BetreuungEventDTO;
 import ch.dvbern.kibon.exchange.commons.platzbestaetigung.ZeitabschnittDTO;
 import ch.dvbern.kibon.exchange.commons.types.Zeiteinheit;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
-import org.easymock.Capture;
-import org.easymock.EasyMock;
-import org.easymock.EasyMockExtension;
-import org.easymock.EasyMockSupport;
-import org.easymock.Mock;
-import org.easymock.MockType;
-import org.easymock.TestSubject;
+import org.easymock.*;
 import org.hamcrest.Matcher;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
@@ -85,32 +41,25 @@ import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.EnumSource;
 import org.junit.jupiter.params.provider.EnumSource.Mode;
 
-import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_MAHLZEITENVERGUENSTIGUNG_ENABLED;
-import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_ENABLED;
-import static ch.dvbern.ebegu.enums.EinstellungKey.OEFFNUNGSSTUNDEN_TFO;
-import static ch.dvbern.ebegu.enums.EinstellungKey.OEFFNUNGSTAGE_KITA;
-import static ch.dvbern.ebegu.enums.EinstellungKey.OEFFNUNGSTAGE_TFO;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.Month;
+import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
+
+import static ch.dvbern.ebegu.enums.EinstellungKey.*;
 import static ch.dvbern.ebegu.inbox.handler.PlatzbestaetigungEventHandler.GO_LIVE;
-import static ch.dvbern.ebegu.inbox.handler.PlatzbestaetigungTestUtil.REF_NUMMER;
-import static ch.dvbern.ebegu.inbox.handler.PlatzbestaetigungTestUtil.createBetreuungEventDTO;
-import static ch.dvbern.ebegu.inbox.handler.PlatzbestaetigungTestUtil.createBetreuungMitteilung;
-import static ch.dvbern.ebegu.inbox.handler.PlatzbestaetigungTestUtil.createBetreuungsmitteilungPensum;
-import static ch.dvbern.ebegu.inbox.handler.PlatzbestaetigungTestUtil.createZeitabschnittDTO;
-import static ch.dvbern.ebegu.inbox.handler.PlatzbestaetigungTestUtil.failed;
-import static ch.dvbern.ebegu.inbox.handler.PlatzbestaetigungTestUtil.getSingleContainer;
 import static ch.dvbern.ebegu.inbox.handler.PlatzbestaetigungTestUtil.matches;
+import static ch.dvbern.ebegu.inbox.handler.PlatzbestaetigungTestUtil.*;
 import static com.spotify.hamcrest.pojo.IsPojo.pojo;
 import static java.util.Objects.requireNonNull;
-import static org.easymock.EasyMock.eq;
-import static org.easymock.EasyMock.expect;
-import static org.easymock.EasyMock.expectLastCall;
+import static org.easymock.EasyMock.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.notNullValue;
-import static org.hamcrest.Matchers.nullValue;
-import static org.hamcrest.Matchers.sameInstance;
-import static org.hamcrest.Matchers.stringContainsInOrder;
+import static org.hamcrest.Matchers.*;
 
 @ExtendWith(EasyMockExtension.class)
 public class PlatzbestaetigungEventHandlerTest extends EasyMockSupport {
@@ -1214,7 +1163,7 @@ public class PlatzbestaetigungEventHandlerTest extends EasyMockSupport {
 			replayAll();
 
 			Processing result = handler.attemptProcessing(eventMonitor, dto);
-			assertThat(result, failed("Die Betreuungsmeldung und die Betreuung sind identisch."));
+			assertThat(result, ignored("Die Betreuungsmeldung und die Betreuung sind identisch."));
 			verifyAll();
 		}
 
@@ -1231,7 +1180,7 @@ public class PlatzbestaetigungEventHandlerTest extends EasyMockSupport {
 			Processing result = handler.attemptProcessing(eventMonitor, dto);
 			assertThat(
 				result,
-				failed("Die Betreuungsmeldung ist identisch mit der neusten offenen Betreuungsmeldung."));
+				ignored("Die Betreuungsmeldung ist identisch mit der neusten offenen Betreuungsmeldung."));
 			verifyAll();
 		}
 
@@ -1268,7 +1217,7 @@ public class PlatzbestaetigungEventHandlerTest extends EasyMockSupport {
 			replayAll();
 
 			Processing result = handler.attemptProcessing(eventMonitor, dto);
-			assertThat(result, failed("Die Betreuungsmeldung und die Betreuung sind identisch."));
+			assertThat(result, ignored("Die Betreuungsmeldung und die Betreuung sind identisch."));
 			verifyAll();
 		}
 
