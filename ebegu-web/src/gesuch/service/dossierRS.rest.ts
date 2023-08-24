@@ -61,4 +61,9 @@ export class DossierRS implements IEntityRS {
     public setVerantwortlicherTS(dossierId: string, username: string): IHttpPromise<TSDossier> {
         return this.$http.put(`${this.serviceURL}/verantwortlicherTS/${encodeURIComponent(dossierId)}`, username);
     }
+
+    public updateBemerkungen(dossierId: string, bemerkungen: string): IHttpPromise<any> {
+        return this.$http.put(`${this.serviceURL}/bemerkungen/${encodeURIComponent(dossierId)}`,
+            bemerkungen);
+    }
 }

@@ -15,7 +15,6 @@
 
 package ch.dvbern.ebegu.api.dtos;
 
-import javax.annotation.Nullable;
 import javax.validation.constraints.Min;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -40,9 +39,6 @@ public class JaxFall extends JaxAbstractDTO {
 	private JaxBenutzer besitzer;
 
 	private JaxSozialdienstFall sozialdienstFall;
-
-	@Nullable
-	private String bemerkungenDossier;
 
 	public long getFallNummer() {
 		return fallNummer;
@@ -75,14 +71,4 @@ public class JaxFall extends JaxAbstractDTO {
 	public void setSozialdienstFall(JaxSozialdienstFall sozialdienstFall) {
 		this.sozialdienstFall = sozialdienstFall;
 	}
-
-	@Nullable
-	public String getBemerkungenDossier() {
-		return bemerkungenDossier;
-	}
-
-	public void setBemerkungenDossier(@Nullable final String bemerkungenDossier) {
-		this.bemerkungenDossier = bemerkungenDossier;
-	}
-
 }

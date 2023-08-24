@@ -1015,7 +1015,6 @@ public class JaxBConverter extends AbstractConverter {
 				fallJAXP.getSozialdienstFall(),
 				sozialdienstFall));
 		}
-		fall.setBemerkungenDossier(fallJAXP.getBemerkungenDossier());
 		return fall;
 	}
 
@@ -1024,7 +1023,6 @@ public class JaxBConverter extends AbstractConverter {
 		convertAbstractVorgaengerFieldsToJAX(persistedFall, jaxFall);
 		jaxFall.setFallNummer(persistedFall.getFallNummer());
 		jaxFall.setNextNumberKind(persistedFall.getNextNumberKind());
-		jaxFall.setBemerkungenDossier(persistedFall.getBemerkungenDossier());
 		if (persistedFall.getBesitzer() != null) {
 			jaxFall.setBesitzer(benutzerToJaxBenutzer(persistedFall.getBesitzer()));
 		}
@@ -1105,6 +1103,7 @@ public class JaxBConverter extends AbstractConverter {
 		convertAbstractVorgaengerFieldsToJAX(persistedDossier, jaxDossier);
 		jaxDossier.setFall(this.fallToJAX(persistedDossier.getFall()));
 		jaxDossier.setGemeinde(gemeindeToJAX(persistedDossier.getGemeinde()));
+		jaxDossier.setBemerkungen(persistedDossier.getBemerkungen());
 		if (persistedDossier.getVerantwortlicherBG() != null) {
 			jaxDossier.setVerantwortlicherBG(benutzerToJaxBenutzerNoDetails(persistedDossier.getVerantwortlicherBG()));
 		}
@@ -4755,7 +4754,7 @@ public class JaxBConverter extends AbstractConverter {
 		JaxAntragDTO antrag = new JaxAntragDTO();
 		antrag.setAntragId(gesuch.getId());
 		antrag.setFallNummer(gesuch.getFall().getFallNummer());
-		antrag.setBemerkungenDossier(gesuch.getFall().getBemerkungenDossier());
+		antrag.setBemerkungen(gesuch.getDossier().getBemerkungen());
 		antrag.setDossierId(gesuch.getDossier().getId());
 		antrag.setFamilienName(gesuch.extractFamiliennamenString());
 		antrag.setEingangsdatum(gesuch.getEingangsdatum());
