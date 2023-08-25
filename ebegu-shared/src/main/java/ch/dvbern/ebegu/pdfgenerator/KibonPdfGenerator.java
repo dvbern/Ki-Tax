@@ -24,6 +24,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
+import java.util.Optional;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -158,9 +159,8 @@ public abstract class KibonPdfGenerator {
 	@Nonnull
 	protected List<String> getFamilieAdresse() {
 		final List<String> empfaengerAdresse = new ArrayList<>();
-		if (getGesuch().isVerfuegungEingeschrieben()) {
-			empfaengerAdresse.add(translate(EINSCHREIBEN));
-		}
+		getOptionalEinschreibeHeader().ifPresent(empfaengerAdresse::add);
+
 		empfaengerAdresse.add(KibonPrintUtil.getGesuchstellerNameAsString(getGesuch().getGesuchsteller1()));
 		if (hasSecondGesuchsteller() && getGesuch().getGesuchsteller2() != null) {
 			empfaengerAdresse.add(KibonPrintUtil.getGesuchstellerNameAsString(getGesuch().getGesuchsteller2()));
@@ -186,5 +186,12 @@ public abstract class KibonPdfGenerator {
 	@Nonnull
 	protected String translate(String key, Object... args) {
 		return ServerMessageUtil.getMessage(key, sprache, mandant, args);
+	}
+
+	protected Optional<String> getOptionalEinschreibeHeader() {
+		if (getGesuch().isVerfuegungEingeschrieben()) {
+			return Optional.of(translate(EINSCHREIBEN));
+		}
+		return Optional.empty();
 	}
 }
