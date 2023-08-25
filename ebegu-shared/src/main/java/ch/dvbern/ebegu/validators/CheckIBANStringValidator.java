@@ -17,8 +17,6 @@
 
 package ch.dvbern.ebegu.validators;
 
-import org.apache.commons.lang.StringUtils;
-
 import javax.annotation.Nullable;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
@@ -33,7 +31,7 @@ public class CheckIBANStringValidator implements ConstraintValidator<CheckIBANSt
 	@Override
 	public boolean isValid(@Nullable String iban, ConstraintValidatorContext constraintValidatorContext) {
 		// we should allow nullable iban fields
-		if (StringUtils.isBlank(iban)) {
+		if (iban == null) {
 			return true;
 		}
 
