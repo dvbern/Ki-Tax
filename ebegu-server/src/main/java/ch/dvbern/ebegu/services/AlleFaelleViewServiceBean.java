@@ -19,12 +19,11 @@ package ch.dvbern.ebegu.services;
 
 import ch.dvbern.ebegu.dto.suchfilter.smarttable.AntragTableFilterDTO;
 import ch.dvbern.ebegu.entities.*;
-import ch.dvbern.ebegu.enums.AntragStatus;
-import ch.dvbern.ebegu.enums.ErrorCodeEnum;
-import ch.dvbern.ebegu.enums.UserRole;
+import ch.dvbern.ebegu.enums.*;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
+import ch.dvbern.ebegu.services.util.AlleFaellePredicateBuilder;
 import ch.dvbern.ebegu.services.util.SearchUtil;
 import ch.dvbern.lib.cdipersistence.Persistence;
 import org.slf4j.Logger;
@@ -40,6 +39,7 @@ import javax.persistence.TypedQuery;
 import javax.persistence.criteria.*;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeParseException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -191,6 +191,7 @@ public class AlleFaelleViewServiceBean extends AbstractBaseService implements Al
 			null);
 
 		alleFaelleView.setGesuchsperiodeId(gesuch.getGesuchsperiode().getId());
+		alleFaelleView.setGesuchsperiodeStatus(gesuch.getGesuchsperiode().getStatus());
 		alleFaelleView.setGesuchsperiodeString(gesuch.getGesuchsperiode().getGesuchsperiodeStringShort());
 
 		Benutzer verantwortlicherBG = gesuch.getDossier().getVerantwortlicherBG();
@@ -258,15 +259,25 @@ public class AlleFaelleViewServiceBean extends AbstractBaseService implements Al
 		CriteriaQuery<String> query = cb.createQuery(String.class);
 		Root<AlleFaelleView> root = query.from(AlleFaelleView.class);
 
+		AlleFaellePredicateBuilder predicateBuilder = new AlleFaellePredicateBuilder(cb, root);
+
 		List<Predicate> predicates = new ArrayList<>();
 
 		Predicate inClauseStatus = root.get(AlleFaelleView_.ANTRAG_STATUS).in(allowedAntragStatus);
 		predicates.add(inClauseStatus);
 		Predicate mandantPredicate = cb.equal(root.get(AlleFaelleView_.MANDANT_ID), user.getMandant().getId());
 		predicates.add(mandantPredicate);
-		getGemeindePredicateForCurrentUser(user, root).ifPresent(predicates::add);
-		getRoleBasedPredicate(user, cb, root).ifPresent(predicates::add);
 
+		predicateBuilder.buildOptionalGemeindePredicateForCurrentUser(user).ifPresent(predicates::add);
+		getRoleBasedPredicate(user, cb, root).ifPresent(predicates::add);
+		predicateBuilder.buildOptionalOnlyAktivePeriodenPredicate(antragTableFilterDTO.isOnlyAktivePerioden()).ifPresent(predicates::add);
+
+		try {
+			predicates.addAll(predicateBuilder.buildFilterPredicates(antragTableFilterDTO,user.getRole()));
+		} catch (DateTimeParseException e) {
+			// Versuch Filterung nach ungueltigem Datum. Es kann kein Gesuch geben, welches passt. Wir geben leer zurueck
+			return Collections.emptyList();
+		}
 
 		query.select(root.get(AlleFaelleView_.ANTRAG_ID))
 			.where(CriteriaQueryHelper.concatenateExpressions(cb, predicates));
@@ -437,18 +448,5 @@ public class AlleFaelleViewServiceBean extends AbstractBaseService implements Al
 				break;
 		}
 		return optionalPredicate;
-	}
-
-	private Optional<Predicate> getGemeindePredicateForCurrentUser(Benutzer currentBenutzer, Root<AlleFaelleView> root) {
-		if (currentBenutzer.getCurrentBerechtigung().getRole().isRoleGemeindeabhaengig()) {
-			Collection<String> gemeindenForBenutzer =
-				currentBenutzer.extractGemeindenForUser()
-					.stream()
-					.map(AbstractEntity::getId)
-					.collect(Collectors.toList());
-			return Optional.of(root.get(AlleFaelleView_.GEMEINDE_ID).in(gemeindenForBenutzer));
-		}
-
-		return Optional.empty();
 	}
 }
