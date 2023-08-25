@@ -176,5 +176,7 @@
     "BETREUUNGSANGEBOT_NUMBER": "{{kindname}}, {{geburtsdatum}}",
     "MUTATION_KORREKTUR_AUSBEZAHLT_AUSSERHALB_KIBON_RUECKFORDERUNG_ELTERN": "Diese Verfügung führt zu einer Rückerstattung. Für die bereits ausbezahlten Betreuungsgutscheine ergibt sich eine Differenz von CHF {{betrag}}. Die Gemeinde fordert den Betrag direkt bei den Antragsstellenden zurück. Die Rechnungen vom Leistungserbringer werden nicht rückwirkend angepasst.",
     "MUTATION_KORREKTUR_AUSBEZAHLT_AUSSERHALB_KIBON_RUECKZAHLUNG_ELTERN": "Diese Verfügung führt zu einer rückwirkenden Auszahlung. Für die markierten Monate ergibt sich eine Differenz von CHF {{betrag}}. Die Gemeinde zahlt den Betrag direkt an die Antragsstellenden aus. Die Rechnungen vom Leistungserbringer werden nicht rückwirkend angepasst.",
+    "KINDER_FACHSTELLENBESTAETIGUNG": "Fachstellenbestätigung",
+    "DOK_ERWEITERTE_BETREUUNG": "Erweiterte Betreuung",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }
