@@ -323,7 +323,6 @@
                     <mat-form-field class="dv-faelle-mat-form-field" floatLabel="never">
                         <input matInput
                                [value]="filterPredicate.institutionen || null"
-                               [placeholder]="'SUCHBEGRIFF_EINGEBEN' | translate"
                                (keyup)="filterInstitution($event.target.value)"
                                [matAutocomplete]="auto">
                     </mat-form-field>

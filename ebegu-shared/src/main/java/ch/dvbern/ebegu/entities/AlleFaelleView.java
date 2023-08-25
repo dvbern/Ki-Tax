@@ -166,6 +166,11 @@ public class AlleFaelleView {
 
 	@NotNull
 	@Column(nullable = false)
+	@Enumerated(EnumType.STRING)
+	private GesuchsperiodeStatus gesuchsperiodeStatus;
+
+	@NotNull
+	@Column(nullable = false)
 	private String gesuchsperiodeString;
 
 	@Nullable
@@ -541,5 +546,13 @@ public class AlleFaelleView {
 
 	public void setGesuchBetreuungenStatus(@Nullable GesuchBetreuungenStatus betreuungsstatus) {
 		this.gesuchBetreuungenStatus = betreuungsstatus;
+	}
+
+	public GesuchsperiodeStatus getGesuchsperiodeStatus() {
+		return gesuchsperiodeStatus;
+	}
+
+	public void setGesuchsperiodeStatus(GesuchsperiodeStatus gesuchsperiodeStatus) {
+		this.gesuchsperiodeStatus = gesuchsperiodeStatus;
 	}
 }
