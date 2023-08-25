@@ -9,6 +9,7 @@ import ch.dvbern.ebegu.util.Constants;
 
 import javax.annotation.Nullable;
 import javax.persistence.criteria.*;
+import javax.persistence.metamodel.SingularAttribute;
 import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -53,6 +54,14 @@ public class AlleFaellePredicateBuilder {
 		AntragPredicateObjectDTO predicateObjectDto = antragTableFilterDTO.getSearch().getPredicateObject();
 		List<Predicate> predicates = new ArrayList<>();
 
+		getOptionalPredicateLike(predicateObjectDto.getGemeinde(), AlleFaelleView_.gemeindeName).ifPresent(predicates::add);
+		getOptionalPredicateLike(predicateObjectDto.getFamilienNameForLike(), AlleFaelleView_.familienName).ifPresent(predicates::add);
+		getOptionalPredicateEqual(predicateObjectDto.getGesuchsperiodeString(), AlleFaelleView_.gesuchsperiodeString).ifPresent(predicates::add);
+		getOptionalPredicateEqual(predicateObjectDto.getInternePendenz(), AlleFaelleView_.internePendenz).ifPresent(predicates::add);
+		getOptionalPredicateEqual(predicateObjectDto.getDokumenteHochgeladen(), AlleFaelleView_.dokumenteHochgeladen).ifPresent(predicates::add);
+		getOptionalPredicateDate(predicateObjectDto.getEingangsdatum(), AlleFaelleView_.eingangsdatum).ifPresent(predicates::add);
+		getOptionalPredicateDate(predicateObjectDto.getEingangsdatumSTV(), AlleFaelleView_.eingangsdatumSTV).ifPresent(predicates::add);
+
 		if (predicateObjectDto.getFallNummer() != null) {
 			// Die Fallnummer muss als String mit LIKE verglichen werden: Bei Eingabe von "14" soll der Fall "114"
 			// kommen
@@ -60,14 +69,7 @@ public class AlleFaellePredicateBuilder {
 			String fallNummerWithWildcards = SearchUtil.withWildcards(predicateObjectDto.getFallNummer());
 			predicates.add(cb.like(fallNummerAsString, fallNummerWithWildcards));
 		}
-		if (predicateObjectDto.getGemeinde() != null) {
-			Expression<String> gemeindeExpression = root.get(AlleFaelleView_.gemeindeName);
-			predicates.add(cb.like(gemeindeExpression, predicateObjectDto.getGemeinde()));
-		}
-		if (predicateObjectDto.getFamilienName() != null) {
-			Expression<String> familienNameExpression = root.get(AlleFaelleView_.familienName);
-			predicates.add(cb.like(familienNameExpression, predicateObjectDto.getFamilienNameForLike()));
-		}
+
 		if (predicateObjectDto.getAntragTyp() != null) {
 			List<AntragTyp> values = AntragTyp.getValuesForFilter(predicateObjectDto.getAntragTyp());
 
@@ -75,21 +77,7 @@ public class AlleFaellePredicateBuilder {
 				predicates.add(root.get(AlleFaelleView_.antragTyp).in(values));
 			}
 		}
-		if (predicateObjectDto.getGesuchsperiodeString() != null) {
-			Expression<String> gesuchsperiodeExpression = root.get(AlleFaelleView_.gesuchsperiodeString);
-			predicates.add(cb.equal(gesuchsperiodeExpression, predicateObjectDto.getGesuchsperiodeString()));
-		}
-		if (predicateObjectDto.getEingangsdatum() != null) {
-			LocalDate searchDate =
-				LocalDate.parse(predicateObjectDto.getEingangsdatum(), Constants.DATE_FORMATTER);
-			predicates.add(cb.equal(root.get(AlleFaelleView_.eingangsdatum), searchDate));
-		}
 
-		if (predicateObjectDto.getEingangsdatumSTV() != null) {
-			LocalDate searchDate =
-				LocalDate.parse(predicateObjectDto.getEingangsdatumSTV(), Constants.DATE_FORMATTER);
-			predicates.add(cb.equal(root.get(AlleFaelleView_.eingangsdatumSTV), searchDate));
-		}
 		if (predicateObjectDto.getAenderungsdatum() != null) {
 			// Wir wollen ohne Zeit vergleichen
 			Expression<LocalDate> aenderungsdatumAsLocalDate =
@@ -106,11 +94,7 @@ public class AlleFaellePredicateBuilder {
 				role);
 			predicates.add(root.get(AlleFaelleView_.antragStatus).in(antragStatus));
 		}
-		if (predicateObjectDto.getDokumenteHochgeladen() != null) {
-			predicates.add(cb.equal(
-				root.get(AlleFaelleView_.dokumenteHochgeladen),
-				predicateObjectDto.getDokumenteHochgeladen()));
-		}
+
 		/*if (predicateObjectDto.getAngebote() != null) {
 			switch (BetreuungsangebotTyp.valueOf(predicateObjectDto.getAngebote())) {
 				case KITA:
@@ -151,14 +135,9 @@ public class AlleFaellePredicateBuilder {
 			predicates.add(cb.like(kindExpression, predicateObjectDto.getKindNameForLike()));
 		}
 
-		if (predicateObjectDto.getVerantwortlicherBG() != null && !role.isRoleSozialdienstabhaengig()) {
-			Expression<String> verantworlicher = root.get(AlleFaelleView_.verantwortlicherBG);
-			predicates.add(cb.equal(verantworlicher, predicateObjectDto.getVerantwortlicherBG()));
-		}
-
-		if (predicateObjectDto.getVerantwortlicherTS() != null && !role.isRoleSozialdienstabhaengig()) {
-			Expression<String> verantworlicher = root.get(AlleFaelleView_.verantwortlicherTS);
-			predicates.add(cb.equal(verantworlicher, predicateObjectDto.getVerantwortlicherTS()));
+		if (!role.isRoleSozialdienstabhaengig()) {
+			getOptionalPredicateEqual(predicateObjectDto.getVerantwortlicherBG(), AlleFaelleView_.verantwortlicherBG).ifPresent(predicates::add);
+			getOptionalPredicateEqual(predicateObjectDto.getVerantwortlicherTS(), AlleFaelleView_.verantwortlicherTS).ifPresent(predicates::add);
 		}
 
 		if (predicateObjectDto.getVerantwortlicherGemeinde() != null && !role.isRoleSozialdienstabhaengig()) {
@@ -169,11 +148,34 @@ public class AlleFaellePredicateBuilder {
 			predicates.add(cb.and(cb.or(predicateBG, predicateTS)));
 		}
 
-		if (predicateObjectDto.getInternePendenz() != null) {
-			predicates.add(cb.equal(root.get(AlleFaelleView_.internePendenz), predicateObjectDto.getInternePendenz()));
+		return predicates;
+	}
+
+	private Optional<Predicate> getOptionalPredicateDate(@Nullable String date, SingularAttribute<AlleFaelleView, LocalDate> attribute) {
+		if (date == null) {
+			return Optional.empty();
 		}
 
-		return predicates;
+		LocalDate searchDate = LocalDate.parse(date, Constants.DATE_FORMATTER);
+		return getOptionalPredicateEqual(searchDate, attribute);
+	}
+
+	private Optional<Predicate> getOptionalPredicateLike(@Nullable String value, SingularAttribute<AlleFaelleView, String> attribute) {
+		if (value == null) {
+			return Optional.empty();
+		}
+
+		Expression<String> expression = root.get(attribute);
+		return Optional.of(cb.like(expression, value));
+	}
+
+	private <T> Optional<Predicate> getOptionalPredicateEqual(@Nullable T value, SingularAttribute<AlleFaelleView, T> attribute) {
+		if (value == null) {
+			return Optional.empty();
+		}
+
+		Expression<T> expression = root.get(attribute);
+		return Optional.of(cb.equal(expression, value));
 	}
 
 	/**
