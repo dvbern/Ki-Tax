@@ -1,21 +1,43 @@
 package ch.dvbern.ebegu.services.util;
 
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+
+import javax.annotation.Nullable;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.Expression;
+import javax.persistence.criteria.JoinType;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+import javax.persistence.criteria.SetJoin;
+import javax.persistence.metamodel.SingularAttribute;
+
 import ch.dvbern.ebegu.dto.suchfilter.smarttable.AntragPredicateObjectDTO;
 import ch.dvbern.ebegu.dto.suchfilter.smarttable.AntragTableFilterDTO;
-import ch.dvbern.ebegu.entities.*;
-import ch.dvbern.ebegu.enums.*;
+import ch.dvbern.ebegu.entities.AbstractEntity;
+import ch.dvbern.ebegu.entities.AlleFaelleView;
+import ch.dvbern.ebegu.entities.AlleFaelleViewKind;
+import ch.dvbern.ebegu.entities.AlleFaelleViewKind_;
+import ch.dvbern.ebegu.entities.AlleFaelleView_;
+import ch.dvbern.ebegu.entities.Benutzer;
+import ch.dvbern.ebegu.enums.AntragStatus;
+import ch.dvbern.ebegu.enums.AntragStatusDTO;
+import ch.dvbern.ebegu.enums.AntragTyp;
+import ch.dvbern.ebegu.enums.GesuchBetreuungenStatus;
+import ch.dvbern.ebegu.enums.GesuchsperiodeStatus;
+import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.util.AntragStatusConverterUtil;
 import ch.dvbern.ebegu.util.Constants;
 
-import javax.annotation.Nullable;
-import javax.persistence.criteria.*;
-import javax.persistence.metamodel.SingularAttribute;
-import java.time.LocalDate;
-import java.util.*;
-import java.util.stream.Collectors;
-
 public class AlleFaellePredicateBuilder {
 
+	private static final Pattern COMPILE = Pattern.compile("^0+(?!$)");
 	private final CriteriaBuilder cb;
 	private final Root<AlleFaelleView> root;
 
@@ -66,7 +88,7 @@ public class AlleFaellePredicateBuilder {
 			// Die Fallnummer muss als String mit LIKE verglichen werden: Bei Eingabe von "14" soll der Fall "114"
 			// kommen
 			Expression<String> fallNummerAsString = root.get(AlleFaelleView_.fallNummer).as(String.class);
-			String fallNummerWithWildcards = SearchUtil.withWildcards(predicateObjectDto.getFallNummer());
+			String fallNummerWithWildcards = getFallNummerSearchString(predicateObjectDto);
 			predicates.add(cb.like(fallNummerAsString, fallNummerWithWildcards));
 		}
 
@@ -149,6 +171,28 @@ public class AlleFaellePredicateBuilder {
 		}
 
 		return predicates;
+	}
+
+	/*
+	Es gibt zwei Möglichkeiten, nach einer Fallnummer zu suchen:
+	- Nur die Nummer, z.B. 123, dann werden alle entsprechenden Fallnummern gefunden, also auch 1234 oder 9123 oder 91234
+	- Die exakte Nummer, beginnend mit 0, oder 00. Fallnummer ist immer sechststellig, ein Suchstring 0012 findet also 001234
+	  und 00012 findet 000123.
+	 */
+	private static String getFallNummerSearchString(AntragPredicateObjectDTO predicateObjectDto) {
+		var fallNr = predicateObjectDto.getFallNummer();
+		StringBuilder fallNummerWithWildcards;
+		if (fallNr.startsWith("0")) {
+			fallNummerWithWildcards = new StringBuilder(fallNr);
+			// add wildcards until fallnummer length reached
+			while (fallNummerWithWildcards.length() < Constants.FALLNUMMER_LENGTH) {
+				fallNummerWithWildcards.append('_');
+			}
+			// remove leading zeros
+			var pattern = Pattern.compile("^0+(?!$)");
+			return pattern.matcher(fallNummerWithWildcards.toString()).replaceFirst("");
+		}
+		return SearchUtil.withWildcards(predicateObjectDto.getFallNummer());
 	}
 
 	private Optional<Predicate> getOptionalPredicateDate(@Nullable String date, SingularAttribute<AlleFaelleView, LocalDate> attribute) {
