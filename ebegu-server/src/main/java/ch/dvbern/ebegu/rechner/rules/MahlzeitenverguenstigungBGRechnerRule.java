@@ -17,16 +17,15 @@
 
 package ch.dvbern.ebegu.rechner.rules;
 
-import java.math.BigDecimal;
-import java.util.Locale;
-
-import javax.annotation.Nonnull;
-
 import ch.dvbern.ebegu.dto.BGCalculationInput;
 import ch.dvbern.ebegu.enums.MsgKey;
 import ch.dvbern.ebegu.rechner.BGRechnerParameterDTO;
 import ch.dvbern.ebegu.rechner.RechnerRuleParameterDTO;
 import ch.dvbern.ebegu.util.MathUtil;
+
+import javax.annotation.Nonnull;
+import java.math.BigDecimal;
+import java.util.Locale;
 
 /**
  * Regel die angewendet wird um die Mahlzeitenvergünstigung zu berechnen

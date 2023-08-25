@@ -87,23 +87,29 @@
                                            class="form-control">
                                 </div>
                             </div>
-                            <dv-demo-feature-wrapper [demo-feature]="vm.demoFeature">
-                                <div class="row margin-top-20 margin-bottom-50">
-                                    <div class="col-xs-12 dv-input-container-question">
-                                        <div class="checkbox">
-                                            <md-checkbox ng-model="vm.getErweiterteBetreuungJA().anspruchFachstelleWennPensumUnterschritten"
-                                                         name="anspruchFachstelleWennPensumUnterschritten"
-                                                         dv-enable-element
-                                                         dv-enable-allowed-roles="vm.allowedRoles"
-                                                         dv-enable-expression="vm.enableFieldsEditedByGemeinde()"
-                                                         aria-label="{{'ANSPRUCH_FACHSTELLE_WENN_PENSUM_UNTERSCHRITTEN'|translate}}">
-                                                <span data-translate="ANSPRUCH_FACHSTELLE_WENN_PENSUM_UNTERSCHRITTEN"></span>
-                                            </md-checkbox>
-                                        </div>
+                            <div class="row">
+                                <div class="col-xs-6 margin-top-20 margin-bottom-50">
+                                    <hr class="header"/>
+                                </div>
+                            </div>
+                        </ng-container>
+
+                        <dv-demo-feature-wrapper [demo-feature]="vm.demoFeature">
+                            <div class="row margin-bottom-50">
+                                <div class="col-xs-12 dv-input-container-question">
+                                    <div class="checkbox">
+                                        <md-checkbox ng-model="vm.getErweiterteBetreuungJA().anspruchFachstelleWennPensumUnterschritten"
+                                                     name="anspruchFachstelleWennPensumUnterschritten"
+                                                     dv-enable-element
+                                                     dv-enable-allowed-roles="vm.allowedRoles"
+                                                     dv-enable-expression="vm.enableFieldsEditedByGemeinde()"
+                                                     aria-label="{{'ANSPRUCH_FACHSTELLE_WENN_PENSUM_UNTERSCHRITTEN'|translate}}">
+                                            <span data-translate="ANSPRUCH_FACHSTELLE_WENN_PENSUM_UNTERSCHRITTEN"></span>
+                                        </md-checkbox>
                                     </div>
                                 </div>
-                            </dv-demo-feature-wrapper>
-                        </ng-container>
+                            </div>
+                        </dv-demo-feature-wrapper>
                     </div>
                 </div>
 

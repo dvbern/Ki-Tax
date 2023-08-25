@@ -16,15 +16,14 @@
  */
 package ch.dvbern.ebegu.ws.sts;
 
-import java.time.LocalDateTime;
-
-import javax.inject.Inject;
-import javax.xml.soap.SOAPElement;
-
 import ch.dvbern.ebegu.errors.STSZertifikatServiceException;
 import org.apache.commons.lang3.Validate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.inject.Inject;
+import javax.xml.soap.SOAPElement;
+import java.time.LocalDateTime;
 
 /**
  * Dieser Service managed die Assertion die verwendet wird um eine EWK Abfrage zu machen.
@@ -53,28 +52,28 @@ public abstract class STSAssertionManager {
 	private RenewalAssertionWebService renewalAssertionWebService;
 
 
-	public SOAPElement getValidSTSAssertionForWebserviceType(WebserviceType webserviceType) throws STSZertifikatServiceException {
+	public SOAPElement getValidSTSAssertionForWebserviceType() throws STSZertifikatServiceException {
 		//check assertion present
 		if (currentAssertionElement == null) {
-			issueSTSSamlAssertion(webserviceType);
+			issueSTSSamlAssertion();
 			// assertion should  be set by WSSSecurityAssertionExtractionHandler
 
 		} else if(!isAssertionPeriodValid()) {
-			renewAssertion(webserviceType);
+			renewAssertion();
 		}
 
 		return currentAssertionElement;
 	}
 
-	public SOAPElement forceRenewalOfCurrentAssertion(WebserviceType webserviceType) throws STSZertifikatServiceException {
-		renewAssertion(webserviceType);
+	public SOAPElement forceRenewalOfCurrentAssertion() throws STSZertifikatServiceException {
+		renewAssertion();
 		return currentAssertionElement;
 	}
 
-	public SOAPElement forceReinitializationOfCurrentAssertion(WebserviceType webserviceType) throws STSZertifikatServiceException {
+	public SOAPElement forceReinitializationOfCurrentAssertion() throws STSZertifikatServiceException {
 		//noinspection ConstantConditions
 		this.currentAssertionElement = null;
-		return getValidSTSAssertionForWebserviceType(webserviceType);
+		return getValidSTSAssertionForWebserviceType();
 
 	}
 
@@ -93,25 +92,25 @@ public abstract class STSAssertionManager {
 		return now.isAfter(this.notBefore.minusSeconds(GRACE_PERIOD)) && now.isBefore(this.notOnOrAfter);
 	}
 
-	private void issueSTSSamlAssertion(WebserviceType webserviceType) throws STSZertifikatServiceException {
+	private void issueSTSSamlAssertion() throws STSZertifikatServiceException {
 		//this service will call our handleUpdateAssertion method. This is not very nice but allows us to use
 		//the generated service with a response handler to extract the smal1 assertion as is
-		stsWebService.getSamlAssertionForBatchuser(webserviceType);
+		stsWebService.getSamlAssertionForBatchuser();
 
 	}
 
-	private void renewAssertion(WebserviceType webserviceType) throws STSZertifikatServiceException {
+	private void renewAssertion() throws STSZertifikatServiceException {
 		Validate.notNull(currentAssertionElement, "Managed current Assertion must be set if renewAssertion is triggerd");
 		Validate.notNull(renewalToken, "Managed current renewal Token must be set if renewAssertion is triggerd");
 
 		if (LocalDateTime.now().isBefore(maxRenewalTime)) {
 
 			final STSAssertionExtractionResult stsAssertionExtractionResult = renewalAssertionWebService.renewAssertion(this.currentAssertionElement,
-				renewalToken, webserviceType);
+				renewalToken);
 			handleUpdatedAssertion(stsAssertionExtractionResult);
 		} else {
 			LOGGER.info("Assertion can not be renewd anymore. Trigger a reinitialization");
-			forceReinitializationOfCurrentAssertion(webserviceType); // should use renewal service
+			forceReinitializationOfCurrentAssertion(); // should use renewal service
 		}
 	}
 }

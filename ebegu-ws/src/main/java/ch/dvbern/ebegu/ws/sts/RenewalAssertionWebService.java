@@ -17,21 +17,16 @@
 
 package ch.dvbern.ebegu.ws.sts;
 
-import java.net.MalformedURLException;
-import java.net.URL;
-
-import javax.enterprise.context.Dependent;
-import javax.inject.Inject;
-import javax.xml.soap.SOAPConnection;
-import javax.xml.soap.SOAPConnectionFactory;
-import javax.xml.soap.SOAPElement;
-import javax.xml.soap.SOAPException;
-import javax.xml.soap.SOAPMessage;
-import javax.xml.transform.TransformerException;
-
 import ch.dvbern.ebegu.errors.STSZertifikatServiceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
+import javax.xml.soap.*;
+import javax.xml.transform.TransformerException;
+import java.net.MalformedURLException;
+import java.net.URL;
 
 /**
  * Service zum aufrufen des Renewal Service von STS welcher eine SAML Assertion fuer den
@@ -48,12 +43,12 @@ public class RenewalAssertionWebService {
 	private STSConfigManager stsConfigManager;
 
 
-	public STSAssertionExtractionResult renewAssertion(SOAPElement assertionElement, String renewalToken, WebserviceType webserviceType) throws STSZertifikatServiceException {
+	public STSAssertionExtractionResult renewAssertion(SOAPElement assertionElement, String renewalToken) throws STSZertifikatServiceException {
 		// Assertion muss erneuert werden
 		LOGGER.info("triggering renew of assertion using renewal token");
 		try {
 			SOAPMessage soapMessage = SAMLAuthenticationUtil.createRenewalSoapMessage(assertionElement, renewalToken);
-			URL url = new URL(stsConfigManager.getEbeguSTSRenewalAssertionEndpoint(webserviceType));
+			URL url = new URL(stsConfigManager.getEbeguSTSRenewalAssertionEndpoint());
 
 			SOAPConnection connection = SOAPConnectionFactory.newInstance().createConnection();
 			SOAPMessage response = connection.call(soapMessage, url.toExternalForm());

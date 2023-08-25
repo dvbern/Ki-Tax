@@ -17,8 +17,11 @@
 
 package ch.dvbern.ebegu.ws.ewk.sts;
 
-import java.util.Set;
-import java.util.TreeSet;
+import ch.dvbern.ebegu.errors.EbeguRuntimeException;
+import ch.dvbern.ebegu.ws.sts.SAMLAuthenticationUtil;
+import ch.dvbern.ebegu.ws.sts.STSAssertionExtractionResult;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
@@ -29,13 +32,8 @@ import javax.xml.soap.SOAPMessage;
 import javax.xml.ws.handler.MessageContext;
 import javax.xml.ws.handler.soap.SOAPHandler;
 import javax.xml.ws.handler.soap.SOAPMessageContext;
-
-import ch.dvbern.ebegu.errors.EbeguRuntimeException;
-import ch.dvbern.ebegu.ws.sts.SAMLAuthenticationUtil;
-import ch.dvbern.ebegu.ws.sts.STSAssertionExtractionResult;
-import ch.dvbern.ebegu.ws.sts.STSAssertionManager;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.util.Set;
+import java.util.TreeSet;
 
 /**
  * Da die Assertion 'EXAKT' so weitergegeben muss wie wir sie bekommen haben extrahiere ich sie direkt aus der SOAP Mesage.

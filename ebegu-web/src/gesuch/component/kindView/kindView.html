@@ -330,8 +330,10 @@
                                 <div ng-repeat="pensumFachstelle in vm.getPensumFachstellen() track by $index">
                                     <dv-kind-fachstelle
                                         [pensum-fachstelle]="pensumFachstelle"
+                                        [pensum-fachstellen-list]="vm.getPensumFachstellen()"
                                         [submitted]="vm.submitted"
                                         [index]="$index"
+                                        (on-pensum-fachstellen-overlaps)="vm.setFachstellenPensumOverlaps($event)"
                                     ></dv-kind-fachstelle>
                                     <div class="row margin-bottom-60 dv-input-container-medium"
                                          ng-if="($index > 0) || (vm.getPensumFachstellen().length > 1)">
@@ -360,6 +362,13 @@
                                                 <i class="fa fa-lg fa-plus-circle"></i>
                                                 <span data-translate="PENSUM_FACHSTELLE_ERFASSEN"></span>
                                             </dv-loading-button>
+                                        </div>
+                                    </div>
+                                    <div class="row margin-bottom-50" ng-if="vm.showWarningPensumOverlaps()">
+                                        <div class="col-md-12">
+                                            <div class="well well-status-abgewiesen">
+                                                <span translate>{{vm.getMessageKeyWarnFachstellenPensumOverlap()}}</span>
+                                            </div>
                                         </div>
                                     </div>
                                 </dv-demo-feature-wrapper>
