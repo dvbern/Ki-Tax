@@ -76,7 +76,7 @@ public class AlleFaellePredicateBuilder {
 		AntragPredicateObjectDTO predicateObjectDto = antragTableFilterDTO.getSearch().getPredicateObject();
 		List<Predicate> predicates = new ArrayList<>();
 
-		getOptionalPredicateLike(predicateObjectDto.getGemeinde(), AlleFaelleView_.gemeindeName).ifPresent(predicates::add);
+		getOptionalPredicateEqual(predicateObjectDto.getGemeinde(), AlleFaelleView_.gemeindeName).ifPresent(predicates::add);
 		getOptionalPredicateLike(predicateObjectDto.getFamilienNameForLike(), AlleFaelleView_.familienName).ifPresent(predicates::add);
 		getOptionalPredicateEqual(predicateObjectDto.getGesuchsperiodeString(), AlleFaelleView_.gesuchsperiodeString).ifPresent(predicates::add);
 		getOptionalPredicateEqual(predicateObjectDto.getInternePendenz(), AlleFaelleView_.internePendenz).ifPresent(predicates::add);
