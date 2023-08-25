@@ -1,43 +1,21 @@
 package ch.dvbern.ebegu.services.util;
 
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
-
-import javax.annotation.Nullable;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.Expression;
-import javax.persistence.criteria.JoinType;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
-import javax.persistence.criteria.SetJoin;
-import javax.persistence.metamodel.SingularAttribute;
-
 import ch.dvbern.ebegu.dto.suchfilter.smarttable.AntragPredicateObjectDTO;
 import ch.dvbern.ebegu.dto.suchfilter.smarttable.AntragTableFilterDTO;
-import ch.dvbern.ebegu.entities.AbstractEntity;
-import ch.dvbern.ebegu.entities.AlleFaelleView;
-import ch.dvbern.ebegu.entities.AlleFaelleViewKind;
-import ch.dvbern.ebegu.entities.AlleFaelleViewKind_;
-import ch.dvbern.ebegu.entities.AlleFaelleView_;
-import ch.dvbern.ebegu.entities.Benutzer;
-import ch.dvbern.ebegu.enums.AntragStatus;
-import ch.dvbern.ebegu.enums.AntragStatusDTO;
-import ch.dvbern.ebegu.enums.AntragTyp;
-import ch.dvbern.ebegu.enums.GesuchBetreuungenStatus;
-import ch.dvbern.ebegu.enums.GesuchsperiodeStatus;
-import ch.dvbern.ebegu.enums.UserRole;
+import ch.dvbern.ebegu.entities.*;
+import ch.dvbern.ebegu.enums.*;
 import ch.dvbern.ebegu.util.AntragStatusConverterUtil;
 import ch.dvbern.ebegu.util.Constants;
 
-public class AlleFaellePredicateBuilder {
+import javax.annotation.Nullable;
+import javax.persistence.criteria.*;
+import javax.persistence.metamodel.SingularAttribute;
+import java.time.LocalDate;
+import java.util.*;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
-	private static final Pattern COMPILE = Pattern.compile("^0+(?!$)");
+public class AlleFaellePredicateBuilder {
 	private final CriteriaBuilder cb;
 	private final Root<AlleFaelleView> root;
 
