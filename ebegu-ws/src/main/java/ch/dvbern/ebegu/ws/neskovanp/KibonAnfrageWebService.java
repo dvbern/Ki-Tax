@@ -108,6 +108,7 @@ public class KibonAnfrageWebService implements IKibonAnfrageWebService {
 		}
 		catch (Exception e) {
 			exceptionReceived = e;
+			LOGGER.error(e.getMessage());
 			throw new KiBonAnfrageServiceException(methodName, "Einen unerwartete Fehler ist aufgetretten", e);
 		}
 		finally {
