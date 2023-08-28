@@ -1,17 +1,16 @@
 package ch.dvbern.ebegu.rules;
 
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.util.Locale;
-
-import javax.annotation.Nonnull;
-
 import ch.dvbern.ebegu.dto.BGCalculationInput;
 import ch.dvbern.ebegu.dto.FinanzDatenDTO;
 import ch.dvbern.ebegu.entities.AbstractPlatz;
 import ch.dvbern.ebegu.entities.BGCalculationResult;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.enums.MsgKey;
+
+import javax.annotation.Nonnull;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.Locale;
 
 public class MutationsMergerFinanzielleSituationBernFKJV extends MutationsMergerFinanzielleSituationBern {
 
@@ -61,9 +60,7 @@ public class MutationsMergerFinanzielleSituationBernFKJV extends MutationsMerger
 	}
 
 	private boolean isFinSitRueckwirkendAnzupassen(BGCalculationInput input, BigDecimal massgebendesEinkommenFinSit, BGCalculationResult resultVorgaenger) {
-		return hasMassgebendesEinkommenVorAbzugFamgrChanged(massgebendesEinkommenFinSit, resultVorgaenger) &&
-			!input.isSozialhilfeempfaenger() &&
-			!input.isKeineVerguenstigungGewuenscht();
+		return hasMassgebendesEinkommenVorAbzugFamgrChanged(massgebendesEinkommenFinSit, resultVorgaenger) && !input.isSozialhilfeempfaenger();
 	}
 
 	private void finsitRueckwirkendAnpassen(BGCalculationInput inputData, BigDecimal massgebendesEinkommenFinSit, AbstractPlatz platz) {
