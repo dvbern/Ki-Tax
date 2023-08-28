@@ -193,8 +193,6 @@ public class BGCalculationInput {
 	private boolean gesuchBeendenKonkubinatWirdInPeriodeXJahreAlt = false;
 	private BigDecimal bgStundenFaktor = BigDecimal.ZERO;
 
-	private boolean keineVerguenstigungGewuenscht = false;
-
 	public BGCalculationInput(@Nonnull VerfuegungZeitabschnitt parent, @Nonnull RuleValidity ruleValidity) {
 		this.parent = parent;
 		this.ruleValidity = ruleValidity;
@@ -263,7 +261,6 @@ public class BGCalculationInput {
 		this.requiredAgeForAnspruchNotReached = toCopy.requiredAgeForAnspruchNotReached;
 		this.gesuchBeendenKonkubinatWirdInPeriodeXJahreAlt = toCopy.gesuchBeendenKonkubinatWirdInPeriodeXJahreAlt;
 		this.bgStundenFaktor = toCopy.bgStundenFaktor;
-		this.keineVerguenstigungGewuenscht = toCopy.keineVerguenstigungGewuenscht;
 		this.integrationTypFachstellenPensum = toCopy.integrationTypFachstellenPensum;
 	}
 
@@ -879,7 +876,6 @@ public class BGCalculationInput {
 		if (MathUtil.isZero(this.bgStundenFaktor) && !MathUtil.isZero(other.getBgStundenFaktor())) {
 			this.setBgStundenFaktor(other.getBgStundenFaktor());
 		}
-		this.keineVerguenstigungGewuenscht = this.keineVerguenstigungGewuenscht || other.keineVerguenstigungGewuenscht;
 
 		//integrations Typ kann nicht ändern wenn zwei Fachstellen zusammengezählt werde
 		this.integrationTypFachstellenPensum = this.integrationTypFachstellenPensum == null ?
@@ -1087,7 +1083,6 @@ public class BGCalculationInput {
 			this.requiredAgeForAnspruchNotReached == other.requiredAgeForAnspruchNotReached &&
 			this.gesuchBeendenKonkubinatWirdInPeriodeXJahreAlt == other.gesuchBeendenKonkubinatWirdInPeriodeXJahreAlt &&
 			MathUtil.isSame(this.bgStundenFaktor, other.bgStundenFaktor) &&
-			this.keineVerguenstigungGewuenscht == other.keineVerguenstigungGewuenscht &&
 			this.integrationTypFachstellenPensum == other.integrationTypFachstellenPensum;
 	}
 
@@ -1264,14 +1259,6 @@ public class BGCalculationInput {
 
 	public BigDecimal getBgStundenFaktor() {
 		return bgStundenFaktor;
-	}
-
-	public boolean isKeineVerguenstigungGewuenscht() {
-		return keineVerguenstigungGewuenscht;
-	}
-
-	public void setKeineVerguenstigungGewuenscht(boolean keineVerguenstigungGewuenscht) {
-		this.keineVerguenstigungGewuenscht = keineVerguenstigungGewuenscht;
 	}
 
 	public IntegrationTyp getIntegrationTypFachstellenPensum() {
