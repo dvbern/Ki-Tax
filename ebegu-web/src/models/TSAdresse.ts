@@ -13,6 +13,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import {EbeguUtil} from '../utils/EbeguUtil';
 import {TSAdressetyp} from './enums/TSAdressetyp';
 import {TSAbstractDateRangedEntity} from './TSAbstractDateRangedEntity';
 import {TSDateRange} from './types/TSDateRange';
@@ -89,6 +90,9 @@ export class TSAdresse extends TSAbstractDateRangedEntity {
     }
 
     public set plzNumber(value: number) {
+        if (EbeguUtil.isNullOrUndefined(value)) {
+            this._plz = undefined;
+        }
         this._plz = value.toString();
     }
 
