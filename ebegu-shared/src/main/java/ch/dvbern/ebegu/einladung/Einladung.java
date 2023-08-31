@@ -172,7 +172,7 @@ public class Einladung {
 
 	@Nonnull
 	public Optional<String> getOptionalTraegerschaftNameForInstitution() {
-		if (associatedEntity != null && associatedEntity instanceof Institution) {
+		if (associatedEntity instanceof Institution) {
 			return Optional.ofNullable(((Institution) associatedEntity).getTraegerschaft())
 				.map(Displayable::getName);
 		}
