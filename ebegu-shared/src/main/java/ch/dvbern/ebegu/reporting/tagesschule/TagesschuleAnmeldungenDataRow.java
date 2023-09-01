@@ -23,6 +23,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import ch.dvbern.ebegu.entities.AnmeldungTagesschule;
+import ch.dvbern.ebegu.enums.AbholungTagesschule;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
 import ch.dvbern.ebegu.enums.reporting.FleischOption;
 
@@ -67,6 +68,8 @@ public class TagesschuleAnmeldungenDataRow {
 	private String referenznummer;
 	@Nullable
 	private String bemerkung;
+	@Nullable
+	private AbholungTagesschule abholungtagesschule;
 	@Nonnull
 	private boolean isAbweichung;
 	@Nullable
@@ -281,5 +284,14 @@ public class TagesschuleAnmeldungenDataRow {
 
 	public void setNotfallnummer(@Nullable String notfallnummer) {
 		this.notfallnummer = notfallnummer;
+	}
+
+	@Nullable
+	public AbholungTagesschule getAbholungTagesschule(){
+		return abholungtagesschule;
+	}
+
+	public void setAbholungTagesschule(@Nullable AbholungTagesschule abholungtagesschule) {
+		this.abholungtagesschule = abholungtagesschule;
 	}
 }
