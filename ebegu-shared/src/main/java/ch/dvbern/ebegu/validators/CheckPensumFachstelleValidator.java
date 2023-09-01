@@ -96,9 +96,11 @@ public class CheckPensumFachstelleValidator implements ConstraintValidator<Check
 		final Gesuchsperiode gesuchsperiode = kindContainer.getGesuch().getGesuchsperiode();
 		for (PensumFachstelle pensumFachstelle : kindContainer.getKindJA().getPensumFachstelle()) {
 
-			if (pensumFachstelle.getIntegrationTyp() == IntegrationTyp.ZUSATZLEISTUNG_INTEGRATION
-				&& pensumFachstelle.getPensum() != PENSUM_ZUSATZLEISTUNG) {
-				return false;
+			if (pensumFachstelle.getIntegrationTyp() == IntegrationTyp.ZUSATZLEISTUNG_INTEGRATION) {
+				if (pensumFachstelle.getPensum() != PENSUM_ZUSATZLEISTUNG) {
+					return false;
+				}
+				continue; // diese pensumFachstelle ist valid, wir prüfen die nächste
 			}
 			@SuppressWarnings("ConstantConditions") // Im DummyService kann es null sein und ist auch null in den Tests!
 			Integer minValueAllowed = getValueAsInteger(
