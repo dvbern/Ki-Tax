@@ -1111,7 +1111,11 @@ public class BGCalculationInput {
 			this.tsInputOhneBetreuung.isSame(that.tsInputOhneBetreuung) &&
 			this.sozialhilfeempfaenger == that.sozialhilfeempfaenger &&
 			this.isZuSpaetEingereicht() == that.isZuSpaetEingereicht() &&
-			this.isAuszahlungAnEltern == that.isAuszahlungAnEltern;
+			this.isAuszahlungAnEltern == that.isAuszahlungAnEltern &&
+			MathUtil.isSame(tarifHauptmahlzeit, that.tarifHauptmahlzeit) &&
+			MathUtil.isSame(tarifNebenmahlzeit, that.tarifNebenmahlzeit) &&
+			MathUtil.isSame(anzahlHauptmahlzeiten, that.anzahlHauptmahlzeiten) &&
+			MathUtil.isSame(anzahlNebenmahlzeiten, that.anzahlNebenmahlzeiten);
 	}
 
 	private boolean isSameErwerbspensum(@Nullable Integer thisErwerbspensumGS, @Nullable Integer thatErwerbspensumGS) {
