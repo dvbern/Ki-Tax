@@ -60,7 +60,7 @@
     </div>
 
     <!--fachstelle-->
-    <div class="row">
+    <div class="row" *ngIf="(getFachstellenList$() | async).length">
         <div class="col-sm-12 dv-input-container-medium form-group">
             <label class="md-no-float required">
                 <span translate>FACHSTELLE</span>
