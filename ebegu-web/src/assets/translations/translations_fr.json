@@ -977,7 +977,7 @@
     "DOK_SONSTIGES": "Autres justificatifs",
     "DOK_PAPIERGESUCH": "Demande au format papier",
     "DOK_FREIGABEQUITTUNG": "Confirmation des données",
-    "DOK_ERWEITERTE_BETREUUNG": "Confirmation d’un besoin d’accueil ou d’encouragement extraordinaire",
+    "DOK_ERWEITERTE_BETREUUNG": "Besoin d’accueil ou d’encouragement extraordinaire",
     "DOK_GS1_AND_GS2": "{{gs1}} et {{gs2}}",
     "ERROR_FILE_TOO_LARGE": "Le fichier est trop volumineux (10MB max).",
     "FAMILIENSITUATION_NACHWEIS_TRENNUNG": "Convention de séparation / jugement de divorce / autre justificatif concernant la séparation / procédure de protection de l'union conjugale",
@@ -3067,8 +3067,8 @@
     "PENSUM_FACHSTELLE_ENTFERNEN": "Supprimer le besoin social ou linguistique {{fachstellennummer}}",
     "ZEITRAUM": "Période",
     "ANSPRUCH_FACHSTELLE_WENN_PENSUM_UNTERSCHRITTEN": "",
-    "PENSUM_FACHSTELLE_WARN_OVERLAP_HOEHER": "Die eingegebenen Pensen für die Fachstellen dürfen sich nicht überlappen<br>Der Betreuungsumfang in der <b>neueren</b> Fachstellenbestätigung ist <b>höher</b>: Tragen Sie beim von-Datum der neueren Indikation das von-Datum der neueren Fachstellenbestätigung ein. Ändern Sie das bis-Datum der älteren Indikation und tragen Sie dort den Vortag ein. Beispiel: Bisherige Indikation bis 31.12. Neue Indikation ist höher und startet am 1.12. &rarr; das bis-Datum der älteren Indikation wird auf den 30.11 abgeändert. ",
-    "PENSUM_FACHSTELLE_WARN_OVERLAP_TIEFER": "Die eingegebenen Pensen für die Fachstellen dürfen sich nicht überlappen<br>Der Betreuungsumfang in der <b>neueren</b> Fachstellenbestätigung ist <b>tiefer</b> oder <b>gleich hoch</b>: Tragen Sie beim von-Datum der neueren Indikation den Folgetag des bis-Datums der älteren Indikation ein. Beispiel: Bisherige Indikation bis 31.12. Neue Indikation ist tiefer und startet am 1.12. &rarr; das von-Datum der neueren Indikation wird auf den 1.1. gesetzt.",
+    "PENSUM_FACHSTELLE_WARN_OVERLAP_HOEHER": "Die erfassten Indikationen überlappen sich zeitlich.<br>Der Betreuungsumfang in der <b>neueren</b> Fachstellenbestätigung ist <b>höher</b>: Tragen Sie beim von-Datum der neueren Indikation das von-Datum der neueren Fachstellenbestätigung ein. Ändern Sie das bis-Datum der älteren Indikation und tragen Sie dort den Vortag ein. Beispiel: Bisherige Indikation bis 31.12. Neue Indikation ist höher und startet am 1.12. &rarr; das bis-Datum der älteren Indikation wird auf den 30.11 abgeändert. ",
+    "PENSUM_FACHSTELLE_WARN_OVERLAP_TIEFER": "Die erfassten Indikationen überlappen sich zeitlich.<br>Der Betreuungsumfang in der <b>neueren</b> Fachstellenbestätigung ist <b>tiefer</b> oder <b>gleich hoch</b>: Tragen Sie beim von-Datum der neueren Indikation den Folgetag des bis-Datums der älteren Indikation ein. Beispiel: Bisherige Indikation bis 31.12. Neue Indikation ist tiefer und startet am 1.12. &rarr; das von-Datum der neueren Indikation wird auf den 1.1. gesetzt.",
     "KITA_STUNDEN_PRO_TAG": "Kita Stunden pro Tag",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }
