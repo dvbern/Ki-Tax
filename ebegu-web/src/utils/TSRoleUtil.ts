@@ -204,6 +204,18 @@ export class TSRoleUtil {
         ];
     }
 
+    public static getTraegerschaftInstitutionGemeindeRoles(): ReadonlyArray<TSRole> {
+        return [
+            TSRole.SUPER_ADMIN,
+            TSRole.ADMIN_INSTITUTION,
+            TSRole.SACHBEARBEITER_INSTITUTION,
+            TSRole.ADMIN_TRAEGERSCHAFT,
+            TSRole.SACHBEARBEITER_TRAEGERSCHAFT,
+            TSRole.ADMIN_GEMEINDE,
+            TSRole.SACHBEARBEITER_GEMEINDE
+        ];
+    }
+
     // noinspection JSUnusedGlobalSymbols Es wird doch benutzt
     public static getTraegerschaftRoles(): ReadonlyArray<TSRole> {
         return [TSRole.SUPER_ADMIN, TSRole.ADMIN_TRAEGERSCHAFT, TSRole.SACHBEARBEITER_TRAEGERSCHAFT];
