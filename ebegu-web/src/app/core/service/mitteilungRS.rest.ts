@@ -191,14 +191,14 @@ export class MitteilungRS {
             }),
             {} as Record<string, TSBetreuungsmitteilung[]>
         );
-        Object.keys(mitteilungenByFall).forEach((fallId) => {
+        Object.keys(mitteilungenByFall).forEach(fallId => {
             from(mitteilungenByFall[fallId] ?? [])
                 .pipe(
-                    concatMap((mitteilung) =>
+                    concatMap(mitteilung =>
                         this.applyBetreuungsmitteilungSilently(mitteilung).pipe(
                             catchError((errors: TSExceptionReport[]) => {
                                 verarbeitung.addError(mitteilung, errors);
-                                errors.forEach((error) => {
+                                errors.forEach(error => {
                                     // we want to display it in the dialog, not in the error bar
                                     this.errorService.clearError(error.msgKey);
                                 });
@@ -207,7 +207,7 @@ export class MitteilungRS {
                         )
                     )
                 )
-                .subscribe((appliedMitteilung) => {
+                .subscribe(appliedMitteilung => {
                     if (EbeguUtil.isEmptyStringNullOrUndefined(appliedMitteilung.errorMessage)) {
                         verarbeitung.addSuccess(appliedMitteilung);
                     } else {

@@ -114,17 +114,15 @@ describe('MitteilungRS', () => {
                     [2, [3]],
                 ] as const
             )
-                .map(([fallId, mitteilungIds]) => {
-                    return mitteilungIds.map((mitteilungId) => {
+                .map(([fallId, mitteilungIds]) => mitteilungIds.map(mitteilungId => {
                         const mitteilung = new TSBetreuungsmitteilung();
-                        mitteilung.id = '987654321' + mitteilungId;
+                        mitteilung.id = `987654321${mitteilungId}`;
                         mitteilung.dossier = new TSDossier();
                         mitteilung.dossier.fall = new TSFall();
-                        mitteilung.dossier.fall.id = '123456789' + fallId;
+                        mitteilung.dossier.fall.id = `123456789${fallId}`;
                         return mitteilung;
-                    });
-                })
-                .reduce((acc, mitteilungen) => [...acc, ...mitteilungen], [] as TSBetreuungsmitteilung[]);
+                    }))
+                .reduce((acc, list) => [...acc, ...list], [] as TSBetreuungsmitteilung[]);
             // Fall 1 and 2 should run in parallel so Mitteilung[0] and Mitteilung[2] should be returned before Mitteilung[1]
             const expectedOrder = [mitteilungen[0], mitteilungen[2], mitteilungen[1]];
 
