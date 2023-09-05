@@ -17,18 +17,14 @@
 
 package ch.dvbern.ebegu.einladung;
 
-import java.util.Optional;
+import ch.dvbern.ebegu.entities.*;
+import ch.dvbern.ebegu.entities.sozialdienst.Sozialdienst;
+import ch.dvbern.ebegu.enums.EinladungTyp;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-
-import ch.dvbern.ebegu.entities.Benutzer;
-import ch.dvbern.ebegu.entities.Displayable;
-import ch.dvbern.ebegu.entities.Gemeinde;
-import ch.dvbern.ebegu.entities.Institution;
-import ch.dvbern.ebegu.entities.Traegerschaft;
-import ch.dvbern.ebegu.entities.sozialdienst.Sozialdienst;
-import ch.dvbern.ebegu.enums.EinladungTyp;
+import java.time.LocalDate;
+import java.util.Optional;
 
 import static com.google.common.base.Preconditions.checkArgument;
 
@@ -46,10 +42,14 @@ public class Einladung {
 	@Nullable
 	private final Displayable associatedEntity;
 
+	@Nullable
+	private final LocalDate institutionGueltigAb;
+
 	private Einladung(@Nonnull EinladungTyp einladungTyp, @Nonnull Benutzer eingeladener) {
 		this.einladungTyp = einladungTyp;
 		this.eingeladener = eingeladener;
 		this.associatedEntity = null;
+		this.institutionGueltigAb = null;
 	}
 
 	private Einladung(
@@ -63,6 +63,18 @@ public class Einladung {
 		this.einladungTyp = einladungTyp;
 		this.eingeladener = eingeladener;
 		this.associatedEntity = associatedEntity;
+		this.institutionGueltigAb = null;
+	}
+
+	private Einladung(
+		@Nonnull EinladungTyp einladungTyp,
+		@Nonnull Benutzer eingeladener,
+		@Nonnull Institution associatedEntity,
+		@Nonnull LocalDate institutionGueltigAb) {
+		this.einladungTyp = einladungTyp;
+		this.eingeladener = eingeladener;
+		this.associatedEntity = associatedEntity;
+		this.institutionGueltigAb = institutionGueltigAb;
 	}
 
 	public static Einladung forRolle(@Nonnull Benutzer eingeladener) {
@@ -117,8 +129,8 @@ public class Einladung {
 	}
 
 	@Nonnull
-	public static Einladung forInstitution(@Nonnull Benutzer eingeladener, @Nonnull Institution institution) {
-		return new Einladung(EinladungTyp.INSTITUTION, eingeladener, institution);
+	public static Einladung forInstitution(@Nonnull Benutzer eingeladener, @Nonnull Institution institution, @Nonnull LocalDate institutionGueltigAb) {
+		return new Einladung(EinladungTyp.INSTITUTION, eingeladener, institution, institutionGueltigAb);
 	}
 
 	@Nonnull
@@ -151,5 +163,20 @@ public class Einladung {
 	public Optional<String> getEinladungObjectName() {
 		return Optional.ofNullable(associatedEntity)
 			.map(Displayable::getName);
+	}
+
+	@Nonnull
+	public Optional<LocalDate> getOptionalStartDatumForInstitution() {
+		return Optional.ofNullable(institutionGueltigAb);
+	}
+
+	@Nonnull
+	public Optional<String> getOptionalTraegerschaftNameForInstitution() {
+		if (associatedEntity instanceof Institution) {
+			return Optional.ofNullable(((Institution) associatedEntity).getTraegerschaft())
+				.map(Displayable::getName);
+		}
+
+		return Optional.empty();
 	}
 }
