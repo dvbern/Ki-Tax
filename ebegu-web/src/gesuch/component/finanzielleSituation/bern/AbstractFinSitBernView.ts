@@ -208,7 +208,7 @@ export abstract class AbstractFinSitBernView extends AbstractGesuchViewControlle
 
     protected showZugriffAufSteuerdatenForGemeinde(): boolean {
         return  EbeguUtil.isNotNullOrUndefined(this.model.getFiSiConToWorkWith().finanzielleSituationJA?.steuerdatenAbfrageStatus)
-            && this.authServiceRS.isOneOfRoles(TSRoleUtil.getGemeindeOrBGRoles().concat(TSRole.SUPER_ADMIN));
+            && this.authServiceRS.isOneOfRoles(TSRoleUtil.getGemeindeOrBGOrTSRoles().concat(TSRole.SUPER_ADMIN));
     }
 
     protected callKiBonAnfrage(isGemeinsam: boolean): IPromise<TSFinanzielleSituationContainer> {
