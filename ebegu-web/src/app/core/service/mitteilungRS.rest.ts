@@ -16,7 +16,8 @@
  */
 
 import {IHttpService, ILogService, IPromise} from 'angular';
-import {from, Observable} from 'rxjs';
+import {EMPTY, from, Observable} from 'rxjs';
+import {catchError, concatMap} from 'rxjs/operators';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {TSMitteilungStatus} from '../../../models/enums/TSMitteilungStatus';
 import {TSBetreuung} from '../../../models/TSBetreuung';
@@ -181,24 +182,48 @@ export class MitteilungRS {
     public applyAlleBetreuungsmitteilungen(mitteilungen: TSBetreuungsmitteilung[]): Observable<TSMitteilungVerarbeitungResult> {
         const verarbeitung = new TSMitteilungVerarbeitung(mitteilungen.length);
 
-        mitteilungen.forEach(mitteilung => {
-            this.applyBetreuungsmitteilungSilently(mitteilung).subscribe(appliedMitteilung => {
-                if (EbeguUtil.isEmptyStringNullOrUndefined(appliedMitteilung.errorMessage)) {
-                    verarbeitung.addSuccess(appliedMitteilung);
-                } else {
-                    verarbeitung.addFailure(appliedMitteilung);
-                }
-            }, (errors: TSExceptionReport[]) => {
-                verarbeitung.addError(mitteilung, errors);
-                errors.forEach(error => {
-                    // we want to display it in the dialog, not in the error bar
-                    this.errorService.clearError(error.msgKey);
+        // group mitteilungen by fall, so that we can apply them in parallel
+        const mitteilungenByFall = this.groupMitteilungenByFall(mitteilungen);
+
+        Object.entries(mitteilungenByFall).forEach(([_, mitteilungenOfFall ]) => {
+            from(mitteilungenOfFall ?? [])
+                .pipe(
+                    // apply all mitteilungen of one fall in sequence
+                    concatMap(mitteilung =>
+                        this.applyBetreuungsmitteilungSilently(mitteilung).pipe(
+                            catchError((errors: TSExceptionReport[]) => {
+                                verarbeitung.addError(mitteilung, errors);
+                                errors.forEach(error => {
+                                    // we want to display it in the dialog, not in the error bar
+                                    this.errorService.clearError(error.msgKey);
+                                });
+                                return EMPTY;
+                            })
+                        )
+                    )
+                )
+                .subscribe(appliedMitteilung => {
+                    if (EbeguUtil.isEmptyStringNullOrUndefined(appliedMitteilung.errorMessage)) {
+                        verarbeitung.addSuccess(appliedMitteilung);
+                    } else {
+                        verarbeitung.addFailure(appliedMitteilung);
+                    }
                 });
-            });
         });
 
         return verarbeitung.results;
     }
+
+    private groupMitteilungenByFall(mitteilungen: TSBetreuungsmitteilung[]): { [fallId: string]: TSBetreuungsmitteilung[] } {
+        return mitteilungen.reduce(
+            (acc, mitteilung) => ({
+                ...acc,
+                [mitteilung.dossier.fall.id]: [...(acc[mitteilung.dossier.fall.id] ?? []), mitteilung],
+            }),
+            {} as Record<string, TSBetreuungsmitteilung[]>,
+        );
+    }
+
     private applyBetreuungsmitteilungSilently(
         mitteilung: TSBetreuungsmitteilung
     ): Observable<TSBetreuungsmitteilung>{
