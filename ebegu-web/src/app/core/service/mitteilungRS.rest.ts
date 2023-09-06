@@ -183,17 +183,12 @@ export class MitteilungRS {
         const verarbeitung = new TSMitteilungVerarbeitung(mitteilungen.length);
 
         // group mitteilungen by fall, so that we can apply them in parallel
-        // and each mitteilung in a fall is applied in sequence (concatMap)
-        const mitteilungenByFall = mitteilungen.reduce(
-            (acc, mitteilung) => ({
-                ...acc,
-                [mitteilung.dossier.fall.id]: [...(acc[mitteilung.dossier.fall.id] ?? []), mitteilung],
-            }),
-            {} as Record<string, TSBetreuungsmitteilung[]>
-        );
-        Object.keys(mitteilungenByFall).forEach(fallId => {
-            from(mitteilungenByFall[fallId] ?? [])
+        const mitteilungenByFall = this.groupMitteilungenByFall(mitteilungen);
+
+        Object.entries(mitteilungenByFall).forEach(([_, mitteilungenOfFall ]) => {
+            from(mitteilungenOfFall ?? [])
                 .pipe(
+                    // apply all mitteilungen of one fall in sequence
                     concatMap(mitteilung =>
                         this.applyBetreuungsmitteilungSilently(mitteilung).pipe(
                             catchError((errors: TSExceptionReport[]) => {
@@ -218,6 +213,17 @@ export class MitteilungRS {
 
         return verarbeitung.results;
     }
+
+    private groupMitteilungenByFall(mitteilungen: TSBetreuungsmitteilung[]): { [fallId: string]: TSBetreuungsmitteilung[] } {
+        return mitteilungen.reduce(
+            (acc, mitteilung) => ({
+                ...acc,
+                [mitteilung.dossier.fall.id]: [...(acc[mitteilung.dossier.fall.id] ?? []), mitteilung],
+            }),
+            {} as Record<string, TSBetreuungsmitteilung[]>,
+        );
+    }
+
     private applyBetreuungsmitteilungSilently(
         mitteilung: TSBetreuungsmitteilung
     ): Observable<TSBetreuungsmitteilung>{
