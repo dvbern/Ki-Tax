@@ -51,7 +51,7 @@
                   unsaved-warning-form>
 
                 <!-- Nur fuer Institutionen/Traegerschaften eingeblendet-->
-                <div dv-show-element dv-show-allowed-roles="vm.TSRoleUtil.getTraegerschaftInstitutionGemeindeRoles()">
+                <div dv-show-element dv-show-allowed-roles="vm.TSRoleUtil.getRolesForBetreuungenView()">
                     <!--Fachstelle-->
                     <div ng-if="vm.getKindModel().hasPensumFachstelle() && !vm.isFachstellenTypLuzern()">
                         <ng-container ng-repeat="pensumFachstelle in vm.getKindModel().kindJA.pensumFachstellen">
