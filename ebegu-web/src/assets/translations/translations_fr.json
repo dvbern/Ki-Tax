@@ -2987,7 +2987,7 @@
     "PDF_GENERIERUNG": "Génération - PDF",
     "KIBON_MITTEILUNGEN": "kiBon - Messages",
     "GEMEINDE_ANGEBOT_NUR_LATS": "Seulement pour la compensation des charges écoles à journée continue",
-    "ALLE_MUTATIONSMELDUNG_AUTOMATISCH_BEARBEITEN": "Traiter automatiquement tous les annonces de changement.",
+    "ALLE_MUTATIONSMELDUNG_AUTOMATISCH_BEARBEITEN": "Traiter automatiquement toutes les annonces de changement.",
     "ALLE_MUTATIONSMEDLUNG_AUTOMATISCH_BEARBEITEN": "Traiter les annonces de changement automatiquement",
     "ALLE_MUTATIONSMELDUNGEN_BEARBEITEN_TITLE": "Voulez-vous vraiment traiter automatiquement toutes les demandes de changements?",
     "ALLE_MUTATIONSMELDUNGEN_BEARBEITEN_FRAGE": "<b>Attention: </b>toutes les annonces de changement figurant dans la liste sont traitées automatiquement et font l’objet d’une décision immédiate lorsque c’est possible.",
@@ -3067,8 +3067,8 @@
     "PENSUM_FACHSTELLE_ENTFERNEN": "Supprimer le besoin social ou linguistique {{fachstellennummer}}",
     "ZEITRAUM": "Période",
     "ANSPRUCH_FACHSTELLE_WENN_PENSUM_UNTERSCHRITTEN": "",
-    "PENSUM_FACHSTELLE_WARN_OVERLAP_HOEHER": "Les périodes des besoins saisies se chevauchent.<br>Le taux de prise en charge indiqué dans la <b>dernière</b> confirmation du service spécialisé est <b>plus élevé</b> :<br>pour la date de début du besoin le plus récent, saisissez la date de début de la dernière confirmation du service spécialisé. Modifiez la date de fin de l’ancien besoin en indiquant le jour précédent. Exemple : l’ancien besoin s’applique jusqu’au 31 décembre. Le nouveau besoin est plus élevé et commence le 1er décembre -> il convient de remplacer la date de fin de l’ancien besoin par le 30 novembre. ",
-    "PENSUM_FACHSTELLE_WARN_OVERLAP_TIEFER": "Les périodes des besoins saisies se chevauchent.<br>Le taux de prise en charge indiqué dans la <b>dernière</b> confirmation du service spécialisé est <b>plus bas</b> ou <b>identique</b> :<br>modifiez la date de début du nouveau besoin en indiquant le jour suivant la date de fin de l’ancien besoin. Exemple : l’ancien besoin s’applique jusqu’au 31 décembre. Le nouveau besoin est plus bas et commence le 1er décembre -> Il convient d’indiquer le 1er janvier comme date de début pour le nouveau besoin. ",
+    "PENSUM_FACHSTELLE_WARN_OVERLAP_HOEHER": "Les périodes des besoins saisies se chevauchent.<br>Le taux de prise en charge indiqué dans la <b>dernière</b> confirmation du service spécialisé est <b>plus élevé</b> :<br>pour la date de début du besoin le plus récent, saisissez la date de début de la dernière confirmation du service spécialisé. Modifiez la date de fin de l’ancien besoin en indiquant le jour précédent. Exemple : l’ancien besoin s’applique jusqu’au 31 décembre. Le nouveau besoin est plus élevé et commence le 1er décembre &rarr; il convient de remplacer la date de fin de l’ancien besoin par le 30 novembre. ",
+    "PENSUM_FACHSTELLE_WARN_OVERLAP_TIEFER": "Les périodes des besoins saisies se chevauchent.<br>Le taux de prise en charge indiqué dans la <b>dernière</b> confirmation du service spécialisé est <b>plus bas</b> ou <b>identique</b> :<br>modifiez la date de début du nouveau besoin en indiquant le jour suivant la date de fin de l’ancien besoin. Exemple : l’ancien besoin s’applique jusqu’au 31 décembre. Le nouveau besoin est plus bas et commence le 1er décembre &rarr; Il convient d’indiquer le 1er janvier comme date de début pour le nouveau besoin. ",
     "KITA_STUNDEN_PRO_TAG": "Kita Stunden pro Tag",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }
