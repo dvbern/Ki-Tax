@@ -476,7 +476,20 @@ public class MailTemplateConfiguration {
 		);
 
 		paramMap.put(contentName, content);
-		paramMap.put(footerName, ServerMessageUtil.getMessage("EinladungEmail_FOOTER", locale, einladender.getMandant()));
+		paramMap.put(footerName,
+			ServerMessageUtil.getMessage(getFooterKeyForEinladungTyp(einladung.getEinladungTyp()), locale, einladender.getMandant()));
+	}
+
+	private String getFooterKeyForEinladungTyp(EinladungTyp einladungTyp) {
+		if (einladungTyp == EinladungTyp.INSTITUTION) {
+			return "EinladungEmail_FOOTER_INSTITUTION";
+		}
+
+		if (einladungTyp == EinladungTyp.TRAEGERSCHAFT) {
+			return "EinladungEmail_FOOTER_TRAEGERSCHAFT";
+		}
+
+		return "EinladungEmail_FOOTER";
 	}
 
 	private String getAbsatzForInstitution(Einladung einladung, Benutzer einladender, Locale locale) {
