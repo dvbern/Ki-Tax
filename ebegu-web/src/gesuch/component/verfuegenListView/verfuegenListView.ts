@@ -339,6 +339,9 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
             return isAnyStatusOfVerfuegt(this.getAntragStatus())
                 && !this.isFinSitAbglehnt() && !this.isGesuchIgnoriert();
         }
+        if (this.hasOnlyFerienbetreuung()) {
+            return false;
+        }
         return !this.isFinSitAbglehnt() && !this.isGesuchIgnoriert();
 
     }
