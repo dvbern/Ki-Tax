@@ -193,7 +193,7 @@ public class BelegungTagesschule extends AbstractMutableEntity {
 			target.setEintrittsdatum(LocalDate.from(eintrittsdatum));
 			target.setPlanKlasse(this.getPlanKlasse());
 			target.setAllergienUndUnvertraeglichkeiten(this.getAllergienUndUnvertraeglichkeiten());
-			target.setAbholungTagesschule(this.abholungTagesschule);
+			target.setAbholungTagesschule(this.getAbholungTagesschule());
 			target.setBemerkung(this.getBemerkung());
 			target.setAbweichungZweitesSemester(this.abweichungZweitesSemester);
 			target.setKeineKesbPlatzierung(this.isKeineKesbPlatzierung());

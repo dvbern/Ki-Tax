@@ -52,6 +52,7 @@ public enum MergeFieldTagesschuleAnmeldungen implements MergeFieldProvider {
 	referenznummerTitle(new SimpleMergeField<>("referenznummerTitle", STRING_CONVERTER)),
 	eintrittsdatumTitle(new SimpleMergeField<>("eintrittsdatumTitle", STRING_CONVERTER)),
 	statusTitle(new SimpleMergeField<>("statusTitle", STRING_CONVERTER)),
+	abholungTagesschuleTitle(new SimpleMergeField<>("abholungTagesschuleTitle", STRING_CONVERTER)),
 	abweichungTitle(new SimpleMergeField<>("abweichungTitle", STRING_CONVERTER)),
 	bemerkungTitle(new SimpleMergeField<>("bemerkungTitle", STRING_CONVERTER)),
 	wochentagMo(new SimpleMergeField<>("wochentagMo", STRING_CONVERTER)),
@@ -99,6 +100,7 @@ public enum MergeFieldTagesschuleAnmeldungen implements MergeFieldProvider {
 	eintrittsdatum(new SimpleMergeField<>("eintrittsdatum", DATE_CONVERTER)),
 	status(new SimpleMergeField<>("status", STRING_CONVERTER)),
 
+	abholungTagesschule(new SimpleMergeField<>("abholungTagesschule", STRING_CONVERTER)),
 	abweichung(new SimpleMergeField<>("isAbweichung", BOOLEAN_X_CONVERTER)),
 	bemerkung(new SimpleMergeField<>("bemerkung", STRING_CONVERTER)),
 
