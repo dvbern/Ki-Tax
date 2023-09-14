@@ -34,7 +34,8 @@ import {bootstrap, html} from './test_helpers';
 class TestComponent {
 }
 
-const benutzerRSSpy = jasmine.createSpyObj<BenutzerRSX>(BenutzerRSX.name, ['getBenutzerBgOrGemeindeForGemeinde', 'getAllBenutzerBgOrGemeinde']);
+const benutzerRSSpy =
+    jasmine.createSpyObj<BenutzerRSX>(BenutzerRSX.name, ['getBenutzerBgOrGemeindeForGemeinde', 'getAllBenutzerBgOrGemeinde']);
 const authRSSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name, ['loginRequest']);
 
 benutzerRSSpy.getAllBenutzerBgOrGemeinde.and.returnValue(Promise.resolve([]));
@@ -56,10 +57,9 @@ describe('NewUserSelectDirective', () => {
                 .directive('ng2', downgradeComponent({component: TestComponent}));
 
             @NgModule({
-                declarations: [NewUserSelectDirective, TestComponent],
-                entryComponents: [TestComponent],
-                imports: [BrowserModule, UpgradeModule, TranslateModule.forRoot()]
-            })
+    declarations: [NewUserSelectDirective, TestComponent],
+    imports: [BrowserModule, UpgradeModule, TranslateModule.forRoot()]
+})
             class Ng2Module implements DoBootstrap {
                 public ngDoBootstrap(): void {
                 }

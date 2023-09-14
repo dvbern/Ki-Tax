@@ -110,7 +110,8 @@ export class ApplicationPropertyRS {
 
     // we keep this method because it is used to perform healthchecks
     public getBackgroundColorFromServer(): IPromise<TSApplicationProperty> {
-        return this.http.get(`${this.serviceURL}/public/background`).then(response => this.ebeguRestUtil.parseApplicationProperty(new TSApplicationProperty(), response.data));
+        return this.http.get(`${this.serviceURL}/public/background`)
+            .then(response => this.ebeguRestUtil.parseApplicationProperty(new TSApplicationProperty(), response.data));
     }
 
     public getNotverordnungDefaultEinreichefristPrivat(): IPromise<string> {

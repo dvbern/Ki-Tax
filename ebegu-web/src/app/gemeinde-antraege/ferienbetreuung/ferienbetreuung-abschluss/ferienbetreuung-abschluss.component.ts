@@ -26,6 +26,7 @@ import {FerienbetreuungAngabenStatus} from '../../../../models/enums/Ferienbetre
 import {TSRole} from '../../../../models/enums/TSRole';
 import {TSSprache} from '../../../../models/enums/TSSprache';
 import {TSWizardStepXTyp} from '../../../../models/enums/TSWizardStepXTyp';
+import {TSFerienbetreuungAngaben} from '../../../../models/gemeindeantrag/TSFerienbetreuungAngaben';
 import {TSFerienbetreuungAngabenContainer} from '../../../../models/gemeindeantrag/TSFerienbetreuungAngabenContainer';
 import {TSRoleUtil} from '../../../../utils/TSRoleUtil';
 import {DvNgConfirmDialogComponent} from '../../../core/component/dv-ng-confirm-dialog/dv-ng-confirm-dialog.component';
@@ -35,7 +36,6 @@ import {DownloadRS} from '../../../core/service/downloadRS.rest';
 import {WizardStepXRS} from '../../../core/service/wizardStepXRS.rest';
 import {FerienbetreuungDokumentService} from '../services/ferienbetreuung-dokument.service';
 import {FerienbetreuungService} from '../services/ferienbetreuung.service';
-import {TSFerienbetreuungAngaben} from '../../../../models/gemeindeantrag/TSFerienbetreuungAngaben';
 
 const LOG = LogFactory.createLog('FerienbetreuungAbschlussComponent');
 
@@ -83,15 +83,20 @@ export class FerienbetreuungAbschlussComponent implements OnInit, OnDestroy {
     public abschliessenVisible(): Observable<boolean> {
         return combineLatest([
             this.ferienbetreuungsService.getFerienbetreuungContainer().pipe(
-                map(latsContainer => latsContainer.status ===
-                    FerienbetreuungAngabenStatus.IN_BEARBEITUNG_GEMEINDE),
+                map(latsContainer => this.isInBearbeitungOrZurueckAnGemeinde(latsContainer)),
                 takeUntil(this.unsubscribe)
             ), this.authService.principal$
         ]).pipe(
-            map(([inBearbeitungGemeinde, principal]) => (principal.hasRole(TSRole.SUPER_ADMIN) && inBearbeitungGemeinde) ||
+            map(([inBearbeitungGemeinde, principal]) =>
+                    (principal.hasRole(TSRole.SUPER_ADMIN) && inBearbeitungGemeinde) ||
                     (principal.hasOneOfRoles(TSRoleUtil.getFerienbetreuungRoles()) &&
                         !principal.hasOneOfRoles(TSRoleUtil.getMandantRoles())))
         );
+    }
+
+    private isInBearbeitungOrZurueckAnGemeinde(latsContainer: TSFerienbetreuungAngabenContainer): boolean {
+        return latsContainer.status === FerienbetreuungAngabenStatus.IN_BEARBEITUNG_GEMEINDE
+                || latsContainer.status === FerienbetreuungAngabenStatus.ZURUECK_AN_GEMEINDE;
     }
 
     public geprueftVisible(): Observable<boolean> {
@@ -101,7 +106,8 @@ export class FerienbetreuungAbschlussComponent implements OnInit, OnDestroy {
                 takeUntil(this.unsubscribe)
             ), this.authService.principal$
         ]).pipe(
-            map(([alLeastInPruefungKanton, principal]) => principal.hasOneOfRoles(TSRoleUtil.getMandantRoles()) && alLeastInPruefungKanton)
+            map(([alLeastInPruefungKanton, principal]) =>
+                principal.hasOneOfRoles(TSRoleUtil.getMandantRoles()) && alLeastInPruefungKanton)
         );
     }
 
@@ -268,7 +274,7 @@ export class FerienbetreuungAbschlussComponent implements OnInit, OnDestroy {
     }
 
     public isBeteiligungGemeindeZuTief(): boolean {
-        return this.getAngabenForStatus().berechnungen?.beteiligungZuTief;
+        return this.getAngabenForStatus()?.berechnungen?.beteiligungZuTief;
     }
 
     private getAngabenForStatus(): TSFerienbetreuungAngaben {

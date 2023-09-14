@@ -146,6 +146,7 @@ describe('EbeguRestUtil', () => {
                 myGesuch.dossier.fall = fall;
                 myGesuch.dossier.fall.besitzer = undefined;
                 myGesuch.dossier.fall.sozialdienstFall = undefined;
+                myGesuch.dossier.bemerkungen = undefined;
                 const gesuchsteller = createGesuchsteller();
                 gesuchsteller.gesuchstellerGS = undefined;
                 TestDataUtil.setAbstractMutableFieldsUndefined(gesuchsteller);
@@ -520,7 +521,6 @@ describe('EbeguRestUtil', () => {
                 restVerfuegungZeitabschnitt.elternbeitrag = 7;
                 restVerfuegungZeitabschnitt.erwerbspensumGS1 = 8;
                 restVerfuegungZeitabschnitt.erwerbspensumGS2 = 9;
-                restVerfuegungZeitabschnitt.fachstellenpensum = 10;
                 restVerfuegungZeitabschnitt.massgebendesEinkommenVorAbzugFamgr = 11;
                 restVerfuegungZeitabschnitt.vollkosten = 12;
                 restVerfuegungZeitabschnitt.zahlungsstatus = TSVerfuegungZeitabschnittZahlungsstatus.NEU;
@@ -542,7 +542,6 @@ describe('EbeguRestUtil', () => {
                 expect(verfuegungTS.elternbeitrag).toEqual(restVerfuegungZeitabschnitt.elternbeitrag);
                 expect(verfuegungTS.erwerbspensumGS1).toEqual(restVerfuegungZeitabschnitt.erwerbspensumGS1);
                 expect(verfuegungTS.erwerbspensumGS2).toEqual(restVerfuegungZeitabschnitt.erwerbspensumGS2);
-                expect(verfuegungTS.fachstellenpensum).toEqual(restVerfuegungZeitabschnitt.fachstellenpensum);
                 expect(verfuegungTS.massgebendesEinkommenVorAbzugFamgr)
                     .toEqual(restVerfuegungZeitabschnitt.massgebendesEinkommenVorAbzugFamgr);
                 expect(verfuegungTS.vollkosten).toEqual(restVerfuegungZeitabschnitt.vollkosten);

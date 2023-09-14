@@ -27,7 +27,7 @@ import {
     Output,
     SimpleChanges,
     ViewChild,
-    ViewEncapsulation
+    ViewEncapsulation,
 } from '@angular/core';
 import {MatPaginator, PageEvent} from '@angular/material/paginator';
 import {MatSort, MatSortHeader, Sort} from '@angular/material/sort';
@@ -35,8 +35,8 @@ import {MatTable, MatTableDataSource} from '@angular/material/table';
 import {TranslateService} from '@ngx-translate/core';
 import {TransitionService} from '@uirouter/angular';
 import {UIRouterGlobals} from '@uirouter/core';
-import {BehaviorSubject, forkJoin, Observable, of, Subject, Subscription} from 'rxjs';
-import {map, takeUntil} from 'rxjs/operators';
+import {BehaviorSubject, forkJoin, from, Observable, of, Subject, Subscription} from 'rxjs';
+import {map, mergeMap, takeUntil} from 'rxjs/operators';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {GemeindeRS} from '../../../gesuch/service/gemeindeRS.rest';
 import {SearchRS} from '../../../gesuch/service/searchRS.rest';
@@ -44,7 +44,7 @@ import {getTSAntragStatusValuesByRole, TSAntragStatus} from '../../../models/enu
 import {getNormalizedTSAntragTypValues, TSAntragTyp} from '../../../models/enums/TSAntragTyp';
 import {
     getTSBetreuungsangebotTypValuesForMandant,
-    TSBetreuungsangebotTyp
+    TSBetreuungsangebotTyp,
 } from '../../../models/enums/TSBetreuungsangebotTyp';
 import {TSAntragDTO} from '../../../models/TSAntragDTO';
 import {TSAntragSearchresultDTO} from '../../../models/TSAntragSearchresultDTO';
@@ -59,10 +59,12 @@ import {DVAntragListItem} from '../../shared/interfaces/DVAntragListItem';
 import {DVPaginationEvent} from '../../shared/interfaces/DVPaginationEvent';
 import {StateStoreService} from '../../shared/services/state-store.service';
 import {CONSTANTS} from '../constants/CONSTANTS';
+import {TSDemoFeature} from '../directive/dv-hide-feature/TSDemoFeature';
 import {ErrorService} from '../errors/service/ErrorService';
 import {LogFactory} from '../logging/LogFactory';
 import {ApplicationPropertyRS} from '../rest-services/applicationPropertyRS.rest';
 import {BenutzerRSX} from '../service/benutzerRSX.rest';
+import {DemoFeatureRS} from '../service/demoFeatureRS.rest';
 import {GesuchsperiodeRS} from '../service/gesuchsperiodeRS.rest';
 import {InstitutionRS} from '../service/institutionRS.rest';
 
@@ -296,7 +298,8 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges, Aft
         private readonly stateStore: StateStoreService,
         private readonly uiRouterGlobals: UIRouterGlobals,
         private readonly benutzerRS: BenutzerRSX,
-        private readonly applicationPropertyRS: ApplicationPropertyRS
+        private readonly applicationPropertyRS: ApplicationPropertyRS,
+        private readonly demofeatureRS: DemoFeatureRS
     ) {
     }
 
@@ -352,6 +355,9 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges, Aft
             }
             if (!this.authServiceRS.isOneOfRoles(TSRoleUtil.getMandantRoles())) {
                 this.hiddenColumns.push('verantwortlicherGemeindeantraege');
+            }
+            if (this.authServiceRS.isOneOfRoles(TSRoleUtil.getTraegerschaftInstitutionOnlyRoles())) {
+                this.hiddenColumns.push('internePendenz');
             }
         }
         this.updateColumns();
@@ -454,7 +460,7 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges, Aft
         };
         const dataToLoad$: Observable<DVAntragListItem[]> = this.data$ ?
             this.data$ :
-            this.searchRS.searchAntraege(body).pipe(map((result: TSAntragSearchresultDTO) => result.antragDTOs.map(antragDto => ({
+            this.searchAntraege(body).pipe(map((result: TSAntragSearchresultDTO) => result.antragDTOs.map(antragDto => ({
                         fallNummer: antragDto.fallNummer,
                         dossierId: antragDto.dossierId,
                         antragId: antragDto.antragId,
@@ -490,6 +496,17 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges, Aft
         });
 
         this.loadTotalCount(body);
+    }
+
+    private searchAntraege(body: any): Observable<TSAntragSearchresultDTO> {
+        return from(this.demofeatureRS.isDemoFeatureAllowed(TSDemoFeature.ALLE_FAELLE_SUCHE_NEU))
+            .pipe(mergeMap((alleFaelleViewNeuAktiv: boolean) => {
+                if (alleFaelleViewNeuAktiv) {
+                    return this.searchRS.searchAntraegeInAlleFaelleView(body);
+                }
+
+                return this.searchRS.searchAntraege(body);
+            }));
     }
 
     // TODO: Doctor: Refactor totalItems into Observable for smoother subscription handling

@@ -17,20 +17,7 @@
 
 package ch.dvbern.ebegu.inbox.handler;
 
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.util.Arrays;
-import java.util.Collection;
-
-import javax.annotation.Nonnull;
-
-import ch.dvbern.ebegu.entities.AbstractMahlzeitenPensum;
-import ch.dvbern.ebegu.entities.Betreuung;
-import ch.dvbern.ebegu.entities.Betreuungsmitteilung;
-import ch.dvbern.ebegu.entities.BetreuungsmitteilungPensum;
-import ch.dvbern.ebegu.entities.Betreuungspensum;
-import ch.dvbern.ebegu.entities.BetreuungspensumContainer;
-import ch.dvbern.ebegu.entities.Gesuch;
+import ch.dvbern.ebegu.entities.*;
 import ch.dvbern.ebegu.enums.PensumUnits;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.Constants;
@@ -41,13 +28,17 @@ import ch.dvbern.kibon.exchange.commons.types.Zeiteinheit;
 import com.spotify.hamcrest.pojo.IsPojo;
 import org.hamcrest.Matcher;
 
+import javax.annotation.Nonnull;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.Arrays;
+import java.util.Collection;
+
 import static ch.dvbern.ebegu.util.EbeguUtil.coalesce;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.spotify.hamcrest.pojo.IsPojo.pojo;
 import static java.util.Objects.requireNonNull;
-import static org.hamcrest.Matchers.comparesEqualTo;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.*;
 
 public final class PlatzbestaetigungTestUtil {
 
@@ -147,6 +138,20 @@ public final class PlatzbestaetigungTestUtil {
 	public static Matcher<Processing> failed(@Nonnull Matcher<String> messageMatcher) {
 		return pojo(Processing.class)
 			.where(Processing::isProcessingSuccess, is(false))
+			.where(Processing::isProcessingIgnored, is(false))
+			.where(Processing::getMessage, messageMatcher);
+	}
+
+	@Nonnull
+	public static Matcher<Processing> ignored(@Nonnull String message) {
+		return ignored(is(message));
+	}
+
+	@Nonnull
+	public static Matcher<Processing> ignored(@Nonnull Matcher<String> messageMatcher) {
+		return pojo(Processing.class)
+			.where(Processing::isProcessingSuccess, is(false))
+			.where(Processing::isProcessingIgnored, is(true))
 			.where(Processing::getMessage, messageMatcher);
 	}
 

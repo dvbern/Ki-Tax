@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022 DV Bern AG, Switzerland
+ * Copyright (C) 2023 DV Bern AG, Switzerland
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -14,20 +14,9 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package ch.dvbern.ebegu.ws.neskovanp.sts;
 
-import javax.ejb.Singleton;
+alter table alle_faelle_view
+modify column fall_nummer BIGINT NOT NULL;
 
-import ch.dvbern.ebegu.ws.sts.STSAssertionManager;
-
-/**
- * This class is responsible to store the currently issued SAML1-Assertion that will be used
- * when calling the GERES Webservice.
- *
- * Clients should usually use the getValidSTSAssertionForPersonensuche Method to get the current Assertion.
- * In case there was no Assertion issued yet or the Assertion is no longer valid the manager will try to
- * obtain one
- */
-@Singleton
-public class STSNeskoAssertionManagerBean extends STSAssertionManager {
-}
+alter table  alle_faelle_view
+add column gesuch_betreuungen_status VARCHAR(255);

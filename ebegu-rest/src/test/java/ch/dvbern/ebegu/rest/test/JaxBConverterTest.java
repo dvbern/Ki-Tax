@@ -15,40 +15,11 @@
 
 package ch.dvbern.ebegu.rest.test;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-
-import javax.inject.Inject;
-
 import ch.dvbern.ebegu.api.converter.JaxBConverter;
-import ch.dvbern.ebegu.api.dtos.JaxBetreuung;
-import ch.dvbern.ebegu.api.dtos.JaxGesuch;
-import ch.dvbern.ebegu.api.dtos.JaxId;
-import ch.dvbern.ebegu.api.dtos.JaxInstitution;
-import ch.dvbern.ebegu.api.dtos.JaxInstitutionStammdaten;
-import ch.dvbern.ebegu.api.dtos.JaxInstitutionStammdatenSummary;
-import ch.dvbern.ebegu.api.dtos.JaxInstitutionUpdate;
-import ch.dvbern.ebegu.api.dtos.JaxKindContainer;
-import ch.dvbern.ebegu.api.resource.BetreuungResource;
-import ch.dvbern.ebegu.api.resource.GesuchResource;
-import ch.dvbern.ebegu.api.resource.InstitutionResource;
-import ch.dvbern.ebegu.api.resource.InstitutionStammdatenResource;
-import ch.dvbern.ebegu.api.resource.KindResource;
-import ch.dvbern.ebegu.entities.Betreuung;
-import ch.dvbern.ebegu.entities.Fachstelle;
-import ch.dvbern.ebegu.entities.Gesuch;
-import ch.dvbern.ebegu.entities.Gesuchsperiode;
-import ch.dvbern.ebegu.entities.Institution;
-import ch.dvbern.ebegu.entities.InstitutionStammdaten;
-import ch.dvbern.ebegu.entities.KindContainer;
-import ch.dvbern.ebegu.entities.Mandant;
-import ch.dvbern.ebegu.entities.PensumFachstelle;
-import ch.dvbern.ebegu.entities.Traegerschaft;
-import ch.dvbern.ebegu.enums.AntragTyp;
-import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
-import ch.dvbern.ebegu.enums.FachstelleName;
-import ch.dvbern.ebegu.enums.GesuchsperiodeStatus;
-import ch.dvbern.ebegu.enums.IntegrationTyp;
+import ch.dvbern.ebegu.api.dtos.*;
+import ch.dvbern.ebegu.api.resource.*;
+import ch.dvbern.ebegu.entities.*;
+import ch.dvbern.ebegu.enums.*;
 import ch.dvbern.ebegu.errors.EbeguFingerWegException;
 import ch.dvbern.ebegu.i18n.LocaleThreadLocal;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
@@ -70,6 +41,10 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
+
+import javax.inject.Inject;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -251,12 +226,14 @@ public class JaxBConverterTest extends AbstractEbeguRestLoginTest {
 		pensumFachstelle.setFachstelle(fachstelle);
 		pensumFachstelle.setPensum(50);
 		pensumFachstelle.setIntegrationTyp(IntegrationTyp.SOZIALE_INTEGRATION);
-		kindContainer.getKindJA().setPensumFachstelle(pensumFachstelle);
-		kindContainer = persistence.merge(kindContainer);
+		pensumFachstelle.setKind(kindContainer.getKindJA());
+		kindContainer.getKindJA().addPensumFachstelle(pensumFachstelle);
+		kindContainer = persistence.persist(kindContainer);
 		JaxKindContainer jaxKindContainer = converter.kindContainerToJAX(kindContainer);
-		assertNotNull(jaxKindContainer.getKindJA().getPensumFachstelle());
+		assertNotNull(jaxKindContainer.getKindJA().getPensumFachstellen());
 		jaxKindContainer.getKindJA()
-			.getPensumFachstelle()
+			.getPensumFachstellen()
+			.stream().findFirst().orElseThrow()
 			.getFachstelle()
 			.setName(FachstelleName.DIENST_ZENTRUM_HOEREN_SPRACHE);
 		kindResource.saveKind(converter.toJaxId(gesuch), jaxKindContainer, DUMMY_URIINFO, DUMMY_RESPONSE);

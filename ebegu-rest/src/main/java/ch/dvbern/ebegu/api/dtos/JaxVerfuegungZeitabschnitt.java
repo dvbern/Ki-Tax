@@ -15,9 +15,8 @@
 
 package ch.dvbern.ebegu.api.dtos;
 
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
+import ch.dvbern.ebegu.enums.PensumUnits;
+import ch.dvbern.ebegu.enums.VerfuegungsZeitabschnittZahlungsstatus;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -27,9 +26,9 @@ import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
-
-import ch.dvbern.ebegu.enums.PensumUnits;
-import ch.dvbern.ebegu.enums.VerfuegungsZeitabschnittZahlungsstatus;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * DTO fuer Verfuegung Zeitabschnitte. Gehoert immer zu einer Verfuegung welche weiderum zu einen Betreuung gehoert
@@ -53,11 +52,6 @@ public class JaxVerfuegungZeitabschnitt extends JaxAbstractDateRangedDTO {
 	@Min(0)
 	@NotNull
 	private BigDecimal betreuungspensumProzent;
-
-	@Max(100)
-	@Min(0)
-	@NotNull
-	private int fachstellenpensum;
 
 	@Max(100)
 	@Min(0)
@@ -166,14 +160,6 @@ public class JaxVerfuegungZeitabschnitt extends JaxAbstractDateRangedDTO {
 
 	public void setBetreuungspensumProzent(BigDecimal betreuungspensumProzent) {
 		this.betreuungspensumProzent = betreuungspensumProzent;
-	}
-
-	public int getFachstellenpensum() {
-		return fachstellenpensum;
-	}
-
-	public void setFachstellenpensum(int fachstellenpensum) {
-		this.fachstellenpensum = fachstellenpensum;
 	}
 
 	public int getAnspruchspensumRest() {

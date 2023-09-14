@@ -23,7 +23,6 @@ import {PendenzenListViewComponent} from './default/component/pendenzenListView/
 @NgModule({
     imports: [SharedModule, UIRouterModule],
     declarations: [PendenzenListViewComponent],
-    exports: [PendenzenListViewComponent],
-    entryComponents: [PendenzenListViewComponent]
+    exports: [PendenzenListViewComponent]
 })
 export class PendenzenXModule {}

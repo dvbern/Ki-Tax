@@ -43,9 +43,13 @@ export class TSDateRange {
 
     /**
      * Returns true if the given date is in the daterange of the current TSDateRange object.
+     * e.g. DateRange 1.8.2023 - 31.7.2023
+     * * Date 15.8.2023 is in Date Range
+     * * Date 1.8.2023 is in Date Range
+     * * Date 31.7.2023 is in Date Range
      */
     public isInDateRange(date: moment.Moment): boolean {
-        return date.isBefore(this.gueltigBis) && date.isAfter(this.gueltigAb);
+        return date.isSameOrBefore(this.gueltigBis) && date.isSameOrAfter(this.gueltigAb);
     }
 
     public contains(other: TSDateRange): boolean {

@@ -17,13 +17,15 @@
 
 package ch.dvbern.ebegu.validators;
 
-import ch.dvbern.ebegu.entities.*;
+import ch.dvbern.ebegu.entities.KindContainer;
+import ch.dvbern.ebegu.entities.PensumFachstelle;
 import ch.dvbern.ebegu.enums.IntegrationTyp;
 
 import javax.annotation.Nonnull;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 import java.time.LocalDate;
+import java.util.Collection;
 
 /**
  * Eine sprachliche Indikation kann erst ab dem zweiten Geburtstag beurteilt werden. Dies wird mit diesem Validator überprüft.
@@ -41,18 +43,25 @@ public class CheckFachstellenFromDateValidator implements ConstraintValidator<Ch
 	@Override
 	public boolean isValid(@Nonnull KindContainer kindContainer, ConstraintValidatorContext context) {
 		if (kindContainer.getKindJA() == null
-			|| kindContainer.getKindJA().getPensumFachstelle() == null
-			|| kindContainer.getKindJA().getPensumFachstelle().getFachstelle() == null
+			|| kindContainer.getKindJA().getPensumFachstelle().isEmpty()
+			|| isAllFachstelleNull(kindContainer.getKindJA().getPensumFachstelle())
 		) {
 			// Kein PensumFachstelle
 			return true;
 		}
-		final PensumFachstelle pensumFachstelle = kindContainer.getKindJA().getPensumFachstelle();
-		if (pensumFachstelle.getIntegrationTyp() == IntegrationTyp.SPRACHLICHE_INTEGRATION) {
-			final LocalDate geburtsdatumPlusMinAge = kindContainer.getKindJA().getGeburtsdatum().plusYears(2);
-			final LocalDate fachstelleFrom = pensumFachstelle.getGueltigkeit().getGueltigAb();
-			return !fachstelleFrom.isBefore(geburtsdatumPlusMinAge);
+		for (PensumFachstelle pensumFachstelle : kindContainer.getKindJA().getPensumFachstelle()) {
+			if (pensumFachstelle.getIntegrationTyp() == IntegrationTyp.SPRACHLICHE_INTEGRATION) {
+				final LocalDate geburtsdatumPlusMinAge = kindContainer.getKindJA().getGeburtsdatum().plusYears(2);
+				final LocalDate fachstelleFrom = pensumFachstelle.getGueltigkeit().getGueltigAb();
+				if (fachstelleFrom.isBefore(geburtsdatumPlusMinAge)) {
+					return false;
+				}
+			}
 		}
 		return true;
+	}
+
+	private boolean isAllFachstelleNull(Collection<PensumFachstelle> pensumFachstellen) {
+		return pensumFachstellen.stream().noneMatch(pensumFachstelle -> pensumFachstelle.getFachstelle() != null);
 	}
 }

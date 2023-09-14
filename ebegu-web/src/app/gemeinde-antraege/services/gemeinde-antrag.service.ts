@@ -178,11 +178,14 @@ export class GemeindeAntragService {
         return undefined;
     }
 
-    public getAllVisibleTagesschulenAngabenForTSLastenausgleich(lastenausgleichId: string): Observable<TSLastenausgleichTagesschuleAngabenInstitutionContainer[]> {
-        return this.http.get<TSLastenausgleichTagesschuleAngabenInstitution[]>(`${this.API_BASE_URL}/${lastenausgleichId}/tagesschulenantraege`)
-            .pipe(
-                map(lastenausgleichAngabenList => this.ebeguRestUtil.parseLastenausgleichTagesschuleAngabenInstitutionContainerList(
-                    lastenausgleichAngabenList))
+    public getAllVisibleTagesschulenAngabenForTSLastenausgleich(
+        lastenausgleichId: string
+    ): Observable<TSLastenausgleichTagesschuleAngabenInstitutionContainer[]> {
+        return this.http.get<TSLastenausgleichTagesschuleAngabenInstitution[]>(
+            `${this.API_BASE_URL}/${lastenausgleichId}/tagesschulenantraege`
+        ).pipe(
+            map(lastenausgleichAngabenList =>
+                this.ebeguRestUtil.parseLastenausgleichTagesschuleAngabenInstitutionContainerList(lastenausgleichAngabenList)),
             );
     }
 }

@@ -30,7 +30,8 @@ describe('MassgebendesEinkommenComponent', () => {
 
     const berechnungsManagerSpy = jasmine.createSpyObj<BerechnungsManager>(BerechnungsManager.name,
         ['calculateFinanzielleSituationTemp']);
-    berechnungsManagerSpy.calculateFinanzielleSituationTemp.and.returnValue(Promise.resolve(new TSFinanzielleSituationResultateDTO()));
+    berechnungsManagerSpy.calculateFinanzielleSituationTemp.and
+        .returnValue(Promise.resolve(new TSFinanzielleSituationResultateDTO()));
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
@@ -48,7 +49,8 @@ describe('MassgebendesEinkommenComponent', () => {
     });
 
     beforeEach(() => {
-        berechnungsManagerSpy.calculateFinanzielleSituationTemp.and.returnValue(Promise.resolve(new TSFinanzielleSituationResultateDTO()));
+        berechnungsManagerSpy.calculateFinanzielleSituationTemp.and
+            .returnValue(Promise.resolve(new TSFinanzielleSituationResultateDTO()));
         berechnungsManagerSpy.finanzielleSituationResultate = new TSFinanzielleSituationResultateDTO();
         fixture = TestBed.createComponent(MassgebendesEinkommenComponent);
         component = fixture.componentInstance;

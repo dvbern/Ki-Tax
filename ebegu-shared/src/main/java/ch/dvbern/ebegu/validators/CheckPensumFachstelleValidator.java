@@ -84,7 +84,7 @@ public class CheckPensumFachstelleValidator implements ConstraintValidator<Check
 	public boolean isValid(@Nonnull KindContainer kindContainer, ConstraintValidatorContext context) {
 
 		if (kindContainer.getKindJA() == null
-			|| kindContainer.getKindJA().getPensumFachstelle() == null
+			|| kindContainer.getKindJA().getPensumFachstelle().isEmpty()
 		) {
 			// Kein PensumFachstelle
 			return true;
@@ -94,26 +94,34 @@ public class CheckPensumFachstelleValidator implements ConstraintValidator<Check
 
 		final Gemeinde gemeinde = kindContainer.getGesuch().extractGemeinde();
 		final Gesuchsperiode gesuchsperiode = kindContainer.getGesuch().getGesuchsperiode();
-		final PensumFachstelle pensumFachstelle = kindContainer.getKindJA().getPensumFachstelle();
+		for (PensumFachstelle pensumFachstelle : kindContainer.getKindJA().getPensumFachstelle()) {
 
-		if (pensumFachstelle.getIntegrationTyp() == IntegrationTyp.ZUSATZLEISTUNG_INTEGRATION) {
-			return pensumFachstelle.getPensum() == PENSUM_ZUSATZLEISTUNG;
+			if (pensumFachstelle.getIntegrationTyp() == IntegrationTyp.ZUSATZLEISTUNG_INTEGRATION) {
+				if (pensumFachstelle.getPensum() != PENSUM_ZUSATZLEISTUNG) {
+					return false;
+				}
+				continue; // diese pensumFachstelle ist valid, wir prüfen die nächste
+			}
+			@SuppressWarnings("ConstantConditions") // Im DummyService kann es null sein und ist auch null in den Tests!
+			Integer minValueAllowed = getValueAsInteger(
+					getMinValueParamFromIntegrationTyp(pensumFachstelle.getIntegrationTyp()),
+				gemeinde, gesuchsperiode, em);
+			Integer maxValueAllowed = getValueAsInteger(
+				getMaxValueParamFromIntegrationTyp(pensumFachstelle.getIntegrationTyp()),
+				gemeinde, gesuchsperiode, em);
+
+			if (!Range.between(minValueAllowed, maxValueAllowed).contains(pensumFachstelle.getPensum())) {
+				createConstraintViolation(
+					minValueAllowed,
+					maxValueAllowed,
+					pensumFachstelle.getIntegrationTyp(),
+					context,
+					kindContainer.getGesuch().extractMandant());
+				return false;
+			}
 		}
-		@SuppressWarnings("ConstantConditions") // Im DummyService kann es null sein und ist auch null in den Tests!
-		Integer minValueAllowed = getValueAsInteger(
-			getMinValueParamFromIntegrationTyp(pensumFachstelle.getIntegrationTyp()),
-			gemeinde, gesuchsperiode, em);
-
-		Integer maxValueAllowed = getValueAsInteger(
-			getMaxValueParamFromIntegrationTyp(pensumFachstelle.getIntegrationTyp()),
-			gemeinde, gesuchsperiode, em);
 
 		closeEntityManager(em);
-
-		if (!Range.between(minValueAllowed, maxValueAllowed).contains(pensumFachstelle.getPensum())) {
-			createConstraintViolation(minValueAllowed, maxValueAllowed, pensumFachstelle.getIntegrationTyp(), context, kindContainer.getGesuch().extractMandant());
-			return false;
-		}
 
 		return true;
 	}

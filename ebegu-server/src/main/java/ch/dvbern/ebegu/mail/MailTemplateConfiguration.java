@@ -15,37 +15,9 @@
 
 package ch.dvbern.ebegu.mail;
 
-import java.io.IOException;
-import java.io.StringWriter;
-import java.time.LocalDate;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.enterprise.context.Dependent;
-import javax.inject.Inject;
-
 import ch.dvbern.ebegu.config.EbeguConfiguration;
 import ch.dvbern.ebegu.einladung.Einladung;
-import ch.dvbern.ebegu.entities.AbstractAnmeldung;
-import ch.dvbern.ebegu.entities.Benutzer;
-import ch.dvbern.ebegu.entities.Betreuung;
-import ch.dvbern.ebegu.entities.Fall;
-import ch.dvbern.ebegu.entities.Gemeinde;
-import ch.dvbern.ebegu.entities.GemeindeStammdaten;
-import ch.dvbern.ebegu.entities.Gesuch;
-import ch.dvbern.ebegu.entities.Gesuchsperiode;
-import ch.dvbern.ebegu.entities.Gesuchsteller;
-import ch.dvbern.ebegu.entities.Institution;
-import ch.dvbern.ebegu.entities.InstitutionStammdaten;
-import ch.dvbern.ebegu.entities.Kind;
-import ch.dvbern.ebegu.entities.Lastenausgleich;
-import ch.dvbern.ebegu.entities.Mandant;
-import ch.dvbern.ebegu.entities.Mitteilung;
-import ch.dvbern.ebegu.entities.RueckforderungFormular;
+import ch.dvbern.ebegu.entities.*;
 import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeContainer;
 import ch.dvbern.ebegu.enums.ApplicationPropertyKey;
 import ch.dvbern.ebegu.enums.EinladungTyp;
@@ -62,6 +34,15 @@ import ch.dvbern.ebegu.util.mandant.MandantIdentifier;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
+import java.io.IOException;
+import java.io.StringWriter;
+import java.time.LocalDate;
+import java.util.*;
 
 import static java.util.Objects.requireNonNull;
 
@@ -483,18 +464,60 @@ public class MailTemplateConfiguration {
 		@Nonnull String footerName,
 		@Nonnull Locale locale
 	) {
-		paramMap.put(
-			contentName,
-			ServerMessageUtil.getMessage(
-				"EinladungEmail_" + einladung.getEinladungTyp(),
+
+		String content = getAbsatzForInstitution(einladung, einladender, locale);
+		content += ServerMessageUtil.getMessage(
+			"EinladungEmail_" + einladung.getEinladungTyp(),
+			locale,
+			einladender.getMandant(),
+			einladender.getFullName(),
+			ServerMessageUtil.translateEnumValue(eingeladener.getRole(), locale, eingeladener.getMandant()),
+			getRollenZusatz(einladung, eingeladener)
+		);
+
+		paramMap.put(contentName, content);
+		paramMap.put(footerName,
+			ServerMessageUtil.getMessage(getFooterKeyForEinladungTyp(einladung.getEinladungTyp()), locale, einladender.getMandant()));
+	}
+
+	private String getFooterKeyForEinladungTyp(EinladungTyp einladungTyp) {
+		if (einladungTyp == EinladungTyp.INSTITUTION) {
+			return "EinladungEmail_FOOTER_INSTITUTION";
+		}
+
+		if (einladungTyp == EinladungTyp.TRAEGERSCHAFT) {
+			return "EinladungEmail_FOOTER_TRAEGERSCHAFT";
+		}
+
+		return "EinladungEmail_FOOTER";
+	}
+
+	private String getAbsatzForInstitution(Einladung einladung, Benutzer einladender, Locale locale) {
+		if (einladung.getEinladungTyp() != EinladungTyp.INSTITUTION) {
+			return "";
+		}
+
+		String institutionsName = einladung.getEinladungObjectName().orElse("");
+		String institutionBGStartdatum = einladung.getOptionalStartDatumForInstitution()
+			.map(Constants.DATE_FORMATTER::format)
+			.orElse("");
+
+		String result = ServerMessageUtil.getMessage(
+			"EinladungEmail_INSTITUTION_BG_ZUGELASSEN",
+			locale,
+			einladender.getMandant(),
+			institutionsName,
+			institutionBGStartdatum);
+
+		result += einladung.getOptionalTraegerschaftNameForInstitution()
+			.map(name -> ServerMessageUtil.getMessage(
+				"EinladungEmail_INSTITUTION_TRAEGERSCHAFT",
 				locale,
 				einladender.getMandant(),
-				einladender.getFullName(),
-				ServerMessageUtil.translateEnumValue(eingeladener.getRole(), locale, eingeladener.getMandant()),
-				getRollenZusatz(einladung, eingeladener)
-			)
-		);
-		paramMap.put(footerName, ServerMessageUtil.getMessage("EinladungEmail_FOOTER", locale, einladender.getMandant()));
+				name))
+			.orElse("");
+
+		return result;
 	}
 
 	@Nonnull

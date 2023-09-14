@@ -32,7 +32,6 @@ export class TSVerfuegungZeitabschnitt extends TSAbstractDateRangedEntity {
     public elternbeitrag: number;
     public erwerbspensumGS1: number;
     public erwerbspensumGS2: number;
-    public fachstellenpensum: number;
     public famGroesse: number;
     public kategorieKeinPensum: boolean;
     public kategorieMaxEinkommen: boolean;

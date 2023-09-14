@@ -17,38 +17,19 @@
 
 package ch.dvbern.ebegu.entities;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
+import ch.dvbern.ebegu.enums.*;
+import ch.dvbern.ebegu.util.Constants;
+import org.hibernate.annotations.Type;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.ForeignKey;
-import javax.persistence.Id;
-import javax.persistence.Index;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
+import javax.persistence.*;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-
-import ch.dvbern.ebegu.enums.AntragStatus;
-import ch.dvbern.ebegu.enums.AntragTyp;
-import ch.dvbern.ebegu.enums.Eingangsart;
-import ch.dvbern.ebegu.util.Constants;
-import org.hibernate.annotations.Type;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.*;
 
 @Entity
 @Table(indexes = {
@@ -89,7 +70,7 @@ public class AlleFaelleView {
 
 	@NotNull
 	@Column(nullable = false)
-	private String fallNummer;
+	private long fallNummer;
 
 	@Nullable
 	@Column(nullable = true)
@@ -115,6 +96,11 @@ public class AlleFaelleView {
 	@Column(nullable = false)
 	@Enumerated(EnumType.STRING)
 	private AntragStatus antragStatus;
+
+	@Nullable
+	@Column(nullable = false)
+	@Enumerated(EnumType.STRING)
+	private GesuchBetreuungenStatus gesuchBetreuungenStatus;
 
 	@NotNull
 	@Column(nullable = false)
@@ -180,6 +166,11 @@ public class AlleFaelleView {
 
 	@NotNull
 	@Column(nullable = false)
+	@Enumerated(EnumType.STRING)
+	private GesuchsperiodeStatus gesuchsperiodeStatus;
+
+	@NotNull
+	@Column(nullable = false)
 	private String gesuchsperiodeString;
 
 	@Nullable
@@ -232,7 +223,7 @@ public class AlleFaelleView {
 			&& getAntragId().equals(that.getAntragId())
 			&& getDossierId().equals(that.getDossierId())
 			&& getFallId().equals(that.getFallId())
-			&& getFallNummer().equals(that.getFallNummer())
+			&& Objects.equals(getFallNummer(), that.getFallNummer())
 			&& Objects.equals(getBesitzerId(), that.getBesitzerId())
 			&& Objects.equals(getBesitzerUsername(), that.getBesitzerUsername())
 			&& getGemeindeId().equals(that.getGemeindeId())
@@ -322,11 +313,11 @@ public class AlleFaelleView {
 		this.fallId = fallId;
 	}
 
-	public String getFallNummer() {
+	public long getFallNummer() {
 		return fallNummer;
 	}
 
-	public void setFallNummer(String fallNummer) {
+	public void setFallNummer(long fallNummer) {
 		this.fallNummer = fallNummer;
 	}
 
@@ -546,5 +537,22 @@ public class AlleFaelleView {
 
 	public void setSozialdienstId(@Nullable String sozialdienstId) {
 		this.sozialdienstId = sozialdienstId;
+	}
+
+	@Nullable
+	public GesuchBetreuungenStatus getGesuchBetreuungenStatus() {
+		return gesuchBetreuungenStatus;
+	}
+
+	public void setGesuchBetreuungenStatus(@Nullable GesuchBetreuungenStatus betreuungsstatus) {
+		this.gesuchBetreuungenStatus = betreuungsstatus;
+	}
+
+	public GesuchsperiodeStatus getGesuchsperiodeStatus() {
+		return gesuchsperiodeStatus;
+	}
+
+	public void setGesuchsperiodeStatus(GesuchsperiodeStatus gesuchsperiodeStatus) {
+		this.gesuchsperiodeStatus = gesuchsperiodeStatus;
 	}
 }

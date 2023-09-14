@@ -149,17 +149,21 @@ public class VerfuegungEventConverter {
 	}
 
 	private static boolean hatSozialeIndikation(@Nonnull Kind kind) {
-		PensumFachstelle pf = kind.getPensumFachstelle();
-
-		return pf != null
-			&& pf.getIntegrationTyp() == IntegrationTyp.SOZIALE_INTEGRATION;
+		for (PensumFachstelle pf : kind.getPensumFachstelle()) {
+			if (pf.getIntegrationTyp() == IntegrationTyp.SOZIALE_INTEGRATION) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	private static boolean hatSprachlicheIndikation(@Nonnull Kind kind) {
-		PensumFachstelle pf = kind.getPensumFachstelle();
-
-		return pf != null
-			&& pf.getIntegrationTyp() == IntegrationTyp.SPRACHLICHE_INTEGRATION;
+		for (PensumFachstelle pf : kind.getPensumFachstelle()) {
+			if (pf.getIntegrationTyp() == IntegrationTyp.SPRACHLICHE_INTEGRATION) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	@Nonnull

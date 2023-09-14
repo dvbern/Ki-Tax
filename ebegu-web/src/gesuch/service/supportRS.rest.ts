@@ -36,7 +36,8 @@ export class SupportRS {
     public sendSupportAnfrage(supportAnfrage: TSSupportAnfrage): IPromise<any> {
         let anfrageRestObject = {};
         anfrageRestObject = this.ebeguRestUtil.supportAnfrageToRestObject(anfrageRestObject, supportAnfrage);
-        this.$log.warn(`Supportanfrage erstellt mit ID ${  supportAnfrage.id}`); // Damit wir Sentryangaben zu diesem Fall mappen koennen
+        // Damit wir Sentryangaben zu diesem Fall mappen koennen
+        this.$log.warn(`Supportanfrage erstellt mit ID ${  supportAnfrage.id}`);
         return this.$http.put(this.serviceURL, anfrageRestObject, {
             headers: {
                 'Content-Type': 'application/json'

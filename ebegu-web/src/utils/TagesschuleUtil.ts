@@ -244,7 +244,8 @@ export class TagesschuleUtil {
 
     public static sortModulTagesschuleGroups(modulTagesschuleGroups: TSModulTagesschuleGroup[]):
         TSModulTagesschuleGroup[] {
-        if (EbeguUtil.isNotNullOrUndefined(modulTagesschuleGroups[0]) && modulTagesschuleGroups[0].modulTagesschuleName.startsWith('SCOLARIS_')) {
+        if (EbeguUtil.isNotNullOrUndefined(modulTagesschuleGroups[0]) &&
+            modulTagesschuleGroups[0].modulTagesschuleName.startsWith('SCOLARIS_')) {
             return this.sortModulTagesschuleGroupsScolaris(modulTagesschuleGroups);
         }
         return modulTagesschuleGroups.sort((a: TSModulTagesschuleGroup, b: TSModulTagesschuleGroup) => {
@@ -269,9 +270,11 @@ export class TagesschuleUtil {
         });
     }
 
-    public static sortModulTagesschuleGroupsScolaris(modulTagesschuleGroups: TSModulTagesschuleGroup[]):
-        TSModulTagesschuleGroup[] {
-        return modulTagesschuleGroups.sort((a: TSModulTagesschuleGroup, b: TSModulTagesschuleGroup) => a.modulTagesschuleName.localeCompare(b.modulTagesschuleName));
+    public static sortModulTagesschuleGroupsScolaris(
+        modulTagesschuleGroups: TSModulTagesschuleGroup[]
+    ): TSModulTagesschuleGroup[] {
+        return modulTagesschuleGroups.sort((a: TSModulTagesschuleGroup, b: TSModulTagesschuleGroup) =>
+            a.modulTagesschuleName.localeCompare(b.modulTagesschuleName));
     }
 
     /**

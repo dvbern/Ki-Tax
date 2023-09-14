@@ -17,7 +17,8 @@
 
 import {ILogService, IPromise, IQService} from 'angular';
 import * as moment from 'moment';
-import {Subscription} from 'rxjs';
+import {BehaviorSubject, Observable, of, Subscription} from 'rxjs';
+import {mergeMap} from 'rxjs/operators';
 import {EinstellungRS} from '../../admin/service/einstellungRS.rest';
 import {CONSTANTS} from '../../app/core/constants/CONSTANTS';
 import {ErrorService} from '../../app/core/errors/service/ErrorService';
@@ -118,7 +119,8 @@ export class GesuchModelManager {
     public basisJahrPlusNumber: number = 1;
     private kindIndex: number;
     private betreuungIndex: number;
-    private fachstellenAnspruchList: Array<TSFachstelle>;
+    private readonly fachstellenAnspruchList: BehaviorSubject<Array<TSFachstelle> | undefined> =
+        new BehaviorSubject<Array<TSFachstelle> | undefined>(undefined);
     private fachstellenErweiterteBetreuungList: Array<TSFachstelle>;
     private activInstitutionenForGemeindeList: Array<TSInstitutionStammdaten>;
     public gemeindeStammdaten: TSGemeindeStammdatenLite;
@@ -399,13 +401,12 @@ export class GesuchModelManager {
             });
     }
 
-    public updateFachstellenAnspruchList(): void {
+    private updateFachstellenAnspruchList(): void {
         if (!this.getGesuchsperiode()) {
-            this.fachstellenAnspruchList = [];
-            return;
+            this.fachstellenAnspruchList.next([]);
         }
-        this.fachstelleRS.getAnspruchFachstellen(this.getGesuchsperiode()).then((response: TSFachstelle[]) => {
-            this.fachstellenAnspruchList = response;
+        this.fachstelleRS.getAnspruchFachstellen(this.getGesuchsperiode()).then(fachstellen => {
+            this.fachstellenAnspruchList.next(fachstellen);
         });
     }
 
@@ -723,13 +724,16 @@ export class GesuchModelManager {
         return -1;
     }
 
-    public getFachstellenAnspruchList(): Array<TSFachstelle> {
-        if (this.fachstellenAnspruchList === undefined) {
-            this.fachstellenAnspruchList = []; // init empty while we wait for promise
-            this.updateFachstellenAnspruchList();
-        }
-
-        return this.fachstellenAnspruchList;
+    public getFachstellenAnspruchList(): Observable<Array<TSFachstelle>> {
+        return this.fachstellenAnspruchList.pipe(
+            mergeMap(list => {
+                if (list === undefined) {
+                    this.updateFachstellenAnspruchList();
+                    return of([]);
+                }
+                return of(list);
+            })
+        );
     }
 
     public getFachstellenErweiterteBetreuungList(): Array<TSFachstelle> {
@@ -1353,7 +1357,8 @@ export class GesuchModelManager {
                 numOfAssigned++;
                 for (let k = 0; k < kindContainer.betreuungen.length; k++) {
                     if (kindContainer.betreuungen.length !== kindContainerVerfuegt.betreuungen.length) {
-                        const msg = `ACHTUNG unvorhergesehener Zustand. Anzahl Betreuungen eines Kindes stimmt nicht mit der berechneten Anzahl Betreuungen ueberein; erwartet: ${kindContainer.betreuungen.length} erhalten: ${kindContainerVerfuegt.betreuungen.length}`;
+                        const msg =
+                            `ACHTUNG unvorhergesehener Zustand. Anzahl Betreuungen eines Kindes stimmt nicht mit der berechneten Anzahl Betreuungen ueberein; erwartet: ${kindContainer.betreuungen.length} erhalten: ${kindContainerVerfuegt.betreuungen.length}`;
                         this.log.error(msg, kindContainer, kindContainerVerfuegt);
                         this.errorService.addMesageAsError(msg);
                     }

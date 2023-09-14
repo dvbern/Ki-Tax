@@ -204,6 +204,24 @@ export class TSRoleUtil {
         ];
     }
 
+    public static getRolesForBetreuungenView(): ReadonlyArray<TSRole> {
+        return [
+            TSRole.SUPER_ADMIN,
+            TSRole.ADMIN_INSTITUTION,
+            TSRole.SACHBEARBEITER_INSTITUTION,
+            TSRole.ADMIN_TRAEGERSCHAFT,
+            TSRole.SACHBEARBEITER_TRAEGERSCHAFT,
+            TSRole.ADMIN_GEMEINDE,
+            TSRole.SACHBEARBEITER_GEMEINDE,
+            TSRole.ADMIN_BG,
+            TSRole.SACHBEARBEITER_BG,
+            TSRole.ADMIN_TS,
+            TSRole.SACHBEARBEITER_TS,
+            TSRole.ADMIN_MANDANT,
+            TSRole.SACHBEARBEITER_MANDANT
+        ];
+    }
+
     // noinspection JSUnusedGlobalSymbols Es wird doch benutzt
     public static getTraegerschaftRoles(): ReadonlyArray<TSRole> {
         return [TSRole.SUPER_ADMIN, TSRole.ADMIN_TRAEGERSCHAFT, TSRole.SACHBEARBEITER_TRAEGERSCHAFT];
@@ -788,6 +806,25 @@ export class TSRoleUtil {
         return [
             TSRole.SACHBEARBEITER_TS,
             TSRole.ADMIN_TS
+        ];
+    }
+
+    public static getEditBemerkungenRoles(): ReadonlyArray<TSRole> {
+        return [
+            TSRole.SUPER_ADMIN,
+            TSRole.ADMIN_GEMEINDE,
+            TSRole.SACHBEARBEITER_GEMEINDE,
+            TSRole.ADMIN_BG,
+            TSRole.SACHBEARBEITER_BG,
+            TSRole.ADMIN_TS,
+            TSRole.SACHBEARBEITER_TS
+        ];
+    }
+
+    public static getBGOnly(): ReadonlyArray<TSRole> {
+        return [
+            TSRole.ADMIN_BG,
+            TSRole.SACHBEARBEITER_BG
         ];
     }
 }

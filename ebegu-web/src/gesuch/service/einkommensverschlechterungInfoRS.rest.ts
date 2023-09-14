@@ -47,7 +47,8 @@ export class EinkommensverschlechterungInfoRS {
                 einkommensverschlechterungInfoContainer);
         const url = `${this.serviceURL}/${encodeURIComponent(gesuchId)}`;
 
-        return this.$http.put(url, returnedEinkommensverschlechterungInfo).then((httpresponse: any) => this.wizardStepManager.findStepsFromGesuch(gesuchId).then(() => {
+        return this.$http.put(url, returnedEinkommensverschlechterungInfo)
+            .then((httpresponse: any) => this.wizardStepManager.findStepsFromGesuch(gesuchId).then(() => {
                 this.$log.debug('PARSING EinkommensverschlechterungInfo REST object ', httpresponse.data);
                 const container = new TSEinkommensverschlechterungInfoContainer();
 

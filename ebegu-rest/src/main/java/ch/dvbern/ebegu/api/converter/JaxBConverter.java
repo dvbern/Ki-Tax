@@ -17,25 +17,301 @@
 
 package ch.dvbern.ebegu.api.converter;
 
-import ch.dvbern.ebegu.api.dtos.*;
-import ch.dvbern.ebegu.api.dtos.finanziellesituation.*;
-import ch.dvbern.ebegu.api.dtos.gemeindeantrag.*;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
+import java.util.TreeSet;
+import java.util.regex.Matcher;
+import java.util.stream.Collectors;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
+import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.Response.Status;
+
+import ch.dvbern.ebegu.api.dtos.JaxAbstractDTO;
+import ch.dvbern.ebegu.api.dtos.JaxAbstractGemeindeStammdaten;
+import ch.dvbern.ebegu.api.dtos.JaxAbstractInstitutionStammdaten;
+import ch.dvbern.ebegu.api.dtos.JaxAbwesenheit;
+import ch.dvbern.ebegu.api.dtos.JaxAbwesenheitContainer;
+import ch.dvbern.ebegu.api.dtos.JaxAdresse;
+import ch.dvbern.ebegu.api.dtos.JaxAdresseContainer;
+import ch.dvbern.ebegu.api.dtos.JaxAlwaysEditableProperties;
+import ch.dvbern.ebegu.api.dtos.JaxAntragStatusHistory;
+import ch.dvbern.ebegu.api.dtos.JaxApplicationProperties;
+import ch.dvbern.ebegu.api.dtos.JaxBelegungFerieninsel;
+import ch.dvbern.ebegu.api.dtos.JaxBelegungFerieninselTag;
+import ch.dvbern.ebegu.api.dtos.JaxBelegungTagesschule;
+import ch.dvbern.ebegu.api.dtos.JaxBelegungTagesschuleModul;
+import ch.dvbern.ebegu.api.dtos.JaxBenutzer;
+import ch.dvbern.ebegu.api.dtos.JaxBenutzerNoDetails;
+import ch.dvbern.ebegu.api.dtos.JaxBerechtigung;
+import ch.dvbern.ebegu.api.dtos.JaxBerechtigungHistory;
+import ch.dvbern.ebegu.api.dtos.JaxBetreuung;
+import ch.dvbern.ebegu.api.dtos.JaxBetreuungMonitoring;
+import ch.dvbern.ebegu.api.dtos.JaxBetreuungsmitteilung;
+import ch.dvbern.ebegu.api.dtos.JaxBetreuungsmitteilungPensum;
+import ch.dvbern.ebegu.api.dtos.JaxBetreuungspensum;
+import ch.dvbern.ebegu.api.dtos.JaxBetreuungspensumAbweichung;
+import ch.dvbern.ebegu.api.dtos.JaxBetreuungspensumContainer;
+import ch.dvbern.ebegu.api.dtos.JaxBetreuungsstandort;
+import ch.dvbern.ebegu.api.dtos.JaxDokument;
+import ch.dvbern.ebegu.api.dtos.JaxDokumentGrund;
+import ch.dvbern.ebegu.api.dtos.JaxDokumente;
+import ch.dvbern.ebegu.api.dtos.JaxDossier;
+import ch.dvbern.ebegu.api.dtos.JaxDownloadFile;
+import ch.dvbern.ebegu.api.dtos.JaxEbeguVorlage;
+import ch.dvbern.ebegu.api.dtos.JaxEinkommensverschlechterung;
+import ch.dvbern.ebegu.api.dtos.JaxEinkommensverschlechterungContainer;
+import ch.dvbern.ebegu.api.dtos.JaxEinkommensverschlechterungInfo;
+import ch.dvbern.ebegu.api.dtos.JaxEinkommensverschlechterungInfoContainer;
+import ch.dvbern.ebegu.api.dtos.JaxEinstellung;
+import ch.dvbern.ebegu.api.dtos.JaxEinstellungenFerieninsel;
+import ch.dvbern.ebegu.api.dtos.JaxEinstellungenTagesschule;
+import ch.dvbern.ebegu.api.dtos.JaxEnversRevision;
+import ch.dvbern.ebegu.api.dtos.JaxErweiterteBetreuung;
+import ch.dvbern.ebegu.api.dtos.JaxErweiterteBetreuungContainer;
+import ch.dvbern.ebegu.api.dtos.JaxErwerbspensum;
+import ch.dvbern.ebegu.api.dtos.JaxErwerbspensumContainer;
+import ch.dvbern.ebegu.api.dtos.JaxExternalClient;
+import ch.dvbern.ebegu.api.dtos.JaxFachstelle;
+import ch.dvbern.ebegu.api.dtos.JaxFall;
+import ch.dvbern.ebegu.api.dtos.JaxFamiliensituation;
+import ch.dvbern.ebegu.api.dtos.JaxFamiliensituationContainer;
+import ch.dvbern.ebegu.api.dtos.JaxFerieninselZeitraum;
+import ch.dvbern.ebegu.api.dtos.JaxGemeinde;
+import ch.dvbern.ebegu.api.dtos.JaxGemeindeKonfiguration;
+import ch.dvbern.ebegu.api.dtos.JaxGemeindeStammdaten;
+import ch.dvbern.ebegu.api.dtos.JaxGemeindeStammdatenGesuchsperiodeFerieninsel;
+import ch.dvbern.ebegu.api.dtos.JaxGemeindeStammdatenKorrespondenz;
+import ch.dvbern.ebegu.api.dtos.JaxGemeindeStammdatenLite;
+import ch.dvbern.ebegu.api.dtos.JaxGesuch;
+import ch.dvbern.ebegu.api.dtos.JaxGesuchsteller;
+import ch.dvbern.ebegu.api.dtos.JaxGesuchstellerContainer;
+import ch.dvbern.ebegu.api.dtos.JaxInstitution;
+import ch.dvbern.ebegu.api.dtos.JaxInstitutionExternalClient;
+import ch.dvbern.ebegu.api.dtos.JaxInstitutionListDTO;
+import ch.dvbern.ebegu.api.dtos.JaxInstitutionStammdaten;
+import ch.dvbern.ebegu.api.dtos.JaxInstitutionStammdatenBetreuungsgutscheine;
+import ch.dvbern.ebegu.api.dtos.JaxInstitutionStammdatenFerieninsel;
+import ch.dvbern.ebegu.api.dtos.JaxInstitutionStammdatenSummary;
+import ch.dvbern.ebegu.api.dtos.JaxInstitutionStammdatenTagesschule;
+import ch.dvbern.ebegu.api.dtos.JaxInstitutionUpdate;
+import ch.dvbern.ebegu.api.dtos.JaxInternePendenz;
+import ch.dvbern.ebegu.api.dtos.JaxKind;
+import ch.dvbern.ebegu.api.dtos.JaxKindContainer;
+import ch.dvbern.ebegu.api.dtos.JaxLastenausgleich;
+import ch.dvbern.ebegu.api.dtos.JaxLastenausgleichTagesschulenStatusHistory;
+import ch.dvbern.ebegu.api.dtos.JaxMahnung;
+import ch.dvbern.ebegu.api.dtos.JaxMandant;
+import ch.dvbern.ebegu.api.dtos.JaxMitteilung;
+import ch.dvbern.ebegu.api.dtos.JaxModulTagesschule;
+import ch.dvbern.ebegu.api.dtos.JaxModulTagesschuleGroup;
+import ch.dvbern.ebegu.api.dtos.JaxPensumAusserordentlicherAnspruch;
+import ch.dvbern.ebegu.api.dtos.JaxPensumFachstelle;
+import ch.dvbern.ebegu.api.dtos.JaxRueckforderungDokument;
+import ch.dvbern.ebegu.api.dtos.JaxRueckforderungFormular;
+import ch.dvbern.ebegu.api.dtos.JaxRueckforderungMitteilung;
+import ch.dvbern.ebegu.api.dtos.JaxSozialhilfeZeitraum;
+import ch.dvbern.ebegu.api.dtos.JaxSozialhilfeZeitraumContainer;
+import ch.dvbern.ebegu.api.dtos.JaxTextRessource;
+import ch.dvbern.ebegu.api.dtos.JaxTraegerschaft;
+import ch.dvbern.ebegu.api.dtos.JaxTsCalculationResult;
+import ch.dvbern.ebegu.api.dtos.JaxUnbezahlterUrlaub;
+import ch.dvbern.ebegu.api.dtos.JaxVerfuegung;
+import ch.dvbern.ebegu.api.dtos.JaxVerfuegungZeitabschnitt;
+import ch.dvbern.ebegu.api.dtos.JaxVerfuegungZeitabschnittBemerkung;
+import ch.dvbern.ebegu.api.dtos.JaxVorlage;
+import ch.dvbern.ebegu.api.dtos.JaxWizardStep;
+import ch.dvbern.ebegu.api.dtos.JaxZahlung;
+import ch.dvbern.ebegu.api.dtos.JaxZahlungsauftrag;
+import ch.dvbern.ebegu.api.dtos.finanziellesituation.JaxAbstractFinanzielleSituation;
+import ch.dvbern.ebegu.api.dtos.finanziellesituation.JaxFinSitZusatzangabenAppenzell;
+import ch.dvbern.ebegu.api.dtos.finanziellesituation.JaxFinanzielleSituation;
+import ch.dvbern.ebegu.api.dtos.finanziellesituation.JaxFinanzielleSituationContainer;
+import ch.dvbern.ebegu.api.dtos.finanziellesituation.JaxFinanzielleSituationSelbstdeklaration;
+import ch.dvbern.ebegu.api.dtos.gemeindeantrag.JaxGemeindeAntrag;
+import ch.dvbern.ebegu.api.dtos.gemeindeantrag.JaxLastenausgleichTagesschuleAngabenGemeinde;
+import ch.dvbern.ebegu.api.dtos.gemeindeantrag.JaxLastenausgleichTagesschuleAngabenGemeindeContainer;
+import ch.dvbern.ebegu.api.dtos.gemeindeantrag.JaxLastenausgleichTagesschuleAngabenInstitution;
+import ch.dvbern.ebegu.api.dtos.gemeindeantrag.JaxLastenausgleichTagesschuleAngabenInstitutionContainer;
 import ch.dvbern.ebegu.api.util.RestUtil;
 import ch.dvbern.ebegu.dto.JaxAntragDTO;
 import ch.dvbern.ebegu.dto.gemeindeantrag.OeffnungszeitenTagesschuleDTO;
-import ch.dvbern.ebegu.entities.*;
-import ch.dvbern.ebegu.entities.gemeindeantrag.*;
+import ch.dvbern.ebegu.entities.AbstractEntity;
+import ch.dvbern.ebegu.entities.AbstractFinanzielleSituation;
+import ch.dvbern.ebegu.entities.AbstractPlatz;
+import ch.dvbern.ebegu.entities.Abwesenheit;
+import ch.dvbern.ebegu.entities.AbwesenheitContainer;
+import ch.dvbern.ebegu.entities.Adresse;
+import ch.dvbern.ebegu.entities.AlleFaelleView;
+import ch.dvbern.ebegu.entities.AlleFaelleViewKind;
+import ch.dvbern.ebegu.entities.AnmeldungFerieninsel;
+import ch.dvbern.ebegu.entities.AnmeldungTagesschule;
+import ch.dvbern.ebegu.entities.AntragStatusHistory;
+import ch.dvbern.ebegu.entities.ApplicationProperty;
+import ch.dvbern.ebegu.entities.Auszahlungsdaten;
+import ch.dvbern.ebegu.entities.BelegungFerieninsel;
+import ch.dvbern.ebegu.entities.BelegungFerieninselTag;
+import ch.dvbern.ebegu.entities.BelegungTagesschule;
+import ch.dvbern.ebegu.entities.BelegungTagesschuleModul;
+import ch.dvbern.ebegu.entities.Benutzer;
+import ch.dvbern.ebegu.entities.Berechtigung;
+import ch.dvbern.ebegu.entities.BerechtigungHistory;
+import ch.dvbern.ebegu.entities.Betreuung;
+import ch.dvbern.ebegu.entities.BetreuungMonitoring;
+import ch.dvbern.ebegu.entities.Betreuungsmitteilung;
+import ch.dvbern.ebegu.entities.BetreuungsmitteilungPensum;
+import ch.dvbern.ebegu.entities.Betreuungspensum;
+import ch.dvbern.ebegu.entities.BetreuungspensumAbweichung;
+import ch.dvbern.ebegu.entities.BetreuungspensumContainer;
+import ch.dvbern.ebegu.entities.Betreuungsstandort;
+import ch.dvbern.ebegu.entities.Dokument;
+import ch.dvbern.ebegu.entities.DokumentGrund;
+import ch.dvbern.ebegu.entities.Dossier;
+import ch.dvbern.ebegu.entities.DownloadFile;
+import ch.dvbern.ebegu.entities.EbeguVorlage;
+import ch.dvbern.ebegu.entities.Einkommensverschlechterung;
+import ch.dvbern.ebegu.entities.EinkommensverschlechterungContainer;
+import ch.dvbern.ebegu.entities.EinkommensverschlechterungInfo;
+import ch.dvbern.ebegu.entities.EinkommensverschlechterungInfoContainer;
+import ch.dvbern.ebegu.entities.Einstellung;
+import ch.dvbern.ebegu.entities.EinstellungenFerieninsel;
+import ch.dvbern.ebegu.entities.EinstellungenTagesschule;
+import ch.dvbern.ebegu.entities.ErweiterteBetreuung;
+import ch.dvbern.ebegu.entities.ErweiterteBetreuungContainer;
+import ch.dvbern.ebegu.entities.Erwerbspensum;
+import ch.dvbern.ebegu.entities.ErwerbspensumContainer;
+import ch.dvbern.ebegu.entities.ExternalClient;
+import ch.dvbern.ebegu.entities.Fachstelle;
+import ch.dvbern.ebegu.entities.Fall;
+import ch.dvbern.ebegu.entities.Familiensituation;
+import ch.dvbern.ebegu.entities.FamiliensituationContainer;
+import ch.dvbern.ebegu.entities.FinSitZusatzangabenAppenzell;
+import ch.dvbern.ebegu.entities.FinanzielleSituation;
+import ch.dvbern.ebegu.entities.FinanzielleSituationContainer;
+import ch.dvbern.ebegu.entities.FinanzielleSituationSelbstdeklaration;
+import ch.dvbern.ebegu.entities.Gemeinde;
+import ch.dvbern.ebegu.entities.GemeindeStammdaten;
+import ch.dvbern.ebegu.entities.GemeindeStammdatenGesuchsperiodeFerieninsel;
+import ch.dvbern.ebegu.entities.GemeindeStammdatenGesuchsperiodeFerieninselZeitraum;
+import ch.dvbern.ebegu.entities.Gesuch;
+import ch.dvbern.ebegu.entities.Gesuchsperiode;
+import ch.dvbern.ebegu.entities.Gesuchsteller;
+import ch.dvbern.ebegu.entities.GesuchstellerAdresse;
+import ch.dvbern.ebegu.entities.GesuchstellerAdresseContainer;
+import ch.dvbern.ebegu.entities.GesuchstellerContainer;
+import ch.dvbern.ebegu.entities.Institution;
+import ch.dvbern.ebegu.entities.InstitutionExternalClient;
+import ch.dvbern.ebegu.entities.InstitutionStammdaten;
+import ch.dvbern.ebegu.entities.InstitutionStammdatenBetreuungsgutscheine;
+import ch.dvbern.ebegu.entities.InstitutionStammdatenFerieninsel;
+import ch.dvbern.ebegu.entities.InstitutionStammdatenTagesschule;
+import ch.dvbern.ebegu.entities.InternePendenz;
+import ch.dvbern.ebegu.entities.Kind;
+import ch.dvbern.ebegu.entities.KindContainer;
+import ch.dvbern.ebegu.entities.Lastenausgleich;
+import ch.dvbern.ebegu.entities.Mahnung;
+import ch.dvbern.ebegu.entities.Mandant;
+import ch.dvbern.ebegu.entities.Mitteilung;
+import ch.dvbern.ebegu.entities.ModulTagesschule;
+import ch.dvbern.ebegu.entities.ModulTagesschuleGroup;
+import ch.dvbern.ebegu.entities.NeueVeranlagungsMitteilung;
+import ch.dvbern.ebegu.entities.PensumAusserordentlicherAnspruch;
+import ch.dvbern.ebegu.entities.PensumFachstelle;
+import ch.dvbern.ebegu.entities.RueckforderungDokument;
+import ch.dvbern.ebegu.entities.RueckforderungFormular;
+import ch.dvbern.ebegu.entities.RueckforderungMitteilung;
+import ch.dvbern.ebegu.entities.SozialhilfeZeitraum;
+import ch.dvbern.ebegu.entities.SozialhilfeZeitraumContainer;
+import ch.dvbern.ebegu.entities.TSCalculationResult;
+import ch.dvbern.ebegu.entities.TextRessource;
+import ch.dvbern.ebegu.entities.Traegerschaft;
+import ch.dvbern.ebegu.entities.UnbezahlterUrlaub;
+import ch.dvbern.ebegu.entities.Verfuegung;
+import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
+import ch.dvbern.ebegu.entities.VerfuegungZeitabschnittBemerkung;
+import ch.dvbern.ebegu.entities.Vorlage;
+import ch.dvbern.ebegu.entities.WizardStep;
+import ch.dvbern.ebegu.entities.Zahlung;
+import ch.dvbern.ebegu.entities.Zahlungsauftrag;
+import ch.dvbern.ebegu.entities.gemeindeantrag.GemeindeAntrag;
+import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeinde;
+import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeContainer;
+import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeStatusHistory;
+import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenInstitution;
+import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenInstitutionContainer;
 import ch.dvbern.ebegu.entities.sozialdienst.Sozialdienst;
 import ch.dvbern.ebegu.entities.sozialdienst.SozialdienstFall;
-import ch.dvbern.ebegu.enums.*;
+import ch.dvbern.ebegu.enums.AntragStatus;
+import ch.dvbern.ebegu.enums.AntragStatusDTO;
+import ch.dvbern.ebegu.enums.ApplicationPropertyKey;
+import ch.dvbern.ebegu.enums.BenutzerStatus;
+import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
+import ch.dvbern.ebegu.enums.EinstellungKey;
+import ch.dvbern.ebegu.enums.ErrorCodeEnum;
+import ch.dvbern.ebegu.enums.InstitutionStatus;
+import ch.dvbern.ebegu.enums.KorrespondenzSpracheTyp;
+import ch.dvbern.ebegu.enums.MitteilungTyp;
+import ch.dvbern.ebegu.enums.UserRole;
+import ch.dvbern.ebegu.enums.ZahlungslaufTyp;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.EbeguFingerWegException;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.i18n.LocaleThreadLocal;
-import ch.dvbern.ebegu.services.*;
+import ch.dvbern.ebegu.services.AdresseService;
+import ch.dvbern.ebegu.services.BenutzerService;
+import ch.dvbern.ebegu.services.BetreuungService;
+import ch.dvbern.ebegu.services.DossierService;
+import ch.dvbern.ebegu.services.EinkommensverschlechterungInfoService;
+import ch.dvbern.ebegu.services.EinkommensverschlechterungService;
+import ch.dvbern.ebegu.services.EinstellungService;
+import ch.dvbern.ebegu.services.ErwerbspensumService;
+import ch.dvbern.ebegu.services.ExternalClientService;
+import ch.dvbern.ebegu.services.FachstelleService;
+import ch.dvbern.ebegu.services.FallService;
+import ch.dvbern.ebegu.services.FamiliensituationService;
+import ch.dvbern.ebegu.services.FerieninselStammdatenService;
+import ch.dvbern.ebegu.services.FinanzielleSituationService;
+import ch.dvbern.ebegu.services.GemeindeService;
+import ch.dvbern.ebegu.services.GesuchService;
+import ch.dvbern.ebegu.services.GesuchsperiodeService;
+import ch.dvbern.ebegu.services.GesuchstellerAdresseService;
+import ch.dvbern.ebegu.services.GesuchstellerService;
+import ch.dvbern.ebegu.services.InstitutionService;
+import ch.dvbern.ebegu.services.InstitutionStammdatenService;
+import ch.dvbern.ebegu.services.InternePendenzService;
+import ch.dvbern.ebegu.services.KindService;
+import ch.dvbern.ebegu.services.MandantService;
+import ch.dvbern.ebegu.services.PensumAusserordentlicherAnspruchService;
+import ch.dvbern.ebegu.services.PensumFachstelleService;
+import ch.dvbern.ebegu.services.SozialdienstService;
+import ch.dvbern.ebegu.services.SozialhilfeZeitraumService;
+import ch.dvbern.ebegu.services.TraegerschaftService;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.types.InstitutionExternalClientId;
-import ch.dvbern.ebegu.util.*;
+import ch.dvbern.ebegu.util.AntragStatusConverterUtil;
+import ch.dvbern.ebegu.util.Constants;
+import ch.dvbern.ebegu.util.EbeguUtil;
+import ch.dvbern.ebegu.util.EnumUtil;
+import ch.dvbern.ebegu.util.MathUtil;
+import ch.dvbern.ebegu.util.StreamsUtil;
 import ch.dvbern.lib.cdipersistence.Persistence;
 import ch.dvbern.lib.date.DateConvertUtils;
 import ch.dvbern.oss.lib.beanvalidation.embeddables.IBAN;
@@ -53,22 +329,11 @@ import org.hibernate.envers.RevisionType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.enterprise.context.Dependent;
-import javax.inject.Inject;
-import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.core.Response.Status;
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
-import java.util.*;
-import java.util.Map.Entry;
-import java.util.regex.Matcher;
-import java.util.stream.Collectors;
-
-import static ch.dvbern.ebegu.enums.UserRole.*;
+import static ch.dvbern.ebegu.enums.UserRole.ADMIN_INSTITUTION;
+import static ch.dvbern.ebegu.enums.UserRole.ADMIN_TRAEGERSCHAFT;
+import static ch.dvbern.ebegu.enums.UserRole.SACHBEARBEITER_INSTITUTION;
+import static ch.dvbern.ebegu.enums.UserRole.SACHBEARBEITER_TRAEGERSCHAFT;
+import static ch.dvbern.ebegu.enums.UserRole.STEUERAMT;
 import static java.util.Objects.requireNonNull;
 
 @Dependent
@@ -838,6 +1103,7 @@ public class JaxBConverter extends AbstractConverter {
 		convertAbstractVorgaengerFieldsToJAX(persistedDossier, jaxDossier);
 		jaxDossier.setFall(this.fallToJAX(persistedDossier.getFall()));
 		jaxDossier.setGemeinde(gemeindeToJAX(persistedDossier.getGemeinde()));
+		jaxDossier.setBemerkungen(persistedDossier.getBemerkungen());
 		if (persistedDossier.getVerantwortlicherBG() != null) {
 			jaxDossier.setVerantwortlicherBG(benutzerToJaxBenutzerNoDetails(persistedDossier.getVerantwortlicherBG()));
 		}
@@ -2115,7 +2381,7 @@ public class JaxBConverter extends AbstractConverter {
 		jaxKind.setZemisNummer(persistedKind.getZemisNummer());
 		jaxKind.setEinschulungTyp(persistedKind.getEinschulungTyp());
 		jaxKind.setKeinPlatzInSchulhort(persistedKind.getKeinPlatzInSchulhort());
-		jaxKind.setPensumFachstelle(pensumFachstelleToJax(persistedKind.getPensumFachstelle()));
+		jaxKind.setPensumFachstellen(pensumFachstellenListToJax(persistedKind.getPensumFachstelle()));
 		jaxKind.setPensumAusserordentlicherAnspruch(pensumAusserordentlicherAnspruchToJax(
 			persistedKind.getPensumAusserordentlicherAnspruch()));
 		jaxKind.setZukunftigeGeburtsdatum(persistedKind.getZukunftigeGeburtsdatum());
@@ -2123,28 +2389,31 @@ public class JaxBConverter extends AbstractConverter {
 		return jaxKind;
 	}
 
-	@Nullable
-	public JaxPensumFachstelle pensumFachstelleToJax(@Nullable final PensumFachstelle persistedPensumFachstelle) {
-		if (persistedPensumFachstelle == null) {
-			return null;
-		}
+	public Collection<JaxPensumFachstelle> pensumFachstellenListToJax(final Set<PensumFachstelle> persistedPensumFachstellenList) {
+		return persistedPensumFachstellenList.stream()
+			.map(this::pensumFachstelleToJax)
+			.collect(Collectors.toList());
+	}
+
+	@Nonnull
+	public JaxPensumFachstelle pensumFachstelleToJax(PensumFachstelle pensumFachstelle) {
 		final JaxPensumFachstelle jaxPensumFachstelle = new JaxPensumFachstelle();
-		convertAbstractPensumFieldsToJAX(persistedPensumFachstelle, jaxPensumFachstelle);
-		if (persistedPensumFachstelle.getFachstelle() != null) {
-			jaxPensumFachstelle.setFachstelle(fachstelleToJAX(persistedPensumFachstelle.getFachstelle()));
+		convertAbstractPensumFieldsToJAX(pensumFachstelle, jaxPensumFachstelle);
+		if (pensumFachstelle.getFachstelle() != null) {
+			jaxPensumFachstelle.setFachstelle(fachstelleToJAX(pensumFachstelle.getFachstelle()));
 		}
-		jaxPensumFachstelle.setIntegrationTyp(persistedPensumFachstelle.getIntegrationTyp());
-		jaxPensumFachstelle.setGruendeZusatzleistung(persistedPensumFachstelle.getGruendeZusatzleistung());
+		jaxPensumFachstelle.setIntegrationTyp(pensumFachstelle.getIntegrationTyp());
+		jaxPensumFachstelle.setGruendeZusatzleistung(pensumFachstelle.getGruendeZusatzleistung());
 		return jaxPensumFachstelle;
 	}
 
-	public PensumFachstelle pensumFachstelleToEntity(
+	public PensumFachstelle jaxPensumFachstelleToEntity(
 		final JaxPensumFachstelle pensumFachstelleJAXP,
-		final PensumFachstelle pensumFachstelle
-	) {
+		final PensumFachstelle pensumFachstelle) {
 		convertAbstractPensumFieldsToEntity(pensumFachstelleJAXP, pensumFachstelle);
 
 		if (pensumFachstelleJAXP.getFachstelle() != null) {
+			assert pensumFachstelleJAXP.getFachstelle().getId() != null;
 			final Optional<Fachstelle> fachstelleFromDB =
 				fachstelleService.findFachstelle(pensumFachstelleJAXP.getFachstelle().getId());
 			if (fachstelleFromDB.isPresent()) {
@@ -2164,21 +2433,27 @@ public class JaxBConverter extends AbstractConverter {
 		return pensumFachstelle;
 	}
 
-	public PensumFachstelle toStorablePensumFachstelle(@Nonnull final JaxPensumFachstelle pensumFsToSave) {
-		PensumFachstelle pensumToMergeWith = new PensumFachstelle();
-		if (pensumFsToSave.getId() != null) {
-			final Optional<PensumFachstelle> pensumFachstelleOpt =
-				pensumFachstelleService.findPensumFachstelle(pensumFsToSave.getId());
-			if (pensumFachstelleOpt.isPresent()) {
-				pensumToMergeWith = pensumFachstelleOpt.get();
+	public void pensumFachstellenToEntity(
+		final Kind kind,
+		final Collection<JaxPensumFachstelle> pensumFsToSave) {
+		final Set<PensumFachstelle> transformedKindPensumFachstellen = new TreeSet<>();
+		for (JaxPensumFachstelle jaxPensumFachstelle : pensumFsToSave) {
+			if (jaxPensumFachstelle.getId() != null) {
+				final PensumFachstelle pensumFachstelleToMergeWith = kind.getPensumFachstelle().stream()
+					.filter(existingPensumFachstelle -> existingPensumFachstelle.getId()
+						.equals(jaxPensumFachstelle.getId()))
+					.findFirst()
+					.orElseThrow(() -> new EbeguEntityNotFoundException(
+						"toStorablePensumFachstelle",
+						ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
+						jaxPensumFachstelle.getId()));
+				transformedKindPensumFachstellen.add(jaxPensumFachstelleToEntity(jaxPensumFachstelle, pensumFachstelleToMergeWith));
 			} else {
-				throw new EbeguEntityNotFoundException(
-					"toStorablePensumFachstelle",
-					ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
-					pensumFsToSave.getId());
+				transformedKindPensumFachstellen.add(jaxPensumFachstelleToEntity(jaxPensumFachstelle, new PensumFachstelle(kind)));
 			}
 		}
-		return pensumFachstelleToEntity(pensumFsToSave, pensumToMergeWith);
+		kind.getPensumFachstelle().clear();
+		kind.getPensumFachstelle().addAll(transformedKindPensumFachstellen);
 	}
 
 	@Nullable
@@ -2269,11 +2544,7 @@ public class JaxBConverter extends AbstractConverter {
 		kind.setEinschulungTyp(kindJAXP.getEinschulungTyp());
 		kind.setKeinPlatzInSchulhort(kindJAXP.getKeinPlatzInSchulhort());
 
-		PensumFachstelle updtPensumFachstelle = null;
-		if (kindJAXP.getPensumFachstelle() != null) {
-			updtPensumFachstelle = toStorablePensumFachstelle(kindJAXP.getPensumFachstelle());
-		}
-		kind.setPensumFachstelle(updtPensumFachstelle);
+		pensumFachstellenToEntity(kind, kindJAXP.getPensumFachstellen());
 
 		PensumAusserordentlicherAnspruch updtPensumAusserordentlicherAnspruch = null;
 		if (kindJAXP.getPensumAusserordentlicherAnspruch() != null) {
@@ -3068,6 +3339,10 @@ public class JaxBConverter extends AbstractConverter {
 		erweiterteBetreuung.setKitaPlusZuschlagBestaetigt(erweiterteBetreuungJAXP.getKitaPlusZuschlagBestaetigt());
 		erweiterteBetreuung.setBetreuungInGemeinde(erweiterteBetreuungJAXP.getBetreuungInGemeinde());
 		erweiterteBetreuung.setErweitereteBeduerfnisseBetrag(erweiterteBetreuungJAXP.getErweitereteBeduerfnisseBetrag());
+		// flag kann auf GUI auch Null sein, auf entity ist es defaultmässig false
+		if (erweiterteBetreuungJAXP.getAnspruchFachstelleWennPensumUnterschritten() != null) {
+			erweiterteBetreuung.setAnspruchFachstelleWennPensumUnterschritten(erweiterteBetreuungJAXP.getAnspruchFachstelleWennPensumUnterschritten());
+		}
 
 		//falls Erweiterte Beduerfnisse true ist, muss eine Fachstelle gesetzt sein
 		if (Boolean.TRUE.equals(erweiterteBetreuung.getErweiterteBeduerfnisse())) {
@@ -3703,7 +3978,6 @@ public class JaxBConverter extends AbstractConverter {
 		jaxZeitabschn.setErwerbspensumGS1(zeitabschnitt.getRelevantBgCalculationInput().getErwerbspensumGS1());
 		jaxZeitabschn.setErwerbspensumGS2(zeitabschnitt.getRelevantBgCalculationInput().getErwerbspensumGS2());
 		jaxZeitabschn.setBetreuungspensumProzent(zeitabschnitt.getBetreuungspensumProzent());
-		jaxZeitabschn.setFachstellenpensum(zeitabschnitt.getRelevantBgCalculationInput().getFachstellenpensum());
 		jaxZeitabschn.setAnspruchspensumRest(zeitabschnitt.getRelevantBgCalculationInput().getAnspruchspensumRest());
 		jaxZeitabschn.setBgPensum(zeitabschnitt.getBgPensum());
 		jaxZeitabschn.setAnspruchspensumProzent(zeitabschnitt.getAnspruchberechtigtesPensum());
@@ -3953,6 +4227,7 @@ public class JaxBConverter extends AbstractConverter {
 		jaxErweiterteBetreuung.setKitaPlusZuschlagBestaetigt(erweiterteBetreuung.isKitaPlusZuschlagBestaetigt());
 		jaxErweiterteBetreuung.setBetreuungInGemeinde(erweiterteBetreuung.getBetreuungInGemeinde());
 		jaxErweiterteBetreuung.setErweitereteBeduerfnisseBetrag(erweiterteBetreuung.getErweitereteBeduerfnisseBetrag());
+		jaxErweiterteBetreuung.setAnspruchFachstelleWennPensumUnterschritten(erweiterteBetreuung.isAnspruchFachstelleWennPensumUnterschritten());
 
 		if (erweiterteBetreuung.getFachstelle() != null) {
 			jaxErweiterteBetreuung.setFachstelle(fachstelleToJAX(erweiterteBetreuung.getFachstelle()));
@@ -4401,7 +4676,7 @@ public class JaxBConverter extends AbstractConverter {
 	/**
 	 * Using the existing GesuchStatus and the UserRole it will translate the Status into the right one for this role.
 	 */
-	public void disguiseStatus(Gesuch gesuch, JaxAntragDTO antrag, @Nullable UserRole userRole) {
+	public void disguiseStatus(AntragStatus status, JaxAntragDTO antrag, @Nullable UserRole userRole) {
 		if (userRole != null) {
 			switch (userRole) {
 			case GESUCHSTELLER:
@@ -4409,7 +4684,7 @@ public class JaxBConverter extends AbstractConverter {
 			case SACHBEARBEITER_INSTITUTION:
 			case ADMIN_TRAEGERSCHAFT:
 			case SACHBEARBEITER_TRAEGERSCHAFT:
-				switch (gesuch.getStatus()) {
+				switch (status) {
 				case PRUEFUNG_STV:
 				case GEPRUEFT_STV:
 				case IN_BEARBEITUNG_STV:
@@ -4455,7 +4730,7 @@ public class JaxBConverter extends AbstractConverter {
 			RestUtil.purgeKinderAndBetreuungenOfInstitutionen(jaxKindContainers, allowedInst);
 		}
 
-		disguiseStatus(gesuch, antrag, userRole);
+		disguiseStatus(gesuch.getStatus(), antrag, userRole);
 
 		if (userRole != STEUERAMT) {
 			antrag.setAngebote(createAngeboteList(jaxKindContainers));
@@ -4470,7 +4745,7 @@ public class JaxBConverter extends AbstractConverter {
 		antrag.setKinder(createKinderList(gesuch.getKindContainers()));
 		antrag.setAngebote(createAngeboteList(gesuch.getKindContainers()));
 		antrag.setInstitutionen(createInstitutionenList(gesuch.getKindContainers()));
-		disguiseStatus(gesuch, antrag, userRole);
+		disguiseStatus(gesuch.getStatus(), antrag, userRole);
 		return antrag;
 	}
 
@@ -4479,6 +4754,7 @@ public class JaxBConverter extends AbstractConverter {
 		JaxAntragDTO antrag = new JaxAntragDTO();
 		antrag.setAntragId(gesuch.getId());
 		antrag.setFallNummer(gesuch.getFall().getFallNummer());
+		antrag.setBemerkungen(gesuch.getDossier().getBemerkungen());
 		antrag.setDossierId(gesuch.getDossier().getId());
 		antrag.setFamilienName(gesuch.extractFamiliennamenString());
 		antrag.setEingangsdatum(gesuch.getEingangsdatum());
@@ -4532,6 +4808,100 @@ public class JaxBConverter extends AbstractConverter {
 		antrag.setVerantwortlicherUsernameBG(verantwortlicherBG.getUsername());
 	}
 
+	/**
+	 * transformiert ein gesuch in ein JaxAntragDTO unter beruecksichtigung der rollen und erlaubten institutionen
+	 * - Fuer die Rolle Steueramt werden saemtlichen Daten von den Kindern nicht geladen
+	 * - Fuer die Rolle Institution/Traegerschaft werden nur die relevanten Institutionen und Angebote geladen
+	 */
+	public JaxAntragDTO alleFaelleToAntragDTO(
+		AlleFaelleView alleFaelleView,
+		@Nullable UserRole userRole,
+		Collection<Institution> allowedInst) {
+
+		JaxAntragDTO antrag = gesuchToAntragDTOBasic(alleFaelleView);
+
+		if (userRole != STEUERAMT) {
+			antrag.setKinder(createKinderList(alleFaelleView));
+		}
+
+//		if (EnumUtil.isOneOf(
+//			userRole,
+//			ADMIN_TRAEGERSCHAFT,
+//			SACHBEARBEITER_TRAEGERSCHAFT,
+//			ADMIN_INSTITUTION,
+//			SACHBEARBEITER_INSTITUTION)) {
+//			RestUtil.purgeKinderAndBetreuungenOfInstitutionen(jaxKindContainers, allowedInst);
+//		}
+
+		disguiseStatus(alleFaelleView.getAntragStatus(), antrag, userRole);
+
+/*		if (userRole != STEUERAMT) {
+			antrag.setAngebote(alleFaelleView.getAngebotTypen());
+			antrag.setInstitutionen(createInstitutionenList(jaxKindContainers));
+		}*/
+
+		return antrag;
+	}
+
+	@Nonnull
+	private JaxAntragDTO gesuchToAntragDTOBasic(@Nonnull AlleFaelleView alleFaelleView) {
+		JaxAntragDTO antrag = new JaxAntragDTO();
+		antrag.setAntragId(alleFaelleView.getAntragId());
+		antrag.setFallNummer(alleFaelleView.getFallNummer());
+		antrag.setDossierId(alleFaelleView.getDossierId());
+		antrag.setFamilienName(getStringValueOrEmptyString(alleFaelleView.getFamilienName()));
+		antrag.setEingangsdatum(alleFaelleView.getEingangsdatum());
+		antrag.setEingangsdatumSTV(alleFaelleView.getEingangsdatumSTV());
+		antrag.setAenderungsdatum(alleFaelleView.getAenderungsdatum());
+		antrag.setAntragTyp(alleFaelleView.getAntragTyp());
+		antrag.setStatus(AntragStatusConverterUtil.convertStatusToDTO(
+			alleFaelleView.getAntragStatus(),
+			alleFaelleView.getGesuchBetreuungenStatus(),
+			alleFaelleView.getAntragId()));
+		antrag.setGesuchsperiodeString(alleFaelleView.getGesuchsperiodeString());
+		antrag.setGemeinde(alleFaelleView.getGemeindeName());
+
+		antrag.setVerantwortlicherTS(alleFaelleView.getVerantwortlicherTS());
+		antrag.setVerantwortlicherBG(getStringValueOrEmptyString(alleFaelleView.getVerantwortlicherBG()));
+
+		antrag.setVerfuegt(alleFaelleView.getAntragStatus().isAnyStatusOfVerfuegt());
+		antrag.setBeschwerdeHaengig(alleFaelleView.getAntragStatus() == AntragStatus.BESCHWERDE_HAENGIG);
+		antrag.setLaufnummer(alleFaelleView.getLaufnummer());
+		antrag.setEingangsart(alleFaelleView.getEingangsart());
+		antrag.setBesitzerUsername(alleFaelleView.getBesitzerUsername());
+		antrag.setDokumenteHochgeladen(alleFaelleView.getDokumenteHochgeladen());
+		antrag.setFallId(alleFaelleView.getFallId());
+		antrag.setGemeindeId(alleFaelleView.getGemeindeId());
+		antrag.setSozialdienst(alleFaelleView.getSozialdienst());
+		antrag.setInternePendenz(alleFaelleView.getInternePendenz());
+//		if (antrag.hasInternePendenz()) {
+//			antrag.setInternePendenzAbgelaufen(internePendenzService.hasGesuchAbgelaufeneInternePendenzen(alleFaelleView));
+//		} else {
+//			antrag.setInternePendenzAbgelaufen(false);
+//		}
+
+		return antrag;
+	}
+
+	@Nonnull
+	private Set<String> createKinderList(AlleFaelleView alleFaelleView) {
+		if (alleFaelleView.getKinder() == null) {
+			return Collections.emptySet();
+		}
+
+		return alleFaelleView.getKinder()
+			.stream()
+			.map(AlleFaelleViewKind::getName)
+			.collect(Collectors.toSet());
+	}
+
+	private String getStringValueOrEmptyString(@Nullable String string) {
+		if (string == null) {
+			return "";
+		}
+
+		return string;
+	}
 	public Mahnung mahnungToEntity(@Nonnull final JaxMahnung jaxMahnung, @Nonnull final Mahnung mahnung) {
 		requireNonNull(mahnung);
 		requireNonNull(jaxMahnung);

@@ -339,6 +339,9 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
             return isAnyStatusOfVerfuegt(this.getAntragStatus())
                 && !this.isFinSitAbglehnt() && !this.isGesuchIgnoriert();
         }
+        if (this.hasOnlyFerienbetreuung()) {
+            return false;
+        }
         return !this.isFinSitAbglehnt() && !this.isGesuchIgnoriert();
 
     }
@@ -874,7 +877,9 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
                 }
 
                 if (betreuung.isAngebotTagesschule()) {
-                    this.veraenderungTS = this.findAbsoultMax(this.veraenderungTS, betreuung.verfuegung.veraenderungVerguenstigungGegenueberVorgaenger);
+                    this.veraenderungTS = this.findAbsoultMax(
+                        this.veraenderungTS,
+                        betreuung.verfuegung.veraenderungVerguenstigungGegenueberVorgaenger);
                 } else {
                     this.veraenderungBG += betreuung.verfuegung.veraenderungVerguenstigungGegenueberVorgaenger;
                 }

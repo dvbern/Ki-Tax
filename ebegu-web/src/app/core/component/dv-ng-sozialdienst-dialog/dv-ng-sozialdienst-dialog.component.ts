@@ -36,7 +36,7 @@ export class DvNgSozialdienstDialogComponent {
 
     public constructor(
         private readonly dialogRef: MatDialogRef<DvNgSozialdienstDialogComponent>,
-        @Inject(MAT_DIALOG_DATA) data: any
+        @Inject(MAT_DIALOG_DATA) private readonly data: any
     ) {
 
         this.sozialdienstList = data.sozialdienstList;

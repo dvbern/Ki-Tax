@@ -673,7 +673,9 @@ export class DossierToolbarController implements IDVFocusableController {
         }
         if (this.authServiceRS.isOneOfRoles(this.TSRoleUtil.getGesuchstellerSozialdienstRolle())) {
             // GS darf nur vor der Freigabe loeschen
-            if (this.hideActionButtons || this.isDashboardScreen || isAtLeastFreigegebenOrFreigabequittung(this.getGesuch().status)) {
+            if (this.hideActionButtons
+                || this.isDashboardScreen
+                || isAtLeastFreigegebenOrFreigabequittung(this.getGesuch().status)) {
                 return false;
             }
         } else if (isStatusVerfuegenVerfuegt(this.getGesuch().status)

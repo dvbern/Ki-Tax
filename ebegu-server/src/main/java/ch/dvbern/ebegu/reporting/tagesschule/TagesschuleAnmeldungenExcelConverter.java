@@ -140,6 +140,9 @@ public class TagesschuleAnmeldungenExcelConverter implements ExcelConverter {
 		excelRowGroup.addValue(MergeFieldTagesschuleAnmeldungen.status, ServerMessageUtil.translateEnumValue(
 			dataRow.getStatus(), locale, gesuchsperiode.getMandant())
 		);
+		excelRowGroup.addValue(MergeFieldTagesschuleAnmeldungen.abholungTagesschule, ServerMessageUtil.translateEnumValue(
+			dataRow.getAbholungTagesschule(), locale, gesuchsperiode.getMandant())
+		);
 		excelRowGroup.addValue(MergeFieldTagesschuleAnmeldungen.abweichung, dataRow.getAbweichung());
 		excelRowGroup.addValue(MergeFieldTagesschuleAnmeldungen.bemerkung, dataRow.getBemerkung());
 	}
@@ -196,6 +199,7 @@ public class TagesschuleAnmeldungenExcelConverter implements ExcelConverter {
 		excelMerger.addValue(MergeFieldTagesschuleAnmeldungen.eintrittsdatumTitle, ServerMessageUtil.getMessage("Reports_eintrittsdatumTitle", locale, mandant));
 		excelMerger.addValue(MergeFieldTagesschuleAnmeldungen.statusTitle, ServerMessageUtil.getMessage("Reports_statusTitle", locale, mandant));
 
+		excelMerger.addValue(MergeFieldTagesschuleAnmeldungen.abholungTagesschuleTitle, ServerMessageUtil.getMessage("Reports_abholungTitle", locale, mandant));
 		excelMerger.addValue(MergeFieldTagesschuleAnmeldungen.abweichungTitle, ServerMessageUtil.getMessage("Reports_abweichungTitle", locale, mandant));
 		excelMerger.addValue(MergeFieldTagesschuleAnmeldungen.bemerkungTitle, ServerMessageUtil.getMessage("Reports_bemerkungTitle", locale, mandant));
 

@@ -51,45 +51,65 @@
                   unsaved-warning-form>
 
                 <!-- Nur fuer Institutionen/Traegerschaften eingeblendet-->
-                <div dv-show-element dv-show-allowed-roles="vm.TSRoleUtil.getTraegerschaftInstitutionRoles()">
+                <div dv-show-element dv-show-allowed-roles="vm.TSRoleUtil.getRolesForBetreuungenView()">
                     <!--Fachstelle-->
                     <div ng-if="vm.getKindModel().hasPensumFachstelle() && !vm.isFachstellenTypLuzern()">
-                        <div class="row" ng-if="vm.getFachstellenList().length > 0 ">
-                            <div class="col-sm-12 dv-input-container-medium form-group">
-                                <label class="md-no-float" data-translate="FACHSTELLE"></label>
-                                <input id="fachstelle_ID" type="text" name="fachstelle" ng-disabled="true"
-                                       ng-value="vm.getKindModel().extractFachstelle().name | translate"
-                                       class="form-control">
-                                <div class="dv-error-messages"></div>
+                        <ng-container ng-repeat="pensumFachstelle in vm.getKindModel().kindJA.pensumFachstellen">
+                            <div class="row" ng-if="vm.getFachstellenList().length > 0 ">
+                                <div class="col-sm-12 dv-input-container-medium form-group">
+                                    <label class="md-no-float" data-translate="FACHSTELLE"></label>
+                                    <input id="fachstelle_ID" type="text" name="fachstelle" ng-disabled="true"
+                                           ng-value="pensumFachstelle.fachstelle.name | translate"
+                                           class="form-control">
+                                </div>
                             </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-sm-12 dv-input-container-small form-group">
-                                <label class="md-no-float" data-translate="BETREUUNGSPENSUM_FACHSTELLE"></label>
-                                <input id="pensumFachstelle_ID" type="text" name="pensumFachstelle" ng-disabled="true"
-                                       ng-value="vm.getKindModel().extractPensumFachstelle().pensum"
-                                       class="form-control">
-                                <div class="dv-error-messages"></div>
+                            <div class="row">
+                                <div class="col-sm-12 dv-input-container-small form-group">
+                                    <label class="md-no-float" data-translate="BETREUUNGSPENSUM_FACHSTELLE"></label>
+                                    <input id="pensumFachstelle_ID" type="text" name="pensumFachstelle" ng-disabled="true"
+                                           ng-value="pensumFachstelle.pensum"
+                                           class="form-control">
+                                </div>
                             </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-sm-6 dv-input-container-small form-group">
-                                <label class="md-no-float" data-translate="VON"></label>
-                                <input id="pensumFachstelleGueltigAb_ID" type="text" name="pensumFachstelleGueltigAb"
-                                       ng-disabled="true"
-                                       ng-value="vm.getKindModel().extractPensumFachstelle().gueltigkeit.gueltigAb | amDateFormat : 'DD.MM.YYYY'"
-                                       class="form-control">
-                                <div class="dv-error-messages"></div>
+                            <div class="row">
+                                <div class="col-sm-6 dv-input-container-small form-group">
+                                    <label class="md-no-float" data-translate="VON"></label>
+                                    <input id="pensumFachstelleGueltigAb_ID" type="text" name="pensumFachstelleGueltigAb"
+                                           ng-disabled="true"
+                                           ng-value="pensumFachstelle.gueltigkeit.gueltigAb | amDateFormat : 'DD.MM.YYYY'"
+                                           class="form-control">
+                                </div>
+                                <div class="col-sm-6 dv-input-container-small form-group">
+                                    <label class="md-no-float" data-translate="BIS"></label>
+                                    <input id="pensumFachstelleGueltigBis_ID" type="text" name="pensumFachstelleGueltigBis"
+                                           ng-disabled="true"
+                                           ng-value="pensumFachstelle.gueltigkeit.gueltigBis | amDateFormat : 'DD.MM.YYYY'"
+                                           class="form-control">
+                                </div>
                             </div>
-                            <div class="col-sm-6 dv-input-container-small form-group">
-                                <label class="md-no-float" data-translate="BIS"></label>
-                                <input id="pensumFachstelleGueltigBis_ID" type="text" name="pensumFachstelleGueltigBis"
-                                       ng-disabled="true"
-                                       ng-value="vm.getKindModel().extractPensumFachstelle().gueltigkeit.gueltigBis | amDateFormat : 'DD.MM.YYYY'"
-                                       class="form-control">
-                                <div class="dv-error-messages"></div>
+                            <div class="row">
+                                <div class="col-xs-6 margin-top-20 margin-bottom-50">
+                                    <hr class="header"/>
+                                </div>
                             </div>
-                        </div>
+                        </ng-container>
+
+                        <dv-demo-feature-wrapper [demo-feature]="vm.demoFeature">
+                            <div class="row margin-bottom-50">
+                                <div class="col-xs-12 dv-input-container-question">
+                                    <div class="checkbox">
+                                        <md-checkbox ng-model="vm.getErweiterteBetreuungJA().anspruchFachstelleWennPensumUnterschritten"
+                                                     name="anspruchFachstelleWennPensumUnterschritten"
+                                                     dv-enable-element
+                                                     dv-enable-allowed-roles="vm.allowedRoles"
+                                                     dv-enable-expression="vm.enableFieldsEditedByGemeinde()"
+                                                     aria-label="{{'ANSPRUCH_FACHSTELLE_WENN_PENSUM_UNTERSCHRITTEN'|translate}}">
+                                            <span data-translate="ANSPRUCH_FACHSTELLE_WENN_PENSUM_UNTERSCHRITTEN"></span>
+                                        </md-checkbox>
+                                    </div>
+                                </div>
+                            </div>
+                        </dv-demo-feature-wrapper>
                     </div>
                 </div>
 
@@ -310,7 +330,7 @@
                                                     aria-described-by="keineKesbPlatzierung-error"
                                                     dv-enable-element
                                                     dv-enable-allowed-roles="vm.allowedRoles"
-                                                    dv-enable-expression="vm.enableErweiterteBeduerfnisse()"
+                                                    dv-enable-expression="vm.enableFieldsEditedByGemeinde()"
                                                     ng-change="vm.changeKeineKesbPlatzierung()">
                                 </dv-radio-container>
                                 <dv-error-messages input-id="keineKesbPlatzierung"
@@ -341,7 +361,7 @@
                                                     ng-required="true"
                                                     dv-enable-element
                                                     dv-enable-allowed-roles="vm.allowedRoles"
-                                                    dv-enable-expression="vm.enableErweiterteBeduerfnisse()">
+                                                    dv-enable-expression="vm.enableFieldsEditedByGemeinde()">
                                 </dv-radio-container>
                                 <dv-error-messages input-id="erweiterteBeduerfnisse"
                                                    for="vm.form.erweiterteBeduerfnisse.$error"
@@ -370,7 +390,7 @@
                                             class="form-control"
                                             ng-options="fachstelle.id as fachstelle.name | translate for fachstelle in vm.getFachstellenList() | orderBy: 'name'"
                                             ng-required="vm.isFachstelleRequired()"
-                                            ng-disabled="!vm.enableErweiterteBeduerfnisse()"
+                                            ng-disabled="!vm.enableFieldsEditedByGemeinde()"
                                             ng-change="vm.setSelectedFachsstelle()">
                                     </select>
                                     <dv-bisher gs="vm.getErweiterteBetreuungGS().fachstelle.name"
@@ -413,7 +433,7 @@
                                             ng-model="vm.getErweiterteBetreuungJA().erweitereteBeduerfnisseBetrag"
                                             dv-max-length class="form-control"
                                             ng-pattern="vm.CONSTANTS.PATTERN_TWO_DECIMALS"
-                                            ng-disabled="!vm.enableErweiterteBeduerfnisse()"
+                                            ng-disabled="!vm.enableFieldsEditedByGemeinde()"
                                             ng-required="true"
                                             ng-attr-placeholder="{{'BETRAG_PLACEHOLDER' | translate}}">
                                         <dv-error-messages input-id="besondereBeduerfnisseAufwand"
@@ -523,15 +543,15 @@
                     </div>
 
                     <!--Eingewoehnung Periode-->
-                    <div class="row" ng-if="vm.showEingewoehnung() && !vm.isSchulamt()">
+                    <div class="row" ng-if="vm.showEingewoehnung()">
                         <div class="col-xs-12 dv-input-container-question">
                             <div class="checkbox">
                                 <md-checkbox ng-model="vm.getBetreuungModel().eingewoehnung"
                                              id="eingewoehnung"
                                              name="eingewoehnung"
                                              aria-label="{{'EINGEWOEHNUNG'| translate}}"
-                                             ng-disabled="vm.isGesuchReadonly()">
-                                    <span data-translate="EINGEWOEHNUNG"></span>
+                                             ng-disabled="!vm.isEingewoehnungEnabled()">
+                                    <span>{{vm.getEingewoehnungLabel()}}</span>
                                 </md-checkbox>
                                 <dv-tooltip input-id="eingewoehnung"
                                             text="'EINGEWOEHNUNG_HELP' | translate"></dv-tooltip>
@@ -1070,7 +1090,7 @@
                     <!-- Save -->
                     <span dv-show-element
                           dv-show-allowed-roles="vm.TSRoleUtil.getAdminJaSchulamtSozialdienstGesuchstellerRoles()"
-                          dv-show-expression="(vm.enableErweiterteBeduerfnisse() && !vm.isBetreuungsstatusAusstehendOrUnbekannteInstitution())">
+                          dv-show-expression="(vm.enableFieldsEditedByGemeinde() && !vm.isBetreuungsstatusAusstehendOrUnbekannteInstitution())">
                         <dv-loading-button button-click="vm.saveBetreuung()" type="submit">
                             <span class="uppercase" data-translate="SPEICHERN"></span>
                         </dv-loading-button>

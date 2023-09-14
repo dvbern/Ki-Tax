@@ -288,6 +288,7 @@ public class ReportTagesschuleServiceBean extends AbstractReportServiceBean impl
 			tdr.setFleischOption(belegung.getFleischOption());
 			tdr.setAllergienUndUnvertraeglichkeiten(belegung.getAllergienUndUnvertraeglichkeiten());
 			tdr.setNotfallnummer(belegung.getNotfallnummer());
+			tdr.setAbholungTagesschule(belegung.getAbholungTagesschule());
 		}
 
 		return tdr;

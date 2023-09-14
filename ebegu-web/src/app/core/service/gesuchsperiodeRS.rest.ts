@@ -106,7 +106,8 @@ export class GesuchsperiodeRS {
     }
 
     public getAllGesuchsperioden(): IPromise<TSGesuchsperiode[]> {
-        return this.http.get(`${this.serviceURL}/`).then((response: any) => this.ebeguRestUtil.parseGesuchsperioden(response.data));
+        return this.http.get(`${this.serviceURL}/`)
+            .then((response: any) => this.ebeguRestUtil.parseGesuchsperioden(response.data));
     }
 
     public updateNichtAbgeschlosseneGesuchsperiodenList(): IPromise<TSGesuchsperiode[]> {
@@ -118,7 +119,8 @@ export class GesuchsperiodeRS {
     }
 
     public getAllAktivUndInaktivGesuchsperioden(): IPromise<TSGesuchsperiode[]> {
-        if (!this.nichtAbgeschlosseneGesuchsperiodenList || this.nichtAbgeschlosseneGesuchsperiodenList.length <= 0) { // if the list is empty, reload it
+        // if the list is empty, reload it
+        if (!this.nichtAbgeschlosseneGesuchsperiodenList || this.nichtAbgeschlosseneGesuchsperiodenList.length <= 0) {
             return this.updateNichtAbgeschlosseneGesuchsperiodenList().then(() => this.nichtAbgeschlosseneGesuchsperiodenList);
         }
         return this.$q.when(this.nichtAbgeschlosseneGesuchsperiodenList); // we need to return a promise

@@ -337,7 +337,9 @@ export class NavigatorController implements IController {
                     }
                     return this.navigateToStepEinkommensverschlechterung('1', '2');
                 }
-                return this.wizardStepManager.updateCurrentWizardStepStatus(TSWizardStepStatus.OK).then(() => this.navigateToStep(this.wizardStepManager.getNextStep(this.gesuchModelManager.getGesuch()))) as any;
+                return this.wizardStepManager.updateCurrentWizardStepStatus(TSWizardStepStatus.OK)
+                    .then(() =>
+                        this.navigateToStep(this.wizardStepManager.getNextStep(this.gesuchModelManager.getGesuch()))) as any;
             }
             if (this.dvSubStep === 2) {
                 if (this.gesuchModelManager.isRequiredEKV_GS_BJ(1, 1)) { // gehe ekv 1/2
@@ -775,7 +777,8 @@ export class NavigatorController implements IController {
             return this.navigateToStepEinkommensverschlechterungResultate('2');
         }
 
-        return this.wizardStepManager.updateCurrentWizardStepStatus(TSWizardStepStatus.OK).then(() => this.navigateToStep(this.wizardStepManager.getNextStep(this.gesuchModelManager.getGesuch()))) as any;
+        return this.wizardStepManager.updateCurrentWizardStepStatus(TSWizardStepStatus.OK)
+            .then(() => this.navigateToStep(this.wizardStepManager.getNextStep(this.gesuchModelManager.getGesuch()))) as any;
     }
 
     public setSubstepManager(manager: FinanzielleSituationSubStepManager): void {

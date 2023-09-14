@@ -39,8 +39,8 @@ export class TSFerienbetreuungAngabenAngebot extends TSFerienbetreuungAbstractAn
     private _gemeindeFuehrtAngebotInKooperation: boolean;
     private _gemeindeBeauftragtExterneAnbieter: boolean;
     private _angebotVereineUndPrivateIntegriert: boolean;
-    private _bemerkungenKooperation: boolean;
-    private _leitungDurchPersonMitAusbildung: string;
+    private _bemerkungenKooperation: string;
+    private _leitungDurchPersonMitAusbildung: boolean;
     private _betreuungDurchPersonenMitErfahrung: boolean;
     private _anzahlKinderAngemessen: boolean;
     private _betreuungsschluessel: string;
@@ -204,19 +204,19 @@ export class TSFerienbetreuungAngabenAngebot extends TSFerienbetreuungAbstractAn
         this._angebotVereineUndPrivateIntegriert = value;
     }
 
-    public get bemerkungenKooperation(): boolean {
+    public get bemerkungenKooperation(): string {
         return this._bemerkungenKooperation;
     }
 
-    public set bemerkungenKooperation(value: boolean) {
+    public set bemerkungenKooperation(value: string) {
         this._bemerkungenKooperation = value;
     }
 
-    public get leitungDurchPersonMitAusbildung(): string {
+    public get leitungDurchPersonMitAusbildung(): boolean {
         return this._leitungDurchPersonMitAusbildung;
     }
 
-    public set leitungDurchPersonMitAusbildung(value: string) {
+    public set leitungDurchPersonMitAusbildung(value: boolean) {
         this._leitungDurchPersonMitAusbildung = value;
     }
 

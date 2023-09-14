@@ -17,26 +17,17 @@
 
 package ch.dvbern.ebegu.dto;
 
-import java.math.BigDecimal;
-import java.util.HashSet;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
+import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
+import ch.dvbern.ebegu.enums.*;
+import ch.dvbern.ebegu.rules.RuleValidity;
+import ch.dvbern.ebegu.util.MathUtil;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
-
-import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
-import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
-import ch.dvbern.ebegu.enums.EinschulungTyp;
-import ch.dvbern.ebegu.enums.MsgKey;
-import ch.dvbern.ebegu.enums.PensumUnits;
-import ch.dvbern.ebegu.enums.Taetigkeit;
-import ch.dvbern.ebegu.rules.RuleValidity;
-import ch.dvbern.ebegu.util.MathUtil;
+import java.math.BigDecimal;
+import java.util.*;
 
 public class BGCalculationInput {
 
@@ -69,6 +60,8 @@ public class BGCalculationInput {
 	private Set<Taetigkeit> taetigkeiten = new HashSet<>();
 
 	private int fachstellenpensum;
+
+	private IntegrationTyp integrationTypFachstellenPensum;
 
 	private boolean betreuungspensumMustBeAtLeastFachstellenpensum = false;
 
@@ -268,6 +261,7 @@ public class BGCalculationInput {
 		this.requiredAgeForAnspruchNotReached = toCopy.requiredAgeForAnspruchNotReached;
 		this.gesuchBeendenKonkubinatWirdInPeriodeXJahreAlt = toCopy.gesuchBeendenKonkubinatWirdInPeriodeXJahreAlt;
 		this.bgStundenFaktor = toCopy.bgStundenFaktor;
+		this.integrationTypFachstellenPensum = toCopy.integrationTypFachstellenPensum;
 	}
 
 	@Nonnull
@@ -882,6 +876,10 @@ public class BGCalculationInput {
 		if (MathUtil.isZero(this.bgStundenFaktor) && !MathUtil.isZero(other.getBgStundenFaktor())) {
 			this.setBgStundenFaktor(other.getBgStundenFaktor());
 		}
+
+		//integrations Typ kann nicht ändern wenn zwei Fachstellen zusammengezählt werde
+		this.integrationTypFachstellenPensum = this.integrationTypFachstellenPensum == null ?
+			other.integrationTypFachstellenPensum : this.integrationTypFachstellenPensum;
 	}
 
 	/**
@@ -1084,7 +1082,8 @@ public class BGCalculationInput {
 			this.isEkvAccepted == other.isEkvAccepted &&
 			this.requiredAgeForAnspruchNotReached == other.requiredAgeForAnspruchNotReached &&
 			this.gesuchBeendenKonkubinatWirdInPeriodeXJahreAlt == other.gesuchBeendenKonkubinatWirdInPeriodeXJahreAlt &&
-			MathUtil.isSame(this.bgStundenFaktor, other.bgStundenFaktor);
+			MathUtil.isSame(this.bgStundenFaktor, other.bgStundenFaktor) &&
+			this.integrationTypFachstellenPensum == other.integrationTypFachstellenPensum;
 	}
 
 	@SuppressWarnings("PMD.CompareObjectsWithEquals")
@@ -1112,7 +1111,11 @@ public class BGCalculationInput {
 			this.tsInputOhneBetreuung.isSame(that.tsInputOhneBetreuung) &&
 			this.sozialhilfeempfaenger == that.sozialhilfeempfaenger &&
 			this.isZuSpaetEingereicht() == that.isZuSpaetEingereicht() &&
-			this.isAuszahlungAnEltern == that.isAuszahlungAnEltern;
+			this.isAuszahlungAnEltern == that.isAuszahlungAnEltern &&
+			MathUtil.isSame(tarifHauptmahlzeit, that.tarifHauptmahlzeit) &&
+			MathUtil.isSame(tarifNebenmahlzeit, that.tarifNebenmahlzeit) &&
+			MathUtil.isSame(anzahlHauptmahlzeiten, that.anzahlHauptmahlzeiten) &&
+			MathUtil.isSame(anzahlNebenmahlzeiten, that.anzahlNebenmahlzeiten);
 	}
 
 	private boolean isSameErwerbspensum(@Nullable Integer thisErwerbspensumGS, @Nullable Integer thatErwerbspensumGS) {
@@ -1260,5 +1263,13 @@ public class BGCalculationInput {
 
 	public BigDecimal getBgStundenFaktor() {
 		return bgStundenFaktor;
+	}
+
+	public IntegrationTyp getIntegrationTypFachstellenPensum() {
+		return integrationTypFachstellenPensum;
+	}
+
+	public void setIntegrationTypFachstellenPensum(IntegrationTyp integrationTypFachstellenPensum) {
+		this.integrationTypFachstellenPensum = integrationTypFachstellenPensum;
 	}
 }

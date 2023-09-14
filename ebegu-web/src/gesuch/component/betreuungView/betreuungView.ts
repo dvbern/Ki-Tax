@@ -26,6 +26,7 @@ import {UnknownKitaIdVisitor} from '../../../app/core/constants/UnknownKitaIdVis
 import {UnknownTagesschuleIdVisitor} from '../../../app/core/constants/UnknownTagesschuleIdVisitor';
 import {UnknownTFOIdVisitor} from '../../../app/core/constants/UnknownTFOIdVisitor';
 import {DvDialog} from '../../../app/core/directive/dv-dialog/dv-dialog';
+import {TSDemoFeature} from '../../../app/core/directive/dv-hide-feature/TSDemoFeature';
 import {ErrorService} from '../../../app/core/errors/service/ErrorService';
 import {LogFactory} from '../../../app/core/logging/LogFactory';
 import {ApplicationPropertyRS} from '../../../app/core/rest-services/applicationPropertyRS.rest';
@@ -40,6 +41,7 @@ import {
     TSBetreuungsangebotTyp,
 } from '../../../models/enums/TSBetreuungsangebotTyp';
 import {TSBetreuungsstatus} from '../../../models/enums/TSBetreuungsstatus';
+import {stringEingewoehnungTyp, TSEingewoehnungTyp} from '../../../models/enums/TSEingewoehnungTyp';
 import {TSEinstellungKey} from '../../../models/enums/TSEinstellungKey';
 import {TSFachstellenTyp} from '../../../models/enums/TSFachstellenTyp';
 import {TSInstitutionStatus} from '../../../models/enums/TSInstitutionStatus';
@@ -94,8 +96,6 @@ export class BetreuungViewComponentConfig implements IComponentOptions {
 const GESUCH_BETREUUNGEN = 'gesuch.betreuungen';
 const PENDENZEN_BETREUUNG = 'pendenzenBetreuungen.list-view';
 const TAGI_ANGEBOT_VALUE = 'TAGI';
-// The hardcoded value of 10 hours per day will be refactored into an Einstellung in KIBON-2967
-const ANZAHL_STUNDEN_KITA_PRO_TAG = 10;
 
 export class BetreuungViewController extends AbstractGesuchViewController<TSBetreuung> {
 
@@ -149,7 +149,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     public searchQuery: string = '';
     public allowedRoles: ReadonlyArray<TSRole>;
     public isKesbPlatzierung: boolean;
-    private eingewoehnungAktiviert: boolean = false;
+    private eingewoehnungTyp: TSEingewoehnungTyp = TSEingewoehnungTyp.KEINE;
     private kitaPlusZuschlagAktiviert: boolean = false;
     private besondereBeduerfnisseAufwandKonfigurierbar: boolean = false;
     private fachstellenTyp: TSFachstellenTyp;
@@ -160,6 +160,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     private oeffnungstageKita: number;
     private oeffnungstageTFO: number;
     private oeffnungsstundenTFO: number;
+    private kitastundenprotag: number;
 
     private multiplierKita: number;
     private multiplierTFO: number;
@@ -172,6 +173,8 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     private angebotTS: boolean;
     private angebotFI: boolean;
     private angebotTFO: boolean;
+
+    public readonly demoFeature = TSDemoFeature.FACHSTELLEN_UEBERGANGSLOESUNG;
 
     public constructor(
         private readonly $state: StateService,
@@ -299,9 +302,9 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         this.einstellungRS.getAllEinstellungenBySystemCached(
             gesuchsperiodeId
         ).subscribe((response: TSEinstellung[]) => {
-            response.filter(r => r.key === TSEinstellungKey.FKJV_EINGEWOEHNUNG)
+            response.filter(r => r.key === TSEinstellungKey.EINGEWOEHNUNG_TYP)
                 .forEach(value => {
-                    this.eingewoehnungAktiviert = value.getValueAsBoolean();
+                    this.eingewoehnungTyp = stringEingewoehnungTyp(value.value);
                 });
             response.filter(r => r.key === TSEinstellungKey.KITAPLUS_ZUSCHLAG_AKTIVIERT)
                 .forEach(value => {
@@ -337,6 +340,10 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
             response.filter(r => r.key === TSEinstellungKey.OEFFNUNGSSTUNDEN_TFO)
                 .forEach(einstellung => {
                     this.oeffnungsstundenTFO = parseInt(einstellung.value, 10);
+                });
+            response.filter(r => r.key === TSEinstellungKey.KITA_STUNDEN_PRO_TAG)
+                .forEach(einstellung => {
+                    this.kitastundenprotag = parseInt(einstellung.value, 10);
                 });
         }, error => LOG.error(error));
 
@@ -1343,7 +1350,48 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     }
 
     public showEingewoehnung(): boolean {
-        return this.eingewoehnungAktiviert;
+        if (this.isSchulamt()) {
+            return false;
+        }
+        switch (this.eingewoehnungTyp) {
+            case TSEingewoehnungTyp.KEINE:
+                return false;
+            case TSEingewoehnungTyp.FKJV:
+                return this.showEingewohenungFKJV();
+            case TSEingewoehnungTyp.LUZERN:
+                return true;
+            default: {
+                const errorMsg = `not implemented eingewoehnungTyp ${this.eingewoehnungTyp}`;
+                LOG.error(errorMsg);
+                throw new Error(errorMsg);
+            }
+        }
+    }
+
+    private showEingewohenungFKJV(): boolean {
+        if (this.isBetreuungsstatusAusstehend()) {
+            return false;
+        }
+        if (this.isBetreuungsstatusWarten()) {
+            return this.authServiceRS.isOneOfRoles(TSRoleUtil.getTraegerschaftInstitutionRoles());
+        }
+        return true;
+    }
+
+    public isEingewoehnungEnabled(): boolean {
+        if (this.isGesuchReadonly()) {
+            return false;
+        }
+        if (this.eingewoehnungTyp === TSEingewoehnungTyp.FKJV) {
+            // bei FKJV darf nur die Institution die Checkbox bearbeiten
+            return this.authServiceRS.isOneOfRoles(TSRoleUtil.getTraegerschaftInstitutionRoles())
+            && this.isBetreuungsstatusWarten();
+        }
+        if (this.eingewoehnungTyp === TSEingewoehnungTyp.LUZERN) {
+            // bei luzern immer editierbar, falls das Gesuch nicht readonly ist.
+            return true;
+        }
+        return false;
     }
 
     private checkIfGemeindeOrBetreuungHasTSAnmeldung(): boolean {
@@ -1379,7 +1427,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         }
     }
 
-    public enableErweiterteBeduerfnisse(): boolean {
+    public enableFieldsEditedByGemeinde(): boolean {
         if (this.isDuplicated) {
             return true;
         }
@@ -1526,7 +1574,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         this.provisorischeBetreuung = false;
 
         // init prov. betreuung
-        if (this.model.vertrag === false) { // eslint-disable-line @typescript-eslint/no-unnecessary-boolean-literal-compare
+        if (this.model.vertrag === false) {
             this.provisorischeBetreuung = true;
             this.createProvisorischeBetreuung();
         }
@@ -1681,7 +1729,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
 
     private calculateMuliplyerKita(): void {
         if (this.betreuungspensumAnzeigeTyp === TSPensumAnzeigeTyp.NUR_STUNDEN) {
-            this.multiplierKita = this.oeffnungstageKita * ANZAHL_STUNDEN_KITA_PRO_TAG / 12 / 100;
+            this.multiplierKita = this.oeffnungstageKita * this.kitastundenprotag / 12 / 100;
             return;
         }
         // Beispiel: 240 Tage Pro Jahr: 240 / 12 = 20 Tage Pro Monat. 100% = 20 days => 1% = 0.2 tage
@@ -1716,7 +1764,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     }
 
     private showHintUntermonatlich(): boolean {
-        return this.getBetreuungspensen().length > 0 && this.mandant !== MANDANTS.LUZERN;
+        return this.getBetreuungspensen()?.length > 0 && this.mandant !== MANDANTS.LUZERN;
     }
 
     private showHintEingewoehnung(): boolean {
@@ -1746,5 +1794,12 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
 
     public hasMandantZusaetzlichesBereuungsangebot(): boolean {
         return this.angebotTS || this.angebotFI || this.angebotTFO;
+    }
+
+    public getEingewoehnungLabel(): string {
+        if (this.eingewoehnungTyp === TSEingewoehnungTyp.FKJV) {
+            return this.$translate.instant('EINGEWOEHNUNG_FKJV');
+        }
+        return this.$translate.instant('EINGEWOEHNUNG');
     }
 }

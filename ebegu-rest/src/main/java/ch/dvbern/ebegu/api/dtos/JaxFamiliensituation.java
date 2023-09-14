@@ -15,7 +15,11 @@
 
 package ch.dvbern.ebegu.api.dtos;
 
-import java.time.LocalDate;
+import ch.dvbern.ebegu.enums.EnumFamilienstatus;
+import ch.dvbern.ebegu.enums.EnumGesuchstellerKardinalitaet;
+import ch.dvbern.ebegu.enums.UnterhaltsvereinbarungAnswer;
+import ch.dvbern.ebegu.validators.CheckIBANString;
+import ch.dvbern.lib.date.converters.LocalDateXMLConverter;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -24,11 +28,7 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-
-import ch.dvbern.ebegu.enums.EnumFamilienstatus;
-import ch.dvbern.ebegu.enums.EnumGesuchstellerKardinalitaet;
-import ch.dvbern.ebegu.enums.UnterhaltsvereinbarungAnswer;
-import ch.dvbern.lib.date.converters.LocalDateXMLConverter;
+import java.time.LocalDate;
 
 /**
  * DTO fuer Familiensituationen
@@ -41,9 +41,6 @@ public class JaxFamiliensituation extends JaxAbstractDTO {
 
 	@NotNull
 	private EnumFamilienstatus familienstatus;
-
-	@NotNull
-	private JaxGesuch gesuch;
 
 	@Nullable
 	private Boolean gemeinsameSteuererklaerung;
@@ -76,6 +73,7 @@ public class JaxFamiliensituation extends JaxAbstractDTO {
 	private boolean keineMahlzeitenverguenstigungBeantragtEditable;
 
 	@Nullable
+	@CheckIBANString
 	private String iban;
 
 	@Nullable
@@ -129,15 +127,6 @@ public class JaxFamiliensituation extends JaxAbstractDTO {
 
 	public void setFamilienstatus(@Nonnull EnumFamilienstatus familienstatus) {
 		this.familienstatus = familienstatus;
-	}
-
-	@Nonnull
-	public JaxGesuch getGesuch() {
-		return gesuch;
-	}
-
-	public void setGesuch(@Nonnull JaxGesuch gesuch) {
-		this.gesuch = gesuch;
 	}
 
 	@Nullable

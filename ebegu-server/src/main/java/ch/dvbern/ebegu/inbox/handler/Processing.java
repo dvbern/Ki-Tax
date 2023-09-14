@@ -24,26 +24,38 @@ public class Processing {
 
 	private final boolean processingSuccess;
 
+	private final boolean processingIgnored;
+
 	@Nullable
 	private final String message;
 
-	private Processing(boolean processingSuccess, @Nullable String message) {
+	private Processing(boolean processingSuccess, boolean processingIgnored, @Nullable String message) {
 		this.processingSuccess = processingSuccess;
+		this.processingIgnored = processingIgnored;
 		this.message = message;
 	}
 
 	@Nonnull
 	public static Processing success() {
-		return new Processing(true, null);
+		return new Processing(true, false, null);
 	}
 
 	@Nonnull
 	public static Processing failure(@Nonnull String message) {
-		return new Processing(false, message);
+		return new Processing(false, false, message);
+	}
+
+	@Nonnull
+	public static Processing ignore(@Nonnull String message) {
+		return new Processing(false, true, message);
 	}
 
 	public boolean isProcessingSuccess() {
 		return processingSuccess;
+	}
+
+	public boolean isProcessingIgnored() {
+		return processingIgnored;
 	}
 
 	@Nullable

@@ -16,5 +16,5 @@
   -->
 <div class="well well-status-warten" *ngIf="showWarning()">
     <i class="fa fa-warning" aria-hidden="true"></i>
-    <span translate="BETREUUNG_MUTATION_WARNUNG"></span>
+    <span [innerHTML]="'BETREUUNG_MUTATION_WARNUNG' | translate"></span>
 </div>

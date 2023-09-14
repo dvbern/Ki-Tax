@@ -53,7 +53,8 @@ export class ErwerbspensumRS {
         restErwerbspensum =
             this.ebeguRestUtil.erwerbspensumContainerToRestObject(restErwerbspensum, erwerbspensenContainer);
         const url = `${this.serviceURL}/${encodeURIComponent(gesuchstellerID)}/${gesuchId}`;
-        return this.http.put(url, restErwerbspensum).then((response: any) => this.wizardStepManager.findStepsFromGesuch(gesuchId).then(() => {
+        return this.http.put(url, restErwerbspensum)
+            .then((response: any) => this.wizardStepManager.findStepsFromGesuch(gesuchId).then(() => {
                 this.log.debug('PARSING ErwerbspensumContainer REST object ', response.data);
                 return this.ebeguRestUtil.parseErwerbspensumContainer(new TSErwerbspensumContainer(), response.data);
             }));

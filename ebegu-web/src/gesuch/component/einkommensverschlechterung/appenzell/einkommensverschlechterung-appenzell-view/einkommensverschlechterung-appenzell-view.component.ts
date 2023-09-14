@@ -80,7 +80,8 @@ export class EinkommensverschlechterungAppenzellViewComponent extends AbstractGe
                 new TSFinSitZusatzangabenAppenzell();
         }
 
-        if (this.isSpezialFallAR() && EbeguUtil.isNullOrUndefined(this.getEkvToWorkWith().finSitZusatzangabenAppenzell.zusatzangabenPartner)) {
+        if (this.isSpezialFallAR() &&
+            EbeguUtil.isNullOrUndefined(this.getEkvToWorkWith().finSitZusatzangabenAppenzell.zusatzangabenPartner)) {
             this.getEkvToWorkWith().finSitZusatzangabenAppenzell.zusatzangabenPartner =
                 new TSFinSitZusatzangabenAppenzell();
         }

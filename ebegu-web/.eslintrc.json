@@ -61,6 +61,7 @@
                         }
                     }
                 ],
+                "@typescript-eslint/consistent-type-assertions": "off",
                 "@typescript-eslint/consistent-type-definitions": "error",
                 "@typescript-eslint/explicit-member-accessibility": [
                     "error",
@@ -91,7 +92,7 @@
                     }
                 ],
                 "@typescript-eslint/no-this-alias": "error",
-                "@typescript-eslint/no-unnecessary-boolean-literal-compare": "error",
+                "@typescript-eslint/no-unnecessary-boolean-literal-compare": "off",
                 "@typescript-eslint/no-unnecessary-qualifier": "error",
                 "@typescript-eslint/no-unnecessary-type-arguments": "error",
                 "@typescript-eslint/prefer-readonly": "error",
@@ -129,10 +130,12 @@
                 ],
                 "import/no-unassigned-import": "error",
                 "max-len": [
-                    "warn",
+                    "error",
                     {
-                        "ignorePattern": "^import .*|^require\\(.*\\)|^export.*",
-                        "code": 120
+                        // ignore import, require, exports, multiline imports and lines that are only one long template string
+                        "ignorePattern": "^import .*|^require\\(.*\\)|^export.*|\\}\\s*from.*|^\\s*`.*`(,|;)?$",
+                        "code": 130,
+                        "ignoreUrls": true
                     }
                 ],
                 "no-duplicate-case": "error",

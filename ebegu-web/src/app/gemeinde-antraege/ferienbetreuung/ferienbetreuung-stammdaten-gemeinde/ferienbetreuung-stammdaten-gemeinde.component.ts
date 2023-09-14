@@ -16,12 +16,13 @@
  */
 
 import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit} from '@angular/core';
-import {FormBuilder, ValidatorFn, Validators} from '@angular/forms';
+import {FormBuilder, FormControl, FormGroup, ValidatorFn, Validators} from '@angular/forms';
 import {MAT_DATE_FORMATS} from '@angular/material/core';
 import {MatDatepicker} from '@angular/material/datepicker';
 import {MatDialog} from '@angular/material/dialog';
 import {TranslateService} from '@ngx-translate/core';
 import {UIRouterGlobals} from '@uirouter/core';
+import {Moment} from 'moment';
 import * as moment from 'moment';
 import {ibanValidator} from 'ngx-iban';
 import {combineLatest, Subscription} from 'rxjs';
@@ -72,6 +73,40 @@ export class FerienbetreuungStammdatenGemeindeComponent extends AbstractFerienbe
 
     public date?: moment.Moment;
 
+    public form = this.fb.group({
+        traegerschaft: [<null | string> null],
+        amAngebotBeteiligteGemeinden: [<null | string[]> null],
+        seitWannFerienbetreuungen: [<null | Moment> null],
+        stammdatenAdresse: this.fb.group({
+            organisation: [<null | string> null],
+            zusatzzeile: [<null | string> null],
+            strasse: [<null | string> null],
+            hausnummer: [<null | string> null],
+            plz: [<null | string> null],
+            ort: [<null | string> null],
+        }),
+        stammdatenKontaktpersonVorname: [<null | string> null],
+        stammdatenKontaktpersonNachname: [<null | string> null],
+        stammdatenKontaktpersonFunktion: [<null | string> null],
+        stammdatenKontaktpersonTelefon: [<null | string> null],
+        stammdatenKontaktpersonEmail: [<null | string> null],
+        auszahlungsdaten: this.fb.group({
+            kontoinhaber: [<null | string> null],
+            adresseKontoinhaber: this.fb.group({
+                strasse: [<null | string> null],
+                hausnummer: [<null | string> null],
+                ort: [<null | string> null],
+                plz: [<null | string> null],
+                zusatzzeile: [<null | string> null],
+            }),
+            iban: [
+                <null | string> null,
+                ibanValidator()
+            ],
+            vermerkAuszahlung: [<null | string> null]
+        })
+    });
+
     public constructor(
         protected readonly errorService: ErrorService,
         protected readonly translate: TranslateService,
@@ -116,89 +151,36 @@ export class FerienbetreuungStammdatenGemeindeComponent extends AbstractFerienbe
         if (!stammdaten) {
             return;
         }
-        this.form = this.fb.group({
-            version: [
-                stammdaten?.version
-            ],
-            traegerschaft: [
-                stammdaten?.traegerschaft
-            ],
-            amAngebotBeteiligteGemeinden: [
-                stammdaten?.amAngebotBeteiligteGemeinden
-            ],
-            seitWannFerienbetreuungen: [
-                stammdaten?.seitWannFerienbetreuungen
-            ],
-            stammdatenAdresse: this.fb.group({
-                organisation: [
-                    stammdaten?.stammdatenAdresse?.organisation
-                ],
-                zusatzzeile: [
-                    stammdaten?.stammdatenAdresse?.zusatzzeile
-                ],
-                strasse: [
-                    stammdaten?.stammdatenAdresse?.strasse
-                ],
-                hausnummer: [
-                    stammdaten?.stammdatenAdresse?.hausnummer
-                ],
-                plz: [
-                    stammdaten?.stammdatenAdresse?.plz
-                ],
-                ort: [
-                    stammdaten?.stammdatenAdresse?.ort
-                ],
-                version: [
-                    stammdaten?.stammdatenAdresse?.version
-                ]
-            }),
-            stammdatenKontaktpersonVorname: [
-                stammdaten?.stammdatenKontaktpersonVorname
-            ],
-            stammdatenKontaktpersonNachname: [
-                stammdaten?.stammdatenKontaktpersonNachname
-            ],
-            stammdatenKontaktpersonFunktion: [
-                stammdaten?.stammdatenKontaktpersonFunktion
-            ],
-            stammdatenKontaktpersonTelefon: [
-                stammdaten?.stammdatenKontaktpersonTelefon
-            ],
-            stammdatenKontaktpersonEmail: [
-                stammdaten?.stammdatenKontaktpersonEmail
-            ],
-            auszahlungsdaten: this.fb.group({
-                kontoinhaber: [
-                    stammdaten?.kontoinhaber
-                ],
-                adresseKontoinhaber: this.fb.group({
-                    strasse: [
-                        stammdaten?.adresseKontoinhaber?.strasse
-                    ],
-                    hausnummer: [
-                        stammdaten?.adresseKontoinhaber?.hausnummer
-                    ],
-                    ort: [
-                        stammdaten?.adresseKontoinhaber?.ort
-                    ],
-                    plz: [
-                        stammdaten?.adresseKontoinhaber?.plz
-                    ],
-                    zusatzzeile: [
-                        stammdaten?.adresseKontoinhaber?.zusatzzeile
-                    ],
-                    version: [
-                        stammdaten?.adresseKontoinhaber?.version
-                    ]
-                }),
-                iban: [
-                    stammdaten?.iban,
-                    ibanValidator()
-                ],
-                vermerkAuszahlung: [
-                    stammdaten?.vermerkAuszahlung
-                ]
-            })
+        this.form.patchValue({
+            amAngebotBeteiligteGemeinden: stammdaten?.amAngebotBeteiligteGemeinden,
+            seitWannFerienbetreuungen: stammdaten?.seitWannFerienbetreuungen,
+            traegerschaft: stammdaten?.traegerschaft,
+            stammdatenKontaktpersonEmail: stammdaten?.stammdatenKontaktpersonEmail,
+            stammdatenKontaktpersonNachname: stammdaten?.stammdatenKontaktpersonNachname,
+            stammdatenKontaktpersonVorname: stammdaten?.stammdatenKontaktpersonVorname,
+            stammdatenKontaktpersonTelefon: stammdaten?.stammdatenKontaktpersonTelefon,
+            stammdatenKontaktpersonFunktion: stammdaten?.stammdatenKontaktpersonFunktion,
+            auszahlungsdaten: {
+                kontoinhaber: stammdaten?.kontoinhaber,
+                vermerkAuszahlung: stammdaten?.vermerkAuszahlung,
+                iban: stammdaten?.iban,
+                adresseKontoinhaber: {
+                    strasse: stammdaten?.adresseKontoinhaber?.strasse,
+                    plz: stammdaten?.adresseKontoinhaber?.plz,
+                    hausnummer: stammdaten?.adresseKontoinhaber?.hausnummer,
+                    zusatzzeile: stammdaten?.adresseKontoinhaber?.zusatzzeile,
+                    ort: stammdaten?.adresseKontoinhaber?.ort
+                }
+            },
+            stammdatenAdresse: {
+                strasse: stammdaten?.stammdatenAdresse?.strasse,
+                plz: stammdaten?.stammdatenAdresse?.plz,
+                hausnummer: stammdaten?.stammdatenAdresse?.hausnummer,
+                zusatzzeile: stammdaten?.stammdatenAdresse?.zusatzzeile,
+                ort: stammdaten?.stammdatenAdresse?.ort,
+                organisation: stammdaten?.stammdatenAdresse?.organisation
+
+            }
         });
         this.setBasicValidation();
     }
@@ -206,10 +188,10 @@ export class FerienbetreuungStammdatenGemeindeComponent extends AbstractFerienbe
     protected setBasicValidation(): void {
         this.removeAllValidators();
 
-        this.form.get('stammdatenKontaktpersonTelefon').setValidators(
+        this.form.controls.stammdatenKontaktpersonTelefon.setValidators(
             Validators.pattern(CONSTANTS.PATTERN_PHONE)
         );
-        this.form.get('stammdatenKontaktpersonEmail').setValidators(
+        this.form.controls.stammdatenKontaktpersonEmail.setValidators(
             Validators.pattern(CONSTANTS.PATTERN_EMAIL)
         );
 
@@ -219,11 +201,16 @@ export class FerienbetreuungStammdatenGemeindeComponent extends AbstractFerienbe
 
     // eslint-disable-next-line
     private adressValidValidator(): ValidatorFn {
-        return control => {
-            const strasse = control.get('strasse');
-            const ort = control.get('ort');
-            const plz = control.get('plz');
-            const organisation = control.get('organisation');
+        return (control: FormGroup<{
+            strasse: FormControl<null | string>;
+            ort: FormControl<null | string>;
+            plz: FormControl<null | string>;
+            organisation: FormControl<null | string>;
+        }>)=> {
+            const strasse = control.controls.strasse;
+            const ort = control.controls.ort;
+            const plz = control.controls.plz;
+            const organisation = control.controls.organisation;
 
             let formErroneous = false;
 
@@ -256,12 +243,22 @@ export class FerienbetreuungStammdatenGemeindeComponent extends AbstractFerienbe
 
     // eslint-disable-next-line
     private auszahlungsdatenValidation(): ValidatorFn {
-        return control => {
-            const kontoinhaber = control.get('kontoinhaber');
-            const strasse = control.get('adresseKontoinhaber').get('strasse');
-            const plz = control.get('adresseKontoinhaber').get('plz');
-            const ort = control.get('adresseKontoinhaber').get('ort');
-            const iban = control.get('iban');
+        return (control: FormGroup<{
+            kontoinhaber: FormControl<null | string>;
+            iban: FormControl<null | string>;
+            adresseKontoinhaber: FormGroup<{
+                strasse: FormControl<null | string>;
+                hausnummer: FormControl<null | string>;
+                ort: FormControl<null | string>;
+                plz: FormControl<null | string>;
+                zusatzzeile: FormControl<null | string>;
+            }>;
+        }>) => {
+            const kontoinhaber = control.controls.kontoinhaber;
+            const strasse = control.controls.adresseKontoinhaber.controls.strasse;
+            const plz = control.controls.adresseKontoinhaber.controls.plz;
+            const ort = control.controls.adresseKontoinhaber.controls.ort;
+            const iban = control.controls.iban;
 
             let formErroneous = false;
 
@@ -300,12 +297,12 @@ export class FerienbetreuungStammdatenGemeindeComponent extends AbstractFerienbe
 
     protected enableFormValidation(): void {
         this.enableStammdatenAuszahlungValidation();
-        this.form.get('stammdatenKontaktpersonVorname').setValidators([Validators.required]);
-        this.form.get('stammdatenKontaktpersonNachname').setValidators([Validators.required]);
-        this.form.get('stammdatenKontaktpersonTelefon')
-            .setValidators([Validators.required, Validators.pattern(CONSTANTS.PATTERN_PHONE)]);
-        this.form.get('stammdatenKontaktpersonEmail')
-            .setValidators([Validators.required, Validators.pattern(CONSTANTS.PATTERN_EMAIL)]);
+        this.form.controls.stammdatenKontaktpersonVorname.setValidators([Validators.required]);
+        this.form.controls.stammdatenKontaktpersonNachname.setValidators([Validators.required]);
+        this.form.controls.stammdatenKontaktpersonTelefon.setValidators(
+            [Validators.required, Validators.pattern(CONSTANTS.PATTERN_PHONE)]);
+        this.form.controls.stammdatenKontaktpersonEmail.setValidators(
+            [Validators.required, Validators.pattern(CONSTANTS.PATTERN_EMAIL)]);
     }
 
     public save(): void {
@@ -326,29 +323,32 @@ export class FerienbetreuungStammdatenGemeindeComponent extends AbstractFerienbe
     }
 
     private extractFormValues(): TSFerienbetreuungAngabenStammdaten {
-        this.stammdaten.amAngebotBeteiligteGemeinden = this.form.get('amAngebotBeteiligteGemeinden').value;
-        this.stammdaten.seitWannFerienbetreuungen = this.form.get('seitWannFerienbetreuungen').value;
-        this.stammdaten.traegerschaft = this.form.get('traegerschaft').value;
+        this.stammdaten.amAngebotBeteiligteGemeinden = this.form.value.amAngebotBeteiligteGemeinden;
+        this.stammdaten.seitWannFerienbetreuungen = this.form.value.seitWannFerienbetreuungen;
+        this.stammdaten.traegerschaft = this.form.value.traegerschaft;
 
-        const adresse = new TSAdresse().from(this.form.get('stammdatenAdresse').value);
+        const adresse = new TSAdresse().from(this.form.value.stammdatenAdresse);
+        adresse.id = this.stammdaten.stammdatenAdresse?.id;
+        adresse.version = this.stammdaten.stammdatenAdresse?.version;
         // Felder der Adresse sind required in Backend. Deshalb müssen entweder alle oder keine gesetzt sein.
         this.stammdaten.stammdatenAdresse = (EbeguUtil.adresseValid(adresse)) ? adresse : null;
 
-        this.stammdaten.stammdatenKontaktpersonVorname = this.form.get('stammdatenKontaktpersonVorname').value;
-        this.stammdaten.stammdatenKontaktpersonNachname = this.form.get('stammdatenKontaktpersonNachname').value;
-        this.stammdaten.stammdatenKontaktpersonFunktion = this.form.get('stammdatenKontaktpersonFunktion').value;
-        this.stammdaten.stammdatenKontaktpersonTelefon = this.form.get('stammdatenKontaktpersonTelefon').value;
-        this.stammdaten.stammdatenKontaktpersonEmail = this.form.get('stammdatenKontaktpersonEmail').value;
-        this.stammdaten.iban = this.form.get('auszahlungsdaten').get('iban')?.value?.toUpperCase();
-        this.stammdaten.kontoinhaber = this.form.get('auszahlungsdaten').get('kontoinhaber').value;
+        this.stammdaten.stammdatenKontaktpersonVorname = this.form.value.stammdatenKontaktpersonVorname;
+        this.stammdaten.stammdatenKontaktpersonNachname = this.form.value.stammdatenKontaktpersonNachname;
+        this.stammdaten.stammdatenKontaktpersonFunktion = this.form.value.stammdatenKontaktpersonFunktion;
+        this.stammdaten.stammdatenKontaktpersonTelefon = this.form.value.stammdatenKontaktpersonTelefon;
+        this.stammdaten.stammdatenKontaktpersonEmail = this.form.value.stammdatenKontaktpersonEmail;
+        this.stammdaten.iban = this.form.controls.auszahlungsdaten.value.iban.toUpperCase();
+        this.stammdaten.kontoinhaber = this.form.value.auszahlungsdaten.kontoinhaber;
 
-        const adresseKontoinhaber = new TSAdresse().from(this.form.get('auszahlungsdaten')
-            .get('adresseKontoinhaber').value);
+        const adresseKontoinhaber = new TSAdresse().from(this.form.value.auszahlungsdaten.adresseKontoinhaber);
+        adresseKontoinhaber.id = this.stammdaten.adresseKontoinhaber?.id;
+        adresseKontoinhaber.version = this.stammdaten.adresseKontoinhaber?.version;
         // Felder der Adresse sind required in Backend. Deshalb müssen entweder alle oder keine gesetzt sein.
         this.stammdaten.adresseKontoinhaber =
             (EbeguUtil.adresseValid(adresseKontoinhaber)) ? adresseKontoinhaber : null;
 
-        this.stammdaten.vermerkAuszahlung = this.form.get('auszahlungsdaten').get('vermerkAuszahlung').value;
+        this.stammdaten.vermerkAuszahlung = this.form.value.auszahlungsdaten.vermerkAuszahlung;
         return this.stammdaten;
     }
 
@@ -356,11 +356,11 @@ export class FerienbetreuungStammdatenGemeindeComponent extends AbstractFerienbe
         const gemeinde = this.container.gemeinde;
         this.gemeindeRS.getGemeindeStammdaten(gemeinde.id).then(stammdaten => {
             const adresse = stammdaten.extractTsAdresse();
-            this.form.get('stammdatenAdresse').get('organisation').setValue(adresse?.organisation);
-            this.form.get('stammdatenAdresse').get('strasse').setValue(adresse?.strasse);
-            this.form.get('stammdatenAdresse').get('hausnummer').setValue(adresse?.hausnummer);
-            this.form.get('stammdatenAdresse').get('plz').setValue(adresse?.plz);
-            this.form.get('stammdatenAdresse').get('ort').setValue(adresse.ort);
+            this.form.controls.stammdatenAdresse.controls.organisation.setValue(adresse?.organisation);
+            this.form.controls.stammdatenAdresse.controls.strasse.setValue(adresse?.strasse);
+            this.form.controls.stammdatenAdresse.controls.hausnummer.setValue(adresse?.hausnummer);
+            this.form.controls.stammdatenAdresse.controls.plz.setValue(adresse?.plz);
+            this.form.controls.stammdatenAdresse.controls.ort.setValue(adresse.ort);
         }, err => {
             this.errorService.addMesageAsError(this.translate.instant('FERIENBETREUUNG_FEHLER_ABRUF_INFORMATIONEN'));
             LOG.error(err);
@@ -369,9 +369,9 @@ export class FerienbetreuungStammdatenGemeindeComponent extends AbstractFerienbe
 
     public fillBenutzer(): void {
         const benutzer = this.authServiceRS.getPrincipal();
-        this.form.get('stammdatenKontaktpersonVorname').setValue(benutzer.vorname);
-        this.form.get('stammdatenKontaktpersonNachname').setValue(benutzer.nachname);
-        this.form.get('stammdatenKontaktpersonEmail').setValue(benutzer.email);
+        this.form.controls.stammdatenKontaktpersonVorname.setValue(benutzer.vorname);
+        this.form.controls.stammdatenKontaktpersonNachname.setValue(benutzer.nachname);
+        this.form.controls.stammdatenKontaktpersonEmail.setValue(benutzer.email);
     }
 
     public async onAbschliessen(): Promise<void> {
@@ -387,11 +387,11 @@ export class FerienbetreuungStammdatenGemeindeComponent extends AbstractFerienbe
     }
 
     private enableStammdatenAuszahlungValidation(): void {
-        this.form.get('stammdatenAdresse').setValidators(this.adressValidValidator());
-        this.form.get('stammdatenAdresse').markAllAsTouched();
-        this.form.get('stammdatenAdresse').get('organisation').markAllAsTouched();
-        this.form.get('auszahlungsdaten').setValidators(this.auszahlungsdatenValidation());
-        this.form.get('auszahlungsdaten').markAllAsTouched();
+        this.form.controls.stammdatenAdresse.setValidators(this.adressValidValidator());
+        this.form.controls.stammdatenAdresse.markAllAsTouched();
+        this.form.controls.stammdatenAdresse.controls.organisation.markAllAsTouched();
+        this.form.controls.auszahlungsdaten.setValidators(this.auszahlungsdatenValidation());
+        this.form.controls.auszahlungsdaten.markAllAsTouched();
 
         this.triggerFormValidation();
     }
@@ -401,14 +401,14 @@ export class FerienbetreuungStammdatenGemeindeComponent extends AbstractFerienbe
     }
 
     public chosenYearHandler(normalizedYear: moment.Moment): void {
-        const control = this.form.get('seitWannFerienbetreuungen');
+        const control = this.form.controls.seitWannFerienbetreuungen;
         const ctrlValue = control.value || moment();
         ctrlValue.year(normalizedYear.year());
         control.setValue(ctrlValue);
     }
 
     public chosenMonthHandler(normalizedMonth: moment.Moment, datepicker: MatDatepicker<moment.Moment>): void {
-        const control = this.form.get('seitWannFerienbetreuungen');
+        const control = this.form.controls.seitWannFerienbetreuungen;
         const ctrlValue = control.value || moment();
         ctrlValue.month(normalizedMonth.month());
         control.setValue(ctrlValue.startOf('month'));

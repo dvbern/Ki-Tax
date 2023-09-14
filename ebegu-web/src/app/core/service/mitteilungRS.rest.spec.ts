@@ -106,4 +106,45 @@ describe('MitteilungRS', () => {
 
         });
     });
+    describe('applyAlleBetreuungsmitteilungen', () => {
+        it('should call the services to apply all the betreuungsmitteilungen with parallel and sequence', () => {
+            const mitteilungen = (
+                [
+                    [1, [1, 2]],
+                    [2, [3]],
+                ] as const
+            )
+                .map(([fallId, mitteilungIds]) => mitteilungIds.map(mitteilungId => {
+                        const mitteilung = new TSBetreuungsmitteilung();
+                        mitteilung.id = `987654321${mitteilungId}`;
+                        mitteilung.dossier = new TSDossier();
+                        mitteilung.dossier.fall = new TSFall();
+                        mitteilung.dossier.fall.id = `123456789${fallId}`;
+                        return mitteilung;
+                    }))
+                .reduce((acc, list) => [...acc, ...list], [] as TSBetreuungsmitteilung[]);
+            // Fall 1 and 2 should run in parallel so Mitteilung[0] and Mitteilung[2] should be returned before Mitteilung[1]
+            const expectedOrder = [mitteilungen[0], mitteilungen[2], mitteilungen[1]];
+
+            spyOn(ebeguRestUtil, 'betreuungsmitteilungToRestObject').and.returnValues(...expectedOrder);
+
+            const urls = expectedOrder.map(
+                ({ id }, i) => [`${mitteilungRS.serviceURL}/applybetreuungsmitteilungsilently`, id, i] as const
+            );
+            urls.forEach(([url, mId, i]) => {
+                $httpBackend.expectPOST(url, expectedOrder[i]).respond($q.when({ id: mId }));
+            });
+
+            const result = mitteilungRS.applyAlleBetreuungsmitteilungen(mitteilungen);
+            $httpBackend.flush();
+            $rootScope.$apply();
+
+            expect(result).toBeDefined();
+            expectedOrder.forEach((expected, i) =>
+                expect((ebeguRestUtil.betreuungsmitteilungToRestObject as jasmine.Spy).calls.argsFor(i)).toEqual([{}, expected])
+            );
+
+            $rootScope.$apply();
+        });
+    });
 });

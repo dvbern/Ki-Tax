@@ -15,7 +15,6 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {NgForm} from '@angular/forms';
 import {MatRadioChange} from '@angular/material/radio';
 import {TranslateService} from '@ngx-translate/core';
 import {IPromise} from 'angular';
@@ -35,6 +34,7 @@ import {WizardStepManager} from '../../../service/wizardStepManager';
 import {AbstractGesuchViewX} from '../../abstractGesuchViewX';
 import {FinanzielleSituationLuzernService} from './finanzielle-situation-luzern.service';
 import {TSRole} from '../../../../models/enums/TSRole';
+import {isAtLeastFreigegeben, TSAntragStatus} from '../../../../models/enums/TSAntragStatus';
 
 export abstract class AbstractFinSitLuzernView extends AbstractGesuchViewX<TSFinanzModel> {
 
@@ -118,7 +118,8 @@ export abstract class AbstractFinSitLuzernView extends AbstractGesuchViewX<TSFin
     }
 
     public gemeinsameStekChange(newGemeinsameStek: MatRadioChange): void {
-        if (newGemeinsameStek.value === false && EbeguUtil.isNullOrFalse(this.getModel().finanzielleSituationJA.alleinigeStekVorjahr)) {
+        if (newGemeinsameStek.value === false &&
+            EbeguUtil.isNullOrFalse(this.getModel().finanzielleSituationJA.alleinigeStekVorjahr)) {
             this.getModel().finanzielleSituationJA.veranlagt = undefined;
             this.getModel().finanzielleSituationJA.veranlagtVorjahr = undefined;
         }
@@ -126,7 +127,8 @@ export abstract class AbstractFinSitLuzernView extends AbstractGesuchViewX<TSFin
     }
 
     public alleinigeStekVorjahrChange(newAlleinigeStekVorjahr: MatRadioChange): void {
-        if (newAlleinigeStekVorjahr.value === false && EbeguUtil.isNullOrFalse(this.getModel().finanzielleSituationJA.gemeinsameStekVorjahr)) {
+        if (newAlleinigeStekVorjahr.value === false &&
+            EbeguUtil.isNullOrFalse(this.getModel().finanzielleSituationJA.gemeinsameStekVorjahr)) {
             this.getModel().finanzielleSituationJA.veranlagt = undefined;
             this.getModel().finanzielleSituationJA.veranlagtVorjahr = undefined;
         }
@@ -275,6 +277,14 @@ export abstract class AbstractFinSitLuzernView extends AbstractGesuchViewX<TSFin
 
     public showFinSitDatumGueltigAbText(): boolean {
         return EbeguUtil.isNullOrUndefined(this.getGesuch().finSitAenderungGueltigAbDatum);
+    }
+
+    public showFinSitDatumGueltigAb(): boolean {
+        if (!isAtLeastFreigegeben(this.getGesuch().status)) {
+            return false;
+        }
+
+        return this.isMutation() && this.isGS1();
     }
 
     public getFinSitDatumGueltigAbText(): string {

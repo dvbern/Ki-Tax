@@ -54,6 +54,10 @@ public class ErweiterteBetreuung extends AbstractMutableEntity {
 	@Column(nullable = true)
 	private BigDecimal erweitereteBeduerfnisseBetrag;
 
+	@Nonnull
+	@Column(nullable = false)
+	private boolean anspruchFachstelleWennPensumUnterschritten = false;
+
 	@Nullable
 	public Boolean getBetreuungInGemeinde() {
 		return betreuungInGemeinde;
@@ -116,6 +120,14 @@ public class ErweiterteBetreuung extends AbstractMutableEntity {
 		this.erweitereteBeduerfnisseBetrag = erweitereteBeduerfnisseBetrag;
 	}
 
+	public boolean isAnspruchFachstelleWennPensumUnterschritten() {
+		return anspruchFachstelleWennPensumUnterschritten;
+	}
+
+	public void setAnspruchFachstelleWennPensumUnterschritten(boolean anspruchFachstelleWennPensumUnterschritten) {
+		this.anspruchFachstelleWennPensumUnterschritten = anspruchFachstelleWennPensumUnterschritten;
+	}
+
 	@Override
 	@SuppressWarnings("PMD.CompareObjectsWithEquals")
 	@SuppressFBWarnings("BC_UNCONFIRMED_CAST")
@@ -152,7 +164,12 @@ public class ErweiterteBetreuung extends AbstractMutableEntity {
 			getErweitereteBeduerfnisseBetrag(),
 			otherErwBetr.getErweitereteBeduerfnisseBetrag());
 
-		return erwBeduerfnisseSame && bestAussBetrAufwand && fachstelleSame && kesbSame && kitaPlusSame && erweitereteBeduerfnisseSame;
+		boolean anspruchUnterschrittenSame =
+			isAnspruchFachstelleWennPensumUnterschritten() ==
+			otherErwBetr.isAnspruchFachstelleWennPensumUnterschritten();
+
+		return erwBeduerfnisseSame && bestAussBetrAufwand && fachstelleSame && kesbSame && kitaPlusSame
+				&& erweitereteBeduerfnisseSame && anspruchUnterschrittenSame;
 	}
 
 	@Nonnull
@@ -171,6 +188,7 @@ public class ErweiterteBetreuung extends AbstractMutableEntity {
 			target.setKitaPlusZuschlag(this.getKitaPlusZuschlag());
 			target.setKitaPlusZuschlagBestaetigt(this.isKitaPlusZuschlagBestaetigt());
 			target.setErweitereteBeduerfnisseBetrag(this.getErweitereteBeduerfnisseBetrag());
+			target.setAnspruchFachstelleWennPensumUnterschritten(this.isAnspruchFachstelleWennPensumUnterschritten());
 			break;
 		case ERNEUERUNG:
 		case ERNEUERUNG_AR_2023:

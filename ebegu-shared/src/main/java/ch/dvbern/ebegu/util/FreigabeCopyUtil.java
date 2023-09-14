@@ -17,45 +17,11 @@
 
 package ch.dvbern.ebegu.util;
 
-import java.util.Objects;
+import ch.dvbern.ebegu.entities.*;
+import ch.dvbern.ebegu.types.DateRange;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-
-import ch.dvbern.ebegu.entities.AbstractFinanzielleSituation;
-import ch.dvbern.ebegu.entities.Abwesenheit;
-import ch.dvbern.ebegu.entities.AbwesenheitContainer;
-import ch.dvbern.ebegu.entities.Adresse;
-import ch.dvbern.ebegu.entities.Auszahlungsdaten;
-import ch.dvbern.ebegu.entities.Betreuung;
-import ch.dvbern.ebegu.entities.Betreuungspensum;
-import ch.dvbern.ebegu.entities.BetreuungspensumContainer;
-import ch.dvbern.ebegu.entities.Einkommensverschlechterung;
-import ch.dvbern.ebegu.entities.EinkommensverschlechterungContainer;
-import ch.dvbern.ebegu.entities.EinkommensverschlechterungInfo;
-import ch.dvbern.ebegu.entities.EinkommensverschlechterungInfoContainer;
-import ch.dvbern.ebegu.entities.ErweiterteBetreuung;
-import ch.dvbern.ebegu.entities.ErweiterteBetreuungContainer;
-import ch.dvbern.ebegu.entities.Erwerbspensum;
-import ch.dvbern.ebegu.entities.ErwerbspensumContainer;
-import ch.dvbern.ebegu.entities.Familiensituation;
-import ch.dvbern.ebegu.entities.FamiliensituationContainer;
-import ch.dvbern.ebegu.entities.FinSitZusatzangabenAppenzell;
-import ch.dvbern.ebegu.entities.FinanzielleSituation;
-import ch.dvbern.ebegu.entities.FinanzielleSituationContainer;
-import ch.dvbern.ebegu.entities.FinanzielleSituationSelbstdeklaration;
-import ch.dvbern.ebegu.entities.Gesuch;
-import ch.dvbern.ebegu.entities.Gesuchsteller;
-import ch.dvbern.ebegu.entities.GesuchstellerAdresse;
-import ch.dvbern.ebegu.entities.GesuchstellerAdresseContainer;
-import ch.dvbern.ebegu.entities.GesuchstellerContainer;
-import ch.dvbern.ebegu.entities.Kind;
-import ch.dvbern.ebegu.entities.KindContainer;
-import ch.dvbern.ebegu.entities.PensumFachstelle;
-import ch.dvbern.ebegu.entities.SozialhilfeZeitraum;
-import ch.dvbern.ebegu.entities.SozialhilfeZeitraumContainer;
-import ch.dvbern.ebegu.entities.UnbezahlterUrlaub;
-import ch.dvbern.ebegu.types.DateRange;
 
 /**
  * Utils fuer das Kopieren der Daten von den JA-Containern in die GS-Container bei der Freigabe des Gesuchs.
@@ -223,6 +189,9 @@ public final class FreigabeCopyUtil {
 		erweiterteBetreuungGS.setErweiterteBeduerfnisse(erweiterteBetreuungJA.getErweiterteBeduerfnisse());
 		erweiterteBetreuungGS.setFachstelle(erweiterteBetreuungJA.getFachstelle());
 		erweiterteBetreuungGS.setKeineKesbPlatzierung(erweiterteBetreuungJA.getKeineKesbPlatzierung());
+		erweiterteBetreuungGS.setAnspruchFachstelleWennPensumUnterschritten(
+				erweiterteBetreuungJA.isAnspruchFachstelleWennPensumUnterschritten()
+		);
 	}
 
 	private static void copyKind(@Nonnull Kind kindGS, @Nonnull Kind kindJA) {
@@ -231,13 +200,14 @@ public final class FreigabeCopyUtil {
 		kindGS.setVorname(kindJA.getVorname());
 		kindGS.setGeschlecht(kindJA.getGeschlecht());
 
-		if (kindJA.getPensumFachstelle() != null) {
-			kindGS.setPensumFachstelle(new PensumFachstelle());
-			Objects.requireNonNull(kindGS.getPensumFachstelle());
-			kindGS.getPensumFachstelle().setFachstelle(kindJA.getPensumFachstelle().getFachstelle());
-			kindGS.getPensumFachstelle().setIntegrationTyp(kindJA.getPensumFachstelle().getIntegrationTyp());
-			kindGS.getPensumFachstelle().setPensum(kindJA.getPensumFachstelle().getPensum());
-			kindGS.getPensumFachstelle().setGueltigkeit(kindJA.getPensumFachstelle().getGueltigkeit());
+		for (PensumFachstelle pensumFachstelle : kindJA.getPensumFachstelle()) {
+			PensumFachstelle copiedPensumFachstelle = new PensumFachstelle();
+			copiedPensumFachstelle.setIntegrationTyp(pensumFachstelle.getIntegrationTyp());
+			copiedPensumFachstelle.setPensum(pensumFachstelle.getPensum());
+			copiedPensumFachstelle.setFachstelle(pensumFachstelle.getFachstelle());
+			copiedPensumFachstelle.setGueltigkeit(pensumFachstelle.getGueltigkeit());
+			copiedPensumFachstelle.setKind(kindGS);
+			kindGS.getPensumFachstelle().add(copiedPensumFachstelle);
 		}
 		kindGS.setKinderabzugErstesHalbjahr(kindJA.getKinderabzugErstesHalbjahr());
 		kindGS.setKinderabzugZweitesHalbjahr(kindJA.getKinderabzugZweitesHalbjahr());

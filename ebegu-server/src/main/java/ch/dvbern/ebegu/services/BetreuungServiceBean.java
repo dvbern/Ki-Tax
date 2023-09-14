@@ -15,18 +15,25 @@
 
 package ch.dvbern.ebegu.services;
 
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
+import ch.dvbern.ebegu.authentication.PrincipalBean;
+import ch.dvbern.ebegu.config.EbeguConfiguration;
+import ch.dvbern.ebegu.entities.*;
+import ch.dvbern.ebegu.enums.*;
+import ch.dvbern.ebegu.errors.*;
+import ch.dvbern.ebegu.outbox.ExportedEvent;
+import ch.dvbern.ebegu.outbox.anmeldung.AnmeldungTagesschuleEventConverter;
+import ch.dvbern.ebegu.outbox.platzbestaetigung.BetreuungAnfrageAddedEvent;
+import ch.dvbern.ebegu.outbox.platzbestaetigung.BetreuungAnfrageEventConverter;
+import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
+import ch.dvbern.ebegu.services.util.FilterFunctions;
+import ch.dvbern.ebegu.types.DateRange;
+import ch.dvbern.ebegu.util.*;
+import ch.dvbern.ebegu.validationgroups.BetreuungBestaetigenValidationGroup;
+import ch.dvbern.lib.cdipersistence.Persistence;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import org.apache.commons.collections4.CollectionUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.activation.MimeTypeParseException;
 import javax.annotation.Nonnull;
@@ -36,93 +43,12 @@ import javax.ejb.Stateless;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 import javax.persistence.TypedQuery;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Join;
-import javax.persistence.criteria.JoinType;
-import javax.persistence.criteria.ParameterExpression;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
-import javax.validation.ConstraintViolation;
-import javax.validation.ConstraintViolationException;
-import javax.validation.Valid;
-import javax.validation.Validation;
-import javax.validation.Validator;
-
-import ch.dvbern.ebegu.authentication.PrincipalBean;
-import ch.dvbern.ebegu.config.EbeguConfiguration;
-import ch.dvbern.ebegu.entities.AbstractAnmeldung;
-import ch.dvbern.ebegu.entities.AbstractAnmeldung_;
-import ch.dvbern.ebegu.entities.AbstractEntity_;
-import ch.dvbern.ebegu.entities.AbstractPlatz;
-import ch.dvbern.ebegu.entities.AbstractPlatz_;
-import ch.dvbern.ebegu.entities.Abwesenheit;
-import ch.dvbern.ebegu.entities.AbwesenheitContainer;
-import ch.dvbern.ebegu.entities.AbwesenheitContainer_;
-import ch.dvbern.ebegu.entities.Abwesenheit_;
-import ch.dvbern.ebegu.entities.AnmeldungFerieninsel;
-import ch.dvbern.ebegu.entities.AnmeldungTagesschule;
-import ch.dvbern.ebegu.entities.AnmeldungTagesschule_;
-import ch.dvbern.ebegu.entities.Benutzer;
-import ch.dvbern.ebegu.entities.Betreuung;
-import ch.dvbern.ebegu.entities.BetreuungMonitoring;
-import ch.dvbern.ebegu.entities.Betreuung_;
-import ch.dvbern.ebegu.entities.Betreuungsmitteilung;
-import ch.dvbern.ebegu.entities.BetreuungsmitteilungPensum;
-import ch.dvbern.ebegu.entities.Dossier;
-import ch.dvbern.ebegu.entities.Dossier_;
-import ch.dvbern.ebegu.entities.Einstellung;
-import ch.dvbern.ebegu.entities.Fall;
-import ch.dvbern.ebegu.entities.Fall_;
-import ch.dvbern.ebegu.entities.Gemeinde;
-import ch.dvbern.ebegu.entities.GemeindeStammdaten;
-import ch.dvbern.ebegu.entities.Gemeinde_;
-import ch.dvbern.ebegu.entities.Gesuch;
-import ch.dvbern.ebegu.entities.Gesuch_;
-import ch.dvbern.ebegu.entities.Gesuchsperiode;
-import ch.dvbern.ebegu.entities.Gesuchsperiode_;
-import ch.dvbern.ebegu.entities.Institution;
-import ch.dvbern.ebegu.entities.InstitutionStammdaten;
-import ch.dvbern.ebegu.entities.InstitutionStammdaten_;
-import ch.dvbern.ebegu.entities.KindContainer;
-import ch.dvbern.ebegu.entities.KindContainer_;
-import ch.dvbern.ebegu.entities.Mandant;
-import ch.dvbern.ebegu.entities.Mitteilung;
-import ch.dvbern.ebegu.enums.AnmeldungMutationZustand;
-import ch.dvbern.ebegu.enums.AntragStatus;
-import ch.dvbern.ebegu.enums.AntragTyp;
-import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
-import ch.dvbern.ebegu.enums.BetreuungspensumAnzeigeTyp;
-import ch.dvbern.ebegu.enums.Betreuungsstatus;
-import ch.dvbern.ebegu.enums.Eingangsart;
-import ch.dvbern.ebegu.enums.EinstellungKey;
-import ch.dvbern.ebegu.enums.ErrorCodeEnum;
-import ch.dvbern.ebegu.enums.GesuchsperiodeStatus;
-import ch.dvbern.ebegu.enums.UserRole;
-import ch.dvbern.ebegu.enums.WizardStepName;
-import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
-import ch.dvbern.ebegu.errors.EbeguRuntimeException;
-import ch.dvbern.ebegu.errors.KibonLogLevel;
-import ch.dvbern.ebegu.errors.MailException;
-import ch.dvbern.ebegu.errors.MergeDocException;
-import ch.dvbern.ebegu.outbox.ExportedEvent;
-import ch.dvbern.ebegu.outbox.anmeldung.AnmeldungTagesschuleEventConverter;
-import ch.dvbern.ebegu.outbox.platzbestaetigung.BetreuungAnfrageAddedEvent;
-import ch.dvbern.ebegu.outbox.platzbestaetigung.BetreuungAnfrageEventConverter;
-import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
-import ch.dvbern.ebegu.services.util.FilterFunctions;
-import ch.dvbern.ebegu.types.DateRange;
-import ch.dvbern.ebegu.util.BetreuungUtil;
-import ch.dvbern.ebegu.util.Constants;
-import ch.dvbern.ebegu.util.EbeguUtil;
-import ch.dvbern.ebegu.util.EnumUtil;
-import ch.dvbern.ebegu.util.MathUtil;
-import ch.dvbern.ebegu.validationgroups.BetreuungBestaetigenValidationGroup;
-import ch.dvbern.lib.cdipersistence.Persistence;
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-import org.apache.commons.collections4.CollectionUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import javax.persistence.criteria.*;
+import javax.validation.*;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.*;
 
 /**
  * Service fuer Betreuung
@@ -315,11 +241,8 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 	}
 
 	private boolean isAnmeldungInStatusToFireEvent(AnmeldungTagesschule betreuung) {
-		return EnumUtil.isOneOf(
-			betreuung.getBetreuungsstatus(),
-			Betreuungsstatus.SCHULAMT_ANMELDUNG_AUSGELOEST,
-			Betreuungsstatus.SCHULAMT_MODULE_AKZEPTIERT,
-			Betreuungsstatus.SCHULAMT_ANMELDUNG_UEBERNOMMEN);
+		return Betreuungsstatus.getBetreuungsstatusForFireAnmeldungTagesschuleEvent()
+			.contains(betreuung.getBetreuungsstatus());
 	}
 
 	@Nonnull
@@ -774,7 +697,7 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 
 		Predicate predBetreuungNummer = cb.equal(root.get(AbstractAnmeldung_.betreuungNummer), betreuungNummer);
 		Predicate predBetreuungAusgeloest =
-			root.get(AbstractAnmeldung_.betreuungsstatus).in(Betreuungsstatus.anmeldungsstatusAusgeloestNotStorniert);
+			root.get(AbstractAnmeldung_.betreuungsstatus).in(Betreuungsstatus.getBetreuungsstatusForAnmeldungsstatusAusgeloestNotStorniert());
 		Predicate predKindNummer = cb.equal(kindjoin.get(KindContainer_.kindNummer), kindNummer);
 		Predicate predFallNummer = cb.equal(gesuchFallJoin.get(Fall_.fallNummer), fallnummer);
 		Predicate predGesuchsperiode = cb.equal(kindContainerGesuchJoin.get(Gesuch_.gesuchsperiode), gesuchsperiode);
@@ -1096,7 +1019,7 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 			cb.equal(root.get(Betreuung_.kind).get(KindContainer_.gesuch).get(Gesuch_.dossier), dossier);
 		predicatesToUse.add(fallPredicate);
 
-		Predicate predicateBetreuung = root.get(Betreuung_.betreuungsstatus).in(Betreuungsstatus.hasVerfuegung);
+		Predicate predicateBetreuung = root.get(Betreuung_.betreuungsstatus).in(Betreuungsstatus.getBetreuungsstatusWithVerfuegung());
 		predicatesToUse.add(predicateBetreuung);
 
 		Predicate verfuegungPredicate = cb.isNotNull(root.get(Betreuung_.verfuegung));
@@ -1140,10 +1063,10 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 
 		if (role.isRoleGemeindeOrTS()) {
 			predicates.add(root.get(Betreuung_.betreuungsstatus)
-				.in(Collections.singletonList(Betreuungsstatus.forPendenzSchulamt)));
+				.in(Collections.singletonList(Betreuungsstatus.getBetreuungsstatusForPendenzSchulamt())));
 		} else { // for Institution or Traegerschaft. by default
 			predicates.add(root.get(Betreuung_.betreuungsstatus)
-				.in(Collections.singletonList(Betreuungsstatus.forPendenzInstitution)));
+				.in(Collections.singletonList(Betreuungsstatus.getBetreuungsstatusForPendenzInstitution())));
 		}
 
 		// Institution
@@ -1192,10 +1115,10 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 
 		if (role.isRoleGemeindeOrTS()) {
 			predicates.add(root.get(AbstractAnmeldung_.betreuungsstatus)
-				.in(Collections.singletonList(Betreuungsstatus.forPendenzSchulamt)));
+				.in(Collections.singletonList(Betreuungsstatus.getBetreuungsstatusForPendenzSchulamt())));
 		} else { // for Institution or Traegerschaft. by default
 			predicates.add(root.get(AbstractAnmeldung_.betreuungsstatus)
-				.in(Collections.singletonList(Betreuungsstatus.forPendenzInstitution)));
+				.in(Collections.singletonList(Betreuungsstatus.getBetreuungsstatusForPendenzInstitution())));
 		}
 
 		// nur Aktuelle Anmeldungen
@@ -1217,10 +1140,16 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 			.get(Gesuchsperiode_.status)
 			.in(GesuchsperiodeStatus.AKTIV, GesuchsperiodeStatus.INAKTIV));
 
-		if (role.isRoleGemeindeOrTS()) {
+		if (role.isRoleGemeinde()) {
 			// SCH darf nur Gesuche sehen, die bereits freigegebn wurden
 			predicates.add(root.get(AbstractPlatz_.kind).get(KindContainer_.gesuch).get(Gesuch_.status).in
-				(AntragStatus.FOR_ADMIN_ROLE));
+				(AntragStatus.allowedforRole(UserRole.SACHBEARBEITER_GEMEINDE)));
+		}
+
+		if (role.isRoleTsOnly()) {
+			// SCH darf nur Gesuche sehen, die bereits freigegebn wurden
+			predicates.add(root.get(AbstractPlatz_.kind).get(KindContainer_.gesuch).get(Gesuch_.status).in
+				(AntragStatus.allowedforRole(UserRole.SACHBEARBEITER_TS)));
 		}
 
 		if (role.isRoleGemeindeabhaengig()) {
@@ -1258,10 +1187,10 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 
 		if (role.isRoleGemeindeOrTS()) {
 			predicates.add(root.get(AbstractAnmeldung_.betreuungsstatus)
-				.in(Collections.singletonList(Betreuungsstatus.forPendenzSchulamt)));
+				.in(Collections.singletonList(Betreuungsstatus.getBetreuungsstatusForPendenzSchulamt())));
 		} else { // for Institution or Traegerschaft. by default
 			predicates.add(root.get(AbstractAnmeldung_.betreuungsstatus)
-				.in(Collections.singletonList(Betreuungsstatus.forPendenzInstitution)));
+				.in(Collections.singletonList(Betreuungsstatus.getBetreuungsstatusForPendenzInstitution())));
 		}
 
 		// nur Aktuelle Anmeldungen
@@ -1283,10 +1212,16 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 			.get(Gesuchsperiode_.status)
 			.in(GesuchsperiodeStatus.AKTIV, GesuchsperiodeStatus.INAKTIV));
 
-		if (role.isRoleGemeindeOrTS()) {
+		if (role.isRoleGemeinde()) {
 			// SCH darf nur Gesuche sehen, die bereits freigegebn wurden
 			predicates.add(root.get(AbstractPlatz_.kind).get(KindContainer_.gesuch).get(Gesuch_.status).in
-				(AntragStatus.FOR_ADMIN_ROLE));
+				(AntragStatus.allowedforRole(UserRole.SACHBEARBEITER_GEMEINDE)));
+		}
+
+		if (role.isRoleTsOnly()) {
+			// SCH darf nur Gesuche sehen, die bereits freigegebn wurden
+			predicates.add(root.get(AbstractPlatz_.kind).get(KindContainer_.gesuch).get(Gesuch_.status).in
+				(AntragStatus.allowedforRole(UserRole.SACHBEARBEITER_TS)));
 		}
 
 		if (role.isRoleGemeindeabhaengig()) {

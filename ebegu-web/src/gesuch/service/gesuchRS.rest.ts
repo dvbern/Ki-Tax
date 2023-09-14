@@ -56,7 +56,10 @@ export class GesuchRS implements IEntityRS {
     public updateGesuch(gesuch: TSGesuch): IPromise<TSGesuch> {
         let sentGesuch = {};
         sentGesuch = this.ebeguRestUtil.gesuchToRestObject(sentGesuch, gesuch);
-        return this.$http.put(this.serviceURL, sentGesuch).then(response => this.wizardStepManager.findStepsFromGesuch(gesuch.id).then(() => this.ebeguRestUtil.parseGesuch(new TSGesuch(), response.data)));
+        return this.$http.put(this.serviceURL, sentGesuch)
+            .then(response =>
+                this.wizardStepManager.findStepsFromGesuch(gesuch.id)
+                    .then(() => this.ebeguRestUtil.parseGesuch(new TSGesuch(), response.data)));
     }
 
     public findGesuch(gesuchID: string): IPromise<TSGesuch> {
@@ -93,7 +96,8 @@ export class GesuchRS implements IEntityRS {
     }
 
     public getAllAntragDTOForDossier(dossierId: string): IPromise<TSAntragDTO[]> {
-        return this.$http.get(`${this.serviceURL}/dossier/${encodeURIComponent(dossierId)}`).then((response: any) => this.ebeguRestUtil.parseAntragDTOs(response.data));
+        return this.$http.get(`${this.serviceURL}/dossier/${encodeURIComponent(dossierId)}`)
+            .then((response: any) => this.ebeguRestUtil.parseAntragDTOs(response.data));
     }
 
     public antragFreigeben(antragId: string, usernameJA: string, usernameSCH: string): IPromise<TSGesuch> {
@@ -225,13 +229,15 @@ export class GesuchRS implements IEntityRS {
     }
 
     public updateAlwaysEditableProperties(properties: any): IPromise<TSGesuch> {
-        return this.$http.put(`${this.serviceURL  }/updateAlwaysEditableProperties`, properties).then(response => this.ebeguRestUtil.parseGesuch(new TSGesuch(), response.data));
+        return this.$http.put(`${this.serviceURL  }/updateAlwaysEditableProperties`, properties)
+            .then(response => this.ebeguRestUtil.parseGesuch(new TSGesuch(), response.data));
     }
 
     public getSteuerdaten(kibonAnfrage: any): IPromise<TSSteuerdatenResponse> {
         let sentKibonAnfrage = {};
         sentKibonAnfrage = this.ebeguRestUtil.kibonAnfrageToRestObject(sentKibonAnfrage, kibonAnfrage);
-        return this.$http.post(`${this.serviceURL  }/kibonanfrage/getsteuerdaten`, sentKibonAnfrage).then(response => this.ebeguRestUtil.parseSteuerdatenResponse(new TSSteuerdatenResponse(), response.data));
+        return this.$http.post(`${this.serviceURL  }/kibonanfrage/getsteuerdaten`, sentKibonAnfrage)
+            .then(response => this.ebeguRestUtil.parseSteuerdatenResponse(new TSSteuerdatenResponse(), response.data));
     }
 
     public lookupKitax(url: string, userUuid: string): IPromise<TSKitaxResponse> {

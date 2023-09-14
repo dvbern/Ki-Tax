@@ -34,7 +34,7 @@ export class InternePendenzDialogComponent implements OnInit {
 
     public constructor(
         private readonly dialogRef: MatDialogRef<InternePendenzDialogComponent>,
-        @Inject(MAT_DIALOG_DATA) data: any
+        @Inject(MAT_DIALOG_DATA) private readonly data: any
     ) {
         this.internePendenz = data.internePendenz;
         this.readonlyMode = !this.isNew();

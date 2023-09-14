@@ -344,21 +344,25 @@ export class EditInstitutionTagesschuleComponent implements OnInit, OnChanges {
         einstellungenTagesschule.modulTagesschuleTyp = TSModulTagesschuleTyp.DYNAMISCH;
         this.institutionStammdatenRS.getAllTagesschulenForCurrentBenutzer()
             .then((institutionStammdatenList: TSInstitutionStammdaten[]) => {
-                this.openDialogImportFromOtherInstitutionComponent$(institutionStammdatenList.filter(is => is.id !== this.stammdaten.id)
-                    .concat(this.stammdaten)).subscribe((modules: TSModulTagesschuleGroup[]) => {
-                    if (!modules) {
-                        return;
-                    }
-                    einstellungenTagesschule.modulTagesschuleGroups = einstellungenTagesschule.modulTagesschuleGroups
-                        .concat(modules);
-                    this.ref.markForCheck();
-                }, () => {
+                this.openDialogImportFromOtherInstitutionComponent$(
+                    institutionStammdatenList.filter(is => is.id !== this.stammdaten.id)
+                        .concat(this.stammdaten))
+                    .subscribe((modules: TSModulTagesschuleGroup[]) => {
+                        if (!modules) {
+                            return;
+                        }
+                        einstellungenTagesschule.modulTagesschuleGroups = einstellungenTagesschule.modulTagesschuleGroups
+                            .concat(modules);
+                        this.ref.markForCheck();
+                    }, () => {
                     this.errorService.addMesageAsError('error');
                 });
             });
     }
 
-    private openDialogImportFromOtherInstitutionComponent$(institutionList: TSInstitutionStammdaten[]): Observable<TSModulTagesschuleGroup[]> {
+    private openDialogImportFromOtherInstitutionComponent$(
+        institutionList: TSInstitutionStammdaten[]
+    ): Observable<TSModulTagesschuleGroup[]> {
         if (!this.editMode) {
             return undefined;
         }
@@ -510,8 +514,8 @@ export class EditInstitutionTagesschuleComponent implements OnInit, OnChanges {
     }
 
     public isScolaris(modulTagesschuleGroups: Array<TSModulTagesschuleGroup>): boolean {
-        if (EbeguUtil.isNotNullOrUndefined(modulTagesschuleGroups[0]) && modulTagesschuleGroups[0].modulTagesschuleName.startsWith(
-            'SCOLARIS_')) {
+        if (EbeguUtil.isNotNullOrUndefined(modulTagesschuleGroups[0])
+            && modulTagesschuleGroups[0].modulTagesschuleName.startsWith('SCOLARIS_')) {
             return true;
         }
         return false;

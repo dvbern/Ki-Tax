@@ -125,3 +125,65 @@ dv-input-container-x {
         }
     }
 }
+
+.gesuch dv-input-container-x {
+
+    .dv-input-container {
+        &.vertical-align {
+            align-items: start;
+        }
+    }
+    input.ng-invalid, select.ng-invalid, mat-radio-group.ng-invalid {
+        background-color: @background-error-color;
+    }
+
+    .dv-select-style {
+        width: 100%;
+    }
+
+    mat-form-field, dv-radio-container-x {
+        margin-left: 0 !important;
+    }
+
+    .no-margin mat-form-field {
+        .mat-form-field-wrapper {
+            padding-bottom: 0 !important;
+        }
+    }
+
+    mat-form-field {
+
+        .mat-select-arrow-wrapper {
+            & > .mat-select-arrow {
+                display: none;
+            }
+
+            &::after {
+                color: rgba(0, 0, 0, 0.87);
+                content: ' \F107';
+                font-family: FontAwesome, sans-serif;
+                font-size: 1.6rem;
+                font-weight: 300;
+                pointer-events: none;
+                position: relative;
+                right: 1rem;
+                z-index: 2;
+            }
+        }
+    }
+
+    mat-select {
+        background-color: @contrast-lightest;
+
+        .mat-select-value {
+            line-height: 2rem;
+            height: 4rem;
+
+            .mat-select-value-text {
+                font-weight: 700;
+                padding: 0 24px 0 1rem;
+            }
+        }
+    }
+
+}

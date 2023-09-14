@@ -57,6 +57,7 @@ export class BetreuungMonitoringRS {
     }
 
     public getAllExternalClient(): Observable<TSExternalClient[]> {
-        return this.$http.get<any[]>(`${this.serviceURL}/allExternalClient`).pipe(map(response => this.ebeguRestUtil.parseExternalClientList(response)));
+        return this.$http.get<any[]>(`${this.serviceURL}/allExternalClient`)
+            .pipe(map(response => this.ebeguRestUtil.parseExternalClientList(response)));
     }
 }

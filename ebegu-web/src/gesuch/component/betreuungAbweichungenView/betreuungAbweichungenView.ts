@@ -339,9 +339,10 @@ export class BetreuungAbweichungenViewController extends AbstractGesuchViewContr
     }
 
     public getInputFormatTitle(): string {
-        return this.model.getAngebotTyp() === TSBetreuungsangebotTyp.KITA && this.betreuungspensumAnzeigeTyp !== TSPensumAnzeigeTyp.NUR_STUNDEN
-            ? this.$translate.instant('DAYS')
-            : this.$translate.instant('HOURS');
+        return this.model.getAngebotTyp() === TSBetreuungsangebotTyp.KITA
+        && this.betreuungspensumAnzeigeTyp !== TSPensumAnzeigeTyp.NUR_STUNDEN ?
+            this.$translate.instant('DAYS') :
+            this.$translate.instant('HOURS');
     }
 
     public cancel(): void {

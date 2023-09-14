@@ -43,15 +43,6 @@ public enum Betreuungsstatus {
 	SCHULAMT_ANMELDUNG_STORNIERT,
 	SCHULAMT_MUTATION_IGNORIERT;
 
-	private static final Set<Betreuungsstatus> all = EnumSet.allOf(Betreuungsstatus.class);
-	private static final Set<Betreuungsstatus> none = EnumSet.noneOf(Betreuungsstatus.class);
-
-	public static final Set<Betreuungsstatus> hasVerfuegung = EnumSet.of(VERFUEGT, NICHT_EINGETRETEN, UNBEKANNTE_INSTITUTION);
-	public static final Set<Betreuungsstatus> forPendenzInstitution = EnumSet.of(WARTEN, SCHULAMT_ANMELDUNG_AUSGELOEST);
-	public static final Set<Betreuungsstatus> forPendenzSchulamt = EnumSet.of(SCHULAMT_ANMELDUNG_AUSGELOEST, SCHULAMT_FALSCHE_INSTITUTION);
-	public static final Set<Betreuungsstatus> anmeldungsstatusAusgeloestNotStorniert = EnumSet.of(SCHULAMT_ANMELDUNG_AUSGELOEST,
-		SCHULAMT_ANMELDUNG_UEBERNOMMEN, SCHULAMT_ANMELDUNG_ABGELEHNT, SCHULAMT_FALSCHE_INSTITUTION, SCHULAMT_MODULE_AKZEPTIERT);
-
 	public boolean isGeschlossenJA() {
 		return VERFUEGT == this || GESCHLOSSEN_OHNE_VERFUEGUNG == this || NICHT_EINGETRETEN == this;
 	}
@@ -96,6 +87,30 @@ public enum Betreuungsstatus {
 		return SCHULAMT_ANMELDUNG_AUSGELOEST == this || SCHULAMT_ANMELDUNG_UEBERNOMMEN == this || SCHULAMT_ANMELDUNG_STORNIERT == this;
 	}
 
+	public static Set<Betreuungsstatus> getBetreuungsstatusWithVerfuegung() {
+		return EnumSet.of(VERFUEGT, NICHT_EINGETRETEN, UNBEKANNTE_INSTITUTION);
+	}
+
+	public static Set<Betreuungsstatus> getBetreuungsstatusForPendenzInstitution() {
+		return EnumSet.of(WARTEN, SCHULAMT_ANMELDUNG_AUSGELOEST);
+	}
+
+	public static Set<Betreuungsstatus> getBetreuungsstatusForPendenzSchulamt() {
+		return EnumSet.of(SCHULAMT_ANMELDUNG_AUSGELOEST, SCHULAMT_FALSCHE_INSTITUTION);
+	}
+
+	public static Set<Betreuungsstatus> getBetreuungsstatusForAnmeldungsstatusAusgeloestNotStorniert() {
+		return EnumSet.of(SCHULAMT_ANMELDUNG_AUSGELOEST,
+			SCHULAMT_ANMELDUNG_UEBERNOMMEN, SCHULAMT_ANMELDUNG_ABGELEHNT, SCHULAMT_FALSCHE_INSTITUTION, SCHULAMT_MODULE_AKZEPTIERT);
+	}
+
+	public static Set<Betreuungsstatus> getBetreuungsstatusForFireAnmeldungTagesschuleEvent() {
+		return EnumSet.of(
+			Betreuungsstatus.SCHULAMT_ANMELDUNG_AUSGELOEST,
+			Betreuungsstatus.SCHULAMT_MODULE_AKZEPTIERT,
+			Betreuungsstatus.SCHULAMT_ANMELDUNG_UEBERNOMMEN);
+	}
+
 	public boolean isSchulamtAnmeldungUebernommen() {
 		return SCHULAMT_ANMELDUNG_UEBERNOMMEN == this;
 	}
@@ -131,9 +146,9 @@ public enum Betreuungsstatus {
 		case STEUERAMT:
 		case ADMIN_MANDANT:
 		case SACHBEARBEITER_MANDANT:
-			return all;
+			return EnumSet.allOf(Betreuungsstatus.class);
 		default:
-			return none;
+			return EnumSet.noneOf(Betreuungsstatus.class);
 		}
 	}
 }

@@ -31,7 +31,7 @@ export class DvNgConfirmDialogComponent {
 
     public constructor(
         private readonly dialogRef: MatDialogRef<DvNgConfirmDialogComponent>,
-        @Inject(MAT_DIALOG_DATA) data: any
+        @Inject(MAT_DIALOG_DATA) private readonly data: any
     ) {
         if (data) {
             this.frage = data.frage;

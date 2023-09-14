@@ -16,7 +16,8 @@
  */
 
 import {IHttpService, ILogService, IPromise} from 'angular';
-import {from, Observable} from 'rxjs';
+import {EMPTY, from, Observable} from 'rxjs';
+import {catchError, concatMap} from 'rxjs/operators';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {TSMitteilungStatus} from '../../../models/enums/TSMitteilungStatus';
 import {TSBetreuung} from '../../../models/TSBetreuung';
@@ -57,27 +58,33 @@ export class MitteilungRS {
     public sendMitteilung(mitteilung: TSMitteilung): IPromise<TSMitteilung> {
         let restMitteilung = {};
         restMitteilung = this.ebeguRestUtil.mitteilungToRestObject(restMitteilung, mitteilung);
-        return this.$http.put(`${this.serviceURL}/send`, restMitteilung).then((response: any) => this.ebeguRestUtil.parseMitteilung(new TSMitteilung(), response.data));
+        return this.$http.put(`${this.serviceURL}/send`, restMitteilung)
+            .then((response: any) => this.ebeguRestUtil.parseMitteilung(new TSMitteilung(), response.data));
     }
 
     public setMitteilungGelesen(mitteilungId: string): IPromise<TSMitteilung> {
-        return this.$http.put(`${this.serviceURL}/setgelesen/${mitteilungId}`, null).then((response: any) => this.ebeguRestUtil.parseMitteilung(new TSMitteilung(), response.data));
+        return this.$http.put(`${this.serviceURL}/setgelesen/${mitteilungId}`, null)
+            .then((response: any) => this.ebeguRestUtil.parseMitteilung(new TSMitteilung(), response.data));
     }
 
     public setMitteilungErledigt(mitteilungId: string): IPromise<TSMitteilung> {
-        return this.$http.put(`${this.serviceURL}/seterledigt/${mitteilungId}`, null).then((response: any) => this.ebeguRestUtil.parseMitteilung(new TSMitteilung(), response.data));
+        return this.$http.put(`${this.serviceURL}/seterledigt/${mitteilungId}`, null)
+            .then((response: any) => this.ebeguRestUtil.parseMitteilung(new TSMitteilung(), response.data));
     }
 
     public setMitteilungUngelesen(mitteilungId: string): IPromise<TSMitteilung> {
-        return this.$http.put(`${this.serviceURL}/setneu/${mitteilungId}`, null).then((response: any) => this.ebeguRestUtil.parseMitteilung(new TSMitteilung(), response.data));
+        return this.$http.put(`${this.serviceURL}/setneu/${mitteilungId}`, null)
+            .then((response: any) => this.ebeguRestUtil.parseMitteilung(new TSMitteilung(), response.data));
     }
 
     public setMitteilungIgnoriert(mitteilungId: string): IPromise<TSMitteilung> {
-        return this.$http.put(`${this.serviceURL}/setignoriert/${mitteilungId}`, null).then((response: any) => this.ebeguRestUtil.parseMitteilung(new TSMitteilung(), response.data));
+        return this.$http.put(`${this.serviceURL}/setignoriert/${mitteilungId}`, null)
+            .then((response: any) => this.ebeguRestUtil.parseMitteilung(new TSMitteilung(), response.data));
     }
 
     public getEntwurfOfDossierForCurrentRolle(dossierId: string): IPromise<TSMitteilung> {
-        return this.$http.get(`${this.serviceURL}/entwurf/dossier/${dossierId}`).then((response: any) => this.ebeguRestUtil.parseMitteilung(new TSMitteilung(), response.data));
+        return this.$http.get(`${this.serviceURL}/entwurf/dossier/${dossierId}`)
+            .then((response: any) => this.ebeguRestUtil.parseMitteilung(new TSMitteilung(), response.data));
     }
 
     public getMitteilungenOfDossierForCurrentRolle(dossierId: string): IPromise<Array<TSMitteilung>> {
@@ -129,7 +136,8 @@ export class MitteilungRS {
     }
 
     public mitteilungWeiterleiten(mitteilungId: string, userName: string): IPromise<TSMitteilung> {
-        return this.$http.get(`${this.serviceURL}/weiterleiten/${mitteilungId}/${userName}`).then((response: any) => this.ebeguRestUtil.parseMitteilung(new TSMitteilung(), response.data));
+        return this.$http.get(`${this.serviceURL}/weiterleiten/${mitteilungId}/${userName}`)
+            .then((response: any) => this.ebeguRestUtil.parseMitteilung(new TSMitteilung(), response.data));
     }
 
     public searchMitteilungen(antragSearch: any, includeClosed: boolean): IPromise<TSMtteilungSearchresultDTO> {
@@ -174,31 +182,58 @@ export class MitteilungRS {
     public applyAlleBetreuungsmitteilungen(mitteilungen: TSBetreuungsmitteilung[]): Observable<TSMitteilungVerarbeitungResult> {
         const verarbeitung = new TSMitteilungVerarbeitung(mitteilungen.length);
 
-        mitteilungen.forEach(mitteilung => {
-            this.applyBetreuungsmitteilungSilently(mitteilung).subscribe(appliedMitteilung => {
-                if (EbeguUtil.isEmptyStringNullOrUndefined(appliedMitteilung.errorMessage)) {
-                    verarbeitung.addSuccess(appliedMitteilung);
-                } else {
-                    verarbeitung.addFailure(appliedMitteilung);
-                }
-            }, (errors: TSExceptionReport[]) => {
-                verarbeitung.addError(mitteilung, errors);
-                errors.forEach(error => {
-                    // we want to display it in the dialog, not in the error bar
-                    this.errorService.clearError(error.msgKey);
+        // group mitteilungen by fall, so that we can apply them in parallel
+        const mitteilungenByFall = this.groupMitteilungenByFall(mitteilungen);
+
+        Object.entries(mitteilungenByFall).forEach(([_, mitteilungenOfFall ]) => {
+            from(mitteilungenOfFall ?? [])
+                .pipe(
+                    // apply all mitteilungen of one fall in sequence
+                    concatMap(mitteilung =>
+                        this.applyBetreuungsmitteilungSilently(mitteilung).pipe(
+                            catchError((errors: TSExceptionReport[]) => {
+                                verarbeitung.addError(mitteilung, errors);
+                                errors.forEach(error => {
+                                    // we want to display it in the dialog, not in the error bar
+                                    this.errorService.clearError(error.msgKey);
+                                });
+                                return EMPTY;
+                            })
+                        )
+                    )
+                )
+                .subscribe(appliedMitteilung => {
+                    if (EbeguUtil.isEmptyStringNullOrUndefined(appliedMitteilung.errorMessage)) {
+                        verarbeitung.addSuccess(appliedMitteilung);
+                    } else {
+                        verarbeitung.addFailure(appliedMitteilung);
+                    }
                 });
-            });
         });
 
         return verarbeitung.results;
     }
+
+    private groupMitteilungenByFall(mitteilungen: TSBetreuungsmitteilung[]): { [fallId: string]: TSBetreuungsmitteilung[] } {
+        return mitteilungen.reduce(
+            (acc, mitteilung) => ({
+                ...acc,
+                [mitteilung.dossier.fall.id]: [...(acc[mitteilung.dossier.fall.id] ?? []), mitteilung],
+            }),
+            {} as Record<string, TSBetreuungsmitteilung[]>,
+        );
+    }
+
     private applyBetreuungsmitteilungSilently(
         mitteilung: TSBetreuungsmitteilung
     ): Observable<TSBetreuungsmitteilung>{
         return from(
-            this.$http.post<TSBetreuungsmitteilung>(`${this.serviceURL}/applybetreuungsmitteilungsilently`, this.ebeguRestUtil.betreuungsmitteilungToRestObject({}, mitteilung))
+            this.$http.post<TSBetreuungsmitteilung>(
+                `${this.serviceURL}/applybetreuungsmitteilungsilently`,
+                this.ebeguRestUtil.betreuungsmitteilungToRestObject({}, mitteilung))
                 .then(res => res.data)
-                .then(restMitteilung => this.ebeguRestUtil.parseBetreuungsmitteilung(new TSBetreuungsmitteilung(), restMitteilung)));
+                .then(restMitteilung =>
+                    this.ebeguRestUtil.parseBetreuungsmitteilung(new TSBetreuungsmitteilung(), restMitteilung)));
     }
 
     public neueVeranlagungsmitteilungBearbeiten(mitteilungId: string): IPromise<string> {

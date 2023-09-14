@@ -320,12 +320,14 @@ export class TSRueckforderungFormular extends TSAbstractEntity {
     private calculateProvisorischerBetragStufe2Privat(): number {
         const entgangeneElternbeitraege = EbeguUtil.isNotNullOrUndefined(this.betragEntgangeneElternbeitraege)
             ? this.betragEntgangeneElternbeitraege : 0;
-        const entgangeneElternbeitraegeNichtAngeboten = EbeguUtil.isNotNullOrUndefined(this.betragEntgangeneElternbeitraegeNichtAngeboteneEinheiten)
-            ? this.betragEntgangeneElternbeitraegeNichtAngeboteneEinheiten : 0;
-        const rueckerstattungNichtAngeboten = EbeguUtil.isNotNullOrUndefined(this.anzahlNichtAngeboteneEinheiten)
-            ? this.anzahlNichtAngeboteneEinheiten : 0;
-        const kurzarbeitBetrag = EbeguUtil.isNotNullOrUndefined(this.kurzarbeitBetrag) && EbeguUtil.isNotNullAndTrue(this.kurzarbeitBeantragt)
-            ? this.kurzarbeitBetrag : 0;
+        const entgangeneElternbeitraegeNichtAngeboten =
+            EbeguUtil.isNotNullOrUndefined(this.betragEntgangeneElternbeitraegeNichtAngeboteneEinheiten) ?
+                this.betragEntgangeneElternbeitraegeNichtAngeboteneEinheiten : 0;
+        const rueckerstattungNichtAngeboten =
+            EbeguUtil.isNotNullOrUndefined(this.anzahlNichtAngeboteneEinheiten) ? this.anzahlNichtAngeboteneEinheiten : 0;
+        const kurzarbeitBetrag =
+            EbeguUtil.isNotNullOrUndefined(this.kurzarbeitBetrag) && EbeguUtil.isNotNullAndTrue(this.kurzarbeitBeantragt) ?
+                this.kurzarbeitBetrag : 0;
         const coronaErerbsersatzBetrag =
             EbeguUtil.isNotNullOrUndefined(this.coronaErwerbsersatzBetrag)
                 && EbeguUtil.isNotNullAndTrue(this.coronaErwerbsersatzBeantragt)

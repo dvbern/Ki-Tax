@@ -57,7 +57,7 @@ export class UnsavedChangesService {
             ));
     }
 
-    private unregisterForm(): void {
+    public unregisterForm(): void {
         this.formGroup = undefined;
     }
 }

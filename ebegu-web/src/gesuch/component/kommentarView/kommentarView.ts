@@ -41,6 +41,9 @@ import {GlobalCacheService} from '../../service/globalCacheService';
 import {WizardStepManager} from '../../service/wizardStepManager';
 import ISidenavService = angular.material.ISidenavService;
 import ITranslateService = angular.translate.ITranslateService;
+import {TSDemoFeature} from '../../../app/core/directive/dv-hide-feature/TSDemoFeature';
+import {TSDossier} from '../../../models/TSDossier';
+import {DossierRS} from '../../service/dossierRS.rest';
 
 const okHtmlDialogTempl = require('../../../gesuch/dialog/okHtmlDialogTemplate.html');
 const removeDialogTempl = require('../../dialog/removeDialogTemplate.html');
@@ -61,6 +64,7 @@ export class KommentarViewController implements IController {
         '$log',
         'GesuchModelManager',
         'GesuchRS',
+        'DossierRS',
         'DokumenteRS',
         'DownloadRS',
         'UploadRS',
@@ -77,12 +81,14 @@ export class KommentarViewController implements IController {
     public form: IFormController;
     public dokumentePapiergesuch: TSDokumentGrund;
     public readonly TSRoleUtil = TSRoleUtil;
+    public readonly demoFeature = TSDemoFeature.BEMERKUNGEN_FALLUEBERGREIFEND;
     public isPersonensucheDisabled: boolean = true;
 
     public constructor(
         private readonly $log: ILogService,
         private readonly gesuchModelManager: GesuchModelManager,
         private readonly gesuchRS: GesuchRS,
+        private readonly dossierRS: DossierRS,
         private readonly dokumenteRS: DokumenteRS,
         private readonly downloadRS: DownloadRS,
         private readonly uploadRS: UploadRS,
@@ -310,5 +316,13 @@ export class KommentarViewController implements IController {
         return TSRoleUtil.getGemeindeRoles().filter(role => role !== TSRole.REVISOR
             && role !== TSRole.JURIST
             && role !== TSRole.STEUERAMT);
+    }
+
+    public getDossier(): TSDossier {
+        return this.getGesuch().dossier;
+    }
+
+    public saveBemerkungen(): void {
+        this.dossierRS.updateBemerkungen(this.getDossier().id, this.getDossier().bemerkungen);
     }
 }

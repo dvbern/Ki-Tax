@@ -71,5 +71,4 @@ public class JaxFall extends JaxAbstractDTO {
 	public void setSozialdienstFall(JaxSozialdienstFall sozialdienstFall) {
 		this.sozialdienstFall = sozialdienstFall;
 	}
-
 }

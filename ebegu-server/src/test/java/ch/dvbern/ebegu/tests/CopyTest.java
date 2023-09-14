@@ -15,36 +15,22 @@
 
 package ch.dvbern.ebegu.tests;
 
-import java.time.LocalDate;
-import java.time.Month;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Objects;
-import java.util.TreeSet;
-
-import ch.dvbern.ebegu.entities.Dossier;
-import ch.dvbern.ebegu.entities.Gesuch;
-import ch.dvbern.ebegu.entities.Gesuchsperiode;
-import ch.dvbern.ebegu.entities.GesuchstellerAdresseContainer;
-import ch.dvbern.ebegu.entities.InstitutionStammdaten;
-import ch.dvbern.ebegu.entities.Kind;
-import ch.dvbern.ebegu.entities.KindContainer;
-import ch.dvbern.ebegu.enums.AntragStatus;
-import ch.dvbern.ebegu.enums.AntragTyp;
-import ch.dvbern.ebegu.enums.Eingangsart;
-import ch.dvbern.ebegu.enums.EinschulungTyp;
-import ch.dvbern.ebegu.enums.EnumFamilienstatus;
+import ch.dvbern.ebegu.entities.*;
+import ch.dvbern.ebegu.enums.*;
+import ch.dvbern.ebegu.test.TestDataUtil;
 import ch.dvbern.ebegu.test.util.TestDataInstitutionStammdatenBuilder;
 import ch.dvbern.ebegu.testfaelle.Testfall01_WaeltiDagmar;
-import ch.dvbern.ebegu.test.TestDataUtil;
 import ch.dvbern.ebegu.util.MathUtil;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import java.time.LocalDate;
+import java.time.Month;
+import java.util.*;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.*;
 
 /**
  * Test copy entities for Mutation, Erneuerung, neues Dossier
@@ -90,8 +76,9 @@ public class CopyTest {
 		erstgesuch.getGesuchsteller1().getAdressen().add(adresseZukuenftig);
 		// Fachstelle, welche während der Gesuchsperiode abläuft
 		Kind kind = erstgesuch.getKindContainers().iterator().next().getKindJA();
-		kind.setPensumFachstelle(TestDataUtil.createDefaultPensumFachstelle());
-		Objects.requireNonNull(kind.getPensumFachstelle()).getGueltigkeit().setGueltigBis(datumAblauf);
+		final PensumFachstelle defaultPensumFachstelle = TestDataUtil.createDefaultPensumFachstelle(kind);
+		defaultPensumFachstelle.getGueltigkeit().setGueltigBis(datumAblauf);
+		kind.setPensumFachstelle(Set.of(defaultPensumFachstelle));
 
 		assertNotNull(erstgesuch);
 		assertNotNull(erstgesuch.getEingangsdatum());
@@ -328,7 +315,7 @@ public class CopyTest {
 		KindContainer kindErneuerung = erneuerung.getKindContainers().iterator().next();
 		assertNotNull(kindErneuerung);
 		assertNotNull(kindErneuerung.getKindJA());
-		assertNull(kindErneuerung.getKindJA().getPensumFachstelle());
+		assertThat(kindErneuerung.getKindJA().getPensumFachstelle().size(), is(0));
 
 		KindContainer kindMutationNeuesDossier = mutationNeuesDossier.getKindContainers().iterator().next();
 		assertNotNull(kindMutationNeuesDossier);
@@ -338,6 +325,6 @@ public class CopyTest {
 		KindContainer kindErneuerungNeuesDossier = erneuerungNeuesDossier.getKindContainers().iterator().next();
 		assertNotNull(kindErneuerungNeuesDossier);
 		assertNotNull(kindErneuerungNeuesDossier.getKindJA());
-		assertNull(kindErneuerungNeuesDossier.getKindJA().getPensumFachstelle());
+		assertThat(kindErneuerungNeuesDossier.getKindJA().getPensumFachstelle().size(), is(0));
 	}
 }

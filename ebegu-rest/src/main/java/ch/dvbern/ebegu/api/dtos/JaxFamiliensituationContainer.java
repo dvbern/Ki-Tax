@@ -15,13 +15,13 @@
 
 package ch.dvbern.ebegu.api.dtos;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.annotation.Nullable;
+import javax.validation.Valid;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * DTO fuer FamiliensituationenContainer
@@ -32,15 +32,20 @@ public class JaxFamiliensituationContainer extends JaxAbstractDTO {
 
 	private static final long serialVersionUID = 5217224327005193232L;
 
+	@Nullable
+	@Valid
 	private JaxFamiliensituation familiensituationJA;
 
+	@Nullable
 	private JaxFamiliensituation familiensituationGS;
 
+	@Nullable
 	private JaxFamiliensituation familiensituationErstgesuch;
 
 	@Nullable
 	private List<JaxSozialhilfeZeitraumContainer> sozialhilfeZeitraumContainers = new ArrayList<>();
 
+	@Nullable
 	public JaxFamiliensituation getFamiliensituationJA() {
 		return familiensituationJA;
 	}
@@ -49,6 +54,7 @@ public class JaxFamiliensituationContainer extends JaxAbstractDTO {
 		this.familiensituationJA = familiensituationJA;
 	}
 
+	@Nullable
 	public JaxFamiliensituation getFamiliensituationGS() {
 		return familiensituationGS;
 	}
@@ -57,6 +63,7 @@ public class JaxFamiliensituationContainer extends JaxAbstractDTO {
 		this.familiensituationGS = familiensituationGS;
 	}
 
+	@Nullable
 	public JaxFamiliensituation getFamiliensituationErstgesuch() {
 		return familiensituationErstgesuch;
 	}

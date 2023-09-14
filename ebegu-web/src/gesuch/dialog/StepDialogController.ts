@@ -97,7 +97,8 @@ export class StepDialogController {
                 $translate.instant('KORREKTURZAHLUNG_NO_CASE_3'),
                 $translate.instant('KORREKTURZAHLUNG_NO_CASE_4')];
             if (this.zahlungDirektIgnorieren) {
-                this.warningZahlungAusserhalbKibon = $translate.instant('WARNUNG_ZAHLUNG_AUSSERHALB_KIBON', {institution: institutionName});
+                this.warningZahlungAusserhalbKibon =
+                    $translate.instant('WARNUNG_ZAHLUNG_AUSSERHALB_KIBON', {institution: institutionName});
                 this.selected = 2;
             }
         }

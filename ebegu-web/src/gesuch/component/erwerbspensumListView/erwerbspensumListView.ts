@@ -215,7 +215,7 @@ export class ErwerbspensumListViewController
      * Gesuchsteller eingegeben wurde.
      */
     public isSaveDisabled(): boolean {
-        if (this.erwerbspensumRequired === false) { // eslint-disable-line @typescript-eslint/no-unnecessary-boolean-literal-compare
+        if (this.erwerbspensumRequired === false) {
             return false;
         }
 
@@ -258,7 +258,7 @@ export class ErwerbspensumListViewController
         if (EbeguUtil.isNullOrUndefined(this.gesuchModelManager.getGesuch())) {
             return false;
         }
-        let familiensituation: TSFamiliensituation = this.gesuchModelManager.getGesuch().familiensituationContainer.familiensituationJA;
+        let familiensituation = this.gesuchModelManager.getGesuch().familiensituationContainer.familiensituationJA;
         const partnerIdentischMitVorgesuch: boolean = this.getGesuch().extractFamiliensituation().partnerIdentischMitVorgesuch;
         if (EbeguUtil.isNotNullAndFalse(partnerIdentischMitVorgesuch)){
             familiensituation = this.getGesuch().extractFamiliensituationErstgesuch();
@@ -293,7 +293,8 @@ export class ErwerbspensumListViewController
             return false;
         }
 
-        return !familiensituation.konkubinatGetsLongerThanXYearsBeforeEndOfPeriode(this.gesuchModelManager.getGesuchsperiode().gueltigkeit.gueltigBis);
+        return !familiensituation.konkubinatGetsLongerThanXYearsBeforeEndOfPeriode(
+            this.gesuchModelManager.getGesuchsperiode().gueltigkeit.gueltigBis);
     }
 
     private isAlleinerziehend(familienSituation: TSFamiliensituation): boolean {

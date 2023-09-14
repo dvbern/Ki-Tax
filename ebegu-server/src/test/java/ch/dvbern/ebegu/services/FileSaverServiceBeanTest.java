@@ -35,7 +35,7 @@ class FileSaverServiceBeanTest {
 		"/app/../breakout/foo.bar, /breakout/foo.bar"
 	})
 	void fileNameNormalizer(@Nonnull String fileName, @Nonnull String expected) {
-		String normalize = FilenameUtils.normalize(fileName);
+		String normalize = FilenameUtils.normalize(fileName, true);
 
 		assertThat(normalize, is(expected));
 	}
