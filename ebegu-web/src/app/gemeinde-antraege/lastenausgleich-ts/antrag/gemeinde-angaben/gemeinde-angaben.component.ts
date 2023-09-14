@@ -535,7 +535,7 @@ export class GemeindeAngabenComponent implements OnInit, OnDestroy {
                 .pipe(startWith(gemeindeAngabenFromServer?.einnahmenSubventionenDritter || 0))
         ]).subscribe(values => {
                 const gemeindeBeitragOderUeberschuss = MathUtil.subtractArrayFloatPrecisionSafe(values[0],
-                    values.slice(1, 4));
+                    values.slice(1, 5));
                 if (+gemeindeBeitragOderUeberschuss < 0) {
                     this.angabenForm.controls.kostenueberschussGemeinde.setValue(gemeindeBeitragOderUeberschuss);
                     this.angabenForm.controls.kostenbeitragGemeinde.setValue(null);
