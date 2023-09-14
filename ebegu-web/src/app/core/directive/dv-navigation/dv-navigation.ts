@@ -1,25 +1,36 @@
 /*
- * Ki-Tax: System for the management of external childcare subsidies
- * Copyright (C) 2017 City of Bern Switzerland
+ * Copyright (C) 2023 DV Bern AG, Switzerland
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Affero General Public License for more details.
+ *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
 import {StateService, TransitionPromise} from '@uirouter/core';
 import {IComponentController, IController, IQService, ITimeoutService} from 'angular';
 import {FinanzielleSituationRS} from '../../../../gesuch/service/finanzielleSituationRS.rest';
 import {FinanzielleSituationSubStepManager} from '../../../../gesuch/service/finanzielleSituationSubStepManager';
-import {FinanzielleSituationSubStepManagerBernAsiv} from '../../../../gesuch/service/finanzielleSituationSubStepManagerBernAsiv';
-import {FinanzielleSituationSubStepManagerLuzern} from '../../../../gesuch/service/finanzielleSituationSubStepManagerLuzern';
-import {FinanzielleSituationSubStepManagerSolothurn} from '../../../../gesuch/service/finanzielleSituationSubStepManagerSolothurn';
+import {
+    FinanzielleSituationSubStepManagerAppenzell
+} from '../../../../gesuch/service/finanzielleSituationSubStepManagerAppenzell';
+import {
+    FinanzielleSituationSubStepManagerBernAsiv
+} from '../../../../gesuch/service/finanzielleSituationSubStepManagerBernAsiv';
+import {
+    FinanzielleSituationSubStepManagerLuzern
+} from '../../../../gesuch/service/finanzielleSituationSubStepManagerLuzern';
+import {
+    FinanzielleSituationSubStepManagerSolothurn
+} from '../../../../gesuch/service/finanzielleSituationSubStepManagerSolothurn';
 import {GesuchModelManager} from '../../../../gesuch/service/gesuchModelManager';
 import {WizardStepManager} from '../../../../gesuch/service/wizardStepManager';
 import {TSEingangsart} from '../../../../models/enums/TSEingangsart';
@@ -139,6 +150,10 @@ export class NavigatorController implements IController {
                     case TSFinanzielleSituationTyp.SOLOTHURN:
                         this.finSitWizardSubStepManager =
                             new FinanzielleSituationSubStepManagerSolothurn(this.gesuchModelManager);
+                        break;
+                    case TSFinanzielleSituationTyp.APPENZELL:
+                        this.finSitWizardSubStepManager =
+                            new FinanzielleSituationSubStepManagerAppenzell(this.gesuchModelManager);
                         break;
                     default:
                         throw new Error(`unexpected TSFinanzielleSituationTyp ${typ}`);
@@ -302,7 +317,8 @@ export class NavigatorController implements IController {
         }
         if (TSWizardStepName.FINANZIELLE_SITUATION === this.wizardStepManager.getCurrentStepName()
             || TSWizardStepName.FINANZIELLE_SITUATION_LUZERN === this.wizardStepManager.getCurrentStepName()
-            || TSWizardStepName.FINANZIELLE_SITUATION_SOLOTHURN === this.wizardStepManager.getCurrentStepName()) {
+            || TSWizardStepName.FINANZIELLE_SITUATION_SOLOTHURN === this.wizardStepManager.getCurrentStepName()
+            || TSWizardStepName.FINANZIELLE_SITUATION_APPENZELL === this.wizardStepManager.getCurrentStepName()) {
             const nextSubStep = this.finSitWizardSubStepManager.getNextSubStepFinanzielleSituation(this.dvSubStepName);
             const nextMainStep = this.wizardStepManager.getNextStep(this.gesuchModelManager.getGesuch());
             return this.navigateToSubStepFinanzielleSituation(
@@ -311,7 +327,8 @@ export class NavigatorController implements IController {
         }
         if (TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG === this.wizardStepManager.getCurrentStepName() ||
             TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_LUZERN === this.wizardStepManager.getCurrentStepName() ||
-            TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_SOLOTHURN === this.wizardStepManager.getCurrentStepName()) {
+            TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_SOLOTHURN === this.wizardStepManager.getCurrentStepName() ||
+            TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_APPENZELL === this.wizardStepManager.getCurrentStepName()) {
             if (this.dvSubStep === 1) {
                 const info = this.gesuchModelManager.getGesuch().extractEinkommensverschlechterungInfo();
                 if (info && info.einkommensverschlechterung) { // was muss hier sein?
@@ -385,7 +402,8 @@ export class NavigatorController implements IController {
 
         if (TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG === this.wizardStepManager.getCurrentStepName() ||
             TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_LUZERN === this.wizardStepManager.getCurrentStepName() ||
-            TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_SOLOTHURN === this.wizardStepManager.getCurrentStepName()) {
+            TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_SOLOTHURN === this.wizardStepManager.getCurrentStepName() ||
+            TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_APPENZELL === this.wizardStepManager.getCurrentStepName()) {
             if (this.dvSubStep === 1) {
                 return this.navigateToStep(this.wizardStepManager.getPreviousStep(this.gesuchModelManager.getGesuch()));
             }
@@ -468,9 +486,12 @@ export class NavigatorController implements IController {
                 return this.state.go('gesuch.finanzielleSituationStartLuzern', gesuchIdParam);
             case TSWizardStepName.FINANZIELLE_SITUATION_SOLOTHURN:
                 return this.state.go('gesuch.finanzielleSituationStartSolothurn', gesuchIdParam);
+            case TSWizardStepName.FINANZIELLE_SITUATION_APPENZELL:
+                return this.state.go('gesuch.finanzielleSituationAppenzell', gesuchIdParam);
             case TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG:
             case TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_LUZERN:
             case TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_SOLOTHURN:
+            case TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_APPENZELL:
                 return this.state.go('gesuch.einkommensverschlechterungInfo', gesuchIdParam);
             case TSWizardStepName.DOKUMENTE:
                 return this.state.go('gesuch.dokumente', gesuchIdParam);
@@ -504,6 +525,9 @@ export class NavigatorController implements IController {
         }
         if (TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_SOLOTHURN === this.wizardStepManager.getCurrentStepName()) {
             stateName = 'gesuch.einkommensverschlechterungSolothurn';
+        }
+        if (TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_APPENZELL === this.wizardStepManager.getCurrentStepName()) {
+            stateName = 'gesuch.einkommensverschlechterungAppenzell';
         }
         return this.state.go(stateName, {
             gesuchstellerNumber: gsNumber ? gsNumber : '1',
@@ -541,6 +565,9 @@ export class NavigatorController implements IController {
         }
         if (TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_SOLOTHURN === this.wizardStepManager.getCurrentStepName()) {
             stateName = 'gesuch.einkommensverschlechterungSolothurnResultate';
+        }
+        if (TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_APPENZELL === this.wizardStepManager.getCurrentStepName()) {
+            stateName = 'gesuch.einkommensverschlechterungAppenzellResultate';
         }
         return this.state.go(stateName, {
             basisjahrPlus: basisjahrPlus ? basisjahrPlus : '1',

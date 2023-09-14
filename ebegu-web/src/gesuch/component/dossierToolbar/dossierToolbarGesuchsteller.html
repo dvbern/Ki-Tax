@@ -174,6 +174,15 @@
             <span data-translate="TOOLBAR_MUTIEREN"></span>
         </button>
     </div>
+    <!-- Gesuch loeschen -->
+    <div dv-show-element
+         dv-show-allowed-roles="vmgs.TSRoleUtil.getGesuchstellerOnlyRoles()"
+         dv-show-expression="vmgs.showGesuchLoeschen()" class="gesuchsperioden-container">
+        <button ng-click="vmgs.closeSidenav('dossier-toolbar-mobile');vmgs.gesuchLoeschen()"
+                aria-label="{{'TOOLBAR_LOESCHEN' | translate}}" class="dv-btn gesuchsperiode-button">
+            <span data-translate="TOOLBAR_LOESCHEN"></span>
+        </button>
+    </div>
     <!-- Mitteilung-->
     <div dv-show-element
          dv-show-allowed-roles="vmgs.TSRoleUtil.getGesuchstellerJugendamtRoles()" class="gesuchsperioden-container">

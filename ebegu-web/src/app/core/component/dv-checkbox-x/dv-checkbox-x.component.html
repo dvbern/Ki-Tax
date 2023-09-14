@@ -1,5 +1,5 @@
 <!--
-  ~ Copyright (C) 2022 DV Bern AG, Switzerland
+  ~ Copyright (C) 2023 DV Bern AG, Switzerland
   ~
   ~ This program is free software: you can redistribute it and/or modify
   ~ it under the terms of the GNU Affero General Public License as
@@ -15,12 +15,14 @@
   ~ along with this program. If not, see <https://www.gnu.org/licenses/>.
   -->
 
-<div class="checkbox">
+<div [class]="'checkbox ' + marginClass">
     <mat-checkbox [(ngModel)]="model"
+                  [disabled]="readonly"
                   [name]="uniqueName" [id]="uniqueName + '_id'"
                   [aria-label]="label | translate"
                   (ngModelChange)="change()">
         <span>{{label | translate}}</span>
+        <dv-tooltip *ngIf="tooltip" [text]="tooltip | translate"></dv-tooltip>
     </mat-checkbox>
     <dv-bisher-x
         [korrektur]="model"

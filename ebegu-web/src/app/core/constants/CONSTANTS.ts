@@ -13,8 +13,6 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {MANDANTS} from './MANDANTS';
-
 export const CONSTANTS = {
     name: 'EBEGU',
     REST_API: '/ebegu/api/v1/',
@@ -30,7 +28,7 @@ export const CONSTANTS = {
     PATTERN_PERCENTAGE: '^[0-9][0-9]?$|^100$',
     PATTERN_PHONE: '(0|\\+41|0041)\\s?([\\d]{2})\\s?([\\d]{3})\\s?([\\d]{2})\\s?([\\d]{2})',
     PATTERN_MOBILE: '(0|\\+41|0041)\\s?(74|75|76|77|78|79)\\s?([\\d]{3})\\s?([\\d]{2})\\s?([\\d]{2})',
-    PATTERN_EMAIL: '[^\\s@]+@[^\\s@]+\\.[^\\s@]{2,}',
+    PATTERN_EMAIL: '^[a-zA-Z0-9\\.!#$%&\'*+-/=?^_`{|}]{2,}@[a-zA-Z0-9\\.-]{2,}\\.[a-zA-Z]{2,5}$',
     PATTERN_ZEMIS_NUMMER: '(^0?\\d{8}\\.\\d$)|(^0\\d{2}\\.\\d{3}\\.\\d{3}[\\.-]\\d$)',
     PATTERN_HHHMM: '^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$',
     PARTS_OF_BETREUUNGSNUMMER: 5,
@@ -44,7 +42,8 @@ export const CONSTANTS = {
     NUR_LATS_STARTDATUM: '2021-08-01',
     QR_IBAN_PATTERN: /(LI|CH)\d{2}3[01]\d{3}\w{12}/,
     // used for debounce input elements
-    KEYUP_TIMEOUT: 700
+    KEYUP_TIMEOUT: 700,
+    FIRST_YEAR_LASTENAUSGLEICH_WITHOUT_SELBSTBEHALT: 2022
 };
 
 export const DEFAULT_LOCALE = 'de-CH';

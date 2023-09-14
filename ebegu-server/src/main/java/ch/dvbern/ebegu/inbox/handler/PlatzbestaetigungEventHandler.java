@@ -70,6 +70,7 @@ import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.EbeguUtil;
 import ch.dvbern.ebegu.util.Gueltigkeit;
 import ch.dvbern.ebegu.util.GueltigkeitsUtil;
+import ch.dvbern.ebegu.util.MathUtil;
 import ch.dvbern.ebegu.util.ServerMessageUtil;
 import ch.dvbern.kibon.exchange.commons.platzbestaetigung.BetreuungEventDTO;
 import ch.dvbern.kibon.exchange.commons.types.Zeiteinheit;
@@ -78,6 +79,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_MAHLZEITENVERGUENSTIGUNG_ENABLED;
+import static ch.dvbern.ebegu.enums.EinstellungKey.OEFFNUNGSSTUNDEN_TFO;
+import static ch.dvbern.ebegu.enums.EinstellungKey.OEFFNUNGSTAGE_KITA;
+import static ch.dvbern.ebegu.enums.EinstellungKey.OEFFNUNGSTAGE_TFO;
 import static ch.dvbern.ebegu.util.EbeguUtil.collectionComparator;
 
 @ApplicationScoped
@@ -175,10 +179,6 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 			return Processing.failure("Die Betreuung wurde verändert, nachdem das BetreuungEvent generiert wurde.");
 		}
 
-		if (hasZeitabschnittWithPensumUnit(dto, Zeiteinheit.HOURS) && !betreuung.isAngebotTagesfamilien()) {
-			return Processing.failure("Eine Pensum in HOURS kann nur für ein Angebot in einer TFO angegeben werden.");
-		}
-
 		if (hasZeitabschnittWithPensumUnit(dto, Zeiteinheit.DAYS) && !betreuung.isAngebotKita()) {
 			return Processing.failure("Eine Pensum in DAYS kann nur für ein Angebot in einer Kita angegeben werden.");
 		}
@@ -217,13 +217,23 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 		}
 
 		boolean mahlzeitVergunstigungEnabled = isEnabled(betreuung, GEMEINDE_MAHLZEITENVERGUENSTIGUNG_ENABLED);
+		BigDecimal maxTageProJahr = getEinstellungAsBigdecimal(betreuung, OEFFNUNGSTAGE_KITA);
+		BigDecimal maxTageProJahrTFO = getEinstellungAsBigdecimal(betreuung, OEFFNUNGSTAGE_TFO);
+		BigDecimal hoursProTag = getEinstellungAsBigdecimal(betreuung, OEFFNUNGSSTUNDEN_TFO);
+		BigDecimal anzahlMonatProJahr = new BigDecimal("12.00");
+		BigDecimal maxTageProMonat = MathUtil.DEFAULT.divideNullSafe(maxTageProJahr, anzahlMonatProJahr);
+
+		BigDecimal maxTageProMonatTFO = MathUtil.DEFAULT.divideNullSafe(maxTageProJahrTFO, anzahlMonatProJahr);
+		BigDecimal maxStundenProMonat = MathUtil.DEFAULT.multiplyNullSafe(maxTageProMonatTFO, hoursProTag);
+
+
 		ProcessingContext ctx = new ProcessingContext(
 			betreuung,
 			dto,
 			overlap.get(),
 			mahlzeitVergunstigungEnabled,
 			eventMonitor,
-			singleClientForPeriod);
+				maxTageProMonat, maxStundenProMonat, singleClientForPeriod);
 
 		Betreuungsstatus status = betreuung.getBetreuungsstatus();
 
@@ -542,6 +552,14 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 		Gesuchsperiode periode = betreuung.extractGesuchsperiode();
 
 		return einstellungService.findEinstellung(key, gemeinde, periode).getValueAsBoolean();
+	}
+
+
+	private BigDecimal getEinstellungAsBigdecimal(@Nonnull Betreuung betreuung, @Nonnull EinstellungKey key) {
+		Gemeinde gemeinde = betreuung.extractGemeinde();
+		Gesuchsperiode periode = betreuung.extractGesuchsperiode();
+
+		return einstellungService.findEinstellung(key, gemeinde, periode).getValueAsBigDecimal();
 	}
 
 	@Nonnull

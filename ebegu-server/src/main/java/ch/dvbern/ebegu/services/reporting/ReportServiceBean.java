@@ -1,16 +1,18 @@
 /*
- * Ki-Tax: System for the management of external childcare subsidies
- * Copyright (C) 2017 City of Bern Switzerland
+ * Copyright (C) 2023 DV Bern AG, Switzerland
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Affero General Public License for more details.
+ *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
 package ch.dvbern.ebegu.services.reporting;
@@ -122,6 +124,7 @@ import ch.dvbern.ebegu.enums.PensumUnits;
 import ch.dvbern.ebegu.enums.Taetigkeit;
 import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.enums.gemeindeantrag.FerienbetreuungAngabenStatus;
+import ch.dvbern.ebegu.enums.reporting.DatumTyp;
 import ch.dvbern.ebegu.enums.reporting.ReportVorlage;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
@@ -370,6 +373,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 	public List<GesuchZeitraumDataRow> getReportDataGesuchZeitraum(
 		@Nonnull LocalDate dateVon,
 		@Nonnull LocalDate dateBis,
+		@Nonnull DatumTyp datumTyp,
 		@Nullable String gesuchPeriodeID,
 		@Nonnull Mandant mandant) {
 
@@ -384,7 +388,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 
 		//noinspection JpaQueryApiInspection
 		TypedQuery<GesuchZeitraumDataRow> query =
-			em.createNamedQuery("GesuchZeitraumNativeSQLQuery", GesuchZeitraumDataRow.class);
+			em.createNamedQuery(datumTyp.getQueryName(), GesuchZeitraumDataRow.class);
 
 		query.setParameter("fromDateTime", Constants.SQL_DATE_FORMAT.format(dateVon));
 		query.setParameter("fromDate", Constants.SQL_DATE_FORMAT.format(dateVon));
@@ -419,6 +423,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 	public UploadFileInfo generateExcelReportGesuchZeitraum(
 		@Nonnull LocalDate dateVon,
 		@Nonnull LocalDate dateBis,
+		@Nonnull DatumTyp datumTyp,
 		@Nullable String gesuchPeriodeID,
 		@Nonnull Locale locale,
 		@Nonnull Mandant mandant
@@ -437,7 +442,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		) {
 			Sheet sheet = workbook.getSheet(reportVorlage.getDataSheetName());
 
-			List<GesuchZeitraumDataRow> reportData = getReportDataGesuchZeitraum(dateVon, dateBis, gesuchPeriodeID, mandant);
+			List<GesuchZeitraumDataRow> reportData = getReportDataGesuchZeitraum(dateVon, dateBis, datumTyp, gesuchPeriodeID, mandant);
 			ExcelMergerDTO excelMergerDTO = gesuchZeitraumExcelConverter.toExcelMergerDTO(reportData, locale);
 
 			mergeData(sheet, excelMergerDTO, reportVorlage.getMergeFields());
@@ -771,7 +776,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		predicates.add(mandantPredicate);
 
 		// Status ist verfuegt
-		predicates.add(root.get(AntragStatusHistory_.status).in(AntragStatus.getAllVerfuegtStates()));
+		predicates.add(root.get(AntragStatusHistory_.status).in(AntragStatus.getAllVerfuegtNotIgnoriertStates()));
 		// Datum der Verfuegung muss nach (oder gleich) dem Anfang des Abfragezeitraums sein
 		predicates.add(builder.greaterThanOrEqualTo(
 			root.get(AntragStatusHistory_.timestampVon),
@@ -1309,7 +1314,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 				requireNonNull(gesuch.getFall().getMandant())));
 		row.setEingangsdatum(gesuch.getEingangsdatum());
 		for (AntragStatusHistory antragStatusHistory : gesuch.getAntragStatusHistories()) {
-			if (AntragStatus.getAllVerfuegtStates().contains(antragStatusHistory.getStatus())) {
+			if (AntragStatus.getAllVerfuegtNotIgnoriertStates().contains(antragStatusHistory.getStatus())) {
 				row.setVerfuegungsdatum(antragStatusHistory.getTimestampVon().toLocalDate());
 			}
 		}
@@ -1443,6 +1448,10 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		row.setKindErwBeduerfnisse(betreuung.hasErweiterteBetreuung());
 		row.setKindSprichtAmtssprache(kind.getSprichtAmtssprache());
 		row.setKindEinschulungTyp(kind.getEinschulungTyp());
+		row.setKeinPlatzImSchulhort(kind.getKeinPlatzInSchulhort());
+		if (kind.getPensumAusserordentlicherAnspruch() != null) {
+			row.setAusserordentlicherAnspruch(BigDecimal.valueOf(kind.getPensumAusserordentlicherAnspruch().getPensum()));
+		}
 	}
 
 	private void addBetreuungToGesuchstellerKinderBetreuungDataRow(
@@ -1496,7 +1505,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		row.setBgPensumKanton(bgPensumKanton);
 		row.setBgPensumGemeinde(bgPensumGemeinde);
 		row.setBgPensumTotal(bgPensumTotal);
-		row.setBgStunden(zeitabschnitt.getBetreuungspensumZeiteinheit());
+		row.setBgStunden(zeitabschnitt.getBgPensumZeiteinheit());
 		// Wir koennen nicht die gespeicherte Zeiteinheit nehmen, da diese entweder Prozent oder Tage/Stunden ist
 		// Daher fix TAGE fuer Kita und STUNDEN fuer TFO
 		PensumUnits zeiteinheit =

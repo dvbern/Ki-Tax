@@ -38,6 +38,7 @@ import {TSInstitution} from '../../../../models/TSInstitution';
 import {EbeguUtil} from '../../../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../../../utils/TSRoleUtil';
 import {LogFactory} from '../../logging/LogFactory';
+import {ApplicationPropertyRS} from '../../rest-services/applicationPropertyRS.rest';
 import {GesuchsperiodeRS} from '../../service/gesuchsperiodeRS.rest';
 import {InstitutionRS} from '../../service/institutionRS.rest';
 import ITranslateService = angular.translate.ITranslateService;
@@ -75,7 +76,8 @@ export class DVAntragListController implements IController {
         'GemeindeRS',
         'EinstellungRS',
         '$translate',
-        '$scope'
+        '$scope',
+        'ApplicationPropertyRS'
     ];
 
     public totalResultCount: number;
@@ -116,6 +118,7 @@ export class DVAntragListController implements IController {
     public readonly TSRoleUtil = TSRoleUtil;
 
     private readonly unsubscribe$ = new Subject<void>();
+    private tagesschulangebotEnabled: boolean;
 
     public constructor(
         private readonly $filter: IFilterService,
@@ -126,7 +129,8 @@ export class DVAntragListController implements IController {
         private readonly gemeindeRS: GemeindeRS,
         private readonly einstellungRS: EinstellungRS,
         private readonly $translate: ITranslateService,
-        private readonly $scope: IScope
+        private readonly $scope: IScope,
+        private readonly applicationPropertyRS: ApplicationPropertyRS
     ) {
     }
 
@@ -151,6 +155,9 @@ export class DVAntragListController implements IController {
             }
             this.pagination.totalItemCount = this.totalResultCount;
             this.pagination.numberOfPages = Math.ceil(this.totalResultCount / this.pagination.number);
+        });
+        this.applicationPropertyRS.getPublicPropertiesCached().then(res => {
+            this.tagesschulangebotEnabled = res.angebotTSActivated;
         });
     }
 
@@ -278,7 +285,7 @@ export class DVAntragListController implements IController {
     }
 
     public isTagesschulangebotEnabled(): boolean {
-        return this.authServiceRS.hasMandantAngebotTS();
+        return this.tagesschulangebotEnabled;
     }
 
     public querySearch(query: string): Array<TSInstitution> {

@@ -15,18 +15,17 @@
 
 package ch.dvbern.ebegu.entities;
 
-import java.math.BigDecimal;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-
 import ch.dvbern.ebegu.enums.AntragCopyType;
 import ch.dvbern.ebegu.enums.SteuerdatenAnfrageStatus;
 import ch.dvbern.ebegu.util.MathUtil;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.hibernate.envers.Audited;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import java.math.BigDecimal;
 
 /**
  * Entität für die Einkommensverschlechterung
@@ -137,12 +136,17 @@ public class Einkommensverschlechterung extends AbstractFinanzielleSituation {
 		switch (copyType) {
 		case MUTATION:
 		case MUTATION_NEUES_DOSSIER:
+		case ERNEUERUNG_AR_2023:
 			super.copyAbstractFinanzielleSituation(target, copyType);
 			target.setGeschaeftsgewinnBasisjahrMinus1(this.getGeschaeftsgewinnBasisjahrMinus1());
 			target.setBruttolohnAbrechnung1(this.getBruttolohnAbrechnung1());
 			target.setBruttolohnAbrechnung2(this.getBruttolohnAbrechnung2());
 			target.setBruttolohnAbrechnung3(this.getBruttolohnAbrechnung3());
 			target.setExtraLohn(this.getExtraLohn());
+			if (this.getFinSitZusatzangabenAppenzell() != null) {
+				target.setFinSitZusatzangabenAppenzell(this.getFinSitZusatzangabenAppenzell()
+					.copyFinSitZusatzangabenAppenzell(new FinSitZusatzangabenAppenzell(), copyType));
+			}
 			break;
 		case ERNEUERUNG:
 		case ERNEUERUNG_NEUES_DOSSIER:

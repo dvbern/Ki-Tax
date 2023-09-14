@@ -1,72 +1,28 @@
 /*
- * Ki-Tax: System for the management of external childcare subsidies
- * Copyright (C) 2017 City of Bern Switzerland
+ * Copyright (C) 2023 DV Bern AG, Switzerland
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
+ *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
 package ch.dvbern.ebegu.services;
 
-import java.math.BigDecimal;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.Collections;
-import java.util.List;
-import java.util.Locale;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.concurrent.Future;
-import java.util.function.BiFunction;
-import java.util.stream.Collectors;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.ejb.AsyncResult;
-import javax.ejb.Asynchronous;
-import javax.ejb.Local;
-import javax.ejb.Stateless;
-import javax.ejb.TransactionAttribute;
-import javax.ejb.TransactionAttributeType;
-import javax.inject.Inject;
-
 import ch.dvbern.ebegu.config.EbeguConfiguration;
 import ch.dvbern.ebegu.dto.SupportAnfrageDTO;
 import ch.dvbern.ebegu.einladung.Einladung;
-import ch.dvbern.ebegu.entities.AbstractAnmeldung;
-import ch.dvbern.ebegu.entities.Benutzer;
-import ch.dvbern.ebegu.entities.Betreuung;
-import ch.dvbern.ebegu.entities.Fall;
-import ch.dvbern.ebegu.entities.Gemeinde;
-import ch.dvbern.ebegu.entities.GemeindeStammdaten;
-import ch.dvbern.ebegu.entities.Gesuch;
-import ch.dvbern.ebegu.entities.Gesuchsperiode;
-import ch.dvbern.ebegu.entities.Gesuchsteller;
-import ch.dvbern.ebegu.entities.GesuchstellerContainer;
-import ch.dvbern.ebegu.entities.Institution;
-import ch.dvbern.ebegu.entities.InstitutionStammdaten;
-import ch.dvbern.ebegu.entities.Kind;
-import ch.dvbern.ebegu.entities.Lastenausgleich;
-import ch.dvbern.ebegu.entities.Mandant;
-import ch.dvbern.ebegu.entities.Mitteilung;
-import ch.dvbern.ebegu.entities.RueckforderungFormular;
-import ch.dvbern.ebegu.entities.RueckforderungMitteilung;
+import ch.dvbern.ebegu.entities.*;
 import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeContainer;
-import ch.dvbern.ebegu.enums.AntragStatus;
-import ch.dvbern.ebegu.enums.Betreuungsstatus;
-import ch.dvbern.ebegu.enums.ErrorCodeEnum;
-import ch.dvbern.ebegu.enums.GemeindeAngebotTyp;
-import ch.dvbern.ebegu.enums.RueckforderungStatus;
-import ch.dvbern.ebegu.enums.Sprache;
+import ch.dvbern.ebegu.enums.*;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.MailException;
 import ch.dvbern.ebegu.mail.MailTemplateConfiguration;
@@ -78,6 +34,20 @@ import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.ejb.*;
+import javax.inject.Inject;
+import java.math.BigDecimal;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.*;
+import java.util.concurrent.Future;
+import java.util.function.BiFunction;
+import java.util.stream.Collectors;
 
 import static java.util.Objects.requireNonNull;
 
@@ -505,11 +475,11 @@ public class MailServiceBean extends AbstractMailServiceBean implements MailServ
 		@Nonnull InstitutionStammdaten institutionStammdaten,
 		boolean offenePendenzen,
 		boolean ungelesendeMitteilung) {
-		String mailaddress = institutionStammdaten.getErinnerungMail() != null ?
+		String mailaddress = StringUtils.isNotBlank(institutionStammdaten.getErinnerungMail()) ?
 			institutionStammdaten.getErinnerungMail() :
 			institutionStammdaten.getMail();
 		try {
-			if (StringUtils.isNotEmpty(mailaddress)) {
+			if (StringUtils.isNotBlank(mailaddress)) {
 				String message = mailTemplateConfig
 					.getInfoOffenePendenzenNeuMitteilungInstitution(
 						institutionStammdaten,
@@ -518,7 +488,7 @@ public class MailServiceBean extends AbstractMailServiceBean implements MailServ
 						ungelesendeMitteilung);
 				Mandant mandant = institutionStammdaten.getInstitution().getMandant();
 				sendMessageWithTemplate(message, mailaddress, mandant.getMandantIdentifier());
-				LOG.debug("Email fuer InfoOffenePendenzenInstitution wurde versendet an {}", mailaddress);
+				LOG.info("Email fuer InfoOffenePendenzenInstitution wurde versendet an {}", mailaddress);
 			} else {
 				LOG.warn("Skipping InfoOffenePendenzenInstitution because E-Mail of Institution is null");
 			}

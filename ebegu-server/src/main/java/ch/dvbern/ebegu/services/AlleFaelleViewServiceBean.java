@@ -20,42 +20,103 @@ package ch.dvbern.ebegu.services;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.annotation.security.PermitAll;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Root;
+import javax.validation.constraints.NotNull;
 
 import ch.dvbern.ebegu.entities.AbstractEntity_;
 import ch.dvbern.ebegu.entities.AlleFaelleView;
+import ch.dvbern.ebegu.entities.AlleFaelleViewKind;
 import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Institution;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten;
+import ch.dvbern.ebegu.entities.Kind;
 import ch.dvbern.ebegu.entities.KindContainer;
+import ch.dvbern.ebegu.enums.ErrorCodeEnum;
+import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.lib.cdipersistence.Persistence;
-import org.hibernate.Criteria;
 
 @Stateless
 @Local(AlleFaelleViewService.class)
 @PermitAll
+@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 public class AlleFaelleViewServiceBean extends AbstractBaseService implements AlleFaelleViewService {
 
 	@Inject
 	private Persistence persistence;
 
 	@Override
-	public void updateViewWithFullGesuch(Gesuch gesuch) {
-		AlleFaelleView alleFaelleView = convertGesuchToAlleFaelleView(gesuch);
+	public boolean isNeueAlleFaelleViewActivated() {
+		return false;
+	}
+
+	@Override
+	public void createViewForFullGesuch(Gesuch gesuch) {
+		AlleFaelleView alleFaelleView = createAlleFaelleViewForFullGesuch(gesuch);
 		persistence.merge(alleFaelleView);
+	}
+
+	@Override
+	public void updateViewForGesuch(Gesuch gesuch) {
+		Optional<AlleFaelleView> alleFaelleViewToUpdate =
+				findAlleFaelleViewByAntragId(gesuch.getId());
+
+		if (alleFaelleViewToUpdate.isEmpty()) {
+			throw new EbeguEntityNotFoundException("updateViewForGesuch", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND);
+		}
+
+		updateAlleFaelleViewForGesuch(gesuch, alleFaelleViewToUpdate.get());
+		persistence.merge(alleFaelleViewToUpdate.get());
+	}
+
+	@Override
+	public void removeViewForGesuch(Gesuch gesuch) {
+		Optional<AlleFaelleView> alleFaelleViewToUpdate =
+				findAlleFaelleViewByAntragId(gesuch.getId());
+
+		alleFaelleViewToUpdate.ifPresent(alleFaelleView -> persistence.remove(alleFaelleView));
+	}
+
+	@Override
+	public void createKindInView(Kind kind, Gesuch gesuch) {
+		AlleFaelleViewKind alleFaelleViewKind = createKindView(kind, gesuch.getId());
+		persistence.merge(alleFaelleViewKind);
+	}
+
+	@Override
+	public void updateKindInView(Kind kind) {
+		Optional<AlleFaelleViewKind> alleFaelleViewKindToUpdate = findAlleFaelleViewKindByKindId(kind.getId());
+
+		if (alleFaelleViewKindToUpdate.isEmpty()) {
+			//hier wird kein Fehler geworffen, es kann sein dass das KindGS updated werden soll. für dieses
+			//gibt es keinen Eintrag in der AlleFälleListe
+			return;
+		}
+
+		AlleFaelleViewKind alleFaelleViewKind = alleFaelleViewKindToUpdate.get();
+		alleFaelleViewKind.setName(kind.getVorname());
+		persistence.merge(alleFaelleViewKind);
+	}
+
+	@Override
+	public void removeKindInView(Kind kind) {
+		Optional<AlleFaelleViewKind> alleFaelleViewKindToRemove = findAlleFaelleViewKindByKindId(kind.getId());
+		alleFaelleViewKindToRemove.ifPresent(alleFaelleViewKind -> persistence.remove(alleFaelleViewKind));
 	}
 
 	@Override
@@ -82,7 +143,18 @@ public class AlleFaelleViewServiceBean extends AbstractBaseService implements Al
 		return typedQuery.getResultList();
 	}
 
-	private AlleFaelleView convertGesuchToAlleFaelleView(Gesuch gesuch) {
+
+	private Optional<AlleFaelleView> findAlleFaelleViewByAntragId(@NotNull String antragId) {
+		AlleFaelleView alleFaelleView =  persistence.find(AlleFaelleView.class, antragId);
+		return Optional.ofNullable(alleFaelleView);
+	}
+
+	private Optional<AlleFaelleViewKind> findAlleFaelleViewKindByKindId(@NotNull String kindId) {
+		AlleFaelleViewKind alleFaelleViewKind =  persistence.find(AlleFaelleViewKind.class, kindId);
+		return Optional.ofNullable(alleFaelleViewKind);
+	}
+
+	private AlleFaelleView createAlleFaelleViewForFullGesuch(Gesuch gesuch) {
 		AlleFaelleView alleFaelleView = new AlleFaelleView();
 		alleFaelleView.setAntragId(gesuch.getId());
 		alleFaelleView.setMandantId(gesuch.getGesuchsperiode().getMandant().getId());
@@ -97,28 +169,23 @@ public class AlleFaelleViewServiceBean extends AbstractBaseService implements Al
 			null);
 		alleFaelleView.setGemeindeId(gesuch.getDossier().getGemeinde().getId());
 		alleFaelleView.setGemeindeName(gesuch.getDossier().getGemeinde().getName());
-		alleFaelleView.setAntragStatus(gesuch.getStatus());
-		alleFaelleView.setAntragTyp(gesuch.getTyp());
-		alleFaelleView.setEingangsart(gesuch.getEingangsart());
-		alleFaelleView.setLaufnummer(gesuch.getLaufnummer());
+
 		alleFaelleView.setFamilienName(gesuch.extractFamiliennamenString());
-		alleFaelleView.setKinder(gesuch.getKindContainers().stream()
-			.map(kc -> kc.getKindJA().getVorname())
-			.collect(Collectors.joining(", ")));
-		Objects.requireNonNull(gesuch.getTimestampMutiert());
+		gesuch.getKindContainers()
+				.forEach(kindContainer -> {
+					AlleFaelleViewKind kind = createKindView(kindContainer.getKindJA(), alleFaelleView.getAntragId());
+					alleFaelleView.addKind(kind);
+				});
+
 		alleFaelleView.setAngebotTypen(gesuch.getKindContainers().stream()
 			.flatMap(kc -> kc.getAllPlaetze().stream())
 			.map(b -> b.getInstitutionStammdaten().getBetreuungsangebotTyp().name()).collect(Collectors.joining(", ")));
 
-		alleFaelleView.setAenderungsdatum(gesuch.getTimestampMutiert());
-		alleFaelleView.setEingangsdatum(gesuch.getEingangsdatum());
-		alleFaelleView.setEingangsdatumSTV(gesuch.getEingangsdatumSTV());
 		alleFaelleView.setSozialdienst(gesuch.getFall().isSozialdienstFall());
 		alleFaelleView.setSozialdienstId(gesuch.getFall().getSozialdienstFall() != null ?
 			gesuch.getFall().getSozialdienstFall().getSozialdienst().getId() :
 			null);
-		alleFaelleView.setInternePendenz(gesuch.getInternePendenz());
-		alleFaelleView.setDokumenteHochgeladen(gesuch.getDokumenteHochgeladen());
+
 		alleFaelleView.setGesuchsperiodeId(gesuch.getGesuchsperiode().getId());
 		alleFaelleView.setGesuchsperiodeString(gesuch.getGesuchsperiode().getGesuchsperiodeString());
 
@@ -133,9 +200,30 @@ public class AlleFaelleViewServiceBean extends AbstractBaseService implements Al
 			alleFaelleView.setVerantwortlicherTSId(verantwortlicherTS.getId());
 		}
 
-
 		alleFaelleView.setInstitutionen(createInstitutionenList(gesuch.getKindContainers()));
+		updateAlleFaelleViewForGesuch(gesuch, alleFaelleView);
 		return alleFaelleView;
+	}
+
+	private AlleFaelleViewKind createKindView(Kind kindJA, String antragId) {
+		AlleFaelleViewKind alleFaelleViewKind = new AlleFaelleViewKind();
+		alleFaelleViewKind.setKindId(kindJA.getId());
+		alleFaelleViewKind.setName(kindJA.getVorname());
+		alleFaelleViewKind.setAntragId(antragId);
+		return alleFaelleViewKind;
+	}
+
+	private void updateAlleFaelleViewForGesuch(Gesuch gesuch, AlleFaelleView alleFaelleView) {
+		alleFaelleView.setAntragStatus(gesuch.getStatus());
+		alleFaelleView.setAntragTyp(gesuch.getTyp());
+		alleFaelleView.setEingangsart(gesuch.getEingangsart());
+		alleFaelleView.setLaufnummer(gesuch.getLaufnummer());
+		Objects.requireNonNull(gesuch.getTimestampMutiert());
+		alleFaelleView.setAenderungsdatum(gesuch.getTimestampMutiert());
+		alleFaelleView.setEingangsdatum(gesuch.getEingangsdatum());
+		alleFaelleView.setEingangsdatumSTV(gesuch.getEingangsdatumSTV());
+		alleFaelleView.setInternePendenz(gesuch.getInternePendenz());
+		alleFaelleView.setDokumenteHochgeladen(gesuch.getDokumenteHochgeladen());
 	}
 
 	private List<Institution> createInstitutionenList(Set<KindContainer> kindContainers) {

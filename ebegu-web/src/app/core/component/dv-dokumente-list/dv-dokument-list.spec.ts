@@ -45,7 +45,8 @@ describe('dvDokumenteList', () => {
             undefined,
             undefined,
             undefined,
-            undefined);
+            undefined,
+                undefined);
 
     }));
 

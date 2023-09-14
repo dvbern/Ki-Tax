@@ -5,13 +5,14 @@ import java.time.LocalDate;
 import java.util.Locale;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 import ch.dvbern.ebegu.dto.BGCalculationInput;
 import ch.dvbern.ebegu.entities.AbstractPlatz;
 import ch.dvbern.ebegu.entities.BGCalculationResult;
+import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
+import ch.dvbern.ebegu.enums.FinanzielleSituationTyp;
 import ch.dvbern.ebegu.enums.MsgKey;
-import ch.dvbern.ebegu.types.DateRange;
+import ch.dvbern.ebegu.enums.VerfuegungsZeitabschnittZahlungsstatus;
 
 public class MutationsMergerFinanzielleSituationBern extends AbstractMutationsMergerFinanzielleSituation {
 
@@ -28,7 +29,7 @@ public class MutationsMergerFinanzielleSituationBern extends AbstractMutationsMe
 		handleVerminderungEinkommen(inputAktuel, resultVorgaenger, mutationsEingansdatum);
 	}
 
-	private void handleVerminderungEinkommen(
+	protected void handleVerminderungEinkommen(
 		@Nonnull BGCalculationInput inputData,
 		@Nonnull BGCalculationResult resultVorangehenderAbschnitt,
 		@Nonnull LocalDate mutationsEingansdatum
@@ -61,9 +62,16 @@ public class MutationsMergerFinanzielleSituationBern extends AbstractMutationsMe
 			} else {
 				inputData.getTsInputOhneBetreuung().setVerpflegungskostenVerguenstigt(BigDecimal.ZERO);
 			}
-			if (massgebendesEinkommen.compareTo(massgebendesEinkommenVorher) < 0) {
-				inputData.addBemerkung(MsgKey.ANSPRUCHSAENDERUNG_MSG, getLocale());
-			}
+			handleRueckwirkendAnspruchaenderungMsg(inputData, massgebendesEinkommen, massgebendesEinkommenVorher);
+		}
+	}
+
+	protected void handleRueckwirkendAnspruchaenderungMsg(
+			BGCalculationInput inputData,
+			BigDecimal massgebendesEinkommen,
+			BigDecimal massgebendesEinkommenVorher) {
+		if (massgebendesEinkommen.compareTo(massgebendesEinkommenVorher) < 0) {
+			inputData.addBemerkung(MsgKey.ANSPRUCHSAENDERUNG_MSG, getLocale());
 		}
 	}
 

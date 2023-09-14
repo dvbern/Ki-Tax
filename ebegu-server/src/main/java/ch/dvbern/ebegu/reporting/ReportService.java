@@ -29,6 +29,7 @@ import ch.dvbern.ebegu.entities.Familiensituation;
 import ch.dvbern.ebegu.entities.FamiliensituationContainer;
 import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
+import ch.dvbern.ebegu.enums.reporting.DatumTyp;
 import ch.dvbern.ebegu.errors.MergeDocException;
 import ch.dvbern.ebegu.reporting.benutzer.BenutzerDataRow;
 import ch.dvbern.ebegu.reporting.gesuchstichtag.GesuchStichtagDataRow;
@@ -59,6 +60,7 @@ public interface ReportService {
 	List<GesuchZeitraumDataRow> getReportDataGesuchZeitraum(
 		@Nonnull LocalDate dateVon,
 		@Nonnull LocalDate dateBis,
+		@Nonnull DatumTyp datumTyp,
 		@Nullable String gesuchPeriodeID,
 		@Nonnull Mandant mandant)
 		throws IOException, URISyntaxException;
@@ -67,6 +69,7 @@ public interface ReportService {
 	UploadFileInfo generateExcelReportGesuchZeitraum(
 		@Nonnull LocalDate dateVon,
 		@Nonnull LocalDate dateBis,
+		@Nonnull DatumTyp datumTyp,
 		@Nullable String gesuchPeriodeID,
 		@Nonnull Locale locale,
 		@Nonnull Mandant mandant

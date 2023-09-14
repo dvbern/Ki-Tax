@@ -39,7 +39,6 @@ public class JaxPublicAppConfig {
 	private String logoFileName;
 	private String logoFileNameWhite;
 	private boolean multimandantAktiviert;
-	private boolean angebotTSActivated;
 	private final boolean infomaZahlungen;
 	private boolean frenchEnabled;
 	private boolean geresEnabledForMandant;
@@ -49,6 +48,10 @@ public class JaxPublicAppConfig {
 	private String activatedDemoFeatures;
 	private final boolean checkboxAuszahlungInZukunft;
 	private boolean institutionenDurchGemeindenEinladen;
+	private boolean erlaubenInstitutionenZuWaehlen;
+	private boolean angebotTSActivated;
+	private boolean angebotFIActivated;
+	private boolean angebotTFOActivated;
 
 	public JaxPublicAppConfig(
 			String currentNode,
@@ -77,7 +80,6 @@ public class JaxPublicAppConfig {
 			String logoFileName,
 			String logoFileNameWhite,
 			boolean multimandantAktiviert,
-			boolean angebotTSActivated,
 			boolean infomaZahlungen,
 			boolean frenchEnabled,
 			boolean geresEnabled,
@@ -86,7 +88,11 @@ public class JaxPublicAppConfig {
 			boolean zusatzinformationenInstitution,
 			String activatedDemoFeatures,
 			boolean checkboxAuszahlungInZukunft,
-			boolean institutionenDurchGemeindenEinladen
+			boolean institutionenDurchGemeindenEinladen,
+			boolean erlaubenInstitutionenZuWaehlen,
+			boolean angebotTSActivated,
+			boolean angebotFIActivated,
+			boolean angebotTFOActivated
 		) {
 		this.currentNode = currentNode;
 		this.devmode = devmode;
@@ -124,6 +130,9 @@ public class JaxPublicAppConfig {
 		this.activatedDemoFeatures = activatedDemoFeatures;
 		this.checkboxAuszahlungInZukunft = checkboxAuszahlungInZukunft;
 		this.institutionenDurchGemeindenEinladen = institutionenDurchGemeindenEinladen;
+		this.erlaubenInstitutionenZuWaehlen = erlaubenInstitutionenZuWaehlen;
+		this.angebotFIActivated = angebotFIActivated;
+		this.angebotTFOActivated = angebotTFOActivated;
 	}
 
 	public String getCurrentNode() {
@@ -400,5 +409,29 @@ public class JaxPublicAppConfig {
 
 	public void setInstitutionenDurchGemeindenEinladen(boolean institutionenDurchGemeindenEinladen) {
 		this.institutionenDurchGemeindenEinladen = institutionenDurchGemeindenEinladen;
+	}
+
+	public boolean isErlaubenInstitutionenZuWaehlen() {
+		return erlaubenInstitutionenZuWaehlen;
+	}
+
+	public void setErlaubenInstitutionenZuWaehlen(boolean erlaubenInstitutionenZuWaehlen) {
+		this.erlaubenInstitutionenZuWaehlen = erlaubenInstitutionenZuWaehlen;
+	}
+
+	public boolean isAngebotFIActivated() {
+		return angebotFIActivated;
+	}
+
+	public void setAngebotFIActivated(boolean angebotFIActivated) {
+		this.angebotFIActivated = angebotFIActivated;
+	}
+
+	public boolean isAngebotTFOActivated() {
+		return angebotTFOActivated;
+	}
+
+	public void setAngebotTFOActivated(boolean angebotTFOActivated) {
+		this.angebotTFOActivated = angebotTFOActivated;
 	}
 }

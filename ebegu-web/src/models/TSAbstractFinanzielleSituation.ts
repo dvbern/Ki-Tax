@@ -1,21 +1,24 @@
 /*
- * Ki-Tax: System for the management of external childcare subsidies
- * Copyright (C) 2017 City of Bern Switzerland
+ * Copyright (C) 2023 DV Bern AG, Switzerland
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Affero General Public License for more details.
+ *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
 import {TSSteuerdatenAnfrageStatus} from './enums/TSSteuerdatenAnfrageStatus';
 import {TSAbstractMutableEntity} from './TSAbstractMutableEntity';
 import {TSFinanzielleSituationSelbstdeklaration} from './TSFinanzielleSituationSelbstdeklaration';
+import {TSFinSitZusatzangabenAppenzell} from './TSFinSitZusatzangabenAppenzell';
 
 export class TSAbstractFinanzielleSituation extends TSAbstractMutableEntity {
     private _nettolohn: number;
@@ -41,6 +44,7 @@ export class TSAbstractFinanzielleSituation extends TSAbstractMutableEntity {
     private _gewinnungskosten: number;
     private _abzugSchuldzinsen: number;
     private _selbstdeklaration: TSFinanzielleSituationSelbstdeklaration;
+    private _finSitZusatzangabenAppenzell: TSFinSitZusatzangabenAppenzell;
 
     public constructor() {
         super();
@@ -218,5 +222,13 @@ export class TSAbstractFinanzielleSituation extends TSAbstractMutableEntity {
 
     public set selbstdeklaration(value: TSFinanzielleSituationSelbstdeklaration) {
         this._selbstdeklaration = value;
+    }
+
+    public get finSitZusatzangabenAppenzell(): TSFinSitZusatzangabenAppenzell {
+        return this._finSitZusatzangabenAppenzell;
+    }
+
+    public set finSitZusatzangabenAppenzell(value: TSFinSitZusatzangabenAppenzell) {
+        this._finSitZusatzangabenAppenzell = value;
     }
 }

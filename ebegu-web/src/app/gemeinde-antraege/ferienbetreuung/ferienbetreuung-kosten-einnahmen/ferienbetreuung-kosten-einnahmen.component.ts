@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2021 DV Bern AG, Switzerland
+ * Copyright (C) 2023 DV Bern AG, Switzerland
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -8,11 +8,11 @@
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program. If not, see <https://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
 import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit} from '@angular/core';
@@ -32,6 +32,7 @@ import {numberValidator, ValidationType} from '../../../shared/validators/number
 import {UnsavedChangesService} from '../../services/unsaved-changes.service';
 import {AbstractFerienbetreuungFormular} from '../abstract.ferienbetreuung-formular';
 import {FerienbetreuungService} from '../services/ferienbetreuung.service';
+import {TSFerienbetreuungAngaben} from '../../../../models/gemeindeantrag/TSFerienbetreuungAngaben';
 
 const LOG = LogFactory.createLog('FerienbetreuungKostenEinnahmenComponent');
 
@@ -71,10 +72,9 @@ export class FerienbetreuungKostenEinnahmenComponent extends AbstractFerienbetre
         ]).pipe(takeUntil(this.unsubscribe$))
             .subscribe(([container, principal]) => {
             this.container = container;
-            this.kostenEinnahmen = container.isAtLeastInPruefungKantonOrZurueckgegeben() ?
-                container.angabenKorrektur?.kostenEinnahmen : container.angabenDeklaration?.kostenEinnahmen;
-            const angaben = container.isAtLeastInPruefungKanton() ?
-                container.angabenKorrektur : container.angabenDeklaration;
+                const angaben = container.isAtLeastInPruefungKantonOrZurueckgegeben() ?
+                    container.angabenKorrektur : container.angabenDeklaration;
+                this.kostenEinnahmen = angaben?.kostenEinnahmen;
             this.isDelegationsmodell = angaben?.isDelegationsmodell();
             this.setupFormAndPermissions(container, this.kostenEinnahmen, principal);
             this.unsavedChangesService.registerForm(this.form);
@@ -206,18 +206,31 @@ export class FerienbetreuungKostenEinnahmenComponent extends AbstractFerienbetre
             this.showValidierungFehlgeschlagenErrorMessage();
             return;
         }
-        this.ferienbetreuungService.saveKostenEinnahmen(this.container.id, this.extractFormValues())
+        this.ferienbetreuungService.saveBerechnung(this.container.id, this.getAngabenForStatus().berechnungen)
             .subscribe(() => {
-                this.ferienbetreuungService.updateFerienbetreuungContainerStores(this.container.id);
-                this.errorService.clearAll();
-                this.errorService.addMesageAsInfo(this.translate.instant('SPEICHERN_ERFOLGREICH'));
-            }, err => this.handleSaveErrors(err));
+                this.ferienbetreuungService.saveKostenEinnahmen(this.container.id, this.extractFormValues())
+                    .subscribe(() => {
+                        this.ferienbetreuungService.updateFerienbetreuungContainerStores(this.container.id);
+                        this.errorService.clearAll();
+                        this.errorService.addMesageAsInfo(this.translate.instant('SPEICHERN_ERFOLGREICH'));
+                    }, err => this.handleSaveErrors(err));
+            });
+    }
+
+    private getAngabenForStatus(): TSFerienbetreuungAngaben {
+        return this.container?.isAtLeastInPruefungKantonOrZurueckgegeben() ?
+            this.container?.angabenKorrektur :
+            this.container?.angabenDeklaration;
     }
 
     public async onAbschliessen(): Promise<void> {
         if (await this.checkReadyForAbschliessen()) {
-            this.ferienbetreuungService.kostenEinnahmenAbschliessen(this.container.id, this.form.value)
-                .subscribe(() => this.handleSaveSuccess(), error => this.handleSaveErrors(error));
+            this.ferienbetreuungService.saveBerechnung(this.container.id, this.getAngabenForStatus().berechnungen)
+                .subscribe(() =>
+                        this.ferienbetreuungService.kostenEinnahmenAbschliessen(this.container.id, this.form.value)
+                    .subscribe(() => this.handleSaveSuccess(), error => this.handleSaveErrors(error)),
+                        error => this.handleSaveErrors(error));
+
         }
     }
 

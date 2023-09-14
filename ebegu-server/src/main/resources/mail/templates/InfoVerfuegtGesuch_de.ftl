@@ -6,6 +6,7 @@
 <#-- @ftlvariable name="gesuchsteller" type="ch.dvbern.ebegu.entities.Gesuchsteller" -->
 <#-- @ftlvariable name="isSozialdienst" type="java.lang.Boolean" -->
 <#-- @ftlvariable name="hostname" type="java.lang.String" -->
+<#-- @ftlvariable name="gruss" type="java.lang.String" -->
 From: ${configuration.senderAddress}
 To: <@base64Header>${senderFullName}</@base64Header> <${empfaengerMail}>
 Subject: <@base64Header>kiBon <#if configuration.isDevmode>Testsystem</#if> – <#if isSozialdienst>Der Antrag für ${gesuchsteller.fullName}<#else>Ihr Antrag</#if> wurde bearbeitet</@base64Header>
@@ -33,7 +34,7 @@ ${templateConfiguration.mailCss}
 	</p>
 	<p>
 		Freundliche Grüsse <br/>
-		Ihre Gemeinde ${gesuch.dossier.gemeinde.name}
+		${gruss}
 	</p>
 	<p>
 		<#if configuration.isDevmode>

@@ -5,7 +5,7 @@ import {StateService, TransitionService, UIRouterGlobals} from '@uirouter/core';
 import {of} from 'rxjs';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {GemeindeRS} from '../../../gesuch/service/gemeindeRS.rest';
-import {SHARED_MODULE_OVERRIDES} from '../../../hybridTools/mockUpgradedComponent';
+import {SHARED_MODULE_OVERRIDES} from '../../../hybridTools/mockUpgradedDirective';
 import {TSBenutzer} from '../../../models/TSBenutzer';
 import {ErrorService} from '../../core/errors/service/ErrorService';
 import {ApplicationPropertyRS} from '../../core/rest-services/applicationPropertyRS.rest';

@@ -31,7 +31,7 @@ import ch.dvbern.ebegu.rules.BetreuungsgutscheinEvaluator;
 import ch.dvbern.ebegu.rules.EbeguRuleTestsHelper;
 import ch.dvbern.ebegu.rules.Rule;
 import ch.dvbern.ebegu.test.TestDataUtil;
-import ch.dvbern.ebegu.util.Constants;
+import ch.dvbern.ebegu.util.RuleParameterUtil;
 import org.junit.jupiter.api.BeforeEach;
 
 public abstract class AbstractPDFGeneratorTest {
@@ -50,10 +50,12 @@ public abstract class AbstractPDFGeneratorTest {
 		@Nonnull Gesuchsperiode gesuchsperiode,
 		@Nonnull Gemeinde bern
 	) {
-		Map<EinstellungKey, Einstellung> einstellungen = EbeguRuleTestsHelper.getEinstellungenConfiguratorAsiv(gesuchsperiode);
-
+		Map<EinstellungKey, Einstellung> einstellungen =
+				EbeguRuleTestsHelper.getEinstellungenConfiguratorAsiv(gesuchsperiode);
+		RuleParameterUtil ruleParameterUtil =
+				new RuleParameterUtil(einstellungen, TestDataUtil.geKitaxUebergangsloesungParameter());
 		BetreuungsgutscheinConfigurator configurator = new BetreuungsgutscheinConfigurator();
-		List<Rule> rules = configurator.configureRulesForMandant(bern, einstellungen, TestDataUtil.geKitaxUebergangsloesungParameter(), Constants.DEFAULT_LOCALE);
+		List<Rule> rules = configurator.configureRulesForMandant(bern, ruleParameterUtil);
 		return new BetreuungsgutscheinEvaluator(rules, einstellungen);
 	}
 }

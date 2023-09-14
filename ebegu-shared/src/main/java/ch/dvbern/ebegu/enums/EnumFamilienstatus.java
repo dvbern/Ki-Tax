@@ -25,4 +25,5 @@ public enum EnumFamilienstatus {
 	KONKUBINAT_KEIN_KIND,
 	ALLEINERZIEHEND,
 	PFLEGEFAMILIE,
+	APPENZELL
 }

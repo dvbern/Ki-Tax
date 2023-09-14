@@ -1,16 +1,18 @@
 <!--
-  ~ Ki-Tax: System for the management of external childcare subsidies
-  ~ Copyright (C) 2017 City of Bern Switzerland
+  ~ Copyright (C) 2023 DV Bern AG, Switzerland
+  ~
   ~ This program is free software: you can redistribute it and/or modify
   ~ it under the terms of the GNU Affero General Public License as
   ~ published by the Free Software Foundation, either version 3 of the
   ~ License, or (at your option) any later version.
+  ~
   ~ This program is distributed in the hope that it will be useful,
   ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
   ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
   ~ GNU Affero General Public License for more details.
+  ~
   ~ You should have received a copy of the GNU Affero General Public License
-  ~ along with this program. If not, see <http://www.gnu.org/licenses/>.
+  ~ along with this program. If not, see <https://www.gnu.org/licenses/>.
   -->
 
 <div class="verfuegen-view gesuch-modul static-position">
@@ -228,19 +230,19 @@
                                         </td>
                                         <!-- Gebühren Pro Stunde -->
                                         <td><span
-                                            ng-bind="zeitabschnitt.tsCalculationResultMitPaedagogischerBetreuung.gebuehrProStunde"></span>
+                                            ng-bind="zeitabschnitt.tsCalculationResultMitPaedagogischerBetreuung.gebuehrProStunde | currency : '' : 2"></span>
                                         </td>
                                         <!-- Verpflegungskosten Pro Woche -->
                                         <td><span
-                                            ng-bind="zeitabschnitt.tsCalculationResultMitPaedagogischerBetreuung.verpflegungskosten"></span>
+                                            ng-bind="zeitabschnitt.tsCalculationResultMitPaedagogischerBetreuung.verpflegungskosten | currency : '' : 2"></span>
                                         </td>
                                         <!-- Mahlzeitenvergünstigung -->
                                         <td ng-if="vm.isMahlzeitenverguenstigungEnabled()"><span
-                                            ng-bind="zeitabschnitt.tsCalculationResultMitPaedagogischerBetreuung.verpflegungskostenVerguenstigt"></span>
+                                            ng-bind="zeitabschnitt.tsCalculationResultMitPaedagogischerBetreuung.verpflegungskostenVerguenstigt | currency : '' : 2"></span>
                                         </td>
                                         <!-- Total Kosten Pro Woche -->
                                         <td class="result"><span
-                                            ng-bind="zeitabschnitt.tsCalculationResultMitPaedagogischerBetreuung.totalKostenProWoche"></span>
+                                            ng-bind="zeitabschnitt.tsCalculationResultMitPaedagogischerBetreuung.totalKostenProWoche | currency : '' : 2"></span>
                                         </td>
                                     </tr>
                                     </tbody>
@@ -296,6 +298,24 @@
                                     </tr>
                                     </tbody>
                                 </table>
+                            </div>
+                        </div>
+
+                        <div class="row margin-top-20" ng-if="vm.showVorgaengerGebuehren()">
+                            <div class="col-xs-12">
+                                <h3>
+                                    <span data-translate="TAGESSCHULE_GEBUEHR_VOR_MUTATION"> </span>
+                                    <dv-tooltip input-id="planKlasse" text="'TAGESSCHULE_GEBUEHR_VOR_MUTATION_HELP' | translate"></dv-tooltip>
+                                </h3>
+                                <ul>
+                                    <li ng-repeat="zeitabschnitt in vm.vorgaengerZeitabschnitteSchulamt"><p>
+                                        <span ng-bind="zeitabschnitt.gueltigkeit.gueltigAb | amDateFormat : 'DD.MM.YYYY'"></span>
+                                        <span>&nbsp;-&nbsp;</span>
+                                        <span ng-bind="zeitabschnitt.gueltigkeit.gueltigBis | amDateFormat : 'DD.MM.YYYY'"></span>
+                                        <span>:&nbsp;CHF </span>
+                                        <span ng-bind="zeitabschnitt.tsCalculationResultMitPaedagogischerBetreuung.gebuehrProStunde  | currency : '' : 2"></span>
+                                    </p></li>
+                                </ul>
                             </div>
                         </div>
 
@@ -358,31 +378,40 @@
                                 <td>
                                     <dv-tooltip text="'VOLLKOSTEN_HELP' | translate"></dv-tooltip>
                                 </td>
-                                <td ng-if="!vm.isLuzern">
+                                <td ng-if="vm.isAppenzell" class="result">
+                                    <dv-tooltip text="'SELBSTBEHALT_PROZENT_HELP' | translate"></dv-tooltip>
+                                </td>
+                                <td ng-if="vm.isAppenzell" class="result">
+                                    <dv-tooltip text="'BEITRAGSHOHE_PROZENT_HELP' | translate"></dv-tooltip>
+                                </td>
+                                <td ng-if="!vm.isLuzern && !vm.isAppenzell">
                                     <dv-tooltip
                                         text="'GUTSCHEIN_OHNE_BERUECKSICHTIGUNG_VOLLKOSTEN_HELP' | translate"></dv-tooltip>
                                 </td>
-                                <td ng-if="!vm.isLuzern" class="result">
+                                <td ng-if="!vm.isLuzern && !vm.isAppenzell" class="result">
                                     <dv-tooltip
                                         text="'GUTSCHEIN_OHNE_BERUECKSICHTIGUNG_MINIMALBEITRAG_HELP' | translate"></dv-tooltip>
                                 </td>
-                                <td ng-if="!vm.isLuzern" class="result">
-                                    <dv-tooltip text="'MIN_ELTERNBEITRAG_HELP' | translate"></dv-tooltip>
+                                <td ng-if="!vm.isLuzern && !vm.isAppenzell" class="result">
+                                    <dv-tooltip text="'MIN_ELTERNBEITRAG_HELP' | translate : {elternbeitragTag: vm.minVerguenstigungProTag, elternbeitragStunde: vm.minVerguenstigungProStunde}"></dv-tooltip>
                                 </td>
                                 <td ng-if="vm.showGutscheinProStunde()" class="result">
                                     <dv-tooltip text="'GUTSCHEIN_PRO_STUNDE_HELP' | translate"></dv-tooltip>
                                 </td>
-                                <td ng-if="vm.showAuszahlungAnInstitutionenRow()" class="result">
+                                <td ng-if="vm.showAuszahlungAnInstitutionenCol()" class="result">
                                     <dv-tooltip text="'VERGUENSTIGUNG_HELP' | translate"></dv-tooltip>
                                 </td>
-                                <td ng-if="vm.showAuszahlungAnElternRow()" class="result">
+                                <td class="result" ng-if="vm.showZahlungsstatusInstitutionenCol()">
+                                    <dv-tooltip text="'ZAHLUNGSSTATUS_HELP' | translate"></dv-tooltip>
+                                </td>
+                                <td ng-if="vm.showAuszahlungAnElternCol()" class="result">
                                     <dv-tooltip text="'VERGUENSTIGUNG_ELTERN_HELP' | translate"></dv-tooltip>
                                 </td>
                                 <td class="result" ng-if="vm.showMahlzeitenverguenstigung()">
                                     &nbsp;
                                 </td>
-                                <td class="result" ng-if="vm.showMahlzeitenverguenstigung()">
-                                    &nbsp;
+                                <td class="result" ng-if="vm.showZahlungsstatusAntragstellerCol()">
+                                    <dv-tooltip text="'ZAHLUNGSSTATUS_HELP' | translate"></dv-tooltip>
                                 </td>
                             </tr>
                             <tr class="title-row">
@@ -398,14 +427,18 @@
                                 <th data-translate="VERGUENSTIGT_IN_H" ng-if="vm.showHours"></th>
                                 <th data-translate="VERGUENSTIGT_IN_D" ng-if="vm.showDays"></th>
                                 <th data-translate="VOLLKOSTEN"></th>
-                                <th ng-if="!vm.isLuzern" data-translate="GUTSCHEIN_OHNE_BERUECKSICHTIGUNG_VOLLKOSTEN"></th>
-                                <th ng-if="!vm.isLuzern" class="result"
+                                <th ng-if="vm.isAppenzell" data-translate="SELBSTBEHALT_PROZENT" class="result"></th>
+                                <th ng-if="vm.isAppenzell" data-translate="BEITRAGSHOHE_PROZENT" class="result"></th>
+                                <th ng-if="!vm.isLuzern && !vm.isAppenzell" data-translate="GUTSCHEIN_OHNE_BERUECKSICHTIGUNG_VOLLKOSTEN"></th>
+                                <th ng-if="!vm.isLuzern && !vm.isAppenzell" class="result"
                                     data-translate="GUTSCHEIN_OHNE_BERUECKSICHTIGUNG_MINIMALBEITRAG"></th>
-                                <th ng-if="!vm.isLuzern" class="result" data-translate="MIN_ELTERNBEITRAG"></th>
+                                <th ng-if="!vm.isLuzern && !vm.isAppenzell" class="result" data-translate="MIN_ELTERNBEITRAG"></th>
                                 <th ng-if="vm.showGutscheinProStunde()" class="result" data-translate="GUTSCHEIN_PRO_STUNDE"></th>
-                                <th ng-if="vm.showAuszahlungAnInstitutionenRow()" class="result" data-translate="VERGUENSTIGUNG_AN_INSTITUTION"></th>
-                                <th ng-if="vm.showAuszahlungAnElternRow()" class="result" data-translate="VERGUENSTIGUNG_AN_ELTERN"></th>
+                                <th ng-if="vm.showAuszahlungAnInstitutionenCol()" class="result" data-translate="VERGUENSTIGUNG_AN_INSTITUTION"></th>
+                                <th ng-if="vm.showZahlungsstatusInstitutionenCol()" class="result" data-translate="ZAHLUNG_AN_INSTITUTION"></th>
+                                <th ng-if="vm.showAuszahlungAnElternCol()" class="result" data-translate="VERGUENSTIGUNG_AN_ELTERN"></th>
                                 <th ng-if="vm.showMahlzeitenverguenstigung()" class="result" data-translate="VERGUENSTIGUNG_MAHLZEITEN"></th>
+                                <th ng-if="vm.showZahlungsstatusAntragstellerCol()" class="result" data-translate="ZAHLUNG_AN_ELTERN"></th>
                             </tr>
                             </thead>
                             <tbody ng-if="vm.getVerfuegungZeitabschnitte().length > 0">
@@ -446,27 +479,47 @@
                                 </td>
                                 <!-- Kosten -->
                                 <td ng-bind="verfuegungZeitabschnitt.vollkosten | currency : '' : 2"></td>
+<!--                                selbstbehalt in prozent-->
+                                <td ng-if="vm.isAppenzell" class="result"
+                                    ng-bind="vm.calculateSelbstbehaltProzent(verfuegungZeitabschnitt.beitragshoeheProzent)"></td>
+                                <!-- Beitragshohe in Prozent -->
+                                <td ng-if="vm.isAppenzell" class="result"
+                                    ng-bind="verfuegungZeitabschnitt.beitragshoeheProzent"></td>
                                 <!-- Gutschein gemäss Formel (Gutschein vor Beruecksichtigung Vollkosten) -->
-                                <td ng-if="!vm.isLuzern" ng-bind="verfuegungZeitabschnitt.verguenstigungOhneBeruecksichtigungVollkosten | currency : '' : 2"></td>
+                                <td ng-if="!vm.isLuzern && !vm.isAppenzell" ng-bind="verfuegungZeitabschnitt.verguenstigungOhneBeruecksichtigungVollkosten | currency : '' : 2"></td>
                                 <!-- Gutschein (Gutschein vor Beruecksichtigung Minimalbeitrag) -->
-                                <td ng-if="!vm.isLuzern" class="result"
+                                <td ng-if="!vm.isLuzern && !vm.isAppenzell" class="result"
                                     ng-bind="verfuegungZeitabschnitt.verguenstigungOhneBeruecksichtigungMinimalbeitrag | currency : '' : 2"></td>
                                 <!-- Minimaler Elternbeitrag -->
-                                <td  ng-if="!vm.isLuzern" class="result"
+                                <td  ng-if="!vm.isLuzern && !vm.isAppenzell" class="result"
                                     ng-bind="verfuegungZeitabschnitt.minimalerElternbeitragGekuerzt | currency : '' : 2"></td>
                                 <!-- Gutschein pro Stunde -->
                                <td ng-if="vm.showGutscheinProStunde()" class="result"
                                     ng-bind="verfuegungZeitabschnitt.verguenstigungProZeiteinheit | currency : '' : 2"></td>-
                                 <!-- An Kita überwiesen (Gutschein) -->
-                                <td class="result" ng-if="vm.showAuszahlungAnInstitutionenRow()"
+                                <td class="result" ng-if="vm.showAuszahlungAnInstitutionenCol()"
                                     ng-bind="vm.getVerguenstigungAnInstitution(verfuegungZeitabschnitt) | currency : '' : 2"></td>
+                                <!-- Zahlungsstatus an Institution -->
+                                <td class="result" ng-if="vm.showZahlungsstatusInstitutionenCol()">
+                                    <dv-zahlungsstatus-icon
+                                        [zahlungsstatus]="verfuegungZeitabschnitt.zahlungsstatusInstitution"
+                                        [is-betreuung-gueltig]="vm.isBetreuungGueltig()"
+                                    ></dv-zahlungsstatus-icon>
+                                </td>
                                 <!-- An Kita überwiesen (Gutschein) -->
-                                <td class="result" ng-if="vm.showAuszahlungAnElternRow()"
+                                <td class="result" ng-if="vm.showAuszahlungAnElternCol()"
                                     ng-bind="vm.getVerguenstigungAnEltern(verfuegungZeitabschnitt) | currency : '' : 2"></td>
                                 <!-- Mahlzeitenverguenstigung Hauptmahlzeiten -->
                                 <td class="result"
                                     ng-if="vm.showMahlzeitenverguenstigung()"
                                     ng-bind="verfuegungZeitabschnitt.verguenstigungMahlzeitTotal | currency : '' : 2"></td>
+                                <!-- Zahlungsstatus an Antragsteller -->
+                                <td class="result" ng-if="vm.showZahlungsstatusAntragstellerCol()">
+                                    <dv-zahlungsstatus-icon
+                                        [zahlungsstatus]="verfuegungZeitabschnitt.zahlungsstatusAntragsteller"
+                                        [is-betreuung-gueltig]="vm.isBetreuungGueltig()"
+                                    ></dv-zahlungsstatus-icon>
+                                </td>
                             </tr>
                             </tbody>
                             <tbody ng-if="vm.getVerfuegungZeitabschnitte().length === 0">
@@ -502,7 +555,7 @@
                     <div class="row" dv-show-element
                          dv-show-allowed-roles="vm.TSRoleUtil.getAdministratorJugendamtRole()"
                          dv-show-expression="vm.showVerfuegung">
-                        <div class="col-xs-12 dv-input-container-question">
+                        <div class="col-xs-12 dv-input-container-question margin-bottom-20">
                             <div class="checkbox">
                                 <md-checkbox ng-model="vm.verfuegungsBemerkungenKontrolliert"
                                              ng-required="vm.isVerfuegenClicked"
@@ -521,6 +574,11 @@
                                 </div>
                             </div>
                         </div>
+                    </div>
+
+                    <!-- Info über Korrektur Betrag in Mutation -->
+                    <div ng-if="vm.showInfoUeberKorrekutren()" class="well margin-top-20">
+                        <div ng-bind-html="vm.getKorrekturenString()" class="white-space-pre-wrap"></div>
                     </div>
 
                     <!--VerfuegungPDF anzeigen-->

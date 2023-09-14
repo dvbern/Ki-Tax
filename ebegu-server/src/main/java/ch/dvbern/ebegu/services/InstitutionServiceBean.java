@@ -45,6 +45,7 @@ import javax.persistence.criteria.Root;
 import ch.dvbern.ebegu.authentication.PrincipalBean;
 import ch.dvbern.ebegu.entities.AbstractDateRangedEntity_;
 import ch.dvbern.ebegu.entities.AbstractEntity_;
+import ch.dvbern.ebegu.entities.AnmeldungTagesschule;
 import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Berechtigung;
 import ch.dvbern.ebegu.entities.BerechtigungHistory;
@@ -59,6 +60,7 @@ import ch.dvbern.ebegu.entities.Institution_;
 import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
+import ch.dvbern.ebegu.enums.InstitutionStatus;
 import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
@@ -109,6 +111,9 @@ public class InstitutionServiceBean extends AbstractBaseService implements Insti
 
 	@Inject
 	private GesuchService gesuchService;
+
+	@Inject
+	private BetreuungService betreuungService;
 
 	@Nonnull
 	@Override
@@ -424,6 +429,7 @@ public class InstitutionServiceBean extends AbstractBaseService implements Insti
 		authorizer.checkWriteAuthorizationInstitution(institution);
 
 		checkForLinkedBerechtigungen(institution);
+		checkForLinkedAnmeldungenTagesschule(institution);
 		removeInstitutionFromBerechtigungHistory(institution);
 
 		institutionStammdatenService.removeInstitutionStammdatenByInstitution(institutionId);
@@ -518,6 +524,14 @@ public class InstitutionServiceBean extends AbstractBaseService implements Insti
 		}
 	}
 
+	private void checkForLinkedAnmeldungenTagesschule(Institution institution) {
+		final Collection<AnmeldungTagesschule> linkedAnmeldungenTagesschule = betreuungService.findAnmeldungenTagesschuleByInstitution(institution);
+		if (!linkedAnmeldungenTagesschule.isEmpty()) {
+			throw new EbeguRuntimeException("removeInstitution", ErrorCodeEnum.ERROR_LINKED_ANMELDUNG_TAGESSCHULE, institution.getName(),
+				institution.getId());
+		}
+	}
+
 	private void removeInstitutionFromBerechtigungHistory(@Nonnull Institution institution) {
 		final Collection<BerechtigungHistory> berechtigungHistories = criteriaQueryHelper.getEntitiesByAttribute(
 			BerechtigungHistory.class,
@@ -549,5 +563,16 @@ public class InstitutionServiceBean extends AbstractBaseService implements Insti
 		Predicate predicate = root.get(Institution_.id).in(ids);
 		query.where(predicate);
 		return persistence.getCriteriaResults(query);
+	}
+
+	@Override
+	public Institution nurLatsInstitutionUmwandeln(@Nonnull Institution institution) {
+		if (institution.getStatus() != InstitutionStatus.NUR_LATS) {
+			throw new EbeguRuntimeException("nurLatsInstitutionUmwandeln", "Institution " + institution.getName() + " ist nicht im Status NUR_LATS");
+		}
+
+		institution.setStatus(InstitutionStatus.KONFIGURATION);
+
+		return persistence.persist(institution);
 	}
 }

@@ -20,7 +20,7 @@ import {NoopAnimationsModule} from '@angular/platform-browser/animations';
 import {of} from 'rxjs';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {GemeindeRS} from '../../../gesuch/service/gemeindeRS.rest';
-import {SHARED_MODULE_OVERRIDES} from '../../../hybridTools/mockUpgradedComponent';
+import {SHARED_MODULE_OVERRIDES} from '../../../hybridTools/mockUpgradedDirective';
 import {ErrorService} from '../../core/errors/service/ErrorService';
 import {BatchJobRS} from '../../core/service/batchRS.rest';
 import {DownloadRS} from '../../core/service/downloadRS.rest';

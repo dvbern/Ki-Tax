@@ -17,6 +17,8 @@
 
 package ch.dvbern.ebegu.inbox.handler;
 
+import java.math.BigDecimal;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
@@ -37,6 +39,12 @@ public class ProcessingContext {
 	@Nonnull
 	private final EventMonitor eventMonitor;
 
+	@Nonnull
+	private final BigDecimal maxTageProMonat;
+
+	@Nonnull
+	private final BigDecimal maxStundenProMonat;
+
 	@Nullable
 	private String humanConfirmationMessage = null;
 
@@ -50,12 +58,14 @@ public class ProcessingContext {
 		@Nonnull DateRange clientGueltigkeitInPeriode,
 		boolean mahlzeitVerguenstigungEnabled,
 		@Nonnull EventMonitor eventMonitor,
-		boolean singleClientForPeriod) {
+		@Nonnull BigDecimal maxTageProMonat, @Nonnull BigDecimal maxStundenProMonat, boolean singleClientForPeriod) {
 		this.betreuung = betreuung;
 		this.dto = dto;
 		this.gueltigkeitInPeriode = clientGueltigkeitInPeriode;
 		this.mahlzeitVerguenstigungEnabled = mahlzeitVerguenstigungEnabled;
 		this.eventMonitor = eventMonitor;
+		this.maxTageProMonat = maxTageProMonat;
+		this.maxStundenProMonat = maxStundenProMonat;
 		this.singleClientForPeriod = singleClientForPeriod;
 	}
 
@@ -97,6 +107,16 @@ public class ProcessingContext {
 
 	public void setHumanConfirmationMessage(@Nullable String humanConfirmationMessage) {
 		this.humanConfirmationMessage = humanConfirmationMessage;
+	}
+
+	@Nonnull
+	public BigDecimal getMaxTageProMonat() {
+		return maxTageProMonat;
+	}
+
+	@Nonnull
+	public BigDecimal getMaxStundenProMonat() {
+		return maxStundenProMonat;
 	}
 
 	@Nonnull

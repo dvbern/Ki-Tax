@@ -1,20 +1,24 @@
 /*
- * Ki-Tax: System for the management of external childcare subsidies
- * Copyright (C) 2017 City of Bern Switzerland
+ * Copyright (C) 2023 DV Bern AG, Switzerland
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
+ *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
 package ch.dvbern.ebegu.rules;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.List;
 import java.util.Locale;
 
@@ -25,6 +29,7 @@ import ch.dvbern.ebegu.entities.AbstractPlatz;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.MsgKey;
 import ch.dvbern.ebegu.types.DateRange;
+import ch.dvbern.ebegu.util.MathUtil;
 import com.google.common.collect.ImmutableList;
 
 import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.KITA;
@@ -59,11 +64,17 @@ public class RestanspruchLimitCalcRule extends AbstractCalcRule {
 				inputData.addBemerkung(
 					MsgKey.RESTANSPRUCH_MSG,
 					getLocale(),
-					anspruchberechtigtesPensum,
-					verfuegbarerRestanspruch);
+					multiplyPensumByFaktorAndRound(anspruchberechtigtesPensum, inputData.getBgStundenFaktor()),
+					multiplyPensumByFaktorAndRound(verfuegbarerRestanspruch, inputData.getBgStundenFaktor()));
 			}
 			inputData.setAnspruchspensumProzent(verfuegbarerRestanspruch);
 		}
+	}
+
+	private BigDecimal multiplyPensumByFaktorAndRound(int pensum, BigDecimal faktor) {
+		return MathUtil.EXACT
+				.multiply(BigDecimal.valueOf(pensum), faktor)
+				.setScale(2, RoundingMode.HALF_UP);
 	}
 
 	private boolean addVerfuegungsbemerkungRestanspruch(@Nonnull BGCalculationInput inputData) {

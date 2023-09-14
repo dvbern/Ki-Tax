@@ -1,5 +1,5 @@
 <!--
-  ~ Copyright (C) 2021 DV Bern AG, Switzerland
+  ~ Copyright (C) 2023 DV Bern AG, Switzerland
   ~
   ~ This program is free software: you can redistribute it and/or modify
   ~ it under the terms of the GNU Affero General Public License as
@@ -38,8 +38,8 @@
             [dvOnBlur]="onValueChangeFunction"
             [inputDisabled]="readOnly"
             [neuerWert]="model.selbstdeklaration.einkunftErwerb"
-            [wertBasisjahr]="isEKV ? finanzModel.getFiSiConToWorkWith().finanzielleSituationJA.selbstdeklaration?.einkunftErwerb : undefined"
-            [basisjahr]="finanzModel.getBasisjahr()"
+            [vergleichswert]="isEKV ? finanzModel.getFiSiConToWorkWith().finanzielleSituationJA.selbstdeklaration?.einkunftErwerb : undefined"
+            [vergleichwertLabel]="'EINGABE_BASISJAHR' | translate: {basisjahr: finanzModel.getBasisjahr()}"
             [showBisher]="isEKV ? showBisher(finanzModel.getEkvToWorkWith_GS()) : showBisher(finanzModel.getFiSiConToWorkWith().finanzielleSituationGS)"
             [deklaration]="isEKV ? finanzModel.getEkvToWorkWith_GS()?.selbstdeklaration?.einkunftErwerb : finanzModel.getFiSiConToWorkWith().finanzielleSituationGS?.selbstdeklaration?.einkunftErwerb"
             [korrektur]="model.selbstdeklaration?.einkunftErwerb">
@@ -56,8 +56,8 @@
             [dvOnBlur]="onValueChangeFunction"
             [inputDisabled]="readOnly"
             [neuerWert]="model.selbstdeklaration.einkunftVersicherung"
-            [wertBasisjahr]="isEKV ? finanzModel.getFiSiConToWorkWith().finanzielleSituationJA.selbstdeklaration?.einkunftVersicherung : undefined"
-            [basisjahr]="finanzModel.getBasisjahr()"
+            [vergleichswert]="isEKV ? finanzModel.getFiSiConToWorkWith().finanzielleSituationJA.selbstdeklaration?.einkunftVersicherung : undefined"
+            [vergleichwertLabel]="'EINGABE_BASISJAHR' | translate: {basisjahr: finanzModel.getBasisjahr()}"
             [showBisher]="isEKV ? showBisher(finanzModel.getEkvToWorkWith_GS()) : showBisher(finanzModel.getFiSiConToWorkWith().finanzielleSituationGS)"
             [deklaration]="isEKV ? finanzModel.getEkvToWorkWith_GS()?.selbstdeklaration?.einkunftVersicherung : finanzModel.getFiSiConToWorkWith().finanzielleSituationGS?.selbstdeklaration?.einkunftVersicherung"
             [korrektur]="model.selbstdeklaration?.einkunftVersicherung">
@@ -74,8 +74,8 @@
             [dvOnBlur]="onValueChangeFunction"
             [inputDisabled]="readOnly"
             [neuerWert]="model.selbstdeklaration.einkunftWertschriften"
-            [wertBasisjahr]="isEKV ? finanzModel.getFiSiConToWorkWith().finanzielleSituationJA.selbstdeklaration?.einkunftWertschriften : undefined"
-            [basisjahr]="finanzModel.getBasisjahr()"
+            [vergleichswert]="isEKV ? finanzModel.getFiSiConToWorkWith().finanzielleSituationJA.selbstdeklaration?.einkunftWertschriften : undefined"
+            [vergleichwertLabel]="'EINGABE_BASISJAHR' | translate: {basisjahr: finanzModel.getBasisjahr()}"
             [showBisher]="isEKV ? showBisher(finanzModel.getEkvToWorkWith_GS()) : showBisher(finanzModel.getFiSiConToWorkWith().finanzielleSituationGS)"
             [deklaration]="isEKV ? finanzModel.getEkvToWorkWith_GS()?.selbstdeklaration?.einkunftWertschriften : finanzModel.getFiSiConToWorkWith().finanzielleSituationGS?.selbstdeklaration?.einkunftWertschriften"
             [korrektur]="model.selbstdeklaration?.einkunftWertschriften">
@@ -92,8 +92,8 @@
             [dvOnBlur]="onValueChangeFunction"
             [inputDisabled]="readOnly"
             [neuerWert]="model.selbstdeklaration.einkunftUnterhaltsbeitragKinder"
-            [wertBasisjahr]="isEKV ? finanzModel.getFiSiConToWorkWith().finanzielleSituationJA.selbstdeklaration?.einkunftUnterhaltsbeitragKinder : undefined"
-            [basisjahr]="finanzModel.getBasisjahr()"
+            [vergleichswert]="isEKV ? finanzModel.getFiSiConToWorkWith().finanzielleSituationJA.selbstdeklaration?.einkunftUnterhaltsbeitragKinder : undefined"
+            [vergleichwertLabel]="'EINGABE_BASISJAHR' | translate: {basisjahr: finanzModel.getBasisjahr()}"
             [showBisher]="isEKV ? showBisher(finanzModel.getEkvToWorkWith_GS()) : showBisher(finanzModel.getFiSiConToWorkWith().finanzielleSituationGS)"
             [deklaration]="isEKV ? finanzModel.getEkvToWorkWith_GS()?.selbstdeklaration?.einkunftUnterhaltsbeitragKinder : finanzModel.getFiSiConToWorkWith().finanzielleSituationGS?.selbstdeklaration?.einkunftUnterhaltsbeitragKinder"
             [korrektur]="model.selbstdeklaration?.einkunftUnterhaltsbeitragKinder">
@@ -110,8 +110,8 @@
             [dvOnBlur]="onValueChangeFunction"
             [inputDisabled]="readOnly"
             [neuerWert]="model.selbstdeklaration.einkunftUeberige"
-            [wertBasisjahr]="isEKV ? finanzModel.getFiSiConToWorkWith().finanzielleSituationJA.selbstdeklaration?.einkunftUeberige : undefined"
-            [basisjahr]="finanzModel.getBasisjahr()"
+            [vergleichswert]="isEKV ? finanzModel.getFiSiConToWorkWith().finanzielleSituationJA.selbstdeklaration?.einkunftUeberige : undefined"
+            [vergleichwertLabel]="'EINGABE_BASISJAHR' | translate: {basisjahr: finanzModel.getBasisjahr()}"
             [showBisher]="isEKV ? showBisher(finanzModel.getEkvToWorkWith_GS()) : showBisher(finanzModel.getFiSiConToWorkWith().finanzielleSituationGS)"
             [deklaration]="isEKV ? finanzModel.getEkvToWorkWith_GS()?.selbstdeklaration?.einkunftUeberige : finanzModel.getFiSiConToWorkWith().finanzielleSituationGS?.selbstdeklaration?.einkunftUeberige"
             [korrektur]="model.selbstdeklaration?.einkunftUeberige">
@@ -128,8 +128,8 @@
             [dvOnBlur]="onValueChangeFunction"
             [inputDisabled]="readOnly"
             [neuerWert]="model.selbstdeklaration.einkunftLiegenschaften"
-            [wertBasisjahr]="isEKV ? finanzModel.getFiSiConToWorkWith().finanzielleSituationJA.selbstdeklaration?.einkunftLiegenschaften : undefined"
-            [basisjahr]="finanzModel.getBasisjahr()"
+            [vergleichswert]="isEKV ? finanzModel.getFiSiConToWorkWith().finanzielleSituationJA.selbstdeklaration?.einkunftLiegenschaften : undefined"
+            [vergleichwertLabel]="'EINGABE_BASISJAHR' | translate: {basisjahr: finanzModel.getBasisjahr()}"
             [showBisher]="isEKV ? showBisher(finanzModel.getEkvToWorkWith_GS()) : showBisher(finanzModel.getFiSiConToWorkWith().finanzielleSituationGS)"
             [deklaration]="isEKV ? finanzModel.getEkvToWorkWith_GS()?.selbstdeklaration?.einkunftLiegenschaften : finanzModel.getFiSiConToWorkWith().finanzielleSituationGS?.selbstdeklaration?.einkunftLiegenschaften"
             [korrektur]="model.selbstdeklaration?.einkunftLiegenschaften">
@@ -157,8 +157,8 @@
             [dvOnBlur]="onValueChangeFunction"
             [inputDisabled]="readOnly"
             [neuerWert]="model.selbstdeklaration.abzugBerufsauslagen"
-            [wertBasisjahr]="isEKV ? finanzModel.getFiSiConToWorkWith().finanzielleSituationJA.selbstdeklaration?.abzugBerufsauslagen : undefined"
-            [basisjahr]="finanzModel.getBasisjahr()"
+            [vergleichswert]="isEKV ? finanzModel.getFiSiConToWorkWith().finanzielleSituationJA.selbstdeklaration?.abzugBerufsauslagen : undefined"
+            [vergleichwertLabel]="'EINGABE_BASISJAHR' | translate: {basisjahr: finanzModel.getBasisjahr()}"
             [showBisher]="isEKV ? showBisher(finanzModel.getEkvToWorkWith_GS()) : showBisher(finanzModel.getFiSiConToWorkWith().finanzielleSituationGS)"
             [deklaration]="isEKV ? finanzModel.getEkvToWorkWith_GS()?.selbstdeklaration?.abzugBerufsauslagen : finanzModel.getFiSiConToWorkWith().finanzielleSituationGS?.selbstdeklaration?.abzugBerufsauslagen"
             [korrektur]="model.selbstdeklaration?.abzugBerufsauslagen">
@@ -175,8 +175,8 @@
             [dvOnBlur]="onValueChangeFunction"
             [inputDisabled]="readOnly"
             [neuerWert]="model.selbstdeklaration.abzugSchuldzinsen"
-            [wertBasisjahr]="isEKV ? finanzModel.getFiSiConToWorkWith().finanzielleSituationJA.abzugSchuldzinsen : undefined"
-            [basisjahr]="finanzModel.getBasisjahr()"
+            [vergleichswert]="isEKV ? finanzModel.getFiSiConToWorkWith().finanzielleSituationJA.selbstdeklaration?.abzugSchuldzinsen : undefined"
+            [vergleichwertLabel]="'EINGABE_BASISJAHR' | translate: {basisjahr: finanzModel.getBasisjahr()}"
             [showBisher]="isEKV ? showBisher(finanzModel.getEkvToWorkWith_GS()) : showBisher(finanzModel.getFiSiConToWorkWith().finanzielleSituationGS)"
             [deklaration]="isEKV ? finanzModel.getEkvToWorkWith_GS()?.selbstdeklaration?.abzugSchuldzinsen : finanzModel.getFiSiConToWorkWith().finanzielleSituationGS?.abzugSchuldzinsen"
             [korrektur]="model.selbstdeklaration?.abzugSchuldzinsen">
@@ -193,8 +193,8 @@
             [dvOnBlur]="onValueChangeFunction"
             [inputDisabled]="readOnly"
             [neuerWert]="model.selbstdeklaration.abzugUnterhaltsbeitragKinder"
-            [wertBasisjahr]="isEKV ? finanzModel.getFiSiConToWorkWith().finanzielleSituationJA.selbstdeklaration?.abzugUnterhaltsbeitragKinder : undefined"
-            [basisjahr]="finanzModel.getBasisjahr()"
+            [vergleichswert]="isEKV ? finanzModel.getFiSiConToWorkWith().finanzielleSituationJA.selbstdeklaration?.abzugUnterhaltsbeitragKinder : undefined"
+            [vergleichwertLabel]="'EINGABE_BASISJAHR' | translate: {basisjahr: finanzModel.getBasisjahr()}"
             [showBisher]="isEKV ? showBisher(finanzModel.getEkvToWorkWith_GS()) : showBisher(finanzModel.getFiSiConToWorkWith().finanzielleSituationGS)"
             [deklaration]="isEKV ? finanzModel.getEkvToWorkWith_GS()?.selbstdeklaration?.abzugUnterhaltsbeitragKinder : finanzModel.getFiSiConToWorkWith().finanzielleSituationGS?.selbstdeklaration?.abzugUnterhaltsbeitragKinder"
             [korrektur]="model.selbstdeklaration?.abzugUnterhaltsbeitragKinder">
@@ -211,8 +211,8 @@
             [dvOnBlur]="onValueChangeFunction"
             [inputDisabled]="readOnly"
             [neuerWert]="model.selbstdeklaration.abzugSaeule3A"
-            [wertBasisjahr]="isEKV ? finanzModel.getFiSiConToWorkWith().finanzielleSituationJA.selbstdeklaration?.abzugSaeule3A : undefined"
-            [basisjahr]="finanzModel.getBasisjahr()"
+            [vergleichswert]="isEKV ? finanzModel.getFiSiConToWorkWith().finanzielleSituationJA.selbstdeklaration?.abzugSaeule3A : undefined"
+            [vergleichwertLabel]="'EINGABE_BASISJAHR' | translate: {basisjahr: finanzModel.getBasisjahr()}"
             [showBisher]="isEKV ? showBisher(finanzModel.getEkvToWorkWith_GS()) : showBisher(finanzModel.getFiSiConToWorkWith().finanzielleSituationGS)"
             [deklaration]="isEKV ? finanzModel.getEkvToWorkWith_GS()?.selbstdeklaration?.abzugSaeule3A : finanzModel.getFiSiConToWorkWith().finanzielleSituationGS?.selbstdeklaration?.abzugSaeule3A"
             [korrektur]="model.selbstdeklaration?.abzugSaeule3A">
@@ -229,8 +229,8 @@
             [dvOnBlur]="onValueChangeFunction"
             [inputDisabled]="readOnly"
             [neuerWert]="model.selbstdeklaration.abzugVersicherungspraemien"
-            [wertBasisjahr]="isEKV ? finanzModel.getFiSiConToWorkWith().finanzielleSituationJA.selbstdeklaration?.abzugVersicherungspraemien : undefined"
-            [basisjahr]="finanzModel.getBasisjahr()"
+            [vergleichswert]="isEKV ? finanzModel.getFiSiConToWorkWith().finanzielleSituationJA.selbstdeklaration?.abzugVersicherungspraemien : undefined"
+            [vergleichwertLabel]="'EINGABE_BASISJAHR' | translate: {basisjahr: finanzModel.getBasisjahr()}"
             [showBisher]="isEKV ? showBisher(finanzModel.getEkvToWorkWith_GS()) : showBisher(finanzModel.getFiSiConToWorkWith().finanzielleSituationGS)"
             [deklaration]="isEKV ? finanzModel.getEkvToWorkWith_GS()?.selbstdeklaration?.abzugVersicherungspraemien : finanzModel.getFiSiConToWorkWith().finanzielleSituationGS?.selbstdeklaration?.abzugVersicherungspraemien"
             [korrektur]="model.selbstdeklaration?.abzugVersicherungspraemien">
@@ -247,8 +247,8 @@
             [dvOnBlur]="onValueChangeFunction"
             [inputDisabled]="readOnly"
             [neuerWert]="model.selbstdeklaration.abzugKrankheitsUnfallKosten"
-            [wertBasisjahr]="isEKV ? finanzModel.getFiSiConToWorkWith().finanzielleSituationJA.selbstdeklaration?.abzugKrankheitsUnfallKosten : undefined"
-            [basisjahr]="finanzModel.getBasisjahr()"
+            [vergleichswert]="isEKV ? finanzModel.getFiSiConToWorkWith().finanzielleSituationJA.selbstdeklaration?.abzugKrankheitsUnfallKosten : undefined"
+            [vergleichwertLabel]="'EINGABE_BASISJAHR' | translate: {basisjahr: finanzModel.getBasisjahr()}"
             [showBisher]="isEKV ? showBisher(finanzModel.getEkvToWorkWith_GS()) : showBisher(finanzModel.getFiSiConToWorkWith().finanzielleSituationGS)"
             [deklaration]="isEKV ? finanzModel.getEkvToWorkWith_GS()?.selbstdeklaration?.abzugKrankheitsUnfallKosten : finanzModel.getFiSiConToWorkWith().finanzielleSituationGS?.selbstdeklaration?.abzugKrankheitsUnfallKosten"
             [korrektur]="model.selbstdeklaration?.abzugKrankheitsUnfallKosten">
@@ -265,8 +265,8 @@
             [dvOnBlur]="onValueChangeFunction"
             [inputDisabled]="readOnly"
             [neuerWert]="model.selbstdeklaration.sonderabzugErwerbstaetigkeitEhegatten"
-            [wertBasisjahr]="isEKV ? finanzModel.getFiSiConToWorkWith().finanzielleSituationJA.selbstdeklaration?.sonderabzugErwerbstaetigkeitEhegatten : undefined"
-            [basisjahr]="finanzModel.getBasisjahr()"
+            [vergleichswert]="isEKV ? finanzModel.getFiSiConToWorkWith().finanzielleSituationJA.selbstdeklaration?.sonderabzugErwerbstaetigkeitEhegatten : undefined"
+            [vergleichwertLabel]="'EINGABE_BASISJAHR' | translate: {basisjahr: finanzModel.getBasisjahr()}"
             [showBisher]="isEKV ? showBisher(finanzModel.getEkvToWorkWith_GS()) : showBisher(finanzModel.getFiSiConToWorkWith().finanzielleSituationGS)"
             [deklaration]="isEKV ? finanzModel.getEkvToWorkWith_GS()?.selbstdeklaration?.sonderabzugErwerbstaetigkeitEhegatten : finanzModel.getFiSiConToWorkWith().finanzielleSituationGS?.selbstdeklaration?.sonderabzugErwerbstaetigkeitEhegatten"
             [korrektur]="model.selbstdeklaration?.sonderabzugErwerbstaetigkeitEhegatten">
@@ -283,8 +283,8 @@
             [dvOnBlur]="onValueChangeFunction"
             [inputDisabled]="readOnly"
             [neuerWert]="model.selbstdeklaration.abzugKinderVorschule"
-            [wertBasisjahr]="isEKV ? finanzModel.getFiSiConToWorkWith().finanzielleSituationJA.selbstdeklaration?.abzugKinderVorschule : undefined"
-            [basisjahr]="finanzModel.getBasisjahr()"
+            [vergleichswert]="isEKV ? finanzModel.getFiSiConToWorkWith().finanzielleSituationJA.selbstdeklaration?.abzugKinderVorschule : undefined"
+            [vergleichwertLabel]="'EINGABE_BASISJAHR' | translate: {basisjahr: finanzModel.getBasisjahr()}"
             [showBisher]="isEKV ? showBisher(finanzModel.getEkvToWorkWith_GS()) : showBisher(finanzModel.getFiSiConToWorkWith().finanzielleSituationGS)"
             [deklaration]="isEKV ? finanzModel.getEkvToWorkWith_GS()?.selbstdeklaration?.abzugKinderVorschule : finanzModel.getFiSiConToWorkWith().finanzielleSituationGS?.selbstdeklaration?.abzugKinderVorschule"
             [korrektur]="model.selbstdeklaration?.abzugKinderVorschule">
@@ -301,8 +301,8 @@
             [dvOnBlur]="onValueChangeFunction"
             [inputDisabled]="readOnly"
             [neuerWert]="model.selbstdeklaration.abzugKinderSchule"
-            [wertBasisjahr]="isEKV ? finanzModel.getFiSiConToWorkWith().finanzielleSituationJA.selbstdeklaration?.abzugKinderSchule : undefined"
-            [basisjahr]="finanzModel.getBasisjahr()"
+            [vergleichswert]="isEKV ? finanzModel.getFiSiConToWorkWith().finanzielleSituationJA.selbstdeklaration?.abzugKinderSchule : undefined"
+            [vergleichwertLabel]="'EINGABE_BASISJAHR' | translate: {basisjahr: finanzModel.getBasisjahr()}"
             [showBisher]="isEKV ? showBisher(finanzModel.getEkvToWorkWith_GS()) : showBisher(finanzModel.getFiSiConToWorkWith().finanzielleSituationGS)"
             [deklaration]="isEKV ? finanzModel.getEkvToWorkWith_GS()?.selbstdeklaration?.abzugKinderSchule : finanzModel.getFiSiConToWorkWith().finanzielleSituationGS?.selbstdeklaration?.abzugKinderSchule"
             [korrektur]="model.selbstdeklaration?.abzugKinderSchule">
@@ -319,8 +319,8 @@
             [dvOnBlur]="onValueChangeFunction"
             [inputDisabled]="readOnly"
             [neuerWert]="model.selbstdeklaration.abzugEigenbetreuung"
-            [wertBasisjahr]="isEKV ? finanzModel.getFiSiConToWorkWith().finanzielleSituationJA.selbstdeklaration?.abzugEigenbetreuung : undefined"
-            [basisjahr]="finanzModel.getBasisjahr()"
+            [vergleichswert]="isEKV ? finanzModel.getFiSiConToWorkWith().finanzielleSituationJA.selbstdeklaration?.abzugEigenbetreuung : undefined"
+            [vergleichwertLabel]="'EINGABE_BASISJAHR' | translate: {basisjahr: finanzModel.getBasisjahr()}"
             [showBisher]="isEKV ? showBisher(finanzModel.getEkvToWorkWith_GS()) : showBisher(finanzModel.getFiSiConToWorkWith().finanzielleSituationGS)"
             [deklaration]="isEKV ? finanzModel.getEkvToWorkWith_GS()?.selbstdeklaration?.abzugEigenbetreuung : finanzModel.getFiSiConToWorkWith().finanzielleSituationGS?.selbstdeklaration?.abzugEigenbetreuung"
             [korrektur]="model.selbstdeklaration?.abzugEigenbetreuung">
@@ -337,8 +337,8 @@
             [dvOnBlur]="onValueChangeFunction"
             [inputDisabled]="readOnly"
             [neuerWert]="model.selbstdeklaration.abzugFremdbetreuung"
-            [wertBasisjahr]="isEKV ? finanzModel.getFiSiConToWorkWith().finanzielleSituationJA.selbstdeklaration?.abzugFremdbetreuung : undefined"
-            [basisjahr]="finanzModel.getBasisjahr()"
+            [vergleichswert]="isEKV ? finanzModel.getFiSiConToWorkWith().finanzielleSituationJA.selbstdeklaration?.abzugFremdbetreuung : undefined"
+            [vergleichwertLabel]="'EINGABE_BASISJAHR' | translate: {basisjahr: finanzModel.getBasisjahr()}"
             [showBisher]="isEKV ? showBisher(finanzModel.getEkvToWorkWith_GS()) : showBisher(finanzModel.getFiSiConToWorkWith().finanzielleSituationGS)"
             [deklaration]="isEKV ? finanzModel.getEkvToWorkWith_GS()?.selbstdeklaration?.abzugFremdbetreuung : finanzModel.getFiSiConToWorkWith().finanzielleSituationGS?.selbstdeklaration?.abzugFremdbetreuung"
             [korrektur]="model.selbstdeklaration?.abzugFremdbetreuung">
@@ -355,8 +355,8 @@
             [dvOnBlur]="onValueChangeFunction"
             [inputDisabled]="readOnly"
             [neuerWert]="model.selbstdeklaration.abzugErwerbsunfaehigePersonen"
-            [wertBasisjahr]="isEKV ? finanzModel.getFiSiConToWorkWith().finanzielleSituationJA.selbstdeklaration?.abzugErwerbsunfaehigePersonen : undefined"
-            [basisjahr]="finanzModel.getBasisjahr()"
+            [vergleichswert]="isEKV ? finanzModel.getFiSiConToWorkWith().finanzielleSituationJA.selbstdeklaration?.abzugErwerbsunfaehigePersonen : undefined"
+            [vergleichwertLabel]="'EINGABE_BASISJAHR' | translate: {basisjahr: finanzModel.getBasisjahr()}"
             [showBisher]="isEKV ? showBisher(finanzModel.getEkvToWorkWith_GS()) : showBisher(finanzModel.getFiSiConToWorkWith().finanzielleSituationGS)"
             [deklaration]="isEKV ? finanzModel.getEkvToWorkWith_GS()?.selbstdeklaration?.abzugErwerbsunfaehigePersonen : finanzModel.getFiSiConToWorkWith().finanzielleSituationGS?.selbstdeklaration?.abzugErwerbsunfaehigePersonen"
             [korrektur]="model.selbstdeklaration?.abzugErwerbsunfaehigePersonen">
@@ -384,8 +384,8 @@
             [dvOnBlur]="onValueChangeFunction"
             [inputDisabled]="readOnly"
             [neuerWert]="model.selbstdeklaration.vermoegen"
-            [wertBasisjahr]="isEKV ? finanzModel.getFiSiConToWorkWith().finanzielleSituationJA.selbstdeklaration?.vermoegen : undefined"
-            [basisjahr]="finanzModel.getBasisjahr()"
+            [vergleichswert]="isEKV ? finanzModel.getFiSiConToWorkWith().finanzielleSituationJA.selbstdeklaration?.vermoegen : undefined"
+            [vergleichwertLabel]="'EINGABE_BASISJAHR' | translate: {basisjahr: finanzModel.getBasisjahr()}"
             [showBisher]="isEKV ? showBisher(finanzModel.getEkvToWorkWith_GS()) : showBisher(finanzModel.getFiSiConToWorkWith().finanzielleSituationGS)"
             [deklaration]="isEKV ? finanzModel.getEkvToWorkWith_GS()?.selbstdeklaration?.vermoegen : finanzModel.getFiSiConToWorkWith().finanzielleSituationGS?.selbstdeklaration?.vermoegen"
             [korrektur]="model.selbstdeklaration?.vermoegen">
@@ -402,8 +402,8 @@
             [dvOnBlur]="onValueChangeFunction"
             [inputDisabled]="readOnly"
             [neuerWert]="model.selbstdeklaration.abzugSteuerfreierBetragErwachsene"
-            [wertBasisjahr]="isEKV ? finanzModel.getFiSiConToWorkWith().finanzielleSituationJA.selbstdeklaration?.abzugSteuerfreierBetragErwachsene : undefined"
-            [basisjahr]="finanzModel.getBasisjahr()"
+            [vergleichswert]="isEKV ? finanzModel.getFiSiConToWorkWith().finanzielleSituationJA.selbstdeklaration?.abzugSteuerfreierBetragErwachsene : undefined"
+            [vergleichwertLabel]="'EINGABE_BASISJAHR' | translate: {basisjahr: finanzModel.getBasisjahr()}"
             [showBisher]="isEKV ? showBisher(finanzModel.getEkvToWorkWith_GS()) : showBisher(finanzModel.getFiSiConToWorkWith().finanzielleSituationGS)"
             [deklaration]="isEKV ? finanzModel.getEkvToWorkWith_GS()?.selbstdeklaration?.abzugSteuerfreierBetragErwachsene : finanzModel.getFiSiConToWorkWith().finanzielleSituationGS?.selbstdeklaration?.abzugSteuerfreierBetragErwachsene"
             [korrektur]="model.selbstdeklaration?.abzugSteuerfreierBetragErwachsene">
@@ -420,8 +420,8 @@
             [dvOnBlur]="onValueChangeFunction"
             [inputDisabled]="readOnly"
             [neuerWert]="model.selbstdeklaration.abzugSteuerfreierBetragKinder"
-            [wertBasisjahr]="isEKV ? finanzModel.getFiSiConToWorkWith().finanzielleSituationJA.selbstdeklaration?.abzugSteuerfreierBetragKinder : undefined"
-            [basisjahr]="finanzModel.getBasisjahr()"
+            [vergleichswert]="isEKV ? finanzModel.getFiSiConToWorkWith().finanzielleSituationJA.selbstdeklaration?.abzugSteuerfreierBetragKinder : undefined"
+            [vergleichwertLabel]="'EINGABE_BASISJAHR' | translate: {basisjahr: finanzModel.getBasisjahr()}"
             [showBisher]="isEKV ? showBisher(finanzModel.getEkvToWorkWith_GS()) : showBisher(finanzModel.getFiSiConToWorkWith().finanzielleSituationGS)"
             [deklaration]="isEKV ? finanzModel.getEkvToWorkWith_GS()?.selbstdeklaration?.abzugSteuerfreierBetragKinder : finanzModel.getFiSiConToWorkWith().finanzielleSituationGS?.selbstdeklaration?.abzugSteuerfreierBetragKinder"
             [korrektur]="model.selbstdeklaration?.abzugSteuerfreierBetragKinder">

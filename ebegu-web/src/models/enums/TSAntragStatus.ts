@@ -1,16 +1,18 @@
 /*
- * Ki-Tax: System for the management of external childcare subsidies
- * Copyright (C) 2017 City of Bern Switzerland
+ * Copyright (C) 2023 DV Bern AG, Switzerland
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Affero General Public License for more details.
+ *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
 import {TSEingangsart} from './TSEingangsart';
@@ -37,7 +39,8 @@ export enum TSAntragStatus {
     BESCHWERDE_HAENGIG = 'BESCHWERDE_HAENGIG',
     PRUEFUNG_STV = 'PRUEFUNG_STV',
     IN_BEARBEITUNG_STV = 'IN_BEARBEITUNG_STV',
-    GEPRUEFT_STV = 'GEPRUEFT_STV'
+    GEPRUEFT_STV = 'GEPRUEFT_STV',
+    IGNORIERT = 'IGNORIERT'
 }
 
 export const IN_BEARBEITUNG_BASE_NAME = 'IN_BEARBEITUNG';
@@ -64,7 +67,8 @@ export function getTSAntragStatusValues(): Array<TSAntragStatus> {
         TSAntragStatus.BESCHWERDE_HAENGIG,
         TSAntragStatus.PRUEFUNG_STV,
         TSAntragStatus.IN_BEARBEITUNG_STV,
-        TSAntragStatus.GEPRUEFT_STV
+        TSAntragStatus.GEPRUEFT_STV,
+        TSAntragStatus.IGNORIERT
     ];
 }
 
@@ -123,7 +127,8 @@ export function getTSAntragStatusPendenzValues(userrole: TSRole): TSAntragStatus
                 && element !== TSAntragStatus.NUR_SCHULAMT
                 && element !== TSAntragStatus.KEIN_KONTINGENT
                 && element !== TSAntragStatus.IN_BEARBEITUNG_STV
-                && element !== TSAntragStatus.PRUEFUNG_STV));
+                && element !== TSAntragStatus.PRUEFUNG_STV
+                && element !== TSAntragStatus.IGNORIERT));
         case TSRole.SACHBEARBEITER_TS:
         case TSRole.ADMIN_TS:
             return allVisibleValuesByRole.filter(element => (
@@ -133,7 +138,8 @@ export function getTSAntragStatusPendenzValues(userrole: TSRole): TSAntragStatus
                 && element !== TSAntragStatus.VERFUEGEN
                 && element !== TSAntragStatus.KEIN_KONTINGENT
                 && element !== TSAntragStatus.IN_BEARBEITUNG_STV
-                && element !== TSAntragStatus.PRUEFUNG_STV));
+                && element !== TSAntragStatus.PRUEFUNG_STV
+                && element !== TSAntragStatus.IGNORIERT));
         default:
             return allVisibleValuesByRole.filter(element => (element !== TSAntragStatus.VERFUEGT
                 && element !== TSAntragStatus.KEIN_ANGEBOT && element !== TSAntragStatus.NUR_SCHULAMT));
@@ -159,7 +165,8 @@ export function isAtLeastFreigegeben(status: TSAntragStatus): boolean {
         TSAntragStatus.BESCHWERDE_HAENGIG,
         TSAntragStatus.PRUEFUNG_STV,
         TSAntragStatus.IN_BEARBEITUNG_STV,
-        TSAntragStatus.GEPRUEFT_STV
+        TSAntragStatus.GEPRUEFT_STV,
+        TSAntragStatus.IGNORIERT
     ];
     return validStates.indexOf(status) !== -1;
 }
@@ -175,7 +182,12 @@ export function isAnyStatusOfVerfuegt(status: TSAntragStatus): boolean {
         || status === TSAntragStatus.PRUEFUNG_STV
         || status === TSAntragStatus.IN_BEARBEITUNG_STV
         || status === TSAntragStatus.GEPRUEFT_STV
-        || status === TSAntragStatus.KEIN_ANGEBOT;
+        || status === TSAntragStatus.KEIN_ANGEBOT
+        || status === TSAntragStatus.IGNORIERT;
+}
+
+export function isAnyStatusOfVerfuegtButIgnoriert(status: TSAntragStatus): boolean {
+    return isAnyStatusOfVerfuegt(status) && status !== TSAntragStatus.IGNORIERT;
 }
 
 // KeinKontingent darf zwar nicht zu den "verfuegt" Status hinzugefuegt werden, wird
@@ -190,7 +202,8 @@ export function isAnyStatusOfVerfuegtButSchulamt(status: TSAntragStatus): boolea
         || status === TSAntragStatus.PRUEFUNG_STV
         || status === TSAntragStatus.IN_BEARBEITUNG_STV
         || status === TSAntragStatus.GEPRUEFT_STV
-        || status === TSAntragStatus.KEIN_ANGEBOT;
+        || status === TSAntragStatus.KEIN_ANGEBOT
+        || status === TSAntragStatus.IGNORIERT;
 }
 
 export function isVerfuegtOrSTV(status: TSAntragStatus): boolean {
@@ -198,7 +211,8 @@ export function isVerfuegtOrSTV(status: TSAntragStatus): boolean {
         || status === TSAntragStatus.PRUEFUNG_STV
         || status === TSAntragStatus.IN_BEARBEITUNG_STV
         || status === TSAntragStatus.GEPRUEFT_STV
-        || status === TSAntragStatus.KEIN_ANGEBOT;
+        || status === TSAntragStatus.KEIN_ANGEBOT
+        || status === TSAntragStatus.IGNORIERT;
 }
 
 export function isAnyStatusOfGeprueftVerfuegenVerfuegtOrAbgeschlossen(status: TSAntragStatus): boolean {

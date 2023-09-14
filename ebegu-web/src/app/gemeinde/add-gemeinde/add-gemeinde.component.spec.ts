@@ -22,9 +22,11 @@ import {of} from 'rxjs';
 import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {GemeindeRS} from '../../../gesuch/service/gemeindeRS.rest';
-import {SHARED_MODULE_OVERRIDES} from '../../../hybridTools/mockUpgradedComponent';
+import {SHARED_MODULE_OVERRIDES} from '../../../hybridTools/mockUpgradedDirective';
+import {TSPublicAppConfig} from '../../../models/TSPublicAppConfig';
 import {TestDataUtil} from '../../../utils/TestDataUtil.spec';
 import {ErrorService} from '../../core/errors/service/ErrorService';
+import {ApplicationPropertyRS} from '../../core/rest-services/applicationPropertyRS.rest';
 import {BenutzerRSX} from '../../core/service/benutzerRSX.rest';
 import {GesuchsperiodeRS} from '../../core/service/gesuchsperiodeRS.rest';
 import {I18nServiceRSRest} from '../../i18n/services/i18nServiceRS.rest';
@@ -48,9 +50,11 @@ describe('AddGemeindeComponent', () => {
     const i18nServiceSpy = jasmine
         .createSpyObj<I18nServiceRSRest>(I18nServiceRSRest.name, ['extractPreferredLanguage']);
     const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name, [
-        'getPrincipal',
-        'hasMandantAngebotTS'
+        'getPrincipal'
     ]);
+    const appPropRSSpy = jasmine.createSpyObj<ApplicationPropertyRS>(ApplicationPropertyRS.name,
+        ['getPublicPropertiesCached']);
+    appPropRSSpy.getPublicPropertiesCached.and.returnValue(Promise.resolve(new TSPublicAppConfig()));
 
     beforeEach(waitForAsync(() => {
 
@@ -67,7 +71,8 @@ describe('AddGemeindeComponent', () => {
                 {provide: Transition, useValue: transitionSpy},
                 {provide: StateService, useValue: stateServiceSpy},
                 {provide: I18nServiceRSRest, useValue: i18nServiceSpy},
-                {provide: AuthServiceRS, useValue: authServiceSpy}
+                {provide: AuthServiceRS, useValue: authServiceSpy},
+                {provide: ApplicationPropertyRS, useValue: appPropRSSpy}
             ],
             declarations: [
                 AddGemeindeComponent

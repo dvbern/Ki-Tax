@@ -15,32 +15,22 @@
 
 package ch.dvbern.ebegu.entities;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.ForeignKey;
-import javax.persistence.Index;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
-
 import ch.dvbern.ebegu.enums.AntragCopyType;
 import ch.dvbern.ebegu.enums.Ferienname;
 import ch.dvbern.ebegu.util.Constants;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.hibernate.annotations.SortNatural;
 import org.hibernate.envers.Audited;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.persistence.*;
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 /**
  * Entity for the Belegung of a Ferieninsel in a Betreuung.
@@ -163,6 +153,7 @@ public class BelegungFerieninsel extends AbstractMutableEntity {
 			}
 			break;
 		case ERNEUERUNG:
+		case ERNEUERUNG_AR_2023:
 		case MUTATION_NEUES_DOSSIER:
 		case ERNEUERUNG_NEUES_DOSSIER:
 			break;

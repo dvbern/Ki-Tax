@@ -17,116 +17,115 @@
 
 package ch.dvbern.ebegu.api.dtos.gemeindeantrag;
 
-import java.math.BigDecimal;
-
-import javax.annotation.Nonnull;
-
 import ch.dvbern.ebegu.api.dtos.JaxAbstractDTO;
+
+import javax.annotation.Nullable;
+import java.math.BigDecimal;
 
 public class JaxFerienbetreuungBerechnungen extends JaxAbstractDTO {
 
 	private static final long serialVersionUID = 5946998195854570129L;
-	
-	@Nonnull
+
+	@Nullable
 	private BigDecimal totalKosten;
 
-	@Nonnull
+	@Nullable
 	private BigDecimal betreuungstageKinderDieserGemeindeMinusSonderschueler;
 
-	@Nonnull
+	@Nullable
 	private BigDecimal betreuungstageKinderAndererGemeindeMinusSonderschueler;
 
-	@Nonnull
+	@Nullable
 	private BigDecimal totalKantonsbeitrag;
 
-	@Nonnull
+	@Nullable
 	private BigDecimal totalEinnahmen;
 
-	@Nonnull
+	@Nullable
 	private BigDecimal beitragKinderAnbietendenGemeinde;
 
-	@Nonnull
+	@Nullable
 	private BigDecimal beteiligungAnbietendenGemeinde;
 
-	@Nonnull
+	@Nullable
 	private Boolean beteiligungZuTief;
 
 	public JaxFerienbetreuungBerechnungen() {
 	}
 
-	@Nonnull
+	@Nullable
 	public BigDecimal getTotalKosten() {
 		return totalKosten;
 	}
 
-	public void setTotalKosten(@Nonnull BigDecimal totalKosten) {
+	public void setTotalKosten(@Nullable BigDecimal totalKosten) {
 		this.totalKosten = totalKosten;
 	}
 
-	@Nonnull
+	@Nullable
 	public BigDecimal getBetreuungstageKinderDieserGemeindeMinusSonderschueler() {
 		return betreuungstageKinderDieserGemeindeMinusSonderschueler;
 	}
 
 	public void setBetreuungstageKinderDieserGemeindeMinusSonderschueler(
-			@Nonnull BigDecimal betreuungstageKinderDieserGemeindeMinusSonderschueler) {
+			@Nullable BigDecimal betreuungstageKinderDieserGemeindeMinusSonderschueler) {
 		this.betreuungstageKinderDieserGemeindeMinusSonderschueler =
 				betreuungstageKinderDieserGemeindeMinusSonderschueler;
 	}
 
-	@Nonnull
+	@Nullable
 	public BigDecimal getBetreuungstageKinderAndererGemeindeMinusSonderschueler() {
 		return betreuungstageKinderAndererGemeindeMinusSonderschueler;
 	}
 
 	public void setBetreuungstageKinderAndererGemeindeMinusSonderschueler(
-			@Nonnull BigDecimal betreuungstageKinderAndererGemeindeMinusSonderschueler) {
+			@Nullable BigDecimal betreuungstageKinderAndererGemeindeMinusSonderschueler) {
 		this.betreuungstageKinderAndererGemeindeMinusSonderschueler =
 				betreuungstageKinderAndererGemeindeMinusSonderschueler;
 	}
 
-	@Nonnull
+	@Nullable
 	public BigDecimal getTotalKantonsbeitrag() {
 		return totalKantonsbeitrag;
 	}
 
-	public void setTotalKantonsbeitrag(@Nonnull BigDecimal totalKantonsbeitrag) {
+	public void setTotalKantonsbeitrag(@Nullable BigDecimal totalKantonsbeitrag) {
 		this.totalKantonsbeitrag = totalKantonsbeitrag;
 	}
 
-	@Nonnull
+	@Nullable
 	public BigDecimal getTotalEinnahmen() {
 		return totalEinnahmen;
 	}
 
-	public void setTotalEinnahmen(@Nonnull BigDecimal totalEinnahmen) {
+	public void setTotalEinnahmen(@Nullable BigDecimal totalEinnahmen) {
 		this.totalEinnahmen = totalEinnahmen;
 	}
 
-	@Nonnull
+	@Nullable
 	public BigDecimal getBeitragKinderAnbietendenGemeinde() {
 		return beitragKinderAnbietendenGemeinde;
 	}
 
-	public void setBeitragKinderAnbietendenGemeinde(@Nonnull BigDecimal beitragKinderAnbietendenGemeinde) {
+	public void setBeitragKinderAnbietendenGemeinde(@Nullable BigDecimal beitragKinderAnbietendenGemeinde) {
 		this.beitragKinderAnbietendenGemeinde = beitragKinderAnbietendenGemeinde;
 	}
 
-	@Nonnull
+	@Nullable
 	public BigDecimal getBeteiligungAnbietendenGemeinde() {
 		return beteiligungAnbietendenGemeinde;
 	}
 
-	public void setBeteiligungAnbietendenGemeinde(@Nonnull BigDecimal beteiligungAnbietendenGemeinde) {
+	public void setBeteiligungAnbietendenGemeinde(@Nullable BigDecimal beteiligungAnbietendenGemeinde) {
 		this.beteiligungAnbietendenGemeinde = beteiligungAnbietendenGemeinde;
 	}
 
-	@Nonnull
+	@Nullable
 	public Boolean getBeteiligungZuTief() {
 		return beteiligungZuTief;
 	}
 
-	public void setBeteiligungZuTief(@Nonnull Boolean beteiligungZuTief) {
+	public void setBeteiligungZuTief(@Nullable Boolean beteiligungZuTief) {
 		this.beteiligungZuTief = beteiligungZuTief;
 	}
 }

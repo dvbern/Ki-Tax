@@ -54,6 +54,8 @@ export class InstitutionListComponent extends AbstractAdminViewX implements OnIn
     private userHasGemeindeWithTSEnabled: boolean;
     private userHasGemeindeWithoutTSEnabled: boolean;
     private institutionenDurchGemeindenEinladen: boolean = false;
+    private angebotTSActivated: boolean;
+    private angebotFIActivated: boolean;
 
     public constructor(
         private readonly institutionRS: InstitutionRS,
@@ -72,8 +74,10 @@ export class InstitutionListComponent extends AbstractAdminViewX implements OnIn
         this.setHiddenColumns();
         this.loadData();
         this.setupGemeindeAndRoleSpecificProperties();
-        this.applicationPropertyRS.getInstitutionenDurchGemeindenEinladen().then(result => {
-            this.institutionenDurchGemeindenEinladen = result;
+        this.applicationPropertyRS.getPublicPropertiesCached().then(result => {
+            this.institutionenDurchGemeindenEinladen = result.institutionenDurchGemeindenEinladen;
+            this.angebotTSActivated = result.angebotTSActivated;
+            this.angebotFIActivated = result.angebotFIActivated;
         });
     }
 
@@ -220,18 +224,18 @@ export class InstitutionListComponent extends AbstractAdminViewX implements OnIn
     public isCreateTSAllowed(): boolean {
         return this.authServiceRS.isOneOfRoles(TSRoleUtil.getGemeindeRoles())
             && this.userHasGemeindeWithTSEnabled
-            && this.authServiceRS.getPrincipal().mandant.angebotTS;
+            && this.angebotTSActivated;
     }
 
     public isCreateLATSTSAllowed(): boolean {
         return this.authServiceRS.isOneOfRoles(TSRoleUtil.getGemeindeRoles())
             && this.userHasGemeindeWithoutTSEnabled
-            && this.authServiceRS.getPrincipal().mandant.angebotTS;
+            && this.angebotTSActivated;
     }
 
     public isCreateFIAllowed(): boolean {
         return this.authServiceRS.isOneOfRoles(TSRoleUtil.getGemeindeRoles())
-            && this.authServiceRS.getPrincipal().mandant.angebotFI;
+            && this.angebotFIActivated;
     }
 
     public isDeleteAllowed(): boolean {
@@ -246,5 +250,9 @@ export class InstitutionListComponent extends AbstractAdminViewX implements OnIn
 
     public isSuperAdmin(): boolean {
         return this.authServiceRS.isRole(TSRole.SUPER_ADMIN);
+    }
+
+    public isAdminBG(): boolean {
+        return this.authServiceRS.isRole(TSRole.ADMIN_BG);
     }
 }

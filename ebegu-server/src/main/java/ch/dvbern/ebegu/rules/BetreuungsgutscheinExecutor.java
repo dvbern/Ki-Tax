@@ -1,16 +1,18 @@
 /*
- * Ki-Tax: System for the management of external childcare subsidies
- * Copyright (C) 2017 City of Bern Switzerland
+ * Copyright (C) 2023 DV Bern AG, Switzerland
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
+ *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
 package ch.dvbern.ebegu.rules;
@@ -26,6 +28,7 @@ import ch.dvbern.ebegu.entities.Einstellung;
 import ch.dvbern.ebegu.entities.KitaxUebergangsloesungInstitutionOeffnungszeiten;
 import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
+import ch.dvbern.ebegu.enums.EinschulungTyp;
 import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.enums.MsgKey;
 import ch.dvbern.ebegu.rechner.AbstractRechner;
@@ -34,6 +37,8 @@ import ch.dvbern.ebegu.rechner.BGRechnerParameterDTO;
 import ch.dvbern.ebegu.rechner.kitax.EmptyKitaxBernRechner;
 import ch.dvbern.ebegu.rechner.rules.RechnerRule;
 import ch.dvbern.ebegu.rules.initalizer.RestanspruchInitializer;
+import ch.dvbern.ebegu.rules.initalizer.RestanspruchInitializerVisitor;
+import ch.dvbern.ebegu.util.EinschulungstypBgStundenFaktorVisitor;
 import ch.dvbern.ebegu.util.KitaxUebergangsloesungParameter;
 import ch.dvbern.ebegu.util.KitaxUtil;
 import org.slf4j.Logger;
@@ -99,7 +104,6 @@ public class BetreuungsgutscheinExecutor {
 		AnspruchFristRule anspruchFristRule = new AnspruchFristRule(isDebug);
 		AbschlussNormalizer abschlussNormalizerOhneMonate = new AbschlussNormalizer(false, isDebug);
 		MonatsRule monatsRule = new MonatsRule(isDebug);
-		KostenAnteilRule kostenAnteilRule = new KostenAnteilRule(isDebug);
 		Boolean anspruchMonatsweise = kibonAbschlussRulesParameters.get(EinstellungKey.ANSPRUCH_MONATSWEISE).getValueAsBoolean();
 		MonatsMergerRule monatsMergerRule = new MonatsMergerRule(isDebug, anspruchMonatsweise);
 		Boolean pauschaleRueckwirkendAuszahlen = kibonAbschlussRulesParameters.get(EinstellungKey.FKJV_PAUSCHALE_RUECKWIRKEND).getValueAsBoolean();
@@ -113,8 +117,6 @@ public class BetreuungsgutscheinExecutor {
 		zeitabschnitte = abschlussNormalizerOhneMonate.executeIfApplicable(platz, zeitabschnitte);
 		// Nach dem Durchlaufen aller Rules noch die Monatsstückelungen machen
 		zeitabschnitte = monatsRule.executeIfApplicable(platz, zeitabschnitte);
-		// Berechnet die effektiven Kosten nach Länge des Zeitabschnitts
-		zeitabschnitte = kostenAnteilRule.executeIfApplicable(platz, zeitabschnitte);
 		// Danach den Anspruch nur noch monatsweise berechnet werden
 		zeitabschnitte = monatsMergerRule.executeIfApplicable(platz, zeitabschnitte);
 		// Ganz am Ende der Berechnung mergen wir das aktuelle Ergebnis mit der Verfügung des letzten Gesuches
@@ -183,7 +185,19 @@ public class BetreuungsgutscheinExecutor {
 		@Nonnull AbstractPlatz platz,
 		@Nonnull List<VerfuegungZeitabschnitt> zeitabschnitte
 	) {
-		RestanspruchInitializer restanspruchInitializer = new RestanspruchInitializer(isDebug);
+		RestanspruchInitializer restanspruchInitializer =
+			new RestanspruchInitializerVisitor(isDebug).getRestanspruchInitialzier(platz.extractGesuch().extractMandant());
 		return restanspruchInitializer.executeIfApplicable(platz, zeitabschnitte);
+	}
+
+	public static void initFaktorBgStunden(
+			EinschulungTyp einschulungTyp,
+			List<VerfuegungZeitabschnitt> zeitabschnitte,
+			Mandant mandant) {
+		zeitabschnitte.forEach(verfuegungZeitabschnitt -> {
+			final EinschulungstypBgStundenFaktorVisitor einschulungstypBgStundenFaktorVisitor =
+					new EinschulungstypBgStundenFaktorVisitor(einschulungTyp);
+			verfuegungZeitabschnitt.setBgStundenFaktor(einschulungstypBgStundenFaktorVisitor.getFaktor(mandant));
+		});
 	}
 }

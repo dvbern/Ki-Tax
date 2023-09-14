@@ -17,20 +17,15 @@
 
 package ch.dvbern.ebegu.entities;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.persistence.Column;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.Inheritance;
-import javax.persistence.InheritanceType;
-import javax.persistence.MappedSuperclass;
-
 import ch.dvbern.ebegu.enums.AnmeldungMutationZustand;
 import ch.dvbern.ebegu.enums.AntragCopyType;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
 import ch.dvbern.ebegu.enums.Eingangsart;
 import org.hibernate.envers.Audited;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.persistence.*;
 
 /**
  * Superklasse fuer Schulamt Anmeldungen: Tagesschule oder Ferieninsel
@@ -47,6 +42,10 @@ public abstract class AbstractAnmeldung extends AbstractPlatz {
 	@Column(nullable = true)
 	private AnmeldungMutationZustand anmeldungMutationZustand = AnmeldungMutationZustand.NOCH_NICHT_FREIGEGEBEN;
 
+	@Nullable
+	@Enumerated(EnumType.STRING)
+	@Column(nullable = true)
+	private Betreuungsstatus statusVorIgnorieren;
 
 	public AbstractAnmeldung() {
 	}
@@ -59,6 +58,15 @@ public abstract class AbstractAnmeldung extends AbstractPlatz {
 
 	public void setAnmeldungMutationZustand(@Nullable AnmeldungMutationZustand anmeldungMutationZustand) {
 		this.anmeldungMutationZustand = anmeldungMutationZustand;
+	}
+
+	@Nullable
+	public Betreuungsstatus getStatusVorIgnorieren() {
+		return statusVorIgnorieren;
+	}
+
+	public void setStatusVorIgnorieren(@Nullable Betreuungsstatus statusVorIgnorieren) {
+		this.statusVorIgnorieren = statusVorIgnorieren;
 	}
 
 	public AbstractAnmeldung copyAbstractAnmeldung(
@@ -81,6 +89,7 @@ public abstract class AbstractAnmeldung extends AbstractPlatz {
 			}
 			break;
 		case ERNEUERUNG:
+		case ERNEUERUNG_AR_2023:
 		case MUTATION_NEUES_DOSSIER:
 		case ERNEUERUNG_NEUES_DOSSIER:
 			break;

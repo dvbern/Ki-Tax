@@ -28,7 +28,7 @@ import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public abstract class AbstractAbschlussRule {
+public abstract class AbstractAbschlussRule extends AbstractRule {
 
 	private static final Logger LOG = LoggerFactory.getLogger(AbstractAbschlussRule.class);
 	private boolean isDebug = false;

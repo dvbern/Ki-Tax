@@ -18,7 +18,7 @@
 import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 import {of} from 'rxjs';
 import {AuthServiceRS} from '../../../../../authentication/service/AuthServiceRS.rest';
-import {SHARED_MODULE_OVERRIDES} from '../../../../../hybridTools/mockUpgradedComponent';
+import {SHARED_MODULE_OVERRIDES} from '../../../../../hybridTools/mockUpgradedDirective';
 import {TSLastenausgleichTagesschuleAngabenGemeindeContainer} from '../../../../../models/gemeindeantrag/TSLastenausgleichTagesschuleAngabenGemeindeContainer';
 import {TSBenutzer} from '../../../../../models/TSBenutzer';
 import {ErrorService} from '../../../../core/errors/service/ErrorService';

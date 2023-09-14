@@ -72,6 +72,7 @@ import static ch.dvbern.ebegu.enums.UserRoleName.GESUCHSTELLER;
 import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_BG;
 import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_GEMEINDE;
 import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_MANDANT;
+import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_TS;
 import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
 
 /**
@@ -140,7 +141,7 @@ public class SuperAdminServiceBean implements SuperAdminService {
 
 	@Override
 	@Nonnull
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE })
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, ADMIN_TS, SACHBEARBEITER_TS })
 	public Gesuch updateGesuch(@Nonnull Gesuch gesuch, boolean saveInStatusHistory, Benutzer saveAsUser) {
 		return gesuchService.updateGesuch(gesuch, saveInStatusHistory, saveAsUser);
 	}
@@ -159,7 +160,7 @@ public class SuperAdminServiceBean implements SuperAdminService {
 					try {
 						for (String gesuchId : foundAntraege) {
 							Gesuch gesuch = persistence.find(Gesuch.class, gesuchId);
-							alleFaelleViewService.updateViewWithFullGesuch(gesuch);
+							alleFaelleViewService.createViewForFullGesuch(gesuch);
 						}
 					} catch (Exception e) {
 						LOG.error(

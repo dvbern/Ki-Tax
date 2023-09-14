@@ -1,16 +1,18 @@
 /*
- * Ki-Tax: System for the management of external childcare subsidies
- * Copyright (C) 2018 City of Bern Switzerland
+ * Copyright (C) 2023 DV Bern AG, Switzerland
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Affero General Public License for more details.
+ *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
 package ch.dvbern.ebegu.batch.jobs.report;
@@ -36,6 +38,7 @@ import javax.inject.Named;
 
 import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.enums.WorkJobConstants;
+import ch.dvbern.ebegu.enums.reporting.DatumTyp;
 import ch.dvbern.ebegu.enums.reporting.ReportVorlage;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
@@ -49,6 +52,7 @@ import ch.dvbern.ebegu.reporting.ReportNotrechtService;
 import ch.dvbern.ebegu.reporting.ReportService;
 import ch.dvbern.ebegu.reporting.ReportTagesschuleService;
 import ch.dvbern.ebegu.reporting.ReportVerrechnungKibonService;
+import ch.dvbern.ebegu.reporting.ReportZahlungenService;
 import ch.dvbern.ebegu.services.MandantService;
 import ch.dvbern.ebegu.util.DateUtil;
 import ch.dvbern.ebegu.util.MathUtil;
@@ -57,6 +61,7 @@ import ch.dvbern.oss.lib.excelmerger.ExcelMergeException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static ch.dvbern.ebegu.enums.WorkJobConstants.DATUM_TYP;
 import static ch.dvbern.ebegu.enums.WorkJobConstants.REPORT_VORLAGE_TYPE_PARAM;
 
 @SuppressWarnings("ClassNamePrefixedWithPackageName")
@@ -92,6 +97,9 @@ public class ReportJobGeneratorBatchlet extends AbstractBatchlet {
 
 	@Inject
 	private ReportLastenausgleichBGZeitabschnitteService reportLastenausgleichBGZeitabschnitteService;
+
+	@Inject
+	private ReportZahlungenService reportZahlungenService;
 
 	@Inject
 	private JobContext jobCtx;
@@ -158,7 +166,10 @@ public class ReportJobGeneratorBatchlet extends AbstractBatchlet {
 			}
 			case VORLAGE_REPORT_GESUCH_ZEITRAUM_DE:
 			case VORLAGE_REPORT_GESUCH_ZEITRAUM_FR: {
-				return this.reportService.generateExcelReportGesuchZeitraum(dateFrom, dateTo, gesuchPeriodeId, locale, mandant);
+				String datumTyp = getParameters().getProperty(DATUM_TYP, DatumTyp.VERFUEGUNGSDATUM.name());
+				DatumTyp datumTypEnum = DatumTyp.valueOf(datumTyp);
+				return this.reportService.generateExcelReportGesuchZeitraum(dateFrom, dateTo, datumTypEnum, gesuchPeriodeId, locale, mandant);
+
 			}
 			case VORLAGE_REPORT_KANTON: {
 				BigDecimal kantonSelbstbehalt = null;
@@ -230,18 +241,36 @@ public class ReportJobGeneratorBatchlet extends AbstractBatchlet {
 				return this.reportLastenausgleichTagesschulenService.generateExcelReportLastenausgleichTagesschulen(gesuchPeriodeId);
 			}
 			case VORLAGE_REPORT_LASTENAUSGLEICH_BG_ZEITABSCHNITTE: {
+				final String von = getParameters().getProperty(WorkJobConstants.DATE_FROM_PARAM);
+				final String bis = getParameters().getProperty(WorkJobConstants.DATE_TO_PARAM);
 				final String gemeindeId = getParameters().getProperty(WorkJobConstants.GEMEINDE_ID_PARAM);
-				if (gemeindeId == null) {
-					throw new EbeguRuntimeException(methodName, "gemeindeId not defined");
+				if ((von == null || bis == null) && gemeindeId == null) {
+					throw new EbeguRuntimeException(methodName, "von/bis and gemeindeId not defined");
 				}
+
 				final String lastenausgleichJahr = getParameters().getProperty(WorkJobConstants.JAHR_PARAM);
 				if (lastenausgleichJahr == null) {
 					throw new EbeguRuntimeException(methodName, "lastenausgleichJahr not defined");
 				}
 				return this.reportLastenausgleichBGZeitabschnitteService.generateExcelReportLastenausgleichBGZeitabschnitte(
 					locale,
+					von,
+					bis,
 					gemeindeId,
 					Integer.parseInt(lastenausgleichJahr, 10)
+				);
+			}
+			case VORLAGE_REPORT_ZAHLUNGEN_DE:
+			case VORLAGE_REPORT_ZAHLUNGEN_FR: {
+				final String gesuchsperiodeId = getParameters().getProperty(WorkJobConstants.GESUCH_PERIODE_ID_PARAM);
+				final String gemeindeId = getParameters().getProperty(WorkJobConstants.GEMEINDE_ID_PARAM);
+				final String institutionId = getParameters().getProperty(WorkJobConstants.INSTITUTION_ID_PARAM);
+				return this.reportZahlungenService.generateExcelReportZahlungen(
+					workJobType,
+					locale,
+					gesuchsperiodeId,
+					gemeindeId,
+					institutionId
 				);
 			}
 		}

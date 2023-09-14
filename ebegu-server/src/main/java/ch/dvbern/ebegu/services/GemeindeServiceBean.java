@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018 DV Bern AG, Switzerland
+ * Copyright (C) 2023 DV Bern AG, Switzerland
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -8,11 +8,11 @@
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
 package ch.dvbern.ebegu.services;
@@ -56,6 +56,7 @@ import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeContainer;
 import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeContainer_;
+import ch.dvbern.ebegu.enums.ApplicationPropertyKey;
 import ch.dvbern.ebegu.enums.DokumentTyp;
 import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
@@ -71,6 +72,7 @@ import ch.dvbern.ebegu.outbox.ExportedEvent;
 import ch.dvbern.ebegu.outbox.gemeinde.GemeindeEventConverter;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.ebegu.util.Constants;
+import ch.dvbern.ebegu.util.mandant.MandantIdentifier;
 import ch.dvbern.lib.cdipersistence.Persistence;
 
 import static java.util.Objects.requireNonNull;
@@ -105,6 +107,9 @@ public class GemeindeServiceBean extends AbstractBaseService implements Gemeinde
 
 	@Inject
 	private GemeindeEventConverter gemeindeEventConverter;
+
+	@Inject
+	private ApplicationPropertyService applicationPropertyService;
 
 	@Nonnull
 	@Override
@@ -294,7 +299,9 @@ public class GemeindeServiceBean extends AbstractBaseService implements Gemeinde
 		}
 
 		// Wenn das Tagesschule-Flag nicht gesetzt ist, dürfen Verbunds-Gemeinden nicht ausgewählt werden können.
-		boolean tagesschuleEnabled = mandant.isAngebotTS();
+		boolean tagesschuleEnabled = Boolean.TRUE.equals(applicationPropertyService.findApplicationPropertyAsBoolean(
+				ApplicationPropertyKey.ANGEBOT_TS_ENABLED,
+				mandant));
 		if (!tagesschuleEnabled) {
 			List<Long> verbundsBfsNummern = getVerbundsBfsNummern(mandant);
 			if (verbundsBfsNummern.size() > 0) {
@@ -735,6 +742,8 @@ public class GemeindeServiceBean extends AbstractBaseService implements Gemeinde
 
 	@Override
 	public void fireGemeindeChangedEvent(@Nonnull Gemeinde gemeinde) {
+		if (gemeinde.getMandant().getMandantIdentifier() != MandantIdentifier.APPENZELL_AUSSERRHODEN) {
 			event.fire(gemeindeEventConverter.of(gemeinde));
+		}
 	}
 }

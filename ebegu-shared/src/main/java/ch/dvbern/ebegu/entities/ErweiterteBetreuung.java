@@ -173,6 +173,7 @@ public class ErweiterteBetreuung extends AbstractMutableEntity {
 			target.setErweitereteBeduerfnisseBetrag(this.getErweitereteBeduerfnisseBetrag());
 			break;
 		case ERNEUERUNG:
+		case ERNEUERUNG_AR_2023:
 		case MUTATION_NEUES_DOSSIER:
 		case ERNEUERUNG_NEUES_DOSSIER:
 			break;

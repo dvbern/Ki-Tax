@@ -23,6 +23,7 @@ import javax.annotation.Nullable;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.ForeignKey;
@@ -36,6 +37,7 @@ import javax.validation.constraints.Pattern;
 
 import ch.dvbern.ebegu.enums.AntragCopyType;
 import ch.dvbern.ebegu.enums.EinschulungTyp;
+import ch.dvbern.ebegu.enums.Geschlecht;
 import ch.dvbern.ebegu.enums.Kinderabzug;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.EbeguUtil;
@@ -51,10 +53,16 @@ import org.hibernate.envers.Audited;
 @Table(
 	indexes = @Index(columnList = "geburtsdatum", name = "IX_kind_geburtsdatum")
 )
+@EntityListeners({ AlleFaelleKindListener.class })
 @CheckKinderabzug
 public class Kind extends AbstractPersonEntity {
 
 	private static final long serialVersionUID = -9032257320578372570L;
+
+	@Enumerated(EnumType.STRING)
+	@Column(nullable = true)
+	@Nullable
+	private Geschlecht geschlecht;
 
 	@Column(nullable = true)
 	@Nullable
@@ -146,6 +154,17 @@ public class Kind extends AbstractPersonEntity {
 	private Boolean inPruefung = false;
 
 	public Kind() {
+	}
+
+	@Override
+	@Nullable
+	public Geschlecht getGeschlecht() {
+		return geschlecht;
+	}
+
+	@Override
+	public void setGeschlecht(@Nullable Geschlecht geschlecht) {
+		this.geschlecht = geschlecht;
 	}
 
 	@Nullable
@@ -337,6 +356,7 @@ public class Kind extends AbstractPersonEntity {
 			target.setAlimenteErhalten(this.getAlimenteErhalten());
 			target.setAlimenteBezahlen(this.getAlimenteBezahlen());
 			target.setZukunftigeGeburtsdatum(target.getGeburtsdatum().isAfter(regelStartDatum) ? true : false);
+			target.setKeinPlatzInSchulhort(this.getKeinPlatzInSchulhort());
 			copyFachstelle(target, copyType);
 			copyAusserordentlicherAnspruch(target, copyType);
 			break;
@@ -358,6 +378,7 @@ public class Kind extends AbstractPersonEntity {
 			// Dieser liegt ja in der Kompetenz der Gemeinde und kann nicht uebernommen werden
 			break;
 		case ERNEUERUNG:
+		case ERNEUERUNG_AR_2023:
 		case ERNEUERUNG_NEUES_DOSSIER:
 			target.inPruefung = true;
 			// Ausserordentlicher Anspruch wird nicht kopiert, auch wenn er noch gueltig waere.

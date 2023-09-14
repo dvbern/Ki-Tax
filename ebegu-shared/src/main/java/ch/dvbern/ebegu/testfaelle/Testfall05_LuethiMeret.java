@@ -18,7 +18,6 @@ package ch.dvbern.ebegu.testfaelle;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.Month;
-import java.util.Objects;
 
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.BetreuungspensumContainer;
@@ -93,30 +92,13 @@ public class Testfall05_LuethiMeret extends AbstractTestfall {
 		betreuungTagiAaregg.getBetreuungspensumContainers().add(betreuungspensumTagiAaregg2);
 
 		// Finanzielle Situation
-		FinanzielleSituationContainer finanzielleSituationGS1 = createFinanzielleSituationContainer();
-		finanzielleSituationGS1.getFinanzielleSituationJA().setNettolohn(MathUtil.DEFAULT.from(EINKOMMEN_GS1));
-		finanzielleSituationGS1.getFinanzielleSituationJA().setBruttovermoegen(Objects.requireNonNull(MathUtil.DEFAULT.from(VERMOEGEN_GS1)));
+		FinanzielleSituationContainer finanzielleSituationGS1 = createFinanzielleSituationContainer(VERMOEGEN_GS1, EINKOMMEN_GS1);
 		finanzielleSituationGS1.setGesuchsteller(gesuchsteller1);
 		gesuchsteller1.setFinanzielleSituationContainer(finanzielleSituationGS1);
 
-		FinanzielleSituationContainer finanzielleSituationGS2 = createFinanzielleSituationContainer();
-		finanzielleSituationGS2.getFinanzielleSituationJA().setNettolohn(MathUtil.DEFAULT.from(EINKOMMEN_GS2));
-		finanzielleSituationGS2.getFinanzielleSituationJA().setBruttovermoegen(Objects.requireNonNull(MathUtil.DEFAULT.from(VERMOEGEN_GS2)));
+		FinanzielleSituationContainer finanzielleSituationGS2 = createFinanzielleSituationContainer(VERMOEGEN_GS2, EINKOMMEN_GS2);
 		finanzielleSituationGS2.setGesuchsteller(gesuchsteller2);
 		gesuchsteller2.setFinanzielleSituationContainer(finanzielleSituationGS2);
-
-		// LU
-		TestFaelleUtil.fillInFinSitLuZero(finanzielleSituationGS1);
-		assert finanzielleSituationGS1.getFinanzielleSituationJA().getSelbstdeklaration() != null;
-		finanzielleSituationGS1.getFinanzielleSituationJA().getSelbstdeklaration().setVermoegen(MathUtil.DEFAULT.from(VERMOEGEN_GS1));
-		finanzielleSituationGS1.getFinanzielleSituationJA().getSelbstdeklaration().setEinkunftErwerb(MathUtil.DEFAULT.from(EINKOMMEN_GS1));
-
-		// SO
-		TestFaelleUtil.fillInFinSitSoZero(finanzielleSituationGS1);
-		finanzielleSituationGS1.getFinanzielleSituationJA().setSteuerbaresVermoegen(MathUtil.DEFAULT.from(VERMOEGEN_GS1));
-
-		TestFaelleUtil.fillInFinSitSoZero(finanzielleSituationGS2);
-		finanzielleSituationGS2.getFinanzielleSituationJA().setSteuerbaresVermoegen(MathUtil.DEFAULT.from(VERMOEGEN_GS2));
 
 		createEmptyEKVInfoContainer(gesuch);
 

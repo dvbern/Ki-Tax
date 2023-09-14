@@ -1,16 +1,18 @@
 /*
- * Ki-Tax: System for the management of external childcare subsidies
- * Copyright (C) 2017 City of Bern Switzerland
+ * Copyright (C) 2023 DV Bern AG, Switzerland
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Affero General Public License for more details.
+ *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
 import {IComponentOptions} from 'angular';
@@ -18,9 +20,11 @@ import {map} from 'rxjs/operators';
 import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
 import {CONSTANTS, MAX_FILE_SIZE} from '../../../app/core/constants/CONSTANTS';
 import {MANDANTS} from '../../../app/core/constants/MANDANTS';
+import {TSDemoFeature} from '../../../app/core/directive/dv-hide-feature/TSDemoFeature';
 import {ErrorService} from '../../../app/core/errors/service/ErrorService';
 import {LogFactory} from '../../../app/core/logging/LogFactory';
 import {ApplicationPropertyRS} from '../../../app/core/rest-services/applicationPropertyRS.rest';
+import {DemoFeatureRS} from '../../../app/core/service/demoFeatureRS.rest';
 import {DownloadRS} from '../../../app/core/service/downloadRS.rest';
 import {EwkRS} from '../../../app/core/service/ewkRS.rest';
 import {UploadRS} from '../../../app/core/service/uploadRS.rest';
@@ -32,9 +36,12 @@ import {TSDokumentGrundTyp} from '../../../models/enums/TSDokumentGrundTyp';
 import {TSDokumentTyp} from '../../../models/enums/TSDokumentTyp';
 import {TSEingangsart} from '../../../models/enums/TSEingangsart';
 import {TSEinstellungKey} from '../../../models/enums/TSEinstellungKey';
+import {TSFamilienstatus} from '../../../models/enums/TSFamilienstatus';
 import {TSGeschlecht} from '../../../models/enums/TSGeschlecht';
+import {TSGesuchstellerKardinalitaet} from '../../../models/enums/TSGesuchstellerKardinalitaet';
 import {TSRole} from '../../../models/enums/TSRole';
 import {getTSSpracheValues, TSSprache} from '../../../models/enums/TSSprache';
+import {TSUnterhaltsvereinbarungAnswer} from '../../../models/enums/TSUnterhaltsvereinbarungAnswer';
 import {TSWizardStepName} from '../../../models/enums/TSWizardStepName';
 import {TSWizardStepStatus} from '../../../models/enums/TSWizardStepStatus';
 import {TSSozialdienstFallDokument} from '../../../models/sozialdienst/TSSozialdienstFallDokument';
@@ -43,6 +50,7 @@ import {TSAdresseContainer} from '../../../models/TSAdresseContainer';
 import {TSDokument} from '../../../models/TSDokument';
 import {TSDokumentGrund} from '../../../models/TSDokumentGrund';
 import {TSDownloadFile} from '../../../models/TSDownloadFile';
+import {TSFamiliensituation} from '../../../models/TSFamiliensituation';
 import {TSGesuchsteller} from '../../../models/TSGesuchsteller';
 import {TSGesuchstellerContainer} from '../../../models/TSGesuchstellerContainer';
 import {EbeguRestUtil} from '../../../utils/EbeguRestUtil';
@@ -93,7 +101,8 @@ export class StammdatenViewController extends AbstractGesuchViewController<TSGes
         'DownloadRS',
         'ApplicationPropertyRS',
         'DokumenteRS',
-        'MandantService'
+        'MandantService',
+        'DemoFeatureRS'
     ];
 
     public filesTooBig: File[];
@@ -113,6 +122,8 @@ export class StammdatenViewController extends AbstractGesuchViewController<TSGes
     public dvFileUploadError: object;
     public frenchEnabled: boolean;
     private isLuzern: boolean;
+    private demoFeature2754: boolean = false;
+    private angebotTS: boolean;
 
     public constructor(
         $stateParams: IStammdatenStateParams,
@@ -133,7 +144,8 @@ export class StammdatenViewController extends AbstractGesuchViewController<TSGes
         private readonly downloadRS: DownloadRS,
         private readonly applicationPropertyRS: ApplicationPropertyRS,
         private readonly dokumenteRS: DokumenteRS,
-        private readonly mandantService: MandantService
+        private readonly mandantService: MandantService,
+        private readonly demoFeatureRS: DemoFeatureRS
     ) {
         super(gesuchModelManager,
             berechnungsManager,
@@ -151,8 +163,21 @@ export class StammdatenViewController extends AbstractGesuchViewController<TSGes
     public $onInit(): void {
         super.$onInit();
         this.initViewmodel();
-        this.loadAusweisNachweiseIfNotNewContainer();
+        this.initAusweisNachweis();
         this.setFrenchEnabled();
+    }
+
+    private initAusweisNachweis(): void {
+        this.einstellungRS.findEinstellung(TSEinstellungKey.AUSWEIS_NACHWEIS_REQUIRED,
+                this.gesuchModelManager.getGemeinde().id,
+                this.gesuchModelManager.getGesuchsperiode().id).subscribe(ausweisNachweisRequired => {
+            this.ausweisNachweisRequiredEinstellung = ausweisNachweisRequired.value === 'true';
+
+            if (!this.ausweisNachweisRequiredEinstellung) {
+                return;
+            }
+            this.loadAusweisNachweiseIfNotNewContainer();
+        }, error => LOG.error(error));
     }
 
     private loadAusweisNachweiseIfNotNewContainer(): void {
@@ -186,11 +211,53 @@ export class StammdatenViewController extends AbstractGesuchViewController<TSGes
             this.gesuchModelManager.getGesuchsperiode().id).subscribe(diplomatenStatusDisabled => {
             this.diplomatenStatusDisabled = diplomatenStatusDisabled.value === 'true';
         }, error => LOG.error(error));
-        this.einstellungRS.findEinstellung(TSEinstellungKey.AUSWEIS_NACHWEIS_REQUIRED,
-            this.gesuchModelManager.getGemeinde().id,
-            this.gesuchModelManager.getGesuchsperiode().id).subscribe(ausweisNachweisRequired => {
-            this.ausweisNachweisRequiredEinstellung = ausweisNachweisRequired.value === 'true';
-        }, error => LOG.error(error));
+        this.demoFeatureRS.isDemoFeatureAllowed(TSDemoFeature.KIBON_2754)
+            .then(isAllowed => this.demoFeature2754 = isAllowed);
+    }
+
+    public getFamilienSituationDisplayValue(): string {
+        if (!this.gesuchModelManager.isFKJVTexte || !this.demoFeature2754){
+            return this.gesuchstellerNumber.toString();
+        }
+
+        if (this.gesuchstellerNumber === 1) {
+            return '1';
+        }
+        let tsFamiliensituation: TSFamiliensituation = this.getGesuch().extractFamiliensituation();
+        if (EbeguUtil.isNullOrUndefined(tsFamiliensituation)) {
+            return '';
+        }
+        const partnerIdentisch: boolean = tsFamiliensituation.partnerIdentischMitVorgesuch;
+        let familienstatus: TSFamilienstatus = tsFamiliensituation.familienstatus;
+        if (EbeguUtil.isNotNullAndFalse(partnerIdentisch)){
+            familienstatus= this.getGesuch().extractFamiliensituationErstgesuch().familienstatus;
+            tsFamiliensituation = this.getGesuch().extractFamiliensituationErstgesuch();
+        }
+        switch (familienstatus) {
+            case TSFamilienstatus.KONKUBINAT_KEIN_KIND:
+                if (tsFamiliensituation.konkubinatGetXYearsInPeriod(this.getGesuch().gesuchsperiode.gueltigkeit)) {
+                    if(tsFamiliensituation.gesuchstellerKardinalitaet ===  TSGesuchstellerKardinalitaet.ZU_ZWEIT ||
+                            tsFamiliensituation.unterhaltsvereinbarung ===
+                            TSUnterhaltsvereinbarungAnswer.NEIN_UNTERHALTSVEREINBARUNG){
+                        return `2 (${this.$translate.instant('ANDERER_ELTERNTEIL')})`;
+                    }
+                    return `2 (${this.$translate.instant('GS2_KONKUBINAT_KEIN_KIND')})`;
+                } else if (tsFamiliensituation
+                        .konkubinatIsShorterThanXYearsAtAnyTimeAfterStartOfPeriode(this.getGesuch().gesuchsperiode)) {
+                    return `2 (${this.$translate.instant('ANDERER_ELTERNTEIL')})`;
+                }
+                break;
+            case TSFamilienstatus.ALLEINERZIEHEND:
+                if(tsFamiliensituation.gesuchstellerKardinalitaet ===  TSGesuchstellerKardinalitaet.ZU_ZWEIT ||
+                    tsFamiliensituation.unterhaltsvereinbarung ===
+                        TSUnterhaltsvereinbarungAnswer.NEIN_UNTERHALTSVEREINBARUNG){
+                    return `2 (${ this.$translate.instant('ANDERER_ELTERNTEIL')   })`;
+                }
+                break;
+            default:
+                break;
+        }
+        return `2 (${ this.$translate.instant(`GS2_${familienstatus}`)   })`;
     }
 
     public korrespondenzAdrClicked(): void {
@@ -431,7 +498,8 @@ export class StammdatenViewController extends AbstractGesuchViewController<TSGes
 
     public showRechnungsadresseCheckbox(): boolean {
         return this.gesuchstellerNumber === 1
-            && this.gesuchModelManager.isAnmeldungTagesschuleEnabledForMandantAndGemeinde()
+            && this.angebotTS
+            && this.gesuchModelManager.isAnmeldungTagesschuleEnabledForGemeinde()
             && this.gesuchModelManager.isAnmeldungenTagesschuleEnabledForGemeindeAndGesuchsperiode();
     }
 
@@ -519,9 +587,9 @@ export class StammdatenViewController extends AbstractGesuchViewController<TSGes
 
     private setFrenchEnabled(): void {
         this.applicationPropertyRS.getPublicPropertiesCached()
-            .then(properties => properties.frenchEnabled)
-            .then(frenchEnabled => {
-                this.frenchEnabled = frenchEnabled;
+            .then(properties => {
+                this.frenchEnabled = properties.frenchEnabled;
+                this.angebotTS = properties.angebotTSActivated;
             });
     }
 

@@ -15,6 +15,8 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import {TSMitteilungTypes} from '../../../models/enums/TSMitteilungTypes';
+
 export interface DVPosteingangFilter {
     sender?: string;
     gemeinde?: string;
@@ -25,4 +27,5 @@ export interface DVPosteingangFilter {
     sentDatum?: string;
     empfaenger?: string;
     empfaengerVerantwortung?: string;
+    messageTypes: TSMitteilungTypes[];
 }

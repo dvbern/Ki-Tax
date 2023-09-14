@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022 DV Bern AG, Switzerland
+ * Copyright (C) 2023 DV Bern AG, Switzerland
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -15,6 +15,16 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+.progress-counter {
+    text-align: end;
+    margin-bottom: 2rem;
+    font-weight: bold;
+}
+
+.verarbeitete-mitteilungen-container {
+    min-height: 65vh;
+}
+
 ul {
     list-style: none;
     padding: 0;
@@ -23,7 +33,6 @@ li {
     padding-left: 1.3em;
 }
 li:before {
-    content: '\f00c';
     display: inline-block;
     font-family: FontAwesome, sans-serif;
     margin-left: -1.3em;
@@ -31,5 +40,8 @@ li:before {
 }
 .nonapplied:before{
     content: '\f00d';
+}
+.applied:before {
+    content: '\f00c';
 }
 

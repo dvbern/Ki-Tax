@@ -17,6 +17,7 @@
 
 import {ChangeDetectionStrategy, ChangeDetectorRef, Component} from '@angular/core';
 import {Transition} from '@uirouter/core';
+import {IPromise} from 'angular';
 import {TSWizardStepName} from '../../../../../models/enums/TSWizardStepName';
 import {BerechnungsManager} from '../../../../service/berechnungsManager';
 import {GesuchModelManager} from '../../../../service/gesuchModelManager';
@@ -25,6 +26,7 @@ import {
     FinanzielleSituationLuzernService
 } from '../../../finanzielleSituation/luzern/finanzielle-situation-luzern.service';
 import {AbstractEinkommensverschlechterungResultat} from '../../AbstractEinkommensverschlechterungResultat';
+import {EinstellungRS} from '../../../../../admin/service/einstellungRS.rest';
 
 @Component({
     selector: 'dv-einkommensverschlechterung-luzern-resultate-view',
@@ -39,6 +41,7 @@ export class EinkommensverschlechterungLuzernResultateViewComponent extends Abst
         protected finSitLuService: FinanzielleSituationLuzernService,
         protected berechnungsManager: BerechnungsManager,
         protected ref: ChangeDetectorRef,
+        protected readonly einstellungRS: EinstellungRS,
         protected readonly $transition$: Transition
     ) {
         super(gesuchModelManager,
@@ -46,6 +49,13 @@ export class EinkommensverschlechterungLuzernResultateViewComponent extends Abst
             berechnungsManager,
             ref,
             TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_LUZERN,
+            einstellungRS,
             $transition$);
+    }
+
+    public save(onResult: (arg: any) => any): IPromise<any> {
+        //hier müssen wir nur den WizardStep Updaten. Die EKV ist schon gespeichert.
+        this.updateStatus(true);
+        return onResult(true);
     }
 }

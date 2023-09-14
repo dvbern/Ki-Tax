@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018 DV Bern AG, Switzerland
+ * Copyright (C) 2023 DV Bern AG, Switzerland
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -8,11 +8,11 @@
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
 import {CommonModule} from '@angular/common';
@@ -23,37 +23,62 @@ import {MatMenuModule} from '@angular/material/menu';
 import {TranslateLoader, TranslateModule, TranslateService} from '@ngx-translate/core';
 import {UIRouterModule} from '@uirouter/angular';
 import {GuidedTourModule} from 'ngx-guided-tour';
-import {DvEingabeBasisjahrComponent} from '../../gesuch/component/dv-eingabe-basisjahr/dv-eingabe-basisjahr.component';
+import {DvEingabeHintComponent} from '../../gesuch/component/dv-eingabe-hint/dv-eingabe-hint.component';
 import {DvNgHelpDialogComponent} from '../../gesuch/dialog/dv-ng-help-dialog/dv-ng-help-dialog.component';
 import {DvNgSupportDialogComponent} from '../../gesuch/dialog/dv-ng-support-dialog.component';
 import {TSBrowserLanguage} from '../../models/enums/TSBrowserLanguage';
-import {DvBenutzerEntry} from '../core/component/dv-benutzer-entry/dv-benutzer-entry.component';
+import {DvBenutzerEntryComponent} from '../core/component/dv-benutzer-entry/dv-benutzer-entry.component';
 import {DvBisherXComponent} from '../core/component/dv-bisher/dv-bisher-x.component';
 import {DvCheckboxXComponent} from '../core/component/dv-checkbox-x/dv-checkbox-x.component';
 import {ErrorMessagesComponent} from '../core/component/dv-error-messages/error-messages.component';
 import {DvHelpmenuComponent} from '../core/component/dv-helpmenu/dv-helpmenu.component';
 import {DVInputContainerXComponent} from '../core/component/dv-input-container/dv-input-container-x.component';
 import {DvInputLabelFieldComponent} from '../core/component/dv-input-label-field/dv-input-label-field.component';
-import {DvMitteilungDelegationComponent} from '../core/component/dv-mitteilung-delegation/dv-mitteilung-delegation.component';
+import {
+    DvMitteilungDelegationComponent
+} from '../core/component/dv-mitteilung-delegation/dv-mitteilung-delegation.component';
 import {DvNavigationXComponent} from '../core/component/dv-navigation-x/dv-navigation-x.component';
 import {DvNgBackDialogComponent} from '../core/component/dv-ng-back-dialog/dv-ng-back-dialog.component';
+import {DvNgCancelDialogComponent} from '../core/component/dv-ng-confirm-dialog/dv-ng-cancel-dialog.component';
 import {DvNgConfirmDialogComponent} from '../core/component/dv-ng-confirm-dialog/dv-ng-confirm-dialog.component';
-import {DvNgDisplayObjectDialogComponent} from '../core/component/dv-ng-display-object-dialog/dv-ng-display-object-dialog.component';
+import {
+    DvNgDisplayObjectDialogComponent
+} from '../core/component/dv-ng-display-object-dialog/dv-ng-display-object-dialog.component';
 import {DvNgGemeindeDialogComponent} from '../core/component/dv-ng-gemeinde-dialog/dv-ng-gemeinde-dialog.component';
-import {DvNgGesuchstellerDialogComponent} from '../core/component/dv-ng-gesuchsteller-dialog/dv-ng-gesuchsteller-dialog.component';
+import {
+    DvNgGesuchstellerDialogComponent
+} from '../core/component/dv-ng-gesuchsteller-dialog/dv-ng-gesuchsteller-dialog.component';
 import {DvNgLinkDialogComponent} from '../core/component/dv-ng-link-dialog/dv-ng-link-dialog.component';
-import {DvNgMitteilungDelegationDialogComponent} from '../core/component/dv-ng-mitteilung-delegation-dialog/dv-ng-mitteilung-delegation-dialog.component';
-import {DvNgMitteilungResultDialogComponent} from '../core/component/dv-ng-mitteilung-result-dialog/dv-ng-mitteilung-result-dialog.component';
-import {DvNgMultiSelectDialog} from '../core/component/dv-ng-multi-select-dialog/dv-ng-multi-select-dialog.component';
+import {
+    DvNgMitteilungDelegationDialogComponent
+} from '../core/component/dv-ng-mitteilung-delegation-dialog/dv-ng-mitteilung-delegation-dialog.component';
+import {
+    DvNgMitteilungResultDialogComponent
+} from '../core/component/dv-ng-mitteilung-result-dialog/dv-ng-mitteilung-result-dialog.component';
+import {
+    DvNgMultiSelectDialogComponent
+} from '../core/component/dv-ng-multi-select-dialog/dv-ng-multi-select-dialog.component';
 import {DvNgOkDialogComponent} from '../core/component/dv-ng-ok-dialog/dv-ng-ok-dialog.component';
 import {DvNgRemoveDialogComponent} from '../core/component/dv-ng-remove-dialog/dv-ng-remove-dialog.component';
-import {DvNgSozialdienstDialogComponent} from '../core/component/dv-ng-sozialdienst-dialog/dv-ng-sozialdienst-dialog.component';
-import {DvNgThreeButtonDialogComponent} from '../core/component/dv-ng-three-button-dialog/dv-ng-three-button-dialog.component';
+import {
+    DvNgSelectTraegerschaftEmailDialogComponent
+} from '../core/component/dv-ng-select-traegerschaft-email-dialog/dv-ng-select-traegerschaft-email-dialog.component';
+import {
+    DvNgSozialdienstDialogComponent
+} from '../core/component/dv-ng-sozialdienst-dialog/dv-ng-sozialdienst-dialog.component';
+import {
+    DvNgThreeButtonDialogComponent
+} from '../core/component/dv-ng-three-button-dialog/dv-ng-three-button-dialog.component';
 import {DvPosteingangComponent} from '../core/component/dv-posteingang/dv-posteingang.component';
 import {DvRadioContainerXComponent} from '../core/component/dv-radio-container/dv-radio-container-x.component';
 import {DvRadioInputXComponent} from '../core/component/dv-radio-input-x/dv-radio-input-x.component';
 import {DvValueinputXComponent} from '../core/component/dv-valueinput-x/dv-valueinput-x.component';
+import {LanguageSelectorComponent} from '../core/component/language-selector/language-selector.component';
 import {NavbarComponent} from '../core/component/navbar/navbar.component';
+import {
+    PulldownUserMenuButtonComponent
+} from '../core/component/pulldown-user-menu-button/pulldown-user-menu-button.component';
+import {PulldownUserMenuComponent} from '../core/component/pulldown-user-menu/pulldown-user-menu.component';
 import {DvDemoFeatureDirective} from '../core/directive/dv-hide-feature/dv-demo-feature.directive';
 import {DvLoadingButtonXDirective} from '../core/directive/dv-loading-button/dv-loading-button-x.directive';
 import {DvNgDebounceClickDirective} from '../core/directive/dv-ng-debounce-click/dv-ng-debounce-click.directive';
@@ -71,11 +96,15 @@ import {DvDatePickerXComponent} from './component/dv-date-picker/dv-date-picker-
 import {DvDemoFeatureWrapperComponent} from './component/dv-demo-feture-wrapper/dv-demo-feature-wrapper.component';
 import {DvMonthPickerComponent} from './component/dv-month-picker/dv-month-picker.component';
 import {DvSimpleTableComponent} from './component/dv-simple-table/dv-simple-table.component';
-import {ExternalClientAssignmentComponent} from './component/external-client-assignment/external-client-assignment.component';
-import {ExternalClientMultiselectComponent} from './component/external-client-multiselect/external-client-multiselect.component';
+import {
+    ExternalClientAssignmentComponent
+} from './component/external-client-assignment/external-client-assignment.component';
+import {
+    ExternalClientMultiselectComponent
+} from './component/external-client-multiselect/external-client-multiselect.component';
 import {GemeindeMultiselectComponent} from './component/gemeinde-multiselect/gemeinde-multiselect.component';
 import {MultipleFileUploadComponent} from './component/multpile-file-upload/multiple-file-upload.component';
-import {SavingInfo} from './component/save-input-info/saving-info.component';
+import {SavingInfoComponent} from './component/save-input-info/saving-info.component';
 import {SingleFileUploadComponent} from './component/single-file-upload/single-file-upload.component';
 import {StammdatenHeaderComponent} from './component/stammdaten-header/stammdaten-header.component';
 import {WarningComponent} from './component/warning/warning.component';
@@ -87,7 +116,9 @@ import {LoadingButtonDirective} from './directive/loading-button.directive';
 import {NumbersMinMaxDirective} from './directive/numbers-min-max.directive';
 import {TooltipDirective} from './directive/TooltipDirective';
 import {FullHeightContainerComponent} from './full-height-container/full-height-container.component';
-import {FullHeightInnerPaddingContainerComponent} from './full-height-inner-padding-container/full-height-inner-padding-container.component';
+import {
+    FullHeightInnerPaddingContainerComponent
+} from './full-height-inner-padding-container/full-height-inner-padding-container.component';
 import {MaterialModule} from './material.module';
 import {EbeguDateTimePipe} from './pipe/ebegu-date-time.pipe';
 import {EbeguDatePipe} from './pipe/ebegu-date.pipe';
@@ -132,7 +163,7 @@ export function createTranslateLoader(http: HttpClient, mandantService: MandantS
         DvMitteilungDelegationComponent,
         DvNgMitteilungDelegationDialogComponent,
         DvNgMitteilungResultDialogComponent,
-        DvBenutzerEntry,
+        DvBenutzerEntryComponent,
         DvNgDebounceClickDirective,
         DvNgGemeindeDialogComponent,
         DvNgHelpDialogComponent,
@@ -142,7 +173,8 @@ export function createTranslateLoader(http: HttpClient, mandantService: MandantS
         DvNgDisplayObjectDialogComponent,
         DvNgRemoveDialogComponent,
         DvNgBackDialogComponent,
-        DvNgMultiSelectDialog,
+        DvNgCancelDialogComponent,
+        DvNgMultiSelectDialogComponent,
         DvNgThreeButtonDialogComponent,
         DvNgShowElementDirective,
         DvPosteingangComponent,
@@ -157,6 +189,7 @@ export function createTranslateLoader(http: HttpClient, mandantService: MandantS
         UiViewComponent,
         KiBonGuidedTourComponent,
         DvNgGesuchstellerDialogComponent,
+        DvNgSelectTraegerschaftEmailDialogComponent,
         ExternalClientAssignmentComponent,
         ExternalClientMultiselectComponent,
         MultipleFileUploadComponent,
@@ -174,7 +207,7 @@ export function createTranslateLoader(http: HttpClient, mandantService: MandantS
         DvSimpleTableComponent,
         DvRadioContainerXComponent,
         DvSearchListComponent,
-        SavingInfo,
+        SavingInfoComponent,
         DVInputContainerXComponent,
         DvBisherXComponent,
         DvNgSozialdienstDialogComponent,
@@ -184,14 +217,17 @@ export function createTranslateLoader(http: HttpClient, mandantService: MandantS
         DvNavigationXComponent,
         DvInputLabelFieldComponent,
         EnableElementDirective,
-        DvEingabeBasisjahrComponent,
+        DvEingabeHintComponent,
         EbeguNumberPipe,
         DvValueinputXComponent,
         DvRadioInputXComponent,
         DvCheckboxXComponent,
         WarningComponent,
         DvNgEnableElementDirective,
-        DvDemoFeatureWrapperComponent
+        DvDemoFeatureWrapperComponent,
+        PulldownUserMenuComponent,
+        PulldownUserMenuButtonComponent,
+        LanguageSelectorComponent
     ],
     // adding custom elements schema disables Angular's element validation: you can now use transclusion for the
     // dv-accordion-tab with multi-slot transclusion (tab-title & tab-body elements).
@@ -217,7 +253,7 @@ export function createTranslateLoader(http: HttpClient, mandantService: MandantS
         DvNgMitteilungResultDialogComponent,
         DvNgDebounceClickDirective,
         DvNgGemeindeDialogComponent,
-        DvBenutzerEntry,
+        DvBenutzerEntryComponent,
         DvNgHelpDialogComponent,
         DvNgSupportDialogComponent,
         DvNgLinkDialogComponent,
@@ -225,7 +261,8 @@ export function createTranslateLoader(http: HttpClient, mandantService: MandantS
         DvNgDisplayObjectDialogComponent,
         DvNgRemoveDialogComponent,
         DvNgBackDialogComponent,
-        DvNgMultiSelectDialog,
+        DvNgCancelDialogComponent,
+        DvNgMultiSelectDialogComponent,
         DvNgThreeButtonDialogComponent,
         DvNgShowElementDirective,
         ErrorMessagesComponent,
@@ -251,7 +288,7 @@ export function createTranslateLoader(http: HttpClient, mandantService: MandantS
         DvSimpleTableComponent,
         DvRadioContainerXComponent,
         DvSearchListComponent,
-        SavingInfo,
+        SavingInfoComponent,
         DVInputContainerXComponent,
         DvBisherXComponent,
         DvNgSozialdienstDialogComponent,
@@ -262,7 +299,7 @@ export function createTranslateLoader(http: HttpClient, mandantService: MandantS
         DvNavigationXComponent,
         DvInputLabelFieldComponent,
         EnableElementDirective,
-        DvEingabeBasisjahrComponent,
+        DvEingabeHintComponent,
         DvValueinputXComponent,
         EbeguNumberPipe,
         DvValueinputXComponent,

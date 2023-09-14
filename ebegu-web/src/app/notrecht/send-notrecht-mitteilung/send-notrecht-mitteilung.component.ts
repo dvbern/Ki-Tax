@@ -15,9 +15,9 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {Component, Inject, ViewChild} from '@angular/core';
+import {Component, Inject, OnInit, ViewChild} from '@angular/core';
 import {NgForm} from '@angular/forms';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 import {TranslateService} from '@ngx-translate/core';
 import {TSRueckforderungStatus} from '../../../models/enums/TSRueckforderungStatus';
 import {TSRueckforderungMitteilung} from '../../../models/TSRueckforderungMitteilung';
@@ -27,7 +27,7 @@ import {TSRueckforderungMitteilung} from '../../../models/TSRueckforderungMittei
     templateUrl: './send-notrecht-mitteilung.template.html',
     styleUrls: ['./send-notrecht-mitteilung.component.less']
 })
-export class SendNotrechtMitteilungComponent {
+export class SendNotrechtMitteilungComponent implements OnInit {
 
     @ViewChild(NgForm, { static: true }) public form: NgForm;
 

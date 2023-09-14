@@ -48,7 +48,7 @@ import javax.ws.rs.core.UriInfo;
 
 import ch.dvbern.ebegu.api.converter.JaxBConverter;
 import ch.dvbern.ebegu.api.dtos.JaxEinkommensverschlechterungContainer;
-import ch.dvbern.ebegu.api.dtos.JaxFinanzModel;
+import ch.dvbern.ebegu.api.dtos.finanziellesituation.JaxFinanzModel;
 import ch.dvbern.ebegu.api.dtos.JaxGesuch;
 import ch.dvbern.ebegu.api.dtos.JaxId;
 import ch.dvbern.ebegu.api.resource.util.ResourceHelper;
@@ -242,7 +242,7 @@ public class EinkommensverschlechterungResource {
 		}
 		final Familiensituation familiensituation = gesuch.extractFamiliensituation();
 		Objects.requireNonNull(familiensituation);
-		familiensituation.setGemeinsameSteuererklaerung(jaxFinSitModel.isGemeinsameSteuererklaerung());
+		familiensituation.setGemeinsameSteuererklaerung(jaxFinSitModel.getJaxFamiliensituation().getGemeinsameSteuererklaerung());
 		if (jaxFinSitModel.getFinanzielleSituationContainerGS1() != null) {
 			gesuch.setGesuchsteller1(new GesuchstellerContainer());
 			//noinspection ConstantConditions

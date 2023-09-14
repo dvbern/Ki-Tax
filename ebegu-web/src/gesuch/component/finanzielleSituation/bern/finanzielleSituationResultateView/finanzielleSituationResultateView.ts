@@ -1,31 +1,39 @@
 /*
- * Ki-Tax: System for the management of external childcare subsidies
- * Copyright (C) 2017 City of Bern Switzerland
+ * Copyright (C) 2023 DV Bern AG, Switzerland
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Affero General Public License for more details.
+ *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
 import {IComponentOptions, IPromise} from 'angular';
 import {DvDialog} from '../../../../../app/core/directive/dv-dialog/dv-dialog';
+import {TSDemoFeature} from '../../../../../app/core/directive/dv-hide-feature/TSDemoFeature';
 import {ErrorService} from '../../../../../app/core/errors/service/ErrorService';
+import {DemoFeatureRS} from '../../../../../app/core/service/demoFeatureRS.rest';
 import {TSFinanzielleSituationResultateDTO} from '../../../../../models/dto/TSFinanzielleSituationResultateDTO';
 import {isSteuerdatenAnfrageStatusErfolgreich} from '../../../../../models/enums/TSSteuerdatenAnfrageStatus';
 import {TSWizardStepName} from '../../../../../models/enums/TSWizardStepName';
 import {TSWizardStepStatus} from '../../../../../models/enums/TSWizardStepStatus';
+import {TSFinanzielleSituation} from '../../../../../models/TSFinanzielleSituation';
 import {TSFinanzielleSituationContainer} from '../../../../../models/TSFinanzielleSituationContainer';
 import {TSFinanzModel} from '../../../../../models/TSFinanzModel';
 import {EbeguUtil} from '../../../../../utils/EbeguUtil';
-import {FinanzielleSituationAufteilungDialogController} from '../../../../dialog/FinanzielleSituationAufteilungDialogController';
+import {
+    FinanzielleSituationAufteilungDialogController
+} from '../../../../dialog/FinanzielleSituationAufteilungDialogController';
 import {BerechnungsManager} from '../../../../service/berechnungsManager';
 import {GesuchModelManager} from '../../../../service/gesuchModelManager';
+import {GesuchRS} from '../../../../service/gesuchRS.rest';
 import {WizardStepManager} from '../../../../service/wizardStepManager';
 import {AbstractGesuchViewController} from '../../../abstractGesuchView';
 import IScope = angular.IScope;
@@ -52,7 +60,9 @@ export class FinanzielleSituationResultateViewController extends AbstractGesuchV
         'WizardStepManager',
         '$scope',
         '$timeout',
-        'DvDialog'
+        'DvDialog',
+        'GesuchRS',
+        'DemoFeatureRS'
     ];
 
     public constructor(
@@ -62,7 +72,9 @@ export class FinanzielleSituationResultateViewController extends AbstractGesuchV
         wizardStepManager: WizardStepManager,
         $scope: IScope,
         $timeout: ITimeoutService,
-        private readonly dvDialog: DvDialog
+        private readonly dvDialog: DvDialog,
+        private readonly gesuchRS: GesuchRS,
+        private readonly demoFeatureRS: DemoFeatureRS
     ) {
         super(gesuchModelManager,
             berechnungsManager,
@@ -81,6 +93,16 @@ export class FinanzielleSituationResultateViewController extends AbstractGesuchV
         this.model.copyFinSitDataFromGesuch(this.gesuchModelManager.getGesuch());
 
         this.calculate();
+        this.initFinSitVorMutation();
+    }
+
+    private async initFinSitVorMutation(): Promise<void> {
+        // beim Erstgesuch macht dies keinen Sinn
+        if (EbeguUtil.isNullOrUndefined(this.getGesuch().vorgaengerId)) {
+            return;
+        }
+        const gesuchVorMutation = await this.gesuchRS.findVorgaengerGesuchNotIgnoriert(this.getGesuch().vorgaengerId);
+        this.model.initFinSitVorMutation(gesuchVorMutation);
     }
 
     public showGS2(): boolean {
@@ -181,5 +203,21 @@ export class FinanzielleSituationResultateViewController extends AbstractGesuchV
             return 'FINANZIELLE_SITUATION_VERMOEGEN_HELP_FKJV';
         }
         return 'FINANZIELLE_SITUATION_VERMOEGEN_HELP';
+    }
+
+    public getFinanzielleSituationVorMutationGS1(): TSFinanzielleSituation | object {
+        if (this.model.finanzielleSituationVorMutationGS1) {
+            return this.model.finanzielleSituationVorMutationGS1;
+        }
+        // leeres objekt zurückgeben, damit wir den Nullcheck nicht immer machen müssen
+        return {};
+    }
+
+    public getFinanzielleSituationVorMutationGS2(): TSFinanzielleSituation | object {
+        if (this.model.finanzielleSituationVorMutationGS2) {
+            return this.model.finanzielleSituationVorMutationGS2;
+        }
+        // leeres objekt zurückgeben, damit wir den Nullcheck nicht immer machen müssen
+        return {};
     }
 }

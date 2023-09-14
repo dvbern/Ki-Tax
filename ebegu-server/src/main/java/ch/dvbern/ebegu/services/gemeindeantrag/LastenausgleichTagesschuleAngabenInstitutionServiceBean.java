@@ -17,69 +17,32 @@
 
 package ch.dvbern.ebegu.services.gemeindeantrag;
 
-import java.math.BigDecimal;
-import java.sql.Date;
-import java.time.DayOfWeek;
-import java.time.LocalDate;
-import java.time.temporal.ChronoUnit;
-import java.util.Collection;
-import java.util.EnumMap;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-
-import javax.annotation.Nonnull;
-import javax.ejb.Local;
-import javax.ejb.Stateless;
-import javax.inject.Inject;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Join;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
-
-import ch.dvbern.ebegu.entities.AnmeldungTagesschule;
-import ch.dvbern.ebegu.entities.AnmeldungTagesschule_;
-import ch.dvbern.ebegu.entities.BelegungTagesschule;
-import ch.dvbern.ebegu.entities.BelegungTagesschuleModul;
-import ch.dvbern.ebegu.entities.BelegungTagesschule_;
-import ch.dvbern.ebegu.entities.Einstellung;
-import ch.dvbern.ebegu.entities.Gemeinde;
-import ch.dvbern.ebegu.entities.Gesuch_;
-import ch.dvbern.ebegu.entities.Gesuchsperiode;
-import ch.dvbern.ebegu.entities.Gesuchsperiode_;
-import ch.dvbern.ebegu.entities.InstitutionStammdaten;
-import ch.dvbern.ebegu.entities.InstitutionStammdaten_;
-import ch.dvbern.ebegu.entities.KindContainer;
-import ch.dvbern.ebegu.entities.KindContainer_;
-import ch.dvbern.ebegu.entities.ModulTagesschule;
-import ch.dvbern.ebegu.entities.ModulTagesschuleGroup;
-import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeContainer;
-import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeContainer_;
-import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenInstitution;
-import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenInstitutionContainer;
-import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenInstitutionContainer_;
-import ch.dvbern.ebegu.enums.BelegungTagesschuleModulIntervall;
-import ch.dvbern.ebegu.enums.Betreuungsstatus;
-import ch.dvbern.ebegu.enums.EinschulungTyp;
-import ch.dvbern.ebegu.enums.EinstellungKey;
-import ch.dvbern.ebegu.enums.ErrorCodeEnum;
+import ch.dvbern.ebegu.authentication.PrincipalBean;
+import ch.dvbern.ebegu.entities.*;
+import ch.dvbern.ebegu.entities.gemeindeantrag.*;
+import ch.dvbern.ebegu.enums.*;
 import ch.dvbern.ebegu.enums.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeFormularStatus;
 import ch.dvbern.ebegu.enums.gemeindeantrag.LastenausgleichTagesschuleAngabenInstitutionStatus;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
-import ch.dvbern.ebegu.services.AbstractBaseService;
-import ch.dvbern.ebegu.services.Authorizer;
-import ch.dvbern.ebegu.services.EinstellungService;
-import ch.dvbern.ebegu.services.GesuchsperiodeService;
-import ch.dvbern.ebegu.services.InstitutionStammdatenService;
+import ch.dvbern.ebegu.services.*;
 import ch.dvbern.ebegu.util.MathUtil;
 import ch.dvbern.lib.cdipersistence.Persistence;
 import com.google.common.base.Preconditions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.annotation.Nonnull;
+import javax.ejb.Local;
+import javax.ejb.Stateless;
+import javax.inject.Inject;
+import javax.persistence.criteria.*;
+import java.math.BigDecimal;
+import java.sql.Date;
+import java.time.DayOfWeek;
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
+import java.util.*;
 
 import static ch.dvbern.ebegu.util.Constants.LATS_NUMBER_WEEKS_PER_YEAR;
 
@@ -105,6 +68,9 @@ public class LastenausgleichTagesschuleAngabenInstitutionServiceBean extends Abs
 
 	@Inject
 	private EinstellungService einstellungService;
+
+	@Inject
+	private PrincipalBean principalBean;
 
 	private static final Logger LOG =
 		LoggerFactory.getLogger(LastenausgleichTagesschuleAngabenInstitutionServiceBean.class);
@@ -284,8 +250,9 @@ public class LastenausgleichTagesschuleAngabenInstitutionServiceBean extends Abs
 		authorizer.checkWriteAuthorization(fallContainer.getAngabenGemeinde());
 
 		Preconditions.checkState(
-			fallContainer.getAngabenGemeinde().isInBearbeitungGemeinde(),
-			"LastenausgleichTagesschuleAngabenGemeindeContainer muss in Bearbeitung Gemeinde sein"
+			fallContainer.getAngabenGemeinde().isInBearbeitungGemeinde() ||
+			fallContainer.getAngabenGemeinde().isInPruefungKanton() && principalBean.isCallerInAnyOfRole(UserRole.getMandantSuperadminRoles()) ,
+			"LastenausgleichTagesschuleAngabenGemeindeContainer muss in Bearbeitung Gemeinde sein oder vom Kanton bearbeitet werden"
 		);
 
 		Preconditions.checkState(
@@ -592,6 +559,12 @@ public class LastenausgleichTagesschuleAngabenInstitutionServiceBean extends Abs
 					functionName,
 					ErrorCodeEnum.ERROR_LATS_ANGABEN_INCOMPLETE,
 					"anzahlEingeschriebeneKinderKindergarten must not be null");
+		}
+		if (Objects.isNull(institutionAngaben.getAnzahlEingeschriebeneKinderBasisstufe())) {
+			throw new EbeguRuntimeException(
+				functionName,
+				ErrorCodeEnum.ERROR_LATS_ANGABEN_INCOMPLETE,
+				"anzahlEingeschriebeneKinderBasisstufe must not be null");
 		}
 		if (Objects.isNull(institutionAngaben.getAnzahlEingeschriebeneKinderPrimarstufe())) {
 			throw new EbeguRuntimeException(

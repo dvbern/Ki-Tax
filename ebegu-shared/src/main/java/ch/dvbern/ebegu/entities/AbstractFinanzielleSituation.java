@@ -15,26 +15,17 @@
 
 package ch.dvbern.ebegu.entities;
 
-import java.math.BigDecimal;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.FetchType;
-import javax.persistence.Inheritance;
-import javax.persistence.InheritanceType;
-import javax.persistence.JoinColumn;
-import javax.persistence.MappedSuperclass;
-import javax.persistence.OneToOne;
-import javax.persistence.Transient;
-
 import ch.dvbern.ebegu.enums.AntragCopyType;
 import ch.dvbern.ebegu.enums.FinanzielleSituationTyp;
 import ch.dvbern.ebegu.enums.SteuerdatenAnfrageStatus;
 import ch.dvbern.ebegu.util.MathUtil;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.hibernate.envers.Audited;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.persistence.*;
+import java.math.BigDecimal;
 
 /**
  * Gemeinsame Basisklasse für FinanzielleSituation und Einkommensverschlechterung
@@ -138,6 +129,11 @@ public abstract class AbstractFinanzielleSituation extends AbstractMutableEntity
 	@JoinColumn(nullable = true)
 	protected FinanzielleSituationSelbstdeklaration selbstdeklaration;
 
+	@Nullable
+	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true,fetch = FetchType.EAGER)
+	@JoinColumn(nullable = true)
+	private FinSitZusatzangabenAppenzell finSitZusatzangabenAppenzell;
+
 	public AbstractFinanzielleSituation() {
 	}
 
@@ -232,19 +228,34 @@ public abstract class AbstractFinanzielleSituation extends AbstractMutableEntity
 
 	@Nullable
 	public BigDecimal getSteuerbaresEinkommen() {
+		if (this.getFinSitZusatzangabenAppenzell() != null) {
+			return this.getFinSitZusatzangabenAppenzell().getSteuerbaresEinkommen();
+		}
 		return steuerbaresEinkommen;
 	}
 
 	public void setSteuerbaresEinkommen(@Nullable BigDecimal steuerbaresEinkommen) {
+		if (this.getFinSitZusatzangabenAppenzell() != null) {
+			this.getFinSitZusatzangabenAppenzell().setSteuerbaresEinkommen(steuerbaresEinkommen);
+			return;
+		}
 		this.steuerbaresEinkommen = steuerbaresEinkommen;
 	}
 
 	@Nullable
 	public BigDecimal getSteuerbaresVermoegen() {
+		if (this.getFinSitZusatzangabenAppenzell() != null) {
+			return this.getFinSitZusatzangabenAppenzell().getSteuerbaresVermoegen();
+		}
+
 		return steuerbaresVermoegen;
 	}
 
 	public void setSteuerbaresVermoegen(@Nullable BigDecimal steuerbaresVermoegen) {
+		if (this.getFinSitZusatzangabenAppenzell() != null) {
+			this.getFinSitZusatzangabenAppenzell().setSteuerbaresVermoegen(steuerbaresVermoegen);
+			return;
+		}
 		this.steuerbaresVermoegen = steuerbaresVermoegen;
 	}
 
@@ -351,6 +362,15 @@ public abstract class AbstractFinanzielleSituation extends AbstractMutableEntity
 		this.selbstdeklaration = selbstdeklaration;
 	}
 
+	@Nullable
+	public FinSitZusatzangabenAppenzell getFinSitZusatzangabenAppenzell() {
+		return finSitZusatzangabenAppenzell;
+	}
+
+	public void setFinSitZusatzangabenAppenzell(@Nullable FinSitZusatzangabenAppenzell finSitZusatzangabenAppenzell) {
+		this.finSitZusatzangabenAppenzell = finSitZusatzangabenAppenzell;
+	}
+
 	@Nonnull
 	public AbstractFinanzielleSituation copyAbstractFinanzielleSituation(
 		@Nonnull AbstractFinanzielleSituation target,
@@ -359,6 +379,7 @@ public abstract class AbstractFinanzielleSituation extends AbstractMutableEntity
 		switch (copyType) {
 		case MUTATION:
 		case MUTATION_NEUES_DOSSIER:
+		case ERNEUERUNG_AR_2023:
 			target.setNettolohn(this.getNettolohn());
 			target.setFamilienzulage(this.getFamilienzulage());
 			target.setErsatzeinkommen(this.getErsatzeinkommen());
@@ -381,6 +402,9 @@ public abstract class AbstractFinanzielleSituation extends AbstractMutableEntity
 			target.setBruttoertraegeVermoegen(this.getBruttoertraegeVermoegen());
 			if (this.getSelbstdeklaration() != null) {
 				target.setSelbstdeklaration(this.getSelbstdeklaration().copySelbsteklaration(new FinanzielleSituationSelbstdeklaration(), copyType));
+			}
+			if (this.getFinSitZusatzangabenAppenzell() != null) {
+				target.setFinSitZusatzangabenAppenzell(this.getFinSitZusatzangabenAppenzell().copyFinSitZusatzangabenAppenzell(new FinSitZusatzangabenAppenzell(), copyType));
 			}
 			break;
 		case ERNEUERUNG:
@@ -433,6 +457,9 @@ public abstract class AbstractFinanzielleSituation extends AbstractMutableEntity
 					&& this.getGeschaeftsverlust() != null
 					&& this.getEinkaeufeVorsorge() != null) ||
 			 this.getSelbstdeklaration() != null && this.getSelbstdeklaration().isVollstaendig();
+		case APPENZELL:
+			return this.getFinSitZusatzangabenAppenzell() != null
+					&& this.getFinSitZusatzangabenAppenzell().isVollstaendig();
 		case SOLOTHURN:
 		case BERN_FKJV:
 		case BERN:

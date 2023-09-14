@@ -16,11 +16,13 @@
 package ch.dvbern.ebegu.dto.suchfilter.smarttable;
 
 import java.io.Serializable;
+import java.util.Arrays;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlTransient;
 
+import ch.dvbern.ebegu.enums.MessageTypes;
 import org.apache.commons.lang.builder.ToStringBuilder;
 
 /**
@@ -41,6 +43,7 @@ public class MitteilungPredicateObjectDTO implements Serializable {
 	private String empfaengerVerantwortung;     // mitteilung.empfaengerVerantwortung;
 	private String mitteilungStatus;  // mitteilung.status
 	private String gemeinde;
+	private MessageTypes[] messageTypes = new MessageTypes[0];
 
 	public String getSender() {
 		return sender;
@@ -126,6 +129,15 @@ public class MitteilungPredicateObjectDTO implements Serializable {
 			.append("empfaengerVerantwortung", empfaengerVerantwortung)
 			.append("mitteilungStatus", mitteilungStatus)
 			.append("gemeinde", gemeinde)
+			.append("messageTypes", messageTypes)
 			.toString();
+	}
+
+	public MessageTypes[] getMessageTypes() {
+		return messageTypes;
+	}
+
+	public void setMessageTypes(MessageTypes[] messageTypes) {
+		this.messageTypes = Arrays.copyOf(messageTypes, messageTypes.length);
 	}
 }

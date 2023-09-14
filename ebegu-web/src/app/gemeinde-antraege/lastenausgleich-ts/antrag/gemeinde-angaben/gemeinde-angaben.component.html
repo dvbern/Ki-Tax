@@ -1,5 +1,5 @@
 <!--
-  ~ Copyright (C) 2020 DV Bern AG, Switzerland
+  ~ Copyright (C) 2023 DV Bern AG, Switzerland
   ~
   ~ This program is free software: you can redistribute it and/or modify
   ~ it under the terms of the GNU Affero General Public License as
@@ -186,7 +186,7 @@
             <div class="max-width-container-750">
 
                 <h3 class="uppercase">{{'LATS_ABRECHNUNG' | translate}}</h3>
-                <p class="italic">{{'LATS_EXPLANATION_SUB_HEADER_ABRECHNUNG' | translate}}</p>
+                <p class="italic margin-bottom-20">{{'LATS_EXPLANATION_SUB_HEADER_ABRECHNUNG' | translate}}</p>
                 <dv-input-container-x>
                     <label required
                            [ngClass]="{'label-required-error': abschliessenValidationActive && angabenForm.get('geleisteteBetreuungsstundenOhneBesondereBeduerfnisse').errors}">
@@ -248,7 +248,7 @@
                     <label required
                            [ngClass]="{'label-required-error': abschliessenValidationActive && angabenForm.get('geleisteteBetreuungsstundenBesondereVolksschulangebot').errors}">
                     <span
-                        [innerHtml]="'LATS_BETREUUNGSSTUNDEN_BESONDERE_VOLKSSCHULANGEBOT' | translate: {jahr: lATSAngabenGemeindeContainer.gesuchsperiode?.getBasisJahrPlus2()}"></span>
+                        [innerHtml]="'LATS_BETREUUNGSSTUNDEN_BESONDERE_VOLKSSCHULANGEBOT' | translate: {jahr: lATSAngabenGemeindeContainer.gesuchsperiode?.gesuchsperiodeString}"></span>
                         <dv-tooltip [text]="'LATS_BETREUUNGSSTUNDEN_BESONDERE_VOLKSSCHULANGEBOT_INFO' | translate: {jahr: lATSAngabenGemeindeContainer.gesuchsperiode?.getBasisJahrPlus2(), jahrBis: lATSAngabenGemeindeContainer.gesuchsperiode?.getBasisJahrPlus1()}"></dv-tooltip>
                     </label>
 
@@ -301,7 +301,10 @@
                     <div
                         *ngIf="abschliessenValidationActive && angabenForm.get('davonStundenZuNormlohnMehrAls50ProzentAusgebildete').errors?.plausibilisierungAdditionError">
                         <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
-                        <span translate>ERROR_LATS_PLAUSIBLISIERUNG_ADDITION</span>
+                        <span>{{'ERROR_LATS_PLAUSIBLISIERUNG_ADDITION' | translate:{
+                            normlohnkostenHoch: (lohnnormkostenSettingMoreThanFifty$ | async)?.value | number:'1.2-2',
+                            normlohnkostenTief: (lohnnormkostenSettingLessThanFifty$ | async)?.value | number:'1.2-2'
+                        } }}</span>
                     </div>
                     <div
                         *ngIf="abschliessenValidationActive && angabenForm.get('davonStundenZuNormlohnWenigerAls50ProzentAusgebildete').errors?.plausibilisierungTagesschulenStundenError">
@@ -389,6 +392,7 @@
                     <label required
                            [ngClass]="{'label-required-error': abschliessenValidationActive && angabenForm.get('einnahmenElterngebuehren').errors}">
                         {{'LATS_TATSACHLICHE_EINNAHMEN_ELTERNGEBUHREN' | translate:{jahr: lATSAngabenGemeindeContainer.gesuchsperiode?.gesuchsperiodeString} }}
+                        <dv-tooltip [text]="'LATS_TATSACHLICHE_EINNAHMEN_ELTERNGEBUHREN_INFO' | translate"></dv-tooltip>
                     </label>
                     <mat-form-field floatLabel="always">
                         <input matInput formControlName="einnahmenElterngebuehren" class="form-control dv-input"/>
@@ -406,6 +410,29 @@
                         <dv-bisher-x
                             [deklaration]="lATSAngabenGemeindeContainer?.angabenDeklaration?.einnahmenElterngebuehren"
                             [korrektur]="angabenForm.get('einnahmenElterngebuehren').value"
+                            [showBisher]="lATSAngabenGemeindeContainer.isAtLeastInBearbeitungKantonOrZurueckgegeben()"
+                            [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
+                        </dv-bisher-x>
+                    </mat-form-field>
+                </dv-input-container-x>
+
+                <dv-input-container-x>
+                    <label [ngClass]="{'label-required-error': abschliessenValidationActive && angabenForm.get('einnahmenElterngebuehrenVolksschulangebot').errors}">
+                        {{'LATS_EINNAHMEN_ELTERNGEBUEHREN_VOLKSSCHALANGEBOT' | translate:{jahr: lATSAngabenGemeindeContainer.gesuchsperiode?.gesuchsperiodeString} }}
+                        <dv-tooltip [text]="'LATS_EINNAHMEN_ELTERNGEBUEHREN_VOLKSSCHALANGEBOT_INFO' | translate"></dv-tooltip>
+                    </label>
+                    <mat-form-field floatLabel="always">
+                        <input matInput formControlName="einnahmenElterngebuehrenVolksschulangebot" class="form-control dv-input"/>
+                        <mat-error *ngIf="angabenForm.get('einnahmenElterngebuehrenVolksschulangebot').errors?.noNumberError"
+                                   translate>ERROR_NUMBER
+                        </mat-error>
+                        <mat-error
+                            *ngIf="angabenForm.get('einnahmenElterngebuehrenVolksschulangebot').errors?.pattern && !angabenForm.get('einnahmenElterngebuehrenVolksschulangebot').errors?.noNumberError">
+                            {{'ERROR_STEP' | translate:{value: 0.01} }}
+                        </mat-error>
+                        <dv-bisher-x
+                            [deklaration]="lATSAngabenGemeindeContainer?.angabenDeklaration?.einnahmenElterngebuehrenVolksschulangebot"
+                            [korrektur]="angabenForm.get('einnahmenElterngebuehrenVolksschulangebot').value"
                             [showBisher]="lATSAngabenGemeindeContainer.isAtLeastInBearbeitungKantonOrZurueckgegeben()"
                             [specificBisherLabel]="'LATS_BISHER_LABEL' | translate">
                         </dv-bisher-x>
@@ -468,15 +495,15 @@
                 </dv-input-container-x>
 
             </div>
-            <div class="controlling-box" *ngIf="controllingCalculator">
+            <div class="controlling-box" *ngIf="controllingActive()">
                 <table class="besondere-beduerfnisse-controlling">
                     <tr>
                         <td>{{'LATS_CONTROLLING_ANTEIL_BETRSONDERE_BEDUERFNISSE' | translate}} {{lATSAngabenGemeindeContainer?.gesuchsperiode.gesuchsperiodeString}}</td>
-                        <td>{{ controllingCalculator.anteilStundenBesondereBeduerfnisseCurrentPeriode$ | async }}</td>
+                        <td>{{ controllingCalculator?.anteilStundenBesondereBeduerfnisseCurrentPeriode$ | async }}</td>
                     </tr>
                     <tr>
                         <td>{{'LATS_CONTROLLING_ANTEIL_BETRSONDERE_BEDUERFNISSE' | translate}} {{lATSAngabenGemeindeContainer?.gesuchsperiode | previousPeriodeStr}}</td>
-                        <td>{{ controllingCalculator.anteilStundenBesondereBeduerfnissePreviousPeriode$ | async }}</td>
+                        <td>{{ controllingCalculator?.anteilStundenBesondereBeduerfnissePreviousPeriode$ | async }}</td>
                     </tr>
                 </table>
                 <table class="betreuungsstunden-controlling">
@@ -492,17 +519,17 @@
                     </tr>
                     <tr>
                         <td>{{ 'LATS_CONTROLLING_VERAENDERUNG_BETREUUNGSSTUNDEN' | translate }}</td>
-                        <td>{{ controllingCalculator.veraenderungBetreuungsstunden$ | async }}</td>
+                        <td>{{ controllingCalculator?.veraenderungBetreuungsstunden$ | async }}</td>
                     </tr>
                 </table>
                 <table class="elternbeitrag-controlling">
                     <tr>
                         <td>{{ 'LATS_CONTROLLING_ANTEIL_ELTERNBEITRAEGE' | translate }} {{lATSAngabenGemeindeContainer?.gesuchsperiode.gesuchsperiodeString}}</td>
-                        <td>{{ controllingCalculator.anteilElternbeitraegeCurrentPeriode$ | async }}</td>
+                        <td>{{ controllingCalculator?.anteilElternbeitraegeCurrentPeriode$ | async }}</td>
                     </tr>
                     <tr>
                         <td>{{ 'LATS_CONTROLLING_ANTEIL_ELTERNBEITRAEGE' | translate }} {{lATSAngabenGemeindeContainer?.gesuchsperiode | previousPeriodeStr}}</td>
-                        <td>{{ controllingCalculator.anteilElternbeitraegePreviousPeriode$ | async }}</td>
+                        <td>{{ controllingCalculator?.anteilElternbeitraegePreviousPeriode$ | async }}</td>
                     </tr>
                 </table>
             </div>
@@ -757,15 +784,15 @@
                 </div>
 
             </div>
-            <div class="controlling-box" *ngIf="controllingCalculator">
+            <div class="controlling-box" *ngIf="controllingActive()">
                 <table class="kostenbeitrag-controlling">
                     <tr>
                         <td>{{ 'LATS_CONTROLLING_KOSTENANTEIL' | translate }}</td>
-                        <td>{{ this.controllingCalculator.kostenanteilGemeindeGesamtkosten$ | async }}</td>
+                        <td>{{ this.controllingCalculator?.kostenanteilGemeindeGesamtkosten$ | async }}</td>
                     </tr>
                     <tr>
                         <td>{{ 'LATS_CONTROLLING_UEBERSCHUSSANTEIL' | translate }}</td>
-                        <td>{{ this.controllingCalculator.erstragsanteilGemeindeGesamtkosten$ | async }}</td>
+                        <td>{{ this.controllingCalculator?.erstragsanteilGemeindeGesamtkosten$ | async }}</td>
                     </tr>
                 </table>
             </div>
@@ -946,8 +973,7 @@
             </dv-input-container-x>
 
             <dv-input-container-x>
-                <label required
-                       [ngClass]="{'label-required-error': abschliessenValidationActive && angabenForm.get('maximalTarif').errors}"
+                <label
                        id="maximalTarif-radio-group">
                     {{'LATS_EINKOMMEN_ELTERN_MAXIMALTARIF' | translate}}
                 </label>
@@ -1089,7 +1115,7 @@
             <h3 class="uppercase">{{'LATS_ANGABEN_GEMEINDE_BEMERKUNGEN' | translate}}</h3>
 
             <dv-input-container-x [verticalAlign]="true">
-                <mat-form-field floatLabel="always" class="no-margin-left">
+                <mat-form-field floatLabel="always">
                     <textarea matInput
                               formControlName="bemerkungen"
                               class="form-control dv-input"></textarea>
@@ -1104,6 +1130,30 @@
 
         </div>
 
+        <div *ngIf="hasStarkeVeraenderung">
+
+            <div class="well well-status-warten">
+                <i class="fa fa-exclamation" aria-hidden="true"></i>
+                <span>{{'LATS_WARNUNG_STARKE_VERAENDERUNG' | translate:
+                    {prozent: controllingCalculator?.veraenderungBetreuungsstunden$ | async }
+                    }}</span>
+            </div>
+
+
+            <h3 class="uppercase">{{'LATS_BEGRUENDUNG_STARKE_VERAENDERUNG' | translate}}</h3>
+
+            <div class="max-width-container-750">
+                <dv-input-container-x [verticalAlign]="true">
+                    <mat-form-field floatLabel="always">
+                    <textarea matInput
+                              required
+                              formControlName="bemerkungStarkeVeraenderung"
+                              class="form-control dv-input"></textarea>
+                    </mat-form-field>
+                </dv-input-container-x>
+            </div>
+        </div>
+
         <div class="well well-status-warten"
              *ngIf="!lATSAngabenGemeindeContainer?.allAngabenInstitutionContainersGeprueft()">
             <i class="fa fa-exclamation" aria-hidden="true"></i>
@@ -1112,13 +1162,13 @@
             </span>
         </div>
 
-        <div class="row" *ngIf="falscheAngabenVisible | async">
-            <div class="col-md-12">
-                <a class="pointer-cursor" (click)="onFalscheAngaben()" translate>FERIENBETREUUNG_ANGABEN_KORRIGIEREN</a>
-            </div>
-        </div>
-
         <div class="actions">
+            <button class="dv-btn cancel-button uppercase"
+                    type="button"
+                    *ngIf="falscheAngabenVisible | async"
+                    (click)="onFalscheAngaben()">
+                <span translate>FERIENBETREUUNG_ANGABEN_KORRIGIEREN</span>
+            </button>
             <dv-loading-button
                 class="uppercase"
                 type="button"

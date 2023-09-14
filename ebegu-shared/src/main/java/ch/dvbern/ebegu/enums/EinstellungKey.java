@@ -115,14 +115,17 @@ public enum EinstellungKey {
 	// Maximale Vergünstigung für Vorschulkinder ab 12 Monaten
 	MAX_VERGUENSTIGUNG_VORSCHULE_KIND_PRO_TG(MandantIdentifier.getAll()),
 	// Maximale Vergünstigung bei Eintritt des Kindergartens
-	MAX_VERGUENSTIGUNG_SCHULE_PRO_TG(MandantIdentifier.getAll()),
+	MAX_VERGUENSTIGUNG_KINDERGARTEN_PRO_TG(MandantIdentifier.getAll()),
 
 	// Maximale Vergünstigung für Vorschulkinder unter 12 Monaten
 	MAX_VERGUENSTIGUNG_VORSCHULE_BABY_PRO_STD(MandantIdentifier.getAll()),
 	// Maximale Vergünstigung für Vorschulkinder ab 12 Monaten
 	MAX_VERGUENSTIGUNG_VORSCHULE_KIND_PRO_STD(MandantIdentifier.getAll()),
 	// Maximale Vergünstigung bei Eintritt des Kindergartens
-	MAX_VERGUENSTIGUNG_SCHULE_PRO_STD(MandantIdentifier.getAll()),
+	MAX_VERGUENSTIGUNG_KINDERGARTEN_PRO_STD(MandantIdentifier.getAll()),
+
+	// Maximale Vergünstigung bei Eintritt in die Primarstufe
+	MAX_VERGUENSTIGUNG_PRIMAR_PRO_STD(MandantIdentifier.getAll()),
 
 	// Minimal Massgebendes Einkommen
 	MIN_MASSGEBENDES_EINKOMMEN(MandantIdentifier.getAll()),
@@ -311,7 +314,7 @@ public enum EinstellungKey {
 	AUSWEIS_NACHWEIS_REQUIRED(MandantIdentifier.getAll()),
 
 	// Switch Eingabe des Betreuungspensums in Tagen oder Prozent erlauben (KIBON-2404)
-	BETREUUNG_INPUT_SWITCH_ENABLED(MandantIdentifier.getAll()),
+	PENSUM_ANZEIGE_TYP(MandantIdentifier.getAll()),
 
 	// Aktiviert die Checkbox, um die Verfügung eingschrieben zu versenden
 	VERFUEGUNG_EINGESCHRIEBEN_VERSENDEN_AKTIVIERT(MandantIdentifier.getAll()),
@@ -329,7 +332,10 @@ public enum EinstellungKey {
 	VERANLAGUNG_MIN_UNTERSCHIED_MASSGEBENDESEINK(MandantIdentifier.getAll()),
 
 	// Gibt an, ob die Zahlungsangaben für Antragsteller auf der FinSit required oder optional sind (KIBON-2688)
-	ZAHLUNGSANGABEN_ANTRAGSTELLER_REQUIRED(MandantIdentifier.BERN);
+	ZAHLUNGSANGABEN_ANTRAGSTELLER_REQUIRED(MandantIdentifier.BERN),
+
+	// Ab welchem Alter in Monaten kann ein Kind Anspruch haben (davor ist der Anspruch 0)
+	ANSPRUCH_AB_X_MONATEN(MandantIdentifier.getAll());
 
 
 	private EinstellungTyp typ;

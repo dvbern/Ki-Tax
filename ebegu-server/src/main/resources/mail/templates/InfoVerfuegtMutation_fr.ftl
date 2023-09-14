@@ -6,6 +6,7 @@
 <#-- @ftlvariable name="gesuchsteller" type="ch.dvbern.ebegu.entities.Gesuchsteller" -->
 <#-- @ftlvariable name="isSozialdienst" type="java.lang.Boolean" -->
 <#-- @ftlvariable name="hostname" type="java.lang.String" -->
+<#-- @ftlvariable name="gruss" type="java.lang.String" -->
 From: ${configuration.senderAddress}
 To: <@base64Header>${senderFullName}</@base64Header> <${empfaengerMail}>
 Subject: <@base64Header>kiBon <#if configuration.isDevmode>Système de test</#if> – Le changement <#if isSozialdienst>pour ${gesuchsteller.fullName}</#if> a été enregistré</@base64Header>
@@ -27,13 +28,12 @@ ${templateConfiguration.mailCss}
 		Chère famille,
 	</p>
 	<p>
-        <#if isSozialdienst>Le changement pour ${gesuchsteller.fullName}<#else>Le changement</#if> que vous avez communiqué le ${gesuch.getEingangsdatumFormated()} a été enregistré.
-		Vous pouvez consulter le résultat
-		<a href="<#if configuration.clientUsingHTTPS>https://<#else>http://</#if>${hostname}/gesuch/verfuegen/${gesuch.id}">ici</a>.
+        Le ${gesuch.getEingangsdatumFormated()}, un changement<#if isSozialdienst> pour ${gesuchsteller.fullName}<#else></#if> a été saisi dans votre demande. Nous l’avons traité.
+		Veuillez cliquer <a href="<#if configuration.clientUsingHTTPS>https://<#else>http://</#if>${hostname}/gesuch/verfuegen/${gesuch.id}">ici</a> pour consulter le résultat.
 	</p>
 	<p>
 		Nous vous présentons nos meilleures salutations.<br/>
-		Votre commune ${gesuch.dossier.gemeinde.name}
+		${gruss}
 	</p>
 	<p>
 		<#if configuration.isDevmode>

@@ -15,14 +15,14 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {ChangeDetectionStrategy, Component, OnInit, ViewChild} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, ViewChild} from '@angular/core';
 import {NgForm} from '@angular/forms';
 import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
 import {TranslateService} from '@ngx-translate/core';
 import {StateService, Transition} from '@uirouter/core';
 import * as moment from 'moment';
-import {take} from 'rxjs/operators';
-import { AuthServiceRS } from '../../../authentication/service/AuthServiceRS.rest';
+import {filter, mergeMap, take} from 'rxjs/operators';
+import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {GemeindeRS} from '../../../gesuch/service/gemeindeRS.rest';
 import {TSBetreuungsangebotTyp} from '../../../models/enums/TSBetreuungsangebotTyp';
 import {TSInstitutionStatus} from '../../../models/enums/TSInstitutionStatus';
@@ -42,6 +42,7 @@ import {ApplicationPropertyRS} from '../../core/rest-services/applicationPropert
 import {BenutzerRSX} from '../../core/service/benutzerRSX.rest';
 import {InstitutionRS} from '../../core/service/institutionRS.rest';
 import {TraegerschaftRS} from '../../core/service/traegerschaftRS.rest';
+import {DvNgSelectTraegerschaftEmailDialogComponent} from '../../core/component/dv-ng-select-traegerschaft-email-dialog/dv-ng-select-traegerschaft-email-dialog.component';
 
 const LOG = LogFactory.createLog('AddInstitutionComponent');
 
@@ -80,13 +81,28 @@ export class AddInstitutionComponent implements OnInit {
         private readonly benutzerRS: BenutzerRSX,
         private readonly dialog: MatDialog,
         private readonly applicationPropertyRS: ApplicationPropertyRS,
-        private readonly authServiceRS: AuthServiceRS
+        private readonly authServiceRS: AuthServiceRS,
+        private readonly cd: ChangeDetectorRef
     ) {
     }
 
     public ngOnInit(): void {
         this.betreuungsangebot = this.$transition$.params().betreuungsangebot;
-        this.betreuungsangebote = this.$transition$.params().betreuungsangebote;
+        this.applicationPropertyRS.getPublicPropertiesCached().then(props => {
+            this.betreuungsangebote =
+                this.$transition$.params().betreuungsangebote.filter((angebotTyp: TSBetreuungsangebotTyp) => {
+                    switch (angebotTyp) {
+                        case TSBetreuungsangebotTyp.TAGESFAMILIEN:
+                            return props.angebotTFOActivated;
+                        case TSBetreuungsangebotTyp.FERIENINSEL:
+                            return props.angebotFIActivated;
+                        case TSBetreuungsangebotTyp.TAGESSCHULE:
+                            return props.angebotTSActivated;
+                        default:
+                            return true;
+                    }
+                });
+        });
         this.isLatsInstitution = this.$transition$.params().latsOnly;
 
         // initally we think it is a Betreuungsgutschein Institution
@@ -103,11 +119,11 @@ export class AddInstitutionComponent implements OnInit {
         this.startDate = this.getStartDate();
 
         // if it is not a Betreuungsgutschein Institution we have to load the Gemeinden
-        if (!this.isBGInstitution) {
-            this.loadGemeindenList();
-        }
         this.applicationPropertyRS.getInstitutionenDurchGemeindenEinladen().then(result => {
             this.institutionenDurchGemeindenEinladen = result;
+            if (this.institutionenDurchGemeindenEinladen || !this.isBGInstitution) {
+                this.loadGemeindenList();
+            }
         });
     }
 
@@ -221,6 +237,8 @@ export class AddInstitutionComponent implements OnInit {
             obs$ = this.gemeindeRS.getGemeindenForTSByPrincipal$();
         } else if (this.betreuungsangebot === TSBetreuungsangebotTyp.FERIENINSEL) {
             obs$ = this.gemeindeRS.getGemeindenForFIByPrincipal$();
+        } else {
+            obs$ = this.gemeindeRS.getGemeindenForBGByPrincipal$();
         }
         obs$.pipe(take(1))
             .subscribe(
@@ -263,5 +281,22 @@ export class AddInstitutionComponent implements OnInit {
     // anderen Rollen ist es entweder nicht sichtbar, oder required
     public selectGemeindeRequired(): boolean {
         return !this.authServiceRS.isRole(TSRole.SUPER_ADMIN);
+    }
+
+    public selectAdminMail(): void {
+
+        this.benutzerRS.getAllEmailAdminForTraegerschaft(this.institution.traegerschaft)
+            .then(mail => {
+                const dialogConfig = new MatDialogConfig();
+
+                dialogConfig.data = mail;
+
+                this.dialog.open(DvNgSelectTraegerschaftEmailDialogComponent, dialogConfig)
+                    .afterClosed()
+                    .subscribe(result => {
+                        this.adminMail = result.selectedEmail;
+                        this.cd.markForCheck();
+                    });
+            });
     }
 }

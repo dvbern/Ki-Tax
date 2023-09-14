@@ -37,6 +37,7 @@ import javax.validation.constraints.NotNull;
 
 import ch.dvbern.ebegu.enums.Sprache;
 import org.hibernate.envers.Audited;
+import org.hibernate.envers.NotAudited;
 
 import static ch.dvbern.ebegu.util.Constants.TEN_MB;
 
@@ -66,12 +67,14 @@ public class GemeindeStammdatenGesuchsperiode extends AbstractEntity {
 	@Column(nullable = true, length = TEN_MB) // 10 megabytes
 	@Lob
 	@Basic(fetch = FetchType.LAZY)
+	@NotAudited
 	private byte[] merkblattAnmeldungTagesschuleDe;
 
 	@Nullable
 	@Column(nullable = true, length = TEN_MB) // 10 megabytes
 	@Lob
 	@Basic(fetch = FetchType.LAZY)
+	@NotAudited
 	private byte[] merkblattAnmeldungTagesschuleFr;
 
 	@Nullable

@@ -15,7 +15,7 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
+import {ChangeDetectionStrategy, Component, HostBinding, OnInit} from '@angular/core';
 import {StateService} from '@uirouter/angular';
 import {Permission} from '../../../app/authorisation/Permission';
 import {PERMISSIONS} from '../../../app/authorisation/Permissions';
@@ -27,13 +27,12 @@ import {TSBenutzer} from '../../../models/TSBenutzer';
     selector: 'dv-benutzer-list-view-x',
     templateUrl: './benutzer-list-view-x.component.html',
     styleUrls: ['./benutzer-list-view-x.component.less'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    host: {
-        class: 'overflow-scroll',
-        flex: 'auto'
-    }
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class BenutzerListViewXComponent implements OnInit {
+
+     @HostBinding('class') public class = 'overflow-scroll';
+     @HostBinding('flex') public flex = 'auto';
 
     public constructor(
         private readonly state: StateService,

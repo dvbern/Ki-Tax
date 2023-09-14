@@ -1,16 +1,18 @@
 /*
- * Ki-Tax: System for the management of external childcare subsidies
- * Copyright (C) 2017 City of Bern Switzerland
+ * Copyright (C) 2023 DV Bern AG, Switzerland
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Affero General Public License for more details.
+ *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
 package ch.dvbern.ebegu.services;
@@ -27,6 +29,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -62,6 +65,7 @@ import ch.dvbern.ebegu.entities.Gemeinde_;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Gesuch_;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
+import ch.dvbern.ebegu.entities.Gesuchsperiode_;
 import ch.dvbern.ebegu.entities.Gesuchsteller;
 import ch.dvbern.ebegu.entities.GesuchstellerContainer;
 import ch.dvbern.ebegu.entities.GesuchstellerContainer_;
@@ -80,6 +84,7 @@ import ch.dvbern.ebegu.enums.AntragTyp;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
 import ch.dvbern.ebegu.enums.GesuchBetreuungenStatus;
+import ch.dvbern.ebegu.enums.GesuchsperiodeStatus;
 import ch.dvbern.ebegu.enums.SearchMode;
 import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
@@ -240,6 +245,7 @@ public class SearchServiceBean extends AbstractBaseService implements SearchServ
 
 		setMandantFilterForCurrentUser(cb, joinFall, predicates, user);
 		setGemeindeFilterForCurrentUser(user, joinGemeinde, predicates);
+		setOnlyAktivePeriodenPredicate(cb, joinGesuchsperiode, predicates, antragTableFilterDto.isOnlyAktivePerioden());
 
 		// Predicates derived from PredicateDTO (Filter coming from client)
 		AntragPredicateObjectDTO predicateObjectDto =
@@ -582,6 +588,20 @@ public class SearchServiceBean extends AbstractBaseService implements SearchServ
 			break;
 		}
 		return result;
+	}
+
+	private void setOnlyAktivePeriodenPredicate(
+		@Nonnull CriteriaBuilder cb,
+		@Nonnull Join<Gesuch, Gesuchsperiode> joinGesuchsperiode,
+		@Nonnull List<Predicate> predicates,
+		@Nullable Boolean onlyAktivePerioden
+	) {
+		if (onlyAktivePerioden == null || !onlyAktivePerioden) {
+			return;
+		}
+		predicates.add(
+			cb.equal(joinGesuchsperiode.get(Gesuchsperiode_.status), GesuchsperiodeStatus.AKTIV)
+		);
 	}
 
 	private void setMandantFilterForCurrentUser(

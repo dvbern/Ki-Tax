@@ -1,21 +1,28 @@
 /*
- * Ki-Tax: System for the management of external childcare subsidies
- * Copyright (C) 2017 City of Bern Switzerland
+ * Copyright (C) 2023 DV Bern AG, Switzerland
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Affero General Public License for more details.
+ *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
 package ch.dvbern.ebegu.api.dtos;
 
-import java.time.LocalDateTime;
+import ch.dvbern.ebegu.api.dtos.finanziellesituation.JaxFinanzielleSituation;
+import ch.dvbern.ebegu.enums.MitteilungStatus;
+import ch.dvbern.ebegu.enums.MitteilungTeilnehmerTyp;
+import ch.dvbern.ebegu.enums.MitteilungTyp;
+import ch.dvbern.ebegu.util.Constants;
+import ch.dvbern.lib.date.converters.LocalDateTimeXMLConverter;
 
 import javax.annotation.Nullable;
 import javax.validation.constraints.NotNull;
@@ -24,11 +31,7 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-
-import ch.dvbern.ebegu.enums.MitteilungStatus;
-import ch.dvbern.ebegu.enums.MitteilungTeilnehmerTyp;
-import ch.dvbern.ebegu.util.Constants;
-import ch.dvbern.lib.date.converters.LocalDateTimeXMLConverter;
+import java.time.LocalDateTime;
 
 /**
  * DTO fuer Stammdaten der Mitteilungen
@@ -44,6 +47,9 @@ public class JaxMitteilung extends JaxAbstractDTO {
 
 	@Nullable
 	private JaxBetreuung betreuung;
+
+	@Nullable
+	private JaxFinanzielleSituation finanzielleSituation;
 
 	@Nullable
 	private MitteilungTeilnehmerTyp senderTyp;
@@ -76,6 +82,9 @@ public class JaxMitteilung extends JaxAbstractDTO {
 	private JaxInstitution institution;
 
 	@Nullable
+	private MitteilungTyp mitteilungTyp;
+
+	@Nullable
 	public JaxDossier getDossier() {
 		return dossier;
 	}
@@ -91,6 +100,15 @@ public class JaxMitteilung extends JaxAbstractDTO {
 
 	public void setBetreuung(@Nullable JaxBetreuung betreuung) {
 		this.betreuung = betreuung;
+	}
+
+	@Nullable
+	public JaxFinanzielleSituation getFinanzielleSituation() {
+		return finanzielleSituation;
+	}
+
+	public void setFinanzielleSituation(@Nullable JaxFinanzielleSituation finanzielleSituation) {
+		this.finanzielleSituation = finanzielleSituation;
 	}
 
 	@Nullable
@@ -171,5 +189,14 @@ public class JaxMitteilung extends JaxAbstractDTO {
 
 	public void setInstitution(@Nullable JaxInstitution institution) {
 		this.institution = institution;
+	}
+
+	@Nullable
+	public MitteilungTyp getMitteilungTyp() {
+		return mitteilungTyp;
+	}
+
+	public void setMitteilungTyp(@Nullable MitteilungTyp mitteilungTyp) {
+		this.mitteilungTyp = mitteilungTyp;
 	}
 }

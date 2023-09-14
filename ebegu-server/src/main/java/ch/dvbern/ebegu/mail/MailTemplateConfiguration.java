@@ -91,6 +91,8 @@ public class MailTemplateConfiguration {
 	public static final String UNGELESENDE_MITTEILUNG = "ungelesendeMitteilung";
 	public static final String OFFENE_PENDENZEN = "offenePendenzen";
 	public static final String HOSTNAME = "hostname";
+	public static final String GRUSS = "gruss";
+	public static final String GRUSS_FR = "gruss_fr";
 
 	private final Configuration freeMarkerConfiguration;
 
@@ -338,7 +340,8 @@ public class MailTemplateConfiguration {
 
 		LocalDate datumLoeschung = LocalDate.now().plusDays(anzahlTage).minusDays(1);
 
-		Map<Object, Object> paramMap = paramsWithEmpfaenger(empfaengerMail, gesuch.extractMandant().getMandantIdentifier());
+		final Mandant mandant = gesuch.extractMandant();
+		Map<Object, Object> paramMap = paramsWithEmpfaenger(empfaengerMail, mandant.getMandantIdentifier());
 
 		GemeindeStammdaten stammdaten = gemeindeService
 			.getGemeindeStammdatenByGemeindeId(gesuch.getDossier().getGemeinde().getId()).get();
@@ -377,13 +380,15 @@ public class MailTemplateConfiguration {
 		@Nonnull Gesuch gesuch,
 		@Nonnull Sprache sprache
 	) {
-		Locale mandantLocale = new MandantLocaleVisitor(sprache.getLocale()).process(gesuch.extractMandant());
+		final Mandant mandant = gesuch.extractMandant();
+		Locale mandantLocale = new MandantLocaleVisitor(sprache.getLocale()).process(mandant);
 
-		Map<Object, Object> paramMap = paramsWithEmpfaenger(empfaengerMail, gesuch.extractMandant().getMandantIdentifier());
+		Map<Object, Object> paramMap = paramsWithEmpfaenger(empfaengerMail, mandant.getMandantIdentifier());
 		paramMap.put(GESUCHSPERIODE, gesuchsperiode);
 		paramMap.put(START_DATUM, Constants.DATE_FORMATTER.format(gesuchsperiode.getGueltigkeit().getGueltigAb()));
 		paramMap.put(SENDER_FULL_NAME, getSenderFullNameForEmail(gesuch, gesuchsteller));
 		paramMap.put(EMPFAENGER_MAIL, empfaengerMail);
+		paramMap.put(GRUSS, getEmailGruss(mandant, mandantLocale, gesuch.extractGemeinde().getName()));
 		paramMap.put(GESUCH, gesuch);
 
 		return doProcessTemplate(getTemplateFileName(MailTemplate.InfoFreischaltungGesuchsperiode), mandantLocale, paramMap);
@@ -512,7 +517,10 @@ public class MailTemplateConfiguration {
 		@Nonnull String empfaengerMail,
 		@Nonnull Sprache sprache
 	) {
-		Map<Object, Object> paramMap = paramsWithEmpfaenger(empfaengerMail, gesuch.extractMandant().getMandantIdentifier());
+		final Mandant mandant = gesuch.extractMandant();
+		Locale mandantLocale = new MandantLocaleVisitor(sprache.getLocale()).process(mandant);
+		Map<Object, Object> paramMap = paramsWithEmpfaenger(empfaengerMail, mandant.getMandantIdentifier());
+		paramMap.put(GRUSS, getEmailGruss(mandant, mandantLocale, gesuch.extractGemeinde().getName()));
 		return processTemplateGesuch(nameOfTemplate, gesuch, gesuchsteller, paramMap, sprache);
 	}
 
@@ -523,11 +531,13 @@ public class MailTemplateConfiguration {
 		@Nonnull Map<Object, Object> paramMap,
 		@Nonnull Sprache sprache
 	) {
-		Locale mandantLocale = new MandantLocaleVisitor(sprache.getLocale()).process(gesuch.extractMandant());
+		final Mandant mandant = gesuch.extractMandant();
+		Locale mandantLocale = new MandantLocaleVisitor(sprache.getLocale()).process(mandant);
 
 		paramMap.put(GESUCH, gesuch);
 		paramMap.put(SENDER_FULL_NAME, getSenderFullNameForEmail(gesuch, gesuchsteller));
 		paramMap.put(GESUCHSTELLER, gesuchsteller);
+		paramMap.put(GRUSS, getEmailGruss(mandant, mandantLocale, gesuch.extractGemeinde().getName()));
 		paramMap.put("isSozialdienst", gesuch.getFall().getSozialdienstFall() != null);
 
 		return doProcessTemplate(getTemplateFileName(nameOfTemplate), mandantLocale, paramMap);
@@ -548,10 +558,12 @@ public class MailTemplateConfiguration {
 		@Nonnull Sprache sprache
 	) {
 
+		final Mandant mandant = betreuung.extractGesuch().extractMandant();
 		Locale mandantLocale = new MandantLocaleVisitor(sprache.getLocale())
-				.process(betreuung.extractGesuch().extractMandant());
+				.process(mandant);
 
 		paramMap.put(BETREUUNG, betreuung);
+		paramMap.put(GRUSS, getEmailGruss(mandant, mandantLocale, betreuung.extractGemeinde().getName()));
 		paramMap.put(SENDER_FULL_NAME, getSenderFullNameForEmail(betreuung.extractGesuch(), gesuchsteller));
 
 		return doProcessTemplate(getTemplateFileName(nameOfTemplate), mandantLocale, paramMap);
@@ -569,8 +581,13 @@ public class MailTemplateConfiguration {
 		Map<Object, Object> paramMap = paramsWithEmpfaenger(empfaengerMail, mandant.getMandantIdentifier());
 		paramMap.put(BETREUUNG, betreuung);
 		paramMap.put(SENDER_FULL_NAME, getSenderFullNameForEmail(betreuung.extractGesuch(), gesuchsteller));
+		paramMap.put(GRUSS, getEmailGruss(mandant, mandantLocale, betreuung.extractGesuch().getDossier().getGemeinde().getName()));
 
 		return doProcessTemplate(getTemplateFileName(nameOfTemplate), mandantLocale, paramMap);
+	}
+
+	private static String getEmailGruss(Mandant mandant, Locale mandantLocale, String gemeindeName) {
+		return ServerMessageUtil.getMessage("Email_GEMEINDE_GRUSS", mandantLocale, mandant, gemeindeName);
 	}
 
 	private String processTemplateBetreuungGeloescht(
@@ -604,10 +621,12 @@ public class MailTemplateConfiguration {
 		@Nonnull Map<Object, Object> paramMap,
 		@Nonnull Sprache sprache
 	) {
+		final Mandant mandant = betreuung.extractGesuch().extractMandant();
 		Locale mandantLocale = new MandantLocaleVisitor(sprache.getLocale())
-				.process(betreuung.extractGesuch().extractMandant());
+				.process(mandant);
 
 		paramMap.put(BETREUUNG, betreuung);
+		paramMap.put(GRUSS, getEmailGruss(mandant, mandantLocale, betreuung.extractGemeinde().getName()));
 		paramMap.put("fall", fall);
 		paramMap.put("kind", kind);
 		paramMap.put(GESUCHSTELLER, gesuchsteller1);
@@ -642,9 +661,24 @@ public class MailTemplateConfiguration {
 		@Nonnull Map<Object, Object> paramMap,
 		@Nonnull List<Sprache> sprachen
 	) {
+		final Mandant mandant = mitteilung.getFall().getMandant();
+		Locale locale = new MandantLocaleVisitor(getLocaleFromSprachen(sprachen)).process(mandant);
 		paramMap.put(MITTEILUNG, mitteilung);
-		Locale locale = new MandantLocaleVisitor(getLocaleFromSprachen(sprachen)).process(mitteilung.getFall().getMandant());
+		paramMap.put(GRUSS, getEmailGruss(mandant, locale, mitteilung.getDossier().getGemeinde().getName()));
+		addBilingualFrenchGrussToParamMap(mitteilung, paramMap, sprachen, mandant);
 		return doProcessTemplate(getTemplateFileName(MailTemplate.InfoMitteilungErhalten), locale, paramMap);
+	}
+
+	private void addBilingualFrenchGrussToParamMap(
+		@Nonnull Mitteilung mitteilung,
+		@Nonnull Map<Object, Object> paramMap,
+		@Nonnull List<Sprache> sprachen,
+		Mandant mandant) {
+		if (sprachen.contains(Sprache.FRANZOESISCH)) {
+			Locale localeFr = new MandantLocaleVisitor(getLocaleFromSprachen(List.of(Sprache.FRANZOESISCH))).process(
+				mandant);
+			paramMap.put(GRUSS_FR, getEmailGruss(mandant, localeFr, mitteilung.getDossier().getGemeinde().getName()));
+		}
 	}
 
 	private String getTemplateFileName(@Nonnull final  MailTemplate mailTemplate) {

@@ -30,6 +30,8 @@ import {TSUnterhaltsvereinbarungAnswer} from '../../../models/enums/TSUnterhalts
 import {TSWizardStepName} from '../../../models/enums/TSWizardStepName';
 import {TSWizardStepStatus} from '../../../models/enums/TSWizardStepStatus';
 import {TSErwerbspensumContainer} from '../../../models/TSErwerbspensumContainer';
+import {TSFamiliensituation} from '../../../models/TSFamiliensituation';
+import {TSFamiliensituationContainer} from '../../../models/TSFamiliensituationContainer';
 import {EbeguRestUtil} from '../../../utils/EbeguRestUtil';
 import {EbeguUtil} from '../../../utils/EbeguUtil';
 import {RemoveDialogController} from '../../dialog/RemoveDialogController';
@@ -66,10 +68,7 @@ export class ErwerbspensumListViewController
         '$scope',
         'AuthServiceRS',
         '$timeout',
-        '$translate',
-        'GemeindeRS',
-        'EinstellungRS',
-        'EbeguRestUtil'
+        '$translate'
     ];
 
     public erwerbspensenGS1: Array<TSErwerbspensumContainer> = undefined;
@@ -79,7 +78,6 @@ export class ErwerbspensumListViewController
     public showInfoAusserordentlichenAnspruch: boolean;
     public gemeindeTelefon: string = '';
     public gemeindeEmail: string = '';
-    public konfigAbhaengigkeitAnspruchBeschaeftigungspensum: TSAnspruchBeschaeftigungAbhaengigkeitTyp;
 
     public constructor(
         private readonly $state: StateService,
@@ -91,10 +89,7 @@ export class ErwerbspensumListViewController
         $scope: IScope,
         private readonly authServiceRS: AuthServiceRS,
         $timeout: ITimeoutService,
-        private readonly $translate: ITranslateService,
-        private readonly gemeindeRS: GemeindeRS,
-        private readonly einstellungenRS: EinstellungRS,
-        private readonly ebeguRestUtil: EbeguRestUtil
+        private readonly $translate: ITranslateService
     ) {
         super(gesuchModelManager,
             berechnungsManager,
@@ -126,11 +121,10 @@ export class ErwerbspensumListViewController
             this.gemeindeTelefon = this.gesuchModelManager.gemeindeStammdaten.telefon;
             this.gemeindeEmail = this.gesuchModelManager.gemeindeStammdaten.mail;
         }
-        this.loadAnspruchUnabhaengingVomBeschaeftigungspensumKonfig();
     }
 
     private setShowInfoAusserordentlichenAnspruchIfPossible(): void {
-        if (this.konfigAbhaengigkeitAnspruchBeschaeftigungspensum !==
+        if (this.getKonfigAnspruchUnabhaengigVomBeschaeftigungsPensumForGemeinde() !==
             TSAnspruchBeschaeftigungAbhaengigkeitTyp.ABHAENGING) {
             this.showInfoAusserordentlichenAnspruch = false;
             return;
@@ -264,48 +258,54 @@ export class ErwerbspensumListViewController
         if (EbeguUtil.isNullOrUndefined(this.gesuchModelManager.getGesuch())) {
             return false;
         }
+        let familiensituation: TSFamiliensituation = this.gesuchModelManager.getGesuch().familiensituationContainer.familiensituationJA;
+        const partnerIdentischMitVorgesuch: boolean = this.getGesuch().extractFamiliensituation().partnerIdentischMitVorgesuch;
+        if (EbeguUtil.isNotNullAndFalse(partnerIdentischMitVorgesuch)){
+            familiensituation = this.getGesuch().extractFamiliensituationErstgesuch();
+        }
         // Wenn zwei Gesuchsteller und keine Unterhatsvereinbarung abgeschlossen ist,
         // muss das Erwerbspensum von GS2 nicht angegeben werden
-        const unterhaltsvereinbarung = this.gesuchModelManager.getGesuch()
-            .familiensituationContainer.familiensituationJA.unterhaltsvereinbarung;
+        const unterhaltsvereinbarung = familiensituation.unterhaltsvereinbarung;
 
         if (
             unterhaltsvereinbarung !== null
             && unterhaltsvereinbarung === TSUnterhaltsvereinbarungAnswer.NEIN_UNTERHALTSVEREINBARUNG
-            && (this.isShortKonkubinat() || this.isAlleinerziehend())
+            && (this.isShortKonkubinat(familiensituation) || this.isAlleinerziehend(familiensituation))
         ) {
             return false;
+        }
+        if (this.getGesuch().isMutation()) {
+            const famSitErstGesuch = this.getGesuch().extractFamiliensituationErstgesuch();
+            if ((this.isShortKonkubinat(familiensituation) || this.isAlleinerziehend(familiensituation)) &&
+                (this.isShortKonkubinat(famSitErstGesuch) || this.isAlleinerziehend(famSitErstGesuch))
+                && famSitErstGesuch.unterhaltsvereinbarung === TSUnterhaltsvereinbarungAnswer.NEIN_UNTERHALTSVEREINBARUNG
+            ) {
+                return false;
+            }
         }
 
         return EbeguUtil.isNotNullOrUndefined(this.gesuchModelManager.getGesuch().gesuchsteller2);
     }
 
-    private isShortKonkubinat(): boolean {
-        const familiensitution = this.gesuchModelManager.getGesuch().familiensituationContainer.familiensituationJA;
+    private isShortKonkubinat(familiensituation: TSFamiliensituation): boolean {
 
-        if (familiensitution.familienstatus !== TSFamilienstatus.KONKUBINAT_KEIN_KIND) {
+        if (familiensituation.familienstatus !== TSFamilienstatus.KONKUBINAT_KEIN_KIND) {
             return false;
         }
 
-        return !familiensitution.konkubinatGetsLongerThanXYearsBeforeEndOfPeriode(this.gesuchModelManager.getGesuchsperiode().gueltigkeit.gueltigBis);
+        return !familiensituation.konkubinatGetsLongerThanXYearsBeforeEndOfPeriode(this.gesuchModelManager.getGesuchsperiode().gueltigkeit.gueltigBis);
     }
 
-    private isAlleinerziehend(): boolean {
-        const familiensitution = this.gesuchModelManager.getGesuch().familiensituationContainer.familiensituationJA;
-        return familiensitution.familienstatus === TSFamilienstatus.ALLEINERZIEHEND;
+    private isAlleinerziehend(familienSituation: TSFamiliensituation): boolean {
+        return familienSituation.familienstatus === TSFamilienstatus.ALLEINERZIEHEND;
     }
 
-    private loadAnspruchUnabhaengingVomBeschaeftigungspensumKonfig(): void {
-        this.einstellungenRS.getAllEinstellungenBySystemCached(this.gesuchModelManager.getGesuchsperiode().id)
-            .subscribe(einstellungen => {
-                this.konfigAbhaengigkeitAnspruchBeschaeftigungspensum = this.ebeguRestUtil
-                    .parseAnspruchBeschaeftigungAbhaengigkeitTyp(einstellungen
-                        .find(e => e.key === TSEinstellungKey.ABHAENGIGKEIT_ANSPRUCH_BESCHAEFTIGUNGPENSUM));
-            }, error => LOG.error(error));
+    private getKonfigAnspruchUnabhaengigVomBeschaeftigungsPensumForGemeinde(): TSAnspruchBeschaeftigungAbhaengigkeitTyp {
+        return this.gesuchModelManager.gemeindeKonfiguration.anspruchUnabhaengingVonBeschaeftigungsPensum;
     }
 
     public anspruchUnabhaengingVomBeschaeftigungspensum(): boolean {
-        return this.konfigAbhaengigkeitAnspruchBeschaeftigungspensum ===
+        return this.getKonfigAnspruchUnabhaengigVomBeschaeftigungsPensumForGemeinde()  ===
             TSAnspruchBeschaeftigungAbhaengigkeitTyp.UNABHAENGING;
     }
 }

@@ -27,14 +27,14 @@ import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 import {FinanzielleSituationRS} from '../../service/finanzielleSituationRS.rest';
 import {GesuchModelManager} from '../../service/gesuchModelManager';
 
-const LOG = LogFactory.createLog('DvFinanzielleSituationRequireX');
+const LOG = LogFactory.createLog('DvFinanzielleSituationRequireXComponent');
 
 @Component({
     selector: 'dv-finanzielle-situation-require-x',
     templateUrl: './dv-finanzielle-situation-require-x.component.html',
     viewProviders: [{provide: ControlContainer, useExisting: NgForm}]
 })
-export class DvFinanzielleSituationRequireX implements OnInit {
+export class DvFinanzielleSituationRequireXComponent implements OnInit {
 
     @Input()
     public hideVerguenstigungGewunscht: boolean = false;
@@ -59,6 +59,9 @@ export class DvFinanzielleSituationRequireX implements OnInit {
 
     @Input()
     public hideSozialhilfeQuestion: boolean = false;
+
+    @Input()
+    public disabled = false;
 
     private maxMassgebendesEinkommen: number;
     private isFinSitTypFkjv: boolean = false;

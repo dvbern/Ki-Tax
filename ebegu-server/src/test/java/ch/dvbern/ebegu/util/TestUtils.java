@@ -17,6 +17,12 @@
 
 package ch.dvbern.ebegu.util;
 
+import ch.dvbern.ebegu.entities.Einkommensverschlechterung;
+import ch.dvbern.ebegu.entities.EinkommensverschlechterungContainer;
+import ch.dvbern.ebegu.entities.EinkommensverschlechterungInfo;
+import ch.dvbern.ebegu.entities.EinkommensverschlechterungInfoContainer;
+import ch.dvbern.ebegu.entities.Gesuch;
+import ch.dvbern.ebegu.entities.GesuchstellerContainer;
 import ch.dvbern.ebegu.rechner.BGRechnerParameterDTO;
 
 public final class TestUtils {
@@ -28,10 +34,11 @@ public final class TestUtils {
 		BGRechnerParameterDTO parameterDTO = new BGRechnerParameterDTO();
 		parameterDTO.setMaxVerguenstigungVorschuleBabyProTg(MathUtil.GANZZAHL.from(150));
 		parameterDTO.setMaxVerguenstigungVorschuleKindProTg(MathUtil.GANZZAHL.from(100));
-		parameterDTO.setMaxVerguenstigungSchuleKindProTg(MathUtil.GANZZAHL.from(75));
+		parameterDTO.setMaxVerguenstigungKindergartenKindProTg(MathUtil.GANZZAHL.from(75));
 		parameterDTO.setMaxVerguenstigungVorschuleBabyProStd(MathUtil.DEFAULT.from(12.75));
 		parameterDTO.setMaxVerguenstigungVorschuleKindProStd(MathUtil.DEFAULT.from(8.50));
-		parameterDTO.setMaxVerguenstigungSchuleKindProStd(MathUtil.DEFAULT.from(8.50));
+		parameterDTO.setMaxVerguenstigungKindergartenKindProStd(MathUtil.DEFAULT.from(8.50));
+		parameterDTO.setMaxVerguenstigungPrimarschuleKindProStd(MathUtil.DEFAULT.from(8.50));
 		parameterDTO.setMaxMassgebendesEinkommen(MathUtil.GANZZAHL.from(160000));
 		parameterDTO.setMinMassgebendesEinkommen(MathUtil.GANZZAHL.from(43000));
 		parameterDTO.setOeffnungstageKita(MathUtil.GANZZAHL.from(240));
@@ -49,5 +56,28 @@ public final class TestUtils {
 		parameterDTO.getMahlzeitenverguenstigungParameter().setEnabled(false);
 		parameterDTO.getGemeindeParameter().setGemeindePauschalbetragEnabled(false);
 		return parameterDTO;
+	}
+
+
+	public static void prepareEKVInfoTwoYears(Gesuch gesuch) {
+		EinkommensverschlechterungInfoContainer ekvInfoContainer = new EinkommensverschlechterungInfoContainer();
+		EinkommensverschlechterungInfo ekvInfo = new EinkommensverschlechterungInfo();
+		ekvInfo.setEinkommensverschlechterung(true);
+		ekvInfo.setEkvFuerBasisJahrPlus1(true);
+		ekvInfo.setEkvFuerBasisJahrPlus2(true);
+		ekvInfoContainer.setEinkommensverschlechterungInfoJA(ekvInfo);
+		gesuch.setEinkommensverschlechterungInfoContainer(ekvInfoContainer);
+	}
+
+	public static void prepareEKVTwoYears(GesuchstellerContainer gesuchsteller1) {
+		EinkommensverschlechterungContainer ekvContainer = new EinkommensverschlechterungContainer();
+
+		Einkommensverschlechterung ekv = new Einkommensverschlechterung();
+		Einkommensverschlechterung ekv2 = new Einkommensverschlechterung();
+
+		ekvContainer.setEkvJABasisJahrPlus1(ekv);
+		ekvContainer.setEkvJABasisJahrPlus2(ekv2);
+
+		gesuchsteller1.setEinkommensverschlechterungContainer(ekvContainer);
 	}
 }

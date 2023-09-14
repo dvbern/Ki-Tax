@@ -131,8 +131,14 @@ public class AnmeldungFerieninsel extends AbstractAnmeldung {
 			if (belegungFerieninsel != null) {
 				target.setBelegungFerieninsel(belegungFerieninsel.copyBelegungFerieninsel(new BelegungFerieninsel(), copyType));
 			}
+			if (this.getBetreuungsstatus().isIgnoriert()) {
+				var oldStatus = this.getStatusVorIgnorieren();
+				Objects.requireNonNull(oldStatus, "statusVorIgnorieren darf nicht null sein, falls ignoriert wurde");
+				target.setBetreuungsstatus(oldStatus);
+			}
 			break;
 		case ERNEUERUNG:
+		case ERNEUERUNG_AR_2023:
 		case MUTATION_NEUES_DOSSIER:
 		case ERNEUERUNG_NEUES_DOSSIER:
 			break;

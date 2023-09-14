@@ -20,7 +20,7 @@ import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {TranslateService} from '@ngx-translate/core';
 import {EinstellungRS} from '../../../../admin/service/einstellungRS.rest';
 import {AuthServiceRS} from '../../../../authentication/service/AuthServiceRS.rest';
-import {SHARED_MODULE_OVERRIDES} from '../../../../hybridTools/mockUpgradedComponent';
+import {SHARED_MODULE_OVERRIDES} from '../../../../hybridTools/mockUpgradedDirective';
 import {ErrorService} from '../../../core/errors/service/ErrorService';
 import {BenutzerRSX} from '../../../core/service/benutzerRSX.rest';
 import {SharedModule} from '../../../shared/shared.module';

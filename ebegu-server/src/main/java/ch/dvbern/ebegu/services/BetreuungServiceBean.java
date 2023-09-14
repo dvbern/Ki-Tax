@@ -92,6 +92,7 @@ import ch.dvbern.ebegu.enums.AnmeldungMutationZustand;
 import ch.dvbern.ebegu.enums.AntragStatus;
 import ch.dvbern.ebegu.enums.AntragTyp;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
+import ch.dvbern.ebegu.enums.BetreuungspensumAnzeigeTyp;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
 import ch.dvbern.ebegu.enums.Eingangsart;
 import ch.dvbern.ebegu.enums.EinstellungKey;
@@ -525,19 +526,13 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 
 	@Override
 	@Nonnull
-	public AnmeldungTagesschule anmeldungMutationIgnorieren(@Nonnull @Valid AnmeldungTagesschule anmeldung) {
+	public AbstractAnmeldung anmeldungMutationIgnorieren(@Nonnull @Valid AbstractAnmeldung anmeldung) {
 		Objects.requireNonNull(anmeldung, BETREUUNG_DARF_NICHT_NULL_SEIN);
 		authorizer.checkWriteAuthorization(anmeldung);
 
 		// vorgänger zurücksetzen
 		Objects.requireNonNull(anmeldung.getVorgaengerId(), "Eine Anmeldung kann nicht ignoriert werden, wenn sie neu ist");
-		AnmeldungTagesschule vorgaenger = findAnmeldungTagesschule(anmeldung.getVorgaengerId())
-			.orElseThrow(() -> new EbeguEntityNotFoundException(
-				"resetMutierteAnmeldungen",
-				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
-				anmeldung.getVorgaengerId()));
-		vorgaenger.setAnmeldungMutationZustand(AnmeldungMutationZustand.AKTUELLE_ANMELDUNG);
-		persistence.merge(vorgaenger);
+		setVorgaengerAnmeldungToGueltig(anmeldung);
 
 		anmeldung.setGueltig(false);
 		anmeldung.setStatusVorIgnorieren(anmeldung.getBetreuungsstatus());
@@ -545,6 +540,51 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 		anmeldung.setAnmeldungMutationZustand(AnmeldungMutationZustand.IGNORIERT);
 
 		return persistence.merge(anmeldung);
+	}
+
+	private void setVorgaengerAnmeldungToGueltig(@Nonnull AbstractAnmeldung anmeldung) {
+		AbstractAnmeldung vorgaenger = findVorgaengerAnmeldungNotIgnoriert(anmeldung);
+		vorgaenger.setAnmeldungMutationZustand(AnmeldungMutationZustand.AKTUELLE_ANMELDUNG);
+		vorgaenger.setGueltig(true); // Die alte Anmeldung ist wieder die gueltige
+		persistence.merge(vorgaenger);
+	}
+
+	@Override
+	@Nonnull
+	public AbstractAnmeldung findVorgaengerAnmeldungNotIgnoriert(AbstractAnmeldung betreuung) {
+		if (betreuung.getVorgaengerId() == null) {
+			//Kann eigentlich nicht eintretten, da das Erst-Gesuch nicht ingoriert werden kann und somit immer ein Vorgänger
+			//gfunden werden kann, welcher nicht ignoiert ist
+			throw new EbeguRuntimeException(
+				"findVorgaengerAnmeldungNotIgnoriert",
+				ErrorCodeEnum.ERROR_NICHT_IGNORIERTER_VORGAENGER_NOT_FOUND,
+				betreuung.getId());
+		}
+
+		AbstractAnmeldung vorgaenger = findAnmeldung(betreuung.getVorgaengerId())
+			.orElseThrow(() -> new EbeguEntityNotFoundException(
+				"findVorgaengerAnmeldungNotIgnoriert",
+				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
+				betreuung.getVorgaengerId()));
+
+		if (vorgaenger.getBetreuungsstatus().isIgnoriert()) {
+			return findVorgaengerAnmeldungNotIgnoriert(vorgaenger);
+		}
+
+		return vorgaenger;
+	}
+
+	@Nonnull
+	@Override
+	public List<AnmeldungTagesschule> findAnmeldungenTagesschuleByInstitution(@Nonnull final Institution institution) {
+		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
+		final CriteriaQuery<AnmeldungTagesschule> query = cb.createQuery(AnmeldungTagesschule.class);
+
+		Root<AnmeldungTagesschule> root = query.from(AnmeldungTagesschule.class);
+		final Join<AnmeldungTagesschule, InstitutionStammdaten> stammdatenJoin = root.join(AbstractPlatz_.INSTITUTION_STAMMDATEN, JoinType.LEFT);
+		Predicate predicate = cb.equal(stammdatenJoin.get(InstitutionStammdaten_.INSTITUTION), institution);
+		query.where(predicate);
+		return persistence.getCriteriaResults(query);
 	}
 
 	/**
@@ -1267,17 +1307,20 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 	@Override
 	@Nonnull
 	public Betreuung schliessenOhneVerfuegen(@Nonnull Betreuung betreuung) {
-		return closeBetreuung(betreuung, Betreuungsstatus.GESCHLOSSEN_OHNE_VERFUEGUNG);
-	}
-
-	@Nonnull
-	private Betreuung closeBetreuung(@Nonnull Betreuung betreuung, @Nonnull Betreuungsstatus status) {
-		betreuung.setBetreuungsstatus(status);
+		betreuung.setBetreuungsstatus(Betreuungsstatus.GESCHLOSSEN_OHNE_VERFUEGUNG);
 		final Betreuung persistedBetreuung = saveBetreuung(betreuung, false, null);
 		authorizer.checkWriteAuthorization(persistedBetreuung);
 		wizardStepService.updateSteps(persistedBetreuung.extractGesuch().getId(), null, null,
 			WizardStepName.VERFUEGEN);
 		return persistedBetreuung;
+	}
+
+	@Override
+	@Nonnull
+	public Betreuung schliessenOnly(@Nonnull Betreuung betreuung) {
+		betreuung.setBetreuungsstatus(Betreuungsstatus.GESCHLOSSEN_OHNE_VERFUEGUNG);
+		authorizer.checkWriteAuthorization(betreuung);
+		return saveBetreuung(betreuung, false, null);
 	}
 
 	@Override
@@ -1292,7 +1335,7 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 
 		Predicate predicateMutation = cb.equal(joinGesuch.get(Gesuch_.typ), AntragTyp.MUTATION);
 		Predicate predicateFlag = cb.isNull(root.get(Betreuung_.betreuungMutiert));
-		Predicate predicateStatus = joinGesuch.get(Gesuch_.status).in(AntragStatus.getAllVerfuegtStates());
+		Predicate predicateStatus = joinGesuch.get(Gesuch_.status).in(AntragStatus.getAllVerfuegtNotIgnoriertStates());
 
 		query.where(predicateMutation, predicateFlag, predicateStatus);
 		query.orderBy(cb.desc(joinGesuch.get(Gesuch_.laufnummer)));
@@ -1315,7 +1358,7 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 
 		Predicate predicateMutation = cb.equal(joinGesuch.get(Gesuch_.typ), AntragTyp.MUTATION);
 		Predicate predicateFlag = cb.isNull(joinBetreuung.get(Betreuung_.abwesenheitMutiert));
-		Predicate predicateStatus = joinGesuch.get(Gesuch_.status).in(AntragStatus.getAllVerfuegtStates());
+		Predicate predicateStatus = joinGesuch.get(Gesuch_.status).in(AntragStatus.getAllVerfuegtNotIgnoriertStates());
 
 		query.where(predicateMutation, predicateFlag, predicateStatus);
 		query.orderBy(cb.desc(joinGesuch.get(Gesuch_.laufnummer)));
@@ -1459,9 +1502,15 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 	public BigDecimal getMultiplierForAbweichnungen(@Nonnull Betreuung betreuung) {
 		Gesuchsperiode gp = betreuung.extractGesuchsperiode();
 
+
 		if (betreuung.isAngebotKita()) {
 			Einstellung oeffnungstageKita = getEinstellung(EinstellungKey.OEFFNUNGSTAGE_KITA, gp);
-			return calculateOeffnungszeitPerMonthProcentual(oeffnungstageKita.getValueAsBigDecimal());
+			Einstellung pensumAnzeigeTyp = getEinstellung(EinstellungKey.PENSUM_ANZEIGE_TYP, gp);
+			BetreuungspensumAnzeigeTyp betreuungspensumAnzeigeTyp = BetreuungspensumAnzeigeTyp.valueOf(pensumAnzeigeTyp.getValue());
+			if(betreuungspensumAnzeigeTyp.equals(BetreuungspensumAnzeigeTyp.NUR_STUNDEN)) {
+				return BetreuungUtil.calculateOeffnungszeitPerMonthProcentual(MathUtil.EXACT.multiply(oeffnungstageKita.getValueAsBigDecimal(), BetreuungUtil.ANZAHL_STUNDEN_PRO_TAG_KITA));
+			}
+			return BetreuungUtil.calculateOeffnungszeitPerMonthProcentual(oeffnungstageKita.getValueAsBigDecimal());
 		}
 
 		Einstellung oeffnungstageTFO = getEinstellung(EinstellungKey.OEFFNUNGSTAGE_TFO, gp);
@@ -1470,13 +1519,7 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 		BigDecimal oeffungszeitProJahrTFO = MathUtil.EXACT.multiply(
 			oeffnungstageTFO.getValueAsBigDecimal(),
 			oeffnungsstundenTFO.getValueAsBigDecimal());
-		return calculateOeffnungszeitPerMonthProcentual(oeffungszeitProJahrTFO);
-	}
-
-	private BigDecimal calculateOeffnungszeitPerMonthProcentual(@Nullable BigDecimal oeffnungszeitProJahr) {
-		return MathUtil.EXACT.divide(
-			MathUtil.EXACT.divide(oeffnungszeitProJahr, MathUtil.EXACT.from(12)),
-			MathUtil.EXACT.from(100));
+		return BetreuungUtil.calculateOeffnungszeitPerMonthProcentual(oeffungszeitProJahrTFO);
 	}
 
 	private Einstellung getEinstellung(EinstellungKey einstellungKey, Gesuchsperiode gesuchsperiode) {

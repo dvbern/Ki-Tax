@@ -28,6 +28,7 @@ import {Moment} from 'moment';
 import {TSFile} from '../../../../models/TSFile';
 import {DateUtil} from '../../../../utils/DateUtil';
 import {ApplicationPropertyRS} from '../../../core/rest-services/applicationPropertyRS.rest';
+import {TSUploadFile} from '../../../../models/TSUploadFile';
 
 export interface HTMLInputEvent extends Event {
     target: HTMLInputElement & EventTarget;
@@ -50,7 +51,7 @@ export class MultipleFileUploadComponent<T extends TSFile> implements OnChanges,
     @Output() public readonly uploadFile: EventEmitter<HTMLInputEvent> = new EventEmitter();
 
     public uploadInputValue: string = '';
-    @Input() public files: TSFile[];
+    @Input() public files: TSUploadFile[];
 
     public allowedMimetypes: string = '';
 

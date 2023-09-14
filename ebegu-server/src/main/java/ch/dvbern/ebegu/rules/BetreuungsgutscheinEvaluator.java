@@ -1,16 +1,18 @@
 /*
- * Ki-Tax: System for the management of external childcare subsidies
- * Copyright (C) 2017 City of Bern Switzerland
+ * Copyright (C) 2023 DV Bern AG, Switzerland
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
+ *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
 package ch.dvbern.ebegu.rules;
@@ -34,6 +36,7 @@ import ch.dvbern.ebegu.entities.Einstellung;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.KindContainer;
+import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.entities.Verfuegung;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.AntragStatus;
@@ -49,9 +52,10 @@ import ch.dvbern.ebegu.rechner.rules.RechnerRule;
 import ch.dvbern.ebegu.rechner.rules.ZusaetzlicherBabyGutscheinRechnerRule;
 import ch.dvbern.ebegu.rechner.rules.ZusaetzlicherGutscheinGemeindeRechnerRule;
 import ch.dvbern.ebegu.rules.initalizer.RestanspruchInitializer;
+import ch.dvbern.ebegu.rules.initalizer.RestanspruchInitializerVisitor;
 import ch.dvbern.ebegu.rules.util.BemerkungsMerger;
 import ch.dvbern.ebegu.rules.veraenderung.VeraenderungCalculator;
-import ch.dvbern.ebegu.util.BetreuungComparator;
+import ch.dvbern.ebegu.util.BetreuungComparatorVisitor;
 import ch.dvbern.ebegu.util.KitaxUebergangsloesungParameter;
 import ch.dvbern.ebegu.util.VerfuegungUtil;
 import org.slf4j.Logger;
@@ -122,7 +126,12 @@ public class BetreuungsgutscheinEvaluator {
 			RestanspruchInitializer.createInitialenRestanspruch(gesuch.getGesuchsperiode(), false);
 
 		if (firstBetreuungOfGesuch != null) {
+			Objects.requireNonNull(firstBetreuungOfGesuch.getKind().getKindJA().getEinschulungTyp());
 
+			BetreuungsgutscheinExecutor.initFaktorBgStunden(
+					firstBetreuungOfGesuch.getKind().getKindJA().getEinschulungTyp(),
+					zeitabschnitte,
+					firstBetreuungOfGesuch.extractGesuch().extractMandant());
 			zeitabschnitte = executor.executeRules(rulesToRun, firstBetreuungOfGesuch, zeitabschnitte, true);
 
 			MonatsRule monatsRule = new MonatsRule(isDebug);
@@ -185,10 +194,13 @@ public class BetreuungsgutscheinEvaluator {
 			// EBEGU-561)
 			List<AbstractPlatz> plaetzeList = new ArrayList<>(kindContainer.getBetreuungen());
 			plaetzeList.addAll(kindContainer.getAnmeldungenTagesschule());
-			plaetzeList.sort(new BetreuungComparator());
+			plaetzeList.sort(new BetreuungComparatorVisitor().getComparatorForMandant(gesuch.extractMandant()));
 
 			for (AbstractPlatz platz : plaetzeList) {
-
+				BetreuungsgutscheinExecutor.initFaktorBgStunden(
+						Objects.requireNonNull(kindContainer.getKindJA().getEinschulungTyp()),
+						restanspruchZeitabschnitte,
+						gesuch.extractMandant());
 				boolean isTagesschule = platz.getBetreuungsangebotTyp().isTagesschule();
 
 				//initiale Restansprueche vorberechnen
@@ -205,10 +217,16 @@ public class BetreuungsgutscheinEvaluator {
 				if (platz.getBetreuungsstatus().isGeschlossenJA() || platz.getBetreuungsstatus()
 					.isGeschlossenSchulamt()) {
 					// Verfuegte Betreuungen duerfen nicht neu berechnet werden
-					LOG.info("Betreuung ist schon verfuegt. Keine Neuberechnung durchgefuehrt");
+					LOG.info("Betreuung oder Tagesschulanmeldung ist schon abgeschlossen. Keine Neuberechnung durchgefuehrt");
 					if (platz.getBetreuungsstatus().isGeschlossenJA()) {
 						// Restanspruch muss mit Daten von Verfügung für nächste Betreuung richtig gesetzt werden
 						restanspruchZeitabschnitte = getRestanspruchForVerfuegteBetreung((Betreuung) platz);
+					}
+					VeraenderungCalculator.getVeranderungCalculator(isTagesschule)
+						.calculateKorrekturAusbezahlteVerguenstigung(platz);
+
+					if (!isTagesschule) {
+						setZahlungRelevanteDaten((Betreuung) platz, bgRechnerParameterDTO, true);
 					}
 					continue;
 				}
@@ -244,35 +262,42 @@ public class BetreuungsgutscheinEvaluator {
 					zeitabschnitte);
 
 				Verfuegung vorgaengerVerfuegung = platz.getVorgaengerVerfuegung();
-				BigDecimal veraenderung = null;
-				boolean ignorable = false;
 
 				if (vorgaengerVerfuegung != null) {
 					usePersistedCalculationResult(zeitabschnitte, vorgaengerVerfuegung);
-					veraenderung = VeraenderungCalculator
-						.getVeranderungCalculator(isTagesschule)
-						.calculateVeraenderung(zeitabschnitte, vorgaengerVerfuegung);
-					ignorable = VeraenderungCalculator
-							.getVeranderungCalculator(isTagesschule)
-							.calculateIgnorable(zeitabschnitte, vorgaengerVerfuegung, veraenderung);
 				}
 				// Und die Resultate in die Verfügung schreiben
 				verfuegungPreview.setZeitabschnitte(zeitabschnitte);
-				verfuegungPreview.setVeraenderungVerguenstigungGegenueberVorgaenger(veraenderung);
-				verfuegungPreview.setIgnorable(ignorable);
+				calculateVeraenderungen(verfuegungPreview, vorgaengerVerfuegung, isTagesschule);
 
 				String bemerkungenToShow = BemerkungsMerger.evaluateBemerkungenForVerfuegung(zeitabschnitte,
 					gesuch.extractMandant(),
 					bgRechnerParameterDTO.isTexteForFKJV());
 				verfuegungPreview.setGeneratedBemerkungen(bemerkungenToShow);
 				if (!isTagesschule) {
-					setZahlungRelevanteDaten((Betreuung) platz, bgRechnerParameterDTO);
+					setZahlungRelevanteDaten((Betreuung) platz, bgRechnerParameterDTO, false);
 				}
 
 				// Am Schluss der Abhandlung dieser Betreuung die Restansprüche für die nächste Betreuung extrahieren
 				restanspruchZeitabschnitte = executor.executeRestanspruchInitializer(platz, zeitabschnitte);
 			}
 		}
+	}
+
+	private void calculateVeraenderungen(Verfuegung verfuegungPreview, Verfuegung vorgaengerVerfuegung, boolean isTagesschule) {
+		if (vorgaengerVerfuegung == null) {
+			return;
+		}
+
+		VeraenderungCalculator veraenderungCalculator = VeraenderungCalculator
+			.getVeranderungCalculator(isTagesschule);
+
+		BigDecimal veranderung = veraenderungCalculator.calculateVeraenderung(verfuegungPreview.getZeitabschnitte(), vorgaengerVerfuegung);
+		boolean ignorable = veraenderungCalculator.calculateIgnorable(verfuegungPreview.getZeitabschnitte(), vorgaengerVerfuegung, veranderung);
+		veraenderungCalculator.calculateKorrekturAusbezahlteVerguenstigung(verfuegungPreview.getPlatz());
+
+		verfuegungPreview.setIgnorable(ignorable);
+		verfuegungPreview.setVeraenderungVerguenstigungGegenueberVorgaenger(veranderung);
 	}
 
 	public static Set<EinstellungKey> getRequiredParametersForAbschlussRules() {
@@ -313,7 +338,8 @@ public class BetreuungsgutscheinEvaluator {
 	 */
 	private void setZahlungRelevanteDaten(
 		@Nonnull Betreuung betreuung,
-		@Nonnull BGRechnerParameterDTO bgRechnerParameterDTO
+		@Nonnull BGRechnerParameterDTO bgRechnerParameterDTO,
+		boolean onlySetIsSameAusbezahlteVerguenstigung
 	) {
 		Verfuegung verfuegungZuBerechnen = betreuung.getVerfuegungOrVerfuegungPreview();
 		if (verfuegungZuBerechnen == null) {
@@ -321,16 +347,9 @@ public class BetreuungsgutscheinEvaluator {
 		}
 		final Map<ZahlungslaufTyp, Verfuegung> vorgaengerAusbezahlteVerfuegungProAuszahlungstyp =
 			betreuung.getVorgaengerAusbezahlteVerfuegungProAuszahlungstyp();
-		Verfuegung vorgaengerVerfuegung = betreuung.getVorgaengerVerfuegung();
 
 		// Den Zahlungsstatus aus der letzten *ausbezahlten* Verfuegung berechnen
 		if (vorgaengerAusbezahlteVerfuegungProAuszahlungstyp != null) {
-			// Zahlungsstatus aus vorgaenger uebernehmen
-			// Dies machen wir immer, auch wenn Mahlzeiten disabled, da das Feld gespeichert wird, und
-			// die Mahlzeiten evtl. spaeter erst enabled werden!
-			VerfuegungUtil.setZahlungsstatusForAllZahlungslauftypes(
-				verfuegungZuBerechnen,
-				vorgaengerAusbezahlteVerfuegungProAuszahlungstyp);
 			// sameAusbezahlteVerguenstigung wird benoetigt, um im GUI die Frage nach dem Ignorieren zu stellen (oder
 			// eben nicht)
 			VerfuegungUtil.setIsSameAusbezahlteVerguenstigung(
@@ -338,7 +357,20 @@ public class BetreuungsgutscheinEvaluator {
 				vorgaengerAusbezahlteVerfuegungProAuszahlungstyp.get(ZahlungslaufTyp.GEMEINDE_INSTITUTION),
 				vorgaengerAusbezahlteVerfuegungProAuszahlungstyp.get(ZahlungslaufTyp.GEMEINDE_ANTRAGSTELLER),
 				bgRechnerParameterDTO.getMahlzeitenverguenstigungEnabled());
+
+			if (onlySetIsSameAusbezahlteVerguenstigung) {
+				return;
+			}
+
+			// Zahlungsstatus aus vorgaenger uebernehmen
+			// Dies machen wir immer, auch wenn Mahlzeiten disabled, da das Feld gespeichert wird, und
+			// die Mahlzeiten evtl. spaeter erst enabled werden!
+			VerfuegungUtil.setZahlungsstatusForAllZahlungslauftypes(
+				verfuegungZuBerechnen,
+				vorgaengerAusbezahlteVerfuegungProAuszahlungstyp);
+
 		}
+		Verfuegung vorgaengerVerfuegung = betreuung.getVorgaengerVerfuegung();
 		// Das Flag "Gleiche Verfügungsdaten" aus der letzten Verfuegung berechnen
 		if (vorgaengerVerfuegung != null) {
 			// Ueberpruefen, ob sich die Verfuegungsdaten veraendert haben
@@ -361,7 +393,15 @@ public class BetreuungsgutscheinEvaluator {
 			throw new EbeguRuntimeException("getRestanspruchForVerfuegteBetreung", message);
 		}
 		Objects.requireNonNull(verfuegungForRestanspruch.getBetreuung());
-		RestanspruchInitializer restanspruchInitializer = new RestanspruchInitializer(isDebug);
+		Objects.requireNonNull(verfuegungForRestanspruch.getBetreuung().getKind().getKindJA().getEinschulungTyp());
+
+		Mandant mandant = betreuung.extractGesuch().extractMandant();
+		BetreuungsgutscheinExecutor.initFaktorBgStunden(
+				verfuegungForRestanspruch.getBetreuung().getKind().getKindJA().getEinschulungTyp(),
+				verfuegungForRestanspruch.getZeitabschnitte(),
+				mandant);
+		RestanspruchInitializer restanspruchInitializer =
+			new RestanspruchInitializerVisitor(isDebug).getRestanspruchInitialzier(mandant);
 		restanspruchZeitabschnitte = restanspruchInitializer.executeIfApplicable(
 			verfuegungForRestanspruch.getBetreuung(), verfuegungForRestanspruch.getZeitabschnitte());
 

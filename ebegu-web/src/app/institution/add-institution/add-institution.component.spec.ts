@@ -21,7 +21,7 @@ import {StateService, Transition} from '@uirouter/core';
 import {of} from 'rxjs';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {GemeindeRS} from '../../../gesuch/service/gemeindeRS.rest';
-import {SHARED_MODULE_OVERRIDES} from '../../../hybridTools/mockUpgradedComponent';
+import {SHARED_MODULE_OVERRIDES} from '../../../hybridTools/mockUpgradedDirective';
 import {TSPublicAppConfig} from '../../../models/TSPublicAppConfig';
 import {TestDataUtil} from '../../../utils/TestDataUtil.spec';
 import {ErrorService} from '../../core/errors/service/ErrorService';
@@ -82,7 +82,7 @@ describe('AddInstitutionComponent', () => {
 
         traegerschaftSpy.getAllTraegerschaften.and.returnValue(Promise.resolve([]));
         traegerschaftSpy.getAllActiveTraegerschaften.and.returnValue(Promise.resolve([]));
-        transitionServiceSpy.params.and.returnValue({institutionId: undefined});
+        transitionServiceSpy.params.and.returnValue({institutionId: undefined, betreuungsangebote: []});
         authServiceSpy.getPrincipal.and.returnValue(TestDataUtil.createSuperadmin());
         applicationPropertyRSSpy.getPublicPropertiesCached.and.returnValue(of(new TSPublicAppConfig()).toPromise());
         applicationPropertyRSSpy.getInstitutionenDurchGemeindenEinladen.and.returnValue(of(false).toPromise());

@@ -1,9 +1,25 @@
+/*
+ * Copyright (C) 2023 DV Bern AG, Switzerland
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
 package ch.dvbern.ebegu.rechner;
 
 import java.math.BigDecimal;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Objects;
 import java.util.TreeMap;
 
 import javax.annotation.Nonnull;
@@ -19,8 +35,7 @@ import static ch.dvbern.ebegu.util.MathUtil.isZero;
 
 public class AppenzellRechner extends AbstractRechner {
 
-	private static final double MAX_BETREUUNGSSTUNDEN_PRO_JAHR_VORSCHULE = 2400;
-	private static final double MAX_BETREUUNGSSTUNDEN_PRO_JAHR_EINGESCHULT = 1900;
+	private static final double ANZAHL_STUNDEN_PRO_BETREUUNGSTAG = 10;
 	private static final MathUtil EXACT = MathUtil.EXACT;
 	private BGCalculationInput input;
 	private BGRechnerParameterDTO parameter;
@@ -61,7 +76,9 @@ public class AppenzellRechner extends AbstractRechner {
 		BigDecimal betreuungspensumInStunden = calcualteBetreuungspensumInStunden();
 		BigDecimal bgPensumInStunden = anspruchpensumInStunden.min(betreuungspensumInStunden);
 		BigDecimal vollkostenGekuerzt = calculateVollkostenGekuerztByPensumAndMonatAnteil(bgPensumInStunden, betreuungspensumInStunden);
-		BigDecimal gutscheinGemaessFormel = calculateGutschein(vollkostenGekuerzt, bgPensumInStunden);
+		BigDecimal prozentsatzAnVollkosten = getProzentsatzByMassgebendemEinkommen(input.getMassgebendesEinkommen());
+		Integer prozentsatzAnVollkostenInteger = EXACT.multiply(prozentsatzAnVollkosten, BigDecimal.valueOf(100)).intValue();
+		BigDecimal gutscheinGemaessFormel = calculateGutschein(vollkostenGekuerzt, bgPensumInStunden, prozentsatzAnVollkosten);
 
 		BGCalculationResult result = new BGCalculationResult();
 		VerfuegungZeitabschnitt.initBGCalculationResult(this.input, result);
@@ -71,24 +88,31 @@ public class AppenzellRechner extends AbstractRechner {
 		result.setBgPensumZeiteinheit(bgPensumInStunden);
 		result.setVollkosten(vollkostenGekuerzt);
 		result.setVerguenstigung(gutscheinGemaessFormel);
+		result.setBeitragshoeheProzent(prozentsatzAnVollkostenInteger);
 		result.roundAllValues();
 
 		verfuegungZeitabschnitt.setBgCalculationResultAsiv(result);
 	}
 
-	private BigDecimal calculateGutschein(BigDecimal vollkostenGekuerzt, BigDecimal bgPensumProStunde) {
-		if (isZero(vollkostenGekuerzt) || isZero(bgPensumProStunde)) {
+	private BigDecimal calculateGutschein(
+		BigDecimal vollkostenGekuerzt,
+		BigDecimal bgPensumInStunden,
+		BigDecimal prozentsatzAnVollkosten
+	) {
+		if (isZero(vollkostenGekuerzt) || isZero(bgPensumInStunden)) {
 			return BigDecimal.ZERO;
 		}
 
-		BigDecimal prozentsatzAnVollkosten = getProzentsatzByMassgebendemEinkommen(input.getMassgebendesEinkommen());
-		BigDecimal gutscheinProMonat = EXACT.multiply(vollkostenGekuerzt, prozentsatzAnVollkosten);
+		BigDecimal maximalerStundensatz = getMaxStundenAnsatz();
+		BigDecimal effektiverStundensatz = EXACT.divideNullSafe(vollkostenGekuerzt, bgPensumInStunden);
 
-		BigDecimal gutscheinProStundeEffektiv = EXACT.divideNullSafe(gutscheinProMonat, bgPensumProStunde);
-		BigDecimal gutscheinProStundeMax = getMaxStundenAnsatz();
+		BigDecimal stundensatz = effektiverStundensatz;
+		if (isMaxStundenAnsatzRequired()) {
+			stundensatz = effektiverStundensatz.min(maximalerStundensatz);
+		}
+		BigDecimal vollkostenGekuerztMitMaxStundensatz = stundensatz.multiply(bgPensumInStunden);
 
-		BigDecimal gutscheinProStunde = gutscheinProStundeEffektiv.min(gutscheinProStundeMax);
-		return EXACT.multiply(gutscheinProStunde,bgPensumProStunde);
+		return EXACT.multiply(vollkostenGekuerztMitMaxStundensatz, prozentsatzAnVollkosten);
 	}
 
 	private BigDecimal getMaxStundenAnsatz() {
@@ -97,6 +121,10 @@ public class AppenzellRechner extends AbstractRechner {
 		}
 
 		return this.parameter.getMaxVerguenstigungVorschuleKindProStd();
+	}
+
+	private boolean isMaxStundenAnsatzRequired() {
+		return !input.isBesondereBeduerfnisseBestaetigt();
 	}
 
 	private BigDecimal getProzentsatzByMassgebendemEinkommen(BigDecimal massgebendesEinkommen) {
@@ -124,23 +152,19 @@ public class AppenzellRechner extends AbstractRechner {
 	}
 
 	private BigDecimal calculateAnspruchpensumInStunden() {
-		return EXACT.multiply(BigDecimal.valueOf(input.getAnspruchspensumProzent()), calculateMaxStundenProMonatAndProzent());
+		return EXACT.multiply(BigDecimal.valueOf(input.getAnspruchspensumProzent()), input.getBgStundenFaktor());
 	}
 
 	private BigDecimal calcualteBetreuungspensumInStunden() {
-		return EXACT.multiply(input.getBetreuungspensumProzent(), calculateMaxStundenProMonatAndProzent());
+		return EXACT.multiply(input.getBetreuungspensumProzent(), calculateHoursPerPercent());
 	}
 
-	private BigDecimal calculateMaxStundenProMonatAndProzent() {
-		return BigDecimal.valueOf(getMaxBetreuungsstundenProJahr() / 100 / 12);
+	private BigDecimal calculateHoursPerPercent() {
+		return BigDecimal.valueOf(getBetreuungsstundenProJahr() / 12 / 100);
 	}
 
-	private double getMaxBetreuungsstundenProJahr() {
-		Objects.requireNonNull(input.getEinschulungTyp());
-
-		if (input.getEinschulungTyp().isEingeschultAppenzell()) {
-			return MAX_BETREUUNGSSTUNDEN_PRO_JAHR_EINGESCHULT;
-		}
-		return MAX_BETREUUNGSSTUNDEN_PRO_JAHR_VORSCHULE;
+	private double getBetreuungsstundenProJahr() {
+		return parameter.getOeffnungstageKita().doubleValue() * ANZAHL_STUNDEN_PRO_BETREUUNGSTAG;
 	}
+
 }

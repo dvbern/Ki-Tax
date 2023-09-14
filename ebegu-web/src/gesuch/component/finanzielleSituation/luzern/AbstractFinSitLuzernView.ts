@@ -34,6 +34,7 @@ import {GesuchModelManager} from '../../../service/gesuchModelManager';
 import {WizardStepManager} from '../../../service/wizardStepManager';
 import {AbstractGesuchViewX} from '../../abstractGesuchViewX';
 import {FinanzielleSituationLuzernService} from './finanzielle-situation-luzern.service';
+import {TSRole} from '../../../../models/enums/TSRole';
 
 export abstract class AbstractFinSitLuzernView extends AbstractGesuchViewX<TSFinanzModel> {
 
@@ -202,8 +203,9 @@ export abstract class AbstractFinSitLuzernView extends AbstractGesuchViewX<TSFin
         return this.gesuchModelManager.getGesuch();
     }
 
-    public isGesuchReadonly(): boolean {
-        return this.gesuchModelManager.isGesuchReadonly();
+    public isFinSitReadonly(): boolean {
+        return this.isGesuchReadonly()
+           ||  (this.getGesuch().isMutation() && this.authServiceRS.isRole(TSRole.GESUCHSTELLER));
     }
 
     public showInfomaFields(): boolean {
@@ -222,7 +224,7 @@ export abstract class AbstractFinSitLuzernView extends AbstractGesuchViewX<TSFin
 
     public abstract getSubStepName(): string;
 
-    public abstract prepareSave(onResult: Function): IPromise<TSFinanzielleSituationContainer>;
+    public abstract prepareSave(onResult: (arg: any) => any): IPromise<TSFinanzielleSituationContainer>;
 
     public getAntragstellerNameForCurrentStep(): string {
         if (this.isGemeinsam()) {
@@ -250,7 +252,7 @@ export abstract class AbstractFinSitLuzernView extends AbstractGesuchViewX<TSFin
         return this.model.getFiSiConToWorkWith();
     }
 
-    protected abstract save(onResult: Function): IPromise<TSFinanzielleSituationContainer>;
+    protected abstract save(onResult: (arg: any) => any): IPromise<TSFinanzielleSituationContainer>;
 
     public getAntragsteller2Name(): string {
         return this.gesuchModelManager.getGesuch().gesuchsteller2?.extractFullName();
@@ -285,6 +287,6 @@ export abstract class AbstractFinSitLuzernView extends AbstractGesuchViewX<TSFin
     }
 
     public isSozialhilfeBezueger(): boolean {
-        return EbeguUtil.isNotNullAndTrue(this.model.sozialhilfeBezueger);
+        return EbeguUtil.isNotNullAndTrue(this.model.familienSituation.sozialhilfeBezueger);
     }
 }

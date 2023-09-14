@@ -95,10 +95,10 @@ public class MonatsMergerRule extends AbstractAbschlussRule {
 		//Die Zeitabschnitte sollen auf den ganzen Monat erweitert werden. Danach haben alle Zeitabschnitte eine Gültigkeit
 		//vom ersten bis zum letzten Tag es Monats, die Calculation Input Werte werden dabei Prozentual zu den anzahl Tagen ausgerechnet
 		List<VerfuegungZeitabschnitt> strechedZeitabschnitte = strechZeitabschnitteToFullMonth(monthlyZeitabschnitte);
-		return mergeZeitabschnitte(strechedZeitabschnitte);
+		return calculateZeitabschnitte(strechedZeitabschnitte);
 	}
 
-	private VerfuegungZeitabschnitt mergeZeitabschnitte(List<VerfuegungZeitabschnitt> zeitabschnitte) {
+	private VerfuegungZeitabschnitt calculateZeitabschnitte(List<VerfuegungZeitabschnitt> zeitabschnitte) {
 		VerfuegungZeitabschnitt zeitabschnittMerged = null;
 
 		for(VerfuegungZeitabschnitt zeitabschnitt : zeitabschnitte) {
@@ -108,6 +108,7 @@ public class MonatsMergerRule extends AbstractAbschlussRule {
 			}
 
 			zeitabschnittMerged.add(zeitabschnitt);
+			zeitabschnittMerged.roundValuesAfterCalculateProportinaly();
 		}
 
 		return zeitabschnittMerged;

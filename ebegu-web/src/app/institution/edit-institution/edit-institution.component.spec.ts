@@ -5,7 +5,7 @@ import {StateService, Transition} from '@uirouter/core';
 import * as moment from 'moment';
 import {of} from 'rxjs';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
-import {SHARED_MODULE_OVERRIDES} from '../../../hybridTools/mockUpgradedComponent';
+import {SHARED_MODULE_OVERRIDES} from '../../../hybridTools/mockUpgradedDirective';
 import {TSDateRange} from '../../../models/types/TSDateRange';
 import {ErrorService} from '../../core/errors/service/ErrorService';
 import {InstitutionRS} from '../../core/service/institutionRS.rest';

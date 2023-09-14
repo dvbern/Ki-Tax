@@ -17,7 +17,11 @@
 
 package ch.dvbern.ebegu.entities.gemeindeantrag;
 
-import java.math.BigDecimal;
+import ch.dvbern.ebegu.entities.AbstractEntity;
+import ch.dvbern.ebegu.enums.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeFormularStatus;
+import ch.dvbern.ebegu.util.Constants;
+import com.google.common.base.Preconditions;
+import org.hibernate.envers.Audited;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -27,14 +31,7 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-
-import ch.dvbern.ebegu.entities.AbstractEntity;
-import ch.dvbern.ebegu.enums.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeFormularStatus;
-import ch.dvbern.ebegu.util.Constants;
-import com.google.common.base.Preconditions;
-import org.hibernate.envers.Audited;
-
-import static ch.dvbern.ebegu.util.Constants.DB_DEFAULT_MAX_LENGTH;
+import java.math.BigDecimal;
 
 @Audited
 @Entity
@@ -91,6 +88,10 @@ public class LastenausgleichTagesschuleAngabenGemeinde extends AbstractEntity {
 	@Nullable
 	@Column(nullable = true)
 	private BigDecimal einnahmenElterngebuehren;
+
+	@Nullable
+	@Column(nullable = true)
+	private BigDecimal einnahmenElterngebuehrenVolksschulangebot;
 
 	@Nullable
 	@Column(nullable = true)
@@ -199,6 +200,11 @@ public class LastenausgleichTagesschuleAngabenGemeinde extends AbstractEntity {
 	@Column(nullable = true)
 	private String bemerkungen;
 
+	@Nullable
+	@Column(nullable = true)
+	@Size(max = Constants.DB_TEXTAREA_LENGTH)
+	private String bemerkungStarkeVeraenderung;
+
 	// Berechnungen
 	@Nullable
 	@Column(nullable = true)
@@ -281,6 +287,7 @@ public class LastenausgleichTagesschuleAngabenGemeinde extends AbstractEntity {
 		this.ausbildungenMitarbeitendeBelegtBemerkung = source.ausbildungenMitarbeitendeBelegtBemerkung;
 		// Bemerkungen
 		this.bemerkungen = source.bemerkungen;
+		this.bemerkungStarkeVeraenderung = source.bemerkungStarkeVeraenderung;
 	}
 
 	@Nullable
@@ -706,5 +713,23 @@ public class LastenausgleichTagesschuleAngabenGemeinde extends AbstractEntity {
 
 	public void setAusbildungenMitarbeitendeBelegtBemerkung(@Nullable String ausbildungenMitarbeitendeBelegtBemerkung) {
 		this.ausbildungenMitarbeitendeBelegtBemerkung = ausbildungenMitarbeitendeBelegtBemerkung;
+	}
+
+	@Nullable
+	public BigDecimal getEinnahmenElterngebuehrenVolksschulangebot() {
+		return einnahmenElterngebuehrenVolksschulangebot;
+	}
+
+	public void setEinnahmenElterngebuehrenVolksschulangebot(@Nullable BigDecimal einnahmenElterngebuehrenVolksschulangebot) {
+		this.einnahmenElterngebuehrenVolksschulangebot = einnahmenElterngebuehrenVolksschulangebot;
+	}
+
+	@Nullable
+	public String getBemerkungStarkeVeraenderung() {
+		return bemerkungStarkeVeraenderung;
+	}
+
+	public void setBemerkungStarkeVeraenderung(@Nullable String bemerkungStarkeVeraenderung) {
+		this.bemerkungStarkeVeraenderung = bemerkungStarkeVeraenderung;
 	}
 }

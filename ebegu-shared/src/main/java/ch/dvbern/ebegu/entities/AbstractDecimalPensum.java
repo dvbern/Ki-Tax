@@ -44,10 +44,6 @@ public class AbstractDecimalPensum extends AbstractDateRangedEntity {
 
 	private static final long serialVersionUID = -7136083144964149528L;
 
-	// these values should somehow have a link to the Rechner
-	private static final BigDecimal MAX_TAGE_PRO_MONAT = new BigDecimal("20.00");
-	private static final BigDecimal MAX_STUNDEN_PRO_MONAT = new BigDecimal("220.00");
-
 	@Min(0)
 	@NotNull
 	@Nonnull
@@ -103,13 +99,13 @@ public class AbstractDecimalPensum extends AbstractDateRangedEntity {
 		target.setStuendlicheVollkosten(this.getStuendlicheVollkosten());
 	}
 
-	public void applyPensumFromDays(@Nonnull BigDecimal days) {
-		pensum = MathUtil.EXACT.divide(MathUtil.HUNDRED.multiply(days), MAX_TAGE_PRO_MONAT);
+	public void applyPensumFromDays(@Nonnull BigDecimal days, @Nonnull BigDecimal maxTageProMonat) {
+		pensum = MathUtil.EXACT.divide(MathUtil.HUNDRED.multiply(days), maxTageProMonat);
 		unitForDisplay = PensumUnits.DAYS;
 	}
 
-	public void applyPensumFromHours(@Nonnull BigDecimal hours) {
-		pensum = MathUtil.EXACT.divide(MathUtil.HUNDRED.multiply(hours), MAX_STUNDEN_PRO_MONAT);
+	public void applyPensumFromHours(@Nonnull BigDecimal hours, @Nonnull BigDecimal maxStundenProMonat) {
+		pensum = MathUtil.EXACT.divide(MathUtil.HUNDRED.multiply(hours), maxStundenProMonat);
 		unitForDisplay = PensumUnits.HOURS;
 	}
 

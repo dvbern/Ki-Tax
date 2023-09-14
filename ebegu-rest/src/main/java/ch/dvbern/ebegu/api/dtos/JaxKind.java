@@ -22,6 +22,7 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 
 import ch.dvbern.ebegu.enums.EinschulungTyp;
+import ch.dvbern.ebegu.enums.Geschlecht;
 import ch.dvbern.ebegu.enums.Kinderabzug;
 
 /**
@@ -31,6 +32,9 @@ import ch.dvbern.ebegu.enums.Kinderabzug;
 public class JaxKind extends JaxAbstractPersonDTO {
 
 	private static final long serialVersionUID = -1297026881674137397L;
+
+	@Nullable
+	private Geschlecht geschlecht;
 
 	@Nullable
 	private Kinderabzug kinderabzugErstesHalbjahr;
@@ -269,5 +273,16 @@ public class JaxKind extends JaxAbstractPersonDTO {
 
 	public void setKeinPlatzInSchulhort(@Nonnull Boolean keinPlatzInSchulhort) {
 		this.keinPlatzInSchulhort = keinPlatzInSchulhort;
+	}
+
+	@Override
+	@Nullable
+	public Geschlecht getGeschlecht() {
+		return geschlecht;
+	}
+
+	@Override
+	public void setGeschlecht(@Nullable Geschlecht geschlecht) {
+		this.geschlecht = geschlecht;
 	}
 }

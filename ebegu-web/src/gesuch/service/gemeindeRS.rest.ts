@@ -45,6 +45,7 @@ export class GemeindeRS implements IEntityRS {
     private readonly principalGemeindenSubject$ = new BehaviorSubject<TSGemeinde[]>([]);
     private readonly principalGemeindenSubjectTS$ = new BehaviorSubject<TSGemeinde[]>([]);
     private readonly principalGemeindenSubjectFI$ = new BehaviorSubject<TSGemeinde[]>([]);
+    private readonly principalGemeindenSubjectBG$ = new BehaviorSubject<TSGemeinde[]>([]);
 
     public constructor(
         public $http: IHttpService,
@@ -85,6 +86,10 @@ export class GemeindeRS implements IEntityRS {
         return this.principalGemeindenSubjectFI$.asObservable();
     }
 
+    public getGemeindenForBGByPrincipal$(): Observable<TSGemeinde[]> {
+        return this.principalGemeindenSubjectBG$.asObservable();
+    }
+
     public getGemeindenForPrincipal$(): Observable<TSGemeinde[]> {
         return this.principalGemeindenSubject$.asObservable();
     }
@@ -103,9 +108,11 @@ export class GemeindeRS implements IEntityRS {
 
                     const gemeindenTS = angular.copy(gemeinden.filter(g => g.angebotTS));
                     const gemeindenFI = angular.copy(gemeinden.filter(g => g.angebotFI));
+                    const gemeindenBG = angular.copy(gemeinden.filter(g => g.angebotBG));
 
                     this.principalGemeindenSubjectTS$.next(gemeindenTS);
                     this.principalGemeindenSubjectFI$.next(gemeindenFI);
+                    this.principalGemeindenSubjectBG$.next(gemeindenBG);
                 },
                 err => this.$log.error(err)
             );
@@ -190,8 +197,7 @@ export class GemeindeRS implements IEntityRS {
     }
 
     private postLogo(gemeindeId: string, formData: FormData): IPromise<any> {
-        let result: IPromise<any>;
-        result = this.$http.post(this.getLogoUrl(gemeindeId), formData, {
+        const result = this.$http.post(this.getLogoUrl(gemeindeId), formData, {
             transformRequest: (request: IHttpRequestTransformer) => request,
             headers: {'Content-Type': undefined}
         })

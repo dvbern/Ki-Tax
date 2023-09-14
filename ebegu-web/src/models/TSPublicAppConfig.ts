@@ -41,6 +41,8 @@ export class TSPublicAppConfig {
     public gemeindeKennzahlenAktiv: any;
     public mulitmandantAktiv: any;
     public angebotTSActivated: boolean;
+    public angebotFIActivated: boolean;
+    public angebotTFOActivated: boolean;
     public infomaZahlungen: boolean;
     public frenchEnabled: boolean;
     public geresEnabledForMandant: boolean;
@@ -50,4 +52,5 @@ export class TSPublicAppConfig {
     public activatedDemoFeatures: string;
     public checkboxAuszahlungInZukunft: boolean;
     public institutionenDurchGemeindenEinladen: boolean;
+    public erlaubenInstitutionenZuWaehlen: boolean;
 }

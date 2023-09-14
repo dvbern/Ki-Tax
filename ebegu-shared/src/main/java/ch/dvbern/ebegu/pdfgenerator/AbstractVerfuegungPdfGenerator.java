@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018 DV Bern AG, Switzerland
+ * Copyright (C) 2023 DV Bern AG, Switzerland
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -8,11 +8,11 @@
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
 package ch.dvbern.ebegu.pdfgenerator;
@@ -39,6 +39,7 @@ import ch.dvbern.ebegu.entities.Kind;
 import ch.dvbern.ebegu.entities.Verfuegung;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
+import ch.dvbern.ebegu.enums.BetreuungspensumAnzeigeTyp;
 import ch.dvbern.ebegu.pdfgenerator.PdfGenerator.CustomGenerator;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.Constants;
@@ -75,8 +76,8 @@ public abstract class AbstractVerfuegungPdfGenerator extends DokumentAnFamilieGe
 	protected static final String VERFUEGUNG_TITLE = "PdfGeneration_Verfuegung_Title";
 	private static final String ANGEBOT = "PdfGeneration_Betreuungsangebot";
 	private static final String GEMEINDE = "PdfGeneration_Gemeinde";
-	private static final String VERFUEGUNG_CONTENT_1 = "PdfGeneration_Verfuegung_Content_1";
-	private static final String VERFUEGUNG_CONTENT_2 = "PdfGeneration_Verfuegung_Content_2";
+	protected static final String VERFUEGUNG_CONTENT_1 = "PdfGeneration_Verfuegung_Content_1";
+	protected static final String VERFUEGUNG_CONTENT_2 = "PdfGeneration_Verfuegung_Content_2";
 	private static final String VERFUEGUNG_ERKLAERUNG_FEBR = "PdfGeneration_Verfuegung_Erklaerung_FEBR";
 	private static final String VON = "PdfGeneration_Verfuegung_Von";
 	private static final String BIS = "PdfGeneration_Verfuegung_Bis";
@@ -103,7 +104,7 @@ public abstract class AbstractVerfuegungPdfGenerator extends DokumentAnFamilieGe
 	protected static final String NICHT_EINTRETEN_CONTENT_4 = "PdfGeneration_NichtEintreten_Content_4";
 	protected static final String NICHT_EINTRETEN_CONTENT_5 = "PdfGeneration_NichtEintreten_Content_5";
 	private static final String NICHT_EINTRETEN_CONTENT_5_FKJV = "PdfGeneration_NichtEintreten_Content_5_FKJV";
-	private static final String NICHT_EINTRETEN_CONTENT_6 = "PdfGeneration_NichtEintreten_Content_6";
+	protected static final String NICHT_EINTRETEN_CONTENT_6 = "PdfGeneration_NichtEintreten_Content_6";
 	protected static final String NICHT_EINTRETEN_CONTENT_7 = "PdfGeneration_NichtEintreten_Content_7";
 	private static final String NICHT_EINTRETEN_CONTENT_8 = "PdfGeneration_NichtEintreten_Content_8";
 	private static final String BEMERKUNGEN = "PdfGeneration_Verfuegung_Bemerkungen";
@@ -136,6 +137,7 @@ public abstract class AbstractVerfuegungPdfGenerator extends DokumentAnFamilieGe
 	private final boolean kontingentierungEnabledAndEntwurf;
 	private final boolean stadtBernAsivConfigured;
 	private final boolean isFKJVTexte;
+	private final BetreuungspensumAnzeigeTyp betreuungspensumAnzeigeTyp;
 	private boolean showColumnAnElternAuszahlen;
 	private boolean showColumnAnInsitutionenAuszahlen;
 	private List<VerfuegungZeitabschnitt> abschnitte;
@@ -149,7 +151,8 @@ public abstract class AbstractVerfuegungPdfGenerator extends DokumentAnFamilieGe
 		@Nonnull Art art,
 		boolean kontingentierungEnabledAndEntwurf,
 		boolean stadtBernAsivConfigured,
-		boolean isFKJVTexte
+		boolean isFKJVTexte,
+		BetreuungspensumAnzeigeTyp betreuungspensumAnzeigeTyp
 	) {
 		super(betreuung.extractGesuch(), stammdaten);
 
@@ -158,6 +161,7 @@ public abstract class AbstractVerfuegungPdfGenerator extends DokumentAnFamilieGe
 		this.kontingentierungEnabledAndEntwurf = kontingentierungEnabledAndEntwurf;
 		this.stadtBernAsivConfigured = stadtBernAsivConfigured;
 		this.isFKJVTexte = isFKJVTexte;
+		this.betreuungspensumAnzeigeTyp = betreuungspensumAnzeigeTyp;
 	}
 
 	@Nonnull
@@ -205,13 +209,8 @@ public abstract class AbstractVerfuegungPdfGenerator extends DokumentAnFamilieGe
 		Kind kind = betreuung.getKind().getKindJA();
 
 		createFusszeileNormaleVerfuegung(generator.getDirectContent());
-		Paragraph paragraphWithSupertext = PdfUtil.createParagraph(translate(
-			VERFUEGUNG_CONTENT_1,
-			kind.getFullName(),
-			Constants.DATE_FORMATTER.format(kind.getGeburtsdatum())), 2);
-		paragraphWithSupertext.add(PdfUtil.createSuperTextInText("1"));
-		paragraphWithSupertext.add(new Chunk(' ' + translate(VERFUEGUNG_CONTENT_2)));
-		document.add(paragraphWithSupertext);
+		Paragraph firstParagraph = createFirstParagraph(kind);
+		document.add(firstParagraph);
 		document.add(createVerfuegungTable());
 
 		// Erklaerungstext zu FEBR: Falls Stadt Bern und das Flag ist noch nicht gesetzt
@@ -223,7 +222,18 @@ public abstract class AbstractVerfuegungPdfGenerator extends DokumentAnFamilieGe
 		addZusatzTextIfAvailable(document);
 	}
 
-	private void createDokumentKeinAnspruch(Document document, PdfGenerator generator) {
+	@Nonnull
+	protected Paragraph createFirstParagraph(Kind kind) {
+		Paragraph paragraphWithSupertext = PdfUtil.createParagraph(translate(
+			VERFUEGUNG_CONTENT_1,
+			kind.getFullName(),
+			Constants.DATE_FORMATTER.format(kind.getGeburtsdatum())), 2);
+		paragraphWithSupertext.add(PdfUtil.createSuperTextInText("1"));
+		paragraphWithSupertext.add(new Chunk(' ' + translate(VERFUEGUNG_CONTENT_2)));
+		return paragraphWithSupertext;
+	}
+
+	protected void createDokumentKeinAnspruch(Document document, PdfGenerator generator) {
 		DateRange gp = gesuch.getGesuchsperiode().getGueltigkeit();
 		LocalDate eingangsdatum = gesuch.getEingangsdatum() != null ? gesuch.getEingangsdatum() : LocalDate.now();
 		Kind kind = betreuung.getKind().getKindJA();
@@ -313,7 +323,7 @@ public abstract class AbstractVerfuegungPdfGenerator extends DokumentAnFamilieGe
 			Constants.DATE_FORMATTER.format(eingangsdatum)));
 	}
 
-	private LocalDate getEingangsdatum() {
+	protected LocalDate getEingangsdatum() {
 		return gesuch.getEingangsdatum() != null ? gesuch.getEingangsdatum() : LocalDate.now();
 	}
 
@@ -383,10 +393,18 @@ public abstract class AbstractVerfuegungPdfGenerator extends DokumentAnFamilieGe
 			intro.add(new TableRowLabelValue(BEMERKUNG, translate(ERSETZT_VERFUEGUNG,
 				Constants.DATE_FORMATTER.format(betreuung.getVorgaengerVerfuegung().getTimestampErstellt()))));
 		}
-		intro.add(new TableRowLabelValue(ANGEBOT, translateEnumValue(betreuung.getBetreuungsangebotTyp())));
-		intro.add(new TableRowLabelValue(BETREUUNG_INSTITUTION, institutionName));
+		addAngebotToIntro(intro);
+		addInstitutionToIntro(institutionName, intro);
 		intro.add(new TableRowLabelValue(GEMEINDE, gemeinde));
 		return PdfUtil.createIntroTable(intro, sprache, mandant);
+	}
+
+	protected void addAngebotToIntro(List<TableRowLabelValue> intro) {
+		intro.add(new TableRowLabelValue(ANGEBOT, translateEnumValue(betreuung.getBetreuungsangebotTyp())));
+	}
+
+	protected void addInstitutionToIntro(String institutionName, List<TableRowLabelValue> intro) {
+		intro.add(new TableRowLabelValue(BETREUUNG_INSTITUTION, institutionName));
 	}
 
 	@Nonnull
@@ -423,6 +441,7 @@ public abstract class AbstractVerfuegungPdfGenerator extends DokumentAnFamilieGe
 		table.addCell(createCell(true, Element.ALIGN_CENTER, translate(getPensumTitle()), null, fontTabelle, 1, 3));
 		table.addCell(createCell(true, Element.ALIGN_RIGHT, translate(VOLLKOSTEN), null, fontTabelle, 2, 1));
 
+		addTitleBeitraghoheUndSelbstbehaltInProzent(table);
 		addTitleBerechneterGutschein(table);
 		addTitleBetreuungsGutschein(table);
 		addTitleNrElternBeitrag(table);
@@ -485,6 +504,7 @@ public abstract class AbstractVerfuegungPdfGenerator extends DokumentAnFamilieGe
 				fontTabelle,
 				1,
 				1));
+			addValueaBeitraghoheUndSelbstbehaltInProzent(table, abschnitt.getBeitraghoheProzent());
 			addValueBerechneterGutschein(table, abschnitt.getVerguenstigungOhneBeruecksichtigungVollkosten());
 			addValueBetreuungsGutschein(table, abschnitt.getVerguenstigungOhneBeruecksichtigungMinimalbeitrag());
 			addValueElternBeitrag(table, abschnitt.getMinimalerElternbeitragGekuerzt());
@@ -546,6 +566,10 @@ public abstract class AbstractVerfuegungPdfGenerator extends DokumentAnFamilieGe
 		if (showColumnAnInsitutionenAuszahlen) {
 			table.addCell(createCell(true, Element.ALIGN_RIGHT, translate(GUTSCHEIN_AN_INSTITUTION), Color.LIGHT_GRAY, fontTabelle, 2, 1));
 		}
+	}
+
+	protected void addTitleBeitraghoheUndSelbstbehaltInProzent(PdfPTable table) {
+		//no-op ausser in Appenzell
 	}
 
 	protected void addValueBerechneterGutschein(PdfPTable table, BigDecimal verguenstigungOhneBeruecksichtigungVollkosten) {
@@ -620,6 +644,10 @@ public abstract class AbstractVerfuegungPdfGenerator extends DokumentAnFamilieGe
 			1));
 	}
 
+	protected void addValueaBeitraghoheUndSelbstbehaltInProzent(PdfPTable table, Integer beitraghoheInProzent) {
+		//no-op ausser in Appenzell
+	}
+
 	protected abstract float[] getVerfuegungColumnWidths();
 
 	private float[] calculateVerfuegungColumnWidths() {
@@ -683,7 +711,7 @@ public abstract class AbstractVerfuegungPdfGenerator extends DokumentAnFamilieGe
 		return result;
 	}
 
-	private void removeLeadingZeitabschnitteWithNoPositivBetreuungsPensum(List<VerfuegungZeitabschnitt> result) {
+	protected void removeLeadingZeitabschnitteWithNoPositivBetreuungsPensum(List<VerfuegungZeitabschnitt> result) {
 		ListIterator<VerfuegungZeitabschnitt> listIterator = result.listIterator();
 		while (listIterator.hasNext()) {
 			VerfuegungZeitabschnitt zeitabschnitt = listIterator.next();
@@ -807,33 +835,35 @@ public abstract class AbstractVerfuegungPdfGenerator extends DokumentAnFamilieGe
 		return translate(FUSSZEILE_1_VERFUEGUNG);
 	}
 
-	private boolean isTFO() {
-		return betreuung.getBetreuungsangebotTyp() == BetreuungsangebotTyp.TAGESFAMILIEN;
+	private boolean isStunden() {
+		return (betreuungspensumAnzeigeTyp.equals(BetreuungspensumAnzeigeTyp.ZEITEINHEIT_UND_PROZENT) &&
+			betreuung.getBetreuungsangebotTyp() == BetreuungsangebotTyp.TAGESFAMILIEN)
+			|| betreuungspensumAnzeigeTyp.equals(BetreuungspensumAnzeigeTyp.NUR_STUNDEN);
 	}
 
 	private String getPensumTitle() {
-		if (isTFO()) {
+		if (isStunden()) {
 			return PENSUM_TITLE_TFO;
 		}
 		return PENSUM_TITLE;
 	}
 
 	private String printEffektiv(VerfuegungZeitabschnitt abschnitt) {
-		if (isTFO()) {
+		if (isStunden()) {
 			return PdfUtil.printBigDecimal(abschnitt.getBetreuungspensumZeiteinheit());
 		}
 		return PdfUtil.printPercent(abschnitt.getBetreuungspensumProzent());
 	}
 
 	private String printAnspruch(VerfuegungZeitabschnitt abschnitt) {
-		if (isTFO()) {
+		if (isStunden()) {
 			return PdfUtil.printBigDecimal(abschnitt.getAnspruchsberechtigteAnzahlZeiteinheiten());
 		}
 		return PdfUtil.printPercent(abschnitt.getAnspruchberechtigtesPensum());
 	}
 
 	private String printVerguenstigt(VerfuegungZeitabschnitt abschnitt) {
-		if (isTFO()) {
+		if (isStunden()) {
 			return PdfUtil.printBigDecimal(abschnitt.getVerfuegteAnzahlZeiteinheiten());
 		}
 		return PdfUtil.printPercent(abschnitt.getBgPensum());

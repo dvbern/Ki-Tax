@@ -17,71 +17,71 @@
 
 package ch.dvbern.ebegu.nesko.utils;
 
+import java.time.LocalDate;
 import java.util.Objects;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
+import ch.dvbern.ebegu.entities.FinanzielleSituationContainer;
 import ch.dvbern.ebegu.entities.Gesuch;
-import ch.dvbern.ebegu.nesko.handler.KibonAnfrageContext;
+import ch.dvbern.ebegu.entities.SteuerdatenResponse;
+import ch.dvbern.ebegu.enums.GesuchstellerTyp;
 
 public final class KibonAnfrageUtil {
 
 	private KibonAnfrageUtil(){
 	}
-	/**
-	 * Bestimmen ob der Veranlagung Event betrifft der GS1 oder GS2 und das Context entsprechend initialisieren
-	 *
-	 * @return KibonAnfrageContext
-	 */
-	public static KibonAnfrageContext initKibonAnfrageContext(@Nonnull Gesuch gesuch, int zpvNummer) {
-		KibonAnfrageContext kibonAnfrageContext = null;
-		Objects.requireNonNull(gesuch.getGesuchsteller1());
-		Objects.requireNonNull(gesuch.getGesuchsteller1().getFinanzielleSituationContainer());
-		if (gesuch.getGesuchsteller1()
-			.getFinanzielleSituationContainer()
-			.getFinanzielleSituationJA()
-			.getSteuerdatenResponse() != null && gesuch.getGesuchsteller1()
-			.getFinanzielleSituationContainer()
-			.getFinanzielleSituationJA()
-			.getSteuerdatenResponse()
-			.getZpvNrDossiertraeger() != null) {
-			if (gesuch.getGesuchsteller1()
-				.getFinanzielleSituationContainer()
-				.getFinanzielleSituationJA()
-				.getSteuerdatenResponse()
-				.getZpvNrDossiertraeger()
-				.equals(zpvNummer)) {
-				kibonAnfrageContext = new KibonAnfrageContext(
-					gesuch,
-					gesuch.getGesuchsteller1(),
-					gesuch.getGesuchsteller1().getFinanzielleSituationContainer(),
-					gesuch.getId());
-			}
-		} else {
-			Objects.requireNonNull(gesuch.getGesuchsteller2());
-			Objects.requireNonNull(gesuch.getGesuchsteller2()
-				.getFinanzielleSituationContainer());
-			if (gesuch.getGesuchsteller2()
-				.getFinanzielleSituationContainer()
-				.getFinanzielleSituationJA()
-				.getSteuerdatenResponse() != null && gesuch.getGesuchsteller2()
-				.getFinanzielleSituationContainer()
-				.getFinanzielleSituationJA()
-				.getSteuerdatenResponse()
-				.getZpvNrDossiertraeger() != null && gesuch.getGesuchsteller2()
-				.getFinanzielleSituationContainer()
-				.getFinanzielleSituationJA()
-				.getSteuerdatenResponse()
-				.getZpvNrDossiertraeger()
-				.equals(zpvNummer)) {
-				kibonAnfrageContext = new KibonAnfrageContext(
-					gesuch,
-					gesuch.getGesuchsteller2(),
-					gesuch.getGesuchsteller2().getFinanzielleSituationContainer(),
-					gesuch.getId());
 
-			}
+	public static boolean hasGesuchSteuerdatenResponseWithZpvNummer(@Nonnull Gesuch gesuch, int zpvNummer) {
+		Objects.requireNonNull(gesuch.getGesuchsteller1());
+
+		if (isZpvNrFromAntragsteller(gesuch.getGesuchsteller1().getFinanzielleSituationContainer(), zpvNummer)) {
+			return true;
 		}
-		return kibonAnfrageContext;
+
+		if (gesuch.getGesuchsteller2() != null &&
+			gesuch.getGesuchsteller2().getFinanzielleSituationContainer() != null) {
+			return isZpvNrFromAntragsteller(gesuch.getGesuchsteller2().getFinanzielleSituationContainer(), zpvNummer);
+		}
+
+		return false;
+	}
+
+	private static boolean isZpvNrFromAntragsteller(@Nullable FinanzielleSituationContainer finanzielleSituationContainer, int zpvNummer) {
+		if (finanzielleSituationContainer == null) {
+			return false;
+		}
+
+		SteuerdatenResponse steuerdatenResponse =
+			finanzielleSituationContainer
+			.getFinanzielleSituationJA()
+			.getSteuerdatenResponse();
+
+		if (steuerdatenResponse == null || steuerdatenResponse.getZpvNrAntragsteller() == null) {
+			return false;
+		}
+
+		return steuerdatenResponse.getZpvNrAntragsteller().equals(zpvNummer);
+	}
+
+	public static GesuchstellerTyp getGesuchstellerTypByGeburtsdatum(Gesuch gesuch, LocalDate geburtsdatum) {
+		if (gesuch.getGesuchsteller1() != null &&
+					gesuch.getGesuchsteller1().getGesuchstellerJA().getGeburtsdatum().equals(geburtsdatum)) {
+			return GesuchstellerTyp.GESUCHSTELLER_1;
+		}
+
+		if (gesuch.getGesuchsteller2() != null &&
+					gesuch.getGesuchsteller2().getGesuchstellerJA().getGeburtsdatum().equals(geburtsdatum)) {
+			return GesuchstellerTyp.GESUCHSTELLER_2;
+		}
+
+		return null;
+	}
+
+	public static String getZpvFromBesitzer(Gesuch gesuch) {
+		//Online Fall hat immer ein Besitzer
+		Objects.requireNonNull(gesuch.getFall().getBesitzer());
+		return gesuch.getFall().getBesitzer().getZpvNummer();
 	}
 }

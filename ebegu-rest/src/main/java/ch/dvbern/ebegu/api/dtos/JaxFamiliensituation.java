@@ -37,7 +37,7 @@ import ch.dvbern.lib.date.converters.LocalDateXMLConverter;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class JaxFamiliensituation extends JaxAbstractDTO {
 
-	private static final long serialVersionUID = -1297019741664130597L;
+	private static final long serialVersionUID = 6551372166765101992L;
 
 	@NotNull
 	private EnumFamilienstatus familienstatus;
@@ -50,6 +50,9 @@ public class JaxFamiliensituation extends JaxAbstractDTO {
 
 	@Nullable
 	private Boolean sozialhilfeBezueger;
+
+	@Nullable
+	private Boolean partnerIdentischMitVorgesuch;
 
 	@Nullable
 	private String zustaendigeAmtsstelle;
@@ -107,6 +110,14 @@ public class JaxFamiliensituation extends JaxAbstractDTO {
 	@Nullable
 	private Boolean geteilteObhut;
 
+	@Nullable
+	private Boolean gemeinsamerHaushaltMitObhutsberechtigterPerson;
+
+	@Nullable
+	private Boolean gemeinsamerHaushaltMitPartner;
+
+	private boolean auszahlungAusserhalbVonKibon;
+
 	public static long getSerialVersionUID() {
 		return serialVersionUID;
 	}
@@ -163,6 +174,14 @@ public class JaxFamiliensituation extends JaxAbstractDTO {
 
 	public void setSozialhilfeBezueger(@Nullable Boolean sozialhilfeBezueger) {
 		this.sozialhilfeBezueger = sozialhilfeBezueger;
+	}
+
+	public void setPartnerIdentischMitVorgesuch(@Nullable Boolean identischerPartner) {
+		this.partnerIdentischMitVorgesuch = identischerPartner;
+	}
+
+	public Boolean getPartnerIdentischMitVorgesuch(){
+		return partnerIdentischMitVorgesuch;
 	}
 
 	@Nullable
@@ -311,5 +330,32 @@ public class JaxFamiliensituation extends JaxAbstractDTO {
 
 	public void setGeteilteObhut(@Nullable Boolean geteilteObhut) {
 		this.geteilteObhut = geteilteObhut;
+	}
+
+	@Nullable
+	public Boolean getGemeinsamerHaushaltMitObhutsberechtigterPerson() {
+		return gemeinsamerHaushaltMitObhutsberechtigterPerson;
+	}
+
+	public void setGemeinsamerHaushaltMitObhutsberechtigterPerson(
+		@Nullable Boolean gemeinsamerHaushaltMitObhutsberechtigterPerson) {
+		this.gemeinsamerHaushaltMitObhutsberechtigterPerson = gemeinsamerHaushaltMitObhutsberechtigterPerson;
+	}
+
+	@Nullable
+	public Boolean getGemeinsamerHaushaltMitPartner() {
+		return gemeinsamerHaushaltMitPartner;
+	}
+
+	public void setGemeinsamerHaushaltMitPartner(@Nullable Boolean gemeinsamerHaushaltMitPartner) {
+		this.gemeinsamerHaushaltMitPartner = gemeinsamerHaushaltMitPartner;
+	}
+
+	public boolean isAuszahlungAusserhalbVonKibon() {
+		return auszahlungAusserhalbVonKibon;
+	}
+
+	public void setAuszahlungAusserhalbVonKibon(boolean auszahlungAusserhalbVonKibon) {
+		this.auszahlungAusserhalbVonKibon = auszahlungAusserhalbVonKibon;
 	}
 }

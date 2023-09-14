@@ -80,7 +80,7 @@ export class FinanzielleSituationStartViewLuzernComponent extends AbstractFinSit
         return TSFinanzielleSituationSubStepName.LUZERN_START;
     }
 
-    public prepareSave(onResult: Function): IPromise<TSFinanzielleSituationContainer> {
+    public prepareSave(onResult: (arg: any) => any): IPromise<TSFinanzielleSituationContainer> {
         if (!this.isGesuchValid()) {
             onResult(undefined);
             return undefined;
@@ -88,7 +88,7 @@ export class FinanzielleSituationStartViewLuzernComponent extends AbstractFinSit
         return this.save(onResult);
     }
 
-    protected save(onResult: Function): angular.IPromise<TSFinanzielleSituationContainer> {
+    protected save(onResult: (arg: any) => any): IPromise<TSFinanzielleSituationContainer> {
         this.model.copyFinSitDataToGesuch(this.gesuchModelManager.getGesuch());
         return this.gesuchModelManager.saveFinanzielleSituationStart()
             .then((gesuch: TSGesuch) => {
@@ -113,6 +113,6 @@ export class FinanzielleSituationStartViewLuzernComponent extends AbstractFinSit
     }
 
     public isNotSozialhilfeBezueger(): boolean {
-        return EbeguUtil.isNotNullAndFalse(this.model.sozialhilfeBezueger);
+        return EbeguUtil.isNotNullAndFalse(this.model.familienSituation.sozialhilfeBezueger);
     }
 }

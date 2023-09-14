@@ -29,6 +29,7 @@ import ITranslateService = angular.translate.ITranslateService;
 export class I18nServiceRSRest {
 
     public serviceURL: string;
+    private $translate: ITranslateService; // will be removed in KIBON-2962
 
     public constructor(
         private readonly translate: TranslateService,
@@ -43,13 +44,12 @@ export class I18nServiceRSRest {
      * angularJsTranslateService to set the language in the corresponding plugin of angularjs
      */
     public changeClientLanguage(
-        selectedLanguage: TSBrowserLanguage,
-        angularJsTranslateService: ITranslateService
+        selectedLanguage: TSBrowserLanguage
     ): void {
         this.$window.nativeLocalStorage.setItem(LOCALSTORAGE_LANGUAGE_KEY, selectedLanguage);
         this.translate.use(selectedLanguage); // angular
         this.dateAdapter.setLocale(selectedLanguage);
-        angularJsTranslateService.use(selectedLanguage); // angularjs
+        this.$translate.use(selectedLanguage); // will be removed in KIBON-2962
     }
 
     /**
@@ -65,6 +65,11 @@ export class I18nServiceRSRest {
 
     public currentLanguage(): TSBrowserLanguage {
         return tsBrowserLanguageFromString(this.translate.currentLang);
+    }
+
+    // will be removed in KIBON-2962
+    public setAngularJSTranslateService($translate: any): void {
+        this.$translate = $translate;
     }
 }
 

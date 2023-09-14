@@ -1,16 +1,18 @@
 /*
- * Ki-Tax: System for the management of external childcare subsidies
- * Copyright (C) 2017 City of Bern Switzerland
+ * Copyright (C) 2023 DV Bern AG, Switzerland
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
+ *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
 package ch.dvbern.ebegu.entities;
@@ -327,6 +329,11 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 		return getRelevantBgCalculationResult().getBetreuungspensumZeiteinheit();
 	}
 
+	@Nonnull
+	public BigDecimal getBgPensumZeiteinheit() {
+		return getRelevantBgCalculationResult().getBgPensumZeiteinheit();
+	}
+
 	@Nullable
 	public BigDecimal getAbzugFamGroesse() {
 		return getRelevantBgCalculationResult().getAbzugFamGroesse();
@@ -376,6 +383,10 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 
 	public boolean isAuszahlungAnEltern() {
 		return getRelevantBgCalculationResult().isAuszahlungAnEltern();
+	}
+
+	public Integer getBeitraghoheProzent() {
+		return getRelevantBgCalculationResult().getBeitragshoeheProzent();
 	}
 
 	/* Ende Delegator-Methoden */
@@ -613,9 +624,9 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 		this.getBgCalculationInputGemeinde().calculateInputValuesProportionaly(percentag);
 	}
 
-	public void setKostenAnteilMonat(BigDecimal kostenAnteilMonat) {
-		this.getBgCalculationInputAsiv().setKostenAnteilMonat(kostenAnteilMonat);
-		this.getBgCalculationInputGemeinde().setKostenAnteilMonat(kostenAnteilMonat);
+	public void roundValuesAfterCalculateProportinaly() {
+		this.getBgCalculationInputAsiv().roundValuesAfterCalculateProportinaly();
+		this.getBgCalculationInputGemeinde().roundValuesAfterCalculateProportinaly();
 	}
 
 	public void setStuendlicheVollkosten(BigDecimal stuendlicheVollkosten) {
@@ -630,6 +641,16 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 
 	public boolean hasBetreuungspensum() {
 		return !MathUtil.isZero(this.getRelevantBgCalculationResult().getBetreuungspensumProzent());
+	}
+
+	public void setPartnerIdentischMitVorgesuch(boolean partnerIdentischMitVorgesuch){
+		this.getBgCalculationInputAsiv().setPartnerIdentischMitVorgesuch(partnerIdentischMitVorgesuch);
+		this.getBgCalculationInputGemeinde().setPartnerIdentischMitVorgesuch(partnerIdentischMitVorgesuch);
+	}
+
+	public void setBgStundenFaktor(BigDecimal bgStundenFaktor){
+		this.getBgCalculationInputAsiv().setBgStundenFaktor(bgStundenFaktor);
+		this.getBgCalculationInputGemeinde().setBgStundenFaktor(bgStundenFaktor);
 	}
 
 	/* Ende Delegator Setter-Methoden: Setzen die Werte auf BEIDEN inputs */
@@ -862,5 +883,25 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 		return this.getVerfuegungZeitabschnittBemerkungList().stream()
 			.map(VerfuegungZeitabschnittBemerkung::getBemerkung)
 			.collect(Collectors.joining("\n"));
+	}
+
+	public void setGeschwisternBonusKind2ForAsivAndGemeinde(boolean geschwisternBonusKind2) {
+		this.bgCalculationInputAsiv.setGeschwisternBonusKind2(geschwisternBonusKind2);
+		this.bgCalculationInputGemeinde.setGeschwisternBonusKind2(geschwisternBonusKind2);
+	}
+
+	public void setGeschwisternBonusKind3ForAsivAndGemeinde(boolean geschwisternBonusKind3) {
+		this.bgCalculationInputAsiv.setGeschwisternBonusKind3(geschwisternBonusKind3);
+		this.bgCalculationInputGemeinde.setGeschwisternBonusKind3(geschwisternBonusKind3);
+	}
+
+	public void setRequiredAgeForAnspruchNotReached(boolean requiredAgeForAnspruchNotReached) {
+		this.bgCalculationInputAsiv.setRequiredAgeForAnspruchNotReached(requiredAgeForAnspruchNotReached);
+		this.bgCalculationInputGemeinde.setRequiredAgeForAnspruchNotReached(requiredAgeForAnspruchNotReached);
+	}
+
+	public void setGesuchBeendenKonkubinatWirdInPeriodeXJahreAlt(boolean gesuchBeenden) {
+		this.bgCalculationInputAsiv.setGesuchBeendenKonkubinatWirdInPeriodeXJahreAlt(gesuchBeenden);
+		this.bgCalculationInputGemeinde.setGesuchBeendenKonkubinatWirdInPeriodeXJahreAlt(gesuchBeenden);
 	}
 }

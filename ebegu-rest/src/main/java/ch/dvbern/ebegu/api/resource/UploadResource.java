@@ -15,42 +15,6 @@
 
 package ch.dvbern.ebegu.api.resource;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URI;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Paths;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Base64;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.concurrent.TimeUnit;
-
-import javax.activation.MimeType;
-import javax.activation.MimeTypeParseException;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.annotation.security.DenyAll;
-import javax.annotation.security.PermitAll;
-import javax.annotation.security.RolesAllowed;
-import javax.ejb.Stateless;
-import javax.ejb.TransactionAttribute;
-import javax.ejb.TransactionAttributeType;
-import javax.inject.Inject;
-import javax.servlet.http.HttpServletRequest;
-import javax.validation.constraints.NotNull;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.UriInfo;
-
 import ch.dvbern.ebegu.api.av.AVClient;
 import ch.dvbern.ebegu.api.converter.JaxBConverter;
 import ch.dvbern.ebegu.api.converter.JaxFerienbetreuungConverter;
@@ -65,34 +29,18 @@ import ch.dvbern.ebegu.api.resource.util.MultipartFormToFileConverter;
 import ch.dvbern.ebegu.api.resource.util.TransferFile;
 import ch.dvbern.ebegu.api.util.RestUtil;
 import ch.dvbern.ebegu.authentication.PrincipalBean;
-import ch.dvbern.ebegu.entities.DokumentGrund;
-import ch.dvbern.ebegu.entities.Fall;
-import ch.dvbern.ebegu.entities.Gesuch;
-import ch.dvbern.ebegu.entities.RueckforderungDokument;
-import ch.dvbern.ebegu.entities.RueckforderungFormular;
+import ch.dvbern.ebegu.config.EbeguConfiguration;
+import ch.dvbern.ebegu.entities.*;
 import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungAngabenContainer;
 import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungDokument;
 import ch.dvbern.ebegu.entities.sozialdienst.SozialdienstFall;
 import ch.dvbern.ebegu.entities.sozialdienst.SozialdienstFallDokument;
-import ch.dvbern.ebegu.enums.DokumentTyp;
-import ch.dvbern.ebegu.enums.ErrorCodeEnum;
-import ch.dvbern.ebegu.enums.RueckforderungDokumentTyp;
-import ch.dvbern.ebegu.enums.RueckforderungStatus;
-import ch.dvbern.ebegu.enums.Sprache;
+import ch.dvbern.ebegu.enums.*;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.errors.KibonLogLevel;
 import ch.dvbern.ebegu.errors.MailException;
 import ch.dvbern.ebegu.reporting.ReportKinderMitZemisNummerService;
-import ch.dvbern.ebegu.services.ApplicationPropertyService;
-import ch.dvbern.ebegu.services.DokumentGrundService;
-import ch.dvbern.ebegu.services.FallService;
-import ch.dvbern.ebegu.services.FileSaverService;
-import ch.dvbern.ebegu.services.GemeindeService;
-import ch.dvbern.ebegu.services.GesuchService;
-import ch.dvbern.ebegu.services.GesuchsperiodeService;
-import ch.dvbern.ebegu.services.RueckforderungDokumentService;
-import ch.dvbern.ebegu.services.RueckforderungFormularService;
-import ch.dvbern.ebegu.services.SozialdienstFallDokumentService;
+import ch.dvbern.ebegu.services.*;
 import ch.dvbern.ebegu.services.gemeindeantrag.FerienbetreuungDokumentService;
 import ch.dvbern.ebegu.services.gemeindeantrag.FerienbetreuungService;
 import ch.dvbern.ebegu.util.Constants;
@@ -111,23 +59,34 @@ import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_BG;
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_FERIENBETREUUNG;
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_GEMEINDE;
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_INSTITUTION;
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_MANDANT;
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_SOZIALDIENST;
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_TRAEGERSCHAFT;
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_TS;
-import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_BG;
-import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_FERIENBETREUUNG;
-import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_GEMEINDE;
-import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_INSTITUTION;
-import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_MANDANT;
-import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_SOZIALDIENST;
-import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_TRAEGERSCHAFT;
-import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_TS;
-import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
+import javax.activation.MimeType;
+import javax.activation.MimeTypeParseException;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.annotation.security.DenyAll;
+import javax.annotation.security.PermitAll;
+import javax.annotation.security.RolesAllowed;
+import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
+import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
+import javax.validation.constraints.NotNull;
+import javax.ws.rs.*;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriInfo;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URI;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Paths;
+import java.time.LocalDateTime;
+import java.util.*;
+import java.util.concurrent.TimeUnit;
+
+import static ch.dvbern.ebegu.enums.UserRoleName.*;
 
 /**
  * REST Resource zum Upload von Dokumenten
@@ -192,6 +151,9 @@ public class UploadResource {
 	@Inject
 	private PrincipalBean principal;
 
+	@Inject
+	private EbeguConfiguration ebeguConfiguration;
+
 	private static final String PART_FILE = "file";
 	private static final String PART_DOKUMENT_GRUND = "dokumentGrund";
 
@@ -229,11 +191,13 @@ public class UploadResource {
 
 		// Get GesuchId from header
 		String gesuchId = request.getHeader(GESUCHID_HEADER);
+		UUID.fromString(gesuchId); //will throw illegalArgumentException if no valid UUID
 		if (StringUtils.isEmpty(gesuchId)) {
 			final String problemString = "a valid gesuchID must be given";
 			LOG.error(problemString);
 			return Response.serverError().entity(problemString).build();
 		}
+
 
 		// Get DokumentGrund Object from form-paramter
 		List<InputPart> inputPartsDG = input.getFormDataMap().get(PART_DOKUMENT_GRUND);
@@ -260,8 +224,9 @@ public class UploadResource {
 			final String problemString = "\"Can't parse DokumentGrund from Jax to object";
 			LOG.error(problemString);
 			return Response.serverError().entity(problemString).build();
-
 		}
+
+		jaxDokumentGrund.getDokumente().forEach(dokument -> validateFilePath(dokument.getFilepfad()));
 
 		// jaxDokumentGrund ist jetzt u.U. noch in einem falschen Zustand. Wir müssen es neu von der Datenbank lesen
 		// Die neu hochgeladenen Files gehen nicht verloren, sie befinden sich im "input"
@@ -794,5 +759,11 @@ public class UploadResource {
 		dokument.setFilesize(uploadFileInfo.getSizeString());
 		jaxDokumentGrund.getDokumente().add(dokument);
 		LOG.info("Add on {} file {}", jaxDokumentGrund.getDokumentTyp(), uploadFileInfo.getFilename());
+	}
+
+	private void validateFilePath(@Nonnull String path) {
+		if (!path.startsWith(ebeguConfiguration.getDocumentFilePath())) {
+			throw new EbeguRuntimeException("save file", "illegal document path");
+		}
 	}
 }

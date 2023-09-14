@@ -116,21 +116,10 @@ public class Testfall08_UmzugAusInAusBern extends AbstractTestfall {
 		betreuungspensumKitaBruennen.setBetreuung(betreuungKitaBruennen);
 		betreuungKitaBruennen.getBetreuungspensumContainers().add(betreuungspensumKitaBruennen);
 		// Finanzielle Situation
-		FinanzielleSituationContainer finanzielleSituationContainer = createFinanzielleSituationContainer();
-		finanzielleSituationContainer.getFinanzielleSituationJA().setNettolohn(MathUtil.DEFAULT.from(EINKOMMEN));
-		finanzielleSituationContainer.getFinanzielleSituationJA().setBruttovermoegen(Objects.requireNonNull(MathUtil.DEFAULT.from(VERMOEGEN)));
+		FinanzielleSituationContainer finanzielleSituationContainer =
+				createFinanzielleSituationContainer(MathUtil.DEFAULT.from(VERMOEGEN), MathUtil.DEFAULT.from(EINKOMMEN));
 		finanzielleSituationContainer.setGesuchsteller(gesuchsteller1);
 		gesuchsteller1.setFinanzielleSituationContainer(finanzielleSituationContainer);
-
-		// LU
-		TestFaelleUtil.fillInFinSitLuZero(finanzielleSituationContainer);
-		assert finanzielleSituationContainer.getFinanzielleSituationJA().getSelbstdeklaration() != null;
-		finanzielleSituationContainer.getFinanzielleSituationJA().getSelbstdeklaration().setVermoegen(MathUtil.DEFAULT.from(VERMOEGEN));
-		finanzielleSituationContainer.getFinanzielleSituationJA().getSelbstdeklaration().setEinkunftErwerb(MathUtil.DEFAULT.from(EINKOMMEN));
-
-		// SO
-		TestFaelleUtil.fillInFinSitSoZero(finanzielleSituationContainer);
-		finanzielleSituationContainer.getFinanzielleSituationJA().setSteuerbaresVermoegen(MathUtil.DEFAULT.from(VERMOEGEN));
 
 		createEmptyEKVInfoContainer(gesuch);
 

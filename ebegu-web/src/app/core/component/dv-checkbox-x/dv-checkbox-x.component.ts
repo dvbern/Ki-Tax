@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022 DV Bern AG, Switzerland
+ * Copyright (C) 2023 DV Bern AG, Switzerland
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -32,6 +32,9 @@ export class DvCheckboxXComponent implements OnInit {
     public label: string;
 
     @Input()
+    public tooltip: string;
+
+    @Input()
     public readonly: boolean = false;
 
     @Input()
@@ -39,6 +42,12 @@ export class DvCheckboxXComponent implements OnInit {
 
     @Input()
     public dvBisherValue: boolean;
+
+    @Input()
+    public marginClass: 'no-margin-bottom' | 'default' = 'default';
+
+    @Input()
+    public displayBisher: boolean = true;
 
     @Output()
     public readonly modelChange: EventEmitter<boolean> = new EventEmitter<boolean>();
@@ -60,7 +69,8 @@ export class DvCheckboxXComponent implements OnInit {
     }
 
     public showBisher(): boolean {
-        return this.gesuchModelManager.getGesuch()
+        return this.displayBisher
+            && this.gesuchModelManager.getGesuch()
             && isAtLeastFreigegeben(this.gesuchModelManager.getGesuch().status)
             && (TSEingangsart.ONLINE === this.gesuchModelManager.getGesuch().eingangsart);
     }

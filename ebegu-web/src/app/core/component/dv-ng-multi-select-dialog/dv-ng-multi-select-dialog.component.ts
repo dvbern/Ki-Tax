@@ -32,7 +32,7 @@ export interface DvMultiSelectDialogItem {
     templateUrl: './dv-ng-multi-select-dialog.template.html',
     styleUrls: ['./dv-ng-multi-select-dialog.component.less']
 })
-export class DvNgMultiSelectDialog {
+export class DvNgMultiSelectDialogComponent {
 
     public title: string = '';
     public text: string = '';
@@ -41,7 +41,7 @@ export class DvNgMultiSelectDialog {
     public someChecked: boolean;
 
     public constructor(
-        private readonly dialogRef: MatDialogRef<DvNgMultiSelectDialog>,
+        private readonly dialogRef: MatDialogRef<DvNgMultiSelectDialogComponent>,
         @Inject(MAT_DIALOG_DATA) data: any
     ) {
         if (data) {

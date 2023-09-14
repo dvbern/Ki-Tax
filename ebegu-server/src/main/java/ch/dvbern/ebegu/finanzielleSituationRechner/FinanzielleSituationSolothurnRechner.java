@@ -17,17 +17,16 @@
 
 package ch.dvbern.ebegu.finanzielleSituationRechner;
 
-import java.math.BigDecimal;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
 import ch.dvbern.ebegu.dto.FinanzielleSituationResultateDTO;
 import ch.dvbern.ebegu.entities.AbstractFinanzielleSituation;
 import ch.dvbern.ebegu.entities.Einkommensverschlechterung;
 import ch.dvbern.ebegu.entities.FinanzielleSituation;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.util.MathUtil;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.math.BigDecimal;
 
 public class FinanzielleSituationSolothurnRechner extends AbstractFinanzielleSituationRechner {
 
@@ -87,13 +86,14 @@ public class FinanzielleSituationSolothurnRechner extends AbstractFinanzielleSit
 	public boolean acceptEKV(
 		BigDecimal massgebendesEinkommenBasisjahr,
 		BigDecimal massgebendesEinkommenJahr,
-		BigDecimal minimumEKV) {
+		BigDecimal minimumProzentFuerEKV) {
 
 		boolean result = massgebendesEinkommenBasisjahr.compareTo(BigDecimal.ZERO) > 0;
 		if (result) {
 			BigDecimal differenzGerundet = getCalculatedProzentualeDifferenzRounded(massgebendesEinkommenBasisjahr, massgebendesEinkommenJahr);
 			// wenn es gibt mehr als minimumEKV in einer positive oder negative Richtung ist der EKV akkzeptiert
-			return differenzGerundet.compareTo(minimumEKV.negate()) <= 0 || differenzGerundet.compareTo(minimumEKV) >= 0;
+			return differenzGerundet.compareTo(minimumProzentFuerEKV.negate()) <= 0 || differenzGerundet.compareTo(
+					minimumProzentFuerEKV) >= 0;
 		}
 		return false;
 	}
@@ -174,7 +174,7 @@ public class FinanzielleSituationSolothurnRechner extends AbstractFinanzielleSit
 		BigDecimal steuerbaresVermoegen5Prozent = calcualteStuerbaresVermoegen5Prozent(finanzielleSituation.getSteuerbaresVermoegen());
 
 		return MathUtil.EXACT.subtractNullSafe(nettoLohn, abzuegeKinderAusbildung)
-			.subtract(unterhaltsBeitraege)
+			.add(unterhaltsBeitraege)
 			.add(steuerbaresVermoegen5Prozent);
 	}
 

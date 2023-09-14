@@ -20,7 +20,7 @@ import {StateService} from '@uirouter/core';
 import {of} from 'rxjs';
 import {EinstellungRS} from '../../../../admin/service/einstellungRS.rest';
 import {AuthServiceRS} from '../../../../authentication/service/AuthServiceRS.rest';
-import {SHARED_MODULE_OVERRIDES} from '../../../../hybridTools/mockUpgradedComponent';
+import {SHARED_MODULE_OVERRIDES} from '../../../../hybridTools/mockUpgradedDirective';
 import {TSFerienbetreuungAngabenContainer} from '../../../../models/gemeindeantrag/TSFerienbetreuungAngabenContainer';
 import {TSBenutzer} from '../../../../models/TSBenutzer';
 import {ErrorService} from '../../../core/errors/service/ErrorService';
@@ -29,6 +29,7 @@ import {SharedModule} from '../../../shared/shared.module';
 import {FerienbetreuungService} from '../services/ferienbetreuung.service';
 
 import {FerienbetreuungAbschlussComponent} from './ferienbetreuung-abschluss.component';
+import {TSFerienbetreuungAngaben} from '../../../../models/gemeindeantrag/TSFerienbetreuungAngaben';
 
 describe('FerienbetreuungAbschlussComponent', () => {
     let component: FerienbetreuungAbschlussComponent;
@@ -55,7 +56,7 @@ describe('FerienbetreuungAbschlussComponent', () => {
         ['openDownload']);
 
     const container = new TSFerienbetreuungAngabenContainer();
-    container.angabenDeklaration = null;
+    container.angabenDeklaration = new TSFerienbetreuungAngaben();
     authServiceSpy.principal$ = of(dummyUser);
 
     beforeEach(async () => {

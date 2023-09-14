@@ -1,22 +1,26 @@
 /*
- * Ki-Tax: System for the management of external childcare subsidies
- * Copyright (C) 2017 City of Bern Switzerland
+ * Copyright (C) 2023 DV Bern AG, Switzerland
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Affero General Public License for more details.
+ *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
 import * as moment from 'moment';
 import {TSAbstractMutableEntity} from './TSAbstractMutableEntity';
 import {TSGemeinde} from './TSGemeinde';
+import {TSInstitution} from './TSInstitution';
 import {TSInstitutionStammdaten} from './TSInstitutionStammdaten';
+import {TSDatumTyp} from './enums/TSDatumTyp';
 
 export class TSStatistikParameter extends TSAbstractMutableEntity {
     private _jahr: number;
@@ -35,6 +39,8 @@ export class TSStatistikParameter extends TSAbstractMutableEntity {
     private _gemeindeMahlzeitenverguenstigungen: TSGemeinde;
     private _kantonSelbstbehalt: number;
     private _gemeinde: TSGemeinde;
+	private _institution: TSInstitution;
+    private _gesuchZeitraumDatumTyp: TSDatumTyp = TSDatumTyp.VERFUEGUNGSDATUM;
 
     public constructor(gesuchsperiode?: string, stichtag?: moment.Moment,
                        von?: moment.Moment, bis?: moment.Moment
@@ -172,5 +178,21 @@ export class TSStatistikParameter extends TSAbstractMutableEntity {
 
     public set gemeinde(value: TSGemeinde) {
         this._gemeinde = value;
+    }
+
+	public get institution(): TSInstitution {
+		return this._institution;
+	}
+
+	public set institution(value: TSInstitution) {
+		this._institution = value;
+	}
+
+    public get gesuchZeitraumDatumTyp(): TSDatumTyp {
+        return this._gesuchZeitraumDatumTyp;
+    }
+
+    public set gesuchZeitraumDatumTyp(value: TSDatumTyp) {
+        this._gesuchZeitraumDatumTyp = value;
     }
 }

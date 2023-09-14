@@ -35,12 +35,12 @@ export class TSApplicationProperty extends TSAbstractMutableEntity {
         this._name = name;
     }
 
-    public set value(value: string) {
-        this._value = value;
-    }
-
     public get name(): string {
         return this._name;
+    }
+
+    public set value(value: string) {
+        this._value = value;
     }
 
     public get value(): string {

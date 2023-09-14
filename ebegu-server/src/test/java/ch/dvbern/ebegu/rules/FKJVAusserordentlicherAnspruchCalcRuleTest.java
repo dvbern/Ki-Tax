@@ -288,6 +288,15 @@ public class FKJVAusserordentlicherAnspruchCalcRuleTest {
 						DEFAULT_AUSSERORDENTLICHER_ANSPRUCH,
 						bgCalculationInput.getAusserordentlicherAnspruch());
 			}
+
+			@Test
+			public void testGSNullBeschaeftigungspensumFKJVAnspruch() {
+				bgCalculationInput.setErwerbspensumGS1(null);
+				bgCalculationInput.setErwerbspensumGS2(100);
+				ruleToTest.executeRule(betreuung, bgCalculationInput);
+
+				Assert.assertEquals(DEFAULT_AUSSERORDENTLICHER_ANSPRUCH, bgCalculationInput.getAusserordentlicherAnspruch());
+			}
 		}
 
 		@Nested

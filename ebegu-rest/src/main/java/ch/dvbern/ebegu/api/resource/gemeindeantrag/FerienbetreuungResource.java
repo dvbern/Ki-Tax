@@ -17,46 +17,11 @@
 
 package ch.dvbern.ebegu.api.resource.gemeindeantrag;
 
-import java.io.IOException;
-import java.util.Locale;
-import java.util.Objects;
-import java.util.Optional;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.annotation.security.DenyAll;
-import javax.annotation.security.RolesAllowed;
-import javax.ejb.Stateless;
-import javax.inject.Inject;
-import javax.servlet.http.HttpServletResponse;
-import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.GET;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
-import javax.ws.rs.core.UriInfo;
-
 import ch.dvbern.ebegu.api.converter.JaxFerienbetreuungConverter;
 import ch.dvbern.ebegu.api.dtos.JaxId;
-import ch.dvbern.ebegu.api.dtos.gemeindeantrag.JaxFerienbetreuungAngabenAngebot;
-import ch.dvbern.ebegu.api.dtos.gemeindeantrag.JaxFerienbetreuungAngabenContainer;
-import ch.dvbern.ebegu.api.dtos.gemeindeantrag.JaxFerienbetreuungAngabenKostenEinnahmen;
-import ch.dvbern.ebegu.api.dtos.gemeindeantrag.JaxFerienbetreuungAngabenNutzung;
-import ch.dvbern.ebegu.api.dtos.gemeindeantrag.JaxFerienbetreuungAngabenStammdaten;
+import ch.dvbern.ebegu.api.dtos.gemeindeantrag.*;
 import ch.dvbern.ebegu.api.util.RestUtil;
-import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungAngabenAngebot;
-import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungAngabenContainer;
-import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungAngabenKostenEinnahmen;
-import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungAngabenNutzung;
-import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungAngabenStammdaten;
-import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungBerechnungen;
+import ch.dvbern.ebegu.entities.gemeindeantrag.*;
 import ch.dvbern.ebegu.enums.Sprache;
 import ch.dvbern.ebegu.enums.gemeindeantrag.FerienbetreuungAngabenStatus;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
@@ -68,17 +33,27 @@ import com.google.common.base.Preconditions;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_BG;
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_FERIENBETREUUNG;
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_GEMEINDE;
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_MANDANT;
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_TS;
-import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_BG;
-import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_FERIENBETREUUNG;
-import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_GEMEINDE;
-import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_MANDANT;
-import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_TS;
-import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.annotation.security.DenyAll;
+import javax.annotation.security.RolesAllowed;
+import javax.ejb.Stateless;
+import javax.inject.Inject;
+import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
+import javax.ws.rs.*;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
+import javax.ws.rs.core.UriInfo;
+import java.io.IOException;
+import java.util.Locale;
+import java.util.Objects;
+import java.util.Optional;
+
+import static ch.dvbern.ebegu.enums.UserRoleName.*;
 
 /**
  * REST Resource fuer die Ferienbetreuungen
@@ -260,12 +235,13 @@ public class FerienbetreuungResource {
 					containerId.getId()));
 
 		authorizer.checkWriteAuthorization(container);
+		Objects.requireNonNull(container.getAngabenKorrektur());
 
 		FerienbetreuungBerechnungen berechnungen =
 				converter.ferienbetreuungBerechnungentoEntity(jaxFerienbetreuungContainer.getAngabenKorrektur()
-						.getBerechnungen(), new FerienbetreuungBerechnungen());
+						.getBerechnungen(), container.getAngabenKorrektur().getFerienbetreuungBerechnungen());
 
-		Objects.requireNonNull(container.getAngabenKorrektur()).setFerienbetreuungBerechnungen(berechnungen);
+		container.getAngabenKorrektur().setFerienbetreuungBerechnungen(berechnungen);
 
 		FerienbetreuungAngabenContainer persisted =
 			ferienbetreuungService.ferienbetreuungAngabenGeprueft(container);
@@ -782,6 +758,47 @@ public class FerienbetreuungResource {
 		FerienbetreuungAngabenKostenEinnahmen persisted =
 			ferienbetreuungService.saveFerienbetreuungAngabenKostenEinnahmen(kostenEinnahmen);
 		return converter.ferienbetreuungAngabenKostenEinnahmenToJax(persisted);
+	}
+
+	@ApiOperation(
+		value = "Speichert FerienbetreuungBerechnung in der Datenbank",
+		response = JaxFerienbetreuungBerechnungen.class)
+	@Nonnull
+	@PUT
+	@Path("/{containerId}/berechnung/save")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE,
+		ADMIN_BG, SACHBEARBEITER_BG, ADMIN_TS, SACHBEARBEITER_TS, ADMIN_FERIENBETREUUNG,
+		SACHBEARBEITER_FERIENBETREUUNG })
+	public JaxFerienbetreuungBerechnungen saveFerienbetreuungBerechnung(
+		@Nonnull @NotNull @Valid JaxFerienbetreuungBerechnungen jaxFerienbetreuungBerechnungen,
+		@Context UriInfo uriInfo,
+		@Context HttpServletResponse response,
+		@Nonnull @NotNull @PathParam("containerId") JaxId containerId
+	) {
+		Objects.requireNonNull(jaxFerienbetreuungBerechnungen.getId());
+		Objects.requireNonNull(containerId.getId());
+
+		FerienbetreuungAngabenContainer container =
+			ferienbetreuungService.findFerienbetreuungAngabenContainer(containerId.getId())
+				.orElseThrow(() -> new EbeguEntityNotFoundException(
+					"saveFerienbetreuungBerechnung",
+					containerId.getId()));
+
+		authorizer.checkWriteAuthorization(container);
+
+		FerienbetreuungBerechnungen berechnungen =
+			ferienbetreuungService.findFerienbetreuungBerechnung(jaxFerienbetreuungBerechnungen.getId())
+				.orElseThrow(() -> new EbeguEntityNotFoundException(
+					"saveFerienbetreuungKostenEinnahmen",
+					jaxFerienbetreuungBerechnungen.getId()));
+
+		berechnungen = converter.ferienbetreuungBerechnungentoEntity(jaxFerienbetreuungBerechnungen, berechnungen);
+
+		FerienbetreuungBerechnungen persisted =
+			ferienbetreuungService.saveFerienbetreuungBerechnungen(berechnungen);
+		return converter.ferienbetreuungBerechnungenToJax(persisted);
 	}
 
 	@ApiOperation(

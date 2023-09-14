@@ -17,19 +17,16 @@
 
 package ch.dvbern.ebegu.entities.gemeindeantrag;
 
-import java.math.BigDecimal;
+import ch.dvbern.ebegu.entities.AbstractEntity;
+import ch.dvbern.ebegu.util.Constants;
+import org.hibernate.envers.Audited;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.validation.constraints.Size;
-
-import ch.dvbern.ebegu.entities.AbstractEntity;
-import ch.dvbern.ebegu.util.Constants;
-import org.hibernate.envers.Audited;
-
-import static ch.dvbern.ebegu.util.Constants.DB_DEFAULT_MAX_LENGTH;
+import java.math.BigDecimal;
 
 @Audited
 @Entity
@@ -87,6 +84,11 @@ public class LastenausgleichTagesschuleAngabenInstitution extends AbstractEntity
 
 	@Nullable
 	@Column(nullable = true)
+	private BigDecimal anzahlEingeschriebeneKinderBasisstufe;
+
+
+	@Nullable
+	@Column(nullable = true)
 	private BigDecimal betreuungsstundenEinschliesslichBesondereBeduerfnisse;
 
 	// C: Qualitative Vorgaben der Tagesschuleverordnung
@@ -140,6 +142,7 @@ public class LastenausgleichTagesschuleAngabenInstitution extends AbstractEntity
 		this.durchschnittKinderProTagNachmittag1 = source.durchschnittKinderProTagNachmittag1;
 		this.durchschnittKinderProTagNachmittag2 = source.durchschnittKinderProTagNachmittag2;
 		this.betreuungsstundenEinschliesslichBesondereBeduerfnisse = source.betreuungsstundenEinschliesslichBesondereBeduerfnisse;
+		this.anzahlEingeschriebeneKinderBasisstufe = source.anzahlEingeschriebeneKinderBasisstufe;
 		// C: Qualitative Vorgaben der Tagesschuleverordnung
 		this.schuleAufBasisOrganisatorischesKonzept = source.schuleAufBasisOrganisatorischesKonzept;
 		this.schuleAufBasisPaedagogischesKonzept = source.schuleAufBasisPaedagogischesKonzept;
@@ -329,5 +332,14 @@ public class LastenausgleichTagesschuleAngabenInstitution extends AbstractEntity
 
 	public void setOeffnungszeiten(@Nullable String oeffnungszeiten) {
 		this.oeffnungszeiten = oeffnungszeiten;
+	}
+
+	@Nullable
+	public BigDecimal getAnzahlEingeschriebeneKinderBasisstufe() {
+		return anzahlEingeschriebeneKinderBasisstufe;
+	}
+
+	public void setAnzahlEingeschriebeneKinderBasisstufe(@Nullable BigDecimal anzahlEingeschriebeneKinderBasisstufe) {
+		this.anzahlEingeschriebeneKinderBasisstufe = anzahlEingeschriebeneKinderBasisstufe;
 	}
 }

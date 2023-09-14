@@ -29,6 +29,7 @@ import javax.validation.constraints.NotNull;
 
 import ch.dvbern.ebegu.entities.Familiensituation;
 import ch.dvbern.ebegu.entities.FamiliensituationContainer;
+import ch.dvbern.ebegu.entities.FinanzielleSituationContainer;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.SozialhilfeZeitraumContainer;
 import ch.dvbern.ebegu.enums.EnumFamilienstatus;
@@ -121,6 +122,10 @@ public class FamiliensituationServiceBean extends AbstractBaseService implements
 			changeFamSitLuzern(gesuch, mergedFamiliensituationContainer, oldFamiliensituation);
 		}
 
+		if (gesuch.getFinSitTyp() == FinanzielleSituationTyp.APPENZELL) {
+			changeFamSitAR(gesuch, mergedFamiliensituationContainer, oldFamiliensituation);
+		}
+
 		//bei änderung der Familiensituation müssen die Fragen zum Kinderabzug im FKJV resetet werden
 		if (gesuch.getFinSitTyp() == FinanzielleSituationTyp.BERN_FKJV &&
 			oldFamiliensituation != null &&
@@ -188,6 +193,37 @@ public class FamiliensituationServiceBean extends AbstractBaseService implements
 
 		if (oldIsVerheiratet && newIsKonkubinatOrAlleinerziehend) {
 			gesuch.getGesuchsteller1().setFinanzielleSituationContainer(null);
+		}
+	}
+	private void changeFamSitAR(
+		@Nonnull Gesuch gesuch,
+		FamiliensituationContainer mergedFamiliensituationContainer,
+		Familiensituation oldFamiliensituation) {
+
+		if (oldFamiliensituation == null
+			|| mergedFamiliensituationContainer.getFamiliensituationJA() == null
+			|| gesuch.getGesuchsteller1() == null) {
+			return;
+		}
+
+		if (oldFamiliensituation.isSpezialFallAR()
+				&& !mergedFamiliensituationContainer.getFamiliensituationJA().isSpezialFallAR()) {
+			resetFinSitARZusatzangabenPartner(gesuch);
+			mergedFamiliensituationContainer.getFamiliensituationJA().setGemeinsameSteuererklaerung(null);
+		}
+	}
+
+	private static void resetFinSitARZusatzangabenPartner(@Nonnull Gesuch gesuch) {
+		Objects.requireNonNull(gesuch.getGesuchsteller1());
+		final FinanzielleSituationContainer finSitGS1Container =
+				gesuch.getGesuchsteller1().getFinanzielleSituationContainer();
+		if (finSitGS1Container != null
+				&& finSitGS1Container.getFinanzielleSituationJA() != null
+				&& finSitGS1Container.getFinanzielleSituationJA().getFinSitZusatzangabenAppenzell() != null) {
+			finSitGS1Container
+					.getFinanzielleSituationJA()
+					.getFinSitZusatzangabenAppenzell()
+					.setZusatzangabenPartner(null);
 		}
 	}
 

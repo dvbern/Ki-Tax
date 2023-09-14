@@ -2,7 +2,7 @@ import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {StateService} from '@uirouter/angular';
 import {of} from 'rxjs';
-import {SHARED_MODULE_OVERRIDES} from '../../../../hybridTools/mockUpgradedComponent';
+import {SHARED_MODULE_OVERRIDES} from '../../../../hybridTools/mockUpgradedDirective';
 import {ErrorService} from '../../../core/errors/service/ErrorService';
 import {SharedModule} from '../../../shared/shared.module';
 import {LastenausgleichTSService} from '../services/lastenausgleich-ts.service';

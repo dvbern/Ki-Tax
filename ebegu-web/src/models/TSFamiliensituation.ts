@@ -14,12 +14,14 @@
  */
 
 import * as moment from 'moment';
+import {EbeguUtil} from '../utils/EbeguUtil';
 import {TSFamilienstatus} from './enums/TSFamilienstatus';
 import {TSGesuchstellerKardinalitaet} from './enums/TSGesuchstellerKardinalitaet';
 import {TSUnterhaltsvereinbarungAnswer} from './enums/TSUnterhaltsvereinbarungAnswer';
 import {TSAbstractMutableEntity} from './TSAbstractMutableEntity';
 import {TSAdresse} from './TSAdresse';
 import {TSGesuchsperiode} from './TSGesuchsperiode';
+import {TSDateRange} from './types/TSDateRange';
 
 export class TSFamiliensituation extends TSAbstractMutableEntity {
 
@@ -46,6 +48,10 @@ export class TSFamiliensituation extends TSAbstractMutableEntity {
     private _unterhaltsvereinbarung: TSUnterhaltsvereinbarungAnswer;
     private _unterhaltsvereinbarungBemerkung: string;
     private _geteilteObhut: boolean;
+    private _partnerIdentischMitVorgesuch: boolean;
+    private _gemeinsamerHaushaltMitObhutsberechtigterPerson: boolean;
+    private _gemeinsamerHaushaltMitPartner: boolean;
+    private _auszahlungAusserhalbVonKibon: boolean;
 
     public constructor() {
         super();
@@ -189,6 +195,8 @@ export class TSFamiliensituation extends TSAbstractMutableEntity {
 
     public hasSecondGesuchsteller(endOfPeriode: moment.Moment): boolean {
         switch (this.familienstatus) {
+            case TSFamilienstatus.APPENZELL:
+                return this.hasSecondGesuchstellerAppenzell();
             case TSFamilienstatus.ALLEINERZIEHEND:
                 if (!this.fkjvFamSit) {
                     return false;
@@ -223,30 +231,45 @@ export class TSFamiliensituation extends TSAbstractMutableEntity {
         if (!this.startKonkubinat) {
             return false;
         }
-        const konkubinatEndOfMonth = moment(this.startKonkubinat).endOf('month');
-        const konkubinatPlusYears = konkubinatEndOfMonth.add(this.minDauerKonkubinat, 'years');
+        const konkubinatPlusYears = this.getStartKonkubinatEndofMonthPlusMinDauer();
         return konkubinatPlusYears.isAfter(periode.gueltigkeit.gueltigAb);
     }
 
     /**
-     * Wir prüfen, ob das Konkubinat irgendwann in der Periode mindestens zwei Jahre alt ist.
+     * Wir prüfen, ob das Konkubinat irgendwann in der Periode mindestens x Jahre alt ist.
      * z.B. Periode 22/23, Start Konkubinat 1.11.2020 => zwei Jahre am 1.11.2022 erreicht => true
      */
     public konkubinatGetsLongerThanXYearsBeforeEndOfPeriode(endOfPeriode: moment.Moment): boolean {
-        const konkubinatEndOfMonth = moment(this.startKonkubinat).endOf('month');
-        const konkubinatPlusYears = konkubinatEndOfMonth.add(this.minDauerKonkubinat, 'years');
+        const konkubinatPlusYears = this.getStartKonkubinatPlusMinDauer();
         return konkubinatPlusYears.isSameOrBefore(endOfPeriode);
     }
 
+    public getStartKonkubinatPlusMinDauer( ): moment.Moment {
+        const konkubinat_start: moment.Moment = moment(this.startKonkubinat.clone());
+        return konkubinat_start.add({years: this.minDauerKonkubinat});
+    }
+
+    public getStartKonkubinatEndofMonthPlusMinDauer( ): moment.Moment {
+        return this.getStartKonkubinatPlusMinDauer().endOf('month');
+    }
+
     public isSameFamiliensituation(other: TSFamiliensituation): boolean {
-        let same = this.familienstatus === other.familienstatus;
+        let same = EbeguUtil.areSameOrWithoutValue(this.familienstatus, other.familienstatus);
         if (same && this.familienstatus === TSFamilienstatus.KONKUBINAT_KEIN_KIND) {
             same = this.startKonkubinat.isSame(other.startKonkubinat);
         }
         if (same && this.fkjvFamSit) {
-            same = this.geteilteObhut === other.geteilteObhut
-                && this.unterhaltsvereinbarung === other.unterhaltsvereinbarung
-                && this.gesuchstellerKardinalitaet === other.gesuchstellerKardinalitaet;
+            same = EbeguUtil.areSameOrWithoutValue(this.geteilteObhut, other.geteilteObhut)
+                && EbeguUtil.areSameOrWithoutValue(this.unterhaltsvereinbarung , other.unterhaltsvereinbarung)
+                && EbeguUtil.areSameOrWithoutValue(this.gesuchstellerKardinalitaet, other.gesuchstellerKardinalitaet);
+        }
+        if(this.familienstatus === TSFamilienstatus.APPENZELL) {
+            same = EbeguUtil.areSameOrWithoutValue(this.geteilteObhut, other.geteilteObhut)
+                && EbeguUtil.areSameOrWithoutValue(
+                        this.gemeinsamerHaushaltMitObhutsberechtigterPerson,
+                            other.gemeinsamerHaushaltMitObhutsberechtigterPerson)
+                && EbeguUtil.areSameOrWithoutValue(
+                        this.gemeinsamerHaushaltMitPartner, other.gemeinsamerHaushaltMitPartner);
         }
         return same;
     }
@@ -258,6 +281,8 @@ export class TSFamiliensituation extends TSAbstractMutableEntity {
         this.unterhaltsvereinbarung = other.unterhaltsvereinbarung;
         this.geteilteObhut = other.geteilteObhut;
         this.unterhaltsvereinbarungBemerkung = other.unterhaltsvereinbarungBemerkung;
+        this.gemeinsamerHaushaltMitPartner = other.gemeinsamerHaushaltMitPartner;
+        this.gemeinsamerHaushaltMitObhutsberechtigterPerson = other.gemeinsamerHaushaltMitObhutsberechtigterPerson;
     }
 
     public get fkjvFamSit(): boolean {
@@ -300,11 +325,55 @@ export class TSFamiliensituation extends TSAbstractMutableEntity {
         this._geteilteObhut = value;
     }
 
+    public get partnerIdentischMitVorgesuch(): boolean {
+        return this._partnerIdentischMitVorgesuch;
+    }
+
+    public set partnerIdentischMitVorgesuch(value: boolean) {
+        this._partnerIdentischMitVorgesuch = value;
+    }
+
+    public get gemeinsamerHaushaltMitPartner(): boolean {
+        return this._gemeinsamerHaushaltMitPartner;
+    }
+
+    public set gemeinsamerHaushaltMitPartner(value: boolean) {
+        this._gemeinsamerHaushaltMitPartner = value;
+    }
+    public get gemeinsamerHaushaltMitObhutsberechtigterPerson(): boolean {
+        return this._gemeinsamerHaushaltMitObhutsberechtigterPerson;
+    }
+
+    public set gemeinsamerHaushaltMitObhutsberechtigterPerson(value: boolean) {
+        this._gemeinsamerHaushaltMitObhutsberechtigterPerson = value;
+    }
+
+    public get auszahlungAusserhalbVonKibon(): boolean {
+        return this._auszahlungAusserhalbVonKibon;
+    }
+
+    public set auszahlungAusserhalbVonKibon(value: boolean) {
+        this._auszahlungAusserhalbVonKibon = value;
+    }
+
     private hasSecondGesuchstellerFKJV(): boolean {
         if (this.geteilteObhut) {
             return this.gesuchstellerKardinalitaet === TSGesuchstellerKardinalitaet.ZU_ZWEIT;
         }
 
         return this.unterhaltsvereinbarung === TSUnterhaltsvereinbarungAnswer.NEIN_UNTERHALTSVEREINBARUNG;
+    }
+
+    private hasSecondGesuchstellerAppenzell(): boolean {
+        return this.geteilteObhut && this.gemeinsamerHaushaltMitObhutsberechtigterPerson;
+    }
+
+    public konkubinatGetXYearsInPeriod(gueltigkeit: TSDateRange): boolean {
+        if(EbeguUtil.isNullOrUndefined(this.startKonkubinat)){
+            return false;
+        }
+        return this.getStartKonkubinatPlusMinDauer().isAfter(gueltigkeit.gueltigAb)
+                && this.getStartKonkubinatPlusMinDauer().isBefore(gueltigkeit.gueltigBis);
+
     }
 }

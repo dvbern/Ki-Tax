@@ -84,6 +84,7 @@ public class EinkommenCalcRule extends AbstractCalcRule {
 		// - "Bezahlt Vollkosten" darf nur gesetzt werden, wenn KEINE erweiterten Beduerfnisse
 
  		Familiensituation familiensituation = platz.extractGesuch().extractFamiliensituation();
+
 		boolean sozialhilfeEmpfaenger = familiensituation != null && Boolean.TRUE.equals(familiensituation.getSozialhilfeBezueger());
 		int basisjahr = platz.extractGesuchsperiode().getBasisJahr();
 
@@ -314,6 +315,7 @@ public class EinkommenCalcRule extends AbstractCalcRule {
 		} else {
 			inputData.setMassgebendesEinkommenVorAbzugFamgr(finanzDatenDTO.getMassgebendesEinkBjP2VorAbzFamGr());
 		}
+		inputData.setEkvAccepted(true);
 		inputData.setEinkommensjahr(ekvJahr);
 		inputData.addBemerkung(
 				MsgKey.EINKOMMENSVERSCHLECHTERUNG_ACCEPT_MSG,

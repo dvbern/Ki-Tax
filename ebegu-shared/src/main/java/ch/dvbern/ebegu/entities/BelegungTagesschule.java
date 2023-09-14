@@ -197,9 +197,12 @@ public class BelegungTagesschule extends AbstractMutableEntity {
 			target.setBemerkung(this.getBemerkung());
 			target.setAbweichungZweitesSemester(this.abweichungZweitesSemester);
 			target.setKeineKesbPlatzierung(this.isKeineKesbPlatzierung());
+			target.setNotfallnummer(this.getNotfallnummer());
+			target.setFleischOption(this.getFleischOption());
 			copyBelegungTagesschuleModul(target, copyType);
 			break;
 		case ERNEUERUNG:
+		case ERNEUERUNG_AR_2023:
 		case MUTATION_NEUES_DOSSIER:
 		case ERNEUERUNG_NEUES_DOSSIER:
 			break;

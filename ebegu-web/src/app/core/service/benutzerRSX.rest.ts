@@ -25,6 +25,7 @@ import {EbeguRestUtil} from '../../../utils/EbeguRestUtil';
 import {CONSTANTS} from '../constants/CONSTANTS';
 import {CoreModule} from '../core.module';
 import {LogFactory} from '../logging/LogFactory';
+import {TSTraegerschaft} from '../../../models/TSTraegerschaft';
 
 @Injectable({
     providedIn: CoreModule
@@ -186,5 +187,10 @@ export class BenutzerRSX {
 
     public deleteExternalUuidForBenutzer(user: TSBenutzer): Promise<any> {
         return this.$http.put(`${this.serviceURL}/reset/${user.username}`, {}).toPromise();
+    }
+
+    public getAllEmailAdminForTraegerschaft(traegerschaft: TSTraegerschaft): Promise<string[]> {
+        return this.$http.get(`${this.serviceURL}/mailAdminTraegerschaft/${traegerschaft.id}`)
+            .pipe(map((response: any) => response)).toPromise();
     }
 }

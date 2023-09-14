@@ -1,10 +1,27 @@
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, ViewChild} from '@angular/core';
-import {NgForm} from '@angular/forms';
+/*
+ * Copyright (C) 2023 DV Bern AG, Switzerland
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit} from '@angular/core';
 import {TranslateService} from '@ngx-translate/core';
-import {UIRouterGlobals} from '@uirouter/core';
+import {StateService, UIRouterGlobals} from '@uirouter/core';
 import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
 import {ErrorService} from '../../../app/core/errors/service/ErrorService';
 import {LogFactory} from '../../../app/core/logging/LogFactory';
+import {ApplicationPropertyRS} from '../../../app/core/rest-services/applicationPropertyRS.rest';
 import {GesuchsperiodeRS} from '../../../app/core/service/gesuchsperiodeRS.rest';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {TSAntragTyp} from '../../../models/enums/TSAntragTyp';
@@ -20,6 +37,7 @@ import {DateUtil} from '../../../utils/DateUtil';
 import {EbeguUtil} from '../../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 import {GesuchModelManager} from '../../service/gesuchModelManager';
+import {GesuchRS} from '../../service/gesuchRS.rest';
 import {WizardStepManager} from '../../service/wizardStepManager';
 import {AbstractGesuchViewX} from '../abstractGesuchViewX';
 
@@ -51,7 +69,10 @@ export class FallCreationViewXComponent extends AbstractGesuchViewX<TSGesuch> im
         private readonly gesuchsperiodeRS: GesuchsperiodeRS,
         private readonly cd: ChangeDetectorRef,
         private readonly uiRouterGlobals: UIRouterGlobals,
-        private readonly einstellungService: EinstellungRS
+        private readonly einstellungService: EinstellungRS,
+        private readonly $state: StateService,
+        private readonly gesuchRS: GesuchRS,
+        private readonly applicationPropertyRS: ApplicationPropertyRS
     ) {
         super(gesuchModelManager,
             wizardStepManager,
@@ -78,7 +99,9 @@ export class FallCreationViewXComponent extends AbstractGesuchViewX<TSGesuch> im
             this.gesuchsperiodeId = this.gesuchModelManager.getGesuchsperiode().id;
         }
 
-        this.isTagesschuleEnabledForMandant = this.authServiceRS.hasMandantAngebotTS();
+        this.applicationPropertyRS.getPublicPropertiesCached().then(res => {
+            this.isTagesschuleEnabledForMandant = res.angebotTSActivated;
+        });
 
         const dossier = this.gesuchModelManager.getDossier();
         if (!dossier) {
@@ -263,5 +286,4 @@ export class FallCreationViewXComponent extends AbstractGesuchViewX<TSGesuch> im
         return this.isBegruendungMutationActiv &&
             this.getGesuchModel().isMutation();
     }
-
 }

@@ -80,11 +80,13 @@ import ch.dvbern.lib.cdipersistence.Persistence;
 
 import static ch.dvbern.ebegu.enums.EinstellungKey.ABWESENHEIT_AKTIV;
 import static ch.dvbern.ebegu.enums.EinstellungKey.ABHAENGIGKEIT_ANSPRUCH_BESCHAEFTIGUNGPENSUM;
+import static ch.dvbern.ebegu.enums.EinstellungKey.ANSPRUCH_AB_X_MONATEN;
 import static ch.dvbern.ebegu.enums.EinstellungKey.AUSSERORDENTLICHER_ANSPRUCH_RULE;
 import static ch.dvbern.ebegu.enums.EinstellungKey.AUSWEIS_NACHWEIS_REQUIRED;
 import static ch.dvbern.ebegu.enums.EinstellungKey.BEGRUENDUNG_MUTATION_AKTIVIERT;
 import static ch.dvbern.ebegu.enums.EinstellungKey.BESONDERE_BEDUERFNISSE_LUZERN;
-import static ch.dvbern.ebegu.enums.EinstellungKey.BETREUUNG_INPUT_SWITCH_ENABLED;
+import static ch.dvbern.ebegu.enums.EinstellungKey.MAX_VERGUENSTIGUNG_PRIMAR_PRO_STD;
+import static ch.dvbern.ebegu.enums.EinstellungKey.PENSUM_ANZEIGE_TYP;
 import static ch.dvbern.ebegu.enums.EinstellungKey.DAUER_BABYTARIF;
 import static ch.dvbern.ebegu.enums.EinstellungKey.DIPLOMATENSTATUS_DEAKTIVIERT;
 import static ch.dvbern.ebegu.enums.EinstellungKey.ERWERBSPENSUM_ZUSCHLAG;
@@ -152,8 +154,8 @@ import static ch.dvbern.ebegu.enums.EinstellungKey.LATS_STICHTAG;
 import static ch.dvbern.ebegu.enums.EinstellungKey.MAX_MASSGEBENDES_EINKOMMEN;
 import static ch.dvbern.ebegu.enums.EinstellungKey.MAX_TARIF_MIT_PAEDAGOGISCHER_BETREUUNG;
 import static ch.dvbern.ebegu.enums.EinstellungKey.MAX_TARIF_OHNE_PAEDAGOGISCHER_BETREUUNG;
-import static ch.dvbern.ebegu.enums.EinstellungKey.MAX_VERGUENSTIGUNG_SCHULE_PRO_STD;
-import static ch.dvbern.ebegu.enums.EinstellungKey.MAX_VERGUENSTIGUNG_SCHULE_PRO_TG;
+import static ch.dvbern.ebegu.enums.EinstellungKey.MAX_VERGUENSTIGUNG_KINDERGARTEN_PRO_STD;
+import static ch.dvbern.ebegu.enums.EinstellungKey.MAX_VERGUENSTIGUNG_KINDERGARTEN_PRO_TG;
 import static ch.dvbern.ebegu.enums.EinstellungKey.MAX_VERGUENSTIGUNG_VORSCHULE_BABY_PRO_STD;
 import static ch.dvbern.ebegu.enums.EinstellungKey.MAX_VERGUENSTIGUNG_VORSCHULE_BABY_PRO_TG;
 import static ch.dvbern.ebegu.enums.EinstellungKey.MAX_VERGUENSTIGUNG_VORSCHULE_KIND_PRO_STD;
@@ -572,10 +574,11 @@ public class TestdataCreationServiceBean extends AbstractBaseService implements 
 		saveEinstellung(PARAM_MAX_TAGE_ABWESENHEIT, "30", gesuchsperiode);
 		saveEinstellung(MAX_VERGUENSTIGUNG_VORSCHULE_BABY_PRO_TG, "150", gesuchsperiode);
 		saveEinstellung(MAX_VERGUENSTIGUNG_VORSCHULE_KIND_PRO_TG, "100", gesuchsperiode);
-		saveEinstellung(MAX_VERGUENSTIGUNG_SCHULE_PRO_TG, "75", gesuchsperiode);
+		saveEinstellung(MAX_VERGUENSTIGUNG_KINDERGARTEN_PRO_TG, "75", gesuchsperiode);
 		saveEinstellung(MAX_VERGUENSTIGUNG_VORSCHULE_BABY_PRO_STD, "12.75", gesuchsperiode);
 		saveEinstellung(MAX_VERGUENSTIGUNG_VORSCHULE_KIND_PRO_STD, "8.50", gesuchsperiode);
-		saveEinstellung(MAX_VERGUENSTIGUNG_SCHULE_PRO_STD, "8.50", gesuchsperiode);
+		saveEinstellung(MAX_VERGUENSTIGUNG_KINDERGARTEN_PRO_STD, "8.50", gesuchsperiode);
+		saveEinstellung(MAX_VERGUENSTIGUNG_PRIMAR_PRO_STD, "8.50", gesuchsperiode);
 		saveEinstellung(MAX_MASSGEBENDES_EINKOMMEN, "160000", gesuchsperiode);
 		saveEinstellung(MIN_MASSGEBENDES_EINKOMMEN, "43000", gesuchsperiode);
 		saveEinstellung(OEFFNUNGSTAGE_KITA, "240", gesuchsperiode);
@@ -667,13 +670,14 @@ public class TestdataCreationServiceBean extends AbstractBaseService implements 
 		saveEinstellung(UNBEZAHLTER_URLAUB_AKTIV, "true", gesuchsperiode);
 		saveEinstellung(FACHSTELLEN_TYP, "BERN", gesuchsperiode);
 		saveEinstellung(AUSWEIS_NACHWEIS_REQUIRED, "false", gesuchsperiode);
-		saveEinstellung(BETREUUNG_INPUT_SWITCH_ENABLED, "true", gesuchsperiode);
+		saveEinstellung(PENSUM_ANZEIGE_TYP, "ZEITEINHEIT_UND_PROZENT", gesuchsperiode);
 		saveEinstellung(VERFUEGUNG_EINGESCHRIEBEN_VERSENDEN_AKTIVIERT, "true", gesuchsperiode);
 		saveEinstellung(ABWESENHEIT_AKTIV, "true", gesuchsperiode);
 		saveEinstellung(BEGRUENDUNG_MUTATION_AKTIVIERT, "false", gesuchsperiode);
 		saveEinstellung(VERFUEGUNG_EXPORT_ENABLED, "false", gesuchsperiode);
 		saveEinstellung(ZAHLUNGSANGABEN_ANTRAGSTELLER_REQUIRED, "false", gesuchsperiode);
 		saveEinstellung(VERANLAGUNG_MIN_UNTERSCHIED_MASSGEBENDESEINK,"0", gesuchsperiode);
+		saveEinstellung(ANSPRUCH_AB_X_MONATEN,"0", gesuchsperiode);
 	}
 
 	public void saveEinstellung(EinstellungKey key, String value, Gesuchsperiode gesuchsperiode) {

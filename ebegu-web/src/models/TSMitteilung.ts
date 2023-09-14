@@ -1,16 +1,18 @@
 /*
- * Ki-Tax: System for the management of external childcare subsidies
- * Copyright (C) 2017 City of Bern Switzerland
+ * Copyright (C) 2023 DV Bern AG, Switzerland
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Affero General Public License for more details.
+ *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
 import * as moment from 'moment';
@@ -20,12 +22,15 @@ import {TSAbstractMutableEntity} from './TSAbstractMutableEntity';
 import {TSBenutzer} from './TSBenutzer';
 import {TSBetreuung} from './TSBetreuung';
 import {TSDossier} from './TSDossier';
+import {TSFinanzielleSituation} from './TSFinanzielleSituation';
 import {TSInstitution} from './TSInstitution';
+import {TSMitteilungTyp} from './enums/TSMitteilungTyp';
 
 export class TSMitteilung extends TSAbstractMutableEntity {
 
     private _dossier: TSDossier;
     private _betreuung: TSBetreuung;
+    private _finanzielleSituation: TSFinanzielleSituation;
     private _senderTyp: TSMitteilungTeilnehmerTyp;
     private _empfaengerTyp: TSMitteilungTeilnehmerTyp;
     private _sender: TSBenutzer;
@@ -35,10 +40,12 @@ export class TSMitteilung extends TSAbstractMutableEntity {
     private _mitteilungStatus: TSMitteilungStatus;
     private _sentDatum: moment.Moment;
     private _institution: TSInstitution;
+    private _mitteilungTyp: TSMitteilungTyp;
 
     public constructor(
         dossier?: TSDossier,
         betreuung?: TSBetreuung,
+        finanzielleSituation?: TSFinanzielleSituation,
         senderTyp?: TSMitteilungTeilnehmerTyp,
         empfaengerTyp?: TSMitteilungTeilnehmerTyp,
         sender?: TSBenutzer,
@@ -47,11 +54,13 @@ export class TSMitteilung extends TSAbstractMutableEntity {
         message?: string,
         mitteilungStatus?: TSMitteilungStatus,
         sentDatum?: moment.Moment,
-        institution?: TSInstitution
+        institution?: TSInstitution,
+        mitteilungTyp?: TSMitteilungTyp,
     ) {
         super();
         this._dossier = dossier;
         this._betreuung = betreuung;
+        this._finanzielleSituation = finanzielleSituation;
         this._senderTyp = senderTyp;
         this._empfaengerTyp = empfaengerTyp;
         this._sender = sender;
@@ -61,6 +70,7 @@ export class TSMitteilung extends TSAbstractMutableEntity {
         this._mitteilungStatus = mitteilungStatus;
         this._sentDatum = sentDatum;
         this._institution = institution;
+        this._mitteilungTyp = mitteilungTyp;
     }
 
     public get dossier(): TSDossier {
@@ -77,6 +87,14 @@ export class TSMitteilung extends TSAbstractMutableEntity {
 
     public set betreuung(value: TSBetreuung) {
         this._betreuung = value;
+    }
+
+    public get finanzielleSituation(): TSFinanzielleSituation {
+        return this._finanzielleSituation;
+    }
+
+    public set finanzielleSituation(value: TSFinanzielleSituation) {
+        this._finanzielleSituation = value;
     }
 
     public get senderTyp(): TSMitteilungTeilnehmerTyp {
@@ -156,6 +174,14 @@ export class TSMitteilung extends TSAbstractMutableEntity {
 
     public set institution(value: TSInstitution) {
         this._institution = value;
+    }
+
+    public get mitteilungTyp(): TSMitteilungTyp {
+        return this._mitteilungTyp;
+    }
+
+    public set mitteilungTyp(value: TSMitteilungTyp) {
+        this._mitteilungTyp = value;
     }
 
     public get senderAsString(): string {

@@ -1,26 +1,27 @@
 /*
- * Ki-Tax: System for the management of external childcare subsidies
- * Copyright (C) 2017 City of Bern Switzerland
+ * Copyright (C) 2023 DV Bern AG, Switzerland
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
+ *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
 import {StateService} from '@uirouter/core';
-import {IComponentOptions} from 'angular';
+import {IComponentOptions, IPromise} from 'angular';
 import * as $ from 'jquery';
 import * as moment from 'moment';
 import {map} from 'rxjs/operators';
 import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
-import * as CONSTANTS from '../../../app/core/constants/CONSTANTS';
-import {MANDANTS, KiBonMandant} from '../../../app/core/constants/MANDANTS';
+import {KiBonMandant, MANDANTS} from '../../../app/core/constants/MANDANTS';
 import {UnknownKitaIdVisitor} from '../../../app/core/constants/UnknownKitaIdVisitor';
 import {UnknownTagesschuleIdVisitor} from '../../../app/core/constants/UnknownTagesschuleIdVisitor';
 import {UnknownTFOIdVisitor} from '../../../app/core/constants/UnknownTFOIdVisitor';
@@ -36,12 +37,13 @@ import {isAnyStatusOfVerfuegt, isVerfuegtOrSTV, TSAntragStatus} from '../../../m
 import {
     getTSBetreuungsangebotTypValuesForMandantIfTagesschulanmeldungen,
     isJugendamt,
-    TSBetreuungsangebotTyp
+    TSBetreuungsangebotTyp,
 } from '../../../models/enums/TSBetreuungsangebotTyp';
 import {TSBetreuungsstatus} from '../../../models/enums/TSBetreuungsstatus';
 import {TSEinstellungKey} from '../../../models/enums/TSEinstellungKey';
 import {TSFachstellenTyp} from '../../../models/enums/TSFachstellenTyp';
 import {TSInstitutionStatus} from '../../../models/enums/TSInstitutionStatus';
+import {TSPensumAnzeigeTyp} from '../../../models/enums/TSPensumAnzeigeTyp';
 import {TSPensumUnits} from '../../../models/enums/TSPensumUnits';
 import {TSRole} from '../../../models/enums/TSRole';
 import {TSWizardStepName} from '../../../models/enums/TSWizardStepName';
@@ -92,6 +94,8 @@ export class BetreuungViewComponentConfig implements IComponentOptions {
 const GESUCH_BETREUUNGEN = 'gesuch.betreuungen';
 const PENDENZEN_BETREUUNG = 'pendenzenBetreuungen.list-view';
 const TAGI_ANGEBOT_VALUE = 'TAGI';
+// The hardcoded value of 10 hours per day will be refactored into an Einstellung in KIBON-2967
+const ANZAHL_STUNDEN_KITA_PRO_TAG = 10;
 
 export class BetreuungViewController extends AbstractGesuchViewController<TSBetreuung> {
 
@@ -150,7 +154,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     private besondereBeduerfnisseAufwandKonfigurierbar: boolean = false;
     private fachstellenTyp: TSFachstellenTyp;
     protected minEintrittsdatum: moment.Moment;
-    public isSwitchBetreuungspensumEnabled: boolean;
+    public betreuungspensumAnzeigeTyp: TSPensumAnzeigeTyp;
     public isTFOKostenBerechnungStuendlich: boolean = false;
 
     private oeffnungstageKita: number;
@@ -165,6 +169,9 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     private hideKesbPlatzierung: boolean;
     public infomaZahlungen: boolean;
     private mandant: KiBonMandant;
+    private angebotTS: boolean;
+    private angebotFI: boolean;
+    private angebotTFO: boolean;
 
     public constructor(
         private readonly $state: StateService,
@@ -191,102 +198,106 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         this.dvDialog = dvDialog;
         this.$translate = $translate;
         this.mandantService.mandant$.pipe(map(mandant => mandant)).subscribe(mandant => {
-                this.mandant = mandant;
-            }, err => LOG.error(err));
+            this.mandant = mandant;
+        }, err => LOG.error(err));
     }
 
     // eslint-disable-next-line
     public $onInit(): void {
         super.$onInit();
-        this.mutationsmeldungModel = undefined;
-        this.isMutationsmeldungStatus = false;
-        const kindNumber = parseInt(this.$stateParams.kindNumber, 10);
-        const kindIndex = this.gesuchModelManager.convertKindNumberToKindIndex(kindNumber);
+        this.initApplicationProperties()
+            .then(() => {
+                const gesuchsperiodeId: string = this.gesuchModelManager.getGesuchsperiode().id;
+                return this.einstellungRS.getAllEinstellungenBySystemCached(
+                    gesuchsperiodeId
+                ).toPromise().then((response: TSEinstellung[]) => {
+                    response.filter(r => r.key === TSEinstellungKey.PENSUM_ANZEIGE_TYP)
+                        .forEach(einstellung => {
+                            this.loadPensumAnzeigeTyp(einstellung);
+                        });
+                }, error => LOG.error(error));
+            })
+            .then(() => {
+            this.mutationsmeldungModel = undefined;
+            this.isMutationsmeldungStatus = false;
+            const kindNumber = parseInt(this.$stateParams.kindNumber, 10);
+            const kindIndex = this.gesuchModelManager.convertKindNumberToKindIndex(kindNumber);
 
-        if (this.mandant === MANDANTS.LUZERN) {
-            this.isTFOKostenBerechnungStuendlich = true;
-        }
-
-        if (kindIndex >= 0) {
-            this.gesuchModelManager.setKindIndex(kindIndex);
-            if (this.$stateParams.betreuungNumber && this.$stateParams.betreuungNumber.length > 0) {
-                const betreuungNumber = parseInt(this.$stateParams.betreuungNumber, 10);
-                this.betreuungIndex = this.gesuchModelManager.convertBetreuungNumberToBetreuungIndex(betreuungNumber);
-                this.model = angular.copy(this.gesuchModelManager.getKindToWorkWith().betreuungen[this.betreuungIndex]);
-                this.initialBetreuung =
-                    angular.copy(this.gesuchModelManager.getKindToWorkWith().betreuungen[this.betreuungIndex]);
-
-                this.gesuchModelManager.setBetreuungIndex(this.betreuungIndex);
-            } else {
-                // wenn betreuung-nummer nicht definiert ist heisst das, dass wir ein neues erstellen sollten
-                this.model = this.initEmptyBetreuung();
-                this.initialBetreuung = angular.copy(this.model);
-                this.betreuungIndex = this.gesuchModelManager.getKindToWorkWith().betreuungen
-                    ? this.gesuchModelManager.getKindToWorkWith().betreuungen.length
-                    : 0;
-                this.gesuchModelManager.setBetreuungIndex(this.betreuungIndex);
+            if (this.mandant === MANDANTS.LUZERN) {
+                this.isTFOKostenBerechnungStuendlich = true;
             }
 
-            this.setBetreuungsangebotTypValues();
-            // Falls ein Typ gesetzt ist, handelt es sich um eine direkt-Anmeldung
-            if (this.$stateParams.betreuungsangebotTyp) {
-                for (const obj of this.betreuungsangebotValues) {
-                    // eslint-disable-next-line
-                    if (obj.key === this.$stateParams.betreuungsangebotTyp
-                        && obj.value !== this.ebeguUtil.translateString(TAGI_ANGEBOT_VALUE)
-                    ) {
-                        // Es wurde ein Angebot ueber den Direktlink mitgegeben und dieses ist auch erlaubt
-                        // -> wir nehmen alle anderen Angebote aus der Liste raus
-                        this.betreuungsangebotValues = new Array<any>();
-                        this.betreuungsangebotValues.push(obj);
-                        this.betreuungsangebot = obj;
-                        this.changedAngebot();
+            if (kindIndex >= 0) {
+                this.gesuchModelManager.setKindIndex(kindIndex);
+                if (this.$stateParams.betreuungNumber && this.$stateParams.betreuungNumber.length > 0) {
+                    const betreuungNumber = parseInt(this.$stateParams.betreuungNumber, 10);
+                    this.betreuungIndex =
+                        this.gesuchModelManager.convertBetreuungNumberToBetreuungIndex(betreuungNumber);
+                    this.model =
+                        angular.copy(this.gesuchModelManager.getKindToWorkWith().betreuungen[this.betreuungIndex]);
+                    this.initialBetreuung =
+                        angular.copy(this.gesuchModelManager.getKindToWorkWith().betreuungen[this.betreuungIndex]);
+
+                    this.gesuchModelManager.setBetreuungIndex(this.betreuungIndex);
+                } else {
+                    // wenn betreuung-nummer nicht definiert ist heisst das, dass wir ein neues erstellen sollten
+                    this.model = this.initEmptyBetreuung();
+                    this.initialBetreuung = angular.copy(this.model);
+                    this.betreuungIndex = this.gesuchModelManager.getKindToWorkWith().betreuungen
+                        ? this.gesuchModelManager.getKindToWorkWith().betreuungen.length
+                        : 0;
+                    this.gesuchModelManager.setBetreuungIndex(this.betreuungIndex);
+                }
+
+                this.setBetreuungsangebotTypValues();
+                // Falls ein Typ gesetzt ist, handelt es sich um eine direkt-Anmeldung
+                this.initBetreuungsangebotTyp();
+                this.initViewModel();
+
+                if (this.getErweiterteBetreuungJA() && this.getErweiterteBetreuungJA().fachstelle) {
+                    this.fachstelleId = this.getErweiterteBetreuungJA().fachstelle.id;
+                }
+
+                this.provisorischeBetreuung = false;
+
+                if (EbeguUtil.isNotNullOrUndefined(this.getBetreuungModel())
+                    && this.getBetreuungModel().betreuungsstatus === TSBetreuungsstatus.UNBEKANNTE_INSTITUTION) {
+                    this.provisorischeBetreuung = true;
+                }
+
+                // just to read!
+                this.kindModel = this.gesuchModelManager.getKindToWorkWith();
+            } else {
+                this.$log.error(`There is no kind available with kind-number:${this.$stateParams.kindNumber}`);
+            }
+            this.isNewestGesuch = this.gesuchModelManager.isNeuestesGesuch();
+
+            if (EbeguUtil.isNotNullOrUndefined(this.getBetreuungModel())) {
+                if (this.getBetreuungModel().getAngebotTyp() === TSBetreuungsangebotTyp.KITA
+                    || this.getBetreuungModel().getAngebotTyp() === TSBetreuungsangebotTyp.TAGESFAMILIEN) {
+                    // Falls es Kita oder TFO ist, eine eventuell bereits existierende Betreuungsmitteilung lesen
+                    this.findExistingBetreuungsmitteilung();
+                }
+
+                const anmeldungMutationZustand = this.getBetreuungModel().anmeldungMutationZustand;
+                if (anmeldungMutationZustand) {
+                    if (anmeldungMutationZustand === TSAnmeldungMutationZustand.MUTIERT) {
+                        this.aktuellGueltig = false;
+                    } else if (anmeldungMutationZustand === TSAnmeldungMutationZustand.NOCH_NICHT_FREIGEGEBEN) {
+                        this.aktuellGueltig = false;
                     }
                 }
-            } else {
-                this.betreuungsangebot = undefined;
             }
-            this.initViewModel();
+            this.initEinstellungen();
+        });
 
-            if (this.getErweiterteBetreuungJA() && this.getErweiterteBetreuungJA().fachstelle) {
-                this.fachstelleId = this.getErweiterteBetreuungJA().fachstelle.id;
-            }
+    }
 
-            this.provisorischeBetreuung = false;
-
-            if (EbeguUtil.isNotNullOrUndefined(this.getBetreuungModel())
-                && this.getBetreuungModel().betreuungsstatus === TSBetreuungsstatus.UNBEKANNTE_INSTITUTION) {
-                this.provisorischeBetreuung = true;
-            }
-
-            // just to read!
-            this.kindModel = this.gesuchModelManager.getKindToWorkWith();
-        } else {
-            this.$log.error(`There is no kind available with kind-number:${  this.$stateParams.kindNumber}`);
-        }
-        this.isNewestGesuch = this.gesuchModelManager.isNeuestesGesuch();
-
-        if (EbeguUtil.isNotNullOrUndefined(this.getBetreuungModel())) {
-            if (this.getBetreuungModel().getAngebotTyp() === TSBetreuungsangebotTyp.KITA
-                || this.getBetreuungModel().getAngebotTyp() === TSBetreuungsangebotTyp.TAGESFAMILIEN) {
-                // Falls es Kita oder TFO ist, eine eventuell bereits existierende Betreuungsmitteilung lesen
-                this.findExistingBetreuungsmitteilung();
-            }
-
-            const anmeldungMutationZustand = this.getBetreuungModel().anmeldungMutationZustand;
-            if (anmeldungMutationZustand) {
-                if (anmeldungMutationZustand === TSAnmeldungMutationZustand.MUTIERT) {
-                    this.aktuellGueltig = false;
-                } else if (anmeldungMutationZustand === TSAnmeldungMutationZustand.NOCH_NICHT_FREIGEGEBEN) {
-                    this.aktuellGueltig = false;
-                }
-            }
-        }
-
+    private initEinstellungen(): void {
         this.loadInfomaZahlungenActive();
-
+        const gesuchsperiodeId: string = this.gesuchModelManager.getGesuchsperiode().id;
         this.einstellungRS.getAllEinstellungenBySystemCached(
-            this.gesuchModelManager.getGesuchsperiode().id
+            gesuchsperiodeId
         ).subscribe((response: TSEinstellung[]) => {
             response.filter(r => r.key === TSEinstellungKey.FKJV_EINGEWOEHNUNG)
                 .forEach(value => {
@@ -327,16 +338,12 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
                 .forEach(einstellung => {
                     this.oeffnungsstundenTFO = parseInt(einstellung.value, 10);
                 });
-            response.filter(r => r.key === TSEinstellungKey.BETREUUNG_INPUT_SWITCH_ENABLED)
-                .forEach(einstellung => {
-                    this.isSwitchBetreuungspensumEnabled = einstellung.getValueAsBoolean();
-                });
         }, error => LOG.error(error));
 
         this.einstellungRS.findEinstellung(
             TSEinstellungKey.ZUSCHLAG_BEHINDERUNG_PRO_TG,
             this.gesuchModelManager.getGemeinde().id,
-            this.gesuchModelManager.getGesuchsperiode().id
+            gesuchsperiodeId
         ).subscribe(res => {
             this.zuschlagBehinderungProTag = Number(res.value);
         }, error => LOG.error(error));
@@ -344,10 +351,44 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         this.einstellungRS.findEinstellung(
             TSEinstellungKey.ZUSCHLAG_BEHINDERUNG_PRO_STD,
             this.gesuchModelManager.getGemeinde().id,
-            this.gesuchModelManager.getGesuchsperiode().id
+            gesuchsperiodeId
         ).subscribe(res => {
             this.zuschlagBehinderungProStd = Number(res.value);
         }, error => LOG.error(error));
+    }
+
+    private initBetreuungsangebotTyp() {
+        if (this.$stateParams.betreuungsangebotTyp) {
+            for (const obj of this.betreuungsangebotValues) {
+                // eslint-disable-next-line
+                if (obj.key === this.$stateParams.betreuungsangebotTyp
+                    && obj.value !== this.ebeguUtil.translateString(TAGI_ANGEBOT_VALUE)
+                ) {
+                    // Es wurde ein Angebot ueber den Direktlink mitgegeben und dieses ist auch erlaubt
+                    // -> wir nehmen alle anderen Angebote aus der Liste raus
+                    this.betreuungsangebotValues = new Array<any>();
+                    this.betreuungsangebotValues.push(obj);
+                    this.betreuungsangebot = obj;
+                    this.changedAngebot();
+                    return;
+                }
+            }
+        } else {
+            this.betreuungsangebot = undefined;
+        }
+
+        if (!this.hasMandantZusaetzlichesBereuungsangebot() &&
+                this.betreuungsangebotValues.length === 1) {
+            this.betreuungsangebot = this.betreuungsangebotValues[0];
+        }
+    }
+
+    private loadPensumAnzeigeTyp(einstellung: TSEinstellung) {
+        const einstellungPensumAnzeigeTyp = this.ebeguRestUtil
+            .parsePensumAnzeigeTyp(einstellung);
+
+        this.betreuungspensumAnzeigeTyp = EbeguUtil.isNotNullOrUndefined(einstellungPensumAnzeigeTyp) ?
+            einstellungPensumAnzeigeTyp : TSPensumAnzeigeTyp.ZEITEINHEIT_UND_PROZENT;
     }
 
     private loadInfomaZahlungenActive(): void {
@@ -432,7 +473,8 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     }
 
     private getBetreuungsangebotFromInstitutionList(): any {
-        return $.grep(this.betreuungsangebotValues, (value: any) => value.key === this.getInstitutionSD().betreuungsangebotTyp)[0];
+        return $.grep(this.betreuungsangebotValues,
+            (value: any) => value.key === this.getInstitutionSD().betreuungsangebotTyp)[0];
     }
 
     public getKindModel(): TSKindContainer {
@@ -570,7 +612,8 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     public enableBetreuungsangebotsTyp(): boolean {
         return this.model
             && this.model.isNew()
-            && !this.gesuchModelManager.isGesuchReadonly();
+            && !this.gesuchModelManager.isGesuchReadonly()
+            && this.hasMandantZusaetzlichesBereuungsangebot();
     }
 
     public showInstitutionenList(): boolean {
@@ -686,7 +729,8 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     private setBetreuungsangebotTypValues(): void {
         const betreuungsangebotTypValues =
             getTSBetreuungsangebotTypValuesForMandantIfTagesschulanmeldungen(
-                this.gesuchModelManager.isTagesschulangebotEnabled(),
+                this.angebotTS,
+                this.angebotTFO,
                 this.checkIfGemeindeOrBetreuungHasTSAnmeldung(),
                 this.gesuchModelManager.getGemeinde(),
                 this.gesuchModelManager.getGesuchsperiode());
@@ -727,7 +771,8 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
             .filter(instStamm => instStamm.betreuungsangebotTyp === this.betreuungsangebot.key);
 
         if (this.betreuungsangebot.key === TSBetreuungsangebotTyp.TAGESSCHULE) {
-            institutionenSDList = institutionenSDList.filter(instStamm =>  instStamm.institution.status !== TSInstitutionStatus.NUR_LATS);
+            institutionenSDList =
+                institutionenSDList.filter(instStamm => instStamm.institution.status !== TSInstitutionStatus.NUR_LATS);
 
             if (this.betreuungsangebot.value === this.ebeguUtil.translateString(TAGI_ANGEBOT_VALUE)) {
                 institutionenSDList = this.filterTagisTagesschule(institutionenSDList);
@@ -800,7 +845,9 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
             this.errorService.addMesageAsError('Betreuungsmodel ist nicht initialisiert.');
         }
         const tsBetreuungspensum = new TSBetreuungspensum();
-        tsBetreuungspensum.unitForDisplay = TSPensumUnits.PERCENTAGE;
+        tsBetreuungspensum.unitForDisplay = this.betreuungspensumAnzeigeTyp === TSPensumAnzeigeTyp.NUR_STUNDEN ?
+            TSPensumUnits.HOURS :
+            TSPensumUnits.PERCENTAGE;
         tsBetreuungspensum.nichtEingetreten = false;
         tsBetreuungspensum.gueltigkeit = new TSDateRange();
 
@@ -824,8 +871,8 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         if (this.isTFOKostenBerechnungStuendlich
             && this.betreuungsangebot
             && this.betreuungsangebot.key === TSBetreuungsangebotTyp.TAGESFAMILIEN) {
-            // die felder sind not null und müssen auf 0 gesetzt werden, damit die Validierung nicht fehlschlägt falls die
-            // TFO Kosten stündlich eingegeben werden
+            // die felder sind not null und müssen auf 0 gesetzt werden, damit die Validierung nicht fehlschlägt falls
+            // die TFO Kosten stündlich eingegeben werden
             tsBetreuungspensum.monatlicheBetreuungskosten = 0;
             tsBetreuungspensum.pensum = 0;
         }
@@ -1535,7 +1582,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         this.$state.go('gesuch.abweichungen', {
             gesuchId: this.gesuchModelManager.getGesuch().id,
             betreuungNumber: this.$stateParams.betreuungNumber,
-            kindNumber: this.$stateParams.kindNumber,
+            kindNumber: this.$stateParams.kindNumber
         });
     }
 
@@ -1556,7 +1603,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         return !this.isFreigabequittungAusstehend()
             && (this.getBetreuungModel().isBetreuungsstatus(TSBetreuungsstatus.SCHULAMT_ANMELDUNG_ERFASST) ||
                 ((this.getBetreuungModel().isBetreuungsstatus(TSBetreuungsstatus.SCHULAMT_ANMELDUNG_AUSGELOEST)
-                    || this.getBetreuungModel().isBetreuungsstatus(TSBetreuungsstatus.SCHULAMT_FALSCHE_INSTITUTION))
+                        || this.getBetreuungModel().isBetreuungsstatus(TSBetreuungsstatus.SCHULAMT_FALSCHE_INSTITUTION))
                     && this.authServiceRS.isOneOfRoles(TSRoleUtil.getSchulamtInstitutionRoles())));
     }
 
@@ -1587,7 +1634,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
                 title: 'TS_ANMELDUNG_ERNEUT_OEFFNEN',
                 deleteText: '',
                 cancelText: 'LABEL_ABBRECHEN',
-                confirmText: 'LABEL_SPEICHERN',
+                confirmText: 'LABEL_SPEICHERN'
             }).then(() => {
                 this.save(TSBetreuungsstatus.SCHULAMT_ANMELDUNG_AUSGELOEST);
             });
@@ -1633,6 +1680,10 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     }
 
     private calculateMuliplyerKita(): void {
+        if (this.betreuungspensumAnzeigeTyp === TSPensumAnzeigeTyp.NUR_STUNDEN) {
+            this.multiplierKita = this.oeffnungstageKita * ANZAHL_STUNDEN_KITA_PRO_TAG / 12 / 100;
+            return;
+        }
         // Beispiel: 240 Tage Pro Jahr: 240 / 12 = 20 Tage Pro Monat. 100% = 20 days => 1% = 0.2 tage
         this.multiplierKita = this.oeffnungstageKita / 12 / 100;
     }
@@ -1661,7 +1712,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
 
     private isBetreuungsangebotTagesfamilie(): boolean {
         return this.betreuungsangebot
-        && this.betreuungsangebot.key === TSBetreuungsangebotTyp.TAGESFAMILIEN;
+            && this.betreuungsangebot.key === TSBetreuungsangebotTyp.TAGESFAMILIEN;
     }
 
     private showHintUntermonatlich(): boolean {
@@ -1670,7 +1721,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
 
     private showHintEingewoehnung(): boolean {
         return this.mandant === MANDANTS.LUZERN
-        && !this.authServiceRS.isOneOfRoles(TSRoleUtil.getGesuchstellerSozialdienstRolle());
+            && !this.authServiceRS.isOneOfRoles(TSRoleUtil.getGesuchstellerSozialdienstRolle());
     }
 
     public showAuszahlungAnInstituion(): boolean {
@@ -1679,5 +1730,21 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
 
     public onChangeAbrechnungGutscheine(): void {
         this.getBetreuungModel().begruendungAuszahlungAnInstitution = null;
+    }
+
+    public getInstitutionNotFoundHint(): string {
+        return this.$translate.instant('INSTITUTION_NOT_FOUND_HINT');
+    }
+
+    private initApplicationProperties(): IPromise<void> {
+        return this.applicationPropertyRS.getPublicPropertiesCached().then(res => {
+            this.angebotTS = res.angebotTSActivated;
+            this.angebotFI = res.angebotFIActivated;
+            this.angebotTFO = res.angebotTFOActivated;
+        })
+    }
+
+    public hasMandantZusaetzlichesBereuungsangebot(): boolean {
+        return this.angebotTS || this.angebotFI || this.angebotTFO;
     }
 }

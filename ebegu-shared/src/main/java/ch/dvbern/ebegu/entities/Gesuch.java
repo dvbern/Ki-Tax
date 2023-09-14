@@ -15,66 +15,35 @@
 
 package ch.dvbern.ebegu.entities;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.stream.Collectors;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EntityListeners;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
-import javax.persistence.ForeignKey;
-import javax.persistence.Index;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
-import javax.persistence.OrderBy;
-import javax.persistence.Table;
-import javax.persistence.Transient;
-import javax.persistence.UniqueConstraint;
-import javax.validation.Valid;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
-
 import ch.dvbern.ebegu.dto.FinanzDatenDTO;
 import ch.dvbern.ebegu.dto.suchfilter.lucene.Searchable;
 import ch.dvbern.ebegu.entities.sozialdienst.SozialdienstFall;
-import ch.dvbern.ebegu.enums.AntragCopyType;
-import ch.dvbern.ebegu.enums.AntragStatus;
-import ch.dvbern.ebegu.enums.AntragTyp;
-import ch.dvbern.ebegu.enums.Betreuungsstatus;
-import ch.dvbern.ebegu.enums.DokumentGrundPersonType;
-import ch.dvbern.ebegu.enums.Eingangsart;
-import ch.dvbern.ebegu.enums.FinSitStatus;
-import ch.dvbern.ebegu.enums.FinanzielleSituationTyp;
-import ch.dvbern.ebegu.enums.GesuchBetreuungenStatus;
-import ch.dvbern.ebegu.enums.GesuchTypFromAngebotTyp;
+import ch.dvbern.ebegu.enums.*;
 import ch.dvbern.ebegu.util.Constants;
+import ch.dvbern.ebegu.util.mandant.MandantIdentifier;
 import ch.dvbern.ebegu.validationgroups.AntragCompleteValidationGroup;
 import ch.dvbern.ebegu.validationgroups.GesuchstellerSaveValidationGroup;
 import ch.dvbern.ebegu.validators.CheckEmailGesuchsteller;
 import ch.dvbern.ebegu.validators.CheckGesuchComplete;
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import com.google.common.base.Strings;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Analyzer;
 import org.hibernate.search.annotations.Indexed;
 import org.hibernate.search.annotations.IndexedEmbedded;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.persistence.*;
+import javax.validation.Valid;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.*;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.stream.Collectors;
 
 /**
  * Entitaet zum Speichern von Gesuch in der Datenbank.
@@ -85,7 +54,7 @@ import org.hibernate.search.annotations.IndexedEmbedded;
 @Entity
 @Indexed
 @Analyzer(definition = "EBEGUGermanAnalyzer")
-@EntityListeners({ GesuchStatusListener.class, GesuchGueltigListener.class })
+@EntityListeners({ GesuchStatusListener.class, GesuchGueltigListener.class, AlleFaelleGesuchListener.class })
 @Table(
 	uniqueConstraints = { @UniqueConstraint(columnNames = { "dossier_id", "gesuchsperiode_id", "gueltig" },
 		name = "UK_gueltiges_gesuch"),
@@ -282,7 +251,6 @@ public class Gesuch extends AbstractMutableEntity implements Searchable {
 
 	@Transient
 	private boolean newlyCreatedMutation = false;
-
 
 	public Gesuch() {
 	}
@@ -952,6 +920,7 @@ public class Gesuch extends AbstractMutableEntity implements Searchable {
 		familiensituationContainer.setFamiliensituationJA(new Familiensituation());
 	}
 
+	@SuppressWarnings("PMD.NcssMethodCount")
 	@Nonnull
 	public Gesuch copyGesuch(
 		@Nonnull Gesuch target,
@@ -991,7 +960,6 @@ public class Gesuch extends AbstractMutableEntity implements Searchable {
 
 		switch (copyType) {
 		case MUTATION:
-			target.setLaufnummer(this.getLaufnummer() + 1);
 			copyGesuchsteller2(target, copyType);
 			copyEinkommensverschlechterungInfoContainer(target, copyType);
 			copyDokumentGruende(target, copyType);
@@ -1008,6 +976,12 @@ public class Gesuch extends AbstractMutableEntity implements Searchable {
 		case ERNEUERUNG_NEUES_DOSSIER:
 			target.setLaufnummer(0); // Wir fangen für die neue Periode wieder mit 0 an
 			copyGesuchsteller2IfStillNeeded(target, copyType);
+			break;
+		case ERNEUERUNG_AR_2023:
+			target.setLaufnummer(0); // Wir fangen für die neue Periode wieder mit 0 an
+			copyGesuchsteller2IfStillNeeded(target, copyType);
+			copyEinkommensverschlechterungInfoContainer(target, copyType);
+			copyDokumentGruende(target, copyType);
 			break;
 		case MUTATION_NEUES_DOSSIER:
 			target.setLaufnummer(0); // Wir fangen für das neue Dossier wieder mit 0 an
@@ -1111,7 +1085,19 @@ public class Gesuch extends AbstractMutableEntity implements Searchable {
 
 	@Nonnull
 	public Gesuch copyForMutation(
-		@Nonnull Gesuch mutation, @Nonnull Eingangsart eingangsartOfTarget, @Nonnull LocalDate regelStartDatum) {
+		@Nonnull Gesuch mutation,
+		@Nonnull Eingangsart eingangsartOfTarget,
+		@Nonnull LocalDate regelStartDatum) {
+		return this.copyForMutation(mutation, eingangsartOfTarget, regelStartDatum, laufnummer+1);
+	}
+
+	@Nonnull
+	public Gesuch copyForMutation(
+		@Nonnull Gesuch mutation,
+		@Nonnull Eingangsart eingangsartOfTarget,
+		@Nonnull LocalDate regelStartDatum,
+		int laufnr) {
+		mutation.setLaufnummer(laufnr);
 		return this.copyGesuch(
 			mutation,
 			AntragCopyType.MUTATION,
@@ -1128,14 +1114,21 @@ public class Gesuch extends AbstractMutableEntity implements Searchable {
 		@Nonnull Gesuchsperiode gesuchsperiodeOfTarget,
 		@Nonnull Eingangsart eingangsartOfTarget,
 		@Nonnull LocalDate regelStartDatum) {
+		AntragCopyType antragTyp = isErneuerungSpeziallFallAR(gesuchsperiodeOfTarget) ?
+			AntragCopyType.ERNEUERUNG_AR_2023 : AntragCopyType.ERNEUERUNG;
 		return this.copyGesuch(
 			folgegesuch,
-			AntragCopyType.ERNEUERUNG,
+			antragTyp,
 			eingangsartOfTarget,
 			AntragTyp.ERNEUERUNGSGESUCH,
 			this.getDossier(),
 			gesuchsperiodeOfTarget,
 			regelStartDatum);
+	}
+
+	private boolean isErneuerungSpeziallFallAR(Gesuchsperiode gesuchsperiodeOfTarget) {
+		return gesuchsperiodeOfTarget.getBasisJahr() == 2022 &&
+			gesuchsperiodeOfTarget.getMandant().getMandantIdentifier() == MandantIdentifier.APPENZELL_AUSSERRHODEN;
 	}
 
 	@Nonnull

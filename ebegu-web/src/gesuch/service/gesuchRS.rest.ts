@@ -1,16 +1,18 @@
 /*
- * Ki-Tax: System for the management of external childcare subsidies
- * Copyright (C) 2017 City of Bern Switzerland
+ * Copyright (C) 2023 DV Bern AG, Switzerland
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Affero General Public License for more details.
+ *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
 import {IHttpPromise, IHttpService, IPromise} from 'angular';
@@ -70,6 +72,11 @@ export class GesuchRS implements IEntityRS {
     public findGesuchForInstitution(gesuchID: string): IPromise<TSGesuch> {
         return this.$http.get(`${this.serviceURL}/institution/${encodeURIComponent(gesuchID)}`)
             .then((response: any) => this.ebeguRestUtil.parseGesuch(new TSGesuch(), response.data));
+    }
+
+    public getNeustesVerfuegtesGesuchFuerGesuch(gesuchID: string): IPromise<string> {
+        return this.$http.get(`${this.serviceURL}/neustesVerfuegtesGesuchFuerGesuch/${encodeURIComponent(gesuchID)}`)
+            .then((response: any) => response.data);
     }
 
     public updateBemerkung(gesuchID: string, bemerkung: string): IHttpPromise<any> {
@@ -238,6 +245,11 @@ export class GesuchRS implements IEntityRS {
 
     }
 
+    public zpvNummerErfolgreichVerknuepft(gesuchstellerId: string): IPromise<boolean> {
+        return this.$http.get(`${this.serviceURL}/zpvNummerSuccess/${encodeURIComponent(gesuchstellerId)}`)
+            .then((response: any) => JSON.parse(response.data));
+    }
+
     public mutationIgnorieren(gesuchId: string): IPromise<TSGesuch> {
         return this.$http.put(`${this.serviceURL}/${gesuchId}/ignorieren`, {})
             .then(response => this.ebeguRestUtil.parseGesuch(new TSGesuch(), response.data));
@@ -246,5 +258,21 @@ export class GesuchRS implements IEntityRS {
     public markiertFuerKontrollUpdaten(antragId: string, markiertFuerKontroll: boolean): IPromise<TSGesuch> {
         const url = `${this.serviceURL}/markiertfuerkontroll/${encodeURIComponent(antragId)}/${markiertFuerKontroll}`;
         return this.$http.post(url, null).then(response => this.ebeguRestUtil.parseGesuch(new TSGesuch(), response.data));
+    }
+
+    public simulateNewVerfuegung(id: string): IPromise<string> {
+        const url = `${this.serviceURL}/simulateNewVerfuegung/${encodeURIComponent(id)}`;
+        return this.$http.post(url, null)
+            .then(response => response.data as string);
+    }
+
+    public findGesuchForFinSit(finSitId: string): IPromise<TSGesuch> {
+        return this.$http.get(`${this.serviceURL}/gesuchForFinSit/${encodeURIComponent(finSitId)}`)
+            .then((response: any) => this.ebeguRestUtil.parseGesuch(new TSGesuch(), response.data));
+    }
+
+    public findVorgaengerGesuchNotIgnoriert(gesuchId: string): IPromise<TSGesuch> {
+        return this.$http.get(`${this.serviceURL}/vorgaengerGesuchNotIgnoriert/${encodeURIComponent(gesuchId)}`)
+            .then((response: any) => this.ebeguRestUtil.parseGesuch(new TSGesuch(), response.data));
     }
 }

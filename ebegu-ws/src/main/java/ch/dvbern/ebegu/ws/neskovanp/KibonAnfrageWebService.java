@@ -73,7 +73,7 @@ public class KibonAnfrageWebService implements IKibonAnfrageWebService {
 	public SteuerdatenResponse getSteuerDaten(
 		Integer zpvNummer,
 		LocalDate geburtsdatum,
-		String kibonAntragId,
+		String gesuchId,
 		Integer gesuchsperiodeBeginnJahr) throws KiBonAnfrageServiceException {
 		final String methodName = "KibonAnfrageService#getSteuerdaten";
 		SteuerdatenResponse steuerdatenResponse = null;
@@ -81,7 +81,8 @@ public class KibonAnfrageWebService implements IKibonAnfrageWebService {
 		LocalDateTime startDate = LocalDateTime.now();
 
 		try {
-			SteuerDatenResponseType steuerDatenResponseType = getServicePort().getSteuerdaten(zpvNummer, geburtsdatum, kibonAntragId, gesuchsperiodeBeginnJahr);
+			SteuerDatenResponseType steuerDatenResponseType = getServicePort().getSteuerdaten(zpvNummer, geburtsdatum,
+					gesuchId, gesuchsperiodeBeginnJahr);
 			steuerdatenResponse = KibonAnfrageConverter.convertFromKibonAnfrage(steuerDatenResponseType);
 			return steuerdatenResponse;
 		}
@@ -114,7 +115,8 @@ public class KibonAnfrageWebService implements IKibonAnfrageWebService {
 			throw new KiBonAnfrageServiceException(methodName, "Einen unerwartete Fehler ist aufgetretten", e);
 		}
 		finally {
-			writeAuditLogForKibonAnfrageCall(zpvNummer, geburtsdatum, kibonAntragId, gesuchsperiodeBeginnJahr, startDate, steuerdatenResponse, exceptionReceived);
+			writeAuditLogForKibonAnfrageCall(zpvNummer, geburtsdatum,
+					gesuchId, gesuchsperiodeBeginnJahr, startDate, steuerdatenResponse, exceptionReceived);
 		}
 	}
 

@@ -80,9 +80,6 @@ public final class AbschlussNormalizer extends AbstractAbschlussRule {
 					if (zeitabschnitt.getBemerkungenDTOList() != null) {
 						lastZeitabschnitt.getBemerkungenDTOList().mergeBemerkungenMap(zeitabschnitt.getBemerkungenDTOList());
 					}
-					// Die monatlichen Kosten Anteile müssen zusammengezählt werden, see KIBON-2336
-					addUpVollkostenAnteil(lastZeitabschnitt.getBgCalculationInputAsiv(), zeitabschnitt.getBgCalculationInputAsiv());
-					addUpVollkostenAnteil(lastZeitabschnitt.getBgCalculationInputGemeinde(), zeitabschnitt.getBgCalculationInputGemeinde());
 
 					validZeitabschnitte.remove(indexOfLast);
 					validZeitabschnitte.add(lastZeitabschnitt);
@@ -104,10 +101,5 @@ public final class AbschlussNormalizer extends AbstractAbschlussRule {
 	private boolean isSameMonth(@Nonnull VerfuegungZeitabschnitt abschnittA, @Nonnull VerfuegungZeitabschnitt abschnittB) {
 		return abschnittA.getGueltigkeit().getGueltigAb().getMonth() == abschnittB.getGueltigkeit().getGueltigAb().getMonth()
 			&& abschnittA.getGueltigkeit().getGueltigBis().getMonth() == abschnittB.getGueltigkeit().getGueltigBis().getMonth();
-	}
-
-	private void addUpVollkostenAnteil(BGCalculationInput lastBgInput, BGCalculationInput bgInput) {
-		BigDecimal sum = lastBgInput.getKostenAnteilMonat().add(bgInput.getKostenAnteilMonat());
-		lastBgInput.setKostenAnteilMonat(sum);
 	}
 }

@@ -20,6 +20,7 @@ import {TSBenutzerNoDetails} from '../../../../models/TSBenutzerNoDetails';
 import {TSDossier} from '../../../../models/TSDossier';
 import {TSGesuch} from '../../../../models/TSGesuch';
 import {CORE_JS_MODULE} from '../../core.angularjs.module';
+import {ApplicationPropertyRS} from '../../rest-services/applicationPropertyRS.rest';
 import {BenutzerRSX} from '../../service/benutzerRSX.rest';
 import {VerantwortlicherselectController} from './dv-verantwortlicherselect';
 import ITranslateService = angular.translate.ITranslateService;
@@ -31,6 +32,7 @@ describe('dvVerantwortlicherSelect', () => {
     let benutzerRS: BenutzerRSX;
     let benutzer: TSBenutzerNoDetails;
     let $translate: ITranslateService;
+    let applicationPropertyRS: ApplicationPropertyRS;
 
     beforeEach(angular.mock.module(CORE_JS_MODULE.name));
 
@@ -43,10 +45,12 @@ describe('dvVerantwortlicherSelect', () => {
         benutzerRS = $injector.get('BenutzerRS');
         benutzer = new TSBenutzerNoDetails('Emiliano', 'Camacho');
         $translate = $injector.get('$translate');
+        applicationPropertyRS = $injector.get('ApplicationPropertyRS');
 
         verantwortlicherselectController = new VerantwortlicherselectController(benutzerRS,
             gesuchModelManager,
-            $translate);
+            $translate,
+            applicationPropertyRS);
     }));
 
     describe('getVerantwortlicherFullName', () => {

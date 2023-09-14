@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2021 DV Bern AG, Switzerland
+ * Copyright (C) 2023 DV Bern AG, Switzerland
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -8,11 +8,11 @@
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 import {
     AfterViewInit,
@@ -50,6 +50,7 @@ import {TSAntragDTO} from '../../../models/TSAntragDTO';
 import {TSAntragSearchresultDTO} from '../../../models/TSAntragSearchresultDTO';
 import {TSBenutzerNoDetails} from '../../../models/TSBenutzerNoDetails';
 import {TSGemeinde} from '../../../models/TSGemeinde';
+import {TSGesuchsperiode} from '../../../models/TSGesuchsperiode';
 import {TSInstitution} from '../../../models/TSInstitution';
 import {EbeguUtil} from '../../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
@@ -60,6 +61,7 @@ import {StateStoreService} from '../../shared/services/state-store.service';
 import {CONSTANTS} from '../constants/CONSTANTS';
 import {ErrorService} from '../errors/service/ErrorService';
 import {LogFactory} from '../logging/LogFactory';
+import {ApplicationPropertyRS} from '../rest-services/applicationPropertyRS.rest';
 import {BenutzerRSX} from '../service/benutzerRSX.rest';
 import {GesuchsperiodeRS} from '../service/gesuchsperiodeRS.rest';
 import {InstitutionRS} from '../service/institutionRS.rest';
@@ -250,6 +252,9 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges, Aft
 
     public filterPredicate: DVAntragListFilter;
 
+    public searchInaktivePerioden = false;
+    private searchInaktivePeriodenId: string;
+
     private readonly unsubscribe$ = new Subject<void>();
 
     // used to cancel the previous subscription so we don't have two data loads racing each other
@@ -276,6 +281,7 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges, Aft
     public initialTsGemeindeUser: TSBenutzerNoDetails;
     private sortId: string;
     private filterId: string;
+    private tagesschulangebotEnabled: boolean;
 
     public constructor(
         private readonly institutionRS: InstitutionRS,
@@ -289,22 +295,25 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges, Aft
         private readonly transitionService: TransitionService,
         private readonly stateStore: StateStoreService,
         private readonly uiRouterGlobals: UIRouterGlobals,
-        private readonly benutzerRS: BenutzerRSX
+        private readonly benutzerRS: BenutzerRSX,
+        private readonly applicationPropertyRS: ApplicationPropertyRS
     ) {
     }
 
     public ngOnInit(): void {
         this.updateInstitutionenList();
-        this.updateGesuchsperiodenList();
         this.updateGemeindenList();
         this.initStateStores();
+        this.updateGesuchsperiodenList();
         this.initFilter(true);
         this.initDisplayedColumns();
         this.initBenutzerLists();
+        this.initPublicProperties();
     }
 
     public ngAfterViewInit(): void {
         this.initSort();
+        this.initSearchInaktivePerioden();
         this.initTable();
     }
 
@@ -378,10 +387,22 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges, Aft
 
     public updateGesuchsperiodenList(): void {
         this.gesuchsperiodeRS.getAllGesuchsperioden().then(response => {
+            this.gesuchsperiodenList = [];
             response.forEach(gesuchsperiode => {
-                this.gesuchsperiodenList.push(gesuchsperiode.gesuchsperiodeString);
+                if (this.showPeriodeInList(gesuchsperiode)) {
+                    this.gesuchsperiodenList.push(gesuchsperiode.gesuchsperiodeString);
+                }
             });
         });
+    }
+
+    private showPeriodeInList(periode: TSGesuchsperiode): boolean {
+        // falls der User die inaktiven Perioden nicht rausfiltern kann, dann wird die
+        // periode immer gezeigt
+        if (!this.showSearchInaktivePerioden()) {
+            return true;
+        }
+        return this.searchInaktivePerioden || periode.isAktiv();
     }
 
     private updateGemeindenList(): void {
@@ -400,6 +421,13 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges, Aft
             this.stateStore.get(this.filterId) :
             {...this.initialFilter};
         this.filterChange.emit(this.filterPredicate);
+    }
+
+    private initSearchInaktivePerioden(): void {
+        if (this.stateStoreId && this.stateStore.has(this.searchInaktivePeriodenId)) {
+            const stored = this.stateStore.get(this.searchInaktivePeriodenId) as { searchInaktivePerioden: boolean };
+            this.searchInaktivePerioden = stored.searchInaktivePerioden;
+        }
     }
 
     public ngOnDestroy(): void {
@@ -421,7 +449,8 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges, Aft
             search: {
                 predicateObject: this.filterPredicate
             },
-            sort: this.sort
+            sort: this.sort,
+            onlyAktivePerioden: !this.searchInaktivePerioden
         };
         const dataToLoad$: Observable<DVAntragListItem[]> = this.data$ ?
             this.data$ :
@@ -620,7 +649,7 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges, Aft
     }
 
     private isTagesschulangebotEnabled(): boolean {
-        return this.authServiceRS.hasMandantAngebotTS();
+        return this.tagesschulangebotEnabled;
     }
 
     public sortData(sortEvent: Sort): void {
@@ -696,6 +725,7 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges, Aft
         }
         this.sortId = `${this.stateStoreId}-sort`;
         this.filterId = `${this.stateStoreId}-filter`;
+        this.searchInaktivePeriodenId = `${this.stateStoreId}-searchInaktivePerioden`;
 
         this.transitionService.onStart({exiting: this.uiRouterGlobals.$current.name}, () => {
             if (this.sort.predicate) {
@@ -706,6 +736,7 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges, Aft
             }
 
             this.stateStore.store(this.filterId, this.filterPredicate);
+            this.stateStore.store(this.searchInaktivePeriodenId, {searchInaktivePerioden: this.searchInaktivePerioden});
         });
 
     }
@@ -747,6 +778,25 @@ export class NewAntragListComponent implements OnInit, OnDestroy, OnChanges, Aft
         this.benutzerRS.getAllActiveBenutzerMandant().then(response => {
             this.userListGemeindeantraege = response;
             this.changeDetectorRef.markForCheck();
+        });
+    }
+
+    public changeSearchInaktivePerioden(searchInaktivenPerioden: boolean): void {
+        this.searchInaktivePerioden = searchInaktivenPerioden;
+        this.updateGesuchsperiodenList();
+        this.loadData();
+    }
+
+    // wenn externe daten in diesen Component eingegeben werden,
+    // dann zeigen wir diese Checkbox nicht, weil sie nur für die Abruf der Daten
+    // über loadData() innerhalb dieses Components relevant ist.
+    public showSearchInaktivePerioden(): boolean {
+        return EbeguUtil.isNullOrUndefined(this.data$);
+    }
+
+    private initPublicProperties() {
+        this.applicationPropertyRS.getPublicPropertiesCached().then(res => {
+            this.tagesschulangebotEnabled = res.angebotTSActivated;
         });
     }
 }

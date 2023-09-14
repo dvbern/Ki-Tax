@@ -15,7 +15,7 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {Component, Inject, ViewChild} from '@angular/core';
+import {Component, Inject, OnInit, ViewChild} from '@angular/core';
 import {NgForm} from '@angular/forms';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 import {TSInternePendenz} from '../../../../models/TSInternePendenz';
@@ -25,7 +25,7 @@ import {TSInternePendenz} from '../../../../models/TSInternePendenz';
     templateUrl: './interne-pendenz-dialog.template.html',
     styleUrls: ['./interne-pendenz-dialog.component.less']
 })
-export class InternePendenzDialogComponent {
+export class InternePendenzDialogComponent implements OnInit {
 
     @ViewChild(NgForm, { static: true }) public form: NgForm;
 

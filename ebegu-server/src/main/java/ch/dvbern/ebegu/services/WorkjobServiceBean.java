@@ -1,16 +1,18 @@
 /*
- * Ki-Tax: System for the management of external childcare subsidies
- * Copyright (C) 2018 City of Bern Switzerland
+ * Copyright (C) 2023 DV Bern AG, Switzerland
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Affero General Public License for more details.
+ *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
 package ch.dvbern.ebegu.services;
@@ -49,6 +51,7 @@ import javax.persistence.criteria.Root;
 import ch.dvbern.ebegu.authentication.PrincipalBean;
 import ch.dvbern.ebegu.entities.AbstractEntity_;
 import ch.dvbern.ebegu.entities.Gemeinde;
+import ch.dvbern.ebegu.entities.Institution;
 import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.entities.Workjob;
 import ch.dvbern.ebegu.entities.Workjob_;
@@ -56,6 +59,7 @@ import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.enums.WorkJobConstants;
 import ch.dvbern.ebegu.enums.reporting.BatchJobStatus;
+import ch.dvbern.ebegu.enums.reporting.DatumTyp;
 import ch.dvbern.ebegu.enums.reporting.ReportVorlage;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.errors.KibonLogLevel;
@@ -70,6 +74,7 @@ import org.slf4j.LoggerFactory;
 import static ch.dvbern.ebegu.enums.WorkJobConstants.BETRAG_PRO_KIND;
 import static ch.dvbern.ebegu.enums.WorkJobConstants.DATE_FROM_PARAM;
 import static ch.dvbern.ebegu.enums.WorkJobConstants.DATE_TO_PARAM;
+import static ch.dvbern.ebegu.enums.WorkJobConstants.DATUM_TYP;
 import static ch.dvbern.ebegu.enums.WorkJobConstants.DO_SAVE;
 import static ch.dvbern.ebegu.enums.WorkJobConstants.INKL_BG_GESUCHE;
 import static ch.dvbern.ebegu.enums.WorkJobConstants.INKL_MISCH_GESUCHE;
@@ -144,6 +149,7 @@ public class WorkjobServiceBean extends AbstractBaseService implements WorkjobSe
 		boolean inklTsGesuche,
 		boolean ohneErneuerungsgesuch,
 		@Nullable Gemeinde gemeinde,
+		@Nullable Institution institution,
 		@Nullable Integer jahr,
 		@Nullable String text,
 		@Nonnull Locale locale,
@@ -154,14 +160,16 @@ public class WorkjobServiceBean extends AbstractBaseService implements WorkjobSe
 			vorlage,
 			datumVon,
 			datumBis,
+			null,
 			gesuchPeriodIdParam,
 			null,
 			inklBgGesuche,
 			inklMischGesuche,
 			inklTsGesuche,
 			ohneErneuerungsgesuch,
-			gemeinde,
 			jahr,
+			gemeinde,
+			institution,
 			text,
 			false,
 			BigDecimal.ZERO,
@@ -176,14 +184,16 @@ public class WorkjobServiceBean extends AbstractBaseService implements WorkjobSe
 		@Nonnull ReportVorlage vorlage,
 		@Nullable LocalDate datumVon,
 		@Nullable LocalDate datumBis,
+		@Nullable DatumTyp datumTyp,
 		@Nullable String gesuchPeriodIdParam,
 		@Nullable String stammdatenIdParam,
 		boolean inklBgGesuche,
 		boolean inklMischGesuche,
 		boolean inklTsGesuche,
 		boolean ohneErneuerungsgesuch,
-		@Nullable Gemeinde gemeinde,
 		@Nullable Integer jahr,
+		@Nullable Gemeinde gemeinde,
+		@Nullable Institution institution,
 		@Nullable String text,
 		boolean doSave,
 		@Nonnull BigDecimal betragProKind,
@@ -205,6 +215,9 @@ public class WorkjobServiceBean extends AbstractBaseService implements WorkjobSe
 			jobParameters.setProperty(DATE_TO_PARAM, datumBisString);
 		}
 
+		if (datumTyp != null) {
+			jobParameters.setProperty(DATUM_TYP, String.valueOf(datumTyp));
+		}
 		jobParameters.setProperty(INKL_BG_GESUCHE, String.valueOf(inklBgGesuche));
 		jobParameters.setProperty(REPORT_MANDANT_ID, mandant.getId());
 		jobParameters.setProperty(INKL_MISCH_GESUCHE, String.valueOf(inklMischGesuche));
@@ -226,6 +239,9 @@ public class WorkjobServiceBean extends AbstractBaseService implements WorkjobSe
 		if (gemeinde != null) {
 			jobParameters.setProperty(WorkJobConstants.GEMEINDE_ID_PARAM, gemeinde.getId());
 		}
+		if (institution != null) {
+			jobParameters.setProperty(WorkJobConstants.INSTITUTION_ID_PARAM, institution.getId());
+		}
 		if (jahr != null) {
 			jobParameters.setProperty(WorkJobConstants.JAHR_PARAM, jahr.toString());
 		}
@@ -242,7 +258,7 @@ public class WorkjobServiceBean extends AbstractBaseService implements WorkjobSe
 		workJob.setExecutionId(executionId);
 		workJob = this.saveWorkjob(workJob);
 
-		LOG.debug("Startet GesuchStichttagStatistik with executionId {}", executionId);
+		LOG.debug("Startet workjob für {} with executionId {}", vorlage.getDefaultExportFilename(), executionId);
 
 		return workJob;
 	}
@@ -269,7 +285,7 @@ public class WorkjobServiceBean extends AbstractBaseService implements WorkjobSe
 			false,
 			false,
 			null,
-			null,
+			null, null,
 			null,
 			locale,
 			mandant);
@@ -306,12 +322,14 @@ public class WorkjobServiceBean extends AbstractBaseService implements WorkjobSe
 			vorlage,
 			datumVon,
 			datumBis,
+			null,
 			gesuchPeriodIdParam,
 			null,
 			false,
 			false,
 			false,
 			false,
+			null,
 			null,
 			null,
 			null,
@@ -333,10 +351,12 @@ public class WorkjobServiceBean extends AbstractBaseService implements WorkjobSe
 			null,
 			null,
 			null,
+			null,
 			false,
 			false,
 			false,
 			false,
+			null,
 			null,
 			null,
 			null,
@@ -361,6 +381,7 @@ public class WorkjobServiceBean extends AbstractBaseService implements WorkjobSe
 			vorlage,
 			null,
 			null,
+			null,
 			gesuchsperiodeId,
 			stammdatenId,
 			false,
@@ -370,11 +391,40 @@ public class WorkjobServiceBean extends AbstractBaseService implements WorkjobSe
 			null,
 			null,
 			null,
+			null,
 			false,
 			BigDecimal.ZERO,
 			null,
 			locale,
 			mandant);
+	}
+
+	@Nonnull
+	@Override
+	public Workjob createNewReporting(@Nonnull final Workjob workJob, @Nonnull final ReportVorlage vorlage, @Nullable final LocalDate datumVon, @Nullable final LocalDate datumBis,
+		@Nonnull final DatumTyp datumTyp, @Nullable final String gesuchPeriodIdParam, @Nonnull final Locale locale, @Nonnull final Mandant mandant) {
+		return createNewReporting(
+			workJob,
+			vorlage,
+			datumVon,
+			datumBis,
+			datumTyp,
+			gesuchPeriodIdParam,
+			null,
+			false,
+			false,
+			false,
+			false,
+			null,
+			null,
+			null,
+			null,
+			false,
+			BigDecimal.ZERO,
+			null,
+			locale,
+			mandant
+		);
 	}
 
 	private void setPropertyIfPresent(@Nonnull Properties jobParameters, @Nonnull String paramName, @Nullable String paramValue) {

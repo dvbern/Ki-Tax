@@ -27,7 +27,7 @@ import {SharedModule} from '../../../app/shared/shared.module';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {GemeindeRS} from '../../../gesuch/service/gemeindeRS.rest';
 import {GesuchRS} from '../../../gesuch/service/gesuchRS.rest';
-import {SHARED_MODULE_OVERRIDES} from '../../../hybridTools/mockUpgradedComponent';
+import {SHARED_MODULE_OVERRIDES} from '../../../hybridTools/mockUpgradedDirective';
 import {TSBenutzer} from '../../../models/TSBenutzer';
 import {TestFaelleRS} from '../../service/testFaelleRS.rest';
 import {TestdatenViewComponent} from './testdatenView.component';
@@ -78,6 +78,8 @@ describe('testdatenView', () => {
             gemeindeKennzahlenAktiv: true,
             mulitmandantAktiv: false,
             angebotTSActivated: true,
+            angebotFIActivated: true,
+            angebotTFOActivated: true,
             infomaZahlungen: true,
             frenchEnabled: true,
             geresEnabledForMandant: true,
@@ -86,7 +88,8 @@ describe('testdatenView', () => {
             zusatzinformationenInstitution: true,
             activatedDemoFeatures: '',
             checkboxAuszahlungInZukunft: false,
-            institutionenDurchGemeindenEinladen: false
+            institutionenDurchGemeindenEinladen: false,
+            erlaubenInstitutionenZuWaehlen: false
         });
         const gemeindeRSSpy = jasmine.createSpyObj<GemeindeRS>(GemeindeRS.name, ['getAktiveGemeinden']);
         gemeindeRSSpy.getAktiveGemeinden.and.resolveTo([]);

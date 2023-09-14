@@ -61,8 +61,9 @@ public class ZusaetzlicherBabyGutscheinRechnerRule implements RechnerRule {
 			addMessage(inputGemeinde, MsgKey.BABYGUTSCHEIN_NEIN_SOZIALHILFE);
 		}
 		// (3) Lange Abwesenheit
-		if (inputGemeinde.isLongAbwesenheit()) {
+		if (inputGemeinde.isLongAbwesenheit() && inputGemeinde.isBezahltKompletteVollkosten()) {
 			// Bei Abwesenheit wird der Anspruch *nicht* auf 0 gesetzt, darum muss es hier speziell behandelt werden
+			// Dies gilt nur, wenn die Abwesenheit während des ganzen Zeitabschnitts gilt (die ganzen Vollkosten werden von den Eltern bezahlt)
 			hasAnspruch = false;
 		}
 		return hasAnspruch;

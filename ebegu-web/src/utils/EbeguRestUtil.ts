@@ -1,16 +1,18 @@
 /*
- * Ki-Tax: System for the management of external childcare subsidies
- * Copyright (C) 2017 City of Bern Switzerland
+ * Copyright (C) 2023 DV Bern AG, Switzerland
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Affero General Public License for more details.
+ *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
 import * as moment from 'moment';
@@ -32,6 +34,7 @@ import {TSFachstellenTyp} from '../models/enums/TSFachstellenTyp';
 import {ferienInselNameOrder} from '../models/enums/TSFerienname';
 import {TSFinanzielleSituationTyp} from '../models/enums/TSFinanzielleSituationTyp';
 import {TSKinderabzugTyp} from '../models/enums/TSKinderabzugTyp';
+import {TSPensumAnzeigeTyp} from '../models/enums/TSPensumAnzeigeTyp';
 import {TSGemeindeKennzahlen} from '../models/gemeindeantrag/gemeindekennzahlen/TSGemeindeKennzahlen';
 import {TSAnzahlEingeschriebeneKinder} from '../models/gemeindeantrag/TSAnzahlEingeschriebeneKinder';
 import {TSDurchschnittKinderProTag} from '../models/gemeindeantrag/TSDurchschnittKinderProTag';
@@ -137,6 +140,7 @@ import {TSFinanzielleSituation} from '../models/TSFinanzielleSituation';
 import {TSFinanzielleSituationContainer} from '../models/TSFinanzielleSituationContainer';
 import {TSFinanzielleSituationSelbstdeklaration} from '../models/TSFinanzielleSituationSelbstdeklaration';
 import {TSFinanzModel} from '../models/TSFinanzModel';
+import {TSFinSitZusatzangabenAppenzell} from '../models/TSFinSitZusatzangabenAppenzell';
 import {TSGemeinde} from '../models/TSGemeinde';
 import {TSGemeindeKonfiguration} from '../models/TSGemeindeKonfiguration';
 import {TSGemeindeRegistrierung} from '../models/TSGemeindeRegistrierung';
@@ -651,6 +655,11 @@ export class EbeguRestUtil {
             restFamiliensituation.geteilteObhut = familiensituation.geteilteObhut;
             restFamiliensituation.unterhaltsvereinbarung = familiensituation.unterhaltsvereinbarung;
             restFamiliensituation.unterhaltsvereinbarungBemerkung = familiensituation.unterhaltsvereinbarungBemerkung;
+            restFamiliensituation.partnerIdentischMitVorgesuch = familiensituation.partnerIdentischMitVorgesuch;
+            restFamiliensituation.gemeinsamerHaushaltMitObhutsberechtigterPerson =
+                familiensituation.gemeinsamerHaushaltMitObhutsberechtigterPerson;
+            restFamiliensituation.gemeinsamerHaushaltMitPartner = familiensituation.gemeinsamerHaushaltMitPartner;
+            restFamiliensituation.auszahlungAusserhalbVonKibon = familiensituation.auszahlungAusserhalbVonKibon;
             return restFamiliensituation;
         }
 
@@ -734,6 +743,11 @@ export class EbeguRestUtil {
             familiensituation.unterhaltsvereinbarung = familiensituationFromServer.unterhaltsvereinbarung;
             familiensituation.unterhaltsvereinbarungBemerkung =
                 familiensituationFromServer.unterhaltsvereinbarungBemerkung;
+            familiensituation.partnerIdentischMitVorgesuch = familiensituationFromServer.partnerIdentischMitVorgesuch;
+            familiensituation.gemeinsamerHaushaltMitObhutsberechtigterPerson =
+                familiensituationFromServer.gemeinsamerHaushaltMitObhutsberechtigterPerson;
+            familiensituation.gemeinsamerHaushaltMitPartner = familiensituationFromServer.gemeinsamerHaushaltMitPartner;
+            familiensituation.auszahlungAusserhalbVonKibon = familiensituationFromServer.auszahlungAusserhalbVonKibon;
             return familiensituation;
         }
         return undefined;
@@ -1443,8 +1457,6 @@ export class EbeguRestUtil {
         if (mandant) {
             this.abstractMutableEntityToRestObject(restMandant, mandant);
             restMandant.name = mandant.name;
-            restMandant.angebotTS = mandant.angebotTS;
-            restMandant.angebotFI = mandant.angebotFI;
             restMandant.mandantIdentifier = mandant.mandantIdentifier;
             return restMandant;
         }
@@ -1455,8 +1467,6 @@ export class EbeguRestUtil {
         if (mandantFromServer) {
             this.parseAbstractMutableEntity(mandantTS, mandantFromServer);
             mandantTS.name = mandantFromServer.name;
-            mandantTS.angebotTS = mandantFromServer.angebotTS;
-            mandantTS.angebotFI = mandantFromServer.angebotFI;
             mandantTS.mandantIdentifier = mandantFromServer.mandantIdentifier;
             return mandantTS;
         }
@@ -2025,6 +2035,11 @@ export class EbeguRestUtil {
                 {},
                 abstractFinanzielleSituation.selbstdeklaration);
         }
+        if (EbeguUtil.isNotNullOrUndefined(abstractFinanzielleSituation.finSitZusatzangabenAppenzell)) {
+            restAbstractFinanzielleSituation.finSitZusatzangabenAppenzell = this.finSitZusatzangabenAppenzellToRestObject(
+                {},
+                abstractFinanzielleSituation.finSitZusatzangabenAppenzell);
+        }
         return restAbstractFinanzielleSituation;
     }
 
@@ -2060,6 +2075,28 @@ export class EbeguRestUtil {
         restSelbstdeklaration.abzugSteuerfreierBetragKinder
             = selbstdeklaration.abzugSteuerfreierBetragKinder;
         return restSelbstdeklaration;
+    }
+
+    private finSitZusatzangabenAppenzellToRestObject(
+        restFinanzielleVerhaeltnisse: any,
+        finanzielleVerhaeltnisse: TSFinSitZusatzangabenAppenzell
+    ): TSFinSitZusatzangabenAppenzell {
+
+        this.abstractMutableEntityToRestObject(restFinanzielleVerhaeltnisse, finanzielleVerhaeltnisse);
+        restFinanzielleVerhaeltnisse.saeule3a = finanzielleVerhaeltnisse.saeule3a;
+        restFinanzielleVerhaeltnisse.saeule3aNichtBvg = finanzielleVerhaeltnisse.saeule3aNichtBvg;
+        restFinanzielleVerhaeltnisse.beruflicheVorsorge = finanzielleVerhaeltnisse.beruflicheVorsorge;
+        restFinanzielleVerhaeltnisse.vorjahresverluste = finanzielleVerhaeltnisse.vorjahresverluste;
+        restFinanzielleVerhaeltnisse.liegenschaftsaufwand = finanzielleVerhaeltnisse.liegenschaftsaufwand;
+        restFinanzielleVerhaeltnisse.einkuenfteBgsa = finanzielleVerhaeltnisse.einkuenfteBgsa;
+        restFinanzielleVerhaeltnisse.politischeParteiSpende = finanzielleVerhaeltnisse.politischeParteiSpende;
+        restFinanzielleVerhaeltnisse.leistungAnJuristischePersonen = finanzielleVerhaeltnisse.leistungAnJuristischePersonen;
+        restFinanzielleVerhaeltnisse.steuerbaresVermoegen = finanzielleVerhaeltnisse.steuerbaresVermoegen;
+        restFinanzielleVerhaeltnisse.steuerbaresEinkommen = finanzielleVerhaeltnisse.steuerbaresEinkommen;
+        if (EbeguUtil.isNotNullOrUndefined(finanzielleVerhaeltnisse.zusatzangabenPartner)) {
+            restFinanzielleVerhaeltnisse.zusatzangabenPartner = this.finSitZusatzangabenAppenzellToRestObject({}, finanzielleVerhaeltnisse.zusatzangabenPartner);
+        }
+        return restFinanzielleVerhaeltnisse;
     }
 
     public parseAbstractFinanzielleSituation(
@@ -2102,6 +2139,9 @@ export class EbeguRestUtil {
             abstractFinanzielleSituationTS.selbstdeklaration =
                 this.parseFinanzielleSituationSelbstdeklaration(new TSFinanzielleSituationSelbstdeklaration(),
                     abstractFinanzielleSituationFromServer.selbstdeklaration);
+            abstractFinanzielleSituationTS.finSitZusatzangabenAppenzell =
+                this.parseFinSitZusatzangabenAppenzell(new TSFinSitZusatzangabenAppenzell(),
+                    abstractFinanzielleSituationFromServer.finSitZusatzangabenAppenzell);
             return abstractFinanzielleSituationTS;
         }
         return undefined;
@@ -2133,6 +2173,10 @@ export class EbeguRestUtil {
             finanzielleSituationTS.unterhaltsBeitraege = finanzielleSituationFromServer.unterhaltsBeitraege;
             finanzielleSituationTS.automatischePruefungErlaubt =
                 finanzielleSituationFromServer.automatischePruefungErlaubt;
+            if (finanzielleSituationFromServer.steuerdatenAbfrageTimestamp) {
+                finanzielleSituationTS.steuerdatenAbfrageTimestamp =
+                    DateUtil.localDateTimeToMoment(finanzielleSituationFromServer.steuerdatenAbfrageTimestamp);
+            }
             finanzielleSituationTS.momentanSelbststaendig = finanzielleSituationFromServer.momentanSelbststaendig;
 
             return finanzielleSituationTS;
@@ -2174,6 +2218,34 @@ export class EbeguRestUtil {
             tsSelbstdeklaration.abzugSteuerfreierBetragKinder
                 = selbstdeklarationFromServer.abzugSteuerfreierBetragKinder;
             return tsSelbstdeklaration;
+        }
+        return undefined;
+    }
+
+    private parseFinSitZusatzangabenAppenzell(
+        tsFinSitZusatzangabenAppenzell: TSFinSitZusatzangabenAppenzell,
+        finSitZusatzangabenAppenzellFromServer: any
+    ): TSFinSitZusatzangabenAppenzell {
+
+        if (finSitZusatzangabenAppenzellFromServer) {
+            this.parseAbstractMutableEntity(tsFinSitZusatzangabenAppenzell, finSitZusatzangabenAppenzellFromServer);
+            tsFinSitZusatzangabenAppenzell.saeule3a = finSitZusatzangabenAppenzellFromServer.saeule3a;
+            tsFinSitZusatzangabenAppenzell.saeule3aNichtBvg = finSitZusatzangabenAppenzellFromServer.saeule3aNichtBvg;
+            tsFinSitZusatzangabenAppenzell.beruflicheVorsorge = finSitZusatzangabenAppenzellFromServer.beruflicheVorsorge;
+            tsFinSitZusatzangabenAppenzell.einkuenfteBgsa = finSitZusatzangabenAppenzellFromServer.einkuenfteBgsa;
+            tsFinSitZusatzangabenAppenzell.liegenschaftsaufwand = finSitZusatzangabenAppenzellFromServer.liegenschaftsaufwand;
+            tsFinSitZusatzangabenAppenzell.vorjahresverluste = finSitZusatzangabenAppenzellFromServer.vorjahresverluste;
+            tsFinSitZusatzangabenAppenzell.politischeParteiSpende = finSitZusatzangabenAppenzellFromServer.politischeParteiSpende;
+            tsFinSitZusatzangabenAppenzell.leistungAnJuristischePersonen = finSitZusatzangabenAppenzellFromServer.leistungAnJuristischePersonen;
+            tsFinSitZusatzangabenAppenzell.steuerbaresEinkommen = finSitZusatzangabenAppenzellFromServer.steuerbaresEinkommen;
+            tsFinSitZusatzangabenAppenzell.steuerbaresVermoegen = finSitZusatzangabenAppenzellFromServer.steuerbaresVermoegen;
+            if (EbeguUtil.isNotNullOrUndefined(finSitZusatzangabenAppenzellFromServer.zusatzangabenPartner)) {
+                tsFinSitZusatzangabenAppenzell.zusatzangabenPartner =
+                    this.parseFinSitZusatzangabenAppenzell(new TSFinSitZusatzangabenAppenzell(),
+                        finSitZusatzangabenAppenzellFromServer.zusatzangabenPartner);
+            }
+
+            return tsFinSitZusatzangabenAppenzell;
         }
         return undefined;
     }
@@ -2718,6 +2790,7 @@ export class EbeguRestUtil {
             betreuungTS.eingewoehnung = betreuungFromServer.eingewoehnung;
             betreuungTS.auszahlungAnEltern = betreuungFromServer.auszahlungAnEltern;
             betreuungTS.begruendungAuszahlungAnInstitution = betreuungFromServer.begruendungAuszahlungAnInstitution;
+            betreuungTS.finSitRueckwirkendKorrigiertInThisMutation = betreuungFromServer.finSitRueckwirkendKorrigiertInThisMutation;
             return betreuungTS;
         }
         return undefined;
@@ -3390,6 +3463,8 @@ export class EbeguRestUtil {
             verfuegungTS.kategorieNormal = verfuegungFromServer.kategorieNormal;
             verfuegungTS.veraenderungVerguenstigungGegenueberVorgaenger = verfuegungFromServer.veraenderungVerguenstigungGegenueberVorgaenger;
             verfuegungTS.ignorable = verfuegungFromServer.ignorable;
+            verfuegungTS.korrekturAusbezahltEltern = verfuegungFromServer.korrekturAusbezahltEltern;
+            verfuegungTS.korrekturAusbezahltInstitution = verfuegungFromServer.korrekturAusbezahltInstitution;
             return verfuegungTS;
         }
         return undefined;
@@ -3460,6 +3535,7 @@ export class EbeguRestUtil {
                 this.parseTsCalculationResult(zeitabschnittFromServer.tsCalculationResultOhnePaedagogischerBetreuung);
             verfuegungZeitabschnittTS.verguenstigungMahlzeitTotal = zeitabschnittFromServer.verguenstigungMahlzeitTotal;
             verfuegungZeitabschnittTS.auszahlungAnEltern = zeitabschnittFromServer.auszahlungAnEltern;
+            verfuegungZeitabschnittTS.beitragshoeheProzent = zeitabschnittFromServer.beitragshoeheProzent;
 
             if (zeitabschnittFromServer.verfuegungZeitabschnittBemerkungList) {
                 zeitabschnittFromServer.verfuegungZeitabschnittBemerkungList.forEach((bemerkung: any) => {
@@ -3635,7 +3711,10 @@ export class EbeguRestUtil {
                     this.einkommensverschlechterungInfoContainerToRestObject({},
                         finSitModel.einkommensverschlechterungInfoContainer);
             }
-            restFinSitModel.gemeinsameSteuererklaerung = finSitModel.gemeinsameSteuererklaerung;
+            if (finSitModel.familienSituation) {
+                restFinSitModel.familiensituation =
+                    this.familiensituationToRestObject({}, finSitModel.familienSituation);
+            }
             restFinSitModel.finanzielleSituationTyp = finSitModel.finanzielleSituationTyp;
             return restFinSitModel;
         }
@@ -3783,6 +3862,12 @@ export class EbeguRestUtil {
             if (mitteilungFromServer.betreuung) {
                 tsMitteilung.betreuung = this.parseBetreuung(new TSBetreuung(), mitteilungFromServer.betreuung);
             }
+            if (mitteilungFromServer.finanzielleSituation) {
+                tsMitteilung.finanzielleSituation = this.parseFinanzielleSituation(
+                    new TSFinanzielleSituation(),
+                    mitteilungFromServer.finanzielleSituation
+                );
+            }
             if (mitteilungFromServer.institution) {
                 tsMitteilung.institution = this.parseInstitution(new TSInstitution(), mitteilungFromServer.institution);
             }
@@ -3794,6 +3879,7 @@ export class EbeguRestUtil {
             tsMitteilung.message = mitteilungFromServer.message;
             tsMitteilung.mitteilungStatus = mitteilungFromServer.mitteilungStatus;
             tsMitteilung.sentDatum = DateUtil.localDateTimeToMoment(mitteilungFromServer.sentDatum);
+            tsMitteilung.mitteilungTyp = mitteilungFromServer.mitteilungTyp;
             return tsMitteilung;
         }
         return undefined;
@@ -4457,6 +4543,8 @@ export class EbeguRestUtil {
         publicAppConfigTS.lastenausgleichAktiv = data.lastenausgleichAktiv;
         publicAppConfigTS.mulitmandantAktiv = data.multimandantAktiviert;
         publicAppConfigTS.angebotTSActivated = data.angebotTSActivated;
+        publicAppConfigTS.angebotFIActivated = data.angebotFIActivated;
+        publicAppConfigTS.angebotTFOActivated = data.angebotTFOActivated;
         publicAppConfigTS.infomaZahlungen = data.infomaZahlungen;
         publicAppConfigTS.frenchEnabled = data.frenchEnabled;
         publicAppConfigTS.geresEnabledForMandant = data.geresEnabledForMandant;
@@ -4466,6 +4554,7 @@ export class EbeguRestUtil {
         publicAppConfigTS.institutionenDurchGemeindenEinladen = data.institutionenDurchGemeindenEinladen;
         publicAppConfigTS.activatedDemoFeatures = data.activatedDemoFeatures;
         publicAppConfigTS.checkboxAuszahlungInZukunft = data.checkboxAuszahlungInZukunft;
+        publicAppConfigTS.erlaubenInstitutionenZuWaehlen = data.erlaubenInstitutionenZuWaehlen;
         return publicAppConfigTS;
 
     }
@@ -4957,6 +5046,8 @@ export class EbeguRestUtil {
                 gemeindeFromServer.davonStundenZuNormlohnWenigerAls50ProzentAusgebildete;
             gemeindeTS.einnahmenElterngebuehren =
                 gemeindeFromServer.einnahmenElterngebuehren;
+            gemeindeTS.einnahmenElterngebuehrenVolksschulangebot =
+                gemeindeFromServer.einnahmenElterngebuehrenVolksschulangebot;
             gemeindeTS.ersteRateAusbezahlt =
                 gemeindeFromServer.ersteRateAusbezahlt;
             gemeindeTS.tagesschuleTeilweiseGeschlossen =
@@ -5005,6 +5096,8 @@ export class EbeguRestUtil {
             // Bemerkungen
             gemeindeTS.bemerkungen =
                 gemeindeFromServer.bemerkungen;
+            gemeindeTS.bemerkungStarkeVeraenderung =
+                gemeindeFromServer.bemerkungStarkeVeraenderung;
             // Berechnungen
             gemeindeTS.lastenausgleichberechtigteBetreuungsstunden =
                 gemeindeFromServer.lastenausgleichberechtigteBetreuungsstunden;
@@ -5059,6 +5152,8 @@ export class EbeguRestUtil {
                 tsAngabenGemeinde.davonStundenZuNormlohnWenigerAls50ProzentAusgebildete;
             restAngabenGemeinde.einnahmenElterngebuehren =
                 tsAngabenGemeinde.einnahmenElterngebuehren;
+            restAngabenGemeinde.einnahmenElterngebuehrenVolksschulangebot =
+                tsAngabenGemeinde.einnahmenElterngebuehrenVolksschulangebot;
             restAngabenGemeinde.tagesschuleTeilweiseGeschlossen =
                 tsAngabenGemeinde.tagesschuleTeilweiseGeschlossen;
             restAngabenGemeinde.rueckerstattungenElterngebuehrenSchliessung =
@@ -5107,6 +5202,8 @@ export class EbeguRestUtil {
             // Bemerkungen
             restAngabenGemeinde.bemerkungen =
                 tsAngabenGemeinde.bemerkungen;
+            restAngabenGemeinde.bemerkungStarkeVeraenderung =
+                tsAngabenGemeinde.bemerkungStarkeVeraenderung;
             // Berechnungen
             restAngabenGemeinde.lastenausgleichberechtigteBetreuungsstunden =
                 tsAngabenGemeinde.lastenausgleichberechtigteBetreuungsstunden;
@@ -5222,6 +5319,8 @@ export class EbeguRestUtil {
                 angabenInstitutionFromServer.anzahlEingeschriebeneKinderMitBesonderenBeduerfnissen;
             angabenInstitutionTS.anzahlEingeschriebeneKinderVolksschulangebot =
                 angabenInstitutionFromServer.anzahlEingeschriebeneKinderVolksschulangebot;
+            angabenInstitutionTS.anzahlEingeschriebeneKinderBasisstufe =
+                angabenInstitutionFromServer.anzahlEingeschriebeneKinderBasisstufe;
             angabenInstitutionTS.durchschnittKinderProTagFruehbetreuung =
                 angabenInstitutionFromServer.durchschnittKinderProTagFruehbetreuung;
             angabenInstitutionTS.durchschnittKinderProTagMittag =
@@ -5294,6 +5393,8 @@ export class EbeguRestUtil {
                 tsAngabenInstitution.anzahlEingeschriebeneKinderMitBesonderenBeduerfnissen;
             restAngabenInstitution.anzahlEingeschriebeneKinderVolksschulangebot =
                 tsAngabenInstitution.anzahlEingeschriebeneKinderVolksschulangebot;
+            restAngabenInstitution.anzahlEingeschriebeneKinderBasisstufe =
+                tsAngabenInstitution.anzahlEingeschriebeneKinderBasisstufe;
             restAngabenInstitution.durchschnittKinderProTagFruehbetreuung =
                 tsAngabenInstitution.durchschnittKinderProTagFruehbetreuung;
             restAngabenInstitution.durchschnittKinderProTagMittag = tsAngabenInstitution.durchschnittKinderProTagMittag;
@@ -5441,10 +5542,9 @@ export class EbeguRestUtil {
         restFerienbetreuung.nutzung = this.ferienbetreuungNutzungToRestObject({}, ferienbetreuungTS.nutzung);
         restFerienbetreuung.kostenEinnahmen =
             this.ferienbetreuungKostenEinnahmenToRestObject({}, ferienbetreuungTS.kostenEinnahmen);
-        if (ferienbetreuungTS.berechnungen) {
-            restFerienbetreuung.berechnungen =
-                this.ferienbetreuungBerechnungenToRestObject({}, ferienbetreuungTS.berechnungen);
-        }
+        restFerienbetreuung.berechnungen =
+            this.parseFerienbetreuungBerechnungenToRestObject({}, ferienbetreuungTS.berechnungen);
+
         return restFerienbetreuung;
         // never send kantonsbeitrag and gemeindebeitrag to server
     }
@@ -5605,6 +5705,10 @@ export class EbeguRestUtil {
             new TSFerienbetreuungAngabenKostenEinnahmen(),
             ferienbetreuungFromServer.kostenEinnahmen
         );
+        ferienbetreuungTS.berechnungen = this.parseFerienbetreuungBerechnung(
+            new TSFerienbetreuungBerechnung(),
+            ferienbetreuungFromServer.berechnungen
+        );
         ferienbetreuungTS.kantonsbeitrag = ferienbetreuungFromServer.kantonsbeitrag;
         ferienbetreuungTS.gemeindebeitrag = ferienbetreuungFromServer.gemeindebeitrag;
         return ferienbetreuungTS;
@@ -5732,7 +5836,31 @@ export class EbeguRestUtil {
         return kostenEinnahmenTS;
     }
 
-    private ferienbetreuungBerechnungenToRestObject(restBerechnung: any, berechnung: TSFerienbetreuungBerechnung): any {
+    public parseFerienbetreuungBerechnung(
+        berechnungTS: TSFerienbetreuungBerechnung,
+        berechnungFromServer: any
+    ): TSFerienbetreuungBerechnung | undefined {
+
+        if (!berechnungFromServer) {
+            return undefined;
+        }
+
+        this.parseAbstractEntity(berechnungTS, berechnungFromServer);
+        berechnungTS.totalKosten = berechnungFromServer.totalKosten;
+        berechnungTS.totalLeistungenLeistungsvertrag = berechnungFromServer.totalLeistungenLeistungsvertrag;
+        berechnungTS.betreuungstageKinderDieserGemeindeMinusSonderschueler =
+            berechnungFromServer.betreuungstageKinderDieserGemeindeMinusSonderschueler;
+        berechnungTS.betreuungstageKinderAndererGemeindeMinusSonderschueler =
+            berechnungFromServer._betreuungstageKinderAndererGemeindeMinusSonderschueler;
+        berechnungTS.totalKantonsbeitrag = berechnungFromServer.totalKantonsbeitrag;
+        berechnungTS.beitragFuerKinderDerAnbietendenGemeinde =
+            berechnungFromServer.beitragFuerKinderDerAnbietendenGemeinde;
+        berechnungTS.beteiligungZuTief = berechnungFromServer.beteiligungZuTief;
+        return berechnungTS;
+    }
+
+    public parseFerienbetreuungBerechnungenToRestObject(restBerechnung: any, berechnung: TSFerienbetreuungBerechnung): any {
+        this.abstractEntityToRestObject(restBerechnung, berechnung);
         restBerechnung.totalKosten = berechnung.totalKosten;
         restBerechnung.betreuungstageKinderDieserGemeindeMinusSonderschueler =
             berechnung.betreuungstageKinderDieserGemeindeMinusSonderschueler;
@@ -5982,6 +6110,13 @@ export class EbeguRestUtil {
             return typ.value as TSAnspruchBeschaeftigungAbhaengigkeitTyp;
         }
         throw new Error(`TSAnspruchBeschaeftigungAbhaengigkeitTyp ${typ} not defined`);
+    }
+
+    public parsePensumAnzeigeTyp(typ: any): TSPensumAnzeigeTyp {
+        if (Object.values(TSPensumAnzeigeTyp).includes(typ.value)) {
+            return typ.value as TSPensumAnzeigeTyp;
+        }
+        throw new Error(`TSPensumAnzeigeTyp ${typ.value} not defined`);
     }
 
     public parseKinderabzugTyp(typ: any): TSKinderabzugTyp {

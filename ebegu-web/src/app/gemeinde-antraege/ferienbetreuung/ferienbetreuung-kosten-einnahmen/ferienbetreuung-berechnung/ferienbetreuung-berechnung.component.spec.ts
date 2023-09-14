@@ -19,7 +19,7 @@ import {HttpClientModule} from '@angular/common/http';
 /* eslint-disable no-magic-numbers */
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {EinstellungRS} from '../../../../../admin/service/einstellungRS.rest';
-import {SHARED_MODULE_OVERRIDES} from '../../../../../hybridTools/mockUpgradedComponent';
+import {SHARED_MODULE_OVERRIDES} from '../../../../../hybridTools/mockUpgradedDirective';
 import {SharedModule} from '../../../../shared/shared.module';
 import {TSFerienbetreuungBerechnung} from '../TSFerienbetreuungBerechnung';
 
@@ -60,7 +60,9 @@ describe('FerienbetreuungBerechnungComponent', () => {
     });
 
     it('should calculate 1440 CHF, 960 CHF and \"true\"', () => {
-        const berechnung = new TSFerienbetreuungBerechnung(pauschale, pauschaleSonderschueler);
+        const berechnung = new TSFerienbetreuungBerechnung();
+        berechnung.pauschaleBetreuungstag = pauschale;
+        berechnung.pauschaleBetreuungstagSonderschueler = pauschaleSonderschueler;
         berechnung.personalkosten = 2400;
         berechnung.sachkosten = 500;
         berechnung.verpflegungskosten = 500;
@@ -81,7 +83,9 @@ describe('FerienbetreuungBerechnungComponent', () => {
     });
 
     it('should calculate 1440 CHF, 960 CHF and \"false\". It should use calculation for delegationsmodell', () => {
-        const berechnung = new TSFerienbetreuungBerechnung(pauschale, pauschaleSonderschueler);
+        const berechnung = new TSFerienbetreuungBerechnung();
+        berechnung.pauschaleBetreuungstag = pauschale;
+        berechnung.pauschaleBetreuungstagSonderschueler = pauschaleSonderschueler;
         berechnung.sockelbeitrag = 1111;
         berechnung.beitraegeNachAnmeldungen = 2222;
         berechnung.vorfinanzierteKantonsbeitraege = 3000;
@@ -103,7 +107,9 @@ describe('FerienbetreuungBerechnungComponent', () => {
 
     it('should return 0, throw no error and beteiligungZuTief should be "false" '
         + 'if no values are given', () => {
-        const berechnung = new TSFerienbetreuungBerechnung(pauschale, pauschaleSonderschueler);
+        const berechnung = new TSFerienbetreuungBerechnung();
+        berechnung.pauschaleBetreuungstag = pauschale;
+        berechnung.pauschaleBetreuungstagSonderschueler = pauschaleSonderschueler;
         berechnung.calculate();
         expect(berechnung.totalKantonsbeitrag).toEqual(0);
         expect(berechnung.beitragFuerKinderDerAnbietendenGemeinde).toEqual(0);

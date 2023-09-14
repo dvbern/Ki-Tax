@@ -1,28 +1,41 @@
 /*
- * Ki-Tax: System for the management of external childcare subsidies
- * Copyright (C) 2017 City of Bern Switzerland
+ * Copyright (C) 2023 DV Bern AG, Switzerland
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
+ *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
 package ch.dvbern.ebegu.api.resource;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Locale;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.stream.Collectors;
+import ch.dvbern.ebegu.api.converter.JaxBConverter;
+import ch.dvbern.ebegu.api.dtos.*;
+import ch.dvbern.ebegu.dto.suchfilter.smarttable.MitteilungTableFilterDTO;
+import ch.dvbern.ebegu.dto.suchfilter.smarttable.PaginationDTO;
+import ch.dvbern.ebegu.entities.*;
+import ch.dvbern.ebegu.enums.ErrorCodeEnum;
+import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
+import ch.dvbern.ebegu.errors.EbeguRuntimeException;
+import ch.dvbern.ebegu.errors.KibonLogLevel;
+import ch.dvbern.ebegu.i18n.LocaleThreadLocal;
+import ch.dvbern.ebegu.services.BenutzerService;
+import ch.dvbern.ebegu.services.BetreuungService;
+import ch.dvbern.ebegu.services.DossierService;
+import ch.dvbern.ebegu.services.MitteilungService;
+import ch.dvbern.ebegu.util.MitteilungUtil;
+import ch.dvbern.ebegu.util.MonitoringUtil;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -33,73 +46,15 @@ import javax.inject.Inject;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
+import java.util.*;
+import java.util.stream.Collectors;
 
-import ch.dvbern.ebegu.api.converter.JaxBConverter;
-import ch.dvbern.ebegu.api.dtos.JaxBetreuung;
-import ch.dvbern.ebegu.api.dtos.JaxBetreuungsmitteilung;
-import ch.dvbern.ebegu.api.dtos.JaxBetreuungsmitteilungen;
-import ch.dvbern.ebegu.api.dtos.JaxBetreuungspensumAbweichung;
-import ch.dvbern.ebegu.api.dtos.JaxId;
-import ch.dvbern.ebegu.api.dtos.JaxMitteilung;
-import ch.dvbern.ebegu.api.dtos.JaxMitteilungSearchresultDTO;
-import ch.dvbern.ebegu.api.dtos.JaxMitteilungen;
-import ch.dvbern.ebegu.dto.suchfilter.smarttable.MitteilungTableFilterDTO;
-import ch.dvbern.ebegu.dto.suchfilter.smarttable.PaginationDTO;
-import ch.dvbern.ebegu.entities.Benutzer;
-import ch.dvbern.ebegu.entities.Betreuung;
-import ch.dvbern.ebegu.entities.Betreuungsmitteilung;
-import ch.dvbern.ebegu.entities.Dossier;
-import ch.dvbern.ebegu.entities.Einstellung;
-import ch.dvbern.ebegu.entities.Gesuch;
-import ch.dvbern.ebegu.entities.Mitteilung;
-import ch.dvbern.ebegu.entities.NeueVeranlagungsMitteilung;
-import ch.dvbern.ebegu.enums.EinstellungKey;
-import ch.dvbern.ebegu.enums.ErrorCodeEnum;
-import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
-import ch.dvbern.ebegu.errors.EbeguRuntimeException;
-import ch.dvbern.ebegu.errors.KibonLogLevel;
-import ch.dvbern.ebegu.i18n.LocaleThreadLocal;
-import ch.dvbern.ebegu.services.BenutzerService;
-import ch.dvbern.ebegu.services.BetreuungService;
-import ch.dvbern.ebegu.services.DossierService;
-import ch.dvbern.ebegu.services.EinstellungService;
-import ch.dvbern.ebegu.services.MitteilungService;
-import ch.dvbern.ebegu.util.MitteilungUtil;
-import ch.dvbern.ebegu.util.MonitoringUtil;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import org.apache.commons.lang3.tuple.Pair;
-
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_BG;
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_GEMEINDE;
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_INSTITUTION;
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_MANDANT;
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_SOZIALDIENST;
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_TRAEGERSCHAFT;
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_TS;
-import static ch.dvbern.ebegu.enums.UserRoleName.GESUCHSTELLER;
-import static ch.dvbern.ebegu.enums.UserRoleName.JURIST;
-import static ch.dvbern.ebegu.enums.UserRoleName.REVISOR;
-import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_BG;
-import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_GEMEINDE;
-import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_INSTITUTION;
-import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_MANDANT;
-import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_SOZIALDIENST;
-import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_TRAEGERSCHAFT;
-import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_TS;
-import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
+import static ch.dvbern.ebegu.enums.UserRoleName.*;
 
 /**
  * Resource fuer Mitteilung
@@ -127,9 +82,6 @@ public class MitteilungResource {
 
 	@Inject
 	private BenutzerService benutzerService;
-
-	@Inject
-	private EinstellungService einstellungService;
 
 	@ApiOperation(value = "Speichert eine Mitteilung", response = JaxMitteilung.class)
 	@Nullable
@@ -191,12 +143,6 @@ public class MitteilungResource {
 
 		final Locale locale = LocaleThreadLocal.get();
 
-		final Einstellung einstellung = einstellungService.findEinstellung(
-			EinstellungKey.GEMEINDE_MAHLZEITENVERGUENSTIGUNG_ENABLED,
-			betreuung.extractGemeinde(),
-			betreuung.extractGesuchsperiode());
-		boolean mahlzeitenverguenstigungEnabled = einstellung.getValueAsBoolean();
-
 		final Benutzer currentBenutzer = benutzerService.getCurrentBenutzer()
 			.orElseThrow(() -> new EbeguEntityNotFoundException(
 				"sendBetreuungsmitteilung",
@@ -204,9 +150,8 @@ public class MitteilungResource {
 
 		MitteilungUtil.initializeBetreuungsmitteilung(betreuungsmitteilung, betreuung, currentBenutzer, locale);
 
-		betreuungsmitteilung.setMessage(MitteilungUtil.createNachrichtForMutationsmeldung(
-			betreuungsmitteilung.getBetreuungspensen(),
-			mahlzeitenverguenstigungEnabled, locale));
+		betreuungsmitteilung.setMessage(mitteilungService.createNachrichtForMutationsmeldung(betreuungsmitteilung,
+			betreuungsmitteilung.getBetreuungspensen()));
 
 		Betreuungsmitteilung persistedMitteilung =
 			this.mitteilungService.sendBetreuungsmitteilung(betreuungsmitteilung);
@@ -236,6 +181,39 @@ public class MitteilungResource {
 		}
 		final Gesuch mutiertesGesuch = this.mitteilungService.applyBetreuungsmitteilung(mitteilung.get());
 		return converter.toJaxId(mutiertesGesuch);
+	}
+	@ApiOperation(value = "Uebernimmt eine Betreuungsmitteilung in eine Mutation. Falls aktuell keine Mutation offen"
+		+ " "
+		+ "ist, wird eine neue erstellt. Falls eine Mutation im Status VERFUEGEN vorhanden ist, oder die Mutation im"
+		+ "Status BESCHWERDE ist, wird der Fehler auf der Betreuungsmitteilung gespeichert und kein Fehler geworfen",
+		response = JaxMitteilungSearchresultDTO.class)
+	@Nonnull
+	@POST
+	@Path("/applybetreuungsmitteilungsilently")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, GESUCHSTELLER,
+		ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION, ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT, ADMIN_TS,
+		SACHBEARBEITER_TS, ADMIN_SOZIALDIENST, SACHBEARBEITER_SOZIALDIENST })
+	public JaxBetreuungsmitteilung applyBetreuungsmitteilungSilenty(
+		@Nonnull @NotNull JaxBetreuungsmitteilung jaxBetreuungsmitteilung,
+		@Context UriInfo uriInfo,
+		@Context HttpServletResponse response) {
+
+		Objects.requireNonNull(jaxBetreuungsmitteilung.getId());
+		final Betreuungsmitteilung betreuungsmitteilung =
+			mitteilungService.findBetreuungsmitteilung(jaxBetreuungsmitteilung.getId())
+				.orElseThrow(() -> new EbeguEntityNotFoundException(
+					"applyBetreuungsmitteilung",
+					ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
+					"JaxBetreuungsmitteilungId is invalid: " + jaxBetreuungsmitteilung.getId()));
+
+		String errorMessage = mitteilungService.applyBetreuungsmitteilungIfPossible(betreuungsmitteilung);
+		Betreuungsmitteilung betreuungsmitteilungUpdated =
+			mitteilungService.findAndRefreshBetreuungsmitteilung(betreuungsmitteilung.getId()).get();
+		betreuungsmitteilungUpdated.setErrorMessage(errorMessage);
+
+		return converter.betreuungsmitteilungToJAX(betreuungsmitteilungUpdated);
 	}
 
 	@ApiOperation(value = "Markiert eine Mitteilung als gelesen", response = JaxMitteilung.class)
@@ -694,7 +672,7 @@ public class MitteilungResource {
 	@Path("/neueVeranlagungsmitteilungBearbeiten/{neueveranlagungsmitteilungId}")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE })
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, ADMIN_TS, SACHBEARBEITER_TS })
 	public JaxId neueVeranlagungsmitteilungBearbeiten(
 		@Nonnull @NotNull @PathParam("neueveranlagungsmitteilungId") JaxId neueVeranlagungsmitteilungId,
 		@Context UriInfo uriInfo,

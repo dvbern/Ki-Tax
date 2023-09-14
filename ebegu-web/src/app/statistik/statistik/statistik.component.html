@@ -1,5 +1,5 @@
 <!--
-  ~ Copyright (C) 2021 DV Bern AG, Switzerland
+  ~ Copyright (C) 2023 DV Bern AG, Switzerland
   ~
   ~ This program is free software: you can redistribute it and/or modify
   ~ it under the terms of the GNU Affero General Public License as
@@ -111,9 +111,23 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="col-xs-3 statistik-button">
-                                        <dv-loading-button [type]="'submit'"
-                                                           style="margin-left:auto;margin-right:auto;width:13rem;">
+
+                                    <div class="col-xs-3">
+                                        <div class="form-group">
+                                            <label class="md-no-float" translate>FILTERNNACH</label>
+
+                                            <mat-radio-group name="creationType"
+                                                             [(ngModel)]="statistikParameter.gesuchZeitraumDatumTyp"
+                                                             required>
+
+                                                <mat-radio-button class="filter-radio-button" [value]="'VERFUEGUNGSDATUM'">{{'VERFUEGUNGSDATUM'|translate}}</mat-radio-button>
+
+                                                <mat-radio-button [value]="'EINREICHEDATUM'">{{'EINREICHEDATUM'|translate}}</mat-radio-button>
+                                            </mat-radio-group>
+                                        </div>
+                                    </div>
+                                    <div class="generieren-button statistik-button">
+                                        <dv-loading-button type="submit">
                                             <span class="uppercase" translate>GENERIEREN</span>
                                         </dv-loading-button>
                                     </div>
@@ -928,7 +942,7 @@
                     </dv-accordion-tab>
                 </div>
 
-                <div *ngIf="showLastenausgleichBGStatistikAllowedForRole() && lastenausgleichYears.length" [dvDemoFeature]="demoFeature">
+                <div *ngIf="showLastenausgleichBGStatistikAllowedForRole() && lastenausgleichYears.length">
                     <div>
                         <dv-accordion-tab [tabid]="'lastenausgleichBG'">
                             <tab-title>
@@ -960,9 +974,24 @@
                                             </div>
                                         </div>
 
+                                        <div class="col-xs-3" *ngIf="isSuperadmin()">
+                                            <dv-date-picker-x label="VON"
+                                                              [minDate]="minDate"
+                                                              [maxDate]="maxDate"
+                                                              [(date)]="statistikParameter.von">
+                                            </dv-date-picker-x>
+                                        </div>
+                                        <div class="col-xs-3" *ngIf="isSuperadmin()">
+                                            <dv-date-picker-x label="BIS"
+                                                              [minDate]="statistikParameter.von || minDate"
+                                                              [maxDate]="maxDate"
+                                                              [(date)]="statistikParameter.bis">
+                                            </dv-date-picker-x>
+                                        </div>
+
                                         <div class="col-xs-3" *ngIf="gemeinden">
                                             <div class="form-group">
-                                                <label class="md-no-float required" for="gemeinden_mahlzeitenverguenstigung"
+                                                <label class="md-no-float" [class.required]="!isSuperadmin()" for="gemeinden_mahlzeitenverguenstigung"
                                                        translate>GEMEINDE</label>
                                                 <div class="dv-select-style">
                                                     <select name="gemeinden"
@@ -970,14 +999,93 @@
                                                             [(ngModel)]="statistikParameter.gemeinde"
                                                             #gemeindeRef='ngModel'
                                                             class="form-control"
-                                                            required>
+                                                            [required]="!isSuperadmin()">
                                                         <option *ngFor="let gemeinde of gemeinden" [ngValue]="gemeinde">{{gemeinde.name}}</option>
                                                     </select>
                                                     <dv-error-messages [errorObject]="gemeindeRef.errors" class="error"></dv-error-messages>
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="col-xs-3 statistik-button">
+                                        <div class="generieren-button statistik-button">
+                                            <dv-loading-button type="submit"
+                                                               style="margin-left:auto;margin-right:auto;width:13rem;">
+                                                <span class="uppercase" translate>GENERIEREN</span>
+                                            </dv-loading-button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </tab-body>
+                        </dv-accordion-tab>
+                    </div>
+                </div>
+
+<!--                betreuungsgutscheine: zahlungen-->
+                <div *ngIf="showZahlungenStatistik()" [dvDemoFeature]="demoFeature">
+                    <div>
+                        <dv-accordion-tab [tabid]="'zahlungen'">
+                            <tab-title>
+                                <span class="uppercase" translate>STATISTIK_ZAHLUNGEN</span>
+                                <dv-tooltip (click)="$event.stopPropagation()"
+                                            [text]="'STATISTIK_ZAHLUNGEN_HINT' | translate"></dv-tooltip>
+                            </tab-title>
+                            <tab-body>
+                                <form name="zahlungen"
+                                      #zahlungenRef='ngForm'
+                                      [ngClass]="{'ng-submitted': zahlungenRef.submitted}"
+                                      (ngSubmit)="generateStatistik(zahlungenRef, TSStatistikParameterType.ZAHLUNGEN)">
+                                    <div class="row">
+                                        <div class="col-xs-3">
+                                            <div class="form-group">
+                                                <label class="md-no-float required" for="periode_gesuch_stichtag"
+                                                       translate>GESUCHSPERIODEN</label>
+                                                <div class="dv-select-style">
+                                                    <select name="zahlungen_periode" id="zahlungen_periode"
+                                                            [(ngModel)]="statistikParameter.gesuchsperiode"
+                                                            #periodeGesuchStichtagForm='ngModel'
+															required
+                                                            class="form-control">
+                                                        <option *ngFor="let gesuchsperiode of gesuchsperioden" [value]="gesuchsperiode.id">{{gesuchsperiode.gesuchsperiodeString}}</option>
+                                                    </select>
+                                                    <dv-error-messages [errorObject]="periodeGesuchStichtagForm.errors"
+                                                                       class="error"></dv-error-messages>
+                                                </div>
+                                            </div>
+                                        </div>
+										<div class="col-xs-3" *ngIf="gemeindenVisibleZahlungenStatistik()">
+											<div class="form-group">
+												<label class="md-no-float required" for="zahlungen_gemeinden"
+													   translate>GEMEINDE</label>
+												<div class="dv-select-style">
+													<select name="zahlungen_gemeinden"
+															id="zahlungen_gemeinden"
+															[(ngModel)]="statistikParameter.gemeinde"
+															#gemeindeRef='ngModel'
+															required
+															class="form-control">
+														<option *ngFor="let gemeinde of gemeinden" [ngValue]="gemeinde">{{gemeinde.name}}</option>
+													</select>
+													<dv-error-messages [errorObject]="gemeindeRef.errors" class="error"></dv-error-messages>
+												</div>
+											</div>
+										</div>
+										<div class="col-xs-3" *ngIf="institutionenVisibleZahlungenStatistik()">
+											<div class="form-group">
+												<label class="md-no-float" for="zahlungen_institutionen"
+													   translate>INSTITUTION</label>
+												<div class="dv-select-style">
+													<select name="zahlungen_institutionen"
+															id="zahlungen_institutionen"
+															[(ngModel)]="statistikParameter.institution"
+															#institutionenRef='ngModel'
+															class="form-control">
+														<option [ngValue]="undefined">{{'ALLE' | translate}}</option>
+														<option *ngFor="let institution of bgInstitutionen" [ngValue]="institution">{{institution.name}}</option>
+													</select>
+													<dv-error-messages [errorObject]="institutionenRef.errors" class="error"></dv-error-messages>
+												</div>
+											</div>
+										</div>
+                                        <div class="generieren-button statistik-button">
                                             <dv-loading-button type="submit"
                                                                style="margin-left:auto;margin-right:auto;width:13rem;">
                                                 <span class="uppercase" translate>GENERIEREN</span>
@@ -1029,7 +1137,7 @@
                             <span translate>GESTARTET</span>
                         </th>
                         <td mat-cell *matCellDef="let element" class="ellipsis">
-                            {{element.execution.createTime | ebeguDateTime}}
+                            {{element.execution?.createTime | ebeguDateTime}}
                         </td>
                     </ng-container>
 
@@ -1038,7 +1146,7 @@
                             <span translate>BEENDET</span>
                         </th>
                         <td mat-cell *matCellDef="let element" class="ellipsis">
-                            {{element.execution.endTime | ebeguDateTime}}
+                            {{element.execution?.endTime | ebeguDateTime}}
                         </td>
                     </ng-container>
 

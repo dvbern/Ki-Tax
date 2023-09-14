@@ -13,7 +13,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy} from '@angular/core';
+import {AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit} from '@angular/core';
 import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
 import {TranslateService} from '@ngx-translate/core';
 import {StateService} from '@uirouter/core';
@@ -52,7 +52,7 @@ const LOG = LogFactory.createLog('NavbarComponent');
     styleUrls: ['./navbar.component.less'],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class NavbarComponent implements OnDestroy, AfterViewInit {
+export class NavbarComponent implements OnDestroy, AfterViewInit, OnInit {
 
     public readonly TSRoleUtil = TSRoleUtil;
 
@@ -61,6 +61,7 @@ export class NavbarComponent implements OnDestroy, AfterViewInit {
     public gemeindeAntraegeActive = false;
     public lastenausgleichActive = false;
     public gemeindeAntragVisible: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+    private tagesschulangebotEnabled: boolean;
 
     public constructor(
         private readonly authServiceRS: AuthServiceRS,
@@ -119,6 +120,7 @@ export class NavbarComponent implements OnDestroy, AfterViewInit {
             this.gemeindeAntraegeActive =
                 properties.ferienbetreuungAktiv || properties.lastenausgleichTagesschulenAktiv;
             this.lastenausgleichActive = properties.lastenausgleichAktiv;
+            this.tagesschulangebotEnabled = properties.angebotTSActivated;
             this.changeDetectorRef.markForCheck();
         });
     }
@@ -281,6 +283,6 @@ export class NavbarComponent implements OnDestroy, AfterViewInit {
     }
 
     public isTagesschulangebotEnabled(): boolean {
-        return this.authServiceRS.hasMandantAngebotTS();
+        return this.tagesschulangebotEnabled;
     }
 }

@@ -1,33 +1,21 @@
 /*
- * Ki-Tax: System for the management of external childcare subsidies
- * Copyright (C) 2017 City of Bern Switzerland
+ * Copyright (C) 2023 DV Bern AG, Switzerland
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Affero General Public License for more details.
+ *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
 package ch.dvbern.ebegu.entities;
-
-import java.math.BigDecimal;
-import java.util.Objects;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.ForeignKey;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
-import javax.validation.constraints.NotNull;
 
 import ch.dvbern.ebegu.enums.AntragCopyType;
 import ch.dvbern.ebegu.enums.SteuerdatenAnfrageStatus;
@@ -35,6 +23,14 @@ import ch.dvbern.ebegu.util.MathUtil;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.RelationTargetAuditMode;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.util.Objects;
 
 /**
  * Entität für die Finanzielle Situation
@@ -65,6 +61,10 @@ public class FinanzielleSituation extends AbstractFinanzielleSituation {
 	@Column(nullable = true)
 	@Enumerated(EnumType.STRING)
 	private SteuerdatenAnfrageStatus steuerdatenAbfrageStatus;
+
+	@Nullable
+	@Column(nullable = true)
+	private LocalDateTime steuerdatenAbfrageTimestamp;
 
 	@Nullable
 	@Column(nullable = true)
@@ -119,7 +119,7 @@ public class FinanzielleSituation extends AbstractFinanzielleSituation {
 	public FinanzielleSituation() {
 	}
 
-
+	@Override
 	public Boolean getSteuerveranlagungErhalten() {
 		return steuerveranlagungErhalten;
 	}
@@ -128,6 +128,7 @@ public class FinanzielleSituation extends AbstractFinanzielleSituation {
 		this.steuerveranlagungErhalten = steuerveranlagungErhalten;
 	}
 
+	@Override
 	public Boolean getSteuererklaerungAusgefuellt() {
 		return steuererklaerungAusgefuellt;
 	}
@@ -136,6 +137,7 @@ public class FinanzielleSituation extends AbstractFinanzielleSituation {
 		this.steuererklaerungAusgefuellt = steuererklaerungAusgefuellt;
 	}
 
+	@Override
 	@Nullable
 	public Boolean getSteuerdatenZugriff() {
 		return steuerdatenZugriff;
@@ -235,6 +237,7 @@ public class FinanzielleSituation extends AbstractFinanzielleSituation {
 		this.bruttoLohn = bruttoLohn;
 	}
 
+	@Override
 	@Nullable
 	public SteuerdatenAnfrageStatus getSteuerdatenAbfrageStatus() {
 		return steuerdatenAbfrageStatus;
@@ -242,6 +245,15 @@ public class FinanzielleSituation extends AbstractFinanzielleSituation {
 
 	public void setSteuerdatenAbfrageStatus(@Nullable SteuerdatenAnfrageStatus steuerdatenAbfrageStatus) {
 		this.steuerdatenAbfrageStatus = steuerdatenAbfrageStatus;
+	}
+
+	@Nullable
+	public LocalDateTime getSteuerdatenAbfrageTimestamp() {
+		return steuerdatenAbfrageTimestamp;
+	}
+
+	public void setSteuerdatenAbfrageTimestamp(@Nullable LocalDateTime steuerdatenAbfrageTimestamp) {
+		this.steuerdatenAbfrageTimestamp = steuerdatenAbfrageTimestamp;
 	}
 
 	@Nullable
@@ -267,6 +279,7 @@ public class FinanzielleSituation extends AbstractFinanzielleSituation {
 		switch (copyType) {
 		case MUTATION:
 		case MUTATION_NEUES_DOSSIER:
+		case ERNEUERUNG_AR_2023:
 			super.copyAbstractFinanzielleSituation(target, copyType);
 			target.setSteuerveranlagungErhalten(this.getSteuerveranlagungErhalten());
 			target.setSteuererklaerungAusgefuellt(this.getSteuererklaerungAusgefuellt());
@@ -282,6 +295,7 @@ public class FinanzielleSituation extends AbstractFinanzielleSituation {
 			target.setAbzuegeKinderAusbildung(this.getAbzuegeKinderAusbildung());
 			target.setBruttoLohn(this.getBruttoLohn());
 			target.setSteuerdatenAbfrageStatus(this.getSteuerdatenAbfrageStatus());
+			target.setSteuerdatenAbfrageTimestamp(this.getSteuerdatenAbfrageTimestamp());
 			target.setAutomatischePruefungErlaubt(this.getAutomatischePruefungErlaubt());
 			target.setMomentanSelbststaendig(this.getMomentanSelbststaendig());
 			break;

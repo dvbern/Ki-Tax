@@ -1,16 +1,18 @@
 /*
- * Ki-Tax: System for the management of external childcare subsidies
- * Copyright (C) 2017 City of Bern Switzerland
+ * Copyright (C) 2023 DV Bern AG, Switzerland
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Affero General Public License for more details.
+ *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
 import {
@@ -20,7 +22,7 @@ import {
     Component,
     OnDestroy,
     OnInit,
-    ViewChild
+    ViewChild,
 } from '@angular/core';
 import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
 import {PageEvent} from '@angular/material/paginator';
@@ -30,26 +32,33 @@ import {TranslateService} from '@ngx-translate/core';
 import {TransitionService} from '@uirouter/angular';
 import {StateService, UIRouterGlobals} from '@uirouter/core';
 import {from, Observable, of, Subject} from 'rxjs';
-import {map, mergeMap, takeUntil, tap} from 'rxjs/operators';
+import {map, mergeMap, takeUntil} from 'rxjs/operators';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {GemeindeRS} from '../../../gesuch/service/gemeindeRS.rest';
 import {TSPagination} from '../../../models/dto/TSPagination';
 import {DVErrorMessageCallback} from '../../../models/DVErrorMessageCallback';
 import {getTSMitteilungsStatusForFilter, TSMitteilungStatus} from '../../../models/enums/TSMitteilungStatus';
+import {TSMitteilungTyp} from '../../../models/enums/TSMitteilungTyp';
+import {TSMitteilungTypes} from '../../../models/enums/TSMitteilungTypes';
 import {TSRole} from '../../../models/enums/TSRole';
 import {TSVerantwortung} from '../../../models/enums/TSVerantwortung';
+import {TSBenutzer} from '../../../models/TSBenutzer';
 import {TSBenutzerNoDetails} from '../../../models/TSBenutzerNoDetails';
+import {TSBetreuungsmitteilung} from '../../../models/TSBetreuungsmitteilung';
 import {TSGemeinde} from '../../../models/TSGemeinde';
 import {TSMitteilung} from '../../../models/TSMitteilung';
 import {TSMtteilungSearchresultDTO} from '../../../models/TSMitteilungSearchresultDTO';
 import {EbeguUtil} from '../../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 import {DvNgConfirmDialogComponent} from '../../core/component/dv-ng-confirm-dialog/dv-ng-confirm-dialog.component';
-import {DvNgMitteilungResultDialogComponent} from '../../core/component/dv-ng-mitteilung-result-dialog/dv-ng-mitteilung-result-dialog.component';
+import {
+    DvNgMitteilungResultDialogComponent,
+} from '../../core/component/dv-ng-mitteilung-result-dialog/dv-ng-mitteilung-result-dialog.component';
 import {TSDemoFeature} from '../../core/directive/dv-hide-feature/TSDemoFeature';
 import {ErrorServiceX} from '../../core/errors/service/ErrorServiceX';
 import {Log, LogFactory} from '../../core/logging/LogFactory';
 import {BenutzerRSX} from '../../core/service/benutzerRSX.rest';
+import {DemoFeatureRS} from '../../core/service/demoFeatureRS.rest';
 import {MitteilungRS} from '../../core/service/mitteilungRS.rest';
 import {DVPosteingangFilter} from '../../shared/interfaces/DVPosteingangFilter';
 import {StateStoreService} from '../../shared/services/state-store.service';
@@ -115,7 +124,7 @@ export class PosteingangViewComponent implements OnInit, OnDestroy, AfterViewIni
     public page: number = 0;
     public pageSize: any = 20;
     public totalItem: number = 0;
-    public totalResultCount: string = '0';
+    public totalResultCount: number = 0;
     // Muss hier gespeichert werden, damit es fuer den Aufruf ab "Inkl.Erledigt"-Checkbox vorhanden ist
     public myTableFilterState: any;
 
@@ -126,20 +135,30 @@ export class PosteingangViewComponent implements OnInit, OnDestroy, AfterViewIni
     public gemeindenList: Array<TSGemeinde> = [];
     public paginationItems: number[];
     public initialEmpfaenger: TSBenutzerNoDetails;
-    public filterPredicate: DVPosteingangFilter = {};
+    public filterPredicate: DVPosteingangFilter = {
+        messageTypes: [TSMitteilungTypes.BETREUUNGSMITTEILUNG,
+            TSMitteilungTypes.MITTEILUNG,
+            TSMitteilungTypes.NEUEVERANLAGUNGMITTEILUNG
+        ]
+    };
 
     // StateStore Properties
-    public initialFilter: DVPosteingangFilter = {};
+    public initialFilter: DVPosteingangFilter = {
+        messageTypes: [
+            TSMitteilungTypes.BETREUUNGSMITTEILUNG,
+            TSMitteilungTypes.MITTEILUNG,
+            TSMitteilungTypes.NEUEVERANLAGUNGMITTEILUNG
+        ]
+    };
     public readonly stateStoreId: string = 'posteingangId';
-    private sortId: string;
-    private filterId: string;
+    private readonly sortId = 'posteingangId-sort';
+    private readonly filterId = 'posteingangId-filter';
     private readonly sort: {
         predicate?: string;
         reverse?: boolean;
     } = {};
 
     public readonly mutationsMeldungDemoFeature = TSDemoFeature.ALLE_MUTATIONSMELDUNGEN_VERFUEGEN;
-    public readonly mitteilungIgnorierenDemoFeature = TSDemoFeature.MITTEILUNG_IGNORIEREN;
 
     public constructor(
         private readonly mitteilungRS: MitteilungRS,
@@ -154,17 +173,23 @@ export class PosteingangViewComponent implements OnInit, OnDestroy, AfterViewIni
         private readonly posteingangService: PosteingangService,
         private readonly dialog: MatDialog,
         private readonly translate: TranslateService,
-        private readonly errorService: ErrorServiceX
+        private readonly errorService: ErrorServiceX,
+        private readonly demoFeatureRS: DemoFeatureRS
     ) {
     }
 
     public ngOnInit(): void {
         this.updateGemeindenList();
-        this.initStateStores();
-        this.initFilter();
-        this.initSort();
         this.initDisplayedColumns();
-        this.initEmpfaenger().subscribe(() => this.passFilterToServer(), error => LOG.error(error));
+        this.initSort();
+        this.initFilter().subscribe(filter => {
+            this.filterPredicate = filter;
+            this.benutzerRS.getAllBenutzerBgTsOrGemeinde().then(response => {
+                this.initialEmpfaenger = EbeguUtil.findUserByNameInList(filter?.empfaenger, response);
+                this.changeDetectorRef.markForCheck();
+            });
+            this.passFilterToServer();
+        }, error => LOG.error(error));
     }
 
     public ngAfterViewInit(): void {
@@ -172,27 +197,8 @@ export class PosteingangViewComponent implements OnInit, OnDestroy, AfterViewIni
         this.initMatSort();
     }
 
-    private initEmpfaenger(): Observable<DVPosteingangFilter> {
-        return this.authServiceRS.principal$.pipe(
-            map(principal => principal.hasOneOfRoles([TSRole.SUPER_ADMIN])),
-            mergeMap(isSuperAdmin => {
-                if (isSuperAdmin) {
-                    return of(this.filterPredicate);
-                }
-                return from(this.benutzerRS.getAllBenutzerBgTsOrGemeinde()).pipe(
-                    tap(response => {
-                        this.filterPredicate.empfaenger = this.authServiceRS.getPrincipal().getFullName();
-                        this.initialEmpfaenger =
-                            EbeguUtil.findUserByNameInList(this.filterPredicate?.empfaenger, response);
-                        this.changeDetectorRef.markForCheck();
-                    }),
-                    map(() => this.filterPredicate)
-                );
-            })
-        );
-    }
-
     public ngOnDestroy(): void {
+        this.storeFilterSortStates();
         this.unsubscribe$.next();
         this.unsubscribe$.complete();
     }
@@ -214,6 +220,7 @@ export class PosteingangViewComponent implements OnInit, OnDestroy, AfterViewIni
             .subscribe(
                 gemeinden => {
                     this.gemeindenList = gemeinden;
+                    this.gemeindenList.sort((a, b) => a.name.localeCompare(b.name));
                 },
                 err => this.log.error(err)
             );
@@ -227,7 +234,8 @@ export class PosteingangViewComponent implements OnInit, OnDestroy, AfterViewIni
         return getTSMitteilungsStatusForFilter();
     }
 
-    public clickedIncludeClosed(): void {
+    public clickedIncludeClosed(includeClosed: boolean): void {
+        this.includeClosed = includeClosed;
         this.passFilterToServer();
     }
 
@@ -258,7 +266,7 @@ export class PosteingangViewComponent implements OnInit, OnDestroy, AfterViewIni
         }
         this.displayedCollection.data = [].concat(result.mitteilungen);
         this.totalItem = result.totalResultSize ? result.totalResultSize : 0;
-        this.totalResultCount = this.totalItem.toString();
+        this.totalResultCount = this.totalItem;
         this.updatePagination();
         this.changeDetectorRef.markForCheck();
     }
@@ -353,26 +361,41 @@ export class PosteingangViewComponent implements OnInit, OnDestroy, AfterViewIni
         }
     }
 
-    private initFilter(): void {
-        this.filterPredicate = (this.filterId && this.stateStore.has(this.filterId)) ?
-            this.stateStore.get(this.filterId) :
+    private initFilter(): Observable<DVPosteingangFilter> {
+        const initial = (this.filterId && this.stateStore.has(this.filterId)) ?
+            this.stateStore.get(this.filterId) as DVPosteingangFilter :
             {...this.initialFilter};
+
+        return of(initial).pipe(
+            mergeMap(filter => this.adaptFilterForPrincipal(filter))
+        );
     }
 
-    private initStateStores(): void {
-        this.sortId = `${this.stateStoreId}-sort`;
-        this.filterId = `${this.stateStoreId}-filter`;
+    private adaptFilterForPrincipal(filter: DVPosteingangFilter): Observable<DVPosteingangFilter> {
+        return this.authServiceRS.principal$.pipe(
+            map(principal => {
+                if (principal.hasOneOfRoles([TSRole.SUPER_ADMIN])) {
+                    return filter;
+                }
+                return this.addEmpfaengerToFilter(filter, principal);
+            })
+        );
+    }
 
-        this.transitionService.onStart({exiting: this.uiRouterGlobals.$current.name}, () => {
-            if (this.sort.predicate) {
-                this.stateStore.store(this.sortId, this.sort);
-            } else {
-                this.stateStore.delete(this.sortId);
-                this.stateStore.delete(this.filterId);
-            }
+    private addEmpfaengerToFilter(filter: DVPosteingangFilter, user: TSBenutzer): DVPosteingangFilter {
+        filter.empfaenger = user.getFullName();
+        return filter;
+    }
 
-            this.stateStore.store(this.filterId, this.filterPredicate);
-        });
+    private storeFilterSortStates() {
+        if (this.sort.predicate) {
+            this.stateStore.store(this.sortId, this.sort);
+        } else {
+            this.stateStore.delete(this.sortId);
+            this.stateStore.delete(this.filterId);
+        }
+
+        this.stateStore.store(this.filterId, this.filterPredicate);
     }
 
     private initSort(): void {
@@ -404,8 +427,10 @@ export class PosteingangViewComponent implements OnInit, OnDestroy, AfterViewIni
 
     public resetFilter(): void {
         this.filterPredicate = this.initialFilter;
-        this.applyFilter();
-        this.initEmpfaenger();
+        this.initFilter().subscribe(filter => {
+            this.adaptFilterForPrincipal(filter);
+            this.applyFilter();
+        });
     }
 
     public setUngelesen(mitteilung: TSMitteilung): void {
@@ -476,9 +501,7 @@ export class PosteingangViewComponent implements OnInit, OnDestroy, AfterViewIni
                         },
                         sort: this.sort
                     };
-                    this.mitteilungRS.applyAlleBetreuungsmitteilungen(body).then(
-                        resultList => {
-                            dialogConfig.data = resultList;
+                            dialogConfig.data = this.getOpenTsBetreuungsmitteilungenOfTable();
                             dialogConfig.disableClose = true;
                             this.dialog.open(DvNgMitteilungResultDialogComponent, dialogConfig).afterClosed()
                                 .subscribe(() => {
@@ -491,9 +514,15 @@ export class PosteingangViewComponent implements OnInit, OnDestroy, AfterViewIni
                             ;
                         }
                     );
-                },
-                () => {
-                });
+    }
+
+    private getOpenTsBetreuungsmitteilungenOfTable(): TSBetreuungsmitteilung[] {
+        return this.displayedCollection.data
+            .filter(mitteilung =>
+                mitteilung.mitteilungTyp === TSMitteilungTyp.BETREUUNGSMITTEILUNG
+                && mitteilung.mitteilungStatus !== TSMitteilungStatus.ERLEDIGT
+            )
+            .map(mitteilung => mitteilung as TSBetreuungsmitteilung);
     }
 
     public canSeeMutationsmeldungenAutomatischBearbeiten() {

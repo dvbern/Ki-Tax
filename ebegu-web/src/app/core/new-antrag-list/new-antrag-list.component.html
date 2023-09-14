@@ -1,5 +1,5 @@
 <!--
-  ~ Copyright (C) 2021 DV Bern AG, Switzerland
+  ~ Copyright (C) 2023 DV Bern AG, Switzerland
   ~
   ~ This program is free software: you can redistribute it and/or modify
   ~ it under the terms of the GNU Affero General Public License as
@@ -16,7 +16,7 @@
   -->
 <div class="dv-table">
     <div class="row">
-        <div class="col-md-10">
+        <div class="col-md-8">
             <div id="titleText">
                 <h3 class="ng-scope" *ngIf="title">{{title}}</h3>
                 <h3 class="ng-scope" *ngIf="!title" translate>FAELLE_LIST</h3>
@@ -25,8 +25,18 @@
                 <i class="fa fa-undo" (click)="resetFilter()"></i>
             </div>
         </div>
-        <div class="col-md-2 text-right">
-            <h3>{{totalItems}}</h3>
+        <div class="col-md-4">
+            <div id="box-right">
+                <dv-checkbox-x
+                    *ngIf="showSearchInaktivePerioden()"
+                    [model]="searchInaktivePerioden"
+                    [marginClass]="'no-margin-bottom'"
+                    (modelChange)="changeSearchInaktivePerioden($event)"
+                    [displayBisher]="false"
+                    [label]="'SEARCH_INAKTIVE_PERIODEN' | translate">
+                </dv-checkbox-x>
+                <h3>{{totalItems}}</h3>
+            </div>
         </div>
     </div>
 
@@ -334,7 +344,7 @@
                          [showSelectionAll]="true"
                          [angular2]="true"
                          [initialAll]="true"
-                         (onUserChanged)="filterVerantwortlicheTS($event.user)"
+                         (userChanged)="filterVerantwortlicheTS($event.user)"
                          [schulamt]="true"></div>
                 </mat-header-cell>
             </ng-container>
@@ -346,7 +356,7 @@
                          [selectedUser]="initialBgGemeindeUser"
                          [angular2]="true"
                          [initialAll]="true"
-                         (onUserChanged)="filterVerantwortlicheBG($event.user)"></div>
+                         (userChanged)="filterVerantwortlicheBG($event.user)"></div>
                 </mat-header-cell>
             </ng-container>
 
@@ -357,7 +367,7 @@
                          [selectedUser]="initialGemeindeUser"
                          [angular2]="true"
                          [initialAll]="true"
-                         (onUserChanged)="filterVerantwortlicheGemeinde($event.user)"
+                         (userChanged)="filterVerantwortlicheGemeinde($event.user)"
                          [sachbearbeiterGemeinde]="true"></div>
                 </mat-header-cell>
             </ng-container>
@@ -370,7 +380,7 @@
                      [initialAll]="true"
                      [userList]="userListGemeindeantraege"
                      [useDefaultUserLists]="false"
-                     (onUserChanged)="filterVerantwortlicherGemeindeantraege($event.user)"></div>
+                     (userChanged)="filterVerantwortlicherGemeindeantraege($event.user)"></div>
             </mat-header-cell>
             </ng-container>
 

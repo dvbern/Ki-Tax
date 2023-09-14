@@ -1,16 +1,18 @@
 /*
- * Ki-Tax: System for the management of external childcare subsidies
- * Copyright (C) 2017 City of Bern Switzerland
+ * Copyright (C) 2023 DV Bern AG, Switzerland
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Affero General Public License for more details.
+ *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
 import {ILogService, IPromise, IQService} from 'angular';
@@ -20,6 +22,7 @@ import {EinstellungRS} from '../../admin/service/einstellungRS.rest';
 import {CONSTANTS} from '../../app/core/constants/CONSTANTS';
 import {ErrorService} from '../../app/core/errors/service/ErrorService';
 import {LogFactory} from '../../app/core/logging/LogFactory';
+import {ApplicationPropertyRS} from '../../app/core/rest-services/applicationPropertyRS.rest';
 import {AntragStatusHistoryRS} from '../../app/core/service/antragStatusHistoryRS.rest';
 import {BetreuungRS} from '../../app/core/service/betreuungRS.rest';
 import {ErwerbspensumRS} from '../../app/core/service/erwerbspensumRS.rest';
@@ -83,6 +86,9 @@ import {TSKindContainer} from '../../models/TSKindContainer';
 import {TSVerfuegung} from '../../models/TSVerfuegung';
 import {EbeguUtil} from '../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../utils/TSRoleUtil';
+import {
+    FinanzielleSituationAppenzellService
+} from '../component/finanzielleSituation/appenzell/finanzielle-situation-appenzell.service';
 import {InternePendenzenRS} from '../component/internePendenzenView/internePendenzenRS.rest';
 import {DossierRS} from './dossierRS.rest';
 import {EinkommensverschlechterungContainerRS} from './einkommensverschlechterungContainerRS.rest';
@@ -154,7 +160,8 @@ export class GesuchModelManager {
         private readonly gesuchGenerator: GesuchGenerator,
         private readonly gemeindeRS: GemeindeRS,
         private readonly internePendenzenRS: InternePendenzenRS,
-        private readonly einstellungenRS: EinstellungRS
+        private readonly einstellungenRS: EinstellungRS,
+        private readonly applicationPropertyRS: ApplicationPropertyRS
     ) {
     }
 
@@ -298,6 +305,20 @@ export class GesuchModelManager {
 
     // eslint-disable-next-line
     public isRequiredEKV_GS_BJ(gs: number, bj: number): boolean {
+        if (this.wizardStepManager.getCurrentStepName() === TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_APPENZELL) {
+            if (gs === 1) {
+                return this.getEkvFuerBasisJahrPlus(bj);
+            }
+            if (this.gesuch.extractFamiliensituation().gemeinsameSteuererklaerung) {
+                return false;
+            }
+            // GS 2 Spezialfall
+            if (this.isSpezialFallAR()) {
+                return this.getEkvFuerBasisJahrPlus(bj);
+            }
+            // GS 2 Normalfall
+            return this.getEkvFuerBasisJahrPlus(bj) && EbeguUtil.isNotNullOrUndefined(this.gesuch.gesuchsteller2);
+        }
         if (this.wizardStepManager.getCurrentStepName() === TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_LUZERN) {
             return gs === 2 ?
                 this.getEkvFuerBasisJahrPlus(bj) && this.isGesuchsteller2RequiredForLuzernEKV() :
@@ -360,6 +381,10 @@ export class GesuchModelManager {
 
     public updateVerguenstigungGewuenschtFlag(): void {
         if (this.gesuch.areThereOnlySchulamtAngebote()) {
+            return;
+        }
+
+        if (this.gesuch.familiensituationContainer.familiensituationJA.sozialhilfeBezueger) {
             return;
         }
 
@@ -601,7 +626,7 @@ export class GesuchModelManager {
     public callKiBonAnfrageAndUpdateFinSit(isGemeinsam: boolean): IPromise<TSFinanzielleSituationContainer> {
         return this.finanzielleSituationRS.updateFinSitMitSteuerdaten(
             this.gesuch.id,
-            this.getStammdatenToWorkWith(),
+            this.getGesuchstellerNumber(),
             isGemeinsam)
             .then((finSitContRespo: TSFinanzielleSituationContainer) => {
                 this.getStammdatenToWorkWith().finanzielleSituationContainer = finSitContRespo;
@@ -620,6 +645,14 @@ export class GesuchModelManager {
             .then((finSitContRespo: TSFinanzielleSituationContainer) => {
                 this.getStammdatenToWorkWith().finanzielleSituationContainer = finSitContRespo;
                 return this.getStammdatenToWorkWith().finanzielleSituationContainer;
+            });
+    }
+
+    public removeFinanzielleSitautionFromGesuchsteller2(): IPromise<TSGesuchstellerContainer> {
+        return this.finanzielleSituationRS.removeFinanzielleSituationFromGesuchsteller(this.getGesuch().gesuchsteller2)
+            .then((gesuchstellerContariner: TSGesuchstellerContainer) => {
+                this.gesuch.gesuchsteller2 = gesuchstellerContariner;
+                return this.gesuch.gesuchsteller2;
             });
     }
 
@@ -756,8 +789,7 @@ export class GesuchModelManager {
             return;
         }
 
-        let gesuchsteller: TSGesuchsteller;
-        gesuchsteller = new TSGesuchsteller();
+        const gesuchsteller = new TSGesuchsteller();
         if (this.gesuchstellerNumber === 1 && this.authServiceRS.isOneOfRoles(TSRoleUtil.getGesuchstellerOnlyRoles())) {
             const principal = this.authServiceRS.getPrincipal();
             const name = principal ? principal.nachname : undefined;
@@ -1205,8 +1237,7 @@ export class GesuchModelManager {
     }
 
     public removeErwerbspensum(pensum: TSErwerbspensumContainer): IPromise<any> {
-        let erwerbspensenOfCurrentGS: Array<TSErwerbspensumContainer>;
-        erwerbspensenOfCurrentGS = this.getStammdatenToWorkWith().erwerbspensenContainer;
+        const erwerbspensenOfCurrentGS = this.getStammdatenToWorkWith().erwerbspensenContainer;
         const index = erwerbspensenOfCurrentGS.indexOf(pensum);
         if (index < 0) {
             this.log.error('can not remove Erwerbspensum since it could not be found in list');
@@ -1233,8 +1264,7 @@ export class GesuchModelManager {
     }
 
     public findIndexOfErwerbspensum(gesuchstellerNumber: number, pensum: any): number {
-        let gesuchsteller: TSGesuchstellerContainer;
-        gesuchsteller = gesuchstellerNumber === 2 ? this.gesuch.gesuchsteller2 : this.gesuch.gesuchsteller1;
+        const gesuchsteller = gesuchstellerNumber === 2 ? this.gesuch.gesuchsteller2 : this.gesuch.gesuchsteller1;
 
         return gesuchsteller.erwerbspensenContainer.indexOf(pensum);
     }
@@ -1363,6 +1393,13 @@ export class GesuchModelManager {
         });
     }
 
+    private calculateGesuchStatusIgnoriert(): void {
+        if (!this.isThereAnyOpenBetreuung()) {
+            this.gesuch.status = this.calculateNewStatus(TSAntragStatus.IGNORIERT);
+            this.antragStatusHistoryRS.loadLastStatusChange(this.getGesuch());
+        }
+    }
+
     private calculateGesuchStatusVerfuegt(): void {
         if (!this.isThereAnyOpenBetreuung()) {
             this.gesuch.status = this.calculateNewStatus(TSAntragStatus.VERFUEGT);
@@ -1379,9 +1416,8 @@ export class GesuchModelManager {
     }
 
     public mutationIgnorieren(): IPromise<void> {
-        return this.gesuchRS.mutationIgnorieren(this.gesuch.id).then(() => {
-            return this.reloadGesuch();
-        }).then(() => this.calculateGesuchStatusVerfuegt());
+        return this.gesuchRS.mutationIgnorieren(this.gesuch.id).then(() => this.reloadGesuch())
+            .then(() => this.calculateGesuchStatusIgnoriert());
     }
 
     public verfuegungSchliessenNichtEintreten(): IPromise<TSVerfuegung> {
@@ -1762,14 +1798,6 @@ export class GesuchModelManager {
         return this.gesuchRS.isAusserordentlicherAnspruchPossible(this.gesuch.id);
     }
 
-    public isTagesschulangebotEnabled(): boolean {
-        return this.authServiceRS.hasMandantAngebotTS();
-    }
-
-    public isFerieninselangebotEnabled(): boolean {
-        return this.authServiceRS.hasMandantAngebotFI();
-    }
-
     public isSozialhilfeBezueger(): boolean {
         return this.getFamiliensituation() && this.getFamiliensituation().sozialhilfeBezueger;
     }
@@ -1828,11 +1856,7 @@ export class GesuchModelManager {
     /**
      * Entscheidet, ob Tagesschulen sowohl für den Mandanten wie auch für die Gemeinde eingeschaltet sind
      */
-    public isAnmeldungTagesschuleEnabledForMandantAndGemeinde(): boolean {
-        if (!this.isTagesschulangebotEnabled()) {
-            // Tagesschulen sind grundsätzlich auf dem Mandant nicht eingeschaltet
-            return false;
-        }
+    public isAnmeldungTagesschuleEnabledForGemeinde(): boolean {
         const gemeinde = this.getGemeinde();
         const gesuchsperiode = this.getGesuchsperiode();
         return gemeinde
@@ -1858,5 +1882,11 @@ export class GesuchModelManager {
                 return gesuch;
             }
         );
+    }
+
+    public isSpezialFallAR(): boolean {
+        return FinanzielleSituationAppenzellService.finSitNeedsTwoSeparateAntragsteller(
+            this.getGesuch()
+        ) && EbeguUtil.isNullOrUndefined(this.getGesuch().gesuchsteller2);
     }
 }

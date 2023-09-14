@@ -30,6 +30,7 @@ import {BerechnungsManager} from '../../../../service/berechnungsManager';
 import {GesuchModelManager} from '../../../../service/gesuchModelManager';
 import {WizardStepManager} from '../../../../service/wizardStepManager';
 import {AbstractEinkommensverschlechterungResultat} from '../../AbstractEinkommensverschlechterungResultat';
+import {EinstellungRS} from '../../../../../admin/service/einstellungRS.rest';
 
 @Component({
     selector: 'dv-einkommensverschlechterung-resultate-view',
@@ -48,6 +49,7 @@ export class EinkommensverschlechterungResultateViewComponent extends AbstractEi
         protected wizardStepManager: WizardStepManager,
         protected berechnungsManager: BerechnungsManager,
         protected ref: ChangeDetectorRef,
+        protected readonly einstellungRS: EinstellungRS,
         protected readonly $transition$: Transition,
         private readonly errorService: ErrorService
     ) {
@@ -56,6 +58,7 @@ export class EinkommensverschlechterungResultateViewComponent extends AbstractEi
             berechnungsManager,
             ref,
             TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG,
+            einstellungRS,
             $transition$);
         this.readOnly = this.gesuchModelManager.isGesuchReadonly();
     }
@@ -75,7 +78,7 @@ export class EinkommensverschlechterungResultateViewComponent extends AbstractEi
         return ekvFuerBasisJahrPlus && ekvFuerBasisJahrPlus;
     }
 
-    public save(onResult: Function): IPromise<any> {
+    public save(onResult: (arg: any) => any): IPromise<any> {
         if (!this.isGesuchValid()) {
             onResult(undefined);
             return undefined;
@@ -153,37 +156,6 @@ export class EinkommensverschlechterungResultateViewComponent extends AbstractEi
         return this.model.getBasisJahrPlus() === 2 ?
             this.getEinkommensverschlechterungContainerGS2().ekvJABasisJahrPlus2 :
             this.getEinkommensverschlechterungContainerGS2().ekvJABasisJahrPlus1;
-    }
-
-    /**
-     * Hier wird der Status von WizardStep auf OK (MUTIERT fuer Mutationen) aktualisiert aber nur wenn es die letzt
-     * Seite EVResultate gespeichert wird. Sonst liefern wir einfach den aktuellen GS als Promise zurueck.
-     */
-    private updateStatus(changes: boolean): IPromise<any> {
-        if (this.isLastEinkVersStep()) {
-            if (this.gesuchModelManager.getGesuch().isMutation()) {
-                if (this.wizardStepManager.getCurrentStep().wizardStepStatus === TSWizardStepStatus.NOK || changes) {
-                    this.wizardStepManager.updateCurrentWizardStepStatusMutiert();
-                }
-            } else {
-                return this.wizardStepManager.updateCurrentWizardStepStatusSafe(
-                    TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG,
-                    TSWizardStepStatus.OK);
-            }
-        }
-        // wenn nichts gespeichert einfach den aktuellen GS zurueckgeben
-        return Promise.resolve(this.gesuchModelManager.getStammdatenToWorkWith());
-    }
-
-    /**
-     * Prueft ob es die letzte Seite von EVResultate ist. Es ist die letzte Seite wenn es zum letzten EV-Jahr gehoert
-     */
-    private isLastEinkVersStep(): boolean {
-        // Letztes Jahr haengt von den eingegebenen Daten ab
-        const info = this.gesuchModelManager.getGesuch().extractEinkommensverschlechterungInfo();
-
-        return info.ekvFuerBasisJahrPlus2 && this.gesuchModelManager.basisJahrPlusNumber === 2
-            || !info.ekvFuerBasisJahrPlus2 && this.gesuchModelManager.basisJahrPlusNumber === 1;
     }
 
     public getBruttovermoegenTooltipLabel(): string {

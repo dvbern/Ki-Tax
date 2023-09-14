@@ -58,4 +58,5 @@ export class TSVerfuegungZeitabschnitt extends TSAbstractDateRangedEntity {
     public tsCalculationResultOhnePaedagogischerBetreuung: TSTsCalculationResult;
     public verguenstigungMahlzeitTotal: number;
     public auszahlungAnEltern: boolean;
+    public beitragshoeheProzent: number;
 }

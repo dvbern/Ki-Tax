@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020 DV Bern AG, Switzerland
+ * Copyright (C) 2023 DV Bern AG, Switzerland
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -186,14 +186,19 @@ public class BGCalculationInput {
 
 	private PensumUnits pensumUnit = PensumUnits.PERCENTAGE;
 
-	private BigDecimal kostenAnteilMonat = BigDecimal.ZERO;
-
 	private boolean isAuszahlungAnEltern = false;
 
 	//für TFO Luzern
 	private BigDecimal stuendlicheVollkosten;
 
 	private BigDecimal percentage;
+	private Boolean partnerIdentischMitVorgesuch;
+
+	private boolean isEkvAccepted = false;
+
+	private boolean requiredAgeForAnspruchNotReached = false;
+	private boolean gesuchBeendenKonkubinatWirdInPeriodeXJahreAlt = false;
+	private BigDecimal bgStundenFaktor = BigDecimal.ZERO;
 
 	public BGCalculationInput(@Nonnull VerfuegungZeitabschnitt parent, @Nonnull RuleValidity ruleValidity) {
 		this.parent = parent;
@@ -252,13 +257,17 @@ public class BGCalculationInput {
 		this.minimalErforderlichesPensum = toCopy.minimalErforderlichesPensum;
 		this.rueckwirkendReduziertesPensumRest = toCopy.rueckwirkendReduziertesPensumRest;
 		this.kitaPlusZuschlag = toCopy.kitaPlusZuschlag;
-		this.kostenAnteilMonat = toCopy.kostenAnteilMonat;
 		this.isKesbPlatzierung = toCopy.isKesbPlatzierung;
 		this.geschwisternBonusKind2 = toCopy.geschwisternBonusKind2;
 		this.geschwisternBonusKind3 = toCopy.geschwisternBonusKind3;
 		this.besondereBeduerfnisseZuschlag = toCopy.besondereBeduerfnisseZuschlag;
 		this.stuendlicheVollkosten = toCopy.stuendlicheVollkosten;
 		this.isAuszahlungAnEltern = toCopy.isAuszahlungAnEltern;
+		this.partnerIdentischMitVorgesuch = toCopy.partnerIdentischMitVorgesuch;
+		this.isEkvAccepted = toCopy.isEkvAccepted;
+		this.requiredAgeForAnspruchNotReached = toCopy.requiredAgeForAnspruchNotReached;
+		this.gesuchBeendenKonkubinatWirdInPeriodeXJahreAlt = toCopy.gesuchBeendenKonkubinatWirdInPeriodeXJahreAlt;
+		this.bgStundenFaktor = toCopy.bgStundenFaktor;
 	}
 
 	@Nonnull
@@ -367,7 +376,8 @@ public class BGCalculationInput {
 	}
 
 	// In den RechnerRules kann nur gesetzt werden, das die Eltern die Vollkosten während des kompleten Zeitabschnittes
-	// also zu 100 % tragen. Einzig beim berchnen des prozentualen Anteils (@see BgCalculationInput#calculateInputValuesProportionaly)
+	// also zu 100 % tragen. Einzig beim berchnen des prozentualen Anteils (@see
+	// BgCalculationInput#calculateInputValuesProportionaly)
 	// wird hier ein Wert zwischen 0 und 1 gesetzt
 	public void setBezahltVollkostenKomplett() {
 		this.bezahltVollkostenMonatAnteil = BigDecimal.ONE;
@@ -711,12 +721,12 @@ public class BGCalculationInput {
 		isAuszahlungAnEltern = auszahlungAnEltern;
 	}
 
-	public BigDecimal getKostenAnteilMonat() {
-		return kostenAnteilMonat;
+	public boolean isRequiredAgeForAnspruchNotReached() {
+		return requiredAgeForAnspruchNotReached;
 	}
 
-	public void setKostenAnteilMonat(BigDecimal kostenAnteilMonat) {
-		this.kostenAnteilMonat = kostenAnteilMonat;
+	public void setRequiredAgeForAnspruchNotReached(boolean requiredAgeForAnspruchNotReached) {
+		this.requiredAgeForAnspruchNotReached = requiredAgeForAnspruchNotReached;
 	}
 
 	@Override
@@ -760,13 +770,15 @@ public class BGCalculationInput {
 			this.setErwerbspensumZuschlag(other.getErwerbspensumZuschlag());
 		}
 
-		this.monatlicheBetreuungskosten = add(this.getMonatlicheBetreuungskosten(), other.getMonatlicheBetreuungskosten());
-		this.anzahlHauptmahlzeiten =  add(this.getAnzahlHauptmahlzeiten(), other.getAnzahlHauptmahlzeiten());
+		this.monatlicheBetreuungskosten =
+			add(this.getMonatlicheBetreuungskosten(), other.getMonatlicheBetreuungskosten());
+		this.anzahlHauptmahlzeiten = add(this.getAnzahlHauptmahlzeiten(), other.getAnzahlHauptmahlzeiten());
 		this.anzahlNebenmahlzeiten = add(this.getAnzahlNebenmahlzeiten(), other.getAnzahlNebenmahlzeiten());
 		this.tarifHauptmahlzeit = add(this.getTarifHauptmahlzeit(), other.getTarifHauptmahlzeit());
 		this.tarifNebenmahlzeit = add(this.getTarifNebenmahlzeit(), other.getTarifNebenmahlzeit());
 
-		this.setVerguenstigungMahlzeitenBeantragt(this.verguenstigungMahlzeitenBeantragt || other.verguenstigungMahlzeitenBeantragt);
+		this.setVerguenstigungMahlzeitenBeantragt(this.verguenstigungMahlzeitenBeantragt
+			|| other.verguenstigungMahlzeitenBeantragt);
 
 		this.getTaetigkeiten().addAll(other.getTaetigkeiten());
 		this.setWohnsitzNichtInGemeindeGS1(this.isWohnsitzNichtInGemeindeGS1() && other.isWohnsitzNichtInGemeindeGS1());
@@ -779,7 +791,8 @@ public class BGCalculationInput {
 			this.bezahltVollkostenMonatAnteil = BigDecimal.ONE;
 		}
 
-		this.setKeinAnspruchAufgrundEinkommen(this.isKeinAnspruchAufgrundEinkommen() || other.isKeinAnspruchAufgrundEinkommen());
+		this.setKeinAnspruchAufgrundEinkommen(this.isKeinAnspruchAufgrundEinkommen()
+			|| other.isKeinAnspruchAufgrundEinkommen());
 
 		this.setLongAbwesenheit(this.isLongAbwesenheit() || other.isLongAbwesenheit());
 		this.setHasSecondGesuchstellerForFinanzielleSituation(this.isHasSecondGesuchstellerForFinanzielleSituation()
@@ -800,8 +813,6 @@ public class BGCalculationInput {
 		this.betreuungsangebotTyp =
 			this.betreuungsangebotTyp != null ? this.betreuungsangebotTyp : other.betreuungsangebotTyp;
 
-		this.kostenAnteilMonat = this.kostenAnteilMonat.add(other.kostenAnteilMonat);
-
 		//Minimal erforderliches Pensum ist immer nur auf dem Vorgänger gesetzt und muss einfach übernommen werden.
 		this.minimalErforderlichesPensum = other.minimalErforderlichesPensum;
 
@@ -817,9 +828,11 @@ public class BGCalculationInput {
 		}
 
 		this.einkommensjahr = other.einkommensjahr;
-		this.massgebendesEinkommenVorAbzugFamgr = this.massgebendesEinkommenVorAbzugFamgr.add(other.massgebendesEinkommenVorAbzugFamgr);
+		this.massgebendesEinkommenVorAbzugFamgr =
+			this.massgebendesEinkommenVorAbzugFamgr.add(other.massgebendesEinkommenVorAbzugFamgr);
 		this.zuSpaetEingereicht = this.zuSpaetEingereicht || other.zuSpaetEingereicht;
-		this.besondereBeduerfnisseBestaetigt = this.besondereBeduerfnisseBestaetigt || other.besondereBeduerfnisseBestaetigt;
+		this.besondereBeduerfnisseBestaetigt =
+			this.besondereBeduerfnisseBestaetigt || other.besondereBeduerfnisseBestaetigt;
 		this.tsInputMitBetreuung.add(other.tsInputMitBetreuung);
 		this.tsInputOhneBetreuung.add(other.tsInputOhneBetreuung);
 		this.sozialhilfeempfaenger = this.sozialhilfeempfaenger || other.sozialhilfeempfaenger;
@@ -828,10 +841,19 @@ public class BGCalculationInput {
 		this.geschwisternBonusKind2 = this.geschwisternBonusKind2 || other.geschwisternBonusKind2;
 		this.geschwisternBonusKind3 = this.geschwisternBonusKind3 || other.geschwisternBonusKind3;
 		this.isAuszahlungAnEltern = this.isAuszahlungAnEltern || other.isAuszahlungAnEltern;
+		if (null == this.partnerIdentischMitVorgesuch) {
+			this.partnerIdentischMitVorgesuch = other.partnerIdentischMitVorgesuch;
+		} else {
+			this.partnerIdentischMitVorgesuch =
+				this.partnerIdentischMitVorgesuch || other.partnerIdentischMitVorgesuch;
+		}
+		this.isEkvAccepted = this.isEkvAccepted || other.isEkvAccepted;
 
 		// Die Felder betreffend Familienabzug können nicht linear addiert werden. Es darf also nie Überschneidungen geben!
 		if (other.getAbzugFamGroesse() != null) {
-			if (this.getAbzugFamGroesse() != null && !MathUtil.isSame(this.getAbzugFamGroesse(), other.getAbzugFamGroesse())) {
+			if (this.getAbzugFamGroesse() != null &&
+				!MathUtil.isSame( this.getAbzugFamGroesse(), other.getAbzugFamGroesse())
+			) {
 				throw new IllegalArgumentException("Familiengoressenabzug kann nicht gemerged werden");
 			}
 			this.setAbzugFamGroesse(other.getAbzugFamGroesse());
@@ -845,7 +867,9 @@ public class BGCalculationInput {
 		}
 		// Die stündlichen Vollkosten für TFOs können nicht linaer addiert werden, daher darf es keine Überschneidungen geben
 		if (other.getStuendlicheVollkosten() != null) {
-			if(this.getStuendlicheVollkosten() != null && !MathUtil.isSame(this.getStuendlicheVollkosten(), other.getStuendlicheVollkosten())) {
+			if (this.getStuendlicheVollkosten() != null &&
+				!MathUtil.isSame( this.getStuendlicheVollkosten(), other.getStuendlicheVollkosten())
+			) {
 				throw new IllegalArgumentException("Stuendliche Vollkosten können nicht gemerged werden");
 			}
 			this.setStuendlicheVollkosten(other.getStuendlicheVollkosten());
@@ -853,6 +877,11 @@ public class BGCalculationInput {
 
 		this.kitaPlusZuschlag = this.kitaPlusZuschlag || other.kitaPlusZuschlag;
 		this.besondereBeduerfnisseZuschlag = add(this.getBesondereBeduerfnisseZuschlag(), other.getBesondereBeduerfnisseZuschlag());
+		this.requiredAgeForAnspruchNotReached = this.requiredAgeForAnspruchNotReached || other.requiredAgeForAnspruchNotReached;
+		this.gesuchBeendenKonkubinatWirdInPeriodeXJahreAlt = this.gesuchBeendenKonkubinatWirdInPeriodeXJahreAlt || other.gesuchBeendenKonkubinatWirdInPeriodeXJahreAlt;
+		if (MathUtil.isZero(this.bgStundenFaktor) && !MathUtil.isZero(other.getBgStundenFaktor())) {
+			this.setBgStundenFaktor(other.getBgStundenFaktor());
+		}
 	}
 
 	/**
@@ -879,14 +908,10 @@ public class BGCalculationInput {
 			|| other.bezahltVollkostenMonatAnteil.compareTo(BigDecimal.ZERO) > 0) && this.percentage != null &&
 			other.getBetreuungspensumProzent().compareTo(BigDecimal.ZERO) > 0
 			&& this.getBetreuungspensumProzent().compareTo(BigDecimal.ZERO) > 0 &&
-			(this.getBetreuungspensumProzent().compareTo(other.getBetreuungspensumProzent()) != 0 ||
-				this.getKostenAnteilMonat().compareTo(other.getKostenAnteilMonat()) != 0)) {
+			this.getBetreuungspensumProzent().compareTo(other.getBetreuungspensumProzent()) != 0) {
 
 			if (this.bezahltVollkostenMonatAnteil.compareTo(BigDecimal.ZERO) > 0
 				&& other.bezahltVollkostenMonatAnteil.compareTo(BigDecimal.ZERO) <= 0) {
-				this.setKostenAnteilMonat(calculatePercentage(calculatePercentageBackward(
-					other.getKostenAnteilMonat(),
-					other.percentage.doubleValue()), this.percentage.doubleValue()));
 				this.setBetreuungspensumProzent(calculatePercentage(calculatePercentageBackward(
 					other.getBetreuungspensumProzent(),
 					other.percentage.doubleValue()), this.percentage.doubleValue()));
@@ -898,9 +923,6 @@ public class BGCalculationInput {
 			}
 			if (other.bezahltVollkostenMonatAnteil.compareTo(BigDecimal.ZERO) > 0
 				&& this.bezahltVollkostenMonatAnteil.compareTo(BigDecimal.ZERO) <= 0) {
-				other.setKostenAnteilMonat(calculatePercentage(calculatePercentageBackward(
-					this.getKostenAnteilMonat(),
-					this.percentage.doubleValue()), other.percentage.doubleValue()));
 				other.setBetreuungspensumProzent(calculatePercentage(calculatePercentageBackward(
 					this.getBetreuungspensumProzent(),
 					this.percentage.doubleValue()), other.percentage.doubleValue()));
@@ -952,6 +974,11 @@ public class BGCalculationInput {
 		this.tsInputMitBetreuung.calculatePercentage(percentage);
 		this.tsInputOhneBetreuung.calculatePercentage(percentage);
 		this.bezahltVollkostenMonatAnteil = calculatePercentage(this.bezahltVollkostenMonatAnteil, percentage);
+
+	}
+
+	public void roundValuesAfterCalculateProportinaly() {
+		this.massgebendesEinkommenVorAbzugFamgr = MathUtil.GANZZAHL.from(this.massgebendesEinkommenVorAbzugFamgr);
 	}
 
 	private boolean isPercentCaluclable(double percent) {
@@ -1052,7 +1079,12 @@ public class BGCalculationInput {
 			this.geschwisternBonusKind2 == other.geschwisternBonusKind2 &&
 			this.geschwisternBonusKind3 == other.geschwisternBonusKind3 &&
 			MathUtil.isSame(this.stuendlicheVollkosten, other.stuendlicheVollkosten) &&
-			this.isAuszahlungAnEltern == other.isAuszahlungAnEltern;
+			this.isAuszahlungAnEltern == other.isAuszahlungAnEltern &&
+			Objects.equals( this.partnerIdentischMitVorgesuch , other.partnerIdentischMitVorgesuch) &&
+			this.isEkvAccepted == other.isEkvAccepted &&
+			this.requiredAgeForAnspruchNotReached == other.requiredAgeForAnspruchNotReached &&
+			this.gesuchBeendenKonkubinatWirdInPeriodeXJahreAlt == other.gesuchBeendenKonkubinatWirdInPeriodeXJahreAlt &&
+			MathUtil.isSame(this.bgStundenFaktor, other.bgStundenFaktor);
 	}
 
 	@SuppressWarnings("PMD.CompareObjectsWithEquals")
@@ -1196,5 +1228,37 @@ public class BGCalculationInput {
 
 	public void setStuendlicheVollkosten(BigDecimal stuendlicheVollkosten) {
 		this.stuendlicheVollkosten = stuendlicheVollkosten;
+	}
+
+	public void setPartnerIdentischMitVorgesuch(@Nullable Boolean samePartner) {
+		this.partnerIdentischMitVorgesuch = samePartner;
+	}
+
+	public Boolean getPartnerIdentischMitVorgesuch() {
+		return partnerIdentischMitVorgesuch;
+	}
+
+	public boolean isEkvAccepted() {
+		return isEkvAccepted;
+	}
+
+	public void setEkvAccepted(boolean ekvAccepted) {
+		isEkvAccepted = ekvAccepted;
+	}
+
+	public void setGesuchBeendenKonkubinatWirdInPeriodeXJahreAlt(boolean konkubinatWirdInPeriodeXJahreAlt) {
+		this.gesuchBeendenKonkubinatWirdInPeriodeXJahreAlt = konkubinatWirdInPeriodeXJahreAlt;
+	}
+
+	public boolean isGesuchBeendenKonkubinatWirdInPeriodeXJahreAlt() {
+		return gesuchBeendenKonkubinatWirdInPeriodeXJahreAlt;
+	}
+
+	public void setBgStundenFaktor(BigDecimal bgStundenFaktor) {
+		this.bgStundenFaktor = bgStundenFaktor;
+	}
+
+	public BigDecimal getBgStundenFaktor() {
+		return bgStundenFaktor;
 	}
 }

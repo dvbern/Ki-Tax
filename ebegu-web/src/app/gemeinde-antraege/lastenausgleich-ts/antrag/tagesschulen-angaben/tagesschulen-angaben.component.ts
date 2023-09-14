@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020 DV Bern AG, Switzerland
+ * Copyright (C) 2023 DV Bern AG, Switzerland
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -8,14 +8,14 @@
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program. If not, see <https://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, ViewEncapsulation} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnInit, ViewEncapsulation} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
 import {TranslateService} from '@ngx-translate/core';
@@ -26,15 +26,25 @@ import {startWith} from 'rxjs/operators';
 import {EinstellungRS} from '../../../../../admin/service/einstellungRS.rest';
 import {AuthServiceRS} from '../../../../../authentication/service/AuthServiceRS.rest';
 import {TSEinstellungKey} from '../../../../../models/enums/TSEinstellungKey';
-import {TSLastenausgleichTagesschuleAngabenGemeindeStatus} from '../../../../../models/enums/TSLastenausgleichTagesschuleAngabenGemeindeStatus';
-import {TSLastenausgleichTagesschuleAngabenInstitutionStatus} from '../../../../../models/enums/TSLastenausgleichTagesschuleAngabenInstitutionStatus';
+import {
+    TSLastenausgleichTagesschuleAngabenGemeindeStatus,
+} from '../../../../../models/enums/TSLastenausgleichTagesschuleAngabenGemeindeStatus';
+import {
+    TSLastenausgleichTagesschuleAngabenInstitutionStatus,
+} from '../../../../../models/enums/TSLastenausgleichTagesschuleAngabenInstitutionStatus';
 import {TSRole} from '../../../../../models/enums/TSRole';
 import {TSWizardStepXTyp} from '../../../../../models/enums/TSWizardStepXTyp';
 import {TSAnzahlEingeschriebeneKinder} from '../../../../../models/gemeindeantrag/TSAnzahlEingeschriebeneKinder';
 import {TSDurchschnittKinderProTag} from '../../../../../models/gemeindeantrag/TSDurchschnittKinderProTag';
-import {TSLastenausgleichTagesschuleAngabenGemeindeContainer} from '../../../../../models/gemeindeantrag/TSLastenausgleichTagesschuleAngabenGemeindeContainer';
-import {TSLastenausgleichTagesschuleAngabenInstitution} from '../../../../../models/gemeindeantrag/TSLastenausgleichTagesschuleAngabenInstitution';
-import {TSLastenausgleichTagesschuleAngabenInstitutionContainer} from '../../../../../models/gemeindeantrag/TSLastenausgleichTagesschuleAngabenInstitutionContainer';
+import {
+    TSLastenausgleichTagesschuleAngabenGemeindeContainer,
+} from '../../../../../models/gemeindeantrag/TSLastenausgleichTagesschuleAngabenGemeindeContainer';
+import {
+    TSLastenausgleichTagesschuleAngabenInstitution,
+} from '../../../../../models/gemeindeantrag/TSLastenausgleichTagesschuleAngabenInstitution';
+import {
+    TSLastenausgleichTagesschuleAngabenInstitutionContainer,
+} from '../../../../../models/gemeindeantrag/TSLastenausgleichTagesschuleAngabenInstitutionContainer';
 import {TSOeffnungszeitenTagesschule} from '../../../../../models/gemeindeantrag/TSOeffnungszeitenTagesschule';
 import {TSOeffnungszeitenTagesschuleTyp} from '../../../../../models/gemeindeantrag/TSOeffnungszeitenTagesschuleTyp';
 import {TSBenutzer} from '../../../../../models/TSBenutzer';
@@ -42,7 +52,9 @@ import {TSExceptionReport} from '../../../../../models/TSExceptionReport';
 import {TSGesuchsperiode} from '../../../../../models/TSGesuchsperiode';
 import {EbeguUtil} from '../../../../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../../../../utils/TSRoleUtil';
-import {DvNgConfirmDialogComponent} from '../../../../core/component/dv-ng-confirm-dialog/dv-ng-confirm-dialog.component';
+import {
+    DvNgConfirmDialogComponent,
+} from '../../../../core/component/dv-ng-confirm-dialog/dv-ng-confirm-dialog.component';
 import {CONSTANTS} from '../../../../core/constants/CONSTANTS';
 import {ErrorService} from '../../../../core/errors/service/ErrorService';
 import {LogFactory} from '../../../../core/logging/LogFactory';
@@ -61,7 +73,7 @@ const LOG = LogFactory.createLog('TagesschulenAngabenComponent');
     changeDetection: ChangeDetectionStrategy.OnPush,
     encapsulation: ViewEncapsulation.None
 })
-export class TagesschulenAngabenComponent {
+export class TagesschulenAngabenComponent implements OnInit {
 
     @Input() public lastenausgleichID: string;
     @Input() public institutionContainerId: string;
@@ -181,65 +193,61 @@ export class TagesschulenAngabenComponent {
         angaben: TSLastenausgleichTagesschuleAngabenInstitutionContainer,
         principal: TSBenutzer
     ): void {
-        if (container.isAtLeastInBearbeitungKanton()) {
-            this.canSeeDurchKibonAusfuellen.next(false);
-            this.canSeeAbschliessen.next(false);
-            this.canSeeFalscheAngaben.next(false);
-            this.canSeeFreigeben.next(false);
-            this.canSeeSave.next(false);
-        } else {
+        let canSeeDurchKibonAusfuellen = false;
+        let canSeeGeprueft = false;
+        let canSeeFalscheAngaben = false;
+        let canSeeFreigeben = false;
+        let canSeeSave = false;
+
+        if (container.isInBearbeitungGemeinde()) {
             if (angaben.isInBearbeitungInstitution()) {
-                this.canSeeDurchKibonAusfuellen.next(true);
-                this.canSeeSave.next(true);
-                this.canSeeAbschliessen.next(false);
-                this.canSeeFreigeben.next(true);
-                this.canSeeFalscheAngaben.next(false);
+                canSeeFreigeben = principal.hasOneOfRoles(TSRoleUtil.getTraegerschaftInstitutionRoles()) ||
+                    principal.hasOneOfRoles(TSRoleUtil.getGemeindeRoles());
+                canSeeSave = principal.hasOneOfRoles(TSRoleUtil.getTraegerschaftInstitutionRoles()) ||
+                    principal.hasOneOfRoles(TSRoleUtil.getGemeindeRoles());
+                canSeeDurchKibonAusfuellen = principal.hasOneOfRoles(TSRoleUtil.getTraegerschaftInstitutionRoles()) ||
+                    principal.hasOneOfRoles(TSRoleUtil.getGemeindeRoles());
             }
             if (angaben.isInPruefungGemeinde()) {
-                if (principal.hasOneOfRoles(TSRoleUtil.getTraegerschaftInstitutionOnlyRoles())) {
-                    this.canSeeDurchKibonAusfuellen.next(false);
-                    this.canSeeSave.next(false);
-                    this.canSeeAbschliessen.next(false);
-                    this.canSeeFreigeben.next(false);
-                    this.canSeeFalscheAngaben.next(true);
-                }
-                if (principal.hasOneOfRoles(TSRoleUtil.getGemeindeRoles())) {
-                    this.canSeeDurchKibonAusfuellen.next(true);
-                    this.canSeeSave.next(true);
-                    this.canSeeAbschliessen.next(true);
-                    this.canSeeFreigeben.next(false);
-                    if (principal.hasRole(TSRole.SUPER_ADMIN)) {
-                        this.canSeeFalscheAngaben.next(true);
-                    } else {
-                        this.canSeeFalscheAngaben.next(false);
-                    }
-                }
+                canSeeFalscheAngaben = principal.hasOneOfRoles(TSRoleUtil.getGemeindeRoles());
+                canSeeSave = principal.hasOneOfRoles(TSRoleUtil.getGemeindeRoles());
+                canSeeGeprueft = principal.hasOneOfRoles(TSRoleUtil.getGemeindeRoles());
             }
             if (angaben.isGeprueftGemeinde()) {
-                this.canSeeDurchKibonAusfuellen.next(false);
-                if (principal.hasOneOfRoles(TSRoleUtil.getTraegerschaftInstitutionOnlyRoles())) {
-                    this.canSeeSave.next(false);
-                    this.canSeeAbschliessen.next(false);
-                    this.canSeeFreigeben.next(false);
-                    this.canSeeFalscheAngaben.next(false);
-                }
-                if (principal.hasOneOfRoles(TSRoleUtil.getGemeindeRoles())) {
-                    this.canSeeSave.next(false);
-                    this.canSeeAbschliessen.next(false);
-                    this.canSeeFreigeben.next(false);
-                    this.canSeeFalscheAngaben.next(true);
-                }
+                canSeeFalscheAngaben = principal.hasOneOfRoles(TSRoleUtil.getGemeindeRoles());
             }
         }
+
+        if (container.isinPruefungKanton()) {
+            if (angaben.isInPruefungGemeinde()) {
+                canSeeSave = principal.hasOneOfRoles(TSRoleUtil.getMandantRoles());
+                canSeeGeprueft = principal.hasOneOfRoles(TSRoleUtil.getMandantRoles());
+            }
+            if (angaben.isGeprueftGemeinde()) {
+                canSeeFalscheAngaben = principal.hasOneOfRoles(TSRoleUtil.getMandantRoles());
+            }
+        }
+
+        this.canSeeDurchKibonAusfuellen.next(canSeeDurchKibonAusfuellen);
+        this.canSeeSave.next(canSeeSave);
+        this.canSeeFreigeben.next(canSeeFreigeben);
+        this.canSeeAbschliessen.next(canSeeGeprueft);
+        this.canSeeFalscheAngaben.next(canSeeFalscheAngaben);
     }
 
     public canEditForm(): boolean {
-        return !this.authService.isOneOfRoles(TSRoleUtil.getMandantOnlyRoles()) && (
+        const angaben = this.latsAngabenInstitutionContainer;
+        if (EbeguUtil.isNullOrUndefined(angaben)) {
+            return false;
+        }
+        return (this.authService.isOneOfRoles(TSRoleUtil.getTraegerschaftInstitutionOnlyRoles()) &&
+                angaben.isInBearbeitungInstitution()) ||
             (this.authService.isOneOfRoles(TSRoleUtil.getGemeindeRoles()) &&
-                this.latsAngabenInstitutionContainer?.status !== TSLastenausgleichTagesschuleAngabenInstitutionStatus.GEPRUEFT) ||
-            (this.authService.isOneOfRoles(TSRoleUtil.getTraegerschaftInstitutionOnlyRoles()) &&
-                this.latsAngabenInstitutionContainer?.status === TSLastenausgleichTagesschuleAngabenInstitutionStatus.OFFEN)
-        );
+                !this.gemeindeAntragContainer.isinPruefungKanton() &&
+                (angaben.isInBearbeitungInstitution() || angaben.isInPruefungGemeinde())) ||
+            (this.authService.isOneOfRoles(TSRoleUtil.getMandantRoles()) &&
+                this.gemeindeAntragContainer.isinPruefungKanton() &&
+                angaben.isInPruefungGemeinde());
     }
 
     private setupForm(latsAngabenInstiution: TSLastenausgleichTagesschuleAngabenInstitution): FormGroup {
@@ -253,6 +261,10 @@ export class TagesschulenAngabenComponent {
             ],
             anzahlEingeschriebeneKinderKindergarten: [
                 latsAngabenInstiution?.anzahlEingeschriebeneKinderKindergarten,
+                numberValidator(ValidationType.POSITIVE_INTEGER)
+            ],
+            anzahlEingeschriebeneKinderBasisstufe: [
+                latsAngabenInstiution?.anzahlEingeschriebeneKinderBasisstufe,
                 numberValidator(ValidationType.POSITIVE_INTEGER)
             ],
             anzahlEingeschriebeneKinderSekundarstufe: [
@@ -333,10 +345,13 @@ export class TagesschulenAngabenComponent {
                     .pipe(startWith(angaben?.anzahlEingeschriebeneKinderPrimarstufe || 0)),
                 this.form.get('anzahlEingeschriebeneKinderSekundarstufe')
                     .valueChanges
-                    .pipe(startWith(angaben?.anzahlEingeschriebeneKinderSekundarstufe || 0))
+                    .pipe(startWith(angaben?.anzahlEingeschriebeneKinderSekundarstufe || 0)),
+                this.form.get('anzahlEingeschriebeneKinderBasisstufe')
+                    .valueChanges
+                    .pipe(startWith(angaben?.anzahlEingeschriebeneKinderBasisstufe || 0))
             ]
         ).subscribe(values => {
-            this.abweichungenAnzahlKinder = values[0] - values[1] - values[2] - values[3];
+            this.abweichungenAnzahlKinder = values[0] - values[1] - values[2] - values[3] - values[4];
             this.cd.markForCheck();
         }, () => {
             this.errorService.addMesageAsError('BAD_NUMBER_ERROR');
@@ -472,6 +487,8 @@ export class TagesschulenAngabenComponent {
             .setValidators([Validators.required, numberValidator(ValidationType.POSITIVE_INTEGER)]);
         this.form.get('anzahlEingeschriebeneKinderKindergarten')
             .setValidators([Validators.required, numberValidator(ValidationType.POSITIVE_INTEGER)]);
+        this.form.get('anzahlEingeschriebeneKinderBasisstufe')
+            .setValidators([Validators.required, numberValidator(ValidationType.POSITIVE_INTEGER)]);
         this.form.get('anzahlEingeschriebeneKinderSekundarstufe')
             .setValidators([Validators.required, numberValidator(ValidationType.POSITIVE_INTEGER)]);
         this.form.get('anzahlEingeschriebeneKinderPrimarstufe')
@@ -522,28 +539,6 @@ export class TagesschulenAngabenComponent {
         }
         this.form.updateValueAndValidity();
     }
-
-    public actionButtonsDisabled(): boolean {
-        return this.authService.isOneOfRoles(TSRoleUtil.getMandantOnlyRoles()) ||
-            (this.authService.isOneOfRoles(TSRoleUtil.getGemeindeRoles()) &&
-                this.latsAngabenInstitutionContainer?.status === TSLastenausgleichTagesschuleAngabenInstitutionStatus.GEPRUEFT) ||
-            (this.authService.isOneOfRoles(TSRoleUtil.getTraegerschaftInstitutionOnlyRoles()) &&
-                this.latsAngabenInstitutionContainer?.status !== TSLastenausgleichTagesschuleAngabenInstitutionStatus.OFFEN);
-    }
-
-    public canSeeFreigebenButton(): boolean {
-        return this.authService.isOneOfRoles(TSRoleUtil.getTraegerschaftInstitutionOnlyRoles()) ||
-            (this.authService.isOneOfRoles(TSRoleUtil.getGemeindeRoles()) && !this.latsAngabenInstitutionContainer?.isAtLeastInBearbeitungGemeinde());
-    }
-
-    public canSeeGeprueftButton(): boolean {
-        return this.authService.isOneOfRoles(TSRoleUtil.getGemeindeRoles()) && this.latsAngabenInstitutionContainer?.isAtLeastInBearbeitungGemeinde();
-    }
-
-    public canSeeSaveButton(): boolean {
-        return !this.authService.isOneOfRoles(TSRoleUtil.getMandantOnlyRoles());
-    }
-
     public async onFalscheAngaben(): Promise<void> {
 
         const gemeindeMustBeReopenedCheckRequired = !this.isInstiUser &&
@@ -570,16 +565,6 @@ export class TagesschulenAngabenComponent {
             }
             this.manageSaveErrorCodes(error);
         });
-    }
-
-    public falscheAngabenVisible(): boolean {
-        return this.gemeindeAntragContainer?.status ===
-            TSLastenausgleichTagesschuleAngabenGemeindeStatus.IN_BEARBEITUNG_GEMEINDE && (
-                this.authService.isOneOfRoles(TSRoleUtil.getTraegerschaftInstitutionOnlyRoles()) &&
-                this.latsAngabenInstitutionContainer?.status ===
-                TSLastenausgleichTagesschuleAngabenInstitutionStatus.IN_PRUEFUNG_GEMEINDE ||
-                this.authService.isOneOfRoles(TSRoleUtil.getGemeindeRoles()) &&
-                this.latsAngabenInstitutionContainer?.status === TSLastenausgleichTagesschuleAngabenInstitutionStatus.GEPRUEFT);
     }
 
     public navigateBack($event?: MouseEvent): void {
@@ -696,11 +681,12 @@ export class TagesschulenAngabenComponent {
     }
 
     public manageSaveErrorCodes(errors: TSExceptionReport[]): void {
-        console.info(errors.map(error => error.customMessage).join('; '));
+        LOG.error(errors.map(error => error.customMessage).join('; '));
     }
 
     public allAnzahlFieldsFilledOut(): boolean {
-        return this.form?.get('anzahlEingeschriebeneKinder').value?.toString().length > 0 &&
+        return this.form?.get('anzahlEingeschriebeneKinderBasisstufe').value?.toString().length > 0 &&
+            this.form?.get('anzahlEingeschriebeneKinder').value?.toString().length > 0 &&
             this.form?.get('anzahlEingeschriebeneKinderKindergarten').value?.toString().length > 0 &&
             this.form?.get('anzahlEingeschriebeneKinderPrimarstufe').value?.toString().length > 0 &&
             this.form?.get('anzahlEingeschriebeneKinderSekundarstufe').value?.toString().length > 0;

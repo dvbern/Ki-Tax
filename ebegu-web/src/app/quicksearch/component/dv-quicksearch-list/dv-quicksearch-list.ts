@@ -39,6 +39,7 @@ import {TSInstitution} from '../../../../models/TSInstitution';
 import {EbeguUtil} from '../../../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../../../utils/TSRoleUtil';
 import {LogFactory} from '../../../core/logging/LogFactory';
+import {ApplicationPropertyRS} from '../../../core/rest-services/applicationPropertyRS.rest';
 import {GesuchsperiodeRS} from '../../../core/service/gesuchsperiodeRS.rest';
 import {InstitutionRS} from '../../../core/service/institutionRS.rest';
 
@@ -53,7 +54,7 @@ export class DVQuicksearchListConfig implements IComponentOptions {
         initialAll: '=',
         showSelectionAll: '=',
         totalResultCount: '<',
-        onUserChanged: '&',
+        userChanged: '&',
         tableId: '@',
         tableTitle: '<'
     };
@@ -67,7 +68,8 @@ export class DVQuicksearchListController implements IController {
 
     public static $inject: string[] = [
         '$filter', 'InstitutionRS', 'GesuchsperiodeRS',
-        '$state', 'AuthServiceRS', 'GemeindeRS'
+        '$state', 'AuthServiceRS', 'GemeindeRS',
+        'ApplicationPropertyRS'
     ];
 
     public antraege: Array<TSAntragDTO> = []; // muss hier gesuch haben damit Felder die wir anzeigen muessen da sind
@@ -95,9 +97,10 @@ export class DVQuicksearchListController implements IController {
     public institutionenList: Array<TSInstitution>;
     public gesuchsperiodenList: Array<string>;
     public gemeindenList: Array<TSGemeinde>;
-    public onUserChanged: (user: any) => void;
+    public userChanged: (user: any) => void;
 
     private readonly unsubscribe$ = new Subject<void>();
+    private anmeldungTSEnabled: boolean;
 
     public constructor(
         private readonly $filter: IFilterService,
@@ -105,18 +108,22 @@ export class DVQuicksearchListController implements IController {
         private readonly gesuchsperiodeRS: GesuchsperiodeRS,
         private readonly $state: StateService,
         private readonly authServiceRS: AuthServiceRS,
-        private readonly gemeindeRS: GemeindeRS
+        private readonly gemeindeRS: GemeindeRS,
+        private readonly applicationPropertyRS: ApplicationPropertyRS
     ) {
     }
 
-    public userChanged(selectedUser: TSBenutzerNoDetails): void {
-        this.onUserChanged({user: selectedUser});
+    public userHasChanged(selectedUser: TSBenutzerNoDetails): void {
+        this.userChanged({user: selectedUser});
     }
 
     public $onInit(): void {
         this.updateInstitutionenList();
         this.updateGesuchsperiodenList();
         this.updateGemeindenList();
+        this.applicationPropertyRS.getPublicPropertiesCached().then(res => {
+            this.anmeldungTSEnabled = res.angebotTSActivated;
+        });
     }
 
     public $onDestroy(): void {
@@ -252,7 +259,7 @@ export class DVQuicksearchListController implements IController {
     }
 
     public isTagesschulangebotEnabled(): boolean {
-        return this.authServiceRS.hasMandantAngebotTS();
+        return this.anmeldungTSEnabled;
     }
 
     private goTo(state: string, params: any, isCtrlKeyPressed: boolean): void {

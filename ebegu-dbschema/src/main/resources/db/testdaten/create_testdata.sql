@@ -91,7 +91,6 @@ INSERT IGNORE INTO adresse (id, timestamp_erstellt, timestamp_mutiert, user_erst
 
 INSERT IGNORE INTO institution_stammdaten (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version, vorgaenger_id, gueltig_ab, gueltig_bis, betreuungsangebot_typ, adresse_id, institution_id, institution_stammdaten_tagesschule_id, institution_stammdaten_ferieninsel_id, institution_stammdaten_betreuungsgutscheine_id, mail, telefon, webseite) VALUES (UNHEX(REPLACE('199ac4a1-448f-4d4c-b3a6-5aee21f89613', '-', '')), '2016-01-01 00:00:00', '2016-01-01 00:00:00', 'flyway', 'flyway', 0, null, '1000-01-01', '9999-12-31', 'TAGESSCHULE', UNHEX(REPLACE('febf3cd1-4bd9-40eb-b65f-fd9b823b1270', '-', '')), UNHEX(REPLACE('f7abc530-5d1d-4f1c-a198-9039232974a0', '-', '')), null, null, null, 'tagesschule@mailbucket.dvbern.ch', null, null);
 
-update mandant set angebotts = true, angebotfi = true where name = 'Kanton Bern';
 update gemeinde set angebotts = true, angebotfi = true where bfs_nummer in (99999, 99998);
 
 -- Zusatzgutschein-Konfigurationen überschreiben am Beispiel Paris
@@ -518,20 +517,20 @@ FROM (SELECT UNHEX(REPLACE('cbd31ac8-1165-11ec-82a8-0242ac130003', '-', ''))    
 where (select count(*) from einstellung where gemeinde_id =  UNHEX(REPLACE('ea02b313-e7c3-4b26-9ef7-e413f4046db2', '-', ''))
 		and einstellung_key = 'GEMEINDE_MIN_ERWERBSPENSUM_EINGESCHULT') = 0;
 
-INSERT IGNORE INTO ebegu.gemeinde_stammdaten_gesuchsperiode (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version, gemeinde_id, gesuchsperiode_id, merkblatt_anmeldung_tagesschule_de, merkblatt_anmeldung_tagesschule_fr) VALUES
+INSERT IGNORE INTO gemeinde_stammdaten_gesuchsperiode (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version, gemeinde_id, gesuchsperiode_id, merkblatt_anmeldung_tagesschule_de, merkblatt_anmeldung_tagesschule_fr) VALUES
 # PARIS
 (UNHEX(REPLACE('b69c7aba-6904-11ea-bbf8-f4390979fa3e', '-', '')), '2020-03-18 00:00:00', '2020-03-18 00:00:00', 'flyway', 'flyway', 0, UNHEX(REPLACE('ea02b313-e7c3-4b26-9ef7-e413f4046db2', '-', '')), UNHEX(REPLACE('0621fb5d-a187-5a91-abaf-8a813c4d263a', '-', '')), null, null),
 # LONDON
 (UNHEX(REPLACE('cd28e254-6904-11ea-bbf8-f4390979fa3e', '-', '')), '2020-03-18 00:00:00', '2020-03-18 00:00:00', 'flyway', 'flyway', 0, UNHEX(REPLACE('80a8e496-b73c-4a4a-a163-a0b2caf76487', '-', '')), UNHEX(REPLACE('0621fb5d-a187-5a91-abaf-8a813c4d263a', '-', '')), null, null);
 
 # PARIS
-INSERT IGNORE INTO ebegu.gemeinde_stammdaten_gesuchsperiode_ferieninsel (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version, vorgaenger_id, anmeldeschluss, ferienname, gemeinde_stammdaten_gesuchsperiode_id) VALUES
+INSERT IGNORE INTO gemeinde_stammdaten_gesuchsperiode_ferieninsel (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version, vorgaenger_id, anmeldeschluss, ferienname, gemeinde_stammdaten_gesuchsperiode_id) VALUES
 (UNHEX(REPLACE('54086b1a-6901-11ea-bbf8-f4390979fa3e', '-', '')), '2020-03-18 00:00:00', '2020-03-18 00:00:00', 'flyway', 'flyway', 0, null, '2019-09-01', 'HERBSTFERIEN', UNHEX(REPLACE('b69c7aba-6904-11ea-bbf8-f4390979fa3e', '-', ''))),
 (UNHEX(REPLACE('4ea68aa1-6901-11ea-bbf8-f4390979fa3e', '-', '')), '2020-03-18 00:00:00', '2020-03-18 00:00:00', 'flyway', 'flyway', 0, null, '2019-06-01', 'SOMMERFERIEN', UNHEX(REPLACE('b69c7aba-6904-11ea-bbf8-f4390979fa3e', '-', ''))),
 (UNHEX(REPLACE('9c19b314-6900-11ea-bbf8-f4390979fa3e', '-', '')), '2020-03-18 00:00:00', '2020-03-18 00:00:00', 'flyway', 'flyway', 0, null, '2019-01-01', 'SPORTFERIEN', UNHEX(REPLACE('b69c7aba-6904-11ea-bbf8-f4390979fa3e', '-', ''))),
 (UNHEX(REPLACE('36665051-6901-11ea-bbf8-f4390979fa3e', '-', '')), '2020-03-18 00:00:00', '2020-03-18 00:00:00', 'flyway', 'flyway', 0, null, '2019-04-01', 'FRUEHLINGSFERIEN', UNHEX(REPLACE('b69c7aba-6904-11ea-bbf8-f4390979fa3e', '-', '')));
 # LONDON
-INSERT IGNORE INTO ebegu.gemeinde_stammdaten_gesuchsperiode_ferieninsel (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version, vorgaenger_id, anmeldeschluss, ferienname, gemeinde_stammdaten_gesuchsperiode_id) VALUES
+INSERT IGNORE INTO gemeinde_stammdaten_gesuchsperiode_ferieninsel (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version, vorgaenger_id, anmeldeschluss, ferienname, gemeinde_stammdaten_gesuchsperiode_id) VALUES
 (UNHEX(REPLACE('a3e774d0-6903-11ea-bbf8-f4390979fa3e', '-', '')), '2020-03-18 00:00:00', '2020-03-18 00:00:00', 'flyway', 'flyway', 0, null, '2019-09-01', 'HERBSTFERIEN', UNHEX(REPLACE('cd28e254-6904-11ea-bbf8-f4390979fa3e', '-', ''))),
 (UNHEX(REPLACE('9ea7ae08-6903-11ea-bbf8-f4390979fa3e', '-', '')), '2020-03-18 00:00:00', '2020-03-18 00:00:00', 'flyway', 'flyway', 0, null, '2019-06-01', 'SOMMERFERIEN', UNHEX(REPLACE('cd28e254-6904-11ea-bbf8-f4390979fa3e', '-', ''))),
 (UNHEX(REPLACE('90cb89be-6903-11ea-bbf8-f4390979fa3e', '-', '')), '2020-03-18 00:00:00', '2020-03-18 00:00:00', 'flyway', 'flyway', 0, null, '2019-01-01', 'SPORTFERIEN', UNHEX(REPLACE('cd28e254-6904-11ea-bbf8-f4390979fa3e', '-', ''))),

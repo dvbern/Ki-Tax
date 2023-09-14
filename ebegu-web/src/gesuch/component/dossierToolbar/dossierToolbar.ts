@@ -1,16 +1,18 @@
 /*
- * Ki-Tax: System for the management of external childcare subsidies
- * Copyright (C) 2017 City of Bern Switzerland
+ * Copyright (C) 2023 DV Bern AG, Switzerland
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Affero General Public License for more details.
+ *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
 import {StateService} from '@uirouter/core';
@@ -21,6 +23,7 @@ import {PERMISSIONS} from '../../../app/authorisation/Permissions';
 import {IDVFocusableController} from '../../../app/core/component/IDVFocusableController';
 import {MANDANTS} from '../../../app/core/constants/MANDANTS';
 import {DvDialog} from '../../../app/core/directive/dv-dialog/dv-dialog';
+import {ApplicationPropertyRS} from '../../../app/core/rest-services/applicationPropertyRS.rest';
 import {GesuchsperiodeRS} from '../../../app/core/service/gesuchsperiodeRS.rest';
 import {MitteilungRS} from '../../../app/core/service/mitteilungRS.rest';
 import {SozialdienstRS} from '../../../app/core/service/SozialdienstRS.rest';
@@ -114,7 +117,8 @@ export class DossierToolbarController implements IDVFocusableController {
         'GemeindeRS',
         'SozialdienstRS',
         '$translate',
-        'MandantService'
+        'MandantService',
+        'ApplicationPropertyRS'
     ];
 
     public antragList: Array<TSAntragDTO>;
@@ -141,6 +145,7 @@ export class DossierToolbarController implements IDVFocusableController {
     public erneuernPossibleForCurrentAntrag: boolean = false;
     public neuesteGesuchsperiode: TSGesuchsperiode;
     public amountNewMitteilungenGS: number = 0;
+    private angebotTS: boolean;
 
     public constructor(private readonly ebeguUtil: EbeguUtil,
                        private readonly gesuchRS: GesuchRS,
@@ -157,7 +162,8 @@ export class DossierToolbarController implements IDVFocusableController {
                        private readonly gemeindeRS: GemeindeRS,
                        private readonly sozialdienstRS: SozialdienstRS,
                        private readonly $translate: ITranslateService,
-                       private readonly mandantService: MandantService
+                       private readonly mandantService: MandantService,
+                       private readonly applicationPropertyRS: ApplicationPropertyRS
     ) {
 
     }
@@ -169,6 +175,9 @@ export class DossierToolbarController implements IDVFocusableController {
         if (EbeguUtil.isEmptyStringNullOrUndefined(this.dossierId)) {
             return;
         }
+        this.applicationPropertyRS.getPublicPropertiesCached().then(res => {
+            this.angebotTS = res.angebotTSActivated;
+        });
         this.gesuchsperiodeRS.getActiveGesuchsperiodenForDossier(this.dossierId)
             .then((response: TSGesuchsperiode[]) => {
                 // Die neueste ist zuoberst
@@ -536,7 +545,8 @@ export class DossierToolbarController implements IDVFocusableController {
                 && this.getGesuch().gesuchsperiode.status === TSGesuchsperiodeStatus.GESCHLOSSEN) {
                 return false;
             }
-            if (!this.gesuchModelManager.isNeuestesGesuch()) {
+            // der Button soll für den Gesuchsteller ausgeblendet werden,
+            if (!this.gesuchModelManager.isNeuestesGesuch() && this.authServiceRS.isRole(TSRole.GESUCHSTELLER)) {
                 return false;
             }
         }
@@ -843,5 +853,9 @@ export class DossierToolbarController implements IDVFocusableController {
 
     private sanitizeHtml(altGemeindeKontaktText: string): string {
         return altGemeindeKontaktText;
+    }
+
+    public isTagesschulangebotEnabled(): boolean {
+        return this.angebotTS;
     }
 }

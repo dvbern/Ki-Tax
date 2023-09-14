@@ -40,6 +40,7 @@ import {DvNgConfirmDialogComponent} from '../../core/component/dv-ng-confirm-dia
 import {DvNgOkDialogComponent} from '../../core/component/dv-ng-ok-dialog/dv-ng-ok-dialog.component';
 import {ErrorService} from '../../core/errors/service/ErrorService';
 import {LogFactory} from '../../core/logging/LogFactory';
+import {ApplicationPropertyRS} from '../../core/rest-services/applicationPropertyRS.rest';
 import {GemeindeWarningService} from '../gemeinde-warning-service/gemeinde-warning.service';
 
 const LOG = LogFactory.createLog('EditGemeindeComponent');
@@ -89,7 +90,8 @@ export class EditGemeindeComponent implements OnInit {
         private readonly authServiceRS: AuthServiceRS,
         private readonly dialog: MatDialog,
         private readonly changeDetectorRef: ChangeDetectorRef,
-        private readonly gemeindeWarningService: GemeindeWarningService
+        private readonly gemeindeWarningService: GemeindeWarningService,
+        private readonly applicationPropertyRS: ApplicationPropertyRS
     ) {
     }
 
@@ -106,7 +108,9 @@ export class EditGemeindeComponent implements OnInit {
 
         this.isRegisteringGemeinde = this.$transition$.params().isRegistering;
 
-        this.tageschuleEnabledForMandant = this.authServiceRS.hasMandantAngebotTS();
+        this.applicationPropertyRS.getPublicPropertiesCached().then(res => {
+            this.tageschuleEnabledForMandant = res.angebotTSActivated;
+        });
 
         this.loadGemeindenList();
 
@@ -177,9 +181,10 @@ export class EditGemeindeComponent implements OnInit {
 
     private initializeEmptyUnrequiredFields(stammdaten: TSGemeindeStammdaten): void {
         // wenn die Stammdaten noch nicht definiert sind, ist der checkbox fur beschwerde Adresse unselektiert
-        (EbeguUtil.isNullOrUndefined(stammdaten.adresse)
+        this.keineBeschwerdeAdresse = (EbeguUtil.isNullOrUndefined(stammdaten.adresse)
             || EbeguUtil.isEmptyStringNullOrUndefined(stammdaten.adresse.strasse))
-            ? this.keineBeschwerdeAdresse = false : this.keineBeschwerdeAdresse = !stammdaten.beschwerdeAdresse;
+            ? false
+            : !stammdaten.beschwerdeAdresse;
         if (EbeguUtil.isNullOrUndefined(stammdaten.beschwerdeAdresse)) {
             stammdaten.beschwerdeAdresse = new TSAdresse();
         }

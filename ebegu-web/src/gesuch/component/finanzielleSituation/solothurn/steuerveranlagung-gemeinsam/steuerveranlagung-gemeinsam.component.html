@@ -1,7 +1,24 @@
+<!--
+  ~ Copyright (C) 2023 DV Bern AG, Switzerland
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU Affero General Public License as
+  ~ published by the Free Software Foundation, either version 3 of the
+  ~ License, or (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  ~ GNU Affero General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU Affero General Public License
+  ~ along with this program. If not, see <https://www.gnu.org/licenses/>.
+  -->
+
 <div class="row">
 	<div class="col-xs-12 dv-input-container-question">
 		<div class="form-group">
-			<span class="ebegu-h1 required">{{'FINANZIELLE_SITUATION_STEK_GEMEINSAM' | translate:{basisjahr: gesuchModelManager.getBasisjahr(), namegs2: gesuchModelManager.getGesuch()?.gesuchsteller2?.gesuchstellerJA?.getFullName() || ''} }}</span>
+			<span class="ebegu-h1 required">{{this.getLabel()}}</span>
 			<dv-input-container-x [verticalAlign]="true">
 				<dv-radio-container-x>
 					<mat-radio-group
@@ -9,7 +26,8 @@
 							name="steuerveranlagungGemeinsam"
 							#steuerveranlagungGemeinsam="ngModel"
 							required
-							[(ngModel)]="model.gemeinsameSteuererklaerung"
+							[(ngModel)]="model.familienSituation.gemeinsameSteuererklaerung"
+                            (change)="this.change($event)"
                             dvEnableElement
                             [enableExpression]="!gesuchModelManager.isGesuchReadonly() && !gesuchModelManager.isKorrekturModusJugendamt()">
 						<mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>

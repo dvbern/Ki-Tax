@@ -6,6 +6,7 @@
 <#-- @ftlvariable name="gesuchsteller" type="ch.dvbern.ebegu.entities.Gesuchsteller" -->
 <#-- @ftlvariable name="isSozialdienst" type="java.lang.Boolean" -->
 <#-- @ftlvariable name="hostname" type="java.lang.String" -->
+<#-- @ftlvariable name="gruss" type="java.lang.String" -->
 From: ${configuration.senderAddress}
 To: <@base64Header>${senderFullName}</@base64Header> <${empfaengerMail}>
 Subject: <@base64Header>kiBon <#if configuration.isDevmode>Testsystem</#if> – <#if isSozialdienst>Die Mutation für den Antrag von ${gesuchsteller.fullName}<#else>Ihre Mutation</#if> wurde bearbeitet</@base64Header>
@@ -27,14 +28,13 @@ ${templateConfiguration.mailCss}
 		Sehr geehrte Familie
 	</p>
 	<p>
-		Am ${gesuch.getEingangsdatumFormated()} haben Sie via kiBon eine Mutation eingereicht.
-		Wir haben die Mutation <#if isSozialdienst>für den Antrag von ${gesuchsteller.fullName}</#if> bearbeitet und Sie können das Ergebnis
+		Am ${gesuch.getEingangsdatumFormated()} wurde auf kiBon eine Mutation zu Ihrem Antrag erfasst. Wir haben die Mutation<#if isSozialdienst> für den Antrag von ${gesuchsteller.fullName}</#if> bearbeitet. Sie können das Ergebnis
 		<a href="<#if configuration.clientUsingHTTPS>https://<#else>http://</#if>${hostname}/gesuch/verfuegen/${gesuch.id}">hier</a>
         einsehen.
 	</p>
 	<p>
 		Freundliche Grüsse <br/>
-		Ihre Gemeinde ${gesuch.dossier.gemeinde.name}
+		${gruss}
 	</p>
 	<p>
 		<#if configuration.isDevmode>

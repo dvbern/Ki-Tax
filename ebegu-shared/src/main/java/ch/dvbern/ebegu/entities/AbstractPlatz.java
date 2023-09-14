@@ -98,6 +98,8 @@ public abstract class AbstractPlatz extends AbstractMutableEntity implements Com
 	@Transient
 	private boolean vorgaengerInitialized = false;
 
+	@Transient
+	private boolean finSitRueckwirkendKorrigiertInThisMutation = false;
 
 	protected AbstractPlatz() {
 	}
@@ -250,6 +252,7 @@ public abstract class AbstractPlatz extends AbstractMutableEntity implements Com
 			target.setBetreuungNummer(this.getBetreuungNummer());
 			break;
 		case ERNEUERUNG:
+		case ERNEUERUNG_AR_2023:
 		case MUTATION_NEUES_DOSSIER:
 		case ERNEUERUNG_NEUES_DOSSIER:
 			break;
@@ -346,5 +349,13 @@ public abstract class AbstractPlatz extends AbstractMutableEntity implements Com
 	@Transient
 	public boolean isAngebotSchulamt() {
 		return BetreuungsangebotTyp.TAGESSCHULE == getBetreuungsangebotTyp() || BetreuungsangebotTyp.FERIENINSEL == getBetreuungsangebotTyp();
+	}
+
+	public boolean isFinSitRueckwirkendKorrigiertInThisMutation() {
+		return finSitRueckwirkendKorrigiertInThisMutation;
+	}
+
+	public void setFinSitRueckwirkendKorrigiertInThisMutation(boolean finSitRueckwirkendKorrigiertInThisMutation) {
+		this.finSitRueckwirkendKorrigiertInThisMutation = finSitRueckwirkendKorrigiertInThisMutation;
 	}
 }

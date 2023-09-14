@@ -312,9 +312,8 @@ export class SozialdienstFallCreationViewController extends AbstractGesuchViewCo
     }
 
     private openDownloadForFile(response: BlobPart): void {
-        let file;
         let filename;
-        file = new Blob([response], {type: 'application/pdf'});
+        const file = new Blob([response], {type: 'application/pdf'});
         filename = this.$translate.instant('VOLLMACHT_DATEI_NAME');
         filename = `${filename}_${this.getSozialdienstFall().vorname}_${this.getSozialdienstFall().name}`;
         this.downloadRS.openDownload(file, filename);

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020 DV Bern AG, Switzerland
+ * Copyright (C) 2023 DV Bern AG, Switzerland
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -8,11 +8,11 @@
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
 package ch.dvbern.ebegu.entities;
@@ -172,6 +172,10 @@ public class BGCalculationResult extends AbstractEntity {
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_BGCalculationResult_tsCalculationResultOhneBetreuung"), nullable = true)
 	private TSCalculationResult tsCalculationResultOhnePaedagogischerBetreuung;
 
+	@Max(100) @Min(0)
+	@Column(nullable = true)
+	private Integer beitragshoeheProzent;
+
 	@Transient
 	@Nonnull
 	private Function<BigDecimal, BigDecimal> zeiteinheitenRoundingStrategy = MathUtil::toTwoKommastelle;
@@ -218,6 +222,7 @@ public class BGCalculationResult extends AbstractEntity {
 
 		this.auszahlungAnEltern = toCopy.auszahlungAnEltern;
 		this.babyTarif = toCopy.babyTarif;
+		this.beitragshoeheProzent = toCopy.beitragshoeheProzent;
 	}
 
 	public boolean isCloseTo(@Nonnull BGCalculationResult that) {
@@ -292,6 +297,7 @@ public class BGCalculationResult extends AbstractEntity {
 			.add("anspruchspensumRest", anspruchspensumRest)
 			.add("getBgPensumProzent", getBgPensumProzent())
 			.add("bgPensumZeiteinheit", bgPensumZeiteinheit)
+			.add("beitragshoeheProzent", beitragshoeheProzent)
 
 			.add("einkommensjahr", einkommensjahr)
 			.add("massgebendesEinkommenVorAbzugFamgr", massgebendesEinkommenVorAbzugFamgr)
@@ -326,7 +332,8 @@ public class BGCalculationResult extends AbstractEntity {
 			besondereBeduerfnisseBestaetigt == otherResult.besondereBeduerfnisseBestaetigt &&
 			MathUtil.isSame(verguenstigungProZeiteinheit, otherResult.verguenstigungProZeiteinheit) &&
 			auszahlungAnEltern == otherResult.isAuszahlungAnEltern() &&
-			babyTarif == otherResult.babyTarif;
+			babyTarif == otherResult.babyTarif &&
+			Objects.equals(beitragshoeheProzent, otherResult.beitragshoeheProzent);
 	}
 
 	public static boolean isSameSichtbareDaten(@Nullable BGCalculationResult thisEntity, @Nullable BGCalculationResult otherEntity) {
@@ -352,7 +359,8 @@ public class BGCalculationResult extends AbstractEntity {
 					otherEntity.tsCalculationResultOhnePaedagogischerBetreuung) &&
 				MathUtil.isSame(thisEntity.verguenstigungProZeiteinheit, otherEntity.verguenstigungProZeiteinheit) &&
 				thisEntity.auszahlungAnEltern == otherEntity.auszahlungAnEltern &&
-					thisEntity.babyTarif == otherEntity.babyTarif
+					thisEntity.babyTarif == otherEntity.babyTarif &&
+				Objects.equals(thisEntity.beitragshoeheProzent, otherEntity.beitragshoeheProzent)
 		));
 	}
 
@@ -367,7 +375,8 @@ public class BGCalculationResult extends AbstractEntity {
 			MathUtil.isSame(thisEntity.getBgPensumProzent(), otherEntity.getBgPensumProzent()) &&
 			MathUtil.isSame(thisEntity.minimalerElternbeitragGekuerzt, otherEntity.minimalerElternbeitragGekuerzt) &&
 			thisEntity.anspruchspensumProzent == otherEntity.anspruchspensumProzent &&
-			thisEntity.auszahlungAnEltern == otherEntity.auszahlungAnEltern
+			thisEntity.auszahlungAnEltern == otherEntity.auszahlungAnEltern &&
+			Objects.equals(thisEntity.beitragshoeheProzent, otherEntity.beitragshoeheProzent)
 		));
 	}
 
@@ -405,7 +414,8 @@ public class BGCalculationResult extends AbstractEntity {
 				(thisEntity.minimalesEwpUnterschritten == otherEntity.minimalesEwpUnterschritten) &&
 				isSameZeiteinheiten(thisEntity, otherEntity) &&
 				thisEntity.auszahlungAnEltern == otherEntity.auszahlungAnEltern &&
-					thisEntity.babyTarif == otherEntity.babyTarif
+				thisEntity.babyTarif == otherEntity.babyTarif &&
+				Objects.equals(thisEntity.beitragshoeheProzent, otherEntity.beitragshoeheProzent)
 		));
 	}
 
@@ -716,12 +726,19 @@ public class BGCalculationResult extends AbstractEntity {
 		this.babyTarif = babyTarif;
 	}
 
+	public Integer getBeitragshoeheProzent() {
+		return beitragshoeheProzent;
+	}
+
+	public void setBeitragshoeheProzent(Integer beitragshoeheProzent) {
+		this.beitragshoeheProzent = beitragshoeheProzent;
+	}
+
 	// changes in mutationen can be ignored, as long as nothing except FinSit data changes
 	public boolean differsIgnorableFrom(BGCalculationResult otherResult) {
 		return 	MathUtil.isSame(betreuungspensumProzent, otherResult.betreuungspensumProzent) &&
 				this.anspruchspensumProzent == otherResult.anspruchspensumProzent &&
 				MathUtil.isSame(famGroesse, otherResult.famGroesse) &&
-				MathUtil.isSame(vollkosten, otherResult.vollkosten) &&
 				MathUtil.isSame(verguenstigungMahlzeitenTotal, otherResult.verguenstigungMahlzeitenTotal) &&
 				besondereBeduerfnisseBestaetigt == otherResult.besondereBeduerfnisseBestaetigt &&
 				babyTarif == otherResult.babyTarif &&

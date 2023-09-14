@@ -17,15 +17,14 @@
 
 package ch.dvbern.ebegu.entities;
 
-import java.math.BigDecimal;
+import ch.dvbern.ebegu.enums.AntragCopyType;
+import org.hibernate.envers.Audited;
 
 import javax.annotation.Nonnull;
 import javax.persistence.Column;
 import javax.persistence.MappedSuperclass;
 import javax.validation.constraints.NotNull;
-
-import ch.dvbern.ebegu.enums.AntragCopyType;
-import org.hibernate.envers.Audited;
+import java.math.BigDecimal;
 
 @MappedSuperclass
 @Audited
@@ -111,6 +110,7 @@ public class AbstractMahlzeitenPensum extends AbstractDecimalPensum {
 			target.setTarifProNebenmahlzeit(this.getTarifProNebenmahlzeit());
 			break;
 		case ERNEUERUNG:
+		case ERNEUERUNG_AR_2023:
 		case MUTATION_NEUES_DOSSIER:
 		case ERNEUERUNG_NEUES_DOSSIER:
 			break;

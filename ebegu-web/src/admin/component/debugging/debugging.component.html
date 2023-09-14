@@ -1,5 +1,5 @@
 <!--
-  ~ Copyright (C) 2018 DV Bern AG, Switzerland
+  ~ Copyright (C) 2023 DV Bern AG, Switzerland
   ~
   ~ This program is free software: you can redistribute it and/or modify
   ~ it under the terms of the GNU Affero General Public License as
@@ -8,11 +8,11 @@
   ~
   ~ This program is distributed in the hope that it will be useful,
   ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
-  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
   ~ GNU Affero General Public License for more details.
   ~
   ~ You should have received a copy of the GNU Affero General Public License
-  ~ along with this program.  If not, see <https://www.gnu.org/licenses/>.
+  ~ along with this program. If not, see <https://www.gnu.org/licenses/>.
   -->
 
 <dv-full-height-container>
@@ -64,5 +64,42 @@
                 </div>
             </div>
         </form>
+
+        <div class="view-title margin-top-40">
+            <h2>Neue BG-Berechung für bereits verfügte Gesuche simulieren</h2>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <p>Hier kann für bereits Gesuche eine Neuberechnung der Betreuungsgutscheine simuliert werden.
+                    Falls es Abweichungen zwischen den Betreuungsgutscheinen des verfügten Gesuchs und der Simulation gibt, werden
+                    die unten angezeigt (falls das Resultat identisch ist, wird nichts angezeigt).
+                    <br>Mehrere GesuchIds auf unterschiedlichen Zeilen eingeben</p>
+            </div>
+        </div>
+        <div>
+            <div class="row margin-top-10">
+                <div class="col-md-6">
+                    <textarea [(ngModel)]="gesuchIdsStr"
+                              class="form-control"
+                              id="gesuchIds">
+                </textarea>
+                </div>
+                <div class="col-md-3">
+                    <button (click)="startSimulation()" class="dv-btn">
+                        Simulation starten
+                    </button>
+                </div>
+            </div>
+            <div class="row margin-top-10" *ngIf="simulationsFinished > 0">
+                <div class="col-md-12">
+                    <p>Simulation {{simulationsFinished}} von {{gesuchIds.length}} fertig</p>
+                </div>
+                <div class="col-md-12" id="simulationResult">
+                    <p>{{simulationResult}}</p>
+                </div>
+            </div>
+        </div>
+
+
     </div>
 </dv-full-height-container>

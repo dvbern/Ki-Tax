@@ -27,6 +27,7 @@ import javax.annotation.Nullable;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
 import javax.persistence.ForeignKey;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -65,6 +66,7 @@ import org.hibernate.search.annotations.IndexedEmbedded;
 	uniqueConstraints = @UniqueConstraint(columnNames = { "kindNummer", "gesuch_id" }, name = "UK_kindcontainer_gesuch_kind_nummer")
 )
 @Indexed
+@EntityListeners({ AlleFaelleKindContainerListener.class })
 @Analyzer(definition = "EBEGUGermanAnalyzer")
 public class KindContainer extends AbstractMutableEntity implements Comparable<KindContainer>, Searchable {
 
@@ -244,6 +246,7 @@ public class KindContainer extends AbstractMutableEntity implements Comparable<K
 			target.setKeinSelbstbehaltDurchGemeinde(this.getKeinSelbstbehaltDurchGemeinde());
 			break;
 		case ERNEUERUNG:
+		case ERNEUERUNG_AR_2023:
 		case MUTATION_NEUES_DOSSIER:
 		case ERNEUERUNG_NEUES_DOSSIER:
 			target.setNextNumberBetreuung(1); // Betreuungen werden wieder ab 1 durchnummeriert

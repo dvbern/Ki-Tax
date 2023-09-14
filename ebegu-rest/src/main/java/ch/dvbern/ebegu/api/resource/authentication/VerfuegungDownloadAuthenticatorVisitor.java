@@ -1,7 +1,5 @@
 package ch.dvbern.ebegu.api.resource.authentication;
 
-import javax.management.BadBinaryOpValueExpException;
-
 import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.util.mandant.MandantVisitor;
@@ -35,6 +33,6 @@ public class VerfuegungDownloadAuthenticatorVisitor implements MandantVisitor<Bo
 
 	@Override
 	public Boolean visitAppenzellAusserrhoden() {
-		return !this.role.isInstitutionRole();
+		return Boolean.TRUE;
 	}
 }

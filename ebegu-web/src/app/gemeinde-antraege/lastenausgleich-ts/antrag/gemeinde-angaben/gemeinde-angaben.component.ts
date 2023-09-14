@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020 DV Bern AG, Switzerland
+ * Copyright (C) 2023 DV Bern AG, Switzerland
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -8,36 +8,55 @@
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program. If not, see <https://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnInit, ViewEncapsulation} from '@angular/core';
+import {
+    ChangeDetectionStrategy,
+    ChangeDetectorRef,
+    Component,
+    Input,
+    OnDestroy,
+    OnInit,
+    ViewEncapsulation
+} from '@angular/core';
 import {AbstractControl, FormBuilder, FormGroup, ValidatorFn, Validators} from '@angular/forms';
 import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
 import {MatRadioChange} from '@angular/material/radio';
 import {TranslateService} from '@ngx-translate/core';
 import {StateService, UIRouterGlobals} from '@uirouter/core';
-import {BehaviorSubject, combineLatest, Subject, Subscription} from 'rxjs';
+import {BehaviorSubject, combineLatest, ReplaySubject, Subject, Subscription} from 'rxjs';
 import {map, startWith} from 'rxjs/operators';
 import {EinstellungRS} from '../../../../../admin/service/einstellungRS.rest';
 import {AuthServiceRS} from '../../../../../authentication/service/AuthServiceRS.rest';
 import {TSEinstellungKey} from '../../../../../models/enums/TSEinstellungKey';
-import {TSLastenausgleichTagesschuleAngabenGemeindeFormularStatus} from '../../../../../models/enums/TSLastenausgleichTagesschuleAngabenGemeindeFormularStatus';
-import {TSLastenausgleichTagesschuleAngabenGemeindeStatus} from '../../../../../models/enums/TSLastenausgleichTagesschuleAngabenGemeindeStatus';
+import {
+    TSLastenausgleichTagesschuleAngabenGemeindeFormularStatus
+} from '../../../../../models/enums/TSLastenausgleichTagesschuleAngabenGemeindeFormularStatus';
+import {
+    TSLastenausgleichTagesschuleAngabenGemeindeStatus
+} from '../../../../../models/enums/TSLastenausgleichTagesschuleAngabenGemeindeStatus';
 import {TSRole} from '../../../../../models/enums/TSRole';
 import {TSWizardStepXTyp} from '../../../../../models/enums/TSWizardStepXTyp';
-import {TSLastenausgleichTagesschuleAngabenGemeinde} from '../../../../../models/gemeindeantrag/TSLastenausgleichTagesschuleAngabenGemeinde';
-import {TSLastenausgleichTagesschuleAngabenGemeindeContainer} from '../../../../../models/gemeindeantrag/TSLastenausgleichTagesschuleAngabenGemeindeContainer';
+import {
+    TSLastenausgleichTagesschuleAngabenGemeinde
+} from '../../../../../models/gemeindeantrag/TSLastenausgleichTagesschuleAngabenGemeinde';
+import {
+    TSLastenausgleichTagesschuleAngabenGemeindeContainer
+} from '../../../../../models/gemeindeantrag/TSLastenausgleichTagesschuleAngabenGemeindeContainer';
 import {TSBenutzer} from '../../../../../models/TSBenutzer';
 import {TSEinstellung} from '../../../../../models/TSEinstellung';
 import {TSExceptionReport} from '../../../../../models/TSExceptionReport';
 import {EbeguUtil} from '../../../../../utils/EbeguUtil';
+import {MathUtil} from '../../../../../utils/MathUtil';
 import {TSRoleUtil} from '../../../../../utils/TSRoleUtil';
-import {DvNgConfirmDialogComponent} from '../../../../core/component/dv-ng-confirm-dialog/dv-ng-confirm-dialog.component';
+import {
+    DvNgConfirmDialogComponent
+} from '../../../../core/component/dv-ng-confirm-dialog/dv-ng-confirm-dialog.component';
 import {DvNgOkDialogComponent} from '../../../../core/component/dv-ng-ok-dialog/dv-ng-ok-dialog.component';
 import {CONSTANTS} from '../../../../core/constants/CONSTANTS';
 import {ErrorService} from '../../../../core/errors/service/ErrorService';
@@ -58,7 +77,7 @@ const LOG = LogFactory.createLog('GemeindeAngabenComponent');
     changeDetection: ChangeDetectionStrategy.OnPush,
     encapsulation: ViewEncapsulation.None
 })
-export class GemeindeAngabenComponent implements OnInit {
+export class GemeindeAngabenComponent implements OnInit, OnDestroy {
 
     @Input() public lastenausgleichID: string;
     @Input() public triggerValidationOnInit = false;
@@ -68,8 +87,8 @@ export class GemeindeAngabenComponent implements OnInit {
     public formularInitForm: FormGroup;
     private subscription: Subscription;
     public abschliessenValidationActive = false;
-    public lohnnormkostenSettingMoreThanFifty$: Subject<TSEinstellung> = new Subject<TSEinstellung>();
-    public lohnnormkostenSettingLessThanFifty$: Subject<TSEinstellung> = new Subject<TSEinstellung>();
+    public lohnnormkostenSettingMoreThanFifty$: Subject<TSEinstellung> = new ReplaySubject<TSEinstellung>(1);
+    public lohnnormkostenSettingLessThanFifty$: Subject<TSEinstellung> = new ReplaySubject<TSEinstellung>(1);
 
     public saveVisible: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
     public abschliessenVisible: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
@@ -81,6 +100,7 @@ export class GemeindeAngabenComponent implements OnInit {
 
     private readonly kostenbeitragGemeinde = 0.2;
     private readonly WIZARD_TYPE: TSWizardStepXTyp = TSWizardStepXTyp.LASTENAUSGLEICH_TAGESSCHULEN;
+    public hasStarkeVeraenderung: boolean = false;
 
     public constructor(
         private readonly fb: FormBuilder,
@@ -212,6 +232,12 @@ export class GemeindeAngabenComponent implements OnInit {
                     Validators.pattern(CONSTANTS.PATTERN_TWO_DECIMALS)
                 ])
             ],
+            einnahmenElterngebuehrenVolksschulangebot: [
+                initialGemeindeAngaben?.einnahmenElterngebuehrenVolksschulangebot, Validators.compose([
+                    this.numberValidator(),
+                    Validators.pattern(CONSTANTS.PATTERN_TWO_DECIMALS)
+                ])
+            ],
             ersteRateAusbezahlt: [
                 initialGemeindeAngaben?.ersteRateAusbezahlt,
                 numberValidator(ValidationType.POSITIVE_INTEGER)
@@ -277,6 +303,7 @@ export class GemeindeAngabenComponent implements OnInit {
             ],
             // Bemerkungen
             bemerkungen: [initialGemeindeAngaben?.bemerkungen],
+            bemerkungStarkeVeraenderung: [initialGemeindeAngaben?.bemerkungStarkeVeraenderung],
             // calculated values
             lastenausgleichberechtigteBetreuungsstunden: [{value: ''}],
             davonStundenZuNormlohnWenigerAls50ProzentAusgebildeteBerechnet: [{value: '', disabled: true}],
@@ -411,7 +438,6 @@ export class GemeindeAngabenComponent implements OnInit {
             () => this.errorService.addMesageAsError(this.translateService.instant(
                 'einkommenElternBelegtBemerkung ValueChanges error')));
 
-        this.angabenForm.get('maximalTarif').setValidators([Validators.required]);
         this.angabenForm.get('maximalTarif').valueChanges.subscribe(value => {
             this.setValidatorRequiredIfFalse('maximalTarifBemerkung', value);
         }, () => this.errorService.addMesageAsError(this.translateService.instant('Maximal Tarif ValueChanges error')));
@@ -446,8 +472,10 @@ export class GemeindeAngabenComponent implements OnInit {
 
     private plausibilisierungAddition(): ValidatorFn {
         return control => parseFloat(this.angabenForm.get('lastenausgleichberechtigteBetreuungsstunden').value) ===
-            parseFloat(this.angabenForm.get('davonStundenZuNormlohnWenigerAls50ProzentAusgebildete').value) +
-            parseFloat(this.angabenForm.get('davonStundenZuNormlohnMehrAls50ProzentAusgebildete').value) ? null : {
+            MathUtil.addFloatPrecisionSafe(
+                parseFloat(this.angabenForm.get('davonStundenZuNormlohnWenigerAls50ProzentAusgebildete').value),
+                parseFloat(this.angabenForm.get('davonStundenZuNormlohnMehrAls50ProzentAusgebildete').value)
+            ) ? null : {
                 plausibilisierungAdditionError: control.value
             };
     }
@@ -503,8 +531,10 @@ export class GemeindeAngabenComponent implements OnInit {
             ]
         ).subscribe(formValues => {
             this.angabenForm.get('lastenausgleichberechtigteBetreuungsstunden')
-                .setValue(parseFloat(formValues[0] || 0) + parseFloat(formValues[1] || 0)
-                    + parseFloat(formValues[2] || 0));
+                .setValue(
+                    MathUtil.addArrayFloatPrecisionSafe(formValues[0] || 0,
+                        [formValues[1] || 0, formValues[2] || 0]),
+                );
             this.angabenForm.get('davonStundenZuNormlohnWenigerAls50ProzentAusgebildete').updateValueAndValidity();
             this.angabenForm.get('davonStundenZuNormlohnMehrAls50ProzentAusgebildete').updateValueAndValidity();
             this.angabenForm.get('lastenausgleichberechtigteBetreuungsstunden')
@@ -531,8 +561,8 @@ export class GemeindeAngabenComponent implements OnInit {
         }, () => this.errorService.addMesageAsError(this.translateService.instant('LATS_CALCULATION_ERROR')));
     }
 
-    private setValidatorRequiredIfFalse(fieldname: string, value: boolean): void {
-        if (!value) {
+    private setValidatorRequiredIfFalse(fieldname: string, value: undefined | boolean): void {
+        if (EbeguUtil.isNotNullAndFalse(value)) {
             this.angabenForm.get(fieldname).setValidators([Validators.required]);
         } else {
             this.angabenForm.get(fieldname).setValidators(null);
@@ -570,16 +600,18 @@ export class GemeindeAngabenComponent implements OnInit {
                 .valueChanges
                 .pipe(
                     startWith(gemeindeAngabenFromServer?.einnahmenElterngebuehren || 0),
-                    map(value => this.parseFloatSafe(value))
-                )
+                    map(value => this.parseFloatSafe(value)),
+                ),
         ]).subscribe(values => {
+                const result = MathUtil.subtractFloatPrecisionSafe(values[0], values[1]);
+                // round to next Franken
+                const roundedResult = Math.ceil(result).toFixed(2);
                 this.angabenForm.get('lastenausgleichsberechtigerBetrag').setValue(
-                    // round to next Franken
-                    Math.ceil(values[0] - values[1]).toFixed(2)
+                    roundedResult,
                 );
                 this.angabenForm.get('lastenausgleichsberechtigerBetragRO').setValue(
                     // round to next Franken
-                    Math.ceil(values[0] - values[1]).toFixed(2)
+                    roundedResult,
                 );
             },
             () => this.errorService.addMesageAsError(this.translateService.instant('LATS_CALCULATION_ERROR'))
@@ -607,7 +639,8 @@ export class GemeindeAngabenComponent implements OnInit {
                 .valueChanges
                 .pipe(startWith(gemeindeAngabenFromServer?.einnahmenSubventionenDritter || 0))
         ]).subscribe(values => {
-                const gemeindeBeitragOderUeberschuss = (values[0] - values[1] - values[2] - values[3] - values[4]).toFixed(2);
+                const gemeindeBeitragOderUeberschuss = MathUtil.subtractArrayFloatPrecisionSafe(values[0],
+                    values.slice(1, 4));
                 if (+gemeindeBeitragOderUeberschuss < 0) {
                     this.angabenForm.get('kostenueberschussGemeinde')
                         .setValue(gemeindeBeitragOderUeberschuss);
@@ -633,13 +666,13 @@ export class GemeindeAngabenComponent implements OnInit {
             [
                 this.angabenForm.get('davonStundenZuNormlohnWenigerAls50ProzentAusgebildeteBerechnet')
                     .valueChanges
-                    .pipe(startWith(0)),
+                    .pipe(startWith(0), map (formValue => parseFloat(formValue))),
                 this.angabenForm.get('davonStundenZuNormlohnMehrAls50ProzentAusgebildeteBerechnet')
                     .valueChanges
-                    .pipe(startWith(0))
+                    .pipe(startWith(0), map (formValue => parseFloat(formValue)))
             ]
         ).subscribe(value => {
-                const normlohnkostenExact = parseFloat(value[0] || 0) + parseFloat(value[1] || 0);
+                const normlohnkostenExact = MathUtil.addFloatPrecisionSafe(value[0], value[1]);
                 const normlohnkostenRounded = EbeguUtil.ceilToFiveRappen(normlohnkostenExact);
                 this.angabenForm.get('normlohnkostenBetreuungBerechnet')
                     .setValue(normlohnkostenRounded.toFixed(2));
@@ -1000,9 +1033,6 @@ export class GemeindeAngabenComponent implements OnInit {
     }
 
     private initControlling(): void {
-        if (!this.controllingActive()) {
-            return;
-        }
         combineLatest([
             this.lastenausgleichTSService.findAntragOfPreviousPeriode(this.lATSAngabenGemeindeContainer),
             this.lastenausgleichTSService.getErwarteteBetreuungsstunden(this.lATSAngabenGemeindeContainer)
@@ -1010,6 +1040,7 @@ export class GemeindeAngabenComponent implements OnInit {
             this.previousAntrag = results[0];
             this.erwarteteBetreuungsstunden = results[1];
             this.controllingCalculator = new TSControllingCalculator(this.angabenForm, results[0]);
+            this.calculateStarkeVeraenderung();
             this.cd.markForCheck();
         }, err => {
             LOG.error(err);
@@ -1023,5 +1054,14 @@ export class GemeindeAngabenComponent implements OnInit {
         }
 
         this.angabenForm.get(formFieldToClear).setValue(undefined);
+    }
+
+    private calculateStarkeVeraenderung(): void {
+        const starkeVeraenderungAb = 0.2; //veranderung Betreuungsstunden +/- 20% = Starke Veranderung
+        this.controllingCalculator.veraenderungBetreuungsstundenAsNumber$
+            .subscribe(value => {
+                this.hasStarkeVeraenderung = Math.abs(value) >= starkeVeraenderungAb;
+                this.cd.markForCheck();
+            });
     }
 }

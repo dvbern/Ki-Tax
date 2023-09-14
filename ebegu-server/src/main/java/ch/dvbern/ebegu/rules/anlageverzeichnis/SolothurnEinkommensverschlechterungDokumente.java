@@ -70,13 +70,14 @@ public class SolothurnEinkommensverschlechterungDokumente extends AbstractDokume
 		Set<DokumentGrund> anlageVerzeichnis) {
 
 		add(getDokument
-				(DokumentTyp.NACHWEIS_VERMOEGEN,
-					null,
-					null,
-					DokumentGrundPersonType.GESUCHSTELLER,
-					personNumber,
-					DokumentGrundTyp.EINKOMMENSVERSCHLECHTERUNG),
-			anlageVerzeichnis);
+					(DokumentTyp.NACHWEIS_VERMOEGEN,
+							null,
+							null,
+							DokumentGrundPersonType.GESUCHSTELLER,
+							personNumber,
+							DokumentGrundTyp.EINKOMMENSVERSCHLECHTERUNG),
+				anlageVerzeichnis);
+
 
 		add(getDokument
 				(DokumentTyp.NACHWEIS_LOHNAUSWEIS_1,

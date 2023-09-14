@@ -138,7 +138,6 @@ public class TageselternBernRechnerTest extends AbstractBGRechnerTest {
 			.isAfter(verfuegungZeitabschnitt.getGueltigkeit().getGueltigBis()));
 		inputAsiv.setEinschulungTyp(einschulungTyp);
 		inputAsiv.setBesondereBeduerfnisseBestaetigt(besondereBeduerfnisseBestaetigt);
-		inputAsiv.setKostenAnteilMonat(calculateKostenAnteilMonat(inputAsiv, intervall));
 
 		BGCalculationResult result = tageselternRechner.calculateAsiv(inputAsiv, parameterDTO);
 

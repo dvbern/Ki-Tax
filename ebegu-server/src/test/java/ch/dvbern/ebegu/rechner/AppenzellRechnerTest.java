@@ -1,3 +1,20 @@
+/*
+ * Copyright (C) 2023 DV Bern AG, Switzerland
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
 package ch.dvbern.ebegu.rechner;
 
 import java.math.BigDecimal;
@@ -8,7 +25,10 @@ import ch.dvbern.ebegu.entities.BGCalculationResult;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.EinschulungTyp;
 import ch.dvbern.ebegu.enums.PensumUnits;
+import ch.dvbern.ebegu.test.TestDataUtil;
 import ch.dvbern.ebegu.types.DateRange;
+import ch.dvbern.ebegu.util.EinschulungstypBgStundenFaktorVisitor;
+import ch.dvbern.ebegu.util.mandant.MandantIdentifier;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -74,9 +94,10 @@ public class AppenzellRechnerTest extends AbstractBGRechnerTest {
 	public void betreuungsPensumInStundenEingeschult() {
 		VerfuegungZeitabschnitt verfuegungZeitabschnitt = prepareVerfuegungZeitabschnitt(EinschulungTyp.KLASSE1);
 		verfuegungZeitabschnitt.getRelevantBgCalculationInput().setBetreuungspensumProzent(BigDecimal.valueOf(50));
+		verfuegungZeitabschnitt.getRelevantBgCalculationInput().setAnspruchspensumProzent(60);
 		BGCalculationResult result = calculateResult(verfuegungZeitabschnitt);
 		assertEquals(BigDecimal.valueOf(50), result.getBetreuungspensumProzent());
-		assertEquals(BigDecimal.valueOf(79.17), result.getBetreuungspensumZeiteinheit());
+		assertEquals(BigDecimal.valueOf(100), result.getBetreuungspensumZeiteinheit());
 	}
 
 	@Test
@@ -196,7 +217,22 @@ public class AppenzellRechnerTest extends AbstractBGRechnerTest {
 		verfuegungZeitabschnitt.getRelevantBgCalculationInput().setBabyTarif(true);
 
 		BGCalculationResult result = calculateResult(verfuegungZeitabschnitt);
-		assertEquals(BigDecimal.valueOf(2700), result.getVerguenstigung());
+		assertEquals(BigDecimal.valueOf(2322), result.getVerguenstigung());
+	}
+
+	@Test
+	public void gutscheinMaxStundenSatzUeberschrittenBabyAberAusserordentlicherAnspruch() {
+		VerfuegungZeitabschnitt verfuegungZeitabschnitt = prepareVerfuegungZeitabschnitt(EinschulungTyp.VORSCHULALTER);
+		verfuegungZeitabschnitt.setGueltigkeit(AUGUST);
+		verfuegungZeitabschnitt.setBesondereBeduerfnisseBestaetigtForAsivAndGemeinde(true);
+		verfuegungZeitabschnitt.getRelevantBgCalculationInput().setMonatlicheBetreuungskosten(BigDecimal.valueOf(5000));
+		verfuegungZeitabschnitt.getRelevantBgCalculationInput().setBetreuungspensumProzent(BigDecimal.valueOf(100));
+		verfuegungZeitabschnitt.getRelevantBgCalculationInput().setAnspruchspensumProzent(100);
+		verfuegungZeitabschnitt.getRelevantBgCalculationInput().setMassgebendesEinkommenVorAbzugFamgr(BigDecimal.valueOf(40000));
+		verfuegungZeitabschnitt.getRelevantBgCalculationInput().setBabyTarif(true);
+
+		BGCalculationResult result = calculateResult(verfuegungZeitabschnitt);
+		assertEquals(BigDecimal.valueOf(4300), result.getVerguenstigung());
 	}
 
 	@Test
@@ -209,7 +245,21 @@ public class AppenzellRechnerTest extends AbstractBGRechnerTest {
 		verfuegungZeitabschnitt.getRelevantBgCalculationInput().setMassgebendesEinkommenVorAbzugFamgr(BigDecimal.valueOf(40000));
 
 		BGCalculationResult result = calculateResult(verfuegungZeitabschnitt);
-		assertEquals(BigDecimal.valueOf(2300), result.getVerguenstigung());
+		assertEquals(BigDecimal.valueOf(1978), result.getVerguenstigung());
+	}
+
+	@Test
+	public void gutscheinMaxStundenSatzUeberschrittenKindAberAusserordentlicherAnspruch() {
+		VerfuegungZeitabschnitt verfuegungZeitabschnitt = prepareVerfuegungZeitabschnitt(EinschulungTyp.VORSCHULALTER);
+		verfuegungZeitabschnitt.setGueltigkeit(AUGUST);
+		verfuegungZeitabschnitt.setBesondereBeduerfnisseBestaetigtForAsivAndGemeinde(true);
+		verfuegungZeitabschnitt.getRelevantBgCalculationInput().setMonatlicheBetreuungskosten(BigDecimal.valueOf(5000));
+		verfuegungZeitabschnitt.getRelevantBgCalculationInput().setBetreuungspensumProzent(BigDecimal.valueOf(100));
+		verfuegungZeitabschnitt.getRelevantBgCalculationInput().setAnspruchspensumProzent(100);
+		verfuegungZeitabschnitt.getRelevantBgCalculationInput().setMassgebendesEinkommenVorAbzugFamgr(BigDecimal.valueOf(40000));
+
+		BGCalculationResult result = calculateResult(verfuegungZeitabschnitt);
+		assertEquals(BigDecimal.valueOf(4300), result.getVerguenstigung());
 	}
 
 
@@ -226,6 +276,9 @@ public class AppenzellRechnerTest extends AbstractBGRechnerTest {
 	private VerfuegungZeitabschnitt prepareVerfuegungZeitabschnitt(EinschulungTyp einschulungTyp) {
 		VerfuegungZeitabschnitt zeitabschnitt =  new VerfuegungZeitabschnitt();
 		zeitabschnitt.getRelevantBgCalculationInput().setEinschulungTyp(einschulungTyp);
+		BigDecimal faktor = new EinschulungstypBgStundenFaktorVisitor(einschulungTyp)
+				.getFaktor(TestDataUtil.createMandant(MandantIdentifier.APPENZELL_AUSSERRHODEN));
+		zeitabschnitt.getRelevantBgCalculationInput().setBgStundenFaktor(faktor);
 		return zeitabschnitt;
 	}
 }

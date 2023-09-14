@@ -49,4 +49,9 @@ public class EinkommenVerschlechterungDokumenteVisitor implements FinanzielleSit
 	public AbstractDokumente<AbstractFinanzielleSituation, Familiensituation> visitFinSitSolothurn() {
 		return new SolothurnEinkommensverschlechterungDokumente();
 	}
+
+	@Override
+	public AbstractDokumente<AbstractFinanzielleSituation, Familiensituation> visitFinSitAppenzell() {
+		return new AppenzellEinkommensverschlechterungDokumente();
+	}
 }

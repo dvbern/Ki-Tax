@@ -1,48 +1,21 @@
 /*
- * Ki-Tax: System for the management of external childcare subsidies
- * Copyright (C) 2017 City of Bern Switzerland
+ * Copyright (C) 2023 DV Bern AG, Switzerland
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Affero General Public License for more details.
+ *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
 package ch.dvbern.ebegu.api.resource;
-
-import java.net.URI;
-import java.util.Collection;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.annotation.security.DenyAll;
-import javax.annotation.security.PermitAll;
-import javax.annotation.security.RolesAllowed;
-import javax.ejb.Stateless;
-import javax.inject.Inject;
-import javax.servlet.http.HttpServletResponse;
-import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.UriInfo;
 
 import ch.dvbern.ebegu.api.converter.JaxBConverter;
 import ch.dvbern.ebegu.api.dtos.JaxAlwaysEditableProperties;
@@ -55,56 +28,44 @@ import ch.dvbern.ebegu.config.EbeguConfiguration;
 import ch.dvbern.ebegu.dto.JaxAntragDTO;
 import ch.dvbern.ebegu.dto.neskovanp.KibonAnfrageDTO;
 import ch.dvbern.ebegu.dto.personensuche.EWKResultat;
-import ch.dvbern.ebegu.entities.Dossier;
-import ch.dvbern.ebegu.entities.Gesuch;
-import ch.dvbern.ebegu.entities.Gesuchsperiode;
-import ch.dvbern.ebegu.entities.GesuchstellerContainer;
-import ch.dvbern.ebegu.entities.Institution;
-import ch.dvbern.ebegu.entities.SteuerdatenResponse;
-import ch.dvbern.ebegu.enums.AntragStatus;
-import ch.dvbern.ebegu.enums.AntragStatusDTO;
-import ch.dvbern.ebegu.enums.ErrorCodeEnum;
-import ch.dvbern.ebegu.enums.FinSitStatus;
-import ch.dvbern.ebegu.enums.GesuchBetreuungenStatus;
-import ch.dvbern.ebegu.enums.UserRole;
+import ch.dvbern.ebegu.entities.*;
+import ch.dvbern.ebegu.enums.*;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.EbeguException;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
-import ch.dvbern.ebegu.services.DossierService;
-import ch.dvbern.ebegu.services.GesuchService;
-import ch.dvbern.ebegu.services.GesuchsperiodeService;
-import ch.dvbern.ebegu.services.GesuchstellerService;
-import ch.dvbern.ebegu.services.InstitutionService;
-import ch.dvbern.ebegu.services.KibonAnfrageService;
-import ch.dvbern.ebegu.services.MassenversandService;
-import ch.dvbern.ebegu.services.PensumAusserordentlicherAnspruchService;
-import ch.dvbern.ebegu.services.PersonenSucheService;
+import ch.dvbern.ebegu.services.*;
 import ch.dvbern.ebegu.util.AntragStatusConverterUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Validate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_BG;
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_GEMEINDE;
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_INSTITUTION;
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_MANDANT;
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_SOZIALDIENST;
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_TRAEGERSCHAFT;
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_TS;
-import static ch.dvbern.ebegu.enums.UserRoleName.GESUCHSTELLER;
-import static ch.dvbern.ebegu.enums.UserRoleName.JURIST;
-import static ch.dvbern.ebegu.enums.UserRoleName.REVISOR;
-import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_BG;
-import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_GEMEINDE;
-import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_INSTITUTION;
-import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_MANDANT;
-import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_SOZIALDIENST;
-import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_TRAEGERSCHAFT;
-import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_TS;
-import static ch.dvbern.ebegu.enums.UserRoleName.STEUERAMT;
-import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.annotation.Resource;
+import javax.annotation.security.DenyAll;
+import javax.annotation.security.PermitAll;
+import javax.annotation.security.RolesAllowed;
+import javax.ejb.EJBContext;
+import javax.ejb.Stateless;
+import javax.inject.Inject;
+import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
+import javax.ws.rs.*;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriInfo;
+import java.net.URI;
+import java.util.Collection;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+
+import static ch.dvbern.ebegu.enums.UserRoleName.*;
 
 /**
  * Resource fuer Gesuch
@@ -157,6 +118,12 @@ public class GesuchResource {
 
 	@Inject
 	private EbeguConfiguration configuration;
+
+	@Inject
+	private SimulationService simulationService;
+
+	@Resource
+	private EJBContext context;    //fuer rollback
 
 	@ApiOperation(value = "Creates a new Antrag in the database. The transfer object also has a relation to " +
 		"Familiensituation which is stored in the database as well.", response = JaxGesuch.class)
@@ -229,6 +196,26 @@ public class GesuchResource {
 		Gesuch gesuchToReturn = gesuchOptional.get();
 		final JaxGesuch jaxGesuch = converter.gesuchToJAX(gesuchToReturn);
 		return jaxGesuch;
+	}
+
+	@ApiOperation(value = "Gibt den Antrag für die übergebene FinSit ID zurück", response = JaxGesuch.class)
+	@Nullable
+	@GET
+	@Path("/gesuchForFinSit/{finSitId}")
+	@Consumes(MediaType.WILDCARD)
+	@Produces(MediaType.APPLICATION_JSON)
+	@PermitAll // Grundsaetzliche fuer alle Rollen: Datenabhaengig. -> Authorizer
+	public JaxGesuch findGesuchForFinSit(
+		@Nonnull @NotNull @PathParam("finSitId") JaxId finSitJAXPId) {
+		Objects.requireNonNull(finSitJAXPId.getId());
+		String finSitId = converter.toEntityId(finSitJAXPId);
+		Optional<Gesuch> gesuchOptional = gesuchService.findGesuchForFinSit(finSitId);
+
+		if (gesuchOptional.isEmpty()) {
+			throw new EbeguEntityNotFoundException("findGesuchForFinSit", finSitId);
+		}
+		Gesuch gesuchToReturn = gesuchOptional.get();
+		return converter.gesuchToJAX(gesuchToReturn);
 	}
 
 	@ApiOperation(value = "Sucht eine Person im EWK nach Name, Vorname, Geburtsdatum und Geschlecht.",
@@ -318,6 +305,34 @@ public class GesuchResource {
 			return cleanGesuchForInstitutionTraegerschaft(completeGesuch, instForCurrBenutzer);
 		}
 		return null; // aus sicherheitsgruenden geben wir null zurueck wenn etwas nicht stimmmt
+	}
+
+
+	@ApiOperation(value = "Gibt das letzte verfügte Gesuch für das Gesuch mit uebergebenen Id zurueck. ", response = JaxGesuch.class)
+	@Nullable
+	@GET
+	@Path("/neustesVerfuegtesGesuchFuerGesuch/{gesuchId}")
+	@Consumes(MediaType.WILDCARD)
+	@Produces(MediaType.APPLICATION_JSON)
+	@PermitAll
+	public JaxId getNeustesVerfuegtesGesuchFuerGesuch(
+		@Nonnull @NotNull @PathParam("gesuchId") JaxId gesuchJAXPId) {
+		Optional<Gesuch> gesuchOptional = gesuchService.findGesuch(converter.toEntityId(gesuchJAXPId));
+
+		if (gesuchOptional.isPresent()) {
+			Optional<Gesuch> neustesVerfuegtesGesuch = gesuchService.getNeustesVerfuegtesGesuchFuerGesuch(gesuchOptional.get());
+			if (neustesVerfuegtesGesuch.isEmpty()) {
+				throw new EbeguEntityNotFoundException("getNeustesVerfuegtesGesuchFuerGesuch",
+					"Neustes verfügtes Gesuch nicht gefunden", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND);
+			}
+			Gesuch gesuchToReturn = neustesVerfuegtesGesuch.get();
+			return converter.toJaxId(gesuchToReturn);
+		}
+		String message = String.format(
+			"Could not get Gesuch because the Gesuch with ID %s could not be read",
+			gesuchJAXPId.getId());
+		throw new EbeguEntityNotFoundException("getNeustesVerfuegtesGesuchFuerGesuch", message, ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
+			GESUCH_ID_INVALID + gesuchJAXPId.getId());
 	}
 
 	/**
@@ -857,14 +872,11 @@ public class GesuchResource {
 	@Path("/{antragId}/ignorieren")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE })
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, SACHBEARBEITER_TS, ADMIN_TS })
 	public Response mutationIgnorieren(
 		@Nonnull @NotNull @PathParam("antragId") JaxId antragJaxId,
 		@Context UriInfo uriInfo,
 		@Context HttpServletResponse response) {
-
-		// Sicherstellen, dass der Status des Client-Objektes genau dem des Servers entspricht
-		resourceHelper.assertGesuchStatusEqual(antragJaxId.getId(), AntragStatusDTO.GEPRUEFT, AntragStatusDTO.VERFUEGEN);
 
 		Objects.requireNonNull(antragJaxId.getId());
 		final String antragId = converter.toEntityId(antragJaxId);
@@ -873,6 +885,21 @@ public class GesuchResource {
 			new EbeguEntityNotFoundException("mutationIgnorieren", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
 				GESUCH_ID_INVALID + antragId)
 		);
+
+		// Sicherstellen, dass der Status des Client-Objektes genau dem des Servers entspricht
+		if (gesuch.hasOnlyBetreuungenOfSchulamt()) {
+			resourceHelper.assertGesuchStatusEqual(
+				antragJaxId.getId(),
+				AntragStatusDTO.IN_BEARBEITUNG_JA
+			);
+		} else {
+			resourceHelper.assertGesuchStatusEqual(
+				antragJaxId.getId(),
+				AntragStatusDTO.GEPRUEFT,
+				AntragStatusDTO.VERFUEGEN
+			);
+		}
+
 		Gesuch closedGesuch = gesuchService.mutationIgnorieren(gesuch);
 		Optional<Gesuch> reloadedGesuch = gesuchService.findGesuch(closedGesuch.getId());
 
@@ -1178,6 +1205,69 @@ public class GesuchResource {
 				antragJaxId.getId()));
 		Gesuch modifiedGesuch = gesuchService.updateMarkiertFuerKontroll(gesuchFromDB, markiertFuerKontroll);
 		return converter.gesuchToJAX(modifiedGesuch);
+	}
+
+	@ApiOperation(value = "Simuliert eine neue Neuberechnung der Betreuungsgutscheine"
+		+ " für ein bereits verfügtes Gesuch.",
+		response = Boolean.class)
+	@Nullable
+	@POST
+	@Path("/simulateNewVerfuegung/{gesuchId}")
+	@Consumes(MediaType.WILDCARD)
+	@Produces(MediaType.TEXT_PLAIN)
+	@RolesAllowed({ SUPER_ADMIN })
+	public Response simulateNewVerfuegung(
+		@Nonnull @NotNull @PathParam("gesuchId") String gesuchId
+	) {
+		if (!configuration.getIsDevmode()) {
+			throw new EbeguRuntimeException("simulateNewVerfuegung", "simulateNewVerfuegung darf nur in Devmode verwendet werden");
+		}
+		Gesuch gesuchFromDB = gesuchService.findGesuch(gesuchId).orElseThrow(
+			() -> new EbeguEntityNotFoundException("simulateNewVerfuegung", "Gesuch nicht gefunden", gesuchId)
+		);
+		String simulation;
+		try {
+			simulation = simulationService.simulateNewVerfuegung(gesuchFromDB);
+		} catch (EbeguRuntimeException e) {
+			LOG.error("simulateNewVerfuegung", e);
+			simulation = e.getMessage();
+		}
+		// transaction muss rollbacked werden, damit die Änderung in den Betreuungsstatus nicht gespeichert wird.
+		context.setRollbackOnly();
+		return Response.ok(simulation).build();
+	}
+
+	@ApiOperation(value = "Gibt der jüngste Vorgänger des übergebenen Gesuches zurück" +
+		"der nicht ignoriert wurde.", response = JaxGesuch.class)
+	@Nullable
+	@GET
+	@Path("/vorgaengerGesuchNotIgnoriert/{gesuchId}")
+	@Consumes(MediaType.WILDCARD)
+	@Produces(MediaType.APPLICATION_JSON)
+	@PermitAll // Grundsaetzliche fuer alle Rollen: Datenabhaengig. -> Authorizer
+	public JaxGesuch findVorgaengerGesuchNotIgnoriert(
+		@Nonnull @NotNull @PathParam("gesuchId") JaxId gesuchJAXPId) {
+		Objects.requireNonNull(gesuchJAXPId.getId());
+		String gesuchId = converter.toEntityId(gesuchJAXPId);
+		var vorgangerGesuch = gesuchService.findVorgaengerGesuchNotIgnoriert(gesuchId);
+		return converter.gesuchToJAX(vorgangerGesuch);
+	}
+
+	@ApiOperation(value = "Gibt zurück ob der Gesuchsteller erfolgreich mit einer ZPV Nummer verknuepft wurde",
+		response = Boolean.class)
+	@GET
+	@Path("/zpvNummerSuccess/{gesuchstellerId}")
+	@Consumes(MediaType.WILDCARD)
+	@Produces(MediaType.APPLICATION_JSON)
+	@PermitAll
+	public boolean zpvNummerSuccess(@Nonnull @PathParam("gesuchstellerId") JaxId gesuchstellerJAXPId) {
+
+		Objects.requireNonNull(gesuchstellerJAXPId.getId());
+		String gesuchstellerID = converter.toEntityId(gesuchstellerJAXPId);
+		GesuchstellerContainer gesuchsteller = gesuchstellerService.findGesuchsteller(gesuchstellerID)
+			.orElseThrow(() -> new EbeguEntityNotFoundException("zpvNummerSuccess", gesuchstellerID));
+
+		return StringUtils.isNotEmpty(gesuchsteller.getGesuchstellerJA().getZpvNummer());
 	}
 
 }

@@ -27,7 +27,7 @@ const LOG = LogFactory.createLog('SavingInfo');
     styleUrls: ['./saving-info.component.less'],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class SavingInfo implements OnInit {
+export class SavingInfoComponent implements OnInit {
 
     private static readonly HIDE_SAVED_AFTER_MS = 3000;
 
@@ -62,6 +62,6 @@ export class SavingInfo implements OnInit {
         setTimeout(() => {
             this.showSaved = false;
             this.ref.markForCheck();
-        }, SavingInfo.HIDE_SAVED_AFTER_MS);
+        }, SavingInfoComponent.HIDE_SAVED_AFTER_MS);
     }
 }

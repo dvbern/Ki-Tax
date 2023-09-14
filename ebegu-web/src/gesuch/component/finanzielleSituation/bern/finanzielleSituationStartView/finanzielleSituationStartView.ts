@@ -1,16 +1,18 @@
 /*
- * Ki-Tax: System for the management of external childcare subsidies
- * Copyright (C) 2017 City of Bern Switzerland
+ * Copyright (C) 2023 DV Bern AG, Switzerland
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU Affero General Public License for more details.
+ *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
 import {IComponentOptions} from 'angular';
@@ -78,8 +80,6 @@ export class FinanzielleSituationStartViewController extends AbstractFinSitBernV
     public laenderList: TSLand[];
     private triedSavingWithoutForm: boolean = false;
 
-    private isAlwaysShowAuszahlungsdatenActivated: boolean = false;
-
     public constructor(
         gesuchModelManager: GesuchModelManager,
         berechnungsManager: BerechnungsManager,
@@ -123,9 +123,6 @@ export class FinanzielleSituationStartViewController extends AbstractFinSitBernV
                                                                                                     // just once
 
         this.gesuchModelManager.setGesuchstellerNumber(1);
-
-        demoFeatureRS.isDemoFeatureAllowed(TSDemoFeature.ALLWAYS_SHOW_ZAHLUNGSDATEN_ON_FINSIT_BERN)
-            .then(isAllowed => this.isAlwaysShowAuszahlungsdatenActivated = isAllowed);
     }
 
     public showSteuerveranlagung(): boolean {
@@ -134,7 +131,7 @@ export class FinanzielleSituationStartViewController extends AbstractFinSitBernV
             return false;
         }
         // bei alleiniger Steuererklärung wird die Frage immer auf der finSitView gezeigt
-        if (!this.model.gemeinsameSteuererklaerung) {
+        if (!this.model.familienSituation.gemeinsameSteuererklaerung) {
             return false;
         }
 
@@ -237,14 +234,14 @@ export class FinanzielleSituationStartViewController extends AbstractFinSitBernV
     }
 
     public gemeinsameStekClicked(): void {
-        if (!this.model.gemeinsameSteuererklaerung && this.model.finanzielleSituationContainerGS1 && !this.model.finanzielleSituationContainerGS1.isNew()) {
+        if (!this.model.familienSituation.gemeinsameSteuererklaerung && this.model.finanzielleSituationContainerGS1 && !this.model.finanzielleSituationContainerGS1.isNew()) {
             // Wenn neu NEIN und schon was eingegeben -> Fragen mal auf false setzen und Status auf nok damit man
             // sicher noch weiter muss!
             this.initSteuerFragen();
             this.wizardStepManager.updateCurrentWizardStepStatusSafe(
                 TSWizardStepName.FINANZIELLE_SITUATION,
                 TSWizardStepStatus.NOK);
-        } else if (!this.model.gemeinsameSteuererklaerung) {
+        } else if (!this.model.familienSituation.gemeinsameSteuererklaerung) {
             // Wenn neu NEIN -> Fragen loeschen wenn noch nichts eingegeben worden ist
             this.model.finanzielleSituationContainerGS1 = undefined;
             this.model.finanzielleSituationContainerGS2 = undefined;
@@ -284,7 +281,7 @@ export class FinanzielleSituationStartViewController extends AbstractFinSitBernV
     }
 
     public steuererklaerungClicked(): void {
-        if (this.model.gemeinsameSteuererklaerung) {
+        if (this.model.familienSituation.gemeinsameSteuererklaerung) {
             this.model.finanzielleSituationContainerGS2.finanzielleSituationJA.steuererklaerungAusgefuellt =
                 this.model.finanzielleSituationContainerGS1.finanzielleSituationJA.steuererklaerungAusgefuellt;
         }
@@ -307,36 +304,13 @@ export class FinanzielleSituationStartViewController extends AbstractFinSitBernV
 
     public isMahlzeitenverguenstigungEnabled(): boolean {
         return this.gesuchModelManager.isMahlzeitenverguenstigungEnabled() &&
-            (this.model.sozialhilfeBezueger || this.model.verguenstigungGewuenscht)
+            (this.model.familienSituation.sozialhilfeBezueger || this.model.familienSituation.verguenstigungGewuenscht)
             && this.getGesuch() && !this.getGesuch().areThereOnlyFerieninsel();
     }
 
-    public showZahlungsdaten(): boolean {
-        return this.isDemofeatureAlwaysShowZahlungsdatenEnabled() ||
-        (this.isMahlzeitenverguenstigungEnabled() &&
-            !this.model.zahlungsinformationen.keineMahlzeitenverguenstigungBeantragt);
-    }
-
-    private isDemofeatureAlwaysShowZahlungsdatenEnabled() {
-        return this.isAlwaysShowAuszahlungsdatenActivated;
-    }
-
-    public changeMahlzeitenGewuenscht(): void {
-        // Solang dei Funktion noch mit dem Demofeature ausgeblendet ist, sollen die Auszahlungsdaten reseted werden,
-        // wenn die mahlzeitenvergünsitung nicht mehr beantragt wird
-        // das kann gelöscht werden, sobald wir die funktion permanent aktivieren
-        if (this.model.zahlungsinformationen.keineMahlzeitenverguenstigungBeantragt &&
-            !this.isDemofeatureAlwaysShowZahlungsdatenEnabled()) {
-            this.model.zahlungsinformationen.iban = undefined;
-            this.model.zahlungsinformationen.kontoinhaber = undefined;
-            this.model.zahlungsinformationen.abweichendeZahlungsadresse = undefined;
-            this.model.zahlungsinformationen.zahlungsadresse = undefined;
-        }
-    }
-
     public isZahlungsangabenRequired(): boolean {
-        return !this.model.zahlungsinformationen.keineMahlzeitenverguenstigungBeantragt ||
-            this.zahlungsangabenRequired;
+        return (!this.model.zahlungsinformationen.keineMahlzeitenverguenstigungBeantragt && this.isMahlzeitenverguenstigungEnabled())
+            || (this.zahlungsangabenRequired && this.gesuchModelManager.getGesuch().isOnlineGesuch());
     }
 
     public areZahlungsdatenEditable(): boolean {
@@ -386,7 +360,7 @@ export class FinanzielleSituationStartViewController extends AbstractFinSitBernV
     }
 
     public showZugriffAufSteuerdaten(): boolean {
-        return super.showZugriffAufSteuerdaten() && this.model.gemeinsameSteuererklaerung;
+        return super.showZugriffAufSteuerdaten() && this.model.familienSituation.gemeinsameSteuererklaerung;
     }
 
     public showAutomatischePruefungSteuerdatenFrage(): boolean {
@@ -399,7 +373,7 @@ export class FinanzielleSituationStartViewController extends AbstractFinSitBernV
         }
 
         return this.gesuchModelManager.getGesuch().isOnlineGesuch() &&
-            this.model.gemeinsameSteuererklaerung &&
+            this.model.familienSituation.gemeinsameSteuererklaerung &&
             (EbeguUtil.isNotNullAndFalse(this.getModel().finanzielleSituationJA.steuerdatenZugriff));
     }
 
@@ -411,15 +385,6 @@ export class FinanzielleSituationStartViewController extends AbstractFinSitBernV
         this.resetKiBonAnfrageFinSitIfRequired();
     }
 
-    public callKiBonAnfrageAndUpdateFinSit(): void {
-       super.callKiBonAnfrage(EbeguUtil.isNotNullAndTrue(this.model.gemeinsameSteuererklaerung))
-            .then(() => {
-                    this.model.copyFinSitDataFromGesuch(this.gesuchModelManager.getGesuch());
-                    this.form.$setDirty();
-                }
-            );
-    }
-
     private getAbfrageStatus(): string {
         return this.getModel().finanzielleSituationJA.steuerdatenAbfrageStatus;
     }
@@ -428,7 +393,7 @@ export class FinanzielleSituationStartViewController extends AbstractFinSitBernV
         this.model.copyFinSitDataToGesuch(this.gesuchModelManager.getGesuch());
         this.gesuchModelManager.resetKiBonAnfrageFinSit(EbeguUtil.isNotNullOrUndefined(this.model.finanzielleSituationContainerGS2))
             .then(() => {
-                    this.wizardStepManager.updateCurrentWizardStepStatusSafe(
+                this.wizardStepManager.updateCurrentWizardStepStatusSafe(
                         TSWizardStepName.FINANZIELLE_SITUATION,
                         TSWizardStepStatus.NOK);
                     this.model.copyFinSitDataFromGesuch(this.gesuchModelManager.getGesuch());
