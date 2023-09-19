@@ -245,6 +245,7 @@ public class BGCalculationResult extends AbstractEntity {
 		minimalerElternbeitragGekuerzt = that.minimalerElternbeitragGekuerzt;
 		verguenstigung = that.verguenstigung;
 		verguenstigungProZeiteinheit = that.verguenstigungProZeiteinheit;
+		verguenstigungGewuenscht = that.verguenstigungGewuenscht;
 	}
 
 	@CanIgnoreReturnValue

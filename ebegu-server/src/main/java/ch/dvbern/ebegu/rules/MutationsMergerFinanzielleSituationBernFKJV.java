@@ -60,7 +60,13 @@ public class MutationsMergerFinanzielleSituationBernFKJV extends MutationsMerger
 	}
 
 	private boolean isFinSitRueckwirkendAnzupassen(BGCalculationInput input, BigDecimal massgebendesEinkommenFinSit, BGCalculationResult resultVorgaenger) {
-		return hasMassgebendesEinkommenVorAbzugFamgrChanged(massgebendesEinkommenFinSit, resultVorgaenger) && !input.isSozialhilfeempfaenger();
+		return hasMassgebendesEinkommenVorAbzugFamgrChanged(massgebendesEinkommenFinSit, resultVorgaenger)
+			&& !input.isSozialhilfeempfaenger()
+			&& !verguenstigungGewuenschtFlagChanged(input, resultVorgaenger);
+	}
+
+	private boolean verguenstigungGewuenschtFlagChanged(BGCalculationInput input, BGCalculationResult resultVorgaenger) {
+		return input.isVerguenstigungGewuenscht() != resultVorgaenger.isVerguenstigungGewuenscht();
 	}
 
 	private void finsitRueckwirkendAnpassen(BGCalculationInput inputData, BigDecimal massgebendesEinkommenFinSit, AbstractPlatz platz) {

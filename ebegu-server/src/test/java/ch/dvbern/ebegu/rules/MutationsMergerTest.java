@@ -15,37 +15,8 @@
 
 package ch.dvbern.ebegu.rules;
 
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.time.Month;
-import java.time.temporal.TemporalAdjusters;
-import java.util.ArrayList;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Locale;
-import java.util.Objects;
-import java.util.Set;
-import java.util.TreeSet;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
-import ch.dvbern.ebegu.entities.Betreuung;
-import ch.dvbern.ebegu.entities.EinkommensverschlechterungContainer;
-import ch.dvbern.ebegu.entities.EinkommensverschlechterungInfoContainer;
-import ch.dvbern.ebegu.entities.FinanzielleSituation;
-import ch.dvbern.ebegu.entities.FinanzielleSituationContainer;
-import ch.dvbern.ebegu.entities.Gesuch;
-import ch.dvbern.ebegu.entities.KindContainer;
-import ch.dvbern.ebegu.entities.Mandant;
-import ch.dvbern.ebegu.entities.Verfuegung;
-import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
-import ch.dvbern.ebegu.enums.AntragTyp;
-import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
-import ch.dvbern.ebegu.enums.FinanzielleSituationTyp;
-import ch.dvbern.ebegu.enums.Kinderabzug;
-import ch.dvbern.ebegu.enums.MsgKey;
-import ch.dvbern.ebegu.enums.VerfuegungsZeitabschnittZahlungsstatus;
+import ch.dvbern.ebegu.entities.*;
+import ch.dvbern.ebegu.enums.*;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.finanzielleSituationRechner.FinanzielleSituationBernRechner;
 import ch.dvbern.ebegu.test.TestDataUtil;
@@ -53,6 +24,14 @@ import ch.dvbern.ebegu.util.MathUtil;
 import ch.dvbern.ebegu.util.mandant.MandantIdentifier;
 import org.junit.Assert;
 import org.junit.Test;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.Month;
+import java.time.temporal.TemporalAdjusters;
+import java.util.*;
 
 import static org.junit.Assert.assertNotNull;
 
@@ -915,6 +894,62 @@ public class MutationsMergerTest {
 		assertEqualBigDecimal(BigDecimal.valueOf(40000), findZeitabschnittByMonth(zeitabschnitte, Month.JUNE).getMassgebendesEinkommen());
 		assertEqualBigDecimal(BigDecimal.valueOf(40000), findZeitabschnittByMonth(zeitabschnitte, Month.JULY).getMassgebendesEinkommen());
 	}
+
+	@Test
+	public void mutationAenderungToVerguenstigungBeantragt() {
+		Betreuung erstgesuchBetreuung = prepareData(MathUtil.DEFAULT.from(160000), AntragTyp.ERSTGESUCH);
+		erstgesuchBetreuung.extractGesuch().getFamiliensituationContainer().getFamiliensituationJA().setVerguenstigungGewuenscht(false);
+		Verfuegung verfuegungErstGesuch = prepareVerfuegungForBetreuung(erstgesuchBetreuung);
+
+		//EK Mutation = 40000 ab 31.10.
+		Betreuung mutierteBetreuung = prepareData(MathUtil.DEFAULT.from(40000), AntragTyp.MUTATION);
+		mutierteBetreuung.initVorgaengerVerfuegungen(verfuegungErstGesuch, null);
+
+
+		mutierteBetreuung.extractGesuch()
+			.setFinSitAenderungGueltigAbDatum(TestDataUtil.START_PERIODE.plusMonths(1).minusDays(1)); //31.08
+		mutierteBetreuung.extractGesuch().setFinSitTyp(FinanzielleSituationTyp.BERN);
+		mutierteBetreuung.extractGesuch().setEingangsdatum(OCTOBER_31); //FinSit GueltigAb 31.10
+
+		List<VerfuegungZeitabschnitt> zeitabschnitte = EbeguRuleTestsHelper.calculateInklAllgemeineRegeln(mutierteBetreuung);
+
+		// EK bis Oktober 50000 ab Oktober 40000
+		assertEqualBigDecimal(BigDecimal.valueOf(160000), findZeitabschnittByMonth(zeitabschnitte, Month.AUGUST).getMassgebendesEinkommen());
+		assertEqualBigDecimal(BigDecimal.valueOf(160000), findZeitabschnittByMonth(zeitabschnitte, Month.SEPTEMBER).getMassgebendesEinkommen());
+		assertEqualBigDecimal(BigDecimal.valueOf(160000), findZeitabschnittByMonth(zeitabschnitte, Month.OCTOBER).getMassgebendesEinkommen());
+		assertEqualBigDecimal(BigDecimal.valueOf(40000), findZeitabschnittByMonth(zeitabschnitte, Month.NOVEMBER).getMassgebendesEinkommen());
+		assertEqualBigDecimal(BigDecimal.valueOf(40000), findZeitabschnittByMonth(zeitabschnitte, Month.DECEMBER).getMassgebendesEinkommen());
+		assertEqualBigDecimal(BigDecimal.valueOf(40000), findZeitabschnittByMonth(zeitabschnitte, Month.JANUARY).getMassgebendesEinkommen());
+		assertEqualBigDecimal(BigDecimal.valueOf(40000), findZeitabschnittByMonth(zeitabschnitte, Month.FEBRUARY).getMassgebendesEinkommen());
+		assertEqualBigDecimal(BigDecimal.valueOf(40000), findZeitabschnittByMonth(zeitabschnitte, Month.MARCH).getMassgebendesEinkommen());
+		assertEqualBigDecimal(BigDecimal.valueOf(40000), findZeitabschnittByMonth(zeitabschnitte, Month.APRIL).getMassgebendesEinkommen());
+		assertEqualBigDecimal(BigDecimal.valueOf(40000), findZeitabschnittByMonth(zeitabschnitte, Month.MAY).getMassgebendesEinkommen());
+		assertEqualBigDecimal(BigDecimal.valueOf(40000), findZeitabschnittByMonth(zeitabschnitte, Month.JUNE).getMassgebendesEinkommen());
+		assertEqualBigDecimal(BigDecimal.valueOf(40000), findZeitabschnittByMonth(zeitabschnitte, Month.JULY).getMassgebendesEinkommen());
+	}
+
+	@Test
+	public void mutationAenderungToNoVerguenstigungBeantragt() {
+		//EK ErstGesuch = 50000
+		Verfuegung verfuegungErstGesuch = prepareErstGesuchVerfuegung();
+
+		//EK Mutation = 40000 ab 31.10.
+		Betreuung mutierteBetreuung = prepareData(MathUtil.DEFAULT.from(40000), AntragTyp.MUTATION);
+		mutierteBetreuung.extractGesuch().getFamiliensituationContainer().getFamiliensituationJA().setVerguenstigungGewuenscht(false);
+		mutierteBetreuung.initVorgaengerVerfuegungen(verfuegungErstGesuch, null);
+
+
+		mutierteBetreuung.extractGesuch()
+			.setFinSitAenderungGueltigAbDatum(TestDataUtil.START_PERIODE.plusMonths(1).minusDays(1)); //31.08
+		mutierteBetreuung.extractGesuch().setFinSitTyp(FinanzielleSituationTyp.BERN);
+		mutierteBetreuung.extractGesuch().setEingangsdatum(OCTOBER_31); //FinSit GueltigAb 31.10
+
+		List<VerfuegungZeitabschnitt> zeitabschnitte = EbeguRuleTestsHelper.calculateInklAllgemeineRegeln(mutierteBetreuung);
+
+		zeitabschnitte
+			.forEach(zeitabschnitt -> assertEqualBigDecimal(BigDecimal.valueOf(160000), zeitabschnitt.getMassgebendesEinkommen()));
+	}
+
 
 	private void assertEqualBigDecimal(@Nonnull BigDecimal expected, @Nullable BigDecimal actual) {
 		Assert.assertNotNull(actual);
