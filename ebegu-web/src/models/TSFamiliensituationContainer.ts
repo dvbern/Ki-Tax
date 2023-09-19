@@ -58,4 +58,19 @@ export class TSFamiliensituationContainer extends TSAbstractMutableEntity {
     public set sozialhilfeZeitraumContainers(value: Array<TSSozialhilfeZeitraumContainer>) {
         this._sozialhilfeZeitraumContainers = value;
     }
+
+    public deepCopy():TSFamiliensituationContainer {
+        const familienSituationContainer = new TSFamiliensituationContainer();
+        familienSituationContainer.familiensituationJA = this._familiensituationJA.deepCopy();
+        if (this._familiensituationGS != null) {
+            familienSituationContainer.familiensituationGS = this._familiensituationGS.deepCopy();
+        }
+        if (this._familiensituationErstgesuch != null) {
+            familienSituationContainer.familiensituationErstgesuch = this._familiensituationErstgesuch.deepCopy();
+        }
+        if (this._sozialhilfeZeitraumContainers != null) {
+            familienSituationContainer.sozialhilfeZeitraumContainers = this._sozialhilfeZeitraumContainers.map(value => {return value.deepCopy()});
+        }
+        return familienSituationContainer;
+    }
 }
