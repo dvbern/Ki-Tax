@@ -377,7 +377,7 @@ export class TSFamiliensituation extends TSAbstractMutableEntity {
 
     }
 
-    public deepCopy():TSFamiliensituation {
+    public deepCopy(): TSFamiliensituation {
         const familiensituation = new TSFamiliensituation();
         familiensituation.familienstatus = this.familienstatus;
         familiensituation.gemeinsameSteuererklaerung = this.gemeinsameSteuererklaerung;
@@ -389,7 +389,7 @@ export class TSFamiliensituation extends TSAbstractMutableEntity {
         familiensituation.verguenstigungGewuenscht = this.verguenstigungGewuenscht;
         familiensituation.keineMahlzeitenverguenstigungBeantragt = this.keineMahlzeitenverguenstigungBeantragt;
         familiensituation.keineMahlzeitenverguenstigungBeantragtEditable = this.keineMahlzeitenverguenstigungBeantragtEditable;
-        familiensituation.iban = this.iban
+        familiensituation.iban = this.iban;
         familiensituation.kontoinhaber = this.kontoinhaber;
         familiensituation.abweichendeZahlungsadresse = this.abweichendeZahlungsadresse;
         familiensituation.zahlungsadresse = this.zahlungsadresse;
