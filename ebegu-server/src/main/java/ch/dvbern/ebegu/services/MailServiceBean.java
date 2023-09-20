@@ -361,7 +361,7 @@ public class MailServiceBean extends AbstractMailServiceBean implements MailServ
 					}
 
 				}
-			} catch (MailException e) {
+			} catch (Exception e) {
 				logExceptionAccordingToEnvironment(
 					e,
 					"Mail InfoBetreuungGeloescht konnte nicht verschickt werden fuer Betreuung",
