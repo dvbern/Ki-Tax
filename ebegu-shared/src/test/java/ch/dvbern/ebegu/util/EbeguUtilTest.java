@@ -15,7 +15,9 @@
 
 package ch.dvbern.ebegu.util;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -27,6 +29,8 @@ import ch.dvbern.ebegu.entities.FamiliensituationContainer;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.KindContainer;
 import ch.dvbern.ebegu.entities.Mandant;
+import ch.dvbern.ebegu.entities.Verfuegung;
+import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.AntragStatus;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
 import ch.dvbern.ebegu.enums.EnumFamilienstatus;
@@ -118,18 +122,31 @@ public class EbeguUtilTest {
 
 	@Test
 	public void isErlaeuterungenZurVerfuegungMit0AnspruchRequiredTest() {
-		Gesuch gesuch = prepareGesuchForErlaeuterungenZurVerguegungTests(MandantIdentifier.BERN);
+		Gesuch gesuch = prepareGesuchForErlaeuterungenZurVerguegungTests(MandantIdentifier.BERN, 0);
 		// 0 Anspruch sollte keine Erlaeterung sein:
 		Assert.assertFalse(EbeguUtil.isErlaeuterungenZurVerfuegungRequired(gesuch));
 	}
+
+	@Test
+	public void isErlaeuterungenZurVerfuegungMit1AnspruchRequiredTest() {
+		Gesuch gesuch = prepareGesuchForErlaeuterungenZurVerguegungTests(MandantIdentifier.BERN, 1);
+		// 0 Anspruch sollte keine Erlaeterung sein:
+		Assert.assertTrue(EbeguUtil.isErlaeuterungenZurVerfuegungRequired(gesuch));
+	}
 	@Test
 	public void isErlaeuterungenZurVerfuegungMit0AnspruchRequiredFuerAppenzellTest() {
-		Gesuch gesuch = prepareGesuchForErlaeuterungenZurVerguegungTests(MandantIdentifier.APPENZELL_AUSSERRHODEN);
+		Gesuch gesuch = prepareGesuchForErlaeuterungenZurVerguegungTests(MandantIdentifier.APPENZELL_AUSSERRHODEN, 0);
+		// 0 Anspruch aber beim Appenzell ist einer Ausnahme so es muss immer sein:
+		Assert.assertTrue(EbeguUtil.isErlaeuterungenZurVerfuegungRequired(gesuch));
+	}
+	@Test
+	public void isErlaeuterungenZurVerfuegungMit1AnspruchRequiredFuerAppenzellTest() {
+		Gesuch gesuch = prepareGesuchForErlaeuterungenZurVerguegungTests(MandantIdentifier.APPENZELL_AUSSERRHODEN, 1);
 		// 0 Anspruch aber beim Appenzell ist einer Ausnahme so es muss immer sein:
 		Assert.assertTrue(EbeguUtil.isErlaeuterungenZurVerfuegungRequired(gesuch));
 	}
 
-	private Gesuch prepareGesuchForErlaeuterungenZurVerguegungTests(MandantIdentifier mandantIdentifier) {
+	private Gesuch prepareGesuchForErlaeuterungenZurVerguegungTests(MandantIdentifier mandantIdentifier, int anspruch) {
 		Mandant mandant = new Mandant();
 		mandant.setMandantIdentifier(mandantIdentifier);
 		Fall fall = new Fall();
@@ -143,6 +160,12 @@ public class EbeguUtilTest {
 		betreuung.setBetreuungsstatus(Betreuungsstatus.VERFUEGT);
 		Set<Betreuung> betreuungen = new TreeSet<>();
 		betreuungen.add(betreuung);
+		final Verfuegung verfuegungPreview = new Verfuegung();
+		final VerfuegungZeitabschnitt zeitabschnitt = new VerfuegungZeitabschnitt();
+		zeitabschnitt.getRelevantBgCalculationResult().setAnspruchspensumProzent(anspruch);
+		zeitabschnitt.getRelevantBgCalculationResult().setBetreuungspensumProzent(BigDecimal.valueOf(anspruch));
+		verfuegungPreview.setZeitabschnitte(List.of(zeitabschnitt));
+		betreuung.setVerfuegung(verfuegungPreview);
 		KindContainer kindContainer = new KindContainer();
 		kindContainer.setBetreuungen(betreuungen);
 		gesuch.addKindContainer(kindContainer);
