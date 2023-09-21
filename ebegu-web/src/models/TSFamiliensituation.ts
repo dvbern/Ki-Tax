@@ -392,7 +392,8 @@ export class TSFamiliensituation extends TSAbstractMutableEntity {
         familiensituation.iban = this.iban;
         familiensituation.kontoinhaber = this.kontoinhaber;
         familiensituation.abweichendeZahlungsadresse = this.abweichendeZahlungsadresse;
-        familiensituation.zahlungsadresse = this.zahlungsadresse;
+        familiensituation.zahlungsadresse = new TSAdresse();
+        familiensituation.zahlungsadresse.copy(this.zahlungsadresse)
 
         familiensituation.infomaKreditorennummer = this.infomaKreditorennummer;
         familiensituation.infomaBankcode = this.infomaBankcode;
