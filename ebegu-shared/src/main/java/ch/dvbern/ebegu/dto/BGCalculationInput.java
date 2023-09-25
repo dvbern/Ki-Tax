@@ -149,6 +149,8 @@ public class BGCalculationInput {
 
 	private boolean geschwisternBonusKind3 = false;
 
+	private boolean verguenstigungGewuenscht = true;
+
 	@Valid
 	@NotNull
 	@Nonnull
@@ -262,6 +264,7 @@ public class BGCalculationInput {
 		this.gesuchBeendenKonkubinatWirdInPeriodeXJahreAlt = toCopy.gesuchBeendenKonkubinatWirdInPeriodeXJahreAlt;
 		this.bgStundenFaktor = toCopy.bgStundenFaktor;
 		this.integrationTypFachstellenPensum = toCopy.integrationTypFachstellenPensum;
+		this.verguenstigungGewuenscht = toCopy.verguenstigungGewuenscht;
 	}
 
 	@Nonnull
@@ -880,6 +883,11 @@ public class BGCalculationInput {
 		//integrations Typ kann nicht ändern wenn zwei Fachstellen zusammengezählt werde
 		this.integrationTypFachstellenPensum = this.integrationTypFachstellenPensum == null ?
 			other.integrationTypFachstellenPensum : this.integrationTypFachstellenPensum;
+
+		//das flag kann sich nicht ändern, wenn einmal false ist es für die ganze gp false
+		if (!other.verguenstigungGewuenscht) {
+			this.verguenstigungGewuenscht = false;
+		}
 	}
 
 	/**
@@ -1083,7 +1091,8 @@ public class BGCalculationInput {
 			this.requiredAgeForAnspruchNotReached == other.requiredAgeForAnspruchNotReached &&
 			this.gesuchBeendenKonkubinatWirdInPeriodeXJahreAlt == other.gesuchBeendenKonkubinatWirdInPeriodeXJahreAlt &&
 			MathUtil.isSame(this.bgStundenFaktor, other.bgStundenFaktor) &&
-			this.integrationTypFachstellenPensum == other.integrationTypFachstellenPensum;
+			this.integrationTypFachstellenPensum == other.integrationTypFachstellenPensum &&
+			this.verguenstigungGewuenscht == other.verguenstigungGewuenscht;
 	}
 
 	@SuppressWarnings("PMD.CompareObjectsWithEquals")
@@ -1271,5 +1280,13 @@ public class BGCalculationInput {
 
 	public void setIntegrationTypFachstellenPensum(IntegrationTyp integrationTypFachstellenPensum) {
 		this.integrationTypFachstellenPensum = integrationTypFachstellenPensum;
+	}
+
+	public boolean isVerguenstigungGewuenscht() {
+		return verguenstigungGewuenscht;
+	}
+
+	public void setVerguenstigungGewuenscht(boolean verguenstigungGewuenscht) {
+		this.verguenstigungGewuenscht = verguenstigungGewuenscht;
 	}
 }

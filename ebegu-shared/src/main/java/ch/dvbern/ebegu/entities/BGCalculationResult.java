@@ -17,26 +17,6 @@
 
 package ch.dvbern.ebegu.entities;
 
-import java.math.BigDecimal;
-import java.util.Objects;
-import java.util.function.Function;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.ForeignKey;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
-import javax.persistence.Transient;
-import javax.validation.Valid;
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotNull;
-
 import ch.dvbern.ebegu.enums.PensumUnits;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.MathUtil;
@@ -44,6 +24,17 @@ import com.google.common.base.MoreObjects;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.hibernate.envers.Audited;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.persistence.*;
+import javax.validation.Valid;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
+import java.math.BigDecimal;
+import java.util.Objects;
+import java.util.function.Function;
 
 import static ch.dvbern.ebegu.util.MathUtil.roundToFrankenRappen;
 import static ch.dvbern.ebegu.util.MathUtil.roundUpToFranken;
@@ -176,6 +167,10 @@ public class BGCalculationResult extends AbstractEntity {
 	@Column(nullable = true)
 	private Integer beitragshoeheProzent;
 
+	@NotNull
+	@Column(nullable = false)
+	private boolean verguenstigungGewuenscht;
+
 	@Transient
 	@Nonnull
 	private Function<BigDecimal, BigDecimal> zeiteinheitenRoundingStrategy = MathUtil::toTwoKommastelle;
@@ -223,6 +218,7 @@ public class BGCalculationResult extends AbstractEntity {
 		this.auszahlungAnEltern = toCopy.auszahlungAnEltern;
 		this.babyTarif = toCopy.babyTarif;
 		this.beitragshoeheProzent = toCopy.beitragshoeheProzent;
+		this.verguenstigungGewuenscht = toCopy.verguenstigungGewuenscht;
 	}
 
 	public boolean isCloseTo(@Nonnull BGCalculationResult that) {
@@ -249,6 +245,7 @@ public class BGCalculationResult extends AbstractEntity {
 		minimalerElternbeitragGekuerzt = that.minimalerElternbeitragGekuerzt;
 		verguenstigung = that.verguenstigung;
 		verguenstigungProZeiteinheit = that.verguenstigungProZeiteinheit;
+		verguenstigungGewuenscht = that.verguenstigungGewuenscht;
 	}
 
 	@CanIgnoreReturnValue
@@ -304,6 +301,7 @@ public class BGCalculationResult extends AbstractEntity {
 			.add("abzugFamGroesse", abzugFamGroesse)
 			.add("auszahlungAnEltern", auszahlungAnEltern)
 			.add("babyTarif", babyTarif)
+			.add("verguensigungGewuenscht", verguenstigungGewuenscht)
 			.toString();
 	}
 
@@ -732,6 +730,14 @@ public class BGCalculationResult extends AbstractEntity {
 
 	public void setBeitragshoeheProzent(Integer beitragshoeheProzent) {
 		this.beitragshoeheProzent = beitragshoeheProzent;
+	}
+
+	public boolean isVerguenstigungGewuenscht() {
+		return verguenstigungGewuenscht;
+	}
+
+	public void setVerguenstigungGewuenscht(boolean verguenstigungGewuenscht) {
+		this.verguenstigungGewuenscht = verguenstigungGewuenscht;
 	}
 
 	// changes in mutationen can be ignored, as long as nothing except FinSit data changes
