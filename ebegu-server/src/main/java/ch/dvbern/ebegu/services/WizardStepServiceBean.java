@@ -372,6 +372,7 @@ public class WizardStepServiceBean extends AbstractBaseService implements Wizard
 		} else if (WizardStepName.ERWERBSPENSUM == stepName) {
 			updateAllStatusForErwerbspensum(wizardSteps);
 		} else if (stepName.isEKVWizardStepName()
+			&& oldEntity instanceof EinkommensverschlechterungInfoContainer
 			&& newEntity instanceof EinkommensverschlechterungInfoContainer) {
 			updateAllStatusForEinkommensverschlechterungInfo(
 				wizardSteps,

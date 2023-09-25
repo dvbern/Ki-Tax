@@ -32,6 +32,7 @@ import javax.annotation.Nonnull;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -41,6 +42,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Objects;
 import java.util.UUID;
+import java.util.stream.Stream;
 
 /**
  * Service zum Speichern von Files auf dem File-System
@@ -141,7 +143,6 @@ public class FileSaverServiceBean implements FileSaverService {
 		UUID uuid = UUID.randomUUID();
 		String ending = getFileNameEnding(fileToCopy.getFilename());
 
-
 		// Wir speichern der Name des Files nicht im FS. Kann sonst Probleme mit Umlauten geben
 		final String path = '/' + folderName + '/' + uuid + '.' + ending;
 		final String absoluteFilePath = getDocumentFilePathValidated(path);
@@ -213,22 +214,23 @@ public class FileSaverServiceBean implements FileSaverService {
 		final String path = '/' + folder;
 		final String absoluteFilePath = getDocumentFilePathValidated(path);
 		Path tempFolder = Paths.get(absoluteFilePath);
-		try {
-			if (Files.exists(tempFolder) && Files.isDirectory(tempFolder)) {
-				Files.walk(tempFolder)
+		if (Files.exists(tempFolder) && Files.isDirectory(tempFolder)) {
+			try (Stream<Path> files = Files.walk(tempFolder)) {
+				files
 					.filter(Files::isRegularFile)
 					.forEach(file -> deleteFileIfTokenExpired(file));
+			} catch (IOException e) {
+				throw new EbeguRuntimeException("save", "Could not save file in filesystem {0}", e, absoluteFilePath);
 			}
-		} catch (IOException e) {
-			throw new EbeguRuntimeException("save", "Could not save file in filesystem {0}", e, absoluteFilePath);
 		}
 	}
 
 	private void deleteFileIfTokenExpired(Path path) {
 		LocalDateTime deleteBefore = LocalDateTime.now().minusMinutes(Constants.MAX_LONGER_TEMP_DOWNLOAD_AGE_MINUTES);
-		LocalDateTime lastModified = LocalDateTime.ofInstant(Instant.ofEpochMilli(path.toFile().lastModified()), ZoneId.systemDefault());
+		LocalDateTime lastModified =
+			LocalDateTime.ofInstant(Instant.ofEpochMilli(path.toFile().lastModified()), ZoneId.systemDefault());
 		if (lastModified.isBefore(deleteBefore)) {
-			LOG.info("Deleting File {}, lastModified on {}",  path.getFileName(), lastModified);
+			LOG.info("Deleting File {}, lastModified on {}", path.getFileName(), lastModified);
 			try {
 				Files.delete(path);
 			} catch (IOException e) {
