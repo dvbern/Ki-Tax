@@ -159,6 +159,9 @@ public class BfsGemeindenInsertCreator {
 
 	private void println(String s) {
 		LOG.info(s);
-		getPrintWriter().println(s);
+		PrintWriter printWriter = getPrintWriter();
+		if(printWriter != null){
+			printWriter.println(s);
+		}
 	}
 }

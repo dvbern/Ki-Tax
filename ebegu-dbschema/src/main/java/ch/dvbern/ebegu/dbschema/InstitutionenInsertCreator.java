@@ -347,6 +347,9 @@ public class InstitutionenInsertCreator {
 	}
 
 	private void println(String s) {
-		getPrintWriter().println(s);
+		PrintWriter printWriter = getPrintWriter();
+		if(printWriter != null){
+			printWriter.println(s);
+		}
 	}
 }
