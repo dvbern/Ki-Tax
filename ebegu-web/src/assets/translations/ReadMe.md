@@ -1,5 +1,5 @@
-1. Die Übersetzungen die gilten für mehrere <b>nur</b> DE Mandanten sollten nicht in FR gesetzt werden
-2. Die Übersetungen die gilten für beide Sprachen müssen in beide Dateien definiert werden
-3. Die Übersetzungen die sind anders bei einem Mandant sind in der Mandant spezifische Datei erneu definiert
+1. Die Übersetzungen, die für mehrere <strong>nur</strong>-DE-Mandanten gelten, sollten nicht in FR gesetzt werden.
+2. Die Übersetzungen, die für beide Sprachen gelten, müssen in beiden Dateien definiert werden.
+3. Die Übersetzungen, die bei einem Mandanten abweichend sind, sind in der mandantenspezifischen Datei erneut zu definieren.
 
-Es gibt keine Mandant Spezifische Übersetzungen als alle Optionen sollten konfiguriertbar sein.
+Es gibt keine mandantenspezifischen Übersetzungen, da alle Optionen konfigurierbar sein sollen.

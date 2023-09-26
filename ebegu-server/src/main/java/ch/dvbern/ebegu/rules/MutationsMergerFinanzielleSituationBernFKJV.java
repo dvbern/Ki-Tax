@@ -60,7 +60,13 @@ public class MutationsMergerFinanzielleSituationBernFKJV extends MutationsMerger
 	}
 
 	private boolean isFinSitRueckwirkendAnzupassen(BGCalculationInput input, BigDecimal massgebendesEinkommenFinSit, BGCalculationResult resultVorgaenger) {
-		return hasMassgebendesEinkommenVorAbzugFamgrChanged(massgebendesEinkommenFinSit, resultVorgaenger) && !input.isSozialhilfeempfaenger();
+		return hasMassgebendesEinkommenVorAbzugFamgrChanged(massgebendesEinkommenFinSit, resultVorgaenger)
+			&& !input.isSozialhilfeempfaenger()
+			&& !verguenstigungGewuenschtFlagChangedToVerguenstigungGewuenscht(input, resultVorgaenger);
+	}
+
+	private boolean verguenstigungGewuenschtFlagChangedToVerguenstigungGewuenscht(BGCalculationInput input, BGCalculationResult resultVorgaenger) {
+		return input.isVerguenstigungGewuenscht() && !resultVorgaenger.isVerguenstigungGewuenscht();
 	}
 
 	private void finsitRueckwirkendAnpassen(BGCalculationInput inputData, BigDecimal massgebendesEinkommenFinSit, AbstractPlatz platz) {
@@ -73,7 +79,10 @@ public class MutationsMergerFinanzielleSituationBernFKJV extends MutationsMerger
 			.extractGesuch()
 			.setFinSitAenderungGueltigAbDatum(gesuchsperiode.getGueltigkeit().getGueltigAb().minusDays(1));
 		platz.setFinSitRueckwirkendKorrigiertInThisMutation(true);
-		inputData.addBemerkung(MsgKey.FIN_SIT_RUECKWIRKEND_ANGEPASST, getLocale());
+
+		if (!platz.isAngebotSchulamt()) {
+			inputData.addBemerkung(MsgKey.FIN_SIT_RUECKWIRKEND_ANGEPASST, getLocale());
+		}
 	}
 
 	private boolean hasMassgebendesEinkommenVorAbzugFamgrChanged(
@@ -87,6 +96,10 @@ public class MutationsMergerFinanzielleSituationBernFKJV extends MutationsMerger
 
 	private BigDecimal getMassgebendesEinkommenFromFinSit(BGCalculationInput inputAktuel, AbstractPlatz platz) {
 		FinanzDatenDTO finanzDatenDTO ;
+
+		if (!inputAktuel.isVerguenstigungGewuenscht()) {
+			return inputAktuel.getMassgebendesEinkommenVorAbzugFamgr();
+		}
 
 		if (inputAktuel.isHasSecondGesuchstellerForFinanzielleSituation()) {
 			finanzDatenDTO = platz.extractGesuch().getFinanzDatenDTO_zuZweit();

@@ -62,6 +62,7 @@ import ch.dvbern.ebegu.enums.Sprache;
 import ch.dvbern.ebegu.enums.WizardStepName;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.services.GemeindeService;
+import ch.dvbern.ebegu.util.mandant.MandantIdentifier;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -483,7 +484,8 @@ public final class EbeguUtil {
 		}
 		for (Betreuung betreuung : gesuch.extractAllBetreuungen()) {
 			// Status VERFUEGT mit Anspruch
-			if (Betreuungsstatus.VERFUEGT == betreuung.getBetreuungsstatus() && betreuung.hasAnspruch()) {
+			if (Betreuungsstatus.VERFUEGT == betreuung.getBetreuungsstatus() && (betreuung.hasAnspruch() ||
+				gesuch.getDossier().getFall().getMandant().getMandantIdentifier() == MandantIdentifier.APPENZELL_AUSSERRHODEN)) {
 				return true;
 			}
 		}
