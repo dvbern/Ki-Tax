@@ -166,7 +166,7 @@ export class FerienbetreuungAngebotComponent extends AbstractFerienbetreuungForm
             anzahlStundenProBetreuungstag: angebot.anzahlStundenProBetreuungstag,
             bemerkungenAnzahlFerienwochen: angebot.bemerkungenAnzahlFerienwochen,
             gemeindeFuehrtAngebotInKooperation: angebot.gemeindeFuehrtAngebotInKooperation,
-            gemeindeFuehrtAngebotSelber: angebot.gemeindeFuehrtAngebotInKooperation,
+            gemeindeFuehrtAngebotSelber: angebot.gemeindeFuehrtAngebotSelber,
             kinderAusAnderenGemeindenZahlenAnderenTarif: angebot.kinderAusAnderenGemeindenZahlenAnderenTarif,
             leitungDurchPersonMitAusbildung: angebot.leitungDurchPersonMitAusbildung,
             bemerkungenTarifsystem: angebot.bemerkungenTarifsystem,
