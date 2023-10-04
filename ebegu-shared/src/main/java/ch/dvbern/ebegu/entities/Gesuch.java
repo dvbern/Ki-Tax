@@ -1059,6 +1059,10 @@ public class Gesuch extends AbstractMutableEntity implements Searchable {
 	}
 
 	private void copyDokumentGruende(@Nonnull Gesuch target, @Nonnull AntragCopyType copyType) {
+		if (isDeletionOfGesuchPossible()) {
+			//Die Dokumente sollen nur kopiert werden, wenn das Gesuch nicht mehr gelöscht werden kann
+			return;
+		}
 		if (this.getDokumentGrunds() != null) {
 			target.setDokumentGrunds(new HashSet<>());
 			this.getDokumentGrunds().forEach(
@@ -1069,6 +1073,14 @@ public class Gesuch extends AbstractMutableEntity implements Searchable {
 				}
 			);
 		}
+	}
+
+	private boolean isDeletionOfGesuchPossible() {
+		if (this.getEingangsart().isOnlineGesuch()) {
+			return this.status.isAnyOfInBearbeitungGSOrSZD();
+		}
+
+		return !this.getStatus().isAnyStatusOfVerfuegtOrVefuegen();
 	}
 
 	private boolean isDokumentOfSecondGesuchstellerButHasNoSecondGesuchsteller(
