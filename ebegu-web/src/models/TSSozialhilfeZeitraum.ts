@@ -16,6 +16,8 @@
  */
 
 import {TSAbstractDateRangedEntity} from './TSAbstractDateRangedEntity';
+import {TSDateRange} from './types/TSDateRange';
+import {EbeguUtil} from '../utils/EbeguUtil';
 
 export class TSSozialhilfeZeitraum extends TSAbstractDateRangedEntity {
 
@@ -26,8 +28,11 @@ export class TSSozialhilfeZeitraum extends TSAbstractDateRangedEntity {
     public deepCopy(): TSSozialhilfeZeitraum {
         const sozialhilfeZeitraum = new TSSozialhilfeZeitraum();
         sozialhilfeZeitraum.vorgaengerId = this.vorgaengerId;
-        sozialhilfeZeitraum.gueltigkeit.gueltigAb = this.gueltigkeit.gueltigAb.clone();
-        sozialhilfeZeitraum.gueltigkeit.gueltigBis = this.gueltigkeit.gueltigBis.clone();
+        if (EbeguUtil.isNotNullOrUndefined(this.gueltigkeit)) {
+            sozialhilfeZeitraum.gueltigkeit = new TSDateRange();
+            sozialhilfeZeitraum.gueltigkeit.gueltigAb = this.gueltigkeit.gueltigAb.clone();
+            sozialhilfeZeitraum.gueltigkeit.gueltigBis = this.gueltigkeit.gueltigBis.clone();
+        }
         return sozialhilfeZeitraum;
     }
 }
