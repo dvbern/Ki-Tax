@@ -16,6 +16,7 @@
 import {TSAbstractMutableEntity} from './TSAbstractMutableEntity';
 import {TSFamiliensituation} from './TSFamiliensituation';
 import {TSSozialhilfeZeitraumContainer} from './TSSozialhilfeZeitraumContainer';
+import {EbeguUtil} from '../utils/EbeguUtil';
 
 export class TSFamiliensituationContainer extends TSAbstractMutableEntity {
     private _familiensituationJA: TSFamiliensituation;
@@ -57,5 +58,23 @@ export class TSFamiliensituationContainer extends TSAbstractMutableEntity {
 
     public set sozialhilfeZeitraumContainers(value: Array<TSSozialhilfeZeitraumContainer>) {
         this._sozialhilfeZeitraumContainers = value;
+    }
+
+    public deepCopy(): TSFamiliensituationContainer {
+        const familienSituationContainer = new TSFamiliensituationContainer();
+        familienSituationContainer.familiensituationJA = this._familiensituationJA.deepCopy();
+        if (EbeguUtil.isNotNullOrUndefined(this._familiensituationGS)) {
+            familienSituationContainer.familiensituationGS = this._familiensituationGS.deepCopy();
+        }
+        if (EbeguUtil.isNotNullOrUndefined(this._familiensituationErstgesuch)) {
+            familienSituationContainer.familiensituationErstgesuch = this._familiensituationErstgesuch.deepCopy();
+        }
+        if (EbeguUtil.isNotNullOrUndefined(this.sozialhilfeZeitraumContainers)) {
+            familienSituationContainer.sozialhilfeZeitraumContainers = this._sozialhilfeZeitraumContainers
+                .map(value => (
+                     value.deepCopy()
+                ));
+        }
+        return familienSituationContainer;
     }
 }
