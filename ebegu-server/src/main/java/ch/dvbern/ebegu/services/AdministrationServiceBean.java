@@ -15,27 +15,6 @@
 
 package ch.dvbern.ebegu.services;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.PrintWriter;
-import java.nio.charset.StandardCharsets;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.ejb.Local;
-import javax.ejb.Stateless;
-import javax.inject.Inject;
-
 import ch.dvbern.ebegu.entities.Adresse;
 import ch.dvbern.ebegu.entities.Institution;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten;
@@ -50,6 +29,17 @@ import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.ejb.Local;
+import javax.ejb.Stateless;
+import javax.inject.Inject;
+import java.io.*;
+import java.nio.charset.StandardCharsets;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
 
 /**
  * Service fuer diverse Admin-Aufgaben.
@@ -387,7 +377,7 @@ public class AdministrationServiceBean extends AbstractBaseService implements Ad
 		return '\'' + aStringOrNull + '\'';
 	}
 
-	@SuppressWarnings("Duplicates")
+	@SuppressWarnings({"Duplicates", "PMD.CloseResource"})
 	private PrintWriter getPrintWriter() {
 		if (printWriter == null) {
 			File output = new File(OUTPUT_FILE);
