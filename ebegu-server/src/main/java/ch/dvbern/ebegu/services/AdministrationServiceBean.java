@@ -391,6 +391,7 @@ public class AdministrationServiceBean extends AbstractBaseService implements Ad
 		return printWriter;
 	}
 
+	@SuppressWarnings("PMD.CloseResource")
 	private void println(String s) {
 		PrintWriter printWriter = getPrintWriter();
 		if(printWriter != null){
