@@ -49,4 +49,11 @@ export class TSSozialhilfeZeitraumContainer extends TSAbstractMutableEntity {
     public isGSContainerEmpty(): boolean {
         return EbeguUtil.isNullOrUndefined(this.sozialhilfeZeitraumGS);
     }
+
+    public deepCopy(): TSSozialhilfeZeitraumContainer {
+        const sozialhilfeZeitraumContainer = new TSSozialhilfeZeitraumContainer();
+        sozialhilfeZeitraumContainer._sozialhilfeZeitraumGS = this._sozialhilfeZeitraumGS.deepCopy();
+        sozialhilfeZeitraumContainer._sozialhilfeZeitraumJA = this._sozialhilfeZeitraumJA.deepCopy();
+        return sozialhilfeZeitraumContainer;
+    }
 }

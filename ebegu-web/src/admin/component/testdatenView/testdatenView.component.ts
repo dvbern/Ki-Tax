@@ -17,8 +17,12 @@ import {Component, OnInit} from '@angular/core';
 import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
 import * as moment from 'moment';
 import {Observable} from 'rxjs';
-import {DvNgConfirmDialogComponent} from '../../../app/core/component/dv-ng-confirm-dialog/dv-ng-confirm-dialog.component';
-import {DvNgDisplayObjectDialogComponent} from '../../../app/core/component/dv-ng-display-object-dialog/dv-ng-display-object-dialog.component';
+import {
+    DvNgConfirmDialogComponent,
+} from '../../../app/core/component/dv-ng-confirm-dialog/dv-ng-confirm-dialog.component';
+import {
+    DvNgDisplayObjectDialogComponent,
+} from '../../../app/core/component/dv-ng-display-object-dialog/dv-ng-display-object-dialog.component';
 import {DvNgLinkDialogComponent} from '../../../app/core/component/dv-ng-link-dialog/dv-ng-link-dialog.component';
 import {DvNgOkDialogComponent} from '../../../app/core/component/dv-ng-ok-dialog/dv-ng-ok-dialog.component';
 import {DvNgRemoveDialogComponent} from '../../../app/core/component/dv-ng-remove-dialog/dv-ng-remove-dialog.component';
@@ -207,8 +211,8 @@ export class TestdatenViewComponent implements OnInit {
             }, error => LOG.error(error));
     }
 
-    public testAllMails(): Observable<any> {
-        return this.testFaelleRS.testAllMails(this.mailadresse);
+    public testAllMails(): void {
+        this.testFaelleRS.testAllMails(this.mailadresse).subscribe();
     }
 
     public mutiereFallScheidung(): void {
