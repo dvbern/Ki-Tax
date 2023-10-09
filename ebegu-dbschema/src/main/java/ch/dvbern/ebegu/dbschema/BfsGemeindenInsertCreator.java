@@ -17,20 +17,6 @@
 
 package ch.dvbern.ebegu.dbschema;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.PrintWriter;
-import java.time.LocalDate;
-import java.time.ZoneId;
-import java.util.Iterator;
-import java.util.Objects;
-import java.util.UUID;
-
-import javax.annotation.Nullable;
-
 import ch.dvbern.ebegu.util.Constants;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellType;
@@ -39,6 +25,14 @@ import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.annotation.Nullable;
+import java.io.*;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.util.Iterator;
+import java.util.Objects;
+import java.util.UUID;
 
 /**
  * Liest die Liste der Gemeinden gemaess BFS ein.
@@ -157,6 +151,7 @@ public class BfsGemeindenInsertCreator {
 		return printWriter;
 	}
 
+	@SuppressWarnings("PMD.CloseResource")
 	private void println(String s) {
 		LOG.info(s);
 		PrintWriter printWriter = getPrintWriter();
