@@ -15,20 +15,6 @@
 
 package ch.dvbern.ebegu.dbschema;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.PrintWriter;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.UUID;
-
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.services.AdministrationService;
 import org.apache.commons.lang.StringUtils;
@@ -39,6 +25,9 @@ import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.*;
+import java.util.*;
 
 /**
  * Liest die Liste der Institutionen (Excel) ein
@@ -346,7 +335,11 @@ public class InstitutionenInsertCreator {
 		return printWriter;
 	}
 
+	@SuppressWarnings("PMD.CloseResource")
 	private void println(String s) {
-		getPrintWriter().println(s);
+		PrintWriter printWriter = getPrintWriter();
+		if(printWriter != null){
+			printWriter.println(s);
+		}
 	}
 }

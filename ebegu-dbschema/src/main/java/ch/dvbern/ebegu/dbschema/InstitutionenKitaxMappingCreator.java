@@ -17,22 +17,16 @@
 
 package ch.dvbern.ebegu.dbschema;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
-import java.math.BigDecimal;
-import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
-import java.util.Locale;
-
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.*;
+import java.math.BigDecimal;
+import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
+import java.util.Locale;
 
 /**
  * Liest die Liste der Institutionen (Excel) ein
@@ -107,8 +101,12 @@ public class InstitutionenKitaxMappingCreator {
 		return printWriter;
 	}
 
+	@SuppressWarnings("PMD.CloseResource")
 	private void println(String s) {
-		getPrintWriter().println(s);
+		PrintWriter printWriter = getPrintWriter();
+		if(printWriter != null){
+			printWriter.println(s);
+		}
 	}
 
 

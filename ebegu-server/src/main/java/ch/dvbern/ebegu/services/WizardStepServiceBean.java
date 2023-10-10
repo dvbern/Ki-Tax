@@ -17,13 +17,20 @@
 
 package ch.dvbern.ebegu.services;
 
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
+import ch.dvbern.ebegu.authentication.PrincipalBean;
+import ch.dvbern.ebegu.entities.*;
+import ch.dvbern.ebegu.enums.*;
+import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
+import ch.dvbern.ebegu.errors.EbeguRuntimeException;
+import ch.dvbern.ebegu.errors.MailException;
+import ch.dvbern.ebegu.errors.MergeDocException;
+import ch.dvbern.ebegu.rules.anlageverzeichnis.DokumentenverzeichnisEvaluator;
+import ch.dvbern.ebegu.util.Constants;
+import ch.dvbern.ebegu.util.DokumenteUtil;
+import ch.dvbern.ebegu.util.EbeguUtil;
+import ch.dvbern.lib.cdipersistence.Persistence;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.activation.MimeTypeParseException;
 import javax.annotation.Nonnull;
@@ -36,46 +43,9 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import javax.validation.constraints.NotNull;
-
-import ch.dvbern.ebegu.authentication.PrincipalBean;
-import ch.dvbern.ebegu.entities.AbstractEntity;
-import ch.dvbern.ebegu.entities.AbstractMutableEntity;
-import ch.dvbern.ebegu.entities.AbstractPlatz;
-import ch.dvbern.ebegu.entities.Betreuung;
-import ch.dvbern.ebegu.entities.DokumentGrund;
-import ch.dvbern.ebegu.entities.EinkommensverschlechterungContainer;
-import ch.dvbern.ebegu.entities.EinkommensverschlechterungInfoContainer;
-import ch.dvbern.ebegu.entities.Familiensituation;
-import ch.dvbern.ebegu.entities.GemeindeStammdaten;
-import ch.dvbern.ebegu.entities.Gesuch;
-import ch.dvbern.ebegu.entities.Gesuch_;
-import ch.dvbern.ebegu.entities.GesuchstellerAdresseContainer;
-import ch.dvbern.ebegu.entities.GesuchstellerContainer;
-import ch.dvbern.ebegu.entities.KindContainer;
-import ch.dvbern.ebegu.entities.WizardStep;
-import ch.dvbern.ebegu.entities.WizardStep_;
-import ch.dvbern.ebegu.enums.AntragStatus;
-import ch.dvbern.ebegu.enums.AntragTyp;
-import ch.dvbern.ebegu.enums.Betreuungsstatus;
-import ch.dvbern.ebegu.enums.DokumentGrundTyp;
-import ch.dvbern.ebegu.enums.EinstellungKey;
-import ch.dvbern.ebegu.enums.ErrorCodeEnum;
-import ch.dvbern.ebegu.enums.SozialdienstFallStatus;
-import ch.dvbern.ebegu.enums.UnterhaltsvereinbarungAnswer;
-import ch.dvbern.ebegu.enums.UserRole;
-import ch.dvbern.ebegu.enums.WizardStepName;
-import ch.dvbern.ebegu.enums.WizardStepStatus;
-import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
-import ch.dvbern.ebegu.errors.EbeguRuntimeException;
-import ch.dvbern.ebegu.errors.MailException;
-import ch.dvbern.ebegu.errors.MergeDocException;
-import ch.dvbern.ebegu.rules.anlageverzeichnis.DokumentenverzeichnisEvaluator;
-import ch.dvbern.ebegu.util.Constants;
-import ch.dvbern.ebegu.util.DokumenteUtil;
-import ch.dvbern.ebegu.util.EbeguUtil;
-import ch.dvbern.lib.cdipersistence.Persistence;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.time.LocalDate;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Service fuer Gesuch
@@ -372,6 +342,7 @@ public class WizardStepServiceBean extends AbstractBaseService implements Wizard
 		} else if (WizardStepName.ERWERBSPENSUM == stepName) {
 			updateAllStatusForErwerbspensum(wizardSteps);
 		} else if (stepName.isEKVWizardStepName()
+			&& (oldEntity == null || oldEntity instanceof EinkommensverschlechterungInfoContainer)
 			&& newEntity instanceof EinkommensverschlechterungInfoContainer) {
 			updateAllStatusForEinkommensverschlechterungInfo(
 				wizardSteps,
@@ -397,7 +368,7 @@ public class WizardStepServiceBean extends AbstractBaseService implements Wizard
 	 */
 	private void updateAllStatusForEinkommensverschlechterungInfo(
 		List<WizardStep> wizardSteps,
-		EinkommensverschlechterungInfoContainer oldEntity,
+		@Nullable EinkommensverschlechterungInfoContainer oldEntity,
 		EinkommensverschlechterungInfoContainer newEntity
 	) {
 		for (WizardStep wizardStep : wizardSteps) {

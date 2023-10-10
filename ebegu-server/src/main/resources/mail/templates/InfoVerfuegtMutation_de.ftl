@@ -9,7 +9,7 @@
 <#-- @ftlvariable name="gruss" type="java.lang.String" -->
 From: ${configuration.senderAddress}
 To: <@base64Header>${senderFullName}</@base64Header> <${empfaengerMail}>
-Subject: <@base64Header>kiBon <#if configuration.isDevmode>Testsystem</#if> – <#if isSozialdienst>Die Mutation für den Antrag von ${gesuchsteller.fullName}<#else>Ihre Mutation</#if> wurde bearbeitet</@base64Header>
+Subject: <@base64Header>kiBon <#if configuration.isDevmode>Testsystem</#if> – <#if isSozialdienst>Die Mutation für den Antrag von ${gesuchsteller.fullName}<#else>Eine Mutation</#if> wurde bearbeitet</@base64Header>
 Content-Type: text/html;charset=utf-8
 
 <html>

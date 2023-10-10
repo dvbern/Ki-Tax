@@ -259,8 +259,9 @@ public enum UserRole {
 	}
 
 	public static List<UserRole> getAllInstitutionRoles() {
-		List<UserRole> all = getAllInstitutionAdminRoles();
-		all.addAll(getAllInstitutionSachbearbeiterRoles());
-		return all;
+		List<UserRole> roles = new ArrayList<>();
+		roles.addAll(getAllInstitutionAdminRoles());
+		roles.addAll(getAllInstitutionSachbearbeiterRoles());
+		return roles;
 	}
 }

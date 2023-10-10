@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.annotation.Nonnull;
 import javax.xml.bind.DatatypeConverter;
@@ -44,7 +45,9 @@ public class UUIDToBase64TestHelper {
 		final boolean complexMatch = testLine.matches(Constants.REGEX_UUID);
 		System.out.println("complex match " + complexMatch);
 
-		lineList = Files.lines(Paths.get(path)).collect(Collectors.toList());
+		try (Stream<String> lines = Files.lines(Paths.get(path))) {
+			lineList = lines.collect(Collectors.toList());
+		}
 
 		StringBuffer sb = new StringBuffer();
 		Pattern p = Pattern.compile(Constants.REGEX_UUID);
