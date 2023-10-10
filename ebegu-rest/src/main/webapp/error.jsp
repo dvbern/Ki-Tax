@@ -1,4 +1,5 @@
 <%@page isErrorPage="true" contentType="text/html" %>
+<!DOCTYPE html>
 <%--
   ~ Ki-Tax: System for the management of external childcare subsidies
   ~ Copyright (C) 2018 City of Bern Switzerland
@@ -13,8 +14,8 @@
   ~ You should have received a copy of the GNU Affero General Public License
   ~ along with this program. If not, see <http://www.gnu.org/licenses/>.
   --%>
-
-<html>
+<html lang="en">
+<title></title>
 <body>
 <p>Internal Error occured at
     <%= new java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm").format(new java.util.Date()) %>
