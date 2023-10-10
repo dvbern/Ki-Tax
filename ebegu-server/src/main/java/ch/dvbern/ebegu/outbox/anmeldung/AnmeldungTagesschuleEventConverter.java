@@ -36,6 +36,7 @@ import ch.dvbern.ebegu.entities.GesuchstellerAdresseContainer;
 import ch.dvbern.ebegu.entities.GesuchstellerContainer;
 import ch.dvbern.ebegu.entities.Kind;
 import ch.dvbern.ebegu.entities.TSCalculationResult;
+import ch.dvbern.ebegu.enums.Betreuungsstatus;
 import ch.dvbern.kibon.exchange.commons.tagesschulen.AbholungTagesschule;
 import ch.dvbern.kibon.exchange.commons.tagesschulen.ModulAuswahlDTO;
 import ch.dvbern.kibon.exchange.commons.tagesschulen.TagesschuleAnmeldungDetailsDTO;
@@ -87,8 +88,7 @@ public class AnmeldungTagesschuleEventConverter {
 				null)
 			.setAnmeldungsDetails(toTagesschuleAnmeldungDetailsDTO(anmeldung))
 			.setStatus(TagesschuleAnmeldungStatus.valueOf(anmeldung.getBetreuungsstatus().name()))
-			// TODO muss noch richtig ausgefüllt weren. Abhängig von Betreuungsstatus
-			.setAnmeldungZurueckgezogen(false)
+			.setAnmeldungZurueckgezogen(anmeldung.getBetreuungsstatus() == Betreuungsstatus.SCHULAMT_ANMELDUNG_STORNIERT ? true : false)
 			.setTarife(toTagesschuleAnmeldungTarifeDTO(anmeldung))
 			.build();
 	}

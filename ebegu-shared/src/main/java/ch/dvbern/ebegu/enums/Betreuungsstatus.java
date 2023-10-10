@@ -108,7 +108,8 @@ public enum Betreuungsstatus {
 		return EnumSet.of(
 			Betreuungsstatus.SCHULAMT_ANMELDUNG_AUSGELOEST,
 			Betreuungsstatus.SCHULAMT_MODULE_AKZEPTIERT,
-			Betreuungsstatus.SCHULAMT_ANMELDUNG_UEBERNOMMEN);
+			Betreuungsstatus.SCHULAMT_ANMELDUNG_UEBERNOMMEN,
+			Betreuungsstatus.SCHULAMT_ANMELDUNG_STORNIERT);
 	}
 
 	public boolean isSchulamtAnmeldungUebernommen() {
