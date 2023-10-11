@@ -17,41 +17,18 @@
 
 package ch.dvbern.ebegu.outbox.anmeldung;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.stream.Collectors;
+import ch.dvbern.ebegu.entities.*;
+import ch.dvbern.ebegu.enums.Betreuungsstatus;
+import ch.dvbern.kibon.exchange.commons.tagesschulen.*;
+import ch.dvbern.kibon.exchange.commons.types.*;
+import ch.dvbern.kibon.exchange.commons.util.AvroConverter;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.enterprise.context.ApplicationScoped;
-
-import ch.dvbern.ebegu.entities.Adresse;
-import ch.dvbern.ebegu.entities.AdresseTyp;
-import ch.dvbern.ebegu.entities.AnmeldungTagesschule;
-import ch.dvbern.ebegu.entities.BelegungTagesschule;
-import ch.dvbern.ebegu.entities.BelegungTagesschuleModul;
-import ch.dvbern.ebegu.entities.Gesuch;
-import ch.dvbern.ebegu.entities.Gesuchsteller;
-import ch.dvbern.ebegu.entities.GesuchstellerAdresseContainer;
-import ch.dvbern.ebegu.entities.GesuchstellerContainer;
-import ch.dvbern.ebegu.entities.Kind;
-import ch.dvbern.ebegu.entities.TSCalculationResult;
-import ch.dvbern.ebegu.enums.Betreuungsstatus;
-import ch.dvbern.kibon.exchange.commons.tagesschulen.AbholungTagesschule;
-import ch.dvbern.kibon.exchange.commons.tagesschulen.ModulAuswahlDTO;
-import ch.dvbern.kibon.exchange.commons.tagesschulen.TagesschuleAnmeldungDetailsDTO;
-import ch.dvbern.kibon.exchange.commons.tagesschulen.TagesschuleAnmeldungEventDTO;
-import ch.dvbern.kibon.exchange.commons.tagesschulen.TagesschuleAnmeldungStatus;
-import ch.dvbern.kibon.exchange.commons.tagesschulen.TagesschuleAnmeldungTarifeDTO;
-import ch.dvbern.kibon.exchange.commons.tagesschulen.TarifDTO;
-import ch.dvbern.kibon.exchange.commons.tagesschulen.TarifZeitabschnittDTO;
-import ch.dvbern.kibon.exchange.commons.types.AdresseDTO;
-import ch.dvbern.kibon.exchange.commons.types.Geschlecht;
-import ch.dvbern.kibon.exchange.commons.types.GesuchstellerDTO;
-import ch.dvbern.kibon.exchange.commons.types.Intervall;
-import ch.dvbern.kibon.exchange.commons.types.KindDTO;
-import ch.dvbern.kibon.exchange.commons.types.Wochentag;
-import ch.dvbern.kibon.exchange.commons.util.AvroConverter;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import static java.util.Objects.requireNonNull;
 
@@ -88,7 +65,7 @@ public class AnmeldungTagesschuleEventConverter {
 				null)
 			.setAnmeldungsDetails(toTagesschuleAnmeldungDetailsDTO(anmeldung))
 			.setStatus(TagesschuleAnmeldungStatus.valueOf(anmeldung.getBetreuungsstatus().name()))
-			.setAnmeldungZurueckgezogen(anmeldung.getBetreuungsstatus() == Betreuungsstatus.SCHULAMT_ANMELDUNG_STORNIERT ? true : false)
+			.setAnmeldungZurueckgezogen(anmeldung.getBetreuungsstatus() == Betreuungsstatus.SCHULAMT_ANMELDUNG_STORNIERT)
 			.setTarife(toTagesschuleAnmeldungTarifeDTO(anmeldung))
 			.build();
 	}
