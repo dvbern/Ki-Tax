@@ -1883,7 +1883,7 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 		if (hasNichtEintretenBetreuung(vorgaenger)) {
 			return false;
 		}
-		return erstGesuch.getEingangsart().isOnlineGesuch();
+		return false;
 	}
 
 	private static boolean hasNichtEintretenBetreuung(Gesuch vorgaenger) {
