@@ -4,6 +4,7 @@ import ch.dvbern.ebegu.dto.BGCalculationInput;
 import ch.dvbern.ebegu.dto.FinanzDatenDTO;
 import ch.dvbern.ebegu.entities.AbstractPlatz;
 import ch.dvbern.ebegu.entities.BGCalculationResult;
+import ch.dvbern.ebegu.entities.Familiensituation;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.enums.MsgKey;
 
@@ -50,7 +51,7 @@ public class MutationsMergerFinanzielleSituationBernFKJV extends MutationsMerger
 
 		BigDecimal massgebendesEinkommenFinSit = getMassgebendesEinkommenFromFinSit(inputData, platz);
 
-		if (isFinSitRueckwirkendAnzupassen(inputData, massgebendesEinkommenFinSit, resultVorgaenger)) {
+		if (isFinSitRueckwirkendAnzupassen(inputData, massgebendesEinkommenFinSit, resultVorgaenger, platz)) {
 			finsitRueckwirkendAnpassen(inputData, massgebendesEinkommenFinSit, platz);
 			return;
 		}
@@ -59,10 +60,23 @@ public class MutationsMergerFinanzielleSituationBernFKJV extends MutationsMerger
 		}
 	}
 
-	private boolean isFinSitRueckwirkendAnzupassen(BGCalculationInput input, BigDecimal massgebendesEinkommenFinSit, BGCalculationResult resultVorgaenger) {
+	private boolean isFinSitRueckwirkendAnzupassen(
+		BGCalculationInput input,
+		BigDecimal massgebendesEinkommenFinSit,
+		BGCalculationResult resultVorgaenger,
+		AbstractPlatz platz) {
 		return hasMassgebendesEinkommenVorAbzugFamgrChanged(massgebendesEinkommenFinSit, resultVorgaenger)
-			&& !input.isSozialhilfeempfaenger()
+			&& !isSozialhilfeBezueger(platz)
 			&& !verguenstigungGewuenschtFlagChangedToVerguenstigungGewuenscht(input, resultVorgaenger);
+	}
+
+	private boolean isSozialhilfeBezueger(AbstractPlatz platz) {
+		Familiensituation familiensituation = platz.extractGesuch().extractFamiliensituation();
+		if (familiensituation == null || familiensituation.getSozialhilfeBezueger() == null) {
+			return false;
+		}
+
+		return Boolean.TRUE.equals(familiensituation.getSozialhilfeBezueger());
 	}
 
 	private boolean verguenstigungGewuenschtFlagChangedToVerguenstigungGewuenscht(BGCalculationInput input, BGCalculationResult resultVorgaenger) {
