@@ -981,7 +981,10 @@ public class Gesuch extends AbstractMutableEntity implements Searchable {
 			target.setLaufnummer(0); // Wir fangen für die neue Periode wieder mit 0 an
 			copyGesuchsteller2IfStillNeeded(target, copyType);
 			copyEinkommensverschlechterungInfoContainer(target, copyType);
-			copyDokumentGruende(target, copyType);
+			if (!isDeletionOfGesuchPossible()) {
+				//Die Dokumente sollen nur kopiert werden, wenn das Gesuch nicht mehr gelöscht werden kann
+				copyDokumentGruende(target, copyType);
+			}
 			break;
 		case MUTATION_NEUES_DOSSIER:
 			target.setLaufnummer(0); // Wir fangen für das neue Dossier wieder mit 0 an
@@ -1069,6 +1072,14 @@ public class Gesuch extends AbstractMutableEntity implements Searchable {
 				}
 			);
 		}
+	}
+
+	private boolean isDeletionOfGesuchPossible() {
+		if (this.getEingangsart().isOnlineGesuch()) {
+			return this.status.isAnyOfInBearbeitungGSOrSZD();
+		}
+
+		return !this.getStatus().isAnyStatusOfVerfuegtOrVefuegen();
 	}
 
 	private boolean isDokumentOfSecondGesuchstellerButHasNoSecondGesuchsteller(
