@@ -15,7 +15,7 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.dvbern.ebegu.services;
+package ch.dvbern.ebegu.services.mitteilung;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -130,6 +130,17 @@ import ch.dvbern.ebegu.nesko.handler.KibonAnfrageContext;
 import ch.dvbern.ebegu.nesko.handler.KibonAnfrageHelper;
 import ch.dvbern.ebegu.nesko.utils.KibonAnfrageUtil;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
+import ch.dvbern.ebegu.services.AbstractBaseService;
+import ch.dvbern.ebegu.services.Authorizer;
+import ch.dvbern.ebegu.services.BenutzerService;
+import ch.dvbern.ebegu.services.BetreuungService;
+import ch.dvbern.ebegu.services.EinstellungService;
+import ch.dvbern.ebegu.services.FinanzielleSituationService;
+import ch.dvbern.ebegu.services.GemeindeService;
+import ch.dvbern.ebegu.services.GesuchService;
+import ch.dvbern.ebegu.services.MailService;
+import ch.dvbern.ebegu.services.MitteilungService;
+import ch.dvbern.ebegu.services.VerfuegungService;
 import ch.dvbern.ebegu.services.util.SearchUtil;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.types.DateRange_;
@@ -1880,10 +1891,10 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 
 		Gesuch erstGesuch = gesuchService.findErstgesuchForGesuch(mutation);
 		Gesuch vorgaenger = gesuchService.findVorgaengerGesuchNotIgnoriert(requireNonNull(mutation.getVorgaengerId()));
-		if (hasNichtEintretenBetreuung(vorgaenger)) {
+		if (hasNichtEintretenBetreuung(vorgaenger) || vorgaenger.getFinSitStatus().equals(FinSitStatus.ABGELEHNT)) {
 			return false;
 		}
-		return false;
+		return erstGesuch.getEingangsart().isOnlineGesuch();
 	}
 
 	private static boolean hasNichtEintretenBetreuung(Gesuch vorgaenger) {
