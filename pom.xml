@@ -47,7 +47,7 @@
         <database.jdbc.pwd>ebegu</database.jdbc.pwd>
 
         <!-- keep in sync with dependencies from Wildfly BOM -->
-        <version.hibernate>5.3.20.Final</version.hibernate>
+        <version.hibernate>5.4.24.Final</version.hibernate>
         <version.org.hibernate.validator>6.0.21.Final</version.org.hibernate.validator>
         <version.wildfly-arquillian-containers>3.0.1.Final</version.wildfly-arquillian-containers>
         <hibernate-search.version>5.10.11.Final</hibernate-search.version>
