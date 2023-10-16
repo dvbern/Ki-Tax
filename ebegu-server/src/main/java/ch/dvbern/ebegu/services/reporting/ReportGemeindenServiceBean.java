@@ -176,6 +176,11 @@ public class ReportGemeindenServiceBean extends AbstractReportServiceBean implem
 
 					GemeindeKennzahlen gemeindeKennzahlen = gemeindeAntragGesuchsperiodeCache.get(gesuchsperiode.getId() + gemeinde.getId());
 						if(gemeindeKennzahlen != null) {
+							gemeindenDatenDataRow.setGemeindeKennzahlenStatus(
+								ServerMessageUtil.getMessage(
+									"GemeindeKennzahlenStatus_" + gemeindeKennzahlen.getStatus(),
+									locale,
+									requireNonNull(gemeinde.getMandant())));
 							gemeindenDatenDataRow.setKontingentierung(gemeindeKennzahlen.getGemeindeKontingentiert());
 							gemeindenDatenDataRow.setNachfrageErfuellt(gemeindeKennzahlen.getNachfrageErfuellt());
 							gemeindenDatenDataRow.setNachfrageAnzahl(gemeindeKennzahlen.getNachfrageAnzahl());
