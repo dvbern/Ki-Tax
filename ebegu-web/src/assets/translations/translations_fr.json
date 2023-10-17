@@ -1086,6 +1086,7 @@
     "EINKVERS_ONE_PERIODE_WARNING_BESCHREIBUNG": "Vous avez déclaré une déterioration de revenu seulement pour {{jahr1periode}}. Dans ce cas le revenu de l'année {{basisjahr}} s'applique pour l'année {{jahr2periode}}.",
     "FINSIT_WARNING": "Voulez-vous vraiment enregistrer cette modification ? ",
     "FINSIT_WARNING_BESCHREIBUNG": "Les informations déjà saisies concernant la situation financière et la diminution du revenu seront supprimées.",
+    "FINSIT_WARNING_SOZIALHILFE_BESCHREIBUNG": "Vous bénéficiez de l'aide sociale. Votre situation financière sera modifiée.",
     "FINSIT_BERN_LOADING": "<i class=\"fa fa-circle-o-notch fa-spin fa-fw\"></i> Données en cours de récupération",
     "FINSIT_BERN_SAVED": "<i class=\"fa fa-check\"></i> Données actualisées",
     "IN_BEARBEITUNG_GS": "En traitement par l'auteur-e de la demande",
