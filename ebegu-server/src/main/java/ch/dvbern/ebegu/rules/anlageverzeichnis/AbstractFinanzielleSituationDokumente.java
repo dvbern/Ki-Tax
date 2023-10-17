@@ -144,11 +144,11 @@ abstract class AbstractFinanzielleSituationDokumente
 				abstractFinanzielleSituation.getGeleisteteAlimente().compareTo(BigDecimal.ZERO) > 0;
 		case NACHWEIS_VERMOEGEN:
 			// Vermögen muss immer ausgewiesen werden!
-			return !abstractFinanzielleSituation.getSteuerveranlagungErhalten() &&
-				!abstractFinanzielleSituation.getSteuererklaerungAusgefuellt();
+			return !abstractFinanzielleSituation.getSteuerveranlagungErhalten() ||
+				abstractFinanzielleSituation.getSteuererklaerungAusgefuellt();
 		case NACHWEIS_SCHULDEN:
-			return !abstractFinanzielleSituation.getSteuerveranlagungErhalten() &&
-				!abstractFinanzielleSituation.getSteuererklaerungAusgefuellt() &&
+			return (!abstractFinanzielleSituation.getSteuerveranlagungErhalten() ||
+				abstractFinanzielleSituation.getSteuererklaerungAusgefuellt()) &&
 				abstractFinanzielleSituation.getSchulden() != null &&
 				abstractFinanzielleSituation.getSchulden().compareTo(BigDecimal.ZERO) > 0;
 		case ERFOLGSRECHNUNGEN_JAHR:
