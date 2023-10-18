@@ -189,6 +189,7 @@ export class FamiliensituationViewXComponent extends AbstractFamiliensitutaionVi
             this.getFamiliensituation().startKonkubinat = this.getFamiliensituation().aenderungPer;
         }
         this.onDatumBlur();
+        this.resetPartnerIdentischMitVorgesuchIfHidden();
     }
 
     /**
@@ -430,5 +431,11 @@ export class FamiliensituationViewXComponent extends AbstractFamiliensitutaionVi
 
     public gesuchstellerKardinalitaetChange(): void {
         this.getFamiliensituation().partnerIdentischMitVorgesuch = undefined;
+    }
+
+    private resetPartnerIdentischMitVorgesuchIfHidden(): void {
+        if (!this.showFragePartnerWieBisher()) {
+            this.getFamiliensituation().partnerIdentischMitVorgesuch = undefined;
+        }
     }
 }
