@@ -466,6 +466,8 @@
     "FAMILIENSITUATION_FRAGE_PARTNERIDENTISCH_WARNBEZ_ANDERER_ELTERNTEIL": "l'autre parent",
     "FAMILIENSITUATION_FRAGE_PARTNERIDENTISCH_WARNING": "La période couverte par la demande déposée conjointement avec {{namegs2}} prendra fin le {{endeDatum}}.",
     "FAMILIENSITUATION_FRAGE_PARTNERIDENTISCH_WARNING_PAAR": "Adressez-vous à votre commune si vous souhaitez introduire une nouvelle demande avec  {{warnbez}}.",
+    "FAMILIENSITUATION_X_JAHRE_KONKUBINAT_MSG": "Jusqu'au {{endeDatum}}, la demande est déposée en même temps que {{namegs2}}. Ensuite, vous devrez déposer une nouvelle demande avec votre concubin(e). Pour cela, veuillez vous adresser à votre commune",
+    "FAMILIENSITUATION_ANDERE_ERZIEHUNGSBERCHTIGTE_PERSION": "de l'autre personne exerçant l'autorité parentale",
     "KONKUBINAT_KEIN_KIND": "Oui, concubin-e sans enfant commun",
     "ANDERER_ELTERNTEIL": "Autre parent",
     "GS2_VERHEIRATET": "Epouse/époux ou partenaire enregistré-e",
