@@ -189,9 +189,12 @@ export class FinanzielleSituationStartViewController extends AbstractFinSitBernV
             return this.$q.when(this.gesuchModelManager.getGesuch());
         }
         if (this.finanzielleSituationTurnedNotRequired()) {
+            const keyDeleteText = this.modelHasChangedToSozialhilfebezuegerin() ?
+                'FINSIT_WARNING_SOZIALHILFE_BESCHREIBUNG' :
+                'FINSIT_WARNING_BESCHREIBUNG';
             return this.dvDialog.showRemoveDialog(removeDialogTemplate, this.form, RemoveDialogController, {
                 title: 'FINSIT_WARNING',
-                deleteText: 'FINSIT_WARNING_BESCHREIBUNG'
+                deleteText: keyDeleteText
             }).then(() =>    // User confirmed changes
                  this.save()
             );
@@ -212,6 +215,10 @@ export class FinanzielleSituationStartViewController extends AbstractFinSitBernV
 
     public finanzielleSituationTurnedNotRequired(): boolean {
         return this.initialModel.isFinanzielleSituationRequired() && !this.model.isFinanzielleSituationRequired();
+    }
+
+    public modelHasChangedToSozialhilfebezuegerin(): boolean {
+        return !this.initialModel.familienSituation?.sozialhilfeBezueger && this.model.familienSituation?.sozialhilfeBezueger;
     }
 
     public getFinanzielleSituationGS1(): TSFinanzielleSituation {
