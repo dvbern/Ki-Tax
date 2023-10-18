@@ -67,6 +67,7 @@ public class GemeindenExcelConverter implements ExcelConverter {
 				gemeindeDatenRegisterGroup.addValue(MergeFieldGemeinden.gesuchsperiode, gemeindenDatenDataRow.getGesuchsperiode());
 				gemeindeDatenRegisterGroup.addValue(MergeFieldGemeinden.limitierungKita, gemeindenDatenDataRow.getLimitierungKita());
 				gemeindeDatenRegisterGroup.addValue(MergeFieldGemeinden.kontingentierung, gemeindenDatenDataRow.getKontingentierung());
+				gemeindeDatenRegisterGroup.addValue(MergeFieldGemeinden.gemeindeKennzahlenStatus, gemeindenDatenDataRow.getGemeindeKennzahlenStatus());
 				gemeindeDatenRegisterGroup.addValue(MergeFieldGemeinden.erwerbspensumZuschlag, gemeindenDatenDataRow.getErwerbspensumZuschlag());
 
 
@@ -100,6 +101,7 @@ public class GemeindenExcelConverter implements ExcelConverter {
 		excelMerger.addValue(MergeFieldGemeinden.limitierungKitaTitle, ServerMessageUtil.getMessage("Reports_limitierungKitaTitle", locale, mandant));
 		excelMerger.addValue(MergeFieldGemeinden.erwerbspensumZuschlagTitle, ServerMessageUtil.getMessage("Reports_erwerbspensumZuschlagTitle", locale, mandant));
 		excelMerger.addValue(MergeFieldGemeinden.kontingentierungTitle, ServerMessageUtil.getMessage("Reports_kontingentierungTitle", locale, mandant));
+		excelMerger.addValue(MergeFieldGemeinden.gemeindeKennzahlenStatusTitle, ServerMessageUtil.getMessage("Reports_gemeindeKennzahlenStatusTitle", locale, mandant));
 		excelMerger.addValue(MergeFieldGemeinden.gesuchsperiodeTitle, ServerMessageUtil.getMessage("Reports_periodeTitle", locale, mandant));
 		excelMerger.addValue(MergeFieldGemeinden.nachfrageErfuelltTitle, ServerMessageUtil.getMessage("Reports_nachfrageErfuelltTitle", locale, mandant));
 		excelMerger.addValue(MergeFieldGemeinden.nachfrageAnzahlTitle, ServerMessageUtil.getMessage("Reports_nachfrageAnzahlTitle", locale, mandant));

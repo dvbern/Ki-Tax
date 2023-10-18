@@ -31,6 +31,9 @@ public class GemeindenDatenDataRow {
 	private String limitierungKita;
 
 	@Nullable
+	private String gemeindeKennzahlenStatus;
+
+	@Nullable
 	private Boolean kontingentierung;
 
 	@Nullable
@@ -126,5 +129,14 @@ public class GemeindenDatenDataRow {
 
 	public void setErwerbspensumZuschlag(@Nullable BigDecimal erwerbspensumZuschlag) {
 		this.erwerbspensumZuschlag = erwerbspensumZuschlag;
+	}
+
+	@Nullable
+	public String getGemeindeKennzahlenStatus() {
+		return gemeindeKennzahlenStatus;
+	}
+
+	public void setGemeindeKennzahlenStatus(@Nullable String gemeindeKennzahlenStatus) {
+		this.gemeindeKennzahlenStatus = gemeindeKennzahlenStatus;
 	}
 }
