@@ -17,51 +17,10 @@
 
 package ch.dvbern.ebegu.services.gemeindeantrag;
 
-import java.math.BigDecimal;
-import java.math.MathContext;
-import java.time.LocalDate;
-import java.time.format.DateTimeParseException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
-import java.util.concurrent.atomic.AtomicBoolean;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.ejb.Local;
-import javax.ejb.Stateless;
-import javax.inject.Inject;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Expression;
-import javax.persistence.criteria.Join;
-import javax.persistence.criteria.JoinType;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
-import javax.persistence.criteria.SetJoin;
-import javax.validation.constraints.NotNull;
-
 import ch.dvbern.ebegu.authentication.PrincipalBean;
 import ch.dvbern.ebegu.config.EbeguConfiguration;
-import ch.dvbern.ebegu.entities.AbstractEntity_;
-import ch.dvbern.ebegu.entities.Benutzer;
-import ch.dvbern.ebegu.entities.Gemeinde;
-import ch.dvbern.ebegu.entities.Gemeinde_;
-import ch.dvbern.ebegu.entities.Gesuchsperiode;
-import ch.dvbern.ebegu.entities.Gesuchsperiode_;
-import ch.dvbern.ebegu.entities.InstitutionStammdaten;
-import ch.dvbern.ebegu.entities.Mandant;
-import ch.dvbern.ebegu.entities.gemeindeantrag.GemeindeAntrag;
-import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeinde;
-import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeContainer;
-import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeContainer_;
-import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeStatusHistory;
-import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenInstitutionContainer;
-import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenInstitutionContainer_;
+import ch.dvbern.ebegu.entities.*;
+import ch.dvbern.ebegu.entities.gemeindeantrag.*;
 import ch.dvbern.ebegu.enums.ApplicationPropertyKey;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.KorrespondenzSpracheTyp;
@@ -71,14 +30,7 @@ import ch.dvbern.ebegu.enums.gemeindeantrag.LastenausgleichTagesschuleAngabenGem
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
-import ch.dvbern.ebegu.services.AbstractBaseService;
-import ch.dvbern.ebegu.services.ApplicationPropertyService;
-import ch.dvbern.ebegu.services.Authorizer;
-import ch.dvbern.ebegu.services.BenutzerService;
-import ch.dvbern.ebegu.services.GemeindeService;
-import ch.dvbern.ebegu.services.InstitutionService;
-import ch.dvbern.ebegu.services.InstitutionStammdatenService;
-import ch.dvbern.ebegu.services.MailService;
+import ch.dvbern.ebegu.services.*;
 import ch.dvbern.ebegu.services.util.PredicateHelper;
 import ch.dvbern.ebegu.types.DateRange_;
 import ch.dvbern.ebegu.util.Constants;
@@ -87,6 +39,20 @@ import ch.dvbern.lib.cdipersistence.Persistence;
 import com.google.common.base.Preconditions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.ejb.Local;
+import javax.ejb.Stateless;
+import javax.inject.Inject;
+import javax.persistence.criteria.*;
+import javax.validation.constraints.NotNull;
+import java.math.BigDecimal;
+import java.math.MathContext;
+import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
+import java.util.*;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * Service fuer den Lastenausgleich der Tagesschulen
@@ -928,7 +894,7 @@ public class LastenausgleichTagesschuleAngabenGemeindeServiceBean extends Abstra
 
 	@Nullable
 	@Override
-	public Number calculateErwarteteBetreuungsstunden(String containerId) {
+	public Number calculateErwarteteBetreuungsstunden(String containerId, boolean calculatePrognose) {
 
 		LastenausgleichTagesschuleAngabenGemeindeContainer currentAntrag =
 			findLastenausgleichTagesschuleAngabenGemeindeContainer(containerId)
@@ -946,7 +912,8 @@ public class LastenausgleichTagesschuleAngabenGemeindeServiceBean extends Abstra
 		for (InstitutionStammdaten stammdaten : allTagesschulen) {
 			BigDecimal result = this.angabenInstitutionService.countBetreuungsstundenPerYearForTagesschuleAndPeriode(
 				stammdaten,
-				currentAntrag.getGesuchsperiode()
+				currentAntrag.getGesuchsperiode(),
+				calculatePrognose
 			);
 			erwarteteBetreuungsstunden = erwarteteBetreuungsstunden.add(result);
 		};

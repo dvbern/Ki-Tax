@@ -203,6 +203,13 @@ export class LastenausgleichTSService {
         );
     }
 
+    public getErwarteteBetreuungsstundenPrognose(antrag: TSLastenausgleichTagesschuleAngabenGemeindeContainer):
+        Observable<number> {
+        return this.http.get<number>(
+            `${this.API_BASE_URL}/erwartete-betreuungsstunden-prognose/${encodeURIComponent(antrag.id)}`
+        );
+    }
+
     public latsDocxErstellen(
         antrag: TSLastenausgleichTagesschuleAngabenGemeindeContainer,
         sprache: TSSprache,
