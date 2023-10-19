@@ -48,7 +48,7 @@ Content-Type: text/html;charset=utf-8
 		</b>
 	</p>
 	<p>
-		Bei Rückfragen steht Ihnen die Abteilung Familie des Amtes für Integration und Soziales info.fam@be.ch zur
+		Bei Rückfragen steht Ihnen die Abteilung Familie des Amtes für Integration und Soziales info.bg@be.ch zur
 		Verfügung.
 	</p>
 	Mit freundlichen Grüssen
@@ -57,7 +57,7 @@ Content-Type: text/html;charset=utf-8
 		Abteilung Familie Kanton Bern</p>
 	<p>
 		Amt für Integration und Soziales
-		info.fam@be.ch
+		info.bg@be.ch
 		+41 31 633 78 83
 	</p>
     <#if configuration.isDevmode>
