@@ -134,7 +134,7 @@ export class LastenausgleichTsBerechnungComponent implements OnInit {
     }
 
     private initErwarteteBetreuungsstundenFromKiBon(): void {
-        this.latsService.getErwarteteBetreuungsstunden(this.latsContainer)
+        this.latsService.getErwarteteBetreuungsstundenPrognose(this.latsContainer)
             .subscribe(res => {
                 this.betreuungsstundenPrognoseFromKiBon = res;
                 this.cd.markForCheck();

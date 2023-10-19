@@ -445,9 +445,13 @@ public class LastenausgleichTagesschuleAngabenInstitutionServiceBean extends Abs
 
 	@Nonnull
 	@Override
-	public BigDecimal countBetreuungsstundenPerYearForTagesschuleAndPeriode(InstitutionStammdaten stammdaten, Gesuchsperiode gesuchsperiode) {
-		List<AnmeldungTagesschule> anmeldungenTagesschule =
+	public BigDecimal countBetreuungsstundenPerYearForTagesschuleAndPeriode(InstitutionStammdaten stammdaten,
+																			Gesuchsperiode gesuchsperiode,
+																			boolean countForNextYear) {
+		List<AnmeldungTagesschule> anmeldungenTagesschule = countForNextYear ?
+			findTagesschuleAnmeldungenForTagesschuleStammdatenAndPeriodeOneYearAfterStichtag(stammdaten, gesuchsperiode) :
 			findTagesschuleAnmeldungenForTagesschuleStammdatenAndPeriode(stammdaten, gesuchsperiode);
+
 
 		BigDecimal hours = BigDecimal.ZERO;
 		for (AnmeldungTagesschule anmeldungTagesschule : anmeldungenTagesschule) {
@@ -474,6 +478,22 @@ public class LastenausgleichTagesschuleAngabenInstitutionServiceBean extends Abs
 		@Nonnull Gesuchsperiode gesuchsperiode
 	) {
 
+		LocalDate stichtag =  getLatsStichtag(gesuchsperiode);
+		return findTagesschuleAnmeldungenForStammdatenOnStichtag(stichtag, stammdaten, gesuchsperiode.getMandant());
+	}
+
+	@Nonnull
+	@Override
+	public List<AnmeldungTagesschule> findTagesschuleAnmeldungenForTagesschuleStammdatenAndPeriodeOneYearAfterStichtag(
+		@Nonnull InstitutionStammdaten stammdaten,
+		@Nonnull Gesuchsperiode gesuchsperiode
+	) {
+		LocalDate stichtag =  getLatsStichtag(gesuchsperiode).plusYears(1);
+		return findTagesschuleAnmeldungenForStammdatenOnStichtag(stichtag, stammdaten, gesuchsperiode.getMandant());
+
+	}
+
+	private LocalDate getLatsStichtag(Gesuchsperiode gesuchsperiode) {
 		List<Einstellung> einstellungList =
 			einstellungService.findEinstellungen(EinstellungKey.LATS_STICHTAG, gesuchsperiode);
 		if (einstellungList.size() != 1) {
@@ -483,9 +503,12 @@ public class LastenausgleichTagesschuleAngabenInstitutionServiceBean extends Abs
 					+ gesuchsperiode.getGesuchsperiodeString()
 					+ " gefunden werden");
 		}
-		LocalDate stichtag = Date.valueOf(einstellungList.get(0).getValue()).toLocalDate();
-		var mandant = gesuchsperiode.getMandant();
-		Objects.requireNonNull(mandant);
+		return Date.valueOf(einstellungList.get(0).getValue()).toLocalDate();
+	}
+
+	private List<AnmeldungTagesschule> findTagesschuleAnmeldungenForStammdatenOnStichtag(@Nonnull LocalDate stichtag,
+																						 @Nonnull InstitutionStammdaten stammdaten,
+																						 @Nonnull Mandant mandant) {
 		Gesuchsperiode gesuchsperiodeAmStichtag = gesuchsperiodeService.getGesuchsperiodeAm(stichtag, mandant)
 			.orElseThrow(() -> new EbeguEntityNotFoundException(
 				"findTagesschuleAnmeldungenForTagesschuleStammdatenAndPeriode",
@@ -529,7 +552,6 @@ public class LastenausgleichTagesschuleAngabenInstitutionServiceBean extends Abs
 			predicateUebernommen);
 
 		return persistence.getCriteriaResults(query);
-
 	}
 
 	// we check this since the attributes can be cached and can be null then, but must not be when changing status

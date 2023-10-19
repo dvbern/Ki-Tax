@@ -17,19 +17,17 @@
 
 package ch.dvbern.ebegu.services.gemeindeantrag;
 
-import java.math.BigDecimal;
-import java.util.List;
-import java.util.Optional;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.validation.constraints.Null;
-
 import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.gemeindeantrag.GemeindeAntrag;
 import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeContainer;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.math.BigDecimal;
+import java.util.List;
+import java.util.Optional;
 
 /**
  * Service fuer den Lastenausgleich der Tagesschulen
@@ -161,7 +159,7 @@ public interface LastenausgleichTagesschuleAngabenGemeindeService {
 	@Nullable
 	LastenausgleichTagesschuleAngabenGemeindeContainer findContainerOfPreviousPeriode(@Nonnull String currentAntragId);
 
-	@Nullable Number calculateErwarteteBetreuungsstunden(String containerId);
+	@Nullable Number calculateErwarteteBetreuungsstunden(String containerId, boolean calculatePrognose);
 
 	void savePrognose(@Nonnull String containerId, @Nonnull BigDecimal prognose, @Nullable String bemerkungen);
 
