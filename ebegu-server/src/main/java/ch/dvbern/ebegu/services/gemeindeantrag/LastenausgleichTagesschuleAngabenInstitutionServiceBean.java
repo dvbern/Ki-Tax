@@ -445,14 +445,24 @@ public class LastenausgleichTagesschuleAngabenInstitutionServiceBean extends Abs
 
 	@Nonnull
 	@Override
-	public BigDecimal countBetreuungsstundenPerYearForTagesschuleAndPeriode(InstitutionStammdaten stammdaten,
-																			Gesuchsperiode gesuchsperiode,
-																			boolean countForNextYear) {
-		List<AnmeldungTagesschule> anmeldungenTagesschule = countForNextYear ?
-			findTagesschuleAnmeldungenForTagesschuleStammdatenAndPeriodeOneYearAfterStichtag(stammdaten, gesuchsperiode) :
-			findTagesschuleAnmeldungenForTagesschuleStammdatenAndPeriode(stammdaten, gesuchsperiode);
+	public BigDecimal countBetreuungsstundenPrognoseForTagesschuleAndPeriode(
+		InstitutionStammdaten stammdaten,
+		Gesuchsperiode gesuchsperiode) {
+		List<AnmeldungTagesschule> anmeldungenTagesschule =
+			findTagesschuleAnmeldungenForTagesschuleStammdatenAndPeriodeOneYearAfterStichtag(stammdaten, gesuchsperiode);
+		return countBetreuungsstundenForTagesschuleAnmeldungen(anmeldungenTagesschule);
+	}
 
+	@Nonnull
+	@Override
+	public BigDecimal countBetreuungsstundenPerYearForTagesschuleAndPeriode(
+		InstitutionStammdaten stammdaten,
+		Gesuchsperiode gesuchsperiode) {
+		List<AnmeldungTagesschule> anmeldungenTagesschule = findTagesschuleAnmeldungenForTagesschuleStammdatenAndPeriode(stammdaten, gesuchsperiode);
+		return countBetreuungsstundenForTagesschuleAnmeldungen(anmeldungenTagesschule);
+	}
 
+	private BigDecimal countBetreuungsstundenForTagesschuleAnmeldungen(List<AnmeldungTagesschule> anmeldungenTagesschule) {
 		BigDecimal hours = BigDecimal.ZERO;
 		for (AnmeldungTagesschule anmeldungTagesschule : anmeldungenTagesschule) {
 			BelegungTagesschule belegungTagesschule = anmeldungTagesschule.getBelegungTagesschule();

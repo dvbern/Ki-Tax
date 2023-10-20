@@ -568,7 +568,7 @@ public class LastenausgleichTagesschuleAngabenGemeindeResource {
 		Objects.requireNonNull(containerJaxId);
 		Objects.requireNonNull(containerJaxId.getId());
 
-		return angabenGemeindeService.calculateErwarteteBetreuungsstunden(containerJaxId.getId(), false);
+		return angabenGemeindeService.calculateErwarteteBetreuungsstunden(containerJaxId.getId());
 	}
 
 	@ApiOperation(
@@ -588,7 +588,7 @@ public class LastenausgleichTagesschuleAngabenGemeindeResource {
 		Objects.requireNonNull(containerJaxId);
 		Objects.requireNonNull(containerJaxId.getId());
 
-		return angabenGemeindeService.calculateErwarteteBetreuungsstunden(containerJaxId.getId(), true);
+		return angabenGemeindeService.calculateErwarteteBetreuungsstundenPrognose(containerJaxId.getId());
 	}
 
 
