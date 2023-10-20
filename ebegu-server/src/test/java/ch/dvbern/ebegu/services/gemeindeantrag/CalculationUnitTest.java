@@ -179,7 +179,7 @@ public class CalculationUnitTest extends EasyMockSupport {
 
 		replay(latsAngabenInstitutionServiceMock);
 
-		BigDecimal betreuungsstunden = latsAngabenInstitutionServiceMock.countBetreuungsstundenPerYearForTagesschuleAndPeriode(stammdaten, gesuchsperiode, false);
+		BigDecimal betreuungsstunden = latsAngabenInstitutionServiceMock.countBetreuungsstundenPerYearForTagesschuleAndPeriode(stammdaten, gesuchsperiode);
 		Assert.assertEquals(new BigDecimal("1452.75"), betreuungsstunden);
 	}
 

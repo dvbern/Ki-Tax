@@ -159,7 +159,8 @@ public interface LastenausgleichTagesschuleAngabenGemeindeService {
 	@Nullable
 	LastenausgleichTagesschuleAngabenGemeindeContainer findContainerOfPreviousPeriode(@Nonnull String currentAntragId);
 
-	@Nullable Number calculateErwarteteBetreuungsstunden(String containerId, boolean calculatePrognose);
+	@Nullable Number calculateErwarteteBetreuungsstunden(String containerId);
+	@Nullable Number calculateErwarteteBetreuungsstundenPrognose(String containerId);
 
 	void savePrognose(@Nonnull String containerId, @Nonnull BigDecimal prognose, @Nullable String bemerkungen);
 

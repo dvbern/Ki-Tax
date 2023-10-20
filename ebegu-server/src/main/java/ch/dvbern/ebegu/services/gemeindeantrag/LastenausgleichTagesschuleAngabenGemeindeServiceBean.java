@@ -894,8 +894,17 @@ public class LastenausgleichTagesschuleAngabenGemeindeServiceBean extends Abstra
 
 	@Nullable
 	@Override
-	public Number calculateErwarteteBetreuungsstunden(String containerId, boolean calculatePrognose) {
+	public Number calculateErwarteteBetreuungsstundenPrognose(String containerId) {
+		return calculateErwarteteBetreuungsstunden(containerId, true);
+	}
 
+	@Nullable
+	@Override
+	public Number calculateErwarteteBetreuungsstunden(String containerId) {
+		return calculateErwarteteBetreuungsstunden(containerId, false);
+	}
+
+	private Number calculateErwarteteBetreuungsstunden(String containerId, boolean calculatePrognose) {
 		LastenausgleichTagesschuleAngabenGemeindeContainer currentAntrag =
 			findLastenausgleichTagesschuleAngabenGemeindeContainer(containerId)
 				.orElseThrow(() -> new EbeguEntityNotFoundException(
@@ -910,10 +919,12 @@ public class LastenausgleichTagesschuleAngabenGemeindeServiceBean extends Abstra
 			this.institutionStammdatenService.getAllTagesschulenForGemeinde(currentAntrag.getGemeinde());
 		BigDecimal erwarteteBetreuungsstunden = BigDecimal.ZERO;
 		for (InstitutionStammdaten stammdaten : allTagesschulen) {
-			BigDecimal result = this.angabenInstitutionService.countBetreuungsstundenPerYearForTagesschuleAndPeriode(
+			BigDecimal result = calculatePrognose ? this.angabenInstitutionService.countBetreuungsstundenPrognoseForTagesschuleAndPeriode(
 				stammdaten,
-				currentAntrag.getGesuchsperiode(),
-				calculatePrognose
+				currentAntrag.getGesuchsperiode()
+			) : this.angabenInstitutionService.countBetreuungsstundenPerYearForTagesschuleAndPeriode(
+				stammdaten,
+				currentAntrag.getGesuchsperiode()
 			);
 			erwarteteBetreuungsstunden = erwarteteBetreuungsstunden.add(result);
 		};

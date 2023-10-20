@@ -94,7 +94,10 @@ public interface LastenausgleichTagesschuleAngabenInstitutionService {
 	);
 
 	@Nonnull
-	BigDecimal countBetreuungsstundenPerYearForTagesschuleAndPeriode(InstitutionStammdaten stammdaten, Gesuchsperiode gesuchsperiode, boolean countForNextYear);
+	BigDecimal countBetreuungsstundenPerYearForTagesschuleAndPeriode(InstitutionStammdaten stammdaten, Gesuchsperiode gesuchsperiode);
+
+	@Nonnull
+	BigDecimal countBetreuungsstundenPrognoseForTagesschuleAndPeriode(InstitutionStammdaten stammdaten, Gesuchsperiode gesuchsperiode);
 
 	@Nonnull
 	List<AnmeldungTagesschule> findTagesschuleAnmeldungenForTagesschuleStammdatenAndPeriode(
