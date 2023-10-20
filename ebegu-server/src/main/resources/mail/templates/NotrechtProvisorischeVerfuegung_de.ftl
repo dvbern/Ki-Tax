@@ -55,7 +55,7 @@ ${institutionStammdaten.institution.name}<br>
 		Abteilung Familie Kanton Bern</p>
 	<p>
 		Amt für Integration und Soziales<br>
-		<a href="mailto:info.fam@be.ch">info.fam@be.ch</a><br>
+		<a href="mailto:info.bg@be.ch">info.bg@be.ch</a><br>
 		+41 31 633 78 83
 	</p>
     <#if configuration.isDevmode>
