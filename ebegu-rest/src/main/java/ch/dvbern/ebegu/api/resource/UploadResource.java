@@ -247,7 +247,7 @@ public class UploadResource {
 		extractFilesFromInput(input, encodedFilenames, gesuchId, jaxDokumentGrund);
 
 		Optional<Gesuch> gesuch = gesuchService.findGesuch(gesuchId);
-		if (!gesuch.isPresent()) {
+		if (gesuch.isEmpty()) {
 			final String problemString = "Can't find Gesuch on DB";
 			LOG.error(problemString);
 			return Response.serverError().entity(problemString).build();
@@ -309,7 +309,7 @@ public class UploadResource {
 
 		Optional<RueckforderungFormular> rueckforderungFormular =
 			rueckforderungFormularService.findRueckforderungFormular(rueckforderungId);
-		if (!rueckforderungFormular.isPresent()) {
+		if (rueckforderungFormular.isEmpty()) {
 			final String problemString = "Can't find RueckforderungFormular on DB";
 			LOG.error(problemString);
 			return Response.serverError().entity(problemString).build();
@@ -360,7 +360,7 @@ public class UploadResource {
 		String fallId = converter.toEntityId(fallJAXPId);
 
 		Optional<Fall> fall = fallService.findFall(fallId);
-		if (!fall.isPresent() || fall.get().getSozialdienstFall() == null) {
+		if (fall.isEmpty() || fall.get().getSozialdienstFall() == null) {
 			final String problemString = "Can't find Fall on DB or not a SozialdienstFall";
 			LOG.error(problemString);
 			return Response.serverError().entity(problemString).build();
