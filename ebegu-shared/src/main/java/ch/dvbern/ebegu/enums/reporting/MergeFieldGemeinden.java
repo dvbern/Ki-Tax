@@ -49,6 +49,7 @@ public enum MergeFieldGemeinden implements MergeFieldProvider {
 
 	gesuchsperiodeTitle(new SimpleMergeField<>("gesuchsperiodeTitle", STRING_CONVERTER)),
 	limitierungKitaTitle(new SimpleMergeField<>("limitierungKitaTitle", STRING_CONVERTER)),
+	gemeindeKennzahlenStatusTitle(new SimpleMergeField<>("gemeindeKennzahlenStatusTitle", STRING_CONVERTER)),
 	kontingentierungTitle(new SimpleMergeField<>("kontingentierungTitle", STRING_CONVERTER)),
 	nachfrageErfuelltTitle(new SimpleMergeField<>("nachfrageErfuelltTitle", STRING_CONVERTER)),
 	nachfrageAnzahlTitle(new SimpleMergeField<>("nachfrageAnzahlTitle", STRING_CONVERTER)),
@@ -67,6 +68,7 @@ public enum MergeFieldGemeinden implements MergeFieldProvider {
 	gesuchsperiode(new SimpleMergeField<>("gesuchsperiode", STRING_CONVERTER)),
 	limitierungKita(new SimpleMergeField<>("limitierungKita", STRING_CONVERTER)),
 	kontingentierung(new SimpleMergeField<>("kontingentierung", BOOLEAN_X_CONVERTER)),
+	gemeindeKennzahlenStatus(new SimpleMergeField<>("gemeindeKennzahlenStatus", STRING_CONVERTER)),
 	nachfrageErfuellt(new SimpleMergeField<>("nachfrageErfuellt", BOOLEAN_X_CONVERTER)),
 	nachfrageAnzahl(new SimpleMergeField<>("nachfrageAnzahl", BIGDECIMAL_CONVERTER)),
 	nachfrageDauer(new SimpleMergeField<>("nachfrageDauer", BIGDECIMAL_CONVERTER)),

@@ -57,7 +57,6 @@ import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.outbox.ExportedEvent;
 import ch.dvbern.ebegu.outbox.gemeindekennzahlen.GemeindeKennzahlenEventConverter;
 import ch.dvbern.ebegu.services.AbstractBaseService;
-import ch.dvbern.ebegu.services.ApplicationPropertyService;
 import ch.dvbern.ebegu.services.EinstellungService;
 import ch.dvbern.ebegu.services.util.PredicateHelper;
 import ch.dvbern.ebegu.util.Constants;
@@ -131,14 +130,6 @@ public class GemeindeKennzahlenServiceBean extends AbstractBaseService implement
 		GemeindeKennzahlen gemeindeKennzahlen = persistence.find(GemeindeKennzahlen.class, id);
 
 		return Optional.ofNullable(gemeindeKennzahlen);
-	}
-
-	@Nonnull
-	@Override
-	public List<GemeindeKennzahlen> findAllAbgeschlosseneGemeindeKennzahlen() {
-		final List<GemeindeKennzahlen> gemeindeKennzahlen =
-			this.getGemeindeKennzahlen(null, null, "ABGESCHLOSSEN", null);
-		return gemeindeKennzahlen;
 	}
 
 	@Override

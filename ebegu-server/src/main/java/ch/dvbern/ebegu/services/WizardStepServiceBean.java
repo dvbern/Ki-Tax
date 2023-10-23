@@ -509,7 +509,7 @@ public class WizardStepServiceBean extends AbstractBaseService implements Wizard
 						mailService.sendInfoVerfuegtMutation(verfuegenWizardStep.getGesuch());
 					}
 				}
-			} catch (MailException e) {
+			} catch (Exception e) {
 				logExceptionAccordingToEnvironment(e, "Error sending Mail zu gesuchsteller", "");
 			}
 

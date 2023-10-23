@@ -35,6 +35,9 @@ import ch.dvbern.ebegu.enums.DokumentGrundPersonType;
 import ch.dvbern.ebegu.enums.DokumentGrundTyp;
 import ch.dvbern.ebegu.enums.DokumentTyp;
 
+import static ch.dvbern.ebegu.enums.DokumentTyp.NACHWEIS_SCHULDEN;
+import static ch.dvbern.ebegu.enums.DokumentTyp.NACHWEIS_VERMOEGEN;
+
 /**
  * Dokumente für Einkommensverschlechterung:
  * <p>
@@ -178,6 +181,25 @@ public class BernEinkommensverschlechterungDokumente extends AbstractFinanzielle
 			),
 			anlageVerzeichnis
 		);
+	}
+
+	@Override
+	public boolean isDokumentNeeded(
+		@Nonnull DokumentTyp dokumentTyp,
+		@Nullable AbstractFinanzielleSituation abstractFinanzielleSituation
+	) {
+		if (abstractFinanzielleSituation == null) {
+			return false;
+		}
+		if (dokumentTyp == NACHWEIS_VERMOEGEN) {
+			return true;
+		}
+		if (dokumentTyp == NACHWEIS_SCHULDEN) {
+			return abstractFinanzielleSituation.getSchulden() != null &&
+				abstractFinanzielleSituation.getSchulden().compareTo(BigDecimal.ZERO) > 0;
+		}
+
+		return super.isDokumentNeeded(dokumentTyp, abstractFinanzielleSituation);
 	}
 
 	@Override

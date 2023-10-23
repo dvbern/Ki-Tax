@@ -175,16 +175,15 @@ public class MitteilungResource {
 
 		final Optional<Betreuungsmitteilung> mitteilung =
 			mitteilungService.findBetreuungsmitteilung(betreuungsmitteilungId.getId());
-		if (!mitteilung.isPresent()) {
+		if (mitteilung.isEmpty()) {
 			throw new EbeguEntityNotFoundException("applyBetreuungsmitteilung", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
 				"BetreuungsmitteilungID invalid: " + betreuungsmitteilungId.getId());
 		}
 		final Gesuch mutiertesGesuch = this.mitteilungService.applyBetreuungsmitteilung(mitteilung.get());
 		return converter.toJaxId(mutiertesGesuch);
 	}
-	@ApiOperation(value = "Uebernimmt eine Betreuungsmitteilung in eine Mutation. Falls aktuell keine Mutation offen"
-		+ " "
-		+ "ist, wird eine neue erstellt. Falls eine Mutation im Status VERFUEGEN vorhanden ist, oder die Mutation im"
+	@ApiOperation(value = "Uebernimmt eine Betreuungsmitteilung in eine Mutation. Falls aktuell keine Mutation offen "
+		+ "ist, wird eine neue erstellt. Falls eine Mutation im Status VERFUEGEN vorhanden ist, oder die Mutation im "
 		+ "Status BESCHWERDE ist, wird der Fehler auf der Betreuungsmitteilung gespeichert und kein Fehler geworfen",
 		response = JaxMitteilungSearchresultDTO.class)
 	@Nonnull
@@ -210,7 +209,11 @@ public class MitteilungResource {
 
 		String errorMessage = mitteilungService.applyBetreuungsmitteilungIfPossible(betreuungsmitteilung);
 		Betreuungsmitteilung betreuungsmitteilungUpdated =
-			mitteilungService.findAndRefreshBetreuungsmitteilung(betreuungsmitteilung.getId()).get();
+			mitteilungService.findAndRefreshBetreuungsmitteilung(betreuungsmitteilung.getId())
+				.orElseThrow(() -> new EbeguEntityNotFoundException(
+					"applyBetreuungsmitteilung",
+					ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
+					"JaxBetreuungsmitteilungId is invalid after Update: " + betreuungsmitteilung.getId()));
 		betreuungsmitteilungUpdated.setErrorMessage(errorMessage);
 
 		return converter.betreuungsmitteilungToJAX(betreuungsmitteilungUpdated);
@@ -328,7 +331,7 @@ public class MitteilungResource {
 		String betreuungId = converter.toEntityId(jaxBetreuungId);
 		Optional<Betreuung> optional = betreuungService.findBetreuung(betreuungId);
 
-		if (!optional.isPresent()) {
+		if (optional.isEmpty()) {
 			throw new EbeguEntityNotFoundException(
 				"findNewestBetreuunsmitteilung",
 				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
@@ -602,7 +605,7 @@ public class MitteilungResource {
 
 		Optional<Betreuung> betreuungOpt = betreuungService.findBetreuung(converter.toEntityId(jaxBetreuungId));
 
-		if (!betreuungOpt.isPresent()) {
+		if (betreuungOpt.isEmpty()) {
 			return null;
 		}
 
@@ -618,48 +621,6 @@ public class MitteilungResource {
 
 		mitteilungService.createMutationsmeldungAbweichungen(mitteilung, betreuung);
 		return converter.betreuungspensumAbweichungenToJax(betreuung);
-	}
-
-	@ApiOperation(value = "Automatisch uebernimmt alle MutationsMitteilungen mit den uebergebenen Suchkriterien/Filtern",
-		response = JaxMitteilungSearchresultDTO.class)
-	@Nonnull
-	@POST
-	@Path("/applyAlleBetreuungsmitteilungen")
-	@Consumes(MediaType.APPLICATION_JSON)
-	@Produces(MediaType.APPLICATION_JSON)
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, GESUCHSTELLER,
-		ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION, ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT, ADMIN_TS,
-		SACHBEARBEITER_TS, ADMIN_SOZIALDIENST, SACHBEARBEITER_SOZIALDIENST })
-	public JaxBetreuungsmitteilungen applyAlleBetreuungsmitteilungen(
-		@Nonnull @NotNull MitteilungTableFilterDTO tableFilterDTO,
-		@Context UriInfo uriInfo,
-		@Context HttpServletResponse response) {
-
-		// Wir setzen die Pagination zu null als wir alle Meldungen bearbeiten wollen
-		tableFilterDTO.setPagination(null);
-
-		Pair<Long, List<Mitteilung>> searchResultPair = mitteilungService
-			.searchMitteilungen(tableFilterDTO, false);
-		List<Mitteilung> foundMitteilungen = searchResultPair.getRight();
-
-		List<Betreuungsmitteilung> betreuungsmitteilungs = new ArrayList<>();
-
-		for (Mitteilung mitteilung : foundMitteilungen) {
-			final Optional<Betreuungsmitteilung> betreuungsmitteilung =
-				mitteilungService.findBetreuungsmitteilung(mitteilung.getId());
-			if (betreuungsmitteilung.isPresent()) {
-				String errorMessage = mitteilungService.applyBetreuungsmitteilungIfPossible(betreuungsmitteilung.get());
-				Betreuungsmitteilung betreuungsmitteilungUpdated =
-					mitteilungService.findAndRefreshBetreuungsmitteilung(mitteilung.getId()).get();
-				betreuungsmitteilungUpdated.setErrorMessage(errorMessage);
-				betreuungsmitteilungs.add(betreuungsmitteilungUpdated);
-			}
-		}
-		List<JaxBetreuungsmitteilung> jaxResult = new ArrayList<>();
-		betreuungsmitteilungs.stream().forEach(betreuungsmitteilung -> jaxResult.add(converter.betreuungsmitteilungToJAX(betreuungsmitteilung)));
-		JaxBetreuungsmitteilungen jaxBetreuungsmitteilungen = new JaxBetreuungsmitteilungen();
-		jaxBetreuungsmitteilungen.setBetreuungsmitteilungen(jaxResult);
-		return jaxBetreuungsmitteilungen;
 	}
 
 	@ApiOperation(value = "Uebernimmt eine neue Veranlagung Mitteilung in eine Mutation. Falls aktuell keine Mutation "
@@ -680,7 +641,7 @@ public class MitteilungResource {
 
 		final Optional<NeueVeranlagungsMitteilung> mitteilung =
 			mitteilungService.findVeranlagungsMitteilungById(neueVeranlagungsmitteilungId.getId());
-		if (!mitteilung.isPresent()) {
+		if (mitteilung.isEmpty()) {
 			throw new EbeguEntityNotFoundException("neueVeranlagungsmitteilungBearbeiten", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
 				"NeueVeranlagungsmitteilungId invalid: " + neueVeranlagungsmitteilungId.getId());
 		}

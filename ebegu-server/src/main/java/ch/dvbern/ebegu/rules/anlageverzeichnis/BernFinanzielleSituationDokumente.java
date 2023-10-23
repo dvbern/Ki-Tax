@@ -72,6 +72,12 @@ import ch.dvbern.ebegu.enums.DokumentTyp;
  * Erfolgsrechnungen der letzten drei Jahre (Basisjahr, Basisjahr-1, Basisjahr-2)
  * Notwendig, wenn keine Steuerveranlagung vorhanden und Summe der Erfolgsrechnungen > 0
  * <p>
+ * Nachweis über die Schulden
+ * Notwendig, wenn Steuererklärung ausgefüllt
+ * <p>
+ * Nachweis über das Vermögen
+ * Notwendig, wenn Steuererklärung ausgefüllt
+ * <p>
  **/
 public class BernFinanzielleSituationDokumente extends AbstractFinanzielleSituationDokumente {
 
