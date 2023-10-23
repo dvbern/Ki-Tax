@@ -200,9 +200,9 @@ public class AntragStatusHistoryServiceBean extends AbstractBaseService implemen
 		final CriteriaQuery<AntragStatusHistory> query = cb.createQuery(AntragStatusHistory.class);
 		Root<AntragStatusHistory> root = query.from(AntragStatusHistory.class);
 
-		Predicate predicateInstitution = cb.equal(root.get(AntragStatusHistory_.gesuch).get(AbstractEntity_.id), gesuchId);
+		Predicate predicateGesuch = cb.equal(root.get(AntragStatusHistory_.gesuch).get(AbstractEntity_.id), gesuchId);
 
-		query.where(predicateInstitution);
+		query.where(predicateGesuch);
 		query.orderBy(cb.desc(root.get(AntragStatusHistory_.timestampVon)));
 		return query;
 	}

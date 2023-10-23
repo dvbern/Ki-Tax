@@ -19,11 +19,11 @@
      class="well well-status-warten minus-margin">
     <p class="ebegu-h3"
        [innerHTML]="getWarningText()"></p>
-    <a *ngIf="showWarningRetry() && isGesuchsteller() && !isGesuchReadonly()" class="pointer-cursor" translate (click)="tryAgain()">ERNEUT_VERSUCHEN</a>
+    <a *ngIf="showWarningRetry() && (isGesuchsteller() || showRetryForGemeinde()) && !isGesuchReadonly()" class="pointer-cursor" translate (click)="tryAgain()">ERNEUT_VERSUCHEN</a>
     <a *ngIf="showZugriffKeineZPVNummer() && isGesuchsteller() && !isGesuchReadonly()" class="pointer-cursor" translate (click)="openDialogGSZPVVerknuepfen()">FINANZIELLE_SITUATION_STEUERDATEN_ZPV_VERKNUEPFEN_AUSLOESEN</a>
 </div>
 
-<div *ngIf="showZugriffErfolgreich()"
+<div *ngIf="showZugriffErfolgreich(status)"
      class="well well-status-bestaetigt minus-margin">
 <!--    wir haben den timestamp erst später hinzugefügt. deshalb kann es sein, dass dieser leer ist-->
     <p class="ebegu-h3" *ngIf="timestampAbruf"
@@ -56,7 +56,7 @@
     <p class="ebegu-h3"
        [innerHTML]="'FINANZIELLE_SITUATION_STEUERDATEN_ZUGRIFF_RETRY' | translate"></p>
     <dv-loading-button
-            [buttonDisabled]="!isGesuchsteller()"
+            [buttonDisabled]="!isGesuchsteller() && !showRetryForGemeinde()"
             type="button"
             (buttonClick)="tryAgain()">
         {{'STEUERDATEN_ABHOLEN' | translate}}

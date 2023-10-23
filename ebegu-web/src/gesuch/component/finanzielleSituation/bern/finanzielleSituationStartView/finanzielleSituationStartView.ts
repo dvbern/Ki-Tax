@@ -399,6 +399,10 @@ export class FinanzielleSituationStartViewController extends AbstractFinSitBernV
         return this.getModel().finanzielleSituationJA.steuerdatenAbfrageStatus;
     }
 
+    private getAbfrageStatusGS(): string {
+        return this.getModel().finanzielleSituationGS?.steuerdatenAbfrageStatus;
+    }
+
     protected resetKiBonAnfrageFinSit(): void {
         this.model.copyFinSitDataToGesuch(this.gesuchModelManager.getGesuch());
         this.gesuchModelManager.resetKiBonAnfrageFinSit(
