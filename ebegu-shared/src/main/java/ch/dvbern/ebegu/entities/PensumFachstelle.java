@@ -69,6 +69,7 @@ public class PensumFachstelle extends AbstractIntegerPensum implements Comparabl
 		super.copyAbstractPensumEntity(target, copyType);
 		target.setFachstelle(this.getFachstelle());
 		target.setIntegrationTyp(this.getIntegrationTyp());
+		target.setGruendeZusatzleistung(this.getGruendeZusatzleistung());
 		return target;
 	}
 
