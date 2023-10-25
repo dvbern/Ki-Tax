@@ -135,6 +135,7 @@ import ch.dvbern.ebegu.types.DateRange_;
 import ch.dvbern.ebegu.util.EbeguUtil;
 import ch.dvbern.ebegu.util.FreigabeCopyUtil;
 import ch.dvbern.ebegu.validationgroups.AntragCompleteValidationGroup;
+import ch.dvbern.ebegu.validators.CheckFachstellenValidator;
 import ch.dvbern.lib.cdipersistence.Persistence;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
@@ -270,9 +271,27 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 		// Die WizardSteps werden direkt erstellt wenn das Gesuch erstellt wird. So vergewissern wir uns dass es kein
 		// Gesuch ohne WizardSteps gibt
 		wizardStepService.createWizardStepList(persistedGesuch);
+		checkCorruptData(persistedGesuch);
 		antragStatusHistoryService.saveStatusChange(persistedGesuch, null);
 		LOG.info(logInfo.toString());
 		return persistedGesuch;
+	}
+
+	private void checkCorruptData(Gesuch persistedGesuch) {
+		// We check whether the mutation we create has corrupt data in its children. If that is the case, we set
+		// the children in Prüfung
+		for (KindContainer kindContainer : persistedGesuch.getKindContainers()) {
+			if (hasCorruptKindData(kindContainer)) {
+				kindContainer.getKindJA().setInPruefung(true);
+				wizardStepService.updateSteps(persistedGesuch.getId(), kindContainer, kindContainer, WizardStepName.KINDER);
+			}
+
+		}
+
+	}
+
+	private boolean hasCorruptKindData(KindContainer kind) {
+		return !new CheckFachstellenValidator(einstellungService, persistence.getEntityManager()).isValid(kind, null);
 	}
 
 	private void updateGesuchWithConfiguration(Gesuch gesuch) {
