@@ -167,7 +167,7 @@ describe('kindView', () => {
         );
     }));
 
-    beforeEach(function(done) {
+    beforeEach(function (done) {
         kindView.$onInit();
         $rootScope.$apply();
         kindView.model = kind;
