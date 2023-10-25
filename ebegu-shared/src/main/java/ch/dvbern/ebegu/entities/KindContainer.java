@@ -61,7 +61,7 @@ import org.hibernate.search.annotations.IndexedEmbedded;
 @CheckPensumFachstelle
 @CheckPensumFachstellenOverlapping
 @CheckFachstellenFromDate
-@CheckFachstellen
+//@CheckFachstellen
 @Audited
 @Entity
 @Table(
