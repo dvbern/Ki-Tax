@@ -883,7 +883,7 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 		this.bgCalculationInputGemeinde.setRequiredAgeForAnspruchNotReached(requiredAgeForAnspruchNotReached);
 	}
 
-	public void setGesuchBeendenKonkubinatWirdInPeriodeXJahreAlt(boolean gesuchBeenden) {
+	public void setGesuchBeendenKonkubitantMitZweiGS(boolean gesuchBeenden) {
 		this.bgCalculationInputAsiv.setGesuchBeendenKonkubinatWirdInPeriodeXJahreAlt(gesuchBeenden);
 		this.bgCalculationInputGemeinde.setGesuchBeendenKonkubinatWirdInPeriodeXJahreAlt(gesuchBeenden);
 	}

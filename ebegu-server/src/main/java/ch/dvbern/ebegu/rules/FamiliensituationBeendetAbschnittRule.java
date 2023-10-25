@@ -49,7 +49,9 @@ public class FamiliensituationBeendetAbschnittRule extends AbstractAbschnittRule
 				createZeitabschnitteNachZweiJahrenKonkubinat(neueZeitabschnitte, gesuch, startKonkubinat);
 			}
 
-			return neueZeitabschnitte;
+			if (!neueZeitabschnitte.isEmpty()) {
+                return neueZeitabschnitte;
+            }
 		}
 
 		LocalDate familiensituationAenderungPer = Objects.requireNonNull(familiensituation).getAenderungPer();
@@ -94,7 +96,7 @@ public class FamiliensituationBeendetAbschnittRule extends AbstractAbschnittRule
 				createZeitabschnittWithinValidityPeriodOfRule(new DateRange(
 						zweiJahreKonkubinatNextMonth,
 						gesuch.getGesuchsperiode().getGueltigkeit().getGueltigBis()));
-		abschnittNachJahrenKonkubinat.setGesuchBeendenKonkubinatWirdInPeriodeXJahreAlt(true);
+		abschnittNachJahrenKonkubinat.setGesuchBeendenKonkubitantMitZweiGS(true);
 		neueZeitabschnitte.add(abschnittNachJahrenKonkubinat);
 
 	}

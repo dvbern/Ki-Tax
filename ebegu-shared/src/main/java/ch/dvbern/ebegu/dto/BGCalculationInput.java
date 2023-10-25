@@ -1258,8 +1258,8 @@ public class BGCalculationInput {
 		isEkvAccepted = ekvAccepted;
 	}
 
-	public void setGesuchBeendenKonkubinatWirdInPeriodeXJahreAlt(boolean konkubinatWirdInPeriodeXJahreAlt) {
-		this.gesuchBeendenKonkubinatWirdInPeriodeXJahreAlt = konkubinatWirdInPeriodeXJahreAlt;
+	public void setGesuchBeendenKonkubinatWirdInPeriodeXJahreAlt(boolean gesuchBeendenKonkubinatWirdInPeriodeXJahreAlt) {
+		this.gesuchBeendenKonkubinatWirdInPeriodeXJahreAlt = gesuchBeendenKonkubinatWirdInPeriodeXJahreAlt;
 	}
 
 	public boolean isGesuchBeendenKonkubinatWirdInPeriodeXJahreAlt() {
