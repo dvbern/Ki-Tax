@@ -15,15 +15,7 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {
-    AfterViewInit,
-    ChangeDetectionStrategy,
-    ChangeDetectorRef,
-    Component,
-    OnDestroy,
-    OnInit,
-    ViewChild
-} from '@angular/core';
+import {AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {NgForm} from '@angular/forms';
 import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
 import {MatPaginator, PageEvent} from '@angular/material/paginator';
@@ -56,6 +48,7 @@ import {ReportRS} from '../../core/service/reportRS.rest';
 import {DvSimpleTableColumnDefinition} from '../../shared/component/dv-simple-table/dv-simple-table-column-definition';
 import {StateStoreService} from '../../shared/services/state-store.service';
 import {ZahlungRS} from '../services/zahlungRS.rest';
+import {TSGeneratedDokumentTyp} from '../../../models/enums/TSGeneratedDokumentTyp';
 
 const LOG = LogFactory.createLog('ZahlungsauftragViewXComponent');
 
@@ -108,6 +101,7 @@ export class ZahlungsauftragViewXComponent implements OnInit, AfterViewInit, OnD
     public page: number = 0;
     public readonly PAGE_SIZE: number = 20;
     public totalResult: number = 0;
+    public hasInfomaZahlung: boolean = false;
 
     public readonly DEFAULT_SORT = {
         active: 'datumFaellig',
@@ -261,8 +255,16 @@ export class ZahlungsauftragViewXComponent implements OnInit, AfterViewInit, OnD
     }
 
     public downloadPain(zahlungsauftrag: TSZahlungsauftrag): Promise<void> {
+       return this.downloadZahlungsfile(zahlungsauftrag, TSGeneratedDokumentTyp.PAIN001);
+    }
+
+    public downloadInfoma(zahlungsauftrag: TSZahlungsauftrag): Promise<void> {
+        return this.downloadZahlungsfile(zahlungsauftrag, TSGeneratedDokumentTyp.INFOMA);
+    }
+
+    private downloadZahlungsfile(zahlungsauftrag: TSZahlungsauftrag, typ: TSGeneratedDokumentTyp) {
         const win = this.downloadRS.prepareDownloadWindow();
-        return this.downloadRS.getPain001AccessTokenGeneratedDokument(zahlungsauftrag.id)
+        return this.downloadRS.getPain001AccessTokenGeneratedDokument(zahlungsauftrag.id, typ)
             .then((downloadFile: TSDownloadFile) => {
                 this.downloadRS.startDownload(downloadFile.accessToken, downloadFile.filename, true, win);
             })
@@ -444,6 +446,7 @@ export class ZahlungsauftragViewXComponent implements OnInit, AfterViewInit, OnD
         this.applicationPropertyRS.getPublicPropertiesCached()
             .then((response: TSPublicAppConfig) => {
                 this.hasAuszahlungAnEltern = response.infomaZahlungen;
+                this.hasInfomaZahlung = response.infomaZahlungen;
             });
     }
 
@@ -537,6 +540,10 @@ export class ZahlungsauftragViewXComponent implements OnInit, AfterViewInit, OnD
             allColumnNames.splice(3, 0, `zahlungPain`);
             allColumnNames.push('editSave');
             allColumnNames.push('ausloesen');
+
+            if (this.hasInfomaZahlung) {
+                allColumnNames.splice(3, 0, `zahlungInfoma`);
+            }
         }
         return allColumnNames;
     }

@@ -194,5 +194,7 @@
     "MUTATION_AENDERUNG_AUSZAHLUNGSKONTO": "Änderungen des Auszahlungskontos melden Sie via Mail an betreuungsgutscheine@stadtluzern.ch",
     "DOK_ERWEITERTE_BETREUUNG": "Erweiterte Betreuung",
     "BETREUUNGSPENSUM_FACHSTELLE": "Von Fachstelle festgelegte Betreuung",
+    "ZAHLUNG_PAIN001": "Zahlungsdatei <br> PAIN",
+    "ZAHLUNG_INFOMA": "Zahlungsdatei <br> INFOMA",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

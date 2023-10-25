@@ -1425,6 +1425,7 @@
     "ZAHLUNG_FAELLIGKEIT": "Fälligkeitsdatum",
     "ZAHLUNG_TOTAL": "Betrag",
     "ZAHLUNG_PAIN001": "Zahlungsdatei",
+    "ZAHLUNG_INFOMA": "Zahlungsdatei",
     "ZAHLUNGSAUFTRAEGE": "Zahlungsaufträge",
     "ZAHLUNG_INSTITUTION": "Institution",
     "ZAHLUNG_BETREUUNGSANGEBOTTYP": "Angebot",
