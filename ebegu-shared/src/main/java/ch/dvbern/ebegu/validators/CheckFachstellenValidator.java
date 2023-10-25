@@ -134,8 +134,10 @@ public class CheckFachstellenValidator implements ConstraintValidator<CheckFachs
 		return null;
 	}
 
+	@SuppressWarnings("PMD.CompareObjectsWithEquals")
 	private void closeEntityManager(EntityManager em) {
 		// we only want to close a local EntityManager that we created ourselves in this class
+		//noinspection ObjectEquality
 		if (em != null && em != entityManager) {
 			em.close();
 		}
