@@ -21,6 +21,7 @@ import java.text.MessageFormat;
 import java.util.Objects;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -52,6 +53,8 @@ public class CheckFachstellenValidator implements ConstraintValidator<CheckFachs
 
 	@Inject
 	private EinstellungService einstellungService;
+	@Nullable
+	private EntityManager entityManager;
 
 	// We need to pass to EinstellungService a new EntityManager to avoid errors like ConcurrentModificatinoException. So we create it here
 	// and pass it to the methods of EinstellungService we need to call.
@@ -64,6 +67,12 @@ public class CheckFachstellenValidator implements ConstraintValidator<CheckFachs
 
 	public CheckFachstellenValidator(@Nonnull EinstellungService einstellungService) {
 		this.einstellungService = einstellungService;
+	}
+
+	// Workaround for entityFactor being null when called outside of persistence context
+	public CheckFachstellenValidator(@Nonnull EinstellungService einstellungService, @Nonnull EntityManager entityManager) {
+		this.einstellungService = einstellungService;
+		this.entityManager = entityManager;
 	}
 
 	@Override
@@ -116,6 +125,9 @@ public class CheckFachstellenValidator implements ConstraintValidator<CheckFachs
 	}
 
 	private EntityManager createEntityManager() {
+		if (entityManager != null) {
+			return entityManager;
+		}
 		if (entityManagerFactory != null) {
 			return entityManagerFactory.createEntityManager(); // creates a new EntityManager
 		}
@@ -123,7 +135,8 @@ public class CheckFachstellenValidator implements ConstraintValidator<CheckFachs
 	}
 
 	private void closeEntityManager(EntityManager em) {
-		if (em != null) {
+		// we only want to close a local EntityManager that we created ourselves in this class
+		if (em != null && em != entityManager) {
 			em.close();
 		}
 	}
