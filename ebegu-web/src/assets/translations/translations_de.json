@@ -3167,5 +3167,7 @@
     "ZEITRAUM": "Zeitraum",
     "ANSPRUCH_FACHSTELLE_WENN_PENSUM_UNTERSCHRITTEN": "Anspruch gewähren, auch wenn das Pensum für die gewählte Fachstelle zu tief ist",
     "KITA_STUNDEN_PRO_TAG": "Kita Stunden pro Tag",
+    "PENSUM_FACHSTELLE_INVALID_FACHSTELLEN_SOZIAL": "Eine Fachstelle zur sozialen Indikation ist nur bis zur Stufe {{stufe}} möglich.",
+    "PENSUM_FACHSTELLE_INVALID_FACHSTELLEN_SPRACHLICH": "Das Kind ist nicht mehr im Vorschulalter. Ein Bedarf wegen einer sprachlichen Indikation ist nicht möglich.",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }
