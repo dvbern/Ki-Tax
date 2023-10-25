@@ -24,7 +24,7 @@
         </div>
     </div>
 
-    <div class="well well-with-button" *ngIf="angabenAusKibon && (canSeeDurchKibonAusfuellen | async)">
+    <div class="well well-with-button" *ngIf="angabenAusKibon && (canSeeDurchKibonAusfuellen$ | async)">
         <span translate>LATS_AUTOMATISCHE_BERECHNUNGEN_HINT</span>
         <!--        <div class="flex-whitespace-item"></div>-->
         <button class="dv-btn cancel-button" (click)="fillOutCalculationsFromKiBon()">
@@ -636,14 +636,14 @@
         <div class="actions">
             <button class="dv-btn cancel-button uppercase"
                     type="button"
-                    *ngIf="(canSeeFalscheAngaben | async) && isInstiUser || latsAngabenInstitutionContainer?.isGeprueftGemeinde()"
+                    *ngIf="(canSeeFalscheAngaben$ | async) && isInstiUser"
                     (click)="onFalscheAngaben()">
                 <span translate>FERIENBETREUUNG_ANGABEN_KORRIGIEREN</span>
             </button>
 
             <dv-loading-button
                 class="uppercase"
-                *ngIf="canSeeFreigeben | async"
+                *ngIf="canSeeFreigeben$ | async"
                 type="button"
                 (buttonClick)="onFreigeben()">
                 <span translate>FREIGEBEN</span>
@@ -651,7 +651,7 @@
 
             <dv-loading-button
                 class="uppercase"
-                *ngIf="canSeeAbschliessen | async"
+                *ngIf="canSeeAbschliessen$ | async"
                 type="button"
                 (buttonClick)="onGeprueft()">
                 <span translate>GEPRUEFT</span>
@@ -659,21 +659,21 @@
 
             <button class="dv-btn cancel-button uppercase"
                     type="button"
-                    *ngIf="canSeeSave | async"
+                    *ngIf="canSeeSave$ | async"
                     (click)="onFormSubmit()">
                 <span translate>SAVE</span>
             </button>
 
             <button class="dv-btn cancel-button margin-left-5 uppercase"
                     type="button"
-                    *ngIf="canSeeSave | async"
+                    *ngIf="canSeeSave$ | async"
                     (click)="navigateBack($event)">
                 <span translate>CANCEL</span>
             </button>
 
             <button class="dv-btn cancel-button uppercase margin-left-5"
                     type="button"
-                    *ngIf="(canSeeFalscheAngaben | async) && !isInstiUser && latsAngabenInstitutionContainer?.isInPruefungGemeinde()"
+                    *ngIf="(canSeeFalscheAngaben$ | async) && !isInstiUser"
                     (click)="onFalscheAngaben()">
                 <span translate>FERIENBETREUUNG_ANGABEN_ZURUECK_AN_INSTITUTION</span>
             </button>
