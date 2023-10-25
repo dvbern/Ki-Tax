@@ -17,6 +17,8 @@
 
 import {IComponentOptions} from 'angular';
 import * as moment from 'moment';
+import {Subject} from 'rxjs';
+import {takeUntil} from 'rxjs/operators';
 import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
 import {CONSTANTS} from '../../../app/core/constants/CONSTANTS';
 import {EinschulungTypesVisitor} from '../../../app/core/constants/EinschulungTypesVisitor';
@@ -118,6 +120,10 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
     private mandant: KiBonMandant;
     public readonly demoFeature = TSDemoFeature.MEHRERE_FACHSTELLEN;
     private fachstellenPensumOverlapsMessageKey: string = undefined;
+    private sozialeIntegrationBisSchulstufe: TSEinschulungTyp;
+    private sprachlicheIntegrationBisSchulstufe: TSEinschulungTyp;
+
+    private readonly unsubscribe$ = new Subject();
 
     public constructor(
         $stateParams: IKindStateParams,
@@ -155,11 +161,17 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
         }
         this.allowedRoles = this.TSRoleUtil.getAllRolesButTraegerschaftInstitution();
         // TODO: Replace with angularX async template pipe during ablösung
-        this.mandantService.mandant$.subscribe(mandant => {
-            this.mandant = mandant;
-            this.initViewModel();
+        this.mandantService.mandant$
+            .pipe(takeUntil(this.unsubscribe$))
+            .subscribe(mandant => {
+                this.mandant = mandant;
+                this.initViewModel();
         }, err => LOG.error(err));
 
+    }
+
+    public $onDestroy(): void {
+        this.unsubscribe$.next();
     }
 
     private initViewModel(): void {
@@ -200,7 +212,13 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
 
     public save(): IPromise<TSKindContainer> {
         this.submitted = true;
+        this.errorService.clearAll();
         if (!this.isGesuchValid()) {
+            return undefined;
+        }
+        const invalidPensumFachstellen = this.checkFachstellenValidity();
+        if (invalidPensumFachstellen.length > 0) {
+            this.errorService.addMesageAsError(invalidPensumFachstellen[0].error);
             return undefined;
         }
         if (this.fjkvKinderabzugExchangeService.form && !this.fjkvKinderabzugExchangeService.form.valid) {
@@ -486,6 +504,7 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
 
     private loadEinstellungen(): void {
         this.einstellungRS.getAllEinstellungenBySystemCached(this.gesuchModelManager.getGesuchsperiode().id)
+            .pipe(takeUntil(this.unsubscribe$))
             .subscribe(einstellungen => {
                 this.loadEinstellungZemisDisabled(einstellungen);
                 this.loadEinstellungMaxAusserordentlicherAnspruch(einstellungen);
@@ -493,6 +512,8 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
                 this.loadEinstellungAnspruchUnabhaengig(einstellungen);
                 this.loadEinstellungSpracheAmtsprache(einstellungen);
                 this.loadEinstellungFachstellenTyp(einstellungen);
+                this.loadEinstellungSozialeIntegrationBisSchulstufe(einstellungen);
+                this.loadEinstellungSprachlicheIntegrationBisSchulstufe(einstellungen);
             }, error => LOG.error(error));
     }
 
@@ -543,6 +564,18 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
             [TSIntegrationTyp.SOZIALE_INTEGRATION, TSIntegrationTyp.SPRACHLICHE_INTEGRATION];
     }
 
+    private loadEinstellungSozialeIntegrationBisSchulstufe(einstellungen: TSEinstellung[]): void {
+        const einstellung = einstellungen
+            .find(e => e.key === TSEinstellungKey.FKJV_SOZIALE_INTEGRATION_BIS_SCHULSTUFE);
+        this.sozialeIntegrationBisSchulstufe = this.ebeguRestUtil.parseEinschulungTyp(einstellung.value);
+    }
+
+    private loadEinstellungSprachlicheIntegrationBisSchulstufe(einstellungen: TSEinstellung[]): void {
+        const einstellung = einstellungen
+            .find(e => e.key === TSEinstellungKey.SPRACHLICHE_INTEGRATION_BIS_SCHULSTUFE);
+        this.sprachlicheIntegrationBisSchulstufe = this.ebeguRestUtil.parseEinschulungTyp(einstellung.value);
+    }
+
     public isEinschulungTypObligatorischerKindergarten(): boolean {
         return this.getModel().einschulungTyp === TSEinschulungTyp.OBLIGATORISCHER_KINDERGARTEN;
     }
@@ -561,4 +594,46 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
         return this.fachstellenTyp !== TSFachstellenTyp.KEINE;
     }
 
+    public checkFachstellenValidity(): {pensumFachstelle: TSPensumFachstelle; error: string}[] {
+        const einschulungstypen = new EinschulungTypesVisitor().process(this.mandant);
+        const ordinalitaetKind =
+            einschulungstypen.findIndex(einschulungstyp => einschulungstyp === this.getModel().einschulungTyp);
+        if (ordinalitaetKind < 0) {
+            throw new Error(`Einschulungstyp ${this.getModel().einschulungTyp} not found for ${this.mandant}`);
+        }
+
+        const errors: { pensumFachstelle: TSPensumFachstelle; error: string }[] = [];
+
+        for (const pensumFachstelle of this.getPensumFachstellen()) {
+            let ordinalitaetEinstellung;
+            switch (pensumFachstelle.integrationTyp) {
+                case TSIntegrationTyp.SOZIALE_INTEGRATION:
+                    ordinalitaetEinstellung =
+                        einschulungstypen.findIndex(einschulungstyp => einschulungstyp === this.sozialeIntegrationBisSchulstufe);
+                    if (ordinalitaetKind > ordinalitaetEinstellung) {
+                        errors.push({
+                            pensumFachstelle,
+                            error: this.$translate.instant('PENSUM_FACHSTELLE_INVALID_FACHSTELLEN_SOZIAL',
+                                {stufe: this.$translate.instant(this.sozialeIntegrationBisSchulstufe)})
+                        });
+                    }
+                    break;
+                case TSIntegrationTyp.SPRACHLICHE_INTEGRATION:
+                case TSIntegrationTyp.ZUSATZLEISTUNG_INTEGRATION:
+                    ordinalitaetEinstellung =
+                        einschulungstypen.findIndex(einschulungstyp =>
+                            einschulungstyp === this.sprachlicheIntegrationBisSchulstufe);
+                    if (ordinalitaetKind > ordinalitaetEinstellung) {
+                        errors.push({
+                            pensumFachstelle,
+                            error: this.$translate.instant('PENSUM_FACHSTELLE_INVALID_FACHSTELLEN_SPRACHLICH')
+                        });
+                    }
+                    break;
+                default:
+                    throw new Error(`Unhandled TSIntegrationTyp ${pensumFachstelle.integrationTyp}`);
+            }
+        }
+        return errors;
+    }
 }
