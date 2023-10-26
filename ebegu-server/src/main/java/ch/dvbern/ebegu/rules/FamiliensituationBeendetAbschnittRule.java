@@ -96,7 +96,7 @@ public class FamiliensituationBeendetAbschnittRule extends AbstractAbschnittRule
 				createZeitabschnittWithinValidityPeriodOfRule(new DateRange(
 						zweiJahreKonkubinatNextMonth,
 						gesuch.getGesuchsperiode().getGueltigkeit().getGueltigBis()));
-		abschnittNachJahrenKonkubinat.setGesuchBeendenKonkubitantMitZweiGS(true);
+		abschnittNachJahrenKonkubinat.setGesuchBeendenKonkubinatMitZweiGS(true);
 		neueZeitabschnitte.add(abschnittNachJahrenKonkubinat);
 
 	}

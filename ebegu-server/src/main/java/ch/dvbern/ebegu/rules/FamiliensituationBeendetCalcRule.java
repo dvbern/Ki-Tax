@@ -42,7 +42,7 @@ public class FamiliensituationBeendetCalcRule extends AbstractCalcRule {
 			@Nonnull AbstractPlatz platz,
 			@Nonnull BGCalculationInput inputData) {
 
-		if (inputData.isGesuchBeendenKonkubinatWirdInPeriodeXJahreAlt()) {
+		if (inputData.isGesuchBeendenKonkubinatMitZweiGS()) {
 			executeGesuchBeenden(platz, inputData);
 			return;
 		}
