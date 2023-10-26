@@ -5,6 +5,8 @@ import java.time.temporal.TemporalAdjusters;
 import java.util.Locale;
 import java.util.Objects;
 
+import javax.annotation.Nonnull;
+
 import ch.dvbern.ebegu.dto.BGCalculationInput;
 import ch.dvbern.ebegu.entities.AbstractPlatz;
 import ch.dvbern.ebegu.entities.BGCalculationResult;
@@ -42,5 +44,16 @@ public class MutationsMergerFinanzielleSituationLuzern extends AbstractMutations
 
 		return firstDayWhenFitSitIsGueltig.isBefore(zeitabschnitt.getGueltigkeit().getGueltigAb()) ||
 			firstDayWhenFitSitIsGueltig.isEqual(zeitabschnitt.getGueltigkeit().getGueltigAb());
+	}
+
+	protected void setFinSitDataFromResultToInput(
+		@Nonnull BGCalculationInput input,
+		@Nonnull BGCalculationResult result
+	) {
+		input.setMassgebendesEinkommenVorAbzugFamgr(result.getMassgebendesEinkommenVorAbzugFamgr());
+		input.setEinkommensjahr(result.getEinkommensjahr());
+		input.setFamGroesse(result.getFamGroesse());
+		input.setAbzugFamGroesse(result.getAbzugFamGroesse());
+		input.setAnspruchspensumProzent(result.getAnspruchspensumProzent());
 	}
 }
