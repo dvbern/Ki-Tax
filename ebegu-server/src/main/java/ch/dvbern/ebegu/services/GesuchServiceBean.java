@@ -135,7 +135,7 @@ import ch.dvbern.ebegu.types.DateRange_;
 import ch.dvbern.ebegu.util.EbeguUtil;
 import ch.dvbern.ebegu.util.FreigabeCopyUtil;
 import ch.dvbern.ebegu.validationgroups.AntragCompleteValidationGroup;
-import ch.dvbern.ebegu.validators.CheckFachstellenValidator;
+import ch.dvbern.ebegu.validationgroups.CheckFachstellenValidationGroup;
 import ch.dvbern.lib.cdipersistence.Persistence;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
@@ -210,6 +210,8 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 	private MassenversandService massenversandService;
 	@Inject
 	private InternePendenzService internePendenzService;
+	@Inject
+	private Validator validator;
 
 	@Nonnull
 	@Override
@@ -291,7 +293,8 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 	}
 
 	private boolean hasCorruptKindData(KindContainer kind) {
-		return !new CheckFachstellenValidator(einstellungService, persistence.getEntityManager()).isValid(kind, null);
+		Set<ConstraintViolation<KindContainer>> fachstellenViolations = validator.validate(kind, CheckFachstellenValidationGroup.class);
+		return !fachstellenViolations.isEmpty();
 	}
 
 	private void updateGesuchWithConfiguration(Gesuch gesuch) {
