@@ -76,7 +76,7 @@
                                [(ngModel)]="stammdaten.telefon"
                                [maxlength]="255" class="form-control"
                                required
-                        [pattern]="CONSTANTS.PATTERN_PHONE">
+                               [pattern]="CONSTANTS.PATTERN_PHONE">
                         <dv-error-messages [errorObject]="nameTelefon.errors"
                                            inputId="telefon_id"></dv-error-messages>
                     </div>
@@ -128,7 +128,7 @@
                                     id="verantwortliche_id"
                                     name="verantwortliche_id"
                                     class="form-control"
-									#nameVerantwortliche='ngModel'
+                                    #nameVerantwortliche='ngModel'
                                     [compareWith]="compareBenutzer"
                                     required>
                             <mat-option *ngFor="let vgem of benutzerListe" [value]="vgem">
@@ -237,7 +237,8 @@
                                             <div class="form-group">
                                                 <dv-input-container-x [verticalAlign]="true">
                                                     <label class="required"
-                                                           translate for="zusatzText_id">ZUSAETZLICHER_TEXT_FREIGABEQUITTUNG_TITEL</label>
+                                                           translate
+                                                           for="zusatzText_id">ZUSAETZLICHER_TEXT_FREIGABEQUITTUNG_TITEL</label>
                                                     <mat-form-field floatLabel="always" class="no-margin-left">
                                             <textarea matInput
                                                       id="zusatzTextFreigabequittungTitle_id"
@@ -272,18 +273,25 @@
                             {{'GEMEINDE_ANGEBOT_BETREUUNGSGUTSCHEINE'|translate}}</mat-checkbox>
 
                         <div class="form-group inner-option" *ngIf="stammdaten.gemeinde.angebotBG">
-                            <label class="md-no-float" translate for="begu_start_ID">BEGU_START</label>
-                            <input class="dv-mat-datepicker" type="text"
-                                   name="begu_start" id="begu_start_ID" #bgStartDate="ngModel"
-                                   [(ngModel)]="stammdaten.gemeinde.betreuungsgutscheineStartdatum"
-                                   [matDatepicker]="begu_start"
-                                   [disabled]="!(isSuperadminOrMandant())"
-                                   placeholder="{{'DATE_PLACEHOLDER_FIRSTOFMONTH' | translate}}">
-                            <mat-datepicker-toggle matSuffix [for]="begu_start"></mat-datepicker-toggle>
-                            <mat-datepicker #begu_start></mat-datepicker>
-                            <dv-error-messages input-id="begu_start_ID"
-                                               [errorObject]="bgStartDate.errors">
-                            </dv-error-messages>
+                            <div class="form-group">
+                                <label class="md-no-float" translate for="begu_start_ID">BEGU_START</label>
+                                <input class="dv-mat-datepicker" type="text"
+                                       name="begu_start" id="begu_start_ID" #bgStartDate="ngModel"
+                                       [(ngModel)]="stammdaten.gemeinde.betreuungsgutscheineStartdatum"
+                                       [matDatepicker]="begu_start"
+                                       [disabled]="!(isSuperadminOrMandant())"
+                                       placeholder="{{'DATE_PLACEHOLDER_FIRSTOFMONTH' | translate}}">
+                                <mat-datepicker-toggle matSuffix [for]="begu_start"></mat-datepicker-toggle>
+                                <mat-datepicker #begu_start></mat-datepicker>
+                                <dv-error-messages input-id="begu_start_ID"
+                                                   [errorObject]="bgStartDate.errors">
+                                </dv-error-messages>
+                            </div>
+                            <div class="form-group">
+                                <mat-checkbox id="angebotBGTFO" name="angebotBGTFO"
+                                              [(ngModel)]="stammdaten.gemeinde.angebotBGTFO">
+                                    {{'GEMEINDE_ANGEBOT_BETREUUNGSGUTSCHEINE_TFO'|translate}}</mat-checkbox>
+                            </div>
                         </div>
 
                         <mat-checkbox id="angebotTS" name="angebotTS"
@@ -310,10 +318,11 @@
                                                    [errorObject]="tsStartDate.errors">
                                 </dv-error-messages>
                             </div>
-
-                            <mat-checkbox id="nurLats" name="nurLats"
-                                          [(ngModel)]="stammdaten.gemeinde.nurLats">
-                                {{'GEMEINDE_ANGEBOT_NUR_LATS'|translate}}</mat-checkbox>
+                            <div class="form-group">
+                                <mat-checkbox id="nurLats" name="nurLats"
+                                              [(ngModel)]="stammdaten.gemeinde.nurLats">
+                                    {{'GEMEINDE_ANGEBOT_NUR_LATS'|translate}}</mat-checkbox>
+                            </div>
                         </div>
 
                         <mat-checkbox id="angebotFI" name="angebotFI"

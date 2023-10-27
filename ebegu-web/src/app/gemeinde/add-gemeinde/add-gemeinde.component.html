@@ -74,25 +74,32 @@
                     <div class="col-sm-6">
 
                         <div class="form-group">
-                            <label class="md-no-float" translate for="begu_start_ID"  *ngIf="tageschuleEnabledForMandant">GEMEINDE_ANGEBOT</label>
+                            <label class="md-no-float" translate for="begu_start_ID" *ngIf="tageschuleEnabledForMandant">GEMEINDE_ANGEBOT</label>
 
                             <mat-checkbox id="angebotBG" name="angebotBG"
                                           [(ngModel)]="gemeinde.angebotBG" *ngIf="tageschuleEnabledForMandant">
                                 {{'GEMEINDE_ANGEBOT_BETREUUNGSGUTSCHEINE'|translate}}</mat-checkbox>
 
                             <div class="form-group {{getCssClassAngebotBGInput()}}" *ngIf="gemeinde.angebotBG">
-                                <label class="md-no-float" translate for="begu_start_ID">BEGU_START</label>
-                                <input class="dv-mat-datepicker" type="text"
-                                       name="begu_start" id="begu_start_ID"
-                                       [(ngModel)]="gemeinde.betreuungsgutscheineStartdatum"
-                                       [matDatepicker]="begu_start"
-                                       placeholder="{{'DATE_PLACEHOLDER_FIRSTOFMONTH' | translate}}"
-                                       required>
-                                <mat-datepicker-toggle matSuffix [for]="begu_start"></mat-datepicker-toggle>
-                                <mat-datepicker #begu_start></mat-datepicker>
-                                <dv-error-messages input-id="begu_start_ID"
-                                                   [errorObject]="form.controls.begu_start?.errors">
-                                </dv-error-messages>
+                                <div class="form-group">
+                                    <label class="md-no-float" translate for="begu_start_ID">BEGU_START</label>
+                                    <input class="dv-mat-datepicker" type="text"
+                                           name="begu_start" id="begu_start_ID"
+                                           [(ngModel)]="gemeinde.betreuungsgutscheineStartdatum"
+                                           [matDatepicker]="begu_start"
+                                           placeholder="{{'DATE_PLACEHOLDER_FIRSTOFMONTH' | translate}}"
+                                           required>
+                                    <mat-datepicker-toggle matSuffix [for]="begu_start"></mat-datepicker-toggle>
+                                    <mat-datepicker #begu_start></mat-datepicker>
+                                    <dv-error-messages input-id="begu_start_ID"
+                                                       [errorObject]="form.controls.begu_start?.errors">
+                                    </dv-error-messages>
+                                </div>
+                                <div class="form-group">
+                                    <mat-checkbox id="angebotBGTFO" name="angebotBGTFO"
+                                                  [(ngModel)]="gemeinde.angebotBGTFO">
+                                        {{'GEMEINDE_ANGEBOT_BETREUUNGSGUTSCHEINE_TFO'|translate}}</mat-checkbox>
+                                </div>
                             </div>
 
                             <mat-checkbox id="angebotTS" name="angebotTS"

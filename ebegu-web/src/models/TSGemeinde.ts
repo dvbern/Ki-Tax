@@ -28,6 +28,7 @@ export class TSGemeinde extends TSAbstractEntity {
     public tagesschulanmeldungenStartdatum: moment.Moment;
     public ferieninselanmeldungenStartdatum: moment.Moment;
     public angebotBG: boolean;
+    public angebotBGTFO: boolean;
     public angebotTS: boolean;
     public angebotFI: boolean;
     public besondereVolksschule: boolean;

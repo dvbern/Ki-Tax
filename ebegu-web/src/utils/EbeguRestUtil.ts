@@ -966,6 +966,7 @@ export class EbeguRestUtil {
             restGemeinde.gueltigBis = gemeinde.gueltigBis === null ? '9999-12-31' :
                 DateUtil.momentToLocalDate(gemeinde.gueltigBis);
             restGemeinde.angebotBG = gemeinde.angebotBG;
+            restGemeinde.angebotBGTFO = gemeinde.angebotBGTFO;
             restGemeinde.angebotTS = gemeinde.angebotTS;
             restGemeinde.angebotFI = gemeinde.angebotFI;
             restGemeinde.besondereVolksschule = gemeinde.besondereVolksschule;
@@ -991,6 +992,7 @@ export class EbeguRestUtil {
             gemeindeTS.gueltigBis = gemeindeFromServer.gueltigBis === '9999-12-31' ? null :
                 DateUtil.localDateToMoment(gemeindeFromServer.gueltigBis);
             gemeindeTS.angebotBG = gemeindeFromServer.angebotBG;
+            gemeindeTS.angebotBGTFO = gemeindeFromServer.angebotBGTFO;
             gemeindeTS.angebotTS = gemeindeFromServer.angebotTS;
             gemeindeTS.angebotFI = gemeindeFromServer.angebotFI;
             gemeindeTS.besondereVolksschule = gemeindeFromServer.besondereVolksschule;

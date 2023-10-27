@@ -737,7 +737,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         const betreuungsangebotTypValues =
             getTSBetreuungsangebotTypValuesForMandantIfTagesschulanmeldungen(
                 this.angebotTS,
-                this.angebotTFO,
+                this.angebotTFO && this.gesuchModelManager.getGemeinde().angebotBGTFO,
                 this.checkIfGemeindeOrBetreuungHasTSAnmeldung(),
                 this.gesuchModelManager.getGemeinde(),
                 this.gesuchModelManager.getGesuchsperiode());
