@@ -42,6 +42,7 @@ import javax.validation.constraints.NotNull;
 import ch.dvbern.ebegu.dto.suchfilter.lucene.Searchable;
 import ch.dvbern.ebegu.enums.AntragCopyType;
 import ch.dvbern.ebegu.util.EbeguUtil;
+import ch.dvbern.ebegu.validationgroups.CheckFachstellenValidationGroup;
 import ch.dvbern.ebegu.validators.CheckFachstellen;
 import ch.dvbern.ebegu.validators.CheckFachstellenFromDate;
 import ch.dvbern.ebegu.validators.CheckPensumFachstelle;
@@ -61,7 +62,7 @@ import org.hibernate.search.annotations.IndexedEmbedded;
 @CheckPensumFachstelle
 @CheckPensumFachstellenOverlapping
 @CheckFachstellenFromDate
-//@CheckFachstellen
+@CheckFachstellen(groups = CheckFachstellenValidationGroup.class)
 @Audited
 @Entity
 @Table(
