@@ -1,9 +1,5 @@
 package ch.dvbern.ebegu.services.zahlungen;
 
-import javax.annotation.Nonnull;
-import javax.enterprise.context.Dependent;
-import javax.inject.Inject;
-
 import ch.dvbern.ebegu.entities.ApplicationProperty;
 import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.enums.ApplicationPropertyKey;
@@ -14,8 +10,13 @@ import ch.dvbern.ebegu.services.MandantService;
 import ch.dvbern.ebegu.util.mandant.MandantIdentifier;
 import ch.dvbern.ebegu.util.mandant.MandantVisitor;
 
+import javax.annotation.Nonnull;
+import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
+import java.util.List;
+
 @Dependent
-public class ZahlungsfileGeneratorVisitor implements MandantVisitor<IZahlungsfileGenerator> {
+public class ZahlungsfileGeneratorVisitor implements MandantVisitor< List<IZahlungsfileGenerator>> {
 
 	@Inject
 	private ApplicationPropertyService applicationPropertyService;
@@ -29,38 +30,38 @@ public class ZahlungsfileGeneratorVisitor implements MandantVisitor<IZahlungsfil
 	@Inject
 	private ZahlungsfileGeneratorInfoma infomaGenerator;
 
-	public IZahlungsfileGenerator getZahlungsfileGenerator(
+	public List<IZahlungsfileGenerator> getZahlungsfileGenerator(
 		@Nonnull Mandant mandant
 	) {
 		return mandant.getMandantIdentifier().accept(this);
 	}
 
 	@Override
-	public IZahlungsfileGenerator visitBern() {
+	public  List<IZahlungsfileGenerator> visitBern() {
 		return getZahlungsfileGeneratorForMandant(MandantIdentifier.BERN);
 	}
 
 	@Override
-	public IZahlungsfileGenerator visitLuzern() {
+	public  List<IZahlungsfileGenerator> visitLuzern() {
 		return getZahlungsfileGeneratorForMandant(MandantIdentifier.LUZERN);
 	}
 
 	@Override
-	public IZahlungsfileGenerator visitSolothurn() {
+	public  List<IZahlungsfileGenerator> visitSolothurn() {
 		return getZahlungsfileGeneratorForMandant(MandantIdentifier.SOLOTHURN);
 	}
 
 	@Override
-	public IZahlungsfileGenerator visitAppenzellAusserrhoden() {
+	public  List<IZahlungsfileGenerator> visitAppenzellAusserrhoden() {
 		return getZahlungsfileGeneratorForMandant(MandantIdentifier.APPENZELL_AUSSERRHODEN);
 	}
 
 	@Nonnull
-	private IZahlungsfileGenerator getZahlungsfileGeneratorForMandant(@Nonnull MandantIdentifier mandantIdentifier) {
+	private  List<IZahlungsfileGenerator> getZahlungsfileGeneratorForMandant(@Nonnull MandantIdentifier mandantIdentifier) {
 		if (isInfomaZahlungenActivatedForMandant(mandantIdentifier)) {
-			return infomaGenerator;
+			return List.of(infomaGenerator, painGenerator);
 		}
-		return painGenerator;
+		return List.of(painGenerator);
 	}
 
 	private boolean isInfomaZahlungenActivatedForMandant(@Nonnull MandantIdentifier mandantIdentifier) {
