@@ -15,6 +15,22 @@
 
 package ch.dvbern.ebegu.rechner;
 
+import ch.dvbern.ebegu.entities.*;
+import ch.dvbern.ebegu.enums.EinschulungTyp;
+import ch.dvbern.ebegu.enums.EinstellungKey;
+import ch.dvbern.ebegu.rules.BetreuungsgutscheinConfigurator;
+import ch.dvbern.ebegu.rules.BetreuungsgutscheinEvaluator;
+import ch.dvbern.ebegu.rules.EbeguRuleTestsHelper;
+import ch.dvbern.ebegu.rules.Rule;
+import ch.dvbern.ebegu.test.TestDataUtil;
+import ch.dvbern.ebegu.testfaelle.*;
+import ch.dvbern.ebegu.types.DateRange;
+import ch.dvbern.ebegu.util.MathUtil;
+import ch.dvbern.ebegu.util.RuleParameterUtil;
+import ch.dvbern.ebegu.util.TestUtils;
+import org.junit.Before;
+
+import javax.annotation.Nonnull;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.Month;
@@ -23,55 +39,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.annotation.Nonnull;
-
-import ch.dvbern.ebegu.entities.AbstractPersonEntity;
-import ch.dvbern.ebegu.entities.BGCalculationResult;
-import ch.dvbern.ebegu.entities.Betreuung;
-import ch.dvbern.ebegu.entities.Einstellung;
-import ch.dvbern.ebegu.entities.ErweiterteBetreuung;
-import ch.dvbern.ebegu.entities.ErweiterteBetreuungContainer;
-import ch.dvbern.ebegu.entities.Gemeinde;
-import ch.dvbern.ebegu.entities.Gesuch;
-import ch.dvbern.ebegu.entities.Gesuchsperiode;
-import ch.dvbern.ebegu.entities.Kind;
-import ch.dvbern.ebegu.entities.KindContainer;
-import ch.dvbern.ebegu.entities.Verfuegung;
-import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
-import ch.dvbern.ebegu.enums.EinschulungTyp;
-import ch.dvbern.ebegu.enums.EinstellungKey;
-import ch.dvbern.ebegu.rules.BetreuungsgutscheinConfigurator;
-import ch.dvbern.ebegu.rules.BetreuungsgutscheinEvaluator;
-import ch.dvbern.ebegu.rules.EbeguRuleTestsHelper;
-import ch.dvbern.ebegu.rules.Rule;
-import ch.dvbern.ebegu.test.TestDataUtil;
-import ch.dvbern.ebegu.testfaelle.Testfall01_WaeltiDagmar;
-import ch.dvbern.ebegu.testfaelle.Testfall02_FeutzYvonne;
-import ch.dvbern.ebegu.testfaelle.Testfall03_PerreiraMarcia;
-import ch.dvbern.ebegu.testfaelle.Testfall04_WaltherLaura;
-import ch.dvbern.ebegu.testfaelle.Testfall05_LuethiMeret;
-import ch.dvbern.ebegu.testfaelle.Testfall06_BeckerNora;
-import ch.dvbern.ebegu.testfaelle.Testfall_ASIV_01;
-import ch.dvbern.ebegu.testfaelle.Testfall_ASIV_02;
-import ch.dvbern.ebegu.testfaelle.Testfall_ASIV_03;
-import ch.dvbern.ebegu.testfaelle.Testfall_ASIV_04;
-import ch.dvbern.ebegu.testfaelle.Testfall_ASIV_05;
-import ch.dvbern.ebegu.testfaelle.Testfall_ASIV_06;
-import ch.dvbern.ebegu.testfaelle.Testfall_ASIV_07;
-import ch.dvbern.ebegu.testfaelle.Testfall_ASIV_08;
-import ch.dvbern.ebegu.testfaelle.Testfall_ASIV_09;
-import ch.dvbern.ebegu.testfaelle.Testfall_ASIV_10;
-import ch.dvbern.ebegu.types.DateRange;
-import ch.dvbern.ebegu.util.MathUtil;
-import ch.dvbern.ebegu.util.RuleParameterUtil;
-import ch.dvbern.ebegu.util.TestUtils;
-import org.junit.Before;
-
 import static ch.dvbern.ebegu.testfaelle.AbstractTestfall.ID_INSTITUTION_STAMMDATEN_WEISSENSTEIN_KITA;
 import static ch.dvbern.ebegu.util.Constants.ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 
 /**
  * Superklasse für BG-Rechner-Tests
@@ -238,6 +208,10 @@ public abstract class AbstractBGRechnerTest {
 		defaultParameter.setOeffnungstageKita(BigDecimal.valueOf(246));
 		defaultParameter.setOeffnungstageTFO(BigDecimal.valueOf(246));
 		defaultParameter.setOeffnungsstundenTFO(BigDecimal.valueOf(11));
+		defaultParameter.setMaxVerguenstigungVorschuleKindProTg(BigDecimal.valueOf(130));
+		defaultParameter.setMaxVerguenstigungVorschuleBabyProTg(BigDecimal.valueOf(160));
+		defaultParameter.setMaxVerguenstigungVorschuleBabyProStd(BigDecimal.valueOf(16.3));
+		defaultParameter.setMaxVerguenstigungVorschuleKindProStd(BigDecimal.valueOf(12.4));
 		return defaultParameter;
 	}
 

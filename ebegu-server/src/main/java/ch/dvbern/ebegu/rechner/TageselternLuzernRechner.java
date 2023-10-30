@@ -17,21 +17,18 @@
 
 package ch.dvbern.ebegu.rechner;
 
-import java.math.BigDecimal;
-import java.util.List;
-
-import javax.annotation.Nonnull;
-
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.PensumUnits;
 import ch.dvbern.ebegu.rechner.rules.RechnerRule;
 import ch.dvbern.ebegu.util.MathUtil;
 
+import javax.annotation.Nonnull;
+import java.math.BigDecimal;
+import java.util.List;
+
 public class TageselternLuzernRechner extends AbstractLuzernRechner {
 
 	//Die Tarife werden im Moment als Konstante gespeichert. Dies wird in Zukunft evtl noch konfigurierbar gemacht.
-	private static final BigDecimal VOLLKOSTEN_TARIF_BABY = BigDecimal.valueOf(16.30);
-	private static final BigDecimal VOLLKOSTEN_TARIF_KIND = BigDecimal.valueOf(12.40);
 	private static final BigDecimal MIN_BETREUUNGSGUTSCHEIN_BABY = BigDecimal.valueOf(1.30);
 	private static final BigDecimal MIN_BETREUUNGSGUTSCHEIN_KIND = BigDecimal.ONE;
 
@@ -90,7 +87,7 @@ public class TageselternLuzernRechner extends AbstractLuzernRechner {
 
 	@Override
 	protected BigDecimal getVollkostenTarif() {
-		return isBaby ? VOLLKOSTEN_TARIF_BABY : VOLLKOSTEN_TARIF_KIND;
+		return isBaby ? getInputParameter().getMaxVerguenstigungVorschuleBabyProStd() : getInputParameter().getMaxVerguenstigungVorschuleKindProStd();
 	}
 
 	@Override
