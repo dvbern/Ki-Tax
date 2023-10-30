@@ -31,7 +31,7 @@ import java.util.Collections;
 
 public class TageselternLuzernRechnerTest extends AbstractLuzernRechnerTest {
 
-	private final BGRechnerParameterDTO defaultParameterDTO = TestUtils.getRechnerParamterAppenzell();
+	private final BGRechnerParameterDTO defaultParameterDTO = TestUtils.getRechnerParameterLuzern();
 
 	@Test
 	public void testKind() { //Kind 1 im BG_Rechner_Luzern Excel
