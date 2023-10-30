@@ -2940,7 +2940,7 @@
     "INSTITUTION_GUELTIGKEIT_DECREASED_WARNUNG": "Achtung: Sie haben die Gültigkeit dieser Institution verändert. Alle Daten zu dieser Institution, welche ausserhalb der Gültigkeit liegen, werden gelöscht. Sind Sie sicher, dass Sie diese Änderung speichern möchten?",
     "GEMEINDE_ANTRAG_GELOESCHT": "Der Antrag {{typ}} für die Gemeinde {{gemeinde}} in der Gesuchsperiode {{periode}} wurde gelöscht",
     "KITAPLUS_ZUSCHLAG_AKTIVIERT": "Luzern: KITAplus Zuschlag aktiviert",
-    "GEMEINDESPEZIFISCHE_BG_KONFIGURATIONEN": "Solothurn: Gemeindespezifische Konfigurationen für BG",
+    "GEMEINDESPEZIFISCHE_BG_KONFIGURATIONEN": "Solothurn, Luzern: Gemeindespezifische Konfigurationen für BG",
     "GEMEINDESPEZIFISCHE_BG_KONFIGURATIONEN_TITLE": "Gemeindespezifische Konfigurationen für BG",
     "ABHAENGIGKEIT_ANSPRUCH_BESCHAEFTIGUNGPENSUM": "Abhängigkeit des Anspruchs vom Beschäftigungspensum (Abhaengig, Unabhaengig, Minimum)",
     "ABHAENGIGKEIT_ANSPRUCH_BESCHAEFTIGUNGPENSUM_HELP": "Die Einstellung kann 3 Werte haben ABHAENGING, UNABHAENGING oder MINIMUM. Abhängig = Der Anspruch hängt vom Beschäftigungspensum ab (wie in Bern) Unabhängig = Der Anspruch hängt nicht vom Beschäftigungspensum ab (wie in Solothurn) Minimal = Es muss ein minimum an Beschäftigungspensum erreicht werden um einen Anspruch zu erhalten (wie in Grenchen)",
