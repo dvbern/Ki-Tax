@@ -122,9 +122,7 @@ public class CheckFachstellenValidator implements ConstraintValidator<CheckFachs
 		return null;
 	}
 
-	@SuppressWarnings("PMD.CompareObjectsWithEquals")
 	private void closeEntityManager(EntityManager em) {
-		//noinspection ObjectEquality
 		if (em != null) {
 			em.close();
 		}
