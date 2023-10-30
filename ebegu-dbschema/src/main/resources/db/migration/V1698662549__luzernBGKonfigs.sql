@@ -64,5 +64,8 @@ where gesuchsperiode_id in (
     where mandant_identifier = 'LUZERN') and
 einstellung_key = 'MAX_VERGUENSTIGUNG_KINDERGARTEN_PRO_STD';
 
+INSERT INTO bfs_gemeinde (id, mandant_id, kanton, bfs_nummer, name, gueltig_ab)
+    VALUES (UUID(), (select id from mandant where mandant_identifier = 'LUZERN'), 'LU', 1058, 'Horw', '2010-01-01');
+
 
 
