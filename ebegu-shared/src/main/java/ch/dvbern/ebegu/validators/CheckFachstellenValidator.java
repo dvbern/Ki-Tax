@@ -21,7 +21,6 @@ import java.text.MessageFormat;
 import java.util.Objects;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -66,7 +65,6 @@ public class CheckFachstellenValidator implements ConstraintValidator<CheckFachs
 	public CheckFachstellenValidator(@Nonnull EinstellungService einstellungService) {
 		this.einstellungService = einstellungService;
 	}
-
 
 	@Override
 	public void initialize(CheckFachstellen constraintAnnotation) {
@@ -126,7 +124,6 @@ public class CheckFachstellenValidator implements ConstraintValidator<CheckFachs
 
 	@SuppressWarnings("PMD.CompareObjectsWithEquals")
 	private void closeEntityManager(EntityManager em) {
-		// we only want to close a local EntityManager that we created ourselves in this class
 		//noinspection ObjectEquality
 		if (em != null) {
 			em.close();
