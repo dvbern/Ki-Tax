@@ -95,7 +95,7 @@ export class TSLastenausgleichTagesschuleAngabenGemeindeContainer extends TSAbst
     }
 
     public allAngabenInstitutionContainersGeprueft(): boolean {
-        return this.angabenInstitutionContainers.reduce((
+        return this.angabenInstitutionContainers.length > 0 && this.angabenInstitutionContainers.reduce((
             prev: boolean,
             cur: TSLastenausgleichTagesschuleAngabenInstitutionContainer
         ) => prev && cur.isGeprueftGemeinde(), true);
