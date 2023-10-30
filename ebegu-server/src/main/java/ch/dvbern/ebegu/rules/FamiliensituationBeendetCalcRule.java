@@ -12,7 +12,6 @@ import ch.dvbern.ebegu.entities.AbstractPlatz;
 import ch.dvbern.ebegu.entities.Familiensituation;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
-import ch.dvbern.ebegu.enums.EnumFamilienstatus;
 import ch.dvbern.ebegu.enums.MsgKey;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.Constants;
@@ -43,7 +42,7 @@ public class FamiliensituationBeendetCalcRule extends AbstractCalcRule {
 			@Nonnull AbstractPlatz platz,
 			@Nonnull BGCalculationInput inputData) {
 
-		if (inputData.isGesuchBeendenKonkubinatWirdInPeriodeXJahreAlt()) {
+		if (inputData.isGesuchBeendenKonkubinatMitZweiGS()) {
 			executeGesuchBeenden(platz, inputData);
 			return;
 		}
