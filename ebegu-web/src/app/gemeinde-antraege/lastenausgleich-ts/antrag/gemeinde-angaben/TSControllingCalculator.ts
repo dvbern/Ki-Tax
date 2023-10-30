@@ -176,7 +176,8 @@ export class TSControllingCalculator {
     }
 
     private calculateAnteilElternbeitraegePreviousPeriode(): void {
-        if (!(this._previousAntrag?.angabenKorrektur?.einnahmenElterngebuehren)) {
+        if (!(this._previousAntrag?.angabenKorrektur?.einnahmenElterngebuehren)
+            || !(this._previousAntrag.angabenKorrektur.normlohnkostenBetreuungBerechnet)) {
             this._anteilElternbeitraegePreviousPeriode.next('?');
             return;
         }

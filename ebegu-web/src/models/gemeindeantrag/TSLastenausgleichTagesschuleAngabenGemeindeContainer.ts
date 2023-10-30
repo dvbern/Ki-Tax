@@ -79,23 +79,23 @@ export class TSLastenausgleichTagesschuleAngabenGemeindeContainer extends TSAbst
     public isGemeindeFormularInBearbeitungForRole(role: TSRole): boolean {
         switch (role) {
             case TSRole.SUPER_ADMIN:
-                return (this.isInBearbeitungKanton() && this.angabenKorrektur?.isInBearbeitung()) ||
-                    (this.isInBearbeitungGemeinde() && this.angabenDeklaration?.isInBearbeitung());
+                return (this.isInBearbeitungKanton() && this.getAngabenToWorkWith()?.isInBearbeitung()) ||
+                    (this.isInBearbeitungGemeinde() && this.getAngabenToWorkWith()?.isInBearbeitung());
             case TSRole.SACHBEARBEITER_MANDANT:
             case TSRole.ADMIN_MANDANT:
-                return this.isInBearbeitungKanton() && this.angabenKorrektur?.isInBearbeitung();
+                return this.isInBearbeitungKanton() && this.getAngabenToWorkWith()?.isInBearbeitung();
             case TSRole.ADMIN_TS:
             case TSRole.SACHBEARBEITER_TS:
             case TSRole.ADMIN_GEMEINDE:
             case TSRole.SACHBEARBEITER_GEMEINDE:
-                return this.isInBearbeitungGemeinde() && this.angabenDeklaration?.isInBearbeitung();
+                return this.isInBearbeitungGemeinde() && this.getAngabenToWorkWith()?.isInBearbeitung();
             default:
                 return false;
         }
     }
 
     public allAngabenInstitutionContainersGeprueft(): boolean {
-        return this.angabenInstitutionContainers.reduce((
+        return this.angabenInstitutionContainers.length > 0 && this.angabenInstitutionContainers.reduce((
             prev: boolean,
             cur: TSLastenausgleichTagesschuleAngabenInstitutionContainer
         ) => prev && cur.isGeprueftGemeinde(), true);

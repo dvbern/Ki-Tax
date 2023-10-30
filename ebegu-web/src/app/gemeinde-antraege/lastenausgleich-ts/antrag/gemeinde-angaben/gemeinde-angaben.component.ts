@@ -72,71 +72,7 @@ export class GemeindeAngabenComponent implements OnInit, OnDestroy {
     @Input() public lastenausgleichID: string;
     @Input() public triggerValidationOnInit = false;
 
-    public angabenForm = this.fb.group({
-        status: [<null|string>null],
-        version: [<null|number>null],
-        // A
-        alleFaelleInKibon: [<null|boolean>null],
-        angebotVerfuegbarFuerAlleSchulstufen: [<null|boolean>null],
-        begruendungWennAngebotNichtVerfuegbarFuerAlleSchulstufen: [],
-        bedarfBeiElternAbgeklaert: [<null|boolean>null],
-        angebotFuerFerienbetreuungVorhanden: [<null|boolean>null],
-        // B
-        geleisteteBetreuungsstundenOhneBesondereBeduerfnisse:
-            [<null|number>null, numberValidator(ValidationType.POSITIVE_INTEGER)],
-        geleisteteBetreuungsstundenBesondereBeduerfnisse: [<null|number>null,  numberValidator(ValidationType.POSITIVE_INTEGER)],
-        geleisteteBetreuungsstundenBesondereVolksschulangebot:
-            [<null|number>null, numberValidator(ValidationType.POSITIVE_INTEGER)],
-        davonStundenZuNormlohnMehrAls50ProzentAusgebildete: [<null|number>null, numberValidator(ValidationType.POSITIVE_INTEGER)],
-        davonStundenZuNormlohnWenigerAls50ProzentAusgebildete:
-            [<null|number>null, numberValidator(ValidationType.POSITIVE_INTEGER)],
-        einnahmenElterngebuehren:
-            [<null|number>null, [this.numberValidator(), Validators.pattern(CONSTANTS.PATTERN_TWO_DECIMALS)]],
-        einnahmenElterngebuehrenVolksschulangebot:
-            [<null|number>null,[this.numberValidator(), Validators.pattern(CONSTANTS.PATTERN_TWO_DECIMALS)]],
-        ersteRateAusbezahlt: [<null|number>null, numberValidator(ValidationType.POSITIVE_INTEGER)],
-        tagesschuleTeilweiseGeschlossen: [<null|boolean>null],
-        rueckerstattungenElterngebuehrenSchliessung:
-            [<null|number>null,[this.numberValidator(), Validators.pattern(CONSTANTS.PATTERN_TWO_DECIMALS)]],
-        // C
-        gesamtKostenTagesschule:
-            [<null|number>null, [this.numberValidator(), Validators.pattern(CONSTANTS.PATTERN_TWO_DECIMALS)]],
-        einnnahmenVerpflegung: [<null|number>null, [this.numberValidator(), Validators.pattern(CONSTANTS.PATTERN_TWO_DECIMALS)]],
-        einnahmenSubventionenDritter:
-            [<null|number>null, [this.numberValidator(), Validators.pattern(CONSTANTS.PATTERN_TWO_DECIMALS)]],
-        ueberschussErzielt: [<null|boolean>null],
-        ueberschussVerwendung: [<null|string>null],
-        // D
-        bemerkungenWeitereKostenUndErtraege: [<null|string>null],
-        // E
-        betreuungsstundenDokumentiertUndUeberprueft: [<null|boolean>null],
-        betreuungsstundenDokumentiertUndUeberprueftBemerkung: [<null|string>null],
-        elterngebuehrenGemaessVerordnungBerechnet: [<null|boolean>null],
-        elterngebuehrenGemaessVerordnungBerechnetBemerkung: [<null|string>null],
-        einkommenElternBelegt: [<null|boolean>null],
-        einkommenElternBelegtBemerkung: [<null|string>null],
-        maximalTarif: [<null|boolean>null],
-        maximalTarifBemerkung: [<null|string>null],
-        mindestens50ProzentBetreuungszeitDurchAusgebildetesPersonal: [<null|boolean>null],
-        mindestens50ProzentBetreuungszeitDurchAusgebildetesPersonalBemerkung: [<null|string>null],
-        ausbildungenMitarbeitendeBelegt: [<null|boolean>null],
-        ausbildungenMitarbeitendeBelegtBemerkung: [<null|string>null],
-        // Bemerkungen
-        bemerkungen: [<null|string>null],
-        bemerkungStarkeVeraenderung: [<null|string>null],
-        // calculated values
-        lastenausgleichberechtigteBetreuungsstunden: [this.fb.control({value: <null|number>null, disabled: true})],
-        davonStundenZuNormlohnWenigerAls50ProzentAusgebildeteBerechnet: [{value: <null|number>null, disabled: true}],
-        davonStundenZuNormlohnMehrAls50ProzentAusgebildeteBerechnet: [{value: <null|number>null, disabled: true}],
-        normlohnkostenBetreuungBerechnet: [{value: <null|number>null, disabled: true}],
-        lastenausgleichsberechtigerBetrag: [{value: <null|number>null, disabled: true}],
-        lastenausgleichsberechtigerBetragRO: [{value: <null|number>null, disabled: true}],
-        einnahmenElterngebuehrenRO: [{value: <null|number>null, disabled: true}],
-        kostenbeitragGemeinde: [{value: <null|number>null, disabled: true}],
-        kostenueberschussGemeinde: [{value: <null|number>null, disabled: true}],
-        erwarteterKostenbeitragGemeinde: [{value: <null|number>null, disabled: true}],
-        schlusszahlung: [{value: <null|number>null, disabled: true}]
-    });
+    public angabenForm = this.createForm();
     public lATSAngabenGemeindeContainer: TSLastenausgleichTagesschuleAngabenGemeindeContainer;
     public formularInitForm: FormGroup<{alleAngabenInKibonErfasst: FormControl<boolean>}>;
     private subscription: Subscription;
@@ -144,9 +80,9 @@ export class GemeindeAngabenComponent implements OnInit, OnDestroy {
     public lohnnormkostenSettingMoreThanFifty$: Subject<TSEinstellung> = new ReplaySubject<TSEinstellung>(1);
     public lohnnormkostenSettingLessThanFifty$: Subject<TSEinstellung> = new ReplaySubject<TSEinstellung>(1);
 
-    public saveVisible: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
-    public abschliessenVisible: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
-    public falscheAngabenVisible: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+    public saveVisible$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+    public abschliessenVisible$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+    public falscheAngabenVisible$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
     public controllingCalculator: TSControllingCalculator;
     public previousAntrag: TSLastenausgleichTagesschuleAngabenGemeindeContainer;
@@ -182,7 +118,6 @@ export class GemeindeAngabenComponent implements OnInit, OnDestroy {
             if (this.lATSAngabenGemeindeContainer.alleAngabenInKibonErfasst !== null) {
                 const gemeindeAngaben = container.getAngabenToWorkWith();
                 this.setupForm(gemeindeAngaben);
-                this.setupCalculcations(gemeindeAngaben);
             }
             this.initLATSGemeindeInitializationForm(container, principal);
             this.setupPermissions(container, principal);
@@ -230,20 +165,18 @@ export class GemeindeAngabenComponent implements OnInit, OnDestroy {
                 ]
             });
         }
-        if (principal.hasOneOfRoles(TSRoleUtil.getGemeindeOrBGOrTSRoles().concat(TSRole.SUPER_ADMIN))
-            && container.isInBearbeitungGemeinde() && container.angabenDeklaration.isInBearbeitung()) {
-            this.formularInitForm.enable();
-        } else {
+        if (!principal.hasOneOfRoles(TSRoleUtil.getGemeindeOrBGOrTSRoles().concat(TSRole.SUPER_ADMIN))
+            || !container.isInBearbeitungGemeinde() || !container.getAngabenToWorkWith().isInBearbeitung()) {
             this.formularInitForm.disable();
         }
     }
 
-    private setupForm(initialGemeindeAngaben: TSLastenausgleichTagesschuleAngabenGemeinde): void {
-        this.angabenForm.patchValue(initialGemeindeAngaben);
+    private setupForm(gemeindeAngaben: TSLastenausgleichTagesschuleAngabenGemeinde): void {
+        this.angabenForm = this.createForm();
+        this.angabenForm.patchValue(gemeindeAngaben);
+        this.setupCalculcations(gemeindeAngaben);
 
-        if (this.lATSAngabenGemeindeContainer.isGemeindeFormularInBearbeitungForRole(this.authServiceRS.getPrincipalRole())) {
-            this.angabenForm.enable();
-        } else {
+        if (!this.lATSAngabenGemeindeContainer.isGemeindeFormularInBearbeitungForRole(this.authServiceRS.getPrincipalRole())) {
             this.angabenForm.disable();
         }
     }
@@ -385,7 +318,7 @@ export class GemeindeAngabenComponent implements OnInit, OnDestroy {
     }
 
     private plausibilisierungAddition(): ValidatorFn {
-        return control => this.angabenForm.value.lastenausgleichberechtigteBetreuungsstunden ===
+        return control => this.angabenForm.controls.lastenausgleichberechtigteBetreuungsstunden.value ===
             MathUtil.addFloatPrecisionSafe(
                 this.angabenForm.value.davonStundenZuNormlohnWenigerAls50ProzentAusgebildete,
                 this.angabenForm.value.davonStundenZuNormlohnMehrAls50ProzentAusgebildete
@@ -444,9 +377,10 @@ export class GemeindeAngabenComponent implements OnInit, OnDestroy {
                 )
             ]
         ).subscribe(formValues => {
-            this.angabenForm.controls.lastenausgleichberechtigteBetreuungsstunden.setValue(
-                    MathUtil.addArrayFloatPrecisionSafe(formValues[0] || 0,
-                        [formValues[1] || 0, formValues[2] || 0]),
+            const value: number = MathUtil.addArrayFloatPrecisionSafe(formValues[0] || 0,
+                [formValues[1] || 0, formValues[2] || 0]);
+            this.angabenForm.controls.lastenausgleichberechtigteBetreuungsstunden.patchValue(
+                    value,
                 );
             this.angabenForm.controls.davonStundenZuNormlohnWenigerAls50ProzentAusgebildete.updateValueAndValidity();
             this.angabenForm.controls.davonStundenZuNormlohnMehrAls50ProzentAusgebildete.updateValueAndValidity();
@@ -871,46 +805,44 @@ export class GemeindeAngabenComponent implements OnInit, OnDestroy {
         principal: TSBenutzer
     ): void {
         if (container.isAtLeastGeprueft()) {
-            this.saveVisible.next(false);
-            this.abschliessenVisible.next(false);
-            this.falscheAngabenVisible.next(false);
+            this.saveVisible$.next(false);
+            this.abschliessenVisible$.next(false);
+            this.falscheAngabenVisible$.next(false);
             return;
         }
         if (principal.hasRole(TSRole.SUPER_ADMIN)) {
-            const angaben = container.isInBearbeitungGemeinde() ?
-                container.angabenDeklaration :
-                container.angabenKorrektur;
+            const angaben = container.getAngabenToWorkWith();
             if (angaben.isInBearbeitung()) {
-                this.saveVisible.next(true);
-                this.abschliessenVisible.next(container.allAngabenInstitutionContainersGeprueft());
-                this.falscheAngabenVisible.next(false);
+                this.saveVisible$.next(true);
+                this.abschliessenVisible$.next(container.allAngabenInstitutionContainersGeprueft());
+                this.falscheAngabenVisible$.next(false);
             } else {
-                this.saveVisible.next(false);
-                this.abschliessenVisible.next(false);
-                this.falscheAngabenVisible.next(true);
+                this.saveVisible$.next(false);
+                this.abschliessenVisible$.next(false);
+                this.falscheAngabenVisible$.next(true);
             }
         }
         if (principal.hasOneOfRoles(TSRoleUtil.getMandantOnlyRoles())) {
             if (container.isInBearbeitungGemeinde()) {
-                this.saveVisible.next(false);
-                this.abschliessenVisible.next(false);
-                this.falscheAngabenVisible.next(false);
+                this.saveVisible$.next(false);
+                this.abschliessenVisible$.next(false);
+                this.falscheAngabenVisible$.next(false);
             } else {
-                this.saveVisible.next(container.angabenKorrektur.isInBearbeitung());
-                this.abschliessenVisible.next(container.angabenKorrektur.isInBearbeitung());
-                this.falscheAngabenVisible.next(!container.angabenKorrektur.isInBearbeitung());
+                this.saveVisible$.next(container.angabenKorrektur.isInBearbeitung());
+                this.abschliessenVisible$.next(container.angabenKorrektur.isInBearbeitung());
+                this.falscheAngabenVisible$.next(!container.angabenKorrektur.isInBearbeitung());
             }
         }
         if (principal.hasOneOfRoles(TSRoleUtil.getGemeindeOrBGOrTSRoles())) {
             if (container.isInBearbeitungGemeinde()) {
-                this.saveVisible.next(container.angabenDeklaration.isInBearbeitung());
-                this.abschliessenVisible.next
-                (container.angabenDeklaration.isInBearbeitung() && container.allAngabenInstitutionContainersGeprueft());
-                this.falscheAngabenVisible.next(!container.angabenDeklaration.isInBearbeitung());
+                this.saveVisible$.next(container.getAngabenToWorkWith().isInBearbeitung());
+                this.abschliessenVisible$.next
+                (container.getAngabenToWorkWith().isInBearbeitung() && container.allAngabenInstitutionContainersGeprueft());
+                this.falscheAngabenVisible$.next(!container.getAngabenToWorkWith().isInBearbeitung());
             } else {
-                this.saveVisible.next(false);
-                this.abschliessenVisible.next(false);
-                this.falscheAngabenVisible.next(false);
+                this.saveVisible$.next(false);
+                this.abschliessenVisible$.next(false);
+                this.falscheAngabenVisible$.next(false);
             }
         }
     }
@@ -960,5 +892,82 @@ export class GemeindeAngabenComponent implements OnInit, OnDestroy {
 
     public initFormAnswered(): boolean {
         return this.lATSAngabenGemeindeContainer.status !== TSLastenausgleichTagesschuleAngabenGemeindeStatus.NEU;
+    }
+
+    private createForm() {
+        return this.fb.group({
+            status: [<null|string>null],
+            version: [<null | number>null],
+            // A
+            alleFaelleInKibon: [<null | boolean>null],
+            angebotVerfuegbarFuerAlleSchulstufen: [<null | boolean>null],
+            begruendungWennAngebotNichtVerfuegbarFuerAlleSchulstufen: [],
+            bedarfBeiElternAbgeklaert: [<null | boolean>null],
+            angebotFuerFerienbetreuungVorhanden: [<null | boolean>null],
+            // B
+            geleisteteBetreuungsstundenOhneBesondereBeduerfnisse:
+                [<null | number>null, numberValidator(ValidationType.POSITIVE_INTEGER)],
+            geleisteteBetreuungsstundenBesondereBeduerfnisse: [
+                <null | number>null,
+                numberValidator(ValidationType.POSITIVE_INTEGER),
+            ],
+            geleisteteBetreuungsstundenBesondereVolksschulangebot:
+                [<null | number>null, numberValidator(ValidationType.POSITIVE_INTEGER)],
+            davonStundenZuNormlohnMehrAls50ProzentAusgebildete: [
+                <null | number>null,
+                numberValidator(ValidationType.POSITIVE_INTEGER),
+            ],
+            davonStundenZuNormlohnWenigerAls50ProzentAusgebildete:
+                [<null | number>null, numberValidator(ValidationType.POSITIVE_INTEGER)],
+            einnahmenElterngebuehren:
+                [<null | number>null, [this.numberValidator(), Validators.pattern(CONSTANTS.PATTERN_TWO_DECIMALS)]],
+            einnahmenElterngebuehrenVolksschulangebot:
+                [<null | number>null, [this.numberValidator(), Validators.pattern(CONSTANTS.PATTERN_TWO_DECIMALS)]],
+            ersteRateAusbezahlt: [<null | number>null, numberValidator(ValidationType.POSITIVE_INTEGER)],
+            tagesschuleTeilweiseGeschlossen: [<null | boolean>null],
+            rueckerstattungenElterngebuehrenSchliessung:
+                [<null | number>null, [this.numberValidator(), Validators.pattern(CONSTANTS.PATTERN_TWO_DECIMALS)]],
+            // C
+            gesamtKostenTagesschule:
+                [<null | number>null, [this.numberValidator(), Validators.pattern(CONSTANTS.PATTERN_TWO_DECIMALS)]],
+            einnnahmenVerpflegung: [
+                <null | number>null,
+                [this.numberValidator(), Validators.pattern(CONSTANTS.PATTERN_TWO_DECIMALS)],
+            ],
+            einnahmenSubventionenDritter:
+                [<null | number>null, [this.numberValidator(), Validators.pattern(CONSTANTS.PATTERN_TWO_DECIMALS)]],
+            ueberschussErzielt: [<null | boolean>null],
+            ueberschussVerwendung: [<null | string>null],
+            // D
+            bemerkungenWeitereKostenUndErtraege: [<null|string>null],
+            // E
+            betreuungsstundenDokumentiertUndUeberprueft: [<null|boolean>null],
+            betreuungsstundenDokumentiertUndUeberprueftBemerkung: [<null|string>null],
+            elterngebuehrenGemaessVerordnungBerechnet: [<null|boolean>null],
+            elterngebuehrenGemaessVerordnungBerechnetBemerkung: [<null|string>null],
+            einkommenElternBelegt: [<null|boolean>null],
+            einkommenElternBelegtBemerkung: [<null|string>null],
+            maximalTarif: [<null|boolean>null],
+            maximalTarifBemerkung: [<null|string>null],
+            mindestens50ProzentBetreuungszeitDurchAusgebildetesPersonal: [<null|boolean>null],
+            mindestens50ProzentBetreuungszeitDurchAusgebildetesPersonalBemerkung: [<null|string>null],
+            ausbildungenMitarbeitendeBelegt: [<null|boolean>null],
+            ausbildungenMitarbeitendeBelegtBemerkung: [<null|string>null],
+            // Bemerkungen
+            bemerkungen: [<null|string>null],
+            bemerkungStarkeVeraenderung: [<null|string>null],
+            // calculated values
+            lastenausgleichberechtigteBetreuungsstunden: [{value: <null|number>null, disabled: true}],
+            davonStundenZuNormlohnWenigerAls50ProzentAusgebildeteBerechnet: [{value: <null|number>null, disabled: true}],
+            davonStundenZuNormlohnMehrAls50ProzentAusgebildeteBerechnet: [{value: <null|number>null, disabled: true}],
+            normlohnkostenBetreuungBerechnet: [{value: <null|number>null, disabled: true}],
+            lastenausgleichsberechtigerBetrag: [{value: <null|number>null, disabled: true}],
+            lastenausgleichsberechtigerBetragRO: [{value: <null|number>null, disabled: true}],
+            einnahmenElterngebuehrenRO: [{value: <null|number>null, disabled: true}],
+            kostenbeitragGemeinde: [{value: <null|number>null, disabled: true}],
+            kostenueberschussGemeinde: [{value: <null|number>null, disabled: true}],
+            erwarteterKostenbeitragGemeinde: [{value: <null|number>null, disabled: true}],
+            schlusszahlung: [{value: <null|number>null, disabled: true}]
+        });
     }
 }

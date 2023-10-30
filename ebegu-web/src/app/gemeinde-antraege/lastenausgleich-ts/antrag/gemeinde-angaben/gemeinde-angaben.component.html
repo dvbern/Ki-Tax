@@ -196,6 +196,7 @@
                     </label>
                     <mat-form-field floatLabel="always">
                         <input matInput
+                               type="number"
                                formControlName="geleisteteBetreuungsstundenOhneBesondereBeduerfnisse"
                                class="form-control dv-input"/>
                         <mat-error
@@ -225,6 +226,7 @@
 
                     <mat-form-field floatLabel="always">
                         <input matInput
+                               type="number"
                                formControlName="geleisteteBetreuungsstundenBesondereBeduerfnisse"
                                class="form-control dv-input"/>
                         <mat-error
@@ -254,6 +256,7 @@
 
                     <mat-form-field floatLabel="always">
                         <input matInput
+                               type="number"
                                formControlName="geleisteteBetreuungsstundenBesondereVolksschulangebot"
                                class="form-control dv-input"/>
                         <mat-error
@@ -321,6 +324,7 @@
                     </label>
                     <mat-form-field floatLabel="always">
                         <input matInput
+                               type="number"
                                formControlName="davonStundenZuNormlohnMehrAls50ProzentAusgebildete"
                                class="form-control dv-input"/>
                         <mat-error
@@ -340,6 +344,7 @@
                     </mat-form-field>
                     <mat-form-field floatLabel="always">
                         <input matInput
+                               type="number"
                                formControlName="davonStundenZuNormlohnMehrAls50ProzentAusgebildeteBerechnet"
                                class="form-control dv-input"/>
                     </mat-form-field>
@@ -352,6 +357,7 @@
                     </label>
                     <mat-form-field floatLabel="always">
                         <input matInput
+                               type="number"
                                formControlName="davonStundenZuNormlohnWenigerAls50ProzentAusgebildete"
                                class="form-control dv-input"/>
                         <mat-error
@@ -395,7 +401,7 @@
                         <dv-tooltip [text]="'LATS_TATSACHLICHE_EINNAHMEN_ELTERNGEBUHREN_INFO' | translate"></dv-tooltip>
                     </label>
                     <mat-form-field floatLabel="always">
-                        <input matInput formControlName="einnahmenElterngebuehren" class="form-control dv-input"/>
+                        <input matInput type="number" formControlName="einnahmenElterngebuehren" class="form-control dv-input"/>
                         <mat-error
                             *ngIf="abschliessenValidationActive && angabenForm.controls.einnahmenElterngebuehren.errors?.required"
                             translate>ERROR_REQUIRED
@@ -1165,14 +1171,14 @@
         <div class="actions">
             <button class="dv-btn cancel-button uppercase"
                     type="button"
-                    *ngIf="falscheAngabenVisible | async"
+                    *ngIf="falscheAngabenVisible$ | async"
                     (click)="onFalscheAngaben()">
                 <span translate>FERIENBETREUUNG_ANGABEN_KORRIGIEREN</span>
             </button>
             <dv-loading-button
                 class="uppercase"
                 type="button"
-                *ngIf="saveVisible | async"
+                *ngIf="saveVisible$ | async"
                 [ngClass]="{'secondary': !formularNotEditable()}"
                 [buttonDisabled]="formularNotEditable()"
                 (buttonClick)="onAngabenFormSubmit()">
@@ -1181,7 +1187,7 @@
             <dv-loading-button
                 class="uppercase"
                 type="button"
-                *ngIf="abschliessenVisible | async"
+                *ngIf="abschliessenVisible$ | async"
                 [buttonDisabled]="formularNotEditable()"
                 (buttonClick)="onAbschliessen()">
                 <span *ngIf="lATSAngabenGemeindeContainer?.isInBearbeitungGemeinde()" translate>ABSCHLIESSEN</span>
