@@ -17,10 +17,6 @@
 
 package ch.dvbern.ebegu.rechner;
 
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.time.Month;
-
 import ch.dvbern.ebegu.entities.BGCalculationResult;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.EinschulungTyp;
@@ -28,9 +24,14 @@ import ch.dvbern.ebegu.enums.PensumUnits;
 import ch.dvbern.ebegu.test.TestDataUtil;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.EinschulungstypBgStundenFaktorVisitor;
+import ch.dvbern.ebegu.util.TestUtils;
 import ch.dvbern.ebegu.util.mandant.MandantIdentifier;
 import org.junit.Assert;
 import org.junit.Test;
+
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.Month;
 
 public class AppenzellRechnerTest extends AbstractBGRechnerTest {
 
@@ -269,7 +270,7 @@ public class AppenzellRechnerTest extends AbstractBGRechnerTest {
 	}
 
 	private BGCalculationResult calculateResult(VerfuegungZeitabschnitt zeitabschnitt) {
-		APPENZELL_RECHNER.calculate(zeitabschnitt, getRechnerParamterAppenzell());
+		APPENZELL_RECHNER.calculate(zeitabschnitt, TestUtils.getRechnerParamterAppenzell());
 		return zeitabschnitt.getRelevantBgCalculationResult();
 	}
 

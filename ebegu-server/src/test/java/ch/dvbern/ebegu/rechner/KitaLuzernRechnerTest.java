@@ -17,22 +17,23 @@
 
 package ch.dvbern.ebegu.rechner;
 
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.time.Month;
-import java.util.Collections;
-
 import ch.dvbern.ebegu.entities.BGCalculationResult;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.PensumUnits;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.MathUtil;
+import ch.dvbern.ebegu.util.TestUtils;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.Month;
+import java.util.Collections;
+
 public class KitaLuzernRechnerTest extends AbstractLuzernRechnerTest {
 
-	private final BGRechnerParameterDTO defaultParameterDTO = getRechnerParameterLuzern();
+	private final BGRechnerParameterDTO defaultParameterDTO = TestUtils.getRechnerParameterLuzern();
 
 
 	@Test
@@ -194,7 +195,7 @@ public class KitaLuzernRechnerTest extends AbstractLuzernRechnerTest {
 		testValues.betreuungsPensum = MathUtil.DEFAULT.fromNullSafe(80);
 		testValues.anspruchsPensum = 80;
 		testValues.einkommen = MathUtil.DEFAULT
-			.fromNullSafe(getRechnerParameterLuzern().getMaxMassgebendesEinkommen())
+			.fromNullSafe(TestUtils.getRechnerParameterLuzern().getMaxMassgebendesEinkommen())
 			.add(BigDecimal.valueOf(1000));
 		testValues.isBaby = true;
 

@@ -15,6 +15,22 @@
 
 package ch.dvbern.ebegu.rechner;
 
+import ch.dvbern.ebegu.entities.*;
+import ch.dvbern.ebegu.enums.EinschulungTyp;
+import ch.dvbern.ebegu.enums.EinstellungKey;
+import ch.dvbern.ebegu.rules.BetreuungsgutscheinConfigurator;
+import ch.dvbern.ebegu.rules.BetreuungsgutscheinEvaluator;
+import ch.dvbern.ebegu.rules.EbeguRuleTestsHelper;
+import ch.dvbern.ebegu.rules.Rule;
+import ch.dvbern.ebegu.test.TestDataUtil;
+import ch.dvbern.ebegu.testfaelle.*;
+import ch.dvbern.ebegu.types.DateRange;
+import ch.dvbern.ebegu.util.MathUtil;
+import ch.dvbern.ebegu.util.RuleParameterUtil;
+import ch.dvbern.ebegu.util.TestUtils;
+import org.junit.Before;
+
+import javax.annotation.Nonnull;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.Month;
@@ -23,55 +39,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.annotation.Nonnull;
-
-import ch.dvbern.ebegu.entities.AbstractPersonEntity;
-import ch.dvbern.ebegu.entities.BGCalculationResult;
-import ch.dvbern.ebegu.entities.Betreuung;
-import ch.dvbern.ebegu.entities.Einstellung;
-import ch.dvbern.ebegu.entities.ErweiterteBetreuung;
-import ch.dvbern.ebegu.entities.ErweiterteBetreuungContainer;
-import ch.dvbern.ebegu.entities.Gemeinde;
-import ch.dvbern.ebegu.entities.Gesuch;
-import ch.dvbern.ebegu.entities.Gesuchsperiode;
-import ch.dvbern.ebegu.entities.Kind;
-import ch.dvbern.ebegu.entities.KindContainer;
-import ch.dvbern.ebegu.entities.Verfuegung;
-import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
-import ch.dvbern.ebegu.enums.EinschulungTyp;
-import ch.dvbern.ebegu.enums.EinstellungKey;
-import ch.dvbern.ebegu.rules.BetreuungsgutscheinConfigurator;
-import ch.dvbern.ebegu.rules.BetreuungsgutscheinEvaluator;
-import ch.dvbern.ebegu.rules.EbeguRuleTestsHelper;
-import ch.dvbern.ebegu.rules.Rule;
-import ch.dvbern.ebegu.test.TestDataUtil;
-import ch.dvbern.ebegu.testfaelle.Testfall01_WaeltiDagmar;
-import ch.dvbern.ebegu.testfaelle.Testfall02_FeutzYvonne;
-import ch.dvbern.ebegu.testfaelle.Testfall03_PerreiraMarcia;
-import ch.dvbern.ebegu.testfaelle.Testfall04_WaltherLaura;
-import ch.dvbern.ebegu.testfaelle.Testfall05_LuethiMeret;
-import ch.dvbern.ebegu.testfaelle.Testfall06_BeckerNora;
-import ch.dvbern.ebegu.testfaelle.Testfall_ASIV_01;
-import ch.dvbern.ebegu.testfaelle.Testfall_ASIV_02;
-import ch.dvbern.ebegu.testfaelle.Testfall_ASIV_03;
-import ch.dvbern.ebegu.testfaelle.Testfall_ASIV_04;
-import ch.dvbern.ebegu.testfaelle.Testfall_ASIV_05;
-import ch.dvbern.ebegu.testfaelle.Testfall_ASIV_06;
-import ch.dvbern.ebegu.testfaelle.Testfall_ASIV_07;
-import ch.dvbern.ebegu.testfaelle.Testfall_ASIV_08;
-import ch.dvbern.ebegu.testfaelle.Testfall_ASIV_09;
-import ch.dvbern.ebegu.testfaelle.Testfall_ASIV_10;
-import ch.dvbern.ebegu.types.DateRange;
-import ch.dvbern.ebegu.util.MathUtil;
-import ch.dvbern.ebegu.util.RuleParameterUtil;
-import ch.dvbern.ebegu.util.TestUtils;
-import org.junit.Before;
-
 import static ch.dvbern.ebegu.testfaelle.AbstractTestfall.ID_INSTITUTION_STAMMDATEN_WEISSENSTEIN_KITA;
 import static ch.dvbern.ebegu.util.Constants.ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 
 /**
  * Superklasse für BG-Rechner-Tests
@@ -190,66 +160,11 @@ public abstract class AbstractBGRechnerTest {
 		assertEquals(MATH.from(massgebendesEinkommen), MATH.from(abschnitt.getMassgebendesEinkommen()));
 	}
 
-	private static BGRechnerParameterDTO createParameterDTO() {
-		BGRechnerParameterDTO dto = new BGRechnerParameterDTO();
-		dto.setMaxVerguenstigungVorschuleBabyProTg(MathUtil.GANZZAHL.from(150));
-		dto.setMaxVerguenstigungVorschuleKindProTg(MathUtil.GANZZAHL.from(100));
-		dto.setMaxVerguenstigungKindergartenKindProTg(MathUtil.GANZZAHL.from(75));
-		dto.setMaxVerguenstigungVorschuleBabyProStd(MathUtil.DEFAULT.from(12.75));
-		dto.setMaxVerguenstigungVorschuleKindProStd(MathUtil.DEFAULT.from(8.50));
-		dto.setMaxVerguenstigungKindergartenKindProStd(MathUtil.DEFAULT.from(8.50));
-		dto.setMaxVerguenstigungPrimarschuleKindProStd(MathUtil.DEFAULT.from(8.50));
-		dto.setMaxMassgebendesEinkommen(MathUtil.GANZZAHL.from(160000));
-		dto.setMinMassgebendesEinkommen(MathUtil.GANZZAHL.from(43000));
-		dto.setOeffnungstageKita(MathUtil.GANZZAHL.from(240));
-		dto.setOeffnungstageTFO(MathUtil.GANZZAHL.from(240));
-		dto.setOeffnungsstundenTFO(MathUtil.GANZZAHL.from(11));
-		dto.setZuschlagBehinderungProTg(MathUtil.GANZZAHL.from(50));
-		dto.setZuschlagBehinderungProStd(MathUtil.DEFAULT.from(4.25));
-		dto.setMinVerguenstigungProTg(MathUtil.GANZZAHL.from(7));
-		dto.setMinVerguenstigungProStd(MathUtil.DEFAULT.from(0.70));
-		dto.setMaxTarifTagesschuleMitPaedagogischerBetreuung(MathUtil.DEFAULT.from(12.24));
-		dto.setMaxTarifTagesschuleOhnePaedagogischerBetreuung(MathUtil.DEFAULT.from(6.11));
-		dto.setMinTarifTagesschule(MathUtil.DEFAULT.from(0.78));
-		dto.getGemeindeParameter().setGemeindeZusaetzlicherGutscheinEnabled(false);
-		dto.getMahlzeitenverguenstigungParameter().setEnabled(false);
-		dto.getGemeindeParameter().setGemeindePauschalbetragEnabled(false);
-		return dto;
-	}
-
 	/**
 	 * Stellt alle für die Berechnung benötigten Parameter zusammen
 	 */
 	public static BGRechnerParameterDTO getParameter() {
 		return TestUtils.getParameter();
-	}
-
-	/**
-	 * Stellt alle für die Berechnung benötigten Parameter für Luzern zusammen
-	 */
-	public static BGRechnerParameterDTO getRechnerParameterLuzern() {
-		BGRechnerParameterDTO defaultParameter = getParameter();
-
-		//SET Parameters for LU
-		defaultParameter.setMinVerguenstigungProTg(BigDecimal.valueOf(15));
-		defaultParameter.setMinMassgebendesEinkommen(BigDecimal.valueOf(48000));
-		defaultParameter.setMaxMassgebendesEinkommen(BigDecimal.valueOf(125000));
-		defaultParameter.setMinVerguenstigungProStd(BigDecimal.valueOf(0.7));
-		defaultParameter.setOeffnungstageKita(BigDecimal.valueOf(246));
-		defaultParameter.setOeffnungstageTFO(BigDecimal.valueOf(246));
-		defaultParameter.setOeffnungsstundenTFO(BigDecimal.valueOf(11));
-		return defaultParameter;
-	}
-
-	public static BGRechnerParameterDTO getRechnerParamterAppenzell() {
-		BGRechnerParameterDTO defaultParameter = getParameter();
-
-		//SET Parameters for AR
-		defaultParameter.setMaxVerguenstigungVorschuleBabyProStd(BigDecimal.valueOf(13.50));
-		defaultParameter.setMaxVerguenstigungVorschuleKindProStd(BigDecimal.valueOf(11.50));
-		defaultParameter.setOeffnungstageKita(BigDecimal.valueOf(240));
-
-		return defaultParameter;
 	}
 
 	/**
