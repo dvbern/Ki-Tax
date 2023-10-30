@@ -25,6 +25,8 @@ import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.GesuchstellerContainer;
 import ch.dvbern.ebegu.rechner.BGRechnerParameterDTO;
 
+import java.math.BigDecimal;
+
 public final class TestUtils {
 
 	/**
@@ -79,5 +81,37 @@ public final class TestUtils {
 		ekvContainer.setEkvJABasisJahrPlus2(ekv2);
 
 		gesuchsteller1.setEinkommensverschlechterungContainer(ekvContainer);
+	}
+
+	/**
+	 * Stellt alle für die Berechnung benötigten Parameter für Luzern zusammen
+	 */
+	public static BGRechnerParameterDTO getRechnerParameterLuzern() {
+		BGRechnerParameterDTO defaultParameter = getParameter();
+
+		//SET Parameters for LU
+		defaultParameter.setMinVerguenstigungProTg(BigDecimal.valueOf(15));
+		defaultParameter.setMinMassgebendesEinkommen(BigDecimal.valueOf(48000));
+		defaultParameter.setMaxMassgebendesEinkommen(BigDecimal.valueOf(125000));
+		defaultParameter.setMinVerguenstigungProStd(BigDecimal.valueOf(0.7));
+		defaultParameter.setOeffnungstageKita(BigDecimal.valueOf(246));
+		defaultParameter.setOeffnungstageTFO(BigDecimal.valueOf(246));
+		defaultParameter.setOeffnungsstundenTFO(BigDecimal.valueOf(11));
+		defaultParameter.setMaxVerguenstigungVorschuleKindProTg(BigDecimal.valueOf(130));
+		defaultParameter.setMaxVerguenstigungVorschuleBabyProTg(BigDecimal.valueOf(160));
+		defaultParameter.setMaxVerguenstigungVorschuleBabyProStd(BigDecimal.valueOf(16.3));
+		defaultParameter.setMaxVerguenstigungVorschuleKindProStd(BigDecimal.valueOf(12.4));
+		return defaultParameter;
+	}
+
+	public static BGRechnerParameterDTO getRechnerParamterAppenzell() {
+		BGRechnerParameterDTO defaultParameter = getParameter();
+
+		//SET Parameters for AR
+		defaultParameter.setMaxVerguenstigungVorschuleBabyProStd(BigDecimal.valueOf(13.50));
+		defaultParameter.setMaxVerguenstigungVorschuleKindProStd(BigDecimal.valueOf(11.50));
+		defaultParameter.setOeffnungstageKita(BigDecimal.valueOf(240));
+
+		return defaultParameter;
 	}
 }
