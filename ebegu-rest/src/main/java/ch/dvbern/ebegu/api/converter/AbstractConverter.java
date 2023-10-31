@@ -339,6 +339,7 @@ public class AbstractConverter {
 		gemeinde.setFerieninselanmeldungenStartdatum(jaxGemeinde.getFerieninselanmeldungenStartdatum());
 		gemeinde.setGueltigBis(jaxGemeinde.getGueltigBis());
 		gemeinde.setAngebotBG(jaxGemeinde.isAngebotBG());
+		gemeinde.setAngebotBGTFO(jaxGemeinde.isAngebotBGTFO());
 		gemeinde.setAngebotTS(jaxGemeinde.isAngebotTS());
 		gemeinde.setAngebotFI(jaxGemeinde.isAngebotFI());
 		gemeinde.setBesondereVolksschule(jaxGemeinde.isBesondereVolksschule());
@@ -359,6 +360,7 @@ public class AbstractConverter {
 		jaxGemeinde.setFerieninselanmeldungenStartdatum(persistedGemeinde.getFerieninselanmeldungenStartdatum());
 		jaxGemeinde.setGueltigBis(persistedGemeinde.getGueltigBis());
 		jaxGemeinde.setAngebotBG(persistedGemeinde.isAngebotBG());
+		jaxGemeinde.setAngebotBGTFO(persistedGemeinde.isAngebotBGTFO());
 		jaxGemeinde.setAngebotTS(persistedGemeinde.isAngebotTS());
 		jaxGemeinde.setAngebotFI(persistedGemeinde.isAngebotFI());
 		jaxGemeinde.setBesondereVolksschule(persistedGemeinde.isBesondereVolksschule());

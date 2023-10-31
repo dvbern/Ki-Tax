@@ -112,6 +112,7 @@ export class AddGemeindeComponent implements OnInit {
         // eslint-disable-next-line
         if (!this.tageschuleEnabledForMandant) {
             this.gemeinde.angebotBG = true;
+            this.gemeinde.angebotBGTFO = true;
             this.gemeinde.angebotTS = false;
             this.gemeinde.angebotFI = false;
         }

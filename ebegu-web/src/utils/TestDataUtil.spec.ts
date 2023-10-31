@@ -227,6 +227,7 @@ export class TestDataUtil {
         gemeinde.tagesschulanmeldungenStartdatum = moment('20200801', 'YYYYMMDD');
         gemeinde.ferieninselanmeldungenStartdatum = moment('20200801', 'YYYYMMDD');
         gemeinde.angebotBG = true;
+        gemeinde.angebotBGTFO = true;
         gemeinde.angebotTS = false;
         gemeinde.angebotFI = false;
         gemeinde.besondereVolksschule = false;
@@ -248,6 +249,7 @@ export class TestDataUtil {
         gemeinde.tagesschulanmeldungenStartdatum = moment('20200801', 'YYYYMMDD');
         gemeinde.ferieninselanmeldungenStartdatum = moment('20200801', 'YYYYMMDD');
         gemeinde.angebotBG = true;
+        gemeinde.angebotBGTFO = true;
         gemeinde.angebotTS = false;
         gemeinde.angebotFI = false;
         gemeinde.besondereVolksschule = false;
@@ -268,6 +270,7 @@ export class TestDataUtil {
         gemeinde.tagesschulanmeldungenStartdatum = moment('20200801', 'YYYYMMDD');
         gemeinde.ferieninselanmeldungenStartdatum = moment('20200801', 'YYYYMMDD');
         gemeinde.angebotBG = true;
+        gemeinde.angebotBGTFO = true;
         gemeinde.angebotTS = false;
         gemeinde.angebotFI = false;
         gemeinde.besondereVolksschule = false;
