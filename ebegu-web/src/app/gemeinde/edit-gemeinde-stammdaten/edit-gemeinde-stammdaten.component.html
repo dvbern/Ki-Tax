@@ -287,7 +287,7 @@
                                                    [errorObject]="bgStartDate.errors">
                                 </dv-error-messages>
                             </div>
-                            <div class="form-group">
+                            <div class="form-group" *ngIf="tfoEnabledForMandant">
                                 <mat-checkbox id="angebotBGTFO" name="angebotBGTFO"
                                               [(ngModel)]="stammdaten.gemeinde.angebotBGTFO">
                                     {{'GEMEINDE_ANGEBOT_BETREUUNGSGUTSCHEINE_TFO'|translate}}</mat-checkbox>
