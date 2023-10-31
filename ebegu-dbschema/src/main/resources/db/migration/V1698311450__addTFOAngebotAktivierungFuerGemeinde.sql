@@ -14,7 +14,10 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-ALTER TABLE gemeinde ADD angebotbgtfo bit;
+ALTER TABLE gemeinde ADD angebotbgtfo bit NOT NULL default false;
 ALTER TABLE gemeinde_aud ADD angebotbgtfo bit;
-UPDATE gemeinde SET angebotbgtfo = true WHERE angebotbg = true;
-ALTER TABLE gemeinde MODIFY angebotbgtfo bit NOT NULL;
+
+UPDATE gemeinde SET angebotbgtfo = true
+        WHERE id in (select id from gemeinde
+                          where mandant_id in
+                                (select application_property.mandant_id from application_property where name = 'ANGEBOT_TFO_ENABLED' and value = 'true'));
