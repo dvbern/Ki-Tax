@@ -34,7 +34,7 @@ export abstract class AbstractFamiliensitutaionView extends AbstractGesuchViewX<
             TSWizardStepName.FAMILIENSITUATION);
         this.initViewModel();
         this.gesuchModelManager.initFamiliensituation();
-        this.model = this.getGesuch().familiensituationContainer.deepCopy();
+        this.model = this.getGesuch().familiensituationContainer.deepCopyTo(new TSFamiliensituationContainer());
     }
 
     private initViewModel(): void {

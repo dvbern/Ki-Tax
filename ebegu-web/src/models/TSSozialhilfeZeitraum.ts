@@ -25,14 +25,14 @@ export class TSSozialhilfeZeitraum extends TSAbstractDateRangedEntity {
         super();
     }
 
-    public deepCopy(): TSSozialhilfeZeitraum {
-        const sozialhilfeZeitraum = new TSSozialhilfeZeitraum();
-        sozialhilfeZeitraum.vorgaengerId = this.vorgaengerId;
+    public deepCopyTo(target: TSSozialhilfeZeitraum): TSSozialhilfeZeitraum {
+        super.deepCopyTo(target);
+        target.vorgaengerId = this.vorgaengerId;
         if (EbeguUtil.isNotNullOrUndefined(this.gueltigkeit)) {
-            sozialhilfeZeitraum.gueltigkeit = new TSDateRange();
-            sozialhilfeZeitraum.gueltigkeit.gueltigAb = this.gueltigkeit.gueltigAb.clone();
-            sozialhilfeZeitraum.gueltigkeit.gueltigBis = this.gueltigkeit.gueltigBis.clone();
+            target.gueltigkeit = new TSDateRange();
+            target.gueltigkeit.gueltigAb = this.gueltigkeit.gueltigAb.clone();
+            target.gueltigkeit.gueltigBis = this.gueltigkeit.gueltigBis.clone();
         }
-        return sozialhilfeZeitraum;
+        return target;
     }
 }
