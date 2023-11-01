@@ -52,8 +52,12 @@ export class TSSozialhilfeZeitraumContainer extends TSAbstractMutableEntity {
 
     public deepCopyTo(target: TSSozialhilfeZeitraumContainer): TSSozialhilfeZeitraumContainer {
         super.deepCopyTo(target);
-        target._sozialhilfeZeitraumGS = this._sozialhilfeZeitraumGS.deepCopyTo(new TSSozialhilfeZeitraum());
-        target._sozialhilfeZeitraumJA = this._sozialhilfeZeitraumJA.deepCopyTo(new TSSozialhilfeZeitraum());
+        if (EbeguUtil.isNotNullOrUndefined(this._sozialhilfeZeitraumGS)) {
+            target._sozialhilfeZeitraumGS = this._sozialhilfeZeitraumGS.deepCopyTo(new TSSozialhilfeZeitraum());
+        }
+        if (EbeguUtil.isNotNullOrUndefined(this._sozialhilfeZeitraumJA)) {
+            target._sozialhilfeZeitraumJA = this._sozialhilfeZeitraumJA.deepCopyTo(new TSSozialhilfeZeitraum());
+        }
         return target;
     }
 }

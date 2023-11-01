@@ -30,8 +30,8 @@ export class TSSozialhilfeZeitraum extends TSAbstractDateRangedEntity {
         target.vorgaengerId = this.vorgaengerId;
         if (EbeguUtil.isNotNullOrUndefined(this.gueltigkeit)) {
             target.gueltigkeit = new TSDateRange();
-            target.gueltigkeit.gueltigAb = this.gueltigkeit.gueltigAb.clone();
-            target.gueltigkeit.gueltigBis = this.gueltigkeit.gueltigBis.clone();
+            target.gueltigkeit.gueltigAb = this.gueltigkeit.gueltigAb?.clone();
+            target.gueltigkeit.gueltigBis = this.gueltigkeit.gueltigBis?.clone();
         }
         return target;
     }
