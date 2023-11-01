@@ -53,6 +53,12 @@ export class TSAdresse extends TSAbstractDateRangedEntity {
         this.gueltigkeit.gueltigBis = toCopy.gueltigkeit?.gueltigBis;
     }
 
+    public deepCopyTo(toCopy: TSAdresse): TSAdresse {
+        super.deepCopyTo(toCopy);
+        this.copy(toCopy);
+        return this;
+    }
+
     public get strasse(): string {
         return this._strasse;
     }

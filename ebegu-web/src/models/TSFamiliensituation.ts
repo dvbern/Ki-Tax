@@ -394,7 +394,7 @@ export class TSFamiliensituation extends TSAbstractMutableEntity {
         target.abweichendeZahlungsadresse = this.abweichendeZahlungsadresse;
         if (EbeguUtil.isNotNullOrUndefined(this.zahlungsadresse)) {
             target.zahlungsadresse = new TSAdresse();
-            target.zahlungsadresse.copy(this.zahlungsadresse);
+            target.zahlungsadresse.deepCopyTo(this.zahlungsadresse);
         }
 
         target.infomaKreditorennummer = this.infomaKreditorennummer;
