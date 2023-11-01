@@ -117,7 +117,7 @@ public class KitaPlusZuschlagCalcRuleTest {
 		einstellungenMap.get(KITAPLUS_ZUSCHLAG_AKTIVIERT).setValue("true");
 
 		List<VerfuegungZeitabschnitt> result = EbeguRuleTestsHelper.calculate(betreuung, einstellungenMap);
-		// 1476 + 32 * 12 = 1860
+		// 1424.1 + 32 * 12 = 1860
 		Assert.assertEquals(result.get(0).getVerguenstigung(), new BigDecimal("1808.10"));
 	}
 
