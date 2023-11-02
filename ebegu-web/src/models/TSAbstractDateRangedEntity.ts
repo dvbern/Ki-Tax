@@ -13,6 +13,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import {EbeguUtil} from '../utils/EbeguUtil';
 import {TSAbstractMutableEntity} from './TSAbstractMutableEntity';
 import {TSDateRange} from './types/TSDateRange';
 
@@ -35,7 +36,9 @@ export class TSAbstractDateRangedEntity extends TSAbstractMutableEntity {
 
     public deepCopyTo(target: TSAbstractDateRangedEntity): TSAbstractDateRangedEntity {
         super.deepCopyTo(target);
-        target.gueltigkeit = new TSDateRange(this.gueltigkeit.gueltigAb.clone(), this.gueltigkeit.gueltigBis.clone());
+        if (EbeguUtil.isNotNullOrUndefined(this.gueltigkeit)) {
+            target.gueltigkeit = new TSDateRange(this.gueltigkeit.gueltigAb?.clone(), this.gueltigkeit.gueltigBis?.clone());
+        }
 
         return target;
     }
