@@ -32,4 +32,11 @@ export class TSAbstractDateRangedEntity extends TSAbstractMutableEntity {
     public set gueltigkeit(value: TSDateRange) {
         this._gueltigkeit = value;
     }
+
+    public deepCopyTo(target: TSAbstractDateRangedEntity): TSAbstractDateRangedEntity {
+        super.deepCopyTo(target);
+        target.gueltigkeit = new TSDateRange(this.gueltigkeit.gueltigAb.clone(), this.gueltigkeit.gueltigBis.clone());
+
+        return target;
+    }
 }
