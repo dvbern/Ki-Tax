@@ -60,21 +60,21 @@ export class TSFamiliensituationContainer extends TSAbstractMutableEntity {
         this._sozialhilfeZeitraumContainers = value;
     }
 
-    public deepCopy(): TSFamiliensituationContainer {
-        const familienSituationContainer = new TSFamiliensituationContainer();
-        familienSituationContainer.familiensituationJA = this._familiensituationJA.deepCopy();
+    public deepCopyTo(target: TSFamiliensituationContainer): TSFamiliensituationContainer {
+        super.deepCopyTo(target);
+        target.familiensituationJA = this._familiensituationJA.deepCopyTo(new TSFamiliensituation());
         if (EbeguUtil.isNotNullOrUndefined(this._familiensituationGS)) {
-            familienSituationContainer.familiensituationGS = this._familiensituationGS.deepCopy();
+            target.familiensituationGS = this._familiensituationGS.deepCopyTo(new TSFamiliensituation());
         }
         if (EbeguUtil.isNotNullOrUndefined(this._familiensituationErstgesuch)) {
-            familienSituationContainer.familiensituationErstgesuch = this._familiensituationErstgesuch.deepCopy();
+            target.familiensituationErstgesuch = this._familiensituationErstgesuch.deepCopyTo(new TSFamiliensituation());
         }
         if (EbeguUtil.isNotNullOrUndefined(this.sozialhilfeZeitraumContainers)) {
-            familienSituationContainer.sozialhilfeZeitraumContainers = this._sozialhilfeZeitraumContainers
+            target.sozialhilfeZeitraumContainers = this._sozialhilfeZeitraumContainers
                 .map(value => (
-                     value.deepCopy()
+                     value.deepCopyTo(new TSSozialhilfeZeitraumContainer())
                 ));
         }
-        return familienSituationContainer;
+        return target;
     }
 }
