@@ -269,16 +269,7 @@ public final class EbeguUtil {
 				.getFinanzielleSituationJA(), gesuch.getFinSitTyp(), gesuch)) {
 				return false;
 			}
-			if (gesuch.getFinSitTyp() == FinanzielleSituationTyp.LUZERN &&
-				requireNonNull(requireNonNull(gesuch.getFamiliensituationContainer()).getFamiliensituationJA()).getFamilienstatus()
-					== EnumFamilienstatus.VERHEIRATET) {
-				// finsit is gemeinsam for verheiratet in Luzern
-				return true;
-			}
-			if (gesuch.getFinSitTyp() == FinanzielleSituationTyp.APPENZELL && Boolean.TRUE.equals(requireNonNull(
-				requireNonNull(gesuch.getFamiliensituationContainer())
-					.getFamiliensituationJA())
-				.getGemeinsameSteuererklaerung())) {
+			if (isMandantSpecificFinSitGemeinsam(gesuch)) {
 				return true;
 			}
 			if (gesuch.getGesuchsteller2() != null &&
@@ -320,10 +311,7 @@ public final class EbeguUtil {
 					.getEkvJABasisJahrPlus1(), gesuch.getFinSitTyp(), gesuch)) {
 					return false;
 				}
-				if (gesuch.getFinSitTyp() == FinanzielleSituationTyp.LUZERN &&
-					requireNonNull(requireNonNull(gesuch.getFamiliensituationContainer()).getFamiliensituationJA()).getFamilienstatus()
-						== EnumFamilienstatus.VERHEIRATET) {
-					// finsit is gemeinsam for verheiratet in Luzern
+				if (isMandantSpecificFinSitGemeinsam(gesuch)) {
 					return true;
 				}
 				if (gesuch.getGesuchsteller2() != null
@@ -360,6 +348,22 @@ public final class EbeguUtil {
 		}
 		// EKV is not activated
 		return true;
+	}
+
+	private static boolean isMandantSpecificFinSitGemeinsam(@Nonnull Gesuch gesuch) {
+		if (gesuch.getFinSitTyp() == FinanzielleSituationTyp.LUZERN &&
+			requireNonNull(requireNonNull(gesuch.getFamiliensituationContainer()).getFamiliensituationJA()).getFamilienstatus()
+				== EnumFamilienstatus.VERHEIRATET) {
+			// finsit is gemeinsam for verheiratet in Luzern
+			return true;
+		}
+		if (gesuch.getFinSitTyp() == FinanzielleSituationTyp.APPENZELL && Boolean.TRUE.equals(requireNonNull(
+			requireNonNull(gesuch.getFamiliensituationContainer())
+				.getFamiliensituationJA())
+			.getGemeinsameSteuererklaerung())) {
+			return true;
+		}
+		return false;
 	}
 
 	private static boolean isFinanzielleSituationVollstaendig(
