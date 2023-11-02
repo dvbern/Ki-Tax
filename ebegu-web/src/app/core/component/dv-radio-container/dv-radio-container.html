@@ -17,6 +17,7 @@
     <md-radio-group class="radio" ng-model="vm.modelToPassOn" ng-blur="vm.onBlur()" ng-change="vm.onChange()"
                     dv-suppress-form-submit-on-enter aria-label="{{vm.ariaLabel}}" ng-required="vm.ngRequired">
         <md-radio-button ng-if="vm.items" ng-repeat="current in vm.items" ng-value="current"
+                         ng-attr-data-test="{{vm.ariaLabel + '.radio-value.' + current}}"
                          aria-label="{{current | translate}}" class="element-{{$index}}"
                          ng-attr-dv-enable-element="{{vm.dvEnableAllowedRoles ? '' : undefined}}"
                          ng-attr-dv-enable-allowed-roles="{{vm.dvEnableAllowedRoles ? vm.dvEnableAllowedRoles : vm.allRoles}}"
@@ -26,6 +27,7 @@
             <span data-translate="{{current}}"></span>
         </md-radio-button>
         <md-radio-button ng-if="!vm.items" ng-value="true"
+                         ng-attr-data-test="{{vm.ariaLabel + '.radio-value.ja'}}"
                          aria-label="{{vm.trueOptionLabel ? vm.trueOptionLabel : 'LABEL_JA'| translate}}"
                          class="element-ja"
                          ng-attr-dv-enable-element="{{vm.dvEnableAllowedRoles ? '' : undefined}}"

@@ -15,7 +15,7 @@
 
 <!-- strasse/hausnummer -->
 <div ng-form="adresseForm">
-    <fieldset class="dv-adresse__fieldset">
+    <fieldset class="dv-adresse__fieldset" ng-attr-data-test="container.{{vm.prefix}}">
 
         <!-- Adresse Organisation-->
         <div class="row" ng-if="vm.organisation">
@@ -25,6 +25,7 @@
                     </label>
                     <input aria-describedby="{{vm.prefix}}-organisation-error" id="{{vm.prefix}}-organisation"
                            type="text" name="organisation"
+                           data-test="organisation"
                            ng-model="vm.getModel().adresseJA.organisation"
                            dv-max-length class="form-control">
                     <dv-bisher gs="vm.getModel().adresseGS.organisation"
@@ -45,6 +46,7 @@
                     </label>
                     <input aria-describedby="{{vm.prefix}}-strasse-error" id="{{vm.prefix}}-strasse" type="text"
                            name="adresseStrasse"
+                           data-test="adresseStrasse"
                            ng-model="vm.getModel().adresseJA.strasse"
                            autocomplete="address-line1"
                            dv-max-length maxlength="60" class="form-control" required>
@@ -62,6 +64,7 @@
                     </label>
                     <input aria-describedby="{{vm.prefix}}-hausnummer-error" id="{{vm.prefix}}-hausnummer" type="text"
                            name="adresseHausnummer" autocomplete="address-line2"
+                           data-test="adresseHausnummer"
                            ng-model="vm.getModel().adresseJA.hausnummer"
                            dv-max-length dv-trim-empty class="form-control">
                     <dv-bisher gs="vm.getModel().adresseGS.hausnummer"
@@ -80,6 +83,7 @@
                     <label class="md-no-float" data-translate="ADRESSE_ZUSATZZEILE" for="{{vm.prefix}}-zusatzzeile">
                     </label>
                     <input aria-describedby="{{vm.prefix}}-zusatzzeile-error" id="{{vm.prefix}}-zusatzzeile"
+                           data-test="adresseZusatzzeile"
                            type="text" name="adresseZusatzzeile"
                            autocomplete="address-line3"
                            ng-model="vm.getModel().adresseJA.zusatzzeile"
@@ -101,6 +105,7 @@
                     </label>
                     <input aria-describedby="{{vm.prefix}}-plz-error" id="{{vm.prefix}}-plz" type="number"
                            name="adressePlz" ng-model="vm.getModel().adresseJA.plzNumber" autocomplete="postal-code"
+                           data-test="adressePlz"
                            dv-max-length class="form-control" required>
                     <dv-bisher gs="vm.getModel().adresseGS.plz"
                                ja="vm.getModel().adresseJA.plz"
@@ -116,6 +121,7 @@
                     </label>
                     <input aria-describedby="{{vm.prefix}}-ort-error" id="{{vm.prefix}}-ort" type="text"
                            name="adresseOrt" ng-model="vm.getModel().adresseJA.ort"
+                           data-test="adresseOrt"
                            autocomplete="address-level3"
                            dv-max-length maxlength="40" class="form-control" required>
                     <dv-bisher gs="vm.getModel().adresseGS.ort"
@@ -135,6 +141,7 @@
                     </label>
                     <input aria-describedby="{{vm.prefix}}-gemeinde-error" id="{{vm.prefix}}-gemeinde" type="text"
                            name="adresseGemeinde" ng-model="vm.getModel().adresseJA.gemeinde"
+                           data-test="adresseGemeinde"
                            autocomplete="address-level2"
                            dv-max-length class="form-control">
                     <dv-bisher gs="vm.getModel().adresseGS.gemeinde"
@@ -154,6 +161,7 @@
                     </label>
                     <div class="dv-select-style">
                         <select aria-describedby="{{vm.prefix}}-land-error" name="adresseLand" id="{{vm.prefix}}-land"
+                                data-test="adresseLand"
                                 ng-model="vm.getModel().adresseJA.land"
                                 ng-options="land.code as land.translationKey | translate for land in vm.laenderList | orderBy: 'name'"
                                 class="form-control"
@@ -179,6 +187,7 @@
                 <div class="checkbox">
                     <md-checkbox ng-model="vm.getModel().adresseJA.nichtInGemeinde"
                                  name="{{vm.prefix}}-nichtInGemeinde"
+                                 ng-attr-data-test="{{vm.prefix}}-nichtInGemeinde"
                                  id="{{vm.prefix}}-nichtInGemeinde"
                                  aria-label="{{'NICHT_IN_GEMEINDE_WOHNHAFT' | translate:'{ gemeinde: &quot;' + vm.gemeinde.name + '&quot;}'}}"
                                  dv-enable-element
@@ -210,6 +219,7 @@
                             </span>
                         </label>
                         <dv-datepicker input-id="{{vm.prefix}}-gueltigAb" input-name="gueltigAb" name="gueltigAb"
+                                       data-test="gueltigAb"
                                        ng-model="vm.getModel().adresseJA.gueltigkeit.gueltigAb"
                                        class="input-element" ng-required="true"
                                        ng-attr-placeholder="{{'DATE_PLACEHOLDER' | translate}}">
@@ -231,6 +241,7 @@
                     <label class="md-no-float" data-translate="ADRESSE_GUELTIGBIS" for="{{vm.prefix}}-gueltigBis">
                     </label>
                     <dv-datepicker input-id="{{vm.prefix}}-gueltigBis" input-name="gueltigBis" name="gueltigBis"
+                                   data-test="gueltigBis"
                                    ng-model="vm.getModel().adresseJA.gueltigkeit.gueltigBis" ng-required="true">
                     </dv-datepicker>
                     <dv-bisher gs="vm.getModel().adresseGS.gueltigkeit.gueltigBis"

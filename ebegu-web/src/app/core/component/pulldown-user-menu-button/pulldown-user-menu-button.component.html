@@ -18,6 +18,7 @@
 <button *dvNgShowElement="true; roles: allowedRoles || allRoles"
         [uiSrefActive]="'active'"
         [uiSref]="uiSRef"
+        [attr.data-test]="'action-' + (uiSRef ?? 'none')"
         (click)="buttonClick ? buttonClick.emit($event) : $event.preventDefault()" href="">
     <a [href]="href">
         <span><ng-content></ng-content></span>
