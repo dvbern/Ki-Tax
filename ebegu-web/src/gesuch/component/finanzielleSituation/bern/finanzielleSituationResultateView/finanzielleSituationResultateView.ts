@@ -28,7 +28,7 @@ import {TSFinanzielleSituationContainer} from '../../../../../models/TSFinanziel
 import {TSFinanzModel} from '../../../../../models/TSFinanzModel';
 import {EbeguUtil} from '../../../../../utils/EbeguUtil';
 import {
-    FinanzielleSituationAufteilungDialogController,
+    FinanzielleSituationAufteilungDialogController
 } from '../../../../dialog/FinanzielleSituationAufteilungDialogController';
 import {BerechnungsManager} from '../../../../service/berechnungsManager';
 import {GesuchModelManager} from '../../../../service/gesuchModelManager';
@@ -61,7 +61,7 @@ export class FinanzielleSituationResultateViewController extends AbstractGesuchV
         '$timeout',
         'DvDialog',
         'GesuchRS',
-        'DemoFeatureRS',
+        'DemoFeatureRS'
     ];
 
     public constructor(
@@ -73,7 +73,7 @@ export class FinanzielleSituationResultateViewController extends AbstractGesuchV
         $timeout: ITimeoutService,
         private readonly dvDialog: DvDialog,
         private readonly gesuchRS: GesuchRS,
-        private readonly demoFeatureRS: DemoFeatureRS,
+        private readonly demoFeatureRS: DemoFeatureRS
     ) {
         super(gesuchModelManager,
             berechnungsManager,
@@ -174,21 +174,17 @@ export class FinanzielleSituationResultateViewController extends AbstractGesuchV
     public hasGS1SteuerDatenErfolgreichAbgefragt(): boolean {
         return EbeguUtil.isNotNullAndTrue(this.getFinanzielleSituationGS1().finanzielleSituationJA.steuerdatenZugriff) &&
             (isSteuerdatenAnfrageStatusErfolgreich(
-                    this.getFinanzielleSituationGS1().finanzielleSituationJA.steuerdatenAbfrageStatus) ||
-                isSteuerdatenAnfrageStatusErfolgreich(
-                    this.getFinanzielleSituationGS1().finanzielleSituationGS?.steuerdatenAbfrageStatus) ||
-                (EbeguUtil.isNullOrUndefined(this.getFinanzielleSituationGS1().finanzielleSituationGS)
-                    && EbeguUtil.isNotNullOrUndefined(this.getFinanzielleSituationGS1().finanzielleSituationJA.steuerdatenAbfrageStatus)));
+                this.getFinanzielleSituationGS1().finanzielleSituationJA.steuerdatenAbfrageStatus) ||
+            isSteuerdatenAnfrageStatusErfolgreich(
+                this.getFinanzielleSituationGS1().finanzielleSituationGS?.steuerdatenAbfrageStatus));
     }
 
     public hasGS2SteuerDatenErfolgreichAbgefragt(): boolean {
         return EbeguUtil.isNotNullAndTrue(this.getFinanzielleSituationGS2().finanzielleSituationJA.steuerdatenZugriff) &&
             (isSteuerdatenAnfrageStatusErfolgreich(
-                    this.getFinanzielleSituationGS2().finanzielleSituationJA.steuerdatenAbfrageStatus) ||
+                this.getFinanzielleSituationGS2().finanzielleSituationJA.steuerdatenAbfrageStatus)||
                 isSteuerdatenAnfrageStatusErfolgreich(
-                    this.getFinanzielleSituationGS2().finanzielleSituationGS?.steuerdatenAbfrageStatus) ||
-                (EbeguUtil.isNullOrUndefined(this.getFinanzielleSituationGS2().finanzielleSituationGS)
-                    && EbeguUtil.isNotNullOrUndefined(this.getFinanzielleSituationGS2().finanzielleSituationJA.steuerdatenAbfrageStatus)));
+                    this.getFinanzielleSituationGS2().finanzielleSituationGS?.steuerdatenAbfrageStatus));
     }
 
     public startAufteilung(): void {
