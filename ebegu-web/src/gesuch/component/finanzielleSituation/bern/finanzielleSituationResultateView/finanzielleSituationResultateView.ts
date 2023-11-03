@@ -177,9 +177,8 @@ export class FinanzielleSituationResultateViewController extends AbstractGesuchV
                     this.getFinanzielleSituationGS1().finanzielleSituationJA.steuerdatenAbfrageStatus) ||
                 isSteuerdatenAnfrageStatusErfolgreich(
                     this.getFinanzielleSituationGS1().finanzielleSituationGS?.steuerdatenAbfrageStatus) ||
-                (EbeguUtil.isNullOrUndefined(this.getFinanzielleSituationGS1().finanzielleSituationGS) &&
-                    EbeguUtil.isNotNullOrUndefined(
-                        this.getFinanzielleSituationGS1().finanzielleSituationJA.steuerdatenAbfrageStatus)));
+                (EbeguUtil.isNullOrUndefined(this.getFinanzielleSituationGS1().finanzielleSituationGS)
+                    && EbeguUtil.isNotNullOrUndefined(this.getFinanzielleSituationGS1().finanzielleSituationJA.steuerdatenAbfrageStatus)));
     }
 
     public hasGS2SteuerDatenErfolgreichAbgefragt(): boolean {
@@ -188,9 +187,8 @@ export class FinanzielleSituationResultateViewController extends AbstractGesuchV
                     this.getFinanzielleSituationGS2().finanzielleSituationJA.steuerdatenAbfrageStatus) ||
                 isSteuerdatenAnfrageStatusErfolgreich(
                     this.getFinanzielleSituationGS2().finanzielleSituationGS?.steuerdatenAbfrageStatus) ||
-                (EbeguUtil.isNullOrUndefined(this.getFinanzielleSituationGS2().finanzielleSituationGS) &&
-                    EbeguUtil.isNotNullOrUndefined(
-                        this.getFinanzielleSituationGS2().finanzielleSituationJA.steuerdatenAbfrageStatus)));
+                (EbeguUtil.isNullOrUndefined(this.getFinanzielleSituationGS2().finanzielleSituationGS)
+                    && EbeguUtil.isNotNullOrUndefined(this.getFinanzielleSituationGS2().finanzielleSituationJA.steuerdatenAbfrageStatus)));
     }
 
     public startAufteilung(): void {
