@@ -377,38 +377,38 @@ export class TSFamiliensituation extends TSAbstractMutableEntity {
 
     }
 
-    public deepCopy(): TSFamiliensituation {
-        const familiensituation = new TSFamiliensituation();
-        familiensituation.familienstatus = this.familienstatus;
-        familiensituation.gemeinsameSteuererklaerung = this.gemeinsameSteuererklaerung;
-        familiensituation.aenderungPer = this.aenderungPer;
-        familiensituation.startKonkubinat = this.startKonkubinat;
-        familiensituation.sozialhilfeBezueger = this.sozialhilfeBezueger;
-        familiensituation.zustaendigeAmtsstelle = this.zustaendigeAmtsstelle;
-        familiensituation.nameBetreuer = this.nameBetreuer;
-        familiensituation.verguenstigungGewuenscht = this.verguenstigungGewuenscht;
-        familiensituation.keineMahlzeitenverguenstigungBeantragt = this.keineMahlzeitenverguenstigungBeantragt;
-        familiensituation.keineMahlzeitenverguenstigungBeantragtEditable = this.keineMahlzeitenverguenstigungBeantragtEditable;
-        familiensituation.iban = this.iban;
-        familiensituation.kontoinhaber = this.kontoinhaber;
-        familiensituation.abweichendeZahlungsadresse = this.abweichendeZahlungsadresse;
+    public deepCopyTo(target: TSFamiliensituation): TSFamiliensituation {
+        super.deepCopyTo(target);
+        target.familienstatus = this.familienstatus;
+        target.gemeinsameSteuererklaerung = this.gemeinsameSteuererklaerung;
+        target.aenderungPer = this.aenderungPer;
+        target.startKonkubinat = this.startKonkubinat;
+        target.sozialhilfeBezueger = this.sozialhilfeBezueger;
+        target.zustaendigeAmtsstelle = this.zustaendigeAmtsstelle;
+        target.nameBetreuer = this.nameBetreuer;
+        target.verguenstigungGewuenscht = this.verguenstigungGewuenscht;
+        target.keineMahlzeitenverguenstigungBeantragt = this.keineMahlzeitenverguenstigungBeantragt;
+        target.keineMahlzeitenverguenstigungBeantragtEditable = this.keineMahlzeitenverguenstigungBeantragtEditable;
+        target.iban = this.iban;
+        target.kontoinhaber = this.kontoinhaber;
+        target.abweichendeZahlungsadresse = this.abweichendeZahlungsadresse;
         if (EbeguUtil.isNotNullOrUndefined(this.zahlungsadresse)) {
-            familiensituation.zahlungsadresse = new TSAdresse();
-            familiensituation.zahlungsadresse.copy(this.zahlungsadresse);
+            target.zahlungsadresse = new TSAdresse();
+            target.zahlungsadresse.deepCopyTo(this.zahlungsadresse);
         }
 
-        familiensituation.infomaKreditorennummer = this.infomaKreditorennummer;
-        familiensituation.infomaBankcode = this.infomaBankcode;
-        familiensituation.gesuchstellerKardinalitaet = this.gesuchstellerKardinalitaet;
-        familiensituation.fkjvFamSit = this.fkjvFamSit;
-        familiensituation.minDauerKonkubinat = this.minDauerKonkubinat;
-        familiensituation.unterhaltsvereinbarung = this.unterhaltsvereinbarung;
-        familiensituation.unterhaltsvereinbarungBemerkung = this.unterhaltsvereinbarungBemerkung;
-        familiensituation.geteilteObhut = this.geteilteObhut;
-        familiensituation.partnerIdentischMitVorgesuch = this.partnerIdentischMitVorgesuch;
-        familiensituation.gemeinsamerHaushaltMitObhutsberechtigterPerson = this.gemeinsamerHaushaltMitObhutsberechtigterPerson;
-        familiensituation.gemeinsamerHaushaltMitPartner = this.gemeinsamerHaushaltMitPartner;
-        familiensituation.auszahlungAusserhalbVonKibon = this.auszahlungAusserhalbVonKibon;
-        return familiensituation;
+        target.infomaKreditorennummer = this.infomaKreditorennummer;
+        target.infomaBankcode = this.infomaBankcode;
+        target.gesuchstellerKardinalitaet = this.gesuchstellerKardinalitaet;
+        target.fkjvFamSit = this.fkjvFamSit;
+        target.minDauerKonkubinat = this.minDauerKonkubinat;
+        target.unterhaltsvereinbarung = this.unterhaltsvereinbarung;
+        target.unterhaltsvereinbarungBemerkung = this.unterhaltsvereinbarungBemerkung;
+        target.geteilteObhut = this.geteilteObhut;
+        target.partnerIdentischMitVorgesuch = this.partnerIdentischMitVorgesuch;
+        target.gemeinsamerHaushaltMitObhutsberechtigterPerson = this.gemeinsamerHaushaltMitObhutsberechtigterPerson;
+        target.gemeinsamerHaushaltMitPartner = this.gemeinsamerHaushaltMitPartner;
+        target.auszahlungAusserhalbVonKibon = this.auszahlungAusserhalbVonKibon;
+        return target;
     }
 }

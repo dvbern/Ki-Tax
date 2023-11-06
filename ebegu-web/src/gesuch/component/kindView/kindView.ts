@@ -595,14 +595,17 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
     }
 
     public checkFachstellenValidity(): {pensumFachstelle: TSPensumFachstelle; error: string}[] {
+        const errors: { pensumFachstelle: TSPensumFachstelle; error: string }[] = [];
+
+        if (EbeguUtil.isNullOrUndefined(this.getPensumFachstellen()) || this.getPensumFachstellen().length < 1) {
+            return errors;
+        }
         const einschulungstypen = new EinschulungTypesVisitor().process(this.mandant);
         const ordinalitaetKind =
             einschulungstypen.findIndex(einschulungstyp => einschulungstyp === this.getModel().einschulungTyp);
         if (ordinalitaetKind < 0) {
             throw new Error(`Einschulungstyp ${this.getModel().einschulungTyp} not found for ${this.mandant}`);
         }
-
-        const errors: { pensumFachstelle: TSPensumFachstelle; error: string }[] = [];
 
         for (const pensumFachstelle of this.getPensumFachstellen()) {
             let ordinalitaetEinstellung;
