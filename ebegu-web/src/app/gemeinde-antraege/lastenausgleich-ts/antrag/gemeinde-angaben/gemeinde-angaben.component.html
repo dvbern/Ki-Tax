@@ -1171,14 +1171,14 @@
         <div class="actions">
             <button class="dv-btn cancel-button uppercase"
                     type="button"
-                    *ngIf="falscheAngabenVisible$ | async"
+                    *ngIf="falscheAngabenVisible | async"
                     (click)="onFalscheAngaben()">
                 <span translate>FERIENBETREUUNG_ANGABEN_KORRIGIEREN</span>
             </button>
             <dv-loading-button
                 class="uppercase"
                 type="button"
-                *ngIf="saveVisible$ | async"
+                *ngIf="saveVisible | async"
                 [ngClass]="{'secondary': !formularNotEditable()}"
                 [buttonDisabled]="formularNotEditable()"
                 (buttonClick)="onAngabenFormSubmit()">
@@ -1187,7 +1187,7 @@
             <dv-loading-button
                 class="uppercase"
                 type="button"
-                *ngIf="abschliessenVisible$ | async"
+                *ngIf="abschliessenVisible | async"
                 [buttonDisabled]="formularNotEditable()"
                 (buttonClick)="onAbschliessen()">
                 <span *ngIf="lATSAngabenGemeindeContainer?.isInBearbeitungGemeinde()" translate>ABSCHLIESSEN</span>

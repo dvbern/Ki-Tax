@@ -80,9 +80,9 @@ export class GemeindeAngabenComponent implements OnInit, OnDestroy {
     public lohnnormkostenSettingMoreThanFifty$: Subject<TSEinstellung> = new ReplaySubject<TSEinstellung>(1);
     public lohnnormkostenSettingLessThanFifty$: Subject<TSEinstellung> = new ReplaySubject<TSEinstellung>(1);
 
-    public saveVisible$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
-    public abschliessenVisible$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
-    public falscheAngabenVisible$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+    public saveVisible: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+    public abschliessenVisible: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+    public falscheAngabenVisible: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
     public controllingCalculator: TSControllingCalculator;
     public previousAntrag: TSLastenausgleichTagesschuleAngabenGemeindeContainer;
@@ -805,44 +805,44 @@ export class GemeindeAngabenComponent implements OnInit, OnDestroy {
         principal: TSBenutzer
     ): void {
         if (container.isAtLeastGeprueft()) {
-            this.saveVisible$.next(false);
-            this.abschliessenVisible$.next(false);
-            this.falscheAngabenVisible$.next(false);
+            this.saveVisible.next(false);
+            this.abschliessenVisible.next(false);
+            this.falscheAngabenVisible.next(false);
             return;
         }
         if (principal.hasRole(TSRole.SUPER_ADMIN)) {
             const angaben = container.getAngabenToWorkWith();
             if (angaben.isInBearbeitung()) {
-                this.saveVisible$.next(true);
-                this.abschliessenVisible$.next(container.allAngabenInstitutionContainersGeprueft());
-                this.falscheAngabenVisible$.next(false);
+                this.saveVisible.next(true);
+                this.abschliessenVisible.next(container.allAngabenInstitutionContainersGeprueft());
+                this.falscheAngabenVisible.next(false);
             } else {
-                this.saveVisible$.next(false);
-                this.abschliessenVisible$.next(false);
-                this.falscheAngabenVisible$.next(true);
+                this.saveVisible.next(false);
+                this.abschliessenVisible.next(false);
+                this.falscheAngabenVisible.next(true);
             }
         }
         if (principal.hasOneOfRoles(TSRoleUtil.getMandantOnlyRoles())) {
             if (container.isInBearbeitungGemeinde()) {
-                this.saveVisible$.next(false);
-                this.abschliessenVisible$.next(false);
-                this.falscheAngabenVisible$.next(false);
+                this.saveVisible.next(false);
+                this.abschliessenVisible.next(false);
+                this.falscheAngabenVisible.next(false);
             } else {
-                this.saveVisible$.next(container.angabenKorrektur.isInBearbeitung());
-                this.abschliessenVisible$.next(container.angabenKorrektur.isInBearbeitung());
-                this.falscheAngabenVisible$.next(!container.angabenKorrektur.isInBearbeitung());
+                this.saveVisible.next(container.angabenKorrektur.isInBearbeitung());
+                this.abschliessenVisible.next(container.angabenKorrektur.isInBearbeitung());
+                this.falscheAngabenVisible.next(!container.angabenKorrektur.isInBearbeitung());
             }
         }
         if (principal.hasOneOfRoles(TSRoleUtil.getGemeindeOrBGOrTSRoles())) {
             if (container.isInBearbeitungGemeinde()) {
-                this.saveVisible$.next(container.getAngabenToWorkWith().isInBearbeitung());
-                this.abschliessenVisible$.next
+                this.saveVisible.next(container.getAngabenToWorkWith().isInBearbeitung());
+                this.abschliessenVisible.next
                 (container.getAngabenToWorkWith().isInBearbeitung() && container.allAngabenInstitutionContainersGeprueft());
-                this.falscheAngabenVisible$.next(!container.getAngabenToWorkWith().isInBearbeitung());
+                this.falscheAngabenVisible.next(!container.getAngabenToWorkWith().isInBearbeitung());
             } else {
-                this.saveVisible$.next(false);
-                this.abschliessenVisible$.next(false);
-                this.falscheAngabenVisible$.next(false);
+                this.saveVisible.next(false);
+                this.abschliessenVisible.next(false);
+                this.falscheAngabenVisible.next(false);
             }
         }
     }
