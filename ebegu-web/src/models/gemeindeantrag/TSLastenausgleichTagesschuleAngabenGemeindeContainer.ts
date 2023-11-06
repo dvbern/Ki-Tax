@@ -79,16 +79,16 @@ export class TSLastenausgleichTagesschuleAngabenGemeindeContainer extends TSAbst
     public isGemeindeFormularInBearbeitungForRole(role: TSRole): boolean {
         switch (role) {
             case TSRole.SUPER_ADMIN:
-                return (this.isInBearbeitungKanton() && this.getAngabenToWorkWith()?.isInBearbeitung()) ||
-                    (this.isInBearbeitungGemeinde() && this.getAngabenToWorkWith()?.isInBearbeitung());
+                return (this.isInBearbeitungKanton() && this.angabenKorrektur?.isInBearbeitung()) ||
+                    (this.isInBearbeitungGemeinde() && this.angabenDeklaration?.isInBearbeitung());
             case TSRole.SACHBEARBEITER_MANDANT:
             case TSRole.ADMIN_MANDANT:
-                return this.isInBearbeitungKanton() && this.getAngabenToWorkWith()?.isInBearbeitung();
+                return this.isInBearbeitungKanton() && this.angabenKorrektur?.isInBearbeitung();
             case TSRole.ADMIN_TS:
             case TSRole.SACHBEARBEITER_TS:
             case TSRole.ADMIN_GEMEINDE:
             case TSRole.SACHBEARBEITER_GEMEINDE:
-                return this.isInBearbeitungGemeinde() && this.getAngabenToWorkWith()?.isInBearbeitung();
+                return this.isInBearbeitungGemeinde() && this.angabenDeklaration?.isInBearbeitung();
             default:
                 return false;
         }
