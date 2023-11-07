@@ -196,7 +196,6 @@
                     </label>
                     <mat-form-field floatLabel="always">
                         <input matInput
-                               type="number"
                                formControlName="geleisteteBetreuungsstundenOhneBesondereBeduerfnisse"
                                class="form-control dv-input"/>
                         <mat-error
@@ -226,7 +225,6 @@
 
                     <mat-form-field floatLabel="always">
                         <input matInput
-                               type="number"
                                formControlName="geleisteteBetreuungsstundenBesondereBeduerfnisse"
                                class="form-control dv-input"/>
                         <mat-error
@@ -256,7 +254,6 @@
 
                     <mat-form-field floatLabel="always">
                         <input matInput
-                               type="number"
                                formControlName="geleisteteBetreuungsstundenBesondereVolksschulangebot"
                                class="form-control dv-input"/>
                         <mat-error
@@ -318,13 +315,11 @@
 
                 <dv-input-container-x>
                     <label required
-                           [ngClass]="{'label-required-error': abschliessenValidationActive && angabenForm.controls.davonStundenZuNormlohnMehrAls50ProzentAusgebildete.errors}"
-                    >
+                           [ngClass]="{'label-required-error': abschliessenValidationActive && angabenForm.controls.davonStundenZuNormlohnMehrAls50ProzentAusgebildete.errors}">
                         {{'LATS_DAVON_STUNDEN_NORM_MEHR_ALS_50' | translate: {lohnkosten: (lohnnormkostenSettingMoreThanFifty$ | async)?.value | number:'1.2-2'} }}
                     </label>
                     <mat-form-field floatLabel="always">
                         <input matInput
-                               type="number"
                                formControlName="davonStundenZuNormlohnMehrAls50ProzentAusgebildete"
                                class="form-control dv-input"/>
                         <mat-error
@@ -344,9 +339,9 @@
                     </mat-form-field>
                     <mat-form-field floatLabel="always">
                         <input matInput
-                               type="number"
                                formControlName="davonStundenZuNormlohnMehrAls50ProzentAusgebildeteBerechnet"
-                               class="form-control dv-input"/>
+                               [readonly]="true"
+                               class="form-control dv-input">
                     </mat-form-field>
                 </dv-input-container-x>
 
@@ -357,7 +352,6 @@
                     </label>
                     <mat-form-field floatLabel="always">
                         <input matInput
-                               type="number"
                                formControlName="davonStundenZuNormlohnWenigerAls50ProzentAusgebildete"
                                class="form-control dv-input"/>
                         <mat-error
@@ -378,6 +372,7 @@
                     <mat-form-field floatLabel="always">
                         <input matInput
                                formControlName="davonStundenZuNormlohnWenigerAls50ProzentAusgebildeteBerechnet"
+                               [readonly]="true"
                                class="form-control dv-input"/>
                     </mat-form-field>
                 </dv-input-container-x>
@@ -390,6 +385,7 @@
                     <mat-form-field floatLabel="always">
                         <input matInput
                                formControlName="normlohnkostenBetreuungBerechnet"
+                               [readonly]="true"
                                class="form-control dv-input"/>
                     </mat-form-field>
                 </dv-input-container-x>
@@ -401,7 +397,7 @@
                         <dv-tooltip [text]="'LATS_TATSACHLICHE_EINNAHMEN_ELTERNGEBUHREN_INFO' | translate"></dv-tooltip>
                     </label>
                     <mat-form-field floatLabel="always">
-                        <input matInput type="number" formControlName="einnahmenElterngebuehren" class="form-control dv-input"/>
+                        <input matInput formControlName="einnahmenElterngebuehren" class="form-control dv-input"/>
                         <mat-error
                             *ngIf="abschliessenValidationActive && angabenForm.controls.einnahmenElterngebuehren.errors?.required"
                             translate>ERROR_REQUIRED
@@ -552,7 +548,7 @@
                     {{'LATS_LASTENAUSGLEICHSBERECHTIGTER_BETRAG_SCHULJAHR' | translate: {jahr: lATSAngabenGemeindeContainer.gesuchsperiode?.gesuchsperiodeString} }}
                 </label>
                 <mat-form-field floatLabel="always">
-                    <input matInput formControlName="lastenausgleichsberechtigerBetrag" class="form-control dv-input"/>
+                    <input matInput formControlName="lastenausgleichsberechtigerBetrag" class="form-control dv-input" [readonly]="true"/>
                 </mat-form-field>
             </dv-input-container-x>
 
@@ -587,7 +583,7 @@
                     {{'LATS_SCHLUSSZAHLUNG' | translate:{year: getNextYear()} }}
                 </label>
                 <mat-form-field floatLabel="always">
-                    <input matInput formControlName="schlusszahlung" class="form-control dv-input"/>
+                    <input matInput formControlName="schlusszahlung" class="form-control dv-input" [readonly]="true"/>
                 </mat-form-field>
             </dv-input-container-x>
 
@@ -635,6 +631,7 @@
                     <mat-form-field floatLabel="always">
                         <input id="lastenausgleichsberechtigerBetragRO"
                                matInput
+                               [readonly]="true"
                                formControlName="lastenausgleichsberechtigerBetragRO"
                                class="form-control dv-input"/>
                     </mat-form-field>
@@ -645,7 +642,7 @@
                         {{'LATS_EINNAHMEN_ELTERNGEBUEHREN' | translate}}
                     </label>
                     <mat-form-field floatLabel="always">
-                        <input matInput formControlName="einnahmenElterngebuehrenRO" class="form-control dv-input"/>
+                        <input matInput formControlName="einnahmenElterngebuehrenRO" [readonly]="true" class="form-control dv-input"/>
                     </mat-form-field>
                 </dv-input-container-x>
 
@@ -708,7 +705,7 @@
                         {{'LATS_KOSTENBEITRAG_GEMEINDE' | translate}}
                     </label>
                     <mat-form-field floatLabel="always">
-                        <input matInput formControlName="kostenbeitragGemeinde" class="form-control dv-input"/>
+                        <input matInput formControlName="kostenbeitragGemeinde" [readonly]="true" class="form-control dv-input"/>
                     </mat-form-field>
                 </dv-input-container-x>
 
@@ -717,7 +714,7 @@
                         {{'LATS_KOSTENUEBERSCHUSS_GEMEINDE' | translate}}
                     </label>
                     <mat-form-field floatLabel="always">
-                        <input matInput formControlName="kostenueberschussGemeinde" class="form-control dv-input"/>
+                        <input matInput formControlName="kostenueberschussGemeinde" [readonly]="true" class="form-control dv-input"/>
                     </mat-form-field>
                 </dv-input-container-x>
 
@@ -728,6 +725,7 @@
                     <mat-form-field floatLabel="always">
                         <input matInput
                                formControlName="erwarteterKostenbeitragGemeinde"
+                               [readonly]="true"
                                class="form-control dv-input"/>
                     </mat-form-field>
                 </dv-input-container-x>
@@ -1171,14 +1169,14 @@
         <div class="actions">
             <button class="dv-btn cancel-button uppercase"
                     type="button"
-                    *ngIf="falscheAngabenVisible$ | async"
+                    *ngIf="falscheAngabenVisible | async"
                     (click)="onFalscheAngaben()">
                 <span translate>FERIENBETREUUNG_ANGABEN_KORRIGIEREN</span>
             </button>
             <dv-loading-button
                 class="uppercase"
                 type="button"
-                *ngIf="saveVisible$ | async"
+                *ngIf="saveVisible | async"
                 [ngClass]="{'secondary': !formularNotEditable()}"
                 [buttonDisabled]="formularNotEditable()"
                 (buttonClick)="onAngabenFormSubmit()">
@@ -1187,7 +1185,7 @@
             <dv-loading-button
                 class="uppercase"
                 type="button"
-                *ngIf="abschliessenVisible$ | async"
+                *ngIf="abschliessenVisible | async"
                 [buttonDisabled]="formularNotEditable()"
                 (buttonClick)="onAbschliessen()">
                 <span *ngIf="lATSAngabenGemeindeContainer?.isInBearbeitungGemeinde()" translate>ABSCHLIESSEN</span>
