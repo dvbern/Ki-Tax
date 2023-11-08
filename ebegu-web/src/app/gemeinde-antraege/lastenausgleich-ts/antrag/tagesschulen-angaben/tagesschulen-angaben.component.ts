@@ -547,6 +547,7 @@ export class TagesschulenAngabenComponent implements OnInit {
             this.errorService.clearAll();
             this.wizardRS.updateSteps(TSWizardStepXTyp.LASTENAUSGLEICH_TAGESSCHULEN, this.gemeindeAntragContainer.id);
             this.lastenausgleichTSService.updateLATSAngabenGemeindeContainerStore(this.routerGlobals.params.id);
+            this.form.enable();
             this.cd.markForCheck();
         }, error => {
             if (error.error.includes(
