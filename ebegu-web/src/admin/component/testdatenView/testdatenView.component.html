@@ -25,10 +25,10 @@
             <div class="row margin-top-10">
                 <div class="col-sm-3">
                     <mat-radio-group name="creationType" [(ngModel)]="creationType" required>
-                        <mat-radio-button value="warten">Betreuungen mit Zustand &#034;warten&#034;</mat-radio-button>
-                        <mat-radio-button value="bestaetigt">Betreuungen mit Zustand &#034;bestätigt&#034;
+                        <mat-radio-button data-test="creationType.warten" value="warten">Betreuungen mit Zustand &#034;warten&#034;</mat-radio-button>
+                        <mat-radio-button data-test="creationType.bestaetigt" value="bestaetigt">Betreuungen mit Zustand &#034;bestätigt&#034;
                         </mat-radio-button>
-                        <mat-radio-button value="verfuegt">Verfügte Erstgesuche</mat-radio-button>
+                        <mat-radio-button data-test="creationType.verfuegt" value="verfuegt">Verfügte Erstgesuche</mat-radio-button>
                     </mat-radio-group>
                 </div>
                 <div class="col-sm-3">
@@ -45,8 +45,8 @@
                     <label class="md-no-float" for="periode">
                         Gemeinde
                     </label>
-                    <mat-select [(ngModel)]="selectedGemeinde" id="gemeinde" name="gemeinde" class="input-testfall">
-                        <mat-option *ngFor="let gem of gemeindeList" [value]="gem">
+                    <mat-select [(ngModel)]="selectedGemeinde" id="gemeinde" name="gemeinde" class="input-testfall" data-test="gemeinde">
+                        <mat-option *ngFor="let gem of gemeindeList" [value]="gem" [attr.data-test]="'gemeinde.' + gem.name">
                             {{gem.name}}
                         </mat-option>
                     </mat-select>
@@ -55,8 +55,8 @@
                     <label class="md-no-float" for="periode">
                         Gesuchsperiode
                     </label>
-                    <mat-select [(ngModel)]="selectedGesuchsperiode" id="periode" name="periode" class="input-testfall">
-                        <mat-option *ngFor="let gp of gesuchsperiodeList" [value]="gp">
+                    <mat-select [(ngModel)]="selectedGesuchsperiode" id="periode" name="periode" class="input-testfall" data-test="periode">
+                        <mat-option *ngFor="let gp of gesuchsperiodeList" [value]="gp" [attr.data-test]="'periode.' + gp.gesuchsperiodeString">
                             {{gp.gesuchsperiodeString}}
                         </mat-option>
                     </mat-select>
@@ -67,52 +67,52 @@
             <div class="row margin-top-30">
                 <ul>
                     <li>
-                        <button type="button" class="dv-btn btn-link btn-testfall" (click)="createTestFallType('1')">
+                        <button type="button" class="dv-btn btn-link btn-testfall" data-test="testfall-1" (click)="createTestFallType('1')">
                             <span [textContent]="'Testfall Dagmar Wälti: Ledig, 1 Kind, 2 Kitas'"></span>
                         </button>
                     </li>
                     <li>
-                        <button type="button" class="dv-btn btn-link btn-testfall" (click)="createTestFallType('2')">
+                        <button type="button" class="dv-btn btn-link btn-testfall" data-test="testfall-2" (click)="createTestFallType('2')">
                             <span [textContent]="'Testfall Yvonne Feutz: Verheiratet, 2 Kinder, Kita'"></span>
                         </button>
                     </li>
                     <li>
-                        <button type="button" class="dv-btn btn-link btn-testfall" (click)="createTestFallType('3')">
+                        <button type="button" class="dv-btn btn-link btn-testfall" data-test="testfall-3" (click)="createTestFallType('3')">
                             <span [textContent]="'Testfall Marcia Perreira: Verheiratet, 2 Kinder, Kind 1 Kita, Kind 2 keine Betreuung'"></span>
                         </button>
                     </li>
                     <li>
-                        <button type="button" class="dv-btn btn-link btn-testfall" (click)="createTestFallType('4')">
+                        <button type="button" class="dv-btn btn-link btn-testfall" data-test="testfall-4" (click)="createTestFallType('4')">
                             <span [textContent]="'Testfall Laura Walther: Verheiratet, 1 Kind, Kita'"></span>
                         </button>
                     </li>
                     <li>
-                        <button type="button" class="dv-btn btn-link btn-testfall" (click)="createTestFallType('5')">
+                        <button type="button" class="dv-btn btn-link btn-testfall" data-test="testfall-5" (click)="createTestFallType('5')">
                             <span [textContent]="'Testfall Mereth Lueti: Verheiratet, 1 Kind, Kita, 2 Pensen'"></span>
                         </button>
                     </li>
                     <li>
-                        <button type="button" class="dv-btn btn-link btn-testfall" (click)="createTestFallType('6')">
+                        <button type="button" class="dv-btn btn-link btn-testfall" data-test="testfall-6" (click)="createTestFallType('6')">
                             <span [textContent]="'Testfall Nora Becker: Verheiratet, 1 Kind, Kita'"></span>
                         </button>
                     </li>
                     <li>
-                        <button type="button" class="dv-btn btn-link btn-testfall" (click)="createTestFallType('7')">
+                        <button type="button" class="dv-btn btn-link btn-testfall" data-test="testfall-7" (click)="createTestFallType('7')">
                             <span [textContent]="'Testfall Mereth Meier'"></span>
                         </button>
                     </li>
                     <li>
-                        <button type="button" class="dv-btn btn-link btn-testfall" (click)="createTestFallType('8')">
+                        <button type="button" class="dv-btn btn-link btn-testfall" data-test="testfall-8" (click)="createTestFallType('8')">
                             <span [textContent]="'Testfall AusInAusBern'"></span>
                         </button>
                     </li>
                     <li>
-                        <button type="button" class="dv-btn btn-link btn-testfall" (click)="createTestFallType('9')">
+                        <button type="button" class="dv-btn btn-link btn-testfall" data-test="testfall-9" (click)="createTestFallType('9')">
                             <span [textContent]="'Testfall Abwesenheit'"></span>
                         </button>
                     </li>
                     <li>
-                        <button type="button" class="dv-btn btn-link btn-testfall" (click)="createTestFallType('10')">
+                        <button type="button" class="dv-btn btn-link btn-testfall" data-test="testfall-10" (click)="createTestFallType('10')">
                             <span [textContent]="'Testfall Umzug vor Gesuchperiode'"></span>
                         </button>
                     </li>
@@ -127,73 +127,73 @@
                     </li> -->
                     <li>
                         <button type="button" class="dv-btn btn-link btn-testfall"
-                                (click)="createTestFallType('ASIV1')">
+                                data-test="testfall-ASIV1" (click)="createTestFallType('ASIV1')">
                             <span [textContent]="'Testfall ASIV 1'"></span>
                         </button>
                     </li>
                     <li>
                         <button type="button" class="dv-btn btn-link btn-testfall"
-                                (click)="createTestFallType('ASIV2')">
+                                data-test="testfall-ASIV2" (click)="createTestFallType('ASIV2')">
                             <span [textContent]="'Testfall ASIV 2'"></span>
                         </button>
                     </li>
                     <li>
                         <button type="button" class="dv-btn btn-link btn-testfall"
-                                (click)="createTestFallType('ASIV3')">
+                                data-test="testfall-ASIV3" (click)="createTestFallType('ASIV3')">
                             <span [textContent]="'Testfall ASIV 3'"></span>
                         </button>
                     </li>
                     <li>
                         <button type="button" class="dv-btn btn-link btn-testfall"
-                                (click)="createTestFallType('ASIV4')">
+                                data-test="testfall-ASIV4" (click)="createTestFallType('ASIV4')">
                             <span [textContent]="'Testfall ASIV 4'"></span>
                         </button>
                     </li>
                     <li>
                         <button type="button" class="dv-btn btn-link btn-testfall"
-                                (click)="createTestFallType('ASIV5')">
+                                data-test="testfall-ASIV5" (click)="createTestFallType('ASIV5')">
                             <span [textContent]="'Testfall ASIV 5'"></span>
                         </button>
                     </li>
                     <li>
                         <button type="button" class="dv-btn btn-link btn-testfall"
-                                (click)="createTestFallType('ASIV6')">
+                                data-test="testfall-ASIV6" (click)="createTestFallType('ASIV6')">
                             <span [textContent]="'Testfall ASIV 6'"></span>
                         </button>
                     </li>
                     <li>
                         <button type="button" class="dv-btn btn-link btn-testfall"
-                                (click)="createTestFallType('ASIV7')">
+                                data-test="testfall-ASIV7" (click)="createTestFallType('ASIV7')">
                             <span [textContent]="'Testfall ASIV 7'"></span>
                         </button>
                     </li>
                     <li>
                         <button type="button" class="dv-btn btn-link btn-testfall"
-                                (click)="createTestFallType('ASIV8')">
+                                data-test="testfall-ASIV8" (click)="createTestFallType('ASIV8')">
                             <span [textContent]="'Testfall ASIV 8'"></span>
                         </button>
                     </li>
                     <li>
                         <button type="button" class="dv-btn btn-link btn-testfall"
-                                (click)="createTestFallType('ASIV9')">
+                                data-test="testfall-ASIV9" (click)="createTestFallType('ASIV9')">
                             <span [textContent]="'Testfall ASIV 9'"></span>
                         </button>
                     </li>
                     <li>
                         <button type="button" class="dv-btn btn-link btn-testfall"
-                                (click)="createTestFallType('ASIV10')">
+                                data-test="testfall-ASIV10" (click)="createTestFallType('ASIV10')">
                             <span [textContent]="'Testfall ASIV 10'"></span>
                         </button>
                     </li>
                     <li *ngIf="!this.selectedBesitzer">
                         <button type="button" class="dv-btn btn-link btn-testfall"
-                                (click)="createTestFallType('Sozialdienst')">
+                                data-test="testfall-Sozialdienst" (click)="createTestFallType('Sozialdienst')">
                             <span [textContent]="'Testfall Unterstützungsdienste'"></span>
                         </button>
                     </li>
                     <li *ngIf="!this.selectedBesitzer">
                         <button type="button" class="dv-btn btn-link btn-testfall"
-                                (click)="createTestFallType('LATS')">
+                                data-test="testfall-LATS" (click)="createTestFallType('LATS')">
                             <span [textContent]="'Testfall LATS'"></span>
                         </button>
                     </li>
@@ -207,9 +207,9 @@
                     <div class="row margin-top-10">
                         <div class="col-sm-3">
                             <mat-radio-group name="creationType" [(ngModel)]="gemeindeAntragStatus" required>
-                                <mat-radio-button value="IN_BEARBEITUNG_GEMEINDE" selected="">In Bearbeitung Gemeinde
+                                <mat-radio-button data-test="creationType.IN_BEARBEITUNG_GEMEINDE" value="IN_BEARBEITUNG_GEMEINDE" selected="">In Bearbeitung Gemeinde
                                 </mat-radio-button>
-                                <mat-radio-button value="IN_PRUEFUNG_KANTON">In Prüfung Kanton</mat-radio-button>
+                                <mat-radio-button data-test="creationType.IN_PRUEFUNG_KANTON" value="IN_PRUEFUNG_KANTON">In Prüfung Kanton</mat-radio-button>
                             </mat-radio-group>
                         </div>
                         <div class="col-sm-2">

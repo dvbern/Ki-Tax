@@ -281,7 +281,7 @@ public class ZahlungResource {
 		final Zahlungsauftrag zahlungsauftrag = zahlungService.zahlungsauftragAusloesen(zahlungsauftragId);
 
 		//Force creation and saving of ZahlungsFile Pain001
-		generatedDokumentService.getPain001DokumentAccessTokenGeneratedDokument(zahlungsauftrag, true);
+		generatedDokumentService.createZahlungsFiles(zahlungsauftrag);
 
 		return converter.zahlungsauftragToJAX(zahlungsauftrag, false);
 	}

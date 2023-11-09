@@ -34,6 +34,7 @@
                 <td></td>
                 <td>
                     <div class="first-row panel panel-default mark-hover panel-body"
+                         [attr.data-test]="'test-user-' + superadmin?.vorname  + '-' + superadmin?.nachname"
                          [textContent]="'Einloggen als ' + superadmin?.vorname  + ' ' + superadmin?.nachname"
                          (click)="logIn(superadmin)"></div>
                 </td>
@@ -44,6 +45,7 @@
                 <td></td>
                 <td>
                     <div class="first-row panel panel-default mark-hover panel-body"
+                         [attr.data-test]="'test-user-' + administratorKantonBern?.vorname  + '-' + administratorKantonBern?.nachname"
                          [textContent]="'Einloggen als ' + administratorKantonBern?.vorname  + ' ' + administratorKantonBern?.nachname"
                          (click)="logIn(administratorKantonBern)"></div>
                 </td>
@@ -53,6 +55,7 @@
                 <td></td>
                 <td>
                     <div class="first-row panel panel-default mark-hover panel-body"
+                         [attr.data-test]="'test-user-' + sachbearbeiterKantonBern?.vorname  + '-' + sachbearbeiterKantonBern?.nachname"
                          [textContent]="'Einloggen als ' + sachbearbeiterKantonBern?.vorname  + ' ' + sachbearbeiterKantonBern?.nachname"
                          (click)="logIn(sachbearbeiterKantonBern)"></div>
                 </td>
@@ -63,6 +66,7 @@
                 <td></td>
                 <td>
                     <div class="first-row panel panel-default mark-hover panel-body"
+                         [attr.data-test]="'test-user-' + administratorInstitutionKitaBruennen?.vorname  + '-' + administratorInstitutionKitaBruennen?.nachname"
                          [textContent]="'Einloggen als ' + administratorInstitutionKitaBruennen?.vorname  + ' ' + administratorInstitutionKitaBruennen?.nachname"
                          (click)="logIn(administratorInstitutionKitaBruennen)"></div>
                 </td>
@@ -72,6 +76,7 @@
                 <td></td>
                 <td>
                     <div class="first-row panel panel-default mark-hover panel-body"
+                         [attr.data-test]="'test-user-' + sachbearbeiterInstitutionKitaBruennen?.vorname  + '-' + sachbearbeiterInstitutionKitaBruennen?.nachname"
                          [textContent]="'Einloggen als ' + sachbearbeiterInstitutionKitaBruennen?.vorname  + ' ' + sachbearbeiterInstitutionKitaBruennen?.nachname"
                          (click)="logIn(sachbearbeiterInstitutionKitaBruennen)"></div>
                 </td>
@@ -81,6 +86,7 @@
                 <td></td>
                 <td>
                     <div class="first-row panel panel-default mark-hover panel-body"
+                         [attr.data-test]="'test-user-' + administratorInstitutionTagesschuleParis?.vorname  + '-' + administratorInstitutionTagesschuleParis?.nachname"
                          [textContent]="'Einloggen als ' + administratorInstitutionTagesschuleParis?.vorname  + ' ' + administratorInstitutionTagesschuleParis?.nachname"
                          (click)="logIn(administratorInstitutionTagesschuleParis)"></div>
                 </td>
@@ -90,6 +96,7 @@
                 <td></td>
                 <td>
                     <div class="first-row panel panel-default mark-hover panel-body"
+                         [attr.data-test]="'test-user-' + sachbearbeiterInstitutionTagesschuleParis?.vorname  + '-' + sachbearbeiterInstitutionTagesschuleParis?.nachname"
                          [textContent]="'Einloggen als ' + sachbearbeiterInstitutionTagesschuleParis?.vorname  + ' ' + sachbearbeiterInstitutionTagesschuleParis?.nachname"
                          (click)="logIn(sachbearbeiterInstitutionTagesschuleParis)"></div>
                 </td>
@@ -99,6 +106,7 @@
                 <td></td>
                 <td>
                     <div class="first-row panel panel-default mark-hover panel-body"
+                         [attr.data-test]="'test-user-' + administratorTraegerschaftStadtBern?.vorname  + '-' + administratorTraegerschaftStadtBern?.nachname"
                          [textContent]="'Einloggen als ' + administratorTraegerschaftStadtBern?.vorname  + ' ' + administratorTraegerschaftStadtBern?.nachname"
                          (click)="logIn(administratorTraegerschaftStadtBern)"></div>
                 </td>
@@ -108,6 +116,7 @@
                 <td></td>
                 <td>
                     <div class="first-row panel panel-default mark-hover panel-body"
+                         [attr.data-test]="'test-user-' + sachbearbeiterTraegerschaftStadtBern?.vorname  + '-' + sachbearbeiterTraegerschaftStadtBern?.nachname"
                          [textContent]="'Einloggen als ' + sachbearbeiterTraegerschaftStadtBern?.vorname  + ' ' + sachbearbeiterTraegerschaftStadtBern?.nachname"
                          (click)="logIn(sachbearbeiterTraegerschaftStadtBern)"></div>
                 </td>
@@ -118,6 +127,7 @@
                 <td></td>
                 <td>
                     <div class="first-row panel panel-default mark-hover panel-body"
+                         [attr.data-test]="'test-user-' + administratorSozialdienst?.vorname  + '-' + administratorSozialdienst?.nachname"
                          [textContent]="'Einloggen als ' + administratorSozialdienst?.vorname  + ' ' + administratorSozialdienst?.nachname"
                          (click)="logIn(administratorSozialdienst)"></div>
                 </td>
@@ -127,6 +137,7 @@
                 <td></td>
                 <td>
                     <div class="first-row panel panel-default mark-hover panel-body"
+                         [attr.data-test]="'test-user-' + sachbearbeiterSozialdienst?.vorname  + '-' + sachbearbeiterSozialdienst?.nachname"
                          [textContent]="'Einloggen als ' + sachbearbeiterSozialdienst?.vorname  + ' ' + sachbearbeiterSozialdienst?.nachname"
                          (click)="logIn(sachbearbeiterSozialdienst)"></div>
                 </td>
@@ -138,6 +149,7 @@
                 <td></td>
                 <td>
                     <div class="first-row panel panel-default mark-hover panel-body"
+                         [attr.data-test]="'test-user-' + gesuchstellerEmmaGerber?.vorname  + '-' + gesuchstellerEmmaGerber?.nachname"
                          [textContent]="'Einloggen als ' + gesuchstellerEmmaGerber?.vorname  + ' ' + gesuchstellerEmmaGerber?.nachname"
                          (click)="logIn(gesuchstellerEmmaGerber)"></div>
                 </td>
@@ -147,6 +159,7 @@
                 <td></td>
                 <td>
                     <div class="first-row panel panel-default mark-hover panel-body"
+                         [attr.data-test]="'test-user-' + gesuchstellerHeinrichMueller?.vorname  + '-' + gesuchstellerHeinrichMueller?.nachname"
                          [textContent]="'Einloggen als ' + gesuchstellerHeinrichMueller?.vorname  + ' ' + gesuchstellerHeinrichMueller?.nachname"
                          (click)="logIn(gesuchstellerHeinrichMueller)"></div>
                 </td>
@@ -156,6 +169,7 @@
                 <td></td>
                 <td>
                     <div class="first-row panel panel-default mark-hover panel-body"
+                         [attr.data-test]="'test-user-' + gesuchstellerMichaelBerger?.vorname  + '-' + gesuchstellerMichaelBerger?.nachname"
                          [textContent]="'Einloggen als ' + gesuchstellerMichaelBerger?.vorname  + ' ' + gesuchstellerMichaelBerger?.nachname"
                          (click)="logIn(gesuchstellerMichaelBerger)"></div>
                 </td>
@@ -165,6 +179,7 @@
                 <td></td>
                 <td>
                     <div class="first-row panel panel-default mark-hover panel-body"
+                         [attr.data-test]="'test-user-' + gesuchstellerHansZimmermann?.vorname  + '-' + gesuchstellerHansZimmermann?.nachname"
                          [textContent]="'Einloggen als ' + gesuchstellerHansZimmermann?.vorname  + ' ' + gesuchstellerHansZimmermann?.nachname"
                          (click)="logIn(gesuchstellerHansZimmermann)"></div>
                 </td>
@@ -174,6 +189,7 @@
                 <td></td>
                 <td>
                     <div class="first-row panel panel-default mark-hover panel-body"
+                         [attr.data-test]="'test-user-' + gesuchstellerJeanChambre?.vorname  + '-' + gesuchstellerJeanChambre?.nachname"
                          [textContent]="'Einloggen als ' + gesuchstellerJeanChambre?.vorname  + ' ' + gesuchstellerJeanChambre?.nachname"
                          (click)="logIn(gesuchstellerJeanChambre)"></div>
                 </td>
@@ -189,21 +205,21 @@
                 <td>Administrator/in BG</td>
                 <td>
                     <div class="first-row panel panel-default mark-hover panel-body"
-                         [textContent]="'Einloggen als ' + administratorBGParis?.vorname + ' ' +
-                         administratorBGParis?.nachname"
+                         [attr.data-test]="'test-user-' + administratorBGParis?.vorname + '-' + administratorBGParis?.nachname"
+                         [textContent]="'Einloggen als ' + administratorBGParis?.vorname + ' ' + administratorBGParis?.nachname"
                          (click)="logIn(administratorBGParis)"></div>
                 </td>
                 <td>
                     <div class="first-row panel panel-default mark-hover panel-body"
-                         [textContent]="'Einloggen als ' + administratorBGLondon?.vorname + ' ' +
-                         administratorBGLondon?.nachname"
+                         [attr.data-test]="'test-user-' + administratorBGLondon?.vorname + '-' + administratorBGLondon?.nachname"
+                         [textContent]="'Einloggen als ' + administratorBGLondon?.vorname + ' ' + administratorBGLondon?.nachname"
                          *ngIf="hasSecondGemeinde"
                          (click)="logIn(administratorBGLondon)"></div>
                 </td>
                 <td>
                     <div class="first-row panel panel-default mark-hover panel-body"
-                         [textContent]="'Einloggen als ' + administratorBGParisLondon?.vorname + ' ' +
-                         administratorBGParisLondon?.nachname"
+                         [attr.data-test]="'test-user-' + administratorBGParisLondon?.vorname + '-' + administratorBGParisLondon?.nachname"
+                         [textContent]="'Einloggen als ' + administratorBGParisLondon?.vorname + ' ' + administratorBGParisLondon?.nachname"
                          *ngIf="hasSecondGemeinde"
                          (click)="logIn(administratorBGParisLondon)"></div>
                 </td>
@@ -213,21 +229,21 @@
                 <td>Sachbearbeiter/in BG</td>
                 <td>
                     <div class="first-row panel panel-default mark-hover panel-body"
-                         [textContent]="'Einloggen als ' + sachbearbeiterBGParis?.vorname + ' ' +
-                         sachbearbeiterBGParis?.nachname"
+                         [attr.data-test]="'test-user-' + sachbearbeiterBGParis?.vorname + '-' + sachbearbeiterBGParis?.nachname"
+                         [textContent]="'Einloggen als ' + sachbearbeiterBGParis?.vorname + ' ' + sachbearbeiterBGParis?.nachname"
                          (click)="logIn(sachbearbeiterBGParis)"></div>
                 </td>
                 <td>
                     <div class="first-row panel panel-default mark-hover panel-body"
-                         [textContent]="'Einloggen als ' + sachbearbeiterBGLondon?.vorname + ' ' +
-                         sachbearbeiterBGLondon?.nachname"
+                         [attr.data-test]="'test-user-' + sachbearbeiterBGLondon?.vorname + '-' + sachbearbeiterBGLondon?.nachname"
+                         [textContent]="'Einloggen als ' + sachbearbeiterBGLondon?.vorname + ' ' + sachbearbeiterBGLondon?.nachname"
                          *ngIf="hasSecondGemeinde"
                          (click)="logIn(sachbearbeiterBGLondon)"></div>
                 </td>
                 <td>
                     <div class="first-row panel panel-default mark-hover panel-body"
-                         [textContent]="'Einloggen als ' + sachbearbeiterBGParisLondon?.vorname + ' ' +
-                         sachbearbeiterBGParisLondon?.nachname"
+                         [attr.data-test]="'test-user-' + sachbearbeiterBGParisLondon?.vorname + '-' + sachbearbeiterBGParisLondon?.nachname"
+                         [textContent]="'Einloggen als ' + sachbearbeiterBGParisLondon?.vorname + ' ' + sachbearbeiterBGParisLondon?.nachname"
                          *ngIf="hasSecondGemeinde"
                          (click)="logIn(sachbearbeiterBGParisLondon)"></div>
                 </td>
@@ -237,21 +253,21 @@
                 <td>Administrator/in TS</td>
                 <td>
                     <div class="first-row panel panel-default mark-hover panel-body"
-                         [textContent]="'Einloggen als ' + administratorTSParis?.vorname + ' ' +
-                         administratorTSParis?.nachname"
+                         [attr.data-test]="'test-user-' + administratorTSParis?.vorname + '-' + administratorTSParis?.nachname"
+                         [textContent]="'Einloggen als ' + administratorTSParis?.vorname + ' ' + administratorTSParis?.nachname"
                          (click)="logIn(administratorTSParis)"></div>
                 </td>
                 <td>
                     <div class="first-row panel panel-default mark-hover panel-body"
-                         [textContent]="'Einloggen als ' + administratorTSLondon?.vorname + ' ' +
-                         administratorTSLondon?.nachname"
+                         [attr.data-test]="'test-user-' + administratorTSLondon?.vorname + '-' + administratorTSLondon?.nachname"
+                         [textContent]="'Einloggen als ' + administratorTSLondon?.vorname + ' ' + administratorTSLondon?.nachname"
                          *ngIf="hasSecondGemeinde"
                          (click)="logIn(administratorTSLondon)"></div>
                 </td>
                 <td>
                     <div class="first-row panel panel-default mark-hover panel-body"
-                         [textContent]="'Einloggen als ' + administratorTSParisLondon?.vorname + ' ' +
-                         administratorTSParisLondon?.nachname"
+                         [attr.data-test]="'test-user-' + administratorTSParisLondon?.vorname + '-' + administratorTSParisLondon?.nachname"
+                         [textContent]="'Einloggen als ' + administratorTSParisLondon?.vorname + ' ' + administratorTSParisLondon?.nachname"
                          *ngIf="hasSecondGemeinde"
                          (click)="logIn(administratorTSParisLondon)"></div>
                 </td>
@@ -261,21 +277,21 @@
                 <td>Sachbearbeiter/in TS</td>
                 <td>
                     <div class="first-row panel panel-default mark-hover panel-body"
-                         [textContent]="'Einloggen als ' + sachbearbeiterTSParis?.vorname + ' ' +
-                         sachbearbeiterTSParis?.nachname"
+                         [attr.data-test]="'test-user-' + sachbearbeiterTSParis?.vorname + '-' + sachbearbeiterTSParis?.nachname"
+                         [textContent]="'Einloggen als ' + sachbearbeiterTSParis?.vorname + ' ' + sachbearbeiterTSParis?.nachname"
                          (click)="logIn(sachbearbeiterTSParis)"></div>
                 </td>
                 <td>
                     <div class="first-row panel panel-default mark-hover panel-body"
-                         [textContent]="'Einloggen als ' + sachbearbeiterTSLondon?.vorname + ' ' +
-                         sachbearbeiterTSLondon?.nachname"
+                         [attr.data-test]="'test-user-' + sachbearbeiterTSLondon?.vorname + '-' + sachbearbeiterTSLondon?.nachname"
+                         [textContent]="'Einloggen als ' + sachbearbeiterTSLondon?.vorname + ' ' + sachbearbeiterTSLondon?.nachname"
                          *ngIf="hasSecondGemeinde"
                          (click)="logIn(sachbearbeiterTSLondon)"></div>
                 </td>
                 <td>
                     <div class="first-row panel panel-default mark-hover panel-body"
-                         [textContent]="'Einloggen als ' + sachbearbeiterTSParisLondon?.vorname + ' ' +
-                         sachbearbeiterTSParisLondon?.nachname"
+                         [attr.data-test]="'test-user-' + sachbearbeiterTSParisLondon?.vorname + '-' + sachbearbeiterTSParisLondon?.nachname"
+                         [textContent]="'Einloggen als ' + sachbearbeiterTSParisLondon?.vorname + ' ' + sachbearbeiterTSParisLondon?.nachname"
                          *ngIf="hasSecondGemeinde"
                          (click)="logIn(sachbearbeiterTSParisLondon)"></div>
                 </td>
@@ -285,21 +301,21 @@
                 <td>Administrator/in Gemeinde</td>
                 <td>
                     <div class="first-row panel panel-default mark-hover panel-body"
-                         [textContent]="'Einloggen als ' + administratorGemeindeParis?.vorname + ' ' +
-                         administratorGemeindeParis?.nachname"
+                         [attr.data-test]="'test-user-' + administratorGemeindeParis?.vorname + '-' + administratorGemeindeParis?.nachname"
+                         [textContent]="'Einloggen als ' + administratorGemeindeParis?.vorname + ' ' + administratorGemeindeParis?.nachname"
                          (click)="logIn(administratorGemeindeParis)"></div>
                 </td>
                 <td>
                     <div class="first-row panel panel-default mark-hover panel-body"
-                         [textContent]="'Einloggen als ' + administratorGemeindeLondon?.vorname + ' ' +
-                         administratorGemeindeLondon?.nachname"
+                         [attr.data-test]="'test-user-' + administratorGemeindeLondon?.vorname + '-' + administratorGemeindeLondon?.nachname"
+                         [textContent]="'Einloggen als ' + administratorGemeindeLondon?.vorname + ' ' + administratorGemeindeLondon?.nachname"
                          *ngIf="hasSecondGemeinde"
                          (click)="logIn(administratorGemeindeLondon)"></div>
                 </td>
                 <td>
                     <div class="first-row panel panel-default mark-hover panel-body"
-                         [textContent]="'Einloggen als ' + administratorGemeindeParisLondon?.vorname + ' ' +
-                         administratorGemeindeParisLondon?.nachname"
+                         [attr.data-test]="'test-user-' + administratorGemeindeParisLondon?.vorname + '-' + administratorGemeindeParisLondon?.nachname"
+                         [textContent]="'Einloggen als ' + administratorGemeindeParisLondon?.vorname + ' ' + administratorGemeindeParisLondon?.nachname"
                          *ngIf="hasSecondGemeinde"
                          (click)="logIn(administratorGemeindeParisLondon)"></div>
                 </td>
@@ -309,21 +325,21 @@
                 <td>Sachbearbeiter/in Gemeinde</td>
                 <td>
                     <div class="first-row panel panel-default mark-hover panel-body"
-                         [textContent]="'Einloggen als ' + sachbearbeiterGemeindeParis?.vorname + ' ' +
-                         sachbearbeiterGemeindeParis?.nachname"
+                         [attr.data-test]="'test-user-' + sachbearbeiterGemeindeParis?.vorname + '-' + sachbearbeiterGemeindeParis?.nachname"
+                         [textContent]="'Einloggen als ' + sachbearbeiterGemeindeParis?.vorname + ' ' + sachbearbeiterGemeindeParis?.nachname"
                          (click)="logIn(sachbearbeiterGemeindeParis)"></div>
                 </td>
                 <td>
                     <div class="first-row panel panel-default mark-hover panel-body"
-                         [textContent]="'Einloggen als ' + sachbearbeiterGemeindeLondon?.vorname + ' ' +
-                         sachbearbeiterGemeindeLondon?.nachname"
+                         [attr.data-test]="'test-user-' + sachbearbeiterGemeindeLondon?.vorname + '-' + sachbearbeiterGemeindeLondon?.nachname"
+                         [textContent]="'Einloggen als ' + sachbearbeiterGemeindeLondon?.vorname + ' ' + sachbearbeiterGemeindeLondon?.nachname"
                          *ngIf="hasSecondGemeinde"
                          (click)="logIn(sachbearbeiterGemeindeLondon)"></div>
                 </td>
                 <td>
                     <div class="first-row panel panel-default mark-hover panel-body"
-                         [textContent]="'Einloggen als ' + sachbearbeiterGemeindeParisLondon?.vorname + ' ' +
-                         sachbearbeiterGemeindeParisLondon?.nachname"
+                         [attr.data-test]="'test-user-' + sachbearbeiterGemeindeParisLondon?.vorname + '-' + sachbearbeiterGemeindeParisLondon?.nachname"
+                         [textContent]="'Einloggen als ' + sachbearbeiterGemeindeParisLondon?.vorname + ' ' + sachbearbeiterGemeindeParisLondon?.nachname"
                          *ngIf="hasSecondGemeinde"
                          (click)="logIn(sachbearbeiterGemeindeParisLondon)"></div>
                 </td>
@@ -333,21 +349,21 @@
                 <td>Sachbearbeiter/in Ferienbetreuung Gemeinde</td>
                 <td>
                     <div class="first-row panel panel-default mark-hover panel-body"
-                         [textContent]="'Einloggen als ' + sachbearbeiterinFerienbetreuungGemeindeParis?.vorname + ' ' +
-                         sachbearbeiterinFerienbetreuungGemeindeParis?.nachname"
+                         [attr.data-test]="'test-user-' + sachbearbeiterinFerienbetreuungGemeindeParis?.vorname + '-' + sachbearbeiterinFerienbetreuungGemeindeParis?.nachname"
+                         [textContent]="'Einloggen als ' + sachbearbeiterinFerienbetreuungGemeindeParis?.vorname + ' ' + sachbearbeiterinFerienbetreuungGemeindeParis?.nachname"
                          (click)="logIn(sachbearbeiterinFerienbetreuungGemeindeParis)"></div>
                 </td>
                 <td>
                     <div class="first-row panel panel-default mark-hover panel-body"
-                         [textContent]="'Einloggen als ' + sachbearbeiterinFerienbetreuungGemeindeLondon?.vorname + ' ' +
-                         sachbearbeiterinFerienbetreuungGemeindeLondon?.nachname"
+                         [attr.data-test]="'test-user-' + sachbearbeiterinFerienbetreuungGemeindeLondon?.vorname + '-' + sachbearbeiterinFerienbetreuungGemeindeLondon?.nachname"
+                         [textContent]="'Einloggen als ' + sachbearbeiterinFerienbetreuungGemeindeLondon?.vorname + ' ' + sachbearbeiterinFerienbetreuungGemeindeLondon?.nachname"
                          *ngIf="hasSecondGemeinde"
                          (click)="logIn(sachbearbeiterinFerienbetreuungGemeindeLondon)"></div>
                 </td>
                 <td>
                     <div class="first-row panel panel-default mark-hover panel-body"
-                         [textContent]="'Einloggen als ' + sachbearbeiterinFerienbetreuungGemeindeParisundLondon?.vorname + ' ' +
-                         sachbearbeiterinFerienbetreuungGemeindeParisundLondon?.nachname"
+                         [attr.data-test]="'test-user-' + sachbearbeiterinFerienbetreuungGemeindeParisundLondon?.vorname + '-' + sachbearbeiterinFerienbetreuungGemeindeParisundLondon?.nachname"
+                         [textContent]="'Einloggen als ' + sachbearbeiterinFerienbetreuungGemeindeParisundLondon?.vorname + ' ' + sachbearbeiterinFerienbetreuungGemeindeParisundLondon?.nachname"
                          *ngIf="hasSecondGemeinde"
                          (click)="logIn(sachbearbeiterinFerienbetreuungGemeindeParisundLondon)"></div>
                 </td>
@@ -358,21 +374,21 @@
                 <td>Administrator/in Ferienbetreuung Gemeinde</td>
                 <td>
                     <div class="first-row panel panel-default mark-hover panel-body"
-                         [textContent]="'Einloggen als ' + adminFerienbetreuungGemeindeParis?.vorname + ' ' +
-                         adminFerienbetreuungGemeindeParis?.nachname"
+                         [attr.data-test]="'test-user-' + adminFerienbetreuungGemeindeParis?.vorname + '-' + adminFerienbetreuungGemeindeParis?.nachname"
+                         [textContent]="'Einloggen als ' + adminFerienbetreuungGemeindeParis?.vorname + ' ' + adminFerienbetreuungGemeindeParis?.nachname"
                          (click)="logIn(adminFerienbetreuungGemeindeParis)"></div>
                 </td>
                 <td>
                     <div class="first-row panel panel-default mark-hover panel-body"
-                         [textContent]="'Einloggen als ' + adminFerienbetreuungGemeindeLondon?.vorname + ' ' +
-                         adminFerienbetreuungGemeindeLondon?.nachname"
+                         [attr.data-test]="'test-user-' + adminFerienbetreuungGemeindeLondon?.vorname + '-' + adminFerienbetreuungGemeindeLondon?.nachname"
+                         [textContent]="'Einloggen als ' + adminFerienbetreuungGemeindeLondon?.vorname + ' ' + adminFerienbetreuungGemeindeLondon?.nachname"
                          *ngIf="hasSecondGemeinde"
                          (click)="logIn(adminFerienbetreuungGemeindeLondon)"></div>
                 </td>
                 <td>
                     <div class="first-row panel panel-default mark-hover panel-body"
-                         [textContent]="'Einloggen als ' + adminFerienbetreuungGemeindeParisundLondon?.vorname + ' ' +
-                         adminFerienbetreuungGemeindeParisundLondon?.nachname"
+                         [attr.data-test]="'test-user-' + adminFerienbetreuungGemeindeParisundLondon?.vorname + '-' + adminFerienbetreuungGemeindeParisundLondon?.nachname"
+                         [textContent]="'Einloggen als ' + adminFerienbetreuungGemeindeParisundLondon?.vorname + ' ' + adminFerienbetreuungGemeindeParisundLondon?.nachname"
                          *ngIf="hasSecondGemeinde"
                          (click)="logIn(adminFerienbetreuungGemeindeParisundLondon)"></div>
                 </td>
@@ -383,20 +399,21 @@
                 <td>Steueramt</td>
                 <td>
                     <div class="first-row panel panel-default mark-hover panel-body"
+                         [attr.data-test]="'test-user-' + steueramtParis?.vorname + '-' + steueramtParis?.nachname"
                          [textContent]="'Einloggen als ' + steueramtParis?.vorname + ' ' + steueramtParis?.nachname"
                          (click)="logIn(steueramtParis)"></div>
                 </td>
                 <td>
                     <div class="first-row panel panel-default mark-hover panel-body"
-                         [textContent]="'Einloggen als ' + steueramtLondon?.vorname + ' ' +
-                         steueramtLondon?.nachname"
+                         [attr.data-test]="'test-user-' + steueramtLondon?.vorname + '-' + steueramtLondon?.nachname"
+                         [textContent]="'Einloggen als ' + steueramtLondon?.vorname + ' ' + steueramtLondon?.nachname"
                          *ngIf="hasSecondGemeinde"
                          (click)="logIn(steueramtLondon)"></div>
                 </td>
                 <td>
                     <div class="first-row panel panel-default mark-hover panel-body"
-                         [textContent]="'Einloggen als ' + steueramtParisLondon?.vorname + ' ' +
-                         steueramtParisLondon?.nachname"
+                         [attr.data-test]="'test-user-' + steueramtParisLondon?.vorname + '-' + steueramtParisLondon?.nachname"
+                         [textContent]="'Einloggen als ' + steueramtParisLondon?.vorname + ' ' + steueramtParisLondon?.nachname"
                          *ngIf="hasSecondGemeinde"
                          (click)="logIn(steueramtParisLondon)"></div>
                 </td>
@@ -405,20 +422,21 @@
                 <td>Revisor/in</td>
                 <td>
                     <div class="first-row panel panel-default mark-hover panel-body"
+                         [attr.data-test]="'test-user-' + revisorParis?.vorname + '-' + revisorParis?.nachname"
                          [textContent]="'Einloggen als ' + revisorParis?.vorname + ' ' + revisorParis?.nachname"
                          (click)="logIn(revisorParis)"></div>
                 </td>
                 <td>
                     <div class="first-row panel panel-default mark-hover panel-body"
-                         [textContent]="'Einloggen als ' + revisorLondon?.vorname + ' ' +
-                         revisorLondon?.nachname"
+                         [attr.data-test]="'test-user-' + revisorLondon?.vorname + '-' + revisorLondon?.nachname"
+                         [textContent]="'Einloggen als ' + revisorLondon?.vorname + ' ' + revisorLondon?.nachname"
                          *ngIf="hasSecondGemeinde"
                          (click)="logIn(revisorLondon)"></div>
                 </td>
                 <td>
                     <div class="first-row panel panel-default mark-hover panel-body"
-                         [textContent]="'Einloggen als ' + revisorParisLondon?.vorname + ' ' +
-                         revisorParisLondon?.nachname"
+                         [attr.data-test]="'test-user-' + revisorParisLondon?.vorname + '-' + revisorParisLondon?.nachname"
+                         [textContent]="'Einloggen als ' + revisorParisLondon?.vorname + ' ' + revisorParisLondon?.nachname"
                          *ngIf="hasSecondGemeinde"
                          (click)="logIn(revisorParisLondon)"></div>
                 </td>
@@ -427,19 +445,21 @@
                 <td>Jurist/in</td>
                 <td>
                     <div class="first-row panel panel-default mark-hover panel-body"
+                         [attr.data-test]="'test-user-' + juristParis?.vorname + '-' + juristParis?.nachname"
                          [textContent]="'Einloggen als ' + juristParis?.vorname + ' ' + juristParis?.nachname"
                          (click)="logIn(juristParis)"></div>
                 </td>
                 <td>
                     <div class="first-row panel panel-default mark-hover panel-body"
+                         [attr.data-test]="'test-user-' + juristLondon?.vorname + '-' + juristLondon?.nachname"
                          [textContent]="'Einloggen als ' + juristLondon?.vorname + ' ' + juristLondon?.nachname"
                          *ngIf="hasSecondGemeinde"
                          (click)="logIn(juristLondon)"></div>
                 </td>
                 <td>
                     <div class="first-row panel panel-default mark-hover panel-body"
-                         [textContent]="'Einloggen als ' + juristParisLondon?.vorname + ' ' +
-                         juristParisLondon?.nachname"
+                         [attr.data-test]="'test-user-' + juristParisLondon?.vorname + '-' + juristParisLondon?.nachname"
+                         [textContent]="'Einloggen als ' + juristParisLondon?.vorname + ' ' + juristParisLondon?.nachname"
                          *ngIf="hasSecondGemeinde"
                          (click)="logIn(juristParisLondon)"></div>
                 </td>

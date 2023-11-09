@@ -178,10 +178,22 @@
 
                 <ng-container [matColumnDef]="'zahlungPain'">
                     <mat-header-cell *matHeaderCellDef class="ellipsis">
-                        <span translate>ZAHLUNG_PAIN001</span>
+                        <span [innerHTML]="'ZAHLUNG_PAIN001' | translate"></span>
                     </mat-header-cell>
                     <mat-cell *matCellDef="let element" class="ellipsis">
                         <dv-loading-button type="button" (buttonClick)="downloadPain(element)"
+                                           [buttonClass]="'dv-btn-operation'">
+                            <i class="fa fa-lg fa-file-code-o"></i>
+                        </dv-loading-button>
+                    </mat-cell>
+                </ng-container>
+
+                <ng-container [matColumnDef]="'zahlungInfoma'">
+                    <mat-header-cell *matHeaderCellDef class="ellipsis">
+                        <span [innerHTML]="'ZAHLUNG_INFOMA' | translate"></span>
+                    </mat-header-cell>
+                    <mat-cell *matCellDef="let element" class="ellipsis">
+                        <dv-loading-button type="button" (buttonClick)="downloadInfoma(element)"
                                            [buttonClass]="'dv-btn-operation'">
                             <i class="fa fa-lg fa-file-code-o"></i>
                         </dv-loading-button>

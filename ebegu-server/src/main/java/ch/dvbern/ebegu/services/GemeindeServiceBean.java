@@ -384,6 +384,12 @@ public class GemeindeServiceBean extends AbstractBaseService implements Gemeinde
 	}
 
 	@Override
+	public void updateAngebotBGTFO(@Nonnull Gemeinde gemeinde, boolean value) {
+		gemeinde.setAngebotBGTFO(value);
+		persistence.merge(gemeinde);
+	}
+
+	@Override
 	public void updateAngebotTS(@Nonnull Gemeinde gemeinde, boolean value, boolean nurLats) {
 		gemeinde.setAngebotTS(value);
 		gemeinde.setNurLats(nurLats);

@@ -17,22 +17,20 @@
 
 package ch.dvbern.ebegu.pdfgenerator;
 
-import java.awt.Color;
-import java.math.BigDecimal;
-import java.util.List;
-
-import javax.annotation.Nonnull;
-
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.GemeindeStammdaten;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.BetreuungspensumAnzeigeTyp;
 import ch.dvbern.lib.invoicegenerator.pdf.PdfGenerator;
-import com.lowagie.text.Document;
-import com.lowagie.text.Element;
+import com.lowagie.text.*;
 import com.lowagie.text.Font;
 import com.lowagie.text.pdf.PdfPTable;
 import org.jetbrains.annotations.Nullable;
+
+import javax.annotation.Nonnull;
+import java.awt.*;
+import java.math.BigDecimal;
+import java.util.List;
 
 public class VerfuegungPdfGeneratorLuzern extends AbstractVerfuegungPdfGenerator {
 
@@ -167,5 +165,10 @@ public class VerfuegungPdfGeneratorLuzern extends AbstractVerfuegungPdfGenerator
 	@Override
 	protected void createDokumentKeinAnspruchTFO(Document document, PdfGenerator generator) {
 		super.createDokumentNormal(document, generator);
+	}
+
+	@Override
+	protected void addSuperTextForKeinAnspruchAbschnitt(Paragraph paragraph) {
+		//no-op in Luzern soll kein SuperText angezeigt werden, da keine Fussnote existiert
 	}
 }
