@@ -220,7 +220,8 @@ export class SteuerabfrageResponseHintsComponent implements OnInit, OnDestroy, O
     }
 
     public showRetryForGemeinde(): boolean {
-        return (EbeguUtil.isNullOrUndefined(this.gsStatus) || this.showZugriffErfolgreich(this.gsStatus)) && this.isGemeindeOrSuperadmin();
+        return (EbeguUtil.isNullOrUndefined(this.gsStatus)
+            || this.showZugriffErfolgreich(this.gsStatus)) && this.isGemeindeOrSuperadmin();
     }
 
     public getGS1Name(): string {
