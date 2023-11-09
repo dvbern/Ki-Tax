@@ -32,4 +32,10 @@ export class TSAbstractMutableEntity extends TSAbstractEntity {
     public hasVorgaenger(): boolean {
         return this.vorgaengerId !== null && this.vorgaengerId !== undefined;
     }
+
+    public deepCopyTo(target: TSAbstractMutableEntity): TSAbstractMutableEntity {
+        super.deepCopyTo(target);
+        target.vorgaengerId = this.vorgaengerId;
+        return target;
+    }
 }

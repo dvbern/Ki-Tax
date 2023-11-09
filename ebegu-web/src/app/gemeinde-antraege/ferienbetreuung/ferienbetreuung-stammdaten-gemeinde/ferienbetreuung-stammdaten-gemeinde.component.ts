@@ -338,7 +338,7 @@ export class FerienbetreuungStammdatenGemeindeComponent extends AbstractFerienbe
         this.stammdaten.stammdatenKontaktpersonFunktion = this.form.value.stammdatenKontaktpersonFunktion;
         this.stammdaten.stammdatenKontaktpersonTelefon = this.form.value.stammdatenKontaktpersonTelefon;
         this.stammdaten.stammdatenKontaktpersonEmail = this.form.value.stammdatenKontaktpersonEmail;
-        this.stammdaten.iban = this.form.controls.auszahlungsdaten.value.iban.toUpperCase();
+        this.stammdaten.iban = this.form.controls.auszahlungsdaten.value.iban?.toUpperCase();
         this.stammdaten.kontoinhaber = this.form.value.auszahlungsdaten.kontoinhaber;
 
         const adresseKontoinhaber = new TSAdresse().from(this.form.value.auszahlungsdaten.adresseKontoinhaber);

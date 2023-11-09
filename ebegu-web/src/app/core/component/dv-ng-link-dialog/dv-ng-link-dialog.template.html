@@ -16,7 +16,7 @@
 <h2 mat-dialog-title [textContent]="title | translate"></h2>
 
 <mat-dialog-content>
-    <a class="md-default-theme" (click)="close()" href="{{link}}">
+    <a class="md-default-theme" (click)="close()" href="{{link}}" data-test="dialog-link">
         <span class="ng-binding ng-scope" [textContent]="link"></span>
     </a>
 </mat-dialog-content>

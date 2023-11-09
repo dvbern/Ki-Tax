@@ -66,6 +66,7 @@
                                 <input id="vorname_ID"
                                        type="text"
                                        name="vorname"
+                                       data-test="vorname"
                                        ng-model="vm.getModelJA().vorname"
                                        dv-max-length
                                        class="form-control input-dv"
@@ -87,6 +88,7 @@
                                        id="name_ID"
                                        type="text"
                                        name="name"
+                                       data-test="name"
                                        ng-model="vm.getModelJA().nachname"
                                        dv-max-length
                                        class="form-control"
@@ -131,6 +133,7 @@
                                 </label>
                                 <div class="dv-select-style dv-input-container-medium-select">
                                     <select name="korrespondenzSprache" id="korrespondenzSprache" class="form-control"
+                                            data-test="korrespondenzSprache"
                                             aria-describedby="korrespondenzSprache-error"
                                             ng-model="vm.getModelJA().korrespondenzSprache"
                                             ng-options="lang | translate for lang in vm.getSprachen()"
@@ -185,6 +188,7 @@
                         <div class="col-xs-12 dv-input-container-question">
                             <div class=" checkbox">
                                 <md-checkbox ng-model="vm.getModelJA().diplomatenstatus" name="diplomatenstatus"
+                                             data-test="diplomatenstatus"
                                              id="diplomatenstatus"
                                              aria-label="{{'GESUCHSTELLER_DIPLOMATENSTATUS'|translate}}"
                                              dv-enable-element
@@ -207,6 +211,7 @@
                             <div class="checkbox no-tooltip">
                                 <md-checkbox ng-model="vm.getModel().showUmzug"
                                              name="umzug"
+                                             data-test="umzug"
                                              aria-label="{{'UMZUG'|translate}}"
                                              dv-enable-element
                                              dv-enable-allowed-roles="vm.TSRoleUtil.getAllRolesButTraegerschaftInstitution()"
@@ -225,6 +230,7 @@
                             <div class=" checkbox">
                                 <md-checkbox ng-model="vm.showKorrespondadr"
                                              name="korrespondenzAdr"
+                                             data-test="korrespondenzAdr"
                                              id="korrespondenzAdr"
                                              aria-label="{{'KORRESPONDENZADR'|translate}}"
                                              ng-change="vm.korrespondenzAdrClicked()"
@@ -256,6 +262,7 @@
                             <div class=" checkbox">
                                 <md-checkbox ng-model="vm.showRechnungsadr"
                                              name="rechnungsAdr"
+                                             data-test="rechnungsAdr"
                                              id="rechnungsAdr"
                                              aria-label="{{'RECHNUNGSADR'|translate}}"
                                              ng-change="vm.rechnungsAdrClicked()"
@@ -296,6 +303,7 @@
                                        id="email_ID"
                                        type="email"
                                        name="email"
+                                       data-test="email"
                                        ng-model="vm.getModelJA().mail"
                                        dv-max-length
                                        class="form-control"
@@ -322,6 +330,7 @@
                                        id="mobile_ID"
                                        type="text"
                                        name="mobile"
+                                       data-test="mobile"
                                        ng-model="vm.getModelJA().mobile"
                                        dv-max-length
                                        class="form-control"
@@ -343,6 +352,7 @@
                                        id="tel_ID"
                                        type="text"
                                        name="telefon"
+                                       data-test="telefon"
                                        ng-model="vm.getModelJA().telefon"
                                        dv-max-length
                                        class="form-control"
@@ -365,6 +375,7 @@
                                 <label class="md-no-float" data-translate="TELEFON_AUSLAND" for="ausl_tel">
                                 </label>
                                 <input aria-describedby="ausl_tel-error" id="ausl_tel" type="text" name="telefonAusland"
+                                       data-test="telefonAusland"
                                        ng-model="vm.getModelJA().telefonAusland" autocomplete="tel"
                                        dv-max-length class="form-control">
                                 <dv-bisher gs="vm.getModel().gesuchstellerGS.telefonAusland"

@@ -172,11 +172,11 @@ export class TagesschulenAngabenComponent implements OnInit {
     public nachmittagsbetreuung1Oeffnungszeiten: TSOeffnungszeitenTagesschule;
     public nachmittagsbetreuung2Oeffnungszeiten: TSOeffnungszeitenTagesschule;
 
-    public readonly canSeeSave$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
-    public readonly canSeeAbschliessen$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
-    public readonly canSeeFreigeben$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
-    public readonly canSeeFalscheAngaben$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
-    public readonly canSeeDurchKibonAusfuellen$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+    public readonly canSeeSave: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+    public readonly canSeeAbschliessen: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+    public readonly canSeeFreigeben: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+    public readonly canSeeFalscheAngaben: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+    public readonly canSeeDurchKibonAusfuellen: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
     public constructor(
         private readonly lastenausgleichTSService: LastenausgleichTSService,
@@ -305,11 +305,11 @@ export class TagesschulenAngabenComponent implements OnInit {
             }
         }
 
-        this.canSeeDurchKibonAusfuellen$.next(canSeeDurchKibonAusfuellen);
-        this.canSeeSave$.next(canSeeSave);
-        this.canSeeFreigeben$.next(canSeeFreigeben);
-        this.canSeeAbschliessen$.next(canSeeGeprueft);
-        this.canSeeFalscheAngaben$.next(canSeeFalscheAngaben);
+        this.canSeeDurchKibonAusfuellen.next(canSeeDurchKibonAusfuellen);
+        this.canSeeSave.next(canSeeSave);
+        this.canSeeFreigeben.next(canSeeFreigeben);
+        this.canSeeAbschliessen.next(canSeeGeprueft);
+        this.canSeeFalscheAngaben.next(canSeeFalscheAngaben);
     }
 
     public canEditForm(): boolean {
@@ -547,6 +547,7 @@ export class TagesschulenAngabenComponent implements OnInit {
             this.errorService.clearAll();
             this.wizardRS.updateSteps(TSWizardStepXTyp.LASTENAUSGLEICH_TAGESSCHULEN, this.gemeindeAntragContainer.id);
             this.lastenausgleichTSService.updateLATSAngabenGemeindeContainerStore(this.routerGlobals.params.id);
+            this.form.enable();
             this.cd.markForCheck();
         }, error => {
             if (error.error.includes(

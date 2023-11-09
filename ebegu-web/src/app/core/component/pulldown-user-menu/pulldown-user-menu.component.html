@@ -15,7 +15,7 @@
   ~ along with this program.  If not, see <https://www.gnu.org/licenses/>.
   -->
 
-<button mat-button [matMenuTriggerFor]="menu" class="user-menu-trigger">
+<button mat-button [matMenuTriggerFor]="menu" class="user-menu-trigger" data-test="page-menu">
     <span>{{getFullName() | async}}</span>
     <i class="fa fa-angle-down"></i>
 </button>
