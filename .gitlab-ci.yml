@@ -1,0 +1,84 @@
+# stages: [build, validate, test, analyze, package, deploy, mirror]
+stages: [build, prepare-package, package, deploy, mirror]
+
+variables:
+  RELEASE_VERSION:
+    description: "The version of the release to build and push"
+
+workflow:
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+      variables:
+        VERSION: $CI_COMMIT_SHA
+    - if: $CI_MERGE_REQUEST_ID || '$CI_PIPELINE_SOURCE == "merge_request_event"'
+      variables:
+        VERSION: $CI_COMMIT_REF_SLUG
+    - if: $RELEASE_VERSION != ""
+      variables:
+        VERSION: $RELEASE_VERSION
+
+include:
+  - component: 'gitlab.dvbern.ch/components/buildah@v1.0.1'
+    inputs:
+      registry: $DVB_PUBLIC_DOCKER_REGISTRY
+      registry-user: $DVB_PUBLIC_DOCKER_REGISTRY_USER
+      registry-token: $DVB_PUBLIC_DOCKER_REGISTRY_TOKEN
+      name: build-dev-docker-image
+      stage: package
+      image-name: kibon/kibon-wildfly
+      dockerfile-path: ./kibon-docker/kibon-docker-config/Dockerfile
+      version: $VERSION
+      push-enabled: "false"
+
+# build-dev-docker-image:
+#   extends: .build-dev-docker-image
+#   needs: [ "download-dev-artifacts" ]
+#   stage: package
+
+# Build, test and deploy to Nexus the newest commit on dev
+build-dev-without-arquillian:
+  image: docker-registry.dvbern.ch/kibon/build-environment/mvn-npm-gitflow-chromium:jdk11-old
+  stage: build
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $CI_PIPELINE_SOURCE != "schedule"
+  script:
+    - |
+      mvn -B -U -T 1C \
+      -Pdvbern.oss \
+      -P frontend \
+      -P ci \
+      --settings build-config/maven_dev_settings.xml \
+      clean deploy
+
+build-dev-with-arquillian:
+  extends: build-dev-without-arquillian
+  rules:
+    - if: $CI_COMMIT_BRANCH == "dev" && $CI_PIPELINE_SOURCE == "schedule"
+  script:
+    - |
+      mvn -B -U -T 1C \
+      -Pdvbern.oss \
+      -P frontend \
+      -P ci \
+      -P test-wildfly-managed \
+      --settings build-config/maven_dev_settings.xml \
+      clean deploy
+
+download-dev-artifacts:
+  image: maven:3.6.3-openjdk-11
+  stage: prepare-package
+  script:
+    - |
+      cd ..
+      git clone -b develop --single-branch https://gitlab.dvbern.ch/kibon/kibon-docker.git kibon-docker
+      cd kibon-docker
+    - |
+      mvn --file kibon-docker-config/pom.xml \
+      clean package \
+      -U -Drelease.version="${releaseversion} \
+      -Pcreate-docker-image-kibon
+  artifacts:
+    paths:
+      - "kibon-docker-config/target/**/*.war"
+      - "kibon-docker-config/target/**/*.jar"
+    expire_in: "30 days"
