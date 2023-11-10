@@ -21,18 +21,6 @@ workflow:
         MAVEN_GOAL: install
 
 include:
-  # - component: 'gitlab.dvbern.ch/components/buildah@v1.0.1'
-  #   inputs:
-  #     registry: $DVB_PUBLIC_DOCKER_REGISTRY
-  #     registry-user: $DVB_PUBLIC_DOCKER_REGISTRY_USER
-  #     registry-token: $DVB_PUBLIC_DOCKER_REGISTRY_TOKEN
-  #     name: build-dev-docker-image
-  #     stage: package
-  #     image-name: kibon/kibon-wildfly
-  #     dockerfile-path: ./kibon-docker/kibon-docker-config/Dockerfile
-  #     version: $VERSION
-  #     push-enabled: "false"
-
   - component: gitlab.dvbern.ch/components/maven@v2.0.1
     rules:
       - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $CI_PIPELINE_SOURCE != "schedule"
@@ -48,6 +36,18 @@ include:
       java-image: docker-registry.dvbern.ch/kibon/build-environment/mvn-npm-gitflow-chromium
       java-image-version: jdk11-old
       maven-goal: -Pdvbern.oss -Pfrontend -Pci -Ptest-wildfly-managed clean install
+
+  - component: 'gitlab.dvbern.ch/components/buildah@v1.0.1'
+    inputs:
+      registry: $DVB_PUBLIC_DOCKER_REGISTRY
+      registry-user: $DVB_PUBLIC_DOCKER_REGISTRY_USER
+      registry-token: $DVB_PUBLIC_DOCKER_REGISTRY_TOKEN
+      name: build-dev-docker-image
+      stage: package
+      image-name: kibon/kibon-wildfly
+      dockerfile-path: ./kibon-docker/kibon-docker-config/Dockerfile
+      version: $VERSION
+      push-enabled: "false"
 
 # build-dev-docker-image:
 #   extends: .build-dev-docker-image
