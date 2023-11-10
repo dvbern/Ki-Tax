@@ -249,12 +249,6 @@ public final class EbeguUtil {
 			.getVerguenstigungGewuenscht());
 	}
 
-	public static boolean isSozialhilfeBezuegerNull(@Nonnull Gesuch gesuch) {
-		return (gesuch.getFamiliensituationContainer() != null
-			&& gesuch.getFamiliensituationContainer().getFamiliensituationJA() != null
-			&& gesuch.getFamiliensituationContainer().getFamiliensituationJA().getSozialhilfeBezueger() == null);
-	}
-
 	public static boolean isFinanzielleSituationIntroducedAndComplete(
 		@Nonnull Gesuch gesuch,
 		@Nullable WizardStepName wizardStepName) {
@@ -351,25 +345,25 @@ public final class EbeguUtil {
 	}
 
 	private static boolean isMandantSpecificFinSitGemeinsam(@Nonnull Gesuch gesuch) {
-		if (gesuch.getFinSitTyp() == FinanzielleSituationTyp.LUZERN &&
-			requireNonNull(requireNonNull(gesuch.getFamiliensituationContainer()).getFamiliensituationJA()).getFamilienstatus()
-				== EnumFamilienstatus.VERHEIRATET) {
-			// finsit is gemeinsam for verheiratet in Luzern
-			return true;
+		switch (gesuch.getFinSitTyp()) {
+		case LUZERN:
+			return requireNonNull(requireNonNull(gesuch.getFamiliensituationContainer()).getFamiliensituationJA()).getFamilienstatus()
+				== EnumFamilienstatus.VERHEIRATET;
+		case APPENZELL:
+			return Boolean.TRUE.equals(requireNonNull(requireNonNull(gesuch.getFamiliensituationContainer()).getFamiliensituationJA())
+				.getGemeinsameSteuererklaerung());
+		default:
+			return false;
 		}
-		if (gesuch.getFinSitTyp() == FinanzielleSituationTyp.APPENZELL && Boolean.TRUE.equals(requireNonNull(
-			requireNonNull(gesuch.getFamiliensituationContainer())
-				.getFamiliensituationJA())
-			.getGemeinsameSteuererklaerung())) {
-			return true;
-		}
-		return false;
 	}
 
 	private static boolean isFinanzielleSituationVollstaendig(
-		@Nonnull FinanzielleSituation finanzielleSituation,
+		@Nullable FinanzielleSituation finanzielleSituation,
 		FinanzielleSituationTyp finSitTyp,
 		@Nonnull Gesuch gesuch) {
+		if (finanzielleSituation == null) {
+			return false;
+		}
 		boolean valid = false;
 		// Solothurn hat nur einen Teil von seiner Feldern in der Abstract Methode so wir muessen
 		if (finSitTyp.equals(FinanzielleSituationTyp.SOLOTHURN)) {
@@ -436,7 +430,7 @@ public final class EbeguUtil {
 
 	private static boolean isInfomaZahlungenVollstaendig(Gesuch gesuch) {
 		boolean valid = true;
-		if(gesuch.getStatus().isReadableByJugendamtSchulamtSteueramt()){
+		if (gesuch.getStatus().isReadableByJugendamtSchulamtSteueramt()) {
 			valid = gesuch.getFamiliensituationContainer() != null
 				&& gesuch.getFamiliensituationContainer().getFamiliensituationJA() != null
 				&& gesuch.getFamiliensituationContainer().getFamiliensituationJA().getAuszahlungsdaten() != null
@@ -674,7 +668,8 @@ public final class EbeguUtil {
 	}
 
 	@Nonnull
-	public static OeffnungszeitenTagesschuleDTO[] convertOeffnungszeiten(@Nonnull String oeffnungszeiten) throws JsonProcessingException {
+	public static OeffnungszeitenTagesschuleDTO[] convertOeffnungszeiten(@Nonnull String oeffnungszeiten)
+		throws JsonProcessingException {
 		ObjectMapper mapper = new ObjectMapper();
 		mapper.configure(DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT, true);
 		return mapper.readValue(oeffnungszeiten, OeffnungszeitenTagesschuleDTO[].class);
