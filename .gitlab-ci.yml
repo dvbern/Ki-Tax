@@ -37,10 +37,11 @@ include:
 
 # Build, test and deploy to Nexus the newest commit on dev
 build-dev-without-arquillian:
+  tags: ['os:linux', 'type:docker', 'zone:tz']
   image: docker-registry.dvbern.ch/kibon/build-environment/mvn-npm-gitflow-chromium:jdk11-old
   stage: build
   rules:
-    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $CI_PIPELINE_SOURCE != "schedule"
+    - if: $CI_COMMIT_BRANCH == "feature/gitlab-pipeline-migration" && $CI_PIPELINE_SOURCE != "schedule"
   script:
     - |
       mvn -B -U -T 1C \
@@ -51,9 +52,10 @@ build-dev-without-arquillian:
       clean deploy
 
 build-dev-with-arquillian:
+  tags: ['os:linux', 'type:docker', 'zone:tz']
   extends: build-dev-without-arquillian
   rules:
-    - if: $CI_COMMIT_BRANCH == "dev" && $CI_PIPELINE_SOURCE == "schedule"
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $CI_PIPELINE_SOURCE == "schedule"
   script:
     - |
       mvn -B -U -T 1C \
@@ -65,6 +67,7 @@ build-dev-with-arquillian:
       clean deploy
 
 download-dev-artifacts:
+  tags: ['os:linux', 'type:docker', 'zone:tz']
   image: maven:3.6.3-openjdk-11
   stage: prepare-package
   script:
