@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
+import ch.dvbern.ebegu.entities.Auszahlungsdaten;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Dossier;
 import ch.dvbern.ebegu.entities.Fall;
@@ -42,6 +43,7 @@ import ch.dvbern.ebegu.enums.EnumFamilienstatus;
 import ch.dvbern.ebegu.enums.FinanzielleSituationTyp;
 import ch.dvbern.ebegu.enums.WizardStepName;
 import ch.dvbern.ebegu.util.mandant.MandantIdentifier;
+import ch.dvbern.oss.lib.beanvalidation.embeddables.IBAN;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -209,11 +211,43 @@ public class EbeguUtilTest {
 	}
 
 	@Test
-	public void isFinanzielleSituationIntroducedAndComplete_LUZERN_Test() {
+	public void isFinanzielleSituationIntroducedAndComplete_LUZERN_Infoma_Test() {
 		Gesuch gesuch = new Gesuch();
+		gesuch.setStatus(AntragStatus.IN_BEARBEITUNG_GS);
+		gesuch.setFinSitTyp(FinanzielleSituationTyp.LUZERN);
 		gesuch.setFamiliensituationContainer(new FamiliensituationContainer());
 		Assert.assertFalse(EbeguUtil.isFinanzielleSituationIntroducedAndComplete(gesuch, WizardStepName.FINANZIELLE_SITUATION));
 
+		GesuchstellerContainer gesuchstellerContainer = new GesuchstellerContainer();
+		FinanzielleSituationContainer finanzielleSituationContainer = new FinanzielleSituationContainer();
+		gesuchstellerContainer.setFinanzielleSituationContainer(finanzielleSituationContainer);
+		gesuch.setGesuchsteller1(gesuchstellerContainer);
+		FinanzielleSituation finSitLuzern = new FinanzielleSituation();
+
+		gesuch.getGesuchsteller1().getFinanzielleSituationContainer().setFinanzielleSituationJA(finSitLuzern);
+		gesuch.getGesuchsteller1().getFinanzielleSituationContainer().getFinanzielleSituationJA().setSteuerbaresEinkommen(BigDecimal.ONE);
+		gesuch.getGesuchsteller1().getFinanzielleSituationContainer().getFinanzielleSituationJA().setSteuerbaresVermoegen(BigDecimal.ONE);
+		gesuch.getGesuchsteller1().getFinanzielleSituationContainer().getFinanzielleSituationJA().setAbzuegeLiegenschaft(BigDecimal.ONE);
+		gesuch.getGesuchsteller1().getFinanzielleSituationContainer().getFinanzielleSituationJA().setGeschaeftsverlust(BigDecimal.ONE);
+		gesuch.getGesuchsteller1().getFinanzielleSituationContainer().getFinanzielleSituationJA().setEinkaeufeVorsorge(BigDecimal.ONE);
+		Assert.assertFalse(EbeguUtil.isFinanzielleSituationIntroducedAndComplete(gesuch, WizardStepName.FINANZIELLE_SITUATION));
+
+		gesuch.setFamiliensituationContainer(new FamiliensituationContainer());
+		gesuch.getFamiliensituationContainer().setFamiliensituationJA(new Familiensituation());
+		gesuch.getFamiliensituationContainer().getFamiliensituationJA().setAuszahlungsdaten(new Auszahlungsdaten());
+		Assert.assertFalse(EbeguUtil.isFinanzielleSituationIntroducedAndComplete(gesuch, WizardStepName.FINANZIELLE_SITUATION));
+
+		gesuch.getFamiliensituationContainer().getFamiliensituationJA().getAuszahlungsdaten().setIban(new IBAN());
+		Assert.assertTrue(EbeguUtil.isFinanzielleSituationIntroducedAndComplete(gesuch, WizardStepName.FINANZIELLE_SITUATION));
+
+		gesuch.setStatus(AntragStatus.IN_BEARBEITUNG_JA);
+		Assert.assertFalse(EbeguUtil.isFinanzielleSituationIntroducedAndComplete(gesuch, WizardStepName.FINANZIELLE_SITUATION));
+
+		gesuch.getFamiliensituationContainer().getFamiliensituationJA().getAuszahlungsdaten().setInfomaBankcode("test");
+		Assert.assertFalse(EbeguUtil.isFinanzielleSituationIntroducedAndComplete(gesuch, WizardStepName.FINANZIELLE_SITUATION));
+
+		gesuch.getFamiliensituationContainer().getFamiliensituationJA().getAuszahlungsdaten().setInfomaKreditorennummer("test");
+		Assert.assertTrue(EbeguUtil.isFinanzielleSituationIntroducedAndComplete(gesuch, WizardStepName.FINANZIELLE_SITUATION));
 	}
 
 	@Test
@@ -236,30 +270,13 @@ public class EbeguUtilTest {
 
 		FinSitZusatzangabenAppenzell finSitAR = new FinSitZusatzangabenAppenzell();
 		gesuch.getGesuchsteller1().getFinanzielleSituationContainer().getFinanzielleSituationJA().setFinSitZusatzangabenAppenzell(finSitAR);
-		Assert.assertFalse(EbeguUtil.isFinanzielleSituationIntroducedAndComplete(gesuch, WizardStepName.FINANZIELLE_SITUATION));
-
-
 		gesuch.getGesuchsteller1().getFinanzielleSituationContainer().getFinanzielleSituationJA().getFinSitZusatzangabenAppenzell().setSaeule3a(BigDecimal.TEN);
-		Assert.assertFalse(EbeguUtil.isFinanzielleSituationIntroducedAndComplete(gesuch, WizardStepName.FINANZIELLE_SITUATION));
-
 		gesuch.getGesuchsteller1().getFinanzielleSituationContainer().getFinanzielleSituationJA().getFinSitZusatzangabenAppenzell().setSaeule3aNichtBvg(BigDecimal.TEN);
-		Assert.assertFalse(EbeguUtil.isFinanzielleSituationIntroducedAndComplete(gesuch, WizardStepName.FINANZIELLE_SITUATION));
-
 		gesuch.getGesuchsteller1().getFinanzielleSituationContainer().getFinanzielleSituationJA().getFinSitZusatzangabenAppenzell().setBeruflicheVorsorge(BigDecimal.TEN);
-		Assert.assertFalse(EbeguUtil.isFinanzielleSituationIntroducedAndComplete(gesuch, WizardStepName.FINANZIELLE_SITUATION));
-
 		gesuch.getGesuchsteller1().getFinanzielleSituationContainer().getFinanzielleSituationJA().getFinSitZusatzangabenAppenzell().setLiegenschaftsaufwand(BigDecimal.TEN);
-		Assert.assertFalse(EbeguUtil.isFinanzielleSituationIntroducedAndComplete(gesuch, WizardStepName.FINANZIELLE_SITUATION));
-
 		gesuch.getGesuchsteller1().getFinanzielleSituationContainer().getFinanzielleSituationJA().getFinSitZusatzangabenAppenzell().setEinkuenfteBgsa(BigDecimal.TEN);
-		Assert.assertFalse(EbeguUtil.isFinanzielleSituationIntroducedAndComplete(gesuch, WizardStepName.FINANZIELLE_SITUATION));
-
 		gesuch.getGesuchsteller1().getFinanzielleSituationContainer().getFinanzielleSituationJA().getFinSitZusatzangabenAppenzell().setVorjahresverluste(BigDecimal.TEN);
-		Assert.assertFalse(EbeguUtil.isFinanzielleSituationIntroducedAndComplete(gesuch, WizardStepName.FINANZIELLE_SITUATION));
-
 		gesuch.getGesuchsteller1().getFinanzielleSituationContainer().getFinanzielleSituationJA().getFinSitZusatzangabenAppenzell().setPolitischeParteiSpende(BigDecimal.TEN);
-		Assert.assertFalse(EbeguUtil.isFinanzielleSituationIntroducedAndComplete(gesuch, WizardStepName.FINANZIELLE_SITUATION));
-
 		gesuch.getGesuchsteller1().getFinanzielleSituationContainer().getFinanzielleSituationJA().getFinSitZusatzangabenAppenzell().setLeistungAnJuristischePersonen(BigDecimal.TEN);
 		Assert.assertFalse(EbeguUtil.isFinanzielleSituationIntroducedAndComplete(gesuch, WizardStepName.FINANZIELLE_SITUATION));
 
