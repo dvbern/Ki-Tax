@@ -293,27 +293,17 @@ public final class EbeguUtil {
 			if (gesuch.getEinkommensverschlechterungInfoContainer()
 				.getEinkommensverschlechterungInfoJA()
 				.getEkvFuerBasisJahrPlus1()) {
-
 				Objects.requireNonNull(gesuch.getGesuchsteller1());
-				Objects.requireNonNull(gesuch.getGesuchsteller1().getEinkommensverschlechterungContainer());
-
 				if (gesuch.getGesuchsteller1().getEinkommensverschlechterungContainer() == null) {
 					return false;
 				}
-				if (!isEinkommensverschlechterungVollstaendig(gesuch.getGesuchsteller1()
-					.getEinkommensverschlechterungContainer()
-					.getEkvJABasisJahrPlus1(), gesuch.getFinSitTyp(), gesuch)) {
-					return false;
-				}
-				if (isMandantSpecificFinSitGemeinsam(gesuch)) {
-					return true;
-				}
-				if (gesuch.getGesuchsteller2() != null
-					&& gesuch.getGesuchsteller2().getEinkommensverschlechterungContainer() != null
-					&& !isEinkommensverschlechterungVollstaendig(gesuch.getGesuchsteller2()
-					.getEinkommensverschlechterungContainer()
-					.getEkvJABasisJahrPlus1(), gesuch.getFinSitTyp(), gesuch)
-				) {
+				if (!isEKVFuerJahrComplete(
+					gesuch,
+					gesuch.getGesuchsteller1().getEinkommensverschlechterungContainer().getEkvJABasisJahrPlus1(),
+					gesuch.getGesuchsteller2() != null
+						&& gesuch.getGesuchsteller2().getEinkommensverschlechterungContainer() != null ?
+						gesuch.getGesuchsteller2().getEinkommensverschlechterungContainer().getEkvJABasisJahrPlus1() :
+						null)) {
 					return false;
 				}
 			}
@@ -322,25 +312,38 @@ public final class EbeguUtil {
 				.getEkvFuerBasisJahrPlus2()) {
 
 				Objects.requireNonNull(gesuch.getGesuchsteller1());
-				Objects.requireNonNull(gesuch.getGesuchsteller1().getEinkommensverschlechterungContainer());
-
 				if (gesuch.getGesuchsteller1().getEinkommensverschlechterungContainer() == null) {
 					return false;
 				}
-				if (!isEinkommensverschlechterungVollstaendig(gesuch.getGesuchsteller1()
-					.getEinkommensverschlechterungContainer()
-					.getEkvJABasisJahrPlus2(), gesuch.getFinSitTyp(), gesuch)) {
+				if (!isEKVFuerJahrComplete(
+					gesuch,
+					gesuch.getGesuchsteller1().getEinkommensverschlechterungContainer().getEkvJABasisJahrPlus2(),
+					gesuch.getGesuchsteller2() != null
+						&& gesuch.getGesuchsteller2().getEinkommensverschlechterungContainer() != null ?
+						gesuch.getGesuchsteller2().getEinkommensverschlechterungContainer().getEkvJABasisJahrPlus2() :
+						null)) {
 					return false;
-				}
-				if (gesuch.getGesuchsteller2() != null
-					&& gesuch.getGesuchsteller2().getEinkommensverschlechterungContainer() != null) {
-					return isEinkommensverschlechterungVollstaendig(gesuch.getGesuchsteller2()
-						.getEinkommensverschlechterungContainer()
-						.getEkvJABasisJahrPlus2(), gesuch.getFinSitTyp(), gesuch);
 				}
 			}
 		}
 		// EKV is not activated
+		return true;
+	}
+
+	private static boolean isEKVFuerJahrComplete(
+		Gesuch gesuch, Einkommensverschlechterung einkommensverschlechterungGS1,
+		Einkommensverschlechterung einkommensverschlechterungGS2) {
+		if (einkommensverschlechterungGS1 == null || !isEinkommensverschlechterungVollstaendig(einkommensverschlechterungGS1, gesuch.getFinSitTyp(), gesuch)) {
+			return false;
+		}
+		if (isMandantSpecificFinSitGemeinsam(gesuch)) {
+			return true;
+		}
+		if (einkommensverschlechterungGS2 != null
+			&& !isEinkommensverschlechterungVollstaendig(einkommensverschlechterungGS2, gesuch.getFinSitTyp(), gesuch)
+		) {
+			return false;
+		}
 		return true;
 	}
 
@@ -434,8 +437,12 @@ public final class EbeguUtil {
 			valid = gesuch.getFamiliensituationContainer() != null
 				&& gesuch.getFamiliensituationContainer().getFamiliensituationJA() != null
 				&& gesuch.getFamiliensituationContainer().getFamiliensituationJA().getAuszahlungsdaten() != null
-				&& gesuch.getFamiliensituationContainer().getFamiliensituationJA().getAuszahlungsdaten().getInfomaBankcode() != null
-				&& gesuch.getFamiliensituationContainer().getFamiliensituationJA().getAuszahlungsdaten().getInfomaKreditorennummer() != null;
+				&& gesuch.getFamiliensituationContainer().getFamiliensituationJA().getAuszahlungsdaten().getInfomaBankcode()
+				!= null
+				&& gesuch.getFamiliensituationContainer()
+				.getFamiliensituationJA()
+				.getAuszahlungsdaten()
+				.getInfomaKreditorennummer() != null;
 		}
 		return valid && gesuch.getFamiliensituationContainer() != null
 			&& gesuch.getFamiliensituationContainer().getFamiliensituationJA() != null
