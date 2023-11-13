@@ -178,6 +178,7 @@
                                                     text="'FINANZIELLE_SITUATION_NETTOLOHN_HELP' | translate"></dv-tooltip>
                                     </label>
                                     <dv-valueinput input-id="nettolohn" name="nettolohn"
+                                                   data-test="nettolohn"
                                                    ng-model="vm.getModel().finanzielleSituationJA.nettolohn"
                                                    ng-disabled="vm.isGesuchReadonly() || vm.isSteueranfrageErfolgreich()"
                                                    class="input-element" required>
@@ -209,6 +210,7 @@
                                     </label>
                                     <div class="dv-input-container-medium-select">
                                         <dv-valueinput input-id="familienzulage" name="familienzulage"
+                                                       data-test="familienzulage"
                                                        ng-model="vm.getModel().finanzielleSituationJA.familienzulage"
                                                        ng-disabled="vm.isGesuchReadonly() || vm.isSteueranfrageErfolgreich()"
                                                        class="input-element" required>
@@ -240,6 +242,7 @@
                                         ></dv-tooltip>
                                     </label>
                                     <dv-valueinput input-id="ersatzeinkommen" name="ersatzeinkommen"
+                                                   data-test="ersatzeinkommen"
                                                    ng-model="vm.getModel().finanzielleSituationJA.ersatzeinkommen"
                                                    ng-disabled="vm.isGesuchReadonly() || vm.isSteueranfrageErfolgreich()"
                                                    class="input-element" required>
@@ -270,6 +273,7 @@
                                     </label>
                                     <div class="dv-input-container-medium-select">
                                         <dv-valueinput input-id="erhalteneAlimente" name="erhalteneAlimente"
+                                                       data-test="erhaltene-alimente"
                                                        ng-model="vm.getModel().finanzielleSituationJA.erhalteneAlimente"
                                                        ng-disabled="vm.isGesuchReadonly() || vm.isSteueranfrageErfolgreich()"
                                                        class="input-element" required>
@@ -296,6 +300,7 @@
                             <div class="col-xs-12 dv-input-container-question">
                                 <div class="checkbox">
                                     <md-checkbox ng-model="vm.showSelbstaendig"
+                                                 data-test="show-selbstaendig"
                                                  name="showSelbstaendig"
                                                  id="showSelbstaendig"
                                                  aria-label="{{'FINANZIELLE_SITUATION_SELBSTAENDIGKEIT'|translate}}"
@@ -323,6 +328,7 @@
                                                for="geschaeftsgewinnBasisjahr"
                                                translate-values="{basisjahr: {{vm.getBasisjahr()}}}"></label>
                                         <dv-valueinput input-id="geschaeftsgewinnBasisjahr"
+                                                       data-test="geschaeftsgewinn-basisjahr"
                                                        name="geschaeftsgewinnBasisjahr"
                                                        ng-model="vm.getModel().finanzielleSituationJA.geschaeftsgewinnBasisjahr"
                                                        ng-required="vm.showSelbstaendig"
@@ -357,6 +363,7 @@
                                                for="geschaeftsgewinnBasisjahrMinus1"
                                                translate-values="{basisjahr: {{vm.getBasisjahrMinus1()}}}"></label>
                                         <dv-valueinput input-id="geschaeftsgewinnBasisjahrMinus1"
+                                                       data-test="geschaeftsgewinn-basisjahr-minus-1"
                                                        name="geschaeftsgewinnBasisjahrMinus1"
                                                        ng-model="vm.getModel().finanzielleSituationJA.geschaeftsgewinnBasisjahrMinus1"
                                                        allow-negative=true
@@ -388,6 +395,7 @@
                                                for="geschaeftsgewinnBasisjahrMinus2"
                                                translate-values="{basisjahr: {{vm.getBasisjahrMinus2()}}}"></label>
                                         <dv-valueinput input-id="geschaeftsgewinnBasisjahrMinus2"
+                                                       data-test="geschaeftsgewinn-basisjahr-minus-2"
                                                        name="geschaeftsgewinnBasisjahrMinus2"
                                                        ng-model="vm.getModel().finanzielleSituationJA.geschaeftsgewinnBasisjahrMinus2"
                                                        allow-negative=true
@@ -419,6 +427,7 @@
                                                data-translate="FINANZIELLE_SITUATION_GESCHAEFTSGEWINN_DURCHSCHNITT"
                                                for="geschaeftsgewinnDurchschnittGS1"></label>
                                         <dv-valueinput input-id="geschaeftsgewinnDurchschnittGS1"
+                                                       data-test="geschaeftsgewinn-durchschnitt-gs-1"
                                                        name="geschaeftsgewinnDurchschnittGS1"
                                                        ng-model="vm.getResultate().geschaeftsgewinnDurchschnittGesuchsteller1"
                                                        ng-disabled="true">
@@ -431,6 +440,7 @@
                                                data-translate="FINANZIELLE_SITUATION_GESCHAEFTSGEWINN_DURCHSCHNITT"
                                                for="geschaeftsgewinnDurchschnittGS2"></label>
                                         <dv-valueinput input-id="geschaeftsgewinnDurchschnittGS2"
+                                                       data-test="geschaeftsgewinn-durchschnitt-gs-2"
                                                        name="geschaeftsgewinnDurchschnittGS2"
                                                        ng-model="vm.getResultate().geschaeftsgewinnDurchschnittGesuchsteller2"
                                                        ng-disabled="true">
@@ -452,6 +462,7 @@
                                     </label>
                                     <div class="dv-input-container-medium-select">
                                         <dv-valueinput input-id="bruttoErtraegeVermoegen" name="bruttoertraegeVermoegen"
+                                                       data-test="brutto-ertraege-vermoegen"
                                                        ng-model="vm.getModel().finanzielleSituationJA.bruttoertraegeVermoegen"
                                                        ng-disabled="vm.isGesuchReadonly() || vm.isSteueranfrageErfolgreich()"
                                                        class="input-element" required>
@@ -484,6 +495,7 @@
                                     </label>
                                     <div class="dv-input-container-medium-select">
                                         <dv-valueinput input-id="nettoertraege_erbengemeinschaften"
+                                                       data-test="nettoertraege_erbengemeinschaften"
                                                        name="nettoertraegeErbengemeinschaft"
                                                        ng-model="vm.getModel().finanzielleSituationJA.nettoertraegeErbengemeinschaft"
                                                        ng-disabled="vm.isGesuchReadonly() || vm.isSteueranfrageErfolgreich()"
@@ -519,6 +531,7 @@
                                              text="'FINANZIELLE_SITUATION_EINKOMMEN_VEREINFACHTEM_VERFAHREN_TOOLTIP' | translate"></dv-tooltip>
                             </span>
                                     <dv-radio-container name="einkommenInVereinfachtemVerfahrenAbgerechnet1"
+                                                        data-test="einkommen-in-vereinfachtem-verfahren-abgerechnet-1"
                                                         class="input-element radio"
                                                         input-id="einkommenInVereinfachtemVerfahrenAbgerechnet1"
                                                         ng-model="vm.getModel().finanzielleSituationJA.einkommenInVereinfachtemVerfahrenAbgerechnet"
@@ -547,6 +560,7 @@
                                     </label>
                                     <div class="dv-input-container-medium-label">
                                         <dv-valueinput input-id="amount_vereinfacht_abgerechnet" name="testasd"
+                                                       data-test="amount-einkommen-in-vereinfachtem-verfahren-abgerechnet"
                                                        ng-model="vm.getModel().finanzielleSituationJA.amountEinkommenInVereinfachtemVerfahrenAbgerechnet"
                                                        class="input-element" required>
                                         </dv-valueinput>
@@ -577,6 +591,7 @@
                                     </label>
                                     <div class="dv-input-container-medium-select">
                                         <dv-valueinput input-id="geleisteteAlimente" name="geleisteteAlimente"
+                                                       data-test="geleistete-alimente"
                                                        ng-model="vm.getModel().finanzielleSituationJA.geleisteteAlimente"
                                                        ng-disabled="vm.isGesuchReadonly() || vm.isSteueranfrageErfolgreich()"
                                                        class="input-element" required>
@@ -609,6 +624,7 @@
                                     </label>
                                     <div class="dv-input-container-medium-select">
                                         <dv-valueinput input-id="abzug_schuldzinsen" name="abzugSchuldzinsen"
+                                                       data-test="abzug-schuldzinsen"
                                                        ng-model="vm.getModel().finanzielleSituationJA.abzugSchuldzinsen"
                                                        ng-disabled="vm.isGesuchReadonly() || vm.isSteueranfrageErfolgreich()"
                                                        class="input-element" required>
@@ -641,6 +657,7 @@
                                     </label>
                                     <div class="dv-input-container-medium-select">
                                         <dv-valueinput input-id="abzug_gewinnungskosten" name="gewinnungskosten"
+                                                       data-test="gewinnungskosten"
                                                        ng-model="vm.getModel().finanzielleSituationJA.gewinnungskosten"
                                                        ng-disabled="vm.isGesuchReadonly() || vm.isSteueranfrageErfolgreich()"
                                                        class="input-element" required>

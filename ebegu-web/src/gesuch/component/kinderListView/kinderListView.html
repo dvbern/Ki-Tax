@@ -19,7 +19,7 @@
     <h1 class="access-for-all-title" data-translate="AFA_GESUCHSFORMULAR"></h1>
     <div class="row view-title">
         <div class="col-md-12">
-            <h2>
+            <h2 data-test="page-title">
                 <span data-translate="KINDER"></span>
             </h2>
             <hr class="header"/>
@@ -52,6 +52,7 @@
                 </thead>
                 <tbody>
                 <tr ng-repeat="row in displayedCollection" st-select-row="row" st-select-mode="single"
+                    ng-attr-data-test="{{'kind#' + row.kindNummer}}"
                     ng-click="vm.editKind(row)" role="row" tabindex="-1">
                     <td ng-bind="row.kindJA.vorname"></td>
                     <td ng-bind="row.kindJA.nachname"></td>
@@ -101,6 +102,7 @@
         </div>
         <div class="col-md-12" style="margin-bottom: 2rem" ng-if="!vm.isGesuchReadonly()">
             <dv-loading-button type="button" button-click="vm.createKind()"
+                               data-test="container.create-kind"
                                button-class="dv-btn-operation">
                 <i class="fa fa-lg fa-plus-circle"></i>
                 <span data-translate="KIND_HINZUFUEGEN"></span>

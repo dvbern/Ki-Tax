@@ -11,13 +11,15 @@
                             dvNgEnableElement
                             [dvEnabled]="!isGesuchReadonly()"
                             [dvEnableAllowedRoles]="allowedRoles"
-                            [name]="'integration-' + index"
+                            [name]="'integration#' + index"
+                            [attr.data-test]="'container.integration#' + index"
                             #integration='ngModel'
                             [required]="submitted || integration.touched"
                             [disabled]="isGesuchReadonly()"
                             [(ngModel)]="pensumFachstelle.integrationTyp"
                             (ngModelChange)="loadEinstellungenForIntegration()">
                             <mat-radio-button *ngFor="let integrationType of integrationTypes"
+                                              [attr.data-test]="'radio-value.' + integrationType"
                                               [value]="integrationType">
                                 {{integrationType | translate}}
                             </mat-radio-button>
@@ -38,7 +40,8 @@
                 <dv-input-container-x [noMargin]="true" [verticalAlign]="true">
                     <dv-radio-container-x>
                         <mat-radio-group
-                            [name]="'grundZusatzleistung-' + index"
+                            [name]="'grundZusatzleistung#' + index"
+                            [attr.data-test]="'container.grund-zusatzleistung#' + index"
                             dvNgEnableElement
                             #grundZusatzleistung='ngModel'
                             [(ngModel)]="pensumFachstelle.gruendeZusatzleistung"
@@ -46,6 +49,7 @@
                             [required]="submitted || integration.touched"
                             [dvEnableAllowedRoles]="allowedRoles">
                             <mat-radio-button *ngFor="let grundZusatzleisung of gruendeZusatzleistung"
+                                              [attr.data-test]="'radio-value.' + grundZusatzleisung"
                                               [value]="grundZusatzleisung">
                                 {{grundZusatzleisung | translate}}
                             </mat-radio-button>
@@ -69,8 +73,9 @@
             </label>
             <dv-input-container-x [noMargin]="true" [verticalAlign]="true">
                 <div class="dv-select-style">
-                    <select [name]="'fachstelle-' + index"
-                            [id]="'fachstelle-' + index"
+                    <select [name]="'fachstelle#' + index"
+                            [attr.data-test]="'fachstelle#' + index"
+                            [id]="'fachstelle#' + index"
                             [(ngModel)]="pensumFachstelle.fachstelle"
                             #fachstelle='ngModel'
                             [required]="submitted || fachstelle.touched"
@@ -97,7 +102,8 @@
                 <input aria-describedby="betreuungspensumFachstelle-error"
                        id="betreuungspensumFachstelle"
                        type="number"
-                       [name]="'betreuungspensumFachstelle-' + index"
+                       [name]="'betreuungspensum-fachstelle#' + index"
+                       [attr.data-test]="'betreuungspensum-fachstelle#' + index"
                        [(ngModel)]="pensumFachstelle.pensum"
                        #betreuungspensumFachstelle='ngModel'
                        [min]="minValueAllowed"
@@ -118,6 +124,7 @@
         <div class="col-sm-12 dv-input-container-small">
             <dv-date-picker-x
                 [label]="'VON'"
+                [attr.data-test]="'pensum-gueltig-ab#' + index"
                 [(date)]="pensumFachstelle.gueltigkeit.gueltigAb"
                 [required]="true"
                 (dateChange)="validatePensumOverlaps()">
@@ -127,6 +134,7 @@
         <div class="col-sm-12 dv-input-container-small">
             <dv-date-picker-x
                 [label]="'BIS'"
+                [attr.data-test]="'pensum-gueltig-bis#' + index"
                 [(date)]="pensumFachstelle.gueltigkeit.gueltigBis"
                 (dateChange)="validatePensumOverlaps()"
             ></dv-date-picker-x>

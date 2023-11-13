@@ -17,6 +17,7 @@
     <span ng-disabled="vm.buttonDisabled || vm.isDisabled">
         <button ng-attr-type="{{vm.type}}" aria-label="{{vm.ariaLabel}}" class="dv-btn {{vm.buttonClass}}"
                 id="{{vm.inputId}}"
+                data-test="navigation-button"
                 ng-click="vm.buttonClicked($event)" ng-disabled="vm.buttonDisabled || vm.isDisabled">
             <ng-transclude></ng-transclude>
         </button>
