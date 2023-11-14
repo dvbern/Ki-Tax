@@ -17,23 +17,21 @@
 
 package ch.dvbern.ebegu.rechner;
 
-import java.math.BigDecimal;
-import java.util.Collections;
-
 import ch.dvbern.ebegu.entities.BGCalculationResult;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.PensumUnits;
 import ch.dvbern.ebegu.util.MathUtil;
+import ch.dvbern.ebegu.util.TestUtils;
 import org.junit.Assert;
 import org.junit.Test;
+
+import java.math.BigDecimal;
+import java.util.Collections;
 
 
 public class TageselternLuzernRechnerTest extends AbstractLuzernRechnerTest {
 
-	private final BGRechnerParameterDTO defaultParameterDTO = getRechnerParameterLuzern();
-
-
-
+	private final BGRechnerParameterDTO defaultParameterDTO = TestUtils.getRechnerParameterLuzern();
 
 	@Test
 	public void testKind() { //Kind 1 im BG_Rechner_Luzern Excel

@@ -887,6 +887,10 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
     }
 
     private hasOnlyFerienbetreuung(): boolean {
+        if (EbeguUtil.isNullOrUndefined(this.kinderWithBetreuungList)) {
+            return false;
+        }
+
         return this.kinderWithBetreuungList.every(kindcontainer =>
             kindcontainer.betreuungen
                 .every(betreuung => betreuung.getAngebotTyp() === TSBetreuungsangebotTyp.FERIENINSEL));

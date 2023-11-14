@@ -71,6 +71,7 @@ public class JaxGemeinde extends JaxAbstractDTO {
 	private LocalDate gueltigBis = END_OF_TIME;
 
 	private boolean angebotBG = false;
+	private boolean angebotBGTFO = false;
 	private boolean angebotTS = false;
 	private boolean angebotFI = false;
 	private boolean besondereVolksschule = false;
@@ -214,5 +215,13 @@ public class JaxGemeinde extends JaxAbstractDTO {
 
 	public void setNurLats(boolean nurLats) {
 		this.nurLats = nurLats;
+	}
+
+	public boolean isAngebotBGTFO() {
+		return angebotBGTFO;
+	}
+
+	public void setAngebotBGTFO(boolean angebotBGTFO) {
+		this.angebotBGTFO = angebotBGTFO;
 	}
 }

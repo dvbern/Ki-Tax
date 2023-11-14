@@ -122,6 +122,23 @@ public class AnmeldungTagesschuleEventConverterTest {
 			.where(TagesschuleAnmeldungEventDTO::getPeriodeVon, is(gesuchsperiode.getGueltigAb()))
 			.where(TagesschuleAnmeldungEventDTO::getPeriodeBis, is(gesuchsperiode.getGueltigBis()))
 			.where(TagesschuleAnmeldungEventDTO::getAnmeldungsDetails, matchesAnmeldungDetails(anmeldungTagesschule))
+			.where(TagesschuleAnmeldungEventDTO::getAnmeldungZurueckgezogen, is(false))
+		));
+
+	}
+
+	@Test
+	public void testAnmeldungStornierenTagesschuleEvent() {
+		AnmeldungTagesschule anmeldungTagesschule = createAnmeldungTagesschule();
+		anmeldungTagesschule.setBetreuungsstatus(Betreuungsstatus.SCHULAMT_ANMELDUNG_STORNIERT);
+		AnmeldungTagesschuleEvent anmeldungTagesschuleAddedEvent = converter.of(anmeldungTagesschule);
+		TagesschuleAnmeldungEventDTO specificRecord =
+			assertEventAndConvertBackFromAvro(anmeldungTagesschuleAddedEvent, anmeldungTagesschule.getBGNummer());
+		assertThat(specificRecord, is(pojo(TagesschuleAnmeldungEventDTO.class)
+			.where(
+				TagesschuleAnmeldungEventDTO::getStatus,
+				is(TagesschuleAnmeldungStatus.SCHULAMT_ANMELDUNG_STORNIERT))
+			.where(TagesschuleAnmeldungEventDTO::getAnmeldungZurueckgezogen, is(true))
 		));
 
 	}

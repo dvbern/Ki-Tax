@@ -189,6 +189,7 @@ export class FamiliensituationViewXComponent extends AbstractFamiliensitutaionVi
             this.getFamiliensituation().startKonkubinat = this.getFamiliensituation().aenderungPer;
         }
         this.onDatumBlur();
+        this.resetPartnerIdentischMitVorgesuchIfHidden();
     }
 
     /**
@@ -354,7 +355,7 @@ export class FamiliensituationViewXComponent extends AbstractFamiliensitutaionVi
 
     private getWarningPaarBezeichnung(): string {
         const familienstatus: TSFamilienstatus =
-                this.gesuchModelManager.getGesuch().extractFamiliensituation().familienstatus;
+                this.getFamiliensituation().familienstatus;
         if (familienstatus === TSFamilienstatus.VERHEIRATET) {
             return this.$translate.instant('FAMILIENSITUATION_FRAGE_PARTNERIDENTISCH_WARNBEZ_EHEPARTNER');
         }
@@ -371,7 +372,7 @@ export class FamiliensituationViewXComponent extends AbstractFamiliensitutaionVi
 
     public getPartnerIdentischFrage(): string {
         const familienstatus: TSFamilienstatus =
-                this.gesuchModelManager.getGesuch().extractFamiliensituation().familienstatus;
+                this.getFamiliensituation().familienstatus;
         if (familienstatus === TSFamilienstatus.VERHEIRATET) {
             return this.$translate.instant('FAMILIENSITUATION_FRAGE_PARTNERIDENTISCH_EHE' , {
                 namegs2: this.getNameGesuchsteller2()
@@ -389,8 +390,7 @@ export class FamiliensituationViewXComponent extends AbstractFamiliensitutaionVi
     }
 
     private konkubinatIsXYearsOldInPeriode(): boolean {
-        const gesuch: TSGesuch = this.gesuchModelManager.getGesuch();
-        return gesuch.extractFamiliensituation()
+        return this.getFamiliensituation()
                 .konkubinatGetXYearsInPeriod(this.getGesuch().gesuchsperiode.gueltigkeit);
     }
 
@@ -431,5 +431,11 @@ export class FamiliensituationViewXComponent extends AbstractFamiliensitutaionVi
 
     public gesuchstellerKardinalitaetChange(): void {
         this.getFamiliensituation().partnerIdentischMitVorgesuch = undefined;
+    }
+
+    private resetPartnerIdentischMitVorgesuchIfHidden(): void {
+        if (!this.showFragePartnerWieBisher()) {
+            this.getFamiliensituation().partnerIdentischMitVorgesuch = undefined;
+        }
     }
 }

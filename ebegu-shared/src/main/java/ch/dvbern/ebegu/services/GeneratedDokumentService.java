@@ -15,25 +15,15 @@
 
 package ch.dvbern.ebegu.services;
 
-import java.io.IOException;
-import java.util.Collection;
+import ch.dvbern.ebegu.entities.*;
+import ch.dvbern.ebegu.enums.GeneratedDokumentTyp;
+import ch.dvbern.ebegu.errors.MergeDocException;
 
 import javax.activation.MimeTypeParseException;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-
-import ch.dvbern.ebegu.entities.AbstractAnmeldung;
-import ch.dvbern.ebegu.entities.AbstractEntity;
-import ch.dvbern.ebegu.entities.Betreuung;
-import ch.dvbern.ebegu.entities.GeneratedDokument;
-import ch.dvbern.ebegu.entities.Gesuch;
-import ch.dvbern.ebegu.entities.Mahnung;
-import ch.dvbern.ebegu.entities.Pain001Dokument;
-import ch.dvbern.ebegu.entities.RueckforderungFormular;
-import ch.dvbern.ebegu.entities.WriteProtectedDokument;
-import ch.dvbern.ebegu.entities.Zahlungsauftrag;
-import ch.dvbern.ebegu.enums.GeneratedDokumentTyp;
-import ch.dvbern.ebegu.errors.MergeDocException;
+import java.io.IOException;
+import java.util.Collection;
 
 /**
  * Service zum Verwalten von GeneratedDokumenten
@@ -85,8 +75,14 @@ public interface GeneratedDokumentService {
 		throws MimeTypeParseException, IOException, MergeDocException;
 
 	@Nonnull
-	WriteProtectedDokument getPain001DokumentAccessTokenGeneratedDokument(@Nonnull Zahlungsauftrag zahlungsauftrag, @Nonnull Boolean forceCreation)
+	WriteProtectedDokument getPain001DokumentAccessTokenGeneratedDokument(@Nonnull Zahlungsauftrag zahlungsauftrag)
 		throws MimeTypeParseException;
+
+	@Nonnull
+	WriteProtectedDokument getInfomaDokumentAccessTokenGeneratedDokument(@Nonnull Zahlungsauftrag zahlungsauftrag)
+		throws MimeTypeParseException;
+
+	void createZahlungsFiles(@Nonnull Zahlungsauftrag zahlungsauftrag) throws MimeTypeParseException;
 
 	void removeAllGeneratedDokumenteFromGesuch(@Nonnull Gesuch gesuch);
 

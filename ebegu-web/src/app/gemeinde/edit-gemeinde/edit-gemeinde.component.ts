@@ -66,6 +66,7 @@ export class EditGemeindeComponent implements OnInit {
     private isRegisteringGemeinde: boolean = false;
     public editMode: boolean = false;
     public tageschuleEnabledForMandant: boolean;
+    public tfoEnabledForMandant: boolean;
     public currentTab: number;
     public altBGAdresse: boolean;
     public altTSAdresse: boolean;
@@ -110,6 +111,7 @@ export class EditGemeindeComponent implements OnInit {
 
         this.applicationPropertyRS.getPublicPropertiesCached().then(res => {
             this.tageschuleEnabledForMandant = res.angebotTSActivated;
+            this.tfoEnabledForMandant = res.angebotTFOActivated;
         });
 
         this.loadGemeindenList();

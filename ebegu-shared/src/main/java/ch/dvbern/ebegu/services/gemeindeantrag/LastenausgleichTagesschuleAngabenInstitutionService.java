@@ -17,18 +17,17 @@
 
 package ch.dvbern.ebegu.services.gemeindeantrag;
 
-import java.math.BigDecimal;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-
-import javax.annotation.Nonnull;
-
 import ch.dvbern.ebegu.entities.AnmeldungTagesschule;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.InstitutionStammdaten;
 import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeContainer;
 import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenInstitutionContainer;
+
+import javax.annotation.Nonnull;
+import java.math.BigDecimal;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 /**
  * Service fuer den Lastenausgleich der Tagesschulen, Formulare der Institutionen
@@ -98,7 +97,15 @@ public interface LastenausgleichTagesschuleAngabenInstitutionService {
 	BigDecimal countBetreuungsstundenPerYearForTagesschuleAndPeriode(InstitutionStammdaten stammdaten, Gesuchsperiode gesuchsperiode);
 
 	@Nonnull
+	BigDecimal countBetreuungsstundenPrognoseForTagesschuleAndPeriode(InstitutionStammdaten stammdaten, Gesuchsperiode gesuchsperiode);
+
+	@Nonnull
 	List<AnmeldungTagesschule> findTagesschuleAnmeldungenForTagesschuleStammdatenAndPeriode(
+		@Nonnull InstitutionStammdaten stammdaten,
+		@Nonnull Gesuchsperiode gesuchsperiode
+	);
+	@Nonnull
+	List<AnmeldungTagesschule> findTagesschuleAnmeldungenForTagesschuleStammdatenAndPeriodeOneYearAfterStichtag(
 		@Nonnull InstitutionStammdaten stammdaten,
 		@Nonnull Gesuchsperiode gesuchsperiode
 	);

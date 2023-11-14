@@ -30,6 +30,7 @@ import {TSSearchResultEntry} from '../models/dto/TSSearchResultEntry';
 import {TSAdressetyp} from '../models/enums/TSAdressetyp';
 import {TSAnspruchBeschaeftigungAbhaengigkeitTyp} from '../models/enums/TSAnspruchBeschaeftigungAbhaengigkeitTyp';
 import {TSBetreuungspensumAbweichungStatus} from '../models/enums/TSBetreuungspensumAbweichungStatus';
+import {TSEinschulungTyp} from '../models/enums/TSEinschulungTyp';
 import {TSFachstellenTyp} from '../models/enums/TSFachstellenTyp';
 import {ferienInselNameOrder} from '../models/enums/TSFerienname';
 import {TSFinanzielleSituationTyp} from '../models/enums/TSFinanzielleSituationTyp';
@@ -966,6 +967,7 @@ export class EbeguRestUtil {
             restGemeinde.gueltigBis = gemeinde.gueltigBis === null ? '9999-12-31' :
                 DateUtil.momentToLocalDate(gemeinde.gueltigBis);
             restGemeinde.angebotBG = gemeinde.angebotBG;
+            restGemeinde.angebotBGTFO = gemeinde.angebotBGTFO;
             restGemeinde.angebotTS = gemeinde.angebotTS;
             restGemeinde.angebotFI = gemeinde.angebotFI;
             restGemeinde.besondereVolksschule = gemeinde.besondereVolksschule;
@@ -991,6 +993,7 @@ export class EbeguRestUtil {
             gemeindeTS.gueltigBis = gemeindeFromServer.gueltigBis === '9999-12-31' ? null :
                 DateUtil.localDateToMoment(gemeindeFromServer.gueltigBis);
             gemeindeTS.angebotBG = gemeindeFromServer.angebotBG;
+            gemeindeTS.angebotBGTFO = gemeindeFromServer.angebotBGTFO;
             gemeindeTS.angebotTS = gemeindeFromServer.angebotTS;
             gemeindeTS.angebotFI = gemeindeFromServer.angebotFI;
             gemeindeTS.besondereVolksschule = gemeindeFromServer.besondereVolksschule;
@@ -6163,6 +6166,13 @@ export class EbeguRestUtil {
             return typ as TSFachstellenTyp;
         }
         throw new Error(`TSFachstellenTyp ${typ} not defined`);
+    }
+
+    public parseEinschulungTyp(typ: any): TSEinschulungTyp {
+        if (Object.values(TSEinschulungTyp).includes(typ)) {
+            return typ as TSEinschulungTyp;
+        }
+        throw new Error(`TSEinschulungTyp ${typ} not defined`);
     }
 
     public parseSteuerdatenResponse(

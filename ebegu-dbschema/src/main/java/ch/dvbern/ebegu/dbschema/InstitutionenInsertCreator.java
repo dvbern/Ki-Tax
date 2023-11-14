@@ -15,20 +15,6 @@
 
 package ch.dvbern.ebegu.dbschema;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.PrintWriter;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.UUID;
-
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.services.AdministrationService;
 import org.apache.commons.lang.StringUtils;
@@ -39,6 +25,9 @@ import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.*;
+import java.util.*;
 
 /**
  * Liest die Liste der Institutionen (Excel) ein
@@ -64,6 +53,9 @@ public class InstitutionenInsertCreator {
 	private static final String INPUT_FILE = "/institutionen/institutionen-24.02.2017.xlsx";
 	private static final int ANZAHL_ZEILEN = 87;
 	private static final String OUTPUT_FILE = "insertInstitutionen.sql";
+	private static final String VALUES = "\"VALUES (\"";
+	private static final String TIMESTAMP = "\"'2016-01-01 00:00:00', \"";
+	private static final String USER = "\"'flyway', \"";
 
 	public static void main(String[] args) {
 		InstitutionenInsertCreator creator = new InstitutionenInsertCreator();
@@ -196,12 +188,12 @@ public class InstitutionenInsertCreator {
 		StringBuilder sb = new StringBuilder();
 		sb.append("INSERT INTO adresse ");
 		sb.append("(id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version, gemeinde, gueltig_ab, gueltig_bis, hausnummer, land, ort, plz, strasse, zusatzzeile, event_published) ");
-		sb.append("VALUES (");
+		sb.append(VALUES);
 		sb.append('\'').append(id).append("', ");    // id
-		sb.append("'2016-01-01 00:00:00', ");        // timestamp_erstellt
-		sb.append("'2016-01-01 00:00:00', ");        // timestamp_mutiert
-		sb.append("'flyway', ");                    // user_erstellt
-		sb.append("'flyway', ");                    // user_mutiert
+		sb.append(TIMESTAMP);       				 // timestamp_erstellt
+		sb.append(TIMESTAMP);        				// timestamp_mutiert
+		sb.append(USER);                    // user_erstellt
+		sb.append(USER);                    // user_mutiert
 		sb.append("0, ");                            // version,
 		sb.append("null, ");                        // gemeinde,
 		sb.append("'1000-01-01', ");                // gueltig_ab,
@@ -236,12 +228,12 @@ public class InstitutionenInsertCreator {
 		StringBuilder sb = new StringBuilder();
 		sb.append("INSERT INTO traegerschaft ");
 		sb.append("(id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version, name, active, mail) ");
-		sb.append("VALUES (");
+		sb.append(VALUES);
 		sb.append('\'').append(id).append("', ");    // id
-		sb.append("'2016-01-01 00:00:00', ");        // timestamp_erstellt
-		sb.append("'2016-01-01 00:00:00', ");        // timestamp_mutiert
-		sb.append("'flyway', ");                    // user_erstellt
-		sb.append("'flyway', ");                    // user_mutiert
+		sb.append(TIMESTAMP);        // timestamp_erstellt
+		sb.append(TIMESTAMP);        // timestamp_mutiert
+		sb.append(USER);                    // user_erstellt
+		sb.append(USER);                    // user_mutiert
 		sb.append("0, ");                            // version,
 		sb.append(toStringOrNull(traegerschaftsname)).append(", "); // name
 		sb.append("true, ");                                // active
@@ -269,12 +261,12 @@ public class InstitutionenInsertCreator {
 		StringBuilder sb = new StringBuilder();
 		sb.append("INSERT INTO institution ");
 		sb.append("(id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version, name, mandant_id, traegerschaft_id, active, mail) ");
-		sb.append("VALUES (");
+		sb.append(VALUES);
 		sb.append('\'').append(id).append("', ");    // id
-		sb.append("'2016-01-01 00:00:00', ");        // timestamp_erstellt
-		sb.append("'2016-01-01 00:00:00', ");        // timestamp_mutiert
-		sb.append("'flyway', ");                    // user_erstellt
-		sb.append("'flyway', ");                    // user_mutiert
+		sb.append(TIMESTAMP);        // timestamp_erstellt
+		sb.append(TIMESTAMP);        // timestamp_mutiert
+		sb.append(USER);                    // user_erstellt
+		sb.append(USER);                    // user_mutiert
 		sb.append("0, ");                            // version,
 		sb.append(toStringOrNull(institutionsname)).append(", "); // name
 		sb.append('\'').append(AdministrationService.MANDANT_ID_BERN).append("', ");    // mandant_id,
@@ -297,19 +289,18 @@ public class InstitutionenInsertCreator {
 			return null;
 		}
 
-		// INSERT INTO institution_stammdaten (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version, gueltig_ab, gueltig_bis, betreuungsangebot_typ, iban, institution_id, adresse_id) VALUES ('11111111-1111-1111-1111-111111111101', '2016-07-26 00:00:00', '2016-07-26 00:00:00', 'flyway', 'flyway', 0, '1000-01-01', '9999-12-31', 'KITA', null, 11.50, 240.00, '11111111-1111-1111-1111-111111111101', '11111111-1111-1111-1111-111111111101');
 		String id = UUID.randomUUID().toString();
 		String iban = readString(row, AdministrationService.COL_IBAN);
 
 		StringBuilder sb = new StringBuilder();
 		sb.append("INSERT INTO institution_stammdaten ");
 		sb.append("(id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version, gueltig_ab, gueltig_bis, betreuungsangebot_typ, iban, institution_id, adresse_id) ");
-		sb.append("VALUES (");
+		sb.append(VALUES);
 		sb.append('\'').append(id).append("', ");    // id
-		sb.append("'2016-01-01 00:00:00', ");        // timestamp_erstellt
-		sb.append("'2016-01-01 00:00:00', ");        // timestamp_mutiert
-		sb.append("'flyway', ");                    // user_erstellt
-		sb.append("'flyway', ");                    // user_mutiert
+		sb.append(TIMESTAMP);        // timestamp_erstellt
+		sb.append(TIMESTAMP);        // timestamp_mutiert
+		sb.append(USER);                    // user_erstellt
+		sb.append(USER);                    // user_mutiert
 		sb.append("0, ");                    // version,
 		sb.append("'1000-01-01', ");                // gueltig_ab,
 		sb.append("'9999-12-31', ");                // gueltig_bis,
@@ -346,7 +337,11 @@ public class InstitutionenInsertCreator {
 		return printWriter;
 	}
 
+	@SuppressWarnings("PMD.CloseResource")
 	private void println(String s) {
-		getPrintWriter().println(s);
+		PrintWriter printWriter = getPrintWriter();
+		if(printWriter != null){
+			printWriter.println(s);
+		}
 	}
 }

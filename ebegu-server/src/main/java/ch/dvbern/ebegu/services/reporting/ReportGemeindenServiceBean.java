@@ -27,6 +27,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -37,6 +38,7 @@ import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.entities.gemeindeantrag.gemeindekennzahlen.GemeindeKennzahlen;
+import ch.dvbern.ebegu.entities.gemeindeantrag.gemeindekennzahlen.GemeindeKennzahlenStatus;
 import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.enums.reporting.ReportVorlage;
 import ch.dvbern.ebegu.reporting.ReportGemeindenService;
@@ -124,7 +126,7 @@ public class ReportGemeindenServiceBean extends AbstractReportServiceBean implem
 		Collection<Gesuchsperiode> allActiveGesuchsperioden = gesuchsperiodeService.getAllActiveGesuchsperioden();
 
 		Map<String, GemeindeKennzahlen> gemeindeAntragGesuchsperiodeCache = new HashMap<>();
-		List<GemeindeKennzahlen> gemeindeAntrags = gemeindeKennzahlenService.findAllAbgeschlosseneGemeindeKennzahlen();
+		List<GemeindeKennzahlen> gemeindeAntrags = gemeindeKennzahlenService.getGemeindeKennzahlen(null, null, null, null);
 		gemeindeAntrags.forEach(
 			gemeindeAntrag -> gemeindeAntragGesuchsperiodeCache.put(
 				gemeindeAntrag.getGesuchsperiode().getId() + gemeindeAntrag.getGemeinde().getId(),
@@ -174,17 +176,9 @@ public class ReportGemeindenServiceBean extends AbstractReportServiceBean implem
 							gesuchsperiode);
 					gemeindenDatenDataRow.setErwerbspensumZuschlag(erwerbspensumZuschlag.getValueAsBigDecimal());
 
-					GemeindeKennzahlen gemeindeKennzahlen = gemeindeAntragGesuchsperiodeCache.get(gesuchsperiode.getId() + gemeinde.getId());
-						if(gemeindeKennzahlen != null) {
-							gemeindenDatenDataRow.setKontingentierung(gemeindeKennzahlen.getGemeindeKontingentiert());
-							gemeindenDatenDataRow.setNachfrageErfuellt(gemeindeKennzahlen.getNachfrageErfuellt());
-							gemeindenDatenDataRow.setNachfrageAnzahl(gemeindeKennzahlen.getNachfrageAnzahl());
-							gemeindenDatenDataRow.setNachfrageDauer(gemeindeKennzahlen.getNachfrageDauer());
-							gemeindenDatenDataRow.setLimitierungTfo(
-									ServerMessageUtil.getMessage("EinschulungTyp_" + gemeindeKennzahlen.getLimitierungTfo(), locale,
-											requireNonNull(gemeinde.getMandant()))
-							);
-						}
+					GemeindeKennzahlen gemeindeKennzahlen =
+						gemeindeAntragGesuchsperiodeCache.get(gesuchsperiode.getId() + gemeinde.getId());
+					setGemeindeKennzahlenRows(gemeindeKennzahlen, gemeindenDatenDataRow, locale, gemeinde);
 
 					dataRow.getGemeindenDaten().add(gemeindenDatenDataRow);
 				});
@@ -192,5 +186,37 @@ public class ReportGemeindenServiceBean extends AbstractReportServiceBean implem
 				return dataRow;
 			})
 			.collect(Collectors.toList());
+	}
+
+	private static void setGemeindeKennzahlenRows(
+		@Nullable GemeindeKennzahlen gemeindeKennzahlen,
+		GemeindenDatenDataRow gemeindenDatenDataRow,
+		@Nonnull Locale locale,
+		Gemeinde gemeinde) {
+		if (gemeindeKennzahlen == null) {
+			gemeindenDatenDataRow.setGemeindeKennzahlenStatus(ServerMessageUtil.getMessage(
+				"GemeindeKennzahlen_keinAntrag",
+				locale,
+				requireNonNull(gemeinde.getMandant())));
+			return;
+		}
+		gemeindenDatenDataRow.setGemeindeKennzahlenStatus(
+			ServerMessageUtil.getMessage(
+				"GemeindeKennzahlenStatus_" + gemeindeKennzahlen.getStatus(),
+				locale,
+				requireNonNull(gemeinde.getMandant())));
+		if (gemeindeKennzahlen.getStatus() != GemeindeKennzahlenStatus.ABGESCHLOSSEN) {
+			return;
+		}
+		gemeindenDatenDataRow.setKontingentierung(gemeindeKennzahlen.getGemeindeKontingentiert());
+		gemeindenDatenDataRow.setNachfrageErfuellt(gemeindeKennzahlen.getNachfrageErfuellt());
+		gemeindenDatenDataRow.setNachfrageAnzahl(gemeindeKennzahlen.getNachfrageAnzahl());
+		gemeindenDatenDataRow.setNachfrageDauer(gemeindeKennzahlen.getNachfrageDauer());
+		gemeindenDatenDataRow.setLimitierungTfo(
+			ServerMessageUtil.getMessage(
+				"EinschulungTyp_" + gemeindeKennzahlen.getLimitierungTfo(),
+				locale,
+				requireNonNull(gemeinde.getMandant()))
+		);
 	}
 }

@@ -115,8 +115,11 @@ export class DownloadRS {
             .then((response: any) => this.ebeguRestUtil.parseDownloadFile(new TSDownloadFile(), response.data));
     }
 
-    public getPain001AccessTokenGeneratedDokument(zahlungsauftragId: string): IPromise<TSDownloadFile> {
-        const dokumentTypEnc = encodeURIComponent(TSGeneratedDokumentTyp[TSGeneratedDokumentTyp.PAIN001]);
+    public getPain001AccessTokenGeneratedDokument(
+        zahlungsauftragId: string,
+        docTyp: TSGeneratedDokumentTyp
+    ): IPromise<TSDownloadFile> {
+        const dokumentTypEnc = encodeURIComponent(TSGeneratedDokumentTyp[docTyp]);
         const url = `${this.serviceURL}/${encodeURIComponent(zahlungsauftragId)}/${dokumentTypEnc}/generated`;
 
         return this.http.get(url)

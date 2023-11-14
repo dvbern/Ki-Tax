@@ -819,6 +819,9 @@ public class GemeindeResource {
 		if (gemeinde.isAngebotBG() != jaxGemeinde.isAngebotBG()) {
 			gemeindeService.updateAngebotBG(gemeinde, jaxGemeinde.isAngebotBG());
 		}
+		if (gemeinde.isAngebotBGTFO() != jaxGemeinde.isAngebotBGTFO()) {
+			gemeindeService.updateAngebotBGTFO(gemeinde, jaxGemeinde.isAngebotBGTFO());
+		}
 		if (gemeinde.isAngebotTS() != jaxGemeinde.isAngebotTS() || gemeinde.isNurLats() != jaxGemeinde.isNurLats()) {
 			gemeindeService.updateAngebotTS(gemeinde, jaxGemeinde.isAngebotTS(), jaxGemeinde.isNurLats());
 		}

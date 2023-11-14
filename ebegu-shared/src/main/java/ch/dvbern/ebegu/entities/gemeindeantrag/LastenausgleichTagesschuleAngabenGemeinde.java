@@ -264,6 +264,7 @@ public class LastenausgleichTagesschuleAngabenGemeinde extends AbstractEntity {
 		this.ersteRateAusbezahlt = source.ersteRateAusbezahlt;
 		this.einnahmenElterngebuehren = source.einnahmenElterngebuehren;
 		this.geleisteteBetreuungsstundenBesondereVolksschulangebot = source.geleisteteBetreuungsstundenBesondereVolksschulangebot;
+		this.einnahmenElterngebuehrenVolksschulangebot = source.einnahmenElterngebuehrenVolksschulangebot;
 		// C: Kostenbeteiligung Gemeinde
 		this.gesamtKostenTagesschule = source.gesamtKostenTagesschule;
 		this.einnnahmenVerpflegung = source.einnnahmenVerpflegung;

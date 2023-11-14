@@ -196,6 +196,7 @@ public class VerfuegungsBemerkungDTOList {
 			// 3. Erwerbspensum
 			// 4. Erweiterte Beduefrnisse
 			// 5. Zusatzgutschein
+			// 6. Beenden von Antrag bei Konkubinat
 			if (messagesMap.containsKey(MsgKey.AUSSERORDENTLICHER_ANSPRUCH_MSG)) {
 				removeBemerkungForPeriodes(MsgKey.ERWERBSPENSUM_ANSPRUCH, getGueltigkeitenByMessageKey(MsgKey.AUSSERORDENTLICHER_ANSPRUCH_MSG));
 				removeBemerkungForPeriodes(MsgKey.FACHSTELLE_MSG, getGueltigkeitenByMessageKey(MsgKey.AUSSERORDENTLICHER_ANSPRUCH_MSG));
@@ -221,6 +222,9 @@ public class VerfuegungsBemerkungDTOList {
 			}
 			if (messagesMap.containsKey(MsgKey.FIN_SIT_RUECKWIRKEND_ANGEPASST)) {
 				removeBemerkungForPeriodes(MsgKey.EINKOMMENSVERSCHLECHTERUNG_ACCEPT_MSG, getGueltigkeitenByMessageKey(MsgKey.FIN_SIT_RUECKWIRKEND_ANGEPASST));
+			}
+			if (messagesMap.containsKey(MsgKey.FAMILIENSITUATION_X_JAHRE_KONKUBINAT_MSG)) {
+				removeBemerkungForPeriodes(MsgKey.FAMILIENSITUATION_KONKUBINAT_MSG, getGueltigkeitenByMessageKey(MsgKey.FAMILIENSITUATION_X_JAHRE_KONKUBINAT_MSG));
 			}
 			Optional<MsgKey> msgKeySchulstufe = getOptionalMsgKeySchulstufe();
 			msgKeySchulstufe.ifPresent(msgKey -> removeBemerkungForPeriodes(MsgKey.FACHSTELLE_MSG, getGueltigkeitenByMessageKey(msgKey)));

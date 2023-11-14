@@ -15,32 +15,6 @@
 
 package ch.dvbern.ebegu.api.resource;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.Collection;
-import java.util.List;
-import java.util.Optional;
-import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
-
-import javax.activation.MimeTypeParseException;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.annotation.security.DenyAll;
-import javax.annotation.security.RolesAllowed;
-import javax.ejb.Stateless;
-import javax.inject.Inject;
-import javax.validation.constraints.NotNull;
-import javax.ws.rs.BadRequestException;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.GET;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
-import javax.ws.rs.core.MediaType;
-
 import ch.dvbern.ebegu.api.converter.JaxBConverter;
 import ch.dvbern.ebegu.api.dtos.JaxId;
 import ch.dvbern.ebegu.api.dtos.JaxPaginationDTO;
@@ -48,11 +22,7 @@ import ch.dvbern.ebegu.api.dtos.JaxZahlung;
 import ch.dvbern.ebegu.api.dtos.JaxZahlungsauftrag;
 import ch.dvbern.ebegu.authentication.PrincipalBean;
 import ch.dvbern.ebegu.dto.ZahlungenSearchParamsDTO;
-import ch.dvbern.ebegu.entities.AbstractEntity;
-import ch.dvbern.ebegu.entities.Gemeinde;
-import ch.dvbern.ebegu.entities.Institution;
-import ch.dvbern.ebegu.entities.Zahlung;
-import ch.dvbern.ebegu.entities.Zahlungsauftrag;
+import ch.dvbern.ebegu.entities.*;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.ZahlungslaufTyp;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
@@ -68,19 +38,25 @@ import io.swagger.annotations.ApiOperation;
 import org.apache.commons.collections.CollectionUtils;
 import org.jboss.ejb3.annotation.TransactionTimeout;
 
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_BG;
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_GEMEINDE;
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_INSTITUTION;
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_MANDANT;
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_TRAEGERSCHAFT;
-import static ch.dvbern.ebegu.enums.UserRoleName.JURIST;
-import static ch.dvbern.ebegu.enums.UserRoleName.REVISOR;
-import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_BG;
-import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_GEMEINDE;
-import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_INSTITUTION;
-import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_MANDANT;
-import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_TRAEGERSCHAFT;
-import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
+import javax.activation.MimeTypeParseException;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.annotation.security.DenyAll;
+import javax.annotation.security.RolesAllowed;
+import javax.ejb.Stateless;
+import javax.inject.Inject;
+import javax.validation.constraints.NotNull;
+import javax.ws.rs.*;
+import javax.ws.rs.core.MediaType;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.Collection;
+import java.util.List;
+import java.util.Optional;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
+
+import static ch.dvbern.ebegu.enums.UserRoleName.*;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -205,18 +181,12 @@ public class ZahlungResource {
 		String message = "invalid param: ";
 		int page;
 		int pageSize;
-		if (pageParam == null) {
-			throw new BadRequestException(message + "page");
-		}
 		try {
 			page = Integer.parseInt(pageParam);
 		} catch (NumberFormatException e) {
 			throw new BadRequestException(message + "page", e);
 		}
 
-		if (pageSizeParam == null) {
-			throw new BadRequestException(message + "pageSize");
-		}
 		try {
 			pageSize = Integer.parseInt(pageSizeParam);
 		} catch (NumberFormatException e) {
@@ -226,9 +196,7 @@ public class ZahlungResource {
 
 		if (filterGemeindeParam != null) {
 			Gemeinde gemeinde = gemeindeService.findGemeinde(filterGemeindeParam)
-				.orElseThrow(() -> {
-					throw new EbeguEntityNotFoundException("toZahlungenSearchParamsDTO", filterGemeindeParam);
-				});
+				.orElseThrow(() -> new EbeguEntityNotFoundException("toZahlungenSearchParamsDTO", filterGemeindeParam));
 			zahlungenParams.setGemeinde(gemeinde);
 		}
 		if (sortReverseParam == null || sortReverseParam.equals("true") || sortReverseParam.equals("false")) {
@@ -241,14 +209,14 @@ public class ZahlungResource {
 		zahlungenParams.setZahlungslaufTyp(zahlungslaufTyp);
 
 		if (allowedInst != null) {
-			if (allowedInst.size() == 0) {
+			if (allowedInst.isEmpty()) {
 				throw new BadRequestException(message + "allowedInst");
-			} else {
-				List<String> allowedInstIds = allowedInst.stream()
+			}
+
+			List<String> allowedInstIds = allowedInst.stream()
 					.map(AbstractEntity::getId)
 					.collect(Collectors.toList());
-				zahlungenParams.setAllowedInstitutionIds(allowedInstIds);
-			}
+			zahlungenParams.setAllowedInstitutionIds(allowedInstIds);
 		}
 		return zahlungenParams;
 	}
@@ -313,7 +281,7 @@ public class ZahlungResource {
 		final Zahlungsauftrag zahlungsauftrag = zahlungService.zahlungsauftragAusloesen(zahlungsauftragId);
 
 		//Force creation and saving of ZahlungsFile Pain001
-		generatedDokumentService.getPain001DokumentAccessTokenGeneratedDokument(zahlungsauftrag, true);
+		generatedDokumentService.createZahlungsFiles(zahlungsauftrag);
 
 		return converter.zahlungsauftragToJAX(zahlungsauftrag, false);
 	}

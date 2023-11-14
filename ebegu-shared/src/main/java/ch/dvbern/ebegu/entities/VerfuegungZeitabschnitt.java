@@ -849,6 +849,7 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 		result.setMinimalesEwpUnterschritten(input.isMinimalesEwpUnterschritten());
 		result.setFamGroesse(input.getFamGroesseNonNull());
 		result.setAuszahlungAnEltern(input.isAuszahlungAnEltern());
+		result.setVerguenstigungGewuenscht(input.isVerguenstigungGewuenscht());
 	}
 
 	public boolean isSameMZV(VerfuegungZeitabschnitt other) {
@@ -882,8 +883,8 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 		this.bgCalculationInputGemeinde.setRequiredAgeForAnspruchNotReached(requiredAgeForAnspruchNotReached);
 	}
 
-	public void setGesuchBeendenKonkubinatWirdInPeriodeXJahreAlt(boolean gesuchBeenden) {
-		this.bgCalculationInputAsiv.setGesuchBeendenKonkubinatWirdInPeriodeXJahreAlt(gesuchBeenden);
-		this.bgCalculationInputGemeinde.setGesuchBeendenKonkubinatWirdInPeriodeXJahreAlt(gesuchBeenden);
+	public void setGesuchBeendenKonkubinatMitZweiGS(boolean gesuchBeenden) {
+		this.bgCalculationInputAsiv.setGesuchBeendenKonkubinatMitZweiGS(gesuchBeenden);
+		this.bgCalculationInputGemeinde.setGesuchBeendenKonkubinatMitZweiGS(gesuchBeenden);
 	}
 }

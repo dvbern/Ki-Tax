@@ -149,6 +149,8 @@ public class BGCalculationInput {
 
 	private boolean geschwisternBonusKind3 = false;
 
+	private boolean verguenstigungGewuenscht = true;
+
 	@Valid
 	@NotNull
 	@Nonnull
@@ -190,7 +192,7 @@ public class BGCalculationInput {
 	private boolean isEkvAccepted = false;
 
 	private boolean requiredAgeForAnspruchNotReached = false;
-	private boolean gesuchBeendenKonkubinatWirdInPeriodeXJahreAlt = false;
+	private boolean gesuchBeendenKonkubinatMitZweiGS = false;
 	private BigDecimal bgStundenFaktor = BigDecimal.ZERO;
 
 	public BGCalculationInput(@Nonnull VerfuegungZeitabschnitt parent, @Nonnull RuleValidity ruleValidity) {
@@ -259,9 +261,10 @@ public class BGCalculationInput {
 		this.partnerIdentischMitVorgesuch = toCopy.partnerIdentischMitVorgesuch;
 		this.isEkvAccepted = toCopy.isEkvAccepted;
 		this.requiredAgeForAnspruchNotReached = toCopy.requiredAgeForAnspruchNotReached;
-		this.gesuchBeendenKonkubinatWirdInPeriodeXJahreAlt = toCopy.gesuchBeendenKonkubinatWirdInPeriodeXJahreAlt;
+		this.gesuchBeendenKonkubinatMitZweiGS = toCopy.gesuchBeendenKonkubinatMitZweiGS;
 		this.bgStundenFaktor = toCopy.bgStundenFaktor;
 		this.integrationTypFachstellenPensum = toCopy.integrationTypFachstellenPensum;
+		this.verguenstigungGewuenscht = toCopy.verguenstigungGewuenscht;
 	}
 
 	@Nonnull
@@ -872,7 +875,7 @@ public class BGCalculationInput {
 		this.kitaPlusZuschlag = this.kitaPlusZuschlag || other.kitaPlusZuschlag;
 		this.besondereBeduerfnisseZuschlag = add(this.getBesondereBeduerfnisseZuschlag(), other.getBesondereBeduerfnisseZuschlag());
 		this.requiredAgeForAnspruchNotReached = this.requiredAgeForAnspruchNotReached || other.requiredAgeForAnspruchNotReached;
-		this.gesuchBeendenKonkubinatWirdInPeriodeXJahreAlt = this.gesuchBeendenKonkubinatWirdInPeriodeXJahreAlt || other.gesuchBeendenKonkubinatWirdInPeriodeXJahreAlt;
+		this.gesuchBeendenKonkubinatMitZweiGS = this.gesuchBeendenKonkubinatMitZweiGS || other.gesuchBeendenKonkubinatMitZweiGS;
 		if (MathUtil.isZero(this.bgStundenFaktor) && !MathUtil.isZero(other.getBgStundenFaktor())) {
 			this.setBgStundenFaktor(other.getBgStundenFaktor());
 		}
@@ -880,6 +883,11 @@ public class BGCalculationInput {
 		//integrations Typ kann nicht ändern wenn zwei Fachstellen zusammengezählt werde
 		this.integrationTypFachstellenPensum = this.integrationTypFachstellenPensum == null ?
 			other.integrationTypFachstellenPensum : this.integrationTypFachstellenPensum;
+
+		//das flag kann sich nicht ändern, wenn einmal false ist es für die ganze gp false
+		if (!other.verguenstigungGewuenscht) {
+			this.verguenstigungGewuenscht = false;
+		}
 	}
 
 	/**
@@ -1081,9 +1089,10 @@ public class BGCalculationInput {
 			Objects.equals( this.partnerIdentischMitVorgesuch , other.partnerIdentischMitVorgesuch) &&
 			this.isEkvAccepted == other.isEkvAccepted &&
 			this.requiredAgeForAnspruchNotReached == other.requiredAgeForAnspruchNotReached &&
-			this.gesuchBeendenKonkubinatWirdInPeriodeXJahreAlt == other.gesuchBeendenKonkubinatWirdInPeriodeXJahreAlt &&
+			this.gesuchBeendenKonkubinatMitZweiGS == other.gesuchBeendenKonkubinatMitZweiGS &&
 			MathUtil.isSame(this.bgStundenFaktor, other.bgStundenFaktor) &&
-			this.integrationTypFachstellenPensum == other.integrationTypFachstellenPensum;
+			this.integrationTypFachstellenPensum == other.integrationTypFachstellenPensum &&
+			this.verguenstigungGewuenscht == other.verguenstigungGewuenscht;
 	}
 
 	@SuppressWarnings("PMD.CompareObjectsWithEquals")
@@ -1249,12 +1258,12 @@ public class BGCalculationInput {
 		isEkvAccepted = ekvAccepted;
 	}
 
-	public void setGesuchBeendenKonkubinatWirdInPeriodeXJahreAlt(boolean konkubinatWirdInPeriodeXJahreAlt) {
-		this.gesuchBeendenKonkubinatWirdInPeriodeXJahreAlt = konkubinatWirdInPeriodeXJahreAlt;
+	public void setGesuchBeendenKonkubinatMitZweiGS(boolean gesuchBeendenKonkubinatMitZweiGS) {
+		this.gesuchBeendenKonkubinatMitZweiGS = gesuchBeendenKonkubinatMitZweiGS;
 	}
 
-	public boolean isGesuchBeendenKonkubinatWirdInPeriodeXJahreAlt() {
-		return gesuchBeendenKonkubinatWirdInPeriodeXJahreAlt;
+	public boolean isGesuchBeendenKonkubinatMitZweiGS() {
+		return gesuchBeendenKonkubinatMitZweiGS;
 	}
 
 	public void setBgStundenFaktor(BigDecimal bgStundenFaktor) {
@@ -1271,5 +1280,13 @@ public class BGCalculationInput {
 
 	public void setIntegrationTypFachstellenPensum(IntegrationTyp integrationTypFachstellenPensum) {
 		this.integrationTypFachstellenPensum = integrationTypFachstellenPensum;
+	}
+
+	public boolean isVerguenstigungGewuenscht() {
+		return verguenstigungGewuenscht;
+	}
+
+	public void setVerguenstigungGewuenscht(boolean verguenstigungGewuenscht) {
+		this.verguenstigungGewuenscht = verguenstigungGewuenscht;
 	}
 }

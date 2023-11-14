@@ -30,6 +30,7 @@ import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.EbeguUtil;
 import ch.dvbern.ebegu.util.EnumUtil;
 import ch.dvbern.ebegu.util.mandant.MandantIdentifier;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -303,6 +304,7 @@ public class MailServiceBean extends AbstractMailServiceBean implements MailServ
 		return false;
 	}
 
+	@SuppressFBWarnings("REC_CATCH_EXCEPTION")
 	@Override
 	public void sendInfoBetreuungGeloescht(@Nonnull List<Betreuung> betreuungen) {
 
@@ -361,7 +363,7 @@ public class MailServiceBean extends AbstractMailServiceBean implements MailServ
 					}
 
 				}
-			} catch (MailException e) {
+			} catch (Exception e) {
 				logExceptionAccordingToEnvironment(
 					e,
 					"Mail InfoBetreuungGeloescht konnte nicht verschickt werden fuer Betreuung",

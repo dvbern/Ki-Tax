@@ -177,6 +177,9 @@ public class KindServiceBean extends AbstractBaseService implements KindService 
 		Root<KindContainer> root = query.from(KindContainer.class);
 		Join<KindContainer, Kind> joinKind = root.join(KindContainer_.kindJA, JoinType.LEFT);
 		Join<KindContainer, Gesuch> joinGesuch = root.join(KindContainer_.gesuch, JoinType.LEFT);
+		Join<Gesuch, Dossier> joinDossier = joinGesuch.join(Gesuch_.dossier, JoinType.INNER);
+		Join<Dossier, Fall> joinFall = joinDossier.join(Dossier_.fall, JoinType.INNER);
+
 
 		query.multiselect(
 			joinGesuch.get(AbstractEntity_.id),
@@ -196,6 +199,8 @@ public class KindServiceBean extends AbstractBaseService implements KindService 
 		predicates.add(cb.notEqual(joinGesuch.get(Gesuch_.dossier), kindContainer.getGesuch().getDossier()));
 		// Nur das zuletzt gueltige Gesuch
 		predicates.add(joinGesuch.get(Gesuch_.status).in(AntragStatus.getForKindDubletten()));
+		// Nur Gesuch mit demselben Mandant
+		predicates.add(cb.equal(joinFall.get(Fall_.mandant), kindContainer.getGesuch().getDossier().getFall().getMandant()));
 
 		// Eingeloggter Benutzer muss Berechtigung für die Gemeinde haben
 		// Superadmin und Mandant können alle Gemeinden sehen
@@ -205,7 +210,6 @@ public class KindServiceBean extends AbstractBaseService implements KindService 
 				throw new EbeguRuntimeException("getKindDubletten", "Keine Gemeinden für aktiven Benutzer gefunden");
 			}
 
-			Join<Gesuch, Dossier> joinDossier = joinGesuch.join(Gesuch_.dossier, JoinType.INNER);
 			predicates.add(joinDossier.get(Dossier_.gemeinde).in(gemeinden));
 		}
 

@@ -654,8 +654,8 @@
                                                 </div>
 
                                                 <!-- Custom Erwerbspensum Zuschlag -->
-                                                <div class="form-group" *ngIf="!isUndefined(konfigurationsListe[i].isAnspruchUnabhaengingVonBeschaeftigungsPensum)
-                                                && !konfigurationsListe[i].isAnspruchUnabhaengingVonBeschaeftigungsPensum">
+                                                <div class="form-group" *ngIf="!isUndefined(konfigurationsListe[i].isAnspruchUnabhaengingVonBeschaeftigungsPensum())
+                                                && !konfigurationsListe[i].isAnspruchUnabhaengingVonBeschaeftigungsPensum()">
                                                     <mat-checkbox id="ewp_zuschlag_override_id_{{i}}"
                                                                   name="ewp_zuschlag_override_id_{{i}}"
                                                                   [(ngModel)]="konfigurationsListe[i].erwerbspensumZuschlagOverriden"

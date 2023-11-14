@@ -49,7 +49,7 @@ const LOG = LogFactory.createLog('FerienbetreuungAbschlussComponent');
 export class FerienbetreuungAbschlussComponent implements OnInit, OnDestroy {
 
     private static readonly FILENAME_DE = 'Verfügung Ferienbetreuung kiBon';
-    private static readonly FILENAME_FR = 'Modèle Décisions EJC kibon';
+    private static readonly FILENAME_FR = 'Modèle Décisions VAC kibon';
 
     public container: TSFerienbetreuungAngabenContainer;
 
