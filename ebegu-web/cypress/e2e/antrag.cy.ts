@@ -39,7 +39,7 @@ describe('Kibon - generate Testfälle [Gemeinde Sachbearbeiter]', () => {
 
     beforeEach(() => {
         cy.intercept({ resourceType: 'xhr' }, { log: false }); // don't log XHRs
-        cy.login('Stefan-Weibel');
+        cy.login(userSB);
         cy.visit('/#/faelle');
     });
 
