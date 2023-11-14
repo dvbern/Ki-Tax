@@ -76,6 +76,7 @@ import {GesuchModelManager} from '../../service/gesuchModelManager';
 import {GlobalCacheService} from '../../service/globalCacheService';
 import {WizardStepManager} from '../../service/wizardStepManager';
 import {AbstractGesuchViewController} from '../abstractGesuchView';
+import {TSIntegrationTyp} from '../../../models/enums/TSIntegrationTyp';
 import ILogService = angular.ILogService;
 import IScope = angular.IScope;
 import ITimeoutService = angular.ITimeoutService;
@@ -165,6 +166,8 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     private multiplierKita: number;
     private multiplierTFO: number;
 
+    public minPensumSprachlicheIndikation: number;
+
     // felder um aus provisorischer Betreuung ein Betreuungspensum zu erstellen
     public provMonatlicheBetreuungskosten: number;
     private hideKesbPlatzierung: boolean;
@@ -217,6 +220,10 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
                     response.filter(r => r.key === TSEinstellungKey.PENSUM_ANZEIGE_TYP)
                         .forEach(einstellung => {
                             this.loadPensumAnzeigeTyp(einstellung);
+                        });
+                    response.filter(r => r.key === TSEinstellungKey.FACHSTELLE_MIN_PENSUM_SPRACHLICHE_INTEGRATION)
+                        .forEach(value => {
+                            this.minPensumSprachlicheIndikation = Number(value.value);
                         });
                 }, error => LOG.error(error));
             })
@@ -1022,6 +1029,29 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         } else {
             this.savePlatzBestaetigung();
         }
+    }
+
+    public showPensumUnterschrittenCheckBox(): boolean {
+        if (!this.authServiceRS.isOneOfRoles(TSRoleUtil.getGemeindeOrBGRoles().concat(TSRole.SUPER_ADMIN))) {
+            return false;
+        }
+
+        if (EbeguUtil.isNullOrUndefined(this.getBetreuungspensen())) {
+            return false;
+        }
+
+        const sprachlicheIntegrationen = this.getKindModel()?.kindJA?.pensumFachstellen
+            .filter(fachstelle =>
+                fachstelle.integrationTyp === TSIntegrationTyp.SPRACHLICHE_INTEGRATION);
+
+        if (EbeguUtil.isNullOrUndefined(sprachlicheIntegrationen) ||
+            sprachlicheIntegrationen.length === 0) {
+            return false;
+        }
+
+        return this.getBetreuungspensen()
+            .filter(pensum => pensum.betreuungspensumJA?.pensum < this.minPensumSprachlicheIndikation)
+            .length > 0;
     }
 
     private savePlatzBestaetigung(): void {
