@@ -148,6 +148,10 @@ public interface GemeindeService {
 	 * aktiviert oder deaktiviert das BG Angebot
 	 */
 	void updateAngebotBG(@Nonnull Gemeinde gemeinde, boolean value);
+	/**
+	 * aktiviert oder deaktiviert das BG TFO Angebot
+	 */
+	void updateAngebotBGTFO(@Nonnull Gemeinde gemeinde, boolean value);
 
 	/**
 	 * aktiviert oder deaktiviert das TS Angebot

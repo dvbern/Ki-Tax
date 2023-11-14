@@ -17,20 +17,8 @@
 
 package ch.dvbern.ebegu.rules;
 
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-
-import javax.annotation.Nonnull;
-
 import ch.dvbern.ebegu.dto.BGCalculationInput;
-import ch.dvbern.ebegu.entities.Betreuung;
-import ch.dvbern.ebegu.entities.Einstellung;
-import ch.dvbern.ebegu.entities.ErwerbspensumContainer;
-import ch.dvbern.ebegu.entities.Mandant;
-import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
+import ch.dvbern.ebegu.entities.*;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.test.TestDataUtil;
@@ -41,6 +29,13 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.needle4j.annotation.ObjectUnderTest;
+
+import javax.annotation.Nonnull;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 import static ch.dvbern.ebegu.enums.EinstellungKey.KITAPLUS_ZUSCHLAG_AKTIVIERT;
 
@@ -109,7 +104,7 @@ public class KitaPlusZuschlagCalcRuleTest {
 		einstellungenMap.get(KITAPLUS_ZUSCHLAG_AKTIVIERT).setValue("true");
 
 		List<VerfuegungZeitabschnitt> result = EbeguRuleTestsHelper.calculate(betreuung, einstellungenMap);
-		Assert.assertEquals(result.get(0).getVerguenstigung(), new BigDecimal("1476.00"));
+		Assert.assertEquals(result.get(0).getVerguenstigung(), new BigDecimal("1414.50"));
 	}
 
 	@Test
@@ -122,8 +117,8 @@ public class KitaPlusZuschlagCalcRuleTest {
 		einstellungenMap.get(KITAPLUS_ZUSCHLAG_AKTIVIERT).setValue("true");
 
 		List<VerfuegungZeitabschnitt> result = EbeguRuleTestsHelper.calculate(betreuung, einstellungenMap);
-		// 1476 + 32 * 12 = 1860
-		Assert.assertEquals(result.get(0).getVerguenstigung(), new BigDecimal("1860.00"));
+		// 1424.1 + 32 * 12 = 1860
+		Assert.assertEquals(result.get(0).getVerguenstigung(), new BigDecimal("1808.10"));
 	}
 
 	@Test
@@ -136,7 +131,7 @@ public class KitaPlusZuschlagCalcRuleTest {
 		einstellungenMap.get(KITAPLUS_ZUSCHLAG_AKTIVIERT).setValue("false");
 
 		List<VerfuegungZeitabschnitt> result = EbeguRuleTestsHelper.calculate(betreuung, einstellungenMap);
-		Assert.assertEquals(result.get(0).getVerguenstigung(), new BigDecimal("1476.00"));
+		Assert.assertEquals(result.get(0).getVerguenstigung(), new BigDecimal("1414.50"));
 	}
 
 	@Test

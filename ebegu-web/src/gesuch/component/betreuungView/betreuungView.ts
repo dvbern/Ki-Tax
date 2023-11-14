@@ -172,7 +172,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     private mandant: KiBonMandant;
     private angebotTS: boolean;
     private angebotFI: boolean;
-    private angebotTFO: boolean;
+    private angebotTFO: boolean = false;
 
     public readonly demoFeature = TSDemoFeature.FACHSTELLEN_UEBERGANGSLOESUNG;
 
@@ -208,7 +208,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     // eslint-disable-next-line
     public $onInit(): void {
         super.$onInit();
-        this.initApplicationProperties()
+        this.initAngebotTypenFromEinstellungen()
             .then(() => {
                 const gesuchsperiodeId: string = this.gesuchModelManager.getGesuchsperiode().id;
                 return this.einstellungRS.getAllEinstellungenBySystemCached(
@@ -1784,11 +1784,14 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         return this.$translate.instant('INSTITUTION_NOT_FOUND_HINT');
     }
 
-    private initApplicationProperties(): IPromise<void> {
+    private initAngebotTypenFromEinstellungen(): IPromise<void> {
         return this.applicationPropertyRS.getPublicPropertiesCached().then(res => {
             this.angebotTS = res.angebotTSActivated;
             this.angebotFI = res.angebotFIActivated;
-            this.angebotTFO = res.angebotTFOActivated;
+            //wenn TFO aktiv on mandant then check if tfo is activ on gemeinde
+            if (res.angebotTFOActivated) {
+                this.angebotTFO = this.gesuchModelManager.getGemeinde().angebotBGTFO;
+            }
         })
     }
 

@@ -25,4 +25,13 @@ export class TSAbstractEntity {
     public isNew(): boolean {
         return !this.timestampErstellt;
     }
+
+    public deepCopyTo(target: TSAbstractEntity): TSAbstractEntity {
+        target.id = this.id;
+        target.version = this.version;
+        target.timestampErstellt = this.timestampErstellt;
+        target.timestampMutiert = this.timestampMutiert;
+
+        return target;
+    }
 }

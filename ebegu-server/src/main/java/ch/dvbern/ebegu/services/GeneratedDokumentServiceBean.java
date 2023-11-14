@@ -15,60 +15,9 @@
 
 package ch.dvbern.ebegu.services;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-
-import javax.activation.MimeTypeParseException;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.ejb.Local;
-import javax.ejb.Stateless;
-import javax.inject.Inject;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
-
 import ch.dvbern.ebegu.config.EbeguConfiguration;
-import ch.dvbern.ebegu.entities.AbstractAnmeldung;
-import ch.dvbern.ebegu.entities.AbstractEntity;
-import ch.dvbern.ebegu.entities.AbstractEntity_;
-import ch.dvbern.ebegu.entities.AnmeldungTagesschule;
-import ch.dvbern.ebegu.entities.Betreuung;
-import ch.dvbern.ebegu.entities.FileMetadata_;
-import ch.dvbern.ebegu.entities.GemeindeStammdaten;
-import ch.dvbern.ebegu.entities.GeneratedDokument;
-import ch.dvbern.ebegu.entities.GeneratedDokument_;
-import ch.dvbern.ebegu.entities.GeneratedGeneralDokument;
-import ch.dvbern.ebegu.entities.GeneratedNotrechtDokument;
-import ch.dvbern.ebegu.entities.GeneratedNotrechtDokument_;
-import ch.dvbern.ebegu.entities.Gesuch;
-import ch.dvbern.ebegu.entities.Gesuchsperiode;
-import ch.dvbern.ebegu.entities.Mahnung;
-import ch.dvbern.ebegu.entities.Pain001Dokument;
-import ch.dvbern.ebegu.entities.Pain001Dokument_;
-import ch.dvbern.ebegu.entities.RueckforderungFormular;
-import ch.dvbern.ebegu.entities.Verfuegung;
-import ch.dvbern.ebegu.entities.WriteProtectedDokument;
-import ch.dvbern.ebegu.entities.Zahlungsauftrag;
-import ch.dvbern.ebegu.enums.AntragStatus;
-import ch.dvbern.ebegu.enums.Betreuungsstatus;
-import ch.dvbern.ebegu.enums.ErrorCodeEnum;
-import ch.dvbern.ebegu.enums.FinSitStatus;
-import ch.dvbern.ebegu.enums.GeneratedDokumentTyp;
-import ch.dvbern.ebegu.enums.Sprache;
-import ch.dvbern.ebegu.enums.ZahlungauftragStatus;
+import ch.dvbern.ebegu.entities.*;
+import ch.dvbern.ebegu.enums.*;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.errors.KibonLogLevel;
@@ -76,6 +25,8 @@ import ch.dvbern.ebegu.errors.MergeDocException;
 import ch.dvbern.ebegu.pdfgenerator.PdfUtil;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.ebegu.services.zahlungen.IZahlungsfileGenerator;
+import ch.dvbern.ebegu.services.zahlungen.ZahlungsfileGeneratorInfoma;
+import ch.dvbern.ebegu.services.zahlungen.ZahlungsfileGeneratorPain;
 import ch.dvbern.ebegu.services.zahlungen.ZahlungsfileGeneratorVisitor;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.DokumenteUtil;
@@ -87,6 +38,26 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.commons.lang.Validate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.activation.MimeTypeParseException;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.ejb.Local;
+import javax.ejb.Stateless;
+import javax.inject.Inject;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.time.LocalDate;
+import java.util.*;
 
 /**
  * Service fuer GeneratedDokument
@@ -138,6 +109,11 @@ public class GeneratedDokumentServiceBean extends AbstractBaseService implements
 	@Inject
 	private ZahlungsfileGeneratorVisitor zahlungsfileGeneratorVisitor;
 
+	@Inject
+	private ZahlungsfileGeneratorPain painGenerator;
+
+	@Inject
+	private ZahlungsfileGeneratorInfoma infomaGenerator;
 
 	@Override
 	@Nonnull
@@ -811,23 +787,41 @@ public class GeneratedDokumentServiceBean extends AbstractBaseService implements
 	@Nonnull
 	@Override
 	public WriteProtectedDokument getPain001DokumentAccessTokenGeneratedDokument(
-		@Nonnull Zahlungsauftrag zahlungsauftrag,
-		@Nonnull Boolean forceCreation
+		@Nonnull Zahlungsauftrag zahlungsauftrag
 	) throws MimeTypeParseException {
+		return getZahlungsfileDokumentAccssTokenGeneratedDokument(zahlungsauftrag, painGenerator, false);
+	}
 
-		WriteProtectedDokument persistedDokument = null;
+	@Nonnull
+	@Override
+	public WriteProtectedDokument getInfomaDokumentAccessTokenGeneratedDokument(
+		@Nonnull Zahlungsauftrag zahlungsauftrag
+	) throws MimeTypeParseException {
+		return getZahlungsfileDokumentAccssTokenGeneratedDokument(zahlungsauftrag, infomaGenerator, false);
+	}
 
+	@Override
+	public void createZahlungsFiles(@Nonnull Zahlungsauftrag zahlungsauftrag) throws MimeTypeParseException {
 		Objects.requireNonNull(zahlungsauftrag.getMandant());
-		final IZahlungsfileGenerator zahlungsfileGenerator =
-			zahlungsfileGeneratorVisitor.getZahlungsfileGenerator(zahlungsauftrag.getMandant());
+		for (IZahlungsfileGenerator generator : zahlungsfileGeneratorVisitor.getZahlungsfileGenerator(zahlungsauftrag.getMandant())) {
+			getZahlungsfileDokumentAccssTokenGeneratedDokument(zahlungsauftrag, generator, true);
+		}
+	}
 
+	private WriteProtectedDokument getZahlungsfileDokumentAccssTokenGeneratedDokument(
+		@Nonnull Zahlungsauftrag zahlungsauftrag,
+		IZahlungsfileGenerator zahlungsfileGenerator,
+		boolean forceCreation
+	) throws MimeTypeParseException {
+		Objects.requireNonNull(zahlungsauftrag.getMandant());
+		WriteProtectedDokument persistedDokument = null;
 		GeneratedDokumentTyp dokumentTyp = zahlungsfileGenerator.getGeneratedDokumentTyp();
 
 		final Optional<GemeindeStammdaten> stammdatenOptional = gemeindeService.getGemeindeStammdatenByGemeindeId(zahlungsauftrag.getGemeinde().getId());
-		if (!stammdatenOptional.isPresent()) {
+		if (stammdatenOptional.isEmpty()) {
 			// Wenn die Stammdaten nicht ausgefuellt sind, fahren wir hier nicht weiter.
 			throw new EbeguRuntimeException(KibonLogLevel.INFO,
-				"getPain001DokumentAccessTokenGeneratedDokument",
+				"getZahlungsfileDokumentAccessTokenGeneratedDokument",
 				ErrorCodeEnum.ERROR_ZAHLUNGSINFORMATIONEN_GEMEINDE_INCOMPLETE,
 				zahlungsauftrag.getGemeinde().getName());
 		}
@@ -837,7 +831,7 @@ public class GeneratedDokumentServiceBean extends AbstractBaseService implements
 		// Wenn die Zahlungsinformationen nicht komplett ausgefuellt sind, fahren wir hier nicht weiter.
 		if (!stammdaten.isZahlungsinformationValid()) {
 			throw new EbeguRuntimeException(KibonLogLevel.INFO,
-				"getPain001DokumentAccessTokenGeneratedDokument",
+				"getZahlungsfileDokumentAccessTokenGeneratedDokument",
 				ErrorCodeEnum.ERROR_ZAHLUNGSINFORMATIONEN_GEMEINDE_INCOMPLETE,
 				zahlungsauftrag.getGemeinde().getName());
 		}

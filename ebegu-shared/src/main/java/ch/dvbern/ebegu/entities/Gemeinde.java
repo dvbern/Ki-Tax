@@ -39,6 +39,8 @@ import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.validators.CheckGemeindeAtLeastOneAngebot;
 import com.google.common.base.Strings;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import lombok.Getter;
+import lombok.Setter;
 import org.apache.commons.lang3.builder.CompareToBuilder;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Field;
@@ -58,6 +60,8 @@ import static ch.dvbern.ebegu.util.Constants.END_OF_TIME;
 	}
 )
 @CheckGemeindeAtLeastOneAngebot
+@Getter
+@Setter
 public class Gemeinde extends AbstractEntity implements Comparable<Gemeinde>, Displayable, HasMandant {
 
 	private static final long serialVersionUID = -6976259296646006855L;
@@ -105,6 +109,8 @@ public class Gemeinde extends AbstractEntity implements Comparable<Gemeinde>, Di
 	@Column(nullable = false)
 	private boolean angebotBG = false;
 
+	@Column(nullable = false)
+	private boolean angebotBGTFO = false;
 	@Column(nullable = false)
 	private boolean angebotTS = false;
 

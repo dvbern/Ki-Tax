@@ -17,7 +17,7 @@
 <div class="dv-table">
     <div class="row">
         <div class="col-md-8">
-            <div id="titleText">
+            <div id="titleText" data-test="page-title">
                 <h3 class="ng-scope" *ngIf="title">{{title}}</h3>
                 <h3 class="ng-scope" *ngIf="!title" translate>FAELLE_LIST</h3>
             </div>
@@ -390,7 +390,8 @@
             <mat-header-row *matHeaderRowDef="displayedColumns" class="dv-faelle-mat-header-row"></mat-header-row>
             <mat-header-row class="dv-faelle-mat-header-row"
                             *matHeaderRowDef="filterColumns"></mat-header-row>
-            <mat-row *matRowDef="let element; columns: displayedColumns;"
+            <mat-row *matRowDef="let element; columns: displayedColumns; let index = index"
+                     [attr.data-test]="'antrag-entry#' + index"
                      (click)="onEditClicked(element, $event)"
                      class="pointer-cursor"></mat-row>
 

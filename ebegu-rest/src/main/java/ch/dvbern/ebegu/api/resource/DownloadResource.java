@@ -15,9 +15,28 @@
 
 package ch.dvbern.ebegu.api.resource;
 
-import java.io.IOException;
-import java.net.URI;
-import java.util.Optional;
+import ch.dvbern.ebegu.api.av.AVClient;
+import ch.dvbern.ebegu.api.converter.JaxBConverter;
+import ch.dvbern.ebegu.api.dtos.JaxDownloadFile;
+import ch.dvbern.ebegu.api.dtos.JaxId;
+import ch.dvbern.ebegu.api.dtos.JaxMahnung;
+import ch.dvbern.ebegu.api.resource.authentication.VerfuegungDownloadAuthenticatorVisitor;
+import ch.dvbern.ebegu.api.util.RestUtil;
+import ch.dvbern.ebegu.authentication.PrincipalBean;
+import ch.dvbern.ebegu.entities.*;
+import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
+import ch.dvbern.ebegu.enums.ErrorCodeEnum;
+import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
+import ch.dvbern.ebegu.errors.EbeguRuntimeException;
+import ch.dvbern.ebegu.errors.MergeDocException;
+import ch.dvbern.ebegu.services.*;
+import ch.dvbern.ebegu.services.gemeindeantrag.FerienbetreuungDokumentService;
+import ch.dvbern.ebegu.util.UploadFileInfo;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.activation.MimeTypeParseException;
 import javax.annotation.Nonnull;
@@ -29,81 +48,16 @@ import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.DefaultValue;
-import javax.ws.rs.GET;
-import javax.ws.rs.MatrixParam;
-import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
+import java.io.IOException;
+import java.net.URI;
+import java.util.Optional;
 
-import ch.dvbern.ebegu.api.av.AVClient;
-import ch.dvbern.ebegu.api.converter.JaxBConverter;
-import ch.dvbern.ebegu.api.dtos.JaxDownloadFile;
-import ch.dvbern.ebegu.api.dtos.JaxId;
-import ch.dvbern.ebegu.api.dtos.JaxMahnung;
-import ch.dvbern.ebegu.api.resource.authentication.VerfuegungDownloadAuthenticatorVisitor;
-import ch.dvbern.ebegu.api.util.RestUtil;
-import ch.dvbern.ebegu.authentication.PrincipalBean;
-import ch.dvbern.ebegu.entities.AbstractAnmeldung;
-import ch.dvbern.ebegu.entities.Betreuung;
-import ch.dvbern.ebegu.entities.DownloadFile;
-import ch.dvbern.ebegu.entities.FileMetadata;
-import ch.dvbern.ebegu.entities.Gesuch;
-import ch.dvbern.ebegu.entities.Mahnung;
-import ch.dvbern.ebegu.entities.RueckforderungFormular;
-import ch.dvbern.ebegu.entities.WriteProtectedDokument;
-import ch.dvbern.ebegu.entities.Zahlungsauftrag;
-import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
-import ch.dvbern.ebegu.enums.ErrorCodeEnum;
-import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
-import ch.dvbern.ebegu.errors.EbeguRuntimeException;
-import ch.dvbern.ebegu.errors.MergeDocException;
-import ch.dvbern.ebegu.services.Authorizer;
-import ch.dvbern.ebegu.services.BetreuungService;
-import ch.dvbern.ebegu.services.DokumentService;
-import ch.dvbern.ebegu.services.DownloadFileService;
-import ch.dvbern.ebegu.services.EbeguVorlageService;
-import ch.dvbern.ebegu.services.ExportService;
-import ch.dvbern.ebegu.services.GeneratedDokumentService;
-import ch.dvbern.ebegu.services.GesuchService;
-import ch.dvbern.ebegu.services.RueckforderungDokumentService;
-import ch.dvbern.ebegu.services.RueckforderungFormularService;
-import ch.dvbern.ebegu.services.SozialdienstFallDokumentService;
-import ch.dvbern.ebegu.services.VorlageService;
-import ch.dvbern.ebegu.services.ZahlungService;
-import ch.dvbern.ebegu.services.gemeindeantrag.FerienbetreuungDokumentService;
-import ch.dvbern.ebegu.util.UploadFileInfo;
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_BG;
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_GEMEINDE;
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_INSTITUTION;
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_MANDANT;
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_SOZIALDIENST;
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_TRAEGERSCHAFT;
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_TS;
-import static ch.dvbern.ebegu.enums.UserRoleName.GESUCHSTELLER;
-import static ch.dvbern.ebegu.enums.UserRoleName.JURIST;
-import static ch.dvbern.ebegu.enums.UserRoleName.REVISOR;
-import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_BG;
-import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_GEMEINDE;
-import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_INSTITUTION;
-import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_MANDANT;
-import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_SOZIALDIENST;
-import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_TRAEGERSCHAFT;
-import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_TS;
-import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
+import static ch.dvbern.ebegu.enums.UserRoleName.*;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -575,11 +529,36 @@ public class DownloadResource {
 		if (zahlungsauftrag.isPresent()) {
 
 			WriteProtectedDokument persistedDokument = generatedDokumentService
-				.getPain001DokumentAccessTokenGeneratedDokument(zahlungsauftrag.get(), false);
+				.getPain001DokumentAccessTokenGeneratedDokument(zahlungsauftrag.get());
 			return getFileDownloadResponse(uriInfo, ip, persistedDokument);
-
 		}
 		throw new EbeguEntityNotFoundException("getPain001AccessTokenGeneratedDokument",
+			ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, "ZahlungsauftragId invalid: " + jaxId.getId());
+	}
+
+	@ApiOperation("Erstellt ein Token für den Download des Zahlungsfiles (INFOMA) für die " +
+		"Zahlung mit der übergebenen Id.")
+	@Nonnull
+	@GET
+	@Path("/{zahlungsauftragId}/INFOMA/generated")
+	@Consumes(MediaType.WILDCARD)
+	@Produces(MediaType.WILDCARD)
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, ADMIN_GEMEINDE })
+	public Response getInfomaAccessTokenGeneratedDokument(
+		@Nonnull @Valid @PathParam("zahlungsauftragId") JaxId jaxId,
+		@Context HttpServletRequest request, @Context UriInfo uriInfo) throws EbeguEntityNotFoundException,
+		MimeTypeParseException {
+		requireNonNull(jaxId.getId());
+		String ip = getIP(request);
+
+		final Optional<Zahlungsauftrag> zahlungsauftrag =
+			zahlungService.findZahlungsauftrag(converter.toEntityId(jaxId));
+		if (zahlungsauftrag.isPresent()) {
+			WriteProtectedDokument persistedDokument = generatedDokumentService
+				.getInfomaDokumentAccessTokenGeneratedDokument(zahlungsauftrag.get());
+			return getFileDownloadResponse(uriInfo, ip, persistedDokument);
+		}
+		throw new EbeguEntityNotFoundException("geInfomaAccessTokenGeneratedDokument",
 			ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, "ZahlungsauftragId invalid: " + jaxId.getId());
 	}
 
