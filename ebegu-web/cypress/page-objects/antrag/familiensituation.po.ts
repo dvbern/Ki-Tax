@@ -1,4 +1,4 @@
-import { FixtureFamSit } from '../support/fixture-helper';
+import { FixtureFamSit } from '@dv-e2e/fixtures';
 
 const fillFamiliensituationForm = (dataset: keyof typeof FixtureFamSit) => {
     FixtureFamSit[dataset](({ GS1, GS2 }) => {
@@ -20,8 +20,8 @@ const fillFamiliensituationForm = (dataset: keyof typeof FixtureFamSit) => {
         cy.getByData('nachname').type(GS2.nachname);
         cy.getByData('geburtsdatum').find('input').type(GS2.geburtsdatum);
     });
-}
+};
 
 export const AntragFamSitPO = {
-    fillFamiliensituationForm
-}
+    fillFamiliensituationForm,
+};

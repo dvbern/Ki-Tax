@@ -3,14 +3,16 @@
     "compilerOptions": {
         "allowJs": true,
         "outDir": "./dist/out-tsc",
+        "baseUrl": "./",
         "esModuleInterop": true,
         "resolveJsonModule": true,
-        "module": "commonjs",
-        "types": [
-            "cypress",
-            "node"
-        ],
-        "sourceMap": false
+        "module": "es2020",
+        "types": ["cypress", "node"],
+        "sourceMap": false,
+        "paths": {
+            "@dv-e2e/fixtures": ["./support/fixture-helper.ts"],
+            "@dv-e2e/page-objects": ["./page-objects/index.ts"]
+        }
     },
     "include": [
         "**/*.ts",

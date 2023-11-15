@@ -1,13 +1,15 @@
-import { PapierAntragPO } from '../page-objects/antrag-papiergesuch.po';
-import { AntragFamSitPO } from '../page-objects/antrag-familiensituation.po';
-import { AntragKindPO } from '../page-objects/antrag-kind.po';
-import { AntragBetreuungPO } from '../page-objects/antrag-betreuung.po';
-import { AntragBeschaeftigungspensumPO } from '../page-objects/beschaeftigungspensum.po';
-import { FixtureFinSit } from '../support/fixture-helper';
+import {
+    AntragPapierPO,
+    AntragFamSitPO,
+    AntragKindPO,
+    AntragBetreuungPO,
+    AntragBeschaeftigungspensumPO,
+} from '@dv-e2e/page-objects';
+import { FixtureFinSit } from '@dv-e2e/fixtures';
 
 const createNewKindWithAllSettings = () => {
     AntragKindPO.createNewKind();
-    AntragKindPO.fillKindForm();
+    AntragKindPO.fillKindForm('withValid');
     AntragKindPO.fillPflegekind();
 
     cy.getByData('show-fachstelle').click();
@@ -53,7 +55,7 @@ describe('Kibon - generate Testfälle [Gemeinde Sachbearbeiter]', () => {
     it('should correctly create a new Papier Antrag', () => {
         // INIT
         {
-            PapierAntragPO.createPapierGesuch('withValid');
+            AntragPapierPO.createPapierGesuch('withValid');
             cy.url().then(url => /familiensituation\/(.*)$/.exec(url)[1]).as('antragsId');
         }
 

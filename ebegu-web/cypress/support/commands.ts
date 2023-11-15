@@ -1,16 +1,47 @@
 /// <reference types="cypress" />
 
-type OnlyValidSelectors<T> = T extends string ? (T extends `${string}${'[data-test='}${string}` ? 'Please specify the value given to data-test="", getByData automatically wraps the value in [data-test="..."]' : T) : never
+type OnlyValidSelectors<T> = T extends string
+    ? T extends `${string}${'[data-test='}${string}`
+        ? 'Please specify the value given to data-test="", getByData automatically wraps the value in [data-test="..."]'
+        : T
+    : never;
 
 declare namespace Cypress {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     interface Chainable<Subject> {
+        /**
+         * Uses **`cy.session`** to create a new session with given user
+         *
+         * Please use the **`data-test`** values found at **`/#/locallogin`** except the _`test-user-`_ prefix
+         *
+         * @example
+         * // ✅ ok
+         * cy.login('E-BEGU-Superuser');
+         *
+         * // ⛔ not
+         * cy.login('test-user-E-BEGU-Superuser');
+         */
         login(user: string): void;
+        /**
+         * Used to change the used during the test, should be used with caution.
+         *
+         * @see login
+         */
         changeLogin(user: string): void;
 
+        /**
+         * It is a shorthand for **`cy.get('[data-test="..."])`** and also allows to sub-select nested elements.
+         *
+         * @example
+         *   cy.getByData('form-kind', 'vorname');
+         *   // equals
+         *   cy.get('[data-test="form-kind"] [data-test="vorname"]');
+         *
+         * @example
+         *   cy.getByData('dv-radiobutton').find('label');
+         *   // technically equals
+         *   cy.get('[data-test="dv-radiobutton"] label');
+         */
         getByData<T extends string>(name: OnlyValidSelectors<T>, ...nestedNames: OnlyValidSelectors<T>[]): Chainable<Subject>;
-
-        checkMaterial(): Subject;
     }
 }
 Cypress.Commands.add('login', (user: string) => {
@@ -27,18 +58,17 @@ Cypress.Commands.add('login', (user: string) => {
                 cy.intercept({ pathname: '**/auth/authenticated-user', method: 'GET', times: 1 }).as('authCallValidation');
                 cy.visit('/#/');
                 cy.reload();
-                cy.wait('@authCallValidation').its('response.body').then(response => {
-                    expect(`${response.vorname}-${response.nachname}`).eq(user);
-                });
+                cy.wait('@authCallValidation')
+                    .its('response.body')
+                    .then((response) => {
+                        expect(`${response.vorname}-${response.nachname}`).eq(user);
+                    });
             },
-        },
+        }
     );
 });
 Cypress.Commands.add('getByData', (name, ...names) => {
-    return cy.get([name, ...names].map(name => `[data-test="${name}"]`).join(' '));
-});
-Cypress.Commands.add('checkMaterial', { prevSubject: 'element' }, (subject) => {
-    return cy.wrap(subject).find('input').check({ force: true }).then(() => subject);
+    return cy.get([name, ...names].map((name) => `[data-test="${name}"]`).join(' '));
 });
 Cypress.Commands.add('changeLogin', (user: string) => {
     cy.clearAllSessionStorage();
