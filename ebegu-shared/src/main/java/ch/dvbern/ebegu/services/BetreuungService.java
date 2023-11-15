@@ -17,28 +17,17 @@
 
 package ch.dvbern.ebegu.services;
 
+import ch.dvbern.ebegu.entities.*;
+import ch.dvbern.ebegu.types.DateRange;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.validation.Valid;
 import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.validation.Valid;
-
-import ch.dvbern.ebegu.entities.AbstractAnmeldung;
-import ch.dvbern.ebegu.entities.AbstractPlatz;
-import ch.dvbern.ebegu.entities.Abwesenheit;
-import ch.dvbern.ebegu.entities.AnmeldungFerieninsel;
-import ch.dvbern.ebegu.entities.AnmeldungTagesschule;
-import ch.dvbern.ebegu.entities.Betreuung;
-import ch.dvbern.ebegu.entities.BetreuungsmitteilungPensum;
-import ch.dvbern.ebegu.entities.Dossier;
-import ch.dvbern.ebegu.entities.Gesuchsperiode;
-import ch.dvbern.ebegu.entities.Institution;
-import ch.dvbern.ebegu.entities.Mandant;
-import ch.dvbern.ebegu.types.DateRange;
 
 /**
  * Service zum Verwalten von Betreuungen
@@ -216,14 +205,14 @@ public interface BetreuungService {
 	 * betreuungMutiert-Flag noch nicht gesetzt sind
 	 */
 	@Nonnull
-	List<Betreuung> getAllBetreuungenWithMissingStatistics();
+	List<Betreuung> getAllBetreuungenWithMissingStatistics(Mandant mandant);
 
 	/**
 	 * Gibt alle Abwesenheiten zurueck, welche Mutationen betreffen, die verfügt sind und deren
 	 * abwesenheitMutiert-Flag noch nicht gesetzt sind
 	 */
 	@Nonnull
-	List<Abwesenheit> getAllAbwesenheitenWithMissingStatistics();
+	List<Abwesenheit> getAllAbwesenheitenWithMissingStatistics(Mandant mandant);
 
 	/**
 	 * Sendet eine E-Mail an alle Institutionen die aktuell offene Pendenzen haben.
