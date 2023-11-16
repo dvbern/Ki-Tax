@@ -206,11 +206,12 @@
 					<div class="row" *ngIf="showBemerkungUnterhaltsvereinbarung()">
 						<div class="col-sm-12 dv-input-container-medium form-group">
 							<dv-input-container class="form-group">
-                                 <span>
-                                     <label class="required" for="begruendung" translate>UNTERHALTSVEREINBARUNG_GRUND  <dv-tooltip
+                                 <label>
+                                     <span class="required" for="begruendung" translate>UNTERHALTSVEREINBARUNG_GRUND</span>
+                                     <dv-tooltip
 											 [inputId]="'begruendung'"
-											 [text]="getTextForFamSitUnterhaltsvereinbarungGrund()"></dv-tooltip></label>
-                                 </span>
+											 [text]="getTextForFamSitUnterhaltsvereinbarungGrund()"></dv-tooltip>
+                                 </label>
 
 								<textarea md-no-autogrow class="form-control" rows="6" maxlength="4000"
 										  ng-maxlength="3000"
