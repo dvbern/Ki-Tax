@@ -26,23 +26,20 @@ import {
     OnInit,
     Output,
     SimpleChanges,
-    ViewEncapsulation
+    ViewEncapsulation,
 } from '@angular/core';
 import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
 import {TranslateService} from '@ngx-translate/core';
 import * as moment from 'moment';
 import {BehaviorSubject, Subscription} from 'rxjs';
-import {
-    DvNgRemoveDialogComponent
-} from '../../../../../app/core/component/dv-ng-remove-dialog/dv-ng-remove-dialog.component';
-import {TSDemoFeature} from '../../../../../app/core/directive/dv-hide-feature/TSDemoFeature';
+import {DvNgRemoveDialogComponent} from '../../../../../app/core/component/dv-ng-remove-dialog/dv-ng-remove-dialog.component';
 import {ErrorService} from '../../../../../app/core/errors/service/ErrorService';
 import {LogFactory} from '../../../../../app/core/logging/LogFactory';
 import {AuthServiceRS} from '../../../../../authentication/service/AuthServiceRS.rest';
 import {TSRole} from '../../../../../models/enums/TSRole';
 import {
     isSteuerdatenAnfrageStatusErfolgreich,
-    TSSteuerdatenAnfrageStatus
+    TSSteuerdatenAnfrageStatus,
 } from '../../../../../models/enums/TSSteuerdatenAnfrageStatus';
 import {TSBenutzer} from '../../../../../models/TSBenutzer';
 import {EbeguUtil} from '../../../../../utils/EbeguUtil';
@@ -50,7 +47,7 @@ import {TSRoleUtil} from '../../../../../utils/TSRoleUtil';
 import {FinanzielleSituationRS} from '../../../../service/finanzielleSituationRS.rest';
 import {GesuchModelManager} from '../../../../service/gesuchModelManager';
 import {
-    DialogInitZPVNummerVerknuepfenComponent
+    DialogInitZPVNummerVerknuepfenComponent,
 } from '../dialog-init-zpv-nummer-verknuepfen/dialog-init-zpv-nummer-verknpuefen.component';
 
 const LOG = LogFactory.createLog('SteuerabfrageResponseHintsComponent');
@@ -65,7 +62,10 @@ const LOG = LogFactory.createLog('SteuerabfrageResponseHintsComponent');
 export class SteuerabfrageResponseHintsComponent implements OnInit, OnDestroy, OnChanges {
 
     @Input()
-    private readonly status: TSSteuerdatenAnfrageStatus;
+    public readonly status: TSSteuerdatenAnfrageStatus;
+
+    @Input()
+    private readonly gsStatus: TSSteuerdatenAnfrageStatus;
 
     @Input()
     public readonly timestampAbruf: moment.Moment;
@@ -109,7 +109,7 @@ export class SteuerabfrageResponseHintsComponent implements OnInit, OnDestroy, O
             this.gesuchModelManager.getGesuch().gesuchsteller1 :
             this.gesuchModelManager.getGesuch().gesuchsteller2;
         // eslint-disable-next-line
-        if (this.showZugriffErfolgreich()) {
+        if (this.showZugriffErfolgreich(this.status)) {
             this.finSitRS.geburtsdatumMatchesSteuerabfrage(gesuchSteller.gesuchstellerJA.geburtsdatum,
                 gesuchSteller.finanzielleSituationContainer.id).then(isMatching => {
                     this.geburtstagNotMatching$.next(!isMatching);
@@ -122,9 +122,9 @@ export class SteuerabfrageResponseHintsComponent implements OnInit, OnDestroy, O
         this.subscription.unsubscribe();
     }
 
-    public showZugriffErfolgreich(): boolean {
-        return EbeguUtil.isNotNullOrUndefined(this.status) &&
-            isSteuerdatenAnfrageStatusErfolgreich(this.status);
+    public showZugriffErfolgreich(statusToCheck: TSSteuerdatenAnfrageStatus): boolean {
+        return EbeguUtil.isNotNullOrUndefined(statusToCheck) &&
+            isSteuerdatenAnfrageStatusErfolgreich(statusToCheck);
     }
 
     public showWarningRetry(): boolean {
@@ -217,6 +217,10 @@ export class SteuerabfrageResponseHintsComponent implements OnInit, OnDestroy, O
 
     public showRetry(): boolean {
         return this.status === TSSteuerdatenAnfrageStatus.RETRY;
+    }
+
+    public showRetryForGemeinde(): boolean {
+        return this.showZugriffErfolgreich(this.gsStatus) && this.isGemeindeOrSuperadmin();
     }
 
     public getGS1Name(): string {
