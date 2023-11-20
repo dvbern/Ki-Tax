@@ -21,7 +21,7 @@ workflow:
         MAVEN_GOAL: install
 
 include:
-  - component: gitlab.dvbern.ch/components/maven@v2.0.1
+  - component: gitlab.dvbern.ch/mobj/maven@89ec140318641f5a453983b8c04454bd6b1932b8
     #rules:
     #  - if: $CI_COMMIT_BRANCH == "feature/gitlab-pipeline-migration" && $CI_PIPELINE_SOURCE != "schedule"
     inputs:
@@ -29,6 +29,8 @@ include:
       java-image: docker-registry.dvbern.ch/kibon/build-environment/mvn-npm-gitflow-chromium
       java-image-version: jdk11-old
       maven-goal: -Pdvbern.oss -Pfrontend -Pci clean install
+      archive-path: ./**/target
+
 
   # - component: gitlab.dvbern.ch/components/maven@v2.0.1
   #   rules:
