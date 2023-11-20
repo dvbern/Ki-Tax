@@ -1,16 +1,20 @@
+import { FixtureBetreuung } from '@dv-e2e/fixtures';
+
 const createNewBetreuung = () => {
     cy.getByData('container.create-betreuung', 'navigation-button').click();
 };
 
-const fillBetreuungForm = () => {
-    cy.getByData('betreuungsangebot').select('Kita');
-    cy.getByData('institution').find('input').type('Brünnen');
-    cy.getByData('institution').find('input').should('have.value', 'Brünnen');
-    cy.getByData('instutions-suchtext').click();
+const fillKitaBetreuungsForm = (dataset: keyof typeof FixtureBetreuung) => {
+    FixtureBetreuung[dataset](({ kita }) => {
+        cy.getByData('betreuungsangebot').select(kita.betreuungsangebot);
+        cy.getByData('institution').find('input').type(kita.institution);
+        cy.getByData('instutions-suchtext').click();
+        cy.getByData('institution').find('input').should('have.value', kita.institution);
+    });
 };
 
 const fillKeinePlatzierung = () => {
-    cy.getByData('keineKesbPlatzierung.radio-value.ja').click();
+    cy.getByData('keineKesbPlatzierung.radio-value.nein').click();
 };
 
 const fillErweiterteBeduerfnisse = () => {
@@ -25,13 +29,12 @@ const fillEingewoehnung = () => {
 const platzBestaetigungAnfordern = () => {
     cy.intercept('PUT', '**/betreuungen/betreuung/false').as('savingBetreuung');
     cy.getByData('container.platzbestaetigung-anfordern', 'navigation-button').click();
-    cy.getByData('container.confirm', 'navigation-button').click();
     cy.wait('@savingBetreuung');
 };
 
 export const AntragBetreuungPO = {
     createNewBetreuung,
-    fillBetreuungForm,
+    fillKitaBetreuungsForm,
     fillKeinePlatzierung,
     fillErweiterteBeduerfnisse,
     fillEingewoehnung,

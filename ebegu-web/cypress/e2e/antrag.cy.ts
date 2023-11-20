@@ -28,7 +28,7 @@ const createNewKindWithAllSettings = () => {
 
 const createNewBetreuungWithAllSettings = () => {
     AntragBetreuungPO.createNewBetreuung();
-    AntragBetreuungPO.fillBetreuungForm();
+    AntragBetreuungPO.fillKitaBetreuungsForm('withValid');
     AntragBetreuungPO.fillKeinePlatzierung();
     AntragBetreuungPO.fillErweiterteBeduerfnisse();
     AntragBetreuungPO.fillEingewoehnung();
@@ -87,8 +87,8 @@ describe('Kibon - generate Testfälle [Gemeinde Sachbearbeiter]', () => {
 
         // BESCHAEFTIGUNGSPENSUM
         {
-            AntragBeschaeftigungspensumPO.createBeschaeftigungspensum('GS1');
-            AntragBeschaeftigungspensumPO.createBeschaeftigungspensum('GS2');
+            AntragBeschaeftigungspensumPO.createBeschaeftigungspensum('GS1', 'withValid');
+            AntragBeschaeftigungspensumPO.createBeschaeftigungspensum('GS2', 'withValid');
 
             cy.getByData('container.navigation-save', 'navigation-button').click();
         }
