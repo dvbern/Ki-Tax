@@ -17,6 +17,7 @@ package ch.dvbern.ebegu.services;
 
 import ch.dvbern.ebegu.dto.KindDubletteDTO;
 import ch.dvbern.ebegu.entities.KindContainer;
+import ch.dvbern.ebegu.entities.Mandant;
 
 import javax.annotation.Nonnull;
 import java.util.Collection;
@@ -60,7 +61,7 @@ public interface KindService {
 	 * kindMutiert-Flag noch nicht gesetzt sind
 	 */
 	@Nonnull
-	List<KindContainer> getAllKinderWithMissingStatistics();
+	List<KindContainer> getAllKinderWithMissingStatistics(Mandant mandant);
 
 	/**
 	 * Sucht Kinder mit gleichen Merkmalen in anderen Faellen.

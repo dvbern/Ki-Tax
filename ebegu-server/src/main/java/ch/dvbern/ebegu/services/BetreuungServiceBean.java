@@ -27,7 +27,10 @@ import ch.dvbern.ebegu.outbox.platzbestaetigung.BetreuungAnfrageEventConverter;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.ebegu.services.util.FilterFunctions;
 import ch.dvbern.ebegu.types.DateRange;
-import ch.dvbern.ebegu.util.*;
+import ch.dvbern.ebegu.util.BetreuungUtil;
+import ch.dvbern.ebegu.util.Constants;
+import ch.dvbern.ebegu.util.EbeguUtil;
+import ch.dvbern.ebegu.util.MathUtil;
 import ch.dvbern.ebegu.validationgroups.BetreuungBestaetigenValidationGroup;
 import ch.dvbern.lib.cdipersistence.Persistence;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
@@ -1260,26 +1263,29 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 
 	@Override
 	@Nonnull
-	public List<Betreuung> getAllBetreuungenWithMissingStatistics() {
+	public List<Betreuung> getAllBetreuungenWithMissingStatistics(Mandant mandant) {
 		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
 		final CriteriaQuery<Betreuung> query = cb.createQuery(Betreuung.class);
 
 		Root<Betreuung> root = query.from(Betreuung.class);
 		Join<Betreuung, KindContainer> joinKindContainer = root.join(Betreuung_.kind, JoinType.LEFT);
 		Join<KindContainer, Gesuch> joinGesuch = joinKindContainer.join(KindContainer_.gesuch, JoinType.LEFT);
+		Join<Gesuch, Dossier> joinDossier = joinGesuch.join(Gesuch_.dossier, JoinType.LEFT);
+		Join<Dossier, Fall> joinFall = joinDossier.join(Dossier_.fall, JoinType.LEFT);
 
 		Predicate predicateMutation = cb.equal(joinGesuch.get(Gesuch_.typ), AntragTyp.MUTATION);
 		Predicate predicateFlag = cb.isNull(root.get(Betreuung_.betreuungMutiert));
 		Predicate predicateStatus = joinGesuch.get(Gesuch_.status).in(AntragStatus.getAllVerfuegtNotIgnoriertStates());
+		Predicate predicateMandant = cb.equal(joinFall.get(Fall_.mandant), mandant);
 
-		query.where(predicateMutation, predicateFlag, predicateStatus);
+		query.where(predicateMutation, predicateFlag, predicateStatus, predicateMandant);
 		query.orderBy(cb.desc(joinGesuch.get(Gesuch_.laufnummer)));
 		return persistence.getCriteriaResults(query);
 	}
 
 	@Override
 	@Nonnull
-	public List<Abwesenheit> getAllAbwesenheitenWithMissingStatistics() {
+	public List<Abwesenheit> getAllAbwesenheitenWithMissingStatistics(Mandant mandant) {
 		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
 		final CriteriaQuery<Abwesenheit> query = cb.createQuery(Abwesenheit.class);
 
@@ -1290,12 +1296,15 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 			joinAbwesenheitContainer.join(AbwesenheitContainer_.betreuung, JoinType.LEFT);
 		Join<Betreuung, KindContainer> joinKindContainer = joinBetreuung.join(Betreuung_.kind, JoinType.LEFT);
 		Join<KindContainer, Gesuch> joinGesuch = joinKindContainer.join(KindContainer_.gesuch, JoinType.LEFT);
+		Join<Gesuch, Dossier> joinDossier = joinGesuch.join(Gesuch_.dossier, JoinType.LEFT);
+		Join<Dossier, Fall> joinFall = joinDossier.join(Dossier_.fall, JoinType.LEFT);
 
 		Predicate predicateMutation = cb.equal(joinGesuch.get(Gesuch_.typ), AntragTyp.MUTATION);
 		Predicate predicateFlag = cb.isNull(joinBetreuung.get(Betreuung_.abwesenheitMutiert));
 		Predicate predicateStatus = joinGesuch.get(Gesuch_.status).in(AntragStatus.getAllVerfuegtNotIgnoriertStates());
+		Predicate predicateMandant = cb.equal(joinFall.get(Fall_.mandant), mandant);
 
-		query.where(predicateMutation, predicateFlag, predicateStatus);
+		query.where(predicateMutation, predicateFlag, predicateStatus, predicateMandant);
 		query.orderBy(cb.desc(joinGesuch.get(Gesuch_.laufnummer)));
 		return persistence.getCriteriaResults(query);
 	}

@@ -125,18 +125,21 @@ public class KindServiceBean extends AbstractBaseService implements KindService 
 
 	@Override
 	@Nonnull
-	public List<KindContainer> getAllKinderWithMissingStatistics() {
+	public List<KindContainer> getAllKinderWithMissingStatistics(Mandant mandant) {
 		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
 		final CriteriaQuery<KindContainer> query = cb.createQuery(KindContainer.class);
 
 		Root<KindContainer> root = query.from(KindContainer.class);
 		Join<KindContainer, Gesuch> joinGesuch = root.join(KindContainer_.gesuch, JoinType.LEFT);
+		Join<Gesuch, Dossier> joinDossier = joinGesuch.join(Gesuch_.dossier, JoinType.LEFT);
+		Join<Dossier, Fall> joinFall = joinDossier.join(Dossier_.fall, JoinType.LEFT);
 
 		Predicate predicateMutation = cb.equal(joinGesuch.get(Gesuch_.typ), AntragTyp.MUTATION);
 		Predicate predicateFlag = cb.isNull(root.get(KindContainer_.kindMutiert));
 		Predicate predicateStatus = joinGesuch.get(Gesuch_.status).in(AntragStatus.getAllVerfuegtNotIgnoriertStates());
+		Predicate predicateMandant = cb.equal(joinFall.get(Fall_.mandant), mandant);
 
-		query.where(predicateMutation, predicateFlag, predicateStatus);
+		query.where(predicateMutation, predicateFlag, predicateStatus, predicateMandant);
 		query.orderBy(cb.desc(joinGesuch.get(Gesuch_.laufnummer)));
 		return persistence.getCriteriaResults(query);
 	}
