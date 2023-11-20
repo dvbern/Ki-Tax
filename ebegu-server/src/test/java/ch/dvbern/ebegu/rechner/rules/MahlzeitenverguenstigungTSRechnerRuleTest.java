@@ -61,7 +61,6 @@ public class MahlzeitenverguenstigungTSRechnerRuleTest {
 
 	@Test
 	public void isConfiguredForGemeinde_MZVEnabled() {
-		parameter.getMahlzeitenverguenstigungParameter().setEnabled(true);
 		assertThat(rechnerRule.isConfigueredForGemeinde(parameter), is(true));
 	}
 
