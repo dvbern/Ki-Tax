@@ -39,11 +39,12 @@ include:
     #     java-image-version: jdk11-old
     #     maven-goal: -Pdvbern.oss -Pfrontend -Pci -Ptest-wildfly-managed clean install
 
+    # TODO public or private registry? using a private base image and pushing the resulting image to public registry is not supported at the moment
     -   component: 'gitlab.dvbern.ch/components/buildah@v1.0.1'
         inputs:
-            registry: $DVB_PUBLIC_DOCKER_REGISTRY
-            registry-user: $DVB_PUBLIC_DOCKER_REGISTRY_USER
-            registry-token: $DVB_PUBLIC_DOCKER_REGISTRY_TOKEN
+            registry: $DVB_DOCKER_REGISTRY
+            registry-user: $DVB_DOCKER_REGISTRY_USER
+            registry-token: $DVB_DOCKER_REGISTRY_TOKEN
             name: build-dev-docker-image
             stage: package
             image-name: kibon-wildfly
