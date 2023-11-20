@@ -15,6 +15,7 @@
 
 package ch.dvbern.ebegu.rules.anlageverzeichnis;
 
+import java.time.LocalDate;
 import java.util.Locale;
 import java.util.Set;
 
@@ -81,12 +82,12 @@ public class BernKindDokumente extends AbstractDokumente<Kind, Object> {
 
 	private String getPensumFachstelleTag(@Nonnull PensumFachstelle pensumFachstelle, @Nonnull Locale locale,
 			@Nonnull Mandant mandant) {
-		var gueltigAbStr = pensumFachstelle.getGueltigkeit().getGueltigAb().format(Constants.DATE_FORMATTER);
-		var gueltigBis = pensumFachstelle.getGueltigkeit().getGueltigBis();
+		String gueltigAbStr = pensumFachstelle.getGueltigkeit().getGueltigAb().format(Constants.DATE_FORMATTER);
+		LocalDate gueltigBis = pensumFachstelle.getGueltigkeit().getGueltigBis();
 		if (gueltigBis.equals(Constants.END_OF_TIME))  {
 			return ServerMessageUtil.getMessage("Ab", locale, mandant) + ' ' + gueltigAbStr;
 		}
-		return gueltigBis.format(Constants.DATE_FORMATTER) + " - " + gueltigBis.format(Constants.DATE_FORMATTER);
+		return gueltigAbStr + " - " + gueltigBis.format(Constants.DATE_FORMATTER);
 	}
 
 	@Nullable
