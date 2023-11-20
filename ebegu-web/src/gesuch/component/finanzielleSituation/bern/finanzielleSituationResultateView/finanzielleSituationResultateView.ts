@@ -173,14 +173,14 @@ export class FinanzielleSituationResultateViewController extends AbstractGesuchV
 
     public hasGS1SteuerDatenErfolgreichAbgefragt(): boolean {
         return EbeguUtil.isNotNullAndTrue(this.getFinanzielleSituationGS1().finanzielleSituationJA.steuerdatenZugriff) &&
-            isSteuerdatenAnfrageStatusErfolgreich(
-                this.getFinanzielleSituationGS1().finanzielleSituationJA.steuerdatenAbfrageStatus);
+            (isSteuerdatenAnfrageStatusErfolgreich(
+                this.getFinanzielleSituationGS1().finanzielleSituationJA.steuerdatenAbfrageStatus));
     }
 
     public hasGS2SteuerDatenErfolgreichAbgefragt(): boolean {
         return EbeguUtil.isNotNullAndTrue(this.getFinanzielleSituationGS2().finanzielleSituationJA.steuerdatenZugriff) &&
-            isSteuerdatenAnfrageStatusErfolgreich(
-                this.getFinanzielleSituationGS2().finanzielleSituationJA.steuerdatenAbfrageStatus);
+            (isSteuerdatenAnfrageStatusErfolgreich(
+                this.getFinanzielleSituationGS2().finanzielleSituationJA.steuerdatenAbfrageStatus));
     }
 
     public startAufteilung(): void {

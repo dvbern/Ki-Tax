@@ -60,7 +60,7 @@
                                     <span class="betreuung-bar"></span>
                                 </td>
                                 <td ng-show="vm.isSuperAdmin()">
-                                    <span>{{betreuung.gueltig ? 'Ja' : 'Nein'}}</span>
+                                    <span>{{betreuung.gueltig ? 'LABEL_JA' : 'LABEL_NEIN' | translate}}</span>
                                 </td>
                                 <td role="cell" tabindex="-1" ng-click="$event.stopPropagation()" width="5%">
                                     <dv-loading-button input-id="open{{betreuung.id}}"

@@ -121,6 +121,7 @@
                             && vm.getModel().finanzielleSituationJA.steuerdatenZugriff"
                         (try-again-event)="vm.callKiBonAnfrageAndUpdateFinSit()"
                         [status]="vm.getAbfrageStatus()"
+                        [gs-status]="vm.getAbfrageStatusGS()"
                         [timestamp-abruf]="vm.getModel().finanzielleSituationJA.steuerdatenAbfrageTimestamp"
                         [steuer-abfrage-respone-hint-status-text]="vm.finSitRequestState |translate"
                         [steuer-abfrage-request-running]="vm.finSitRequestRunning"
