@@ -23,6 +23,7 @@ export default defineConfig({
             });
         },
         projectId: 'ebegu-web',
+        defaultCommandTimeout: 8000,
         experimentalStudio: true,
         viewportWidth: 1920,
         viewportHeight: 1080,
