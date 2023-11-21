@@ -35,8 +35,8 @@
                     <label class="md-no-float" for="besitzer">
                         Gesuchsteller wenn gewünscht
                     </label>
-                    <mat-select [(ngModel)]="selectedBesitzer" id="besitzer" name="besitzer" class="input-testfall">
-                        <mat-option *ngFor="let gs of gesuchstellerList" [value]="gs">
+                    <mat-select [(ngModel)]="selectedBesitzer" id="besitzer" name="besitzer" class="input-testfall" data-test="gesuchsteller">
+                        <mat-option *ngFor="let gs of gesuchstellerList" [value]="gs" [attr.data-test]="'gesuchsteller.' + gs.vorname + '-' + gs.nachname">
                             {{gs.vorname}} {{gs.nachname}}
                         </mat-option>
                     </mat-select>
