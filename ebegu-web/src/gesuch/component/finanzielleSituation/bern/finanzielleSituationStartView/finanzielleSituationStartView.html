@@ -246,6 +246,7 @@
                                         <dv-tooltip ng-if="!vm.isMahlzeitenverguenstigungEnabled()" text="'AUSZAHLUNG_HINT' | translate"></dv-tooltip>
                                     </label>
                                     <input id="iban" type="text" name="iban"
+                                           data-test="iban"
                                            ng-model="vm.model.zahlungsinformationen.iban"
                                            dv-is-not-qr-iban
                                            ng-disabled="vm.isGesuchReadonly()"
@@ -266,6 +267,7 @@
                                            data-translate="MAHLZEITENVERGUENSTIGUNG_KONTOINHABER"
                                            for="kontoinhaber"></label>
                                     <input id="kontoinhaber" type="text" name="kontoinhaber"
+                                           data-test="kontoinhaber"
                                            ng-model="vm.model.zahlungsinformationen.kontoinhaber"
                                            ng-required="vm.isZahlungsangabenRequired()"
                                            ng-disabled="vm.isGesuchReadonly()"

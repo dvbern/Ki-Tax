@@ -1,0 +1,27 @@
+{
+    "extends": "../tsconfig.json",
+    "compilerOptions": {
+        "allowJs": true,
+        "outDir": "./dist/out-tsc",
+        "baseUrl": "./",
+        "esModuleInterop": true,
+        "resolveJsonModule": true,
+        "module": "es2020",
+        "types": ["cypress", "node"],
+        "sourceMap": false,
+        "paths": {
+            "@dv-e2e/fixtures": ["./support/fixture-helper.ts"],
+            "@dv-e2e/page-objects": ["./page-objects/index.ts"]
+        }
+    },
+    "include": [
+        "**/*.ts",
+        "**/*.js",
+        "../cypress.config.ts",
+        "../**/*.cy.ts",
+        "../**/*.cy.tsx",
+        "../**/*.cy.js",
+        "../**/*.cy.jsx",
+        "../**/*.d.ts"
+    ]
+}

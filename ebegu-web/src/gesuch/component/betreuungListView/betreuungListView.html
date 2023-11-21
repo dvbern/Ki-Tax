@@ -17,7 +17,7 @@
     <h1 class="access-for-all-title" data-translate="AFA_GESUCHSFORMULAR"></h1>
     <div class="row view-title">
         <div class="col-md-12">
-            <h2>
+            <h2 data-test="page-title">
                 <span data-translate="KINDER_MIT_BETREUUNG"></span>
             </h2>
             <hr class="header"/>
@@ -55,6 +55,7 @@
                             <tbody>
                             <tr ng-repeat="betreuung in displayedCollection" st-select-row="betreuung"
                                 st-select-mode="single"
+                                ng-attr-data-test="betreuung#{{$index}}"
                                 ng-click="vm.editBetreuung(kind, betreuung)" role="row" tabindex="-1">
                                 <td ng-bind="vm.getBetreuungsangebotTyp(betreuung) | translate"
                                     class="betreuung-table-header"></td>
@@ -117,6 +118,7 @@
                          dv-show-allowed-roles="vm.TSRoleUtil.getAllRolesButTraegerschaftInstitution()"
                          dv-show-expression="!vm.isGesuchReadonly() && vm.isNeueBetreuungErlaubtForFI()">
                         <dv-loading-button type="button" button-click="vm.createBetreuung(kind)"
+                                           data-test="container.create-betreuung"
                                            button-class="dv-btn-operation">
                             <i class="fa fa-lg fa-plus-circle"></i>
                             <span data-translate="BETREUUNG_HINZUFUEGEN"></span>
@@ -127,6 +129,7 @@
                          dv-show-allowed-roles="vm.TSRoleUtil.getAllRolesButTraegerschaftInstitution()"
                          dv-show-expression="vm.showButtonAnmeldungFerieninsel()">
                         <dv-loading-button type="button" button-click="vm.createAnmeldungFerieninsel(kind)"
+                                           data-test="container.create-ferieninsel"
                                            button-class="dv-btn-operation">
                             <i class="fa fa-lg fa-plus-circle"></i>
                             <span data-translate="BETREUUNG_FERIENINSEL_HINZUFUEGEN"></span>
@@ -137,6 +140,7 @@
                          dv-show-allowed-roles="vm.TSRoleUtil.getAllRolesButTraegerschaftInstitution()"
                          dv-show-expression="vm.showButtonAnmeldungTagesschule() && vm.isNeueBetreuungErlaubtForFI()">
                         <dv-loading-button type="button" button-click="vm.createAnmeldungTagesschule(kind)"
+                                           data-test="container.create-tagesschule"
                                            button-class="dv-btn-operation">
                             <i class="fa fa-lg fa-plus-circle"></i>
                             <span data-translate="BETREUUNG_TAGESSCHULE_HINZUFUEGEN"></span>

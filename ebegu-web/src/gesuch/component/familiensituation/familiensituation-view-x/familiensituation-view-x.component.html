@@ -95,6 +95,7 @@
 													 aria-label="{{ 'FAMILIENSITUATION_FRAGE_1' |translate}}"
 													 aria-described-by="familienstatus-error">
 										<mat-radio-button *ngFor="let famSit of getFamiliensituationValues()"
+                                                          [attr.data-test]="'familienstatus.' + famSit"
 														  [value]="famSit">{{famSit | translate}}</mat-radio-button>
 									</mat-radio-group>
 								</dv-radio-container-x>

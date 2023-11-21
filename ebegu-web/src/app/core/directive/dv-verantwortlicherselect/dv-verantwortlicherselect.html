@@ -25,7 +25,7 @@
     <md-menu dv-show-element
              dv-show-allowed-roles="vm.TSRoleUtil.getAdministratorOrAmtRole()">
 
-        <button ng-click="$mdMenu.open()" aria-label="{{vm.getVerantwortlicherFullName()}}">
+        <button ng-click="$mdMenu.open()" aria-label="{{vm.getVerantwortlicherFullName()}}" ng-attr-data-test="{{vm.isSchulamt ? 'schul' : ''}}verantwortlicher">
             <i ng-class="{'fa fa-gift': !vm.isSchulamt, 'fa fa-graduation-cap': vm.isSchulamt}" aria-hidden="true"
                style="margin-right: 0.2rem"></i>
             <span ng-bind="vm.getVerantwortlicherFullName()"></span>
@@ -34,13 +34,14 @@
 
         <md-menu-content class="menu-item-container">
 
-            <md-menu-item class="menu-item-text uppercase">
+            <md-menu-item class="menu-item-text uppercase" data-test="option.none">
                 <span>{{vm.getTitel()}}</span>
             </md-menu-item>
 
             <md-menu-item class="menu-item-link">
                 <md-button ng-click="vm.setVerantwortlicher(undefined)"
                            aria-label="{{'NO_VERANTWORTLICHER_SELECTED' | translate}}"
+                           data-test="option.none"
                            style="position: relative;">
                 <span>
                     <a href="#" ng-click="$event.preventDefault();" aria-hidden>{{'NO_VERANTWORTLICHER_SELECTED' | translate}}</a>
@@ -53,7 +54,7 @@
             </md-menu-item>
 
             <md-menu-item class="menu-item-link" ng-repeat="user in vm.userList | orderBy: 'getFullName()'"
-                          ng-value="user.username">
+                          ng-value="user.username" ng-attr-data-test="option.{{user.vorname}}-{{user.nachname}}">
                 <md-button ng-click="vm.setVerantwortlicher(user)" aria-label="{{user.username}}"
                            style="position: relative;">
                 <span>

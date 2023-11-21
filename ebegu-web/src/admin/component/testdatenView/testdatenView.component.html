@@ -35,8 +35,8 @@
                     <label class="md-no-float" for="besitzer">
                         Gesuchsteller wenn gewünscht
                     </label>
-                    <mat-select [(ngModel)]="selectedBesitzer" id="besitzer" name="besitzer" class="input-testfall">
-                        <mat-option *ngFor="let gs of gesuchstellerList" [value]="gs">
+                    <mat-select [(ngModel)]="selectedBesitzer" id="besitzer" name="besitzer" class="input-testfall" data-test="gesuchsteller">
+                        <mat-option *ngFor="let gs of gesuchstellerList" [value]="gs" [attr.data-test]="'gesuchsteller.' + gs.vorname + '-' + gs.nachname">
                             {{gs.vorname}} {{gs.nachname}}
                         </mat-option>
                     </mat-select>
@@ -317,6 +317,7 @@
                            [matDatepicker]="dpEingangsdatum"
                            placeholder="Eingangsdatum"
                            id="eingangsdatum"
+                           data-test="eingangsdatum"
                            [value]="eingangsdatum">
                     <mat-datepicker-toggle matSuffix [for]="dpEingangsdatum"></mat-datepicker-toggle>
                     <mat-datepicker #dpEingangsdatum></mat-datepicker>
@@ -326,6 +327,7 @@
                     <input class="input-testfall input-testfall--datepicker" [matDatepicker]="dpDatumHeirat" type="text"
                            placeholder="Ereignisdatum"
                            id="ereignisdatum"
+                           data-test="ereignisdatum"
                            [value]="ereignisdatum">
                     <mat-datepicker-toggle matSuffix [for]="dpDatumHeirat"></mat-datepicker-toggle>
                     <mat-datepicker #dpDatumHeirat></mat-datepicker>
@@ -348,10 +350,12 @@
                 <div class="col-md-12 dv-input-container-small">
                     <label class="md-no-float" for="mailadresse">Mailadresse:</label>
                     <input id="mailadresse" type="text" name="mailadresse" [(ngModel)]="mailadresse"
+                           data-test="mailadresse"
                            class="input-testfall">
                 </div>
                 <div>
                     <button dvNgDebounceClick (debounceClick)="testAllMails()"
+                            data-test="test-all-mails"
                             class="dv-btn testfall-button testfall-button">
                         Mails senden
                     </button>
@@ -363,10 +367,12 @@
             <div class="row">
                 <div class="col-md-12">
                     <button dvNgDebounceClick (debounceClick)="resetSchulungsdaten()"
+                            data-test="reset-schulungs-daten"
                             class="dv-btn testfall-button-duo">
                         Schulungsdaten erstellen
                     </button>
                     <button dvNgDebounceClick (debounceClick)="deleteSchulungsdaten()"
+                            data-test="delete-schulungs-daten"
                             class="dv-btn testfall-button-duo">
                         Schulungsdaten löschen
                     </button>
@@ -378,6 +384,7 @@
             <div class="row">
                 <div class="col-md-12">
                     <button dvNgDebounceClick (debounceClick)="createTutorialdaten()"
+                            data-test="create-tutorial-daten"
                             class="dv-btn testfall-button-duo">
                         Tutorialdaten erstellen
                     </button>

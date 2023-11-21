@@ -17,7 +17,7 @@
     <h1 class="access-for-all-title" data-translate="AFA_GESUCHSFORMULAR"></h1>
     <div class="row view-title">
         <div class="col-md-12">
-                <h2>
+                <h2 data-test="gesuchformular-title">
                     <span data-translate="GESUCHSTELLERIN"></span>
                     {{vm.getFamilienSituationDisplayValue()}}
                 </h2>
@@ -88,7 +88,7 @@
                                        id="name_ID"
                                        type="text"
                                        name="name"
-                                       data-test="name"
+                                       data-test="nachname"
                                        ng-model="vm.getModelJA().nachname"
                                        dv-max-length
                                        class="form-control"
@@ -110,6 +110,7 @@
                                 <label class="md-no-float" data-translate="GEBURTSDATUM" for="geburtsdatum_ID">
                                 </label>
                                 <dv-datepicker no-future="true"
+                                               data-test="geburtsdatum"
                                                input-id="geburtsdatum_ID" name="geburtsdatum"
                                                ng-model="vm.getModelJA().geburtsdatum" ng-required="true"
                                                class="input-element">

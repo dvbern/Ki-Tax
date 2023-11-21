@@ -17,6 +17,7 @@
 
 <div [ngClass]="containerClass">
     <dv-loading-button input-id="buttonSave"
+                       data-test="container.navigation-save"
                        class="dv-navigation-item"
                        *ngIf="dvNext"
                        (buttonClick)="nextStep()"
@@ -32,6 +33,7 @@
         <span *ngIf="doesdvTranslateNextExist()" [textContent]="getNextButtonName()"></span>
     </dv-loading-button>
     <dv-loading-button input-id="buttonPrevious"
+                       data-test="container.navigation-previous"
                        class="dv-navigation-item"
                        *ngIf="dvPrevious"
                        (buttonClick)="previousStep()"
@@ -42,6 +44,7 @@
         <span class="fa fa-angle-left" style="font-size: 2rem; height:unset; line-height: 4rem;" *dvIfViewportSize="'mobile'"></span>
     </dv-loading-button>
     <dv-loading-button input-id="buttonCancel"
+                       data-test="container.navigation-cancel"
                        class="dv-navigation-item"
                        *ngIf="doesCancelExist()"
                        (buttonClick)="cancel()"

@@ -24,6 +24,7 @@
                 <label class="md-no-float required" data-translate="FERIENNAME" for="ferienname"></label>
                 <div class="dv-select-style">
                     <select aria-describedby="ferienname-error" name="ferienname" id="ferienname"
+                            data-test="ferienname"
                             ng-model="vm.betreuung.belegungFerieninsel.ferienname"
                             class="form-control"
                             ng-options="(ferienname| translate) for ferienname in vm.getFeriennamen() "
@@ -65,6 +66,7 @@
                                ng-if="tag.tag.weekday()==0"></break>
                         <div class="dv-ebegu-calendar-day dv-ebegu-calendar-day--{{tag.tag.weekday()+1}}">
                             <md-checkbox ng-model="tag.angemeldet"
+                                         ng-attr-data-test="belegungs-tag-is-angemeldet-{{tag.tag | amDateFormat : 'DD.MM.YYYY'}}"
                                          aria-label="{{tag.tag | amDateFormat : 'DD.MM.YYYY'}}"
                                          class="dv-ebegu-calendar">
                                 <span class="dv-ebegu-calendar-date--day"
@@ -92,6 +94,7 @@
                                ng-if="tag.tag.weekday()==0"></break>
                         <div class="dv-ebegu-calendar-day dv-ebegu-calendar-day--{{tag.tag.weekday()+1}}">
                             <md-checkbox ng-disabled="true" ng-model="isDisabled" aria-checked="true"
+                                         data-test="belegungs-tag-is-disabled-{{tag.tag | amDateFormat : 'DD.MM.YYYY'}}"
                                          aria-label="{{tag.tag | amDateFormat : 'DD.MM.YYYY'}}"
                                          class="dv-ebegu-calendar">
                                 <span class="dv-ebegu-calendar-date--day"
@@ -130,6 +133,7 @@
                                ng-if="tag.tag.weekday()==0"></break>
                         <div class="dv-ebegu-calendar-day dv-ebegu-calendar-day--{{tag.tag.weekday()+1}}">
                             <md-checkbox ng-model="tag.angemeldet"
+                                         data-test="belegungs-morgenmodul-angemeldet-{{tag.tag | amDateFormat : 'DD.MM.YYYY'}}"
                                          aria-label="{{tag.tag | amDateFormat : 'DD.MM.YYYY'}}"
                                          class="dv-ebegu-calendar">
                                 <span class="dv-ebegu-calendar-date--day"
@@ -157,6 +161,7 @@
                                ng-if="tag.tag.weekday()==0"></break>
                         <div class="dv-ebegu-calendar-day dv-ebegu-calendar-day--{{tag.tag.weekday()+1}}">
                             <md-checkbox ng-disabled="true" ng-model="isDisabled" aria-checked="true"
+                                         data-test="morgenmodul-is-disabled-tag-{{tag.tag | amDateFormat : 'DD.MM.YYYY'}}"
                                          aria-label="{{tag.tag | amDateFormat : 'DD.MM.YYYY'}}"
                                          class="dv-ebegu-calendar">
                                 <span class="dv-ebegu-calendar-date--day"
@@ -195,6 +200,7 @@
                 <div class="col-md-12 dv-input-container-medium">
                     <dv-input-container class="form-group">
                         <textarea md-no-autogrow class="form-control" aria-label="notfallAngaben" rows="6" id="notfallAngaben"
+                                  data-test="notfall-angaben"
                                   ng-model="vm.betreuung.belegungFerieninsel.notfallAngaben"
                                   maxlength="4000">
                     </textarea>

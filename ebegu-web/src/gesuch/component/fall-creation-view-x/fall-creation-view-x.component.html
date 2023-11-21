@@ -75,6 +75,7 @@
 									<dv-date-picker-x [required]="true"
 													  [inputId]="'eingangsdatum'"
 													  id="eingangsdatum"
+                                                      data-test="fall-creation-eingangsdatum"
 													  [datePickerEnabled]="false"
 													  [(date)]="getGesuchModel().eingangsdatum"></dv-date-picker-x>
 								</div>
@@ -95,6 +96,7 @@
 									<dv-date-picker-x [(date)]="getGesuchModel().regelnGueltigAb"
 													  [required]="false"
 													  [inputId]="'alternativDatum'"
+                                                      data-test="fall-creation-alternativDatum"
 													  id="alternativDatum"
 													  [datePickerEnabled]="false"
 													  class="input-element">
@@ -143,6 +145,7 @@
 													[required]="true">
 												<mat-radio-button *ngFor="let gp of getAllActiveGesuchsperioden()"
 																  [value]="gp.id"
+                                                                  [attr.data-test]="'gesuchsperioden.' + gp.gesuchsperiodeString"
 																  [aria-label]="gp.gesuchsperiodeString">{{gp.gesuchsperiodeString}}
 												</mat-radio-button>
 												<dv-error-messages *ngIf="gesuchsperioden.touched" [errorObject]="gesuchsperioden.errors"></dv-error-messages>
