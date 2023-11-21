@@ -288,7 +288,8 @@
                                     class="dv-table-mat-header-row"></mat-header-row>
                     <mat-header-row class="dv-table-mat-header-row"
                                     *matHeaderRowDef="filterColumns"></mat-header-row>
-                    <mat-row *matRowDef="let element; columns: displayedColumns;"
+                    <mat-row *matRowDef="let element; let index = index; columns: displayedColumns;"
+                             [attr.data-test]="'mitteilung#' + index"
                              (click)="gotoMitteilung(element)"
                              [class]="{'mitteilung-neu': ('NEU' === element.mitteilungStatus.toString()),'mitteilung-alt': ('NEU' !== element.mitteilungStatus.toString())}"></mat-row>
                 </mat-table>
