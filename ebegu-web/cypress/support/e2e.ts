@@ -27,6 +27,7 @@ const rootInteractionElements = [
     'md-autocomplete',
     'mat-radio-button',
     'md-radio-button',
+    'dv-accordion-tab',
     'dv-checkbox-x',
     'dv-datepicker',
     'dv-date-picker-x',
@@ -56,7 +57,7 @@ Cypress.SelectorPlayground.defaults({
         let workingEl = el.parents(
             rootInteractionElements.map((input) => `${input}[data-test]`).join(','),
         );
-        if (workingEl.length === 0 && el.data('test') || workingEl.data('test')?.startsWith('container.')) {
+        if (workingEl.length === 0 || el.data('test') || workingEl.data('test')?.startsWith('container.')) {
             workingEl = el;
         }
         const [, suffix] =
