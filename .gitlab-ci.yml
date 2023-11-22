@@ -38,7 +38,7 @@ include:
             name: build-ebegu-web
             java-image: docker-registry.dvbern.ch/kibon/build-environment/mvn-npm-gitflow-chromium
             java-image-version: jdk11-old
-            maven-goal: --projects .,ebegu-web -Pdvbern.oss -Pci clean install
+            maven-goal: --projects .,ebegu-web -Pdvbern.oss -Pci -Pfrontend clean install
             archive-path: ebegu-web/target/*.tar.gz
 
     # - component: gitlab.dvbern.ch/components/maven@v2.0.1
@@ -75,6 +75,7 @@ include:
             push-enabled: "false"
 
 create-build-args:
+    tags: [ "os:linux", "type:docker", "zone:tz" ]
     stage: prepare-package
     script:
         - echo "KIBON_POM_VERSION=$(./mvn org.apache.maven.plugins:maven-help-plugin:3.2.0:evaluate -Dexpression=project.version -DforceStdout -q -o)" > build-args.env
