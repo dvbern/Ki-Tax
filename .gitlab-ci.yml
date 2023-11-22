@@ -25,7 +25,7 @@ include:
         #rules:
         #  - if: $CI_COMMIT_BRANCH == "feature/gitlab-pipeline-migration" && $CI_PIPELINE_SOURCE != "schedule"
         inputs:
-            name: .build-without-arquillian
+            name: build-without-arquillian
             java-image: docker-registry.dvbern.ch/kibon/build-environment/mvn-npm-gitflow-chromium
             java-image-version: jdk11-old
             maven-goal: -Pdvbern.oss -Pcopy-wildfly-dependencies -P\!frontend clean install
@@ -35,7 +35,7 @@ include:
         #rules:
         #  - if: $CI_COMMIT_BRANCH == "feature/gitlab-pipeline-migration" && $CI_PIPELINE_SOURCE != "schedule"
         inputs:
-            name: .build-ebegu-web
+            name: build-ebegu-web
             java-image: docker-registry.dvbern.ch/kibon/build-environment/mvn-npm-gitflow-chromium
             java-image-version: jdk11-old
             maven-goal: --projects .,ebegu-web -Pdvbern.oss -Pci -Pfrontend clean install
@@ -55,7 +55,7 @@ include:
             registry: $DVB_DOCKER_REGISTRY
             registry-user: $DVB_DOCKER_REGISTRY_USER
             registry-token: $DVB_DOCKER_REGISTRY_TOKEN
-            name: .build-kibon-app-image
+            name: build-kibon-app-image
             stage: package
             image-name: kibon-wildfly
             context-dir: ebegu-rest
@@ -67,7 +67,7 @@ include:
             registry: $DVB_DOCKER_REGISTRY
             registry-user: $DVB_DOCKER_REGISTRY_USER
             registry-token: $DVB_DOCKER_REGISTRY_TOKEN
-            name: .build-kibon-web-image
+            name: build-kibon-web-image
             stage: package
             image-name: kibon-nginx
             context-dir: ebegu-web
