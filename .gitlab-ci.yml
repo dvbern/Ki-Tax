@@ -75,7 +75,7 @@ include:
             push-enabled: "false"
 
 create-build-args:
-    image: docker-registry.dvbern.ch/kibon/build-environment/mvn-npm-gitflow-chromium:jdk11-old
+    image: '$DVB_DOCKER_REGISTRY/dockerhub/library/eclipse-temurin:11-jdk-alpine'
     tags: [ "os:linux", "type:docker", "zone:tz" ]
     stage: prepare-package
     variables:
