@@ -1,5 +1,7 @@
+import { getUser } from '@dv-e2e/types';
+
 describe('Kibon - generate Testfälle [Superadmin]', () => {
-    const adminUser = 'E-BEGU-Superuser';
+    const adminUser = getUser('[1-Superadmin] E-BEGU Superuser');
 
     beforeEach(() => {
         cy.intercept({ resourceType: 'xhr' }, { log: false }); // don't log XHRs

@@ -6,6 +6,7 @@ import {
     AntragBeschaeftigungspensumPO,
 } from '@dv-e2e/page-objects';
 import { FixtureFinSit } from '@dv-e2e/fixtures';
+import { getUser } from '@dv-e2e/types';
 
 const createNewKindWithAllSettings = () => {
     AntragKindPO.createNewKind();
@@ -36,8 +37,8 @@ const createNewBetreuungWithAllSettings = () => {
 };
 
 describe('Kibon - generate Testfälle [Gemeinde Sachbearbeiter]', () => {
-    const userSB = 'Stefan-Weibel';
-    const userKita = 'Sophie-Bergmann';
+    const userSB = getUser('[6-SB-Gemeinde] Stefan Weibel');
+    const userKita = getUser('[3-SB-Institution-Kita-Brünnen] Sophie Bergmann');
 
     beforeEach(() => {
         cy.intercept({ resourceType: 'xhr' }, { log: false }); // don't log XHRs
