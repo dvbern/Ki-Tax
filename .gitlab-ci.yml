@@ -50,38 +50,34 @@ include:
     #     maven-goal: -Pdvbern.oss -Pfrontend -Pci -Ptest-wildfly-managed clean install
 
     # TODO public or private registry? using a private base image and pushing the resulting image to public registry is not supported at the moment
-    -   component: 'gitlab.dvbern.ch/components/buildah@v1.0.1'
+    -   component: 'gitlab.dvbern.ch/mobj/buildah@a7143bb366f9ee8e1ddfd1813acb1649a104cb36'
         inputs:
             registry: $DVB_DOCKER_REGISTRY
             registry-user: $DVB_DOCKER_REGISTRY_USER
             registry-token: $DVB_DOCKER_REGISTRY_TOKEN
-            name: .build-kibon-app-image
+            name: build-kibon-app-image
             stage: package
             image-name: kibon-wildfly
             context-dir: ebegu-rest
             version: $VERSION
             push-enabled: "false"
-            build-args: |
-                KIBON_POM_VERSION=${KIBON_POM_VERSION}
 
-    -   component: 'gitlab.dvbern.ch/components/buildah@v1.0.1'
+    -   component: 'gitlab.dvbern.ch/mobj/buildah@a7143bb366f9ee8e1ddfd1813acb1649a104cb36'
         inputs:
             registry: $DVB_DOCKER_REGISTRY
             registry-user: $DVB_DOCKER_REGISTRY_USER
             registry-token: $DVB_DOCKER_REGISTRY_TOKEN
-            name: .build-kibon-web-image
+            name: build-kibon-web-image
             stage: package
             image-name: kibon-nginx
             context-dir: ebegu-web
             version: $VERSION
             push-enabled: "false"
-            build-args: |
-                KIBON_POM_VERSION=${KIBON_POM_VERSION}
 
-build-kibon-app-image:
-    before_script:
-        - export KIBON_POM_VERSION=$(./mvn org.apache.maven.plugins:maven-help-plugin:3.2.0:evaluate -Dexpression=project.version -DforceStdout -q -o)
-
-build-kibon-web-image:
-    before_script:
-        - export KIBON_POM_VERSION=$(./mvn org.apache.maven.plugins:maven-help-plugin:3.2.0:evaluate -Dexpression=project.version -DforceStdout -q -o)
+create-build-args:
+    stage: prepare-package
+    script:
+        - echo "KIBON_POM_VERSION=$(./mvn org.apache.maven.plugins:maven-help-plugin:3.2.0:evaluate -Dexpression=project.version -DforceStdout -q -o)" > build-args.env
+    artifacts:
+        paths:
+            - build-args.env
