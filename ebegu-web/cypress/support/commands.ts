@@ -42,6 +42,8 @@ declare namespace Cypress {
          *   cy.get('[data-test="dv-radiobutton"] label');
          */
         getByData<T extends string>(name: OnlyValidSelectors<T>, ...nestedNames: OnlyValidSelectors<T>[]): Chainable<Subject>;
+
+        resetViewport(): Chainable<Subject>;
     }
 }
 Cypress.Commands.add('login', (user: string) => {
@@ -78,4 +80,10 @@ Cypress.Commands.add('changeLogin', (user: string) => {
     cy.reload();
 
     cy.login(user);
+});
+Cypress.Commands.add('resetViewport', () => {
+   const width = Cypress.config('viewportWidth'); 
+   const height = Cypress.config('viewportHeight');
+
+   cy.viewport(width, height);
 });

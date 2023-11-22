@@ -5,19 +5,20 @@ describe('Kibon - Test Mitteilungen', () => {
     let gesuchUrl: string;
 
     before(() => {
+        cy.resetViewport();
         cy.intercept({ resourceType: 'xhr' }, { log: false }); // don't log XHRs
         cy.login(userSuperAdmin);
         cy.visit('/#/faelle');
 
         cy.getByData('page-menu').click();
         cy.getByData('action-admin.testdaten').click();
+        cy.getByData('creationType.verfuegt').find('label').click();
         cy.getByData('gesuchsteller').click();
         cy.getByData(`gesuchsteller.${userGS}`).click();
         cy.getByData('gemeinde').click();
         cy.getByData('gemeinde.London').click();
         cy.getByData('periode').click();
         cy.getByData('periode.2022/23').click();
-        cy.getByData('creationType.verfuegt').find('label').click();
 
         cy.getByData('testfall-2').click();
         cy.get('[data-test="dialog-link"]', { timeout: 20000 }).click();
@@ -32,16 +33,19 @@ describe('Kibon - Test Mitteilungen', () => {
     });
 
     it('Gesuchsteller send Message to Sachbearbeiter', () => {
+        cy.viewport('iphone-8');
         cy.login(userGS);
 
         cy.intercept('GET', '**/gesuchsperioden/gemeinde/**').as('untilReadyGS1');
         cy.visit(gesuchUrl);
         cy.wait('@untilReadyGS1');
 
-        cy.getByData('toolbar.mitteilungen').click();
+        cy.getByData('mobile-menu-button').click();
+        cy.getByData('menu.mitteilungen').click();
         cy.getByData('subject').type('Mitteilung GS - 1');
         cy.getByData('nachricht').type('Irgend ein Inhalt');
-        cy.getByData('container.senden', 'navigation-button').click()
+        cy.getByData('container.senden', 'navigation-button').click();
+        cy.resetViewport();
     });
 
     it('Sachbearbeiter sees message and responds', () => {
@@ -69,17 +73,20 @@ describe('Kibon - Test Mitteilungen', () => {
     });
 
     it('Gesuchsteller sees Sachbearbeiter message', () => {
+        cy.viewport('iphone-8');
         cy.login(userGS);
 
         cy.intercept('GET', '**/amountnew/dossier/**').as('mitteilungCount');
         cy.visit('/#/');
         cy.wait('@mitteilungCount');
 
-        cy.getByData('toolbar.mitteilungen').should('include.text', '(1)');
-        cy.getByData('toolbar.mitteilungen').click();
+        cy.getByData('mobile-menu-button').click();
+        cy.getByData('menu.mitteilungen').should('include.text', '(1)');
+        cy.getByData('menu.mitteilungen').click();
 
         cy.getByData('container.mitteilung#0', 'nachricht-subject').should('include.text', 'Mitteilung SB - 1');
         cy.getByData('container.mitteilung#0').click();
         cy.getByData('container.mitteilung#0', 'nachricht-inhalt').should('include.text', 'Irgend ein anderer Inhalt');
+        cy.resetViewport();
     });
 });
