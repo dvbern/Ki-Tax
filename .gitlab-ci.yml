@@ -78,8 +78,8 @@ create-build-args:
     tags: [ "os:linux", "type:docker", "zone:tz" ]
     stage: prepare-package
     script:
-        - ./mvnw org.apache.maven.plugins:maven-help-plugin:3.2.0:evaluate -Dexpression=project.version -DforceStdout -q -o
-        - echo "KIBON_POM_VERSION=$(./mvnw org.apache.maven.plugins:maven-help-plugin:3.2.0:evaluate -Dexpression=project.version -DforceStdout -q -o)" > build-args.env
+        - mvn org.apache.maven.plugins:maven-help-plugin:3.2.0:evaluate -Dexpression=project.version -DforceStdout -q -o
+        - echo "KIBON_POM_VERSION=$(mvn org.apache.maven.plugins:maven-help-plugin:3.2.0:evaluate -Dexpression=project.version -DforceStdout -q -o)" > build-args.env
     artifacts:
         paths:
             - build-args.env
