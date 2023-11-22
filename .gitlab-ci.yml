@@ -78,9 +78,12 @@ create-build-args:
     image: docker-registry.dvbern.ch/kibon/build-environment/mvn-npm-gitflow-chromium:jdk11-old
     tags: [ "os:linux", "type:docker", "zone:tz" ]
     stage: prepare-package
+    variables:
+        DVB_MAVEN_CLI_OPTS: >-
+            --settings .m2/settings.xml
     script:
-        - ./mvnw org.apache.maven.plugins:maven-help-plugin:3.2.0:evaluate -Dexpression=project.version -DforceStdout -q -o
-        - echo "KIBON_POM_VERSION=$(./mvnw org.apache.maven.plugins:maven-help-plugin:3.2.0:evaluate -Dexpression=project.version -DforceStdout -q -o)" > build-args.env
+        - ./mvnw $DVB_MAVEN_CLI_OPTS org.apache.maven.plugins:maven-help-plugin:3.2.0:evaluate -Dexpression=project.version -DforceStdout -q -o
+        - echo "KIBON_POM_VERSION=$(./mvnw $DVB_MAVEN_CLI_OPTS org.apache.maven.plugins:maven-help-plugin:3.2.0:evaluate -Dexpression=project.version -DforceStdout -q -o)" > build-args.env
         - cat build-args.env
     artifacts:
         paths:
