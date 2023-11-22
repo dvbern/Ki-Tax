@@ -82,7 +82,6 @@ create-build-args:
         DVB_MAVEN_CLI_OPTS: >-
             --settings .m2/settings.xml
     script:
-        - ./mvnw $DVB_MAVEN_CLI_OPTS org.apache.maven.plugins:maven-help-plugin:3.2.0:evaluate -Dexpression=project.version -DforceStdout -q
         - echo "KIBON_POM_VERSION=$(./mvnw $DVB_MAVEN_CLI_OPTS org.apache.maven.plugins:maven-help-plugin:3.2.0:evaluate -Dexpression=project.version -DforceStdout -q)" > build-args.env
         - cat build-args.env
     artifacts:
