@@ -57,10 +57,10 @@ include:
             registry-token: $DVB_DOCKER_REGISTRY_TOKEN
             name: build-kibon-app-image
             stage: package
-            image-name: kibon-wildfly
+            image-name: gitlab-migration/kibon-wildfly # TODO remove prefix
             context-dir: ebegu-rest
             version: $VERSION
-            push-enabled: "false"
+            push-enabled: "true"
 
     -   component: 'gitlab.dvbern.ch/mobj/buildah@a7143bb366f9ee8e1ddfd1813acb1649a104cb36'
         inputs:
@@ -69,10 +69,10 @@ include:
             registry-token: $DVB_DOCKER_REGISTRY_TOKEN
             name: build-kibon-web-image
             stage: package
-            image-name: kibon-nginx
+            image-name: gitlab-migration/kibon-nginx # TODO remove prefix
             context-dir: ebegu-web
             version: $VERSION
-            push-enabled: "false"
+            push-enabled: "true"
 
 create-build-args:
     image: '$DVB_DOCKER_REGISTRY/dockerhub/library/eclipse-temurin:11-jdk-alpine'
