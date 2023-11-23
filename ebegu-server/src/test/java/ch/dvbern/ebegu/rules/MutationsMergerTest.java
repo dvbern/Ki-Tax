@@ -242,6 +242,7 @@ public class MutationsMergerTest {
 
 		// Erstgesuch Gesuch vorbereiten
 		Verfuegung verfuegungErstgesuch = prepareErstGesuchVerfuegung();
+		setAnsprechberechtigtesPensumAbDatum(verfuegungErstgesuch.getZeitabschnitte(), TestDataUtil.START_PERIODE, 80);
 		mutierteBetreuung.initVorgaengerVerfuegungen(verfuegungErstgesuch, null);
 
 		// mergen
@@ -309,6 +310,7 @@ public class MutationsMergerTest {
 
 		// Erstgesuch Gesuch vorbereiten
 		Verfuegung verfuegungErstgesuch = prepareErstGesuchVerfuegung();
+		setAnsprechberechtigtesPensumAbDatum(verfuegungErstgesuch.getZeitabschnitte(), TestDataUtil.START_PERIODE, 80);
 		mutierteBetreuung.initVorgaengerVerfuegungen(verfuegungErstgesuch, null);
 
 		// mergen
@@ -340,7 +342,7 @@ public class MutationsMergerTest {
 
 		// Erstgesuch Gesuch vorbereiten
 		Verfuegung verfuegungErstgesuch = prepareErstGesuchVerfuegung();
-
+		setAnsprechberechtigtesPensumAbDatum(verfuegungErstgesuch.getZeitabschnitte(), TestDataUtil.START_PERIODE, 80);
 		mutierteBetreuung.initVorgaengerVerfuegungen(verfuegungErstgesuch, null);
 
 		// mergen
@@ -373,7 +375,7 @@ public class MutationsMergerTest {
 
 		// Erstgesuch Gesuch vorbereiten
 		Verfuegung verfuegungErstgesuch = prepareErstGesuchVerfuegung();
-
+		setAnsprechberechtigtesPensumAbDatum(verfuegungErstgesuch.getZeitabschnitte(), TestDataUtil.START_PERIODE, 80);
 		mutierteBetreuung.initVorgaengerVerfuegungen(verfuegungErstgesuch, null);
 
 		//mutationMerger mit Pauschale Rueckwirkend
@@ -1022,7 +1024,6 @@ public class MutationsMergerTest {
 		Verfuegung verfuegungErstgesuch = new Verfuegung();
 		final List<VerfuegungZeitabschnitt> verfuegungsZeitabschnitteErstgesuch =
 			EbeguRuleTestsHelper.runSingleAbschlussRule(monatsRule, betreuung, zabetrErtgesuch);
-		setAnsprechberechtigtesPensumAbDatum(verfuegungsZeitabschnitteErstgesuch, TestDataUtil.START_PERIODE, 80);
 		verfuegungErstgesuch.setZeitabschnitte(verfuegungsZeitabschnitteErstgesuch);
 		betreuung.setVerfuegung(verfuegungErstgesuch);
 		return verfuegungErstgesuch;
