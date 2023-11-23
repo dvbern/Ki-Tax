@@ -105,5 +105,24 @@ describe('Kibon - mutationen [Gesuchsteller]', () => {
 
         cy.getByData('verfuegung#0-0', 'betreuungs-status').should('include.text', 'Verfügt');
         cy.getByData('verfuegung#1-0', 'betreuungs-status').should('include.text', 'Geschlossen ohne Verfügung');
+
+        cy.getByData('toolbar.antrag-mutieren').click();
+        cy.getByData('fall-creation-eingangsdatum').find('input').type('01.05.2022');
+        cy.intercept('GET', '**/gesuche/dossier/**').as('createNewMutation');
+        cy.getByData('container.navigation-save', 'navigation-button').click();
+        cy.wait('@createNewMutation');
+
+        cy.getByData('toolbar.antrag').click();
+        cy.get('[data-test^="antrag#').should('have.length', 3);
+        cy.closeMaterialOverlay();
+
+        cy.getByData('toolbar.antrag-loeschen').click();
+        cy.intercept('GET', '**/gesuchsperioden/gemeinde/**').as('deletingMutation');
+        cy.getByData('container.confirm', 'navigation-button').click();
+        cy.wait('@deletingMutation');
+
+        cy.getByData('toolbar.antrag').click();
+        cy.get('[data-test^="antrag#').should('have.length', 2);
+        cy.closeMaterialOverlay();
     });
 });

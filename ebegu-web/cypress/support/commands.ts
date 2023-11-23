@@ -27,6 +27,11 @@ declare global {
             changeLogin(user: User): void;
 
             /**
+             * Used to close an angular material dialog or overlay
+             */
+            closeMaterialOverlay(): void;
+
+            /**
              * It is a shorthand for **`cy.get('[data-test="..."])`** and also allows to sub-select nested elements.
              *
              * @example
@@ -80,4 +85,8 @@ Cypress.Commands.add('changeLogin', (user: User) => {
     cy.reload();
 
     cy.login(user);
+});
+Cypress.Commands.add('closeMaterialOverlay', () => {
+    cy.log('Closing material dialog/overlay');
+    cy.get('.md-menu-backdrop').should('not.have.class', 'ng-animate').click();
 });
