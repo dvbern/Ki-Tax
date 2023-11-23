@@ -36,6 +36,7 @@
                                 </span>
 
                         <dv-radio-container name="keineKesbPlatzierungk" class="input-element"
+                                            data-test="keine-kesb-platzierung"
                                             ng-model="vm.isKesbPlatzierung"
                                             aria-label="{{'KEINE_KESB_PLATZIERUNG'|translate}}"
                                             ng-required="true"
@@ -77,6 +78,7 @@
                         <label class="md-no-float required" data-translate="EINTRITTSDATUM"
                                for="eintrittsdatum_ID"></label>
                         <dv-datepicker input-id="eintrittsdatum_ID" name="eintrittsdatum"
+                                       data-test="eintrittsdatum"
                                        ng-model="vm.betreuung.belegungTagesschule.eintrittsdatum"
                                        ng-required="true"
                                        class="input-element "
@@ -100,6 +102,7 @@
                                 <dv-tooltip input-id="planKlasse_ID" text="'PLANKLASSE_INFO' | translate"></dv-tooltip>
                             </label>
                             <input aria-describedby="planKlasse_ID-error" id="planKlasse_ID"
+                                   data-test="plan-klasse"
                                    type="text" name="planKlasse"
                                    ng-model="vm.betreuung.belegungTagesschule.planKlasse"
                                    dv-max-length class="form-control"
@@ -121,6 +124,7 @@
                                 </label>
                                 <div class="dv-select-style">
                                     <select aria-describedby="fleischOption_ID-error" name="fleischOption"
+                                            data-test="fleisch-optionen"
                                             id="fleischOptionen_ID"
                                             ng-model="vm.betreuung.belegungTagesschule.fleischOption"
                                             class="form-control"
@@ -142,6 +146,7 @@
                                     <span data-translate="ALLERGIEN"> </span>
                                 </label>
                                 <textarea aria-describedby="allegergienUndUnvertraeglichkeit_ID-error"
+                                       data-test="allegergien-und-unvertraeglichkeiten"
                                        id="allegergienUndUnvertraeglichkeit_ID"
                                        name="allergienUndUnvertraeglichkeiten" class="form-control " rows="4"
                                        ng-model="vm.betreuung.belegungTagesschule.allergienUndUnvertraeglichkeiten"
@@ -163,6 +168,7 @@
                                        for="notfallnummer_ID">
                                 </label>
                                 <input aria-describedby="notfallnummer_ID-error"
+                                       data-test="notfallnummer"
                                        id="notfallnummer_ID"
                                        type="text"
                                        name="notfallnummer"
@@ -190,6 +196,7 @@
                             </label>
                             <div class="dv-select-style">
                                 <select aria-describedby="abholungTagesschule_ID-error" name="abholungTagesschule"
+                                        data-test="abholung-tagesschule"
                                         id="abholungTagesschule_ID"
                                         ng-model="vm.betreuung.belegungTagesschule.abholungTagesschule"
                                         class="form-control"
@@ -240,6 +247,7 @@
                                             ng-disabled="!vm.isModuleEditable(mod)"
                                             ng-click=""
                                             ng-change="vm.openMenu(mod, group, $mdMenu, $event);"
+                                            ng-attr-data-test="modul-{{mod.modulTagesschule.identifier}}"
                                             class="dv-ebegu-calendar--tagesschule"
                                             aria-describedby="{{'modul_' + mod.modulTagesschule.identifier + '-error'}}">
                                             <span class="error"
@@ -292,6 +300,7 @@
                 <div class="row margin-top-30">
                     <div class="col-sm-12 dv-input-container-question">
                         <md-checkbox class="checkbox margin-top-20"
+                                     data-test="abweichung-zweites-semester"
                                      ng-model="vm.betreuung.belegungTagesschule.abweichungZweitesSemester"
                                      name="abweichungZweitesSemester"
                                      id="abweichungZweitesSemester"
@@ -306,6 +315,7 @@
                             </label>
                             <p class="inline-hint" data-translate="BETREUUNG_TAGESSCHULE_BEMERKUNG_HINT"></p>
                             <textarea aria-describedby="bemerkung_ID-error"
+                                      data-test="tagesschule-bemerkung"
                                       name="bemerkung"
                                       class="form-control " rows="6"
                                       id="bemerkung_ID"
@@ -320,6 +330,7 @@
                 <div class="row margin-top-30" ng-if="!vm.isGesuchReadonly() && !vm.isFreigabequittungAusstehend()">
                     <div class="col-sm-12 dv-input-container-question">
                         <md-checkbox class="checkbox"
+                                     data-test="agb-tsakzeptiert"
                                      ng-model="vm.agbTSAkzeptiert"
                                      name="agbTSAkzeptiert"
                                      id="agbTSAkzeptiert"

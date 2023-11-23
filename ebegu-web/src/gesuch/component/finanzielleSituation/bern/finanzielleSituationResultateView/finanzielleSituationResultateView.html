@@ -41,6 +41,7 @@
                                 </label>
                                 <div class="dv-input-container-medium-label">
                                     <dv-valueinput input-id="einkommenBeiderGesuchsteller"
+                                                   data-test="einkommenBeiderGesuchsteller"
                                                    name="einkommenBeiderGesuchsteller"
                                                    ng-model="vm.getResultate().einkommenBeiderGesuchsteller"
                                                    allow-negative="true"
@@ -63,6 +64,7 @@
                                 </label>
                                 <div class="dv-input-container-medium-label">
                                     <dv-valueinput input-id="nettovermoegenGS1" name="nettovermoegenGS1"
+                                                   data-test="nettovermoegenGS1"
                                                    aria-label="{{'FINANZIELLE_SITUATION_NETTOVERMOEGEN_GS_1'|translate}}"
                                                    ng-model="vm.getFinanzielleSituationGS1().finanzielleSituationJA.nettoVermoegen"
                                                    ng-disabled="true"
@@ -97,6 +99,7 @@
                                 </label>
                                 <div class="dv-input-container-medium-label">
                                     <dv-valueinput input-id="bruttovermoegen1" name="bruttovermoegen1"
+                                                   data-test="bruttovermoegen1"
                                                    aria-label="{{'FINANZIELLE_SITUATION_VERMOEGEN_GS_1'|translate}}"
                                                    ng-model="vm.getFinanzielleSituationGS1().finanzielleSituationJA.bruttovermoegen"
                                                    class="input-element"
@@ -131,6 +134,7 @@
                                 </label>
                                 <div class="dv-input-container-medium-label">
                                     <dv-valueinput input-id="bruttovermoegen2" name="bruttovermoegen2"
+                                                   data-test="bruttovermoegen2"
                                                    aria-label="{{'FINANZIELLE_SITUATION_VERMOEGEN_GS_2'|translate}}"
                                                    ng-model="vm.getFinanzielleSituationGS2().finanzielleSituationJA.bruttovermoegen"
                                                    dv-on-blur="vm.calculate()"
@@ -165,6 +169,7 @@
                                 </label>
                                 <div class="dv-input-container-medium-label">
                                     <dv-valueinput input-id="schulden1" name="schulden1"
+                                                   data-test="schulden1"
                                                    aria-label="{{'FINANZIELLE_SITUATION_SCHULDEN_GS_1'|translate}}"
                                                    ng-model="vm.getFinanzielleSituationGS1().finanzielleSituationJA.schulden"
                                                    dv-on-blur="vm.calculate()"
@@ -199,6 +204,7 @@
                                 </label>
                                 <div class="dv-input-container-medium-label">
                                     <dv-valueinput input-id="schulden2" name="schulden2"
+                                                   data-test="schulden2"
                                                    aria-label="{{'FINANZIELLE_SITUATION_SCHULDEN_GS_2'|translate}}"
                                                    ng-model="vm.getFinanzielleSituationGS2().finanzielleSituationJA.schulden"
                                                    dv-on-blur="vm.calculate()"
@@ -230,6 +236,7 @@
                                 </label>
                                 <div class="dv-input-container-medium-label">
                                     <dv-valueinput input-id="nettovermoegenGS2" name="nettovermoegenGS2"
+                                                   data-test="nettovermoegenGS2"
                                                    aria-label="{{'FINANZIELLE_SITUATION_NETTOVERMOEGEN_GS_2'|translate}}"
                                                    ng-model="vm.getFinanzielleSituationGS2().finanzielleSituationJA.nettoVermoegen"
                                                    ng-disabled="true"
@@ -260,6 +267,7 @@
                                        for="nettovermoegenFuenfProzent"></label>
                                 <div class="dv-input-container-medium-label">
                                     <dv-valueinput input-id="nettovermoegenFuenfProzent"
+                                                   data-test="nettovermoegenFuenfProzent"
                                                    name="nettovermoegenFuenfProzent"
                                                    ng-model="vm.getResultate().nettovermoegenFuenfProzent"
                                                    ng-disabled="true">
@@ -279,6 +287,7 @@
                                 </label>
                                 <div class="dv-input-container-medium-label">
                                     <dv-valueinput input-id="anrechenbaresEinkommen" name="anrechenbaresEinkommen"
+                                                   data-test="anrechenbaresEinkommen"
                                                    ng-model="vm.getResultate().anrechenbaresEinkommen"
                                                    allow-negative="true"
                                                    ng-disabled="true">
@@ -302,6 +311,7 @@
                                 </label>
                                 <div class="dv-input-container-medium-label">
                                     <dv-valueinput input-id="abzuegeBeiderGesuchsteller"
+                                                   data-test="abzuegeBeiderGesuchsteller"
                                                    name="abzuegeBeiderGesuchsteller"
                                                    ng-model="vm.getResultate().abzuegeBeiderGesuchsteller"
                                                    aria-label="{{'FINANZIELLE_SITUATION_ABZUEGE_ALIMENTE'|translate}}"
@@ -322,6 +332,7 @@
                                        for="massgebendesEinkVorAbzFamGr"></label>
                                 <div class="dv-input-container-medium-label">
                                     <dv-valueinput input-id="massgebendesEinkVorAbzFamGr"
+                                                   data-test="massgebendesEinkVorAbzFamGr"
                                                    name="massgebendesEinkVorAbzFamGr"
                                                    ng-model="vm.getResultate().massgebendesEinkVorAbzFamGr"
                                                    ng-disabled="true">

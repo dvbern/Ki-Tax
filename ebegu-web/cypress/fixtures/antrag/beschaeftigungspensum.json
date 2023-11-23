@@ -1,0 +1,16 @@
+{
+    "valid": {
+        "GS1": {
+            "bezeichnung":  "DVBern",
+            "taetigkeit": "ANGESTELLT",
+            "taetigkeitPensum":  "90",
+            "taetigkeitAb": "01.01.1990"
+        },
+        "GS2": {
+            "bezeichnung":  "DVBern",
+            "taetigkeit": "ANGESTELLT",
+            "taetigkeitPensum":  "70",
+            "taetigkeitAb": "02.02.1991"
+        }
+    }
+}

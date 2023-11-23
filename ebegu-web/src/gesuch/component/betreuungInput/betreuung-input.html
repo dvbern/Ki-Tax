@@ -42,6 +42,7 @@
                        ng-pattern="vm.CONSTANTS.PATTERN_TWO_DECIMALS"
                        ng-disabled="vm.isDisabled"
                        ng-attr-placeholder="{{vm.getPlaceholder()}}"
+                       ng-attr-data-test="{{vm.id}}"
                 >
                 <dv-error-messages input-id="{{vm.id}}" class="error"
                                    for="pensumForm[vm.id].$error"

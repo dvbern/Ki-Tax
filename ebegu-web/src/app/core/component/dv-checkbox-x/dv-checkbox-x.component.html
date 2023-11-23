@@ -20,6 +20,7 @@
                   [disabled]="readonly"
                   [name]="uniqueName" [id]="uniqueName + '_id'"
                   [aria-label]="label | translate"
+                  data-test="checkbox"
                   (ngModelChange)="change()">
         <span>{{label | translate}}</span>
         <dv-tooltip *ngIf="tooltip" [text]="tooltip | translate"></dv-tooltip>

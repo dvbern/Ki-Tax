@@ -95,6 +95,7 @@
 													 aria-label="{{ 'FAMILIENSITUATION_FRAGE_1' |translate}}"
 													 aria-described-by="familienstatus-error">
 										<mat-radio-button *ngFor="let famSit of getFamiliensituationValues()"
+                                                          [attr.data-test]="'familienstatus.' + famSit"
 														  [value]="famSit">{{famSit | translate}}</mat-radio-button>
 									</mat-radio-group>
 								</dv-radio-container-x>
@@ -206,11 +207,12 @@
 					<div class="row" *ngIf="showBemerkungUnterhaltsvereinbarung()">
 						<div class="col-sm-12 dv-input-container-medium form-group">
 							<dv-input-container class="form-group">
-                                 <span>
-                                     <label class="required" for="begruendung" translate>UNTERHALTSVEREINBARUNG_GRUND  <dv-tooltip
+                                 <label>
+                                     <span class="required" for="begruendung" translate>UNTERHALTSVEREINBARUNG_GRUND</span>
+                                     <dv-tooltip
 											 [inputId]="'begruendung'"
-											 [text]="getTextForFamSitUnterhaltsvereinbarungGrund()"></dv-tooltip></label>
-                                 </span>
+											 [text]="getTextForFamSitUnterhaltsvereinbarungGrund()"></dv-tooltip>
+                                 </label>
 
 								<textarea md-no-autogrow class="form-control" rows="6" maxlength="4000"
 										  ng-maxlength="3000"

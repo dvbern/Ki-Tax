@@ -34,7 +34,10 @@
     "docs": "npm run typedoc -- --options typedoc.json --exclude '**/*.spec.ts' ./src/",
     "start": "npm run server",
     "set-version": "node scripts/version-from-pom.js",
-    "postinstall": "ngcc && npm run set-version && mkdirp build"
+    "postinstall": "ngcc && npm run set-version && mkdirp build",
+    "cypress:open": "cypress open",
+    "cypress:run": "cypress run",
+    "cypress:run:parallel": "cypress-parallel -s cypress:run -t 3 -d \"cypress/e2e/**/*.cy.ts\""
   },
   "devDependencies": {
     "@angular-builders/custom-webpack": "^14.0.0",
@@ -66,6 +69,9 @@
     "caniuse-lite": "^1.0.30001039",
     "check-engine": "^1.10.0",
     "concurrently": "^5.1.0",
+    "cypress": "^13.5.1",
+    "cypress-multi-reporters": "^1.6.4",
+    "cypress-parallel": "^0.13.0",
     "eslint": "8.30.0",
     "eslint-plugin-import": "latest",
     "eslint-plugin-jsdoc": "^38.1.6",
@@ -98,7 +104,8 @@
     "stylelint-scss": "^3.17.2",
     "ts-node": "~3.3.0",
     "tslint-consistent-codestyle": "^1.16.0",
-    "typescript": "^4.7"
+    "typescript": "^4.7",
+    "webpack": "^5.89.0"
   },
   "engines": {
     "node": ">=16.20.0",

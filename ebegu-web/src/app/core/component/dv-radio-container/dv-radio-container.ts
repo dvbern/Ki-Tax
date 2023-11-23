@@ -27,6 +27,7 @@ export class DvRadioContainerComponentConfig implements IComponentOptions {
         items: '<',
         dvEnableAllowedRoles: '<',
         dvEnableExpression: '<',
+        name: '@',
         ariaDescribedBy: '@',
         ariaLabel: '@',
         trueOptionLabel: '@',

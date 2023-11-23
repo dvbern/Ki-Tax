@@ -1,0 +1,37 @@
+{
+    "valid": {
+        "GS1": {
+            "nettolohn": "60000",
+            "familienzulage": "4000",
+            "ersatzeinkommen": "0",
+            "erhalteneAlimente": "0",
+            "bruttoErtraegeVermoegen": "0",
+            "nettoertraegeErbengemeinschaften": "0",
+            "geleisteteAlimente": "0",
+            "abzugSchuldzinsen": "0",
+            "gewinnungskosten": "0"
+        },
+        "GS2": {
+            "nettolohn": "20000",
+            "familienzulage": "0",
+            "ersatzeinkommen": "0",
+            "erhalteneAlimente": "0",
+            "bruttoErtraegeVermoegen": "0",
+            "nettoertraegeErbengemeinschaften": "0",
+            "geleisteteAlimente": "0",
+            "abzugSchuldzinsen": "0",
+            "gewinnungskosten": "0"
+        },
+        "Resultate": {
+            "einkommenBeiderGesuchsteller": "84'000",
+            "bruttovermoegen1":"25000",
+            "bruttovermoegen2": "10000",
+            "schulden1":"0",
+            "schulden2": "0",
+            "nettovermoegenFuenfProzent": "1'750",
+            "anrechenbaresEinkommen": "85'750",
+            "abzuegeBeiderGesuchsteller": "0",
+            "massgebendesEinkVorAbzFamGr": "85'750"
+        }
+    }
+}
