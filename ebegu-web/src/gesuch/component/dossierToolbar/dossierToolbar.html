@@ -86,7 +86,8 @@
                  dv-show-expression="vmx.showGesuchLoeschen()">
                 <button ng-click="vmx.gesuchLoeschen()"
                         aria-label="{{'TOOLBAR_LOESCHEN' | translate}}" style="text-align: center;"
-                        input-id="{{'gesuchLoeschenButton'}}" type="reset">
+                        input-id="{{'gesuchLoeschenButton'}}" type="reset"
+                        data-test="toolbar.antrag-loeschen">
                     <span class="uppercase" data-translate="TOOLBAR_LOESCHEN"></span>
                 </button>
             </div>
@@ -126,7 +127,8 @@
                  dv-show-allowed-roles="vmx.TSRoleUtil.getGesuchstellerSozialdienstJugendamtSchulamtRoles()"
                  dv-show-expression="vmx.showButtonMutieren()">
                 <button ng-click="vmx.antragMutieren()"
-                        aria-label="{{'TOOLBAR_MUTIEREN' | translate}}" style="text-align: center;">
+                        aria-label="{{'TOOLBAR_MUTIEREN' | translate}}" style="text-align: center;"
+                        data-test="toolbar.antrag-mutieren">
                     <span class="uppercase" data-translate="TOOLBAR_MUTIEREN"></span>
                 </button>
             </div>
