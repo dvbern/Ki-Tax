@@ -15,13 +15,11 @@ import ch.dvbern.ebegu.util.VerfuegungsBemerkungComparator;
 public class VerfuegungsBemerkungComparatorTest {
 	private final VerfuegungsBemerkungDTO verfuegungsBemerkungFachstelle = new VerfuegungsBemerkungDTO(RuleValidity.ASIV, MsgKey.FACHSTELLE_MSG, Locale.GERMAN);
 	private final VerfuegungsBemerkungDTO verfuegungsBemerkungFachstelleZwei = new VerfuegungsBemerkungDTO(RuleValidity.ASIV, MsgKey.FACHSTELLE_MSG, Locale.GERMAN);
-	private final VerfuegungsBemerkungDTO verfuegungsBemerkungAbwesenheit = new VerfuegungsBemerkungDTO(RuleValidity.GEMEINDE, MsgKey.ABWESENHEIT_MSG, Locale.FRENCH);
+	private final VerfuegungsBemerkungDTO verfuegungsBemerkungAbwesenheit = new VerfuegungsBemerkungDTO(RuleValidity.ASIV, MsgKey.ABWESENHEIT_MSG, Locale.GERMAN);
 	private final VerfuegungsBemerkungComparator verfuegungsBemerkungComparator = new VerfuegungsBemerkungComparator();
 
 	@Test
 	public void testVerfuegungGleichGross() {
-		VerfuegungsBemerkungDTO verfuegungsBemerkungBemerkungZwei = new VerfuegungsBemerkungDTO(RuleValidity.ASIV, MsgKey.FACHSTELLE_MSG, Locale.GERMAN);
-
 		int resultatVerfueungsBemerkung = verfuegungsBemerkungComparator.compare(verfuegungsBemerkungFachstelle, verfuegungsBemerkungFachstelleZwei);
 		assertThat(resultatVerfueungsBemerkung, Matchers.is(0));
 	}
