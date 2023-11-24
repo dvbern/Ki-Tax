@@ -88,6 +88,7 @@ include:
             environment: dev
         rules:
             - if: $CI_COMMIT_BRANCH == "feature/gitlab-pipeline-migration"
+              when: never
 
 create-build-args:
     image: '$DVB_DOCKER_REGISTRY/dockerhub/library/eclipse-temurin:11-jdk-alpine'
