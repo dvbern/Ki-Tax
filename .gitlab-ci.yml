@@ -75,6 +75,20 @@ include:
             version: $VERSION
             push-enabled: "true"
 
+    -   component: 'gitlab.dvbern.ch/fuju/docker-compose-deploy@main'
+        inputs:
+            service-name: 'kibon-dev'
+            # TODO: Tag built version with commit sha so we don't rely on latest
+            # version: $CI_COMMIT_SHA
+            version-env-var: 'TAGTOUSE'
+            ssh-user: $KIBON_DEPLOY_SSH_USER
+            # TODO: Fill this group variable after response from service team
+            ssh-private-key: $KIBON_SSH_PRIVATE_KEY
+            ssh-target: 'sdvbvmkiba31.dvbern.ch'
+            environment: dev
+        rules:
+            - if: $CI_COMMIT_BRANCH == "feature/gitlab-pipeline-migration"
+
 create-build-args:
     image: '$DVB_DOCKER_REGISTRY/dockerhub/library/eclipse-temurin:11-jdk-alpine'
     tags: [ "os:linux", "type:docker", "zone:tz" ]
