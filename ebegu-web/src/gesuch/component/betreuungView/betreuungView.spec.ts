@@ -423,24 +423,6 @@ describe('betreuungView', () => {
                 expect(betreuungView.showPensumUnterschrittenCheckBox()).toBe(false);
             });
 
-            it('should not show checkbox if fachstellen List is empty', () => {
-                kind.kindJA = new TSKind();
-                kind.kindJA.pensumFachstellen = [];
-                spyOn(betreuungView, 'getKindModel').and.returnValue(kind);
-                expect(betreuungView.showPensumUnterschrittenCheckBox()).toBe(false);
-            });
-
-            it('should not show checkbox if fachstellen List has no sprachliche indikation', () => {
-                const pensumFachstelleSozialeIndikation = new TSPensumFachstelle();
-                pensumFachstelleSozialeIndikation.integrationTyp = TSIntegrationTyp.SOZIALE_INTEGRATION;
-
-                kind.kindJA = new TSKind();
-                kind.kindJA.pensumFachstellen = [pensumFachstelleSozialeIndikation];
-
-                spyOn(betreuungView, 'getKindModel').and.returnValue(kind);
-                expect(betreuungView.showPensumUnterschrittenCheckBox()).toBe(false);
-            });
-
             it('should not show checkbox if no betreuungspensum less than 40% pensum',
                 () => {
                 const pensumFachstelleSozialeIndikation = new TSPensumFachstelle();

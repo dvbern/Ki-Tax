@@ -1040,12 +1040,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
             return false;
         }
 
-        const sprachlicheIntegrationen = this.getKindModel()?.kindJA?.pensumFachstellen
-            .filter(fachstelle =>
-                fachstelle.integrationTyp === TSIntegrationTyp.SPRACHLICHE_INTEGRATION);
-
-        if (EbeguUtil.isNullOrUndefined(sprachlicheIntegrationen) ||
-            sprachlicheIntegrationen.length === 0) {
+        if (!EbeguUtil.hasSprachlicheIndikation(this.getKindModel())) {
             return false;
         }
 
