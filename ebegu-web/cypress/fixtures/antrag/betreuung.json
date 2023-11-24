@@ -3,6 +3,10 @@
         "kita": {
             "betreuungsangebot": "Kita",
             "institution": "Brünnen"
+        },
+        "tfo": {
+            "betreuungsangebot": "Tagesfamilien",
+            "institution": "Tageseltern Bern"
         }
     }
 }

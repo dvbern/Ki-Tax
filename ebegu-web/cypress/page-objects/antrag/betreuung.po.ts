@@ -13,6 +13,26 @@ const fillKitaBetreuungsForm = (dataset: keyof typeof FixtureBetreuung) => {
     });
 };
 
+const fillOnlineKitaBetreuungsForm = (dataset: keyof typeof FixtureBetreuung) => {
+    FixtureBetreuung[dataset](({ kita }) => {
+        cy.getByData('betreuungsangebot').select(kita.betreuungsangebot);
+        cy.getByData('container.vertrag', 'radio-value.ja').click();
+        cy.getByData('institution').find('input').type(kita.institution);
+        cy.getByData('instutions-suchtext').click();
+        cy.getByData('institution').find('input').should('have.value', kita.institution);
+    });
+};
+
+const fillOnlineTfoBetreuungsForm = (dataset: keyof typeof FixtureBetreuung) => {
+    FixtureBetreuung[dataset](({ tfo }) => {
+        cy.getByData('betreuungsangebot').select(tfo.betreuungsangebot);
+        cy.getByData('container.vertrag', 'radio-value.ja').click();
+        cy.getByData('institution').find('input').type(tfo.institution);
+        cy.getByData('instutions-suchtext').click();
+        cy.getByData('institution').find('input').should('have.value', tfo.institution);
+    });
+};
+
 const fillKeinePlatzierung = () => {
     cy.getByData('keineKesbPlatzierung.radio-value.nein').click();
 };
@@ -35,6 +55,8 @@ const platzBestaetigungAnfordern = () => {
 export const AntragBetreuungPO = {
     createNewBetreuung,
     fillKitaBetreuungsForm,
+    fillOnlineKitaBetreuungsForm,
+    fillOnlineTfoBetreuungsForm,
     fillKeinePlatzierung,
     fillErweiterteBeduerfnisse,
     fillEingewoehnung,
