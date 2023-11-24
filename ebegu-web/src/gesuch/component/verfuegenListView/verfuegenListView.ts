@@ -109,6 +109,7 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
     private kontingentierungEnabled: boolean = false;
     private readonly ebeguUtil: EbeguUtil;
     private isVerfuegungEingeschriebenSendenAktiv: boolean;
+    private minPensumSprachlicheIndikation: number;
     private letzteIgnorierteGesuchId: string;
     public finSitStatusUpdateIsRunning: boolean = false;
     public constructor(
@@ -196,6 +197,13 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
             ).subscribe(response => {
                     this.isVerfuegungEingeschriebenSendenAktiv = JSON.parse(response.value);
                 }, error => LOG.error(error));
+            this.einstellungRS.findEinstellung(
+                TSEinstellungKey.FACHSTELLE_MIN_PENSUM_SPRACHLICHE_INTEGRATION,
+                this.gesuchModelManager.getDossier().gemeinde.id,
+                this.gesuchModelManager.getGesuchsperiode().id
+            ).subscribe(response => {
+                this.minPensumSprachlicheIndikation = Number(response.value);
+            }, error => LOG.error(error));
         }
     }
 
@@ -299,6 +307,16 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
             return this.isDetailAvailableForBetreuungstatus(betreuung.betreuungsstatus);
         }
         return false;
+    }
+
+    public showWarningSozialeIndikationPensumNichtErreicht(): boolean {
+        if (!this.authServiceRs.isOneOfRoles(TSRoleUtil.getGemeindeOrBGRoles().concat(TSRole.SUPER_ADMIN))) {
+            return false;
+        }
+
+        return this.getKinderWithBetreuungList()?.filter(kindcontainer => EbeguUtil.hasSprachlicheIndikation(kindcontainer))
+            .filter(kindcontainer => this.isOneBetreuungspensumLessThanMinPensum(kindcontainer))
+            .length > 0;
     }
 
     /**
@@ -969,5 +987,17 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
         }
 
         return true;
+    }
+
+    private isOneBetreuungspensumLessThanMinPensum(kindContainer: TSKindContainer): boolean {
+        for (const betreuungen of kindContainer.betreuungen) {
+            if (betreuungen.betreuungspensumContainers
+                .filter(pensum => pensum.betreuungspensumJA.pensum < this.minPensumSprachlicheIndikation)
+                .length > 0) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }
