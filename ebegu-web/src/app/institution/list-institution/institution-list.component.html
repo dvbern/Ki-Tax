@@ -37,7 +37,8 @@
                 <span translate>INSTITUTION_HINZUFUEGEN</span>
             </button>
 
-            <button *ngIf="isCreateTSAllowed() && !isAdminBG()" (click)="createInstitutionTS();" class="dv-btn next-button">
+            <button *ngIf="isCreateTSAllowed() && !isAdminBG()" (click)="createInstitutionTS();" class="dv-btn next-button"
+                    data-test="institution.create-tagesschule">
                 <span translate>TAGESSCHULE_HINZUFUEGEN</span>
             </button>
 

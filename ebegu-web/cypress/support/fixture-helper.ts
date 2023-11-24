@@ -35,3 +35,12 @@ export const FixturePapierAntrag = {
     // withValid: <T>(fn: (data: (typeof Papier)['valid']) => T) => cy.fixture('antrag/papier.json').then((data: typeof Papier) => fn(data.valid)),
     withValid: fromFixture<typeof Papier>('antrag/papier.json', 'valid'),
 };
+
+
+export const FixtureCreateTagesschule = {
+    withValid: fromFixture<typeof Papier>('institution/tagesschule.json', 'create-valid'),
+};
+
+export const FixtureTagesschule = {
+    withValid: fromFixture<typeof Papier>('institution/tagesschule.json', 'valid'),
+}

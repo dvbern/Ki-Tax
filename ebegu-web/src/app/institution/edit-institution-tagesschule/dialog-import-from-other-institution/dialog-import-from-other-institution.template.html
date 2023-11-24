@@ -28,9 +28,11 @@
                     id="institution"
                     [(ngModel)]="selectedInstitutionStammdaten"
                     class="form-control"
+                    data-test="institution.tageschule.modul.import.institution"
                     [required]="true">
 
-                <option *ngFor="let institutionStammdaten of institutionStammdatenList" [ngValue]="institutionStammdaten">{{institutionStammdaten.institution.name}}</option>
+                <option *ngFor="let institutionStammdaten of institutionStammdatenList" [ngValue]="institutionStammdaten"
+                        [attr.data-test]="'institution.tageschule.modul.import.institution-' + institutionStammdaten.institution.name">{{institutionStammdaten.institution.name}}</option>
             </select>
         </div>
 
