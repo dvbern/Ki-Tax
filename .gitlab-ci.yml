@@ -1,5 +1,5 @@
 # stages: [build, validate, test, analyze, package, deploy, mirror]
-stages: [ build, prepare-package, package, deploy, mirror ]
+stages: [ build, prepare-package, package, release, deploy, mirror ]
 
 variables:
     RELEASE_VERSION:
@@ -25,7 +25,7 @@ include:
         #rules:
         #  - if: $CI_COMMIT_BRANCH == "feature/gitlab-pipeline-migration" && $CI_PIPELINE_SOURCE != "schedule"
         inputs:
-            name: build-without-arquillian
+            name: .build-backend-without-arquillian
             java-image: docker-registry.dvbern.ch/kibon/build-environment/mvn-npm-gitflow-chromium
             java-image-version: jdk11-old
             maven-goal: -Pdvbern.oss -Pcopy-wildfly-dependencies -P\!frontend clean install
@@ -35,19 +35,20 @@ include:
         #rules:
         #  - if: $CI_COMMIT_BRANCH == "feature/gitlab-pipeline-migration" && $CI_PIPELINE_SOURCE != "schedule"
         inputs:
-            name: build-ebegu-web
+            name: .build-frontend
             java-image: docker-registry.dvbern.ch/kibon/build-environment/mvn-npm-gitflow-chromium
             java-image-version: jdk11-old
             maven-goal: --projects .,ebegu-web -Pdvbern.oss -Pci -Pfrontend clean install
             archive-path: ebegu-web/target/*.tar.gz
 
+    # TODO enable nightly arquillian test
     # - component: gitlab.dvbern.ch/components/maven@v2.0.1
     #   rules:
     #     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $CI_PIPELINE_SOURCE == "schedule"
     #   inputs:
     #     java-image: docker-registry.dvbern.ch/kibon/build-environment/mvn-npm-gitflow-chromium
     #     java-image-version: jdk11-old
-    #     maven-goal: -Pdvbern.oss -Pfrontend -Pci -Ptest-wildfly-managed clean install
+    #     maven-goal: -Pdvbern.oss -Pfrontend -Pci -Ptest-wildfly-managed clean verify
 
     # TODO public or private registry? using a private base image and pushing the resulting image to public registry is not supported at the moment
     -   component: 'gitlab.dvbern.ch/mobj/buildah@a7143bb366f9ee8e1ddfd1813acb1649a104cb36'
@@ -55,7 +56,7 @@ include:
             registry: $DVB_DOCKER_REGISTRY
             registry-user: $DVB_DOCKER_REGISTRY_USER
             registry-token: $DVB_DOCKER_REGISTRY_TOKEN
-            name: build-kibon-app-image
+            name: .build-backend-image
             stage: package
             image-name: gitlab-migration/kibon-wildfly # TODO remove prefix
             context-dir: ebegu-rest
@@ -67,7 +68,7 @@ include:
             registry: $DVB_DOCKER_REGISTRY
             registry-user: $DVB_DOCKER_REGISTRY_USER
             registry-token: $DVB_DOCKER_REGISTRY_TOKEN
-            name: build-kibon-web-image
+            name: .build-frontend-image
             stage: package
             image-name: gitlab-migration/kibon-nginx # TODO remove prefix
             context-dir: ebegu-web
@@ -87,3 +88,24 @@ create-build-args:
     artifacts:
         paths:
             - build-args.env
+    needs: []
+
+build-backend-without-arquillian:
+    extends: .build-backend-without-arquillian
+    needs: []
+
+build-frontend:
+    extends: .build-frontend
+    needs: []
+
+build-frontend-image:
+    extends: .build-frontend-image
+    needs:
+        - build-frontend
+        - create-build-args
+
+build-backend-image:
+    extends: .build-backend-image
+    needs:
+        - build-backend-without-arquillian
+        - create-build-args
