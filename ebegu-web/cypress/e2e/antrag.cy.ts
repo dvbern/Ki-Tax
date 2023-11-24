@@ -201,7 +201,7 @@ describe('Kibon - generate Testfälle [Gemeinde Sachbearbeiter]', () => {
             //     const fullPath = path.join(downloadsFolder, fileName);
             //     cy.readFile(fullPath).should('exist');
             //     cy.log('FULL PATH?', fullPath);
-            //     cy.task('deleteDownload', { dirPath: downloadsFolder, fileName });
+            //     cy.task('deleteDownload', { dirPath: downloadsFolder, fileName }, { custom: true });
             //     return cy.readFile(fullPath).should('not.exist');
             // });
 
