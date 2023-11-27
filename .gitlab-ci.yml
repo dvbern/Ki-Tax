@@ -89,6 +89,9 @@ include:
 
 deploy-to-dev:
     extends: .docker-compose-deploy:kibon-dev
+    environment:
+        name: dev
+        url: https://dev.kibon.ch
     rules:
         - if: $CI_COMMIT_BRANCH == "feature/gitlab-pipeline-migration"
           when: manual
