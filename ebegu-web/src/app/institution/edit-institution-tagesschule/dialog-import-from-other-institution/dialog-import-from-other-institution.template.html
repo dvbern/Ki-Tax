@@ -46,6 +46,7 @@
                         id="gesuchsperiode"
                         [(ngModel)]="selectedEinstellungTagesschule"
                         class="form-control"
+                        data-test="institution.tageschule.modul.import.gesuchsperiode"
                         [required]="true">
 
                     <option *ngFor="let einstellungTagesschule of filterEinstellungenTagesschule(selectedInstitutionStammdaten.institutionStammdatenTagesschule.einstellungenTagesschule)"
@@ -66,7 +67,8 @@
 <mat-dialog-actions>
     <div class="dv-dialog-actions">
         <button class="dv-btn" (click)="save()" [textContent]="'IMPORT' | translate"
-                *ngIf="selectedEinstellungTagesschule && institutionStammdatenList.length"></button>
+                *ngIf="selectedEinstellungTagesschule && institutionStammdatenList.length"
+                data-test="institution.tageschule.modul.import.button"></button>
         <button class="dv-btn cancel-button" (click)="close()" [textContent]="'CANCEL' | translate"></button>
     </div>
 </mat-dialog-actions>

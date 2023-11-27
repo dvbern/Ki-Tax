@@ -1,4 +1,5 @@
 import {FixtureCreateTagesschule, FixtureTagesschule} from '@dv-e2e/fixtures';
+import {EbeguUtil} from '../../../src/utils/EbeguUtil';
 
 const createTagesschule = (
     tagesschuleArt: 'dynamisch' | 'scolaris' | 'import',
@@ -7,7 +8,7 @@ const createTagesschule = (
     FixtureCreateTagesschule[dataset](data => {
         cy.getByData('institution.create-tagesschule').click();
         cy.getByData('institution.create-tagesschule.gemeinde-auswaehlen').select(data[tagesschuleArt].gemeinde);
-        cy.getByData('institution.create-tagesschule.institutionsname').type(data[tagesschuleArt].name);
+        cy.getByData('institution.create-tagesschule.institutionsname').type(data[tagesschuleArt].name + '-' + EbeguUtil.generateRandomName(3));
         cy.getByData('institution.create-tagesschule.email-adresse').type(data[tagesschuleArt].email);
         cy.intercept('POST', '**/institutionen?**').as('goingToEdit');
         cy.getByData('institution.create-tagesschule.submit').click();

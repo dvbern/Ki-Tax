@@ -20,6 +20,8 @@ import {ControllEditTagesschulePO, CreateTagesschulePO, EditTagesschulePO} from 
 describe('Kibon - generate Tagesschule Institutionen', () => {
     const gemeindeAdministator = getUser('[6-Admin-Gemeinde] Gerlinde Hofstetter');
 
+    let tagesschuleDynamischName = '';
+
     beforeEach(() => {
         cy.intercept({resourceType: 'xhr'}, {log: false}); // don't log XHRs
         cy.login(gemeindeAdministator);
@@ -34,6 +36,10 @@ describe('Kibon - generate Tagesschule Institutionen', () => {
         ControllEditTagesschulePO.controllEditTagesschuleForm('dynamisch', 'withValid')
 
         cy.getByData('institution.edit.submit').click();
+        cy.getByData('institution.edit.name').invoke('val').then((value) => {
+            this.tagesschuleDynamischName = value;
+        })
+        // Module 1
         cy.getByData('institution.gesuchsperiode-1').find('.dv-accordion-tab-title').click();
         cy.getByData('institution.gesuchsperiode.add.modul-1').click();
         cy.getByData('institution.tageschule.modul.bezeichnungDe').type('Dynamo');
@@ -47,6 +53,7 @@ describe('Kibon - generate Tagesschule Institutionen', () => {
         cy.getByData('institution.tageschule.modul.freitag').find('.mat-checkbox-inner-container').click();
         cy.getByData('institution.tageschule.modul.ok').click();
 
+        // Module 2
         cy.getByData('institution.gesuchsperiode.add.modul-1').click();
         cy.getByData('institution.tageschule.modul.bezeichnungDe').type('Dynamo Nachmittag');
         cy.getByData('institution.tageschule.modul.bezeichnungFr').type('Après-midi dynamique');
@@ -60,7 +67,8 @@ describe('Kibon - generate Tagesschule Institutionen', () => {
         cy.getByData('institution.tageschule.modul.intervall').click();
         cy.getByData('institution.tageschule.modul.intervall.WOECHENTLICH_ODER_ALLE_ZWEI_WOCHEN').click();
         cy.getByData('institution.tageschule.modul.ok').click();
-        // header + 2 Module
+
+        // Check Result: header + 2 Module
         cy.getByData('institution.gesuchsperiode.module.table-1').find('tr').its('length').should('eq', 3);
         cy.intercept('PUT', '**/institutionen/**').as('saveInstitution');
         cy.getByData('institution.edit.submit').click();
@@ -76,13 +84,20 @@ describe('Kibon - generate Tagesschule Institutionen', () => {
 
         ControllEditTagesschulePO.controllEditTagesschuleForm('import', 'withValid')
 
+        // import Module from previously created Tagesschule
         cy.getByData('institution.edit.submit').click();
         cy.getByData('institution.gesuchsperiode-1').find('.dv-accordion-tab-title').click();
-
         cy.getByData('institution.gesuchsperiode.import.modul-1').click();
+        cy.getByData('institution.tageschule.modul.import.institution').select(this.tagesschuleDynamischName);
+        cy.getByData('institution.tageschule.modul.import.gesuchsperiode').select(0);
+        cy.getByData('institution.tageschule.modul.import.button').click();
+        cy.getByData('institution.tageschule.modul.import.button').should('not.exist');
 
-        //cy.getByData('institution.tageschule.modul.import.institution').select('Tagesschule-dynamo-cy');
-
-      //  cy.getByData('institution.tageschule.modul.import.institution-gesuchsperiode').select('option').first();
+        // Check Result: header + 2 Module
+        cy.intercept('PUT', '**/institutionen/**').as('saveInstitution');
+        cy.getByData('institution.edit.submit').click();
+        cy.wait('@saveInstitution');
+        // header + 2 Module
+        cy.getByData('institution.gesuchsperiode.module.table-1').find('tr').its('length').should('eq', 3);
     });
 });

@@ -41,13 +41,14 @@
                 </div>
 
                 <div class="row">
-                    <!-- Anschrift -->
+                    <!-- Name -->
                     <div class="col-sm-6">
                         <div class="form-group">
                             <h3 class="required" translate for="name_id">NAME</h3>
                             <input id="name_id" type="text" name="name_id" #name="ngModel"
                                    [(ngModel)]="stammdaten.institution.name"
                                    [maxlength]="255" class="form-control"
+                                   data-test="institution.edit.name"
                                    required>
                             <dv-error-messages [errorObject]="form.controls.name_id?.errors"
                                                inputId="name_id"></dv-error-messages>
