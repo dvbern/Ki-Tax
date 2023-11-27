@@ -1049,6 +1049,13 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
             .length > 0;
     }
 
+    public resetAnspruchFachstelleWennPensumUnterschritten() {
+        const unterschritten = this.getErweiterteBetreuungJA()?.anspruchFachstelleWennPensumUnterschritten;
+        if (!EbeguUtil.isNullOrUndefined(unterschritten) && unterschritten) {
+            this.getErweiterteBetreuungJA().anspruchFachstelleWennPensumUnterschritten = false;
+        }
+    }
+
     private savePlatzBestaetigung(): void {
         this.getBetreuungModel().datumBestaetigung = DateUtil.today();
         this.save(TSBetreuungsstatus.BESTAETIGT, PENDENZEN_BETREUUNG, undefined);
