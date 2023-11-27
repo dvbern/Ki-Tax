@@ -80,7 +80,7 @@ include:
             name: .docker-compose-deploy
             service-name: 'kibon-dev'
             # TODO: Tag built version with commit sha so we don't rely on latest
-            # version: $CI_COMMIT_SHA
+            version: $VERSION
             version-env-var: 'TAGTOUSE'
             ssh-user: $KIBON_DEPLOY_SSH_USER
             ssh-private-key: $KIBON_SSH_PRIVATE_KEY
