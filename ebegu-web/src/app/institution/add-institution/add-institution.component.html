@@ -39,9 +39,10 @@
                 </div>
                 <div class="row">
                     <div class="col-sm-6">
-                        <div class="form-group">
+                        <div class="form-group" data-test="'container.context' + index">
                             <label class="required" translate for="betreuungsangebot_id">BETREUUNGSANGEBOT</label>
                             <mat-select [(ngModel)]="betreuungsangebot" id="betreuungsangebot_id"
+                                        data-test="betreuungsangebot"
                                         name="betreuungsangebot_id" class="form-control" required>
                                 <mat-option *ngFor="let ba of betreuungsangebote" [value]="ba">{{ba | translate}}
                                 </mat-option>

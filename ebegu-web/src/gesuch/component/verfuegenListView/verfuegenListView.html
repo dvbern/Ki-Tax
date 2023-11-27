@@ -46,6 +46,7 @@
                             </thead>
                             <tbody ng-repeat="kindContainer in displayedCollection">
                             <tr ng-repeat="betreuung in kindContainer.betreuungen" st-select-row="betreuung"
+                                ng-attr-data-test="verfuegung#{{$index}}"
                                 st-select-mode="single"
                                 ng-class="{'disabled-row': !vm.kannVerfuegungOeffnen(betreuung)}"
                                 ng-click="vm.openVerfuegung(kindContainer, betreuung)" role="row" tabindex="-1">
@@ -59,7 +60,7 @@
                                     <span class="betreuung-bar"></span>
                                 </td>
                                 <td ng-show="vm.isSuperAdmin()">
-                                    <span>{{betreuung.gueltig ? 'Ja' : 'Nein'}}</span>
+                                    <span>{{betreuung.gueltig ? 'LABEL_JA' : 'LABEL_NEIN' | translate}}</span>
                                 </td>
                                 <td role="cell" tabindex="-1" ng-click="$event.stopPropagation()" width="5%">
                                     <dv-loading-button input-id="open{{betreuung.id}}"

@@ -29,8 +29,8 @@
         #radio="ngModel"
         [disabled]="readonly"
         [required]="required">
-        <mat-radio-button [value]="true">{{'LABEL_JA' | translate}}</mat-radio-button>
-        <mat-radio-button [value]="false">{{'LABEL_NEIN' | translate}}</mat-radio-button>
+        <mat-radio-button [value]="true" data-test="radio-value.ja">{{'LABEL_JA' | translate}}</mat-radio-button>
+        <mat-radio-button [value]="false" data-test="radio-value.nein">{{'LABEL_NEIN' | translate}}</mat-radio-button>
     </mat-radio-group>
     <div class="margin-bottom-20">
         <dv-bisher-x

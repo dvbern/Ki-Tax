@@ -41,6 +41,7 @@
                                        for="geschlecht"
                                        data-translate="GESCHLECHT"></label>
                                 <dv-radio-container name="geschlecht" class="input-element"
+                                                    aria-label="{{'GESCHLECHT' | translate}}"
                                                     id="geschlecht"
                                                     dv-enable-element
                                                     dv-enable-allowed-roles="vm.allowedRoles"
@@ -63,6 +64,7 @@
                             <dv-input-container class="form-group">
                                 <label class="md-no-float" data-translate="VORNAME" for="vorname_ID"></label>
                                 <input aria-describedby="vorname_ID-error" id="vorname_ID" type="text" name="vorname"
+                                       data-test="vorname"
                                        ng-model="vm.getModel().vorname"
                                        dv-max-length class="form-control" required>
                                 <dv-bisher gs="vm.getContainer().kindGS.vorname"
@@ -76,6 +78,7 @@
                             <dv-input-container class="form-group secondColumn">
                                 <label class="md-no-float" data-translate="NAME" for="name_ID"></label>
                                 <input aria-describedby="name_ID-error"
+                                       data-test="nachname"
                                        id="name_ID"
                                        type="text"
                                        name="name"
@@ -100,6 +103,7 @@
                                 </label>
                                 <dv-datepicker no-future="!(vm.kontingentierungEnabled)"
                                                input-id="geburtsdatum_ID" name="geburtsdatum"
+                                               data-test="geburtsdatum"
                                                ng-model="vm.getModel().geburtsdatum" ng-required="true"
                                                class="input-element"
                                                ng-blur="vm.geburtsdatumChanged()"
@@ -216,7 +220,7 @@
                                            ja="vm.getContainer().kindJA.familienErgaenzendeBetreuung"
                                            show-if-bisher-none="vm.isNotNullOrUndefined(vm.getContainer().kindGS)"></dv-bisher>
                                 <dv-error-messages input-id="familienErgaenzendeBetreuung"
-                                                   for="vm.form.familienErgaenzendeBetreuung.$error"
+                                                       for="vm.form.familienErgaenzendeBetreuung.$error"
                                                    class="error"></dv-error-messages>
                             </div>
                         </div>
@@ -265,6 +269,7 @@
                                     </span>
                                     <div class="dv-select-style">
                                         <select name="einschulungTyp" id="einschulungTyp"
+                                                data-test="einschulung-typ"
                                                 class="form-control"
                                                 aria-describedby="einschulungTyp-error"
                                                 dv-enable-element
@@ -290,6 +295,7 @@
                             <div class="col-xs-12 dv-input-container-question">
                                 <div class="checkbox checkbox-with-margin no-tooltip margin-bottom-4rem">
                                     <md-checkbox ng-model="vm.getModel().keinPlatzInSchulhort"
+                                                 data-test="kein-platz-in-schulhort"
                                                  name="keinPlatzInSchulhort"
                                                  id="keinPlatzInSchulhort"
                                                  aria-label="{{'KEIN_PLATZ_IN_SCHULHORT'|translate}}"
@@ -310,6 +316,7 @@
                                     <div class="checkbox checkbox-with-margin"
                                          ng-show="vm.getModel().familienErgaenzendeBetreuung">
                                         <md-checkbox ng-model="vm.showFachstelle"
+                                                     data-test="show-fachstelle"
                                                      name="showFachstelle"
                                                      id="showFachstelle"
                                                      aria-label="{{'INVOLVIERTE_FACHSTELLE'|translate}}"
@@ -378,6 +385,7 @@
                                 <div class="col-xs-12 dv-input-container-question">
                                     <div class="checkbox checkbox-with-margin">
                                         <md-checkbox ng-model="vm.getModel().ausAsylwesen" name="showAsylwesen"
+                                                     data-test="show-asylwesen"
                                                      id="showAsylwesen"
                                                      aria-label="{{'KIND_AUS_ASYLWESEN'|translate}}"
                                                      ng-change="vm.deleteZemisNummer(vm.getModel())"
@@ -400,6 +408,7 @@
                                             <label class="md-no-float" data-translate="ZEMIS_NUMMER"
                                                    for="zemisNummer"></label>
                                             <input aria-describedby="zemisNummer-error"
+                                                   data-test="zemis-nummer"
                                                    id="zemisNummer" type="text"
                                                    name="zemisNummer"
                                                    ng-model="vm.getModel().zemisNummer"
@@ -416,6 +425,7 @@
                                          ng-if="vm.showKeinSelbstbehaltDurchGemeinde()">
                                         <div class="checkbox checkbox-with-margin">
                                             <md-checkbox ng-model="vm.getContainer().keinSelbstbehaltDurchGemeinde"
+                                                         data-test="kein-selbstbehalt-durch-gemeinde"
                                                          name="keinSelbstbehaltDurchGemeinde"
                                                          id="keinSelbstbehaltDurchGemeinde"
                                                          aria-label="{{'KEIN_SELBSTBEHALT_DURCH_GEMEINDE'|translate}}"
@@ -433,6 +443,7 @@
                                     <div class="checkbox checkbox-with-margin"
                                          ng-show="vm.showAusserordentlicherAnspruchCheckbox()">
                                         <md-checkbox ng-model="vm.showAusserordentlicherAnspruch"
+                                                     data-test="show-ausserordentlicher-anspruch"
                                                      name="showAusserordentlicherAnspruch"
                                                      id="showAusserordentlicherAnspruch"
                                                      aria-label="{{'AUSSERORDENTLICHER_ANSPRUCH'|translate}}"
@@ -457,6 +468,7 @@
                                             <label class="md-no-float" for="begruendung"
                                                    data-translate="AUSSERORDENTLICHER_ANSPRUCH_BEGRUENDUNG"></label>
                                             <textarea md-no-autogrow class="form-control" rows="6" maxlength="4000"
+                                                      data-test="ausserordentlich-begruendung"
                                                       ng-maxlength="3000"
                                                       ng-minlength="5"
                                                       id="begruendung" name="begruendung"
@@ -479,6 +491,7 @@
                                                    data-translate="AUSSERORDENTLICHER_ANSPRUCH_BETREUUNGSPENSUM"
                                                    for="betreuungspensumAusserordentlicherAnspruch"></label>
                                             <input aria-describedby="betreuungspensumAusserordentlicherAnspruch-error"
+                                                   data-test="betreuungspensum-ausserordentlicher-anspruch"
                                                    id="betreuungspensumAusserordentlicherAnspruch" type="number"
                                                    name="betreuungspensumAusserordentlicherAnspruch"
                                                    ng-model="vm.getPensumAusserordentlicherAnspruch().pensum"
@@ -501,6 +514,7 @@
                                             <label class="md-no-float" data-translate="VON"
                                                    for="aussAnspruchDatumAb"></label>
                                             <dv-datepicker input-id="aussAnspruchDatumAb" name="aussAnspruchDatumAb"
+                                                           data-test="auss-anspruch-datum-ab"
                                                            class="input-element"
                                                            ng-model="vm.getPensumAusserordentlicherAnspruch().gueltigkeit.gueltigAb"
                                                            ng-required="vm.isAusserordentlicherAnspruchRequired()"
@@ -516,6 +530,7 @@
                                             <label class="md-no-float" data-translate="BIS" for="aussAnspruchDatumBis">
                                             </label>
                                             <dv-datepicker input-id="aussAnspruchDatumBis" name="aussAnspruchDatumBis"
+                                                           data-test="auss-anspruch-datum-bis"
                                                            class="input-element"
                                                            ng-model="vm.getPensumAusserordentlicherAnspruch().gueltigkeit.gueltigBis"
                                                            ng-required="false"

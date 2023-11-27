@@ -73,7 +73,8 @@
             <!-- Gesuch loeschen -->
             <div dv-show-element
                  dv-show-allowed-roles="vmgs.TSRoleUtil.getGesuchstellerOnlyRoles()"
-                 dv-show-expression="vmgs.showGesuchLoeschen()">
+                 dv-show-expression="vmgs.showGesuchLoeschen()"
+                 data-test="toolbar.delete">
                 <button ng-click="vmgs.gesuchLoeschen()"
                         aria-label="{{'TOOLBAR_LOESCHEN' | translate}}" style="text-align: center;"
                         input-id="{{'gesuchLoeschenButton'}}">
@@ -84,7 +85,8 @@
             <!-- Mutieren -->
             <div dv-show-element
                  dv-show-allowed-roles="vmgs.TSRoleUtil.getGesuchstellerSozialdienstJugendamtSchulamtRoles()"
-                 dv-show-expression="vmgs.showButtonMutieren()">
+                 dv-show-expression="vmgs.showButtonMutieren()"
+                 data-test="toolbar.mutieren">
                 <button ng-click="vmgs.antragMutieren()"
                         aria-label="{{'TOOLBAR_MUTIEREN' | translate}}" style="text-align: center;">
                     <span class="uppercase" data-translate="TOOLBAR_MUTIEREN"></span>
@@ -95,7 +97,8 @@
             <div dv-show-element
                  dv-show-allowed-roles="vmgs.TSRoleUtil.getGesuchstellerJugendamtRoles()">
                 <button id="button" ng-click="vmgs.openAlleVerfuegungen()"
-                        aria-label="{{'TOOLBAR_ALLE_VERFUEGUNGEN' | translate}}" style="text-align: center;">
+                        aria-label="{{'TOOLBAR_ALLE_VERFUEGUNGEN' | translate}}" style="text-align: center;"
+                        data-test="toolbar.alle-verfuegungen">
                     <span class="uppercase" data-translate="TOOLBAR_ALLE_VERFUEGUNGEN"></span>
                 </button>
             </div>
@@ -104,14 +107,16 @@
             <div dv-show-element
                  dv-show-allowed-roles="vmgs.TSRoleUtil.getGesuchstellerJugendamtOtherAmtRoles()">
                 <button ng-click="vmgs.openMitteilungen()"
-                        aria-label="{{'TOOLBAR_MITTEILUNGEN' | translate}}" style="text-align: center;">
+                        aria-label="{{'TOOLBAR_MITTEILUNGEN' | translate}}" style="text-align: center;"
+                        data-test="toolbar.mitteilungen">
                     <span class="uppercase" data-translate="TOOLBAR_MITTEILUNGEN"></span>
                     <span ng-bind="vmgs.getAmountNewMitteilungenGS()"></span>
                 </button>
             </div>
             <!--Kontakt-->
             <div dv-show-element
-                 dv-show-allowed-roles="vmgs.TSRoleUtil.getGesuchstellerJugendamtOtherAmtRoles()">
+                 dv-show-allowed-roles="vmgs.TSRoleUtil.getGesuchstellerJugendamtOtherAmtRoles()"
+                 data-test="toolbar.kontakt">
                 <button ng-click="vmgs.showKontakt()" id="kontaktButton"
                         aria-label="{{'ARIA_KONTAKT_MENU' | translate}}">
                     <i class="ellipsis-icon font-size-2 fa fa-question-circle"></i>

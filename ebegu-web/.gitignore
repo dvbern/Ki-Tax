@@ -8,3 +8,4 @@ npm-debug.log
 .cache-loader
 src/environments/version.ts
 /debug.log
+runner-results/
