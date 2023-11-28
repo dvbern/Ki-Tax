@@ -18,17 +18,29 @@
 import {TestFaellePO} from '@dv-e2e/page-objects';
 import { getUser } from '@dv-e2e/types';
 
-describe('Kibon - generate Testfälle [Superadmin]', () => {
+describe('Kibon - Tagesschule Only [Superadmin]', () => {
     const adminUser = getUser('[1-Superadmin] E-BEGU Superuser');
 
     beforeEach(() => {
-        cy.intercept({ resourceType: 'xhr' }, { log: false }); // don't log XHRs
+        cy.intercept({resourceType: 'xhr'}, {log: false}); // don't log XHRs
         cy.login(adminUser);
         cy.visit('/#/faelle');
     });
 
     it('should create a prefilled new Testfall Antrag', () => {
-        TestFaellePO.createNewTestFaelle('testfall-2', 'gemeinde.London') ;
-    });
-});
+        TestFaellePO.createNewTestFaelle('testfall-2', 'gemeinde.Paris') ;
 
+        cy.getByData('sidenav.BETREUUNG').click();
+        // delete other betreuung nur lats
+        cy.getByData('removeBetreuungButton1_0','navigation-button').click();
+        cy.getByData('container.confirm','navigation-button').click();
+        cy.getByData('removeBetreuungButton2_0', 'navigation-button').click();
+        cy.getByData('container.confirm','navigation-button').click();
+        cy.getByData('container.create-betreuung','navigation-button').click();
+
+        //choose Tagesschule and random select 2 modules
+
+        //save akkzeptier abschliessen
+    });
+
+});

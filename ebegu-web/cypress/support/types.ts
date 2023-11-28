@@ -21,3 +21,5 @@ export const getUser = (user: Users): Users => {
 }
 
 export type TestFall = 'testfall-1' | 'testfall-2';
+
+export type GemeindeTestFall = 'gemeinde.London' | 'gemeinde.Paris';
