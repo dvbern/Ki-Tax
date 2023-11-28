@@ -96,13 +96,11 @@ include:
         inputs:
             name: .docker-compose-deploy
             service-name: $SERVICE_NAME
-            # TODO: Tag built version with commit sha so we don't rely on latest
             version: $VERSION
             version-env-var: 'TAGTOUSE'
             ssh-user: $KIBON_DEPLOY_SSH_USER
             ssh-private-key: $KIBON_SSH_PRIVATE_KEY
             ssh-target: '$SSH_HOST'
-            # environment: $DEPLOY_ENV
 
 deploy:
     extends: .docker-compose-deploy:$SERVICE_NAME
