@@ -91,7 +91,7 @@ include:
     -   component: 'gitlab.dvbern.ch/fuju/docker-compose-deploy@main'
         inputs:
             name: .docker-compose-deploy
-            service-name: kibon-dev
+            service-name: $SERVICE_NAME
             # TODO: Tag built version with commit sha so we don't rely on latest
             version: $VERSION
             version-env-var: 'TAGTOUSE'
@@ -106,7 +106,7 @@ deploy-to-dev:
         name: dev
         url: https://dev.kibon.ch
     rules:
-        - if: $CI_COMMIT_BRANCH == "feature/gitlab-pipeline-migration"
+        - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
           when: manual
 
 deploy-to-dev-preview:
