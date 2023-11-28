@@ -1,7 +1,7 @@
 import {getUser} from "@dv-e2e/types";
 import {visit} from "jsonc-parser";
 
-describe('beschreibung', () => {
+describe('Kibon - generate Testfälle [Gemeinde Sachbearbeiter]', () => {
     const userSB = getUser('[3-SB-Institution-Kita-Brünnen] Sophie Bergmann');
     const adminUser = getUser('[1-Superadmin] E-BEGU Superuser');
     const monatlichesPensum = '60';
