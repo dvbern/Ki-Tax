@@ -8,8 +8,8 @@ variables:
 workflow:
     rules:
         # Commit on dev branch
-        -   if: $CI_COMMIT_BRANCH == "feature/gitlab-pipeline-migration" # TODO switch to default branch when migrating
-        # -   if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+        # -   if: $CI_COMMIT_BRANCH == "feature/gitlab-pipeline-migration" # TODO switch to default branch when migrating
+        -   if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
             variables:
                 VERSION: $CI_COMMIT_SHA
                 SERVICE_NAME: kibon-dev
