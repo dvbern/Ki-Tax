@@ -4,6 +4,11 @@ describe('Kibon - Test Mitteilungen', () => {
     const userGS = 'Michael-Berger';
     let gesuchUrl: string;
 
+    const subjectGS: string = 'Frage Gutschein';
+    const inhaltGS: string = 'Wieso wurde der Gutschein gekürzt?';
+    const subjectSB: string = 'Antwort Gutschein';
+    const inhaltSB: string = 'Guten Tag, der Gutschein wurde nicht gekürzt.';
+
     before(() => {
         cy.resetViewport();
         cy.intercept({ resourceType: 'xhr' }, { log: false }); // don't log XHRs
@@ -42,8 +47,9 @@ describe('Kibon - Test Mitteilungen', () => {
 
         cy.getByData('mobile-menu-button').click();
         cy.getByData('menu.mitteilungen').click();
-        cy.getByData('subject').type('Mitteilung GS - 1');
-        cy.getByData('nachricht').type('Irgend ein Inhalt');
+
+        cy.getByData('subject').type(subjectGS);
+        cy.getByData('nachricht').type(inhaltGS);
         cy.getByData('container.senden', 'navigation-button').click();
         cy.resetViewport();
     });
@@ -62,13 +68,13 @@ describe('Kibon - Test Mitteilungen', () => {
 
         cy.getByData('mitteilung#0').click();
 
-        cy.getByData('container.mitteilung#0', 'nachricht-subject').should('include.text', 'Mitteilung GS - 1');
+        cy.getByData('container.mitteilung#0', 'nachricht-subject').should('include.text', subjectGS);
         cy.getByData('container.mitteilung#0').click();
-        cy.getByData('container.mitteilung#0', 'nachricht-inhalt').should('include.text', 'Irgend ein Inhalt');
+        cy.getByData('container.mitteilung#0', 'nachricht-inhalt').should('include.text', inhaltGS);
 
         cy.getByData('empfaenger').select('Antragsteller/in');
-        cy.getByData('subject').type('Mitteilung SB - 1');
-        cy.getByData('nachricht').type('Irgend ein anderer Inhalt');
+        cy.getByData('subject').type(subjectSB);
+        cy.getByData('nachricht').type(inhaltSB);
         cy.getByData('container.senden', 'navigation-button').click();
     });
 
@@ -84,9 +90,9 @@ describe('Kibon - Test Mitteilungen', () => {
         cy.getByData('menu.mitteilungen').should('include.text', '(1)');
         cy.getByData('menu.mitteilungen').click();
 
-        cy.getByData('container.mitteilung#0', 'nachricht-subject').should('include.text', 'Mitteilung SB - 1');
+        cy.getByData('container.mitteilung#0', 'nachricht-subject').should('include.text', subjectSB);
         cy.getByData('container.mitteilung#0').click();
-        cy.getByData('container.mitteilung#0', 'nachricht-inhalt').should('include.text', 'Irgend ein anderer Inhalt');
+        cy.getByData('container.mitteilung#0', 'nachricht-inhalt').should('include.text', inhaltSB);
         cy.resetViewport();
     });
 });
