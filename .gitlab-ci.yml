@@ -7,14 +7,27 @@ variables:
 
 workflow:
     rules:
-        -   if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+        # Commit on dev branch
+        -   if: $CI_COMMIT_BRANCH == "feature/gitlab-pipeline-migration" # TODO switch to default branch when migrating
+        # -   if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
             variables:
                 VERSION: $CI_COMMIT_SHA
-                MAVEN_GOAL: deploy
-        -   if: $CI_MERGE_REQUEST_ID || '$CI_PIPELINE_SOURCE == "merge_request_event"'
+                SERVICE_NAME: kibon-dev
+                SSH_HOST: sdvbvmkiba31.dvbern.ch
+                MAVEN_GOAL: install
+        # merge request
+        # -   if: $CI_MERGE_REQUEST_ID || '$CI_PIPELINE_SOURCE == "merge_request_event"'
+        #     variables:
+        #         VERSION: $CI_COMMIT_REF_SLUG
+        #         MAVEN_GOAL: install
+        # feature/... merge request
+        -   if: $CI_MERGE_REQUEST_ID && $CI_MERGE_REQUEST_SOURCE_BRANCH_NAME =~ /^feature/
             variables:
                 VERSION: $CI_COMMIT_REF_SLUG
-                MAVEN_GOAL: install
+                SERVICE_NAME: kibon-dev-preview
+                SSH_HOST: sdvbvmkiba31.dvbern.ch
+                MAVE_GOAL: install
+        # Release
         -   if: $RELEASE_VERSION != ""
             variables:
                 VERSION: $RELEASE_VERSION
@@ -78,14 +91,14 @@ include:
     -   component: 'gitlab.dvbern.ch/fuju/docker-compose-deploy@main'
         inputs:
             name: .docker-compose-deploy
-            service-name: 'kibon-dev'
+            service-name: kibon-dev
             # TODO: Tag built version with commit sha so we don't rely on latest
             version: $VERSION
             version-env-var: 'TAGTOUSE'
             ssh-user: $KIBON_DEPLOY_SSH_USER
             ssh-private-key: $KIBON_SSH_PRIVATE_KEY
-            ssh-target: 'sdvbvmkiba31.dvbern.ch'
-            environment: dev
+            ssh-target: '$SSH_HOST'
+            # environment: $DEPLOY_ENV
 
 deploy-to-dev:
     extends: .docker-compose-deploy:kibon-dev
@@ -94,6 +107,15 @@ deploy-to-dev:
         url: https://dev.kibon.ch
     rules:
         - if: $CI_COMMIT_BRANCH == "feature/gitlab-pipeline-migration"
+          when: manual
+
+deploy-to-dev-preview:
+    extends: .docker-compose-deploy:kibon-dev-preview
+    environment:
+        name: dev-preview
+        url: https://dev-preview.kibon.ch
+    rules:
+        - if: $CI_MERGE_REQUEST_SOURCE_BRANCH_NAME =~ /^feature/
           when: manual
 
 create-build-args:
