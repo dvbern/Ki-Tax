@@ -73,11 +73,11 @@
             <!-- Gesuch loeschen -->
             <div dv-show-element
                  dv-show-allowed-roles="vmgs.TSRoleUtil.getGesuchstellerOnlyRoles()"
-                 dv-show-expression="vmgs.showGesuchLoeschen()"
-                 data-test="toolbar.delete">
+                 dv-show-expression="vmgs.showGesuchLoeschen()">
                 <button ng-click="vmgs.gesuchLoeschen()"
                         aria-label="{{'TOOLBAR_LOESCHEN' | translate}}" style="text-align: center;"
-                        input-id="{{'gesuchLoeschenButton'}}">
+                        input-id="{{'gesuchLoeschenButton'}}"
+                        data-test="toolbar.delete">
                     <span class="uppercase" data-translate="TOOLBAR_LOESCHEN"></span>
                 </button>
             </div>
@@ -85,10 +85,10 @@
             <!-- Mutieren -->
             <div dv-show-element
                  dv-show-allowed-roles="vmgs.TSRoleUtil.getGesuchstellerSozialdienstJugendamtSchulamtRoles()"
-                 dv-show-expression="vmgs.showButtonMutieren()"
-                 data-test="toolbar.mutieren">
+                 dv-show-expression="vmgs.showButtonMutieren()">
                 <button ng-click="vmgs.antragMutieren()"
-                        aria-label="{{'TOOLBAR_MUTIEREN' | translate}}" style="text-align: center;">
+                        aria-label="{{'TOOLBAR_MUTIEREN' | translate}}" style="text-align: center;"
+                        data-test="toolbar.mutieren">
                     <span class="uppercase" data-translate="TOOLBAR_MUTIEREN"></span>
                 </button>
             </div>
@@ -115,10 +115,10 @@
             </div>
             <!--Kontakt-->
             <div dv-show-element
-                 dv-show-allowed-roles="vmgs.TSRoleUtil.getGesuchstellerJugendamtOtherAmtRoles()"
-                 data-test="toolbar.kontakt">
+                 dv-show-allowed-roles="vmgs.TSRoleUtil.getGesuchstellerJugendamtOtherAmtRoles()">
                 <button ng-click="vmgs.showKontakt()" id="kontaktButton"
-                        aria-label="{{'ARIA_KONTAKT_MENU' | translate}}">
+                        aria-label="{{'ARIA_KONTAKT_MENU' | translate}}"
+                        data-test="toolbar.kontakt">
                     <i class="ellipsis-icon font-size-2 fa fa-question-circle"></i>
                     <span class="uppercase"  data-translate="TOOLBAR_KONTAKT"></span>
                 </button>

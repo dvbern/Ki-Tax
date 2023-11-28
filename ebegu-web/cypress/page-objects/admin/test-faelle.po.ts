@@ -15,20 +15,22 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { FixturePapierAntrag } from '@dv-e2e/fixtures';
+import {TestFall} from '@dv-e2e/types';
 
-const createPapierGesuch = (dataset: keyof typeof FixturePapierAntrag) => {
-    cy.getByData('fall-eroeffnen').click();
-    FixturePapierAntrag[dataset]((data) => {
-        cy.getByData('fall-creation-eingangsdatum').find('input').type(data.fallCreationEingangsdatum);
-    });
-    cy.getByData('gesuchsperioden.2022/23').find('label').click();
-    cy.intercept('POST', '**/gesuche');
-    cy.intercept('GET', '**/PAPIERGESUCH').as('getPapierGesuch');
-    cy.getByData('container.navigation-save', 'navigation-button').click();
-    cy.wait('@getPapierGesuch');
+const createNewTestFaelle = (testFall: TestFall) => {
+    cy.getByData('page-title').contains('Alle Fälle');
+    cy.getByData('page-menu').click();
+    cy.getByData('action-admin.testdaten').click();
+    cy.getByData('gemeinde').click();
+    cy.getByData('gemeinde.London').click();
+    cy.getByData('periode').click();
+    cy.getByData('periode.2022/23').click();
+    cy.getByData('creationType.warten').find('label').click();
+    cy.getByData(testFall).click();
+    cy.get('[data-test="dialog-link"]', {timeout: 20000}).click();
+    cy.getByData('fall-creation-eingangsdatum').find('input').should('have.value', '15.2.2016');
 };
 
-export const AntragPapierPO = {
-    createPapierGesuch,
-};
+export const TestFaellePO = {
+    createNewTestFaelle,
+}
