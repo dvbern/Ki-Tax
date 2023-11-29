@@ -33,7 +33,6 @@ const fillFamiliensituationForm = (dataset: keyof typeof FixtureFamSit) => {
         cy.getByData('container.wohn', 'adressePlz').type(GS1.adressePlz);
         cy.getByData('container.wohn', 'adresseOrt').type(GS1.adresseOrt);
         cy.getByData('container.navigation-save', 'navigation-button').click();
-        cy.wait(2000);
         cy.getByData('gesuchformular-title').should('include.text', '2');
         cy.getByData(`geschlecht.radio-value.${GS2.geschlecht}`).click();
         cy.getByData('vorname').type(GS2.vorname);

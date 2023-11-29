@@ -18,6 +18,7 @@
 /// <reference types="cypress" />
 
 import { OnlyValidSelectors, User } from '@dv-e2e/types';
+import { Method } from 'cypress/types/net-stubbing';
 
 declare global {
     namespace Cypress {
@@ -64,6 +65,41 @@ declare global {
             getByData<T extends string>(name: OnlyValidSelectors<T>, ...nestedNames: OnlyValidSelectors<T>[]): Chainable<Subject>;
 
             resetViewport(): Chainable<Subject>;
+
+            /**
+             * Group logs from a part of a test
+             *
+             * @example
+             * cy.groupBy('Resultate', () => {
+             *   cy.getByData('page-title').should('include.text', gesuchsPeriode.anfang);
+             *   EinkommensverschlechterungPO.fillResultateForm('withValid', 'jahr1');
+             *   clickSave();
+             *
+             *   cy.getByData('page-title').should('include.text', gesuchsPeriode.ende);
+             *   EinkommensverschlechterungPO.fillResultateForm('withValid', 'jahr2');
+             *
+             *   // The logs of the commands above will be written within a collapsible group in the cypress log
+             * });
+             *
+             */
+            groupBy<T>(context: string, run: () => T): Chainable<Subject>;
+
+            /**
+             * An abstraction for `cy.intercept` with the additional benefit that the intercept tracks the given request only 1 time
+             *
+             * @example
+             * cy.waitForRequest('POST', '**‍/einkommensverschlechterung/calculateTemp/1', () => {
+             *   cy.getByData('container.navigation-save', 'navigation-button').click();
+             * });
+             * // Equals
+             * cy.intercept('POST', '**‍/einkommensverschlechterung/calculateTemp/1').as('...');
+             * cy.getByData('container.navigation-save', 'navigation-button').click();
+             * cy.wait('...')
+             *
+             * // More specifically it equals to
+             * cy.intercept({ pathname: '**‍/einkommensverschlechterung/calculateTemp/1', method: 'POST', times: 1 }).as('...');
+             */
+            waitForRequest<T>(method: Method, urlPart: string, run: () => T): Chainable<T>;
         }
     }
 }
@@ -77,14 +113,14 @@ Cypress.Commands.add('login', (user: User) => {
             cy.intercept({ pathname: '**/auth/authenticated-user', method: 'GET', times: 1 }).as('authCall');
             cy.visit('/#/locallogin');
             cy.get(`[data-test="test-user-${userSelector}"]`).click();
-            cy.wait('@authCall');
+            cy.wait('@authCall', { timeout: 3000 });
         },
         {
             validate: () => {
                 cy.intercept({ pathname: '**/auth/authenticated-user', method: 'GET', times: 1 }).as('authCallValidation');
                 cy.visit('/#/');
                 cy.reload();
-                cy.wait('@authCallValidation')
+                cy.wait('@authCallValidation', { timeout: 3000 })
                     .its('response.body')
                     .then((response) => {
                         expect(`${response.vorname}-${response.nachname}`).eq(userSelector);
@@ -92,6 +128,18 @@ Cypress.Commands.add('login', (user: User) => {
             },
         }
     );
+});
+Cypress.Commands.add('groupBy', (context, run) => {
+    Cypress.log({ message: context, displayName: 'Group:' });
+    return cy.get('body', { log: false }).within(() => {
+        run();
+    });
+});
+Cypress.Commands.add('waitForRequest', (method, pathname, run) => {
+    const alias = `Request ${method} ${pathname}`;
+    cy.intercept({ method, pathname, times: 1 }).as(alias);
+    run();
+    cy.wait(`@${alias}`);
 });
 Cypress.Commands.add('getByData', (name, ...names) => {
     return cy.get([name, ...names].map((name) => `[data-test="${name}"]`).join(' '));
@@ -106,10 +154,10 @@ Cypress.Commands.add('changeLogin', (user: User) => {
     cy.login(user);
 });
 Cypress.Commands.add('resetViewport', () => {
-   const width = Cypress.config('viewportWidth');
-   const height = Cypress.config('viewportHeight');
+    const width = Cypress.config('viewportWidth');
+    const height = Cypress.config('viewportHeight');
 
-   cy.viewport(width, height);
+    cy.viewport(width, height);
 });
 Cypress.Commands.add('closeMaterialOverlay', () => {
     cy.log('Closing material dialog/overlay');

@@ -49,6 +49,7 @@ const rootInteractionElements = [
     'dv-datepicker',
     'dv-date-picker-x',
     'dv-valueinput',
+    'dv-valueinput-x',
 ] as const;
 const elementsWithSuffixSelector: [
     (typeof rootInteractionElements)[number],
@@ -58,6 +59,7 @@ const elementsWithSuffixSelector: [
     ['dv-datepicker', 'input'],
     ['dv-date-picker-x', 'input'],
     ['dv-valueinput', 'input'],
+    ['dv-valueinput-x', 'input'],
     ['md-autocomplete', 'input'],
     ['mat-radio-button', 'label'],
 ];

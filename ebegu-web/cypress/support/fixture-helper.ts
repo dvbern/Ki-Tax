@@ -17,6 +17,7 @@
 
 import type * as Beschaeftigungspensum from '../fixtures/antrag/beschaeftigungspensum.json';
 import type * as Betreuung from '../fixtures/antrag/betreuung.json';
+import type * as Einkommensverschlechterung from '../fixtures/antrag/einkommensverschlechterung.json';
 import type * as Kind from '../fixtures/antrag/kind.json';
 import type * as FamSit from '../fixtures/antrag/famsit.json';
 import type * as FinSit from '../fixtures/antrag/finsit.json';
@@ -44,11 +45,13 @@ export const FixtureFamSit = {
 };
 
 export const FixtureFinSit = {
-    // withValid: <T>(fn: (data: (typeof FinSit)['valid']) => T) => cy.fixture('antrag/finsit.json').then((data: typeof FinSit) => fn(data.valid)),
     withValid: fromFixture<typeof FinSit>('antrag/finsit.json', 'valid'),
 };
 
 export const FixturePapierAntrag = {
-    // withValid: <T>(fn: (data: (typeof Papier)['valid']) => T) => cy.fixture('antrag/papier.json').then((data: typeof Papier) => fn(data.valid)),
     withValid: fromFixture<typeof Papier>('antrag/papier.json', 'valid'),
 };
+
+export const FixtureEinkommensverschlechterung = {
+    withValid: fromFixture<typeof Einkommensverschlechterung>('antrag/einkommensverschlechterung.json', 'valid'),
+}

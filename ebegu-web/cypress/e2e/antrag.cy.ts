@@ -239,7 +239,7 @@ describe('Kibon - generate Testfälle [Gemeinde Sachbearbeiter]', () => {
             cy.getByData('sidenav.BETREUUNG').click();
             cy.wait(`@goingToBetreuungWith${userKita}`);
 
-            cy.getByData('betreuung#0').click();
+            cy.getByData('container.betreuung#0').click();
 
             cy.getByData('betreuungspensum-0').type('25');
             cy.getByData('monatliche-betreuungskosten#0').type('1000');

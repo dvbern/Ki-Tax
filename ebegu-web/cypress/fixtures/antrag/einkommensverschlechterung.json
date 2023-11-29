@@ -1,0 +1,68 @@
+{
+    "valid": {
+        "jahr1": {
+            "GS1": {
+                "nettolohn": "55000",
+                "familienzulage": "4000",
+                "ersatzeinkommen":  "0",
+                "erhalteneAlimente": "0",
+                "bruttoertraegeVermoegen":  "0",
+                "nettoertraegeErbengemeinschaften": "0",
+                "einkommenInVereinfachtemVerfahrenAbgerechnet": "nein",
+                "geleisteteAlimente":  "0",
+                "abzugSchuldzinsen": "0",
+                "gewinnungskosten":  "0"
+            },
+            "GS2": {
+                "nettolohn": "20000",
+                "familienzulage": "0",
+                "ersatzeinkommen":  "0",
+                "erhalteneAlimente": "0",
+                "bruttoertraegeVermoegen":  "0",
+                "nettoertraegeErbengemeinschaften": "0",
+                "einkommenInVereinfachtemVerfahrenAbgerechnet": "nein",
+                "geleisteteAlimente":  "0",
+                "abzugSchuldzinsen": "0",
+                "gewinnungskosten":  "0"
+            },
+            "Resultate": {
+                "bruttovermoegen1": "20000",
+                "bruttovermoegen2":"5000",
+                "schulden1": "0",
+                "schulden2": "0"
+            }
+        },
+        "jahr2": {
+            "GS1": {
+                "nettolohn": "50000",
+                "familienzulage": "4000",
+                "ersatzeinkommen":  "0",
+                "erhalteneAlimente": "0",
+                "bruttoertraegeVermoegen":  "0",
+                "nettoertraegeErbengemeinschaften": "0",
+                "einkommenInVereinfachtemVerfahrenAbgerechnet": "nein",
+                "geleisteteAlimente":  "0",
+                "abzugSchuldzinsen": "0",
+                "gewinnungskosten":  "0"
+            },
+            "GS2": {
+                "nettolohn": "20000",
+                "familienzulage": "0",
+                "ersatzeinkommen":  "0",
+                "erhalteneAlimente": "0",
+                "bruttoertraegeVermoegen":  "0",
+                "nettoertraegeErbengemeinschaften": "0",
+                "einkommenInVereinfachtemVerfahrenAbgerechnet": "nein",
+                "geleisteteAlimente":  "0",
+                "abzugSchuldzinsen": "0",
+                "gewinnungskosten":  "0"
+            },
+            "Resultate": {
+                "bruttovermoegen1": "15000",
+                "bruttovermoegen2":"0000",
+                "schulden1": "0",
+                "schulden2": "2000"
+            }
+        }
+    }
+}
