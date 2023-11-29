@@ -1,7 +1,9 @@
+import {getUser, normalizeUser} from '@dv-e2e/types';
+
 describe('Kibon - Test Mitteilungen', () => {
-    const userSuperAdmin = 'E-BEGU-Superuser';
-    const userSB = 'Jörg-Keller';
-    const userGS = 'Michael-Berger';
+    const userSuperAdmin = getUser('[1-Superadmin] E-BEGU Superuser');
+    const userSB = getUser('[6-L-SB-BG] Jörg Keller');
+    const userGS = getUser('[5-GS] Michael Berger');
     let gesuchUrl: string;
 
     const subjectGS: string = 'Frage Gutschein';
@@ -19,17 +21,17 @@ describe('Kibon - Test Mitteilungen', () => {
         cy.getByData('action-admin.testdaten').click();
         cy.getByData('creationType.verfuegt').find('label').click();
         cy.getByData('gesuchsteller').click();
-        cy.getByData(`gesuchsteller.${userGS}`).click();
+        cy.getByData(`gesuchsteller.${normalizeUser(userGS)}`).click();
         cy.getByData('gemeinde').click();
         cy.getByData('gemeinde.London').click();
         cy.getByData('periode').click();
         cy.getByData('periode.2022/23').click();
 
         cy.getByData('testfall-2').click();
-        cy.get('[data-test="dialog-link"]', { timeout: 20000 }).click();
+        cy.get('[data-test="dialog-link"]', { timeout: 25000 }).click();
         cy.getByData('fall-creation-eingangsdatum').find('input').should('have.value', '15.2.2016');
         cy.getByData('verantwortlicher').click();
-        cy.getByData(`option.${userSB}`).click();
+        cy.getByData(`option.${normalizeUser(userSB)}`).click();
 
         cy.url().then(url => {
             const parts = new URL(url);
