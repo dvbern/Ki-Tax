@@ -271,7 +271,7 @@
                     </label>
 
                     <mat-select [(ngModel)]="selectedBesitzer" id="gesuchsteller" name="gesuchsteller"
-                                class="input-testfall" data-test="gesuchsteller">
+                                class="input-testfall" data-test="gesuchsteller-faelle-loeschen">
                         <mat-option *ngFor="let gp of gesuchstellerList" [value]="gp"
                                     [attr.data-test]="'gesuchsteller.' + gp.getFullName()">
                             {{gp.getFullName()}}
