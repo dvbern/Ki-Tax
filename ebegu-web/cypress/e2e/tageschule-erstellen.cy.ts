@@ -37,7 +37,7 @@ describe('Kibon - generate Tagesschule Institutionen', () => {
 
         cy.getByData('institution.edit.submit').click();
         cy.getByData('institution.edit.name').invoke('val').then((value) => {
-            this.tagesschuleDynamischName = value;
+            tagesschuleDynamischName = value;
         })
         // Module 1
         cy.getByData('institution.gesuchsperiode-1').find('.dv-accordion-tab-title').click();
@@ -88,7 +88,7 @@ describe('Kibon - generate Tagesschule Institutionen', () => {
         cy.getByData('institution.edit.submit').click();
         cy.getByData('institution.gesuchsperiode-1').find('.dv-accordion-tab-title').click();
         cy.getByData('institution.gesuchsperiode.import.modul-1').click();
-        cy.getByData('institution.tageschule.modul.import.institution').select(this.tagesschuleDynamischName);
+        cy.getByData('institution.tageschule.modul.import.institution').select(tagesschuleDynamischName);
         cy.getByData('institution.tageschule.modul.import.gesuchsperiode').select(0);
         cy.getByData('institution.tageschule.modul.import.button').click();
         cy.getByData('institution.tageschule.modul.import.button').should('not.exist');
