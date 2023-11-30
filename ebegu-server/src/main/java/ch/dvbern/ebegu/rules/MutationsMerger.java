@@ -111,10 +111,6 @@ public final class MutationsMerger extends AbstractAbschlussRule {
 								vorgaengerZeitabschnittVerfugegungAusbezahlt :
 								vorangehenderAbschnitt);
 
-				if (platz.isAngebotSchulamt() && platz.hasVorgaenger() && inputAsiv.isZuSpaetEingereicht()) {
-					inputAsiv.setZuSpaetEingereicht(vorangehenderAbschnitt.isZuSpaetEingereicht());
-				}
-
 				BGCalculationInput inputGemeinde = verfuegungZeitabschnitt.getBgCalculationInputGemeinde();
 				BGCalculationResult resultGemeindeVorangehenderAbschnitt = vorangehenderAbschnitt.getBgCalculationResultGemeinde();
 
@@ -169,6 +165,9 @@ public final class MutationsMerger extends AbstractAbschlussRule {
 		handleFinanzielleSituation(inputAktuel, resultVorgaenger, platz, mutationsEingansdatum);
 		handleAnpassungErweiterteBeduerfnisse(inputAktuel, resultVorgaenger, mutationsEingansdatum);
 		handleEinreichfrist(inputAktuel, mutationsEingansdatum);
+		if (platz.isAngebotSchulamt() && platz.hasVorgaenger() && inputAktuel.isZuSpaetEingereicht()) {
+			inputAktuel.setZuSpaetEingereicht(resultVorgaenger.isZuSpaetEingereicht());
+		}
 	}
 
 	private void handleFinanzielleSituation(
