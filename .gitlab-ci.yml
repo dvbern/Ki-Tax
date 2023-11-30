@@ -3,6 +3,7 @@ stages: [ build, prepare-package, package, release, deploy, mirror ]
 
 variables:
     RELEASE_TO:
+        value: "uat"
         options:
             - "uat"
             - "prod"
@@ -41,12 +42,12 @@ workflow:
                 VERSION: $RELEASE_VERSION
                 DEPLOY_ENV: $RELEASE_TO
                 MAVEN_GOAL: install
-        -   if: $RELEASE_VERSION != "" && $RELEASE_TO = "uat"
+        -   if: $RELEASE_TO == "uat"
             variables:
                 SERVICE_NAME: TODO
                 SSH_HOST: TODO
                 DEPLOY_URL: TODO
-        -   if: $RELEASE_VERSION != "" && $RELEASE_TO = "prod"
+        -   if: $RELEASE_TO == "prod"
             variables:
                 SERVICE_NAME: TODO
                 SSH_HOST: TODO
