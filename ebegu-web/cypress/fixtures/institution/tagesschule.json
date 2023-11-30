@@ -1,21 +1,4 @@
 {
-    "create-valid": {
-        "dynamisch": {
-            "gemeinde": "Paris",
-            "name": "Tagesschule-dynamo-cy",
-            "email": "tagesschule-dynamo-cy@mailbucket.dvbern.ch"
-        },
-        "scolaris": {
-            "gemeinde": "Paris",
-            "name": "Tagesschule-scolaris-cy",
-            "email": "tagesschule-scolaris-cy@mailbucket.dvbern.ch"
-        },
-        "import": {
-            "gemeinde": "Paris",
-            "name": "Tagesschule-import-cy",
-            "email": "tagesschule-import-cy@mailbucket.dvbern.ch"
-        }
-    },
     "valid": {
         "dynamisch": {
             "anschrift": "Tagesschule-dynamo-cy",
