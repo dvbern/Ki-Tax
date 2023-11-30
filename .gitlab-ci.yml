@@ -14,20 +14,14 @@ variables:
 workflow:
     rules:
         # Commit on dev branch
-        # -   if: $CI_COMMIT_BRANCH == "feature/gitlab-pipeline-migration" # TODO switch to default branch when migrating
         -   if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
             variables:
                 VERSION: $CI_COMMIT_SHA
                 SERVICE_NAME: kibon-dev
                 SSH_HOST: sdvbvmkiba31.dvbern.ch
                 DEPLOY_ENV: dev
-                DEPLOY_URL: dev.kibon.ch
+                DEPLOY_URL: https://dev.kibon.ch
                 MAVEN_GOAL: install
-        # merge request
-        # -   if: $CI_MERGE_REQUEST_ID || '$CI_PIPELINE_SOURCE == "merge_request_event"'
-        #     variables:
-        #         VERSION: $CI_COMMIT_REF_SLUG
-        #         MAVEN_GOAL: install
         # feature/... merge request
         -   if: $CI_MERGE_REQUEST_ID && $CI_MERGE_REQUEST_SOURCE_BRANCH_NAME =~ /^feature/
             variables:
@@ -35,7 +29,7 @@ workflow:
                 SERVICE_NAME: kibon-dev-preview
                 SSH_HOST: sdvbvmkiba31.dvbern.ch
                 DEPLOY_ENV: preview
-                DEPLOY_URL: dev-preview.kibon.ch
+                DEPLOY_URL: https://dev-preview.kibon.ch
                 MAVEN_GOAL: install
         # Release
         -   if: $RELEASE_VERSION != ""
@@ -47,17 +41,15 @@ workflow:
             variables:
                 SERVICE_NAME: kibon-uat
                 SSH_HOST: sdvbvmkiba21.dvbern.ch sdvbvmkiba22.dvbern.ch
-                DEPLOY_URL: TODO
+                DEPLOY_URL: https://uat.kibon.ch
         -   if: $RELEASE_TO == "prod"
             variables:
-                SERVICE_NAME: TODO
-                SSH_HOST: TODO1 TODO2
-                DEPLOY_URL: TODO
+                SERVICE_NAME: kibon
+                SSH_HOST: sdvbvmkiba01.dvbern.ch sdvbvmkiba02.dvbern.ch
+                DEPLOY_URL: https://kibon.ch
 
 include:
     -   component: gitlab.dvbern.ch/mobj/maven@89ec140318641f5a453983b8c04454bd6b1932b8
-        #rules:
-        #  - if: $CI_COMMIT_BRANCH == "feature/gitlab-pipeline-migration" && $CI_PIPELINE_SOURCE != "schedule"
         inputs:
             name: .build-backend-without-arquillian
             java-image: docker-registry.dvbern.ch/kibon/build-environment/mvn-npm-gitflow-chromium
@@ -66,8 +58,6 @@ include:
             archive-path: ebegu-rest/target # we need ebegu-rest WAR, sentry JAR and belogin-connector WAR
 
     -   component: gitlab.dvbern.ch/mobj/maven@89ec140318641f5a453983b8c04454bd6b1932b8
-        #rules:
-        #  - if: $CI_COMMIT_BRANCH == "feature/gitlab-pipeline-migration" && $CI_PIPELINE_SOURCE != "schedule"
         inputs:
             name: .build-frontend
             java-image: docker-registry.dvbern.ch/kibon/build-environment/mvn-npm-gitflow-chromium
