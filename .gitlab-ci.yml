@@ -92,7 +92,7 @@ include:
             registry-token: $DVB_DOCKER_REGISTRY_TOKEN
             name: .build-backend-image
             stage: package
-            image-name: gitlab-migration/kibon-wildfly # TODO remove prefix
+            image-name: kibon-wildfly # TODO remove prefix
             context-dir: ebegu-rest
             version: $VERSION
             push-enabled: "true"
@@ -104,7 +104,7 @@ include:
             registry-token: $DVB_DOCKER_REGISTRY_TOKEN
             name: .build-frontend-image
             stage: package
-            image-name: gitlab-migration/kibon-nginx # TODO remove prefix
+            image-name: kibon-nginx # TODO remove prefix
             context-dir: ebegu-web
             version: $VERSION
             push-enabled: "true"
