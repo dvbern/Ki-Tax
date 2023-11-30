@@ -46,12 +46,12 @@ workflow:
         -   if: $RELEASE_TO == "uat"
             variables:
                 SERVICE_NAME: kibon-uat
-                SSH_HOST: ('sdvbvmkiba21' 'sdvbvmkiba22')
+                SSH_HOST: sdvbvmkiba21.dvbern.ch sdvbvmkiba22.dvbern.ch
                 DEPLOY_URL: TODO
         -   if: $RELEASE_TO == "prod"
             variables:
                 SERVICE_NAME: TODO
-                SSH_HOST: '(TODO1, TODO2)'
+                SSH_HOST: TODO1 TODO2
                 DEPLOY_URL: TODO
 
 include:
