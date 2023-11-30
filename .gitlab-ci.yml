@@ -2,6 +2,10 @@
 stages: [ build, prepare-package, package, release, deploy, mirror ]
 
 variables:
+    RELEASE_TO:
+        options:
+            - "uat"
+            - "prod"
     RELEASE_VERSION:
         description: "The version of the release to build and push"
 
@@ -30,12 +34,23 @@ workflow:
                 SSH_HOST: sdvbvmkiba31.dvbern.ch
                 DEPLOY_ENV: preview
                 DEPLOY_URL: dev-preview.kibon.ch
-                MAVE_GOAL: install
+                MAVEN_GOAL: install
         # Release
         -   if: $RELEASE_VERSION != ""
             variables:
                 VERSION: $RELEASE_VERSION
+                DEPLOY_ENV: $RELEASE_TO
                 MAVEN_GOAL: install
+        -   if: $RELEASE_VERSION != "" && $RELEASE_TO = "uat"
+            variables:
+                SERVICE_NAME: TODO
+                SSH_HOST: TODO
+                DEPLOY_URL: TODO
+        -   if: $RELEASE_VERSION != "" && $RELEASE_TO = "prod"
+            variables:
+                SERVICE_NAME: TODO
+                SSH_HOST: TODO
+                DEPLOY_URL: TODO
 
 include:
     -   component: gitlab.dvbern.ch/mobj/maven@89ec140318641f5a453983b8c04454bd6b1932b8
