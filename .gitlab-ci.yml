@@ -92,7 +92,7 @@ include:
             registry-token: $DVB_DOCKER_REGISTRY_TOKEN
             name: .build-backend-image
             stage: package
-            image-name: kibon-wildfly # TODO remove prefix
+            image-name: kibon-wildfly
             context-dir: ebegu-rest
             version: $VERSION
             push-enabled: "true"
@@ -104,7 +104,8 @@ include:
             registry-token: $DVB_DOCKER_REGISTRY_TOKEN
             name: .build-frontend-image
             stage: package
-            image-name: kibon-nginx # TODO remove prefix
+            # nginx is spelled wrong here, but that's correct
+            image-name: kibon-ngnix
             context-dir: ebegu-web
             version: $VERSION
             push-enabled: "true"
@@ -126,11 +127,10 @@ deploy:
         url: $DEPLOY_URL
     rules:
         - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
-          when: manual
         - if: $CI_MERGE_REQUEST_SOURCE_BRANCH_NAME =~ /^feature/
           when: manual
         - if: $RELEASE_VERSION
-          when: never
+          when: manual
 
 create-build-args:
     image: '$DVB_DOCKER_REGISTRY/dockerhub/library/eclipse-temurin:11-jdk-alpine'
