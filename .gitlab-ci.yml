@@ -2,6 +2,7 @@
 stages: [ build, prepare-package, package, release, deploy, mirror ]
 
 variables:
+    VERSION: $CI_COMMIT_SHA
     RELEASE_TO:
         value: "uat"
         options:
