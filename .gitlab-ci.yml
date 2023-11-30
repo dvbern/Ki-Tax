@@ -1,0 +1,168 @@
+# stages: [build, validate, test, analyze, package, deploy, mirror]
+stages: [ build, prepare-package, package, release, deploy, mirror ]
+
+variables:
+    VERSION: $CI_COMMIT_SHA
+    RELEASE_TO:
+        value: "uat"
+        options:
+            - "uat"
+            - "prod"
+    RELEASE_VERSION:
+        description: "The version of the release to build and push"
+
+workflow:
+    rules:
+        # Commit on dev branch
+        # -   if: $CI_COMMIT_BRANCH == "feature/gitlab-pipeline-migration" # TODO switch to default branch when migrating
+        -   if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+            variables:
+                VERSION: $CI_COMMIT_SHA
+                SERVICE_NAME: kibon-dev
+                SSH_HOST: sdvbvmkiba31.dvbern.ch
+                DEPLOY_ENV: dev
+                DEPLOY_URL: dev.kibon.ch
+                MAVEN_GOAL: install
+        # merge request
+        # -   if: $CI_MERGE_REQUEST_ID || '$CI_PIPELINE_SOURCE == "merge_request_event"'
+        #     variables:
+        #         VERSION: $CI_COMMIT_REF_SLUG
+        #         MAVEN_GOAL: install
+        # feature/... merge request
+        -   if: $CI_MERGE_REQUEST_ID && $CI_MERGE_REQUEST_SOURCE_BRANCH_NAME =~ /^feature/
+            variables:
+                VERSION: $CI_COMMIT_REF_SLUG
+                SERVICE_NAME: kibon-dev-preview
+                SSH_HOST: sdvbvmkiba31.dvbern.ch
+                DEPLOY_ENV: preview
+                DEPLOY_URL: dev-preview.kibon.ch
+                MAVEN_GOAL: install
+        # Release
+        -   if: $RELEASE_VERSION != ""
+            variables:
+                VERSION: $RELEASE_VERSION
+                DEPLOY_ENV: $RELEASE_TO
+                MAVEN_GOAL: install
+        -   if: $RELEASE_TO == "uat"
+            variables:
+                SERVICE_NAME: kibon-uat
+                SSH_HOST: ('sdvbvmkiba21' 'sdvbvmkiba22')
+                DEPLOY_URL: TODO
+        -   if: $RELEASE_TO == "prod"
+            variables:
+                SERVICE_NAME: TODO
+                SSH_HOST: '(TODO1, TODO2)'
+                DEPLOY_URL: TODO
+
+include:
+    -   component: gitlab.dvbern.ch/mobj/maven@89ec140318641f5a453983b8c04454bd6b1932b8
+        #rules:
+        #  - if: $CI_COMMIT_BRANCH == "feature/gitlab-pipeline-migration" && $CI_PIPELINE_SOURCE != "schedule"
+        inputs:
+            name: .build-backend-without-arquillian
+            java-image: docker-registry.dvbern.ch/kibon/build-environment/mvn-npm-gitflow-chromium
+            java-image-version: jdk11-old
+            maven-goal: -Pdvbern.oss -Pcopy-wildfly-dependencies -P\!frontend clean install
+            archive-path: ebegu-rest/target # we need ebegu-rest WAR, sentry JAR and belogin-connector WAR
+
+    -   component: gitlab.dvbern.ch/mobj/maven@89ec140318641f5a453983b8c04454bd6b1932b8
+        #rules:
+        #  - if: $CI_COMMIT_BRANCH == "feature/gitlab-pipeline-migration" && $CI_PIPELINE_SOURCE != "schedule"
+        inputs:
+            name: .build-frontend
+            java-image: docker-registry.dvbern.ch/kibon/build-environment/mvn-npm-gitflow-chromium
+            java-image-version: jdk11-old
+            maven-goal: --projects .,ebegu-web -Pdvbern.oss -Pci -Pfrontend clean install
+            archive-path: ebegu-web/target/*.tar.gz
+
+    # TODO enable nightly arquillian test
+    # - component: gitlab.dvbern.ch/components/maven@v2.0.1
+    #   rules:
+    #     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $CI_PIPELINE_SOURCE == "schedule"
+    #   inputs:
+    #     java-image: docker-registry.dvbern.ch/kibon/build-environment/mvn-npm-gitflow-chromium
+    #     java-image-version: jdk11-old
+    #     maven-goal: -Pdvbern.oss -Pfrontend -Pci -Ptest-wildfly-managed clean verify
+
+    # TODO public or private registry? using a private base image and pushing the resulting image to public registry is not supported at the moment
+    -   component: 'gitlab.dvbern.ch/mobj/buildah@a7143bb366f9ee8e1ddfd1813acb1649a104cb36'
+        inputs:
+            registry: $DVB_DOCKER_REGISTRY
+            registry-user: $DVB_DOCKER_REGISTRY_USER
+            registry-token: $DVB_DOCKER_REGISTRY_TOKEN
+            name: .build-backend-image
+            stage: package
+            image-name: gitlab-migration/kibon-wildfly # TODO remove prefix
+            context-dir: ebegu-rest
+            version: $VERSION
+            push-enabled: "true"
+
+    -   component: 'gitlab.dvbern.ch/mobj/buildah@a7143bb366f9ee8e1ddfd1813acb1649a104cb36'
+        inputs:
+            registry: $DVB_DOCKER_REGISTRY
+            registry-user: $DVB_DOCKER_REGISTRY_USER
+            registry-token: $DVB_DOCKER_REGISTRY_TOKEN
+            name: .build-frontend-image
+            stage: package
+            image-name: gitlab-migration/kibon-nginx # TODO remove prefix
+            context-dir: ebegu-web
+            version: $VERSION
+            push-enabled: "true"
+
+    -   component: 'gitlab.dvbern.ch/fuju/docker-compose-deploy@main'
+        inputs:
+            name: .docker-compose-deploy
+            service-name: $SERVICE_NAME
+            version: $VERSION
+            version-env-var: 'TAGTOUSE'
+            ssh-user: $KIBON_DEPLOY_SSH_USER
+            ssh-private-key: $KIBON_SSH_PRIVATE_KEY
+            ssh-target: '$SSH_HOST'
+
+deploy:
+    extends: .docker-compose-deploy:$SERVICE_NAME
+    environment:
+        name: $DEPLOY_ENV
+        url: $DEPLOY_URL
+    rules:
+        - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+          when: manual
+        - if: $CI_MERGE_REQUEST_SOURCE_BRANCH_NAME =~ /^feature/
+          when: manual
+        - if: $RELEASE_VERSION
+          when: never
+
+create-build-args:
+    image: '$DVB_DOCKER_REGISTRY/dockerhub/library/eclipse-temurin:11-jdk-alpine'
+    tags: [ "os:linux", "type:docker", "zone:tz" ]
+    stage: prepare-package
+    variables:
+        DVB_MAVEN_CLI_OPTS: >-
+            --settings .m2/settings.xml
+    script:
+        - echo "KIBON_POM_VERSION=$(./mvnw $DVB_MAVEN_CLI_OPTS org.apache.maven.plugins:maven-help-plugin:3.2.0:evaluate -Dexpression=project.version -DforceStdout -q)" > build-args.env
+        - cat build-args.env
+    artifacts:
+        paths:
+            - build-args.env
+    needs: []
+
+build-backend-without-arquillian:
+    extends: .build-backend-without-arquillian
+    needs: []
+
+build-frontend:
+    extends: .build-frontend
+    needs: []
+
+build-frontend-image:
+    extends: .build-frontend-image
+    needs:
+        - build-frontend
+        - create-build-args
+
+build-backend-image:
+    extends: .build-backend-image
+    needs:
+        - build-backend-without-arquillian
+        - create-build-args

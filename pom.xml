@@ -73,6 +73,7 @@
         <spotbugs-maven-plugin.version>4.6.0.0</spotbugs-maven-plugin.version>
         <spotbugs-annotations.version>4.6.0</spotbugs-annotations.version>
         <lombok.version>1.18.22</lombok.version>
+        <version.kibon-belogin-connector>2023.19.0</version.kibon-belogin-connector>
 
     </properties>
 
@@ -899,6 +900,38 @@
                     <scope>test</scope>
                 </dependency>
             </dependencies>
+            <build>
+                <plugins>
+                    <!-- You need the maven dependency plugin to download locally a zip with the server,
+                unless you provide your own, it will download under the /target directory -->
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-dependency-plugin</artifactId>
+                        <version>3.1.1</version>
+                        <executions>
+                            <execution>
+                                <id>unpack</id>
+                                <phase>process-test-classes</phase>
+                                <goals>
+                                    <goal>unpack</goal>
+                                </goals>
+                                <configuration>
+                                    <artifactItems>
+                                        <artifactItem>
+                                            <groupId>${unpack.groupId}</groupId>
+                                            <artifactId>${unpack.artifactId}</artifactId>
+                                            <version>${unpack.version}</version>
+                                            <type>zip</type>
+                                            <overWrite>false</overWrite>
+                                            <outputDirectory>${unpack.directory}</outputDirectory>
+                                        </artifactItem>
+                                    </artifactItems>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
         </profile>
     </profiles>
 
@@ -1010,35 +1043,6 @@
                         <includeFilterFile>rules/ebegu/findbugs/findbugs-includes.xml</includeFilterFile>
                         <excludeFilterFile>rules/ebegu/findbugs/findbugs-excludes.xml</excludeFilterFile>
                     </configuration>
-                </plugin>
-
-                <!-- You need the maven dependency plugin to download locally a zip with the server,
-                unless you provide your own, it will download under the /target directory -->
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-dependency-plugin</artifactId>
-                    <version>3.1.1</version>
-                    <executions>
-                        <execution>
-                            <id>unpack</id>
-                            <phase>process-test-classes</phase>
-                            <goals>
-                                <goal>unpack</goal>
-                            </goals>
-                            <configuration>
-                                <artifactItems>
-                                    <artifactItem>
-                                        <groupId>${unpack.groupId}</groupId>
-                                        <artifactId>${unpack.artifactId}</artifactId>
-                                        <version>${unpack.version}</version>
-                                        <type>zip</type>
-                                        <overWrite>false</overWrite>
-                                        <outputDirectory>${unpack.directory}</outputDirectory>
-                                    </artifactItem>
-                                </artifactItems>
-                            </configuration>
-                        </execution>
-                    </executions>
                 </plugin>
 
                 <plugin>
