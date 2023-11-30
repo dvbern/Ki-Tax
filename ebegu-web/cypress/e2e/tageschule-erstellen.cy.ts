@@ -18,9 +18,27 @@ import {getUser} from '@dv-e2e/types';
 import {ControllEditTagesschulePO, CreateTagesschulePO, EditTagesschulePO} from '../page-objects/antrag/tagesschule.po';
 
 describe('Kibon - generate Tagesschule Institutionen', () => {
+    const superAdmin = getUser('[1-Superadmin] E-BEGU Superuser')
     const gemeindeAdministator = getUser('[6-Admin-Gemeinde] Gerlinde Hofstetter');
 
     let tagesschuleDynamischName = '';
+
+    after(() => {
+        cy.login(superAdmin);
+        cy.visit('/#/institution/list');
+        cy.getByData('list-search-field').type('-cy-');
+        cy.getByData('item-name')
+            .each($el => cy.wrap($el).should('include.text', '-cy-'));
+        cy.getByData('remove-entry').its('length').then(length => {
+            for (let i = length - 1; i >= 0; i--) {
+                cy.getByData('remove-entry').eq(i).click();
+                cy.intercept({method: 'GET', pathname: '**/institutionen/editable/currentuser/listdto', times: 1})
+                    .as('deletingRow');
+                cy.getByData('remove-ok').click();
+                cy.wait('@deletingRow');
+            }
+        });
+    })
 
     beforeEach(() => {
         cy.intercept({resourceType: 'xhr'}, {log: false}); // don't log XHRs
