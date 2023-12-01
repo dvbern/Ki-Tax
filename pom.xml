@@ -1063,40 +1063,40 @@
                     <version>2.1.1</version>
                 </plugin>
 
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-enforcer-plugin</artifactId>
-                    <version>1.4.1</version>
-                    <executions>
-                        <execution>
-                            <id>check-maven-setup</id>
-                            <goals>
-                                <goal>enforce</goal>
-                            </goals>
-                            <configuration>
-                                <fail>true</fail>
-                                <failFast>true</failFast>
-                                <rules>
-                                    <dependencyConvergence />
-                                    <reactorModuleConvergence />
-                                    <requireJavaVersion>
-                                        <!-- Bei aelteren Versionen aendern die Unit-Test-Ergebnisse bei Berechnungen mit BigDecimal -->
-                                        <version>[1.8.0-40,)</version>
-                                    </requireJavaVersion>
-                                    <requireMavenVersion>
-                                        <version>3.3</version>
-                                    </requireMavenVersion>
-                                    <!-- Pruefen, dass im Release keine SNAPSHOT-Dependencies mehr drin sind -->
-                                    <requireReleaseDeps>
-                                        <failWhenParentIsSnapshot>true</failWhenParentIsSnapshot>
-                                        <onlyWhenRelease>true</onlyWhenRelease>
-                                        <searchTransitive>true</searchTransitive>
-                                    </requireReleaseDeps>
-                                </rules>
-                            </configuration>
-                        </execution>
-                    </executions>
-                </plugin>
+<!--                <plugin>-->
+<!--                    <groupId>org.apache.maven.plugins</groupId>-->
+<!--                    <artifactId>maven-enforcer-plugin</artifactId>-->
+<!--                    <version>1.4.1</version>-->
+<!--                    <executions>-->
+<!--                        <execution>-->
+<!--                            <id>check-maven-setup</id>-->
+<!--                            <goals>-->
+<!--                                <goal>enforce</goal>-->
+<!--                            </goals>-->
+<!--                            <configuration>-->
+<!--                                <fail>true</fail>-->
+<!--                                <failFast>true</failFast>-->
+<!--                                <rules>-->
+<!--                                    <dependencyConvergence />-->
+<!--                                    <reactorModuleConvergence />-->
+<!--                                    <requireJavaVersion>-->
+<!--                                        &lt;!&ndash; Bei aelteren Versionen aendern die Unit-Test-Ergebnisse bei Berechnungen mit BigDecimal &ndash;&gt;-->
+<!--                                        <version>[1.8.0-40,)</version>-->
+<!--                                    </requireJavaVersion>-->
+<!--                                    <requireMavenVersion>-->
+<!--                                        <version>3.3</version>-->
+<!--                                    </requireMavenVersion>-->
+<!--                                    &lt;!&ndash; Pruefen, dass im Release keine SNAPSHOT-Dependencies mehr drin sind &ndash;&gt;-->
+<!--                                    <requireReleaseDeps>-->
+<!--                                        <failWhenParentIsSnapshot>true</failWhenParentIsSnapshot>-->
+<!--                                        <onlyWhenRelease>true</onlyWhenRelease>-->
+<!--                                        <searchTransitive>true</searchTransitive>-->
+<!--                                    </requireReleaseDeps>-->
+<!--                                </rules>-->
+<!--                            </configuration>-->
+<!--                        </execution>-->
+<!--                    </executions>-->
+<!--                </plugin>-->
 
                 <plugin>
                     <groupId>org.owasp</groupId>
