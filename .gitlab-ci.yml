@@ -54,18 +54,16 @@ include:
             name: .build-backend-without-arquillian
             java-image: docker-registry.dvbern.ch/kibon/build-environment/mvn-npm-gitflow-chromium
             java-image-version: jdk11-old
-            maven-goal: -Pdvbern.oss -Pcopy-wildfly-dependencies -P\!frontend clean install
+            maven-goal: -Drevision=$VERSION -Pdvbern.oss -Pcopy-wildfly-dependencies -P\!frontend clean install
             archive-path: ebegu-rest/target # we need ebegu-rest WAR, sentry JAR and belogin-connector WAR
-            maven-opts-extend: -Drevision=$VERSION
 
     -   component: gitlab.dvbern.ch/mobj/maven@89ec140318641f5a453983b8c04454bd6b1932b8
         inputs:
             name: .build-frontend
             java-image: docker-registry.dvbern.ch/kibon/build-environment/mvn-npm-gitflow-chromium
             java-image-version: jdk11-old
-            maven-goal: --projects .,ebegu-web -Pdvbern.oss -Pci -Pfrontend clean install
+            maven-goal: -Drevision=$VERSION --projects .,ebegu-web -Pdvbern.oss -Pci -Pfrontend clean install
             archive-path: ebegu-web/target/*.tar.gz
-            maven-opts-extend: -Drevision=$VERSION
 
     # TODO enable nightly arquillian test
     # - component: gitlab.dvbern.ch/components/maven@v2.0.1
