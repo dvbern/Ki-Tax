@@ -22,7 +22,7 @@
     <parent>
         <artifactId>parent</artifactId>
         <groupId>ch.dvbern.oss.maven</groupId>
-        <version>2.0.0</version>
+        <version>5.0.0</version>
     </parent>
 
     <groupId>ch.dvbern.ebegu</groupId>
@@ -939,6 +939,33 @@
     <build>
         <plugins>
             <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>flatten-maven-plugin</artifactId>
+                <version>1.5.0</version>
+                <configuration>
+                    <updatePomFile>true</updatePomFile>
+                    <flattenMode>resolveCiFriendliesOnly</flattenMode>
+                    <flattenDependencyMode>all</flattenDependencyMode>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>flatten</id>
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>flatten</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>flatten.clean</id>
+                        <phase>clean</phase>
+                        <goals>
+                            <goal>clean</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            
+            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>2.22.2</version>
@@ -965,18 +992,18 @@
 
             </plugin>
 
-            <plugin>
-                <groupId>ch.dvbern.oss.maven.jgitflow</groupId>
-                <artifactId>jgitflow-maven-plugin</artifactId>
-                <version>1.0-m6</version>
-                <configuration>
-                    <serverId>${dvb.git.serverId}</serverId>
-                    <flowInitContext>
-                        <developBranchName>dev</developBranchName>
-                        <versionTagPrefix />
-                    </flowInitContext>
-                </configuration>
-            </plugin>
+<!--            <plugin>-->
+<!--                <groupId>ch.dvbern.oss.maven.jgitflow</groupId>-->
+<!--                <artifactId>jgitflow-maven-plugin</artifactId>-->
+<!--                <version>1.0-m6</version>-->
+<!--                <configuration>-->
+<!--                    <serverId>${dvb.git.serverId}</serverId>-->
+<!--                    <flowInitContext>-->
+<!--                        <developBranchName>dev</developBranchName>-->
+<!--                        <versionTagPrefix />-->
+<!--                    </flowInitContext>-->
+<!--                </configuration>-->
+<!--            </plugin>-->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-deploy-plugin</artifactId>
@@ -1062,45 +1089,51 @@
                     <artifactId>hibernate-maven-plugin</artifactId>
                     <version>2.1.1</version>
                 </plugin>
+                
+                <plugin>
+                    <groupId>fr.jcgay.maven.plugins</groupId>
+                    <artifactId>buildplan-maven-plugin</artifactId>
+                    <version>1.5</version>
+                </plugin>
 
-<!--                <plugin>-->
-<!--                    <groupId>org.apache.maven.plugins</groupId>-->
-<!--                    <artifactId>maven-enforcer-plugin</artifactId>-->
-<!--                    <version>1.4.1</version>-->
-<!--                    <executions>-->
-<!--                        <execution>-->
-<!--                            <id>check-maven-setup</id>-->
-<!--                            <goals>-->
-<!--                                <goal>enforce</goal>-->
-<!--                            </goals>-->
-<!--                            <configuration>-->
-<!--                                <fail>true</fail>-->
-<!--                                <failFast>true</failFast>-->
-<!--                                <rules>-->
-<!--                                    <dependencyConvergence />-->
-<!--                                    <reactorModuleConvergence />-->
-<!--                                    <requireJavaVersion>-->
-<!--                                        &lt;!&ndash; Bei aelteren Versionen aendern die Unit-Test-Ergebnisse bei Berechnungen mit BigDecimal &ndash;&gt;-->
-<!--                                        <version>[1.8.0-40,)</version>-->
-<!--                                    </requireJavaVersion>-->
-<!--                                    <requireMavenVersion>-->
-<!--                                        <version>3.3</version>-->
-<!--                                    </requireMavenVersion>-->
-<!--                                    &lt;!&ndash; Pruefen, dass im Release keine SNAPSHOT-Dependencies mehr drin sind &ndash;&gt;-->
-<!--                                    <requireReleaseDeps>-->
-<!--                                        <failWhenParentIsSnapshot>true</failWhenParentIsSnapshot>-->
-<!--                                        <onlyWhenRelease>true</onlyWhenRelease>-->
-<!--                                        <searchTransitive>true</searchTransitive>-->
-<!--                                    </requireReleaseDeps>-->
-<!--                                </rules>-->
-<!--                            </configuration>-->
-<!--                        </execution>-->
-<!--                    </executions>-->
-<!--                </plugin>-->
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-enforcer-plugin</artifactId>
+                    <executions>
+                        <execution>
+                            <id>check-maven-setup</id>
+                            <goals>
+                                <goal>enforce</goal>
+                            </goals>
+                            <configuration>
+                                <fail>false</fail>
+                                <failFast>true</failFast>
+                                <rules>
+                                    <dependencyConvergence />
+                                    <reactorModuleConvergence />
+                                    <requireJavaVersion>
+                                        <!-- Bei aelteren Versionen aendern die Unit-Test-Ergebnisse bei Berechnungen mit BigDecimal -->
+                                        <version>[1.8.0-40,)</version>
+                                    </requireJavaVersion>
+                                    <requireMavenVersion>
+                                        <version>3.5.4</version>
+                                    </requireMavenVersion>
+                                    <!-- Pruefen, dass im Release keine SNAPSHOT-Dependencies mehr drin sind -->
+                                    <requireReleaseDeps>
+                                        <failWhenParentIsSnapshot>true</failWhenParentIsSnapshot>
+                                        <onlyWhenRelease>true</onlyWhenRelease>
+                                        <searchTransitive>true</searchTransitive>
+                                    </requireReleaseDeps>
+                                </rules>
+                            </configuration>
+                        </execution>
+                    </executions>
+                </plugin>
 
                 <plugin>
                     <groupId>org.owasp</groupId>
                     <artifactId>dependency-check-maven</artifactId>
+                    <version>9.0.1</version>
                     <configuration>
                         <failBuildOnAnyVulnerability>true</failBuildOnAnyVulnerability>
                         <bundleAuditAnalyzerEnabled>false</bundleAuditAnalyzerEnabled>
