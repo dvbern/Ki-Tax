@@ -54,7 +54,7 @@ const createNewBetreuungWithAllSettings = () => {
 };
 
 describe('Kibon - generate Testfälle [Gemeinde Sachbearbeiter]', () => {
-    const userSB = getUser('[6-SB-Gemeinde] Stefan Weibel');
+    const userSB = getUser('[6-L-SB-Gemeinde] Stefan Weibel');
     const userKita = getUser('[3-SB-Institution-Kita-Brünnen] Sophie Bergmann');
 
     beforeEach(() => {
