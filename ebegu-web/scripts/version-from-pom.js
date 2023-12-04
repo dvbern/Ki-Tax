@@ -16,7 +16,7 @@
 const {resolve} = require('path');
 const {readFileSync, writeFileSync} = require('fs');
 
-const contents = readFileSync(__dirname + '/../pom.xml').toString();
+const contents = readFileSync(__dirname + '/../../.flattened-pom.xml').toString();
 
 const re = new RegExp(
     '<artifactId>ebegu</artifactId>[\\s\\S]*?<version>(.*?)</version>[\\s\\S]*?<packaging>pom</packaging>', 'im');

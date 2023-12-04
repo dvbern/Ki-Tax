@@ -20,7 +20,7 @@
     <parent>
         <artifactId>ebegu</artifactId>
         <groupId>ch.dvbern.ebegu</groupId>
-        <version>2023.20.0-SNAPSHOT</version>
+        <version>${revision}</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -235,6 +235,55 @@
                 </plugins>
             </build>
         </profile>
+        <profile>
+            <id>copy-wildfly-dependencies</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-dependency-plugin</artifactId>
+                        <version>2.10</version>
+                        <executions>
+                            <execution>
+                                <id>copy ebegu-rest for docker</id>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>copy</goal>
+                                </goals>
+                                <configuration>
+                                    <artifactItems>
+                                        <!--Login connector artefact-->
+                                        <artifactItem>
+                                            <groupId>ch.dvbern.ebegu</groupId>
+                                            <artifactId>kibon-belogin-connector-war</artifactId>
+                                            <version>${version.kibon-belogin-connector}</version>
+                                            <type>war</type>
+                                            <destFileName>kibon-belogin-connector-war.war</destFileName>
+                                            <overWrite>false</overWrite>
+                                            <outputDirectory>${project.build.directory}/for-docker-build</outputDirectory>
+                                        </artifactItem>
+
+                                        <!--Sentry.jar for module-->
+                                        <artifactItem>
+                                            <groupId>io.sentry</groupId>
+                                            <artifactId>sentry</artifactId>
+                                            <version>${version.sentry}</version>
+                                            <type>jar</type>
+                                            <destFileName>sentry.jar</destFileName>
+                                            <overWrite>false</overWrite>
+                                            <outputDirectory>${project.build.directory}/for-docker-build</outputDirectory>
+                                        </artifactItem>
+                                    </artifactItems>
+                                    <overWriteReleases>false</overWriteReleases>
+                                    <overWriteSnapshots>true</overWriteSnapshots>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
     </profiles>
 
 </project>
