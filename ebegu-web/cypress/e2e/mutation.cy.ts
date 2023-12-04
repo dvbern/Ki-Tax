@@ -18,7 +18,7 @@ describe('Kibon - mutationen [Gesuchsteller]', () => {
         cy.getByData('gemeinde').click();
         cy.getByData('gemeinde.London').click();
         cy.getByData('periode').click();
-        cy.getByData('periode.2022/23').click();
+        cy.getByData('periode.2023/24').click();
 
         cy.getByData('testfall-2').click();
         cy.get('[data-test="dialog-link"]', { timeout: Cypress.config('defaultCommandTimeout') * 4 }).click();
@@ -47,7 +47,7 @@ describe('Kibon - mutationen [Gesuchsteller]', () => {
         cy.getByData('container.umzug-0', 'adresseHausnummer').type('2');
         cy.getByData('container.umzug-0', 'adressePlz').type('3000');
         cy.getByData('container.umzug-0', 'adresseOrt').type('Bern');
-        cy.getByData('container.umzug-0', 'gueltigAb').find('input').type('01.11.2022');
+        cy.getByData('container.umzug-0', 'gueltigAb').find('input').type('01.11.2023');
         cy.intercept('GET', '**/einstellung/key/FINANZIELLE_SITUATION_TYP/gemeinde/**').as('goingToAbwesenheit');
         cy.getByData('container.navigation-save', 'navigation-button').click();
         cy.wait('@goingToAbwesenheit');
@@ -55,8 +55,8 @@ describe('Kibon - mutationen [Gesuchsteller]', () => {
         cy.getByData('ABWESENHEIT').click();
         cy.getByData('container.erfassen', 'navigation-button').click();
         cy.getByData('kind').select('Tamara Feutz - Weissenstein');
-        cy.getByData('abwesenheit-von').find('input').type('01.10.2022');
-        cy.getByData('abwesenheit-bis').find('input').type('30.11.2022');
+        cy.getByData('abwesenheit-von').find('input').type('01.10.2023');
+        cy.getByData('abwesenheit-bis').find('input').type('30.11.2023');
 
         cy.intercept('GET', '**/gesuche/ausserordentlicheranspruchpossible/**').as('abwesenheitSaved');
         cy.getByData('container.navigation-save', 'navigation-button').click();
@@ -107,7 +107,7 @@ describe('Kibon - mutationen [Gesuchsteller]', () => {
         cy.getByData('verfuegung#1-0', 'betreuungs-status').should('include.text', 'Geschlossen ohne Verfügung');
 
         cy.getByData('toolbar.antrag-mutieren').click();
-        cy.getByData('fall-creation-eingangsdatum').find('input').type('01.05.2022');
+        cy.getByData('fall-creation-eingangsdatum').find('input').type('01.05.2023');
         cy.intercept('GET', '**/gesuche/dossier/**').as('createNewMutation');
         cy.getByData('container.navigation-save', 'navigation-button').click();
         cy.wait('@createNewMutation');
