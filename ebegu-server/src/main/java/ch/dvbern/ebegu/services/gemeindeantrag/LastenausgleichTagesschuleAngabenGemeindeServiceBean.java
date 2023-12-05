@@ -49,6 +49,7 @@ import javax.persistence.criteria.*;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.math.MathContext;
+import java.security.SecureRandom;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 import java.util.*;
@@ -825,7 +826,7 @@ public class LastenausgleichTagesschuleAngabenGemeindeServiceBean extends Abstra
 						container.getGemeinde().getMandant());
 				}
 
-				BigDecimal randomNumber = new BigDecimal(Math.random(), MathContext.DECIMAL64);
+				BigDecimal randomNumber = new BigDecimal(new SecureRandom().nextDouble(), MathContext.DECIMAL64);
 
 				BigDecimal betreuungsstundenTotal = container.getAngabenKorrektur()
 					.getGeleisteteBetreuungsstundenBesondereBeduerfnisse()
