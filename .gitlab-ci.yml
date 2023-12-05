@@ -11,7 +11,7 @@ workflow:
             variables:
                 VERSION: $CI_COMMIT_SHA
                 SERVICE_NAME: kibon-dev
-                SSH_HOST: sdvbvmkiba31.dvbern.ch
+                SSH_HOST: sdvbvmkiba31.dvbern.ch sdvbvmkiba31.dvbern.ch
                 DEPLOY_ENV: dev
                 DEPLOY_URL: https://dev.kibon.ch
                 MAVEN_GOAL: install
