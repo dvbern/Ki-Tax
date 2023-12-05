@@ -100,7 +100,7 @@ include:
             version: $VERSION
             push-enabled: "true"
 
-    -   component: 'gitlab.dvbern.ch/fuju/docker-compose-deploy@main'
+    -   component: 'gitlab.dvbern.ch/fuju/docker-compose-deploy@d2cd3edc6d7f63211e5c76e9b014e86feeaa768d'
         inputs:
             name: .docker-compose-deploy
             service-name: $SERVICE_NAME
