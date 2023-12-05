@@ -19,6 +19,7 @@ import {ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output}
 import {GesuchModelManager} from '../../../../gesuch/service/gesuchModelManager';
 import {isAtLeastFreigegeben} from '../../../../models/enums/TSAntragStatus';
 import {TSEingangsart} from '../../../../models/enums/TSEingangsart';
+import {EbeguUtil} from '../../../../utils/EbeguUtil';
 
 @Component({
     selector: 'dv-checkbox-x',
@@ -26,7 +27,7 @@ import {TSEingangsart} from '../../../../models/enums/TSEingangsart';
     styleUrls: ['./dv-checkbox-x.component.less'],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class DvCheckboxXComponent implements OnInit {
+export class DvCheckboxXComponent {
 
     @Input()
     public label: string;
@@ -52,16 +53,11 @@ export class DvCheckboxXComponent implements OnInit {
     @Output()
     public readonly modelChange: EventEmitter<boolean> = new EventEmitter<boolean>();
 
-    public uniqueName: string;
+    public uniqueName: string = `checkbox_${EbeguUtil.generateRandomName(10)}`;
 
     public constructor(
         private readonly gesuchModelManager: GesuchModelManager
     ) {
-    }
-
-    public ngOnInit(): void {
-        // eslint-disable-next-line no-magic-numbers
-        this.uniqueName = `checkbox_${Math.round(Math.random() * 10000)}`;
     }
 
     public change(): void {

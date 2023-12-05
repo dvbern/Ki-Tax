@@ -21,6 +21,7 @@ import {MatRadioChange} from '@angular/material/radio';
 import {GesuchModelManager} from '../../../../gesuch/service/gesuchModelManager';
 import {isAtLeastFreigegeben} from '../../../../models/enums/TSAntragStatus';
 import {TSEingangsart} from '../../../../models/enums/TSEingangsart';
+import {EbeguUtil} from '../../../../utils/EbeguUtil';
 
 @Component({
     selector: 'dv-radio-input-x',
@@ -29,7 +30,7 @@ import {TSEingangsart} from '../../../../models/enums/TSEingangsart';
     viewProviders: [{provide: ControlContainer, useExisting: NgForm}],
     styleUrls: ['./dv-radio-input-x.component.less']
 })
-export class DvRadioInputXComponent implements OnInit {
+export class DvRadioInputXComponent {
 
     @Input()
     public label: string;
@@ -56,17 +57,12 @@ export class DvRadioInputXComponent implements OnInit {
     public readonly modelChange: EventEmitter<boolean> = new EventEmitter<boolean>();
 
     // unique name for this radio
-    public uniqueName: string;
+    public uniqueName: string = `radio_${EbeguUtil.generateRandomName(10)}`;
 
     public constructor(
         public readonly form: NgForm,
         private readonly gesuchModelManager: GesuchModelManager
     ) {
-    }
-
-    public ngOnInit(): void {
-        // eslint-disable-next-line no-magic-numbers
-        this.uniqueName = `radio_${Math.round(Math.random() * 10000)}`;
     }
 
     public change($event: MatRadioChange): void {
