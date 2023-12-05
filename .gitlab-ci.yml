@@ -100,7 +100,7 @@ include:
             version: $VERSION
             push-enabled: "true"
 
-    -   component: 'gitlab.dvbern.ch/fuju/docker-compose-deploy@d2cd3edc6d7f63211e5c76e9b014e86feeaa768d'
+    -   component: 'gitlab.dvbern.ch/fuju/docker-compose-deploy@4ecd5519fb57c296f9e9745de8fb98858d20e19a'
         inputs:
             name: .docker-compose-deploy
             service-name: $SERVICE_NAME
@@ -110,8 +110,26 @@ include:
             ssh-private-key: $KIBON_SSH_PRIVATE_KEY
             ssh-target: '$SSH_HOST'
 
+deploy:prod:
+    rules:
+        - if: $CI_COMMIT_TAG
+          when: manual
+    environment:
+        name: prod
+        url: https://kibon.ch
+    extends: .docker-compose-deploy
+
+deploy:uat:
+    rules:
+        - if: $CI_COMMIT_TAG
+          when: manual
+    environment:
+        name: uat
+        url: https://uat.kibon.ch
+    extends: .docker-compose-deploy
+
 deploy:
-    extends: .docker-compose-deploy:$SERVICE_NAME
+    extends: .docker-compose-deploy
     environment:
         name: $DEPLOY_ENV
         url: $DEPLOY_URL
