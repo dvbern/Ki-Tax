@@ -249,11 +249,11 @@
                                         <md-checkbox
                                             name="modul_{{mod.modulTagesschule.identifier}}"
                                             ng-model="mod.modulTagesschule.angemeldet"
-                                            aria-label="Modul {{group.group.bezeichnung}} {{mod.modulTagesschule.wochentag | translate}}"
+                                            aria-label="Modul {{group.group.bezeichnung.textDeutsch}} {{mod.modulTagesschule.wochentag | translate}}"
                                             ng-disabled="!vm.isModuleEditable(mod)"
                                             ng-click=""
                                             ng-change="vm.openMenu(mod, group, $mdMenu, $event);"
-                                            data-test="modul-{{group.group.bezeichnung}}-{{mod.modulTagesschule.wochentag}}"
+                                            data-test="modul-{{group.group.bezeichnung.textDeutsch}}-{{mod.modulTagesschule.wochentag}}"
                                             class="dv-ebegu-calendar--tagesschule"
                                             aria-describedby="{{'modul_' + mod.modulTagesschule.identifier + '-error'}}">
                                             <span class="error"
@@ -424,7 +424,7 @@
         <span dv-show-element
               dv-show-allowed-roles="vm.TSRoleUtil.getAdminJaSchulamtSozialdienstGesuchstellerRoles()"
               dv-show-expression="vm.betreuung.isEnabled() && !vm.isFreigabequittungAusstehend()">
-            <dv-loading-button button-click="vm.anmelden()" type="submit" button-class="save">
+            <dv-loading-button button-click="vm.anmelden()" type="submit" button-class="save" data-test="container.save">
                 <span class="uppercase" data-translate="{{vm.getButtonTextSpeichern()}}"></span>
             </dv-loading-button>
         </span>
@@ -435,18 +435,21 @@
 
             <dv-loading-button button-click="vm.anmelden()"
                                type="submit"
-                               button-class="save">
+                               button-class="save"
+                               data-test="container.anmelden">
                 <span class="uppercase" data-translate="{{vm.getButtonTextSpeichern()}}"></span>
             </dv-loading-button>
             <dv-loading-button button-click="vm.anmeldungSchulamtAblehnen()"
                                type="button"
-                               button-class="save">
+                               button-class="save"
+                               data-test="container.ablehnen">
                 <span class="uppercase" data-translate="SCHULAMT_ANMELDUNG_ABLEHNEN"></span>
             </dv-loading-button>
              <dv-loading-button
                  button-click="vm.saveAnmeldungSchulamtStornieren()"
                  type="button"
-                 button-class="save">
+                 button-class="save"
+                 data-test="container.stornieren">
                     <span class="uppercase" data-translate="SCHULAMT_ANMELDUNG_STORNIEREN"></span>
                 </dv-loading-button>
         </span>
@@ -458,13 +461,15 @@
                 <dv-loading-button button-disabled="vm.showErrorMessageNoModule"
                                    button-click="vm.saveAnmeldungSchulamtUebernehmen()"
                                    type="submit"
-                                   button-class="save">
+                                   button-class="save"
+                                   data-test="container.akzeptieren">
                     <span class="uppercase" data-translate="SCHULAMT_ANMELDUNG_AKZEPTIEREN"></span>
                 </dv-loading-button>
 
                 <dv-loading-button button-click="vm.saveAnmeldungSchulamtAblehnen()"
                                    type="button"
-                                   button-class="save">
+                                   button-class="save"
+                                   data-test="container.ablehnen">
                     <span class="uppercase" data-translate="SCHULAMT_ANMELDUNG_ABLEHNEN"></span>
                 </dv-loading-button>
 
@@ -472,14 +477,16 @@
                     ng-if="vm.showStornierenForRole()"
                     button-click="vm.saveAnmeldungSchulamtStornieren()"
                     type="button"
-                    button-class="save">
+                    button-class="save"
+                    data-test="container.stornieren-for-role">
                     <span class="uppercase" data-translate="SCHULAMT_ANMELDUNG_STORNIEREN"></span>
                 </dv-loading-button>
 
                 <dv-loading-button
                     button-click="vm.saveAnmeldungSchulamtFalscheInstitution()"
                     type="button"
-                    button-class="save">
+                    button-class="save"
+                    data-test="container.falsche-institution">
                     <span class="uppercase" data-translate="AKTION_SCHULAMT_FALSCHE_INSTITUTION"></span>
                 </dv-loading-button>
 
@@ -488,7 +495,8 @@
         <span>
             <dv-loading-button button-click="vm.cancel()"
                                button-class="cancel-button"
-                               type="reset">
+                               type="reset"
+                               data-test="container.cancel">
                 <span class="uppercase" data-translate="ABBRECHEN"></span>
             </dv-loading-button>
         </span>
