@@ -47,7 +47,7 @@ describe('Kibon - generate Testfälle [Online-Antrag]', () => {
             cy.intercept('GET', '**/dossier/fall/**').as('openingAntrag');
             cy.getByData(`container.periode.${gesuchsPeriode.ganze}`, 'navigation-button').click();
             cy.wait('@openingAntrag');
-        }
+        };
 
         //INIT Antrag
         {
@@ -304,7 +304,7 @@ describe('Kibon - generate Testfälle [Online-Antrag]', () => {
             });
 
             goToBetreuungen();
-            cy.waitForRequest('GET', '**/fachstellen/erweiterteBetreuung/**', () => {
+            cy.waitForRequest('GET', '**/fachstellen/erweiterteBetreuung', () => {
                 cy.getByData('container.betreuung#1').click();
             });
             cy.getByData('grund-ablehnung').click();
@@ -317,8 +317,7 @@ describe('Kibon - generate Testfälle [Online-Antrag]', () => {
 
         cy.changeLogin(userGS);
         openAntrag();
-        // // !!!!!! - changed back to previous user - !!!!!!
-
+        // !!!!!! - changed back to previous user - !!!!!!
 
         // FREIGABE
         {
@@ -331,33 +330,45 @@ describe('Kibon - generate Testfälle [Online-Antrag]', () => {
 
             cy.getByData('sidenav.FREIGABE').click();
             cy.getByData('container.freigeben', 'navigation-button').click();
-
-            cy.window()
-                .then((win) => {
-                    // Listen for download events (window.open)
-                    const promise = getDownloadUrl(win);
-
-                    // Continue once the download URL has been created
-                    return cy
-                        .getByData('container.confirm', 'navigation-button')
-                        .click()
-                        .then(() => promise);
-                })
-                .as('downloadUrl');
+            cy.getDownloadUrl(() => {
+                cy.waitForRequest('GET', '**/dossier/fall/**', () => {
+                    cy.getByData('container.confirm', 'navigation-button').click();
+                });
+            }).then(downloadUrl => {
+                return cy.request(downloadUrl)
+                    .then(response => expect(response.headers['content-disposition']).to.match(/Freigabequittung_.*\.pdf/));
+            });
         }
 
         // VERFUEGUNG
         {
-            // cy.get('@antragsId').then((antragsId) => cy.visit(`/#/gesuch/verfuegen/${antragsId}`));
-            //
-            // cy.getByData('verfuegung#0').click();
-            // cy.getByData('container.zeitabschnitt#5', 'betreuungspensumProzent').should('include.text', '25%');
-            // cy.getByData('container.zeitabschnitt#6', 'betreuungspensumProzent').should('include.text', '25%');
-            // cy.getByData('container.zeitabschnitt#7', 'betreuungspensumProzent').should('include.text', '25%');
-            // cy.getByData('container.zeitabschnitt#8', 'betreuungspensumProzent').should('include.text', '25%');
-            // cy.getByData('container.zeitabschnitt#9', 'betreuungspensumProzent').should('include.text', '25%');
-            // cy.getByData('container.zeitabschnitt#10', 'betreuungspensumProzent').should('include.text', '25%');
-            // cy.getByData('container.zeitabschnitt#11', 'betreuungspensumProzent').should('include.text', '25%');
+            cy.changeLogin(userKita);
+            cy.get('@antragsId').then((antragsId) => cy.visit(`/#/gesuch/freigabe/${antragsId}`));
+            cy.waitForRequest('GET', '**/dossier/fall/**', () => {
+                cy.getByData('container.freigabe-simulieren', 'navigation-button').click();
+            });
+            clickSave();
+            cy.waitForRequest('GET', '**/verfuegung/calculate/**', () => {
+                cy.getByData('finSitStatus.radio-value.AKZEPTIERT').click();
+            });
+            cy.getByData('container.geprueft', 'navigation-button').click();
+            cy.waitForRequest('GET', '**/verfuegung/calculate/**', () => {
+                cy.getByData('container.confirm', 'navigation-button').click();
+            });
+
+            cy.getByData('container.verfuegen', 'navigation-button').click();
+            cy.waitForRequest('GET', '**/verfuegung/calculate/**', () => {
+                cy.getByData('container.confirm', 'navigation-button').click();
+            });
+
+            cy.getByData('verfuegung#0-0').click();
+            cy.getByData('container.zeitabschnitt#5', 'anspruchberechtigtesPensum').should('include.text', '80%');
+
+            cy.getByData('verfuegungs-bemerkungen-kontrolliert').click();
+            cy.getByData('container.verfuegen', 'navigation-button').click();
+            cy.waitForRequest('GET', '**/gesuche/dossier/**', () => {
+                cy.getByData('container.confirm', 'navigation-button').click();
+            });
         }
     });
 });
@@ -366,27 +377,3 @@ function clickSave() {
     cy.getByData('container.navigation-save', 'navigation-button').should('not.have.a.property', 'disabled');
     cy.getByData('container.navigation-save', 'navigation-button').click();
 }
-
-/**
- * The download is managed by a window.open with target=_blank which then triggers a new window.open to obtain the download URL
- */
-const getDownloadUrl = (win: Cypress.AUTWindow) => {
-    return new Promise((resolve) => {
-        // Mock the first window.open call to render the download preparation page into an iframe
-        cy.stub(win, 'open').callsFake((url) => {
-            const iframe = win.document.createElement('iframe');
-            iframe.src = url;
-            win.document.body.appendChild(iframe);
-            const newWin = iframe.contentWindow;
-
-            // Mock the second window.open to obtain the download url
-            cy.stub(newWin, 'open').callsFake((url) => {
-                resolve(url);
-
-                return newWin;
-            });
-
-            return newWin;
-        });
-    });
-};
