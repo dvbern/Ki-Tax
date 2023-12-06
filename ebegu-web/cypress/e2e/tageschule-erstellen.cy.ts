@@ -25,11 +25,12 @@ describe('Kibon - generate Tagesschule Institutionen', () => {
 
     beforeEach(() => {
         cy.intercept({resourceType: 'xhr'}, {log: false}); // don't log XHRs
-        cy.login(gemeindeAdministator);
-        cy.visit('/#/institution/list');
     });
 
     it('should create a Tagesschule with Dynamische Module', function () {
+        cy.login(gemeindeAdministator);
+        cy.visit('/#/institution/list');
+
         CreateTagesschulePO.createTagesschule('dynamisch', 'withValid');
 
         EditTagesschulePO.editTagesschuleForm('dynamisch', 'withValid')
@@ -79,6 +80,9 @@ describe('Kibon - generate Tagesschule Institutionen', () => {
     });
 
     it('should create a Tagesschule with imported Module', function () {
+        cy.login(gemeindeAdministator);
+        cy.visit('/#/institution/list');
+
         CreateTagesschulePO.createTagesschule('import', 'withValid');
 
         EditTagesschulePO.editTagesschuleForm('import', 'withValid')
@@ -103,6 +107,8 @@ describe('Kibon - generate Tagesschule Institutionen', () => {
     });
 
     it('should delete created Tagesschule', () => {
+        cy.login(superAdmin);
+        cy.visit('/#/institution/list');
         cy.getByData('list-search-field').type('-cy-');
         cy.getByData('item-name')
             .each($el => cy.wrap($el).should('include.text', '-cy-'));
