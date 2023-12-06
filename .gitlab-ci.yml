@@ -29,14 +29,36 @@ workflow:
             variables:
                 VERSION: $CI_COMMIT_TAG
                 MAVEN_GOAL: install
+        # Hotfix
+        -   if: $CI_COMMIT_BRANCH =~ /^hotfix/
+            variables:
+                VERSION: $CI_REF_SLUG
+                SERVICE_NAME: TODO
+                SSH_HOST: TODO
+                DEPLOY_ENV: hotfix
+                DEPLOY_URL: TODO
+                MAVEN_GOAL: install
 
 include:
     -   component: gitlab.dvbern.ch/mobj/maven@89ec140318641f5a453983b8c04454bd6b1932b8
+        rules:
+            - if: $CI_COMMIT_BRANCH !~ /^hotfix/ || $CI_COMMIT_BRANCH !~ /^warmfix/
         inputs:
-            name: .build-backend-without-arquillian
+            name: .build-backend
             java-image: docker-registry.dvbern.ch/kibon/build-environment/mvn-npm-gitflow-chromium
             java-image-version: jdk11-old
             maven-goal: -Drevision=$VERSION -Pdvbern.oss -Pcopy-wildfly-dependencies -P\!frontend clean install
+            archive-path: ebegu-rest/target # we need ebegu-rest WAR, sentry JAR and belogin-connector WAR
+
+    # TODO scheduled nightly Arquillian runs
+    -   component: gitlab.dvbern.ch/mobj/maven@89ec140318641f5a453983b8c04454bd6b1932b8
+        rules:
+          - if: $CI_COMMIT_BRANCH =~ /^hotfix/ || $CI_COMMIT_BRANCH =~ /^warmfix/
+        inputs:
+            name: .build-backend
+            java-image: docker-registry.dvbern.ch/kibon/build-environment/mvn-npm-gitflow-chromium
+            java-image-version: jdk11-old
+            maven-goal: -Drevision=$VERSION -Pdvbern.oss -Ptest-wildfly-dependencies -Pcopy-wildfly-dependencies -P\!frontend clean install
             archive-path: ebegu-rest/target # we need ebegu-rest WAR, sentry JAR and belogin-connector WAR
 
     -   component: gitlab.dvbern.ch/mobj/maven@89ec140318641f5a453983b8c04454bd6b1932b8
@@ -46,15 +68,6 @@ include:
             java-image-version: jdk11-old
             maven-goal: -Drevision=$VERSION --projects .,ebegu-web -Pdvbern.oss -Pci -Pfrontend clean install
             archive-path: ebegu-web/target/*.tar.gz
-
-    # TODO enable nightly arquillian test
-    # - component: gitlab.dvbern.ch/components/maven@v2.0.1
-    #   rules:
-    #     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $CI_PIPELINE_SOURCE == "schedule"
-    #   inputs:
-    #     java-image: docker-registry.dvbern.ch/kibon/build-environment/mvn-npm-gitflow-chromium
-    #     java-image-version: jdk11-old
-    #     maven-goal: -Pdvbern.oss -Pfrontend -Pci -Ptest-wildfly-managed clean verify
 
     # TODO public or private registry? using a private base image and pushing the resulting image to public registry is not supported at the moment
     -   component: 'gitlab.dvbern.ch/mobj/buildah@a7143bb366f9ee8e1ddfd1813acb1649a104cb36'
@@ -139,6 +152,8 @@ deploy:
         - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
         - if: $CI_MERGE_REQUEST_SOURCE_BRANCH_NAME =~ /^feature/
           when: manual
+        - if: $CI_COMMIT_BRANCH =~ /^hotfix/ || $CI_COMMIT_BRANCH =~ /^warmfix/
+          when: manual
         - if: $CI_COMMIT_TAG
           when: never
 
@@ -157,8 +172,8 @@ create-build-args:
             - build-args.env
     needs: []
 
-build-backend-without-arquillian:
-    extends: .build-backend-without-arquillian
+build-backend:
+    extends: .build-backend
     needs: []
 
 build-frontend:
@@ -174,5 +189,5 @@ build-frontend-image:
 build-backend-image:
     extends: .build-backend-image
     needs:
-        - build-backend-without-arquillian
+        - build-backend
         - create-build-args
