@@ -1869,8 +1869,10 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 			Objects.requireNonNull(betreuungsmitteilung.getBetreuung());
 			Gesuch mutation =
 					doApplymitteilung(betreuungsmitteilung, betreuungsmitteilung.getBetreuung().extractGesuch());
-			acceptFinSit(mutation);
 			if (canGesuchBeAutomatischVerfuegt(mutation)) {
+				acceptFinSit(mutation);
+				mutation = setGesuchGeprueft(mutation);
+				mutation = gesuchService.verfuegenStarten(mutation);
 				verfuegungService.gesuchAutomatischVerfuegen(mutation);
 			}
 			persistence.getEntityManager().flush();
@@ -1908,6 +1910,11 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 	private void acceptFinSit(Gesuch mutation) {
 		mutation.setFinSitStatus(FinSitStatus.AKZEPTIERT);
 		gesuchService.updateGesuch(mutation, false, null);
+	}
+
+	private Gesuch setGesuchGeprueft(Gesuch mutation) {
+		mutation.setStatus(AntragStatus.GEPRUEFT);
+		return gesuchService.updateGesuch(mutation, true, null);
 	}
 
 	@Override

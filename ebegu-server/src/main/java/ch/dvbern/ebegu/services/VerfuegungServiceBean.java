@@ -162,7 +162,7 @@ public class VerfuegungServiceBean extends AbstractBaseService implements Verfue
 	@Override
 	public void gesuchAutomatischVerfuegen(@Nonnull Gesuch mutation) {
 		Preconditions.checkArgument(mutation.isMutation());
-		Preconditions.checkArgument(mutation.getStatus() == AntragStatus.IN_BEARBEITUNG_JA);
+		Preconditions.checkArgument(mutation.getStatus() == AntragStatus.VERFUEGEN);
 		Preconditions.checkArgument(mutation.isNewlyCreatedMutation());
 
 		mutation.getKindContainers().forEach(kindContainer -> {
