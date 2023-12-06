@@ -3,6 +3,7 @@ stages: [ build, prepare-package, package, release, deploy, mirror ]
 
 variables:
     VERSION: $CI_COMMIT_SHA
+    MAVEN_BACKEND_PROFILES: -Pdvbern.oss -Ptest-wildfly-dependencies -Pcopy-wildfly-dependencies -P\!frontend
 
 workflow:
     rules:
@@ -27,6 +28,7 @@ workflow:
         # Release
         -   if: $CI_COMMIT_TAG
             variables:
+                MAVEN_BACKEND_PROFILES: -Ptest-wildfly-dependencies -Pdvbern.oss -Ptest-wildfly-dependencies -Pcopy-wildfly-dependencies -P\!frontend
                 VERSION: $CI_COMMIT_TAG
                 MAVEN_GOAL: install
         # Hotfix
@@ -40,25 +42,13 @@ workflow:
                 MAVEN_GOAL: install
 
 include:
-    -   component: gitlab.dvbern.ch/mobj/maven@89ec140318641f5a453983b8c04454bd6b1932b8
-        rules:
-            - if: $CI_COMMIT_BRANCH !~ /^hotfix/ || $CI_COMMIT_BRANCH !~ /^warmfix/
-        inputs:
-            name: .build-backend
-            java-image: docker-registry.dvbern.ch/kibon/build-environment/mvn-npm-gitflow-chromium
-            java-image-version: jdk11-old
-            maven-goal: -Drevision=$VERSION -Pdvbern.oss -Pcopy-wildfly-dependencies -P\!frontend clean install
-            archive-path: ebegu-rest/target # we need ebegu-rest WAR, sentry JAR and belogin-connector WAR
-
     # TODO scheduled nightly Arquillian runs
     -   component: gitlab.dvbern.ch/mobj/maven@89ec140318641f5a453983b8c04454bd6b1932b8
-        rules:
-          - if: $CI_COMMIT_TAG && $CI_COMMIT_BRANCH =~ /^hotfix/ || $CI_COMMIT_BRANCH =~ /^warmfix/
         inputs:
             name: .build-backend
             java-image: docker-registry.dvbern.ch/kibon/build-environment/mvn-npm-gitflow-chromium
             java-image-version: jdk11-old
-            maven-goal: -Drevision=$VERSION -Pdvbern.oss -Ptest-wildfly-dependencies -Pcopy-wildfly-dependencies -P\!frontend clean install
+            maven-goal: -Drevision=$VERSION $MAVEN_BACKEND_PROFILES clean install
             archive-path: ebegu-rest/target # we need ebegu-rest WAR, sentry JAR and belogin-connector WAR
 
     -   component: gitlab.dvbern.ch/mobj/maven@89ec140318641f5a453983b8c04454bd6b1932b8
@@ -145,7 +135,7 @@ deploy:uat:
 
 deploy:iat:
     rules:
-        - if: $CI_COMMIT_TAG && $CI_COMMIT_BRANCH =~ /^hotfix/ || $CI_COMMIT_BRANCH =~ /^warmfix/
+        - if: ($CI_COMMIT_TAG && $CI_COMMIT_BRANCH =~ /^hotfix/) || $CI_COMMIT_BRANCH =~ /^warmfix/
           when: manual
     environment:
         name: iat
