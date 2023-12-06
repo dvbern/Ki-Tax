@@ -19,26 +19,9 @@ import {ControllEditTagesschulePO, CreateTagesschulePO, EditTagesschulePO} from 
 
 describe('Kibon - generate Tagesschule Institutionen', () => {
     const superAdmin = getUser('[1-Superadmin] E-BEGU Superuser')
-    const gemeindeAdministator = getUser('[6-Admin-Gemeinde] Gerlinde Hofstetter');
+    const gemeindeAdministator = getUser('[6-P-Admin-Gemeinde] Gerlinde Hofstetter');
 
     let tagesschuleDynamischName = '';
-
-    after(() => {
-        cy.login(superAdmin);
-        cy.visit('/#/institution/list');
-        cy.getByData('list-search-field').type('-cy-');
-        cy.getByData('item-name')
-            .each($el => cy.wrap($el).should('include.text', '-cy-'));
-        cy.getByData('remove-entry').its('length').then(length => {
-            for (let i = length - 1; i >= 0; i--) {
-                cy.getByData('remove-entry').eq(i).click();
-                cy.intercept({method: 'GET', pathname: '**/institutionen/editable/currentuser/listdto', times: 1})
-                    .as('deletingRow');
-                cy.getByData('remove-ok').click();
-                cy.wait('@deletingRow');
-            }
-        });
-    })
 
     beforeEach(() => {
         cy.intercept({resourceType: 'xhr'}, {log: false}); // don't log XHRs
@@ -118,4 +101,21 @@ describe('Kibon - generate Tagesschule Institutionen', () => {
         // header + 2 Module
         cy.getByData('institution.gesuchsperiode.module.table-1').find('tr').its('length').should('eq', 3);
     });
+
+    it('should delete created Tagesschule', () => {
+        cy.getByData('list-search-field').type('-cy-');
+        cy.getByData('item-name')
+            .each($el => cy.wrap($el).should('include.text', '-cy-'));
+        cy.getByData('remove-entry').its('length').then(length => {
+            for (let i = length - 1; i >= 0; i--) {
+                cy.getByData('remove-entry').eq(i).click();
+                cy.intercept({method: 'GET', pathname: '**/institutionen/editable/currentuser/listdto', times: 1})
+                    .as('deletingRow');
+                cy.getByData('remove-ok').click();
+                cy.wait('@deletingRow');
+            }
+        });
+        cy.getByData('list-search-field').clear().type('-cy-');
+        cy.getByData('item-name').should('have.length', 0);
+    })
 });
