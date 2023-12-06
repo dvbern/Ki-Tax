@@ -144,7 +144,8 @@
                                type="submit"
                                button-click="vm.gesuchEinreichen()"
                                aria-label="vm.getButtonLabel()"
-                               button-disabled="!vm.canBeFreigegeben()">
+                               button-disabled="!vm.canBeFreigegeben()"
+                               data-test="container.freigeben">
 				<span ng-bind="vm.getButtonLabel()"></span>
             </dv-loading-button>
         </span>

@@ -45,3 +45,5 @@ ebegu-ws/src/test/
 /ebegu-dbschema/src/main/resources/_vorher.sql
 /ebegu-dbschema/_dbNachher.sql
 /ebegu-dbschema/_dbVorher.sql
+
+.flattened-pom.xml

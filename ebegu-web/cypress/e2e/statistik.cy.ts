@@ -4,7 +4,7 @@ describe('Kibon - generate Statistiken', () => {
     const downloadsPath = Cypress.config('downloadsFolder');
     const fileName = 'StatistikTest.xlsx';
     const userSuperadmin = getUser('[1-Superadmin] E-BEGU Superuser');
-    const userSB = getUser('[6-SB-Gemeinde] Stefan Wirth');
+    const userSB = getUser('[6-P-SB-Gemeinde] Stefan Wirth');
 
     before(() => {
         cy.login(userSuperadmin);
