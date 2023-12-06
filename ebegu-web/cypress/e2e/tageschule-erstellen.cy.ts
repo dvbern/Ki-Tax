@@ -18,7 +18,8 @@ import {getUser} from '@dv-e2e/types';
 import {ControllEditTagesschulePO, CreateTagesschulePO, EditTagesschulePO} from '../page-objects/antrag/tagesschule.po';
 
 describe('Kibon - generate Tagesschule Institutionen', () => {
-    const gemeindeAdministator = getUser('[6-Admin-Gemeinde] Gerlinde Hofstetter');
+    const superAdmin = getUser('[1-Superadmin] E-BEGU Superuser')
+    const gemeindeAdministator = getUser('[6-P-Admin-Gemeinde] Gerlinde Hofstetter');
 
     let tagesschuleDynamischName = '';
 
@@ -37,7 +38,7 @@ describe('Kibon - generate Tagesschule Institutionen', () => {
 
         cy.getByData('institution.edit.submit').click();
         cy.getByData('institution.edit.name').invoke('val').then((value) => {
-            this.tagesschuleDynamischName = value;
+            tagesschuleDynamischName = value;
         })
         // Module 1
         cy.getByData('institution.gesuchsperiode-1').find('.dv-accordion-tab-title').click();
@@ -88,7 +89,7 @@ describe('Kibon - generate Tagesschule Institutionen', () => {
         cy.getByData('institution.edit.submit').click();
         cy.getByData('institution.gesuchsperiode-1').find('.dv-accordion-tab-title').click();
         cy.getByData('institution.gesuchsperiode.import.modul-1').click();
-        cy.getByData('institution.tageschule.modul.import.institution').select(this.tagesschuleDynamischName);
+        cy.getByData('institution.tageschule.modul.import.institution').select(tagesschuleDynamischName);
         cy.getByData('institution.tageschule.modul.import.gesuchsperiode').select(0);
         cy.getByData('institution.tageschule.modul.import.button').click();
         cy.getByData('institution.tageschule.modul.import.button').should('not.exist');
@@ -100,4 +101,21 @@ describe('Kibon - generate Tagesschule Institutionen', () => {
         // header + 2 Module
         cy.getByData('institution.gesuchsperiode.module.table-1').find('tr').its('length').should('eq', 3);
     });
+
+    it('should delete created Tagesschule', () => {
+        cy.getByData('list-search-field').type('-cy-');
+        cy.getByData('item-name')
+            .each($el => cy.wrap($el).should('include.text', '-cy-'));
+        cy.getByData('remove-entry').its('length').then(length => {
+            for (let i = length - 1; i >= 0; i--) {
+                cy.getByData('remove-entry').eq(i).click();
+                cy.intercept({method: 'GET', pathname: '**/institutionen/editable/currentuser/listdto', times: 1})
+                    .as('deletingRow');
+                cy.getByData('remove-ok').click();
+                cy.wait('@deletingRow');
+            }
+        });
+        cy.getByData('list-search-field').clear().type('-cy-');
+        cy.getByData('item-name').should('have.length', 0);
+    })
 });
