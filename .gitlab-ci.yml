@@ -143,6 +143,16 @@ deploy:uat:
         url: https://uat.kibon.ch
     extends: .docker-compose-deploy:uat
 
+deploy:iat:
+    rules:
+        - if: $CI_COMMIT_TAG && $CI_COMMIT_BRANCH =~ /^hotfix/ || $CI_COMMIT_BRANCH =~ /^warmfix/
+          when: manual
+    environment:
+        name: iat
+        url: https://iat.kibon.ch
+    extends: .docker-compose-deploy
+
+
 deploy:
     extends: .docker-compose-deploy
     environment:
@@ -151,8 +161,6 @@ deploy:
     rules:
         - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
         - if: $CI_MERGE_REQUEST_SOURCE_BRANCH_NAME =~ /^feature/
-          when: manual
-        - if: $CI_COMMIT_TAG && $CI_COMMIT_BRANCH =~ /^hotfix/ || $CI_COMMIT_BRANCH =~ /^warmfix/
           when: manual
         - if: $CI_COMMIT_TAG
           when: never
