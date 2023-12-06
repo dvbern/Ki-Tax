@@ -33,10 +33,10 @@ workflow:
         -   if: $CI_COMMIT_BRANCH =~ /^hotfix/
             variables:
                 VERSION: $CI_REF_SLUG
-                SERVICE_NAME: TODO
-                SSH_HOST: TODO
+                SERVICE_NAME: kibon-iat
+                SSH_HOST: sdvbvmkiba41.dvbern.ch
                 DEPLOY_ENV: hotfix
-                DEPLOY_URL: TODO
+                DEPLOY_URL: https://iat.kibon.ch
                 MAVEN_GOAL: install
 
 include:
