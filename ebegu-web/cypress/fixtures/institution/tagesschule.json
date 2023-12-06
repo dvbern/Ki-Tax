@@ -1,0 +1,28 @@
+{
+    "valid": {
+        "dynamisch": {
+            "anschrift": "Tagesschule-dynamo-cy",
+            "strasse": "Dynamostrasse",
+            "hausnummer": "1",
+            "plz": "3000",
+            "ort": "Bern",
+            "gueltigAb": "1.8.2020"
+        },
+        "scolaris": {
+            "anschrift": "Tagesschule-scolaris-cy",
+            "strasse": "Scolarisstrasse",
+            "hausnummer": "1",
+            "plz": "3000",
+            "ort": "Bern",
+            "gueltigAb": "1.8.2020"
+        },
+        "import": {
+            "anschrift": "Tagesschule-import-cy",
+            "strasse": "Importstrasse",
+            "hausnummer": "1",
+            "plz": "3000",
+            "ort": "Bern",
+            "gueltigAb": "1.8.2020"
+        }
+    }
+}
