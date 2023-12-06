@@ -3,13 +3,6 @@ stages: [ build, prepare-package, package, release, deploy, mirror ]
 
 variables:
     VERSION: $CI_COMMIT_SHA
-    RELEASE_TO:
-        value: "uat"
-        options:
-            - "uat"
-            - "prod"
-    RELEASE_VERSION:
-        description: "The version of the release to build and push"
 
 workflow:
     rules:
@@ -32,21 +25,10 @@ workflow:
                 DEPLOY_URL: https://dev-preview.kibon.ch
                 MAVEN_GOAL: install
         # Release
-        -   if: $RELEASE_VERSION != ""
+        -   if: $CI_COMMIT_TAG
             variables:
-                VERSION: $RELEASE_VERSION
-                DEPLOY_ENV: $RELEASE_TO
+                VERSION: $CI_COMMIT_TAG
                 MAVEN_GOAL: install
-        -   if: $RELEASE_TO == "uat"
-            variables:
-                SERVICE_NAME: kibon-uat
-                SSH_HOST: sdvbvmkiba21.dvbern.ch sdvbvmkiba22.dvbern.ch
-                DEPLOY_URL: https://uat.kibon.ch
-        -   if: $RELEASE_TO == "prod"
-            variables:
-                SERVICE_NAME: kibon
-                SSH_HOST: sdvbvmkiba01.dvbern.ch sdvbvmkiba02.dvbern.ch
-                DEPLOY_URL: https://kibon.ch
 
 include:
     -   component: gitlab.dvbern.ch/mobj/maven@89ec140318641f5a453983b8c04454bd6b1932b8
@@ -100,7 +82,7 @@ include:
             version: $VERSION
             push-enabled: "true"
 
-    -   component: 'gitlab.dvbern.ch/fuju/docker-compose-deploy@main'
+    -   component: 'gitlab.dvbern.ch/fuju/docker-compose-deploy@4ecd5519fb57c296f9e9745de8fb98858d20e19a'
         inputs:
             name: .docker-compose-deploy
             service-name: $SERVICE_NAME
@@ -110,8 +92,46 @@ include:
             ssh-private-key: $KIBON_SSH_PRIVATE_KEY
             ssh-target: '$SSH_HOST'
 
+    -   component: 'gitlab.dvbern.ch/fuju/docker-compose-deploy@4ecd5519fb57c296f9e9745de8fb98858d20e19a'
+        inputs:
+            name: .docker-compose-deploy:prod
+            service-name: kibon
+            version: $VERSION
+            version-env-var: 'TAGTOUSE'
+            ssh-user: $KIBON_DEPLOY_SSH_USER
+            ssh-private-key: $KIBON_SSH_PRIVATE_KEY
+            ssh-target: 'sdvbvmkiba01.dvbern.ch sdvbvmkiba02.dvbern.ch'
+
+    -   component: 'gitlab.dvbern.ch/fuju/docker-compose-deploy@4ecd5519fb57c296f9e9745de8fb98858d20e19a'
+        inputs:
+            name: .docker-compose-deploy:uat
+            service-name: kibon-uat
+            version: $VERSION
+            version-env-var: 'TAGTOUSE'
+            ssh-user: $KIBON_DEPLOY_SSH_USER
+            ssh-private-key: $KIBON_SSH_PRIVATE_KEY
+            ssh-target: 'sdvbvmkiba21.dvbern.ch sdvbvmkiba22.dvbern.ch'
+
+deploy:prod:
+    rules:
+        - if: $CI_COMMIT_TAG
+          when: manual
+    environment:
+        name: prod
+        url: https://kibon.ch
+    extends: .docker-compose-deploy:prod
+
+deploy:uat:
+    rules:
+        - if: $CI_COMMIT_TAG
+          when: manual
+    environment:
+        name: uat
+        url: https://uat.kibon.ch
+    extends: .docker-compose-deploy:uat
+
 deploy:
-    extends: .docker-compose-deploy:$SERVICE_NAME
+    extends: .docker-compose-deploy
     environment:
         name: $DEPLOY_ENV
         url: $DEPLOY_URL
@@ -119,8 +139,8 @@ deploy:
         - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
         - if: $CI_MERGE_REQUEST_SOURCE_BRANCH_NAME =~ /^feature/
           when: manual
-        - if: $RELEASE_VERSION
-          when: manual
+        - if: $CI_COMMIT_TAG
+          when: never
 
 create-build-args:
     image: '$DVB_DOCKER_REGISTRY/dockerhub/library/eclipse-temurin:11-jdk-alpine'
