@@ -104,6 +104,8 @@ public class LastenausgleichTagesschuleAngabenGemeindeServiceBean extends Abstra
 	@Inject
 	private BenutzerService benutzerService;
 
+	private static final SecureRandom RANDOM = new SecureRandom();
+
 	private static final Logger LOG =
 		LoggerFactory.getLogger(LastenausgleichTagesschuleAngabenGemeindeServiceBean.class);
 
@@ -826,7 +828,7 @@ public class LastenausgleichTagesschuleAngabenGemeindeServiceBean extends Abstra
 						container.getGemeinde().getMandant());
 				}
 
-				BigDecimal randomNumber = new BigDecimal(new SecureRandom().nextDouble(), MathContext.DECIMAL64);
+				BigDecimal randomNumber = new BigDecimal(RANDOM.nextDouble(), MathContext.DECIMAL64);
 
 				BigDecimal betreuungsstundenTotal = container.getAngabenKorrektur()
 					.getGeleisteteBetreuungsstundenBesondereBeduerfnisse()
