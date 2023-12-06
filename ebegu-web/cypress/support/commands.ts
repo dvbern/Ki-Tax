@@ -87,6 +87,29 @@ declare global {
             ): Chainable<ReturnType<T>>;
 
             resetViewport(): Chainable<Subject>;
+
+            /**
+             * Run an action and wait for a given download to initiate, the download url is the resulting subject
+             *
+             * @example
+             *  cy.getDownloadUrl(() => {
+             *      cy.getByData('statistik#0').click();
+             *  }).as('downloadUrl');
+             *
+             *  cy.get<string>('@downloadUrl').then((url) => {
+             *      cy.log(`downloading ${url}`);
+             *      cy.downloadFile(url, fileName).as('download');
+             *  });
+             *
+             *  // or
+             *
+             *  cy.get<string>('@downloadUrl').then((url) => {
+             *      cy.request(url).then(response => {
+             *          expect(response.headers['content-disposition']).to.match(/Statistik.*\.csv/)
+             *      });
+             *  });
+             */
+            getDownloadUrl(downloadAction: () => void): Chainable<string>;
         }
     }
 }
@@ -150,4 +173,32 @@ Cypress.Commands.add('resetViewport', () => {
 Cypress.Commands.add('closeMaterialOverlay', () => {
     cy.log('Closing material dialog/overlay');
     cy.get('.md-menu-backdrop').should('not.have.class', 'ng-animate').click();
+});
+Cypress.Commands.add('getDownloadUrl', (action) => {
+    cy.window().then((win) => {
+        const result = new Promise<string>((resolve) => {
+            // Mock the first window.open call to render the download preparation page into an iframe
+            cy.stub(win, 'open').callsFake((url) => {
+                const iframe = win.document.createElement('iframe');
+                iframe.src = url;
+                win.document.body.appendChild(iframe);
+                const newWin = iframe.contentWindow;
+
+                iframe.onload = function (this: any) {
+                    // Mock the second window.open to obtain the download url
+                    cy.stub(this.contentWindow, 'open').callsFake((url) => {
+                        resolve(url);
+                        iframe.onload = null;
+                        iframe.remove();
+
+                        return this.contentWindow;
+                    });
+                };
+
+                return newWin;
+            });
+        });
+        action();
+        return cy.wrap(result);
+    });
 });

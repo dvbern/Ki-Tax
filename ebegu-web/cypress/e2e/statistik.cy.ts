@@ -43,18 +43,9 @@ describe('Kibon - generate Statistiken', () => {
             'Bereit zum Download'
         );
 
-        cy.window()
-            .then((win) => {
-                // Listen for download events (window.open)
-                const promise = getDownloadUrl(win);
-
-                // Continue once the download URL has been created
-                return cy
-                    .getByData('statistik#0')
-                    .click()
-                    .then(() => promise);
-            })
-            .as('downloadUrl');
+        cy.getDownloadUrl(() => {
+            cy.getByData('statistik#0').click();
+        }).as('downloadUrl');
         cy.get<string>('@downloadUrl').then((url) => {
             cy.log(`downloading ${url}`);
             cy.downloadFile(url, fileName).as('download');
@@ -92,27 +83,3 @@ describe('Kibon - generate Statistiken', () => {
             });
     });
 });
-
-/**
- * The download is managed by a window.open with target=_blank which then triggers a new window.open to obtain the download URL
- */
-const getDownloadUrl = (win: Cypress.AUTWindow) => {
-    return new Promise((resolve) => {
-        // Mock the first window.open call to render the download preparation page into an iframe
-        cy.stub(win, 'open').callsFake((url) => {
-            const iframe = win.document.createElement('iframe');
-            iframe.src = url;
-            win.document.body.appendChild(iframe);
-            const newWin = iframe.contentWindow;
-
-            // Mock the second window.open to obtain the download url
-            cy.stub(newWin, 'open').callsFake((url) => {
-                resolve(url);
-
-                return newWin;
-            });
-
-            return newWin;
-        });
-    });
-};
