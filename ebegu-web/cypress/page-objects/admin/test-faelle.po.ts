@@ -24,7 +24,7 @@ const createNewTestFaelle = (testFall: TestFall) => {
     cy.getByData('gemeinde').click();
     cy.getByData('gemeinde.London').click();
     cy.getByData('periode').click();
-    cy.getByData('periode.2022/23').click();
+    cy.getByData('periode.2023/24').click();
     cy.getByData('creationType.warten').find('label').click();
     cy.getByData(testFall).click();
     cy.get('[data-test="dialog-link"]', {timeout: 20000}).click();
