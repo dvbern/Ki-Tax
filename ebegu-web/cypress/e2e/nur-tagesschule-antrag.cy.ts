@@ -15,12 +15,12 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {TestFaellePO} from '@dv-e2e/page-objects';
+import {AnmeldungTagesschulePO, TestFaellePO} from '@dv-e2e/page-objects';
 import { getUser } from '@dv-e2e/types';
 
 describe('Kibon - Tagesschule Only [Superadmin]', () => {
     const adminUser = getUser('[1-Superadmin] E-BEGU Superuser');
-    const testTagesschule = 'Tagesschule Paris';
+
 
     beforeEach(() => {
         cy.intercept({resourceType: 'xhr'}, {log: false}); // don't log XHRs
@@ -42,15 +42,11 @@ describe('Kibon - Tagesschule Only [Superadmin]', () => {
         cy.getByData('container.create-betreuung','navigation-button').click();
 
         // anmeldung Tagesschule erfassen
-        cy.getByData('betreuungsangebot').select('Tagesschule');
-        cy.getByData('institution').find('input').focus().type(testTagesschule, { delay: 30 });
-        cy.getByData('instutions-suchtext').click();
-        cy.getByData('institution').find('input').should('have.value',testTagesschule);
-        cy.getByData('keineKesbPlatzierungk.radio-value.nein').click();
-        cy.get('[data-test$="-MONDAY"]').first().click();
-        cy.get('[data-test$="-THURSDAY"]').first().click();
-        cy.getByData('agb-tsakzeptiert').click();
-        cy.getByData('container.save','navigation-button').click();
+        AnmeldungTagesschulePO.fillAnmeldungTagesschule();
+
+        // anmeldung akkzeptieren
+        cy.getByData('editBetreuungButton1_0','navigation-button').click();
+        cy.getByData('container.akzeptieren','navigation-button').click();
         cy.getByData('container.confirm','navigation-button').click();
 
         // Antrag abschliessen
@@ -61,5 +57,7 @@ describe('Kibon - Tagesschule Only [Superadmin]', () => {
         cy.getByData('container.confirm','navigation-button').click();
         cy.wait('@abschliessenGesuch');
         cy.getByData('gesuch.status').should('have.text', 'Abgeschlossen');
+        cy.getByData('betreuungs-status').should('have.text', 'Anmeldung übernommen');
+
     });
 });

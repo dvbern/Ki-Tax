@@ -77,7 +77,8 @@
                                     <dv-loading-button type="button" button-click="vm.editBetreuung(kind, betreuung);"
                                                        button-class="dv-btn-operation dv-btn-row"
                                                        title="{{'TABLE_EDIT'|translate}}"
-                                                       aria-label="{{'TABLE_EDIT'|translate}}">
+                                                       aria-label="{{'TABLE_EDIT'|translate}}"
+                                                       data-test="{{'editBetreuungButton' + kind.kindNummer + '_' + $index}}">
                                         <i class="fa fa-lg fa-arrow-right" aria-label="{{'TABLE_EDIT'|translate}}">
                                         </i>
                                     </dv-loading-button>
