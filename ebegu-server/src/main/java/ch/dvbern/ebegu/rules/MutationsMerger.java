@@ -15,8 +15,21 @@
 
 package ch.dvbern.ebegu.rules;
 
+import java.time.LocalDate;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Objects;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import ch.dvbern.ebegu.dto.BGCalculationInput;
-import ch.dvbern.ebegu.entities.*;
+import ch.dvbern.ebegu.entities.AbstractPlatz;
+import ch.dvbern.ebegu.entities.BGCalculationResult;
+import ch.dvbern.ebegu.entities.Betreuung;
+import ch.dvbern.ebegu.entities.Verfuegung;
+import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.MsgKey;
 import ch.dvbern.ebegu.enums.ZahlungslaufTyp;
@@ -25,15 +38,9 @@ import com.google.common.collect.ImmutableList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import java.time.LocalDate;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Objects;
-
-import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.*;
+import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.KITA;
+import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.TAGESFAMILIEN;
+import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.TAGESSCHULE;
 
 /**
  * Sonderregel das Ergenis der aktuellen Berechnung mit der Vorhergehenden merged.
@@ -104,10 +111,6 @@ public final class MutationsMerger extends AbstractAbschlussRule {
 								vorgaengerZeitabschnittVerfugegungAusbezahlt :
 								vorangehenderAbschnitt);
 
-				if (platz.isAngebotSchulamt() && platz.hasVorgaenger() && inputAsiv.isZuSpaetEingereicht()) {
-					inputAsiv.setZuSpaetEingereicht(vorangehenderAbschnitt.isZuSpaetEingereicht());
-				}
-
 				BGCalculationInput inputGemeinde = verfuegungZeitabschnitt.getBgCalculationInputGemeinde();
 				BGCalculationResult resultGemeindeVorangehenderAbschnitt = vorangehenderAbschnitt.getBgCalculationResultGemeinde();
 
@@ -163,6 +166,9 @@ public final class MutationsMerger extends AbstractAbschlussRule {
 		handleAnpassungErweiterteBeduerfnisse(inputAktuel, resultVorgaenger, mutationsEingansdatum);
 		handleEinreichfrist(inputAktuel, mutationsEingansdatum);
 		handleAnpassungAnspruch(inputAktuel, resultVorgaenger, mutationsEingansdatum);
+		if (platz.isAngebotSchulamt() && platz.hasVorgaenger() && inputAktuel.isZuSpaetEingereicht()) {
+			inputAktuel.setZuSpaetEingereicht(resultVorgaenger.isZuSpaetEingereicht());
+		}
 	}
 
 	private void handleFinanzielleSituation(

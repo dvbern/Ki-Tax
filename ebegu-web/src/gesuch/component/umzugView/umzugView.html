@@ -82,7 +82,8 @@
                              dv-show-expression="!vm.isGesuchReadonly()">
                             <dv-loading-button type="button" button-click="vm.createUmzugAdresse()"
                                                button-class="dv-btn-operation"
-                                               button-disabled="vm.isKorrekturModusJugendamt()">
+                                               button-disabled="vm.isKorrekturModusJugendamt()"
+                                               data-test="container.hinzufuegen">
                                 <i class="fa fa-lg fa-plus-circle"></i>
                                 <span data-translate="UMZUG_HINZUFUEGEN"></span>
                             </dv-loading-button>

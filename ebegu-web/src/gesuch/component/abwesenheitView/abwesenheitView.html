@@ -54,6 +54,7 @@
                                         <select aria-describedby="betreuungsangebot-{{$index}}-error"
                                                 name="betreuungsangebot-{{$index}}" id="betreuungsangebot-{{$index}}"
                                                 ng-model="abwesenheitInstance.kindBetreuung"
+                                                data-test="kind"
                                                 class="input-element form-control"
                                                 ng-options="betreuungsangebot as vm.getTextForBetreuungDDL(betreuungsangebot) for betreuungsangebot in vm.getBetreuungList()"
                                                 ng-required="true"
@@ -76,6 +77,7 @@
                                     </label>
                                     <dv-datepicker input-id="datumAb-{{$index}}" name="datumAb-{{$index}}"
                                                    class="input-element"
+                                                   data-test="abwesenheit-von"
                                                    ng-model="abwesenheitInstance.abwesenheit.abwesenheitJA.gueltigkeit.gueltigAb"
                                                    ng-required="true"
                                                    ng-attr-placeholder="{{'DATE_PLACEHOLDER' | translate}}">
@@ -95,6 +97,7 @@
                                     </label>
                                     <dv-datepicker input-id="datumBis-{{$index}}" name="datumBis-{{$index}}"
                                                    class="input-element"
+                                                   data-test="abwesenheit-bis"
                                                    ng-model="abwesenheitInstance.abwesenheit.abwesenheitJA.gueltigkeit.gueltigBis"
                                                    ng-required="true"
                                                    ng-attr-placeholder="{{'DATE_PLACEHOLDER' | translate}}">
@@ -118,6 +121,7 @@
                                                    button-click="vm.removeAbwesenheitConfirm(abwesenheitInstance)"
                                                    button-class="dv-btn-operation"
                                                    button-disabled="vm.isKorrekturModusJugendamt()"
+                                                   data-test="container.entfernen"
                                                    title="{{'ABWESENHEIT_DELETE' | translate}}">
                                     <i class="fa fa-lg fa-trash-o"
                                        aria-label="{{'ABWESENHEIT_DELETE' | translate}}"></i>
@@ -137,6 +141,7 @@
                     <div class="col-md-12">
                         <dv-loading-button type="button" button-click="vm.createAbwesenheit()"
                                            button-class="dv-btn-operation"
+                                           data-test="container.erfassen"
                                            dv-enable-element
                                            dv-enable-allowed-roles="vm.TSRoleUtil.getTraegerschaftInstitutionRoles()"
                                            button-disabled="vm.isKorrekturModusJugendamt()">
