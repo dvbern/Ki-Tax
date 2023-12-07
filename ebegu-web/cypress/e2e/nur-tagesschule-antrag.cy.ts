@@ -29,7 +29,7 @@ describe('Kibon - Tagesschule Only [Superadmin]', () => {
     });
 
     it('should create a prefilled new Testfall Antrag', () => {
-        TestFaellePO.createNewTestFaelle('testfall-1', 'gemeinde.Paris') ;
+        TestFaellePO.createNewTestFaelle('testfall-1', 'Paris') ;
 
         cy.getByData('sidenav.BETREUUNG').click();
         // delete other betreuung nur lats

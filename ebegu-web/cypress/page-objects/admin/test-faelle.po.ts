@@ -17,12 +17,12 @@
 
 import {GemeindeTestFall, TestFall} from '@dv-e2e/types';
 
-const createNewTestFaelle = (testFall: TestFall, gemeinde: GemeindeTestFall) => {
+const createNewTestFaelle = (testFall: TestFall, gemeindeName: GemeindeTestFall) => {
     cy.getByData('page-title').contains('Alle Fälle');
     cy.getByData('page-menu').click();
     cy.getByData('action-admin.testdaten').click();
     cy.getByData('gemeinde').click();
-    cy.getByData(gemeinde).click();
+    cy.getByData(`gemeinde.${gemeindeName}`).click();
     cy.getByData('periode').click();
     cy.getByData('periode.2022/23').click();
     cy.getByData('creationType.warten').find('label').click();
