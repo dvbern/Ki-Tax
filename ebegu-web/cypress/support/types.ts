@@ -85,4 +85,4 @@ export type OnlyValidSelectors<T> = T extends string
 
 export type TestFall = 'testfall-1' | 'testfall-2';
 
-export type GemeindeTestFall = 'gemeinde.London' | 'gemeinde.Paris';
+export type GemeindeTestFall = 'London' | 'Paris';
