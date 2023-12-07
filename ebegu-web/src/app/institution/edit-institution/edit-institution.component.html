@@ -41,13 +41,14 @@
                 </div>
 
                 <div class="row">
-                    <!-- Anschrift -->
+                    <!-- Name -->
                     <div class="col-sm-6">
                         <div class="form-group">
                             <h3 class="required" translate for="name_id">NAME</h3>
                             <input id="name_id" type="text" name="name_id" #name="ngModel"
                                    [(ngModel)]="stammdaten.institution.name"
                                    [maxlength]="255" class="form-control"
+                                   data-test="institution.edit.name"
                                    required>
                             <dv-error-messages [errorObject]="form.controls.name_id?.errors"
                                                inputId="name_id"></dv-error-messages>
@@ -83,7 +84,8 @@
                             <label class="required" translate for="anschrift_id">NAME_INSTITUION</label>
                             <input id="anschrift_id" type="text" name="anschrift_id" #name="ngModel"
                                    [(ngModel)]="stammdaten.adresse.organisation"
-                                   [maxlength]="255" class="form-control" required>
+                                   [maxlength]="255" class="form-control"
+                                   data-test="institution.edit.anschrift" required>
                             <dv-error-messages [errorObject]="form.controls.anschrift_id?.errors"
                                                inputId="anschrift_id"></dv-error-messages>
                         </div>
@@ -96,7 +98,8 @@
                             <input id="e_mail_id" type="email" name="e_mail_id" #name="ngModel"
                                    [(ngModel)]="stammdaten.mail"
                                    email
-                                   [maxlength]="255" class="form-control" required>
+                                   [maxlength]="255" class="form-control"
+                                   data-test="institution.edit.email" required>
                             <dv-error-messages [errorObject]="form.controls.e_mail_id?.errors"
                                                inputId="e_mail_id"></dv-error-messages>
                         </div>
@@ -109,7 +112,8 @@
                             <label class="required" translate for="strasse_id">ADRESSE_STRASSE</label>
                             <input id="strasse_id" type="text" name="strasse_id" #name="ngModel"
                                    [(ngModel)]="stammdaten.adresse.strasse"
-                                   [maxlength]="255" class="form-control" required>
+                                   [maxlength]="255" class="form-control"
+                                   data-test="institution.edit.strasse" required>
                             <dv-error-messages [errorObject]="form.controls.strasse_id?.errors"
                                                inputId="strasse_id"></dv-error-messages>
                         </div>
@@ -120,7 +124,8 @@
                             <label translate for="hausnummer_id">ADRESSE_NUMMER</label>
                             <input id="hausnummer_id" type="text" name="hausnummer_id" #name="ngModel"
                                    [(ngModel)]="stammdaten.adresse.hausnummer"
-                                   [maxlength]="255" class="form-control">
+                                   [maxlength]="255" class="form-control"
+                                   data-test="institution.edit.hausnummer">
                             <dv-error-messages [errorObject]="form.controls.hausnummer_id?.errors"
                                                inputId="hausnummer_id"></dv-error-messages>
                         </div>
@@ -133,7 +138,7 @@
                                    [(ngModel)]="stammdaten.telefon"
                                    [maxlength]="255" class="form-control"
                                    [pattern]="CONSTANTS.PATTERN_PHONE"
-                            >
+                                   data-test="institution.edit.telefon">
                             <dv-error-messages [errorObject]="form.controls.telefon_id?.errors"
                                                inputId="telefon_id"></dv-error-messages>
                         </div>
@@ -146,7 +151,8 @@
                             <label class="required" translate for="plz_id">ADRESSE_PLZ</label>
                             <input id="plz_id" type="text" name="plz_id" #name="ngModel"
                                    [(ngModel)]="stammdaten.adresse.plz"
-                                   [maxlength]="255" class="form-control" required>
+                                   [maxlength]="255" class="form-control"
+                                   data-test="institution.edit.plz" required>
                             <dv-error-messages [errorObject]="form.controls.plz_id?.errors"
                                                inputId="plz_id"></dv-error-messages>
                         </div>
@@ -157,7 +163,8 @@
                             <label class="required" translate for="ort_id">ADRESSE_ORT</label>
                             <input id="ort_id" type="text" name="ort_id" #name="ngModel"
                                    [(ngModel)]="stammdaten.adresse.ort"
-                                   [maxlength]="255" class="form-control" required>
+                                   [maxlength]="255" class="form-control"
+                                   data-test="institution.edit.ort" required>
                             <dv-error-messages [errorObject]="form.controls.ort_id?.errors"
                                                inputId="ort_id"></dv-error-messages>
                         </div>
@@ -168,7 +175,8 @@
                             <label translate for="webseite_id">WEBSEITE</label>
                             <input id="webseite_id" type="text" name="webseite_id" #name="ngModel"
                                    [(ngModel)]="stammdaten.webseite"
-                                   [maxlength]="255" class="form-control">
+                                   [maxlength]="255" class="form-control"
+                                   data-test="institution.edit.webseite">
                             <dv-error-messages [errorObject]="form.controls.webseite_id?.errors"
                                                inputId="webseite_id"></dv-error-messages>
                         </div>
@@ -195,7 +203,8 @@
                                            required
                                            [min]="getMinStartDate()"
                                            placeholder="{{'DATE_PLACEHOLDER' | translate}}"
-                                           [(ngModel)]="stammdaten.gueltigkeit.gueltigAb">
+                                           [(ngModel)]="stammdaten.gueltigkeit.gueltigAb"
+                                           data-test="institution.edit.gueltigAb">
                                     <mat-datepicker-toggle matSuffix [for]="begu_start_id"></mat-datepicker-toggle>
                                     <mat-datepicker #begu_start_id></mat-datepicker>
                                     <dv-error-messages inputId="begu_start_id"
@@ -212,7 +221,8 @@
                                            [min]="getMinByRole()"
                                            [disabled]="isDateStartEndDisabled()"
                                            placeholder="{{'DATE_PLACEHOLDER' | translate}}"
-                                           [(ngModel)]="stammdaten.gueltigkeit.gueltigBis">
+                                           [(ngModel)]="stammdaten.gueltigkeit.gueltigBis"
+                                           data-test="institution.edit.gueltigBis">
                                     <mat-datepicker-toggle matSuffix [for]="begu_ende_id"></mat-datepicker-toggle>
                                     <mat-datepicker #begu_ende_id></mat-datepicker>
                                     <dv-error-messages inputId="begu_ende_id"
@@ -437,7 +447,8 @@
                     translate>
                 {{'NUR_LATS_UMWANDELN'}}
             </button>
-            <button *ngIf="isStammdatenEditable()" [type]="'submit'" class="dv-btn next-button">
+            <button *ngIf="isStammdatenEditable()" [type]="'submit'" class="dv-btn next-button"
+                    data-test="institution.edit.submit">
                 {{submitButtonLabel()}}
             </button>
 <!--            KIBON-2168 temporarily hide "stammdaten sind korrekt" button-->

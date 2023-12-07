@@ -21,6 +21,8 @@ import type * as Kind from '../fixtures/antrag/kind.json';
 import type * as FamSit from '../fixtures/antrag/famsit.json';
 import type * as FinSit from '../fixtures/antrag/finsit.json';
 import type * as Papier from '../fixtures/antrag/papier.json';
+import type * as CreateTagesschule from '../fixtures/institution/create-tagesschule.json';
+import type * as Tagesschule from '../fixtures/institution/tagesschule.json';
 
 const fromFixture =
     <T, FixturePart extends keyof T = keyof T>(fixture: string, fixturePart: FixturePart) =>
@@ -52,3 +54,11 @@ export const FixturePapierAntrag = {
     // withValid: <T>(fn: (data: (typeof Papier)['valid']) => T) => cy.fixture('antrag/papier.json').then((data: typeof Papier) => fn(data.valid)),
     withValid: fromFixture<typeof Papier>('antrag/papier.json', 'valid'),
 };
+
+export const FixtureCreateTagesschule = {
+    withValid: fromFixture<typeof CreateTagesschule>('institution/create-tagesschule.json', 'valid'),
+}
+
+export const FixtureTagesschule = {
+    withValid: fromFixture<typeof Tagesschule>('institution/tagesschule.json', 'valid'),
+}
