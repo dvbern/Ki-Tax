@@ -32,7 +32,7 @@
             <i class="ellipsis-icon fa fa-chevron-down"></i>
         </button>
 
-        <md-menu-content class="menu-item-container">
+        <md-menu-content class="menu-item-container" ng-attr-data-test="container.{{vm.isSchulamt ? 'schul' : ''}}verantwortlicher">
 
             <md-menu-item class="menu-item-text uppercase" data-test="option.none">
                 <span>{{vm.getTitel()}}</span>
