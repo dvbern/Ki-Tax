@@ -43,9 +43,11 @@
             trackBy: trackById; let i = index">
             <dv-accordion-tab
                 [tabid]="i"
-                *ngIf="showGesuchsperiode(einstellungGP.gesuchsperiode.gueltigkeit)">
+                *ngIf="showGesuchsperiode(einstellungGP.gesuchsperiode.gueltigkeit)"
+                [attr.data-test]="'institution.gesuchsperiode-' + i"
+                >
                 <tab-title>
-                    <div class="message-header">
+                    <div class="message-header" >
                         <p class="fa fa-angle-right"></p>{{einstellungGP.gesuchsperiode.gesuchsperiodeString}}
                     </div>
                 </tab-title>
@@ -69,7 +71,7 @@
                             </div>
                         </div>
                         <div class="col-xs-12">
-                            <table class="table fixedtable table-hover" title="Title">
+                            <table class="table fixedtable table-hover" title="Title" [attr.data-test]="'institution.gesuchsperiode.module.table-' + i">
                                 <thead>
                                 <tr>
                                     <th *ngIf="isScolaris(einstellungGP.modulTagesschuleGroups)" translate>MODUL_NAME</th>
@@ -165,7 +167,8 @@
                             <div *ngIf="editMode && !isModulTagesschuleTypScolaris(einstellungGP)">
                                 <div>
                                     <button type="button" (click)="addModulTagesschuleGroup(einstellungGP)"
-                                            class="dv-btn dv-btn-operation add-module-button">
+                                            class="dv-btn dv-btn-operation add-module-button"
+                                            [attr.data-test]="'institution.gesuchsperiode.add.modul-' + i">
                                         <i class="fa fa-lg fa-plus-circle"></i>
                                         <span translate>MODUL_HINZUFUEGEN</span>
                                     </button>
@@ -182,7 +185,8 @@
                                     </a>
                                 </div>
                                 <div>
-                                    <a class="pointer" (click)="importFromOtherInstitution(einstellungGP)">
+                                    <a class="pointer" (click)="importFromOtherInstitution(einstellungGP)"
+                                       [attr.data-test]="'institution.gesuchsperiode.import.modul-' + i">
                                         <span>{{'IMPORT_FROM_OTHER_INSTITUTION' | translate}}</span>
                                     </a>
                                 </div>
