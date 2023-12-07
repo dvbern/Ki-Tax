@@ -1,6 +1,6 @@
 import { defineConfig } from 'cypress';
-import * as fs from 'fs';
-import * as path from 'path';
+
+import * as dvTasks from './cypress/support/tasks';
 
 const baseUrl = process.env.baseURL ?? 'http://local-be.kibon.ch:4200/';
 
@@ -10,16 +10,7 @@ export default defineConfig({
             // implement node event listeners here
 
             on('task', {
-                deleteDownload({ dirPath, fileName }) {
-                    fs.readdir(dirPath, (err, files) => {
-                        for (const file of files) {
-                            if (fileName && file === fileName) {
-                                fs.unlinkSync(path.join(dirPath, file));
-                            }
-                        }
-                    });
-                    return null;
-                },
+                ...dvTasks,
             });
         },
         projectId: 'ebegu-web',
