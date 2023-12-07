@@ -304,7 +304,8 @@
                 <dv-loading-button input-id="button_abschliessen" button-click="vm.setAbschliessen()"
                                    aria-label="{{'ABSCHLIESSEN' | translate}}"
                                    ng-if="vm.showAbschliessen() && !vm.showCloseWithoutAngebot()"
-                                   button-disabled="!vm.isFinSitChoosen() && !vm.gesuchModelManager.areThereOnlyFerieninsel()">
+                                   button-disabled="!vm.isFinSitChoosen() && !vm.gesuchModelManager.areThereOnlyFerieninsel()"
+                                   data-test="container.abschliessen">
                     <span class="uppercase" data-translate="ABSCHLIESSEN"></span>
                 </dv-loading-button>
                 <dv-loading-button input-id="button_ersteMahnung" button-click="vm.ersteMahnungErstellen()"
