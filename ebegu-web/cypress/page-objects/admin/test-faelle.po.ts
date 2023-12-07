@@ -15,14 +15,14 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {TestFall} from '@dv-e2e/types';
+import {GemeindeTestFall, TestFall} from '@dv-e2e/types';
 
-const createNewTestFaelle = (testFall: TestFall) => {
+const createNewTestFaelle = (testFall: TestFall, gemeinde: GemeindeTestFall) => {
     cy.getByData('page-title').contains('Alle Fälle');
     cy.getByData('page-menu').click();
     cy.getByData('action-admin.testdaten').click();
     cy.getByData('gemeinde').click();
-    cy.getByData('gemeinde.London').click();
+    cy.getByData(gemeinde).click();
     cy.getByData('periode').click();
     cy.getByData('periode.2022/23').click();
     cy.getByData('creationType.warten').find('label').click();

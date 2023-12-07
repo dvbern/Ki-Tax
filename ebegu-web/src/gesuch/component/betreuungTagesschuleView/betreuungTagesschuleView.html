@@ -20,7 +20,6 @@
         ng-disabled="!vm.isAnmeldungTSEditable()">
 
 
-
         <div
             ng-if="vm.gesuchModelManager.gemeindeKonfiguration.hasTagesschulenAnmeldung()
             	&& !vm.getBetreuungModel().keineDetailinformationen">
@@ -44,7 +43,8 @@
                                             dv-enable-element
                                             dv-enable-allowed-roles="vm.allowedRoles"
                                             dv-enable-expression="vm.enableKESBFrage()"
-                                            ng-change="vm.changeKeineKesbPlatzierung()">
+                                            ng-change="vm.changeKeineKesbPlatzierung()"
+                                            data-test="institution.tagesschule.kesbPlatzierung">
                         </dv-radio-container>
                         <dv-error-messages input-id="keineKesbPlatzierung"
                                            for="vm.form.keineKesbPlatzierung.$error"
@@ -83,7 +83,8 @@
                                        ng-required="true"
                                        class="input-element "
                                        dv-gesuchsperiode-min-date="vm.getMinDateInCurrentPeriode()"
-                                       dv-gesuchsperiode-max-date="vm.getMaxDateInCurrentPeriode()">
+                                       dv-gesuchsperiode-max-date="vm.getMaxDateInCurrentPeriode()"
+                                       data-test="institution.tagesschule.eintrittsdatum">
                         </dv-datepicker>
                         <dv-error-messages class="date"
                                            input-id="eintrittsdatum_ID"
@@ -106,7 +107,8 @@
                                    type="text" name="planKlasse"
                                    ng-model="vm.betreuung.belegungTagesschule.planKlasse"
                                    dv-max-length class="form-control"
-                                   ng-required="vm.isGesuchstellerRole()">
+                                   ng-required="vm.isGesuchstellerRole()"
+                                   data-test="institution.tagesschule.planKlasse">
                             <dv-error-messages input-id="planKlasse_ID"
                                                for="vm.form.planKlasse.$error"></dv-error-messages>
                         </dv-input-container>
@@ -129,7 +131,8 @@
                                             ng-model="vm.betreuung.belegungTagesschule.fleischOption"
                                             class="form-control"
                                             ng-options="(fleischOption| translate) for fleischOption in vm.getFleischOptionValues()"
-                                            ng-required="true">
+                                            ng-required="true"
+                                            data-test="institution.tagesschule.fleisch-optionen">
                                     </select>
                                     <dv-error-messages input-id="fleischOptionen_ID"
                                                        for="vm.form.fleischOption.$error"></dv-error-messages>
@@ -146,12 +149,13 @@
                                     <span data-translate="ALLERGIEN"> </span>
                                 </label>
                                 <textarea aria-describedby="allegergienUndUnvertraeglichkeit_ID-error"
-                                       data-test="allegergien-und-unvertraeglichkeiten"
-                                       id="allegergienUndUnvertraeglichkeit_ID"
-                                       name="allergienUndUnvertraeglichkeiten" class="form-control " rows="4"
-                                       ng-model="vm.betreuung.belegungTagesschule.allergienUndUnvertraeglichkeiten"
-                                       maxlength="4000"
-                                       class="form-control">
+                                          data-test="allegergien-und-unvertraeglichkeiten"
+                                          id="allegergienUndUnvertraeglichkeit_ID"
+                                          name="allergienUndUnvertraeglichkeiten" class="form-control " rows="4"
+                                          ng-model="vm.betreuung.belegungTagesschule.allergienUndUnvertraeglichkeiten"
+                                          maxlength="4000"
+                                          class="form-control"
+                                          data-test="institution.tagesschule.allegergienUndUnvertraeglichkeit">
                                 </textarea>
                                 <dv-error-messages input-id="allegergienUndUnvertraeglichkeit_ID"
                                                    for="vm.form.allergienUndUnvertraeglichkeiten.$error"></dv-error-messages>
@@ -178,7 +182,8 @@
                                        placeholder="e.g: +41 79 123 44 55"
                                        ng-required="true"
                                        ng-pattern="vm.CONSTANTS.PATTERN_PHONE"
-                                       autocomplete="mobile">
+                                       autocomplete="mobile"
+                                       data-test="institution.tagesschule.notfallnummer">
                                 <dv-error-messages input-id="notfallnummer_ID" for="vm.form.notfallnummer.$error"
                                                    class="error"></dv-error-messages>
                             </dv-input-container>
@@ -201,7 +206,8 @@
                                         ng-model="vm.betreuung.belegungTagesschule.abholungTagesschule"
                                         class="form-control"
                                         ng-options="(abholungTagesschule| translate) for abholungTagesschule in vm.getAbholungTagesschuleValues()"
-                                        ng-required="vm.isGesuchstellerRole()">
+                                        ng-required="vm.isGesuchstellerRole()"
+                                        data-test="institution.tagesschule.abholungTagesschule">
                                 </select>
                                 <dv-error-messages input-id="abholungTagesschule_ID"
                                                    for="vm.form.abholungTagesschule.$error"></dv-error-messages>
@@ -243,11 +249,11 @@
                                         <md-checkbox
                                             name="modul_{{mod.modulTagesschule.identifier}}"
                                             ng-model="mod.modulTagesschule.angemeldet"
-                                            aria-label="Modul {{group.group.bezeichnung}} {{mod.modulTagesschule.wochentag | translate}}"
+                                            aria-label="Modul {{group.group.bezeichnung.textDeutsch}} {{mod.modulTagesschule.wochentag | translate}}"
                                             ng-disabled="!vm.isModuleEditable(mod)"
                                             ng-click=""
                                             ng-change="vm.openMenu(mod, group, $mdMenu, $event);"
-                                            ng-attr-data-test="modul-{{mod.modulTagesschule.identifier}}"
+                                            data-test="modul-{{group.group.bezeichnung.textDeutsch}}-{{mod.modulTagesschule.wochentag}}"
                                             class="dv-ebegu-calendar--tagesschule"
                                             aria-describedby="{{'modul_' + mod.modulTagesschule.identifier + '-error'}}">
                                             <span class="error"
@@ -418,7 +424,7 @@
         <span dv-show-element
               dv-show-allowed-roles="vm.TSRoleUtil.getAdminJaSchulamtSozialdienstGesuchstellerRoles()"
               dv-show-expression="vm.betreuung.isEnabled() && !vm.isFreigabequittungAusstehend()">
-            <dv-loading-button button-click="vm.anmelden()" type="submit" button-class="save">
+            <dv-loading-button button-click="vm.anmelden()" type="submit" button-class="save" data-test="container.save">
                 <span class="uppercase" data-translate="{{vm.getButtonTextSpeichern()}}"></span>
             </dv-loading-button>
         </span>
@@ -429,18 +435,21 @@
 
             <dv-loading-button button-click="vm.anmelden()"
                                type="submit"
-                               button-class="save">
+                               button-class="save"
+                               data-test="container.anmelden">
                 <span class="uppercase" data-translate="{{vm.getButtonTextSpeichern()}}"></span>
             </dv-loading-button>
             <dv-loading-button button-click="vm.anmeldungSchulamtAblehnen()"
                                type="button"
-                               button-class="save">
+                               button-class="save"
+                               data-test="container.ablehnen">
                 <span class="uppercase" data-translate="SCHULAMT_ANMELDUNG_ABLEHNEN"></span>
             </dv-loading-button>
              <dv-loading-button
                  button-click="vm.saveAnmeldungSchulamtStornieren()"
                  type="button"
-                 button-class="save">
+                 button-class="save"
+                 data-test="container.stornieren">
                     <span class="uppercase" data-translate="SCHULAMT_ANMELDUNG_STORNIEREN"></span>
                 </dv-loading-button>
         </span>
@@ -452,13 +461,15 @@
                 <dv-loading-button button-disabled="vm.showErrorMessageNoModule"
                                    button-click="vm.saveAnmeldungSchulamtUebernehmen()"
                                    type="submit"
-                                   button-class="save">
+                                   button-class="save"
+                                   data-test="container.akzeptieren">
                     <span class="uppercase" data-translate="SCHULAMT_ANMELDUNG_AKZEPTIEREN"></span>
                 </dv-loading-button>
 
                 <dv-loading-button button-click="vm.saveAnmeldungSchulamtAblehnen()"
                                    type="button"
-                                   button-class="save">
+                                   button-class="save"
+                                   data-test="container.ablehnen">
                     <span class="uppercase" data-translate="SCHULAMT_ANMELDUNG_ABLEHNEN"></span>
                 </dv-loading-button>
 
@@ -466,14 +477,16 @@
                     ng-if="vm.showStornierenForRole()"
                     button-click="vm.saveAnmeldungSchulamtStornieren()"
                     type="button"
-                    button-class="save">
+                    button-class="save"
+                    data-test="container.stornieren-for-role">
                     <span class="uppercase" data-translate="SCHULAMT_ANMELDUNG_STORNIEREN"></span>
                 </dv-loading-button>
 
                 <dv-loading-button
                     button-click="vm.saveAnmeldungSchulamtFalscheInstitution()"
                     type="button"
-                    button-class="save">
+                    button-class="save"
+                    data-test="container.falsche-institution">
                     <span class="uppercase" data-translate="AKTION_SCHULAMT_FALSCHE_INSTITUTION"></span>
                 </dv-loading-button>
 
@@ -482,7 +495,8 @@
         <span>
             <dv-loading-button button-click="vm.cancel()"
                                button-class="cancel-button"
-                               type="reset">
+                               type="reset"
+                               data-test="container.cancel">
                 <span class="uppercase" data-translate="ABBRECHEN"></span>
             </dv-loading-button>
         </span>
