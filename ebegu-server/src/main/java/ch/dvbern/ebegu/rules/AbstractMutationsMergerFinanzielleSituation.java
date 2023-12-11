@@ -104,10 +104,8 @@ public abstract class AbstractMutationsMergerFinanzielleSituation {
 
 		if (resultVorangehenderAbschnitt.getAnspruchspensumProzent() == 0 &&
 			vorgaengerVerfuegung.getBetreuung().extractGesuch().getFinSitStatus() == FinSitStatus.ABGELEHNT) {
-			//Wenn die vorherige FinSit bereits abgelehnt wurde und der Anspruch 0 ist, soll die aktuelle Anspruch auch 0 sein
+			//Wenn die vorherige FinSit bereits abgelehnt wurde und der Anspruch 0 ist, soll die
 			inputData.setAnspruchZeroAndSaveRestanspruch();
-			//Damit muss auch die Anspruch Bemerkung geloescht werden
-			inputData.getParent().getBemerkungenDTOList().removeBemerkungByMsgKey(MsgKey.VERFUEGUNG_MIT_ANSPRUCH);
 		}
 
 		if (massgebendesEinkommen.compareTo(massgebendesEinkommenVorher) != 0) {
