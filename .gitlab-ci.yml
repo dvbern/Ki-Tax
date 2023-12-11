@@ -3,13 +3,7 @@ stages: [ build, prepare-package, package, release, deploy, mirror ]
 
 variables:
     VERSION: $CI_COMMIT_SHA
-    RELEASE_TO:
-        value: "uat"
-        options:
-            - "uat"
-            - "prod"
-    RELEASE_VERSION:
-        description: "The version of the release to build and push"
+    MAVEN_BACKEND_PROFILES: -Pdvbern.oss -Pcopy-wildfly-dependencies -P!frontend
 
 workflow:
     rules:
@@ -32,29 +26,28 @@ workflow:
                 DEPLOY_URL: https://dev-preview.kibon.ch
                 MAVEN_GOAL: install
         # Release
-        -   if: $RELEASE_VERSION != ""
+        -   if: $CI_COMMIT_TAG
             variables:
-                VERSION: $RELEASE_VERSION
-                DEPLOY_ENV: $RELEASE_TO
+                VERSION: $CI_COMMIT_TAG
                 MAVEN_GOAL: install
-        -   if: $RELEASE_TO == "uat"
+        # Hotfix
+        -   if: $CI_COMMIT_TAG && $CI_COMMIT_BRANCH =~ /^hotfix/
             variables:
-                SERVICE_NAME: kibon-uat
-                SSH_HOST: sdvbvmkiba21.dvbern.ch sdvbvmkiba22.dvbern.ch
-                DEPLOY_URL: https://uat.kibon.ch
-        -   if: $RELEASE_TO == "prod"
-            variables:
-                SERVICE_NAME: kibon
-                SSH_HOST: sdvbvmkiba01.dvbern.ch sdvbvmkiba02.dvbern.ch
-                DEPLOY_URL: https://kibon.ch
+                VERSION: $CI_REF_SLUG
+                SERVICE_NAME: kibon-iat
+                SSH_HOST: sdvbvmkiba41.dvbern.ch
+                DEPLOY_ENV: hotfix
+                DEPLOY_URL: https://iat.kibon.ch
+                MAVEN_GOAL: install
 
 include:
+    # TODO scheduled nightly Arquillian runs
     -   component: gitlab.dvbern.ch/mobj/maven@89ec140318641f5a453983b8c04454bd6b1932b8
         inputs:
-            name: .build-backend-without-arquillian
+            name: .build-backend
             java-image: docker-registry.dvbern.ch/kibon/build-environment/mvn-npm-gitflow-chromium
             java-image-version: jdk11-old
-            maven-goal: -Drevision=$VERSION -Pdvbern.oss -Pcopy-wildfly-dependencies -P\!frontend clean install
+            maven-goal: -Drevision=$VERSION $MAVEN_BACKEND_PROFILES clean install
             archive-path: ebegu-rest/target # we need ebegu-rest WAR, sentry JAR and belogin-connector WAR
 
     -   component: gitlab.dvbern.ch/mobj/maven@89ec140318641f5a453983b8c04454bd6b1932b8
@@ -64,15 +57,6 @@ include:
             java-image-version: jdk11-old
             maven-goal: -Drevision=$VERSION --projects .,ebegu-web -Pdvbern.oss -Pci -Pfrontend clean install
             archive-path: ebegu-web/target/*.tar.gz
-
-    # TODO enable nightly arquillian test
-    # - component: gitlab.dvbern.ch/components/maven@v2.0.1
-    #   rules:
-    #     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $CI_PIPELINE_SOURCE == "schedule"
-    #   inputs:
-    #     java-image: docker-registry.dvbern.ch/kibon/build-environment/mvn-npm-gitflow-chromium
-    #     java-image-version: jdk11-old
-    #     maven-goal: -Pdvbern.oss -Pfrontend -Pci -Ptest-wildfly-managed clean verify
 
     # TODO public or private registry? using a private base image and pushing the resulting image to public registry is not supported at the moment
     -   component: 'gitlab.dvbern.ch/mobj/buildah@a7143bb366f9ee8e1ddfd1813acb1649a104cb36'
@@ -100,7 +84,7 @@ include:
             version: $VERSION
             push-enabled: "true"
 
-    -   component: 'gitlab.dvbern.ch/fuju/docker-compose-deploy@main'
+    -   component: 'gitlab.dvbern.ch/fuju/docker-compose-deploy@4ecd5519fb57c296f9e9745de8fb98858d20e19a'
         inputs:
             name: .docker-compose-deploy
             service-name: $SERVICE_NAME
@@ -110,8 +94,56 @@ include:
             ssh-private-key: $KIBON_SSH_PRIVATE_KEY
             ssh-target: '$SSH_HOST'
 
+    -   component: 'gitlab.dvbern.ch/fuju/docker-compose-deploy@4ecd5519fb57c296f9e9745de8fb98858d20e19a'
+        inputs:
+            name: .docker-compose-deploy:prod
+            service-name: kibon
+            version: $VERSION
+            version-env-var: 'TAGTOUSE'
+            ssh-user: $KIBON_DEPLOY_SSH_USER
+            ssh-private-key: $KIBON_SSH_PRIVATE_KEY
+            ssh-target: 'sdvbvmkiba01.dvbern.ch sdvbvmkiba02.dvbern.ch'
+
+    -   component: 'gitlab.dvbern.ch/fuju/docker-compose-deploy@4ecd5519fb57c296f9e9745de8fb98858d20e19a'
+        inputs:
+            name: .docker-compose-deploy:uat
+            service-name: kibon-uat
+            version: $VERSION
+            version-env-var: 'TAGTOUSE'
+            ssh-user: $KIBON_DEPLOY_SSH_USER
+            ssh-private-key: $KIBON_SSH_PRIVATE_KEY
+            ssh-target: 'sdvbvmkiba21.dvbern.ch sdvbvmkiba22.dvbern.ch'
+
+deploy:prod:
+    rules:
+        - if: $CI_COMMIT_TAG
+          when: manual
+    environment:
+        name: prod
+        url: https://kibon.ch
+    extends: .docker-compose-deploy:prod
+
+deploy:uat:
+    rules:
+        - if: $CI_COMMIT_TAG
+          when: manual
+    environment:
+        name: uat
+        url: https://uat.kibon.ch
+    extends: .docker-compose-deploy:uat
+
+deploy:iat:
+    rules:
+        - if: ($CI_COMMIT_TAG && $CI_COMMIT_BRANCH =~ /^hotfix/) || $CI_COMMIT_BRANCH =~ /^warmfix/
+          when: manual
+    environment:
+        name: iat
+        url: https://iat.kibon.ch
+    extends: .docker-compose-deploy
+
+
 deploy:
-    extends: .docker-compose-deploy:$SERVICE_NAME
+    extends: .docker-compose-deploy
     environment:
         name: $DEPLOY_ENV
         url: $DEPLOY_URL
@@ -119,8 +151,8 @@ deploy:
         - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
         - if: $CI_MERGE_REQUEST_SOURCE_BRANCH_NAME =~ /^feature/
           when: manual
-        - if: $RELEASE_VERSION
-          when: manual
+        - if: $CI_COMMIT_TAG
+          when: never
 
 create-build-args:
     image: '$DVB_DOCKER_REGISTRY/dockerhub/library/eclipse-temurin:11-jdk-alpine'
@@ -137,8 +169,8 @@ create-build-args:
             - build-args.env
     needs: []
 
-build-backend-without-arquillian:
-    extends: .build-backend-without-arquillian
+build-backend:
+    extends: .build-backend
     needs: []
 
 build-frontend:
@@ -154,5 +186,5 @@ build-frontend-image:
 build-backend-image:
     extends: .build-backend-image
     needs:
-        - build-backend-without-arquillian
+        - build-backend
         - create-build-args

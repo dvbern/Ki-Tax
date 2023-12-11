@@ -16,6 +16,9 @@
  */
 
 /// <reference types="cypress" />
+import * as dvTasks from '@dv-e2e/tasks';
+
+type DvTasks = typeof dvTasks;
 
 import { OnlyValidSelectors, User } from '@dv-e2e/types';
 import { Method } from 'cypress/types/net-stubbing';
@@ -63,6 +66,26 @@ declare global {
              *   cy.get('[data-test="dv-radiobutton"] label');
              */
             getByData<T extends string>(name: OnlyValidSelectors<T>, ...nestedNames: OnlyValidSelectors<T>[]): Chainable<Subject>;
+
+            /**
+             * Download a file using given url and save it with the given name
+             *
+             * @see Cypress.config('downloadsFolder')
+             */
+            downloadFile(url: string, fileName: string): Chainable<Subject>;
+
+            /**
+             * Use custom dv tasks by using the 3rd param option `{ custom: true }`
+             *
+             * @see {@link DvTasks}
+             */
+            task<K extends keyof DvTasks, T extends DvTasks[K]>(
+                event: K,
+                arg: Parameters<T>[0],
+                opts: {
+                    custom: true;
+                }
+            ): Chainable<ReturnType<T>>;
 
             resetViewport(): Chainable<Subject>;
 
@@ -128,7 +151,6 @@ declare global {
 }
 
 Cypress.Commands.add('login', (user: User) => {
-    console.log('/.*] (.*)/.exec(user)', /.*] (.*)/.exec(user));
     const userSelector = /.*] (.*)/.exec(user)[1].split(' ').join('-');
     cy.session(
         'login' + user,
@@ -176,6 +198,20 @@ Cypress.Commands.add('changeLogin', (user: User) => {
 
     cy.login(user);
 });
+Cypress.Commands.add('downloadFile', (url, fileName) => {
+    return cy
+        .request({
+            url: url as string,
+            method: 'GET',
+            encoding: 'binary',
+        })
+        .then((res) => {
+            if (res.status === 200) {
+                return cy.writeFile(`${Cypress.config('downloadsFolder')}/${fileName}`, res.body, 'binary').then(() => fileName);
+            }
+            throw new Error(`Failed to download: ${url}`);
+        });
+});
 Cypress.Commands.add('resetViewport', () => {
     const width = Cypress.config('viewportWidth');
     const height = Cypress.config('viewportHeight');
@@ -186,7 +222,6 @@ Cypress.Commands.add('closeMaterialOverlay', () => {
     cy.log('Closing material dialog/overlay');
     cy.get('.md-menu-backdrop').should('not.have.class', 'ng-animate').click();
 });
-
 Cypress.Commands.add('getDownloadUrl', (action) => {
     cy.window().then((win) => {
         const result = new Promise<string>((resolve) => {

@@ -1,4 +1,4 @@
-import {getUser, normalizeUser} from '@dv-e2e/types';
+import { getUser, normalizeUser } from '@dv-e2e/types';
 
 describe('Kibon - Test Mitteilungen', () => {
     const userSuperAdmin = getUser('[1-Superadmin] E-BEGU Superuser');
@@ -25,7 +25,7 @@ describe('Kibon - Test Mitteilungen', () => {
         cy.getByData('gemeinde').click();
         cy.getByData('gemeinde.London').click();
         cy.getByData('periode').click();
-        cy.getByData('periode.2022/23').click();
+        cy.getByData('periode.2023/24').click();
 
         cy.getByData('testfall-2').click();
         cy.get('[data-test="dialog-link"]', { timeout: 25000 }).click();
@@ -33,7 +33,7 @@ describe('Kibon - Test Mitteilungen', () => {
         cy.getByData('verantwortlicher').click();
         cy.getByData(`option.${normalizeUser(userSB)}`).click();
 
-        cy.url().then(url => {
+        cy.url().then((url) => {
             const parts = new URL(url);
             gesuchUrl = `${parts.pathname}${parts.hash}`;
         });
@@ -52,7 +52,9 @@ describe('Kibon - Test Mitteilungen', () => {
 
         cy.getByData('subject').type(subjectGS);
         cy.getByData('nachricht').type(inhaltGS);
+        cy.intercept('PUT', '**/mitteilungen/send').as('sendingMitteilung');
         cy.getByData('container.senden', 'navigation-button').click();
+        cy.wait('@sendingMitteilung');
         cy.resetViewport();
     });
 
@@ -77,7 +79,9 @@ describe('Kibon - Test Mitteilungen', () => {
         cy.getByData('empfaenger').select('Antragsteller/in');
         cy.getByData('subject').type(subjectSB);
         cy.getByData('nachricht').type(inhaltSB);
+        cy.intercept('PUT', '**/mitteilungen/send').as('sendingMitteilung');
         cy.getByData('container.senden', 'navigation-button').click();
+        cy.wait('@sendingMitteilung');
     });
 
     it('Gesuchsteller sees Sachbearbeiter message', () => {

@@ -28,7 +28,7 @@ describe('Kibon - generate Testfälle [Superadmin]', () => {
     });
 
     it('should create a prefilled new Testfall Antrag', () => {
-        TestFaellePO.createNewTestFaelle('testfall-2') ;
+        TestFaellePO.createNewTestFaelle('testfall-2', 'London') ;
     });
 });
 
