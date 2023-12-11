@@ -1,5 +1,67 @@
-UPDATE application_property SET value = 'true' WHERE name = 'DUMMY_LOGIN_ENABLED';
-UPDATE application_property SET value = 'yellow' WHERE name = 'BACKGROUND_COLOR';
+
+SET @bern_mandant_id = UNHEX('E3736EB86EEF40EF9E5296AB48D8F220');
+# Adresse
+INSERT INTO adresse (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version, vorgaenger_id, gueltig_ab, gueltig_bis, gemeinde, hausnummer, land, organisation, ort, plz, strasse, zusatzzeile, bfs_nummer) VALUES (UNHEX('4A7AFBA94AF011E99A3AAFD41A03C0BB'), '2018-10-23 00:00:00', '2018-10-23 00:00:00', 'flyway', 'flyway', 0, null, '2018-01-01', '9999-01-01', 'Paris', '21', 'CH', 'Jugendamt', 'Paris', '3008', 'Effingerstrasse', null, null);
+INSERT INTO adresse (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version, vorgaenger_id, gueltig_ab, gueltig_bis, gemeinde, hausnummer, land, organisation, ort, plz, strasse, zusatzzeile, bfs_nummer) VALUES (UNHEX('4A7D4BA54AF011E99A3AAFD41A03C0BB'), '2018-10-23 00:00:00', '2018-10-23 00:00:00', 'flyway', 'flyway', 0, null, '2018-01-01', '9999-01-01', 'London', '1', 'CH', 'Gemeinde', 'London', '3072', 'Schiessplatzweg', null, null);
+INSERT INTO adresse (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version, vorgaenger_id, gueltig_ab, gueltig_bis, gemeinde, hausnummer, land, organisation, ort, plz, strasse, zusatzzeile, bfs_nummer) VALUES (UNHEX('68992B608A1A415CA43DC8C349B73FF8'), '2016-01-01 00:00:00', '2023-12-08 14:05:54', 'flyway', 'ebegu:Kanton Bern', 2, null, '1000-01-01', '9999-12-31', 'Bern', '26', 'CH', 'Brünnen', 'Bern', '3027', 'Colombstrasse', null, 351);
+INSERT INTO adresse (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version, vorgaenger_id, gueltig_ab, gueltig_bis, gemeinde, hausnummer, land, organisation, ort, plz, strasse, zusatzzeile, bfs_nummer) VALUES (UNHEX('9D743BC2873147FFA979D4BB1D4203C0'), '2016-01-01 00:00:00', '2023-12-08 08:36:53', 'flyway', 'anonymous', 1, null, '1000-01-01', '9999-12-31', 'Bern', '5', 'CH', 'Weissenstein', 'Bern', '3007', 'Weberstrasse', null, 351);
+INSERT INTO adresse (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version, vorgaenger_id, gueltig_ab, gueltig_bis, gemeinde, hausnummer, land, organisation, ort, plz, strasse, zusatzzeile, bfs_nummer) VALUES (UNHEX('A805A1014200473AACCCBBB423EA1937'), '2020-02-28 09:48:18', '2020-02-28 10:11:35', 'flyway', 'flyway', 1, null, '1000-01-01', '9999-12-31', null, '2', 'CH', 'Tageschule Paris', 'Paris', '3000', 'Pariser Strasse', null, null);
+INSERT INTO adresse (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version, vorgaenger_id, gueltig_ab, gueltig_bis, gemeinde, hausnummer, land, organisation, ort, plz, strasse, zusatzzeile, bfs_nummer) VALUES (UNHEX('A805A1014200473AACCCBBB423EA1999'), '2021-02-15 09:48:18', '2021-02-15 10:11:35', 'flyway', 'flyway', 1, null, '1000-01-01', '9999-12-31', null, '2', 'CH', 'Bern Sozialdienst', 'Paris', '3000', 'Sozialdienst Strasse', null, null);
+INSERT INTO adresse (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version, vorgaenger_id, gueltig_ab, gueltig_bis, gemeinde, hausnummer, land, organisation, ort, plz, strasse, zusatzzeile, bfs_nummer) VALUES (UNHEX('ABD8EC9B30A311ECA86FB89A2AE4A038'), '2016-01-01 00:00:00', '2016-01-01 00:00:00', 'flyway', 'flyway', 0, null, '1000-01-01', '9999-12-31', null, '4', 'CH', 'Tageseltern Bern', 'Bern', '3005', 'Gasstrasse', null, null);
+INSERT INTO adresse (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version, vorgaenger_id, gueltig_ab, gueltig_bis, gemeinde, hausnummer, land, organisation, ort, plz, strasse, zusatzzeile, bfs_nummer) VALUES (UNHEX('BC0CBF674A684E0E81079316EE3F00A3'), '2016-01-01 00:00:00', '2023-12-08 08:36:53', 'flyway', 'anonymous', 1, null, '1000-01-01', '9999-12-31', 'Bern', '4', 'CH', 'Tageseltern Bern', 'Bern', '3005', 'Gasstrasse', null, 351);
+INSERT INTO adresse (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version, vorgaenger_id, gueltig_ab, gueltig_bis, gemeinde, hausnummer, land, organisation, ort, plz, strasse, zusatzzeile, bfs_nummer) VALUES (UNHEX('BDA4670C30A311ECA86FB89A2AE4A038'), '2016-01-01 00:00:00', '2016-01-01 00:00:00', 'flyway', 'flyway', 0, null, '1000-01-01', '9999-12-31', null, '5', 'CH', 'Weissenstein', 'Bern', '3007', 'Weberstrasse', null, null);
+INSERT INTO adresse (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version, vorgaenger_id, gueltig_ab, gueltig_bis, gemeinde, hausnummer, land, organisation, ort, plz, strasse, zusatzzeile, bfs_nummer) VALUES (UNHEX('C41AB59130A311ECA86FB89A2AE4A038'), '2016-01-01 00:00:00', '2016-01-01 00:00:00', 'flyway', 'flyway', 0, null, '1000-01-01', '9999-12-31', null, '27', 'CH', 'Brünnen', 'Bern', '3027', 'Colombstrasse', null, null);
+INSERT INTO adresse (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version, vorgaenger_id, gueltig_ab, gueltig_bis, gemeinde, hausnummer, land, organisation, ort, plz, strasse, zusatzzeile, bfs_nummer) VALUES (UNHEX('FEBF3CD14BD940EBB65FFD9B823B1270'), '2016-01-01 00:00:00', '2016-01-01 00:00:00', 'flyway', 'flyway', 0, null, '1000-01-01', '9999-12-31', null, '21', 'CH', 'Tagesschule', 'Bern', '3008', 'Effingerstrasse', null, null);
+
+
+UPDATE application_property SET value = 'true' WHERE name = 'DUMMY_LOGIN_ENABLED' AND mandant_id =  @bern_mandant_id;;
+UPDATE application_property SET value = 'yellow' WHERE name = 'BACKGROUND_COLOR' AND mandant_id =  @bern_mandant_id;;
+UPDATE application_property SET value = 'true' WHERE name = 'FRENCH_ENABLED' AND mandant_id = @bern_mandant_id;
+UPDATE application_property SET value = 'true' WHERE name = 'GERES_ENABLED_FOR_MANDANT' AND mandant_id = @bern_mandant_id;
+UPDATE application_property SET value = '2022-04-04' WHERE name = 'SCHNITTSTELLE_STEUERSYSTEME_AKTIV_AB' AND mandant_id = @bern_mandant_id;
+UPDATE application_property SET value = 'true' WHERE name = 'ZUSATZINFORMATIONEN_INSTITUTION' AND mandant_id = @bern_mandant_id;
+UPDATE application_property SET value = 'true' WHERE name = 'STADT_BERN_ASIV_CONFIGURED' AND mandant_id = @bern_mandant_id;
+UPDATE application_property SET value = 'LASTENAUSGLEICH_STATISTIK, STEUERABFRAGE_ERNEUT_DURCHFUEHREN_IN_MUTATION, STEUERABFRAGE_NEUE_VERANLAGUNG, VERAENDERUNG_BEI_MUTATION, MITTEILUNG_IGNORIEREN, LASTENAUSGLEICH_STATISTIK, NEUE_VERANLAGUNG_MITTEILUNG, ALLWAYS_SHOW_ZAHLUNGSDATEN_ON_FINSIT_BERN, ALLE_MUTATIONSMELDUNGEN_VERFUEGEN, MEHRERE_FACHSTELLENBESTAETIGUNGEN' WHERE name = 'ACTIVATED_DEMO_FEATURES' AND mandant_id = @bern_mandant_id;
+UPDATE application_property SET value = 'false' WHERE name = 'INSTITUTIONEN_DURCH_GEMEINDEN_EINLADEN' AND mandant_id = @bern_mandant_id;
+UPDATE application_property SET value = 'false' WHERE name = 'ERLAUBEN_INSTITUTIONEN_ZU_WAEHLEN' AND mandant_id = @bern_mandant_id;
+UPDATE application_property SET value = 'true' WHERE name = 'ANGEBOT_TS_ENABLED' AND mandant_id = @bern_mandant_id;
+UPDATE application_property SET value = 'true' WHERE name = 'ANGEBOT_FI_ENABLED' AND mandant_id = @bern_mandant_id;
+UPDATE application_property SET value = 'true' WHERE name = 'ANGEBOT_TFO_ENABLED' AND mandant_id = @bern_mandant_id;
+UPDATE application_property SET value = 'logo-kibon-white-bern.svg' WHERE name = 'LOGO_WHITE_FILE_NAME' AND mandant_id = @bern_mandant_id;
+UPDATE application_property SET value = 'false' WHERE name = 'EVALUATOR_DEBUG_ENABLED' AND mandant_id = @bern_mandant_id;
+UPDATE application_property SET value = 'yellow' WHERE name = 'BACKGROUND_COLOR' AND mandant_id = @bern_mandant_id;
+UPDATE application_property SET value = '60' WHERE name = 'ANZAHL_TAGE_BIS_LOESCHUNG_NACH_WARNUNG_FREIGABE' AND mandant_id = @bern_mandant_id;
+UPDATE application_property SET value = '90' WHERE name = 'ANZAHL_TAGE_BIS_LOESCHUNG_NACH_WARNUNG_QUITTUNG' AND mandant_id = @bern_mandant_id;
+UPDATE application_property SET value = 'false' WHERE name = 'CHECKBOX_AUSZAHLEN_IN_ZUKUNFT' AND mandant_id = @bern_mandant_id;
+UPDATE application_property SET value = 'logo-kibon-bern.svg' WHERE name = 'LOGO_FILE_NAME' AND mandant_id = @bern_mandant_id;
+UPDATE application_property SET value = '01.01.2021' WHERE name = 'STADT_BERN_ASIV_START_DATUM' AND mandant_id = @bern_mandant_id;
+UPDATE application_property SET value = 'true' WHERE name = 'DUMMY_LOGIN_ENABLED' AND mandant_id = @bern_mandant_id;
+UPDATE application_property SET value = '60' WHERE name = 'ANZAHL_TAGE_BIS_WARNUNG_FREIGABE' AND mandant_id = @bern_mandant_id;
+UPDATE application_property SET value = '15' WHERE name = 'ANZAHL_TAGE_BIS_WARNUNG_QUITTUNG' AND mandant_id = @bern_mandant_id;
+UPDATE application_property SET value = '#D50025' WHERE name = 'PRIMARY_COLOR' AND mandant_id = @bern_mandant_id;
+UPDATE application_property SET value = '#BF0425' WHERE name = 'PRIMARY_COLOR_DARK' AND mandant_id = @bern_mandant_id;
+UPDATE application_property SET value = 'application/pdf, application/vnd.openxmlformats-officedocument.wordprocessingml.document, image/jpeg, image/png, application/msword, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel, application/vnd.oasis.opendocument.text, image/tiff, text/plain, application/vnd.oasis.opendocument.spreadsheet, text/csv,  application/rtf' WHERE name = 'UPLOAD_FILETYPES_WHITELIST' AND mandant_id = @bern_mandant_id;
+UPDATE application_property SET value = '#F0C3CB' WHERE name = 'PRIMARY_COLOR_LIGHT' AND mandant_id = @bern_mandant_id;
+UPDATE application_property SET value = 'false' WHERE name = 'INFOMA_ZAHLUNGEN' AND mandant_id = @bern_mandant_id;
+UPDATE application_property SET value = 'true' WHERE name = 'SCHNITTSTELLE_EVENTS_AKTIVIERT' AND mandant_id = @bern_mandant_id;
+UPDATE application_property SET value = 'false' WHERE name = 'KANTON_NOTVERORDNUNG_PHASE_2_AKTIV' AND mandant_id = @bern_mandant_id;
+UPDATE application_property SET value = '2020-07-31' WHERE name = 'NOTVERORDNUNG_DEFAULT_EINREICHEFRIST_OEFFENTLICH' AND mandant_id = @bern_mandant_id;
+UPDATE application_property SET value = '2020-07-17' WHERE name = 'NOTVERORDNUNG_DEFAULT_EINREICHEFRIST_PRIVAT' AND mandant_id = @bern_mandant_id;
+UPDATE application_property SET value = 'true' WHERE name = 'FERIENBETREUUNG_AKTIV' AND mandant_id = @bern_mandant_id;
+UPDATE application_property SET value = 'true' WHERE name = 'LASTENAUSGLEICH_TAGESSCHULEN_AKTIV' AND mandant_id = @bern_mandant_id;
+UPDATE application_property SET value = '0.2' WHERE name = 'LASTENAUSGLEICH_TAGESSCHULEN_ANTEIL_ZWEITPRUEFUNG_DE' AND mandant_id = @bern_mandant_id;
+UPDATE application_property SET value = '1' WHERE name = 'LASTENAUSGLEICH_TAGESSCHULEN_ANTEIL_ZWEITPRUEFUNG_FR' AND mandant_id = @bern_mandant_id;
+UPDATE application_property SET value = '100000' WHERE name = 'LASTENAUSGLEICH_TAGESSCHULEN_AUTO_ZWEITPRUEFUNG_DE' AND mandant_id = @bern_mandant_id;
+UPDATE application_property SET value = '50000' WHERE name = 'LASTENAUSGLEICH_TAGESSCHULEN_AUTO_ZWEITPRUEFUNG_FR' AND mandant_id = @bern_mandant_id;
+UPDATE application_property SET value = 'true' WHERE name = 'GEMEINDE_KENNZAHLEN_AKTIV' AND mandant_id = @bern_mandant_id;
+UPDATE application_property SET value = 'true' WHERE name = 'LASTENAUSGLEICH_AKTIV' AND mandant_id = @bern_mandant_id;
+
+
+
+
+
+
+
 # noinspection SqlWithoutWhere
 UPDATE gesuchsperiode SET status = 'AKTIV';
 
@@ -522,6 +584,23 @@ INSERT IGNORE INTO gemeinde_stammdaten_gesuchsperiode (id, timestamp_erstellt, t
 (UNHEX(REPLACE('b69c7aba-6904-11ea-bbf8-f4390979fa3e', '-', '')), '2020-03-18 00:00:00', '2020-03-18 00:00:00', 'flyway', 'flyway', 0, UNHEX(REPLACE('ea02b313-e7c3-4b26-9ef7-e413f4046db2', '-', '')), UNHEX(REPLACE('0621fb5d-a187-5a91-abaf-8a813c4d263a', '-', '')), null, null),
 # LONDON
 (UNHEX(REPLACE('cd28e254-6904-11ea-bbf8-f4390979fa3e', '-', '')), '2020-03-18 00:00:00', '2020-03-18 00:00:00', 'flyway', 'flyway', 0, UNHEX(REPLACE('80a8e496-b73c-4a4a-a163-a0b2caf76487', '-', '')), UNHEX(REPLACE('0621fb5d-a187-5a91-abaf-8a813c4d263a', '-', '')), null, null);
+
+/*
+ * Copyright (C) 2023 DV Bern AG, Switzerland
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 
 # PARIS
 INSERT IGNORE INTO gemeinde_stammdaten_gesuchsperiode_ferieninsel (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version, vorgaenger_id, anmeldeschluss, ferienname, gemeinde_stammdaten_gesuchsperiode_id) VALUES
