@@ -19,6 +19,7 @@ SET @mandant_id_ar = UNHEX(REPLACE('5b9e6fa4-3991-11ed-a63d-b05cda43de9c', '-', 
 SET @testgemeinde_solothurn_id = UNHEX(REPLACE('47c4b3a8-5379-11ec-98e8-f4390979fa3e', '-', ''));
 
 SET @gesuchperiode_23_id = UNHEX(REPLACE('9bb4a798-3998-11ed-a63d-b05cda43de9c', '-', ''));
+SET @gesuchperiode_22_23_id = UNHEX('30636536393134632D393530652D3131');
 SET @testgemeinde_ar_id = UNHEX(REPLACE('b3e44f85-3999-11ed-a63d-b05cda43de9c', '-', ''));
 SET @testgemeinde_ar_bfs_nr = 99995;
 SET @traegerschaft_solothurn_id = UNHEX(REPLACE('c256ebf1-3999-11ed-a63d-b05cda43de9c', '-', ''));
@@ -82,7 +83,8 @@ UPDATE application_property SET value = 'false' WHERE name = 'ANGEBOT_TFO_ENABLE
 UPDATE mandant SET activated = TRUE WHERE id = @mandant_id_ar;
 
 # noinspection SqlWithoutWhere
-UPDATE gesuchsperiode SET status = 'AKTIV' WHERE id = @gesuchperiode_23_id;
+UPDATE gesuchsperiode SET status = 'AKTIV' WHERE id = @gesuchperiode_23_id OR id = @gesuchperiode_22_23_id;
+
 
 # Gemeinde Testgemeinde Appenzell Ausserrhoden erstellen, inkl. Adressen und Gemeindestammdaten. Sequenz anpassen
 INSERT IGNORE INTO gemeinde (
@@ -113,22 +115,247 @@ VALUES (UNHEX(REPLACE('e7cf727f-39a8-11ed-a63d-b05cda43de9c', '-', '')), '2018-1
 		'herisau@mailbucket.dvbern.ch', '+41 31 930 15 15', 'https://www.herisau.ch', null, 'DE', 'BIC', 'CH2089144969768441935',
 		'Herisau Kontoinhaber', true, true, true, true, false, UNHEX(REPLACE('ae69aa8a-39a8-11ed-a63d-b05cda43de9c', '-', '')));
 
-INSERT INTO einstellung
-SELECT DISTINCT *
-FROM (SELECT UNHEX(REPLACE(UUID(), '-', '')) AS id,
-		  '2020-01-01 00:00:00' AS timestamp_erstellt,
-		  '2020-01-01 00:00:00' AS timestamp_mutiert,
-		  'flyway' AS user_erstellt,
-		  'flyway' AS user_mutiert,
-		  0 AS version,
-		  einstellung_key as einstellung_key,
-		  value as value,
-		  @testgemeinde_ar_id AS gemeinde_id,
-		  @gesuchperiode_23_id AS gesuchsperiode_id,
-		  @mandant_id_ar AS mandant_id
-	  FROM einstellung
-	  WHERE gemeinde_id = @testgemeinde_solothurn_id
-	  GROUP BY einstellung_key) AS inserttable;
+# Gesuchsperiode 22-23 Einstellung:
+UPDATE einstellung set value = 'false' WHERE einstellung_key = 'KESB_PLATZIERUNG_DEAKTIVIEREN' AND gesuchsperiode_id = @gesuchperiode_22_23_id AND mandant_id =  null;
+UPDATE einstellung set value = 'ASIV' WHERE einstellung_key = 'KINDERABZUG_TYP' AND gesuchsperiode_id = @gesuchperiode_22_23_id AND mandant_id =  null;
+UPDATE einstellung set value = 'false' WHERE einstellung_key = 'BESONDERE_BEDUERFNISSE_LUZERN' AND gesuchsperiode_id = @gesuchperiode_22_23_id AND mandant_id =  null;
+UPDATE einstellung set value = '100' WHERE einstellung_key = 'FKJV_MAX_PENSUM_AUSSERORDENTLICHER_ANSPRUCH' AND gesuchsperiode_id = @gesuchperiode_22_23_id AND mandant_id =  null;
+UPDATE einstellung set value = 'ASIV' WHERE einstellung_key = 'AUSSERORDENTLICHER_ANSPRUCH_RULE' AND gesuchsperiode_id = @gesuchperiode_22_23_id AND mandant_id =  null;
+UPDATE einstellung set value = 'false' WHERE einstellung_key = 'GESCHWISTERNBONUS_AKTIVIERT' AND gesuchsperiode_id = @gesuchperiode_22_23_id AND mandant_id =  null;
+UPDATE einstellung set value = '18' WHERE einstellung_key = 'DAUER_BABYTARIF' AND gesuchsperiode_id = @gesuchperiode_22_23_id AND mandant_id =  null;
+UPDATE einstellung set value = 'false' WHERE einstellung_key = 'FKJV_TEXTE' AND gesuchsperiode_id = @gesuchperiode_22_23_id AND mandant_id =  null;
+UPDATE einstellung set value = 'false' WHERE einstellung_key = 'DIPLOMATENSTATUS_DEAKTIVIERT' AND gesuchsperiode_id = @gesuchperiode_22_23_id AND mandant_id =  null;
+UPDATE einstellung set value = 'false' WHERE einstellung_key = 'ZEMIS_DISABLED' AND gesuchsperiode_id = @gesuchperiode_22_23_id AND mandant_id =  null;
+UPDATE einstellung set value = 'false' WHERE einstellung_key = 'SPRACHE_AMTSPRACHE_DISABLED' AND gesuchsperiode_id = @gesuchperiode_22_23_id AND mandant_id =  null;
+UPDATE einstellung set value = 'false' WHERE einstellung_key = 'FREIGABE_QUITTUNG_EINLESEN_REQUIRED' AND gesuchsperiode_id = @gesuchperiode_22_23_id AND mandant_id =  null;
+UPDATE einstellung set value = '12.24' WHERE einstellung_key = 'MAX_TARIF_MIT_PAEDAGOGISCHER_BETREUUNG' AND gesuchsperiode_id = @gesuchperiode_22_23_id AND mandant_id =  null;
+UPDATE einstellung set value = '6.11' WHERE einstellung_key = 'MAX_TARIF_OHNE_PAEDAGOGISCHER_BETREUUNG' AND gesuchsperiode_id = @gesuchperiode_22_23_id AND mandant_id =  null;
+UPDATE einstellung set value = '0.78' WHERE einstellung_key = 'MIN_TARIF' AND gesuchsperiode_id = @gesuchperiode_22_23_id AND mandant_id =  null;
+UPDATE einstellung set value = '0' WHERE einstellung_key = 'PARAM_PENSUM_TAGESELTERN_MIN' AND gesuchsperiode_id = @gesuchperiode_22_23_id AND mandant_id =  null;
+UPDATE einstellung set value = '0' WHERE einstellung_key = 'PARAM_PENSUM_TAGESSCHULE_MIN' AND gesuchsperiode_id = @gesuchperiode_22_23_id AND mandant_id =  null;
+UPDATE einstellung set value = '0' WHERE einstellung_key = 'PARAM_PENSUM_KITA_MIN' AND gesuchsperiode_id = @gesuchperiode_22_23_id AND mandant_id =  null;
+UPDATE einstellung set value = 'KLASSE1' WHERE einstellung_key = 'GEMEINDE_BG_BIS_UND_MIT_SCHULSTUFE' AND gesuchsperiode_id = @gesuchperiode_22_23_id AND mandant_id =  null;
+UPDATE einstellung set value = 'false' WHERE einstellung_key = 'GEMEINDE_KONTINGENTIERUNG_ENABLED' AND gesuchsperiode_id = @gesuchperiode_22_23_id AND mandant_id =  null;
+UPDATE einstellung set value = '140' WHERE einstellung_key = 'MAX_VERGUENSTIGUNG_VORSCHULE_BABY_PRO_TG' AND gesuchsperiode_id = @gesuchperiode_22_23_id AND mandant_id =  null;
+UPDATE einstellung set value = '95' WHERE einstellung_key = 'MAX_VERGUENSTIGUNG_VORSCHULE_KIND_PRO_TG' AND gesuchsperiode_id = @gesuchperiode_22_23_id AND mandant_id =  null;
+UPDATE einstellung set value = '70' WHERE einstellung_key = 'MAX_VERGUENSTIGUNG_KINDERGARTEN_PRO_TG' AND gesuchsperiode_id = @gesuchperiode_22_23_id AND mandant_id =  null;
+UPDATE einstellung set value = '14' WHERE einstellung_key = 'MAX_VERGUENSTIGUNG_VORSCHULE_BABY_PRO_STD' AND gesuchsperiode_id = @gesuchperiode_22_23_id AND mandant_id =  null;
+UPDATE einstellung set value = '9.5' WHERE einstellung_key = 'MAX_VERGUENSTIGUNG_VORSCHULE_KIND_PRO_STD' AND gesuchsperiode_id = @gesuchperiode_22_23_id AND mandant_id =  null;
+UPDATE einstellung set value = '7' WHERE einstellung_key = 'MAX_VERGUENSTIGUNG_KINDERGARTEN_PRO_STD' AND gesuchsperiode_id = @gesuchperiode_22_23_id AND mandant_id =  null;
+UPDATE einstellung set value = '100001' WHERE einstellung_key = 'MAX_MASSGEBENDES_EINKOMMEN' AND gesuchsperiode_id = @gesuchperiode_22_23_id AND mandant_id =  null;
+UPDATE einstellung set value = '40000' WHERE einstellung_key = 'MIN_MASSGEBENDES_EINKOMMEN' AND gesuchsperiode_id = @gesuchperiode_22_23_id AND mandant_id =  null;
+UPDATE einstellung set value = '240' WHERE einstellung_key = 'OEFFNUNGSTAGE_KITA' AND gesuchsperiode_id = @gesuchperiode_22_23_id AND mandant_id =  null;
+UPDATE einstellung set value = '240' WHERE einstellung_key = 'OEFFNUNGSTAGE_TFO' AND gesuchsperiode_id = @gesuchperiode_22_23_id AND mandant_id =  null;
+UPDATE einstellung set value = '10' WHERE einstellung_key = 'OEFFNUNGSSTUNDEN_TFO' AND gesuchsperiode_id = @gesuchperiode_22_23_id AND mandant_id =  null;
+UPDATE einstellung set value = '60' WHERE einstellung_key = 'ZUSCHLAG_BEHINDERUNG_PRO_TG' AND gesuchsperiode_id = @gesuchperiode_22_23_id AND mandant_id =  null;
+UPDATE einstellung set value = '6' WHERE einstellung_key = 'ZUSCHLAG_BEHINDERUNG_PRO_STD' AND gesuchsperiode_id = @gesuchperiode_22_23_id AND mandant_id =  null;
+UPDATE einstellung set value = '30' WHERE einstellung_key = 'MIN_VERGUENSTIGUNG_PRO_TG' AND gesuchsperiode_id = @gesuchperiode_22_23_id AND mandant_id =  null;
+UPDATE einstellung set value = '3' WHERE einstellung_key = 'MIN_VERGUENSTIGUNG_PRO_STD' AND gesuchsperiode_id = @gesuchperiode_22_23_id AND mandant_id =  null;
+UPDATE einstellung set value = '20' WHERE einstellung_key = 'MIN_ERWERBSPENSUM_NICHT_EINGESCHULT' AND gesuchsperiode_id = @gesuchperiode_22_23_id AND mandant_id =  null;
+UPDATE einstellung set value = '20' WHERE einstellung_key = 'MIN_ERWERBSPENSUM_EINGESCHULT' AND gesuchsperiode_id = @gesuchperiode_22_23_id AND mandant_id =  null;
+UPDATE einstellung set value = '20' WHERE einstellung_key = 'FACHSTELLE_MIN_PENSUM_SOZIALE_INTEGRATION' AND gesuchsperiode_id = @gesuchperiode_22_23_id AND mandant_id =  null;
+UPDATE einstellung set value = '60' WHERE einstellung_key = 'FACHSTELLE_MAX_PENSUM_SOZIALE_INTEGRATION' AND gesuchsperiode_id = @gesuchperiode_22_23_id AND mandant_id =  null;
+UPDATE einstellung set value = '40' WHERE einstellung_key = 'FACHSTELLE_MIN_PENSUM_SPRACHLICHE_INTEGRATION' AND gesuchsperiode_id = @gesuchperiode_22_23_id AND mandant_id =  null;
+UPDATE einstellung set value = '40' WHERE einstellung_key = 'FACHSTELLE_MAX_PENSUM_SPRACHLICHE_INTEGRATION' AND gesuchsperiode_id = @gesuchperiode_22_23_id AND mandant_id =  null;
+UPDATE einstellung set value = '20' WHERE einstellung_key = 'ERWERBSPENSUM_ZUSCHLAG' AND gesuchsperiode_id = @gesuchperiode_22_23_id AND mandant_id =  null;
+UPDATE einstellung set value = '3800' WHERE einstellung_key = 'PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_3' AND gesuchsperiode_id = @gesuchperiode_22_23_id AND mandant_id =  null;
+UPDATE einstellung set value = '6000' WHERE einstellung_key = 'PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_4' AND gesuchsperiode_id = @gesuchperiode_22_23_id AND mandant_id =  null;
+UPDATE einstellung set value = '7000' WHERE einstellung_key = 'PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_5' AND gesuchsperiode_id = @gesuchperiode_22_23_id AND mandant_id =  null;
+UPDATE einstellung set value = '30' WHERE einstellung_key = 'PARAM_MAX_TAGE_ABWESENHEIT' AND gesuchsperiode_id = @gesuchperiode_22_23_id AND mandant_id =  null;
+UPDATE einstellung set value = '20' WHERE einstellung_key = 'PARAM_GRENZWERT_EINKOMMENSVERSCHLECHTERUNG' AND gesuchsperiode_id = @gesuchperiode_22_23_id AND mandant_id =  null;
+UPDATE einstellung set value = '7700' WHERE einstellung_key = 'PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_6' AND gesuchsperiode_id = @gesuchperiode_22_23_id AND mandant_id =  null;
+UPDATE einstellung set value = '01.08.2019' WHERE einstellung_key = 'GEMEINDE_TAGESSCHULE_ANMELDUNGEN_DATUM_AB' AND gesuchsperiode_id = @gesuchperiode_22_23_id AND mandant_id =  null;
+UPDATE einstellung set value = '01.08.2019' WHERE einstellung_key = 'GEMEINDE_TAGESSCHULE_ERSTER_SCHULTAG' AND gesuchsperiode_id = @gesuchperiode_22_23_id AND mandant_id =  null;
+UPDATE einstellung set value = '01.08.2019' WHERE einstellung_key = 'GEMEINDE_FERIENINSEL_ANMELDUNGEN_DATUM_AB' AND gesuchsperiode_id = @gesuchperiode_22_23_id AND mandant_id =  null;
+UPDATE einstellung set value = '10.39' WHERE einstellung_key = 'LATS_LOHNNORMKOSTEN' AND gesuchsperiode_id = @gesuchperiode_22_23_id AND mandant_id =  null;
+UPDATE einstellung set value = '5.2' WHERE einstellung_key = 'LATS_LOHNNORMKOSTEN_LESS_THAN_50' AND gesuchsperiode_id = @gesuchperiode_22_23_id AND mandant_id =  null;
+UPDATE einstellung set value = '2019-09-15' WHERE einstellung_key = 'LATS_STICHTAG' AND gesuchsperiode_id = @gesuchperiode_22_23_id AND mandant_id =  null;
+UPDATE einstellung set value = 'KEINE' WHERE einstellung_key = 'EINGEWOEHNUNG_TYP' AND gesuchsperiode_id = @gesuchperiode_22_23_id AND mandant_id =  null;
+UPDATE einstellung set value = '100' WHERE einstellung_key = 'FKJV_MAX_DIFFERENZ_BESCHAEFTIGUNGSPENSUM' AND gesuchsperiode_id = @gesuchperiode_22_23_id AND mandant_id =  null;
+UPDATE einstellung set value = 'VORSCHULALTER' WHERE einstellung_key = 'FKJV_SOZIALE_INTEGRATION_BIS_SCHULSTUFE' AND gesuchsperiode_id = @gesuchperiode_22_23_id AND mandant_id =  null;
+UPDATE einstellung set value = 'false' WHERE einstellung_key = 'FKJV_PAUSCHALE_BEI_ANSPRUCH' AND gesuchsperiode_id = @gesuchperiode_22_23_id AND mandant_id =  null;
+UPDATE einstellung set value = 'false' WHERE einstellung_key = 'FKJV_PAUSCHALE_RUECKWIRKEND' AND gesuchsperiode_id = @gesuchperiode_22_23_id AND mandant_id =  null;
+UPDATE einstellung set value = 'null' WHERE einstellung_key = 'FKJV_EINKOMMENSVERSCHLECHTERUNG_BIS_CHF' AND gesuchsperiode_id = @gesuchperiode_22_23_id AND mandant_id =  null;
+UPDATE einstellung set value = 'true' WHERE einstellung_key = 'ANSPRUCH_MONATSWEISE' AND gesuchsperiode_id = @gesuchperiode_22_23_id AND mandant_id =  null;
+UPDATE einstellung set value = 'false' WHERE einstellung_key = 'SCHNITTSTELLE_STEUERN_AKTIV' AND gesuchsperiode_id = @gesuchperiode_22_23_id AND mandant_id =  null;
+UPDATE einstellung set value = '30' WHERE einstellung_key = 'FERIENBETREUUNG_CHF_PAUSCHALBETRAG' AND gesuchsperiode_id = @gesuchperiode_22_23_id AND mandant_id =  null;
+UPDATE einstellung set value = '60' WHERE einstellung_key = 'FERIENBETREUUNG_CHF_PAUSCHALBETRAG_SONDERSCHUELER' AND gesuchsperiode_id = @gesuchperiode_22_23_id AND mandant_id =  null;
+UPDATE einstellung set value = 'false' WHERE einstellung_key = 'FKJV_FAMILIENSITUATION_NEU' AND gesuchsperiode_id = @gesuchperiode_22_23_id AND mandant_id =  null;
+UPDATE einstellung set value = '5' WHERE einstellung_key = 'MINIMALDAUER_KONKUBINAT' AND gesuchsperiode_id = @gesuchperiode_22_23_id AND mandant_id =  null;
+UPDATE einstellung set value = 'APPENZELL' WHERE einstellung_key = 'FINANZIELLE_SITUATION_TYP' AND gesuchsperiode_id = @gesuchperiode_22_23_id AND mandant_id =  null;
+UPDATE einstellung set value = 'false' WHERE einstellung_key = 'KITAPLUS_ZUSCHLAG_AKTIVIERT' AND gesuchsperiode_id = @gesuchperiode_22_23_id AND mandant_id =  null;
+UPDATE einstellung set value = '0' WHERE einstellung_key = 'GEMEINDESPEZIFISCHE_BG_KONFIGURATIONEN' AND gesuchsperiode_id = @gesuchperiode_22_23_id AND mandant_id =  null;
+UPDATE einstellung set value = 'ABHAENGING' WHERE einstellung_key = 'ABHAENGIGKEIT_ANSPRUCH_BESCHAEFTIGUNGPENSUM' AND gesuchsperiode_id = @gesuchperiode_22_23_id AND mandant_id =  null;
+UPDATE einstellung set value = 'KLASSE9' WHERE einstellung_key = 'SPRACHLICHE_INTEGRATION_BIS_SCHULSTUFE' AND gesuchsperiode_id = @gesuchperiode_22_23_id AND mandant_id =  null;
+UPDATE einstellung set value = 'false' WHERE einstellung_key = 'UNBEZAHLTER_URLAUB_AKTIV' AND gesuchsperiode_id = @gesuchperiode_22_23_id AND mandant_id =  null;
+UPDATE einstellung set value = 'KEINE' WHERE einstellung_key = 'FACHSTELLEN_TYP' AND gesuchsperiode_id = @gesuchperiode_22_23_id AND mandant_id =  null;
+UPDATE einstellung set value = 'false' WHERE einstellung_key = 'AUSWEIS_NACHWEIS_REQUIRED' AND gesuchsperiode_id = @gesuchperiode_22_23_id AND mandant_id =  null;
+UPDATE einstellung set value = 'ZEITEINHEIT_UND_PROZENT' WHERE einstellung_key = 'PENSUM_ANZEIGE_TYP' AND gesuchsperiode_id = @gesuchperiode_22_23_id AND mandant_id =  null;
+UPDATE einstellung set value = 'true' WHERE einstellung_key = 'ABWESENHEIT_AKTIV' AND gesuchsperiode_id = @gesuchperiode_22_23_id AND mandant_id =  null;
+UPDATE einstellung set value = 'true' WHERE einstellung_key = 'VERFUEGUNG_EINGESCHRIEBEN_VERSENDEN_AKTIVIERT' AND gesuchsperiode_id = @gesuchperiode_22_23_id AND mandant_id =  null;
+UPDATE einstellung set value = 'false' WHERE einstellung_key = 'BEGRUENDUNG_MUTATION_AKTIVIERT' AND gesuchsperiode_id = @gesuchperiode_22_23_id AND mandant_id =  null;
+UPDATE einstellung set value = 'false' WHERE einstellung_key = 'GEMEINDE_PAUSCHALBETRAG_HOHE_EINKOMMENSKLASSEN_AKTIVIERT' AND gesuchsperiode_id = @gesuchperiode_22_23_id AND mandant_id =  null;
+UPDATE einstellung set value = '0' WHERE einstellung_key = 'GEMEINDE_PAUSCHALBETRAG_HOHE_EINKOMMENSKLASSEN_BETRAG_KITA' AND gesuchsperiode_id = @gesuchperiode_22_23_id AND mandant_id =  null;
+UPDATE einstellung set value = '0' WHERE einstellung_key = 'GEMEINDE_PAUSCHALBETRAG_HOHE_EINKOMMENSKLASSEN_BETRAG_TFO' AND gesuchsperiode_id = @gesuchperiode_22_23_id AND mandant_id =  null;
+UPDATE einstellung set value = '0' WHERE einstellung_key = 'GEMEINDE_PAUSCHALBETRAG_HOHE_EINKOMMENSKLASSEN_BETRAG_TFO_AB_PRIMARSCHULE' AND gesuchsperiode_id = @gesuchperiode_22_23_id AND mandant_id =  null;
+UPDATE einstellung set value = '0' WHERE einstellung_key = 'GEMEINDE_PAUSCHALBETRAG_HOHE_EINKOMMENSKLASSEN_MAX_MASSGEBENDEN_EINKOMMEN_FUER_BERECHNUNG' AND gesuchsperiode_id = @gesuchperiode_22_23_id AND mandant_id =  null;
+UPDATE einstellung set value = 'false' WHERE einstellung_key = 'VERFUEGUNG_EXPORT_ENABLED' AND gesuchsperiode_id = @gesuchperiode_22_23_id AND mandant_id =  null;
+UPDATE einstellung set value = '0' WHERE einstellung_key = 'VERANLAGUNG_MIN_UNTERSCHIED_MASSGEBENDESEINK' AND gesuchsperiode_id = @gesuchperiode_22_23_id AND mandant_id =  null;
+UPDATE einstellung set value = 'false' WHERE einstellung_key = 'ZAHLUNGSANGABEN_ANTRAGSTELLER_REQUIRED' AND gesuchsperiode_id = @gesuchperiode_22_23_id AND mandant_id =  null;
+UPDATE einstellung set value = 'false' WHERE einstellung_key = 'GEMEINDE_KEIN_GUTSCHEIN_FUER_SOZIALHILFE_EMPFAENGER' AND gesuchsperiode_id = @gesuchperiode_22_23_id AND mandant_id =  null;
+UPDATE einstellung set value = '7' WHERE einstellung_key = 'MAX_VERGUENSTIGUNG_PRIMAR_PRO_STD' AND gesuchsperiode_id = @gesuchperiode_22_23_id AND mandant_id =  null;
+UPDATE einstellung set value = 'KLASSE1' WHERE einstellung_key = 'GEMEINDE_BG_BIS_UND_MIT_SCHULSTUFE' AND gesuchsperiode_id = @gesuchperiode_22_23_id and mandant_id = @mandant_id_ar;
+UPDATE einstellung set value = 'false' WHERE einstellung_key = 'GEMEINDE_KONTINGENTIERUNG_ENABLED' AND gesuchsperiode_id = @gesuchperiode_22_23_id and mandant_id = @mandant_id_ar;
+UPDATE einstellung set value = '01.08.2019' WHERE einstellung_key = 'GEMEINDE_TAGESSCHULE_ANMELDUNGEN_DATUM_AB' AND gesuchsperiode_id = @gesuchperiode_22_23_id and mandant_id = @mandant_id_ar;
+UPDATE einstellung set value = '01.08.2019' WHERE einstellung_key = 'GEMEINDE_TAGESSCHULE_ERSTER_SCHULTAG' AND gesuchsperiode_id = @gesuchperiode_22_23_id and mandant_id = @mandant_id_ar;
+UPDATE einstellung set value = '01.08.2019' WHERE einstellung_key = 'GEMEINDE_FERIENINSEL_ANMELDUNGEN_DATUM_AB' AND gesuchsperiode_id = @gesuchperiode_22_23_id and mandant_id = @mandant_id_ar;
+UPDATE einstellung set value = '0' WHERE einstellung_key = 'GEMEINDESPEZIFISCHE_BG_KONFIGURATIONEN' AND gesuchsperiode_id = @gesuchperiode_22_23_id and mandant_id = @mandant_id_ar;
+UPDATE einstellung set value = 'false' WHERE einstellung_key = 'GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_ENABLED' AND gesuchsperiode_id = @gesuchperiode_22_23_id and mandant_id = @mandant_id_ar;
+UPDATE einstellung set value = '0.00' WHERE einstellung_key = 'GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_BETRAG_KITA' AND gesuchsperiode_id = @gesuchperiode_22_23_id and mandant_id = @mandant_id_ar;
+UPDATE einstellung set value = '0.00' WHERE einstellung_key = 'GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_BETRAG_TFO' AND gesuchsperiode_id = @gesuchperiode_22_23_id and mandant_id = @mandant_id_ar;
+UPDATE einstellung set value = 'VORSCHULALTER' WHERE einstellung_key = 'GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_BIS_UND_MIT_SCHULSTUFE_KITA' AND gesuchsperiode_id = @gesuchperiode_22_23_id and mandant_id = @mandant_id_ar;
+UPDATE einstellung set value = 'VORSCHULALTER' WHERE einstellung_key = 'GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_BIS_UND_MIT_SCHULSTUFE_TFO' AND gesuchsperiode_id = @gesuchperiode_22_23_id and mandant_id = @mandant_id_ar;
+UPDATE einstellung set value = 'false' WHERE einstellung_key = 'GEMEINDE_ZUSAETZLICHER_BABYBEITRAG_ENABLED' AND gesuchsperiode_id = @gesuchperiode_22_23_id and mandant_id = @mandant_id_ar;
+UPDATE einstellung set value = '0.00' WHERE einstellung_key = 'GEMEINDE_ZUSAETZLICHER_BABYBEITRAG_BETRAG_KITA' AND gesuchsperiode_id = @gesuchperiode_22_23_id and mandant_id = @mandant_id_ar;
+UPDATE einstellung set value = '0.00' WHERE einstellung_key = 'GEMEINDE_ZUSAETZLICHER_BABYBEITRAG_BETRAG_TFO' AND gesuchsperiode_id = @gesuchperiode_22_23_id and mandant_id = @mandant_id_ar;
+UPDATE einstellung set value = 'false' WHERE einstellung_key = 'GEMEINDE_ZUSAETZLICHER_ANSPRUCH_FREIWILLIGENARBEIT_ENABLED' AND gesuchsperiode_id = @gesuchperiode_22_23_id and mandant_id = @mandant_id_ar;
+UPDATE einstellung set value = '0' WHERE einstellung_key = 'GEMEINDE_ZUSAETZLICHER_ANSPRUCH_FREIWILLIGENARBEIT_MAXPROZENT' AND gesuchsperiode_id = @gesuchperiode_22_23_id and mandant_id = @mandant_id_ar;
+UPDATE einstellung set value = 'false' WHERE einstellung_key = 'GEMEINDE_MAHLZEITENVERGUENSTIGUNG_ENABLED' AND gesuchsperiode_id = @gesuchperiode_22_23_id and mandant_id = @mandant_id_ar;
+UPDATE einstellung set value = '6.00' WHERE einstellung_key = 'GEMEINDE_MAHLZEITENVERGUENSTIGUNG_EINKOMMENSSTUFE_1_VERGUENSTIGUNG_MAHLZEIT' AND gesuchsperiode_id = @gesuchperiode_22_23_id and mandant_id = @mandant_id_ar;
+UPDATE einstellung set value = '51000' WHERE einstellung_key = 'GEMEINDE_MAHLZEITENVERGUENSTIGUNG_EINKOMMENSSTUFE_1_MAX_EINKOMMEN' AND gesuchsperiode_id = @gesuchperiode_22_23_id and mandant_id = @mandant_id_ar;
+UPDATE einstellung set value = '3.00' WHERE einstellung_key = 'GEMEINDE_MAHLZEITENVERGUENSTIGUNG_EINKOMMENSSTUFE_2_VERGUENSTIGUNG_MAHLZEIT' AND gesuchsperiode_id = @gesuchperiode_22_23_id and mandant_id = @mandant_id_ar;
+UPDATE einstellung set value = '70000' WHERE einstellung_key = 'GEMEINDE_MAHLZEITENVERGUENSTIGUNG_EINKOMMENSSTUFE_2_MAX_EINKOMMEN' AND gesuchsperiode_id = @gesuchperiode_22_23_id and mandant_id = @mandant_id_ar;
+UPDATE einstellung set value = '0' WHERE einstellung_key = 'GEMEINDE_MAHLZEITENVERGUENSTIGUNG_EINKOMMENSSTUFE_3_VERGUENSTIGUNG_MAHLZEIT' AND gesuchsperiode_id = @gesuchperiode_22_23_id and mandant_id = @mandant_id_ar;
+UPDATE einstellung set value = 'false' WHERE einstellung_key = 'GEMEINDE_MAHLZEITENVERGUENSTIGUNG_FUER_SOZIALHILFEBEZUEGER_ENABLED' AND gesuchsperiode_id = @gesuchperiode_22_23_id and mandant_id = @mandant_id_ar;
+UPDATE einstellung set value = 'false' WHERE einstellung_key = 'GEMEINDE_SCHNITTSTELLE_KITAX_ENABLED' AND gesuchsperiode_id = @gesuchperiode_22_23_id and mandant_id = @mandant_id_ar;
+UPDATE einstellung set value = 'false' WHERE einstellung_key = 'GEMEINDE_TAGESSCHULE_TAGIS_ENABLED' AND gesuchsperiode_id = @gesuchperiode_22_23_id and mandant_id = @mandant_id_ar;
+UPDATE einstellung set value = '20' WHERE einstellung_key = 'GEMEINDE_MIN_ERWERBSPENSUM_NICHT_EINGESCHULT' AND gesuchsperiode_id = @gesuchperiode_22_23_id and mandant_id = @mandant_id_ar;
+UPDATE einstellung set value = '20' WHERE einstellung_key = 'GEMEINDE_MIN_ERWERBSPENSUM_EINGESCHULT' AND gesuchsperiode_id = @gesuchperiode_22_23_id and mandant_id = @mandant_id_ar;
+UPDATE einstellung set value = '0.00' WHERE einstellung_key = 'GEMEINDE_MAHLZEITENVERGUENSTIGUNG_MINIMALER_ELTERNBEITRAG_MAHLZEIT' AND gesuchsperiode_id = @gesuchperiode_22_23_id and mandant_id = @mandant_id_ar;
+UPDATE einstellung set value = 'false' WHERE einstellung_key = 'GEMEINDE_TAGESSCHULE_ZUSAETZLICHE_ANGABEN_ZUR_ANMELDUNG' AND gesuchsperiode_id = @gesuchperiode_22_23_id and mandant_id = @mandant_id_ar;
+UPDATE einstellung set value = 'false' WHERE einstellung_key = 'GEMEINDE_PAUSCHALBETRAG_HOHE_EINKOMMENSKLASSEN_AKTIVIERT' AND gesuchsperiode_id = @gesuchperiode_22_23_id and mandant_id = @mandant_id_ar;
+UPDATE einstellung set value = '0' WHERE einstellung_key = 'GEMEINDE_PAUSCHALBETRAG_HOHE_EINKOMMENSKLASSEN_BETRAG_KITA' AND gesuchsperiode_id = @gesuchperiode_22_23_id and mandant_id = @mandant_id_ar;
+UPDATE einstellung set value = '0' WHERE einstellung_key = 'GEMEINDE_PAUSCHALBETRAG_HOHE_EINKOMMENSKLASSEN_BETRAG_TFO' AND gesuchsperiode_id = @gesuchperiode_22_23_id and mandant_id = @mandant_id_ar;
+UPDATE einstellung set value = '0' WHERE einstellung_key = 'GEMEINDE_PAUSCHALBETRAG_HOHE_EINKOMMENSKLASSEN_BETRAG_TFO_AB_PRIMARSCHULE' AND gesuchsperiode_id = @gesuchperiode_22_23_id and mandant_id = @mandant_id_ar;
+UPDATE einstellung set value = '0' WHERE einstellung_key = 'GEMEINDE_PAUSCHALBETRAG_HOHE_EINKOMMENSKLASSEN_MAX_MASSGEBENDEN_EINKOMMEN_FUER_BERECHNUNG' AND gesuchsperiode_id = @gesuchperiode_22_23_id and mandant_id = @mandant_id_ar;
+UPDATE einstellung set value = 'false' WHERE einstellung_key = 'GEMEINDE_KEIN_GUTSCHEIN_FUER_SOZIALHILFE_EMPFAENGER' AND gesuchsperiode_id = @gesuchperiode_22_23_id and mandant_id = @mandant_id_ar;
+UPDATE einstellung set value = '3' WHERE einstellung_key = 'ANSPRUCH_AB_X_MONATEN' AND gesuchsperiode_id = @gesuchperiode_22_23_id AND mandant_id =  null;
+UPDATE einstellung set value = '10' WHERE einstellung_key = 'KITA_STUNDEN_PRO_TAG' AND gesuchsperiode_id = @gesuchperiode_22_23_id AND mandant_id =  null;
+
+# Gesuchsperiode 23-24 Einstellungen :
+UPDATE einstellung set value = 'false' WHERE einstellung_key = 'KESB_PLATZIERUNG_DEAKTIVIEREN' AND gesuchsperiode_id = @gesuchperiode_23_id and mandant_id =  null;
+UPDATE einstellung set value = 'ASIV' WHERE einstellung_key = 'KINDERABZUG_TYP' AND gesuchsperiode_id = @gesuchperiode_23_id and mandant_id =  null;
+UPDATE einstellung set value = 'false' WHERE einstellung_key = 'BESONDERE_BEDUERFNISSE_LUZERN' AND gesuchsperiode_id = @gesuchperiode_23_id and mandant_id =  null;
+UPDATE einstellung set value = '100' WHERE einstellung_key = 'FKJV_MAX_PENSUM_AUSSERORDENTLICHER_ANSPRUCH' AND gesuchsperiode_id = @gesuchperiode_23_id and mandant_id =  null;
+UPDATE einstellung set value = 'ASIV' WHERE einstellung_key = 'AUSSERORDENTLICHER_ANSPRUCH_RULE' AND gesuchsperiode_id = @gesuchperiode_23_id and mandant_id =  null;
+UPDATE einstellung set value = 'false' WHERE einstellung_key = 'GESCHWISTERNBONUS_AKTIVIERT' AND gesuchsperiode_id = @gesuchperiode_23_id and mandant_id =  null;
+UPDATE einstellung set value = '18' WHERE einstellung_key = 'DAUER_BABYTARIF' AND gesuchsperiode_id = @gesuchperiode_23_id and mandant_id =  null;
+UPDATE einstellung set value = 'false' WHERE einstellung_key = 'FKJV_TEXTE' AND gesuchsperiode_id = @gesuchperiode_23_id and mandant_id =  null;
+UPDATE einstellung set value = 'false' WHERE einstellung_key = 'DIPLOMATENSTATUS_DEAKTIVIERT' AND gesuchsperiode_id = @gesuchperiode_23_id and mandant_id =  null;
+UPDATE einstellung set value = 'false' WHERE einstellung_key = 'ZEMIS_DISABLED' AND gesuchsperiode_id = @gesuchperiode_23_id and mandant_id =  null;
+UPDATE einstellung set value = 'false' WHERE einstellung_key = 'SPRACHE_AMTSPRACHE_DISABLED' AND gesuchsperiode_id = @gesuchperiode_23_id and mandant_id =  null;
+UPDATE einstellung set value = 'false' WHERE einstellung_key = 'FREIGABE_QUITTUNG_EINLESEN_REQUIRED' AND gesuchsperiode_id = @gesuchperiode_23_id and mandant_id =  null;
+UPDATE einstellung set value = '12.24' WHERE einstellung_key = 'MAX_TARIF_MIT_PAEDAGOGISCHER_BETREUUNG' AND gesuchsperiode_id = @gesuchperiode_23_id and mandant_id =  null;
+UPDATE einstellung set value = '6.11' WHERE einstellung_key = 'MAX_TARIF_OHNE_PAEDAGOGISCHER_BETREUUNG' AND gesuchsperiode_id = @gesuchperiode_23_id and mandant_id =  null;
+UPDATE einstellung set value = '0.78' WHERE einstellung_key = 'MIN_TARIF' AND gesuchsperiode_id = @gesuchperiode_23_id and mandant_id =  null;
+UPDATE einstellung set value = '0' WHERE einstellung_key = 'PARAM_PENSUM_TAGESELTERN_MIN' AND gesuchsperiode_id = @gesuchperiode_23_id and mandant_id =  null;
+UPDATE einstellung set value = '0' WHERE einstellung_key = 'PARAM_PENSUM_TAGESSCHULE_MIN' AND gesuchsperiode_id = @gesuchperiode_23_id and mandant_id =  null;
+UPDATE einstellung set value = '0' WHERE einstellung_key = 'PARAM_PENSUM_KITA_MIN' AND gesuchsperiode_id = @gesuchperiode_23_id and mandant_id =  null;
+UPDATE einstellung set value = 'KLASSE1' WHERE einstellung_key = 'GEMEINDE_BG_BIS_UND_MIT_SCHULSTUFE' AND gesuchsperiode_id = @gesuchperiode_23_id and mandant_id =  null;
+UPDATE einstellung set value = 'false' WHERE einstellung_key = 'GEMEINDE_KONTINGENTIERUNG_ENABLED' AND gesuchsperiode_id = @gesuchperiode_23_id and mandant_id =  null;
+UPDATE einstellung set value = '140' WHERE einstellung_key = 'MAX_VERGUENSTIGUNG_VORSCHULE_BABY_PRO_TG' AND gesuchsperiode_id = @gesuchperiode_23_id and mandant_id =  null;
+UPDATE einstellung set value = '95' WHERE einstellung_key = 'MAX_VERGUENSTIGUNG_VORSCHULE_KIND_PRO_TG' AND gesuchsperiode_id = @gesuchperiode_23_id and mandant_id =  null;
+UPDATE einstellung set value = '70' WHERE einstellung_key = 'MAX_VERGUENSTIGUNG_KINDERGARTEN_PRO_TG' AND gesuchsperiode_id = @gesuchperiode_23_id and mandant_id =  null;
+UPDATE einstellung set value = '14' WHERE einstellung_key = 'MAX_VERGUENSTIGUNG_VORSCHULE_BABY_PRO_STD' AND gesuchsperiode_id = @gesuchperiode_23_id and mandant_id =  null;
+UPDATE einstellung set value = '9.5' WHERE einstellung_key = 'MAX_VERGUENSTIGUNG_VORSCHULE_KIND_PRO_STD' AND gesuchsperiode_id = @gesuchperiode_23_id and mandant_id =  null;
+UPDATE einstellung set value = '7' WHERE einstellung_key = 'MAX_VERGUENSTIGUNG_KINDERGARTEN_PRO_STD' AND gesuchsperiode_id = @gesuchperiode_23_id and mandant_id =  null;
+UPDATE einstellung set value = '100001' WHERE einstellung_key = 'MAX_MASSGEBENDES_EINKOMMEN' AND gesuchsperiode_id = @gesuchperiode_23_id and mandant_id =  null;
+UPDATE einstellung set value = '40000' WHERE einstellung_key = 'MIN_MASSGEBENDES_EINKOMMEN' AND gesuchsperiode_id = @gesuchperiode_23_id and mandant_id =  null;
+UPDATE einstellung set value = '240' WHERE einstellung_key = 'OEFFNUNGSTAGE_KITA' AND gesuchsperiode_id = @gesuchperiode_23_id and mandant_id =  null;
+UPDATE einstellung set value = '240' WHERE einstellung_key = 'OEFFNUNGSTAGE_TFO' AND gesuchsperiode_id = @gesuchperiode_23_id and mandant_id =  null;
+UPDATE einstellung set value = '10' WHERE einstellung_key = 'OEFFNUNGSSTUNDEN_TFO' AND gesuchsperiode_id = @gesuchperiode_23_id and mandant_id =  null;
+UPDATE einstellung set value = '60' WHERE einstellung_key = 'ZUSCHLAG_BEHINDERUNG_PRO_TG' AND gesuchsperiode_id = @gesuchperiode_23_id and mandant_id =  null;
+UPDATE einstellung set value = '6' WHERE einstellung_key = 'ZUSCHLAG_BEHINDERUNG_PRO_STD' AND gesuchsperiode_id = @gesuchperiode_23_id and mandant_id =  null;
+UPDATE einstellung set value = '30' WHERE einstellung_key = 'MIN_VERGUENSTIGUNG_PRO_TG' AND gesuchsperiode_id = @gesuchperiode_23_id and mandant_id =  null;
+UPDATE einstellung set value = '3' WHERE einstellung_key = 'MIN_VERGUENSTIGUNG_PRO_STD' AND gesuchsperiode_id = @gesuchperiode_23_id and mandant_id =  null;
+UPDATE einstellung set value = '20' WHERE einstellung_key = 'MIN_ERWERBSPENSUM_NICHT_EINGESCHULT' AND gesuchsperiode_id = @gesuchperiode_23_id and mandant_id =  null;
+UPDATE einstellung set value = '20' WHERE einstellung_key = 'MIN_ERWERBSPENSUM_EINGESCHULT' AND gesuchsperiode_id = @gesuchperiode_23_id and mandant_id =  null;
+UPDATE einstellung set value = '20' WHERE einstellung_key = 'FACHSTELLE_MIN_PENSUM_SOZIALE_INTEGRATION' AND gesuchsperiode_id = @gesuchperiode_23_id and mandant_id =  null;
+UPDATE einstellung set value = '60' WHERE einstellung_key = 'FACHSTELLE_MAX_PENSUM_SOZIALE_INTEGRATION' AND gesuchsperiode_id = @gesuchperiode_23_id and mandant_id =  null;
+UPDATE einstellung set value = '40' WHERE einstellung_key = 'FACHSTELLE_MIN_PENSUM_SPRACHLICHE_INTEGRATION' AND gesuchsperiode_id = @gesuchperiode_23_id and mandant_id =  null;
+UPDATE einstellung set value = '40' WHERE einstellung_key = 'FACHSTELLE_MAX_PENSUM_SPRACHLICHE_INTEGRATION' AND gesuchsperiode_id = @gesuchperiode_23_id and mandant_id =  null;
+UPDATE einstellung set value = '20' WHERE einstellung_key = 'ERWERBSPENSUM_ZUSCHLAG' AND gesuchsperiode_id = @gesuchperiode_23_id and mandant_id =  null;
+UPDATE einstellung set value = '3800' WHERE einstellung_key = 'PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_3' AND gesuchsperiode_id = @gesuchperiode_23_id and mandant_id =  null;
+UPDATE einstellung set value = '6000' WHERE einstellung_key = 'PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_4' AND gesuchsperiode_id = @gesuchperiode_23_id and mandant_id =  null;
+UPDATE einstellung set value = '7000' WHERE einstellung_key = 'PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_5' AND gesuchsperiode_id = @gesuchperiode_23_id and mandant_id =  null;
+UPDATE einstellung set value = '30' WHERE einstellung_key = 'PARAM_MAX_TAGE_ABWESENHEIT' AND gesuchsperiode_id = @gesuchperiode_23_id and mandant_id =  null;
+UPDATE einstellung set value = '20' WHERE einstellung_key = 'PARAM_GRENZWERT_EINKOMMENSVERSCHLECHTERUNG' AND gesuchsperiode_id = @gesuchperiode_23_id and mandant_id =  null;
+UPDATE einstellung set value = '7700' WHERE einstellung_key = 'PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_6' AND gesuchsperiode_id = @gesuchperiode_23_id and mandant_id =  null;
+UPDATE einstellung set value = '01.08.2019' WHERE einstellung_key = 'GEMEINDE_TAGESSCHULE_ANMELDUNGEN_DATUM_AB' AND gesuchsperiode_id = @gesuchperiode_23_id and mandant_id =  null;
+UPDATE einstellung set value = '01.08.2019' WHERE einstellung_key = 'GEMEINDE_TAGESSCHULE_ERSTER_SCHULTAG' AND gesuchsperiode_id = @gesuchperiode_23_id and mandant_id =  null;
+UPDATE einstellung set value = '01.08.2019' WHERE einstellung_key = 'GEMEINDE_FERIENINSEL_ANMELDUNGEN_DATUM_AB' AND gesuchsperiode_id = @gesuchperiode_23_id and mandant_id =  null;
+UPDATE einstellung set value = '10.39' WHERE einstellung_key = 'LATS_LOHNNORMKOSTEN' AND gesuchsperiode_id = @gesuchperiode_23_id and mandant_id =  null;
+UPDATE einstellung set value = '5.2' WHERE einstellung_key = 'LATS_LOHNNORMKOSTEN_LESS_THAN_50' AND gesuchsperiode_id = @gesuchperiode_23_id and mandant_id =  null;
+UPDATE einstellung set value = '2019-09-15' WHERE einstellung_key = 'LATS_STICHTAG' AND gesuchsperiode_id = @gesuchperiode_23_id and mandant_id =  null;
+UPDATE einstellung set value = 'KEINE' WHERE einstellung_key = 'EINGEWOEHNUNG_TYP' AND gesuchsperiode_id = @gesuchperiode_23_id and mandant_id =  null;
+UPDATE einstellung set value = '100' WHERE einstellung_key = 'FKJV_MAX_DIFFERENZ_BESCHAEFTIGUNGSPENSUM' AND gesuchsperiode_id = @gesuchperiode_23_id and mandant_id =  null;
+UPDATE einstellung set value = 'VORSCHULALTER' WHERE einstellung_key = 'FKJV_SOZIALE_INTEGRATION_BIS_SCHULSTUFE' AND gesuchsperiode_id = @gesuchperiode_23_id and mandant_id =  null;
+UPDATE einstellung set value = 'false' WHERE einstellung_key = 'FKJV_PAUSCHALE_BEI_ANSPRUCH' AND gesuchsperiode_id = @gesuchperiode_23_id and mandant_id =  null;
+UPDATE einstellung set value = 'false' WHERE einstellung_key = 'FKJV_PAUSCHALE_RUECKWIRKEND' AND gesuchsperiode_id = @gesuchperiode_23_id and mandant_id =  null;
+UPDATE einstellung set value = 'null' WHERE einstellung_key = 'FKJV_EINKOMMENSVERSCHLECHTERUNG_BIS_CHF' AND gesuchsperiode_id = @gesuchperiode_23_id and mandant_id =  null;
+UPDATE einstellung set value = 'true' WHERE einstellung_key = 'ANSPRUCH_MONATSWEISE' AND gesuchsperiode_id = @gesuchperiode_23_id and mandant_id =  null;
+UPDATE einstellung set value = 'false' WHERE einstellung_key = 'SCHNITTSTELLE_STEUERN_AKTIV' AND gesuchsperiode_id = @gesuchperiode_23_id and mandant_id =  null;
+UPDATE einstellung set value = '30' WHERE einstellung_key = 'FERIENBETREUUNG_CHF_PAUSCHALBETRAG' AND gesuchsperiode_id = @gesuchperiode_23_id and mandant_id =  null;
+UPDATE einstellung set value = '60' WHERE einstellung_key = 'FERIENBETREUUNG_CHF_PAUSCHALBETRAG_SONDERSCHUELER' AND gesuchsperiode_id = @gesuchperiode_23_id and mandant_id =  null;
+UPDATE einstellung set value = 'false' WHERE einstellung_key = 'FKJV_FAMILIENSITUATION_NEU' AND gesuchsperiode_id = @gesuchperiode_23_id and mandant_id =  null;
+UPDATE einstellung set value = '5' WHERE einstellung_key = 'MINIMALDAUER_KONKUBINAT' AND gesuchsperiode_id = @gesuchperiode_23_id and mandant_id =  null;
+UPDATE einstellung set value = 'APPENZELL' WHERE einstellung_key = 'FINANZIELLE_SITUATION_TYP' AND gesuchsperiode_id = @gesuchperiode_23_id and mandant_id =  null;
+UPDATE einstellung set value = 'false' WHERE einstellung_key = 'KITAPLUS_ZUSCHLAG_AKTIVIERT' AND gesuchsperiode_id = @gesuchperiode_23_id and mandant_id =  null;
+UPDATE einstellung set value = '0' WHERE einstellung_key = 'GEMEINDESPEZIFISCHE_BG_KONFIGURATIONEN' AND gesuchsperiode_id = @gesuchperiode_23_id and mandant_id =  null;
+UPDATE einstellung set value = 'ABHAENGING' WHERE einstellung_key = 'ABHAENGIGKEIT_ANSPRUCH_BESCHAEFTIGUNGPENSUM' AND gesuchsperiode_id = @gesuchperiode_23_id and mandant_id =  null;
+UPDATE einstellung set value = 'KLASSE9' WHERE einstellung_key = 'SPRACHLICHE_INTEGRATION_BIS_SCHULSTUFE' AND gesuchsperiode_id = @gesuchperiode_23_id and mandant_id =  null;
+UPDATE einstellung set value = 'false' WHERE einstellung_key = 'UNBEZAHLTER_URLAUB_AKTIV' AND gesuchsperiode_id = @gesuchperiode_23_id and mandant_id =  null;
+UPDATE einstellung set value = 'KEINE' WHERE einstellung_key = 'FACHSTELLEN_TYP' AND gesuchsperiode_id = @gesuchperiode_23_id and mandant_id =  null;
+UPDATE einstellung set value = 'false' WHERE einstellung_key = 'AUSWEIS_NACHWEIS_REQUIRED' AND gesuchsperiode_id = @gesuchperiode_23_id and mandant_id =  null;
+UPDATE einstellung set value = 'ZEITEINHEIT_UND_PROZENT' WHERE einstellung_key = 'PENSUM_ANZEIGE_TYP' AND gesuchsperiode_id = @gesuchperiode_23_id and mandant_id =  null;
+UPDATE einstellung set value = 'true' WHERE einstellung_key = 'ABWESENHEIT_AKTIV' AND gesuchsperiode_id = @gesuchperiode_23_id and mandant_id =  null;
+UPDATE einstellung set value = 'true' WHERE einstellung_key = 'VERFUEGUNG_EINGESCHRIEBEN_VERSENDEN_AKTIVIERT' AND gesuchsperiode_id = @gesuchperiode_23_id and mandant_id =  null;
+UPDATE einstellung set value = 'false' WHERE einstellung_key = 'BEGRUENDUNG_MUTATION_AKTIVIERT' AND gesuchsperiode_id = @gesuchperiode_23_id and mandant_id =  null;
+UPDATE einstellung set value = 'false' WHERE einstellung_key = 'GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_ENABLED' AND gesuchsperiode_id = @gesuchperiode_23_id and mandant_id = @mandant_id_ar;
+UPDATE einstellung set value = '0.00' WHERE einstellung_key = 'GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_BETRAG_KITA' AND gesuchsperiode_id = @gesuchperiode_23_id and mandant_id = @mandant_id_ar;
+UPDATE einstellung set value = '0.00' WHERE einstellung_key = 'GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_BETRAG_TFO' AND gesuchsperiode_id = @gesuchperiode_23_id and mandant_id = @mandant_id_ar;
+UPDATE einstellung set value = 'VORSCHULALTER' WHERE einstellung_key = 'GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_BIS_UND_MIT_SCHULSTUFE_KITA' AND gesuchsperiode_id = @gesuchperiode_23_id and mandant_id = @mandant_id_ar;
+UPDATE einstellung set value = 'VORSCHULALTER' WHERE einstellung_key = 'GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_BIS_UND_MIT_SCHULSTUFE_TFO' AND gesuchsperiode_id = @gesuchperiode_23_id and mandant_id = @mandant_id_ar;
+UPDATE einstellung set value = 'false' WHERE einstellung_key = 'GEMEINDE_ZUSAETZLICHER_BABYBEITRAG_ENABLED' AND gesuchsperiode_id = @gesuchperiode_23_id and mandant_id = @mandant_id_ar;
+UPDATE einstellung set value = '0.00' WHERE einstellung_key = 'GEMEINDE_ZUSAETZLICHER_BABYBEITRAG_BETRAG_KITA' AND gesuchsperiode_id = @gesuchperiode_23_id and mandant_id = @mandant_id_ar;
+UPDATE einstellung set value = '0.00' WHERE einstellung_key = 'GEMEINDE_ZUSAETZLICHER_BABYBEITRAG_BETRAG_TFO' AND gesuchsperiode_id = @gesuchperiode_23_id and mandant_id = @mandant_id_ar;
+UPDATE einstellung set value = 'false' WHERE einstellung_key = 'GEMEINDE_ZUSAETZLICHER_ANSPRUCH_FREIWILLIGENARBEIT_ENABLED' AND gesuchsperiode_id = @gesuchperiode_23_id and mandant_id = @mandant_id_ar;
+UPDATE einstellung set value = '0' WHERE einstellung_key = 'GEMEINDE_ZUSAETZLICHER_ANSPRUCH_FREIWILLIGENARBEIT_MAXPROZENT' AND gesuchsperiode_id = @gesuchperiode_23_id and mandant_id = @mandant_id_ar;
+UPDATE einstellung set value = 'false' WHERE einstellung_key = 'GEMEINDE_MAHLZEITENVERGUENSTIGUNG_ENABLED' AND gesuchsperiode_id = @gesuchperiode_23_id and mandant_id = @mandant_id_ar;
+UPDATE einstellung set value = '6.00' WHERE einstellung_key = 'GEMEINDE_MAHLZEITENVERGUENSTIGUNG_EINKOMMENSSTUFE_1_VERGUENSTIGUNG_MAHLZEIT' AND gesuchsperiode_id = @gesuchperiode_23_id and mandant_id = @mandant_id_ar;
+UPDATE einstellung set value = '51000' WHERE einstellung_key = 'GEMEINDE_MAHLZEITENVERGUENSTIGUNG_EINKOMMENSSTUFE_1_MAX_EINKOMMEN' AND gesuchsperiode_id = @gesuchperiode_23_id and mandant_id = @mandant_id_ar;
+UPDATE einstellung set value = '3.00' WHERE einstellung_key = 'GEMEINDE_MAHLZEITENVERGUENSTIGUNG_EINKOMMENSSTUFE_2_VERGUENSTIGUNG_MAHLZEIT' AND gesuchsperiode_id = @gesuchperiode_23_id and mandant_id = @mandant_id_ar;
+UPDATE einstellung set value = '70000' WHERE einstellung_key = 'GEMEINDE_MAHLZEITENVERGUENSTIGUNG_EINKOMMENSSTUFE_2_MAX_EINKOMMEN' AND gesuchsperiode_id = @gesuchperiode_23_id and mandant_id = @mandant_id_ar;
+UPDATE einstellung set value = '0' WHERE einstellung_key = 'GEMEINDE_MAHLZEITENVERGUENSTIGUNG_EINKOMMENSSTUFE_3_VERGUENSTIGUNG_MAHLZEIT' AND gesuchsperiode_id = @gesuchperiode_23_id and mandant_id = @mandant_id_ar;
+UPDATE einstellung set value = 'false' WHERE einstellung_key = 'GEMEINDE_MAHLZEITENVERGUENSTIGUNG_FUER_SOZIALHILFEBEZUEGER_ENABLED' AND gesuchsperiode_id = @gesuchperiode_23_id and mandant_id = @mandant_id_ar;
+UPDATE einstellung set value = 'false' WHERE einstellung_key = 'GEMEINDE_SCHNITTSTELLE_KITAX_ENABLED' AND gesuchsperiode_id = @gesuchperiode_23_id and mandant_id = @mandant_id_ar;
+UPDATE einstellung set value = 'false' WHERE einstellung_key = 'GEMEINDE_TAGESSCHULE_TAGIS_ENABLED' AND gesuchsperiode_id = @gesuchperiode_23_id and mandant_id = @mandant_id_ar;
+UPDATE einstellung set value = '20' WHERE einstellung_key = 'GEMEINDE_MIN_ERWERBSPENSUM_NICHT_EINGESCHULT' AND gesuchsperiode_id = @gesuchperiode_23_id and mandant_id = @mandant_id_ar;
+UPDATE einstellung set value = '20' WHERE einstellung_key = 'GEMEINDE_MIN_ERWERBSPENSUM_EINGESCHULT' AND gesuchsperiode_id = @gesuchperiode_23_id and mandant_id = @mandant_id_ar;
+UPDATE einstellung set value = '0.00' WHERE einstellung_key = 'GEMEINDE_MAHLZEITENVERGUENSTIGUNG_MINIMALER_ELTERNBEITRAG_MAHLZEIT' AND gesuchsperiode_id = @gesuchperiode_23_id and mandant_id = @mandant_id_ar;
+UPDATE einstellung set value = 'false' WHERE einstellung_key = 'GEMEINDE_TAGESSCHULE_ZUSAETZLICHE_ANGABEN_ZUR_ANMELDUNG' AND gesuchsperiode_id = @gesuchperiode_23_id and mandant_id = @mandant_id_ar;
+UPDATE einstellung set value = 'false' WHERE einstellung_key = 'GEMEINDE_PAUSCHALBETRAG_HOHE_EINKOMMENSKLASSEN_AKTIVIERT' AND gesuchsperiode_id = @gesuchperiode_23_id and mandant_id =  null;
+UPDATE einstellung set value = '0' WHERE einstellung_key = 'GEMEINDE_PAUSCHALBETRAG_HOHE_EINKOMMENSKLASSEN_BETRAG_KITA' AND gesuchsperiode_id = @gesuchperiode_23_id and mandant_id =  null;
+UPDATE einstellung set value = '0' WHERE einstellung_key = 'GEMEINDE_PAUSCHALBETRAG_HOHE_EINKOMMENSKLASSEN_BETRAG_TFO' AND gesuchsperiode_id = @gesuchperiode_23_id and mandant_id =  null;
+UPDATE einstellung set value = '0' WHERE einstellung_key = 'GEMEINDE_PAUSCHALBETRAG_HOHE_EINKOMMENSKLASSEN_BETRAG_TFO_AB_PRIMARSCHULE' AND gesuchsperiode_id = @gesuchperiode_23_id and mandant_id =  null;
+UPDATE einstellung set value = '0' WHERE einstellung_key = 'GEMEINDE_PAUSCHALBETRAG_HOHE_EINKOMMENSKLASSEN_MAX_MASSGEBENDEN_EINKOMMEN_FUER_BERECHNUNG' AND gesuchsperiode_id = @gesuchperiode_23_id and mandant_id =  null;
+UPDATE einstellung set value = 'false' WHERE einstellung_key = 'VERFUEGUNG_EXPORT_ENABLED' AND gesuchsperiode_id = @gesuchperiode_23_id and mandant_id =  null;
+UPDATE einstellung set value = '0' WHERE einstellung_key = 'VERANLAGUNG_MIN_UNTERSCHIED_MASSGEBENDESEINK' AND gesuchsperiode_id = @gesuchperiode_23_id and mandant_id =  null;
+UPDATE einstellung set value = 'false' WHERE einstellung_key = 'ZAHLUNGSANGABEN_ANTRAGSTELLER_REQUIRED' AND gesuchsperiode_id = @gesuchperiode_23_id and mandant_id =  null;
+UPDATE einstellung set value = 'false' WHERE einstellung_key = 'GEMEINDE_KEIN_GUTSCHEIN_FUER_SOZIALHILFE_EMPFAENGER' AND gesuchsperiode_id = @gesuchperiode_23_id and mandant_id =  null;
+UPDATE einstellung set value = '7' WHERE einstellung_key = 'MAX_VERGUENSTIGUNG_PRIMAR_PRO_STD' AND gesuchsperiode_id = @gesuchperiode_23_id and mandant_id =  null;
+UPDATE einstellung set value = '3' WHERE einstellung_key = 'ANSPRUCH_AB_X_MONATEN' AND gesuchsperiode_id = @gesuchperiode_23_id and mandant_id =  null;
+UPDATE einstellung set value = '10' WHERE einstellung_key = 'KITA_STUNDEN_PRO_TAG' AND gesuchsperiode_id = @gesuchperiode_23_id and mandant_id =  null;
 
 # Test-Institutionen erstellen
 INSERT IGNORE INTO traegerschaft (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version, name, active, mandant_id)
