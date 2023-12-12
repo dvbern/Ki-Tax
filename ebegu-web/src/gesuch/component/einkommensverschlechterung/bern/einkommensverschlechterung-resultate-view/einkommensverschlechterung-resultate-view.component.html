@@ -35,6 +35,7 @@
                 <div class="row">
                     <div class="col-sm-12 dv-input-container-small">
                         <dv-input-label-field
+                            data-test="einkommen-beider-gesuchsteller"
                             [model]="getResultate()?.einkommenBeiderGesuchsteller"
                             [labelMessageKey]="this.model.isGesuchsteller2Required() ? 'FINANZIELLE_SITUATION_EINKOMMEN_ZWEI_GS' : 'FINANZIELLE_SITUATION_EINKOMMEN_EIN_GS'"
                             [labelMessageKeyArgs]=""
@@ -206,6 +207,7 @@
                     <div class="row margin-top-20">
                         <div class="col-sm-12 dv-input-container-small">
                             <dv-input-label-field
+                                data-test="einkommen-vorjahr-basis"
                                 [model]="resultatBasisjahr?.massgebendesEinkVorAbzFamGr"
                                 [labelMessageKey]="'EVK_EINKOMMEN_JAHR'"
                                 [labelMessageKeyArgs]="{basisjahr: this.getBasisjahr()}"
@@ -217,6 +219,7 @@
                     <div class="row">
                         <div class="col-sm-12 dv-input-container-small">
                             <dv-input-label-field
+                                data-test="einkommen-vorjahr"
                                 [model]="getResultate()?.massgebendesEinkVorAbzFamGr"
                                 [labelMessageKey]="'EVK_EINKOMMEN_JAHR'"
                                 [labelMessageKeyArgs]="{basisjahr: this.gesuchModelManager.getBasisjahrToWorkWith()}"

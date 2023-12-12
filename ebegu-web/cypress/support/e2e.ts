@@ -48,6 +48,7 @@ const rootInteractionElements = [
     'dv-checkbox-x',
     'dv-datepicker',
     'dv-date-picker-x',
+    'dv-input-label-field',
     'dv-valueinput',
     'dv-valueinput-x',
 ] as const;
@@ -58,6 +59,7 @@ const elementsWithSuffixSelector: [
     ['dv-checkbox-x', '[data-test="checkbox"]'],
     ['dv-datepicker', 'input'],
     ['dv-date-picker-x', 'input'],
+    ['dv-input-label-field', 'input'],
     ['dv-valueinput', 'input'],
     ['dv-valueinput-x', 'input'],
     ['md-autocomplete', 'input'],

@@ -15,14 +15,14 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { FixtureBetreuung } from '@dv-e2e/fixtures';
+import {FixtureBetreuung} from '@dv-e2e/fixtures';
 
 const createNewBetreuung = () => {
     cy.getByData('container.create-betreuung', 'navigation-button').click();
 };
 
 const fillKitaBetreuungsForm = (dataset: keyof typeof FixtureBetreuung) => {
-    FixtureBetreuung[dataset](({ kita }) => {
+    FixtureBetreuung[dataset](({kita}) => {
         cy.getByData('betreuungsangebot').select(kita.betreuungsangebot);
         cy.getByData('institution').find('input').type(kita.institution);
         cy.getByData('instutions-suchtext').click();
@@ -30,23 +30,31 @@ const fillKitaBetreuungsForm = (dataset: keyof typeof FixtureBetreuung) => {
     });
 };
 
-const fillOnlineKitaBetreuungsForm = (dataset: keyof typeof FixtureBetreuung) => {
-    FixtureBetreuung[dataset](({ kita }) => {
+const fillOnlineKitaBetreuungsForm = (dataset: keyof typeof FixtureBetreuung, opts?: { mobile: boolean }) => {
+    FixtureBetreuung[dataset](({kita}) => {
         cy.getByData('betreuungsangebot').select(kita.betreuungsangebot);
         cy.getByData('container.vertrag', 'radio-value.ja').click();
-        cy.getByData('institution').find('input').type(kita.institution);
-        cy.getByData('instutions-suchtext').click();
-        cy.getByData('institution').find('input').should('have.value', kita.institution);
+        if (opts?.mobile) {
+            cy.getByData('institution-mobile').select(kita.institution);
+        } else {
+            cy.getByData('institution').find('input').type(kita.institution);
+            cy.getByData('instutions-suchtext').click();
+            cy.getByData('institution').find('input').should('have.value', kita.institution);
+        }
     });
 };
 
-const fillOnlineTfoBetreuungsForm = (dataset: keyof typeof FixtureBetreuung) => {
-    FixtureBetreuung[dataset](({ tfo }) => {
+const fillOnlineTfoBetreuungsForm = (dataset: keyof typeof FixtureBetreuung, opts?: { mobile: boolean }) => {
+    FixtureBetreuung[dataset](({tfo}) => {
         cy.getByData('betreuungsangebot').select(tfo.betreuungsangebot);
         cy.getByData('container.vertrag', 'radio-value.ja').click();
-        cy.getByData('institution').find('input').type(tfo.institution);
-        cy.getByData('instutions-suchtext').click();
-        cy.getByData('institution').find('input').should('have.value', tfo.institution);
+        if (opts?.mobile) {
+            cy.getByData('institution-mobile').select(tfo.institution);
+        } else {
+            cy.getByData('institution').find('input').type(tfo.institution);
+            cy.getByData('instutions-suchtext').click();
+            cy.getByData('institution').find('input').should('have.value', tfo.institution);
+        }
     });
 };
 

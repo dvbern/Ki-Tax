@@ -9,8 +9,9 @@ import { FixtureFamSit, FixtureFinSit } from '@dv-e2e/fixtures';
 import { getUser } from '@dv-e2e/types';
 
 describe('Kibon - generate Testfälle [Online-Antrag]', () => {
-    // TODO: Change userKita to Agnes Krause once "Kitas & Tagis Stadt Bern" can view the TFO of this test
-    const userKita = getUser('[1-Superadmin] E-BEGU Superuser');
+    const userSuperadmin = getUser('[1-Superadmin] E-BEGU Superuser');
+    const userGemeinde = getUser('[6-L-SB-Gemeinde] Stefan Weibel');
+    const userKita = getUser('[3-SB-Tägerschaft-Kitas-StadtBern] Agnes Krause');
     const userGS = getUser('[5-GS] Emma Gerber');
     const admin = getUser('[1-Superadmin] E-BEGU Superuser');
     const gesuchsPeriode = { ganze: '2023/24', anfang: '2023', ende: '2024' };
@@ -39,6 +40,7 @@ describe('Kibon - generate Testfälle [Online-Antrag]', () => {
     });
 
     it('should correctly create a new online antrag', () => {
+        cy.viewport('iphone-8');
         const famsitDataset = 'withValid';
 
         const openAntrag = () => {
@@ -92,7 +94,7 @@ describe('Kibon - generate Testfälle [Online-Antrag]', () => {
             //KITA
             {
                 AntragBetreuungPO.createNewBetreuung();
-                AntragBetreuungPO.fillOnlineKitaBetreuungsForm(famsitDataset);
+                AntragBetreuungPO.fillOnlineKitaBetreuungsForm(famsitDataset, { mobile: true });
                 AntragBetreuungPO.fillKeinePlatzierung();
                 AntragBetreuungPO.fillErweiterteBeduerfnisse();
                 AntragBetreuungPO.platzBestaetigungAnfordern();
@@ -101,7 +103,7 @@ describe('Kibon - generate Testfälle [Online-Antrag]', () => {
             //TFO
             {
                 AntragBetreuungPO.createNewBetreuung();
-                AntragBetreuungPO.fillOnlineTfoBetreuungsForm('withValid');
+                AntragBetreuungPO.fillOnlineTfoBetreuungsForm('withValid', { mobile: true });
                 AntragBetreuungPO.fillKeinePlatzierung();
                 cy.getByData('erweiterteBeduerfnisse.radio-value.nein').click();
                 AntragBetreuungPO.platzBestaetigungAnfordern();
@@ -244,10 +246,12 @@ describe('Kibon - generate Testfälle [Online-Antrag]', () => {
             cy.groupBy('Resultate', () => {
                 cy.getByData('page-title').should('include.text', gesuchsPeriode.anfang);
                 EinkommensverschlechterungPO.fillResultateForm('withValid', 'jahr1');
+                EinkommensverschlechterungPO.checkResultateForm('withValid', 'jahr1');
                 clickSave();
 
                 cy.getByData('page-title').should('include.text', gesuchsPeriode.ende);
                 EinkommensverschlechterungPO.fillResultateForm('withValid', 'jahr2');
+                EinkommensverschlechterungPO.checkResultateForm('withValid', 'jahr2');
             });
             cy.intercept('GET', '**/dokumente/**').as('goingToDokumente');
             clickSave();
@@ -280,10 +284,12 @@ describe('Kibon - generate Testfälle [Online-Antrag]', () => {
             cy.wait('@goingToVerfuegungen');
         }
 
+        cy.resetViewport();
         // PLATZBESTAETIGUNG mit Kita SB
         // !!!!!! - New User - !!!!!!
         {
-            cy.changeLogin(userKita);
+            // TODO: Change to userKita once "Kitas & Tagis Stadt Bern" can view the TFO of this test
+            cy.changeLogin(userSuperadmin);
 
             const goToBetreuungen = () => {
                 cy.get('@antragsId').then((antragsId) => cy.visit(`/#/gesuch/familiensituation/${antragsId}`));
@@ -297,6 +303,12 @@ describe('Kibon - generate Testfälle [Online-Antrag]', () => {
 
             goToBetreuungen();
             cy.getByData('container.betreuung#0').click();
+            cy.getByData('container.add-betreuungspensum', 'navigation-button').click();
+            cy.getByData('betreuungspensum-0').type('25');
+            cy.getByData('monatliche-betreuungskosten#0').type('1000');
+            cy.getByData('betreuung-datum-ab#0').find('input').type('01.08.2023');
+            cy.getByData('betreuung-datum-bis#0').find('input').type('31.07.2024');
+
             cy.getByData('korrekte-kosten-bestaetigung').click();
             cy.getByData('container.platz-bestaetigen', 'navigation-button').click();
             cy.waitForRequest('GET', '**/search/pendenzenBetreuungen', () => {
@@ -316,11 +328,13 @@ describe('Kibon - generate Testfälle [Online-Antrag]', () => {
         }
 
         cy.changeLogin(userGS);
+        cy.viewport('iphone-8');
         openAntrag();
         // !!!!!! - changed back to previous user - !!!!!!
 
         // FREIGABE
         {
+            cy.getByData('mobile-menu').click();
             cy.getByData('sidenav.BETREUUNG').click();
             cy.getByData('container.betreuung#1', 'betreuungs-status').should('include.text', 'Abgewiesen');
             cy.getByData('container.betreuung#1', 'container.delete', 'navigation-button').click();
@@ -328,6 +342,7 @@ describe('Kibon - generate Testfälle [Online-Antrag]', () => {
                 cy.getByData('container.confirm', 'navigation-button').click();
             });
 
+            cy.getByData('mobile-menu').click();
             cy.getByData('sidenav.FREIGABE').click();
             cy.getByData('container.freigeben', 'navigation-button').click();
             cy.getDownloadUrl(() => {
@@ -340,13 +355,22 @@ describe('Kibon - generate Testfälle [Online-Antrag]', () => {
             });
         }
 
+        cy.resetViewport();
         // VERFUEGUNG
         {
-            cy.changeLogin(userKita);
+            cy.changeLogin(userSuperadmin);
             cy.get('@antragsId').then((antragsId) => cy.visit(`/#/gesuch/freigabe/${antragsId}`));
             cy.waitForRequest('GET', '**/dossier/fall/**', () => {
                 cy.getByData('container.freigabe-simulieren', 'navigation-button').click();
             });
+            cy.getByData('sidenav.GESUCH_ERSTELLEN').click();
+            cy.getByData('fall-creation-eingangsdatum').find('input').clear().type('01.07.2023');
+            cy.waitForRequest('PUT', '**/gesuche', () => {
+                clickSave();
+            });
+
+            cy.changeLogin(userGemeinde);
+            cy.get('@antragsId').then((antragsId) => cy.visit(`/#/gesuch/freigabe/${antragsId}`));
             clickSave();
             cy.waitForRequest('GET', '**/verfuegung/calculate/**', () => {
                 cy.getByData('finSitStatus.radio-value.AKZEPTIERT').click();

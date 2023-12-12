@@ -25,7 +25,16 @@ const fillResultateForm = (dataset: keyof typeof FixtureEinkommensverschlechteru
     })
 }
 
+const checkResultateForm = (dataset: keyof typeof FixtureEinkommensverschlechterung, jahr: 'jahr1' | 'jahr2') => {
+    FixtureEinkommensverschlechterung[dataset](({ [jahr]: { Resultate } }) => {
+        cy.getByData('einkommen-beider-gesuchsteller').find('input').should('have.value', Resultate.einkommenBeiderGesuchsteller);
+        cy.getByData('einkommen-vorjahr-basis').find('input').should('have.value', Resultate.einkommenVorjahrBasis);
+        cy.getByData('einkommen-vorjahr').find('input').should('have.value', Resultate.einkommenVorjahr);
+    })
+}
+
 export const EinkommensverschlechterungPO = {
+    checkResultateForm,
     fillEinkommensverschlechterungForm,
     fillResultateForm,
 };
