@@ -21,6 +21,7 @@ import type * as Kind from '../fixtures/antrag/kind.json';
 import type * as FamSit from '../fixtures/antrag/famsit.json';
 import type * as FinSit from '../fixtures/antrag/finsit.json';
 import type * as Papier from '../fixtures/antrag/papier.json';
+import type * as Tagesschulanmeldung from '../fixtures/antrag/tagesschulanmeldung.json';
 import type * as CreateTagesschule from '../fixtures/institution/create-tagesschule.json';
 import type * as Tagesschule from '../fixtures/institution/tagesschule.json';
 
@@ -39,7 +40,11 @@ export const FixtureBeschaeftigungspensum = {
 
 export const FixtureBetreuung = {
     withValid: fromFixture<typeof Betreuung>('antrag/betreuung.json', 'valid'),
-}
+};
+
+export const FixtureTagesschulAnmeldung = {
+    withValid: fromFixture<typeof Tagesschulanmeldung>('antrag/tagesschulanmeldung.json', 'valid')
+};
 
 export const FixtureFamSit = {
     withValid: fromFixture<typeof FamSit>('antrag/famsit.json', 'valid'),
