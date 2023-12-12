@@ -15,6 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+# Variables definition
 SET @bern_mandant_id = UNHEX('E3736EB86EEF40EF9E5296AB48D8F220');
 SET @gesuchsperiode_23_24 = UNHEX('4DF2170684424596A864E6D14EEBD7BD');
 SET @gesuchsperiode_22_23 = UNHEX('DD8798F7F10E43CE8AF78BD7E8475D52');

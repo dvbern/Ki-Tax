@@ -14,6 +14,8 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
+
+ # Variables definition
 SET @mandant_id_ar = UNHEX(REPLACE('5b9e6fa4-3991-11ed-a63d-b05cda43de9c', '-', ''));
 SET @testgemeinde_solothurn_id = UNHEX(REPLACE('47c4b3a8-5379-11ec-98e8-f4390979fa3e', '-', ''));
 SET @gesuchperiode_23_id = UNHEX(REPLACE('9bb4a798-3998-11ed-a63d-b05cda43de9c', '-', ''));
@@ -453,83 +455,6 @@ VALUES (UNHEX(REPLACE('56aa13db-39a9-11ed-a63d-b05cda43de9c', '-', '')), '2016-0
 		UNHEX(REPLACE('3eb65ff2-39a9-11ed-a63d-b05cda43de9c', '-', '')), 'bruennen-ar@mailbucket.dvbern.ch', NULL, NULL);
 
 update gemeinde set angebotts = false, angebotfi = false where bfs_nummer = @testgemeinde_ar_bfs_nr;
-
--- Tagesschule Gemeinde Paris
-INSERT IGNORE INTO institution (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version,
-								vorgaenger_id, name, status, mandant_id, traegerschaft_id, stammdaten_check_required,
-								event_published)
-VALUES (@ts_id, '2020-02-28 09:48:18', '2020-02-28 10:11:35',
-		'flyway', 'flyway', 0, NULL, 'Tagesschule Appenzell Ausserrhoden', 'AKTIV',
-		@mandant_id_ar, NULL, FALSE, TRUE);
-
-INSERT IGNORE INTO adresse (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version,
-							vorgaenger_id, gueltig_ab, gueltig_bis, gemeinde, hausnummer, land, organisation, ort, plz,
-							strasse, zusatzzeile)
-VALUES (UNHEX(REPLACE('648f4d9f-39a9-11ed-a63d-b05cda43de9c', '-', '')), '2020-02-28 09:48:18', '2020-02-28 10:11:35',
-		'flyway', 'flyway', 1, NULL, '1000-01-01', '9999-12-31', NULL, '2', 'CH', 'Tageschule Appenzell Ausserrhoden', 'Herisau', '9100',
-		'Appenzell Ausserrhodener Strasse', NULL);
-
-INSERT IGNORE INTO institution_stammdaten_tagesschule (id, timestamp_erstellt, timestamp_mutiert, user_erstellt,
-													   user_mutiert, version, gemeinde_id)
-VALUES (UNHEX(REPLACE('d75e306e-5393-11ec-98e8-f4390979fa3e', '-', '')), '2020-02-28 09:48:18', '2020-02-28 09:48:18',
-		'flyway', 'flyway', 0, @testgemeinde_ar_id);
-
-INSERT IGNORE INTO institution_stammdaten (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert,
-										   version, vorgaenger_id, gueltig_ab, gueltig_bis, betreuungsangebot_typ, mail,
-										   telefon, webseite, adresse_id, institution_id,
-										   institution_stammdaten_ferieninsel_id, institution_stammdaten_tagesschule_id,
-										   send_mail_wenn_offene_pendenzen,
-										   institution_stammdaten_betreuungsgutscheine_id)
-VALUES (UNHEX(REPLACE('f89d4bf4-39aa-11ed-a63d-b05cda43de9c', '-', '')), '2020-02-28 09:48:18', '2020-02-28 09:48:18',
-		'flyway', 'flyway', 0, NULL, '2020-08-01', '9999-12-31', 'TAGESSCHULE', 'tagesschule-ar@mailbucket.dvbern.ch', NULL, NULL,
-		UNHEX(REPLACE('648f4d9f-39a9-11ed-a63d-b05cda43de9c', '-', '')), @ts_id, NULL,
-		UNHEX(REPLACE('d75e306e-5393-11ec-98e8-f4390979fa3e', '-', '')), TRUE, NULL);
-
-INSERT IGNORE INTO einstellungen_tagesschule (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert,
-											  version,
-											  modul_tagesschule_typ, gesuchsperiode_id,
-											  institution_stammdaten_tagesschule_id,
-											  erlaeuterung)
-SELECT *
-FROM (SELECT UNHEX(REPLACE(UUID(), '-', ''))    as id,
-		  '2020-01-01 00:00:00'              as timestamp_erstellt,
-		  '2020-01-01 00:00:00'              as timestamp_mutiert,
-		  'flyway'                           as user_erstellt,
-		  'flyway'                           as user_mutiert,
-		  0                                  as version,
-		  'DYNAMISCH' as  modul_tagesschule_typ,
-		  gp.id   							 as gesuchsperiode_id,
-		  UNHEX(REPLACE('d75e306e-5393-11ec-98e8-f4390979fa3e','-', '')) as institution_stammdaten_tagesschule_id,
-		  null as erlaeuterung
-	  from gesuchsperiode as gp where gp.mandant_id = @mandant_id_ar) as tmp;
-
-INSERT IGNORE INTO gemeinde_stammdaten_gesuchsperiode (id, timestamp_erstellt, timestamp_mutiert, user_erstellt,
-															 user_mutiert, version, gemeinde_id, gesuchsperiode_id,
-															 merkblatt_anmeldung_tagesschule_de,
-															 merkblatt_anmeldung_tagesschule_fr)
-VALUES
-# LONDON
-	(UNHEX(REPLACE('073fcdda-39ab-11ed-a63d-b05cda43de9c', '-', '')), '2020-03-18 00:00:00', '2020-03-18 00:00:00',
-	 'flyway', 'flyway', 0, @testgemeinde_ar_id,
-	 @gesuchperiode_23_id, NULL, NULL);
-
-# LONDON
-INSERT IGNORE INTO gemeinde_stammdaten_gesuchsperiode_ferieninsel (id, timestamp_erstellt, timestamp_mutiert,
-																		 user_erstellt, user_mutiert, version,
-																		 vorgaenger_id, anmeldeschluss, ferienname,
-																		 gemeinde_stammdaten_gesuchsperiode_id)
-VALUES (UNHEX(REPLACE(UUID(), '-', '')), '2020-03-18 00:00:00', '2020-03-18 00:00:00',
-		'flyway', 'flyway', 0, NULL, '2019-09-01', 'HERBSTFERIEN',
-		UNHEX(REPLACE('073fcdda-39ab-11ed-a63d-b05cda43de9c', '-', ''))),
-	(UNHEX(REPLACE(UUID(), '-', '')), '2020-03-18 00:00:00', '2020-03-18 00:00:00',
-	 'flyway', 'flyway', 0, NULL, '2019-06-01', 'SOMMERFERIEN',
-	 UNHEX(REPLACE('073fcdda-39ab-11ed-a63d-b05cda43de9c', '-', ''))),
-	(UNHEX(REPLACE(UUID(), '-', '')), '2020-03-18 00:00:00', '2020-03-18 00:00:00',
-	 'flyway', 'flyway', 0, NULL, '2019-01-01', 'SPORTFERIEN',
-	 UNHEX(REPLACE('073fcdda-39ab-11ed-a63d-b05cda43de9c', '-', ''))),
-	(UNHEX(REPLACE(UUID(), '-', '')), '2020-03-18 00:00:00', '2020-03-18 00:00:00',
-	 'flyway', 'flyway', 0, NULL, '2019-04-01', 'FRUEHLINGSFERIEN',
-	 UNHEX(REPLACE('073fcdda-39ab-11ed-a63d-b05cda43de9c', '-', '')));
 
 -- Sozialdienst
 INSERT IGNORE INTO sozialdienst (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version,
