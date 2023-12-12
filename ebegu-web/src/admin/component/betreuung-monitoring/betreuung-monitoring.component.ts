@@ -108,11 +108,7 @@ export class BetreuungMonitoringComponent implements OnInit, AfterViewInit {
     private initExternalClientList(): void {
         this.betreuungMonitoringRS.getAllExternalClient()
             .subscribe((result: TSExternalClient[]) => {
-                    result.forEach(externalClient => EbeguUtil.isNotNullOrUndefined(this.externalClientNames) ?
-                        this.externalClientNames =
-                            `${this.externalClientNames},${externalClient.clientName}` :
-                        this.externalClientNames = externalClient.clientName);
-                    this.changeDetectorRef.markForCheck();
+                    this.externalClientNames = result.map(x => x.clientName).join();
                 },
                 () => {
                 });
