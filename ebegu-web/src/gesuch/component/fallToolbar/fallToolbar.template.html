@@ -13,7 +13,7 @@
   ~ along with this program. If not, see <http://www.gnu.org/licenses/>.
   -->
 
-<div class="fall-toolbar" *ngIf="!mobileMode; else mobileModeTemplate">
+<div class="fall-toolbar" *ngIf="!mobileMode; else mobileModeTemplate" data-test="fall-toolbar">
     <div layout="row" class="fall-toolbar-content">
 
         <div class="dossier-list col-md-12">
@@ -38,7 +38,7 @@
             <div class="pull-right dossier-element fall-nummer"
                  [ngClass]="{'fall-nummer-gesuchsteller': isGesuchsteller()}">
                 <span [textContent]="nameGs" class="fall-toolbar-symbol-padding"></span>
-                <span [textContent]="fallNummer" class="fall-toolbar-symbol-padding"></span>
+                <span [textContent]="fallNummer" data-test="fall-nummer" class="fall-toolbar-symbol-padding"></span>
                 <span class="kitax-link" *ngIf="kitaxResponse && isGemeindeUserOrSuperAdmin()">
                     (<a target="_blank" rel="noopener noreferrer" [href]="kitaxHost + kitaxResponse.url">Ki-Tax {{kitaxResponse.fallNummer}}</a>)
                 </span>
