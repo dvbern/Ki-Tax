@@ -21,13 +21,9 @@ SET @gesuchsperiode_23_24_id = UNHEX('3A873D7EE6C14C0481A273FF1D16B769');
 SET @luzern_test_gemeinde_id = UNHEX(REPLACE('6fd6183c-30a2-11ec-a86f-b89a2ae4a038', '-', ''));
 
 # Adresse
-INSERT INTO adresse (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version, vorgaenger_id, gueltig_ab, gueltig_bis, gemeinde, hausnummer, land, organisation, ort, plz, strasse, zusatzzeile, bfs_nummer) VALUES (UNHEX('2476287E326411ECA17EB89A2AE4A038'), '2018-10-23 00:00:00', '2018-10-23 00:00:00', 'flyway', 'flyway', 0, null, '2018-01-01', '9999-01-01', 'Luzern', '1', 'CH', 'Gemeinde', 'Luzern', '3072', 'Schiessplatzweg', null, null);
 INSERT INTO adresse (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version, vorgaenger_id, gueltig_ab, gueltig_bis, gemeinde, hausnummer, land, organisation, ort, plz, strasse, zusatzzeile, bfs_nummer) VALUES (UNHEX('3073FF81BD9640168B92F7483B79BC0E'), '2023-12-08 10:58:36', '2023-12-08 10:59:59', 'ebegu:Stadt Luzern', 'ebegu:Stadt Luzern', 1, null, '2023-12-08', '9999-12-31', null, '2', 'CH', 'Kita Luzern', 'Luzern', '6000', 'Kita Strasse', null, null);
 INSERT INTO adresse (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version, vorgaenger_id, gueltig_ab, gueltig_bis, gemeinde, hausnummer, land, organisation, ort, plz, strasse, zusatzzeile, bfs_nummer) VALUES (UNHEX('5DBE5D0E8C4D43AB9FC1C44F4B259784'), '2023-12-08 10:56:11', '2023-12-08 10:56:11', 'ebegu:Stadt Luzern', 'ebegu:Stadt Luzern', 0, null, '2023-12-08', '9999-12-31', null, null, 'CH', 'Stadt Luzern Kinder Jugend Familie', 'Luzern 7', '6000', 'Kasernenplatz 3, Postfach', null, null);
-INSERT INTO adresse (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version, vorgaenger_id, gueltig_ab, gueltig_bis, gemeinde, hausnummer, land, organisation, ort, plz, strasse, zusatzzeile, bfs_nummer) VALUES (UNHEX('A0B9119630AB11ECA86FB89A2AE4A038'), '2021-02-15 09:48:18', '2021-02-15 10:11:35', 'flyway', 'flyway', 1, null, '1000-01-01', '9999-12-31', null, '2', 'CH', 'Luzern Sozialdienst', 'Luzern', '6000', 'Sozialdienst Strasse', null, null);
 INSERT INTO adresse (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version, vorgaenger_id, gueltig_ab, gueltig_bis, gemeinde, hausnummer, land, organisation, ort, plz, strasse, zusatzzeile, bfs_nummer) VALUES (UNHEX('C153D59824D14650970109F3CD5E1AD4'), '2023-12-08 10:56:11', '2023-12-08 10:56:11', 'ebegu:Stadt Luzern', 'ebegu:Stadt Luzern', 0, null, '1000-01-01', '9999-12-31', null, null, 'CH', 'Stadt Luzern Frühkindliche Bildung und Betreuung', 'Luzern 7', '6000', 'Kasernenplatz 3', null, null);
-INSERT INTO adresse (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version, vorgaenger_id, gueltig_ab, gueltig_bis, gemeinde, hausnummer, land, organisation, ort, plz, strasse, zusatzzeile, bfs_nummer) VALUES (UNHEX('D4388A5130AA11ECA86FB89A2AE4A038'), '2020-02-28 09:48:18', '2020-02-28 10:11:35', 'flyway', 'flyway', 1, null, '1000-01-01', '9999-12-31', null, '2', 'CH', 'Tageschule Luzern', 'Luzern', '6000', 'Luzerner Strasse', null, null);
-
 
 # application property
 UPDATE application_property SET value = 'false' WHERE name = 'INSTITUTIONEN_DURCH_GEMEINDEN_EINLADEN' AND mandant_id = @mandant_id_luzern;
@@ -581,63 +577,6 @@ FROM (SELECT UNHEX(REPLACE(UUID(), '-', ''))    as id,
 		  UNHEX(REPLACE('e24f092b-30aa-11ec-a86f-b89a2ae4a038','-', '')) as institution_stammdaten_tagesschule_id,
 		  null as erlaeuterung
 	  from gesuchsperiode as gp where gp.mandant_id =  @mandant_id_luzern) as tmp;
-
-# Tagis fuer Paris aktivieren
-INSERT IGNORE INTO einstellung (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version,
-						 einstellung_key, value, gemeinde_id, gesuchsperiode_id, mandant_id)
-SELECT *
-FROM (SELECT UNHEX(REPLACE(UUID(), '-', ''))    as id,
-			 '2020-01-01 00:00:00'              as timestamp_erstellt,
-			 '2020-01-01 00:00:00'              as timestamp_mutiert,
-			 'flyway'                           as user_erstellt,
-			 'flyway'                           as user_mutiert,
-			 0                                  as version,
-			 'GEMEINDE_TAGESSCHULE_TAGIS_ENABLED' as einstellung_key,
-			 'true' 								as value,
-			 UNHEX(REPLACE('6fd6183c-30a2-11ec-a86f-b89a2ae4a038', '-', '')) as gemeinde_id,
-			 gp.id                              as gesuchsperiode_id,
-			 UNHEX(REPLACE('485d7483-30a2-11ec-a86f-b89a2ae4a038', '-','')) as mandant_id
-	  from gesuchsperiode as gp) as tmp
-where (select count(*) from einstellung where gemeinde_id =  UNHEX(REPLACE('6fd6183c-30a2-11ec-a86f-b89a2ae4a038', '-', ''))
-		and einstellung_key = 'GEMEINDE_TAGESSCHULE_TAGIS_ENABLED') = 0;
-
-
-# Minimale Erwerbspensen fuer Paris ueberschreiben: 15%/30% anstatt 20%/40% fuer Vorschulkinder/EingeschulteKinder
-INSERT IGNORE INTO einstellung (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version,
-						 einstellung_key, value, gemeinde_id, gesuchsperiode_id, mandant_id)
-SELECT *
-FROM (SELECT UNHEX(REPLACE(UUID(), '-', ''))    as id,
-			 '2020-01-01 00:00:00'              as timestamp_erstellt,
-			 '2020-01-01 00:00:00'              as timestamp_mutiert,
-			 'flyway'                           as user_erstellt,
-			 'flyway'                           as user_mutiert,
-			 0                                  as version,
-			 'GEMEINDE_MIN_ERWERBSPENSUM_NICHT_EINGESCHULT' as einstellung_key,
-			 '15' 								as value,
-			 UNHEX(REPLACE('6fd6183c-30a2-11ec-a86f-b89a2ae4a038', '-', '')) as gemeinde_id,
-			 gp.id                              as gesuchsperiode_id,
-			 UNHEX(REPLACE('485d7483-30a2-11ec-a86f-b89a2ae4a038', '-','')) as mandant_id
-	  from gesuchsperiode as gp) as tmp
-where (select count(*) from einstellung where gemeinde_id =  UNHEX(REPLACE('6fd6183c-30a2-11ec-a86f-b89a2ae4a038', '-', ''))
-		and einstellung_key = 'GEMEINDE_MIN_ERWERBSPENSUM_NICHT_EINGESCHULT') = 0;
-
-INSERT IGNORE INTO einstellung (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version,
-						 einstellung_key, value, gemeinde_id, gesuchsperiode_id, mandant_id)
-SELECT *
-FROM (SELECT UNHEX(REPLACE(UUID(), '-', ''))    as id,
-			 '2020-01-01 00:00:00'              as timestamp_erstellt,
-			 '2020-01-01 00:00:00'              as timestamp_mutiert,
-			 'flyway'                           as user_erstellt,
-			 'flyway'                           as user_mutiert,
-			 0                                  as version,
-			 'GEMEINDE_MIN_ERWERBSPENSUM_EINGESCHULT' as einstellung_key,
-			 '30' 								as value,
-			 UNHEX(REPLACE('6fd6183c-30a2-11ec-a86f-b89a2ae4a038', '-', '')) as gemeinde_id,
-			 gp.id                              as gesuchsperiode_id,
-			 UNHEX(REPLACE('485d7483-30a2-11ec-a86f-b89a2ae4a038', '-','')) as mandant_id
-	  from gesuchsperiode as gp) as tmp
-where (select count(*) from einstellung where gemeinde_id =  UNHEX(REPLACE('6fd6183c-30a2-11ec-a86f-b89a2ae4a038', '-', ''))
-		and einstellung_key = 'GEMEINDE_MIN_ERWERBSPENSUM_EINGESCHULT') = 0;
 
 INSERT IGNORE INTO gemeinde_stammdaten_gesuchsperiode (id, timestamp_erstellt, timestamp_mutiert, user_erstellt,
 															 user_mutiert, version, gemeinde_id, gesuchsperiode_id,
