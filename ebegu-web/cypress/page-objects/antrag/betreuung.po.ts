@@ -15,10 +15,16 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { FixtureBetreuung } from '@dv-e2e/fixtures';
+import {FixtureBetreuung, FixtureTagesschulAnmeldung} from '@dv-e2e/fixtures';
 
 const createNewBetreuung = () => {
+    cy.intercept('**/institutionstammdaten/gesuchsperiode/gemeinde/*').as('getInstitutionsStammdaten');
     cy.getByData('container.create-betreuung', 'navigation-button').click();
+    cy.wait('@getInstitutionsStammdaten');
+};
+
+const createNewTagesschulAnmeldung = () => {
+    cy.getByData('container.create-tagesschule', 'navigation-button').click();
 };
 
 const fillKitaBetreuungsForm = (dataset: keyof typeof FixtureBetreuung) => {
@@ -27,6 +33,15 @@ const fillKitaBetreuungsForm = (dataset: keyof typeof FixtureBetreuung) => {
         cy.getByData('institution').find('input').type(kita.institution);
         cy.getByData('instutions-suchtext').click();
         cy.getByData('institution').find('input').should('have.value', kita.institution);
+    });
+};
+
+const fillTagesschulBetreuungsForm = (dataset: keyof typeof FixtureTagesschulAnmeldung) => {
+    FixtureTagesschulAnmeldung[dataset](({tagesschule}) => {
+       cy.getByData('betreuungsangebot').select(tagesschule.betreuungsangebot);
+       cy.getByData('institution').find('input').type(tagesschule.institution);
+       cy.getByData('instutions-suchtext').eq(0).click();
+       cy.getByData('institution').find('input').should('have.value', tagesschule.institution);
     });
 };
 
@@ -49,11 +64,18 @@ const platzBestaetigungAnfordern = () => {
     cy.wait('@savingBetreuung');
 };
 
+const getBetreuungspensum = (index: number) => {
+    return cy.getByData(`betreuungspensum-${index}`);
+};
+
 export const AntragBetreuungPO = {
     createNewBetreuung,
+    createNewTagesschulAnmeldung,
+    fillTagesschulBetreuungsForm,
     fillKitaBetreuungsForm,
     fillKeinePlatzierung,
     fillErweiterteBeduerfnisse,
     fillEingewoehnung,
     platzBestaetigungAnfordern,
+    getBetreuungspensum,
 };

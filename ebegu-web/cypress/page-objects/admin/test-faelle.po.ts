@@ -15,7 +15,15 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {GemeindeTestFall, TestFall} from '@dv-e2e/types';
+import {
+    normalizeUser,
+    TestBetreuungsstatus,
+    TestFall,
+    TestGesuchstellende,
+    TestPeriode,
+    User,
+    GemeindeTestFall
+} from '@dv-e2e/types';
 
 const createNewTestFaelle = (testFall: TestFall, gemeindeName: GemeindeTestFall) => {
     cy.getByData('page-title').contains('Alle Fälle');
@@ -31,6 +39,23 @@ const createNewTestFaelle = (testFall: TestFall, gemeindeName: GemeindeTestFall)
     cy.getByData('fall-creation-eingangsdatum').find('input').should('have.value', '15.2.2016');
 };
 
+const createNewTestFallIn = (testFall: TestFall, gemeinde: GemeindeTestFall, periode: TestPeriode, betreuungsstatus: TestBetreuungsstatus, besitzerin: TestGesuchstellende) => {
+    cy.getByData('page-title').contains('Alle Fälle');
+    cy.getByData('page-menu').click();
+    cy.getByData('action-admin.testdaten').click();
+    cy.getByData('gemeinde').click();
+    cy.getByData(`gemeinde.${gemeinde}`).click();
+    cy.getByData('periode').click();
+    cy.getByData(`periode.${periode}`).click();
+    cy.getByData(`creationType.${betreuungsstatus}`).find('label').click();
+    cy.getByData(`gesuchsteller`).click();
+    cy.getByData(`gesuchsteller.${normalizeUser(besitzerin)}`).click();
+    cy.getByData(testFall).click();
+    cy.get('[data-test="dialog-link"]', {timeout: 20000}).click();
+    cy.getByData('fall-creation-eingangsdatum').find('input').should('have.value', '15.2.2016');
+};
+
 export const TestFaellePO = {
     createNewTestFaelle,
-}
+    createNewTestFallIn
+};

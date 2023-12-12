@@ -42,7 +42,8 @@ describe('Kibon - Tagesschule Only [Superadmin]', () => {
         cy.getByData('container.create-betreuung','navigation-button').click();
 
         // anmeldung Tagesschule erfassen
-        AnmeldungTagesschulePO.fillAnmeldungTagesschule();
+        AnmeldungTagesschulePO.fillAndSaveAnmeldungTagesschule();
+        cy.getByData('container.confirm','navigation-button').click();
 
         // anmeldung akkzeptieren
         cy.getByData('editBetreuungButton1_0','navigation-button').click();
