@@ -1870,9 +1870,7 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 			Gesuch mutation =
 					doApplymitteilung(betreuungsmitteilung, betreuungsmitteilung.getBetreuung().extractGesuch());
 			if (canGesuchBeAutomatischVerfuegt(mutation)) {
-				acceptFinSit(mutation);
-				mutation = setGesuchGeprueft(mutation);
-				mutation = gesuchService.verfuegenStarten(mutation);
+
 				verfuegungService.gesuchAutomatischVerfuegen(mutation);
 			}
 			persistence.getEntityManager().flush();
@@ -1905,16 +1903,6 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 			.anyMatch(kindContainer -> kindContainer.getBetreuungen()
 				.stream()
 				.anyMatch(betreuung -> betreuung.getBetreuungsstatus() == Betreuungsstatus.NICHT_EINGETRETEN));
-	}
-
-	private void acceptFinSit(Gesuch mutation) {
-		mutation.setFinSitStatus(FinSitStatus.AKZEPTIERT);
-		gesuchService.updateGesuch(mutation, false, null);
-	}
-
-	private Gesuch setGesuchGeprueft(Gesuch mutation) {
-		mutation.setStatus(AntragStatus.GEPRUEFT);
-		return gesuchService.updateGesuch(mutation, true, null);
 	}
 
 	@Override

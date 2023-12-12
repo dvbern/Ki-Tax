@@ -162,8 +162,14 @@ public class VerfuegungServiceBean extends AbstractBaseService implements Verfue
 	@Override
 	public void gesuchAutomatischVerfuegen(@Nonnull Gesuch mutation) {
 		Preconditions.checkArgument(mutation.isMutation());
-		Preconditions.checkArgument(mutation.getStatus() == AntragStatus.VERFUEGEN);
+		Preconditions.checkArgument(mutation.getStatus() == AntragStatus.IN_BEARBEITUNG_JA);
 		Preconditions.checkArgument(mutation.isNewlyCreatedMutation());
+
+		acceptFinSit(mutation);
+		setGesuchGeprueft(mutation);
+		gesuchService.verfuegenStarten(mutation);
+
+		Preconditions.checkArgument(mutation.getStatus() == AntragStatus.VERFUEGEN);
 
 		mutation.getKindContainers().forEach(kindContainer -> {
 			kindContainer.getBetreuungen().forEach(betreuung -> {
@@ -171,6 +177,16 @@ public class VerfuegungServiceBean extends AbstractBaseService implements Verfue
 				verfuegen(mutation.getId(), betreuung.getId(), null, false, false, true);
 			});
 		});
+	}
+
+	private void acceptFinSit(Gesuch mutation) {
+		mutation.setFinSitStatus(FinSitStatus.AKZEPTIERT);
+		gesuchService.updateGesuch(mutation, false, null);
+	}
+
+	private Gesuch setGesuchGeprueft(Gesuch mutation) {
+		mutation.setStatus(AntragStatus.GEPRUEFT);
+		return gesuchService.updateGesuch(mutation, true, null);
 	}
 
 	private void createFinSitDokument(Gesuch gesuch) {
