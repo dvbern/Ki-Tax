@@ -76,10 +76,10 @@ INSERT IGNORE INTO gesuchsperiode (id, timestamp_erstellt, timestamp_mutiert, us
 INSERT IGNORE INTO gemeinde (
 	id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version, name, gemeinde_nummer, mandant_id, status, bfs_nummer,
 	betreuungsgutscheine_startdatum, tagesschulanmeldungen_startdatum, ferieninselanmeldungen_startdatum, angebotbg,
-                      angebotts, angebotfi, gueltig_bis)
+                      angebotts, angebotfi, angebotbgtfo, gueltig_bis)
 SELECT @luzern_test_gemeinde_id, '2018-01-01 00:00:00', '2018-01-01 00:00:00', 'flyway', 'flyway', 0,
 	   'Testgemeinde Luzern', max(gemeinde_nummer)+1,  @mandant_id_luzern, 'AKTIV', 99997,
-	'2016-01-01', '2020-08-01', '2020-08-01', true, false, false, '9999-12-31' from gemeinde;
+	'2016-01-01', '2020-08-01', '2020-08-01', true, false, false, true, '9999-12-31' from gemeinde;
 
 INSERT IGNORE INTO adresse (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version, vorgaenger_id, gueltig_ab, gueltig_bis, gemeinde,
 					 hausnummer, land, organisation, ort, plz, strasse, zusatzzeile) VALUES (UNHEX(REPLACE('2476287e-3264-11ec-a17e-b89a2ae4a038', '-', '')),
@@ -535,4 +535,4 @@ VALUES (UNHEX(REPLACE(UUID(), '-', '')), '2021-02-15 09:48:18', '2021-02-15 09:4
 		UNHEX(REPLACE('a0b91196-30ab-11ec-a86f-b89a2ae4a038', '-', '')),
 		UNHEX(REPLACE('7049ec48-30ab-11ec-a86f-b89a2ae4a038', '-', '')));
 
-UPDATE ebegu.mandant SET ebegu.mandant.activated=true where id = @mandant_id_luzern;
+UPDATE mandant SET mandant.activated=true where id = @mandant_id_luzern;

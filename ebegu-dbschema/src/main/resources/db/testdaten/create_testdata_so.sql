@@ -663,7 +663,7 @@ VALUES (UNHEX(REPLACE('6aa08c20-537f-11ec-98e8-f4390979fa3e', '-', '')), '2016-0
 		@bruennen_id, NULL, NULL,
 		UNHEX(REPLACE('3f194c4f-537f-11ec-98e8-f4390979fa3e', '-', '')), 'bruennen-so@mailbucket.dvbern.ch', NULL, NULL);
 
-update gemeinde set angebotts = false, angebotfi = false where bfs_nummer = 99996;
+update gemeinde set angebotts = false, angebotfi = false, angebotbgtfo = false where bfs_nummer = 99996;
 
 -- Sozialdienst
 INSERT IGNORE INTO sozialdienst (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version,
