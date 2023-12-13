@@ -36,7 +36,7 @@
                     </div>
                 </div>
                 <!--Tabelle mit Betreuungen-->
-                <div class="row">
+                <div class="row" data-test="container.kind#{{$index}}">
                     <div class="col-md-12 table-responsive">
 
                         <table st-table="displayedCollection" st-safe-src="kind.betreuungen"
@@ -78,8 +78,7 @@
                                                        data-test="container.edit"
                                                        button-class="dv-btn-operation dv-btn-row"
                                                        title="{{'TABLE_EDIT'|translate}}"
-                                                       aria-label="{{'TABLE_EDIT'|translate}}"
-                                                       data-test="{{'editBetreuungButton' + kind.kindNummer + '_' + $index}}">
+                                                       aria-label="{{'TABLE_EDIT'|translate}}">
                                         <i class="fa fa-lg fa-arrow-right" aria-label="{{'TABLE_EDIT'|translate}}">
                                         </i>
                                     </dv-loading-button>

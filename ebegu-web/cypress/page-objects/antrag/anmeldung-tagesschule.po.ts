@@ -17,19 +17,32 @@
 
 const testTagesschule = 'Tagesschule Paris';
 
-const fillAnmeldungTagesschule = () => {
+const selectTagesschule = () => {
     cy.getByData('betreuungsangebot').select('Tagesschule');
-    cy.getByData('institution').find('input').focus().type(testTagesschule, { delay: 30 });
+};
+const fillAnmeldungTagesschule = () => {
+    cy.getByData('betreuungsangebot').should('exist');
+    cy.wait(1000);
+    cy.getByData('institution').find('input').type(testTagesschule, {force: true});
     cy.getByData('instutions-suchtext').click();
     cy.getByData('institution').find('input').should('have.value',testTagesschule);
     cy.getByData('keineKesbPlatzierungk.radio-value.nein').click();
     cy.get('[data-test$="-MONDAY"]').first().click();
     cy.get('[data-test$="-THURSDAY"]').first().click();
     cy.getByData('agb-tsakzeptiert').click();
+};
+
+const save = () => {
     cy.getByData('container.save','navigation-button').click();
+};
+
+const confirm = () => {
     cy.getByData('container.confirm','navigation-button').click();
 };
 
 export const AnmeldungTagesschulePO = {
+    selectTagesschule,
     fillAnmeldungTagesschule,
+    save,
+    confirm,
 };
