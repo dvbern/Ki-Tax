@@ -37,7 +37,13 @@ describe('Kibon - Testet das Feature der automatischen Abarbeitung von Mutations
     });
 
     it('should create and verfuegen mischantrag', () => {
-        TestFaellePO.createNewTestFallIn('testfall-1', 'London', '2022/23', 'bestaetigt', '[5-GS] Heinrich Mueller');
+        TestFaellePO.createNewTestFallIn({
+            testFall: 'testfall-1',
+            gemeinde: 'London',
+            periode: '2022/23',
+            betreuungsstatus: 'bestaetigt',
+            besitzerin: '[5-GS] Heinrich Mueller'
+        });
         cy.login('[5-GS] Heinrich Mueller');
         cy.visit('/#/dossier/gesuchstellerDashboard');
         cy.getByData('2022/23', 'container.antrag-bearbeiten', 'navigation-button').click();
