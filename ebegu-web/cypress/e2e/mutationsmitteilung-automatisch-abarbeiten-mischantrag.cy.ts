@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {AnmeldungTagesschulePO, AntragBetreuungPO, TestFaellePO} from '@dv-e2e/page-objects';
+import {AntragBetreuungPO, TestFaellePO} from '@dv-e2e/page-objects';
 import {getUser} from '@dv-e2e/types';
 import {PosteingangPO} from '../page-objects/antrag/posteingang.po';
 import {SidenavPO} from '../page-objects/antrag/sidenav.po';
@@ -31,7 +31,7 @@ describe('Kibon - Testet das Feature der automatischen Abarbeitung von Mutations
     const betreuungspensumInMutation = 90;
 
     beforeEach(() => {
-        cy.intercept({ resourceType: 'xhr' }, { log: false }); // don't log XHRs
+        cy.intercept({resourceType: 'xhr'}, {log: false}); // don't log XHRs
         cy.login(superAdmin);
         cy.visit('/#/faelle');
     });
@@ -41,13 +41,15 @@ describe('Kibon - Testet das Feature der automatischen Abarbeitung von Mutations
         cy.login('[5-GS] Heinrich Mueller');
         cy.visit('/#/dossier/gesuchstellerDashboard');
         cy.getByData('2022/23', 'container.antrag-bearbeiten', 'navigation-button').click();
-        SidenavPO.goTo('BETREUUNG');
-        // TODO: intercept request to make sure that the page with the betreuung url is loaded
+        cy.waitForRequest('GET', '**/einstellung/key/FINANZIELLE_SITUATION_TYP/gemeinde/**', () => {
+            SidenavPO.goTo('BETREUUNG');
+        });
         cy.url()
             .then((url) => /betreuungen\/(.*)$/.exec(url)[1])
             .as('antragsId');
         AntragBetreuungPO.createNewBetreuung();
-        AnmeldungTagesschulePO.fillAndSaveAnmeldungTagesschule();
+        AntragBetreuungPO.fillTagesschulBetreuungsForm('withValid', 'London');
+        AntragBetreuungPO.saveBetreuung();
 
         SidenavPO.goTo('DOKUMENTE');
 
@@ -78,7 +80,7 @@ describe('Kibon - Testet das Feature der automatischen Abarbeitung von Mutations
             cy.changeLogin(sachbearbeitungBGGemeinde);
             openGesuchInFreigabe();
             SidenavPO.goTo('GESUCH_ERSTELLEN');
-            cy.intercept('**/gesuche').as("updateGesuch");
+            cy.intercept('**/gesuche').as('updateGesuch');
             cy.getByData('fall-creation-alternativDatum').type('01.07.2022');
             cy.getByData('container.navigation-save', 'navigation-button').click();
             cy.wait('@updateGesuch');
@@ -90,13 +92,13 @@ describe('Kibon - Testet das Feature der automatischen Abarbeitung von Mutations
             cy.changeLogin(sachbearbeitungTSGemeinde);
             openGesuchInFreigabe();
             SidenavPO.goTo('BETREUUNG');
-            cy.getByData('betreuung#2', "betreuungs-status").should('have.text', 'Anmeldung ausgelöst');
+            cy.getByData('betreuung#2', 'betreuungs-status').should('have.text', 'Anmeldung ausgelöst');
             cy.getByData('betreuung#2').click();
             cy.intercept('**//betreuungen/schulamt/akzeptieren').as('anmeldungAkzeptieren');
             cy.getByData('container.akzeptieren', 'navigation-button').click();
-            cy.getByData('container.confirm','navigation-button').click();
+            cy.getByData('container.confirm', 'navigation-button').click();
             cy.wait('@anmeldungAkzeptieren');
-            cy.getByData('betreuung#2', "betreuungs-status").should('have.text', 'Module akzeptiert');
+            cy.getByData('betreuung#2', 'betreuungs-status').should('have.text', 'Module akzeptiert');
         }
 
         // !! AS GEMEINDE SB BG !!
@@ -109,20 +111,20 @@ describe('Kibon - Testet das Feature der automatischen Abarbeitung von Mutations
             cy.wait('@calculateVerfuegung');
             cy.getByData('finSitStatus.radio-value.AKZEPTIERT').click();
             cy.intercept('PUT', '**/gesuche/status/*/GEPRUEFT').as('gesuchGeprueft');
-            cy.getByData('container.geprueft','navigation-button').click();
-            cy.getByData('container.confirm','navigation-button').click();
+            cy.getByData('container.geprueft', 'navigation-button').click();
+            cy.getByData('container.confirm', 'navigation-button').click();
             cy.wait('@gesuchGeprueft');
             SidenavPO.getGesuchStatus().should('have.text', 'Geprüft');
 
             cy.getByData('container.verfuegen', 'navigation-button').click();
-            cy.getByData('verfuegung#0-2', "betreuungs-status").should('have.text', 'Module akzeptiert');
+            cy.getByData('verfuegung#0-2', 'betreuungs-status').should('have.text', 'Module akzeptiert');
             cy.intercept('**/verfuegenStarten/*').as('verfuegenStarten');
             cy.waitForRequest('GET', '**/verfuegung/calculate/**', () => {
                 cy.getByData('container.confirm', 'navigation-button').click();
             });
             cy.wait('@verfuegenStarten');
             SidenavPO.getGesuchStatus().should('have.text', 'Verfügen');
-            cy.getByData('verfuegung#0-2', "betreuungs-status").should('have.text', 'Anmeldung übernommen');
+            cy.getByData('verfuegung#0-2', 'betreuungs-status').should('have.text', 'Anmeldung übernommen');
 
             verfuegeBetreuung(0, 100);
             verfuegeBetreuung(1, 20);
@@ -144,7 +146,7 @@ describe('Kibon - Testet das Feature der automatischen Abarbeitung von Mutations
             cy.getByData('mutationsmeldung-erstellen').click();
             cy.getByData('betreuungspensum-0').clear().type(betreuungspensumInMutation.toString());
             cy.getByData('mutationsmeldung-senden').click();
-            cy.intercept("PUT", '**/mitteilungen/sendbetreuungsmitteilung').as('creatingMutationsmeldung');
+            cy.intercept('PUT', '**/mitteilungen/sendbetreuungsmitteilung').as('creatingMutationsmeldung');
             cy.get('[data-test="container.confirm"]').click();
             cy.wait('@creatingMutationsmeldung');
         }
@@ -193,31 +195,30 @@ describe('Kibon - Testet das Feature der automatischen Abarbeitung von Mutations
             SidenavPO.goTo('VERFUEGEN');
             cy.wait('@calculateVerfuegung');
 
-
             cy.getByData('verfuegung#0-2').click();
             VerfuegungPO.getVerfuegterTarif(0).should('have.text', '1.84');
 
         }
 
-
-
     })
 });
 
 function openGesuchInFreigabe() {
-    cy.intercept("**/FREIGABE_QUITTUNG_EINLESEN_REQUIRED/gemeinde/*/gp/*").as('freigabeQuittungRequiredLoaded');
+    cy.intercept('**/FREIGABE_QUITTUNG_EINLESEN_REQUIRED/gemeinde/*/gp/*').as('freigabeQuittungRequiredLoaded');
     cy.get('@antragsId').then(antragsId => cy.visit(`/#/gesuch/freigabe/${antragsId}`));
     cy.wait('@freigabeQuittungRequiredLoaded');
 }
+
 function openGesuchInBetreuungen() {
-    cy.intercept("**/FINANZIELLE_SITUATION_TYP/gemeinde/*/gp/*").as('finSitTypLoaded');
+    cy.intercept('**/FINANZIELLE_SITUATION_TYP/gemeinde/*/gp/*').as('finSitTypLoaded');
     cy.get('@antragsId').then(antragsId => cy.visit(`/#/gesuch/betreuungen/${antragsId}`));
     cy.wait('@finSitTypLoaded');
 }
 
 function verfuegeBetreuung(betreuungNumber: number, expectedAnspruchberechtigtesPensum: number): void {
     cy.getByData(`verfuegung#0-${betreuungNumber}`).click();
-    cy.getByData('container.zeitabschnitt#0', 'anspruchberechtigtesPensum').should('include.text', `${expectedAnspruchberechtigtesPensum}%`);
+    cy.getByData('container.zeitabschnitt#0', 'anspruchberechtigtesPensum')
+        .should('include.text', `${expectedAnspruchberechtigtesPensum}%`);
 
     cy.getByData('verfuegungs-bemerkungen-kontrolliert').click();
     cy.intercept('**/verfuegung/verfuegen/*/*/false/false').as('verfuegen');

@@ -1,8 +1,20 @@
 {
     "valid": {
-        "kita": {
-            "betreuungsangebot": "Kita",
-            "institution": "Brünnen"
+        "London": {
+            "kita": {
+                "betreuungsangebot": "Kita",
+                "institution": "Brünnen"
+            },
+            "tagesschule": {
+                "betreuungsangebot": "Tagesschule",
+                "institution": "Tagesschule London"
+            }
+        },
+        "Paris": {
+            "tagesschule": {
+                "betreuungsangebot": "Tagesschule",
+                "institution": "Tagesschule Paris"
+            }
         }
     }
 }
