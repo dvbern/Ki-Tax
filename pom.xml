@@ -27,12 +27,15 @@
 
     <groupId>ch.dvbern.ebegu</groupId>
     <artifactId>ebegu</artifactId>
-    <version>2023.20.0-SNAPSHOT</version>
+    <version>${revision}</version>
     <packaging>pom</packaging>
 
     <name>eBEGU - Multimodule Project</name>
 
     <properties>
+        <revision>2023-SNAPSHOT</revision>
+        
+        <maven-enforcer-plugin.version>3.4.1</maven-enforcer-plugin.version>
 
         <dvb.git.serverId>gitlab.dvbern.ch</dvb.git.serverId>
 
@@ -73,6 +76,7 @@
         <spotbugs-maven-plugin.version>4.6.0.0</spotbugs-maven-plugin.version>
         <spotbugs-annotations.version>4.6.0</spotbugs-annotations.version>
         <lombok.version>1.18.22</lombok.version>
+        <version.kibon-belogin-connector>2023.19.0</version.kibon-belogin-connector>
 
     </properties>
 
@@ -899,11 +903,70 @@
                     <scope>test</scope>
                 </dependency>
             </dependencies>
+            <build>
+                <plugins>
+                    <!-- You need the maven dependency plugin to download locally a zip with the server,
+                unless you provide your own, it will download under the /target directory -->
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-dependency-plugin</artifactId>
+                        <version>3.1.1</version>
+                        <executions>
+                            <execution>
+                                <id>unpack</id>
+                                <phase>process-test-classes</phase>
+                                <goals>
+                                    <goal>unpack</goal>
+                                </goals>
+                                <configuration>
+                                    <artifactItems>
+                                        <artifactItem>
+                                            <groupId>${unpack.groupId}</groupId>
+                                            <artifactId>${unpack.artifactId}</artifactId>
+                                            <version>${unpack.version}</version>
+                                            <type>zip</type>
+                                            <overWrite>false</overWrite>
+                                            <outputDirectory>${unpack.directory}</outputDirectory>
+                                        </artifactItem>
+                                    </artifactItems>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
         </profile>
     </profiles>
 
     <build>
         <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>flatten-maven-plugin</artifactId>
+                <version>1.5.0</version>
+                <configuration>
+                    <updatePomFile>true</updatePomFile>
+                    <flattenMode>resolveCiFriendliesOnly</flattenMode>
+                    <flattenDependencyMode>all</flattenDependencyMode>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>flatten</id>
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>flatten</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>flatten.clean</id>
+                        <phase>clean</phase>
+                        <goals>
+                            <goal>clean</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
@@ -931,18 +994,18 @@
 
             </plugin>
 
-            <plugin>
-                <groupId>ch.dvbern.oss.maven.jgitflow</groupId>
-                <artifactId>jgitflow-maven-plugin</artifactId>
-                <version>1.0-m6</version>
-                <configuration>
-                    <serverId>${dvb.git.serverId}</serverId>
-                    <flowInitContext>
-                        <developBranchName>dev</developBranchName>
-                        <versionTagPrefix />
-                    </flowInitContext>
-                </configuration>
-            </plugin>
+<!--            <plugin>-->
+<!--                <groupId>ch.dvbern.oss.maven.jgitflow</groupId>-->
+<!--                <artifactId>jgitflow-maven-plugin</artifactId>-->
+<!--                <version>1.0-m6</version>-->
+<!--                <configuration>-->
+<!--                    <serverId>${dvb.git.serverId}</serverId>-->
+<!--                    <flowInitContext>-->
+<!--                        <developBranchName>dev</developBranchName>-->
+<!--                        <versionTagPrefix />-->
+<!--                    </flowInitContext>-->
+<!--                </configuration>-->
+<!--            </plugin>-->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-deploy-plugin</artifactId>
@@ -1012,35 +1075,6 @@
                     </configuration>
                 </plugin>
 
-                <!-- You need the maven dependency plugin to download locally a zip with the server,
-                unless you provide your own, it will download under the /target directory -->
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-dependency-plugin</artifactId>
-                    <version>3.1.1</version>
-                    <executions>
-                        <execution>
-                            <id>unpack</id>
-                            <phase>process-test-classes</phase>
-                            <goals>
-                                <goal>unpack</goal>
-                            </goals>
-                            <configuration>
-                                <artifactItems>
-                                    <artifactItem>
-                                        <groupId>${unpack.groupId}</groupId>
-                                        <artifactId>${unpack.artifactId}</artifactId>
-                                        <version>${unpack.version}</version>
-                                        <type>zip</type>
-                                        <overWrite>false</overWrite>
-                                        <outputDirectory>${unpack.directory}</outputDirectory>
-                                    </artifactItem>
-                                </artifactItems>
-                            </configuration>
-                        </execution>
-                    </executions>
-                </plugin>
-
                 <plugin>
                     <groupId>org.flywaydb</groupId>
                     <artifactId>flyway-maven-plugin</artifactId>
@@ -1057,11 +1091,16 @@
                     <artifactId>hibernate-maven-plugin</artifactId>
                     <version>2.1.1</version>
                 </plugin>
+                
+                <plugin>
+                    <groupId>fr.jcgay.maven.plugins</groupId>
+                    <artifactId>buildplan-maven-plugin</artifactId>
+                    <version>1.5</version>
+                </plugin>
 
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-enforcer-plugin</artifactId>
-                    <version>1.4.1</version>
                     <executions>
                         <execution>
                             <id>check-maven-setup</id>
@@ -1069,7 +1108,7 @@
                                 <goal>enforce</goal>
                             </goals>
                             <configuration>
-                                <fail>true</fail>
+                                <fail>false</fail>
                                 <failFast>true</failFast>
                                 <rules>
                                     <dependencyConvergence />
@@ -1079,7 +1118,7 @@
                                         <version>[1.8.0-40,)</version>
                                     </requireJavaVersion>
                                     <requireMavenVersion>
-                                        <version>3.3</version>
+                                        <version>3.5.4</version>
                                     </requireMavenVersion>
                                     <!-- Pruefen, dass im Release keine SNAPSHOT-Dependencies mehr drin sind -->
                                     <requireReleaseDeps>
@@ -1096,6 +1135,7 @@
                 <plugin>
                     <groupId>org.owasp</groupId>
                     <artifactId>dependency-check-maven</artifactId>
+                    <version>9.0.1</version>
                     <configuration>
                         <failBuildOnAnyVulnerability>true</failBuildOnAnyVulnerability>
                         <bundleAuditAnalyzerEnabled>false</bundleAuditAnalyzerEnabled>

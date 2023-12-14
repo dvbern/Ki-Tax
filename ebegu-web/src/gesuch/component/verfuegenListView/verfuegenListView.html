@@ -15,7 +15,7 @@
   ~ along with this program. If not, see <https://www.gnu.org/licenses/>.
   -->
 
-<div class="verfuegen-list-view gesuch-modul static-position">
+  <div class="verfuegen-list-view gesuch-modul static-position">
     <h1 class="access-for-all-title" data-translate="AFA_GESUCHSFORMULAR"></h1>
 
     <form role="form" name="vm.form" class="" novalidate unsaved-warning-form>
@@ -44,9 +44,9 @@
                                 <th width="5%"></th>
                             </tr>
                             </thead>
-                            <tbody ng-repeat="kindContainer in displayedCollection">
-                            <tr ng-repeat="betreuung in kindContainer.betreuungen" st-select-row="betreuung"
-                                ng-attr-data-test="verfuegung#{{$index}}"
+                            <tbody ng-repeat="kindContainer in displayedCollection" ng-init="kindIndex = $index">
+                            <tr ng-repeat="betreuung in kindContainer.betreuungen" ng-init="rowIndex = $index" st-select-row="betreuung"
+                                ng-attr-data-test="verfuegung#{{kindIndex}}-{{rowIndex}}"
                                 st-select-mode="single"
                                 ng-class="{'disabled-row': !vm.kannVerfuegungOeffnen(betreuung)}"
                                 ng-click="vm.openVerfuegung(kindContainer, betreuung)" role="row" tabindex="-1">
@@ -56,7 +56,7 @@
                                 <td ng-bind="vm.ebeguUtil.calculateBetreuungsId(vm.getGesuchsperiode(), vm.getFall(), vm.getGesuch().dossier.gemeinde,
                                     kindContainer.kindNummer, betreuung.betreuungNummer)"></td>
                                 <td class="betreuung-status ng-class:betreuung.betreuungsstatus;">
-                                    <div ng-bind="betreuung.betreuungsstatus | translate"></div>
+                                    <div ng-bind="betreuung.betreuungsstatus | translate" data-test="betreuungs-status"></div>
                                     <span class="betreuung-bar"></span>
                                 </td>
                                 <td ng-show="vm.isSuperAdmin()">
@@ -272,12 +272,14 @@
                   dv-show-expression="!vm.gesuchModelManager.isGesuchsperiodeReadonly()">
                 <dv-loading-button input-id="button_geprueft" type="button" button-click="vm.setGesuchStatusGeprueft()"
                                    aria-label="{{'GEPRUEFT' | translate}}" ng-if="vm.showGeprueft()"
-                                   button-disabled="!vm.isFinSitChoosen()">
+                                   button-disabled="!vm.isFinSitChoosen()"
+                                   data-test="container.geprueft">
                     <span class="uppercase" data-translate="GEPRUEFT"></span>
                 </dv-loading-button>
                 <dv-loading-button input-id="button_verfuegenStarten" button-click="vm.setGesuchStatusVerfuegen()"
                                    aria-label="{{'VERFUEGUNG_STARTEN' | translate}}"
-                                   ng-if="vm.showVerfuegenStarten()">
+                                   ng-if="vm.showVerfuegenStarten()"
+                                   data-test="container.verfuegen">
                     <span class="uppercase" data-translate="VERFUEGUNG_STARTEN"></span>
                 </dv-loading-button>
                 <dv-loading-button input-id="button_keinKontingent" button-click="vm.setGesuchStatusKeinKontingent()"
@@ -302,7 +304,8 @@
                 <dv-loading-button input-id="button_abschliessen" button-click="vm.setAbschliessen()"
                                    aria-label="{{'ABSCHLIESSEN' | translate}}"
                                    ng-if="vm.showAbschliessen() && !vm.showCloseWithoutAngebot()"
-                                   button-disabled="!vm.isFinSitChoosen() && !vm.gesuchModelManager.areThereOnlyFerieninsel()">
+                                   button-disabled="!vm.isFinSitChoosen() && !vm.gesuchModelManager.areThereOnlyFerieninsel()"
+                                   data-test="container.abschliessen">
                     <span class="uppercase" data-translate="ABSCHLIESSEN"></span>
                 </dv-loading-button>
                 <dv-loading-button input-id="button_ersteMahnung" button-click="vm.ersteMahnungErstellen()"

@@ -442,7 +442,7 @@
                             </tr>
                             </thead>
                             <tbody ng-if="vm.getVerfuegungZeitabschnitte().length > 0">
-                            <tr ng-repeat="verfuegungZeitabschnitt in displayedCollection" data-test="container.zeitabschnitt#{{$index}}">
+                            <tr ng-repeat="verfuegungZeitabschnitt in displayedCollection" ng-attr-data-test="container.zeitabschnitt#{{$index}}">
                                 <!-- Von -->
                                 <td data-test="gueltigkeit-ab" ng-bind="verfuegungZeitabschnitt.gueltigkeit.gueltigAb | amDateFormat : 'DD.MM.YYYY'"></td>
                                 <!-- Bis -->
@@ -486,7 +486,7 @@
                                 <td ng-if="vm.isAppenzell" class="result"
                                     ng-bind="verfuegungZeitabschnitt.beitragshoeheProzent"></td>
                                 <!-- Gutschein gemäss Formel (Gutschein vor Beruecksichtigung Vollkosten) -->
-                                <td ng-if="!vm.isLuzern && !vm.isAppenzell" ng-bind="verfuegungZeitabschnitt.verguenstigungOhneBeruecksichtigungVollkosten | currency : '' : 2"></td>
+                                <td data-test="verguenstigungOhneBeruecksichtigungVollkosten" ng-if="!vm.isLuzern && !vm.isAppenzell" ng-bind="verfuegungZeitabschnitt.verguenstigungOhneBeruecksichtigungVollkosten | currency : '' : 2"></td>
                                 <!-- Gutschein (Gutschein vor Beruecksichtigung Minimalbeitrag) -->
                                 <td ng-if="!vm.isLuzern && !vm.isAppenzell" class="result"
                                     ng-bind="verfuegungZeitabschnitt.verguenstigungOhneBeruecksichtigungMinimalbeitrag | currency : '' : 2"></td>
@@ -560,7 +560,8 @@
                                 <md-checkbox ng-model="vm.verfuegungsBemerkungenKontrolliert"
                                              ng-required="vm.isVerfuegenClicked"
                                              name="verfuegungsBemerkungenKontrolliert"
-                                             aria-label="{{'VERFUEGEN_CONFIRM_BEMERKUNGEN_KONTROLLIERT' | translate}}">
+                                             aria-label="{{'VERFUEGEN_CONFIRM_BEMERKUNGEN_KONTROLLIERT' | translate}}"
+                                             data-test="verfuegungs-bemerkungen-kontrolliert">
                                     <span data-translate="VERFUEGEN_CONFIRM_BEMERKUNGEN_KONTROLLIERT"></span>
                                 </md-checkbox>
                                 <div class="dv-error-messages">
@@ -641,12 +642,14 @@
                           dv-show-allowed-roles="vm.TSRoleUtil.getAdministratorJugendamtRole()">
                         <dv-loading-button input-id="buttonVerfuegen" type="submit"
                                            button-click="vm.save()"
-                                           ng-if="(!vm.sameVerfuegteVerfuegungsrelevanteDaten || vm.mahlzeitenChanged) && vm.showVerfuegung">
+                                           ng-if="(!vm.sameVerfuegteVerfuegungsrelevanteDaten || vm.mahlzeitenChanged) && vm.showVerfuegung"
+                                           data-test="container.verfuegen">
                             <span class="uppercase" data-translate="VERFUEGEN"></span>
                         </dv-loading-button>
                         <dv-loading-button input-id="buttonNichtEintreten" type="submit"
                                            button-click="vm.nichtEintreten()"
-                                           ng-if="(!vm.sameVerfuegteVerfuegungsrelevanteDaten || vm.mahlzeitenChanged) && vm.showVerfuegung && vm.gesuchModelManager.isGesuch()">
+                                           ng-if="(!vm.sameVerfuegteVerfuegungsrelevanteDaten || vm.mahlzeitenChanged) && vm.showVerfuegung && vm.gesuchModelManager.isGesuch()"
+                                           data-test="container.nicht-eintreten">
                             <span class="uppercase" data-translate="VERFUEGEN_NICHT_EINTRETEN"></span>
                         </dv-loading-button>
                         <span class="ie11-fix"
@@ -655,27 +658,30 @@
                             nach nicht 100% aber im Moment passt der am besten. (siehe auch EBEGU-890) -->
                             <dv-loading-button input-id="buttonAblehnen" type="submit"
                                                button-click="vm.schliessenOhneVerfuegen()"
-                                               ng-if="!vm.disableAblehnen()">
+                                               ng-if="!vm.disableAblehnen()"
+                                               data-test="container.ablehnen">
                                 <span class="uppercase" data-translate="VERFUEGEN_ABLEHNEN"></span>
                             </dv-loading-button>
                         </span>
                         <span class="ie11-fix"
                               ng-show="vm.showVerfuegung && vm.sameVerfuegteVerfuegungsrelevanteDaten && !vm.mahlzeitenChanged">
                             <dv-loading-button input-id="buttonVerzichten" type="submit"
-                                               button-click="vm.schliessenOhneVerfuegen()">
+                                               button-click="vm.schliessenOhneVerfuegen()"
+                                               data-test="container.verfuegen-verzichten">
                                 <span class="uppercase" data-translate="VERFUEGEN_VERZICHTEN"></span>
                             </dv-loading-button>
                         </span>
                         <span class="ie11-fix"
                               ng-show="vm.showVerfuegung && vm.sameVerfuegteVerfuegungsrelevanteDaten && !vm.mahlzeitenChanged">
                             <dv-loading-button input-id="buttonTrotzdemVerfuegen" type="submit"
-                                               button-click="vm.save()">
+                                               button-click="vm.save()"
+                                               data-test="container.trotzdem-verfuegen">
                                 <span class="uppercase" data-translate="TROTZDEM_VERFUEGEN"></span>
                             </dv-loading-button>
                         </span>
                     </span>
                     <span>
-                        <dv-navigation container-class="avoid" dv-cancel="vm.cancel()" dv-next="false" dv-sub-step="2">
+                        <dv-navigation container-class="avoid" dv-cancel="vm.cancel()" dv-next="false" dv-sub-step="2" data-test="container.cancel">
                         </dv-navigation>
                     </span>
                 </div>

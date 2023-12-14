@@ -1,3 +1,20 @@
+/*
+ * Copyright (C) 2023 DV Bern AG, Switzerland
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
 import {
     AntragPapierPO,
     AntragFamSitPO,
@@ -37,7 +54,7 @@ const createNewBetreuungWithAllSettings = () => {
 };
 
 describe('Kibon - generate Testfälle [Gemeinde Sachbearbeiter]', () => {
-    const userSB = getUser('[6-SB-Gemeinde] Stefan Weibel');
+    const userSB = getUser('[6-L-SB-Gemeinde] Stefan Weibel');
     const userKita = getUser('[3-SB-Institution-Kita-Brünnen] Sophie Bergmann');
 
     beforeEach(() => {
@@ -57,7 +74,9 @@ describe('Kibon - generate Testfälle [Gemeinde Sachbearbeiter]', () => {
         // INIT
         {
             AntragPapierPO.createPapierGesuch('withValid');
-            cy.url().then(url => /familiensituation\/(.*)$/.exec(url)[1]).as('antragsId');
+            cy.url()
+                .then((url) => /familiensituation\/(.*)$/.exec(url)[1])
+                .as('antragsId');
         }
 
         // FAMILIENSITUATION
@@ -150,19 +169,29 @@ describe('Kibon - generate Testfälle [Gemeinde Sachbearbeiter]', () => {
             // Resultate
             {
                 FixtureFinSit.withValid(({ Resultate }) => {
-                    cy.getByData('einkommenBeiderGesuchsteller').find('input').should('have.value', Resultate.einkommenBeiderGesuchsteller);
+                    cy.getByData('einkommenBeiderGesuchsteller')
+                        .find('input')
+                        .should('have.value', Resultate.einkommenBeiderGesuchsteller);
                     cy.getByData('bruttovermoegen1').find('input').type(Resultate.bruttovermoegen1);
                     cy.getByData('bruttovermoegen2').find('input').type(Resultate.bruttovermoegen2);
                     cy.getByData('schulden1').find('input').type(Resultate.schulden1);
                     cy.getByData('schulden2').find('input').type(Resultate.schulden2);
-                    cy.getByData('nettovermoegenFuenfProzent').find('input').should('have.value', Resultate.nettovermoegenFuenfProzent);
+                    cy.getByData('nettovermoegenFuenfProzent')
+                        .find('input')
+                        .should('have.value', Resultate.nettovermoegenFuenfProzent);
                     cy.getByData('anrechenbaresEinkommen').find('input').should('have.value', Resultate.anrechenbaresEinkommen);
-                    cy.getByData('abzuegeBeiderGesuchsteller').find('input').should('have.value', Resultate.abzuegeBeiderGesuchsteller);
-                    cy.getByData('massgebendesEinkVorAbzFamGr').find('input').should('have.value', Resultate.massgebendesEinkVorAbzFamGr);
+                    cy.getByData('abzuegeBeiderGesuchsteller')
+                        .find('input')
+                        .should('have.value', Resultate.abzuegeBeiderGesuchsteller);
+                    cy.getByData('massgebendesEinkVorAbzFamGr')
+                        .find('input')
+                        .should('have.value', Resultate.massgebendesEinkVorAbzFamGr);
                 });
             }
 
-            cy.intercept('GET', '**/einkommensverschlechterung/minimalesMassgebendesEinkommen/**').as('goingToEinkommensverschlechterung');
+            cy.intercept('GET', '**/einkommensverschlechterung/minimalesMassgebendesEinkommen/**').as(
+                'goingToEinkommensverschlechterung'
+            );
             cy.getByData('container.navigation-save', 'navigation-button').click();
             cy.wait('@goingToEinkommensverschlechterung');
         }
@@ -201,7 +230,7 @@ describe('Kibon - generate Testfälle [Gemeinde Sachbearbeiter]', () => {
             //     const fullPath = path.join(downloadsFolder, fileName);
             //     cy.readFile(fullPath).should('exist');
             //     cy.log('FULL PATH?', fullPath);
-            //     cy.task('deleteDownload', { dirPath: downloadsFolder, fileName });
+            //     cy.task('deleteDownload', { dirPath: downloadsFolder, fileName }, { custom: true });
             //     return cy.readFile(fullPath).should('not.exist');
             // });
 
@@ -215,9 +244,7 @@ describe('Kibon - generate Testfälle [Gemeinde Sachbearbeiter]', () => {
         {
             cy.changeLogin(userKita);
 
-            cy.get('@antragsId').then(antragsId =>
-                cy.visit(`/#/gesuch/familiensituation/${antragsId}`),
-            );
+            cy.get('@antragsId').then((antragsId) => cy.visit(`/#/gesuch/familiensituation/${antragsId}`));
             cy.intercept('GET', '**/einstellung/key/FINANZIELLE_SITUATION_TYP/gemeinde/**').as(`goingToBetreuungWith${userKita}`);
             cy.getByData('sidenav.BETREUUNG').click();
             cy.wait(`@goingToBetreuungWith${userKita}`);
@@ -241,9 +268,7 @@ describe('Kibon - generate Testfälle [Gemeinde Sachbearbeiter]', () => {
 
         // VERFUEGUNG
         {
-            cy.get('@antragsId').then(antragsId =>
-                cy.visit(`/#/gesuch/verfuegen/${antragsId}`),
-            );
+            cy.get('@antragsId').then((antragsId) => cy.visit(`/#/gesuch/verfuegen/${antragsId}`));
 
             cy.getByData('verfuegung#0').click();
             cy.getByData('container.zeitabschnitt#5', 'betreuungspensumProzent').should('include.text', '25%');

@@ -46,6 +46,7 @@
 							   #bezeichnungDe="ngModel"
                                [(ngModel)]="modulTagesschuleGroup.bezeichnung.textDeutsch"
                                class="form-control"
+                               data-test="institution.tageschule.modul.bezeichnungDe"
                                required>
                         <dv-error-messages [errorObject]="form.controls.bezeichnungDe?.errors"
                                            inputId="bezeichnungDe"></dv-error-messages>
@@ -58,6 +59,7 @@
 							   #bezeichnungFr="ngModel"
                                [(ngModel)]="modulTagesschuleGroup.bezeichnung.textFranzoesisch"
                                class="form-control"
+                               data-test="institution.tageschule.modul.bezeichnungFr"
                                required>
                         <dv-error-messages [errorObject]="form.controls.bezeichnungFr?.errors"
                                            inputId="bezeichnungFr"></dv-error-messages>
@@ -70,6 +72,7 @@
 							   #zeitVon="ngModel"
                                [(ngModel)]="modulTagesschuleGroup.zeitVon"
                                class="form-control"
+                               data-test="institution.tageschule.modul.zeitVon"
                                required
                                placeholder="HH:mm" [pattern]="CONSTANTS.PATTERN_HHHMM">
                         <dv-error-messages [errorObject]="form.controls.zeitVon?.errors"
@@ -83,6 +86,7 @@
 							   #zeitBis="ngModel"
                                [(ngModel)]="modulTagesschuleGroup.zeitBis"
                                class="form-control"
+                               data-test="institution.tageschule.modul.zeitBis"
                                required
                                placeholder="HH:mm" [pattern]="CONSTANTS.PATTERN_HHHMM">
                         <dv-error-messages [errorObject]="form.controls.zeitBis?.errors"
@@ -99,7 +103,9 @@
 							   #verpflegungskosten="ngModel"
                                [(ngModel)]="modulTagesschuleGroup.verpflegungskosten"
                                placeholder="{{'IN_CHF_PLACEHOLDER' | translate}}"
-                               pattern="^[0-9]{1,}(\.|)[0-9]{0,2}$">
+                               pattern="^[0-9]{1,}(\.|)[0-9]{0,2}$"
+                               data-test="institution.tageschule.modul.verpflegungskosten"
+                        >
                         <dv-error-messages [errorObject]="verpflegungskosten.errors"
                                            inputId="verpflegungskosten"></dv-error-messages>
                     </div>
@@ -127,23 +133,28 @@
                             <div class="row">
                                 <div class="col-xs-1">
                                     <mat-checkbox id="montag" name="montag"
-                                                  [(ngModel)]="modulTagesschuleGroup.tempModulMonday.angeboten"></mat-checkbox>
+                                                  [(ngModel)]="modulTagesschuleGroup.tempModulMonday.angeboten"
+                                                  data-test="institution.tageschule.modul.montag"></mat-checkbox>
                                 </div>
                                 <div class="col-xs-1">
                                     <mat-checkbox id="dienstag" name="dienstag"
-                                                  [(ngModel)]="modulTagesschuleGroup.tempModulTuesday.angeboten"></mat-checkbox>
+                                                  [(ngModel)]="modulTagesschuleGroup.tempModulTuesday.angeboten"
+                                                  data-test="institution.tageschule.modul.dienstag"></mat-checkbox>
                                 </div>
                                 <div class="col-xs-1">
                                     <mat-checkbox id="mittwoch" name="mittwoch"
-                                                  [(ngModel)]="modulTagesschuleGroup.tempModulWednesday.angeboten"></mat-checkbox>
+                                                  [(ngModel)]="modulTagesschuleGroup.tempModulWednesday.angeboten"
+                                                  data-test="institution.tageschule.modul.mittwoch"></mat-checkbox>
                                 </div>
                                 <div class="col-xs-1">
                                     <mat-checkbox id="donnerstag" name="donnerstag"
-                                                  [(ngModel)]="modulTagesschuleGroup.tempModulThursday.angeboten"></mat-checkbox>
+                                                  [(ngModel)]="modulTagesschuleGroup.tempModulThursday.angeboten"
+                                                  data-test="institution.tageschule.modul.donnerstag"></mat-checkbox>
                                 </div>
                                 <div class="col-xs-1">
                                     <mat-checkbox id="freitag" name="freitag"
-                                                  [(ngModel)]="modulTagesschuleGroup.tempModulFriday.angeboten"></mat-checkbox>
+                                                  [(ngModel)]="modulTagesschuleGroup.tempModulFriday.angeboten"
+                                                  data-test="institution.tageschule.modul.freitag"></mat-checkbox>
                                 </div>
                             </div>
                         </div>
@@ -155,7 +166,8 @@
                         <div class="row">
                             <div class="col-md-12">
                                 <mat-checkbox id="wirdPaedagogischBetreut" name="wirdPaedagogischBetreut"
-                                              [(ngModel)]="modulTagesschuleGroup.wirdPaedagogischBetreut">
+                                              [(ngModel)]="modulTagesschuleGroup.wirdPaedagogischBetreut"
+                                              data-test="institution.tageschule.modul.wirdPaedagogischBetreut">
                                     {{'MODUL_PAEDAGOGISCH_BETREUT'|translate}}
                                 </mat-checkbox>
                             </div>
@@ -167,9 +179,12 @@
                         <label translate for="intervall" class="required">MODUL_INTERVALL</label>
                         <mat-select [(ngModel)]="modulTagesschuleGroup.intervall"
 									#intervall="ngModel" id="intervall"
-                                    name="intervall" class="form-control" required>
+                                    name="intervall" class="form-control"
+                                    data-test="institution.tageschule.modul.intervall"
+                                    required>
                             <mat-option *ngFor="let option of getModulTagesschuleIntervallOptions()"
-                                        [value]="option">{{option | translate}} </mat-option>
+                                        [value]="option"
+                                        [attr.data-test]="'institution.tageschule.modul.intervall.' + option">{{option | translate}} </mat-option>
                         </mat-select>
                         <dv-error-messages [errorObject]="form.controls.intervall?.errors"
                                            inputId="intervall"></dv-error-messages>
@@ -182,7 +197,7 @@
 
     <mat-dialog-actions>
         <div class="dv-dialog-actions">
-            <button type="submit" class="dv-btn" [textContent]="'OK' | translate"></button>
+            <button type="submit" class="dv-btn" [textContent]="'OK' | translate" data-test="institution.tageschule.modul.ok"></button>
             <button type="button" class="dv-btn cancel-button" (click)="close()" [textContent]="'CANCEL' | translate"></button>
         </div>
     </mat-dialog-actions>

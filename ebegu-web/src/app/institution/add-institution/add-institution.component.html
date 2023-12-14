@@ -54,11 +54,15 @@
                     </div>
                     <div class="col-sm-6" *ngIf="selectGemeindeVisible()">
                         <div class="form-group">
-                            <label [ngClass]="{'required' : selectGemeindeRequired()}" class="md-no-float" translate for="gemeinde">GEMEINDE_AUSWAEHLEN</label>
+                            <label [ngClass]="{'required' : selectGemeindeRequired()}"
+                                   class="md-no-float"
+                                   translate
+                                   for="gemeinde">GEMEINDE_AUSWAEHLEN</label>
                             <select [(ngModel)]="selectedGemeinde"
                                     name="gemeinde"
                                     class="form-control"
                                     id="gemeinde"
+                                    data-test="institution.create-tagesschule.gemeinde-auswaehlen"
                                     [required]="selectGemeindeRequired()">
                                 <option *ngFor="let gemeinde of (gemeinden)"
                                         [ngValue]="gemeinde">
@@ -80,7 +84,8 @@
                             <label class="required" translate for="institution_ID">INSTITUTIONSNAME</label>
                             <input id="institution_ID" type="text" name="institution_name" #name="ngModel"
                                    [(ngModel)]="institution.name"
-                                   [maxlength]="255" class="form-control" required>
+                                   [maxlength]="255" class="form-control"
+                                   data-test="institution.create-tagesschule.institutionsname" required>
                             <dv-error-messages [errorObject]="form.controls.institution_name?.errors"
                                                inputId="institution_ID">
                             </dv-error-messages>
@@ -88,7 +93,10 @@
                     </div>
                     <div class="col-sm-6" *ngIf="isBGInstitution">
                         <div class="form-group">
-                            <label class="required" class="md-no-float" translate for="begu_start_ID">INSTITUTION_BEGU_START</label>
+                            <label class="required"
+                                   class="md-no-float"
+                                   translate
+                                   for="begu_start_ID">INSTITUTION_BEGU_START</label>
                             <input class="dv-mat-datepicker" type="text"
                                    name="start_date" id="begu_start_ID"
                                    [(ngModel)]="startDate"
@@ -110,7 +118,11 @@
                         <div class="form-group">
                             <div style="display: flex; justify-content: space-between">
                                 <label *ngIf="isBGInstitution" class="required" translate for="admin_mail_ID">ADMIN_MAIL</label>
-                                <button type="button" class="dv-btn btn-link link-underline link-color-primary" style="height: 100%;" (click)="selectAdminMail()" *ngIf="institution.traegerschaft">
+                                <button type="button"
+                                        class="dv-btn btn-link link-underline link-color-primary"
+                                        style="height: 100%;"
+                                        (click)="selectAdminMail()"
+                                        *ngIf="institution.traegerschaft">
                                     <span [textContent]="'ADMIN_MAIL_BUTTON' | translate"></span>
                                 </button>
                             </div>
@@ -118,7 +130,8 @@
                             <input id="admin_mail_ID" type="email" name="admin_mail"
                                    [(ngModel)]="adminMail"
                                    email
-                                   [maxlength]="255" class="form-control" required>
+                                   [maxlength]="255" class="form-control"
+                                   data-test="institution.create-tagesschule.email-adresse" required>
                             <dv-error-messages [errorObject]="form.controls.admin_mail?.errors"
                                                input-id="admin_mail_ID">
                             </dv-error-messages>
@@ -149,7 +162,10 @@
                 <span translate>EINLADUNG_SENDEN</span>
             </button>
 
-            <button *ngIf="!isBGInstitution" (click)="institutionErstellen()" class="dv-btn next-button">
+            <button *ngIf="!isBGInstitution"
+                    (click)="institutionErstellen()"
+                    class="dv-btn next-button"
+                    data-test="institution.create-tagesschule.submit">
                 <span translate>INSTITUTION_ERSTELLEN</span>
             </button>
 
