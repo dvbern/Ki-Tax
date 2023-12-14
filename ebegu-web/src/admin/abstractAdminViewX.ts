@@ -30,7 +30,7 @@ export class AbstractAdminViewX implements OnInit {
     }
 
     public periodenParamsEditableForPeriode(gesuchsperiode: TSGesuchsperiode): boolean {
-        if (gesuchsperiode && gesuchsperiode.status) {
+        if (gesuchsperiode?.status) {
             // Fuer SuperAdmin immer auch editierbar, wenn AKTIV oder INAKTIV, sonst nur ENTWURF
             if (TSGesuchsperiodeStatus.GESCHLOSSEN === gesuchsperiode.status) {
                 return false;
