@@ -410,7 +410,7 @@
                 </div>
 
                 <div *ngIf="showGesuchstellerKinderBetreuungStatistik()">
-                    <dv-accordion-tab [tabid]="'betreuung'">
+                    <dv-accordion-tab [tabid]="'betreuung'" data-test="statistik-gesuchsteller-kinder-betreuung">
                         <tab-title>
                             <span class="uppercase" translate>GESUCHSTELLER_KINDER_BETREUUNG</span>
                             <dv-tooltip inputId="betreuung_info"
@@ -429,7 +429,8 @@
                                                           [minDate]="minDate"
                                                           [maxDate]="maxDate"
                                                           [(date)]="statistikParameter.von"
-                                                          [required]="true">
+                                                          [required]="true"
+                                                          data-test="statistik-von">
                                         </dv-date-picker-x>
                                     </div>
                                     <div class="col-xs-3">
@@ -437,7 +438,8 @@
                                                           [minDate]="statistikParameter.von || minDate"
                                                           [maxDate]="maxDate"
                                                           [(date)]="statistikParameter.bis"
-                                                          [required]="true">
+                                                          [required]="true"
+                                                          data-test="statistik-bis">
                                         </dv-date-picker-x>
                                     </div>
                                     <div class="col-xs-3">
@@ -448,10 +450,12 @@
                                                 <select name="betreuung_gp_name" id="betreuung_gp"
                                                         [(ngModel)]="statistikParameter.gesuchsperiode"
                                                         #gesuchZeitraumGP='ngModel'
+                                                        data-test="gesuchsperiode"
                                                         class="form-control">
                                                     <option [ngValue]="undefined">{{'KEINE' | translate}}</option>
                                                     <option *ngFor="let gesuchsperiode of gesuchsperioden"
-                                                            [value]="gesuchsperiode.id">{{gesuchsperiode.gesuchsperiodeString}}</option>
+                                                            [value]="gesuchsperiode.id"
+                                                            [attr.data-test]="'periode' + gesuchsperiode.gesuchsperiodeString">{{gesuchsperiode.gesuchsperiodeString}}</option>
                                                 </select>
                                                 <dv-error-messages [errorObject]="gesuchZeitraumGP.errors"
                                                                    class="error"></dv-error-messages>
@@ -459,7 +463,7 @@
                                         </div>
                                     </div>
                                     <div class="col-xs-3 statistik-button">
-                                        <dv-loading-button type="submit">
+                                        <dv-loading-button type="submit" data-test="container.generieren">
                                             <span class="uppercase" translate>GENERIEREN</span>
                                         </dv-loading-button>
                                     </div>
@@ -1194,7 +1198,7 @@
                         <th mat-header-cell *matHeaderCellDef class="ellipsis">
                             <span translate>STATUS</span>
                         </th>
-                        <td mat-cell *matCellDef="let element" class="ellipsis">
+                        <td mat-cell *matCellDef="let element" class="ellipsis" data-test="job-status">
                             {{'BatchJobStatus_' + element.batchJobStatus | translate}}
                         </td>
                     </ng-container>
@@ -1211,7 +1215,8 @@
 
                     <tr mat-header-row *matHeaderRowDef="columndefs"></tr>
                     <tr mat-row [ngClass]="{'ready': row.batchJobStatus === 'FINISHED'}"
-                        *matRowDef="let row; columns: columndefs;" (click)="downloadStatistik(row)"></tr>
+                        *matRowDef="let row; let index = index; columns: columndefs;" (click)="downloadStatistik(row)"
+                        [attr.data-test]="'statistik#' + index"></tr>
 
                 </mat-table>
 

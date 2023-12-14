@@ -11,6 +11,7 @@
         "sourceMap": false,
         "paths": {
             "@dv-e2e/types": ["./support/types.ts"],
+            "@dv-e2e/tasks": ["./support/tasks.ts"],
             "@dv-e2e/fixtures": ["./support/fixture-helper.ts"],
             "@dv-e2e/page-objects": ["./page-objects/index.ts"]
         }
