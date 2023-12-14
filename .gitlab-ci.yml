@@ -112,6 +112,26 @@ include:
             ssh-private-key: $KIBON_SSH_PRIVATE_KEY
             ssh-target: 'sdvbvmkiba41.dvbern.ch'
 
+    -   component: 'gitlab.dvbern.ch/fuju/docker-compose-deploy@4ecd5519fb57c296f9e9745de8fb98858d20e19a'
+        inputs:
+            name: .docker-compose-deploy:schulung
+            service-name: kibon-schulung
+            version: $VERSION
+            version-env-var: 'TAGTOUSE'
+            ssh-user: $KIBON_DEPLOY_SSH_USER
+            ssh-private-key: $KIBON_SSH_PRIVATE_KEY
+            ssh-target: 'sdvbvmkiba11.dvbern.ch'
+
+    -   component: 'gitlab.dvbern.ch/fuju/docker-compose-deploy@4ecd5519fb57c296f9e9745de8fb98858d20e19a'
+        inputs:
+            name: .docker-compose-deploy:demo
+            service-name: kibon-demo
+            version: $VERSION
+            version-env-var: 'TAGTOUSE'
+            ssh-user: $KIBON_DEPLOY_SSH_USER
+            ssh-private-key: $KIBON_SSH_PRIVATE_KEY
+            ssh-target: 'sdvbvmkiba11.dvbern.ch'
+
 deploy:prod:
     dependencies: []
     rules:
@@ -145,7 +165,30 @@ deploy:iat:
         url: https://iat.kibon.ch
     extends: .docker-compose-deploy:iat
 
+deploy:schulung:
+    dependencies: []
+    rules:
+        - if: $CI_COMMIT_TAG
+          when: manual
+          allow_failure: true
+    environment:
+        name: schulung
+        url: https://schulung.kibon.ch
+    extends: .docker-compose-deploy:schulung
 
+deploy:demo:
+    dependencies: []
+    needs:
+        - deploy:prod
+    rules:
+        - if: $CI_COMMIT_TAG
+          allow_failure: true
+    environment:
+        name: demo
+        url: https://demo.kibon.ch
+    extends: .docker-compose-deploy:demo
+
+# for dev and preview
 deploy:
     extends: .docker-compose-deploy
     dependencies: []
