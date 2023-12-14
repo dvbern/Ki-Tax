@@ -31,7 +31,7 @@ export class YoutubeLinkVisitor implements MandantVisitor<string> {
 
     public visitBern(): string {
         if (this._isGerman) {
-            return 'https://www.youtube.com/embed/-nwcolwnI1M';
+            return 'https://www.youtube.com/embed/9eMWHfLjdBk';
         }
         return 'https://www.youtube.com/embed/4Um--UCWaXs';
     }
