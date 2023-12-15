@@ -196,7 +196,9 @@ describe('Kibon - Online TS-Anmeldung (Mischgesuch) [Gesuchsteller]', () => {
 
     const platzBestaetigen = () => {
         cy.getByData('korrekte-kosten-bestaetigung').click();
-        cy.getByData('container.platz-bestaetigen', 'navigation-button').click();
+        cy.waitForRequest('PUT', '**/betreuungen/bestaetigen', () => {
+            cy.getByData('container.platz-bestaetigen', 'navigation-button').click();
+        });
     };
 });
 
