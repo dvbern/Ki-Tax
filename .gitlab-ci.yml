@@ -12,7 +12,7 @@ workflow:
             variables:
                 VERSION: $CI_COMMIT_SHA
                 SERVICE_NAME: kibon-dev
-                SSH_HOST: sdvbvmkiba31.dvbern.ch sdvbvmkiba31.dvbern.ch
+                SSH_HOST: sdvbvmkiba31.dvbern.ch
                 DEPLOY_ENV: dev
                 DEPLOY_URL: https://dev.kibon.ch
                 MAVEN_GOAL: install
@@ -30,18 +30,8 @@ workflow:
             variables:
                 VERSION: $CI_COMMIT_TAG
                 MAVEN_GOAL: install
-        # Hotfix
-        -   if: $CI_COMMIT_TAG && $CI_COMMIT_BRANCH =~ /^hotfix/
-            variables:
-                VERSION: $CI_REF_SLUG
-                SERVICE_NAME: kibon-iat
-                SSH_HOST: sdvbvmkiba41.dvbern.ch
-                DEPLOY_ENV: hotfix
-                DEPLOY_URL: https://iat.kibon.ch
-                MAVEN_GOAL: install
 
 include:
-    # TODO scheduled nightly Arquillian runs
     -   component: gitlab.dvbern.ch/mobj/maven@89ec140318641f5a453983b8c04454bd6b1932b8
         inputs:
             name: .build-backend
@@ -58,7 +48,6 @@ include:
             maven-goal: -Drevision=$VERSION --projects .,ebegu-web -Pdvbern.oss -Pci -Pfrontend clean install
             archive-path: ebegu-web/target/*.tar.gz
 
-    # TODO public or private registry? using a private base image and pushing the resulting image to public registry is not supported at the moment
     -   component: 'gitlab.dvbern.ch/mobj/buildah@a7143bb366f9ee8e1ddfd1813acb1649a104cb36'
         inputs:
             registry: $DVB_DOCKER_REGISTRY
@@ -114,10 +103,21 @@ include:
             ssh-private-key: $KIBON_SSH_PRIVATE_KEY
             ssh-target: 'sdvbvmkiba21.dvbern.ch sdvbvmkiba22.dvbern.ch'
 
+    -   component: 'gitlab.dvbern.ch/fuju/docker-compose-deploy@4ecd5519fb57c296f9e9745de8fb98858d20e19a'
+        inputs:
+            name: .docker-compose-deploy:iat
+            service-name: kibon-iat
+            version: $VERSION
+            version-env-var: 'TAGTOUSE'
+            ssh-user: $KIBON_DEPLOY_SSH_USER
+            ssh-private-key: $KIBON_SSH_PRIVATE_KEY
+            ssh-target: 'sdvbvmkiba41.dvbern.ch'
+
 deploy:prod:
     rules:
         - if: $CI_COMMIT_TAG
           when: manual
+          allow_failure: true
     environment:
         name: prod
         url: https://kibon.ch
@@ -127,6 +127,7 @@ deploy:uat:
     rules:
         - if: $CI_COMMIT_TAG
           when: manual
+          allow_failure: true
     environment:
         name: uat
         url: https://uat.kibon.ch
@@ -134,12 +135,13 @@ deploy:uat:
 
 deploy:iat:
     rules:
-        - if: ($CI_COMMIT_TAG && $CI_COMMIT_BRANCH =~ /^hotfix/) || $CI_COMMIT_BRANCH =~ /^warmfix/
+        - if: $CI_COMMIT_TAG
           when: manual
+          allow_failure: true
     environment:
         name: iat
         url: https://iat.kibon.ch
-    extends: .docker-compose-deploy
+    extends: .docker-compose-deploy:iat
 
 
 deploy:
@@ -151,6 +153,7 @@ deploy:
         - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
         - if: $CI_MERGE_REQUEST_SOURCE_BRANCH_NAME =~ /^feature/
           when: manual
+          allow_failure: true
         - if: $CI_COMMIT_TAG
           when: never
 
