@@ -184,7 +184,7 @@ describe('Kibon - Online TS-Anmeldung (Mischgesuch) [Gesuchsteller]', () => {
     const checkBetreuungsstatus = () => {
         cy.getByData('sidenav.VERFUEGEN').click();
         cy.getByData('verfuegung#0-0', 'betreuungs-status').should('include.text', 'Verfügt');
-        cy.getByData('verfuegung#0-1', 'betreuungs-status').should('include.text', 'Anmeldung ausgelöst');
+        cy.getByData('verfuegung#0-1', 'betreuungs-status').should('include.text', 'Anmeldung übernommen');
         cy.getByData('verfuegung#1-0', 'betreuungs-status').should('include.text', 'Verfügt');
         cy.getByData('verfuegung#1-1', 'betreuungs-status').should('include.text', 'Anmeldung übernommen');
     };
