@@ -71,7 +71,9 @@ describe('Kibon - Online TS-Anmeldung (Mischgesuch) [Gesuchsteller]', () => {
         AnmeldungTagesschulePO.selectTagesschule();
         AnmeldungTagesschulePO.fillAnmeldungTagesschule();
         AnmeldungTagesschulePO.save();
-        cy.getByData('container.kind#0', 'container.betreuung#1').should('exist');
+        cy.waitForRequest('GET', '**/institutionstammdaten/gesuchsperiode/gemeinde/active', () => {
+            cy.getByData('container.kind#0', 'container.create-betreuung', 'navigation-button').click();
+        });
     };
 
     const createTsAnmeldungFuerKind2 = () => {
