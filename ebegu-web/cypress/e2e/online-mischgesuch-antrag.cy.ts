@@ -176,7 +176,9 @@ describe('Kibon - Online TS-Anmeldung (Mischgesuch) [Gesuchsteller]', () => {
 
         cy.getByData('verfuegungs-bemerkungen-kontrolliert').click();
         cy.getByData('container.verfuegen', 'navigation-button').click();
-        cy.getByData('container.confirm', 'navigation-button').click();
+        cy.waitForRequest('PUT', '**/verfuegung/verfuegen/**', () => {
+            cy.getByData('container.confirm', 'navigation-button').click();
+        });
     };
 
     const checkBetreuungsstatus = () => {
