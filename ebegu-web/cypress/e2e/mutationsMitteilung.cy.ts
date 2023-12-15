@@ -1,5 +1,4 @@
 import {getUser} from "@dv-e2e/types";
-import {visit} from "jsonc-parser";
 
 describe('Kibon - generate Testfälle [Gemeinde Sachbearbeiter]', () => {
     const userSB = getUser('[3-SB-Institution-Kita-Brünnen] Sophie Bergmann');
@@ -34,7 +33,7 @@ describe('Kibon - generate Testfälle [Gemeinde Sachbearbeiter]', () => {
         cy.getByData('betreuung-datum-bis#0').clear().type(enddatum);
         cy.getByData('mutationsmeldung-senden').click();
         cy.intercept("PUT", '**/mitteilungen/sendbetreuungsmitteilung').as('creatingMutationsmeldung');
-        cy.get('[data-test="container.confirm"]').click();
+        cy.getByData('container.confirm').click();
         cy.wait('@creatingMutationsmeldung');
     });
 
@@ -44,9 +43,9 @@ describe('Kibon - generate Testfälle [Gemeinde Sachbearbeiter]', () => {
         cy.getByData('antrag-entry#0').click();
         cy.getByData('toolbar-mitteilungen').click();
         cy.getByData('container.mitteilung#0').click();
-        cy.get('[data-test="container.mitteilung#0"] [data-test="navigation-button"]').click();
+        cy.getByData('container.mitteilung#0', 'navigation-button').click();
         cy.intercept("PUT", '**/mitteilungen/applybetreuungsmitteilung/**').as('acceptMutationsmeldung');
-        cy.get('[data-test="container.confirm"] [data-test="navigation-button"]').click();
+        cy.getByData('container.confirm', 'navigation-button').click()
         cy.wait('@acceptMutationsmeldung');
     });
 
