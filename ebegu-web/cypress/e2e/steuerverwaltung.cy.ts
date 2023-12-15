@@ -57,24 +57,24 @@ describe('Kibon - Gesuch zu Steuerverwaltung senden', () => {
         cy.getByData(`antrag-entry#${fallnummer}`).click();
         cy.getByData('gesuch-status').should('contain.text', 'In Bearbeitung Steuerbüro der Gemeinde');
 
-       cy.getByData('bemerkungen-gemeinde').should('have.value', 'Wie hoch ist der Nettolohn im Jahr 2022 von Yvonne Feuz?');
-       cy.getByData('container.navigation-save').click();
-       cy.getByData('gesuchformular-title').should('contain.text', 'Antragsteller/in');
-       cy.getByData('gesuchformular-title').should('contain.text', '1');
-       cy.getByData('container.navigation-save').click();
-       cy.getByData('gesuchformular-title').should('contain.text', 'Antragsteller/in');
-       cy.getByData('gesuchformular-title').should('contain.text', '2');
-       cy.getByData('container.navigation-save').should('not.exist');
-       cy.getByData('bemerkungen-stv').type("Der Nettolohn beträgt 50'000 CHF im Jahr 2021");
-       cy.getByData('container.zurueck-an-gemeinde').click();
-       cy.intercept('POST', '**/search/search').as('searchCompleted');
-       cy.getByData('container.confirm').click();
-       cy.wait('@searchCompleted');
-       cy.getByData(`antrag-entry#${fallnummer}`).should('not.exist');
+        cy.getByData('bemerkungen-gemeinde').should('have.value', 'Wie hoch ist der Nettolohn im Jahr 2022 von Yvonne Feuz?');
+        cy.getByData('container.navigation-save').click();
+        cy.getByData('gesuchformular-title').should('contain.text', 'Antragsteller/in');
+        cy.getByData('gesuchformular-title').should('contain.text', '1');
+        cy.getByData('container.navigation-save').click();
+        cy.getByData('gesuchformular-title').should('contain.text', 'Antragsteller/in');
+        cy.getByData('gesuchformular-title').should('contain.text', '2');
+        cy.getByData('container.navigation-save').should('not.exist');
+        cy.getByData('bemerkungen-stv').type("Der Nettolohn beträgt 50'000 CHF im Jahr 2021");
+        cy.getByData('container.zurueck-an-gemeinde').click();
+        cy.intercept('POST', '**/search/search').as('searchCompleted');
+        cy.getByData('container.confirm').click();
+        cy.wait('@searchCompleted');
+        cy.getByData(`antrag-entry#${fallnummer}`).should('not.exist');
 
-       cy.changeLogin(userGemeinde);
-       cy.visit('/#/faelle');
-       cy.getByData(`antrag-entry#${fallnummer}`).should('exist');
+        cy.changeLogin(userGemeinde);
+        cy.visit('/#/faelle');
+        cy.getByData(`antrag-entry#${fallnummer}`).should('exist');
 
         cy.visit('/#/pendenzen');
         cy.getByData(`antrag-entry#${fallnummer}`).click();
