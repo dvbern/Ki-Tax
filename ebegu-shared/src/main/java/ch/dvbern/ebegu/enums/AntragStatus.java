@@ -410,7 +410,7 @@ public enum AntragStatus {
 			IGNORIERT);
 	}
 
-	public static final Set<AntragStatus> FOR_SOZIALDIENST_PENDENZEN = EnumSet.of(
+	private static final Set<AntragStatus> FOR_SOZIALDIENST_PENDENZEN = EnumSet.of(
 		IN_BEARBEITUNG_SOZIALDIENST, ERSTE_MAHNUNG, ZWEITE_MAHNUNG);
 
 	/**
