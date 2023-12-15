@@ -31,6 +31,7 @@ describe('Kibon - Gesuch zu Steuerverwaltung senden', () => {
             gesuchUrl = `${parts.pathname}${parts.hash}`;
         });
 
+        cy.getByData('fallnummer').should('not.be.empty');
         cy.getByData('fallnummer').invoke('text').then(value => {
             fallnummer = value;
             cy.getByData('fallnummer').should('contain.text', fallnummer);
@@ -42,7 +43,9 @@ describe('Kibon - Gesuch zu Steuerverwaltung senden', () => {
         cy.visit(gesuchUrl);
         cy.getByData('verantwortlicher').click();
         cy.getByData('container.verantwortlicher',`option.${normalizeUser(userGemeinde)}`).click();
+        cy.intercept('GET', '**/verfuegung/calculate/**').as('verfuegenView');
         cy.getByData('sidenav.VERFUEGEN').click();
+        cy.wait('@verfuegenView');
         cy.getByData('container.send-to-stv', 'navigation-button').click();
         cy.getByData('send-bemerkungen').should('have.focus');
         cy.getByData('kommentar-for-stv').focus().type('Wie hoch ist der Nettolohn im Jahr 2022 von Yvonne Feuz?');
@@ -64,8 +67,9 @@ describe('Kibon - Gesuch zu Steuerverwaltung senden', () => {
        cy.getByData('container.navigation-save').should('not.exist');
        cy.getByData('bemerkungen-stv').type("Der Nettolohn beträgt 50'000 CHF im Jahr 2021");
        cy.getByData('container.zurueck-an-gemeinde').click();
+       cy.intercept('POST', '**/search/search').as('searchCompleted');
        cy.getByData('container.confirm').click();
-       cy.wait(1000);
+       cy.wait('@searchCompleted');
        cy.getByData(`antrag-entry#${fallnummer}`).should('not.exist');
 
        cy.changeLogin(userGemeinde);
