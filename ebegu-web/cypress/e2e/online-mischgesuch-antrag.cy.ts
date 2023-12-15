@@ -123,7 +123,11 @@ describe('Kibon - Online TS-Anmeldung (Mischgesuch) [Gesuchsteller]', () => {
         cy.getByData('container.navigation-save', 'navigation-button').click();
 
         cy.getByData('container.freigeben', 'navigation-button').click();
-        cy.getByData('container.confirm', 'navigation-button').click();
+        cy.getDownloadUrl(() => {
+            cy.waitForRequest('GET', '**/dossier/fall/**', () => {
+                cy.getByData('container.confirm', 'navigation-button').click();
+            });
+        });
     };
 
     const freigabequittungEinlesen = () => {
