@@ -17,10 +17,15 @@
 
 const getVerfuegterTarif = (zeitabschnittIndex: number) => {
     return cy.getByData('tagesschul-anmeldung-tarife',
-        'tagesschul-anmeldung-zeitabschnitt#0',
+        `tagesschul-anmeldung-zeitabschnitt#${zeitabschnittIndex}`,
         'tagesschul-anmeldung-zeitabschnitt-tarif');
+};
+
+const getAllTarife = () => {
+    return cy.getByData('tagesschul-anmeldung-tarife', 'tagesschul-anmeldung-zeitabschnitt-tarif');
 };
 
 export const VerfuegungPO = {
     getVerfuegterTarif,
+    getAllTarife,
 };

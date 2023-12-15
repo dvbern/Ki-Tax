@@ -23,10 +23,10 @@
                 <i *ngIf="verarbeitung.count !== verarbeitung.total" class="fa fa-circle-o-notch fa-spin fa-fw"></i>
                 {{verarbeitung.count}}/{{verarbeitung.total}} {{'VERARBEITET' | translate}}
             </div>
-            <ul data-test="automatisch-verfuegte-mitteilungen">
+            <ul data-test="container.automatisch-verfuegte-mitteilungen">
                 <span>{{'AUTOMATISCHE_BEARBEITETE_MITTEILUNGEN_VERFUEGT' | translate}}</span>
                 <li class="applied" *ngFor="let betreuungsmitteilung of getVerfuegtSuccessItems()">
-                    <a href="{{getBetreuungUrl(betreuungsmitteilung)}}" target="_blank" rel="noopener noreferrer">{{getRererenceNummer(
+                    <a href="{{getBetreuungUrl(betreuungsmitteilung)}}" [attr.data-test]="'verfuegt#' + betreuungsmitteilung.dossier.fall.fallNummer" target="_blank" rel="noopener noreferrer">{{getRererenceNummer(
                         betreuungsmitteilung)}}</a>
                 </li>
                 <span *ngIf="getVerfuegtSuccessItems().length === 0"><br>-</span>
