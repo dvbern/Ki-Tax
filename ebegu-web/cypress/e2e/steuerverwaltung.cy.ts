@@ -44,8 +44,8 @@ describe('Kibon - Gesuch zu Steuerverwaltung senden', () => {
         cy.getByData('container.verantwortlicher',`option.${normalizeUser(userGemeinde)}`).click();
         cy.getByData('sidenav.VERFUEGEN').click();
         cy.getByData('container.send-to-stv', 'navigation-button').click();
-        cy.wait(1000);
-        cy.getByData('kommentar-for-stv').type('Wie hoch ist der Nettolohn im Jahr 2022 von Yvonne Feuz?');
+        cy.getByData('send-bemerkungen').should('have.focus');
+        cy.getByData('kommentar-for-stv').focus().type('Wie hoch ist der Nettolohn im Jahr 2022 von Yvonne Feuz?');
         cy.getByData('kommentar-absenden').click();
         cy.getByData('gesuch-status').should('contain.text', 'Prüfung Steuerbüro der Gemeinde');
 
