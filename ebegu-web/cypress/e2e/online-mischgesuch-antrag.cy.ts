@@ -103,7 +103,9 @@ describe('Kibon - Online TS-Anmeldung (Mischgesuch) [Gesuchsteller]', () => {
         cy.getByData('container.betreuung#0').click();
 
         cy.getByData('container.akzeptieren','navigation-button').click();
-        cy.getByData('container.confirm','navigation-button').click();
+        cy.waitForRequest('PUT', '**/betreuungen/schulamt/akzeptieren', () => {
+            cy.getByData('container.confirm', 'navigation-button').click();
+        });
     };
 
     const tsAkzeptierenFuerKind2 = () => {
