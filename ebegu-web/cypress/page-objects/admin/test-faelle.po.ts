@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {GemeindeTestFall, TestFall} from '@dv-e2e/types';
+import { normalizeUser, TestBetreuungsstatus, TestFall, TestGesuchstellende, TestPeriode, GemeindeTestFall } from '@dv-e2e/types';
 
 const createNewTestFaelle = (testFall: TestFall, gemeindeName: GemeindeTestFall) => {
     cy.getByData('page-title').contains('Alle Fälle');
@@ -27,10 +27,33 @@ const createNewTestFaelle = (testFall: TestFall, gemeindeName: GemeindeTestFall)
     cy.getByData('periode.2022/23').click();
     cy.getByData('creationType.warten').find('label').click();
     cy.getByData(testFall).click();
-    cy.get('[data-test="dialog-link"]', {timeout: 20000}).click();
+    cy.get('[data-test="dialog-link"]', { timeout: 20000 }).click();
+    cy.getByData('fall-creation-eingangsdatum').find('input').should('have.value', '15.2.2016');
+};
+
+const createNewTestFallIn = (data: {
+    testFall: TestFall;
+    gemeinde: GemeindeTestFall;
+    periode: TestPeriode;
+    betreuungsstatus: TestBetreuungsstatus;
+    besitzerin: TestGesuchstellende;
+}) => {
+    cy.getByData('page-title').contains('Alle Fälle');
+    cy.getByData('page-menu').click();
+    cy.getByData('action-admin.testdaten').click();
+    cy.getByData('gemeinde').click();
+    cy.getByData(`gemeinde.${data.gemeinde}`).click();
+    cy.getByData('periode').click();
+    cy.getByData(`periode.${data.periode}`).click();
+    cy.getByData(`creationType.${data.betreuungsstatus}`).find('label').click();
+    cy.getByData(`gesuchsteller`).click();
+    cy.getByData(`gesuchsteller.${normalizeUser(data.besitzerin)}`).click();
+    cy.getByData(data.testFall).click();
+    cy.get('[data-test="dialog-link"]', { timeout: 20000 }).click();
     cy.getByData('fall-creation-eingangsdatum').find('input').should('have.value', '15.2.2016');
 };
 
 export const TestFaellePO = {
     createNewTestFaelle,
-}
+    createNewTestFallIn,
+};

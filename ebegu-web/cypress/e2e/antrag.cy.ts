@@ -46,7 +46,7 @@ const createNewKindWithAllSettings = () => {
 
 const createNewBetreuungWithAllSettings = () => {
     AntragBetreuungPO.createNewBetreuung();
-    AntragBetreuungPO.fillKitaBetreuungsForm('withValid');
+    AntragBetreuungPO.fillKitaBetreuungsForm('withValid', 'London');
     AntragBetreuungPO.fillKeinePlatzierung();
     AntragBetreuungPO.fillErweiterteBeduerfnisse();
     AntragBetreuungPO.fillEingewoehnung();

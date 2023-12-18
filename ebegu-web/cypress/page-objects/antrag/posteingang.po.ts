@@ -15,9 +15,19 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-export * from './beschaeftigungspensum.po';
-export * from './betreuung.po';
-export * from './familiensituation.po';
-export * from './kind.po';
-export * from './papiergesuch.po';
-export * from './tagesschule.po';
+const getFallFilter = () => {
+    return cy.getByData('fall-nummer-filter');
+};
+const getEmpfaengerFilter = () => {
+    return cy.getByData('container.empfaenger-select');
+};
+
+const getMutationsmitteilungenAutomatischBearbeitenButton = () => {
+    return cy.getByData('mutationsmeldungen-automatisch-bearbeiten');
+};
+
+export const PosteingangPO = {
+    getFallFilter,
+    getMutationsmitteilungenAutomatischBearbeitenButton,
+    getEmpfaengerFilter
+};

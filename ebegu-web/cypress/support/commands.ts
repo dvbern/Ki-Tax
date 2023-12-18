@@ -21,6 +21,7 @@ import * as dvTasks from '@dv-e2e/tasks';
 type DvTasks = typeof dvTasks;
 
 import { OnlyValidSelectors, User } from '@dv-e2e/types';
+import {Method} from 'cypress/types/net-stubbing';
 
 declare global {
     namespace Cypress {
@@ -64,7 +65,7 @@ declare global {
              *   // technically equals
              *   cy.get('[data-test="dv-radiobutton"] label');
              */
-            getByData<T extends string>(name: OnlyValidSelectors<T>, ...nestedNames: OnlyValidSelectors<T>[]): Chainable<Subject>;
+            getByData<T extends string>(name: OnlyValidSelectors<T>, ...nestedNames: OnlyValidSelectors<T>[]): Chainable<JQuery<HTMLElement>>;
 
             /**
              * Download a file using given url and save it with the given name
@@ -87,6 +88,23 @@ declare global {
             ): Chainable<ReturnType<T>>;
 
             resetViewport(): Chainable<Subject>;
+
+            /**
+             * An abstraction for `cy.intercept` with the additional benefit that the intercept tracks the given request only 1 time
+             *
+             * @example
+             * cy.waitForRequest('POST', '**‍/einkommensverschlechterung/calculateTemp/1', () => {
+             *   cy.getByData('container.navigation-save', 'navigation-button').click();
+             * });
+             * // Equals
+             * cy.intercept('POST', '**‍/einkommensverschlechterung/calculateTemp/1').as('...');
+             * cy.getByData('container.navigation-save', 'navigation-button').click();
+             * cy.wait('...')
+             *
+             * // More specifically it equals to
+             * cy.intercept({ pathname: '**‍/einkommensverschlechterung/calculateTemp/1', method: 'POST', times: 1 }).as('...');
+             */
+            waitForRequest<T>(method: Method, urlPart: string, run: () => T): Chainable<T>;
 
             /**
              * Run an action and wait for a given download to initiate, the download url is the resulting subject
@@ -140,6 +158,12 @@ Cypress.Commands.add('login', (user: User) => {
 });
 Cypress.Commands.add('getByData', (name, ...names) => {
     return cy.get([name, ...names].map((name) => `[data-test="${name}"]`).join(' '));
+});
+Cypress.Commands.add('waitForRequest', (method, pathname, run) => {
+    const alias = `Request ${method} ${pathname}`;
+    cy.intercept({ method, pathname, times: 1 }).as(alias);
+    run();
+    cy.wait(`@${alias}`);
 });
 Cypress.Commands.add('changeLogin', (user: User) => {
     cy.clearAllSessionStorage();

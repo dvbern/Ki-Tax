@@ -364,7 +364,7 @@
 
     <md-content id="gesuchContainer" flex>
         <!--linke Seite zum ausfüllen des Formulars-->
-        <div ui-view="gesuchViewPort" autoscroll="true">
+        <div ui-view="gesuchViewPort" autoscroll="true" data-test="antrags-daten" ng-attr-data-antrags-id="{{ vm.getGesuchId() }}">
         </div>
 
     </md-content>

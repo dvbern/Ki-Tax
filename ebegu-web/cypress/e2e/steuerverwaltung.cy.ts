@@ -65,6 +65,8 @@ describe('Kibon - Gesuch zu Steuerverwaltung senden', () => {
         cy.getByData('gesuchformular-title').should('contain.text', 'Antragsteller/in');
         cy.getByData('gesuchformular-title').should('contain.text', '2');
         cy.getByData('container.navigation-save').should('not.exist');
+        // TODO: remove this wait once a solution for textarea issues has been found
+        cy.wait(1000);
         cy.getByData('bemerkungen-stv').type("Der Nettolohn beträgt 50'000 CHF im Jahr 2021");
         cy.getByData('container.zurueck-an-gemeinde').click();
         cy.intercept('POST', '**/search/search').as('searchCompleted');

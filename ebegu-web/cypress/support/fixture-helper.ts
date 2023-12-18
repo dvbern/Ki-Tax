@@ -39,7 +39,7 @@ export const FixtureBeschaeftigungspensum = {
 
 export const FixtureBetreuung = {
     withValid: fromFixture<typeof Betreuung>('antrag/betreuung.json', 'valid'),
-}
+};
 
 export const FixtureFamSit = {
     withValid: fromFixture<typeof FamSit>('antrag/famsit.json', 'valid'),
