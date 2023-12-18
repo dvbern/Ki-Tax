@@ -1018,7 +1018,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 	) {
 		List<VerfuegungZeitabschnitt> zeitabschnittList = getReportDataBetreuungen(datumVon, datumBis, gesuchsperiode, mandant);
 		List<GesuchstellerKinderBetreuungDataRow> dataRows =
-			convertToGesuchstellerKinderBetreuungDataRow(zeitabschnittList, gesuchsperiode, locale);
+			convertToGesuchstellerKinderBetreuungDataRow(zeitabschnittList, gesuchsperiode, locale, mandant);
 
 		dataRows.sort(Comparator.comparing(GesuchstellerKinderBetreuungDataRow::getBgNummer)
 			.thenComparing(GesuchstellerKinderBetreuungDataRow::getZeitabschnittVon));
@@ -1035,7 +1035,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		@Nonnull Mandant mandant
 	) {
 		List<VerfuegungZeitabschnitt> zeitabschnittList = getReportDataBetreuungen(datumVon, datumBis, gesuchsperiode, mandant);
-		List<GesuchstellerKinderBetreuungDataRow> dataRows = convertToKinderDataRow(zeitabschnittList, locale, gesuchsperiode);
+		List<GesuchstellerKinderBetreuungDataRow> dataRows = convertToKinderDataRow(zeitabschnittList, locale, gesuchsperiode, mandant);
 
 		dataRows.sort(Comparator.comparing(GesuchstellerKinderBetreuungDataRow::getBgNummer)
 			.thenComparing(GesuchstellerKinderBetreuungDataRow::getZeitabschnittVon));
@@ -1052,7 +1052,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		List<VerfuegungZeitabschnitt> zeitabschnittList = getReportDataBetreuungen(stichtag, mandant);
 
 		List<GesuchstellerKinderBetreuungDataRow> dataRows =
-			convertToGesuchstellerKinderBetreuungDataRow(zeitabschnittList, null, locale);
+			convertToGesuchstellerKinderBetreuungDataRow(zeitabschnittList, null, locale, mandant);
 
 		dataRows.sort(Comparator.comparing(GesuchstellerKinderBetreuungDataRow::getBgNummer)
 			.thenComparing(GesuchstellerKinderBetreuungDataRow::getZeitabschnittVon));
@@ -1509,13 +1509,15 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 
 	private List<GesuchstellerKinderBetreuungDataRow> convertToGesuchstellerKinderBetreuungDataRow(
 		List<VerfuegungZeitabschnitt> zeitabschnittList,
-		@Nullable Gesuchsperiode gesuchsperiode, @Nonnull Locale locale
+		@Nullable Gesuchsperiode gesuchsperiode,
+		@Nonnull Locale locale,
+		@Nonnull Mandant mandant
 	) {
 
 		List<GesuchstellerKinderBetreuungDataRow> dataRowList = new ArrayList<>();
 
 		Map<Long, Gesuch> neustesVerfuegtesGesuchCache = new HashMap<>();
-		List<Gesuch> gesuches = getAllGueltigeGesuch(gesuchsperiode);
+		List<Gesuch> gesuches = getAllGueltigeGesuch(gesuchsperiode, mandant);
 		gesuches.forEach(
 			gueltigeGesuch -> neustesVerfuegtesGesuchCache.put(gueltigeGesuch.getFall().getFallNummer(),
 				gueltigeGesuch)
@@ -1538,7 +1540,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		return dataRowList;
 	}
 
-	private List<Gesuch> getAllGueltigeGesuch(Gesuchsperiode gesuchsperiode) {
+	private List<Gesuch> getAllGueltigeGesuch(Gesuchsperiode gesuchsperiode, @Nonnull Mandant mandant) {
 		Benutzer user = benutzerService.getCurrentBenutzer().orElseThrow(() -> new EbeguRuntimeException(
 			"getAllGueltigeGesuch", NO_USER_IS_LOGGED_IN));
 
@@ -1556,6 +1558,10 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 
 		// Nur Gesuche von Gemeinden, fuer die ich berechtigt bin
 		setGemeindeFilterForCurrentUser(user, joinGemeinde, predicatesToUse);
+
+		// Nur Gesuche von Gemeinden die in dasselbe Mandant sind
+		Predicate predicateMandantGemeinde = builder.equal(joinGemeinde.get(Gemeinde_.mandant), mandant);
+		predicatesToUse.add(predicateMandantGemeinde);
 
 		// Gesuchsperiode
 		if (gesuchsperiode != null) {
@@ -1789,13 +1795,14 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 	private List<GesuchstellerKinderBetreuungDataRow> convertToKinderDataRow(
 		List<VerfuegungZeitabschnitt> zeitabschnittList,
 		@Nonnull Locale locale,
-		@Nullable Gesuchsperiode gesuchsperiode
+		@Nullable Gesuchsperiode gesuchsperiode,
+		@Nonnull Mandant mandant
 	) {
 
 		List<GesuchstellerKinderBetreuungDataRow> dataRowList = new ArrayList<>();
 
 		Map<Long, Gesuch> neustesVerfuegtesGesuchCache = new HashMap<>();
-		List<Gesuch> gesuches = getAllGueltigeGesuch(gesuchsperiode);
+		List<Gesuch> gesuches = getAllGueltigeGesuch(gesuchsperiode, mandant);
 		gesuches.forEach(
 			gueltigeGesuch -> neustesVerfuegtesGesuchCache.put(gueltigeGesuch.getFall().getFallNummer(),
 				gueltigeGesuch)

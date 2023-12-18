@@ -356,7 +356,8 @@
                 </dv-loading-button>
                 <dv-loading-button input-id="buttonSteuerverwaltung" button-click="vm.sendToSteuerverwaltung()"
                                    aria-label="{{'SEND_TO_STV' | translate}}"
-                                   ng-if="vm.showSendToSteuerverwaltung()">
+                                   ng-if="vm.showSendToSteuerverwaltung()"
+                                   data-test="container.send-to-stv">
                     <span class="uppercase" data-translate="SEND_TO_STV"></span>
                 </dv-loading-button>
                 <dv-loading-button input-id="buttonSteuerverwaltungAbschliessen" button-click="vm.stvPruefungAbschliessen()"

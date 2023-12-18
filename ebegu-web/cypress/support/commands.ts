@@ -65,7 +65,7 @@ declare global {
              *   // technically equals
              *   cy.get('[data-test="dv-radiobutton"] label');
              */
-            getByData<T extends string>(name: OnlyValidSelectors<T>, ...nestedNames: OnlyValidSelectors<T>[]): Chainable<Subject>;
+            getByData<T extends string>(name: OnlyValidSelectors<T>, ...nestedNames: OnlyValidSelectors<T>[]): Chainable<JQuery<HTMLElement>>;
 
             /**
              * Download a file using given url and save it with the given name
@@ -188,6 +188,12 @@ Cypress.Commands.add('waitForRequest', (method, pathname, run) => {
 });
 Cypress.Commands.add('getByData', (name, ...names) => {
     return cy.get([name, ...names].map((name) => `[data-test="${name}"]`).join(' '));
+});
+Cypress.Commands.add('waitForRequest', (method, pathname, run) => {
+    const alias = `Request ${method} ${pathname}`;
+    cy.intercept({ method, pathname, times: 1 }).as(alias);
+    run();
+    cy.wait(`@${alias}`);
 });
 Cypress.Commands.add('changeLogin', (user: User) => {
     cy.clearAllSessionStorage();

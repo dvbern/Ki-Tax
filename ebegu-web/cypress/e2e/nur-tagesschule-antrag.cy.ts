@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {AnmeldungTagesschulePO, TestFaellePO} from '@dv-e2e/page-objects';
+import { AntragBetreuungPO, TestFaellePO } from '@dv-e2e/page-objects';
 import { getUser } from '@dv-e2e/types';
 
 describe('Kibon - Tagesschule Only [Superadmin]', () => {
@@ -42,7 +42,8 @@ describe('Kibon - Tagesschule Only [Superadmin]', () => {
         cy.getByData('container.create-betreuung','navigation-button').click();
 
         // anmeldung Tagesschule erfassen
-        AnmeldungTagesschulePO.fillAnmeldungTagesschule();
+        AntragBetreuungPO.fillTagesschulBetreuungsForm('withValid', 'Paris');
+        AntragBetreuungPO.saveBetreuung({ withConfirm: true });
 
         // anmeldung akkzeptieren
         cy.getByData('editBetreuungButton1_0','navigation-button').click();

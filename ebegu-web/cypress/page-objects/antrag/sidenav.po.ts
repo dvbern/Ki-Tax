@@ -15,10 +15,18 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-export * from './einkommensverschlechterung.po';
-export * from './beschaeftigungspensum.po';
-export * from './betreuung.po';
-export * from './familiensituation.po';
-export * from './kind.po';
-export * from './papiergesuch.po';
-export * from './tagesschule.po';
+import {SidenavStep} from '@dv-e2e/types';
+
+const goTo = (step: SidenavStep): void  => {
+    cy.getByData(`sidenav.${step}`).click();
+};
+
+const getGesuchStatus = () => {
+    return cy.getByData('gesuch.status');
+};
+
+
+export const SidenavPO = {
+    goTo,
+    getGesuchStatus
+};

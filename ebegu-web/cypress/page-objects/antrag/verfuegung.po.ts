@@ -15,10 +15,17 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-export * from './einkommensverschlechterung.po';
-export * from './beschaeftigungspensum.po';
-export * from './betreuung.po';
-export * from './familiensituation.po';
-export * from './kind.po';
-export * from './papiergesuch.po';
-export * from './tagesschule.po';
+const getVerfuegterTarif = (zeitabschnittIndex: number) => {
+    return cy.getByData('tagesschul-anmeldung-tarife',
+        `tagesschul-anmeldung-zeitabschnitt#${zeitabschnittIndex}`,
+        'tagesschul-anmeldung-zeitabschnitt-tarif');
+};
+
+const getAllTarife = () => {
+    return cy.getByData('tagesschul-anmeldung-tarife', 'tagesschul-anmeldung-zeitabschnitt-tarif');
+};
+
+export const VerfuegungPO = {
+    getVerfuegterTarif,
+    getAllTarife,
+};
