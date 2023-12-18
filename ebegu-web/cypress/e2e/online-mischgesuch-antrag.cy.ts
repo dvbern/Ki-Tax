@@ -1,5 +1,5 @@
 import {getUser, normalizeUser, User} from '@dv-e2e/types';
-import { AnmeldungTagesschulePO} from '@dv-e2e/page-objects';
+import {AntragBetreuungPO} from '@dv-e2e/page-objects';
 
 describe('Kibon - Online TS-Anmeldung (Mischgesuch) [Gesuchsteller]', () => {
     const userSuperadmin = getUser('[1-Superadmin] E-BEGU Superuser');
@@ -7,10 +7,10 @@ describe('Kibon - Online TS-Anmeldung (Mischgesuch) [Gesuchsteller]', () => {
     const userTS = getUser('[3-SB-TS-Paris] Charlotte Gainsbourg');
     const userSB = getUser('[6-P-Admin-Gemeinde] Gerlinde Hofstetter');
     let gesuchUrl: string;
-
+    let fallnummer: string;
 
     before(() => {
-        cy.intercept({ resourceType: 'xhr' }, { log: false }); // don't log XHRs
+        cy.intercept({resourceType: 'xhr'}, {log: false}); // don't log XHRs
         cy.login(userSuperadmin);
         cy.visit('/#/faelle');
 
@@ -25,11 +25,16 @@ describe('Kibon - Online TS-Anmeldung (Mischgesuch) [Gesuchsteller]', () => {
         cy.getByData('periode.2023/24').click();
 
         cy.getByData('testfall-2').click();
-        cy.get('[data-test="dialog-link"]', { timeout: Cypress.config('defaultCommandTimeout') * 4 }).click();
+        cy.waitForRequest('GET', '**/benutzer/TsOrGemeinde/**', () => {
+            cy.get('[data-test="dialog-link"]', {timeout: Cypress.config('defaultCommandTimeout') * 4}).click();
+        });
 
         cy.url().then((url) => {
             const parts = new URL(url);
             gesuchUrl = `${parts.pathname}${parts.hash}`;
+        });
+        cy.getByData('fallnummer').then(el$ => {
+            fallnummer = el$.text();
         });
     });
 
@@ -67,10 +72,10 @@ describe('Kibon - Online TS-Anmeldung (Mischgesuch) [Gesuchsteller]', () => {
 
     const craeateTsAnmeldungFuerKind1 = () => {
         cy.getByData('sidenav.BETREUUNG').click();
-        cy.getByData('container.kind#0', 'container.create-betreuung','navigation-button').click();
-        AnmeldungTagesschulePO.selectTagesschule();
-        AnmeldungTagesschulePO.fillAnmeldungTagesschule();
-        AnmeldungTagesschulePO.save();
+        cy.getByData('container.kind#0', 'container.create-betreuung', 'navigation-button').click();
+        AntragBetreuungPO.selectTagesschulBetreuung();
+        AntragBetreuungPO.fillTagesschulBetreuungsForm('withValid', 'Paris');
+        AntragBetreuungPO.saveBetreuung();
         cy.waitForRequest('GET', '**/institutionstammdaten/gesuchsperiode/gemeinde/active', () => {
             cy.getByData('container.kind#0', 'container.create-betreuung', 'navigation-button').click();
         });
@@ -79,10 +84,9 @@ describe('Kibon - Online TS-Anmeldung (Mischgesuch) [Gesuchsteller]', () => {
     const createTsAnmeldungFuerKind2 = () => {
         cy.getByData('sidenav.BETREUUNG').click();
         cy.getByData('container.create-betreuung').should('not.exist');
-        cy.getByData('container.kind#1','container.create-tagesschule','navigation-button').click();
-        AnmeldungTagesschulePO.fillAnmeldungTagesschule();
-        AnmeldungTagesschulePO.save();
-        AnmeldungTagesschulePO.confirm();
+        cy.getByData('container.kind#1', 'container.create-tagesschule', 'navigation-button').click();
+        AntragBetreuungPO.fillTagesschulBetreuungsForm('withValid', 'Paris');
+        AntragBetreuungPO.saveAndConfirmBetreuung();
         cy.getByData('container.kind#1', 'container.betreuung#1').should('exist');
     };
 
@@ -99,10 +103,10 @@ describe('Kibon - Online TS-Anmeldung (Mischgesuch) [Gesuchsteller]', () => {
     const tsAkzeptierenAsUserTs = () => {
         cy.login(userTS);
         cy.visit('/#/faelle');
-        cy.getByData(`antrag-entry#0`).click();
+        cy.getByData(`antrag-entry#${fallnummer}`).click();
         cy.getByData('container.betreuung#0').click();
 
-        cy.getByData('container.akzeptieren','navigation-button').click();
+        cy.getByData('container.akzeptieren', 'navigation-button').click();
         cy.waitForRequest('PUT', '**/betreuungen/schulamt/akzeptieren', () => {
             cy.getByData('container.confirm', 'navigation-button').click();
         });
@@ -110,11 +114,11 @@ describe('Kibon - Online TS-Anmeldung (Mischgesuch) [Gesuchsteller]', () => {
 
     const tsAkzeptierenFuerKind2 = () => {
         cy.getByData('sidenav.BETREUUNG').click();
-        cy.getByData('container.kind#1','container.betreuung#1').click();
-        cy.getByData('container.akzeptieren','navigation-button').click();
+        cy.getByData('container.kind#1', 'container.betreuung#1').click();
+        cy.getByData('container.akzeptieren', 'navigation-button').click();
 
         cy.waitForRequest('GET', '**/dossier/fall/**', () => {
-            cy.getByData('container.confirm','navigation-button').click();
+            cy.getByData('container.confirm', 'navigation-button').click();
         });
     };
 
@@ -189,7 +193,7 @@ describe('Kibon - Online TS-Anmeldung (Mischgesuch) [Gesuchsteller]', () => {
         cy.getByData('verfuegung#1-1', 'betreuungs-status').should('include.text', 'Anmeldung übernommen');
     };
 
-    const loginAndGoToGesuch = (user : User) => {
+    const loginAndGoToGesuch = (user: User) => {
         cy.login(user);
         cy.visit(gesuchUrl);
     };

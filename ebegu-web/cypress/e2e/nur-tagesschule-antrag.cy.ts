@@ -42,6 +42,7 @@ describe('Kibon - Tagesschule Only [Superadmin]', () => {
         cy.getByData('container.create-betreuung','navigation-button').click();
 
         // anmeldung Tagesschule erfassen
+        AntragBetreuungPO.selectTagesschulBetreuung();
         AntragBetreuungPO.fillTagesschulBetreuungsForm('withValid', 'Paris');
         AntragBetreuungPO.saveAndConfirmBetreuung();
 

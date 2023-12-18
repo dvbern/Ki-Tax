@@ -32,7 +32,8 @@ const fillKitaBetreuungsForm = (dataset: keyof typeof FixtureBetreuung, gemeinde
     FixtureBetreuung[dataset]((data) => {
         const kita = data[gemeinde].tagesschule;
         cy.getByData('betreuungsangebot').select(kita.betreuungsangebot);
-        cy.getByData('institution').find('input').type(kita.institution);
+        cy.wait(1000);
+        cy.getByData('institution').find('input').focus().type(kita.institution, { force: true, delay: 30 });
         cy.getByData('instutions-suchtext').click();
         cy.getByData('institution').find('input').should('have.value', kita.institution);
     });
@@ -68,15 +69,19 @@ const fillOnlineTfoBetreuungsForm = (dataset: keyof typeof FixtureBetreuung, opt
     });
 };
 
+const selectTagesschulBetreuung = () => {
+    cy.getByData('betreuungsangebot').select('Tagesschule');
+}
+
 const fillTagesschulBetreuungsForm = (dataset: keyof typeof FixtureBetreuung, gemeinde: GemeindeTestFall) => {
     FixtureBetreuung[dataset]((data) => {
         const tagesschule = data[gemeinde].tagesschule.institution;
-        cy.getByData('betreuungsangebot').select('Tagesschule');
         cy.getByData('container.vertrag', 'radio-value.nein').should('not.exist');
-        cy.getByData('institution').find('input').focus().type(tagesschule, {delay: 30});
+        cy.wait(1000);
+        cy.getByData('institution').find('input').focus().type(tagesschule, { force: true, delay: 30 });
         cy.getByData('instutions-suchtext').first().click();
         cy.getByData('institution').find('input').should('have.value', tagesschule);
-        cy.getByData('keineKesbPlatzierungk.radio-value.nein').click();
+        cy.getByData('keineKesbPlatzierung.radio-value.nein').click();
         cy.get('[data-test^="modul-"][data-test$="-MONDAY"]').first().click();
         cy.get('[data-test^="modul-"][data-test$="-THURSDAY"]').first().click();
         cy.getByData('agb-tsakzeptiert').click();
@@ -122,6 +127,7 @@ const saveAndConfirmBetreuung = () => {
 export const AntragBetreuungPO = {
     createNewBetreuung,
     createNewTagesschulAnmeldung,
+    selectTagesschulBetreuung,
     fillTagesschulBetreuungsForm,
     fillKitaBetreuungsForm,
     fillOnlineKitaBetreuungsForm,
