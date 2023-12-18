@@ -68,7 +68,7 @@ describe('Kibon - Testet das Feature der automatischen Abarbeitung von Mutations
             return cy.request(downloadUrl)
                 .then(response => expect(response.headers['content-disposition']).to.match(/Freigabequittung_.*\.pdf/));
         });
-        cy.getByData('fall-toolbar', 'fall-nummer').then(a => a.text()).as('fallNummer');
+        cy.getByData('fall-toolbar', 'fallnummer').then(a => a.text()).as('fallNummer');
         // !! AS SUPERUSER !!
         // FREIGABEQUITTUNG SCANNEN SIMULIEREN
         {

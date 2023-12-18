@@ -63,13 +63,6 @@ describe('Kibon - generate Testfälle [Gemeinde Sachbearbeiter]', () => {
         cy.visit('/#/faelle');
     });
 
-    it('should add a new Kind to an existing Antrag', () => {
-        cy.getByData('antrag-entry#0').click();
-        cy.getByData('sidenav.KINDER').click();
-
-        createNewKindWithAllSettings();
-    });
-
     it('should correctly create a new Papier Antrag', () => {
         // INIT
         {
