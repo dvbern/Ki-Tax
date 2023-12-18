@@ -198,7 +198,7 @@
                         </div>
 
                         <!-- Preview oder definitive Verfuegung -->
-                        <div class="row" ng-if="vm.tagesschuleZeitabschnitteMitBetreuung.length > 0">
+                        <div class="row" ng-if="vm.tagesschuleZeitabschnitteMitBetreuung.length > 0" data-test="tagesschul-anmeldung-tarife">
                             <br/>
                             <div class="col-md-12 table-responsive">
                                 <h3 class="md-no-float"
@@ -219,18 +219,21 @@
                                     </tr>
                                     </thead>
                                     <tbody>
-                                    <tr ng-repeat="zeitabschnitt in tsTagesschuleMitBetreuungList">
+                                    <tr ng-repeat="zeitabschnitt in tsTagesschuleMitBetreuungList" ng-attr-data-test="{{'tagesschul-anmeldung-zeitabschnitt#' + $index}}">
                                         <!-- Von -->
-                                        <td ng-bind="zeitabschnitt.gueltigkeit.gueltigAb | amDateFormat : 'DD.MM.YYYY'"></td>
+                                        <td ng-bind="zeitabschnitt.gueltigkeit.gueltigAb | amDateFormat : 'DD.MM.YYYY'"
+                                            data-test="tagesschul-anmeldung-zeitabschnitt-gueltig-ab"></td>
                                         <!-- Bis -->
-                                        <td ng-bind="zeitabschnitt.gueltigkeit.gueltigBis | amDateFormat : 'DD.MM.YYYY'"></td>
+                                        <td ng-bind="zeitabschnitt.gueltigkeit.gueltigBis | amDateFormat : 'DD.MM.YYYY'"
+                                            data-test="tagesschul-anmeldung-zeitabschnitt-gueltigb-bis"></td>
                                         <!-- Betreungszeit Pro Woche -->
                                         <td><span
                                             ng-bind="zeitabschnitt.tsCalculationResultMitPaedagogischerBetreuung.betreuungszeitProWocheFormatted"></span>
                                         </td>
                                         <!-- Gebühren Pro Stunde -->
                                         <td><span
-                                            ng-bind="zeitabschnitt.tsCalculationResultMitPaedagogischerBetreuung.gebuehrProStunde | currency : '' : 2"></span>
+                                            ng-bind="zeitabschnitt.tsCalculationResultMitPaedagogischerBetreuung.gebuehrProStunde | currency : '' : 2"
+                                            data-test="tagesschul-anmeldung-zeitabschnitt-tarif"></span>
                                         </td>
                                         <!-- Verpflegungskosten Pro Woche -->
                                         <td><span

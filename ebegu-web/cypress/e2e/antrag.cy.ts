@@ -46,7 +46,7 @@ const createNewKindWithAllSettings = () => {
 
 const createNewBetreuungWithAllSettings = () => {
     AntragBetreuungPO.createNewBetreuung();
-    AntragBetreuungPO.fillKitaBetreuungsForm('withValid');
+    AntragBetreuungPO.fillKitaBetreuungsForm('withValid', 'London');
     AntragBetreuungPO.fillKeinePlatzierung();
     AntragBetreuungPO.fillErweiterteBeduerfnisse();
     AntragBetreuungPO.fillEingewoehnung();
@@ -61,13 +61,6 @@ describe('Kibon - generate Testfälle [Gemeinde Sachbearbeiter]', () => {
         cy.intercept({ resourceType: 'xhr' }, { log: false }); // don't log XHRs
         cy.login(userSB);
         cy.visit('/#/faelle');
-    });
-
-    it('should add a new Kind to an existing Antrag', () => {
-        cy.getByData('antrag-entry#0').click();
-        cy.getByData('sidenav.KINDER').click();
-
-        createNewKindWithAllSettings();
     });
 
     it('should correctly create a new Papier Antrag', () => {

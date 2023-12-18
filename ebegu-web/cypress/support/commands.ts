@@ -65,7 +65,7 @@ declare global {
              *   // technically equals
              *   cy.get('[data-test="dv-radiobutton"] label');
              */
-            getByData<T extends string>(name: OnlyValidSelectors<T>, ...nestedNames: OnlyValidSelectors<T>[]): Chainable<Subject>;
+            getByData<T extends string>(name: OnlyValidSelectors<T>, ...nestedNames: OnlyValidSelectors<T>[]): Chainable<JQuery<HTMLElement>>;
 
             /**
              * Download a file using given url and save it with the given name

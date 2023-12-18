@@ -1,12 +1,24 @@
 {
     "valid": {
-        "kita": {
-            "betreuungsangebot": "Kita",
-            "institution": "Brünnen"
+        "London": {
+            "kita": {
+                "betreuungsangebot": "Kita",
+                "institution": "Brünnen"
+            },
+            "tfo": {
+                "betreuungsangebot": "Tagesfamilien",
+                "institution": "Tageseltern Bern"
+            },
+            "tagesschule": {
+                "betreuungsangebot": "Tagesschule",
+                "institution": "Tagesschule London"
+            }
         },
-        "tfo": {
-            "betreuungsangebot": "Tagesfamilien",
-            "institution": "Tageseltern Bern"
+        "Paris": {
+            "tagesschule": {
+                "betreuungsangebot": "Tagesschule",
+                "institution": "Tagesschule Paris"
+            }
         }
     }
 }

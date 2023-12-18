@@ -133,7 +133,7 @@ describe('Kibon - Online TS-Anmeldung (Mischgesuch) [Gesuchsteller]', () => {
     const freigabequittungEinlesen = () => {
         cy.getByData('sidenav.FREIGABE').click();
         cy.waitForRequest('GET', '**/dossier/fall/**', () => {
-            cy.getByData('container.freigabe-simulieren', 'navigation-button').click();
+            cy.getByData('container.antrag-freigeben-simulieren', 'navigation-button').click();
         });
 
         cy.getByData('sidenav.GESUCH_ERSTELLEN').click();

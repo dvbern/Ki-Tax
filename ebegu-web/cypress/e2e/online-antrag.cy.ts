@@ -361,7 +361,7 @@ describe('Kibon - generate Testfälle [Online-Antrag]', () => {
             cy.changeLogin(userSuperadmin);
             cy.get('@antragsId').then((antragsId) => cy.visit(`/#/gesuch/freigabe/${antragsId}`));
             cy.waitForRequest('GET', '**/dossier/fall/**', () => {
-                cy.getByData('container.freigabe-simulieren', 'navigation-button').click();
+                cy.getByData('container.antrag-freigeben-simulieren', 'navigation-button').click();
             });
             cy.getByData('sidenav.GESUCH_ERSTELLEN').click();
             cy.getByData('fall-creation-eingangsdatum').find('input').clear().type('01.07.2023');
