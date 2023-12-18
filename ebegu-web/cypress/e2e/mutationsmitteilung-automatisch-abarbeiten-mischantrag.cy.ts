@@ -212,15 +212,15 @@ describe('Kibon - Testet das Feature der automatischen Abarbeitung von Mutations
 });
 
 function openGesuchInFreigabe() {
-    cy.intercept('**/FREIGABE_QUITTUNG_EINLESEN_REQUIRED/gemeinde/*/gp/*').as('freigabeQuittungRequiredLoaded');
-    cy.get('@antragsId').then(antragsId => cy.visit(`/#/gesuch/freigabe/${antragsId}`));
-    cy.wait('@freigabeQuittungRequiredLoaded');
+    cy.waitForRequest('GET', '**/FREIGABE_QUITTUNG_EINLESEN_REQUIRED/gemeinde/*/gp/*', () => {
+        cy.get('@antragsId').then(antragsId => cy.visit(`/#/gesuch/freigabe/${antragsId}`));
+    });
 }
 
 function openGesuchInBetreuungen() {
-    cy.intercept('**/FINANZIELLE_SITUATION_TYP/gemeinde/*/gp/*').as('finSitTypLoaded');
-    cy.get('@antragsId').then(antragsId => cy.visit(`/#/gesuch/betreuungen/${antragsId}`));
-    cy.wait('@finSitTypLoaded');
+    cy.waitForRequest('GET', '**/FINANZIELLE_SITUATION_TYP/gemeinde/*/gp/*', () => {
+        cy.get('@antragsId').then(antragsId => cy.visit(`/#/gesuch/betreuungen/${antragsId}`));
+    });
 }
 
 function verfuegeBetreuung(betreuungNumber: number, expectedAnspruchberechtigtesPensum: number): void {
