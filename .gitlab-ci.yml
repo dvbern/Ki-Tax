@@ -1,9 +1,7 @@
-# stages: [build, validate, test, analyze, package, deploy, mirror]
-stages: [ build, prepare-package, package, release, deploy, mirror ]
+stages: [ build, analyze, prepare-package, package, release, deploy, mirror ]
 
 variables:
     VERSION: $CI_COMMIT_SHA
-    MAVEN_BACKEND_PROFILES: -Pdvbern.oss -Pcopy-wildfly-dependencies -P!frontend
 
 workflow:
     rules:
@@ -15,38 +13,31 @@ workflow:
                 SSH_HOST: sdvbvmkiba31.dvbern.ch
                 DEPLOY_ENV: dev
                 DEPLOY_URL: https://dev.kibon.ch
-                MAVEN_GOAL: install
-        # feature/... merge request
-        -   if: $CI_MERGE_REQUEST_ID && $CI_MERGE_REQUEST_SOURCE_BRANCH_NAME =~ /^feature/
+                SONAR_CONFIG: -Dsonar.host.url=$DVB_SONARQUBE_HOST_URL -Dsonar.projectKey=$SONAR_PROJECT_KEY
+                SONAR_GOAL: sonar:sonar
+        # merge request
+        -   if: $CI_MERGE_REQUEST_ID
             variables:
                 VERSION: $CI_COMMIT_REF_SLUG
                 SERVICE_NAME: kibon-dev-preview
                 SSH_HOST: sdvbvmkiba31.dvbern.ch
                 DEPLOY_ENV: preview
                 DEPLOY_URL: https://dev-preview.kibon.ch
-                MAVEN_GOAL: install
+                SONAR_CONFIG: -Dsonar.host.url=$DVB_SONARQUBE_HOST_URL -Dsonar.projectKey=$SONAR_PROJECT_KEY
+                SONAR_GOAL: sonar:sonar
         # Release
         -   if: $CI_COMMIT_TAG
             variables:
                 VERSION: $CI_COMMIT_TAG
-                MAVEN_GOAL: install
 
 include:
     -   component: gitlab.dvbern.ch/mobj/maven@89ec140318641f5a453983b8c04454bd6b1932b8
         inputs:
-            name: .build-backend
+            name: .build-and-analyze
             java-image: docker-registry.dvbern.ch/kibon/build-environment/mvn-npm-gitflow-chromium
             java-image-version: jdk11-old
-            maven-goal: -Drevision=$VERSION $MAVEN_BACKEND_PROFILES clean install
-            archive-path: ebegu-rest/target # we need ebegu-rest WAR, sentry JAR and belogin-connector WAR
-
-    -   component: gitlab.dvbern.ch/mobj/maven@89ec140318641f5a453983b8c04454bd6b1932b8
-        inputs:
-            name: .build-frontend
-            java-image: docker-registry.dvbern.ch/kibon/build-environment/mvn-npm-gitflow-chromium
-            java-image-version: jdk11-old
-            maven-goal: -Drevision=$VERSION --projects .,ebegu-web -Pdvbern.oss -Pci -Pfrontend clean install
-            archive-path: ebegu-web/target/*.tar.gz
+            maven-goal: -Drevision=$VERSION -Pcopy-wildfly-dependencies -Pfrontend -Pci $SONAR_CONFIG clean install $SONAR_GOAL
+            archive-path: '**/target'
 
     -   component: 'gitlab.dvbern.ch/mobj/buildah@a7143bb366f9ee8e1ddfd1813acb1649a104cb36'
         inputs:
@@ -113,7 +104,28 @@ include:
             ssh-private-key: $KIBON_SSH_PRIVATE_KEY
             ssh-target: 'sdvbvmkiba41.dvbern.ch'
 
+    -   component: 'gitlab.dvbern.ch/fuju/docker-compose-deploy@4ecd5519fb57c296f9e9745de8fb98858d20e19a'
+        inputs:
+            name: .docker-compose-deploy:schulung
+            service-name: kibon-schulung
+            version: $VERSION
+            version-env-var: 'TAGTOUSE'
+            ssh-user: $KIBON_DEPLOY_SSH_USER
+            ssh-private-key: $KIBON_SSH_PRIVATE_KEY
+            ssh-target: 'sdvbvmkiba11.dvbern.ch'
+
+    -   component: 'gitlab.dvbern.ch/fuju/docker-compose-deploy@4ecd5519fb57c296f9e9745de8fb98858d20e19a'
+        inputs:
+            name: .docker-compose-deploy:demo
+            service-name: kibon-demo
+            version: $VERSION
+            version-env-var: 'TAGTOUSE'
+            ssh-user: $KIBON_DEPLOY_SSH_USER
+            ssh-private-key: $KIBON_SSH_PRIVATE_KEY
+            ssh-target: 'sdvbvmkiba11.dvbern.ch'
+
 deploy:prod:
+    dependencies: []
     rules:
         - if: $CI_COMMIT_TAG
           when: manual
@@ -124,6 +136,7 @@ deploy:prod:
     extends: .docker-compose-deploy:prod
 
 deploy:uat:
+    dependencies: []
     rules:
         - if: $CI_COMMIT_TAG
           when: manual
@@ -134,6 +147,7 @@ deploy:uat:
     extends: .docker-compose-deploy:uat
 
 deploy:iat:
+    dependencies: []
     rules:
         - if: $CI_COMMIT_TAG
           when: manual
@@ -143,15 +157,39 @@ deploy:iat:
         url: https://iat.kibon.ch
     extends: .docker-compose-deploy:iat
 
+deploy:schulung:
+    dependencies: []
+    rules:
+        - if: $CI_COMMIT_TAG
+          when: manual
+          allow_failure: true
+    environment:
+        name: schulung
+        url: https://schulung.kibon.ch
+    extends: .docker-compose-deploy:schulung
 
+deploy:demo:
+    dependencies: []
+    needs:
+        - deploy:prod
+    rules:
+        - if: $CI_COMMIT_TAG
+          allow_failure: true
+    environment:
+        name: demo
+        url: https://demo.kibon.ch
+    extends: .docker-compose-deploy:demo
+
+# for dev and preview
 deploy:
     extends: .docker-compose-deploy
+    dependencies: []
     environment:
         name: $DEPLOY_ENV
         url: $DEPLOY_URL
     rules:
         - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
-        - if: $CI_MERGE_REQUEST_SOURCE_BRANCH_NAME =~ /^feature/
+        - if: $CI_MERGE_REQUEST_ID
           when: manual
           allow_failure: true
         - if: $CI_COMMIT_TAG
@@ -172,22 +210,18 @@ create-build-args:
             - build-args.env
     needs: []
 
-build-backend:
-    extends: .build-backend
-    needs: []
-
-build-frontend:
-    extends: .build-frontend
+build-and-analyze:
+    extends: .build-and-analyze
     needs: []
 
 build-frontend-image:
     extends: .build-frontend-image
     needs:
-        - build-frontend
+        - build-and-analyze
         - create-build-args
 
 build-backend-image:
     extends: .build-backend-image
     needs:
-        - build-backend
+        - build-and-analyze
         - create-build-args
