@@ -20,19 +20,31 @@ import { getUser } from '@dv-e2e/types';
 
 describe('Kibon - Tagesschule Only [Superadmin]', () => {
     const adminUser = getUser('[1-Superadmin] E-BEGU Superuser');
+    const adminGemeindeTSParisUser = getUser('[6-P-Admin-TS] Adrian Schuler');
+    let gesuchUrl: string;
 
-
-    beforeEach(() => {
+    before(() => {
         cy.intercept({resourceType: 'xhr'}, {log: false}); // don't log XHRs
         cy.login(adminUser);
         cy.visit('/#/faelle');
+        TestFaellePO.createNewTestFaelle('testfall-1', 'Paris') ;
+
+        // get AntragsId
+        cy.url().then((url) => {
+            const parts = new URL(url);
+            gesuchUrl = `${parts.pathname}${parts.hash}`;
+        });
     });
 
     it('should create a prefilled new Testfall Antrag', () => {
-        TestFaellePO.createNewTestFaelle('testfall-1', 'Paris') ;
+        // login as Administrator TS der Gemeinde
+        cy.login(adminGemeindeTSParisUser)
 
+        // go to the Antrag
+        cy.visit(gesuchUrl);
         cy.getByData('sidenav.BETREUUNG').click();
-        // delete other betreuung nur lats
+
+        // delete other betreuung nur ts
         cy.getByData('removeBetreuungButton1_1','navigation-button').click();
         cy.getByData('container.confirm','navigation-button').click();
         cy.getByData('removeBetreuungButton1_1','navigation-button').should('not.exist');
@@ -41,7 +53,7 @@ describe('Kibon - Tagesschule Only [Superadmin]', () => {
         cy.getByData('removeBetreuungButton1_0', 'navigation-button').should('not.exist');
         cy.getByData('container.create-betreuung','navigation-button').click();
 
-        // anmeldung Tagesschule erfassen
+        // Antrag bearbeiten - anmeldung Tagesschule erfassen
         AntragBetreuungPO.fillTagesschulBetreuungsForm('withValid', 'Paris');
         AntragBetreuungPO.saveBetreuung({ withConfirm: true });
 
@@ -57,8 +69,11 @@ describe('Kibon - Tagesschule Only [Superadmin]', () => {
         cy.getByData('container.abschliessen','navigation-button').click();
         cy.getByData('container.confirm','navigation-button').click();
         cy.wait('@abschliessenGesuch');
-        cy.getByData('gesuch.status').should('have.text', 'Abgeschlossen');
-        cy.getByData('betreuungs-status').should('have.text', 'Anmeldung übernommen');
 
+        // Control status and tarif are definitiv
+        cy.getByData('gesuch-status').should('have.text', 'Abgeschlossen');
+        cy.getByData('betreuungs-status').should('have.text', 'Anmeldung übernommen');
+        cy.getByData('verfuegung-anmeldung-anzeigen','navigation-button').click();
+        cy.getByData('verfuegung-tagesschule-provisorisch').should('not.exist');
     });
 });
