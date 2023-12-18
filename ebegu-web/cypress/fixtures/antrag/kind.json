@@ -5,7 +5,7 @@
             "nachname": "kind1-nachname",
             "geschlecht": "MAENNLICH",
             "geburtsdatum":  "01.01.2020",
-            "einschulungstyp": "VORSCHULALTER"
+            "einschulungstyp": "Vorschulalter"
         }
     }
 }

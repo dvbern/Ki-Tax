@@ -49,7 +49,6 @@ const createNewBetreuungWithAllSettings = () => {
     AntragBetreuungPO.fillKitaBetreuungsForm('withValid', 'London');
     AntragBetreuungPO.fillKeinePlatzierung();
     AntragBetreuungPO.fillErweiterteBeduerfnisse();
-    AntragBetreuungPO.fillEingewoehnung();
     AntragBetreuungPO.platzBestaetigungAnfordern();
 };
 
@@ -263,7 +262,7 @@ describe('Kibon - generate Testfälle [Gemeinde Sachbearbeiter]', () => {
         {
             cy.get('@antragsId').then((antragsId) => cy.visit(`/#/gesuch/verfuegen/${antragsId}`));
 
-            cy.getByData('verfuegung#0').click();
+            cy.getByData('verfuegung#0-0').click();
             cy.getByData('container.zeitabschnitt#5', 'betreuungspensumProzent').should('include.text', '25%');
             cy.getByData('container.zeitabschnitt#6', 'betreuungspensumProzent').should('include.text', '25%');
             cy.getByData('container.zeitabschnitt#7', 'betreuungspensumProzent').should('include.text', '25%');
