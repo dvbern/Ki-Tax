@@ -85,4 +85,41 @@ export type OnlyValidSelectors<T> = T extends string
 
 export type TestFall = 'testfall-1' | 'testfall-2';
 
+export type TestPeriode = '2022/23';
+
+export type TestBetreuungsstatus = 'warten' | 'bestaetigt' | 'verfuegt';
+
+export type TestGesuchstellende = Extract<User, '[5-GS] Emma Gerber' | '[5-GS] Heinrich Mueller' | '[5-GS] Michael Berger' | '[5-GS] Hans Zimmermann' | '[5-GS] Jean Chambre'>;
+
+export type SidenavStep = 'SOZIALDIENSTFALL_ERSTELLEN'
+    | 'GESUCH_ERSTELLEN'
+    | 'FAMILIENSITUATION'
+    | 'UMZUG'
+    | 'KINDER'
+    | 'BETREUUNG'
+    | 'ABWESENHEIT'
+    | 'ERWERBSPENSUM'
+    | 'FINANZIELLE_SITUATION'
+    | 'FINANZIELLE_SITUATION_LUZERN'
+    | 'FINANZIELLE_SITUATION_SOLOTHURN'
+    | 'FINANZIELLE_SITUATION_APPENZELL'
+    | 'EINKOMMENSVERSCHLECHTERUNG'
+    | 'EINKOMMENSVERSCHLECHTERUNG_LUZERN'
+    | 'EINKOMMENSVERSCHLECHTERUNG_SOLOTHURN'
+    | 'EINKOMMENSVERSCHLECHTERUNG_APPENZELL'
+    | 'DOKUMENTE'
+    | 'FREIGABE'
+    | 'VERFUEGEN';
+
+export type MainnavStep = 'ALLE_FAELLE'
+    | 'PENDENZEN'
+    | 'PENDENZEN_BETREUUNGEN'
+    | 'PENDENZEN_ANMELDUNGEN'
+    | 'PENDENZEN_STEUERAMT'
+    | 'LASTENAUSGLEICH'
+    | 'GEMEINDEANTRAEGE'
+    | 'POSTEINGANG'
+    | 'ZAHLUNGEN'
+    | 'STATISTIKEN';
+
 export type GemeindeTestFall = 'London' | 'Paris';

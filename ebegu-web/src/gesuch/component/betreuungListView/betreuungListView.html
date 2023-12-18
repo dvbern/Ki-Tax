@@ -60,7 +60,7 @@
                                 <td ng-bind="vm.getBetreuungsangebotTyp(betreuung) | translate"
                                     class="betreuung-table-header"></td>
                                 <td class="betreuung-status ng-class:betreuung.betreuungsstatus;">
-                                    <div ng-bind="betreuung.betreuungsstatus | translate"></div>
+                                    <div ng-bind="betreuung.betreuungsstatus | translate" data-test="betreuungs-status"></div>
                                     <span class="betreuung-bar"></span>
                                 </td>
                                 <td ng-bind="vm.getBetreuungDetails(betreuung) | translate"

@@ -1825,6 +1825,16 @@ public final class TestDataUtil {
 		persistence.persist(einstellung);
 	}
 
+	public static void prepareEinstellung(
+		EinstellungKey key,
+		String value,
+		Gesuchsperiode gesuchsperiode,
+		Map<EinstellungKey, Einstellung> einstellungMap
+	) {
+		Einstellung einstellung = new Einstellung(key, value, gesuchsperiode);
+		einstellungMap.put(key, einstellung);
+	}
+
 	public static void createStammdatenDefaultVerantwortlicheParis(
 		@Nonnull Persistence persistence,
 		@Nonnull Benutzer verantwortlicherTS,

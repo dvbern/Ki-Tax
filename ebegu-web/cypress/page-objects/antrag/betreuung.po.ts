@@ -15,18 +15,41 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { FixtureBetreuung } from '@dv-e2e/fixtures';
+import {FixtureBetreuung} from '@dv-e2e/fixtures';
+import {GemeindeTestFall} from '@dv-e2e/types';
 
 const createNewBetreuung = () => {
+    cy.intercept('**/institutionstammdaten/gesuchsperiode/gemeinde/*').as('getInstitutionsStammdaten');
     cy.getByData('container.create-betreuung', 'navigation-button').click();
+    cy.wait('@getInstitutionsStammdaten');
 };
 
-const fillKitaBetreuungsForm = (dataset: keyof typeof FixtureBetreuung) => {
-    FixtureBetreuung[dataset](({ kita }) => {
+const createNewTagesschulAnmeldung = () => {
+    cy.getByData('container.create-tagesschule', 'navigation-button').click();
+};
+
+const fillKitaBetreuungsForm = (dataset: keyof typeof FixtureBetreuung, gemeinde: GemeindeTestFall) => {
+    FixtureBetreuung[dataset]((data) => {
+        const kita = data[gemeinde].tagesschule;
         cy.getByData('betreuungsangebot').select(kita.betreuungsangebot);
         cy.getByData('institution').find('input').type(kita.institution);
         cy.getByData('instutions-suchtext').click();
         cy.getByData('institution').find('input').should('have.value', kita.institution);
+    });
+};
+
+const fillTagesschulBetreuungsForm = (dataset: keyof typeof FixtureBetreuung, gemeinde: GemeindeTestFall) => {
+    FixtureBetreuung[dataset]((data) => {
+        const tagesschule = data[gemeinde].tagesschule.institution;
+        cy.getByData('betreuungsangebot').select('Tagesschule');
+        cy.getByData('container.vertrag', 'radio-value.nein').should('not.exist');
+        cy.getByData('institution').find('input').focus().type(tagesschule, {delay: 30});
+        cy.getByData('instutions-suchtext').first().click();
+        cy.getByData('institution').find('input').should('have.value', tagesschule);
+        cy.getByData('keineKesbPlatzierungk.radio-value.nein').click();
+        cy.get('[data-test^="modul-"][data-test$="-MONDAY"]').first().click();
+        cy.get('[data-test^="modul-"][data-test$="-THURSDAY"]').first().click();
+        cy.getByData('agb-tsakzeptiert').click();
     });
 };
 
@@ -49,11 +72,28 @@ const platzBestaetigungAnfordern = () => {
     cy.wait('@savingBetreuung');
 };
 
+const getBetreuungspensum = (index: number) => {
+    return cy.getByData(`betreuungspensum-${index}`);
+};
+
+const saveBetreuung = (opts?: { withConfirm: boolean }) => {
+    cy.intercept('**/betreuungen/betreuung/*').as('saveBetreuung');
+    cy.getByData('container.save','navigation-button').click();
+    if (opts?.withConfirm) {
+        cy.getByData('container.confirm', 'navigation-button').click();
+    }
+    cy.wait('@saveBetreuung');
+};
+
 export const AntragBetreuungPO = {
     createNewBetreuung,
+    createNewTagesschulAnmeldung,
+    fillTagesschulBetreuungsForm,
     fillKitaBetreuungsForm,
     fillKeinePlatzierung,
     fillErweiterteBeduerfnisse,
     fillEingewoehnung,
     platzBestaetigungAnfordern,
+    getBetreuungspensum,
+    saveBetreuung,
 };
