@@ -238,6 +238,7 @@ build-backend-image:
         - build-backend
         - create-build-args
 
+# based on stip-api's mirror job
 github-mirror:
     stage: mirror
     needs: []
@@ -252,13 +253,8 @@ github-mirror:
         - git clone --branch $CI_COMMIT_TAG --single-branch https://mirror:$GITHUB_MIRROR_CLONE_TOKEN@$CI_SERVER_HOST/$CI_PROJECT_PATH.git .
         - git checkout $CI_COMMIT_TAG
     script:
-        - git push -u https://token:${GITHUB_MIRROR_TOKEN}@github.com/dvbern/kiBon.git HEAD:gitlab-test # TODO set to master before merge
+        - git push -u https://token:${GITHUB_MIRROR_TOKEN}@github.com/dvbern/kiBon.git HEAD:dev
     rules:
         - if: $CI_COMMIT_TAG
           when: manual
           allow_failure: true
-        - if: $CI_MERGE_REQUEST_ID # TODO remove before merge
-          variables:
-              CI_COMMIT_TAG: feature/KIBON-3189-github-mirror
-          when: manual
-
