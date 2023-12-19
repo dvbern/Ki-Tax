@@ -924,7 +924,6 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
             cancelText: 'LABEL_NEIN',
             confirmText: 'LABEL_JA'
         }).then(() => {
-            this.form.$valid = true;
             this.platzAnfordern();
         });
     }

@@ -62,7 +62,7 @@ export class BetreuungInput implements IController {
 
     private pensumValue: number;
 
-    private isLuzern: boolean;
+    private readonly isLuzern: boolean;
 
     public constructor(private readonly translate: ITranslateService,
                        public readonly gesuchModelManager: GesuchModelManager) {
