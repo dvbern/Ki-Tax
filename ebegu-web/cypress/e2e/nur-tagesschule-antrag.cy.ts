@@ -43,13 +43,16 @@ describe('Kibon - Tagesschule Only [Superadmin]', () => {
         // go to the Antrag
         cy.visit(gesuchUrl);
         cy.getByData('sidenav.BETREUUNG').click();
-        // delete other betreuung nur lats
-        cy.getByData('container.betreuung#1', 'container.delete', 'navigation-button').click();
+
+        // delete other betreuung nur ts
+        cy.getByData('container.kind#0', 'container.betreuung#1', 'container.delete', 'navigation-button').click();
         cy.getByData('container.confirm','navigation-button').click();
-        cy.getByData('container.betreuung#1', 'container.delete').should('not.exist');
-        cy.getByData('container.betreuung#0', 'container.delete', 'navigation-button').click();
+        cy.getByData('container.kind#0', 'container.betreuung#1', 'container.delete').should('not.exist');
+
+        cy.getByData('container.kind#0', 'container.betreuung#0', 'container.delete', 'navigation-button').click();
         cy.getByData('container.confirm','navigation-button').click();
-        cy.getByData('container.betreuung#0', 'container.delete').should('not.exist');
+        cy.getByData('container.kind#0', 'container.betreuung#0', 'container.delete').should('not.exist');
+
         cy.getByData('container.create-betreuung','navigation-button').click();
 
         // Antrag bearbeiten - anmeldung Tagesschule erfassen
@@ -58,7 +61,7 @@ describe('Kibon - Tagesschule Only [Superadmin]', () => {
         AntragBetreuungPO.saveAndConfirmBetreuung();
 
         // anmeldung akkzeptieren
-        cy.getByData('container.betreuung#0', 'container.edit', 'navigation-button').click();
+        cy.getByData('container.kind#0', 'container.betreuung#0', 'container.edit', 'navigation-button').click();
         cy.getByData('container.akzeptieren','navigation-button').click();
         cy.getByData('container.confirm','navigation-button').click();
 
