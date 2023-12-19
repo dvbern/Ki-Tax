@@ -39,9 +39,9 @@ const createNewKindWithAllSettings = () => {
     cy.getByData('show-ausserordentlicher-anspruch').click();
     AntragKindPO.fillAusserordentlicherAnspruch();
 
-    cy.intercept('PUT', '**/kinder/**').as('savingKind');
-    cy.getByData('container.navigation-save', 'navigation-button').click();
-    cy.wait('@savingKind');
+    cy.waitForRequest('PUT', '**/kinder/**', () => {
+        cy.getByData('container.navigation-save', 'navigation-button').click();
+    });
 };
 
 const createNewBetreuungWithAllSettings = () => {
@@ -49,7 +49,6 @@ const createNewBetreuungWithAllSettings = () => {
     AntragBetreuungPO.fillKitaBetreuungsForm('withValid', 'London');
     AntragBetreuungPO.fillKeinePlatzierung();
     AntragBetreuungPO.fillErweiterteBeduerfnisse();
-    AntragBetreuungPO.fillEingewoehnung();
     AntragBetreuungPO.platzBestaetigungAnfordern();
 };
 
@@ -67,9 +66,7 @@ describe('Kibon - generate Testfälle [Gemeinde Sachbearbeiter]', () => {
         // INIT
         {
             AntragPapierPO.createPapierGesuch('withValid');
-            cy.url()
-                .then((url) => /familiensituation\/(.*)$/.exec(url)[1])
-                .as('antragsId');
+            cy.getByData('antrags-daten').then((el$) => el$.data('antrags-id')).as('antragsId');
         }
 
         // FAMILIENSITUATION
@@ -121,6 +118,7 @@ describe('Kibon - generate Testfälle [Gemeinde Sachbearbeiter]', () => {
 
             // Finanzielle Situation - GS 1
             {
+                // TODO: update EinkommensverschlechterungPO and update it to also support Finanzielle Situation
                 FixtureFinSit.withValid(({ GS1 }) => {
                     cy.getByData('nettolohn').find('input').type(GS1.nettolohn);
                     cy.getByData('familienzulage').find('input').type(GS1.familienzulage);
@@ -141,6 +139,7 @@ describe('Kibon - generate Testfälle [Gemeinde Sachbearbeiter]', () => {
 
             // Finanzielle Situation - GS 2
             {
+                // TODO: update EinkommensverschlechterungPO and update it to also support Finanzielle Situation
                 FixtureFinSit.withValid(({ GS2 }) => {
                     cy.getByData('nettolohn').find('input').type(GS2.nettolohn);
                     cy.getByData('familienzulage').find('input').type(GS2.familienzulage);
@@ -161,6 +160,7 @@ describe('Kibon - generate Testfälle [Gemeinde Sachbearbeiter]', () => {
 
             // Resultate
             {
+                // TODO: update EinkommensverschlechterungPO and update it to also support Finanzielle Situation
                 FixtureFinSit.withValid(({ Resultate }) => {
                     cy.getByData('einkommenBeiderGesuchsteller')
                         .find('input')
@@ -182,18 +182,16 @@ describe('Kibon - generate Testfälle [Gemeinde Sachbearbeiter]', () => {
                 });
             }
 
-            cy.intercept('GET', '**/einkommensverschlechterung/minimalesMassgebendesEinkommen/**').as(
-                'goingToEinkommensverschlechterung'
-            );
-            cy.getByData('container.navigation-save', 'navigation-button').click();
-            cy.wait('@goingToEinkommensverschlechterung');
+            cy.waitForRequest('GET', '**/einkommensverschlechterung/minimalesMassgebendesEinkommen/**', () => {
+                cy.getByData('container.navigation-save', 'navigation-button').click();
+            });
         }
 
         // EINKOMMENSVERSCHLECHTERUNG
         {
-            cy.intercept('GET', '**/dokumente/**').as('goingToDokumente');
-            cy.getByData('container.navigation-save', 'navigation-button').click();
-            cy.wait('@goingToDokumente');
+            cy.waitForRequest('GET', '**/dokumente/**', () => {
+                cy.getByData('container.navigation-save', 'navigation-button').click();
+            });
         }
 
         // DOKUMENTE
@@ -227,9 +225,9 @@ describe('Kibon - generate Testfälle [Gemeinde Sachbearbeiter]', () => {
             //     return cy.readFile(fullPath).should('not.exist');
             // });
 
-            cy.intercept('POST', '**/wizard-steps').as('goingToVerfuegungen');
-            cy.getByData('container.navigation-save', 'navigation-button').click();
-            cy.wait('@goingToVerfuegungen');
+            cy.waitForRequest('POST', '**/wizard-steps', () => {
+                cy.getByData('container.navigation-save', 'navigation-button').click();
+            });
         }
 
         // PLATZBESTAETIGUNG mit Kita SB
@@ -238,9 +236,9 @@ describe('Kibon - generate Testfälle [Gemeinde Sachbearbeiter]', () => {
             cy.changeLogin(userKita);
 
             cy.get('@antragsId').then((antragsId) => cy.visit(`/#/gesuch/familiensituation/${antragsId}`));
-            cy.intercept('GET', '**/einstellung/key/FINANZIELLE_SITUATION_TYP/gemeinde/**').as(`goingToBetreuungWith${userKita}`);
-            cy.getByData('sidenav.BETREUUNG').click();
-            cy.wait(`@goingToBetreuungWith${userKita}`);
+            cy.waitForRequest('GET', '**/einstellung/key/FINANZIELLE_SITUATION_TYP/gemeinde/**', () => {
+                cy.getByData('sidenav.BETREUUNG').click();
+            });
 
             cy.getByData('container.betreuung#0').click();
 
@@ -252,9 +250,9 @@ describe('Kibon - generate Testfälle [Gemeinde Sachbearbeiter]', () => {
 
             cy.getByData('container.platz-bestaetigen', 'navigation-button').click();
 
-            cy.intercept('GET', '**/search/pendenzenBetreuungen').as('afterPlatzBestaetigung');
-            cy.getByData('container.confirm', 'navigation-button').click();
-            cy.wait('@afterPlatzBestaetigung');
+            cy.waitForRequest('GET', '**/search/pendenzenBetreuungen', () => {
+                cy.getByData('container.confirm', 'navigation-button').click();
+            });
         }
         cy.changeLogin(userSB);
         // !!!!!! - changed back to previous user - !!!!!!
@@ -263,7 +261,7 @@ describe('Kibon - generate Testfälle [Gemeinde Sachbearbeiter]', () => {
         {
             cy.get('@antragsId').then((antragsId) => cy.visit(`/#/gesuch/verfuegen/${antragsId}`));
 
-            cy.getByData('verfuegung#0').click();
+            cy.getByData('verfuegung#0-0').click();
             cy.getByData('container.zeitabschnitt#5', 'betreuungspensumProzent').should('include.text', '25%');
             cy.getByData('container.zeitabschnitt#6', 'betreuungspensumProzent').should('include.text', '25%');
             cy.getByData('container.zeitabschnitt#7', 'betreuungspensumProzent').should('include.text', '25%');

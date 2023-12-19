@@ -30,18 +30,17 @@ const createNewTagesschulAnmeldung = () => {
 
 const fillKitaBetreuungsForm = (dataset: keyof typeof FixtureBetreuung, gemeinde: GemeindeTestFall) => {
     FixtureBetreuung[dataset]((data) => {
-        const kita = data[gemeinde].tagesschule;
+        const kita = data[gemeinde].kita;
         cy.getByData('betreuungsangebot').select(kita.betreuungsangebot);
-        cy.wait(1000);
-        cy.getByData('institution').find('input').focus().type(kita.institution, { force: true, delay: 30 });
+        cy.getByData('institution').find('input').type(kita.institution, { delay: 30 });
         cy.getByData('instutions-suchtext').click();
         cy.getByData('institution').find('input').should('have.value', kita.institution);
     });
 };
 
-const fillOnlineKitaBetreuungsForm = (dataset: keyof typeof FixtureBetreuung, opts?: { mobile: boolean }) => {
+const fillOnlineKitaBetreuungsForm = (dataset: keyof typeof FixtureBetreuung, gemeinde: GemeindeTestFall, opts?: { mobile: boolean }) => {
     FixtureBetreuung[dataset]((data) => {
-        const kita = data['London'].kita;
+        const kita = data[gemeinde].kita;
         cy.getByData('betreuungsangebot').select(kita.betreuungsangebot);
         cy.getByData('container.vertrag', 'radio-value.ja').click();
         if (opts?.mobile) {
@@ -54,9 +53,9 @@ const fillOnlineKitaBetreuungsForm = (dataset: keyof typeof FixtureBetreuung, op
     });
 };
 
-const fillOnlineTfoBetreuungsForm = (dataset: keyof typeof FixtureBetreuung, opts?: { mobile: boolean }) => {
+const fillOnlineTfoBetreuungsForm = (dataset: keyof typeof FixtureBetreuung, gemeinde: GemeindeTestFall, opts?: { mobile: boolean }) => {
     FixtureBetreuung[dataset]((data) => {
-        const tfo = data['London'].tfo;
+        const tfo = data[gemeinde].tfo;
         cy.getByData('betreuungsangebot').select(tfo.betreuungsangebot);
         cy.getByData('container.vertrag', 'radio-value.ja').click();
         if (opts?.mobile) {
@@ -94,7 +93,7 @@ const fillKeinePlatzierung = () => {
 
 const fillErweiterteBeduerfnisse = () => {
     cy.getByData('erweiterteBeduerfnisse.radio-value.ja').click();
-    cy.getByData('fachstelle').select('string:46d37d8e-4083-11ec-a836-b89a2ae4a038');
+    cy.getByData('fachstelle').select(1);
 };
 
 const fillEingewoehnung = () => {

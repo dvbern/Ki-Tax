@@ -94,7 +94,7 @@ describe('Kibon - generate Testfälle [Online-Antrag]', () => {
             //KITA
             {
                 AntragBetreuungPO.createNewBetreuung();
-                AntragBetreuungPO.fillOnlineKitaBetreuungsForm(famsitDataset, { mobile: true });
+                AntragBetreuungPO.fillOnlineKitaBetreuungsForm(famsitDataset, 'London', { mobile: true });
                 AntragBetreuungPO.fillKeinePlatzierung();
                 AntragBetreuungPO.fillErweiterteBeduerfnisse();
                 AntragBetreuungPO.platzBestaetigungAnfordern();
@@ -103,7 +103,7 @@ describe('Kibon - generate Testfälle [Online-Antrag]', () => {
             //TFO
             {
                 AntragBetreuungPO.createNewBetreuung();
-                AntragBetreuungPO.fillOnlineTfoBetreuungsForm('withValid', { mobile: true });
+                AntragBetreuungPO.fillOnlineTfoBetreuungsForm('withValid', 'London', { mobile: true });
                 AntragBetreuungPO.fillKeinePlatzierung();
                 cy.getByData('erweiterteBeduerfnisse.radio-value.nein').click();
                 AntragBetreuungPO.platzBestaetigungAnfordern();
