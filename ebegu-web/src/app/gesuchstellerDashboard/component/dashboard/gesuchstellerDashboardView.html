@@ -48,7 +48,7 @@
                                type="button"
                                button-click="vm.openAntrag(periode, true)"
                                button-class="dvb-loading-button gdashboard-panel-button"
-                               ng-attr-data-test="container.antrag-oeffnen" >
+                               data-test="container.antrag-oeffnen" >
                 {{'GS_ANSEHEN' | translate}}
             </dv-loading-button>
 
@@ -56,7 +56,7 @@
                                ng-if="vm.getButtonText(periode)" type="button"
                                button-click="vm.openAntrag(periode)"
                                button-class="dvb-loading-button gdashboard-panel-button"
-                               ng-attr-data-test="container.antrag-bearbeiten" >
+                               data-test="container.antrag-bearbeiten">
                 {{vm.getButtonText(periode)}}
             </dv-loading-button>
 

@@ -189,12 +189,6 @@ Cypress.Commands.add('waitForRequest', (method, pathname, run) => {
 Cypress.Commands.add('getByData', (name, ...names) => {
     return cy.get([name, ...names].map((name) => `[data-test="${name}"]`).join(' '));
 });
-Cypress.Commands.add('waitForRequest', (method, pathname, run) => {
-    const alias = `Request ${method} ${pathname}`;
-    cy.intercept({ method, pathname, times: 1 }).as(alias);
-    run();
-    cy.wait(`@${alias}`);
-});
 Cypress.Commands.add('changeLogin', (user: User) => {
     cy.clearAllSessionStorage();
     cy.clearAllCookies();

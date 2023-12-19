@@ -68,12 +68,16 @@ const fillOnlineTfoBetreuungsForm = (dataset: keyof typeof FixtureBetreuung, gem
     });
 };
 
+const selectTagesschulBetreuung = () => {
+    cy.getByData('betreuungsangebot').select('Tagesschule');
+}
+
 const fillTagesschulBetreuungsForm = (dataset: keyof typeof FixtureBetreuung, gemeinde: GemeindeTestFall) => {
     FixtureBetreuung[dataset]((data) => {
         const tagesschule = data[gemeinde].tagesschule.institution;
-        cy.getByData('betreuungsangebot').select('Tagesschule');
         cy.getByData('container.vertrag', 'radio-value.nein').should('not.exist');
-        cy.getByData('institution').find('input').focus().type(tagesschule, {delay: 30});
+        cy.wait(1000);
+        cy.getByData('institution').find('input').focus().type(tagesschule, { force: true, delay: 30 });
         cy.getByData('instutions-suchtext').first().click();
         cy.getByData('institution').find('input').should('have.value', tagesschule);
         cy.getByData('keineKesbPlatzierung.radio-value.nein').click();
@@ -106,18 +110,23 @@ const getBetreuungspensum = (index: number) => {
     return cy.getByData(`betreuungspensum-${index}`);
 };
 
-const saveBetreuung = (opts?: { withConfirm: boolean }) => {
-    cy.intercept('**/betreuungen/betreuung/*').as('saveBetreuung');
+const saveBetreuung = () => {
+    cy.waitForRequest('PUT', '**/betreuungen/betreuung/*', () => {
+        cy.getByData('container.save','navigation-button').click();
+    });
+};
+
+const saveAndConfirmBetreuung = () => {
     cy.getByData('container.save','navigation-button').click();
-    if (opts?.withConfirm) {
+    cy.waitForRequest('PUT', '**/betreuungen/betreuung/*', () => {
         cy.getByData('container.confirm', 'navigation-button').click();
-    }
-    cy.wait('@saveBetreuung');
+    });
 };
 
 export const AntragBetreuungPO = {
     createNewBetreuung,
     createNewTagesschulAnmeldung,
+    selectTagesschulBetreuung,
     fillTagesschulBetreuungsForm,
     fillKitaBetreuungsForm,
     fillOnlineKitaBetreuungsForm,
@@ -128,4 +137,5 @@ export const AntragBetreuungPO = {
     platzBestaetigungAnfordern,
     getBetreuungspensum,
     saveBetreuung,
+    saveAndConfirmBetreuung,
 };
