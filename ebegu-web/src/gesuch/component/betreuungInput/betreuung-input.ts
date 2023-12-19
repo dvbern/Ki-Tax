@@ -34,7 +34,8 @@ export class BetreuungInputConfig implements IComponentOptions {
         betreuungsangebotTyp: '<',
         multiplierKita: '<',
         multiplierTfo: '<',
-        betreuungInputSwitchTyp: '<'
+        betreuungInputSwitchTyp: '<',
+        isLuzern: '<'
     };
     public controller = BetreuungInput;
     public controllerAs = 'vm';
@@ -60,6 +61,8 @@ export class BetreuungInput implements IController {
     private readonly multiplierTfo: number;
 
     private pensumValue: number;
+
+    private isLuzern: boolean;
 
     public constructor(private readonly translate: ITranslateService,
                        public readonly gesuchModelManager: GesuchModelManager) {
@@ -180,5 +183,9 @@ export class BetreuungInput implements IController {
 
     private showBetreuungInputSwitch(): boolean {
         return this.betreuungInputSwitchTyp === TSPensumAnzeigeTyp.ZEITEINHEIT_UND_PROZENT;
+    }
+
+    public getStepSize(): string {
+        return this.isLuzern ? '0.0000000001' : '0.01';
     }
 }

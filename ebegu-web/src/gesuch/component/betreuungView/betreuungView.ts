@@ -174,6 +174,8 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     private angebotFI: boolean;
     private angebotTFO: boolean = false;
 
+    private isLuzern: boolean;
+
     public readonly demoFeature = TSDemoFeature.FACHSTELLEN_UEBERGANGSLOESUNG;
 
     public constructor(
@@ -202,6 +204,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         this.$translate = $translate;
         this.mandantService.mandant$.pipe(map(mandant => mandant)).subscribe(mandant => {
             this.mandant = mandant;
+            this.isLuzern = mandant === MANDANTS.LUZERN;
         }, err => LOG.error(err));
     }
 
