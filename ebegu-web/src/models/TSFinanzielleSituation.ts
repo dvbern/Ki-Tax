@@ -39,7 +39,6 @@ export class TSFinanzielleSituation extends TSAbstractFinanzielleSituation {
     private _ersatzeinkommenT1: number;
     private _ersatzeinkommenT2: number;
 
-
     public constructor() {
         super();
     }
