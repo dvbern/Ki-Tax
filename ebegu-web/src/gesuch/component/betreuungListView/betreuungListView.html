@@ -55,7 +55,7 @@
                             <tbody>
                             <tr ng-repeat="betreuung in displayedCollection" st-select-row="betreuung"
                                 st-select-mode="single"
-                                ng-attr-data-test="betreuung#{{$index}}"
+                                ng-attr-data-test="container.betreuung#{{$index}}"
                                 ng-click="vm.editBetreuung(kind, betreuung)" role="row" tabindex="-1">
                                 <td ng-bind="vm.getBetreuungsangebotTyp(betreuung) | translate"
                                     class="betreuung-table-header"></td>
@@ -75,6 +75,7 @@
                                 </td>
                                 <td role="cell" tabindex="-1" ng-click="$event.stopPropagation()" width="5%">
                                     <dv-loading-button type="button" button-click="vm.editBetreuung(kind, betreuung);"
+                                                       data-test="container.edit"
                                                        button-class="dv-btn-operation dv-btn-row"
                                                        title="{{'TABLE_EDIT'|translate}}"
                                                        aria-label="{{'TABLE_EDIT'|translate}}"
@@ -88,6 +89,7 @@
                                     dv-show-expression="vm.canRemoveBetreuung(betreuung)"
                                     role="cell" tabindex="-1" ng-click="$event.stopPropagation()" width="5%">
                                     <dv-loading-button aria-label="{{'BETREUUNG_DELETE' | translate}}" type="button"
+                                                       data-test="container.delete"
                                                        title="{{'BETREUUNG_DELETE' | translate}}"
                                                        button-click="vm.removeBetreuung(kind, betreuung,$index)"
                                                        button-disabled="vm.isNotAllowedToRemove(betreuung)"

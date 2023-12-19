@@ -23,11 +23,11 @@
         <form (ngSubmit)="onSubmit(form)" #form="ngForm" [ngClass]="{'ng-submitted': form.submitted}" novalidate>
             <div class="neu-bg-checkbox">
                 <mat-checkbox id="betreuungsgutscheinBeantragen_id" name="betreuungsgutscheinBeantragen_id" (ngModelChange)="resetBgGemeinde()"
-                              [(ngModel)]="betreuungsgutscheinBeantragen">{{'ONBOARDING_BG_BEANTRAGEN'|translate}}</mat-checkbox>
+                              [(ngModel)]="betreuungsgutscheinBeantragen"  data-test="bg-beantragen">{{'ONBOARDING_BG_BEANTRAGEN'|translate}}</mat-checkbox>
             </div>
             <div class="neu-ts-checkbox margin-top-10" *ngIf="isTSAngebotEnabled">
                 <mat-checkbox id="tsBeantragen_id" name="tsBeantragen_id" (ngModelChange)="resetGemeindeListe()"
-                              [(ngModel)]="tsBeantragen">{{'ONBOARDING_TS_BEANTRAGEN'|translate}}</mat-checkbox>
+                              [(ngModel)]="tsBeantragen" data-test="ts-beantragen">{{'ONBOARDING_TS_BEANTRAGEN'|translate}}</mat-checkbox>
             </div>
             <div class="neu-besondere-volksschule-checkbox margin-top-10" *ngIf="isTSAngebotEnabled && tsBeantragen && isNotNullAndNotEmpty(this.besondereVolksschulen$ | async)">
                 <mat-checkbox id="besondereVolksschuleBeantragen_id" name="besondereVolksschuleBeantragen_id" (ngModelChange)="resetGemeindeListe()"
@@ -44,9 +44,10 @@
                                         name="gemeinde"
                                         class="form-control"
                                         id="gemeinde"
-                                        [required]="true">
+                                        [required]="true"
+                                        data-test="gemeinde">
                                     <option [ngValue]="null" selected="selected"></option>
-                                    <option *ngFor="let gemeinde of (gemeindenBG$ | async)" [ngValue]="gemeinde">
+                                    <option *ngFor="let gemeinde of (gemeindenBG$ | async)" [ngValue]="gemeinde" [attr.data-test]="'gemeinde.' + gemeinde.name">
                                         {{gemeinde.name}}
                                     </option>
                                 </select>
@@ -95,7 +96,7 @@
                 </div>
                 <div class="onboarding-nb-gemeinde-input-button">
                     <div *ngIf="betreuungsgutscheinBeantragen || tsBeantragen || besondereVolksschuleBeantragen">
-                        <button [type]="'submit'" class="dv-btn onboarding-big-red-button">
+                        <button [type]="'submit'" class="dv-btn onboarding-big-red-button" data-test="registrieren">
                             <span translate>ONBOARDING_REGISTRIEREN</span>
                         </button>
                     </div>

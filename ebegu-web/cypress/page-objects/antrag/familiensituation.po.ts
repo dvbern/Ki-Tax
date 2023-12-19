@@ -22,7 +22,9 @@ const fillFamiliensituationForm = (dataset: keyof typeof FixtureFamSit) => {
         cy.getByData('familienstatus.VERHEIRATET').find('label').click();
         cy.getByData('container.navigation-save', 'navigation-button').click();
         cy.getByData(`geschlecht.radio-value.${GS1.geschlecht}`).click();
+        cy.getByData('vorname').clear();
         cy.getByData('vorname').type(GS1.vorname);
+        cy.getByData('nachname').clear();
         cy.getByData('nachname').type(GS1.nachname);
         cy.getByData('geburtsdatum').find('input').type(GS1.geburtsdatum);
         cy.getByData('korrespondenzSprache').select(GS1.korrespondenzSprache);

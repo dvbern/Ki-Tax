@@ -32,7 +32,7 @@
 
         <div class="gdashboard-panel"
              ng-repeat="periode in vm.activeGesuchsperiodenList | orderBy: 'gueltigkeit.gueltigAb'"
-             ng-attr-data-test="{{periode.gesuchsperiodeString}}"
+             ng-attr-data-test="container.periode.{{periode.gesuchsperiodeString}}"
              ng-if="vm.activeGesuchsperiodenList.length > 0">
 
             <span class="gdashboard-panel-gesuchstring">
