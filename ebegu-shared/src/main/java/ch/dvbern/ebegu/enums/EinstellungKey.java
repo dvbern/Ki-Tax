@@ -17,9 +17,9 @@
 
 package ch.dvbern.ebegu.enums;
 
-import java.util.List;
-
 import ch.dvbern.ebegu.util.mandant.MandantIdentifier;
+
+import java.util.List;
 
 /**
  * Keys für die Einstellungen
@@ -336,6 +336,9 @@ public enum EinstellungKey {
 
 	// Ab welchem Alter in Monaten kann ein Kind Anspruch haben (davor ist der Anspruch 0)
 	ANSPRUCH_AB_X_MONATEN(MandantIdentifier.getAll()),
+
+	// Zusätzliche Input Felder für das Ersatzeinkommen anzeigen (KIBON-3249)
+	ZUSATZLICHE_FELDER_ERSATZEINKOMMEN(MandantIdentifier.BERN),
 
 	KITA_STUNDEN_PRO_TAG(MandantIdentifier.getAll());
 
