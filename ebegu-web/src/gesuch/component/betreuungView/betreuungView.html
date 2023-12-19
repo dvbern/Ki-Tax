@@ -115,6 +115,9 @@
                                     </div>
                                 </div>
                             </div>
+                            <ng-container ng-if="!vm.showPensumUnterschrittenCheckBox()">
+                                {{ vm.resetAnspruchFachstelleWennPensumUnterschritten() }}
+                            </ng-container>
                         </dv-demo-feature-wrapper>
                     </div>
                 </div>
