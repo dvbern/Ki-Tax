@@ -15,6 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+export * from './einkommensverschlechterung.po';
 export * from './beschaeftigungspensum.po';
 export * from './betreuung.po';
 export * from './familiensituation.po';

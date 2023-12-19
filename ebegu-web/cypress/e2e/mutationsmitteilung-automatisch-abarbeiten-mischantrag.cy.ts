@@ -46,12 +46,13 @@ describe('Kibon - Testet das Feature der automatischen Abarbeitung von Mutations
         });
         cy.login('[5-GS] Heinrich Mueller');
         cy.visit('/#/dossier/gesuchstellerDashboard');
-        cy.getByData('2022/23', 'container.antrag-bearbeiten', 'navigation-button').click();
+        cy.getByData('container.periode.2022/23', 'container.antrag-bearbeiten', 'navigation-button').click();
         cy.waitForRequest('GET', '**/einstellung/key/FINANZIELLE_SITUATION_TYP/gemeinde/**', () => {
             SidenavPO.goTo('BETREUUNG');
         });
         cy.getByData('antrags-daten').then(el$ => el$.data('antrags-id')).as('antragsId');
         AntragBetreuungPO.createNewBetreuung();
+        AntragBetreuungPO.selectTagesschulBetreuung();
         AntragBetreuungPO.fillTagesschulBetreuungsForm('withValid', 'London');
         AntragBetreuungPO.saveBetreuung();
 
