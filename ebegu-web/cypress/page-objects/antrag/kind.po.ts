@@ -1,3 +1,20 @@
+/*
+ * Copyright (C) 2023 DV Bern AG, Switzerland
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
 import { FixtureKind } from '@dv-e2e/fixtures';
 
 const createNewKind = () => {
@@ -24,7 +41,7 @@ const fillPflegekind = () => {
 
 const fillFachstelle = () => {
     cy.getByData('container.integration#0', 'radio-value.SOZIALE_INTEGRATION').find('label').click();
-    cy.getByData('fachstelle#0').select('8: Object');
+    cy.getByData('fachstelle#0').select(1);
     cy.getByData('betreuungspensum-fachstelle#0').type('40');
     cy.getByData('pensum-gueltig-ab#0').find('input').type('01.01.2024');
     cy.getByData('pensum-gueltig-bis#0').find('input').type('01.01.2025');

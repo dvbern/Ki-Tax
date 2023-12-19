@@ -19,7 +19,7 @@
     <h1 class="access-for-all-title" data-translate="AFA_GESUCHSFORMULAR"></h1>
     <div class="row view-title">
         <div class="col-md-12">
-            <h2>
+            <h2 data-test="page-title">
                 <span data-translate="EINKOMMENSVERSCHLECHTERUNG"></span>
             </h2>
             <hr class="header"/>
@@ -87,6 +87,7 @@
 
                                 <div class="checkbox">
                                     <md-checkbox name="ekvFuerBasisJahrPlus1"
+                                                 data-test="ekv-fuer-basis-jahr-plus#1"
                                                  ng-model="vm.getEinkommensverschlechterungsInfo().ekvFuerBasisJahrPlus1"
                                                  aria-label="{{vm.getBasisjahrPlus1()}}"
                                                  ng-required="vm.isRequired(1)" class="input-element"
@@ -112,6 +113,7 @@
                             <div class="form-group col-sm-12 dv-input-container-medium">
                                 <div class="checkbox">
                                     <md-checkbox name="ekvBasisJahrPlus1Annulliert"
+                                                 data-test="ekv-basis-jahr-plus#1-annulliert"
                                                  ng-model="vm.getEinkommensverschlechterungsInfo().ekvBasisJahrPlus1Annulliert"
                                                  aria-label="{{'EKVI_ABLEHNEN' | translate}}"
                                                  class="input-element"
@@ -129,6 +131,7 @@
                             <div class="form-group no-margin col-sm-12 dv-input-container-question" ng-if="vm.showEkvi()">
                                 <div class="checkbox">
                                     <md-checkbox name="ekvFuerBasisJahrPlus2"
+                                                 data-test="ekv-fuer-basis-jahr-plus#2"
                                                  ng-model="vm.getEinkommensverschlechterungsInfo().ekvFuerBasisJahrPlus2"
                                                  aria-label="{vm.getBasisjahrPlus2()}"
                                                  ng-required="vm.isRequired(2)" class="input-element"
@@ -153,6 +156,7 @@
                             <div class="form-group col-sm-12 dv-input-container-medium">
                                 <div class="checkbox">
                                     <md-checkbox name="ekvBasisJahrPlus2Annulliert"
+                                                 data-test="ekv-basis-jahr-plus#2-annulliert"
                                                  ng-model="vm.getEinkommensverschlechterungsInfo().ekvBasisJahrPlus2Annulliert"
                                                  aria-label="{{'EKVI_ABLEHNEN' | translate}}"
                                                  class="input-element"

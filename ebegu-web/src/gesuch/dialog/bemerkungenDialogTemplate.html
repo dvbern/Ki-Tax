@@ -23,7 +23,7 @@
 			<h2 class="md-title ng-binding" ng-bind="vm.title"></h2>
             <textarea md-no-autogrow class="form-control" rows="4" id="kommentarDialog"
                       ng-model="vm.bemerkungen" maxlength="4000" required
-                      ng-attr-placeholder="{{'SEND_TO_STV_PLACEHOLDER' | translate}}">
+                      ng-attr-placeholder="{{'SEND_TO_STV_PLACEHOLDER' | translate}}" data-test="kommentar-for-stv">
             </textarea>
 		</md-dialog-content>
 
@@ -33,6 +33,7 @@
 				<span class="ng-binding ng-scope" data-translate="LABEL_ABBRECHEN"></span>
 			</button>
 			<button class="dv-btn md-default-theme" type="button"
+					data-test="kommentar-absenden"
 					ng-click="vm.hide()" md-autofocus="dialog.$type==='alert'" aria-label="{{'LABEL_ABSENDEN' | translate}}">
 				<span class="ng-binding ng-scope" data-translate="LABEL_ABSENDEN"></span>
 			</button>

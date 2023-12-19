@@ -269,15 +269,17 @@
                     <label class="md-no-float" for="gesuchsteller">
                         Gesuchsteller dessen Fälle gelöscht werden sollen
                     </label>
+
                     <mat-select [(ngModel)]="selectedBesitzer" id="gesuchsteller" name="gesuchsteller"
-                                class="input-testfall">
-                        <mat-option *ngFor="let gp of gesuchstellerList" [value]="gp">
+                                class="input-testfall" data-test="gesuchsteller-faelle-loeschen">
+                        <mat-option *ngFor="let gp of gesuchstellerList" [value]="gp"
+                                    [attr.data-test]="'gesuchsteller.' + gp.getFullName()">
                             {{gp.getFullName()}}
                         </mat-option>
                     </mat-select>
                 </div>
                 <div class="col-sm-4 ">
-                    <button dvNgDebounceClick (debounceClick)="removeGesucheGS()" class="dv-btn testfall-button">
+                    <button dvNgDebounceClick (debounceClick)="removeGesucheGS()" class="dv-btn testfall-button"  data-test="delete-gesuche">
                         <span [textContent]="'DELETE' | translate"></span>
                     </button>
                 </div>

@@ -887,6 +887,7 @@
                                      dv-show-expression="vm.isPensumEditable()">
                                     <div class="col-md-12">
                                         <dv-loading-button type="button" button-click="vm.createBetreuungspensum()"
+                                                           data-test="container.add-betreuungspensum"
                                                            dv-enable-element
                                                            dv-enable-allowed-roles="vm.TSRoleUtil.getTraegerschaftInstitutionRoles()"
                                                            dv-enable-expression="vm.isEnabled()"
@@ -1075,11 +1076,13 @@
 
                         <dv-loading-button button-click="vm.mutationsmeldungErstellen()"
                                            ng-if="!vm.isMutationsmeldungStatus"
+                                           data-test="mutationsmeldung-erstellen"
                                            aria-label="{{MUTATIONSMELDUNG_ERSTELLEN | translate}}">
                             <span class="uppercase" data-translate="MUTATIONSMELDUNG_ERSTELLEN"></span>
                         </dv-loading-button>
                         <dv-loading-button button-click="vm.preMutationsmeldungSenden()"
                                            ng-if="vm.isMutationsmeldungStatus"
+                                           data-test="mutationsmeldung-senden"
                                            aria-label="{{MUTATIONSMELDUNG_SENDEN | translate}}">
                             <span class="uppercase" data-translate="MUTATIONSMELDUNG_SENDEN"></span>
                         </dv-loading-button>

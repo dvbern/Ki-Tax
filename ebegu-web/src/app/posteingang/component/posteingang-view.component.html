@@ -28,7 +28,10 @@
                         <i class="fa fa-undo"></i>
                         {{'NEU_LADEN' | translate}}
                     </a>
-                    <a class="ng-scope pointer-cursor" (click)="alleMutationsmeldungVerfuegen()" [dvDemoFeature]="mutationsMeldungDemoFeature">
+                    <a class="ng-scope pointer-cursor"
+                       (click)="alleMutationsmeldungVerfuegen()"
+                       [dvDemoFeature]="mutationsMeldungDemoFeature"
+                       data-test="mutationsmeldungen-automatisch-bearbeiten">
                         <i class="fa fa-flash fa-lg"></i>
                         {{'ALLE_MUTATIONSMELDUNG_AUTOMATISCH_BEARBEITEN' | translate}}
                     </a>
@@ -69,7 +72,7 @@
 
                     <!-- Fall-Nummer -->
                     <ng-container matColumnDef="fallNummer">
-                        <mat-header-cell mat-sort-header="fallNummer" *matHeaderCellDef class="ellipsis">
+                        <mat-header-cell mat-sort-header="fallNummer" *matHeaderCellDef class="ellipsis" data-test="fall-nummer">
                             <span translate>POSTEINGANG_FALL</span>
                         </mat-header-cell>
                         <mat-cell *matCellDef="let element" class="ellipsis">
@@ -190,7 +193,7 @@
                     <!-- Fall-Nummer -->
                     <ng-container matColumnDef="fallNummer-filter">
                         <mat-header-cell *matHeaderCellDef="let column">
-                            <mat-form-field class="dv-table-mat-form-field">
+                            <mat-form-field class="dv-table-mat-form-field" data-test="fall-nummer-filter">
                                 <input [value]="filterPredicate.fallNummer || null"
                                        matInput
                                        (keyup)="filterFall($event.target.value)">
@@ -235,6 +238,7 @@
                     <ng-container *ngIf="!isSozialdienstOrInstitution()" matColumnDef="empfaenger-filter" st-table="">
                         <mat-header-cell *matHeaderCellDef="let column">
                             <div dvNewUserSelect
+                                 data-test="container.empfaenger-select"
                                  [selectedUser]="initialEmpfaenger"
                                  [showSelectionAll]="true"
                                  [angular2]="true"
@@ -288,7 +292,8 @@
                                     class="dv-table-mat-header-row"></mat-header-row>
                     <mat-header-row class="dv-table-mat-header-row"
                                     *matHeaderRowDef="filterColumns"></mat-header-row>
-                    <mat-row *matRowDef="let element; columns: displayedColumns;"
+                    <mat-row *matRowDef="let element; let index = index; columns: displayedColumns;"
+                             [attr.data-test]="'mitteilung#' + index"
                              (click)="gotoMitteilung(element)"
                              [class]="{'mitteilung-neu': ('NEU' === element.mitteilungStatus.toString()),'mitteilung-alt': ('NEU' !== element.mitteilungStatus.toString())}"></mat-row>
                 </mat-table>

@@ -1,0 +1,248 @@
+stages: [ build, analyze, prepare-package, package, release, deploy, mirror ]
+
+variables:
+    VERSION: $CI_COMMIT_SHA
+
+workflow:
+    rules:
+        # Commit on dev branch
+        -   if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+            variables:
+                VERSION: $CI_COMMIT_SHA
+                SERVICE_NAME: kibon-dev
+                SSH_HOST: sdvbvmkiba31.dvbern.ch
+                DEPLOY_ENV: dev
+                DEPLOY_URL: https://dev.kibon.ch
+                SONAR_CONFIG: -Dsonar.host.url=$DVB_SONARQUBE_HOST_URL -Dsonar.projectKey=$SONAR_PROJECT_KEY
+                SONAR_GOAL: sonar:sonar
+        # merge request
+        -   if: $CI_MERGE_REQUEST_ID
+            variables:
+                VERSION: $CI_COMMIT_REF_SLUG
+                SERVICE_NAME: kibon-dev-preview
+                SSH_HOST: sdvbvmkiba31.dvbern.ch
+                DEPLOY_ENV: preview
+                DEPLOY_URL: https://dev-preview.kibon.ch
+                SONAR_CONFIG: -Dsonar.host.url=$DVB_SONARQUBE_HOST_URL -Dsonar.projectKey=$SONAR_PROJECT_KEY
+                SONAR_GOAL: sonar:sonar
+        # Release
+        -   if: $CI_COMMIT_TAG
+            variables:
+                VERSION: $CI_COMMIT_TAG
+
+include:
+    -   component: gitlab.dvbern.ch/mobj/maven@89ec140318641f5a453983b8c04454bd6b1932b8
+        inputs:
+            name: .build-and-analyze
+            java-image: docker-registry.dvbern.ch/kibon/build-environment/mvn-npm-gitflow-chromium
+            java-image-version: jdk11-old
+            maven-goal: -Drevision=$VERSION -Pcopy-wildfly-dependencies -Pfrontend -Pci $SONAR_CONFIG clean install $SONAR_GOAL
+            archive-path: '**/target'
+
+    -   component: 'gitlab.dvbern.ch/mobj/buildah@a7143bb366f9ee8e1ddfd1813acb1649a104cb36'
+        inputs:
+            registry: $DVB_DOCKER_REGISTRY
+            registry-user: $DVB_DOCKER_REGISTRY_USER
+            registry-token: $DVB_DOCKER_REGISTRY_TOKEN
+            name: .build-backend-image
+            stage: package
+            image-name: kibon-wildfly
+            context-dir: ebegu-rest
+            version: $VERSION
+            push-enabled: "true"
+
+    -   component: 'gitlab.dvbern.ch/mobj/buildah@a7143bb366f9ee8e1ddfd1813acb1649a104cb36'
+        inputs:
+            registry: $DVB_DOCKER_REGISTRY
+            registry-user: $DVB_DOCKER_REGISTRY_USER
+            registry-token: $DVB_DOCKER_REGISTRY_TOKEN
+            name: .build-frontend-image
+            stage: package
+            # nginx is spelled wrong here, but that's correct
+            image-name: kibon-ngnix
+            context-dir: ebegu-web
+            version: $VERSION
+            push-enabled: "true"
+
+    -   component: 'gitlab.dvbern.ch/fuju/docker-compose-deploy@4ecd5519fb57c296f9e9745de8fb98858d20e19a'
+        inputs:
+            name: .docker-compose-deploy
+            service-name: $SERVICE_NAME
+            version: $VERSION
+            version-env-var: 'TAGTOUSE'
+            ssh-user: $KIBON_DEPLOY_SSH_USER
+            ssh-private-key: $KIBON_SSH_PRIVATE_KEY
+            ssh-target: '$SSH_HOST'
+
+    -   component: 'gitlab.dvbern.ch/fuju/docker-compose-deploy@4ecd5519fb57c296f9e9745de8fb98858d20e19a'
+        inputs:
+            name: .docker-compose-deploy:prod
+            service-name: kibon
+            version: $VERSION
+            version-env-var: 'TAGTOUSE'
+            ssh-user: $KIBON_DEPLOY_SSH_USER
+            ssh-private-key: $KIBON_SSH_PRIVATE_KEY
+            ssh-target: 'sdvbvmkiba01.dvbern.ch sdvbvmkiba02.dvbern.ch'
+
+    -   component: 'gitlab.dvbern.ch/fuju/docker-compose-deploy@4ecd5519fb57c296f9e9745de8fb98858d20e19a'
+        inputs:
+            name: .docker-compose-deploy:uat
+            service-name: kibon-uat
+            version: $VERSION
+            version-env-var: 'TAGTOUSE'
+            ssh-user: $KIBON_DEPLOY_SSH_USER
+            ssh-private-key: $KIBON_SSH_PRIVATE_KEY
+            ssh-target: 'sdvbvmkiba21.dvbern.ch sdvbvmkiba22.dvbern.ch'
+
+    -   component: 'gitlab.dvbern.ch/fuju/docker-compose-deploy@4ecd5519fb57c296f9e9745de8fb98858d20e19a'
+        inputs:
+            name: .docker-compose-deploy:iat
+            service-name: kibon-iat
+            version: $VERSION
+            version-env-var: 'TAGTOUSE'
+            ssh-user: $KIBON_DEPLOY_SSH_USER
+            ssh-private-key: $KIBON_SSH_PRIVATE_KEY
+            ssh-target: 'sdvbvmkiba41.dvbern.ch'
+
+    -   component: 'gitlab.dvbern.ch/fuju/docker-compose-deploy@4ecd5519fb57c296f9e9745de8fb98858d20e19a'
+        inputs:
+            name: .docker-compose-deploy:schulung
+            service-name: kibon-schulung
+            version: $VERSION
+            version-env-var: 'TAGTOUSE'
+            ssh-user: $KIBON_DEPLOY_SSH_USER
+            ssh-private-key: $KIBON_SSH_PRIVATE_KEY
+            ssh-target: 'sdvbvmkiba11.dvbern.ch'
+
+    -   component: 'gitlab.dvbern.ch/fuju/docker-compose-deploy@4ecd5519fb57c296f9e9745de8fb98858d20e19a'
+        inputs:
+            name: .docker-compose-deploy:demo
+            service-name: kibon-demo
+            version: $VERSION
+            version-env-var: 'TAGTOUSE'
+            ssh-user: $KIBON_DEPLOY_SSH_USER
+            ssh-private-key: $KIBON_SSH_PRIVATE_KEY
+            ssh-target: 'sdvbvmkiba11.dvbern.ch'
+
+deploy:prod:
+    dependencies: []
+    rules:
+        - if: $CI_COMMIT_TAG
+          when: manual
+          allow_failure: true
+    environment:
+        name: prod
+        url: https://kibon.ch
+    extends: .docker-compose-deploy:prod
+
+deploy:uat:
+    dependencies: []
+    rules:
+        - if: $CI_COMMIT_TAG
+          when: manual
+          allow_failure: true
+    environment:
+        name: uat
+        url: https://uat.kibon.ch
+    extends: .docker-compose-deploy:uat
+
+deploy:iat:
+    dependencies: []
+    rules:
+        - if: $CI_COMMIT_TAG
+          when: manual
+          allow_failure: true
+    environment:
+        name: iat
+        url: https://iat.kibon.ch
+    extends: .docker-compose-deploy:iat
+
+deploy:schulung:
+    dependencies: []
+    rules:
+        - if: $CI_COMMIT_TAG
+          when: manual
+          allow_failure: true
+    environment:
+        name: schulung
+        url: https://schulung.kibon.ch
+    extends: .docker-compose-deploy:schulung
+
+deploy:demo:
+    dependencies: []
+    needs:
+        - deploy:prod
+    rules:
+        - if: $CI_COMMIT_TAG
+          allow_failure: true
+    environment:
+        name: demo
+        url: https://demo.kibon.ch
+    extends: .docker-compose-deploy:demo
+
+# for dev and preview
+deploy:
+    extends: .docker-compose-deploy
+    dependencies: []
+    environment:
+        name: $DEPLOY_ENV
+        url: $DEPLOY_URL
+    rules:
+        - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+        - if: $CI_MERGE_REQUEST_ID
+          when: manual
+          allow_failure: true
+        - if: $CI_COMMIT_TAG
+          when: never
+
+create-build-args:
+    image: '$DVB_DOCKER_REGISTRY/dockerhub/library/eclipse-temurin:11-jdk-alpine'
+    tags: [ "os:linux", "type:docker", "zone:tz" ]
+    stage: prepare-package
+    variables:
+        DVB_MAVEN_CLI_OPTS: >-
+            --settings .m2/settings.xml
+    script:
+        - echo "KIBON_POM_VERSION=$VERSION" > build-args.env
+        - cat build-args.env
+    artifacts:
+        paths:
+            - build-args.env
+    needs: []
+
+build-and-analyze:
+    extends: .build-and-analyze
+    needs: []
+
+build-frontend-image:
+    extends: .build-frontend-image
+    needs:
+        - build-and-analyze
+        - create-build-args
+
+build-backend-image:
+    extends: .build-backend-image
+    needs:
+        - build-and-analyze
+        - create-build-args
+
+# based on stip-api's mirror job
+github-mirror:
+    stage: mirror
+    needs: []
+    image:
+        name: '${DVB_DOCKER_REGISTRY}/dockerhub/alpine/git:2.40.1'
+        entrypoint: ['']
+    tags: ['os:linux', 'type:docker', 'zone:tz']
+    variables:
+        GIT_STRATEGY: none
+    before_script:
+        - rm -rf ./*
+        - git clone --branch $CI_COMMIT_TAG --single-branch https://mirror:$GITHUB_MIRROR_CLONE_TOKEN@$CI_SERVER_HOST/$CI_PROJECT_PATH.git .
+        - git checkout $CI_COMMIT_TAG
+    script:
+        - git push -u https://token:${GITHUB_MIRROR_TOKEN}@github.com/dvbern/kiBon.git HEAD:dev
+    rules:
+        - if: $CI_COMMIT_TAG
+          when: manual
+          allow_failure: true

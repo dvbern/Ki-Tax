@@ -165,12 +165,28 @@ public class VerfuegungServiceBean extends AbstractBaseService implements Verfue
 		Preconditions.checkArgument(mutation.getStatus() == AntragStatus.IN_BEARBEITUNG_JA);
 		Preconditions.checkArgument(mutation.isNewlyCreatedMutation());
 
+		acceptFinSit(mutation);
+		setGesuchGeprueft(mutation);
+		gesuchService.verfuegenStarten(mutation);
+
+		Preconditions.checkArgument(mutation.getStatus() == AntragStatus.VERFUEGEN);
+
 		mutation.getKindContainers().forEach(kindContainer -> {
 			kindContainer.getBetreuungen().forEach(betreuung -> {
 				createFinSitDokument(mutation);
 				verfuegen(mutation.getId(), betreuung.getId(), null, false, false, true);
 			});
 		});
+	}
+
+	private void acceptFinSit(Gesuch mutation) {
+		mutation.setFinSitStatus(FinSitStatus.AKZEPTIERT);
+		gesuchService.updateGesuch(mutation, false, null);
+	}
+
+	private Gesuch setGesuchGeprueft(Gesuch mutation) {
+		mutation.setStatus(AntragStatus.GEPRUEFT);
+		return gesuchService.updateGesuch(mutation, true, null);
 	}
 
 	private void createFinSitDokument(Gesuch gesuch) {

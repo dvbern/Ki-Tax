@@ -1,3 +1,20 @@
+/*
+ * Copyright (C) 2023 DV Bern AG, Switzerland
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
 import { FixtureFamSit } from '@dv-e2e/fixtures';
 
 const fillFamiliensituationForm = (dataset: keyof typeof FixtureFamSit) => {
@@ -5,7 +22,9 @@ const fillFamiliensituationForm = (dataset: keyof typeof FixtureFamSit) => {
         cy.getByData('familienstatus.VERHEIRATET').find('label').click();
         cy.getByData('container.navigation-save', 'navigation-button').click();
         cy.getByData(`geschlecht.radio-value.${GS1.geschlecht}`).click();
+        cy.getByData('vorname').clear();
         cy.getByData('vorname').type(GS1.vorname);
+        cy.getByData('nachname').clear();
         cy.getByData('nachname').type(GS1.nachname);
         cy.getByData('geburtsdatum').find('input').type(GS1.geburtsdatum);
         cy.getByData('korrespondenzSprache').select(GS1.korrespondenzSprache);

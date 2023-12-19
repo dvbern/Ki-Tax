@@ -135,8 +135,14 @@ module.exports = function (config) {
         // available browser launchers: https://npmjs.org/browse/keyword/karma-launcher
         browsers: [
             // 'Chrome',
-            'ChromeHeadless'
+            'ChromeHeadlessWithoutSandboxing'
         ],
+        customLaunchers: {
+            ChromeHeadlessWithoutSandboxing: {
+                base: 'ChromeHeadless',
+                flags: [ '--no-sandbox' ]
+            }
+        },
 
         // timeout when there's no activity, increased because the start up time is quite long with webpack
         captureTimeout: 120000,

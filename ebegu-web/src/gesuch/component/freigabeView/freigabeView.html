@@ -60,6 +60,7 @@
             <div class="row margin-top-50" ng-if="vm.isThereFreigabequittung()">
                 <div class="col-md-12">
                     <dv-loading-button type="button" button-class="btn-link link-underline"
+                                       data-test="container.freigabequittung"
                                        button-click="vm.openFreigabequittungPDF(false)">
                         <i class="fa fa-file-text-o"></i>
                         <span data-translate="PDF_FREIGABEQUITTUNG_ANZEIGEN"></span>
@@ -70,7 +71,7 @@
             <!-- Simulationsbutton fuer Quittung einlesen -->
             <div class="row margin-top-50" ng-if="vm.isFreigabequittungAusstehend()">
                 <span class="col-md-12" ng-if="vm.showGesuchFreigebenSimulationButton">
-                    <dv-loading-button type="button" button-click="vm.gesuchFreigeben()">
+                    <dv-loading-button type="button" button-click="vm.gesuchFreigeben()" data-test="container.antrag-freigeben-simulieren">
                         <span data-translate="ANTRAG_FREIGEBEN_SIMULIEREN"></span>
                     </dv-loading-button>
                 </span>
@@ -144,7 +145,8 @@
                                type="submit"
                                button-click="vm.gesuchEinreichen()"
                                aria-label="vm.getButtonLabel()"
-                               button-disabled="!vm.canBeFreigegeben()">
+                               button-disabled="!vm.canBeFreigegeben()"
+                               data-test="container.freigeben">
 				<span ng-bind="vm.getButtonLabel()"></span>
             </dv-loading-button>
         </span>

@@ -21,7 +21,7 @@
     <div class="row view-title">
         <div class="col-md-12">
 
-            <h2>
+            <h2 data-test="page-title">
             <span data-translate="EKVI_EINKOMMENSVERSCHLECHTERUNG_FUER_BASISJAHR"
                   translate-values="{basisjahr: vm.gesuchModelManager.getBasisjahrToWorkWith(), gesuchsteller:vm.gesuchModelManager.getStammdatenToWorkWith().extractFullName()}"></span>
             </h2>
@@ -46,6 +46,7 @@
                                 <label class="md-no-float required" data-translate="FINANZIELLE_SITUATION_NETTOLOHN"
                                        for="nettolohn"></label>
                                 <dv-valueinput input-id="nettolohn"
+                                               data-test="nettolohn"
                                                name="nettolohn"
                                                ng-model="vm.model.getEkvToWorkWith().nettolohn"
                                                class="input-element" required>
@@ -78,6 +79,7 @@
                                 </label>
                                 <div class="dv-input-container-medium-select">
                                     <dv-valueinput input-id="familienzulage"
+                                                   data-test="familienzulage"
                                                    name="familienzulage"
                                                    ng-model="vm.model.getEkvToWorkWith().familienzulage"
                                                    class="input-element" required>
@@ -109,6 +111,7 @@
                                                 text="'FINANZIELLE_SITUATION_ERSATZEINKOMMEN_HELP' | translate"></dv-tooltip>
                                 </label>
                                 <dv-valueinput input-id="ersatzeinkommen"
+                                               data-test="ersatzeinkommen"
                                                name="ersatzeinkommen"
                                                ng-model="vm.model.getEkvToWorkWith().ersatzeinkommen"
                                                class="input-element" required>
@@ -140,6 +143,7 @@
                                 </label>
                                 <div class="dv-input-container-medium-select">
                                     <dv-valueinput input-id="erhalteneAlimente"
+                                                   data-test="erhalteneAlimente"
                                                    name="erhalteneAlimente"
                                                    ng-model="vm.model.getEkvToWorkWith().erhalteneAlimente"
                                                    class="input-element" required>
@@ -168,6 +172,7 @@
                         <div class="col-xs-12 dv-input-container-question">
                             <div class="checkbox no-margin">
                                 <md-checkbox ng-model="vm.showSelbstaendig"
+                                             data-test="show-selbstaendig"
                                              name="showSelbstaendig"
                                              id="showSelbstaendig"
                                              aria-label="{{'FINANZIELLE_SITUATION_SELBSTAENDIGKEIT' | translate}}"
@@ -197,6 +202,7 @@
                                            for="geschaeftsgewinnBasisjahr"
                                            translate-values="{basisjahr: {{vm.gesuchModelManager.getBasisjahrToWorkWith()}}}"></label>
                                     <dv-valueinput input-id="geschaeftsgewinnBasisjahr"
+                                                   data-test="geschaeftsgewinn-basisjahr"
                                                    name="geschaeftsgewinnBasisjahr"
                                                    ng-model="vm.model.getEkvToWorkWith().geschaeftsgewinnBasisjahr"
                                                    ng-required="vm.showSelbstaendig"
@@ -226,6 +232,7 @@
                                            for="geschaeftsgewinnBasisjahrMinus1"
                                            translate-values="{basisjahr: {{vm.gesuchModelManager.getBasisjahrToWorkWith() - 1}}}"></label>
                                     <dv-valueinput input-id="geschaeftsgewinnBasisjahrMinus1"
+                                                   data-test="geschaeftsgewinn-basisjahr-minus#1-readonly"
                                                    name="geschaeftsgewinnBasisjahrMinus1"
                                                    ng-model="vm.geschaeftsgewinnBasisjahrMinus1"
                                                    allow-negative=true
@@ -246,6 +253,7 @@
                                            for="geschaeftsgewinnBasisjahrMinus1"
                                            translate-values="{basisjahr: {{vm.gesuchModelManager.getBasisjahrToWorkWith() - 1}}}"></label>
                                     <dv-valueinput input-id="geschaeftsgewinnBasisjahrMinus1"
+                                                   data-test="geschaeftsgewinn-basisjahr-minus#1"
                                                    name="geschaeftsgewinnBasisjahrMinus1"
                                                    ng-model="vm.model.getEkvToWorkWith().geschaeftsgewinnBasisjahrMinus1"
                                                    allow-negative=true
@@ -273,6 +281,7 @@
                                            for="geschaeftsgewinnBasisjahrMinus2"
                                            translate-values="{basisjahr: {{vm.gesuchModelManager.getBasisjahrToWorkWith()-2}}}"></label>
                                     <dv-valueinput input-id="geschaeftsgewinnBasisjahrMinus2"
+                                                   data-test="geschaeftsgewinn-basisjahr-minus#2"
                                                    name="geschaeftsgewinnBasisjahrMinus2"
                                                    ng-model="vm.geschaeftsgewinnBasisjahrMinus2"
                                                    allow-negative=true
@@ -293,6 +302,7 @@
                                            data-translate="FINANZIELLE_SITUATION_GESCHAEFTSGEWINN_DURCHSCHNITT"
                                            for="geschaeftsgewinnDurchschnittGS1"></label>
                                     <dv-valueinput input-id="geschaeftsgewinnDurchschnittGS1"
+                                                   data-test="geschaeftsgewinn-durchschnitt-gs#1"
                                                    name="geschaeftsgewinnDurchschnittGS1"
                                                    ng-model="vm.getResultate().geschaeftsgewinnDurchschnittGesuchsteller1"
                                                    class="input-element"
@@ -306,6 +316,7 @@
                                            data-translate="FINANZIELLE_SITUATION_GESCHAEFTSGEWINN_DURCHSCHNITT"
                                            for="geschaeftsgewinnDurchschnittGS2"></label>
                                     <dv-valueinput input-id="geschaeftsgewinnDurchschnittGS2"
+                                                   data-test="geschaeftsgewinn-durchschnitt-gs#2"
                                                    name="geschaeftsgewinnDurchschnittGS2"
                                                    ng-model="vm.getResultate().geschaeftsgewinnDurchschnittGesuchsteller2"
                                                    class="input-element"
@@ -328,6 +339,7 @@
                                 </label>
                                 <div class="dv-input-container-medium-select">
                                     <dv-valueinput input-id="bruttoErtraegeVermoegen" name="bruttoertraegeVermoegen"
+                                                   data-test="bruttoertraege-vermoegen"
                                                    ng-model="vm.model.getEkvToWorkWith().bruttoertraegeVermoegen"
                                                    class="input-element" required>
                                     </dv-valueinput>
@@ -359,6 +371,7 @@
                                 </label>
                                 <div class="dv-input-container-medium-select">
                                     <dv-valueinput input-id="nettoertraege_erbengemeinschaften"
+                                                   data-test="nettoertraege-erbengemeinschaften"
                                                    name="nettoertraegeErbengemeinschaft"
                                                    ng-model="vm.model.getEkvToWorkWith().nettoertraegeErbengemeinschaft"
                                                    allow-negative="true"
@@ -393,6 +406,7 @@
                                             text="'FINANZIELLE_SITUATION_EINKOMMEN_VEREINFACHTEM_VERFAHREN_TOOLTIP' | translate"></dv-tooltip>
                             </span>
                                 <dv-radio-container name="einkommenInVereinfachtemVerfahrenAbgerechnet1"
+                                                    data-test="container.einkommen-in-vereinfachtem-verfahren-abgerechnet"
                                                     class="input-element radio"
                                                     input-id="einkommenInVereinfachtemVerfahrenAbgerechnet1"
                                                     ng-model="vm.model.getEkvToWorkWith().einkommenInVereinfachtemVerfahrenAbgerechnet"
@@ -419,6 +433,7 @@
                                 </label>
                                 <div class="dv-input-container-medium-label">
                                     <dv-valueinput input-id="amount_vereinfacht_abgerechnet" name="testasd"
+                                                   data-test="amount-vereinfacht-abgerechnet"
                                                    ng-model="vm.model.getEkvToWorkWith().amountEinkommenInVereinfachtemVerfahrenAbgerechnet"
                                                    class="input-element" required>
                                     </dv-valueinput>
@@ -449,6 +464,7 @@
                                 </label>
                                 <div class="dv-input-container-medium-select">
                                     <dv-valueinput input-id="geleisteteAlimente"
+                                                   data-test="geleistete-alimente"
                                                    name="geleisteteAlimente"
                                                    ng-model="vm.model.getEkvToWorkWith().geleisteteAlimente"
                                                    class="input-element" required>
@@ -481,6 +497,7 @@
                                 </label>
                                 <div class="dv-input-container-medium-select">
                                     <dv-valueinput input-id="abzug_schuldzinsen" name="abzugSchuldzinsen"
+                                                   data-test="abzug-schuldzinsen"
                                                    ng-model="vm.model.getEkvToWorkWith().abzugSchuldzinsen"
                                                    class="input-element" required>
                                     </dv-valueinput>
@@ -512,6 +529,7 @@
                                 </label>
                                 <div class="dv-input-container-medium-select">
                                     <dv-valueinput input-id="abzug_gewinnungskosten" name="gewinnungskosten"
+                                                   data-test="gewinnungskosten"
                                                    ng-model="vm.model.getEkvToWorkWith().gewinnungskosten"
                                                    class="input-element" required>
                                     </dv-valueinput>
