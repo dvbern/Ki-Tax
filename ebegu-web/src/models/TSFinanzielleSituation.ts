@@ -34,6 +34,11 @@ export class TSFinanzielleSituation extends TSAbstractFinanzielleSituation {
     private _bruttoLohn: number;
     private _momentanSelbststaendig: boolean;
     private _steuerdatenAbfrageTimestamp: moment.Moment;
+    private _ersatzeinkommenBezogen: boolean;
+    private _ersatzeinkommenT: number;
+    private _ersatzeinkommenT1: number;
+    private _ersatzeinkommenT2: number;
+
 
     public constructor() {
         super();
@@ -164,6 +169,38 @@ export class TSFinanzielleSituation extends TSAbstractFinanzielleSituation {
 
     public set steuerdatenAbfrageTimestamp(value: moment.Moment) {
         this._steuerdatenAbfrageTimestamp = value;
+    }
+
+    public get ersatzeinkommenBezogen(): boolean {
+        return this._ersatzeinkommenBezogen;
+    }
+
+    public set ersatzeinkommenBezogen(value: boolean) {
+        this._ersatzeinkommenBezogen = value;
+    }
+
+    public get ersatzeinkommenT(): number {
+        return this._ersatzeinkommenT;
+    }
+
+    public set ersatzeinkommenT(value: number) {
+        this._ersatzeinkommenT = value;
+    }
+
+    public get ersatzeinkommenT1(): number {
+        return this._ersatzeinkommenT1;
+    }
+
+    public set ersatzeinkommenT1(value: number) {
+        this._ersatzeinkommenT1 = value;
+    }
+
+    public get ersatzeinkommenT2(): number {
+        return this._ersatzeinkommenT2;
+    }
+
+    public set ersatzeinkommenT2(value: number) {
+        this._ersatzeinkommenT2 = value;
     }
 
     public isSelbstaendig(): boolean {

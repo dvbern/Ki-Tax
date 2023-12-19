@@ -2830,6 +2830,11 @@ public class JaxBConverter extends AbstractConverter {
 		finanzielleSituation.setVeranlagtVorjahr(finanzielleSituationJAXP.getVeranlagtVorjahr());
 		finanzielleSituation.setMomentanSelbststaendig(finanzielleSituationJAXP.getMomentanSelbststaendig());
 
+		finanzielleSituation.setErsatzeinkommenBezogen(finanzielleSituationJAXP.isErsatzeinkommenBezogen());
+		finanzielleSituation.setErsatzeinkommenT(finanzielleSituationJAXP.getErsatzeinkommenT());
+		finanzielleSituation.setErsatzeinkommenT1(finanzielleSituationJAXP.getErsatzeinkommenT1());
+		finanzielleSituation.setErsatzeinkommenT2(finanzielleSituationJAXP.getErsatzeinkommenT2());
+
 		return finanzielleSituation;
 	}
 
@@ -2919,6 +2924,11 @@ public class JaxBConverter extends AbstractConverter {
 		jaxFinanzielleSituation.setSteuerdatenAbfrageTimestamp(persistedFinanzielleSituation.getSteuerdatenAbfrageTimestamp());
 		jaxFinanzielleSituation.setAutomatischePruefungErlaubt(persistedFinanzielleSituation.getAutomatischePruefungErlaubt());
 		jaxFinanzielleSituation.setMomentanSelbststaendig(persistedFinanzielleSituation.getMomentanSelbststaendig());
+
+		jaxFinanzielleSituation.setErsatzeinkommenBezogen(persistedFinanzielleSituation.isErsatzeinkommenBezogen());
+		jaxFinanzielleSituation.setErsatzeinkommenT(persistedFinanzielleSituation.getErsatzeinkommenT());
+		jaxFinanzielleSituation.setErsatzeinkommenT1(persistedFinanzielleSituation.getErsatzeinkommenT1());
+		jaxFinanzielleSituation.setErsatzeinkommenT2(persistedFinanzielleSituation.getErsatzeinkommenT2());
 
 		return jaxFinanzielleSituation;
 	}

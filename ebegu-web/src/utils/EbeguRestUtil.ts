@@ -2002,6 +2002,11 @@ export class EbeguRestUtil {
         restFinanzielleSituation.unterhaltsBeitraege = finanzielleSituation.unterhaltsBeitraege;
         restFinanzielleSituation.automatischePruefungErlaubt = finanzielleSituation.automatischePruefungErlaubt;
         restFinanzielleSituation.momentanSelbststaendig = finanzielleSituation.momentanSelbststaendig;
+        restFinanzielleSituation.ersatzeinkommenBezogen = finanzielleSituation.ersatzeinkommenBezogen;
+        restFinanzielleSituation.ersatzeinkommenT = finanzielleSituation.ersatzeinkommenT;
+        restFinanzielleSituation.ersatzeinkommenT1 = finanzielleSituation.ersatzeinkommenT1;
+        restFinanzielleSituation.ersatzeinkommenT2 = finanzielleSituation.ersatzeinkommenT2;
+
         return restFinanzielleSituation;
     }
 
@@ -2184,7 +2189,10 @@ export class EbeguRestUtil {
                     DateUtil.localDateTimeToMoment(finanzielleSituationFromServer.steuerdatenAbfrageTimestamp);
             }
             finanzielleSituationTS.momentanSelbststaendig = finanzielleSituationFromServer.momentanSelbststaendig;
-
+            finanzielleSituationTS.ersatzeinkommenBezogen = finanzielleSituationFromServer.ersatzeinkommenBezogen;
+            finanzielleSituationTS.ersatzeinkommenT = finanzielleSituationFromServer.ersatzeinkommenT;
+            finanzielleSituationTS.ersatzeinkommenT1 = finanzielleSituationFromServer.ersatzeinkommenT1;
+            finanzielleSituationTS.ersatzeinkommenT2 = finanzielleSituationFromServer.ersatzeinkommenT2;
             return finanzielleSituationTS;
         }
         return undefined;

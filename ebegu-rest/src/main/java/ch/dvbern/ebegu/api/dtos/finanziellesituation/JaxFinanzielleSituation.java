@@ -85,6 +85,18 @@ public class JaxFinanzielleSituation extends JaxAbstractFinanzielleSituation {
 	@Nullable
 	private Boolean momentanSelbststaendig;
 
+	@NotNull
+	private boolean ersatzeinkommenBezogen = false;
+
+	@Nullable
+	private BigDecimal ersatzeinkommenT;
+
+	@Nullable
+	private BigDecimal ersatzeinkommenT1;
+
+	@Nullable
+	private BigDecimal ersatzeinkommenT2;
+
 	@Nullable
 	@XmlJavaTypeAdapter(LocalDateTimeXMLConverter.class)
 	private LocalDateTime steuerdatenAbfrageTimestamp;
@@ -238,5 +250,40 @@ public class JaxFinanzielleSituation extends JaxAbstractFinanzielleSituation {
 
 	public void setMomentanSelbststaendig(@Nullable Boolean momentanSelbststaendig) {
 		this.momentanSelbststaendig = momentanSelbststaendig;
+	}
+
+	public boolean isErsatzeinkommenBezogen() {
+		return ersatzeinkommenBezogen;
+	}
+
+	public void setErsatzeinkommenBezogen(boolean ersatzeinkommenBezogen) {
+		this.ersatzeinkommenBezogen = ersatzeinkommenBezogen;
+	}
+
+	@Nullable
+	public BigDecimal getErsatzeinkommenT() {
+		return ersatzeinkommenT;
+	}
+
+	public void setErsatzeinkommenT(@Nullable BigDecimal ersatzeinkommenT) {
+		this.ersatzeinkommenT = ersatzeinkommenT;
+	}
+
+	@Nullable
+	public BigDecimal getErsatzeinkommenT1() {
+		return ersatzeinkommenT1;
+	}
+
+	public void setErsatzeinkommenT1(@Nullable BigDecimal ersatzeinkommenT1) {
+		this.ersatzeinkommenT1 = ersatzeinkommenT1;
+	}
+
+	@Nullable
+	public BigDecimal getErsatzeinkommenT2() {
+		return ersatzeinkommenT2;
+	}
+
+	public void setErsatzeinkommenT2(@Nullable BigDecimal ersatzeinkommenT2) {
+		this.ersatzeinkommenT2 = ersatzeinkommenT2;
 	}
 }

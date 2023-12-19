@@ -110,6 +110,22 @@ public class FinanzielleSituation extends AbstractFinanzielleSituation {
 	@Column(nullable = true)
 	private Boolean momentanSelbststaendig;
 
+	@NotNull
+	@Column(nullable = false)
+	private boolean ersatzeinkommenBezogen = false;
+
+	@Nullable
+	@Column(nullable = true)
+	private BigDecimal ersatzeinkommenT;
+
+	@Nullable
+	@Column(nullable = true)
+	private BigDecimal ersatzeinkommenT1;
+
+	@Nullable
+	@Column(nullable = true)
+	private BigDecimal ersatzeinkommenT2;
+
 	@Nullable
 	@OneToOne(optional = true, orphanRemoval = false)
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_finanzielle_situation_stuerdaten_response"))
@@ -274,6 +290,41 @@ public class FinanzielleSituation extends AbstractFinanzielleSituation {
 		this.momentanSelbststaendig = momentanSelbststaendig;
 	}
 
+	public boolean isErsatzeinkommenBezogen() {
+		return ersatzeinkommenBezogen;
+	}
+
+	public void setErsatzeinkommenBezogen(boolean ersatzeinkommenBezogen) {
+		this.ersatzeinkommenBezogen = ersatzeinkommenBezogen;
+	}
+
+	@Nullable
+	public BigDecimal getErsatzeinkommenT() {
+		return ersatzeinkommenT;
+	}
+
+	public void setErsatzeinkommenT(@Nullable BigDecimal ersatzeinkommenT) {
+		this.ersatzeinkommenT = ersatzeinkommenT;
+	}
+
+	@Nullable
+	public BigDecimal getErsatzeinkommenT1() {
+		return ersatzeinkommenT1;
+	}
+
+	public void setErsatzeinkommenT1(@Nullable BigDecimal ersatzeinkommenT1) {
+		this.ersatzeinkommenT1 = ersatzeinkommenT1;
+	}
+
+	@Nullable
+	public BigDecimal getErsatzeinkommenT2() {
+		return ersatzeinkommenT2;
+	}
+
+	public void setErsatzeinkommenT2(@Nullable BigDecimal ersatzeinkommenT2) {
+		this.ersatzeinkommenT2 = ersatzeinkommenT2;
+	}
+
 	@Nonnull
 	public FinanzielleSituation copyFinanzielleSituation(@Nonnull FinanzielleSituation target, @Nonnull AntragCopyType copyType) {
 		switch (copyType) {
@@ -298,6 +349,10 @@ public class FinanzielleSituation extends AbstractFinanzielleSituation {
 			target.setSteuerdatenAbfrageTimestamp(this.getSteuerdatenAbfrageTimestamp());
 			target.setAutomatischePruefungErlaubt(this.getAutomatischePruefungErlaubt());
 			target.setMomentanSelbststaendig(this.getMomentanSelbststaendig());
+			target.setErsatzeinkommenBezogen(this.isErsatzeinkommenBezogen());
+			target.setErsatzeinkommenT(this.getErsatzeinkommenT());
+			target.setErsatzeinkommenT1(this.getErsatzeinkommenT1());
+			target.setErsatzeinkommenT2(this.getErsatzeinkommenT2());
 			break;
 		case ERNEUERUNG:
 		case ERNEUERUNG_NEUES_DOSSIER:
@@ -336,7 +391,11 @@ public class FinanzielleSituation extends AbstractFinanzielleSituation {
 			MathUtil.isSame(getBruttoLohn(), otherFinSit.getBruttoLohn()) &&
 			MathUtil.isSame(getAbzuegeKinderAusbildung(), otherFinSit.getAbzuegeKinderAusbildung()) &&
 			MathUtil.isSame(getUnterhaltsBeitraege(), otherFinSit.getUnterhaltsBeitraege()) &&
-			Objects.equals(getMomentanSelbststaendig(), otherFinSit.getMomentanSelbststaendig());
+			Objects.equals(getMomentanSelbststaendig(), otherFinSit.getMomentanSelbststaendig()) &&
+			MathUtil.isSame(getErsatzeinkommenT(), otherFinSit.getErsatzeinkommenT()) &&
+			MathUtil.isSame(getErsatzeinkommenT1(), otherFinSit.getErsatzeinkommenT1()) &&
+			MathUtil.isSame(getErsatzeinkommenT2(), otherFinSit.getErsatzeinkommenT2()) &&
+			isErsatzeinkommenBezogen() == otherFinSit.isErsatzeinkommenBezogen();
 	}
 
 	@Nullable
