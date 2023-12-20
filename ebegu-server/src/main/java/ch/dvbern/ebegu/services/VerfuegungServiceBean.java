@@ -171,9 +171,10 @@ public class VerfuegungServiceBean extends AbstractBaseService implements Verfue
 
 		Preconditions.checkArgument(mutation.getStatus() == AntragStatus.VERFUEGEN);
 
+		createFinSitDokument(mutation);
+
 		mutation.getKindContainers().forEach(kindContainer -> {
 			kindContainer.getBetreuungen().forEach(betreuung -> {
-				createFinSitDokument(mutation);
 				verfuegen(mutation.getId(), betreuung.getId(), null, false, false, true);
 			});
 		});
