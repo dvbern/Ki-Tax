@@ -225,3 +225,24 @@ build-backend-image:
     needs:
         - build-and-analyze
         - create-build-args
+
+# based on stip-api's mirror job
+github-mirror:
+    stage: mirror
+    needs: []
+    image:
+        name: '${DVB_DOCKER_REGISTRY}/dockerhub/alpine/git:2.40.1'
+        entrypoint: ['']
+    tags: ['os:linux', 'type:docker', 'zone:tz']
+    variables:
+        GIT_STRATEGY: none
+    before_script:
+        - rm -rf ./*
+        - git clone --branch $CI_COMMIT_TAG --single-branch https://mirror:$GITHUB_MIRROR_CLONE_TOKEN@$CI_SERVER_HOST/$CI_PROJECT_PATH.git .
+        - git checkout $CI_COMMIT_TAG
+    script:
+        - git push -u https://token:${GITHUB_MIRROR_TOKEN}@github.com/dvbern/kiBon.git HEAD:dev
+    rules:
+        - if: $CI_COMMIT_TAG
+          when: manual
+          allow_failure: true

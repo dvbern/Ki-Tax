@@ -41,7 +41,7 @@ const fillPflegekind = () => {
 
 const fillFachstelle = () => {
     cy.getByData('container.integration#0', 'radio-value.SOZIALE_INTEGRATION').find('label').click();
-    cy.getByData('fachstelle#0').select('8: Object');
+    cy.getByData('fachstelle#0').select(1);
     cy.getByData('betreuungspensum-fachstelle#0').type('40');
     cy.getByData('pensum-gueltig-ab#0').find('input').type('01.01.2024');
     cy.getByData('pensum-gueltig-bis#0').find('input').type('01.01.2025');
