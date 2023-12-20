@@ -16,11 +16,11 @@
  */
 
 alter table finanzielle_situation add ersatzeinkommen_bezogen BIT NOT NULL DEFAULT false;
-alter table finanzielle_situation add ersatzeinkommen_t  DECIMAL(19, 2);
-alter table finanzielle_situation add ersatzeinkommen_t1 DECIMAL(19, 2);
-alter table finanzielle_situation add ersatzeinkommen_t2 DECIMAL(19, 2);
+alter table finanzielle_situation add ersatzeinkommen_basisjahr  DECIMAL(19, 2);
+alter table finanzielle_situation add ersatzeinkommen_basisjahr_minus1 DECIMAL(19, 2);
+alter table finanzielle_situation add ersatzeinkommen_basisjahr_minus2 DECIMAL(19, 2);
 
 alter table finanzielle_situation_aud add ersatzeinkommen_bezogen BIT;
-alter table finanzielle_situation_aud add ersatzeinkommen_t  DECIMAL(19, 2);
-alter table finanzielle_situation_aud add ersatzeinkommen_t1 DECIMAL(19, 2);
-alter table finanzielle_situation_aud add ersatzeinkommen_t2 DECIMAL(19, 2);
+alter table finanzielle_situation_aud add  ersatzeinkommen_basisjahr  DECIMAL(19, 2);
+alter table finanzielle_situation_aud add ersatzeinkommen_basisjahr_minus1 DECIMAL(19, 2);
+alter table finanzielle_situation_aud add ersatzeinkommen_basisjahr_minus2 DECIMAL(19, 2);
