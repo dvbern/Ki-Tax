@@ -75,7 +75,9 @@ describe('Kibon - Testet das Feature der automatischen Abarbeitung von Mutations
         {
             cy.changeLogin(superAdmin);
             openGesuchInFreigabe();
+            cy.intercept('**/freigeben/*/JA/*/SCH/*').as('gesuchFreigebenSimulieren');
             cy.getByData('container.antrag-freigeben-simulieren', 'navigation-button').click();
+            cy.wait('@gesuchFreigebenSimulieren');
             SidenavPO.getGesuchStatus().should('have.text', 'Freigegeben');
         }
 
@@ -97,13 +99,13 @@ describe('Kibon - Testet das Feature der automatischen Abarbeitung von Mutations
             cy.changeLogin(sachbearbeitungTSGemeinde);
             openGesuchInFreigabe();
             SidenavPO.goTo('BETREUUNG');
-            cy.getByData('betreuung#2', 'betreuungs-status').should('have.text', 'Anmeldung ausgelöst');
-            cy.getByData('betreuung#2').click();
+            cy.getByData('container.betreuung#2', 'betreuungs-status').should('have.text', 'Anmeldung ausgelöst');
+            cy.getByData('container.betreuung#2').click();
             cy.waitForRequest('PUT', '**/betreuungen/schulamt/akzeptieren', () => {
                 cy.getByData('container.akzeptieren', 'navigation-button').click();
                 cy.getByData('container.confirm', 'navigation-button').click();
             });
-            cy.getByData('betreuung#2', 'betreuungs-status').should('have.text', 'Module akzeptiert');
+            cy.getByData('container.betreuung#2', 'betreuungs-status').should('have.text', 'Module akzeptiert');
         }
 
         // !! AS GEMEINDE SB BG !!
@@ -146,7 +148,7 @@ describe('Kibon - Testet das Feature der automatischen Abarbeitung von Mutations
         {
             cy.changeLogin(sachbearbeitungKita);
             openGesuchInBetreuungen();
-            cy.getByData('betreuung#0').click();
+            cy.getByData('container.betreuung#0').click();
             cy.getByData('mutationsmeldung-erstellen').click();
             cy.getByData('betreuungspensum-0').clear().type(betreuungspensumInMutation.toString());
             cy.getByData('mutationsmeldung-senden').click();

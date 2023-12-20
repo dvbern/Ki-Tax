@@ -74,7 +74,7 @@ describe('Kibon - Tagesschule Only [Superadmin]', () => {
         cy.wait('@abschliessenGesuch');
 
         // Control status and tarif are definitiv
-        cy.getByData('gesuch-status').should('have.text', 'Abgeschlossen');
+        cy.getByData('gesuch.status').should('have.text', 'Abgeschlossen');
         cy.getByData('betreuungs-status').should('have.text', 'Anmeldung übernommen');
         cy.getByData('verfuegung-anmeldung-anzeigen','navigation-button').click();
         cy.getByData('verfuegung-tagesschule-provisorisch').should('not.exist');
