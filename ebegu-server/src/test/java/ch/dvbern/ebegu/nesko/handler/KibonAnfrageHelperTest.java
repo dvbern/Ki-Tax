@@ -102,7 +102,7 @@ public class KibonAnfrageHelperTest {
 		FinanzielleSituation finanzielleSituation = new FinanzielleSituation();
 		KibonAnfrageHelper.setValuesToFinSit(finanzielleSituation, response, BigDecimal.ONE, SteuerdatenDatenTraeger.DOSSIERTRAEGER);
 		assertThat(finanzielleSituation.getErsatzeinkommen(), is(BigDecimal.TEN));
-		assertThat(finanzielleSituation.getErsatzeinkommenT(), is(BigDecimal.TEN));
+		assertThat(finanzielleSituation.getErsatzeinkommenBasisjahr(), is(BigDecimal.TEN));
 		assertThat(finanzielleSituation.isErsatzeinkommenBezogen(), is(true));
 	}
 
@@ -112,7 +112,7 @@ public class KibonAnfrageHelperTest {
 		FinanzielleSituation finanzielleSituation = new FinanzielleSituation();
 		KibonAnfrageHelper.setValuesToFinSit(finanzielleSituation, response, BigDecimal.ONE, SteuerdatenDatenTraeger.DOSSIERTRAEGER);
 		assertThat(finanzielleSituation.getErsatzeinkommen(), is(BigDecimal.ZERO));
-		assertThat(finanzielleSituation.getErsatzeinkommenT(), is(BigDecimal.ZERO));
+		assertThat(finanzielleSituation.getErsatzeinkommenBasisjahr(), is(BigDecimal.ZERO));
 		assertThat(finanzielleSituation.isErsatzeinkommenBezogen(), is(true));
 	}
 
@@ -122,7 +122,7 @@ public class KibonAnfrageHelperTest {
 		FinanzielleSituation finanzielleSituation = new FinanzielleSituation();
 		KibonAnfrageHelper.setValuesToFinSit(finanzielleSituation, response, BigDecimal.ONE, SteuerdatenDatenTraeger.DOSSIERTRAEGER);
 		assertThat(finanzielleSituation.getErsatzeinkommen(), is(BigDecimal.ZERO));
-		assertThat(finanzielleSituation.getErsatzeinkommenT(), is(BigDecimal.ZERO));
+		assertThat(finanzielleSituation.getErsatzeinkommenBasisjahr(), is(BigDecimal.ZERO));
 		assertThat(finanzielleSituation.isErsatzeinkommenBezogen(), is(true));
 	}
 
@@ -131,7 +131,7 @@ public class KibonAnfrageHelperTest {
 		FinanzielleSituation finanzielleSituation = new FinanzielleSituation();
 		KibonAnfrageHelper.setValuesToFinSit(finanzielleSituation, response, BigDecimal.ONE, SteuerdatenDatenTraeger.DOSSIERTRAEGER);
 		assertThat(finanzielleSituation.getErsatzeinkommen(), nullValue());
-		assertThat(finanzielleSituation.getErsatzeinkommenT(), nullValue());
+		assertThat(finanzielleSituation.getErsatzeinkommenBasisjahr(), nullValue());
 		assertThat(finanzielleSituation.isErsatzeinkommenBezogen(), is(false));
 	}
 
