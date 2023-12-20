@@ -163,7 +163,7 @@ public class KibonAnfrageHelper {
 		finSit.setFamilienzulage(getPositvValueOrZero(steuerdatenResponse.getWeitereSteuerbareEinkuenfte(traeger)));
 		if(steuerdatenResponse.getSteuerpflichtigesErsatzeinkommen(traeger) != null) {
 			finSit.setErsatzeinkommen(getPositvValueOrZero(steuerdatenResponse.getSteuerpflichtigesErsatzeinkommen(traeger)));
-			finSit.setErsatzeinkommenT(steuerdatenResponse.getSteuerpflichtigesErsatzeinkommen(traeger));
+			finSit.setErsatzeinkommenT(getPositvValueOrZero(steuerdatenResponse.getSteuerpflichtigesErsatzeinkommen(traeger)));
 			finSit.setErsatzeinkommenBezogen(true);
 		}
 		finSit.setErhalteneAlimente(getPositvValueOrZero(steuerdatenResponse.getErhalteneUnterhaltsbeitraege(traeger)));

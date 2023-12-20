@@ -122,7 +122,7 @@ public class KibonAnfrageHelperTest {
 		FinanzielleSituation finanzielleSituation = new FinanzielleSituation();
 		KibonAnfrageHelper.setValuesToFinSit(finanzielleSituation, response, BigDecimal.ONE, SteuerdatenDatenTraeger.DOSSIERTRAEGER);
 		assertThat(finanzielleSituation.getErsatzeinkommen(), is(BigDecimal.ZERO));
-		assertThat(finanzielleSituation.getErsatzeinkommenT(), is(BigDecimal.TEN.negate()));
+		assertThat(finanzielleSituation.getErsatzeinkommenT(), is(BigDecimal.ZERO));
 		assertThat(finanzielleSituation.isErsatzeinkommenBezogen(), is(true));
 	}
 
