@@ -161,7 +161,11 @@ public class KibonAnfrageHelper {
 		// Pflichtfeldern wenn null muessen zu 0 gesetzt werden, Sie sind nicht editierbar im Formular
 		finSit.setNettolohn(getPositvValueOrZero(steuerdatenResponse.getErwerbseinkommenUnselbstaendigkeit(traeger)));
 		finSit.setFamilienzulage(getPositvValueOrZero(steuerdatenResponse.getWeitereSteuerbareEinkuenfte(traeger)));
-		finSit.setErsatzeinkommen(getPositvValueOrZero(steuerdatenResponse.getSteuerpflichtigesErsatzeinkommen(traeger)));
+		if(steuerdatenResponse.getSteuerpflichtigesErsatzeinkommen(traeger) != null) {
+			finSit.setErsatzeinkommen(getPositvValueOrZero(steuerdatenResponse.getSteuerpflichtigesErsatzeinkommen(traeger)));
+			finSit.setErsatzeinkommenT(steuerdatenResponse.getSteuerpflichtigesErsatzeinkommen(traeger));
+			finSit.setErsatzeinkommenBezogen(true);
+		}
 		finSit.setErhalteneAlimente(getPositvValueOrZero(steuerdatenResponse.getErhalteneUnterhaltsbeitraege(traeger)));
 		finSit.setNettoertraegeErbengemeinschaft(getValueOrZero(steuerdatenResponse.getNettoertraegeAusEgme(traeger)));
 
