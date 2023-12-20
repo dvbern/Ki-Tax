@@ -2003,9 +2003,9 @@ export class EbeguRestUtil {
         restFinanzielleSituation.automatischePruefungErlaubt = finanzielleSituation.automatischePruefungErlaubt;
         restFinanzielleSituation.momentanSelbststaendig = finanzielleSituation.momentanSelbststaendig;
         restFinanzielleSituation.ersatzeinkommenBezogen = finanzielleSituation.ersatzeinkommenBezogen;
-        restFinanzielleSituation.ersatzeinkommenT = finanzielleSituation.ersatzeinkommenT;
-        restFinanzielleSituation.ersatzeinkommenT1 = finanzielleSituation.ersatzeinkommenT1;
-        restFinanzielleSituation.ersatzeinkommenT2 = finanzielleSituation.ersatzeinkommenT2;
+        restFinanzielleSituation.ErsatzeinkommenBasisjahr = finanzielleSituation.ersatzeinkommenBasisjahr;
+        restFinanzielleSituation.ersatzeinkommenBasisjahrMinus1 = finanzielleSituation.ersatzeinkommenBasisjahrMinus1;
+        restFinanzielleSituation.ersatzeinkommenBasisjahrMinus2 = finanzielleSituation.ersatzeinkommenBasisjahrMinus2;
 
         return restFinanzielleSituation;
     }
@@ -2190,9 +2190,9 @@ export class EbeguRestUtil {
             }
             finanzielleSituationTS.momentanSelbststaendig = finanzielleSituationFromServer.momentanSelbststaendig;
             finanzielleSituationTS.ersatzeinkommenBezogen = finanzielleSituationFromServer.ersatzeinkommenBezogen;
-            finanzielleSituationTS.ersatzeinkommenT = finanzielleSituationFromServer.ersatzeinkommenT;
-            finanzielleSituationTS.ersatzeinkommenT1 = finanzielleSituationFromServer.ersatzeinkommenT1;
-            finanzielleSituationTS.ersatzeinkommenT2 = finanzielleSituationFromServer.ersatzeinkommenT2;
+            finanzielleSituationTS.ersatzeinkommenBasisjahr = finanzielleSituationFromServer.ersatzeinkommenBasisjahr;
+            finanzielleSituationTS.ersatzeinkommenBasisjahrMinus1 = finanzielleSituationFromServer.ersatzeinkommenBasisjahrMinus1;
+            finanzielleSituationTS.ersatzeinkommenBasisjahrMinus2 = finanzielleSituationFromServer.ersatzeinkommenBasisjahrMinus2;
             return finanzielleSituationTS;
         }
         return undefined;

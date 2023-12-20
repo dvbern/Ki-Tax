@@ -89,13 +89,13 @@ public class JaxFinanzielleSituation extends JaxAbstractFinanzielleSituation {
 	private boolean ersatzeinkommenBezogen = false;
 
 	@Nullable
-	private BigDecimal ersatzeinkommenT;
+	private BigDecimal ersatzeinkommenBasisjahr;
 
 	@Nullable
-	private BigDecimal ersatzeinkommenT1;
+	private BigDecimal ersatzeinkommenBasisjahrMinus1;
 
 	@Nullable
-	private BigDecimal ersatzeinkommenT2;
+	private BigDecimal ersatzeinkommenBasisjahrMinus2;
 
 	@Nullable
 	@XmlJavaTypeAdapter(LocalDateTimeXMLConverter.class)
@@ -261,29 +261,29 @@ public class JaxFinanzielleSituation extends JaxAbstractFinanzielleSituation {
 	}
 
 	@Nullable
-	public BigDecimal getErsatzeinkommenT() {
-		return ersatzeinkommenT;
+	public BigDecimal getErsatzeinkommenBasisjahr() {
+		return ersatzeinkommenBasisjahr;
 	}
 
-	public void setErsatzeinkommenT(@Nullable BigDecimal ersatzeinkommenT) {
-		this.ersatzeinkommenT = ersatzeinkommenT;
-	}
-
-	@Nullable
-	public BigDecimal getErsatzeinkommenT1() {
-		return ersatzeinkommenT1;
-	}
-
-	public void setErsatzeinkommenT1(@Nullable BigDecimal ersatzeinkommenT1) {
-		this.ersatzeinkommenT1 = ersatzeinkommenT1;
+	public void setErsatzeinkommenBasisjahr(@Nullable BigDecimal ersatzeinkommenBasisjahr) {
+		this.ersatzeinkommenBasisjahr = ersatzeinkommenBasisjahr;
 	}
 
 	@Nullable
-	public BigDecimal getErsatzeinkommenT2() {
-		return ersatzeinkommenT2;
+	public BigDecimal getErsatzeinkommenBasisjahrMinus1() {
+		return ersatzeinkommenBasisjahrMinus1;
 	}
 
-	public void setErsatzeinkommenT2(@Nullable BigDecimal ersatzeinkommenT2) {
-		this.ersatzeinkommenT2 = ersatzeinkommenT2;
+	public void setErsatzeinkommenBasisjahrMinus1(@Nullable BigDecimal ersatzeinkommenBasisjahrMinus1) {
+		this.ersatzeinkommenBasisjahrMinus1 = ersatzeinkommenBasisjahrMinus1;
+	}
+
+	@Nullable
+	public BigDecimal getErsatzeinkommenBasisjahrMinus2() {
+		return ersatzeinkommenBasisjahrMinus2;
+	}
+
+	public void setErsatzeinkommenBasisjahrMinus2(@Nullable BigDecimal ersatzeinkommenBasisjahrMinus2) {
+		this.ersatzeinkommenBasisjahrMinus2 = ersatzeinkommenBasisjahrMinus2;
 	}
 }
