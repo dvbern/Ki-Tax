@@ -34,7 +34,7 @@ describe('Kibon - mutationen [Gesuchsteller]', () => {
         cy.visit(gesuchUrl);
 
         cy.intercept('GET', '**/gemeinde/stammdaten/lite/**').as('mutationReady');
-        cy.getByData('toolbar.mutieren').click();
+        cy.getByData('toolbar.antrag-mutieren').click();
         cy.wait('@mutationReady');
 
         cy.getByData('container.navigation-save', 'navigation-button').contains('Erstellen').click();

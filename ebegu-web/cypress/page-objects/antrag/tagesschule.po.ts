@@ -53,7 +53,7 @@ const controllEditTagesschuleForm = (
         cy.getByData('institution.edit.plz').should('have.value', data[tagesschuleArt].plz);
         cy.getByData('institution.edit.ort').should('have.value', data[tagesschuleArt].ort);
         cy.getByData('institution.edit.gueltigAb').should('have.value', data[tagesschuleArt].gueltigAb);
-        cy.getByData('institution.edit.submit').click();
+        cy.getByData('institution.edit.cancel').click();
     });
 }
 export const ControllEditTagesschulePO = {

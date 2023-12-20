@@ -32,6 +32,7 @@
 
         <div class="gdashboard-panel"
              ng-repeat="periode in vm.activeGesuchsperiodenList | orderBy: 'gueltigkeit.gueltigAb'"
+             ng-attr-data-test="container.periode.{{periode.gesuchsperiodeString}}"
              ng-if="vm.activeGesuchsperiodenList.length > 0">
 
             <span class="gdashboard-panel-gesuchstring">
@@ -46,14 +47,16 @@
                                ng-if="vm.displayAnsehenButton(periode)"
                                type="button"
                                button-click="vm.openAntrag(periode, true)"
-                               button-class="dvb-loading-button gdashboard-panel-button">
+                               button-class="dvb-loading-button gdashboard-panel-button"
+                               data-test="container.antrag-oeffnen" >
                 {{'GS_ANSEHEN' | translate}}
             </dv-loading-button>
 
             <dv-loading-button class="gdashboard-panel-button--margin"
                                ng-if="vm.getButtonText(periode)" type="button"
                                button-click="vm.openAntrag(periode)"
-                               button-class="dvb-loading-button gdashboard-panel-button">
+                               button-class="dvb-loading-button gdashboard-panel-button"
+                               data-test="container.antrag-bearbeiten">
                 {{vm.getButtonText(periode)}}
             </dv-loading-button>
 

@@ -5,6 +5,7 @@ import * as dvTasks from './cypress/support/tasks';
 const baseUrl = process.env.baseURL ?? 'http://local-be.kibon.ch:4200/';
 
 export default defineConfig({
+    watchForFileChanges: false,
     e2e: {
         setupNodeEvents(on, config) {
             // implement node event listeners here
@@ -20,6 +21,8 @@ export default defineConfig({
         viewportHeight: 1080,
         baseUrl,
         fixturesFolder: './cypress/fixtures',
+        experimentalRunAllSpecs: true,
+        requestTimeout: 10000
     },
     scrollBehavior: 'nearest',
 });

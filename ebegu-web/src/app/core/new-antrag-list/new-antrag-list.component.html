@@ -391,7 +391,7 @@
             <mat-header-row class="dv-faelle-mat-header-row"
                             *matHeaderRowDef="filterColumns"></mat-header-row>
             <mat-row *matRowDef="let element; columns: displayedColumns; let index = index"
-                     [attr.data-test]="'antrag-entry#' + index"
+                     [attr.data-test]="'antrag-entry#' + addZerosToFallnummer(element.fallNummer)"
                      (click)="onEditClicked(element, $event)"
                      class="pointer-cursor"></mat-row>
 

@@ -15,18 +15,75 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { FixtureBetreuung } from '@dv-e2e/fixtures';
+import {FixtureBetreuung} from '@dv-e2e/fixtures';
+import {GemeindeTestFall} from '@dv-e2e/types';
 
 const createNewBetreuung = () => {
+    cy.intercept('**/institutionstammdaten/gesuchsperiode/gemeinde/*').as('getInstitutionsStammdaten');
     cy.getByData('container.create-betreuung', 'navigation-button').click();
+    cy.wait('@getInstitutionsStammdaten');
 };
 
-const fillKitaBetreuungsForm = (dataset: keyof typeof FixtureBetreuung) => {
-    FixtureBetreuung[dataset](({ kita }) => {
+const createNewTagesschulAnmeldung = () => {
+    cy.getByData('container.create-tagesschule', 'navigation-button').click();
+};
+
+const fillKitaBetreuungsForm = (dataset: keyof typeof FixtureBetreuung, gemeinde: GemeindeTestFall) => {
+    FixtureBetreuung[dataset]((data) => {
+        const kita = data[gemeinde].kita;
         cy.getByData('betreuungsangebot').select(kita.betreuungsangebot);
-        cy.getByData('institution').find('input').type(kita.institution);
+        cy.getByData('institution').find('input').type(kita.institution, { delay: 30 });
         cy.getByData('instutions-suchtext').click();
         cy.getByData('institution').find('input').should('have.value', kita.institution);
+    });
+};
+
+const fillOnlineKitaBetreuungsForm = (dataset: keyof typeof FixtureBetreuung, gemeinde: GemeindeTestFall, opts?: { mobile: boolean }) => {
+    FixtureBetreuung[dataset]((data) => {
+        const kita = data[gemeinde].kita;
+        cy.getByData('betreuungsangebot').select(kita.betreuungsangebot);
+        cy.getByData('container.vertrag', 'radio-value.ja').click();
+        if (opts?.mobile) {
+            cy.getByData('institution-mobile').select(kita.institution);
+        } else {
+            cy.getByData('institution').find('input').type(kita.institution);
+            cy.getByData('instutions-suchtext').click();
+            cy.getByData('institution').find('input').should('have.value', kita.institution);
+        }
+    });
+};
+
+const fillOnlineTfoBetreuungsForm = (dataset: keyof typeof FixtureBetreuung, gemeinde: GemeindeTestFall, opts?: { mobile: boolean }) => {
+    FixtureBetreuung[dataset]((data) => {
+        const tfo = data[gemeinde].tfo;
+        cy.getByData('betreuungsangebot').select(tfo.betreuungsangebot);
+        cy.getByData('container.vertrag', 'radio-value.ja').click();
+        if (opts?.mobile) {
+            cy.getByData('institution-mobile').select(tfo.institution);
+        } else {
+            cy.getByData('institution').find('input').type(tfo.institution);
+            cy.getByData('instutions-suchtext').click();
+            cy.getByData('institution').find('input').should('have.value', tfo.institution);
+        }
+    });
+};
+
+const selectTagesschulBetreuung = () => {
+    cy.getByData('betreuungsangebot').select('Tagesschule');
+}
+
+const fillTagesschulBetreuungsForm = (dataset: keyof typeof FixtureBetreuung, gemeinde: GemeindeTestFall) => {
+    FixtureBetreuung[dataset]((data) => {
+        const tagesschule = data[gemeinde].tagesschule.institution;
+        cy.getByData('container.vertrag', 'radio-value.nein').should('not.exist');
+        cy.wait(1000);
+        cy.getByData('institution').find('input').focus().type(tagesschule, { force: true, delay: 30 });
+        cy.getByData('instutions-suchtext').first().click();
+        cy.getByData('institution').find('input').should('have.value', tagesschule);
+        cy.getByData('keineKesbPlatzierung.radio-value.nein').click();
+        cy.get('[data-test^="modul-"][data-test$="-MONDAY"]').first().click();
+        cy.get('[data-test^="modul-"][data-test$="-THURSDAY"]').first().click();
+        cy.getByData('agb-tsakzeptiert').click();
     });
 };
 
@@ -36,7 +93,7 @@ const fillKeinePlatzierung = () => {
 
 const fillErweiterteBeduerfnisse = () => {
     cy.getByData('erweiterteBeduerfnisse.radio-value.ja').click();
-    cy.getByData('fachstelle').select('string:46d37d8e-4083-11ec-a836-b89a2ae4a038');
+    cy.getByData('fachstelle').select(1);
 };
 
 const fillEingewoehnung = () => {
@@ -49,11 +106,36 @@ const platzBestaetigungAnfordern = () => {
     cy.wait('@savingBetreuung');
 };
 
+const getBetreuungspensum = (index: number) => {
+    return cy.getByData(`betreuungspensum-${index}`);
+};
+
+const saveBetreuung = () => {
+    cy.waitForRequest('PUT', '**/betreuungen/betreuung/*', () => {
+        cy.getByData('container.save','navigation-button').click();
+    });
+};
+
+const saveAndConfirmBetreuung = () => {
+    cy.getByData('container.save','navigation-button').click();
+    cy.waitForRequest('PUT', '**/betreuungen/betreuung/*', () => {
+        cy.getByData('container.confirm', 'navigation-button').click();
+    });
+};
+
 export const AntragBetreuungPO = {
     createNewBetreuung,
+    createNewTagesschulAnmeldung,
+    selectTagesschulBetreuung,
+    fillTagesschulBetreuungsForm,
     fillKitaBetreuungsForm,
+    fillOnlineKitaBetreuungsForm,
+    fillOnlineTfoBetreuungsForm,
     fillKeinePlatzierung,
     fillErweiterteBeduerfnisse,
     fillEingewoehnung,
     platzBestaetigungAnfordern,
+    getBetreuungspensum,
+    saveBetreuung,
+    saveAndConfirmBetreuung,
 };

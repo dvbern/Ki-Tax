@@ -34,7 +34,7 @@
                                     <span data-translate="KEINE_KESB_PLATZIERUNG"></span>
                                 </span>
 
-                        <dv-radio-container name="keineKesbPlatzierungk" class="input-element"
+                        <dv-radio-container name="keineKesbPlatzierung" class="input-element"
                                             data-test="keine-kesb-platzierung"
                                             ng-model="vm.isKesbPlatzierung"
                                             aria-label="{{'KEINE_KESB_PLATZIERUNG'|translate}}"
@@ -217,7 +217,7 @@
                 </div>
 
                 <!-- TS-Module -->
-                <div class="dv-ebegu-calendar-wrapper-tagesschule" ng-if="vm.isTagesschuleAlreadySelected()">
+                <div class="dv-ebegu-calendar-wrapper-tagesschule" ng-if="vm.isTagesschuleAlreadySelected()" data-test="tagesschule-kalender">
 
                     <!-- Header mit Wochentagen -->
                     <div class="dv-ebegu-calendar-row--tagesschule">
@@ -225,8 +225,9 @@
                         <div class="dv-ebegu-calendar-wrapper">
                             <div class="dv-ebegu-calendar-container-weekdays">
                                 <div class="dv-ebegu-calendar-weekday dv-ebegu-calendar-weekday--{{day}}"
-                                     ng-repeat="day in vm.getWeekDays()">{{ day | translate}}
-                                </div>
+                                     ng-repeat="day in vm.getWeekDays()"
+                                     ng-attr-data-test="{{'tagesschule-kalender-' + day }}"
+                                >{{ day | translate}}</div>
                             </div>
                         </div>
                     </div>

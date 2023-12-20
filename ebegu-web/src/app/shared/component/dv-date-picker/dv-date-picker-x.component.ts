@@ -18,6 +18,7 @@
 import {ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {ControlContainer, NgForm} from '@angular/forms';
 import * as moment from 'moment';
+import {EbeguUtil} from '../../../../utils/EbeguUtil';
 
 @Component({
     selector: 'dv-date-picker-x',
@@ -62,7 +63,7 @@ export class DvDatePickerXComponent implements OnInit {
     @Input()
     public readonly required: boolean;
 
-    public randId = Math.round(Math.random() * 1000);
+    public randId = EbeguUtil.generateRandomName(10);
 
     public constructor() {
     }

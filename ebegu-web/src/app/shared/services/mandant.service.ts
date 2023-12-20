@@ -11,6 +11,7 @@ import {MandantLogoNameVisitor} from '../../core/constants/MandantLogoNameVisito
 import {MANDANTS, KiBonMandant} from '../../core/constants/MANDANTS';
 import {LogFactory} from '../../core/logging/LogFactory';
 import {WindowRef} from '../../core/service/windowRef.service';
+import {EbeguUtil} from '../../../utils/EbeguUtil';
 
 const LOG = LogFactory.createLog('MandantService');
 
@@ -182,12 +183,12 @@ export class MandantService {
     }
 
     public getEnvironmentFromCompleteHost(): string {
-        const environmentRegex = /(local|dev|uat|iat|demo|schulung|replica)?(?=(-.*)?\.(kibon))/;
-        const matches = this.windowRef.nativeWindow.location.host.match(environmentRegex);
-        if (matches === null) {
+        const environmentRegex = /(local|dev-preview|dev-e2e|dev|uat|iat|demo|schulung|replica)?(-\w*)?/;
+        const matches = this.windowRef.nativeWindow.location.host.split('kibon.ch')[0].match(environmentRegex);
+        if (EbeguUtil.isNullOrUndefined(matches[1])) {
             return '';
         }
-        return matches[0];
+        return matches[1];
     }
 
     public getMandantRedirect(): KiBonMandant {
