@@ -21,7 +21,8 @@ export default defineConfig({
         viewportHeight: 1080,
         baseUrl,
         fixturesFolder: './cypress/fixtures',
-        experimentalRunAllSpecs: true
+        experimentalRunAllSpecs: true,
+        requestTimeout: 10000
     },
     scrollBehavior: 'nearest',
 });

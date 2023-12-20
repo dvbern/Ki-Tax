@@ -461,7 +461,8 @@
             <button type="button" class="dv-btn cancel-button"
                     *ngIf="!isRegistering()"
                     (click)="cancel()"
-                    [textContent]="'CANCEL' | translate">
+                    [textContent]="'CANCEL' | translate"
+                    data-test="institution.edit.cancel">
             </button>
         </div>
     </form>

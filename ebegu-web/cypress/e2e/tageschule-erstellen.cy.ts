@@ -104,6 +104,19 @@ describe('Kibon - generate Tagesschule Institutionen', () => {
         cy.wait('@saveInstitution');
         // header + 2 Module
         cy.getByData('institution.gesuchsperiode.module.table-1').find('tr').its('length').should('eq', 3);
+        // check imported modules values
+        cy.getByData('institution.gesuchsperiode.module.table-1').find('tr').eq(1).find('td').eq(0).get('span').should('contain', 'Dynamo / Dynamique');
+        cy.getByData('institution.gesuchsperiode.module.table-1').find('tr').eq(1).find('td').eq(1).should('contain', '8:00 - 12:00');
+        cy.getByData('institution.gesuchsperiode.module.table-1').find('tr').eq(1).find('td').eq(2).should('contain', '4');
+        cy.getByData('institution.gesuchsperiode.module.table-1').find('tr').eq(1).find('td').eq(3).should('contain', 'Mo, Di, Do, Fr');
+        cy.getByData('institution.gesuchsperiode.module.table-1').find('tr').eq(1).find('td').eq(4).should('contain', 'Ja');
+        cy.getByData('institution.gesuchsperiode.module.table-1').find('tr').eq(1).find('td').eq(5).should('contain', 'Wöchentlich');
+        cy.getByData('institution.gesuchsperiode.module.table-1').find('tr').eq(2).find('td').eq(0).get('span').should('contain', 'Dynamo Nachmittag / Après-midi dynamique');
+        cy.getByData('institution.gesuchsperiode.module.table-1').find('tr').eq(2).find('td').eq(1).should('contain', '13:00 - 17:00');
+        cy.getByData('institution.gesuchsperiode.module.table-1').find('tr').eq(2).find('td').eq(2).should('contain', '3');
+        cy.getByData('institution.gesuchsperiode.module.table-1').find('tr').eq(2).find('td').eq(3).should('contain', 'Mo, Mi, Fr');
+        cy.getByData('institution.gesuchsperiode.module.table-1').find('tr').eq(2).find('td').eq(4).should('contain', 'Nein');
+        cy.getByData('institution.gesuchsperiode.module.table-1').find('tr').eq(2).find('td').eq(5).should('contain', 'Wöchentlich oder alle zwei Wochen');
     });
 
     it('should delete created Tagesschule', () => {

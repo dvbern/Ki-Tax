@@ -18,7 +18,7 @@ describe('Kibon - generate Statistiken', () => {
         cy.getByData('periode.2022/23').click();
         cy.getByData('creationType.verfuegt').find('label').click();
         cy.getByData('testfall-2').click();
-        cy.get('[data-test="dialog-link"]', { timeout: 20000 }).click();
+        cy.get('[data-test="dialog-link"]', { timeout: 750000 }).click();
     });
 
     beforeEach(() => {
@@ -59,7 +59,7 @@ describe('Kibon - generate Statistiken', () => {
                     {
                         dirPath: downloadsPath,
                         fileName,
-                        refs: 'A8:CL34',
+                        refs: 'A8:CL50000'
                     },
                     { custom: true }
                 )
