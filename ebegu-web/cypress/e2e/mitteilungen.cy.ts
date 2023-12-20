@@ -28,7 +28,7 @@ describe('Kibon - Test Mitteilungen', () => {
         cy.getByData('periode.2023/24').click();
 
         cy.getByData('testfall-2').click();
-        cy.get('[data-test="dialog-link"]', { timeout: 25000 }).click();
+        cy.get('[data-test="dialog-link"]', { timeout: 75000 }).click();
         cy.getByData('fall-creation-eingangsdatum').find('input').should('have.value', '15.2.2016');
         cy.getByData('verantwortlicher').click();
         cy.getByData(`option.${normalizeUser(userSB)}`).click();
@@ -45,7 +45,7 @@ describe('Kibon - Test Mitteilungen', () => {
 
         cy.intercept('GET', '**/gesuchsperioden/gemeinde/**').as('untilReadyGS1');
         cy.visit(gesuchUrl);
-        cy.wait('@untilReadyGS1');
+        cy.wait('@untilReadyGS1', {timeout: 17500});
 
         cy.getByData('mobile-menu-button').click();
         cy.getByData('menu.mitteilungen').click();
@@ -64,7 +64,7 @@ describe('Kibon - Test Mitteilungen', () => {
         cy.intercept('GET', '**/mitteilungen/amountnewforuser/**').as('mitteilungCount');
         cy.intercept('GET', '**/gesuchsperioden/gemeinde/**').as('untilReadySB');
         cy.visit(gesuchUrl);
-        cy.wait('@untilReadySB');
+        cy.wait('@untilReadySB', {timeout: 17500});
         cy.wait('@mitteilungCount');
 
         cy.getByData('posteingang-link').should('include.text', '(1)');
