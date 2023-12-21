@@ -2003,7 +2003,7 @@ export class EbeguRestUtil {
         restFinanzielleSituation.automatischePruefungErlaubt = finanzielleSituation.automatischePruefungErlaubt;
         restFinanzielleSituation.momentanSelbststaendig = finanzielleSituation.momentanSelbststaendig;
         restFinanzielleSituation.ersatzeinkommenBezogen = finanzielleSituation.ersatzeinkommenBezogen;
-        restFinanzielleSituation.ErsatzeinkommenBasisjahr = finanzielleSituation.ersatzeinkommenBasisjahr;
+        restFinanzielleSituation.ersatzeinkommenBasisjahr = finanzielleSituation.ersatzeinkommenBasisjahr;
         restFinanzielleSituation.ersatzeinkommenBasisjahrMinus1 = finanzielleSituation.ersatzeinkommenBasisjahrMinus1;
         restFinanzielleSituation.ersatzeinkommenBasisjahrMinus2 = finanzielleSituation.ersatzeinkommenBasisjahrMinus2;
 
