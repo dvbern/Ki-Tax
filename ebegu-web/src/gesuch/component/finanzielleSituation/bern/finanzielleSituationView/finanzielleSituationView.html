@@ -464,8 +464,8 @@
                                                            allow-negative=true
                                                            dv-on-blur="vm.calculate()"
                                                            class="input-element"
-                                                           ng-required="vm.hasGeschaeftsgewinn(0)"
-                                                           ng-disabled="vm.isGesuchReadonly()  || vm.getModel().finanzielleSituationJA.ersatzeinkommen === 0">
+                                                           ng-required="true"
+                                                           ng-disabled="vm.isGesuchReadonly()  || vm.getModel().finanzielleSituationJA.ersatzeinkommen === 0 || !vm.hasGeschaeftsgewinn(0)">
                                             </dv-valueinput>
                                             <dv-error-messages input-id="ersatzeinkommenSelbststaendigkeitBasisjahr"
                                                                for="vm.form.ersatzeinkommenSelbststaendigkeitBasisjahr.$error"
@@ -486,6 +486,7 @@
 
                                 <div ng-if="!vm.isErsatzeinkommenValid()"
                                      class="well well-status-abgewiesen"
+                                     data-test="ersatzeinkommen-invalid-error-message"
                                      data-translate="FINANZIELLE_SITUATION_ERSATZEINKOMMEN_INVALID"
                                      translate-values="{basisjahr: vm.gesuchModelManager.getBasisjahr()}"></div>
 
@@ -564,6 +565,7 @@
 
                             <div ng-if="!vm.isAtLeastOneErsatzeinkommenSelbststaendigkeitProvided()"
                                  class="well well-status-abgewiesen"
+                                 data-test="all-ersatzeinkommen-selbststaendigkeit-zero-error-message"
                                  data-translate="FINANZIELLE_SITUATION_ERSATZEINKOMMEN_SELBSTSTAENDIGKEIT_INVALID"></div>
 
                             <!-- Durchschnitt Geschäftsgewinn -->
