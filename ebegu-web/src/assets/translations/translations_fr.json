@@ -3077,5 +3077,8 @@
     "PENSUM_FACHSTELLE_INVALID_FACHSTELLEN_SOZIAL": "Un centre spécialisé dans les indications sociales n'est possible que jusqu'au niveau \"{0}\".",
     "PENSUM_FACHSTELLE_INVALID_FACHSTELLEN_SPRACHLICH": "Il ne s'agit plus d'un enfant d'âge préscolaire. Le besoin d'ordre linguistique ne peut pas être saisi.",
     "ZUSATZLICHE_FELDER_ERSATZEINKOMMEN": "Afficher les champs supplémentaires sur la situation financière pour le revenu de remplacement",
+    "FINANZIELLE_SITUATION_ERSATZEINKOMMEN_SELBSTAENDIGKEIT": "Haben Sie als selbständig Erwerbende/r in einem oder mehreren dieser Jahre ein Ersatzeinkommen für einen entgangenen Geschäftsgewinn bezogen?",
+    "FINANZIELLE_SITUATION_ERSATZEINKOMMEN_SELBSTAENDIGKEIT_HELP": "Steuerpflichtiges Ersatzeinkommen von Selbstständigerwerbenden (Ziffern 2.23,  bspw. Corona-Erwerbsausfallentschädigung, Erwerbsausfall bei Dienstpflicht, Mutterschaft, Vaterschaft sowie bei der Betreuung eines gesundheitlich schwer beeinträchtigten Kindes) wird dem Geschäftsgewinn des Jahres angerechnet, in dem es bezogen wurde und in der Berechnung des durchschnittlichen Geschäftsgewinns der vergangenen drei Jahre berücksichtigt. Geben Sie das bezogene Ersatzeinkommen für einen entgangenen Geschäftsgewinn bei dem Jahr an, in dem Sie es bezogen haben.",
+    "FINANZIELLE_SITUATION_ERSATZEINKOMMEN_SELBSTSTAENDIGKEIT_JAHR": "Ersatzeinkommen {{jahr}}",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

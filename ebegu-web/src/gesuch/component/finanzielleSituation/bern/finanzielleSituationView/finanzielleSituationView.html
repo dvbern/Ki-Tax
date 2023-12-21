@@ -419,6 +419,131 @@
                                 </div>
                             </div>
 
+                            <!--Checkbox Ersatzeinkommen Selbstständigkeit -->
+                            <div class="row" ng-if="vm.ersatzeinkommenSelbststaendigkeitActivated">
+                                <div class="col-xs-12 dv-input-container-question">
+                                    <div class="checkbox">
+                                        <md-checkbox ng-model="vm.showErsatzeinkommenSelbststaendigkeit"
+                                                     data-test="show-ersatzeinkommen-selbststaendigkeit"
+                                                     name="showErsatzeinkommenSelbststaendigkeit"
+                                                     id="showErsatzeinkommenSelbststaendigkeit"
+                                                     aria-label="{{'FINANZIELLE_SITUATION_ERSATZEINKOMMEN_SELBSTAENDIGKEIT'|translate}}"
+                                                     ng-change="vm.showErsatzeinkommenSelbststaendigkeitClicked()"
+                                                     ng-disabled="vm.isGesuchReadonly() || vm.isSteueranfrageErfolgreich()">
+                                            <span data-translate="FINANZIELLE_SITUATION_ERSATZEINKOMMEN_SELBSTAENDIGKEIT"></span>
+                                        </md-checkbox>
+                                        <dv-tooltip input-id="showErsatzeinkommenSelbststaendigkeit"
+                                                    text="'FINANZIELLE_SITUATION_ERSATZEINKOMMEN_SELBSTAENDIGKEIT_HELP' | translate"></dv-tooltip>
+                                        <dv-bisher gs="vm.showErsatzeinkommenSelbststaendigkeitGS" class="dv-bisher-break"
+                                                   ja="vm.showErsatzeinkommenSelbststaendigkeit"
+                                                   specific-bisher-text="vm.getTextErsatzeinkommenSelbstaendigKorrektur()"
+                                                   show-if-bisher-none="vm.isNotNullOrUndefined(vm.getModel().finanzielleSituationGS)"
+                                                   show-specific-bisher-text-if-bisher-none="false"></dv-bisher>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div ng-if="vm.showErsatzeinkommenSelbststaendigkeit">
+                                <!-- Ersatzeinkommen Selbstständigkeit Basisjahr -->
+                                <div class="row">
+                                    <div class="col-sm-12 dv-input-container-small">
+                                        <dv-input-container class="form-group">
+                                            <label class="md-no-float"
+                                                   data-translate="FINANZIELLE_SITUATION_ERSATZEINKOMMEN_SELBSTSTAENDIGKEIT_JAHR"
+                                                   for="ersatzeinkommenSelbststaendigkeitBasisjahr"
+                                                   translate-values="{jahr: {{vm.getBasisjahr()}}}"></label>
+                                            <dv-valueinput input-id="ersatzeinkommenSelbststaendigkeitBasisjahr"
+                                                           data-test="ersatzeinkommen-selbststaendigkeit-basisjahr"
+                                                           name="ersatzeinkommenSelbststaendigkeitBasisjahr"
+                                                           ng-model="vm.getModel().finanzielleSituationJA.ersatzeinkommenBasisjahr"
+                                                           ng-required="vm.showErsatzeinkommenSelbststaendigkeit"
+                                                           allow-negative=true
+                                                           dv-on-blur="vm.calculate()"
+                                                           class="input-element"
+                                                           ng-disabled="vm.isGesuchReadonly() || vm.isSteueranfrageErfolgreich()">
+                                            </dv-valueinput>
+                                            <dv-error-messages input-id="ersatzeinkommenSelbststaendigkeitBasisjahr"
+                                                               for="vm.form.ersatzeinkommenSelbststaendigkeitBasisjahr.$error"
+                                                               class="error"></dv-error-messages>
+                                            <dv-bisher gs="vm.getModel().finanzielleSituationGS.ersatzeinkommenBasisjahr"
+                                                       ja="vm.getModel().finanzielleSituationJA.ersatzeinkommenBasisjahr"
+                                                       show-if-bisher-none="false"
+                                                       block-existed="vm.showErsatzeinkommenSelbststaendigkeitGS === true"></dv-bisher>
+                                            <dv-eingabe-hint
+                                                [neuer-wert]="vm.getModel().finanzielleSituationJA.ersatzeinkommenBasisjahr"
+                                                [vergleichswert]="vm.getFinSitVorMutationToWorkWith().ersatzeinkommenBasisjahr"
+                                                [label]="'BISHER' | translate"
+                                                [show-only-if-not-identical]="true"
+                                            ></dv-eingabe-hint>
+                                        </dv-input-container>
+                                    </div>
+                                </div>
+
+                                <!-- Ersatzeinkommen Selbstständigkeit Basisjahr - 1 -->
+                                <div class="row">
+                                    <div class="col-sm-12 dv-input-container-small">
+                                        <dv-input-container class="form-group">
+                                            <label class="md-no-float"
+                                                   data-translate="FINANZIELLE_SITUATION_ERSATZEINKOMMEN_SELBSTSTAENDIGKEIT_JAHR"
+                                                   for="ersatzeinkommenSelbststaendigkeitBasisjahrMinus1"
+                                                   translate-values="{jahr: {{vm.getBasisjahrMinus1()}}}"></label>
+                                            <dv-valueinput input-id="ersatzeinkommenSelbststaendigkeitBasisjahrMinus1"
+                                                           data-test="ersatzeinkommen-selbststaendigkeit-basisjahr-minus-1"
+                                                           name="ersatzeinkommenSelbststaendigkeitBasisjahrMinus1"
+                                                           ng-model="vm.getModel().finanzielleSituationJA.ersatzeinkommenBasisjahrMinus1"
+                                                           allow-negative=true
+                                                           dv-on-blur="vm.calculate()"
+                                                           class="input-element"
+                                                           ng-disabled="vm.isGesuchReadonly() || vm.isSteueranfrageErfolgreich()">
+                                            </dv-valueinput>
+                                            <dv-bisher
+                                                gs="vm.getModel().finanzielleSituationGS.ersatzeinkommenBasisjahrMinus1"
+                                                ja="vm.getModel().finanzielleSituationJA.ersatzeinkommenBasisjahrMinus1"
+                                                show-if-bisher-none="false"
+                                                block-existed="vm.showErsatzeinkommenSelbststaendigkeitGS === true"></dv-bisher>
+                                            <dv-eingabe-hint
+                                                [neuer-wert]="vm.getModel().finanzielleSituationJA.ersatzeinkommenBasisjahrMinus1"
+                                                [vergleichswert]="vm.getFinSitVorMutationToWorkWith().ersatzeinkommenBasisjahrMinus1"
+                                                [label]="'BISHER' | translate"
+                                                [show-only-if-not-identical]="true"
+                                            ></dv-eingabe-hint>
+                                        </dv-input-container>
+                                    </div>
+                                </div>
+
+                                <!-- Geschäftsgewinn Basisjahr - 2 -->
+                                <div class="row">
+                                    <div class="col-sm-12 dv-input-container-small">
+                                        <dv-input-container class="form-group">
+                                            <label class="md-no-float"
+                                                   data-translate="FINANZIELLE_SITUATION_ERSATZEINKOMMEN_SELBSTSTAENDIGKEIT_JAHR"
+                                                   for="ersatzeinkommenSelbststaendigkeitBasisjahrMinus2"
+                                                   translate-values="{jahr: {{vm.getBasisjahrMinus2()}}}"></label>
+                                            <dv-valueinput input-id="ersatzeinkommenSelbststaendigkeitBasisjahrMinus2"
+                                                           data-test="ersatzeinkommen-selbststaendigkeit-basisjahr-minus-2"
+                                                           name="ersatzeinkommenSelbststaendigkeitBasisjahrMinus2"
+                                                           ng-model="vm.getModel().finanzielleSituationJA.ersatzeinkommenBasisjahrMinus2"
+                                                           allow-negative=true
+                                                           dv-on-blur="vm.calculate()"
+                                                           class="input-element"
+                                                           ng-disabled="vm.isGesuchReadonly() || vm.isSteueranfrageErfolgreich()">
+                                            </dv-valueinput>
+                                            <dv-bisher
+                                                gs="vm.getModel().finanzielleSituationGS.ersatzeinkommenBasisjahrMinus2"
+                                                ja="vm.getModel().finanzielleSituationJA.ersatzeinkommenBasisjahrMinus2"
+                                                show-if-bisher-none="false"
+                                                block-existed="vm.showErsatzeinkommenSelbststaendigkeitGS === true"></dv-bisher>
+                                            <dv-eingabe-hint
+                                                [neuer-wert]="vm.getModel().finanzielleSituationJA.ersatzeinkommenBasisjahrMinus2"
+                                                [vergleichswert]="vm.getFinSitVorMutationToWorkWith().ersatzeinkommenBasisjahrMinus2"
+                                                [label]="'BISHER' | translate"
+                                                [show-only-if-not-identical]="true"
+                                            ></dv-eingabe-hint>
+                                        </dv-input-container>
+                                    </div>
+                                </div>
+                            </div>
+
                             <!-- Durchschnitt Geschäftsgewinn -->
                             <div class="row">
                                 <div class="col-sm-12 dv-input-container-small">

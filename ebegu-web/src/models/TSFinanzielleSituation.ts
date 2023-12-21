@@ -14,6 +14,7 @@
  */
 
 import * as moment from 'moment';
+import {EbeguUtil} from '../utils/EbeguUtil';
 import {TSAbstractFinanzielleSituation} from './TSAbstractFinanzielleSituation';
 
 export class TSFinanzielleSituation extends TSAbstractFinanzielleSituation {
@@ -206,5 +207,11 @@ export class TSFinanzielleSituation extends TSAbstractFinanzielleSituation {
         return (this.geschaeftsgewinnBasisjahr !== null && this.geschaeftsgewinnBasisjahr !== undefined)
             || (this._geschaeftsgewinnBasisjahrMinus1 !== null && this._geschaeftsgewinnBasisjahrMinus1 !== undefined)
             || (this._geschaeftsgewinnBasisjahrMinus2 !== null && this._geschaeftsgewinnBasisjahrMinus2 !== undefined);
+    }
+
+    public hasErsatzeinkommenSelbststaendigkeit(): boolean {
+        return EbeguUtil.isNotNullOrUndefined(this.ersatzeinkommenBasisjahr)
+            || EbeguUtil.isNotNullOrUndefined(this.ersatzeinkommenBasisjahrMinus1)
+            || EbeguUtil.isNotNullOrUndefined(this.ersatzeinkommenBasisjahrMinus2);
     }
 }

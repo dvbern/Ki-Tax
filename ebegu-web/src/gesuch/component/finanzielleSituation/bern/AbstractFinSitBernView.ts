@@ -62,7 +62,7 @@ export abstract class AbstractFinSitBernView extends AbstractGesuchViewControlle
         $scope: IScope,
         $timeout: ITimeoutService,
         protected readonly authServiceRS: AuthServiceRS,
-        private readonly einstellungRS: EinstellungRS,
+        protected readonly einstellungRS: EinstellungRS,
         protected readonly dvDialog: DvDialog,
         private readonly applicationPropertyRS: ApplicationPropertyRS
     ) {
