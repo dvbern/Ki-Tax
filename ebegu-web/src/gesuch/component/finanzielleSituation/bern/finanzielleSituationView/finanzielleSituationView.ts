@@ -160,6 +160,8 @@ export class FinanzielleSituationViewController extends AbstractFinSitBernView {
     public showErsatzeinkommenSelbststaendigkeitClicked(): void {
         if (!this.showErsatzeinkommenSelbststaendigkeit) {
             this.resetErsatzeinkommenSelbststaendigkeitFields();
+        } else if (this.getModel().finanzielleSituationJA.ersatzeinkommen === 0) {
+            this.getModel().finanzielleSituationJA.ersatzeinkommenBasisjahr = 0;
         }
     }
 
@@ -250,6 +252,9 @@ export class FinanzielleSituationViewController extends AbstractFinSitBernView {
 
     public save(): IPromise<TSFinanzielleSituationContainer> {
         if (!this.isGesuchValid()) {
+            return undefined;
+        }
+        if (!this.isAtLeastOneErsatzeinkommenSelbststaendigkeitProvided() || !this.isErsatzeinkommenValid()) {
             return undefined;
         }
         // speichern darf nicht möglich sein, wenn das Formular nicht sichtbar ist
@@ -444,5 +449,49 @@ export class FinanzielleSituationViewController extends AbstractFinSitBernView {
         const params = {basisjahr, ersatzeinkommen, ersatzeinkommen2, ersatzeinkommen3};
 
         return this.$translate.instant('JA_KORREKTUR_ERSATZEINKOMMEN_SELBSTAENDIG', params);
+    }
+
+    public isErsatzeinkommenValid(): boolean {
+            const finSit: TSFinanzielleSituation = this.model.getFiSiConToWorkWith().finanzielleSituationJA;
+        return EbeguUtil.isNullOrUndefined(finSit.ersatzeinkommen)
+            || EbeguUtil.isNullOrUndefined(finSit.ersatzeinkommenBasisjahr)
+            || finSit.ersatzeinkommen - finSit.ersatzeinkommenBasisjahr >= 0;
+    }
+
+    public isAtLeastOneErsatzeinkommenSelbststaendigkeitProvided(): boolean {
+        const finSit = this.model.getFiSiConToWorkWith().finanzielleSituationJA;
+        return !finSit.hasErsatzeinkommenSelbststaendigkeit() ||
+            (EbeguUtil.isNotNullOrUndefined(finSit.ersatzeinkommenBasisjahr)
+                && finSit.ersatzeinkommenBasisjahr > 0)
+                || (EbeguUtil.isNotNullOrUndefined(finSit.ersatzeinkommenBasisjahrMinus1)
+                    && finSit.ersatzeinkommenBasisjahrMinus1 > 0)
+            || (EbeguUtil.isNotNullOrUndefined(finSit.ersatzeinkommenBasisjahrMinus2)
+                    && finSit.ersatzeinkommenBasisjahrMinus2 > 0);
+    }
+
+    public hasGeschaeftsgewinn(basisjahrMinus: number): boolean {
+        const finSit = this.model.getFiSiConToWorkWith().finanzielleSituationJA;
+        if (basisjahrMinus === 2) {
+            return EbeguUtil.isNotNullOrUndefined(finSit.geschaeftsgewinnBasisjahrMinus2);
+        }
+        if (basisjahrMinus === 1) {
+            return EbeguUtil.isNotNullOrUndefined(finSit.geschaeftsgewinnBasisjahrMinus1);
+        }
+        return EbeguUtil.isNotNullOrUndefined(finSit.geschaeftsgewinnBasisjahr);
+    }
+
+    public geschaeftsgewinnChange(basisjahrMinus: number): void {
+        const finSit = this.model.getFiSiConToWorkWith().finanzielleSituationJA;
+        if (basisjahrMinus === 2 && finSit.geschaeftsgewinnBasisjahrMinus2 !== undefined) {
+            finSit.ersatzeinkommenBasisjahrMinus2 = null;
+        } else if (basisjahrMinus === 1 && finSit.geschaeftsgewinnBasisjahrMinus1 !== undefined) {
+            finSit.ersatzeinkommenBasisjahrMinus1 = null;
+        }
+    }
+
+    public ersatzeinkommenChanged(): void {
+        if (this.getModel().finanzielleSituationJA.ersatzeinkommen === 0) {
+            this.getModel().finanzielleSituationJA.ersatzeinkommenBasisjahr = 0;
+        }
     }
 }

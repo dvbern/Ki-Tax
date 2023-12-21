@@ -246,6 +246,7 @@
                                                    data-test="ersatzeinkommen"
                                                    ng-model="vm.getModel().finanzielleSituationJA.ersatzeinkommen"
                                                    ng-disabled="vm.isGesuchReadonly() || vm.isSteueranfrageErfolgreich()"
+                                                   ng-change="vm.ersatzeinkommenChanged()"
                                                    class="input-element" required>
                                     </dv-valueinput>
                                     <dv-bisher gs="vm.getModel().finanzielleSituationGS.ersatzeinkommen"
@@ -335,6 +336,7 @@
                                                        ng-required="vm.showSelbstaendig"
                                                        allow-negative=true
                                                        dv-on-blur="vm.calculate()"
+                                                       ng-change="vm.geschaeftsgewinnChange(0)"
                                                        class="input-element"
                                                        ng-disabled="vm.isGesuchReadonly() || vm.isSteueranfrageErfolgreich()">
                                         </dv-valueinput>
@@ -370,6 +372,7 @@
                                                        allow-negative=true
                                                        dv-on-blur="vm.calculate()"
                                                        class="input-element"
+                                                       ng-change="vm.geschaeftsgewinnChange(1)"
                                                        ng-disabled="vm.isGesuchReadonly() || vm.isSteueranfrageErfolgreich()">
                                         </dv-valueinput>
                                         <dv-bisher
@@ -402,6 +405,7 @@
                                                        allow-negative=true
                                                        dv-on-blur="vm.calculate()"
                                                        class="input-element"
+                                                       ng-change="vm.geschaeftsgewinnChange(2)"
                                                        ng-disabled="vm.isGesuchReadonly() || vm.isSteueranfrageErfolgreich()">
                                         </dv-valueinput>
                                         <dv-bisher
@@ -460,7 +464,8 @@
                                                            allow-negative=true
                                                            dv-on-blur="vm.calculate()"
                                                            class="input-element"
-                                                           ng-disabled="vm.isGesuchReadonly() || vm.isSteueranfrageErfolgreich()">
+                                                           ng-required="vm.hasGeschaeftsgewinn(0)"
+                                                           ng-disabled="vm.isGesuchReadonly()  || vm.getModel().finanzielleSituationJA.ersatzeinkommen === 0">
                                             </dv-valueinput>
                                             <dv-error-messages input-id="ersatzeinkommenSelbststaendigkeitBasisjahr"
                                                                for="vm.form.ersatzeinkommenSelbststaendigkeitBasisjahr.$error"
@@ -479,6 +484,11 @@
                                     </div>
                                 </div>
 
+                                <div ng-if="!vm.isErsatzeinkommenValid()"
+                                     class="well well-status-abgewiesen"
+                                     data-translate="FINANZIELLE_SITUATION_ERSATZEINKOMMEN_INVALID"
+                                     translate-values="{basisjahr: vm.gesuchModelManager.getBasisjahr()}"></div>
+
                                 <!-- Ersatzeinkommen Selbstständigkeit Basisjahr - 1 -->
                                 <div class="row">
                                     <div class="col-sm-12 dv-input-container-small">
@@ -494,8 +504,12 @@
                                                            allow-negative=true
                                                            dv-on-blur="vm.calculate()"
                                                            class="input-element"
-                                                           ng-disabled="vm.isGesuchReadonly() || vm.isSteueranfrageErfolgreich()">
+                                                           ng-required="vm.hasGeschaeftsgewinn(1)"
+                                                           ng-disabled="vm.isGesuchReadonly()  || !vm.hasGeschaeftsgewinn(1)">
                                             </dv-valueinput>
+                                            <dv-error-messages input-id="ersatzeinkommenSelbststaendigkeitBasisjahrMinus1"
+                                                               for="vm.form.ersatzeinkommenSelbststaendigkeitBasisjahrMinus1.$error"
+                                                               class="error"></dv-error-messages>
                                             <dv-bisher
                                                 gs="vm.getModel().finanzielleSituationGS.ersatzeinkommenBasisjahrMinus1"
                                                 ja="vm.getModel().finanzielleSituationJA.ersatzeinkommenBasisjahrMinus1"
@@ -511,7 +525,7 @@
                                     </div>
                                 </div>
 
-                                <!-- Geschäftsgewinn Basisjahr - 2 -->
+                                <!-- Ersatzeinkommen Selbstständigkeit Basisjahr - 2 -->
                                 <div class="row">
                                     <div class="col-sm-12 dv-input-container-small">
                                         <dv-input-container class="form-group">
@@ -526,8 +540,12 @@
                                                            allow-negative=true
                                                            dv-on-blur="vm.calculate()"
                                                            class="input-element"
-                                                           ng-disabled="vm.isGesuchReadonly() || vm.isSteueranfrageErfolgreich()">
+                                                           ng-required="vm.hasGeschaeftsgewinn(2)"
+                                                           ng-disabled="vm.isGesuchReadonly() || !vm.hasGeschaeftsgewinn(2)">
                                             </dv-valueinput>
+                                            <dv-error-messages input-id="ersatzeinkommenSelbststaendigkeitBasisjahrMinus2"
+                                                               for="vm.form.ersatzeinkommenSelbststaendigkeitBasisjahrMinus2.$error"
+                                                               class="error"></dv-error-messages>
                                             <dv-bisher
                                                 gs="vm.getModel().finanzielleSituationGS.ersatzeinkommenBasisjahrMinus2"
                                                 ja="vm.getModel().finanzielleSituationJA.ersatzeinkommenBasisjahrMinus2"
@@ -544,10 +562,14 @@
                                 </div>
                             </div>
 
+                            <div ng-if="!vm.isAtLeastOneErsatzeinkommenSelbststaendigkeitProvided()"
+                                 class="well well-status-abgewiesen"
+                                 data-translate="FINANZIELLE_SITUATION_ERSATZEINKOMMEN_SELBSTSTAENDIGKEIT_INVALID"></div>
+
                             <!-- Durchschnitt Geschäftsgewinn -->
                             <div class="row">
                                 <div class="col-sm-12 dv-input-container-small">
-                                    <dv-input-container class="form-group  no-margin"
+                                    <dv-input-container class="form-group"
                                                         ng-if="vm.model.getGesuchstellerNumber() === 1">
                                         <label class="md-no-float"
                                                data-translate="FINANZIELLE_SITUATION_GESCHAEFTSGEWINN_DURCHSCHNITT"

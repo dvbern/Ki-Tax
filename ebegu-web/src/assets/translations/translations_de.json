@@ -3177,6 +3177,8 @@
     "FINANZIELLE_SITUATION_ERSATZEINKOMMEN_SELBSTAENDIGKEIT": "Haben Sie als selbständig Erwerbende/r in einem oder mehreren dieser Jahre ein Ersatzeinkommen für einen entgangenen Geschäftsgewinn bezogen?",
     "FINANZIELLE_SITUATION_ERSATZEINKOMMEN_SELBSTAENDIGKEIT_HELP": "Steuerpflichtiges Ersatzeinkommen von Selbstständigerwerbenden (Ziffern 2.23,  bspw. Corona-Erwerbsausfallentschädigung, Erwerbsausfall bei Dienstpflicht, Mutterschaft, Vaterschaft sowie bei der Betreuung eines gesundheitlich schwer beeinträchtigten Kindes) wird dem Geschäftsgewinn des Jahres angerechnet, in dem es bezogen wurde und in der Berechnung des durchschnittlichen Geschäftsgewinns der vergangenen drei Jahre berücksichtigt. Geben Sie das bezogene Ersatzeinkommen für einen entgangenen Geschäftsgewinn bei dem Jahr an, in dem Sie es bezogen haben.",
     "FINANZIELLE_SITUATION_ERSATZEINKOMMEN_SELBSTSTAENDIGKEIT_JAHR": "Ersatzeinkommen {{jahr}}",
+    "FINANZIELLE_SITUATION_ERSATZEINKOMMEN_INVALID": "Ihre Angaben bezüglich Ersatzeinkommen in Zusammenhang mit einem entgangenen Geschäftsgewinn aufgrund selbständiger Erwerbstätigkeit im Jahr {{basisjahr}} stimmen nicht überein.",
+    "FINANZIELLE_SITUATION_ERSATZEINKOMMEN_SELBSTSTAENDIGKEIT_INVALID": "Sie müssen für mindestens ein Jahr ein Ersatzeinkommen angeben.",
     "JA_KORREKTUR_ERSATZEINKOMMEN_SELBSTAENDIG": "Ersatzeinkommen Selbständigkeit {{basisjahr}}: {{ersatzeinkommen}},\n Geschäftsgewinn {{basisjahr - 1}}: {{ersatzeinkommen2 }},\n Geschäftsgewinn {{basisjahr - 2}}: {{ersatzeinkommen3}} ",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }
