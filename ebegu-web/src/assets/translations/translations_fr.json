@@ -3076,5 +3076,6 @@
     "KITA_STUNDEN_PRO_TAG": "Kita Stunden pro Tag",
     "PENSUM_FACHSTELLE_INVALID_FACHSTELLEN_SOZIAL": "Un centre spécialisé dans les indications sociales n'est possible que jusqu'au niveau \"{0}\".",
     "PENSUM_FACHSTELLE_INVALID_FACHSTELLEN_SPRACHLICH": "Il ne s'agit plus d'un enfant d'âge préscolaire. Le besoin d'ordre linguistique ne peut pas être saisi.",
+    "ZUSATZLICHE_FELDER_ERSATZEINKOMMEN": "Afficher les champs supplémentaires sur la situation financière pour le revenu de remplacement",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }
