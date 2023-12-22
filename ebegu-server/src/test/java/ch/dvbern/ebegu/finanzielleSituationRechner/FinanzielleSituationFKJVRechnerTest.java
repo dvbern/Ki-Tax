@@ -17,14 +17,14 @@
 
 package ch.dvbern.ebegu.finanzielleSituationRechner;
 
-import java.math.BigDecimal;
-
 import ch.dvbern.ebegu.entities.FinanzielleSituation;
 import ch.dvbern.ebegu.entities.FinanzielleSituationContainer;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.GesuchstellerContainer;
 import org.junit.Before;
 import org.junit.Test;
+
+import java.math.BigDecimal;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
@@ -90,6 +90,75 @@ public class FinanzielleSituationFKJVRechnerTest extends FinanzielleSituationBer
 		assertThat(
 				gesuch.getFinanzDatenDTO_zuZweit().getMassgebendesEinkBjVorAbzFamGr(),
 				is(BigDecimal.valueOf(60505 * 2)));
+	}
+
+	/**
+	 * Steuerbares Einkommen								60'000
+	 * Erhaltene Unterhaltsbeiträge						   + 1'135
+	 * Steuerbares Vermögen	10'000, 5% =			       +   500
+	 * Bruttoerträge aus Vermögen						   +	50
+	 * Einkommen im vereinfachten Verfahren abgerechnet    +    50
+	 *
+	 *      Geschäftsgewinn BJ 					+ 5'000
+	 * 	    Geschäftsgewinn BJ-1				+ 3'500
+	 * 	    Geschäftsgewinn BJ-2				+ 1'840
+	 * 	    Ersatzeinkommen BJ					+ 1'600
+	 * 	    Ersatzeinkommen BJ-1				+ 3'208
+	 * 	    Ersatzeinkommen BJ-2				+ 1'847
+	 * 	    Total 								16'995
+	 * 	Durchschnittlicher Geschäftsgwinn (16'995/3)       + 5'665
+	 *
+	 *		Ersatzeinkomen						10'000
+	 *		Ersatzeinkommen BJ			       - 1'600
+	 * 	    Ersatzeinkommen BJ-1		       - 3'208
+	 * 	    Ersatzeinkommen BJ-2		       - 1'847
+	 * 	Zu Berücksichtigendes Ersatzeinkommen  				+3'345
+	 * Schuldzinsen subtrahieren						   - 	10
+	 * Gewinnungskosten subtrahieren					   -	85
+	 *
+	 *
+	 * -------
+	 * 70650
+	 */
+	@Test
+	public void calculateFinanzdatenWithErsatzeinkommenSelbsstaendig() {
+		Gesuch gesuch = new Gesuch();
+		GesuchstellerContainer gesuchstellerContainer = new GesuchstellerContainer();
+		FinanzielleSituationContainer finanzielleSituationContainer = new FinanzielleSituationContainer();
+		FinanzielleSituation finSit = new FinanzielleSituation();
+
+		finSit.setNettolohn(NETTLOHON);
+		finSit.setBruttovermoegen(STEUERBARES_VERMOEGEN);
+		finSit.setSchulden(BigDecimal.ZERO);
+
+		finSit.setFamilienzulage(BigDecimal.ZERO);
+		finSit.setErsatzeinkommen(BigDecimal.valueOf(10000));
+		finSit.setErhalteneAlimente(BigDecimal.valueOf(1135));
+
+		finSit.setFamilienzulage(BigDecimal.ZERO);
+		finSit.setBruttoertraegeVermoegen(BigDecimal.valueOf(50));
+		finSit.setGeschaeftsgewinnBasisjahr(BigDecimal.valueOf(5000));
+		finSit.setGeschaeftsgewinnBasisjahrMinus1(BigDecimal.valueOf(3500));
+		finSit.setGeschaeftsgewinnBasisjahrMinus2(BigDecimal.valueOf(1840));
+		finSit.setErsatzeinkommenBasisjahr(BigDecimal.valueOf(1600));
+		finSit.setErsatzeinkommenBasisjahrMinus1(BigDecimal.valueOf(3208));
+		finSit.setErsatzeinkommenBasisjahrMinus2(BigDecimal.valueOf(1847));
+
+		finSit.setAbzugSchuldzinsen(BigDecimal.valueOf(10));
+		finSit.setGewinnungskosten(BigDecimal.valueOf(85));
+		finSit.setEinkommenInVereinfachtemVerfahrenAbgerechnet(false);
+
+		finSit.setEinkommenInVereinfachtemVerfahrenAbgerechnet(true);
+		finSit.setAmountEinkommenInVereinfachtemVerfahrenAbgerechnet(BigDecimal.valueOf(50));
+
+		finanzielleSituationContainer.setFinanzielleSituationJA(finSit);
+		gesuchstellerContainer.setFinanzielleSituationContainer(finanzielleSituationContainer);
+		gesuch.setGesuchsteller1(gesuchstellerContainer);
+
+		finSitRechner.calculateFinanzDaten(gesuch, null);
+		assertThat(
+			gesuch.getFinanzDatenDTO_alleine().getMassgebendesEinkBjVorAbzFamGr(),
+			is(BigDecimal.valueOf(70650)));
 	}
 
 	private Gesuch prepareGesuch(boolean secondGesuchsteller) {

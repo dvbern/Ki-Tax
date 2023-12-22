@@ -17,13 +17,13 @@
 
 package ch.dvbern.ebegu.finanzielleSituationRechner;
 
-import java.math.BigDecimal;
+import ch.dvbern.ebegu.entities.AbstractFinanzielleSituation;
+import ch.dvbern.ebegu.entities.FinanzielleSituation;
+import org.apache.commons.lang.NotImplementedException;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-
-import ch.dvbern.ebegu.entities.AbstractFinanzielleSituation;
-import org.apache.commons.lang.NotImplementedException;
+import java.math.BigDecimal;
 
 public class FinanzielleSituationFKJVRechner extends FinanzielleSituationBernRechner {
 
@@ -44,6 +44,12 @@ public class FinanzielleSituationFKJVRechner extends FinanzielleSituationBernRec
 			total = add(total, abstractFinanzielleSituation.getNettoertraegeErbengemeinschaft());
 			if (Boolean.TRUE.equals(abstractFinanzielleSituation.getEinkommenInVereinfachtemVerfahrenAbgerechnet())) {
 				total = add(total, abstractFinanzielleSituation.getAmountEinkommenInVereinfachtemVerfahrenAbgerechnet());
+			}
+			if (abstractFinanzielleSituation instanceof FinanzielleSituation) {
+				FinanzielleSituation finanzielleSituation = (FinanzielleSituation) abstractFinanzielleSituation;
+				total = subtract(total, finanzielleSituation.getErsatzeinkommenBasisjahr());
+				total = subtract(total, finanzielleSituation.getErsatzeinkommenBasisjahrMinus1());
+				total = subtract(total, finanzielleSituation.getErsatzeinkommenBasisjahrMinus2());
 			}
 		}
 		return total;
