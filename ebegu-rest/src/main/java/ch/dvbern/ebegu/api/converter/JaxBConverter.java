@@ -2830,10 +2830,9 @@ public class JaxBConverter extends AbstractConverter {
 		finanzielleSituation.setVeranlagtVorjahr(finanzielleSituationJAXP.getVeranlagtVorjahr());
 		finanzielleSituation.setMomentanSelbststaendig(finanzielleSituationJAXP.getMomentanSelbststaendig());
 
-		finanzielleSituation.setErsatzeinkommenBezogen(finanzielleSituationJAXP.isErsatzeinkommenBezogen());
-		finanzielleSituation.setErsatzeinkommenBasisjahr(finanzielleSituationJAXP.getErsatzeinkommenBasisjahr());
-		finanzielleSituation.setErsatzeinkommenBasisjahrMinus1(finanzielleSituationJAXP.getErsatzeinkommenBasisjahrMinus1());
-		finanzielleSituation.setErsatzeinkommenBasisjahrMinus2(finanzielleSituationJAXP.getErsatzeinkommenBasisjahrMinus2());
+		finanzielleSituation.setErsatzeinkommenSelbststaendigkeitBasisjahr(finanzielleSituationJAXP.getErsatzeinkommenSelbststaendigkeitBasisjahr());
+		finanzielleSituation.setErsatzeinkommenSelbststaendigkeitBasisjahrMinus1(finanzielleSituationJAXP.getErsatzeinkommenSelbststaendigkeitBasisjahrMinus1());
+		finanzielleSituation.setErsatzeinkommenSelbststaendigkeitBasisjahrMinus2(finanzielleSituationJAXP.getErsatzeinkommenSelbststaendigkeitBasisjahrMinus2());
 
 		return finanzielleSituation;
 	}
@@ -2925,10 +2924,9 @@ public class JaxBConverter extends AbstractConverter {
 		jaxFinanzielleSituation.setAutomatischePruefungErlaubt(persistedFinanzielleSituation.getAutomatischePruefungErlaubt());
 		jaxFinanzielleSituation.setMomentanSelbststaendig(persistedFinanzielleSituation.getMomentanSelbststaendig());
 
-		jaxFinanzielleSituation.setErsatzeinkommenBezogen(persistedFinanzielleSituation.isErsatzeinkommenBezogen());
-		jaxFinanzielleSituation.setErsatzeinkommenBasisjahr(persistedFinanzielleSituation.getErsatzeinkommenBasisjahr());
-		jaxFinanzielleSituation.setErsatzeinkommenBasisjahrMinus1(persistedFinanzielleSituation.getErsatzeinkommenBasisjahrMinus1());
-		jaxFinanzielleSituation.setErsatzeinkommenBasisjahrMinus2(persistedFinanzielleSituation.getErsatzeinkommenBasisjahrMinus2());
+		jaxFinanzielleSituation.setErsatzeinkommenSelbststaendigkeitBasisjahr(persistedFinanzielleSituation.getErsatzeinkommenSelbststaendigkeitBasisjahr());
+		jaxFinanzielleSituation.setErsatzeinkommenSelbststaendigkeitBasisjahrMinus1(persistedFinanzielleSituation.getErsatzeinkommenSelbststaendigkeitBasisjahrMinus1());
+		jaxFinanzielleSituation.setErsatzeinkommenSelbststaendigkeitBasisjahrMinus2(persistedFinanzielleSituation.getErsatzeinkommenSelbststaendigkeitBasisjahrMinus2());
 
 		return jaxFinanzielleSituation;
 	}

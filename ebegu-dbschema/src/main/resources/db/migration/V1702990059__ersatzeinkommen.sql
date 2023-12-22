@@ -15,12 +15,10 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-alter table finanzielle_situation add ersatzeinkommen_bezogen BIT NOT NULL DEFAULT false;
-alter table finanzielle_situation add ersatzeinkommen_basisjahr  DECIMAL(19, 2);
-alter table finanzielle_situation add ersatzeinkommen_basisjahr_minus1 DECIMAL(19, 2);
-alter table finanzielle_situation add ersatzeinkommen_basisjahr_minus2 DECIMAL(19, 2);
+alter table finanzielle_situation add ersatzeinkommen_selbststaendigkeit_basisjahr DECIMAL(19, 2);
+alter table finanzielle_situation add ersatzeinkommen_selbststaendigkeit_basisjahr_minus1 DECIMAL(19, 2);
+alter table finanzielle_situation add ersatzeinkommen_selbststaendigkeit_basisjahr_minus2 DECIMAL(19, 2);
 
-alter table finanzielle_situation_aud add ersatzeinkommen_bezogen BIT;
-alter table finanzielle_situation_aud add  ersatzeinkommen_basisjahr  DECIMAL(19, 2);
-alter table finanzielle_situation_aud add ersatzeinkommen_basisjahr_minus1 DECIMAL(19, 2);
-alter table finanzielle_situation_aud add ersatzeinkommen_basisjahr_minus2 DECIMAL(19, 2);
+alter table finanzielle_situation_aud add ersatzeinkommen_selbststaendigkeit_basisjahr DECIMAL(19, 2);
+alter table finanzielle_situation_aud add ersatzeinkommen_selbststaendigkeit_basisjahr_minus1 DECIMAL(19, 2);
+alter table finanzielle_situation_aud add ersatzeinkommen_selbststaendigkeit_basisjahr_minus2 DECIMAL(19, 2);
