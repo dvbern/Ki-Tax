@@ -106,7 +106,7 @@ public enum EinstellungKey {
 	GEMEINDE_PAUSCHALBETRAG_HOHE_EINKOMMENSKLASSEN_MAX_MASSGEBENDEN_EINKOMMEN_FUER_BERECHNUNG(MandantIdentifier.SOLOTHURN, EinstellungTyp.GEMEINDE),
 
 	// Wenn aktiv werden in der Gemeinde werde keine Gutscheine für Sozialhilfeempfänger ausgestellt
-	GEMEINDE_KEIN_GUTSCHEIN_FUER_SOZIALHILFE_EMPFAENGER(MandantIdentifier.getAll(), EinstellungTyp.GEMEINDE),
+	GEMEINDE_KEIN_GUTSCHEIN_FUER_SOZIALHILFE_EMPFAENGER(MandantIdentifier.SOLOTHURN, EinstellungTyp.GEMEINDE),
 
 	// *** Einstellungen fuer die Gutscheinberechnung
 
