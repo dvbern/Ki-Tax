@@ -255,6 +255,7 @@ export class FinanzielleSituationViewController extends AbstractFinSitBernView {
             return undefined;
         }
         if (!this.isAtLeastOneErsatzeinkommenSelbststaendigkeitProvided() || !this.isErsatzeinkommenValid()) {
+            this.scrollToErsatzeinkommenSelbststaendigkeit();
             return undefined;
         }
         // speichern darf nicht möglich sein, wenn das Formular nicht sichtbar ist
@@ -492,6 +493,13 @@ export class FinanzielleSituationViewController extends AbstractFinSitBernView {
     public ersatzeinkommenChanged(): void {
         if (this.getModel().finanzielleSituationJA.ersatzeinkommen === 0) {
             this.getModel().finanzielleSituationJA.ersatzeinkommenBasisjahr = 0;
+        }
+    }
+
+    private scrollToErsatzeinkommenSelbststaendigkeit(): void {
+        const tmp = document.getElementById('ersatzeinkommen-selbststaendigkeit-container');
+        if (tmp) {
+            tmp.scrollIntoView();
         }
     }
 }
