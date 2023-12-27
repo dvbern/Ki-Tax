@@ -2802,13 +2802,18 @@ public class JaxBConverter extends AbstractConverter {
 		requireNonNull(finanzielleSituationJAXP);
 
 		// wenn die finanzielle Situation durch die Steuerdatenschnittstelle ausgefüllt wurde
-		// ist es nie erlaubt, diese Werte zu überschreiben. Eine Ausnahme ist das Einkommen aus dem vereinfachten
-		// Verfahren und die Flag für den Zugriff
+		// ist es nie erlaubt, diese Werte zu überschreiben. Eine Ausnahme sind das Einkommen aus dem vereinfachten
+		// Verfahren, die Flag für den Zugriff und das Ersatzeinkommen bei Selbstständigkeit
 		if (finanzielleSituation.getSteuerdatenAbfrageStatus() != null
 			&& finanzielleSituation.getSteuerdatenAbfrageStatus().isSteuerdatenAbfrageErfolgreich()) {
 			finanzielleSituation.setSteuerdatenZugriff(finanzielleSituationJAXP.getSteuerdatenZugriff());
 			finanzielleSituation.setEinkommenInVereinfachtemVerfahrenAbgerechnet(finanzielleSituationJAXP.getEinkommenInVereinfachtemVerfahrenAbgerechnet());
 			finanzielleSituation.setAmountEinkommenInVereinfachtemVerfahrenAbgerechnet(finanzielleSituationJAXP.getAmountEinkommenInVereinfachtemVerfahrenAbgerechnet());
+
+			finanzielleSituation.setErsatzeinkommenBezogen(finanzielleSituationJAXP.isErsatzeinkommenBezogen());
+			finanzielleSituation.setErsatzeinkommenBasisjahr(finanzielleSituationJAXP.getErsatzeinkommenBasisjahr());
+			finanzielleSituation.setErsatzeinkommenBasisjahrMinus1(finanzielleSituationJAXP.getErsatzeinkommenBasisjahrMinus1());
+			finanzielleSituation.setErsatzeinkommenBasisjahrMinus2(finanzielleSituationJAXP.getErsatzeinkommenBasisjahrMinus2());
 			return finanzielleSituation;
 		}
 
@@ -2830,10 +2835,6 @@ public class JaxBConverter extends AbstractConverter {
 		finanzielleSituation.setVeranlagtVorjahr(finanzielleSituationJAXP.getVeranlagtVorjahr());
 		finanzielleSituation.setMomentanSelbststaendig(finanzielleSituationJAXP.getMomentanSelbststaendig());
 
-		finanzielleSituation.setErsatzeinkommenBezogen(finanzielleSituationJAXP.isErsatzeinkommenBezogen());
-		finanzielleSituation.setErsatzeinkommenBasisjahr(finanzielleSituationJAXP.getErsatzeinkommenBasisjahr());
-		finanzielleSituation.setErsatzeinkommenBasisjahrMinus1(finanzielleSituationJAXP.getErsatzeinkommenBasisjahrMinus1());
-		finanzielleSituation.setErsatzeinkommenBasisjahrMinus2(finanzielleSituationJAXP.getErsatzeinkommenBasisjahrMinus2());
 
 		return finanzielleSituation;
 	}
