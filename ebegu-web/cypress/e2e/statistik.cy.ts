@@ -1,3 +1,4 @@
+import {TestFaellePO} from '@dv-e2e/page-objects';
 import { getUser } from '@dv-e2e/types';
 
 describe('Kibon - generate Statistiken', () => {
@@ -10,15 +11,12 @@ describe('Kibon - generate Statistiken', () => {
         cy.login(userSuperadmin);
         cy.visit('/#/faelle');
 
-        cy.getByData('page-menu').click();
-        cy.getByData('action-admin.testdaten').click();
-        cy.getByData('gemeinde').click();
-        cy.getByData('gemeinde.Paris').click();
-        cy.getByData('periode').click();
-        cy.getByData('periode.2022/23').click();
-        cy.getByData('creationType.verfuegt').find('label').click();
-        cy.getByData('testfall-2').click();
-        cy.get('[data-test="dialog-link"]', { timeout: 750000 }).click();
+        TestFaellePO.createPapierTestfall({
+            testFall: 'testfall-2',
+            gemeinde: 'Paris',
+            periode: '2022/23',
+            betreuungsstatus: 'verfuegt'
+        });
     });
 
     beforeEach(() => {

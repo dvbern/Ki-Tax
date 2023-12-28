@@ -27,8 +27,9 @@ const createPapierTestfall = (data: {testFall: TestFall, gemeinde: GemeindeTestF
     cy.getByData(`periode.${data.periode}`).click();
     cy.getByData(`creationType.${data.betreuungsstatus}`).find('label').click();
     cy.getByData(data.testFall).click();
-    cy.get('[data-test="dialog-link"]', { timeout: 100000 }).click();
-    cy.getByData('fall-creation-eingangsdatum').find('input').should('have.value', '15.2.2016');
+    cy.intercept('GET', '**/dossier/id//**').as('opengesuch');
+    cy.get('[data-test="dialog-link"]', {timeout: Cypress.config('defaultCommandTimeout') * 50}).click();
+    cy.wait('@opengesuch');
 };
 
 const createOnlineTestfall = (data: {
@@ -49,8 +50,9 @@ const createOnlineTestfall = (data: {
     cy.getByData(`gesuchsteller`).click();
     cy.getByData(`gesuchsteller.${normalizeUser(data.besitzerin)}`).click();
     cy.getByData(data.testFall).click();
-    cy.get('[data-test="dialog-link"]', { timeout: 20000 }).click();
-    cy.getByData('fall-creation-eingangsdatum').find('input').should('have.value', '15.2.2016');
+    cy.intercept('GET', '**/dossier/id//**').as('opengesuch');
+    cy.get('[data-test="dialog-link"]', {timeout: Cypress.config('defaultCommandTimeout') * 50}).click();
+    cy.wait('@opengesuch');
 };
 
 export const TestFaellePO = {

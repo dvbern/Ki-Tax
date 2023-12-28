@@ -1,3 +1,4 @@
+import {TestFaellePO} from '@dv-e2e/page-objects';
 import {getUser} from "@dv-e2e/types";
 
 describe('Kibon - generate Testfälle [Gemeinde Sachbearbeiter]', () => {
@@ -12,18 +13,13 @@ describe('Kibon - generate Testfälle [Gemeinde Sachbearbeiter]', () => {
     before(() => {
         cy.login(adminUser);
         cy.visit('/#/faelle');
-        cy.getByData('page-title').contains('Alle Fälle');
-        cy.getByData('page-menu').click();
-        cy.getByData('action-admin.testdaten').click();
-        cy.getByData('gemeinde').click();
-        cy.getByData('gemeinde.London').click();
-        cy.getByData('periode').click();
-        cy.getByData('periode.2022/23').click();
-        cy.getByData('creationType.verfuegt').find('label').click();
-        cy.getByData('testfall-1').click();
-        cy.intercept('GET', '**/dossier/id//**').as('opengesuch');
-        cy.get('[data-test="dialog-link"]', {timeout: Cypress.config('defaultCommandTimeout') * 10}).click();
-        cy.wait('@opengesuch');
+        TestFaellePO.createPapierTestfall({
+            testFall: 'testfall-1',
+            betreuungsstatus: 'verfuegt',
+            gemeinde: 'London',
+            periode: '2022/23'
+        });
+
         cy.getByData('fallnummer').invoke('text').then(value => {
             fallnummer = value;
             cy.getByData('fallnummer').should('contain.text', fallnummer);

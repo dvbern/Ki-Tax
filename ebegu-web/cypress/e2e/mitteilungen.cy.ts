@@ -1,3 +1,4 @@
+import {TestFaellePO} from '@dv-e2e/page-objects';
 import { getUser, normalizeUser } from '@dv-e2e/types';
 
 describe('Kibon - Test Mitteilungen', () => {
@@ -17,18 +18,14 @@ describe('Kibon - Test Mitteilungen', () => {
         cy.login(userSuperAdmin);
         cy.visit('/#/faelle');
 
-        cy.getByData('page-menu').click();
-        cy.getByData('action-admin.testdaten').click();
-        cy.getByData('creationType.verfuegt').find('label').click();
-        cy.getByData('gesuchsteller').click();
-        cy.getByData(`gesuchsteller.${normalizeUser(userGS)}`).click();
-        cy.getByData('gemeinde').click();
-        cy.getByData('gemeinde.London').click();
-        cy.getByData('periode').click();
-        cy.getByData('periode.2023/24').click();
+        TestFaellePO.createOnlineTestfall({
+            testFall: 'testfall-2',
+            besitzerin: '[5-GS] Michael Berger',
+            betreuungsstatus: 'verfuegt',
+            periode: '2023/24',
+            gemeinde: 'London'
+        });
 
-        cy.getByData('testfall-2').click();
-        cy.get('[data-test="dialog-link"]', { timeout: 75000 }).click();
         cy.getByData('fall-creation-eingangsdatum').find('input').should('have.value', '15.2.2016');
         cy.getByData('verantwortlicher').click();
         cy.getByData(`option.${normalizeUser(userSB)}`).click();

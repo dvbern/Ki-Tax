@@ -1,3 +1,4 @@
+import {TestFaellePO} from '@dv-e2e/page-objects';
 import {getUser, normalizeUser} from '@dv-e2e/types';
 
 describe('Kibon - Gesuch zu Steuerverwaltung senden', () => {
@@ -12,19 +13,12 @@ describe('Kibon - Gesuch zu Steuerverwaltung senden', () => {
         cy.login(userSuperadmin);
         cy.visit('/#/faelle');
 
-        cy.getByData('page-menu').click();
-        cy.getByData('action-admin.testdaten').click();
-        cy.getByData('creationType.verfuegt').find('label').click();
-        cy.getByData('gemeinde').click();
-        cy.getByData('gemeinde.London').click();
-        cy.getByData('periode').click();
-        cy.getByData('periode.2023/24').click();
-
-        cy.getByData('testfall-2').click();
-
-        cy.intercept('GET', '**/dossier/id//**').as('opengesuch');
-        cy.get('[data-test="dialog-link"]', {timeout: Cypress.config('defaultCommandTimeout') * 6}).click();
-        cy.wait('@opengesuch');
+        TestFaellePO.createPapierTestfall({
+            testFall: 'testfall-2',
+            gemeinde: 'London',
+            periode: '2023/24',
+            betreuungsstatus: 'verfuegt'
+        });
 
         cy.url().then((url) => {
             const parts = new URL(url);

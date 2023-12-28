@@ -1,5 +1,5 @@
 import {getUser, normalizeUser, User} from '@dv-e2e/types';
-import {AntragBetreuungPO} from '@dv-e2e/page-objects';
+import {AntragBetreuungPO, TestFaellePO} from '@dv-e2e/page-objects';
 
 describe('Kibon - Online TS-Anmeldung (Mischgesuch) [Gesuchsteller]', () => {
     const userSuperadmin = getUser('[1-Superadmin] E-BEGU Superuser');
@@ -14,19 +14,12 @@ describe('Kibon - Online TS-Anmeldung (Mischgesuch) [Gesuchsteller]', () => {
         cy.login(userSuperadmin);
         cy.visit('/#/faelle');
 
-        cy.getByData('page-menu').click();
-        cy.getByData('action-admin.testdaten').click();
-        cy.getByData('creationType.warten').find('label').click();
-        cy.getByData('gesuchsteller').click();
-        cy.getByData(`gesuchsteller.${normalizeUser(userGS)}`).click();
-        cy.getByData('gemeinde').click();
-        cy.getByData('gemeinde.Paris').click();
-        cy.getByData('periode').click();
-        cy.getByData('periode.2023/24').click();
-
-        cy.getByData('testfall-2').click();
-        cy.waitForRequest('GET', '**/benutzer/TsOrGemeinde/**', () => {
-            cy.get('[data-test="dialog-link"]', {timeout: Cypress.config('defaultCommandTimeout') * 4}).click();
+        TestFaellePO.createOnlineTestfall({
+            testFall: 'testfall-2',
+            periode: '2023/24',
+            gemeinde: 'Paris',
+            besitzerin: '[5-GS] Emma Gerber',
+            betreuungsstatus: 'warten'
         });
 
         cy.url().then((url) => {

@@ -1,3 +1,4 @@
+import {TestFaellePO} from '@dv-e2e/page-objects';
 import { getUser, normalizeUser } from '@dv-e2e/types';
 
 describe('Kibon - mutationen [Gesuchsteller]', () => {
@@ -10,18 +11,13 @@ describe('Kibon - mutationen [Gesuchsteller]', () => {
         cy.login(userSuperadmin);
         cy.visit('/#/faelle');
 
-        cy.getByData('page-menu').click();
-        cy.getByData('action-admin.testdaten').click();
-        cy.getByData('creationType.verfuegt').find('label').click();
-        cy.getByData('gesuchsteller').click();
-        cy.getByData(`gesuchsteller.${normalizeUser(userGS)}`).click();
-        cy.getByData('gemeinde').click();
-        cy.getByData('gemeinde.London').click();
-        cy.getByData('periode').click();
-        cy.getByData('periode.2023/24').click();
-
-        cy.getByData('testfall-2').click();
-        cy.get('[data-test="dialog-link"]', { timeout: Cypress.config('defaultCommandTimeout') * 4 }).click();
+        TestFaellePO.createOnlineTestfall({
+            testFall: 'testfall-2',
+            periode: '2023/24',
+            gemeinde: 'London',
+            besitzerin: '[5-GS] Michael Berger',
+            betreuungsstatus: 'verfuegt'
+        });
 
         cy.url().then((url) => {
             const parts = new URL(url);
