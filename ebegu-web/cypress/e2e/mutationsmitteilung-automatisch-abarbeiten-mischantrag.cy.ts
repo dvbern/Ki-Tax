@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {AntragBetreuungPO, TestFaellePO} from '@dv-e2e/page-objects';
+import {AntragBetreuungPO, NavigationPO, TestFaellePO} from '@dv-e2e/page-objects';
 import {getUser} from '@dv-e2e/types';
 import {PosteingangPO} from '../page-objects/antrag/posteingang.po';
 import {SidenavPO} from '../page-objects/antrag/sidenav.po';
@@ -58,7 +58,7 @@ describe('Kibon - Testet das Feature der automatischen Abarbeitung von Mutations
 
         SidenavPO.goTo('DOKUMENTE');
 
-        cy.getByData('container.navigation-save', 'navigation-button').click();
+        NavigationPO.saveAndGoNext();
         cy.getByData('container.freigeben', 'navigation-button').click();
         // TODO: extract duplication once KIBON-3208 is merged
         cy.getDownloadUrl(() => {
@@ -89,7 +89,7 @@ describe('Kibon - Testet das Feature der automatischen Abarbeitung von Mutations
             SidenavPO.goTo('GESUCH_ERSTELLEN');
             cy.waitForRequest('PUT', '**/gesuche', () => {
                 cy.getByData('fall-creation-alternativDatum').type('01.07.2022');
-                cy.getByData('container.navigation-save', 'navigation-button').click();
+                NavigationPO.saveAndGoNext();
             });
 
         }
@@ -199,7 +199,7 @@ describe('Kibon - Testet das Feature der automatischen Abarbeitung von Mutations
 
             cy.waitForRequest('GET', '**/FINANZIELLE_SITUATION_TYP/gemeinde/*/gp/*', () => {
                 cy.getByData('fall-creation-eingangsdatum').find('input').type('01.12.2022');
-                cy.getByData('container.navigation-save', 'navigation-button').contains('Erstellen').click();
+                NavigationPO.getSaveAndNextButton().contains('Erstellen').click();
             });
             cy.waitForRequest('GET', '**/verfuegung/calculate/**', () => {
                 SidenavPO.goTo('VERFUEGEN');

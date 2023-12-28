@@ -1,4 +1,4 @@
-import {TestFaellePO} from '@dv-e2e/page-objects';
+import {NavigationPO, TestFaellePO} from '@dv-e2e/page-objects';
 import { getUser, normalizeUser } from '@dv-e2e/types';
 import {SidenavPO} from '../page-objects/antrag/sidenav.po';
 
@@ -34,7 +34,7 @@ describe('Kibon - mutationen [Gesuchsteller]', () => {
         cy.getByData('toolbar.antrag-mutieren').click();
         cy.wait('@mutationReady');
 
-        cy.getByData('container.navigation-save', 'navigation-button').contains('Erstellen').click();
+        NavigationPO.getSaveAndNextButton().contains('Erstellen').click();
         cy.url().should('not.contain', 'CREATE_NEW_MUTATION/ONLINE');
 
         SidenavPO.goTo('UMZUG');
@@ -46,7 +46,7 @@ describe('Kibon - mutationen [Gesuchsteller]', () => {
         cy.getByData('container.umzug-0', 'adresseOrt').type('Bern');
         cy.getByData('container.umzug-0', 'gueltigAb').find('input').type('01.11.2023');
         cy.intercept('GET', '**/einstellung/key/FINANZIELLE_SITUATION_TYP/gemeinde/**').as('goingToAbwesenheit');
-        cy.getByData('container.navigation-save', 'navigation-button').click();
+        NavigationPO.saveAndGoNext();
         cy.wait('@goingToAbwesenheit');
 
         cy.getByData('ABWESENHEIT').click();
@@ -56,7 +56,7 @@ describe('Kibon - mutationen [Gesuchsteller]', () => {
         cy.getByData('abwesenheit-bis').find('input').type('30.11.2023');
 
         cy.intercept('GET', '**/gesuche/ausserordentlicheranspruchpossible/**').as('abwesenheitSaved');
-        cy.getByData('container.navigation-save', 'navigation-button').click();
+        NavigationPO.saveAndGoNext();
         cy.wait('@abwesenheitSaved');
 
         SidenavPO.goTo('FREIGABE');
@@ -106,7 +106,7 @@ describe('Kibon - mutationen [Gesuchsteller]', () => {
         cy.getByData('toolbar.antrag-mutieren').click();
         cy.getByData('fall-creation-eingangsdatum').find('input').type('01.05.2023');
         cy.intercept('GET', '**/gesuche/dossier/**').as('createNewMutation');
-        cy.getByData('container.navigation-save', 'navigation-button').click();
+        NavigationPO.saveAndGoNext();
         cy.wait('@createNewMutation');
 
         cy.getByData('toolbar.antrag').click();

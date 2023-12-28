@@ -16,12 +16,14 @@
  */
 
 import { FixtureFamSit } from '@dv-e2e/fixtures';
+import {NavigationPO} from './navigation.po';
 
 const fillFamiliensituationForm = (dataset: keyof typeof FixtureFamSit) => {
     FixtureFamSit[dataset](({ GS1, GS2 }) => {
         cy.getByData('familienstatus.VERHEIRATET').find('label').click();
-        cy.getByData('container.navigation-save', 'navigation-button').click();
-        cy.getByData('geschlecht.radio-group').should('have.class', 'ng-untouched');
+        NavigationPO.saveAndGoNext();
+        cy.wait(2000);
+        cy.url().should('include', 'stammdaten');
         cy.getByData(`geschlecht.radio-value.${GS1.geschlecht}`).click();
         cy.getByData('vorname').clear();
         cy.getByData('vorname').type(GS1.vorname);
@@ -33,7 +35,9 @@ const fillFamiliensituationForm = (dataset: keyof typeof FixtureFamSit) => {
         cy.getByData('container.wohn', 'adresseHausnummer').type(GS1.adresseHausnummer);
         cy.getByData('container.wohn', 'adressePlz').type(GS1.adressePlz);
         cy.getByData('container.wohn', 'adresseOrt').type(GS1.adresseOrt);
-        cy.getByData('container.navigation-save', 'navigation-button').click();
+        NavigationPO.saveAndGoNext();
+        cy.url().should('include', 'stammdaten');
+        cy.wait(2000);
         cy.getByData('geschlecht.radio-group').should('have.class', 'ng-untouched');
         cy.getByData('gesuchformular-title').should('include.text', '2');
         cy.getByData(`geschlecht.radio-value.${GS2.geschlecht}`).click();

@@ -1,4 +1,4 @@
-import {TestFaellePO} from '@dv-e2e/page-objects';
+import {NavigationPO, TestFaellePO} from '@dv-e2e/page-objects';
 import {getUser, normalizeUser} from '@dv-e2e/types';
 import {SidenavPO} from '../page-objects/antrag/sidenav.po';
 
@@ -53,13 +53,13 @@ describe('Kibon - Gesuch zu Steuerverwaltung senden', () => {
         cy.getByData('gesuch.status').should('contain.text', 'In Bearbeitung Steuerbüro der Gemeinde');
 
         cy.getByData('bemerkungen-gemeinde').should('have.value', 'Wie hoch ist der Nettolohn im Jahr 2022 von Yvonne Feuz?');
-        cy.getByData('container.navigation-save').click();
+        NavigationPO.saveAndGoNext();
         cy.getByData('gesuchformular-title').should('contain.text', 'Antragsteller/in');
         cy.getByData('gesuchformular-title').should('contain.text', '1');
-        cy.getByData('container.navigation-save').click();
+        NavigationPO.saveAndGoNext();
         cy.getByData('gesuchformular-title').should('contain.text', 'Antragsteller/in');
         cy.getByData('gesuchformular-title').should('contain.text', '2');
-        cy.getByData('container.navigation-save').should('not.exist');
+        NavigationPO.getSaveAndNextButton().should('not.exist');
         // TODO: remove this wait once a solution for textarea issues has been found
         cy.wait(1000);
         cy.getByData('bemerkungen-stv').type("Der Nettolohn beträgt 50'000 CHF im Jahr 2021");

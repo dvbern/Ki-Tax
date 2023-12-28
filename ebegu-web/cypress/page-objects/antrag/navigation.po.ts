@@ -15,21 +15,15 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { FixturePapierAntrag } from '@dv-e2e/fixtures';
-import {NavigationPO} from './navigation.po';
-
-const createPapierGesuch = (dataset: keyof typeof FixturePapierAntrag) => {
-    cy.getByData('fall-eroeffnen').click();
-    FixturePapierAntrag[dataset]((data) => {
-        cy.getByData('fall-creation-eingangsdatum').find('input').type(data.fallCreationEingangsdatum);
-    });
-    cy.getByData('gesuchsperioden.2022/23').find('label').click();
-    cy.intercept('POST', '**/gesuche');
-    cy.intercept('GET', '**/PAPIERGESUCH').as('getPapierGesuch');
-    NavigationPO.saveAndGoNext();
-    cy.wait('@getPapierGesuch');
+const getSaveAndNextButton = () => {
+    return cy.getByData('container.navigation-save', 'navigation-button');
 };
 
-export const AntragPapierPO = {
-    createPapierGesuch,
+const saveAndGoNext = () => {
+    getSaveAndNextButton().click();
+};
+
+export const NavigationPO = {
+    getSaveAndNextButton,
+    saveAndGoNext
 };

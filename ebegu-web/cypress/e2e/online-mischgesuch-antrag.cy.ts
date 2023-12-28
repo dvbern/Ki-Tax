@@ -1,5 +1,5 @@
 import {getUser, normalizeUser, User} from '@dv-e2e/types';
-import {AntragBetreuungPO, TestFaellePO} from '@dv-e2e/page-objects';
+import {AntragBetreuungPO, NavigationPO, TestFaellePO} from '@dv-e2e/page-objects';
 import {SidenavPO} from '../page-objects/antrag/sidenav.po';
 
 describe('Kibon - Online TS-Anmeldung (Mischgesuch) [Gesuchsteller]', () => {
@@ -118,7 +118,7 @@ describe('Kibon - Online TS-Anmeldung (Mischgesuch) [Gesuchsteller]', () => {
 
     const gesuchFreigeben = () => {
         SidenavPO.goTo('DOKUMENTE');
-        cy.getByData('container.navigation-save', 'navigation-button').click();
+        NavigationPO.saveAndGoNext();
 
         cy.getByData('container.freigeben', 'navigation-button').click();
         cy.getDownloadUrl(() => {
@@ -138,7 +138,7 @@ describe('Kibon - Online TS-Anmeldung (Mischgesuch) [Gesuchsteller]', () => {
         cy.getByData('fall-creation-eingangsdatum').find('input').clear().type('31.07.2023');
 
         cy.waitForRequest('PUT', '**/gesuche', () => {
-            cy.getByData('container.navigation-save', 'navigation-button').click();
+            NavigationPO.saveAndGoNext();
         });
     };
 

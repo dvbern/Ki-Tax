@@ -20,7 +20,7 @@ import {
     AntragFamSitPO,
     AntragKindPO,
     AntragBetreuungPO,
-    AntragBeschaeftigungspensumPO,
+    AntragBeschaeftigungspensumPO, NavigationPO,
 } from '@dv-e2e/page-objects';
 import { FixtureFinSit } from '@dv-e2e/fixtures';
 import { getUser } from '@dv-e2e/types';
@@ -41,7 +41,7 @@ const createNewKindWithAllSettings = () => {
     AntragKindPO.fillAusserordentlicherAnspruch();
 
     cy.waitForRequest('PUT', '**/kinder/**', () => {
-        cy.getByData('container.navigation-save', 'navigation-button').click();
+        NavigationPO.saveAndGoNext();
     });
 };
 
@@ -73,7 +73,7 @@ describe('Kibon - generate Testfälle [Gemeinde Sachbearbeiter]', () => {
         // FAMILIENSITUATION
         {
             AntragFamSitPO.fillFamiliensituationForm('withValid');
-            cy.getByData('container.navigation-save', 'navigation-button').click();
+            NavigationPO.saveAndGoNext();
         }
 
         // KINDER
@@ -82,7 +82,7 @@ describe('Kibon - generate Testfälle [Gemeinde Sachbearbeiter]', () => {
             cy.getByData('page-title').should('include.text', 'Kinder');
 
             cy.intercept('POST', '**/wizard-steps').as('goingToBetreuung');
-            cy.getByData('container.navigation-save', 'navigation-button').click();
+            NavigationPO.saveAndGoNext();
             cy.wait('@goingToBetreuung');
         }
 
@@ -92,7 +92,7 @@ describe('Kibon - generate Testfälle [Gemeinde Sachbearbeiter]', () => {
             cy.getByData('page-title').should('include.text', 'Betreuung');
 
             cy.intercept('GET', '**/erwerbspensen/required/**').as('goingToBeschaeftigungspensum');
-            cy.getByData('container.navigation-save', 'navigation-button').click();
+            NavigationPO.saveAndGoNext();
             cy.wait('@goingToBeschaeftigungspensum');
         }
 
@@ -101,7 +101,7 @@ describe('Kibon - generate Testfälle [Gemeinde Sachbearbeiter]', () => {
             AntragBeschaeftigungspensumPO.createBeschaeftigungspensum('GS1', 'withValid');
             AntragBeschaeftigungspensumPO.createBeschaeftigungspensum('GS2', 'withValid');
 
-            cy.getByData('container.navigation-save', 'navigation-button').click();
+            NavigationPO.saveAndGoNext();
         }
 
         // FINANZIELLE VERHAELTNISSE
@@ -113,7 +113,7 @@ describe('Kibon - generate Testfälle [Gemeinde Sachbearbeiter]', () => {
                 cy.getByData('kontoinhaber').type('vorname-test1 nachname-test-1');
 
                 cy.intercept('POST', '**/finanzielleSituation/calculateTemp').as('goingToFinSitGS1');
-                cy.getByData('container.navigation-save', 'navigation-button').click();
+                NavigationPO.saveAndGoNext();
                 cy.wait('@goingToFinSitGS1');
             }
 
@@ -121,6 +121,7 @@ describe('Kibon - generate Testfälle [Gemeinde Sachbearbeiter]', () => {
             {
                 // TODO: update EinkommensverschlechterungPO and update it to also support Finanzielle Situation
                 FixtureFinSit.withValid(({ GS1 }) => {
+                    cy.wait(2000);
                     cy.getByData('nettolohn').find('input').type(GS1.nettolohn);
                     cy.getByData('familienzulage').find('input').type(GS1.familienzulage);
                     cy.getByData('ersatzeinkommen').find('input').type(GS1.ersatzeinkommen);
@@ -134,7 +135,7 @@ describe('Kibon - generate Testfälle [Gemeinde Sachbearbeiter]', () => {
                 });
 
                 cy.intercept('POST', '**/finanzielleSituation/calculateTemp').as('goingToFinSitGS2');
-                cy.getByData('container.navigation-save', 'navigation-button').click();
+                NavigationPO.saveAndGoNext();
                 cy.wait('@goingToFinSitGS2');
             }
 
@@ -155,7 +156,7 @@ describe('Kibon - generate Testfälle [Gemeinde Sachbearbeiter]', () => {
                 });
 
                 cy.intercept('POST', '**/finanzielleSituation/calculateTemp').as('goingToResultate');
-                cy.getByData('container.navigation-save', 'navigation-button').click();
+                NavigationPO.saveAndGoNext();
                 cy.wait('@goingToResultate');
             }
 
@@ -184,14 +185,14 @@ describe('Kibon - generate Testfälle [Gemeinde Sachbearbeiter]', () => {
             }
 
             cy.waitForRequest('GET', '**/einkommensverschlechterung/minimalesMassgebendesEinkommen/**', () => {
-                cy.getByData('container.navigation-save', 'navigation-button').click();
+                NavigationPO.saveAndGoNext();
             });
         }
 
         // EINKOMMENSVERSCHLECHTERUNG
         {
             cy.waitForRequest('GET', '**/dokumente/**', () => {
-                cy.getByData('container.navigation-save', 'navigation-button').click();
+                NavigationPO.saveAndGoNext();
             });
         }
 
@@ -227,7 +228,7 @@ describe('Kibon - generate Testfälle [Gemeinde Sachbearbeiter]', () => {
             // });
 
             cy.waitForRequest('POST', '**/wizard-steps', () => {
-                cy.getByData('container.navigation-save', 'navigation-button').click();
+                NavigationPO.saveAndGoNext();
             });
         }
 

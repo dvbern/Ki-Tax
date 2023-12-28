@@ -3,7 +3,7 @@ import {
     AntragBeschaeftigungspensumPO,
     AntragBetreuungPO,
     AntragKindPO,
-    AntragFamSitPO,
+    AntragFamSitPO, NavigationPO,
 } from '@dv-e2e/page-objects';
 import { FixtureFamSit, FixtureFinSit } from '@dv-e2e/fixtures';
 import { getUser } from '@dv-e2e/types';
@@ -399,6 +399,6 @@ describe('Kibon - generate Testfälle [Online-Antrag]', () => {
 });
 
 function clickSave() {
-    cy.getByData('container.navigation-save', 'navigation-button').should('not.have.a.property', 'disabled');
-    cy.getByData('container.navigation-save', 'navigation-button').click();
+    NavigationPO.getSaveAndNextButton().should('not.have.a.property', 'disabled');
+    NavigationPO.saveAndGoNext();
 }
