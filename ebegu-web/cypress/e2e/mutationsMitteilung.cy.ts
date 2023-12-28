@@ -1,5 +1,6 @@
 import {TestFaellePO} from '@dv-e2e/page-objects';
 import {getUser} from "@dv-e2e/types";
+import {SidenavPO} from '../page-objects/antrag/sidenav.po';
 
 describe('Kibon - generate Testfälle [Gemeinde Sachbearbeiter]', () => {
     const userSB = getUser('[3-SB-Institution-Kita-Brünnen] Sophie Bergmann');
@@ -30,7 +31,7 @@ describe('Kibon - generate Testfälle [Gemeinde Sachbearbeiter]', () => {
         cy.login(userSB);
         cy.visit('/#/faelle');
         cy.getByData('antrag-entry#' + fallnummer).click();
-        cy.getByData('sidenav.BETREUUNG').click();
+        SidenavPO.goTo('BETREUUNG');
         cy.getByData('container.betreuung#0').click();
         cy.getByData('mutationsmeldung-erstellen').click();
         cy.getByData('betreuungspensum-0').clear().type(monatlichesPensum);
@@ -59,7 +60,7 @@ describe('Kibon - generate Testfälle [Gemeinde Sachbearbeiter]', () => {
         cy.login(adminUser);
         cy.visit('/#/faelle');
         cy.getByData('antrag-entry#' + fallnummer).first().click();
-        cy.getByData('sidenav.BETREUUNG').click();
+        SidenavPO.goTo('BETREUUNG');
         cy.getByData('container.betreuung#1').click();
         cy.getByData('betreuungspensum-0').should('have.value', monatlichesPensum);
         cy.getByData('monatliche-betreuungskosten#0').should('have.value', monatlicheKosten);

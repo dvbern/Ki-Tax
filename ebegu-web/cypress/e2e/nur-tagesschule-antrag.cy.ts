@@ -17,6 +17,7 @@
 
 import { AntragBetreuungPO, TestFaellePO } from '@dv-e2e/page-objects';
 import { getUser } from '@dv-e2e/types';
+import {SidenavPO} from '../page-objects/antrag/sidenav.po';
 
 describe('Kibon - Tagesschule Only [Superadmin]', () => {
     const adminUser = getUser('[1-Superadmin] E-BEGU Superuser');
@@ -47,7 +48,7 @@ describe('Kibon - Tagesschule Only [Superadmin]', () => {
 
         // go to the Antrag
         cy.visit(gesuchUrl);
-        cy.getByData('sidenav.BETREUUNG').click();
+        SidenavPO.goTo('BETREUUNG');
 
         // delete other betreuung nur ts
         cy.getByData('container.kind#0', 'container.betreuung#1', 'container.delete', 'navigation-button').click();
@@ -71,7 +72,7 @@ describe('Kibon - Tagesschule Only [Superadmin]', () => {
         cy.getByData('container.confirm','navigation-button').click();
 
         // Antrag abschliessen
-        cy.getByData('sidenav.VERFUEGEN').click();
+        SidenavPO.goTo('VERFUEGEN');
         cy.getByData('finSitStatus.radio-value.AKZEPTIERT').click();
         cy.intercept('GET', '**/gesuche/dossier/**').as('abschliessenGesuch');
         cy.getByData('container.abschliessen','navigation-button').click();

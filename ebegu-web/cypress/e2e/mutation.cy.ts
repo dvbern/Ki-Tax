@@ -1,5 +1,6 @@
 import {TestFaellePO} from '@dv-e2e/page-objects';
 import { getUser, normalizeUser } from '@dv-e2e/types';
+import {SidenavPO} from '../page-objects/antrag/sidenav.po';
 
 describe('Kibon - mutationen [Gesuchsteller]', () => {
     const userSuperadmin = getUser('[1-Superadmin] E-BEGU Superuser');
@@ -36,7 +37,7 @@ describe('Kibon - mutationen [Gesuchsteller]', () => {
         cy.getByData('container.navigation-save', 'navigation-button').contains('Erstellen').click();
         cy.url().should('not.contain', 'CREATE_NEW_MUTATION/ONLINE');
 
-        cy.getByData('sidenav.UMZUG').click();
+        SidenavPO.goTo('UMZUG');
         cy.getByData('container.hinzufuegen', 'navigation-button').click();
 
         cy.getByData('container.umzug-0', 'adresseStrasse').type('Test');
@@ -58,7 +59,7 @@ describe('Kibon - mutationen [Gesuchsteller]', () => {
         cy.getByData('container.navigation-save', 'navigation-button').click();
         cy.wait('@abwesenheitSaved');
 
-        cy.getByData('sidenav.FREIGABE').click();
+        SidenavPO.goTo('FREIGABE');
         cy.getByData('container.freigeben', 'navigation-button').click();
         cy.getByData('container.confirm', 'navigation-button').click();
 
@@ -70,7 +71,7 @@ describe('Kibon - mutationen [Gesuchsteller]', () => {
         cy.getByData('antrag#1').click();
         cy.wait('@goToLatestMutation');
 
-        cy.getByData('sidenav.VERFUEGEN').click();
+        SidenavPO.goTo('VERFUEGEN');
         cy.getByData('finSitStatus.radio-value.AKZEPTIERT').click();
 
         cy.getByData('container.geprueft', 'navigation-button').click();

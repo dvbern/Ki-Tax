@@ -24,6 +24,7 @@ import {
 } from '@dv-e2e/page-objects';
 import { FixtureFinSit } from '@dv-e2e/fixtures';
 import { getUser } from '@dv-e2e/types';
+import {SidenavPO} from '../page-objects/antrag/sidenav.po';
 
 const createNewKindWithAllSettings = () => {
     AntragKindPO.createNewKind();
@@ -237,7 +238,7 @@ describe('Kibon - generate Testfälle [Gemeinde Sachbearbeiter]', () => {
 
             cy.get('@antragsId').then((antragsId) => cy.visit(`/#/gesuch/familiensituation/${antragsId}`));
             cy.waitForRequest('GET', '**/einstellung/key/FINANZIELLE_SITUATION_TYP/gemeinde/**', () => {
-                cy.getByData('sidenav.BETREUUNG').click();
+                SidenavPO.goTo('BETREUUNG');
             });
 
             cy.getByData('container.betreuung#0').click();

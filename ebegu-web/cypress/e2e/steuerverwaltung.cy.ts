@@ -1,5 +1,6 @@
 import {TestFaellePO} from '@dv-e2e/page-objects';
 import {getUser, normalizeUser} from '@dv-e2e/types';
+import {SidenavPO} from '../page-objects/antrag/sidenav.po';
 
 describe('Kibon - Gesuch zu Steuerverwaltung senden', () => {
     const userSuperadmin = getUser('[1-Superadmin] E-BEGU Superuser');
@@ -38,7 +39,7 @@ describe('Kibon - Gesuch zu Steuerverwaltung senden', () => {
         cy.getByData('verantwortlicher').click();
         cy.getByData('container.verantwortlicher',`option.${normalizeUser(userGemeinde)}`).click();
         cy.intercept('GET', '**/verfuegung/calculate/**').as('verfuegenView');
-        cy.getByData('sidenav.VERFUEGEN').click();
+        SidenavPO.goTo('VERFUEGEN');
         cy.wait('@verfuegenView');
         cy.getByData('container.send-to-stv', 'navigation-button').click();
         cy.getByData('kommentar-absenden').should('have.focus');

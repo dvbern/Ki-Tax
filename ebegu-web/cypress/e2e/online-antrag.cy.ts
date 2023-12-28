@@ -7,6 +7,7 @@ import {
 } from '@dv-e2e/page-objects';
 import { FixtureFamSit, FixtureFinSit } from '@dv-e2e/fixtures';
 import { getUser } from '@dv-e2e/types';
+import {SidenavPO} from '../page-objects/antrag/sidenav.po';
 
 describe('Kibon - generate Testfälle [Online-Antrag]', () => {
     const userSuperadmin = getUser('[1-Superadmin] E-BEGU Superuser');
@@ -297,7 +298,7 @@ describe('Kibon - generate Testfälle [Online-Antrag]', () => {
                 cy.intercept('GET', '**/einstellung/key/FINANZIELLE_SITUATION_TYP/gemeinde/**').as(
                     `goingToBetreuungWith${userKita}`
                 );
-                cy.getByData('sidenav.BETREUUNG').click();
+                SidenavPO.goTo('BETREUUNG');
                 cy.wait(`@goingToBetreuungWith${userKita}`);
             };
 
@@ -335,7 +336,7 @@ describe('Kibon - generate Testfälle [Online-Antrag]', () => {
         // FREIGABE
         {
             cy.getByData('mobile-menu').click();
-            cy.getByData('sidenav.BETREUUNG').click();
+            SidenavPO.goTo('BETREUUNG');
             cy.getByData('container.betreuung#1', 'betreuungs-status').should('include.text', 'Abgewiesen');
             cy.getByData('container.betreuung#1', 'container.delete', 'navigation-button').click();
             cy.waitForRequest('DELETE', '**/betreuungen/**', () => {
@@ -343,7 +344,7 @@ describe('Kibon - generate Testfälle [Online-Antrag]', () => {
             });
 
             cy.getByData('mobile-menu').click();
-            cy.getByData('sidenav.FREIGABE').click();
+            SidenavPO.goTo('FREIGABE');
             cy.getByData('container.freigeben', 'navigation-button').click();
             cy.getDownloadUrl(() => {
                 cy.waitForRequest('GET', '**/dossier/fall/**', () => {
@@ -363,7 +364,7 @@ describe('Kibon - generate Testfälle [Online-Antrag]', () => {
             cy.waitForRequest('GET', '**/dossier/fall/**', () => {
                 cy.getByData('container.antrag-freigeben-simulieren', 'navigation-button').click();
             });
-            cy.getByData('sidenav.GESUCH_ERSTELLEN').click();
+            SidenavPO.goTo('GESUCH_ERSTELLEN');
             cy.getByData('fall-creation-eingangsdatum').find('input').clear().type('01.07.2023');
             cy.waitForRequest('PUT', '**/gesuche', () => {
                 clickSave();

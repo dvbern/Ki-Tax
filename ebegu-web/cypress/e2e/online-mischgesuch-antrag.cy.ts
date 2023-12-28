@@ -1,5 +1,6 @@
 import {getUser, normalizeUser, User} from '@dv-e2e/types';
 import {AntragBetreuungPO, TestFaellePO} from '@dv-e2e/page-objects';
+import {SidenavPO} from '../page-objects/antrag/sidenav.po';
 
 describe('Kibon - Online TS-Anmeldung (Mischgesuch) [Gesuchsteller]', () => {
     const userSuperadmin = getUser('[1-Superadmin] E-BEGU Superuser');
@@ -64,7 +65,7 @@ describe('Kibon - Online TS-Anmeldung (Mischgesuch) [Gesuchsteller]', () => {
     });
 
     const craeateTsAnmeldungFuerKind1 = () => {
-        cy.getByData('sidenav.BETREUUNG').click();
+        SidenavPO.goTo('BETREUUNG');
         cy.getByData('container.kind#0', 'container.create-betreuung', 'navigation-button').click();
         AntragBetreuungPO.selectTagesschulBetreuung();
         AntragBetreuungPO.fillTagesschulBetreuungsForm('withValid', 'Paris');
@@ -75,7 +76,7 @@ describe('Kibon - Online TS-Anmeldung (Mischgesuch) [Gesuchsteller]', () => {
     };
 
     const createTsAnmeldungFuerKind2 = () => {
-        cy.getByData('sidenav.BETREUUNG').click();
+        SidenavPO.goTo('BETREUUNG');
         cy.getByData('container.create-betreuung').should('not.exist');
         cy.getByData('container.kind#1', 'container.create-tagesschule', 'navigation-button').click();
         AntragBetreuungPO.fillTagesschulBetreuungsForm('withValid', 'Paris');
@@ -84,11 +85,11 @@ describe('Kibon - Online TS-Anmeldung (Mischgesuch) [Gesuchsteller]', () => {
     };
 
     const plaetzeFuerBeideKinderBestaetigen = () => {
-        cy.getByData('sidenav.BETREUUNG').click();
+        SidenavPO.goTo('BETREUUNG');
         cy.getByData('container.kind#0', 'container.betreuung#0').click();
         platzBestaetigen();
         cy.visit(gesuchUrl);
-        cy.getByData('sidenav.BETREUUNG').click();
+        SidenavPO.goTo('BETREUUNG');
         cy.getByData('container.kind#1', 'container.betreuung#0').click();
         platzBestaetigen();
     };
@@ -106,7 +107,7 @@ describe('Kibon - Online TS-Anmeldung (Mischgesuch) [Gesuchsteller]', () => {
     };
 
     const tsAkzeptierenFuerKind2 = () => {
-        cy.getByData('sidenav.BETREUUNG').click();
+        SidenavPO.goTo('BETREUUNG');
         cy.getByData('container.kind#1', 'container.betreuung#1').click();
         cy.getByData('container.akzeptieren', 'navigation-button').click();
 
@@ -116,7 +117,7 @@ describe('Kibon - Online TS-Anmeldung (Mischgesuch) [Gesuchsteller]', () => {
     };
 
     const gesuchFreigeben = () => {
-        cy.getByData('sidenav.DOKUMENTE').click();
+        SidenavPO.goTo('DOKUMENTE');
         cy.getByData('container.navigation-save', 'navigation-button').click();
 
         cy.getByData('container.freigeben', 'navigation-button').click();
@@ -128,12 +129,12 @@ describe('Kibon - Online TS-Anmeldung (Mischgesuch) [Gesuchsteller]', () => {
     };
 
     const freigabequittungEinlesen = () => {
-        cy.getByData('sidenav.FREIGABE').click();
+        SidenavPO.goTo('FREIGABE');
         cy.waitForRequest('GET', '**/dossier/fall/**', () => {
             cy.getByData('container.antrag-freigeben-simulieren', 'navigation-button').click();
         });
 
-        cy.getByData('sidenav.GESUCH_ERSTELLEN').click();
+        SidenavPO.goTo('GESUCH_ERSTELLEN');
         cy.getByData('fall-creation-eingangsdatum').find('input').clear().type('31.07.2023');
 
         cy.waitForRequest('PUT', '**/gesuche', () => {
@@ -142,7 +143,7 @@ describe('Kibon - Online TS-Anmeldung (Mischgesuch) [Gesuchsteller]', () => {
     };
 
     const finSitAkzeptieren = () => {
-        cy.getByData('sidenav.VERFUEGEN').click();
+        SidenavPO.goTo('VERFUEGEN');
         cy.getByData('finSitStatus.radio-value.AKZEPTIERT').click();
 
         cy.getByData('container.geprueft', 'navigation-button').click();
@@ -165,7 +166,7 @@ describe('Kibon - Online TS-Anmeldung (Mischgesuch) [Gesuchsteller]', () => {
     };
 
     const betreuungVerfuegen = (verfuegung: string) => {
-        cy.getByData('sidenav.VERFUEGEN').click();
+        SidenavPO.goTo('VERFUEGEN');
 
         cy.waitForRequest('GET', '**/einstellung/key/FINANZIELLE_SITUATION_TYP/gemeinde/**', () => {
             cy.getByData(verfuegung).click();
@@ -179,7 +180,7 @@ describe('Kibon - Online TS-Anmeldung (Mischgesuch) [Gesuchsteller]', () => {
     };
 
     const checkBetreuungsstatus = () => {
-        cy.getByData('sidenav.VERFUEGEN').click();
+        SidenavPO.goTo('VERFUEGEN');
         cy.getByData('verfuegung#0-0', 'betreuungs-status').should('include.text', 'Verfügt');
         cy.getByData('verfuegung#0-1', 'betreuungs-status').should('include.text', 'Anmeldung übernommen');
         cy.getByData('verfuegung#1-0', 'betreuungs-status').should('include.text', 'Verfügt');
