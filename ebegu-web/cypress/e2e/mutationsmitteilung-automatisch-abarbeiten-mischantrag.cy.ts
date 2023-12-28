@@ -37,7 +37,7 @@ describe('Kibon - Testet das Feature der automatischen Abarbeitung von Mutations
     });
 
     it('should create and verfuegen mischantrag', () => {
-        TestFaellePO.createNewTestFallIn({
+        TestFaellePO.createOnlineTestfall({
             testFall: 'testfall-1',
             gemeinde: 'London',
             periode: '2022/23',

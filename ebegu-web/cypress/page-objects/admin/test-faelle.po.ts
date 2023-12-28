@@ -17,21 +17,21 @@
 
 import { normalizeUser, TestBetreuungsstatus, TestFall, TestGesuchstellende, TestPeriode, GemeindeTestFall } from '@dv-e2e/types';
 
-const createNewTestFaelle = (testFall: TestFall, gemeindeName: GemeindeTestFall) => {
+const createPapierTestfall = (data: {testFall: TestFall, gemeinde: GemeindeTestFall, periode: TestPeriode, betreuungsstatus: TestBetreuungsstatus, }) => {
     cy.getByData('page-title').contains('Alle Fälle');
     cy.getByData('page-menu').click();
     cy.getByData('action-admin.testdaten').click();
     cy.getByData('gemeinde').click();
-    cy.getByData(`gemeinde.${gemeindeName}`).click();
+    cy.getByData(`gemeinde.${data.gemeinde}`).click();
     cy.getByData('periode').click();
-    cy.getByData('periode.2023/24').click();
-    cy.getByData('creationType.warten').find('label').click();
-    cy.getByData(testFall).click();
+    cy.getByData(`periode.${data.periode}`).click();
+    cy.getByData(`creationType.${data.betreuungsstatus}`).find('label').click();
+    cy.getByData(data.testFall).click();
     cy.get('[data-test="dialog-link"]', { timeout: 100000 }).click();
     cy.getByData('fall-creation-eingangsdatum').find('input').should('have.value', '15.2.2016');
 };
 
-const createNewTestFallIn = (data: {
+const createOnlineTestfall = (data: {
     testFall: TestFall;
     gemeinde: GemeindeTestFall;
     periode: TestPeriode;
@@ -54,6 +54,6 @@ const createNewTestFallIn = (data: {
 };
 
 export const TestFaellePO = {
-    createNewTestFaelle,
-    createNewTestFallIn,
+    createPapierTestfall,
+    createOnlineTestfall,
 };

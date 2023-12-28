@@ -27,7 +27,12 @@ describe('Kibon - Tagesschule Only [Superadmin]', () => {
         cy.intercept({resourceType: 'xhr'}, {log: false}); // don't log XHRs
         cy.login(adminUser);
         cy.visit('/#/faelle');
-        TestFaellePO.createNewTestFaelle('testfall-1', 'Paris') ;
+        TestFaellePO.createPapierTestfall({
+            testFall: 'testfall-1',
+            gemeinde: 'Paris',
+            periode: '2022/23',
+            betreuungsstatus: 'warten',
+        });
 
         // get AntragsId
         cy.url().then((url) => {
@@ -38,7 +43,7 @@ describe('Kibon - Tagesschule Only [Superadmin]', () => {
 
     it('should create a prefilled new Testfall Antrag', () => {
         // login as Administrator TS der Gemeinde
-        cy.login(adminGemeindeTSParisUser)
+        cy.login(adminGemeindeTSParisUser);
 
         // go to the Antrag
         cy.visit(gesuchUrl);
