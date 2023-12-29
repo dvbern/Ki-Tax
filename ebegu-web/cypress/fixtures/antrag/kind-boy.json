@@ -1,8 +1,8 @@
 {
     "valid": {
         "kind1": {
-            "vorname": "kind1-vorname",
-            "nachname": "kind1-nachname",
+            "vorname": "Christian",
+            "nachname": "Benito",
             "geschlecht": "MAENNLICH",
             "geburtsdatum":  "01.01.2020",
             "einschulungstyp": "Vorschulalter"

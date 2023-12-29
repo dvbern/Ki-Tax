@@ -138,7 +138,7 @@ To create a new Fixture dataset, follow these steps:
 3. Extend the `support/fixture-helper.ts` file with the new Fixture:
    > ```typescript
    > export const FixtureKind = {
-   >     withValid: fromFixture<typeof Kind>('antrag/kind.json', 'valid'),
+   >     withValidBoy: fromFixture<typeof Kind>('antrag/kind.json', 'valid'),
    > }
    > ```
 4. Use the new fixture by importing `import { FixtureKind } from '@dv-e2e/fixtures';`:

@@ -71,16 +71,11 @@ describe('Kibon - generate Testfälle [Online-Antrag]', () => {
         //Kinder
         {
             AntragKindPO.createNewKind();
-            AntragKindPO.fillKindForm('withValid');
+            AntragKindPO.fillKindForm('withValidBoy');
             clickSave();
 
             AntragKindPO.createNewKind();
-            cy.getByData(`geschlecht.radio-value.WEIBLICH`).click();
-            cy.getByData('vorname').type('Mia');
-            cy.getByData('nachname').type('Test');
-            cy.getByData('geburtsdatum').find('input').type('01.01.2019');
-            cy.getByData('container.obhut-alternierend-ausueben', 'radio-value.nein').find('label').click();
-            cy.getByData('container.ergaenzende-betreuung-beide', 'radio-value.nein').find('label').click();
+            AntragKindPO.fillKindForm('withValidGirl');
             clickSave();
 
             cy.getByData('page-title').should('include.text', 'Kinder');

@@ -31,7 +31,8 @@ const fromFixture =
         cy.fixture(fixture).then((data: T) => fn(data[fixturePart]));
 
 export const FixtureKind = {
-    withValid: fromFixture<typeof Kind>('antrag/kind.json', 'valid'),
+    withValidBoy: fromFixture<typeof Kind>('antrag/kind-boy.json', 'valid'),
+    withValidGirl: fromFixture<typeof Kind>('antrag/kind-girl.json', 'valid'),
 };
 
 export const FixtureBeschaeftigungspensum = {
