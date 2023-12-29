@@ -18,9 +18,9 @@
 import {FixtureBetreuung} from '@dv-e2e/fixtures';
 import {GemeindeTestFall} from '@dv-e2e/types';
 
-const createNewBetreuung = () => {
+const createNewBetreuung = (kindIndex: number = 0) => {
     cy.intercept('**/institutionstammdaten/gesuchsperiode/gemeinde/*').as('getInstitutionsStammdaten');
-    cy.getByData('container.create-betreuung', 'navigation-button').click();
+    cy.getByData('container.create-betreuung', 'navigation-button').eq(kindIndex).click();
     cy.wait('@getInstitutionsStammdaten');
 };
 

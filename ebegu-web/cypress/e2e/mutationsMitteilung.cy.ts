@@ -36,8 +36,8 @@ describe('Kibon - generate Testfälle [Gemeinde Sachbearbeiter]', () => {
         cy.getByData('mutationsmeldung-erstellen').click();
         cy.getByData('betreuungspensum-0').clear().type(monatlichesPensum);
         cy.getByData('monatliche-betreuungskosten#0').clear().type(monatlicheKosten);
-        cy.getByData('betreuung-datum-ab#0').clear().type(startdatum);
-        cy.getByData('betreuung-datum-bis#0').clear().type(enddatum);
+        cy.getByData('betreuung-datum-ab#0').find('input').clear().type(startdatum);
+        cy.getByData('betreuung-datum-bis#0').find('input').clear().type(enddatum);
         cy.getByData('mutationsmeldung-senden').click();
         cy.intercept("PUT", '**/mitteilungen/sendbetreuungsmitteilung').as('creatingMutationsmeldung');
         cy.getByData('container.confirm').click();

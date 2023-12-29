@@ -28,7 +28,7 @@ import {SidenavPO} from '../page-objects/antrag/sidenav.po';
 
 const createNewKindWithAllSettings = () => {
     AntragKindPO.createNewKind();
-    AntragKindPO.fillKindForm('withValid');
+    AntragKindPO.fillKindForm('withValidBoy');
     AntragKindPO.fillPflegekind();
 
     cy.getByData('show-fachstelle').click();
@@ -108,6 +108,7 @@ describe('Kibon - generate Testfälle [Gemeinde Sachbearbeiter]', () => {
         {
             // Config
             {
+                cy.wait(2000);
                 cy.getByData('sozialhilfeBezueger.radio-value.nein').click();
                 cy.getByData('iban').type('CH3908704016075473007');
                 cy.getByData('kontoinhaber').type('vorname-test1 nachname-test-1');
@@ -143,6 +144,7 @@ describe('Kibon - generate Testfälle [Gemeinde Sachbearbeiter]', () => {
             {
                 // TODO: update EinkommensverschlechterungPO and update it to also support Finanzielle Situation
                 FixtureFinSit.withValid(({ GS2 }) => {
+                    cy.wait(2000);
                     cy.getByData('nettolohn').find('input').type(GS2.nettolohn);
                     cy.getByData('familienzulage').find('input').type(GS2.familienzulage);
                     cy.getByData('ersatzeinkommen').find('input').type(GS2.ersatzeinkommen);
@@ -244,6 +246,7 @@ describe('Kibon - generate Testfälle [Gemeinde Sachbearbeiter]', () => {
 
             cy.getByData('container.betreuung#0').click();
 
+            cy.wait(2000);
             cy.getByData('betreuungspensum-0').type('25');
             cy.getByData('monatliche-betreuungskosten#0').type('1000');
             cy.getByData('betreuung-datum-ab#0').find('input').type('01.01.2023');

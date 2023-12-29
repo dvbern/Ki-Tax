@@ -23,7 +23,8 @@ const createNewKind = () => {
 
 const fillKindForm = (dataset: keyof typeof FixtureKind) => {
     FixtureKind[dataset](({ kind1 }) => {
-        cy.getByData('geschlecht.radio-group').should('have.class', 'ng-untouched');
+        cy.url().should('include', 'kinder/kind');
+        cy.wait(2000);
         cy.getByData(`geschlecht.radio-value.${kind1.geschlecht}`).click();
         cy.getByData('vorname').type(kind1.vorname);
         cy.getByData('nachname').type(kind1.nachname);

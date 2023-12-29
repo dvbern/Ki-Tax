@@ -94,7 +94,7 @@ describe('Kibon - generate Testfälle [Online-Antrag]', () => {
         {
             //KITA
             {
-                AntragBetreuungPO.createNewBetreuung();
+                AntragBetreuungPO.createNewBetreuung(0);
                 AntragBetreuungPO.fillOnlineKitaBetreuungsForm(famsitDataset, 'London', { mobile: true });
                 AntragBetreuungPO.fillKeinePlatzierung();
                 AntragBetreuungPO.fillErweiterteBeduerfnisse();
@@ -103,7 +103,7 @@ describe('Kibon - generate Testfälle [Online-Antrag]', () => {
 
             //TFO
             {
-                AntragBetreuungPO.createNewBetreuung();
+                AntragBetreuungPO.createNewBetreuung(1);
                 AntragBetreuungPO.fillOnlineTfoBetreuungsForm('withValid', 'London', { mobile: true });
                 AntragBetreuungPO.fillKeinePlatzierung();
                 cy.getByData('erweiterteBeduerfnisse.radio-value.nein').click();
@@ -128,6 +128,7 @@ describe('Kibon - generate Testfälle [Online-Antrag]', () => {
         {
             // Config
             {
+                cy.wait(2000);
                 cy.getByData('sozialhilfeBezueger.radio-value.nein').click();
                 cy.getByData('iban').type('CH3908704016075473007');
                 cy.getByData('kontoinhaber').type('vorname-test1 nachname-test-1');
@@ -142,6 +143,7 @@ describe('Kibon - generate Testfälle [Online-Antrag]', () => {
                 cy.getByData('steuerdatenzugriff.radio-value.nein').click();
 
                 FixtureFinSit.withValid(({ GS1 }) => {
+                    cy.wait(2000);
                     cy.getByData('nettolohn').find('input').type(GS1.nettolohn);
                     cy.getByData('familienzulage').find('input').type(GS1.familienzulage);
                     cy.getByData('ersatzeinkommen').find('input').type(GS1.ersatzeinkommen);
@@ -166,6 +168,7 @@ describe('Kibon - generate Testfälle [Online-Antrag]', () => {
                 cy.getByData('steuerdatenzugriff.radio-value.nein').click();
 
                 FixtureFinSit.withValid(({ GS2 }) => {
+                    cy.wait(2000);
                     cy.getByData('nettolohn').find('input').type(GS2.nettolohn);
                     cy.getByData('familienzulage').find('input').type(GS2.familienzulage);
                     cy.getByData('ersatzeinkommen').find('input').type(GS2.ersatzeinkommen);
@@ -303,7 +306,7 @@ describe('Kibon - generate Testfälle [Online-Antrag]', () => {
             };
 
             goToBetreuungen();
-            cy.getByData('container.betreuung#0').click();
+            cy.getByData('container.kind#0', 'container.betreuung#0').click();
             cy.getByData('container.add-betreuungspensum', 'navigation-button').click();
             cy.getByData('betreuungspensum-0').type('25');
             cy.getByData('monatliche-betreuungskosten#0').type('1000');
@@ -318,7 +321,7 @@ describe('Kibon - generate Testfälle [Online-Antrag]', () => {
 
             goToBetreuungen();
             cy.waitForRequest('GET', '**/fachstellen/erweiterteBetreuung', () => {
-                cy.getByData('container.betreuung#1').click();
+                cy.getByData('container.kind#1', 'container.betreuung#0').click();
             });
             cy.getByData('grund-ablehnung').click();
             cy.getByData('grund-ablehnung').type('Ein sehr legitimer Grund der hier nicht weiter aufgeführt wird.');
@@ -337,8 +340,8 @@ describe('Kibon - generate Testfälle [Online-Antrag]', () => {
         {
             cy.getByData('mobile-menu').click();
             SidenavPO.goTo('BETREUUNG');
-            cy.getByData('container.betreuung#1', 'betreuungs-status').should('include.text', 'Abgewiesen');
-            cy.getByData('container.betreuung#1', 'container.delete', 'navigation-button').click();
+            cy.getByData('container.kind#1', 'container.betreuung#0', 'betreuungs-status').should('include.text', 'Abgewiesen');
+            cy.getByData('container.kind#1', 'container.betreuung#0', 'container.delete', 'navigation-button').click();
             cy.waitForRequest('DELETE', '**/betreuungen/**', () => {
                 cy.getByData('container.confirm', 'navigation-button').click();
             });
