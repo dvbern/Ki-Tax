@@ -19,6 +19,7 @@ export * from './antrag-creation.po';
 export * from './beschaeftigungspensum.po';
 export * from './betreuung.po';
 export * from './einkommensverschlechterung.po';
+export * from './einkommensverschlechterungResultate.po';
 export * from './familiensituation.po';
 export * from './finanzielleSituation.po';
 export * from './finanzielleSituationStart.po';

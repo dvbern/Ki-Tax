@@ -26,10 +26,13 @@ import {
     FinanzielleSituationStartPO,
     FinanzielleSituationResultatePO,
     NavigationPO,
-    SidenavPO,
+    SidenavPO, ConfirmDialogPO,
 } from '@dv-e2e/page-objects';
 import { FixtureFinSit } from '@dv-e2e/fixtures';
-import { getUser } from '@dv-e2e/types';
+import {GemeindeTestFall, getUser} from '@dv-e2e/types';
+import {VerfuegungPO} from '../page-objects/antrag/verfuegung.po';
+
+const gemeinde: GemeindeTestFall = 'London';
 
 const createNewKindWithAllSettings = () => {
     AntragKindPO.createNewKind();
@@ -51,8 +54,8 @@ const createNewKindWithAllSettings = () => {
 };
 
 const createNewBetreuungWithAllSettings = () => {
-    AntragBetreuungPO.createNewBetreuung();
-    AntragBetreuungPO.fillKitaBetreuungsForm('withValid', 'London');
+    AntragBetreuungPO.createNewBetreuung()
+    AntragBetreuungPO.fillKitaBetreuungsForm('withValid', gemeinde);
     AntragBetreuungPO.fillKeinePlatzierung();
     AntragBetreuungPO.fillErweiterteBeduerfnisse();
     AntragBetreuungPO.platzBestaetigungAnfordern();
@@ -214,20 +217,9 @@ describe('Kibon - generate Testfälle [Gemeinde Sachbearbeiter]', () => {
                 SidenavPO.goTo('BETREUUNG');
             });
 
-            cy.getByData('container.betreuung#0').click();
-
-            cy.wait(2000);
-            cy.getByData('betreuungspensum-0').type('25');
-            cy.getByData('monatliche-betreuungskosten#0').type('1000');
-            cy.getByData('betreuung-datum-ab#0').find('input').type('01.01.2023');
-            cy.getByData('betreuung-datum-bis#0').find('input').type('31.12.2023');
-            cy.getByData('korrekte-kosten-bestaetigung').click();
-
-            cy.getByData('container.platz-bestaetigen', 'navigation-button').click();
-
-            cy.waitForRequest('GET', '**/search/pendenzenBetreuungen', () => {
-                cy.getByData('container.confirm', 'navigation-button').click();
-            });
+            AntragBetreuungPO.getBetreuung(0, 0).click();
+            AntragBetreuungPO.fillKitaBetreuungspensumForm('withValid', gemeinde);
+            AntragBetreuungPO.platzBestaetigen();
         }
         cy.changeLogin(userSB);
         // !!!!!! - changed back to previous user - !!!!!!
@@ -236,14 +228,14 @@ describe('Kibon - generate Testfälle [Gemeinde Sachbearbeiter]', () => {
         {
             cy.get('@antragsId').then((antragsId) => cy.visit(`/#/gesuch/verfuegen/${antragsId}`));
 
-            cy.getByData('verfuegung#0-0').click();
-            cy.getByData('container.zeitabschnitt#5', 'betreuungspensumProzent').should('include.text', '25%');
-            cy.getByData('container.zeitabschnitt#6', 'betreuungspensumProzent').should('include.text', '25%');
-            cy.getByData('container.zeitabschnitt#7', 'betreuungspensumProzent').should('include.text', '25%');
-            cy.getByData('container.zeitabschnitt#8', 'betreuungspensumProzent').should('include.text', '25%');
-            cy.getByData('container.zeitabschnitt#9', 'betreuungspensumProzent').should('include.text', '25%');
-            cy.getByData('container.zeitabschnitt#10', 'betreuungspensumProzent').should('include.text', '25%');
-            cy.getByData('container.zeitabschnitt#11', 'betreuungspensumProzent').should('include.text', '25%');
+            VerfuegungPO.getVerfuegung(0, 0).click();
+            VerfuegungPO.getBetreuungspensumProzent(5).should('include.text', '25%');
+            VerfuegungPO.getBetreuungspensumProzent(6).should('include.text', '25%');
+            VerfuegungPO.getBetreuungspensumProzent(7).should('include.text', '25%');
+            VerfuegungPO.getBetreuungspensumProzent(8).should('include.text', '25%');
+            VerfuegungPO.getBetreuungspensumProzent(9).should('include.text', '25%');
+            VerfuegungPO.getBetreuungspensumProzent(10).should('include.text', '25%');
+            VerfuegungPO.getBetreuungspensumProzent(11).should('include.text', '25%');
         }
     });
 });

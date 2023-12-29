@@ -17,18 +17,46 @@
 
 import {FixtureBetreuung} from '@dv-e2e/fixtures';
 import {GemeindeTestFall} from '@dv-e2e/types';
+import {ConfirmDialogPO} from '../dialogs';
 
 // !! -- PAGE OBJECTS -- !!
 const getPageTitle = () => {
     return cy.getByData('page-title');
 };
 
-const getBetreuungspensum = (index: number) => {
-    return cy.getByData(`betreuungspensum-${index}`);
+const getBetreuung = (kindIndex: number, betreuungsIndex: number) => {
+    return cy.getByData('container.kind#' + kindIndex, 'container.betreuung#' + betreuungsIndex);
+};
+
+const getBetreuungspensum = (betreuungspensumIndex: number) => {
+    return cy.getByData(`betreuungspensum-${betreuungspensumIndex}`);
+};
+
+const getWeiteresBetreuungspensumErfassenButton = () => {
+    return cy.getByData('container.add-betreuungspensum', 'navigation-button');
+};
+
+const getMonatlicheBetreuungskosten = (betreuungspensumIndex: number) => {
+    return cy.getByData('monatliche-betreuungskosten#' + betreuungspensumIndex);
+};
+
+const getBetreuungspensumAb = (betreuungspensumIndex: number) => {
+    return cy.getByData('betreuung-datum-ab#0');
+};
+
+const getBetreuungspensumBis = (betreuungspensumIndex: number) => {
+    return cy.getByData('betreuung-datum-bis#0');
+};
+
+const getKorrekteKostenBestaetigung = () => {
+    return cy.getByData('korrekte-kosten-bestaetigung');
+};
+
+const getPlatzBestaetigenButton = () => {
+	return cy.getByData('container.platz-bestaetigen', 'navigation-button');
 };
 
 // !! -- PAGE ACTIONS -- !!
-
 const createNewBetreuung = (kindIndex: number = 0) => {
     cy.intercept('**/institutionstammdaten/gesuchsperiode/gemeinde/*').as('getInstitutionsStammdaten');
     cy.getByData('container.create-betreuung', 'navigation-button').eq(kindIndex).click();
@@ -46,6 +74,22 @@ const fillKitaBetreuungsForm = (dataset: keyof typeof FixtureBetreuung, gemeinde
         cy.getByData('institution').find('input').type(kita.institution, { delay: 30 });
         cy.getByData('instutions-suchtext').click();
         cy.getByData('institution').find('input').should('have.value', kita.institution);
+    });
+};
+
+const fillKitaBetreuungspensumForm = (dataset: keyof typeof FixtureBetreuung, gemeinde: GemeindeTestFall) => {
+    cy.wait(2000);
+    FixtureBetreuung[dataset]((data) => {
+       const pensen = data[gemeinde].kita.betreuungspensen;
+       pensen.forEach((pensum, index) => {
+           if (index > 0) {
+               AntragBetreuungPO.getWeiteresBetreuungspensumErfassenButton().click()
+           }
+           AntragBetreuungPO.getBetreuungspensum(index).type(pensum.monatlichesBetreuungspensum);
+           AntragBetreuungPO.getMonatlicheBetreuungskosten(index).type(pensum.monatlicheBetreuungskosten);
+           AntragBetreuungPO.getBetreuungspensumAb(index).find('input').type(pensum.von);
+           AntragBetreuungPO.getBetreuungspensumBis(index).find('input').type(pensum.bis);
+       });
     });
 };
 
@@ -81,7 +125,7 @@ const fillOnlineTfoBetreuungsForm = (dataset: keyof typeof FixtureBetreuung, gem
 
 const selectTagesschulBetreuung = () => {
     cy.getByData('betreuungsangebot').select('Tagesschule');
-}
+};
 
 const fillTagesschulBetreuungsForm = (dataset: keyof typeof FixtureBetreuung, gemeinde: GemeindeTestFall) => {
     FixtureBetreuung[dataset]((data) => {
@@ -130,10 +174,25 @@ const saveAndConfirmBetreuung = () => {
     });
 };
 
+const platzBestaetigen = () => {
+    getKorrekteKostenBestaetigung().click();
+    getPlatzBestaetigenButton().click();
+    cy.waitForRequest('GET', '**/search/pendenzenBetreuungen', () => {
+        ConfirmDialogPO.getConfirmButton().click();
+    });
+};
+
 export const AntragBetreuungPO = {
     // page objects
     getPageTitle,
+    getBetreuung,
     getBetreuungspensum,
+    getMonatlicheBetreuungskosten,
+    getBetreuungspensumAb,
+    getBetreuungspensumBis,
+    getKorrekteKostenBestaetigung,
+    getPlatzBestaetigenButton,
+    getWeiteresBetreuungspensumErfassenButton,
     // page actions
     createNewBetreuung,
     createNewTagesschulAnmeldung,
@@ -148,4 +207,6 @@ export const AntragBetreuungPO = {
     platzBestaetigungAnfordern,
     saveBetreuung,
     saveAndConfirmBetreuung,
+    fillKitaBetreuungspensumForm,
+    platzBestaetigen,
 };

@@ -15,6 +15,14 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+const getVerfuegung = (kindIndex: number, betreuungsIndex: number) => {
+    return cy.getByData(`verfuegung#${kindIndex}-${betreuungsIndex}`);
+};
+
+const getBetreuungspensumProzent = (zeitabschnittIndex: number) => {
+	return cy.getByData('container.zeitabschnitt#' + zeitabschnittIndex, 'betreuungspensumProzent');
+};
+
 const getVerfuegterTarif = (zeitabschnittIndex: number) => {
     return cy.getByData('tagesschul-anmeldung-tarife',
         `tagesschul-anmeldung-zeitabschnitt#${zeitabschnittIndex}`,
@@ -26,6 +34,8 @@ const getAllTarife = () => {
 };
 
 export const VerfuegungPO = {
+    getVerfuegung,
+    getBetreuungspensumProzent,
     getVerfuegterTarif,
     getAllTarife,
 };

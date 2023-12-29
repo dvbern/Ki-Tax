@@ -15,7 +15,10 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-export * from './admin';
-export * from './antrag';
-export * from './dialogs';
+const getConfirmButton = () => {
+    return cy.getByData('container.confirm', 'navigation-button');
+};
 
+export const ConfirmDialogPO = {
+  getConfirmButton,
+};
