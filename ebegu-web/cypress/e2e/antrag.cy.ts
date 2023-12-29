@@ -24,6 +24,7 @@ import {
     AntragBeschaeftigungspensumPO,
     FinanzielleSituationPO,
     FinanzielleSituationStartPO,
+    FinanzielleSituationResultatePO,
     NavigationPO,
     SidenavPO,
 } from '@dv-e2e/page-objects';
@@ -112,80 +113,45 @@ describe('Kibon - generate Testfälle [Gemeinde Sachbearbeiter]', () => {
         {
             // Config
             {
-                cy.wait(2000);
-                cy.getByData('sozialhilfeBezueger.radio-value.nein').click();
-                cy.getByData('iban').type('CH3908704016075473007');
-                cy.getByData('kontoinhaber').type('vorname-test1 nachname-test-1');
-
-                cy.intercept('POST', '**/finanzielleSituation/calculateTemp').as('goingToFinSitGS1');
-                NavigationPO.saveAndGoNext();
-                cy.wait('@goingToFinSitGS1');
+                FinanzielleSituationStartPO.fillFinanzielleSituationStartForm('withValid');
+                FinanzielleSituationStartPO.saveForm();
             }
 
             // Finanzielle Situation - GS 1
             {
-                // TODO: update EinkommensverschlechterungPO and update it to also support Finanzielle Situation
-                FixtureFinSit.withValid(({ GS1 }) => {
-                    cy.wait(2000);
-                    cy.getByData('nettolohn').find('input').type(GS1.nettolohn);
-                    cy.getByData('familienzulage').find('input').type(GS1.familienzulage);
-                    cy.getByData('ersatzeinkommen').find('input').type(GS1.ersatzeinkommen);
-                    cy.getByData('erhaltene-alimente').find('input').type(GS1.erhalteneAlimente);
-                    cy.getByData('brutto-ertraege-vermoegen').find('input').type(GS1.bruttoErtraegeVermoegen);
-                    cy.getByData('nettoertraege_erbengemeinschaften').find('input').type(GS1.nettoertraegeErbengemeinschaften);
-                    cy.getByData('einkommenInVereinfachtemVerfahrenAbgerechnet1.radio-value.nein').click();
-                    cy.getByData('geleistete-alimente').find('input').type(GS1.geleisteteAlimente);
-                    cy.getByData('abzug-schuldzinsen').find('input').type(GS1.abzugSchuldzinsen);
-                    cy.getByData('gewinnungskosten').find('input').type(GS1.gewinnungskosten);
-                });
 
-                cy.intercept('POST', '**/finanzielleSituation/calculateTemp').as('goingToFinSitGS2');
-                NavigationPO.saveAndGoNext();
-                cy.wait('@goingToFinSitGS2');
+                // TODO: update EinkommensverschlechterungPO and update it to also support Finanzielle Situation
+                FinanzielleSituationPO.fillFinanzielleSituationForm('withValid', 'GS1');
+                FinanzielleSituationPO.saveForm();
             }
 
             // Finanzielle Situation - GS 2
             {
                 // TODO: update EinkommensverschlechterungPO and update it to also support Finanzielle Situation
-                FixtureFinSit.withValid(({ GS2 }) => {
-                    cy.wait(2000);
-                    cy.getByData('nettolohn').find('input').type(GS2.nettolohn);
-                    cy.getByData('familienzulage').find('input').type(GS2.familienzulage);
-                    cy.getByData('ersatzeinkommen').find('input').type(GS2.ersatzeinkommen);
-                    cy.getByData('erhaltene-alimente').find('input').type(GS2.erhalteneAlimente);
-                    cy.getByData('brutto-ertraege-vermoegen').find('input').type(GS2.bruttoErtraegeVermoegen);
-                    cy.getByData('nettoertraege_erbengemeinschaften').find('input').type(GS2.nettoertraegeErbengemeinschaften);
-                    cy.getByData('einkommenInVereinfachtemVerfahrenAbgerechnet1.radio-value.nein').click();
-                    cy.getByData('geleistete-alimente').find('input').type(GS2.geleisteteAlimente);
-                    cy.getByData('abzug-schuldzinsen').find('input').type(GS2.abzugSchuldzinsen);
-                    cy.getByData('gewinnungskosten').find('input').type(GS2.gewinnungskosten);
-                });
-
-                cy.intercept('POST', '**/finanzielleSituation/calculateTemp').as('goingToResultate');
-                NavigationPO.saveAndGoNext();
-                cy.wait('@goingToResultate');
+                FinanzielleSituationPO.fillFinanzielleSituationForm('withValid', 'GS2');
+                FinanzielleSituationPO.saveForm();
             }
 
             // Resultate
             {
                 // TODO: update EinkommensverschlechterungPO and update it to also support Finanzielle Situation
-                FixtureFinSit.withValid(({ Resultate }) => {
-                    cy.getByData('einkommenBeiderGesuchsteller')
+                FixtureFinSit.withValid(({Resultate}) => {
+                    FinanzielleSituationResultatePO.getEinkommenBeiderGesuchsteller()
                         .find('input')
                         .should('have.value', Resultate.einkommenBeiderGesuchsteller);
-                    cy.getByData('bruttovermoegen1').find('input').type(Resultate.bruttovermoegen1);
-                    cy.getByData('bruttovermoegen2').find('input').type(Resultate.bruttovermoegen2);
-                    cy.getByData('schulden1').find('input').type(Resultate.schulden1);
-                    cy.getByData('schulden2').find('input').type(Resultate.schulden2);
-                    cy.getByData('nettovermoegenFuenfProzent')
+                    FinanzielleSituationResultatePO.getBruttovermoegenGS1().find('input').type(Resultate.bruttovermoegen1);
+                    FinanzielleSituationResultatePO.getBruttovermoegenGS2().find('input').type(Resultate.bruttovermoegen2);
+                    FinanzielleSituationResultatePO.getSchuldenGS1().find('input').type(Resultate.schulden1);
+                    FinanzielleSituationResultatePO.getSchuldenGS2().find('input').type(Resultate.schulden2);
+                    FinanzielleSituationResultatePO.getNettovermoegenFuenfProzent()
                         .find('input')
                         .should('have.value', Resultate.nettovermoegenFuenfProzent);
-                    cy.getByData('anrechenbaresEinkommen').find('input').should('have.value', Resultate.anrechenbaresEinkommen);
-                    cy.getByData('abzuegeBeiderGesuchsteller')
+                    FinanzielleSituationResultatePO.getAnrechenbaresEinkommen()
                         .find('input')
+                        .should('have.value', Resultate.anrechenbaresEinkommen);
+                    FinanzielleSituationResultatePO.getAbzuegeBeiderGesuchstellenden().find('input')
                         .should('have.value', Resultate.abzuegeBeiderGesuchsteller);
-                    cy.getByData('massgebendesEinkVorAbzFamGr')
-                        .find('input')
+                    FinanzielleSituationResultatePO.getMassgebendesEinkommenVorAbzugFamGroesse().find('input')
                         .should('have.value', Resultate.massgebendesEinkVorAbzFamGr);
                 });
             }
