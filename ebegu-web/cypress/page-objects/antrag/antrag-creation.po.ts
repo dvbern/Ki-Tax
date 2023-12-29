@@ -15,13 +15,10 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-export * from './antrag-creation.po';
-export * from './beschaeftigungspensum.po';
-export * from './betreuung.po';
-export * from './einkommensverschlechterung.po';
-export * from './familiensituation.po';
-export * from './kind.po';
-export * from './navigation.po';
-export * from './papiergesuch.po';
-export * from './sidenav.po';
-export * from './tagesschule.po';
+const getAntragsDaten = () => {
+    return cy.getByData('antrags-daten');
+};
+
+export const AntragCreationPO = {
+    getAntragsDaten,
+};

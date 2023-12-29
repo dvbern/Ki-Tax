@@ -17,6 +17,13 @@
 
 import { FixtureKind } from '@dv-e2e/fixtures';
 
+// !! -- PAGE OBJECTS -- !!
+ const getPageTitle = () => {
+    return cy.getByData('page-title');
+};
+
+// !! -- PAGE ACTIONS -- !!
+
 const createNewKind = () => {
     cy.getByData('container.create-kind', 'navigation-button').click();
 };
@@ -57,6 +64,9 @@ const fillAusserordentlicherAnspruch = () => {
 };
 
 export const AntragKindPO = {
+    // page objects
+    getPageTitle,
+    // page actions
     createNewKind,
     fillKindForm,
     fillPflegekind,

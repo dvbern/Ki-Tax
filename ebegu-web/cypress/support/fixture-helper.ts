@@ -18,7 +18,7 @@
 import type * as Beschaeftigungspensum from '../fixtures/antrag/beschaeftigungspensum.json';
 import type * as Betreuung from '../fixtures/antrag/betreuung.json';
 import type * as Einkommensverschlechterung from '../fixtures/antrag/einkommensverschlechterung.json';
-import type * as Kind from '../fixtures/antrag/kind.json';
+import type * as Kind from '../fixtures/antrag/kind-boy.json';
 import type * as FamSit from '../fixtures/antrag/famsit.json';
 import type * as FinSit from '../fixtures/antrag/finsit.json';
 import type * as Papier from '../fixtures/antrag/papier.json';

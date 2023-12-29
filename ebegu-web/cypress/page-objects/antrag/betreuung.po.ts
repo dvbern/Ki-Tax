@@ -18,6 +18,17 @@
 import {FixtureBetreuung} from '@dv-e2e/fixtures';
 import {GemeindeTestFall} from '@dv-e2e/types';
 
+// !! -- PAGE OBJECTS -- !!
+const getPageTitle = () => {
+    return cy.getByData('page-title');
+};
+
+const getBetreuungspensum = (index: number) => {
+    return cy.getByData(`betreuungspensum-${index}`);
+};
+
+// !! -- PAGE ACTIONS -- !!
+
 const createNewBetreuung = (kindIndex: number = 0) => {
     cy.intercept('**/institutionstammdaten/gesuchsperiode/gemeinde/*').as('getInstitutionsStammdaten');
     cy.getByData('container.create-betreuung', 'navigation-button').eq(kindIndex).click();
@@ -106,10 +117,6 @@ const platzBestaetigungAnfordern = () => {
     cy.wait('@savingBetreuung');
 };
 
-const getBetreuungspensum = (index: number) => {
-    return cy.getByData(`betreuungspensum-${index}`);
-};
-
 const saveBetreuung = () => {
     cy.waitForRequest('PUT', '**/betreuungen/betreuung/*', () => {
         cy.getByData('container.save','navigation-button').click();
@@ -124,6 +131,10 @@ const saveAndConfirmBetreuung = () => {
 };
 
 export const AntragBetreuungPO = {
+    // page objects
+    getPageTitle,
+    getBetreuungspensum,
+    // page actions
     createNewBetreuung,
     createNewTagesschulAnmeldung,
     selectTagesschulBetreuung,
@@ -135,7 +146,6 @@ export const AntragBetreuungPO = {
     fillErweiterteBeduerfnisse,
     fillEingewoehnung,
     platzBestaetigungAnfordern,
-    getBetreuungspensum,
     saveBetreuung,
     saveAndConfirmBetreuung,
 };

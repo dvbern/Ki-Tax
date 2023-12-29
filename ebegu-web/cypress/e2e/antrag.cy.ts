@@ -16,15 +16,19 @@
  */
 
 import {
+    AntragCreationPO,
     AntragPapierPO,
     AntragFamSitPO,
     AntragKindPO,
     AntragBetreuungPO,
-    AntragBeschaeftigungspensumPO, NavigationPO,
+    AntragBeschaeftigungspensumPO,
+    FinanzielleSituationPO,
+    FinanzielleSituationStartPO,
+    NavigationPO,
+    SidenavPO,
 } from '@dv-e2e/page-objects';
 import { FixtureFinSit } from '@dv-e2e/fixtures';
 import { getUser } from '@dv-e2e/types';
-import {SidenavPO} from '../page-objects/antrag/sidenav.po';
 
 const createNewKindWithAllSettings = () => {
     AntragKindPO.createNewKind();
@@ -67,7 +71,7 @@ describe('Kibon - generate Testfälle [Gemeinde Sachbearbeiter]', () => {
         // INIT
         {
             AntragPapierPO.createPapierGesuch('withValid');
-            cy.getByData('antrags-daten').then((el$) => el$.data('antrags-id')).as('antragsId');
+            AntragCreationPO.getAntragsDaten().then((el$) => el$.data('antrags-id')).as('antragsId');
         }
 
         // FAMILIENSITUATION
@@ -79,7 +83,7 @@ describe('Kibon - generate Testfälle [Gemeinde Sachbearbeiter]', () => {
         // KINDER
         {
             createNewKindWithAllSettings();
-            cy.getByData('page-title').should('include.text', 'Kinder');
+            AntragKindPO.getPageTitle().should('include.text', 'Kinder');
 
             cy.intercept('POST', '**/wizard-steps').as('goingToBetreuung');
             NavigationPO.saveAndGoNext();
@@ -89,7 +93,7 @@ describe('Kibon - generate Testfälle [Gemeinde Sachbearbeiter]', () => {
         // BETREUUNG
         {
             createNewBetreuungWithAllSettings();
-            cy.getByData('page-title').should('include.text', 'Betreuung');
+            AntragBetreuungPO.getPageTitle().should('include.text', 'Betreuung');
 
             cy.intercept('GET', '**/erwerbspensen/required/**').as('goingToBeschaeftigungspensum');
             NavigationPO.saveAndGoNext();
