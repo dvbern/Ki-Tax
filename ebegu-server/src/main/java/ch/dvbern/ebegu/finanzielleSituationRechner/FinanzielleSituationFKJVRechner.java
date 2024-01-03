@@ -17,13 +17,13 @@
 
 package ch.dvbern.ebegu.finanzielleSituationRechner;
 
-import java.math.BigDecimal;
+import ch.dvbern.ebegu.entities.AbstractFinanzielleSituation;
+import ch.dvbern.ebegu.entities.FinanzielleSituation;
+import org.apache.commons.lang.NotImplementedException;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-
-import ch.dvbern.ebegu.entities.AbstractFinanzielleSituation;
-import org.apache.commons.lang.NotImplementedException;
+import java.math.BigDecimal;
 
 public class FinanzielleSituationFKJVRechner extends FinanzielleSituationBernRechner {
 
@@ -36,7 +36,7 @@ public class FinanzielleSituationFKJVRechner extends FinanzielleSituationBernRec
 	) {
 		if (abstractFinanzielleSituation != null) {
 			total = add(total, abstractFinanzielleSituation.getNettolohn());
-			total = add(total, abstractFinanzielleSituation.getErsatzeinkommen());
+			total = add(total, getZwischentotalErsatzeinkommen(abstractFinanzielleSituation));
 			total = add(total, abstractFinanzielleSituation.getErhalteneAlimente());
 			total = add(total, abstractFinanzielleSituation.getFamilienzulage());
 			total = add(total, geschaeftsgewinnDurchschnitt);
@@ -47,6 +47,20 @@ public class FinanzielleSituationFKJVRechner extends FinanzielleSituationBernRec
 			}
 		}
 		return total;
+	}
+
+	@Nullable
+	private BigDecimal getZwischentotalErsatzeinkommen(AbstractFinanzielleSituation abstractFinanzielleSituation) {
+		BigDecimal totalErsatzeinkommen = abstractFinanzielleSituation.getErsatzeinkommen();
+
+		if (abstractFinanzielleSituation instanceof FinanzielleSituation) {
+			FinanzielleSituation finanzielleSituation = (FinanzielleSituation) abstractFinanzielleSituation;
+			totalErsatzeinkommen = subtract(totalErsatzeinkommen, finanzielleSituation.getErsatzeinkommenSelbststaendigkeitBasisjahr());
+			totalErsatzeinkommen = subtract(totalErsatzeinkommen, finanzielleSituation.getErsatzeinkommenSelbststaendigkeitBasisjahrMinus1());
+			totalErsatzeinkommen = subtract(totalErsatzeinkommen, finanzielleSituation.getErsatzeinkommenSelbststaendigkeitBasisjahrMinus2());
+		}
+
+		return totalErsatzeinkommen;
 	}
 
 	@Override
