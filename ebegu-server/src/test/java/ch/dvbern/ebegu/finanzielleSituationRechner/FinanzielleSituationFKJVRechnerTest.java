@@ -140,9 +140,9 @@ public class FinanzielleSituationFKJVRechnerTest extends FinanzielleSituationBer
 		finSit.setGeschaeftsgewinnBasisjahr(BigDecimal.valueOf(5000));
 		finSit.setGeschaeftsgewinnBasisjahrMinus1(BigDecimal.valueOf(3500));
 		finSit.setGeschaeftsgewinnBasisjahrMinus2(BigDecimal.valueOf(1840));
-		finSit.setErsatzeinkommenBasisjahr(BigDecimal.valueOf(1600));
-		finSit.setErsatzeinkommenBasisjahrMinus1(BigDecimal.valueOf(3208));
-		finSit.setErsatzeinkommenBasisjahrMinus2(BigDecimal.valueOf(1847));
+		finSit.setErsatzeinkommenSelbststaendigkeitBasisjahr(BigDecimal.valueOf(1600));
+		finSit.setErsatzeinkommenSelbststaendigkeitBasisjahrMinus1(BigDecimal.valueOf(3208));
+		finSit.setErsatzeinkommenSelbststaendigkeitBasisjahrMinus2(BigDecimal.valueOf(1847));
 
 		finSit.setAbzugSchuldzinsen(BigDecimal.valueOf(10));
 		finSit.setGewinnungskosten(BigDecimal.valueOf(85));

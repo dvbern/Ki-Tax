@@ -55,9 +55,9 @@ public class FinanzielleSituationFKJVRechner extends FinanzielleSituationBernRec
 
 		if (abstractFinanzielleSituation instanceof FinanzielleSituation) {
 			FinanzielleSituation finanzielleSituation = (FinanzielleSituation) abstractFinanzielleSituation;
-			totalErsatzeinkommen = subtract(totalErsatzeinkommen, finanzielleSituation.getErsatzeinkommenBasisjahr());
-			totalErsatzeinkommen = subtract(totalErsatzeinkommen, finanzielleSituation.getErsatzeinkommenBasisjahrMinus1());
-			totalErsatzeinkommen = subtract(totalErsatzeinkommen, finanzielleSituation.getErsatzeinkommenBasisjahrMinus2());
+			totalErsatzeinkommen = subtract(totalErsatzeinkommen, finanzielleSituation.getErsatzeinkommenSelbststaendigkeitBasisjahr());
+			totalErsatzeinkommen = subtract(totalErsatzeinkommen, finanzielleSituation.getErsatzeinkommenSelbststaendigkeitBasisjahrMinus1());
+			totalErsatzeinkommen = subtract(totalErsatzeinkommen, finanzielleSituation.getErsatzeinkommenSelbststaendigkeitBasisjahrMinus2());
 		}
 
 		return totalErsatzeinkommen;

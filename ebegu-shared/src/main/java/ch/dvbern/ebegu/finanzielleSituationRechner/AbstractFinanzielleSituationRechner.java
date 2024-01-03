@@ -292,13 +292,13 @@ public abstract class AbstractFinanzielleSituationRechner {
 		if (finanzielleSituation != null) {
 			BigDecimal gBJ = calcGeschaeftsgewinnWithErsatzeinkommenAusSelbststaendigkeit(
 				finanzielleSituation.getGeschaeftsgewinnBasisjahr(),
-				finanzielleSituation.getErsatzeinkommenBasisjahr());
+				finanzielleSituation.getErsatzeinkommenSelbststaendigkeitBasisjahr());
 			BigDecimal gBJ1 = calcGeschaeftsgewinnWithErsatzeinkommenAusSelbststaendigkeit(
 				finanzielleSituation.getGeschaeftsgewinnBasisjahrMinus1(),
-				finanzielleSituation.getErsatzeinkommenBasisjahrMinus1());
+				finanzielleSituation.getErsatzeinkommenSelbststaendigkeitBasisjahrMinus1());
 			BigDecimal gBJ2 = calcGeschaeftsgewinnWithErsatzeinkommenAusSelbststaendigkeit(
 				finanzielleSituation.getGeschaeftsgewinnBasisjahrMinus2(),
-				finanzielleSituation.getErsatzeinkommenBasisjahrMinus2());
+				finanzielleSituation.getErsatzeinkommenSelbststaendigkeitBasisjahrMinus2());
 
 			return calcGeschaeftsgewinnDurchschnitt(gBJ, gBJ1, gBJ2);
 		}
@@ -324,10 +324,10 @@ public abstract class AbstractFinanzielleSituationRechner {
 					null);
 				BigDecimal gBJ1 =  calcGeschaeftsgewinnWithErsatzeinkommenAusSelbststaendigkeit(
 					finanzielleSituation.getGeschaeftsgewinnBasisjahr(),
-					finanzielleSituation.getErsatzeinkommenBasisjahr());
+					finanzielleSituation.getErsatzeinkommenSelbststaendigkeitBasisjahr());
 				BigDecimal gBJ2 =  calcGeschaeftsgewinnWithErsatzeinkommenAusSelbststaendigkeit(
 					finanzielleSituation.getGeschaeftsgewinnBasisjahrMinus1(),
-					finanzielleSituation.getErsatzeinkommenBasisjahrMinus1());
+					finanzielleSituation.getErsatzeinkommenSelbststaendigkeitBasisjahrMinus1());
 
 				return calcGeschaeftsgewinnDurchschnitt(gBJ, gBJ1, gBJ2);
 			}
@@ -341,7 +341,7 @@ public abstract class AbstractFinanzielleSituationRechner {
 					null);
 				BigDecimal gBJ2 =  calcGeschaeftsgewinnWithErsatzeinkommenAusSelbststaendigkeit(
 					finanzielleSituation.getGeschaeftsgewinnBasisjahr(),
-					finanzielleSituation.getErsatzeinkommenBasisjahr());
+					finanzielleSituation.getErsatzeinkommenSelbststaendigkeitBasisjahr());
 
 				return calcGeschaeftsgewinnDurchschnitt(gBJ, gBJ1, gBJ2);
 			} else {
@@ -353,7 +353,7 @@ public abstract class AbstractFinanzielleSituationRechner {
 					null);
 				BigDecimal gBJ2 =  calcGeschaeftsgewinnWithErsatzeinkommenAusSelbststaendigkeit(
 					finanzielleSituation.getGeschaeftsgewinnBasisjahr(),
-					finanzielleSituation.getErsatzeinkommenBasisjahr());
+					finanzielleSituation.getErsatzeinkommenSelbststaendigkeitBasisjahr());
 				return calcGeschaeftsgewinnDurchschnitt(gBJ, gBJ1, gBJ2);
 			}
 		}

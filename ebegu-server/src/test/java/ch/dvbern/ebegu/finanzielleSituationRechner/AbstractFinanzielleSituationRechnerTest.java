@@ -31,7 +31,7 @@ public class AbstractFinanzielleSituationRechnerTest {
 	@Test
 	public void calcGeschaeftsgewinnDurchschnitt_gewinnBasisJahrNull_ErsatzeinkommenNotNull() {
 		FinanzielleSituation finanzielleSituation = new FinanzielleSituation();
-		finanzielleSituation.setErsatzeinkommenBasisjahr(BigDecimal.ONE);
+		finanzielleSituation.setErsatzeinkommenSelbststaendigkeitBasisjahr(BigDecimal.ONE);
 		BigDecimal geschaeftsGewinnDurchschnitt =
 			AbstractFinanzielleSituationRechner.calcGeschaeftsgewinnDurchschnitt(finanzielleSituation);
 		assertThat(geschaeftsGewinnDurchschnitt, is(BigDecimal.ZERO));
@@ -82,7 +82,7 @@ public class AbstractFinanzielleSituationRechnerTest {
 	public void calcGeschaeftsgewinnDurchschnitt_gewinnBasisJahr_Ersatzeinkommen() {
 		FinanzielleSituation finanzielleSituation = new FinanzielleSituation();
 		finanzielleSituation.setGeschaeftsgewinnBasisjahr(BigDecimal.valueOf(6804));
-		finanzielleSituation.setErsatzeinkommenBasisjahr(BigDecimal.valueOf(1365));
+		finanzielleSituation.setErsatzeinkommenSelbststaendigkeitBasisjahr(BigDecimal.valueOf(1365));
 
 		BigDecimal geschaeftsGewinnDurchschnitt =
 			AbstractFinanzielleSituationRechner.calcGeschaeftsgewinnDurchschnitt(finanzielleSituation);
@@ -96,8 +96,8 @@ public class AbstractFinanzielleSituationRechnerTest {
 		FinanzielleSituation finanzielleSituation = new FinanzielleSituation();
 		finanzielleSituation.setGeschaeftsgewinnBasisjahr(BigDecimal.valueOf(6800));
 		finanzielleSituation.setGeschaeftsgewinnBasisjahrMinus1(BigDecimal.valueOf(350));
-		finanzielleSituation.setErsatzeinkommenBasisjahr(BigDecimal.valueOf(3000));
-		finanzielleSituation.setErsatzeinkommenBasisjahrMinus1(BigDecimal.valueOf(768));
+		finanzielleSituation.setErsatzeinkommenSelbststaendigkeitBasisjahr(BigDecimal.valueOf(3000));
+		finanzielleSituation.setErsatzeinkommenSelbststaendigkeitBasisjahrMinus1(BigDecimal.valueOf(768));
 		BigDecimal geschaeftsGewinnDurchschnitt =
 			AbstractFinanzielleSituationRechner.calcGeschaeftsgewinnDurchschnitt(finanzielleSituation);
 
@@ -111,9 +111,9 @@ public class AbstractFinanzielleSituationRechnerTest {
 		finanzielleSituation.setGeschaeftsgewinnBasisjahr(BigDecimal.valueOf(1680));
 		finanzielleSituation.setGeschaeftsgewinnBasisjahrMinus1(BigDecimal.valueOf(5823));
 		finanzielleSituation.setGeschaeftsgewinnBasisjahrMinus2(BigDecimal.valueOf(7962));
-		finanzielleSituation.setErsatzeinkommenBasisjahr(BigDecimal.valueOf(905));
-		finanzielleSituation.setErsatzeinkommenBasisjahrMinus1(BigDecimal.valueOf(486));
-		finanzielleSituation.setErsatzeinkommenBasisjahrMinus2(BigDecimal.valueOf(1872));
+		finanzielleSituation.setErsatzeinkommenSelbststaendigkeitBasisjahr(BigDecimal.valueOf(905));
+		finanzielleSituation.setErsatzeinkommenSelbststaendigkeitBasisjahrMinus1(BigDecimal.valueOf(486));
+		finanzielleSituation.setErsatzeinkommenSelbststaendigkeitBasisjahrMinus2(BigDecimal.valueOf(1872));
 
 		BigDecimal geschaeftsGewinnDurchschnitt =
 			AbstractFinanzielleSituationRechner.calcGeschaeftsgewinnDurchschnitt(finanzielleSituation);
@@ -196,9 +196,9 @@ public class AbstractFinanzielleSituationRechnerTest {
 		finanzielleSituation.setGeschaeftsgewinnBasisjahr(BigDecimal.valueOf(3480));
 		finanzielleSituation.setGeschaeftsgewinnBasisjahrMinus1(BigDecimal.valueOf(540));
 		finanzielleSituation.setGeschaeftsgewinnBasisjahrMinus2(BigDecimal.valueOf(7235));
-		finanzielleSituation.setErsatzeinkommenBasisjahr(BigDecimal.valueOf(685));
-		finanzielleSituation.setErsatzeinkommenBasisjahrMinus1(BigDecimal.valueOf(963));
-		finanzielleSituation.setErsatzeinkommenBasisjahrMinus2(BigDecimal.valueOf(1039));
+		finanzielleSituation.setErsatzeinkommenSelbststaendigkeitBasisjahr(BigDecimal.valueOf(685));
+		finanzielleSituation.setErsatzeinkommenSelbststaendigkeitBasisjahrMinus1(BigDecimal.valueOf(963));
+		finanzielleSituation.setErsatzeinkommenSelbststaendigkeitBasisjahrMinus2(BigDecimal.valueOf(1039));
 
 		Einkommensverschlechterung ekvBj1 = new Einkommensverschlechterung();
 		ekvBj1.setGeschaeftsgewinnBasisjahr(BigDecimal.valueOf(9803));
