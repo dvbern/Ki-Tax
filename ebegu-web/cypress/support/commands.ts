@@ -21,7 +21,7 @@ import * as dvTasks from '@dv-e2e/tasks';
 type DvTasks = typeof dvTasks;
 
 import { OnlyValidSelectors, User } from '@dv-e2e/types';
-import { Method } from 'cypress/types/net-stubbing';
+import {Method, WaitOptions} from 'cypress/types/net-stubbing';
 
 declare global {
     namespace Cypress {
@@ -122,7 +122,7 @@ declare global {
              * // More specifically it equals to
              * cy.intercept({ pathname: '**‍/einkommensverschlechterung/calculateTemp/1', method: 'POST', times: 1 }).as('...');
              */
-            waitForRequest<T>(method: Method, urlPart: string, run: () => T): Chainable<T>;
+            waitForRequest<T>(method: Method, urlPart: string, run: () => T, params?: {waitOptions?: Partial<WaitOptions>}): Chainable<T>;
 
             /**
              * Run an action and wait for a given download to initiate, the download url is the resulting subject
@@ -180,11 +180,11 @@ Cypress.Commands.add('groupBy', (context, run) => {
         run();
     });
 });
-Cypress.Commands.add('waitForRequest', (method, pathname, run) => {
+Cypress.Commands.add('waitForRequest', (method, pathname, run, params? ) => {
     const alias = `Request ${method} ${pathname}`;
     cy.intercept({ method, pathname, times: 1 }).as(alias);
     run();
-    cy.wait(`@${alias}`);
+    cy.wait(`@${alias}`, params?.waitOptions);
 });
 Cypress.Commands.add('getByData', (name, ...names) => {
     return cy.get([name, ...names].map((name) => `[data-test="${name}"]`).join(' '));
