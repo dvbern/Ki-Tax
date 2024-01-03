@@ -36,7 +36,7 @@ public class FinanzielleSituationFKJVRechner extends FinanzielleSituationBernRec
 	) {
 		if (abstractFinanzielleSituation != null) {
 			total = add(total, abstractFinanzielleSituation.getNettolohn());
-			total = add(total, abstractFinanzielleSituation.getErsatzeinkommen());
+			total = add(total, getZwischentotalErsatzeinkommen(abstractFinanzielleSituation));
 			total = add(total, abstractFinanzielleSituation.getErhalteneAlimente());
 			total = add(total, abstractFinanzielleSituation.getFamilienzulage());
 			total = add(total, geschaeftsgewinnDurchschnitt);
@@ -45,14 +45,22 @@ public class FinanzielleSituationFKJVRechner extends FinanzielleSituationBernRec
 			if (Boolean.TRUE.equals(abstractFinanzielleSituation.getEinkommenInVereinfachtemVerfahrenAbgerechnet())) {
 				total = add(total, abstractFinanzielleSituation.getAmountEinkommenInVereinfachtemVerfahrenAbgerechnet());
 			}
-			if (abstractFinanzielleSituation instanceof FinanzielleSituation) {
-				FinanzielleSituation finanzielleSituation = (FinanzielleSituation) abstractFinanzielleSituation;
-				total = subtract(total, finanzielleSituation.getErsatzeinkommenBasisjahr());
-				total = subtract(total, finanzielleSituation.getErsatzeinkommenBasisjahrMinus1());
-				total = subtract(total, finanzielleSituation.getErsatzeinkommenBasisjahrMinus2());
-			}
 		}
 		return total;
+	}
+
+	@Nullable
+	private BigDecimal getZwischentotalErsatzeinkommen(AbstractFinanzielleSituation abstractFinanzielleSituation) {
+		BigDecimal totalErsatzeinkommen = abstractFinanzielleSituation.getErsatzeinkommen();
+
+		if (abstractFinanzielleSituation instanceof FinanzielleSituation) {
+			FinanzielleSituation finanzielleSituation = (FinanzielleSituation) abstractFinanzielleSituation;
+			totalErsatzeinkommen = subtract(totalErsatzeinkommen, finanzielleSituation.getErsatzeinkommenBasisjahr());
+			totalErsatzeinkommen = subtract(totalErsatzeinkommen, finanzielleSituation.getErsatzeinkommenBasisjahrMinus1());
+			totalErsatzeinkommen = subtract(totalErsatzeinkommen, finanzielleSituation.getErsatzeinkommenBasisjahrMinus2());
+		}
+
+		return totalErsatzeinkommen;
 	}
 
 	@Override
