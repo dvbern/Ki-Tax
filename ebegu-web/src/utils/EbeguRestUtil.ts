@@ -2002,10 +2002,12 @@ export class EbeguRestUtil {
         restFinanzielleSituation.unterhaltsBeitraege = finanzielleSituation.unterhaltsBeitraege;
         restFinanzielleSituation.automatischePruefungErlaubt = finanzielleSituation.automatischePruefungErlaubt;
         restFinanzielleSituation.momentanSelbststaendig = finanzielleSituation.momentanSelbststaendig;
-        restFinanzielleSituation.ersatzeinkommenBezogen = finanzielleSituation.ersatzeinkommenBezogen;
-        restFinanzielleSituation.ersatzeinkommenBasisjahr = finanzielleSituation.ersatzeinkommenBasisjahr;
-        restFinanzielleSituation.ersatzeinkommenBasisjahrMinus1 = finanzielleSituation.ersatzeinkommenBasisjahrMinus1;
-        restFinanzielleSituation.ersatzeinkommenBasisjahrMinus2 = finanzielleSituation.ersatzeinkommenBasisjahrMinus2;
+        restFinanzielleSituation.ErsatzeinkommenSelbststaendigkeitBasisjahr =
+            finanzielleSituation.ersatzeinkommenSelbststaendigkeitBasisjahr;
+        restFinanzielleSituation.ersatzeinkommenSelbststaendigkeitBasisjahrMinus1 =
+            finanzielleSituation.ersatzeinkommenSelbststaendigkeitBasisjahrMinus1;
+        restFinanzielleSituation.ersatzeinkommenSelbststaendigkeitBasisjahrMinus2 =
+            finanzielleSituation.ersatzeinkommenSelbststaendigkeitBasisjahrMinus2;
 
         return restFinanzielleSituation;
     }
@@ -2189,10 +2191,12 @@ export class EbeguRestUtil {
                     DateUtil.localDateTimeToMoment(finanzielleSituationFromServer.steuerdatenAbfrageTimestamp);
             }
             finanzielleSituationTS.momentanSelbststaendig = finanzielleSituationFromServer.momentanSelbststaendig;
-            finanzielleSituationTS.ersatzeinkommenBezogen = finanzielleSituationFromServer.ersatzeinkommenBezogen;
-            finanzielleSituationTS.ersatzeinkommenBasisjahr = finanzielleSituationFromServer.ersatzeinkommenBasisjahr;
-            finanzielleSituationTS.ersatzeinkommenBasisjahrMinus1 = finanzielleSituationFromServer.ersatzeinkommenBasisjahrMinus1;
-            finanzielleSituationTS.ersatzeinkommenBasisjahrMinus2 = finanzielleSituationFromServer.ersatzeinkommenBasisjahrMinus2;
+            finanzielleSituationTS.ersatzeinkommenSelbststaendigkeitBasisjahr =
+                finanzielleSituationFromServer.ersatzeinkommenSelbststaendigkeitBasisjahr;
+            finanzielleSituationTS.ersatzeinkommenSelbststaendigkeitBasisjahrMinus1 =
+                finanzielleSituationFromServer.ersatzeinkommenSelbststaendigkeitBasisjahrMinus1;
+            finanzielleSituationTS.ersatzeinkommenSelbststaendigkeitBasisjahrMinus2 =
+                finanzielleSituationFromServer.ersatzeinkommenSelbststaendigkeitBasisjahrMinus2;
             return finanzielleSituationTS;
         }
         return undefined;
