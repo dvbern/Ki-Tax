@@ -1,5 +1,13 @@
-import {TestFaellePO} from '@dv-e2e/page-objects';
-import { getUser, normalizeUser } from '@dv-e2e/types';
+import {
+    AntragCreationPO,
+    DossierToolbarGesuchstellendePO,
+    MainNavigationPO,
+    MitteilungenPO,
+    NavbarPO,
+    PosteingangPO,
+    TestFaellePO,
+} from '@dv-e2e/page-objects';
+import { getUser } from '@dv-e2e/types';
 
 describe('Kibon - Test Mitteilungen', () => {
     const userSuperAdmin = getUser('[1-Superadmin] E-BEGU Superuser');
@@ -26,9 +34,9 @@ describe('Kibon - Test Mitteilungen', () => {
             gemeinde: 'London'
         });
 
-        cy.getByData('fall-creation-eingangsdatum').find('input').should('have.value', '15.2.2016');
-        cy.getByData('verantwortlicher').click();
-        cy.getByData(`option.${normalizeUser(userSB)}`).click();
+        AntragCreationPO.getEingangsdatum().find('input').should('have.value', '15.2.2016');
+        AntragCreationPO.getVerantwortlicher().click();
+        AntragCreationPO.getUserOption(userSB).click();
 
         cy.url().then((url) => {
             const parts = new URL(url);
@@ -44,13 +52,13 @@ describe('Kibon - Test Mitteilungen', () => {
         cy.visit(gesuchUrl);
         cy.wait('@untilReadyGS1', {timeout: 17500});
 
-        cy.getByData('mobile-menu-button').click();
-        cy.getByData('menu.mitteilungen').click();
+        MainNavigationPO.getMobileMenuButton().click();
+        DossierToolbarGesuchstellendePO.getMitteilungen().click();
 
-        cy.getByData('subject').type(subjectGS);
-        cy.getByData('nachricht').type(inhaltGS);
+        MitteilungenPO.getSubjectInput().type(subjectGS);
+        MitteilungenPO.getNachrichtInput().type(inhaltGS);
         cy.intercept('PUT', '**/mitteilungen/send').as('sendingMitteilung');
-        cy.getByData('container.senden', 'navigation-button').click();
+        MitteilungenPO.getNachrichtSendenButton().click();
         cy.wait('@sendingMitteilung');
         cy.resetViewport();
     });
@@ -64,20 +72,20 @@ describe('Kibon - Test Mitteilungen', () => {
         cy.wait('@untilReadySB', {timeout: 17500});
         cy.wait('@mitteilungCount');
 
-        cy.getByData('posteingang-link').should('include.text', '(1)');
-        cy.getByData('posteingang-link').click();
+        NavbarPO.getLinkPosteingang().should('include.text', '(1)');
+        NavbarPO.getLinkPosteingang().click();
 
-        cy.getByData('mitteilung#0').click();
+        PosteingangPO.getMitteilung(0).click();
 
-        cy.getByData('container.mitteilung#0', 'nachricht-subject').should('include.text', subjectGS);
-        cy.getByData('container.mitteilung#0').click();
-        cy.getByData('container.mitteilung#0', 'nachricht-inhalt').should('include.text', inhaltGS);
+        MitteilungenPO.getSubjectOfMitteilung(0).should('include.text', subjectGS);
+        MitteilungenPO.getMitteilung(0).click();
+        MitteilungenPO.getInhaltOfMitteilung(0).should('include.text', inhaltGS);
 
-        cy.getByData('empfaenger').select('Antragsteller/in');
-        cy.getByData('subject').type(subjectSB);
-        cy.getByData('nachricht').type(inhaltSB);
+        MitteilungenPO.getEmpfangendeInput().select('Antragsteller/in');
+        MitteilungenPO.getSubjectInput().type(subjectSB);
+        MitteilungenPO.getNachrichtInput().type(inhaltSB);
         cy.intercept('PUT', '**/mitteilungen/send').as('sendingMitteilung');
-        cy.getByData('container.senden', 'navigation-button').click();
+        MitteilungenPO.getNachrichtSendenButton().click();
         cy.wait('@sendingMitteilung');
     });
 
@@ -89,13 +97,13 @@ describe('Kibon - Test Mitteilungen', () => {
         cy.visit('/#/');
         cy.wait('@mitteilungCount');
 
-        cy.getByData('mobile-menu-button').click();
-        cy.getByData('menu.mitteilungen').should('include.text', '(1)');
-        cy.getByData('menu.mitteilungen').click();
+        MainNavigationPO.getMobileMenuButton().click();
+        DossierToolbarGesuchstellendePO.getMitteilungen().should('include.text', '(1)');
+        DossierToolbarGesuchstellendePO.getMitteilungen().click();
 
-        cy.getByData('container.mitteilung#0', 'nachricht-subject').should('include.text', subjectSB);
-        cy.getByData('container.mitteilung#0').click();
-        cy.getByData('container.mitteilung#0', 'nachricht-inhalt').should('include.text', inhaltSB);
+        MitteilungenPO.getSubjectOfMitteilung(0).should('include.text', subjectSB);
+        MitteilungenPO.getMitteilung(0).click();
+        MitteilungenPO.getInhaltOfMitteilung(0).should('include.text', inhaltSB);
         cy.resetViewport();
     });
 });

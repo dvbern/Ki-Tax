@@ -15,10 +15,5 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-export * from './admin';
-export * from './antrag';
-export * from './dialogs';
-export * from './dossier';
-export * from './antragverwaltung';
-export * from './navigation';
-
+export * from './dossier-toolbar-gesuchstellende.po';
+export * from './mitteilungen.po';

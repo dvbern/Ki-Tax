@@ -15,10 +15,27 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import {normalizeUser, User} from '@dv-e2e/types';
+
 const getAntragsDaten = () => {
     return cy.getByData('antrags-daten');
 };
 
+const getEingangsdatum = () => {
+    return cy.getByData('fall-creation-eingangsdatum');
+};
+
+const getVerantwortlicher = () => {
+	return cy.getByData('verantwortlicher');
+};
+
+const getUserOption = (user: User) => {
+	return cy.getByData(`option.${normalizeUser(user)}`);
+};
+
 export const AntragCreationPO = {
     getAntragsDaten,
+    getEingangsdatum,
+    getVerantwortlicher,
+    getUserOption,
 };
