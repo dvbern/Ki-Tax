@@ -28,6 +28,11 @@ const getBetreuung = (kindIndex: number, betreuungsIndex: number) => {
     return cy.getByData('container.kind#' + kindIndex, 'container.betreuung#' + betreuungsIndex);
 };
 
+const getBetreuungLoeschenButton = (kindIndex: number, betreuungsIndex: number) => {
+    return cy.getByData('container.kind#' + kindIndex, 'container.betreuung#' + betreuungsIndex)
+        .findByData('container.delete', 'navigation-button');
+};
+
 const getBetreuungsstatus = (kindIndex: number, betreuungsIndex: number) => {
 	return getBetreuung(kindIndex, betreuungsIndex).get('betreuungs-status');
 };
@@ -213,6 +218,7 @@ export const AntragBetreuungPO = {
     getPlatzAkzeptierenButton,
     getWeiteresBetreuungspensumErfassenButton,
     getMutationsmeldungErstellenButton,
+    getBetreuungLoeschenButton,
     getMutationsmeldungSendenButton,
     // page actions
     createNewBetreuung,

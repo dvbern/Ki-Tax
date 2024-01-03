@@ -26,6 +26,10 @@ const getVerfuegterTarif = (zeitabschnittIndex: number) => {
         'tagesschul-anmeldung-zeitabschnitt-tarif');
 };
 
+const getProvisorischerTarifTitel = () => {
+    return cy.getByData('verfuegung-tagesschule-provisorisch');
+};
+
 const getAllTarife = () => {
     return cy.getByData('tagesschul-anmeldung-tarife', 'tagesschul-anmeldung-zeitabschnitt-tarif');
 };
@@ -53,6 +57,7 @@ const getVerfuegenVerzichtenButton = () => {
 export const VerfuegungPO = {
     getBetreuungspensumProzent,
     getVerfuegterTarif,
+    getProvisorischerTarifTitel,
     getAllTarife,
     getVerguenstigungOhneBeruecksichtigungVollkosten,
     getVerfuegungsBemerkungenKontrolliert,

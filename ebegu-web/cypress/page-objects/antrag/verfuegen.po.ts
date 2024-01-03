@@ -34,9 +34,15 @@ const getBetreuungsstatus = (kindIndex: number, betreuungsIndex: number) => {
 const getFinSitAkzeptiert = (status: string) => {
     return cy.getByData('finSitStatus.radio-value.' + status);
 };
+
+const getAbschliessenButton = () => {
+	return cy.getByData('container.abschliessen','navigation-button');
+};
+
 export const VerfuegenPO = {
     getBetreuungsstatus,
     getFinSitAkzeptiert,
+    getAbschliessenButton,
     getGeprueftButton,
     getVerfuegung,
     getVerfuegenStartenButton,
