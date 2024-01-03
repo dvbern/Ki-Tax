@@ -146,12 +146,12 @@ public class AbstractFinanzielleSituationRechnerTest {
 
 		BigDecimal geschaeftsGewinnDurchschnitt = calculateGeschaftsGwinnWithCompleteFinSitAndEKV(ekvInfo, 1);
 
-		// Expected Result
-		// 9803 (EKVBJ1 Basisjahr)
-		// + 3480 (FinSit Geschäftsgewinn Basisjahr)
-		// + 685 (FinSit ErsatzEinkommen Basisjahr)
-		// + 540 (FinSit Geschäftsgewinn Basisjahr Minus 1)
-		// + 963 (FinSit ErsatzEinkommen Basisjahr Minus 1)
+                // Expected Result (Example Antrag 2023/24)
+		// 9803 (EKVBJ1 Geschäftsgewinn Basisjahr (2023))
+		// + 3480 (FinSit Geschäftsgewinn Basisjahr (2022))
+		// + 685 (FinSit ErsatzEinkommen Basisjahr (2022))
+		// + 540 (FinSit Geschäftsgewinn Basisjahr Minus 1 (2021))
+		// + 963 (FinSit ErsatzEinkommen Basisjahr Minus 1(2021))
 		// / 3 (Jahre)
 		assertThat(geschaeftsGewinnDurchschnitt, is(BigDecimal.valueOf(5157)));
 	}
@@ -162,11 +162,11 @@ public class AbstractFinanzielleSituationRechnerTest {
 		ekvInfo.setEkvFuerBasisJahrPlus1(true);
 
 		BigDecimal geschaeftsGewinnDurchschnitt = calculateGeschaftsGwinnWithCompleteFinSitAndEKV(ekvInfo, 2);
-		// Expected Result
-		// 2700 (EKVBJ2 Basisjahr)
-		// + 9803 (EKVBJ1 Basisjahr)
-		// + 3480 (FinSit Geschäftsgewinn Basisjahr)
-		// + 685 (FinSit ErsatzEinkommen Basisjahr)
+		// Expected Result (Example Antrag 2023/24
+		// 2700 (EKVBJ2 Basisjahr (2024))
+		// + 9803 (EKVBJ1 Basisjahr(2023))
+		// + 3480 (FinSit Geschäftsgewinn Basisjahr (2022))
+                // + 685 (FinSit ErsatzEinkommen Basisjahr(2022))
 		// / 3 (Jahre)
 		assertThat(geschaeftsGewinnDurchschnitt, is(BigDecimal.valueOf(5556)));
 	}
