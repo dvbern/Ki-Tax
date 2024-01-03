@@ -454,8 +454,10 @@ export class FinanzielleSituationViewController extends AbstractFinSitBernView {
 
     public isErsatzeinkommenValid(): boolean {
             const finSit: TSFinanzielleSituation = this.model.getFiSiConToWorkWith().finanzielleSituationJA;
-        return EbeguUtil.isNullOrUndefined(finSit.ersatzeinkommen)
-            || EbeguUtil.isNullOrUndefined(finSit.ersatzeinkommenSelbststaendigkeitBasisjahr)
+        return (EbeguUtil.isNullOrUndefined(finSit.ersatzeinkommen)
+                && EbeguUtil.isNullOrUndefined(finSit.ersatzeinkommenSelbststaendigkeitBasisjahr))
+            || (EbeguUtil.isNotNullOrUndefined(finSit.ersatzeinkommen)
+                && EbeguUtil.isNullOrUndefined(finSit.ersatzeinkommenSelbststaendigkeitBasisjahr))
             || finSit.ersatzeinkommen - finSit.ersatzeinkommenSelbststaendigkeitBasisjahr >= 0;
     }
 
