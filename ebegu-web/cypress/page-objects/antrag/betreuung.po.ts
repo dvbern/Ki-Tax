@@ -56,6 +56,15 @@ const getPlatzBestaetigenButton = () => {
 	return cy.getByData('container.platz-bestaetigen', 'navigation-button');
 };
 
+const getMutationsmeldungErstellenButton = () => {
+	return cy.getByData('mutationsmeldung-erstellen');
+};
+
+const getMutationsmeldungSendenButton = () => {
+	return cy.getByData('mutationsmeldung-senden');
+};
+
+
 // !! -- PAGE ACTIONS -- !!
 const createNewBetreuung = (kindIndex: number = 0) => {
     cy.intercept('**/institutionstammdaten/gesuchsperiode/gemeinde/*').as('getInstitutionsStammdaten');
@@ -193,6 +202,8 @@ export const AntragBetreuungPO = {
     getKorrekteKostenBestaetigung,
     getPlatzBestaetigenButton,
     getWeiteresBetreuungspensumErfassenButton,
+    getMutationsmeldungErstellenButton,
+    getMutationsmeldungSendenButton,
     // page actions
     createNewBetreuung,
     createNewTagesschulAnmeldung,

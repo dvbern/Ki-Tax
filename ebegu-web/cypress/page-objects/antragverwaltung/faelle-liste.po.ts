@@ -15,35 +15,10 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-const getAllAntraegeInDropdown = () => {
-	return cy.get('[data-test^="antrag#');
+const getAntrag = (fallnummer: string) => {
+	return cy.getByData('antrag-entry#' + fallnummer);
 };
 
-const getAntrag = (antragIndex: number) => {
-	return cy.getByData('antrag#' + antragIndex);
-};
-
-const getAntraegeTrigger = () => {
-    return cy.getByData('toolbar.antrag');
-};
-
-const getAntragMutieren = () => {
-	return cy.getByData('toolbar.antrag-mutieren');
-};
-
-const getAntragLoeschen = () => {
-	return cy.getByData('toolbar.antrag-loeschen');
-};
-
-const getMitteilungen = () => {
-	return cy.getByData('toolbar-mitteilungen');
-};
-
-export const DossierToolbarPO = {
-    getAllAntraegeInDropdown,
-    getAntrag,
-    getAntraegeTrigger,
-    getAntragLoeschen,
-    getAntragMutieren,
-    getMitteilungen,
+export const FaelleListePO = {
+    getAntrag
 };

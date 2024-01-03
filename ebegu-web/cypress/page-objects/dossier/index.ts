@@ -17,4 +17,5 @@
 
 export * from './dossier-toolbar.po';
 export * from './dossier-toolbar-gesuchstellende.po';
+export * from './fall-toolbar.po';
 export * from './mitteilungen.po';
