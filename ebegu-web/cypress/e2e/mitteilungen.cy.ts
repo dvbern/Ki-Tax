@@ -48,24 +48,25 @@ describe('Kibon - Test Mitteilungen', () => {
         cy.viewport('iphone-8');
         cy.login(userGS);
 
-        cy.intercept('GET', '**/gesuchsperioden/gemeinde/**').as('untilReadyGS1');
-        cy.visit(gesuchUrl);
-        cy.wait('@untilReadyGS1', {timeout: 17500});
+        cy.waitForRequest('GET', '**/gesuchsperioden/gemeinde/**', () => {
+            cy.visit(gesuchUrl);
+        }, {waitOptions: {timeout: 17500}});
 
         MainNavigationPO.getMobileMenuButton().click();
         DossierToolbarGesuchstellendePO.getMitteilungen().click();
 
         MitteilungenPO.getSubjectInput().type(subjectGS);
         MitteilungenPO.getNachrichtInput().type(inhaltGS);
-        cy.intercept('PUT', '**/mitteilungen/send').as('sendingMitteilung');
-        MitteilungenPO.getNachrichtSendenButton().click();
-        cy.wait('@sendingMitteilung');
+        cy.waitForRequest('PUT', '**/mitteilungen/send', () => {
+            MitteilungenPO.getNachrichtSendenButton().click();
+        });
         cy.resetViewport();
     });
 
     it('Sachbearbeiter sees message and responds', () => {
         cy.login(userSB);
 
+        // TODO: add support for intercepting multiple requests in custom command
         cy.intercept('GET', '**/mitteilungen/amountnewforuser/**').as('mitteilungCount');
         cy.intercept('GET', '**/gesuchsperioden/gemeinde/**').as('untilReadySB');
         cy.visit(gesuchUrl);
@@ -84,18 +85,18 @@ describe('Kibon - Test Mitteilungen', () => {
         MitteilungenPO.getEmpfangendeInput().select('Antragsteller/in');
         MitteilungenPO.getSubjectInput().type(subjectSB);
         MitteilungenPO.getNachrichtInput().type(inhaltSB);
-        cy.intercept('PUT', '**/mitteilungen/send').as('sendingMitteilung');
-        MitteilungenPO.getNachrichtSendenButton().click();
-        cy.wait('@sendingMitteilung');
+        cy.waitForRequest('PUT', '**/mitteilungen/send', () => {
+            MitteilungenPO.getNachrichtSendenButton().click();
+        });
     });
 
     it('Gesuchsteller sees Sachbearbeiter message', () => {
         cy.viewport('iphone-8');
         cy.login(userGS);
 
-        cy.intercept('GET', '**/amountnew/dossier/**').as('mitteilungCount');
-        cy.visit('/#/');
-        cy.wait('@mitteilungCount');
+        cy.waitForRequest('GET', '**/amountnew/dossier/**', () => {
+            cy.visit('/#/');
+        });
 
         MainNavigationPO.getMobileMenuButton().click();
         DossierToolbarGesuchstellendePO.getMitteilungen().should('include.text', '(1)');
