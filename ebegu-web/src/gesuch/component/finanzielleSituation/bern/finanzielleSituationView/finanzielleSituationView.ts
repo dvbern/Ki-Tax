@@ -161,7 +161,7 @@ export class FinanzielleSituationViewController extends AbstractFinSitBernView {
         if (!this.showErsatzeinkommenSelbststaendigkeit) {
             this.resetErsatzeinkommenSelbststaendigkeitFields();
         } else if (this.getModel().finanzielleSituationJA.ersatzeinkommen === 0) {
-            this.getModel().finanzielleSituationJA.ersatzeinkommenBasisjahr = 0;
+            this.getModel().finanzielleSituationJA.ersatzeinkommenSelbststaendigkeitBasisjahr = 0;
         }
     }
 
@@ -197,9 +197,9 @@ export class FinanzielleSituationViewController extends AbstractFinSitBernView {
             return;
         }
 
-        this.model.getFiSiConToWorkWith().finanzielleSituationJA.ersatzeinkommenBasisjahr = undefined;
-        this.model.getFiSiConToWorkWith().finanzielleSituationJA.ersatzeinkommenBasisjahrMinus1 = undefined;
-        this.model.getFiSiConToWorkWith().finanzielleSituationJA.ersatzeinkommenBasisjahrMinus2 = undefined;
+        this.model.getFiSiConToWorkWith().finanzielleSituationJA.ersatzeinkommenSelbststaendigkeitBasisjahr = undefined;
+        this.model.getFiSiConToWorkWith().finanzielleSituationJA.ersatzeinkommenSelbststaendigkeitBasisjahrMinus1 = undefined;
+        this.model.getFiSiConToWorkWith().finanzielleSituationJA.ersatzeinkommenSelbststaendigkeitBasisjahrMinus2 = undefined;
         this.initErsatzeinkommenSelbststaendigkeit();
         this.calculate();
     }
@@ -443,9 +443,9 @@ export class FinanzielleSituationViewController extends AbstractFinSitBernView {
             return this.$translate.instant('LABEL_KEINE_ANGABE');
         }
 
-        const ersatzeinkommen = finSitGS.ersatzeinkommenBasisjahr;
-        const ersatzeinkommen2 = finSitGS.ersatzeinkommenBasisjahrMinus1;
-        const ersatzeinkommen3 = finSitGS.ersatzeinkommenBasisjahrMinus2;
+        const ersatzeinkommen = finSitGS.ersatzeinkommenSelbststaendigkeitBasisjahr;
+        const ersatzeinkommen2 = finSitGS.ersatzeinkommenSelbststaendigkeitBasisjahrMinus1;
+        const ersatzeinkommen3 = finSitGS.ersatzeinkommenSelbststaendigkeitBasisjahrMinus2;
         const basisjahr = this.gesuchModelManager.getBasisjahr();
         const params = {basisjahr, ersatzeinkommen, ersatzeinkommen2, ersatzeinkommen3};
 
@@ -455,19 +455,19 @@ export class FinanzielleSituationViewController extends AbstractFinSitBernView {
     public isErsatzeinkommenValid(): boolean {
             const finSit: TSFinanzielleSituation = this.model.getFiSiConToWorkWith().finanzielleSituationJA;
         return EbeguUtil.isNullOrUndefined(finSit.ersatzeinkommen)
-            || EbeguUtil.isNullOrUndefined(finSit.ersatzeinkommenBasisjahr)
-            || finSit.ersatzeinkommen - finSit.ersatzeinkommenBasisjahr >= 0;
+            || EbeguUtil.isNullOrUndefined(finSit.ersatzeinkommenSelbststaendigkeitBasisjahr)
+            || finSit.ersatzeinkommen - finSit.ersatzeinkommenSelbststaendigkeitBasisjahr >= 0;
     }
 
     public isAtLeastOneErsatzeinkommenSelbststaendigkeitProvided(): boolean {
         const finSit = this.model.getFiSiConToWorkWith().finanzielleSituationJA;
         return !finSit.hasErsatzeinkommenSelbststaendigkeit() ||
-            (EbeguUtil.isNotNullOrUndefined(finSit.ersatzeinkommenBasisjahr)
-                && finSit.ersatzeinkommenBasisjahr > 0)
-                || (EbeguUtil.isNotNullOrUndefined(finSit.ersatzeinkommenBasisjahrMinus1)
-                    && finSit.ersatzeinkommenBasisjahrMinus1 > 0)
-            || (EbeguUtil.isNotNullOrUndefined(finSit.ersatzeinkommenBasisjahrMinus2)
-                    && finSit.ersatzeinkommenBasisjahrMinus2 > 0);
+            (EbeguUtil.isNotNullOrUndefined(finSit.ersatzeinkommenSelbststaendigkeitBasisjahr)
+                && finSit.ersatzeinkommenSelbststaendigkeitBasisjahr > 0)
+                || (EbeguUtil.isNotNullOrUndefined(finSit.ersatzeinkommenSelbststaendigkeitBasisjahrMinus1)
+                    && finSit.ersatzeinkommenSelbststaendigkeitBasisjahrMinus1 > 0)
+            || (EbeguUtil.isNotNullOrUndefined(finSit.ersatzeinkommenSelbststaendigkeitBasisjahrMinus2)
+                    && finSit.ersatzeinkommenSelbststaendigkeitBasisjahrMinus2 > 0);
     }
 
     public hasGeschaeftsgewinn(basisjahrMinus: number): boolean {
@@ -484,15 +484,15 @@ export class FinanzielleSituationViewController extends AbstractFinSitBernView {
     public geschaeftsgewinnChange(basisjahrMinus: number): void {
         const finSit = this.model.getFiSiConToWorkWith().finanzielleSituationJA;
         if (basisjahrMinus === 2 && finSit.geschaeftsgewinnBasisjahrMinus2 !== undefined) {
-            finSit.ersatzeinkommenBasisjahrMinus2 = null;
+            finSit.ersatzeinkommenSelbststaendigkeitBasisjahrMinus2 = null;
         } else if (basisjahrMinus === 1 && finSit.geschaeftsgewinnBasisjahrMinus1 !== undefined) {
-            finSit.ersatzeinkommenBasisjahrMinus1 = null;
+            finSit.ersatzeinkommenSelbststaendigkeitBasisjahrMinus1 = null;
         }
     }
 
     public ersatzeinkommenChanged(): void {
         if (this.getModel().finanzielleSituationJA.ersatzeinkommen === 0) {
-            this.getModel().finanzielleSituationJA.ersatzeinkommenBasisjahr = 0;
+            this.getModel().finanzielleSituationJA.ersatzeinkommenSelbststaendigkeitBasisjahr = 0;
         }
     }
 

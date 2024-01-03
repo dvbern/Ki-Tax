@@ -2810,9 +2810,9 @@ public class JaxBConverter extends AbstractConverter {
 			finanzielleSituation.setEinkommenInVereinfachtemVerfahrenAbgerechnet(finanzielleSituationJAXP.getEinkommenInVereinfachtemVerfahrenAbgerechnet());
 			finanzielleSituation.setAmountEinkommenInVereinfachtemVerfahrenAbgerechnet(finanzielleSituationJAXP.getAmountEinkommenInVereinfachtemVerfahrenAbgerechnet());
 
-			finanzielleSituation.setErsatzeinkommenSelbststaendigkeitBasisjahr(finanzielleSituationJAXP.getErsatzeinkommenBasisjahr());
-			finanzielleSituation.setErsatzeinkommenSelbststaendigkeitBasisjahrMinus1(finanzielleSituationJAXP.getErsatzeinkommenBasisjahrMinus1());
-			finanzielleSituation.setErsatzeinkommenSelbststaendigkeitBasisjahrMinus2(finanzielleSituationJAXP.getErsatzeinkommenBasisjahrMinus2());
+			finanzielleSituation.setErsatzeinkommenSelbststaendigkeitBasisjahr(finanzielleSituationJAXP.getErsatzeinkommenSelbststaendigkeitBasisjahr());
+			finanzielleSituation.setErsatzeinkommenSelbststaendigkeitBasisjahrMinus1(finanzielleSituationJAXP.getErsatzeinkommenSelbststaendigkeitBasisjahrMinus1());
+			finanzielleSituation.setErsatzeinkommenSelbststaendigkeitBasisjahrMinus2(finanzielleSituationJAXP.getErsatzeinkommenSelbststaendigkeitBasisjahrMinus2());
 			return finanzielleSituation;
 		}
 

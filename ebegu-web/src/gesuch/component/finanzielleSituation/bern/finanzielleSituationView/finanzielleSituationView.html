@@ -463,7 +463,7 @@
                                                 <dv-valueinput input-id="ersatzeinkommenSelbststaendigkeitBasisjahr"
                                                                data-test="ersatzeinkommen-selbststaendigkeit-basisjahr"
                                                                name="ersatzeinkommenSelbststaendigkeitBasisjahr"
-                                                               ng-model="vm.getModel().finanzielleSituationJA.ersatzeinkommenBasisjahr"
+                                                               ng-model="vm.getModel().finanzielleSituationJA.ersatzeinkommenSelbststaendigkeitBasisjahr"
                                                                ng-required="vm.showErsatzeinkommenSelbststaendigkeit"
                                                                allow-negative=true
                                                                dv-on-blur="vm.calculate()"
@@ -474,13 +474,13 @@
                                                 <dv-error-messages input-id="ersatzeinkommenSelbststaendigkeitBasisjahr"
                                                                    for="vm.form.ersatzeinkommenSelbststaendigkeitBasisjahr.$error"
                                                                    class="error"></dv-error-messages>
-                                                <dv-bisher gs="vm.getModel().finanzielleSituationGS.ersatzeinkommenBasisjahr"
-                                                           ja="vm.getModel().finanzielleSituationJA.ersatzeinkommenBasisjahr"
+                                                <dv-bisher gs="vm.getModel().finanzielleSituationGS.ersatzeinkommenSelbststaendigkeitBasisjahr"
+                                                           ja="vm.getModel().finanzielleSituationJA.ersatzeinkommenSelbststaendigkeitBasisjahr"
                                                            show-if-bisher-none="false"
                                                            block-existed="vm.showErsatzeinkommenSelbststaendigkeitGS === true"></dv-bisher>
                                                 <dv-eingabe-hint
-                                                    [neuer-wert]="vm.getModel().finanzielleSituationJA.ersatzeinkommenBasisjahr"
-                                                    [vergleichswert]="vm.getFinSitVorMutationToWorkWith().ersatzeinkommenBasisjahr"
+                                                    [neuer-wert]="vm.getModel().finanzielleSituationJA.ersatzeinkommenSelbststaendigkeitBasisjahr"
+                                                    [vergleichswert]="vm.getFinSitVorMutationToWorkWith().ersatzeinkommenSelbststaendigkeitBasisjahr"
                                                     [label]="'BISHER' | translate"
                                                     [show-only-if-not-identical]="true"
                                                 ></dv-eingabe-hint>
@@ -507,7 +507,7 @@
                                                 <dv-valueinput input-id="ersatzeinkommenSelbststaendigkeitBasisjahrMinus1"
                                                                data-test="ersatzeinkommen-selbststaendigkeit-basisjahr-minus-1"
                                                                name="ersatzeinkommenSelbststaendigkeitBasisjahrMinus1"
-                                                               ng-model="vm.getModel().finanzielleSituationJA.ersatzeinkommenBasisjahrMinus1"
+                                                               ng-model="vm.getModel().finanzielleSituationJA.ersatzeinkommenSelbststaendigkeitBasisjahrMinus1"
                                                                allow-negative=true
                                                                dv-on-blur="vm.calculate()"
                                                                class="input-element"
@@ -518,13 +518,13 @@
                                                                    for="vm.form.ersatzeinkommenSelbststaendigkeitBasisjahrMinus1.$error"
                                                                    class="error"></dv-error-messages>
                                                 <dv-bisher
-                                                    gs="vm.getModel().finanzielleSituationGS.ersatzeinkommenBasisjahrMinus1"
-                                                    ja="vm.getModel().finanzielleSituationJA.ersatzeinkommenBasisjahrMinus1"
+                                                    gs="vm.getModel().finanzielleSituationGS.ersatzeinkommenSelbststaendigkeitBasisjahrMinus1"
+                                                    ja="vm.getModel().finanzielleSituationJA.ersatzeinkommenSelbststaendigkeitBasisjahrMinus1"
                                                     show-if-bisher-none="false"
                                                     block-existed="vm.showErsatzeinkommenSelbststaendigkeitGS === true"></dv-bisher>
                                                 <dv-eingabe-hint
-                                                    [neuer-wert]="vm.getModel().finanzielleSituationJA.ersatzeinkommenBasisjahrMinus1"
-                                                    [vergleichswert]="vm.getFinSitVorMutationToWorkWith().ersatzeinkommenBasisjahrMinus1"
+                                                    [neuer-wert]="vm.getModel().finanzielleSituationJA.ersatzeinkommenSelbststaendigkeitBasisjahrMinus1"
+                                                    [vergleichswert]="vm.getFinSitVorMutationToWorkWith().ersatzeinkommenSelbststaendigkeitBasisjahrMinus1"
                                                     [label]="'BISHER' | translate"
                                                     [show-only-if-not-identical]="true"
                                                 ></dv-eingabe-hint>
@@ -545,7 +545,7 @@
                                                 <dv-valueinput input-id="ersatzeinkommenSelbststaendigkeitBasisjahrMinus2"
                                                                data-test="ersatzeinkommen-selbststaendigkeit-basisjahr-minus-2"
                                                                name="ersatzeinkommenSelbststaendigkeitBasisjahrMinus2"
-                                                               ng-model="vm.getModel().finanzielleSituationJA.ersatzeinkommenBasisjahrMinus2"
+                                                               ng-model="vm.getModel().finanzielleSituationJA.ersatzeinkommenSelbststaendigkeitBasisjahrMinus2"
                                                                allow-negative=true
                                                                dv-on-blur="vm.calculate()"
                                                                class="input-element"
@@ -556,13 +556,13 @@
                                                                    for="vm.form.ersatzeinkommenSelbststaendigkeitBasisjahrMinus2.$error"
                                                                    class="error"></dv-error-messages>
                                                 <dv-bisher
-                                                    gs="vm.getModel().finanzielleSituationGS.ersatzeinkommenBasisjahrMinus2"
-                                                    ja="vm.getModel().finanzielleSituationJA.ersatzeinkommenBasisjahrMinus2"
+                                                    gs="vm.getModel().finanzielleSituationGS.ersatzeinkommenSelbststaendigkeitBasisjahrMinus2"
+                                                    ja="vm.getModel().finanzielleSituationJA.ersatzeinkommenSelbststaendigkeitBasisjahrMinus2"
                                                     show-if-bisher-none="false"
                                                     block-existed="vm.showErsatzeinkommenSelbststaendigkeitGS === true"></dv-bisher>
                                                 <dv-eingabe-hint
-                                                    [neuer-wert]="vm.getModel().finanzielleSituationJA.ersatzeinkommenBasisjahrMinus2"
-                                                    [vergleichswert]="vm.getFinSitVorMutationToWorkWith().ersatzeinkommenBasisjahrMinus2"
+                                                    [neuer-wert]="vm.getModel().finanzielleSituationJA.ersatzeinkommenSelbststaendigkeitBasisjahrMinus2"
+                                                    [vergleichswert]="vm.getFinSitVorMutationToWorkWith().ersatzeinkommenSelbststaendigkeitBasisjahrMinus2"
                                                     [label]="'BISHER' | translate"
                                                     [show-only-if-not-identical]="true"
                                                 ></dv-eingabe-hint>

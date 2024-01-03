@@ -201,8 +201,8 @@ export class TSFinanzielleSituation extends TSAbstractFinanzielleSituation {
     }
 
     public hasErsatzeinkommenSelbststaendigkeit(): boolean {
-        return EbeguUtil.isNotNullOrUndefined(this.ersatzeinkommenBasisjahr)
-            || EbeguUtil.isNotNullOrUndefined(this.ersatzeinkommenBasisjahrMinus1)
-            || EbeguUtil.isNotNullOrUndefined(this.ersatzeinkommenBasisjahrMinus2);
+        return EbeguUtil.isNotNullOrUndefined(this.ersatzeinkommenSelbststaendigkeitBasisjahr)
+            || EbeguUtil.isNotNullOrUndefined(this.ersatzeinkommenSelbststaendigkeitBasisjahrMinus1)
+            || EbeguUtil.isNotNullOrUndefined(this.ersatzeinkommenSelbststaendigkeitBasisjahrMinus2);
     }
 }

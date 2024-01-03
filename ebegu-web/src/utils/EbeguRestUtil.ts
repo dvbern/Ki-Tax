@@ -2002,7 +2002,7 @@ export class EbeguRestUtil {
         restFinanzielleSituation.unterhaltsBeitraege = finanzielleSituation.unterhaltsBeitraege;
         restFinanzielleSituation.automatischePruefungErlaubt = finanzielleSituation.automatischePruefungErlaubt;
         restFinanzielleSituation.momentanSelbststaendig = finanzielleSituation.momentanSelbststaendig;
-        restFinanzielleSituation.ErsatzeinkommenSelbststaendigkeitBasisjahr =
+        restFinanzielleSituation.ersatzeinkommenSelbststaendigkeitBasisjahr =
             finanzielleSituation.ersatzeinkommenSelbststaendigkeitBasisjahr;
         restFinanzielleSituation.ersatzeinkommenSelbststaendigkeitBasisjahrMinus1 =
             finanzielleSituation.ersatzeinkommenSelbststaendigkeitBasisjahrMinus1;
