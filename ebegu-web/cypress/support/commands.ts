@@ -75,6 +75,21 @@ declare global {
             downloadFile(url: string, fileName: string): Chainable<Subject>;
 
             /**
+             * It is a shortand for **`cy.find('[data-test="..."]=`** and also allowds to sub-select nested elements.
+             *
+             * Same as with cy.find, requires being chained off a command that yields DOM Element(s).
+             * See https://docs.cypress.io/api/commands/find#Rules
+             *
+             * @example
+             *   cy.get('[data-test="dv-radiobutton"]').find('[data-test="dv-label"]');
+             *   // equals
+             *   cy.get('[data-test="dv-radiobutton"]').findByData('dv-label');
+             *   // also equals
+             *   cy.getByData('dv-radiobutton').findByData('dv-label');
+             */
+            findByData<T extends string>(name: OnlyValidSelectors<T>, ...nestedNames: OnlyValidSelectors<T>[]): Chainable<JQuery<HTMLElement>>;
+
+            /**
              * Use custom dv tasks by using the 3rd param option `{ custom: true }`
              *
              * @see {@link DvTasks}
@@ -108,7 +123,8 @@ declare global {
             groupBy<T>(context: string, run: () => T): Chainable<Subject>;
 
             /**
-             * An abstraction for `cy.intercept` with the additional benefit that the intercept tracks the given request only 1 time
+             * An abstraction for `cy.intercept` with the additional benefit that the intercept tracks the given request only 1
+             * time
              *
              * @example
              * cy.waitForRequest('POST', '**‍/einkommensverschlechterung/calculateTemp/1', () => {
@@ -188,6 +204,9 @@ Cypress.Commands.add('waitForRequest', (method, pathname, run, params? ) => {
 });
 Cypress.Commands.add('getByData', (name, ...names) => {
     return cy.get([name, ...names].map((name) => `[data-test="${name}"]`).join(' '));
+});
+Cypress.Commands.add('findByData', {prevSubject: true}, (subject, name, ...names) => {
+    return subject.find([name, ...names].map((name) => `[data-test="${name}"]`).join(' '));
 });
 Cypress.Commands.add('changeLogin', (user: User) => {
     cy.clearAllSessionStorage();
