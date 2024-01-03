@@ -25,6 +25,10 @@ const getEingangsdatum = () => {
     return cy.getByData('fall-creation-eingangsdatum');
 };
 
+const getAlternativdatum = () => {
+	return cy.getByData('fall-creation-alternativDatum');
+};
+
 const getVerantwortlicher = () => {
 	return cy.getByData('verantwortlicher');
 };
@@ -35,6 +39,7 @@ const getUserOption = (user: User) => {
 
 export const AntragCreationPO = {
     getAntragsDaten,
+    getAlternativdatum,
     getEingangsdatum,
     getVerantwortlicher,
     getUserOption,

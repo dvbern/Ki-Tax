@@ -19,6 +19,11 @@ const getFreigebenButton = () => {
     return cy.getByData('container.freigeben', 'navigation-button');
 };
 
+const getFreigabequittungEinscannenSimulierenButton = () => {
+	return cy.getByData('container.antrag-freigeben-simulieren', 'navigation-button');
+};
+
 export const FreigabePO = {
     getFreigebenButton,
+    getFreigabequittungEinscannenSimulierenButton,
 };

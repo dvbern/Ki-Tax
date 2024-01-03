@@ -38,6 +38,10 @@ const getVerfuegungsBemerkungenKontrolliert = () => {
 	return cy.getByData('verfuegungs-bemerkungen-kontrolliert');
 };
 
+const getAnspruchberechtigtesBetreuungspensum = (zeitabschnittIndex: number) => {
+	return cy.getByData('container.zeitabschnitt#' + zeitabschnittIndex, 'anspruchberechtigtesPensum');
+};
+
 const getVerfuegenButton = () => {
 	return cy.getByData('container.verfuegen', 'navigation-button');
 };
@@ -54,4 +58,5 @@ export const VerfuegungPO = {
     getVerfuegungsBemerkungenKontrolliert,
     getVerfuegenButton,
     getVerfuegenVerzichtenButton,
+    getAnspruchberechtigtesBetreuungspensum,
 };

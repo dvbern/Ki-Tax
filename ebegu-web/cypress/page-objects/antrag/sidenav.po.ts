@@ -25,8 +25,13 @@ const getGesuchStatus = () => {
     return cy.getByData('gesuch.status');
 };
 
+const getGesuchsDaten = () => {
+	return cy.getByData('antrags-daten');
+};
+
 
 export const SidenavPO = {
     goTo,
-    getGesuchStatus
+    getGesuchStatus,
+    getGesuchsDaten,
 };

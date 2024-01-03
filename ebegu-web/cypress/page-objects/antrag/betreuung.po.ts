@@ -28,6 +28,10 @@ const getBetreuung = (kindIndex: number, betreuungsIndex: number) => {
     return cy.getByData('container.kind#' + kindIndex, 'container.betreuung#' + betreuungsIndex);
 };
 
+const getBetreuungsstatus = (kindIndex: number, betreuungsIndex: number) => {
+	return getBetreuung(kindIndex, betreuungsIndex).get('betreuungs-status');
+};
+
 const getBetreuungspensum = (betreuungspensumIndex: number) => {
     return cy.getByData(`betreuungspensum-${betreuungspensumIndex}`);
 };
@@ -41,11 +45,11 @@ const getMonatlicheBetreuungskosten = (betreuungspensumIndex: number) => {
 };
 
 const getBetreuungspensumAb = (betreuungspensumIndex: number) => {
-    return cy.getByData('betreuung-datum-ab#0');
+    return cy.getByData('betreuung-datum-ab#' + betreuungspensumIndex);
 };
 
 const getBetreuungspensumBis = (betreuungspensumIndex: number) => {
-    return cy.getByData('betreuung-datum-bis#0');
+    return cy.getByData('betreuung-datum-bis#' + betreuungspensumIndex);
 };
 
 const getKorrekteKostenBestaetigung = () => {
@@ -54,6 +58,10 @@ const getKorrekteKostenBestaetigung = () => {
 
 const getPlatzBestaetigenButton = () => {
 	return cy.getByData('container.platz-bestaetigen', 'navigation-button');
+};
+
+const getPlatzAkzeptierenButton = () => {
+    return cy.getByData('container.akzeptieren', 'navigation-button');
 };
 
 const getMutationsmeldungErstellenButton = () => {
@@ -195,12 +203,14 @@ export const AntragBetreuungPO = {
     // page objects
     getPageTitle,
     getBetreuung,
+    getBetreuungsstatus,
     getBetreuungspensum,
     getMonatlicheBetreuungskosten,
     getBetreuungspensumAb,
     getBetreuungspensumBis,
     getKorrekteKostenBestaetigung,
     getPlatzBestaetigenButton,
+    getPlatzAkzeptierenButton,
     getWeiteresBetreuungspensumErfassenButton,
     getMutationsmeldungErstellenButton,
     getMutationsmeldungSendenButton,

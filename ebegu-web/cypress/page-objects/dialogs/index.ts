@@ -16,3 +16,4 @@
  */
 
 export * from './confirm-dialog.po';
+export * from './mitteilungen-result-dialog.po';

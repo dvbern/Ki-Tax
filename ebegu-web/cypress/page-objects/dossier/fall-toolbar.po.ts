@@ -17,7 +17,7 @@
 
 
 const getFallnummer = () => {
-    return cy.getByData('fallnummer');
+    return cy.getByData('fall-toolbar','fallnummer');
 };
 
 export const FallToolbarPO = {
