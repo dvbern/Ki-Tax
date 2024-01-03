@@ -26,7 +26,7 @@ import {
     FinanzielleSituationStartPO,
     FinanzielleSituationResultatePO,
     NavigationPO,
-    SidenavPO, ConfirmDialogPO,
+    SidenavPO,
 } from '@dv-e2e/page-objects';
 import { FixtureFinSit } from '@dv-e2e/fixtures';
 import {GemeindeTestFall, getUser} from '@dv-e2e/types';
@@ -54,7 +54,7 @@ const createNewKindWithAllSettings = () => {
 };
 
 const createNewBetreuungWithAllSettings = () => {
-    AntragBetreuungPO.createNewBetreuung()
+    AntragBetreuungPO.createNewBetreuung();
     AntragBetreuungPO.fillKitaBetreuungsForm('withValid', gemeinde);
     AntragBetreuungPO.fillKeinePlatzierung();
     AntragBetreuungPO.fillErweiterteBeduerfnisse();
@@ -89,9 +89,9 @@ describe('Kibon - generate Testfälle [Gemeinde Sachbearbeiter]', () => {
             createNewKindWithAllSettings();
             AntragKindPO.getPageTitle().should('include.text', 'Kinder');
 
-            cy.intercept('POST', '**/wizard-steps').as('goingToBetreuung');
-            NavigationPO.saveAndGoNext();
-            cy.wait('@goingToBetreuung');
+            cy.waitForRequest('POST', '**/wizard-steps', () => {
+                NavigationPO.saveAndGoNext();
+            });
         }
 
         // BETREUUNG
@@ -99,9 +99,9 @@ describe('Kibon - generate Testfälle [Gemeinde Sachbearbeiter]', () => {
             createNewBetreuungWithAllSettings();
             AntragBetreuungPO.getPageTitle().should('include.text', 'Betreuung');
 
-            cy.intercept('GET', '**/erwerbspensen/required/**').as('goingToBeschaeftigungspensum');
-            NavigationPO.saveAndGoNext();
-            cy.wait('@goingToBeschaeftigungspensum');
+            cy.waitForRequest('GET', '**/erwerbspensen/required/**', () => {
+                NavigationPO.saveAndGoNext();
+            });
         }
 
         // BESCHAEFTIGUNGSPENSUM
