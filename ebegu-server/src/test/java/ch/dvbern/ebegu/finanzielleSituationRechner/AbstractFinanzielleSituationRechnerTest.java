@@ -179,11 +179,11 @@ public class AbstractFinanzielleSituationRechnerTest {
 
 		BigDecimal geschaeftsGewinnDurchschnitt = calculateGeschaftsGwinnWithCompleteFinSitAndEKV(ekvInfo, 2);
 
-		// Expected Result
-		// 2700 (EKVBJ2 Basisjahr)
-		// + 6200 (EKVBJ2 Basisjahr Minus 1)
-		// + 3480 (FinSit Geschäftsgewinn Basisjahr)
-		// + 685 (FinSit ErsatzEinkommen Basisjahr)
+		// Expected Result (Example Antrag 2023/24)
+		// 2700 (EKVBJ2 Basisjahr (2024))
+		// + 6200 (EKVBJ2 Basisjahr Minus 1 (2023))
+		// + 3480 (FinSit Geschäftsgewinn Basisjahr (2022))
+		// + 685 (FinSit ErsatzEinkommen Basisjahr (2022))
 		// / 3 (Jahre)
 		assertThat(geschaeftsGewinnDurchschnitt, is(BigDecimal.valueOf(4355)));
 	}
