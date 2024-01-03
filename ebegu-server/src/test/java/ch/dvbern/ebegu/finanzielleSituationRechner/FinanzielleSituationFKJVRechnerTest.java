@@ -146,7 +146,6 @@ public class FinanzielleSituationFKJVRechnerTest extends FinanzielleSituationBer
 
 		finSit.setAbzugSchuldzinsen(BigDecimal.valueOf(10));
 		finSit.setGewinnungskosten(BigDecimal.valueOf(85));
-		finSit.setEinkommenInVereinfachtemVerfahrenAbgerechnet(false);
 
 		finSit.setEinkommenInVereinfachtemVerfahrenAbgerechnet(true);
 		finSit.setAmountEinkommenInVereinfachtemVerfahrenAbgerechnet(BigDecimal.valueOf(50));
