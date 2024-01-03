@@ -3173,5 +3173,6 @@
     "KITA_STUNDEN_PRO_TAG": "Kita Stunden pro Tag",
     "PENSUM_FACHSTELLE_INVALID_FACHSTELLEN_SOZIAL": "Eine Fachstelle zur sozialen Indikation ist nur bis zur Stufe {{stufe}} möglich.",
     "PENSUM_FACHSTELLE_INVALID_FACHSTELLEN_SPRACHLICH": "Das Kind ist nicht mehr im Vorschulalter. Ein Bedarf wegen einer sprachlichen Indikation ist nicht möglich.",
+    "ZUSATZLICHE_FELDER_ERSATZEINKOMMEN": "Zusätzliche Felder auf Finanzieller Situation für das Ersatzeinkommen anzeigen",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

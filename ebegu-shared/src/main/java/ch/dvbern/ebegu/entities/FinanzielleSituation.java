@@ -110,21 +110,17 @@ public class FinanzielleSituation extends AbstractFinanzielleSituation {
 	@Column(nullable = true)
 	private Boolean momentanSelbststaendig;
 
-	@NotNull
-	@Column(nullable = false)
-	private boolean ersatzeinkommenBezogen = false;
+	@Nullable
+	@Column(nullable = true)
+	private BigDecimal ersatzeinkommenSelbststaendigkeitBasisjahr;
 
 	@Nullable
 	@Column(nullable = true)
-	private BigDecimal ersatzeinkommenBasisjahr;
+	private BigDecimal ersatzeinkommenSelbststaendigkeitBasisjahrMinus1;
 
 	@Nullable
 	@Column(nullable = true)
-	private BigDecimal ersatzeinkommenBasisjahrMinus1;
-
-	@Nullable
-	@Column(nullable = true)
-	private BigDecimal ersatzeinkommenBasisjahrMinus2;
+	private BigDecimal ersatzeinkommenSelbststaendigkeitBasisjahrMinus2;
 
 	@Nullable
 	@OneToOne(optional = true, orphanRemoval = false)
@@ -290,39 +286,33 @@ public class FinanzielleSituation extends AbstractFinanzielleSituation {
 		this.momentanSelbststaendig = momentanSelbststaendig;
 	}
 
-	public boolean isErsatzeinkommenBezogen() {
-		return ersatzeinkommenBezogen;
+	@Nullable
+	public BigDecimal getErsatzeinkommenSelbststaendigkeitBasisjahr() {
+		return ersatzeinkommenSelbststaendigkeitBasisjahr;
 	}
 
-	public void setErsatzeinkommenBezogen(boolean ersatzeinkommenBezogen) {
-		this.ersatzeinkommenBezogen = ersatzeinkommenBezogen;
+	public void setErsatzeinkommenSelbststaendigkeitBasisjahr(@Nullable BigDecimal ersatzeinkommenSelbststaendigkeitBasisjahr) {
+		this.ersatzeinkommenSelbststaendigkeitBasisjahr = ersatzeinkommenSelbststaendigkeitBasisjahr;
 	}
 
 	@Nullable
-	public BigDecimal getErsatzeinkommenBasisjahr() {
-		return ersatzeinkommenBasisjahr;
+	public BigDecimal getErsatzeinkommenSelbststaendigkeitBasisjahrMinus1() {
+		return ersatzeinkommenSelbststaendigkeitBasisjahrMinus1;
 	}
 
-	public void setErsatzeinkommenBasisjahr(@Nullable BigDecimal ersatzeinkommenBasisjahr) {
-		this.ersatzeinkommenBasisjahr = ersatzeinkommenBasisjahr;
-	}
-
-	@Nullable
-	public BigDecimal getErsatzeinkommenBasisjahrMinus1() {
-		return ersatzeinkommenBasisjahrMinus1;
-	}
-
-	public void setErsatzeinkommenBasisjahrMinus1(@Nullable BigDecimal ersatzeinkommenBasisjahrMinus1) {
-		this.ersatzeinkommenBasisjahrMinus1 = ersatzeinkommenBasisjahrMinus1;
+	public void setErsatzeinkommenSelbststaendigkeitBasisjahrMinus1(
+		@Nullable BigDecimal ersatzeinkommenSelbststaendigkeitBasisjahrMinus1) {
+		this.ersatzeinkommenSelbststaendigkeitBasisjahrMinus1 = ersatzeinkommenSelbststaendigkeitBasisjahrMinus1;
 	}
 
 	@Nullable
-	public BigDecimal getErsatzeinkommenBasisjahrMinus2() {
-		return ersatzeinkommenBasisjahrMinus2;
+	public BigDecimal getErsatzeinkommenSelbststaendigkeitBasisjahrMinus2() {
+		return ersatzeinkommenSelbststaendigkeitBasisjahrMinus2;
 	}
 
-	public void setErsatzeinkommenBasisjahrMinus2(@Nullable BigDecimal ersatzeinkommenBasisjahrMinus2) {
-		this.ersatzeinkommenBasisjahrMinus2 = ersatzeinkommenBasisjahrMinus2;
+	public void setErsatzeinkommenSelbststaendigkeitBasisjahrMinus2(
+		@Nullable BigDecimal ersatzeinkommenSelbststaendigkeitBasisjahrMinus2) {
+		this.ersatzeinkommenSelbststaendigkeitBasisjahrMinus2 = ersatzeinkommenSelbststaendigkeitBasisjahrMinus2;
 	}
 
 	@Nonnull
@@ -349,10 +339,9 @@ public class FinanzielleSituation extends AbstractFinanzielleSituation {
 			target.setSteuerdatenAbfrageTimestamp(this.getSteuerdatenAbfrageTimestamp());
 			target.setAutomatischePruefungErlaubt(this.getAutomatischePruefungErlaubt());
 			target.setMomentanSelbststaendig(this.getMomentanSelbststaendig());
-			target.setErsatzeinkommenBezogen(this.isErsatzeinkommenBezogen());
-			target.setErsatzeinkommenBasisjahr(this.getErsatzeinkommenBasisjahr());
-			target.setErsatzeinkommenBasisjahrMinus1(this.getErsatzeinkommenBasisjahrMinus1());
-			target.setErsatzeinkommenBasisjahrMinus2(this.getErsatzeinkommenBasisjahrMinus2());
+			target.setErsatzeinkommenSelbststaendigkeitBasisjahr(this.getErsatzeinkommenSelbststaendigkeitBasisjahr());
+			target.setErsatzeinkommenSelbststaendigkeitBasisjahrMinus1(this.getErsatzeinkommenSelbststaendigkeitBasisjahrMinus1());
+			target.setErsatzeinkommenSelbststaendigkeitBasisjahrMinus2(this.getErsatzeinkommenSelbststaendigkeitBasisjahrMinus2());
 			break;
 		case ERNEUERUNG:
 		case ERNEUERUNG_NEUES_DOSSIER:
@@ -392,10 +381,9 @@ public class FinanzielleSituation extends AbstractFinanzielleSituation {
 			MathUtil.isSame(getAbzuegeKinderAusbildung(), otherFinSit.getAbzuegeKinderAusbildung()) &&
 			MathUtil.isSame(getUnterhaltsBeitraege(), otherFinSit.getUnterhaltsBeitraege()) &&
 			Objects.equals(getMomentanSelbststaendig(), otherFinSit.getMomentanSelbststaendig()) &&
-			MathUtil.isSame(getErsatzeinkommenBasisjahr(), otherFinSit.getErsatzeinkommenBasisjahr()) &&
-			MathUtil.isSame(getErsatzeinkommenBasisjahrMinus1(), otherFinSit.getErsatzeinkommenBasisjahrMinus1()) &&
-			MathUtil.isSame(getErsatzeinkommenBasisjahrMinus2(), otherFinSit.getErsatzeinkommenBasisjahrMinus2()) &&
-			isErsatzeinkommenBezogen() == otherFinSit.isErsatzeinkommenBezogen();
+			MathUtil.isSame(getErsatzeinkommenSelbststaendigkeitBasisjahr(), otherFinSit.getErsatzeinkommenSelbststaendigkeitBasisjahr()) &&
+			MathUtil.isSame(getErsatzeinkommenSelbststaendigkeitBasisjahrMinus1(), otherFinSit.getErsatzeinkommenSelbststaendigkeitBasisjahrMinus1()) &&
+			MathUtil.isSame(getErsatzeinkommenSelbststaendigkeitBasisjahrMinus2(), otherFinSit.getErsatzeinkommenSelbststaendigkeitBasisjahrMinus2());
 	}
 
 	@Nullable

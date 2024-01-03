@@ -85,17 +85,14 @@ public class JaxFinanzielleSituation extends JaxAbstractFinanzielleSituation {
 	@Nullable
 	private Boolean momentanSelbststaendig;
 
-	@NotNull
-	private boolean ersatzeinkommenBezogen = false;
+	@Nullable
+	private BigDecimal ersatzeinkommenSelbststaendigkeitBasisjahr;
 
 	@Nullable
-	private BigDecimal ersatzeinkommenBasisjahr;
+	private BigDecimal ersatzeinkommenSelbststaendigkeitBasisjahrMinus1;
 
 	@Nullable
-	private BigDecimal ersatzeinkommenBasisjahrMinus1;
-
-	@Nullable
-	private BigDecimal ersatzeinkommenBasisjahrMinus2;
+	private BigDecimal ersatzeinkommenSelbststaendigkeitBasisjahrMinus2;
 
 	@Nullable
 	@XmlJavaTypeAdapter(LocalDateTimeXMLConverter.class)
@@ -252,38 +249,32 @@ public class JaxFinanzielleSituation extends JaxAbstractFinanzielleSituation {
 		this.momentanSelbststaendig = momentanSelbststaendig;
 	}
 
-	public boolean isErsatzeinkommenBezogen() {
-		return ersatzeinkommenBezogen;
+	@Nullable
+	public BigDecimal getErsatzeinkommenSelbststaendigkeitBasisjahr() {
+		return ersatzeinkommenSelbststaendigkeitBasisjahr;
 	}
 
-	public void setErsatzeinkommenBezogen(boolean ersatzeinkommenBezogen) {
-		this.ersatzeinkommenBezogen = ersatzeinkommenBezogen;
+	public void setErsatzeinkommenSelbststaendigkeitBasisjahr(@Nullable BigDecimal ersatzeinkommenSelbststaendigkeitBasisjahr) {
+		this.ersatzeinkommenSelbststaendigkeitBasisjahr = ersatzeinkommenSelbststaendigkeitBasisjahr;
 	}
 
 	@Nullable
-	public BigDecimal getErsatzeinkommenBasisjahr() {
-		return ersatzeinkommenBasisjahr;
+	public BigDecimal getErsatzeinkommenSelbststaendigkeitBasisjahrMinus1() {
+		return ersatzeinkommenSelbststaendigkeitBasisjahrMinus1;
 	}
 
-	public void setErsatzeinkommenBasisjahr(@Nullable BigDecimal ersatzeinkommenBasisjahr) {
-		this.ersatzeinkommenBasisjahr = ersatzeinkommenBasisjahr;
-	}
-
-	@Nullable
-	public BigDecimal getErsatzeinkommenBasisjahrMinus1() {
-		return ersatzeinkommenBasisjahrMinus1;
-	}
-
-	public void setErsatzeinkommenBasisjahrMinus1(@Nullable BigDecimal ersatzeinkommenBasisjahrMinus1) {
-		this.ersatzeinkommenBasisjahrMinus1 = ersatzeinkommenBasisjahrMinus1;
+	public void setErsatzeinkommenSelbststaendigkeitBasisjahrMinus1(
+		@Nullable BigDecimal ersatzeinkommenSelbststaendigkeitBasisjahrMinus1) {
+		this.ersatzeinkommenSelbststaendigkeitBasisjahrMinus1 = ersatzeinkommenSelbststaendigkeitBasisjahrMinus1;
 	}
 
 	@Nullable
-	public BigDecimal getErsatzeinkommenBasisjahrMinus2() {
-		return ersatzeinkommenBasisjahrMinus2;
+	public BigDecimal getErsatzeinkommenSelbststaendigkeitBasisjahrMinus2() {
+		return ersatzeinkommenSelbststaendigkeitBasisjahrMinus2;
 	}
 
-	public void setErsatzeinkommenBasisjahrMinus2(@Nullable BigDecimal ersatzeinkommenBasisjahrMinus2) {
-		this.ersatzeinkommenBasisjahrMinus2 = ersatzeinkommenBasisjahrMinus2;
+	public void setErsatzeinkommenSelbststaendigkeitBasisjahrMinus2(
+		@Nullable BigDecimal ersatzeinkommenSelbststaendigkeitBasisjahrMinus2) {
+		this.ersatzeinkommenSelbststaendigkeitBasisjahrMinus2 = ersatzeinkommenSelbststaendigkeitBasisjahrMinus2;
 	}
 }

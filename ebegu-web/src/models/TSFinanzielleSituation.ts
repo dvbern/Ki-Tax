@@ -34,10 +34,9 @@ export class TSFinanzielleSituation extends TSAbstractFinanzielleSituation {
     private _bruttoLohn: number;
     private _momentanSelbststaendig: boolean;
     private _steuerdatenAbfrageTimestamp: moment.Moment;
-    private _ersatzeinkommenBezogen: boolean;
-    private _ersatzeinkommenBasisjahr: number;
-    private _ersatzeinkommenBasisjahrMinus1: number;
-    private _ersatzeinkommenBasisjahrMinus2: number;
+    private _ersatzeinkommenSelbststaendigkeitBasisjahr: number;
+    private _ersatzeinkommenSelbststaendigkeitBasisjahrMinus1: number;
+    private _ersatzeinkommenSelbststaendigkeitBasisjahrMinus2: number;
 
     public constructor() {
         super();
@@ -170,36 +169,28 @@ export class TSFinanzielleSituation extends TSAbstractFinanzielleSituation {
         this._steuerdatenAbfrageTimestamp = value;
     }
 
-    public get ersatzeinkommenBezogen(): boolean {
-        return this._ersatzeinkommenBezogen;
+    public get ersatzeinkommenSelbststaendigkeitBasisjahr(): number {
+        return this._ersatzeinkommenSelbststaendigkeitBasisjahr;
     }
 
-    public set ersatzeinkommenBezogen(value: boolean) {
-        this._ersatzeinkommenBezogen = value;
+    public set ersatzeinkommenSelbststaendigkeitBasisjahr(value: number) {
+        this._ersatzeinkommenSelbststaendigkeitBasisjahr = value;
     }
 
-    public get ersatzeinkommenBasisjahr(): number {
-        return this._ersatzeinkommenBasisjahr;
+    public get ersatzeinkommenSelbststaendigkeitBasisjahrMinus1(): number {
+        return this._ersatzeinkommenSelbststaendigkeitBasisjahrMinus1;
     }
 
-    public set ersatzeinkommenBasisjahr(value: number) {
-        this._ersatzeinkommenBasisjahr = value;
+    public set ersatzeinkommenSelbststaendigkeitBasisjahrMinus1(value: number) {
+        this._ersatzeinkommenSelbststaendigkeitBasisjahrMinus1 = value;
     }
 
-    public get ersatzeinkommenBasisjahrMinus1(): number {
-        return this._ersatzeinkommenBasisjahrMinus1;
+    public get ersatzeinkommenSelbststaendigkeitBasisjahrMinus2(): number {
+        return this._ersatzeinkommenSelbststaendigkeitBasisjahrMinus2;
     }
 
-    public set ersatzeinkommenBasisjahrMinus1(value: number) {
-        this._ersatzeinkommenBasisjahrMinus1 = value;
-    }
-
-    public get ersatzeinkommenBasisjahrMinus2(): number {
-        return this._ersatzeinkommenBasisjahrMinus2;
-    }
-
-    public set ersatzeinkommenBasisjahrMinus2(value: number) {
-        this._ersatzeinkommenBasisjahrMinus2 = value;
+    public set ersatzeinkommenSelbststaendigkeitBasisjahrMinus2(value: number) {
+        this._ersatzeinkommenSelbststaendigkeitBasisjahrMinus2 = value;
     }
 
     public isSelbstaendig(): boolean {

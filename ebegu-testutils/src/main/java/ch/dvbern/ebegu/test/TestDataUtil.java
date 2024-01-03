@@ -1813,6 +1813,7 @@ public final class TestDataUtil {
 		saveEinstellung(VERANLAGUNG_MIN_UNTERSCHIED_MASSGEBENDESEINK, "0", gesuchsperiode,persistence);
 		saveEinstellung(ANSPRUCH_AB_X_MONATEN, "0", gesuchsperiode,persistence);
 		saveEinstellung(KITA_STUNDEN_PRO_TAG, "10", gesuchsperiode, persistence);
+		saveEinstellung(ZUSATZLICHE_FELDER_ERSATZEINKOMMEN, "false", gesuchsperiode, persistence);
 	}
 
 	public static void saveEinstellung(
