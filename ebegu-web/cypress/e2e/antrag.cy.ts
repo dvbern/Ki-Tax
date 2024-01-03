@@ -26,7 +26,7 @@ import {
     FinanzielleSituationStartPO,
     FinanzielleSituationResultatePO,
     NavigationPO,
-    SidenavPO,
+    SidenavPO, VerfuegenPO,
 } from '@dv-e2e/page-objects';
 import { FixtureFinSit } from '@dv-e2e/fixtures';
 import {GemeindeTestFall, getUser} from '@dv-e2e/types';
@@ -228,7 +228,7 @@ describe('Kibon - generate Testfälle [Gemeinde Sachbearbeiter]', () => {
         {
             cy.get('@antragsId').then((antragsId) => cy.visit(`/#/gesuch/verfuegen/${antragsId}`));
 
-            VerfuegungPO.getVerfuegung(0, 0).click();
+            VerfuegenPO.getVerfuegung(0, 0).click();
             VerfuegungPO.getBetreuungspensumProzent(5).should('include.text', '25%');
             VerfuegungPO.getBetreuungspensumProzent(6).should('include.text', '25%');
             VerfuegungPO.getBetreuungspensumProzent(7).should('include.text', '25%');

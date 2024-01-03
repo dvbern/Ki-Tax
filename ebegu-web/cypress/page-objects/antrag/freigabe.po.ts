@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2023 DV Bern AG, Switzerland
+ * Copyright (C) 2024 DV Bern AG, Switzerland
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -15,6 +15,10 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-export * from './dossier-toolbar.po';
-export * from './dossier-toolbar-gesuchstellende.po';
-export * from './mitteilungen.po';
+const getFreigebenButton = () => {
+    return cy.getByData('container.freigeben', 'navigation-button');
+};
+
+export const FreigabePO = {
+    getFreigebenButton,
+};

@@ -23,7 +23,12 @@ const saveAndGoNext = () => {
     getSaveAndNextButton().click();
 };
 
+const getAbbrechenButton = () => {
+	return cy.getByData('container.cancel', 'navigation-button');
+};
+
 export const NavigationPO = {
+    getAbbrechenButton,
     getSaveAndNextButton,
     saveAndGoNext
 };

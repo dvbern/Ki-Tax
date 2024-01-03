@@ -1,6 +1,15 @@
-import {NavigationPO, TestFaellePO} from '@dv-e2e/page-objects';
+import {
+    AbwesenheitPo, AntragCreationPO,
+    ConfirmDialogPO,
+    DossierToolbarPO,
+    FreigabePO,
+    NavigationPO,
+    TestFaellePO,
+    UmzugPO, VerfuegenPO,
+} from '@dv-e2e/page-objects';
 import { getUser, normalizeUser } from '@dv-e2e/types';
 import {SidenavPO} from '../page-objects/antrag/sidenav.po';
+import {VerfuegungPO} from '../page-objects/antrag/verfuegung.po';
 
 describe('Kibon - mutationen [Gesuchsteller]', () => {
     const userSuperadmin = getUser('[1-Superadmin] E-BEGU Superuser');
@@ -31,95 +40,95 @@ describe('Kibon - mutationen [Gesuchsteller]', () => {
         cy.visit(gesuchUrl);
 
         cy.intercept('GET', '**/gemeinde/stammdaten/lite/**').as('mutationReady');
-        cy.getByData('toolbar.antrag-mutieren').click();
+        DossierToolbarPO.getAntragMutieren().click();
         cy.wait('@mutationReady');
 
         NavigationPO.getSaveAndNextButton().contains('Erstellen').click();
         cy.url().should('not.contain', 'CREATE_NEW_MUTATION/ONLINE');
 
         SidenavPO.goTo('UMZUG');
-        cy.getByData('container.hinzufuegen', 'navigation-button').click();
+        UmzugPO.getUmzugHinzufuegenButton().click();
 
-        cy.getByData('container.umzug-0', 'adresseStrasse').type('Test');
-        cy.getByData('container.umzug-0', 'adresseHausnummer').type('2');
-        cy.getByData('container.umzug-0', 'adressePlz').type('3000');
-        cy.getByData('container.umzug-0', 'adresseOrt').type('Bern');
-        cy.getByData('container.umzug-0', 'gueltigAb').find('input').type('01.11.2023');
+        UmzugPO.getUmzugStrasse(0).type('Test');
+        UmzugPO.getUmzugHausnummer(0).type('2');
+        UmzugPO.getUmzugPlz(0).type('3000');
+        UmzugPO.getUmzugOrt(0).type('Bern');
+        UmzugPO.getUmzugGueltigAb(0).find('input').type('01.11.2023');
         cy.intercept('GET', '**/einstellung/key/FINANZIELLE_SITUATION_TYP/gemeinde/**').as('goingToAbwesenheit');
         NavigationPO.saveAndGoNext();
         cy.wait('@goingToAbwesenheit');
 
-        cy.getByData('ABWESENHEIT').click();
-        cy.getByData('container.erfassen', 'navigation-button').click();
-        cy.getByData('kind').select('Tamara Feutz - Weissenstein');
-        cy.getByData('abwesenheit-von').find('input').type('01.10.2023');
-        cy.getByData('abwesenheit-bis').find('input').type('30.11.2023');
+        SidenavPO.goTo('ABWESENHEIT');
+        AbwesenheitPo.getAbwesenheitErfassenButton().click();
+        AbwesenheitPo.getKind().select('Tamara Feutz - Weissenstein');
+        AbwesenheitPo.getAbwesenheitAb().find('input').type('01.10.2023');
+        AbwesenheitPo.getAbwesenheitBis().find('input').type('30.11.2023');
 
         cy.intercept('GET', '**/gesuche/ausserordentlicheranspruchpossible/**').as('abwesenheitSaved');
         NavigationPO.saveAndGoNext();
         cy.wait('@abwesenheitSaved');
 
         SidenavPO.goTo('FREIGABE');
-        cy.getByData('container.freigeben', 'navigation-button').click();
-        cy.getByData('container.confirm', 'navigation-button').click();
-
+        FreigabePO.getFreigebenButton().click();
+        ConfirmDialogPO.getConfirmButton().click();
         cy.changeLogin(userSB);
         cy.visit(gesuchUrl);
 
-        cy.getByData('toolbar.antrag').click();
+
+        DossierToolbarPO.getAntraegeTrigger().click();
         cy.intercept('GET', '**/einstellung/key/FINANZIELLE_SITUATION_TYP/gemeinde/**').as('goToLatestMutation');
-        cy.getByData('antrag#1').click();
+        DossierToolbarPO.getAntrag(1).click();
         cy.wait('@goToLatestMutation');
 
         SidenavPO.goTo('VERFUEGEN');
-        cy.getByData('finSitStatus.radio-value.AKZEPTIERT').click();
+        VerfuegenPO.getFinSitAkzeptiert('AKZEPTIERT').click();
 
-        cy.getByData('container.geprueft', 'navigation-button').click();
+        VerfuegenPO.getGeprueftButton().click();
         cy.intercept('GET', '**/verfuegung/calculate/**').as('checkGeprueft');
-        cy.getByData('container.confirm', 'navigation-button').click();
+        ConfirmDialogPO.getConfirmButton().click();
         cy.wait('@checkGeprueft');
 
-        cy.getByData('container.verfuegen', 'navigation-button').click();
-        cy.getByData('container.confirm', 'navigation-button').click();
+        VerfuegenPO.getVerfuegenStartenButton().click();
+        ConfirmDialogPO.getConfirmButton().click();
         cy.intercept('GET', '**/verfuegung/calculate/**').as('checkVerfuegen');
         cy.wait('@checkVerfuegen');
 
         cy.intercept('GET', '**/einstellung/key/FINANZIELLE_SITUATION_TYP/gemeinde/**').as('openingVerfuegung');
-        cy.getByData('verfuegung#0-0').click();
+        VerfuegenPO.getVerfuegung(0,0).click();
         cy.wait('@openingVerfuegung');
-        cy.getByData('container.zeitabschnitt#3', 'verguenstigungOhneBeruecksichtigungVollkosten').should('have.text', '0.00');
-        cy.getByData('verfuegungs-bemerkungen-kontrolliert').click();
-        cy.getByData('container.verfuegen', 'navigation-button').click();
+        VerfuegungPO.getVerguenstigungOhneBeruecksichtigungVollkosten(3).should('have.text', '0.00');
+        VerfuegungPO.getVerfuegungsBemerkungenKontrolliert().click();
+        VerfuegungPO.getVerfuegenButton().click();
         cy.intercept('PUT', '**/verfuegung/verfuegen/**').as('verfuegungVerfuegen');
-        cy.getByData('container.confirm', 'navigation-button').click();
+        ConfirmDialogPO.getConfirmButton().click();
         cy.wait('@verfuegungVerfuegen');
-        cy.getByData('container.cancel', 'navigation-button').click();
-        cy.getByData('verfuegung#1-0').click();
-        cy.getByData('container.verfuegen-verzichten', 'navigation-button').click();
+        NavigationPO.getAbbrechenButton().click();
+        VerfuegenPO.getVerfuegung(1,0).click();
+        VerfuegungPO.getVerfuegenVerzichtenButton().click();
         cy.intercept('POST', '**/verfuegung/schliessenOhneVerfuegen/**').as('ohneVerfuegung');
-        cy.getByData('container.confirm', 'navigation-button').click();
-        cy.wait('@ohneVerfuegung')
+        ConfirmDialogPO.getConfirmButton().click();
+        cy.wait('@ohneVerfuegung');
 
-        cy.getByData('verfuegung#0-0', 'betreuungs-status').should('include.text', 'Verfügt');
-        cy.getByData('verfuegung#1-0', 'betreuungs-status').should('include.text', 'Geschlossen ohne Verfügung');
+        VerfuegenPO.getBetreuungsstatus(0,0).should('include.text', 'Verfügt');
+        VerfuegenPO.getBetreuungsstatus(1,0).should('include.text', 'Geschlossen ohne Verfügung');
 
-        cy.getByData('toolbar.antrag-mutieren').click();
-        cy.getByData('fall-creation-eingangsdatum').find('input').type('01.05.2023');
+        DossierToolbarPO.getAntragMutieren().click();
+        AntragCreationPO.getEingangsdatum().find('input').type('01.05.2023');
         cy.intercept('GET', '**/gesuche/dossier/**').as('createNewMutation');
         NavigationPO.saveAndGoNext();
         cy.wait('@createNewMutation');
 
-        cy.getByData('toolbar.antrag').click();
-        cy.get('[data-test^="antrag#').should('have.length', 3);
+        DossierToolbarPO.getAntraegeTrigger().click();
+        DossierToolbarPO.getAllAntraegeInDropdown().should('have.length', 3);
         cy.closeMaterialOverlay();
 
-        cy.getByData('toolbar.antrag-loeschen').click();
+        DossierToolbarPO.getAntragLoeschen().click();
         cy.intercept('GET', '**/gesuchsperioden/gemeinde/**').as('deletingMutation');
-        cy.getByData('container.confirm', 'navigation-button').click();
+        ConfirmDialogPO.getConfirmButton().click();
         cy.wait('@deletingMutation');
 
-        cy.getByData('toolbar.antrag').click();
-        cy.get('[data-test^="antrag#').should('have.length', 2);
+        DossierToolbarPO.getAntraegeTrigger().click();
+        DossierToolbarPO.getAllAntraegeInDropdown().should('have.length', 2);
         cy.closeMaterialOverlay();
     });
 });
