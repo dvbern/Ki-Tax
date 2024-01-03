@@ -485,10 +485,12 @@ export class FinanzielleSituationViewController extends AbstractFinSitBernView {
 
     public geschaeftsgewinnChange(basisjahrMinus: number): void {
         const finSit = this.model.getFiSiConToWorkWith().finanzielleSituationJA;
-        if (basisjahrMinus === 2 && finSit.geschaeftsgewinnBasisjahrMinus2 !== undefined) {
+        if (basisjahrMinus === 2 && EbeguUtil.isNullOrUndefined(finSit.geschaeftsgewinnBasisjahrMinus2)) {
             finSit.ersatzeinkommenSelbststaendigkeitBasisjahrMinus2 = null;
-        } else if (basisjahrMinus === 1 && finSit.geschaeftsgewinnBasisjahrMinus1 !== undefined) {
+        } else if (basisjahrMinus === 1 && EbeguUtil.isNullOrUndefined(finSit.geschaeftsgewinnBasisjahrMinus1)) {
             finSit.ersatzeinkommenSelbststaendigkeitBasisjahrMinus1 = null;
+        } else if (basisjahrMinus === 0 && EbeguUtil.isNullOrUndefined(finSit.geschaeftsgewinnBasisjahr)) {
+            finSit.ersatzeinkommenSelbststaendigkeitBasisjahr = null;
         }
     }
 
