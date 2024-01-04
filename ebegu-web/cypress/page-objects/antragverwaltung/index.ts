@@ -18,3 +18,4 @@
 export * from './faelle-liste.po';
 export * from './navbar.po';
 export * from './posteingang.po';
+export * from './statistik.po';

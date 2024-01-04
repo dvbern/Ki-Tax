@@ -1,4 +1,4 @@
-import {TestFaellePO} from '@dv-e2e/page-objects';
+import {StatistikPO, TestFaellePO} from '@dv-e2e/page-objects';
 import { getUser } from '@dv-e2e/types';
 
 describe('Kibon - generate Statistiken', () => {
@@ -26,23 +26,23 @@ describe('Kibon - generate Statistiken', () => {
     });
 
     it('should correctly create the Betreuungsgutscheine: Antragsstellende-Kinder-Betreuung statistik', () => {
-        cy.getByData('statistik-gesuchsteller-kinder-betreuung').click();
+        StatistikPO.getGesuchstellendeKinderBetreuungTab().click();
 
-        cy.getByData('statistik-von').find('input').type('01.07.2023');
-        cy.getByData('statistik-bis').find('input').type('31.07.2023');
-        cy.getByData('gesuchsperiode').select('2022/23');
+        StatistikPO.getVon().find('input').type('01.07.2023');
+        StatistikPO.getBis().find('input').type('31.07.2023');
+        StatistikPO.getGesuchsperiode().select('2022/23');
 
-        cy.intercept('GET', '**/admin/batch/userjobs/**').as('reportQueued');
-        cy.getByData('container.generieren', 'navigation-button').click();
-        cy.wait('@reportQueued');
+        cy.waitForRequest('GET', '**/admin/batch/userjobs/**', () => {
+            StatistikPO.getGenerierenButton().click();
+        });
 
-        cy.get('[data-test="statistik#0"] [data-test="job-status"]', { timeout: 20000 }).should(
+        StatistikPO.getStatistikJobStatus(0).should(
             'include.text',
             'Bereit zum Download'
         );
 
         cy.getDownloadUrl(() => {
-            cy.getByData('statistik#0').click();
+            StatistikPO.getStatistikJob(0).click();
         }).as('downloadUrl');
         cy.get<string>('@downloadUrl').then((url) => {
             cy.log(`downloading ${url}`);
