@@ -19,8 +19,17 @@ const getMobileMenuButton = () => {
     return cy.getByData('mobile-menu-button');
 };
 
+const getMenuButton = () => {
+	return cy.getByData('page-menu');
+};
+
+const getTestdatenLink = () => {
+	return cy.getByData('action-admin.testdaten');
+};
 
 
 export const MainNavigationPO = {
+    getTestdatenLink,
+    getMenuButton,
     getMobileMenuButton,
 };

@@ -24,20 +24,75 @@ import {
     GemeindeTestFall,
     User,
 } from '@dv-e2e/types';
+import {MainNavigationPO} from '../navigation';
+
+// !! -- PAGE OBJECTS -- !!
+const getPageTitle = () => {
+	return cy.getByData('page-title');
+};
+
+const getGemeindeSelection = () => {
+	return cy.getByData('gemeinde');
+};
+
+const getGemeindeOption = (gemeinde: GemeindeTestFall) => {
+	return cy.getByData(`gemeinde.${gemeinde}`);
+};
+
+const getPeriodeSelection = () => {
+	return cy.getByData('periode');
+};
+
+const getPeriodeOption = (periode: TestPeriode) => {
+	return cy.getByData(`periode.${periode}`);
+};
+
+const getBetreuungsstatus = (betreuungsstatus: TestBetreuungsstatus) => {
+	return cy.getByData(`creationType.${betreuungsstatus}`);
+};
+
+const getTestfall = (testfall: TestFall) => {
+	return cy.getByData(testfall);
+};
+
+const getBesitzerinSelection = () => {
+	return cy.getByData(`gesuchsteller`);
+};
+
+const getBesitzerinOption = (besitzerin: User) => {
+	return cy.getByData(`gesuchsteller.${normalizeUser(besitzerin)}`);
+};
+
+const getFallLink = () => {
+	return cy.get('[data-test="dialog-link"]', {timeout: Cypress.config('defaultCommandTimeout') * 50});
+};
+
+const getGesuchstellerFaelleLoeschen = () => {
+    return cy.getByData('gesuchsteller-faelle-loeschen');
+};
+
+const getGesuchstellerIn = (user: User) => {
+    return cy.getByData('gesuchsteller.' + normalizeUser(user));
+};
+
+const getGesuchstellerInToRemoveFaelle = (user: User) => {
+    return cy.getByData('gesuchsteller.' + normalizeUser(user) + '-loeschen');
+};
+
+const getGesucheLoeschenButton = () => {
+    return cy.getByData('delete-gesuche');
+};
+
+// !! -- PAGE ACTIONS -- !!
 
 const createPapierTestfall = (data: {testFall: TestFall, gemeinde: GemeindeTestFall, periode: TestPeriode, betreuungsstatus: TestBetreuungsstatus, }) => {
-    cy.getByData('page-title').contains('Alle Fälle');
-    cy.getByData('page-menu').click();
-    cy.getByData('action-admin.testdaten').click();
-    cy.getByData('gemeinde').click();
-    cy.getByData(`gemeinde.${data.gemeinde}`).click();
-    cy.getByData('periode').click();
-    cy.getByData(`periode.${data.periode}`).click();
-    cy.getByData(`creationType.${data.betreuungsstatus}`).find('label').click();
-    cy.getByData(data.testFall).click();
-    cy.intercept('GET', '**/dossier/id//**').as('opengesuch');
-    cy.get('[data-test="dialog-link"]', {timeout: Cypress.config('defaultCommandTimeout') * 50}).click();
-    cy.wait('@opengesuch');
+    navigateToTestfaelle();
+    getGemeindeSelection().click();
+    getGemeindeOption(data.gemeinde).click();
+    getPeriodeSelection().click();
+    getPeriodeOption(data.periode).click();
+    getBetreuungsstatus(data.betreuungsstatus).find('label').click();
+    createAndOpenTestfall(data.testFall);
 };
 
 const createOnlineTestfall = (data: {
@@ -47,43 +102,46 @@ const createOnlineTestfall = (data: {
     betreuungsstatus: TestBetreuungsstatus;
     besitzerin: TestGesuchstellende;
 }) => {
-    cy.getByData('page-title').contains('Alle Fälle');
-    cy.getByData('page-menu').click();
-    cy.getByData('action-admin.testdaten').click();
-    cy.getByData('gemeinde').click();
-    cy.getByData(`gemeinde.${data.gemeinde}`).click();
-    cy.getByData('periode').click();
-    cy.getByData(`periode.${data.periode}`).click();
-    cy.getByData(`creationType.${data.betreuungsstatus}`).find('label').click();
-    cy.getByData(`gesuchsteller`).click();
-    cy.getByData(`gesuchsteller.${normalizeUser(data.besitzerin)}`).click();
-    cy.getByData(data.testFall).click();
-    cy.intercept('GET', '**/dossier/id//**').as('opengesuch');
-    cy.get('[data-test="dialog-link"]', {timeout: Cypress.config('defaultCommandTimeout') * 50}).click();
-    cy.wait('@opengesuch');
+    navigateToTestfaelle();
+    getGemeindeSelection().click();
+    getGemeindeOption(data.gemeinde).click();
+    getPeriodeSelection().click();
+    getPeriodeOption(data.periode).click();
+    getBetreuungsstatus(data.betreuungsstatus).find('label').click();
+    getBesitzerinSelection().click();
+    getBesitzerinOption(data.besitzerin).click();
+    createAndOpenTestfall(data.testFall);
 };
 
-const getGesuchstellerFaelleLoeschen = () => {
-	return cy.getByData('gesuchsteller-faelle-loeschen');
-};
+function navigateToTestfaelle(): void {
+    MainNavigationPO.getMenuButton().click();
+    MainNavigationPO.getTestdatenLink().click();
+}
 
-const getGesuchstellerIn = (user: User) => {
-	return cy.getByData('gesuchsteller.' + normalizeUser(user));
-};
+function createAndOpenTestfall(testfall: TestFall) {
+    cy.waitForRequest('GET','**/dossier/id//**', () => {
+        getTestfall(testfall).click();
+        getFallLink().click();
+    });
+}
 
-const getGesuchstellerInToRemoveFaelle = (user: User) => {
-    return cy.getByData('gesuchsteller.' + normalizeUser(user) + '-loeschen');
-};
-
-const getGesucheLoeschenButton = () => {
-	return cy.getByData('delete-gesuche');
-};
 
 export const TestFaellePO = {
-    createPapierTestfall,
-    createOnlineTestfall,
+    // page objects
+    getGemeindeSelection,
+    getGemeindeOption,
+    getPeriodeSelection,
+    getPeriodeOption,
+    getBesitzerinSelection,
+    getBesitzerinOption,
+    getBetreuungsstatus,
+    getTestfall,
+    getFallLink,
     getGesuchstellerFaelleLoeschen,
     getGesuchstellerIn,
     getGesuchstellerInToRemoveFaelle,
     getGesucheLoeschenButton,
+    // page actions
+    createPapierTestfall,
+    createOnlineTestfall,
 };
