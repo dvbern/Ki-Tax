@@ -39,6 +39,10 @@ const getAbschliessenButton = () => {
 	return cy.getByData('container.abschliessen','navigation-button');
 };
 
+const getSendToSTVButton = () => {
+	return cy.getByData('container.send-to-stv', 'navigation-button');
+};
+
 export const VerfuegenPO = {
     getBetreuungsstatus,
     getFinSitAkzeptiert,
@@ -46,4 +50,5 @@ export const VerfuegenPO = {
     getGeprueftButton,
     getVerfuegung,
     getVerfuegenStartenButton,
+    getSendToSTVButton,
 };

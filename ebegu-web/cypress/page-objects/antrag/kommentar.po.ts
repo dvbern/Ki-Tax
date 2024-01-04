@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2023 DV Bern AG, Switzerland
+ * Copyright (C) 2024 DV Bern AG, Switzerland
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -15,6 +15,20 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-export * from './confirm-dialog.po';
-export * from './mitteilungen-result-dialog.po';
-export * from './stv-kommentar-dialog.po';
+const getSTVBemerkungGemeinde = () => {
+	return cy.getByData('bemerkungen-gemeinde');
+};
+
+const getSTVBemerkung = () => {
+	return cy.getByData('bemerkungen-stv');
+};
+
+const getSTVPruefungZurueckAnGemeindeButton = () => {
+	return cy.getByData('container.zurueck-an-gemeinde');
+};
+
+export const KommentarPO = {
+    getSTVBemerkung,
+    getSTVBemerkungGemeinde,
+    getSTVPruefungZurueckAnGemeindeButton,
+};

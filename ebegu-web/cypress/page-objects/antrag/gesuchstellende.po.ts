@@ -103,6 +103,7 @@ export const GesuchstellendePO = {
     getAdresseHausnummer,
     getAdressePlz,
     getAdresseOrt,
+    getFormularTitle,
     // page actions
     fillVerheiratet,
 };

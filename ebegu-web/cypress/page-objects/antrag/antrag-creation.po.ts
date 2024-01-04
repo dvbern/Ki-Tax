@@ -29,12 +29,13 @@ const getAlternativdatum = () => {
 	return cy.getByData('fall-creation-alternativDatum');
 };
 
+// TODO: this should probably be on a toolbar po
 const getVerantwortlicher = () => {
 	return cy.getByData('verantwortlicher');
 };
 
-const getUserOption = (user: User) => {
-	return cy.getByData(`option.${normalizeUser(user)}`);
+const getUserOption = (user: User, schulamt: boolean) => {
+	return cy.getByData(`container.${schulamt? 'schul' : ''}verantwortlicher`,`option.${normalizeUser(user)}`);
 };
 
 export const AntragCreationPO = {

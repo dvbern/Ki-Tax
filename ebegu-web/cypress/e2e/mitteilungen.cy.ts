@@ -36,7 +36,7 @@ describe('Kibon - Test Mitteilungen', () => {
 
         AntragCreationPO.getEingangsdatum().find('input').should('have.value', '15.2.2016');
         AntragCreationPO.getVerantwortlicher().click();
-        AntragCreationPO.getUserOption(userSB).click();
+        AntragCreationPO.getUserOption(userSB, false).click();
 
         cy.url().then((url) => {
             const parts = new URL(url);

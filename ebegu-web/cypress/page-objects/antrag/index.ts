@@ -29,6 +29,7 @@ export * from './finanzielleSituationStart.po';
 export * from './finanzielleSituationResultate.po';
 export * from './freigabe.po';
 export * from './kind.po';
+export * from './kommentar.po';
 export * from './navigation.po';
 export * from './papiergesuch.po';
 export * from './sidenav.po';
