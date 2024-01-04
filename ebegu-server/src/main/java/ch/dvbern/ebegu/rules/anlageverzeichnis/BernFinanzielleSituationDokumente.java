@@ -15,24 +15,17 @@
 
 package ch.dvbern.ebegu.rules.anlageverzeichnis;
 
+import ch.dvbern.ebegu.entities.*;
+import ch.dvbern.ebegu.enums.DokumentGrundPersonType;
+import ch.dvbern.ebegu.enums.DokumentGrundTyp;
+import ch.dvbern.ebegu.enums.DokumentTyp;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Locale;
 import java.util.Set;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
-import ch.dvbern.ebegu.entities.AbstractFinanzielleSituation;
-import ch.dvbern.ebegu.entities.DokumentGrund;
-import ch.dvbern.ebegu.entities.Familiensituation;
-import ch.dvbern.ebegu.entities.FinanzielleSituation;
-import ch.dvbern.ebegu.entities.FinanzielleSituationContainer;
-import ch.dvbern.ebegu.entities.Gesuch;
-import ch.dvbern.ebegu.entities.GesuchstellerContainer;
-import ch.dvbern.ebegu.enums.DokumentGrundPersonType;
-import ch.dvbern.ebegu.enums.DokumentGrundTyp;
-import ch.dvbern.ebegu.enums.DokumentTyp;
 
 /**
  * Dokumente für FinanzielleSituation:
@@ -277,6 +270,26 @@ public class BernFinanzielleSituationDokumente extends AbstractFinanzielleSituat
 					&& (finanzielleSituation.getGeschaeftsgewinnBasisjahrMinus2() != null);
 			default:
 				return false;
+			}
+		}
+		return false;
+	}
+
+	@Override
+	protected boolean isNachweisErsatzeinkommenSelbststaendigkeitNeeded(
+		AbstractFinanzielleSituation abstractFinanzielleSituation,
+		int basisjahr) {
+		if (abstractFinanzielleSituation instanceof FinanzielleSituation) {
+			FinanzielleSituation finanzielleSituation = (FinanzielleSituation) abstractFinanzielleSituation;
+			switch (basisjahr) {
+				case 0:
+					return finanzielleSituation.getErsatzeinkommenSelbststaendigkeitBasisjahr() != null;
+				case 1:
+					return finanzielleSituation.getErsatzeinkommenSelbststaendigkeitBasisjahrMinus1() != null;
+				case 2:
+					return finanzielleSituation.getErsatzeinkommenSelbststaendigkeitBasisjahrMinus2() != null;
+				default:
+					return false;
 			}
 		}
 		return false;
