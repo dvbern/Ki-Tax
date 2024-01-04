@@ -114,6 +114,7 @@ abstract class AbstractFinanzielleSituationDokumente
 	}
 
 	@Override
+	@SuppressWarnings("PMD.NcssMethodCount")
 	public boolean isDokumentNeeded(
 		@Nonnull DokumentTyp dokumentTyp,
 		@Nullable AbstractFinanzielleSituation abstractFinanzielleSituation) {
