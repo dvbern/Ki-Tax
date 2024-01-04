@@ -803,6 +803,89 @@ public class DokumentenverzeichnisEvaluatorTest extends EasyMockSupport {
 		Assertions.assertFalse(found);
 	}
 
+	@Test
+	public void ersatzeinkommenSelbststaendigkeit_DokumenteRequired_1GS() {
+		setUpEinstellungMock(testgesuch, AnspruchBeschaeftigungAbhaengigkeitTyp.ABHAENGING.name());
+		createFinanzielleSituationGS(1, testgesuch, "Sämi", true);
+		createFamilienSituation(testgesuch, false, false);
+
+		Assert.assertNotNull(testgesuch.getGesuchsteller1());
+		Assert.assertNotNull(testgesuch.getGesuchsteller1().getFinanzielleSituationContainer());
+
+		final FinanzielleSituation finanzielleSituationJA =
+			testgesuch.getGesuchsteller1().getFinanzielleSituationContainer().getFinanzielleSituationJA();
+		finanzielleSituationJA.setErsatzeinkommenSelbststaendigkeitBasisjahr(ZEHN_TAUSEND);
+		finanzielleSituationJA.setErsatzeinkommenSelbststaendigkeitBasisjahrMinus1(ZEHN_TAUSEND);
+		finanzielleSituationJA.setErsatzeinkommenSelbststaendigkeitBasisjahrMinus2(ZEHN_TAUSEND);
+
+		var dokumentGruende = evaluator.calculate(testgesuch, Constants.DEFAULT_LOCALE);
+		Assertions.assertEquals(4, dokumentGruende.size());
+		assertType(
+			dokumentGruende,
+			DokumentTyp.NACHWEIS_ERSATZINKOMMEN_SELBSTSTAENDIGKEIT_JAHR,
+			testgesuch.getGesuchsteller1().extractFullName(),
+			"2016",
+			DokumentGrundPersonType.GESUCHSTELLER,
+			1,
+			DokumentGrundTyp.FINANZIELLESITUATION);
+		assertType(
+			dokumentGruende,
+			DokumentTyp.NACHWEIS_ERSATZINKOMMEN_SELBSTSTAENDIGKEIT_JAHR_MINUS1,
+			testgesuch.getGesuchsteller1().extractFullName(),
+			"2015",
+			DokumentGrundPersonType.GESUCHSTELLER,
+			1,
+			DokumentGrundTyp.FINANZIELLESITUATION);
+		assertType(
+			dokumentGruende,
+			DokumentTyp.NACHWEIS_ERSATZINKOMMEN_SELBSTSTAENDIGKEIT_JAHR_MINUS2,
+			testgesuch.getGesuchsteller1().extractFullName(),
+			"2014",
+			DokumentGrundPersonType.GESUCHSTELLER,
+			1,
+			DokumentGrundTyp.FINANZIELLESITUATION);
+	}
+
+	@Test
+	public void ersatzeinkommenSelbststaendigkeit_DokumenteRequired_2GS() {
+		setUpEinstellungMock(testgesuch, AnspruchBeschaeftigungAbhaengigkeitTyp.ABHAENGING.name());
+		createFinanzielleSituationGS(1, testgesuch, "Sämi", true);
+		createFinanzielleSituationGS(2, testgesuch, "Alex", true);
+		createFamilienSituation(testgesuch, false, false);
+
+		Assert.assertNotNull(testgesuch.getGesuchsteller1());
+		Assert.assertNotNull(testgesuch.getGesuchsteller1().getFinanzielleSituationContainer());
+		Assert.assertNotNull(testgesuch.getGesuchsteller2());
+		Assert.assertNotNull(testgesuch.getGesuchsteller2().getFinanzielleSituationContainer());
+
+		testgesuch.getGesuchsteller1().getFinanzielleSituationContainer()
+			.getFinanzielleSituationJA()
+			.setErsatzeinkommenSelbststaendigkeitBasisjahr(ZEHN_TAUSEND);
+
+		testgesuch.getGesuchsteller2().getFinanzielleSituationContainer()
+			.getFinanzielleSituationJA()
+			.setErsatzeinkommenSelbststaendigkeitBasisjahrMinus1(ZEHN_TAUSEND);
+
+		var dokumentGruende = evaluator.calculate(testgesuch, Constants.DEFAULT_LOCALE);
+		Assertions.assertEquals(4, dokumentGruende.size());
+		assertType(
+			dokumentGruende,
+			DokumentTyp.NACHWEIS_ERSATZINKOMMEN_SELBSTSTAENDIGKEIT_JAHR,
+			testgesuch.getGesuchsteller1().extractFullName(),
+			"2016",
+			DokumentGrundPersonType.GESUCHSTELLER,
+			1,
+			DokumentGrundTyp.FINANZIELLESITUATION);
+		assertType(
+			dokumentGruende,
+			DokumentTyp.NACHWEIS_ERSATZINKOMMEN_SELBSTSTAENDIGKEIT_JAHR_MINUS1,
+			testgesuch.getGesuchsteller2().extractFullName(),
+			"2015",
+			DokumentGrundPersonType.GESUCHSTELLER,
+			2,
+			DokumentGrundTyp.FINANZIELLESITUATION);
+	}
+
 	private void createEinkommensverschlechterungInfo() {
 		final EinkommensverschlechterungInfoContainer einkommensverschlechterungsInfo = TestDataUtil.createDefaultEinkommensverschlechterungsInfoContainer(testgesuch);
 		einkommensverschlechterungsInfo.getEinkommensverschlechterungInfoJA().setEkvFuerBasisJahrPlus1(true);

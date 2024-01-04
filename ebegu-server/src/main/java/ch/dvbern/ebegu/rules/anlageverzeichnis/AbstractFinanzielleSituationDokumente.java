@@ -15,19 +15,18 @@
 
 package ch.dvbern.ebegu.rules.anlageverzeichnis;
 
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.util.Set;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
 import ch.dvbern.ebegu.entities.AbstractFinanzielleSituation;
 import ch.dvbern.ebegu.entities.DokumentGrund;
 import ch.dvbern.ebegu.entities.Familiensituation;
 import ch.dvbern.ebegu.enums.DokumentGrundPersonType;
 import ch.dvbern.ebegu.enums.DokumentGrundTyp;
 import ch.dvbern.ebegu.enums.DokumentTyp;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.Set;
 
 /**
  * Gemeinsame Basisklasse zum berechnen der benötigten Dokumente für die Finanzielle Situation und die
@@ -103,6 +102,15 @@ abstract class AbstractFinanzielleSituationDokumente
 		add(getDokument(DokumentTyp.ERFOLGSRECHNUNGEN_JAHR_MINUS2, abstractFinanzielleSituation, null,
 			String.valueOf(basisJahr - 2), DokumentGrundPersonType.GESUCHSTELLER,
 			gesuchstellerNumber, dokumentGrundTyp, stichtag), anlageVerzeichnis);
+		add(getDokument(DokumentTyp.NACHWEIS_ERSATZINKOMMEN_SELBSTSTAENDIGKEIT_JAHR, abstractFinanzielleSituation, null,
+				basisJahrString, DokumentGrundPersonType.GESUCHSTELLER, gesuchstellerNumber, dokumentGrundTyp, stichtag),
+			anlageVerzeichnis);
+		add(getDokument(DokumentTyp.NACHWEIS_ERSATZINKOMMEN_SELBSTSTAENDIGKEIT_JAHR_MINUS1, abstractFinanzielleSituation, null,
+				String.valueOf(basisJahr - 1), DokumentGrundPersonType.GESUCHSTELLER, gesuchstellerNumber, dokumentGrundTyp, stichtag),
+			anlageVerzeichnis);
+		add(getDokument(DokumentTyp.NACHWEIS_ERSATZINKOMMEN_SELBSTSTAENDIGKEIT_JAHR_MINUS2, abstractFinanzielleSituation, null,
+				String.valueOf(basisJahr - 2), DokumentGrundPersonType.GESUCHSTELLER, gesuchstellerNumber, dokumentGrundTyp, stichtag),
+			anlageVerzeichnis);
 	}
 
 	@Override
@@ -174,11 +182,20 @@ abstract class AbstractFinanzielleSituationDokumente
 		case NACHWEIS_NETTOERTRAEGE_ERBENGEMEINSCHAFTEN:
 			return abstractFinanzielleSituation.getNettoertraegeErbengemeinschaft() != null
 				&& abstractFinanzielleSituation.getNettoertraegeErbengemeinschaft().compareTo(BigDecimal.ZERO) > 0;
+		case NACHWEIS_ERSATZINKOMMEN_SELBSTSTAENDIGKEIT_JAHR:
+			return isNachweisErsatzeinkommenSelbststaendigkeitNeeded(abstractFinanzielleSituation, 0);
+		case NACHWEIS_ERSATZINKOMMEN_SELBSTSTAENDIGKEIT_JAHR_MINUS1:
+			return isNachweisErsatzeinkommenSelbststaendigkeitNeeded(abstractFinanzielleSituation, 1);
+		case NACHWEIS_ERSATZINKOMMEN_SELBSTSTAENDIGKEIT_JAHR_MINUS2:
+			return isNachweisErsatzeinkommenSelbststaendigkeitNeeded(abstractFinanzielleSituation, 2);
+
 		default:
 			return false;
 		}
 
 	}
+
+	protected abstract boolean isNachweisErsatzeinkommenSelbststaendigkeitNeeded(AbstractFinanzielleSituation abstractFinanzielleSituation, int basisjahr);
 
 	protected abstract boolean isJahresLohnausweisNeeded(
 		@Nonnull AbstractFinanzielleSituation abstractFinanzielleSituation);
