@@ -15,15 +15,24 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-const getFallnummer = () => {
-    return cy.getByData('fall-toolbar','fallnummer');
+const getBGBeantragen = () => {
+	return cy.getByData('bg-beantragen');
 };
 
-const getMobileSidenavTrigger = () => {
-	return cy.getByData('mobile-menu');
+const getGemeindeSelection = () => {
+    return cy.getByData('gemeinde');
+};
+const getRegistrierenButton = () => {
+	return cy.getByData('registrieren');
 };
 
-export const FallToolbarPO = {
-    getFallnummer,
-    getMobileSidenavTrigger,
+const getRegistrierungAbschliessenButton = () => {
+	return cy.getByData('registrierung-abschliessen');
+};
+
+export const RegistrationAbschliessenPO = {
+    getBGBeantragen,
+    getGemeindeSelection,
+    getRegistrierenButton,
+    getRegistrierungAbschliessenButton,
 };

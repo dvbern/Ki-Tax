@@ -16,21 +16,51 @@
  */
 
 import { FixtureBeschaeftigungspensum } from '@dv-e2e/fixtures';
+import {NavigationPO} from './navigation.po';
 
+// !! -- PAGE OBJECTS -- !!
+const getAddErwerbspensumButton = (gesuchSteller: 'GS1' | 'GS2') => {
+	return cy.getByData(`container.add-erwerbungspensum-erwerbspensen${gesuchSteller}`, 'navigation-button');
+};
+
+const getBezeichnung = () => {
+	return cy.getByData('bezeichnung');
+};
+
+const getTaetigkeit = () => {
+	return cy.getByData('taetigkeit');
+};
+
+const getTaetigkeitsPensum = () => {
+	return cy.getByData('taetigkeit-pensum');
+};
+
+const getTaetigkeitAb = () => {
+	return cy.getByData('taetigkeit-ab');
+};
+
+// !! -- PAGE ACTIONS -- !!
 const createBeschaeftigungspensum = (gesuchSteller: 'GS1' | 'GS2', dataset: keyof typeof FixtureBeschaeftigungspensum) => {
     FixtureBeschaeftigungspensum[dataset](data => {
-        cy.getByData(`container.add-erwerbungspensum-erwerbspensen${gesuchSteller}`, 'navigation-button').click();
-        cy.getByData('bezeichnung').type(data[gesuchSteller].bezeichnung);
-        cy.getByData('taetigkeit').select(`string:${data[gesuchSteller].taetigkeit}`);
-        cy.getByData('taetigkeit-pensum').type(data[gesuchSteller].taetigkeitPensum);
-        cy.getByData('taetigkeit-ab').find('input').type(data[gesuchSteller].taetigkeitAb);
+        getAddErwerbspensumButton(gesuchSteller).click();
+        getBezeichnung().type(data[gesuchSteller].bezeichnung);
+        getTaetigkeit().select(`string:${data[gesuchSteller].taetigkeit}`);
+        getTaetigkeitsPensum().type(data[gesuchSteller].taetigkeitPensum);
+        getTaetigkeitAb().find('input').type(data[gesuchSteller].taetigkeitAb);
 
-        cy.intercept('GET', '**/erwerbspensen/required/**').as(`reloadingTaetigkeiten${gesuchSteller}`);
-        cy.get('[data-test="container.navigation-save"] [data-test="navigation-button"]:not([disaFbled])').click();
-        cy.wait(`@reloadingTaetigkeiten${gesuchSteller}`);
+        cy.waitForRequest('GET', '**/erwerbspensen/required/**', () => {
+            NavigationPO.saveAndGoNext();
+        });
     });
 };
 
 export const AntragBeschaeftigungspensumPO = {
+    //page objects
+    getAddErwerbspensumButton,
+    getBezeichnung,
+    getTaetigkeit,
+    getTaetigkeitAb,
+    getTaetigkeitsPensum,
+    // page objects
     createBeschaeftigungspensum,
 };

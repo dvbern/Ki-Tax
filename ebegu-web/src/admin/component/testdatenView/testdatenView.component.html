@@ -36,7 +36,7 @@
                         Gesuchsteller wenn gewünscht
                     </label>
                     <mat-select [(ngModel)]="selectedBesitzer" id="besitzer" name="besitzer" class="input-testfall" data-test="gesuchsteller">
-                        <mat-option *ngFor="let gs of gesuchstellerList" [value]="gs" [attr.data-test]="'gesuchsteller.' + gs.vorname + '-' + gs.nachname">
+                        <mat-option *ngFor="let gs of gesuchstellerList" [value]="gs" [attr.data-test]="getGesuchstellerDataTestValue(gs)">
                             {{gs.vorname}} {{gs.nachname}}
                         </mat-option>
                     </mat-select>
@@ -273,7 +273,7 @@
                     <mat-select [(ngModel)]="selectedBesitzer" id="gesuchsteller" name="gesuchsteller"
                                 class="input-testfall" data-test="gesuchsteller-faelle-loeschen">
                         <mat-option *ngFor="let gp of gesuchstellerList" [value]="gp"
-                                    [attr.data-test]="'gesuchsteller.' + gp.getFullName()">
+                                    [attr.data-test]="getGesuchstellerDataTestValue(gp) + '-loeschen'">
                             {{gp.getFullName()}}
                         </mat-option>
                     </mat-select>

@@ -20,3 +20,4 @@ export * from './dossier-toolbar-gesuchstellende.po';
 export * from './fall-toolbar.po';
 export * from './gesuchstellende-dashboard.po';
 export * from './mitteilungen.po';
+export * from './registration-abschliessen.po';

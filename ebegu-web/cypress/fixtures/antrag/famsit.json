@@ -1,5 +1,8 @@
 {
     "valid": {
+        "familiensituation": {
+            "familienstand": "VERHEIRATET"
+        },
         "GS1": {
             "geschlecht": "MAENNLICH",
             "vorname": "gs1-vorname",

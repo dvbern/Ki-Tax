@@ -41,9 +41,9 @@ const fillFinanzielleSituationStartForm = (dataset: keyof typeof FixtureFinSit) 
 };
 
 const saveForm = () => {
-    cy.intercept('POST', '**/finanzielleSituation/calculateTemp').as('goingToFinSitGS1');
-    NavigationPO.saveAndGoNext();
-    cy.wait('@goingToFinSitGS1');
+    cy.waitForRequest('POST', '**/finanzielleSituation/calculateTemp', () => {
+        NavigationPO.saveAndGoNext();
+    });
 };
 
 export const FinanzielleSituationStartPO = {

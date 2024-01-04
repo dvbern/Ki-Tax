@@ -377,4 +377,8 @@ export class TestdatenViewComponent implements OnInit {
         }).afterClosed()
             .toPromise();
     }
+
+    public getGesuchstellerDataTestValue(gs: TSBenutzerNoDetails): string {
+        return 'gesuchsteller.' + gs.vorname + '-' + gs.nachname;
+    }
 }

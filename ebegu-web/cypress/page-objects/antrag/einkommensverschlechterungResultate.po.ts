@@ -18,6 +18,9 @@
 import {FixtureEinkommensverschlechterung} from '@dv-e2e/fixtures';
 
 // !! -- PAGE OBJECTS -- !!
+const getPageTitle = () => {
+	return cy.getByData('page-title');
+};
 const getBruttovermoegenGS1 = () => {
     return cy.getByData('bruttovermoegen1');
 };
@@ -56,15 +59,9 @@ const// !! -- PAGE ACTIONS -- !!
     })
 };
 
-const checkResultateForm = (dataset: keyof typeof FixtureEinkommensverschlechterung, jahr: 'jahr1' | 'jahr2') => {
-    FixtureEinkommensverschlechterung[dataset](({[jahr]: {Resultate}}) => {
-        getEinkommenBeiderGesuchsteller().find('input').should('have.value', Resultate.einkommenBeiderGesuchsteller);
-        getEinkommenVorjahrBasis().find('input').should('have.value', Resultate.einkommenVorjahrBasis);
-        getEinkommenVorjahr().find('input').should('have.value', Resultate.einkommenVorjahr);
-    })
-};
 
 export const EinkommensverschlechterungResultatePO = {
+    getPageTitle,
     getBruttovermoegenGS1,
     getBruttovermoegenGS2,
     getSchuldenGS1,
@@ -73,7 +70,6 @@ export const EinkommensverschlechterungResultatePO = {
     getEinkommenVorjahrBasis,
     getEinkommenVorjahr,
     // page actions
-    checkResultateForm,
     fillResultateForm,
 };
 

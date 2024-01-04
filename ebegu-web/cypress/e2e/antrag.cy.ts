@@ -30,6 +30,7 @@ import {
 } from '@dv-e2e/page-objects';
 import { FixtureFinSit } from '@dv-e2e/fixtures';
 import {GemeindeTestFall, getUser} from '@dv-e2e/types';
+import {GesuchstellendePO} from '../page-objects/antrag/gesuchstellende.po';
 import {VerfuegungPO} from '../page-objects/antrag/verfuegung.po';
 
 const gemeinde: GemeindeTestFall = 'London';
@@ -82,6 +83,8 @@ describe('Kibon - generate Testfälle [Gemeinde Sachbearbeiter]', () => {
         {
             AntragFamSitPO.fillFamiliensituationForm('withValid');
             NavigationPO.saveAndGoNext();
+            GesuchstellendePO.fillVerheiratet('withValid');
+            NavigationPO.saveAndGoNext();
         }
 
         // KINDER
@@ -125,14 +128,14 @@ describe('Kibon - generate Testfälle [Gemeinde Sachbearbeiter]', () => {
 
                 // TODO: update EinkommensverschlechterungPO and update it to also support Finanzielle Situation
                 FinanzielleSituationPO.fillFinanzielleSituationForm('withValid', 'GS1');
-                FinanzielleSituationPO.saveForm();
+                FinanzielleSituationPO.saveFormAndGoNext();
             }
 
             // Finanzielle Situation - GS 2
             {
                 // TODO: update EinkommensverschlechterungPO and update it to also support Finanzielle Situation
                 FinanzielleSituationPO.fillFinanzielleSituationForm('withValid', 'GS2');
-                FinanzielleSituationPO.saveForm();
+                FinanzielleSituationPO.saveFormAndGoNext();
             }
 
             // Resultate

@@ -15,6 +15,8 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import {FixtureFinSit} from '@dv-e2e/fixtures';
+
 const getBruttovermoegenGS1 = () => {
     return cy.getByData('bruttovermoegen1');
 };
@@ -51,6 +53,17 @@ const getMassgebendesEinkommenVorAbzugFamGroesse = () => {
     return cy.getByData('massgebendesEinkVorAbzFamGr');
 };
 
+// !! -- PAGE ACTIONS -- !!
+
+const fillFinSitResultate = (dataset: keyof typeof FixtureFinSit) => {
+    FixtureFinSit[dataset](({Resultate}) => {
+        getBruttovermoegenGS1().find('input').type(Resultate.bruttovermoegen1);
+        getBruttovermoegenGS2().find('input').type(Resultate.bruttovermoegen2);
+        getSchuldenGS1().find('input').type(Resultate.schulden1);
+        getSchuldenGS2().find('input').type(Resultate.schulden2);
+    });
+};
+
 export const FinanzielleSituationResultatePO = {
     // page objects
     getBruttovermoegenGS1,
@@ -62,4 +75,6 @@ export const FinanzielleSituationResultatePO = {
     getAnrechenbaresEinkommen,
     getAbzuegeBeiderGesuchstellenden,
     getMassgebendesEinkommenVorAbzugFamGroesse,
+    // page actions
+    fillFinSitResultate,
 };

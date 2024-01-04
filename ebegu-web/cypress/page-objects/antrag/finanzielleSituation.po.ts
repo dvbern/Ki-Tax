@@ -59,6 +59,14 @@ const getGewinnungskosten = () => {
     return cy.getByData('gewinnungskosten');
 };
 
+const getSteuerdatenzugriff = (answer: string) => {
+	return cy.getByData('steuerdatenzugriff.radio-value.' + answer);
+};
+
+const getAutomatischePruefung = (answer: string) => {
+	return cy.getByData('automatischePruefung.radio-value.' + answer);
+};
+
 // !! -- PAGE ACTIONS -- !!
 const fillFinanzielleSituationForm = (dataset: keyof typeof FixtureFinSit, gs: 'GS1' | 'GS2') => {
     FixtureFinSit[dataset]((allData) => {
@@ -79,7 +87,7 @@ const fillFinanzielleSituationForm = (dataset: keyof typeof FixtureFinSit, gs: '
     });
 };
 
-const saveForm = () => {
+const saveFormAndGoNext = () => {
     cy.waitForRequest('POST', '**/finanzielleSituation/calculateTemp', () => {
         NavigationPO.saveAndGoNext();
     });
@@ -97,8 +105,10 @@ export const FinanzielleSituationPO = {
     getGeleisteteAlimente,
     getAbzugSchuldzinsen,
     getGewinnungskosten,
+    getSteuerdatenzugriff,
+    getAutomatischePruefung,
     // page actions
     fillFinanzielleSituationForm,
-    saveForm,
+    saveFormAndGoNext,
 };
 

@@ -18,6 +18,7 @@
 import type * as Beschaeftigungspensum from '../fixtures/antrag/beschaeftigungspensum.json';
 import type * as Betreuung from '../fixtures/antrag/betreuung.json';
 import type * as Einkommensverschlechterung from '../fixtures/antrag/einkommensverschlechterung.json';
+import type * as EinkommensverschlechterungInfo from '../fixtures/antrag/einkommensverschlechterung-info.json';
 import type * as Kind from '../fixtures/antrag/kind-boy.json';
 import type * as FamSit from '../fixtures/antrag/famsit.json';
 import type * as FinSit from '../fixtures/antrag/finsit.json';
@@ -57,6 +58,10 @@ export const FixturePapierAntrag = {
 
 export const FixtureEinkommensverschlechterung = {
     withValid: fromFixture<typeof Einkommensverschlechterung>('antrag/einkommensverschlechterung.json', 'valid'),
+};
+
+export const FixtureEinkommensverschlechterungInfo = {
+    withValid: fromFixture<typeof EinkommensverschlechterungInfo>('antrag/einkommensverschlechterung-info.json', 'valid'),
 };
 
 export const FixtureCreateTagesschule = {

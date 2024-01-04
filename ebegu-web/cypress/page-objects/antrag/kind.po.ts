@@ -16,10 +16,90 @@
  */
 
 import { FixtureKind } from '@dv-e2e/fixtures';
+import {getName} from 'domutils';
 
 // !! -- PAGE OBJECTS -- !!
- const getPageTitle = () => {
+const getPageTitle = () => {
     return cy.getByData('page-title');
+};
+
+const getGeschlecht = (geschlecht: string) => {
+ 	return cy.getByData(`geschlecht.radio-value.${geschlecht}`);
+};
+
+const getVorname = () => {
+	return cy.getByData('vorname');
+};
+
+const getNachname = () => {
+	return cy.getByData('nachname');
+};
+
+const getGeburtsdatum = () => {
+	return cy.getByData('geburtsdatum');
+};
+
+const getObhutAlternierend = (answer: string) => {
+    return cy.getByData('container.obhut-alternierend-ausueben', 'radio-value.' + answer);
+};
+
+const getFamErgaenzendeBetreuungAnmelden = (answer: string) => {
+	return cy.getByData('container.ergaenzende-betreuung-beide', 'radio-value.' + answer);
+};
+
+const getSprichtAmtsprache = (answer: string) => {
+	return  cy.getByData('sprichtAmtssprache.radio-value.' + answer);
+};
+
+const getEinschulungstyp = () => {
+	return cy.getByData('einschulung-typ');
+};
+
+const getIsPflegekind = () => {
+	return cy.getByData('ist-pflegekind', 'checkbox');
+};
+
+const getPflaegeEntschaedigungErhalten = (answer: string) => {
+	return cy.getByData('container.pflege-entschaedigung-erhalten', 'radio-value.' + answer);
+};
+const getIntegration = (integrationIndex: number) => {
+	return cy.getByData('container.integration#' + integrationIndex);
+};
+
+const getIntegrationBedarf = (integrationIndex: number, bedarf: string) => {
+	return getIntegration(integrationIndex).findByData( 'radio-value.' + bedarf);
+};
+
+const getFachstelle = (integrationIndex: number) => {
+	return cy.getByData('fachstelle#' + integrationIndex);
+};
+
+const getBetreuungspensumIndikation = (integrationIndex: number) => {
+	return cy.getByData('betreuungspensum-fachstelle#' + integrationIndex);
+};
+
+const getIntegrationAb = (integrationIndex: number) => {
+	return cy.getByData('pensum-gueltig-ab#' + integrationIndex);
+};
+
+const getIntegrationBis = (integrationIndex: number) => {
+	return cy.getByData('pensum-gueltig-bis#' + integrationIndex);
+};
+
+const getAusserordentlicherAnspruchBegruendung = () => {
+	return cy.getByData('ausserordentlich-begruendung');
+};
+
+const getAusserordentlicherAnspruchPensum = () => {
+	return cy.getByData('betreuungspensum-ausserordentlicher-anspruch');
+};
+
+const getAusserordentlicherAnspruchAb = () => {
+	return cy.getByData('auss-anspruch-datum-ab');
+};
+
+const getAusserordentlicherAnspruchBis = () => {
+	return cy.getByData('auss-anspruch-datum-bis');
 };
 
 // !! -- PAGE ACTIONS -- !!
@@ -32,40 +112,50 @@ const fillKindForm = (dataset: keyof typeof FixtureKind) => {
     FixtureKind[dataset](({ kind1 }) => {
         cy.url().should('include', 'kinder/kind');
         cy.wait(2000);
-        cy.getByData(`geschlecht.radio-value.${kind1.geschlecht}`).click();
-        cy.getByData('vorname').type(kind1.vorname);
-        cy.getByData('nachname').type(kind1.nachname);
-        cy.getByData('geburtsdatum').find('input').type(kind1.geburtsdatum);
-        cy.getByData('container.obhut-alternierend-ausueben', 'radio-value.ja').find('label').click();
-        cy.getByData('container.ergaenzende-betreuung-beide', 'radio-value.ja').find('label').click();
-        cy.getByData('sprichtAmtssprache.radio-value.ja').click();
-        cy.getByData('einschulung-typ').select(kind1.einschulungstyp);
+        getGeschlecht(kind1.geschlecht).click();
+        getVorname().type(kind1.vorname);
+        getNachname().type(kind1.nachname);
+        getGeburtsdatum().find('input').type(kind1.geburtsdatum);
+        getObhutAlternierend('ja').find('label').click();
+        getFamErgaenzendeBetreuungAnmelden('ja').find('label').click();
+        getSprichtAmtsprache('ja').click();
+        getEinschulungstyp().select(kind1.einschulungstyp);
     });
 };
 
 const fillPflegekind = () => {
-    cy.getByData('ist-pflegekind', 'checkbox').click();
-    cy.getByData('container.pflege-entschaedigung-erhalten', 'radio-value.ja').find('label').click();
+    getIsPflegekind().click();
+    getPflaegeEntschaedigungErhalten('ja').find('label').click();
 };
 
 const fillFachstelle = () => {
-    cy.getByData('container.integration#0', 'radio-value.SOZIALE_INTEGRATION').find('label').click();
-    cy.getByData('fachstelle#0').select(1);
-    cy.getByData('betreuungspensum-fachstelle#0').type('40');
-    cy.getByData('pensum-gueltig-ab#0').find('input').type('01.01.2024');
-    cy.getByData('pensum-gueltig-bis#0').find('input').type('01.01.2025');
+    getIntegrationBedarf(0, 'SOZIALE_INTEGRATION').find('label').click();
+    getFachstelle(0).select(1);
+    getBetreuungspensumIndikation(0).type('40');
+    getIntegrationAb(0).find('input').type('01.01.2024');
+    getIntegrationBis(0).find('input').type('01.01.2025');
 };
 
 const fillAusserordentlicherAnspruch = () => {
-    cy.getByData('ausserordentlich-begruendung').type('eine ausführliche Begründung');
-    cy.getByData('betreuungspensum-ausserordentlicher-anspruch').type('20');
-    cy.getByData('auss-anspruch-datum-ab').find('input').type('01.01.2024');
-    cy.getByData('auss-anspruch-datum-bis').find('input').type('01.01.2025');
+    getAusserordentlicherAnspruchBegruendung().type('eine ausführliche Begründung');
+    getAusserordentlicherAnspruchPensum().type('20');
+    getAusserordentlicherAnspruchAb().find('input').type('01.01.2024');
+    getAusserordentlicherAnspruchBis().find('input').type('01.01.2025');
 };
 
 export const AntragKindPO = {
     // page objects
     getPageTitle,
+    getGeschlecht,
+    getVorname,
+    getNachname,
+    getGeburtsdatum,
+    getIsPflegekind,
+    getPflaegeEntschaedigungErhalten,
+    getObhutAlternierend,
+    getFamErgaenzendeBetreuungAnmelden,
+    getSprichtAmtsprache,
+    getEinschulungstyp,
     // page actions
     createNewKind,
     fillKindForm,

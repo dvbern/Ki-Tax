@@ -15,15 +15,10 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-const getFallnummer = () => {
-    return cy.getByData('fall-toolbar','fallnummer');
+const getAllFileUploads = () => {
+	return cy.get('input[type="file"][tabindex=0]');
 };
 
-const getMobileSidenavTrigger = () => {
-	return cy.getByData('mobile-menu');
-};
-
-export const FallToolbarPO = {
-    getFallnummer,
-    getMobileSidenavTrigger,
+export const DokumentePO = {
+    getAllFileUploads,
 };

@@ -1,6 +1,9 @@
 import {FixtureEinkommensverschlechterung} from '@dv-e2e/fixtures';
 
 // !! -- PAGE OBJECTS -- !!
+const getPageTitle = () => {
+	return cy.getByData('page-title');
+};
 const getNettoLohn = () => {
     return cy.getByData('nettolohn');
 };
@@ -22,7 +25,7 @@ const getBruttoertraegeVermoegen = () => {
 };
 
 const getNettoertraegeErbengemeinschaft = () => {
-    return cy.getByData('nettoertraege_erbengemeinschaften');
+    return cy.getByData('netto-ertraege-erbengemeinschaften');
 };
 
 const getEinkommenInVereinfachtemVerfahren = (answer: string) => {
@@ -67,6 +70,7 @@ const fillEinkommensverschlechterungForm = (
 
 export const EinkommensverschlechterungPO = {
     // page objects
+    getPageTitle,
     getNettoLohn,
     getFamilienzulagen,
     getErsatzeinkommen,

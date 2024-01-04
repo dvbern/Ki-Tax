@@ -15,7 +15,15 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { normalizeUser, TestBetreuungsstatus, TestFall, TestGesuchstellende, TestPeriode, GemeindeTestFall } from '@dv-e2e/types';
+import {
+    normalizeUser,
+    TestBetreuungsstatus,
+    TestFall,
+    TestGesuchstellende,
+    TestPeriode,
+    GemeindeTestFall,
+    User,
+} from '@dv-e2e/types';
 
 const createPapierTestfall = (data: {testFall: TestFall, gemeinde: GemeindeTestFall, periode: TestPeriode, betreuungsstatus: TestBetreuungsstatus, }) => {
     cy.getByData('page-title').contains('Alle Fälle');
@@ -55,7 +63,27 @@ const createOnlineTestfall = (data: {
     cy.wait('@opengesuch');
 };
 
+const getGesuchstellerFaelleLoeschen = () => {
+	return cy.getByData('gesuchsteller-faelle-loeschen');
+};
+
+const getGesuchstellerIn = (user: User) => {
+	return cy.getByData('gesuchsteller.' + normalizeUser(user));
+};
+
+const getGesuchstellerInToRemoveFaelle = (user: User) => {
+    return cy.getByData('gesuchsteller.' + normalizeUser(user) + '-loeschen');
+};
+
+const getGesucheLoeschenButton = () => {
+	return cy.getByData('delete-gesuche');
+};
+
 export const TestFaellePO = {
     createPapierTestfall,
     createOnlineTestfall,
+    getGesuchstellerFaelleLoeschen,
+    getGesuchstellerIn,
+    getGesuchstellerInToRemoveFaelle,
+    getGesucheLoeschenButton,
 };
