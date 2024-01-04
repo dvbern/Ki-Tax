@@ -183,7 +183,7 @@ export class MandantService {
     }
 
     public getEnvironmentFromCompleteHost(): string {
-        const environmentRegex = /(local|dev-preview|dev-e2e|dev|uat|iat|demo|schulung|replica)?(-\w*)?/;
+        const environmentRegex = /(local|preview|e2e|dev|uat|iat|demo|schulung|replica)?(-\w*)?/;
         const matches = this.windowRef.nativeWindow.location.host.split('kibon.ch')[0].match(environmentRegex);
         if (EbeguUtil.isNullOrUndefined(matches[1])) {
             return '';
