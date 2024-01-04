@@ -17,4 +17,7 @@
 
 export * from './confirm-dialog.po';
 export * from './mitteilungen-result-dialog.po';
+export * from './remove-dialog.po';
 export * from './stv-kommentar-dialog.po';
+export * from './tagesschule-modul-dialog.po';
+export * from './tagesschule-modul-import-dialog.po';

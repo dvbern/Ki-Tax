@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2023 DV Bern AG, Switzerland
+ * Copyright (C) 2024 DV Bern AG, Switzerland
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -15,6 +15,21 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-export * from './institution-list.po';
-export * from './tagesschule.po';
-export * from './test-faelle.po';
+const getSearchField = () => {
+	return cy.getByData('list-search-field');
+};
+
+const getAllListItemNames = () => {
+	return cy.getByData('item-name');
+};
+
+const getAllInstitutionLoeschenButtons = () => {
+	return cy.getByData('remove-entry');
+};
+
+export const InstitutionListPO = {
+    getSearchField,
+    getAllListItemNames,
+    getAllInstitutionLoeschenButtons,
+};
+

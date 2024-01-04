@@ -33,7 +33,7 @@ export * from './kommentar.po';
 export * from './navigation.po';
 export * from './papiergesuch.po';
 export * from './sidenav.po';
-export * from './tagesschule.po';
+export * from '../admin/tagesschule.po';
 export * from './umzug.po';
 export * from './verfuegen.po';
 export * from './verfuegung.po';
