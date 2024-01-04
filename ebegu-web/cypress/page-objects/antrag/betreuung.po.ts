@@ -38,6 +38,10 @@ const getBetreuungErstellenButton = (kindIndex: number) => {
 	return cy.getByData('container.kind#' + kindIndex, 'container.create-betreuung', 'navigation-button');
 };
 
+const getAnmeldungErstellenButton = (kindIndex: number) => {
+	return cy.getByData('container.kind#' + kindIndex, 'container.create-tagesschule', 'navigation-button');
+};
+
 const getBetreuungsstatus = (kindIndex: number, betreuungsIndex: number) => {
 	return getBetreuung(kindIndex, betreuungsIndex).findByData('betreuungs-status');
 };
@@ -256,7 +260,7 @@ const saveBetreuung = () => {
 
 const saveAndConfirmBetreuung = () => {
     cy.waitForRequest('PUT', '**/betreuungen/betreuung/*', () => {
-        getSaveButton();
+        getSaveButton().click();
         ConfirmDialogPO.getConfirmButton().click();
     });
 };
@@ -296,6 +300,7 @@ export const AntragBetreuungPO = {
     getPlatzbestaetigungAnfordernButton,
     getSaveButton,
     getBetreuungErstellenButton,
+    getAnmeldungErstellenButton,
     getBetreuungsangebot,
     getInstitution,
     getInstitutionMobile,

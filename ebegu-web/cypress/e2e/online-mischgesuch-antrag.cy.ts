@@ -1,5 +1,12 @@
 import {getUser, normalizeUser, User} from '@dv-e2e/types';
-import {AntragBetreuungPO, NavigationPO, TestFaellePO} from '@dv-e2e/page-objects';
+import {
+    AntragBetreuungPO, AntragCreationPO, ConfirmDialogPO,
+    DossierToolbarPO,
+    FaelleListePO,
+    FallToolbarPO, FreigabePO,
+    NavigationPO,
+    TestFaellePO, VerfuegenPO, VerfuegungPO,
+} from '@dv-e2e/page-objects';
 import {SidenavPO} from '../page-objects/antrag/sidenav.po';
 
 describe('Kibon - Online TS-Anmeldung (Mischgesuch) [Gesuchsteller]', () => {
@@ -27,7 +34,7 @@ describe('Kibon - Online TS-Anmeldung (Mischgesuch) [Gesuchsteller]', () => {
             const parts = new URL(url);
             gesuchUrl = `${parts.pathname}${parts.hash}`;
         });
-        cy.getByData('fallnummer').then(el$ => {
+        FallToolbarPO.getFallnummer().then(el$ => {
             fallnummer = el$.text();
         });
     });
@@ -66,53 +73,52 @@ describe('Kibon - Online TS-Anmeldung (Mischgesuch) [Gesuchsteller]', () => {
 
     const craeateTsAnmeldungFuerKind1 = () => {
         SidenavPO.goTo('BETREUUNG');
-        cy.getByData('container.kind#0', 'container.create-betreuung', 'navigation-button').click();
+        AntragBetreuungPO.getBetreuungErstellenButton(0).click();
         AntragBetreuungPO.selectTagesschulBetreuung();
         AntragBetreuungPO.fillTagesschulBetreuungsForm('withValid', 'Paris');
         AntragBetreuungPO.saveBetreuung();
-        cy.waitForRequest('GET', '**/institutionstammdaten/gesuchsperiode/gemeinde/active', () => {
-            cy.getByData('container.kind#0', 'container.create-betreuung', 'navigation-button').click();
-        });
+
     };
 
     const createTsAnmeldungFuerKind2 = () => {
         SidenavPO.goTo('BETREUUNG');
-        cy.getByData('container.create-betreuung').should('not.exist');
-        cy.getByData('container.kind#1', 'container.create-tagesschule', 'navigation-button').click();
+        AntragBetreuungPO.getBetreuungErstellenButton(1).should('not.exist');
+        AntragBetreuungPO.getAnmeldungErstellenButton(1).click();
         AntragBetreuungPO.fillTagesschulBetreuungsForm('withValid', 'Paris');
         AntragBetreuungPO.saveAndConfirmBetreuung();
-        cy.getByData('container.kind#1', 'container.betreuung#1').should('exist');
+        AntragBetreuungPO.getBetreuung(1, 1).should('exist');
     };
 
     const plaetzeFuerBeideKinderBestaetigen = () => {
         SidenavPO.goTo('BETREUUNG');
-        cy.getByData('container.kind#0', 'container.betreuung#0').click();
-        platzBestaetigen();
+        AntragBetreuungPO.getBetreuung(0, 0).click();
+        AntragBetreuungPO.getKorrekteKostenBestaetigung().click();
+        AntragBetreuungPO.getPlatzBestaetigenButton().click();
         cy.visit(gesuchUrl);
         SidenavPO.goTo('BETREUUNG');
-        cy.getByData('container.kind#1', 'container.betreuung#0').click();
-        platzBestaetigen();
+        AntragBetreuungPO.getBetreuung(1, 0).click();
+        AntragBetreuungPO.getKorrekteKostenBestaetigung().click();
+        AntragBetreuungPO.getPlatzBestaetigenButton().click();
     };
 
     const tsAkzeptierenAsUserTs = () => {
         cy.login(userTS);
         cy.visit('/#/faelle');
-        cy.getByData(`antrag-entry#${fallnummer}`).click();
-        cy.getByData('container.betreuung#0').click();
-
-        cy.getByData('container.akzeptieren', 'navigation-button').click();
+        FaelleListePO.getAntrag(fallnummer).click();
+        AntragBetreuungPO.getBetreuung(0, 0).click();
+        AntragBetreuungPO.getPlatzAkzeptierenButton().click();
         cy.waitForRequest('PUT', '**/betreuungen/schulamt/akzeptieren', () => {
-            cy.getByData('container.confirm', 'navigation-button').click();
+            ConfirmDialogPO.getConfirmButton().click();
         });
     };
 
     const tsAkzeptierenFuerKind2 = () => {
         SidenavPO.goTo('BETREUUNG');
-        cy.getByData('container.kind#1', 'container.betreuung#1').click();
-        cy.getByData('container.akzeptieren', 'navigation-button').click();
+        AntragBetreuungPO.getBetreuung(1, 1).click();
+        AntragBetreuungPO.getPlatzAkzeptierenButton().click();
 
         cy.waitForRequest('GET', '**/dossier/fall/**', () => {
-            cy.getByData('container.confirm', 'navigation-button').click();
+            ConfirmDialogPO.getConfirmButton().click();
         });
     };
 
@@ -120,10 +126,10 @@ describe('Kibon - Online TS-Anmeldung (Mischgesuch) [Gesuchsteller]', () => {
         SidenavPO.goTo('DOKUMENTE');
         NavigationPO.saveAndGoNext();
 
-        cy.getByData('container.freigeben', 'navigation-button').click();
+        FreigabePO.getFreigebenButton().click();
         cy.getDownloadUrl(() => {
             cy.waitForRequest('GET', '**/dossier/fall/**', () => {
-                cy.getByData('container.confirm', 'navigation-button').click();
+                ConfirmDialogPO.getConfirmButton().click();
             });
         });
     };
@@ -131,11 +137,11 @@ describe('Kibon - Online TS-Anmeldung (Mischgesuch) [Gesuchsteller]', () => {
     const freigabequittungEinlesen = () => {
         SidenavPO.goTo('FREIGABE');
         cy.waitForRequest('GET', '**/dossier/fall/**', () => {
-            cy.getByData('container.antrag-freigeben-simulieren', 'navigation-button').click();
+            FreigabePO.getFreigabequittungEinscannenSimulierenButton().click();
         });
 
         SidenavPO.goTo('GESUCH_ERSTELLEN');
-        cy.getByData('fall-creation-eingangsdatum').find('input').clear().type('31.07.2023');
+        AntragCreationPO.getEingangsdatum().find('input').clear().type('31.07.2023');
 
         cy.waitForRequest('PUT', '**/gesuche', () => {
             NavigationPO.saveAndGoNext();
@@ -144,47 +150,47 @@ describe('Kibon - Online TS-Anmeldung (Mischgesuch) [Gesuchsteller]', () => {
 
     const finSitAkzeptieren = () => {
         SidenavPO.goTo('VERFUEGEN');
-        cy.getByData('finSitStatus.radio-value.AKZEPTIERT').click();
+        VerfuegenPO.getFinSitAkzeptiert('AKZEPTIERT').click();
 
-        cy.getByData('container.geprueft', 'navigation-button').click();
         cy.waitForRequest('GET', '**/verfuegung/calculate/**', () => {
-            cy.getByData('container.confirm', 'navigation-button').click();
+            VerfuegenPO.getGeprueftButton().click();
+            ConfirmDialogPO.getConfirmButton().click();
         });
     };
 
     const verfuegenStarten = () => {
-        cy.getByData('container.verfuegen', 'navigation-button').click();
         cy.waitForRequest('GET', '**/verfuegung/calculate/**', () => {
-            cy.getByData('container.confirm', 'navigation-button').click();
+            VerfuegenPO.getVerfuegenStartenButton().click();
+            ConfirmDialogPO.getConfirmButton().click();
         });
     };
 
     const gesuchVerfuegen = () => {
-        betreuungVerfuegen('verfuegung#0-0');
-        betreuungVerfuegen('verfuegung#1-0');
-
+        betreuungVerfuegen(0, 0);
+        betreuungVerfuegen(1, 0);
     };
 
-    const betreuungVerfuegen = (verfuegung: string) => {
+    const betreuungVerfuegen = (kindIndex: number, betreuungIndex: number) => {
         SidenavPO.goTo('VERFUEGEN');
 
         cy.waitForRequest('GET', '**/einstellung/key/FINANZIELLE_SITUATION_TYP/gemeinde/**', () => {
-            cy.getByData(verfuegung).click();
+            VerfuegenPO.getVerfuegung(kindIndex, betreuungIndex).click();
         });
 
-        cy.getByData('verfuegungs-bemerkungen-kontrolliert').click();
-        cy.getByData('container.verfuegen', 'navigation-button').click();
+        VerfuegungPO.getVerfuegungsBemerkungenKontrolliert().click();
+
         cy.waitForRequest('PUT', '**/verfuegung/verfuegen/**', () => {
-            cy.getByData('container.confirm', 'navigation-button').click();
+            VerfuegungPO.getVerfuegenButton().click();
+            ConfirmDialogPO.getConfirmButton().click();
         });
     };
 
     const checkBetreuungsstatus = () => {
         SidenavPO.goTo('VERFUEGEN');
-        cy.getByData('verfuegung#0-0', 'betreuungs-status').should('include.text', 'Verfügt');
-        cy.getByData('verfuegung#0-1', 'betreuungs-status').should('include.text', 'Anmeldung übernommen');
-        cy.getByData('verfuegung#1-0', 'betreuungs-status').should('include.text', 'Verfügt');
-        cy.getByData('verfuegung#1-1', 'betreuungs-status').should('include.text', 'Anmeldung übernommen');
+        VerfuegenPO.getBetreuungsstatus(0, 0).should('include.text', 'Verfügt');
+        VerfuegenPO.getBetreuungsstatus(0, 1).should('include.text', 'Anmeldung übernommen');
+        VerfuegenPO.getBetreuungsstatus(1, 0).should('include.text', 'Verfügt');
+        VerfuegenPO.getBetreuungsstatus(1, 1).should('include.text', 'Anmeldung übernommen');
     };
 
     const loginAndGoToGesuch = (user: User) => {
@@ -192,12 +198,6 @@ describe('Kibon - Online TS-Anmeldung (Mischgesuch) [Gesuchsteller]', () => {
         cy.visit(gesuchUrl);
     };
 
-    const platzBestaetigen = () => {
-        cy.getByData('korrekte-kosten-bestaetigung').click();
-        cy.waitForRequest('PUT', '**/betreuungen/bestaetigen', () => {
-            cy.getByData('container.platz-bestaetigen', 'navigation-button').click();
-        });
-    };
 });
 
 
