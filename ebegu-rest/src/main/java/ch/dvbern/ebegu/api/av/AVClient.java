@@ -17,29 +17,29 @@
 
 package ch.dvbern.ebegu.api.av;
 
-import java.io.ByteArrayInputStream;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Collection;
-import java.util.Map.Entry;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.ejb.Stateless;
-import javax.inject.Inject;
-
 import ch.dvbern.ebegu.config.EbeguConfiguration;
 import ch.dvbern.ebegu.entities.FileMetadata;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.EbeguMailiciousContentException;
+import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import xyz.capybara.clamav.ClamavClient;
 import xyz.capybara.clamav.ClamavException;
 import xyz.capybara.clamav.commands.scan.result.ScanResult;
 import xyz.capybara.clamav.commands.scan.result.ScanResult.VirusFound;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.ejb.Stateless;
+import javax.inject.Inject;
+import java.io.ByteArrayInputStream;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Collection;
+import java.util.Map.Entry;
 
 @Stateless
 public class AVClient {
@@ -66,6 +66,11 @@ public class AVClient {
 		if (ebeguConfiguration.isClamavDisabled() || !isReady() || client == null) {
 			return;
 		}
+
+		if (!fileMetadata.getFilepfad().startsWith(ebeguConfiguration.getDocumentFilePath())) {
+			throw new EbeguRuntimeException("scan file", "illegal document path");
+		}
+
 		try (InputStream is = new FileInputStream(fileMetadata.getFilepfad())) {
 			ScanResult result = client.scan(is);
 
