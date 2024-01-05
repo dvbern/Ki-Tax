@@ -32,7 +32,6 @@ import javax.annotation.Nonnull;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -169,6 +168,7 @@ public class FileSaverServiceBean implements FileSaverService {
 
 	@Override
 	public boolean remove(String dokumentPaths) {
+		validateDocumentPath(dokumentPaths);
 		final Path path = Paths.get(dokumentPaths);
 		try {
 			if (Files.exists(path)) {
@@ -242,9 +242,13 @@ public class FileSaverServiceBean implements FileSaverService {
 	private String getDocumentFilePathValidated(@Nonnull String path) {
 		String tmpFilePath = ebeguConfiguration.getDocumentFilePath() + path;
 		String absoluteFilePath = FilenameUtils.normalize(tmpFilePath);
-		if (!absoluteFilePath.startsWith(ebeguConfiguration.getDocumentFilePath())) {
+		validateDocumentPath(absoluteFilePath);
+		return absoluteFilePath;
+	}
+
+	private void validateDocumentPath(@Nonnull String path) {
+		if (!path.startsWith(ebeguConfiguration.getDocumentFilePath())) {
 			throw new EbeguRuntimeException("save file", "illegal document path");
 		}
-		return absoluteFilePath;
 	}
 }
