@@ -37,7 +37,8 @@ import java.io.Writer;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Objects;
-import java.util.regex.Pattern;
+
+import static ch.dvbern.ebegu.util.Constants.NEW_LINE_CHAR_PATTERN;
 
 /**
  * Allgemeine Mailing-Funktionalität
@@ -46,7 +47,6 @@ public abstract class AbstractMailServiceBean extends AbstractBaseService {
 
 	private static final Logger LOG = LoggerFactory.getLogger(AbstractMailServiceBean.class.getSimpleName());
 	private static final int CONNECTION_TIMEOUT = 15000;
-	private static final Pattern NEW_LINE_CHAR_PATTERN = Pattern.compile("[\n\r]");
 
 	@Inject
 	private Persistence persistence;
