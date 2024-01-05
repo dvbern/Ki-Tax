@@ -210,7 +210,9 @@ public abstract class AbstractMailServiceBean extends AbstractBaseService {
 	}
 
 	private void pretendToSendMessage(final String messageBody, final String mailadress) {
-		LOG.info("Sending of Emails disabled. Mail would be sent to {} : {}", removeNewLineChar(mailadress), removeNewLineChar(messageBody));
+		if (LOG.isInfoEnabled()) {
+			LOG.info("Sending of Emails disabled. Mail would be sent to {} : {}", removeNewLineChar(mailadress), removeNewLineChar(messageBody));
+		}
 	}
 
 	protected String removeNewLineChar(String str) {
