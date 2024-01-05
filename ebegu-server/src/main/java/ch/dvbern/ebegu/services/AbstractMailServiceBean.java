@@ -213,7 +213,7 @@ public abstract class AbstractMailServiceBean extends AbstractBaseService {
 		LOG.info("Sending of Emails disabled. Mail would be sent to {} : {}", removeNewLineChar(mailadress), removeNewLineChar(messageBody));
 	}
 
-	private String removeNewLineChar(String str) {
+	protected String removeNewLineChar(String str) {
 		return NEW_LINE_CHAR_PATTERN.matcher(str).replaceAll("_");
 	}
 
