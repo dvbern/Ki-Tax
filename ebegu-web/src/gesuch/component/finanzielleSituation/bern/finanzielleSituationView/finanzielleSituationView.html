@@ -426,18 +426,24 @@
                             <!--Checkbox Ersatzeinkommen Selbstständigkeit -->
                             <div class="row" ng-if="vm.ersatzeinkommenSelbststaendigkeitActivated">
                                 <div class="col-xs-12 dv-input-container-question" id="ersatzeinkommen-selbststaendigkeit-container">
-                                    <div class="checkbox">
-                                        <md-checkbox ng-model="vm.showErsatzeinkommenSelbststaendigkeit"
-                                                     data-test="show-ersatzeinkommen-selbststaendigkeit"
-                                                     name="showErsatzeinkommenSelbststaendigkeit"
-                                                     id="showErsatzeinkommenSelbststaendigkeit"
-                                                     aria-label="{{'FINANZIELLE_SITUATION_ERSATZEINKOMMEN_SELBSTAENDIGKEIT'|translate}}"
-                                                     ng-change="vm.showErsatzeinkommenSelbststaendigkeitClicked()"
-                                                     ng-disabled="vm.isGesuchReadonly()">
+                                    <div class="form-group">
+                                        <span class="ebegu-h1 required">
                                             <span data-translate="FINANZIELLE_SITUATION_ERSATZEINKOMMEN_SELBSTAENDIGKEIT"></span>
-                                        </md-checkbox>
-                                        <dv-tooltip input-id="showErsatzeinkommenSelbststaendigkeit"
-                                                    text="'FINANZIELLE_SITUATION_ERSATZEINKOMMEN_SELBSTAENDIGKEIT_HELP' | translate"></dv-tooltip>
+                                            <dv-tooltip input-id="showErsatzeinkommenSelbststaendigkeit"
+                                                        text="'FINANZIELLE_SITUATION_ERSATZEINKOMMEN_SELBSTAENDIGKEIT_HELP' | translate"></dv-tooltip>
+                                        </span>
+                                        <dv-radio-container name="showErsatzeinkommenSelbststaendigkeit"
+                                                            class="input-element radio"
+                                                            ng-model="vm.showErsatzeinkommenSelbststaendigkeit"
+                                                            data-test="show-ersatzeinkommen-selbststaendigkeit"
+                                                            id="showErsatzeinkommenSelbststaendigkeit"
+                                                            dv-enable-expression="!vm.isGesuchReadonly()"
+                                                            true-option-label="{{ 'LABEL_JA' | translate}}"
+                                                            false-option-label="{{ 'LABEL_NEIN' | translate}}"
+                                                            aria-label="{{'FINANZIELLE_SITUATION_ERSATZEINKOMMEN_SELBSTAENDIGKEIT'|translate}}"
+                                                            aria-described-by="steuerdatenzugriff-error"
+                                                            ng-change="vm.showErsatzeinkommenSelbststaendigkeitClicked()">
+                                        </dv-radio-container>
                                         <dv-bisher gs="vm.showErsatzeinkommenSelbststaendigkeitGS" class="dv-bisher-break"
                                                    ja="vm.showErsatzeinkommenSelbststaendigkeit"
                                                    specific-bisher-text="vm.getTextErsatzeinkommenSelbstaendigKorrektur()"
@@ -465,7 +471,7 @@
                                                                name="ersatzeinkommenSelbststaendigkeitBasisjahr"
                                                                ng-model="vm.getModel().finanzielleSituationJA.ersatzeinkommenSelbststaendigkeitBasisjahr"
                                                                ng-required="vm.showErsatzeinkommenSelbststaendigkeit"
-                                                               allow-negative=true
+                                                               allow-negative=false
                                                                dv-on-blur="vm.calculate()"
                                                                class="input-element"
                                                                ng-required="true"
@@ -508,7 +514,7 @@
                                                                data-test="ersatzeinkommen-selbststaendigkeit-basisjahr-minus-1"
                                                                name="ersatzeinkommenSelbststaendigkeitBasisjahrMinus1"
                                                                ng-model="vm.getModel().finanzielleSituationJA.ersatzeinkommenSelbststaendigkeitBasisjahrMinus1"
-                                                               allow-negative=true
+                                                               allow-negative=false
                                                                dv-on-blur="vm.calculate()"
                                                                class="input-element"
                                                                ng-required="vm.hasGeschaeftsgewinn(1)"
@@ -546,7 +552,7 @@
                                                                data-test="ersatzeinkommen-selbststaendigkeit-basisjahr-minus-2"
                                                                name="ersatzeinkommenSelbststaendigkeitBasisjahrMinus2"
                                                                ng-model="vm.getModel().finanzielleSituationJA.ersatzeinkommenSelbststaendigkeitBasisjahrMinus2"
-                                                               allow-negative=true
+                                                               allow-negative=false
                                                                dv-on-blur="vm.calculate()"
                                                                class="input-element"
                                                                ng-required="vm.hasGeschaeftsgewinn(2)"

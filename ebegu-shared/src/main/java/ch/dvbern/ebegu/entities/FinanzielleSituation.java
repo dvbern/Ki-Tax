@@ -27,6 +27,7 @@ import org.hibernate.envers.RelationTargetAuditMode;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.persistence.*;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -112,14 +113,17 @@ public class FinanzielleSituation extends AbstractFinanzielleSituation {
 
 	@Nullable
 	@Column(nullable = true)
+	@Min(0)
 	private BigDecimal ersatzeinkommenSelbststaendigkeitBasisjahr;
 
 	@Nullable
 	@Column(nullable = true)
+	@Min(0)
 	private BigDecimal ersatzeinkommenSelbststaendigkeitBasisjahrMinus1;
 
 	@Nullable
 	@Column(nullable = true)
+	@Min(0)
 	private BigDecimal ersatzeinkommenSelbststaendigkeitBasisjahrMinus2;
 
 	@Nullable
