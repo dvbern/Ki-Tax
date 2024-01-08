@@ -27,7 +27,7 @@ describe('Kibon - generate Testfälle [Gemeinde Sachbearbeiter]', () => {
             gemeinde: 'London',
             periode: '2022/23'
         });
-
+        FallToolbarPO.getFallnummer().should('not.be.empty');
         FallToolbarPO.getFallnummer().then(value => {
             fallnummer = value.text();
             FallToolbarPO.getFallnummer().should('contain.text', fallnummer);
@@ -55,6 +55,8 @@ describe('Kibon - generate Testfälle [Gemeinde Sachbearbeiter]', () => {
         cy.login(adminUser);
         cy.visit('/#/faelle');
         FaelleListePO.getAntrag(fallnummer).click();
+        FallToolbarPO.getFallnummer().should('not.be.empty');
+        FallToolbarPO.getFallnummer().should('contain.text', fallnummer);
         DossierToolbarPO.getMitteilungen().click();
         MitteilungenPO.getMitteilung(0).click();
         MitteilungenPO.getMutationsmeldungHinzufuegenButton(0).click();
