@@ -19,10 +19,12 @@ import {IComponentOptions} from 'angular';
 import {EinstellungRS} from '../../../../../admin/service/einstellungRS.rest';
 import {DvDialog} from '../../../../../app/core/directive/dv-dialog/dv-dialog';
 import {ErrorService} from '../../../../../app/core/errors/service/ErrorService';
+import {LogFactory} from '../../../../../app/core/logging/LogFactory';
 import {ApplicationPropertyRS} from '../../../../../app/core/rest-services/applicationPropertyRS.rest';
 import {DemoFeatureRS} from '../../../../../app/core/service/demoFeatureRS.rest';
 import {AuthServiceRS} from '../../../../../authentication/service/AuthServiceRS.rest';
 import {TSFinanzielleSituationResultateDTO} from '../../../../../models/dto/TSFinanzielleSituationResultateDTO';
+import {TSEinstellungKey} from '../../../../../models/enums/TSEinstellungKey';
 import {TSFinanzielleSituationSubStepName} from '../../../../../models/enums/TSFinanzielleSituationSubStepName';
 import {TSRole} from '../../../../../models/enums/TSRole';
 import {isSteuerdatenAnfrageStatusErfolgreich} from '../../../../../models/enums/TSSteuerdatenAnfrageStatus';
@@ -32,9 +34,7 @@ import {TSFinanzielleSituation} from '../../../../../models/TSFinanzielleSituati
 import {TSFinanzielleSituationContainer} from '../../../../../models/TSFinanzielleSituationContainer';
 import {TSFinanzModel} from '../../../../../models/TSFinanzModel';
 import {EbeguUtil} from '../../../../../utils/EbeguUtil';
-import {
-    FinanzielleSituationAufteilungDialogController
-} from '../../../../dialog/FinanzielleSituationAufteilungDialogController';
+import {FinanzielleSituationAufteilungDialogController} from '../../../../dialog/FinanzielleSituationAufteilungDialogController';
 import {IStammdatenStateParams} from '../../../../gesuch.route';
 import {BerechnungsManager} from '../../../../service/berechnungsManager';
 import {GesuchModelManager} from '../../../../service/gesuchModelManager';
@@ -49,6 +49,7 @@ import ITranslateService = angular.translate.ITranslateService;
 
 const aufteilungDialogTemplate = require('../../../../dialog/finanzielleSituationAufteilungDialogTemplate.html');
 
+const LOG = LogFactory.createLog('FinanzielleSituationViewController');
 export class FinanzielleSituationViewComponentConfig implements IComponentOptions {
     public transclude = false;
     public template = require('./finanzielleSituationView.html');
@@ -78,6 +79,9 @@ export class FinanzielleSituationViewController extends AbstractFinSitBernView {
 
     public showSelbstaendig: boolean;
     public showSelbstaendigGS: boolean;
+    public ersatzeinkommenSelbststaendigkeitActivated: boolean;
+    public showErsatzeinkommenSelbststaendigkeit: boolean;
+    public showErsatzeinkommenSelbststaendigkeitGS: boolean;
     public allowedRoles: ReadonlyArray<TSRole>;
     private readonly $stateParams: IStammdatenStateParams;
     private triedSavingWithoutForm: boolean = false;
@@ -141,7 +145,10 @@ export class FinanzielleSituationViewController extends AbstractFinSitBernView {
         this.wizardStepManager.updateCurrentWizardStepStatusSafe(
             TSWizardStepName.FINANZIELLE_SITUATION,
             TSWizardStepStatus.IN_BEARBEITUNG);
-        this.initSelbstaendigkeit();
+        this.initEinstellungen().then(() => {
+            this.initSelbstaendigkeit();
+            this.initErsatzeinkommenSelbststaendigkeit();
+        });
     }
 
     public showSelbstaendigClicked(): void {
@@ -150,10 +157,27 @@ export class FinanzielleSituationViewController extends AbstractFinSitBernView {
         }
     }
 
+    public showErsatzeinkommenSelbststaendigkeitClicked(): void {
+        if (!this.showErsatzeinkommenSelbststaendigkeit) {
+            this.resetErsatzeinkommenSelbststaendigkeitFields();
+        } else if (this.getModel().finanzielleSituationJA.ersatzeinkommen === 0) {
+            this.getModel().finanzielleSituationJA.ersatzeinkommenSelbststaendigkeitBasisjahr = 0;
+        }
+    }
+
     private initSelbstaendigkeit(): void {
         this.showSelbstaendig = this.model.getFiSiConToWorkWith().finanzielleSituationJA.isSelbstaendig();
         this.showSelbstaendigGS = this.model.getFiSiConToWorkWith().finanzielleSituationGS
             ? this.model.getFiSiConToWorkWith().finanzielleSituationGS.isSelbstaendig() : false;
+
+    }
+
+    private initErsatzeinkommenSelbststaendigkeit(): void {
+        this.showErsatzeinkommenSelbststaendigkeit =
+            this.model.getFiSiConToWorkWith().finanzielleSituationJA.hasErsatzeinkommenSelbststaendigkeit();
+        this.showErsatzeinkommenSelbststaendigkeitGS = this.model.getFiSiConToWorkWith().finanzielleSituationGS ?
+            this.model.getFiSiConToWorkWith().finanzielleSituationGS.hasErsatzeinkommenSelbststaendigkeit() :
+            false;
     }
 
     private resetSelbstaendigFields(): void {
@@ -164,6 +188,19 @@ export class FinanzielleSituationViewController extends AbstractFinSitBernView {
         this.model.getFiSiConToWorkWith().finanzielleSituationJA.geschaeftsgewinnBasisjahr = undefined;
         this.model.getFiSiConToWorkWith().finanzielleSituationJA.geschaeftsgewinnBasisjahrMinus1 = undefined;
         this.model.getFiSiConToWorkWith().finanzielleSituationJA.geschaeftsgewinnBasisjahrMinus2 = undefined;
+        this.resetErsatzeinkommenSelbststaendigkeitFields();
+        this.calculate();
+    }
+
+    private resetErsatzeinkommenSelbststaendigkeitFields(): void {
+        if (!this.model.getFiSiConToWorkWith()) {
+            return;
+        }
+
+        this.model.getFiSiConToWorkWith().finanzielleSituationJA.ersatzeinkommenSelbststaendigkeitBasisjahr = undefined;
+        this.model.getFiSiConToWorkWith().finanzielleSituationJA.ersatzeinkommenSelbststaendigkeitBasisjahrMinus1 = undefined;
+        this.model.getFiSiConToWorkWith().finanzielleSituationJA.ersatzeinkommenSelbststaendigkeitBasisjahrMinus2 = undefined;
+        this.initErsatzeinkommenSelbststaendigkeit();
         this.calculate();
     }
 
@@ -215,6 +252,10 @@ export class FinanzielleSituationViewController extends AbstractFinSitBernView {
 
     public save(): IPromise<TSFinanzielleSituationContainer> {
         if (!this.isGesuchValid()) {
+            return undefined;
+        }
+        if (!this.isAtLeastOneErsatzeinkommenSelbststaendigkeitProvided() || !this.isErsatzeinkommenValid()) {
+            this.scrollToErsatzeinkommenSelbststaendigkeit();
             return undefined;
         }
         // speichern darf nicht möglich sein, wenn das Formular nicht sichtbar ist
@@ -354,6 +395,7 @@ export class FinanzielleSituationViewController extends AbstractFinSitBernView {
             TSWizardStepStatus.NOK);
         this.model.copyFinSitDataFromGesuch(this.gesuchModelManager.getGesuch());
         this.initSelbstaendigkeit();
+        this.initErsatzeinkommenSelbststaendigkeit();
     }
 
     protected showAutomatischePruefungSteuerdatenFrage(): boolean {
@@ -378,5 +420,90 @@ export class FinanzielleSituationViewController extends AbstractFinSitBernView {
         }
         // wir returnieren leeres Objekt, damit wir im Template nicht überall den Nullcheck machen müssen
         return {};
+    }
+
+    private initEinstellungen(): Promise<void> {
+        return this.einstellungRS.getAllEinstellungenBySystemCached(this.gesuchModelManager.getGesuchsperiode().id).toPromise()
+            .then(einstellungen => {
+                const showErsatzeinkommen = einstellungen.find(einstellung => einstellung.key
+                    === TSEinstellungKey.ZUSATZLICHE_FELDER_ERSATZEINKOMMEN);
+                if (showErsatzeinkommen === undefined) {
+                    // eslint-disable-next-line max-len
+                    LOG.error(`Missing Einstellung "ZUSATZLICHE_FELDER_ERSATZEINKOMMEN" in gesuchsperiode ${this.gesuchModelManager.getGesuchsperiode().gesuchsperiodeString}`);
+                    this.ersatzeinkommenSelbststaendigkeitActivated = false;
+                    return;
+                }
+                this.ersatzeinkommenSelbststaendigkeitActivated = showErsatzeinkommen.getValueAsBoolean();
+            });
+    }
+
+    public getTextErsatzeinkommenSelbstaendigKorrektur(): string {
+        const finSitGS = this.getModel().finanzielleSituationGS;
+        if (!finSitGS || !finSitGS.hasErsatzeinkommenSelbststaendigkeit()) {
+            return this.$translate.instant('LABEL_KEINE_ANGABE');
+        }
+
+        const ersatzeinkommen = finSitGS.ersatzeinkommenSelbststaendigkeitBasisjahr;
+        const ersatzeinkommen2 = finSitGS.ersatzeinkommenSelbststaendigkeitBasisjahrMinus1;
+        const ersatzeinkommen3 = finSitGS.ersatzeinkommenSelbststaendigkeitBasisjahrMinus2;
+        const basisjahr = this.gesuchModelManager.getBasisjahr();
+        const params = {basisjahr, ersatzeinkommen, ersatzeinkommen2, ersatzeinkommen3};
+
+        return this.$translate.instant('JA_KORREKTUR_ERSATZEINKOMMEN_SELBSTAENDIG', params);
+    }
+
+    public isErsatzeinkommenValid(): boolean {
+            const finSit: TSFinanzielleSituation = this.model.getFiSiConToWorkWith().finanzielleSituationJA;
+        return (EbeguUtil.isNullOrUndefined(finSit.ersatzeinkommen)
+                && EbeguUtil.isNullOrUndefined(finSit.ersatzeinkommenSelbststaendigkeitBasisjahr))
+            || (EbeguUtil.isNotNullOrUndefined(finSit.ersatzeinkommen)
+                && EbeguUtil.isNullOrUndefined(finSit.ersatzeinkommenSelbststaendigkeitBasisjahr))
+            || finSit.ersatzeinkommen - finSit.ersatzeinkommenSelbststaendigkeitBasisjahr >= 0;
+    }
+
+    public isAtLeastOneErsatzeinkommenSelbststaendigkeitProvided(): boolean {
+        const finSit = this.model.getFiSiConToWorkWith().finanzielleSituationJA;
+        return !finSit.hasErsatzeinkommenSelbststaendigkeit() ||
+            (EbeguUtil.isNotNullOrUndefined(finSit.ersatzeinkommenSelbststaendigkeitBasisjahr)
+                && finSit.ersatzeinkommenSelbststaendigkeitBasisjahr > 0)
+                || (EbeguUtil.isNotNullOrUndefined(finSit.ersatzeinkommenSelbststaendigkeitBasisjahrMinus1)
+                    && finSit.ersatzeinkommenSelbststaendigkeitBasisjahrMinus1 > 0)
+            || (EbeguUtil.isNotNullOrUndefined(finSit.ersatzeinkommenSelbststaendigkeitBasisjahrMinus2)
+                    && finSit.ersatzeinkommenSelbststaendigkeitBasisjahrMinus2 > 0);
+    }
+
+    public hasGeschaeftsgewinn(basisjahrMinus: number): boolean {
+        const finSit = this.model.getFiSiConToWorkWith().finanzielleSituationJA;
+        if (basisjahrMinus === 2) {
+            return EbeguUtil.isNotNullOrUndefined(finSit.geschaeftsgewinnBasisjahrMinus2);
+        }
+        if (basisjahrMinus === 1) {
+            return EbeguUtil.isNotNullOrUndefined(finSit.geschaeftsgewinnBasisjahrMinus1);
+        }
+        return EbeguUtil.isNotNullOrUndefined(finSit.geschaeftsgewinnBasisjahr);
+    }
+
+    public geschaeftsgewinnChange(basisjahrMinus: number): void {
+        const finSit = this.model.getFiSiConToWorkWith().finanzielleSituationJA;
+        if (basisjahrMinus === 2 && EbeguUtil.isNullOrUndefined(finSit.geschaeftsgewinnBasisjahrMinus2)) {
+            finSit.ersatzeinkommenSelbststaendigkeitBasisjahrMinus2 = null;
+        } else if (basisjahrMinus === 1 && EbeguUtil.isNullOrUndefined(finSit.geschaeftsgewinnBasisjahrMinus1)) {
+            finSit.ersatzeinkommenSelbststaendigkeitBasisjahrMinus1 = null;
+        } else if (basisjahrMinus === 0 && EbeguUtil.isNullOrUndefined(finSit.geschaeftsgewinnBasisjahr)) {
+            finSit.ersatzeinkommenSelbststaendigkeitBasisjahr = null;
+        }
+    }
+
+    public ersatzeinkommenChanged(): void {
+        if (this.getModel().finanzielleSituationJA.ersatzeinkommen === 0) {
+            this.getModel().finanzielleSituationJA.ersatzeinkommenSelbststaendigkeitBasisjahr = 0;
+        }
+    }
+
+    private scrollToErsatzeinkommenSelbststaendigkeit(): void {
+        const tmp = document.getElementById('ersatzeinkommen-selbststaendigkeit-container');
+        if (tmp) {
+            tmp.scrollIntoView();
+        }
     }
 }

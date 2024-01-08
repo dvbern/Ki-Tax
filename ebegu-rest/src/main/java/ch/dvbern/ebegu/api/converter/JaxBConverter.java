@@ -2802,13 +2802,17 @@ public class JaxBConverter extends AbstractConverter {
 		requireNonNull(finanzielleSituationJAXP);
 
 		// wenn die finanzielle Situation durch die Steuerdatenschnittstelle ausgefüllt wurde
-		// ist es nie erlaubt, diese Werte zu überschreiben. Eine Ausnahme ist das Einkommen aus dem vereinfachten
-		// Verfahren und die Flag für den Zugriff
+		// ist es nie erlaubt, diese Werte zu überschreiben. Eine Ausnahme sind das Einkommen aus dem vereinfachten
+		// Verfahren, die Flag für den Zugriff und das Ersatzeinkommen bei Selbstständigkeit
 		if (finanzielleSituation.getSteuerdatenAbfrageStatus() != null
 			&& finanzielleSituation.getSteuerdatenAbfrageStatus().isSteuerdatenAbfrageErfolgreich()) {
 			finanzielleSituation.setSteuerdatenZugriff(finanzielleSituationJAXP.getSteuerdatenZugriff());
 			finanzielleSituation.setEinkommenInVereinfachtemVerfahrenAbgerechnet(finanzielleSituationJAXP.getEinkommenInVereinfachtemVerfahrenAbgerechnet());
 			finanzielleSituation.setAmountEinkommenInVereinfachtemVerfahrenAbgerechnet(finanzielleSituationJAXP.getAmountEinkommenInVereinfachtemVerfahrenAbgerechnet());
+
+			finanzielleSituation.setErsatzeinkommenSelbststaendigkeitBasisjahr(finanzielleSituationJAXP.getErsatzeinkommenSelbststaendigkeitBasisjahr());
+			finanzielleSituation.setErsatzeinkommenSelbststaendigkeitBasisjahrMinus1(finanzielleSituationJAXP.getErsatzeinkommenSelbststaendigkeitBasisjahrMinus1());
+			finanzielleSituation.setErsatzeinkommenSelbststaendigkeitBasisjahrMinus2(finanzielleSituationJAXP.getErsatzeinkommenSelbststaendigkeitBasisjahrMinus2());
 			return finanzielleSituation;
 		}
 
@@ -2829,6 +2833,10 @@ public class JaxBConverter extends AbstractConverter {
 		finanzielleSituation.setVeranlagt(finanzielleSituationJAXP.getVeranlagt());
 		finanzielleSituation.setVeranlagtVorjahr(finanzielleSituationJAXP.getVeranlagtVorjahr());
 		finanzielleSituation.setMomentanSelbststaendig(finanzielleSituationJAXP.getMomentanSelbststaendig());
+
+		finanzielleSituation.setErsatzeinkommenSelbststaendigkeitBasisjahr(finanzielleSituationJAXP.getErsatzeinkommenSelbststaendigkeitBasisjahr());
+		finanzielleSituation.setErsatzeinkommenSelbststaendigkeitBasisjahrMinus1(finanzielleSituationJAXP.getErsatzeinkommenSelbststaendigkeitBasisjahrMinus1());
+		finanzielleSituation.setErsatzeinkommenSelbststaendigkeitBasisjahrMinus2(finanzielleSituationJAXP.getErsatzeinkommenSelbststaendigkeitBasisjahrMinus2());
 
 		return finanzielleSituation;
 	}
@@ -2919,6 +2927,10 @@ public class JaxBConverter extends AbstractConverter {
 		jaxFinanzielleSituation.setSteuerdatenAbfrageTimestamp(persistedFinanzielleSituation.getSteuerdatenAbfrageTimestamp());
 		jaxFinanzielleSituation.setAutomatischePruefungErlaubt(persistedFinanzielleSituation.getAutomatischePruefungErlaubt());
 		jaxFinanzielleSituation.setMomentanSelbststaendig(persistedFinanzielleSituation.getMomentanSelbststaendig());
+
+		jaxFinanzielleSituation.setErsatzeinkommenSelbststaendigkeitBasisjahr(persistedFinanzielleSituation.getErsatzeinkommenSelbststaendigkeitBasisjahr());
+		jaxFinanzielleSituation.setErsatzeinkommenSelbststaendigkeitBasisjahrMinus1(persistedFinanzielleSituation.getErsatzeinkommenSelbststaendigkeitBasisjahrMinus1());
+		jaxFinanzielleSituation.setErsatzeinkommenSelbststaendigkeitBasisjahrMinus2(persistedFinanzielleSituation.getErsatzeinkommenSelbststaendigkeitBasisjahrMinus2());
 
 		return jaxFinanzielleSituation;
 	}

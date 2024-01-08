@@ -49,11 +49,31 @@ const createNewTestFallIn = (data: {
     cy.getByData(`gesuchsteller`).click();
     cy.getByData(`gesuchsteller.${normalizeUser(data.besitzerin)}`).click();
     cy.getByData(data.testFall).click();
-    cy.get('[data-test="dialog-link"]', { timeout: 20000 }).click();
+    cy.get('[data-test="dialog-link"]', { timeout: 120000 }).click();
+    cy.getByData('fall-creation-eingangsdatum').find('input').should('have.value', '15.2.2016');
+};
+
+const createNewPapierTestFallIn = (data: {
+    testFall: TestFall;
+    gemeinde: GemeindeTestFall;
+    periode: TestPeriode;
+    betreuungsstatus: TestBetreuungsstatus;
+}) => {
+    cy.getByData('page-title').contains('Alle Fälle');
+    cy.getByData('page-menu').click();
+    cy.getByData('action-admin.testdaten').click();
+    cy.getByData('gemeinde').click();
+    cy.getByData(`gemeinde.${data.gemeinde}`).click();
+    cy.getByData('periode').click();
+    cy.getByData(`periode.${data.periode}`).click();
+    cy.getByData(`creationType.${data.betreuungsstatus}`).find('label').click();
+    cy.getByData(data.testFall).click();
+    cy.get('[data-test="dialog-link"]', { timeout: 120000 }).click();
     cy.getByData('fall-creation-eingangsdatum').find('input').should('have.value', '15.2.2016');
 };
 
 export const TestFaellePO = {
     createNewTestFaelle,
     createNewTestFallIn,
+    createNewPapierTestFallIn
 };

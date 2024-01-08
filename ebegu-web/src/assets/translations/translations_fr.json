@@ -999,6 +999,9 @@
     "FINANZIELLESITUATION_JAHRESLOHNAUSWEISE": "Justificatif de salaire net (p. ex. certificats annuels de salaire)",
     "FINANZIELLESITUATION_NACHWEIS_FAMILIENZULAGEN": "Justificatif d'autres revenus imposables",
     "FINANZIELLESITUATION_NACHWEIS_ERSATZEINKOMMEN": "Justificatif d'un revenu de remplacement",
+    "FINANZIELLESITUATION_NACHWEIS_ERSATZINKOMMEN_SELBSTSTAENDIGKEIT_JAHR": "Nachweis über Ersatzeinkommen aus Selbstständigkeit",
+    "FINANZIELLESITUATION_NACHWEIS_ERSATZINKOMMEN_SELBSTSTAENDIGKEIT_JAHR_MINUS1": "Nachweis über Ersatzeinkommen aus Selbstständigkeit",
+    "FINANZIELLESITUATION_NACHWEIS_ERSATZINKOMMEN_SELBSTSTAENDIGKEIT_JAHR_MINUS2": "Nachweis über Ersatzeinkommen aus Selbstständigkeit",
     "FINANZIELLESITUATION_NACHWEIS_ERHALTENE_ALIMENTE": "Justificatif de pension alimentaire perçue – contributions d'entretien",
     "FINANZIELLESITUATION_NACHWEIS_GELEISTETE_ALIMENTE": "Justificatif de pension alimentaire versée",
     "FINANZIELLESITUATION_NACHWEIS_VERMOEGEN": "Justificatif concernant la fortune, état au 31.12, p. ex. : extrait de compte, immeubles, intérêts, etc.",
@@ -3076,6 +3079,13 @@
     "KITA_STUNDEN_PRO_TAG": "Kita Stunden pro Tag",
     "PENSUM_FACHSTELLE_INVALID_FACHSTELLEN_SOZIAL": "Un centre spécialisé dans les indications sociales n'est possible que jusqu'au niveau \"{0}\".",
     "PENSUM_FACHSTELLE_INVALID_FACHSTELLEN_SPRACHLICH": "Il ne s'agit plus d'un enfant d'âge préscolaire. Le besoin d'ordre linguistique ne peut pas être saisi.",
+    "ZUSATZLICHE_FELDER_ERSATZEINKOMMEN": "Afficher les champs supplémentaires sur la situation financière pour le revenu de remplacement",
+    "FINANZIELLE_SITUATION_ERSATZEINKOMMEN_SELBSTAENDIGKEIT": "Haben Sie als selbständig Erwerbende/r in einem oder mehreren dieser Jahre ein Ersatzeinkommen für einen entgangenen Geschäftsgewinn bezogen?",
+    "FINANZIELLE_SITUATION_ERSATZEINKOMMEN_SELBSTAENDIGKEIT_HELP": "Steuerpflichtiges Ersatzeinkommen von Selbstständigerwerbenden (Ziffern 2.23,  bspw. Corona-Erwerbsausfallentschädigung, Erwerbsausfall bei Dienstpflicht, Mutterschaft, Vaterschaft sowie bei der Betreuung eines gesundheitlich schwer beeinträchtigten Kindes) wird dem Geschäftsgewinn des Jahres angerechnet, in dem es bezogen wurde und in der Berechnung des durchschnittlichen Geschäftsgewinns der vergangenen drei Jahre berücksichtigt. Geben Sie das bezogene Ersatzeinkommen für einen entgangenen Geschäftsgewinn bei dem Jahr an, in dem Sie es bezogen haben.",
+    "FINANZIELLE_SITUATION_ERSATZEINKOMMEN_SELBSTSTAENDIGKEIT_JAHR": "Ersatzeinkommen bezogen im Jahr {{jahr}}",
+    "FINANZIELLE_SITUATION_ERSATZEINKOMMEN_INVALID": "Ihre Angaben bezüglich Ersatzeinkommen in Zusammenhang mit einem entgangenen Geschäftsgewinn aufgrund selbständiger Erwerbstätigkeit im Jahr {{basisjahr}} stimmen nicht überein.",
+    "FINANZIELLE_SITUATION_ERSATZEINKOMMEN_SELBSTSTAENDIGKEIT_INVALID": "Sie müssen für mindestens ein Jahr ein Ersatzeinkommen angeben.",
+    "FINANZIELLE_SITUATION_ERSATZEINKOMMEN_BASISJAHR_TOOLTIP": "Angaben, die Sie unter \"Ersatzeinkommen bezogen im Jahr {{basisjahr}}\" machen, werden abgezogen vom angegebenen Betrag unter \"Ersatzeinkommen\".",
     "SPRACHLICHE_INDIKATION_BETREUUNGS_PENSUM_ZU_TIEF": "Besoin d’ordre linguistique : le taux de prise en charge minimal de 40 % n’est pas atteint pendant un ou plusieurs mois.",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }
