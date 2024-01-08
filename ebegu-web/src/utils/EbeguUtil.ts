@@ -33,6 +33,9 @@ import {TSGesuchsperiode} from '../models/TSGesuchsperiode';
 import {TSDateRange} from '../models/types/TSDateRange';
 import {DateUtil} from './DateUtil';
 import ITranslateService = angular.translate.ITranslateService;
+import {TSKind} from '../models/TSKind';
+import {TSKindContainer} from '../models/TSKindContainer';
+import {TSIntegrationTyp} from '../models/enums/TSIntegrationTyp';
 
 const LOG = LogFactory.createLog('EbeguUtil');
 
@@ -547,5 +550,14 @@ export class EbeguUtil {
             }
         }
         return text;
+    }
+
+    public static hasSprachlicheIndikation(kind: TSKindContainer): boolean {
+        const sprachlicheIntegrationen = kind.kindJA?.pensumFachstellen
+            .filter(fachstelle =>
+                fachstelle.integrationTyp === TSIntegrationTyp.SPRACHLICHE_INTEGRATION);
+
+        return !(EbeguUtil.isNullOrUndefined(sprachlicheIntegrationen) ||
+            sprachlicheIntegrationen.length === 0);
     }
 }

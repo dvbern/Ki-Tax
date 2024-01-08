@@ -85,7 +85,7 @@ export type OnlyValidSelectors<T> = T extends string
 
 export type TestFall = 'testfall-1' | 'testfall-2';
 
-export type TestPeriode = '2022/23' | '2023/24';
+export type TestPeriode = '2022/23' | '2023/24' | '2024/25';
 
 export type TestBetreuungsstatus = 'warten' | 'bestaetigt' | 'verfuegt';
 

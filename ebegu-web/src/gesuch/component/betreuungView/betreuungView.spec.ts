@@ -44,7 +44,11 @@ import {IBetreuungStateParams} from '../../gesuch.route';
 import {GesuchModelManager} from '../../service/gesuchModelManager';
 import {WizardStepManager} from '../../service/wizardStepManager';
 import {BetreuungViewController} from './betreuungView';
-
+import {TSKind} from '../../../models/TSKind';
+import {TSPensumFachstelle} from '../../../models/TSPensumFachstelle';
+import {TSIntegrationTyp} from '../../../models/enums/TSIntegrationTyp';
+import {TSBetreuungspensumContainer} from '../../../models/TSBetreuungspensumContainer';
+import {TSBetreuungspensum} from '../../../models/TSBetreuungspensum';
 /* eslint-disable max-len */
 describe('betreuungView', () => {
     const betreuungenState = 'gesuch.betreuungen';
@@ -157,6 +161,7 @@ describe('betreuungView', () => {
         kind.betreuungen = [betreuung];
 
         betreuungView.form = TestDataUtil.createDummyForm();
+        betreuungView.minPensumSprachlicheIndikation = 40;
         // You can call any async task, when done() is called the test will begin
         setTimeout(() => {
             done();
@@ -396,6 +401,60 @@ describe('betreuungView', () => {
                     expect(betreuungView.showInstitutionenList()).toBe(false);
                     expect(betreuungView.showInstitutionenAsText()).toBe(true);
                 });
+        });
+        describe('showPensumUnterschrittenCheckBox', () => {
+            it('should not show checkbox if betreuungspensum List is undefined', () => {
+                spyOn(betreuungView, 'getBetreuungspensen').and.returnValue(undefined);
+                expect(betreuungView.showPensumUnterschrittenCheckBox()).toBe(false);
+            });
+
+            it('should not show checkbox if betreuungspensum List is empty', () => {
+                spyOn(betreuungView, 'getBetreuungspensen').and.returnValue([]);
+                expect(betreuungView.showPensumUnterschrittenCheckBox()).toBe(false);
+            });
+
+            it('should not show checkbox if no PensumFachstellenList is undefined', () => {
+                spyOn(betreuungView, 'getKindModel').and.returnValue(kind);
+                spyOn(betreuungView, 'getBetreuungspensen').and.returnValue([new TSBetreuungspensumContainer()]);
+
+                expect(betreuungView.showPensumUnterschrittenCheckBox()).toBe(false);
+
+                kind.kindJA = new TSKind();
+                expect(betreuungView.showPensumUnterschrittenCheckBox()).toBe(false);
+            });
+
+            it('should not show checkbox if no betreuungspensum less than 40% pensum',
+                () => {
+                const pensumFachstelleSozialeIndikation = new TSPensumFachstelle();
+                pensumFachstelleSozialeIndikation.integrationTyp = TSIntegrationTyp.SPRACHLICHE_INTEGRATION;
+
+                kind.kindJA = new TSKind();
+                kind.kindJA.pensumFachstellen = [pensumFachstelleSozialeIndikation];
+
+                const betreuungspensum = new TSBetreuungspensumContainer();
+                betreuungspensum.betreuungspensumJA = new TSBetreuungspensum();
+                betreuungspensum.betreuungspensumJA.pensum = 40;
+
+                spyOn(betreuungView, 'getKindModel').and.returnValue(kind);
+                spyOn(betreuungView, 'getBetreuungspensen').and.returnValue([betreuungspensum]);
+                expect(betreuungView.showPensumUnterschrittenCheckBox()).toBe(false);
+            });
+
+            it('should not show checkbox if betreuungspensum less than 40% pensum',
+                () => {
+                const pensumFachstelleSozialeIndikation = new TSPensumFachstelle();
+                pensumFachstelleSozialeIndikation.integrationTyp = TSIntegrationTyp.SPRACHLICHE_INTEGRATION;
+                kind.kindJA = new TSKind();
+                kind.kindJA.pensumFachstellen = [pensumFachstelleSozialeIndikation];
+
+                const betreuungspensum = new TSBetreuungspensumContainer();
+                betreuungspensum.betreuungspensumJA = new TSBetreuungspensum();
+                betreuungspensum.betreuungspensumJA.pensum = 30;
+
+                spyOn(betreuungView, 'getKindModel').and.returnValue(kind);
+                    spyOn(betreuungView, 'getBetreuungspensen').and.returnValue([betreuungspensum]);
+                expect(betreuungView.showPensumUnterschrittenCheckBox()).toBe(true);
+            });
         });
     });
 

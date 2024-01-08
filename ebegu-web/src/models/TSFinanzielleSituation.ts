@@ -14,6 +14,7 @@
  */
 
 import * as moment from 'moment';
+import {EbeguUtil} from '../utils/EbeguUtil';
 import {TSAbstractFinanzielleSituation} from './TSAbstractFinanzielleSituation';
 
 export class TSFinanzielleSituation extends TSAbstractFinanzielleSituation {
@@ -34,6 +35,9 @@ export class TSFinanzielleSituation extends TSAbstractFinanzielleSituation {
     private _bruttoLohn: number;
     private _momentanSelbststaendig: boolean;
     private _steuerdatenAbfrageTimestamp: moment.Moment;
+    private _ersatzeinkommenSelbststaendigkeitBasisjahr: number;
+    private _ersatzeinkommenSelbststaendigkeitBasisjahrMinus1: number;
+    private _ersatzeinkommenSelbststaendigkeitBasisjahrMinus2: number;
 
     public constructor() {
         super();
@@ -166,9 +170,39 @@ export class TSFinanzielleSituation extends TSAbstractFinanzielleSituation {
         this._steuerdatenAbfrageTimestamp = value;
     }
 
+    public get ersatzeinkommenSelbststaendigkeitBasisjahr(): number {
+        return this._ersatzeinkommenSelbststaendigkeitBasisjahr;
+    }
+
+    public set ersatzeinkommenSelbststaendigkeitBasisjahr(value: number) {
+        this._ersatzeinkommenSelbststaendigkeitBasisjahr = value;
+    }
+
+    public get ersatzeinkommenSelbststaendigkeitBasisjahrMinus1(): number {
+        return this._ersatzeinkommenSelbststaendigkeitBasisjahrMinus1;
+    }
+
+    public set ersatzeinkommenSelbststaendigkeitBasisjahrMinus1(value: number) {
+        this._ersatzeinkommenSelbststaendigkeitBasisjahrMinus1 = value;
+    }
+
+    public get ersatzeinkommenSelbststaendigkeitBasisjahrMinus2(): number {
+        return this._ersatzeinkommenSelbststaendigkeitBasisjahrMinus2;
+    }
+
+    public set ersatzeinkommenSelbststaendigkeitBasisjahrMinus2(value: number) {
+        this._ersatzeinkommenSelbststaendigkeitBasisjahrMinus2 = value;
+    }
+
     public isSelbstaendig(): boolean {
         return (this.geschaeftsgewinnBasisjahr !== null && this.geschaeftsgewinnBasisjahr !== undefined)
             || (this._geschaeftsgewinnBasisjahrMinus1 !== null && this._geschaeftsgewinnBasisjahrMinus1 !== undefined)
             || (this._geschaeftsgewinnBasisjahrMinus2 !== null && this._geschaeftsgewinnBasisjahrMinus2 !== undefined);
+    }
+
+    public hasErsatzeinkommenSelbststaendigkeit(): boolean {
+        return EbeguUtil.isNotNullOrUndefined(this.ersatzeinkommenSelbststaendigkeitBasisjahr)
+            || EbeguUtil.isNotNullOrUndefined(this.ersatzeinkommenSelbststaendigkeitBasisjahrMinus1)
+            || EbeguUtil.isNotNullOrUndefined(this.ersatzeinkommenSelbststaendigkeitBasisjahrMinus2);
     }
 }

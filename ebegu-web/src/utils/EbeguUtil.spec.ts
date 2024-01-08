@@ -23,6 +23,10 @@ import {TSDateRange} from '../models/types/TSDateRange';
 import {EbeguUtil} from './EbeguUtil';
 import {TestDataUtil} from './TestDataUtil.spec';
 import IProvideService = angular.auto.IProvideService;
+import {TSKindContainer} from '../models/TSKindContainer';
+import {TSKind} from '../models/TSKind';
+import {TSPensumFachstelle} from '../models/TSPensumFachstelle';
+import {TSIntegrationTyp} from '../models/enums/TSIntegrationTyp';
 
 /* eslint-disable no-magic-numbers */
 describe('EbeguUtil', () => {
@@ -210,6 +214,30 @@ describe('EbeguUtil', () => {
  EbeguUtil.zemisNummerToStandardZemisNummer(zemis4);
 })
                 .toThrow(new Error(`Wrong Format for ZEMIS-Nummer ${zemis4}`));
+        });
+    });
+    describe('hasSprachlicheIndikation', () => {
+        const  kindContainter = new TSKindContainer();
+        kindContainter.kindJA = new TSKind();
+
+        it('should return false if no PensumFachstellenList is defined', () => {
+            expect(EbeguUtil.hasSprachlicheIndikation(kindContainter)).toBe(false);
+        });
+        it('should return false if no PensumFachstellenList is empty', () => {
+            kindContainter.kindJA.pensumFachstellen = [];
+            expect(EbeguUtil.hasSprachlicheIndikation(kindContainter)).toBe(false);
+        });
+        it('should return false if no PensumFachstellen with sprachliche indikation', () => {
+            const pensumFachstelleSozialeIndikation = new TSPensumFachstelle();
+            pensumFachstelleSozialeIndikation.integrationTyp = TSIntegrationTyp.SOZIALE_INTEGRATION;
+            kindContainter.kindJA.pensumFachstellen = [pensumFachstelleSozialeIndikation];
+            expect(EbeguUtil.hasSprachlicheIndikation(kindContainter)).toBe(false);
+        });
+        it('should return true if one PensumFachstellen is sprachliche indikation', () => {
+            const pensumFachstelleSprachlicheIndikation = new TSPensumFachstelle();
+            pensumFachstelleSprachlicheIndikation.integrationTyp = TSIntegrationTyp.SPRACHLICHE_INTEGRATION;
+            kindContainter.kindJA.pensumFachstellen = [pensumFachstelleSprachlicheIndikation];
+            expect(EbeguUtil.hasSprachlicheIndikation(kindContainter)).toBe(true);
         });
     });
 });
