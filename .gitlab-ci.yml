@@ -37,7 +37,7 @@ include:
             name: .build-and-analyze
             java-image: docker-registry.dvbern.ch/kibon/build-environment/mvn-npm-gitflow-chromium
             java-image-version: jdk11-old
-            maven-goal: -Drevision=$VERSION -Pcopy-wildfly-dependencies -Pfrontend -Pci $SONAR_CONFIG clean install $SONAR_GOAL
+            maven-goal: -Drevision=$VERSION -Pcoverage -Pcopy-wildfly-dependencies -Pfrontend -Pci $SONAR_CONFIG clean install $SONAR_GOAL
             archive-path: '**/target'
 
     -   component: 'gitlab.dvbern.ch/mobj/buildah@301da90e8cb758ec10267633e43eb753eea6762e'
