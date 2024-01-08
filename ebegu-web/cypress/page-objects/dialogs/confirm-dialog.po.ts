@@ -19,6 +19,11 @@ const getConfirmButton = () => {
     return cy.getByData('container.confirm', 'navigation-button');
 };
 
+const getSimpleConfirmButton = () => {
+    return cy.getByData('container.confirm');
+};
+
 export const ConfirmDialogPO = {
   getConfirmButton,
+    getSimpleConfirmButton
 };

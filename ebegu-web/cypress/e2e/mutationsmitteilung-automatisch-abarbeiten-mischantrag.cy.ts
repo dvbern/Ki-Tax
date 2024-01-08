@@ -31,8 +31,8 @@ import {VerfuegungPO} from '../page-objects/antrag/verfuegung.po';
 describe('Kibon - Testet das Feature der automatischen Abarbeitung von Mutationsmitteilungen, KIBON-3240', () => {
 
     const superAdmin = getUser('[1-Superadmin] E-BEGU Superuser');
-    const sachbearbeitungBGGemeinde = getUser('[6-L-SB-BG] Jörg Keller');
-    const sachbearbeitungTSGemeinde = getUser('[6-L-SB-TS] Julien Odermatt');
+    const sachbearbeitungBGGemeinde = getUser('[6-P-SB-BG] Jörg Becker');
+    const sachbearbeitungTSGemeinde = getUser('[6-P-SB-TS] Julien Schuler');
     const sachbearbeitungKita = getUser('[3-SB-Institution-Kita-Brünnen] Sophie Bergmann');
 
     const betreuungspensumInMutation = 90;
@@ -46,7 +46,7 @@ describe('Kibon - Testet das Feature der automatischen Abarbeitung von Mutations
     it('should create and verfuegen mischantrag', () => {
         TestFaellePO.createOnlineTestfall({
             testFall: 'testfall-1',
-            gemeinde: 'London',
+            gemeinde: 'Paris',
             periode: '2022/23',
             betreuungsstatus: 'bestaetigt',
             besitzerin: '[5-GS] Heinrich Mueller',
@@ -60,7 +60,7 @@ describe('Kibon - Testet das Feature der automatischen Abarbeitung von Mutations
         SidenavPO.getGesuchsDaten().then(el$ => el$.data('antrags-id')).as('antragsId');
         AntragBetreuungPO.createNewBetreuung();
         AntragBetreuungPO.selectTagesschulBetreuung();
-        AntragBetreuungPO.fillTagesschulBetreuungsForm('withValid', 'London');
+        AntragBetreuungPO.fillTagesschulBetreuungsForm('withValid', 'Paris');
         AntragBetreuungPO.saveBetreuung();
 
         SidenavPO.goTo('DOKUMENTE');
@@ -82,7 +82,7 @@ describe('Kibon - Testet das Feature der automatischen Abarbeitung von Mutations
         {
             cy.changeLogin(superAdmin);
             openGesuchInFreigabe();
-            cy.waitForRequest('PUT', '**/freigeben/*/JA/*/SCH/*', () => {
+            cy.waitForRequest('POST', '**/freigeben/*/JA/*/SCH/*', () => {
                 FreigabePO.getFreigabequittungEinscannenSimulierenButton().click();
             });
             SidenavPO.getGesuchStatus().should('have.text', 'Freigegeben');
@@ -108,7 +108,7 @@ describe('Kibon - Testet das Feature der automatischen Abarbeitung von Mutations
             SidenavPO.goTo('BETREUUNG');
             AntragBetreuungPO.getBetreuungsstatus(0,2).should('have.text', 'Anmeldung ausgelöst');
             AntragBetreuungPO.getBetreuung(0,2).click();
-            cy.waitForRequest('PUT', '**/betreuungen/schulamt/akzeptieren', () => {
+            cy.waitForRequest('GET', '**/dossier/id/**', () => {
                 AntragBetreuungPO.getPlatzAkzeptierenButton().click();
                 ConfirmDialogPO.getConfirmButton().click();
             });
@@ -146,7 +146,7 @@ describe('Kibon - Testet das Feature der automatischen Abarbeitung von Mutations
             SidenavPO.goTo('VERFUEGEN');
             VerfuegenPO.getBetreuungsstatus(0,2).click();
             VerfuegungPO.getAllTarife().should('have.length', 1);
-            VerfuegungPO.getVerfuegterTarif(0).should('have.text', '1.84');
+            VerfuegungPO.getVerfuegterTarif(0).should('have.text', '1.87');
         }
 
         // !!! AS SB BG GEMEINDE !!!
@@ -155,7 +155,7 @@ describe('Kibon - Testet das Feature der automatischen Abarbeitung von Mutations
         {
             cy.changeLogin(sachbearbeitungKita);
             openGesuchInBetreuungen();
-            AntragBetreuungPO.getBetreuung(0,2).click();
+            AntragBetreuungPO.getBetreuung(0,0).click();
             AntragBetreuungPO.getMutationsmeldungErstellenButton().click();
             AntragBetreuungPO.getBetreuungspensum(0).clear().type(betreuungspensumInMutation.toString());
             AntragBetreuungPO.getMutationsmeldungSendenButton().click();
@@ -179,7 +179,7 @@ describe('Kibon - Testet das Feature der automatischen Abarbeitung von Mutations
 
             cy.waitForRequest('POST', 'applybetreuungsmitteilungsilently', () => {
                 PosteingangPO.getMutationsmitteilungenAutomatischBearbeitenButton().click();
-                ConfirmDialogPO.getConfirmButton().click();
+                ConfirmDialogPO.getSimpleConfirmButton().click();
             }, {waitOptions: {timeout: 40000}});
 
             cy.waitForRequest('GET', '**/benutzer/TsOrGemeinde/*', () => {
@@ -195,7 +195,7 @@ describe('Kibon - Testet das Feature der automatischen Abarbeitung von Mutations
             VerfuegenPO.getBetreuungsstatus(0, 2).should('have.text', 'Anmeldung übernommen');
             VerfuegenPO.getVerfuegung(0, 2).click();
             VerfuegungPO.getAllTarife().should('have.length', 1);
-            VerfuegungPO.getVerfuegterTarif(0).should('have.text', '1.84');
+            VerfuegungPO.getVerfuegterTarif(0).should('have.text', '1.87');
         }
 
         // NEUE MUTATION ERÖFFNEN
@@ -216,7 +216,7 @@ describe('Kibon - Testet das Feature der automatischen Abarbeitung von Mutations
             VerfuegenPO.getBetreuungsstatus(0, 2).should('have.text', 'Module akzeptiert');
             VerfuegenPO.getVerfuegung(0 ,2).click();
             VerfuegungPO.getAllTarife().should('have.length', 1);
-            VerfuegungPO.getVerfuegterTarif(0).should('have.text', '1.84');
+            VerfuegungPO.getVerfuegterTarif(0).should('have.text', '1.87');
         }
 
     })
