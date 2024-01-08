@@ -20,8 +20,8 @@
 	<div class="row view-title">
 		<div class="col-md-12">
 			<h2>
-				<span *ngIf="isMutation()" translate>MUTATION_FAMSITUATION_TITLE</span>
-				<span *ngIf="!isMutation()" translate>FAMILIENSITUATION</span>
+				<span *ngIf="isMutation()" data-test="page-title" translate>MUTATION_FAMSITUATION_TITLE</span>
+				<span *ngIf="!isMutation()" data-test="page-title" translate>FAMILIENSITUATION</span>
 			</h2>
 			<hr class="header"/>
 			<p *ngIf="showError()" role="alert" translate

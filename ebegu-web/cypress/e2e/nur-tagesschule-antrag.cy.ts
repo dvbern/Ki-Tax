@@ -15,8 +15,9 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { AntragBetreuungPO, TestFaellePO } from '@dv-e2e/page-objects';
+import {AntragBetreuungPO, ConfirmDialogPO, TestFaellePO, VerfuegenPO, VerfuegungPO} from '@dv-e2e/page-objects';
 import { getUser } from '@dv-e2e/types';
+import {SidenavPO} from '../page-objects/antrag/sidenav.po';
 
 describe('Kibon - Tagesschule Only [Superadmin]', () => {
     const adminUser = getUser('[1-Superadmin] E-BEGU Superuser');
@@ -27,7 +28,12 @@ describe('Kibon - Tagesschule Only [Superadmin]', () => {
         cy.intercept({resourceType: 'xhr'}, {log: false}); // don't log XHRs
         cy.login(adminUser);
         cy.visit('/#/faelle');
-        TestFaellePO.createNewTestFaelle('testfall-1', 'Paris') ;
+        TestFaellePO.createPapierTestfall({
+            testFall: 'testfall-1',
+            gemeinde: 'Paris',
+            periode: '2022/23',
+            betreuungsstatus: 'warten',
+        });
 
         // get AntragsId
         cy.url().then((url) => {
@@ -38,22 +44,26 @@ describe('Kibon - Tagesschule Only [Superadmin]', () => {
 
     it('should create a prefilled new Testfall Antrag', () => {
         // login as Administrator TS der Gemeinde
-        cy.login(adminGemeindeTSParisUser)
+        cy.login(adminGemeindeTSParisUser);
 
         // go to the Antrag
         cy.visit(gesuchUrl);
-        cy.getByData('sidenav.BETREUUNG').click();
+        SidenavPO.goTo('BETREUUNG');
 
         // delete other betreuung nur ts
-        cy.getByData('container.kind#0', 'container.betreuung#1', 'container.delete', 'navigation-button').click();
-        cy.getByData('container.confirm','navigation-button').click();
-        cy.getByData('container.kind#0', 'container.betreuung#1', 'container.delete').should('not.exist');
+        cy.waitForRequest('GET', '**/wizard-steps/**', () => {
+            AntragBetreuungPO.getBetreuungLoeschenButton(0, 1).click();
+            ConfirmDialogPO.getConfirmButton().click();
+        });
+        AntragBetreuungPO.getBetreuung(0, 1).should('not.exist');
 
-        cy.getByData('container.kind#0', 'container.betreuung#0', 'container.delete', 'navigation-button').click();
-        cy.getByData('container.confirm','navigation-button').click();
-        cy.getByData('container.kind#0', 'container.betreuung#0', 'container.delete').should('not.exist');
+        cy.waitForRequest('GET', '**/wizard-steps/**', () => {
+            AntragBetreuungPO.getBetreuungLoeschenButton(0, 0).click();
+            ConfirmDialogPO.getConfirmButton().click();
+        });
+        AntragBetreuungPO.getBetreuung(0, 0).should('not.exist');
 
-        cy.getByData('container.create-betreuung','navigation-button').click();
+        AntragBetreuungPO.createNewBetreuung(0);
 
         // Antrag bearbeiten - anmeldung Tagesschule erfassen
         AntragBetreuungPO.selectTagesschulBetreuung();
@@ -61,22 +71,22 @@ describe('Kibon - Tagesschule Only [Superadmin]', () => {
         AntragBetreuungPO.saveAndConfirmBetreuung();
 
         // anmeldung akkzeptieren
-        cy.getByData('container.kind#0', 'container.betreuung#0', 'container.edit', 'navigation-button').click();
-        cy.getByData('container.akzeptieren','navigation-button').click();
-        cy.getByData('container.confirm','navigation-button').click();
+        AntragBetreuungPO.getBetreuung(0, 0).click();
+        AntragBetreuungPO.getPlatzAkzeptierenButton().click();
+        ConfirmDialogPO.getConfirmButton().click();
 
         // Antrag abschliessen
-        cy.getByData('sidenav.VERFUEGEN').click();
-        cy.getByData('finSitStatus.radio-value.AKZEPTIERT').click();
-        cy.intercept('GET', '**/gesuche/dossier/**').as('abschliessenGesuch');
-        cy.getByData('container.abschliessen','navigation-button').click();
-        cy.getByData('container.confirm','navigation-button').click();
-        cy.wait('@abschliessenGesuch');
+        SidenavPO.goTo('VERFUEGEN');
+        VerfuegenPO.getFinSitAkzeptiert('AKZEPTIERT').click();
+        cy.waitForRequest('GET', '**/gesuche/dossier/**', () => {
+            VerfuegenPO.getAbschliessenButton().click();
+            ConfirmDialogPO.getConfirmButton().click();
+        });
 
         // Control status and tarif are definitiv
-        cy.getByData('gesuch.status').should('have.text', 'Abgeschlossen');
-        cy.getByData('betreuungs-status').should('have.text', 'Anmeldung übernommen');
-        cy.getByData('verfuegung-anmeldung-anzeigen','navigation-button').click();
-        cy.getByData('verfuegung-tagesschule-provisorisch').should('not.exist');
+        SidenavPO.getGesuchStatus().should('have.text', 'Abgeschlossen');
+        VerfuegenPO.getBetreuungsstatus(0,0).should('have.text', 'Anmeldung übernommen');
+        VerfuegenPO.getVerfuegung(0,0).click();
+        VerfuegungPO.getProvisorischerTarifTitel().should('not.exist');
     });
 });

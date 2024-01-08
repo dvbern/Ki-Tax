@@ -1,4 +1,14 @@
-import {getUser, normalizeUser} from '@dv-e2e/types';
+import {
+    AntragCreationPO,
+    ConfirmDialogPO,
+    FaelleListePO,
+    FallToolbarPO, KommentarPO,
+    NavigationPO, STVKommentarDialogPO,
+    TestFaellePO, VerfuegenPO,
+} from '@dv-e2e/page-objects';
+import {getUser} from '@dv-e2e/types';
+import {GesuchstellendePO} from '../page-objects/antrag/gesuchstellende.po';
+import {SidenavPO} from '../page-objects/antrag/sidenav.po';
 
 describe('Kibon - Gesuch zu Steuerverwaltung senden', () => {
     const userSuperadmin = getUser('[1-Superadmin] E-BEGU Superuser');
@@ -12,75 +22,70 @@ describe('Kibon - Gesuch zu Steuerverwaltung senden', () => {
         cy.login(userSuperadmin);
         cy.visit('/#/faelle');
 
-        cy.getByData('page-menu').click();
-        cy.getByData('action-admin.testdaten').click();
-        cy.getByData('creationType.verfuegt').find('label').click();
-        cy.getByData('gemeinde').click();
-        cy.getByData('gemeinde.London').click();
-        cy.getByData('periode').click();
-        cy.getByData('periode.2023/24').click();
-
-        cy.getByData('testfall-2').click();
-
-        cy.intercept('GET', '**/dossier/id//**').as('opengesuch');
-        cy.get('[data-test="dialog-link"]', {timeout: Cypress.config('defaultCommandTimeout') * 6}).click();
-        cy.wait('@opengesuch');
+        TestFaellePO.createPapierTestfall({
+            testFall: 'testfall-2',
+            gemeinde: 'London',
+            periode: '2023/24',
+            betreuungsstatus: 'verfuegt'
+        });
 
         cy.url().then((url) => {
             const parts = new URL(url);
             gesuchUrl = `${parts.pathname}${parts.hash}`;
         });
 
-        cy.getByData('fallnummer').should('not.be.empty');
-        cy.getByData('fallnummer').invoke('text').then(value => {
-            fallnummer = value;
-            cy.getByData('fallnummer').should('contain.text', fallnummer);
+        FallToolbarPO.getFallnummer().should('not.be.empty');
+        FallToolbarPO.getFallnummer().then(value => {
+            fallnummer = value.text();
+            FallToolbarPO.getFallnummer().should('contain.text', fallnummer);
         });
     });
 
     it('should send a gesuch for prüfung to steuerverwaltung and send it back to gemeinde', () => {
         cy.login(userGemeinde);
         cy.visit(gesuchUrl);
-        cy.getByData('verantwortlicher').click();
-        cy.getByData('container.verantwortlicher',`option.${normalizeUser(userGemeinde)}`).click();
-        cy.intercept('GET', '**/verfuegung/calculate/**').as('verfuegenView');
-        cy.getByData('sidenav.VERFUEGEN').click();
-        cy.wait('@verfuegenView');
-        cy.getByData('container.send-to-stv', 'navigation-button').click();
-        cy.getByData('kommentar-absenden').should('have.focus');
-        cy.getByData('kommentar-for-stv').focus().type('Wie hoch ist der Nettolohn im Jahr 2022 von Yvonne Feuz?');
-        cy.getByData('kommentar-absenden').click();
-        cy.getByData('gesuch.status').should('contain.text', 'Prüfung Steuerbüro der Gemeinde');
+        AntragCreationPO.getVerantwortlicher().click();
+        AntragCreationPO.getUserOption(userGemeinde, false).click();
+        cy.waitForRequest('GET', '**/verfuegung/calculate/**', () => {
+            SidenavPO.goTo('VERFUEGEN');
+        });
+
+        VerfuegenPO.getSendToSTVButton().click();
+        STVKommentarDialogPO.getSTVKommentarAbsendenButton().should('have.focus');
+        STVKommentarDialogPO.getSTVKommentar().focus().type('Wie hoch ist der Nettolohn im Jahr 2022 von Yvonne Feuz?');
+        STVKommentarDialogPO.getSTVKommentarAbsendenButton().click();
+        SidenavPO.getGesuchStatus().should('contain.text', 'Prüfung Steuerbüro der Gemeinde');
 
         cy.changeLogin(userSteueramt);
         cy.visit('/#/pendenzenSteueramt');
-        cy.getByData(`antrag-entry#${fallnummer}`).click();
-        cy.getByData('gesuch.status').should('contain.text', 'In Bearbeitung Steuerbüro der Gemeinde');
+        FaelleListePO.getAntrag(fallnummer).click();
+        SidenavPO.getGesuchStatus().should('contain.text', 'In Bearbeitung Steuerbüro der Gemeinde');
 
-        cy.getByData('bemerkungen-gemeinde').should('have.value', 'Wie hoch ist der Nettolohn im Jahr 2022 von Yvonne Feuz?');
-        cy.getByData('container.navigation-save').click();
-        cy.getByData('gesuchformular-title').should('contain.text', 'Antragsteller/in');
-        cy.getByData('gesuchformular-title').should('contain.text', '1');
-        cy.getByData('container.navigation-save').click();
-        cy.getByData('gesuchformular-title').should('contain.text', 'Antragsteller/in');
-        cy.getByData('gesuchformular-title').should('contain.text', '2');
-        cy.getByData('container.navigation-save').should('not.exist');
+        KommentarPO.getSTVBemerkungGemeinde().should('have.value', 'Wie hoch ist der Nettolohn im Jahr 2022 von Yvonne Feuz?');
+        NavigationPO.saveAndGoNext();
+        GesuchstellendePO.getFormularTitle().should('contain.text', 'Antragsteller/in');
+        GesuchstellendePO.getFormularTitle().should('contain.text', '1');
+        NavigationPO.saveAndGoNext();
+        GesuchstellendePO.getFormularTitle().should('contain.text', 'Antragsteller/in');
+        GesuchstellendePO.getFormularTitle().should('contain.text', '2');
+        NavigationPO.getSaveAndNextButton().should('not.exist');
         // TODO: remove this wait once a solution for textarea issues has been found
         cy.wait(1000);
-        cy.getByData('bemerkungen-stv').type("Der Nettolohn beträgt 50'000 CHF im Jahr 2021");
-        cy.getByData('container.zurueck-an-gemeinde').click();
-        cy.intercept('POST', '**/search/search').as('searchCompleted');
-        cy.getByData('container.confirm').click();
-        cy.wait('@searchCompleted');
-        cy.getByData(`antrag-entry#${fallnummer}`).should('not.exist');
+        KommentarPO.getSTVBemerkung().type("Der Nettolohn beträgt 50'000 CHF im Jahr 2021");
+        cy.waitForRequest('POST', '**/search/search', () => {
+            KommentarPO.getSTVPruefungZurueckAnGemeindeButton().click();
+            ConfirmDialogPO.getConfirmButton().click();
+        });
+        FaelleListePO.getAntrag(fallnummer).should('not.exist');
 
         cy.changeLogin(userGemeinde);
         cy.visit('/#/faelle');
-        cy.getByData(`antrag-entry#${fallnummer}`).should('exist');
+        FaelleListePO.getAntrag(fallnummer).should('exist');
 
         cy.visit('/#/pendenzen');
-        cy.getByData(`antrag-entry#${fallnummer}`).click();
-        cy.getByData('gesuch.status').should('contain.text', 'Geprüft durch Steuerbüro der Gemeinde');
-        cy.getByData('bemerkungen-stv').should('have.value', "Der Nettolohn beträgt 50'000 CHF im Jahr 2021");
+        FaelleListePO.getAntrag(fallnummer).click();
+        SidenavPO.getGesuchStatus().should('contain.text', 'Geprüft durch Steuerbüro der Gemeinde');
+
+        KommentarPO.getSTVBemerkung().should('have.value', "Der Nettolohn beträgt 50'000 CHF im Jahr 2021");
     });
 });

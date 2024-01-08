@@ -16,6 +16,7 @@
  */
 
 import { FixturePapierAntrag } from '@dv-e2e/fixtures';
+import {NavigationPO} from './navigation.po';
 
 const createPapierGesuch = (dataset: keyof typeof FixturePapierAntrag) => {
     cy.getByData('fall-eroeffnen').click();
@@ -25,7 +26,7 @@ const createPapierGesuch = (dataset: keyof typeof FixturePapierAntrag) => {
     cy.getByData('gesuchsperioden.2022/23').find('label').click();
     cy.intercept('POST', '**/gesuche');
     cy.intercept('GET', '**/PAPIERGESUCH').as('getPapierGesuch');
-    cy.getByData('container.navigation-save', 'navigation-button').click();
+    NavigationPO.saveAndGoNext();
     cy.wait('@getPapierGesuch');
 };
 
