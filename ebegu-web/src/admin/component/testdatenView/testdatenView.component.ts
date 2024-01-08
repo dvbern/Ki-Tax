@@ -379,6 +379,6 @@ export class TestdatenViewComponent implements OnInit {
     }
 
     public getGesuchstellerDataTestValue(gs: TSBenutzerNoDetails): string {
-        return 'gesuchsteller.' + gs.vorname + '-' + gs.nachname;
+        return `gesuchsteller.${gs.vorname}-${gs.nachname}`;
     }
 }
