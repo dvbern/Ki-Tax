@@ -99,7 +99,7 @@
                         </ng-container>
 
                         <dv-demo-feature-wrapper [demo-feature]="vm.demoFeature">
-                            <div class="row margin-bottom-50">
+                            <div class="row margin-bottom-50" ng-if="vm.showPensumUnterschrittenCheckBox()">
                                 <div class="col-xs-12 dv-input-container-question">
                                     <div class="checkbox">
                                         <md-checkbox ng-model="vm.getErweiterteBetreuungJA().anspruchFachstelleWennPensumUnterschritten"
@@ -115,6 +115,9 @@
                                     </div>
                                 </div>
                             </div>
+                            <ng-container ng-if="!vm.showPensumUnterschrittenCheckBox()">
+                                {{ vm.resetAnspruchFachstelleWennPensumUnterschritten() }}
+                            </ng-container>
                         </dv-demo-feature-wrapper>
                     </div>
                 </div>
@@ -122,7 +125,9 @@
                 <fieldset>
 
                     <!--Betreuungsangebot (Mit diesem Wert filtern wir die Institutionen)-->
-                    <div class="row" ng-if="vm.hasMandantZusaetzlichesBereuungsangebot()" ng-disabled="!vm.enableBetreuungsangebotsTyp()">
+                    <div class="row"
+                         ng-if="vm.hasMandantZusaetzlichesBereuungsangebot()"
+                         ng-disabled="!vm.enableBetreuungsangebotsTyp()">
                         <div class="col-sm-12 dv-input-container-medium">
                             <div class="form-group">
                                 <label class="md-no-float"
@@ -207,7 +212,8 @@
                                                 input-id="provPensum"
                                                 is-disabled="!vm.isEnabled()"
                                                 betreuungsangebot-typ="vm.betreuungsangebot.key"
-                                                betreuung-input-switch-typ="vm.betreuungspensumAnzeigeTyp">
+                                                betreuung-input-switch-typ="vm.betreuungspensumAnzeigeTyp"
+                                                is-luzern="vm.isLuzern">
                             </dv-betreuung-input>
 
                             <!--provisorische monatliche Betreuungskosten-->
@@ -364,7 +370,7 @@
                                 <span class="ebegu-h1 required">
                                     <span data-translate="ERWEITERTE_BEDUERFNISSE"></span>
                                     <dv-tooltip ng-if="('ERWEITERTE_BEDUERFNISSE_HINT' | translate).length > 0"
-                                              text="'ERWEITERTE_BEDUERFNISSE_HINT' | translate"></dv-tooltip>
+                                                text="'ERWEITERTE_BEDUERFNISSE_HINT' | translate"></dv-tooltip>
                                 </span>
 
                                 <dv-radio-container name="erweiterteBeduerfnisse" class="input-element"
@@ -554,7 +560,7 @@
                                     maxlength="4000"
                                     ng-required="true"
                                     dv-enable-element
-                                   ng-disabled="!vm.showAbrechnungGutscheine()"
+                                    ng-disabled="!vm.showAbrechnungGutscheine()"
                                     ng-model="vm.getBetreuungModel().begruendungAuszahlungAnInstitution"></textarea>
                                 <dv-error-messages input-id="begruendungAuszahlungInstitution"
                                                    for="vm.form.begruendungAuszahlungInstitution.$error"
@@ -629,7 +635,7 @@
                                       dv-enable-expression="vm.isPensumEditable()">
 
                                 <p class="inline-hint" data-translate="BETREUUNG_HINT_UNTERMONATLICH"
-                                        ng-show="vm.showHintUntermonatlich()"></p>
+                                   ng-show="vm.showHintUntermonatlich()"></p>
 
                                 <p class="inline-hint eingewoehnung-hint" ng-show="vm.showHintEingewoehnung()">
                                     <span translate>BETREUUNG_HINT_EINGEWOEHNUNG</span>
@@ -641,12 +647,13 @@
                                     <!--Betreuungspensum-->
                                     <div ng-if="vm.showBetreuungsKostenAndPensumInput()">
                                         <dv-betreuung-input pensum-container="vm.getBetreuungspensum($index)"
-                                                        input-id="betreuungspensum-{{$index}}"
-                                                        betreuungsangebot-typ="vm.getBetreuungModel().getAngebotTyp()"
-                                                        is-disabled="!vm.isPensumEditable()"
-                                                        multiplier-kita="vm.getMultiplierKita()"
-                                                        multiplier-tfo="vm.getMultiplierTFO()"
-                                                        betreuung-input-switch-typ="vm.betreuungspensumAnzeigeTyp">
+                                                            input-id="betreuungspensum-{{$index}}"
+                                                            betreuungsangebot-typ="vm.getBetreuungModel().getAngebotTyp()"
+                                                            is-disabled="!vm.isPensumEditable()"
+                                                            multiplier-kita="vm.getMultiplierKita()"
+                                                            multiplier-tfo="vm.getMultiplierTFO()"
+                                                            betreuung-input-switch-typ="vm.betreuungspensumAnzeigeTyp"
+                                                            is-luzern="vm.isLuzern">
                                         </dv-betreuung-input>
                                     </div>
                                     <!--Monatliche Betreuungskosten-->
@@ -726,7 +733,8 @@
                                                                    class="form-control"
                                                                    ng-attr-data-test="monatliche-hauptmahlzeiten#{{$index}}"
                                                                    ng-required="true">
-                                                            <dv-error-messages input-id="monatlicheHauptmahlzeiten-{{$index}}" step="0.01"
+                                                            <dv-error-messages input-id="monatlicheHauptmahlzeiten-{{$index}}"
+                                                                               step="0.01"
                                                                                for="vm.form['monatlicheHauptmahlzeiten-' + $index].$error"></dv-error-messages>
                                                         </div>
                                                     </dv-input-container>
@@ -752,7 +760,8 @@
                                                                    class="form-control"
                                                                    ng-attr-data-test="monatliche-nebenmahlzeiten#{{$index}}"
                                                                    ng-required="true">
-                                                            <dv-error-messages input-id="monatlicheNebenmahlzeiten-{{$index}}" step="0.01"
+                                                            <dv-error-messages input-id="monatlicheNebenmahlzeiten-{{$index}}"
+                                                                               step="0.01"
                                                                                for="vm.form['monatlicheNebenmahlzeiten-' + $index].$error"></dv-error-messages>
                                                         </div>
                                                     </dv-input-container>
@@ -780,7 +789,8 @@
                                                                    class="form-control"
                                                                    ng-attr-data-test="tarif-pro-hauptmahlzeit#{{$index}}"
                                                                    ng-required="true">
-                                                            <dv-error-messages input-id="tarifProHauptmahlzeit-{{$index}}" step="0.05"
+                                                            <dv-error-messages input-id="tarifProHauptmahlzeit-{{$index}}"
+                                                                               step="0.05"
                                                                                for="vm.form['tarifProHauptmahlzeit-' + $index].$error"></dv-error-messages>
                                                         </div>
                                                     </dv-input-container>
@@ -806,7 +816,8 @@
                                                                    class="form-control"
                                                                    ng-attr-data-test="tarif-pro-nebenmahlzeit#{{$index}}"
                                                                    ng-required="true">
-                                                            <dv-error-messages input-id="tarifProNebenmahlzeit-{{$index}}" step="0.05"
+                                                            <dv-error-messages input-id="tarifProNebenmahlzeit-{{$index}}"
+                                                                               step="0.05"
                                                                                for="vm.form['tarifProNebenmahlzeit-' + $index].$error"></dv-error-messages>
                                                         </div>
                                                     </dv-input-container>
@@ -1122,7 +1133,9 @@
                     <span dv-show-element
                           dv-show-allowed-roles="vm.TSRoleUtil.getGesuchstellerSozialdienstJugendamtSchulamtRoles()"
                           dv-show-expression="vm.isBetreuungsstatusAusstehendOrUnbekannteInstitution() && !vm.isProvisorischeBetreuung()">
-                        <dv-loading-button button-click="vm.platzAnfordern()" type="submit" data-test="container.platzbestaetigung-anfordern">
+                        <dv-loading-button button-click="vm.platzAnfordern()"
+                                           type="submit"
+                                           data-test="container.platzbestaetigung-anfordern">
                             <span class="uppercase" data-translate="PLATZBESTAETIGUNG_ANFORDERN"></span>
                         </dv-loading-button>
                     </span>
@@ -1140,7 +1153,9 @@
                     <span dv-show-element
                           dv-show-allowed-roles="vm.TSRoleUtil.getGesuchstellerRoles()"
                           dv-show-expression="vm.isProvisorischeBetreuung() && vm.isEnabled()">
-                        <dv-loading-button button-click="vm.saveProvisorischeBetreuung()" type="submit" data-test="container.save-provisorisch">
+                        <dv-loading-button button-click="vm.saveProvisorischeBetreuung()"
+                                           type="submit"
+                                           data-test="container.save-provisorisch">
                             <span class="uppercase" data-translate="SPEICHERN"></span>
                         </dv-loading-button>
                     </span>

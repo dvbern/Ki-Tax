@@ -15,7 +15,8 @@
 
 <div class="dv-radio-container">
     <md-radio-group class="radio" ng-model="vm.modelToPassOn" ng-blur="vm.onBlur()" ng-change="vm.onChange()"
-                    dv-suppress-form-submit-on-enter aria-label="{{vm.ariaLabel}}" ng-required="vm.ngRequired">
+                    dv-suppress-form-submit-on-enter aria-label="{{vm.ariaLabel}}" ng-required="vm.ngRequired"
+                    ng-attr-data-test="{{vm.name + '.radio-group'}}">
         <md-radio-button ng-if="vm.items" ng-repeat="current in vm.items" ng-value="current"
                          ng-attr-data-test="{{vm.name + '.radio-value.' + current}}"
                          aria-label="{{current | translate}}" class="element-{{$index}}"

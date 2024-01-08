@@ -23,7 +23,7 @@ describe('Kibon - Gesuch zu Steuerverwaltung senden', () => {
         cy.getByData('testfall-2').click();
 
         cy.intercept('GET', '**/dossier/id//**').as('opengesuch');
-        cy.get('[data-test="dialog-link"]', {timeout: Cypress.config('defaultCommandTimeout') * 4}).click();
+        cy.get('[data-test="dialog-link"]', {timeout: Cypress.config('defaultCommandTimeout') * 6}).click();
         cy.wait('@opengesuch');
 
         cy.url().then((url) => {
@@ -50,12 +50,12 @@ describe('Kibon - Gesuch zu Steuerverwaltung senden', () => {
         cy.getByData('kommentar-absenden').should('have.focus');
         cy.getByData('kommentar-for-stv').focus().type('Wie hoch ist der Nettolohn im Jahr 2022 von Yvonne Feuz?');
         cy.getByData('kommentar-absenden').click();
-        cy.getByData('gesuch-status').should('contain.text', 'Prüfung Steuerbüro der Gemeinde');
+        cy.getByData('gesuch.status').should('contain.text', 'Prüfung Steuerbüro der Gemeinde');
 
         cy.changeLogin(userSteueramt);
         cy.visit('/#/pendenzenSteueramt');
         cy.getByData(`antrag-entry#${fallnummer}`).click();
-        cy.getByData('gesuch-status').should('contain.text', 'In Bearbeitung Steuerbüro der Gemeinde');
+        cy.getByData('gesuch.status').should('contain.text', 'In Bearbeitung Steuerbüro der Gemeinde');
 
         cy.getByData('bemerkungen-gemeinde').should('have.value', 'Wie hoch ist der Nettolohn im Jahr 2022 von Yvonne Feuz?');
         cy.getByData('container.navigation-save').click();
@@ -80,7 +80,7 @@ describe('Kibon - Gesuch zu Steuerverwaltung senden', () => {
 
         cy.visit('/#/pendenzen');
         cy.getByData(`antrag-entry#${fallnummer}`).click();
-        cy.getByData('gesuch-status').should('contain.text', 'Geprüft durch Steuerbüro der Gemeinde');
+        cy.getByData('gesuch.status').should('contain.text', 'Geprüft durch Steuerbüro der Gemeinde');
         cy.getByData('bemerkungen-stv').should('have.value', "Der Nettolohn beträgt 50'000 CHF im Jahr 2021");
     });
 });

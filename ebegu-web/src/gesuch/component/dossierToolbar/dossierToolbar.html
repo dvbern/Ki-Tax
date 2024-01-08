@@ -117,6 +117,7 @@
                  dv-show-allowed-roles="vmx.TSRoleUtil.getAllRolesForDossierMitteilungen()"
                  dv-show-expression="!vmx.getGesuch().isNew()">
                 <button ng-click="vmx.openMitteilungen()"
+                        data-test="toolbar-mitteilungen"
                         aria-label="{{'TOOLBAR_MITTEILUNGEN' | translate}}" style="text-align: center;">
                     <span class="uppercase" data-translate="TOOLBAR_MITTEILUNGEN"></span>
                 </button>

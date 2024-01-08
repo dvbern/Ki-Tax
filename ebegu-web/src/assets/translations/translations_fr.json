@@ -3086,5 +3086,6 @@
     "FINANZIELLE_SITUATION_ERSATZEINKOMMEN_INVALID": "Ihre Angaben bezüglich Ersatzeinkommen in Zusammenhang mit einem entgangenen Geschäftsgewinn aufgrund selbständiger Erwerbstätigkeit im Jahr {{basisjahr}} stimmen nicht überein.",
     "FINANZIELLE_SITUATION_ERSATZEINKOMMEN_SELBSTSTAENDIGKEIT_INVALID": "Sie müssen für mindestens ein Jahr ein Ersatzeinkommen angeben.",
     "FINANZIELLE_SITUATION_ERSATZEINKOMMEN_BASISJAHR_TOOLTIP": "Angaben, die Sie unter \"Ersatzeinkommen bezogen im Jahr {{basisjahr}}\" machen, werden abgezogen vom angegebenen Betrag unter \"Ersatzeinkommen\".",
+    "SPRACHLICHE_INDIKATION_BETREUUNGS_PENSUM_ZU_TIEF": "Besoin d’ordre linguistique : le taux de prise en charge minimal de 40 % n’est pas atteint pendant un ou plusieurs mois.",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }
