@@ -686,6 +686,7 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 			return new ArrayList<>();
 		}
 		final long fallnummer = BetreuungUtil.getFallnummerFromBGNummer(bgNummer);
+		final long gemeindeNummer = BetreuungUtil.getGemeindeFromBGNummer(bgNummer);
 
 		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
 		final CriteriaQuery<T> query = cb.createQuery(clazz);
@@ -697,6 +698,7 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 			JoinType.LEFT);
 		final Join<Gesuch, Dossier> dossierJoin = kindContainerGesuchJoin.join(Gesuch_.dossier, JoinType.LEFT);
 		final Join<Dossier, Fall> gesuchFallJoin = dossierJoin.join(Dossier_.fall);
+		final Join<Dossier, Gemeinde> gesuchGemeindeJoin = dossierJoin.join(Dossier_.gemeinde);
 
 		Predicate predBetreuungNummer = cb.equal(root.get(AbstractAnmeldung_.betreuungNummer), betreuungNummer);
 		Predicate predBetreuungAusgeloest =
@@ -704,6 +706,7 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 		Predicate predKindNummer = cb.equal(kindjoin.get(KindContainer_.kindNummer), kindNummer);
 		Predicate predFallNummer = cb.equal(gesuchFallJoin.get(Fall_.fallNummer), fallnummer);
 		Predicate predGesuchsperiode = cb.equal(kindContainerGesuchJoin.get(Gesuch_.gesuchsperiode), gesuchsperiode);
+		Predicate predGemeineNummer = cb.equal(gesuchGemeindeJoin.get(Gemeinde_.gemeindeNummer), gemeindeNummer);
 
 		List<Predicate> predicates = new ArrayList<>();
 		predicates.add(predFallNummer);
@@ -711,6 +714,7 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 		predicates.add(predKindNummer);
 		predicates.add(predBetreuungNummer);
 		predicates.add(predBetreuungAusgeloest);
+		predicates.add(predGemeineNummer);
 
 		if (getOnlyAktuelle) {
 			Predicate predAktuelleBetreuung =
