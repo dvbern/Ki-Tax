@@ -29,7 +29,7 @@ describe('kiBon - Features auf der FinSit - Page', () => {
         cy.login(superAdmin);
         cy.visit('/#/faelle');
 
-        TestFaellePO.createNewPapierTestFallIn({
+        TestFaellePO.createPapierTestfall({
             testFall: 'testfall-1',
             gemeinde: 'London',
             betreuungsstatus: 'warten',
