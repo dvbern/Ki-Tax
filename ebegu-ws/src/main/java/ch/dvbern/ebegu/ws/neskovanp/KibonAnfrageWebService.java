@@ -84,7 +84,7 @@ public class KibonAnfrageWebService implements IKibonAnfrageWebService {
 		}
 		catch(BusinessFault businessFault) {
 			String msg = createFaultLogmessage("BusinessFault" ,methodName, businessFault.getMessage(), businessFault.getFaultInfo());
-			LOGGER.error(msg);
+			LOGGER.debug(msg);
 			exceptionReceived = businessFault;
 			throw new KiBonAnfrageServiceException(methodName, msg, businessFault.getFaultInfo().getErrorCode(), businessFault.getFaultInfo().getUserMessage());
 		}
