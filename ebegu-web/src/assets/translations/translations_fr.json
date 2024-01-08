@@ -3076,5 +3076,6 @@
     "KITA_STUNDEN_PRO_TAG": "Kita Stunden pro Tag",
     "PENSUM_FACHSTELLE_INVALID_FACHSTELLEN_SOZIAL": "Un centre spécialisé dans les indications sociales n'est possible que jusqu'au niveau \"{0}\".",
     "PENSUM_FACHSTELLE_INVALID_FACHSTELLEN_SPRACHLICH": "Il ne s'agit plus d'un enfant d'âge préscolaire. Le besoin d'ordre linguistique ne peut pas être saisi.",
+    "SPRACHLICHE_INDIKATION_BETREUUNGS_PENSUM_ZU_TIEF": "Besoin d’ordre linguistique : le taux de prise en charge minimal de 40 % n’est pas atteint pendant un ou plusieurs mois.",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

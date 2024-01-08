@@ -99,7 +99,7 @@
                         </ng-container>
 
                         <dv-demo-feature-wrapper [demo-feature]="vm.demoFeature">
-                            <div class="row margin-bottom-50">
+                            <div class="row margin-bottom-50" ng-if="vm.showPensumUnterschrittenCheckBox()">
                                 <div class="col-xs-12 dv-input-container-question">
                                     <div class="checkbox">
                                         <md-checkbox ng-model="vm.getErweiterteBetreuungJA().anspruchFachstelleWennPensumUnterschritten"
@@ -115,6 +115,9 @@
                                     </div>
                                 </div>
                             </div>
+                            <ng-container ng-if="!vm.showPensumUnterschrittenCheckBox()">
+                                {{ vm.resetAnspruchFachstelleWennPensumUnterschritten() }}
+                            </ng-container>
                         </dv-demo-feature-wrapper>
                     </div>
                 </div>
