@@ -985,9 +985,7 @@ public class TestfaelleServiceBean extends AbstractBaseService implements Testfa
 			mailService.sendInfoOffenePendenzenNeuMitteilungInstitution(firstBetreuung.getInstitutionStammdaten(), true,false);
 			mailService.sendBenutzerEinladung(besitzer, einladung);
 			mailService.sendInfoMitteilungErhalten(mitteilung);
-			if (LOG.isInfoEnabled()) {
-				LOG.info("Es sollten 31 Mails verschickt worden sein an {}", NEW_LINE_CHAR_PATTERN.matcher(mailadresse).replaceAll("_"));
-			}
+			LOG.info("Es sollten 31 Mails verschickt worden sein an {}", NEW_LINE_CHAR_PATTERN.matcher(mailadresse).replaceAll("_"));
 		} catch (MailException e) {
 			LOG.error("Could not send Mails", e);
 		} finally {

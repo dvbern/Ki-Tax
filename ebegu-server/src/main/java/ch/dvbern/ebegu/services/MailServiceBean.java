@@ -419,9 +419,7 @@ public class MailServiceBean extends AbstractMailServiceBean implements MailServ
 
 		try {
 			sendMessageWithTemplate(message, receiverEmail, mandant.getMandantIdentifier());
-			if (LOG.isInfoEnabled()) {
-				LOG.info("Email fuer InfoStatistikGeneriert wurde versendet an {}", removeNewLineChar(receiverEmail));
-			}
+			LOG.info("Email fuer InfoStatistikGeneriert wurde versendet an {}", removeNewLineChar(receiverEmail));
 		} catch (MailException e) {
 			logExceptionAccordingToEnvironment(
 				e,
@@ -808,9 +806,7 @@ public class MailServiceBean extends AbstractMailServiceBean implements MailServ
 
 			String message = mailTemplateConfig.getInitGSZPVNr(ssoInitURL, Collections.singletonList(Sprache.valueOf(korrespondenzSprache)), email, trunctatedUrl);
 			sendMessageWithTemplate(message, email, mandantIdentifier);
-			if (LOG.isDebugEnabled()) {
-				LOG.debug("Email fuer sendInitGSZPVNr wurde versendet an {}", removeNewLineChar(email));
-			}
+			LOG.debug("Email fuer sendInitGSZPVNr wurde versendet an {}", removeNewLineChar(email));
 		}  catch (MailException | URISyntaxException mailException) {
 			logExceptionAccordingToEnvironment(
 					mailException,
