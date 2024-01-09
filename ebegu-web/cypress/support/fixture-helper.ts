@@ -18,7 +18,8 @@
 import type * as Beschaeftigungspensum from '../fixtures/antrag/beschaeftigungspensum.json';
 import type * as Betreuung from '../fixtures/antrag/betreuung.json';
 import type * as Einkommensverschlechterung from '../fixtures/antrag/einkommensverschlechterung.json';
-import type * as Kind from '../fixtures/antrag/kind.json';
+import type * as EinkommensverschlechterungInfo from '../fixtures/antrag/einkommensverschlechterung-info.json';
+import type * as Kind from '../fixtures/antrag/kind-boy.json';
 import type * as FamSit from '../fixtures/antrag/famsit.json';
 import type * as FinSit from '../fixtures/antrag/finsit.json';
 import type * as Papier from '../fixtures/antrag/papier.json';
@@ -31,7 +32,8 @@ const fromFixture =
         cy.fixture(fixture).then((data: T) => fn(data[fixturePart]));
 
 export const FixtureKind = {
-    withValid: fromFixture<typeof Kind>('antrag/kind.json', 'valid'),
+    withValidBoy: fromFixture<typeof Kind>('antrag/kind-boy.json', 'valid'),
+    withValidGirl: fromFixture<typeof Kind>('antrag/kind-girl.json', 'valid'),
 };
 
 export const FixtureBeschaeftigungspensum = {
@@ -56,6 +58,10 @@ export const FixturePapierAntrag = {
 
 export const FixtureEinkommensverschlechterung = {
     withValid: fromFixture<typeof Einkommensverschlechterung>('antrag/einkommensverschlechterung.json', 'valid'),
+};
+
+export const FixtureEinkommensverschlechterungInfo = {
+    withValid: fromFixture<typeof EinkommensverschlechterungInfo>('antrag/einkommensverschlechterung-info.json', 'valid'),
 };
 
 export const FixtureCreateTagesschule = {

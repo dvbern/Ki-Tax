@@ -490,6 +490,9 @@ public final class FreigabeCopyUtil {
 		gs.setAbzuegeKinderAusbildung(ja.getAbzuegeKinderAusbildung());
 		gs.setBruttoLohn(ja.getBruttoLohn());
 		gs.setMomentanSelbststaendig(ja.getMomentanSelbststaendig());
+		gs.setErsatzeinkommenSelbststaendigkeitBasisjahr(ja.getErsatzeinkommenSelbststaendigkeitBasisjahr());
+		gs.setErsatzeinkommenSelbststaendigkeitBasisjahrMinus1(ja.getErsatzeinkommenSelbststaendigkeitBasisjahrMinus1());
+		gs.setErsatzeinkommenSelbststaendigkeitBasisjahrMinus2(ja.getErsatzeinkommenSelbststaendigkeitBasisjahrMinus2());
 		copyFinSitZusatzangabenAppenzell(gs, ja);
 	}
 

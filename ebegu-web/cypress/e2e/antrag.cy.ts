@@ -16,18 +16,28 @@
  */
 
 import {
+    AntragCreationPO,
     AntragPapierPO,
     AntragFamSitPO,
     AntragKindPO,
     AntragBetreuungPO,
     AntragBeschaeftigungspensumPO,
+    FinanzielleSituationPO,
+    FinanzielleSituationStartPO,
+    FinanzielleSituationResultatePO,
+    NavigationPO,
+    SidenavPO, VerfuegenPO,
 } from '@dv-e2e/page-objects';
 import { FixtureFinSit } from '@dv-e2e/fixtures';
-import { getUser } from '@dv-e2e/types';
+import {GemeindeTestFall, getUser} from '@dv-e2e/types';
+import {GesuchstellendePO} from '../page-objects/antrag/gesuchstellende.po';
+import {VerfuegungPO} from '../page-objects/antrag/verfuegung.po';
+
+const gemeinde: GemeindeTestFall = 'London';
 
 const createNewKindWithAllSettings = () => {
     AntragKindPO.createNewKind();
-    AntragKindPO.fillKindForm('withValid');
+    AntragKindPO.fillKindForm('withValidBoy');
     AntragKindPO.fillPflegekind();
 
     cy.getByData('show-fachstelle').click();
@@ -40,13 +50,13 @@ const createNewKindWithAllSettings = () => {
     AntragKindPO.fillAusserordentlicherAnspruch();
 
     cy.waitForRequest('PUT', '**/kinder/**', () => {
-        cy.getByData('container.navigation-save', 'navigation-button').click();
+        NavigationPO.saveAndGoNext();
     });
 };
 
 const createNewBetreuungWithAllSettings = () => {
     AntragBetreuungPO.createNewBetreuung();
-    AntragBetreuungPO.fillKitaBetreuungsForm('withValid', 'London');
+    AntragBetreuungPO.fillKitaBetreuungsForm('withValid', gemeinde);
     AntragBetreuungPO.fillKeinePlatzierung();
     AntragBetreuungPO.fillErweiterteBeduerfnisse();
     AntragBetreuungPO.platzBestaetigungAnfordern();
@@ -66,33 +76,35 @@ describe('Kibon - generate Testfälle [Gemeinde Sachbearbeiter]', () => {
         // INIT
         {
             AntragPapierPO.createPapierGesuch('withValid');
-            cy.getByData('antrags-daten').then((el$) => el$.data('antrags-id')).as('antragsId');
+            AntragCreationPO.getAntragsDaten().then((el$) => el$.data('antrags-id')).as('antragsId');
         }
 
         // FAMILIENSITUATION
         {
             AntragFamSitPO.fillFamiliensituationForm('withValid');
-            cy.getByData('container.navigation-save', 'navigation-button').click();
+            NavigationPO.saveAndGoNext();
+            GesuchstellendePO.fillVerheiratet('withValid');
+            NavigationPO.saveAndGoNext();
         }
 
         // KINDER
         {
             createNewKindWithAllSettings();
-            cy.getByData('page-title').should('include.text', 'Kinder');
+            AntragKindPO.getPageTitle().should('include.text', 'Kinder');
 
-            cy.intercept('POST', '**/wizard-steps').as('goingToBetreuung');
-            cy.getByData('container.navigation-save', 'navigation-button').click();
-            cy.wait('@goingToBetreuung');
+            cy.waitForRequest('POST', '**/wizard-steps', () => {
+                NavigationPO.saveAndGoNext();
+            });
         }
 
         // BETREUUNG
         {
             createNewBetreuungWithAllSettings();
-            cy.getByData('page-title').should('include.text', 'Betreuung');
+            AntragBetreuungPO.getPageTitle().should('include.text', 'Betreuung');
 
-            cy.intercept('GET', '**/erwerbspensen/required/**').as('goingToBeschaeftigungspensum');
-            cy.getByData('container.navigation-save', 'navigation-button').click();
-            cy.wait('@goingToBeschaeftigungspensum');
+            cy.waitForRequest('GET', '**/erwerbspensen/required/**', () => {
+                NavigationPO.saveAndGoNext();
+            });
         }
 
         // BESCHAEFTIGUNGSPENSUM
@@ -100,97 +112,65 @@ describe('Kibon - generate Testfälle [Gemeinde Sachbearbeiter]', () => {
             AntragBeschaeftigungspensumPO.createBeschaeftigungspensum('GS1', 'withValid');
             AntragBeschaeftigungspensumPO.createBeschaeftigungspensum('GS2', 'withValid');
 
-            cy.getByData('container.navigation-save', 'navigation-button').click();
+            NavigationPO.saveAndGoNext();
         }
 
         // FINANZIELLE VERHAELTNISSE
         {
             // Config
             {
-                cy.getByData('sozialhilfeBezueger.radio-value.nein').click();
-                cy.getByData('iban').type('CH3908704016075473007');
-                cy.getByData('kontoinhaber').type('vorname-test1 nachname-test-1');
-
-                cy.intercept('POST', '**/finanzielleSituation/calculateTemp').as('goingToFinSitGS1');
-                cy.getByData('container.navigation-save', 'navigation-button').click();
-                cy.wait('@goingToFinSitGS1');
+                FinanzielleSituationStartPO.fillFinanzielleSituationStartForm('withValid');
+                FinanzielleSituationStartPO.saveForm();
             }
 
             // Finanzielle Situation - GS 1
             {
-                // TODO: update EinkommensverschlechterungPO and update it to also support Finanzielle Situation
-                FixtureFinSit.withValid(({ GS1 }) => {
-                    cy.getByData('nettolohn').find('input').type(GS1.nettolohn);
-                    cy.getByData('familienzulage').find('input').type(GS1.familienzulage);
-                    cy.getByData('ersatzeinkommen').find('input').type(GS1.ersatzeinkommen);
-                    cy.getByData('erhaltene-alimente').find('input').type(GS1.erhalteneAlimente);
-                    cy.getByData('brutto-ertraege-vermoegen').find('input').type(GS1.bruttoErtraegeVermoegen);
-                    cy.getByData('nettoertraege_erbengemeinschaften').find('input').type(GS1.nettoertraegeErbengemeinschaften);
-                    cy.getByData('einkommenInVereinfachtemVerfahrenAbgerechnet1.radio-value.nein').click();
-                    cy.getByData('geleistete-alimente').find('input').type(GS1.geleisteteAlimente);
-                    cy.getByData('abzug-schuldzinsen').find('input').type(GS1.abzugSchuldzinsen);
-                    cy.getByData('gewinnungskosten').find('input').type(GS1.gewinnungskosten);
-                });
 
-                cy.intercept('POST', '**/finanzielleSituation/calculateTemp').as('goingToFinSitGS2');
-                cy.getByData('container.navigation-save', 'navigation-button').click();
-                cy.wait('@goingToFinSitGS2');
+                // TODO: update EinkommensverschlechterungPO and update it to also support Finanzielle Situation
+                FinanzielleSituationPO.fillFinanzielleSituationForm('withValid', 'GS1');
+                FinanzielleSituationPO.saveFormAndGoNext();
             }
 
             // Finanzielle Situation - GS 2
             {
                 // TODO: update EinkommensverschlechterungPO and update it to also support Finanzielle Situation
-                FixtureFinSit.withValid(({ GS2 }) => {
-                    cy.getByData('nettolohn').find('input').type(GS2.nettolohn);
-                    cy.getByData('familienzulage').find('input').type(GS2.familienzulage);
-                    cy.getByData('ersatzeinkommen').find('input').type(GS2.ersatzeinkommen);
-                    cy.getByData('erhaltene-alimente').find('input').type(GS2.erhalteneAlimente);
-                    cy.getByData('brutto-ertraege-vermoegen').find('input').type(GS2.bruttoErtraegeVermoegen);
-                    cy.getByData('nettoertraege_erbengemeinschaften').find('input').type(GS2.nettoertraegeErbengemeinschaften);
-                    cy.getByData('einkommenInVereinfachtemVerfahrenAbgerechnet1.radio-value.nein').click();
-                    cy.getByData('geleistete-alimente').find('input').type(GS2.geleisteteAlimente);
-                    cy.getByData('abzug-schuldzinsen').find('input').type(GS2.abzugSchuldzinsen);
-                    cy.getByData('gewinnungskosten').find('input').type(GS2.gewinnungskosten);
-                });
-
-                cy.intercept('POST', '**/finanzielleSituation/calculateTemp').as('goingToResultate');
-                cy.getByData('container.navigation-save', 'navigation-button').click();
-                cy.wait('@goingToResultate');
+                FinanzielleSituationPO.fillFinanzielleSituationForm('withValid', 'GS2');
+                FinanzielleSituationPO.saveFormAndGoNext();
             }
 
             // Resultate
             {
                 // TODO: update EinkommensverschlechterungPO and update it to also support Finanzielle Situation
-                FixtureFinSit.withValid(({ Resultate }) => {
-                    cy.getByData('einkommenBeiderGesuchsteller')
+                FixtureFinSit.withValid(({Resultate}) => {
+                    FinanzielleSituationResultatePO.getEinkommenBeiderGesuchsteller()
                         .find('input')
                         .should('have.value', Resultate.einkommenBeiderGesuchsteller);
-                    cy.getByData('bruttovermoegen1').find('input').type(Resultate.bruttovermoegen1);
-                    cy.getByData('bruttovermoegen2').find('input').type(Resultate.bruttovermoegen2);
-                    cy.getByData('schulden1').find('input').type(Resultate.schulden1);
-                    cy.getByData('schulden2').find('input').type(Resultate.schulden2);
-                    cy.getByData('nettovermoegenFuenfProzent')
+                    FinanzielleSituationResultatePO.getBruttovermoegenGS1().find('input').type(Resultate.bruttovermoegen1);
+                    FinanzielleSituationResultatePO.getBruttovermoegenGS2().find('input').type(Resultate.bruttovermoegen2);
+                    FinanzielleSituationResultatePO.getSchuldenGS1().find('input').type(Resultate.schulden1);
+                    FinanzielleSituationResultatePO.getSchuldenGS2().find('input').type(Resultate.schulden2);
+                    FinanzielleSituationResultatePO.getNettovermoegenFuenfProzent()
                         .find('input')
                         .should('have.value', Resultate.nettovermoegenFuenfProzent);
-                    cy.getByData('anrechenbaresEinkommen').find('input').should('have.value', Resultate.anrechenbaresEinkommen);
-                    cy.getByData('abzuegeBeiderGesuchsteller')
+                    FinanzielleSituationResultatePO.getAnrechenbaresEinkommen()
                         .find('input')
+                        .should('have.value', Resultate.anrechenbaresEinkommen);
+                    FinanzielleSituationResultatePO.getAbzuegeBeiderGesuchstellenden().find('input')
                         .should('have.value', Resultate.abzuegeBeiderGesuchsteller);
-                    cy.getByData('massgebendesEinkVorAbzFamGr')
-                        .find('input')
+                    FinanzielleSituationResultatePO.getMassgebendesEinkommenVorAbzugFamGroesse().find('input')
                         .should('have.value', Resultate.massgebendesEinkVorAbzFamGr);
                 });
             }
 
             cy.waitForRequest('GET', '**/einkommensverschlechterung/minimalesMassgebendesEinkommen/**', () => {
-                cy.getByData('container.navigation-save', 'navigation-button').click();
+                NavigationPO.saveAndGoNext();
             });
         }
 
         // EINKOMMENSVERSCHLECHTERUNG
         {
             cy.waitForRequest('GET', '**/dokumente/**', () => {
-                cy.getByData('container.navigation-save', 'navigation-button').click();
+                NavigationPO.saveAndGoNext();
             });
         }
 
@@ -226,7 +206,7 @@ describe('Kibon - generate Testfälle [Gemeinde Sachbearbeiter]', () => {
             // });
 
             cy.waitForRequest('POST', '**/wizard-steps', () => {
-                cy.getByData('container.navigation-save', 'navigation-button').click();
+                NavigationPO.saveAndGoNext();
             });
         }
 
@@ -237,22 +217,12 @@ describe('Kibon - generate Testfälle [Gemeinde Sachbearbeiter]', () => {
 
             cy.get('@antragsId').then((antragsId) => cy.visit(`/#/gesuch/familiensituation/${antragsId}`));
             cy.waitForRequest('GET', '**/einstellung/key/FINANZIELLE_SITUATION_TYP/gemeinde/**', () => {
-                cy.getByData('sidenav.BETREUUNG').click();
+                SidenavPO.goTo('BETREUUNG');
             });
 
-            cy.getByData('container.betreuung#0').click();
-
-            cy.getByData('betreuungspensum-0').type('25');
-            cy.getByData('monatliche-betreuungskosten#0').type('1000');
-            cy.getByData('betreuung-datum-ab#0').find('input').type('01.01.2023');
-            cy.getByData('betreuung-datum-bis#0').find('input').type('31.12.2023');
-            cy.getByData('korrekte-kosten-bestaetigung').click();
-
-            cy.getByData('container.platz-bestaetigen', 'navigation-button').click();
-
-            cy.waitForRequest('GET', '**/search/pendenzenBetreuungen', () => {
-                cy.getByData('container.confirm', 'navigation-button').click();
-            });
+            AntragBetreuungPO.getBetreuung(0, 0).click();
+            AntragBetreuungPO.fillKitaBetreuungspensumForm('withValid', gemeinde);
+            AntragBetreuungPO.platzBestaetigen();
         }
         cy.changeLogin(userSB);
         // !!!!!! - changed back to previous user - !!!!!!
@@ -261,14 +231,14 @@ describe('Kibon - generate Testfälle [Gemeinde Sachbearbeiter]', () => {
         {
             cy.get('@antragsId').then((antragsId) => cy.visit(`/#/gesuch/verfuegen/${antragsId}`));
 
-            cy.getByData('verfuegung#0-0').click();
-            cy.getByData('container.zeitabschnitt#5', 'betreuungspensumProzent').should('include.text', '25%');
-            cy.getByData('container.zeitabschnitt#6', 'betreuungspensumProzent').should('include.text', '25%');
-            cy.getByData('container.zeitabschnitt#7', 'betreuungspensumProzent').should('include.text', '25%');
-            cy.getByData('container.zeitabschnitt#8', 'betreuungspensumProzent').should('include.text', '25%');
-            cy.getByData('container.zeitabschnitt#9', 'betreuungspensumProzent').should('include.text', '25%');
-            cy.getByData('container.zeitabschnitt#10', 'betreuungspensumProzent').should('include.text', '25%');
-            cy.getByData('container.zeitabschnitt#11', 'betreuungspensumProzent').should('include.text', '25%');
+            VerfuegenPO.getVerfuegung(0, 0).click();
+            VerfuegungPO.getBetreuungspensumProzent(5).should('include.text', '25%');
+            VerfuegungPO.getBetreuungspensumProzent(6).should('include.text', '25%');
+            VerfuegungPO.getBetreuungspensumProzent(7).should('include.text', '25%');
+            VerfuegungPO.getBetreuungspensumProzent(8).should('include.text', '25%');
+            VerfuegungPO.getBetreuungspensumProzent(9).should('include.text', '25%');
+            VerfuegungPO.getBetreuungspensumProzent(10).should('include.text', '25%');
+            VerfuegungPO.getBetreuungspensumProzent(11).should('include.text', '25%');
         }
     });
 });

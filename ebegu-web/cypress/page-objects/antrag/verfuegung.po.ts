@@ -15,17 +15,53 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+
+const getBetreuungspensumProzent = (zeitabschnittIndex: number) => {
+	return cy.getByData('container.zeitabschnitt#' + zeitabschnittIndex, 'betreuungspensumProzent');
+};
+
 const getVerfuegterTarif = (zeitabschnittIndex: number) => {
     return cy.getByData('tagesschul-anmeldung-tarife',
         `tagesschul-anmeldung-zeitabschnitt#${zeitabschnittIndex}`,
         'tagesschul-anmeldung-zeitabschnitt-tarif');
 };
 
+const getProvisorischerTarifTitel = () => {
+    return cy.getByData('verfuegung-tagesschule-provisorisch');
+};
+
 const getAllTarife = () => {
     return cy.getByData('tagesschul-anmeldung-tarife', 'tagesschul-anmeldung-zeitabschnitt-tarif');
 };
 
+const getVerguenstigungOhneBeruecksichtigungVollkosten = (zeitabschnittIndex: number) => {
+    return cy.getByData('container.zeitabschnitt#' + zeitabschnittIndex, 'verguenstigungOhneBeruecksichtigungVollkosten');
+};
+
+const getVerfuegungsBemerkungenKontrolliert = () => {
+	return cy.getByData('verfuegungs-bemerkungen-kontrolliert');
+};
+
+const getAnspruchberechtigtesBetreuungspensum = (zeitabschnittIndex: number) => {
+	return cy.getByData('container.zeitabschnitt#' + zeitabschnittIndex, 'anspruchberechtigtesPensum');
+};
+
+const getVerfuegenButton = () => {
+	return cy.getByData('container.verfuegen', 'navigation-button');
+};
+
+const getVerfuegenVerzichtenButton = () => {
+	return cy.getByData('container.verfuegen-verzichten', 'navigation-button');
+};
+
 export const VerfuegungPO = {
+    getBetreuungspensumProzent,
     getVerfuegterTarif,
+    getProvisorischerTarifTitel,
     getAllTarife,
+    getVerguenstigungOhneBeruecksichtigungVollkosten,
+    getVerfuegungsBemerkungenKontrolliert,
+    getVerfuegenButton,
+    getVerfuegenVerzichtenButton,
+    getAnspruchberechtigtesBetreuungspensum,
 };

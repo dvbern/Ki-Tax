@@ -15,25 +15,17 @@
 
 package ch.dvbern.ebegu.rules.anlageverzeichnis;
 
+import ch.dvbern.ebegu.entities.*;
+import ch.dvbern.ebegu.enums.DokumentGrundPersonType;
+import ch.dvbern.ebegu.enums.DokumentGrundTyp;
+import ch.dvbern.ebegu.enums.DokumentTyp;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Locale;
 import java.util.Set;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
-import ch.dvbern.ebegu.entities.AbstractFinanzielleSituation;
-import ch.dvbern.ebegu.entities.DokumentGrund;
-import ch.dvbern.ebegu.entities.Einkommensverschlechterung;
-import ch.dvbern.ebegu.entities.EinkommensverschlechterungContainer;
-import ch.dvbern.ebegu.entities.EinkommensverschlechterungInfo;
-import ch.dvbern.ebegu.entities.Familiensituation;
-import ch.dvbern.ebegu.entities.Gesuch;
-import ch.dvbern.ebegu.entities.GesuchstellerContainer;
-import ch.dvbern.ebegu.enums.DokumentGrundPersonType;
-import ch.dvbern.ebegu.enums.DokumentGrundTyp;
-import ch.dvbern.ebegu.enums.DokumentTyp;
 
 import static ch.dvbern.ebegu.enums.DokumentTyp.NACHWEIS_SCHULDEN;
 import static ch.dvbern.ebegu.enums.DokumentTyp.NACHWEIS_VERMOEGEN;
@@ -200,6 +192,11 @@ public class BernEinkommensverschlechterungDokumente extends AbstractFinanzielle
 		}
 
 		return super.isDokumentNeeded(dokumentTyp, abstractFinanzielleSituation);
+	}
+
+	@Override
+	protected boolean isNachweisErsatzeinkommenSelbststaendigkeitNeeded(AbstractFinanzielleSituation abstractFinanzielleSituation, int basisjahr) {
+		return false;
 	}
 
 	@Override

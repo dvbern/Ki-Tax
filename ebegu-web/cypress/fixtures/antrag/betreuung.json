@@ -3,21 +3,33 @@
         "London": {
             "kita": {
                 "betreuungsangebot": "Kita",
-                "institution": "Brünnen"
+                "institution": "Brünnen",
+                "betreuungspensen": [
+                    {
+                        "monatlichesBetreuungspensum": "25",
+                        "monatlicheBetreuungskosten": "1000",
+                        "von": "01.01.2023",
+                        "bis": "31.12.2023"
+                    }
+                ]
             },
             "tfo": {
                 "betreuungsangebot": "Tagesfamilien",
                 "institution": "Tageseltern Bern"
-            },
-            "tagesschule": {
-                "betreuungsangebot": "Tagesschule",
-                "institution": "Tagesschule London"
             }
         },
         "Paris": {
             "kita": {
                 "betreuungsangebot": "Kita",
-                "institution": "Brünnen"
+                "institution": "Brünnen",
+                "betreuungspensen": [
+                    {
+                        "monatlichesBetreuungspensum": "25",
+                        "monatlicheBetreuungskosten": "1000",
+                        "von": "01.01.2023",
+                        "bis": "31.12.2023"
+                    }
+                ]
             },
             "tfo": {
                 "betreuungsangebot": "Tagesfamilien",
