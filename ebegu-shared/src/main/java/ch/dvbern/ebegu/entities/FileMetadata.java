@@ -75,7 +75,7 @@ public abstract class FileMetadata extends AbstractMutableEntity {
 
 	public FileMetadata(UploadFileInfo uploadFileInfo) {
 		this.filename = uploadFileInfo.getFilename();
-		this.filepfad = uploadFileInfo.getPath();
+		this.filepfad = uploadFileInfo.getPathAsString();
 		this.filesize = uploadFileInfo.getSizeString();
 	}
 

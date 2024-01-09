@@ -4,9 +4,13 @@ import ch.dvbern.ebegu.config.EbeguConfiguration;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 
 import javax.annotation.Nonnull;
+import javax.ejb.Local;
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 import java.nio.file.Path;
 
+@Stateless
+@Local(UploadFilePathService.class)
 public class UploadFilePathServiceBean implements UploadFilePathService {
 
 	@Inject

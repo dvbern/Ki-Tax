@@ -1122,7 +1122,7 @@ public class TestfaelleServiceBean extends AbstractBaseService implements Testfa
 
 			SozialdienstFallDokument sozialdienstFallDokument = new SozialdienstFallDokument();
 			sozialdienstFallDokument.setSozialdienstFall(fall.getSozialdienstFall());
-			sozialdienstFallDokument.setFilepfad(fileInfo.getPath());
+			sozialdienstFallDokument.setFilepfad(fileInfo.getPathAsString());
 			sozialdienstFallDokument.setFilename(fileInfo.getFilename());
 			sozialdienstFallDokument.setFilesize(fileInfo.getSizeString());
 

@@ -122,7 +122,7 @@ public abstract class AbstractMailServiceBean extends AbstractBaseService {
 		try {
 			// Create the attachment
 			EmailAttachment attachment = new EmailAttachment();
-			final String pathOfAttachment = "File://" + uploadFileInfo.getPath();
+			final String pathOfAttachment = "File://" + uploadFileInfo.getPathAsString();
 			attachment.setURL(new URL(pathOfAttachment));
 			attachment.setDisposition(EmailAttachment.ATTACHMENT);
 			attachment.setDescription(uploadFileInfo.getFilename());

@@ -219,7 +219,7 @@ public class GeneratedDokumentServiceBean extends AbstractBaseService implements
 			fileName, entity.getId());
 
 		writeProtectedDokument.setFilename(savedDokument.getFilename());
-		writeProtectedDokument.setFilepfad(savedDokument.getPath());
+		writeProtectedDokument.setFilepfad(savedDokument.getPathAsString());
 		writeProtectedDokument.setFilesize(savedDokument.getSizeString());
 		writeProtectedDokument.setTyp(dokumentTyp);
 		writeProtectedDokument.setWriteProtected(writeProtected);
@@ -1058,7 +1058,7 @@ public class GeneratedDokumentServiceBean extends AbstractBaseService implements
 		GeneratedGeneralDokument writeProtectedDokument = new GeneratedGeneralDokument();
 		writeProtectedDokument.setIdentifier(auftragIdentifier);
 		writeProtectedDokument.setFilename(savedDokument.getFilename());
-		writeProtectedDokument.setFilepfad(savedDokument.getPath());
+		writeProtectedDokument.setFilepfad(savedDokument.getPathAsString());
 		writeProtectedDokument.setFilesize(savedDokument.getSizeString());
 		writeProtectedDokument.setTyp(GeneratedDokumentTyp.NOTRECHT_MASSENVERFUEGUNG);
 		writeProtectedDokument.setWriteProtected(true);

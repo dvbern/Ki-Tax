@@ -53,6 +53,18 @@ public class UploadFilePathServiceBeanTest {
 		assertThat(validatedFilePath.toString(), is(FILE_PATH_CONFIG + "\\test"));
 	}
 
+	@Test
+	public void validUriFilePath() {
+		Path validatedFilePath = filePathValidator.getValidatedFilePathWithDirectoryPrefix("\\test");
+		assertThat(validatedFilePath.toString(), is(FILE_PATH_CONFIG + "\\test"));
+	}
+
+	@Test
+	public void validFilePathWithEnding() {
+		Path validatedFilePath = filePathValidator.getValidatedFilePathWithDirectoryPrefix("test/file.txt");
+		assertThat(validatedFilePath.toString(), is(FILE_PATH_CONFIG + "\\test\\file.txt"));
+	}
+
 	@Test(expected = EbeguRuntimeException.class)
 	public void filePathWithDoubleDotPathStep() {
 		Path validatedFilePath = filePathValidator.getValidatedFilePathWithDirectoryPrefix("\\..\\test");

@@ -22,7 +22,7 @@ import ch.dvbern.ebegu.entities.FileMetadata;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.EbeguMailiciousContentException;
-import ch.dvbern.ebegu.errors.EbeguRuntimeException;
+import ch.dvbern.ebegu.services.UploadFilePathService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import xyz.capybara.clamav.ClamavClient;
@@ -38,6 +38,7 @@ import java.io.ByteArrayInputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Path;
 import java.util.Collection;
 import java.util.Map.Entry;
 
@@ -49,6 +50,9 @@ public class AVClient {
 
 	@Inject
 	private EbeguConfiguration ebeguConfiguration;
+
+	@Inject
+	private UploadFilePathService uploadFilePathService;
 
 	@Nullable
 	private ClamavClient client;
@@ -67,9 +71,7 @@ public class AVClient {
 			return;
 		}
 
-		if (!fileMetadata.getFilepfad().startsWith(ebeguConfiguration.getDocumentFilePath())) {
-			throw new EbeguRuntimeException("scan file", "illegal document path");
-		}
+		uploadFilePathService.getValidatedFilePath(Path.of(fileMetadata.getFilepfad()));
 
 		try (InputStream is = new FileInputStream(fileMetadata.getFilepfad())) {
 			ScanResult result = client.scan(is);
