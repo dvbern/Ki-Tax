@@ -85,8 +85,8 @@ describe('kiBon - Features auf der FinSit - Page', () => {
             cy.getByData('geschaeftsgewinn-basisjahr-minus-2').should('exist');
 
             cy.getByData('show-ersatzeinkommen-selbststaendigkeit').should('exist');
-            cy.getByData('show-ersatzeinkommen-selbststaendigkeit').should('not.have.class', 'md-checked');
-            cy.getByData('show-ersatzeinkommen-selbststaendigkeit').invoke('attr', 'aria-checked').should('contain', 'false');
+            cy.getByData('showErsatzeinkommenSelbststaendigkeit.radio-value.ja').should('not.have.class', 'md-checked');
+            cy.getByData('showErsatzeinkommenSelbststaendigkeit.radio-value.ja').invoke('attr', 'aria-checked').should('contain', 'false');
             cy.getByData('ersatzeinkommen-selbststaendigkeit-basisjahr').should('not.exist');
             cy.getByData('ersatzeinkommen-selbststaendigkeit-basisjahr-minus-1').should('not.exist');
             cy.getByData('ersatzeinkommen-selbststaendigkeit-basisjahr-minus-2').should('not.exist');
@@ -103,12 +103,12 @@ describe('kiBon - Features auf der FinSit - Page', () => {
             cy.getByData('geschaeftsgewinn-basisjahr-minus-2').should('exist');
 
             cy.getByData('show-ersatzeinkommen-selbststaendigkeit').should('exist');
-            cy.getByData('show-ersatzeinkommen-selbststaendigkeit').should('not.have.class', 'md-checked');
-            cy.getByData('show-ersatzeinkommen-selbststaendigkeit').invoke('attr', 'aria-checked').should('contain', 'false');
+            cy.getByData('showErsatzeinkommenSelbststaendigkeit.radio-value.ja').should('not.have.class', 'md-checked');
+            cy.getByData('showErsatzeinkommenSelbststaendigkeit.radio-value.ja').invoke('attr', 'aria-checked').should('contain', 'false');
 
-            cy.getByData('show-ersatzeinkommen-selbststaendigkeit').click();
-            cy.getByData('show-ersatzeinkommen-selbststaendigkeit').should('have.class', 'md-checked');
-            cy.getByData('show-ersatzeinkommen-selbststaendigkeit').invoke('attr', 'aria-checked').should('contain', 'true');
+            cy.getByData('showErsatzeinkommenSelbststaendigkeit.radio-value.ja').click();
+            cy.getByData('showErsatzeinkommenSelbststaendigkeit.radio-value.ja').should('have.class', 'md-checked');
+            cy.getByData('showErsatzeinkommenSelbststaendigkeit.radio-value.ja').invoke('attr', 'aria-checked').should('contain', 'true');
 
             cy.getByData('ersatzeinkommen-selbststaendigkeit-basisjahr').should('exist');
             cy.getByData('ersatzeinkommen-selbststaendigkeit-basisjahr-minus-1').should('exist');
@@ -117,7 +117,7 @@ describe('kiBon - Features auf der FinSit - Page', () => {
 
     it('should have ersatzeinkommen basisjahr disabled if ersatzeinkommen in finsit is 0', () => {
         cy.getByData('show-selbstaendig').click();
-        cy.getByData('show-ersatzeinkommen-selbststaendigkeit').click();
+        cy.getByData('showErsatzeinkommenSelbststaendigkeit.radio-value.ja').click();
         cy.getByData('ersatzeinkommen-selbststaendigkeit-basisjahr').should('exist');
         cy.getByData('ersatzeinkommen').should('exist');
         cy.getByData('ersatzeinkommen').find('input').clear().type('0');
@@ -127,7 +127,7 @@ describe('kiBon - Features auf der FinSit - Page', () => {
     it('should have ersatzeinkommen basisjahr disabled if ersatzeinkommen in finsit is not 0, but geschaeftsgewinn basisjahr is empty',
         () => {
             cy.getByData('show-selbstaendig').click();
-            cy.getByData('show-ersatzeinkommen-selbststaendigkeit').click();
+            cy.getByData('showErsatzeinkommenSelbststaendigkeit.radio-value.ja').click();
             cy.getByData('ersatzeinkommen-selbststaendigkeit-basisjahr').should('exist');
             cy.getByData('ersatzeinkommen').should('exist');
             cy.getByData('ersatzeinkommen').find('input').clear().type('1');
@@ -138,7 +138,7 @@ describe('kiBon - Features auf der FinSit - Page', () => {
     it('should have ersatzeinkommen basisjahr enabled if ersatzeinkommen in finsit is not 0 and geschaeftsgewinn is not empty',
         () => {
             cy.getByData('show-selbstaendig').click();
-            cy.getByData('show-ersatzeinkommen-selbststaendigkeit').click();
+            cy.getByData('showErsatzeinkommenSelbststaendigkeit.radio-value.ja').click();
             cy.getByData('ersatzeinkommen-selbststaendigkeit-basisjahr').should('exist');
             cy.getByData('ersatzeinkommen').find('input').clear().type('1');
             cy.getByData('geschaeftsgewinn-basisjahr').find('input').type('1');
@@ -147,7 +147,7 @@ describe('kiBon - Features auf der FinSit - Page', () => {
 
     it('should have ersatzeinkommen basisjahr minus 1 disabled if geschaeftsgewinn basisjahr minus 1 is empty', () => {
         cy.getByData('show-selbstaendig').click();
-        cy.getByData('show-ersatzeinkommen-selbststaendigkeit').click();
+        cy.getByData('showErsatzeinkommenSelbststaendigkeit.radio-value.ja').click();
         cy.getByData('ersatzeinkommen-selbststaendigkeit-basisjahr-minus-1').should('exist');
         cy.getByData('geschaeftsgewinn-basisjahr-minus-1').find('input').clear();
         cy.getByData('ersatzeinkommen-selbststaendigkeit-basisjahr-minus-1').find('input').should('be.disabled');
@@ -155,7 +155,7 @@ describe('kiBon - Features auf der FinSit - Page', () => {
 
     it('should have ersatzeinkommen basisjahr minus 1 enabled if geschaeftsgewinn basisjahr minus 1 is not empty', () => {
         cy.getByData('show-selbstaendig').click();
-        cy.getByData('show-ersatzeinkommen-selbststaendigkeit').click();
+        cy.getByData('showErsatzeinkommenSelbststaendigkeit.radio-value.ja').click();
         cy.getByData('ersatzeinkommen-selbststaendigkeit-basisjahr-minus-1').should('exist');
         cy.getByData('geschaeftsgewinn-basisjahr-minus-1').find('input').clear().type('1');
         cy.getByData('ersatzeinkommen-selbststaendigkeit-basisjahr-minus-1').find('input').should('not.be.disabled');
@@ -163,7 +163,7 @@ describe('kiBon - Features auf der FinSit - Page', () => {
 
     it('should have ersatzeinkommen basisjahr minus 2 disabled if geschaeftsgewinn minus 2 is empty', () => {
         cy.getByData('show-selbstaendig').click();
-        cy.getByData('show-ersatzeinkommen-selbststaendigkeit').click();
+        cy.getByData('showErsatzeinkommenSelbststaendigkeit.radio-value.ja').click();
         cy.getByData('ersatzeinkommen-selbststaendigkeit-basisjahr-minus-2').should('exist');
         cy.getByData('geschaeftsgewinn-basisjahr-minus-2').find('input').clear();
         cy.getByData('ersatzeinkommen-selbststaendigkeit-basisjahr-minus-2').find('input').should('be.disabled');
@@ -171,7 +171,7 @@ describe('kiBon - Features auf der FinSit - Page', () => {
 
     it('should have ersatzeinkommen basisjahr minus 2 enabled if geschaeftsgewinn minus 2 is not empty', () => {
         cy.getByData('show-selbstaendig').click();
-        cy.getByData('show-ersatzeinkommen-selbststaendigkeit').click();
+        cy.getByData('showErsatzeinkommenSelbststaendigkeit.radio-value.ja').click();
         cy.getByData('ersatzeinkommen-selbststaendigkeit-basisjahr-minus-2').should('exist');
         cy.getByData('geschaeftsgewinn-basisjahr-minus-2').find('input').clear().type('1');
         cy.getByData('ersatzeinkommen-selbststaendigkeit-basisjahr-minus-2').find('input').should('not.be.disabled');
@@ -179,7 +179,7 @@ describe('kiBon - Features auf der FinSit - Page', () => {
 
     it('should display error if ersatzeinkommen is selected but all three years are 0', () => {
         cy.getByData('show-selbstaendig').click();
-        cy.getByData('show-ersatzeinkommen-selbststaendigkeit').click();
+        cy.getByData('showErsatzeinkommenSelbststaendigkeit.radio-value.ja').click();
         cy.getByData('geschaeftsgewinn-basisjahr').find('input').clear().type('1');
         cy.getByData('geschaeftsgewinn-basisjahr-minus-1').find('input').clear().type('2');
         cy.getByData('geschaeftsgewinn-basisjahr-minus-2').find('input').clear().type('3');
@@ -192,7 +192,7 @@ describe('kiBon - Features auf der FinSit - Page', () => {
 
     it('should not display error if ersatzeinkommen is selected and one of the three years is not 0', () => {
         cy.getByData('show-selbstaendig').click();
-        cy.getByData('show-ersatzeinkommen-selbststaendigkeit').click();
+        cy.getByData('showErsatzeinkommenSelbststaendigkeit.radio-value.ja').click();
         cy.getByData('geschaeftsgewinn-basisjahr').find('input').clear().type('1');
         cy.getByData('geschaeftsgewinn-basisjahr-minus-1').find('input').clear().type('2');
         cy.getByData('geschaeftsgewinn-basisjahr-minus-2').find('input').clear().type('3');
@@ -205,7 +205,7 @@ describe('kiBon - Features auf der FinSit - Page', () => {
 
     it('should display error if ersatzeinkommen basisjahr is larger than ersatzeinkommen in finsit', () => {
         cy.getByData('show-selbstaendig').click();
-        cy.getByData('show-ersatzeinkommen-selbststaendigkeit').click();
+        cy.getByData('showErsatzeinkommenSelbststaendigkeit.radio-value.ja').click();
         cy.getByData('geschaeftsgewinn-basisjahr').find('input').clear().type('1');
         cy.getByData('ersatzeinkommen').find('input').clear().type('1');
         cy.getByData('ersatzeinkommen-selbststaendigkeit-basisjahr').find('input').clear().type('2');
@@ -214,7 +214,7 @@ describe('kiBon - Features auf der FinSit - Page', () => {
 
     it('should not display error if ersatzeinkommen basisjahr is equal than ersatzeinkommen in finsit', () => {
         cy.getByData('show-selbstaendig').click();
-        cy.getByData('show-ersatzeinkommen-selbststaendigkeit').click();
+        cy.getByData('showErsatzeinkommenSelbststaendigkeit.radio-value.ja').click();
         cy.getByData('geschaeftsgewinn-basisjahr').find('input').clear().type('1');
         cy.getByData('ersatzeinkommen').find('input').clear().type('1');
         cy.getByData('ersatzeinkommen-selbststaendigkeit-basisjahr').find('input').clear().type('1');
@@ -223,7 +223,7 @@ describe('kiBon - Features auf der FinSit - Page', () => {
 
     it('should not display error if ersatzeinkommen basisjahr is smaller than ersatzeinkommen in finsit', () => {
         cy.getByData('show-selbstaendig').click();
-        cy.getByData('show-ersatzeinkommen-selbststaendigkeit').click();
+        cy.getByData('showErsatzeinkommenSelbststaendigkeit.radio-value.ja').click();
         cy.getByData('geschaeftsgewinn-basisjahr').find('input').clear().type('1');
         cy.getByData('ersatzeinkommen').find('input').clear().type('1');
         cy.getByData('ersatzeinkommen-selbststaendigkeit-basisjahr').find('input').clear().type('0');
