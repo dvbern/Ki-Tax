@@ -26,7 +26,7 @@ public class UploadFilePathServiceBeanTest {
 	@Mock
 	private EbeguConfiguration ebeguConfiguration;
 
-	private static final String FILE_PATH_CONFIG = "\\kibon\\data";
+	private static final String FILE_PATH_CONFIG = "/kibon/data";
 
 	@Before
 	public void init() {
@@ -38,7 +38,7 @@ public class UploadFilePathServiceBeanTest {
 	public void ebeguFilePath() {
 		Path filePath = Path.of(FILE_PATH_CONFIG, "test");
 		Path validatedFilePath = filePathValidator.getValidatedFilePath(filePath);
-		assertThat(validatedFilePath.toString(), is(FILE_PATH_CONFIG + "\\test"));
+		assertThat(validatedFilePath, is(filePath));
 	}
 
 	@Test(expected = EbeguRuntimeException.class)
@@ -50,24 +50,24 @@ public class UploadFilePathServiceBeanTest {
 	@Test
 	public void validFilePath() {
 		Path validatedFilePath = filePathValidator.getValidatedFilePathWithDirectoryPrefix("test");
-		assertThat(validatedFilePath.toString(), is(FILE_PATH_CONFIG + "\\test"));
+		assertThat(validatedFilePath, is(Path.of(FILE_PATH_CONFIG, "test")));
 	}
 
 	@Test
 	public void validUriFilePath() {
-		Path validatedFilePath = filePathValidator.getValidatedFilePathWithDirectoryPrefix("\\test");
-		assertThat(validatedFilePath.toString(), is(FILE_PATH_CONFIG + "\\test"));
+		Path validatedFilePath = filePathValidator.getValidatedFilePathWithDirectoryPrefix("/test");
+		assertThat(validatedFilePath, is(Path.of(FILE_PATH_CONFIG ,"test")));
 	}
 
 	@Test
 	public void validFilePathWithEnding() {
 		Path validatedFilePath = filePathValidator.getValidatedFilePathWithDirectoryPrefix("test/file.txt");
-		assertThat(validatedFilePath.toString(), is(FILE_PATH_CONFIG + "\\test\\file.txt"));
+		assertThat(validatedFilePath, is(Path.of(FILE_PATH_CONFIG, "/test/file.txt")));
 	}
 
 	@Test(expected = EbeguRuntimeException.class)
 	public void filePathWithDoubleDotPathStep() {
-		Path validatedFilePath = filePathValidator.getValidatedFilePathWithDirectoryPrefix("\\..\\test");
+		Path validatedFilePath = filePathValidator.getValidatedFilePathWithDirectoryPrefix("/../test");
 	}
 
 }
