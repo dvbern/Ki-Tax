@@ -15,32 +15,9 @@
 
 package ch.dvbern.ebegu.rules;
 
-import java.math.BigDecimal;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
 import ch.dvbern.ebegu.dto.VerfuegungsBemerkungDTO;
 import ch.dvbern.ebegu.dto.VerfuegungsBemerkungDTOList;
-import ch.dvbern.ebegu.entities.AbstractPlatz;
-import ch.dvbern.ebegu.entities.AnmeldungTagesschule;
-import ch.dvbern.ebegu.entities.Betreuung;
-import ch.dvbern.ebegu.entities.Einkommensverschlechterung;
-import ch.dvbern.ebegu.entities.EinkommensverschlechterungContainer;
-import ch.dvbern.ebegu.entities.EinkommensverschlechterungInfo;
-import ch.dvbern.ebegu.entities.EinkommensverschlechterungInfoContainer;
-import ch.dvbern.ebegu.entities.Einstellung;
-import ch.dvbern.ebegu.entities.ErweiterteBetreuung;
-import ch.dvbern.ebegu.entities.ErweiterteBetreuungContainer;
-import ch.dvbern.ebegu.entities.Fachstelle;
-import ch.dvbern.ebegu.entities.FinanzielleSituation;
-import ch.dvbern.ebegu.entities.FinanzielleSituationContainer;
-import ch.dvbern.ebegu.entities.Gesuch;
-import ch.dvbern.ebegu.entities.Mandant;
-import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
+import ch.dvbern.ebegu.entities.*;
 import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.enums.FinSitStatus;
 import ch.dvbern.ebegu.enums.MsgKey;
@@ -51,14 +28,18 @@ import ch.dvbern.ebegu.util.mandant.MandantIdentifier;
 import org.junit.Before;
 import org.junit.Test;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.math.BigDecimal;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+
 import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.KITA;
 import static ch.dvbern.ebegu.enums.EinstellungKey.FKJV_PAUSCHALE_BEI_ANSPRUCH;
 import static ch.dvbern.ebegu.util.Constants.EinstellungenDefaultWerteAsiv.EINSTELLUNG_MAX_EINKOMMEN;
 import static ch.dvbern.ebegu.util.Constants.EinstellungenDefaultWerteAsiv.MAX_EINKOMMEN;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 /**
  * Testet die MaximalesEinkommen-Regel
@@ -349,6 +330,34 @@ public class EinkommenCalcRuleTest {
 		assertTrue(abschnitt.getBemerkungenDTOList().containsMsgKey(MsgKey.EINKOMMEN_FINSIT_ABGELEHNT_ERSTGESUCH_MSG));
 		assertTrue(abschnitt.getBemerkungenDTOList().containsMsgKey(MsgKey.ERWEITERTE_BEDUERFNISSE_MSG));
 		assertTrue(abschnitt.getBemerkungenDTOList().containsMsgKey(MsgKey.VERFUEGUNG_MIT_ANSPRUCH));
+	}
+
+	@Test
+	public void finSitAbgelehentForSozialhilfeEmpfaenger() {
+		List<VerfuegungZeitabschnitt> result = EbeguRuleTestsHelper.calculate(prepareBetreuungKita(
+			EINKOMMEN, true, false, false, FinSitStatus.ABGELEHNT));
+
+		assertNotNull(result);
+		assertEquals(1, result.size());
+		assertEquals(MAX_EINKOMMEN, result.get(0).getMassgebendesEinkommen());
+		assertEquals(BigDecimal.ZERO.stripTrailingZeros(), result.get(0).getAbzugFamGroesse().stripTrailingZeros());
+		assertTrue(result.get(0).getRelevantBgCalculationInput().isKeinAnspruchAufgrundEinkommen());
+		assertTrue(result.get(0).getRelevantBgCalculationInput().isKategorieMaxEinkommen());
+		assertTrue(result.get(0).getBemerkungenDTOList().containsMsgKey(MsgKey.EINKOMMEN_FINSIT_ABGELEHNT_ERSTGESUCH_MSG));
+		assertFalse(result.get(0).getBemerkungenDTOList().containsMsgKey(MsgKey.EINKOMMEN_SOZIALHILFEEMPFAENGER_MSG_FKJV));
+		assertFalse(result.get(0).getBemerkungenDTOList().containsMsgKey(MsgKey.EINKOMMEN_SOZIALHILFEEMPFAENGER_MSG));
+	}
+
+	@Test
+	public void finSitAkzeptiertForSozialhilfeEmpfaenger() {
+		List<VerfuegungZeitabschnitt> result = EbeguRuleTestsHelper.calculate(prepareBetreuungKita(
+			EINKOMMEN, true, false, false, FinSitStatus.AKZEPTIERT));
+
+		assertNotNull(result);
+		assertEquals(1, result.size());
+		assertEquals(BigDecimal.ZERO.stripTrailingZeros(), result.get(0).getMassgebendesEinkommen().stripTrailingZeros());
+		assertFalse(result.get(0).getBemerkungenDTOList().containsMsgKey(MsgKey.EINKOMMEN_FINSIT_ABGELEHNT_ERSTGESUCH_MSG));
+		assertTrue(result.get(0).getBemerkungenDTOList().containsMsgKey(MsgKey.EINKOMMEN_SOZIALHILFEEMPFAENGER_MSG));
 	}
 
 	private Betreuung prepareBetreuungKita(

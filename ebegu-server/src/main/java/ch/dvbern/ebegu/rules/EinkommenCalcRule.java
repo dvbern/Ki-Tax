@@ -85,20 +85,19 @@ public class EinkommenCalcRule extends AbstractCalcRule {
 		boolean sozialhilfeEmpfaenger = familiensituation != null && Boolean.TRUE.equals(familiensituation.getSozialhilfeBezueger());
 		int basisjahr = platz.extractGesuchsperiode().getBasisJahr();
 
-		if (sozialhilfeEmpfaenger) {
-			inputData.setMassgebendesEinkommenVorAbzugFamgr(BigDecimal.ZERO);
-			inputData.setAbzugFamGroesse(BigDecimal.ZERO);
-			inputData.setEinkommensjahr(basisjahr);
-			inputData.addBemerkung(MsgKey.EINKOMMEN_SOZIALHILFEEMPFAENGER_MSG, getLocale());
-			return;
-		}
-
-		boolean keineFinSitErfasst = familiensituation != null && Boolean.FALSE.equals(familiensituation.getVerguenstigungGewuenscht());
-		inputData.setVerguenstigungGewuenscht(!keineFinSitErfasst);
 		// FinSit abgelehnt muss nur bei Erstgesuch beachtet werden. In einer Mutation wird es im Mutationsmerger abgehandelt
 		boolean finSitAbgelehnt = FinSitStatus.ABGELEHNT == platz.extractGesuch().getFinSitStatus()
 			&& platz.extractGesuch().getTyp().isGesuch();
+
+		boolean keineFinSitErfasst = familiensituation != null && Boolean.FALSE.equals(familiensituation.getVerguenstigungGewuenscht());
+		inputData.setVerguenstigungGewuenscht(!keineFinSitErfasst);
+
 		boolean hasErweiterteBetreuung = hasErweiterteBetreuung(platz);
+
+		if (sozialhilfeEmpfaenger) {
+			handleSozialhilfeEmpfaenger(platz, inputData, basisjahr, finSitAbgelehnt, keineFinSitErfasst, hasErweiterteBetreuung);
+			return;
+		}
 
 		// Die Finanzdaten berechnen
 		FinanzDatenDTO finanzDatenDTO;
@@ -122,41 +121,53 @@ public class EinkommenCalcRule extends AbstractCalcRule {
 				getLocale());
 		}
 
-		// Keine FinSit erfasst oder FinSit abgelehnt, aber auch nicht Sozialhilfeempfaenger -> Bezahlt Vollkosten
+		// Keine FinSit erfasst oder FinSit abgelehnt -> Bezahlt Vollkosten
 		if (keineFinSitErfasst || finSitAbgelehnt) {
 			// Wenn die FinSit nicht ausgefuellt oder nicht akzeptiert wurde, setzen wir das MaxEinkommen
 			// Es wird auch automatisch das Basisjahr gesetzt, da in einem solchen Fall keine EKV akzeptiert wird.
-			inputData.setMassgebendesEinkommenVorAbzugFamgr(maximalesEinkommen);
-			inputData.setAbzugFamGroesse(BigDecimal.ZERO);
-			inputData.setEinkommensjahr(basisjahr);
+			setMaximalesEinkommen(inputData, basisjahr);
 		}
 
 		// Erst jetzt kann das Maximale Einkommen geprueft werden!
-		if (keineFinSitErfasst || finSitAbgelehnt || inputData.getMassgebendesEinkommen().compareTo(maximalesEinkommen) >= 0) {
+		if (inputData.getMassgebendesEinkommen().compareTo(maximalesEinkommen) >= 0) {
 			//maximales einkommen wurde ueberschritten
-			inputData.setKategorieMaxEinkommen(true);
-			inputData.setKeinAnspruchAufgrundEinkommen(true);
-			if (!hasErweiterteBetreuung || pauschalBeiAnspruch) {
-				// Darf nur gesetzt werden, wenn KEINE erweiterten Beduerfnisse, da sonst der Zuschlag nicht ausbezahlt wird!
-				inputData.setBezahltVollkostenKomplett();
-				if (platz.getBetreuungsangebotTyp().isJugendamt()) {
-					// Falls MaxEinkommen, aber kein Zuschlag fuer erweiterte Betreuung -> Anspruch wird auf 0 gesetzt
-					// Wenn das Kind erweiterte Beduerfnisse hat, bleibt der Anspruch bestehen
-					// Bei Tagesschule muss der Anspruch immer 100 bleiben, siehe BetreuungsangebotTypCalcRule
-					inputData.setAnspruchZeroAndSaveRestanspruch();
-				}
-				if (hasErweiterteBetreuung) {
-					inputData.addBemerkung(MsgKey.KEINE_ERWEITERTE_BEDUERFNISSE_MSG, getLocale());
-				}
+			handleMaximalesEinkommenUeberschritten(platz, inputData, finSitAbgelehnt, keineFinSitErfasst, hasErweiterteBetreuung);
+		}
+	}
+
+	private void setMaximalesEinkommen(@Nonnull BGCalculationInput inputData, int basisjahr) {
+		inputData.setMassgebendesEinkommenVorAbzugFamgr(maximalesEinkommen);
+		inputData.setAbzugFamGroesse(BigDecimal.ZERO);
+		inputData.setEinkommensjahr(basisjahr);
+	}
+
+	private void handleMaximalesEinkommenUeberschritten(@Nonnull AbstractPlatz platz,
+														@Nonnull BGCalculationInput inputData,
+														boolean finSitAbgelehnt,
+														boolean keineFinSitErfasst,
+														boolean hasErweiterteBetreuung) {
+		inputData.setKategorieMaxEinkommen(true);
+		inputData.setKeinAnspruchAufgrundEinkommen(true);
+		if (!hasErweiterteBetreuung || pauschalBeiAnspruch) {
+			// Darf nur gesetzt werden, wenn KEINE erweiterten Beduerfnisse, da sonst der Zuschlag nicht ausbezahlt wird!
+			inputData.setBezahltVollkostenKomplett();
+			if (platz.getBetreuungsangebotTyp().isJugendamt()) {
+				// Falls MaxEinkommen, aber kein Zuschlag fuer erweiterte Betreuung -> Anspruch wird auf 0 gesetzt
+				// Wenn das Kind erweiterte Beduerfnisse hat, bleibt der Anspruch bestehen
+				// Bei Tagesschule muss der Anspruch immer 100 bleiben, siehe BetreuungsangebotTypCalcRule
+				inputData.setAnspruchZeroAndSaveRestanspruch();
 			}
-			// Bemerkungen setzen, je nach Grund des Max-Einkommens
-			if (keineFinSitErfasst) {
-				inputData.addBemerkung(MsgKey.EINKOMMEN_KEINE_VERGUENSTIGUNG_GEWUENSCHT_MSG, getLocale());
-			} else if (finSitAbgelehnt) {
-				inputData.addBemerkung(MsgKey.EINKOMMEN_FINSIT_ABGELEHNT_ERSTGESUCH_MSG, getLocale());
-			} else {
-				inputData.addBemerkung(MsgKey.EINKOMMEN_MAX_MSG, getLocale(), NumberFormat.getInstance().format(maximalesEinkommen));
+			if (hasErweiterteBetreuung) {
+				inputData.addBemerkung(MsgKey.KEINE_ERWEITERTE_BEDUERFNISSE_MSG, getLocale());
 			}
+		}
+		// Bemerkungen setzen, je nach Grund des Max-Einkommens
+		if (keineFinSitErfasst) {
+			inputData.addBemerkung(MsgKey.EINKOMMEN_KEINE_VERGUENSTIGUNG_GEWUENSCHT_MSG, getLocale());
+		} else if (finSitAbgelehnt) {
+			inputData.addBemerkung(MsgKey.EINKOMMEN_FINSIT_ABGELEHNT_ERSTGESUCH_MSG, getLocale());
+		} else {
+			inputData.addBemerkung(MsgKey.EINKOMMEN_MAX_MSG, getLocale(), NumberFormat.getInstance().format(maximalesEinkommen));
 		}
 	}
 
@@ -170,6 +181,23 @@ public class EinkommenCalcRule extends AbstractCalcRule {
 			return Boolean.TRUE.equals(betreuung.hasErweiterteBetreuung());
 		}
 		return false;
+	}
+
+	private void handleSozialhilfeEmpfaenger(@Nonnull AbstractPlatz platz,
+											 @Nonnull BGCalculationInput inputData,
+											 int basisjahr,
+											 boolean finSitAbgelehnt,
+											 boolean keineFinSitErfasst,
+											 boolean hasErweiterteBetreuung) {
+		if (!finSitAbgelehnt)  {
+			inputData.setMassgebendesEinkommenVorAbzugFamgr(BigDecimal.ZERO);
+			inputData.setAbzugFamGroesse(BigDecimal.ZERO);
+			inputData.setEinkommensjahr(basisjahr);
+			inputData.addBemerkung(MsgKey.EINKOMMEN_SOZIALHILFEEMPFAENGER_MSG, getLocale());
+		} else {
+			setMaximalesEinkommen(inputData, basisjahr);
+			handleMaximalesEinkommenUeberschritten(platz, inputData, finSitAbgelehnt, keineFinSitErfasst, hasErweiterteBetreuung);
+		}
 	}
 
 	@SuppressWarnings("PMD.CollapsibleIfStatements")
