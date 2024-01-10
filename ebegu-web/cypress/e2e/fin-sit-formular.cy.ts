@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {TestFaellePO} from '@dv-e2e/page-objects';
+import {FinanzielleSituationPO, NavigationPO, TestFaellePO} from '@dv-e2e/page-objects';
 import {getUser} from '@dv-e2e/types';
 import {SidenavPO} from '../page-objects/antrag/sidenav.po';
 
@@ -50,183 +50,195 @@ describe('kiBon - Features auf der FinSit - Page', () => {
             SidenavPO.goTo('FINANZIELLE_SITUATION');
         });
         cy.waitForRequest('POST', '**/calculateTemp', () => {
-            cy.getByData('container.navigation-save', 'navigation-button').click();
+            NavigationPO.saveAndGoNext();
         });
     });
 
     it('should not display geschaeftsgewinn and ersatzeinkommen selbststaendigkeit fields, if Selbstständigkeit is not selected',
         () => {
-            cy.getByData('show-selbstaendig').should('exist');
-            cy.getByData('show-selbstaendig').should('not.have.class', 'md-checked');
-            cy.getByData('show-selbstaendig').invoke('attr', 'aria-checked').should('contain', 'false');
 
-            cy.getByData('geschaeftsgewinn-basisjahr').should('not.exist');
-            cy.getByData('geschaeftsgewinn-basisjahr-minus-1').should('not.exist');
-            cy.getByData('geschaeftsgewinn-basisjahr-minus-2').should('not.exist');
+            FinanzielleSituationPO.getShowSelbstaendig().should('exist');
+            FinanzielleSituationPO.getShowSelbstaendig().should('not.have.class', 'md-checked');
+            FinanzielleSituationPO.getShowSelbstaendig().invoke('attr', 'aria-checked').should('contain', 'false');
 
-            cy.getByData('show-ersatzeinkommen-selbststaendigkeit').should('not.exist');
-            cy.getByData('ersatzeinkommen-selbststaendigkeit-basisjahr').should('not.exist');
-            cy.getByData('ersatzeinkommen-selbststaendigkeit-basisjahr-minus-1').should('not.exist');
-            cy.getByData('ersatzeinkommen-selbststaendigkeit-basisjahr-minus-2').should('not.exist');
+            FinanzielleSituationPO.getGeschaeftsgewinnBasisjahr().should('not.exist');
+            FinanzielleSituationPO.getGeschaeftsgewinnBasisjahrMinus1().should('not.exist');
+            FinanzielleSituationPO.getGeschaeftsgewinnBasisjahrMinus2().should('not.exist');
+
+            FinanzielleSituationPO.getShowErsatzeinkommenSelbststaendigkeit().should('not.exist');
+
+            FinanzielleSituationPO.getErsatzeinkommenSelbststaendigkeitBasisjahr().should('not.exist');
+            FinanzielleSituationPO.getErsatzeinkommenSelbststaendigkeitBasisjahrMinus1().should('not.exist');
+            FinanzielleSituationPO.getErsatzeinkommenSelbststaendigkeitBasisjahrMinus2().should('not.exist');
         });
 
     it('should display geschaeftsgewinn but not ersatzeinkommen selbststaendigkeit fields, if Selbstständigkeit is selected but ersatzeinkommen is not selected',
         () => {
-            cy.getByData('show-selbstaendig').should('exist');
-            cy.getByData('show-selbstaendig').should('not.have.class', 'md-checked');
-            cy.getByData('show-selbstaendig').invoke('attr', 'aria-checked').should('contain', 'false');
+            FinanzielleSituationPO.getShowSelbstaendig().should('exist');
+            FinanzielleSituationPO.getShowSelbstaendig().should('not.have.class', 'md-checked');
+            FinanzielleSituationPO.getShowSelbstaendig().invoke('attr', 'aria-checked').should('contain', 'false');
 
-            cy.getByData('show-selbstaendig').click();
-            cy.getByData('show-selbstaendig').should('have.class', 'md-checked');
-            cy.getByData('show-selbstaendig').invoke('attr', 'aria-checked').should('contain', 'true');
+            FinanzielleSituationPO.getShowSelbstaendig().click();
+            FinanzielleSituationPO.getShowSelbstaendig().should('have.class', 'md-checked');
+            FinanzielleSituationPO.getShowSelbstaendig().invoke('attr', 'aria-checked').should('contain', 'true');
 
-            cy.getByData('geschaeftsgewinn-basisjahr').should('exist');
-            cy.getByData('geschaeftsgewinn-basisjahr-minus-1').should('exist');
-            cy.getByData('geschaeftsgewinn-basisjahr-minus-2').should('exist');
+            FinanzielleSituationPO.getGeschaeftsgewinnBasisjahr().should('exist');
+            FinanzielleSituationPO.getGeschaeftsgewinnBasisjahrMinus1().should('exist');
+            FinanzielleSituationPO.getGeschaeftsgewinnBasisjahrMinus2().should('exist');
 
-            cy.getByData('show-ersatzeinkommen-selbststaendigkeit').should('exist');
-            cy.getByData('showErsatzeinkommenSelbststaendigkeit.radio-value.ja').should('not.have.class', 'md-checked');
-            cy.getByData('showErsatzeinkommenSelbststaendigkeit.radio-value.ja').invoke('attr', 'aria-checked').should('contain', 'false');
-            cy.getByData('ersatzeinkommen-selbststaendigkeit-basisjahr').should('not.exist');
-            cy.getByData('ersatzeinkommen-selbststaendigkeit-basisjahr-minus-1').should('not.exist');
-            cy.getByData('ersatzeinkommen-selbststaendigkeit-basisjahr-minus-2').should('not.exist');
+            FinanzielleSituationPO.getShowErsatzeinkommenSelbststaendigkeit().should('exist');
+
+            FinanzielleSituationPO.getShowErsatzeinkommenSelbststaendigkeitRadioButton('ja')
+                .should('not.have.class', 'md-checked');
+            FinanzielleSituationPO.getShowErsatzeinkommenSelbststaendigkeitRadioButton('ja')
+                .invoke('attr', 'aria-checked')
+                .should('contain', 'false');
+            FinanzielleSituationPO.getErsatzeinkommenSelbststaendigkeitBasisjahr().should('not.exist');
+            FinanzielleSituationPO.getErsatzeinkommenSelbststaendigkeitBasisjahrMinus1().should('not.exist');
+            FinanzielleSituationPO.getErsatzeinkommenSelbststaendigkeitBasisjahrMinus2().should('not.exist');
         });
 
     it('should display geschaeftsgewinn and ersatzeinkommen selbststaendigkeit fields, if Selbstständigkeit and ersatzeinkommen is selected',
         () => {
-            cy.getByData('show-selbstaendig').click();
-            cy.getByData('show-selbstaendig').should('have.class', 'md-checked');
-            cy.getByData('show-selbstaendig').invoke('attr', 'aria-checked').should('contain', 'true');
+            FinanzielleSituationPO.getShowSelbstaendig().click();
+            FinanzielleSituationPO.getShowSelbstaendig().should('have.class', 'md-checked');
+            FinanzielleSituationPO.getShowSelbstaendig().invoke('attr', 'aria-checked').should('contain', 'true');
 
-            cy.getByData('geschaeftsgewinn-basisjahr').should('exist');
-            cy.getByData('geschaeftsgewinn-basisjahr-minus-1').should('exist');
-            cy.getByData('geschaeftsgewinn-basisjahr-minus-2').should('exist');
+            FinanzielleSituationPO.getGeschaeftsgewinnBasisjahr().should('exist');
+            FinanzielleSituationPO.getGeschaeftsgewinnBasisjahrMinus1().should('exist');
+            FinanzielleSituationPO.getGeschaeftsgewinnBasisjahrMinus2().should('exist');
 
-            cy.getByData('show-ersatzeinkommen-selbststaendigkeit').should('exist');
-            cy.getByData('showErsatzeinkommenSelbststaendigkeit.radio-value.ja').should('not.have.class', 'md-checked');
-            cy.getByData('showErsatzeinkommenSelbststaendigkeit.radio-value.ja').invoke('attr', 'aria-checked').should('contain', 'false');
+            FinanzielleSituationPO.getShowErsatzeinkommenSelbststaendigkeit().should('exist');
+            FinanzielleSituationPO.getShowErsatzeinkommenSelbststaendigkeitRadioButton('ja')
+                .should('not.have.class', 'md-checked');
+            FinanzielleSituationPO.getShowErsatzeinkommenSelbststaendigkeitRadioButton('ja')
+                .invoke('attr', 'aria-checked')
+                .should('contain', 'false');
 
-            cy.getByData('showErsatzeinkommenSelbststaendigkeit.radio-value.ja').click();
-            cy.getByData('showErsatzeinkommenSelbststaendigkeit.radio-value.ja').should('have.class', 'md-checked');
-            cy.getByData('showErsatzeinkommenSelbststaendigkeit.radio-value.ja').invoke('attr', 'aria-checked').should('contain', 'true');
+            FinanzielleSituationPO.getShowErsatzeinkommenSelbststaendigkeitRadioButton('ja').click();
+            FinanzielleSituationPO.getShowErsatzeinkommenSelbststaendigkeitRadioButton('ja').should('have.class', 'md-checked');
+            FinanzielleSituationPO.getShowErsatzeinkommenSelbststaendigkeitRadioButton('ja')
+                .invoke('attr', 'aria-checked')
+                .should('contain', 'true');
 
-            cy.getByData('ersatzeinkommen-selbststaendigkeit-basisjahr').should('exist');
-            cy.getByData('ersatzeinkommen-selbststaendigkeit-basisjahr-minus-1').should('exist');
-            cy.getByData('ersatzeinkommen-selbststaendigkeit-basisjahr-minus-2').should('exist');
+            FinanzielleSituationPO.getErsatzeinkommenSelbststaendigkeitBasisjahr().should('exist');
+            FinanzielleSituationPO.getErsatzeinkommenSelbststaendigkeitBasisjahrMinus1().should('exist');
+            FinanzielleSituationPO.getErsatzeinkommenSelbststaendigkeitBasisjahrMinus2().should('exist');
         });
 
     it('should have ersatzeinkommen basisjahr disabled if ersatzeinkommen in finsit is 0', () => {
-        cy.getByData('show-selbstaendig').click();
-        cy.getByData('showErsatzeinkommenSelbststaendigkeit.radio-value.ja').click();
-        cy.getByData('ersatzeinkommen-selbststaendigkeit-basisjahr').should('exist');
-        cy.getByData('ersatzeinkommen').should('exist');
-        cy.getByData('ersatzeinkommen').find('input').clear().type('0');
-        cy.getByData('ersatzeinkommen-selbststaendigkeit-basisjahr').find('input').should('be.disabled');
+        FinanzielleSituationPO.getShowSelbstaendig().click();
+        FinanzielleSituationPO.getShowErsatzeinkommenSelbststaendigkeitRadioButton('ja').click();
+        FinanzielleSituationPO.getErsatzeinkommenSelbststaendigkeitBasisjahr().should('exist');
+
+        FinanzielleSituationPO.getErsatzeinkommen().should('exist');
+        FinanzielleSituationPO.getErsatzeinkommen().find('input').clear().type('0');
+        FinanzielleSituationPO.getErsatzeinkommenSelbststaendigkeitBasisjahr().find('input').should('be.disabled');
     });
 
     it('should have ersatzeinkommen basisjahr disabled if ersatzeinkommen in finsit is not 0, but geschaeftsgewinn basisjahr is empty',
         () => {
-            cy.getByData('show-selbstaendig').click();
-            cy.getByData('showErsatzeinkommenSelbststaendigkeit.radio-value.ja').click();
-            cy.getByData('ersatzeinkommen-selbststaendigkeit-basisjahr').should('exist');
-            cy.getByData('ersatzeinkommen').should('exist');
-            cy.getByData('ersatzeinkommen').find('input').clear().type('1');
-            cy.getByData('geschaeftsgewinn-basisjahr').find('input').clear();
-            cy.getByData('ersatzeinkommen-selbststaendigkeit-basisjahr').find('input').should('be.disabled');
+            FinanzielleSituationPO.getShowSelbstaendig().click();
+            FinanzielleSituationPO.getShowErsatzeinkommenSelbststaendigkeitRadioButton('ja').click();
+            FinanzielleSituationPO.getErsatzeinkommenSelbststaendigkeitBasisjahr().should('exist');
+            FinanzielleSituationPO.getErsatzeinkommen().should('exist');
+            FinanzielleSituationPO.getErsatzeinkommen().find('input').clear().type('1');
+            FinanzielleSituationPO.getGeschaeftsgewinnBasisjahr().find('input').clear();
+            FinanzielleSituationPO.getErsatzeinkommenSelbststaendigkeitBasisjahr().find('input').should('be.disabled');
         });
 
     it('should have ersatzeinkommen basisjahr enabled if ersatzeinkommen in finsit is not 0 and geschaeftsgewinn is not empty',
         () => {
-            cy.getByData('show-selbstaendig').click();
-            cy.getByData('showErsatzeinkommenSelbststaendigkeit.radio-value.ja').click();
-            cy.getByData('ersatzeinkommen-selbststaendigkeit-basisjahr').should('exist');
-            cy.getByData('ersatzeinkommen').find('input').clear().type('1');
-            cy.getByData('geschaeftsgewinn-basisjahr').find('input').type('1');
-            cy.getByData('ersatzeinkommen-selbststaendigkeit-basisjahr').find('input').should('not.be.disabled');
+            FinanzielleSituationPO.getShowSelbstaendig().click();
+            FinanzielleSituationPO.getShowErsatzeinkommenSelbststaendigkeitRadioButton('ja').click();
+            FinanzielleSituationPO.getErsatzeinkommenSelbststaendigkeitBasisjahr().should('exist');
+            FinanzielleSituationPO.getErsatzeinkommen().find('input').clear().type('1');
+            FinanzielleSituationPO.getGeschaeftsgewinnBasisjahr().find('input').type('1');
+            FinanzielleSituationPO.getErsatzeinkommenSelbststaendigkeitBasisjahr().find('input').should('not.be.disabled');
         });
 
     it('should have ersatzeinkommen basisjahr minus 1 disabled if geschaeftsgewinn basisjahr minus 1 is empty', () => {
-        cy.getByData('show-selbstaendig').click();
-        cy.getByData('showErsatzeinkommenSelbststaendigkeit.radio-value.ja').click();
-        cy.getByData('ersatzeinkommen-selbststaendigkeit-basisjahr-minus-1').should('exist');
-        cy.getByData('geschaeftsgewinn-basisjahr-minus-1').find('input').clear();
-        cy.getByData('ersatzeinkommen-selbststaendigkeit-basisjahr-minus-1').find('input').should('be.disabled');
+        FinanzielleSituationPO.getShowSelbstaendig().click();
+        FinanzielleSituationPO.getShowErsatzeinkommenSelbststaendigkeitRadioButton('ja').click();
+        FinanzielleSituationPO.getErsatzeinkommenSelbststaendigkeitBasisjahrMinus1().should('exist');
+        FinanzielleSituationPO.getGeschaeftsgewinnBasisjahrMinus1().find('input').clear();
+        FinanzielleSituationPO.getErsatzeinkommenSelbststaendigkeitBasisjahrMinus1().find('input').should('be.disabled');
     });
 
     it('should have ersatzeinkommen basisjahr minus 1 enabled if geschaeftsgewinn basisjahr minus 1 is not empty', () => {
-        cy.getByData('show-selbstaendig').click();
-        cy.getByData('showErsatzeinkommenSelbststaendigkeit.radio-value.ja').click();
-        cy.getByData('ersatzeinkommen-selbststaendigkeit-basisjahr-minus-1').should('exist');
-        cy.getByData('geschaeftsgewinn-basisjahr-minus-1').find('input').clear().type('1');
-        cy.getByData('ersatzeinkommen-selbststaendigkeit-basisjahr-minus-1').find('input').should('not.be.disabled');
+        FinanzielleSituationPO.getShowSelbstaendig().click();
+        FinanzielleSituationPO.getShowErsatzeinkommenSelbststaendigkeitRadioButton('ja').click();
+        FinanzielleSituationPO.getErsatzeinkommenSelbststaendigkeitBasisjahrMinus1().should('exist');
+        FinanzielleSituationPO.getGeschaeftsgewinnBasisjahrMinus1().find('input').clear().type('1');
+        FinanzielleSituationPO.getErsatzeinkommenSelbststaendigkeitBasisjahrMinus1().find('input').should('not.be.disabled');
     });
 
     it('should have ersatzeinkommen basisjahr minus 2 disabled if geschaeftsgewinn minus 2 is empty', () => {
-        cy.getByData('show-selbstaendig').click();
-        cy.getByData('showErsatzeinkommenSelbststaendigkeit.radio-value.ja').click();
-        cy.getByData('ersatzeinkommen-selbststaendigkeit-basisjahr-minus-2').should('exist');
-        cy.getByData('geschaeftsgewinn-basisjahr-minus-2').find('input').clear();
-        cy.getByData('ersatzeinkommen-selbststaendigkeit-basisjahr-minus-2').find('input').should('be.disabled');
+        FinanzielleSituationPO.getShowSelbstaendig().click();
+        FinanzielleSituationPO.getShowErsatzeinkommenSelbststaendigkeitRadioButton('ja').click();
+        FinanzielleSituationPO.getErsatzeinkommenSelbststaendigkeitBasisjahrMinus2().should('exist');
+        FinanzielleSituationPO.getGeschaeftsgewinnBasisjahrMinus2().find('input').clear();
+        FinanzielleSituationPO.getErsatzeinkommenSelbststaendigkeitBasisjahrMinus2().find('input').should('be.disabled');
     });
 
     it('should have ersatzeinkommen basisjahr minus 2 enabled if geschaeftsgewinn minus 2 is not empty', () => {
-        cy.getByData('show-selbstaendig').click();
-        cy.getByData('showErsatzeinkommenSelbststaendigkeit.radio-value.ja').click();
-        cy.getByData('ersatzeinkommen-selbststaendigkeit-basisjahr-minus-2').should('exist');
-        cy.getByData('geschaeftsgewinn-basisjahr-minus-2').find('input').clear().type('1');
-        cy.getByData('ersatzeinkommen-selbststaendigkeit-basisjahr-minus-2').find('input').should('not.be.disabled');
+        FinanzielleSituationPO.getShowSelbstaendig().click();
+        FinanzielleSituationPO.getShowErsatzeinkommenSelbststaendigkeitRadioButton('ja').click();
+        FinanzielleSituationPO.getErsatzeinkommenSelbststaendigkeitBasisjahrMinus2().should('exist');
+        FinanzielleSituationPO.getGeschaeftsgewinnBasisjahrMinus2().find('input').clear().type('1');
+        FinanzielleSituationPO.getErsatzeinkommenSelbststaendigkeitBasisjahrMinus2().find('input').should('not.be.disabled');
     });
 
     it('should display error if ersatzeinkommen is selected but all three years are 0', () => {
-        cy.getByData('show-selbstaendig').click();
-        cy.getByData('showErsatzeinkommenSelbststaendigkeit.radio-value.ja').click();
-        cy.getByData('geschaeftsgewinn-basisjahr').find('input').clear().type('1');
-        cy.getByData('geschaeftsgewinn-basisjahr-minus-1').find('input').clear().type('2');
-        cy.getByData('geschaeftsgewinn-basisjahr-minus-2').find('input').clear().type('3');
-        cy.getByData('ersatzeinkommen').find('input').clear().type('1');
-        cy.getByData('ersatzeinkommen-selbststaendigkeit-basisjahr').find('input').clear().type('0');
-        cy.getByData('ersatzeinkommen-selbststaendigkeit-basisjahr-minus-1').find('input').clear().type('0');
-        cy.getByData('ersatzeinkommen-selbststaendigkeit-basisjahr-minus-2').find('input').clear().type('0');
-        cy.getByData('all-ersatzeinkommen-selbststaendigkeit-zero-error-message').should('exist');
+        FinanzielleSituationPO.getShowSelbstaendig().click();
+        FinanzielleSituationPO.getShowErsatzeinkommenSelbststaendigkeitRadioButton('ja').click();
+        FinanzielleSituationPO.getGeschaeftsgewinnBasisjahr().find('input').clear().type('1');
+        FinanzielleSituationPO.getGeschaeftsgewinnBasisjahrMinus1().find('input').clear().type('2');
+        FinanzielleSituationPO.getGeschaeftsgewinnBasisjahrMinus2().find('input').clear().type('3');
+        FinanzielleSituationPO.getErsatzeinkommen().find('input').clear().type('1');
+        FinanzielleSituationPO.getErsatzeinkommenSelbststaendigkeitBasisjahr().find('input').clear().type('0');
+        FinanzielleSituationPO.getErsatzeinkommenSelbststaendigkeitBasisjahrMinus1().find('input').clear().type('0');
+        FinanzielleSituationPO.getErsatzeinkommenSelbststaendigkeitBasisjahrMinus2().find('input').clear().type('0');
+        FinanzielleSituationPO.getAllErsatzeinkommenSelbststaendigkeitZeroErrorMessage().should('exist');
     });
 
     it('should not display error if ersatzeinkommen is selected and one of the three years is not 0', () => {
-        cy.getByData('show-selbstaendig').click();
-        cy.getByData('showErsatzeinkommenSelbststaendigkeit.radio-value.ja').click();
-        cy.getByData('geschaeftsgewinn-basisjahr').find('input').clear().type('1');
-        cy.getByData('geschaeftsgewinn-basisjahr-minus-1').find('input').clear().type('2');
-        cy.getByData('geschaeftsgewinn-basisjahr-minus-2').find('input').clear().type('3');
-        cy.getByData('ersatzeinkommen').find('input').clear().type('1');
-        cy.getByData('ersatzeinkommen-selbststaendigkeit-basisjahr').find('input').clear().type('1');
-        cy.getByData('ersatzeinkommen-selbststaendigkeit-basisjahr-minus-1').find('input').clear().type('0');
-        cy.getByData('ersatzeinkommen-selbststaendigkeit-basisjahr-minus-2').find('input').clear().type('0');
-        cy.getByData('all-ersatzeinkommen-selbststaendigkeit-zero-error-message').should('not.exist');
+        FinanzielleSituationPO.getShowSelbstaendig().click();
+        FinanzielleSituationPO.getShowErsatzeinkommenSelbststaendigkeitRadioButton('ja').click();
+        FinanzielleSituationPO.getGeschaeftsgewinnBasisjahr().find('input').clear().type('1');
+        FinanzielleSituationPO.getGeschaeftsgewinnBasisjahrMinus1().find('input').clear().type('2');
+        FinanzielleSituationPO.getGeschaeftsgewinnBasisjahrMinus2().find('input').clear().type('3');
+        FinanzielleSituationPO.getErsatzeinkommen().find('input').clear().type('1');
+        FinanzielleSituationPO.getErsatzeinkommenSelbststaendigkeitBasisjahr().find('input').clear().type('1');
+        FinanzielleSituationPO.getErsatzeinkommenSelbststaendigkeitBasisjahrMinus1().find('input').clear().type('0');
+        FinanzielleSituationPO.getErsatzeinkommenSelbststaendigkeitBasisjahrMinus2().find('input').clear().type('0');
+        FinanzielleSituationPO.getAllErsatzeinkommenSelbststaendigkeitZeroErrorMessage().should('not.exist');
     });
 
     it('should display error if ersatzeinkommen basisjahr is larger than ersatzeinkommen in finsit', () => {
-        cy.getByData('show-selbstaendig').click();
-        cy.getByData('showErsatzeinkommenSelbststaendigkeit.radio-value.ja').click();
-        cy.getByData('geschaeftsgewinn-basisjahr').find('input').clear().type('1');
-        cy.getByData('ersatzeinkommen').find('input').clear().type('1');
-        cy.getByData('ersatzeinkommen-selbststaendigkeit-basisjahr').find('input').clear().type('2');
-        cy.getByData('ersatzeinkommen-invalid-error-message').should('exist');
+        FinanzielleSituationPO.getShowSelbstaendig().click();
+        FinanzielleSituationPO.getShowErsatzeinkommenSelbststaendigkeitRadioButton('ja').click();
+        FinanzielleSituationPO.getGeschaeftsgewinnBasisjahr().find('input').clear().type('1');
+        FinanzielleSituationPO.getErsatzeinkommen().find('input').clear().type('1');
+        FinanzielleSituationPO.getErsatzeinkommenSelbststaendigkeitBasisjahr().find('input').clear().type('2');
+        FinanzielleSituationPO.getErsatzeinkommenInvalidErrorMessage().should('exist');
     });
 
     it('should not display error if ersatzeinkommen basisjahr is equal than ersatzeinkommen in finsit', () => {
-        cy.getByData('show-selbstaendig').click();
-        cy.getByData('showErsatzeinkommenSelbststaendigkeit.radio-value.ja').click();
-        cy.getByData('geschaeftsgewinn-basisjahr').find('input').clear().type('1');
-        cy.getByData('ersatzeinkommen').find('input').clear().type('1');
-        cy.getByData('ersatzeinkommen-selbststaendigkeit-basisjahr').find('input').clear().type('1');
-        cy.getByData('ersatzeinkommen-invalid-error-message').should('not.exist');
+        FinanzielleSituationPO.getShowSelbstaendig().click();
+        FinanzielleSituationPO.getShowErsatzeinkommenSelbststaendigkeitRadioButton('ja').click();
+        FinanzielleSituationPO.getGeschaeftsgewinnBasisjahr().find('input').clear().type('1');
+        FinanzielleSituationPO.getErsatzeinkommen().find('input').clear().type('1');
+        FinanzielleSituationPO.getErsatzeinkommenSelbststaendigkeitBasisjahr().find('input').clear().type('1');
+        FinanzielleSituationPO.getErsatzeinkommenInvalidErrorMessage().should('not.exist');
     });
 
     it('should not display error if ersatzeinkommen basisjahr is smaller than ersatzeinkommen in finsit', () => {
-        cy.getByData('show-selbstaendig').click();
-        cy.getByData('showErsatzeinkommenSelbststaendigkeit.radio-value.ja').click();
-        cy.getByData('geschaeftsgewinn-basisjahr').find('input').clear().type('1');
-        cy.getByData('ersatzeinkommen').find('input').clear().type('1');
-        cy.getByData('ersatzeinkommen-selbststaendigkeit-basisjahr').find('input').clear().type('0');
-        cy.getByData('ersatzeinkommen-invalid-error-message').should('not.exist');
+        FinanzielleSituationPO.getShowSelbstaendig().click();
+        FinanzielleSituationPO.getShowErsatzeinkommenSelbststaendigkeitRadioButton('ja').click();
+        FinanzielleSituationPO.getGeschaeftsgewinnBasisjahr().find('input').clear().type('1');
+        FinanzielleSituationPO.getErsatzeinkommen().find('input').clear().type('1');
+        FinanzielleSituationPO.getErsatzeinkommenSelbststaendigkeitBasisjahr().find('input').clear().type('0');
+        FinanzielleSituationPO.getErsatzeinkommenInvalidErrorMessage().should('not.exist');
     });
 });
