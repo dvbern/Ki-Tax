@@ -589,8 +589,7 @@ INSERT IGNORE INTO auszahlungsdaten(id, timestamp_erstellt, timestamp_mutiert, u
 INSERT IGNORE INTO institution_stammdaten_betreuungsgutscheine(id, timestamp_erstellt, timestamp_mutiert, user_erstellt,
 															   user_mutiert, version, auszahlungsdaten_id,
 															   alterskategorie_baby, alterskategorie_vorschule,
-															   alterskategorie_kindergarten, alterskategorie_schule,
-															   subventionierte_plaetze, anzahl_plaetze,
+															   alterskategorie_kindergarten, alterskategorie_schule, anzahl_plaetze,
 															   anzahl_plaetze_firmen, offen_von, offen_bis,
 															   oeffnungstage_pro_jahr, auslastung_institutionen,
 															   anzahl_kinder_warteliste, summe_pensum_warteliste,
@@ -598,13 +597,12 @@ INSERT IGNORE INTO institution_stammdaten_betreuungsgutscheine(id, timestamp_ers
 															   wochenende_eroeffnung, uebernachtung_moeglich)
 VALUES (UNHEX(REPLACE('2d3f850d-537f-11ec-98e8-f4390979fa3e', '-', '')), '2016-01-01 00:00:00', '2016-01-01 00:00:00',
 		'flyway', 'flyway', 0, UNHEX(REPLACE('0b1dc282-537f-11ec-98e8-f4390979fa3e', '-', '')), FALSE, FALSE, FALSE,
-		FALSE, FALSE, 30, NULL, '08:00', '18:00', 0, 0.00, 0.00, 0.00, 0.00, FALSE, FALSE, FALSE, FALSE);
+		FALSE, 30, NULL, '08:00', '18:00', 0, 0.00, 0.00, 0.00, 0.00, FALSE, FALSE, FALSE, FALSE);
 
 INSERT IGNORE INTO institution_stammdaten_betreuungsgutscheine(id, timestamp_erstellt, timestamp_mutiert, user_erstellt,
 															   user_mutiert, version, auszahlungsdaten_id,
 															   alterskategorie_baby, alterskategorie_vorschule,
-															   alterskategorie_kindergarten, alterskategorie_schule,
-															   subventionierte_plaetze, anzahl_plaetze,
+															   alterskategorie_kindergarten, alterskategorie_schule, anzahl_plaetze,
 															   anzahl_plaetze_firmen, offen_von, offen_bis,
 															   oeffnungstage_pro_jahr, auslastung_institutionen,
 															   anzahl_kinder_warteliste, summe_pensum_warteliste,
@@ -612,13 +610,12 @@ INSERT IGNORE INTO institution_stammdaten_betreuungsgutscheine(id, timestamp_ers
 															   wochenende_eroeffnung, uebernachtung_moeglich)
 VALUES (UNHEX(REPLACE('365cbb27-537f-11ec-98e8-f4390979fa3e', '-', '')), '2016-01-01 00:00:00', '2016-01-01 00:00:00',
 		'flyway', 'flyway', 0, UNHEX(REPLACE('04176a28-537f-11ec-98e8-f4390979fa3e', '-', '')), FALSE, FALSE, FALSE,
-		FALSE, FALSE, 35, NULL, '08:00', '18:00', 0, 0.00, 0.00, 0.00, 0.00, FALSE, FALSE, FALSE, FALSE);
+		FALSE, 35, NULL, '08:00', '18:00', 0, 0.00, 0.00, 0.00, 0.00, FALSE, FALSE, FALSE, FALSE);
 
 INSERT IGNORE INTO institution_stammdaten_betreuungsgutscheine(id, timestamp_erstellt, timestamp_mutiert, user_erstellt,
 															   user_mutiert, version, auszahlungsdaten_id,
 															   alterskategorie_baby, alterskategorie_vorschule,
-															   alterskategorie_kindergarten, alterskategorie_schule,
-															   subventionierte_plaetze, anzahl_plaetze,
+															   alterskategorie_kindergarten, alterskategorie_schule, anzahl_plaetze,
 															   anzahl_plaetze_firmen, offen_von, offen_bis,
 															   oeffnungstage_pro_jahr, auslastung_institutionen,
 															   anzahl_kinder_warteliste, summe_pensum_warteliste,
@@ -626,7 +623,7 @@ INSERT IGNORE INTO institution_stammdaten_betreuungsgutscheine(id, timestamp_ers
 															   wochenende_eroeffnung, uebernachtung_moeglich)
 VALUES (UNHEX(REPLACE('3f194c4f-537f-11ec-98e8-f4390979fa3e', '-', '')), '2016-01-01 00:00:00', '2016-01-01 00:00:00',
 		'flyway', 'flyway', 0, UNHEX(REPLACE('fca0bc52-537e-11ec-98e8-f4390979fa3e', '-', '')), FALSE, FALSE, FALSE,
-		FALSE, FALSE, 40, NULL, '08:00', '18:00', 0, 0.00, 0.00, 0.00, 0.00, FALSE, FALSE, FALSE, FALSE);
+		FALSE, 40, NULL, '08:00', '18:00', 0, 0.00, 0.00, 0.00, 0.00, FALSE, FALSE, FALSE, FALSE);
 
 INSERT IGNORE INTO institution_stammdaten (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert,
 										   version, vorgaenger_id, gueltig_ab, gueltig_bis, betreuungsangebot_typ,

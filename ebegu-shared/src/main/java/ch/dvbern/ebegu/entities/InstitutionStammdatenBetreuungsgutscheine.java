@@ -17,6 +17,19 @@
 
 package ch.dvbern.ebegu.entities;
 
+import ch.dvbern.ebegu.util.Constants;
+import ch.dvbern.oss.lib.beanvalidation.embeddables.IBAN;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import org.apache.commons.lang.builder.CompareToBuilder;
+import org.hibernate.envers.Audited;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.persistence.*;
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
 import java.math.BigDecimal;
 import java.time.DayOfWeek;
 import java.time.LocalTime;
@@ -24,33 +37,6 @@ import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.persistence.CascadeType;
-import javax.persistence.CollectionTable;
-import javax.persistence.Column;
-import javax.persistence.ElementCollection;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
-import javax.persistence.ForeignKey;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
-import javax.persistence.UniqueConstraint;
-import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
-import javax.validation.constraints.Size;
-
-import ch.dvbern.ebegu.util.Constants;
-import ch.dvbern.oss.lib.beanvalidation.embeddables.IBAN;
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-import org.apache.commons.lang.builder.CompareToBuilder;
-import org.hibernate.envers.Audited;
 
 import static ch.dvbern.ebegu.util.Constants.DB_DEFAULT_MAX_LENGTH;
 import static ch.dvbern.ebegu.util.Constants.DB_TEXTAREA_LENGTH;
@@ -87,10 +73,6 @@ public class InstitutionStammdatenBetreuungsgutscheine extends AbstractEntity im
 	@NotNull
 	@Column(nullable = false)
 	private boolean alterskategorieSchule = false;
-
-	@NotNull
-	@Column(nullable = false)
-	private boolean subventioniertePlaetze = false;
 
 	@Nullable
 	@Column(nullable = true)
@@ -259,14 +241,6 @@ public class InstitutionStammdatenBetreuungsgutscheine extends AbstractEntity im
 
 	public void setAlterskategorieSchule(boolean alterskategorieSchule) {
 		this.alterskategorieSchule = alterskategorieSchule;
-	}
-
-	public boolean getSubventioniertePlaetze() {
-		return subventioniertePlaetze;
-	}
-
-	public void setSubventioniertePlaetze(boolean subventioniertePlaetze) {
-		this.subventioniertePlaetze = subventioniertePlaetze;
 	}
 
 	@Nullable
