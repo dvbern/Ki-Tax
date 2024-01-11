@@ -3351,6 +3351,9 @@ public class JaxBConverter extends AbstractConverter {
 		erweiterteBetreuung.setKitaPlusZuschlagBestaetigt(erweiterteBetreuungJAXP.getKitaPlusZuschlagBestaetigt());
 		erweiterteBetreuung.setBetreuungInGemeinde(erweiterteBetreuungJAXP.getBetreuungInGemeinde());
 		erweiterteBetreuung.setErweitereteBeduerfnisseBetrag(erweiterteBetreuungJAXP.getErweitereteBeduerfnisseBetrag());
+		erweiterteBetreuung.setSprachfoerderungBestaetigt(erweiterteBetreuungJAXP.getSprachfoerderungBestaetigt() != null ?
+			erweiterteBetreuungJAXP.getSprachfoerderungBestaetigt() :
+			false);
 		// flag kann auf GUI auch Null sein, auf entity ist es defaultmässig false
 		if (erweiterteBetreuungJAXP.getAnspruchFachstelleWennPensumUnterschritten() != null) {
 			erweiterteBetreuung.setAnspruchFachstelleWennPensumUnterschritten(erweiterteBetreuungJAXP.getAnspruchFachstelleWennPensumUnterschritten());
@@ -4240,6 +4243,7 @@ public class JaxBConverter extends AbstractConverter {
 		jaxErweiterteBetreuung.setBetreuungInGemeinde(erweiterteBetreuung.getBetreuungInGemeinde());
 		jaxErweiterteBetreuung.setErweitereteBeduerfnisseBetrag(erweiterteBetreuung.getErweitereteBeduerfnisseBetrag());
 		jaxErweiterteBetreuung.setAnspruchFachstelleWennPensumUnterschritten(erweiterteBetreuung.isAnspruchFachstelleWennPensumUnterschritten());
+		jaxErweiterteBetreuung.setSprachfoerderungBestaetigt(erweiterteBetreuung.isSprachfoerderungBestaetigt());
 
 		if (erweiterteBetreuung.getFachstelle() != null) {
 			jaxErweiterteBetreuung.setFachstelle(fachstelleToJAX(erweiterteBetreuung.getFachstelle()));

@@ -176,9 +176,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     private angebotTS: boolean;
     private angebotFI: boolean;
     private angebotTFO: boolean = false;
-
     private isLuzern: boolean;
-
     public readonly demoFeature = TSDemoFeature.FACHSTELLEN_UEBERGANGSLOESUNG;
 
     public constructor(
@@ -1050,6 +1048,16 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         return this.getBetreuungspensen()
             .filter(pensum => pensum.betreuungspensumJA?.pensum < this.minPensumSprachlicheIndikation)
             .length > 0;
+    }
+
+    public showSprachforderungBestaetigenCheckBox(): boolean {
+        if (!this.authServiceRS.isOneOfRoles(TSRoleUtil.getGemeindeOrBGRoles().concat(TSRole.SUPER_ADMIN))) {
+            return false;
+        }
+        if (!EbeguUtil.hasSprachlicheIndikation(this.getKindModel())) {
+            return false;
+        }
+        return true;
     }
 
     public resetAnspruchFachstelleWennPensumUnterschritten() {
