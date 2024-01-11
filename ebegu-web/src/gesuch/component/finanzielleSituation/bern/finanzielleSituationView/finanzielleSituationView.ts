@@ -495,7 +495,9 @@ export class FinanzielleSituationViewController extends AbstractFinSitBernView {
     }
 
     public ersatzeinkommenChanged(): void {
-        if (this.getModel().finanzielleSituationJA.ersatzeinkommen === 0) {
+        if (this.getModel().finanzielleSituationJA.ersatzeinkommen === 0
+            && EbeguUtil.isNotNullOrUndefined(
+                this.getModel().finanzielleSituationJA.ersatzeinkommenSelbststaendigkeitBasisjahr)) {
             this.getModel().finanzielleSituationJA.ersatzeinkommenSelbststaendigkeitBasisjahr = 0;
         }
     }
