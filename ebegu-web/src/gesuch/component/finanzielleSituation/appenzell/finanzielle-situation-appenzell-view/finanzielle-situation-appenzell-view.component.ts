@@ -256,6 +256,25 @@ export class FinanzielleSituationAppenzellViewComponent extends AbstractGesuchVi
         return this.getModel().finanzielleSituationJA.finSitZusatzangabenAppenzell.zusatzangabenPartner;
     }
 
+
+    public getFinSitZusatzangabenAppenzellGSToWorkWith(): TSFinSitZusatzangabenAppenzell {
+        return this.isSpezialFallAR() ?
+            this.getFinSitZusatzangabenAppenzellGSToWorkWithSpezialfall() :
+            this.getOrCreateFinSitModel(this.model.getFiSiConToWorkWith().finanzielleSituationGS);
+    }
+    private getFinSitZusatzangabenAppenzellGSToWorkWithSpezialfall(): TSFinSitZusatzangabenAppenzell {
+        if (this.gesuchstellerNumber === 1 || this.isGemeinsam()) {
+            return this.getOrCreateFinSitModel(this.getModel().finanzielleSituationGS);
+        }
+        if (EbeguUtil.isNullOrUndefined(
+            this.getModel().finanzielleSituationGS.finSitZusatzangabenAppenzell.zusatzangabenPartner)
+        ) {
+            this.getModel().finanzielleSituationGS.finSitZusatzangabenAppenzell.zusatzangabenPartner =
+                new TSFinSitZusatzangabenAppenzell();
+        }
+        return this.getModel().finanzielleSituationGS.finSitZusatzangabenAppenzell.zusatzangabenPartner;
+    }
+
     private getOrCreateFinSitModel(finSitToWorkWith: TSFinanzielleSituation): TSFinSitZusatzangabenAppenzell {
         if (EbeguUtil.isNullOrUndefined(finSitToWorkWith.finSitZusatzangabenAppenzell)) {
             finSitToWorkWith.finSitZusatzangabenAppenzell = new TSFinSitZusatzangabenAppenzell();
