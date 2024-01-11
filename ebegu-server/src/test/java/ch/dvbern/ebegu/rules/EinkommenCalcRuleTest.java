@@ -349,6 +349,26 @@ public class EinkommenCalcRuleTest {
 	}
 
 	@Test
+	public void finSitAbgelehentForSozialhilfeEmpfaengerAndTagesschulanmeldung() {
+		AnmeldungTagesschule anmeldungTagesschule = prepareBetreuungTagesschule(
+			EINKOMMEN, true, false,  FinSitStatus.ABGELEHNT);
+		List<VerfuegungZeitabschnitt> result = EbeguRuleTestsHelper.calculate(anmeldungTagesschule);
+
+		BigDecimal maxTsTarif = EbeguRuleTestsHelper
+			.getAllEinstellungen(anmeldungTagesschule.extractGesuchsperiode())
+			.get(EinstellungKey.MAX_TARIF_MIT_PAEDAGOGISCHER_BETREUUNG)
+			.getValueAsBigDecimal();
+
+		assertNotNull(result);
+		assertEquals(1, result.size());
+		assertEquals(MAX_EINKOMMEN, result.get(0).getMassgebendesEinkommen());
+		assertEquals(BigDecimal.ZERO.stripTrailingZeros(), result.get(0).getAbzugFamGroesse().stripTrailingZeros());
+		assertTrue(result.get(0).getRelevantBgCalculationInput().isKeinAnspruchAufgrundEinkommen());
+		assertTrue(result.get(0).getRelevantBgCalculationInput().isKategorieMaxEinkommen());
+		assertEquals(result.get(0).getTsCalculationResultMitPaedagogischerBetreuung().getGebuehrProStunde(), maxTsTarif);
+	}
+
+	@Test
 	public void finSitAkzeptiertForSozialhilfeEmpfaenger() {
 		List<VerfuegungZeitabschnitt> result = EbeguRuleTestsHelper.calculate(prepareBetreuungKita(
 			EINKOMMEN, true, false, false, FinSitStatus.AKZEPTIERT));
