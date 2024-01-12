@@ -30,6 +30,8 @@ flyway "${flyway_args[@]}" -cleanDisabled="false" clean
 echo "importing db dump" # to avoid broken migrations, see https://support.dvbern.ch/browse/KIBON-3277
 mariadb "${mariadb_args[@]}" < ebegu-dump.sql
 
+echo "migrating schema"
+flyway "${flyway_args[@]}" migrate
 
 echo "insert test data for BE"
 mariadb "${mariadb_args[@]}" < testdaten/create_testdata.sql
@@ -42,8 +44,5 @@ mariadb "${mariadb_args[@]}" < testdaten/create_testdata_lu.sql
 
 echo "insert test data for SO"
 mariadb "${mariadb_args[@]}" < testdaten/create_testdata_so.sql
-
-echo "migrating schema"
-flyway "${flyway_args[@]}" migrate
 
 echo "done"
