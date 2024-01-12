@@ -67,6 +67,49 @@ const getAutomatischePruefung = (answer: string) => {
 	return cy.getByData('automatischePruefung.radio-value.' + answer);
 };
 
+const getShowSelbstaendig = () => {
+    return cy.getByData('show-selbstaendig');
+};
+
+const getGeschaeftsgewinnBasisjahr = () => {
+    return cy.getByData('geschaeftsgewinn-basisjahr');
+};
+
+const getGeschaeftsgewinnBasisjahrMinus1 = () => {
+    return cy.getByData('geschaeftsgewinn-basisjahr-minus-1');
+};
+
+const getGeschaeftsgewinnBasisjahrMinus2 = () => {
+    return cy.getByData('geschaeftsgewinn-basisjahr-minus-2');
+};
+const getShowErsatzeinkommenSelbststaendigkeit = () => {
+    return cy.getByData('show-ersatzeinkommen-selbststaendigkeit');
+};
+
+const getShowErsatzeinkommenSelbststaendigkeitRadioButton = (answer: string) => {
+    return cy.getByData('showErsatzeinkommenSelbststaendigkeit.radio-value.' + answer);
+};
+
+const getErsatzeinkommenSelbststaendigkeitBasisjahr = () => {
+    return cy.getByData('ersatzeinkommen-selbststaendigkeit-basisjahr');
+};
+
+const getErsatzeinkommenSelbststaendigkeitBasisjahrMinus1 = () => {
+    return cy.getByData('ersatzeinkommen-selbststaendigkeit-basisjahr-minus-1');
+};
+
+const getErsatzeinkommenSelbststaendigkeitBasisjahrMinus2 = () => {
+    return cy.getByData('ersatzeinkommen-selbststaendigkeit-basisjahr-minus-2');
+};
+
+const getErsatzeinkommenInvalidErrorMessage = () => {
+    return cy.getByData('ersatzeinkommen-invalid-error-message');
+};
+
+const getAllErsatzeinkommenSelbststaendigkeitZeroErrorMessage = () => {
+    return cy.getByData('all-ersatzeinkommen-selbststaendigkeit-zero-error-message');
+};
+
 // !! -- PAGE ACTIONS -- !!
 const fillFinanzielleSituationForm = (dataset: keyof typeof FixtureFinSit, gs: 'GS1' | 'GS2') => {
     FixtureFinSit[dataset]((allData) => {
@@ -107,6 +150,17 @@ export const FinanzielleSituationPO = {
     getGewinnungskosten,
     getSteuerdatenzugriff,
     getAutomatischePruefung,
+    getShowSelbstaendig,
+    getGeschaeftsgewinnBasisjahr,
+    getGeschaeftsgewinnBasisjahrMinus1,
+    getGeschaeftsgewinnBasisjahrMinus2,
+    getShowErsatzeinkommenSelbststaendigkeit,
+    getShowErsatzeinkommenSelbststaendigkeitRadioButton,
+    getErsatzeinkommenSelbststaendigkeitBasisjahr,
+    getErsatzeinkommenSelbststaendigkeitBasisjahrMinus1,
+    getErsatzeinkommenSelbststaendigkeitBasisjahrMinus2,
+    getErsatzeinkommenInvalidErrorMessage,
+    getAllErsatzeinkommenSelbststaendigkeitZeroErrorMessage,
     // page actions
     fillFinanzielleSituationForm,
     saveFormAndGoNext,

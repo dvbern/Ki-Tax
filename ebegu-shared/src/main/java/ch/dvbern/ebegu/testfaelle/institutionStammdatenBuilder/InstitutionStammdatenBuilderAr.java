@@ -29,8 +29,7 @@ public class InstitutionStammdatenBuilderAr extends InstitutionStammdatenBuilder
 				institutionStammdatenService,
 				"51451c92-39a9-11ed-a63d-b05cda43de9c",
 				"56aa13db-39a9-11ed-a63d-b05cda43de9c",
-				"458bee8d-39a9-11ed-a63d-b05cda43de9c",
-				"f89d4bf4-39aa-11ed-a63d-b05cda43de9c");
+				"458bee8d-39a9-11ed-a63d-b05cda43de9c");
 	}
 
 	@Override
@@ -39,7 +38,6 @@ public class InstitutionStammdatenBuilderAr extends InstitutionStammdatenBuilder
 		institutionStammdatenList.add(findInstitutionWeissenstein());
 		institutionStammdatenList.add(findInstitutionBruennen());
 		institutionStammdatenList.add(findInstitutionTagesfamilien());
-		institutionStammdatenList.add(findInstitutionTagesschule());
 
 		return institutionStammdatenList;
 	}
