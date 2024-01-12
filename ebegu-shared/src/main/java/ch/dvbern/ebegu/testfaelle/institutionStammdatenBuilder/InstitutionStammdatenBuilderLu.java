@@ -25,8 +25,11 @@ import ch.dvbern.ebegu.services.InstitutionStammdatenService;
 
 public class InstitutionStammdatenBuilderLu extends InstitutionStammdatenBuilder {
 	public InstitutionStammdatenBuilderLu(InstitutionStammdatenService institutionStammdatenService) {
-		super(institutionStammdatenService, "97882a4e-3261-11ec-a17e-b89a2ae4a038", "6d6afdb2-3261-11ec-a17e-b89a2ae4a038",
-				"16075d77-30a5-11ec-a86f-b89a2ae4a038", "b8e3acdc-3261-11ec-a17e-b89a2ae4a038");
+		super(
+			institutionStammdatenService,
+			"97882a4e-3261-11ec-a17e-b89a2ae4a038",
+			"6d6afdb2-3261-11ec-a17e-b89a2ae4a038",
+			"16075d77-30a5-11ec-a86f-b89a2ae4a038");
 	}
 
 	@Override
@@ -35,7 +38,6 @@ public class InstitutionStammdatenBuilderLu extends InstitutionStammdatenBuilder
 		institutionStammdatenList.add(findInstitutionWeissenstein());
 		institutionStammdatenList.add(findInstitutionBruennen());
 		institutionStammdatenList.add(findInstitutionTagesfamilien());
-		institutionStammdatenList.add(findInstitutionTagesschule());
 
 		return institutionStammdatenList;
 	}
