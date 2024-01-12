@@ -27,6 +27,7 @@ import org.hibernate.envers.RelationTargetAuditMode;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.persistence.*;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -109,6 +110,21 @@ public class FinanzielleSituation extends AbstractFinanzielleSituation {
 	@Nullable
 	@Column(nullable = true)
 	private Boolean momentanSelbststaendig;
+
+	@Nullable
+	@Column(nullable = true)
+	@Min(0)
+	private BigDecimal ersatzeinkommenSelbststaendigkeitBasisjahr;
+
+	@Nullable
+	@Column(nullable = true)
+	@Min(0)
+	private BigDecimal ersatzeinkommenSelbststaendigkeitBasisjahrMinus1;
+
+	@Nullable
+	@Column(nullable = true)
+	@Min(0)
+	private BigDecimal ersatzeinkommenSelbststaendigkeitBasisjahrMinus2;
 
 	@Nullable
 	@OneToOne(optional = true, orphanRemoval = false)
@@ -274,6 +290,35 @@ public class FinanzielleSituation extends AbstractFinanzielleSituation {
 		this.momentanSelbststaendig = momentanSelbststaendig;
 	}
 
+	@Nullable
+	public BigDecimal getErsatzeinkommenSelbststaendigkeitBasisjahr() {
+		return ersatzeinkommenSelbststaendigkeitBasisjahr;
+	}
+
+	public void setErsatzeinkommenSelbststaendigkeitBasisjahr(@Nullable BigDecimal ersatzeinkommenSelbststaendigkeitBasisjahr) {
+		this.ersatzeinkommenSelbststaendigkeitBasisjahr = ersatzeinkommenSelbststaendigkeitBasisjahr;
+	}
+
+	@Nullable
+	public BigDecimal getErsatzeinkommenSelbststaendigkeitBasisjahrMinus1() {
+		return ersatzeinkommenSelbststaendigkeitBasisjahrMinus1;
+	}
+
+	public void setErsatzeinkommenSelbststaendigkeitBasisjahrMinus1(
+		@Nullable BigDecimal ersatzeinkommenSelbststaendigkeitBasisjahrMinus1) {
+		this.ersatzeinkommenSelbststaendigkeitBasisjahrMinus1 = ersatzeinkommenSelbststaendigkeitBasisjahrMinus1;
+	}
+
+	@Nullable
+	public BigDecimal getErsatzeinkommenSelbststaendigkeitBasisjahrMinus2() {
+		return ersatzeinkommenSelbststaendigkeitBasisjahrMinus2;
+	}
+
+	public void setErsatzeinkommenSelbststaendigkeitBasisjahrMinus2(
+		@Nullable BigDecimal ersatzeinkommenSelbststaendigkeitBasisjahrMinus2) {
+		this.ersatzeinkommenSelbststaendigkeitBasisjahrMinus2 = ersatzeinkommenSelbststaendigkeitBasisjahrMinus2;
+	}
+
 	@Nonnull
 	public FinanzielleSituation copyFinanzielleSituation(@Nonnull FinanzielleSituation target, @Nonnull AntragCopyType copyType) {
 		switch (copyType) {
@@ -298,6 +343,9 @@ public class FinanzielleSituation extends AbstractFinanzielleSituation {
 			target.setSteuerdatenAbfrageTimestamp(this.getSteuerdatenAbfrageTimestamp());
 			target.setAutomatischePruefungErlaubt(this.getAutomatischePruefungErlaubt());
 			target.setMomentanSelbststaendig(this.getMomentanSelbststaendig());
+			target.setErsatzeinkommenSelbststaendigkeitBasisjahr(this.getErsatzeinkommenSelbststaendigkeitBasisjahr());
+			target.setErsatzeinkommenSelbststaendigkeitBasisjahrMinus1(this.getErsatzeinkommenSelbststaendigkeitBasisjahrMinus1());
+			target.setErsatzeinkommenSelbststaendigkeitBasisjahrMinus2(this.getErsatzeinkommenSelbststaendigkeitBasisjahrMinus2());
 			break;
 		case ERNEUERUNG:
 		case ERNEUERUNG_NEUES_DOSSIER:
@@ -336,7 +384,10 @@ public class FinanzielleSituation extends AbstractFinanzielleSituation {
 			MathUtil.isSame(getBruttoLohn(), otherFinSit.getBruttoLohn()) &&
 			MathUtil.isSame(getAbzuegeKinderAusbildung(), otherFinSit.getAbzuegeKinderAusbildung()) &&
 			MathUtil.isSame(getUnterhaltsBeitraege(), otherFinSit.getUnterhaltsBeitraege()) &&
-			Objects.equals(getMomentanSelbststaendig(), otherFinSit.getMomentanSelbststaendig());
+			Objects.equals(getMomentanSelbststaendig(), otherFinSit.getMomentanSelbststaendig()) &&
+			MathUtil.isSame(getErsatzeinkommenSelbststaendigkeitBasisjahr(), otherFinSit.getErsatzeinkommenSelbststaendigkeitBasisjahr()) &&
+			MathUtil.isSame(getErsatzeinkommenSelbststaendigkeitBasisjahrMinus1(), otherFinSit.getErsatzeinkommenSelbststaendigkeitBasisjahrMinus1()) &&
+			MathUtil.isSame(getErsatzeinkommenSelbststaendigkeitBasisjahrMinus2(), otherFinSit.getErsatzeinkommenSelbststaendigkeitBasisjahrMinus2());
 	}
 
 	@Nullable

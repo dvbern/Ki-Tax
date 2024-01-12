@@ -15,45 +15,133 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { normalizeUser, TestBetreuungsstatus, TestFall, TestGesuchstellende, TestPeriode, GemeindeTestFall } from '@dv-e2e/types';
+import {
+    normalizeUser,
+    TestBetreuungsstatus,
+    TestFall,
+    TestGesuchstellende,
+    TestPeriode,
+    GemeindeTestFall,
+    User,
+} from '@dv-e2e/types';
+import {MainNavigationPO} from '../navigation';
 
-const createNewTestFaelle = (testFall: TestFall, gemeindeName: GemeindeTestFall) => {
-    cy.getByData('page-title').contains('Alle Fälle');
-    cy.getByData('page-menu').click();
-    cy.getByData('action-admin.testdaten').click();
-    cy.getByData('gemeinde').click();
-    cy.getByData(`gemeinde.${gemeindeName}`).click();
-    cy.getByData('periode').click();
-    cy.getByData('periode.2023/24').click();
-    cy.getByData('creationType.warten').find('label').click();
-    cy.getByData(testFall).click();
-    cy.get('[data-test="dialog-link"]', { timeout: 100000 }).click();
-    cy.getByData('fall-creation-eingangsdatum').find('input').should('have.value', '15.2.2016');
+// !! -- PAGE OBJECTS -- !!
+const getPageTitle = () => {
+	return cy.getByData('page-title');
 };
 
-const createNewTestFallIn = (data: {
+const getGemeindeSelection = () => {
+	return cy.getByData('gemeinde');
+};
+
+const getGemeindeOption = (gemeinde: GemeindeTestFall) => {
+	return cy.getByData(`gemeinde.${gemeinde}`);
+};
+
+const getPeriodeSelection = () => {
+	return cy.getByData('periode');
+};
+
+const getPeriodeOption = (periode: TestPeriode) => {
+	return cy.getByData(`periode.${periode}`);
+};
+
+const getBetreuungsstatus = (betreuungsstatus: TestBetreuungsstatus) => {
+	return cy.getByData(`creationType.${betreuungsstatus}`);
+};
+
+const getTestfall = (testfall: TestFall) => {
+	return cy.getByData(testfall);
+};
+
+const getBesitzerinSelection = () => {
+	return cy.getByData(`gesuchsteller`);
+};
+
+const getBesitzerinOption = (besitzerin: User) => {
+	return cy.getByData(`gesuchsteller.${normalizeUser(besitzerin)}`);
+};
+
+const getFallLink = () => {
+	return cy.get('[data-test="dialog-link"]', {timeout: Cypress.config('defaultCommandTimeout') * 50});
+};
+
+const getGesuchstellerFaelleLoeschen = () => {
+    return cy.getByData('gesuchsteller-faelle-loeschen');
+};
+
+const getGesuchstellerIn = (user: User) => {
+    return cy.getByData('gesuchsteller.' + normalizeUser(user));
+};
+
+const getGesuchstellerInToRemoveFaelle = (user: User) => {
+    return cy.getByData('gesuchsteller.' + normalizeUser(user) + '-loeschen');
+};
+
+const getGesucheLoeschenButton = () => {
+    return cy.getByData('delete-gesuche');
+};
+
+// !! -- PAGE ACTIONS -- !!
+
+const createPapierTestfall = (data: {testFall: TestFall, gemeinde: GemeindeTestFall, periode: TestPeriode, betreuungsstatus: TestBetreuungsstatus, }) => {
+    navigateToTestfaelle();
+    getGemeindeSelection().click();
+    getGemeindeOption(data.gemeinde).click();
+    getPeriodeSelection().click();
+    getPeriodeOption(data.periode).click();
+    getBetreuungsstatus(data.betreuungsstatus).find('label').click();
+    createAndOpenTestfall(data.testFall);
+};
+
+const createOnlineTestfall = (data: {
     testFall: TestFall;
     gemeinde: GemeindeTestFall;
     periode: TestPeriode;
     betreuungsstatus: TestBetreuungsstatus;
     besitzerin: TestGesuchstellende;
 }) => {
-    cy.getByData('page-title').contains('Alle Fälle');
-    cy.getByData('page-menu').click();
-    cy.getByData('action-admin.testdaten').click();
-    cy.getByData('gemeinde').click();
-    cy.getByData(`gemeinde.${data.gemeinde}`).click();
-    cy.getByData('periode').click();
-    cy.getByData(`periode.${data.periode}`).click();
-    cy.getByData(`creationType.${data.betreuungsstatus}`).find('label').click();
-    cy.getByData(`gesuchsteller`).click();
-    cy.getByData(`gesuchsteller.${normalizeUser(data.besitzerin)}`).click();
-    cy.getByData(data.testFall).click();
-    cy.get('[data-test="dialog-link"]', { timeout: 20000 }).click();
-    cy.getByData('fall-creation-eingangsdatum').find('input').should('have.value', '15.2.2016');
+    navigateToTestfaelle();
+    getGemeindeSelection().click();
+    getGemeindeOption(data.gemeinde).click();
+    getPeriodeSelection().click();
+    getPeriodeOption(data.periode).click();
+    getBetreuungsstatus(data.betreuungsstatus).find('label').click();
+    getBesitzerinSelection().click();
+    getBesitzerinOption(data.besitzerin).click();
+    createAndOpenTestfall(data.testFall);
 };
 
+function navigateToTestfaelle(): void {
+    MainNavigationPO.getMenuButton().click();
+    MainNavigationPO.getTestdatenLink().click();
+}
+
+function createAndOpenTestfall(testfall: TestFall) {
+    cy.waitForRequest('GET','**/dossier/id//**', () => {
+        getTestfall(testfall).click();
+        getFallLink().click();
+    });
+}
+
+
 export const TestFaellePO = {
-    createNewTestFaelle,
-    createNewTestFallIn,
+    // page objects
+    getGemeindeSelection,
+    getGemeindeOption,
+    getPeriodeSelection,
+    getPeriodeOption,
+    getBesitzerinSelection,
+    getBesitzerinOption,
+    getBetreuungsstatus,
+    getTestfall,
+    getFallLink,
+    getGesuchstellerFaelleLoeschen,
+    getGesuchstellerIn,
+    getGesuchstellerInToRemoveFaelle,
+    getGesucheLoeschenButton,
+    // page actions
+    createPapierTestfall,
+    createOnlineTestfall,
 };

@@ -15,4 +15,6 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+export * from './institution-list.po';
+export * from './tagesschule.po';
 export * from './test-faelle.po';

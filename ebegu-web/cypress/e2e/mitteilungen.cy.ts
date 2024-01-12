@@ -1,4 +1,13 @@
-import { getUser, normalizeUser } from '@dv-e2e/types';
+import {
+    AntragCreationPO,
+    DossierToolbarGesuchstellendePO,
+    MainNavigationPO,
+    MitteilungenPO,
+    NavbarPO,
+    PosteingangPO,
+    TestFaellePO,
+} from '@dv-e2e/page-objects';
+import { getUser } from '@dv-e2e/types';
 
 describe('Kibon - Test Mitteilungen', () => {
     const userSuperAdmin = getUser('[1-Superadmin] E-BEGU Superuser');
@@ -17,21 +26,17 @@ describe('Kibon - Test Mitteilungen', () => {
         cy.login(userSuperAdmin);
         cy.visit('/#/faelle');
 
-        cy.getByData('page-menu').click();
-        cy.getByData('action-admin.testdaten').click();
-        cy.getByData('creationType.verfuegt').find('label').click();
-        cy.getByData('gesuchsteller').click();
-        cy.getByData(`gesuchsteller.${normalizeUser(userGS)}`).click();
-        cy.getByData('gemeinde').click();
-        cy.getByData('gemeinde.London').click();
-        cy.getByData('periode').click();
-        cy.getByData('periode.2023/24').click();
+        TestFaellePO.createOnlineTestfall({
+            testFall: 'testfall-2',
+            besitzerin: '[5-GS] Michael Berger',
+            betreuungsstatus: 'verfuegt',
+            periode: '2023/24',
+            gemeinde: 'London'
+        });
 
-        cy.getByData('testfall-2').click();
-        cy.get('[data-test="dialog-link"]', { timeout: 75000 }).click();
-        cy.getByData('fall-creation-eingangsdatum').find('input').should('have.value', '15.2.2016');
-        cy.getByData('verantwortlicher').click();
-        cy.getByData(`option.${normalizeUser(userSB)}`).click();
+        AntragCreationPO.getEingangsdatum().find('input').should('have.value', '15.2.2016');
+        AntragCreationPO.getVerantwortlicher().click();
+        AntragCreationPO.getUserOption(userSB, false).click();
 
         cy.url().then((url) => {
             const parts = new URL(url);
@@ -43,62 +48,63 @@ describe('Kibon - Test Mitteilungen', () => {
         cy.viewport('iphone-8');
         cy.login(userGS);
 
-        cy.intercept('GET', '**/gesuchsperioden/gemeinde/**').as('untilReadyGS1');
-        cy.visit(gesuchUrl);
-        cy.wait('@untilReadyGS1', {timeout: 17500});
+        cy.waitForRequest('GET', '**/gesuchsperioden/gemeinde/**', () => {
+            cy.visit(gesuchUrl);
+        }, {waitOptions: {timeout: 17500}});
 
-        cy.getByData('mobile-menu-button').click();
-        cy.getByData('menu.mitteilungen').click();
+        MainNavigationPO.getMobileMenuButton().click();
+        DossierToolbarGesuchstellendePO.getMitteilungen().click();
 
-        cy.getByData('subject').type(subjectGS);
-        cy.getByData('nachricht').type(inhaltGS);
-        cy.intercept('PUT', '**/mitteilungen/send').as('sendingMitteilung');
-        cy.getByData('container.senden', 'navigation-button').click();
-        cy.wait('@sendingMitteilung');
+        MitteilungenPO.getSubjectInput().type(subjectGS);
+        MitteilungenPO.getNachrichtInput().type(inhaltGS);
+        cy.waitForRequest('PUT', '**/mitteilungen/send', () => {
+            MitteilungenPO.getNachrichtSendenButton().click();
+        });
         cy.resetViewport();
     });
 
     it('Sachbearbeiter sees message and responds', () => {
         cy.login(userSB);
 
+        // TODO: add support for intercepting multiple requests in custom command
         cy.intercept('GET', '**/mitteilungen/amountnewforuser/**').as('mitteilungCount');
         cy.intercept('GET', '**/gesuchsperioden/gemeinde/**').as('untilReadySB');
         cy.visit(gesuchUrl);
         cy.wait('@untilReadySB', {timeout: 17500});
         cy.wait('@mitteilungCount');
 
-        cy.getByData('posteingang-link').should('include.text', '(1)');
-        cy.getByData('posteingang-link').click();
+        NavbarPO.getLinkPosteingang().should('include.text', '(1)');
+        NavbarPO.getLinkPosteingang().click();
 
-        cy.getByData('mitteilung#0').click();
+        PosteingangPO.getMitteilung(0).click();
 
-        cy.getByData('container.mitteilung#0', 'nachricht-subject').should('include.text', subjectGS);
-        cy.getByData('container.mitteilung#0').click();
-        cy.getByData('container.mitteilung#0', 'nachricht-inhalt').should('include.text', inhaltGS);
+        MitteilungenPO.getSubjectOfMitteilung(0).should('include.text', subjectGS);
+        MitteilungenPO.getMitteilung(0).click();
+        MitteilungenPO.getInhaltOfMitteilung(0).should('include.text', inhaltGS);
 
-        cy.getByData('empfaenger').select('Antragsteller/in');
-        cy.getByData('subject').type(subjectSB);
-        cy.getByData('nachricht').type(inhaltSB);
-        cy.intercept('PUT', '**/mitteilungen/send').as('sendingMitteilung');
-        cy.getByData('container.senden', 'navigation-button').click();
-        cy.wait('@sendingMitteilung');
+        MitteilungenPO.getEmpfangendeInput().select('Antragsteller/in');
+        MitteilungenPO.getSubjectInput().type(subjectSB);
+        MitteilungenPO.getNachrichtInput().type(inhaltSB);
+        cy.waitForRequest('PUT', '**/mitteilungen/send', () => {
+            MitteilungenPO.getNachrichtSendenButton().click();
+        });
     });
 
     it('Gesuchsteller sees Sachbearbeiter message', () => {
         cy.viewport('iphone-8');
         cy.login(userGS);
 
-        cy.intercept('GET', '**/amountnew/dossier/**').as('mitteilungCount');
-        cy.visit('/#/');
-        cy.wait('@mitteilungCount');
+        cy.waitForRequest('GET', '**/amountnew/dossier/**', () => {
+            cy.visit('/#/');
+        });
 
-        cy.getByData('mobile-menu-button').click();
-        cy.getByData('menu.mitteilungen').should('include.text', '(1)');
-        cy.getByData('menu.mitteilungen').click();
+        MainNavigationPO.getMobileMenuButton().click();
+        DossierToolbarGesuchstellendePO.getMitteilungen().should('include.text', '(1)');
+        DossierToolbarGesuchstellendePO.getMitteilungen().click();
 
-        cy.getByData('container.mitteilung#0', 'nachricht-subject').should('include.text', subjectSB);
-        cy.getByData('container.mitteilung#0').click();
-        cy.getByData('container.mitteilung#0', 'nachricht-inhalt').should('include.text', inhaltSB);
+        MitteilungenPO.getSubjectOfMitteilung(0).should('include.text', subjectSB);
+        MitteilungenPO.getMitteilung(0).click();
+        MitteilungenPO.getInhaltOfMitteilung(0).should('include.text', inhaltSB);
         cy.resetViewport();
     });
 });

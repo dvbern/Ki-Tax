@@ -17,22 +17,16 @@
 
 package ch.dvbern.ebegu.finanzielleSituationRechner;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.util.Objects;
+import ch.dvbern.ebegu.dto.FinanzDatenDTO;
+import ch.dvbern.ebegu.dto.FinanzielleSituationResultateDTO;
+import ch.dvbern.ebegu.entities.*;
+import ch.dvbern.ebegu.util.MathUtil;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-
-import ch.dvbern.ebegu.dto.FinanzDatenDTO;
-import ch.dvbern.ebegu.dto.FinanzielleSituationResultateDTO;
-import ch.dvbern.ebegu.entities.AbstractFinanzielleSituation;
-import ch.dvbern.ebegu.entities.Einkommensverschlechterung;
-import ch.dvbern.ebegu.entities.EinkommensverschlechterungInfo;
-import ch.dvbern.ebegu.entities.FinanzielleSituation;
-import ch.dvbern.ebegu.entities.Gesuch;
-import ch.dvbern.ebegu.entities.GesuchstellerContainer;
-import ch.dvbern.ebegu.util.MathUtil;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.Objects;
 
 /**
  * Abstract Class basiert auf dem Berner Finanzielle Situation Berechnung
@@ -296,10 +290,17 @@ public abstract class AbstractFinanzielleSituationRechner {
 	@Nullable
 	public static BigDecimal calcGeschaeftsgewinnDurchschnitt(@Nullable FinanzielleSituation finanzielleSituation) {
 		if (finanzielleSituation != null) {
-			return calcGeschaeftsgewinnDurchschnitt(
+			BigDecimal gBJ = calcGeschaeftsgewinnWithErsatzeinkommenAusSelbststaendigkeit(
 				finanzielleSituation.getGeschaeftsgewinnBasisjahr(),
+				finanzielleSituation.getErsatzeinkommenSelbststaendigkeitBasisjahr());
+			BigDecimal gBJ1 = calcGeschaeftsgewinnWithErsatzeinkommenAusSelbststaendigkeit(
 				finanzielleSituation.getGeschaeftsgewinnBasisjahrMinus1(),
-				finanzielleSituation.getGeschaeftsgewinnBasisjahrMinus2());
+				finanzielleSituation.getErsatzeinkommenSelbststaendigkeitBasisjahrMinus1());
+			BigDecimal gBJ2 = calcGeschaeftsgewinnWithErsatzeinkommenAusSelbststaendigkeit(
+				finanzielleSituation.getGeschaeftsgewinnBasisjahrMinus2(),
+				finanzielleSituation.getErsatzeinkommenSelbststaendigkeitBasisjahrMinus2());
+
+			return calcGeschaeftsgewinnDurchschnitt(gBJ, gBJ1, gBJ2);
 		}
 		return null;
 	}
@@ -318,22 +319,42 @@ public abstract class AbstractFinanzielleSituationRechner {
 		int basisJahrPlus) {
 		if (basisJahrPlus == 1) {
 			if (finanzielleSituation != null && einkVersBjp1 != null) {
-				return calcGeschaeftsgewinnDurchschnitt(
+				BigDecimal gBJ = calcGeschaeftsgewinnWithErsatzeinkommenAusSelbststaendigkeit(
 					einkVersBjp1.getGeschaeftsgewinnBasisjahr(),
+					null);
+				BigDecimal gBJ1 =  calcGeschaeftsgewinnWithErsatzeinkommenAusSelbststaendigkeit(
 					finanzielleSituation.getGeschaeftsgewinnBasisjahr(),
-					finanzielleSituation.getGeschaeftsgewinnBasisjahrMinus1());
+					finanzielleSituation.getErsatzeinkommenSelbststaendigkeitBasisjahr());
+				BigDecimal gBJ2 =  calcGeschaeftsgewinnWithErsatzeinkommenAusSelbststaendigkeit(
+					finanzielleSituation.getGeschaeftsgewinnBasisjahrMinus1(),
+					finanzielleSituation.getErsatzeinkommenSelbststaendigkeitBasisjahrMinus1());
+
+				return calcGeschaeftsgewinnDurchschnitt(gBJ, gBJ1, gBJ2);
 			}
 		} else if (basisJahrPlus == 2 && finanzielleSituation != null && einkVersBjp2 != null) {
 			if (ekvi != null && ekvi.getEkvFuerBasisJahrPlus1() && einkVersBjp1 != null) {
-				return calcGeschaeftsgewinnDurchschnitt(
+				BigDecimal gBJ =  calcGeschaeftsgewinnWithErsatzeinkommenAusSelbststaendigkeit(
 					einkVersBjp2.getGeschaeftsgewinnBasisjahr(),
+					null);
+				BigDecimal gBJ1 =  calcGeschaeftsgewinnWithErsatzeinkommenAusSelbststaendigkeit(
 					einkVersBjp1.getGeschaeftsgewinnBasisjahr(),
-					finanzielleSituation.getGeschaeftsgewinnBasisjahr());
+					null);
+				BigDecimal gBJ2 =  calcGeschaeftsgewinnWithErsatzeinkommenAusSelbststaendigkeit(
+					finanzielleSituation.getGeschaeftsgewinnBasisjahr(),
+					finanzielleSituation.getErsatzeinkommenSelbststaendigkeitBasisjahr());
+
+				return calcGeschaeftsgewinnDurchschnitt(gBJ, gBJ1, gBJ2);
 			} else {
-				return calcGeschaeftsgewinnDurchschnitt(
+				BigDecimal gBJ =  calcGeschaeftsgewinnWithErsatzeinkommenAusSelbststaendigkeit(
 					einkVersBjp2.getGeschaeftsgewinnBasisjahr(),
+					null);
+				BigDecimal gBJ1 =  calcGeschaeftsgewinnWithErsatzeinkommenAusSelbststaendigkeit(
 					einkVersBjp2.getGeschaeftsgewinnBasisjahrMinus1(),
-					finanzielleSituation.getGeschaeftsgewinnBasisjahr());
+					null);
+				BigDecimal gBJ2 =  calcGeschaeftsgewinnWithErsatzeinkommenAusSelbststaendigkeit(
+					finanzielleSituation.getGeschaeftsgewinnBasisjahr(),
+					finanzielleSituation.getErsatzeinkommenSelbststaendigkeitBasisjahr());
+				return calcGeschaeftsgewinnDurchschnitt(gBJ, gBJ1, gBJ2);
 			}
 		}
 		return null;
@@ -344,7 +365,7 @@ public abstract class AbstractFinanzielleSituationRechner {
 	 * uebergeben
 	 */
 	@Nullable
-	public static BigDecimal calcGeschaeftsgewinnDurchschnitt(
+	private static BigDecimal calcGeschaeftsgewinnDurchschnitt(
 		@Nullable final BigDecimal geschaeftsgewinnBasisjahr,
 		@Nullable final BigDecimal geschaeftsgewinnBasisjahrMinus1,
 		@Nullable final BigDecimal geschaeftsgewinnBasisjahrMinus2) {
@@ -372,6 +393,21 @@ public abstract class AbstractFinanzielleSituationRechner {
 		}
 
 		return null;
+	}
+
+	@Nullable
+	private static BigDecimal calcGeschaeftsgewinnWithErsatzeinkommenAusSelbststaendigkeit(
+		@Nullable BigDecimal geschaeftsgewinn,
+		@Nullable BigDecimal ersatzeinkommenAusSelbststaendigkeit) {
+		if (geschaeftsgewinn == null) {
+			return null;
+		}
+
+		if (ersatzeinkommenAusSelbststaendigkeit == null) {
+			return geschaeftsgewinn;
+		}
+
+		return geschaeftsgewinn.add(ersatzeinkommenAusSelbststaendigkeit);
 	}
 
 	/**

@@ -14,11 +14,16 @@
  */
 
 import {waitForAsync} from '@angular/core/testing';
+import {of} from 'rxjs';
+import {EinstellungRS} from '../../../../../admin/service/einstellungRS.rest';
 import {ngServicesMock} from '../../../../../hybridTools/ngServicesMocks';
 import {TSCreationAction} from '../../../../../models/enums/TSCreationAction';
 import {TSEingangsart} from '../../../../../models/enums/TSEingangsart';
+import {TSEinstellungKey} from '../../../../../models/enums/TSEinstellungKey';
+import {TSEinstellung} from '../../../../../models/TSEinstellung';
 import {TSFamiliensituation} from '../../../../../models/TSFamiliensituation';
 import {TSFamiliensituationContainer} from '../../../../../models/TSFamiliensituationContainer';
+import {TSGesuchsperiode} from '../../../../../models/TSGesuchsperiode';
 import {TSGesuchsteller} from '../../../../../models/TSGesuchsteller';
 import {TSGesuchstellerContainer} from '../../../../../models/TSGesuchstellerContainer';
 import {GESUCH_JS_MODULE} from '../../../../gesuch.module';
@@ -27,6 +32,7 @@ import {GesuchModelManager} from '../../../../service/gesuchModelManager';
 describe('finanzielleSituationView', () => {
 
     let gesuchModelManager: GesuchModelManager;
+    let einstellungRS: EinstellungRS;
 
     beforeEach(angular.mock.module(GESUCH_JS_MODULE.name));
 
@@ -41,6 +47,11 @@ describe('finanzielleSituationView', () => {
         gesuchModelManager = $injector.get('GesuchModelManager');
         const $rootScope = $injector.get('$rootScope');
         scope = $rootScope.$new();
+        einstellungRS = $injector.get('EinstellungRS');
+        const zusaetzlicheFelderEinkommenEinstellung = new TSEinstellung(null,
+            TSEinstellungKey.ZUSATZLICHE_FELDER_ERSATZEINKOMMEN,
+            'false');
+        spyOn(einstellungRS, 'getAllEinstellungenBySystemCached').and.returnValue(of([zusaetzlicheFelderEinkommenEinstellung]));
     }));
 
     beforeEach(waitForAsync(() => {
@@ -48,6 +59,7 @@ describe('finanzielleSituationView', () => {
             gesuchModelManager.getGesuch().familiensituationContainer = new TSFamiliensituationContainer();
             gesuchModelManager.getGesuch().familiensituationContainer.familiensituationJA = new TSFamiliensituation();
             gesuchModelManager.getGesuch().gesuchsteller1 = new TSGesuchstellerContainer(new TSGesuchsteller());
+            gesuchModelManager.getGesuch().gesuchsperiode = new TSGesuchsperiode();
         });
     }));
 

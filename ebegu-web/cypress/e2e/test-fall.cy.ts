@@ -28,7 +28,12 @@ describe('Kibon - generate Testfälle [Superadmin]', () => {
     });
 
     it('should create a prefilled new Testfall Antrag', () => {
-        TestFaellePO.createNewTestFaelle('testfall-2', 'London') ;
+        TestFaellePO.createPapierTestfall({
+            testFall: 'testfall-2',
+            gemeinde: 'London',
+            periode: '2022/23',
+            betreuungsstatus: 'warten',
+        });
     });
 });
 

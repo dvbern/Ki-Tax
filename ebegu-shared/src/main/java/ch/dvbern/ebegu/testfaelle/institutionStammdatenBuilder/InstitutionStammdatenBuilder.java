@@ -40,7 +40,7 @@ public abstract class InstitutionStammdatenBuilder {
 			String idInstitutionStammdatenWeissenstein,
 			String idInstitutionStammdatenBruennen,
 			String idInstitutionStammdatenTagesfamilie,
-			String idInstitutionStammdatenTagesschule,
+			@Nullable String idInstitutionStammdatenTagesschule,
 			@Nullable String idInstitutionStammdatenFerieninsel) {
 		this.institutionStammdatenService = institutionStammdatenService;
 		this.idInstitutionStammdatenWeissenstein = idInstitutionStammdatenWeissenstein;
@@ -48,6 +48,14 @@ public abstract class InstitutionStammdatenBuilder {
 		this.idInstitutionStammdatenTagesfamilie = idInstitutionStammdatenTagesfamilie;
 		this.idInstitutionStammdatenTagesschule = idInstitutionStammdatenTagesschule;
 		this.idInstitutionStammdatenFerieninsel = idInstitutionStammdatenFerieninsel;
+	}
+
+	protected InstitutionStammdatenBuilder(
+		InstitutionStammdatenService institutionStammdatenService,
+		String idInstitutionStammdatenWeissenstein,
+		String idInstitutionStammdatenBruennen,
+		String idInstitutionStammdatenTagesfamilie) {
+		this(institutionStammdatenService, idInstitutionStammdatenWeissenstein, idInstitutionStammdatenBruennen, idInstitutionStammdatenTagesfamilie, null,null);
 	}
 
 	protected InstitutionStammdatenBuilder(

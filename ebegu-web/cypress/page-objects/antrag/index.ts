@@ -15,10 +15,25 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-export * from './einkommensverschlechterung.po';
+export * from './abwesenheit.po';
+export * from './antrag-creation.po';
 export * from './beschaeftigungspensum.po';
 export * from './betreuung.po';
+export * from './dokumente.po';
+export * from './einkommensverschlechterung.po';
+export * from './einkommensverschlechterungInfo.po';
+export * from './einkommensverschlechterungResultate.po';
 export * from './familiensituation.po';
+export * from './finanzielleSituation.po';
+export * from './finanzielleSituationStart.po';
+export * from './finanzielleSituationResultate.po';
+export * from './freigabe.po';
 export * from './kind.po';
+export * from './kommentar.po';
+export * from './navigation.po';
 export * from './papiergesuch.po';
-export * from './tagesschule.po';
+export * from './sidenav.po';
+export * from '../admin/tagesschule.po';
+export * from './umzug.po';
+export * from './verfuegen.po';
+export * from './verfuegung.po';

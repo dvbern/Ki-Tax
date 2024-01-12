@@ -1,5 +1,10 @@
 {
     "valid": {
+        "Start": {
+            "sozialhilfebeziehende": "nein",
+            "iban": "CH3908704016075473007",
+            "kontoinhaber": "Dagmar Wälti"
+        },
         "GS1": {
             "nettolohn": "60000",
             "familienzulage": "4000",
