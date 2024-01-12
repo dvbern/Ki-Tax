@@ -17,21 +17,15 @@
 
 package ch.dvbern.ebegu.services;
 
+import ch.dvbern.ebegu.entities.*;
+import ch.dvbern.ebegu.enums.DokumentTyp;
+import ch.dvbern.ebegu.enums.Sprache;
+
+import javax.annotation.Nonnull;
 import java.time.LocalDate;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
-
-import javax.annotation.Nonnull;
-
-import ch.dvbern.ebegu.entities.BfsGemeinde;
-import ch.dvbern.ebegu.entities.Gemeinde;
-import ch.dvbern.ebegu.entities.GemeindeStammdaten;
-import ch.dvbern.ebegu.entities.GemeindeStammdatenGesuchsperiode;
-import ch.dvbern.ebegu.entities.Gesuchsperiode;
-import ch.dvbern.ebegu.entities.Mandant;
-import ch.dvbern.ebegu.enums.DokumentTyp;
-import ch.dvbern.ebegu.enums.Sprache;
 
 /**
  * Service zum Verwalten von Gemeinden
@@ -115,6 +109,16 @@ public interface GemeindeService {
 	 */
 	@Nonnull
 	GemeindeStammdaten uploadLogo(
+		@Nonnull String gemeindeId,
+		@Nonnull byte[] content,
+		@Nonnull String name,
+		@Nonnull String type);
+
+	/**
+	 * Updates the alternative tagesschule logo of the given Gemeinde wth the given content
+	 */
+	@Nonnull
+	GemeindeStammdaten uploadAlternativeLogo(
 		@Nonnull String gemeindeId,
 		@Nonnull byte[] content,
 		@Nonnull String name,

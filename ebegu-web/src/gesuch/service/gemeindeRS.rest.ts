@@ -185,19 +185,35 @@ export class GemeindeRS implements IEntityRS {
         return `${this.serviceURL}/logo/data/${encodeURIComponent(gemeindeId)}?timestamp=${new Date().getTime()}`;
     }
 
+    public getAlternativeLogoUrl(gemeindeId: string): string {
+        return `${this.serviceURL}/alternative-logo/data/${encodeURIComponent(gemeindeId)}?timestamp=${new Date().getTime()}`;
+    }
+
     public getSupportedImageUrl(): string {
         return `${this.serviceURL}/supported/image?timestamp=${new Date().getTime()}`;
     }
 
+    public uploadAlternativeLogoImage(gemeindeId: string, fileToUpload: File): IPromise<any> {
+        const formData=  this.createFormDataFromFileToUpload(fileToUpload);
+        return this.postLogo(gemeindeId, formData, true);
+    }
+
     public uploadLogoImage(gemeindeId: string, fileToUpload: File): IPromise<any> {
+        const formData = this.createFormDataFromFileToUpload(fileToUpload);
+        return this.postLogo(gemeindeId, formData, false);
+    }
+
+    private createFormDataFromFileToUpload(fileToUpload: File): FormData {
         const formData = new FormData();
         formData.append('file', fileToUpload, encodeURIComponent(fileToUpload.name));
         formData.append('kat', fileToUpload, encodeURIComponent('logo'));
-        return this.postLogo(gemeindeId, formData);
+        return formData;
     }
 
-    private postLogo(gemeindeId: string, formData: FormData): IPromise<any> {
-        const result = this.$http.post(this.getLogoUrl(gemeindeId), formData, {
+    private postLogo(gemeindeId: string, formData: FormData, alternativeLogo: boolean): IPromise<any> {
+        const logoUrl = alternativeLogo ? this.getAlternativeLogoUrl(gemeindeId) : this.getLogoUrl(gemeindeId);
+
+        const result = this.$http.post(logoUrl, formData, {
             transformRequest: (request: IHttpRequestTransformer) => request,
             headers: {'Content-Type': undefined}
         })

@@ -17,15 +17,26 @@
 
 package ch.dvbern.ebegu.api.resource;
 
-import java.io.IOException;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.stream.Collectors;
+import ch.dvbern.ebegu.api.AuthConstants;
+import ch.dvbern.ebegu.api.converter.JaxBConverter;
+import ch.dvbern.ebegu.api.dtos.*;
+import ch.dvbern.ebegu.api.resource.util.MultipartFormToFileConverter;
+import ch.dvbern.ebegu.api.resource.util.TransferFile;
+import ch.dvbern.ebegu.api.util.RestUtil;
+import ch.dvbern.ebegu.authentication.PrincipalBean;
+import ch.dvbern.ebegu.einladung.Einladung;
+import ch.dvbern.ebegu.entities.*;
+import ch.dvbern.ebegu.enums.*;
+import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
+import ch.dvbern.ebegu.errors.EbeguRuntimeException;
+import ch.dvbern.ebegu.errors.MergeDocException;
+import ch.dvbern.ebegu.services.*;
+import ch.dvbern.ebegu.util.Constants;
+import com.lowagie.text.Image;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import org.apache.commons.lang3.Validate;
+import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -37,88 +48,15 @@ import javax.inject.Inject;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.CookieParam;
-import javax.ws.rs.DELETE;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.Cookie;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
+import javax.ws.rs.*;
+import javax.ws.rs.core.*;
 import javax.ws.rs.core.Response.Status;
-import javax.ws.rs.core.UriInfo;
+import java.io.IOException;
+import java.time.LocalDate;
+import java.util.*;
+import java.util.stream.Collectors;
 
-import ch.dvbern.ebegu.api.AuthConstants;
-import ch.dvbern.ebegu.api.converter.JaxBConverter;
-import ch.dvbern.ebegu.api.dtos.JaxBfsGemeinde;
-import ch.dvbern.ebegu.api.dtos.JaxEinstellung;
-import ch.dvbern.ebegu.api.dtos.JaxExternalClientAssignment;
-import ch.dvbern.ebegu.api.dtos.JaxGemeinde;
-import ch.dvbern.ebegu.api.dtos.JaxGemeindeKonfiguration;
-import ch.dvbern.ebegu.api.dtos.JaxGemeindeRegistrierung;
-import ch.dvbern.ebegu.api.dtos.JaxGemeindeStammdaten;
-import ch.dvbern.ebegu.api.dtos.JaxGemeindeStammdatenGesuchsperiodeFerieninsel;
-import ch.dvbern.ebegu.api.dtos.JaxGemeindeStammdatenLite;
-import ch.dvbern.ebegu.api.dtos.JaxId;
-import ch.dvbern.ebegu.api.resource.util.MultipartFormToFileConverter;
-import ch.dvbern.ebegu.api.resource.util.TransferFile;
-import ch.dvbern.ebegu.api.util.RestUtil;
-import ch.dvbern.ebegu.authentication.PrincipalBean;
-import ch.dvbern.ebegu.einladung.Einladung;
-import ch.dvbern.ebegu.entities.Adresse;
-import ch.dvbern.ebegu.entities.Benutzer;
-import ch.dvbern.ebegu.entities.BfsGemeinde;
-import ch.dvbern.ebegu.entities.Einstellung;
-import ch.dvbern.ebegu.entities.ExternalClient;
-import ch.dvbern.ebegu.entities.Gemeinde;
-import ch.dvbern.ebegu.entities.GemeindeStammdaten;
-import ch.dvbern.ebegu.entities.GemeindeStammdatenGesuchsperiode;
-import ch.dvbern.ebegu.entities.GemeindeStammdatenGesuchsperiodeFerieninsel;
-import ch.dvbern.ebegu.entities.GemeindeStammdatenKorrespondenz;
-import ch.dvbern.ebegu.entities.Gesuchsperiode;
-import ch.dvbern.ebegu.entities.Mandant;
-import ch.dvbern.ebegu.enums.DokumentTyp;
-import ch.dvbern.ebegu.enums.ErrorCodeEnum;
-import ch.dvbern.ebegu.enums.GemeindeStatus;
-import ch.dvbern.ebegu.enums.GesuchsperiodeStatus;
-import ch.dvbern.ebegu.enums.Sprache;
-import ch.dvbern.ebegu.enums.UserRole;
-import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
-import ch.dvbern.ebegu.errors.EbeguRuntimeException;
-import ch.dvbern.ebegu.errors.MergeDocException;
-import ch.dvbern.ebegu.services.BenutzerService;
-import ch.dvbern.ebegu.services.EinstellungService;
-import ch.dvbern.ebegu.services.ExternalClientService;
-import ch.dvbern.ebegu.services.FerieninselStammdatenService;
-import ch.dvbern.ebegu.services.GemeindeService;
-import ch.dvbern.ebegu.services.GesuchsperiodeService;
-import ch.dvbern.ebegu.services.MandantService;
-import ch.dvbern.ebegu.services.PDFService;
-import ch.dvbern.ebegu.util.Constants;
-import com.lowagie.text.Image;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import org.apache.commons.lang3.Validate;
-import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
-
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_BG;
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_GEMEINDE;
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_MANDANT;
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_SOZIALDIENST;
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_TS;
-import static ch.dvbern.ebegu.enums.UserRoleName.GESUCHSTELLER;
-import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_BG;
-import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_GEMEINDE;
-import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_MANDANT;
-import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_SOZIALDIENST;
-import static ch.dvbern.ebegu.enums.UserRoleName.SACHBEARBEITER_TS;
-import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
+import static ch.dvbern.ebegu.enums.UserRoleName.*;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -554,6 +492,28 @@ public class GemeindeResource {
 		return Response.ok().build();
 	}
 
+	@ApiOperation("Stores the alternative logo-image for tagesschule of the Gemeinde with the given id")
+	@POST
+	@Path("/alternative-logo/data/{gemeindeId}")
+	@Consumes(MediaType.MULTIPART_FORM_DATA)
+	@Produces(MediaType.APPLICATION_JSON)
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_GEMEINDE, ADMIN_BG, ADMIN_TS, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
+	public Response uploadAlternativeLogoTagesschule(
+		@Nonnull @NotNull @PathParam("gemeindeId") JaxId gemeindeJAXPId,
+		@Nonnull @NotNull MultipartFormDataInput input) {
+
+		List<TransferFile> fileList = MultipartFormToFileConverter.parse(input);
+
+		Validate.notEmpty(fileList, "Need to upload something");
+
+		String gemeindeId = converter.toEntityId(gemeindeJAXPId);
+
+		TransferFile file = fileList.get(0);
+		gemeindeService.uploadAlternativeLogo(gemeindeId, file.getContent(), file.getFilename(), file.getFiletype());
+
+		return Response.ok().build();
+	}
+
 	@ApiOperation("Checks if it isa supported image")
 	@POST
 	@Path("/supported/image")
@@ -589,6 +549,34 @@ public class GemeindeResource {
 				String type = stammdaten.get().getGemeindeStammdatenKorrespondenz().getLogoType();
 				return RestUtil.buildDownloadResponse(false, name == null ? "logo" : name,
 					type == null ? "image/*" : type, stammdaten.get().getGemeindeStammdatenKorrespondenz().getLogoContent());
+			} catch (IOException e) {
+				return Response.status(Status.NOT_FOUND).entity("Logo kann nicht gelesen werden").build();
+			}
+		}
+
+		return Response.status(Status.NO_CONTENT).build();
+	}
+
+	@ApiOperation("Returns the alternative logo image for tagesschulen of the Gemeinde with the given id or an errorcode if none is available")
+	@GET
+	@Path("/alternative-logo/data/{gemeindeId}")
+	@Consumes(MediaType.WILDCARD)
+	@Produces(MediaType.APPLICATION_OCTET_STREAM)
+	@PermitAll // Oeffentliche Daten
+	public Response downloadAlternativeLogo(
+		@Nonnull @NotNull @PathParam("gemeindeId") JaxId gemeindeJAXPId) {
+
+		String gemeindeId = converter.toEntityId(gemeindeJAXPId);
+		Optional<GemeindeStammdaten> stammdaten = gemeindeService.getGemeindeStammdatenByGemeindeId(gemeindeId);
+		if (stammdaten.isPresent()) {
+			try {
+				String name = stammdaten.get().getGemeindeStammdatenKorrespondenz().getAlternativesLogoTagesschuleName();
+				String type = stammdaten.get().getGemeindeStammdatenKorrespondenz().getAlternativesLogoTagesschuleType();
+
+				return RestUtil.buildDownloadResponse(false,
+					name == null ? "logo" : name,
+					type == null ? "image/*" : type,
+					stammdaten.get().getGemeindeStammdatenKorrespondenz().getAlternativesLogoTagesschuleContent());
 			} catch (IOException e) {
 				return Response.status(Status.NOT_FOUND).entity("Logo kann nicht gelesen werden").build();
 			}
