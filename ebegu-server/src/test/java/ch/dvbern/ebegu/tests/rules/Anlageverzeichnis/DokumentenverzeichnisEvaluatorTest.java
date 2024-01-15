@@ -910,7 +910,7 @@ public class DokumentenverzeichnisEvaluatorTest extends EasyMockSupport {
 
 
 		testgesuch.getGesuchsteller1().getFinanzielleSituationContainer()
-			.getFinanzielleSituationJA().setErsatzeinkommenSelbststaendigkeitBasisjahr(ZEHN_TAUSEND);
+			.getFinanzielleSituationJA().setErsatzeinkommenSelbststaendigkeitBasisjahr(BigDecimal.ZERO);
 
 		var dokumentGruende = evaluator.calculate(testgesuch, Constants.DEFAULT_LOCALE);
 		var dokumentGruendeErsatzeinkommen = getDokumentGrundsForType(
