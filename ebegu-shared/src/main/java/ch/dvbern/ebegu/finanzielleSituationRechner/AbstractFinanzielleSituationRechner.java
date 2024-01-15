@@ -536,6 +536,22 @@ public abstract class AbstractFinanzielleSituationRechner {
 	}
 
 	@Nullable
+	public BigDecimal calcErsatzeinkommen(AbstractFinanzielleSituation abstractFinanzielleSituation) {
+		if (abstractFinanzielleSituation == null) {
+			return null;
+		}
+
+		BigDecimal totalErsatzeinkommen = abstractFinanzielleSituation.getErsatzeinkommen();
+
+		if (abstractFinanzielleSituation instanceof FinanzielleSituation) {
+			FinanzielleSituation finanzielleSituation = (FinanzielleSituation) abstractFinanzielleSituation;
+			totalErsatzeinkommen = subtract(totalErsatzeinkommen, finanzielleSituation.getErsatzeinkommenSelbststaendigkeitBasisjahr());
+		}
+
+		return totalErsatzeinkommen;
+	}
+
+	@Nullable
 	protected BigDecimal calcEinkommenProGS(
 		@Nullable AbstractFinanzielleSituation abstractFinanzielleSituation,
 		@Nullable BigDecimal geschaeftsgewinnDurchschnitt,
