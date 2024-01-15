@@ -200,7 +200,7 @@ export class GemeindeRS implements IEntityRS {
 
     public uploadLogoImage(gemeindeId: string, fileToUpload: File): IPromise<any> {
         const formData = this.createFormDataFromFileToUpload(fileToUpload);
-        return this.postLogo(this.getLogoUrl(gemeindeId), formData, false);
+        return this.postLogo(this.getLogoUrl(gemeindeId), formData);
     }
 
     private createFormDataFromFileToUpload(fileToUpload: File): FormData {
@@ -220,7 +220,7 @@ export class GemeindeRS implements IEntityRS {
                 return response.data;
             });
         if (!result) {
-            this.$log.error(`Upload Gemeinde (${gemeindeId}) Logo failed`);
+            this.$log.error(`Upload Gemeinde Logo failed`);
         }
         return result;
     }
