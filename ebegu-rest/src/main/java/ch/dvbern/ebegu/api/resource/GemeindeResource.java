@@ -494,7 +494,7 @@ public class GemeindeResource {
 
 	@ApiOperation("Stores the alternative logo-image for tagesschule of the Gemeinde with the given id")
 	@POST
-	@Path("/alternative-logo/data/{gemeindeId}")
+	@Path("/alternativeLogo/data/{gemeindeId}")
 	@Consumes(MediaType.MULTIPART_FORM_DATA)
 	@Produces(MediaType.APPLICATION_JSON)
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_GEMEINDE, ADMIN_BG, ADMIN_TS, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
@@ -559,7 +559,7 @@ public class GemeindeResource {
 
 	@ApiOperation("Returns the alternative logo image for tagesschulen of the Gemeinde with the given id or an errorcode if none is available")
 	@GET
-	@Path("/alternative-logo/data/{gemeindeId}")
+	@Path("/alternativeLogo/data/{gemeindeId}")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_OCTET_STREAM)
 	@PermitAll // Oeffentliche Daten
