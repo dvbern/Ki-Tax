@@ -217,8 +217,11 @@ describe('EbeguUtil', () => {
         });
     });
     describe('hasSprachlicheIndikation', () => {
-        const  kindContainter = new TSKindContainer();
-        kindContainter.kindJA = new TSKind();
+        let kindContainter = new TSKindContainer();
+        beforeEach(() => {
+            kindContainter = new TSKindContainer();
+            kindContainter.kindJA = new TSKind();
+        });
 
         it('should return false if no PensumFachstellenList is defined', () => {
             expect(EbeguUtil.hasSprachlicheIndikation(kindContainter)).toBe(false);
