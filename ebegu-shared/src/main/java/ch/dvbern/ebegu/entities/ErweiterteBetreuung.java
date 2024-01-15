@@ -60,7 +60,7 @@ public class ErweiterteBetreuung extends AbstractMutableEntity {
 
 	@Nonnull
 	@Column(nullable = false)
-	private boolean sprachfoerderungBestaetigt = true;
+	private boolean sprachfoerderungBestaetigt = false;
 
 	@Nullable
 	public Boolean getBetreuungInGemeinde() {

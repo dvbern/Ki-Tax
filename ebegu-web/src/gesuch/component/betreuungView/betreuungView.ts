@@ -176,7 +176,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     private angebotFI: boolean;
     private angebotTFO: boolean = false;
     private isLuzern: boolean;
-    private sprachforderungBestaetigenAktiviert: boolean;
+    private sprachfoerderungBestaetigenAktiviert: boolean;
     public readonly demoFeature = TSDemoFeature.FACHSTELLEN_UEBERGANGSLOESUNG;
 
     public constructor(
@@ -355,7 +355,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
                 });
             response.filter(r => r.key == TSEinstellungKey.SPRACHFOERDERUNG_BESTAETIGEN)
                 .forEach(einstellung => {
-                    this.sprachforderungBestaetigenAktiviert = einstellung.getValueAsBoolean();
+                    this.sprachfoerderungBestaetigenAktiviert = einstellung.getValueAsBoolean();
                 });
         }, error => LOG.error(error));
 
@@ -1054,14 +1054,14 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
             .length > 0;
     }
 
-    public showSprachforderungBestaetigenCheckBox(): boolean {
+    public showSprachfoerderungBestaetigenCheckBox(): boolean {
         if (!this.authServiceRS.isOneOfRoles(TSRoleUtil.getGemeindeOrBGRoles().concat(TSRole.SUPER_ADMIN))) {
             return false;
         }
         if (!EbeguUtil.hasSprachlicheIndikation(this.getKindModel())) {
             return false;
         }
-        if (EbeguUtil.isNotNullAndFalse(this.sprachforderungBestaetigenAktiviert)) {
+        if (EbeguUtil.isNotNullAndFalse(this.sprachfoerderungBestaetigenAktiviert)) {
             return false;
         }
         return true;

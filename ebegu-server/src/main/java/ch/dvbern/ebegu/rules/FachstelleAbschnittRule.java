@@ -61,20 +61,23 @@ public class FachstelleAbschnittRule extends AbstractAbschnittRule {
 	}
 
 	@Nonnull
-	private VerfuegungZeitabschnitt toVerfuegungZeitabschnitt(@Nonnull PensumFachstelle pensumFachstelle,
-			@Nonnull AbstractPlatz platz) {
+	private VerfuegungZeitabschnitt toVerfuegungZeitabschnitt(
+		@Nonnull PensumFachstelle pensumFachstelle,
+		@Nonnull AbstractPlatz platz) {
 		VerfuegungZeitabschnitt zeitabschnitt = createZeitabschnittWithinValidityPeriodOfRule(pensumFachstelle.getGueltigkeit());
 		zeitabschnitt.setFachstellenpensumForAsivAndGemeinde(pensumFachstelle.getPensum());
 		zeitabschnitt.setBetreuungspensumMustBeAtLeastFachstellenpensumForAsivAndGemeinde(
-				betreuungspensumMustBeAtLeastFachstellenpensum(pensumFachstelle.getIntegrationTyp(), platz)
+			betreuungspensumMustBeAtLeastFachstellenpensum(pensumFachstelle.getIntegrationTyp(), platz)
 		);
+		zeitabschnitt.setFachstelleSprachlicheIntegrationBestaetigtForAsivAndGemeinde(
+			fachstelleSprachlicheIntegrationBestaetigtForAsivAndGemeinde(pensumFachstelle.getIntegrationTyp(), platz));
 		zeitabschnitt.setIntegrationTypFachstellenPensumForAsivAndGemeinde(pensumFachstelle.getIntegrationTyp());
 		return zeitabschnitt;
 	}
 
 	private boolean betreuungspensumMustBeAtLeastFachstellenpensum(
-			@Nonnull IntegrationTyp integrationTyp,
-			@Nonnull AbstractPlatz platz
+		@Nonnull IntegrationTyp integrationTyp,
+		@Nonnull AbstractPlatz platz
 	) {
 		// nur bei sprachlicher integration relevant
 		if (integrationTyp != IntegrationTyp.SPRACHLICHE_INTEGRATION) {
@@ -88,7 +91,22 @@ public class FachstelleAbschnittRule extends AbstractAbschnittRule {
 		}
 		// gemeinde kann manuell bestätigen, dass der BG ausbezahlt wird, auch wenn das fachstellenpensum unterschritten ist.
 		return !betreuung.getErweiterteBetreuungContainer()
-				.getErweiterteBetreuungJA()
-				.isAnspruchFachstelleWennPensumUnterschritten();
+			.getErweiterteBetreuungJA()
+			.isAnspruchFachstelleWennPensumUnterschritten();
+	}
+
+	private boolean fachstelleSprachlicheIntegrationBestaetigtForAsivAndGemeinde(
+		@Nonnull IntegrationTyp integrationTyp,
+		@Nonnull AbstractPlatz platz) {
+
+		var betreuung = (Betreuung) platz;
+		if (betreuung.getErweiterteBetreuungContainer().getErweiterteBetreuungJA() == null) {
+			return false;
+		}
+		if (integrationTyp.equals(IntegrationTyp.SPRACHLICHE_INTEGRATION)) {
+			return betreuung.getErweiterteBetreuungContainer().getErweiterteBetreuungJA().isSprachfoerderungBestaetigt();
+		}
+
+		return true;
 	}
 }

@@ -119,16 +119,16 @@
                                 {{ vm.resetAnspruchFachstelleWennPensumUnterschritten() }}
                             </ng-container>
                         </dv-demo-feature-wrapper>
-                        <div class="row margin-bottom-50" ng-if="vm.showSprachforderungBestaetigenCheckBox()">
+                        <div class="row margin-bottom-50" ng-if="vm.showSprachfoerderungBestaetigenCheckBox()">
                             <div class="col-xs-12 dv-input-container-question">
                                 <div class="checkbox">
                                     <md-checkbox ng-model="vm.getErweiterteBetreuungJA().sprachfoerderungBestaetigt"
-                                                 name="sprachforderungBestaetigt"
+                                                 name="sprachfoerderungBestaetigt"
                                                  dv-enable-element
                                                  dv-enable-allowed-roles="vm.allowedRoles"
                                                  dv-enable-expression="vm.enableFieldsEditedByGemeinde()"
-                                                 aria-label="{{vm.isKita() ? 'SPRACHFORDERUNG_BESTAETIGEN_KITA' : 'SPRACHFORDERUNG_BESTAETIGEN_TFO' |translate}}">
-                                        <span data-translate="{{vm.isKita() ? 'SPRACHFORDERUNG_BESTAETIGEN_KITA' : 'SPRACHFORDERUNG_BESTAETIGEN_TFO'}}"></span>
+                                                 aria-label="{{vm.isKita() ? 'SPRACHFOERDERUNG_BESTAETIGEN_KITA' : 'SPRACHFOERDERUNG_BESTAETIGEN_TFO' |translate}}">
+                                        <span data-translate="{{vm.isKita() ? 'SPRACHFOERDERUNG_BESTAETIGEN_KITA' : 'SPRACHFOERDERUNG_BESTAETIGEN_TFO'}}"></span>
                                     </md-checkbox>
                                     <dv-tooltip input-id="niedrigesBetreuungspensum"
                                                 text="'NIEDRIGES_BETREUUNGSPENSUM' | translate"></dv-tooltip>

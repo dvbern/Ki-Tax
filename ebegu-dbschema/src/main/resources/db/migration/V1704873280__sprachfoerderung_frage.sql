@@ -16,7 +16,7 @@
  */
 
 ALTER TABLE erweiterte_betreuung
-ADD COLUMN sprachfoerderung_bestaetigt BIT NOT NULL DEFAULT true;
+ADD COLUMN sprachfoerderung_bestaetigt BIT NOT NULL DEFAULT false;
 
 ALTER TABLE erweiterte_betreuung_aud
 ADD COLUMN sprachfoerderung_bestaetigt BIT;

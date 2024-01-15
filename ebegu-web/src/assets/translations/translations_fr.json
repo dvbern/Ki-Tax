@@ -3088,7 +3088,7 @@
     "FINANZIELLE_SITUATION_ERSATZEINKOMMEN_SELBSTSTAENDIGKEIT_INVALID": "Sie müssen für mindestens ein Jahr ein Ersatzeinkommen angeben.",
     "FINANZIELLE_SITUATION_ERSATZEINKOMMEN_BASISJAHR_TOOLTIP": "Le montant que vous indiquez sous \"Revenu de remplacement perçu en année {{basisjahr}}\" est déduit du montant indiqué sous \"Revenu de remplacement\".",
     "SPRACHLICHE_INDIKATION_BETREUUNGS_PENSUM_ZU_TIEF": "Besoin d’ordre linguistique : le taux de prise en charge minimal de 40 % n’est pas atteint pendant un ou plusieurs mois.",
-    "SPRACHFORDERUNG_BESTAETIGEN_KITA": "Les langues pour lesquelles un encouragement linguistique est prévu sont le français ou l’allemand (langues parlées plus tard à l’école).",
-    "SPRACHFORDERUNG_BESTAETIGEN_TFO": "L’accueillant∙e en milieu familial est apte à assurer l’encouragement linguistique et possède au minimum un niveau C1 dans la langue parlée plus tard à l’école.",
+    "SPRACHFOERDERUNG_BESTAETIGEN_KITA": "Les langues pour lesquelles un encouragement linguistique est prévu sont le français ou l’allemand (langues parlées plus tard à l’école).",
+    "SPRACHFOERDERUNG_BESTAETIGEN_TFO": "L’accueillant∙e en milieu familial est apte à assurer l’encouragement linguistique et possède au minimum un niveau C1 dans la langue parlée plus tard à l’école.",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }
