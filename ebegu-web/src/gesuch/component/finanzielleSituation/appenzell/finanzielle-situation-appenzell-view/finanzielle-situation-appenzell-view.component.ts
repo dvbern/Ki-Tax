@@ -256,7 +256,6 @@ export class FinanzielleSituationAppenzellViewComponent extends AbstractGesuchVi
         return this.getModel().finanzielleSituationJA.finSitZusatzangabenAppenzell.zusatzangabenPartner;
     }
 
-
     public getFinSitZusatzangabenAppenzellGSToWorkWith(): TSFinSitZusatzangabenAppenzell {
         return this.isSpezialFallAR() ?
             this.getFinSitZusatzangabenAppenzellGSToWorkWithSpezialfall() :
