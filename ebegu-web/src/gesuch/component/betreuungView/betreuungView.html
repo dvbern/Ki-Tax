@@ -127,8 +127,8 @@
                                                  dv-enable-element
                                                  dv-enable-allowed-roles="vm.allowedRoles"
                                                  dv-enable-expression="vm.enableFieldsEditedByGemeinde()"
-                                                 aria-label="{{'SPRACHFORDERUNG_BESTAETIGEM'|translate}}">
-                                        <span data-translate="SPRACHFORDERUNG_BESTAETIGEM"></span>
+                                                 aria-label="{{vm.isKita() ? 'SPRACHFORDERUNG_BESTAETIGEN_KITA' : 'SPRACHFORDERUNG_BESTAETIGEN_TFO' |translate}}">
+                                        <span data-translate="{{vm.isKita() ? 'SPRACHFORDERUNG_BESTAETIGEN_KITA' : 'SPRACHFORDERUNG_BESTAETIGEN_TFO'}}"></span>
                                     </md-checkbox>
                                     <dv-tooltip input-id="niedrigesBetreuungspensum"
                                                 text="'NIEDRIGES_BETREUUNGSPENSUM' | translate"></dv-tooltip>
