@@ -17,20 +17,15 @@
 
 package ch.dvbern.ebegu.finanzielleSituationRechner;
 
-import java.math.BigDecimal;
-import java.util.Objects;
+import ch.dvbern.ebegu.dto.FinanzielleSituationResultateDTO;
+import ch.dvbern.ebegu.entities.*;
+import ch.dvbern.ebegu.util.MathUtil;
+import org.apache.commons.lang.NotImplementedException;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-
-import ch.dvbern.ebegu.dto.FinanzielleSituationResultateDTO;
-import ch.dvbern.ebegu.entities.AbstractFinanzielleSituation;
-import ch.dvbern.ebegu.entities.Einkommensverschlechterung;
-import ch.dvbern.ebegu.entities.FinSitZusatzangabenAppenzell;
-import ch.dvbern.ebegu.entities.Gesuch;
-import ch.dvbern.ebegu.entities.GesuchstellerContainer;
-import ch.dvbern.ebegu.util.MathUtil;
-import org.apache.commons.lang.NotImplementedException;
+import java.math.BigDecimal;
+import java.util.Objects;
 
 public class FinanzielleSituationAppenzellRechner extends AbstractFinanzielleSituationRechner {
 

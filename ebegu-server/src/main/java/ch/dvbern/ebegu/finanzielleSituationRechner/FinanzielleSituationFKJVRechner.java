@@ -18,7 +18,6 @@
 package ch.dvbern.ebegu.finanzielleSituationRechner;
 
 import ch.dvbern.ebegu.entities.AbstractFinanzielleSituation;
-import ch.dvbern.ebegu.entities.FinanzielleSituation;
 import org.apache.commons.lang.NotImplementedException;
 
 import javax.annotation.Nonnull;
@@ -36,7 +35,7 @@ public class FinanzielleSituationFKJVRechner extends FinanzielleSituationBernRec
 	) {
 		if (abstractFinanzielleSituation != null) {
 			total = add(total, abstractFinanzielleSituation.getNettolohn());
-			total = add(total, getZwischentotalErsatzeinkommen(abstractFinanzielleSituation));
+			total = add(total, calcErsatzeinkommen(abstractFinanzielleSituation));
 			total = add(total, abstractFinanzielleSituation.getErhalteneAlimente());
 			total = add(total, abstractFinanzielleSituation.getFamilienzulage());
 			total = add(total, geschaeftsgewinnDurchschnitt);
@@ -47,20 +46,6 @@ public class FinanzielleSituationFKJVRechner extends FinanzielleSituationBernRec
 			}
 		}
 		return total;
-	}
-
-	@Nullable
-	private BigDecimal getZwischentotalErsatzeinkommen(AbstractFinanzielleSituation abstractFinanzielleSituation) {
-		BigDecimal totalErsatzeinkommen = abstractFinanzielleSituation.getErsatzeinkommen();
-
-		if (abstractFinanzielleSituation instanceof FinanzielleSituation) {
-			FinanzielleSituation finanzielleSituation = (FinanzielleSituation) abstractFinanzielleSituation;
-			totalErsatzeinkommen = subtract(totalErsatzeinkommen, finanzielleSituation.getErsatzeinkommenSelbststaendigkeitBasisjahr());
-			totalErsatzeinkommen = subtract(totalErsatzeinkommen, finanzielleSituation.getErsatzeinkommenSelbststaendigkeitBasisjahrMinus1());
-			totalErsatzeinkommen = subtract(totalErsatzeinkommen, finanzielleSituation.getErsatzeinkommenSelbststaendigkeitBasisjahrMinus2());
-		}
-
-		return totalErsatzeinkommen;
 	}
 
 	@Override
