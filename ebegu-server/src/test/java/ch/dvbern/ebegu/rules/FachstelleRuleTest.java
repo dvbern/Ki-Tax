@@ -17,6 +17,7 @@ package ch.dvbern.ebegu.rules;
 
 import ch.dvbern.ebegu.entities.*;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
+import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.enums.IntegrationTyp;
 import ch.dvbern.ebegu.test.TestDataUtil;
 import ch.dvbern.ebegu.types.DateRange;
@@ -44,10 +45,7 @@ public class FachstelleRuleTest {
 			BetreuungsangebotTyp.KITA, 60, new BigDecimal(2000));
 		final Gesuch gesuch = betreuung.extractGesuch();
 		TestDataUtil.createDefaultAdressenForGS(gesuch, false);
-		final PensumFachstelle pensumFachstelle = new PensumFachstelle();
-		pensumFachstelle.setPensum(40);
-		pensumFachstelle.setGueltigkeit(new DateRange(TestDataUtil.START_PERIODE, TestDataUtil.ENDE_PERIODE));
-		betreuung.getKind().getKindJA().getPensumFachstelle().add(pensumFachstelle);
+		setPensumFachstelle(TestDataUtil.START_PERIODE, TestDataUtil.ENDE_PERIODE, 40, IntegrationTyp.SPRACHLICHE_INTEGRATION, betreuung);
 		Assert.assertNotNull(betreuung.getKind().getGesuch().getGesuchsteller1());
 		betreuung.getKind().getGesuch().getGesuchsteller1().addErwerbspensumContainer(TestDataUtil.createErwerbspensum(TestDataUtil.START_PERIODE, TestDataUtil.ENDE_PERIODE, 60));
 		List<VerfuegungZeitabschnitt> result = EbeguRuleTestsHelper.calculate(betreuung);
@@ -69,11 +67,8 @@ public class FachstelleRuleTest {
 			BetreuungsangebotTyp.KITA, 60, new BigDecimal(2000));
 		final Gesuch gesuch = betreuung.extractGesuch();
 		TestDataUtil.createDefaultAdressenForGS(gesuch, false);
-		final PensumFachstelle pensumFachstelle = new PensumFachstelle();
-		pensumFachstelle.setPensum(100);
-		pensumFachstelle.setIntegrationTyp(IntegrationTyp.SOZIALE_INTEGRATION);
-		pensumFachstelle.setGueltigkeit(new DateRange(TestDataUtil.START_PERIODE, TestDataUtil.ENDE_PERIODE));
-		betreuung.getKind().getKindJA().getPensumFachstelle().add(pensumFachstelle);
+		setPensumFachstelle(TestDataUtil.START_PERIODE, TestDataUtil.ENDE_PERIODE, 100, IntegrationTyp.SOZIALE_INTEGRATION, betreuung);
+
 		Assert.assertNotNull(betreuung.getKind().getGesuch().getGesuchsteller1());
 		betreuung.getKind().getGesuch().getGesuchsteller1().addErwerbspensumContainer(TestDataUtil.createErwerbspensum(TestDataUtil.START_PERIODE, TestDataUtil.ENDE_PERIODE, 60));
 		List<VerfuegungZeitabschnitt> result = EbeguRuleTestsHelper.calculate(betreuung);
@@ -99,17 +94,8 @@ public class FachstelleRuleTest {
 		var sep30 = LocalDate.of(TestDataUtil.START_PERIODE.getYear(), 9, 30);
 		var oct1 = LocalDate.of(TestDataUtil.START_PERIODE.getYear(), 10, 1);
 
-		final PensumFachstelle pensumFachstelle = new PensumFachstelle();
-		pensumFachstelle.setIntegrationTyp(IntegrationTyp.SOZIALE_INTEGRATION);
-		pensumFachstelle.setPensum(100);
-		pensumFachstelle.setGueltigkeit(new DateRange(TestDataUtil.START_PERIODE, sep30));
-
-		final PensumFachstelle pensumFachstelle2 = new PensumFachstelle();
-		pensumFachstelle2.setIntegrationTyp(IntegrationTyp.SOZIALE_INTEGRATION);
-		pensumFachstelle2.setPensum(80);
-		pensumFachstelle2.setGueltigkeit(new DateRange(oct1, TestDataUtil.ENDE_PERIODE));
-		betreuung.getKind().getKindJA().getPensumFachstelle().add(pensumFachstelle);
-		betreuung.getKind().getKindJA().getPensumFachstelle().add(pensumFachstelle2);
+		setPensumFachstelle(TestDataUtil.START_PERIODE, sep30, 100, IntegrationTyp.SOZIALE_INTEGRATION, betreuung);
+		setPensumFachstelle(oct1, TestDataUtil.ENDE_PERIODE, 80, IntegrationTyp.SOZIALE_INTEGRATION, betreuung);
 
 		Assert.assertNotNull(betreuung.getKind().getGesuch().getGesuchsteller1());
 		betreuung.getKind().getGesuch().getGesuchsteller1().addErwerbspensumContainer(TestDataUtil.createErwerbspensum(TestDataUtil.START_PERIODE, TestDataUtil.ENDE_PERIODE, 60));
@@ -145,17 +131,8 @@ public class FachstelleRuleTest {
 		var sep15 = LocalDate.of(TestDataUtil.START_PERIODE.getYear(), 9, 15);
 		var nov1 = LocalDate.of(TestDataUtil.START_PERIODE.getYear(), 11, 1);
 
-		final PensumFachstelle pensumFachstelle = new PensumFachstelle();
-		pensumFachstelle.setIntegrationTyp(IntegrationTyp.SOZIALE_INTEGRATION);
-		pensumFachstelle.setPensum(100);
-		pensumFachstelle.setGueltigkeit(new DateRange(TestDataUtil.START_PERIODE, sep15));
-
-		final PensumFachstelle pensumFachstelle2 = new PensumFachstelle();
-		pensumFachstelle2.setIntegrationTyp(IntegrationTyp.SOZIALE_INTEGRATION);
-		pensumFachstelle2.setPensum(80);
-		pensumFachstelle2.setGueltigkeit(new DateRange(nov1, TestDataUtil.ENDE_PERIODE));
-		betreuung.getKind().getKindJA().getPensumFachstelle().add(pensumFachstelle);
-		betreuung.getKind().getKindJA().getPensumFachstelle().add(pensumFachstelle2);
+		setPensumFachstelle(TestDataUtil.START_PERIODE, sep15, 100, IntegrationTyp.SOZIALE_INTEGRATION, betreuung);
+		setPensumFachstelle(nov1, TestDataUtil.ENDE_PERIODE, 80, IntegrationTyp.SOZIALE_INTEGRATION, betreuung);
 
 		Assert.assertNotNull(betreuung.getKind().getGesuch().getGesuchsteller1());
 		betreuung.getKind().getGesuch().getGesuchsteller1().addErwerbspensumContainer(TestDataUtil.createErwerbspensum(TestDataUtil.START_PERIODE, TestDataUtil.ENDE_PERIODE, 40));
@@ -197,17 +174,8 @@ public class FachstelleRuleTest {
 		var sep16 = LocalDate.of(TestDataUtil.START_PERIODE.getYear(), 9, 16);
 		var sep30 = LocalDate.of(TestDataUtil.START_PERIODE.getYear(), 9, 30);
 
-		final PensumFachstelle pensumFachstelle = new PensumFachstelle();
-		pensumFachstelle.setIntegrationTyp(IntegrationTyp.SOZIALE_INTEGRATION);
-		pensumFachstelle.setPensum(100);
-		pensumFachstelle.setGueltigkeit(new DateRange(TestDataUtil.START_PERIODE, sep15));
-
-		final PensumFachstelle pensumFachstelle2 = new PensumFachstelle();
-		pensumFachstelle2.setIntegrationTyp(IntegrationTyp.SOZIALE_INTEGRATION);
-		pensumFachstelle2.setPensum(80);
-		pensumFachstelle2.setGueltigkeit(new DateRange(sep16, sep30));
-		betreuung.getKind().getKindJA().getPensumFachstelle().add(pensumFachstelle);
-		betreuung.getKind().getKindJA().getPensumFachstelle().add(pensumFachstelle2);
+		setPensumFachstelle(TestDataUtil.START_PERIODE, sep15, 100, IntegrationTyp.SOZIALE_INTEGRATION, betreuung);
+		setPensumFachstelle(sep16, sep30, 80, IntegrationTyp.SOZIALE_INTEGRATION, betreuung);
 
 		Assert.assertNotNull(betreuung.getKind().getGesuch().getGesuchsteller1());
 		betreuung.getKind().getGesuch().getGesuchsteller1().addErwerbspensumContainer(TestDataUtil.createErwerbspensum(TestDataUtil.START_PERIODE, TestDataUtil.ENDE_PERIODE, 40));
@@ -244,17 +212,8 @@ public class FachstelleRuleTest {
 		var sep16 = LocalDate.of(TestDataUtil.START_PERIODE.getYear(), 9, 16);
 		var sep30 = LocalDate.of(TestDataUtil.START_PERIODE.getYear(), 9, 30);
 
-		final PensumFachstelle pensumFachstelle = new PensumFachstelle();
-		pensumFachstelle.setIntegrationTyp(IntegrationTyp.SOZIALE_INTEGRATION);
-		pensumFachstelle.setPensum(80);
-		pensumFachstelle.setGueltigkeit(new DateRange(TestDataUtil.START_PERIODE, sep15));
-
-		final PensumFachstelle pensumFachstelle2 = new PensumFachstelle();
-		pensumFachstelle2.setIntegrationTyp(IntegrationTyp.SOZIALE_INTEGRATION);
-		pensumFachstelle2.setPensum(100);
-		pensumFachstelle2.setGueltigkeit(new DateRange(sep16, sep30));
-		betreuung.getKind().getKindJA().getPensumFachstelle().add(pensumFachstelle);
-		betreuung.getKind().getKindJA().getPensumFachstelle().add(pensumFachstelle2);
+		setPensumFachstelle(TestDataUtil.START_PERIODE, sep15, 80, IntegrationTyp.SOZIALE_INTEGRATION, betreuung);
+		setPensumFachstelle(sep16, sep30, 100, IntegrationTyp.SOZIALE_INTEGRATION, betreuung);
 
 		Assert.assertNotNull(betreuung.getKind().getGesuch().getGesuchsteller1());
 		betreuung.getKind().getGesuch().getGesuchsteller1().addErwerbspensumContainer(TestDataUtil.createErwerbspensum(TestDataUtil.START_PERIODE, TestDataUtil.ENDE_PERIODE, 40));
@@ -298,17 +257,9 @@ public class FachstelleRuleTest {
 			BetreuungsangebotTyp.KITA, 60, new BigDecimal(2000));
 		final Gesuch gesuch = betreuung.extractGesuch();
 		TestDataUtil.createDefaultAdressenForGS(gesuch, false);
-
 		betreuung.getKind().getKindJA().setPensumFachstelle(new TreeSet<>());
 
-		final PensumFachstelle pensumFachstelle = new PensumFachstelle();
-		final Fachstelle fachstelle = new Fachstelle();
-		fachstelle.setMandant(TestDataUtil.createDefaultMandant());
-		pensumFachstelle.setFachstelle(fachstelle);
-		pensumFachstelle.setPensum(80);
-		pensumFachstelle.setIntegrationTyp(IntegrationTyp.SOZIALE_INTEGRATION);
-		pensumFachstelle.setGueltigkeit(new DateRange(TestDataUtil.START_PERIODE, TestDataUtil.ENDE_PERIODE));
-		betreuung.getKind().getKindJA().getPensumFachstelle().add(pensumFachstelle);
+		setPensumFachstelle(TestDataUtil.START_PERIODE, TestDataUtil.ENDE_PERIODE, 80, IntegrationTyp.SOZIALE_INTEGRATION, betreuung);
 
 		assertThat(betreuung.getKind().getKindJA().getPensumFachstelle().size(), is(1));
 		Assert.assertNotNull(betreuung.getKind().getGesuch().getGesuchsteller1());
@@ -323,5 +274,39 @@ public class FachstelleRuleTest {
 		Assert.assertEquals(-1, result.get(0).getBgCalculationInputAsiv().getAnspruchspensumRest());
 		List<VerfuegungZeitabschnitt> nextZeitabschn = EbeguRuleTestsHelper.initializeRestanspruchForNextBetreuung(betreuung, result);
 		Assert.assertEquals(20, nextZeitabschn.get(0).getBgCalculationInputAsiv().getAnspruchspensumRest());
+	}
+
+	@Test
+	public void testKitaMitSpracheIntegrationUndSparchfoerderung() {
+		Betreuung betreuung = EbeguRuleTestsHelper.createBetreuungWithPensum(TestDataUtil.START_PERIODE, TestDataUtil.ENDE_PERIODE,
+			BetreuungsangebotTyp.KITA, 60, new BigDecimal(2000));
+		final Gesuch gesuch = betreuung.extractGesuch();
+		TestDataUtil.createDefaultAdressenForGS(gesuch, false);
+		betreuung.getErweiterteBetreuungContainer().getErweiterteBetreuungJA().setSprachfoerderungBestaetigt(false);
+		betreuung.getKind().getKindJA().setPensumFachstelle(new TreeSet<>());
+		setPensumFachstelle(TestDataUtil.START_PERIODE, TestDataUtil.ENDE_PERIODE, 40, IntegrationTyp.SPRACHLICHE_INTEGRATION, betreuung);
+
+		betreuung.getKind().getGesuch().getGesuchsteller1().addErwerbspensumContainer(TestDataUtil.createErwerbspensum(TestDataUtil.START_PERIODE, TestDataUtil.ENDE_PERIODE, 40));
+		var einstellungen = EbeguRuleTestsHelper.getEinstellungenConfiguratorAsiv(gesuch.getGesuchsperiode());
+		einstellungen.get(EinstellungKey.SPRACHFOERDERUNG_BESTAETIGEN).setValue("true");
+		List<VerfuegungZeitabschnitt> result = EbeguRuleTestsHelper.calculateWithCustomEinstellungen(betreuung, einstellungen);
+		Assert.assertEquals(1, result.size());
+		assertThat(result.get(0).getVerfuegungZeitabschnittBemerkungList().stream().anyMatch(bemerkung -> bemerkung.getBemerkung().contains("der Anspruch aufgrund sprachlicher Indikation nicht gegeben")), is(true));
+
+		betreuung.getErweiterteBetreuungContainer().getErweiterteBetreuungJA().setSprachfoerderungBestaetigt(true);
+		result = EbeguRuleTestsHelper.calculateWithCustomEinstellungen(betreuung, einstellungen);
+		Assert.assertEquals(1, result.size());
+		assertThat(result.get(0).getVerfuegungZeitabschnittBemerkungList().stream().anyMatch(bemerkung -> bemerkung.getBemerkung().contains("der Anspruch aufgrund sprachlicher Indikation nicht gegeben")), is(false));
+	}
+
+	private void setPensumFachstelle(LocalDate start, LocalDate ende,int pensum, IntegrationTyp integrationTyp,  Betreuung betreuung) {
+		final PensumFachstelle pensumFachstelle = new PensumFachstelle();
+		final Fachstelle fachstelle = new Fachstelle();
+		fachstelle.setMandant(TestDataUtil.createDefaultMandant());
+		pensumFachstelle.setFachstelle(fachstelle);
+		pensumFachstelle.setPensum(pensum);
+		pensumFachstelle.setIntegrationTyp(integrationTyp);
+		pensumFachstelle.setGueltigkeit(new DateRange(start, ende));
+		betreuung.getKind().getKindJA().getPensumFachstelle().add(pensumFachstelle);
 	}
 }
