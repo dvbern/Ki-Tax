@@ -40,4 +40,8 @@ export class UnknownTagesschuleIdVisitor implements MandantVisitor<string> {
         return '00000000-0000-0000-0000-000000000011';
     }
 
+    public visitSchwyz(): string {
+        return '00000000-0000-0000-0000-000000000014';
+    }
+
 }

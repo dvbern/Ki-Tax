@@ -48,4 +48,8 @@ export class YoutubeLinkVisitor implements MandantVisitor<string> {
         return this.visitBern();
     }
 
+    public visitSchwyz(): string {
+        return this.visitSolothurn();
+    }
+
 }

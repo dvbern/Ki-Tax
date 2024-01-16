@@ -41,6 +41,11 @@ export abstract class MANDANTS {
         hostname: 'ar',
         fullName: 'Appenzell Ausserrhoden'
     };
+    public static readonly SCHWYZ: KiBonMandant = {
+        accept: visitor => visitor.visitSchwyz(),
+        hostname: 'sz',
+        fullName: 'Kanon Schwyz'
+    };
     public static readonly NONE: KiBonMandant = {
         accept: () => {
             throw new Error('Should never be called for Mandant NONE, make sure mandant is set');

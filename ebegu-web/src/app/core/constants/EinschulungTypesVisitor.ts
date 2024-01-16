@@ -45,4 +45,8 @@ export class EinschulungTypesVisitor implements MandantVisitor<ReadonlyArray<TSE
         return this.visitBern();
     }
 
+    public visitSchwyz(): ReadonlyArray<TSEinschulungTyp> {
+        return this.visitSolothurn();
+    }
+
 }
