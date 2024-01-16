@@ -51,4 +51,9 @@ public class RestanspruchInitializerVisitor implements MandantVisitor<Restanspru
 	public RestanspruchInitializer visitAppenzellAusserrhoden() {
 		return new RestanspruchInitializerAR(isDebug);
 	}
+
+	@Override
+	public RestanspruchInitializer visitSchwyz() {
+		return new RestanspruchInitializer(isDebug);
+	}
 }

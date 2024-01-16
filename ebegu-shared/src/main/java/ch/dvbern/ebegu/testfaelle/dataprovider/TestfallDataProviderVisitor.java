@@ -45,4 +45,10 @@ public class TestfallDataProviderVisitor implements MandantVisitor<AbstractTestf
 	public AbstractTestfallDataProvider visitAppenzellAusserrhoden() {
 		return new AppenzellTestfallDataProvider(gesuchsperiode);
 	}
+
+	// TODO
+	@Override
+	public AbstractTestfallDataProvider visitSchwyz() {
+		return null;
+	}
 }

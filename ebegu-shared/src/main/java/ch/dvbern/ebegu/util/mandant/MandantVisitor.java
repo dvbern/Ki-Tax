@@ -22,4 +22,6 @@ public interface MandantVisitor<T> {
 	T visitLuzern();
 	T visitSolothurn();
 	T visitAppenzellAusserrhoden();
+
+	T visitSchwyz();
 }

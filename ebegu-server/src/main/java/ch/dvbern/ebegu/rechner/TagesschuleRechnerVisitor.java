@@ -54,4 +54,9 @@ public class TagesschuleRechnerVisitor implements MandantVisitor<AbstractRechner
 	public AbstractRechner visitAppenzellAusserrhoden() {
 		return new TageselternBernRechner(rechnerRulesForGemeinde);
 	}
+
+	@Override
+	public AbstractRechner visitSchwyz() {
+		return new TageselternBernRechner(rechnerRulesForGemeinde);
+	}
 }

@@ -101,4 +101,10 @@ public class SchulungConstantsVisitor implements MandantVisitor<SchulungConstant
 				"44444444-1114-1111-1111-1111111111XX"
 		);
 	}
+
+	// TODO
+	@Override
+	public SchulungConstants visitSchwyz() {
+		return null;
+	}
 }

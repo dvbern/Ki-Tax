@@ -56,6 +56,11 @@ public class ZahlungsfileGeneratorVisitor implements MandantVisitor< List<IZahlu
 		return getZahlungsfileGeneratorForMandant(MandantIdentifier.APPENZELL_AUSSERRHODEN);
 	}
 
+	@Override
+	public List<IZahlungsfileGenerator> visitSchwyz() {
+		return getZahlungsfileGeneratorForMandant(MandantIdentifier.SCHWYZ);
+	}
+
 	@Nonnull
 	private  List<IZahlungsfileGenerator> getZahlungsfileGeneratorForMandant(@Nonnull MandantIdentifier mandantIdentifier) {
 		if (isInfomaZahlungenActivatedForMandant(mandantIdentifier)) {

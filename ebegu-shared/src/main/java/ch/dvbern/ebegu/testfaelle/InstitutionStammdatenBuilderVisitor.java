@@ -58,4 +58,10 @@ public final class InstitutionStammdatenBuilderVisitor implements MandantVisitor
 	public InstitutionStammdatenBuilder visitAppenzellAusserrhoden() {
 		return new InstitutionStammdatenBuilderAr(institutionStammdatenService);
 	}
+
+	// TODO
+	@Override
+	public InstitutionStammdatenBuilder visitSchwyz() {
+		return null;
+	}
 }
