@@ -172,6 +172,16 @@
                         <p>{{tsAnmeldungenStartStr}}</p>
                     </div>
                 </div>
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <h3 translate>ALT_LOGO_TAGESSCHULE</h3>
+                        <img [src]="altLogoImageUrl$ | async"
+                             class="tagesschul-profil-image">
+                        <input #fileInput type="file" accept='image/png,image/jpeg'
+                               (change)="srcChange(fileInput.files)"
+                               class="gemeinde-profil-fileinput">
+                    </div>
+                </div>
             </div>
             <div class="row">
                 <div class="col-sm-6">
@@ -261,15 +271,24 @@
                 </div>
             </div>
             <div *ngIf="!stammdaten.gemeinde.nurLats">
-            <div class="row">
-                <!-- Anmeldungen akzeptieren ab -->
-                <div class="col-sm-6">
-                    <div class="form-group">
-                        <h3 translate>TS_START</h3>
-                        <p>{{tsAnmeldungenStartStr}}</p>
+                <div class="row">
+                    <!-- Anmeldungen akzeptieren ab -->
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <h3 translate>TS_START</h3>
+                            <p>{{tsAnmeldungenStartStr}}</p>
+                        </div>
+                    </div>
+
+                    <!-- Alternatives Logo Tagesschule -->
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <h3 translate>ALT_LOGO_TAGESSCHULE</h3>
+                            <img [src]=""
+                                 class="tagesschul-profil-image">
+                        </div>
                     </div>
                 </div>
-            </div>
             <div class="row">
                 <div class="col-sm-6">
                     <h3 *ngIf="stammdaten.benachrichtigungTsEmailAuto">

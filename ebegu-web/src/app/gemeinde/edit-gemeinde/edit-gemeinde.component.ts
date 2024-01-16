@@ -62,6 +62,7 @@ export class EditGemeindeComponent implements OnInit {
     private navigationSource: StateDeclaration;
     public gemeindeId: string;
     private fileToUpload: File;
+    private altFileToUpload: File;
     // this field will be true when the gemeinde_stammdaten don't yet exist i.e. when the gemeinde is being registered
     private isRegisteringGemeinde: boolean = false;
     public editMode: boolean = false;
@@ -261,6 +262,10 @@ export class EditGemeindeComponent implements OnInit {
             await this.gemeindeRS.saveGemeindeStammdaten(stammdaten);
             if (this.fileToUpload) {
                 this.persistLogo(this.fileToUpload);
+            }
+
+            if (this.altFileToUpload) {
+                this.persistAltLogo(this.altFileToUpload);
             } else if (this.isRegisteringGemeinde) {
                 this.$state.go('welcome');
                 return;
@@ -338,12 +343,28 @@ export class EditGemeindeComponent implements OnInit {
                 this.errorService.addMesageAsError(this.translate.instant('GEMEINDE_LOGO_ZU_GROSS'));
             });
     }
+    private persistAltLogo(file: File): void {
+        this.gemeindeRS.uploadAlternativeLogoImage(this.gemeindeId, file).then(
+            () => {
+                this.navigateBack();
+            },
+            () => {
+                this.errorService.clearAll();
+                this.errorService.addMesageAsError(this.translate.instant('TAGESSCHUL_LOGO_ZU_GROSS'));
+            });
+    }
 
     public collectLogoChange(file: File): void {
         if (!file) {
             return;
         }
         this.fileToUpload = file;
+    }
+    public altCollectLogoChange(file: File): void {
+        if (!file) {
+            return;
+        }
+        this.altFileToUpload = file;
     }
 
     private validateData(stammdaten: TSGemeindeStammdaten): Promise<number> {
