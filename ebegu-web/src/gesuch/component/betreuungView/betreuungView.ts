@@ -353,7 +353,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
                 .forEach(einstellung => {
                     this.kitastundenprotag = parseInt(einstellung.value, 10);
                 });
-            response.filter(r => r.key == TSEinstellungKey.SPRACHFOERDERUNG_BESTAETIGEN)
+            response.filter(r => r.key === TSEinstellungKey.SPRACHFOERDERUNG_BESTAETIGEN)
                 .forEach(einstellung => {
                     this.sprachfoerderungBestaetigenAktiviert = einstellung.getValueAsBoolean();
                 });
