@@ -112,6 +112,8 @@ export class VerfuegenListViewController extends AbstractGesuchViewController<an
     private minPensumSprachlicheIndikation: number;
     private letzteIgnorierteGesuchId: string;
     public finSitStatusUpdateIsRunning: boolean = false;
+
+    public readonly demoFeatureFachstelleUebergangsloesung = TSDemoFeature.FACHSTELLEN_UEBERGANGSLOESUNG;
     public constructor(
         private readonly $state: StateService,
         gesuchModelManager: GesuchModelManager,
