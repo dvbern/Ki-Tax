@@ -172,8 +172,15 @@
                         <p>{{tsAnmeldungenStartStr}}</p>
                     </div>
                 </div>
-                <div class="col-sm-6">
+                <div class="col-sm-6" *ngIf="stammdaten?.gemeindeStammdatenKorrespondenz">
                     <div class="form-group">
+                        <mat-checkbox id="hasAlternativeTSLogo_id"
+                                      name="hasAlternativeTSLogo_id"
+                                      [(ngModel)]="stammdaten.gemeindeStammdatenKorrespondenz.hasAlternativeTSLogo">
+                            {{'GEMEINDE_HAS_ALTERNATIVE_TS_LOGO'|translate}}
+                        </mat-checkbox>
+                    </div>
+                    <div class="form-group" *ngIf="stammdaten.gemeindeStammdatenKorrespondenz.hasAlternativeTSLogo">
                         <h3 translate>ALT_LOGO_TAGESSCHULE</h3>
                         <img [src]="altLogoImageUrl$ | async"
                              class="tagesschul-profil-image">
