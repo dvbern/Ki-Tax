@@ -60,15 +60,13 @@ public class FileSaverServiceBean implements FileSaverService {
 		Objects.requireNonNull(uploadFileInfo);
 		Objects.requireNonNull(uploadFileInfo.getFilename());
 
-		UUID uuid = UUID.randomUUID();
-
 		String ending = getFileNameEnding(uploadFileInfo.getFilename());
-
+		String filename = getUuidAsFilename(ending);
 		// Wir speichern der Name des Files nicht im FS. Kann sonst Probleme mit Umlauten geben
-		final String path = '/' + folderName + '/' + uuid + '.' + ending;
+		final Path path = Path.of(folderName, filename);
 		final Path absoluteFilePath = uploadFilePathService.getValidatedFilePathWithDirectoryPrefix(path);
 		uploadFileInfo.setPath(absoluteFilePath);
-		uploadFileInfo.setActualFilename(uuid + "." + ending);
+		uploadFileInfo.setActualFilename(filename);
 
 		try {
 			if (!Files.exists(absoluteFilePath.getParent())) {
@@ -103,7 +101,7 @@ public class FileSaverServiceBean implements FileSaverService {
 		Objects.requireNonNull(uploadFileInfo);
 		Objects.requireNonNull(uploadFileInfo.getFilename());
 
-		final String path = "/auftraege/" + filenameWithEnding;
+		final Path path = Path.of("auftraege", filenameWithEnding);
 		final Path file = uploadFilePathService.getValidatedFilePathWithDirectoryPrefix(path);
 		uploadFileInfo.setPath(file);
 		uploadFileInfo.setActualFilename(filenameWithEnding);
@@ -136,13 +134,10 @@ public class FileSaverServiceBean implements FileSaverService {
 		Objects.requireNonNull(folderName);
 
 		Path oldfile = Paths.get(fileToCopy.getFilepfad());
-		UUID uuid = UUID.randomUUID();
-		String ending = getFileNameEnding(fileToCopy.getFilename());
-
 		// Wir speichern der Name des Files nicht im FS. Kann sonst Probleme mit Umlauten geben
-		final String path = '/' + folderName + '/' + uuid + '.' + ending;
-		final Path newfile = uploadFilePathService.getValidatedFilePathWithDirectoryPrefix(path);
-		fileToCopy.setFilepfad(String.valueOf(newfile));
+		String filename = getUuidAsFilename(getFileNameEnding(fileToCopy.getFilename()));
+		final Path newfile = uploadFilePathService.getValidatedFilePathWithDirectoryPrefix(Path.of(folderName, filename));
+		fileToCopy.setFilepfad(String.valueOf(filename));
 
 		try {
 			if (!Files.exists(newfile.getParent())) {
@@ -228,5 +223,11 @@ public class FileSaverServiceBean implements FileSaverService {
 				LOG.error("Can't delete file in FileSystem: {}", path.getFileName(), e);
 			}
 		}
+	}
+
+	@Nonnull
+	private String getUuidAsFilename(String filenameEnding) {
+		UUID uuid = UUID.randomUUID();
+		return uuid.toString() + '.' + filenameEnding;
 	}
 }

@@ -71,14 +71,14 @@ public class AVClient {
 			return;
 		}
 
-		uploadFilePathService.getValidatedFilePath(Path.of(fileMetadata.getFilepfad()));
+		String filepath = uploadFilePathService.getValidatedFilePath(Path.of(fileMetadata.getFilepfad())).toString();
 
-		try (InputStream is = new FileInputStream(fileMetadata.getFilepfad())) {
+		try (InputStream is = new FileInputStream(filepath)) {
 			ScanResult result = client.scan(is);
 
 			if (result instanceof ScanResult.VirusFound) {
 				logFoundViruses((VirusFound) result, fileMetadata);
-				throw new EbeguMailiciousContentException(METHOD_NAME, ErrorCodeEnum.ERROR_MALICIOUS_CONTENT, fileMetadata.getFilepfad());
+				throw new EbeguMailiciousContentException(METHOD_NAME, ErrorCodeEnum.ERROR_MALICIOUS_CONTENT, filepath);
 			}
 		} catch (IOException e) {
 			throw new EbeguEntityNotFoundException(METHOD_NAME,

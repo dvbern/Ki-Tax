@@ -17,8 +17,8 @@ public class UploadFilePathServiceBean implements UploadFilePathService {
 	private EbeguConfiguration ebeguConfiguration;
 
 	@Override
-	public Path getValidatedFilePathWithDirectoryPrefix(@Nonnull String path) {
-		Path ebeguPath = Path.of(ebeguConfiguration.getDocumentFilePath(), path);
+	public Path getValidatedFilePathWithDirectoryPrefix(@Nonnull Path path) {
+		Path ebeguPath = Path.of(ebeguConfiguration.getDocumentFilePath()).resolve(path);
 		return getValidatedFilePath(ebeguPath);
 	}
 
