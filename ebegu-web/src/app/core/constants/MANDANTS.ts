@@ -44,7 +44,7 @@ export abstract class MANDANTS {
     public static readonly SCHWYZ: KiBonMandant = {
         accept: visitor => visitor.visitSchwyz(),
         hostname: 'sz',
-        fullName: 'Kanon Schwyz'
+        fullName: 'Kanton Schwyz'
     };
     public static readonly NONE: KiBonMandant = {
         accept: () => {

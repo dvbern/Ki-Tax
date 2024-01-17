@@ -68,7 +68,7 @@ public enum MandantIdentifier {
 	SCHWYZ {
 		@Override
 		public <T> T accept(MandantVisitor<T> visitor) {
-			return visitor.visitAppenzellAusserrhoden();
+			return visitor.visitSchwyz();
 		}
 
 		@Override

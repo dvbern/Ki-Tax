@@ -53,6 +53,8 @@ export class MandantService {
                 return MANDANTS.SOLOTHURN;
             case MANDANTS.APPENZELL_AUSSERRHODEN.hostname:
                 return MANDANTS.APPENZELL_AUSSERRHODEN;
+            case MANDANTS.SCHWYZ.hostname:
+                return MANDANTS.SCHWYZ;
             default:
                 return MANDANTS.NONE;
         }
@@ -68,6 +70,8 @@ export class MandantService {
                 return MANDANTS.LUZERN;
             case MANDANTS.APPENZELL_AUSSERRHODEN.fullName:
                 return MANDANTS.APPENZELL_AUSSERRHODEN;
+            case MANDANTS.SCHWYZ.fullName:
+                return MANDANTS.SCHWYZ;
             default:
                 return MANDANTS.NONE;
         }
@@ -207,6 +211,8 @@ export class MandantService {
                 return MANDANTS.APPENZELL_AUSSERRHODEN;
             case 'LUZERN':
                 return MANDANTS.LUZERN;
+            case 'SCHWYZ':
+                return MANDANTS.SCHWYZ;
             case 'BERN':
             default:
                 return MANDANTS.BERN;

@@ -42,7 +42,7 @@ export class MandantLocalLoginDatenVisitor implements MandantVisitor<LocalLoginD
     }
 
     public visitSchwyz(): LocalLoginDaten {
-        return this.visitSolothurn();
+        return LOCALLOGIN_DATA.SZ;
     }
 
 }
