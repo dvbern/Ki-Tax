@@ -81,7 +81,7 @@
                          (click)="logIn(sachbearbeiterInstitutionKitaBruennen)"></div>
                 </td>
             </tr>
-            <tr>
+            <tr *ngIf="defaultGemeinde?.angebotTS">
                 <td>Administrator/in Tagesschule: {{localLoginDaten?.tagesschule.name}}</td>
                 <td></td>
                 <td>
@@ -91,7 +91,7 @@
                          (click)="logIn(administratorInstitutionTagesschuleParis)"></div>
                 </td>
             </tr>
-            <tr>
+            <tr *ngIf="defaultGemeinde?.angebotTS">
                 <td>Sachbearbeiter/in Tagesschule: {{localLoginDaten?.tagesschule.name}}</td>
                 <td></td>
                 <td>
