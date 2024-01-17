@@ -814,6 +814,10 @@ public class DokumentenverzeichnisEvaluatorTest extends EasyMockSupport {
 
 		final FinanzielleSituation finanzielleSituationJA =
 			testgesuch.getGesuchsteller1().getFinanzielleSituationContainer().getFinanzielleSituationJA();
+
+		finanzielleSituationJA.setGeschaeftsgewinnBasisjahr(ZEHN_TAUSEND);
+		finanzielleSituationJA.setGeschaeftsgewinnBasisjahrMinus1(ZEHN_TAUSEND);
+		finanzielleSituationJA.setGeschaeftsgewinnBasisjahrMinus2(ZEHN_TAUSEND);
 		finanzielleSituationJA.setErsatzeinkommenSelbststaendigkeitBasisjahr(ZEHN_TAUSEND);
 		finanzielleSituationJA.setErsatzeinkommenSelbststaendigkeitBasisjahrMinus1(ZEHN_TAUSEND);
 		finanzielleSituationJA.setErsatzeinkommenSelbststaendigkeitBasisjahrMinus2(ZEHN_TAUSEND);
@@ -861,10 +865,16 @@ public class DokumentenverzeichnisEvaluatorTest extends EasyMockSupport {
 		testgesuch.getGesuchsteller1().getFinanzielleSituationContainer()
 			.getFinanzielleSituationJA()
 			.setErsatzeinkommenSelbststaendigkeitBasisjahr(ZEHN_TAUSEND);
+		testgesuch.getGesuchsteller1().getFinanzielleSituationContainer()
+			.getFinanzielleSituationJA()
+			.setGeschaeftsgewinnBasisjahr(ZEHN_TAUSEND);
 
 		testgesuch.getGesuchsteller2().getFinanzielleSituationContainer()
 			.getFinanzielleSituationJA()
 			.setErsatzeinkommenSelbststaendigkeitBasisjahrMinus1(ZEHN_TAUSEND);
+		testgesuch.getGesuchsteller2().getFinanzielleSituationContainer()
+			.getFinanzielleSituationJA()
+			.setGeschaeftsgewinnBasisjahrMinus1(ZEHN_TAUSEND);
 
 		var dokumentGruende = evaluator.calculate(testgesuch, Constants.DEFAULT_LOCALE);
 		Assertions.assertEquals(4, dokumentGruende.size());
@@ -884,6 +894,29 @@ public class DokumentenverzeichnisEvaluatorTest extends EasyMockSupport {
 			DokumentGrundPersonType.GESUCHSTELLER,
 			2,
 			DokumentGrundTyp.FINANZIELLESITUATION);
+	}
+
+	@Test
+	public void ersatzeinkommenSelbststaendigkeit_DokumenteNotRequiredWhenNoGeschaeftsGewinn() {
+		setUpEinstellungMock(testgesuch, AnspruchBeschaeftigungAbhaengigkeitTyp.ABHAENGING.name());
+		createFinanzielleSituationGS(1, testgesuch, "Sämi", true);
+		createFinanzielleSituationGS(2, testgesuch, "Alex", true);
+		createFamilienSituation(testgesuch, false, false);
+
+		Assert.assertNotNull(testgesuch.getGesuchsteller1());
+		Assert.assertNotNull(testgesuch.getGesuchsteller1().getFinanzielleSituationContainer());
+		Assert.assertNotNull(testgesuch.getGesuchsteller2());
+		Assert.assertNotNull(testgesuch.getGesuchsteller2().getFinanzielleSituationContainer());
+
+
+		testgesuch.getGesuchsteller1().getFinanzielleSituationContainer()
+			.getFinanzielleSituationJA().setErsatzeinkommenSelbststaendigkeitBasisjahr(BigDecimal.ZERO);
+
+		var dokumentGruende = evaluator.calculate(testgesuch, Constants.DEFAULT_LOCALE);
+		var dokumentGruendeErsatzeinkommen = getDokumentGrundsForType(
+			DokumentTyp.NACHWEIS_ERSATZINKOMMEN_SELBSTSTAENDIGKEIT_JAHR,
+			dokumentGruende, DokumentGrundPersonType.GESUCHSTELLER, 1, "2016");
+		Assert.assertTrue(dokumentGruendeErsatzeinkommen.isEmpty());
 	}
 
 	private void createEinkommensverschlechterungInfo() {
