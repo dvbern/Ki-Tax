@@ -41,7 +41,7 @@ export class MandantLogoNameVisitor implements MandantVisitor<string> {
     }
 
     public visitSchwyz(): string {
-        return 'logo-kibon-schwyz.sg';
+        return 'logo-kibon-schwyz.svg';
     }
 
 }

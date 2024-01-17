@@ -74,7 +74,7 @@ WHERE mandant_id = @mandant_id_solothurn AND
 
 UPDATE application_property SET value = '#ee1d23' WHERE name = 'PRIMARY_COLOR';
 UPDATE application_property SET value = '#BF0425' WHERE name = 'PRIMARY_COLOR_DARK';
-UPDATE application_property SET value = '#D50025' WHERE name = 'PRIMARY_COLOR_LIGHT';
+UPDATE application_property SET value = '#F0C3CB' WHERE name = 'PRIMARY_COLOR_LIGHT';
 UPDATE application_property SET value = '#logo-kibon-schwyz.svg' WHERE name = 'LOGO_FILE_NAME';
 UPDATE application_property SET value = 'logo-kibon-white-schwyz.svg' WHERE name = 'LOGO_WHITE_FILE_NAME';
 
