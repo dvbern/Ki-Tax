@@ -27,5 +27,7 @@ export class TSGemeindeStammdatenKorrespondenz extends TSAbstractEntity {
     public logoSpacingLeft: number;
     public logoSpacingTop: number;
     public standardSignatur: string;
+    // Transient, should not be sent to the backend
+    public hasAlternativeTSLogo: string;
 
 }
