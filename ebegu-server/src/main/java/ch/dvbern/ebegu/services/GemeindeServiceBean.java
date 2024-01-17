@@ -304,6 +304,19 @@ public class GemeindeServiceBean extends AbstractBaseService implements Gemeinde
 
 	@Nonnull
 	@Override
+	public GemeindeStammdaten deleteAlternativeLogo(@Nonnull String gemeindeId) {
+		final GemeindeStammdaten stammdaten = getGemeindeStammdatenByGemeindeId(gemeindeId)
+			.orElseThrow(() ->
+				new EbeguEntityNotFoundException("uploadAlternativeLogo", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, gemeindeId));
+		stammdaten.getGemeindeStammdatenKorrespondenz()
+			.setAlternativesLogoTagesschuleName(null)
+			.setAlternativesLogoTagesschuleType(null)
+			.setAlternativesLogoTagesschuleContent(null);
+		return saveGemeindeStammdaten(stammdaten);
+	}
+
+	@Nonnull
+	@Override
 	public Collection<BfsGemeinde> getUnregisteredBfsGemeinden(@Nonnull Mandant mandant) {
 		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
 		final CriteriaQuery<BfsGemeinde> query = cb.createQuery(BfsGemeinde.class);

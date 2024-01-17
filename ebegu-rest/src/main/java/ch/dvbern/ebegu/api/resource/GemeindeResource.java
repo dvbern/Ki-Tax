@@ -585,6 +585,18 @@ public class GemeindeResource {
 		return Response.status(Status.NO_CONTENT).build();
 	}
 
+	@ApiOperation("Deletes alternative logo image for tagesschulen of the Gemeinde with the given id or an errorcode if none is available")
+	@DELETE
+	@Path("/alternativeLogo/{gemeindeId}")
+	@Consumes(MediaType.WILDCARD)
+	@Produces(MediaType.WILDCARD)
+	@PermitAll // Oeffentliche Daten
+	public JaxGemeindeStammdaten deleteAlternativeTSLogo(
+		@Nonnull @NotNull @PathParam("gemeindeId") JaxId gemeindeJAXPId) {
+		String gemeindeId = converter.toEntityId(gemeindeJAXPId);
+		return converter.gemeindeStammdatenToJAX(gemeindeService.deleteAlternativeLogo(gemeindeId));
+	}
+
 	@ApiOperation(value = "Returns all unregistered Gemeinden from BFS", responseContainer = "Collection",
 		response = JaxBfsGemeinde.class)
 	@Nullable
