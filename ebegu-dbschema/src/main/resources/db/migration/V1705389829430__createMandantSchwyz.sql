@@ -79,6 +79,7 @@ UPDATE application_property SET value = '#logo-kibon-schwyz.svg' WHERE name = 'L
 UPDATE application_property SET value = 'logo-kibon-white-schwyz.svg' WHERE name = 'LOGO_WHITE_FILE_NAME';
 
 UPDATE application_property SET value = 'false' WHERE name = 'LASTENAUSGLEICH_AKTIV' and mandant_id = @mandant_id_schwyz;
+UPDATE application_property SET value = 'false' WHERE name = 'DUMMY_LOGIN_ENABLED' and mandant_id = @mandant_id_schwyz;
 
 # BFS Gemeinden
 INSERT INTO bfs_gemeinde (id, mandant_id, kanton, bfs_nummer, name, gueltig_ab)
@@ -120,7 +121,7 @@ VALUES
 	(UUID(), @mandant_id_schwyz, 'SZ', 1375, 'Unteriberg', '1848-09-12');
 
 INSERT INTO gesuchsperiode
-VALUES (@gesuchsperiode_id, NOW(), NOW(), 'system', 'system', 0, 0, '2024-08-01', '2025-07-31', NULL,
+VALUES (@gesuchsperiode_id, NOW(), NOW(), 'system', 'system', 0, NULL, '2024-08-01', '2025-07-31', NULL,
 		'ENTWURF', NULL, NULL, NULL,
 		NULL, NULL, NULL, @mandant_id_schwyz, NULL,
 		NULL);
