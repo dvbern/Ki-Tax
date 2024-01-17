@@ -30,7 +30,7 @@ UPDATE application_property SET value = 'true' WHERE name = 'GERES_ENABLED_FOR_M
 UPDATE application_property SET value = '2022-04-04' WHERE name = 'SCHNITTSTELLE_STEUERSYSTEME_AKTIV_AB' AND mandant_id = @bern_mandant_id;
 UPDATE application_property SET value = 'true' WHERE name = 'ZUSATZINFORMATIONEN_INSTITUTION' AND mandant_id = @bern_mandant_id;
 UPDATE application_property SET value = 'true' WHERE name = 'STADT_BERN_ASIV_CONFIGURED' AND mandant_id = @bern_mandant_id;
-UPDATE application_property SET value = 'ALLE_MUTATIONSMELDUNGEN_VERFUEGEN', 'KIBON_2754', 'GESUCH_BEENDEN_FAMSIT', 'ZAHLUNGEN_STATISTIK', 'BEMERKUNGEN_FALLUEBERGREIFEND', 'MEHRERE_FACHSTELLENBESTAETIGUNGEN','FACHSTELLEN_UEBERGANGSLOESUNG' WHERE name = 'ACTIVATED_DEMO_FEATURES' AND mandant_id = @bern_mandant_id;
+UPDATE application_property SET value = 'ALLE_MUTATIONSMELDUNGEN_VERFUEGEN, KIBON_2754, GESUCH_BEENDEN_FAMSIT, ZAHLUNGEN_STATISTIK, BEMERKUNGEN_FALLUEBERGREIFEND, MEHRERE_FACHSTELLENBESTAETIGUNGEN, FACHSTELLEN_UEBERGANGSLOESUNG' WHERE name = 'ACTIVATED_DEMO_FEATURES' AND mandant_id = @bern_mandant_id;
 UPDATE application_property SET value = 'false' WHERE name = 'INSTITUTIONEN_DURCH_GEMEINDEN_EINLADEN' AND mandant_id = @bern_mandant_id;
 UPDATE application_property SET value = 'false' WHERE name = 'ERLAUBEN_INSTITUTIONEN_ZU_WAEHLEN' AND mandant_id = @bern_mandant_id;
 UPDATE application_property SET value = 'true' WHERE name = 'ANGEBOT_TS_ENABLED' AND mandant_id = @bern_mandant_id;
