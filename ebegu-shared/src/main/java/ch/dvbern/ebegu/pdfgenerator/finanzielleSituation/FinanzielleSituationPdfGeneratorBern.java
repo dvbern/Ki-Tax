@@ -363,8 +363,7 @@ public class FinanzielleSituationPdfGeneratorBern extends FinanzielleSituationPd
 		FinanzielleSituationRow familienzulagen = createRow(translate(FAMILIENZULAGEN, mandant),
 			AbstractFinanzielleSituation::getFamilienzulage, gs1, gs2, gs1Urspruenglich, gs2Urspruenglich);
 
-		FinanzielleSituationRow ersatzeinkommen = createRow(translate(ERSATZEINKOMMEN, mandant),
-			AbstractFinanzielleSituation::getErsatzeinkommen, gs1, gs2, gs1Urspruenglich, gs2Urspruenglich);
+		FinanzielleSituationRow ersatzeinkommen = createRowErsatzeinkommen(gs1, gs2, gs1Urspruenglich, gs2Urspruenglich);
 
 		FinanzielleSituationRow unterhaltsbeitraege = createRow(translate(ERH_UNTERHALTSBEITRAEGE, mandant),
 			AbstractFinanzielleSituation::getErhalteneAlimente, gs1, gs2, gs1Urspruenglich, gs2Urspruenglich);
@@ -412,6 +411,19 @@ public class FinanzielleSituationPdfGeneratorBern extends FinanzielleSituationPd
 		tableEinkommen.addRow(zwischentotal);
 		tableEinkommen.addRow(total);
 		return tableEinkommen.createTable();
+	}
+
+	private FinanzielleSituationRow createRowErsatzeinkommen(
+		@Nullable AbstractFinanzielleSituation gs1,
+		@Nullable AbstractFinanzielleSituation gs2,
+		@Nullable AbstractFinanzielleSituation gs1Urspruenglich,
+		@Nullable AbstractFinanzielleSituation gs2Urspruenglich) {
+		BigDecimal gs1ErsatzEinkommen = finanzielleSituationRechner.calcErsatzeinkommen(gs1);
+		BigDecimal gs2ErsatzEinkommen = finanzielleSituationRechner.calcErsatzeinkommen(gs2);
+		BigDecimal gs1UrsprunglichErsatzEinkommen = finanzielleSituationRechner.calcErsatzeinkommen(gs1Urspruenglich);
+		BigDecimal gs2UrsprunglichErsatzEinkommen = finanzielleSituationRechner.calcErsatzeinkommen(gs2Urspruenglich);
+		return createRow(translate(ERSATZEINKOMMEN, mandant), gs1ErsatzEinkommen, gs2ErsatzEinkommen, gs1UrsprunglichErsatzEinkommen, gs2UrsprunglichErsatzEinkommen);
+
 	}
 
 	private void addEinkommenFKJVRow(
@@ -645,6 +657,16 @@ public class FinanzielleSituationPdfGeneratorBern extends FinanzielleSituationPd
 		BigDecimal gs2BigDecimal = gs2 == null ? null : getter.apply(gs2);
 		BigDecimal gs1UrspruenglichBigDecimal = gs1Urspruenglich == null ? null : getter.apply(gs1Urspruenglich);
 		BigDecimal gs2UrspruenglichBigDecimal = gs2Urspruenglich == null ? null : getter.apply(gs2Urspruenglich);
+		return createRow(message, gs1BigDecimal, gs2BigDecimal, gs1UrspruenglichBigDecimal, gs2UrspruenglichBigDecimal);
+	}
+
+	protected final FinanzielleSituationRow createRow(
+		String message,
+		@Nullable BigDecimal gs1BigDecimal,
+		@Nullable BigDecimal gs2BigDecimal,
+		@Nullable BigDecimal gs1UrspruenglichBigDecimal,
+		@Nullable BigDecimal gs2UrspruenglichBigDecimal
+	) {
 		FinanzielleSituationRow row = new FinanzielleSituationRow(message, gs1BigDecimal);
 		row.setGs2(gs2BigDecimal);
 		if (!MathUtil.isSameWithNullAsZero(gs1BigDecimal, gs1UrspruenglichBigDecimal)) {
