@@ -29,7 +29,7 @@ import {SidenavPO} from '../page-objects/antrag/sidenav.po';
 describe('Kibon - generate Testfälle [Online-Antrag]', () => {
     const userSuperadmin = getUser('[1-Superadmin] E-BEGU Superuser');
     const userGemeinde = getUser('[6-L-SB-Gemeinde] Stefan Weibel');
-    const userKita = getUser('[3-SB-Tägerschaft-Kitas-StadtBern] Agnes Krause');
+    const userKita = getUser('[3-SB-Institution-Kita-Brünnen] Sophie Bergmann');
     const userGS = getUser('[5-GS] Emma Gerber');
     const admin = getUser('[1-Superadmin] E-BEGU Superuser');
     const gesuchsPeriode: {ganze: TestPeriode, anfang: string, ende: string} = { ganze: '2023/24', anfang: '2023', ende: '2024' };
@@ -260,8 +260,7 @@ describe('Kibon - generate Testfälle [Online-Antrag]', () => {
         // PLATZBESTAETIGUNG mit Kita SB
         // !!!!!! - New User - !!!!!!
         {
-            // TODO: Change to userKita once "Kitas & Tagis Stadt Bern" can view the TFO of this test
-            cy.changeLogin(userSuperadmin);
+            cy.changeLogin(userKita);
 
             const goToBetreuungen = () => {
                 cy.get('@antragsId').then((antragsId) => cy.visit(`/#/gesuch/familiensituation/${antragsId}`));
@@ -279,6 +278,7 @@ describe('Kibon - generate Testfälle [Online-Antrag]', () => {
             AntragBetreuungPO.getBetreuungspensumBis(0).find('input').clear().type('31.07.2024');
             AntragBetreuungPO.platzBestaetigen();
 
+            cy.changeLogin(userSuperadmin);
             goToBetreuungen();
 
             cy.waitForRequest('GET', '**/fachstellen/erweiterteBetreuung', () => {
