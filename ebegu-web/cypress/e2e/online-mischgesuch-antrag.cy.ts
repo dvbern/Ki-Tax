@@ -32,7 +32,7 @@ describe('Kibon - Online TS-Anmeldung (Mischgesuch) [Gesuchsteller]', () => {
 
         cy.url().then((url) => {
             const parts = new URL(url);
-            gesuchUrl = `${parts.pathname}${parts.hash}`;
+            gesuchUrl = `/${parts.hash}`;
         });
         FallToolbarPO.getFallnummer().then(el$ => {
             fallnummer = el$.text();

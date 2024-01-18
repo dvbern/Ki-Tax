@@ -37,7 +37,7 @@ describe('kiBon - Features auf der FinSit - Page', () => {
         });
         cy.url().then((url) => {
             const parts = new URL(url);
-            gesuchUrl = `${parts.pathname}${parts.hash}`;
+            gesuchUrl = `/${parts.hash}`;
         });
     });
 

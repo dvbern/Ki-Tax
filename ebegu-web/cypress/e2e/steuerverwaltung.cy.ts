@@ -31,7 +31,7 @@ describe('Kibon - Gesuch zu Steuerverwaltung senden', () => {
 
         cy.url().then((url) => {
             const parts = new URL(url);
-            gesuchUrl = `${parts.pathname}${parts.hash}`;
+            gesuchUrl = `/${parts.hash}`;
         });
 
         FallToolbarPO.getFallnummer().should('not.be.empty');

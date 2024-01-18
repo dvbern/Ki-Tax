@@ -266,6 +266,8 @@ Cypress.Commands.add('getDownloadUrl', (action) => {
             });
         });
         action();
-        return cy.wrap(result);
+        return cy.wrap(result).then((result: string) => {
+            return cy.location('origin').then(origin => origin.concat(result));
+        });
     });
 });
