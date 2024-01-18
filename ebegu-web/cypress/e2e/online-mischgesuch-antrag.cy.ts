@@ -1,7 +1,6 @@
-import {getUser, normalizeUser, User} from '@dv-e2e/types';
+import {getUser, User} from '@dv-e2e/types';
 import {
     AntragBetreuungPO, AntragCreationPO, ConfirmDialogPO,
-    DossierToolbarPO,
     FaelleListePO,
     FallToolbarPO, FreigabePO,
     NavigationPO,
@@ -13,7 +12,8 @@ describe('Kibon - Online TS-Anmeldung (Mischgesuch) [Gesuchsteller]', () => {
     const userSuperadmin = getUser('[1-Superadmin] E-BEGU Superuser');
     const userGS = getUser('[5-GS] Emma Gerber');
     const userTS = getUser('[3-SB-TS-Paris] Charlotte Gainsbourg');
-    const userSB = getUser('[6-P-Admin-Gemeinde] Gerlinde Hofstetter');
+    const userGemeindeBGTS = getUser('[6-P-Admin-Gemeinde] Gerlinde Hofstetter');
+    const userTraegerschaft = getUser('[3-SB-Trägerschaft-Kitas-StadtBern] Agnes Krause');
     let gesuchUrl: string;
     let fallnummer: string;
 
@@ -41,9 +41,22 @@ describe('Kibon - Online TS-Anmeldung (Mischgesuch) [Gesuchsteller]', () => {
 
     it('shoud create a online ts anmeldung, send mails and verfuegen', () => {
         loginAndGoToGesuch(userGS);
+        SidenavPO.goTo('FAMILIENSITUATION');
+        cy.url()
+            .then((url) => /familiensituation\/(.*)$/.exec(url)[1])
+            .as('antragsId');
+
         craeateTsAnmeldungFuerKind1();
 
-        loginAndGoToGesuch(userSuperadmin);
+        cy.changeLogin(userTraegerschaft);
+        const goToBetreuungen = () => {
+            cy.get('@antragsId').then((antragsId) => cy.visit(`/#/gesuch/familiensituation/${antragsId}`));
+
+            cy.waitForRequest('GET', '**/einstellung/key/FINANZIELLE_SITUATION_TYP/gemeinde/**', () => {
+                SidenavPO.goTo('BETREUUNG');
+            });
+        };
+        goToBetreuungen();
         plaetzeFuerBeideKinderBestaetigen();
 
         loginAndGoToGesuch(userGS);
@@ -55,7 +68,7 @@ describe('Kibon - Online TS-Anmeldung (Mischgesuch) [Gesuchsteller]', () => {
         tsAkzeptierenAsUserTs();
         //TODO Überprüfen, ob einen Email versendet wurde => 1. Bestätigung ohne FinSit
 
-        loginAndGoToGesuch(userSB);
+        loginAndGoToGesuch(userGemeindeBGTS);
         finSitAkzeptieren();
         verfuegenStarten();
         //TODO Überprüfen, ob einen Email versendet wurde => 2. Bestätigung mit FinSit
@@ -63,10 +76,10 @@ describe('Kibon - Online TS-Anmeldung (Mischgesuch) [Gesuchsteller]', () => {
         loginAndGoToGesuch(userGS);
         createTsAnmeldungFuerKind2();
 
-        loginAndGoToGesuch(userSuperadmin);
-        tsAkzeptierenFuerKind2();
+        tsAkzeptierenFuerKind2AsUserTS();
         //TODO Überprüfen, ob ein weiteres Email versendet wurde (Anmeldung zweites Kind mit Tarif)
 
+        loginAndGoToGesuch(userGemeindeBGTS);
         gesuchVerfuegen();
         checkBetreuungsstatus();
     });
@@ -112,14 +125,15 @@ describe('Kibon - Online TS-Anmeldung (Mischgesuch) [Gesuchsteller]', () => {
         });
     };
 
-    const tsAkzeptierenFuerKind2 = () => {
-        SidenavPO.goTo('BETREUUNG');
-        AntragBetreuungPO.getBetreuung(1, 1).click();
+    const tsAkzeptierenFuerKind2AsUserTS = () => {
+        cy.login(userTS);
+        cy.visit('/#/faelle');
+        FaelleListePO.getAntrag(fallnummer).click();
+        AntragBetreuungPO.getBetreuung(1, 0).click();
         AntragBetreuungPO.getPlatzAkzeptierenButton().click();
 
-        cy.waitForRequest('GET', '**/dossier/fall/**', () => {
-            ConfirmDialogPO.getConfirmButton().click();
-        });
+        ConfirmDialogPO.getConfirmButton().click();
+        cy.wait(2000); // the second call waiting for the PUT akzeptieren request doesnt work
     };
 
     const gesuchFreigeben = () => {
