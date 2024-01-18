@@ -42,3 +42,6 @@ where einstellung_key = 'SPRACHFOERDERUNG_BESTAETIGEN' and
 		gesuchsperiode_id = (select gesuchsperiode.id from gesuchsperiode
 														   join mandant on gesuchsperiode.mandant_id = mandant.id
 							 where gesuchsperiode.gueltig_ab = '2024-08-01' and mandant_identifier = 'BERN');
+
+INSERT IGNORE INTO application_property (id, mandant_id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version, vorgaenger_id, name, value)
+SELECT UNHEX(REPLACE(UUID(), '-', '')), id, NOW(), NOW(), 'flyway', 'flyway', 0, NULL, 'SCHNITTSTELLE_SPRACHFOERDERUNG_AKTIV_AB', '01.12.2024' FROM mandant;

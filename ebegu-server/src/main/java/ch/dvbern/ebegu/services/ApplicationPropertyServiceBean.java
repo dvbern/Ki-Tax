@@ -291,4 +291,15 @@ public class ApplicationPropertyServiceBean extends AbstractBaseService implemen
 				.filter(Objects::nonNull)
 				.collect(Collectors.toList());
 	}
+
+	@Override
+	@Nullable
+	public LocalDate getSchnittstelleSprachfoerderungAktivAb(@Nonnull Mandant mandant) {
+		String valueAsString =
+			findApplicationPropertyAsString(ApplicationPropertyKey.SCHNITTSTELLE_SPRACHFOERDERUNG_AKTIV_AB, mandant);
+		if (valueAsString != null) {
+			return LocalDate.parse(valueAsString, Constants.DATE_FORMATTER);
+		}
+		return null;
+	}
 }
