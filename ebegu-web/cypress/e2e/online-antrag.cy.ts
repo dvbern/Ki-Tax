@@ -338,10 +338,7 @@ describe('Kibon - generate Testfälle [Online-Antrag]', () => {
             cy.waitForRequest('GET', '**/verfuegung/calculate/**', () => {
                 VerfuegenPO.getFinSitAkzeptiert('AKZEPTIERT').click();
             });
-            cy.waitForRequest('PUT', '**/gesuche/status/*/GEPRUEFT', () => {
-                VerfuegenPO.getGeprueftButton().click();
-                ConfirmDialogPO.getDvLoadingConfirmButton().click();
-            });
+            VerfuegenPO.pruefeGesuch();
 
             cy.waitForRequest('GET', '**/verfuegung/calculate/**', () => {
                 VerfuegenPO.getVerfuegenStartenButton().click();

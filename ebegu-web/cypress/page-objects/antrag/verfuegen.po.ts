@@ -15,6 +15,9 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+// !! -- PAGE OBJECTS -- !!
+import {ConfirmDialogPO} from '../dialogs';
+
 const getVerfuegung = (kindIndex: number, betreuungsIndex: number) => {
     return cy.getByData(`verfuegung#${kindIndex}-${betreuungsIndex}`);
 };
@@ -43,7 +46,15 @@ const getSendToSTVButton = () => {
 	return cy.getByData('container.send-to-stv', 'navigation-button');
 };
 
+// !! -- PAGE OBJECTS -- !!
+const pruefeGesuch = () => {
+	cy.waitForRequest('PUT', '**/gesuche/status/*/GEPRUEFT', () => {
+        VerfuegenPO.getGeprueftButton().click();
+        ConfirmDialogPO.getDvLoadingConfirmButton().click();
+    });
+};
 export const VerfuegenPO = {
+    // PAGE OBJECTS
     getBetreuungsstatus,
     getFinSitAkzeptiert,
     getAbschliessenButton,
@@ -51,4 +62,6 @@ export const VerfuegenPO = {
     getVerfuegung,
     getVerfuegenStartenButton,
     getSendToSTVButton,
+    // PAGE ACTIONS
+    pruefeGesuch
 };

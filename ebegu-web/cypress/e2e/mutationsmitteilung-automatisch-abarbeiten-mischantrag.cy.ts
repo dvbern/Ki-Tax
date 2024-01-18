@@ -124,10 +124,7 @@ describe('Kibon - Testet das Feature der automatischen Abarbeitung von Mutations
                 SidenavPO.goTo('VERFUEGEN');
             });
             VerfuegenPO.getFinSitAkzeptiert('AKZEPTIERT').click();
-            cy.waitForRequest('PUT', '**/gesuche/status/*/GEPRUEFT', () => {
-                VerfuegenPO.getGeprueftButton().click();
-                ConfirmDialogPO.getDvLoadingConfirmButton().click();
-            });
+            VerfuegenPO.pruefeGesuch();
             SidenavPO.getGesuchStatus().should('have.text', 'Geprüft');
 
             VerfuegenPO.getVerfuegenStartenButton().click();
