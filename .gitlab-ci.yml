@@ -249,6 +249,17 @@ create-build-args:
 build-and-analyze:
     extends: .build-and-analyze
     needs: []
+    cache:
+        key:
+            files:
+                - ebegu-web/package-lock.json
+        paths:
+            - .npm
+        policy: push
+    artifacts:
+        paths:
+            - '**/target'
+            - .flattened-pom.xml
 
 build-frontend-image:
     extends: .build-frontend-image
