@@ -54,6 +54,10 @@ const getVerfuegenVerzichtenButton = () => {
 	return cy.getByData('container.verfuegen-verzichten', 'navigation-button');
 };
 
+const getNichtEintretenButton = () => {
+	return cy.getByData('container.nicht-eintreten', 'navigation-button');
+};
+
 export const VerfuegungPO = {
     getBetreuungspensumProzent,
     getVerfuegterTarif,
@@ -63,5 +67,6 @@ export const VerfuegungPO = {
     getVerfuegungsBemerkungenKontrolliert,
     getVerfuegenButton,
     getVerfuegenVerzichtenButton,
+    getNichtEintretenButton,
     getAnspruchberechtigtesBetreuungspensum,
 };
