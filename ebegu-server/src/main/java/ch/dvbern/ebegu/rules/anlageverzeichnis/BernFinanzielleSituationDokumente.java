@@ -153,6 +153,18 @@ public class BernFinanzielleSituationDokumente extends AbstractFinanzielleSituat
 			);
 		}
 
+		final String basisJahrString = String.valueOf(basisJahr);
+
+		add(getDokument(DokumentTyp.NACHWEIS_ERSATZINKOMMEN_SELBSTSTAENDIGKEIT_JAHR, finanzielleSituationJA, null,
+				basisJahrString, DokumentGrundPersonType.GESUCHSTELLER,
+				gesuchstellerNumber, DokumentGrundTyp.FINANZIELLESITUATION, stichtag), anlageVerzeichnis);
+		add(getDokument(DokumentTyp.NACHWEIS_ERSATZINKOMMEN_SELBSTSTAENDIGKEIT_JAHR_MINUS1, finanzielleSituationJA, null,
+				String.valueOf(basisJahr - 1), DokumentGrundPersonType.GESUCHSTELLER,
+				gesuchstellerNumber, DokumentGrundTyp.FINANZIELLESITUATION, stichtag), anlageVerzeichnis);
+		add(getDokument(DokumentTyp.NACHWEIS_ERSATZINKOMMEN_SELBSTSTAENDIGKEIT_JAHR_MINUS2, finanzielleSituationJA, null,
+				String.valueOf(basisJahr - 2), DokumentGrundPersonType.GESUCHSTELLER, gesuchstellerNumber,
+				DokumentGrundTyp.FINANZIELLESITUATION, stichtag), anlageVerzeichnis);
+
 		if (Boolean.TRUE.equals(finanzielleSituationJA.getSteuerdatenZugriff())
 			&& finanzielleSituationJA.getSteuerdatenAbfrageStatus() != null
 			&& finanzielleSituationJA.getSteuerdatenAbfrageStatus()
@@ -283,16 +295,24 @@ public class BernFinanzielleSituationDokumente extends AbstractFinanzielleSituat
 			FinanzielleSituation finanzielleSituation = (FinanzielleSituation) abstractFinanzielleSituation;
 			switch (basisjahr) {
 				case 0:
-					return finanzielleSituation.getErsatzeinkommenSelbststaendigkeitBasisjahr() != null;
+					return hasValueBigerThanZero(finanzielleSituation.getErsatzeinkommenSelbststaendigkeitBasisjahr());
 				case 1:
-					return finanzielleSituation.getErsatzeinkommenSelbststaendigkeitBasisjahrMinus1() != null;
+					return hasValueBigerThanZero(finanzielleSituation.getErsatzeinkommenSelbststaendigkeitBasisjahrMinus1());
 				case 2:
-					return finanzielleSituation.getErsatzeinkommenSelbststaendigkeitBasisjahrMinus2() != null;
+					return hasValueBigerThanZero(finanzielleSituation.getErsatzeinkommenSelbststaendigkeitBasisjahrMinus2());
 				default:
 					return false;
 			}
 		}
 		return false;
+	}
+
+	private boolean hasValueBigerThanZero(@Nullable BigDecimal bigDecimal) {
+		if (bigDecimal == null) {
+			return false;
+		}
+
+		return bigDecimal.compareTo(BigDecimal.ZERO) > 0;
 	}
 
 }

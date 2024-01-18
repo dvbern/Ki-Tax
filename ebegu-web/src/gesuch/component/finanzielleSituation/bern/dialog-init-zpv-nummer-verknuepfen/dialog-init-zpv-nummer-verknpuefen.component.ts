@@ -22,6 +22,8 @@ import {StateService} from '@uirouter/core';
 import {GesuchstellerRS} from '../../../../../app/core/service/gesuchstellerRS.rest';
 import {TSSprache} from '../../../../../models/enums/TSSprache';
 import {TSGesuchstellerContainer} from '../../../../../models/TSGesuchstellerContainer';
+import {CONSTANTS} from '../../../../../app/core/constants/CONSTANTS';
+import {NgForm} from '@angular/forms';
 
 @Component({
     selector: 'dv-ng-zpv-nummmer-verknuepfen-dialog',
@@ -32,6 +34,7 @@ export class DialogInitZPVNummerVerknuepfenComponent implements OnInit {
     private readonly gs: TSGesuchstellerContainer;
     private readonly korrespondenzSprache: TSSprache;
     public email: string;
+    public readonly CONSTANTS = CONSTANTS;
 
     public constructor(
         private readonly dialogRef: MatDialogRef<DialogInitZPVNummerVerknuepfenComponent>,
@@ -47,7 +50,10 @@ export class DialogInitZPVNummerVerknuepfenComponent implements OnInit {
     public ngOnInit(): void {
     }
 
-    public save(): void {
+    public save(form: NgForm): void {
+        if (!form.valid) {
+            return;
+        }
         const target = this.$state.target('onboarding.zpvgssuccess');
         const relayPath = this.$state.href(target.$state(), {gesuchstellerId: this.gs.id}, {absolute: true});
         this.gesuchstellerRS.initGS2ZPVNr(this.email, this.gs, this.korrespondenzSprache, relayPath)
