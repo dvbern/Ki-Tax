@@ -322,4 +322,8 @@ export class GemeindeRS implements IEntityRS {
         return this.$http.get(`${this.serviceURL}/gemeinden-with-lats`)
             .then(response => this.ebeguRestUtil.parseGemeindeList(response.data));
     }
+
+    public deleteAlternativeTSLogo(gemeindeId: string): IHttpPromise<void> {
+        return this.$http.delete<void>(`${this.serviceURL}/alternativeLogo/${encodeURIComponent(gemeindeId)}`);
+    }
 }

@@ -263,16 +263,21 @@ export class EditGemeindeComponent implements OnInit {
         }
 
         try {
-            await this.gemeindeRS.saveGemeindeStammdaten(stammdaten);
+            const savedStammdaten = await this.gemeindeRS.saveGemeindeStammdaten(stammdaten);
             if (this.fileToUpload) {
-                this.persistLogo(this.fileToUpload);
+                await this.persistLogo(this.fileToUpload);
             }
 
-            if (this.altFileToUpload) {
-                this.persistAltLogo(this.altFileToUpload);
+            if (this.altFileToUpload && stammdaten.gemeindeStammdatenKorrespondenz.hasAlternativeTSLogo) {
+                await this.persistAltLogo(this.altFileToUpload);
             } else if (this.isRegisteringGemeinde) {
                 this.$state.go('welcome');
                 return;
+            }
+
+            if (savedStammdaten.gemeindeStammdatenKorrespondenz.hasAlternativeTSLogo
+                && !stammdaten.gemeindeStammdatenKorrespondenz.hasAlternativeTSLogo) {
+                await this.gemeindeRS.deleteAlternativeTSLogo(this.gemeindeId);
             }
 
             if (this.authServiceRS.isOneOfRoles(TSRoleUtil.getMandantRoles())) {
@@ -356,6 +361,12 @@ export class EditGemeindeComponent implements OnInit {
                 this.errorService.clearAll();
                 this.errorService.addMesageAsError(this.translate.instant('TAGESSCHUL_LOGO_ZU_GROSS'));
             });
+    }
+
+    private deleteALternativeTSLogo(): void {
+        this.gemeindeRS.deleteAlternativeTSLogo(this.gemeindeId).catch(() => {
+            this.errorService.addMesageAsError(this.translate.instant('ERROR_COULD_NOT_DELETE_ALTERNATIVE_GEMEINDE_LOGO'));
+        });
     }
 
     public collectLogoChange(file: File): void {

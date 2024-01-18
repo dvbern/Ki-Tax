@@ -125,6 +125,13 @@ public interface GemeindeService {
 		@Nonnull String type);
 
 	/**
+	 * Deletes the alternative tagesschule logo of the given Gemeinde
+	 */
+	@Nonnull
+	GemeindeStammdaten deleteAlternativeLogo(
+		@Nonnull String gemeindeId);
+
+	/**
 	 * Gibt eine Liste aller BFS Gemeinden dieses Mandanten zurueck, welche noch nicht fuer KiBon registriert sind.
 	 */
 	@Nonnull
