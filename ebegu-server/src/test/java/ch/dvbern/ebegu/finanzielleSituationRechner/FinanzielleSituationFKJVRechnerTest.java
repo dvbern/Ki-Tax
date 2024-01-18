@@ -110,15 +110,13 @@ public class FinanzielleSituationFKJVRechnerTest extends FinanzielleSituationBer
 	 *
 	 *		Ersatzeinkomen						10'000
 	 *		Ersatzeinkommen BJ			       - 1'600
-	 * 	    Ersatzeinkommen BJ-1		       - 3'208
-	 * 	    Ersatzeinkommen BJ-2		       - 1'847
-	 * 	Zu Berücksichtigendes Ersatzeinkommen  				+3'345
-	 * Schuldzinsen subtrahieren						   - 	10
-	 * Gewinnungskosten subtrahieren					   -	85
+	 * 	Zu Berücksichtigendes Ersatzeinkommen  			   + 8'400
+	 * Schuldzinsen subtrahieren						   -    10
+	 * Gewinnungskosten subtrahieren					   -    85
 	 *
 	 *
 	 * -------
-	 * 70650
+	 * 75'705
 	 */
 	@Test
 	public void calculateFinanzdatenWithErsatzeinkommenSelbsstaendig() {
@@ -157,7 +155,7 @@ public class FinanzielleSituationFKJVRechnerTest extends FinanzielleSituationBer
 		finSitRechner.calculateFinanzDaten(gesuch, null);
 		assertThat(
 			gesuch.getFinanzDatenDTO_alleine().getMassgebendesEinkBjVorAbzFamGr(),
-			is(BigDecimal.valueOf(70650)));
+			is(BigDecimal.valueOf(75705)));
 	}
 
 	private Gesuch prepareGesuch(boolean secondGesuchsteller) {

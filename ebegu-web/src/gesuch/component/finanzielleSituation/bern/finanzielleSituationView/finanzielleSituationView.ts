@@ -463,7 +463,7 @@ export class FinanzielleSituationViewController extends AbstractFinSitBernView {
 
     public isAtLeastOneErsatzeinkommenSelbststaendigkeitProvided(): boolean {
         const finSit = this.model.getFiSiConToWorkWith().finanzielleSituationJA;
-        return !finSit.hasErsatzeinkommenSelbststaendigkeit() ||
+        return !this.showErsatzeinkommenSelbststaendigkeit ||
             (EbeguUtil.isNotNullOrUndefined(finSit.ersatzeinkommenSelbststaendigkeitBasisjahr)
                 && finSit.ersatzeinkommenSelbststaendigkeitBasisjahr > 0)
                 || (EbeguUtil.isNotNullOrUndefined(finSit.ersatzeinkommenSelbststaendigkeitBasisjahrMinus1)
@@ -495,7 +495,9 @@ export class FinanzielleSituationViewController extends AbstractFinSitBernView {
     }
 
     public ersatzeinkommenChanged(): void {
-        if (this.getModel().finanzielleSituationJA.ersatzeinkommen === 0) {
+        if (this.getModel().finanzielleSituationJA.ersatzeinkommen === 0
+            && EbeguUtil.isNotNullOrUndefined(
+                this.getModel().finanzielleSituationJA.ersatzeinkommenSelbststaendigkeitBasisjahr)) {
             this.getModel().finanzielleSituationJA.ersatzeinkommenSelbststaendigkeitBasisjahr = 0;
         }
     }

@@ -17,17 +17,16 @@
 
 package ch.dvbern.ebegu.api.dtos;
 
-import java.math.BigDecimal;
-import java.time.DayOfWeek;
-import java.util.EnumSet;
-import java.util.HashSet;
-import java.util.Set;
-
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
+import java.math.BigDecimal;
+import java.time.DayOfWeek;
+import java.util.EnumSet;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * DTO fuer InstitutionStammdatenBetreuungsgutscheine
@@ -52,8 +51,6 @@ public class JaxInstitutionStammdatenBetreuungsgutscheine extends JaxAbstractDTO
 	private boolean alterskategorieKindergarten;
 
 	private boolean alterskategorieSchule;
-
-	private boolean subventioniertePlaetze;
 
 	@Nullable
 	private BigDecimal tarifProHauptmahlzeit;
@@ -171,14 +168,6 @@ public class JaxInstitutionStammdatenBetreuungsgutscheine extends JaxAbstractDTO
 
 	public void setAlterskategorieSchule(boolean alterskategorieSchule) {
 		this.alterskategorieSchule = alterskategorieSchule;
-	}
-
-	public boolean isSubventioniertePlaetze() {
-		return subventioniertePlaetze;
-	}
-
-	public void setSubventioniertePlaetze(boolean subventioniertePlaetze) {
-		this.subventioniertePlaetze = subventioniertePlaetze;
 	}
 
 	@Nullable

@@ -17,29 +17,30 @@
 
 package ch.dvbern.ebegu.api.av;
 
-import java.io.ByteArrayInputStream;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Collection;
-import java.util.Map.Entry;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.ejb.Stateless;
-import javax.inject.Inject;
-
 import ch.dvbern.ebegu.config.EbeguConfiguration;
 import ch.dvbern.ebegu.entities.FileMetadata;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.EbeguMailiciousContentException;
+import ch.dvbern.ebegu.services.UploadFilePathService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import xyz.capybara.clamav.ClamavClient;
 import xyz.capybara.clamav.ClamavException;
 import xyz.capybara.clamav.commands.scan.result.ScanResult;
 import xyz.capybara.clamav.commands.scan.result.ScanResult.VirusFound;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.ejb.Stateless;
+import javax.inject.Inject;
+import java.io.ByteArrayInputStream;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Path;
+import java.util.Collection;
+import java.util.Map.Entry;
 
 @Stateless
 public class AVClient {
@@ -49,6 +50,9 @@ public class AVClient {
 
 	@Inject
 	private EbeguConfiguration ebeguConfiguration;
+
+	@Inject
+	private UploadFilePathService uploadFilePathService;
 
 	@Nullable
 	private ClamavClient client;
@@ -66,12 +70,15 @@ public class AVClient {
 		if (ebeguConfiguration.isClamavDisabled() || !isReady() || client == null) {
 			return;
 		}
-		try (InputStream is = new FileInputStream(fileMetadata.getFilepfad())) {
+
+		String filepath = uploadFilePathService.getValidatedFilePath(Path.of(fileMetadata.getFilepfad())).toString();
+
+		try (InputStream is = new FileInputStream(filepath)) {
 			ScanResult result = client.scan(is);
 
 			if (result instanceof ScanResult.VirusFound) {
 				logFoundViruses((VirusFound) result, fileMetadata);
-				throw new EbeguMailiciousContentException(METHOD_NAME, ErrorCodeEnum.ERROR_MALICIOUS_CONTENT, fileMetadata.getFilepfad());
+				throw new EbeguMailiciousContentException(METHOD_NAME, ErrorCodeEnum.ERROR_MALICIOUS_CONTENT, filepath);
 			}
 		} catch (IOException e) {
 			throw new EbeguEntityNotFoundException(METHOD_NAME,
