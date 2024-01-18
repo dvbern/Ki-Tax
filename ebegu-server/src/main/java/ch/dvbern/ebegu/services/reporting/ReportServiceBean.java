@@ -2333,8 +2333,6 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 			&& institutionStammdatenBG.getAlterskategorieKindergarten());
 		row.setSchulkind(institutionStammdatenBG != null && institutionStammdatenBG.getAlterskategorieSchule());
 		if (!institutionStammdaten.getBetreuungsangebotTyp().isTagesfamilien()) {
-			row.setSubventioniert(institutionStammdatenBG != null
-				&& institutionStammdatenBG.getSubventioniertePlaetze());
 			if (institutionStammdatenBG != null && institutionStammdatenBG.getAnzahlPlaetze() != null) {
 				row.setKapazitaet(institutionStammdatenBG.getAnzahlPlaetze());
 			}

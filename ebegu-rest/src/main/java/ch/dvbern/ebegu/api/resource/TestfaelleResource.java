@@ -15,30 +15,6 @@
 
 package ch.dvbern.ebegu.api.resource;
 
-import java.time.LocalDate;
-import java.util.Collection;
-import java.util.Objects;
-import java.util.stream.Collectors;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.annotation.security.PermitAll;
-import javax.annotation.security.RolesAllowed;
-import javax.ejb.Stateless;
-import javax.inject.Inject;
-import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-
 import ch.dvbern.ebegu.api.dtos.JaxGemeindeAntraegeFBTestdatenDTO;
 import ch.dvbern.ebegu.api.dtos.JaxGemeindeAntraegeLATSTestdatenDTO;
 import ch.dvbern.ebegu.authentication.PrincipalBean;
@@ -50,13 +26,29 @@ import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.services.SchulungService;
 import ch.dvbern.ebegu.services.TestfaelleService;
+import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.DateUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_BG;
-import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_GEMEINDE;
-import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.annotation.security.PermitAll;
+import javax.annotation.security.RolesAllowed;
+import javax.ejb.Stateless;
+import javax.inject.Inject;
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
+import javax.ws.rs.*;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import java.time.LocalDate;
+import java.util.Collection;
+import java.util.Objects;
+import java.util.stream.Collectors;
+
+import static ch.dvbern.ebegu.enums.UserRoleName.*;
 
 /**
  * REST Resource zur Erstellung von (vordefinierten) Testfaellen.
@@ -261,7 +253,7 @@ public class TestfaelleResource {
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.TEXT_PLAIN)
 	public Response testAllMails(
-		@PathParam("mailadresse") String mailadresse) {
+		@PathParam("mailadresse") @Pattern(regexp = Constants.REGEX_EMAIL, message = "{validator.constraints.Email.message}") String mailadresse) {
 
 		assertTestfaelleAccessAllowed();
 

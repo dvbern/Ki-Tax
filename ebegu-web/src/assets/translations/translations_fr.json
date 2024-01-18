@@ -593,7 +593,6 @@
     "INSTITUTION_ALTERSKATEGORIE_KINDERGARTEN": "Ecole enfantine",
     "INSTITUTION_ALTERSKATEGORIE_SCHULE": "Ecole",
     "INSTITUTION_PLAETZE": "Places",
-    "INSTITUTION_SUBVENTIONIERTE_PLAETZE": "Certaine places sont calculées par l'ancien système des émoluments (incl. l'acceptation de bons de garde de la Ville de Berne)",
     "INSTITUTION_ANZAHL_PLAETZE": "Nombre total de place en crèche",
     "INSTITUTION_ANZAHL_PLAETZE_FIRMEN": "Dont places réservées pour les entreprises",
     "INSTITUTION_ANZAHL_PLAETZE_PARAM": "Nombre total de places en crèche : {{anzahlPlaetze}}",

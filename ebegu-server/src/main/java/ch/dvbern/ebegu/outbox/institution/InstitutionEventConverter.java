@@ -17,41 +17,14 @@
 
 package ch.dvbern.ebegu.outbox.institution;
 
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.enterprise.context.ApplicationScoped;
-
-import ch.dvbern.ebegu.entities.Adresse;
-import ch.dvbern.ebegu.entities.EinstellungenTagesschule;
-import ch.dvbern.ebegu.entities.Institution;
-import ch.dvbern.ebegu.entities.InstitutionStammdaten;
-import ch.dvbern.ebegu.entities.InstitutionStammdatenBetreuungsgutscheine;
-import ch.dvbern.ebegu.entities.InstitutionStammdatenTagesschule;
-import ch.dvbern.ebegu.entities.KontaktAngaben;
-import ch.dvbern.ebegu.entities.ModulTagesschuleGroup;
-import ch.dvbern.ebegu.entities.Traegerschaft;
+import ch.dvbern.ebegu.entities.*;
 import ch.dvbern.ebegu.enums.ModulTagesschuleIntervall;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.EbeguUtil;
 import ch.dvbern.ebegu.util.MathUtil;
-import ch.dvbern.kibon.exchange.commons.institution.AltersKategorie;
-import ch.dvbern.kibon.exchange.commons.institution.GemeindeDTO;
-import ch.dvbern.kibon.exchange.commons.institution.InstitutionEventDTO;
+import ch.dvbern.kibon.exchange.commons.institution.*;
 import ch.dvbern.kibon.exchange.commons.institution.InstitutionEventDTO.Builder;
-import ch.dvbern.kibon.exchange.commons.institution.InstitutionStatus;
-import ch.dvbern.kibon.exchange.commons.institution.KontaktAngabenDTO;
 import ch.dvbern.kibon.exchange.commons.tagesschulen.ModulDTO;
 import ch.dvbern.kibon.exchange.commons.tagesschulen.TagesschuleModuleDTO;
 import ch.dvbern.kibon.exchange.commons.types.BetreuungsangebotTyp;
@@ -64,6 +37,15 @@ import ch.dvbern.kibon.exchange.commons.util.TimestampConverter;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import org.apache.commons.lang.NotImplementedException;
 import org.apache.commons.lang.StringUtils;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.enterprise.context.ApplicationScoped;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @ApplicationScoped
 public class InstitutionEventConverter {
@@ -145,7 +127,6 @@ public class InstitutionEventConverter {
 			.setOffenBis(TimeConverter.serialize(bgStammdaten.getOffenBis()))
 			.setOeffnungsAbweichungen(bgStammdaten.getOeffnungsAbweichungen())
 			.setAltersKategorien(getAltersKategorien(bgStammdaten))
-			.setSubventioniertePlaetze(bgStammdaten.getSubventioniertePlaetze())
 			.setAnzahlPlaetze(MathUtil.ZWEI_NACHKOMMASTELLE.from(bgStammdaten.getAnzahlPlaetze()))
 			.setAnzahlPlaetzeFirmen(MathUtil.ZWEI_NACHKOMMASTELLE.from(bgStammdaten.getAnzahlPlaetzeFirmen()))
 			.setAuslastungPct(MathUtil.ZWEI_NACHKOMMASTELLE.from(bgStammdaten.getAuslastungInstitutionen()));
