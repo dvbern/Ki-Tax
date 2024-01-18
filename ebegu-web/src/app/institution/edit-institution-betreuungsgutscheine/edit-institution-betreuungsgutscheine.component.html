@@ -384,14 +384,6 @@
                                        inputId="anzahlPlaetzeFirmen_id"></dv-error-messages>
                 </div>
             </div>
-            <div *ngIf="!(stammdaten.betreuungsangebotTyp === 'TAGESFAMILIEN')" class="col-sm-6">
-                <div class="form-group">
-                    <mat-checkbox id="subventioniertePlaetze_id" name="subventioniertePlaetze_id"
-                                  [(ngModel)]="stammdaten.institutionStammdatenBetreuungsgutscheine.subventioniertePlaetze">
-                        {{'INSTITUTION_SUBVENTIONIERTE_PLAETZE'|translate}}
-                    </mat-checkbox>
-                </div>
-            </div>
         </div>
 
         <div class="row">
@@ -592,8 +584,6 @@
                                    ? stammdaten.institutionStammdatenBetreuungsgutscheine.anzahlPlaetzeFirmen : 0}">
                     INSTITUTION_ANZAHL_PLAETZE_FIRMEN_PARAM
                 </p>
-                <p *ngIf="stammdaten.institutionStammdatenBetreuungsgutscheine.subventioniertePlaetze"
-                   translate>INSTITUTION_SUBVENTIONIERTE_PLAETZE</p>
             </div>
         </div>
         <div class="col-sm-12">
