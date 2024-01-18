@@ -661,7 +661,6 @@
     "INSTITUTION_ALTERSKATEGORIE_KINDERGARTEN": "Kindergarten",
     "INSTITUTION_ALTERSKATEGORIE_SCHULE": "Schule",
     "INSTITUTION_PLAETZE": "Plätze",
-    "INSTITUTION_SUBVENTIONIERTE_PLAETZE": "Einige dieser Plätze werden nach dem bisherigen Gebührensystem verrechnet (inkl. Annahme Betreuungsgutscheine der Stadt Bern)",
     "INSTITUTION_ANZAHL_PLAETZE": "Total Kitaplätze",
     "INSTITUTION_ANZAHL_PLAETZE_FIRMEN": "Davon für Firmen reserviert",
     "INSTITUTION_ANZAHL_PLAETZE_PARAM": "Total Kitaplätze: {{anzahlPlaetze}}",

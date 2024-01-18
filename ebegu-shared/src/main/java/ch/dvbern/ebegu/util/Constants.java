@@ -15,6 +15,9 @@
 
 package ch.dvbern.ebegu.util;
 
+import ch.dvbern.ebegu.enums.EinschulungTyp;
+import ch.dvbern.ebegu.types.DateRange;
+
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
@@ -24,9 +27,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
-
-import ch.dvbern.ebegu.enums.EinschulungTyp;
-import ch.dvbern.ebegu.types.DateRange;
+import java.util.regex.Pattern;
 
 /**
  * Interface fuer Konstanten.
@@ -57,6 +58,7 @@ public final class Constants {
 	public static final Locale DEUTSCH_FRENCH_LOCALE = new Locale("defr", "CH");
 
 	public static final Character LINE_BREAK = '\n';
+	public static final Pattern NEW_LINE_CHAR_PATTERN = Pattern.compile("[\n\r]");
 	public static final String DATA = "Data";
 	public static final String REGEX_UUID =
 		"(^.*)([a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12})(.*$)";
