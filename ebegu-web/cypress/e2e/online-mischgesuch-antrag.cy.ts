@@ -108,7 +108,7 @@ describe('Kibon - Online TS-Anmeldung (Mischgesuch) [Gesuchsteller]', () => {
         AntragBetreuungPO.getBetreuung(0, 0).click();
         AntragBetreuungPO.getPlatzAkzeptierenButton().click();
         cy.waitForRequest('PUT', '**/betreuungen/schulamt/akzeptieren', () => {
-            ConfirmDialogPO.getConfirmButton().click();
+            ConfirmDialogPO.getDvLoadingConfirmButton().click();
         });
     };
 
@@ -118,7 +118,7 @@ describe('Kibon - Online TS-Anmeldung (Mischgesuch) [Gesuchsteller]', () => {
         AntragBetreuungPO.getPlatzAkzeptierenButton().click();
 
         cy.waitForRequest('GET', '**/dossier/fall/**', () => {
-            ConfirmDialogPO.getConfirmButton().click();
+            ConfirmDialogPO.getDvLoadingConfirmButton().click();
         });
     };
 
@@ -129,7 +129,7 @@ describe('Kibon - Online TS-Anmeldung (Mischgesuch) [Gesuchsteller]', () => {
         FreigabePO.getFreigebenButton().click();
         cy.getDownloadUrl(() => {
             cy.waitForRequest('GET', '**/dossier/fall/**', () => {
-                ConfirmDialogPO.getConfirmButton().click();
+                ConfirmDialogPO.getDvLoadingConfirmButton().click();
             });
         });
     };
@@ -154,14 +154,14 @@ describe('Kibon - Online TS-Anmeldung (Mischgesuch) [Gesuchsteller]', () => {
 
         cy.waitForRequest('GET', '**/verfuegung/calculate/**', () => {
             VerfuegenPO.getGeprueftButton().click();
-            ConfirmDialogPO.getConfirmButton().click();
+            ConfirmDialogPO.getDvLoadingConfirmButton().click();
         });
     };
 
     const verfuegenStarten = () => {
         cy.waitForRequest('GET', '**/verfuegung/calculate/**', () => {
             VerfuegenPO.getVerfuegenStartenButton().click();
-            ConfirmDialogPO.getConfirmButton().click();
+            ConfirmDialogPO.getDvLoadingConfirmButton().click();
         });
     };
 
@@ -181,7 +181,7 @@ describe('Kibon - Online TS-Anmeldung (Mischgesuch) [Gesuchsteller]', () => {
 
         cy.waitForRequest('PUT', '**/verfuegung/verfuegen/**', () => {
             VerfuegungPO.getVerfuegenButton().click();
-            ConfirmDialogPO.getConfirmButton().click();
+            ConfirmDialogPO.getDvLoadingConfirmButton().click();
         });
     };
 

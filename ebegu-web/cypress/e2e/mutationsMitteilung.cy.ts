@@ -47,7 +47,7 @@ describe('Kibon - generate Testfälle [Gemeinde Sachbearbeiter]', () => {
         AntragBetreuungPO.getBetreuungspensumBis(0).find('input').clear().type(enddatum);
         AntragBetreuungPO.getMutationsmeldungSendenButton().click();
         cy.waitForRequest('PUT', '**/mitteilungen/sendbetreuungsmitteilung', () => {
-            ConfirmDialogPO.getConfirmButton().click();
+            ConfirmDialogPO.getDvLoadingConfirmButton().click();
         });
     });
 
@@ -61,7 +61,7 @@ describe('Kibon - generate Testfälle [Gemeinde Sachbearbeiter]', () => {
         MitteilungenPO.getMitteilung(0).click();
         MitteilungenPO.getMutationsmeldungHinzufuegenButton(0).click();
         cy.waitForRequest('PUT', '**/mitteilungen/applybetreuungsmitteilung/**', () => {
-            ConfirmDialogPO.getConfirmButton().click();
+            ConfirmDialogPO.getDvLoadingConfirmButton().click();
         });
     });
 

@@ -261,7 +261,7 @@ const saveBetreuung = () => {
 const saveAndConfirmBetreuung = () => {
     cy.waitForRequest('PUT', '**/betreuungen/betreuung/*', () => {
         getSaveButton().click();
-        ConfirmDialogPO.getConfirmButton().click();
+        ConfirmDialogPO.getDvLoadingConfirmButton().click();
     });
 };
 
@@ -269,7 +269,7 @@ const platzBestaetigen = () => {
     getKorrekteKostenBestaetigung().click();
     getPlatzBestaetigenButton().click();
     cy.waitForRequest('GET', '**/search/pendenzenBetreuungen', () => {
-        ConfirmDialogPO.getConfirmButton().click();
+        ConfirmDialogPO.getDvLoadingConfirmButton().click();
     });
 };
 

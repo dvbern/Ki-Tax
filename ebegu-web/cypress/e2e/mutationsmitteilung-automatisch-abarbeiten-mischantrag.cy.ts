@@ -70,7 +70,7 @@ describe('Kibon - Testet das Feature der automatischen Abarbeitung von Mutations
         // TODO: extract duplication once KIBON-3208 is merged
         cy.getDownloadUrl(() => {
             cy.waitForRequest('GET', '**/dossier/fall/**', () => {
-                ConfirmDialogPO.getConfirmButton().click();
+                ConfirmDialogPO.getDvLoadingConfirmButton().click();
             });
         }).then(downloadUrl => {
             return cy.request(downloadUrl)
@@ -110,7 +110,7 @@ describe('Kibon - Testet das Feature der automatischen Abarbeitung von Mutations
             AntragBetreuungPO.getBetreuung(0,2).click();
             cy.waitForRequest('GET', '**/dossier/id/**', () => {
                 AntragBetreuungPO.getPlatzAkzeptierenButton().click();
-                ConfirmDialogPO.getConfirmButton().click();
+                ConfirmDialogPO.getDvLoadingConfirmButton().click();
             });
             AntragBetreuungPO.getBetreuungsstatus(0,2).should('have.text', 'Module akzeptiert');
         }
@@ -126,14 +126,14 @@ describe('Kibon - Testet das Feature der automatischen Abarbeitung von Mutations
             VerfuegenPO.getFinSitAkzeptiert('AKZEPTIERT').click();
             cy.waitForRequest('PUT', '**/gesuche/status/*/GEPRUEFT', () => {
                 VerfuegenPO.getGeprueftButton().click();
-                ConfirmDialogPO.getConfirmButton().click();
+                ConfirmDialogPO.getDvLoadingConfirmButton().click();
             });
             SidenavPO.getGesuchStatus().should('have.text', 'Geprüft');
 
             VerfuegenPO.getVerfuegenStartenButton().click();
             VerfuegenPO.getBetreuungsstatus(0,2).should('have.text', 'Module akzeptiert');
             cy.waitForRequest('POST', '**/verfuegenStarten/*', () => {
-                ConfirmDialogPO.getConfirmButton().click();
+                ConfirmDialogPO.getDvLoadingConfirmButton().click();
             });
             SidenavPO.getGesuchStatus().should('have.text', 'Verfügen');
             VerfuegenPO.getBetreuungsstatus(0,2).should('have.text', 'Anmeldung übernommen');
@@ -160,7 +160,7 @@ describe('Kibon - Testet das Feature der automatischen Abarbeitung von Mutations
             AntragBetreuungPO.getBetreuungspensum(0).clear().type(betreuungspensumInMutation.toString());
             AntragBetreuungPO.getMutationsmeldungSendenButton().click();
             cy.waitForRequest('PUT', '**/mitteilungen/sendbetreuungsmitteilung', () => {
-                ConfirmDialogPO.getConfirmButton().click();
+                ConfirmDialogPO.getDvLoadingConfirmButton().click();
             });
         }
 
@@ -242,7 +242,7 @@ function verfuegeBetreuung(betreuungNumber: number, expectedAnspruchberechtigtes
     VerfuegungPO.getVerfuegungsBemerkungenKontrolliert().click();
     cy.waitForRequest('PUT', '**/verfuegung/verfuegen/*/*/false/false', () => {
         VerfuegungPO.getVerfuegenButton().click();
-        ConfirmDialogPO.getConfirmButton().click();
+        ConfirmDialogPO.getDvLoadingConfirmButton().click();
     }, {waitOptions: {timeout: 40000}});
     SidenavPO.goTo('VERFUEGEN');
 }
