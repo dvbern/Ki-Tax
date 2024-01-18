@@ -272,7 +272,6 @@ describe('Kibon - generate Testfälle [Online-Antrag]', () => {
 
             goToBetreuungen();
             AntragBetreuungPO.getBetreuung(0,0).click();
-            AntragBetreuungPO.getWeiteresBetreuungspensumErfassenButton().click();
             AntragBetreuungPO.fillKitaBetreuungspensumForm('withValid', 'London');
             AntragBetreuungPO.getBetreuungspensumAb(0).find('input').clear().type('01.08.2023');
             AntragBetreuungPO.getBetreuungspensumBis(0).find('input').clear().type('31.07.2024');
@@ -335,19 +334,23 @@ describe('Kibon - generate Testfälle [Online-Antrag]', () => {
             cy.changeLogin(userGemeinde);
             cy.get('@antragsId').then((antragsId) => cy.visit(`/#/gesuch/freigabe/${antragsId}`));
             clickSave();
+            SidenavPO.getGesuchStatus().should('have.text', 'In Bearbeitung');
+
             cy.waitForRequest('GET', '**/verfuegung/calculate/**', () => {
                 VerfuegenPO.getFinSitAkzeptiert('AKZEPTIERT').click();
             });
+
             cy.waitForRequest('PUT', '**/gesuche/status/*/GEPRUEFT', () => {
                 VerfuegenPO.getGeprueftButton().click();
                 ConfirmDialogPO.getConfirmButton().click();
             });
+            SidenavPO.getGesuchStatus().should('have.text', 'Geprüft');
 
             cy.waitForRequest('GET', '**/verfuegung/calculate/**', () => {
                 VerfuegenPO.getVerfuegenStartenButton().click();
                 ConfirmDialogPO.getConfirmButton().click();
             });
-
+            SidenavPO.getGesuchStatus().should('have.text', 'Verfügen');
             VerfuegenPO.getVerfuegung(0, 0).click();
             VerfuegungPO.getAnspruchberechtigtesBetreuungspensum(5).should('include.text', '80%');
             VerfuegungPO.getVerfuegungsBemerkungenKontrolliert().click();
@@ -355,6 +358,7 @@ describe('Kibon - generate Testfälle [Online-Antrag]', () => {
                 VerfuegungPO.getVerfuegenButton().click();
                 ConfirmDialogPO.getConfirmButton().click();
             });
+            SidenavPO.getGesuchStatus().should('have.text', 'Verfügt');
         }
     });
 });
