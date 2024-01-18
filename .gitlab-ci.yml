@@ -263,6 +263,39 @@ build-e2e-test-db-setup-image:
     extends: .build-e2e-test-db-setup-image
     needs: []
 
+run-e2e-tests:
+    stage: testing
+    variables:
+        baseURL: "https://e2e-be.kibon.ch/web/"
+    tags: [ 'os:linux', 'type:docker', 'zone:tz' ]
+    needs:
+        - build-and-analyze
+    image: '${DVB_DOCKER_REGISTRY}/dockerhub/cypress/browsers:node-18.14.1-chrome-110.0.5481.96-1-ff-109.0-edge-110.0.1587.41-1'
+    rules:
+        - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+          when: manual
+        - if: $CI_PIPELINE_SOURCE == "schedule"
+    cache:
+        key:
+            files:
+                - ebegu-web/package-lock.json
+        paths:
+            - .npm
+        policy: pull
+    script:
+        - cd ebegu-web
+        - npm ci --legacy-peer-deps
+        - npx cypress run --e2e --headless --browser chrome
+    artifacts:
+        when: always
+        paths:
+            - ebegu-web/cypress/videos/**/*.mp4
+            - ebegu-web/cypress/screenshots/**/*.png
+            - ebegu-web/cypress/results/*.xml
+        expire_in: 1 day
+        reports:
+            junit: ebegu-web/cypress/results/*.xml
+
 # based on stip-api's mirror job
 github-mirror:
     stage: mirror
