@@ -249,10 +249,7 @@ describe('Kibon - generate Testfälle [Gemeinde Sachbearbeiter]', () => {
             VerfuegungPO.getBetreuungspensumProzent(10).should('include.text', '25%');
             VerfuegungPO.getBetreuungspensumProzent(11).should('include.text', '25%');
 
-            cy.waitForRequest('GET', '**/verfuegung/nichtEintreten/**', () => {
-                VerfuegungPO.getNichtEintretenButton().click();
-                ConfirmDialogPO.getDvLoadingConfirmButton().click();
-            });
+            VerfuegungPO.nichtEintretenVerfuegen();
             SidenavPO.getGesuchStatus().should('have.text', 'Verfügt');
             VerfuegenPO.getBetreuungsstatus(0, 0).should('have.text', 'Nicht eingetreten');
         }
