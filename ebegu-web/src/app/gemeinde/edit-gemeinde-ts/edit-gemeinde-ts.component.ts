@@ -66,7 +66,7 @@ export class EditGemeindeTSComponent implements OnInit {
     public constructor(
         private readonly $state: StateService,
         private readonly institutionRS: InstitutionRS,
-        private readonly gemeindeRS: GemeindeRS
+        private readonly gemeindeRS: GemeindeRS,
     ) {
     }
 
@@ -75,6 +75,7 @@ export class EditGemeindeTSComponent implements OnInit {
             return;
         }
         this.updateInstitutionenList();
+        this.altLogoImageUrl$ = of(this.altLogoImageUrl);
     }
 
     public compareBenutzer(b1: TSBenutzer, b2: TSBenutzer): boolean {

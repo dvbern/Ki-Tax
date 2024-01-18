@@ -222,6 +222,10 @@ export class EditGemeindeComponent implements OnInit {
         return this.gemeindeRS.getLogoUrl(gemeinde.id);
     }
 
+    public getAltLogoImageUrl(gemeinde: TSGemeinde): string {
+        return this.gemeindeRS.getAlternativeLogoUrl(gemeinde.id);
+    }
+
     public getMitarbeiterVisibleRoles(): TSRole[] {
         const allowedRoles = PERMISSIONS[Permission.ROLE_GEMEINDE].concat(TSRole.SUPER_ADMIN);
         return allowedRoles;

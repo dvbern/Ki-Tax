@@ -174,8 +174,7 @@
                 </div>
                 <div class="col-sm-6">
                     <div class="form-group">
-                        <h3 translate>ALT_LOGO_TAGESSCHULE</h3>
-                        <img [src]="altLogoImageUrl$ | async"
+                        <img [src]="(altLogoImageUrl$ | async)"
                              class="tagesschul-profil-image">
                         <input #fileInput type="file" accept='image/png,image/jpeg'
                                (change)="srcChange(fileInput.files)"
@@ -284,7 +283,7 @@
                     <div class="col-sm-6">
                         <div class="form-group">
                             <h3 translate>ALT_LOGO_TAGESSCHULE</h3>
-                            <img [src]=""
+                            <img [src]="(altLogoImageUrl$ | async)"
                                  class="tagesschul-profil-image">
                         </div>
                     </div>
