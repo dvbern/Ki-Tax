@@ -164,7 +164,7 @@ INSERT IGNORE INTO institution_stammdaten_betreuungsgutscheine(id, timestamp_ers
 															   user_mutiert, version, auszahlungsdaten_id,
 															   alterskategorie_baby, alterskategorie_vorschule,
 															   alterskategorie_kindergarten, alterskategorie_schule,
-															   subventionierte_plaetze, anzahl_plaetze,
+															   anzahl_plaetze,
 															   anzahl_plaetze_firmen, offen_von, offen_bis,
 															   oeffnungstage_pro_jahr, auslastung_institutionen,
 															   anzahl_kinder_warteliste, summe_pensum_warteliste,
@@ -172,13 +172,13 @@ INSERT IGNORE INTO institution_stammdaten_betreuungsgutscheine(id, timestamp_ers
 															   wochenende_eroeffnung, uebernachtung_moeglich)
 VALUES (UNHEX(REPLACE('65dd4898-b3e8-11ee-829a-0242ac160002', '-', '')), NOW(), NOW(),
 		'flyway:Kanton Schwyz', 'flyway:Kanton Schwyz', 0, UNHEX(REPLACE('5913320b-b3e8-11ee-829a-0242ac160002', '-', '')), FALSE, FALSE, FALSE,
-		FALSE, FALSE, 30, NULL, '08:00', '18:00', 0, 0.00, 0.00, 0.00, 0.00, FALSE, FALSE, FALSE, FALSE);
+		FALSE, 30, NULL, '08:00', '18:00', 0, 0.00, 0.00, 0.00, 0.00, FALSE, FALSE, FALSE, FALSE);
 
 INSERT IGNORE INTO institution_stammdaten_betreuungsgutscheine(id, timestamp_erstellt, timestamp_mutiert, user_erstellt,
 															   user_mutiert, version, auszahlungsdaten_id,
 															   alterskategorie_baby, alterskategorie_vorschule,
 															   alterskategorie_kindergarten, alterskategorie_schule,
-															   subventionierte_plaetze, anzahl_plaetze,
+															   anzahl_plaetze,
 															   anzahl_plaetze_firmen, offen_von, offen_bis,
 															   oeffnungstage_pro_jahr, auslastung_institutionen,
 															   anzahl_kinder_warteliste, summe_pensum_warteliste,
@@ -186,13 +186,13 @@ INSERT IGNORE INTO institution_stammdaten_betreuungsgutscheine(id, timestamp_ers
 															   wochenende_eroeffnung, uebernachtung_moeglich)
 VALUES (UNHEX(REPLACE('7f7041ab-b3e8-11ee-829a-0242ac160002', '-', '')), NOW(), NOW(),
 		'flyway:Kanton Schwyz', 'flyway:Kanton Schwyz', 0, UNHEX(REPLACE('539c6b3e-b3e8-11ee-829a-0242ac160002', '-', '')), FALSE, FALSE, FALSE,
-		FALSE, FALSE, 35, NULL, '08:00', '18:00', 0, 0.00, 0.00, 0.00, 0.00, FALSE, FALSE, FALSE, FALSE);
+		FALSE, 35, NULL, '08:00', '18:00', 0, 0.00, 0.00, 0.00, 0.00, FALSE, FALSE, FALSE, FALSE);
 
 INSERT IGNORE INTO institution_stammdaten_betreuungsgutscheine(id, timestamp_erstellt, timestamp_mutiert, user_erstellt,
 															   user_mutiert, version, auszahlungsdaten_id,
 															   alterskategorie_baby, alterskategorie_vorschule,
 															   alterskategorie_kindergarten, alterskategorie_schule,
-															   subventionierte_plaetze, anzahl_plaetze,
+															   anzahl_plaetze,
 															   anzahl_plaetze_firmen, offen_von, offen_bis,
 															   oeffnungstage_pro_jahr, auslastung_institutionen,
 															   anzahl_kinder_warteliste, summe_pensum_warteliste,
@@ -200,7 +200,7 @@ INSERT IGNORE INTO institution_stammdaten_betreuungsgutscheine(id, timestamp_ers
 															   wochenende_eroeffnung, uebernachtung_moeglich)
 VALUES (UNHEX(REPLACE('95440105-b3e8-11ee-829a-0242ac160002', '-', '')), NOW(), NOW(),
 		'flyway:Kanton Schwyz', 'flyway:Kanton Schwyz', 0, UNHEX(REPLACE('4ef020a5-b3e8-11ee-829a-0242ac160002', '-', '')), FALSE, FALSE, FALSE,
-		FALSE, FALSE, 40, NULL, '08:00', '18:00', 0, 0.00, 0.00, 0.00, 0.00, FALSE, FALSE, FALSE, FALSE);
+		FALSE, 40, NULL, '08:00', '18:00', 0, 0.00, 0.00, 0.00, 0.00, FALSE, FALSE, FALSE, FALSE);
 
 INSERT IGNORE INTO institution_stammdaten (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert,
 										   version, vorgaenger_id, gueltig_ab, gueltig_bis, betreuungsangebot_typ,
