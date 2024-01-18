@@ -237,10 +237,7 @@ describe('Kibon - generate Testfälle [Gemeinde Sachbearbeiter]', () => {
             VerfuegenPO.pruefeGesuch();
             SidenavPO.getGesuchStatus().should('have.text', 'Geprüft');
 
-            VerfuegenPO.getVerfuegenStartenButton().click();
-            cy.waitForRequest('POST', '**/verfuegenStarten/*', () => {
-                ConfirmDialogPO.getDvLoadingConfirmButton().click();
-            });
+            VerfuegenPO.verfuegenStarten();
             SidenavPO.getGesuchStatus().should('have.text', 'Verfügen');
 
             VerfuegenPO.getVerfuegung(0, 0).click();

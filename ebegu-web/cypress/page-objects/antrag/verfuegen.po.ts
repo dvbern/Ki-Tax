@@ -53,6 +53,14 @@ const pruefeGesuch = () => {
         ConfirmDialogPO.getDvLoadingConfirmButton().click();
     });
 };
+
+const verfuegenStarten = () => {
+    cy.waitForRequest('POST', '**/verfuegenStarten/*', () => {
+        VerfuegenPO.getVerfuegenStartenButton().click();
+        ConfirmDialogPO.getDvLoadingConfirmButton().click();
+    });
+};
+
 export const VerfuegenPO = {
     // PAGE OBJECTS
     getBetreuungsstatus,
@@ -63,5 +71,6 @@ export const VerfuegenPO = {
     getVerfuegenStartenButton,
     getSendToSTVButton,
     // PAGE ACTIONS
-    pruefeGesuch
+    pruefeGesuch,
+    verfuegenStarten,
 };
