@@ -3,6 +3,7 @@ stages: [ build, analyze, prepare-package, package, release, deploy, testing, mi
 variables:
     VERSION: $CI_COMMIT_SHA
     DEV_HOST: sdvbvmkiba31.dvbern.ch
+    npm_config_cache: "$CI_PROJECT_DIR/.npm"
 
 workflow:
     rules:
