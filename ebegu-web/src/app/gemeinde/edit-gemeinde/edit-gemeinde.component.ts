@@ -355,7 +355,7 @@ export class EditGemeindeComponent implements OnInit {
     private persistAltLogo(file: File): void {
         this.gemeindeRS.uploadAlternativeLogoImage(this.gemeindeId, file).then(
             () => {
-                this.navigateBack();
+
             },
             () => {
                 this.errorService.clearAll();

@@ -289,7 +289,7 @@
 
                     <!-- Alternatives Logo Tagesschule -->
                     <div class="col-sm-6">
-                        <div class="form-group">
+                        <div class="form-group" *ngIf="stammdaten.gemeindeStammdatenKorrespondenz.hasAlternativeTSLogo">
                             <h3 translate>ALT_LOGO_TAGESSCHULE</h3>
                             <img [src]="(altLogoImageUrl$ | async)"
                                  class="tagesschul-profil-image">
