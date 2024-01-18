@@ -31,18 +31,19 @@ describe('Kibon - generate Testfälle [Online-Antrag]', () => {
     const userGemeinde = getUser('[6-L-SB-Gemeinde] Stefan Weibel');
     const userKita = getUser('[3-SB-Institution-Kita-Brünnen] Sophie Bergmann');
     const userGS = getUser('[5-GS] Emma Gerber');
-    const admin = getUser('[1-Superadmin] E-BEGU Superuser');
     const gesuchsPeriode: {ganze: TestPeriode, anfang: string, ende: string} = { ganze: '2023/24', anfang: '2023', ende: '2024' };
 
     before(() => {
         cy.intercept({ resourceType: 'xhr' }, { log: false }); // don't log XHRs
-        cy.login(admin);
+        cy.login(userSuperadmin);
         cy.intercept('GET', '**/benutzer/gesuchsteller').as('loadingGesuchsteller');
         cy.visit('#/testdaten');
         cy.wait('@loadingGesuchsteller');
         TestFaellePO.getGesuchstellerFaelleLoeschen().click();
         TestFaellePO.getGesuchstellerInToRemoveFaelle(userGS).click();
-        TestFaellePO.getGesucheLoeschenButton().click();
+        cy.waitForRequest('DELETE', '**/testfaelle/testfallgs/*', () => {
+            TestFaellePO.getGesucheLoeschenButton().click();
+        });
     });
 
     it('should register new user for bg', () => {
@@ -261,6 +262,7 @@ describe('Kibon - generate Testfälle [Online-Antrag]', () => {
         // !!!!!! - New User - !!!!!!
         {
             cy.changeLogin(userKita);
+            cy.viewport('macbook-15');
 
             const goToBetreuungen = () => {
                 cy.get('@antragsId').then((antragsId) => cy.visit(`/#/gesuch/familiensituation/${antragsId}`));
@@ -325,6 +327,8 @@ describe('Kibon - generate Testfälle [Online-Antrag]', () => {
             cy.waitForRequest('GET', '**/dossier/fall/**', () => {
                 FreigabePO.getFreigabequittungEinscannenSimulierenButton().click();
             });
+            // attempt to reduce flakyness
+            cy.wait(2000);
             SidenavPO.goTo('GESUCH_ERSTELLEN');
             AntragCreationPO.getEingangsdatum().find('input').clear().type('01.07.2023');
             cy.waitForRequest('PUT', '**/gesuche', () => {
