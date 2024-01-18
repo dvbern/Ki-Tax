@@ -1782,7 +1782,6 @@ public class JaxBConverter extends AbstractConverter {
 		jaxInstStammdaten.setAlterskategorieVorschule(persistedInstStammdaten.getAlterskategorieVorschule());
 		jaxInstStammdaten.setAlterskategorieKindergarten(persistedInstStammdaten.getAlterskategorieKindergarten());
 		jaxInstStammdaten.setAlterskategorieSchule(persistedInstStammdaten.getAlterskategorieSchule());
-		jaxInstStammdaten.setSubventioniertePlaetze(persistedInstStammdaten.getSubventioniertePlaetze());
 		jaxInstStammdaten.setAnzahlPlaetze(persistedInstStammdaten.getAnzahlPlaetze());
 		jaxInstStammdaten.setAnzahlPlaetzeFirmen(persistedInstStammdaten.getAnzahlPlaetzeFirmen());
 		jaxInstStammdaten.setTarifProHauptmahlzeit(persistedInstStammdaten.getTarifProHauptmahlzeit());
@@ -1875,7 +1874,6 @@ public class JaxBConverter extends AbstractConverter {
 		institutionStammdaten.setAlterskategorieVorschule(institutionStammdatenJAXP.isAlterskategorieVorschule());
 		institutionStammdaten.setAlterskategorieKindergarten(institutionStammdatenJAXP.isAlterskategorieKindergarten());
 		institutionStammdaten.setAlterskategorieSchule(institutionStammdatenJAXP.isAlterskategorieSchule());
-		institutionStammdaten.setSubventioniertePlaetze(institutionStammdatenJAXP.isSubventioniertePlaetze());
 		institutionStammdaten.setAnzahlPlaetze(institutionStammdatenJAXP.getAnzahlPlaetze());
 		institutionStammdaten.setAnzahlPlaetzeFirmen(institutionStammdatenJAXP.getAnzahlPlaetzeFirmen());
 		institutionStammdaten.setTarifProHauptmahlzeit(institutionStammdatenJAXP.getTarifProHauptmahlzeit());

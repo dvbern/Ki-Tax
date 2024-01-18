@@ -219,7 +219,7 @@ public class GeneratedDokumentServiceBean extends AbstractBaseService implements
 			fileName, entity.getId());
 
 		writeProtectedDokument.setFilename(savedDokument.getFilename());
-		writeProtectedDokument.setFilepfad(savedDokument.getPath());
+		writeProtectedDokument.setFilepfad(savedDokument.getPathAsString());
 		writeProtectedDokument.setFilesize(savedDokument.getSizeString());
 		writeProtectedDokument.setTyp(dokumentTyp);
 		writeProtectedDokument.setWriteProtected(writeProtected);
@@ -480,7 +480,7 @@ public class GeneratedDokumentServiceBean extends AbstractBaseService implements
 		}
 
 		if (persistedDokument == null) {
-			String expectedFilepath = ebeguConfiguration.getDocumentFilePath() + '/' + id;
+			Path expectedFilepath = Path.of(ebeguConfiguration.getDocumentFilePath(), id);
 			LOGGER.error("Das Dokument vom Typ: {} fuer Antragnummer {} konnte unter dem Pfad {} " +
 					"nicht gefunden  werden obwohl es existieren muesste. Wird neu generiert!", dokumentTyp,
 				id, expectedFilepath);
@@ -634,7 +634,7 @@ public class GeneratedDokumentServiceBean extends AbstractBaseService implements
 		if (!forceCreation && Betreuungsstatus.VERFUEGT == betreuung.getBetreuungsstatus()) {
 			persistedDokument = findGeneratedDokument(gesuch.getId(), fileNameForGeneratedDokumentTyp);
 			if (persistedDokument == null) {
-				String expectedFilepath = ebeguConfiguration.getDocumentFilePath() + '/' + gesuch.getId();
+				Path expectedFilepath = Path.of(ebeguConfiguration.getDocumentFilePath(), gesuch.getId());
 				LOGGER.error(
 					"Das Dokument vom Typ: {} fuer Betreuungsnummer {} konnte unter dem Pfad {} " +
 						"nicht gefunden  werden obwohl es existieren muesste. Wird neu generiert!",
@@ -954,7 +954,7 @@ public class GeneratedDokumentServiceBean extends AbstractBaseService implements
 		|| Betreuungsstatus.SCHULAMT_ANMELDUNG_AUSGELOEST == abstractAnmeldung.getBetreuungsstatus()) {
 			persistedDokument = findGeneratedDokument(gesuch.getId(), fileNameForGeneratedDokumentTyp);
 			if (persistedDokument == null) {
-				String expectedFilepath = ebeguConfiguration.getDocumentFilePath() + '/' + gesuch.getId();
+				Path expectedFilepath = Path.of(ebeguConfiguration.getDocumentFilePath(), gesuch.getId());
 				LOGGER.error(
 					"Das Dokument vom Typ: {} fuer Betreuungsnummer {} konnte unter dem Pfad {} " +
 						"nicht gefunden  werden obwohl es existieren muesste. Wird neu generiert!",
@@ -1058,7 +1058,7 @@ public class GeneratedDokumentServiceBean extends AbstractBaseService implements
 		GeneratedGeneralDokument writeProtectedDokument = new GeneratedGeneralDokument();
 		writeProtectedDokument.setIdentifier(auftragIdentifier);
 		writeProtectedDokument.setFilename(savedDokument.getFilename());
-		writeProtectedDokument.setFilepfad(savedDokument.getPath());
+		writeProtectedDokument.setFilepfad(savedDokument.getPathAsString());
 		writeProtectedDokument.setFilesize(savedDokument.getSizeString());
 		writeProtectedDokument.setTyp(GeneratedDokumentTyp.NOTRECHT_MASSENVERFUEGUNG);
 		writeProtectedDokument.setWriteProtected(true);

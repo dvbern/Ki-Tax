@@ -15,33 +15,30 @@
 
 package ch.dvbern.ebegu.services;
 
-import java.io.IOException;
-import java.io.Writer;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.Objects;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Resource;
-import javax.inject.Inject;
-import javax.transaction.Status;
-import javax.transaction.TransactionSynchronizationRegistry;
-
 import ch.dvbern.ebegu.config.EbeguConfiguration;
 import ch.dvbern.ebegu.errors.MailException;
 import ch.dvbern.ebegu.util.UploadFileInfo;
 import ch.dvbern.ebegu.util.mandant.MandantIdentifier;
 import ch.dvbern.lib.cdipersistence.Persistence;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-import org.apache.commons.mail.Email;
-import org.apache.commons.mail.EmailAttachment;
-import org.apache.commons.mail.EmailException;
-import org.apache.commons.mail.MultiPartEmail;
-import org.apache.commons.mail.SimpleEmail;
+import org.apache.commons.mail.*;
 import org.apache.commons.net.smtp.SMTPClient;
 import org.apache.commons.net.smtp.SMTPReply;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Resource;
+import javax.inject.Inject;
+import javax.transaction.Status;
+import javax.transaction.TransactionSynchronizationRegistry;
+import java.io.IOException;
+import java.io.Writer;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.Objects;
+
+import static ch.dvbern.ebegu.util.Constants.NEW_LINE_CHAR_PATTERN;
 
 /**
  * Allgemeine Mailing-Funktionalität
@@ -125,7 +122,7 @@ public abstract class AbstractMailServiceBean extends AbstractBaseService {
 		try {
 			// Create the attachment
 			EmailAttachment attachment = new EmailAttachment();
-			final String pathOfAttachment = "File://" + uploadFileInfo.getPath();
+			final String pathOfAttachment = "File://" + uploadFileInfo.getPathAsString();
 			attachment.setURL(new URL(pathOfAttachment));
 			attachment.setDisposition(EmailAttachment.ATTACHMENT);
 			attachment.setDescription(uploadFileInfo.getFilename());
@@ -213,7 +210,11 @@ public abstract class AbstractMailServiceBean extends AbstractBaseService {
 	}
 
 	private void pretendToSendMessage(final String messageBody, final String mailadress) {
-		LOG.info("Sending of Emails disabled. Mail would be sent to {} : {}", mailadress, messageBody);
+		LOG.info("Sending of Emails disabled. Mail would be sent to {} : {}", removeNewLineChar(mailadress), removeNewLineChar(messageBody));
+	}
+
+	protected String removeNewLineChar(String str) {
+		return NEW_LINE_CHAR_PATTERN.matcher(str).replaceAll("_");
 	}
 
 	private void assertPositiveIntermediate(final SMTPClient client) {
