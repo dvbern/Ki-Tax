@@ -3000,7 +3000,7 @@
     "EINGEWOEHNUNG": "Findet eine Eingewöhnung bei der Institution statt, bevor Sie mit Ihrer Beschäftigung beginnen?",
     "EINGEWOEHNUNG_FKJV": "Das Kind wird im Zeitraum, für den diese Platzbestätigung gilt, zuerst eingewöhnt",
     "EINGEWOEHNUNG_HELP": "Setzen Sie das Häkchen, wenn das Kind vorher nicht in Ihrer Institution betreut wurde und zuerst eingewöhnt werden muss.<br>Hat die Eingewöhnung in der vorherigen Gutscheinperiode begonnen, kann sie in dieser Platzbestätigung nur bestätigt werden, wenn sie am 1. August noch nicht abgeschlossen war.",
-    "NIEDRIGES_BETREUUNGSPENSUM": "Bei einer Indikation aufgrund eines Sprachförderbedarfs muss das Kind grundsätzlich mindestens im Umfang von 40 Prozent betreut werden um einen Betreuungsgutschein zu erhalten.",
+    "NIEDRIGES_BETREUUNGSPENSUM": "Bei einer Indikation aufgrund eines Sprachförderbedarfs muss das Kind grundsätzlich mindestens im Umfang von 40 Prozent betreut werden um einen Betreuungsgutschein zu erhalten. Setzen Sie das Häkchen, wenn das Pensum unterschritten wurde wegen Ferien oder Krankheit.",
     "FRENCH_ENABLED": "Französische Übersetzungen aktiviert",
     "DIPLOMATENSTATUS_DEAKTIVIERT": "Luzern: Frage Diplomatenstatus deaktiviert",
     "ZEMIS_DISABLED": "Luzern: ZEMIS Nr. deaktiviert",
