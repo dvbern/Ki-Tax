@@ -82,7 +82,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
@@ -579,7 +578,7 @@ public class UploadResource {
 			RueckforderungDokument rueckforderungDokument = new RueckforderungDokument();
 			rueckforderungDokument.setRueckforderungDokumentTyp(rueckforderungDokumentTyp);
 			rueckforderungDokument.setRueckforderungFormular(rueckforderungFormular);
-			rueckforderungDokument.setFilepfad(fileInfo.getPath());
+			rueckforderungDokument.setFilepfad(fileInfo.getPathAsString());
 			rueckforderungDokument.setFilename(fileInfo.getFilename());
 			rueckforderungDokument.setFilesize(fileInfo.getSizeString());
 
@@ -627,7 +626,7 @@ public class UploadResource {
 			// create and add the new file to RueckforderungsDokument object and persist it
 			SozialdienstFallDokument sozialdienstFallDokument = new SozialdienstFallDokument();
 			sozialdienstFallDokument.setSozialdienstFall(sozialdienstFall);
-			sozialdienstFallDokument.setFilepfad(fileInfo.getPath());
+			sozialdienstFallDokument.setFilepfad(fileInfo.getPathAsString());
 			sozialdienstFallDokument.setFilename(fileInfo.getFilename());
 			sozialdienstFallDokument.setFilesize(fileInfo.getSizeString());
 
@@ -667,7 +666,7 @@ public class UploadResource {
 			// create and add the new file to FerienbetreuungDokument object and persist it
 			FerienbetreuungDokument ferienbetreuungDokument = new FerienbetreuungDokument();
 			ferienbetreuungDokument.setFerienbetreuungAngabenContainer(container);
-			ferienbetreuungDokument.setFilepfad(fileInfo.getPath());
+			ferienbetreuungDokument.setFilepfad(fileInfo.getPathAsString());
 			ferienbetreuungDokument.setFilename(fileInfo.getFilename());
 			ferienbetreuungDokument.setFilesize(fileInfo.getSizeString());
 			ferienbetreuungDokument.setTimestampUpload(LocalDateTime.now());
@@ -711,7 +710,7 @@ public class UploadResource {
 
 	private void checkFiletypeAllowed(UploadFileInfo fileInfo) {
 		//we dont purly trust the filetype set in the header, so we perform our own content-type guessing
-		java.nio.file.Path filePath = Paths.get(fileInfo.getPath());
+		java.nio.file.Path filePath = fileInfo.getPath();
 		try {
 			Tika tika = new Tika();
 			String contentType = tika.detect(filePath); //tika should be more accurate than Files.probeContentType
@@ -721,7 +720,7 @@ public class UploadResource {
 					+ "\n\t header:   {} \n\t probing:  {}", mimeType, contentType);
 			}
 			if (!applicationPropertyService.readMimeTypeWhitelist(principal.getMandant()).contains(contentType)) {
-				fileSaverService.remove(fileInfo.getPath());
+				fileSaverService.remove(fileInfo.getPathAsString());
 				String message = "Blocked upload of filetype that is not in whitelist: " + contentType;
 				throw new EbeguRuntimeException(
 					KibonLogLevel.INFO,
@@ -746,7 +745,7 @@ public class UploadResource {
 
 				//set to existing
 				jaxDokument.setFilename(uploadFileInfo.getFilename());
-				jaxDokument.setFilepfad(uploadFileInfo.getPath());
+				jaxDokument.setFilepfad(uploadFileInfo.getPathAsString());
 				jaxDokument.setFilesize(uploadFileInfo.getSizeString());
 				LOG.info(
 					"Replace placeholder on {} by file {}",
@@ -759,7 +758,7 @@ public class UploadResource {
 		//add new
 		JaxDokument dokument = new JaxDokument();
 		dokument.setFilename(uploadFileInfo.getFilename());
-		dokument.setFilepfad(uploadFileInfo.getPath());
+		dokument.setFilepfad(uploadFileInfo.getPathAsString());
 		dokument.setFilesize(uploadFileInfo.getSizeString());
 		jaxDokumentGrund.getDokumente().add(dokument);
 		LOG.info("Add on {} file {}", jaxDokumentGrund.getDokumentTyp(), uploadFileInfo.getFilename());

@@ -17,31 +17,12 @@
 
 package ch.dvbern.ebegu.outbox.institution;
 
-import java.math.BigDecimal;
-import java.time.DayOfWeek;
-import java.time.LocalTime;
-import java.util.EnumSet;
-
-import javax.annotation.Nonnull;
-
-import ch.dvbern.ebegu.entities.Adresse;
-import ch.dvbern.ebegu.entities.Betreuungsstandort;
-import ch.dvbern.ebegu.entities.EinstellungenTagesschule;
-import ch.dvbern.ebegu.entities.Institution;
-import ch.dvbern.ebegu.entities.InstitutionStammdaten;
-import ch.dvbern.ebegu.entities.InstitutionStammdatenBetreuungsgutscheine;
-import ch.dvbern.ebegu.entities.InstitutionStammdatenTagesschule;
-import ch.dvbern.ebegu.entities.KontaktAngaben;
-import ch.dvbern.ebegu.entities.ModulTagesschuleGroup;
+import ch.dvbern.ebegu.entities.*;
 import ch.dvbern.ebegu.outbox.ExportedEvent;
 import ch.dvbern.ebegu.test.TestDataUtil;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.Constants;
-import ch.dvbern.kibon.exchange.commons.institution.AltersKategorie;
-import ch.dvbern.kibon.exchange.commons.institution.GemeindeDTO;
-import ch.dvbern.kibon.exchange.commons.institution.InstitutionEventDTO;
-import ch.dvbern.kibon.exchange.commons.institution.InstitutionStatus;
-import ch.dvbern.kibon.exchange.commons.institution.KontaktAngabenDTO;
+import ch.dvbern.kibon.exchange.commons.institution.*;
 import ch.dvbern.kibon.exchange.commons.tagesschulen.ModulDTO;
 import ch.dvbern.kibon.exchange.commons.tagesschulen.TagesschuleModuleDTO;
 import ch.dvbern.kibon.exchange.commons.types.BetreuungsangebotTyp;
@@ -52,15 +33,16 @@ import com.spotify.hamcrest.pojo.IsPojo;
 import org.hamcrest.Matcher;
 import org.junit.jupiter.api.Test;
 
+import javax.annotation.Nonnull;
+import java.math.BigDecimal;
+import java.time.DayOfWeek;
+import java.time.LocalTime;
+import java.util.EnumSet;
+
 import static com.spotify.hamcrest.pojo.IsPojo.pojo;
 import static java.util.Objects.requireNonNull;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.comparesEqualTo;
-import static org.hamcrest.Matchers.contains;
-import static org.hamcrest.Matchers.containsInAnyOrder;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.notNullValue;
-import static org.hamcrest.Matchers.nullValue;
+import static org.hamcrest.Matchers.*;
 
 public class InstitutionEventConverterTest {
 
@@ -85,7 +67,6 @@ public class InstitutionEventConverterTest {
 		bgStammdaten.setOeffnungsAbweichungen("Freitag bieten wir auf Wunsch auch eine Betreuung an.");
 		bgStammdaten.setAlterskategorieBaby(true);
 		bgStammdaten.setAlterskategorieVorschule(true);
-		bgStammdaten.setSubventioniertePlaetze(false);
 		bgStammdaten.setAnzahlPlaetze(BigDecimal.TEN);
 		bgStammdaten.setAnzahlPlaetzeFirmen(BigDecimal.ONE);
 
@@ -127,7 +108,6 @@ public class InstitutionEventConverterTest {
 				AltersKategorie.BABY,
 				AltersKategorie.VORSCHULE)
 			)
-			.where(InstitutionEventDTO::getSubventioniertePlaetze, is(bgStammdaten.getSubventioniertePlaetze()))
 			.where(InstitutionEventDTO::getAnzahlPlaetze, comparesEqualTo(bgStammdaten.getAnzahlPlaetze()))
 			.where(InstitutionEventDTO::getAnzahlPlaetzeFirmen, comparesEqualTo(bgStammdaten.getAnzahlPlaetzeFirmen()))
 			.where(InstitutionEventDTO::getTimestampMutiert, is(notNullValue()))

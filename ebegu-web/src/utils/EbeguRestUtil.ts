@@ -1701,7 +1701,6 @@ export class EbeguRestUtil {
             restInstitutionStammdaten.alterskategorieVorschule = institutionStammdaten.alterskategorieVorschule;
             restInstitutionStammdaten.alterskategorieKindergarten = institutionStammdaten.alterskategorieKindergarten;
             restInstitutionStammdaten.alterskategorieSchule = institutionStammdaten.alterskategorieSchule;
-            restInstitutionStammdaten.subventioniertePlaetze = institutionStammdaten.subventioniertePlaetze;
             restInstitutionStammdaten.anzahlPlaetze = institutionStammdaten.anzahlPlaetze;
             restInstitutionStammdaten.anzahlPlaetzeFirmen = institutionStammdaten.anzahlPlaetzeFirmen;
             restInstitutionStammdaten.adresseKontoinhaber =
@@ -1763,7 +1762,6 @@ export class EbeguRestUtil {
             institutionStammdatenTS.alterskategorieKindergarten =
                 institutionStammdatenFromServer.alterskategorieKindergarten;
             institutionStammdatenTS.alterskategorieSchule = institutionStammdatenFromServer.alterskategorieSchule;
-            institutionStammdatenTS.subventioniertePlaetze = institutionStammdatenFromServer.subventioniertePlaetze;
             institutionStammdatenTS.anzahlPlaetze = institutionStammdatenFromServer.anzahlPlaetze;
             institutionStammdatenTS.anzahlPlaetzeFirmen = institutionStammdatenFromServer.anzahlPlaetzeFirmen;
             institutionStammdatenTS.adresseKontoinhaber =

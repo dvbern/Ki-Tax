@@ -102,15 +102,6 @@ abstract class AbstractFinanzielleSituationDokumente
 		add(getDokument(DokumentTyp.ERFOLGSRECHNUNGEN_JAHR_MINUS2, abstractFinanzielleSituation, null,
 			String.valueOf(basisJahr - 2), DokumentGrundPersonType.GESUCHSTELLER,
 			gesuchstellerNumber, dokumentGrundTyp, stichtag), anlageVerzeichnis);
-		add(getDokument(DokumentTyp.NACHWEIS_ERSATZINKOMMEN_SELBSTSTAENDIGKEIT_JAHR, abstractFinanzielleSituation, null,
-				basisJahrString, DokumentGrundPersonType.GESUCHSTELLER, gesuchstellerNumber, dokumentGrundTyp, stichtag),
-			anlageVerzeichnis);
-		add(getDokument(DokumentTyp.NACHWEIS_ERSATZINKOMMEN_SELBSTSTAENDIGKEIT_JAHR_MINUS1, abstractFinanzielleSituation, null,
-				String.valueOf(basisJahr - 1), DokumentGrundPersonType.GESUCHSTELLER, gesuchstellerNumber, dokumentGrundTyp, stichtag),
-			anlageVerzeichnis);
-		add(getDokument(DokumentTyp.NACHWEIS_ERSATZINKOMMEN_SELBSTSTAENDIGKEIT_JAHR_MINUS2, abstractFinanzielleSituation, null,
-				String.valueOf(basisJahr - 2), DokumentGrundPersonType.GESUCHSTELLER, gesuchstellerNumber, dokumentGrundTyp, stichtag),
-			anlageVerzeichnis);
 	}
 
 	@Override
@@ -120,6 +111,16 @@ abstract class AbstractFinanzielleSituationDokumente
 		@Nullable AbstractFinanzielleSituation abstractFinanzielleSituation) {
 		if (abstractFinanzielleSituation == null) {
 			return false;
+		}
+
+		switch (dokumentTyp) {
+			case NACHWEIS_ERSATZINKOMMEN_SELBSTSTAENDIGKEIT_JAHR:
+				return isNachweisErsatzeinkommenSelbststaendigkeitNeeded(abstractFinanzielleSituation, 0);
+			case NACHWEIS_ERSATZINKOMMEN_SELBSTSTAENDIGKEIT_JAHR_MINUS1:
+				return isNachweisErsatzeinkommenSelbststaendigkeitNeeded(abstractFinanzielleSituation, 1);
+			case NACHWEIS_ERSATZINKOMMEN_SELBSTSTAENDIGKEIT_JAHR_MINUS2:
+				return isNachweisErsatzeinkommenSelbststaendigkeitNeeded(abstractFinanzielleSituation, 2);
+			default: //do nothing and continiue
 		}
 
 		if (this.isFKJV && abstractFinanzielleSituation.getSteuerveranlagungErhalten()) {
@@ -183,12 +184,6 @@ abstract class AbstractFinanzielleSituationDokumente
 		case NACHWEIS_NETTOERTRAEGE_ERBENGEMEINSCHAFTEN:
 			return abstractFinanzielleSituation.getNettoertraegeErbengemeinschaft() != null
 				&& abstractFinanzielleSituation.getNettoertraegeErbengemeinschaft().compareTo(BigDecimal.ZERO) > 0;
-		case NACHWEIS_ERSATZINKOMMEN_SELBSTSTAENDIGKEIT_JAHR:
-			return isNachweisErsatzeinkommenSelbststaendigkeitNeeded(abstractFinanzielleSituation, 0);
-		case NACHWEIS_ERSATZINKOMMEN_SELBSTSTAENDIGKEIT_JAHR_MINUS1:
-			return isNachweisErsatzeinkommenSelbststaendigkeitNeeded(abstractFinanzielleSituation, 1);
-		case NACHWEIS_ERSATZINKOMMEN_SELBSTSTAENDIGKEIT_JAHR_MINUS2:
-			return isNachweisErsatzeinkommenSelbststaendigkeitNeeded(abstractFinanzielleSituation, 2);
 
 		default:
 			return false;

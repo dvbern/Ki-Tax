@@ -470,11 +470,9 @@
                                                                data-test="ersatzeinkommen-selbststaendigkeit-basisjahr"
                                                                name="ersatzeinkommenSelbststaendigkeitBasisjahr"
                                                                ng-model="vm.getModel().finanzielleSituationJA.ersatzeinkommenSelbststaendigkeitBasisjahr"
-                                                               ng-required="vm.showErsatzeinkommenSelbststaendigkeit"
                                                                allow-negative=false
                                                                dv-on-blur="vm.calculate()"
                                                                class="input-element"
-                                                               ng-required="true"
                                                                ng-disabled="vm.isGesuchReadonly()  || vm.getModel().finanzielleSituationJA.ersatzeinkommen === 0 || !vm.hasGeschaeftsgewinn(0)">
                                                 </dv-valueinput>
                                                 <dv-error-messages input-id="ersatzeinkommenSelbststaendigkeitBasisjahr"
@@ -517,7 +515,6 @@
                                                                allow-negative=false
                                                                dv-on-blur="vm.calculate()"
                                                                class="input-element"
-                                                               ng-required="vm.hasGeschaeftsgewinn(1)"
                                                                ng-disabled="vm.isGesuchReadonly()  || !vm.hasGeschaeftsgewinn(1)">
                                                 </dv-valueinput>
                                                 <dv-error-messages input-id="ersatzeinkommenSelbststaendigkeitBasisjahrMinus1"
@@ -555,7 +552,6 @@
                                                                allow-negative=false
                                                                dv-on-blur="vm.calculate()"
                                                                class="input-element"
-                                                               ng-required="vm.hasGeschaeftsgewinn(2)"
                                                                ng-disabled="vm.isGesuchReadonly() || !vm.hasGeschaeftsgewinn(2)">
                                                 </dv-valueinput>
                                                 <dv-error-messages input-id="ersatzeinkommenSelbststaendigkeitBasisjahrMinus2"
