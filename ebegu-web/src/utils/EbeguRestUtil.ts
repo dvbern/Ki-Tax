@@ -1240,7 +1240,7 @@ export class EbeguRestUtil {
             stammdatenTS.logoSpacingLeft = stammdatenFromServer.logoSpacingLeft;
             stammdatenTS.logoSpacingTop = stammdatenFromServer.logoSpacingTop;
             stammdatenTS.standardSignatur = stammdatenFromServer.standardSignatur;
-            stammdatenTS.hasAlternativeTSLogo = stammdatenFromServer.hasAlternativeTSLogo;
+            stammdatenTS.hasAlternativeLogoTagesschule = stammdatenFromServer.hasAlternativeLogoTagesschule;
             return stammdatenTS;
         }
         return undefined;

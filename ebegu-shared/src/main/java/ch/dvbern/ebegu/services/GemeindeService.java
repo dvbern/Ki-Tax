@@ -118,7 +118,7 @@ public interface GemeindeService {
 	 * Updates the alternative tagesschule logo of the given Gemeinde wth the given content
 	 */
 	@Nonnull
-	GemeindeStammdaten uploadAlternativeLogo(
+	GemeindeStammdaten uploadAlternativeLogoTagesschule(
 		@Nonnull String gemeindeId,
 		@Nonnull byte[] content,
 		@Nonnull String name,
@@ -128,7 +128,7 @@ public interface GemeindeService {
 	 * Deletes the alternative tagesschule logo of the given Gemeinde
 	 */
 	@Nonnull
-	GemeindeStammdaten deleteAlternativeLogo(
+	GemeindeStammdaten deleteAlternativeLogoTagesschule(
 		@Nonnull String gemeindeId);
 
 	/**

@@ -174,13 +174,13 @@
                 </div>
                 <div class="col-sm-6" *ngIf="stammdaten?.gemeindeStammdatenKorrespondenz">
                     <div class="form-group">
-                        <mat-checkbox id="hasAlternativeTSLogo_id"
-                                      name="hasAlternativeTSLogo_id"
-                                      [(ngModel)]="stammdaten.gemeindeStammdatenKorrespondenz.hasAlternativeTSLogo">
+                        <mat-checkbox id="hasAlternativeLogoTagesschule_id"
+                                      name="hasAlternativeLogoTagesschule_id"
+                                      [(ngModel)]="stammdaten.gemeindeStammdatenKorrespondenz.hasAlternativeLogoTagesschule">
                             {{'GEMEINDE_HAS_ALTERNATIVE_TS_LOGO'|translate}}
                         </mat-checkbox>
                     </div>
-                    <div class="form-group" *ngIf="stammdaten.gemeindeStammdatenKorrespondenz.hasAlternativeTSLogo">
+                    <div class="form-group" *ngIf="stammdaten.gemeindeStammdatenKorrespondenz.hasAlternativeLogoTagesschule">
                         <h3 translate>ALT_LOGO_TAGESSCHULE</h3>
                         <img [src]="altLogoImageUrl$ | async"
                              class="tagesschul-profil-image">
@@ -289,7 +289,7 @@
 
                     <!-- Alternatives Logo Tagesschule -->
                     <div class="col-sm-6">
-                        <div class="form-group" *ngIf="stammdaten.gemeindeStammdatenKorrespondenz.hasAlternativeTSLogo">
+                        <div class="form-group" *ngIf="stammdaten.gemeindeStammdatenKorrespondenz.hasAlternativeLogoTagesschule">
                             <h3 translate>ALT_LOGO_TAGESSCHULE</h3>
                             <img [src]="(altLogoImageUrl$ | async)"
                                  class="tagesschul-profil-image">

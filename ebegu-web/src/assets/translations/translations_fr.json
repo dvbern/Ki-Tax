@@ -3089,7 +3089,6 @@
     "FINANZIELLE_SITUATION_ERSATZEINKOMMEN_SELBSTSTAENDIGKEIT_INVALID": "Sie müssen für mindestens ein Jahr ein Ersatzeinkommen angeben.",
     "FINANZIELLE_SITUATION_ERSATZEINKOMMEN_BASISJAHR_TOOLTIP": "Le montant que vous indiquez sous \"Revenu de remplacement perçu en année {{basisjahr}}\" est déduit du montant indiqué sous \"Revenu de remplacement\".",
     "SPRACHLICHE_INDIKATION_BETREUUNGS_PENSUM_ZU_TIEF": "Besoin d’ordre linguistique : le taux de prise en charge minimal de 40 % n’est pas atteint pendant un ou plusieurs mois.",
-    "ERROR_COULD_NOT_DELETE_ALTERNATIVE_GEMEINDE_LOGO": "Le logo alternatif de la commune n'a pas pu être supprimé",
-    "GEMEINDE_HAS_ALTERNATIVE_TS_LOGO": "Utiliser un logo alternatif pour les écoles à horaire continu",
+    "GEMEINDE_HAS_ALTERNATIVE_TS_LOGO": "Utiliser un logo alternatif pour les écoles à journée continue",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

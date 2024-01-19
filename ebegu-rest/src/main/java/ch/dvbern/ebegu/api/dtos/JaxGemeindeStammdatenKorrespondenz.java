@@ -49,7 +49,7 @@ public class JaxGemeindeStammdatenKorrespondenz extends JaxAbstractDTO {
 	private String standardSignatur;
 
 	@NotNull
-	private boolean hasAlternativeTSLogo;
+	private boolean hasAlternativeLogoTagesschule;
 
 	@NotNull
 	public static JaxGemeindeStammdatenKorrespondenz from(@NotNull GemeindeStammdatenKorrespondenz stammdaten) {
