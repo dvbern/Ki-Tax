@@ -159,7 +159,7 @@ public class FileSaverServiceBean implements FileSaverService {
 
 	@Override
 	public boolean remove(String dokumentPaths) {
-		final Path path = uploadFilePathService.getValidatedFilePath(Path.of(dokumentPaths));
+		final Path path = uploadFilePathService.getValidatedFilePathWithDirectoryPrefix(Path.of(dokumentPaths));
 		try {
 			if (Files.exists(path)) {
 				Files.delete(path);
@@ -174,7 +174,7 @@ public class FileSaverServiceBean implements FileSaverService {
 
 	@Override
 	public boolean removeAllFromSubfolder(@Nonnull String subfolder) {
-		Path file = uploadFilePathService.getValidatedFilePath(Path.of(subfolder));
+		Path file = uploadFilePathService.getValidatedFilePathWithDirectoryPrefix(Path.of(subfolder));
 		try {
 			if (Files.exists(file) && Files.isDirectory(file)) {
 				FileUtils.cleanDirectory(file.toFile());
@@ -199,7 +199,7 @@ public class FileSaverServiceBean implements FileSaverService {
 	}
 
 	private void deleteAllFilesInTempFolder(@Nonnull String folder) {
-		final Path tempFolder = uploadFilePathService.getValidatedFilePath(Path.of(folder));
+		final Path tempFolder = uploadFilePathService.getValidatedFilePathWithDirectoryPrefix(Path.of(folder));
 		if (Files.exists(tempFolder) && Files.isDirectory(tempFolder)) {
 			try (Stream<Path> files = Files.walk(tempFolder)) {
 				files
