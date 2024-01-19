@@ -190,6 +190,7 @@ public class BGCalculationInput {
 	private Boolean partnerIdentischMitVorgesuch;
 
 	private boolean isEkvAccepted = false;
+	private boolean finsitAccepted = true;
 
 	private boolean requiredAgeForAnspruchNotReached = false;
 	private boolean gesuchBeendenKonkubinatMitZweiGS = false;
@@ -265,6 +266,7 @@ public class BGCalculationInput {
 		this.bgStundenFaktor = toCopy.bgStundenFaktor;
 		this.integrationTypFachstellenPensum = toCopy.integrationTypFachstellenPensum;
 		this.verguenstigungGewuenscht = toCopy.verguenstigungGewuenscht;
+		this.finsitAccepted = toCopy.finsitAccepted;
 	}
 
 	@Nonnull
@@ -888,6 +890,11 @@ public class BGCalculationInput {
 		if (!other.verguenstigungGewuenscht) {
 			this.verguenstigungGewuenscht = false;
 		}
+
+		//das flag kann sich nicht ändern, wenn einmal false ist es für die ganze gp false
+		if (!other.finsitAccepted) {
+			this.finsitAccepted = false;
+		}
 	}
 
 	/**
@@ -1092,7 +1099,8 @@ public class BGCalculationInput {
 			this.gesuchBeendenKonkubinatMitZweiGS == other.gesuchBeendenKonkubinatMitZweiGS &&
 			MathUtil.isSame(this.bgStundenFaktor, other.bgStundenFaktor) &&
 			this.integrationTypFachstellenPensum == other.integrationTypFachstellenPensum &&
-			this.verguenstigungGewuenscht == other.verguenstigungGewuenscht;
+			this.verguenstigungGewuenscht == other.verguenstigungGewuenscht &&
+			this.finsitAccepted == other.finsitAccepted;
 	}
 
 	@SuppressWarnings("PMD.CompareObjectsWithEquals")
@@ -1149,6 +1157,19 @@ public class BGCalculationInput {
 
 	public void addBemerkung(@Nonnull MsgKey msgKey, @Nonnull Locale locale, @Nullable Object... args) {
 		this.getParent().getBemerkungenDTOList().addBemerkung(ruleValidity, msgKey, locale, args);
+	}
+
+	//Alle Rules welche Bemerkungen hinzufügen, aber nach der Monatsrule laufen,
+	// müssen der Bemerkung eine Gültigkeit hinzufügen, vorallem dann wenn sie
+	// andere Bemerkungen überschrieben (VerfuegungsBemerkungDTOList#removeNotRequiredBemerkungen)
+	public void addBemerkungWithGueltigkeitOfAbschnitt(
+		@Nonnull MsgKey msgKey,
+		@Nonnull Locale locale,
+		@Nullable Object... args)
+	{
+		VerfuegungsBemerkungDTO bemerkung = new VerfuegungsBemerkungDTO(ruleValidity, msgKey, locale, args);
+		bemerkung.setGueltigkeit(getParent().getGueltigkeit());
+		this.getParent().getBemerkungenDTOList().addBemerkung(bemerkung);
 	}
 
 	public PensumUnits getPensumUnit() {
@@ -1288,5 +1309,13 @@ public class BGCalculationInput {
 
 	public void setVerguenstigungGewuenscht(boolean verguenstigungGewuenscht) {
 		this.verguenstigungGewuenscht = verguenstigungGewuenscht;
+	}
+
+	public boolean isFinsitAccepted() {
+		return finsitAccepted;
+	}
+
+	public void setFinsitAccepted(boolean finsitAccepted) {
+		this.finsitAccepted = finsitAccepted;
 	}
 }

@@ -15,22 +15,7 @@
 
 package ch.dvbern.ebegu.rules;
 
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Locale;
-import java.util.Set;
-import java.util.TreeSet;
-
-import javax.annotation.Nonnull;
-
-import ch.dvbern.ebegu.entities.Betreuung;
-import ch.dvbern.ebegu.entities.Gesuch;
-import ch.dvbern.ebegu.entities.KindContainer;
-import ch.dvbern.ebegu.entities.Verfuegung;
-import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
+import ch.dvbern.ebegu.entities.*;
 import ch.dvbern.ebegu.enums.AntragTyp;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.FinSitStatus;
@@ -39,6 +24,12 @@ import ch.dvbern.ebegu.test.TestDataUtil;
 import ch.dvbern.ebegu.util.MathUtil;
 import org.junit.Assert;
 import org.junit.Test;
+
+import javax.annotation.Nonnull;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.*;
 
 /**
  * Tests fuer den Mutationsmerger im Spezialfall, dass in der Mutation die FinSit abgelehnt wurde.
@@ -108,6 +99,66 @@ public class MutationsMergerFinSitAbgelehntTest {
 		checkAllZeitabschnitte(zeitabschnitte, EINKOMMEN_HOEHER);
 	}
 
+	@Test
+	public void finSitAbgelehntInMutation_sozialhilfeInErstgesuch() {
+		//Sozialhilfe Empfänger im erstgesuch akzeptiert
+		Verfuegung verfugeungErstgesuch = createErstgesuch(BigDecimal.ZERO, true);
+
+		//Keine Sozialhilfe in Mutation nicht akzpeitert
+		Betreuung mutierteBetreuung = prepareMutation(DATUM_FRUEHER);
+		List<VerfuegungZeitabschnitt> zaMutaiert = EbeguRuleTestsHelper.calculate(mutierteBetreuung);
+		final List<VerfuegungZeitabschnitt> verfuegungsZeitabschnitteMutiert = EbeguRuleTestsHelper.runSingleAbschlussRule(monatsRule, mutierteBetreuung, zaMutaiert);
+		setMassgebendesEinkommenAbDatum(verfuegungsZeitabschnitteMutiert, TestDataUtil.START_PERIODE, EINKOMMEN_TIEFER);
+		mutierteBetreuung.extractGesuch().setFinSitStatus(FinSitStatus.ABGELEHNT);
+		initVorgangerVerfuegung(mutierteBetreuung, verfuegungsZeitabschnitteMutiert, verfugeungErstgesuch);
+
+		//Vor dem Mutations-Merger ist Sozialhilfe false
+		verfuegungsZeitabschnitteMutiert.forEach(za -> {
+			Assert.assertFalse(za.getBgCalculationInputAsiv().isSozialhilfeempfaenger());
+			Assert.assertFalse(za.getBgCalculationResultAsiv().isSozialhilfeAkzeptiert());
+		});
+		final List<VerfuegungZeitabschnitt> result =
+			EbeguRuleTestsHelper.runSingleAbschlussRule(mutationsMerger, mutierteBetreuung, verfuegungsZeitabschnitteMutiert);
+
+		//Nach dem Mutations-Merger ist Sozialhilfe true
+		Assert.assertNotNull(result);
+		Assert.assertEquals(12, result.size());
+		result.forEach(za -> {
+			Assert.assertTrue(za.getBgCalculationInputAsiv().isSozialhilfeempfaenger());
+			Assert.assertTrue(za.getBgCalculationResultAsiv().isSozialhilfeAkzeptiert());
+		});
+	}
+
+	@Test
+	public void finSitAbgelehntInMutation_sozialhilfeInMutation() {
+		//Sozialhilfe Empfänger im erstgesuch akzeptiert
+		Verfuegung verfugeungErstgesuch = createErstgesuch(EINKOMMEN_TIEFER, false);
+
+		//Sozialhilfe in Mutation nicht akzpeitert
+		Betreuung mutierteBetreuung = prepareMutation(DATUM_FRUEHER);
+		mutierteBetreuung.extractGesuch().getFamiliensituationContainer().getFamiliensituationJA().setSozialhilfeBezueger(true);
+		List<VerfuegungZeitabschnitt> zaMutaiert = EbeguRuleTestsHelper.calculate(mutierteBetreuung);
+		final List<VerfuegungZeitabschnitt> verfuegungsZeitabschnitteMutiert = EbeguRuleTestsHelper.runSingleAbschlussRule(monatsRule, mutierteBetreuung, zaMutaiert);
+		mutierteBetreuung.extractGesuch().setFinSitStatus(FinSitStatus.ABGELEHNT);
+		initVorgangerVerfuegung(mutierteBetreuung, verfuegungsZeitabschnitteMutiert, verfugeungErstgesuch);
+
+		//Vor dem Mutations-Merger ist Sozialhilfe True
+		verfuegungsZeitabschnitteMutiert.forEach(za -> {
+			Assert.assertTrue(za.getBgCalculationInputAsiv().isSozialhilfeempfaenger());
+			Assert.assertTrue(za.getBgCalculationResultAsiv().isSozialhilfeAkzeptiert());
+		});
+		final List<VerfuegungZeitabschnitt> result =
+			EbeguRuleTestsHelper.runSingleAbschlussRule(mutationsMerger, mutierteBetreuung, verfuegungsZeitabschnitteMutiert);
+
+		//Nach dem Mutations-Merger ist Sozialhilfe False -> Handle abgelehnte Sozialhilfe
+		Assert.assertNotNull(result);
+		Assert.assertEquals(12, result.size());
+		result.forEach(za -> {
+			Assert.assertFalse(za.getBgCalculationInputAsiv().isSozialhilfeempfaenger());
+			Assert.assertFalse(za.getBgCalculationResultAsiv().isSozialhilfeAkzeptiert());
+		});
+	}
+
 	private List<VerfuegungZeitabschnitt> calculateMutationWithFinSitAbgelehnt(
 		@Nonnull LocalDate eingangsdatumMutation, @Nonnull LocalDate aenderungAb,
 		@Nonnull BigDecimal einkommenVorher, @Nonnull BigDecimal einkommenAbgelehnt
@@ -121,15 +172,8 @@ public class MutationsMergerFinSitAbgelehntTest {
 		mutierteBetreuung.extractGesuch().setFinSitStatus(FinSitStatus.ABGELEHNT);
 
 		// Erstgesuch Gesuch vorbereiten
-		final Verfuegung verfuegungErstgesuch = createErstgesuch(einkommenVorher);
-		mutierteBetreuung.initVorgaengerVerfuegungen(verfuegungErstgesuch, null);
-		Verfuegung verfuegung = new Verfuegung();
-		verfuegung.setZeitabschnitte(verfuegungsZeitabschnitteMutiert);
-		for (VerfuegungZeitabschnitt verfuegungZeitabschnitt : verfuegungsZeitabschnitteMutiert) {
-			verfuegungZeitabschnitt.setVerfuegung(verfuegung);
-		}
-		verfuegung.setPlatz(mutierteBetreuung);
-				mutierteBetreuung.setVerfuegung(verfuegung);
+		final Verfuegung verfuegungErstgesuch = createErstgesuch(einkommenVorher, false);
+		initVorgangerVerfuegung(mutierteBetreuung, verfuegungsZeitabschnitteMutiert, verfuegungErstgesuch);
 
 		// mergen
 		final List<VerfuegungZeitabschnitt> abschnitte =
@@ -137,10 +181,23 @@ public class MutationsMergerFinSitAbgelehntTest {
 		return abschnitte;
 	}
 
+	private static void initVorgangerVerfuegung(Betreuung mutierteBetreuung, List<VerfuegungZeitabschnitt> verfuegungsZeitabschnitteMutiert, Verfuegung verfuegungErstgesuch) {
+		mutierteBetreuung.initVorgaengerVerfuegungen(verfuegungErstgesuch, null);
+		Verfuegung verfuegung = new Verfuegung();
+		verfuegung.setZeitabschnitte(verfuegungsZeitabschnitteMutiert);
+		for (VerfuegungZeitabschnitt verfuegungZeitabschnitt : verfuegungsZeitabschnitteMutiert) {
+			verfuegungZeitabschnitt.setVerfuegung(verfuegung);
+		}
+		verfuegung.setPlatz(mutierteBetreuung);
+		mutierteBetreuung.setVerfuegung(verfuegung);
+	}
+
 	private Verfuegung createErstgesuch(
-		@Nonnull BigDecimal massgebendesEinkommen
+		@Nonnull BigDecimal massgebendesEinkommen,
+		boolean isSozialhilfeEmpfaenger
 	) {
-		Betreuung erstgesuchBetreuung = prepareData(MathUtil.DEFAULT.from(50000), AntragTyp.ERSTGESUCH);
+		Betreuung erstgesuchBetreuung = prepareData(massgebendesEinkommen, AntragTyp.ERSTGESUCH);
+		erstgesuchBetreuung.extractGesuch().getFamiliensituationContainer().getFamiliensituationJA().setSozialhilfeBezueger(isSozialhilfeEmpfaenger);
 		List<VerfuegungZeitabschnitt> zabetrErtgesuch = EbeguRuleTestsHelper.calculate(erstgesuchBetreuung);
 		Verfuegung verfuegungErstgesuch = new Verfuegung();
 		final List<VerfuegungZeitabschnitt> verfuegungsZeitabschnitteErstgesuch = EbeguRuleTestsHelper.runSingleAbschlussRule(monatsRule, erstgesuchBetreuung, zabetrErtgesuch);

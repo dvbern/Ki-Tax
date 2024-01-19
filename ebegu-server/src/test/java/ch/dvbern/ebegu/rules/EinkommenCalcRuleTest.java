@@ -380,6 +380,26 @@ public class EinkommenCalcRuleTest {
 		assertTrue(result.get(0).getBemerkungenDTOList().containsMsgKey(MsgKey.EINKOMMEN_SOZIALHILFEEMPFAENGER_MSG));
 	}
 
+	@Test
+	public void finSitAkzeptiert() {
+		List<VerfuegungZeitabschnitt> result = EbeguRuleTestsHelper.calculate(prepareBetreuungKita(
+			EINKOMMEN, true, false, false, FinSitStatus.AKZEPTIERT));
+
+		assertNotNull(result);
+		assertEquals(1, result.size());
+		assertTrue(result.get(0).getBgCalculationInputAsiv().isFinsitAccepted());
+	}
+
+	@Test
+	public void finSitAbgelehnt() {
+		List<VerfuegungZeitabschnitt> result = EbeguRuleTestsHelper.calculate(prepareBetreuungKita(
+			EINKOMMEN, true, false, false, FinSitStatus.ABGELEHNT));
+
+		assertNotNull(result);
+		assertEquals(1, result.size());
+		assertFalse(result.get(0).getBgCalculationInputAsiv().isFinsitAccepted());
+	}
+
 	private Betreuung prepareBetreuungKita(
 		@Nonnull BigDecimal massgebendesEinkommen,
 		boolean sozialhilfeempfaenger,

@@ -85,9 +85,12 @@ public class EinkommenCalcRule extends AbstractCalcRule {
 		boolean sozialhilfeEmpfaenger = familiensituation != null && Boolean.TRUE.equals(familiensituation.getSozialhilfeBezueger());
 		int basisjahr = platz.extractGesuchsperiode().getBasisJahr();
 
+		//hier muss explizit geprüft werden, ob nicht abgelehnt... wenn die FinSit noch nicht akzeptiert oder abgelehnt wurde,
+		//machen wir die berechnung als ob die finsit akzeptiert wurde
+		inputData.setFinsitAccepted(FinSitStatus.ABGELEHNT != platz.extractGesuch().getFinSitStatus());
+
 		// FinSit abgelehnt muss nur bei Erstgesuch beachtet werden. In einer Mutation wird es im Mutationsmerger abgehandelt
-		boolean finSitAbgelehnt = FinSitStatus.ABGELEHNT == platz.extractGesuch().getFinSitStatus()
-			&& platz.extractGesuch().getTyp().isGesuch();
+		boolean finSitAbgelehnt = !inputData.isFinsitAccepted()	&& platz.extractGesuch().getTyp().isGesuch();
 
 		boolean keineFinSitErfasst = familiensituation != null && Boolean.FALSE.equals(familiensituation.getVerguenstigungGewuenscht());
 		inputData.setVerguenstigungGewuenscht(!keineFinSitErfasst);
