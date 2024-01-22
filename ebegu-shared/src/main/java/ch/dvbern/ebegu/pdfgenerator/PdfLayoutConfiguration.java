@@ -17,12 +17,6 @@
 
 package ch.dvbern.ebegu.pdfgenerator;
 
-import java.io.IOException;
-import java.util.List;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
 import ch.dvbern.ebegu.entities.GemeindeStammdatenKorrespondenz;
 import ch.dvbern.lib.invoicegenerator.dto.BaseLayoutConfiguration;
 import ch.dvbern.lib.invoicegenerator.dto.OnPage;
@@ -34,6 +28,11 @@ import com.lowagie.text.Image;
 import com.lowagie.text.Utilities;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.io.IOException;
+import java.util.List;
 
 import static ch.dvbern.lib.invoicegenerator.dto.component.AddressComponent.ADRESSE_HEIGHT;
 import static ch.dvbern.lib.invoicegenerator.dto.component.AddressComponent.ADRESSE_WIDTH;
@@ -52,7 +51,8 @@ public class PdfLayoutConfiguration extends BaseLayoutConfiguration {
 	public PdfLayoutConfiguration(
 		@Nonnull GemeindeStammdatenKorrespondenz stammdaten,
 		@Nullable final List<String> absenderHeader,
-		boolean isKanton
+		boolean isKanton,
+		boolean useAlternativeLogoIfPresent
 	) {
 		super(new AddressComponent(
 			null,
@@ -61,7 +61,7 @@ public class PdfLayoutConfiguration extends BaseLayoutConfiguration {
 			ADRESSE_WIDTH,
 			ADRESSE_HEIGHT,
 			OnPage.FIRST));
-		applyLogo(stammdaten, isKanton);
+		applyLogo(stammdaten, isKanton, useAlternativeLogoIfPresent);
 		if (absenderHeader != null && !absenderHeader.isEmpty()) {
 			setHeader(new PhraseRenderer(absenderHeader,
 				stammdaten.getSenderAddressSpacingLeft(),
@@ -71,8 +71,10 @@ public class PdfLayoutConfiguration extends BaseLayoutConfiguration {
 		}
 	}
 
-	private void applyLogo(GemeindeStammdatenKorrespondenz stammdaten, boolean isKanton) {
-		if (stammdaten.getLogoContent().length == 0) {
+	private void applyLogo(GemeindeStammdatenKorrespondenz stammdaten, boolean isKanton, boolean useAlternativLogoIfPresent) {
+		byte[] logoForPDF = getLogoContentToUse(stammdaten, useAlternativLogoIfPresent);
+
+		if (logoForPDF.length == 0) {
 			return;
 		}
 		try {
@@ -87,7 +89,7 @@ public class PdfLayoutConfiguration extends BaseLayoutConfiguration {
 			}
 			int logoLeft = stammdaten.getLogoSpacingLeft();
 			Logo logoToApply = new Logo(
-				stammdaten.getLogoContent(),
+				logoForPDF,
 				logoLeft,
 				isKanton ? 5 : stammdaten.getLogoSpacingTop(),
 				widthInMm);
@@ -95,6 +97,15 @@ public class PdfLayoutConfiguration extends BaseLayoutConfiguration {
 		} catch (IOException | BadElementException e) {
 			LOG.error("Failed to read the Logo: {}", e.getMessage(), e);
 		}
+	}
+
+	private byte[] getLogoContentToUse(GemeindeStammdatenKorrespondenz stammdaten,
+									   boolean useAlternativLogoIfPresent) {
+		if (useAlternativLogoIfPresent && stammdaten.getAlternativesLogoTagesschuleContent().length != 0) {
+			return stammdaten.getAlternativesLogoTagesschuleContent();
+		}
+
+		return stammdaten.getLogoContent();
 	}
 
 	private float getImageWidthDefault(@Nonnull Image image, boolean isKanton) {
