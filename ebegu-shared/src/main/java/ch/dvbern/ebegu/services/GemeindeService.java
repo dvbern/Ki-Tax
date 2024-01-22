@@ -118,11 +118,18 @@ public interface GemeindeService {
 	 * Updates the alternative tagesschule logo of the given Gemeinde wth the given content
 	 */
 	@Nonnull
-	GemeindeStammdaten uploadAlternativeLogo(
+	GemeindeStammdaten uploadAlternativeLogoTagesschule(
 		@Nonnull String gemeindeId,
 		@Nonnull byte[] content,
 		@Nonnull String name,
 		@Nonnull String type);
+
+	/**
+	 * Deletes the alternative tagesschule logo of the given Gemeinde
+	 */
+	@Nonnull
+	GemeindeStammdaten deleteAlternativeLogoTagesschule(
+		@Nonnull String gemeindeId);
 
 	/**
 	 * Gibt eine Liste aller BFS Gemeinden dieses Mandanten zurueck, welche noch nicht fuer KiBon registriert sind.

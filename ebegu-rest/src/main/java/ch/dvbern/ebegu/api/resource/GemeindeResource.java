@@ -509,7 +509,7 @@ public class GemeindeResource {
 		String gemeindeId = converter.toEntityId(gemeindeJAXPId);
 
 		TransferFile file = fileList.get(0);
-		gemeindeService.uploadAlternativeLogo(gemeindeId, file.getContent(), file.getFilename(), file.getFiletype());
+		gemeindeService.uploadAlternativeLogoTagesschule(gemeindeId, file.getContent(), file.getFilename(), file.getFiletype());
 
 		return Response.ok().build();
 	}
@@ -563,7 +563,7 @@ public class GemeindeResource {
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_OCTET_STREAM)
 	@PermitAll // Oeffentliche Daten
-	public Response downloadAlternativeLogo(
+	public Response downloadAlternativeLogoTagesschule(
 		@Nonnull @NotNull @PathParam("gemeindeId") JaxId gemeindeJAXPId) {
 
 		String gemeindeId = converter.toEntityId(gemeindeJAXPId);
@@ -583,6 +583,18 @@ public class GemeindeResource {
 		}
 
 		return Response.status(Status.NO_CONTENT).build();
+	}
+
+	@ApiOperation("Deletes alternative logo image for tagesschulen of the Gemeinde with the given id or an errorcode if none is available")
+	@DELETE
+	@Path("/alternativeLogo/{gemeindeId}")
+	@Consumes(MediaType.WILDCARD)
+	@Produces(MediaType.WILDCARD)
+	@PermitAll // Oeffentliche Daten
+	public JaxGemeindeStammdaten deleteAlternativeLogoTagesschule(
+		@Nonnull @NotNull @PathParam("gemeindeId") JaxId gemeindeJAXPId) {
+		String gemeindeId = converter.toEntityId(gemeindeJAXPId);
+		return converter.gemeindeStammdatenToJAX(gemeindeService.deleteAlternativeLogoTagesschule(gemeindeId));
 	}
 
 	@ApiOperation(value = "Returns all unregistered Gemeinden from BFS", responseContainer = "Collection",
