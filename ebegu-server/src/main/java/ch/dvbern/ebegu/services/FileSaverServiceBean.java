@@ -15,7 +15,6 @@
 
 package ch.dvbern.ebegu.services;
 
-import ch.dvbern.ebegu.config.EbeguConfiguration;
 import ch.dvbern.ebegu.entities.FileMetadata;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.util.Constants;
@@ -32,7 +31,6 @@ import javax.annotation.Nonnull;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -55,33 +53,30 @@ public class FileSaverServiceBean implements FileSaverService {
 	private static final Logger LOG = LoggerFactory.getLogger(FileSaverServiceBean.class.getSimpleName());
 
 	@Inject
-	private EbeguConfiguration ebeguConfiguration;
+	private UploadFilePathService uploadFilePathService;
 
 	@Override
 	public void save(UploadFileInfo uploadFileInfo, String folderName) {
 		Objects.requireNonNull(uploadFileInfo);
 		Objects.requireNonNull(uploadFileInfo.getFilename());
 
-		UUID uuid = UUID.randomUUID();
-
 		String ending = getFileNameEnding(uploadFileInfo.getFilename());
-
+		String filename = getUuidAsFilename(ending);
 		// Wir speichern der Name des Files nicht im FS. Kann sonst Probleme mit Umlauten geben
-		final String path = '/' + folderName + '/' + uuid + '.' + ending;
-		final String absoluteFilePath = getDocumentFilePathValidated(path);
+		final Path path = Path.of(folderName, filename);
+		final Path absoluteFilePath = uploadFilePathService.getValidatedFilePathWithDirectoryPrefix(path);
 		uploadFileInfo.setPath(absoluteFilePath);
-		uploadFileInfo.setActualFilename(uuid + "." + ending);
+		uploadFileInfo.setActualFilename(filename);
 
-		Path file = Paths.get(absoluteFilePath);
 		try {
-			if (!Files.exists(file.getParent())) {
-				Files.createDirectories(file.getParent());
+			if (!Files.exists(absoluteFilePath.getParent())) {
+				Files.createDirectories(absoluteFilePath.getParent());
 			}
-			uploadFileInfo.setSize(Files.size(Files.write(file, uploadFileInfo.getBytes()))); //here we write to filesystem
+			uploadFileInfo.setSize(Files.size(Files.write(absoluteFilePath, uploadFileInfo.getBytes()))); //here we write to filesystem
 			LOG.info("Save file in FileSystem: {}", absoluteFilePath);
 
 		} catch (IOException e) {
-			throw new EbeguRuntimeException("save", "Could not save file in filesystem {0}", e, absoluteFilePath);
+			throw new EbeguRuntimeException("save", "Could not save file in filesystem {0}", e, String.valueOf(absoluteFilePath));
 		}
 	}
 
@@ -106,21 +101,20 @@ public class FileSaverServiceBean implements FileSaverService {
 		Objects.requireNonNull(uploadFileInfo);
 		Objects.requireNonNull(uploadFileInfo.getFilename());
 
-		final String path = "/auftraege/" + filenameWithEnding;
-		final String absoluteFilePath = getDocumentFilePathValidated(path);
-		uploadFileInfo.setPath(absoluteFilePath);
+		final Path path = Path.of("auftraege", filenameWithEnding);
+		final Path file = uploadFilePathService.getValidatedFilePathWithDirectoryPrefix(path);
+		uploadFileInfo.setPath(file);
 		uploadFileInfo.setActualFilename(filenameWithEnding);
 
-		Path file = Paths.get(absoluteFilePath);
 		try {
 			if (!Files.exists(file.getParent())) {
 				Files.createDirectories(file.getParent());
 			}
 			uploadFileInfo.setSize(Files.size(Files.write(file, uploadFileInfo.getBytes()))); //here we write to filesystem
-			LOG.info("Save file in FileSystem: {}", absoluteFilePath);
+			LOG.info("Save file in FileSystem: {}", file);
 
 		} catch (IOException e) {
-			throw new EbeguRuntimeException("save", "Could not save file in filesystem {0}", e, absoluteFilePath);
+			throw new EbeguRuntimeException("save", "Could not save file in filesystem {0}", e, String.valueOf(file));
 		}
 		return uploadFileInfo;
 	}
@@ -140,19 +134,15 @@ public class FileSaverServiceBean implements FileSaverService {
 		Objects.requireNonNull(folderName);
 
 		Path oldfile = Paths.get(fileToCopy.getFilepfad());
-		UUID uuid = UUID.randomUUID();
-		String ending = getFileNameEnding(fileToCopy.getFilename());
-
 		// Wir speichern der Name des Files nicht im FS. Kann sonst Probleme mit Umlauten geben
-		final String path = '/' + folderName + '/' + uuid + '.' + ending;
-		final String absoluteFilePath = getDocumentFilePathValidated(path);
-		fileToCopy.setFilepfad(absoluteFilePath);
+		String filename = getUuidAsFilename(getFileNameEnding(fileToCopy.getFilename()));
+		final Path newfile = uploadFilePathService.getValidatedFilePathWithDirectoryPrefix(Path.of(folderName, filename));
+		fileToCopy.setFilepfad(String.valueOf(filename));
 
-		Path newfile = Paths.get(absoluteFilePath);
 		try {
 			if (!Files.exists(newfile.getParent())) {
 				Files.createDirectories(newfile.getParent());
-				LOG.info("Save file in FileSystem: {}", absoluteFilePath);
+				LOG.info("Save file in FileSystem: {}", newfile);
 			}
 			Files.copy(oldfile, newfile);
 
@@ -169,7 +159,7 @@ public class FileSaverServiceBean implements FileSaverService {
 
 	@Override
 	public boolean remove(String dokumentPaths) {
-		final Path path = Paths.get(dokumentPaths);
+		final Path path = uploadFilePathService.getValidatedFilePathWithDirectoryPrefix(Path.of(dokumentPaths));
 		try {
 			if (Files.exists(path)) {
 				Files.delete(path);
@@ -184,18 +174,16 @@ public class FileSaverServiceBean implements FileSaverService {
 
 	@Override
 	public boolean removeAllFromSubfolder(@Nonnull String subfolder) {
-		final String path = '/' + subfolder + '/';
-		final String absoluteFilePath = getDocumentFilePathValidated(path);
-		Path file = Paths.get(absoluteFilePath);
+		Path file = uploadFilePathService.getValidatedFilePathWithDirectoryPrefix(Path.of(subfolder));
 		try {
 			if (Files.exists(file) && Files.isDirectory(file)) {
 				FileUtils.cleanDirectory(file.toFile());
 				Files.deleteIfExists(file);
-				LOG.info("Deleting directory : {}", absoluteFilePath);
+				LOG.info("Deleting directory : {}", file);
 			}
 			return true;
 		} catch (IOException e) {
-			LOG.error("Can't delete directory: {}", absoluteFilePath, e);
+			LOG.error("Can't delete directory: {}", file, e);
 			return false;
 		}
 	}
@@ -211,16 +199,14 @@ public class FileSaverServiceBean implements FileSaverService {
 	}
 
 	private void deleteAllFilesInTempFolder(@Nonnull String folder) {
-		final String path = '/' + folder;
-		final String absoluteFilePath = getDocumentFilePathValidated(path);
-		Path tempFolder = Paths.get(absoluteFilePath);
+		final Path tempFolder = uploadFilePathService.getValidatedFilePathWithDirectoryPrefix(Path.of(folder));
 		if (Files.exists(tempFolder) && Files.isDirectory(tempFolder)) {
 			try (Stream<Path> files = Files.walk(tempFolder)) {
 				files
 					.filter(Files::isRegularFile)
 					.forEach(file -> deleteFileIfTokenExpired(file));
 			} catch (IOException e) {
-				throw new EbeguRuntimeException("save", "Could not save file in filesystem {0}", e, absoluteFilePath);
+				throw new EbeguRuntimeException("save", "Could not save file in filesystem {0}", e, String.valueOf(tempFolder));
 			}
 		}
 	}
@@ -239,12 +225,9 @@ public class FileSaverServiceBean implements FileSaverService {
 		}
 	}
 
-	private String getDocumentFilePathValidated(@Nonnull String path) {
-		String tmpFilePath = ebeguConfiguration.getDocumentFilePath() + path;
-		String absoluteFilePath = FilenameUtils.normalize(tmpFilePath);
-		if (!absoluteFilePath.startsWith(ebeguConfiguration.getDocumentFilePath())) {
-			throw new EbeguRuntimeException("save file", "illegal document path");
-		}
-		return absoluteFilePath;
+	@Nonnull
+	private String getUuidAsFilename(String filenameEnding) {
+		UUID uuid = UUID.randomUUID();
+		return uuid.toString() + '.' + filenameEnding;
 	}
 }
