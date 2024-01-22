@@ -193,7 +193,7 @@ export class GemeindeRS implements IEntityRS {
         return `${this.serviceURL}/supported/image?timestamp=${new Date().getTime()}`;
     }
 
-    public uploadAlternativeLogoImage(gemeindeId: string, fileToUpload: File): IPromise<any> {
+    public uploadAlternativeLogoTagesschule(gemeindeId: string, fileToUpload: File): IPromise<any> {
         const formData=  this.createFormDataFromFileToUpload(fileToUpload);
         return this.postLogo(this.getAlternativeLogoUrl(gemeindeId), formData);
     }
@@ -321,5 +321,9 @@ export class GemeindeRS implements IEntityRS {
     public getGemeindenWithPreExistingLATS(): IPromise<TSGemeinde[]> {
         return this.$http.get(`${this.serviceURL}/gemeinden-with-lats`)
             .then(response => this.ebeguRestUtil.parseGemeindeList(response.data));
+    }
+
+    public deleteAlternativeLogoTagesschule(gemeindeId: string): IHttpPromise<void> {
+        return this.$http.delete<void>(`${this.serviceURL}/alternativeLogo/${encodeURIComponent(gemeindeId)}`);
     }
 }

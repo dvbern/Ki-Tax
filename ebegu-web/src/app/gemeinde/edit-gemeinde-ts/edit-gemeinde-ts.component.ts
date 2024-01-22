@@ -29,7 +29,7 @@ import {EbeguUtil} from '../../../utils/EbeguUtil';
 import {CONSTANTS} from '../../core/constants/CONSTANTS';
 import {LogFactory} from '../../core/logging/LogFactory';
 import {InstitutionRS} from '../../core/service/institutionRS.rest';
-import {GemeindeRS} from "../../../gesuch/service/gemeindeRS.rest";
+import {GemeindeRS} from '../../../gesuch/service/gemeindeRS.rest';
 
 const LOG = LogFactory.createLog('EditGemeidneComponentTS');
 
@@ -134,7 +134,7 @@ export class EditGemeindeTSComponent implements OnInit {
             this.altLogoImageUrl$ = null;
             this.altLogoImageUrl = null;
             this.emitLogoChange();
-        })
+        });
     }
 
     private emitLogoChange(): void {

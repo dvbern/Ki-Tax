@@ -21,6 +21,7 @@ import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {UpgradeModule} from '@angular/upgrade/static';
 import {TranslateModule} from '@ngx-translate/core';
 import {StateService} from '@uirouter/core';
+import {GemeindeRS} from '../../../gesuch/service/gemeindeRS.rest';
 import {SHARED_MODULE_OVERRIDES} from '../../../hybridTools/mockUpgradedDirective';
 import {InstitutionRS} from '../../core/service/institutionRS.rest';
 import {I18nServiceRSRest} from '../../i18n/services/i18nServiceRS.rest';
@@ -37,6 +38,7 @@ describe('EditGemeindeTSComponent', () => {
     const stateServiceSpy = jasmine.createSpyObj<StateService>(StateService.name, ['go']);
     const i18nServiceSpy = jasmine
         .createSpyObj<I18nServiceRSRest>(I18nServiceRSRest.name, ['extractPreferredLanguage']);
+    const gemeindeRSSpy = jasmine.createSpyObj(GemeindeRS.name, []);
 
     beforeEach(waitForAsync(() => {
         TestBed.configureTestingModule({
@@ -49,7 +51,8 @@ describe('EditGemeindeTSComponent', () => {
                 [
                     {provide: InstitutionRS, useValue: insitutionSpy},
                     {provide: I18nServiceRSRest, useValue: i18nServiceSpy},
-                    {provide: StateService, useValue: stateServiceSpy}
+                    {provide: StateService, useValue: stateServiceSpy},
+                    {provide: GemeindeRS, useValue: gemeindeRSSpy}
                 ]
         }).overrideModule(SharedModule, SHARED_MODULE_OVERRIDES
         ).compileComponents();

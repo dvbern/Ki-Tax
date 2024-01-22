@@ -286,7 +286,7 @@ public class GemeindeServiceBean extends AbstractBaseService implements Gemeinde
 
 	@Nonnull
 	@Override
-	public GemeindeStammdaten uploadAlternativeLogo(
+	public GemeindeStammdaten uploadAlternativeLogoTagesschule(
 		@Nonnull String gemeindeId,
 		@Nonnull byte[] content,
 		@Nonnull String name,
@@ -294,11 +294,24 @@ public class GemeindeServiceBean extends AbstractBaseService implements Gemeinde
 	) {
 		final GemeindeStammdaten stammdaten = getGemeindeStammdatenByGemeindeId(gemeindeId)
 			.orElseThrow(() ->
-				new EbeguEntityNotFoundException("uploadAlternativeLogo", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, gemeindeId));
+				new EbeguEntityNotFoundException("uploadAlternativeLogoTagesschule", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, gemeindeId));
 		stammdaten.getGemeindeStammdatenKorrespondenz()
 			.setAlternativesLogoTagesschuleName(name)
 			.setAlternativesLogoTagesschuleType(type)
 			.setAlternativesLogoTagesschuleContent(content);
+		return saveGemeindeStammdaten(stammdaten);
+	}
+
+	@Nonnull
+	@Override
+	public GemeindeStammdaten deleteAlternativeLogoTagesschule(@Nonnull String gemeindeId) {
+		final GemeindeStammdaten stammdaten = getGemeindeStammdatenByGemeindeId(gemeindeId)
+			.orElseThrow(() ->
+				new EbeguEntityNotFoundException("uploadAlternativeLogoTagesschule", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, gemeindeId));
+		stammdaten.getGemeindeStammdatenKorrespondenz()
+			.setAlternativesLogoTagesschuleName(null)
+			.setAlternativesLogoTagesschuleType(null)
+			.setAlternativesLogoTagesschuleContent(null);
 		return saveGemeindeStammdaten(stammdaten);
 	}
 
