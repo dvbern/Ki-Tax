@@ -267,6 +267,7 @@ public class BGCalculationInput {
 		this.bgStundenFaktor = toCopy.bgStundenFaktor;
 		this.integrationTypFachstellenPensum = toCopy.integrationTypFachstellenPensum;
 		this.verguenstigungGewuenscht = toCopy.verguenstigungGewuenscht;
+		this.fachstelleSprachlicheIntegrationBestaetigt = toCopy.fachstelleSprachlicheIntegrationBestaetigt;
 	}
 
 	@Nonnull

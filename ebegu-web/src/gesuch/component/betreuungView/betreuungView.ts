@@ -1055,7 +1055,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     }
 
     public showSprachfoerderungBestaetigenCheckBox(): boolean {
-        if (!this.authServiceRS.isOneOfRoles(TSRoleUtil.getGemeindeOrBGRoles().concat(TSRole.SUPER_ADMIN))) {
+        if (!this.authServiceRS.isOneOfRoles(TSRoleUtil.getRolesForBetreuungenView())) {
             return false;
         }
         if (!EbeguUtil.hasSprachlicheIndikation(this.getKindModel())) {

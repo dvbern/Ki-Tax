@@ -33,7 +33,7 @@ INSERT INTO einstellung (id, timestamp_erstellt, timestamp_mutiert, user_erstell
 			'SPRACHFOERDERUNG_BESTAETIGEN' AS einstellungkey,
 			'false' AS value,
 			id AS gesuchsperiode_id,
-			'Auf der FinSit werden zur Berechnung des massgebenden Einkommen drei zusätzliche Felder für das Ersatzeinkommen und eine Frage angezeigt.' AS erklaerung
+			'Ab diesem Datum wird das neue Flag gelesen, um die Sprachunterstützung zu bestätigen, bis zu diesem Datum wird es immer auf true gesetzt.' AS erklaerung
 		FROM gesuchsperiode
 	);
 

@@ -76,7 +76,7 @@ public class DailyBatchScheduler {
 		dailyBatch.runBatchWarnungFreigabequittungFehlt();
 	}
 
-	@Schedule(second = "59", minute = "*", hour = "*", persistent = true)
+	@Schedule(second = "59", minute = "50", hour = "22", persistent = true)
 	public void runBatchGesucheLoeschen() {
 		dailyBatch.runBatchGesucheLoeschen();
 	}
