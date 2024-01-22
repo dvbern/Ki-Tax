@@ -125,8 +125,7 @@
                                     <md-checkbox ng-model="vm.getErweiterteBetreuungJA().sprachfoerderungBestaetigt"
                                                  name="sprachfoerderungBestaetigt"
                                                  dv-enable-element
-                                                 dv-enable-allowed-roles="vm.allowedRoles"
-                                                 dv-enable-expression="vm.enableFieldsEditedByGemeinde()"
+                                                 ng-disabled="!vm.isEnabled()"
                                                  aria-label="{{vm.isKita() ? 'SPRACHFOERDERUNG_BESTAETIGEN_KITA' : 'SPRACHFOERDERUNG_BESTAETIGEN_TFO' |translate}}">
                                         <span data-translate="{{vm.isKita() ? 'SPRACHFOERDERUNG_BESTAETIGEN_KITA' : 'SPRACHFOERDERUNG_BESTAETIGEN_TFO'}}"></span>
                                     </md-checkbox>
