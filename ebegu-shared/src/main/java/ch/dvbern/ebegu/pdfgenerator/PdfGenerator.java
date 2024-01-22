@@ -17,12 +17,6 @@
 
 package ch.dvbern.ebegu.pdfgenerator;
 
-import java.io.OutputStream;
-import java.util.List;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
 import ch.dvbern.ebegu.entities.GemeindeStammdatenKorrespondenz;
 import ch.dvbern.lib.invoicegenerator.BaseGenerator;
 import ch.dvbern.lib.invoicegenerator.OnPageHandler;
@@ -35,6 +29,11 @@ import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.Utilities;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.io.OutputStream;
+import java.util.List;
+
 public class PdfGenerator extends BaseGenerator<PdfLayoutConfiguration> {
 
 	@Nonnull
@@ -42,9 +41,11 @@ public class PdfGenerator extends BaseGenerator<PdfLayoutConfiguration> {
 		@Nonnull GemeindeStammdatenKorrespondenz config,
 		@Nonnull final List<String> absenderHeader,
 		@Nullable final PhraseRenderer footer,
-		boolean isKanton
+		boolean isKanton,
+		boolean useAlternativeLogoIfPresent
 	) {
-		PdfLayoutConfiguration layoutConfiguration = new PdfLayoutConfiguration(config, absenderHeader, isKanton);
+		PdfLayoutConfiguration layoutConfiguration = new PdfLayoutConfiguration(
+			config, absenderHeader, isKanton, useAlternativeLogoIfPresent);
 		layoutConfiguration.setFooter(footer);
 		layoutConfiguration.getStaticComponents().stream()
 			.map(ComponentRenderer::getComponentConfiguration)
@@ -63,9 +64,10 @@ public class PdfGenerator extends BaseGenerator<PdfLayoutConfiguration> {
 	public static PdfGenerator create(
 		@Nonnull final GemeindeStammdatenKorrespondenz config,
 		@Nonnull final List<String> absenderHeader,
-		boolean isKanton
+		boolean isKanton,
+		boolean useAlternativeLogoIfPresent
 	) {
-		return create(config, absenderHeader, null, isKanton);
+		return create(config, absenderHeader, null, isKanton, useAlternativeLogoIfPresent);
 	}
 
 	public PdfGenerator(@Nonnull PdfLayoutConfiguration configuration) {
