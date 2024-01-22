@@ -500,7 +500,7 @@ public class PlatzbestaetigungEventHandlerTest extends EasyMockSupport {
 
 			expectPlatzBestaetigung();
 
-			testProcessingSuccess();
+			testProcessingSuccessWithoutErweiterteBetreuung();
 
 			assertThat(betreuung.getErweiterteBetreuungContainer().getErweiterteBetreuungJA(), nullValue());
 		}
@@ -513,7 +513,7 @@ public class PlatzbestaetigungEventHandlerTest extends EasyMockSupport {
 
 			expectPlatzBestaetigung();
 
-			testProcessingSuccess();
+			testProcessingSuccessWithoutErweiterteBetreuung();
 
 			assertThat(betreuung.getErweiterteBetreuungContainer().getErweiterteBetreuungJA(), nullValue());
 		}
@@ -855,8 +855,18 @@ public class PlatzbestaetigungEventHandlerTest extends EasyMockSupport {
 		}
 
 		private void testProcessingSuccess() {
+			this.testProcessingSuccess(true);
+		}
+
+		private void testProcessingSuccessWithoutErweiterteBetreuung() {
+			this.testProcessingSuccess(false);
+		}
+
+		private void testProcessingSuccess(boolean erweitereBetreuung) {
 			expectBetreuungFound(betreuung);
-			expectGetSchnittstelleSprachfoerderungAktivAb(LocalDate.of(2023,01,01));
+			if(erweitereBetreuung) {
+				expectGetSchnittstelleSprachfoerderungAktivAb(LocalDate.of(2023, 01, 01));
+			}
 			mockClients(clientGueltigkeit);
 			withMahlzeitenverguenstigung(true);
 			mockGetStundenTagenEinstellungen();
