@@ -1937,6 +1937,7 @@
     "EVALUATOR_DEBUG_ENABLED": "Evaluator-Debug aktiviert",
     "STADT_BERN_ASIV_CONFIGURED": "Die Konfiguration der Stadt Bern für die ASIV Regeln ist definiert, die Zeiträume nach dem Wechsel zu ASIV werden berechnet",
     "STADT_BERN_ASIV_START_DATUM": "Datum, ab welchem die Stadt Bern die Gutscheine gemäss ASIV berechnet",
+    "SCHNITTSTELLE_SPRACHFOERDERUNG_AKTIV_AB": "Datum (dd.MM.yyyy), ab welchem die Sparchfoerderung in der Platzbestaetigung Schnittstelle berücksichtig wird",
     "UPLOAD_FILETYPES_WHITELIST": "Dateitypen-Whitelist",
     "ACTIVATED_DEMO_FEATURES": "Aktivierte Demo Features",
     "CHECKBOX_AUSZAHLEN_IN_ZUKUNFT": "Checkbox Auszahlen in Zukunft einblenden",

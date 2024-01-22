@@ -224,6 +224,11 @@ public enum ApplicationPropertyKey {
 	/**
 	 * Ist für den Mandanten das Angebot FI aktiviert
 	 */
-	ANGEBOT_FI_ENABLED;
+	ANGEBOT_FI_ENABLED,
+
+	/*
+	 * Wenn dieses Datum überschritten wird, ist die SprachfoerderungBestaegit Flag Wert beruecksichtig.
+	 */
+	SCHNITTSTELLE_SPRACHFOERDERUNG_AKTIV_AB;
 
 }
