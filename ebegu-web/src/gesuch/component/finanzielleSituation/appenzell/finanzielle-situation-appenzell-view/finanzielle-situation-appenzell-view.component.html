@@ -73,7 +73,7 @@
                         [finanzModel]="model"
                         [antragstellerNumber]="getAntragstellerNumber()"
                         [finSitZusatzangabenAppenzell]="getFinSitZusatzangabenAppenzellToWorkWith()"
-                        [deklaration]="model.getFiSiConToWorkWith().finanzielleSituationGS?.finSitZusatzangabenAppenzell"
+                        [deklaration]="getFinSitZusatzangabenAppenzellGSToWorkWith()"
                         [showBisher]="showBisher(getModel().finanzielleSituationJA)"
                         (valueChanges)="calculateResults()"
                     ></dv-fin-sit-felder-appenzell>

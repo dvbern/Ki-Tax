@@ -113,11 +113,13 @@
                 </div>
                 <div class="row" dv-show-element
                      dv-show-allowed-roles="vm.TSRoleUtil.getAdministratorJugendamtRole()">
-                    <div>
-                        <div ng-if="vm.showWarningSozialeIndikationPensumNichtErreicht()" class="well well-status-warten">
-                            <span translate>SPRACHLICHE_INDIKATION_BETREUUNGS_PENSUM_ZU_TIEF</span>
+                    <dv-demo-feature-wrapper [demo-feature]="vm.demoFeatureFachstelleUebergangsloesung">
+                        <div>
+                            <div ng-if="vm.showWarningSozialeIndikationPensumNichtErreicht()" class="well well-status-warten">
+                                <span translate>SPRACHLICHE_INDIKATION_BETREUUNGS_PENSUM_ZU_TIEF</span>
+                            </div>
                         </div>
-                    </div>
+                    </dv-demo-feature-wrapper>
                     <!-- Veränderung der BGs und TS Tarife in Mutationen -->
                     <div ng-if="vm.showSimulationVeranderung()">
                         <div ng-if="vm.hasMutationVeranderung() && !vm.hasAnyNewOrStornierteBetreuung" class="well margin-top-20">

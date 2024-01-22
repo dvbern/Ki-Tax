@@ -63,7 +63,6 @@ public class FinSitZusatzangabenAppenzell extends AbstractMutableEntity {
 	@Column(nullable = true)
 	private BigDecimal leistungAnJuristischePersonen;
 
-
 	@Nullable
 	@Column(nullable = true)
 	private BigDecimal steuerbaresEinkommen;
@@ -226,7 +225,10 @@ public class FinSitZusatzangabenAppenzell extends AbstractMutableEntity {
 		target.setVorjahresverluste(this.getVorjahresverluste());
 		target.setPolitischeParteiSpende(this.getPolitischeParteiSpende());
 		target.setLeistungAnJuristischePersonen(this.getLeistungAnJuristischePersonen());
-		target.setZusatzangabenPartner(this.zusatzangabenPartner);
+		if (this.zusatzangabenPartner != null) {
+			target.setZusatzangabenPartner(this.zusatzangabenPartner.copyAllValues(
+				new FinSitZusatzangabenAppenzell()));
+		}
 		return target;
 	}
 
