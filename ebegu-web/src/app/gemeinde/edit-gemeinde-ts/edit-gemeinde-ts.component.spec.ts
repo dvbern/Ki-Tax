@@ -38,7 +38,7 @@ describe('EditGemeindeTSComponent', () => {
     const stateServiceSpy = jasmine.createSpyObj<StateService>(StateService.name, ['go']);
     const i18nServiceSpy = jasmine
         .createSpyObj<I18nServiceRSRest>(I18nServiceRSRest.name, ['extractPreferredLanguage']);
-    const gemeindeRSSpy = jasmine.createSpyObj(GemeindeRS.name, []);
+    const gemeindeRSSpy = jasmine.createSpyObj(GemeindeRS.name, ['isSupportedImage']);
 
     beforeEach(waitForAsync(() => {
         TestBed.configureTestingModule({
