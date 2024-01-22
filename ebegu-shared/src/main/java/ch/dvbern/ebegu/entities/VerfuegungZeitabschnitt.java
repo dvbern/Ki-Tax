@@ -850,6 +850,7 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 		result.setFamGroesse(input.getFamGroesseNonNull());
 		result.setAuszahlungAnEltern(input.isAuszahlungAnEltern());
 		result.setVerguenstigungGewuenscht(input.isVerguenstigungGewuenscht());
+		result.setSozialhilfeAkzeptiert(input.isSozialhilfeempfaenger() && input.isFinsitAccepted());
 	}
 
 	public boolean isSameMZV(VerfuegungZeitabschnitt other) {
