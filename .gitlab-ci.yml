@@ -280,7 +280,8 @@ build-e2e-test-db-setup-image:
 run-e2e-tests:
     stage: testing
     variables:
-        baseURL: "https://e2e-be.kibon.ch/web/"
+        environment: e2e
+        baseURL: "https://${environment}-be.kibon.ch/web/"
     tags: [ 'os:linux', 'type:docker', 'zone:tz' ]
     needs:
         - build-and-analyze
@@ -288,6 +289,10 @@ run-e2e-tests:
     rules:
         - if: $CI_PIPELINE_SOURCE == "merge_request_event"
           when: manual
+          needs:
+              - deploy
+          variables:
+              environment: preview
         - if: $CI_PIPELINE_SOURCE == "schedule"
     cache:
         key:
