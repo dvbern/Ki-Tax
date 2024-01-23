@@ -84,7 +84,7 @@ public class PdfLayoutConfiguration extends BaseLayoutConfiguration {
 			if (stammdaten.getLogoWidth() != null) {
 				widthInMm = stammdaten.getLogoWidth().floatValue();
 			} else {
-				Image image = Image.getInstance(stammdaten.getLogoContent());
+				Image image = Image.getInstance(logoForPDF);
 				widthInMm = getImageWidthDefault(image, isKanton);
 			}
 			int logoLeft = stammdaten.getLogoSpacingLeft();
