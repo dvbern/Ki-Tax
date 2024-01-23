@@ -176,7 +176,8 @@
                     <div class="form-group">
                         <mat-checkbox id="hasAlternativeLogoTagesschule_id"
                                       name="hasAlternativeLogoTagesschule_id"
-                                      [(ngModel)]="stammdaten.gemeindeStammdatenKorrespondenz.hasAlternativeLogoTagesschule">
+                                      [(ngModel)]="stammdaten.gemeindeStammdatenKorrespondenz.hasAlternativeLogoTagesschule"
+                        (change)="onAlternativeLogoChange($event)">
                             {{'GEMEINDE_HAS_ALTERNATIVE_TS_LOGO'|translate}}
                         </mat-checkbox>
                     </div>

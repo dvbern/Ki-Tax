@@ -278,11 +278,6 @@ export class EditGemeindeComponent implements OnInit {
                 return;
             }
 
-            if (savedStammdaten.gemeindeStammdatenKorrespondenz.hasAlternativeLogoTagesschule
-                && !stammdaten.gemeindeStammdatenKorrespondenz.hasAlternativeLogoTagesschule) {
-                await this.gemeindeRS.deleteAlternativeLogoTagesschule(this.gemeindeId);
-            }
-
             if (this.authServiceRS.isOneOfRoles(TSRoleUtil.getMandantRoles())) {
                 await this.gemeindeRS.updateAngebote(stammdaten.gemeinde);
                 this.updateExternalClients();
