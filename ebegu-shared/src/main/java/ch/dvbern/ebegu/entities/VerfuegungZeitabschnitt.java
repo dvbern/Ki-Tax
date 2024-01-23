@@ -465,11 +465,6 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 		this.getBgCalculationInputGemeinde().setBetreuungspensumMustBeAtLeastFachstellenpensum(atLeastFachstellenpensum);
 	}
 
-	public void setFachstelleSprachlicheIntegrationBestaetigtForAsivAndGemeinde(boolean fachstelleSprachlicheIntegrationBestaetigt) {
-		this.getBgCalculationInputAsiv().setFachstelleSprachlicheIntegrationBestaetigt(fachstelleSprachlicheIntegrationBestaetigt);
-		this.getBgCalculationInputGemeinde().setFachstelleSprachlicheIntegrationBestaetigt(fachstelleSprachlicheIntegrationBestaetigt);
-	}
-
 	public void setIntegrationTypFachstellenPensumForAsivAndGemeinde(IntegrationTyp integrationTyp) {
 		this.getBgCalculationInputAsiv().setIntegrationTypFachstellenPensum(integrationTyp);
 		this.getBgCalculationInputGemeinde().setIntegrationTypFachstellenPensum(integrationTyp);

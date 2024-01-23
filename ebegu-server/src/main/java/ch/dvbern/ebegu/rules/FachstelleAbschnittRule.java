@@ -69,8 +69,6 @@ public class FachstelleAbschnittRule extends AbstractAbschnittRule {
 		zeitabschnitt.setBetreuungspensumMustBeAtLeastFachstellenpensumForAsivAndGemeinde(
 			betreuungspensumMustBeAtLeastFachstellenpensum(pensumFachstelle.getIntegrationTyp(), platz)
 		);
-		zeitabschnitt.setFachstelleSprachlicheIntegrationBestaetigtForAsivAndGemeinde(
-			fachstelleSprachlicheIntegrationBestaetigtForAsivAndGemeinde(pensumFachstelle.getIntegrationTyp(), platz));
 		zeitabschnitt.setIntegrationTypFachstellenPensumForAsivAndGemeinde(pensumFachstelle.getIntegrationTyp());
 		return zeitabschnitt;
 	}
@@ -93,20 +91,5 @@ public class FachstelleAbschnittRule extends AbstractAbschnittRule {
 		return !betreuung.getErweiterteBetreuungContainer()
 			.getErweiterteBetreuungJA()
 			.isAnspruchFachstelleWennPensumUnterschritten();
-	}
-
-	private boolean fachstelleSprachlicheIntegrationBestaetigtForAsivAndGemeinde(
-		@Nonnull IntegrationTyp integrationTyp,
-		@Nonnull AbstractPlatz platz) {
-
-		var betreuung = (Betreuung) platz;
-		if (betreuung.getErweiterteBetreuungContainer().getErweiterteBetreuungJA() == null) {
-			return false;
-		}
-		if (integrationTyp.equals(IntegrationTyp.SPRACHLICHE_INTEGRATION)) {
-			return betreuung.getErweiterteBetreuungContainer().getErweiterteBetreuungJA().isSprachfoerderungBestaetigt();
-		}
-
-		return true;
 	}
 }

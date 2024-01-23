@@ -65,8 +65,6 @@ public class BGCalculationInput {
 
 	private boolean betreuungspensumMustBeAtLeastFachstellenpensum = false;
 
-	private boolean fachstelleSprachlicheIntegrationBestaetigt = false;
-
 	private int ausserordentlicherAnspruch;
 
 	//es muss by default null sein um zu wissen, wann es nicht definiert wurde
@@ -267,7 +265,6 @@ public class BGCalculationInput {
 		this.bgStundenFaktor = toCopy.bgStundenFaktor;
 		this.integrationTypFachstellenPensum = toCopy.integrationTypFachstellenPensum;
 		this.verguenstigungGewuenscht = toCopy.verguenstigungGewuenscht;
-		this.fachstelleSprachlicheIntegrationBestaetigt = toCopy.fachstelleSprachlicheIntegrationBestaetigt;
 	}
 
 	@Nonnull
@@ -891,8 +888,6 @@ public class BGCalculationInput {
 		if (!other.verguenstigungGewuenscht) {
 			this.verguenstigungGewuenscht = false;
 		}
-
-		this.fachstelleSprachlicheIntegrationBestaetigt = this.fachstelleSprachlicheIntegrationBestaetigt || other.fachstelleSprachlicheIntegrationBestaetigt;
 	}
 
 	/**
@@ -1293,13 +1288,5 @@ public class BGCalculationInput {
 
 	public void setVerguenstigungGewuenscht(boolean verguenstigungGewuenscht) {
 		this.verguenstigungGewuenscht = verguenstigungGewuenscht;
-	}
-
-	public boolean isFachstelleSprachlicheIntegrationBestaetigt() {
-		return fachstelleSprachlicheIntegrationBestaetigt;
-	}
-
-	public void setFachstelleSprachlicheIntegrationBestaetigt(boolean fachstelleSprachlicheIntegrationBestaetigt) {
-		this.fachstelleSprachlicheIntegrationBestaetigt = fachstelleSprachlicheIntegrationBestaetigt;
 	}
 }

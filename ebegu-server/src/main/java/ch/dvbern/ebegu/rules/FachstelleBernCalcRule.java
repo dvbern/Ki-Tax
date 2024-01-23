@@ -77,7 +77,9 @@ public class FachstelleBernCalcRule extends AbstractFachstellenCalcRule {
 		int roundedPensumFachstelle = MathUtil.roundIntToFives(pensum);
 		if (roundedPensumFachstelle > 0) {
 			// Bei Sprachliche Integration muss die sprachfoerderung bestaetigt werden
-			if (sprachefoerderungBestaetigenAktiviert && !inputData.isFachstelleSprachlicheIntegrationBestaetigt()) {
+			if (showFachstelleSprachlicheIntegrationNichtBestaetigtBemerkung(
+				inputData.getIntegrationTypFachstellenPensum(),
+				platz)) {
 				inputData.addBemerkung(
 					MsgKey.FACHSTELLE_SPRACHEFOEDERUNG_NICHT_BESTAETIGT_MSG,
 					getLocale());
@@ -119,5 +121,18 @@ public class FachstelleBernCalcRule extends AbstractFachstellenCalcRule {
 	@Override
 	public boolean isRelevantForGemeinde(@Nonnull Map<EinstellungKey, Einstellung> einstellungMap) {
 		return super.getFachstellenTypFromEinstellungen(einstellungMap) == FachstellenTyp.BERN;
+	}
+
+	private boolean showFachstelleSprachlicheIntegrationNichtBestaetigtBemerkung(
+		@Nonnull IntegrationTyp integrationTyp,
+		@Nonnull AbstractPlatz platz) {
+		if (!integrationTyp.equals(IntegrationTyp.SPRACHLICHE_INTEGRATION) || !sprachefoerderungBestaetigenAktiviert) {
+			return false;
+		}
+		var betreuung = (Betreuung) platz;
+		if (betreuung.getErweiterteBetreuungContainer().getErweiterteBetreuungJA() == null) {
+			return true;
+		}
+		return !betreuung.getErweiterteBetreuungContainer().getErweiterteBetreuungJA().isSprachfoerderungBestaetigt();
 	}
 }

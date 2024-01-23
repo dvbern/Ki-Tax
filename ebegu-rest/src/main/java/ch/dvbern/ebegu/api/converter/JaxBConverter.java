@@ -3349,9 +3349,10 @@ public class JaxBConverter extends AbstractConverter {
 		erweiterteBetreuung.setKitaPlusZuschlagBestaetigt(erweiterteBetreuungJAXP.getKitaPlusZuschlagBestaetigt());
 		erweiterteBetreuung.setBetreuungInGemeinde(erweiterteBetreuungJAXP.getBetreuungInGemeinde());
 		erweiterteBetreuung.setErweitereteBeduerfnisseBetrag(erweiterteBetreuungJAXP.getErweitereteBeduerfnisseBetrag());
-		erweiterteBetreuung.setSprachfoerderungBestaetigt(erweiterteBetreuungJAXP.getSprachfoerderungBestaetigt() != null ?
-			erweiterteBetreuungJAXP.getSprachfoerderungBestaetigt() :
-			false);
+		if(erweiterteBetreuungJAXP.getSprachfoerderungBestaetigt() != null ) {
+			erweiterteBetreuung.setSprachfoerderungBestaetigt(erweiterteBetreuungJAXP.getSprachfoerderungBestaetigt());
+		}
+
 		// flag kann auf GUI auch Null sein, auf entity ist es defaultmässig false
 		if (erweiterteBetreuungJAXP.getAnspruchFachstelleWennPensumUnterschritten() != null) {
 			erweiterteBetreuung.setAnspruchFachstelleWennPensumUnterschritten(erweiterteBetreuungJAXP.getAnspruchFachstelleWennPensumUnterschritten());
