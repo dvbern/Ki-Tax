@@ -148,6 +148,10 @@ export const LOCALLOGIN_DATA = {
         sozialdienst: {
             id: '070e2aa4-b3e9-11ee-829a-0242ac160002',
             name: 'Sozialdienst Schwyz'
+        },
+        tagesschule: {
+            id: 'e67aa195-b912-11ee-8d78-0242ac160002',
+            name: 'Tagesschule Schwyz'
         }
     },
 };
