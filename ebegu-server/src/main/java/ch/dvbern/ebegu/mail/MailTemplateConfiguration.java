@@ -544,6 +544,8 @@ public class MailTemplateConfiguration {
 		Locale mandantLocale = new MandantLocaleVisitor(sprache.getLocale()).process(mandant);
 		Map<Object, Object> paramMap = paramsWithEmpfaenger(empfaengerMail, mandant.getMandantIdentifier());
 		paramMap.put(GRUSS, getEmailGruss(mandant, mandantLocale, gesuch.extractGemeinde().getName()));
+		paramMap.put("fall", gesuch.getDossier().getFall());
+		paramMap.put("gesuchsperiode", gesuch.getGesuchsperiode());
 		return processTemplateGesuch(nameOfTemplate, gesuch, gesuchsteller, paramMap, sprache);
 	}
 
