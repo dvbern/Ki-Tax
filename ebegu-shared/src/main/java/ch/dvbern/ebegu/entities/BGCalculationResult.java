@@ -171,6 +171,13 @@ public class BGCalculationResult extends AbstractEntity {
 	@Column(nullable = false)
 	private boolean verguenstigungGewuenscht;
 
+	@NotNull
+	@Column(nullable = false)
+	// ist true, wenn sozialhilfebezüger finsit akzeptiert
+	// false, wenn nicht sozialhilfebezüger
+	// false, wenn sozialhilfebzeüger und finsit abgelehnt
+	private boolean sozialhilfeAkzeptiert;
+
 	@Transient
 	@Nonnull
 	private Function<BigDecimal, BigDecimal> zeiteinheitenRoundingStrategy = MathUtil::toTwoKommastelle;
@@ -219,6 +226,7 @@ public class BGCalculationResult extends AbstractEntity {
 		this.babyTarif = toCopy.babyTarif;
 		this.beitragshoeheProzent = toCopy.beitragshoeheProzent;
 		this.verguenstigungGewuenscht = toCopy.verguenstigungGewuenscht;
+		this.sozialhilfeAkzeptiert = toCopy.sozialhilfeAkzeptiert;
 	}
 
 	public boolean isCloseTo(@Nonnull BGCalculationResult that) {
@@ -246,6 +254,7 @@ public class BGCalculationResult extends AbstractEntity {
 		verguenstigung = that.verguenstigung;
 		verguenstigungProZeiteinheit = that.verguenstigungProZeiteinheit;
 		verguenstigungGewuenscht = that.verguenstigungGewuenscht;
+		sozialhilfeAkzeptiert = that.sozialhilfeAkzeptiert;
 	}
 
 	@CanIgnoreReturnValue
@@ -302,6 +311,7 @@ public class BGCalculationResult extends AbstractEntity {
 			.add("auszahlungAnEltern", auszahlungAnEltern)
 			.add("babyTarif", babyTarif)
 			.add("verguensigungGewuenscht", verguenstigungGewuenscht)
+			.add("sozialhilfeAbgelehnt", sozialhilfeAkzeptiert)
 			.toString();
 	}
 
@@ -331,7 +341,8 @@ public class BGCalculationResult extends AbstractEntity {
 			MathUtil.isSame(verguenstigungProZeiteinheit, otherResult.verguenstigungProZeiteinheit) &&
 			auszahlungAnEltern == otherResult.isAuszahlungAnEltern() &&
 			babyTarif == otherResult.babyTarif &&
-			Objects.equals(beitragshoeheProzent, otherResult.beitragshoeheProzent);
+			Objects.equals(beitragshoeheProzent, otherResult.beitragshoeheProzent) &&
+			sozialhilfeAkzeptiert == otherResult.sozialhilfeAkzeptiert;
 	}
 
 	public static boolean isSameSichtbareDaten(@Nullable BGCalculationResult thisEntity, @Nullable BGCalculationResult otherEntity) {
@@ -413,7 +424,8 @@ public class BGCalculationResult extends AbstractEntity {
 				isSameZeiteinheiten(thisEntity, otherEntity) &&
 				thisEntity.auszahlungAnEltern == otherEntity.auszahlungAnEltern &&
 				thisEntity.babyTarif == otherEntity.babyTarif &&
-				Objects.equals(thisEntity.beitragshoeheProzent, otherEntity.beitragshoeheProzent)
+				Objects.equals(thisEntity.beitragshoeheProzent, otherEntity.beitragshoeheProzent) &&
+				thisEntity.sozialhilfeAkzeptiert == otherEntity.sozialhilfeAkzeptiert
 		));
 	}
 
@@ -738,6 +750,14 @@ public class BGCalculationResult extends AbstractEntity {
 
 	public void setVerguenstigungGewuenscht(boolean verguenstigungGewuenscht) {
 		this.verguenstigungGewuenscht = verguenstigungGewuenscht;
+	}
+
+	public void setSozialhilfeAkzeptiert(boolean sozialhilfeAkzeptiert) {
+		this.sozialhilfeAkzeptiert = sozialhilfeAkzeptiert;
+	}
+
+	public boolean isSozialhilfeAkzeptiert() {
+		return sozialhilfeAkzeptiert;
 	}
 
 	// changes in mutationen can be ignored, as long as nothing except FinSit data changes
