@@ -17,7 +17,6 @@
 
 import {ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {ControlContainer, NgForm} from '@angular/forms';
-import {MatCheckboxChange} from '@angular/material/checkbox';
 import {StateService} from '@uirouter/core';
 import {Moment} from 'moment';
 import {Observable, of} from 'rxjs';
@@ -141,16 +140,6 @@ export class EditGemeindeTSComponent implements OnInit {
     private emitLogoChange(): void {
         if (this.altLogoImageChange) {
             this.altLogoImageChange.emit(this.fileToUpload);
-        }
-    }
-
-    public async onAlternativeLogoChange(event: MatCheckboxChange): Promise<void> {
-        if (!event.checked) {
-            await this.gemeindeRS.deleteAlternativeLogoTagesschule(this.gemeindeId);
-            this.altLogoImageUrl = null;
-            this.altLogoImageUrl$ = null;
-            this.fileToUpload = null;
-            this.emitLogoChange();
         }
     }
 }
