@@ -35,15 +35,14 @@ workflow:
         -   if: $CI_PIPELINE_SOURCE == "schedule"
 
 include:
-    -   component: gitlab.dvbern.ch/mobj/maven@89ec140318641f5a453983b8c04454bd6b1932b8
+    -   component: gitlab.dvbern.ch/mobj/maven@78b9f09bf43116819c519a3d69a765e51eab055f
         inputs:
             name: .build-and-analyze
             java-image: docker-registry.dvbern.ch/kibon/build-environment/mvn-npm-gitflow-chromium
             java-image-version: jdk11-old
             maven-goal: -Drevision=$VERSION -Pcoverage -Pcopy-wildfly-dependencies -Pfrontend -Pci $SONAR_CONFIG clean install $SONAR_GOAL
-            archive-path: '**/target'
 
-    -   component: 'gitlab.dvbern.ch/mobj/buildah@301da90e8cb758ec10267633e43eb753eea6762e'
+    -   component: 'gitlab.dvbern.ch/mobj/buildah@1535f41c035b3fd5bef23bae7abe968ebc00084f'
         inputs:
             registry: $DVB_DOCKER_REGISTRY
             registry-user: $DVB_DOCKER_REGISTRY_USER
@@ -55,7 +54,7 @@ include:
             version: $VERSION
             push-enabled: "true"
 
-    -   component: 'gitlab.dvbern.ch/mobj/buildah@301da90e8cb758ec10267633e43eb753eea6762e'
+    -   component: 'gitlab.dvbern.ch/mobj/buildah@1535f41c035b3fd5bef23bae7abe968ebc00084f'
         inputs:
             registry: $DVB_DOCKER_REGISTRY
             registry-user: $DVB_DOCKER_REGISTRY_USER
@@ -68,7 +67,7 @@ include:
             dockerfile-path: e2e-test-db-setup/Dockerfile
             push-enabled: "true"
 
-    -   component: 'gitlab.dvbern.ch/mobj/buildah@a7143bb366f9ee8e1ddfd1813acb1649a104cb36'
+    -   component: 'gitlab.dvbern.ch/mobj/buildah@1535f41c035b3fd5bef23bae7abe968ebc00084f'
         inputs:
             registry: $DVB_DOCKER_REGISTRY
             registry-user: $DVB_DOCKER_REGISTRY_USER
@@ -81,7 +80,7 @@ include:
             version: $VERSION
             push-enabled: "true"
 
-    -   component: 'gitlab.dvbern.ch/fuju/docker-compose-deploy@4ecd5519fb57c296f9e9745de8fb98858d20e19a'
+    -   component: 'gitlab.dvbern.ch/mobj/docker-compose-deploy@32ef66630d4b27db1893e960017a82809f68ec37'
         inputs:
             name: .docker-compose-deploy
             service-name: $SERVICE_NAME
@@ -91,7 +90,7 @@ include:
             ssh-private-key: $KIBON_SSH_PRIVATE_KEY
             ssh-target: '$SSH_HOST'
 
-    -   component: 'gitlab.dvbern.ch/fuju/docker-compose-deploy@4ecd5519fb57c296f9e9745de8fb98858d20e19a'
+    -   component: 'gitlab.dvbern.ch/mobj/docker-compose-deploy@32ef66630d4b27db1893e960017a82809f68ec37'
         inputs:
             name: .docker-compose-deploy:e2e
             service-name: kibon-dev-e2e
@@ -101,7 +100,7 @@ include:
             ssh-private-key: $KIBON_SSH_PRIVATE_KEY
             ssh-target: $DEV_HOST
 
-    -   component: 'gitlab.dvbern.ch/fuju/docker-compose-deploy@4ecd5519fb57c296f9e9745de8fb98858d20e19a'
+    -   component: 'gitlab.dvbern.ch/mobj/docker-compose-deploy@32ef66630d4b27db1893e960017a82809f68ec37'
         inputs:
             name: .docker-compose-deploy:prod
             service-name: kibon
@@ -111,7 +110,7 @@ include:
             ssh-private-key: $KIBON_SSH_PRIVATE_KEY
             ssh-target: 'sdvbvmkiba01.dvbern.ch sdvbvmkiba02.dvbern.ch'
 
-    -   component: 'gitlab.dvbern.ch/fuju/docker-compose-deploy@4ecd5519fb57c296f9e9745de8fb98858d20e19a'
+    -   component: 'gitlab.dvbern.ch/mobj/docker-compose-deploy@32ef66630d4b27db1893e960017a82809f68ec37'
         inputs:
             name: .docker-compose-deploy:uat
             service-name: kibon-uat
@@ -121,7 +120,7 @@ include:
             ssh-private-key: $KIBON_SSH_PRIVATE_KEY
             ssh-target: 'sdvbvmkiba21.dvbern.ch sdvbvmkiba22.dvbern.ch'
 
-    -   component: 'gitlab.dvbern.ch/fuju/docker-compose-deploy@4ecd5519fb57c296f9e9745de8fb98858d20e19a'
+    -   component: 'gitlab.dvbern.ch/mobj/docker-compose-deploy@32ef66630d4b27db1893e960017a82809f68ec37'
         inputs:
             name: .docker-compose-deploy:iat
             service-name: kibon-iat
@@ -131,7 +130,7 @@ include:
             ssh-private-key: $KIBON_SSH_PRIVATE_KEY
             ssh-target: 'sdvbvmkiba41.dvbern.ch'
 
-    -   component: 'gitlab.dvbern.ch/fuju/docker-compose-deploy@4ecd5519fb57c296f9e9745de8fb98858d20e19a'
+    -   component: 'gitlab.dvbern.ch/mobj/docker-compose-deploy@32ef66630d4b27db1893e960017a82809f68ec37'
         inputs:
             name: .docker-compose-deploy:schulung
             service-name: kibon-schulung
@@ -141,7 +140,7 @@ include:
             ssh-private-key: $KIBON_SSH_PRIVATE_KEY
             ssh-target: 'sdvbvmkiba11.dvbern.ch'
 
-    -   component: 'gitlab.dvbern.ch/fuju/docker-compose-deploy@4ecd5519fb57c296f9e9745de8fb98858d20e19a'
+    -   component: 'gitlab.dvbern.ch/mobj/docker-compose-deploy@32ef66630d4b27db1893e960017a82809f68ec37'
         inputs:
             name: .docker-compose-deploy:demo
             service-name: kibon-demo
@@ -258,8 +257,10 @@ build-and-analyze:
         policy: push
     artifacts:
         paths:
-            - '**/target'
+            - 'ebegu-web/target/*'
+            - 'ebegu-rest/target/*'
             - .flattened-pom.xml
+        expire_in: 7 days
 
 build-frontend-image:
     extends: .build-frontend-image

@@ -1,9 +1,7 @@
 package ch.dvbern.ebegu.rules;
 
 import ch.dvbern.ebegu.dto.BGCalculationInput;
-import ch.dvbern.ebegu.entities.AbstractPlatz;
-import ch.dvbern.ebegu.entities.BGCalculationResult;
-import ch.dvbern.ebegu.entities.Verfuegung;
+import ch.dvbern.ebegu.entities.*;
 import ch.dvbern.ebegu.enums.FinSitStatus;
 import ch.dvbern.ebegu.enums.MsgKey;
 import ch.dvbern.ebegu.util.Constants;
@@ -64,10 +62,13 @@ public abstract class AbstractMutationsMergerFinanzielleSituation {
 		BigDecimal massgebendesEinkommenVorher = resultVorangehenderAbschnitt.getMassgebendesEinkommen();
 
 		setFinSitDataFromResultToInput(inputData, resultVorangehenderAbschnitt);
+		inputData.setKeinAnspruchAufgrundEinkommen(vorgaengerVerfuegung.isKategorieMaxEinkommen());
+
 		if (massgebendesEinkommen.compareTo(massgebendesEinkommenVorher) != 0) {
 			// Die Bemerkung immer dann setzen, wenn das Einkommen (egal in welche Richtung) geaendert haette
 			String datumLetzteVerfuegung = Constants.DATE_FORMATTER.format(timestampVerfuegtVorgaenger);
-			inputData.addBemerkung(MsgKey.EINKOMMEN_FINSIT_ABGELEHNT_MUTATION_MSG, locale, datumLetzteVerfuegung);
+			inputData.addBemerkungWithGueltigkeitOfAbschnitt(
+				MsgKey.EINKOMMEN_FINSIT_ABGELEHNT_MUTATION_MSG, locale, datumLetzteVerfuegung);
 		}
 	}
 
@@ -79,6 +80,7 @@ public abstract class AbstractMutationsMergerFinanzielleSituation {
 		input.setEinkommensjahr(result.getEinkommensjahr());
 		input.setFamGroesse(result.getFamGroesse());
 		input.setAbzugFamGroesse(result.getAbzugFamGroesse());
+		input.setSozialhilfeempfaenger(result.isSozialhilfeAkzeptiert());
 	}
 
 	@Nonnull
