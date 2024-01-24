@@ -32,6 +32,6 @@ public class BGParameterVisitor implements MandantVisitor<BGRechnerParameterDTO>
 
 	@Override
 	public BGRechnerParameterDTO visitSchwyz() {
-		return TestUtils.getParameter();
+		return this.visitSolothurn();
 	}
 }

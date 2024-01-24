@@ -50,6 +50,6 @@ public class BetreuungDokumenteVisitor  implements MandantVisitor<AbstractDokume
 
 	@Override
 	public AbstractDokumente<Betreuung, Object> visitSchwyz() {
-		return new BernBetreuungDokumente();
+		return this.visitSolothurn();
 	}
 }

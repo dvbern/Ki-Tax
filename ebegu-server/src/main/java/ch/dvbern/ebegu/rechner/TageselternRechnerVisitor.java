@@ -57,6 +57,6 @@ public class TageselternRechnerVisitor implements MandantVisitor<AbstractRechner
 
 	@Override
 	public AbstractRechner visitSchwyz() {
-		return new TageselternBernRechner(rechnerRulesForGemeinde);
+		return this.visitSolothurn();
 	}
 }

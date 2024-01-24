@@ -69,6 +69,6 @@ public class FreigabequittungPdfQuittungVisitor implements MandantVisitor<Abstra
 
 	@Override
 	public AbstractFreigabequittungPdfGenerator visitSchwyz() {
-		return new FreigabequittungPdfGeneratorBern(gesuch, stammdaten, benoetigteUnterlagen);
+		return this.visitSolothurn();
 	}
 }

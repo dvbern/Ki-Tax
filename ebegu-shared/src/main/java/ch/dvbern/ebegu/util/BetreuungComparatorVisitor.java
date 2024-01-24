@@ -35,6 +35,6 @@ public class BetreuungComparatorVisitor implements MandantVisitor<Comparator<Abs
 
 	@Override
 	public Comparator<AbstractPlatz> visitSchwyz() {
-		return new BetreuungComparatorBern();
+		return this.visitSolothurn();
 	}
 }

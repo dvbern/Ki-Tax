@@ -35,6 +35,6 @@ public class EinreichefristVisitor implements MandantVisitor<AbstractEinreichefr
 
 	@Override
 	public AbstractEinreichefristCalculator visitSchwyz() {
-		return new EinreichefristCalculatorBern();
+		return this.visitSolothurn();
 	}
 }

@@ -60,6 +60,6 @@ public class ErsteMahnungPdfGeneratorVisitor implements MandantVisitor<AbstractE
 
 	@Override
 	public AbstractErsteMahnungPdfGenerator visitSchwyz() {
-		return new ErsteMahnungPdfGenerator(mahnung, stammdaten);
+		return this.visitSolothurn();
 	}
 }

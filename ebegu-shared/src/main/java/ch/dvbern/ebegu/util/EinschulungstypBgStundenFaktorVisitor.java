@@ -62,6 +62,6 @@ public class EinschulungstypBgStundenFaktorVisitor implements MandantVisitor<Big
 
 	@Override
 	public BigDecimal visitSchwyz() {
-		return BigDecimal.ONE;
+		return this.visitSolothurn();
 	}
 }

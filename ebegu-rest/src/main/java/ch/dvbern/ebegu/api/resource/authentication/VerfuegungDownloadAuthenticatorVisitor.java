@@ -38,6 +38,6 @@ public class VerfuegungDownloadAuthenticatorVisitor implements MandantVisitor<Bo
 
 	@Override
 	public Boolean visitSchwyz() {
-		return Boolean.TRUE;
+		return this.visitSolothurn();
 	}
 }

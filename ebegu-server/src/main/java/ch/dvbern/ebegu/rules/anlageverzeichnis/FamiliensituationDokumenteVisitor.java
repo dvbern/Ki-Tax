@@ -53,6 +53,6 @@ public class FamiliensituationDokumenteVisitor implements MandantVisitor<Abstrac
 
 	@Override
 	public AbstractDokumente<Familiensituation, Familiensituation> visitSchwyz() {
-		return new BernFamiliensituationDokumente();
+		return this.visitSolothurn();
 	}
 }

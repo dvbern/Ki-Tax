@@ -52,6 +52,6 @@ public class ErwerbspensumDokumenteVisitor implements MandantVisitor<AbstractDok
 
 	@Override
 	public AbstractDokumente<Erwerbspensum, LocalDate> visitSchwyz() {
-		return new BernErwerbspensumDokumente();
+		return this.visitSolothurn();
 	}
 }
