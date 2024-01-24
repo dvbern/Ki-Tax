@@ -37,7 +37,7 @@ UPDATE application_property SET value = 'false' WHERE name = 'SCHNITTSTELLE_EVEN
 UPDATE gesuchsperiode SET status = 'AKTIV' WHERE id = @gesuchperiode_24_25_id;
 
 # Benutzer System erstellen
-INSERT IGNORE INTO benutzer (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version, vorgaenger_id, email, nachname, username, vorname, mandant_id, externaluuid, status) VALUES (@system_user, '2016-01-01 00:00:00', '2016-01-01 00:00:00', 'flyway', 'flyway', 0, null, 'hallo@dvbern.ch', 'System', 'system', '', UNHEX(REPLACE('e3736eb8-6eef-40ef-9e52-96ab48d8f220', '-', '')), null, 'AKTIV');
+INSERT IGNORE INTO benutzer (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version, vorgaenger_id, email, nachname, username, vorname, mandant_id, externaluuid, status) VALUES (@system_user, '2016-01-01 00:00:00', '2016-01-01 00:00:00', 'flyway', 'flyway', 0, null, 'hallo@dvbern.ch', 'System', 'system_sz', '', UNHEX(REPLACE('e3736eb8-6eef-40ef-9e52-96ab48d8f220', '-', '')), null, 'AKTIV');
 INSERT IGNORE INTO berechtigung (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version, vorgaenger_id, gueltig_ab, gueltig_bis, role, benutzer_id, institution_id, traegerschaft_id) VALUES (UNHEX(REPLACE('2a7b78ed-4af0-11e9-9a3a-afd41a03c0bb', '-', '')), '2016-01-01 00:00:00', '2016-01-01 00:00:00', 'flyway', 'flyway', 0, null, '2017-01-01', '9999-12-31', 'SUPER_ADMIN', @system_user, null, null);
 
 
@@ -70,7 +70,7 @@ INSERT IGNORE INTO gemeinde (
                       angebotts, angebotfi, gueltig_bis, besondere_volksschule, nur_lats, event_published, angebotbgtfo)
 SELECT @testgemeinde_schwyz_id, NOW(), NOW(), 'flyway:Kanton Schwyz', 'flyway:Kanton Schwyz', 0,
 	   'Testgemeinde Schwyz', max(gemeinde_nummer)+1, @mandant_id_schwyz, 'AKTIV', 99992,
-	   '2016-01-01', '2020-08-01', '2020-08-01', true, true, false, '9999-12-31', FALSE, FALSE, FALSE, FALSE from gemeinde;
+	   '2016-01-01', '2020-08-01', '2020-08-01', TRUE, TRUE, FALSE, '9999-12-31', FALSE, FALSE, FALSE, TRUE from gemeinde;
 
 INSERT IGNORE INTO adresse (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version, vorgaenger_id, gueltig_ab, gueltig_bis, gemeinde,
 					 hausnummer, land, organisation, ort, plz, strasse, zusatzzeile) VALUES (UNHEX(REPLACE('c055f560-b3e6-11ee-829a-0242ac160002', '-', '')),
