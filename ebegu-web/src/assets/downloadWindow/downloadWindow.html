@@ -15,6 +15,10 @@
 
 <html>
 <head>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.0.8/purify.min.js"
+            integrity="sha512-5g2Nj3mqLOgClHi20oat1COW7jWvf7SyqnvwWUsMDwhjHeqeTl0C+uzjucLweruQxHbhDwiPLXlm8HBO0011pA=="
+            crossorigin="anonymous"
+            referrerpolicy="no-referrer"></script>
     <!--INFO: This Pages purpose is to enable the user to download a file without being blocked by the browsers popup-blockers-->
     <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700,600,400italic' rel='stylesheet'
           type='text/css'>
@@ -170,8 +174,8 @@
     }
 
     // we set the default texts from the url.
-    document.getElementById("spinnerText").innerHTML = decodeURIComponent(getGETValueFromURL("spinnerTextLoading"));
-    document.getElementById("spinnerTitle").innerHTML = decodeURIComponent(getGETValueFromURL("spinnerTitle"));
+    document.getElementById("spinnerText").innerHTML = DOMPurify.sanitize(decodeURIComponent(getGETValueFromURL("spinnerTextLoading")));
+    document.getElementById("spinnerTitle").innerHTML = DOMPurify.sanitize(decodeURIComponent(getGETValueFromURL("spinnerTitle")));
 </script>
 
 </body>
