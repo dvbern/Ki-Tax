@@ -24,6 +24,17 @@ const getFamiliensituationsStatus = (status: string) => {
 	return cy.getByData('familienstatus.' + status);
 };
 
+const getKonkubinatStart = () => {
+	return cy.getByData('container.konkubinat-start').find('input');
+};
+
+const getGeteilteObhutOption = (answer: string) => {
+	return cy.getByData('container.geteilte-obhut', 'geteilte-obhut-' + answer);
+};
+
+const getUnterhaltsvereinbarungOption = (answer:string) => {
+	return cy.getByData('container.unterhaltsvereinbarung', answer);
+};
 const fillFamiliensituationForm = (dataset: keyof typeof FixtureFamSit) => {
     FixtureFamSit[dataset](({ familiensituation }) => {
         getFamiliensituationsStatus(familiensituation.familienstand).find('label').click();
@@ -33,6 +44,10 @@ const fillFamiliensituationForm = (dataset: keyof typeof FixtureFamSit) => {
 export const AntragFamSitPO = {
     //page objects
     getPageTitle,
+    getFamiliensituationsStatus,
+    getKonkubinatStart,
+    getGeteilteObhutOption,
+    getUnterhaltsvereinbarungOption,
     //page actions
     fillFamiliensituationForm,
 };

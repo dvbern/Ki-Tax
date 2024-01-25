@@ -43,7 +43,7 @@
 
 
     <!--Erwerbspensen von Gesuchsteller 1-->
-    <div ng-if="vm.gesuchModelManager.getGesuch().gesuchsteller1" class="margin-bottom-80">
+    <div ng-if="vm.gesuchModelManager.getGesuch().gesuchsteller1" class="margin-bottom-80" data-test="erwerbspensen-gs1">
         <h3 class="ebegu-h2">
             <span ng-bind="vm.gesuchModelManager.getGesuch().gesuchsteller1.extractFullName()"></span>
         </h3>
@@ -57,7 +57,7 @@
 
     </div>
     <!--Erwerbspensen von Gesuchsteller 2-->
-    <div ng-if="vm.showErwerbspensumGS2()">
+    <div ng-if="vm.showErwerbspensumGS2()" data-test="erwerbspensen-gs2">
         <h3 class="ebegu-h2">
             <span ng-bind="vm.gesuchModelManager.getGesuch().gesuchsteller2.extractFullName()"></span>
         </h3>
