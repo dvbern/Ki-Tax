@@ -120,6 +120,9 @@ abstract class AbstractFinanzielleSituationDokumente
 				return isNachweisErsatzeinkommenSelbststaendigkeitNeeded(abstractFinanzielleSituation, 1);
 			case NACHWEIS_ERSATZINKOMMEN_SELBSTSTAENDIGKEIT_JAHR_MINUS2:
 				return isNachweisErsatzeinkommenSelbststaendigkeitNeeded(abstractFinanzielleSituation, 2);
+			case NACHWEIS_EINKOMMEN_VERFAHREN:
+				return abstractFinanzielleSituation.getEinkommenInVereinfachtemVerfahrenAbgerechnet() != null &&
+					abstractFinanzielleSituation.getEinkommenInVereinfachtemVerfahrenAbgerechnet();
 			default: //do nothing and continiue
 		}
 
@@ -169,9 +172,6 @@ abstract class AbstractFinanzielleSituationDokumente
 		case NACHWEIS_LOHNAUSWEIS_2:
 		case NACHWEIS_LOHNAUSWEIS_3:
 			return true;
-		case NACHWEIS_EINKOMMEN_VERFAHREN:
-			return abstractFinanzielleSituation.getEinkommenInVereinfachtemVerfahrenAbgerechnet() != null &&
-				abstractFinanzielleSituation.getEinkommenInVereinfachtemVerfahrenAbgerechnet();
 		case NACHWEIS_BRUTTOVERMOEGENERTRAEGE:
 			return abstractFinanzielleSituation.getBruttoertraegeVermoegen() != null
 				&& abstractFinanzielleSituation.getBruttoertraegeVermoegen().compareTo(BigDecimal.ZERO) > 0;
