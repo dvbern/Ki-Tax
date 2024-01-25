@@ -1826,6 +1826,7 @@
     "NEUE_TRAEGERSCHAFT": "Nouvel organisme responsable",
     "ERWEITERTE_BETREUUNG_BESTAETIGUNG_AUSSERORDENTLICHER_BETREUUNGSAUFWAND": "Confirmation des frais de garde extraordinaires",
     "GEMEINDE_LOGO_ZU_GROSS": "Le logo de la commune est trop grand.",
+    "TAGESSCHUL_LOGO_ZU_GROSS": "Le logo de l'école à horaire continu est trop grand!",
     "INTEGRATION": "Besoins",
     "SOZIALE_INTEGRATION": "Besoin d’ordre social",
     "SPRACHLICHE_INTEGRATION": "Besoin d’ordre linguistique",
@@ -2053,6 +2054,7 @@
     "ANGABEN_KONTAKTFELD": "Données de contact",
     "NO_ALTERNATIVE_ADRESSE": "Aucune adresse de contact alternative",
     "ALT_STANDARD_VERANTWORTLICHE": "Responsable standard alternatif",
+    "ALT_LOGO_TAGESSCHULE": "Logo alternatif pour l'école à horaire continu",
     "INSTITUTION_STATUS_KONFIGURATION": "Configuration",
     "MODUL_NAME": "Nom dans le système externe",
     "MODUL_BEZEICHNUNG": "Désignation",
@@ -3086,5 +3088,6 @@
     "FINANZIELLE_SITUATION_ERSATZEINKOMMEN_SELBSTSTAENDIGKEIT_INVALID": "Vous devez indiquer un revenu de remplacement au moins pour l’une des années ci-dessus.",
     "FINANZIELLE_SITUATION_ERSATZEINKOMMEN_BASISJAHR_TOOLTIP": "Le montant que vous indiquez sous \"Revenu de remplacement perçu en année {{basisjahr}}\" est déduit du montant indiqué sous \"Revenu de remplacement\".",
     "SPRACHLICHE_INDIKATION_BETREUUNGS_PENSUM_ZU_TIEF": "Besoin d’ordre linguistique : le taux de prise en charge minimal de 40 % n’est pas atteint pendant un ou plusieurs mois.",
+    "GEMEINDE_HAS_ALTERNATIVE_TS_LOGO": "Utiliser un logo alternatif pour les écoles à journée continue",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }
