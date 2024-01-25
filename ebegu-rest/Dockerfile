@@ -1,6 +1,6 @@
 #FROM docker-registry.dvbern.ch/devops/docker/appserv/wildfly/21.0.1-jdk11-alpine
-FROM docker-registry.dvbern.ch/kibon/kibon-wildfly@sha256:01683e302f1f707f0ef9b34359cb24c88c8e973b8beda0b93e01a59225f335b2
-RUN rm /opt/jboss/wildfly/standalone/deployments/ebegu-rest.war # remove as soon as we are back on "real" base image
+FROM docker-registry.dvbern.ch/kibon/kibon-wildfly@sha256:7432951b9bab5125b4ccdd02900abb251d9e60d02fb0009c0d8a82333380f49b
+RUN rm /opt/jboss/wildfly/standalone/deployments/*.war # remove as soon as we are back on "real" base image
 
 ARG KIBON_POM_VERSION
 
