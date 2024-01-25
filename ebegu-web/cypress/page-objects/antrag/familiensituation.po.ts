@@ -28,6 +28,10 @@ const getKonkubinatStart = () => {
 	return cy.getByData('container.konkubinat-start').find('input');
 };
 
+const getAenderunPer = () => {
+	return cy.getByData('container.aenderungen-per').find('input');
+};
+
 const getGeteilteObhutOption = (answer: string) => {
 	return cy.getByData('container.geteilte-obhut', 'geteilte-obhut-' + answer);
 };
@@ -48,6 +52,7 @@ export const AntragFamSitPO = {
     getKonkubinatStart,
     getGeteilteObhutOption,
     getUnterhaltsvereinbarungOption,
+    getAenderunPer,
     //page actions
     fillFamiliensituationForm,
 };
