@@ -16,14 +16,14 @@
 import {StateService} from '@uirouter/core';
 import {IComponentOptions} from 'angular';
 import * as moment from 'moment';
-import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
 import {IDVFocusableController} from '../../../app/core/component/IDVFocusableController';
 import {DvDialog} from '../../../app/core/directive/dv-dialog/dv-dialog';
+import {TSDemoFeature} from '../../../app/core/directive/dv-hide-feature/TSDemoFeature';
 import {ErrorService} from '../../../app/core/errors/service/ErrorService';
 import {LogFactory} from '../../../app/core/logging/LogFactory';
+import {ApplicationPropertyRS} from '../../../app/core/rest-services/applicationPropertyRS.rest';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {TSAnspruchBeschaeftigungAbhaengigkeitTyp} from '../../../models/enums/TSAnspruchBeschaeftigungAbhaengigkeitTyp';
-import {TSEinstellungKey} from '../../../models/enums/TSEinstellungKey';
 import {TSFamilienstatus} from '../../../models/enums/TSFamilienstatus';
 import {TSRole} from '../../../models/enums/TSRole';
 import {TSUnterhaltsvereinbarungAnswer} from '../../../models/enums/TSUnterhaltsvereinbarungAnswer';
@@ -31,12 +31,9 @@ import {TSWizardStepName} from '../../../models/enums/TSWizardStepName';
 import {TSWizardStepStatus} from '../../../models/enums/TSWizardStepStatus';
 import {TSErwerbspensumContainer} from '../../../models/TSErwerbspensumContainer';
 import {TSFamiliensituation} from '../../../models/TSFamiliensituation';
-import {TSFamiliensituationContainer} from '../../../models/TSFamiliensituationContainer';
-import {EbeguRestUtil} from '../../../utils/EbeguRestUtil';
 import {EbeguUtil} from '../../../utils/EbeguUtil';
 import {RemoveDialogController} from '../../dialog/RemoveDialogController';
 import {BerechnungsManager} from '../../service/berechnungsManager';
-import {GemeindeRS} from '../../service/gemeindeRS.rest';
 import {GesuchModelManager} from '../../service/gesuchModelManager';
 import {WizardStepManager} from '../../service/wizardStepManager';
 import {AbstractGesuchViewController} from '../abstractGesuchView';
@@ -68,7 +65,8 @@ export class ErwerbspensumListViewController
         '$scope',
         'AuthServiceRS',
         '$timeout',
-        '$translate'
+        '$translate',
+        'ApplicationPropertyRS'
     ];
 
     public erwerbspensenGS1: Array<TSErwerbspensumContainer> = undefined;
@@ -78,6 +76,7 @@ export class ErwerbspensumListViewController
     public showInfoAusserordentlichenAnspruch: boolean;
     public gemeindeTelefon: string = '';
     public gemeindeEmail: string = '';
+    private isGesuchBeendenFamSitActive = false;
 
     public constructor(
         private readonly $state: StateService,
@@ -89,7 +88,8 @@ export class ErwerbspensumListViewController
         $scope: IScope,
         private readonly authServiceRS: AuthServiceRS,
         $timeout: ITimeoutService,
-        private readonly $translate: ITranslateService
+        private readonly $translate: ITranslateService,
+        private readonly applicationPropertyRS: ApplicationPropertyRS
     ) {
         super(gesuchModelManager,
             berechnungsManager,
@@ -98,6 +98,9 @@ export class ErwerbspensumListViewController
             TSWizardStepName.ERWERBSPENSUM,
             $timeout);
         this.initViewModel();
+        this.applicationPropertyRS.getActivatedDemoFeatures().then(activated => {
+            this.isGesuchBeendenFamSitActive = activated.includes(TSDemoFeature.GESUCH_BEENDEN_FAMSIT);
+        });
     }
 
     private initViewModel(): void {
@@ -270,7 +273,7 @@ export class ErwerbspensumListViewController
         if (
             unterhaltsvereinbarung !== null
             && unterhaltsvereinbarung === TSUnterhaltsvereinbarungAnswer.NEIN_UNTERHALTSVEREINBARUNG
-            && (this.isShortKonkubinat(familiensituation) || this.isAlleinerziehend(familiensituation))
+            && (this.isKonkubinatWithOneGSPensumRequired(familiensituation) || this.isAlleinerziehend(familiensituation))
         ) {
             return false;
         }
@@ -285,6 +288,15 @@ export class ErwerbspensumListViewController
         }
 
         return EbeguUtil.isNotNullOrUndefined(this.gesuchModelManager.getGesuch().gesuchsteller2);
+    }
+
+    private isKonkubinatWithOneGSPensumRequired(familiensituation: TSFamiliensituation): boolean {
+        if (familiensituation.familienstatus !== TSFamilienstatus.KONKUBINAT_KEIN_KIND) {
+            return false;
+        }
+        return this.isGesuchBeendenFamSitActive ?
+            familiensituation.konkuinatOhneKindBecomesXYearsDuringPeriode(this.gesuchModelManager.getGesuchsperiode()) :
+            this.isShortKonkubinat(familiensituation);
     }
 
     private isShortKonkubinat(familiensituation: TSFamiliensituation): boolean {
