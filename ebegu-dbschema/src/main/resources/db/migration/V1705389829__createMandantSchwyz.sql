@@ -96,7 +96,7 @@ VALUES (@gesuchsperiode_id, NOW(), NOW(), 'system_sz', 'system_sz', 0, NULL, '20
 # Einstellungen für Gesuchsperiode kopieren
 INSERT INTO einstellung
 SELECT UNHEX(REPLACE(UUID(), '-', '')), NOW(), NOW(), 'system_sz', 'system_sz', 0, einstellung_key, value, NULL,
-	   (SELECT ebegu.gesuchsperiode.id
+	   (SELECT gesuchsperiode.id
 		FROM gesuchsperiode
 			 INNER JOIN mandant m ON gesuchsperiode.mandant_id = m.id
 		WHERE mandant_identifier = 'SCHWYZ'), NULL, erklaerung
