@@ -304,7 +304,6 @@ run-e2e-tests:
         policy: pull
     script:
         - cd ebegu-web
-        - npm ci --legacy-peer-deps
         - npx cypress run --e2e --headless --browser chrome
     artifacts:
         when: always
