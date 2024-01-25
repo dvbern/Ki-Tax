@@ -24,8 +24,8 @@ export type User =
     | '[3-SB-Institution-Kita-Brünnen] Sophie Bergmann'
     | '[3-Admin-TS-Paris] Serge Gainsbourg'
     | '[3-SB-TS-Paris] Charlotte Gainsbourg'
-    | '[3-Admin-Tägerschaft-Kitas-StadtBern] Bernhard Bern'
-    | '[3-SB-Tägerschaft-Kitas-StadtBern] Agnes Krause'
+    | '[3-Admin-Trägerschaft-Kitas-StadtBern] Bernhard Bern'
+    | '[3-SB-Trägerschaft-Kitas-StadtBern] Agnes Krause'
     | '[4-Admin-Unterstützung-BernerSozialdienst] Patrick Melcher'
     | '[4-SB-Unterstützung-BernerSozialdienst] Max Palmer'
     // Gesuchsteller

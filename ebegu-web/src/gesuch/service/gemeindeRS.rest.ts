@@ -185,19 +185,33 @@ export class GemeindeRS implements IEntityRS {
         return `${this.serviceURL}/logo/data/${encodeURIComponent(gemeindeId)}?timestamp=${new Date().getTime()}`;
     }
 
+    public getAlternativeLogoUrl(gemeindeId: string): string {
+        return `${this.serviceURL}/alternativeLogo/data/${encodeURIComponent(gemeindeId)}?timestamp=${new Date().getTime()}`;
+    }
+
     public getSupportedImageUrl(): string {
         return `${this.serviceURL}/supported/image?timestamp=${new Date().getTime()}`;
     }
 
+    public uploadAlternativeLogoTagesschule(gemeindeId: string, fileToUpload: File): IPromise<any> {
+        const formData=  this.createFormDataFromFileToUpload(fileToUpload);
+        return this.postLogo(this.getAlternativeLogoUrl(gemeindeId), formData);
+    }
+
     public uploadLogoImage(gemeindeId: string, fileToUpload: File): IPromise<any> {
+        const formData = this.createFormDataFromFileToUpload(fileToUpload);
+        return this.postLogo(this.getLogoUrl(gemeindeId), formData);
+    }
+
+    private createFormDataFromFileToUpload(fileToUpload: File): FormData {
         const formData = new FormData();
         formData.append('file', fileToUpload, encodeURIComponent(fileToUpload.name));
         formData.append('kat', fileToUpload, encodeURIComponent('logo'));
-        return this.postLogo(gemeindeId, formData);
+        return formData;
     }
 
-    private postLogo(gemeindeId: string, formData: FormData): IPromise<any> {
-        const result = this.$http.post(this.getLogoUrl(gemeindeId), formData, {
+    private postLogo(logoUrl: string, formData: FormData): IPromise<any> {
+        const result = this.$http.post(logoUrl, formData, {
             transformRequest: (request: IHttpRequestTransformer) => request,
             headers: {'Content-Type': undefined}
         })
@@ -206,7 +220,7 @@ export class GemeindeRS implements IEntityRS {
                 return response.data;
             });
         if (!result) {
-            this.$log.error(`Upload Gemeinde (${gemeindeId}) Logo failed`);
+            this.$log.error(`Upload Gemeinde Logo failed`);
         }
         return result;
     }
@@ -307,5 +321,9 @@ export class GemeindeRS implements IEntityRS {
     public getGemeindenWithPreExistingLATS(): IPromise<TSGemeinde[]> {
         return this.$http.get(`${this.serviceURL}/gemeinden-with-lats`)
             .then(response => this.ebeguRestUtil.parseGemeindeList(response.data));
+    }
+
+    public deleteAlternativeLogoTagesschule(gemeindeId: string): IHttpPromise<void> {
+        return this.$http.delete<void>(`${this.serviceURL}/alternativeLogo/${encodeURIComponent(gemeindeId)}`);
     }
 }

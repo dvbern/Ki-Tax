@@ -96,6 +96,19 @@ public class GemeindeStammdatenKorrespondenz extends AbstractEntity {
 	@Column(nullable = true)
 	private String standardSignatur;
 
+	@Nullable
+	@Column(nullable = true, length = ONE_MB) // 1 megabytes
+	@Lob
+	private byte[] alternativesLogoTagesschuleContent;
+
+	@Nullable
+	@Column(nullable = true)
+	private String alternativesLogoTagesschuleName;
+
+	@Nullable
+	@Column(nullable = true)
+	private String alternativesLogoTagesschuleType;
+
 	@Override
 	@SuppressWarnings("PMD.CompareObjectsWithEquals")
 	public boolean isSame(AbstractEntity other) {
@@ -127,6 +140,23 @@ public class GemeindeStammdatenKorrespondenz extends AbstractEntity {
 			this.logoContent = null;
 		} else {
 			this.logoContent = Arrays.copyOf(logoContent, logoContent.length);
+		}
+	}
+
+	@Nonnull
+	public byte[] getAlternativesLogoTagesschuleContent() {
+		if (alternativesLogoTagesschuleContent == null) {
+			return EMPTY_BYTE_ARRAY;
+		}
+		return Arrays.copyOf(alternativesLogoTagesschuleContent, alternativesLogoTagesschuleContent.length);
+	}
+
+	public void setAlternativesLogoTagesschuleContent(@Nullable byte[] alternativesLogoTagesschuleContent) {
+		if (alternativesLogoTagesschuleContent == null) {
+			//noinspection ConstantConditions
+			this.alternativesLogoTagesschuleContent = null;
+		} else {
+			this.alternativesLogoTagesschuleContent = Arrays.copyOf(alternativesLogoTagesschuleContent, alternativesLogoTagesschuleContent.length);
 		}
 	}
 }
