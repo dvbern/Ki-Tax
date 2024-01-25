@@ -303,7 +303,9 @@ run-e2e-tests:
             - .npm
         policy: pull
     script:
+        - ls -alF
         - cd ebegu-web
+        - npm ci
         - npx cypress run --e2e --headless --browser chrome
     artifacts:
         when: always
