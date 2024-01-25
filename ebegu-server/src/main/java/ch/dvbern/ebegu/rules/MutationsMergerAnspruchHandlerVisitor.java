@@ -36,4 +36,9 @@ public class MutationsMergerAnspruchHandlerVisitor implements MandantVisitor<Abs
 	public AbstractMutationsMergerAnspruchHandler visitAppenzellAusserrhoden() {
 		return visitBern();
 	}
+
+	@Override
+	public AbstractMutationsMergerAnspruchHandler visitSchwyz() {
+		return this.visitSolothurn();
+	}
 }

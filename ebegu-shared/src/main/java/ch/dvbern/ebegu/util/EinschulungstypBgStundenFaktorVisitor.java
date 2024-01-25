@@ -59,4 +59,9 @@ public class EinschulungstypBgStundenFaktorVisitor implements MandantVisitor<Big
 
 		return MathUtil.EXACT.divide(MathUtil.EXACT.divide(bgStundenProJahr, BigDecimal.valueOf(12)), BigDecimal.valueOf(100));
 	}
+
+	@Override
+	public BigDecimal visitSchwyz() {
+		return this.visitSolothurn();
+	}
 }
