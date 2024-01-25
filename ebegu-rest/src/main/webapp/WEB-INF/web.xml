@@ -129,6 +129,10 @@
 		<!-- Wir benutzen unseren eigenen Filter in dem wir die IDs aus REST-Resourcen durch Platzhalter entfernen -->
 		<filter-class>ch.dvbern.ebegu.api.util.EbeguMonitoringFilter</filter-class>
 		<async-supported>true</async-supported>
+		<init-param>
+			<param-name>authorized-users</param-name>
+			<param-value>admin:{SHA-256}5e75fdb88b4c175be4c252cbc82667b5f0a470e6f388c2d2b8b2d36955122650</param-value>
+		</init-param>
 	</filter>
 	<filter-mapping>
 		<filter-name>javamelody</filter-name>
