@@ -38,11 +38,11 @@ WHERE mandant_id = @mandant_id_solothurn AND
 					   a_p.name = application_property.name);
 
 
-UPDATE application_property SET value = '#ee1d23' WHERE name = 'PRIMARY_COLOR' AND mandant_id = @mandant_id_schwyz;;
-UPDATE application_property SET value = '#BF0425' WHERE name = 'PRIMARY_COLOR_DARK' AND mandant_id = @mandant_id_schwyz;;
-UPDATE application_property SET value = '#F0C3CB' WHERE name = 'PRIMARY_COLOR_LIGHT' AND mandant_id = @mandant_id_schwyz;;
-UPDATE application_property SET value = 'logo-kibon-schwyz.svg' WHERE name = 'LOGO_FILE_NAME' AND mandant_id = @mandant_id_schwyz;;
-UPDATE application_property SET value = 'logo-kibon-white-schwyz.svg' WHERE name = 'LOGO_WHITE_FILE_NAME' AND mandant_id = @mandant_id_schwyz;;
+UPDATE application_property SET value = '#ee1d23' WHERE name = 'PRIMARY_COLOR' AND mandant_id = @mandant_id_schwyz;
+UPDATE application_property SET value = '#BF0425' WHERE name = 'PRIMARY_COLOR_DARK' AND mandant_id = @mandant_id_schwyz;
+UPDATE application_property SET value = '#F0C3CB' WHERE name = 'PRIMARY_COLOR_LIGHT' AND mandant_id = @mandant_id_schwyz;
+UPDATE application_property SET value = 'logo-kibon-schwyz.svg' WHERE name = 'LOGO_FILE_NAME' AND mandant_id = @mandant_id_schwyz;
+UPDATE application_property SET value = 'logo-kibon-white-schwyz.svg' WHERE name = 'LOGO_WHITE_FILE_NAME' AND mandant_id = @mandant_id_schwyz;
 UPDATE application_property SET value = 'true' WHERE name = 'ANGEBOT_TS_ENABLED' AND mandant_id = @mandant_id_schwyz;
 
 UPDATE application_property SET value = 'false' WHERE name = 'LASTENAUSGLEICH_AKTIV' AND mandant_id = @mandant_id_schwyz;
@@ -96,7 +96,7 @@ VALUES (@gesuchsperiode_id, NOW(), NOW(), 'system_sz', 'system_sz', 0, NULL, '20
 # Einstellungen für Gesuchsperiode kopieren
 INSERT INTO einstellung
 SELECT UNHEX(REPLACE(UUID(), '-', '')), NOW(), NOW(), 'system_sz', 'system_sz', 0, einstellung_key, value, NULL,
-	   (SELECT ebegu.gesuchsperiode.id
+	   (SELECT gesuchsperiode.id
 		FROM gesuchsperiode
 			 INNER JOIN mandant m ON gesuchsperiode.mandant_id = m.id
 		WHERE mandant_identifier = 'SCHWYZ'), NULL, erklaerung
