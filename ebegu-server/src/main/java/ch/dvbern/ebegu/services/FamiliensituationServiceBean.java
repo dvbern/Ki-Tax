@@ -16,6 +16,7 @@
 package ch.dvbern.ebegu.services;
 
 import ch.dvbern.ebegu.entities.*;
+import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.enums.EnumFamilienstatus;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.FinanzielleSituationTyp;
@@ -54,6 +55,9 @@ public class FamiliensituationServiceBean extends AbstractBaseService implements
 	private WizardStepService wizardStepService;
 	@Inject
 	private SozialhilfeZeitraumService sozialhilfeZeitraumService;
+
+	@Inject
+	private EinstellungService einstellungService;
 
 	@Override
 	public FamiliensituationContainer saveFamiliensituation(
@@ -122,7 +126,8 @@ public class FamiliensituationServiceBean extends AbstractBaseService implements
 			changeFamSitAR(gesuch, mergedFamiliensituationContainer, oldFamiliensituation);
 		}
 
-		if (isKonkubinatOhneKindWithOneErwerbspensumRequired(newFamiliensituation, gesuch)
+		if (isGesuchBeendenBeiTauschGS2Active(gesuch)
+			&& isKonkubinatOhneKindWithOneErwerbspensumRequired(newFamiliensituation, gesuch)
 			&& gesuch.getGesuchsteller2() != null
 			&& !gesuch.getGesuchsteller2().getErwerbspensenContainers().isEmpty()) {
 			gesuch.getGesuchsteller2().getErwerbspensenContainers().clear();
@@ -139,6 +144,14 @@ public class FamiliensituationServiceBean extends AbstractBaseService implements
 		wizardStepService.updateSteps(gesuch.getId(), oldFamiliensituation, newFamiliensituation, WizardStepName
 			.FAMILIENSITUATION);
 		return mergedFamiliensituationContainer;
+	}
+
+	private Boolean isGesuchBeendenBeiTauschGS2Active(Gesuch gesuch) {
+		Einstellung einstellung = einstellungService.findEinstellung(EinstellungKey.GESUCH_BEENDEN_BEI_TAUSCH_GS2,
+			gesuch.extractGemeinde(),
+			gesuch.getGesuchsperiode());
+
+		return einstellung.getValueAsBoolean();
 	}
 
 	private boolean isKonkubinatOhneKindWithOneErwerbspensumRequired(Familiensituation familiensituation, Gesuch gesuch) {
