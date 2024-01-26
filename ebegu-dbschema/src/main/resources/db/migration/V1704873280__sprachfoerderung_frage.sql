@@ -33,7 +33,7 @@ INSERT INTO einstellung (id, timestamp_erstellt, timestamp_mutiert, user_erstell
 			'SPRACHFOERDERUNG_BESTAETIGEN' AS einstellungkey,
 			'false' AS value,
 			id AS gesuchsperiode_id,
-			'Ab diesem Datum wird das neue Flag gelesen, um die Sprachunterstützung zu bestätigen, bis zu diesem Datum wird es immer auf true gesetzt.' AS erklaerung
+			'Die Sprachunterstützung muss bestätigt werden um einen Anspruch aufgrund sprachlicher Integration zu bekommen.' AS erklaerung
 		FROM gesuchsperiode
 	);
 
