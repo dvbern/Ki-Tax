@@ -3187,5 +3187,6 @@
     "FINANZIELLE_SITUATION_ERSATZEINKOMMEN_BASISJAHR_TOOLTIP": "Angaben, die Sie unter \"Ersatzeinkommen bezogen im Jahr {{basisjahr}}\" machen, werden abgezogen vom angegebenen Betrag unter \"Ersatzeinkommen\".",
     "SPRACHLICHE_INDIKATION_BETREUUNGS_PENSUM_ZU_TIEF": "Sprachliche Indikation: Das erforderliche Betreuungspensum von mind. 40 % wird in einem oder mehreren Monaten nicht erreicht.",
     "GEMEINDE_HAS_ALTERNATIVE_TS_LOGO": "Ein alternatives Logo für Tagesschulen verwenden",
+    "GESUCH_BEENDEN_BEI_TAUSCH_GS2": "Antrag beenden, wenn der Gesuchsteller 2 innerhalb der Periode ändert",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }
