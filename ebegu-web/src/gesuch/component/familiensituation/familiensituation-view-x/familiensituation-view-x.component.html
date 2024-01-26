@@ -27,7 +27,7 @@
 			<p *ngIf="showError()" role="alert" translate
 			   class="dv-error-messages">ERROR_DATUM_GESETZT_BEI_MUTATION</p>
 		</div>
-        <div class="row" *ngIf="isNotPartnerIdentischMitVorgesuch()" [dvDemoFeature]="gesuchBeendenDemoFeature">
+        <div class="row" *ngIf="isNotPartnerIdentischMitVorgesuch()">
             <div class="col-xs-12">
                 <div class="well well-status-warten minus-margin">
                     <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
@@ -35,7 +35,7 @@
                 </div>
             </div>
         </div>
-		<div class="row" *ngIf="antragWirdBeendet()" [dvDemoFeature]="gesuchBeendenDemoFeature">
+		<div class="row" *ngIf="antragWirdBeendet()">
 			<div class="col-xs-12">
 				<div class="well well-status-warten minus-margin">
 					<i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
@@ -270,7 +270,7 @@
 						</div>
 					</div>
 					<!--Partner wie bisher-->
-					<div class="row" *ngIf="showFragePartnerWieBisher()" [dvDemoFeature]="gesuchBeendenDemoFeature">
+					<div class="row" *ngIf="showFragePartnerWieBisher()">
 						<div class="col-xs-12 dv-input-container-question">
 							<div class="form-group">
                                 <span class="ebegu-h1 required">
@@ -278,7 +278,7 @@
                                 </span>
 								<dv-radio-container-x>
 									<mat-radio-group [(ngModel)]="getFamiliensituation().partnerIdentischMitVorgesuch"
-													 [required]="demoFeatureGesuchBeendenFamSitActive"
+													 [required]="gesuchBeendenFamSitActive"
                                                      #partnerIdentischMitVorgesuch="ngModel"
 													 name="partnerIdentischMitVorgesuch"
 													 class="input-element sp"

@@ -40,6 +40,9 @@ import {AbstractGesuchViewController} from '../abstractGesuchView';
 import IScope = angular.IScope;
 import ITimeoutService = angular.ITimeoutService;
 import ITranslateService = angular.translate.ITranslateService;
+import {TSEinstellung} from '../../../models/TSEinstellung';
+import {TSEinstellungKey} from '../../../models/enums/TSEinstellungKey';
+import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
 
 const removeDialogTemplate = require('../../dialog/removeDialogTemplate.html');
 const LOG = LogFactory.createLog('ErwerbspensumListViewComponent');
@@ -66,7 +69,7 @@ export class ErwerbspensumListViewController
         'AuthServiceRS',
         '$timeout',
         '$translate',
-        'ApplicationPropertyRS'
+        'EinstellungRS'
     ];
 
     public erwerbspensenGS1: Array<TSErwerbspensumContainer> = undefined;
@@ -89,7 +92,7 @@ export class ErwerbspensumListViewController
         private readonly authServiceRS: AuthServiceRS,
         $timeout: ITimeoutService,
         private readonly $translate: ITranslateService,
-        private readonly applicationPropertyRS: ApplicationPropertyRS
+        private readonly einstellungRS: EinstellungRS,
     ) {
         super(gesuchModelManager,
             berechnungsManager,
@@ -98,9 +101,14 @@ export class ErwerbspensumListViewController
             TSWizardStepName.ERWERBSPENSUM,
             $timeout);
         this.initViewModel();
-        this.applicationPropertyRS.getActivatedDemoFeatures().then(activated => {
-            this.isGesuchBeendenFamSitActive = activated.includes(TSDemoFeature.GESUCH_BEENDEN_FAMSIT);
-        });
+        this.einstellungRS.getAllEinstellungenBySystemCached(
+            this.gesuchModelManager.getGesuchsperiode().id
+        ).subscribe((response: TSEinstellung[]) => {
+            response.filter(r => r.key === TSEinstellungKey.GESUCH_BEENDEN_BEI_TAUSCH_GS2)
+                .forEach(value => {
+                    this.isGesuchBeendenFamSitActive = value.getValueAsBoolean();
+                });
+        }, error => LOG.error(error));
     }
 
     private initViewModel(): void {
