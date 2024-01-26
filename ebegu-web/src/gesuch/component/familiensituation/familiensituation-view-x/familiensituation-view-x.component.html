@@ -62,6 +62,7 @@
 											   for="aenderungPer_ID">AENDERUNG_PER</label>
 										<dv-date-picker-x [inputId]="'aenderungPer_ID'"
 														  class="input-element"
+                                                          data-test="container.aenderungen-per"
 														  [(date)]="getFamiliensituation().aenderungPer"
 														  (dateChange)="aenderungPerChanged()"
 														  [datePickerEnabled]="false"
@@ -123,6 +124,7 @@
 													  [required]="true"
 													  [maxDate]="getToday()"
 													  (dateChange)="onDatumBlur()"
+                                                      data-test="container.konkubinat-start"
 													  [datePickerEnabled]="false"
 													  [disabled]="isStartKonkubinatDisabled()">
 									</dv-date-picker-x>
@@ -150,11 +152,12 @@
                                                      #geteilteObhut="ngModel"
 													 name="geteilteObhut"
 													 class="input-element sp"
+                                                     data-test="container.geteilte-obhut"
 													 [disabled]="!(isFamiliensituationEnabled() && isOneOfRoles(allowedRoles))"
 													 aria-label="{{ 'FAMILIENSITUATION_FRAGE_GEMEINSAME_OBHUT' |translate}}"
 													 aria-described-by="geteilteObhut-error">
-										<mat-radio-button [value]="true">{{'LABEL_JA' | translate}}</mat-radio-button>
-										<mat-radio-button [value]="false">{{'LABEL_NEIN' | translate}}</mat-radio-button>
+										<mat-radio-button [value]="true" data-test="geteilte-obhut-ja">{{'LABEL_JA' | translate}}</mat-radio-button>
+										<mat-radio-button [value]="false" data-test="geteilte-obhut-nein">{{'LABEL_NEIN' | translate}}</mat-radio-button>
 									</mat-radio-group>
 								</dv-radio-container-x>
 								<dv-error-messages *ngIf="savedClicked || geteilteObhut.touched"
@@ -183,12 +186,13 @@
 													 [required]="true"
                                                      #unterhaltsvereinbarung="ngModel"
                                                      name="unterhaltsvereinbarung"
+                                                     data-test="container.unterhaltsvereinbarung"
                                                      class="input-element sp"
 													 [disabled]="!(isFamiliensituationEnabled() && isOneOfRoles(allowedRoles))"
 													 aria-label="{{ 'FAMILIENSITUATION_FRAGE_UNTERHALTSVEREINBARUNG' |translate}}"
 													 aria-described-by="unterhaltsvereinbarung-error">
 										<mat-radio-button *ngFor="let unerhaltsverinharungValue of getUnterhaltvereinbarungValues()"
-														  [value]="unerhaltsverinharungValue">
+														  [value]="unerhaltsverinharungValue" [attr.data-test]="unerhaltsverinharungValue">
 											{{unerhaltsverinharungValue | translate}}
 										</mat-radio-button>
 									</mat-radio-group>
