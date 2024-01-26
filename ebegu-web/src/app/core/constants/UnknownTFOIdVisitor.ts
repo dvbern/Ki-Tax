@@ -40,4 +40,8 @@ export class UnknownTFOIdVisitor implements MandantVisitor<string> {
         return '00000000-0000-0000-0000-000000000010';
     }
 
+    public visitSchwyz(): string {
+        return '00000000-0000-0000-0000-000000000013';
+    }
+
 }

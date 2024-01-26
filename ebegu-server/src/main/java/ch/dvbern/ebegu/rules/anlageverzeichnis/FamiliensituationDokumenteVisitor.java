@@ -50,4 +50,9 @@ public class FamiliensituationDokumenteVisitor implements MandantVisitor<Abstrac
 	public AbstractDokumente<Familiensituation, Familiensituation> visitAppenzellAusserrhoden() {
 		return new BernFamiliensituationDokumente();
 	}
+
+	@Override
+	public AbstractDokumente<Familiensituation, Familiensituation> visitSchwyz() {
+		return this.visitSolothurn();
+	}
 }

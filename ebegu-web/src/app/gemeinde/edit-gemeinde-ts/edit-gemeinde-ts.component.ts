@@ -19,7 +19,7 @@ import {ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output}
 import {ControlContainer, NgForm} from '@angular/forms';
 import {StateService} from '@uirouter/core';
 import {Moment} from 'moment';
-import {Observable} from 'rxjs';
+import {Observable, of} from 'rxjs';
 import {map} from 'rxjs/operators';
 import {TSBenutzer} from '../../../models/TSBenutzer';
 import {TSExternalClientAssignment} from '../../../models/TSExternalClientAssignment';
@@ -29,6 +29,7 @@ import {EbeguUtil} from '../../../utils/EbeguUtil';
 import {CONSTANTS} from '../../core/constants/CONSTANTS';
 import {LogFactory} from '../../core/logging/LogFactory';
 import {InstitutionRS} from '../../core/service/institutionRS.rest';
+import {GemeindeRS} from '../../../gesuch/service/gemeindeRS.rest';
 
 const LOG = LogFactory.createLog('EditGemeidneComponentTS');
 
@@ -53,14 +54,19 @@ export class EditGemeindeTSComponent implements OnInit {
 
     @Output() public readonly altTSAdresseChange: EventEmitter<boolean> = new EventEmitter();
     @Output() public readonly usernameScolarisChange: EventEmitter<string> = new EventEmitter();
+    @Input() public altLogoImageUrl: string;
+    @Output() public readonly altLogoImageChange: EventEmitter<File> = new EventEmitter();
 
     public readonly CONSTANTS = CONSTANTS;
     private _tagesschulen: TSInstitutionListDTO[];
     public showTSList: boolean = false;
+    public altLogoImageUrl$: Observable<string>;
+    private fileToUpload: File;
 
     public constructor(
         private readonly $state: StateService,
-        private readonly institutionRS: InstitutionRS
+        private readonly institutionRS: InstitutionRS,
+        private readonly gemeindeRS: GemeindeRS,
     ) {
     }
 
@@ -69,6 +75,7 @@ export class EditGemeindeTSComponent implements OnInit {
             return;
         }
         this.updateInstitutionenList();
+        this.altLogoImageUrl$ = of(this.altLogoImageUrl);
     }
 
     public compareBenutzer(b1: TSBenutzer, b2: TSBenutzer): boolean {
@@ -110,5 +117,29 @@ export class EditGemeindeTSComponent implements OnInit {
 
     public isNotNurLats(): Observable<boolean> {
         return this.stammdaten$.pipe(map(stammdaten => stammdaten.gemeinde.nurLats));
+    }
+
+    public srcChange(files: FileList): void {
+        this.fileToUpload = files[0];
+        this.gemeindeRS.isSupportedImage(this.fileToUpload).then(() => {
+            const tmpFileReader = new FileReader();
+            tmpFileReader.readAsDataURL(this.fileToUpload);
+            tmpFileReader.onload = (event: any): void => {
+                const result: string = event.target.result;
+                this.altLogoImageUrl$ = of(result);
+                this.emitLogoChange();
+            };
+        }).catch(() => {
+            this.fileToUpload = null;
+            this.altLogoImageUrl$ = null;
+            this.altLogoImageUrl = null;
+            this.emitLogoChange();
+        });
+    }
+
+    private emitLogoChange(): void {
+        if (this.altLogoImageChange) {
+            this.altLogoImageChange.emit(this.fileToUpload);
+        }
     }
 }

@@ -45,4 +45,7 @@ mariadb "${mariadb_args[@]}" < testdaten/create_testdata_lu.sql
 echo "insert test data for SO"
 mariadb "${mariadb_args[@]}" < testdaten/create_testdata_so.sql
 
+echo "insert test data for SZ"
+mariadb "${mariadb_args[@]}" < testdaten/create_testdata_sz.sql
+
 echo "done"

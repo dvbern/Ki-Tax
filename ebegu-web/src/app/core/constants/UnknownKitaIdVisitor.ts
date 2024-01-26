@@ -40,4 +40,8 @@ export class UnknownKitaIdVisitor implements MandantVisitor<string> {
         return '00000000-0000-0000-0000-000000000009';
     }
 
+    public visitSchwyz(): string {
+        return '00000000-0000-0000-0000-000000000012';
+    }
+
 }
