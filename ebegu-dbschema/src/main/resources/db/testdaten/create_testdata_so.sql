@@ -579,8 +579,8 @@ INSERT IGNORE INTO einstellung (id, timestamp_erstellt, timestamp_mutiert, user_
 INSERT IGNORE INTO einstellung (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version, einstellung_key, value, gemeinde_id, gesuchsperiode_id, mandant_id, erklaerung) VALUES (UNHEX('FF0AECBB2EF6470EB7AE601B213D77C5'), '2023-12-08 11:11:27', '2023-12-08 11:11:27', 'ebegu:Kanton Solothurn', 'ebegu:Kanton Solothurn', 0, 'GEMEINDE_MAHLZEITENVERGUENSTIGUNG_EINKOMMENSSTUFE_2_VERGUENSTIGUNG_MAHLZEIT', '3.00', null, @gesuchperiode_23_24_id, @mandant_id_solothurn, null);
 
 # Test-Institutionen erstellen
-INSERT IGNORE INTO traegerschaft (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version, name, active)
-	VALUES (@traegerschaft_solothurn_id, '2016-01-01 00:00:00', '2016-01-01 00:00:00', 'flyway', 'flyway', 0, 'Kitas & Tagis Stadt Solothurn', true);
+INSERT IGNORE INTO traegerschaft (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version, name, active, mandant_id)
+	VALUES (@traegerschaft_solothurn_id, '2016-01-01 00:00:00', '2016-01-01 00:00:00', 'flyway', 'flyway', 0, 'Kitas & Tagis Stadt Solothurn', true, @mandant_id_solothurn);
 
 # Kita und Tagesfamilien
 INSERT IGNORE INTO institution (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version, vorgaenger_id, name, mandant_id, traegerschaft_id, status, event_published)

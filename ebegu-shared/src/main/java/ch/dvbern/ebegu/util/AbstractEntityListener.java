@@ -31,8 +31,10 @@ import javax.persistence.PreUpdate;
 import ch.dvbern.ebegu.authentication.PrincipalBean;
 import ch.dvbern.ebegu.entities.AbstractEntity;
 import ch.dvbern.ebegu.entities.AbstractPlatz;
+import ch.dvbern.ebegu.entities.ApplicationProperty;
 import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Fall;
+import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.GesuchDeletionLog;
 import ch.dvbern.ebegu.entities.HasMandant;
@@ -70,8 +72,14 @@ public class AbstractEntityListener {
 	@PostLoad
 	protected void postLoad(@Nonnull AbstractEntity entity) {
 		if (entity instanceof HasMandant) {
-			if (getPrincipalBean().getPrincipal().getName().equals(ANONYMOUS_USER_USERNAME)) {
-				return;
+			if (getPrincipalBean().getPrincipal().getName().equals(ANONYMOUS_USER_USERNAME) && !getPrincipalBean().isAnonymousSuperadmin()) {
+				if (entity instanceof ApplicationProperty || entity instanceof Gemeinde || entity instanceof Mandant
+				|| entity instanceof Benutzer) {
+					return;
+				}
+				throw new EJBAccessException("Access Violation "
+					+ ANONYMOUS_USER_USERNAME
+					+ " tried to access a resource that is mandant secured");
 			}
 			checkMandant(entity);
 		}
@@ -255,7 +263,7 @@ public class AbstractEntityListener {
 		if (getPrincipalBean().isAnonymousSuperadmin()) {
 			return;
 		}
-		if (!getPrincipalBean().getMandant().equals(mandant)) {
+		if (mandant != null && !getPrincipalBean().getMandant().equals(mandant)) {
 			throw new EJBAccessException("Access Violation"
 				+ " for mandant: " + mandant.getName()
 				+ " by current user mandant: " + principalBean.getPrincipal()
