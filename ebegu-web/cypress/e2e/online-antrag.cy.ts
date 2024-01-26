@@ -29,7 +29,7 @@ import {SidenavPO} from '../page-objects/antrag/sidenav.po';
 describe('Kibon - generate Testfälle [Online-Antrag]', () => {
     const userSuperadmin = getUser('[1-Superadmin] E-BEGU Superuser');
     const userGemeinde = getUser('[6-L-SB-Gemeinde] Stefan Weibel');
-    const userKita = getUser('[3-SB-Tägerschaft-Kitas-StadtBern] Agnes Krause');
+    const userKita = getUser('[3-SB-Trägerschaft-Kitas-StadtBern] Agnes Krause');
     const userGS = getUser('[5-GS] Emma Gerber');
     const admin = getUser('[1-Superadmin] E-BEGU Superuser');
     const gesuchsPeriode: {ganze: TestPeriode, anfang: string, ende: string} = { ganze: '2023/24', anfang: '2023', ende: '2024' };

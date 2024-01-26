@@ -21,4 +21,8 @@ export class FamiliensituationVisitor implements MandantVisitor<any>  {
     public visitSolothurn(): any {
         return 'gesuch.familiensituation-default';
     }
+
+    public visitSchwyz(): any {
+        return this.visitSolothurn();
+    }
 }

@@ -21,6 +21,7 @@ import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
 import {TranslateService} from '@ngx-translate/core';
 import {StateService, Transition} from '@uirouter/core';
 import {StateDeclaration} from '@uirouter/core/lib/state/interface';
+import {IPromise} from 'angular';
 import {Moment} from 'moment';
 import {from, Observable} from 'rxjs';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
@@ -49,7 +50,7 @@ const LOG = LogFactory.createLog('EditGemeindeComponent');
     selector: 'dv-edit-gemeinde',
     templateUrl: './edit-gemeinde.component.html',
     changeDetection: ChangeDetectionStrategy.OnPush,
-    styleUrls: ['./edit-gemeinde.component.less']
+    styleUrls: ['./edit-gemeinde.component.less'],
 })
 export class EditGemeindeComponent implements OnInit {
     @ViewChildren(NgForm) public forms: QueryList<NgForm>;
@@ -62,6 +63,7 @@ export class EditGemeindeComponent implements OnInit {
     private navigationSource: StateDeclaration;
     public gemeindeId: string;
     private fileToUpload: File;
+    private altFileToUpload: File;
     // this field will be true when the gemeinde_stammdaten don't yet exist i.e. when the gemeinde is being registered
     private isRegisteringGemeinde: boolean = false;
     public editMode: boolean = false;
@@ -92,7 +94,7 @@ export class EditGemeindeComponent implements OnInit {
         private readonly dialog: MatDialog,
         private readonly changeDetectorRef: ChangeDetectorRef,
         private readonly gemeindeWarningService: GemeindeWarningService,
-        private readonly applicationPropertyRS: ApplicationPropertyRS
+        private readonly applicationPropertyRS: ApplicationPropertyRS,
     ) {
     }
 
@@ -221,6 +223,10 @@ export class EditGemeindeComponent implements OnInit {
         return this.gemeindeRS.getLogoUrl(gemeinde.id);
     }
 
+    public getAlternativeLogoImageUrl(gemeinde: TSGemeinde): string {
+        return this.gemeindeRS.getAlternativeLogoUrl(gemeinde.id);
+    }
+
     public getMitarbeiterVisibleRoles(): TSRole[] {
         const allowedRoles = PERMISSIONS[Permission.ROLE_GEMEINDE].concat(TSRole.SUPER_ADMIN);
         return allowedRoles;
@@ -258,12 +264,23 @@ export class EditGemeindeComponent implements OnInit {
         }
 
         try {
-            await this.gemeindeRS.saveGemeindeStammdaten(stammdaten);
+            const savedStammdaten = await this.gemeindeRS.saveGemeindeStammdaten(stammdaten);
+            const hasAlternativeTagesschuleFileToUpload =
+                this.altFileToUpload && stammdaten.gemeindeStammdatenKorrespondenz.hasAlternativeLogoTagesschule;
             if (this.fileToUpload) {
-                this.persistLogo(this.fileToUpload);
+                await this.persistLogo(this.fileToUpload, !hasAlternativeTagesschuleFileToUpload);
+            }
+
+            if (hasAlternativeTagesschuleFileToUpload) {
+                await this.persistAlternativeLogoTagesschule(this.altFileToUpload);
             } else if (this.isRegisteringGemeinde) {
                 this.$state.go('welcome');
                 return;
+            }
+
+            if (savedStammdaten.gemeindeStammdatenKorrespondenz.hasAlternativeLogoTagesschule
+                && !stammdaten.gemeindeStammdatenKorrespondenz.hasAlternativeLogoTagesschule) {
+                await this.gemeindeRS.deleteAlternativeLogoTagesschule(this.gemeindeId);
             }
 
             if (this.authServiceRS.isOneOfRoles(TSRoleUtil.getMandantRoles())) {
@@ -328,14 +345,27 @@ export class EditGemeindeComponent implements OnInit {
         }
     }
 
-    private persistLogo(file: File): void {
-        this.gemeindeRS.uploadLogoImage(this.gemeindeId, file).then(
+    private persistLogo(file: File, navigateBack: boolean): IPromise<void> {
+        return this.gemeindeRS.uploadLogoImage(this.gemeindeId, file).then(
+            () => {
+                if (navigateBack) {
+                    this.navigateBack();
+                }
+            },
+            () => {
+                this.errorService.clearAll();
+                this.errorService.addMesageAsError(this.translate.instant('GEMEINDE_LOGO_ZU_GROSS'));
+            });
+    }
+
+    private persistAlternativeLogoTagesschule(file: File): IPromise<void> {
+        return this.gemeindeRS.uploadAlternativeLogoTagesschule(this.gemeindeId, file).then(
             () => {
                 this.navigateBack();
             },
             () => {
                 this.errorService.clearAll();
-                this.errorService.addMesageAsError(this.translate.instant('GEMEINDE_LOGO_ZU_GROSS'));
+                this.errorService.addMesageAsError(this.translate.instant('TAGESSCHUL_LOGO_ZU_GROSS'));
             });
     }
 
@@ -344,6 +374,13 @@ export class EditGemeindeComponent implements OnInit {
             return;
         }
         this.fileToUpload = file;
+    }
+
+    public altCollectLogoChange(file: File): void {
+        if (!file) {
+            return;
+        }
+        this.altFileToUpload = file;
     }
 
     private validateData(stammdaten: TSGemeindeStammdaten): Promise<number> {
@@ -418,7 +455,7 @@ export class EditGemeindeComponent implements OnInit {
     private async showSaveWarningDialog(): Promise<void> {
         const dialogConfig = new MatDialogConfig();
         dialogConfig.data = {
-            title: this.translate.instant('GEMEINDE_TAB_SAVE_WARNING')
+            title: this.translate.instant('GEMEINDE_TAB_SAVE_WARNING'),
         };
         this.dialog
             .open(DvNgOkDialogComponent, dialogConfig)
@@ -434,7 +471,7 @@ export class EditGemeindeComponent implements OnInit {
     private async showDangerousSaveDialog(): Promise<boolean> {
         const dialogConfig = new MatDialogConfig();
         dialogConfig.data = {
-            frage: this.translate.instant('GEMEINDE_DANGEROUS_SAVING')
+            frage: this.translate.instant('GEMEINDE_DANGEROUS_SAVING'),
         };
         return this.dialog
             .open(DvNgConfirmDialogComponent, dialogConfig)
