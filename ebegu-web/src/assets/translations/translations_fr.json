@@ -3089,5 +3089,6 @@
     "FINANZIELLE_SITUATION_ERSATZEINKOMMEN_BASISJAHR_TOOLTIP": "Le montant que vous indiquez sous \"Revenu de remplacement perçu en année {{basisjahr}}\" est déduit du montant indiqué sous \"Revenu de remplacement\".",
     "SPRACHLICHE_INDIKATION_BETREUUNGS_PENSUM_ZU_TIEF": "Besoin d’ordre linguistique : le taux de prise en charge minimal de 40 % n’est pas atteint pendant un ou plusieurs mois.",
     "GEMEINDE_HAS_ALTERNATIVE_TS_LOGO": "Utiliser un logo alternatif pour les écoles à journée continue",
+    "GESUCH_BEENDEN_BEI_TAUSCH_GS2": "Antrag beenden, wenn der Gesuchsteller 2 innerhalb der Periode ändert",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }
