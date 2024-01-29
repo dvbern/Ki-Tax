@@ -1,7 +1,6 @@
-import {getUser, normalizeUser, User} from '@dv-e2e/types';
+import {getUser, User} from '@dv-e2e/types';
 import {
     AntragBetreuungPO, AntragCreationPO, ConfirmDialogPO,
-    DossierToolbarPO,
     FaelleListePO,
     FallToolbarPO, FreigabePO,
     NavigationPO,
@@ -11,9 +10,10 @@ import {SidenavPO} from '../page-objects/antrag/sidenav.po';
 
 describe('Kibon - Online TS-Anmeldung (Mischgesuch) [Gesuchsteller]', () => {
     const userSuperadmin = getUser('[1-Superadmin] E-BEGU Superuser');
-    const userGS = getUser('[5-GS] Emma Gerber');
+    const userGS: User = '[5-GS] Emma Gerber';
     const userTS = getUser('[3-SB-TS-Paris] Charlotte Gainsbourg');
-    const userSB = getUser('[6-P-Admin-Gemeinde] Gerlinde Hofstetter');
+    const userGemeindeBGTS = getUser('[6-P-Admin-Gemeinde] Gerlinde Hofstetter');
+    const userTraegerschaft = getUser('[3-SB-Trägerschaft-Kitas-StadtBern] Agnes Krause');
     let gesuchUrl: string;
     let fallnummer: string;
 
@@ -26,7 +26,7 @@ describe('Kibon - Online TS-Anmeldung (Mischgesuch) [Gesuchsteller]', () => {
             testFall: 'testfall-2',
             periode: '2023/24',
             gemeinde: 'Paris',
-            besitzerin: '[5-GS] Emma Gerber',
+            besitzerin: userGS,
             betreuungsstatus: 'warten'
         });
 
@@ -43,7 +43,11 @@ describe('Kibon - Online TS-Anmeldung (Mischgesuch) [Gesuchsteller]', () => {
         loginAndGoToGesuch(userGS);
         craeateTsAnmeldungFuerKind1();
 
-        loginAndGoToGesuch(userSuperadmin);
+        cy.changeLogin(userTraegerschaft);
+        cy.visit('/#/faelle');
+        FaelleListePO.getAntrag(fallnummer).click();
+        SidenavPO.goTo('BETREUUNG');
+
         plaetzeFuerBeideKinderBestaetigen();
 
         loginAndGoToGesuch(userGS);
@@ -52,10 +56,10 @@ describe('Kibon - Online TS-Anmeldung (Mischgesuch) [Gesuchsteller]', () => {
         loginAndGoToGesuch(userSuperadmin);
         freigabequittungEinlesen();
 
-        tsAkzeptierenAsUserTs();
+        tsAkzeptierenAsUserTs(0, 0);
         //TODO Überprüfen, ob einen Email versendet wurde => 1. Bestätigung ohne FinSit
 
-        loginAndGoToGesuch(userSB);
+        loginAndGoToGesuch(userGemeindeBGTS);
         finSitAkzeptieren();
         verfuegenStarten();
         //TODO Überprüfen, ob einen Email versendet wurde => 2. Bestätigung mit FinSit
@@ -63,10 +67,11 @@ describe('Kibon - Online TS-Anmeldung (Mischgesuch) [Gesuchsteller]', () => {
         loginAndGoToGesuch(userGS);
         createTsAnmeldungFuerKind2();
 
-        loginAndGoToGesuch(userSuperadmin);
-        tsAkzeptierenFuerKind2();
+        // Gesuch ist verfügt und wir übernehmen nun statt zu akzeptieren
+        tsUebernehmenAsUserTs(1,0);
         //TODO Überprüfen, ob ein weiteres Email versendet wurde (Anmeldung zweites Kind mit Tarif)
 
+        loginAndGoToGesuch(userGemeindeBGTS);
         gesuchVerfuegen();
         checkBetreuungsstatus();
     });
@@ -101,11 +106,25 @@ describe('Kibon - Online TS-Anmeldung (Mischgesuch) [Gesuchsteller]', () => {
         AntragBetreuungPO.getPlatzBestaetigenButton().click();
     };
 
-    const tsAkzeptierenAsUserTs = () => {
+    const tsAkzeptierenAsUserTs = (kindIndex: number, betreuungsIndex: number) => {
+        loginAsTSAndPlatzAkzeptieren(kindIndex, betreuungsIndex);
+        cy.waitForRequest('PUT', '**/betreuungen/schulamt/akzeptieren', () => {
+            ConfirmDialogPO.getConfirmButton().click();
+        });
+    };
+
+    const tsUebernehmenAsUserTs = (kindIndex: number, betreuungsIndex: number) => {
+        loginAsTSAndPlatzAkzeptieren(kindIndex, betreuungsIndex);
+        cy.waitForRequest('PUT', '**/anmeldung/uebernehmen', () => {
+            ConfirmDialogPO.getConfirmButton().click();
+        });
+    };
+
+    const loginAsTSAndPlatzAkzeptieren = (kindIndex: number, betreuungsIndex: number) => {
         cy.login(userTS);
         cy.visit('/#/faelle');
         FaelleListePO.getAntrag(fallnummer).click();
-        AntragBetreuungPO.getBetreuung(0, 0).click();
+        AntragBetreuungPO.getBetreuung(kindIndex, betreuungsIndex).click();
         AntragBetreuungPO.getPlatzAkzeptierenButton().click();
         cy.waitForRequest('PUT', '**/betreuungen/schulamt/akzeptieren', () => {
             ConfirmDialogPO.getDvLoadingConfirmButton().click();

@@ -24,4 +24,6 @@ export interface MandantVisitor<T> {
     visitLuzern(): T;
 
     visitAppenzellAusserrhoden(): T;
+
+    visitSchwyz(): T;
 }

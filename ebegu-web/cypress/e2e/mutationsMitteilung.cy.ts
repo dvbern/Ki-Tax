@@ -12,6 +12,7 @@ import {SidenavPO} from '../page-objects/antrag/sidenav.po';
 describe('Kibon - generate Testfälle [Gemeinde Sachbearbeiter]', () => {
     const userSB = getUser('[3-SB-Institution-Kita-Brünnen] Sophie Bergmann');
     const adminUser = getUser('[1-Superadmin] E-BEGU Superuser');
+    const sachbearbeiterGemeindeUser = getUser('[6-L-SB-Gemeinde] Stefan Weibel');
     const monatlichesPensum = '60';
     const monatlicheKosten = '1000';
     const startdatum = '01.04.2023';
@@ -49,10 +50,18 @@ describe('Kibon - generate Testfälle [Gemeinde Sachbearbeiter]', () => {
         cy.waitForRequest('PUT', '**/mitteilungen/sendbetreuungsmitteilung', () => {
             ConfirmDialogPO.getDvLoadingConfirmButton().click();
         });
+        DossierToolbarPO.getMitteilungen().click();
+        MitteilungenPO.getMitteilung(0).should('exist');
+        MitteilungenPO.getMitteilung(0).click();
+        MitteilungenPO.getInhaltOfMitteilung(0)
+            .should('include.text', "1’000")
+            .and('include.text', monatlichesPensum)
+            .and('include.text', startdatum)
+            .and('include.text', enddatum);
     });
 
     it('should accept the Mutationsmeldung', () => {
-        cy.login(adminUser);
+        cy.login(sachbearbeiterGemeindeUser);
         cy.visit('/#/faelle');
         FaelleListePO.getAntrag(fallnummer).click();
         FallToolbarPO.getFallnummer().should('not.be.empty');
@@ -66,7 +75,7 @@ describe('Kibon - generate Testfälle [Gemeinde Sachbearbeiter]', () => {
     });
 
     it('should check if the Mutationsmeldung was accepted', () => {
-        cy.login(adminUser);
+        cy.login(sachbearbeiterGemeindeUser);
         cy.visit('/#/faelle');
         FaelleListePO.getAntrag(fallnummer).first().click();
         SidenavPO.goTo('BETREUUNG');

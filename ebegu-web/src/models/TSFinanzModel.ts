@@ -223,9 +223,12 @@ export class TSFinanzModel {
     }
 
     public initFinSitVorMutation(gesuchVorMutation: TSGesuch): void {
-        this._finanzielleSituationVorMutationGS1 =
-            gesuchVorMutation.gesuchsteller1.finanzielleSituationContainer.finanzielleSituationJA;
-        if (gesuchVorMutation.gesuchsteller2) {
+        // there are cases where the vorgaenger has a gs but no finSitContainer, e.g. for sozialhilfeempfangende
+        if (gesuchVorMutation.gesuchsteller1?.finanzielleSituationContainer) {
+            this._finanzielleSituationVorMutationGS1 =
+                gesuchVorMutation.gesuchsteller1.finanzielleSituationContainer.finanzielleSituationJA;
+        }
+        if (gesuchVorMutation.gesuchsteller2?.finanzielleSituationContainer) {
             this._finanzielleSituationVorMutationGS2 =
                 gesuchVorMutation.gesuchsteller2.finanzielleSituationContainer.finanzielleSituationJA;
         }

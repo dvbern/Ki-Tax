@@ -17,11 +17,10 @@
 
 package ch.dvbern.ebegu.pdfgenerator;
 
-import java.util.ArrayList;
+import ch.dvbern.ebegu.entities.GemeindeStammdatenKorrespondenz;
 
 import javax.annotation.Nonnull;
-
-import ch.dvbern.ebegu.entities.GemeindeStammdatenKorrespondenz;
+import java.util.ArrayList;
 
 public class NoAdressPdfGenerator extends PdfGenerator{
 
@@ -32,7 +31,11 @@ public class NoAdressPdfGenerator extends PdfGenerator{
 
 	@Nonnull
 	public static NoAdressPdfGenerator create() {
-		PdfLayoutConfiguration layoutConfiguration = new PdfLayoutConfiguration(new GemeindeStammdatenKorrespondenz(), new ArrayList<>(), false);
+		PdfLayoutConfiguration layoutConfiguration = new PdfLayoutConfiguration(
+			new GemeindeStammdatenKorrespondenz(),
+			new ArrayList<>(),
+			false,
+			false);
 		layoutConfiguration.setFooter(null);
 		layoutConfiguration.setHeader(null);
 		// Die Default-Schriften aus der Library ueberschreiben
