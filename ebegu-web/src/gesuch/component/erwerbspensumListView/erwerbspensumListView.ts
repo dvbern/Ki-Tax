@@ -281,7 +281,7 @@ export class ErwerbspensumListViewController
         if (
             unterhaltsvereinbarung !== null
             && unterhaltsvereinbarung === TSUnterhaltsvereinbarungAnswer.NEIN_UNTERHALTSVEREINBARUNG
-            && (this.isKonkubinatWithOneGSPensumRequired(familiensituation) || this.isAlleinerziehend(familiensituation))
+            && (this.isPensumGS2InKonkubinatOmittable(familiensituation) || this.isAlleinerziehend(familiensituation))
         ) {
             return false;
         }
@@ -298,7 +298,7 @@ export class ErwerbspensumListViewController
         return EbeguUtil.isNotNullOrUndefined(this.gesuchModelManager.getGesuch().gesuchsteller2);
     }
 
-    private isKonkubinatWithOneGSPensumRequired(familiensituation: TSFamiliensituation): boolean {
+    private isPensumGS2InKonkubinatOmittable(familiensituation: TSFamiliensituation): boolean {
         if (familiensituation.familienstatus !== TSFamilienstatus.KONKUBINAT_KEIN_KIND) {
             return false;
         }
