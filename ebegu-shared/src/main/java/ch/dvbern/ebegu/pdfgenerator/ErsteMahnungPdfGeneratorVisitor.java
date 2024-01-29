@@ -57,4 +57,9 @@ public class ErsteMahnungPdfGeneratorVisitor implements MandantVisitor<AbstractE
 	public AbstractErsteMahnungPdfGenerator visitAppenzellAusserrhoden() {
 		return new ErsteMahnungPdfGeneratorAppenzell(mahnung, stammdaten);
 	}
+
+	@Override
+	public AbstractErsteMahnungPdfGenerator visitSchwyz() {
+		return this.visitSolothurn();
+	}
 }

@@ -919,6 +919,46 @@ public class DokumentenverzeichnisEvaluatorTest extends EasyMockSupport {
 		Assert.assertTrue(dokumentGruendeErsatzeinkommen.isEmpty());
 	}
 
+	@Test
+	public void nachweisEkInVerinfachtemVerfahren_DokumentRequiredWhenVeranlagt() {
+		setUpEinstellungMock(testgesuch, AnspruchBeschaeftigungAbhaengigkeitTyp.ABHAENGING.name());
+		createFinanzielleSituationGS(1, testgesuch, "Sämi", true);
+		createFamilienSituation(testgesuch, false, false);
+
+		Assert.assertNotNull(testgesuch.getGesuchsteller1());
+		Assert.assertNotNull(testgesuch.getGesuchsteller1().getFinanzielleSituationContainer());
+
+		testgesuch.setFinSitTyp(FinanzielleSituationTyp.BERN_FKJV);
+		testgesuch.getGesuchsteller1().getFinanzielleSituationContainer()
+			.getFinanzielleSituationJA().setEinkommenInVereinfachtemVerfahrenAbgerechnet(true);
+		testgesuch.getGesuchsteller1().getFinanzielleSituationContainer()
+			.getFinanzielleSituationJA().setAmountEinkommenInVereinfachtemVerfahrenAbgerechnet(ZEHN_TAUSEND);
+
+		var dokumentGruende = evaluator.calculate(testgesuch, Constants.DEFAULT_LOCALE);
+		assertType(dokumentGruende, DokumentTyp.NACHWEIS_EINKOMMEN_VERFAHREN, testgesuch.getGesuchsteller1().extractFullName(),
+			"2016", DokumentGrundPersonType.GESUCHSTELLER, 1, DokumentGrundTyp.FINANZIELLESITUATION);
+	}
+
+	@Test
+	public void nachweisEkInVerinfachtemVerfahren_DokumenteRequiredWhenNotVeranlagt() {
+		setUpEinstellungMock(testgesuch, AnspruchBeschaeftigungAbhaengigkeitTyp.ABHAENGING.name());
+		createFinanzielleSituationGS(1, testgesuch, "Sämi", false);
+		createFamilienSituation(testgesuch, false, false);
+
+		Assert.assertNotNull(testgesuch.getGesuchsteller1());
+		Assert.assertNotNull(testgesuch.getGesuchsteller1().getFinanzielleSituationContainer());
+
+		testgesuch.setFinSitTyp(FinanzielleSituationTyp.BERN_FKJV);
+		testgesuch.getGesuchsteller1().getFinanzielleSituationContainer()
+			.getFinanzielleSituationJA().setEinkommenInVereinfachtemVerfahrenAbgerechnet(true);
+		testgesuch.getGesuchsteller1().getFinanzielleSituationContainer()
+			.getFinanzielleSituationJA().setAmountEinkommenInVereinfachtemVerfahrenAbgerechnet(ZEHN_TAUSEND);
+
+		var dokumentGruende = evaluator.calculate(testgesuch, Constants.DEFAULT_LOCALE);
+		assertType(dokumentGruende, DokumentTyp.NACHWEIS_EINKOMMEN_VERFAHREN, testgesuch.getGesuchsteller1().extractFullName(),
+			"2016", DokumentGrundPersonType.GESUCHSTELLER, 1, DokumentGrundTyp.FINANZIELLESITUATION);
+	}
+
 	private void createEinkommensverschlechterungInfo() {
 		final EinkommensverschlechterungInfoContainer einkommensverschlechterungsInfo = TestDataUtil.createDefaultEinkommensverschlechterungsInfoContainer(testgesuch);
 		einkommensverschlechterungsInfo.getEinkommensverschlechterungInfoJA().setEkvFuerBasisJahrPlus1(true);

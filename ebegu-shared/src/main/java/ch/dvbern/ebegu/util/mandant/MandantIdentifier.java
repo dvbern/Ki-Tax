@@ -64,6 +64,17 @@ public enum MandantIdentifier {
 		public String getUrlCode() {
 			return "ar";
 		}
+	},
+	SCHWYZ {
+		@Override
+		public <T> T accept(MandantVisitor<T> visitor) {
+			return visitor.visitSchwyz();
+		}
+
+		@Override
+		public String getUrlCode() {
+			return "schwyz";
+		}
 	};
 
 	public abstract <T> T accept(MandantVisitor<T> visitor);

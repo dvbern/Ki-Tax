@@ -38,4 +38,8 @@ export class KindGeschlechtVisitor implements MandantVisitor<boolean> {
 	public visitSolothurn(): boolean {
 		return true;
 	}
+
+    public visitSchwyz(): boolean {
+        return this.visitSolothurn();
+    }
 }
