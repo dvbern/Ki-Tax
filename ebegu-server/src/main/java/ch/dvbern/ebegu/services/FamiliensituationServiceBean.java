@@ -19,6 +19,7 @@ import ch.dvbern.ebegu.entities.*;
 import ch.dvbern.ebegu.enums.EnumFamilienstatus;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.FinanzielleSituationTyp;
+import ch.dvbern.ebegu.enums.UnterhaltsvereinbarungAnswer;
 import ch.dvbern.ebegu.enums.WizardStepName;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
@@ -121,6 +122,12 @@ public class FamiliensituationServiceBean extends AbstractBaseService implements
 			changeFamSitAR(gesuch, mergedFamiliensituationContainer, oldFamiliensituation);
 		}
 
+		if (isKonkubinatOhneKindWithOneErwerbspensumRequired(newFamiliensituation, gesuch)
+			&& gesuch.getGesuchsteller2() != null
+			&& !gesuch.getGesuchsteller2().getErwerbspensenContainers().isEmpty()) {
+			gesuch.getGesuchsteller2().getErwerbspensenContainers().clear();
+		}
+
 		//bei änderung der Familiensituation müssen die Fragen zum Kinderabzug im FKJV resetet werden
 		if (gesuch.getFinSitTyp() == FinanzielleSituationTyp.BERN_FKJV &&
 			oldFamiliensituation != null &&
@@ -132,6 +139,15 @@ public class FamiliensituationServiceBean extends AbstractBaseService implements
 		wizardStepService.updateSteps(gesuch.getId(), oldFamiliensituation, newFamiliensituation, WizardStepName
 			.FAMILIENSITUATION);
 		return mergedFamiliensituationContainer;
+	}
+
+	private boolean isKonkubinatOhneKindWithOneErwerbspensumRequired(Familiensituation familiensituation, Gesuch gesuch) {
+		if (familiensituation.getFamilienstatus() != EnumFamilienstatus.KONKUBINAT_KEIN_KIND) {
+			return false;
+		}
+		return familiensituation.isKonkubinatReachingMinDauerIn(gesuch.getGesuchsperiode())
+			&& Objects.equals(familiensituation.getGeteilteObhut(), Boolean.FALSE)
+			&& familiensituation.getUnterhaltsvereinbarung() == UnterhaltsvereinbarungAnswer.NEIN_UNTERHALTSVEREINBARUNG;
 	}
 
 
