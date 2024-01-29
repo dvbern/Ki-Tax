@@ -127,7 +127,33 @@ export const LOCALLOGIN_DATA = {
             id: 'b3e44f85-3999-11ed-a63d-b05cda43de9c',
             name: 'Testgemeinde Appenzell Ausserrhoden'
         }
-    }
+    },
+    SZ: {
+        mandant: {
+            id: '08687de9-b3d0-11ee-829a-0242ac160002',
+            name: 'Kanton Schwyz'
+        },
+        traegerschaft: {
+            id: 'ef7ef939-b3e7-11ee-829a-0242ac160002',
+            name: 'Kitas & Tagis Kanton Schwyz'
+        },
+        institution: {
+            id: '1188c355-b3d6-11ee-829a-0242ac160002',
+            name: 'Kita Brünnen SZ'
+        },
+        default_gemeinde: {
+            id: 'de7c81c0-b3d5-11ee-829a-0242ac160002',
+            name: 'Testgemeinde Schwyz'
+        },
+        sozialdienst: {
+            id: '070e2aa4-b3e9-11ee-829a-0242ac160002',
+            name: 'Sozialdienst Schwyz'
+        },
+        tagesschule: {
+            id: 'e67aa195-b912-11ee-8d78-0242ac160002',
+            name: 'Tagesschule Schwyz'
+        }
+    },
 };
 
 export interface LocalLoginDaten {
@@ -143,7 +169,7 @@ export interface LocalLoginDaten {
         id: string;
         name: string;
     };
-    tagesschule: {
+    tagesschule?: {
         id: string;
         name: string;
     };

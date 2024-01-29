@@ -40,4 +40,8 @@ export class MandantLogoNameVisitor implements MandantVisitor<string> {
         return 'logo-kibon-solothurn.svg';
     }
 
+    public visitSchwyz(): string {
+        return 'logo-kibon-schwyz.svg';
+    }
+
 }

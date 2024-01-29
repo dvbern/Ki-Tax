@@ -15,14 +15,6 @@
 
 package ch.dvbern.ebegu.rest.test.util;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Set;
-
-import javax.annotation.Nonnull;
-
 import ch.dvbern.ebegu.api.dtos.JaxBetreuung;
 import ch.dvbern.ebegu.api.dtos.JaxInstitution;
 import ch.dvbern.ebegu.api.dtos.JaxKindContainer;
@@ -32,6 +24,12 @@ import ch.dvbern.ebegu.enums.Betreuungsstatus;
 import ch.dvbern.ebegu.test.TestDataUtil;
 import org.junit.Assert;
 import org.junit.Test;
+
+import javax.annotation.Nonnull;
+import javax.servlet.http.HttpServletRequest;
+import java.util.*;
+
+import static org.easymock.EasyMock.*;
 
 /**
  * Test fuer RestUtil
@@ -124,6 +122,38 @@ public class RestUtilTest {
 
 		Assert.assertNotNull(kind.getBetreuungen());
 		Assert.assertEquals(2, kind.getBetreuungen().size());
+	}
+
+	@Test
+	public void isFileDownloadRequestBlobDownload() {
+		HttpServletRequest request = mockRequest("/blobs/temp/blobdata/");
+		Assert.assertTrue(RestUtil.isFileDownloadRequest(request));
+	}
+
+	@Test
+	public void isFileDownloadRequestLogoDownload() {
+		HttpServletRequest request = mockRequest("/gemeinde/logo/data/");
+		Assert.assertTrue(RestUtil.isFileDownloadRequest(request));
+	}
+
+	@Test
+	public void isFileDownloadRequestAlternativLogoDownload() {
+		HttpServletRequest request = mockRequest("/gemeinde/alternativeLogo/data/");
+		Assert.assertTrue(RestUtil.isFileDownloadRequest(request));
+	}
+
+	@Test
+	public void isFileDownloadRequestWrongFilename() {
+		HttpServletRequest request = mockRequest("/test/");
+		Assert.assertFalse(RestUtil.isFileDownloadRequest(request));
+	}
+
+	private HttpServletRequest mockRequest(String requestUri) {
+		HttpServletRequest request = mock(HttpServletRequest.class);
+		expect(request.getContextPath()).andReturn("");
+		expect(request.getRequestURI()).andReturn("/api/v1" + requestUri);
+		replay(request);
+		return request;
 	}
 
 	// HELP METHODS

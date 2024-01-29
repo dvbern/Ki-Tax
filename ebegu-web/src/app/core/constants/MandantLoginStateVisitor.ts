@@ -40,4 +40,8 @@ export class MandantLoginStateVisitor implements MandantVisitor<string> {
         return 'authentication.login';
     }
 
+    public visitSchwyz(): string {
+        return this.visitSolothurn();
+    }
+
 }

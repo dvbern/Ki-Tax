@@ -17,17 +17,6 @@
 
 package ch.dvbern.ebegu.pdfgenerator;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Locale;
-import java.util.Objects;
-
-import javax.annotation.Nonnull;
-
 import ch.dvbern.ebegu.entities.GemeindeStammdatenKorrespondenz;
 import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.enums.Sprache;
@@ -45,6 +34,12 @@ import com.lowagie.text.pdf.PdfContentByte;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.annotation.Nonnull;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.*;
 
 import static ch.dvbern.lib.invoicegenerator.pdf.PdfUtilities.DEFAULT_MULTIPLIED_LEADING;
 import static com.lowagie.text.Utilities.millimetersToPoints;
@@ -114,7 +109,7 @@ public abstract class MandantPdfGenerator {
 	}
 
 	private void initGenerator(@Nonnull final byte[] mandantLogo, Mandant mandant) {
-		this.pdfGenerator = PdfGenerator.create(getDefaultKorrespondenzConfig(mandantLogo), getAbsenderAdresse(mandant), true);
+		this.pdfGenerator = PdfGenerator.create(getDefaultKorrespondenzConfig(mandantLogo), getAbsenderAdresse(mandant), true, false);
 	}
 
 	private static GemeindeStammdatenKorrespondenz getDefaultKorrespondenzConfig(final byte[] logo) {

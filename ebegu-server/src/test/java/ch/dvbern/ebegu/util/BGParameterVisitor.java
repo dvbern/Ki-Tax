@@ -29,4 +29,9 @@ public class BGParameterVisitor implements MandantVisitor<BGRechnerParameterDTO>
 	public BGRechnerParameterDTO visitAppenzellAusserrhoden() {
 		return TestUtils.getRechnerParamterAppenzell();
 	}
+
+	@Override
+	public BGRechnerParameterDTO visitSchwyz() {
+		return this.visitSolothurn();
+	}
 }

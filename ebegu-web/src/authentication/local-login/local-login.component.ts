@@ -111,7 +111,7 @@ export class LocalLoginComponent {
     public devMode: boolean;
     private mandant: TSMandant;
     private mandantHostname: string;
-    private defaultGemeinde: TSGemeinde;
+    public defaultGemeinde: TSGemeinde;
     private secondGemeinde: TSGemeinde;
     private institution: TSInstitution;
     private tagesschule: TSInstitution;
@@ -194,7 +194,10 @@ export class LocalLoginComponent {
     /**
      * Die Tagesschule Institution wird direkt gegeben. Diese Daten und die Daten der DB muessen uebereinstimmen
      */
-    private static getTagesschule(institutionDatum: { name: string; id: string }, mandant: TSMandant): TSInstitution {
+    private static getTagesschule(institutionDatum: { name: string; id: string } | undefined, mandant: TSMandant): TSInstitution {
+        if (institutionDatum === undefined) {
+            return null;
+        }
         const tagesschule = new TSInstitution();
         tagesschule.name = institutionDatum.name;
         tagesschule.id = institutionDatum.id;

@@ -24,6 +24,7 @@ import ch.dvbern.ebegu.testfaelle.institutionStammdatenBuilder.InstitutionStammd
 import ch.dvbern.ebegu.testfaelle.institutionStammdatenBuilder.InstitutionStammdatenBuilderBe;
 import ch.dvbern.ebegu.testfaelle.institutionStammdatenBuilder.InstitutionStammdatenBuilderLu;
 import ch.dvbern.ebegu.testfaelle.institutionStammdatenBuilder.InstitutionStammdatenBuilderSo;
+import ch.dvbern.ebegu.testfaelle.institutionStammdatenBuilder.InstitutionStammdatenBuilderSz;
 import ch.dvbern.ebegu.util.mandant.MandantVisitor;
 import org.jetbrains.annotations.NotNull;
 
@@ -57,5 +58,11 @@ public final class InstitutionStammdatenBuilderVisitor implements MandantVisitor
 	@Override
 	public InstitutionStammdatenBuilder visitAppenzellAusserrhoden() {
 		return new InstitutionStammdatenBuilderAr(institutionStammdatenService);
+	}
+
+	// TODO
+	@Override
+	public InstitutionStammdatenBuilder visitSchwyz() {
+		return new InstitutionStammdatenBuilderSz(institutionStammdatenService);
 	}
 }

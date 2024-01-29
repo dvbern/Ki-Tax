@@ -58,7 +58,8 @@
             </mat-tab>
             <mat-tab label="{{'GEMEINDE_TAB_TS' | translate}}" ngForm="gemeinde_ts"
                      *ngIf="tageschuleEnabledForMandant && stammdaten.gemeinde.angebotTS">
-                <dv-edit-gemeinde-ts [stammdaten$]="stammdaten$"
+                <dv-edit-gemeinde-ts (altLogoImageChange)="altCollectLogoChange($event)"
+                                     [stammdaten$]="stammdaten$"
                                      [gemeindeId]="gemeindeId"
                                      [editMode]="editModeForTSFI()"
                                      [(altTSAdresse)]="altTSAdresse"
@@ -66,7 +67,8 @@
                                      [tsAnmeldungenStartDatum]="tsAnmeldungenStartDatum"
                                      [externalClients]="externalClients"
                                      [isSuperAdmin]="isSuperAdmin()"
-                                     [(usernameScolaris)]="usernameScolaris">
+                                     [(usernameScolaris)]="usernameScolaris"
+                                     [altLogoImageUrl]="getAlternativeLogoImageUrl(stammdaten.gemeinde)">
                 </dv-edit-gemeinde-ts>
             </mat-tab>
             <mat-tab label="{{'GEMEINDE_TAB_FI' | translate}}" ngForm="gemeinde_fi"
