@@ -72,15 +72,11 @@ public class AbstractEntityListener {
 	@PostLoad
 	protected void postLoad(@Nonnull AbstractEntity entity) {
 		if (entity instanceof HasMandant) {
-			if (isAccessAllowedIfAnonymous(entity, getPrincipalBean())) {
+			if (checkAccessAllowedIfAnonymous(entity, getPrincipalBean())) {
 				return;
 			}
-			throw new EJBAccessException("Access Violation for user "
-				+ ANONYMOUS_USER_USERNAME
-				+ " and entity " + entity.getClass().getName()
-				+ " tried to access a resource that is mandant secured");
+			checkMandant(entity);
 		}
-		checkMandant(entity);
 	}
 
 	@SuppressFBWarnings(value = "LI_LAZY_INIT_STATIC",
@@ -272,12 +268,21 @@ public class AbstractEntityListener {
 		}
 	}
 
-	protected static boolean isAccessAllowedIfAnonymous(@Nonnull AbstractEntity entity, @Nonnull PrincipalBean principalBean) {
-		return principalBean.getPrincipal().getName().equals(ANONYMOUS_USER_USERNAME)
-			&& !principalBean.isAnonymousSuperadmin()
-			&& (entity instanceof ApplicationProperty //required properties geladen bevor login
-			|| entity instanceof Gemeinde //anonym geladen bevor login (onboarding)
-			|| entity instanceof Mandant //anonym geladen bevor login (mandant wahl)
-			|| entity instanceof Benutzer); // wegen locallogin
+	protected static boolean checkAccessAllowedIfAnonymous(@Nonnull AbstractEntity entity,
+		@Nonnull PrincipalBean principalBean) {
+		if (principalBean.getPrincipal().getName().equals(ANONYMOUS_USER_USERNAME)
+			&& !principalBean.isAnonymousSuperadmin()) {
+			if (entity instanceof ApplicationProperty //required properties geladen bevor login
+				|| entity instanceof Gemeinde //anonym geladen bevor login (onboarding)
+				|| entity instanceof Mandant //anonym geladen bevor login (mandant wahl)
+				|| entity instanceof Benutzer){// wegen locallogin
+				return true;
+			}
+			throw new EJBAccessException("Access Violation for user "
+				+ ANONYMOUS_USER_USERNAME
+				+ " and entity " + entity.getClass().getName()
+				+ " tried to access a resource that is mandant secured");
+		}
+		return false;
 	}
 }

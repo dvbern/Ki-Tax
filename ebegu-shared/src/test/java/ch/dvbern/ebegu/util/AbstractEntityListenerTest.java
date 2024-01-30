@@ -20,10 +20,13 @@ package ch.dvbern.ebegu.util;
 import java.security.Principal;
 import java.util.stream.Stream;
 
+import javax.ejb.EJBAccessException;
+
 import ch.dvbern.ebegu.authentication.PrincipalBean;
 import ch.dvbern.ebegu.entities.AbstractEntity;
 import ch.dvbern.ebegu.entities.ApplicationProperty;
 import ch.dvbern.ebegu.entities.Benutzer;
+import ch.dvbern.ebegu.entities.Einstellung;
 import ch.dvbern.ebegu.entities.Fall;
 import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gesuch;
@@ -33,7 +36,6 @@ import org.easymock.EasyMock;
 import org.easymock.EasyMockExtension;
 import org.easymock.EasyMockSupport;
 import org.easymock.Mock;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -41,6 +43,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 import static ch.dvbern.ebegu.util.Constants.ANONYMOUS_USER_USERNAME;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @ExtendWith(EasyMockExtension.class)
 public class AbstractEntityListenerTest extends EasyMockSupport {
@@ -54,33 +57,52 @@ public class AbstractEntityListenerTest extends EasyMockSupport {
 	private Principal principalMock;
 
 	@ParameterizedTest
-	@MethodSource("classAndResultProvider")
-	public void isAccessAllowedIfAnonymousTest(AbstractEntity entity, boolean expectedResult) {
+	@MethodSource("anonymousAllowedClassProvider")
+	public void isAccessAllowedIfAnonymousTest(AbstractEntity entity) {
 		EasyMock.expect(principalBeanMock.getPrincipal()).andReturn(principalMock);
 		EasyMock.expect(principalMock.getName()).andReturn(ANONYMOUS_USER_USERNAME);
 		EasyMock.expect(principalBeanMock.isAnonymousSuperadmin()).andReturn(false);
 		EasyMock.replay(principalMock, principalBeanMock);
-		assertEquals(AbstractEntityListener.isAccessAllowedIfAnonymous(entity, principalBeanMock), expectedResult);
+		assertEquals(AbstractEntityListener.checkAccessAllowedIfAnonymous(entity, principalBeanMock), true);
 	}
 
-	@Test
+	@ParameterizedTest
+	@MethodSource("anonymousAllowedClassProvider")
 	public void isAccessAllowedIfAnonymousSuperadminTest() {
 		EasyMock.expect(principalBeanMock.getPrincipal()).andReturn(principalMock);
 		EasyMock.expect(principalMock.getName()).andReturn(ANONYMOUS_USER_USERNAME);
 		EasyMock.expect(principalBeanMock.isAnonymousSuperadmin()).andReturn(true);
 		EasyMock.replay(principalMock, principalBeanMock);
-		assertEquals(AbstractEntityListener.isAccessAllowedIfAnonymous(new ApplicationProperty(), principalBeanMock), false);
+		assertEquals(AbstractEntityListener.checkAccessAllowedIfAnonymous(new ApplicationProperty(), principalBeanMock), false);
 	}
 
-	private static Stream<Arguments> classAndResultProvider() {
+	@ParameterizedTest
+	@MethodSource("anonymousNotAllowedClassProvider")
+	public void isAccessNotAllowedIfAnonymousTest(AbstractEntity entity) {
+		EasyMock.expect(principalBeanMock.getPrincipal()).andReturn(principalMock);
+		EasyMock.expect(principalMock.getName()).andReturn(ANONYMOUS_USER_USERNAME);
+		EasyMock.expect(principalBeanMock.isAnonymousSuperadmin()).andReturn(false);
+		EasyMock.replay(principalMock, principalBeanMock);
+		assertThrows(
+			EJBAccessException.class,
+			() -> AbstractEntityListener.checkAccessAllowedIfAnonymous(entity, principalBeanMock));
+	}
+
+	private static Stream<Arguments> anonymousAllowedClassProvider() {
 		return Stream.of(
-			Arguments.of(new ApplicationProperty(), true),
-			Arguments.of(new Gemeinde(), true),
-			Arguments.of(new Mandant(), true),
-			Arguments.of(new Benutzer(), true),
-			Arguments.of(new Gesuch(), false),
-			Arguments.of(new Fall(), false),
-			Arguments.of(new Gesuchsperiode(), false)
+			Arguments.of(new ApplicationProperty()),
+			Arguments.of(new Gemeinde()),
+			Arguments.of(new Mandant()),
+			Arguments.of(new Benutzer())
+		);
+	}
+
+	private static Stream<Arguments> anonymousNotAllowedClassProvider() {
+		return Stream.of(
+			Arguments.of(new Gesuch()),
+			Arguments.of(new Fall()),
+			Arguments.of(new Gesuchsperiode()),
+			Arguments.of(new Einstellung())
 		);
 	}
 }
