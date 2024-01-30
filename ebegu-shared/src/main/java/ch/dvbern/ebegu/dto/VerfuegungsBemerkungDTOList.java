@@ -225,6 +225,7 @@ public class VerfuegungsBemerkungDTOList {
 			}
 			if (messagesMap.containsKey(MsgKey.FAMILIENSITUATION_X_JAHRE_KONKUBINAT_MSG)) {
 				removeBemerkungForPeriodes(MsgKey.FAMILIENSITUATION_KONKUBINAT_MSG, getGueltigkeitenByMessageKey(MsgKey.FAMILIENSITUATION_X_JAHRE_KONKUBINAT_MSG));
+				removeBemerkungForPeriodes(MsgKey.ERWERBSPENSUM_KEIN_ANSPRUCH, getGueltigkeitenByMessageKey(MsgKey.FAMILIENSITUATION_X_JAHRE_KONKUBINAT_MSG));
 			}
 			if (messagesMap.containsKey(MsgKey.EINKOMMEN_FINSIT_ABGELEHNT_MUTATION_MSG)) {
 				removeBemerkungForPeriodes(MsgKey.EINKOMMEN_SOZIALHILFEEMPFAENGER_MSG, getGueltigkeitenByMessageKey(MsgKey.EINKOMMEN_FINSIT_ABGELEHNT_MUTATION_MSG));
