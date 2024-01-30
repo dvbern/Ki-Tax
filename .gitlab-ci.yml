@@ -262,6 +262,7 @@ build-and-analyze:
         paths:
             - 'ebegu-web/target/*'
             - 'ebegu-rest/target/*'
+            - 'ebegu-*/target/pmd.xml'
             - .flattened-pom.xml
         expire_in: 7 days
 
