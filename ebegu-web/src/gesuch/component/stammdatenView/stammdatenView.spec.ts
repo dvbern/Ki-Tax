@@ -96,6 +96,7 @@ describe('stammdatenView', () => {
             dokumentRS,
             mandantService,
             demoFeatureRS);
+        stammdatenViewController['demoFeature2754'] = true;
     })));
 
     describe('disableWohnadresseFor2GS', () => {
@@ -126,6 +127,35 @@ describe('stammdatenView', () => {
             spyOn(gesuchModelManager, 'getGesuchstellerNumber').and.returnValue(1);
             gesuchModelManager.getGesuch().typ = TSAntragTyp.MUTATION;
             expect(stammdatenViewController.disableWohnadresseFor2GS()).toBe(true);
+        });
+    });
+
+    describe('getFamilienSituationDisplayValue', () => {
+        it('should return gesuchstellerNumber.toString() if conditions are not met', () => {
+            stammdatenViewController.gesuchModelManager.isFKJVTexte = false;
+            stammdatenViewController.gesuchstellerNumber = 2;
+            const result = stammdatenViewController.getFamilienSituationDisplayValue();
+            expect(result).toEqual('2');
+        });
+        it('should return gesuchstellerNumber.toString() if conditions are not met', () => {
+            stammdatenViewController.gesuchModelManager.isFKJVTexte = true;
+            stammdatenViewController['demoFeature2754'] = false;
+            stammdatenViewController.gesuchstellerNumber = 2;
+            const result = stammdatenViewController.getFamilienSituationDisplayValue();
+            expect(result).toEqual('2');
+        });
+        it('should return 1 if conditions are met', () => {
+            stammdatenViewController.gesuchModelManager.isFKJVTexte = true;
+            stammdatenViewController.gesuchstellerNumber = 1;
+            const result = stammdatenViewController.getFamilienSituationDisplayValue();
+            expect(result).toEqual('1');
+        });
+        it('should return empty string if famsit null', () => {
+            stammdatenViewController.gesuchModelManager.isFKJVTexte = true;
+            stammdatenViewController.gesuchstellerNumber = 2;
+            gesuchModelManager.getGesuch().familiensituationContainer === undefined;
+            const result = stammdatenViewController.getFamilienSituationDisplayValue();
+            expect(result).toEqual('');
         });
     });
 
