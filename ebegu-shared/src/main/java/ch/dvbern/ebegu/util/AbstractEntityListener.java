@@ -72,20 +72,20 @@ public class AbstractEntityListener {
 	@PostLoad
 	protected void postLoad(@Nonnull AbstractEntity entity) {
 		if (entity instanceof HasMandant) {
-			if (getPrincipalBean().getPrincipal().getName().equals(ANONYMOUS_USER_USERNAME) && !getPrincipalBean().isAnonymousSuperadmin()) {
-				if (entity instanceof ApplicationProperty || entity instanceof Gemeinde || entity instanceof Mandant
-				|| entity instanceof Benutzer) {
-					return;
-				}
-				throw new EJBAccessException("Access Violation "
-					+ ANONYMOUS_USER_USERNAME
-					+ " tried to access a resource that is mandant secured");
+			if (isAccessAllowedIfAnonymous(entity, getPrincipalBean())) {
+				return;
 			}
-			checkMandant(entity);
+			throw new EJBAccessException("Access Violation for user "
+				+ ANONYMOUS_USER_USERNAME
+				+ " and entity " + entity.getClass().getName()
+				+ " tried to access a resource that is mandant secured");
 		}
+		checkMandant(entity);
 	}
 
-	@SuppressFBWarnings(value = "LI_LAZY_INIT_STATIC", justification = "Auch wenn das vlt. mehrfach initialisiert wird... das macht nix, solange am Ende was Richtiges drinsteht")
+	@SuppressFBWarnings(value = "LI_LAZY_INIT_STATIC",
+		justification = "Auch wenn das vlt. mehrfach initialisiert wird... das macht nix, solange am Ende was Richtiges "
+			+ "drinsteht")
 	private static PrincipalBean getPrincipalBean() {
 		if (principalBean == null) {
 			//FIXME: das ist nur ein Ugly Workaround, weil CDI-Injection (mal wieder) buggy ist.
@@ -258,16 +258,26 @@ public class AbstractEntityListener {
 	}
 
 	private void checkMandant(@Nonnull AbstractEntity abstractEntity) {
-		HasMandant hasMandantEntity = (HasMandant) abstractEntity;
-		Mandant mandant = hasMandantEntity.getMandant();
 		if (getPrincipalBean().isAnonymousSuperadmin()) {
 			return;
 		}
+		HasMandant hasMandantEntity = (HasMandant) abstractEntity;
+		Mandant mandant = hasMandantEntity.getMandant();
 		if (mandant != null && !getPrincipalBean().getMandant().equals(mandant)) {
 			throw new EJBAccessException("Access Violation"
 				+ " for mandant: " + mandant.getName()
 				+ " by current user mandant: " + principalBean.getPrincipal()
+				+ " for entity " + abstractEntity.getClass().getName()
 				+ " with mandant:  " + principalBean.getMandant().getName());
 		}
+	}
+
+	protected static boolean isAccessAllowedIfAnonymous(@Nonnull AbstractEntity entity, @Nonnull PrincipalBean principalBean) {
+		return principalBean.getPrincipal().getName().equals(ANONYMOUS_USER_USERNAME)
+			&& !principalBean.isAnonymousSuperadmin()
+			&& (entity instanceof ApplicationProperty //required properties geladen bevor login
+			|| entity instanceof Gemeinde //anonym geladen bevor login (onboarding)
+			|| entity instanceof Mandant //anonym geladen bevor login (mandant wahl)
+			|| entity instanceof Benutzer); // wegen locallogin
 	}
 }
