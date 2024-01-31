@@ -216,7 +216,6 @@ export class StammdatenViewController extends AbstractGesuchViewController<TSGes
     }
 
     public getFamilienSituationDisplayValue(): string {
-        console.log(this.demoFeature2754);
         if (!this.gesuchModelManager.isFKJVTexte || !this.demoFeature2754) {
             return this.gesuchstellerNumber.toString();
         }
