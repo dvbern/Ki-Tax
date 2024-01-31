@@ -74,7 +74,7 @@ describe('Kibon - Gesuch zu Steuerverwaltung senden', () => {
         KommentarPO.getSTVBemerkung().type("Der Nettolohn beträgt 50'000 CHF im Jahr 2021");
         cy.waitForRequest('POST', '**/search/search', () => {
             KommentarPO.getSTVPruefungZurueckAnGemeindeButton().click();
-            ConfirmDialogPO.getConfirmButton().click();
+            ConfirmDialogPO.getDvLoadingConfirmButton().click();
         });
         FaelleListePO.getAntrag(fallnummer).should('not.exist');
 

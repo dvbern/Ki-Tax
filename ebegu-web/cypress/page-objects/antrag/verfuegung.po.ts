@@ -15,6 +15,8 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+// !! -- PAGE OBJECTS -- !!
+import {ConfirmDialogPO} from '../dialogs';
 
 const getBetreuungspensumProzent = (zeitabschnittIndex: number) => {
 	return cy.getByData('container.zeitabschnitt#' + zeitabschnittIndex, 'betreuungspensumProzent');
@@ -54,7 +56,20 @@ const getVerfuegenVerzichtenButton = () => {
 	return cy.getByData('container.verfuegen-verzichten', 'navigation-button');
 };
 
+const getNichtEintretenButton = () => {
+	return cy.getByData('container.nicht-eintreten', 'navigation-button');
+};
+
+// !! -- PAGE ACTIONS -- !!
+const nichtEintretenVerfuegen = () => {
+    cy.waitForRequest('GET', '**/verfuegung/nichtEintreten/**', () => {
+        VerfuegungPO.getNichtEintretenButton().click();
+        ConfirmDialogPO.getDvLoadingConfirmButton().click();
+    });
+};
+
 export const VerfuegungPO = {
+    // PAGE OBJECTS
     getBetreuungspensumProzent,
     getVerfuegterTarif,
     getProvisorischerTarifTitel,
@@ -63,5 +78,8 @@ export const VerfuegungPO = {
     getVerfuegungsBemerkungenKontrolliert,
     getVerfuegenButton,
     getVerfuegenVerzichtenButton,
+    getNichtEintretenButton,
     getAnspruchberechtigtesBetreuungspensum,
+    // PAGE ACTIONS
+    nichtEintretenVerfuegen
 };

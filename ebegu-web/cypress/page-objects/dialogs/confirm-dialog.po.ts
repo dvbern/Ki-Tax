@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-const getConfirmButton = () => {
+const getDvLoadingConfirmButton = () => {
     return cy.getByData('container.confirm', 'navigation-button');
 };
 
@@ -24,6 +24,6 @@ const getSimpleConfirmButton = () => {
 };
 
 export const ConfirmDialogPO = {
-  getConfirmButton,
+    getDvLoadingConfirmButton,
     getSimpleConfirmButton
 };

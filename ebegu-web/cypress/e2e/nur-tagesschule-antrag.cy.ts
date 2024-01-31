@@ -53,13 +53,13 @@ describe('Kibon - Tagesschule Only [Superadmin]', () => {
         // delete other betreuung nur ts
         cy.waitForRequest('GET', '**/wizard-steps/**', () => {
             AntragBetreuungPO.getBetreuungLoeschenButton(0, 1).click();
-            ConfirmDialogPO.getConfirmButton().click();
+            ConfirmDialogPO.getDvLoadingConfirmButton().click();
         });
         AntragBetreuungPO.getBetreuung(0, 1).should('not.exist');
 
         cy.waitForRequest('GET', '**/wizard-steps/**', () => {
             AntragBetreuungPO.getBetreuungLoeschenButton(0, 0).click();
-            ConfirmDialogPO.getConfirmButton().click();
+            ConfirmDialogPO.getDvLoadingConfirmButton().click();
         });
         AntragBetreuungPO.getBetreuung(0, 0).should('not.exist');
 
@@ -73,14 +73,14 @@ describe('Kibon - Tagesschule Only [Superadmin]', () => {
         // anmeldung akkzeptieren
         AntragBetreuungPO.getBetreuung(0, 0).click();
         AntragBetreuungPO.getPlatzAkzeptierenButton().click();
-        ConfirmDialogPO.getConfirmButton().click();
+        ConfirmDialogPO.getDvLoadingConfirmButton().click();
 
         // Antrag abschliessen
         SidenavPO.goTo('VERFUEGEN');
         VerfuegenPO.getFinSitAkzeptiert('AKZEPTIERT').click();
         cy.waitForRequest('GET', '**/gesuche/dossier/**', () => {
             VerfuegenPO.getAbschliessenButton().click();
-            ConfirmDialogPO.getConfirmButton().click();
+            ConfirmDialogPO.getDvLoadingConfirmButton().click();
         });
 
         // Control status and tarif are definitiv

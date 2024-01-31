@@ -70,7 +70,7 @@ describe('Kibon - mutationen [Gesuchsteller]', () => {
 
         SidenavPO.goTo('FREIGABE');
         FreigabePO.getFreigebenButton().click();
-        ConfirmDialogPO.getConfirmButton().click();
+        ConfirmDialogPO.getDvLoadingConfirmButton().click();
         cy.changeLogin(userSB);
         cy.visit(gesuchUrl);
 
@@ -85,11 +85,11 @@ describe('Kibon - mutationen [Gesuchsteller]', () => {
 
         VerfuegenPO.getGeprueftButton().click();
         cy.intercept('GET', '**/verfuegung/calculate/**').as('checkGeprueft');
-        ConfirmDialogPO.getConfirmButton().click();
+        ConfirmDialogPO.getDvLoadingConfirmButton().click();
         cy.wait('@checkGeprueft');
 
         VerfuegenPO.getVerfuegenStartenButton().click();
-        ConfirmDialogPO.getConfirmButton().click();
+        ConfirmDialogPO.getDvLoadingConfirmButton().click();
         cy.intercept('GET', '**/verfuegung/calculate/**').as('checkVerfuegen');
         cy.wait('@checkVerfuegen');
 
@@ -100,13 +100,13 @@ describe('Kibon - mutationen [Gesuchsteller]', () => {
         VerfuegungPO.getVerfuegungsBemerkungenKontrolliert().click();
         VerfuegungPO.getVerfuegenButton().click();
         cy.intercept('PUT', '**/verfuegung/verfuegen/**').as('verfuegungVerfuegen');
-        ConfirmDialogPO.getConfirmButton().click();
+        ConfirmDialogPO.getDvLoadingConfirmButton().click();
         cy.wait('@verfuegungVerfuegen');
         NavigationPO.getAbbrechenButton().click();
         VerfuegenPO.getVerfuegung(1,0).click();
         VerfuegungPO.getVerfuegenVerzichtenButton().click();
         cy.intercept('POST', '**/verfuegung/schliessenOhneVerfuegen/**').as('ohneVerfuegung');
-        ConfirmDialogPO.getConfirmButton().click();
+        ConfirmDialogPO.getDvLoadingConfirmButton().click();
         cy.wait('@ohneVerfuegung');
 
         VerfuegenPO.getBetreuungsstatus(0,0).should('include.text', 'Verfügt');
@@ -124,7 +124,7 @@ describe('Kibon - mutationen [Gesuchsteller]', () => {
 
         DossierToolbarPO.getAntragLoeschen().click();
         cy.intercept('GET', '**/gesuchsperioden/gemeinde/**').as('deletingMutation');
-        ConfirmDialogPO.getConfirmButton().click();
+        ConfirmDialogPO.getDvLoadingConfirmButton().click();
         cy.wait('@deletingMutation');
 
         DossierToolbarPO.getAntraegeTrigger().click();

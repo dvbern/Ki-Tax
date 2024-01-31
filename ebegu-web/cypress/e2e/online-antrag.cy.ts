@@ -302,7 +302,7 @@ describe('Kibon - generate Testfälle [Online-Antrag]', () => {
             AntragBetreuungPO.getBetreuungsstatus(1, 0).should('include.text', 'Abgewiesen');
             AntragBetreuungPO.getBetreuungLoeschenButton(1, 0).click();
             cy.waitForRequest('DELETE', '**/betreuungen/**', () => {
-                ConfirmDialogPO.getConfirmButton().click();
+                ConfirmDialogPO.getDvLoadingConfirmButton().click();
             });
 
             FallToolbarPO.getMobileSidenavTrigger().click();
@@ -310,7 +310,7 @@ describe('Kibon - generate Testfälle [Online-Antrag]', () => {
             FreigabePO.getFreigebenButton().click();
             cy.getDownloadUrl(() => {
                 cy.waitForRequest('GET', '**/dossier/fall/**', () => {
-                    ConfirmDialogPO.getConfirmButton().click();
+                    ConfirmDialogPO.getDvLoadingConfirmButton().click();
                 });
             }).then(downloadUrl => {
                 return cy.request(downloadUrl)
@@ -338,14 +338,11 @@ describe('Kibon - generate Testfälle [Online-Antrag]', () => {
             cy.waitForRequest('GET', '**/verfuegung/calculate/**', () => {
                 VerfuegenPO.getFinSitAkzeptiert('AKZEPTIERT').click();
             });
-            cy.waitForRequest('PUT', '**/gesuche/status/*/GEPRUEFT', () => {
-                VerfuegenPO.getGeprueftButton().click();
-                ConfirmDialogPO.getConfirmButton().click();
-            });
+            VerfuegenPO.pruefeGesuch();
 
             cy.waitForRequest('GET', '**/verfuegung/calculate/**', () => {
                 VerfuegenPO.getVerfuegenStartenButton().click();
-                ConfirmDialogPO.getConfirmButton().click();
+                ConfirmDialogPO.getDvLoadingConfirmButton().click();
             });
 
             VerfuegenPO.getVerfuegung(0, 0).click();
@@ -353,7 +350,7 @@ describe('Kibon - generate Testfälle [Online-Antrag]', () => {
             VerfuegungPO.getVerfuegungsBemerkungenKontrolliert().click();
             cy.waitForRequest('GET', '**/gesuche/dossier/**', () => {
                 VerfuegungPO.getVerfuegenButton().click();
-                ConfirmDialogPO.getConfirmButton().click();
+                ConfirmDialogPO.getDvLoadingConfirmButton().click();
             });
         }
     });
