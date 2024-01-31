@@ -173,7 +173,6 @@ public class VerfuegungServiceBean extends AbstractBaseService implements Verfue
 
 		mutation.getKindContainers().forEach(kindContainer -> {
 			kindContainer.getBetreuungen().forEach(betreuung -> {
-				createFinSitDokument(mutation);
 				verfuegen(mutation.getId(), betreuung.getId(), null, false, false, true);
 			});
 		});
@@ -187,18 +186,6 @@ public class VerfuegungServiceBean extends AbstractBaseService implements Verfue
 	private Gesuch setGesuchGeprueft(Gesuch mutation) {
 		mutation.setStatus(AntragStatus.GEPRUEFT);
 		return gesuchService.updateGesuch(mutation, true, null);
-	}
-
-	private void createFinSitDokument(Gesuch gesuch) {
-		if (EbeguUtil.isFinanzielleSituationRequired(gesuch)) {
-			try {
-				// Das Erstellen des FinSitDokumentes wirft eine Exception, wenn die FinSit nicht benötigt wird
-				generatedDokumentService.getFinSitDokumentAccessTokenGeneratedDokument(gesuch, true);
-			} catch (MimeTypeParseException | MergeDocException e) {
-				throw new EbeguRuntimeException("createFinSitDokument", "FinSit-Dokument konnte nicht erstellt werden"
-					+ gesuch.getId(), e);
-			}
-		}
 	}
 
 	@Nonnull
