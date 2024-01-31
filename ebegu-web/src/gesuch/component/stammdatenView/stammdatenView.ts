@@ -122,7 +122,7 @@ export class StammdatenViewController extends AbstractGesuchViewController<TSGes
     public dvFileUploadError: object;
     public frenchEnabled: boolean;
     private isLuzern: boolean;
-    private demoFeature2754: boolean = false;
+    public demoFeature2754: boolean = false;
     private angebotTS: boolean;
 
     public constructor(

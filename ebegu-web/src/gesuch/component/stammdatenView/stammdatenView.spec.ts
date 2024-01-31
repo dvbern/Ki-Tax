@@ -105,7 +105,7 @@ describe('stammdatenView', () => {
             dokumentRS,
             mandantService,
             demoFeatureRS);
-        stammdatenViewController['demoFeature2754'] = true;
+        stammdatenViewController.demoFeature2754 = true;
     })));
 
     describe('disableWohnadresseFor2GS', () => {
@@ -148,7 +148,7 @@ describe('stammdatenView', () => {
         });
         it('should return gesuchstellerNumber.toString() if conditions are not met', () => {
             stammdatenViewController.gesuchModelManager.isFKJVTexte = true;
-            stammdatenViewController['demoFeature2754'] = false;
+            stammdatenViewController.demoFeature2754 = false;
             stammdatenViewController.gesuchstellerNumber = 2;
             const result = stammdatenViewController.getFamilienSituationDisplayValue();
             expect(result).toEqual('2');
