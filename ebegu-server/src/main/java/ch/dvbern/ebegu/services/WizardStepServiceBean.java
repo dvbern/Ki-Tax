@@ -853,6 +853,8 @@ public class WizardStepServiceBean extends AbstractBaseService implements Wizard
 		} else if (WizardStepName.KINDER == wizardStep.getWizardStepName()) {
 			//Nach Update der FamilienSituation kann es sein dass die Kinder View nicht mehr Valid ist
 			checkStepStatusForKinderOnChangeFamSit(wizardStep);
+		} else if (WizardStepName.ERWERBSPENSUM == wizardStep.getWizardStepName()) {
+			checkStepStatusForErwerbspensum(wizardStep, true);
 		} else if (EbeguUtil.fromOneGSToTwoGS(oldEntity, newEntity, bis)) {
 			updateStatusFromOneGSToTwoGS(wizardStep);
 		} else if (!oldEntity.isSpezialFallAR() && newEntity.isSpezialFallAR()) {
@@ -1071,19 +1073,37 @@ public class WizardStepServiceBean extends AbstractBaseService implements Wizard
 	 * Prüft, ob ein Erwerbspensum für den GS2 nötig ist.
 	 * Falls ein GS2 vorhanden ist, ist ein Erwerbspesnum grundsätzlich nötig.
 	 *
-	 * Einzige Ausnahme bietet folgender Spezialfall innerhalb einer FKJV Periode:
+	 * Einzige Ausnahmen bieten folgender Spezialfälle innerhalb einer FKJV Periode:
 	 * Die elterliche Obhut findet nicht in zwei Haushalten statt (Familiensituation#geteilteObhut)
 	 * und es wurde keine Unterhaltsvereinbarung abgeschlossen (Familiensituation#unterhaltsvereinbarung).
 	 * Sind diese Bedinungen erfüllt gibt es zwei Gesuschsteller, es ist allerdings nur das Erwerbspensum von GS1
 	 * relevant
+	 *
+	 * Ab Periode 24/25 muss in folgendem Fall nur das Erwerbspensum von GS1 erfasst werden:
+	 * Konkubinat ohne Kind wird während Periode 2-jährig (Einstellung), keine geteilte Obhut, keine Unterhaltsvereinbarung
 	 */
 	private boolean isErwerbspensumRequiredForGS2(Gesuch gesuch) {
 		if (isUnterhaltsvereinbarungAbschlossenOrNichtMoeglich(gesuch)) {
 			return false;
 		}
 
+		if (isKonkubinatWithOmittableErwerbspensumForGS2(gesuch)) {
+			return false;
+		}
+
 		return gesuch.getGesuchsteller2() == null
 			|| gesuch.getGesuchsteller2().getErwerbspensenContainers().isEmpty();
+	}
+
+	private static boolean isKonkubinatWithOmittableErwerbspensumForGS2(Gesuch gesuch) {
+		final Familiensituation familiensituation = gesuch.extractFamiliensituation();
+		if (familiensituation == null || familiensituation.getFamilienstatus() != EnumFamilienstatus.KONKUBINAT_KEIN_KIND) {
+			return false;
+		}
+		return familiensituation.isKonkubinatReachingMinDauerIn(gesuch.getGesuchsperiode())
+			&& familiensituation.getGeteilteObhut() != null
+			&& !familiensituation.getGeteilteObhut()
+			&& familiensituation.getUnterhaltsvereinbarung() == UnterhaltsvereinbarungAnswer.NEIN_UNTERHALTSVEREINBARUNG;
 	}
 
 	private boolean isUnterhaltsvereinbarungAbschlossenOrNichtMoeglich(Gesuch gesuch) {
