@@ -18,125 +18,211 @@
 import {
     AntragCreationPO,
     AntragFamSitPO,
-    BeschaeftigungspensumListPO, DossierToolbarPO, FallToolbarPO,
+    BeschaeftigungspensumListPO, DossierToolbarPO,
     GesuchstellendeDashboardPO,
     NavigationPO, RemoveDialogPO,
     SidenavPO,
     TestFaellePO,
 } from '@dv-e2e/page-objects';
-import {getUser, TestPeriode} from '@dv-e2e/types';
+import {getUser, TestFall, TestPeriode} from '@dv-e2e/types';
 import {describe} from 'mocha';
 import {TSUnterhaltsvereinbarungAnswer} from '../../../src/models/enums/TSUnterhaltsvereinbarungAnswer';
 
 describe('Kibon - Testet die Fachlichkeit auf der Seite der Erwerbspensen', () => {
 
-    const superAdmin = getUser('[1-Superadmin] E-BEGU Superuser');
-    const gesuchstellende = getUser('[5-GS] Heinrich Mueller');
-    const periode: TestPeriode = '2023/24';
+    describe('Wechsel in der Familiensituation', () => {
+        const gesuchstellende = getUser('[5-GS] Heinrich Mueller');
+        const periode: TestPeriode = '2024/25';
 
-    before(() => {
-        cy.intercept({resourceType: 'xhr'}, {log: false}); // don't log XHRs
-        cy.login(superAdmin);
-        cy.visit('/#/faelle');
-        TestFaellePO.createOnlineTestfall({
-            testFall: 'testfall-2',
-            gemeinde: 'London',
-            periode: periode,
-            betreuungsstatus: 'bestaetigt',
-            besitzerin: '[5-GS] Heinrich Mueller',
-        });
-    });
+        describe('Wechsel aus Verheiratet', () => {
 
-    describe('Erstantrag as GS', () => {
-        beforeEach(() => {
-            cy.login(gesuchstellende);
-            cy.visit('/');
-            cy.waitForRequest('GET', '**/dossier/fall/*', () => {
-                GesuchstellendeDashboardPO.getAntragBearbeitenButton(periode).click();
+            beforeEach(() => {
+                cy.intercept({resourceType: 'xhr'}, {log: false}); // don't log XHRs
+                createOnlineAntrag(periode, 'testfall-2');
+                cy.login(gesuchstellende);
+                cy.visit('/');
+                cy.waitForRequest('GET', '**/dossier/fall/*', () => {
+                    GesuchstellendeDashboardPO.getAntragBearbeitenButton(periode).click();
+                });
             });
-        });
 
-        it('should not require beschaeftigungspensum when gesuch is beendet because of konkubinat ohne kind and keine geteilte obhut',
-            () => {
+            it('should not require beschaeftigungspensum when gesuch is beendet because of konkubinat ohne kind and keine geteilte obhut',
+                () => {
+                    SidenavPO.goTo('FAMILIENSITUATION');
+                    // Spezialfall Antrag beenden weil Konkubinat 2-jährig wird
+                    AntragFamSitPO.getFamiliensituationsStatus('KONKUBINAT_KEIN_KIND').click();
+                    AntragFamSitPO.getKonkubinatStart().clear().type('1.1.2023').blur();
+                    // Spezialfall Konkubinat ohne Kind, Nicht geteilte Obhut ohne Unterhaltsvereinbarung
+                    AntragFamSitPO.getGeteilteObhutOption('nein').click();
+                    AntragFamSitPO.getUnterhaltsvereinbarungOption(TSUnterhaltsvereinbarungAnswer.NEIN_UNTERHALTSVEREINBARUNG)
+                        .click();
+                    NavigationPO.saveAndGoNext();
+
+                    SidenavPO.getSidenavStepStatus('ERWERBSPENSUM').should('have.class', 'fa-check');
+                    SidenavPO.goTo('ERWERBSPENSUM');
+                    BeschaeftigungspensumListPO.getGS1().should('exist');
+                    BeschaeftigungspensumListPO.getGS2().should('not.exist');
+                });
+
+            it('should not require beschaeftigungspensum konkubinat ohne kind is less than 2 years', () => {
                 SidenavPO.goTo('FAMILIENSITUATION');
                 // Spezialfall Antrag beenden weil Konkubinat 2-jährig wird
                 AntragFamSitPO.getFamiliensituationsStatus('KONKUBINAT_KEIN_KIND').click();
-                AntragFamSitPO.getKonkubinatStart().clear().type('1.10.2021').blur();
+                AntragFamSitPO.getKonkubinatStart().clear().type('1.10.2022').blur();
                 // Spezialfall Konkubinat ohne Kind, Nicht geteilte Obhut ohne Unterhaltsvereinbarung
-                AntragFamSitPO.getGeteilteObhutOption('nein').find('label').click();
+                AntragFamSitPO.getGeteilteObhutOption('nein').click();
                 AntragFamSitPO.getUnterhaltsvereinbarungOption(TSUnterhaltsvereinbarungAnswer.NEIN_UNTERHALTSVEREINBARUNG)
-                    .find('label')
                     .click();
                 NavigationPO.saveAndGoNext();
 
+                SidenavPO.getSidenavStepStatus('ERWERBSPENSUM').should('have.class', 'fa-check');
                 SidenavPO.goTo('ERWERBSPENSUM');
                 BeschaeftigungspensumListPO.getGS1().should('exist');
                 BeschaeftigungspensumListPO.getGS2().should('not.exist');
             });
 
-        it('should not require beschaeftigungspensum konkubinat ohne kind is less than 2 years', () => {
-            SidenavPO.goTo('FAMILIENSITUATION');
-            // Spezialfall Antrag beenden weil Konkubinat 2-jährig wird
-            AntragFamSitPO.getFamiliensituationsStatus('KONKUBINAT_KEIN_KIND').click();
-            AntragFamSitPO.getKonkubinatStart().clear().type('1.10.2022').blur();
-            // Spezialfall Konkubinat ohne Kind, Nicht geteilte Obhut ohne Unterhaltsvereinbarung
-            AntragFamSitPO.getGeteilteObhutOption('nein').find('label').click();
-            AntragFamSitPO.getUnterhaltsvereinbarungOption(TSUnterhaltsvereinbarungAnswer.NEIN_UNTERHALTSVEREINBARUNG)
-                .find('label')
-                .click();
-            NavigationPO.saveAndGoNext();
+            it('should require beschaeftigungspensum when konkubinat ohne kind is more than 2 years', () => {
+                SidenavPO.goTo('FAMILIENSITUATION');
+                // Spezialfall Antrag beenden weil Konkubinat 2-jährig wird
+                AntragFamSitPO.getFamiliensituationsStatus('KONKUBINAT_KEIN_KIND').click();
+                AntragFamSitPO.getKonkubinatStart().clear().type('1.10.2020').blur();
+                NavigationPO.saveAndGoNext();
 
-            SidenavPO.goTo('ERWERBSPENSUM');
-            BeschaeftigungspensumListPO.getGS1().should('exist');
-            BeschaeftigungspensumListPO.getGS2().should('not.exist');
+                SidenavPO.getSidenavStepStatus('ERWERBSPENSUM').should('have.class', 'fa-check');
+                SidenavPO.goTo('ERWERBSPENSUM');
+                BeschaeftigungspensumListPO.getGS1().should('exist');
+                BeschaeftigungspensumListPO.getGS2().should('exist');
+            });
         });
 
-        it('should require beschaeftigungspensum when konkubinat ohne kind is more than 2 years', () => {
-            SidenavPO.goTo('FAMILIENSITUATION');
-            // Spezialfall Antrag beenden weil Konkubinat 2-jährig wird
-            AntragFamSitPO.getFamiliensituationsStatus('KONKUBINAT_KEIN_KIND').click();
-            AntragFamSitPO.getKonkubinatStart().clear().type('1.10.2020').blur();
-            NavigationPO.saveAndGoNext();
+        describe('Alleinstehend', () => {
 
-            SidenavPO.goTo('ERWERBSPENSUM');
-            BeschaeftigungspensumListPO.getGS1().should('exist');
-            BeschaeftigungspensumListPO.getGS2().should('exist');
+            beforeEach(() => {
+                createOnlineAntrag(periode, 'testfall-1');
+                cy.intercept({resourceType: 'xhr'}, {log: false}); // don't log XHRs
+                cy.login(gesuchstellende);
+                cy.visit('/');
+                cy.waitForRequest('GET', '**/dossier/fall/*', () => {
+                    GesuchstellendeDashboardPO.getAntragBearbeitenButton(periode).click();
+                });
+            });
+
+            it('should only require one erwerbspensum if famsit status Alleinerziehend with shared obhut and alleine stellen',
+                () => {
+                    SidenavPO.goTo('FAMILIENSITUATION');
+                    AntragFamSitPO.getFamiliensituationsStatus('ALLEINERZIEHEND').click();
+                    AntragFamSitPO.getGeteilteObhutOption('ja').click();
+                    AntragFamSitPO.getGesuchstellendeKardinalitaet('ALLEINE').click();
+                    NavigationPO.saveAndGoNext();
+                    SidenavPO.getSidenavStepStatus('ERWERBSPENSUM').should('have.class', 'fa-check');
+
+                    SidenavPO.goTo('ERWERBSPENSUM');
+                    BeschaeftigungspensumListPO.getGS1().should('exist');
+                    BeschaeftigungspensumListPO.getGS2().should('not.exist');
+                });
+
+            // Wir haben hier im Moment ein Problem. Beim Wechseln auf zu zweit ist dann GS2 null und daher wird das Erwerbspensum
+            // validiert, also ob es nur einen GS gäbe. Eigentlich sollte anhand der FamSit validiert werden. Muss für andere Mandanten
+            // geprüft werden
+            xit('should require two erwerbspensum if famsit status Alleinerziehend with shared obhut and zu zweit stellen', () => {
+                SidenavPO.goTo('FAMILIENSITUATION');
+                AntragFamSitPO.getFamiliensituationsStatus('ALLEINERZIEHEND').click();
+                AntragFamSitPO.getGeteilteObhutOption('ja').click();
+                AntragFamSitPO.getGesuchstellendeKardinalitaet('ZU_ZWEIT').click();
+                NavigationPO.saveAndGoNext();
+                SidenavPO.getSidenavStepStatus('ERWERBSPENSUM').should('have.class', 'fa-close');
+
+                SidenavPO.goTo('ERWERBSPENSUM');
+                BeschaeftigungspensumListPO.getGS1().should('exist');
+                BeschaeftigungspensumListPO.getGS2().should('exist');
+            });
+
+            // Wir haben hier im Moment ein Problem. Beim Wechseln auf zu zweit ist dann GS2 null und daher wird das Erwerbspensum
+            // validiert, also ob es nur einen GS gäbe. Eigentlich sollte anhand der FamSit validiert werden. Muss für andere Mandanten
+            // geprüft werden
+            xit('should require two erwerbspensum if famsit status Alleinerziehend with not shared obhut and with no unterhaltsvereinbarung',
+                () => {
+                    SidenavPO.goTo('FAMILIENSITUATION');
+                    AntragFamSitPO.getFamiliensituationsStatus('ALLEINERZIEHEND').click();
+                    AntragFamSitPO.getGeteilteObhutOption('nein').click();
+                    AntragFamSitPO.getUnterhaltsvereinbarungOption('NEIN_UNTERHALTSVEREINBARUNG').click();
+                    NavigationPO.saveAndGoNext();
+                    SidenavPO.getSidenavStepStatus('ERWERBSPENSUM').should('have.class', 'fa-close');
+
+                    SidenavPO.goTo('ERWERBSPENSUM');
+                    BeschaeftigungspensumListPO.getGS1().should('exist');
+                    BeschaeftigungspensumListPO.getGS2().should('exist');
+                });
+
+            it('should only require one erwerbspensum if famsit status Alleinerziehend with not shared obhut and with no unterhaltsvereinbarung possible',
+                () => {
+                    SidenavPO.goTo('FAMILIENSITUATION');
+                    AntragFamSitPO.getFamiliensituationsStatus('ALLEINERZIEHEND').click();
+                    AntragFamSitPO.getGeteilteObhutOption('nein').click();
+                    AntragFamSitPO.getUnterhaltsvereinbarungOption('UNTERHALTSVEREINBARUNG_NICHT_MOEGLICH').click();
+                    AntragFamSitPO.getUnterhaltsvereinbarungNichtMoeglichBegruendung()
+                        .clear()
+                        .type('Anderer Elternteil unbekannt');
+                    NavigationPO.saveAndGoNext();
+                    SidenavPO.getSidenavStepStatus('ERWERBSPENSUM').should('have.class', 'fa-check');
+
+                    SidenavPO.goTo('ERWERBSPENSUM');
+                    BeschaeftigungspensumListPO.getGS1().should('exist');
+                    BeschaeftigungspensumListPO.getGS2().should('not.exist');
+                });
+
         });
-    });
+    })
 
     describe('Mutation Papierantrag', () => {
-        it('should not require beschaeftigungspensum in mutation from verheiratet to konkubinat ohne kind 2 jährig during gp', () => {
-            cy.login(superAdmin);
-            cy.visit('/');
-            TestFaellePO.createPapierTestfall({
-                testFall: 'testfall-2',
-                betreuungsstatus: 'verfuegt',
-                periode: '2024/25',
-                gemeinde: 'London'
-            });
+        it('should not require beschaeftigungspensum in mutation from verheiratet to konkubinat ohne kind 2 jährig during gp',
+            () => {
+                cy.intercept({resourceType: 'xhr'}, {log: false}); // don't log XHRs
+                const superAdmin = getUser('[1-Superadmin] E-BEGU Superuser');
+                cy.login(superAdmin);
+                cy.visit('/');
+                TestFaellePO.createPapierTestfall({
+                    testFall: 'testfall-2',
+                    betreuungsstatus: 'verfuegt',
+                    periode: '2024/25',
+                    gemeinde: 'London',
+                });
 
-            cy.waitForRequest('GET', '**/gesuchsperioden/gemeinde/*', () => {
-                DossierToolbarPO.getAntragMutieren().click();
-            });
-            AntragCreationPO.getEingangsdatum().find('input').clear().type('1.1.2020');
-            NavigationPO.saveAndGoNext();
+                cy.waitForRequest('GET', '**/gesuchsperioden/gemeinde/*', () => {
+                    DossierToolbarPO.getAntragMutieren().click();
+                });
+                AntragCreationPO.getEingangsdatum().find('input').clear().type('1.1.2020');
+                NavigationPO.saveAndGoNext();
 
-            AntragFamSitPO.getAenderunPer().clear().type('1.1.2023').blur();
-            AntragFamSitPO.getFamiliensituationsStatus('KONKUBINAT_KEIN_KIND').click();
-            AntragFamSitPO.getGeteilteObhutOption('nein').find('label').click();
-            AntragFamSitPO.getUnterhaltsvereinbarungOption(TSUnterhaltsvereinbarungAnswer.NEIN_UNTERHALTSVEREINBARUNG)
-                .find('label')
-                .click();
-            NavigationPO.saveAndGoNext();
-            RemoveDialogPO.getRemoveOkButton().click();
+                AntragFamSitPO.getAenderunPer().clear().type('1.1.2023').blur();
+                AntragFamSitPO.getFamiliensituationsStatus('KONKUBINAT_KEIN_KIND').click();
+                AntragFamSitPO.getGeteilteObhutOption('nein').click();
+                AntragFamSitPO.getUnterhaltsvereinbarungOption(TSUnterhaltsvereinbarungAnswer.NEIN_UNTERHALTSVEREINBARUNG)
+                    .click();
+                NavigationPO.saveAndGoNext();
+                RemoveDialogPO.getRemoveOkButton().click();
 
-            SidenavPO.goTo('ERWERBSPENSUM');
-            BeschaeftigungspensumListPO.getGS1().should('exist');
-            BeschaeftigungspensumListPO.getGS2().should('not.exist');
+                SidenavPO.goTo('ERWERBSPENSUM');
+                BeschaeftigungspensumListPO.getGS1().should('exist');
+                BeschaeftigungspensumListPO.getGS2().should('not.exist');
 
-        })
+            })
     });
 
-
-
 });
+
+function createOnlineAntrag(
+    periode: '2024/25',
+    testFall: TestFall,
+): void {
+    const superAdmin = getUser('[1-Superadmin] E-BEGU Superuser');
+    cy.login(superAdmin);
+    cy.visit('/#/faelle');
+    TestFaellePO.createOnlineTestfall({
+        testFall,
+        gemeinde: 'London',
+        periode,
+        betreuungsstatus: 'bestaetigt',
+        besitzerin: '[5-GS] Heinrich Mueller',
+    });
+}
