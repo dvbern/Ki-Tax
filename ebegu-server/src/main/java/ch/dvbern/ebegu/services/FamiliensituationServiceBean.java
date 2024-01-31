@@ -127,7 +127,7 @@ public class FamiliensituationServiceBean extends AbstractBaseService implements
 		}
 
 		if (isGesuchBeendenBeiTauschGS2Active(gesuch)
-			&& isKonkubinatOhneKindWithOneErwerbspensumRequired(newFamiliensituation, gesuch)
+			&& isPensumGS2InKonkubinatOmittable(newFamiliensituation, gesuch)
 			&& gesuch.getGesuchsteller2() != null
 			&& !gesuch.getGesuchsteller2().getErwerbspensenContainers().isEmpty()) {
 			gesuch.getGesuchsteller2().getErwerbspensenContainers().clear();
@@ -154,7 +154,7 @@ public class FamiliensituationServiceBean extends AbstractBaseService implements
 		return Boolean.TRUE.equals(einstellung.getValueAsBoolean());
 	}
 
-	private boolean isKonkubinatOhneKindWithOneErwerbspensumRequired(Familiensituation familiensituation, Gesuch gesuch) {
+	private boolean isPensumGS2InKonkubinatOmittable(Familiensituation familiensituation, Gesuch gesuch) {
 		if (familiensituation.getFamilienstatus() != EnumFamilienstatus.KONKUBINAT_KEIN_KIND) {
 			return false;
 		}
