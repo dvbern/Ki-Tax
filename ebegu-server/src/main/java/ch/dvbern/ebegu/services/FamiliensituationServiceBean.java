@@ -146,12 +146,12 @@ public class FamiliensituationServiceBean extends AbstractBaseService implements
 		return mergedFamiliensituationContainer;
 	}
 
-	private Boolean isGesuchBeendenBeiTauschGS2Active(Gesuch gesuch) {
+	private boolean isGesuchBeendenBeiTauschGS2Active(Gesuch gesuch) {
 		Einstellung einstellung = einstellungService.findEinstellung(EinstellungKey.GESUCH_BEENDEN_BEI_TAUSCH_GS2,
 			gesuch.extractGemeinde(),
 			gesuch.getGesuchsperiode());
 
-		return einstellung.getValueAsBoolean();
+		return Boolean.TRUE.equals(einstellung.getValueAsBoolean());
 	}
 
 	private boolean isKonkubinatOhneKindWithOneErwerbspensumRequired(Familiensituation familiensituation, Gesuch gesuch) {
