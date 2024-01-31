@@ -1083,11 +1083,16 @@ public class WizardStepServiceBean extends AbstractBaseService implements Wizard
 	 * Konkubinat ohne Kind wird während Periode 2-jährig (Einstellung), keine geteilte Obhut, keine Unterhaltsvereinbarung
 	 */
 	private boolean isErwerbspensumRequiredForGS2(Gesuch gesuch) {
-		if (isUnterhaltsvereinbarungAbschlossenOrNichtMoeglich(gesuch)) {
+		Familiensituation familiensituation = gesuch.extractFamiliensituation();
+		if (familiensituation == null) {
+			return false;
+		}
+		if (isUnterhaltsvereinbarungAbschlossenOrNichtMoeglich(familiensituation)) {
 			return false;
 		}
 
-		if (isKonkubinatWithOmittableErwerbspensumForGS2(gesuch)) {
+		if (isGesuchBeendenBeiTauschGS2Active(gesuch) &&
+			isPensumGS2InKonkubinatOmittable(familiensituation, gesuch.getGesuchsperiode())) {
 			return false;
 		}
 
@@ -1095,26 +1100,31 @@ public class WizardStepServiceBean extends AbstractBaseService implements Wizard
 			|| gesuch.getGesuchsteller2().getErwerbspensenContainers().isEmpty();
 	}
 
-	private static boolean isKonkubinatWithOmittableErwerbspensumForGS2(Gesuch gesuch) {
-		final Familiensituation familiensituation = gesuch.extractFamiliensituation();
-		if (familiensituation == null || familiensituation.getFamilienstatus() != EnumFamilienstatus.KONKUBINAT_KEIN_KIND) {
+	private boolean isGesuchBeendenBeiTauschGS2Active(Gesuch gesuch) {
+		Einstellung einstellung = einstellungService.findEinstellung(EinstellungKey.GESUCH_BEENDEN_BEI_TAUSCH_GS2,
+			gesuch.extractGemeinde(),
+			gesuch.getGesuchsperiode());
+
+		return Boolean.TRUE.equals(einstellung.getValueAsBoolean());
+	}
+
+	private static boolean isPensumGS2InKonkubinatOmittable(Familiensituation familiensituation, Gesuchsperiode gesuchsperiode) {
+		if (familiensituation.getFamilienstatus() != EnumFamilienstatus.KONKUBINAT_KEIN_KIND) {
 			return false;
 		}
-		return familiensituation.isKonkubinatReachingMinDauerIn(gesuch.getGesuchsperiode())
-			&& familiensituation.getGeteilteObhut() != null
-			&& !familiensituation.getGeteilteObhut()
+		return familiensituation.isKonkubinatReachingMinDauerIn(gesuchsperiode)
+			&& Objects.equals(familiensituation.getGeteilteObhut(), Boolean.FALSE)
 			&& familiensituation.getUnterhaltsvereinbarung() == UnterhaltsvereinbarungAnswer.NEIN_UNTERHALTSVEREINBARUNG;
 	}
 
-	private boolean isUnterhaltsvereinbarungAbschlossenOrNichtMoeglich(Gesuch gesuch) {
-		if (gesuch.getFamiliensituationContainer() == null ||
-			gesuch.getFamiliensituationContainer().getFamiliensituationJA() == null ||
-			gesuch.getFamiliensituationContainer().getFamiliensituationJA().getUnterhaltsvereinbarung() == null) {
+
+
+	private boolean isUnterhaltsvereinbarungAbschlossenOrNichtMoeglich(Familiensituation familiensituation) {
+		if (familiensituation.getUnterhaltsvereinbarung() == null) {
 			return false;
 		}
 
-		var unterhaltsvereinbarung =
-			gesuch.getFamiliensituationContainer().getFamiliensituationJA().getUnterhaltsvereinbarung();
+		var unterhaltsvereinbarung = familiensituation.getUnterhaltsvereinbarung();
 		return unterhaltsvereinbarung == UnterhaltsvereinbarungAnswer.JA_UNTERHALTSVEREINBARUNG
 			|| unterhaltsvereinbarung == UnterhaltsvereinbarungAnswer.UNTERHALTSVEREINBARUNG_NICHT_MOEGLICH;
 	}
