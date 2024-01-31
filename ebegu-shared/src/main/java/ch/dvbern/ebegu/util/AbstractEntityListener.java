@@ -144,6 +144,9 @@ public class AbstractEntityListener {
 			}
 		}
 		if (entity instanceof HasMandant) {
+			if (checkWriteAccessAllowedIfAnonymous(entity, getPrincipalBean())) {
+				return;
+			}
 			checkMandant(entity);
 		}
 	}
@@ -282,6 +285,21 @@ public class AbstractEntityListener {
 				+ ANONYMOUS_USER_USERNAME
 				+ " and entity " + entity.getClass().getName()
 				+ " tried to access a resource that is mandant secured");
+		}
+		return false;
+	}
+
+	protected static boolean checkWriteAccessAllowedIfAnonymous(@Nonnull AbstractEntity entity,
+		@Nonnull PrincipalBean principalBean) {
+		if (principalBean.getPrincipal().getName().equals(ANONYMOUS_USER_USERNAME)
+			&& !principalBean.isAnonymousSuperadmin()) {
+			if (entity instanceof Benutzer){// wegen locallogin
+				return true;
+			}
+			throw new EJBAccessException("Access Violation for user "
+				+ ANONYMOUS_USER_USERNAME
+				+ " and entity " + entity.getClass().getName()
+				+ " tried to insert a resource that is mandant secured");
 		}
 		return false;
 	}
