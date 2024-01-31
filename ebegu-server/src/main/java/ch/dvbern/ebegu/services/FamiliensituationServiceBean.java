@@ -38,6 +38,8 @@ import java.util.Collection;
 import java.util.Objects;
 import java.util.Optional;
 
+import static ch.dvbern.ebegu.services.util.ErwerbspensumHelper.isKonkubinatOhneKindAndGS2ErwerbspensumOmittable;
+
 /**
  * Service fuer familiensituation
  */
@@ -127,7 +129,7 @@ public class FamiliensituationServiceBean extends AbstractBaseService implements
 		}
 
 		if (isGesuchBeendenBeiTauschGS2Active(gesuch)
-			&& isPensumGS2InKonkubinatOmittable(newFamiliensituation, gesuch.getGesuchsperiode())
+			&& isKonkubinatOhneKindAndGS2ErwerbspensumOmittable(newFamiliensituation, gesuch.getGesuchsperiode())
 			&& gesuch.getGesuchsteller2() != null
 			&& !gesuch.getGesuchsteller2().getErwerbspensenContainers().isEmpty()) {
 			gesuch.getGesuchsteller2().getErwerbspensenContainers().clear();
@@ -154,14 +156,6 @@ public class FamiliensituationServiceBean extends AbstractBaseService implements
 		return Boolean.TRUE.equals(einstellung.getValueAsBoolean());
 	}
 
-	private boolean isPensumGS2InKonkubinatOmittable(Familiensituation familiensituation, Gesuchsperiode gesuchsperiode) {
-		if (familiensituation.getFamilienstatus() != EnumFamilienstatus.KONKUBINAT_KEIN_KIND) {
-			return false;
-		}
-		return familiensituation.isKonkubinatReachingMinDauerIn(gesuchsperiode)
-			&& Objects.equals(familiensituation.getGeteilteObhut(), Boolean.FALSE)
-			&& familiensituation.getUnterhaltsvereinbarung() == UnterhaltsvereinbarungAnswer.NEIN_UNTERHALTSVEREINBARUNG;
-	}
 
 
 	private boolean isScheidung(

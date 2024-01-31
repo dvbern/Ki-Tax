@@ -22,7 +22,6 @@ import ch.dvbern.ebegu.entities.*;
 import ch.dvbern.ebegu.enums.*;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
-import ch.dvbern.ebegu.errors.MailException;
 import ch.dvbern.ebegu.errors.MergeDocException;
 import ch.dvbern.ebegu.rules.anlageverzeichnis.DokumentenverzeichnisEvaluator;
 import ch.dvbern.ebegu.util.Constants;
@@ -46,6 +45,8 @@ import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
+
+import static ch.dvbern.ebegu.services.util.ErwerbspensumHelper.isKonkubinatOhneKindAndGS2ErwerbspensumOmittable;
 
 /**
  * Service fuer Gesuch
@@ -1092,7 +1093,7 @@ public class WizardStepServiceBean extends AbstractBaseService implements Wizard
 		}
 
 		if (isGesuchBeendenBeiTauschGS2Active(gesuch) &&
-			isPensumGS2InKonkubinatOmittable(familiensituation, gesuch.getGesuchsperiode())) {
+			isKonkubinatOhneKindAndGS2ErwerbspensumOmittable(familiensituation, gesuch.getGesuchsperiode())) {
 			return false;
 		}
 
@@ -1108,14 +1109,7 @@ public class WizardStepServiceBean extends AbstractBaseService implements Wizard
 		return Boolean.TRUE.equals(einstellung.getValueAsBoolean());
 	}
 
-	private static boolean isPensumGS2InKonkubinatOmittable(Familiensituation familiensituation, Gesuchsperiode gesuchsperiode) {
-		if (familiensituation.getFamilienstatus() != EnumFamilienstatus.KONKUBINAT_KEIN_KIND) {
-			return false;
-		}
-		return familiensituation.isKonkubinatReachingMinDauerIn(gesuchsperiode)
-			&& Objects.equals(familiensituation.getGeteilteObhut(), Boolean.FALSE)
-			&& familiensituation.getUnterhaltsvereinbarung() == UnterhaltsvereinbarungAnswer.NEIN_UNTERHALTSVEREINBARUNG;
-	}
+
 
 
 
