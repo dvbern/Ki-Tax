@@ -3019,6 +3019,7 @@ export class EbeguRestUtil {
         if (erweiterteBetreuung.fachstelle) {
             restErweiterteBetreuung.fachstelle = this.fachstelleToRestObject({}, erweiterteBetreuung.fachstelle);
         }
+        restErweiterteBetreuung.sprachfoerderungBestaetigt = erweiterteBetreuung.sprachfoerderungBestaetigt;
         return restErweiterteBetreuung;
     }
 
@@ -3043,6 +3044,8 @@ export class EbeguRestUtil {
                 erweiterteBetreuungTS.fachstelle =
                     this.parseFachstelle(new TSFachstelle(), erweiterteBetreuungFromServer.fachstelle);
             }
+            erweiterteBetreuungTS.sprachfoerderungBestaetigt = erweiterteBetreuungFromServer.sprachfoerderungBestaetigt;
+
             return erweiterteBetreuungTS;
         }
         return undefined;

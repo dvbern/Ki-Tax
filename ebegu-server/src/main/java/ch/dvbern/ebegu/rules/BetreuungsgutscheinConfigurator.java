@@ -77,6 +77,7 @@ import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_PAUSCHALABZUG_PRO_PERSO
 import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_4;
 import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_5;
 import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_6;
+import static ch.dvbern.ebegu.enums.EinstellungKey.SPRACHFOERDERUNG_BESTAETIGEN;
 
 /**
  * Configurator, welcher die Regeln und ihre Reihenfolge konfiguriert. Als Parameter erhält er den Mandanten sowie
@@ -140,7 +141,8 @@ public class BetreuungsgutscheinConfigurator {
 				FKJV_TEXTE,
 				FACHSTELLEN_TYP,
 				GEMEINDE_KEIN_GUTSCHEIN_FUER_SOZIALHILFE_EMPFAENGER,
-				ANSPRUCH_AB_X_MONATEN
+				ANSPRUCH_AB_X_MONATEN,
+				SPRACHFOERDERUNG_BESTAETIGEN
 		);
 	}
 
@@ -373,7 +375,9 @@ public class BetreuungsgutscheinConfigurator {
 		}
 
 		// - Fachstelle: Muss zwingend nach Erwerbspensum und Betreuungspensum durchgefuehrt werden
-		FachstelleBernCalcRule fachstelleBernCalcRule = new FachstelleBernCalcRule(defaultGueltigkeit, locale);
+		Einstellung sprachefoerderungBestaetigen = ruleParameterUtil.getEinstellung(SPRACHFOERDERUNG_BESTAETIGEN);
+		FachstelleBernCalcRule fachstelleBernCalcRule =
+			new FachstelleBernCalcRule(sprachefoerderungBestaetigen.getValueAsBoolean(), defaultGueltigkeit, locale);
 		addToRuleSetIfRelevantForGemeinde(fachstelleBernCalcRule, ruleParameterUtil);
 		FachstelleLuzernCalcRule fachstelleLuzrnCalcRule = new FachstelleLuzernCalcRule(defaultGueltigkeit, locale);
 		addToRuleSetIfRelevantForGemeinde(fachstelleLuzrnCalcRule, ruleParameterUtil);

@@ -58,6 +58,10 @@ public class ErweiterteBetreuung extends AbstractMutableEntity {
 	@Column(nullable = false)
 	private boolean anspruchFachstelleWennPensumUnterschritten = false;
 
+	@Nonnull
+	@Column(nullable = false)
+	private boolean sprachfoerderungBestaetigt = false;
+
 	@Nullable
 	public Boolean getBetreuungInGemeinde() {
 		return betreuungInGemeinde;
@@ -128,6 +132,14 @@ public class ErweiterteBetreuung extends AbstractMutableEntity {
 		this.anspruchFachstelleWennPensumUnterschritten = anspruchFachstelleWennPensumUnterschritten;
 	}
 
+	public boolean isSprachfoerderungBestaetigt() {
+		return sprachfoerderungBestaetigt;
+	}
+
+	public void setSprachfoerderungBestaetigt(boolean sprachfoerderungBestaetigt) {
+		this.sprachfoerderungBestaetigt = sprachfoerderungBestaetigt;
+	}
+
 	@Override
 	@SuppressWarnings("PMD.CompareObjectsWithEquals")
 	@SuppressFBWarnings("BC_UNCONFIRMED_CAST")
@@ -168,8 +180,10 @@ public class ErweiterteBetreuung extends AbstractMutableEntity {
 			isAnspruchFachstelleWennPensumUnterschritten() ==
 			otherErwBetr.isAnspruchFachstelleWennPensumUnterschritten();
 
+		boolean sprachfoerderungBestaetigt = isSprachfoerderungBestaetigt() == otherErwBetr.isSprachfoerderungBestaetigt();
+
 		return erwBeduerfnisseSame && bestAussBetrAufwand && fachstelleSame && kesbSame && kitaPlusSame
-				&& erweitereteBeduerfnisseSame && anspruchUnterschrittenSame;
+				&& erweitereteBeduerfnisseSame && anspruchUnterschrittenSame && sprachfoerderungBestaetigt;
 	}
 
 	@Nonnull
@@ -189,6 +203,7 @@ public class ErweiterteBetreuung extends AbstractMutableEntity {
 			target.setKitaPlusZuschlagBestaetigt(this.isKitaPlusZuschlagBestaetigt());
 			target.setErweitereteBeduerfnisseBetrag(this.getErweitereteBeduerfnisseBetrag());
 			target.setAnspruchFachstelleWennPensumUnterschritten(this.isAnspruchFachstelleWennPensumUnterschritten());
+			target.setSprachfoerderungBestaetigt(this.isSprachfoerderungBestaetigt());
 			break;
 		case ERNEUERUNG:
 		case ERNEUERUNG_AR_2023:

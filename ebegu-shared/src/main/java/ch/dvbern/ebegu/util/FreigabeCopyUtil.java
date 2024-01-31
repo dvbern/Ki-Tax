@@ -192,6 +192,7 @@ public final class FreigabeCopyUtil {
 		erweiterteBetreuungGS.setAnspruchFachstelleWennPensumUnterschritten(
 				erweiterteBetreuungJA.isAnspruchFachstelleWennPensumUnterschritten()
 		);
+		erweiterteBetreuungGS.setSprachfoerderungBestaetigt(erweiterteBetreuungJA.isSprachfoerderungBestaetigt());
 	}
 
 	private static void copyKind(@Nonnull Kind kindGS, @Nonnull Kind kindJA) {

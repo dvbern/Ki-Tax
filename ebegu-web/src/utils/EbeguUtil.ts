@@ -553,7 +553,7 @@ export class EbeguUtil {
     }
 
     public static hasSprachlicheIndikation(kind: TSKindContainer): boolean {
-        const sprachlicheIntegrationen = kind.kindJA?.pensumFachstellen
+        const sprachlicheIntegrationen = kind?.kindJA?.pensumFachstellen
             .filter(fachstelle =>
                 fachstelle.integrationTyp === TSIntegrationTyp.SPRACHLICHE_INTEGRATION);
 
