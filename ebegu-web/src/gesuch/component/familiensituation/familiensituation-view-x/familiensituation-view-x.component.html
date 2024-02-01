@@ -226,6 +226,7 @@
 										  [required]="true"
                                           #begruendung="ngModel"
 										  dvNgEnableElement
+                                          data-test="begruendung-unterhaltsvereinbarung-nicht-moeglich"
 										  [dvEnableAllowedRoles]="allowedRoles"
 										  [dvEnabled]="isFamiliensituationEnabled()">
                                     </textarea>
@@ -252,12 +253,14 @@
 													 [required]="true"
 													 #gesuchstellerKardinalitaet="ngModel"
                                                      name="gesuchstellerKardinalitaet"
+                                                     data-test="container.gesuchsteller-kardnalitaet"
 													 class="input-element sp" items="gesuchstellerKardinalitaetValues"
 													 (change)="gesuchstellerKardinalitaetChange()"
 													 [disabled]="!(isFamiliensituationEnabled() && isOneOfRoles(allowedRoles))"
 													 aria-label="{{ 'FAMILIENSITUATION_FRAGE_2' |translate}}"
 													 aria-described-by="gesuchstellerKardinalitaet-error">
 										<mat-radio-button *ngFor="let kardinalitaet of gesuchstellerKardinalitaetValues"
+                                                           [attr.data-test]="'gesuchsteller-kardinalitaet.' + kardinalitaet"
 														  [value]="kardinalitaet">{{kardinalitaet | translate}}</mat-radio-button>
 									</mat-radio-group>
 								</dv-radio-container-x>
