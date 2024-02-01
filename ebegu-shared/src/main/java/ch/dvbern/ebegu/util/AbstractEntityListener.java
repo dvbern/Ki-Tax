@@ -271,6 +271,7 @@ public class AbstractEntityListener {
 		}
 	}
 
+	//FIXME: Muss nach migration zu OIDC weg, Mandant sollte in diesem Fall nicht null sein
 	private boolean lazyLoadedBenutzerMandantException(@Nonnull AbstractEntity abstractEntity) {
 		return abstractEntity instanceof Benutzer && getPrincipalBean().getMandant() == null;
 	}
