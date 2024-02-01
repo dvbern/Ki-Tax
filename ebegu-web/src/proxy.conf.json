@@ -1,11 +1,11 @@
 {
     "/ebegu": {
-        "target": "http://localhost:8080/",
+        "target": "http://localhost:80/",
         "secure": false,
         "proxyTimeout": 240000
     },
     "/connector": {
-        "target": "http://localhost:8080",
+        "target": "http://localhost:80",
         "secure": false,
         "proxyTimeout": 240000
     },

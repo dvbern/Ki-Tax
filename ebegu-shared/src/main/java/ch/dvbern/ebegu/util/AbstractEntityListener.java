@@ -272,6 +272,7 @@ public class AbstractEntityListener {
 	}
 
 	//FIXME: Muss nach migration zu OIDC weg, Mandant sollte in diesem Fall nicht null sein
+	@SuppressFBWarnings("RCN_REDUNDANT_NULLCHECK_OF_NONNULL_VALUE")
 	private boolean lazyLoadedBenutzerMandantException(@Nonnull AbstractEntity abstractEntity) {
 		return abstractEntity instanceof Benutzer && getPrincipalBean().getMandant() == null;
 	}
