@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2023 DV Bern AG, Switzerland
+ * Copyright (C) 2024 DV Bern AG, Switzerland
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -15,15 +15,5 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-const getDvLoadingConfirmButton = () => {
-    return cy.getByData('container.confirm', 'navigation-button');
-};
-
-const getSimpleConfirmButton = () => {
-    return cy.getByData('container.confirm');
-};
-
-export const ConfirmDialogPO = {
-    getDvLoadingConfirmButton,
-    getSimpleConfirmButton
-};
+UPDATE gemeinde SET bfs_nummer = 10036 WHERE bfs_nummer = 10050;
+UPDATE bfs_gemeinde SET bfs_nummer = 10036 WHERE bfs_nummer = 10050;

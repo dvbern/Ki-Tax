@@ -37,7 +37,7 @@ export class YoutubeLinkVisitor implements MandantVisitor<string> {
     }
 
     public visitAppenzellAusserrhoden(): string {
-        return '';
+        return 'https://www.youtube.com/embed/oq-NRhJlvUQ';
     }
 
     public visitLuzern(): string {
@@ -46,6 +46,10 @@ export class YoutubeLinkVisitor implements MandantVisitor<string> {
 
     public visitSolothurn(): string {
         return this.visitBern();
+    }
+
+    public visitSchwyz(): string {
+        return this.visitSolothurn();
     }
 
 }

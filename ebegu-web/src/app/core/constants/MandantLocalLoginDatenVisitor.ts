@@ -41,4 +41,8 @@ export class MandantLocalLoginDatenVisitor implements MandantVisitor<LocalLoginD
         return LOCALLOGIN_DATA.SO;
     }
 
+    public visitSchwyz(): LocalLoginDaten {
+        return LOCALLOGIN_DATA.SZ;
+    }
+
 }
