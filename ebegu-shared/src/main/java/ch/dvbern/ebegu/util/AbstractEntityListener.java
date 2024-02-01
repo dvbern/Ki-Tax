@@ -262,13 +262,17 @@ public class AbstractEntityListener {
 		}
 		HasMandant hasMandantEntity = (HasMandant) abstractEntity;
 		Mandant mandant = hasMandantEntity.getMandant();
-		if (mandant != null && !getPrincipalBean().getMandant().equals(mandant)) {
+		if (mandant != null && !lazyLoadedBenutzerMandantException(abstractEntity) && !getPrincipalBean().getMandant().equals(mandant)) {
 			throw new EJBAccessException("Access Violation"
 				+ " for mandant: " + mandant.getName()
 				+ " by current user mandant: " + principalBean.getPrincipal()
 				+ " for entity " + abstractEntity.getClass().getName()
 				+ " with mandant:  " + principalBean.getMandant().getName());
 		}
+	}
+
+	private boolean lazyLoadedBenutzerMandantException(@Nonnull AbstractEntity abstractEntity) {
+		return abstractEntity instanceof Benutzer && getPrincipalBean().getMandant() == null;
 	}
 
 	protected static boolean checkAccessAllowedIfAnonymous(@Nonnull AbstractEntity entity,
