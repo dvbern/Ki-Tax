@@ -58,6 +58,7 @@ public class MailTemplateConfiguration {
 	public static final String TS_ONLY_ANTRAG = "tsOnlyAntrag";
 	public static final String GESUCHSTELLER = "gesuchsteller";
 	public static final String GESUCHSPERIODE = "gesuchsperiode";
+	public static final String FALL = "fall";
 	public static final String START_DATUM = "startDatum";
 	public static final String GESUCH = "gesuch";
 	public static final String SENDER_FULL_NAME = "senderFullName";
@@ -450,6 +451,8 @@ public class MailTemplateConfiguration {
 		Map<Object, Object> paramMap = paramsWithEmpfaenger(mailaddressTS, gesuch.extractMandant().getMandantIdentifier());
 		paramMap.put(EMPFAENGER_MAIL, mailaddressTS);
 		paramMap.put(GESUCH, gesuch);
+		paramMap.put(FALL, gesuch.getDossier().getFall());
+		paramMap.put(GESUCHSPERIODE, gesuch.getGesuchsperiode());
 
 		return doProcessTemplate(getTemplateFileName(MailTemplate.InfoGesuchVerfuegtVerantwortlicherTS), mandantLocale,
 			paramMap);
@@ -562,6 +565,8 @@ public class MailTemplateConfiguration {
 		paramMap.put(GESUCHSTELLER, gesuchsteller);
 		paramMap.put(GRUSS, getEmailGruss(mandant, mandantLocale, gesuch.extractGemeinde().getName()));
 		paramMap.put("isSozialdienst", gesuch.getFall().getSozialdienstFall() != null);
+		paramMap.put(FALL, gesuch.getDossier().getFall());
+		paramMap.put(GESUCHSPERIODE, gesuch.getGesuchsperiode());
 
 		return doProcessTemplate(getTemplateFileName(nameOfTemplate), mandantLocale, paramMap);
 	}
@@ -588,6 +593,8 @@ public class MailTemplateConfiguration {
 		paramMap.put(BETREUUNG, betreuung);
 		paramMap.put(GRUSS, getEmailGruss(mandant, mandantLocale, betreuung.extractGemeinde().getName()));
 		paramMap.put(SENDER_FULL_NAME, getSenderFullNameForEmail(betreuung.extractGesuch(), gesuchsteller));
+		paramMap.put(FALL, betreuung.extractGesuch().getDossier().getFall());
+		paramMap.put(GESUCHSPERIODE, betreuung.extractGesuch().getGesuchsperiode());
 
 		return doProcessTemplate(getTemplateFileName(nameOfTemplate), mandantLocale, paramMap);
 	}
@@ -605,6 +612,8 @@ public class MailTemplateConfiguration {
 		paramMap.put(BETREUUNG, betreuung);
 		paramMap.put(SENDER_FULL_NAME, getSenderFullNameForEmail(betreuung.extractGesuch(), gesuchsteller));
 		paramMap.put(GRUSS, getEmailGruss(mandant, mandantLocale, betreuung.extractGesuch().getDossier().getGemeinde().getName()));
+		paramMap.put(FALL, betreuung.extractGesuch().getDossier().getFall());
+		paramMap.put(GESUCHSPERIODE, betreuung.extractGesuch().getGesuchsperiode());
 
 		return doProcessTemplate(getTemplateFileName(nameOfTemplate), mandantLocale, paramMap);
 	}
@@ -650,10 +659,11 @@ public class MailTemplateConfiguration {
 
 		paramMap.put(BETREUUNG, betreuung);
 		paramMap.put(GRUSS, getEmailGruss(mandant, mandantLocale, betreuung.extractGemeinde().getName()));
-		paramMap.put("fall", fall);
+		paramMap.put(FALL, fall);
 		paramMap.put("kind", kind);
 		paramMap.put(GESUCHSTELLER, gesuchsteller1);
 		paramMap.put("institution", institution);
+		paramMap.put(GESUCHSPERIODE, betreuung.extractGesuch().getGesuchsperiode());
 
 		return doProcessTemplate(getTemplateFileName(nameOfTemplate), mandantLocale, paramMap);
 	}

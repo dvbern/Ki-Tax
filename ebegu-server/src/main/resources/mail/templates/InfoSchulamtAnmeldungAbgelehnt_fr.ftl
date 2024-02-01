@@ -5,9 +5,11 @@
 <#-- @ftlvariable name="empfaengerMail" type="java.lang.String" -->
 <#-- @ftlvariable name="hostname" type="java.lang.String" -->
 <#-- @ftlvariable name="gruss" type="java.lang.String" -->
+<#-- @ftlvariable name="fall" type="ch.dvbern.ebegu.entities.Fall"-->
+<#-- @ftlvariable name="gesuchsperiode" type="ch.dvbern.ebegu.entities.Gesuchsperiode"-->
 From: ${configuration.senderAddress}
 To: <@base64Header>${senderFullName}</@base64Header> <${empfaengerMail}>
-Subject: <@base64Header>kiBon <#if configuration.isDevmode>Système de test</#if> – Rejet de l'inscription</@base64Header>
+Subject: ${fall.getPaddedFallnummer()}, ${gesuchsperiode.getGesuchsperiodeString()}, <@base64Header>kiBon <#if configuration.isDevmode>Système de test</#if> – Rejet de l'inscription</@base64Header>
 Content-Type: text/html;charset=utf-8
 
 <html>
