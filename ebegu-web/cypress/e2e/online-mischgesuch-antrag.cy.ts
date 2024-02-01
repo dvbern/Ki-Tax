@@ -32,7 +32,7 @@ describe('Kibon - Online TS-Anmeldung (Mischgesuch) [Gesuchsteller]', () => {
 
         cy.url().then((url) => {
             const parts = new URL(url);
-            gesuchUrl = `${parts.pathname}${parts.hash}`;
+            gesuchUrl = `/${parts.hash}`;
         });
         FallToolbarPO.getFallnummer().then(el$ => {
             fallnummer = el$.text();
@@ -109,14 +109,14 @@ describe('Kibon - Online TS-Anmeldung (Mischgesuch) [Gesuchsteller]', () => {
     const tsAkzeptierenAsUserTs = (kindIndex: number, betreuungsIndex: number) => {
         loginAsTSAndPlatzAkzeptieren(kindIndex, betreuungsIndex);
         cy.waitForRequest('PUT', '**/betreuungen/schulamt/akzeptieren', () => {
-            ConfirmDialogPO.getConfirmButton().click();
+            ConfirmDialogPO.getDvLoadingConfirmButton().click();
         });
     };
 
     const tsUebernehmenAsUserTs = (kindIndex: number, betreuungsIndex: number) => {
         loginAsTSAndPlatzAkzeptieren(kindIndex, betreuungsIndex);
         cy.waitForRequest('PUT', '**/anmeldung/uebernehmen', () => {
-            ConfirmDialogPO.getConfirmButton().click();
+            ConfirmDialogPO.getDvLoadingConfirmButton().click();
         });
     };
 
@@ -126,6 +126,19 @@ describe('Kibon - Online TS-Anmeldung (Mischgesuch) [Gesuchsteller]', () => {
         FaelleListePO.getAntrag(fallnummer).click();
         AntragBetreuungPO.getBetreuung(kindIndex, betreuungsIndex).click();
         AntragBetreuungPO.getPlatzAkzeptierenButton().click();
+        cy.waitForRequest('PUT', '**/betreuungen/schulamt/akzeptieren', () => {
+            ConfirmDialogPO.getDvLoadingConfirmButton().click();
+        });
+    };
+
+    const tsAkzeptierenFuerKind2 = () => {
+        SidenavPO.goTo('BETREUUNG');
+        AntragBetreuungPO.getBetreuung(1, 1).click();
+        AntragBetreuungPO.getPlatzAkzeptierenButton().click();
+
+        cy.waitForRequest('GET', '**/dossier/fall/**', () => {
+            ConfirmDialogPO.getDvLoadingConfirmButton().click();
+        });
     };
 
     const gesuchFreigeben = () => {
@@ -135,7 +148,7 @@ describe('Kibon - Online TS-Anmeldung (Mischgesuch) [Gesuchsteller]', () => {
         FreigabePO.getFreigebenButton().click();
         cy.getDownloadUrl(() => {
             cy.waitForRequest('GET', '**/dossier/fall/**', () => {
-                ConfirmDialogPO.getConfirmButton().click();
+                ConfirmDialogPO.getDvLoadingConfirmButton().click();
             });
         });
     };
@@ -160,14 +173,14 @@ describe('Kibon - Online TS-Anmeldung (Mischgesuch) [Gesuchsteller]', () => {
 
         cy.waitForRequest('GET', '**/verfuegung/calculate/**', () => {
             VerfuegenPO.getGeprueftButton().click();
-            ConfirmDialogPO.getConfirmButton().click();
+            ConfirmDialogPO.getDvLoadingConfirmButton().click();
         });
     };
 
     const verfuegenStarten = () => {
         cy.waitForRequest('GET', '**/verfuegung/calculate/**', () => {
             VerfuegenPO.getVerfuegenStartenButton().click();
-            ConfirmDialogPO.getConfirmButton().click();
+            ConfirmDialogPO.getDvLoadingConfirmButton().click();
         });
     };
 
@@ -187,7 +200,7 @@ describe('Kibon - Online TS-Anmeldung (Mischgesuch) [Gesuchsteller]', () => {
 
         cy.waitForRequest('PUT', '**/verfuegung/verfuegen/**', () => {
             VerfuegungPO.getVerfuegenButton().click();
-            ConfirmDialogPO.getConfirmButton().click();
+            ConfirmDialogPO.getDvLoadingConfirmButton().click();
         });
     };
 

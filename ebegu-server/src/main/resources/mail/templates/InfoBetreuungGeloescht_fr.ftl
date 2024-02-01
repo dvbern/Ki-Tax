@@ -9,9 +9,11 @@
 <#-- @ftlvariable name="status" type="java.lang.String" -->
 <#-- @ftlvariable name="configuration" type="ch.dvbern.ebegu.config.EbeguConfiguration" -->
 <#-- @ftlvariable name="templateConfiguration" type="ch.dvbern.ebegu.mail.MailTemplateConfiguration" -->
+<#-- @ftlvariable name="fall" type="ch.dvbern.ebegu.entities.Fall"-->
+<#-- @ftlvariable name="gesuchsperiode" type="ch.dvbern.ebegu.entities.Gesuchsperiode"-->
 From: ${configuration.senderAddress}
 To: <@base64Header>${institution.name}</@base64Header> <${empfaengerMail}>
-Subject: <@base64Header>${institution.name}: kiBon <#if configuration.isDevmode>Système de test</#if> – Suppression de l'offre de prise en charge</@base64Header>
+Subject: ${fall.getPaddedFallnummer()}, ${gesuchsperiode.getGesuchsperiodeString()}, <@base64Header>${institution.name}: kiBon <#if configuration.isDevmode>Système de test</#if> – Suppression de l'offre de prise en charge</@base64Header>
 Content-Type: text/html;charset=utf-8
 
 <html>

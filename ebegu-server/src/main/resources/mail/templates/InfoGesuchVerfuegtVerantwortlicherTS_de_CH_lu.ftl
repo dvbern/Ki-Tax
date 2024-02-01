@@ -2,9 +2,11 @@
 <#-- @ftlvariable name="templateConfiguration" type="ch.dvbern.ebegu.mail.MailTemplateConfiguration" -->
 <#-- @ftlvariable name="configuration" type="ch.dvbern.ebegu.config.EbeguConfiguration" -->
 <#-- @ftlvariable name="empfaengerMail" type="java.lang.String" -->
+<#-- @ftlvariable name="fall" type="ch.dvbern.ebegu.entities.Fall"-->
+<#-- @ftlvariable name="gesuchsperiode" type="ch.dvbern.ebegu.entities.Gesuchsperiode"-->
 From: ${configuration.senderAddress}
 To: <@base64Header>${gesuch.dossier.verantwortlicherTS.fullName}</@base64Header> <${empfaengerMail}>
-Subject: <@base64Header>kiBon - Betreuungsgutschein wurde bestätigt</@base64Header>
+Subject: ${fall.getPaddedFallnummer()}, ${gesuchsperiode.getGesuchsperiodeString()}, <@base64Header>kiBon - Betreuungsgutschein wurde bestätigt</@base64Header>
 Content-Type: text/html;charset=utf-8
 
 <html>
