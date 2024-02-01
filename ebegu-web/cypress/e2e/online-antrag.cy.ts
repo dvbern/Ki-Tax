@@ -345,7 +345,7 @@ describe('Kibon - generate Testfälle [Online-Antrag]', () => {
                 VerfuegenPO.getFinSitAkzeptiert('AKZEPTIERT').click();
             });
 
-                        VerfuegenPO.pruefeGesuch();
+            VerfuegenPO.pruefeGesuch();
             SidenavPO.getGesuchStatus().should('have.text', 'Geprüft');
 
             cy.waitForRequest('GET', '**/verfuegung/calculate/**', () => {

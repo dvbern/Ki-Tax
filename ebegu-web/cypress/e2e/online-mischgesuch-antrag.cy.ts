@@ -109,14 +109,14 @@ describe('Kibon - Online TS-Anmeldung (Mischgesuch) [Gesuchsteller]', () => {
     const tsAkzeptierenAsUserTs = (kindIndex: number, betreuungsIndex: number) => {
         loginAsTSAndPlatzAkzeptieren(kindIndex, betreuungsIndex);
         cy.waitForRequest('PUT', '**/betreuungen/schulamt/akzeptieren', () => {
-            ConfirmDialogPO.getConfirmButton().click();
+            ConfirmDialogPO.getDvLoadingConfirmButton().click();
         });
     };
 
     const tsUebernehmenAsUserTs = (kindIndex: number, betreuungsIndex: number) => {
         loginAsTSAndPlatzAkzeptieren(kindIndex, betreuungsIndex);
         cy.waitForRequest('PUT', '**/anmeldung/uebernehmen', () => {
-            ConfirmDialogPO.getConfirmButton().click();
+            ConfirmDialogPO.getDvLoadingConfirmButton().click();
         });
     };
 
