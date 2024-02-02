@@ -340,6 +340,8 @@ public enum EinstellungKey {
 	// Zusätzliche Input Felder für das Ersatzeinkommen anzeigen (KIBON-3249)
 	ZUSATZLICHE_FELDER_ERSATZEINKOMMEN(MandantIdentifier.BERN),
 
+	SPRACHFOERDERUNG_BESTAETIGEN(MandantIdentifier.getAll()),
+
 	KITA_STUNDEN_PRO_TAG(MandantIdentifier.getAll());
 
 	private EinstellungTyp typ;

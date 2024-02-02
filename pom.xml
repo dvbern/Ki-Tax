@@ -487,7 +487,7 @@
             <dependency>
                 <groupId>ch.dvbern.kibon</groupId>
                 <artifactId>kibon-exchange-api-commons</artifactId>
-                <version>6.0.3</version>
+                <version>6.0.4</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.kafka</groupId>

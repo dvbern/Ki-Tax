@@ -27,6 +27,7 @@ export class TSErweiterteBetreuung extends TSAbstractMutableEntity {
     private _kitaPlusZuschlagBestaetigt: boolean = false;
     private _erweitereteBeduerfnisseBetrag: number;
     private _anspruchFachstelleWennPensumUnterschritten: boolean;
+    private _sprachfoerderungBestaetigt: boolean;
 
     public constructor() {
         super();
@@ -102,5 +103,13 @@ export class TSErweiterteBetreuung extends TSAbstractMutableEntity {
 
     public set anspruchFachstelleWennPensumUnterschritten(value: boolean) {
         this._anspruchFachstelleWennPensumUnterschritten = value;
+    }
+
+    public get sprachfoerderungBestaetigt(): boolean {
+        return this._sprachfoerderungBestaetigt;
+    }
+
+    public set sprachfoerderungBestaetigt(value: boolean) {
+        this._sprachfoerderungBestaetigt = value;
     }
 }
