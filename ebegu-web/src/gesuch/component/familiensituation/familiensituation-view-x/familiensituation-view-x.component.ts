@@ -63,8 +63,7 @@ export class FamiliensituationViewXComponent extends AbstractFamiliensitutaionVi
     public initialFamiliensituation: TSFamiliensituation;
     public gesuchstellerKardinalitaetValues: Array<TSGesuchstellerKardinalitaet>;
     public unterhaltsvereinbarungAnswerValues: Array<TSUnterhaltsvereinbarungAnswer>;
-    public gesuchBeendenDemoFeature = TSDemoFeature.GESUCH_BEENDEN_FAMSIT;
-    public demoFeatureGesuchBeendenFamSitActive: boolean;
+    public gesuchBeendenFamSitActive: boolean;
 
     public constructor(
             protected readonly gesuchModelManager: GesuchModelManager,
@@ -76,15 +75,12 @@ export class FamiliensituationViewXComponent extends AbstractFamiliensitutaionVi
             protected readonly familiensituationRS: FamiliensituationRS,
             private readonly einstellungRS: EinstellungRS,
             protected readonly authService: AuthServiceRS,
-            private readonly demoFeatureRS: DemoFeatureRS
     ) {
         super(gesuchModelManager, errorService, wizardStepManager, familiensituationRS, authService);
         this.initialFamiliensituation = this.gesuchModelManager.getFamiliensituation();
         this.gesuchstellerKardinalitaetValues = getTSGesuchstellerKardinalitaetValues();
         this.unterhaltsvereinbarungAnswerValues = getTSUnterhaltsvereinbarungAnswerValues();
         this.familienstatusValues = getTSFamilienstatusValues();
-        demoFeatureRS.isDemoFeatureAllowed(this.gesuchBeendenDemoFeature)
-                .then(isAllowed => this.demoFeatureGesuchBeendenFamSitActive = isAllowed);
     }
 
     public ngOnInit(): void {
@@ -99,6 +95,10 @@ export class FamiliensituationViewXComponent extends AbstractFamiliensitutaionVi
                     .forEach(value => {
                         this.getFamiliensituation().minDauerKonkubinat = Number(value.value);
                     });
+            response.filter(r => r.key === TSEinstellungKey.GESUCH_BEENDEN_BEI_TAUSCH_GS2)
+                .forEach(value => {
+                    this.gesuchBeendenFamSitActive = value.getValueAsBoolean();
+                });
         }, error => LOG.error(error));
     }
 
@@ -142,6 +142,9 @@ export class FamiliensituationViewXComponent extends AbstractFamiliensitutaionVi
     }
 
     public showFragePartnerWieBisher(): boolean {
+        if (!this.gesuchBeendenFamSitActive) {
+            return false;
+        }
         const isVorPeriode = this.getFamiliensituation().aenderungPer?.isBefore(
                 this.gesuchModelManager.getGesuchsperiode().gueltigkeit.gueltigAb);
         if (isVorPeriode) {
@@ -237,6 +240,10 @@ export class FamiliensituationViewXComponent extends AbstractFamiliensitutaionVi
     }
 
     public isNotPartnerIdentischMitVorgesuch(): boolean {
+        if (!this.gesuchBeendenFamSitActive) {
+            return false;
+        }
+
         return EbeguUtil.isNotNullOrUndefined(this.getFamiliensituation().partnerIdentischMitVorgesuch) &&
                 !this.getFamiliensituation().partnerIdentischMitVorgesuch;
     }
@@ -395,7 +402,7 @@ export class FamiliensituationViewXComponent extends AbstractFamiliensitutaionVi
     }
 
     public antragWirdBeendet(): boolean {
-        if (!this.konkubinatIsXYearsOldInPeriode()){
+        if (!this.gesuchBeendenFamSitActive || !this.konkubinatIsXYearsOldInPeriode()){
             return false;
         }
 

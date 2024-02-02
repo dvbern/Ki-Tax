@@ -201,22 +201,6 @@ VALUES (UNHEX(REPLACE('d968ba59-b3e8-11ee-829a-0242ac160002', '-', '')), NOW(), 
 		@bruennen_id, NULL, NULL,
 		UNHEX(REPLACE('95440105-b3e8-11ee-829a-0242ac160002', '-', '')), 'bruennen-sz@mailbucket.dvbern.ch', NULL, NULL);
 
-/*
- * Copyright (C) 2024 DV Bern AG, Switzerland
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Affero General Public License as
- * published by the Free Software Foundation, either version 3 of the
- * License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Affero General Public License for more details.
- *
- * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.
- */
 
 -- Sozialdienst
 INSERT IGNORE INTO sozialdienst (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version,

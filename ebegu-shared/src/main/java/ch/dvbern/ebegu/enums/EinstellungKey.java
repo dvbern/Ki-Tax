@@ -342,7 +342,10 @@ public enum EinstellungKey {
 
 	SPRACHFOERDERUNG_BESTAETIGEN(MandantIdentifier.getAll()),
 
-	KITA_STUNDEN_PRO_TAG(MandantIdentifier.getAll());
+	KITA_STUNDEN_PRO_TAG(MandantIdentifier.getAll()),
+
+	//Das Gesuch wird beendent, wenn der Gesuchsteller 2 innerhalb der Periode ändert KIBONBE-31, KIBON-2583
+	GESUCH_BEENDEN_BEI_TAUSCH_GS2(MandantIdentifier.getAll());
 
 	private EinstellungTyp typ;
 	private List<MandantIdentifier> activeForMandant;

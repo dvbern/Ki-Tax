@@ -1815,6 +1815,7 @@ public final class TestDataUtil {
 		saveEinstellung(KITA_STUNDEN_PRO_TAG, "10", gesuchsperiode, persistence);
 		saveEinstellung(ZUSATZLICHE_FELDER_ERSATZEINKOMMEN, "false", gesuchsperiode, persistence);
 		saveEinstellung(SPRACHFOERDERUNG_BESTAETIGEN, "false", gesuchsperiode, persistence);
+		saveEinstellung(GESUCH_BEENDEN_BEI_TAUSCH_GS2, "false", gesuchsperiode, persistence);
 	}
 
 	public static void saveEinstellung(

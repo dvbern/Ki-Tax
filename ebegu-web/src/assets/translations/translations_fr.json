@@ -3093,5 +3093,6 @@
     "GEMEINDE_HAS_ALTERNATIVE_TS_LOGO": "Utiliser un logo alternatif pour les écoles à journée continue",
     "SPRACHFOERDERUNG_BESTAETIGEN_KITA": "Les langues pour lesquelles un encouragement linguistique est prévu sont le français ou l’allemand (langues parlées plus tard à l’école).",
     "SPRACHFOERDERUNG_BESTAETIGEN_TFO": "L’accueillant∙e en milieu familial est apte à assurer l’encouragement linguistique et possède au minimum un niveau C1 dans la langue parlée plus tard à l’école.",
+    "GESUCH_BEENDEN_BEI_TAUSCH_GS2": "Antrag beenden, wenn der Gesuchsteller 2 innerhalb der Periode ändert",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

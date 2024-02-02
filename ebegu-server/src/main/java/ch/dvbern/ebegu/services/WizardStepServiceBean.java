@@ -22,7 +22,6 @@ import ch.dvbern.ebegu.entities.*;
 import ch.dvbern.ebegu.enums.*;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
-import ch.dvbern.ebegu.errors.MailException;
 import ch.dvbern.ebegu.errors.MergeDocException;
 import ch.dvbern.ebegu.rules.anlageverzeichnis.DokumentenverzeichnisEvaluator;
 import ch.dvbern.ebegu.util.Constants;
@@ -46,6 +45,8 @@ import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
+
+import static ch.dvbern.ebegu.services.util.ErwerbspensumHelper.isKonkubinatOhneKindAndGS2ErwerbspensumOmittable;
 
 /**
  * Service fuer Gesuch
@@ -853,6 +854,8 @@ public class WizardStepServiceBean extends AbstractBaseService implements Wizard
 		} else if (WizardStepName.KINDER == wizardStep.getWizardStepName()) {
 			//Nach Update der FamilienSituation kann es sein dass die Kinder View nicht mehr Valid ist
 			checkStepStatusForKinderOnChangeFamSit(wizardStep);
+		} else if (WizardStepName.ERWERBSPENSUM == wizardStep.getWizardStepName()) {
+			checkStepStatusForErwerbspensum(wizardStep, true);
 		} else if (EbeguUtil.fromOneGSToTwoGS(oldEntity, newEntity, bis)) {
 			updateStatusFromOneGSToTwoGS(wizardStep);
 		} else if (!oldEntity.isSpezialFallAR() && newEntity.isSpezialFallAR()) {
@@ -1071,14 +1074,26 @@ public class WizardStepServiceBean extends AbstractBaseService implements Wizard
 	 * Prüft, ob ein Erwerbspensum für den GS2 nötig ist.
 	 * Falls ein GS2 vorhanden ist, ist ein Erwerbspesnum grundsätzlich nötig.
 	 *
-	 * Einzige Ausnahme bietet folgender Spezialfall innerhalb einer FKJV Periode:
+	 * Einzige Ausnahmen bieten folgender Spezialfälle innerhalb einer FKJV Periode:
 	 * Die elterliche Obhut findet nicht in zwei Haushalten statt (Familiensituation#geteilteObhut)
 	 * und es wurde keine Unterhaltsvereinbarung abgeschlossen (Familiensituation#unterhaltsvereinbarung).
 	 * Sind diese Bedinungen erfüllt gibt es zwei Gesuschsteller, es ist allerdings nur das Erwerbspensum von GS1
 	 * relevant
+	 *
+	 * Ab Periode 24/25 muss in folgendem Fall nur das Erwerbspensum von GS1 erfasst werden:
+	 * Konkubinat ohne Kind wird während Periode 2-jährig (Einstellung), keine geteilte Obhut, keine Unterhaltsvereinbarung
 	 */
 	private boolean isErwerbspensumRequiredForGS2(Gesuch gesuch) {
-		if (isUnterhaltsvereinbarungAbschlossenOrNichtMoeglich(gesuch)) {
+		Familiensituation familiensituation = gesuch.extractFamiliensituation();
+		if (familiensituation == null) {
+			return false;
+		}
+		if (isUnterhaltsvereinbarungAbschlossenOrNichtMoeglich(familiensituation)) {
+			return false;
+		}
+
+		if (isGesuchBeendenBeiTauschGS2Active(gesuch) &&
+			isKonkubinatOhneKindAndGS2ErwerbspensumOmittable(familiensituation, gesuch.getGesuchsperiode())) {
 			return false;
 		}
 
@@ -1086,15 +1101,24 @@ public class WizardStepServiceBean extends AbstractBaseService implements Wizard
 			|| gesuch.getGesuchsteller2().getErwerbspensenContainers().isEmpty();
 	}
 
-	private boolean isUnterhaltsvereinbarungAbschlossenOrNichtMoeglich(Gesuch gesuch) {
-		if (gesuch.getFamiliensituationContainer() == null ||
-			gesuch.getFamiliensituationContainer().getFamiliensituationJA() == null ||
-			gesuch.getFamiliensituationContainer().getFamiliensituationJA().getUnterhaltsvereinbarung() == null) {
+	private boolean isGesuchBeendenBeiTauschGS2Active(Gesuch gesuch) {
+		Einstellung einstellung = einstellungService.findEinstellung(EinstellungKey.GESUCH_BEENDEN_BEI_TAUSCH_GS2,
+			gesuch.extractGemeinde(),
+			gesuch.getGesuchsperiode());
+
+		return Boolean.TRUE.equals(einstellung.getValueAsBoolean());
+	}
+
+
+
+
+
+	private boolean isUnterhaltsvereinbarungAbschlossenOrNichtMoeglich(Familiensituation familiensituation) {
+		if (familiensituation.getUnterhaltsvereinbarung() == null) {
 			return false;
 		}
 
-		var unterhaltsvereinbarung =
-			gesuch.getFamiliensituationContainer().getFamiliensituationJA().getUnterhaltsvereinbarung();
+		var unterhaltsvereinbarung = familiensituation.getUnterhaltsvereinbarung();
 		return unterhaltsvereinbarung == UnterhaltsvereinbarungAnswer.JA_UNTERHALTSVEREINBARUNG
 			|| unterhaltsvereinbarung == UnterhaltsvereinbarungAnswer.UNTERHALTSVEREINBARUNG_NICHT_MOEGLICH;
 	}
