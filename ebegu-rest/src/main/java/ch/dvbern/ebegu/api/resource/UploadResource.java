@@ -78,6 +78,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
@@ -197,7 +198,6 @@ public class UploadResource {
 			LOG.error(problemString);
 			return Response.serverError().entity(problemString).build();
 		}
-
 
 		// Get DokumentGrund Object from form-paramter
 		List<InputPart> inputPartsDG = input.getFormDataMap().get(PART_DOKUMENT_GRUND);
@@ -693,7 +693,8 @@ public class UploadResource {
 		String partrileName,
 		MultipartFormDataInput input)
 		throws IOException, MimeTypeParseException {
-		UploadFileInfo fileInfo = RestUtil.parseUploadFile(inputParts.stream().findAny().get());
+		UploadFileInfo fileInfo =
+			RestUtil.parseUploadFile(inputParts.stream().findAny().orElseThrow(() -> new IOException("No InputParts to parse")));
 
 		// evil workaround, (Umlaute werden sonst nicht richtig übertragen!)
 		if (encodedFilename != null) {
