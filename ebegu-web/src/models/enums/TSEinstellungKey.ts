@@ -238,7 +238,7 @@ export function getTSEinstellungenKeys(): Array<TSEinstellungKey> {
         TSEinstellungKey.ANSPRUCH_AB_X_MONATEN,
         TSEinstellungKey.KITA_STUNDEN_PRO_TAG,
         TSEinstellungKey.ZUSATZLICHE_FELDER_ERSATZEINKOMMEN,
-        TSEinstellungKey.SPRACHFOERDERUNG_BESTAETIGEN
+        TSEinstellungKey.SPRACHFOERDERUNG_BESTAETIGEN,
         TSEinstellungKey.GESUCH_BEENDEN_BEI_TAUSCH_GS2,
     ];
 }
