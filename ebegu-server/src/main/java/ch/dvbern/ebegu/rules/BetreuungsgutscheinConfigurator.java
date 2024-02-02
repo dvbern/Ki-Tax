@@ -15,6 +15,17 @@
 
 package ch.dvbern.ebegu.rules;
 
+import java.math.BigDecimal;
+import java.util.EnumSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+
+import javax.annotation.Nonnull;
+
 import ch.dvbern.ebegu.entities.Einstellung;
 import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.enums.EinschulungTyp;
@@ -25,10 +36,6 @@ import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.KitaxUebergangsloesungParameter;
 import ch.dvbern.ebegu.util.KitaxUtil;
 import ch.dvbern.ebegu.util.RuleParameterUtil;
-
-import javax.annotation.Nonnull;
-import java.math.BigDecimal;
-import java.util.*;
 
 import static ch.dvbern.ebegu.enums.EinstellungKey.*;
 
@@ -95,6 +102,7 @@ public class BetreuungsgutscheinConfigurator {
 				FACHSTELLEN_TYP,
 				GEMEINDE_KEIN_GUTSCHEIN_FUER_SOZIALHILFE_EMPFAENGER,
 				ANSPRUCH_AB_X_MONATEN,
+				SPRACHFOERDERUNG_BESTAETIGEN,
 			    GESUCH_BEENDEN_BEI_TAUSCH_GS2
 		);
 	}
@@ -330,7 +338,9 @@ public class BetreuungsgutscheinConfigurator {
 		}
 
 		// - Fachstelle: Muss zwingend nach Erwerbspensum und Betreuungspensum durchgefuehrt werden
-		FachstelleBernCalcRule fachstelleBernCalcRule = new FachstelleBernCalcRule(defaultGueltigkeit, locale);
+		Einstellung sprachefoerderungBestaetigen = ruleParameterUtil.getEinstellung(SPRACHFOERDERUNG_BESTAETIGEN);
+		FachstelleBernCalcRule fachstelleBernCalcRule =
+			new FachstelleBernCalcRule(sprachefoerderungBestaetigen.getValueAsBoolean(), defaultGueltigkeit, locale);
 		addToRuleSetIfRelevantForGemeinde(fachstelleBernCalcRule, ruleParameterUtil);
 		FachstelleLuzernCalcRule fachstelleLuzrnCalcRule = new FachstelleLuzernCalcRule(defaultGueltigkeit, locale);
 		addToRuleSetIfRelevantForGemeinde(fachstelleLuzrnCalcRule, ruleParameterUtil);

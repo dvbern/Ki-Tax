@@ -29,20 +29,22 @@ import {SidenavPO} from '../page-objects/antrag/sidenav.po';
 describe('Kibon - generate Testfälle [Online-Antrag]', () => {
     const userSuperadmin = getUser('[1-Superadmin] E-BEGU Superuser');
     const userGemeinde = getUser('[6-L-SB-Gemeinde] Stefan Weibel');
-    const userKita = getUser('[3-SB-Trägerschaft-Kitas-StadtBern] Agnes Krause');
+    const userKita = getUser('[3-SB-Institution-Kita-Brünnen] Sophie Bergmann');
+    const userTraegerschaft = getUser('[3-SB-Trägerschaft-Kitas-StadtBern] Agnes Krause');
     const userGS = getUser('[5-GS] Emma Gerber');
-    const admin = getUser('[1-Superadmin] E-BEGU Superuser');
     const gesuchsPeriode: {ganze: TestPeriode, anfang: string, ende: string} = { ganze: '2023/24', anfang: '2023', ende: '2024' };
 
     before(() => {
         cy.intercept({ resourceType: 'xhr' }, { log: false }); // don't log XHRs
-        cy.login(admin);
+        cy.login(userSuperadmin);
         cy.intercept('GET', '**/benutzer/gesuchsteller').as('loadingGesuchsteller');
         cy.visit('#/testdaten');
         cy.wait('@loadingGesuchsteller');
         TestFaellePO.getGesuchstellerFaelleLoeschen().click();
         TestFaellePO.getGesuchstellerInToRemoveFaelle(userGS).click();
-        TestFaellePO.getGesucheLoeschenButton().click();
+        cy.waitForRequest('DELETE', '**/testfaelle/testfallgs/*', () => {
+            TestFaellePO.getGesucheLoeschenButton().click();
+        });
     });
 
     it('should register new user for bg', () => {
@@ -260,8 +262,8 @@ describe('Kibon - generate Testfälle [Online-Antrag]', () => {
         // PLATZBESTAETIGUNG mit Kita SB
         // !!!!!! - New User - !!!!!!
         {
-            // TODO: Change to userKita once "Kitas & Tagis Stadt Bern" can view the TFO of this test
-            cy.changeLogin(userSuperadmin);
+            cy.changeLogin(userKita);
+            cy.viewport('macbook-15');
 
             const goToBetreuungen = () => {
                 cy.get('@antragsId').then((antragsId) => cy.visit(`/#/gesuch/familiensituation/${antragsId}`));
@@ -273,12 +275,12 @@ describe('Kibon - generate Testfälle [Online-Antrag]', () => {
 
             goToBetreuungen();
             AntragBetreuungPO.getBetreuung(0,0).click();
-            AntragBetreuungPO.getWeiteresBetreuungspensumErfassenButton().click();
             AntragBetreuungPO.fillKitaBetreuungspensumForm('withValid', 'London');
             AntragBetreuungPO.getBetreuungspensumAb(0).find('input').clear().type('01.08.2023');
             AntragBetreuungPO.getBetreuungspensumBis(0).find('input').clear().type('31.07.2024');
             AntragBetreuungPO.platzBestaetigen();
 
+            cy.changeLogin(userTraegerschaft);
             goToBetreuungen();
 
             cy.waitForRequest('GET', '**/fachstellen/erweiterteBetreuung', () => {
@@ -302,7 +304,7 @@ describe('Kibon - generate Testfälle [Online-Antrag]', () => {
             AntragBetreuungPO.getBetreuungsstatus(1, 0).should('include.text', 'Abgewiesen');
             AntragBetreuungPO.getBetreuungLoeschenButton(1, 0).click();
             cy.waitForRequest('DELETE', '**/betreuungen/**', () => {
-                ConfirmDialogPO.getConfirmButton().click();
+                ConfirmDialogPO.getDvLoadingConfirmButton().click();
             });
 
             FallToolbarPO.getMobileSidenavTrigger().click();
@@ -310,7 +312,7 @@ describe('Kibon - generate Testfälle [Online-Antrag]', () => {
             FreigabePO.getFreigebenButton().click();
             cy.getDownloadUrl(() => {
                 cy.waitForRequest('GET', '**/dossier/fall/**', () => {
-                    ConfirmDialogPO.getConfirmButton().click();
+                    ConfirmDialogPO.getDvLoadingConfirmButton().click();
                 });
             }).then(downloadUrl => {
                 return cy.request(downloadUrl)
@@ -326,6 +328,8 @@ describe('Kibon - generate Testfälle [Online-Antrag]', () => {
             cy.waitForRequest('GET', '**/dossier/fall/**', () => {
                 FreigabePO.getFreigabequittungEinscannenSimulierenButton().click();
             });
+            // attempt to reduce flakyness
+            cy.wait(2000);
             SidenavPO.goTo('GESUCH_ERSTELLEN');
             AntragCreationPO.getEingangsdatum().find('input').clear().type('01.07.2023');
             cy.waitForRequest('PUT', '**/gesuche', () => {
@@ -335,26 +339,28 @@ describe('Kibon - generate Testfälle [Online-Antrag]', () => {
             cy.changeLogin(userGemeinde);
             cy.get('@antragsId').then((antragsId) => cy.visit(`/#/gesuch/freigabe/${antragsId}`));
             clickSave();
+            SidenavPO.getGesuchStatus().should('have.text', 'In Bearbeitung');
+
             cy.waitForRequest('GET', '**/verfuegung/calculate/**', () => {
                 VerfuegenPO.getFinSitAkzeptiert('AKZEPTIERT').click();
             });
-            cy.waitForRequest('PUT', '**/gesuche/status/*/GEPRUEFT', () => {
-                VerfuegenPO.getGeprueftButton().click();
-                ConfirmDialogPO.getConfirmButton().click();
-            });
+
+            VerfuegenPO.pruefeGesuch();
+            SidenavPO.getGesuchStatus().should('have.text', 'Geprüft');
 
             cy.waitForRequest('GET', '**/verfuegung/calculate/**', () => {
                 VerfuegenPO.getVerfuegenStartenButton().click();
-                ConfirmDialogPO.getConfirmButton().click();
+                ConfirmDialogPO.getDvLoadingConfirmButton().click();
             });
-
+            SidenavPO.getGesuchStatus().should('have.text', 'Verfügen');
             VerfuegenPO.getVerfuegung(0, 0).click();
             VerfuegungPO.getAnspruchberechtigtesBetreuungspensum(5).should('include.text', '80%');
             VerfuegungPO.getVerfuegungsBemerkungenKontrolliert().click();
             cy.waitForRequest('GET', '**/gesuche/dossier/**', () => {
                 VerfuegungPO.getVerfuegenButton().click();
-                ConfirmDialogPO.getConfirmButton().click();
+                ConfirmDialogPO.getDvLoadingConfirmButton().click();
             });
+            SidenavPO.getGesuchStatus().should('have.text', 'Verfügt');
         }
     });
 });

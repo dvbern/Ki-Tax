@@ -26,7 +26,7 @@ import {
     FinanzielleSituationStartPO,
     FinanzielleSituationResultatePO,
     NavigationPO,
-    SidenavPO, VerfuegenPO,
+    SidenavPO, VerfuegenPO, ConfirmDialogPO,
 } from '@dv-e2e/page-objects';
 import { FixtureFinSit } from '@dv-e2e/fixtures';
 import {GemeindeTestFall, getUser} from '@dv-e2e/types';
@@ -231,6 +231,15 @@ describe('Kibon - generate Testfälle [Gemeinde Sachbearbeiter]', () => {
         {
             cy.get('@antragsId').then((antragsId) => cy.visit(`/#/gesuch/verfuegen/${antragsId}`));
 
+            SidenavPO.getGesuchStatus().should('have.text', 'In Bearbeitung');
+
+            VerfuegenPO.getFinSitAkzeptiert('AKZEPTIERT').click();
+            VerfuegenPO.pruefeGesuch();
+            SidenavPO.getGesuchStatus().should('have.text', 'Geprüft');
+
+            VerfuegenPO.verfuegenStarten();
+            SidenavPO.getGesuchStatus().should('have.text', 'Verfügen');
+
             VerfuegenPO.getVerfuegung(0, 0).click();
             VerfuegungPO.getBetreuungspensumProzent(5).should('include.text', '25%');
             VerfuegungPO.getBetreuungspensumProzent(6).should('include.text', '25%');
@@ -239,6 +248,10 @@ describe('Kibon - generate Testfälle [Gemeinde Sachbearbeiter]', () => {
             VerfuegungPO.getBetreuungspensumProzent(9).should('include.text', '25%');
             VerfuegungPO.getBetreuungspensumProzent(10).should('include.text', '25%');
             VerfuegungPO.getBetreuungspensumProzent(11).should('include.text', '25%');
+
+            VerfuegungPO.nichtEintretenVerfuegen();
+            SidenavPO.getGesuchStatus().should('have.text', 'Verfügt');
+            VerfuegenPO.getBetreuungsstatus(0, 0).should('have.text', 'Nicht eingetreten');
         }
     });
 });
