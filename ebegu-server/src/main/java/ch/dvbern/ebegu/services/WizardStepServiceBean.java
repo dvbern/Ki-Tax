@@ -43,6 +43,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import javax.validation.constraints.NotNull;
+
 import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -150,7 +151,8 @@ public class WizardStepServiceBean extends AbstractBaseService implements Wizard
 	public List<WizardStep> createWizardStepList(Gesuch gesuch) {
 		List<WizardStep> wizardStepList = new ArrayList<>();
 
-		Boolean abwesenheitActiv = einstellungService.findEinstellung(EinstellungKey.ABWESENHEIT_AKTIV,
+		Boolean abwesenheitActiv = einstellungService.findEinstellung(
+			EinstellungKey.ABWESENHEIT_AKTIV,
 			gesuch.extractGemeinde(),
 			gesuch.getGesuchsperiode()).getValueAsBoolean();
 
@@ -499,7 +501,10 @@ public class WizardStepServiceBean extends AbstractBaseService implements Wizard
 					gemeindeService.getGemeindeStammdatenByGemeindeId(verfuegenWizardStep.getGesuch()
 						.getDossier()
 						.getGemeinde()
-						.getId()).get();
+						.getId()).orElseThrow(() -> new EbeguEntityNotFoundException(
+						"gesuchVerfuegen",
+						ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
+						verfuegenWizardStep.getGesuch().getDossier().getGemeinde().getId()));
 				if (gemeindeStammdaten.getBenachrichtigungBgEmailAuto()) {
 					if (!verfuegenWizardStep.getGesuch().isMutation()) {
 						// Erstgesuch
