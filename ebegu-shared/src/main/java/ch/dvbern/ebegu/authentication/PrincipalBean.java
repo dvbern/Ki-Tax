@@ -120,7 +120,6 @@ public class PrincipalBean {
 		return !"anonymous".equalsIgnoreCase(getPrincipal().getName());
 	}
 
-	@Nonnull
 	public Principal getPrincipal() {
 		return principal;
 	}
