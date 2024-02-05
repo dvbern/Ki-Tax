@@ -72,12 +72,11 @@ describe('Kibon - Tagesschule Only [Superadmin]', () => {
 
         // anmeldung akkzeptieren
         AntragBetreuungPO.getBetreuung(0, 0).click();
-        AntragBetreuungPO.getPlatzAkzeptierenButton().click();
-        ConfirmDialogPO.getDvLoadingConfirmButton().click();
+        AntragBetreuungPO.platzAkzeptieren();
 
         // Antrag abschliessen
         SidenavPO.goTo('VERFUEGEN');
-        VerfuegenPO.getFinSitAkzeptiert('AKZEPTIERT').click();
+        VerfuegenPO.finSitAkzeptieren();
         cy.waitForRequest('GET', '**/gesuche/dossier/**', () => {
             VerfuegenPO.getAbschliessenButton().click();
             ConfirmDialogPO.getDvLoadingConfirmButton().click();

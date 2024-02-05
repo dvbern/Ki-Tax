@@ -167,9 +167,9 @@ describe('Kibon - Online TS-Anmeldung (Mischgesuch) [Gesuchsteller]', () => {
         });
     };
 
-    const finSitAkzeptieren = () => {
+    const finSitAkzeptierenUndPruefen = () => {
         SidenavPO.goTo('VERFUEGEN');
-        VerfuegenPO.getFinSitAkzeptiert('AKZEPTIERT').click();
+        finSitAkzeptierenUndPruefen();
 
         cy.waitForRequest('GET', '**/verfuegung/calculate/**', () => {
             VerfuegenPO.getGeprueftButton().click();
