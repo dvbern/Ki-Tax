@@ -66,10 +66,10 @@ describe('Kibon - generate Testfälle [Online-Antrag]', () => {
         const openAntrag = () => {
             cy.login(userGS);
             cy.visit('/#/dossier/gesuchstellerDashboard');
-            cy.intercept('GET', '**/dossier/fall/**').as('openingAntrag');
             cy.waitForRequest('GET', '**/dossier/fall/**', () => {
                 GesuchstellendeDashboardPO.getAntragBearbeitenButton(gesuchsPeriode.ganze).click();
             });
+          AntragCreationPO.getPageTitle().should('include.text', 'Antrag');
         };
 
         //INIT Antrag

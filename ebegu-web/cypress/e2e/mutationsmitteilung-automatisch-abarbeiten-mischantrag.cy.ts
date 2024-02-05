@@ -62,6 +62,7 @@ describe('Kibon - Testet das Feature der automatischen Abarbeitung von Mutations
         AntragBetreuungPO.selectTagesschulBetreuung();
         AntragBetreuungPO.fillTagesschulBetreuungsForm('withValid', 'Paris');
         AntragBetreuungPO.saveBetreuung();
+        AntragBetreuungPO.getPageTitle().should('include.text', 'Betreuung');
 
         SidenavPO.goTo('DOKUMENTE');
 
