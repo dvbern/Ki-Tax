@@ -1221,15 +1221,18 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		String messageKey = AntragStatus.class.getSimpleName() + '_' + gesuch.getStatus().name();
 		row.setGesuchStatus(ServerMessageUtil.getMessage(messageKey, locale,
 				requireNonNull(gesuch.getFall().getMandant())));
+		row.setFallId(Integer.parseInt(String.valueOf(gesuch.getFall().getFallNummer())));
+		row.setGemeinde(gesuch.getDossier().getGemeinde().getName());
+		row.setBgNummer(betreuung.getBGNummer());
+		if (!isAllowedBgDaten(betreuung)) {
+			return;
+		}
 		row.setEingangsdatum(gesuch.getEingangsdatum());
 		for (AntragStatusHistory antragStatusHistory : gesuch.getAntragStatusHistories()) {
 			if (AntragStatus.getAllVerfuegtNotIgnoriertStates().contains(antragStatusHistory.getStatus())) {
 				row.setVerfuegungsdatum(antragStatusHistory.getTimestampVon().toLocalDate());
 			}
 		}
-		row.setFallId(Integer.parseInt(String.valueOf(gesuch.getFall().getFallNummer())));
-		row.setGemeinde(gesuch.getDossier().getGemeinde().getName());
-		row.setBgNummer(betreuung.getBGNummer());
 	}
 
 	private void addGesuchsteller1ToGesuchstellerKinderBetreuungDataRow(
@@ -1341,6 +1344,9 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		Kind kind = betreuung.getKind().getKindJA();
 		row.setKindName(kind.getNachname());
 		row.setKindVorname(kind.getVorname());
+		if (!isAllowedBgDaten(betreuung)) {
+			return;
+		}
 		row.setKindGeburtsdatum(kind.getGeburtsdatum());
 		if (row.getKindGeburtsdatum() == null || row.getKindGeburtsdatum().isBefore(MIN_DATE)) {
 			row.setKindGeburtsdatum(MIN_DATE);
@@ -1396,64 +1402,74 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		);
 		row.setBetreuungspensum(MathUtil.DEFAULT.from(zeitabschnitt.getBetreuungspensumProzent()));
 
-		// Normalfall: Kanton=Kanton, Gemeinde=0, Total=Kanton
-		BigDecimal anspruchsPensumKanton =
-			new BigDecimal(zeitabschnitt.getBgCalculationResultAsiv().getAnspruchspensumProzent());
-		BigDecimal anspruchsPensumGemeinde = BigDecimal.ZERO;
-		BigDecimal anspruchsPensumTotal = anspruchsPensumKanton;
-		if (zeitabschnitt.isHasGemeindeSpezifischeBerechnung()
-			&& zeitabschnitt.getBgCalculationResultGemeinde() != null) {
-			// Spezialfall: Kanton=Kanton, Gemeinde=Gemeinde-Kanton, Total=Gemeinde
-			BigDecimal anspruchsPensumTotalGemeinde =
-				new BigDecimal(zeitabschnitt.getBgCalculationResultGemeinde().getAnspruchspensumProzent());
-			anspruchsPensumGemeinde =
-				MathUtil.DEFAULT.subtractNullSafe(anspruchsPensumTotalGemeinde, anspruchsPensumKanton);
-			anspruchsPensumTotal = anspruchsPensumTotalGemeinde;
-		}
-		row.setAnspruchsPensumKanton(anspruchsPensumKanton);
-		row.setAnspruchsPensumGemeinde(anspruchsPensumGemeinde);
-		row.setAnspruchsPensumTotal(anspruchsPensumTotal);
+		if (isAllowedBgDaten(betreuung)) {
+			// Normalfall: Kanton=Kanton, Gemeinde=0, Total=Kanton
+			BigDecimal anspruchsPensumKanton =
+				new BigDecimal(zeitabschnitt.getBgCalculationResultAsiv().getAnspruchspensumProzent());
+			BigDecimal anspruchsPensumGemeinde = BigDecimal.ZERO;
+			BigDecimal anspruchsPensumTotal = anspruchsPensumKanton;
+			if (zeitabschnitt.isHasGemeindeSpezifischeBerechnung()
+				&& zeitabschnitt.getBgCalculationResultGemeinde() != null) {
+				// Spezialfall: Kanton=Kanton, Gemeinde=Gemeinde-Kanton, Total=Gemeinde
+				BigDecimal anspruchsPensumTotalGemeinde =
+					new BigDecimal(zeitabschnitt.getBgCalculationResultGemeinde().getAnspruchspensumProzent());
+				anspruchsPensumGemeinde =
+					MathUtil.DEFAULT.subtractNullSafe(anspruchsPensumTotalGemeinde, anspruchsPensumKanton);
+				anspruchsPensumTotal = anspruchsPensumTotalGemeinde;
+			}
+			row.setAnspruchsPensumKanton(anspruchsPensumKanton);
+			row.setAnspruchsPensumGemeinde(anspruchsPensumGemeinde);
+			row.setAnspruchsPensumTotal(anspruchsPensumTotal);
 
-		// Normalfall: Kanton=Kanton, Gemeinde=0, Total=Kanton
-		BigDecimal bgPensumKanton = zeitabschnitt.getBgCalculationResultAsiv().getBgPensumProzent();
-		BigDecimal bgPensumGemeinde = BigDecimal.ZERO;
-		BigDecimal bgPensumTotal = bgPensumKanton;
-		if (zeitabschnitt.isHasGemeindeSpezifischeBerechnung()
-			&& zeitabschnitt.getBgCalculationResultGemeinde() != null) {
-			// Spezialfall: Kanton=Kanton, Gemeinde=Gemeinde-Kanton, Total=Gemeinde
-			BigDecimal bgPensumTotalGemeinde = zeitabschnitt.getBgCalculationResultGemeinde().getBgPensumProzent();
-			bgPensumGemeinde = MathUtil.DEFAULT.subtractNullSafe(bgPensumTotalGemeinde, bgPensumKanton);
-			bgPensumTotal = bgPensumTotalGemeinde;
-		}
-		row.setBgPensumKanton(bgPensumKanton);
-		row.setBgPensumGemeinde(bgPensumGemeinde);
-		row.setBgPensumTotal(bgPensumTotal);
-		row.setBgStunden(zeitabschnitt.getBgPensumZeiteinheit());
-		// Wir koennen nicht die gespeicherte Zeiteinheit nehmen, da diese entweder Prozent oder Tage/Stunden ist
-		// Daher fix TAGE fuer Kita und STUNDEN fuer TFO
-		PensumUnits zeiteinheit =
-			betreuung.getBetreuungsangebotTyp() == BetreuungsangebotTyp.KITA ? PensumUnits.DAYS : PensumUnits.HOURS;
-		row.setBgPensumZeiteinheit(ServerMessageUtil.translateEnumValue(zeiteinheit, locale,
+			// Normalfall: Kanton=Kanton, Gemeinde=0, Total=Kanton
+			BigDecimal bgPensumKanton = zeitabschnitt.getBgCalculationResultAsiv().getBgPensumProzent();
+			BigDecimal bgPensumGemeinde = BigDecimal.ZERO;
+			BigDecimal bgPensumTotal = bgPensumKanton;
+			if (zeitabschnitt.isHasGemeindeSpezifischeBerechnung()
+				&& zeitabschnitt.getBgCalculationResultGemeinde() != null) {
+				// Spezialfall: Kanton=Kanton, Gemeinde=Gemeinde-Kanton, Total=Gemeinde
+				BigDecimal bgPensumTotalGemeinde = zeitabschnitt.getBgCalculationResultGemeinde().getBgPensumProzent();
+				bgPensumGemeinde = MathUtil.DEFAULT.subtractNullSafe(bgPensumTotalGemeinde, bgPensumKanton);
+				bgPensumTotal = bgPensumTotalGemeinde;
+			}
+			row.setBgPensumKanton(bgPensumKanton);
+			row.setBgPensumGemeinde(bgPensumGemeinde);
+			row.setBgPensumTotal(bgPensumTotal);
+			row.setBgStunden(zeitabschnitt.getBgPensumZeiteinheit());
+
+			// Wir koennen nicht die gespeicherte Zeiteinheit nehmen, da diese entweder Prozent oder Tage/Stunden ist
+			// Daher fix TAGE fuer Kita und STUNDEN fuer TFO
+			PensumUnits zeiteinheit =
+				betreuung.getBetreuungsangebotTyp() == BetreuungsangebotTyp.KITA ? PensumUnits.DAYS : PensumUnits.HOURS;
+			row.setBgPensumZeiteinheit(ServerMessageUtil.translateEnumValue(zeiteinheit, locale,
 				requireNonNull(betreuung.extractGemeinde().getMandant())));
 
-		row.setVollkosten(zeitabschnitt.getVollkosten());
-		row.setElternbeitrag(zeitabschnitt.getElternbeitrag());
-		// Normalfall: Kanton=Kanton, Gemeinde=0, Total=Kanton
-		BigDecimal verguenstigungKanton = zeitabschnitt.getBgCalculationResultAsiv().getVerguenstigung();
-		BigDecimal verguenstigungGemeinde = BigDecimal.ZERO;
-		BigDecimal verguenstigungTotal = verguenstigungKanton;
-		if (zeitabschnitt.isHasGemeindeSpezifischeBerechnung()
-			&& zeitabschnitt.getBgCalculationResultGemeinde() != null) {
-			// Spezialfall: Kanton=Kanton, Gemeinde=Gemeinde-Kanton, Total=Gemeinde
-			BigDecimal verguenstigungTotalGemeinde =
-				zeitabschnitt.getBgCalculationResultGemeinde().getVerguenstigung();
-			verguenstigungGemeinde =
-				MathUtil.DEFAULT.subtractNullSafe(verguenstigungTotalGemeinde, verguenstigungKanton);
-			verguenstigungTotal = verguenstigungTotalGemeinde;
+			row.setVollkosten(zeitabschnitt.getVollkosten());
+			row.setElternbeitrag(zeitabschnitt.getElternbeitrag());
+			// Normalfall: Kanton=Kanton, Gemeinde=0, Total=Kanton
+			BigDecimal verguenstigungKanton = zeitabschnitt.getBgCalculationResultAsiv().getVerguenstigung();
+			BigDecimal verguenstigungGemeinde = BigDecimal.ZERO;
+			BigDecimal verguenstigungTotal = verguenstigungKanton;
+			if (zeitabschnitt.isHasGemeindeSpezifischeBerechnung()
+				&& zeitabschnitt.getBgCalculationResultGemeinde() != null) {
+				// Spezialfall: Kanton=Kanton, Gemeinde=Gemeinde-Kanton, Total=Gemeinde
+				BigDecimal verguenstigungTotalGemeinde =
+					zeitabschnitt.getBgCalculationResultGemeinde().getVerguenstigung();
+				verguenstigungGemeinde =
+					MathUtil.DEFAULT.subtractNullSafe(verguenstigungTotalGemeinde, verguenstigungKanton);
+				verguenstigungTotal = verguenstigungTotalGemeinde;
+			}
+			row.setVerguenstigungKanton(verguenstigungKanton);
+			row.setVerguenstigungGemeinde(verguenstigungGemeinde);
+			row.setVerguenstigungTotal(verguenstigungTotal);
 		}
-		row.setVerguenstigungKanton(verguenstigungKanton);
-		row.setVerguenstigungGemeinde(verguenstigungGemeinde);
-		row.setVerguenstigungTotal(verguenstigungTotal);
+
+	}
+
+	private boolean isAllowedBgDaten(Betreuung betreuung) {
+		var auszahlungAnEltern = betreuung.isAuszahlungAnEltern();
+		var isInstitutionUser = principalBean.isCallerInAnyOfRole(UserRole.getInstitutionTraegerschaftRoles());
+		return !(auszahlungAnEltern && isInstitutionUser);
 	}
 
 	@SuppressWarnings("Duplicates")
