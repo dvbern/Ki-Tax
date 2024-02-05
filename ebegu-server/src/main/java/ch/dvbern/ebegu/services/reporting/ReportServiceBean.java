@@ -1878,6 +1878,8 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 		// Betreuung
 		addBetreuungToGesuchstellerKinderBetreuungDataRow(row, zeitabschnitt, gueltigeBetreuung, locale);
 
+		row.setShowBgSensitiveData(isAllowedBgDaten(gueltigeBetreuung));
+
 		return row;
 	}
 
