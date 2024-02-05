@@ -387,6 +387,8 @@ UPDATE einstellung set value = '01.08.2024' where gesuchsperiode_id = @gesuchspe
 UPDATE einstellung set value = '01.08.2024' where gesuchsperiode_id = @gesuchsperiode_24_25 and einstellung_key = 'GEMEINDE_TAGESSCHULE_ANMELDUNGEN_DATUM_AB' and gemeinde_id is null;
 UPDATE einstellung set value = '01.08.2024' where gesuchsperiode_id = @gesuchsperiode_24_25 and einstellung_key = 'GEMEINDE_TAGESSCHULE_ERSTER_SCHULTAG' and gemeinde_id is null;
 UPDATE einstellung set value = 'true' where gesuchsperiode_id = @gesuchsperiode_24_25 and einstellung_key = 'ZUSATZLICHE_FELDER_ERSATZEINKOMMEN' and gemeinde_id is null;
+UPDATE einstellung set value = 'true' where gesuchsperiode_id = @gesuchsperiode_24_25 and einstellung_key = 'SPRACHFOERDERUNG_BESTAETIGEN' and gemeinde_id is null;
+UPDATE einstellung set value = 'true' where gesuchsperiode_id = @gesuchsperiode_24_25 and einstellung_key = 'GESUCH_BEENDEN_BEI_TAUSCH_GS2' and gemeinde_id is null;
 
 UPDATE einstellung set value = '08.05.2024' where gesuchsperiode_id = @gesuchsperiode_24_25 and einstellung_key = 'GEMEINDE_FERIENINSEL_ANMELDUNGEN_DATUM_AB' and gemeinde_id = @gemeinde_paris;
 UPDATE einstellung set value = '08.05.2024' where gesuchsperiode_id = @gesuchsperiode_24_25 and einstellung_key = 'GEMEINDE_TAGESSCHULE_ANMELDUNGEN_DATUM_AB' and gemeinde_id = @gemeinde_paris;
