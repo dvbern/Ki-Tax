@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2023 DV Bern AG, Switzerland
+ * Copyright (C) 2024 DV Bern AG, Switzerland
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -15,32 +15,15 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {SidenavStep} from '@dv-e2e/types';
-
-const getSidenavStep = (step: SidenavStep) => {
-	return cy.getByData(`sidenav.${step}`);
+const getGS1 = () => {
+	return cy.getByData('erwerbspensen-gs1');
 };
 
-const goTo = (step: SidenavStep): void  => {
-    getSidenavStep(step).click();
+const getGS2 = () => {
+	return cy.getByData('erwerbspensen-gs2');
 };
 
-const getGesuchStatus = () => {
-    return cy.getByData('gesuch.status');
-};
-
-const getGesuchsDaten = () => {
-	return cy.getByData('antrags-daten');
-};
-
-const getSidenavStepStatus = (step: SidenavStep) => {
-	return getSidenavStep(step).siblings('.fa').first();
-};
-
-export const SidenavPO = {
-    goTo,
-    getGesuchStatus,
-    getGesuchsDaten,
-    getSidenavStep,
-    getSidenavStepStatus
+export const BeschaeftigungspensumListPO = {
+    getGS1,
+    getGS2,
 };

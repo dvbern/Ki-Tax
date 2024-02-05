@@ -588,6 +588,21 @@
                         </div>
                     </div>
 
+                    <!-- Sprachfoerderung Bestaetigen -->
+                    <div class="row margin-bottom-50" ng-if="vm.showSprachfoerderungBestaetigenCheckBox()">
+                        <div class="col-xs-12 dv-input-container-question">
+                            <div class="checkbox">
+                                <md-checkbox ng-model="vm.getErweiterteBetreuungJA().sprachfoerderungBestaetigt"
+                                             name="sprachfoerderungBestaetigt"
+                                             dv-enable-element
+                                             ng-disabled="!vm.enableFieldsEditedByGemeinde() && !vm.isBetreuungsstatusWarten()"
+                                             aria-label="{{vm.isKita() ? 'SPRACHFOERDERUNG_BESTAETIGEN_KITA' : 'SPRACHFOERDERUNG_BESTAETIGEN_TFO' |translate}}">
+                                    <span data-translate="{{vm.isKita() ? 'SPRACHFOERDERUNG_BESTAETIGEN_KITA' : 'SPRACHFOERDERUNG_BESTAETIGEN_TFO'}}"></span>
+                                </md-checkbox>
+                            </div>
+                        </div>
+                    </div>
+
                     <!--Betreuung in Gemeinde-->
                     <div class="row"
                          dv-show-element

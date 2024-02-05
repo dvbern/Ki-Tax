@@ -541,4 +541,13 @@ public class Familiensituation extends AbstractMutableEntity {
 	public void setAuszahlungAusserhalbVonKibon(boolean auszahlungAusserhalbVonKibon) {
 		this.auszahlungAusserhalbVonKibon = auszahlungAusserhalbVonKibon;
 	}
+
+	public boolean isKonkubinatReachingMinDauerIn(Gesuchsperiode gesuchsperiode) {
+		if (this.startKonkubinat == null) {
+			return false;
+		}
+		final LocalDate stichtag =
+			this.getStartKonkubinatPlusMindauerEndOfMonth(this.startKonkubinat);
+		return gesuchsperiode.getGueltigkeit().contains(stichtag);
+	}
 }

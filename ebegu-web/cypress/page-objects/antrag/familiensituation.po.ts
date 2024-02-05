@@ -24,6 +24,30 @@ const getFamiliensituationsStatus = (status: string) => {
 	return cy.getByData('familienstatus.' + status);
 };
 
+const getKonkubinatStart = () => {
+	return cy.getByData('container.konkubinat-start').find('input');
+};
+
+const getAenderunPer = () => {
+	return cy.getByData('container.aenderungen-per').find('input');
+};
+
+const getGeteilteObhutOption = (answer: string) => {
+	return cy.getByData('container.geteilte-obhut', 'geteilte-obhut-' + answer).find('label');
+};
+
+const getUnterhaltsvereinbarungOption = (answer:string) => {
+	return cy.getByData('container.unterhaltsvereinbarung', answer).find('label');
+};
+
+const getGesuchstellendeKardinalitaet = (kardinalitaet: string) => {
+	return cy.getByData('gesuchsteller-kardinalitaet.' + kardinalitaet).find('label');
+};
+
+const getUnterhaltsvereinbarungNichtMoeglichBegruendung = () => {
+	return cy.getByData('begruendung-unterhaltsvereinbarung-nicht-moeglich');
+};
+
 const fillFamiliensituationForm = (dataset: keyof typeof FixtureFamSit) => {
     FixtureFamSit[dataset](({ familiensituation }) => {
         getFamiliensituationsStatus(familiensituation.familienstand).find('label').click();
@@ -33,6 +57,13 @@ const fillFamiliensituationForm = (dataset: keyof typeof FixtureFamSit) => {
 export const AntragFamSitPO = {
     //page objects
     getPageTitle,
+    getFamiliensituationsStatus,
+    getKonkubinatStart,
+    getGeteilteObhutOption,
+    getUnterhaltsvereinbarungOption,
+    getAenderunPer,
+    getGesuchstellendeKardinalitaet,
+    getUnterhaltsvereinbarungNichtMoeglichBegruendung,
     //page actions
     fillFamiliensituationForm,
 };

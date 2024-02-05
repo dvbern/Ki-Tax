@@ -254,6 +254,7 @@ UPDATE einstellung set value = '0' WHERE einstellung_key = 'GEMEINDE_PAUSCHALBET
 UPDATE einstellung set value = 'false' WHERE einstellung_key = 'GEMEINDE_KEIN_GUTSCHEIN_FUER_SOZIALHILFE_EMPFAENGER' AND gesuchsperiode_id = @gesuchperiode_22_23_id and mandant_id = @mandant_id_ar;
 UPDATE einstellung set value = '3' WHERE einstellung_key = 'ANSPRUCH_AB_X_MONATEN' AND gesuchsperiode_id = @gesuchperiode_22_23_id AND mandant_id =  null;
 UPDATE einstellung set value = '10' WHERE einstellung_key = 'KITA_STUNDEN_PRO_TAG' AND gesuchsperiode_id = @gesuchperiode_22_23_id AND mandant_id =  null;
+INSERT IGNORE INTO einstellung (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version, einstellung_key, value, gemeinde_id, gesuchsperiode_id, mandant_id, erklaerung) VALUES ( UNHEX('DEEFA1E3DF9E441E892CA652A7484D39'), '2023-12-07 15:55:42', '2023-12-08 09:34:00', 'flyway', 'flyway', 0, 'SPRACHFOERDERUNG_BESTAETIGEN', 'false', null, @gesuchperiode_22_23_id, null, null);
 
 # Gesuchsperiode 23-24 Einstellungen :
 UPDATE einstellung set value = 'false' WHERE einstellung_key = 'KESB_PLATZIERUNG_DEAKTIVIEREN' AND gesuchsperiode_id = @gesuchperiode_23_id and mandant_id =  null;
@@ -369,6 +370,7 @@ UPDATE einstellung set value = 'false' WHERE einstellung_key = 'GEMEINDE_KEIN_GU
 UPDATE einstellung set value = '7' WHERE einstellung_key = 'MAX_VERGUENSTIGUNG_PRIMAR_PRO_STD' AND gesuchsperiode_id = @gesuchperiode_23_id and mandant_id =  null;
 UPDATE einstellung set value = '3' WHERE einstellung_key = 'ANSPRUCH_AB_X_MONATEN' AND gesuchsperiode_id = @gesuchperiode_23_id and mandant_id =  null;
 UPDATE einstellung set value = '10' WHERE einstellung_key = 'KITA_STUNDEN_PRO_TAG' AND gesuchsperiode_id = @gesuchperiode_23_id and mandant_id =  null;
+INSERT IGNORE INTO einstellung (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version, einstellung_key, value, gemeinde_id, gesuchsperiode_id, mandant_id, erklaerung) VALUES ( UNHEX('EEEFA1E3DF9E441E892CA652A7484D39'), '2023-12-07 15:55:42', '2023-12-08 09:34:00', 'flyway', 'flyway', 0, 'SPRACHFOERDERUNG_BESTAETIGEN', 'false', null, @gesuchperiode_23_id, null, null);
 
 # Test-Institutionen erstellen
 INSERT IGNORE INTO traegerschaft (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version, name, active, mandant_id)

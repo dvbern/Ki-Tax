@@ -47,9 +47,14 @@ import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.TAGESFAMILIEN;
  * Verweis 16.9.3
  */
 public class FachstelleBernCalcRule extends AbstractFachstellenCalcRule {
+	private boolean sprachefoerderungBestaetigenAktiviert;
 
-	public FachstelleBernCalcRule(@Nonnull DateRange validityPeriod, @Nonnull Locale locale) {
+	public FachstelleBernCalcRule(
+		boolean sprachefoerderungBestaetigenAktiviert,
+		@Nonnull DateRange validityPeriod,
+		@Nonnull Locale locale) {
 		super(RuleKey.FACHSTELLE, RuleType.GRUNDREGEL_CALC, RuleValidity.ASIV, validityPeriod, locale);
+		this.sprachefoerderungBestaetigenAktiviert = sprachefoerderungBestaetigenAktiviert;
 	}
 
 	@Override
@@ -68,34 +73,47 @@ public class FachstelleBernCalcRule extends AbstractFachstellenCalcRule {
 		boolean betreuungspensumMustBeAtLeastFachstellenpensum = inputData.isBetreuungspensumMustBeAtLeastFachstellenpensum();
 		BigDecimal pensumBetreuung = inputData.getBetreuungspensumProzent();
 		int pensumAnspruch = inputData.getAnspruchspensumProzent();
-
 		// Das Fachstellen-Pensum wird immer auf 5-er Schritte gerundet
 		int roundedPensumFachstelle = MathUtil.roundIntToFives(pensum);
-		if (roundedPensumFachstelle > 0 && roundedPensumFachstelle > pensumAnspruch) {
-			if (!betreuungspensumMustBeAtLeastFachstellenpensum
-				|| pensumBetreuung.compareTo(BigDecimal.valueOf(roundedPensumFachstelle)) >= 0) {
-				// Anspruch ist immer mindestens das Pensum der Fachstelle, ausser das Restpensum lässt dies nicht mehr zu
-				inputData.setAnspruchspensumProzent(roundedPensumFachstelle);
-				PensumFachstelle pensumFachstelle =
-					findPensumFachstelleForGueltigkeit(betreuung.getKind().getKindJA(), inputData.getParent().getGueltigkeit());
+		if (roundedPensumFachstelle > 0) {
+			// Bei Sprachliche Integration muss die sprachfoerderung bestaetigt werden
+			if (showFachstelleSprachlicheIntegrationNichtBestaetigtBemerkung(
+				inputData.getIntegrationTypFachstellenPensum(),
+				platz)) {
 				inputData.addBemerkung(
-					MsgKey.FACHSTELLE_MSG,
-					getLocale(),
-					getIndikationName(pensumFachstelle, betreuung),
-					getFachstelleName(pensumFachstelle.getFachstelle())
-				);
-			} else {
-				// Es gibt ein Fachstelle Pensum, aber das Betreuungspensum ist zu tief. Wir muessen uns das Fachstelle Pensum als
-				// Restanspruch merken, damit es für eine eventuelle andere Betreuung dieses Kindes noch gilt!
-				int verfuegbarerRestanspruch = inputData.getAnspruchspensumRest();
-				// wir muessen nur was machen wenn wir schon einen Restanspruch gesetzt haben
-				if (verfuegbarerRestanspruch < roundedPensumFachstelle) {
-					inputData.setAnspruchspensumRest(roundedPensumFachstelle);
+					MsgKey.FACHSTELLE_SPRACHEFOEDERUNG_NICHT_BESTAETIGT_MSG,
+					getLocale());
+				return;
+			}
+			if (roundedPensumFachstelle > pensumAnspruch) {
+				if (!betreuungspensumMustBeAtLeastFachstellenpensum
+					|| pensumBetreuung.compareTo(BigDecimal.valueOf(roundedPensumFachstelle)) >= 0) {
+					// Anspruch ist immer mindestens das Pensum der Fachstelle, ausser das Restpensum lässt dies nicht mehr zu
+					inputData.setAnspruchspensumProzent(roundedPensumFachstelle);
+					PensumFachstelle pensumFachstelle =
+						findPensumFachstelleForGueltigkeit(
+							betreuung.getKind().getKindJA(),
+							inputData.getParent().getGueltigkeit());
+					inputData.addBemerkung(
+						MsgKey.FACHSTELLE_MSG,
+						getLocale(),
+						getIndikationName(pensumFachstelle, betreuung),
+						getFachstelleName(pensumFachstelle.getFachstelle())
+					);
+				} else {
+					// Es gibt ein Fachstelle Pensum, aber das Betreuungspensum ist zu tief. Wir muessen uns das Fachstelle
+					// Pensum als
+					// Restanspruch merken, damit es für eine eventuelle andere Betreuung dieses Kindes noch gilt!
+					int verfuegbarerRestanspruch = inputData.getAnspruchspensumRest();
+					// wir muessen nur was machen wenn wir schon einen Restanspruch gesetzt haben
+					if (verfuegbarerRestanspruch < roundedPensumFachstelle) {
+						inputData.setAnspruchspensumRest(roundedPensumFachstelle);
+					}
+					inputData.addBemerkung(
+						MsgKey.FACHSTELLE_SPRACHLICHE_INTEGRATION_ZU_TIEF_MSG,
+						getLocale(),
+						roundedPensumFachstelle);
 				}
-				inputData.addBemerkung(
-					MsgKey.FACHSTELLE_SPRACHLICHE_INTEGRATION_ZU_TIEF_MSG,
-					getLocale(),
-					roundedPensumFachstelle);
 			}
 		}
 	}
@@ -103,5 +121,18 @@ public class FachstelleBernCalcRule extends AbstractFachstellenCalcRule {
 	@Override
 	public boolean isRelevantForGemeinde(@Nonnull Map<EinstellungKey, Einstellung> einstellungMap) {
 		return super.getFachstellenTypFromEinstellungen(einstellungMap) == FachstellenTyp.BERN;
+	}
+
+	private boolean showFachstelleSprachlicheIntegrationNichtBestaetigtBemerkung(
+		@Nonnull IntegrationTyp integrationTyp,
+		@Nonnull AbstractPlatz platz) {
+		if (!integrationTyp.equals(IntegrationTyp.SPRACHLICHE_INTEGRATION) || !sprachefoerderungBestaetigenAktiviert) {
+			return false;
+		}
+		var betreuung = (Betreuung) platz;
+		if (betreuung.getErweiterteBetreuungContainer().getErweiterteBetreuungJA() == null) {
+			return true;
+		}
+		return !betreuung.getErweiterteBetreuungContainer().getErweiterteBetreuungJA().isSprachfoerderungBestaetigt();
 	}
 }

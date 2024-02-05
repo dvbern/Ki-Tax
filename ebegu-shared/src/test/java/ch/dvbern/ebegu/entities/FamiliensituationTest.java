@@ -19,11 +19,16 @@ package ch.dvbern.ebegu.entities;
 
 import java.time.LocalDate;
 
+
 import ch.dvbern.ebegu.enums.EnumFamilienstatus;
 import ch.dvbern.ebegu.enums.EnumGesuchstellerKardinalitaet;
 import ch.dvbern.ebegu.enums.UnterhaltsvereinbarungAnswer;
+import ch.dvbern.ebegu.types.DateRange;
 import org.junit.Assert;
 import org.junit.Test;
+
+import static org.hamcrest.MatcherAssert.*;
+import static org.hamcrest.Matchers.*;
 
 public class FamiliensituationTest {
 
@@ -114,5 +119,50 @@ public class FamiliensituationTest {
 		//NICHT GETEILTE OBHUT UND KEINE UNTERHALTSVEREINBARUNG
 		familiensituation.setUnterhaltsvereinbarung(UnterhaltsvereinbarungAnswer.NEIN_UNTERHALTSVEREINBARUNG);
 		Assert.assertTrue(familiensituation.hasSecondGesuchsteller(referenzDatum));
+	}
+
+	@Test
+	public void shouldNotBeReachingMinDauerOfInGP2IfStartKonkubinatIsOlderThan2Years() {
+		Familiensituation familiensituation = new Familiensituation();
+		Gesuchsperiode gesuchsperiode = new Gesuchsperiode();
+		gesuchsperiode.setGueltigkeit(new DateRange(LocalDate.of(2024,8,1), LocalDate.of(2025,7,31)));
+		familiensituation.setStartKonkubinat(LocalDate.of(2022, 7,31));
+		assertThat(familiensituation.isKonkubinatReachingMinDauerIn(gesuchsperiode), is(false));
+	}
+
+	@Test
+	public void shouldBeReachingMinDauerOf2InGPIfStartKonkubinatIs2YearsBeforeGPStart() {
+		Familiensituation familiensituation = new Familiensituation();
+		Gesuchsperiode gesuchsperiode = new Gesuchsperiode();
+		gesuchsperiode.setGueltigkeit(new DateRange(LocalDate.of(2024,8,1), LocalDate.of(2025,7,31)));
+		familiensituation.setStartKonkubinat(LocalDate.of(2022, 8,1));
+		assertThat(familiensituation.isKonkubinatReachingMinDauerIn(gesuchsperiode), is(false));
+	}
+
+	@Test
+	public void shouldBeReachingMinDauerOf2InGPIfStartKonkubinatIs2YearsBeforeDuringGP() {
+		Familiensituation familiensituation = new Familiensituation();
+		Gesuchsperiode gesuchsperiode = new Gesuchsperiode();
+		gesuchsperiode.setGueltigkeit(new DateRange(LocalDate.of(2024,8,1), LocalDate.of(2025,7,31)));
+		familiensituation.setStartKonkubinat(LocalDate.of(2023, 1,1));
+		assertThat(familiensituation.isKonkubinatReachingMinDauerIn(gesuchsperiode), is(false));
+	}
+
+	@Test
+	public void shouldBeReachingMinDauerOf2InGPIfStartKonkubinatIs2YearsBeforeGPEnd() {
+		Familiensituation familiensituation = new Familiensituation();
+		Gesuchsperiode gesuchsperiode = new Gesuchsperiode();
+		gesuchsperiode.setGueltigkeit(new DateRange(LocalDate.of(2024,8,1), LocalDate.of(2025,7,31)));
+		familiensituation.setStartKonkubinat(LocalDate.of(2023, 7,31));
+		assertThat(familiensituation.isKonkubinatReachingMinDauerIn(gesuchsperiode), is(false));
+	}
+
+	@Test
+	public void shouldNotBeReachingMinDauerOf2InGPIfStartKonkubinatIsYoungerThan2YearsBeforeGPEnd() {
+		Familiensituation familiensituation = new Familiensituation();
+		Gesuchsperiode gesuchsperiode = new Gesuchsperiode();
+		gesuchsperiode.setGueltigkeit(new DateRange(LocalDate.of(2024,8,1), LocalDate.of(2025,7,31)));
+		familiensituation.setStartKonkubinat(LocalDate.of(2023, 8, 1));
+		assertThat(familiensituation.isKonkubinatReachingMinDauerIn(gesuchsperiode), is(false));
 	}
 }

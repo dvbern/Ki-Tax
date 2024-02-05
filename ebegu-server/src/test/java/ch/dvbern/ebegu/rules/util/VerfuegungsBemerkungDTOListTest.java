@@ -33,6 +33,9 @@ import ch.dvbern.ebegu.types.DateRange;
 import org.junit.Assert;
 import org.junit.Test;
 
+import static org.hamcrest.MatcherAssert.*;
+import static org.hamcrest.Matchers.*;
+
 public class VerfuegungsBemerkungDTOListTest {
 
 	private final DateRange dateRangeFullAugust =
@@ -43,6 +46,8 @@ public class VerfuegungsBemerkungDTOListTest {
 		new DateRange(LocalDate.of(2021, Month.AUGUST, 16), LocalDate.of(2021, Month.AUGUST, 31));
 	private final DateRange dateRangePartAugust =
 		new DateRange(LocalDate.of(2021, Month.AUGUST, 10), LocalDate.of(2021, Month.AUGUST, 20));
+	private final DateRange dateRangeNovToEndJuly =
+		new DateRange(LocalDate.of(2021, Month.NOVEMBER, 10), LocalDate.of(2022, Month.DECEMBER, 31));
 
 
 	@Test
@@ -224,6 +229,29 @@ public class VerfuegungsBemerkungDTOListTest {
 
 		Assert.assertEquals(1,  bemerkungenByMessageKey.get(MsgKey.AUSSERORDENTLICHER_ANSPRUCH_MSG).size());
 		Assert.assertEquals(dateRangePartAugust, bemerkungenByMessageKey.get(MsgKey.AUSSERORDENTLICHER_ANSPRUCH_MSG).get(0).getGueltigkeit());
+	}
+
+	@Test
+	public void test_famsit_beenden_should_ueberschreiben_beschaeftigungspensumTooLowMessage_after_beendung() {
+		// Explicitly don't use FKJV Bemerkung for Erwerbspensum since this the way it would come from the rules
+		// and is then overwritten in the getRequiredBemerkungen
+		VerfuegungsBemerkungDTO bemerkungAntragBeendetKonkubinat = createDefaultVerfugeungsBemerkungeDto(MsgKey.FAMILIENSITUATION_X_JAHRE_KONKUBINAT_MSG);
+		VerfuegungsBemerkungDTO bemerkungKeinAnspruchBeschaeftigungspensum = createDefaultVerfugeungsBemerkungeDto(MsgKey.ERWERBSPENSUM_KEIN_ANSPRUCH);
+		bemerkungAntragBeendetKonkubinat.setGueltigkeit(dateRangeNovToEndJuly);
+		bemerkungKeinAnspruchBeschaeftigungspensum.setGueltigkeit(dateRangeNovToEndJuly);
+
+		VerfuegungsBemerkungDTOList bemerkungList = new VerfuegungsBemerkungDTOList();
+		bemerkungList.addBemerkung(bemerkungKeinAnspruchBeschaeftigungspensum);
+		bemerkungList.addBemerkung(bemerkungAntragBeendetKonkubinat);
+
+		List<VerfuegungsBemerkungDTO> result = bemerkungList.getRequiredBemerkungen(true);
+		assertThat(result.size(), is(1));
+
+		Map<MsgKey, List<VerfuegungsBemerkungDTO>> bemerkungenByMessageKey = mapVerfuegungsBemerkungByMsgKey(result);
+
+		assertThat(bemerkungenByMessageKey.get(MsgKey.FAMILIENSITUATION_X_JAHRE_KONKUBINAT_MSG).size(), is(1));
+		assertThat(bemerkungenByMessageKey.get(MsgKey.FAMILIENSITUATION_X_JAHRE_KONKUBINAT_MSG).get(0).getGueltigkeit(), is(dateRangeNovToEndJuly));
+		assertThat(bemerkungenByMessageKey.get(MsgKey.ERWERBSPENSUM_KEIN_ANSPRUCH_FKJV), nullValue());
 	}
 
 	private Map<MsgKey, List<VerfuegungsBemerkungDTO>> mapVerfuegungsBemerkungByMsgKey(List<VerfuegungsBemerkungDTO> bemerkungen) {
