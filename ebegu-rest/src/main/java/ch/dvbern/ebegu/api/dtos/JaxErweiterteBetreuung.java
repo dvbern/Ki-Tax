@@ -55,6 +55,9 @@ public class JaxErweiterteBetreuung extends JaxAbstractDTO {
 	@NotNull
 	private Boolean anspruchFachstelleWennPensumUnterschritten;
 
+	@NotNull
+	private Boolean sprachfoerderungBestaetigt;
+
 	@Nullable
 	public Boolean getBetreuungInGemeinde() {
 		return betreuungInGemeinde;
@@ -130,5 +133,13 @@ public class JaxErweiterteBetreuung extends JaxAbstractDTO {
 
 	public void setAnspruchFachstelleWennPensumUnterschritten(Boolean anspruchFachstelleWennPensumUnterschritten) {
 		this.anspruchFachstelleWennPensumUnterschritten = anspruchFachstelleWennPensumUnterschritten;
+	}
+
+	public Boolean getSprachfoerderungBestaetigt() {
+		return sprachfoerderungBestaetigt;
+	}
+
+	public void setSprachfoerderungBestaetigt(Boolean sprachfoerderungBestaetigt) {
+		this.sprachfoerderungBestaetigt = sprachfoerderungBestaetigt;
 	}
 }

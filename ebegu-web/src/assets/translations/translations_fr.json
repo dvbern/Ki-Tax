@@ -1009,7 +1009,7 @@
     "FINANZIELLESITUATION_ERFOLGSRECHNUNGEN_JAHR_MINUS1": "Justificatif de bénéfice commercial, p. ex. comptes de résultat",
     "FINANZIELLESITUATION_ERFOLGSRECHNUNGEN_JAHR_MINUS2": "Justificatif de bénéfice commercial, p. ex. comptes de résultat",
     "FINANZIELLESITUATION_UNTERSTUETZUNGSBESTAETIGUNG": "Justificatif d'assistance / confirmation du service social",
-    "FINANZIELLESITUATION_NACHWEIS_EINKOMMEN_VERFAHREN": "Justificatif du revenu ayant été décompté dans le cadre de la procédure simplifiée",
+    "FINANZIELLESITUATION_NACHWEIS_EINKOMMEN_VERFAHREN": "Justificatif de revenu dans le cadre de la procédure de décompte simplifiée",
     "FINANZIELLESITUATION_NACHWEIS_BRUTTOVERMOEGENERTRAEGE": "Justificatif des revenus bruts de la fortune",
     "FINANZIELLESITUATION_NACHWEIS_GEWINNUNGSKOSTEN": "Justificatif des frais d’obtention du revenu",
     "FINANZIELLESITUATION_NACHWEIS_SCHULDZINSEN": "Justificatif des intérêts de la dette",
@@ -1867,6 +1867,7 @@
     "EVALUATOR_DEBUG_ENABLED": "Evaluator-Debug activé",
     "STADT_BERN_ASIV_CONFIGURED": "La configuration de la ville de Berne pour les règles OPIS est définie, les périodes seront calculées après le passage à OPIS",
     "STADT_BERN_ASIV_START_DATUM": "Date à partir de laquelle les bons seront calculés selon OPIS",
+    "SCHNITTSTELLE_SPRACHFOERDERUNG_AKTIV_AB": "Date (dd.MM.yyyy) à partir de laquelle la confirmation l'encouragement linguistique dans l'interface pour la confirmation de place est prise en compte",
     "UPLOAD_FILETYPES_WHITELIST": "Types de fichier-liste blanche",
     "ACTIVATED_DEMO_FEATURES": "Activer les functionnalitées de demo",
     "CHECKBOX_AUSZAHLEN_IN_ZUKUNFT": "Afficher la cache à cocher paiement dans le futur",
@@ -3081,6 +3082,7 @@
     "PENSUM_FACHSTELLE_INVALID_FACHSTELLEN_SOZIAL": "Un centre spécialisé dans les indications sociales n'est possible que jusqu'au niveau \"{0}\".",
     "PENSUM_FACHSTELLE_INVALID_FACHSTELLEN_SPRACHLICH": "Il ne s'agit plus d'un enfant d'âge préscolaire. Le besoin d'ordre linguistique ne peut pas être saisi.",
     "ZUSATZLICHE_FELDER_ERSATZEINKOMMEN": "Afficher les champs supplémentaires sur la situation financière pour le revenu de remplacement",
+    "SPRACHFOERDERUNG_BESTAETIGEN": "Afficher une question supplémentaire pour les institutions afin de confirmer que le soutient linguistique est pris en charge",
     "FINANZIELLE_SITUATION_ERSATZEINKOMMEN_SELBSTAENDIGKEIT": "Dans le cadre de votre activité lucrative indépendante, avez-vous perçu un revenu de remplacement en raison d’une perte de bénéfice commercial durant une ou plusieurs de ces années?",
     "FINANZIELLE_SITUATION_ERSATZEINKOMMEN_SELBSTAENDIGKEIT_HELP": "Le revenu de remplacement imposable des indépendantes et indépendants (chiffre 2.23, p. ex. allocation pour perte de gain COVID-19 ou en cas d’obligation de servir, allocation de maternité ou de paternité ou encore de prise en charge d’un enfant gravement atteint dans sa santé) est imputé au bénéfice commercial de l’exercice au cours duquel il est perçu et est pris en compte dans le calcul du bénéfice commercial moyen des trois dernières années.\nVeuillez indiquer le revenu de remplacement que vous avez perçu pour cause de perte de bénéfice commercial pour l’exercice durant lequel il vous a été versé.",
     "FINANZIELLE_SITUATION_ERSATZEINKOMMEN_SELBSTSTAENDIGKEIT_JAHR": "Revenu de remplacement perçu en {{jahr}}",
@@ -3089,5 +3091,8 @@
     "FINANZIELLE_SITUATION_ERSATZEINKOMMEN_BASISJAHR_TOOLTIP": "Le montant que vous indiquez sous \"Revenu de remplacement perçu en année {{basisjahr}}\" est déduit du montant indiqué sous \"Revenu de remplacement\".",
     "SPRACHLICHE_INDIKATION_BETREUUNGS_PENSUM_ZU_TIEF": "Besoin d’ordre linguistique : le taux de prise en charge minimal de 40 % n’est pas atteint pendant un ou plusieurs mois.",
     "GEMEINDE_HAS_ALTERNATIVE_TS_LOGO": "Utiliser un logo alternatif pour les écoles à journée continue",
+    "SPRACHFOERDERUNG_BESTAETIGEN_KITA": "Les langues pour lesquelles un encouragement linguistique est prévu sont le français ou l’allemand (langues parlées plus tard à l’école).",
+    "SPRACHFOERDERUNG_BESTAETIGEN_TFO": "L’accueillant∙e en milieu familial est apte à assurer l’encouragement linguistique et possède au minimum un niveau C1 dans la langue parlée plus tard à l’école.",
+    "GESUCH_BEENDEN_BEI_TAUSCH_GS2": "Antrag beenden, wenn der Gesuchsteller 2 innerhalb der Periode ändert",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }
