@@ -14,20 +14,20 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-drop procedure if exists select_gesuchsperiode;
-
 -- funktion speichert die gesuchperiode id für eine gesuchsperiode gültig ab (input) in der übergebenen variable gp_id.
 -- falls keine periode mit dem übergebenen gültig_ab datum existeirt wird eine neue uuid in die variable gespeichert
-create procedure select_gesuchsperiode(
-    IN gueltig_ab_input date,
-    IN mandant_id_input binary(16),
-    OUT gp_id binary(16))
+DELIMITER //
+create or replace procedure select_gesuchsperiode(IN gueltig_ab_input date,IN mandant_id_input binary(16),OUT gp_id binary(16))
 begin
     IF EXISTS(select id from gesuchsperiode where mandant_id = mandant_id_input and gueltig_ab = gueltig_ab_input)
     THEN set gp_id = (select id from gesuchsperiode where mandant_id = mandant_id_input and gueltig_ab = gueltig_ab_input);
     ELSE set gp_id = UNHEX(REPLACE(UUID(), '-', ''));
     END IF;
 end;
+
+//
+
+DELIMITER ;
 
 
 # Variables definition
@@ -41,8 +41,8 @@ SET @gemeinde_london = UNHEX(REPLACE('80a8e496-b73c-4a4a-a163-a0b2caf76487', '-'
 SET @gemeinde_paris = UNHEX(REPLACE('ea02b313-e7c3-4b26-9ef7-e413f4046db2', '-', ''));
 
 # Application properties
-UPDATE application_property SET value = 'true' WHERE name = 'DUMMY_LOGIN_ENABLED' AND mandant_id =  @bern_mandant_id;;
-UPDATE application_property SET value = 'yellow' WHERE name = 'BACKGROUND_COLOR' AND mandant_id =  @bern_mandant_id;;
+UPDATE application_property SET value = 'true' WHERE name = 'DUMMY_LOGIN_ENABLED' AND mandant_id =  @bern_mandant_id;
+UPDATE application_property SET value = 'yellow' WHERE name = 'BACKGROUND_COLOR' AND mandant_id =  @bern_mandant_id;
 UPDATE application_property SET value = 'true' WHERE name = 'FRENCH_ENABLED' AND mandant_id = @bern_mandant_id;
 UPDATE application_property SET value = 'true' WHERE name = 'GERES_ENABLED_FOR_MANDANT' AND mandant_id = @bern_mandant_id;
 UPDATE application_property SET value = '2022-04-04' WHERE name = 'SCHNITTSTELLE_STEUERSYSTEME_AKTIV_AB' AND mandant_id = @bern_mandant_id;

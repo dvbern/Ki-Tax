@@ -14,21 +14,20 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
-
-drop procedure if exists select_gesuchsperiode;
-
 -- funktion speichert die gesuchperiode id für eine gesuchsperiode gültig ab (input) in der übergebenen variable gp_id.
 -- falls keine periode mit dem übergebenen gültig_ab datum existeirt wird eine neue uuid in die variable gespeichert
-create procedure select_gesuchsperiode(
-    IN gueltig_ab_input date,
-    IN mandant_id_input binary(16),
-    OUT gp_id binary(16))
+DELIMITER //
+create or replace procedure select_gesuchsperiode(IN gueltig_ab_input date,IN mandant_id_input binary(16),OUT gp_id binary(16))
 begin
     IF EXISTS(select id from gesuchsperiode where mandant_id = mandant_id_input and gueltig_ab = gueltig_ab_input)
     THEN set gp_id = (select id from gesuchsperiode where mandant_id = mandant_id_input and gueltig_ab = gueltig_ab_input);
     ELSE set gp_id = UNHEX(REPLACE(UUID(), '-', ''));
     END IF;
 end;
+
+//
+
+DELIMITER ;
 
 # Variables definition
 SET @mandant_id_solothurn = UNHEX(REPLACE('7781a6bb-5374-11ec-98e8-f4390979fa3e', '-', ''));
