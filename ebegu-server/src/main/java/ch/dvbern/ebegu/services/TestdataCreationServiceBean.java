@@ -525,6 +525,8 @@ public class TestdataCreationServiceBean extends AbstractBaseService implements 
 		saveEinstellung(ANSPRUCH_AB_X_MONATEN,"0", gesuchsperiode);
 		saveEinstellung(KITA_STUNDEN_PRO_TAG,"10", gesuchsperiode);
 		saveEinstellung(ZUSATZLICHE_FELDER_ERSATZEINKOMMEN,"false", gesuchsperiode);
+		saveEinstellung(SPRACHFOERDERUNG_BESTAETIGEN,"false", gesuchsperiode);
+		saveEinstellung(GESUCH_BEENDEN_BEI_TAUSCH_GS2,"false", gesuchsperiode);
 	}
 
 	public void saveEinstellung(EinstellungKey key, String value, Gesuchsperiode gesuchsperiode) {

@@ -21,14 +21,14 @@ import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.*;
 public class FamiliensituationBeendetAbschnittRule extends AbstractAbschnittRule {
 	public static final int ZERO = 0;
 
-	private boolean familiensituationBeendenActivated;
+	private final boolean familiensituationBeendenActivated;
 
 	protected FamiliensituationBeendetAbschnittRule(
 			@Nonnull DateRange validityPeriod,
 			@Nonnull Locale locale,
-			@Nonnull boolean familiensituationBeendenActivated) {
+			@Nonnull Boolean familiensituationBeendenActivated) {
 		super(RuleKey.FAMILIENSITUATION, RuleType.REDUKTIONSREGEL, RuleValidity.ASIV, validityPeriod, locale);
-		this.familiensituationBeendenActivated = familiensituationBeendenActivated;
+		this.familiensituationBeendenActivated = familiensituationBeendenActivated.equals(Boolean.TRUE);
 	}
 
 	@Nonnull

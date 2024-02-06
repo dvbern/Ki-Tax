@@ -37,6 +37,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -57,6 +58,9 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 	private static final String MESSAGE_KEY = "mutationsmeldung_message";
 	private static final String MESSAGE_MAHLZEIT_KEY = "mutationsmeldung_message_mahlzeitverguenstigung_mit_tarif";
 	static final LocalDate GO_LIVE = LocalDate.of(2021, 1, 1);
+
+	@Inject
+	private ApplicationPropertyService applicationPropertyService;
 
 	static final Comparator<AbstractMahlzeitenPensum> COMPARATOR = Comparator
 		.comparing(AbstractMahlzeitenPensum::getMonatlicheBetreuungskosten)
@@ -200,14 +204,13 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 		BigDecimal maxTageProMonatTFO = MathUtil.DEFAULT.divideNullSafe(maxTageProJahrTFO, anzahlMonatProJahr);
 		BigDecimal maxStundenProMonat = MathUtil.DEFAULT.multiplyNullSafe(maxTageProMonatTFO, hoursProTag);
 
-
 		ProcessingContext ctx = new ProcessingContext(
 			betreuung,
 			dto,
 			overlap.get(),
 			mahlzeitVergunstigungEnabled,
 			eventMonitor,
-				maxTageProMonat, maxStundenProMonat, singleClientForPeriod);
+			maxTageProMonat, maxStundenProMonat, singleClientForPeriod);
 
 		Betreuungsstatus status = betreuung.getBetreuungsstatus();
 
@@ -321,9 +324,30 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 		setErweitereBeduerfnisseBestaetigt(ctx);
 		setEingewoehnungPhase(ctx);
 		setBetreuungInGemeinde(ctx);
+		setSprachfoerderungBestaetigt(ctx);
 		PensumMappingUtil.addZeitabschnitteToBetreuung(ctx);
 
 		return ctx.isReadyForBestaetigen();
+	}
+
+	private void setSprachfoerderungBestaetigt(@Nonnull ProcessingContext ctx) {
+		ErweiterteBetreuung erweiterteBetreuung =
+			ctx.getBetreuung().getErweiterteBetreuungContainer().getErweiterteBetreuungJA();
+		if (erweiterteBetreuung == null) {
+			return;
+		}
+		Mandant mandant = betreuungEventHelper.getMandantFromBgNummer(ctx.getDto().getRefnr())
+			.orElseThrow(() -> new EbeguRuntimeException(
+				KibonLogLevel.ERROR, "createBetreuungsmitteilung", "Mandant konnte nicht gefunden werden"));
+		LocalDate sprachfoerderungBesteatigtAktiviereungDatum =
+			applicationPropertyService.getSchnittstelleSprachfoerderungAktivAb(mandant);
+		Objects.requireNonNull(sprachfoerderungBesteatigtAktiviereungDatum);
+
+		if (sprachfoerderungBesteatigtAktiviereungDatum.isAfter(LocalDate.now())) {
+			erweiterteBetreuung.setSprachfoerderungBestaetigt(true);
+		} else {
+			erweiterteBetreuung.setSprachfoerderungBestaetigt(ctx.getDto().getSprachfoerderungBestaetigt());
+		}
 	}
 
 	private void setEingewoehnungPhase(@Nonnull ProcessingContext ctx) {
@@ -526,7 +550,6 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 
 		return einstellungService.findEinstellung(key, gemeinde, periode).getValueAsBoolean();
 	}
-
 
 	private BigDecimal getEinstellungAsBigdecimal(@Nonnull Betreuung betreuung, @Nonnull EinstellungKey key) {
 		Gemeinde gemeinde = betreuung.extractGemeinde();

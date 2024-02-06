@@ -244,6 +244,14 @@ export class TSFamiliensituation extends TSAbstractMutableEntity {
         return konkubinatPlusYears.isSameOrBefore(endOfPeriode);
     }
 
+    public konkuinatOhneKindBecomesXYearsDuringPeriode(periode: TSGesuchsperiode): boolean {
+        if (this.familienstatus !== TSFamilienstatus.KONKUBINAT_KEIN_KIND) {
+            return false;
+        }
+        return this.konkubinatIsShorterThanXYearsAtAnyTimeAfterStartOfPeriode(periode)
+            && this.konkubinatGetsLongerThanXYearsBeforeEndOfPeriode(periode.gueltigkeit.gueltigBis);
+    }
+
     public getStartKonkubinatPlusMinDauer( ): moment.Moment {
         const konkubinat_start: moment.Moment = moment(this.startKonkubinat.clone());
         return konkubinat_start.add({years: this.minDauerKonkubinat});

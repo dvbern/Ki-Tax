@@ -143,4 +143,7 @@ public interface ApplicationPropertyService {
 	 * Gibt eine Liste mit den aktivierten DemoFeatures zurück
 	 */
 	List<DemoFeatureTyp> getActivatedDemoFeatures(@Nonnull Mandant mandant);
+
+	@Nullable
+	LocalDate getSchnittstelleSprachfoerderungAktivAb(@Nonnull Mandant mandant);
 }

@@ -53,7 +53,6 @@ public final class PlatzbestaetigungTestUtil {
 		betreuungEventDTO.setRefnr(REF_NUMMER);
 		betreuungEventDTO.setInstitutionId("1234-5678-9101-1121");
 		betreuungEventDTO.setZeitabschnitte(Arrays.asList(zeitabschnitte));
-
 		return betreuungEventDTO;
 	}
 
