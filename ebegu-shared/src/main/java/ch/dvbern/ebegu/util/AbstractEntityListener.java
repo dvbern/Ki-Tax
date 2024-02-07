@@ -37,9 +37,12 @@ import ch.dvbern.ebegu.entities.Fall;
 import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.GesuchDeletionLog;
+import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.HasMandant;
+import ch.dvbern.ebegu.entities.Institution;
 import ch.dvbern.ebegu.entities.KindContainer;
 import ch.dvbern.ebegu.entities.Mandant;
+import ch.dvbern.ebegu.entities.Traegerschaft;
 import ch.dvbern.ebegu.entities.Verfuegung;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.GesuchDeletionCause;
@@ -262,7 +265,8 @@ public class AbstractEntityListener {
 		}
 		HasMandant hasMandantEntity = (HasMandant) abstractEntity;
 		Mandant mandant = hasMandantEntity.getMandant();
-		if (mandant != null && !lazyLoadedBenutzerMandantException(abstractEntity) && !getPrincipalBean().getMandant().equals(mandant)) {
+		if (mandant != null && !lazyLoadedBenutzerMandantException(abstractEntity) && !getPrincipalBean().getMandant()
+			.equals(mandant)) {
 			throw new EJBAccessException("Access Violation"
 				+ " for mandant: " + mandant.getName()
 				+ " by current user mandant: " + principalBean.getPrincipal()
@@ -274,17 +278,21 @@ public class AbstractEntityListener {
 	//FIXME: Muss nach migration zu OIDC weg, Mandant sollte in diesem Fall nicht null sein
 	@SuppressFBWarnings("RCN_REDUNDANT_NULLCHECK_OF_NONNULL_VALUE")
 	private boolean lazyLoadedBenutzerMandantException(@Nonnull AbstractEntity abstractEntity) {
-		return abstractEntity instanceof Benutzer && getPrincipalBean().getMandant() == null;
+		return (abstractEntity instanceof Benutzer
+			|| abstractEntity instanceof Institution
+			|| abstractEntity instanceof Traegerschaft
+			|| abstractEntity instanceof Gesuchsperiode) && getPrincipalBean().getMandant() == null;
 	}
 
-	protected static boolean checkAccessAllowedIfAnonymous(@Nonnull AbstractEntity entity,
+	protected static boolean checkAccessAllowedIfAnonymous(
+		@Nonnull AbstractEntity entity,
 		@Nonnull PrincipalBean principalBean) {
 		if (principalBean.getPrincipal().getName().equals(ANONYMOUS_USER_USERNAME)
 			&& !principalBean.isAnonymousSuperadmin()) {
 			if (entity instanceof ApplicationProperty //required properties geladen bevor login
 				|| entity instanceof Gemeinde //anonym geladen bevor login (onboarding)
 				|| entity instanceof Mandant //anonym geladen bevor login (mandant wahl)
-				|| entity instanceof Benutzer){// wegen locallogin
+				|| entity instanceof Benutzer) {// wegen locallogin
 				return true;
 			}
 			throw new EJBAccessException("Access Violation for user "
@@ -295,11 +303,12 @@ public class AbstractEntityListener {
 		return false;
 	}
 
-	protected static boolean checkWriteAccessAllowedIfAnonymous(@Nonnull AbstractEntity entity,
+	protected static boolean checkWriteAccessAllowedIfAnonymous(
+		@Nonnull AbstractEntity entity,
 		@Nonnull PrincipalBean principalBean) {
 		if (principalBean.getPrincipal().getName().equals(ANONYMOUS_USER_USERNAME)
 			&& !principalBean.isAnonymousSuperadmin()) {
-			if (entity instanceof Benutzer){// wegen locallogin
+			if (entity instanceof Benutzer) {// wegen locallogin
 				return true;
 			}
 			throw new EJBAccessException("Access Violation for user "
