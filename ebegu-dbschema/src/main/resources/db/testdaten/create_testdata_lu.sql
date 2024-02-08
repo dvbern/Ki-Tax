@@ -20,6 +20,7 @@ SET @mandant_id_luzern = UNHEX(REPLACE('485d7483-30a2-11ec-a86f-b89a2ae4a038', '
 SET @gesuchsperiode_22_23_id = UNHEX('1670D04A30A911ECA86FB89A2AE4A038');
 SET @gesuchsperiode_23_24_id = UNHEX('3A873D7EE6C14C0481A273FF1D16B769');
 SET @luzern_test_gemeinde_id = UNHEX(REPLACE('6fd6183c-30a2-11ec-a86f-b89a2ae4a038', '-', ''));
+SET @system_user = UNHEX(REPLACE('55555555-5555-5555-5555-555555555555', '-', ''));
 
 # Adresse
 INSERT IGNORE INTO adresse (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version, vorgaenger_id, gueltig_ab, gueltig_bis, gemeinde, hausnummer, land, organisation, ort, plz, strasse, zusatzzeile, bfs_nummer) VALUES (UNHEX('3073FF81BD9640168B92F7483B79BC0E'), '2023-12-08 10:58:36', '2023-12-08 10:59:59', 'ebegu:Stadt Luzern', 'ebegu:Stadt Luzern', 1, null, '2023-12-08', '9999-12-31', null, '2', 'CH', 'Kita Luzern', 'Luzern', '6000', 'Kita Strasse', null, null);
@@ -72,6 +73,10 @@ UPDATE application_property SET value = 'false' WHERE name = 'LASTENAUSGLEICH_AK
 UPDATE gesuchsperiode SET status = 'AKTIV' WHERE id = @gesuchsperiode_22_23_id;
 INSERT IGNORE INTO gesuchsperiode (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version, vorgaenger_id, gueltig_ab, gueltig_bis, datum_aktiviert, status, verfuegung_erlaeuterungen_de, verfuegung_erlaeuterungen_fr, vorlage_merkblatt_ts_de, vorlage_merkblatt_ts_fr, vorlage_verfuegung_lats_de, vorlage_verfuegung_lats_fr, mandant_id, vorlage_verfuegung_ferienbetreuung_de, vorlage_verfuegung_ferienbetreuung_fr) VALUES (@gesuchsperiode_23_24_id, '2023-12-08 10:51:23', '2023-12-08 10:57:23', 'ebegu:Stadt Luzern', 'ebegu:Stadt Luzern', 3, null, '2023-08-01', '2024-07-31', '2023-12-08', 'AKTIV', null, null, null, null, null, null, @mandant_id_luzern, null, null);
 
+# Benutzer System erstellen
+INSERT IGNORE INTO benutzer (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version, vorgaenger_id, email, nachname, username, vorname, mandant_id, externaluuid, status) VALUES (@system_user, '2016-01-01 00:00:00', '2016-01-01 00:00:00', 'flyway', 'flyway', 0, null, 'hallo@dvbern.ch', 'System', 'system_lu', '', @mandant_id_luzern, null, 'AKTIV');
+INSERT IGNORE INTO berechtigung (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version, vorgaenger_id, gueltig_ab, gueltig_bis, role, benutzer_id, institution_id, traegerschaft_id) VALUES (UNHEX(REPLACE('2a7b78ed-4af0-11e9-9b2c-afd41a03c0aa', '-', '')), '2016-01-01 00:00:00', '2016-01-01 00:00:00', 'flyway', 'flyway', 0, null, '2017-01-01', '9999-12-31', 'SUPER_ADMIN', @system_user, null, null);
+
 # Antragstellende Benutzer fuer e2e erstellen
 # geem
 INSERT IGNORE INTO benutzer (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version, vorgaenger_id, email, externaluuid, nachname, status, username, vorname, mandant_id, bemerkungen, zpv_nummer) VALUES (UNHEX('5DBDEFEB5E474A998E92DDEF02F45480'), '2024-01-09 15:08:10', '2024-01-09 15:08:10', 'anonymous', 'anonymous', 0, null, 'emma.gerber.lu@mailbucket.dvbern.ch', null, 'Gerber', 'AKTIV', 'geem', 'Emma', @mandant_id_luzern, null, null);
@@ -119,7 +124,7 @@ INSERT IGNORE INTO gemeinde_stammdaten (id, timestamp_erstellt, timestamp_mutier
 										benachrichtigung_bg_email_auto, benachrichtigung_ts_email_auto,
 										standard_dok_signature, ts_verantwortlicher_nach_verfuegung_benachrichtigen, gemeinde_stammdaten_korrespondenz_id)
 VALUES (UNHEX(REPLACE('fd91477c-3263-11ec-a17e-b89a2ae4a038', '-', '')), '2018-10-23 00:00:00', '2018-10-23 00:00:00', 'flyway', 'flyway', 0,
-        UNHEX(REPLACE('22222222-2222-2222-2222-222222222222', '-', '')), UNHEX(REPLACE('22222222-2222-2222-2222-222222222222', '-', '')),
+        @system_user, @system_user,
         UNHEX(REPLACE('6fd6183c-30a2-11ec-a86f-b89a2ae4a038', '-', '')), UNHEX(REPLACE('2476287e-3264-11ec-a17e-b89a2ae4a038', '-', '')),
         'luzern@mailbucket.dvbern.ch', '+41 31 930 14 14', 'https://www.luzern.ch', null, 'DE', 'BIC', 'CH93 0077 2011 6238 5295 7',
         'Luzern Kontoinhaber', true, true, true, true, false, UNHEX(REPLACE('4a7d313f-4af0-11e9-9a3a-afd41a03c0be', '-', '')));
@@ -269,7 +274,6 @@ INSERT IGNORE INTO einstellung (id, timestamp_erstellt, timestamp_mutiert, user_
 INSERT IGNORE INTO einstellung (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version, einstellung_key, value, gemeinde_id, gesuchsperiode_id, mandant_id, erklaerung) VALUES (UNHEX('F15D2CD5ABFD4311B96BDA91F8DFC532'), '2023-12-08 11:02:22', '2023-12-08 11:02:22', 'ebegu:Stadt Luzern', 'ebegu:Stadt Luzern', 0, 'GEMEINDE_ZUSAETZLICHER_BABYBEITRAG_ENABLED', 'false', @luzern_test_gemeinde_id, @gesuchsperiode_22_23_id, @mandant_id_luzern, null);
 INSERT IGNORE INTO einstellung (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version, einstellung_key, value, gemeinde_id, gesuchsperiode_id, mandant_id, erklaerung) VALUES (UNHEX('F31A0BA2E2334CD898DD006684A3C454'), '2023-12-08 11:02:22', '2023-12-08 11:02:22', 'ebegu:Stadt Luzern', 'ebegu:Stadt Luzern', 0, 'GEMEINDE_TAGESSCHULE_ANMELDUNGEN_DATUM_AB', '01.08.2019', @luzern_test_gemeinde_id, @gesuchsperiode_22_23_id, @mandant_id_luzern, null);
 INSERT IGNORE INTO einstellung (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version, einstellung_key, value, gemeinde_id, gesuchsperiode_id, mandant_id, erklaerung) VALUES (UNHEX('FFA9DC88747F46C683A47681084B0FFA'), '2023-12-08 11:02:22', '2023-12-08 11:02:22', 'ebegu:Stadt Luzern', 'ebegu:Stadt Luzern', 0, 'GEMEINDE_ZUSAETZLICHER_BABYBEITRAG_BETRAG_KITA', '0.00', @luzern_test_gemeinde_id, @gesuchsperiode_22_23_id, @mandant_id_luzern, null);
-INSERT IGNORE INTO einstellung (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version, einstellung_key, value, gemeinde_id, gesuchsperiode_id, mandant_id, erklaerung) VALUES (UNHEX('22AFEAE3DF9E441E892CA652A7483539'), '2024-01-01 15:55:42', '2024-01-01 09:34:00', 'ebegu:Stadt Luzern', 'ebegu:Stadt Luzern', 0, 'GESUCH_BEENDEN_BEI_TAUSCH_GS2', 'false', @luzern_test_gemeinde_id, @gesuchsperiode_22_23_id, @mandant_id_luzern, null);
 
 # Gesuchsperiode 23/24 Einstellungen:
 INSERT IGNORE INTO einstellung (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version, einstellung_key, value, gemeinde_id, gesuchsperiode_id, mandant_id, erklaerung) VALUES (UNHEX('00BF260548344EBFAAA1A3C5DE470F5B'), '2023-12-08 10:51:24', '2023-12-08 10:52:54', 'ebegu:Stadt Luzern', 'ebegu:Stadt Luzern', 1, 'FKJV_FAMILIENSITUATION_NEU', 'false', null, @gesuchsperiode_23_24_id, null, null);
@@ -430,7 +434,7 @@ INSERT IGNORE INTO einstellung (id, timestamp_erstellt, timestamp_mutiert, user_
 INSERT IGNORE INTO einstellung (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version, einstellung_key, value, gemeinde_id, gesuchsperiode_id, mandant_id, erklaerung) VALUES (UNHEX('F9B26F6BB6554ABEAB143CFF2EC17636'), '2023-12-08 11:02:22', '2023-12-08 11:02:22', 'ebegu:Stadt Luzern', 'ebegu:Stadt Luzern', 0, 'ZUSCHLAG_BEHINDERUNG_PRO_STD', '4.25', @luzern_test_gemeinde_id, @gesuchsperiode_23_24_id, @mandant_id_luzern, null);
 INSERT IGNORE INTO einstellung (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version, einstellung_key, value, gemeinde_id, gesuchsperiode_id, mandant_id, erklaerung) VALUES (UNHEX('FB3DA1A347934F849820269235A031CD'), '2023-12-08 11:02:22', '2023-12-08 11:02:22', 'ebegu:Stadt Luzern', 'ebegu:Stadt Luzern', 0, 'MAX_VERGUENSTIGUNG_KINDERGARTEN_PRO_STD', '12.4', @luzern_test_gemeinde_id, @gesuchsperiode_23_24_id, @mandant_id_luzern, null);
 INSERT IGNORE INTO einstellung (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version, einstellung_key, value, gemeinde_id, gesuchsperiode_id, mandant_id, erklaerung) VALUES (UNHEX('FB5E49DE60264324A413AF201C16E15A'), '2023-12-08 11:02:22', '2023-12-08 11:02:22', 'ebegu:Stadt Luzern', 'ebegu:Stadt Luzern', 0, 'GEMEINDE_MAHLZEITENVERGUENSTIGUNG_FUER_SOZIALHILFEBEZUEGER_ENABLED', 'false', @luzern_test_gemeinde_id, @gesuchsperiode_23_24_id, @mandant_id_luzern, null);
-INSERT IGNORE INTO einstellung (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version, einstellung_key, value, gemeinde_id, gesuchsperiode_id, mandant_id, erklaerung) VALUES (UNHEX('2TEGTAE3DF9E441E892CA652A7483539'), '2024-01-01 15:55:42', '2024-01-01 09:34:00', 'ebegu:Stadt Luzern', 'ebegu:Stadt Luzern', 0, 'GESUCH_BEENDEN_BEI_TAUSCH_GS2', 'false', @luzern_test_gemeinde_id, @gesuchsperiode_23_24_id, @mandant_id_luzern, null);
+INSERT IGNORE INTO einstellung (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version, einstellung_key, value, gemeinde_id, gesuchsperiode_id, mandant_id, erklaerung) VALUES (UNHEX('2TEGTAE3DF9E441E892CA652A7483539'), '2024-01-01 15:55:42', '2024-01-01 09:34:00', 'ebegu:Stadt Luzern', 'ebegu:Stadt Luzern', 0, 'GESUCH_BEENDEN_BEI_TAUSCH_GS2', 'false', null, @gesuchsperiode_23_24_id, null, null);
 
 # Test-Institutionen erstellen
 INSERT IGNORE INTO traegerschaft (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version, name, active, mandant_id)
@@ -448,11 +452,11 @@ INSERT IGNORE INTO institution (id, timestamp_erstellt, timestamp_mutiert, user_
 	         @mandant_id_luzern, UNHEX(REPLACE('31bf2433-30a3-11ec-a86f-b89a2ae4a038', '-', '')), 'AKTIV', false);
 
 INSERT IGNORE INTO adresse (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version, vorgaenger_id, gueltig_ab, gueltig_bis, gemeinde, hausnummer, land, organisation, ort, plz, strasse, zusatzzeile)
-	VALUES (UNHEX(REPLACE('abd8ec9b-30a3-11ec-a86f-b89a2ae4a038', '-', '')), '2016-01-01 00:00:00', '2016-01-01 00:00:00', 'flyway', 'flyway', 0, null, '1000-01-01', '9999-12-31', null, '4', 'CH', 'Tageseltern Bern', 'Bern', '3005', 'Gasstrasse', null);
+	VALUES (UNHEX(REPLACE('abd8ec9b-30a3-11ec-a86f-b89a2ae4a038', '-', '')), '2016-01-01 00:00:00', '2016-01-01 00:00:00', 'flyway', 'flyway', 0, null, '1000-01-01', '9999-12-31', null, '4', 'CH', 'Tageseltern Luzern', 'Luzern', '6000', 'Gasstrasse', null);
 INSERT IGNORE INTO adresse (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version, vorgaenger_id, gueltig_ab, gueltig_bis, gemeinde, hausnummer, land, organisation, ort, plz, strasse, zusatzzeile)
-	VALUES (UNHEX(REPLACE('bda4670c-30a3-11ec-a86f-b89a2ae4a038', '-', '')), '2016-01-01 00:00:00', '2016-01-01 00:00:00', 'flyway', 'flyway', 0, null, '1000-01-01', '9999-12-31', null, '5', 'CH', 'Weissenstein', 'Bern', '3007', 'Weberstrasse', null);
+	VALUES (UNHEX(REPLACE('bda4670c-30a3-11ec-a86f-b89a2ae4a038', '-', '')), '2016-01-01 00:00:00', '2016-01-01 00:00:00', 'flyway', 'flyway', 0, null, '1000-01-01', '9999-12-31', null, '5', 'CH', 'Weissenstein', 'Luzern', '6001', 'Weberstrasse', null);
 INSERT IGNORE INTO adresse (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version, vorgaenger_id, gueltig_ab, gueltig_bis, gemeinde, hausnummer, land, organisation, ort, plz, strasse, zusatzzeile)
-	VALUES (UNHEX(REPLACE('c41ab591-30a3-11ec-a86f-b89a2ae4a038', '-', '')), '2016-01-01 00:00:00', '2016-01-01 00:00:00', 'flyway', 'flyway', 0, null, '1000-01-01', '9999-12-31', null, '27', 'CH', 'Brünnen', 'Bern', '3027', 'Colombstrasse', null);
+	VALUES (UNHEX(REPLACE('c41ab591-30a3-11ec-a86f-b89a2ae4a038', '-', '')), '2016-01-01 00:00:00', '2016-01-01 00:00:00', 'flyway', 'flyway', 0, null, '1000-01-01', '9999-12-31', null, '27', 'CH', 'Brünnen', 'Luzern', '6002', 'Colombstrasse', null);
 
 INSERT IGNORE INTO auszahlungsdaten(id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version, iban, kontoinhaber, adresse_kontoinhaber_id)
 	VALUES (UNHEX(REPLACE('ad4c1134-30a4-11ec-a86f-b89a2ae4a038', '-', '')), '2020-01-01 00:00:00', '2020-01-01 00:00:00', 'flyway', 'flyway', 0, 'CH82 0900 0000 1001 5000 6', 'Kontoinhaber Bruennen LU', null);

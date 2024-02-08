@@ -753,6 +753,8 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 		final CriteriaQuery<Gesuch> query = cb.createQuery(Gesuch.class);
 
 		Root<Gesuch> root = query.from(Gesuch.class);
+		Join<Gesuch, Dossier> dossierJoin = root.join(Gesuch_.dossier, JoinType.LEFT);
+		Join<Dossier, Fall> fallJoin = dossierJoin.join(Dossier_.fall);
 
 		ParameterExpression<String> nameParam = cb.parameter(String.class, "nachname");
 		Path<Gesuchsteller> gsJAPath = root.get(Gesuch_.gesuchsteller1).get(GesuchstellerContainer_.gesuchstellerJA);
@@ -761,7 +763,9 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 		ParameterExpression<String> vornameParam = cb.parameter(String.class, "vorname");
 		Predicate vornamePredicate = cb.equal(gsJAPath.get(AbstractPersonEntity_.vorname), vornameParam);
 
-		query.where(namePredicate, vornamePredicate);
+		Predicate mandantPredicate = cb.equal(fallJoin.get(Fall_.MANDANT), principalBean.getMandant());
+
+		query.where(namePredicate, vornamePredicate, mandantPredicate);
 		TypedQuery<Gesuch> q = persistence.getEntityManager().createQuery(query);
 		q.setParameter(nameParam, nachname);
 		q.setParameter(vornameParam, vorname);
