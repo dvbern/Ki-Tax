@@ -16,19 +16,21 @@
 import {StateService} from '@uirouter/core';
 import {IComponentOptions} from 'angular';
 import * as moment from 'moment';
+import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
 import {IDVFocusableController} from '../../../app/core/component/IDVFocusableController';
 import {DvDialog} from '../../../app/core/directive/dv-dialog/dv-dialog';
-import {TSDemoFeature} from '../../../app/core/directive/dv-hide-feature/TSDemoFeature';
 import {ErrorService} from '../../../app/core/errors/service/ErrorService';
 import {LogFactory} from '../../../app/core/logging/LogFactory';
-import {ApplicationPropertyRS} from '../../../app/core/rest-services/applicationPropertyRS.rest';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {TSAnspruchBeschaeftigungAbhaengigkeitTyp} from '../../../models/enums/TSAnspruchBeschaeftigungAbhaengigkeitTyp';
+import {TSEinstellungKey} from '../../../models/enums/TSEinstellungKey';
 import {TSFamilienstatus} from '../../../models/enums/TSFamilienstatus';
+import {TSGesuchstellerKardinalitaet} from '../../../models/enums/TSGesuchstellerKardinalitaet';
 import {TSRole} from '../../../models/enums/TSRole';
 import {TSUnterhaltsvereinbarungAnswer} from '../../../models/enums/TSUnterhaltsvereinbarungAnswer';
 import {TSWizardStepName} from '../../../models/enums/TSWizardStepName';
 import {TSWizardStepStatus} from '../../../models/enums/TSWizardStepStatus';
+import {TSEinstellung} from '../../../models/TSEinstellung';
 import {TSErwerbspensumContainer} from '../../../models/TSErwerbspensumContainer';
 import {TSFamiliensituation} from '../../../models/TSFamiliensituation';
 import {EbeguUtil} from '../../../utils/EbeguUtil';
@@ -40,9 +42,6 @@ import {AbstractGesuchViewController} from '../abstractGesuchView';
 import IScope = angular.IScope;
 import ITimeoutService = angular.ITimeoutService;
 import ITranslateService = angular.translate.ITranslateService;
-import {TSEinstellung} from '../../../models/TSEinstellung';
-import {TSEinstellungKey} from '../../../models/enums/TSEinstellungKey';
-import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
 
 const removeDialogTemplate = require('../../dialog/removeDialogTemplate.html');
 const LOG = LogFactory.createLog('ErwerbspensumListViewComponent');
@@ -273,6 +272,10 @@ export class ErwerbspensumListViewController
         const partnerIdentischMitVorgesuch: boolean = this.getGesuch().extractFamiliensituation().partnerIdentischMitVorgesuch;
         if (EbeguUtil.isNotNullAndFalse(partnerIdentischMitVorgesuch)){
             familiensituation = this.getGesuch().extractFamiliensituationErstgesuch();
+        }
+        if (familiensituation.geteilteObhut === true
+            && familiensituation.gesuchstellerKardinalitaet === TSGesuchstellerKardinalitaet.ZU_ZWEIT) {
+            return true;
         }
         // Wenn zwei Gesuchsteller und keine Unterhatsvereinbarung abgeschlossen ist,
         // muss das Erwerbspensum von GS2 nicht angegeben werden

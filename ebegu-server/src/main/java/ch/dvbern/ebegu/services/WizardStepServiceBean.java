@@ -935,7 +935,7 @@ public class WizardStepServiceBean extends AbstractBaseService implements Wizard
 		}
 	}
 
-	private boolean isErwerbespensumContainerEmpty(GesuchstellerContainer gesuchsteller) {
+	private boolean isErwerbespensumContainerEmpty(@Nullable GesuchstellerContainer gesuchsteller) {
 		if (gesuchsteller == null) {
 			return true;
 		}
@@ -1052,12 +1052,14 @@ public class WizardStepServiceBean extends AbstractBaseService implements Wizard
 			if (isErwerbespensumContainerEmpty(gesuch.getGesuchsteller1())) {
 				// Wenn der Step auf NOK gesetzt wird, muss er enabled sein, damit korrigiert werden kann!
 				status = WizardStepStatus.NOK;
-			}
-			if (status != WizardStepStatus.NOK
-				&& gesuch.getGesuchsteller2() != null
-				&& isErwerbspensumRequiredForGS2(gesuch)) {
-				// Wenn der Step auf NOK gesetzt wird, muss er enabled sein, damit korrigiert werden kann!
-				status = WizardStepStatus.NOK;
+			} else {
+				if (isErwerbspensumRequiredForGS2(gesuch) && isErwerbespensumContainerEmpty(gesuch.getGesuchsteller2())) {
+					// Wenn der Step auf NOK gesetzt wird, muss er enabled sein, damit korrigiert werden kann!
+					status = WizardStepStatus.NOK;
+				}
+				if (!isErwerbspensumRequiredForGS2(gesuch) && isErwerbespensumContainerEmpty(gesuch.getGesuchsteller2())) {
+					status = WizardStepStatus.OK;
+				}
 			}
 		} else if (changesBecauseOtherStates && wizardStep.getWizardStepStatus() != WizardStepStatus.MUTIERT) {
 			status = WizardStepStatus.OK;
@@ -1086,6 +1088,9 @@ public class WizardStepServiceBean extends AbstractBaseService implements Wizard
 	private boolean isErwerbspensumRequiredForGS2(Gesuch gesuch) {
 		Familiensituation familiensituation = gesuch.extractFamiliensituation();
 		if (familiensituation == null) {
+			return false;
+		}
+		if (!gesuch.hasSecondGesuchstellerAtAnyTimeOfGesuchsperiode()) {
 			return false;
 		}
 		if (isUnterhaltsvereinbarungAbschlossenOrNichtMoeglich(familiensituation)) {
