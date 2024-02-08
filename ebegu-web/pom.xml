@@ -28,15 +28,6 @@
     <packaging>pom</packaging>
 
     <properties>
-        <sonar.sources>src</sonar.sources>
-        <!-- exclude files from sonar analysis (must match tsconfig.json exclusions -->
-        <sonar.exclusions>src/test.ts</sonar.exclusions>
-        <sonar.tests>src</sonar.tests>
-        <sonar.test.inclusions>**.spec.ts</sonar.test.inclusions>
-        <sonar.verbose>true</sonar.verbose>
-        <sonar.testExecutionReportPaths>build/sonar-report.xml</sonar.testExecutionReportPaths>
-        <sonar.typescript.lcov.reportPaths>build/coverage/lcov.info</sonar.typescript.lcov.reportPaths>
-        <sonar.typescript.tsconfigPath>src/tsconfig.app.json</sonar.typescript.tsconfigPath>
         <npm.preinit.arg>-v</npm.preinit.arg>
         <npm.init.arg>install</npm.init.arg>
     </properties>
