@@ -1093,7 +1093,7 @@ public class WizardStepServiceBean extends AbstractBaseService implements Wizard
 		if (!gesuch.hasSecondGesuchstellerAtAnyTimeOfGesuchsperiode()) {
 			return false;
 		}
-		if (isUnterhaltsvereinbarungAbschlossenOrNichtMoeglich(familiensituation)) {
+		if (familiensituation.getUnterhaltsvereinbarung() != null) {
 			return false;
 		}
 
@@ -1114,19 +1114,6 @@ public class WizardStepServiceBean extends AbstractBaseService implements Wizard
 		return Boolean.TRUE.equals(einstellung.getValueAsBoolean());
 	}
 
-
-
-
-
-	private boolean isUnterhaltsvereinbarungAbschlossenOrNichtMoeglich(Familiensituation familiensituation) {
-		if (familiensituation.getUnterhaltsvereinbarung() == null) {
-			return false;
-		}
-
-		var unterhaltsvereinbarung = familiensituation.getUnterhaltsvereinbarung();
-		return unterhaltsvereinbarung == UnterhaltsvereinbarungAnswer.JA_UNTERHALTSVEREINBARUNG
-			|| unterhaltsvereinbarung == UnterhaltsvereinbarungAnswer.UNTERHALTSVEREINBARUNG_NICHT_MOEGLICH;
-	}
 
 	/**
 	 * Der Step mit dem uebergebenen StepName bekommt den Status OK. Diese Methode wird immer aufgerufen, um den
