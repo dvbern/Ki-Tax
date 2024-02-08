@@ -292,7 +292,9 @@ public class AbstractEntityListener {
 			if (entity instanceof ApplicationProperty //required properties geladen bevor login
 				|| entity instanceof Gemeinde //anonym geladen bevor login (onboarding)
 				|| entity instanceof Mandant //anonym geladen bevor login (mandant wahl)
-				|| entity instanceof Benutzer) {// wegen locallogin
+				|| entity instanceof Benutzer // wegen locallogin
+				|| entity instanceof Institution // wegen locallogin (laden Institution mit Berechtigungen)
+				|| entity instanceof Traegerschaft) {// wegen locallogin (laden Tragerschaft mit Berechtigungen)
 				return true;
 			}
 			throw new EJBAccessException("Access Violation for user "
