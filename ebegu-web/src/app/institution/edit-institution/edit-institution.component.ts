@@ -25,8 +25,8 @@ import {
     ViewChildren
 } from '@angular/core';
 import {NgForm} from '@angular/forms';
-import {MatCheckboxChange} from '@angular/material/checkbox';
-import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
+import {MatLegacyCheckboxChange as MatCheckboxChange} from '@angular/material/legacy-checkbox';
+import {MatLegacyDialog as MatDialog, MatLegacyDialogConfig as MatDialogConfig} from '@angular/material/legacy-dialog';
 import {TranslateService} from '@ngx-translate/core';
 import {StateService, Transition} from '@uirouter/core';
 import * as moment from 'moment';

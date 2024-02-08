@@ -10,7 +10,7 @@ import {
     ViewEncapsulation
 } from '@angular/core';
 import {Sort} from '@angular/material/sort';
-import {MatTableDataSource} from '@angular/material/table';
+import {MatLegacyTableDataSource as MatTableDataSource} from '@angular/material/legacy-table';
 import {DvSimpleTableColumnDefinition} from './dv-simple-table-column-definition';
 import {DvSimpleTableConfig} from './dv-simple-table-config';
 

@@ -24,10 +24,10 @@ import {
     OnInit,
     ViewChild,
 } from '@angular/core';
-import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
-import {PageEvent} from '@angular/material/paginator';
+import {MatLegacyDialog as MatDialog, MatLegacyDialogConfig as MatDialogConfig} from '@angular/material/legacy-dialog';
+import {LegacyPageEvent as PageEvent} from '@angular/material/legacy-paginator';
 import {MatSort, MatSortHeader, Sort} from '@angular/material/sort';
-import {MatTableDataSource} from '@angular/material/table';
+import {MatLegacyTableDataSource as MatTableDataSource} from '@angular/material/legacy-table';
 import {TranslateService} from '@ngx-translate/core';
 import {TransitionService} from '@uirouter/angular';
 import {StateService, UIRouterGlobals} from '@uirouter/core';

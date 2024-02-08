@@ -28,7 +28,7 @@ import {
     SkipSelf
 } from '@angular/core';
 import {MAT_DATE_LOCALE} from '@angular/material/core';
-import {MatPaginatorIntl} from '@angular/material/paginator';
+import {MatLegacyPaginatorIntl as MatPaginatorIntl} from '@angular/material/legacy-paginator';
 import {TranslateModule, TranslatePipe, TranslateService} from '@ngx-translate/core';
 import {UIRouterUpgradeModule} from '@uirouter/angular-hybrid';
 import {CookieService} from 'ngx-cookie-service';

@@ -24,9 +24,9 @@ import {
     OnInit,
     Output
 } from '@angular/core';
-import {PageEvent} from '@angular/material/paginator';
+import {LegacyPageEvent as PageEvent} from '@angular/material/legacy-paginator';
 import {MatSort, Sort} from '@angular/material/sort';
-import {MatTableDataSource} from '@angular/material/table';
+import {MatLegacyTableDataSource as MatTableDataSource} from '@angular/material/legacy-table';
 import {take} from 'rxjs/operators';
 import {CONSTANTS} from '../../../../app/core/constants/CONSTANTS';
 import {LogFactory} from '../../../../app/core/logging/LogFactory';

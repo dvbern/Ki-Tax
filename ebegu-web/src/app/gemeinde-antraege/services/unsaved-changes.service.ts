@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {FormGroup} from '@angular/forms';
-import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
+import {MatLegacyDialog as MatDialog, MatLegacyDialogConfig as MatDialogConfig} from '@angular/material/legacy-dialog';
 import {TransitionService} from '@uirouter/core';
 import {Observable, of} from 'rxjs';
 import {map} from 'rxjs/operators';
