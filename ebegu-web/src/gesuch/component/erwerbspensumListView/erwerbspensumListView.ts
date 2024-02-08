@@ -332,4 +332,10 @@ export class ErwerbspensumListViewController
         return this.getKonfigAnspruchUnabhaengigVomBeschaeftigungsPensumForGemeinde()  ===
             TSAnspruchBeschaeftigungAbhaengigkeitTyp.UNABHAENGING;
     }
+
+    public getGS2FullName(): string {
+        return EbeguUtil.isNotNullOrUndefined(this.gesuchModelManager.getGesuch().gesuchsteller2) ?
+            this.gesuchModelManager.getGesuch().gesuchsteller2.extractFullName() :
+            this.$translate.instant('GS2_NICHT_AUSGEFUELLT');
+    }
 }
