@@ -14,10 +14,25 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
+-- funktion speichert die gesuchsperiode id für eine gesuchsperiode gültig ab (input) in der übergebenen variable gp_id.
+-- falls keine periode mit dem übergebenen gültig_ab datum existeirt wird eine neue uuid in die variable gespeichert
+DELIMITER //
+create or replace procedure select_gesuchsperiode(IN gueltig_ab_input date,IN mandant_id_input binary(16),OUT gp_id binary(16))
+begin
+    IF EXISTS(select id from gesuchsperiode where mandant_id = mandant_id_input and gueltig_ab = gueltig_ab_input)
+    THEN set gp_id = (select id from gesuchsperiode where mandant_id = mandant_id_input and gueltig_ab = gueltig_ab_input);
+    ELSE set gp_id = UNHEX(REPLACE(UUID(), '-', ''));
+    END IF;
+end;
+
+//
+
+DELIMITER ;
 
 # Variables definition
 SET @mandant_id_schwyz = UNHEX(REPLACE('08687de9-b3d0-11ee-829a-0242ac160002', '-', ''));
-SET @gesuchperiode_24_25_id = UNHEX(REPLACE('1b0ed338-b3d2-11ee-829a-0242ac160002', '-', ''));
+call select_gesuchsperiode('2024-08-01', @mandant_id_schwyz, @gesuchsperiode_24_25_id);
+
 SET @testgemeinde_schwyz_id = UNHEX(REPLACE('de7c81c0-b3d5-11ee-829a-0242ac160002', '-', ''));
 SET @traegerschaft_schwyz_id = UNHEX(REPLACE('ef7ef939-b3e7-11ee-829a-0242ac160002', '-', ''));
 SET @bruennen_id = UNHEX(REPLACE('1188c355-b3d6-11ee-829a-0242ac160002', '-', ''));
@@ -33,13 +48,11 @@ UPDATE application_property SET value = 'false' WHERE name = 'ZUSATZINFORMATIONE
 UPDATE application_property SET value = 'false' WHERE name = 'SCHNITTSTELLE_EVENTS_AKTIVIERT' AND mandant_id = @mandant_id_schwyz;
 
 # Gesuchsperiode
-# noinspection SqlWithoutWhere
-UPDATE gesuchsperiode SET status = 'AKTIV' WHERE id = @gesuchperiode_24_25_id;
+UPDATE gesuchsperiode SET status = 'AKTIV' WHERE id = @gesuchsperiode_24_25_id;
 
 # Benutzer System erstellen
-INSERT IGNORE INTO benutzer (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version, vorgaenger_id, email, nachname, username, vorname, mandant_id, externaluuid, status) VALUES (@system_user, '2016-01-01 00:00:00', '2016-01-01 00:00:00', 'flyway', 'flyway', 0, null, 'hallo@dvbern.ch', 'System', 'system_sz', '', @mandant_id_schwyz, null, 'AKTIV');
+INSERT IGNORE INTO benutzer (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version, vorgaenger_id, email, nachname, username, vorname, mandant_id, externaluuid, status) VALUES (@system_user, '2016-01-01 00:00:00', '2016-01-01 00:00:00', 'flyway', 'flyway', 0, null, 'hallo@dvbern.ch', 'System', 'system_sz', '', UNHEX(REPLACE('e3736eb8-6eef-40ef-9e52-96ab48d8f220', '-', '')), null, 'AKTIV');
 INSERT IGNORE INTO berechtigung (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version, vorgaenger_id, gueltig_ab, gueltig_bis, role, benutzer_id, institution_id, traegerschaft_id) VALUES (UNHEX(REPLACE('2a7b78ed-4af0-11e9-9a3a-afd41a03c0bb', '-', '')), '2016-01-01 00:00:00', '2016-01-01 00:00:00', 'flyway', 'flyway', 0, null, '2017-01-01', '9999-12-31', 'SUPER_ADMIN', @system_user, null, null);
-
 
 # Antragstellende Benutzer fuer e2e erstellen
 # geem
@@ -201,7 +214,6 @@ VALUES (UNHEX(REPLACE('d968ba59-b3e8-11ee-829a-0242ac160002', '-', '')), NOW(), 
 		@bruennen_id, NULL, NULL,
 		UNHEX(REPLACE('95440105-b3e8-11ee-829a-0242ac160002', '-', '')), 'bruennen-sz@mailbucket.dvbern.ch', NULL, NULL);
 
-
 -- Sozialdienst
 INSERT IGNORE INTO sozialdienst (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version,
 								 vorgaenger_id, name, status, mandant_id)
@@ -258,134 +270,72 @@ VALUES (UNHEX(REPLACE('47ce5ee5-b911-11ee-8d78-0242ac160002', '-', '')), '2020-0
 INSERT IGNORE INTO einstellungen_tagesschule (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version,
 											  modul_tagesschule_typ, gesuchsperiode_id, institution_stammdaten_tagesschule_id,
 											  erlaeuterung, tagi)
-VALUES (UNHEX('c17a6c06b91111ee8d780242ac160002'), '2023-12-07 15:55:26', '2023-12-07 15:55:26', 'ebegu:Kanton Schwytz',
-		'ebegu:Kanton Schwytz', 0, 'DYNAMISCH', @gesuchperiode_24_25_id, UNHEX('34a03f8bb91111ee8d780242ac160002'),
+VALUES (UNHEX('c17a6c06b91111ee8d780242ac160002'), '2023-12-07 15:55:26', '2023-12-07 15:55:26', 'ebegu:Kanton Schwyz',
+		'ebegu:Kanton Schwyz', 0, 'DYNAMISCH', @gesuchsperiode_24_25_id, UNHEX('34a03f8bb91111ee8d780242ac160002'),
 		null, false);
 
 INSERT IGNORE INTO text_ressource (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version, vorgaenger_id,
 								   text_deutsch, text_franzoesisch)
-VALUES (UNHEX('5c4a4720b91211ee8d780242ac160002'), '2023-12-08 09:45:52', '2023-12-08 09:45:52', 'ebegu:Kanton Schwytz',
-		'ebegu:Kanton Schwytz', 0, null, 'Nachmittag', 'Après-midi');
+VALUES (UNHEX('5c4a4720b91211ee8d780242ac160002'), '2023-12-08 09:45:52', '2023-12-08 09:45:52', 'ebegu:Kanton Schwyz',
+		'ebegu:Kanton Schwyz', 0, null, 'Nachmittag', 'Après-midi');
 INSERT IGNORE INTO text_ressource (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version, vorgaenger_id,
 								   text_deutsch, text_franzoesisch)
-VALUES (UNHEX('79929397b91211ee8d780242ac160002'), '2023-12-08 09:45:52', '2023-12-08 09:45:52', 'ebegu:Kanton Schwytz',
-		'ebegu:Kanton Schwytz', 0, null, 'Morgen', 'Matin');
-INSERT IGNORE INTO text_ressource (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version, vorgaenger_id,
-								   text_deutsch, text_franzoesisch)
-VALUES (UNHEX('47f23263b91211ee8d780242ac160002'), '2023-12-08 09:45:52', '2023-12-08 09:45:52', 'ebegu:Kanton Schwytz',
-		'ebegu:Kanton Schwytz', 0, null, 'Nachmittag', 'Après-midi');
-INSERT IGNORE INTO text_ressource (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version, vorgaenger_id,
-								   text_deutsch, text_franzoesisch)
-VALUES (UNHEX('6c2bc64ab91211ee8d780242ac160002'), '2023-12-08 09:45:52', '2023-12-08 09:45:52', 'ebegu:Kanton Schwytz',
-		'ebegu:Kanton Schwytz', 0, null, 'Morgen', 'Matin');
+VALUES (UNHEX('6c2bc64ab91211ee8d780242ac160002'), '2023-12-08 09:45:52', '2023-12-08 09:45:52', 'ebegu:Kanton Schwyz',
+		'ebegu:Kanton Schwyz', 0, null, 'Morgen', 'Matin');
 
 INSERT IGNORE INTO modul_tagesschule_group (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version,
 											identifier, intervall, modul_tagesschule_name, reihenfolge, verpflegungskosten,
 											wird_paedagogisch_betreut, zeit_bis, zeit_von, einstellungen_tagesschule_id,
 											bezeichnung_id, fremd_id)
-VALUES (UNHEX('00939eebb91211ee8d780242ac160002'), '2023-12-08 09:45:52', '2023-12-08 09:45:52', 'ebegu:Kanton Schwytz',
-		'ebegu:Kanton Schwytz', 0, 'coY1r4cqrK1Bc1HIcgvHwG19pJnGzffZoZO0', 'WOECHENTLICH', 'DYNAMISCH', 0, 2.00, true, '17:00:00',
-		'13:00:00', UNHEX('c17a6c06b91111ee8d780242ac160002'), UNHEX('47f23263b91211ee8d780242ac160002'), null);
-INSERT IGNORE INTO modul_tagesschule_group (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version,
-											identifier, intervall, modul_tagesschule_name, reihenfolge, verpflegungskosten,
-											wird_paedagogisch_betreut, zeit_bis, zeit_von, einstellungen_tagesschule_id,
-											bezeichnung_id, fremd_id)
-VALUES (UNHEX('4edfb4c3b91211ee8d780242ac160002'), '2023-12-08 09:45:52', '2023-12-08 09:45:52', 'ebegu:Kanton Schwytz',
-		'ebegu:Kanton Schwytz', 0, 'lNd5s2hVLEGNAyVgEJOyhGPfjhJoEaDCp4Pp', 'WOECHENTLICH', 'DYNAMISCH', 0, 2.00, true, '17:00:00',
+VALUES (UNHEX('4edfb4c3b91211ee8d780242ac160002'), '2023-12-08 09:45:52', '2023-12-08 09:45:52', 'ebegu:Kanton Schwyz',
+		'ebegu:Kanton Schwyz', 0, 'lNd5s2hVLEGNAyVgEJOyhGPfjhJoEaDCp4Pp', 'WOECHENTLICH', 'DYNAMISCH', 0, 2.00, true, '17:00:00',
 		'13:00:00', UNHEX('c17a6c06b91111ee8d780242ac160002'), UNHEX('5c4a4720b91211ee8d780242ac160002'), null);
 INSERT IGNORE INTO modul_tagesschule_group (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version,
 											identifier, intervall, modul_tagesschule_name, reihenfolge, verpflegungskosten,
 											wird_paedagogisch_betreut, zeit_bis, zeit_von, einstellungen_tagesschule_id,
 											bezeichnung_id, fremd_id)
-VALUES (UNHEX('614e247cb91211ee8d780242ac160002'), '2023-12-08 09:45:52', '2023-12-08 09:45:52', 'ebegu:Kanton Schwytz',
-		'ebegu:Kanton Schwytz', 0, 'F8vXs39fkEuXdvi3kjLv5DXh5m4fcVpm27tw', 'WOECHENTLICH', 'DYNAMISCH', 0, 3.00, true, '12:00:00',
+VALUES (UNHEX('614e247cb91211ee8d780242ac160002'), '2023-12-08 09:45:52', '2023-12-08 09:45:52', 'ebegu:Kanton Schwyz',
+		'ebegu:Kanton Schwyz', 0, 'F8vXs39fkEuXdvi3kjLv5DXh5m4fcVpm27tw', 'WOECHENTLICH', 'DYNAMISCH', 0, 3.00, true, '12:00:00',
 		'08:00:00', UNHEX('c17a6c06b91111ee8d780242ac160002'), UNHEX('6c2bc64ab91211ee8d780242ac160002'), null);
-INSERT IGNORE INTO modul_tagesschule_group (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version,
-											identifier, intervall, modul_tagesschule_name, reihenfolge, verpflegungskosten,
-											wird_paedagogisch_betreut, zeit_bis, zeit_von, einstellungen_tagesschule_id,
-											bezeichnung_id, fremd_id)
-VALUES (UNHEX('70d64f67b91211ee8d780242ac160002'), '2023-12-08 09:45:52', '2023-12-08 09:45:52', 'ebegu:Kanton Schwytz',
-		'ebegu:Kanton Schwytz', 0, 'Hxttr08V9uANnNSJNnqVXZwcXjg8cWdoSnoK', 'WOECHENTLICH', 'DYNAMISCH', 0, 3.00, true, '12:00:00',
-		'08:00:00', UNHEX('c17a6c06b91111ee8d780242ac160002'), UNHEX('79929397b91211ee8d780242ac160002'), null);
 
 INSERT IGNORE INTO modul_tagesschule (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version, wochentag,
 									  modul_tagesschule_group_id)
-VALUES (UNHEX('8099093ab91211ee8d780242ac160002'), '2023-12-08 09:45:52', '2023-12-08 09:45:52', 'ebegu:Kanton Schwytz',
-		'ebegu:Kanton Schwytz', 0, 'FRIDAY', UNHEX('00939eebb91211ee8d780242ac160002'));
+VALUES (UNHEX('9464012cb91211ee8d780242ac160002'), '2023-12-08 09:45:52', '2023-12-08 09:45:52', 'ebegu:Kanton Schwyz',
+		'ebegu:Kanton Schwyz', 0, 'THURSDAY', UNHEX('614e247cb91211ee8d780242ac160002'));
 INSERT IGNORE INTO modul_tagesschule (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version, wochentag,
 									  modul_tagesschule_group_id)
-VALUES (UNHEX('873c2616b91211ee8d780242ac160002'), '2023-12-08 09:45:52', '2023-12-08 09:45:52', 'ebegu:Kanton Schwytz',
-		'ebegu:Kanton Schwytz', 0, 'TUESDAY', UNHEX('70d64f67b91211ee8d780242ac160002'));
+VALUES (UNHEX('97133873b91211ee8d780242ac160002'), '2023-12-08 09:45:52', '2023-12-08 09:45:52', 'ebegu:Kanton Schwyz',
+		'ebegu:Kanton Schwyz', 0, 'WEDNESDAY', UNHEX('4edfb4c3b91211ee8d780242ac160002'));
 INSERT IGNORE INTO modul_tagesschule (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version, wochentag,
 									  modul_tagesschule_group_id)
-VALUES (UNHEX('8a2cec19b91211ee8d780242ac160002'), '2023-12-08 09:45:52', '2023-12-08 09:45:52', 'ebegu:Kanton Schwytz',
-		'ebegu:Kanton Schwytz', 0, 'WEDNESDAY', UNHEX('70d64f67b91211ee8d780242ac160002'));
+VALUES (UNHEX('9fc6a35ab91211ee8d780242ac160002'), '2023-12-08 09:45:52', '2023-12-08 09:45:52', 'ebegu:Kanton Schwyz',
+		'ebegu:Kanton Schwyz', 0, 'MONDAY', UNHEX('614e247cb91211ee8d780242ac160002'));
 INSERT IGNORE INTO modul_tagesschule (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version, wochentag,
 									  modul_tagesschule_group_id)
-VALUES (UNHEX('90d23dc4b91211ee8d780242ac160002'), '2023-12-08 09:45:52', '2023-12-08 09:45:52', 'ebegu:Kanton Schwytz',
-		'ebegu:Kanton Schwytz', 0, 'WEDNESDAY', UNHEX('00939eebb91211ee8d780242ac160002'));
+VALUES (UNHEX('a2a4e499b91211ee8d780242ac160002'), '2023-12-08 09:45:52', '2023-12-08 09:45:52', 'ebegu:Kanton Schwyz',
+		'ebegu:Kanton Schwyz', 0, 'FRIDAY', UNHEX('614e247cb91211ee8d780242ac160002'));
 INSERT IGNORE INTO modul_tagesschule (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version, wochentag,
 									  modul_tagesschule_group_id)
-VALUES (UNHEX('9464012cb91211ee8d780242ac160002'), '2023-12-08 09:45:52', '2023-12-08 09:45:52', 'ebegu:Kanton Schwytz',
-		'ebegu:Kanton Schwytz', 0, 'THURSDAY', UNHEX('614e247cb91211ee8d780242ac160002'));
+VALUES (UNHEX('a73af6d7b91211ee8d780242ac160002'), '2023-12-08 09:45:52', '2023-12-08 09:45:52', 'ebegu:Kanton Schwyz',
+		'ebegu:Kanton Schwyz', 0, 'THURSDAY', UNHEX('4edfb4c3b91211ee8d780242ac160002'));
 INSERT IGNORE INTO modul_tagesschule (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version, wochentag,
 									  modul_tagesschule_group_id)
-VALUES (UNHEX('97133873b91211ee8d780242ac160002'), '2023-12-08 09:45:52', '2023-12-08 09:45:52', 'ebegu:Kanton Schwytz',
-		'ebegu:Kanton Schwytz', 0, 'WEDNESDAY', UNHEX('4edfb4c3b91211ee8d780242ac160002'));
+VALUES (UNHEX('ad5e04b0b91211ee8d780242ac160002'), '2023-12-08 09:45:52', '2023-12-08 09:45:52', 'ebegu:Kanton Schwyz',
+		'ebegu:Kanton Schwyz', 0, 'MONDAY', UNHEX('4edfb4c3b91211ee8d780242ac160002'));
 INSERT IGNORE INTO modul_tagesschule (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version, wochentag,
 									  modul_tagesschule_group_id)
-VALUES (UNHEX('9cdfa639b91211ee8d780242ac160002'), '2023-12-08 09:45:52', '2023-12-08 09:45:52', 'ebegu:Kanton Schwytz',
-		'ebegu:Kanton Schwytz', 0, 'TUESDAY', UNHEX('00939eebb91211ee8d780242ac160002'));
+VALUES (UNHEX('af8448b2b91211ee8d780242ac160002'), '2023-12-08 09:45:52', '2023-12-08 09:45:52', 'ebegu:Kanton Schwyz',
+		'ebegu:Kanton Schwyz', 0, 'TUESDAY', UNHEX('614e247cb91211ee8d780242ac160002'));
 INSERT IGNORE INTO modul_tagesschule (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version, wochentag,
 									  modul_tagesschule_group_id)
-VALUES (UNHEX('9fc6a35ab91211ee8d780242ac160002'), '2023-12-08 09:45:52', '2023-12-08 09:45:52', 'ebegu:Kanton Schwytz',
-		'ebegu:Kanton Schwytz', 0, 'MONDAY', UNHEX('614e247cb91211ee8d780242ac160002'));
+VALUES (UNHEX('b18a65bbb91211ee8d780242ac160002'), '2023-12-08 09:45:52', '2023-12-08 09:45:52', 'ebegu:Kanton Schwyz',
+		'ebegu:Kanton Schwyz', 0, 'WEDNESDAY', UNHEX('614e247cb91211ee8d780242ac160002'));
 INSERT IGNORE INTO modul_tagesschule (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version, wochentag,
 									  modul_tagesschule_group_id)
-VALUES (UNHEX('a2a4e499b91211ee8d780242ac160002'), '2023-12-08 09:45:52', '2023-12-08 09:45:52', 'ebegu:Kanton Schwytz',
-		'ebegu:Kanton Schwytz', 0, 'FRIDAY', UNHEX('614e247cb91211ee8d780242ac160002'));
+VALUES (UNHEX('b6e0e9d0b91211ee8d780242ac160002'), '2023-12-08 09:45:52', '2023-12-08 09:45:52', 'ebegu:Kanton Schwyz',
+		'ebegu:Kanton Schwyz', 0, 'TUESDAY', UNHEX('4edfb4c3b91211ee8d780242ac160002'));
 INSERT IGNORE INTO modul_tagesschule (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version, wochentag,
 									  modul_tagesschule_group_id)
-VALUES (UNHEX('a4e5d93cb91211ee8d780242ac160002'), '2023-12-08 09:45:52', '2023-12-08 09:45:52', 'ebegu:Kanton Schwytz',
-		'ebegu:Kanton Schwytz', 0, 'THURSDAY', UNHEX('00939eebb91211ee8d780242ac160002'));
-INSERT IGNORE INTO modul_tagesschule (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version, wochentag,
-									  modul_tagesschule_group_id)
-VALUES (UNHEX('a73af6d7b91211ee8d780242ac160002'), '2023-12-08 09:45:52', '2023-12-08 09:45:52', 'ebegu:Kanton Schwytz',
-		'ebegu:Kanton Schwytz', 0, 'THURSDAY', UNHEX('4edfb4c3b91211ee8d780242ac160002'));
-INSERT IGNORE INTO modul_tagesschule (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version, wochentag,
-									  modul_tagesschule_group_id)
-VALUES (UNHEX('aaeae273b91211ee8d780242ac160002'), '2023-12-08 09:45:52', '2023-12-08 09:45:52', 'ebegu:Kanton Schwytz',
-		'ebegu:Kanton Schwytz', 0, 'MONDAY', UNHEX('70d64f67b91211ee8d780242ac160002'));
-INSERT IGNORE INTO modul_tagesschule (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version, wochentag,
-									  modul_tagesschule_group_id)
-VALUES (UNHEX('ad5e04b0b91211ee8d780242ac160002'), '2023-12-08 09:45:52', '2023-12-08 09:45:52', 'ebegu:Kanton Schwytz',
-		'ebegu:Kanton Schwytz', 0, 'MONDAY', UNHEX('4edfb4c3b91211ee8d780242ac160002'));
-INSERT IGNORE INTO modul_tagesschule (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version, wochentag,
-									  modul_tagesschule_group_id)
-VALUES (UNHEX('af8448b2b91211ee8d780242ac160002'), '2023-12-08 09:45:52', '2023-12-08 09:45:52', 'ebegu:Kanton Schwytz',
-		'ebegu:Kanton Schwytz', 0, 'TUESDAY', UNHEX('614e247cb91211ee8d780242ac160002'));
-INSERT IGNORE INTO modul_tagesschule (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version, wochentag,
-									  modul_tagesschule_group_id)
-VALUES (UNHEX('b18a65bbb91211ee8d780242ac160002'), '2023-12-08 09:45:52', '2023-12-08 09:45:52', 'ebegu:Kanton Schwytz',
-		'ebegu:Kanton Schwytz', 0, 'WEDNESDAY', UNHEX('614e247cb91211ee8d780242ac160002'));
-INSERT IGNORE INTO modul_tagesschule (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version, wochentag,
-									  modul_tagesschule_group_id)
-VALUES (UNHEX('b3d75504b91211ee8d780242ac160002'), '2023-12-08 09:45:52', '2023-12-08 09:45:52', 'ebegu:Kanton Schwytz',
-		'ebegu:Kanton Schwytz', 0, 'THURSDAY', UNHEX('70d64f67b91211ee8d780242ac160002'));
-INSERT IGNORE INTO modul_tagesschule (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version, wochentag,
-									  modul_tagesschule_group_id)
-VALUES (UNHEX('b6e0e9d0b91211ee8d780242ac160002'), '2023-12-08 09:45:52', '2023-12-08 09:45:52', 'ebegu:Kanton Schwytz',
-		'ebegu:Kanton Schwytz', 0, 'TUESDAY', UNHEX('4edfb4c3b91211ee8d780242ac160002'));
-INSERT IGNORE INTO modul_tagesschule (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version, wochentag,
-									  modul_tagesschule_group_id)
-VALUES (UNHEX('b90149e3b91211ee8d780242ac160002'), '2023-12-08 09:45:52', '2023-12-08 09:45:52', 'ebegu:Kanton Schwytz',
-		'ebegu:Kanton Schwytz', 0, 'MONDAY', UNHEX('00939eebb91211ee8d780242ac160002'));
-INSERT IGNORE INTO modul_tagesschule (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version, wochentag,
-									  modul_tagesschule_group_id)
-VALUES (UNHEX('baff3e93b91211ee8d780242ac160002'), '2023-12-08 09:45:52', '2023-12-08 09:45:52', 'ebegu:Kanton Schwytz',
-		'ebegu:Kanton Schwytz', 0, 'FRIDAY', UNHEX('4edfb4c3b91211ee8d780242ac160002'));
-INSERT IGNORE INTO modul_tagesschule (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version, wochentag,
-									  modul_tagesschule_group_id)
-VALUES (UNHEX('bced62f8b91211ee8d780242ac160002'), '2023-12-08 09:45:52', '2023-12-08 09:45:52', 'ebegu:Kanton Schwytz',
-		'ebegu:Kanton Schwytz', 0, 'FRIDAY', UNHEX('70d64f67b91211ee8d780242ac160002'));
+VALUES (UNHEX('baff3e93b91211ee8d780242ac160002'), '2023-12-08 09:45:52', '2023-12-08 09:45:52', 'ebegu:Kanton Schwyz',
+		'ebegu:Kanton Schwyz', 0, 'FRIDAY', UNHEX('4edfb4c3b91211ee8d780242ac160002'));
 
