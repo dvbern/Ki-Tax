@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
--- funktion speichert die gesuchperiode id für eine gesuchsperiode gültig ab (input) in der übergebenen variable gp_id.
+-- funktion speichert die gesuchsperiode id für eine gesuchsperiode gültig ab (input) in der übergebenen variable gp_id.
 -- falls keine periode mit dem übergebenen gültig_ab datum existeirt wird eine neue uuid in die variable gespeichert
 DELIMITER //
 create or replace procedure select_gesuchsperiode(IN gueltig_ab_input date,IN mandant_id_input binary(16),OUT gp_id binary(16))
@@ -31,7 +31,7 @@ DELIMITER ;
 
 # Variables definition
 SET @mandant_id_schwyz = UNHEX(REPLACE('08687de9-b3d0-11ee-829a-0242ac160002', '-', ''));
-call select_gesuchsperiode('2024-08-01', @mandant_id_schwyz, @gesuchperiode_24_25_id);
+call select_gesuchsperiode('2024-08-01', @mandant_id_schwyz, @gesuchsperiode_24_25_id);
 
 SET @testgemeinde_schwyz_id = UNHEX(REPLACE('de7c81c0-b3d5-11ee-829a-0242ac160002', '-', ''));
 SET @traegerschaft_schwyz_id = UNHEX(REPLACE('ef7ef939-b3e7-11ee-829a-0242ac160002', '-', ''));
@@ -48,7 +48,7 @@ UPDATE application_property SET value = 'false' WHERE name = 'ZUSATZINFORMATIONE
 UPDATE application_property SET value = 'false' WHERE name = 'SCHNITTSTELLE_EVENTS_AKTIVIERT' AND mandant_id = @mandant_id_schwyz;
 
 # Gesuchsperiode
-UPDATE gesuchsperiode SET status = 'AKTIV' WHERE id = @gesuchperiode_24_25_id;
+UPDATE gesuchsperiode SET status = 'AKTIV' WHERE id = @gesuchsperiode_24_25_id;
 
 # Benutzer System erstellen
 INSERT IGNORE INTO benutzer (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version, vorgaenger_id, email, nachname, username, vorname, mandant_id, externaluuid, status) VALUES (@system_user, '2016-01-01 00:00:00', '2016-01-01 00:00:00', 'flyway', 'flyway', 0, null, 'hallo@dvbern.ch', 'System', 'system_sz', '', UNHEX(REPLACE('e3736eb8-6eef-40ef-9e52-96ab48d8f220', '-', '')), null, 'AKTIV');
@@ -271,7 +271,7 @@ INSERT IGNORE INTO einstellungen_tagesschule (id, timestamp_erstellt, timestamp_
 											  modul_tagesschule_typ, gesuchsperiode_id, institution_stammdaten_tagesschule_id,
 											  erlaeuterung, tagi)
 VALUES (UNHEX('c17a6c06b91111ee8d780242ac160002'), '2023-12-07 15:55:26', '2023-12-07 15:55:26', 'ebegu:Kanton Schwyz',
-		'ebegu:Kanton Schwyz', 0, 'DYNAMISCH', @gesuchperiode_24_25_id, UNHEX('34a03f8bb91111ee8d780242ac160002'),
+		'ebegu:Kanton Schwyz', 0, 'DYNAMISCH', @gesuchsperiode_24_25_id, UNHEX('34a03f8bb91111ee8d780242ac160002'),
 		null, false);
 
 INSERT IGNORE INTO text_ressource (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version, vorgaenger_id,
