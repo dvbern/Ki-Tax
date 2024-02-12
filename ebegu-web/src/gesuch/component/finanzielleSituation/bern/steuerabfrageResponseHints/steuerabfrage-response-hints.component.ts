@@ -28,7 +28,7 @@ import {
     SimpleChanges,
     ViewEncapsulation,
 } from '@angular/core';
-import {MatLegacyDialog as MatDialog, MatLegacyDialogConfig as MatDialogConfig} from '@angular/material/legacy-dialog';
+import {MatDialog, MatDialogConfig as MatDialogConfig} from '@angular/material/dialog';
 import {TranslateService} from '@ngx-translate/core';
 import * as moment from 'moment';
 import {BehaviorSubject, Subscription} from 'rxjs';

@@ -14,7 +14,7 @@
  */
 
 import {ComponentFixture, fakeAsync, TestBed, tick, waitForAsync} from '@angular/core/testing';
-import {MatLegacyDialogModule as MatDialogModule} from '@angular/material/legacy-dialog';
+import {MatDialogModule} from '@angular/material/dialog';
 import {TranslateModule} from '@ngx-translate/core';
 import {StateService} from '@uirouter/core';
 import {of} from 'rxjs';

@@ -17,7 +17,7 @@
 
 import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit} from '@angular/core';
 import {FormBuilder, ValidatorFn, Validators} from '@angular/forms';
-import {MatLegacyDialog as MatDialog} from '@angular/material/legacy-dialog';
+import {MatDialog} from '@angular/material/dialog';
 import {TranslateService} from '@ngx-translate/core';
 import {UIRouterGlobals} from '@uirouter/core';
 import {combineLatest, of, Observable, Subject} from 'rxjs';

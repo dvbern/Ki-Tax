@@ -17,7 +17,7 @@
 
 import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnDestroy, OnInit, ViewEncapsulation} from '@angular/core';
 import {AbstractControl, FormBuilder, FormControl, FormGroup, ValidatorFn, Validators} from '@angular/forms';
-import {MatLegacyDialog as MatDialog, MatLegacyDialogConfig as MatDialogConfig} from '@angular/material/legacy-dialog';
+import {MatDialog, MatDialogConfig as MatDialogConfig} from '@angular/material/dialog';
 import {MatLegacyRadioChange as MatRadioChange} from '@angular/material/legacy-radio';
 import {TranslateService} from '@ngx-translate/core';
 import {StateService, UIRouterGlobals} from '@uirouter/core';

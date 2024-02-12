@@ -4,7 +4,7 @@ import {MatLegacyAutocompleteModule as MatAutocompleteModule} from '@angular/mat
 import {MatLegacyButtonModule as MatButtonModule} from '@angular/material/legacy-button';
 import {MatLegacyCheckboxModule as MatCheckboxModule} from '@angular/material/legacy-checkbox';
 import {MatDatepickerModule} from '@angular/material/datepicker';
-import {MatLegacyDialogModule as MatDialogModule} from '@angular/material/legacy-dialog';
+import {MatDialogModule} from '@angular/material/dialog';
 import {MatDividerModule} from '@angular/material/divider';
 import {MatLegacyInputModule as MatInputModule} from '@angular/material/legacy-input';
 import {MatLegacyPaginatorModule as MatPaginatorModule} from '@angular/material/legacy-paginator';

@@ -16,7 +16,7 @@
  */
 
 import {Component} from '@angular/core';
-import { MatLegacyDialogRef as MatDialogRef } from '@angular/material/legacy-dialog';
+import { MatDialogRef as MatDialogRef } from '@angular/material/dialog';
 import {TSSupportAnfrage} from '../../models/TSSupportAnfrage';
 import {EbeguUtil} from '../../utils/EbeguUtil';
 import {SupportRS} from '../service/supportRS.rest';

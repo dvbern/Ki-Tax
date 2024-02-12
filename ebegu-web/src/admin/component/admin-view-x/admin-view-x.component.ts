@@ -1,6 +1,6 @@
 import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, ViewChild} from '@angular/core';
 import {NgForm} from '@angular/forms';
-import {MatLegacyDialog as MatDialog} from '@angular/material/legacy-dialog';
+import {MatDialog} from '@angular/material/dialog';
 import {MatSort} from '@angular/material/sort';
 import {MatLegacyTableDataSource as MatTableDataSource} from '@angular/material/legacy-table';
 import {DvNgOkDialogComponent} from '../../../app/core/component/dv-ng-ok-dialog/dv-ng-ok-dialog.component';

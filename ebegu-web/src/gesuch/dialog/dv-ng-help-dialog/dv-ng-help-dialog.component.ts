@@ -14,7 +14,7 @@
  */
 
 import {Component} from '@angular/core';
-import {MatLegacyDialog as MatDialog, MatLegacyDialogRef as MatDialogRef} from '@angular/material/legacy-dialog';
+import {MatDialog, MatDialogRef as MatDialogRef} from '@angular/material/dialog';
 import {Observable} from 'rxjs';
 import {MANDANTS} from '../../../app/core/constants/MANDANTS';
 import {KiBonGuidedTourService} from '../../../app/kibonTour/service/KiBonGuidedTourService';

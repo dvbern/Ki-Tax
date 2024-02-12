@@ -16,7 +16,7 @@
  */
 
 import {ChangeDetectionStrategy, Component, OnDestroy, OnInit, ViewEncapsulation} from '@angular/core';
-import {MatLegacyDialog as MatDialog, MatLegacyDialogConfig as MatDialogConfig} from '@angular/material/legacy-dialog';
+import {MatDialog, MatDialogConfig as MatDialogConfig} from '@angular/material/dialog';
 import {TranslateService} from '@ngx-translate/core';
 import {StateService} from '@uirouter/core';
 import {BehaviorSubject, combineLatest, Observable, Subject} from 'rxjs';

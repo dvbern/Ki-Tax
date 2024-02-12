@@ -14,7 +14,7 @@
  */
 
 import {Component, Input, OnChanges} from '@angular/core';
-import {MatLegacyDialog as MatDialog, MatLegacyDialogConfig as MatDialogConfig} from '@angular/material/legacy-dialog';
+import {MatDialog, MatDialogConfig as MatDialogConfig} from '@angular/material/dialog';
 import {StateService} from '@uirouter/core';
 import {IPromise} from 'angular';
 import {from as fromPromise, from, Observable, of} from 'rxjs';

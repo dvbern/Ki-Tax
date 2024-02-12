@@ -17,7 +17,7 @@
 
 import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit} from '@angular/core';
 import {NgForm} from '@angular/forms';
-import {MatLegacyDialog as MatDialog, MatLegacyDialogConfig as MatDialogConfig} from '@angular/material/legacy-dialog';
+import {MatDialog, MatDialogConfig as MatDialogConfig} from '@angular/material/dialog';
 import {MatLegacyTableDataSource as MatTableDataSource} from '@angular/material/legacy-table';
 import {TranslateService} from '@ngx-translate/core';
 import * as moment from 'moment';

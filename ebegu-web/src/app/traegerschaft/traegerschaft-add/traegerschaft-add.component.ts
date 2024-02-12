@@ -16,7 +16,7 @@
  */
 import {ChangeDetectionStrategy, Component, OnInit, ViewChild} from '@angular/core';
 import {NgForm} from '@angular/forms';
-import {MatLegacyDialog as MatDialog, MatLegacyDialogConfig as MatDialogConfig} from '@angular/material/legacy-dialog';
+import {MatDialog, MatDialogConfig as MatDialogConfig} from '@angular/material/dialog';
 import {StateService} from '@uirouter/core';
 import {TSExceptionReport} from '../../../models/TSExceptionReport';
 import {TSTraegerschaft} from '../../../models/TSTraegerschaft';

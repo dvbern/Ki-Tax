@@ -16,7 +16,7 @@
  */
 
 import {Component, Input, OnDestroy, OnInit} from '@angular/core';
-import {MatLegacyDialog as MatDialog, MatLegacyDialogConfig as MatDialogConfig} from '@angular/material/legacy-dialog';
+import {MatDialog, MatDialogConfig as MatDialogConfig} from '@angular/material/dialog';
 import {DomSanitizer, SafeResourceUrl} from '@angular/platform-browser';
 import {TranslateService} from '@ngx-translate/core';
 import {BehaviorSubject, combineLatest, from, Observable, Subject} from 'rxjs';

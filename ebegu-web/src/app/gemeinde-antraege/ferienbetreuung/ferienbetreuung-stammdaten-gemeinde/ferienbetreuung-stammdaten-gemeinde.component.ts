@@ -19,7 +19,7 @@ import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit
 import {FormBuilder, FormControl, FormGroup, ValidatorFn, Validators} from '@angular/forms';
 import {MAT_DATE_FORMATS} from '@angular/material/core';
 import {MatDatepicker} from '@angular/material/datepicker';
-import {MatLegacyDialog as MatDialog} from '@angular/material/legacy-dialog';
+import {MatDialog} from '@angular/material/dialog';
 import {TranslateService} from '@ngx-translate/core';
 import {UIRouterGlobals} from '@uirouter/core';
 import {Moment} from 'moment';

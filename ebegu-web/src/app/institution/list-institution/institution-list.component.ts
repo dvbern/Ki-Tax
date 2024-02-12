@@ -17,7 +17,7 @@
 
 import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, ViewChild} from '@angular/core';
 import {NgForm} from '@angular/forms';
-import {MatLegacyDialog as MatDialog, MatLegacyDialogConfig as MatDialogConfig} from '@angular/material/legacy-dialog';
+import {MatDialog, MatDialogConfig as MatDialogConfig} from '@angular/material/dialog';
 import {StateService} from '@uirouter/core';
 import {combineLatest, Observable} from 'rxjs';
 import {map} from 'rxjs/operators';

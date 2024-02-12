@@ -17,7 +17,7 @@
 
 import {Component, Inject, OnInit, ViewChild} from '@angular/core';
 import {NgForm} from '@angular/forms';
-import {MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA, MatLegacyDialogRef as MatDialogRef} from '@angular/material/legacy-dialog';
+import {MAT_DIALOG_DATA, MatDialogRef as MatDialogRef} from '@angular/material/dialog';
 import {TranslateService} from '@ngx-translate/core';
 import {TSRueckforderungStatus} from '../../../models/enums/TSRueckforderungStatus';
 import {TSRueckforderungMitteilung} from '../../../models/TSRueckforderungMitteilung';

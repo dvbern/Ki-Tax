@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {MatLegacyDialog as MatDialog, MatLegacyDialogRef as MatDialogRef} from '@angular/material/legacy-dialog';
+import {MatDialog, MatDialogRef as MatDialogRef} from '@angular/material/dialog';
 import {DvNgSupportDialogComponent} from '../../../gesuch/dialog/dv-ng-support-dialog.component';
 
 @Injectable({

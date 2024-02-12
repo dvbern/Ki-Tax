@@ -17,7 +17,7 @@
 
 import {AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {NgForm} from '@angular/forms';
-import {MatLegacyDialog as MatDialog, MatLegacyDialogConfig as MatDialogConfig} from '@angular/material/legacy-dialog';
+import {MatDialog, MatDialogConfig as MatDialogConfig} from '@angular/material/dialog';
 import {MatLegacyPaginator as MatPaginator, LegacyPageEvent as PageEvent} from '@angular/material/legacy-paginator';
 import {MatSort, MatSortHeader, Sort, SortDirection} from '@angular/material/sort';
 import {MatLegacyTableDataSource as MatTableDataSource} from '@angular/material/legacy-table';

@@ -17,7 +17,7 @@
 
 import {Location} from '@angular/common';
 import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit} from '@angular/core';
-import {MatLegacyDialog as MatDialog, MatLegacyDialogConfig as MatDialogConfig} from '@angular/material/legacy-dialog';
+import {MatDialog, MatDialogConfig as MatDialogConfig} from '@angular/material/dialog';
 import {TSDemoFeature} from '../../../app/core/directive/dv-hide-feature/TSDemoFeature';
 import {LogFactory} from '../../../app/core/logging/LogFactory';
 import {TSInternePendenz} from '../../../models/TSInternePendenz';

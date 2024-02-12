@@ -17,7 +17,7 @@
 
 import {Component, ChangeDetectionStrategy, ViewChild, Inject} from '@angular/core';
 import {NgForm} from '@angular/forms';
-import { MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA, MatLegacyDialogRef as MatDialogRef } from '@angular/material/legacy-dialog';
+import { MAT_DIALOG_DATA, MatDialogRef as MatDialogRef } from '@angular/material/dialog';
 import {TSRueckforderungFormular} from '../../../../models/TSRueckforderungFormular';
 import {EbeguUtil} from '../../../../utils/EbeguUtil';
 import {NotrechtRS} from '../../../core/service/notrechtRS.rest';

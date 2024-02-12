@@ -16,7 +16,7 @@
  */
 import {ChangeDetectionStrategy, Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {NgForm} from '@angular/forms';
-import {MatLegacyDialog as MatDialog, MatLegacyDialogConfig as MatDialogConfig} from '@angular/material/legacy-dialog';
+import {MatDialog, MatDialogConfig as MatDialogConfig} from '@angular/material/dialog';
 import {MatLegacyRadioChange as MatRadioChange} from '@angular/material/legacy-radio';
 import {TranslateService} from '@ngx-translate/core';
 import {combineLatest, Observable, ReplaySubject, Subject} from 'rxjs';
