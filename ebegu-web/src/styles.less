@@ -77,9 +77,20 @@ dv-bisher, .dv-bisher {
     //display: none;
 }
 
-.mat-dialog-title {
+[mat-dialog-title].mat-mdc-dialog-title.mdc-dialog__title {
     .ebeguFont-family();
     font-weight: bold;
+}
+
+mat-dialog-content.mat-mdc-dialog-content.mdc-dialog__content {
+    .ebeguFont-family();
+    font-size: 1.6rem;
+    padding: 24px 20px 12px 24px;
+    color: rgba(0, 0, 0, 0.87);
+}
+
+[mat-dialog-title] + mat-dialog-content.mat-mdc-dialog-content.mdc-dialog__content {
+    padding: 0 24px;
 }
 
 body {
@@ -723,7 +734,7 @@ dv-quicksearchbox {
     }
 }
 
-mat-dialog-content.dv-dialog-content.mat-dialog-content {
+mat-dialog-content.dv-dialog-content.mat-mdc-dialog-content {
     padding-bottom: 10px;
 }
 
@@ -824,7 +835,7 @@ _:-ms-fullscreen, .mat-cell {
 }
 
 .dv-mat-dialog-send-notrecht-mitteilung, .dv-mat-dialog-ts, .interne-pendenzen-dialog, .steuerdaten-email-dialog {
-    .mat-dialog-container {
+    .mat-mdc-dialog-container .mdc-dialog__surface {
         background-color: @lgrey;
     }
 }
