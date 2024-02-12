@@ -25,7 +25,7 @@ import {
     ViewChild,
 } from '@angular/core';
 import {MatDialog, MatDialogConfig as MatDialogConfig} from '@angular/material/dialog';
-import {LegacyPageEvent as PageEvent} from '@angular/material/legacy-paginator';
+import {PageEvent} from '@angular/material/paginator';
 import {MatSort, MatSortHeader, Sort} from '@angular/material/sort';
 import {MatLegacyTableDataSource as MatTableDataSource} from '@angular/material/legacy-table';
 import {TranslateService} from '@ngx-translate/core';

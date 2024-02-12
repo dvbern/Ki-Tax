@@ -29,7 +29,7 @@ import {
     ViewChild,
     ViewEncapsulation,
 } from '@angular/core';
-import {MatLegacyPaginator as MatPaginator, LegacyPageEvent as PageEvent} from '@angular/material/legacy-paginator';
+import {MatPaginator, PageEvent} from '@angular/material/paginator';
 import {MatSort, MatSortHeader, Sort} from '@angular/material/sort';
 import {MatLegacyTable as MatTable, MatLegacyTableDataSource as MatTableDataSource} from '@angular/material/legacy-table';
 import {TranslateService} from '@ngx-translate/core';

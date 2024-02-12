@@ -7,7 +7,7 @@ import {MatDatepickerModule} from '@angular/material/datepicker';
 import {MatDialogModule} from '@angular/material/dialog';
 import {MatDividerModule} from '@angular/material/divider';
 import {MatLegacyInputModule as MatInputModule} from '@angular/material/legacy-input';
-import {MatLegacyPaginatorModule as MatPaginatorModule} from '@angular/material/legacy-paginator';
+import {MatPaginatorModule} from '@angular/material/paginator';
 import {MatLegacyProgressBarModule as MatProgressBarModule} from '@angular/material/legacy-progress-bar';
 import {MatLegacyRadioModule as MatRadioModule} from '@angular/material/legacy-radio';
 import {MatLegacySelectModule as MatSelectModule} from '@angular/material/legacy-select';
