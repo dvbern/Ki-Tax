@@ -196,14 +196,15 @@
     margin: 0 0 64px;
 }
 
-.mat-button, .mat-icon-button, .mat-stroked-button, .mat-flat-button,
+
+.mat-mdc-button, .mat-mdc-icon-button, .mat-stroked-button, .mat-flat-button,
 .mat-fab, .mat-mini-fab {
     font-family: Roboto, 'Helvetica Neue', sans-serif;
     font-size: 14px;
     font-weight: 500;
 }
 
-.mat-button-toggle {
+.mat-mdc-button-toggle {
     font-family: Roboto, 'Helvetica Neue', sans-serif;
 }
 
@@ -302,14 +303,14 @@
     line-height: 1.125;
 }
 
-.mat-form-field-prefix .mat-icon-button,
-.mat-form-field-suffix .mat-icon-button {
+.mat-form-field-prefix .mat-mdc-icon-button,
+.mat-form-field-suffix .mat-mdc-icon-button {
     height: 1.5em;
     width: 1.5em;
 }
 
-.mat-form-field-prefix .mat-icon-button .mat-icon,
-.mat-form-field-suffix .mat-icon-button .mat-icon {
+.mat-form-field-prefix .mat-mdc-icon-button .mat-icon,
+.mat-form-field-suffix .mat-mdc-icon-button .mat-icon {
     height: 1.125em;
     line-height: 1.125;
 }
@@ -771,39 +772,39 @@ input.mat-input-element {
     color: rgba(0, 0, 0, 0.87);
 }
 
-.mat-button, .mat-icon-button, .mat-stroked-button {
+.mat-mdc-button, .mat-mdc-icon-button, .mat-stroked-button {
     background: transparent;
 }
 
-.mat-button.mat-primary .mat-button-focus-overlay, .mat-icon-button.mat-primary .mat-button-focus-overlay, .mat-stroked-button.mat-primary .mat-button-focus-overlay {
+.mat-mdc-button.mat-primary .mat-mdc-button-focus-overlay, .mat-mdc-icon-button.mat-primary .mat-mdc-button-focus-overlay, .mat-stroked-button.mat-primary .mat-mdc-button-focus-overlay {
     background-color: rgba(213, 0, 0, 0.12);
 }
 
-.mat-button.mat-accent .mat-button-focus-overlay, .mat-icon-button.mat-accent .mat-button-focus-overlay, .mat-stroked-button.mat-accent .mat-button-focus-overlay {
+.mat-mdc-button.mat-accent .mat-mdc-button-focus-overlay, .mat-mdc-icon-button.mat-accent .mat-mdc-button-focus-overlay, .mat-stroked-button.mat-accent .mat-mdc-button-focus-overlay {
     background-color: rgba(66, 66, 66, 0.12);
 }
 
-.mat-button.mat-warn .mat-button-focus-overlay, .mat-icon-button.mat-warn .mat-button-focus-overlay, .mat-stroked-button.mat-warn .mat-button-focus-overlay {
+.mat-mdc-button.mat-warn .mat-mdc-button-focus-overlay, .mat-mdc-icon-button.mat-warn .mat-mdc-button-focus-overlay, .mat-stroked-button.mat-warn .mat-mdc-button-focus-overlay {
     background-color: rgba(244, 67, 54, 0.12);
 }
 
-.mat-button[disabled] .mat-button-focus-overlay, .mat-icon-button[disabled] .mat-button-focus-overlay, .mat-stroked-button[disabled] .mat-button-focus-overlay {
+.mat-mdc-button[disabled] .mat-mdc-button-focus-overlay, .mat-mdc-icon-button[disabled] .mat-mdc-button-focus-overlay, .mat-stroked-button[disabled] .mat-mdc-button-focus-overlay {
     background-color: transparent;
 }
 
-.mat-button.mat-primary, .mat-icon-button.mat-primary, .mat-stroked-button.mat-primary {
+.mat-mdc-button.mat-primary, .mat-mdc-icon-button.mat-primary, .mat-stroked-button.mat-primary {
     color: #d50000;
 }
 
-.mat-button.mat-accent, .mat-icon-button.mat-accent, .mat-stroked-button.mat-accent {
+.mat-mdc-button.mat-accent, .mat-mdc-icon-button.mat-accent, .mat-stroked-button.mat-accent {
     color: #424242;
 }
 
-.mat-button.mat-warn, .mat-icon-button.mat-warn, .mat-stroked-button.mat-warn {
+.mat-mdc-button.mat-warn, .mat-mdc-icon-button.mat-warn, .mat-stroked-button.mat-warn {
     color: #f44336;
 }
 
-.mat-button.mat-primary[disabled], .mat-button.mat-accent[disabled], .mat-button.mat-warn[disabled], .mat-button[disabled][disabled], .mat-icon-button.mat-primary[disabled], .mat-icon-button.mat-accent[disabled], .mat-icon-button.mat-warn[disabled], .mat-icon-button[disabled][disabled], .mat-stroked-button.mat-primary[disabled], .mat-stroked-button.mat-accent[disabled], .mat-stroked-button.mat-warn[disabled], .mat-stroked-button[disabled][disabled] {
+.mat-mdc-button.mat-primary[disabled], .mat-mdc-button.mat-accent[disabled], .mat-mdc-button.mat-warn[disabled], .mat-mdc-button[disabled][disabled], .mat-mdc-icon-button.mat-primary[disabled], .mat-mdc-icon-button.mat-accent[disabled], .mat-mdc-icon-button.mat-warn[disabled], .mat-mdc-icon-button[disabled][disabled], .mat-stroked-button.mat-primary[disabled], .mat-stroked-button.mat-accent[disabled], .mat-stroked-button.mat-warn[disabled], .mat-stroked-button[disabled][disabled] {
     color: rgba(0, 0, 0, 0.26);
 }
 
@@ -856,15 +857,15 @@ input.mat-input-element {
     background-color: rgba(255, 255, 255, 0.2);
 }
 
-.mat-button.mat-primary .mat-ripple-element {
+.mat-mdc-button.mat-primary .mat-ripple-element {
     background-color: rgba(213, 0, 0, 0.1);
 }
 
-.mat-button.mat-accent .mat-ripple-element {
+.mat-mdc-button.mat-accent .mat-ripple-element {
     background-color: rgba(66, 66, 66, 0.1);
 }
 
-.mat-button.mat-warn .mat-ripple-element {
+.mat-mdc-button.mat-warn .mat-ripple-element {
     background-color: rgba(244, 67, 54, 0.1);
 }
 
@@ -917,37 +918,37 @@ input.mat-input-element {
     background-color: rgba(255, 255, 255, 0.2);
 }
 
-.mat-icon-button.mat-primary .mat-ripple-element {
+.mat-mdc-icon-button.mat-primary .mat-ripple-element {
     background-color: rgba(213, 0, 0, 0.2);
 }
 
-.mat-icon-button.mat-accent .mat-ripple-element {
+.mat-mdc-icon-button.mat-accent .mat-ripple-element {
     background-color: rgba(66, 66, 66, 0.2);
 }
 
-.mat-icon-button.mat-warn .mat-ripple-element {
+.mat-mdc-icon-button.mat-warn .mat-ripple-element {
     background-color: rgba(244, 67, 54, 0.2);
 }
 
-.mat-button-toggle {
+.mat-mdc-button-toggle {
     color: rgba(0, 0, 0, 0.38);
 }
 
-.mat-button-toggle.cdk-focused .mat-button-toggle-focus-overlay {
+.mat-mdc-button-toggle.cdk-focused .mat-mdc-button-toggle-focus-overlay {
     background-color: rgba(0, 0, 0, 0.12);
 }
 
-.mat-button-toggle-checked {
+.mat-mdc-button-toggle-checked {
     background-color: #e0e0e0;
     color: rgba(0, 0, 0, 0.54);
 }
 
-.mat-button-toggle-disabled {
+.mat-mdc-button-toggle-disabled {
     background-color: #eeeeee;
     color: rgba(0, 0, 0, 0.26);
 }
 
-.mat-button-toggle-disabled.mat-button-toggle-checked {
+.mat-mdc-button-toggle-disabled.mat-mdc-button-toggle-checked {
     background-color: #bdbdbd;
 }
 
@@ -1370,10 +1371,10 @@ input.mat-input-element {
     border-top: 2px solid rgba(0, 0, 0, 0.54);
 }
 
-.mat-icon-button[disabled] .mat-paginator-decrement,
-.mat-icon-button[disabled] .mat-paginator-increment,
-.mat-icon-button[disabled] .mat-paginator-first,
-.mat-icon-button[disabled] .mat-paginator-last {
+.mat-mdc-icon-button[disabled] .mat-paginator-decrement,
+.mat-mdc-icon-button[disabled] .mat-paginator-increment,
+.mat-mdc-icon-button[disabled] .mat-paginator-first,
+.mat-mdc-icon-button[disabled] .mat-paginator-last {
     border-color: rgba(0, 0, 0, 0.38);
 }
 
