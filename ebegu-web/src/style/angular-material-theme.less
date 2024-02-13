@@ -1924,6 +1924,8 @@ mat-form-field.mat-focused.mat-warn .mat-mdc-select-arrow {
     color: #424242;
 }
 
+// Adaptions after Angular 15
+
 .mat-primary .mat-mdc-option.mdc-list-item--selected:not(.mdc-list-item--disabled) .mdc-list-item__primary-text {
     color: #d50000;
 }
@@ -1939,6 +1941,52 @@ mat-form-field.mat-focused.mat-warn .mat-mdc-select-arrow {
 .mat-mdc-select-panel[aria-multiselectable="false"] .mat-pseudo-checkbox {
     display: none;
 }
+
+.mdc-checkbox__background {
+    width: 16px !important;
+    height: 16px !important;
+}
+
+.mat-mdc-checkbox {
+
+    width: 100%;
+    --mdc-checkbox-state-layer-size: 20px;
+
+    &.mat-accent {
+        --mdc-checkbox-selected-checkmark-color: #fff;
+        --mdc-checkbox-selected-focus-icon-color: #424242;
+        --mdc-checkbox-selected-hover-icon-color: #424242;
+        --mdc-checkbox-selected-pressed-icon-color: #424242;
+        --mdc-checkbox-unselected-focus-icon-color: #424242;
+        --mdc-checkbox-unselected-hover-icon-color: #424242;
+        --mdc-checkbox-selected-icon-color: #424242;
+    }
+
+    .mdc-form-field .mdc-checkbox {
+
+        padding-left: 0.5rem;
+
+        & + label {
+            color: #000;
+            font-family: Open Sans, Arial, Helvetica, sans-serif;
+            font-style: normal;
+            font-weight: 600;
+            line-height: 21px;
+        }
+
+        .mdc-checkbox__native-control:enabled:checked ~ .mdc-checkbox__background, .mat-mdc-checkbox .mdc-checkbox .mdc-checkbox__native-control:enabled:indeterminate ~ .mdc-checkbox__background, .mat-mdc-checkbox .mdc-checkbox .mdc-checkbox__native-control[data-indeterminate=true]:enabled ~ .mdc-checkbox__background {
+            background-color: #424242;
+            border-color: #424242;
+        }
+
+        .mdc-checkbox__ripple {
+            display: none;
+        }
+    }
+}
+
+
+
 
 /* stylelint-enable */
 
