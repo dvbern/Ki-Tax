@@ -293,7 +293,7 @@
     line-height: 1.125;
 }
 
-.mat-form-field-wrapper {
+.mat-mdc-text-field-wrapper {
     padding-bottom: 1.25em;
 }
 
@@ -1463,8 +1463,28 @@ input.mat-input-element {
     }
 }
 
-.mat-select-arrow {
+.mat-mdc-select .mat-mdc-select-arrow {
     color: rgba(0, 0, 0, 0.54);
+
+    svg {
+        left: 0;
+    }
+}
+
+.mat-pseudo-checkbox.mat-pseudo-checkbox-full {
+    height: 16px;
+    margin-right: 12px;
+    width: 16px;
+}
+
+.mat-mdc-option.mdc-list-item {
+    .ebeguFont-family();
+    min-height: 3em;
+    font-size: 1.6rem;
+}
+
+.mat-mdc-form-field-subscript-wrapper .mat-mdc-form-field-hint-wrapper, .mat-mdc-form-field-subscript-wrapper .mat-mdc-form-field-error-wrapper {
+    padding: 0;
 }
 
 .mat-select-panel {
@@ -1476,23 +1496,23 @@ input.mat-input-element {
     background: rgba(0, 0, 0, 0.12);
 }
 
-.mat-form-field.mat-focused.mat-primary .mat-select-arrow {
+mat-form-field.mat-focused.mat-primary .mat-mdc-select-arrow {
     color: #d50000;
 }
 
-.mat-form-field.mat-focused.mat-accent .mat-select-arrow {
+mat-form-field.mat-focused.mat-accent .mat-mdc-select-arrow {
     color: #424242;
 }
 
-.mat-form-field.mat-focused.mat-warn .mat-select-arrow {
+mat-form-field.mat-focused.mat-warn .mat-mdc-select-arrow {
     color: #f44336;
 }
 
-.mat-form-field .mat-select.mat-select-invalid .mat-select-arrow {
+.mat-form-field .mat-select.mat-select-invalid .mat-mdc-select-arrow {
     color: #f44336;
 }
 
-.mat-form-field .mat-select.mat-select-disabled .mat-select-arrow {
+.mat-form-field .mat-select.mat-select-disabled .mat-mdc-select-arrow {
     color: rgba(0, 0, 0, 0.38);
 }
 
@@ -1903,4 +1923,22 @@ input.mat-input-element {
 .mat-simple-snackbar-action {
     color: #424242;
 }
+
+.mat-primary .mat-mdc-option.mdc-list-item--selected:not(.mdc-list-item--disabled) .mdc-list-item__primary-text {
+    color: #d50000;
+}
+
+.mat-accent .mat-mdc-option.mdc-list-item--selected:not(.mdc-list-item--disabled) .mdc-list-item__primary-text {
+    color: #424242;
+}
+
+.mat-warn .mat-mdc-option.mdc-list-item--selected:not(.mdc-list-item--disabled) .mdc-list-item__primary-text {
+    color: #f44336;
+}
+
+.mat-mdc-select-panel[aria-multiselectable="false"] .mat-pseudo-checkbox {
+    display: none;
+}
+
 /* stylelint-enable */
+

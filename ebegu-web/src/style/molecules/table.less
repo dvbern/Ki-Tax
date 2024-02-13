@@ -221,27 +221,21 @@ table, .table > tbody, .table > thead, .table > thead:first-child, .dv-table mat
             vertical-align: middle;
 
             & > mat-form-field {
-                height: 5rem;
 
-                & > .mat-form-field-wrapper {
-                    & > div.mat-form-field-flex {
+                & > .mat-mdc-text-field-wrapper  {
+                    & > div.mat-mdc-form-field-flex {
 
                         align-items: center;
-                        height: 5rem;
 
-                        & > .mat-form-field-infix {
+                        & > .mat-mdc-form-field-infix {
                             border: 0;
 
                             & > input {
-                                background: #e5e5e5;
-                                caret-color: black;
-                                font-size: 1.6rem;
-                                font-weight: 700;
-                                height: 4rem;
+                                height: 20px;
                             }
                         }
                     }
-                    & > div.mat-form-field-underline {
+                    & > div.mat-mdc-form-field-underline {
                         display: none;
                     }
                 }
@@ -329,7 +323,7 @@ table, .table > tbody, .table > thead, .table > thead:first-child, .dv-table mat
         width: 100%;
     }
 
-    ::ng-deep .mat-form-field-infix {
+    ::ng-deep .mat-mdc-form-field-infix {
         width: auto !important;
     }
 
@@ -419,7 +413,7 @@ table, .table > tbody, .table > thead, .table > thead:first-child, .dv-table mat
         }
     }
 
-    .mat-select-panel1 {
+    .mat-mdc-select-panel1 {
         .ebeguLabel();
         background: #e5e5e5;
         color: black !important;
@@ -429,21 +423,27 @@ table, .table > tbody, .table > thead, .table > thead:first-child, .dv-table mat
         letter-spacing: normal;
     }
 
-    .select-background {
-        background: #e5e5e5;
-        height: 4rem;
-        position: absolute;
-        top: -0.2rem;
-        width: 100%;
-    }
-
-    .mat-form-field {
+    .mat-mdc-form-field {
         .ebeguLabel();
         color: black !important;
         font-family: Open Sans, Arial, Helvetica, sans-serif;
         font-size: 1.6rem !important;
         font-weight: 700;
         line-height: normal;
+
+        [matformfieldlineripple].mdc-line-ripple {
+            display: none;
+        }
+
+        .mdc-text-field--no-label:not(.mdc-text-field--outlined):not(.mdc-text-field--textarea) .mat-mdc-form-field-infix {
+            min-height: auto;
+            padding-top: 5.25px;
+            padding-bottom: 5.25px;
+        }
+
+        .mat-mdc-select {
+            height: 20px;
+        }
     }
 
     .mat-autocomplete-panel {
@@ -519,7 +519,7 @@ table, .table > tbody, .table > thead, .table > thead:first-child, .dv-table mat
         padding-left: 1rem;
     }
 
-    mat-table > mat-header-row:nth-of-type(2) > mat-header-cell > mat-form-field > .mat-form-field-wrapper > div.mat-form-field-flex > .mat-form-field-infix input {
+    mat-table > mat-header-row:nth-of-type(2) > mat-header-cell > mat-form-field > .mat-mdc-text-field-wrapper  > div.mat-mdc-form-field-flex > .mat-mdc-form-field-infix input {
         padding-left: 5px;
 
         + span > label {
@@ -528,8 +528,12 @@ table, .table > tbody, .table > thead, .table > thead:first-child, .dv-table mat
         }
     }
 
-    .mat-form-field-wrapper {
+    .mat-mdc-text-field-wrapper  {
+        background-color: rgb(229, 229, 229);
+        border-radius: 0;
         padding-bottom: 0;
+        padding-left: 0.5rem;;
+        padding-right: 0;
     }
 
     .pointer-cursor {
@@ -540,19 +544,24 @@ table, .table > tbody, .table > thead, .table > thead:first-child, .dv-table mat
         padding-left: 0.8rem;
     }
 
-    .mat-select-value {
+    .mat-mdc-select-value {
+        align-items: center;
+        display: flex;
         padding-left: 5px;
+        .ebeguFont-family();
+        .ebeguLabel();
+        .ebeguSemi-bold();
     }
 
-    .mat-form-field.mat-focused.mat-primary .mat-select-arrow {
+    .mat-mdc-form-field.mat-focused.mat-primary .mat-mdc-select-arrow {
         color: rgba(0, 0, 0, 0.54);
     }
 
-    .mat-primary .mat-option.mat-selected:not(.mat-option-disabled) {
+    .mat-primary .mat-option.mat-mdc-selected:not(.mat-option-disabled) {
         color: rgba(0, 0, 0, 0.87);
     }
 
-    .mat-focused .mat-form-field-label {
+    .mat-focused .mat-mdc-form-field-label {
         color: rgba(0, 0, 0, 0.54);
     }
 }

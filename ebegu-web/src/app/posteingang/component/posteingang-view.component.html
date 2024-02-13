@@ -178,8 +178,6 @@
                     <ng-container matColumnDef="gemeinde-filter">
                         <mat-header-cell *matHeaderCellDef="let column">
                             <mat-form-field class="dv-table-mat-form-field" floatLabel="never">
-                                <div class="select-background"></div>
-                                <mat-label translate>ALLE</mat-label>
                                 <mat-select [value]="filterPredicate.gemeinde"
                                             (selectionChange)="filterGemeinde($event.value)"
                                             panelClass="mat-select-panel1">
@@ -253,8 +251,6 @@
                                   st-table="">
                         <mat-header-cell *matHeaderCellDef="let column">
                             <mat-form-field class="dv-table-mat-form-field" floatLabel="never">
-                                <div class="select-background"></div>
-                                <mat-label translate>ALLE</mat-label>
                                 <mat-select [value]="filterPredicate.empfaengerVerantwortung"
                                             (selectionChange)="filterVerantwortung($event.value)"
                                             panelClass="mat-select-panel1">
@@ -270,8 +266,6 @@
                     <ng-container matColumnDef="mitteilungStatus-filter">
                         <mat-header-cell *matHeaderCellDef="let column">
                             <mat-form-field class="dv-table-mat-form-field" floatLabel="never">
-                                <div class="select-background"></div>
-                                <mat-label translate>ALLE</mat-label>
                                 <mat-select [value]="filterPredicate.mitteilungStatus"
                                             (selectionChange)="filterMitteilungStatus($event.value)"
                                             panelClass="mat-select-panel1">

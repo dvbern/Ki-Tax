@@ -1,16 +1,17 @@
 import {NgModule} from '@angular/core';
 
-import {MatLegacyAutocompleteModule as MatAutocompleteModule} from '@angular/material/legacy-autocomplete';
+import {MatAutocompleteModule} from '@angular/material/autocomplete';
 import {MatButtonModule} from '@angular/material/button';
+import {MAT_FORM_FIELD_DEFAULT_OPTIONS} from '@angular/material/form-field';
 import {MatLegacyCheckboxModule as MatCheckboxModule} from '@angular/material/legacy-checkbox';
 import {MatDatepickerModule} from '@angular/material/datepicker';
 import {MatDialogModule} from '@angular/material/dialog';
 import {MatDividerModule} from '@angular/material/divider';
-import {MatLegacyInputModule as MatInputModule} from '@angular/material/legacy-input';
+import {MatInputModule} from '@angular/material/input';
 import {MatPaginatorModule} from '@angular/material/paginator';
 import {MatLegacyProgressBarModule as MatProgressBarModule} from '@angular/material/legacy-progress-bar';
 import {MatLegacyRadioModule as MatRadioModule} from '@angular/material/legacy-radio';
-import {MatLegacySelectModule as MatSelectModule} from '@angular/material/legacy-select';
+import {MatSelectModule} from '@angular/material/select';
 import {MatSortModule} from '@angular/material/sort';
 import {MatLegacyTableModule as MatTableModule} from '@angular/material/legacy-table';
 import {MatLegacyTabsModule as MatTabsModule} from '@angular/material/legacy-tabs';
@@ -55,7 +56,10 @@ const MATERIAL_MODULES = [
 
 @NgModule({
     imports: [MatMomentDateModule, ...MATERIAL_MODULES],
-    exports: [MatMomentDateModule, ...MATERIAL_MODULES]
+    exports: [MatMomentDateModule, ...MATERIAL_MODULES],
+    providers: [
+        { provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: { subscriptSizing: 'dynamic' } }
+    ]
 })
 export class MaterialModule {
 }
