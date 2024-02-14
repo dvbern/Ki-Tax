@@ -1,7 +1,7 @@
 import {AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, ViewChild} from '@angular/core';
 import {MatPaginator} from '@angular/material/paginator';
 import {MatSort} from '@angular/material/sort';
-import {MatLegacyTableDataSource as MatTableDataSource} from '@angular/material/legacy-table';
+import {MatTableDataSource} from '@angular/material/table';
 import {TSBetreuungMonitoring} from '../../../models/TSBetreuungMonitoring';
 import {TSExternalClient} from '../../../models/TSExternalClient';
 import {EbeguUtil} from '../../../utils/EbeguUtil';

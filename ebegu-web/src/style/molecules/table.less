@@ -180,8 +180,8 @@ table, .table > tbody, .table > thead, .table > thead:first-child, .dv-table mat
     & > mat-header-row {
         min-height: auto;
 
-        &:first-of-type.mat-header-row {
-            border-bottom-color: black;
+        &:first-of-type.mat-mdc-header-row {
+            border-bottom: 1px solid black;
             border-top: 1px solid black;
         }
 
@@ -314,7 +314,7 @@ table, .table > tbody, .table > thead, .table > thead:first-child, .dv-table mat
         font-family:Open Sans,Arial,Helvetica,sans-serif;
     }
 
-    tr.mat-header-row {
+    tr.mat-mdc-header-row {
         height: 4rem;
     }
 
@@ -473,6 +473,7 @@ table, .table > tbody, .table > thead, .table > thead:first-child, .dv-table mat
     }
 
     mat-cell {
+        .ebeguFont-family();
         .ebeguH3();
         color: @contrast-darkest;
         // we need to declare this additionally in important because there is a global style that would otherwise overwrite
@@ -495,7 +496,7 @@ table, .table > tbody, .table > thead, .table > thead:first-child, .dv-table mat
         }
     }
 
-    mat-cell.mat-cell, mat-header-cell.mat-header-cell, mat-footer-cell {
+    mat-cell.mat-cell, mat-header-cell.mat-mdc-header-cell, mat-footer-cell {
         flex: 2;
     }
 
