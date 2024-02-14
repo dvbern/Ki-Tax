@@ -195,7 +195,11 @@
             <ng-container matColumnDef="gemeinde-filter">
                 <mat-header-cell *matHeaderCellDef="let column">
                     <mat-form-field class="dv-faelle-mat-form-field" floatLabel="never">
-                        <mat-select [value]="filterPredicate.gemeinde" (selectionChange)="filterGemeinde($event.value)" disableOptionCentering panelClass="mat-select-panel1">
+                        <mat-select [value]="filterPredicate.gemeinde"
+                                    (selectionChange)="filterGemeinde($event.value)"
+                                    disableOptionCentering
+                                    panelClass="mat-select-panel1"
+                                    [placeholder]="'ALLE' | translate">
                             <mat-option><span translate>ALLE</span></mat-option>
                             <mat-option *ngFor="let gemeinde of gemeindenList"
                                         [value]="gemeinde.name">{{gemeinde.name}}</mat-option>
@@ -207,7 +211,10 @@
             <ng-container matColumnDef="antragTyp-filter">
                 <mat-header-cell *matHeaderCellDef="let column">
                     <mat-form-field class="dv-faelle-mat-form-field" floatLabel="never">
-                        <mat-select [value]="filterPredicate.antragTyp" (selectionChange)="filterType($event.value)" panelClass="mat-select-panel1">
+                        <mat-select [value]="filterPredicate.antragTyp"
+                                    (selectionChange)="filterType($event.value)"
+                                    panelClass="mat-select-panel1"
+                                    [placeholder]="'ALLE' | translate">
                             <mat-option selected><span translate>ALLE</span></mat-option>
                             <mat-option *ngFor="let type of getAntragTypen()" [value]="type">
                                 <span translate>{{type}}</span></mat-option>
@@ -219,7 +226,10 @@
             <ng-container matColumnDef="status-filter">
                 <mat-header-cell *matHeaderCellDef="let column">
                     <mat-form-field class="dv-faelle-mat-form-field" floatLabel="never">
-                        <mat-select [value]="filterPredicate.status" (selectionChange)="filterStatus($event.value)" panelClass="mat-select-panel1">
+                        <mat-select [value]="filterPredicate.status"
+                                    (selectionChange)="filterStatus($event.value)"
+                                    panelClass="mat-select-panel1"
+                                    [placeholder]="'ALLE' | translate">
                             <mat-option selected><span translate>ALLE</span></mat-option>
                             <mat-option *ngFor="let status of getAntragStatus()"
                                         [value]="status"><span translate>{{status}}</span></mat-option>
@@ -231,7 +241,10 @@
             <ng-container matColumnDef="angebote-filter">
                 <mat-header-cell *matHeaderCellDef="let column">
                     <mat-form-field class="dv-faelle-mat-form-field" floatLabel="never">
-                        <mat-select [value]="filterPredicate.angebote" (selectionChange)="filterAngebot($event.value)" panelClass="mat-select-panel1">
+                        <mat-select [value]="filterPredicate.angebote"
+                                    (selectionChange)="filterAngebot($event.value)"
+                                    panelClass="mat-select-panel1"
+                                    [placeholder]="'ALLE' | translate">
                             <mat-option selected><span translate>ALLE</span></mat-option>
                             <mat-option *ngFor="let angebot of getBetreuungsangebotTypen()"
                                         [value]="angebot"><span translate>{{angebot}}</span></mat-option>
@@ -243,7 +256,10 @@
             <ng-container matColumnDef="periode-filter">
                 <mat-header-cell *matHeaderCellDef="let column">
                     <mat-form-field class="dv-faelle-mat-form-field" floatLabel="never">
-                        <mat-select [value]="filterPredicate.gesuchsperiodeString" (selectionChange)="filterPeriode($event.value)" panelClass="mat-select-panel1">
+                        <mat-select [value]="filterPredicate.gesuchsperiodeString"
+                                    (selectionChange)="filterPeriode($event.value)"
+                                    panelClass="mat-select-panel1"
+                                    [placeholder]="'ALLE' | translate">
                             <mat-option selected><span translate>ALLE</span></mat-option>
                             <mat-option *ngFor="let periode of gesuchsperiodenList"
                                         [value]="periode">{{periode}}</mat-option>
@@ -257,7 +273,8 @@
                     <mat-form-field class="dv-faelle-mat-form-field" floatLabel="never">
                         <mat-select (selectionChange)="filterInternePendenz($event.value)"
                                     [value]="filterPredicate.internePendenz"
-                                    panelClass="mat-select-panel1">
+                                    panelClass="mat-select-panel1"
+                                    [placeholder]="'ALLE' | translate">
                             <mat-option selected><span translate>ALLE</span></mat-option>
                             <mat-option [value]="true"><span translate>LABEL_JA</span></mat-option>
                             <mat-option [value]="false"><span translate>LABEL_NEIN</span></mat-option>
@@ -270,7 +287,8 @@
                 <mat-header-cell *matHeaderCellDef="let column">
                     <mat-form-field class="dv-faelle-mat-form-field" floatLabel="never">
                         <mat-select [value]="filterPredicate.dokumenteHochgeladen" (selectionChange)="filterDocumentsUploaded($event.value)"
-                                    panelClass="mat-select-panel1">
+                                    panelClass="mat-select-panel1"
+                                    [placeholder]="'ALLE' | translate">
                             <mat-option selected><span translate>ALLE</span></mat-option>
                             <mat-option [value]="true"><span translate>LABEL_JA</span></mat-option>
                             <mat-option [value]="false"><span translate>LABEL_NEIN</span></mat-option>

@@ -180,7 +180,8 @@
                             <mat-form-field class="dv-table-mat-form-field" floatLabel="never">
                                 <mat-select [value]="filterPredicate.gemeinde"
                                             (selectionChange)="filterGemeinde($event.value)"
-                                            panelClass="mat-select-panel1">
+                                            panelClass="mat-select-panel1"
+                                            [placeholder]="'ALLE' | translate">
                                     <mat-option><span translate>ALLE</span></mat-option>
                                     <mat-option *ngFor="let gemeinde of gemeindenList"
                                                 [value]="gemeinde.name">{{gemeinde.name}}</mat-option>
@@ -253,7 +254,8 @@
                             <mat-form-field class="dv-table-mat-form-field" floatLabel="never">
                                 <mat-select [value]="filterPredicate.empfaengerVerantwortung"
                                             (selectionChange)="filterVerantwortung($event.value)"
-                                            panelClass="mat-select-panel1">
+                                            panelClass="mat-select-panel1"
+                                            [placeholder]="'ALLE' | translate">
                                     <mat-option><span translate>ALLE</span></mat-option>
                                     <mat-option *ngFor="let verantwortung of getVerantwortungList()"
                                                 [value]="verantwortung">{{verantwortung | translate}}</mat-option>
@@ -268,7 +270,8 @@
                             <mat-form-field class="dv-table-mat-form-field" floatLabel="never">
                                 <mat-select [value]="filterPredicate.mitteilungStatus"
                                             (selectionChange)="filterMitteilungStatus($event.value)"
-                                            panelClass="mat-select-panel1">
+                                            panelClass="mat-select-panel1"
+                                            [placeholder]="'ALLE' | translate">
                                     <mat-option selected><span translate>ALLE</span></mat-option>
                                     <mat-option *ngFor="let status of getMitteilungsStatus()"
                                                 [value]="status"><span translate>{{status}}</span></mat-option>
