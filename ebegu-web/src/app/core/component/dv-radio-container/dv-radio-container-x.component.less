@@ -90,8 +90,11 @@ dv-radio-container-x {
                 width: 2rem;
 
                 .mdc-radio__background::before {
-                    background-color: transparent;
+                    top: calc(-1 * (var(--mdc-radio-state-layer-size, 40px) - 20px) / 3 * 2);
+                    left: calc(-1 * (var(--mdc-radio-state-layer-size, 40px) - 20px) / 3 * 2);
+                    transform: scale(0.75) !important;
                 }
+
 
                 .mdc-radio__native-control:checked + .mdc-radio__background .mdc-radio__inner-circle {
                     transform: scale(0.35);

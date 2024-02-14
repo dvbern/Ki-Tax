@@ -508,7 +508,7 @@ dv-accordion.ewksubsub {
     }
 
     .mat-mdc-radio-group .mat-mdc-radio-button {
-        .mdc-radio__background {
+        .mdc-radio__background, .mat-mdc-radio-touch-target, input.mdc-radio__native-control {
             height: 1.5rem !important;
             width: 1.5rem !important;
         }
@@ -517,9 +517,6 @@ dv-accordion.ewksubsub {
             transform: scale(0.35);
         }
 
-        .mdc-radio .mdc-radio__background::before {
-            background-color: transparent;
-        }
 
         .mdc-radio__inner-circle {
             border-radius: 50%;
