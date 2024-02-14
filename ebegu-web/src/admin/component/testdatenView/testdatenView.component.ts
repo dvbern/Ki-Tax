@@ -13,13 +13,11 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, ViewEncapsulation} from '@angular/core';
 import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
 import * as moment from 'moment';
 import {Observable} from 'rxjs';
-import {
-    DvNgConfirmDialogComponent,
-} from '../../../app/core/component/dv-ng-confirm-dialog/dv-ng-confirm-dialog.component';
+import {DvNgConfirmDialogComponent} from '../../../app/core/component/dv-ng-confirm-dialog/dv-ng-confirm-dialog.component';
 import {
     DvNgDisplayObjectDialogComponent,
 } from '../../../app/core/component/dv-ng-display-object-dialog/dv-ng-display-object-dialog.component';
@@ -48,7 +46,7 @@ const LOG = LogFactory.createLog('TestdatenView');
 @Component({
     selector: 'dv-testdaten-view',
     templateUrl: './testdatenView.component.html',
-    styleUrls: ['./testdatenView.component.less']
+    styleUrls: ['./testdatenView.component.less'],
 })
 export class TestdatenViewComponent implements OnInit {
 

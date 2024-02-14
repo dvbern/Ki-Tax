@@ -2033,12 +2033,31 @@ mat-form-field.mat-focused.mat-warn .mat-mdc-select-arrow {
     font-weight: 500;
 }
 
+.mdc-text-field--disabled.mdc-text-field--filled {
+    background-color: transparent;
+}
+
 :root {
     --mdc-typography-body1-font-family: Open Sans, Arial, Helvetica, sans-serif;
     --mdc-typography-body1-font-size: 10.5px;
     --mdc-typography-body1-font-weight: 500;
     --mdc-typography-body2-font-size: 10.5px;
     --mdc-typography-font-family: Open Sans, Arial, Helvetica, sans-serif;
+}
+
+.mat-mdc-menu-trigger.user-menu-trigger.mdc-button.mat-mdc-button.mat-unthemed.mat-mdc-button-base {
+    height: 100%;
+}
+
+.mat-mdc-select {
+    padding: 1rem 0;
+    .mat-mdc-select-value-text {
+        padding-left: 1rem
+    }
+}
+
+.mdc-icon-button.mat-mdc-icon-button {
+    padding: 3px;
 }
 
 /* stylelint-enable */
