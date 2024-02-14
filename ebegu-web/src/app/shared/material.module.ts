@@ -8,6 +8,7 @@ import {MatDatepickerModule} from '@angular/material/datepicker';
 import {MatDialogModule} from '@angular/material/dialog';
 import {MatDividerModule} from '@angular/material/divider';
 import {MatInputModule} from '@angular/material/input';
+import {MatMenuModule} from '@angular/material/menu';
 import {MatPaginatorModule} from '@angular/material/paginator';
 import {MatProgressBarModule} from '@angular/material/progress-bar';
 import { MatRadioModule} from '@angular/material/radio';
@@ -34,7 +35,7 @@ const MATERIAL_MODULES = [
     // MatIconModule,
     MatInputModule,
     // MatListModule,
-    // MatMenuModule,
+    MatMenuModule,
     MatPaginatorModule,
     MatProgressBarModule,
     // MatProgressSpinnerModule,

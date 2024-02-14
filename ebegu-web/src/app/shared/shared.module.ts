@@ -150,7 +150,6 @@ export function createTranslateLoader(http: HttpClient, mandantService: MandantS
             }
         }),
         GuidedTourModule.forRoot(),
-        MatMenuModule
     ],
     declarations: [
         AccordionDirective,
