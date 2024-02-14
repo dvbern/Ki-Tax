@@ -343,10 +343,13 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 			applicationPropertyService.getSchnittstelleSprachfoerderungAktivAb(mandant);
 		Objects.requireNonNull(sprachfoerderungBesteatigtAktiviereungDatum);
 
-		if (sprachfoerderungBesteatigtAktiviereungDatum.isAfter(LocalDate.now())) {
+		if (sprachfoerderungBesteatigtAktiviereungDatum.isAfter(LocalDate.now())
+			&& ctx.getDto().getSprachfoerderungBestaetigt() == null) {
 			erweiterteBetreuung.setSprachfoerderungBestaetigt(true);
 		} else {
-			erweiterteBetreuung.setSprachfoerderungBestaetigt(ctx.getDto().getSprachfoerderungBestaetigt());
+			erweiterteBetreuung.setSprachfoerderungBestaetigt(ctx.getDto().getSprachfoerderungBestaetigt() != null ?
+				ctx.getDto().getSprachfoerderungBestaetigt() :
+				false);
 		}
 	}
 

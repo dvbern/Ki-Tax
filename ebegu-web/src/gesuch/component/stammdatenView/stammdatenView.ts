@@ -102,7 +102,7 @@ export class StammdatenViewController extends AbstractGesuchViewController<TSGes
         'ApplicationPropertyRS',
         'DokumenteRS',
         'MandantService',
-        'DemoFeatureRS'
+        'DemoFeatureRS',
     ];
 
     public filesTooBig: File[];
@@ -122,7 +122,7 @@ export class StammdatenViewController extends AbstractGesuchViewController<TSGes
     public dvFileUploadError: object;
     public frenchEnabled: boolean;
     private isLuzern: boolean;
-    private demoFeature2754: boolean = false;
+    public demoFeature2754: boolean = false;
     private angebotTS: boolean;
 
     public constructor(
@@ -145,7 +145,7 @@ export class StammdatenViewController extends AbstractGesuchViewController<TSGes
         private readonly applicationPropertyRS: ApplicationPropertyRS,
         private readonly dokumenteRS: DokumenteRS,
         private readonly mandantService: MandantService,
-        private readonly demoFeatureRS: DemoFeatureRS
+        private readonly demoFeatureRS: DemoFeatureRS,
     ) {
         super(gesuchModelManager,
             berechnungsManager,
@@ -169,8 +169,8 @@ export class StammdatenViewController extends AbstractGesuchViewController<TSGes
 
     private initAusweisNachweis(): void {
         this.einstellungRS.findEinstellung(TSEinstellungKey.AUSWEIS_NACHWEIS_REQUIRED,
-                this.gesuchModelManager.getGemeinde().id,
-                this.gesuchModelManager.getGesuchsperiode().id).subscribe(ausweisNachweisRequired => {
+            this.gesuchModelManager.getGemeinde().id,
+            this.gesuchModelManager.getGesuchsperiode().id).subscribe(ausweisNachweisRequired => {
             this.ausweisNachweisRequiredEinstellung = ausweisNachweisRequired.value === 'true';
 
             if (!this.ausweisNachweisRequiredEinstellung) {
@@ -216,7 +216,7 @@ export class StammdatenViewController extends AbstractGesuchViewController<TSGes
     }
 
     public getFamilienSituationDisplayValue(): string {
-        if (!this.gesuchModelManager.isFKJVTexte || !this.demoFeature2754){
+        if (!this.gesuchModelManager.isFKJVTexte || !this.demoFeature2754) {
             return this.gesuchstellerNumber.toString();
         }
 
@@ -229,35 +229,37 @@ export class StammdatenViewController extends AbstractGesuchViewController<TSGes
         }
         const partnerIdentisch: boolean = tsFamiliensituation.partnerIdentischMitVorgesuch;
         let familienstatus: TSFamilienstatus = tsFamiliensituation.familienstatus;
-        if (EbeguUtil.isNotNullAndFalse(partnerIdentisch)){
-            familienstatus= this.getGesuch().extractFamiliensituationErstgesuch().familienstatus;
+        if (EbeguUtil.isNotNullAndFalse(partnerIdentisch)) {
+            familienstatus = this.getGesuch().extractFamiliensituationErstgesuch().familienstatus;
             tsFamiliensituation = this.getGesuch().extractFamiliensituationErstgesuch();
         }
         switch (familienstatus) {
             case TSFamilienstatus.KONKUBINAT_KEIN_KIND:
                 if (tsFamiliensituation.konkubinatGetXYearsInPeriod(this.getGesuch().gesuchsperiode.gueltigkeit)) {
-                    if(tsFamiliensituation.gesuchstellerKardinalitaet ===  TSGesuchstellerKardinalitaet.ZU_ZWEIT ||
-                            tsFamiliensituation.unterhaltsvereinbarung ===
-                            TSUnterhaltsvereinbarungAnswer.NEIN_UNTERHALTSVEREINBARUNG){
+                    if (tsFamiliensituation.gesuchstellerKardinalitaet === TSGesuchstellerKardinalitaet.ZU_ZWEIT ||
+                        tsFamiliensituation.unterhaltsvereinbarung ===
+                        TSUnterhaltsvereinbarungAnswer.NEIN_UNTERHALTSVEREINBARUNG) {
                         return `2 (${this.$translate.instant('ANDERER_ELTERNTEIL')})`;
                     }
-                    return `2 (${this.$translate.instant('GS2_KONKUBINAT_KEIN_KIND')})`;
                 } else if (tsFamiliensituation
-                        .konkubinatIsShorterThanXYearsAtAnyTimeAfterStartOfPeriode(this.getGesuch().gesuchsperiode)) {
+                    .konkubinatIsShorterThanXYearsAtAnyTimeAfterStartOfPeriode(this.getGesuch().gesuchsperiode)) {
                     return `2 (${this.$translate.instant('ANDERER_ELTERNTEIL')})`;
                 }
                 break;
             case TSFamilienstatus.ALLEINERZIEHEND:
-                if(tsFamiliensituation.gesuchstellerKardinalitaet ===  TSGesuchstellerKardinalitaet.ZU_ZWEIT ||
+                if (tsFamiliensituation.gesuchstellerKardinalitaet === TSGesuchstellerKardinalitaet.ZU_ZWEIT ||
                     tsFamiliensituation.unterhaltsvereinbarung ===
-                        TSUnterhaltsvereinbarungAnswer.NEIN_UNTERHALTSVEREINBARUNG){
-                    return `2 (${ this.$translate.instant('ANDERER_ELTERNTEIL')   })`;
+                    TSUnterhaltsvereinbarungAnswer.NEIN_UNTERHALTSVEREINBARUNG) {
+                    return `2 (${this.$translate.instant('ANDERER_ELTERNTEIL')})`;
+                }
+                if (tsFamiliensituation.gesuchstellerKardinalitaet === TSGesuchstellerKardinalitaet.ALLEINE) {
+                    return `2 (${this.$translate.instant('GS2_VERHEIRATET')})`;
                 }
                 break;
             default:
                 break;
         }
-        return `2 (${ this.$translate.instant(`GS2_${familienstatus}`)   })`;
+        return `2 (${this.$translate.instant(`GS2_${familienstatus}`)})`;
     }
 
     public korrespondenzAdrClicked(): void {
@@ -462,7 +464,7 @@ export class StammdatenViewController extends AbstractGesuchViewController<TSGes
             const zusatzzeile = adr.zusatzzeile ? adr.zusatzzeile : '-';
             const plz = adr.plz ? adr.plz : '-';
             const ort = adr.ort ? adr.ort : '-';
-            const land = this.$translate.instant(`Land_${  adr.land}`);
+            const land = this.$translate.instant(`Land_${adr.land}`);
             return this.$translate.instant('JA_KORREKTUR_ADDR', {
                 organisation,
                 strasse,
@@ -470,7 +472,7 @@ export class StammdatenViewController extends AbstractGesuchViewController<TSGes
                 zusatzzeile,
                 plz,
                 ort,
-                land
+                land,
             });
         }
 

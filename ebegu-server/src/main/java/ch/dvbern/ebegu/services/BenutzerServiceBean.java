@@ -636,6 +636,8 @@ public class BenutzerServiceBean extends AbstractBaseService implements Benutzer
 		predicates.add(joinBerechtigungen.get(Berechtigung_.role).in(roles));
 
 		setGemeindeFilterForCurrentUser(currentBenutzer, joinGemeinde, predicates);
+		Predicate predicateMandant = cb.equal(root.get(Benutzer_.mandant), currentBenutzer.getMandant());
+		predicates.add(predicateMandant);
 
 		query.where(predicates.toArray(NEW));
 		query.distinct(true);
