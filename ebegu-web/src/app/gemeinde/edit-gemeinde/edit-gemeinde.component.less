@@ -18,14 +18,22 @@
 @import (reference) '../../../style/variables.less';
 @import (reference) '../../../style/mixins.less';
 
-::ng-deep .mat-tab-label-active {
+::ng-deep .mdc-tab--active {
     background-color: @lgrey;
     opacity: 1 !important;
 }
-::ng-deep .mat-tab-label-content {
+::ng-deep .mdc-tab__content > span {
     .ebeguFont-family();
     color: @black;
     font-weight: 600;
+}
+
+::ng-deep .mat-mdc-tab:not(.mat-mdc-tab-disabled).mdc-tab--active .mdc-tab__text-label, .mat-mdc-tab-link:not(.mat-mdc-tab-disabled).mdc-tab--active .mdc-tab__text-label {
+    color: @black;
+}
+
+::ng-deep .mdc-tab-indicator__content.mdc-tab-indicator__content--underline {
+    display: none;
 }
 
 .mat-tab-group,
