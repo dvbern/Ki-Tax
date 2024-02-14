@@ -23,7 +23,7 @@ import {
     ViewEncapsulation
 } from '@angular/core';
 import {FormBuilder, NgForm, Validators} from '@angular/forms';
-import {MatDialog, MatDialogConfig as MatDialogConfig} from '@angular/material/dialog';
+import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
 import {TranslateService} from '@ngx-translate/core';
 import {StateService} from '@uirouter/core';
 import * as moment from 'moment';

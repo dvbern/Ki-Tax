@@ -14,7 +14,7 @@
  */
 
 import {Component} from '@angular/core';
-import { MatDialog, MatDialogConfig as MatDialogConfig } from '@angular/material/dialog';
+import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import {DvNgOkDialogComponent} from '../../../app/core/component/dv-ng-ok-dialog/dv-ng-ok-dialog.component';
 import {LogFactory} from '../../../app/core/logging/LogFactory';
 import {DailyBatchRS} from '../../service/dailyBatchRS.rest';

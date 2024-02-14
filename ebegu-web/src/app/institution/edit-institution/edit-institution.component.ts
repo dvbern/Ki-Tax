@@ -26,7 +26,7 @@ import {
 } from '@angular/core';
 import {NgForm} from '@angular/forms';
 import {MatCheckboxChange} from '@angular/material/checkbox';
-import {MatDialog, MatDialogConfig as MatDialogConfig} from '@angular/material/dialog';
+import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
 import {TranslateService} from '@ngx-translate/core';
 import {StateService, Transition} from '@uirouter/core';
 import * as moment from 'moment';

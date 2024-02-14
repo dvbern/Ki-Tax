@@ -14,7 +14,7 @@
  */
 
 import {Component, Input, OnChanges} from '@angular/core';
-import {MatDialog, MatDialogConfig as MatDialogConfig} from '@angular/material/dialog';
+import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
 import {StateService} from '@uirouter/core';
 import {IPromise} from 'angular';
 import {from as fromPromise, from, Observable, of} from 'rxjs';

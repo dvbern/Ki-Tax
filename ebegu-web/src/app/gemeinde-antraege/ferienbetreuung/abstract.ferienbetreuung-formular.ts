@@ -17,7 +17,7 @@
 
 import {ChangeDetectorRef} from '@angular/core';
 import {FormGroup} from '@angular/forms';
-import {MatDialog, MatDialogConfig as MatDialogConfig} from '@angular/material/dialog';
+import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
 import {TranslateService} from '@ngx-translate/core';
 import {UIRouterGlobals} from '@uirouter/core';
 import {Moment} from 'moment';

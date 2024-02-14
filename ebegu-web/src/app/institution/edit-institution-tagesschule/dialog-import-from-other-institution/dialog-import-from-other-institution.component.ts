@@ -16,7 +16,7 @@
  */
 
 import {Component, Inject, OnInit} from '@angular/core';
-import {MAT_DIALOG_DATA, MatDialogRef as MatDialogRef} from '@angular/material/dialog';
+import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 import {TSModulTagesschuleTyp} from '../../../../models/enums/TSModulTagesschuleTyp';
 import {TSEinstellungenTagesschule} from '../../../../models/TSEinstellungenTagesschule';
 import {TSInstitutionStammdaten} from '../../../../models/TSInstitutionStammdaten';

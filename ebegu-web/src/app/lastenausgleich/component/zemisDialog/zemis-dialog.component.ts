@@ -17,7 +17,7 @@
 
 import {Component, Inject, ViewChild} from '@angular/core';
 import {NgForm} from '@angular/forms';
-import {MAT_DIALOG_DATA, MatDialogRef as MatDialogRef} from '@angular/material/dialog';
+import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 import {ZemisDialogDTO} from './zemisDialog.interface';
 
 @Component({

@@ -17,7 +17,7 @@
 
 import {Clipboard} from '@angular/cdk/clipboard';
 import {Component, Inject, OnInit} from '@angular/core';
-import {MAT_DIALOG_DATA, MatDialogRef as MatDialogRef} from '@angular/material/dialog';
+import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 import {TSInstitution} from '../../../models/TSInstitution';
 import {TSModulTagesschuleGroup} from '../../../models/TSModulTagesschuleGroup';
 
