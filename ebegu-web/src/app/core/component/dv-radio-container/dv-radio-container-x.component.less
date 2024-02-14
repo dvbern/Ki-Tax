@@ -31,7 +31,7 @@ dv-radio-container-x {
         line-height: 2.4rem;
     }
 
-    > .dv-checkbox-form-group mat-radio-group {
+    > .dv-checkbox-form-group .mat-mdc-radio-group {
         display: flex;
         flex-direction: column;
 
@@ -39,7 +39,7 @@ dv-radio-container-x {
             background-color: @background-error-color;
         }
 
-        > mat-radio-button {
+        > .mat-mdc-radio-button {
             height: auto;
             margin: 0 0 0.2rem 0;
             min-height: 1.5rem;
@@ -54,22 +54,22 @@ dv-radio-container-x {
                 .mat-radio-label-content {
                     color: @dgrey;
                 }
-                .mat-radio-inner-circle {
+                .mdc-radio__inner-circle {
                     background-color: @dgrey;
                 }
-                .mat-radio-outer-circle {
+                .mdc-radio__outer-circle {
                     border-color: @dgrey;
                 }
 
                 &.mat-radio-checked {
-                    .mat-radio-outer-circle {
+                    .mdc-radio__outer-circle {
                         border-color: @dgrey;
                     }
                 }
             }
 
             &.mat-radio-checked {
-                .mat-radio-inner-circle {
+                .mdc-radio__inner-circle {
                     transform: scale(0.35);
                 }
                 .mat-ripple {
@@ -85,17 +85,33 @@ dv-radio-container-x {
                 }
             }
 
-            .mat-radio-container {
-                height: 1.5rem;
-                width: 1.5rem;
-                .mat-radio-outer-circle, .mat-radio-inner-circle {
+            .mdc-form-field .mdc-radio {
+                padding: 1px;
+                width: 2rem;
+
+                .mdc-radio__background::before {
+                    background-color: transparent;
+                }
+
+                .mdc-radio__native-control:checked + .mdc-radio__background .mdc-radio__inner-circle {
+                    transform: scale(0.35);
+                }
+
+                .mdc-radio__outer-circle, .mdc-radio__inner-circle, .mdc-radio__background {
                     height: 1.5rem;
                     width: 1.5rem;
                 }
-                .mat-radio-outer-circle {
+
+                .mdc-radio__inner-circle {
+                    border-radius: 50%;
+                    border-width: 0;
+                    background-color: #424242;
+                }
+
+                .mdc-radio__outer-circle {
                     border-width: 1.5px;
                 }
-                .mat-radio-inner-circle {
+                .mdc-radio__inner-circle {
                     position: absolute !important;
                 }
             }
