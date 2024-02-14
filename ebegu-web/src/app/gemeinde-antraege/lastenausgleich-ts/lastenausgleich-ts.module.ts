@@ -18,7 +18,6 @@
 import {CommonModule} from '@angular/common';
 import {NgModule} from '@angular/core';
 import {ReactiveFormsModule} from '@angular/forms';
-import {MatLegacyMenuModule as MatMenuModule} from '@angular/material/legacy-menu';
 import {MatSidenavModule} from '@angular/material/sidenav';
 import {MatToolbarModule} from '@angular/material/toolbar';
 import {RouterModule} from '@angular/router';
@@ -53,7 +52,6 @@ import {TagesschulenUiViewComponent} from './tagesschulen-ui-view/tagesschulen-u
         MatSidenavModule,
         RouterModule,
         UIRouterModule,
-        MatMenuModule,
         SharedModule,
         ReactiveFormsModule,
         WizardstepXModule
