@@ -15,7 +15,7 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {MatLegacyRadioChange as MatRadioChange} from '@angular/material/legacy-radio';
+import {MatRadioChange} from '@angular/material/radio';
 import {TranslateService} from '@ngx-translate/core';
 import {IPromise} from 'angular';
 import {CONSTANTS} from '../../../../app/core/constants/CONSTANTS';
