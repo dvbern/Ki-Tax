@@ -248,7 +248,8 @@ public class NeueVeranlagungEventHandler extends BaseEventHandler<NeueVeranlagun
 		neueVeranlagungsMitteilung.setSubject(ServerMessageUtil.getMessage(
 				betreffKey,
 				locale,
-				gesuch.extractMandant()));
+				gesuch.extractMandant(),
+				gesuch.getGesuchsperiode().getGesuchsperiodeString()));
 		neueVeranlagungsMitteilung.setMessage(ServerMessageUtil.getMessage(
 				messageKey,
 				locale,

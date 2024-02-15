@@ -33,6 +33,10 @@ import javax.annotation.Nullable;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 
 import ch.dvbern.ebegu.entities.ApplicationProperty;
 import ch.dvbern.ebegu.entities.ApplicationProperty_;
@@ -127,13 +131,13 @@ public class ApplicationPropertyServiceBean extends AbstractBaseService implemen
 	public Optional<ApplicationProperty> readApplicationProperty(
 			@Nonnull final ApplicationPropertyKey key,
 			@Nonnull final Mandant mandant) {
-		return criteriaQueryHelper.getEntitiesByAttribute(
-						ApplicationProperty.class,
-						key,
-						ApplicationProperty_.name).stream()
-				.filter(applicationProperty -> applicationProperty.getMandant() != null
-						&& applicationProperty.getMandant().equals(mandant))
-				.findFirst();
+		final CriteriaBuilder builder = persistence.getCriteriaBuilder();
+		final CriteriaQuery<ApplicationProperty> query = builder.createQuery(ApplicationProperty.class);
+		final Root<ApplicationProperty> root = query.from(ApplicationProperty.class);
+		Predicate keyPredicate = builder.equal(root.get(ApplicationProperty_.name), key);
+		Predicate mandantPredicate = builder.equal(root.get(ApplicationProperty_.MANDANT), mandant);
+		query.where(keyPredicate, mandantPredicate);
+		return Optional.ofNullable(persistence.getCriteriaSingleResult(query));
 	}
 
 	@Nonnull
@@ -168,10 +172,12 @@ public class ApplicationPropertyServiceBean extends AbstractBaseService implemen
 	@Nonnull
 	@Override
 	public List<ApplicationProperty> getAllApplicationProperties(@Nonnull Mandant mandant) {
-		return criteriaQueryHelper.getAll(ApplicationProperty.class)
-				.stream()
-				.filter(applicationProperty -> applicationProperty.getMandant() != null
-						&& applicationProperty.getMandant().equals(mandant)).collect(Collectors.toList());
+		final CriteriaBuilder builder = persistence.getCriteriaBuilder();
+		final CriteriaQuery<ApplicationProperty> query = builder.createQuery(ApplicationProperty.class);
+		final Root<ApplicationProperty> root = query.from(ApplicationProperty.class);
+		Predicate mandantPredicate = builder.equal(root.get(ApplicationProperty_.MANDANT), mandant);
+		query.where(mandantPredicate);
+		return persistence.getCriteriaResults(query);
 	}
 
 	@Override

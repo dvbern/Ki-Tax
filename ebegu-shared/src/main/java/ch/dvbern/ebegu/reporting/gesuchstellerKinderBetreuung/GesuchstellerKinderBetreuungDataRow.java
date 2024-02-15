@@ -125,6 +125,8 @@ public class GesuchstellerKinderBetreuungDataRow {
 	@Nullable private String iban;
 	@Nullable private String kontoinhaber;
 
+	@Nonnull private boolean showBgSensitiveData = true;
+
 	public GesuchstellerKinderBetreuungDataRow() {
 	}
 
@@ -858,5 +860,13 @@ public class GesuchstellerKinderBetreuungDataRow {
 
 	public void setKontoinhaber(@Nullable String kontoinhaber) {
 		this.kontoinhaber = kontoinhaber;
+	}
+
+	public boolean isShowBgSensitiveData() {
+		return showBgSensitiveData;
+	}
+
+	public void setShowBgSensitiveData(boolean showBgSensitiveData) {
+		this.showBgSensitiveData = showBgSensitiveData;
 	}
 }

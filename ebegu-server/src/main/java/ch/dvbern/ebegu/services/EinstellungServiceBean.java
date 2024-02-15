@@ -39,13 +39,17 @@ import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Join;
+import javax.persistence.criteria.JoinType;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import ch.dvbern.ebegu.authentication.PrincipalBean;
 import ch.dvbern.ebegu.entities.Einstellung;
 import ch.dvbern.ebegu.entities.Einstellung_;
 import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
+import ch.dvbern.ebegu.entities.Gesuchsperiode_;
 import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
@@ -72,6 +76,8 @@ public class EinstellungServiceBean extends AbstractBaseService implements Einst
 	@Inject
 	private Authorizer authorizer;
 
+	@Inject
+	private PrincipalBean principalBean;
 
 	@Override
 	@Nonnull
@@ -409,7 +415,13 @@ public class EinstellungServiceBean extends AbstractBaseService implements Einst
 			final Predicate predicateGesuchsperiode = cb.equal(root.get(Einstellung_.gesuchsperiode), gesuchsperiode);
 			predicates.add(predicateGesuchsperiode);
 		}
-		// Gesuchsperiode
+		else {
+			// Mandant need to be setted when Gesuchsperiode not given
+			Join<Einstellung, Gesuchsperiode> gesuchsperiodeJoin = root.join(Einstellung_.gesuchsperiode, JoinType.LEFT);
+			Predicate predicateMandant = cb.equal(gesuchsperiodeJoin.get(Gesuchsperiode_.MANDANT), principalBean.getMandant());
+			predicates.add(predicateMandant);
+		}
+		// Key
 		final Predicate predicateKey = cb.equal(root.get(Einstellung_.key), key);
 		predicates.add(predicateKey);
 		query.where(CriteriaQueryHelper.concatenateExpressions(cb, predicates));

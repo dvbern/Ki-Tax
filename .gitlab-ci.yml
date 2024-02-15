@@ -36,12 +36,37 @@ workflow:
         -   if: $CI_PIPELINE_SOURCE == "schedule"
 
 include:
-    -   component: gitlab.dvbern.ch/mobj/maven@78b9f09bf43116819c519a3d69a765e51eab055f
+    -   component: gitlab.dvbern.ch/devops/gitlab/components/maven@v0.1.7
         inputs:
-            name: .build-and-analyze
+            name: .build-backend
+            java-image-version: 11-jdk-alpine
+            maven-goal: -Drevision=$VERSION -Pcoverage -Pcopy-wildfly-dependencies -P!frontend clean install
+
+    -   component: gitlab.dvbern.ch/devops/gitlab/components/maven@v0.1.7
+        inputs:
+            name: .build-frontend
             java-image: docker-registry.dvbern.ch/kibon/build-environment/mvn-npm-gitflow-chromium
             java-image-version: jdk11-old
-            maven-goal: -Drevision=$VERSION -Pcoverage -Pcopy-wildfly-dependencies -Pfrontend -Pci $SONAR_CONFIG clean install $SONAR_GOAL
+            maven-goal: -Drevision=$VERSION --projects .,ebegu-web -Pci -Pfrontend clean install
+
+    -   component: gitlab.dvbern.ch/devops/gitlab/components/sonarqube@v0.1.7
+        inputs:
+            name: .analyze-backend
+            sonar-scanner: maven
+            java-version: eclipse-temurin-11
+            sonar-project-key: $SONAR_PROJECT_KEY_BACKEND
+            sonar-token: $SONAR_TOKEN_BACKEND
+            enforce-quality-gate: 'false'
+            maven-args: --projects '!ebegu-web' # exclude frontend from analysis
+
+    -   component: gitlab.dvbern.ch/devops/gitlab/components/sonarqube@v0.1.7
+        inputs:
+            name: .analyze-frontend
+            sonar-scanner: cli
+            sonar-project-key: $SONAR_PROJECT_KEY_FRONTEND
+            sonar-token: $SONAR_TOKEN_FRONTEND
+            context-dir: ebegu-web
+            enforce-quality-gate: 'false'
 
     -   component: 'gitlab.dvbern.ch/mobj/buildah@1535f41c035b3fd5bef23bae7abe968ebc00084f'
         inputs:
@@ -152,56 +177,56 @@ include:
             ssh-target: 'sdvbvmkiba11.dvbern.ch'
 
 deploy:prod:
-    dependencies: []
+    dependencies: [ ]
     rules:
-        - if: $CI_COMMIT_TAG
-          when: manual
-          allow_failure: true
+        -   if: $CI_COMMIT_TAG
+            when: manual
+            allow_failure: true
     environment:
         name: prod
         url: https://kibon.ch
     extends: .docker-compose-deploy:prod
 
 deploy:uat:
-    dependencies: []
+    dependencies: [ ]
     rules:
-        - if: $CI_COMMIT_TAG
-          when: manual
-          allow_failure: true
+        -   if: $CI_COMMIT_TAG
+            when: manual
+            allow_failure: true
     environment:
         name: uat
         url: https://uat.kibon.ch
     extends: .docker-compose-deploy:uat
 
 deploy:iat:
-    dependencies: []
+    dependencies: [ ]
     rules:
-        - if: $CI_COMMIT_TAG
-          when: manual
-          allow_failure: true
+        -   if: $CI_COMMIT_TAG
+            when: manual
+            allow_failure: true
     environment:
         name: iat
         url: https://iat.kibon.ch
     extends: .docker-compose-deploy:iat
 
 deploy:schulung:
-    dependencies: []
+    dependencies: [ ]
     rules:
-        - if: $CI_COMMIT_TAG
-          when: manual
-          allow_failure: true
+        -   if: $CI_COMMIT_TAG
+            when: manual
+            allow_failure: true
     environment:
         name: schulung
         url: https://schulung.kibon.ch
     extends: .docker-compose-deploy:schulung
 
 deploy:demo:
-    dependencies: []
+    dependencies: [ ]
     needs:
         - deploy:prod
     rules:
-        - if: $CI_COMMIT_TAG
-          allow_failure: true
+        -   if: $CI_COMMIT_TAG
+            allow_failure: true
     environment:
         name: demo
         url: https://demo.kibon.ch
@@ -210,26 +235,26 @@ deploy:demo:
 # for dev and preview
 deploy:
     extends: .docker-compose-deploy
-    dependencies: []
+    dependencies: [ ]
     environment:
         name: $DEPLOY_ENV
         url: $DEPLOY_URL
     rules:
-        - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
-        - if: $CI_MERGE_REQUEST_ID
-          when: manual
-          allow_failure: true
-        - if: $CI_COMMIT_TAG
-          when: never
+        -   if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+        -   if: $CI_MERGE_REQUEST_ID
+            when: manual
+            allow_failure: true
+        -   if: $CI_COMMIT_TAG
+            when: never
 
 deploy:e2e:
     extends: .docker-compose-deploy:e2e
-    dependencies: []
+    dependencies: [ ]
     environment:
         name: e2e
         url: https://e2e.kibon.ch
     rules:
-        - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+        -   if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
 
 create-build-args:
     image: '$DVB_DOCKER_REGISTRY/dockerhub/library/eclipse-temurin:11-jdk-alpine'
@@ -244,11 +269,26 @@ create-build-args:
     artifacts:
         paths:
             - build-args.env
-    needs: []
+    needs: [ ]
 
-build-and-analyze:
-    extends: .build-and-analyze
-    needs: []
+build-backend:
+    extends: .build-backend
+    needs: [ ]
+    artifacts:
+        paths:
+            - 'ebegu-rest/target/for-docker-build/*'
+            - 'ebegu-rest/target/ebegu-rest-*.war'
+            - 'ebegu-*/target/pmd.xml'
+            - 'ebegu-*/target/spotbugs/'
+            - 'ebegu-*/target/jacoco.exec'
+            - 'ebegu-*/target/site'
+            - 'ebegu-*/target/surefire-reports/'
+            - 'ebegu-*/target/classes'
+        expire_in: 7 days
+
+build-frontend:
+    extends: .build-frontend
+    needs: [ ]
     cache:
         key:
             files:
@@ -261,27 +301,35 @@ build-and-analyze:
     artifacts:
         paths:
             - 'ebegu-web/target/*'
-            - 'ebegu-rest/target/*'
-            - 'ebegu-*/target/pmd.xml'
-            - 'ebegu-*/target/spotbugs/'
-            - .flattened-pom.xml
+            - 'ebegu-web/build/*'
         expire_in: 7 days
 
-build-frontend-image:
-    extends: .build-frontend-image
+analyze-backend:
+    extends: .analyze-backend-maven
     needs:
-        - build-and-analyze
-        - create-build-args
+        - build-backend
 
 build-backend-image:
     extends: .build-backend-image
     needs:
-        - build-and-analyze
+        - build-backend
         - create-build-args
+
+build-frontend-image:
+    extends: .build-frontend-image
+    needs:
+        - build-frontend
+        - create-build-args
+
+analyze-frontend:
+    extends: .analyze-frontend-cli
+    allow_failure: true # TODO remove after SONAR_TOKEN clash is resolved
+    needs:
+        - build-frontend
 
 build-e2e-test-db-setup-image:
     extends: .build-e2e-test-db-setup-image
-    needs: []
+    needs: [ ]
 
 run-e2e-tests:
     stage: testing
@@ -290,17 +338,17 @@ run-e2e-tests:
         baseURL: "https://${environment}-be.kibon.ch/web/"
     tags: [ 'os:linux', 'type:docker', 'zone:tz' ]
     dependencies:
-        - build-and-analyze
+        - build-frontend
     image: '${DVB_DOCKER_REGISTRY}/dockerhub/cypress/browsers:node-18.14.1-chrome-110.0.5481.96-1-ff-109.0-edge-110.0.1587.41-1'
     rules:
-        - if: $CI_PIPELINE_SOURCE == "merge_request_event"
-          when: manual
-          needs:
-              - deploy
-              - build-and-analyze
-          variables:
-              environment: preview
-        - if: $CI_PIPELINE_SOURCE == "schedule"
+        -   if: $CI_PIPELINE_SOURCE == "merge_request_event"
+            when: manual
+            needs:
+                - deploy
+                - build-frontend
+            variables:
+                environment: preview
+        -   if: $CI_PIPELINE_SOURCE == "schedule"
     cache:
         key:
             files:
@@ -326,11 +374,11 @@ run-e2e-tests:
 # based on stip-api's mirror job
 github-mirror:
     stage: mirror
-    needs: []
+    needs: [ ]
     image:
         name: '${DVB_DOCKER_REGISTRY}/dockerhub/alpine/git:2.40.1'
-        entrypoint: ['']
-    tags: ['os:linux', 'type:docker', 'zone:tz']
+        entrypoint: [ '' ]
+    tags: [ 'os:linux', 'type:docker', 'zone:tz' ]
     variables:
         GIT_STRATEGY: none
     before_script:
@@ -340,6 +388,6 @@ github-mirror:
     script:
         - git push -u https://token:${GITHUB_MIRROR_TOKEN}@github.com/dvbern/kiBon.git HEAD:dev
     rules:
-        - if: $CI_COMMIT_TAG
-          when: manual
-          allow_failure: true
+        -   if: $CI_COMMIT_TAG
+            when: manual
+            allow_failure: true
