@@ -115,7 +115,7 @@ export class ErwerbspensumListViewController
         if (EbeguUtil.isNotNullOrUndefined(this.getGesuchId())) {
             this.gesuchModelManager.isErwerbspensumRequired(this.getGesuchId()).then((response: boolean) => {
                 this.erwerbspensumRequired = response;
-                if (this.isSaveDisabled()) {
+                if (this.isSaveDisabled() || this.isErwerbspensumGS2Required() && !this.showErwerbspensumGS2()) {
                     this.wizardStepManager.updateCurrentWizardStepStatusSafe(
                         TSWizardStepName.ERWERBSPENSUM,
                         TSWizardStepStatus.IN_BEARBEITUNG);
@@ -268,14 +268,21 @@ export class ErwerbspensumListViewController
         if (EbeguUtil.isNullOrUndefined(this.gesuchModelManager.getGesuch())) {
             return false;
         }
+
+        return this.isErwerbspensumGS2Required()
+            && EbeguUtil.isNotNullOrUndefined(this.gesuchModelManager.getGesuch().gesuchsteller2);
+    }
+
+    public isErwerbspensumGS2Required(): boolean {
+        const hasGS2 = this.gesuchModelManager.getFamiliensituation()
+            .hasSecondGesuchsteller(this.gesuchModelManager.getGesuchsperiode().gueltigkeit.gueltigBis);
+        if (!hasGS2) {
+            return false;
+        }
         let familiensituation = this.gesuchModelManager.getGesuch().familiensituationContainer.familiensituationJA;
         const partnerIdentischMitVorgesuch: boolean = this.getGesuch().extractFamiliensituation().partnerIdentischMitVorgesuch;
         if (EbeguUtil.isNotNullAndFalse(partnerIdentischMitVorgesuch)){
             familiensituation = this.getGesuch().extractFamiliensituationErstgesuch();
-        }
-        if (familiensituation.geteilteObhut === true
-            && familiensituation.gesuchstellerKardinalitaet === TSGesuchstellerKardinalitaet.ZU_ZWEIT) {
-            return true;
         }
         // Wenn zwei Gesuchsteller und keine Unterhatsvereinbarung abgeschlossen ist,
         // muss das Erwerbspensum von GS2 nicht angegeben werden
@@ -298,7 +305,7 @@ export class ErwerbspensumListViewController
             }
         }
 
-        return EbeguUtil.isNotNullOrUndefined(this.gesuchModelManager.getGesuch().gesuchsteller2);
+        return true;
     }
 
     private isPensumGS2InKonkubinatOmittable(familiensituation: TSFamiliensituation): boolean {
@@ -334,8 +341,6 @@ export class ErwerbspensumListViewController
     }
 
     public getGS2FullName(): string {
-        return EbeguUtil.isNotNullOrUndefined(this.gesuchModelManager.getGesuch().gesuchsteller2) ?
-            this.gesuchModelManager.getGesuch().gesuchsteller2.extractFullName() :
-            this.$translate.instant('GS2_NICHT_AUSGEFUELLT');
+        return this.gesuchModelManager.getGesuch().gesuchsteller2.extractFullName();
     }
 }

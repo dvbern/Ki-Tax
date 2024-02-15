@@ -15,6 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import {FixtureFamSit} from '@dv-e2e/fixtures';
 import {
     AntragCreationPO,
     AntragFamSitPO,
@@ -27,6 +28,7 @@ import {
 import {getUser, TestFall, TestPeriode} from '@dv-e2e/types';
 import {describe} from 'mocha';
 import {TSUnterhaltsvereinbarungAnswer} from '../../../src/models/enums/TSUnterhaltsvereinbarungAnswer';
+import {GesuchstellendePO} from '../../page-objects/antrag/gesuchstellende.po';
 
 describe('Kibon - Testet die Fachlichkeit auf der Seite der Erwerbspensen', () => {
 
@@ -195,7 +197,7 @@ describe('Kibon - Testet die Fachlichkeit auf der Seite der Erwerbspensen', () =
                     BeschaeftigungspensumListPO.getGS2().should('not.exist');
                 });
 
-            it('should require two erwerbspensum if famsit status Alleinerziehend with shared obhut and zu zweit stellen', () => {
+            it('should require two erwerbspensum if famsit status Alleinerziehend with shared obhut and zu zweit stellen and gs2 is filled in', () => {
                 SidenavPO.goTo('FAMILIENSITUATION');
                 AntragFamSitPO.getFamiliensituationsStatus('ALLEINERZIEHEND').click();
                 AntragFamSitPO.getGeteilteObhutOption('ja').click();
@@ -205,7 +207,23 @@ describe('Kibon - Testet die Fachlichkeit auf der Seite der Erwerbspensen', () =
 
                 SidenavPO.goTo('ERWERBSPENSUM');
                 BeschaeftigungspensumListPO.getGS1().should('exist');
+                BeschaeftigungspensumListPO.getGS2().should('not.exist');
+                BeschaeftigungspensumListPO.getWarnungGS2Ausfuellen().should('exist');
+                SidenavPO.getSidenavStepStatus('ERWERBSPENSUM').should('have.class', 'fa-close');
+
+                SidenavPO.goTo('GESUCHSTELLER');
+                NavigationPO.saveAndGoNext();
+                FixtureFamSit['withValid'](({GS2}) => {
+                    GesuchstellendePO.fillBaseGesuchsteller(GS2);
+                });
+                NavigationPO.saveAndGoNext();
+                SidenavPO.getSidenavStep('KINDER').parent().should('have.class', 'active');
+                SidenavPO.goTo('ERWERBSPENSUM');
+
+                BeschaeftigungspensumListPO.getGS1().should('exist');
                 BeschaeftigungspensumListPO.getGS2().should('exist');
+                BeschaeftigungspensumListPO.getWarnungGS2Ausfuellen().should('not.exist');
+                SidenavPO.getSidenavStepStatus('ERWERBSPENSUM').should('have.class', 'fa-close');
             });
 
             it('should require one erwerbspensum if famsit status Alleinerziehend with not shared obhut and with no unterhaltsvereinbarung',
@@ -276,7 +294,7 @@ describe('Kibon - Testet die Fachlichkeit auf der Seite der Erwerbspensen', () =
             });
         });
 
-        describe('Konkubinat', () => {
+       describe('Konkubinat', () => {
             beforeEach(() => {
                 cy.intercept({resourceType: 'xhr'}, {log: false}); // don't log XHRs
                 createOnlineAntrag(periode, 'testfall-2');

@@ -70,6 +70,10 @@
                                on-remove="vm.removePensum(pensum, 2, 'removeEWPButton2_')"></dv-erwerbspensum-list>
     </div>
 
+    <div ng-if="vm.isErwerbspensumGS2Required() && !vm.showErwerbspensumGS2()" data-test="warnung-gs2-ausfuellen" class="well well-status-warten">
+        <span data-translate="WARNUNG_GS2_AUSFUELLEN"></span>
+    </div>
+
     <!-- Information zu Ausserordentlichem Anspruch -->
     <div class="well well-status-warten margin-top-20"
          ng-if="vm.showInfoAusserordentlichenAnspruch">

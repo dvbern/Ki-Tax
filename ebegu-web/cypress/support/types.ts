@@ -94,6 +94,7 @@ export type TestGesuchstellende = Extract<User, '[5-GS] Emma Gerber' | '[5-GS] H
 export type SidenavStep = 'SOZIALDIENSTFALL_ERSTELLEN'
     | 'GESUCH_ERSTELLEN'
     | 'FAMILIENSITUATION'
+    | 'GESUCHSTELLER'
     | 'UMZUG'
     | 'KINDER'
     | 'BETREUUNG'

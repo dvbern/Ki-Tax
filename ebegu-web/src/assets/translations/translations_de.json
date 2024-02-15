@@ -3192,6 +3192,6 @@
     "SPRACHFOERDERUNG_BESTAETIGEN_KITA": "Die Sprachförderung erfolgt auf Deutsch oder Französisch (in der später in der Schule gesprochenen Sprache).",
     "SPRACHFOERDERUNG_BESTAETIGEN_TFO": "Die vermittelte Betreuungsperson eignet sich für die Aufgabe der Sprachförderung und erreicht mindestens ein Sprachniveau von C1 in der künftigen Schulsprache.",
     "GESUCH_BEENDEN_BEI_TAUSCH_GS2": "Antrag beenden, wenn der Gesuchsteller 2 innerhalb der Periode ändert",
-    "GS2_NICHT_AUSGEFUELLT": "Gesuchsteller/in 2 (Noch nicht ausgefüllt)",
+    "WARNUNG_GS2_AUSFUELLEN": "Bitte füllen Sie Gesuchsteller/in 2 aus",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

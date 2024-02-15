@@ -86,6 +86,7 @@ function fillGS1(GS1: any): void {
 }
 
 const fillBaseGesuchsteller = (GS1: {geschlecht: string, vorname: string, nachname: string, geburtsdatum: string}) => {
+    cy.wait(1500);
     getGeschlechtOption(GS1.geschlecht).click();
     getVorname().clear().type(GS1.vorname);
     getNachname().clear().type(GS1.nachname);
@@ -106,4 +107,5 @@ export const GesuchstellendePO = {
     getFormularTitle,
     // page actions
     fillVerheiratet,
+    fillBaseGesuchsteller,
 };
