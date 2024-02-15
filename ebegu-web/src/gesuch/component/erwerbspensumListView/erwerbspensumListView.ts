@@ -25,7 +25,6 @@ import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest'
 import {TSAnspruchBeschaeftigungAbhaengigkeitTyp} from '../../../models/enums/TSAnspruchBeschaeftigungAbhaengigkeitTyp';
 import {TSEinstellungKey} from '../../../models/enums/TSEinstellungKey';
 import {TSFamilienstatus} from '../../../models/enums/TSFamilienstatus';
-import {TSGesuchstellerKardinalitaet} from '../../../models/enums/TSGesuchstellerKardinalitaet';
 import {TSRole} from '../../../models/enums/TSRole';
 import {TSUnterhaltsvereinbarungAnswer} from '../../../models/enums/TSUnterhaltsvereinbarungAnswer';
 import {TSWizardStepName} from '../../../models/enums/TSWizardStepName';
