@@ -1055,18 +1055,32 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     }
 
     public showSprachfoerderungBestaetigenCheckBox(): boolean {
-        if (!this.authServiceRS.isOneOfRoles(TSRoleUtil.getRolesForBetreuungenView())) {
-            return false;
-        }
         if (!EbeguUtil.hasSprachlicheIndikation(this.getKindModel())) {
             return false;
         }
         if (EbeguUtil.isNotNullAndFalse(this.sprachfoerderungBestaetigenAktiviert)) {
             return false;
         }
+        if (this.isBetreuungsstatusAusstehend()) {
+            return false;
+        }
+        if (this.isBetreuungsstatusWarten()) {
+            return this.authServiceRS.isOneOfRoles(TSRoleUtil.getRolesForBetreuungenView());
+        }
         return true;
     }
 
+    public isSprachfoerderungBestaetigenEnabled(): boolean {
+        if (this.authServiceRS.isOneOfRoles(TSRoleUtil.getGesuchstellerOnlyRoles())) {
+            return false;
+        }
+
+        if (this.isBetreuungsstatusWarten()) {
+            return true;
+        }
+
+        return this.enableFieldsEditedByGemeinde();
+    }
     public resetAnspruchFachstelleWennPensumUnterschritten() {
         const unterschritten = this.getErweiterteBetreuungJA()?.anspruchFachstelleWennPensumUnterschritten;
         if (!EbeguUtil.isNullOrUndefined(unterschritten) && unterschritten) {
