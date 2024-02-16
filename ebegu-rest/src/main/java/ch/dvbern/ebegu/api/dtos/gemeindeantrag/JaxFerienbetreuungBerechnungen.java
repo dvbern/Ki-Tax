@@ -50,9 +50,6 @@ public class JaxFerienbetreuungBerechnungen extends JaxAbstractDTO {
 	@Nullable
 	private Boolean beteiligungZuTief;
 
-	public JaxFerienbetreuungBerechnungen() {
-	}
-
 	@Nullable
 	public BigDecimal getTotalKosten() {
 		return totalKosten;
