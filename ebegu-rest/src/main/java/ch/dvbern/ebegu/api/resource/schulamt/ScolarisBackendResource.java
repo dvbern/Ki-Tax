@@ -72,6 +72,7 @@ import io.swagger.annotations.ApiResponses;
 import org.jboss.resteasy.util.BasicAuthHelper;
 import org.slf4j.Logger;
 
+import static ch.dvbern.ebegu.api.AuthConstants.COOKIE_AUTHORIZATION_HEADER;
 import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
 import static javax.servlet.http.HttpServletResponse.SC_FORBIDDEN;
 import static org.slf4j.LoggerFactory.getLogger;
@@ -379,7 +380,7 @@ public class ScolarisBackendResource {
 		@Nonnull AnmeldungTagesschule anmeldungTagesschule,
 		@Nonnull HttpServletRequest request) {
 		//Extract username:
-		String header = request.getHeader("Authorization");
+		String header = request.getHeader(COOKIE_AUTHORIZATION_HEADER);
 		final String[] strings = BasicAuthHelper.parseHeader(header);
 
 		if (strings == null || strings.length != 2) {

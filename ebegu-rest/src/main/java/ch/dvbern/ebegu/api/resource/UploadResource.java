@@ -87,6 +87,8 @@ import java.time.LocalDateTime;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
+import static ch.dvbern.ebegu.api.resource.util.ResourceConstants.PART_FILE;
+import static ch.dvbern.ebegu.api.resource.util.ResourceConstants.UPLOAD_WARNING;
 import static ch.dvbern.ebegu.enums.UserRoleName.*;
 
 /**
@@ -154,14 +156,12 @@ public class UploadResource {
 
 	@Inject
 	private EbeguConfiguration ebeguConfiguration;
-
-	private static final String PART_FILE = "file";
 	private static final String PART_DOKUMENT_GRUND = "dokumentGrund";
 
 	private static final String FILENAME_HEADER = "x-filename";
 	private static final String GESUCHID_HEADER = "x-gesuchID";
 
-	private static final String UPLOAD_WARNING = "Need to upload something";
+
 	private static final String FILENAME_WARNING = "filename must be given";
 
 	private static final String CONTENT_TYPE = "*/*; charset=UTF-8";

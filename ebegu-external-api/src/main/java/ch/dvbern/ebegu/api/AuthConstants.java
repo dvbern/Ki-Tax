@@ -27,6 +27,8 @@ public final class AuthConstants {
 	public static final String X_FORWARDED_PROTO = "X-Forwarded-Proto";
 	public static final String COOKIE_MANDANT = "mandant";
 	public static final String COOKIE_MANDANT_REDIRECT = "mandantRedirect";
+
+	public static final String COOKIE_AUTHORIZATION_HEADER = "Authorization";
 	public static final int COOKIE_TIMEOUT_SECONDS = 60 * 60 * 12; //aktuell 12h
 	/**
 	 * Path to locallogin page (relative to base path) that will be used if no login connector api is specified
