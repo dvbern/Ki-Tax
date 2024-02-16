@@ -42,6 +42,7 @@ public class GesuchstellerKinderBetreuungExcelConverter implements ExcelConverte
 
 	@Override
 	public void applyAutoSize(@Nonnull Sheet sheet) {
+		// No autosizing defined for columns
 	}
 
 	@Nonnull
