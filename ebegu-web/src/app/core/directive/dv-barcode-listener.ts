@@ -45,8 +45,8 @@ export class DVBarcodeListener implements IDirective {
 }
 
 /**
- * This binds a listener for a certain keypress sequence to the document. If this keypress sequence (escaped with §)
- * is found then we open the dialog
+ * This binds a listener for a certain keypress sequence to the document. If this keypress sequence
+ * (escaped with § (or < on MacOS)) is found then we open the dialog
  * The format of an expected barcode sequence is §FREIGABE|OPEN|cd85e001-403f-407f-8eb8-102c402342b6§
  */
 export class DVBarcodeController implements IController {
@@ -123,13 +123,13 @@ export class DVBarcodeController implements IController {
 
         if (this.barcodeReading) {
             e.preventDefault();
-            if (keyPressChar !== '§') {
+            if (this.isNotDelimiterKey(keyPressChar)) {
                 this.barcodeBuffer.push(keyPressChar);
                 this.$log.debug(`Current buffer: ${  this.barcodeBuffer.join('')}`);
             }
         }
 
-        if (keyPressChar !== '§') {
+        if (this.isNotDelimiterKey(keyPressChar)) {
             return;
         }
         e.preventDefault();
@@ -138,7 +138,9 @@ export class DVBarcodeController implements IController {
 
             let barcodeRead = this.barcodeBuffer.join('');
             this.$log.debug(`Barcode read:${  barcodeRead}`);
+            // replace both possible delimiters
             barcodeRead = barcodeRead.replace('§', '');
+            barcodeRead = barcodeRead.replace('<', '');
 
             const barcodeParts = barcodeRead.split('|');
 
@@ -189,5 +191,9 @@ export class DVBarcodeController implements IController {
             }, 2000);
         }
         this.barcodeReading = !this.barcodeReading;
+    }
+
+    private isNotDelimiterKey(keyPressChar: string): boolean {
+        return keyPressChar !== '§' && keyPressChar !== '<';
     }
 }
