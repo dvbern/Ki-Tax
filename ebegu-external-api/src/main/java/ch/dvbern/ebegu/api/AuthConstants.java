@@ -18,18 +18,18 @@ package ch.dvbern.ebegu.api;
 /**
  * Constants that are important in connection with Authentication stuff (cookie, headerparams etc)
  */
-public interface AuthConstants {
-	String COOKIE_PATH = "/";
-	String COOKIE_PRINCIPAL = "authId";
-	String COOKIE_AUTH_TOKEN = "authToken";
-	String PARAM_XSRF_TOKEN = "X-XSRF-TOKEN";
-	String COOKIE_XSRF_TOKEN = "XSRF-TOKEN";
-	String X_FORWARDED_PROTO = "X-Forwarded-Proto";
-	String COOKIE_MANDANT = "mandant";
-	String COOKIE_MANDANT_REDIRECT = "mandantRedirect";
-	int COOKIE_TIMEOUT_SECONDS = 60 * 60 * 12; //aktuell 12h
+public final class AuthConstants {
+	public static final String COOKIE_PATH = "/";
+	public static final String COOKIE_PRINCIPAL = "authId";
+	public static final String COOKIE_AUTH_TOKEN = "authToken";
+	public static final String PARAM_XSRF_TOKEN = "X-XSRF-TOKEN";
+	public static final String COOKIE_XSRF_TOKEN = "XSRF-TOKEN";
+	public static final String X_FORWARDED_PROTO = "X-Forwarded-Proto";
+	public static final String COOKIE_MANDANT = "mandant";
+	public static final String COOKIE_MANDANT_REDIRECT = "mandantRedirect";
+	public static final int COOKIE_TIMEOUT_SECONDS = 60 * 60 * 12; //aktuell 12h
 	/**
 	 * Path to locallogin page (relative to base path) that will be used if no login connector api is specified
 	 */
-	String LOCALLOGIN_PATH = "/#/locallogin";
+	public static final String LOCALLOGIN_PATH = "/#/locallogin";
 }
