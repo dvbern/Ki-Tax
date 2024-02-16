@@ -122,14 +122,14 @@ public class InstitutionenKitaxMappingCreator {
 				LOG.info("Zuwenige Werte! {}", Arrays.toString(kitaArray));
 			}
 			int i = 0;
-			String sOeffnungstage = kitaArray[i++].trim().replaceAll(" ", "");
+			String sOeffnungstage = kitaArray[i++].trim().replace(" ", "");
 			try {
 
 				this.oeffnungstage = new BigDecimal(sOeffnungstage);
 			} catch (Exception e) {
 				LOG.info("{} konnte nicht in Number formatiert werden, {}", sOeffnungstage, Arrays.toString(kitaArray), e);
 			}
-			String sOeffnungsstunden = kitaArray[i++].trim().replaceAll(" ", "");
+			String sOeffnungsstunden = kitaArray[i++].trim().replace(" ", "");
 			try {
 				this.oeffnungsstunden = new BigDecimal(sOeffnungsstunden);
 			} catch (Exception e) {
