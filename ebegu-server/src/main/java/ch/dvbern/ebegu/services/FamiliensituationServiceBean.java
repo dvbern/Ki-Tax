@@ -16,9 +16,11 @@
 package ch.dvbern.ebegu.services;
 
 import ch.dvbern.ebegu.entities.*;
+import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.enums.EnumFamilienstatus;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.FinanzielleSituationTyp;
+import ch.dvbern.ebegu.enums.UnterhaltsvereinbarungAnswer;
 import ch.dvbern.ebegu.enums.WizardStepName;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
@@ -35,6 +37,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Objects;
 import java.util.Optional;
+
+import static ch.dvbern.ebegu.services.util.ErwerbspensumHelper.isKonkubinatOhneKindAndGS2ErwerbspensumOmittable;
 
 /**
  * Service fuer familiensituation
@@ -53,6 +57,9 @@ public class FamiliensituationServiceBean extends AbstractBaseService implements
 	private WizardStepService wizardStepService;
 	@Inject
 	private SozialhilfeZeitraumService sozialhilfeZeitraumService;
+
+	@Inject
+	private EinstellungService einstellungService;
 
 	@Override
 	public FamiliensituationContainer saveFamiliensituation(
@@ -121,6 +128,13 @@ public class FamiliensituationServiceBean extends AbstractBaseService implements
 			changeFamSitAR(gesuch, mergedFamiliensituationContainer, oldFamiliensituation);
 		}
 
+		if (isGesuchBeendenBeiTauschGS2Active(gesuch)
+			&& isKonkubinatOhneKindAndGS2ErwerbspensumOmittable(newFamiliensituation, gesuch.getGesuchsperiode())
+			&& gesuch.getGesuchsteller2() != null
+			&& !gesuch.getGesuchsteller2().getErwerbspensenContainers().isEmpty()) {
+			gesuch.getGesuchsteller2().getErwerbspensenContainers().clear();
+		}
+
 		//bei änderung der Familiensituation müssen die Fragen zum Kinderabzug im FKJV resetet werden
 		if (gesuch.getFinSitTyp() == FinanzielleSituationTyp.BERN_FKJV &&
 			oldFamiliensituation != null &&
@@ -133,6 +147,15 @@ public class FamiliensituationServiceBean extends AbstractBaseService implements
 			.FAMILIENSITUATION);
 		return mergedFamiliensituationContainer;
 	}
+
+	private boolean isGesuchBeendenBeiTauschGS2Active(Gesuch gesuch) {
+		Einstellung einstellung = einstellungService.findEinstellung(EinstellungKey.GESUCH_BEENDEN_BEI_TAUSCH_GS2,
+			gesuch.extractGemeinde(),
+			gesuch.getGesuchsperiode());
+
+		return Boolean.TRUE.equals(einstellung.getValueAsBoolean());
+	}
+
 
 
 	private boolean isScheidung(

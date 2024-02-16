@@ -117,8 +117,7 @@ public class GesuchstellerKinderBetreuungExcelConverter implements ExcelConverte
 			excelRowGroup.addValue(MergeFieldGesuchstellerKinderBetreuung.periode, dataRow.getPeriode());
 			excelRowGroup.addValue(MergeFieldGesuchstellerKinderBetreuung.gesuchStatus, dataRow.getGesuchStatus());
 
-			excelRowGroup.addValue(MergeFieldGesuchstellerKinderBetreuung.eingangsdatum, dataRow.getEingangsdatum());
-			excelRowGroup.addValue(MergeFieldGesuchstellerKinderBetreuung.verfuegungsdatum, dataRow.getVerfuegungsdatum());
+
 			excelRowGroup.addValue(MergeFieldGesuchstellerKinderBetreuung.fallId, dataRow.getFallId());
 
 			excelRowGroup.addValue(MergeFieldGesuchstellerKinderBetreuung.gemeinde, dataRow.getGemeinde());
@@ -180,48 +179,58 @@ public class GesuchstellerKinderBetreuungExcelConverter implements ExcelConverte
 
 			excelRowGroup.addValue(MergeFieldGesuchstellerKinderBetreuung.kindName, dataRow.getKindName());
 			excelRowGroup.addValue(MergeFieldGesuchstellerKinderBetreuung.kindVorname, dataRow.getKindVorname());
-			excelRowGroup.addValue(MergeFieldGesuchstellerKinderBetreuung.kindGeburtsdatum, dataRow.getKindGeburtsdatum());
-			excelRowGroup.addValue(MergeFieldGesuchstellerKinderBetreuung.kindFachstelle, dataRow.getKindFachstelle());
-			excelRowGroup.addValue(MergeFieldGesuchstellerKinderBetreuung.kindIntegration, dataRow.getKindIntegration());
-			excelRowGroup.addValue(MergeFieldGesuchstellerKinderBetreuung.kindErwBeduerfnisse, dataRow.getKindErwBeduerfnisse());
-			excelRowGroup.addValue(MergeFieldGesuchstellerKinderBetreuung.kindSprichtAmtssprache, dataRow.getKindSprichtAmtssprache());
 
 			String einschulungTyp = dataRow.getKindEinschulungTyp() != null ?
 				ServerMessageUtil.translateEnumValue(dataRow.getKindEinschulungTyp(), locale, mandant) : "";
 			excelRowGroup.addValue(MergeFieldGesuchstellerKinderBetreuung.eingeschult, einschulungTyp);
-			excelRowGroup.addValue(MergeFieldGesuchstellerKinderBetreuung.keinPlatzImSchulhort, dataRow.getKeinPlatzImSchulhort());
 
 			excelRowGroup.addValue(MergeFieldGesuchstellerKinderBetreuung.zeitabschnittVon, dataRow.getZeitabschnittVon());
 			excelRowGroup.addValue(MergeFieldGesuchstellerKinderBetreuung.zeitabschnittBis, dataRow.getZeitabschnittBis());
 			excelRowGroup.addValue(MergeFieldGesuchstellerKinderBetreuung.betreuungsStatus, dataRow.getBetreuungsStatus());
 			excelRowGroup.addValue(MergeFieldGesuchstellerKinderBetreuung.betreuungsPensum, dataRow.getBetreuungspensum());
 			BigDecimal anspruchsPensumTotal = dataRow.getAnspruchsPensumTotal();
-			excelRowGroup.addValue(MergeFieldGesuchstellerKinderBetreuung.anspruchsPensumKanton, dataRow.getAnspruchsPensumKanton());
-			excelRowGroup.addValue(MergeFieldGesuchstellerKinderBetreuung.anspruchsPensumGemeinde, dataRow.getAnspruchsPensumGemeinde());
-			excelRowGroup.addValue(MergeFieldGesuchstellerKinderBetreuung.anspruchsPensumTotal, anspruchsPensumTotal);
-			excelRowGroup.addValue(MergeFieldGesuchstellerKinderBetreuung.bgPensumZeiteinheit, dataRow.getBgPensumZeiteinheit());
-			if (anspruchsPensumTotal != null && anspruchsPensumTotal.compareTo(BigDecimal.ZERO) > 0) {
-				excelRowGroup.addValue(MergeFieldGesuchstellerKinderBetreuung.bgPensumKanton, dataRow.getBgPensumKanton());
-				excelRowGroup.addValue(MergeFieldGesuchstellerKinderBetreuung.bgPensumGemeinde, dataRow.getBgPensumGemeinde());
-				excelRowGroup.addValue(MergeFieldGesuchstellerKinderBetreuung.bgPensumTotal, dataRow.getBgPensumTotal());
-				excelRowGroup.addValue(MergeFieldGesuchstellerKinderBetreuung.bgStunden, dataRow.getBgStunden());
-				excelRowGroup.addValue(MergeFieldGesuchstellerKinderBetreuung.vollkosten, dataRow.getVollkosten());
-				excelRowGroup.addValue(MergeFieldGesuchstellerKinderBetreuung.elternbeitrag, dataRow.getElternbeitrag());
-				excelRowGroup.addValue(MergeFieldGesuchstellerKinderBetreuung.verguenstigungKanton, dataRow.getVerguenstigungKanton());
-				excelRowGroup.addValue(MergeFieldGesuchstellerKinderBetreuung.verguenstigungGemeinde, dataRow.getVerguenstigungGemeinde());
-				excelRowGroup.addValue(MergeFieldGesuchstellerKinderBetreuung.verguenstigungTotal, dataRow.getVerguenstigungTotal());
-			} else {
-				excelRowGroup.addValue(MergeFieldGesuchstellerKinderBetreuung.bgPensumKanton, BigDecimal.ZERO);
-				excelRowGroup.addValue(MergeFieldGesuchstellerKinderBetreuung.bgPensumGemeinde, BigDecimal.ZERO);
-				excelRowGroup.addValue(MergeFieldGesuchstellerKinderBetreuung.bgPensumTotal, BigDecimal.ZERO);
-				excelRowGroup.addValue(MergeFieldGesuchstellerKinderBetreuung.bgStunden, BigDecimal.ZERO);
-				excelRowGroup.addValue(MergeFieldGesuchstellerKinderBetreuung.vollkosten, BigDecimal.ZERO);
-				excelRowGroup.addValue(MergeFieldGesuchstellerKinderBetreuung.elternbeitrag, BigDecimal.ZERO);
-				excelRowGroup.addValue(MergeFieldGesuchstellerKinderBetreuung.verguenstigungKanton, BigDecimal.ZERO);
-				excelRowGroup.addValue(MergeFieldGesuchstellerKinderBetreuung.verguenstigungGemeinde, BigDecimal.ZERO);
-				excelRowGroup.addValue(MergeFieldGesuchstellerKinderBetreuung.verguenstigungTotal, BigDecimal.ZERO);
+			if (dataRow.isShowBgSensitiveData()) {
+				excelRowGroup.addValue(MergeFieldGesuchstellerKinderBetreuung.eingangsdatum, dataRow.getEingangsdatum());
+				excelRowGroup.addValue(MergeFieldGesuchstellerKinderBetreuung.verfuegungsdatum, dataRow.getVerfuegungsdatum());
+
+				excelRowGroup.addValue(MergeFieldGesuchstellerKinderBetreuung.kindGeburtsdatum, dataRow.getKindGeburtsdatum());
+				excelRowGroup.addValue(MergeFieldGesuchstellerKinderBetreuung.kindFachstelle, dataRow.getKindFachstelle());
+				excelRowGroup.addValue(MergeFieldGesuchstellerKinderBetreuung.kindIntegration, dataRow.getKindIntegration());
+				excelRowGroup.addValue(MergeFieldGesuchstellerKinderBetreuung.kindErwBeduerfnisse, dataRow.getKindErwBeduerfnisse());
+				excelRowGroup.addValue(MergeFieldGesuchstellerKinderBetreuung.kindSprichtAmtssprache, dataRow.getKindSprichtAmtssprache());
+
+				excelRowGroup.addValue(MergeFieldGesuchstellerKinderBetreuung.keinPlatzImSchulhort, dataRow.getKeinPlatzImSchulhort());
+
+
+				excelRowGroup.addValue(MergeFieldGesuchstellerKinderBetreuung.anspruchsPensumKanton, dataRow.getAnspruchsPensumKanton());
+				excelRowGroup.addValue(MergeFieldGesuchstellerKinderBetreuung.anspruchsPensumGemeinde, dataRow.getAnspruchsPensumGemeinde());
+				excelRowGroup.addValue(MergeFieldGesuchstellerKinderBetreuung.anspruchsPensumTotal, anspruchsPensumTotal);
+				excelRowGroup.addValue(MergeFieldGesuchstellerKinderBetreuung.bgPensumZeiteinheit, dataRow.getBgPensumZeiteinheit());
+
+				if (anspruchsPensumTotal != null && anspruchsPensumTotal.compareTo(BigDecimal.ZERO) > 0) {
+					excelRowGroup.addValue(MergeFieldGesuchstellerKinderBetreuung.bgPensumKanton, dataRow.getBgPensumKanton());
+					excelRowGroup.addValue(MergeFieldGesuchstellerKinderBetreuung.bgPensumGemeinde, dataRow.getBgPensumGemeinde());
+					excelRowGroup.addValue(MergeFieldGesuchstellerKinderBetreuung.bgPensumTotal, dataRow.getBgPensumTotal());
+					excelRowGroup.addValue(MergeFieldGesuchstellerKinderBetreuung.bgStunden, dataRow.getBgStunden());
+					excelRowGroup.addValue(MergeFieldGesuchstellerKinderBetreuung.vollkosten, dataRow.getVollkosten());
+					excelRowGroup.addValue(MergeFieldGesuchstellerKinderBetreuung.elternbeitrag, dataRow.getElternbeitrag());
+					excelRowGroup.addValue(MergeFieldGesuchstellerKinderBetreuung.verguenstigungKanton, dataRow.getVerguenstigungKanton());
+					excelRowGroup.addValue(MergeFieldGesuchstellerKinderBetreuung.verguenstigungGemeinde, dataRow.getVerguenstigungGemeinde());
+					excelRowGroup.addValue(MergeFieldGesuchstellerKinderBetreuung.verguenstigungTotal, dataRow.getVerguenstigungTotal());
+				} else {
+					excelRowGroup.addValue(MergeFieldGesuchstellerKinderBetreuung.bgPensumKanton, BigDecimal.ZERO);
+					excelRowGroup.addValue(MergeFieldGesuchstellerKinderBetreuung.bgPensumGemeinde, BigDecimal.ZERO);
+					excelRowGroup.addValue(MergeFieldGesuchstellerKinderBetreuung.bgPensumTotal, BigDecimal.ZERO);
+					excelRowGroup.addValue(MergeFieldGesuchstellerKinderBetreuung.bgStunden, BigDecimal.ZERO);
+					excelRowGroup.addValue(MergeFieldGesuchstellerKinderBetreuung.vollkosten, BigDecimal.ZERO);
+					excelRowGroup.addValue(MergeFieldGesuchstellerKinderBetreuung.elternbeitrag, BigDecimal.ZERO);
+					excelRowGroup.addValue(MergeFieldGesuchstellerKinderBetreuung.verguenstigungKanton, BigDecimal.ZERO);
+					excelRowGroup.addValue(MergeFieldGesuchstellerKinderBetreuung.verguenstigungGemeinde, BigDecimal.ZERO);
+					excelRowGroup.addValue(MergeFieldGesuchstellerKinderBetreuung.verguenstigungTotal, BigDecimal.ZERO);
+				}
+				excelRowGroup.addValue(
+					MergeFieldGesuchstellerKinderBetreuung.ausserordentlicherAnspruch, dataRow.getAusserordentlicherAnspruch());
 			}
-			excelRowGroup.addValue(MergeFieldGesuchstellerKinderBetreuung.ausserordentlicherAnspruch, dataRow.getAusserordentlicherAnspruch());
 
 			rowFiller.fillRow(excelRowGroup);
 		});

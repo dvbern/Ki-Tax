@@ -18,6 +18,7 @@
 export * from './abwesenheit.po';
 export * from './antrag-creation.po';
 export * from './beschaeftigungspensum.po';
+export * from './beschaeftigungspensumList.po';
 export * from './betreuung.po';
 export * from './dokumente.po';
 export * from './einkommensverschlechterung.po';

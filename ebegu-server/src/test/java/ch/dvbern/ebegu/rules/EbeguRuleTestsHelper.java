@@ -335,6 +335,8 @@ public final class EbeguRuleTestsHelper {
 		einstellungenMap.addEinstellung(KINDERABZUG_TYP, "ASIV", gesuchsperiode);
 		einstellungenMap.addEinstellung(FKJV_TEXTE, "false", gesuchsperiode);
 		einstellungenMap.addEinstellung(FACHSTELLEN_TYP, "BERN", gesuchsperiode);
+		einstellungenMap.addEinstellung(SPRACHFOERDERUNG_BESTAETIGEN, "false", gesuchsperiode);
+		einstellungenMap.addEinstellung(GESUCH_BEENDEN_BEI_TAUSCH_GS2, "false", gesuchsperiode);
 		// LU
 		einstellungenMap.addEinstellung(KITAPLUS_ZUSCHLAG_AKTIVIERT, "false", gesuchsperiode);
 		einstellungenMap.addEinstellung(GESCHWISTERNBONUS_AKTIVIERT, "false", gesuchsperiode);

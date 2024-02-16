@@ -37,18 +37,22 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.EnumSource;
 import org.junit.jupiter.params.provider.EnumSource.Mode;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Month;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Stream;
 
 import static ch.dvbern.ebegu.enums.EinstellungKey.*;
 import static ch.dvbern.ebegu.inbox.handler.PlatzbestaetigungEventHandler.GO_LIVE;
@@ -90,6 +94,9 @@ public class PlatzbestaetigungEventHandlerTest extends EasyMockSupport {
 
 	@Mock(MockType.NICE)
 	private BetreuungMonitoringService betreuungMonitoringService;
+
+	@Mock(MockType.NICE)
+	private ApplicationPropertyService applicationPropertyService;
 
 	private Gesuch gesuch_1GS = null;
 	private Gesuchsperiode gesuchsperiode = null;
@@ -393,6 +400,27 @@ public class PlatzbestaetigungEventHandlerTest extends EasyMockSupport {
 		}
 
 		@ParameterizedTest
+		@MethodSource("ch.dvbern.ebegu.inbox.handler.PlatzbestaetigungEventHandlerTest#provideSprachfoederungTestData")
+		void automaticPlatzbestaetigungSprachfoederungTest(
+			@Nullable Boolean sprachfoerderung,
+			@Nonnull LocalDate aktivierungDatum,
+			@Nonnull boolean isBestaetigt) {
+			dto.setSprachfoerderungBestaetigt(sprachfoerderung);
+			expectPlatzBestaetigung();
+			expectBetreuungFound(betreuung);
+			expectGetSchnittstelleSprachfoerderungAktivAb(aktivierungDatum);
+			mockClients(clientGueltigkeit);
+			withMahlzeitenverguenstigung(true);
+			mockGetStundenTagenEinstellungen();
+			withZusaetzlicherGutschein(zusaetzlicherGutscheinGemeindeEnabled);
+			replayAll();
+			Processing result = handler.attemptProcessing(eventMonitor, dto);
+			ErweiterteBetreuung erweiterteBetreuung = betreuung.getErweiterteBetreuungContainer().getErweiterteBetreuungJA();
+			assertThat(erweiterteBetreuung.isSprachfoerderungBestaetigt(), is(isBestaetigt));
+			verifyAll();
+		}
+
+		@ParameterizedTest
 		@EnumSource(value = AntragStatus.class,
 			names = { "IN_BEARBEITUNG_GS", "IN_BEARBEITUNG_SOZIALDIENST" },
 			mode = Mode.INCLUDE)
@@ -474,7 +502,7 @@ public class PlatzbestaetigungEventHandlerTest extends EasyMockSupport {
 
 			expectPlatzBestaetigung();
 
-			testProcessingSuccess();
+			testProcessingSuccessWithoutErweiterteBetreuung();
 
 			assertThat(betreuung.getErweiterteBetreuungContainer().getErweiterteBetreuungJA(), nullValue());
 		}
@@ -487,7 +515,7 @@ public class PlatzbestaetigungEventHandlerTest extends EasyMockSupport {
 
 			expectPlatzBestaetigung();
 
-			testProcessingSuccess();
+			testProcessingSuccessWithoutErweiterteBetreuung();
 
 			assertThat(betreuung.getErweiterteBetreuungContainer().getErweiterteBetreuungJA(), nullValue());
 		}
@@ -563,7 +591,7 @@ public class PlatzbestaetigungEventHandlerTest extends EasyMockSupport {
 
 				expectHumanConfirmation();
 				expectBetreuungFound(betreuung);
-
+				expectGetSchnittstelleSprachfoerderungAktivAb(LocalDate.of(2023, 01, 01));
 				mockClients(clientGueltigkeit, List.of(client2));
 				withMahlzeitenverguenstigung(true);
 				mockGetStundenTagenEinstellungen();
@@ -829,8 +857,18 @@ public class PlatzbestaetigungEventHandlerTest extends EasyMockSupport {
 		}
 
 		private void testProcessingSuccess() {
-			expectBetreuungFound(betreuung);
+			this.testProcessingSuccess(true);
+		}
 
+		private void testProcessingSuccessWithoutErweiterteBetreuung() {
+			this.testProcessingSuccess(false);
+		}
+
+		private void testProcessingSuccess(boolean erweitereBetreuung) {
+			expectBetreuungFound(betreuung);
+			if (erweitereBetreuung) {
+				expectGetSchnittstelleSprachfoerderungAktivAb(LocalDate.of(2023, 01, 01));
+			}
 			mockClients(clientGueltigkeit);
 			withMahlzeitenverguenstigung(true);
 			mockGetStundenTagenEinstellungen();
@@ -841,6 +879,13 @@ public class PlatzbestaetigungEventHandlerTest extends EasyMockSupport {
 			Processing result = handler.attemptProcessing(eventMonitor, dto);
 			assertThat(result.isProcessingSuccess(), is(true));
 			verifyAll();
+		}
+
+		private void expectGetSchnittstelleSprachfoerderungAktivAb(LocalDate aktivierungDatum) {
+			expect(betreuungEventHelper.getMandantFromBgNummer(REF_NUMMER))
+				.andReturn(Optional.of(mandant));
+			expect(applicationPropertyService.getSchnittstelleSprachfoerderungAktivAb(mandant))
+				.andReturn(aktivierungDatum);
 		}
 
 		private void withZusaetzlicherGutschein(boolean enabled) {
@@ -1375,5 +1420,15 @@ public class PlatzbestaetigungEventHandlerTest extends EasyMockSupport {
 	@Nonnull
 	private Betreuung betreuungWithSingleContainer() {
 		return PlatzbestaetigungTestUtil.betreuungWithSingleContainer(gesuch_1GS);
+	}
+
+	private static Stream<Arguments> provideSprachfoederungTestData() {
+		return Stream.of(
+			Arguments.of(null, LocalDate.now().plusDays(1), true),
+			Arguments.of(null, LocalDate.of(2023, 1, 15), false),
+			Arguments.of(false, LocalDate.of(2023, 1, 15), false),
+			Arguments.of(false, LocalDate.now().plusDays(1), false),
+			Arguments.of(true, LocalDate.now().plusDays(1), true),
+			Arguments.of(true, LocalDate.of(2023, 1, 15), true));
 	}
 }
