@@ -281,8 +281,7 @@ public class AbstractEntityListener {
 		return (abstractEntity instanceof Benutzer
 			|| abstractEntity instanceof Institution
 			|| abstractEntity instanceof Traegerschaft
-			|| abstractEntity instanceof Gesuchsperiode) && (getPrincipalBean().getPrincipal().getName().equals(ANONYMOUS_USER_USERNAME)
-			|| getPrincipalBean().getMandant() == null);
+			|| abstractEntity instanceof Gesuchsperiode) && getPrincipalBean().getMandant() == null;
 	}
 
 	protected static boolean checkAccessAllowedIfAnonymous(
