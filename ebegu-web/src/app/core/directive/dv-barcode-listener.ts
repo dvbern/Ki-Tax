@@ -116,24 +116,22 @@ export class DVBarcodeController implements IController {
         this.$document.unbind('keypress', keypressEvent);
     }
 
-    public barcodeOnKeyPressed(e: any): void {
-        const key = e.keyCode || e.which || 0;
-        const keyPressChar = String.fromCharCode(key);
+    public barcodeOnKeyPressed(e: KeyboardEvent): void {
 
         if (this.barcodeReading) {
             e.preventDefault();
-            if (this.isNotDelimiterKey(keyPressChar)) {
-                this.barcodeBuffer.push(keyPressChar);
+            if (this.isNotDelimiterKey(e)) {
+                this.barcodeBuffer.push(e.key);
                 this.$log.debug(`Current buffer: ${  this.barcodeBuffer.join('')}`);
             }
         }
 
-        if (this.isNotDelimiterKey(keyPressChar)) {
+        if (this.isNotDelimiterKey(e)) {
             return;
         }
         e.preventDefault();
         if (this.barcodeReading) {
-            this.handleBarcodeRead();
+            this.handleBarcodeRead(e.key);
         } else {
             this.$log.debug('Begin Barcode read');
 
@@ -148,14 +146,12 @@ export class DVBarcodeController implements IController {
         this.barcodeReading = !this.barcodeReading;
     }
 
-    private handleBarcodeRead(): void {
+    private handleBarcodeRead(delimiter: string): void {
         this.$log.debug('End Barcode read');
 
         let barcodeRead = this.barcodeBuffer.join('');
         this.$log.debug(`Barcode read:${barcodeRead}`);
-        // replace both possible delimiters
-        barcodeRead = barcodeRead.replace('§', '');
-        barcodeRead = barcodeRead.replace('<', '');
+        barcodeRead = barcodeRead.replace(delimiter, '');
 
         const barcodeParts = barcodeRead.split('|');
 
@@ -196,7 +192,7 @@ export class DVBarcodeController implements IController {
         }
     }
 
-    private isNotDelimiterKey(keyPressChar: string): boolean {
-        return keyPressChar !== '§' && keyPressChar !== '<';
+    private isNotDelimiterKey(keyEvent: KeyboardEvent): boolean {
+        return keyEvent.code !== 'Backquote';
     }
 }
