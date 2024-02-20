@@ -42,12 +42,12 @@ public class MutationsMergerAnspruchHandlerBern extends AbstractMutationsMergerA
 			//Wenn der Anspruch auf dem Vorgänger 0 ist, weil das Erstgesuch zu spät eingereicht wurde
 			//soll die Bemerkung bezüglich der Erhöhung nicht angezeigt werden, da es sich um keine Erhöhung handelt
 			if(!isAnspruchZeroBecauseVorgaengerZuSpaet(resultVorangehenderAbschnitt)) {
-				inputData.addBemerkung(MsgKey.ANSPRUCHSAENDERUNG_MSG, locale);
+				inputData.addBemerkungWithGueltigkeitOfAbschnitt(MsgKey.ANSPRUCHSAENDERUNG_MSG, locale);
 			}
 
 		} else if (anspruchberechtigtesPensum < anspruchAufVorgaengerVerfuegung) {
 			//Meldung nicht Rechtzeitig: Reduktionen des Anspruchs sind auch rückwirkend erlaubt -> keine Aenderungen
-			inputData.addBemerkung(MsgKey.REDUCKTION_RUECKWIRKEND_MSG, locale);
+			inputData.addBemerkungWithGueltigkeitOfAbschnitt(MsgKey.REDUCKTION_RUECKWIRKEND_MSG, locale);
 		}
 	}
 
