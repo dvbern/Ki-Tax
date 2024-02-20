@@ -101,7 +101,9 @@ describe('Kibon - generate Tagesschule Institutionen', () => {
         EditTagesschulePO.getEditSaveButton().click();
         EditTagesschulePO.getGesuchsperiodeTab(1).find('.dv-accordion-tab-title').click();
 
-        EditTagesschulePO.getAddImportModuleButton(1).click();
+        cy.waitForRequest('GET', '**/institutionstammdaten/**', () => {
+            EditTagesschulePO.getAddImportModuleButton(1).click();
+        });
         TagesschuleModulImportDialogPO.getInstitution().select(tagesschuleDynamischName);
         TagesschuleModulImportDialogPO.getGesuchsperiode().select(0);
         TagesschuleModulImportDialogPO.getImportButton().click();

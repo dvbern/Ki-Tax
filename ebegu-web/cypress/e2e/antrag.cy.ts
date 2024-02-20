@@ -233,7 +233,7 @@ describe('Kibon - generate Testfälle [Gemeinde Sachbearbeiter]', () => {
 
             SidenavPO.getGesuchStatus().should('have.text', 'In Bearbeitung');
 
-            VerfuegenPO.getFinSitAkzeptiert('AKZEPTIERT').click();
+            VerfuegenPO.finSitAkzeptieren();
             VerfuegenPO.pruefeGesuch();
             SidenavPO.getGesuchStatus().should('have.text', 'Geprüft');
 

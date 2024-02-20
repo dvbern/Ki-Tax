@@ -1,3 +1,20 @@
+/*
+ * Copyright (C) 2024 DV Bern AG, Switzerland
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
 import {getUser, User} from '@dv-e2e/types';
 import {
     AntragBetreuungPO, AntragCreationPO, ConfirmDialogPO,
@@ -60,8 +77,8 @@ describe('Kibon - Online TS-Anmeldung (Mischgesuch) [Gesuchsteller]', () => {
         //TODO Überprüfen, ob einen Email versendet wurde => 1. Bestätigung ohne FinSit
 
         loginAndGoToGesuch(userGemeindeBGTS);
-        finSitAkzeptieren();
-        verfuegenStarten();
+        finSitAkzeptierenUndPruefen();
+        VerfuegenPO.verfuegenStarten();
         //TODO Überprüfen, ob einen Email versendet wurde => 2. Bestätigung mit FinSit
 
         loginAndGoToGesuch(userGS);
@@ -107,39 +124,28 @@ describe('Kibon - Online TS-Anmeldung (Mischgesuch) [Gesuchsteller]', () => {
     };
 
     const tsAkzeptierenAsUserTs = (kindIndex: number, betreuungsIndex: number) => {
-        loginAsTSAndPlatzAkzeptieren(kindIndex, betreuungsIndex);
+        loginAsTSAndOpenBetreuung(kindIndex, betreuungsIndex);
         cy.waitForRequest('PUT', '**/betreuungen/schulamt/akzeptieren', () => {
+            AntragBetreuungPO.getPlatzAkzeptierenButton().click();
             ConfirmDialogPO.getDvLoadingConfirmButton().click();
         });
     };
 
     const tsUebernehmenAsUserTs = (kindIndex: number, betreuungsIndex: number) => {
-        loginAsTSAndPlatzAkzeptieren(kindIndex, betreuungsIndex);
+        loginAsTSAndOpenBetreuung(kindIndex, betreuungsIndex);
         cy.waitForRequest('PUT', '**/anmeldung/uebernehmen', () => {
+            AntragBetreuungPO.getPlatzAkzeptierenButton().click();
             ConfirmDialogPO.getDvLoadingConfirmButton().click();
         });
     };
 
-    const loginAsTSAndPlatzAkzeptieren = (kindIndex: number, betreuungsIndex: number) => {
+    const loginAsTSAndOpenBetreuung = (kindIndex: number, betreuungsIndex: number) => {
         cy.login(userTS);
         cy.visit('/#/faelle');
         FaelleListePO.getAntrag(fallnummer).click();
         AntragBetreuungPO.getBetreuung(kindIndex, betreuungsIndex).click();
-        AntragBetreuungPO.getPlatzAkzeptierenButton().click();
-        cy.waitForRequest('PUT', '**/betreuungen/schulamt/akzeptieren', () => {
-            ConfirmDialogPO.getDvLoadingConfirmButton().click();
-        });
     };
 
-    const tsAkzeptierenFuerKind2 = () => {
-        SidenavPO.goTo('BETREUUNG');
-        AntragBetreuungPO.getBetreuung(1, 1).click();
-        AntragBetreuungPO.getPlatzAkzeptierenButton().click();
-
-        cy.waitForRequest('GET', '**/dossier/fall/**', () => {
-            ConfirmDialogPO.getDvLoadingConfirmButton().click();
-        });
-    };
 
     const gesuchFreigeben = () => {
         SidenavPO.goTo('DOKUMENTE');
@@ -167,21 +173,10 @@ describe('Kibon - Online TS-Anmeldung (Mischgesuch) [Gesuchsteller]', () => {
         });
     };
 
-    const finSitAkzeptieren = () => {
+    const finSitAkzeptierenUndPruefen = () => {
         SidenavPO.goTo('VERFUEGEN');
-        VerfuegenPO.getFinSitAkzeptiert('AKZEPTIERT').click();
-
-        cy.waitForRequest('GET', '**/verfuegung/calculate/**', () => {
-            VerfuegenPO.getGeprueftButton().click();
-            ConfirmDialogPO.getDvLoadingConfirmButton().click();
-        });
-    };
-
-    const verfuegenStarten = () => {
-        cy.waitForRequest('GET', '**/verfuegung/calculate/**', () => {
-            VerfuegenPO.getVerfuegenStartenButton().click();
-            ConfirmDialogPO.getDvLoadingConfirmButton().click();
-        });
+        VerfuegenPO.finSitAkzeptieren();
+        VerfuegenPO.pruefeGesuch();
     };
 
     const gesuchVerfuegen = () => {

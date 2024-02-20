@@ -62,6 +62,7 @@ describe('Kibon - Testet das Feature der automatischen Abarbeitung von Mutations
         AntragBetreuungPO.selectTagesschulBetreuung();
         AntragBetreuungPO.fillTagesschulBetreuungsForm('withValid', 'Paris');
         AntragBetreuungPO.saveBetreuung();
+        AntragBetreuungPO.getPageTitle().should('include.text', 'Betreuung');
 
         SidenavPO.goTo('DOKUMENTE');
 
@@ -108,11 +109,8 @@ describe('Kibon - Testet das Feature der automatischen Abarbeitung von Mutations
             SidenavPO.goTo('BETREUUNG');
             AntragBetreuungPO.getBetreuungsstatus(0,2).should('have.text', 'Anmeldung ausgelöst');
             AntragBetreuungPO.getBetreuung(0,2).click();
-            cy.waitForRequest('GET', '**/dossier/id/**', () => {
-                AntragBetreuungPO.getPlatzAkzeptierenButton().click();
-                ConfirmDialogPO.getDvLoadingConfirmButton().click();
-            });
-            AntragBetreuungPO.getBetreuungsstatus(0,2).should('have.text', 'Module akzeptiert');
+            AntragBetreuungPO.platzAkzeptieren();
+            AntragBetreuungPO.getBetreuungsstatus(0,2).should('include.text', 'Module akzeptiert');
         }
 
         // !! AS GEMEINDE SB BG !!
@@ -123,7 +121,7 @@ describe('Kibon - Testet das Feature der automatischen Abarbeitung von Mutations
             cy.waitForRequest('GET', '**/verfuegung/calculate/**', () => {
                 SidenavPO.goTo('VERFUEGEN');
             });
-            VerfuegenPO.getFinSitAkzeptiert('AKZEPTIERT').click();
+            VerfuegenPO.finSitAkzeptieren();
             VerfuegenPO.pruefeGesuch();
             SidenavPO.getGesuchStatus().should('have.text', 'Geprüft');
 
