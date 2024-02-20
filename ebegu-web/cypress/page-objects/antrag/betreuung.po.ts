@@ -282,12 +282,15 @@ const platzAbweisen = (grundAbweisung: string) => {
 };
 
 const platzAkzeptieren = () => {
-    cy.waitForRequest('PUT', '**/schulamt/akzeptieren', () => {
-        getPlatzAkzeptierenButton().click();
-        ConfirmDialogPO.getDvLoadingConfirmButton().click();
+    cy.waitForRequest('GET', '**/gesuchBetreuungenStatus/*', () => {
+        cy.waitForRequest('PUT', '**/schulamt/akzeptieren', () => {
+            getPlatzAkzeptierenButton().click();
+            ConfirmDialogPO.getDvLoadingConfirmButton().click();
+        });
     });
     getPageTitle().should('contain.text', 'Betreuung');
 };
+
 
 export const AntragBetreuungPO = {
     // page objects

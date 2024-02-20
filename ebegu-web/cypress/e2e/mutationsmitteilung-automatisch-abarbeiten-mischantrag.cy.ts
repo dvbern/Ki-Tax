@@ -109,11 +109,8 @@ describe('Kibon - Testet das Feature der automatischen Abarbeitung von Mutations
             SidenavPO.goTo('BETREUUNG');
             AntragBetreuungPO.getBetreuungsstatus(0,2).should('have.text', 'Anmeldung ausgelöst');
             AntragBetreuungPO.getBetreuung(0,2).click();
-            cy.waitForRequest('GET', '**/dossier/id/**', () => {
-                AntragBetreuungPO.getPlatzAkzeptierenButton().click();
-                ConfirmDialogPO.getDvLoadingConfirmButton().click();
-            });
-            AntragBetreuungPO.getBetreuungsstatus(0,2).should('have.text', 'Module akzeptiert');
+            AntragBetreuungPO.platzAkzeptieren();
+            AntragBetreuungPO.getBetreuungsstatus(0,2).should('include.text', 'Module akzeptiert');
         }
 
         // !! AS GEMEINDE SB BG !!
