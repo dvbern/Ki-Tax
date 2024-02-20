@@ -67,7 +67,7 @@ public class MutationsMergerFinanzielleSituationBern extends AbstractMutationsMe
 			BigDecimal massgebendesEinkommen,
 			BigDecimal massgebendesEinkommenVorher) {
 		if (massgebendesEinkommen.compareTo(massgebendesEinkommenVorher) < 0) {
-			inputData.addBemerkung(MsgKey.ANSPRUCHSAENDERUNG_MSG, getLocale());
+			inputData.addBemerkungWithGueltigkeitOfAbschnitt(MsgKey.ANSPRUCHSAENDERUNG_MSG, getLocale());
 		}
 	}
 
