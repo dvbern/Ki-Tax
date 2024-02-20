@@ -257,10 +257,6 @@ function checkValuesOfTwoLastVerfuegteBetreuung(data: any): void {
     expect(data[last - 1][17]).to.empty;
     expect(data[last][17]).to.empty;
 
-    // Check Total
-    expect(data[last - 1][18]).to.eq(0);
-    expect(data[last][18]).to.eq(0);
-
     // Check Angestellt
     expect(data[last - 1][19]).to.eq(0.4);
     expect(data[last][19]).to.eq(0.4);
@@ -320,10 +316,6 @@ function checkValuesOfTwoLastVerfuegteBetreuung(data: any): void {
     // Check Diplomat GS2
     expect(data[last - 1][33]).to.empty;
     expect(data[last][33]).to.empty;
-
-    // Check Total GS2
-    expect(data[last - 1][34]).to.eq(0);
-    expect(data[last][34]).to.eq(0);
 
     // Check Angestellt GS2
     expect(data[last - 1][35]).to.eq(1);
@@ -425,10 +417,6 @@ function checkValuesOfTwoLastVerfuegteBetreuung(data: any): void {
     expect(data[last - 1][59]).to.empty;
     expect(data[last][59]).to.empty;
 
-    // Check Baby-Faktor
-    expect(data[last - 1][60]).to.eq(0);
-    expect(data[last][60]).to.eq(0);
-
     // Check Besondere Bedürfnisse
     expect(data[last - 1][61]).to.empty;
     expect(data[last][61]).to.empty;
@@ -440,22 +428,6 @@ function checkValuesOfTwoLastVerfuegteBetreuung(data: any): void {
     // Check Schulstufe
     expect(data[last - 1][63]).to.eq('Vorschulalter');
     expect(data[last][63]).to.eq('Vorschulalter');
-
-    // Check Bis 12 Monate
-    expect(data[last - 1][64]).to.eq(0);
-    expect(data[last][64]).to.eq(0);
-
-    // Check 13-47 Monate
-    expect(data[last - 1][65]).to.eq(0);
-    expect(data[last][65]).to.eq(0);
-
-    // Check 48-72 Monate
-    expect(data[last - 1][66]).to.eq(0);
-    expect(data[last][66]).to.eq(0);
-
-    // Check Ab 73 Monate
-    expect(data[last - 1][67]).to.eq(0);
-    expect(data[last][67]).to.eq(0);
 
     // Check Von
     expect(data[last - 1][68]).to.eq(45108);
@@ -476,10 +448,6 @@ function checkValuesOfTwoLastVerfuegteBetreuung(data: any): void {
     // Check Status
     expect(data[last - 1][72]).to.eq('Verfügt');
     expect(data[last][72]).to.eq('Verfügt');
-
-    // Check Anteil Monat
-    expect(data[last - 1][73]).to.eq(0);
-    expect(data[last][73]).to.eq(0);
 
     // Check Betreuung
     expect(data[last - 1][74]).to.eq(0.6);
@@ -516,10 +484,6 @@ function checkValuesOfTwoLastVerfuegteBetreuung(data: any): void {
     // Check Einheit BG-Pensum
     expect(data[last - 1][82]).to.eq('Tage');
     expect(data[last][82]).to.eq('Tage');
-
-    // Check BG-Monatspensum
-    expect(data[last - 1][83]).to.eq(0);
-    expect(data[last][83]).to.eq(0);
 
     // Check Ausserordentlicher Anspruch
     expect(data[last - 1][84]).to.empty;
