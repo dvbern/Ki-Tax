@@ -17,32 +17,23 @@
 
 package ch.dvbern.ebegu.outbox.platzbestaetigung;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.annotation.security.RunAs;
-import javax.ejb.Schedule;
-import javax.ejb.Stateless;
-import javax.enterprise.event.Event;
-import javax.inject.Inject;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Join;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
-
 import ch.dvbern.ebegu.config.EbeguConfiguration;
-import ch.dvbern.ebegu.entities.AbstractPlatz_;
-import ch.dvbern.ebegu.entities.Betreuung;
-import ch.dvbern.ebegu.entities.Betreuung_;
-import ch.dvbern.ebegu.entities.InstitutionStammdaten;
-import ch.dvbern.ebegu.entities.InstitutionStammdaten_;
+import ch.dvbern.ebegu.entities.*;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
 import ch.dvbern.ebegu.enums.UserRoleName;
 import ch.dvbern.ebegu.outbox.ExportedEvent;
 import ch.dvbern.ebegu.services.ApplicationPropertyService;
 import ch.dvbern.lib.cdipersistence.Persistence;
+
+import javax.annotation.security.RunAs;
+import javax.ejb.Schedule;
+import javax.ejb.Stateless;
+import javax.enterprise.event.Event;
+import javax.inject.Inject;
+import javax.persistence.criteria.*;
+import java.util.ArrayList;
+import java.util.List;
 
 import static ch.dvbern.ebegu.services.util.PredicateHelper.NEW;
 
@@ -86,10 +77,10 @@ public class BetreuungAnfrageEventGenerator {
 		//Institution Stammdaten Join and check angebot Typ, muss Kita oder TFO sein
 		Join<Betreuung, InstitutionStammdaten> institutionStammdatenJoin =
 			root.join(Betreuung_.institutionStammdaten);
-		Predicate isKitaOderTFO =
+		Predicate isBetreuungsgutscheinTyp =
 			institutionStammdatenJoin.get(InstitutionStammdaten_.betreuungsangebotTyp)
 				.in(BetreuungsangebotTyp.getBetreuungsgutscheinTypes());
-		predicates.add(isKitaOderTFO);
+		predicates.add(isBetreuungsgutscheinTyp);
 
 		//Event muss noch nicht plubliziert sein
 		Predicate isNotPublished = cb.isFalse(root.get(Betreuung_.eventPublished));
