@@ -15,6 +15,7 @@
 
 package ch.dvbern.ebegu.enums;
 
+import ch.dvbern.ebegu.util.BetreuungsangebotTypVisitor;
 import com.google.common.collect.ImmutableList;
 
 import java.util.Arrays;
@@ -24,11 +25,36 @@ import java.util.List;
  * Enum fuers Feld betreuungsangebotTyp in Institution.
  */
 public enum BetreuungsangebotTyp {
-	KITA,
-	TAGESSCHULE,
-	MITTAGSTISCH,
-	TAGESFAMILIEN,
-	FERIENINSEL;
+	KITA {
+		@Override
+		public <T> T accept(BetreuungsangebotTypVisitor<T> visitor) {
+			return visitor.visitKita();
+		}
+	},
+	TAGESSCHULE {
+		@Override
+		public <T> T accept(BetreuungsangebotTypVisitor<T> visitor) {
+			return visitor.visitTagesschule();
+		}
+	},
+	MITTAGSTISCH {
+		@Override
+		public <T> T accept(BetreuungsangebotTypVisitor<T> visitor) {
+			return visitor.visitMittagtisch();
+		}
+	},
+	TAGESFAMILIEN {
+		@Override
+		public <T> T accept(BetreuungsangebotTypVisitor<T> visitor) {
+			return visitor.visitTagesfamilien();
+		}
+	},
+	FERIENINSEL {
+		@Override
+		public <T> T accept(BetreuungsangebotTypVisitor<T> visitor) {
+			return visitor.visitFerieninsel();
+		}
+	};
 
 	public boolean isKita() {
 		return KITA == this;
@@ -73,4 +99,6 @@ public enum BetreuungsangebotTyp {
 	public boolean isBerechnetesAngebot() {
 		return getBerechnetesAngebotTypes().contains(this);
 	}
+
+	public abstract <T> T accept(BetreuungsangebotTypVisitor<T> visitor);
 }
