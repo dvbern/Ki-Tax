@@ -32,6 +32,7 @@ import ch.dvbern.ebegu.types.DateRange_;
 import ch.dvbern.ebegu.util.AntragStatusConverterUtil;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.lib.cdipersistence.Persistence;
+import org.apache.commons.lang.NotImplementedException;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
@@ -232,6 +233,7 @@ public class SearchServiceBean extends AbstractBaseService implements SearchServ
 		case SACHBEARBEITER_TRAEGERSCHAFT:
 			if (predicateObjectDto != null && predicateObjectDto.getAngebote() != null) {
 				switch (BetreuungsangebotTyp.valueOf(predicateObjectDto.getAngebote())) {
+
 				case KITA:
 				case TAGESFAMILIEN:
 					predicates.add(cb.equal(
@@ -276,6 +278,7 @@ public class SearchServiceBean extends AbstractBaseService implements SearchServ
 			// eingeloggten benutzers
 			if (predicateObjectDto != null && predicateObjectDto.getAngebote() != null) {
 				switch (BetreuungsangebotTyp.valueOf(predicateObjectDto.getAngebote())) {
+
 				case KITA:
 				case TAGESFAMILIEN:
 					predicates.add(cb.equal(joinInstitutionBetreuungen, user.getInstitution()));
@@ -419,6 +422,7 @@ public class SearchServiceBean extends AbstractBaseService implements SearchServ
 				switch (BetreuungsangebotTyp.valueOf(predicateObjectDto.getAngebote())) {
 				case KITA:
 				case TAGESFAMILIEN:
+				case MITTAGSTISCH:
 					predicates.add(cb.equal(
 						joinInstitutionstammdatenBetreuungen.get(InstitutionStammdaten_.betreuungsangebotTyp),
 						BetreuungsangebotTyp.valueOf(predicateObjectDto.getAngebote())));
@@ -433,6 +437,7 @@ public class SearchServiceBean extends AbstractBaseService implements SearchServ
 						joinInstitutionstammdatenFerieninsel.get(InstitutionStammdaten_.betreuungsangebotTyp),
 						BetreuungsangebotTyp.valueOf(predicateObjectDto.getAngebote())));
 					break;
+				default: throw new NotImplementedException();
 				}
 			}
 			if (predicateObjectDto.getInstitutionen() != null) {
