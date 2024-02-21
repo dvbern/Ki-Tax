@@ -142,10 +142,6 @@ dv-input-container-x {
         display: none;
     }
 
-    .mat-focused .mat-mdc-form-field-infix {
-        border: 2px solid black;
-    }
-
 
     .mdc-text-field--no-label:not(.mdc-text-field--textarea) .mat-mdc-form-field-input-control.mdc-text-field__input, dv-input-container-x .mat-mdc-text-field-wrapper .mat-mdc-form-field-input-control {
         font-size: 1.6rem;
@@ -158,6 +154,10 @@ dv-input-container-x {
         text-decoration: inherit;
         text-transform: inherit;
         border: none;
+    }
+
+    .mat-mdc-form-field-focus-overlay {
+        background-color: transparent;
     }
 
 }
