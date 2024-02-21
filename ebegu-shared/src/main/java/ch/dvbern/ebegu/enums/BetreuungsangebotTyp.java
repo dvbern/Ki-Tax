@@ -66,7 +66,11 @@ public enum BetreuungsangebotTyp {
 		return ImmutableList.of(KITA, TAGESFAMILIEN, MITTAGSTISCH);
 	}
 
+	public static List<BetreuungsangebotTyp> getBerechnetesAngebotTypes() {
+		return ImmutableList.of(KITA, TAGESFAMILIEN, MITTAGSTISCH, TAGESSCHULE);
+	}
+
 	public boolean isBerechnetesAngebot() {
-		return isKita() || isTagesfamilien() || isTagesschule() || isMittagstisch();
+		return getBerechnetesAngebotTypes().contains(this);
 	}
 }
