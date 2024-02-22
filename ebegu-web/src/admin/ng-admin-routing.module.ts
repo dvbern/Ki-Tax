@@ -118,7 +118,7 @@ const states: Ng2StateDeclaration[] = [
     },
     {
         name: 'admin.uebersichtVersendeteMails',
-        url: '/uebersichtVersendeteMail',
+        url: '/uebersichtVersendeteMails',
         component: UebersichtVersendeteMailsComponent,
         data: {
             roles: TSRoleUtil.getSuperAdminRoles()

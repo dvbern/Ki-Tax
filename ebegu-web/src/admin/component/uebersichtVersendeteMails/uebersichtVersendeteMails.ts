@@ -25,5 +25,5 @@ const LOG = LogFactory.createLog('uebersichtVersendeteMailsComponent');
 })
 
 export class UebersichtVersendeteMailsComponent {
-
+    public displayedColumns: string[] = ['zeitpunktVersands', 'empfaengerAdresse', 'betreff'];
 }

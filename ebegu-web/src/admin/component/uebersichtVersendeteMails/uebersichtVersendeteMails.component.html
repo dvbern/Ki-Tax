@@ -13,6 +13,61 @@
   ~ along with this program. If not, see <http://www.gnu.org/licenses/>.
   -->
 
-<p>
-    test
-</p>
+<div class="admin-modul" flex="auto">
+    <div class="col-md-8 col-md-offset-2">
+
+        <h1 class="access-for-all-title" translate>AFA_VERSENDETE_MAILS</h1>
+        <div class="view-title">
+            <h2 translate>VERSENDETE_MAILS_TITLE</h2>
+            <hr class="header">
+        </div>
+
+        <div class="filter margin-bottom-20">
+            <input class="filter"
+                   matInput
+                   type="text"
+                   placeholder="todo">
+        </div>
+
+        <div class="table-responsive">
+            <mat-table #table matSort>
+
+                <!-- Column zeitpunktversand -->
+                <ng-container matColumnDef="zeitpunktVersands">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header>
+                        {{'ZEITPUNKTVERSAND_MAIL' | translate}}
+                    </mat-header-cell>
+                    <mat-cell *matCellDef>
+                        <p>zeitpunkt des versands</p>
+                    </mat-cell>
+                </ng-container>
+
+                <!-- Column empfaengeradresse -->
+                <ng-container matColumnDef="empfaengerAdresse">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header>
+                        {{'EMPFAENGERADRESSE_MAIL' | translate}}
+                    </mat-header-cell>
+                    <mat-cell *matCellDef>
+                        <p>empfaenger adresse</p>
+                    </mat-cell>
+                </ng-container>
+
+                <!-- Column betreff -->
+                <ng-container matColumnDef="betreff">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header>
+                        {{'BETREFF_MAIL' | translate}}
+                    </mat-header-cell>
+                    <mat-cell *matCellDef>
+                        <p>betreff</p>
+                    </mat-cell>
+                </ng-container>
+
+                <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+                <mat-row *matRowDef="let row; columns: displayedColumns;" class="pointer-cursor"></mat-row>
+            </mat-table>
+
+        </div>
+
+
+    </div>
+</div>
