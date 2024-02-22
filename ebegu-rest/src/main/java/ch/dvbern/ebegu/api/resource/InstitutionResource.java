@@ -80,9 +80,6 @@ public class InstitutionResource {
 	private GemeindeService gemeindeService;
 
 	@Inject
-	private GesuchsperiodeService gesuchsperiodeService;
-
-	@Inject
 	private PrincipalBean principalBean;
 
 	@Inject
