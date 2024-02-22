@@ -123,10 +123,24 @@ public class PlatzbestaetigungEventHandlerTest extends EasyMockSupport {
 
 	@ParameterizedTest
 	@EnumSource(value = Betreuungsstatus.class,
-		names = { "VERFUEGT", "BESTAETIGT", "GESCHLOSSEN_OHNE_VERFUEGUNG", "STORNIERT" },
+		names = { "WARTEN", "VERFUEGT", "BESTAETIGT", "GESCHLOSSEN_OHNE_VERFUEGUNG", "STORNIERT" },
 		mode = Mode.INCLUDE)
 	void isMutationsMitteilungStatus(@Nonnull Betreuungsstatus status) {
 		assertThat(handler.isMutationsMitteilungStatus(status), is(true));
+	}
+
+	@ParameterizedTest
+	@CsvSource({
+		"WARTEN, IN_BEARBEITUNG_JA, ERSTGESUCH, true",
+		"WARTEN, IN_BEARBEITUNG_JA, MUTATION, false",
+		"BESTAETIGT, IN_BEARBEITUNG_GS, ERSTGESUCH, true",
+		"BESTAETIGT, IN_BEARBEITUNG_GS, MUTATION, false",
+		"BESTAETIGT, IN_BEARBEITUNG_SOZIALDIENST, ERSTGESUCH, true",
+		"BESTAETIGT, IN_BEARBEITUNG_SOZIALDIENST, MUTATION, false",
+		"BESTAETIGT, IN_BEARBEITUNG_JA, ERSTGESUCH, false"
+	})
+	void isPlatzbestaetigungStatus(@Nonnull Betreuungsstatus betreuungsstatus, @Nonnull AntragStatus antragStatus, @Nonnull AntragTyp antragTyp, @Nonnull boolean expectedResult) {
+		assertThat(handler.isPlatzbestaetigungStatus(betreuungsstatus, antragStatus, antragTyp), is(expectedResult));
 	}
 
 	@Test

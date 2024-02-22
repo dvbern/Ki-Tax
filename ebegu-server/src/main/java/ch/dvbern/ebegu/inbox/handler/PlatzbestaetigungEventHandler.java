@@ -214,7 +214,7 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 
 		Betreuungsstatus status = betreuung.getBetreuungsstatus();
 
-		if (isPlatzbestaetigungStatus(status, betreuung.extractGesuch().getStatus())) {
+		if (isPlatzbestaetigungStatus(status, betreuung.extractGesuch().getStatus(), betreuung.extractGesuch().getTyp())) {
 			return handlePlatzbestaetigung(ctx);
 		}
 
@@ -252,9 +252,12 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 		return Processing.success();
 	}
 
-	private boolean isPlatzbestaetigungStatus(
+	protected boolean isPlatzbestaetigungStatus(
 		@Nonnull Betreuungsstatus status,
-		@Nonnull AntragStatus antragStatus) {
+		@Nonnull AntragStatus antragStatus, @Nonnull AntragTyp antragTyp) {
+		if (antragTyp.equals(AntragTyp.MUTATION)) {
+			return false;
+		}
 		if (status == Betreuungsstatus.WARTEN) {
 			return true;
 		}
@@ -268,7 +271,9 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 	}
 
 	protected boolean isMutationsMitteilungStatus(@Nonnull Betreuungsstatus status) {
-		return status == Betreuungsstatus.VERFUEGT
+		return
+			status == Betreuungsstatus.WARTEN
+			|| status == Betreuungsstatus.VERFUEGT
 			|| status == Betreuungsstatus.BESTAETIGT
 			|| status == Betreuungsstatus.GESCHLOSSEN_OHNE_VERFUEGUNG
 			|| status == Betreuungsstatus.STORNIERT;
