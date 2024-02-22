@@ -2812,6 +2812,7 @@
     "BETREUUNG_MONITORING_TITLE": "Monitorage des prises en charge",
     "AFA_BETREUUNG_MONITORING": "Monitorage des prises en charge",
     "MENU_BETREUUNG_MONITORING": "Monitorage des prises en charge",
+    "MENU_VERSENDETE_MAILS": "Übersicht versendete Mails",
     "LASTENAUSGLEICH_TAGESSCHULEN_ANTEIL_ZWEITPRUEFUNG_DE": "Part des demandes de compensation des charges pour les écoles à journée continue, pour les communes germanophones, qui doivent être choisies pour un deuxième contrôle",
     "LASTENAUSGLEICH_TAGESSCHULEN_ANTEIL_ZWEITPRUEFUNG_FR": "Part des demandes de compensation des charges pour les écoles à journée continue, pour les communes francophones, qui doivent être choisies pour un deuxième contrôle",
     "LASTENAUSGLEICH_TAGESSCHULEN_AUTO_ZWEITPRUEFUNG_DE": "A partir de combien d'heures de prise en charge doit-on automatiquement choisir pour un deuxième contrôle une demande de compensation des charges pour les écoles à journée continue pour les communes germanophones",
