@@ -30,6 +30,7 @@ import ch.dvbern.ebegu.errors.KibonLogLevel;
 import ch.dvbern.ebegu.services.*;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.Constants;
+import ch.dvbern.ebegu.util.InstitutionStammdatenInitalizerVisitor;
 import com.google.common.base.Preconditions;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -95,6 +96,9 @@ public class InstitutionResource {
 
 	@Inject
 	private ApplicationPropertyService applicationPropertyService;
+
+	@Inject
+	private InstitutionStammdatenInitalizerService institutionStammdatenInitalizerService;
 
 	@ApiOperation(value = "Creates a new Institution in the database.", response = JaxInstitution.class)
 	@Nullable
@@ -172,7 +176,6 @@ public class InstitutionResource {
 		}
 	}
 
-	@SuppressWarnings("PMD.NcssMethodCount")
 	private void initInstitutionStammdaten(
 		@Nonnull LocalDate startDate,
 		@Nonnull BetreuungsangebotTyp betreuungsangebot,
@@ -180,54 +183,9 @@ public class InstitutionResource {
 		@Nonnull String adminMail,
 		@Nullable String gemeindeId
 	) {
-		InstitutionStammdaten institutionStammdaten = new InstitutionStammdaten();
-		Gemeinde gemeinde;
-		switch (betreuungsangebot) {
-		case KITA:
-		case TAGESFAMILIEN:
-			InstitutionStammdatenBetreuungsgutscheine bgStammdaten = new InstitutionStammdatenBetreuungsgutscheine();
-			institutionStammdaten.setInstitutionStammdatenBetreuungsgutscheine(bgStammdaten);
-			break;
-		case TAGESSCHULE:
-			gemeinde = getGemeindeOrThrowException(gemeindeId);
-			InstitutionStammdatenTagesschule stammdatenTS = new InstitutionStammdatenTagesschule();
-			stammdatenTS.setGemeinde(gemeinde);
-			Set<EinstellungenTagesschule> einstellungenTagesschuleSet =
-				gesuchsperiodeService.getAllNichtAbgeschlosseneGesuchsperioden().stream().map(
-					gesuchsperiode -> {
-						EinstellungenTagesschule einstellungenTagesschule = new EinstellungenTagesschule();
-						einstellungenTagesschule.setInstitutionStammdatenTagesschule(stammdatenTS);
-						einstellungenTagesschule.setGesuchsperiode(gesuchsperiode);
-						einstellungenTagesschule.setModulTagesschuleTyp(ModulTagesschuleTyp.DYNAMISCH);
-						return einstellungenTagesschule;
-					}
-				).collect(Collectors.toSet());
-
-			stammdatenTS.setEinstellungenTagesschule(einstellungenTagesschuleSet);
-
-			institutionStammdaten.setInstitutionStammdatenTagesschule(stammdatenTS);
-			break;
-
-		case FERIENINSEL:
-			gemeinde = getGemeindeOrThrowException(gemeindeId);
-			InstitutionStammdatenFerieninsel stammdatenFI = new InstitutionStammdatenFerieninsel();
-			stammdatenFI.setGemeinde(gemeinde);
-
-			Set<EinstellungenFerieninsel> einstellungenFerieninselSet =
-				gesuchsperiodeService.getAllNichtAbgeschlosseneGesuchsperioden().stream().map(
-					gesuchsperiode -> {
-						EinstellungenFerieninsel einstellungenFerieninsel = new EinstellungenFerieninsel();
-						einstellungenFerieninsel.setInstitutionStammdatenFerieninsel(stammdatenFI);
-						einstellungenFerieninsel.setGesuchsperiode(gesuchsperiode);
-						return einstellungenFerieninsel;
-					}
-				).collect(Collectors.toSet());
-
-			stammdatenFI.setEinstellungenFerieninsel(einstellungenFerieninselSet);
-
-			institutionStammdaten.setInstitutionStammdatenFerieninsel(stammdatenFI);
-			break;
-		}
+		InstitutionStammdaten institutionStammdaten =
+			new InstitutionStammdatenInitalizerVisitor(institutionStammdatenInitalizerService, gemeindeId)
+				.initalizeInstiutionStammdaten(betreuungsangebot);
 
 		Adresse adresse = new Adresse();
 		adresse.setStrasse("");
@@ -242,18 +200,6 @@ public class InstitutionResource {
 		institutionStammdaten.setGueltigkeit(gueltigkeit);
 
 		institutionStammdatenService.saveInstitutionStammdaten(institutionStammdaten);
-	}
-
-	@Nonnull
-	private Gemeinde getGemeindeOrThrowException(@Nullable String gemeindeId) {
-		if (gemeindeId == null) {
-			throw new EbeguRuntimeException("initInstitutionStammdaten()", "missing gemeindeId");
-		}
-		Gemeinde gemeinde =
-			gemeindeService.findGemeinde(gemeindeId)
-				.orElseThrow(() -> new EbeguEntityNotFoundException("initInstitutionStammdaten",
-					ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, "GemeindeId invalid: " + gemeindeId));
-		return gemeinde;
 	}
 
 	@ApiOperation(value = "Update a Institution and Stammdaten in the database.",
