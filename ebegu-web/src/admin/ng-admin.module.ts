@@ -26,6 +26,7 @@ import {DebuggingComponent} from './component/debugging/debugging.component';
 import {GesuchsperiodeListViewXComponent} from './component/gesuchsperiode-list-view-x/gesuchsperiode-list-view-x.component';
 import {GesuchsperiodeViewXComponent} from './component/gesuchsperiode-view-x/gesuchsperiode-view-x.component';
 import {TestdatenViewComponent} from './component/testdatenView/testdatenView.component';
+import {UebersichtVersendeteMailsComponent} from './component/uebersichtVersendeteMails/uebersichtVersendeteMails';
 import {NgAdminRoutingModule} from './ng-admin-routing.module';
 
 @NgModule({
@@ -42,7 +43,8 @@ import {NgAdminRoutingModule} from './ng-admin-routing.module';
         AdminViewXComponent,
         GesuchsperiodeListViewXComponent,
         BenutzerListViewXComponent,
-        BenutzerListXComponent
+        BenutzerListXComponent,
+        UebersichtVersendeteMailsComponent
     ],
     providers: []
 })

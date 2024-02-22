@@ -29,6 +29,7 @@ import {DebuggingComponent} from './component/debugging/debugging.component';
 import {GesuchsperiodeListViewXComponent} from './component/gesuchsperiode-list-view-x/gesuchsperiode-list-view-x.component';
 import {GesuchsperiodeViewXComponent} from './component/gesuchsperiode-view-x/gesuchsperiode-view-x.component';
 import {TestdatenViewComponent} from './component/testdatenView/testdatenView.component';
+import {UebersichtVersendeteMailsComponent} from './component/uebersichtVersendeteMails/uebersichtVersendeteMails';
 
 const applicationPropertiesResolver = [
     'ApplicationPropertyRS', (applicationPropertyRS: ApplicationPropertyRS) => applicationPropertyRS.getAllApplicationProperties()
@@ -113,6 +114,14 @@ const states: Ng2StateDeclaration[] = [
         component: BenutzerListViewXComponent,
         data: {
             roles: TSRoleUtil.getAllAdministratorRevisorRole()
+        }
+    },
+    {
+        name: 'admin.uebersichtVersendeteMails',
+        url: '/uebersichtVersendeteMail',
+        component: UebersichtVersendeteMailsComponent,
+        data: {
+            roles: TSRoleUtil.getSuperAdminRoles()
         }
     }
 ];
