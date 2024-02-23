@@ -57,7 +57,17 @@ public class CheckKinderabzugValidatorTest {
 		kind.setPflegekind(false);
 		kind.setObhutAlternierendAusueben(true);
 		kind.setGemeinsamesGesuch(false);
+		kind.setGeteilteElterlicheSorgeObhut(false);
 		Assert.assertTrue(validator.isValid(kind, null));
+	}
+
+	@Test
+	public void checkPathObhutalternierendNotValidGeteilteEltericheSorgeObhotNull() {
+		var kind = new Kind();
+		kind.setPflegekind(false);
+		kind.setObhutAlternierendAusueben(true);
+		kind.setGemeinsamesGesuch(false);
+		Assert.assertFalse(validator.isValid(kind, null));
 	}
 
 	@Test
