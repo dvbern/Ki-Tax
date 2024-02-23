@@ -101,6 +101,9 @@ public class JaxKind extends JaxAbstractPersonDTO {
 	private Boolean inPruefung = false;
 
 	@Nullable
+	private Boolean geteilteElterlicheSorgeObhut;
+
+	@Nullable
 	public Kinderabzug getKinderabzugErstesHalbjahr() {
 		return kinderabzugErstesHalbjahr;
 	}
@@ -289,5 +292,14 @@ public class JaxKind extends JaxAbstractPersonDTO {
 	@Override
 	public void setGeschlecht(@Nullable Geschlecht geschlecht) {
 		this.geschlecht = geschlecht;
+	}
+
+	@Nullable
+	public Boolean getGeteilteElterlicheSorgeObhut() {
+		return geteilteElterlicheSorgeObhut;
+	}
+
+	public void setGeteilteElterlicheSorgeObhut(@Nullable Boolean geteilteElterlicheSorgeObhut) {
+		this.geteilteElterlicheSorgeObhut = geteilteElterlicheSorgeObhut;
 	}
 }
