@@ -17,54 +17,21 @@
 
 package ch.dvbern.ebegu.outbox.gemeinde;
 
-import java.util.List;
-
 import javax.annotation.security.RunAs;
 import javax.ejb.Schedule;
 import javax.ejb.Stateless;
-import javax.enterprise.event.Event;
 import javax.inject.Inject;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
 
-import ch.dvbern.ebegu.entities.Gemeinde;
-import ch.dvbern.ebegu.entities.Gemeinde_;
 import ch.dvbern.ebegu.enums.UserRoleName;
-import ch.dvbern.ebegu.outbox.ExportedEvent;
-import ch.dvbern.lib.cdipersistence.Persistence;
+import ch.dvbern.ebegu.outbox.EventGeneratorServiceBean;
 
 @Stateless
 @RunAs(UserRoleName.SUPER_ADMIN)
 public class GemeindeEventGenerator {
-
 	@Inject
-	private Persistence persistence;
-
-	@Inject
-	private Event<ExportedEvent> event;
-
-	@Inject
-	private GemeindeEventConverter gemeindeEventConverter;
-
+	private EventGeneratorServiceBean eventGeneratorServiceBean;
 	@Schedule(info = "Migration-aid, pushes already existing Gemeinden to outbox", hour = "5", minute = "5", persistent = true)
 	public void publishExistingGemeinden() {
-		CriteriaBuilder cb = persistence.getCriteriaBuilder();
-		CriteriaQuery<Gemeinde> query = cb.createQuery(Gemeinde.class);
-		Root<Gemeinde> root = query.from(Gemeinde.class);
-
-		Predicate isNotPublished = cb.isFalse(root.get(Gemeinde_.eventPublished));
-
-		query.where(isNotPublished);
-
-		List<Gemeinde> gemeinden = persistence.getEntityManager().createQuery(query)
-			.getResultList();
-
-		gemeinden.forEach(gemeinde -> {
-				event.fire(gemeindeEventConverter.of(gemeinde));
-				gemeinde.setEventPublished(true);
-				persistence.merge(gemeinde);
-		});
+		eventGeneratorServiceBean.exportGemeindeEvent();
 	}
 }
