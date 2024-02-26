@@ -188,7 +188,8 @@ export class FkjvKinderabzugComponent implements OnInit, AfterViewInit, OnDestro
     public geteilteElterlicheSorgeObhutVisible(): boolean {
         return this.famErgaenzendeBetreuuungVisible()
             && EbeguUtil.isNotNullOrUndefined(this.getModel().familienErgaenzendeBetreuung)
-            && !this.getModel().familienErgaenzendeBetreuung;
+            && !this.getModel().familienErgaenzendeBetreuung
+            && this.getModel().obhutAlternierendAusueben;
     }
 
     private isShortKonkubinat(): boolean {

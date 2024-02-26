@@ -112,6 +112,6 @@ public class CheckKinderabzugValidator implements ConstraintValidator<CheckKinde
 				return kind.getGeteilteElterlicheSorgeObhut() != null;
 			}
 		}
-		return true;
+		return kind.getGeteilteElterlicheSorgeObhut() == null;
 	}
 }

@@ -62,7 +62,45 @@ public class CheckKinderabzugValidatorTest {
 	}
 
 	@Test
-	public void checkPathObhutalternierendNotValidGeteilteEltericheSorgeObhotNull() {
+	public void checkGeteilteEltericheSorgeObhutNullNotValid() {
+		var kind = new Kind();
+		kind.setPflegekind(false);
+		kind.setObhutAlternierendAusueben(true);
+		kind.setGemeinsamesGesuch(false);
+		Assert.assertFalse(validator.isValid(kind, null));
+	}
+
+	@Test
+	public void checkGeteilteEltericheSorgeObhutNullValid() {
+		var kind = new Kind();
+		kind.setPflegekind(false);
+		kind.setObhutAlternierendAusueben(false);
+		kind.setGemeinsamesGesuch(false);
+		Assert.assertTrue(validator.isValid(kind, null));
+	}
+
+	@Test
+	public void checkGeteilteEltericheSorgeObhutNotNullValid() {
+		var kind = new Kind();
+		kind.setPflegekind(false);
+		kind.setObhutAlternierendAusueben(true);
+		kind.setGemeinsamesGesuch(false);
+		kind.setGeteilteElterlicheSorgeObhut(true);
+		Assert.assertTrue(validator.isValid(kind, null));
+	}
+
+	@Test
+	public void checkGeteilteEltericheSorgeObhutNotNullNotValid() {
+		var kind = new Kind();
+		kind.setPflegekind(false);
+		kind.setObhutAlternierendAusueben(false);
+		kind.setGemeinsamesGesuch(false);
+		kind.setGeteilteElterlicheSorgeObhut(true);
+		Assert.assertFalse(validator.isValid(kind, null));
+	}
+
+	@Test
+	public void checkPathObhutalternierendNotValidGeteilteEltericheSorgeObhutNull() {
 		var kind = new Kind();
 		kind.setPflegekind(false);
 		kind.setObhutAlternierendAusueben(true);
