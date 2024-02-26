@@ -281,6 +281,17 @@ const platzAbweisen = (grundAbweisung: string) => {
     });
 };
 
+const platzAkzeptieren = () => {
+    cy.waitForRequest('GET', '**/gesuchBetreuungenStatus/*', () => {
+        cy.waitForRequest('PUT', '**/schulamt/akzeptieren', () => {
+            getPlatzAkzeptierenButton().click();
+            ConfirmDialogPO.getDvLoadingConfirmButton().click();
+        });
+    });
+    getPageTitle().should('contain.text', 'Betreuung');
+};
+
+
 export const AntragBetreuungPO = {
     // page objects
     getPageTitle,
@@ -330,4 +341,5 @@ export const AntragBetreuungPO = {
     fillKitaBetreuungspensumForm,
     platzBestaetigen,
     platzAbweisen,
+    platzAkzeptieren,
 };

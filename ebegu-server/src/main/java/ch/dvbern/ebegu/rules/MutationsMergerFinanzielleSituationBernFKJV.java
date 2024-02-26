@@ -56,7 +56,7 @@ public class MutationsMergerFinanzielleSituationBernFKJV extends MutationsMerger
 			return;
 		}
 		if (massgebendesEinkommenFinSit.compareTo(resultVorgaenger.getMassgebendesEinkommenVorAbzugFamgr()) < 0) {
-			inputData.addBemerkung(MsgKey.ANSPRUCHSAENDERUNG_MSG, getLocale());
+			inputData.addBemerkungWithGueltigkeitOfAbschnitt(MsgKey.ANSPRUCHSAENDERUNG_MSG, getLocale());
 		}
 	}
 
@@ -95,7 +95,7 @@ public class MutationsMergerFinanzielleSituationBernFKJV extends MutationsMerger
 		platz.setFinSitRueckwirkendKorrigiertInThisMutation(true);
 
 		if (!platz.isAngebotSchulamt()) {
-			inputData.addBemerkung(MsgKey.FIN_SIT_RUECKWIRKEND_ANGEPASST, getLocale());
+			inputData.addBemerkungWithGueltigkeitOfAbschnitt(MsgKey.FIN_SIT_RUECKWIRKEND_ANGEPASST, getLocale());
 		}
 	}
 

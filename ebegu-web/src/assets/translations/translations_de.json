@@ -534,7 +534,7 @@
     "FAMILIENSITUATION_FRAGE_PARTNERIDENTISCH_WARNBEZ_ANDERER_ELTERNTEIL": "dem anderen Elternteil",
     "FAMILIENSITUATION_FRAGE_PARTNERIDENTISCH_WARNING": "Ihr Antrag zusammen mit {{namegs2}} wird per {{endeDatum}} beendet.",
     "FAMILIENSITUATION_FRAGE_PARTNERIDENTISCH_WARNING_PAAR": "Wenden Sie sich an Ihre Gemeinde, wenn Sie anschliessend mit {{warnbez}} einen neuen Antrag stellen möchten.",
-    "FAMILIENSITUATION_X_JAHRE_KONKUBINAT_MSG": "Bis am {{endeDatum}} wird der Antrag zusammen mit {{namegs2}} eingereicht. Danach müssen Sie mit Ihrem/Ihrer Konkubinatspartner/in einen neuen Antrag stellen. Bitte melden Sie sich dafür bei ihrer Gemeinde",
+    "FAMILIENSITUATION_X_JAHRE_KONKUBINAT_MSG": "Bis am {{endeDatum}} wird der Antrag zusammen mit {{namegs2}} eingereicht. Danach müssen Sie mit Ihrem/Ihrer Konkubinatspartner/in einen neuen Antrag stellen. Bitte melden Sie sich dafür bei Ihrer Gemeinde",
     "VERHEIRATET": "Ja, Ehepartner/in oder eingetragene(r) Partner/in",
     "KONKUBINAT": "Ja, Konkubinatspartner/in mit gemeinsamem Kind",
     "KONKUBINAT_KEIN_KIND": "Ja, Konkubinatspartner/in ohne gemeinsames Kind",
