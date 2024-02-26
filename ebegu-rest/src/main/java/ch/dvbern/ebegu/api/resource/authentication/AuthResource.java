@@ -170,9 +170,13 @@ public class AuthResource {
 			mandantIdentifier = MandantIdentifier.SOLOTHURN;
 			break;
 		case "Kanton Bern":
-		default:
 			mandantIdentifier = MandantIdentifier.BERN;
 			break;
+		case "Kanton Schwyz":
+			mandantIdentifier = MandantIdentifier.SCHWYZ;
+			break;
+		default:
+			throw new IllegalStateException("Unexpected mandant: " + mandantNameDecoded);
 		}
 		return mandantIdentifier;
 	}
