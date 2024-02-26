@@ -38,6 +38,8 @@ import java.io.Writer;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.time.LocalDateTime;
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 import java.util.Objects;
 
 import static ch.dvbern.ebegu.util.Constants.NEW_LINE_CHAR_PATTERN;
@@ -222,6 +224,44 @@ public abstract class AbstractMailServiceBean extends AbstractBaseService {
 		} else {
 			doSendMessage(messageBody, mailadress, mandantIdentifier);
 		}
+	}
+
+	private String extractSubjectFromMessageBody(String messageBody) {
+		String decodedSubject = messageBody.substring(messageBody.indexOf("Subject: ")+9, messageBody.indexOf("Content-Type"));
+		return decodeMixedBase64String(decodedSubject);
+	}
+
+	public static String decodeMixedBase64String(String mixedString) {
+		StringBuilder decodedBuilder = new StringBuilder();
+		int start = 0; // Start index for the non-encoded part
+
+		while (start < mixedString.length()) {
+			int startIndex = mixedString.indexOf("=?", start);
+			if (startIndex == -1) {
+				// No more encoded parts, append the rest of the string and break
+				decodedBuilder.append(mixedString.substring(start));
+				break;
+			} else {
+				// Append non-encoded part before the encoded section
+				if (startIndex != start) {
+					decodedBuilder.append(mixedString.substring(start, startIndex));
+				}
+				int endIndex = mixedString.indexOf("?=", startIndex) + 2;
+				if (endIndex == 1) { // No closing tag found, break to avoid an infinite loop
+					break;
+				}
+				// Extract the encoded part without the MIME and encoding prefix and suffix
+				String encodedPart = mixedString.substring(startIndex + 10, endIndex - 2);
+				// Decode and append the encoded part
+				byte[] decodedBytes = Base64.getDecoder().decode(encodedPart);
+				decodedBuilder.append(new String(decodedBytes, StandardCharsets.UTF_8));
+
+				// Move start index forward
+				start = endIndex;
+			}
+		}
+
+		return decodedBuilder.toString();
 	}
 
 	private void pretendToSendMessage(final String messageBody, final String mailadress) {
