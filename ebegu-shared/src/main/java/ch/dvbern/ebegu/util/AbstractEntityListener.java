@@ -20,8 +20,10 @@ import java.util.Objects;
 import java.util.Optional;
 
 import javax.annotation.Nonnull;
+import javax.ejb.EJBAccessException;
 import javax.enterprise.context.ContextNotActiveException;
 import javax.enterprise.inject.spi.CDI;
+import javax.persistence.PostLoad;
 import javax.persistence.PrePersist;
 import javax.persistence.PreRemove;
 import javax.persistence.PreUpdate;
@@ -29,13 +31,20 @@ import javax.persistence.PreUpdate;
 import ch.dvbern.ebegu.authentication.PrincipalBean;
 import ch.dvbern.ebegu.entities.AbstractEntity;
 import ch.dvbern.ebegu.entities.AbstractPlatz;
+import ch.dvbern.ebegu.entities.ApplicationProperty;
 import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Fall;
+import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.GesuchDeletionLog;
+import ch.dvbern.ebegu.entities.Gesuchsperiode;
+import ch.dvbern.ebegu.entities.HasMandant;
+import ch.dvbern.ebegu.entities.Institution;
 import ch.dvbern.ebegu.entities.KindContainer;
 import ch.dvbern.ebegu.entities.Mandant;
+import ch.dvbern.ebegu.entities.Traegerschaft;
 import ch.dvbern.ebegu.entities.Verfuegung;
+import ch.dvbern.ebegu.entities.sozialdienst.Sozialdienst;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.GesuchDeletionCause;
 import ch.dvbern.ebegu.enums.SequenceType;
@@ -50,6 +59,8 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static ch.dvbern.ebegu.util.Constants.ANONYMOUS_USER_USERNAME;
+
 public class AbstractEntityListener {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(AbstractEntityListener.class);
@@ -62,7 +73,19 @@ public class AbstractEntityListener {
 
 	private BenutzerService benutzerService;
 
-	@SuppressFBWarnings(value = "LI_LAZY_INIT_STATIC", justification = "Auch wenn das vlt. mehrfach initialisiert wird... das macht nix, solange am Ende was Richtiges drinsteht")
+	@PostLoad
+	protected void postLoad(@Nonnull AbstractEntity entity) {
+		if (entity instanceof HasMandant) {
+			if (checkAccessAllowedIfAnonymous(entity, getPrincipalBean())) {
+				return;
+			}
+			checkMandant(entity);
+		}
+	}
+
+	@SuppressFBWarnings(value = "LI_LAZY_INIT_STATIC",
+		justification = "Auch wenn das vlt. mehrfach initialisiert wird... das macht nix, solange am Ende was Richtiges "
+			+ "drinsteht")
 	private static PrincipalBean getPrincipalBean() {
 		if (principalBean == null) {
 			//FIXME: das ist nur ein Ugly Workaround, weil CDI-Injection (mal wieder) buggy ist.
@@ -103,12 +126,16 @@ public class AbstractEntityListener {
 		} else if (entity instanceof Fall) {
 			Fall fall = (Fall) entity;
 			Mandant mandant = getPrincipalBean().getMandant();
-			Long nextFallNr = getSequenceService().createNumberTransactional(SequenceType.FALL_NUMMER, Objects.requireNonNull(mandant));
+			Long nextFallNr =
+				getSequenceService().createNumberTransactional(SequenceType.FALL_NUMMER, Objects.requireNonNull(mandant));
 			fall.setFallNummer(nextFallNr);
 			fall.setMandant(mandant);
 			if (getPrincipalBean().isCallerInRole(UserRole.GESUCHSTELLER)) {
 				Optional<Benutzer> benutzer = getBenutzerService().findBenutzerById(getPrincipalName());
-				fall.setBesitzer(benutzer.orElseThrow(() -> new EbeguRuntimeException("findBenutzer", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, getPrincipalName())));
+				fall.setBesitzer(benutzer.orElseThrow(() -> new EbeguRuntimeException(
+					"findBenutzer",
+					ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
+					getPrincipalName())));
 
 			}
 		} else if (entity instanceof Verfuegung) {
@@ -116,8 +143,15 @@ public class AbstractEntityListener {
 			Verfuegung verfuegung = (Verfuegung) entity;
 			if (!(verfuegung.getPlatz().getBetreuungsstatus().isGeschlossenJA()
 				|| verfuegung.getPlatz().getBetreuungsstatus().isSchulamtStatusWithPotentialVerfuegung())) {
-				throw new IllegalStateException("Verfuegung darf nicht gespeichert werden, wenn die Betreuung nicht verfuegt ist");
+				throw new IllegalStateException("Verfuegung darf nicht gespeichert werden, wenn die Betreuung nicht verfuegt "
+					+ "ist");
 			}
+		}
+		if (entity instanceof HasMandant) {
+			if (checkWriteAccessAllowedIfAnonymous(entity, getPrincipalBean())) {
+				return;
+			}
+			checkMandant(entity);
 		}
 	}
 
@@ -150,9 +184,14 @@ public class AbstractEntityListener {
 			entity.setTimestampMutiert(LocalDateTime.now());
 			entity.setUserMutiert(getUserMandantString());
 			if (entity instanceof Verfuegung) {
-				throw new IllegalStateException("Verfuegung darf eigentlich nur einmal erstellt werden, wenn die Betreuung verfuegt ist, und nie mehr veraendert");
+				throw new IllegalStateException(
+					"Verfuegung darf eigentlich nur einmal erstellt werden, wenn die Betreuung verfuegt ist, und nie mehr "
+						+ "veraendert");
 
 			}
+		}
+		if (entity instanceof HasMandant) {
+			checkMandant(entity);
 		}
 	}
 
@@ -160,13 +199,19 @@ public class AbstractEntityListener {
 	public void preRemove(@Nonnull AbstractEntity entity) {
 		if (entity instanceof Gesuch) {
 			// Ueberpruefen, ob ein DeletionLog-Eintrag erstellt wurde
-			Optional<GesuchDeletionLog> gesuchDeletionLogByGesuch = getGesuchDeletionLogService().findGesuchDeletionLogByGesuch(entity.getId());
+			Optional<GesuchDeletionLog> gesuchDeletionLogByGesuch =
+				getGesuchDeletionLogService().findGesuchDeletionLogByGesuch(entity.getId());
 			if (!gesuchDeletionLogByGesuch.isPresent()) {
 				GesuchDeletionLog gesuchDeletionLog = getGesuchDeletionLogService().saveGesuchDeletionLog(
 					new GesuchDeletionLog((Gesuch) entity, GesuchDeletionCause.UNBEKANNT));
-				LOGGER.error("Achtung, es wurde ein Gesuch geloescht, welches noch keinen GesuchDeletionLog-Eintrag hat! Erstelle diesen. ID={}",
+				LOGGER.error(
+					"Achtung, es wurde ein Gesuch geloescht, welches noch keinen GesuchDeletionLog-Eintrag hat! Erstelle diesen."
+						+ " ID={}",
 					gesuchDeletionLog.getId());
 			}
+		}
+		if (entity instanceof HasMandant) {
+			checkMandant(entity);
 		}
 	}
 
@@ -213,5 +258,69 @@ public class AbstractEntityListener {
 			deletionLogService = CDI.current().select(GesuchDeletionLogService.class).get();
 		}
 		return deletionLogService;
+	}
+
+	private void checkMandant(@Nonnull AbstractEntity abstractEntity) {
+		if (getPrincipalBean().isAnonymousSuperadmin()) {
+			return;
+		}
+		HasMandant hasMandantEntity = (HasMandant) abstractEntity;
+		Mandant mandant = hasMandantEntity.getMandant();
+		if (mandant != null && !lazyLoadedBenutzerMandantException(abstractEntity) && !getPrincipalBean().getMandant()
+			.equals(mandant)) {
+			throw new EJBAccessException("Access Violation"
+				+ " for mandant: " + mandant.getName()
+				+ " by current user mandant: " + principalBean.getPrincipal()
+				+ " for entity " + abstractEntity.getClass().getName()
+				+ " with mandant:  " + principalBean.getMandant().getName());
+		}
+	}
+
+	//FIXME: Muss nach migration zu OIDC weg, Mandant sollte in diesem Fall nicht null sein
+	@SuppressFBWarnings("RCN_REDUNDANT_NULLCHECK_OF_NONNULL_VALUE")
+	private boolean lazyLoadedBenutzerMandantException(@Nonnull AbstractEntity abstractEntity) {
+		return (abstractEntity instanceof Benutzer
+			|| abstractEntity instanceof Institution
+			|| abstractEntity instanceof Traegerschaft
+			|| abstractEntity instanceof Sozialdienst
+			|| abstractEntity instanceof Gesuchsperiode) && getPrincipalBean().getMandant() == null;
+	}
+
+	protected static boolean checkAccessAllowedIfAnonymous(
+		@Nonnull AbstractEntity entity,
+		@Nonnull PrincipalBean principalBean) {
+		if (principalBean.getPrincipal().getName().equals(ANONYMOUS_USER_USERNAME)
+			&& !principalBean.isAnonymousSuperadmin()) {
+			if (entity instanceof ApplicationProperty //required properties geladen bevor login
+				|| entity instanceof Gemeinde //anonym geladen bevor login (onboarding)
+				|| entity instanceof Mandant //anonym geladen bevor login (mandant wahl)
+				|| entity instanceof Benutzer // wegen locallogin
+				|| entity instanceof Institution // wegen locallogin (laden Institution mit Berechtigungen)
+				|| entity instanceof Sozialdienst // wegen locallogin (laden Sozialdienst mit Berechtigungen)
+				|| entity instanceof Traegerschaft) {// wegen locallogin (laden Tragerschaft mit Berechtigungen)
+				return true;
+			}
+			throw new EJBAccessException("Access Violation for user "
+				+ ANONYMOUS_USER_USERNAME
+				+ " and entity " + entity.getClass().getName()
+				+ " tried to access a resource that is mandant secured");
+		}
+		return false;
+	}
+
+	protected static boolean checkWriteAccessAllowedIfAnonymous(
+		@Nonnull AbstractEntity entity,
+		@Nonnull PrincipalBean principalBean) {
+		if (principalBean.getPrincipal().getName().equals(ANONYMOUS_USER_USERNAME)
+			&& !principalBean.isAnonymousSuperadmin()) {
+			if (entity instanceof Benutzer) {// wegen locallogin
+				return true;
+			}
+			throw new EJBAccessException("Access Violation for user "
+				+ ANONYMOUS_USER_USERNAME
+				+ " and entity " + entity.getClass().getName()
+				+ " tried to insert a resource that is mandant secured");
+		}
+		return false;
 	}
 }

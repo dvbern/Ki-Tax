@@ -61,6 +61,11 @@ const verfuegenStarten = () => {
     });
 };
 
+const finSitAkzeptieren = () => {
+	return cy.waitForRequest('POST',  '**/changeFinSitStatus/**', () => {
+        getFinSitAkzeptiert('AKZEPTIERT').click();
+    });
+};
 export const VerfuegenPO = {
     // PAGE OBJECTS
     getBetreuungsstatus,
@@ -73,4 +78,5 @@ export const VerfuegenPO = {
     // PAGE ACTIONS
     pruefeGesuch,
     verfuegenStarten,
+    finSitAkzeptieren,
 };

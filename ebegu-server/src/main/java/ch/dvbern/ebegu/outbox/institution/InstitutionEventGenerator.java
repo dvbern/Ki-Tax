@@ -17,67 +17,22 @@
 
 package ch.dvbern.ebegu.outbox.institution;
 
-import java.util.List;
-
 import javax.annotation.security.RunAs;
 import javax.ejb.Schedule;
 import javax.ejb.Stateless;
-import javax.enterprise.event.Event;
 import javax.inject.Inject;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Join;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
 
-import ch.dvbern.ebegu.entities.Institution;
-import ch.dvbern.ebegu.entities.InstitutionStammdaten;
-import ch.dvbern.ebegu.entities.InstitutionStammdaten_;
-import ch.dvbern.ebegu.entities.Institution_;
-import ch.dvbern.ebegu.enums.InstitutionStatus;
 import ch.dvbern.ebegu.enums.UserRoleName;
-import ch.dvbern.ebegu.outbox.ExportedEvent;
-import ch.dvbern.lib.cdipersistence.Persistence;
+import ch.dvbern.ebegu.outbox.EventGeneratorServiceBean;
 
 @Stateless
 @RunAs(UserRoleName.SUPER_ADMIN)
 public class InstitutionEventGenerator {
-
 	@Inject
-	private Persistence persistence;
+	private EventGeneratorServiceBean eventGeneratorServiceBean;
 
-	@Inject
-	private Event<ExportedEvent> event;
-
-	@Inject
-	private InstitutionEventConverter institutionEventConverter;
-
-	@Schedule(info = "Migration-aid, pushes already existing institutions to outbox", hour = "5", persistent = true)
+	@Schedule(info = "Migration-aid, pushes already existing institutions to outbox", second = "5", minute="*", hour = "*", persistent = true)
 	public void publishExistingInstitutionen() {
-		CriteriaBuilder cb = persistence.getCriteriaBuilder();
-		CriteriaQuery<InstitutionStammdaten> query = cb.createQuery(InstitutionStammdaten.class);
-		Root<InstitutionStammdaten> root = query.from(InstitutionStammdaten.class);
-
-		Join<InstitutionStammdaten, Institution> institutionJoin = root.join(InstitutionStammdaten_.institution);
-
-		Predicate isNotPublished = cb.isFalse(institutionJoin.get(Institution_.eventPublished));
-		var statusParam = cb.parameter(InstitutionStatus.class, Institution_.STATUS);
-		Predicate notLatsStatus = cb.notEqual(institutionJoin.get(Institution_.status), statusParam);
-
-		query.where(isNotPublished, notLatsStatus);
-
-		List<InstitutionStammdaten> institutions = persistence.getEntityManager().createQuery(query)
-			.setParameter(statusParam, InstitutionStatus.NUR_LATS)
-			.getResultList();
-
-		institutions.stream()
-			.filter(InstitutionEventUtil::isExportable)
-			.forEach(stammdaten -> {
-				event.fire(institutionEventConverter.of(stammdaten));
-				Institution institution = stammdaten.getInstitution();
-				institution.setSkipPreUpdate(true);
-				institution.setEventPublished(true);
-				persistence.merge(institution);
-			});
+		eventGeneratorServiceBean.exportInstitutionEvent();
 	}
 }

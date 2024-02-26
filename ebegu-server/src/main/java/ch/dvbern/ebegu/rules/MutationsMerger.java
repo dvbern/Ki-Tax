@@ -224,7 +224,7 @@ public final class MutationsMerger extends AbstractAbschlussRule {
 			&& !pauschaleRueckwirkendAuszahlen
 		) {
 			inputData.setBesondereBeduerfnisseBestaetigt(false);
-			inputData.addBemerkung(MsgKey.ANSPRUCHSAENDERUNG_MSG, locale);
+			inputData.addBemerkungWithGueltigkeitOfAbschnitt(MsgKey.ANSPRUCHSAENDERUNG_MSG, locale);
 		}
 	}
 

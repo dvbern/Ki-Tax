@@ -202,11 +202,12 @@ Cypress.Commands.add('waitForRequest', (method, pathname, run, params? ) => {
     run();
     cy.wait(`@${alias}`, params?.waitOptions);
 });
-Cypress.Commands.add('getByData', (name, ...names) => {
-    return cy.get([name, ...names].map((name) => `[data-test="${name}"]`).join(' '));
+Cypress.Commands.addQuery('getByData', (name, ...names) => {
+    const getFn = cy.now('get', [name, ...names].map((name) => `[data-test="${name}"]`).join(' '), {}) as (subject: any) => any;
+    return (subject) => getFn(subject);
 });
-Cypress.Commands.add('findByData', {prevSubject: true}, (subject, name, ...names) => {
-    return subject.find([name, ...names].map((name) => `[data-test="${name}"]`).join(' '));
+Cypress.Commands.addQuery('findByData', (name, ...names) => {
+    return (subject) => subject.find([name, ...names].map((name) => `[data-test="${name}"]`).join(' '));
 });
 Cypress.Commands.add('changeLogin', (user: User) => {
     cy.clearAllSessionStorage();

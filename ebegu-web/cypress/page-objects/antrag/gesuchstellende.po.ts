@@ -60,14 +60,10 @@ const getFormularTitle = () => {
 
 // !! -- PAGE ACTIONS -- !!
 const fillVerheiratet = (dataset: keyof typeof FixtureFamSit) => {
-    cy.url().should('include', 'stammdaten');
-    cy.wait(2000);
     FixtureFamSit[dataset](({GS1}) => {
         fillGS1(GS1);
     });
     NavigationPO.saveAndGoNext();
-    cy.wait(2000);
-    cy.url().should('include', 'stammdaten');
     getFormularTitle().should('include.text', '2');
     FixtureFamSit[dataset](({GS2}) => {
        fillBaseGesuchsteller(GS2);
@@ -86,7 +82,7 @@ function fillGS1(GS1: any): void {
 }
 
 const fillBaseGesuchsteller = (GS1: {geschlecht: string, vorname: string, nachname: string, geburtsdatum: string}) => {
-    cy.wait(1500);
+    cy.wait(2000);
     getGeschlechtOption(GS1.geschlecht).click();
     getVorname().clear().type(GS1.vorname);
     getNachname().clear().type(GS1.nachname);

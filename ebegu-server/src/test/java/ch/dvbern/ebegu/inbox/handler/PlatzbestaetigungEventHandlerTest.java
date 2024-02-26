@@ -45,6 +45,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -400,10 +401,11 @@ public class PlatzbestaetigungEventHandlerTest extends EasyMockSupport {
 
 		@ParameterizedTest
 		@MethodSource("ch.dvbern.ebegu.inbox.handler.PlatzbestaetigungEventHandlerTest#provideSprachfoederungTestData")
-		void automaticPlatzbestaetigungSprachfoederungAlwaysTrue(
+		void automaticPlatzbestaetigungSprachfoederungTest(
+			@Nullable Boolean sprachfoerderung,
 			@Nonnull LocalDate aktivierungDatum,
 			@Nonnull boolean isBestaetigt) {
-			dto.setSprachfoerderungBestaetigt(false);
+			dto.setSprachfoerderungBestaetigt(sprachfoerderung);
 			expectPlatzBestaetigung();
 			expectBetreuungFound(betreuung);
 			expectGetSchnittstelleSprachfoerderungAktivAb(aktivierungDatum);
@@ -589,7 +591,7 @@ public class PlatzbestaetigungEventHandlerTest extends EasyMockSupport {
 
 				expectHumanConfirmation();
 				expectBetreuungFound(betreuung);
-				expectGetSchnittstelleSprachfoerderungAktivAb(LocalDate.of(2023,01,01));
+				expectGetSchnittstelleSprachfoerderungAktivAb(LocalDate.of(2023, 01, 01));
 				mockClients(clientGueltigkeit, List.of(client2));
 				withMahlzeitenverguenstigung(true);
 				mockGetStundenTagenEinstellungen();
@@ -864,7 +866,7 @@ public class PlatzbestaetigungEventHandlerTest extends EasyMockSupport {
 
 		private void testProcessingSuccess(boolean erweitereBetreuung) {
 			expectBetreuungFound(betreuung);
-			if(erweitereBetreuung) {
+			if (erweitereBetreuung) {
 				expectGetSchnittstelleSprachfoerderungAktivAb(LocalDate.of(2023, 01, 01));
 			}
 			mockClients(clientGueltigkeit);
@@ -1422,8 +1424,11 @@ public class PlatzbestaetigungEventHandlerTest extends EasyMockSupport {
 
 	private static Stream<Arguments> provideSprachfoederungTestData() {
 		return Stream.of(
-			Arguments.of(LocalDate.now().plusDays(1), true),
-			Arguments.of(LocalDate.of(2023, 1, 15), false)
-		);
+			Arguments.of(null, LocalDate.now().plusDays(1), true),
+			Arguments.of(null, LocalDate.of(2023, 1, 15), false),
+			Arguments.of(false, LocalDate.of(2023, 1, 15), false),
+			Arguments.of(false, LocalDate.now().plusDays(1), false),
+			Arguments.of(true, LocalDate.now().plusDays(1), true),
+			Arguments.of(true, LocalDate.of(2023, 1, 15), true));
 	}
 }

@@ -39,7 +39,7 @@
                        [(ngModel)]="internePendenz.termin"
                        [min]="getMinDateTermin()"
                        [matDatepicker]="terminPicker"
-                       placeholder="{{'DATE_PLACEHOLDER_FIRSTOFMONTH' | translate}}">
+                       placeholder="{{'DATE_PLACEHOLDER' | translate}}">
                 <mat-datepicker-toggle matSuffix [for]="terminPicker"></mat-datepicker-toggle>
                 <mat-datepicker #terminPicker></mat-datepicker>
                 <dv-error-messages input-id="termin_id"

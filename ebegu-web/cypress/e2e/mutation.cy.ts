@@ -81,7 +81,7 @@ describe('Kibon - mutationen [Gesuchsteller]', () => {
         cy.wait('@goToLatestMutation');
 
         SidenavPO.goTo('VERFUEGEN');
-        VerfuegenPO.getFinSitAkzeptiert('AKZEPTIERT').click();
+        VerfuegenPO.finSitAkzeptieren();
 
         VerfuegenPO.getGeprueftButton().click();
         cy.intercept('GET', '**/verfuegung/calculate/**').as('checkGeprueft');

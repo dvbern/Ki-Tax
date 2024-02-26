@@ -38,10 +38,15 @@ const getUserOption = (user: User, schulamt: boolean) => {
 	return cy.getByData(`container.${schulamt? 'schul' : ''}verantwortlicher`,`option.${normalizeUser(user)}`);
 };
 
+const getPageTitle = () => {
+	return cy.getByData('page-title');
+};
+
 export const AntragCreationPO = {
     getAntragsDaten,
     getAlternativdatum,
     getEingangsdatum,
     getVerantwortlicher,
     getUserOption,
+    getPageTitle,
 };
