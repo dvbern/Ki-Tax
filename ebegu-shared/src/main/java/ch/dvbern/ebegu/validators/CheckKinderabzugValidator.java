@@ -107,10 +107,9 @@ public class CheckKinderabzugValidator implements ConstraintValidator<CheckKinde
 	}
 
 	private boolean validateGeteilteElterlicheSorgeObhut(@Nonnull Kind kind) {
-		if (kind.getObhutAlternierendAusueben() != null && kind.getObhutAlternierendAusueben()) {
-			if(kind.getFamilienErgaenzendeBetreuung() != null && !kind.getFamilienErgaenzendeBetreuung()) {
+		if (kind.getObhutAlternierendAusueben() != null && kind.getObhutAlternierendAusueben()
+			&& kind.getFamilienErgaenzendeBetreuung() != null && !kind.getFamilienErgaenzendeBetreuung()) {
 				return kind.getGeteilteElterlicheSorgeObhut() != null;
-			}
 		}
 		return kind.getGeteilteElterlicheSorgeObhut() == null;
 	}
