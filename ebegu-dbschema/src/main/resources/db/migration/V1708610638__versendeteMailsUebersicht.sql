@@ -15,13 +15,14 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-create table if not exists versendete_mail_uebersicht (
+create table if not exists uebersicht_versendete_mails (
 	id binary(16) not null,
 	timestamp_erstellt datetime not null,
 	timestamp_mutiert datetime not null,
 	user_erstellt varchar(255) not null,
 	user_mutiert varchar(255) not null,
-	versand_zeitpunkt datetime not null,
+	version bigint not null,
+	zeitpunkt_versand datetime not null,
 	empfaenger_adresse varchar(255) not null,
 	betreff varchar(500) not null,
 	primary key (id)

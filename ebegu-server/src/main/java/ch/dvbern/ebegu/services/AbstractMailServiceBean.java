@@ -16,6 +16,7 @@
 package ch.dvbern.ebegu.services;
 
 import ch.dvbern.ebegu.config.EbeguConfiguration;
+import ch.dvbern.ebegu.entities.UebersichtVersendeteMails;
 import ch.dvbern.ebegu.errors.MailException;
 import ch.dvbern.ebegu.util.UploadFileInfo;
 import ch.dvbern.ebegu.util.mandant.MandantIdentifier;
@@ -36,6 +37,7 @@ import java.io.IOException;
 import java.io.Writer;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 import static ch.dvbern.ebegu.util.Constants.NEW_LINE_CHAR_PATTERN;
@@ -54,6 +56,9 @@ public abstract class AbstractMailServiceBean extends AbstractBaseService {
 	@Inject
 	private EbeguConfiguration configuration;
 
+	@Inject
+	private UebersichtVersendeteMailsService uebersichtVersendeteMailsService;
+
 	@Resource
 	private TransactionSynchronizationRegistry txReg;
 
@@ -71,6 +76,11 @@ public abstract class AbstractMailServiceBean extends AbstractBaseService {
 			pretendToSendMessage(messageBody, mailadress);
 		} else {
 			doSendMessage(subject, messageBody, mailadress);
+			LocalDateTime zeitpunktVersand = LocalDateTime.now();
+			String empfangerAdresse = mailadress;
+			String betreff = subject;
+			UebersichtVersendeteMails uebersichtVersendeteMails = new UebersichtVersendeteMails(zeitpunktVersand, empfangerAdresse, betreff);
+			uebersichtVersendeteMailsService.saveUebersichtVersendeteMails(uebersichtVersendeteMails);
 		}
 	}
 
@@ -90,6 +100,11 @@ public abstract class AbstractMailServiceBean extends AbstractBaseService {
 			pretendToSendMessage(messageBody, mailadress);
 		} else {
 			doSendMessageWithAttachment(subject, messageBody, mailadress, uploadFileInfo);
+			LocalDateTime zeitpunktVersand = LocalDateTime.now();
+			String empfangerAdresse = mailadress;
+			String betreff = subject;
+			UebersichtVersendeteMails uebersichtVersendeteMails = new UebersichtVersendeteMails(zeitpunktVersand, empfangerAdresse, betreff);
+			uebersichtVersendeteMailsService.saveUebersichtVersendeteMails(uebersichtVersendeteMails);
 		}
 	}
 
