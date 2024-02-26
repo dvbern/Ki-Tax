@@ -642,6 +642,10 @@ input.mat-input-element {
     pointer-events: auto;
     position: absolute;
     z-index: 1000;
+
+    &:has(> .mat-mdc-select-panel) {
+        margin-top: -22px;
+    }
 }
 
 .cdk-overlay-backdrop {
@@ -1481,6 +1485,7 @@ input.mat-input-element {
     .ebeguFont-family();
     min-height: 3em;
     font-size: 1.6rem;
+    letter-spacing: normal;
 }
 
 .mat-mdc-form-field-subscript-wrapper .mat-mdc-form-field-hint-wrapper, .mat-mdc-form-field-subscript-wrapper .mat-mdc-form-field-error-wrapper {
