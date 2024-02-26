@@ -254,8 +254,9 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 
 	protected boolean isPlatzbestaetigungStatus(
 		@Nonnull Betreuungsstatus status,
-		@Nonnull AntragStatus antragStatus, @Nonnull AntragTyp antragTyp) {
-		if (antragTyp.equals(AntragTyp.MUTATION)) {
+		@Nonnull AntragStatus antragStatus, 
+                @Nonnull AntragTyp antragTyp) {
+		if (antragTyp == AntragTyp.MUTATION) {
 			return false;
 		}
 		if (status == Betreuungsstatus.WARTEN) {
