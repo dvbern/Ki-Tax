@@ -79,17 +79,28 @@ export class FallCreationViewXComponent extends AbstractGesuchViewX<TSGesuch> im
             TSWizardStepName.GESUCH_ERSTELLEN);
     }
 
-    public ngOnInit(): void {
+    public async ngOnInit(): Promise<void> {
         // TODO: do we need super.onInit? See abstractGesuchView.$onInit
 
-        this.readStateParams();
+        await this.readStateParams();
         this.initViewModel();
     }
 
-    private readStateParams(): void {
+    private readStateParams(): Promise<TSGesuch> {
         if (this.uiRouterGlobals.params.gesuchsperiodeId && this.uiRouterGlobals.params.gesuchsperiodeId !== '') {
           this.gesuchsperiodeId = this.uiRouterGlobals.params.gesuchsperiodeId;
          }
+        if (this.uiRouterGlobals.params.creationAction) {
+            return this.gesuchModelManager.createNewAntrag(
+                this.uiRouterGlobals.params.gesuchId,
+                this.uiRouterGlobals.params.dossierId,
+                this.uiRouterGlobals.params.eingangsart,
+                this.uiRouterGlobals.params.gemeindeId,
+                this.uiRouterGlobals.params.gesuchsperiodeId,
+                this.uiRouterGlobals.params.creationAction,
+                this.uiRouterGlobals.params.sozialdienstId) as Promise<TSGesuch>;
+        }
+        return Promise.resolve(null);
     }
 
     private initViewModel(): void {

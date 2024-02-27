@@ -21,41 +21,19 @@ import ch.dvbern.ebegu.config.EbeguConfiguration;
 import ch.dvbern.ebegu.entities.*;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
-import ch.dvbern.ebegu.enums.UserRoleName;
-import ch.dvbern.ebegu.outbox.ExportedEvent;
-import ch.dvbern.ebegu.services.ApplicationPropertyService;
-import ch.dvbern.lib.cdipersistence.Persistence;
-
 import javax.annotation.security.RunAs;
 import javax.ejb.Schedule;
 import javax.ejb.Stateless;
-import javax.enterprise.event.Event;
 import javax.inject.Inject;
-import javax.persistence.criteria.*;
-import java.util.ArrayList;
-import java.util.List;
 
-import static ch.dvbern.ebegu.services.util.PredicateHelper.NEW;
+import ch.dvbern.ebegu.enums.UserRoleName;
+import ch.dvbern.ebegu.outbox.EventGeneratorServiceBean;
 
 @Stateless
 @RunAs(UserRoleName.SUPER_ADMIN)
 public class BetreuungAnfrageEventGenerator {
-
 	@Inject
-	private Persistence persistence;
-
-	@Inject
-	private Event<ExportedEvent> event;
-
-	@Inject
-	private BetreuungAnfrageEventConverter betreuungAnfrageEventConverter;
-
-	@Inject
-	private EbeguConfiguration ebeguConfiguration;
-
-	@Inject
-	private ApplicationPropertyService applicationPropertyService;
-
+	private EventGeneratorServiceBean eventGeneratorServiceBean;
 	/**
 	 * This is a job starting every night, there must be no more need for this job after the first execution
 	 * but this could be a great help if we want to re-export something, then we just have to change the database
@@ -65,42 +43,6 @@ public class BetreuungAnfrageEventGenerator {
 		hour = "4",
 		persistent = true)
 	public void publishWartendeBetreuung() {
-		if (!ebeguConfiguration.isBetreuungAnfrageApiEnabled()) {
-			return;
-		}
-
-		CriteriaBuilder cb = persistence.getCriteriaBuilder();
-		CriteriaQuery<Betreuung> query = cb.createQuery(Betreuung.class);
-		Root<Betreuung> root = query.from(Betreuung.class);
-		List<Predicate> predicates = new ArrayList<>();
-
-		//Institution Stammdaten Join and check angebot Typ, muss Kita oder TFO sein
-		Join<Betreuung, InstitutionStammdaten> institutionStammdatenJoin =
-			root.join(Betreuung_.institutionStammdaten);
-		Predicate isBetreuungsgutscheinTyp =
-			institutionStammdatenJoin.get(InstitutionStammdaten_.betreuungsangebotTyp)
-				.in(BetreuungsangebotTyp.getBetreuungsgutscheinTypes());
-		predicates.add(isBetreuungsgutscheinTyp);
-
-		//Event muss noch nicht plubliziert sein
-		Predicate isNotPublished = cb.isFalse(root.get(Betreuung_.eventPublished));
-		predicates.add(isNotPublished);
-
-		//Status muss warten sein
-		Predicate statusWarten = cb.equal(root.get(AbstractPlatz_.betreuungsstatus), Betreuungsstatus.WARTEN);
-		predicates.add(statusWarten);
-
-		query.where(predicates.toArray(NEW));
-
-		List<Betreuung> betreuungs = persistence.getEntityManager().createQuery(query)
-			.getResultList();
-
-		betreuungs.stream()
-		.filter(betreuung -> applicationPropertyService.isPublishSchnittstelleEventsAktiviert(betreuung.extractGesuch().extractMandant()))
-		.forEach(betreuung -> {
-			event.fire(betreuungAnfrageEventConverter.of(betreuung));
-			betreuung.setEventPublished(true);
-			persistence.merge(betreuung);
-		});
+		eventGeneratorServiceBean.exportBetreuungAnfrageEvent();
 	}
 }

@@ -935,7 +935,7 @@ public class WizardStepServiceBean extends AbstractBaseService implements Wizard
 		}
 	}
 
-	private boolean isErwerbespensumContainerEmpty(GesuchstellerContainer gesuchsteller) {
+	private boolean isErwerbespensumContainerEmpty(@Nullable GesuchstellerContainer gesuchsteller) {
 		if (gesuchsteller == null) {
 			return true;
 		}
@@ -1052,12 +1052,14 @@ public class WizardStepServiceBean extends AbstractBaseService implements Wizard
 			if (isErwerbespensumContainerEmpty(gesuch.getGesuchsteller1())) {
 				// Wenn der Step auf NOK gesetzt wird, muss er enabled sein, damit korrigiert werden kann!
 				status = WizardStepStatus.NOK;
-			}
-			if (status != WizardStepStatus.NOK
-				&& gesuch.getGesuchsteller2() != null
-				&& isErwerbspensumRequiredForGS2(gesuch)) {
-				// Wenn der Step auf NOK gesetzt wird, muss er enabled sein, damit korrigiert werden kann!
-				status = WizardStepStatus.NOK;
+			} else {
+				if (isErwerbspensumRequiredForGS2(gesuch) && isErwerbespensumContainerEmpty(gesuch.getGesuchsteller2())) {
+					// Wenn der Step auf NOK gesetzt wird, muss er enabled sein, damit korrigiert werden kann!
+					status = WizardStepStatus.NOK;
+				}
+				if (!isErwerbspensumRequiredForGS2(gesuch) && isErwerbespensumContainerEmpty(gesuch.getGesuchsteller2())) {
+					status = WizardStepStatus.OK;
+				}
 			}
 		} else if (changesBecauseOtherStates && wizardStep.getWizardStepStatus() != WizardStepStatus.MUTIERT) {
 			status = WizardStepStatus.OK;
@@ -1088,7 +1090,10 @@ public class WizardStepServiceBean extends AbstractBaseService implements Wizard
 		if (familiensituation == null) {
 			return false;
 		}
-		if (isUnterhaltsvereinbarungAbschlossenOrNichtMoeglich(familiensituation)) {
+		if (!gesuch.hasSecondGesuchstellerAtAnyTimeOfGesuchsperiode()) {
+			return false;
+		}
+		if (familiensituation.getUnterhaltsvereinbarung() != null) {
 			return false;
 		}
 
@@ -1109,19 +1114,6 @@ public class WizardStepServiceBean extends AbstractBaseService implements Wizard
 		return Boolean.TRUE.equals(einstellung.getValueAsBoolean());
 	}
 
-
-
-
-
-	private boolean isUnterhaltsvereinbarungAbschlossenOrNichtMoeglich(Familiensituation familiensituation) {
-		if (familiensituation.getUnterhaltsvereinbarung() == null) {
-			return false;
-		}
-
-		var unterhaltsvereinbarung = familiensituation.getUnterhaltsvereinbarung();
-		return unterhaltsvereinbarung == UnterhaltsvereinbarungAnswer.JA_UNTERHALTSVEREINBARUNG
-			|| unterhaltsvereinbarung == UnterhaltsvereinbarungAnswer.UNTERHALTSVEREINBARUNG_NICHT_MOEGLICH;
-	}
 
 	/**
 	 * Der Step mit dem uebergebenen StepName bekommt den Status OK. Diese Methode wird immer aufgerufen, um den
