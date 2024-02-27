@@ -78,11 +78,7 @@ public abstract class AbstractMailServiceBean extends AbstractBaseService {
 			pretendToSendMessage(messageBody, mailadress);
 		} else {
 			doSendMessage(subject, messageBody, mailadress);
-			LocalDateTime zeitpunktVersand = LocalDateTime.now();
-			String empfaengerAdresse = mailadress;
-			String betreff = subject;
-			UebersichtVersendeteMails uebersichtVersendeteMails = new UebersichtVersendeteMails(zeitpunktVersand, empfaengerAdresse, betreff);
-			uebersichtVersendeteMailsService.saveUebersichtVersendeteMails(uebersichtVersendeteMails);
+			saveSentMails(subject, mailadress);
 		}
 	}
 
@@ -102,11 +98,7 @@ public abstract class AbstractMailServiceBean extends AbstractBaseService {
 			pretendToSendMessage(messageBody, mailadress);
 		} else {
 			doSendMessageWithAttachment(subject, messageBody, mailadress, uploadFileInfo);
-			LocalDateTime zeitpunktVersand = LocalDateTime.now();
-			String empfaengerAdresse = mailadress;
-			String betreff = subject;
-			UebersichtVersendeteMails uebersichtVersendeteMails = new UebersichtVersendeteMails(zeitpunktVersand, empfaengerAdresse, betreff);
-			uebersichtVersendeteMailsService.saveUebersichtVersendeteMails(uebersichtVersendeteMails);
+			saveSentMails(subject, mailadress);
 		}
 	}
 
@@ -223,11 +215,8 @@ public abstract class AbstractMailServiceBean extends AbstractBaseService {
 			pretendToSendMessage(messageBody, mailadress);
 		} else {
 			doSendMessage(messageBody, mailadress, mandantIdentifier);
-			LocalDateTime zeitpunktVersand = LocalDateTime.now();
-			String empfaengerAdresse = mailadress;
-			String betreff = extractSubjectFromMessageBody(messageBody);
-			UebersichtVersendeteMails uebersichtVersendeteMails = new UebersichtVersendeteMails(zeitpunktVersand, empfaengerAdresse, betreff);
-			uebersichtVersendeteMailsService. saveUebersichtVersendeteMails(uebersichtVersendeteMails);
+			String subject = extractSubjectFromMessageBody(messageBody);
+			saveSentMails(subject, mailadress);
 		}
 	}
 
@@ -295,5 +284,13 @@ public abstract class AbstractMailServiceBean extends AbstractBaseService {
 
 	private void assertPositiveCompletion(final SMTPClient client) {
 		assertPositiveCompletion(client.getReplyCode());
+	}
+
+	private void saveSentMails(String subject, String mailadress) {
+		LocalDateTime zeitpunktVersand = LocalDateTime.now();
+		String empfaengerAdresse = mailadress;
+		String betreff = subject;
+		UebersichtVersendeteMails uebersichtVersendeteMails = new UebersichtVersendeteMails(zeitpunktVersand, empfaengerAdresse, betreff);
+		uebersichtVersendeteMailsService.saveUebersichtVersendeteMails(uebersichtVersendeteMails);
 	}
 }
