@@ -17,46 +17,11 @@
 
 package ch.dvbern.ebegu.outbox;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
-import javax.ejb.Stateless;
-import javax.ejb.TransactionAttribute;
-import javax.ejb.TransactionAttributeType;
-import javax.enterprise.event.Event;
-import javax.inject.Inject;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Join;
-import javax.persistence.criteria.ParameterExpression;
-import javax.persistence.criteria.Path;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
-import javax.transaction.Transactional;
-import javax.transaction.Transactional.TxType;
-
 import ch.dvbern.ebegu.config.EbeguConfiguration;
-import ch.dvbern.ebegu.entities.AbstractEntity_;
-import ch.dvbern.ebegu.entities.AbstractPlatz_;
-import ch.dvbern.ebegu.entities.Betreuung;
-import ch.dvbern.ebegu.entities.Betreuung_;
-import ch.dvbern.ebegu.entities.Einstellung;
-import ch.dvbern.ebegu.entities.Gemeinde;
-import ch.dvbern.ebegu.entities.Gemeinde_;
-import ch.dvbern.ebegu.entities.Institution;
-import ch.dvbern.ebegu.entities.InstitutionStammdaten;
-import ch.dvbern.ebegu.entities.InstitutionStammdaten_;
-import ch.dvbern.ebegu.entities.Institution_;
-import ch.dvbern.ebegu.entities.Verfuegung;
-import ch.dvbern.ebegu.entities.Verfuegung_;
+import ch.dvbern.ebegu.entities.*;
 import ch.dvbern.ebegu.entities.gemeindeantrag.gemeindekennzahlen.GemeindeKennzahlen;
 import ch.dvbern.ebegu.entities.gemeindeantrag.gemeindekennzahlen.GemeindeKennzahlen_;
-import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
-import ch.dvbern.ebegu.enums.Betreuungsstatus;
-import ch.dvbern.ebegu.enums.EinschulungTyp;
-import ch.dvbern.ebegu.enums.EinstellungKey;
-import ch.dvbern.ebegu.enums.InstitutionStatus;
+import ch.dvbern.ebegu.enums.*;
 import ch.dvbern.ebegu.outbox.gemeinde.GemeindeEventConverter;
 import ch.dvbern.ebegu.outbox.gemeindekennzahlen.GemeindeKennzahlenEventConverter;
 import ch.dvbern.ebegu.outbox.institution.InstitutionEventConverter;
@@ -66,6 +31,16 @@ import ch.dvbern.ebegu.outbox.verfuegung.VerfuegungEventAsyncHelper;
 import ch.dvbern.ebegu.services.ApplicationPropertyService;
 import ch.dvbern.ebegu.services.EinstellungService;
 import ch.dvbern.lib.cdipersistence.Persistence;
+
+import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
+import javax.enterprise.event.Event;
+import javax.inject.Inject;
+import javax.persistence.criteria.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 import static ch.dvbern.ebegu.services.util.PredicateHelper.NEW;
 
@@ -191,10 +166,10 @@ public class EventGeneratorServiceBean {
 		//Institution Stammdaten Join and check angebot Typ, muss Kita oder TFO sein
 		Join<Betreuung, InstitutionStammdaten> institutionStammdatenJoin =
 			root.join(Betreuung_.institutionStammdaten);
-		Predicate isKitaOderTFO =
+		Predicate isBetreuungsgutscheinTyp =
 			institutionStammdatenJoin.get(InstitutionStammdaten_.betreuungsangebotTyp)
 				.in(BetreuungsangebotTyp.getBetreuungsgutscheinTypes());
-		predicates.add(isKitaOderTFO);
+		predicates.add(isBetreuungsgutscheinTyp);
 
 		//Event muss noch nicht plubliziert sein
 		Predicate isNotPublished = cb.isFalse(root.get(Betreuung_.eventPublished));

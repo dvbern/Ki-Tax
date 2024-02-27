@@ -346,10 +346,10 @@ public class ZahlungServiceBean extends AbstractBaseService implements ZahlungSe
 			root.get(AbstractDateRangedEntity_.gueltigkeit).get(DateRange_.gueltigBis),
 			zeitabschnittVon);
 		predicates.add(predicateEnd);
-		// Nur Angebot KITA und TAGESFAMILIEN
+		// Nur Angebot Betreuungsgutschein
 		Predicate predicateAngebot =
 			joinBetreuung.get(Betreuung_.institutionStammdaten).get(InstitutionStammdaten_.betreuungsangebotTyp)
-				.in(BetreuungsangebotTyp.KITA, BetreuungsangebotTyp.TAGESFAMILIEN);
+				.in(BetreuungsangebotTyp.getBetreuungsgutscheinTypes());
 		predicates.add(predicateAngebot);
 		// Nur neueste Verfuegung jedes Falls beachten
 		Predicate predicateGueltig = cb.equal(joinBetreuung.get(Betreuung_.gueltig), Boolean.TRUE);
@@ -404,6 +404,7 @@ public class ZahlungServiceBean extends AbstractBaseService implements ZahlungSe
 			zeitabschnittBis);
 		predicates.add(predicateStart);
 		// Nur Angebot KITA und TAGESFAMILIEN
+
 		Predicate predicateAngebot =
 			joinBetreuung.get(Betreuung_.institutionStammdaten).get(InstitutionStammdaten_.betreuungsangebotTyp)
 				.in(BetreuungsangebotTyp.KITA, BetreuungsangebotTyp.TAGESFAMILIEN);

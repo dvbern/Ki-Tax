@@ -15,31 +15,20 @@
 
 package ch.dvbern.ebegu.rules;
 
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-import java.util.Set;
-
-import javax.annotation.Nonnull;
-
-import ch.dvbern.ebegu.entities.AbstractPlatz;
-import ch.dvbern.ebegu.entities.Betreuung;
-import ch.dvbern.ebegu.entities.Betreuungspensum;
-import ch.dvbern.ebegu.entities.BetreuungspensumContainer;
-import ch.dvbern.ebegu.entities.ErweiterteBetreuung;
-import ch.dvbern.ebegu.entities.Familiensituation;
-import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
+import ch.dvbern.ebegu.entities.*;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
 import ch.dvbern.ebegu.enums.MsgKey;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.KitaxUebergangsloesungParameter;
 import ch.dvbern.ebegu.util.KitaxUtil;
-import com.google.common.collect.ImmutableList;
 
-import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.KITA;
-import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.TAGESFAMILIEN;
+import javax.annotation.Nonnull;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+import java.util.Set;
 
 /**
  * Regel für die Erstellung der Zeitabschnitte der Betreuungspensen
@@ -57,7 +46,7 @@ public class BetreuungspensumAbschnittRule extends AbstractAbschnittRule {
 
 	@Override
 	protected List<BetreuungsangebotTyp> getAnwendbareAngebote() {
-		return ImmutableList.of(KITA, TAGESFAMILIEN);
+		return BetreuungsangebotTyp.getBetreuungsgutscheinTypes();
 	}
 
 	@Nonnull

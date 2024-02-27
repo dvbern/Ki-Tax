@@ -17,19 +17,17 @@
 
 package ch.dvbern.ebegu.rules;
 
+import ch.dvbern.ebegu.entities.AbstractPlatz;
+import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
+import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
+import ch.dvbern.ebegu.types.DateRange;
+
+import javax.annotation.Nonnull;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
-
-import javax.annotation.Nonnull;
-
-import ch.dvbern.ebegu.entities.AbstractPlatz;
-import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
-import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
-import ch.dvbern.ebegu.types.DateRange;
-import com.google.common.collect.ImmutableList;
 
 public class AnspruchAbAlterAbschnittRule extends AbstractAbschnittRule {
 
@@ -71,7 +69,7 @@ public class AnspruchAbAlterAbschnittRule extends AbstractAbschnittRule {
 
 	@Override
 	protected List<BetreuungsangebotTyp> getAnwendbareAngebote() {
-		return ImmutableList.of(BetreuungsangebotTyp.KITA, BetreuungsangebotTyp.TAGESFAMILIEN);
+		return BetreuungsangebotTyp.getBetreuungsgutscheinTypes();
 	}
 
 }

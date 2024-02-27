@@ -17,6 +17,10 @@
 
 package ch.dvbern.ebegu.outbox.platzbestaetigung;
 
+import ch.dvbern.ebegu.config.EbeguConfiguration;
+import ch.dvbern.ebegu.entities.*;
+import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
+import ch.dvbern.ebegu.enums.Betreuungsstatus;
 import javax.annotation.security.RunAs;
 import javax.ejb.Schedule;
 import javax.ejb.Stateless;

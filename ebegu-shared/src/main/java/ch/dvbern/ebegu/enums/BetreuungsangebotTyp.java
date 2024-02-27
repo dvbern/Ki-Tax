@@ -15,6 +15,8 @@
 
 package ch.dvbern.ebegu.enums;
 
+import ch.dvbern.ebegu.util.BetreuungsangebotTypVisitor;
+
 import java.util.Arrays;
 import java.util.List;
 
@@ -22,10 +24,36 @@ import java.util.List;
  * Enum fuers Feld betreuungsangebotTyp in Institution.
  */
 public enum BetreuungsangebotTyp {
-	KITA,
-	TAGESSCHULE,
-	TAGESFAMILIEN,
-	FERIENINSEL;
+	KITA {
+		@Override
+		public <T> T accept(BetreuungsangebotTypVisitor<T> visitor) {
+			return visitor.visitKita();
+		}
+	},
+	TAGESSCHULE {
+		@Override
+		public <T> T accept(BetreuungsangebotTypVisitor<T> visitor) {
+			return visitor.visitTagesschule();
+		}
+	},
+	MITTAGSTISCH {
+		@Override
+		public <T> T accept(BetreuungsangebotTypVisitor<T> visitor) {
+			return visitor.visitMittagtisch();
+		}
+	},
+	TAGESFAMILIEN {
+		@Override
+		public <T> T accept(BetreuungsangebotTypVisitor<T> visitor) {
+			return visitor.visitTagesfamilien();
+		}
+	},
+	FERIENINSEL {
+		@Override
+		public <T> T accept(BetreuungsangebotTypVisitor<T> visitor) {
+			return visitor.visitFerieninsel();
+		}
+	};
 
 	public boolean isKita() {
 		return KITA == this;
@@ -36,6 +64,10 @@ public enum BetreuungsangebotTyp {
 	}
 
 	public boolean isTagesfamilien() { return TAGESFAMILIEN == this; }
+
+	public boolean isMittagstisch() {
+		return MITTAGSTISCH == this;
+	}
 
 	public boolean isFerieninsel() {
 		return FERIENINSEL == this;
@@ -56,10 +88,16 @@ public enum BetreuungsangebotTyp {
 	}
 
 	public static List<BetreuungsangebotTyp> getBetreuungsgutscheinTypes() {
-		return Arrays.asList(KITA, TAGESFAMILIEN);
+		return List.of(KITA, TAGESFAMILIEN, MITTAGSTISCH);
+	}
+
+	public static List<BetreuungsangebotTyp> getBerechnetesAngebotTypes() {
+		return List.of(KITA, TAGESFAMILIEN, MITTAGSTISCH, TAGESSCHULE);
 	}
 
 	public boolean isBerechnetesAngebot() {
-		return isKita() || isTagesfamilien() || isTagesschule();
+		return getBerechnetesAngebotTypes().contains(this);
 	}
+
+	public abstract <T> T accept(BetreuungsangebotTypVisitor<T> visitor);
 }
