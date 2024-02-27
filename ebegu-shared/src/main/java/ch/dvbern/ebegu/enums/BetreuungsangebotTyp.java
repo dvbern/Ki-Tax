@@ -16,7 +16,6 @@
 package ch.dvbern.ebegu.enums;
 
 import ch.dvbern.ebegu.util.BetreuungsangebotTypVisitor;
-import com.google.common.collect.ImmutableList;
 
 import java.util.Arrays;
 import java.util.List;
@@ -89,11 +88,11 @@ public enum BetreuungsangebotTyp {
 	}
 
 	public static List<BetreuungsangebotTyp> getBetreuungsgutscheinTypes() {
-		return ImmutableList.of(KITA, TAGESFAMILIEN, MITTAGSTISCH);
+		return List.of(KITA, TAGESFAMILIEN, MITTAGSTISCH);
 	}
 
 	public static List<BetreuungsangebotTyp> getBerechnetesAngebotTypes() {
-		return ImmutableList.of(KITA, TAGESFAMILIEN, MITTAGSTISCH, TAGESSCHULE);
+		return List.of(KITA, TAGESFAMILIEN, MITTAGSTISCH, TAGESSCHULE);
 	}
 
 	public boolean isBerechnetesAngebot() {
