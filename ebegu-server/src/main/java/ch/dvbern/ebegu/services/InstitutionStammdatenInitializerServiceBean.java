@@ -81,10 +81,8 @@ public class InstitutionStammdatenInitializerServiceBean implements InstitutionS
 			throw new EbeguRuntimeException("initInstitutionStammdaten()", "missing gemeindeId");
 		}
 
-		Gemeinde gemeinde =
-			gemeindeService.findGemeinde(gemeindeId)
-				.orElseThrow(() -> new EbeguEntityNotFoundException("initInstitutionStammdaten",
-					ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, "GemeindeId invalid: " + gemeindeId));
-		return gemeinde;
+		return gemeindeService.findGemeinde(gemeindeId)
+			.orElseThrow(() -> new EbeguEntityNotFoundException("initInstitutionStammdaten",
+				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, "GemeindeId invalid: " + gemeindeId));
 	}
 }
