@@ -27,7 +27,7 @@
                    matInput
                    type="text"
                    (keyup)="doFilter($event.target.value)"
-                   placeholder="kiBon Testsystem...">
+                   placeholder="&#34;Zahlungslauf London...&#34;">
         </div>
 
         <div class="table-responsive">
@@ -66,9 +66,7 @@
                 <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
                 <mat-row *matRowDef="let row; columns: displayedColumns;" class="pointer-cursor"></mat-row>
             </mat-table>
-
+            <mat-paginator [pageSizeOptions]="[10, 25, 100]"></mat-paginator>
         </div>
-
-
     </div>
 </div>

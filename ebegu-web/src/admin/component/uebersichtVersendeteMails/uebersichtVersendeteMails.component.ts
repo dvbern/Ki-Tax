@@ -13,7 +13,9 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {ChangeDetectorRef, Component} from '@angular/core';
+import {ChangeDetectorRef, Component, ViewChild} from '@angular/core';
+import {MatPaginator} from '@angular/material/paginator';
+import {MatSort, MatSortable, Sort} from '@angular/material/sort';
 import {MatTableDataSource} from '@angular/material/table';
 import {UebersichtVersendeteMailsRS} from '../../../app/core/service/uebersichtVersendeteMailsRS';
 import {TSUebersichtVersendeteMails} from '../../../models/TSUebersichtVersendeteMails';
@@ -28,7 +30,8 @@ export class UebersichtVersendeteMailsComponent {
     public displayedColumns: string[] = ['zeitpunktVersand', 'empfaengerAdresse', 'betreff'];
 
     public dataSource: MatTableDataSource<TableUebersichtVersendeteMails>;
-
+    @ViewChild(MatSort, {static:true}) public sort: MatSort;
+    @ViewChild(MatPaginator, {static: true}) public paginator: MatPaginator;
     public constructor(
         private readonly uebersichtVersendeteMailsRS: UebersichtVersendeteMailsRS,
         private readonly changeDetectorRef: ChangeDetectorRef,
@@ -37,8 +40,16 @@ export class UebersichtVersendeteMailsComponent {
 
     public ngOnInit(): void {
         this.passFilterToServer();
+        this.sortTable();
+        this.sort.sort(<MatSortable>{
+            id: 'zeitpunktVersand',
+            start: 'desc'
+        });
     }
 
+    public ngAfterViewInit(): void {
+        this.dataSource.sort = this.sort;
+    }
     private assignResultToDataSource(result: TSUebersichtVersendeteMails[]): void {
         this.dataSource.data = result.map(
             item => ({
@@ -47,6 +58,7 @@ export class UebersichtVersendeteMailsComponent {
                 betreff: item.betreff,
             } as TableUebersichtVersendeteMails),
         );
+        this.dataSource.paginator = this.paginator;
     }
 
     private passFilterToServer(): void {
@@ -66,6 +78,15 @@ export class UebersichtVersendeteMailsComponent {
 
     public doFilter(value: string): void {
         this.dataSource.filter = value.trim().toLocaleLowerCase();
+    }
+
+    private sortTable(): void {
+        this.dataSource.sortingDataAccessor = (data: any, sortHeaderId: string): string => {
+            if (typeof data[sortHeaderId] === 'string') {
+                return data[sortHeaderId].toLocaleLowerCase();
+            }
+            return data[sortHeaderId];
+        };
     }
 }
 
