@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2019 DV Bern AG, Switzerland
+ * Copyright (C) 2021 DV Bern AG, Switzerland
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -15,17 +15,10 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-.mat-column-zeitpunktVersand {
-    flex: 0 0 20%;
-    width: 20%;
-}
+import {TSAbstractEntity} from './TSAbstractEntity';
 
-.mat-column-empfaengerAdresse {
-    flex: 0 0 30%;
-    width: 30%;
-}
-
-.mat-column-betreff {
-    flex: 0 0 50%;
-    width: 50%;
+export class TSUebersichtVersendeteMails extends TSAbstractEntity {
+    public zeitpunktVersand: moment.Moment;
+    public empfaengerAdresse: string;
+    public betreff: string;
 }

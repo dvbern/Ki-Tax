@@ -30,15 +30,15 @@
         </div>
 
         <div class="table-responsive">
-            <mat-table #table matSort>
+            <mat-table #table [dataSource]="dataSource" matSort>
 
                 <!-- Column zeitpunktversand -->
-                <ng-container matColumnDef="zeitpunktVersands">
+                <ng-container matColumnDef="zeitpunktVersand">
                     <mat-header-cell *matHeaderCellDef mat-sort-header>
                         {{'ZEITPUNKTVERSAND_MAIL' | translate}}
                     </mat-header-cell>
-                    <mat-cell *matCellDef>
-                        <p>zeitpunkt des versands</p>
+                    <mat-cell *matCellDef="let item">
+                        {{parseMomentToString(item.zeitpunktVersand)}}
                     </mat-cell>
                 </ng-container>
 
@@ -47,8 +47,8 @@
                     <mat-header-cell *matHeaderCellDef mat-sort-header>
                         {{'EMPFAENGERADRESSE_MAIL' | translate}}
                     </mat-header-cell>
-                    <mat-cell *matCellDef>
-                        <p>empfaenger adresse</p>
+                    <mat-cell *matCellDef="let item">
+                        {{item.empfaengerAdresse}}
                     </mat-cell>
                 </ng-container>
 
@@ -57,8 +57,8 @@
                     <mat-header-cell *matHeaderCellDef mat-sort-header>
                         {{'BETREFF_MAIL' | translate}}
                     </mat-header-cell>
-                    <mat-cell *matCellDef>
-                        <p>betreff</p>
+                    <mat-cell *matCellDef="let item">
+                        {{item.betreff}}
                     </mat-cell>
                 </ng-container>
 

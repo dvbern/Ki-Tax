@@ -3,11 +3,15 @@ package ch.dvbern.ebegu.api.dtos;
 import java.time.LocalDateTime;
 
 import javax.annotation.Nonnull;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+
+import ch.dvbern.lib.date.converters.LocalDateTimeXMLConverter;
 
 public class JaxUebersichtVersendeteMails extends JaxAbstractDTO {
 	private static final long serialVersionUID = 3359889275785229022L;
 
 	@Nonnull
+	@XmlJavaTypeAdapter(LocalDateTimeXMLConverter.class)
 	private LocalDateTime zeitpunktVersand;
 
 	@Nonnull

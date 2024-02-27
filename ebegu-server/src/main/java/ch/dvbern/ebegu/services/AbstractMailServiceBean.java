@@ -79,9 +79,9 @@ public abstract class AbstractMailServiceBean extends AbstractBaseService {
 		} else {
 			doSendMessage(subject, messageBody, mailadress);
 			LocalDateTime zeitpunktVersand = LocalDateTime.now();
-			String empfangerAdresse = mailadress;
+			String empfaengerAdresse = mailadress;
 			String betreff = subject;
-			UebersichtVersendeteMails uebersichtVersendeteMails = new UebersichtVersendeteMails(zeitpunktVersand, empfangerAdresse, betreff);
+			UebersichtVersendeteMails uebersichtVersendeteMails = new UebersichtVersendeteMails(zeitpunktVersand, empfaengerAdresse, betreff);
 			uebersichtVersendeteMailsService.saveUebersichtVersendeteMails(uebersichtVersendeteMails);
 		}
 	}
@@ -103,9 +103,9 @@ public abstract class AbstractMailServiceBean extends AbstractBaseService {
 		} else {
 			doSendMessageWithAttachment(subject, messageBody, mailadress, uploadFileInfo);
 			LocalDateTime zeitpunktVersand = LocalDateTime.now();
-			String empfangerAdresse = mailadress;
+			String empfaengerAdresse = mailadress;
 			String betreff = subject;
-			UebersichtVersendeteMails uebersichtVersendeteMails = new UebersichtVersendeteMails(zeitpunktVersand, empfangerAdresse, betreff);
+			UebersichtVersendeteMails uebersichtVersendeteMails = new UebersichtVersendeteMails(zeitpunktVersand, empfaengerAdresse, betreff);
 			uebersichtVersendeteMailsService.saveUebersichtVersendeteMails(uebersichtVersendeteMails);
 		}
 	}
@@ -223,6 +223,11 @@ public abstract class AbstractMailServiceBean extends AbstractBaseService {
 			pretendToSendMessage(messageBody, mailadress);
 		} else {
 			doSendMessage(messageBody, mailadress, mandantIdentifier);
+			LocalDateTime zeitpunktVersand = LocalDateTime.now();
+			String empfaengerAdresse = mailadress;
+			String betreff = extractSubjectFromMessageBody(messageBody);
+			UebersichtVersendeteMails uebersichtVersendeteMails = new UebersichtVersendeteMails(zeitpunktVersand, empfaengerAdresse, betreff);
+			uebersichtVersendeteMailsService. saveUebersichtVersendeteMails(uebersichtVersendeteMails);
 		}
 	}
 

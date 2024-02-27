@@ -185,6 +185,7 @@ import {TSSupportAnfrage} from '../models/TSSupportAnfrage';
 import {TSTextRessource} from '../models/TSTextRessource';
 import {TSTraegerschaft} from '../models/TSTraegerschaft';
 import {TSTsCalculationResult} from '../models/TSTsCalculationResult';
+import {TSUebersichtVersendeteMails} from '../models/TSUebersichtVersendeteMails';
 import {TSUnbezahlterUrlaub} from '../models/TSUnbezahlterUrlaub';
 import {TSVerfuegung} from '../models/TSVerfuegung';
 import {TSVerfuegungZeitabschnitt} from '../models/TSVerfuegungZeitabschnitt';
@@ -6307,5 +6308,26 @@ export class EbeguRestUtil {
             sozialdienst: filter.sozialdienst,
             status: filter.status
         };
+    }
+
+    public parseTSUebersichtVersendeteMailsList(data: any): TSUebersichtVersendeteMails[] {
+        if (!data) {
+            return [];
+        }
+        return Array.isArray(data)
+        ? data.map(item => this.parseTSUebersichtVersendeteMails(new TSUebersichtVersendeteMails(), item))
+        : [this.parseTSUebersichtVersendeteMails(new TSUebersichtVersendeteMails(), data)];
+    }
+    private parseTSUebersichtVersendeteMails(
+        uebersichtVersendeteMails: TSUebersichtVersendeteMails,
+        uebersichtVersendeteMailsFromServer: any
+    ): TSUebersichtVersendeteMails {
+        this.parseAbstractEntity(uebersichtVersendeteMails, uebersichtVersendeteMailsFromServer);
+        uebersichtVersendeteMails.zeitpunktVersand = DateUtil.localDateTimeToMoment(
+            uebersichtVersendeteMailsFromServer.zeitpunktVersand
+        );
+        uebersichtVersendeteMails.empfaengerAdresse = uebersichtVersendeteMailsFromServer.empfaengerAdresse;
+        uebersichtVersendeteMails.betreff = uebersichtVersendeteMailsFromServer.betreff;
+        return uebersichtVersendeteMails;
     }
 }
