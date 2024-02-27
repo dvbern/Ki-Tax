@@ -23,7 +23,7 @@ import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @ExtendWith(EasyMockExtension.class)
-public class InstitutionStammdatenInitalizerServiceTest extends EasyMockSupport {
+class InstitutionStammdatenInitalizerServiceTest extends EasyMockSupport {
 
 	@TestSubject
 	private final InstitutionStammdatenInitializerServiceBean institutionStammdatenInitializerServiceBean = new InstitutionStammdatenInitializerServiceBean();
@@ -37,7 +37,7 @@ public class InstitutionStammdatenInitalizerServiceTest extends EasyMockSupport 
 	private static final String GEMEINDE_ID = "123";
 
 	@Test
-	public void initInstitutionStammdatenBetreuungsgutschein() {
+	void initInstitutionStammdatenBetreuungsgutschein() {
 		InstitutionStammdaten institutionStammdaten =
 			institutionStammdatenInitializerServiceBean.initInstitutionStammdatenBetreuungsgutschein();
 
@@ -47,7 +47,7 @@ public class InstitutionStammdatenInitalizerServiceTest extends EasyMockSupport 
 	}
 
 	@Test
-	public void initTagesschule_gemeindNull() {
+	void initTagesschule_gemeindNull() {
 		EbeguRuntimeException e = assertThrows(EbeguRuntimeException.class, () -> {
 			institutionStammdatenInitializerServiceBean.initInstitutionStammdatenTagesschule(null);
 		});
@@ -56,7 +56,7 @@ public class InstitutionStammdatenInitalizerServiceTest extends EasyMockSupport 
 	}
 
 	@Test
-	public void initFerieninsel_gemeindNull() {
+	void initFerieninsel_gemeindNull() {
 		EbeguRuntimeException e = assertThrows(EbeguRuntimeException.class, () -> {
 			institutionStammdatenInitializerServiceBean.initInstitutionStammdatenTagesschule(null);
 		});
@@ -65,7 +65,7 @@ public class InstitutionStammdatenInitalizerServiceTest extends EasyMockSupport 
 	}
 
 	@Test
-	public void initTagesschule_gemeindNotFound() {
+	void initTagesschule_gemeindNotFound() {
 		expect(gemeindeService.findGemeinde(GEMEINDE_ID)).andReturn(Optional.empty());
 		replayAll();
 
@@ -77,7 +77,7 @@ public class InstitutionStammdatenInitalizerServiceTest extends EasyMockSupport 
 	}
 
 	@Test
-	public void initFerieninsel_gemeindNotFound() {
+	void initFerieninsel_gemeindNotFound() {
 		expect(gemeindeService.findGemeinde(GEMEINDE_ID)).andReturn(Optional.empty());
 		replayAll();
 
@@ -88,7 +88,7 @@ public class InstitutionStammdatenInitalizerServiceTest extends EasyMockSupport 
 		assertThat(e.getErrorCodeEnum(), is(ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND));
 	}
 	@Test
-	public void initTagesschule() {
+	void initTagesschule() {
 		expect(gemeindeService.findGemeinde(GEMEINDE_ID)).andReturn(Optional.of(new Gemeinde()));
 		expect(gesuchsperiodeService.getAllNichtAbgeschlosseneGesuchsperioden()).andReturn(List.of(new Gesuchsperiode()));
 		replayAll();
@@ -109,7 +109,7 @@ public class InstitutionStammdatenInitalizerServiceTest extends EasyMockSupport 
 	}
 
 	@Test
-	public void initFerieninsel() {
+	void initFerieninsel() {
 		expect(gemeindeService.findGemeinde(GEMEINDE_ID)).andReturn(Optional.of(new Gemeinde()));
 		expect(gesuchsperiodeService.getAllNichtAbgeschlosseneGesuchsperioden()).andReturn(List.of(new Gesuchsperiode()));
 		replayAll();
