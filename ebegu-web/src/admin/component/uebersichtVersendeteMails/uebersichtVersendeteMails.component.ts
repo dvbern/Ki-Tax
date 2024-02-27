@@ -21,37 +21,57 @@ import {TSUebersichtVersendeteMails} from '../../../models/TSUebersichtVersendet
 @Component({
     selector: 'dv-uebersicht-Versendete-Mails',
     templateUrl: './uebersichtVersendeteMails.component.html',
-    styleUrls: ['./uebersichtVersendeteMails.component.less']
+    styleUrls: ['./uebersichtVersendeteMails.component.less'],
 })
 
 export class UebersichtVersendeteMailsComponent {
     public displayedColumns: string[] = ['zeitpunktVersand', 'empfaengerAdresse', 'betreff'];
 
-    public dataSource: MatTableDataSource<TSUebersichtVersendeteMails>;
+    public dataSource: MatTableDataSource<TableUebersichtVersendeteMails>;
+
     public constructor(
         private readonly uebersichtVersendeteMailsRS: UebersichtVersendeteMailsRS,
-        private readonly changeDetectorRef: ChangeDetectorRef
+        private readonly changeDetectorRef: ChangeDetectorRef,
     ) {
     }
+
     public ngOnInit(): void {
         this.passFilterToServer();
     }
+
     private assignResultToDataSource(result: TSUebersichtVersendeteMails[]): void {
-        this.dataSource.data = result;
+        this.dataSource.data = result.map(
+            item => ({
+                zeitpunktVersand: this.parseMomentToString(item.zeitpunktVersand),
+                empfaengerAdresse: item.empfaengerAdresse,
+                betreff: item.betreff,
+            } as TableUebersichtVersendeteMails),
+        );
     }
 
     private passFilterToServer(): void {
-        this.dataSource = new MatTableDataSource<TSUebersichtVersendeteMails>([]);
+        this.dataSource = new MatTableDataSource<TableUebersichtVersendeteMails>([]);
         this.uebersichtVersendeteMailsRS.getAllMails()
             .subscribe((result: TSUebersichtVersendeteMails[]) => {
-                this.assignResultToDataSource(result);
-                this.changeDetectorRef.markForCheck();
-            },
-        () => {
-            });
+                    this.assignResultToDataSource(result);
+                    this.changeDetectorRef.markForCheck();
+                },
+                () => {
+                });
     }
 
     protected parseMomentToString(versand: moment.Moment): string {
         return versand.format('DD.MM.YYYY HH:mm:ss');
     }
+
+    public doFilter(value: string): void {
+        this.dataSource.filter = value.trim().toLocaleLowerCase();
+    }
 }
+
+interface TableUebersichtVersendeteMails {
+    zeitpunktVersand: string;
+    empfaengerAdresse: string;
+    betreff: string;
+}
+

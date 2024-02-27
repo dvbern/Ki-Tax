@@ -26,7 +26,8 @@
             <input class="filter"
                    matInput
                    type="text"
-                   placeholder="todo">
+                   (keyup)="doFilter($event.target.value)"
+                   placeholder="kiBon Testsystem...">
         </div>
 
         <div class="table-responsive">
@@ -38,7 +39,7 @@
                         {{'ZEITPUNKTVERSAND_MAIL' | translate}}
                     </mat-header-cell>
                     <mat-cell *matCellDef="let item">
-                        {{parseMomentToString(item.zeitpunktVersand)}}
+                        {{item.zeitpunktVersand}}
                     </mat-cell>
                 </ng-container>
 
