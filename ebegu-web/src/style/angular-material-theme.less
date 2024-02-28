@@ -14,7 +14,8 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-@import (reference) 'mixins.less';
+@import (reference) './mixins.less';
+@import (reference) './variables.less';
 
 /**
  * Applies styles for users in high contrast mode. Note that this only applies
@@ -2073,6 +2074,10 @@ mat-form-field.mat-focused.mat-warn .mat-mdc-select-arrow {
     .mat-mdc-form-field-flex .mat-mdc-form-field-infix {
         padding: 0;
     }
+}
+
+.mat-mdc-select.mat-mdc-select-disabled {
+    background-color: @contrast;
 }
 
 /* stylelint-enable */
