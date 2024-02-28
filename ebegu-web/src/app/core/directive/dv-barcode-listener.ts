@@ -45,8 +45,8 @@ export class DVBarcodeListener implements IDirective {
 }
 
 /**
- * This binds a listener for a certain keypress sequence to the document. If this keypress sequence (escaped with §)
- * is found then we open the dialog
+ * This binds a listener for a certain keypress sequence to the document. If this keypress sequence
+ * (escaped with § (or < on MacOS)) is found then we open the dialog
  * The format of an expected barcode sequence is §FREIGABE|OPEN|cd85e001-403f-407f-8eb8-102c402342b6§
  */
 export class DVBarcodeController implements IController {
@@ -116,67 +116,22 @@ export class DVBarcodeController implements IController {
         this.$document.unbind('keypress', keypressEvent);
     }
 
-    // eslint-disable-next-line
-    public barcodeOnKeyPressed(e: any): void {
-        const key = e.keyCode || e.which || 0;
-        const keyPressChar = String.fromCharCode(key);
+    public barcodeOnKeyPressed(e: KeyboardEvent): void {
 
         if (this.barcodeReading) {
             e.preventDefault();
-            if (keyPressChar !== '§') {
-                this.barcodeBuffer.push(keyPressChar);
+            if (this.isNotDelimiterKey(e)) {
+                this.barcodeBuffer.push(e.key);
                 this.$log.debug(`Current buffer: ${  this.barcodeBuffer.join('')}`);
             }
         }
 
-        if (keyPressChar !== '§') {
+        if (this.isNotDelimiterKey(e)) {
             return;
         }
         e.preventDefault();
         if (this.barcodeReading) {
-            this.$log.debug('End Barcode read');
-
-            let barcodeRead = this.barcodeBuffer.join('');
-            this.$log.debug(`Barcode read:${  barcodeRead}`);
-            barcodeRead = barcodeRead.replace('§', '');
-
-            const barcodeParts = barcodeRead.split('|');
-
-            if (barcodeParts.length === 3 || barcodeParts.length === 4) {
-                const barcodeDocType = barcodeParts[0];
-                const barcodeDocFunction = barcodeParts[1];
-                const barcodeDocID = barcodeParts[2];
-                const barcodeDocAnzahlZurueckgezogen = barcodeParts[3] || '0';
-
-                this.$log.debug(`Barcode Doc Type: ${  barcodeDocType}`);
-                this.$log.debug(`Barcode Doc Function: ${  barcodeDocFunction}`);
-                this.$log.debug(`Barcode Doc ID: ${  barcodeDocID}`);
-                this.$log.debug(`Barcode Doc Anzahl Zurueckgezogen: ${  barcodeDocAnzahlZurueckgezogen}`);
-
-                this.barcodeBuffer = [];
-                this.$timeout.cancel(this.barcodeReadtimeout);
-
-                this.gesuchRS.findGesuchForFreigabe(barcodeDocID, barcodeDocAnzahlZurueckgezogen)
-                    .then((response: TSAntragDTO) => {
-                        let message;
-                        if (!response) {
-                            message = this.$translate.instant('FREIGABE_GESUCH_NOT_FOUND');
-                        }
-                        if (!response.canBeFreigegeben()) {
-                            message = this.$translate.instant('FREIGABE_GESUCH_ALREADY_FREIGEGEBEN');
-                        }
-                        this.dVDialog.showDialogFullscreen(FREIGEBEN_DIALOG_TEMPLATE, FreigabeController, {
-                            docID: barcodeDocID,
-                            errorMessage: message,
-                            gesuch: response
-                        });
-                    }).catch(error => {
-                    this.errorService.addMesageAsError(this.$translate.instant('FREIGABE_GESUCH_NICHT_MOEGLICH'));
-                    LOG.warn('Gesuch konnte nicht freigegeben werden!', error);
-                });
-            } else {
-                this.errorService.addMesageAsError(this.$translate.instant('BARCODE_FALSCHES_FORMAT') + barcodeRead);
-            }
+            this.handleBarcodeRead(e.key);
         } else {
             this.$log.debug('Begin Barcode read');
 
@@ -189,5 +144,55 @@ export class DVBarcodeController implements IController {
             }, 2000);
         }
         this.barcodeReading = !this.barcodeReading;
+    }
+
+    private handleBarcodeRead(delimiter: string): void {
+        this.$log.debug('End Barcode read');
+
+        let barcodeRead = this.barcodeBuffer.join('');
+        this.$log.debug(`Barcode read:${barcodeRead}`);
+        barcodeRead = barcodeRead.replace(delimiter, '');
+
+        const barcodeParts = barcodeRead.split('|');
+
+        if (barcodeParts.length === 3 || barcodeParts.length === 4) {
+            const barcodeDocType = barcodeParts[0];
+            const barcodeDocFunction = barcodeParts[1];
+            const barcodeDocID = barcodeParts[2];
+            const barcodeDocAnzahlZurueckgezogen = barcodeParts[3] || '0';
+
+            this.$log.debug(`Barcode Doc Type: ${barcodeDocType}`);
+            this.$log.debug(`Barcode Doc Function: ${barcodeDocFunction}`);
+            this.$log.debug(`Barcode Doc ID: ${barcodeDocID}`);
+            this.$log.debug(`Barcode Doc Anzahl Zurueckgezogen: ${barcodeDocAnzahlZurueckgezogen}`);
+
+            this.barcodeBuffer = [];
+            this.$timeout.cancel(this.barcodeReadtimeout);
+
+            this.gesuchRS.findGesuchForFreigabe(barcodeDocID, barcodeDocAnzahlZurueckgezogen)
+                .then((response: TSAntragDTO) => {
+                    let message;
+                    if (!response) {
+                        message = this.$translate.instant('FREIGABE_GESUCH_NOT_FOUND');
+                    }
+                    if (!response.canBeFreigegeben()) {
+                        message = this.$translate.instant('FREIGABE_GESUCH_ALREADY_FREIGEGEBEN');
+                    }
+                    this.dVDialog.showDialogFullscreen(FREIGEBEN_DIALOG_TEMPLATE, FreigabeController, {
+                        docID: barcodeDocID,
+                        errorMessage: message,
+                        gesuch: response,
+                    });
+                }).catch(error => {
+                this.errorService.addMesageAsError(this.$translate.instant('FREIGABE_GESUCH_NICHT_MOEGLICH'));
+                LOG.warn('Gesuch konnte nicht freigegeben werden!', error);
+            });
+        } else {
+            this.errorService.addMesageAsError(this.$translate.instant('BARCODE_FALSCHES_FORMAT') + barcodeRead);
+        }
+    }
+
+    private isNotDelimiterKey(keyEvent: KeyboardEvent): boolean {
+        return keyEvent.code !== 'Backquote';
     }
 }
