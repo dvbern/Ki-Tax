@@ -23,7 +23,12 @@ const getGS2 = () => {
 	return cy.getByData('erwerbspensen-gs2');
 };
 
+const getWarnungGS2Ausfuellen = () => {
+	return cy.getByData('warnung-gs2-ausfuellen');
+};
+
 export const BeschaeftigungspensumListPO = {
     getGS1,
     getGS2,
+    getWarnungGS2Ausfuellen,
 };

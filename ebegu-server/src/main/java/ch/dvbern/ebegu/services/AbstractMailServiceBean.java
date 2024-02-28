@@ -22,8 +22,8 @@ import ch.dvbern.ebegu.util.mandant.MandantIdentifier;
 import ch.dvbern.lib.cdipersistence.Persistence;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.commons.mail.*;
-import org.apache.commons.net.smtp.SMTPClient;
 import org.apache.commons.net.smtp.SMTPReply;
+import org.apache.commons.net.smtp.SMTPSClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -151,7 +151,7 @@ public abstract class AbstractMailServiceBean extends AbstractBaseService {
 
 	@SuppressFBWarnings("REC_CATCH_EXCEPTION")
 	private void  doSendMessage(@Nonnull String messageBody, @Nonnull String mailadress, @Nonnull MandantIdentifier mandantIdentifier) throws MailException {
-		final SMTPClient client = new SMTPClient("UTF-8");
+		final SMTPSClient client = new SMTPSClient("UTF-8");
 		Writer writer = null;
 		try {
 			client.setDefaultTimeout(CONNECTION_TIMEOUT);
@@ -217,7 +217,7 @@ public abstract class AbstractMailServiceBean extends AbstractBaseService {
 		return NEW_LINE_CHAR_PATTERN.matcher(str).replaceAll("_");
 	}
 
-	private void assertPositiveIntermediate(final SMTPClient client) {
+	private void assertPositiveIntermediate(final SMTPSClient client) {
 		assertPositiveIntermediate(client.getReplyCode());
 	}
 
@@ -233,7 +233,7 @@ public abstract class AbstractMailServiceBean extends AbstractBaseService {
 		}
 	}
 
-	private void assertPositiveCompletion(final SMTPClient client) {
+	private void assertPositiveCompletion(final SMTPSClient client) {
 		assertPositiveCompletion(client.getReplyCode());
 	}
 }

@@ -30,10 +30,17 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Join;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import ch.dvbern.ebegu.authentication.PrincipalBean;
+import ch.dvbern.ebegu.entities.Dossier;
+import ch.dvbern.ebegu.entities.Dossier_;
+import ch.dvbern.ebegu.entities.Fall;
+import ch.dvbern.ebegu.entities.Fall_;
 import ch.dvbern.ebegu.entities.Gesuch;
+import ch.dvbern.ebegu.entities.Gesuch_;
 import ch.dvbern.ebegu.entities.InternePendenz;
 import ch.dvbern.ebegu.entities.InternePendenz_;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
@@ -54,6 +61,9 @@ public class InternePendenzServiceBean extends AbstractBaseService implements In
 
 	@Inject
 	private CriteriaQueryHelper criteriaQueryHelper;
+
+	@Inject
+	private PrincipalBean principalBean;
 
 	@Nonnull
 	@Override
@@ -129,11 +139,18 @@ public class InternePendenzServiceBean extends AbstractBaseService implements In
 		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
 		final CriteriaQuery<InternePendenz> query = cb.createQuery(InternePendenz.class);
 		Root<InternePendenz> root = query.from(InternePendenz.class);
+		Join<InternePendenz, Gesuch> gesuchJoin = root.join(InternePendenz_.gesuch);
+		Join<Gesuch, Dossier> dossierJoin = gesuchJoin.join(Gesuch_.dossier);
+		Join<Dossier, Fall> fallJoin = dossierJoin.join(Dossier_.fall);
+
 
 		List<Predicate> predicates = new ArrayList<>();
 
 		Predicate predicateNichtErledigt = cb.equal(root.get(InternePendenz_.erledigt), false);
 		predicates.add(predicateNichtErledigt);
+
+		Predicate predicateMandant = cb.equal(fallJoin.get(Fall_.mandant), principalBean.getMandant());
+		predicates.add(predicateMandant);
 
 		Predicate predicateAbgelaufen = cb.lessThanOrEqualTo(root.get(InternePendenz_.termin), LocalDate.now());
 		predicates.add(predicateAbgelaufen);
