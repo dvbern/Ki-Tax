@@ -50,6 +50,9 @@ import java.util.Set;
  * Nachweis über Ersatzeinkommen
  * Notwendig wenn keine Veranlagung vorhanden und Ersatzeinkommen > 0
  * <p>
+ * Nachweis über Ersatzeinkommen Selbstaendigkeit der letzten drei Jahre (Basisjahr, Basisjahr-1, Basisjahr-2)
+ * Notwendig wenn Ersatzeinkommen(Basisjahr, Basisjahr-1, Basisjahr-2) > 0
+ * <p>
  * Nachweis über erhaltene Alimente (Unterhaltsbeiträge)
  * Notwendig, wenn keine Veranlagung vorhanden und erhaltene Alimente > 0
  * <p>
@@ -306,13 +309,4 @@ public class BernFinanzielleSituationDokumente extends AbstractFinanzielleSituat
 		}
 		return false;
 	}
-
-	private boolean hasValueBigerThanZero(@Nullable BigDecimal bigDecimal) {
-		if (bigDecimal == null) {
-			return false;
-		}
-
-		return bigDecimal.compareTo(BigDecimal.ZERO) > 0;
-	}
-
 }

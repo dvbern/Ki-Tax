@@ -22,6 +22,7 @@ import ch.dvbern.ebegu.enums.DokumentTyp;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Locale;
@@ -42,6 +43,9 @@ import static ch.dvbern.ebegu.enums.DokumentTyp.NACHWEIS_VERMOEGEN;
  * Nachweis über Ersatzeinkommen
  * Notwendig, wenn Ersatzeinkommen > 0
  * <p>
+ * Nachweis über Ersatzeinkommen Selbstaendigkeit der letzten zwei Jahre (Jahr der Einkommensverschlechterung: x, x-1)
+ * Notwendig wenn Ersatzeinkommen(Jahr der Einkommensverschlechterung: x, x-1) > 0
+ * <p>
  * Nachweis über erhaltene Alimente (Unterhaltsbeiträge)
  * Notwendig, wenn erhaltene Alimente > 0
  * <p>
@@ -54,7 +58,7 @@ import static ch.dvbern.ebegu.enums.DokumentTyp.NACHWEIS_VERMOEGEN;
  * Nachweis über die Schulden, Stand: 31.12. (z.B.: Kto.-Auszug, Darlehensvertrag usw.)
  * Notwendig, wenn Schulden > 0
  * <p>
- * Erfolgsrechnungen der letzten drei Jahre (Jahr der Einkommensverschlechterung: x, x-1, x-2)
+ * Erfolgsrechnungen der letzten zwei Jahre (Jahr der Einkommensverschlechterung: x, x-1)
  * Notwendig, wenn Erfolgsrechnungen des Jahres nicht null
  **/
 public class BernEinkommensverschlechterungDokumente extends AbstractFinanzielleSituationDokumente {
@@ -195,11 +199,6 @@ public class BernEinkommensverschlechterungDokumente extends AbstractFinanzielle
 	}
 
 	@Override
-	protected boolean isNachweisErsatzeinkommenSelbststaendigkeitNeeded(AbstractFinanzielleSituation abstractFinanzielleSituation, int basisjahr) {
-		return false;
-	}
-
-	@Override
 	protected boolean isJahresLohnausweisNeeded(@Nonnull AbstractFinanzielleSituation abstractFinanzielleSituation) {
 		if (abstractFinanzielleSituation instanceof Einkommensverschlechterung) {
 			Einkommensverschlechterung ekv = (Einkommensverschlechterung) abstractFinanzielleSituation;
@@ -227,4 +226,21 @@ public class BernEinkommensverschlechterungDokumente extends AbstractFinanzielle
 		return false;
 	}
 
+	@Override
+	protected boolean isNachweisErsatzeinkommenSelbststaendigkeitNeeded(
+		AbstractFinanzielleSituation abstractFinanzielleSituation,
+		int minus) {
+		if (abstractFinanzielleSituation instanceof Einkommensverschlechterung) {
+			Einkommensverschlechterung einkommensverschlechterung = (Einkommensverschlechterung) abstractFinanzielleSituation;
+			switch (minus) {
+			case 0:
+				return hasValueBigerThanZero(einkommensverschlechterung.getErsatzeinkommenSelbststaendigkeitBasisjahr());
+			case 1:
+				return hasValueBigerThanZero(einkommensverschlechterung.getErsatzeinkommenSelbststaendigkeitBasisjahrMinus1());
+			default:
+				return false;
+			}
+		}
+		return false;
+	}
 }

@@ -202,4 +202,12 @@ abstract class AbstractFinanzielleSituationDokumente
 	protected boolean isFKJV() {
 		return isFKJV;
 	}
+
+	public boolean hasValueBigerThanZero(@Nullable BigDecimal bigDecimal) {
+		if (bigDecimal == null) {
+			return false;
+		}
+
+		return bigDecimal.compareTo(BigDecimal.ZERO) > 0;
+	}
 }
