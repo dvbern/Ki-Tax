@@ -2748,6 +2748,8 @@ public class JaxBConverter extends AbstractConverter {
 				finSitZusatzangabenAppenzellToMerge));
 		}
 
+		abstractFinanzielleSituation.setErsatzeinkommenSelbststaendigkeitBasisjahr(abstractFinanzielleSituationJAXP.getErsatzeinkommenSelbststaendigkeitBasisjahr());
+		abstractFinanzielleSituation.setErsatzeinkommenSelbststaendigkeitBasisjahrMinus1(abstractFinanzielleSituationJAXP.getErsatzeinkommenSelbststaendigkeitBasisjahrMinus1());
 
 		return abstractFinanzielleSituation;
 	}
@@ -2790,6 +2792,8 @@ public class JaxBConverter extends AbstractConverter {
 			persistedAbstractFinanzielleSituation.getSelbstdeklaration()));
 
 		jaxAbstractFinanzielleSituation.setFinSitZusatzangabenAppenzell(finSitZusatzangabenAppenzellToJax(persistedAbstractFinanzielleSituation.getFinSitZusatzangabenAppenzell()));
+		jaxAbstractFinanzielleSituation.setErsatzeinkommenSelbststaendigkeitBasisjahr(persistedAbstractFinanzielleSituation.getErsatzeinkommenSelbststaendigkeitBasisjahr());
+		jaxAbstractFinanzielleSituation.setErsatzeinkommenSelbststaendigkeitBasisjahrMinus1(persistedAbstractFinanzielleSituation.getErsatzeinkommenSelbststaendigkeitBasisjahrMinus1());
 	}
 
 	private FinanzielleSituation finanzielleSituationToEntity(
@@ -2831,9 +2835,6 @@ public class JaxBConverter extends AbstractConverter {
 		finanzielleSituation.setVeranlagt(finanzielleSituationJAXP.getVeranlagt());
 		finanzielleSituation.setVeranlagtVorjahr(finanzielleSituationJAXP.getVeranlagtVorjahr());
 		finanzielleSituation.setMomentanSelbststaendig(finanzielleSituationJAXP.getMomentanSelbststaendig());
-
-		finanzielleSituation.setErsatzeinkommenSelbststaendigkeitBasisjahr(finanzielleSituationJAXP.getErsatzeinkommenSelbststaendigkeitBasisjahr());
-		finanzielleSituation.setErsatzeinkommenSelbststaendigkeitBasisjahrMinus1(finanzielleSituationJAXP.getErsatzeinkommenSelbststaendigkeitBasisjahrMinus1());
 		finanzielleSituation.setErsatzeinkommenSelbststaendigkeitBasisjahrMinus2(finanzielleSituationJAXP.getErsatzeinkommenSelbststaendigkeitBasisjahrMinus2());
 
 		return finanzielleSituation;
@@ -2926,8 +2927,6 @@ public class JaxBConverter extends AbstractConverter {
 		jaxFinanzielleSituation.setAutomatischePruefungErlaubt(persistedFinanzielleSituation.getAutomatischePruefungErlaubt());
 		jaxFinanzielleSituation.setMomentanSelbststaendig(persistedFinanzielleSituation.getMomentanSelbststaendig());
 
-		jaxFinanzielleSituation.setErsatzeinkommenSelbststaendigkeitBasisjahr(persistedFinanzielleSituation.getErsatzeinkommenSelbststaendigkeitBasisjahr());
-		jaxFinanzielleSituation.setErsatzeinkommenSelbststaendigkeitBasisjahrMinus1(persistedFinanzielleSituation.getErsatzeinkommenSelbststaendigkeitBasisjahrMinus1());
 		jaxFinanzielleSituation.setErsatzeinkommenSelbststaendigkeitBasisjahrMinus2(persistedFinanzielleSituation.getErsatzeinkommenSelbststaendigkeitBasisjahrMinus2());
 
 		return jaxFinanzielleSituation;

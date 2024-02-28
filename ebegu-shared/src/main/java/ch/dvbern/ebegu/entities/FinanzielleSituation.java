@@ -114,16 +114,6 @@ public class FinanzielleSituation extends AbstractFinanzielleSituation {
 	@Nullable
 	@Column(nullable = true)
 	@Min(0)
-	private BigDecimal ersatzeinkommenSelbststaendigkeitBasisjahr;
-
-	@Nullable
-	@Column(nullable = true)
-	@Min(0)
-	private BigDecimal ersatzeinkommenSelbststaendigkeitBasisjahrMinus1;
-
-	@Nullable
-	@Column(nullable = true)
-	@Min(0)
 	private BigDecimal ersatzeinkommenSelbststaendigkeitBasisjahrMinus2;
 
 	@Nullable
@@ -291,25 +281,6 @@ public class FinanzielleSituation extends AbstractFinanzielleSituation {
 	}
 
 	@Nullable
-	public BigDecimal getErsatzeinkommenSelbststaendigkeitBasisjahr() {
-		return ersatzeinkommenSelbststaendigkeitBasisjahr;
-	}
-
-	public void setErsatzeinkommenSelbststaendigkeitBasisjahr(@Nullable BigDecimal ersatzeinkommenSelbststaendigkeitBasisjahr) {
-		this.ersatzeinkommenSelbststaendigkeitBasisjahr = ersatzeinkommenSelbststaendigkeitBasisjahr;
-	}
-
-	@Nullable
-	public BigDecimal getErsatzeinkommenSelbststaendigkeitBasisjahrMinus1() {
-		return ersatzeinkommenSelbststaendigkeitBasisjahrMinus1;
-	}
-
-	public void setErsatzeinkommenSelbststaendigkeitBasisjahrMinus1(
-		@Nullable BigDecimal ersatzeinkommenSelbststaendigkeitBasisjahrMinus1) {
-		this.ersatzeinkommenSelbststaendigkeitBasisjahrMinus1 = ersatzeinkommenSelbststaendigkeitBasisjahrMinus1;
-	}
-
-	@Nullable
 	public BigDecimal getErsatzeinkommenSelbststaendigkeitBasisjahrMinus2() {
 		return ersatzeinkommenSelbststaendigkeitBasisjahrMinus2;
 	}
@@ -343,8 +314,6 @@ public class FinanzielleSituation extends AbstractFinanzielleSituation {
 			target.setSteuerdatenAbfrageTimestamp(this.getSteuerdatenAbfrageTimestamp());
 			target.setAutomatischePruefungErlaubt(this.getAutomatischePruefungErlaubt());
 			target.setMomentanSelbststaendig(this.getMomentanSelbststaendig());
-			target.setErsatzeinkommenSelbststaendigkeitBasisjahr(this.getErsatzeinkommenSelbststaendigkeitBasisjahr());
-			target.setErsatzeinkommenSelbststaendigkeitBasisjahrMinus1(this.getErsatzeinkommenSelbststaendigkeitBasisjahrMinus1());
 			target.setErsatzeinkommenSelbststaendigkeitBasisjahrMinus2(this.getErsatzeinkommenSelbststaendigkeitBasisjahrMinus2());
 			break;
 		case ERNEUERUNG:
@@ -385,8 +354,6 @@ public class FinanzielleSituation extends AbstractFinanzielleSituation {
 			MathUtil.isSame(getAbzuegeKinderAusbildung(), otherFinSit.getAbzuegeKinderAusbildung()) &&
 			MathUtil.isSame(getUnterhaltsBeitraege(), otherFinSit.getUnterhaltsBeitraege()) &&
 			Objects.equals(getMomentanSelbststaendig(), otherFinSit.getMomentanSelbststaendig()) &&
-			MathUtil.isSame(getErsatzeinkommenSelbststaendigkeitBasisjahr(), otherFinSit.getErsatzeinkommenSelbststaendigkeitBasisjahr()) &&
-			MathUtil.isSame(getErsatzeinkommenSelbststaendigkeitBasisjahrMinus1(), otherFinSit.getErsatzeinkommenSelbststaendigkeitBasisjahrMinus1()) &&
 			MathUtil.isSame(getErsatzeinkommenSelbststaendigkeitBasisjahrMinus2(), otherFinSit.getErsatzeinkommenSelbststaendigkeitBasisjahrMinus2());
 	}
 

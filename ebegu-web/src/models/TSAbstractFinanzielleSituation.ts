@@ -15,6 +15,7 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+import {EbeguUtil} from '../utils/EbeguUtil';
 import {TSSteuerdatenAnfrageStatus} from './enums/TSSteuerdatenAnfrageStatus';
 import {TSAbstractMutableEntity} from './TSAbstractMutableEntity';
 import {TSFinanzielleSituationSelbstdeklaration} from './TSFinanzielleSituationSelbstdeklaration';
@@ -45,6 +46,8 @@ export class TSAbstractFinanzielleSituation extends TSAbstractMutableEntity {
     private _abzugSchuldzinsen: number;
     private _selbstdeklaration: TSFinanzielleSituationSelbstdeklaration;
     private _finSitZusatzangabenAppenzell: TSFinSitZusatzangabenAppenzell;
+    private _ersatzeinkommenSelbststaendigkeitBasisjahr: number;
+    private _ersatzeinkommenSelbststaendigkeitBasisjahrMinus1: number;
 
     public constructor() {
         super();
@@ -230,5 +233,21 @@ export class TSAbstractFinanzielleSituation extends TSAbstractMutableEntity {
 
     public set finSitZusatzangabenAppenzell(value: TSFinSitZusatzangabenAppenzell) {
         this._finSitZusatzangabenAppenzell = value;
+    }
+
+    public get ersatzeinkommenSelbststaendigkeitBasisjahr(): number {
+        return this._ersatzeinkommenSelbststaendigkeitBasisjahr;
+    }
+
+    public set ersatzeinkommenSelbststaendigkeitBasisjahr(value: number) {
+        this._ersatzeinkommenSelbststaendigkeitBasisjahr = value;
+    }
+
+    public get ersatzeinkommenSelbststaendigkeitBasisjahrMinus1(): number {
+        return this._ersatzeinkommenSelbststaendigkeitBasisjahrMinus1;
+    }
+
+    public set ersatzeinkommenSelbststaendigkeitBasisjahrMinus1(value: number) {
+        this._ersatzeinkommenSelbststaendigkeitBasisjahrMinus1 = value;
     }
 }

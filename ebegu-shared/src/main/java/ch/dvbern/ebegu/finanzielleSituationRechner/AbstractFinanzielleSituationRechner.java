@@ -321,7 +321,7 @@ public abstract class AbstractFinanzielleSituationRechner {
 			if (finanzielleSituation != null && einkVersBjp1 != null) {
 				BigDecimal gBJ = calcGeschaeftsgewinnWithErsatzeinkommenAusSelbststaendigkeit(
 					einkVersBjp1.getGeschaeftsgewinnBasisjahr(),
-					null);
+					einkVersBjp1.getErsatzeinkommenSelbststaendigkeitBasisjahr());
 				BigDecimal gBJ1 =  calcGeschaeftsgewinnWithErsatzeinkommenAusSelbststaendigkeit(
 					finanzielleSituation.getGeschaeftsgewinnBasisjahr(),
 					finanzielleSituation.getErsatzeinkommenSelbststaendigkeitBasisjahr());
@@ -335,10 +335,10 @@ public abstract class AbstractFinanzielleSituationRechner {
 			if (ekvi != null && ekvi.getEkvFuerBasisJahrPlus1() && einkVersBjp1 != null) {
 				BigDecimal gBJ =  calcGeschaeftsgewinnWithErsatzeinkommenAusSelbststaendigkeit(
 					einkVersBjp2.getGeschaeftsgewinnBasisjahr(),
-					null);
+					einkVersBjp2.getErsatzeinkommenSelbststaendigkeitBasisjahr());
 				BigDecimal gBJ1 =  calcGeschaeftsgewinnWithErsatzeinkommenAusSelbststaendigkeit(
 					einkVersBjp1.getGeschaeftsgewinnBasisjahr(),
-					null);
+					einkVersBjp1.getErsatzeinkommenSelbststaendigkeitBasisjahr());
 				BigDecimal gBJ2 =  calcGeschaeftsgewinnWithErsatzeinkommenAusSelbststaendigkeit(
 					finanzielleSituation.getGeschaeftsgewinnBasisjahr(),
 					finanzielleSituation.getErsatzeinkommenSelbststaendigkeitBasisjahr());
@@ -347,10 +347,10 @@ public abstract class AbstractFinanzielleSituationRechner {
 			} else {
 				BigDecimal gBJ =  calcGeschaeftsgewinnWithErsatzeinkommenAusSelbststaendigkeit(
 					einkVersBjp2.getGeschaeftsgewinnBasisjahr(),
-					null);
+					einkVersBjp2.getErsatzeinkommenSelbststaendigkeitBasisjahr());
 				BigDecimal gBJ1 =  calcGeschaeftsgewinnWithErsatzeinkommenAusSelbststaendigkeit(
 					einkVersBjp2.getGeschaeftsgewinnBasisjahrMinus1(),
-					null);
+					einkVersBjp2.getErsatzeinkommenSelbststaendigkeitBasisjahr());
 				BigDecimal gBJ2 =  calcGeschaeftsgewinnWithErsatzeinkommenAusSelbststaendigkeit(
 					finanzielleSituation.getGeschaeftsgewinnBasisjahr(),
 					finanzielleSituation.getErsatzeinkommenSelbststaendigkeitBasisjahr());

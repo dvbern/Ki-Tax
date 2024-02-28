@@ -89,6 +89,12 @@ public class JaxAbstractFinanzielleSituation extends JaxAbstractDTO {
 	private JaxFinSitZusatzangabenAppenzell finSitZusatzangabenAppenzell;
 
 	@Nullable
+	private BigDecimal ersatzeinkommenSelbststaendigkeitBasisjahr;
+
+	@Nullable
+	private BigDecimal ersatzeinkommenSelbststaendigkeitBasisjahrMinus1;
+
+	@Nullable
 	public BigDecimal getNettolohn() {
 		return nettolohn;
 	}
@@ -274,5 +280,25 @@ public class JaxAbstractFinanzielleSituation extends JaxAbstractDTO {
 
 	public void setFinSitZusatzangabenAppenzell(@Nullable JaxFinSitZusatzangabenAppenzell finSitZusatzangabenAppenzell) {
 		this.finSitZusatzangabenAppenzell = finSitZusatzangabenAppenzell;
+	}
+
+
+	@Nullable
+	public BigDecimal getErsatzeinkommenSelbststaendigkeitBasisjahr() {
+		return ersatzeinkommenSelbststaendigkeitBasisjahr;
+	}
+
+	public void setErsatzeinkommenSelbststaendigkeitBasisjahr(@Nullable BigDecimal ersatzeinkommenSelbststaendigkeitBasisjahr) {
+		this.ersatzeinkommenSelbststaendigkeitBasisjahr = ersatzeinkommenSelbststaendigkeitBasisjahr;
+	}
+
+	@Nullable
+	public BigDecimal getErsatzeinkommenSelbststaendigkeitBasisjahrMinus1() {
+		return ersatzeinkommenSelbststaendigkeitBasisjahrMinus1;
+	}
+
+	public void setErsatzeinkommenSelbststaendigkeitBasisjahrMinus1(
+		@Nullable BigDecimal ersatzeinkommenSelbststaendigkeitBasisjahrMinus1) {
+		this.ersatzeinkommenSelbststaendigkeitBasisjahrMinus1 = ersatzeinkommenSelbststaendigkeitBasisjahrMinus1;
 	}
 }

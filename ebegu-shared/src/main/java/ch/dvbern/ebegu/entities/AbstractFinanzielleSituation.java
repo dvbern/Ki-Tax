@@ -25,6 +25,8 @@ import org.hibernate.envers.Audited;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.persistence.*;
+import javax.validation.constraints.Min;
+
 import java.math.BigDecimal;
 
 /**
@@ -133,6 +135,16 @@ public abstract class AbstractFinanzielleSituation extends AbstractMutableEntity
 	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true,fetch = FetchType.EAGER)
 	@JoinColumn(nullable = true)
 	private FinSitZusatzangabenAppenzell finSitZusatzangabenAppenzell;
+
+	@Nullable
+	@Column(nullable = true)
+	@Min(0)
+	private BigDecimal ersatzeinkommenSelbststaendigkeitBasisjahr;
+
+	@Nullable
+	@Column(nullable = true)
+	@Min(0)
+	private BigDecimal ersatzeinkommenSelbststaendigkeitBasisjahrMinus1;
 
 	public AbstractFinanzielleSituation() {
 	}
@@ -371,6 +383,25 @@ public abstract class AbstractFinanzielleSituation extends AbstractMutableEntity
 		this.finSitZusatzangabenAppenzell = finSitZusatzangabenAppenzell;
 	}
 
+	@Nullable
+	public BigDecimal getErsatzeinkommenSelbststaendigkeitBasisjahr() {
+		return ersatzeinkommenSelbststaendigkeitBasisjahr;
+	}
+
+	public void setErsatzeinkommenSelbststaendigkeitBasisjahr(@Nullable BigDecimal ersatzeinkommenSelbststaendigkeitBasisjahr) {
+		this.ersatzeinkommenSelbststaendigkeitBasisjahr = ersatzeinkommenSelbststaendigkeitBasisjahr;
+	}
+
+	@Nullable
+	public BigDecimal getErsatzeinkommenSelbststaendigkeitBasisjahrMinus1() {
+		return ersatzeinkommenSelbststaendigkeitBasisjahrMinus1;
+	}
+
+	public void setErsatzeinkommenSelbststaendigkeitBasisjahrMinus1(
+		@Nullable BigDecimal ersatzeinkommenSelbststaendigkeitBasisjahrMinus1) {
+		this.ersatzeinkommenSelbststaendigkeitBasisjahrMinus1 = ersatzeinkommenSelbststaendigkeitBasisjahrMinus1;
+	}
+
 	@Nonnull
 	public AbstractFinanzielleSituation copyAbstractFinanzielleSituation(
 		@Nonnull AbstractFinanzielleSituation target,
@@ -406,6 +437,8 @@ public abstract class AbstractFinanzielleSituation extends AbstractMutableEntity
 			if (this.getFinSitZusatzangabenAppenzell() != null) {
 				target.setFinSitZusatzangabenAppenzell(this.getFinSitZusatzangabenAppenzell().copyFinSitZusatzangabenAppenzell(new FinSitZusatzangabenAppenzell(), copyType));
 			}
+			target.setErsatzeinkommenSelbststaendigkeitBasisjahr(this.getErsatzeinkommenSelbststaendigkeitBasisjahr());
+			target.setErsatzeinkommenSelbststaendigkeitBasisjahrMinus1(this.getErsatzeinkommenSelbststaendigkeitBasisjahrMinus1());
 			break;
 		case ERNEUERUNG:
 		case ERNEUERUNG_NEUES_DOSSIER:
@@ -445,7 +478,9 @@ public abstract class AbstractFinanzielleSituation extends AbstractMutableEntity
 			MathUtil.isSame(
 					getAmountEinkommenInVereinfachtemVerfahrenAbgerechnet(),
 					otherFinSituation.getAmountEinkommenInVereinfachtemVerfahrenAbgerechnet()) &&
-			MathUtil.isSame(getDurchschnittlicherGeschaeftsgewinn(), otherFinSituation.getDurchschnittlicherGeschaeftsgewinn());
+			MathUtil.isSame(getDurchschnittlicherGeschaeftsgewinn(), otherFinSituation.getDurchschnittlicherGeschaeftsgewinn()) &&
+		    MathUtil.isSame(getErsatzeinkommenSelbststaendigkeitBasisjahr(), otherFinSituation.getErsatzeinkommenSelbststaendigkeitBasisjahr()) &&
+			MathUtil.isSame(getErsatzeinkommenSelbststaendigkeitBasisjahrMinus1(), otherFinSituation.getErsatzeinkommenSelbststaendigkeitBasisjahrMinus1());
 	}
 
 	public boolean isVollstaendig(FinanzielleSituationTyp finSitTyp) {
