@@ -48,7 +48,7 @@ public class FinanzielleSituationPdfGeneratorSolothurn extends FinanzielleSituat
 
 	private static final String EIKOMMEN_TITLE = "PdfGeneration_FinSit_EinkommenTitle";
 	private static final String NETTOLOHN = "PdfGeneration_FinSit_Nettolohn";
-	private static final String ERH_UNTERHALTSBEITRAEGE = "PdfGeneration_FinSit_ErhalteneUnterhaltsbeitraege";
+	private static final String ENT_UNTERHALTSBEITRAEGE = "PdfGeneration_FinSit_EntrichteteUnterhaltsbeitraege";
 	private static final String KINDER_IN_AUSBILDUNG = "PdfGeneration_KinderInAusbildung";
 	private static final String STEUERBARES_VERMOEGEN = "PdfGeneration_FinSit_SteuerbaresVermoegen";
 	private static final String FOOTER_STEUERBARES_VERMOEGEN = "PdfGeneration_FinSit_FooterSteuerbaresVermoegen";
@@ -238,16 +238,8 @@ public class FinanzielleSituationPdfGeneratorSolothurn extends FinanzielleSituat
 			finSitUrsprunglich
 		);
 
-		FinanzielleSituationRow unterhaltsbeitraege = createRow(
-			translate(ERH_UNTERHALTSBEITRAEGE),
-			FinanzielleSituation::getUnterhaltsBeitraege,
-			finSit,
-			finSitUrsprunglich
-		);
-
 		tableEinkommen.addRow(title);
 		tableEinkommen.addRow(nettolohn);
-		tableEinkommen.addRow(unterhaltsbeitraege);
 		return tableEinkommen.createTable();
 	}
 
@@ -272,8 +264,16 @@ public class FinanzielleSituationPdfGeneratorSolothurn extends FinanzielleSituat
 			finSitUrsprunglich
 		);
 
+		FinanzielleSituationRow unterhaltsbeitraege = createRow(
+			translate(ENT_UNTERHALTSBEITRAEGE),
+			FinanzielleSituation::getUnterhaltsBeitraege,
+			finSit,
+			finSitUrsprunglich
+		);
+
 		tableAbzuege.addRow(title);
 		tableAbzuege.addRow(abzuegeKinder);
+		tableAbzuege.addRow(unterhaltsbeitraege);
 		return tableAbzuege.createTable();
 	}
 
