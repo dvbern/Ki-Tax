@@ -43,9 +43,6 @@ public class CheckKinderabzugValidator implements ConstraintValidator<CheckKinde
 		if (!validateKindErstausbildung(kind)) {
 			return false;
 		}
-		if (!validateGeteilteElterlicheSorgeObhut(kind)) {
-			return false;
-		}
 		return true;
 	}
 
@@ -104,13 +101,5 @@ public class CheckKinderabzugValidator implements ConstraintValidator<CheckKinde
 			}
 		}
 		return true;
-	}
-
-	private boolean validateGeteilteElterlicheSorgeObhut(@Nonnull Kind kind) {
-		if (kind.getObhutAlternierendAusueben() != null && kind.getObhutAlternierendAusueben()
-			&& kind.getFamilienErgaenzendeBetreuung() != null && !kind.getFamilienErgaenzendeBetreuung()) {
-				return kind.getGeteilteElterlicheSorgeObhut() != null;
-		}
-		return kind.getGeteilteElterlicheSorgeObhut() == null;
 	}
 }

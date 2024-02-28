@@ -74,21 +74,6 @@
                 </dv-radio-container-x>
             </div>
         </div>
-        <div class="row" *ngIf="geteilteElterlicheSorgeObhutVisible()">
-            <div class="col-xs-12">
-                <dv-radio-container-x>
-                    <dv-radio-input-x
-                        data-test="container.geteilte-elterliche-sorge-obhut"
-                        [label]="'GETEILTE_ELTERLICHE_SORGE_OBHUT'"
-                        [(model)]="getModel().geteilteElterlicheSorgeObhut"
-                        (modelChange)="change()"
-                        [readonly]="hasKindBetreuungen()"
-                        [dvBisherValue]="getModelGS()?.geteilteElterlicheSorgeObhut"
-                        [required]="true"
-                    ></dv-radio-input-x>
-                </dv-radio-container-x>
-            </div>
-        </div>
         <div class="row" *ngIf="gemeinsamesGesuchVisible()">
             <div class="col-xs-12">
                 <dv-radio-container-x>

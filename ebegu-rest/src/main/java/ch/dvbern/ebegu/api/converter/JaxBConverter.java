@@ -2384,7 +2384,6 @@ public class JaxBConverter extends AbstractConverter {
 			persistedKind.getPensumAusserordentlicherAnspruch()));
 		jaxKind.setZukunftigeGeburtsdatum(persistedKind.getZukunftigeGeburtsdatum());
 		jaxKind.setInPruefung(persistedKind.getInPruefung());
-		jaxKind.setGeteilteElterlicheSorgeObhut(persistedKind.getGeteilteElterlicheSorgeObhut());
 		return jaxKind;
 	}
 
@@ -2542,7 +2541,6 @@ public class JaxBConverter extends AbstractConverter {
 		kind.setZemisNummer(kindJAXP.getZemisNummer());
 		kind.setEinschulungTyp(kindJAXP.getEinschulungTyp());
 		kind.setKeinPlatzInSchulhort(kindJAXP.getKeinPlatzInSchulhort());
-		kind.setGeteilteElterlicheSorgeObhut(kindJAXP.getGeteilteElterlicheSorgeObhut());
 
 		pensumFachstellenToEntity(kind, kindJAXP.getPensumFachstellen());
 

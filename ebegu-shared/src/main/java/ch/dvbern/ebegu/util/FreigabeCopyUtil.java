@@ -223,7 +223,6 @@ public final class FreigabeCopyUtil {
 		kindGS.setFamilienErgaenzendeBetreuung(kindJA.getFamilienErgaenzendeBetreuung());
 		kindGS.setSprichtAmtssprache(kindJA.getSprichtAmtssprache());
 		kindGS.setEinschulungTyp(kindJA.getEinschulungTyp());
-		kindGS.setGeteilteElterlicheSorgeObhut(kindJA.getGeteilteElterlicheSorgeObhut());
 	}
 
 	private static void copyBetreuungspensumContainer(@Nullable BetreuungspensumContainer container) {

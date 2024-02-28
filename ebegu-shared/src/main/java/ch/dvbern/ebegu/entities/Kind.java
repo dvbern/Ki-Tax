@@ -145,11 +145,6 @@ public class Kind extends AbstractPersonEntity {
 	@Nonnull
 	private Boolean inPruefung = false;
 
-	@Column(nullable = true)
-	@Nullable
-	private Boolean geteilteElterlicheSorgeObhut;
-
-
 	public Kind() {
 	}
 
@@ -358,7 +353,6 @@ public class Kind extends AbstractPersonEntity {
 			target.setAlimenteBezahlen(this.getAlimenteBezahlen());
 			target.setZukunftigeGeburtsdatum(target.getGeburtsdatum().isAfter(regelStartDatum) ? true : false);
 			target.setKeinPlatzInSchulhort(this.getKeinPlatzInSchulhort());
-			target.setGeteilteElterlicheSorgeObhut(this.getGeteilteElterlicheSorgeObhut());
 			copyFachstelle(target, copyType);
 			copyAusserordentlicherAnspruch(target, copyType);
 			break;
@@ -375,7 +369,6 @@ public class Kind extends AbstractPersonEntity {
 			target.setAlimenteErhalten(this.getAlimenteErhalten());
 			target.setAlimenteBezahlen(this.getAlimenteBezahlen());
 			target.setZukunftigeGeburtsdatum(target.getGeburtsdatum().isAfter(regelStartDatum) ? true : false);
-			target.setGeteilteElterlicheSorgeObhut(this.getGeteilteElterlicheSorgeObhut());
 			copyFachstelleIfStillValid(target, copyType, gesuchsperiode);
 			// Ausserordentlicher Anspruch wird nicht kopiert, auch wenn er noch gueltig waere.
 			// Dieser liegt ja in der Kompetenz der Gemeinde und kann nicht uebernommen werden
@@ -488,14 +481,5 @@ public class Kind extends AbstractPersonEntity {
 
 	public void setKeinPlatzInSchulhort(@Nonnull Boolean keinPlatzInSchulhort) {
 		this.keinPlatzInSchulhort = keinPlatzInSchulhort;
-	}
-
-	@Nullable
-	public Boolean getGeteilteElterlicheSorgeObhut() {
-		return geteilteElterlicheSorgeObhut;
-	}
-
-	public void setGeteilteElterlicheSorgeObhut(@Nullable Boolean geteilteElterlicheSorgeObhut) {
-		this.geteilteElterlicheSorgeObhut = geteilteElterlicheSorgeObhut;
 	}
 }

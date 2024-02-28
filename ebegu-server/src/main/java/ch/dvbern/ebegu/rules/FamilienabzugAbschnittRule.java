@@ -344,7 +344,7 @@ public class FamilienabzugAbschnittRule extends AbstractAbschnittRule {
 		Objects.requireNonNull(familiensituation);
 
 		if (!kind.getFamilienErgaenzendeBetreuung()) {
-			if (Boolean.TRUE.equals(kind.getGeteilteElterlicheSorgeObhut())) {
+			if (Boolean.TRUE.equals(kind.getGemeinsamesGesuch())) {
 				return 1;
 			}
 			return 0.5;

@@ -43,7 +43,6 @@ export class TSKind extends TSAbstractPersonEntity {
     private _zemisNummerStandardFormat: string; // ZEMIS-Nummer in Format 12345678.9
     private _zukunftigeGeburtsdatum: boolean;
     private _inPruefung: boolean;
-    private _geteilteElterlicheSorgeObhut: boolean;
 
     public constructor() {
         super();
@@ -216,13 +215,5 @@ export class TSKind extends TSAbstractPersonEntity {
 
     public set keinPlatzInSchulhort(value: boolean) {
         this._keinPlatzInSchulhort = value;
-    }
-
-    public get geteilteElterlicheSorgeObhut(): boolean {
-        return this._geteilteElterlicheSorgeObhut;
-    }
-
-    public set geteilteElterlicheSorgeObhut(value: boolean) {
-        this._geteilteElterlicheSorgeObhut = value;
     }
 }

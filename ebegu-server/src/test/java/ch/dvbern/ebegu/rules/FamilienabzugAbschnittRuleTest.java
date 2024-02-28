@@ -460,14 +460,14 @@ public class FamilienabzugAbschnittRuleTest {
 	}
 
 	@Test
-	public void kinderAbzugFKJV2_HalbesKindWennKeineElterlicheSorgeObhut() {
+	public void kinderAbzugFKJV2_HalbesKindWennKeineGemeinsameGesuch() {
 		Gesuch gesuch = createGesuchWithTwoGesuchsteller();
 		Set<KindContainer> kindContainers = new LinkedHashSet<>();
 		final LocalDate date = LocalDate.of(2015, Month.MARCH, 25);
 		KindContainer kind = createKindContainer(Kinderabzug.HALBER_ABZUG, date);
 		kind.getKindJA().setObhutAlternierendAusueben(true);
 		kind.getKindJA().setFamilienErgaenzendeBetreuung(false);
-		kind.getKindJA().setGeteilteElterlicheSorgeObhut(false);
+		kind.getKindJA().setGemeinsamesGesuch(false);
 		kindContainers.add(kind);
 		gesuch.setKindContainers(kindContainers);
 
@@ -477,14 +477,14 @@ public class FamilienabzugAbschnittRuleTest {
 	}
 
 	@Test
-	public void kinderAbzugFKJV2_GanzesKindWennElterlicheSorgeObhut() {
+	public void kinderAbzugFKJV2_GanzesKindWennGemeinsamesGesuch() {
 		Gesuch gesuch = createGesuchWithTwoGesuchsteller();
 		Set<KindContainer> kindContainers = new LinkedHashSet<>();
 		final LocalDate date = LocalDate.of(2015, Month.MARCH, 25);
 		KindContainer kind = createKindContainer(Kinderabzug.HALBER_ABZUG, date);
 		kind.getKindJA().setObhutAlternierendAusueben(true);
 		kind.getKindJA().setFamilienErgaenzendeBetreuung(false);
-		kind.getKindJA().setGeteilteElterlicheSorgeObhut(true);
+		kind.getKindJA().setGemeinsamesGesuch(true);
 		kindContainers.add(kind);
 		gesuch.setKindContainers(kindContainers);
 

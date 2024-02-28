@@ -120,7 +120,7 @@ export class FkjvKinderabzugComponent implements OnInit, AfterViewInit, OnDestro
 
     public gemeinsamesGesuchVisible(): boolean {
         return this.getModel().obhutAlternierendAusueben &&
-            this.getModel().familienErgaenzendeBetreuung &&
+            EbeguUtil.isNotNullOrUndefined(this.getModel().familienErgaenzendeBetreuung) &&
             this.isAlleinerziehenOrShortKonkubinat();
     }
 
@@ -163,9 +163,6 @@ export class FkjvKinderabzugComponent implements OnInit, AfterViewInit, OnDestro
         if (!this.alimenteBezahlenVisible()) {
             this.getModel().alimenteBezahlen = undefined;
         }
-        if (!this.geteilteElterlicheSorgeObhutVisible()) {
-            this.getModel().geteilteElterlicheSorgeObhut = undefined;
-        }
         // Wenn das Kind eine Betreuung hat ist es read-only und darf nicht zurück gesetzt werden
         if (!this.famErgaenzendeBetreuuungVisible() && !this.hasKindBetreuungen()) {
             this.getModel().familienErgaenzendeBetreuung = false;
@@ -183,13 +180,6 @@ export class FkjvKinderabzugComponent implements OnInit, AfterViewInit, OnDestro
 
     public hasKindBetreuungen(): boolean {
         return this.kindContainer.betreuungen?.length > 0;
-    }
-
-    public geteilteElterlicheSorgeObhutVisible(): boolean {
-        return this.famErgaenzendeBetreuuungVisible()
-            && EbeguUtil.isNotNullOrUndefined(this.getModel().familienErgaenzendeBetreuung)
-            && !this.getModel().familienErgaenzendeBetreuung
-            && this.getModel().obhutAlternierendAusueben;
     }
 
     private isShortKonkubinat(): boolean {
