@@ -15,11 +15,15 @@
 
 import {waitForAsync} from '@angular/core/testing';
 import {IComponentControllerService, IScope} from 'angular';
+import {of} from 'rxjs';
+import {EinstellungRS} from '../../../../../admin/service/einstellungRS.rest';
 import {ngServicesMock} from '../../../../../hybridTools/ngServicesMocks';
 import {TSCreationAction} from '../../../../../models/enums/TSCreationAction';
 import {TSEingangsart} from '../../../../../models/enums/TSEingangsart';
+import {TSEinstellungKey} from '../../../../../models/enums/TSEinstellungKey';
 import {TSEinkommensverschlechterung} from '../../../../../models/TSEinkommensverschlechterung';
 import {TSEinkommensverschlechterungContainer} from '../../../../../models/TSEinkommensverschlechterungContainer';
+import {TSEinstellung} from '../../../../../models/TSEinstellung';
 import {TSGesuchsteller} from '../../../../../models/TSGesuchsteller';
 import {TSGesuchstellerContainer} from '../../../../../models/TSGesuchstellerContainer';
 import {GESUCH_JS_MODULE} from '../../../../gesuch.module';
@@ -28,6 +32,7 @@ import {GesuchModelManager} from '../../../../service/gesuchModelManager';
 describe('einkommensverschlechterungView', () => {
 
     let gesuchModelManager: GesuchModelManager;
+    let einstellungRS: EinstellungRS;
 
     beforeEach(angular.mock.module(GESUCH_JS_MODULE.name));
 
@@ -40,8 +45,13 @@ describe('einkommensverschlechterungView', () => {
     beforeEach(angular.mock.inject($injector => {
         $componentController = $injector.get('$componentController');
         gesuchModelManager = $injector.get('GesuchModelManager');
+        einstellungRS = $injector.get('EinstellungRS');
         const $rootScope = $injector.get('$rootScope');
         scope = $rootScope.$new();
+        const zusaetzlicheFelderEinkommenEinstellung = new TSEinstellung(null,
+            TSEinstellungKey.ZUSATZLICHE_FELDER_ERSATZEINKOMMEN,
+            'false');
+        spyOn(einstellungRS, 'getAllEinstellungenBySystemCached').and.returnValue(of([zusaetzlicheFelderEinkommenEinstellung]));
     }));
 
     beforeEach(waitForAsync(() => {
