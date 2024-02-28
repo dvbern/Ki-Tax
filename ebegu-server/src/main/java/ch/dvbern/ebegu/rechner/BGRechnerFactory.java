@@ -15,14 +15,6 @@
 
 package ch.dvbern.ebegu.rechner;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Locale;
-import java.util.Objects;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
 import ch.dvbern.ebegu.entities.AbstractPlatz;
 import ch.dvbern.ebegu.entities.KitaxUebergangsloesungInstitutionOeffnungszeiten;
 import ch.dvbern.ebegu.entities.Mandant;
@@ -31,6 +23,13 @@ import ch.dvbern.ebegu.rechner.kitax.KitaKitaxBernRechner;
 import ch.dvbern.ebegu.rechner.kitax.TageselternKitaxBernRechner;
 import ch.dvbern.ebegu.rechner.rules.RechnerRule;
 import ch.dvbern.ebegu.util.KitaxUebergangsloesungParameter;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.Collections;
+import java.util.List;
+import java.util.Locale;
+import java.util.Objects;
 
 /**
  * Factory, welche für eine Betreuung den richtigen BG-Rechner ermittelt
@@ -45,17 +44,8 @@ public final class BGRechnerFactory {
 		@Nonnull BetreuungsangebotTyp betreuungsangebotTyp,
 		@Nonnull List<RechnerRule> rechnerRulesForGemeinde,
 		@Nonnull Mandant mandant) {
-		if (BetreuungsangebotTyp.KITA == betreuungsangebotTyp) {
-			return new KitaRechnerVisitor(rechnerRulesForGemeinde).getKitaRechnerForMandant(mandant);
-		}
-		if (BetreuungsangebotTyp.TAGESFAMILIEN == betreuungsangebotTyp) {
-			return new TageselternRechnerVisitor(rechnerRulesForGemeinde).getTageselternRechnerForMandant(mandant);
-		}
-		if (BetreuungsangebotTyp.TAGESSCHULE == betreuungsangebotTyp) {
-			return new TagesschuleRechnerVisitor(rechnerRulesForGemeinde).getTagesschuleRechnerForMandant(mandant);
-		}
-		// Alle anderen Angebotstypen werden nicht berechnet
-		return null;
+		return new BetreuungsangebotRechnerVisitor(mandant, rechnerRulesForGemeinde)
+			.getRechnerForBetreuungsTyp(betreuungsangebotTyp);
 	}
 
 	@Nullable

@@ -282,6 +282,7 @@ public class AbstractEntityListener {
 		return (abstractEntity instanceof Benutzer
 			|| abstractEntity instanceof Institution
 			|| abstractEntity instanceof Traegerschaft
+			|| abstractEntity instanceof Sozialdienst
 			|| abstractEntity instanceof Gesuchsperiode) && getPrincipalBean().getMandant() == null;
 	}
 

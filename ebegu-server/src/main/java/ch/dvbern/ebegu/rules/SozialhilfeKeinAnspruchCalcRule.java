@@ -17,12 +17,6 @@
 
 package ch.dvbern.ebegu.rules;
 
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-
-import javax.annotation.Nonnull;
-
 import ch.dvbern.ebegu.dto.BGCalculationInput;
 import ch.dvbern.ebegu.entities.AbstractPlatz;
 import ch.dvbern.ebegu.entities.Einstellung;
@@ -31,11 +25,11 @@ import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.enums.MsgKey;
 import ch.dvbern.ebegu.types.DateRange;
-import com.google.common.collect.ImmutableList;
 
-import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.KITA;
-import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.TAGESFAMILIEN;
-import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.TAGESSCHULE;
+import javax.annotation.Nonnull;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
 /**
  * Wenn die Gemeinde die Einstellung GEMEINDE_KEIN_GUTSCHEIN_FUER_SOZIALHILFE_EMPFAENGER aktiviert ist,
@@ -60,7 +54,7 @@ public class SozialhilfeKeinAnspruchCalcRule extends AbstractCalcRule {
 
 	@Override
 	protected List<BetreuungsangebotTyp> getAnwendbareAngebote() {
-		return ImmutableList.of(KITA, TAGESFAMILIEN, TAGESSCHULE);
+		return BetreuungsangebotTyp.getBerechnetesAngebotTypes();
 	}
 
 	@Override

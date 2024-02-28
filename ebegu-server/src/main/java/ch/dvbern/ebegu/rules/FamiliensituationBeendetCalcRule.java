@@ -1,12 +1,5 @@
 package ch.dvbern.ebegu.rules;
 
-import java.time.LocalDate;
-import java.util.List;
-import java.util.Locale;
-import java.util.Objects;
-
-import javax.annotation.Nonnull;
-
 import ch.dvbern.ebegu.dto.BGCalculationInput;
 import ch.dvbern.ebegu.entities.AbstractPlatz;
 import ch.dvbern.ebegu.entities.Familiensituation;
@@ -15,11 +8,12 @@ import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.MsgKey;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.Constants;
-import com.google.common.collect.ImmutableList;
 
-import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.KITA;
-import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.TAGESFAMILIEN;
-import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.TAGESSCHULE;
+import javax.annotation.Nonnull;
+import java.time.LocalDate;
+import java.util.List;
+import java.util.Locale;
+import java.util.Objects;
 
 public class FamiliensituationBeendetCalcRule extends AbstractCalcRule {
 	public static final int ZERO = 0;
@@ -89,7 +83,7 @@ public class FamiliensituationBeendetCalcRule extends AbstractCalcRule {
 
 		@Override
 		protected List<BetreuungsangebotTyp> getAnwendbareAngebote () {
-			return ImmutableList.of(KITA, TAGESFAMILIEN, TAGESSCHULE);
+			return BetreuungsangebotTyp.getBerechnetesAngebotTypes();
 		}
 
 	}

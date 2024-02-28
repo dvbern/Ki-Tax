@@ -17,12 +17,12 @@
 
 package ch.dvbern.ebegu.services;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
+import ch.dvbern.ebegu.entities.*;
+import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
+import ch.dvbern.ebegu.enums.ExternalClientInstitutionType;
+import ch.dvbern.ebegu.enums.ExternalClientType;
+import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
+import ch.dvbern.lib.cdipersistence.Persistence;
 
 import javax.annotation.Nonnull;
 import javax.ejb.Local;
@@ -32,18 +32,7 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
-
-import ch.dvbern.ebegu.entities.ExternalClient;
-import ch.dvbern.ebegu.entities.ExternalClient_;
-import ch.dvbern.ebegu.entities.Institution;
-import ch.dvbern.ebegu.entities.InstitutionExternalClient;
-import ch.dvbern.ebegu.entities.InstitutionExternalClient_;
-import ch.dvbern.ebegu.entities.InstitutionStammdaten;
-import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
-import ch.dvbern.ebegu.enums.ExternalClientInstitutionType;
-import ch.dvbern.ebegu.enums.ExternalClientType;
-import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
-import ch.dvbern.lib.cdipersistence.Persistence;
+import java.util.*;
 
 @Stateless
 @Local(ExternalClientService.class)
@@ -76,9 +65,7 @@ public class ExternalClientServiceBean extends AbstractBaseService implements Ex
 		// EXCHANGE_SERVICE_USER is allowed for both roles
 		types.add(ExternalClientInstitutionType.EXCHANGE_SERVICE_INSTITUTION);
 
-		if (institutionStammdaten.getBetreuungsangebotTyp() == BetreuungsangebotTyp.KITA
-			|| institutionStammdaten.getBetreuungsangebotTyp() == BetreuungsangebotTyp.TAGESFAMILIEN
-		) {
+		if (BetreuungsangebotTyp.getBetreuungsgutscheinTypes().contains(institutionStammdaten.getBetreuungsangebotTyp())) {
 			types.add(ExternalClientInstitutionType.EXCHANGE_SERVICE_INSTITUTION_BG);
 		} else if (institutionStammdaten.getBetreuungsangebotTyp() == BetreuungsangebotTyp.TAGESSCHULE) {
 			types.add(ExternalClientInstitutionType.EXCHANGE_SERVICE_INSTITUTION_TS);

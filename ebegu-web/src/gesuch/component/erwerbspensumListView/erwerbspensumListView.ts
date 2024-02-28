@@ -16,19 +16,20 @@
 import {StateService} from '@uirouter/core';
 import {IComponentOptions} from 'angular';
 import * as moment from 'moment';
+import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
 import {IDVFocusableController} from '../../../app/core/component/IDVFocusableController';
 import {DvDialog} from '../../../app/core/directive/dv-dialog/dv-dialog';
-import {TSDemoFeature} from '../../../app/core/directive/dv-hide-feature/TSDemoFeature';
 import {ErrorService} from '../../../app/core/errors/service/ErrorService';
 import {LogFactory} from '../../../app/core/logging/LogFactory';
-import {ApplicationPropertyRS} from '../../../app/core/rest-services/applicationPropertyRS.rest';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {TSAnspruchBeschaeftigungAbhaengigkeitTyp} from '../../../models/enums/TSAnspruchBeschaeftigungAbhaengigkeitTyp';
+import {TSEinstellungKey} from '../../../models/enums/TSEinstellungKey';
 import {TSFamilienstatus} from '../../../models/enums/TSFamilienstatus';
 import {TSRole} from '../../../models/enums/TSRole';
 import {TSUnterhaltsvereinbarungAnswer} from '../../../models/enums/TSUnterhaltsvereinbarungAnswer';
 import {TSWizardStepName} from '../../../models/enums/TSWizardStepName';
 import {TSWizardStepStatus} from '../../../models/enums/TSWizardStepStatus';
+import {TSEinstellung} from '../../../models/TSEinstellung';
 import {TSErwerbspensumContainer} from '../../../models/TSErwerbspensumContainer';
 import {TSFamiliensituation} from '../../../models/TSFamiliensituation';
 import {EbeguUtil} from '../../../utils/EbeguUtil';
@@ -40,9 +41,6 @@ import {AbstractGesuchViewController} from '../abstractGesuchView';
 import IScope = angular.IScope;
 import ITimeoutService = angular.ITimeoutService;
 import ITranslateService = angular.translate.ITranslateService;
-import {TSEinstellung} from '../../../models/TSEinstellung';
-import {TSEinstellungKey} from '../../../models/enums/TSEinstellungKey';
-import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
 
 const removeDialogTemplate = require('../../dialog/removeDialogTemplate.html');
 const LOG = LogFactory.createLog('ErwerbspensumListViewComponent');
@@ -116,7 +114,7 @@ export class ErwerbspensumListViewController
         if (EbeguUtil.isNotNullOrUndefined(this.getGesuchId())) {
             this.gesuchModelManager.isErwerbspensumRequired(this.getGesuchId()).then((response: boolean) => {
                 this.erwerbspensumRequired = response;
-                if (this.isSaveDisabled()) {
+                if (this.isSaveDisabled() || this.isErwerbspensumGS2Required() && !this.showErwerbspensumGS2()) {
                     this.wizardStepManager.updateCurrentWizardStepStatusSafe(
                         TSWizardStepName.ERWERBSPENSUM,
                         TSWizardStepStatus.IN_BEARBEITUNG);
@@ -269,6 +267,17 @@ export class ErwerbspensumListViewController
         if (EbeguUtil.isNullOrUndefined(this.gesuchModelManager.getGesuch())) {
             return false;
         }
+
+        return this.isErwerbspensumGS2Required()
+            && EbeguUtil.isNotNullOrUndefined(this.gesuchModelManager.getGesuch().gesuchsteller2);
+    }
+
+    public isErwerbspensumGS2Required(): boolean {
+        const hasGS2 = this.gesuchModelManager.getFamiliensituation()
+            .hasSecondGesuchsteller(this.gesuchModelManager.getGesuchsperiode().gueltigkeit.gueltigBis);
+        if (!hasGS2) {
+            return false;
+        }
         let familiensituation = this.gesuchModelManager.getGesuch().familiensituationContainer.familiensituationJA;
         const partnerIdentischMitVorgesuch: boolean = this.getGesuch().extractFamiliensituation().partnerIdentischMitVorgesuch;
         if (EbeguUtil.isNotNullAndFalse(partnerIdentischMitVorgesuch)){
@@ -295,7 +304,7 @@ export class ErwerbspensumListViewController
             }
         }
 
-        return EbeguUtil.isNotNullOrUndefined(this.gesuchModelManager.getGesuch().gesuchsteller2);
+        return true;
     }
 
     private isPensumGS2InKonkubinatOmittable(familiensituation: TSFamiliensituation): boolean {
@@ -328,5 +337,9 @@ export class ErwerbspensumListViewController
     public anspruchUnabhaengingVomBeschaeftigungspensum(): boolean {
         return this.getKonfigAnspruchUnabhaengigVomBeschaeftigungsPensumForGemeinde()  ===
             TSAnspruchBeschaeftigungAbhaengigkeitTyp.UNABHAENGING;
+    }
+
+    public getGS2FullName(): string {
+        return this.gesuchModelManager.getGesuch().gesuchsteller2.extractFullName();
     }
 }

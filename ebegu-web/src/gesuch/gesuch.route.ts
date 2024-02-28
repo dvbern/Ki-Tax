@@ -185,10 +185,6 @@ export class EbeguMutationState implements Ng1StateDeclaration {
         },
     };
 
-    public resolve = {
-        gesuch: reloadGesuchModelManager,
-    };
-
     public data = {
         roles: TSRoleUtil.getAdminJaSchulamtSozialdienstGesuchstellerRoles(),
     };

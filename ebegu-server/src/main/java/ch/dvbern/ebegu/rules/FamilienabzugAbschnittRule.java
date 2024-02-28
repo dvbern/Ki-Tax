@@ -17,28 +17,7 @@
 
 package ch.dvbern.ebegu.rules;
 
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.util.AbstractMap;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Objects;
-import java.util.TreeMap;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.validation.constraints.NotNull;
-
-import ch.dvbern.ebegu.entities.AbstractPlatz;
-import ch.dvbern.ebegu.entities.Familiensituation;
-import ch.dvbern.ebegu.entities.Gesuch;
-import ch.dvbern.ebegu.entities.Gesuchsperiode;
-import ch.dvbern.ebegu.entities.Kind;
-import ch.dvbern.ebegu.entities.KindContainer;
-import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
+import ch.dvbern.ebegu.entities.*;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.EnumFamilienstatus;
 import ch.dvbern.ebegu.enums.Kinderabzug;
@@ -46,13 +25,16 @@ import ch.dvbern.ebegu.enums.KinderabzugTyp;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.MathUtil;
-import com.google.common.collect.ImmutableList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.KITA;
-import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.TAGESFAMILIEN;
-import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.TAGESSCHULE;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.validation.constraints.NotNull;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.*;
+import java.util.Map.Entry;
 
 /**
  * Umsetzung der ASIV Revision
@@ -95,7 +77,7 @@ public class FamilienabzugAbschnittRule extends AbstractAbschnittRule {
 
 	@Override
 	protected List<BetreuungsangebotTyp> getAnwendbareAngebote() {
-		return ImmutableList.of(KITA, TAGESFAMILIEN, TAGESSCHULE);
+		return BetreuungsangebotTyp.getBerechnetesAngebotTypes();
 	}
 
 	@Override
