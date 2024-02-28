@@ -72,6 +72,10 @@ public abstract class AbstractFinanzielleSituation extends AbstractMutableEntity
 
 	@Nullable
 	@Column(nullable = true)
+	private BigDecimal geschaeftsgewinnBasisjahrMinus1;
+
+	@Nullable
+	@Column(nullable = true)
 	private BigDecimal geleisteteAlimente;
 
 	@Nullable
@@ -219,7 +223,14 @@ public abstract class AbstractFinanzielleSituation extends AbstractMutableEntity
 	public void setGeschaeftsgewinnBasisjahr(@Nullable final BigDecimal geschaeftsgewinnBasisjahr) {
 		this.geschaeftsgewinnBasisjahr = geschaeftsgewinnBasisjahr;
 	}
+	@Nullable
+	public BigDecimal getGeschaeftsgewinnBasisjahrMinus1() {
+		return geschaeftsgewinnBasisjahrMinus1;
+	}
 
+	public void setGeschaeftsgewinnBasisjahrMinus1(@Nullable BigDecimal geschaeftsgewinnBasisjahrMinus1) {
+		this.geschaeftsgewinnBasisjahrMinus1 = geschaeftsgewinnBasisjahrMinus1;
+	}
 	@Nullable
 	public BigDecimal getGeleisteteAlimente() {
 		return geleisteteAlimente;
@@ -418,6 +429,7 @@ public abstract class AbstractFinanzielleSituation extends AbstractMutableEntity
 			target.setBruttovermoegen(this.getBruttovermoegen());
 			target.setSchulden(this.getSchulden());
 			target.setGeschaeftsgewinnBasisjahr(this.getGeschaeftsgewinnBasisjahr());
+			target.setGeschaeftsgewinnBasisjahrMinus1(this.getGeschaeftsgewinnBasisjahrMinus1());
 			target.setGeleisteteAlimente(this.getGeleisteteAlimente());
 			target.setSteuerbaresEinkommen(this.getSteuerbaresEinkommen());
 			target.setSteuerbaresVermoegen(this.getSteuerbaresVermoegen());
@@ -465,6 +477,7 @@ public abstract class AbstractFinanzielleSituation extends AbstractMutableEntity
 			MathUtil.isSame(getBruttovermoegen(), otherFinSituation.getBruttovermoegen()) &&
 			MathUtil.isSame(getSchulden(), otherFinSituation.getSchulden()) &&
 			MathUtil.isSame(getGeschaeftsgewinnBasisjahr(), otherFinSituation.getGeschaeftsgewinnBasisjahr()) &&
+			MathUtil.isSame(getGeschaeftsgewinnBasisjahrMinus1(), otherFinSituation.getGeschaeftsgewinnBasisjahrMinus1()) &&
 			MathUtil.isSame(getGeleisteteAlimente(), otherFinSituation.getGeleisteteAlimente()) &&
 			MathUtil.isSame(getSteuerbaresEinkommen(), otherFinSituation.getSteuerbaresEinkommen()) &&
 			MathUtil.isSame(getSteuerbaresVermoegen(), otherFinSituation.getSteuerbaresVermoegen()) &&

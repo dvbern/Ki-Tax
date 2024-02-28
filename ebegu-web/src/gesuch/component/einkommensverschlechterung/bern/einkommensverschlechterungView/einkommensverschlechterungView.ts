@@ -61,7 +61,6 @@ export class EinkommensverschlechterungViewController extends AbstractGesuchView
     public geschaeftsgewinnBasisjahrMinus1: number;
     public geschaeftsgewinnBasisjahrMinus2: number;
     public geschaeftsgewinnBasisjahrMinus1GS: number;
-    public geschaeftsgewinnBasisjahrMinus2GS: number;
     public ersatzeinkommenSelbststaendigkeitActivated: boolean;
     public ersatzeinkommenSelbststaendigkeitBasisjahrMinus1: number;
     public ersatzeinkommenSelbststaendigkeitBasisjahrMinus2: number;
@@ -239,12 +238,10 @@ export class EinkommensverschlechterungViewController extends AbstractGesuchView
 
             this.geschaeftsgewinnBasisjahrMinus2 = fs.geschaeftsgewinnBasisjahr;
             this.ersatzeinkommenSelbststaendigkeitBasisjahrMinus2 = fs.ersatzeinkommenSelbststaendigkeitBasisjahr;
-            this.geschaeftsgewinnBasisjahrMinus2GS = fsGS ? fsGS.geschaeftsgewinnBasisjahr : undefined;
         } else {
             this.geschaeftsgewinnBasisjahrMinus1 = fs.geschaeftsgewinnBasisjahr;
             this.geschaeftsgewinnBasisjahrMinus2 = fs.geschaeftsgewinnBasisjahrMinus1;
             this.geschaeftsgewinnBasisjahrMinus1GS = fsGS ? fsGS.geschaeftsgewinnBasisjahr : undefined;
-            this.geschaeftsgewinnBasisjahrMinus2GS = fsGS ? fsGS.geschaeftsgewinnBasisjahrMinus1 : undefined;
 
             this.ersatzeinkommenSelbststaendigkeitBasisjahrMinus1 = fs.ersatzeinkommenSelbststaendigkeitBasisjahr;
             this.ersatzeinkommenSelbststaendigkeitBasisjahrMinus2 = fs.ersatzeinkommenSelbststaendigkeitBasisjahrMinus1;

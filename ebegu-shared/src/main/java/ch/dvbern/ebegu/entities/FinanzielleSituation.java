@@ -73,10 +73,6 @@ public class FinanzielleSituation extends AbstractFinanzielleSituation {
 
 	@Nullable
 	@Column(nullable = true)
-	private BigDecimal geschaeftsgewinnBasisjahrMinus1;
-
-	@Nullable
-	@Column(nullable = true)
 	private Boolean quellenbesteuert;
 
 	@Nullable
@@ -160,15 +156,6 @@ public class FinanzielleSituation extends AbstractFinanzielleSituation {
 
 	public void setGeschaeftsgewinnBasisjahrMinus2(@Nullable final BigDecimal geschaeftsgewinnBasisjahrMinus2) {
 		this.geschaeftsgewinnBasisjahrMinus2 = geschaeftsgewinnBasisjahrMinus2;
-	}
-
-	@Nullable
-	public BigDecimal getGeschaeftsgewinnBasisjahrMinus1() {
-		return geschaeftsgewinnBasisjahrMinus1;
-	}
-
-	public void setGeschaeftsgewinnBasisjahrMinus1(@Nullable final BigDecimal geschaeftsgewinnBasisjahrMinus1) {
-		this.geschaeftsgewinnBasisjahrMinus1 = geschaeftsgewinnBasisjahrMinus1;
 	}
 
 	@Nullable
@@ -299,7 +286,6 @@ public class FinanzielleSituation extends AbstractFinanzielleSituation {
 			super.copyAbstractFinanzielleSituation(target, copyType);
 			target.setSteuerveranlagungErhalten(this.getSteuerveranlagungErhalten());
 			target.setSteuererklaerungAusgefuellt(this.getSteuererklaerungAusgefuellt());
-			target.setGeschaeftsgewinnBasisjahrMinus1(this.getGeschaeftsgewinnBasisjahrMinus1());
 			target.setGeschaeftsgewinnBasisjahrMinus2(this.getGeschaeftsgewinnBasisjahrMinus2());
 			target.setSteuerdatenZugriff(this.getSteuerdatenZugriff());
 			target.setGemeinsameStekVorjahr(this.getGemeinsameStekVorjahr());
@@ -342,7 +328,6 @@ public class FinanzielleSituation extends AbstractFinanzielleSituation {
 				Objects.equals(getSteuererklaerungAusgefuellt(), otherFinSit.getSteuererklaerungAusgefuellt()) &&
 				Objects.equals(getSteuerdatenZugriff(), otherFinSit.getSteuerdatenZugriff()) &&
 				Objects.equals(getAutomatischePruefungErlaubt(), otherFinSit.getAutomatischePruefungErlaubt()) &&
-			MathUtil.isSame(getGeschaeftsgewinnBasisjahrMinus1(), otherFinSit.getGeschaeftsgewinnBasisjahrMinus1()) &&
 			MathUtil.isSame(getGeschaeftsgewinnBasisjahrMinus2(), otherFinSit.getGeschaeftsgewinnBasisjahrMinus2()) &&
 			Objects.equals(getAlleinigeStekVorjahr(), otherFinSit.getAlleinigeStekVorjahr()) &&
 			Objects.equals(getGemeinsameStekVorjahr(), otherFinSit.getGemeinsameStekVorjahr()) &&

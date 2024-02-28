@@ -350,6 +350,7 @@ public final class FreigabeCopyUtil {
 		gs.setBruttovermoegen(ja.getBruttovermoegen());
 		gs.setSchulden(ja.getSchulden());
 		gs.setGeschaeftsgewinnBasisjahr(ja.getGeschaeftsgewinnBasisjahr());
+		gs.setGeschaeftsgewinnBasisjahrMinus1(ja.getGeschaeftsgewinnBasisjahrMinus1());
 		gs.setGeleisteteAlimente(ja.getGeleisteteAlimente());
 
 		gs.setSteuerbaresEinkommen(ja.getSteuerbaresEinkommen());
@@ -449,7 +450,6 @@ public final class FreigabeCopyUtil {
 		@Nonnull Einkommensverschlechterung gs,
 		@Nonnull Einkommensverschlechterung ja) {
 		copyAbstractFinanzielleSituation(gs, ja);
-		gs.setGeschaeftsgewinnBasisjahrMinus1(ja.getGeschaeftsgewinnBasisjahrMinus1());
 		gs.setBruttolohnAbrechnung1(ja.getBruttolohnAbrechnung1());
 		gs.setBruttolohnAbrechnung2(ja.getBruttolohnAbrechnung2());
 		gs.setBruttolohnAbrechnung3(ja.getBruttolohnAbrechnung3());
@@ -476,7 +476,6 @@ public final class FreigabeCopyUtil {
 		copyAbstractFinanzielleSituation(gs, ja);
 		gs.setSteuerveranlagungErhalten(ja.getSteuerveranlagungErhalten());
 		gs.setSteuererklaerungAusgefuellt(ja.getSteuererklaerungAusgefuellt());
-		gs.setGeschaeftsgewinnBasisjahrMinus1(ja.getGeschaeftsgewinnBasisjahrMinus1());
 		gs.setGeschaeftsgewinnBasisjahrMinus2(ja.getGeschaeftsgewinnBasisjahrMinus2());
 		gs.setSteuerdatenZugriff(ja.getSteuerdatenZugriff());
 		gs.setAutomatischePruefungErlaubt(ja.getAutomatischePruefungErlaubt());

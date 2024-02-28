@@ -68,9 +68,6 @@ public class JaxFinanzielleSituation extends JaxAbstractFinanzielleSituation {
 	private BigDecimal geschaeftsgewinnBasisjahrMinus2;
 
 	@Nullable
-	private BigDecimal geschaeftsgewinnBasisjahrMinus1;
-
-	@Nullable
 	private BigDecimal unterhaltsBeitraege;
 
 	@Nullable
@@ -116,15 +113,6 @@ public class JaxFinanzielleSituation extends JaxAbstractFinanzielleSituation {
 
 	public void setGeschaeftsgewinnBasisjahrMinus2(@Nullable final BigDecimal geschaeftsgewinnBasisjahrMinus2) {
 		this.geschaeftsgewinnBasisjahrMinus2 = geschaeftsgewinnBasisjahrMinus2;
-	}
-
-	@Nullable
-	public BigDecimal getGeschaeftsgewinnBasisjahrMinus1() {
-		return geschaeftsgewinnBasisjahrMinus1;
-	}
-
-	public void setGeschaeftsgewinnBasisjahrMinus1(@Nullable final BigDecimal geschaeftsgewinnBasisjahrMinus1) {
-		this.geschaeftsgewinnBasisjahrMinus1 = geschaeftsgewinnBasisjahrMinus1;
 	}
 
 	@Nullable

@@ -29,6 +29,7 @@ export class TSAbstractFinanzielleSituation extends TSAbstractMutableEntity {
     private _bruttovermoegen: number;
     private _schulden: number;
     private _geschaeftsgewinnBasisjahr: number;
+    private _geschaeftsgewinnBasisjahrMinus1: number;
     private _geleisteteAlimente: number;
     private _steuerbaresEinkommen: number;
     private _steuerbaresVermoegen: number;
@@ -249,5 +250,13 @@ export class TSAbstractFinanzielleSituation extends TSAbstractMutableEntity {
 
     public set ersatzeinkommenSelbststaendigkeitBasisjahrMinus1(value: number) {
         this._ersatzeinkommenSelbststaendigkeitBasisjahrMinus1 = value;
+    }
+
+    public get geschaeftsgewinnBasisjahrMinus1(): number {
+        return this._geschaeftsgewinnBasisjahrMinus1;
+    }
+
+    public set geschaeftsgewinnBasisjahrMinus1(value: number) {
+        this._geschaeftsgewinnBasisjahrMinus1 = value;
     }
 }

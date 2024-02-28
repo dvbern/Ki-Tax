@@ -1990,7 +1990,6 @@ export class EbeguRestUtil {
             finanzielleSituation.steuererklaerungAusgefuellt || false;
         restFinanzielleSituation.steuerdatenZugriff = finanzielleSituation.steuerdatenZugriff;
         restFinanzielleSituation.geschaeftsgewinnBasisjahrMinus2 = finanzielleSituation.geschaeftsgewinnBasisjahrMinus2;
-        restFinanzielleSituation.geschaeftsgewinnBasisjahrMinus1 = finanzielleSituation.geschaeftsgewinnBasisjahrMinus1;
         restFinanzielleSituation.quellenbesteuert = finanzielleSituation.quellenbesteuert;
         restFinanzielleSituation.gemeinsameStekVorjahr = finanzielleSituation.gemeinsameStekVorjahr;
         restFinanzielleSituation.alleinigeStekVorjahr = finanzielleSituation.alleinigeStekVorjahr;
@@ -2020,6 +2019,8 @@ export class EbeguRestUtil {
         restAbstractFinanzielleSituation.schulden = abstractFinanzielleSituation.schulden;
         restAbstractFinanzielleSituation.geschaeftsgewinnBasisjahr =
             abstractFinanzielleSituation.geschaeftsgewinnBasisjahr;
+        restAbstractFinanzielleSituation.geschaeftsgewinnBasisjahrMinus1 =
+            abstractFinanzielleSituation.geschaeftsgewinnBasisjahrMinus1;
         restAbstractFinanzielleSituation.geleisteteAlimente = abstractFinanzielleSituation.geleisteteAlimente;
         restAbstractFinanzielleSituation.steuerbaresEinkommen = abstractFinanzielleSituation.steuerbaresEinkommen;
         restAbstractFinanzielleSituation.steuerbaresVermoegen = abstractFinanzielleSituation.steuerbaresVermoegen;
@@ -2125,6 +2126,8 @@ export class EbeguRestUtil {
             abstractFinanzielleSituationTS.schulden = abstractFinanzielleSituationFromServer.schulden;
             abstractFinanzielleSituationTS.geschaeftsgewinnBasisjahr =
                 abstractFinanzielleSituationFromServer.geschaeftsgewinnBasisjahr;
+            abstractFinanzielleSituationTS.geschaeftsgewinnBasisjahrMinus1 =
+                abstractFinanzielleSituationFromServer.geschaeftsgewinnBasisjahrMinus1;
             abstractFinanzielleSituationTS.geleisteteAlimente =
                 abstractFinanzielleSituationFromServer.geleisteteAlimente;
             abstractFinanzielleSituationTS.steuerbaresEinkommen =
@@ -2178,8 +2181,6 @@ export class EbeguRestUtil {
                 finanzielleSituationFromServer.steuerdatenZugriff;
             finanzielleSituationTS.geschaeftsgewinnBasisjahrMinus2 =
                 finanzielleSituationFromServer.geschaeftsgewinnBasisjahrMinus2;
-            finanzielleSituationTS.geschaeftsgewinnBasisjahrMinus1 =
-                finanzielleSituationFromServer.geschaeftsgewinnBasisjahrMinus1;
             finanzielleSituationTS.quellenbesteuert = finanzielleSituationFromServer.quellenbesteuert;
             finanzielleSituationTS.gemeinsameStekVorjahr = finanzielleSituationFromServer.gemeinsameStekVorjahr;
             finanzielleSituationTS.alleinigeStekVorjahr = finanzielleSituationFromServer.alleinigeStekVorjahr;
@@ -2345,8 +2346,6 @@ export class EbeguRestUtil {
         einkommensverschlechterung: TSEinkommensverschlechterung
     ): TSEinkommensverschlechterung {
         this.abstractfinanzielleSituationToRestObject(restEinkommensverschlechterung, einkommensverschlechterung);
-        restEinkommensverschlechterung.geschaeftsgewinnBasisjahrMinus1 =
-            einkommensverschlechterung.geschaeftsgewinnBasisjahrMinus1;
         restEinkommensverschlechterung.bruttolohnAbrechnung1 = einkommensverschlechterung.bruttolohnAbrechnung1;
         restEinkommensverschlechterung.bruttolohnAbrechnung2 = einkommensverschlechterung.bruttolohnAbrechnung2;
         restEinkommensverschlechterung.bruttolohnAbrechnung3 = einkommensverschlechterung.bruttolohnAbrechnung3;
@@ -2396,8 +2395,6 @@ export class EbeguRestUtil {
             return undefined;
         }
         this.parseAbstractFinanzielleSituation(einkommensverschlechterungTS, einkommensverschlechterungFromServer);
-        einkommensverschlechterungTS.geschaeftsgewinnBasisjahrMinus1 =
-            einkommensverschlechterungFromServer.geschaeftsgewinnBasisjahrMinus1;
         einkommensverschlechterungTS.bruttolohnAbrechnung1 = einkommensverschlechterungFromServer.bruttolohnAbrechnung1;
         einkommensverschlechterungTS.bruttolohnAbrechnung2 = einkommensverschlechterungFromServer.bruttolohnAbrechnung2;
         einkommensverschlechterungTS.bruttolohnAbrechnung3 = einkommensverschlechterungFromServer.bruttolohnAbrechnung3;

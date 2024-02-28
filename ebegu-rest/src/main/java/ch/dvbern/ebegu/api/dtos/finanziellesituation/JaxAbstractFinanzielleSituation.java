@@ -49,6 +49,8 @@ public class JaxAbstractFinanzielleSituation extends JaxAbstractDTO {
 
 	private BigDecimal geschaeftsgewinnBasisjahr;
 
+	private BigDecimal geschaeftsgewinnBasisjahrMinus1;
+
 	private BigDecimal geleisteteAlimente;
 
 	private BigDecimal steuerbaresEinkommen;
@@ -150,7 +152,13 @@ public class JaxAbstractFinanzielleSituation extends JaxAbstractDTO {
 	public void setGeschaeftsgewinnBasisjahr(final BigDecimal geschaeftsgewinnBasisjahr) {
 		this.geschaeftsgewinnBasisjahr = geschaeftsgewinnBasisjahr;
 	}
+	public BigDecimal getGeschaeftsgewinnBasisjahrMinus1() {
+		return geschaeftsgewinnBasisjahrMinus1;
+	}
 
+	public void setGeschaeftsgewinnBasisjahrMinus1(final BigDecimal geschaeftsgewinnBasisjahrMinus1) {
+		this.geschaeftsgewinnBasisjahrMinus1 = geschaeftsgewinnBasisjahrMinus1;
+	}
 	public BigDecimal getGeleisteteAlimente() {
 		return geleisteteAlimente;
 	}
