@@ -155,6 +155,7 @@ export class EinkommensverschlechterungViewController extends AbstractGesuchView
             this.calculate();
         }
     }
+
     public showErsatzeinkommenSelbststaendigkeitClicked(): void {
         if (!this.showErsatzeinkommenSelbststaendigkeit) {
             this.resetErsatzeinkommenSelbststaendigkeitFields();
@@ -237,7 +238,7 @@ export class EinkommensverschlechterungViewController extends AbstractGesuchView
             }
 
             this.geschaeftsgewinnBasisjahrMinus2 = fs.geschaeftsgewinnBasisjahr;
-            this.ersatzeinkommenSelbststaendigkeitBasisjahrMinus2 = fs.ersatzeinkommenSelbststaendigkeitBasisjahr
+            this.ersatzeinkommenSelbststaendigkeitBasisjahrMinus2 = fs.ersatzeinkommenSelbststaendigkeitBasisjahr;
             this.geschaeftsgewinnBasisjahrMinus2GS = fsGS ? fsGS.geschaeftsgewinnBasisjahr : undefined;
         } else {
             this.geschaeftsgewinnBasisjahrMinus1 = fs.geschaeftsgewinnBasisjahr;
@@ -247,7 +248,8 @@ export class EinkommensverschlechterungViewController extends AbstractGesuchView
 
             this.ersatzeinkommenSelbststaendigkeitBasisjahrMinus1 = fs.ersatzeinkommenSelbststaendigkeitBasisjahr;
             this.ersatzeinkommenSelbststaendigkeitBasisjahrMinus2 = fs.ersatzeinkommenSelbststaendigkeitBasisjahrMinus1;
-            this.ersatzeinkommenSelbststaendigkeitBasisjahrMinus1GS = fsGS ? fsGS.ersatzeinkommenSelbststaendigkeitBasisjahr : undefined;
+            this.ersatzeinkommenSelbststaendigkeitBasisjahrMinus1GS =
+                fsGS ? fsGS.ersatzeinkommenSelbststaendigkeitBasisjahr : undefined;
         }
     }
 

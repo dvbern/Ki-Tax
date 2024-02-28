@@ -152,8 +152,9 @@ public class AbstractFinanzielleSituationRechnerTest {
 		// + 685 (FinSit ErsatzEinkommen Basisjahr (2022))
 		// + 540 (FinSit Geschäftsgewinn Basisjahr Minus 1 (2021))
 		// + 963 (FinSit ErsatzEinkommen Basisjahr Minus 1(2021))
+		// + 1000 (Ersatzeinkommensbasisjahr EKV)
 		// / 3 (Jahre)
-		assertThat(geschaeftsGewinnDurchschnitt, is(BigDecimal.valueOf(5157)));
+		assertThat(geschaeftsGewinnDurchschnitt, is(BigDecimal.valueOf(5490)));
 	}
 
 	@Test
@@ -166,9 +167,11 @@ public class AbstractFinanzielleSituationRechnerTest {
 		// 2700 (EKVBJ2 Basisjahr (2024))
 		// + 9803 (EKVBJ1 Basisjahr(2023))
 		// + 3480 (FinSit Geschäftsgewinn Basisjahr (2022))
-                // + 685 (FinSit ErsatzEinkommen Basisjahr(2022))
+        // + 685 (FinSit ErsatzEinkommen Basisjahr(2022))
+		// + 1000 (Ersatzeinkommensbasisjahr EKV1)
+		// + 1000 (Ersatzeinkommensbasisjahr EKV2)
 		// / 3 (Jahre)
-		assertThat(geschaeftsGewinnDurchschnitt, is(BigDecimal.valueOf(5556)));
+		assertThat(geschaeftsGewinnDurchschnitt, is(BigDecimal.valueOf(6223)));
 	}
 
 	@Test
@@ -184,8 +187,10 @@ public class AbstractFinanzielleSituationRechnerTest {
 		// + 6200 (EKVBJ2 Basisjahr Minus 1 (2023))
 		// + 3480 (FinSit Geschäftsgewinn Basisjahr (2022))
 		// + 685 (FinSit ErsatzEinkommen Basisjahr (2022))
+		// + 500 (ErsatzeinkommensbasisjahrMinus1 EKV2)
+		// + 1000 (Ersatzeinkommensbasisjahr EKV2)
 		// / 3 (Jahre)
-		assertThat(geschaeftsGewinnDurchschnitt, is(BigDecimal.valueOf(4355)));
+		assertThat(geschaeftsGewinnDurchschnitt, is(BigDecimal.valueOf(4855)));
 	}
 
 	@Nullable
@@ -203,10 +208,13 @@ public class AbstractFinanzielleSituationRechnerTest {
 		Einkommensverschlechterung ekvBj1 = new Einkommensverschlechterung();
 		ekvBj1.setGeschaeftsgewinnBasisjahr(BigDecimal.valueOf(9803));
 		ekvBj1.setGeschaeftsgewinnBasisjahrMinus1(BigDecimal.valueOf(7890));
+		ekvBj1.setErsatzeinkommenSelbststaendigkeitBasisjahr(BigDecimal.valueOf(1000));
 
 		Einkommensverschlechterung ekvBj2 = new Einkommensverschlechterung();
 		ekvBj2.setGeschaeftsgewinnBasisjahr(BigDecimal.valueOf(2700));
 		ekvBj2.setGeschaeftsgewinnBasisjahrMinus1(BigDecimal.valueOf(6200));
+		ekvBj2.setErsatzeinkommenSelbststaendigkeitBasisjahr(BigDecimal.valueOf(1000));
+		ekvBj2.setErsatzeinkommenSelbststaendigkeitBasisjahrMinus1(BigDecimal.valueOf(500));
 
 		return AbstractFinanzielleSituationRechner.calcGeschaeftsgewinnDurchschnitt(
 				finanzielleSituation,

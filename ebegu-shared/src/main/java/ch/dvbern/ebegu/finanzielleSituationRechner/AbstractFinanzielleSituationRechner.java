@@ -350,7 +350,7 @@ public abstract class AbstractFinanzielleSituationRechner {
 					einkVersBjp2.getErsatzeinkommenSelbststaendigkeitBasisjahr());
 				BigDecimal gBJ1 =  calcGeschaeftsgewinnWithErsatzeinkommenAusSelbststaendigkeit(
 					einkVersBjp2.getGeschaeftsgewinnBasisjahrMinus1(),
-					einkVersBjp2.getErsatzeinkommenSelbststaendigkeitBasisjahr());
+					einkVersBjp2.getErsatzeinkommenSelbststaendigkeitBasisjahrMinus1());
 				BigDecimal gBJ2 =  calcGeschaeftsgewinnWithErsatzeinkommenAusSelbststaendigkeit(
 					finanzielleSituation.getGeschaeftsgewinnBasisjahr(),
 					finanzielleSituation.getErsatzeinkommenSelbststaendigkeitBasisjahr());
