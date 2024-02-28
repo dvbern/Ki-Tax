@@ -297,6 +297,8 @@ public class AbstractEntityListener {
 				|| entity instanceof Benutzer // wegen locallogin
 				|| entity instanceof Institution // wegen locallogin (laden Institution mit Berechtigungen)
 				|| entity instanceof Sozialdienst // wegen locallogin (laden Sozialdienst mit Berechtigungen)
+				|| entity instanceof Fall // wegen platzbestaetigung
+				|| entity instanceof Gesuchsperiode // wegen platzbestaetigung
 				|| entity instanceof Traegerschaft) {// wegen locallogin (laden Tragerschaft mit Berechtigungen)
 				return true;
 			}
