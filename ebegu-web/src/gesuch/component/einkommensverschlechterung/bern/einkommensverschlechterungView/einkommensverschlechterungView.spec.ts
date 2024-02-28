@@ -24,6 +24,7 @@ import {TSEinstellungKey} from '../../../../../models/enums/TSEinstellungKey';
 import {TSEinkommensverschlechterung} from '../../../../../models/TSEinkommensverschlechterung';
 import {TSEinkommensverschlechterungContainer} from '../../../../../models/TSEinkommensverschlechterungContainer';
 import {TSEinstellung} from '../../../../../models/TSEinstellung';
+import {TSGesuchsperiode} from '../../../../../models/TSGesuchsperiode';
 import {TSGesuchsteller} from '../../../../../models/TSGesuchsteller';
 import {TSGesuchstellerContainer} from '../../../../../models/TSGesuchstellerContainer';
 import {GESUCH_JS_MODULE} from '../../../../gesuch.module';
@@ -63,6 +64,7 @@ describe('einkommensverschlechterungView', () => {
                 new TSEinkommensverschlechterungContainer();
             gesuchModelManager.getGesuch().gesuchsteller1.einkommensverschlechterungContainer.ekvJABasisJahrPlus1 =
                 new TSEinkommensverschlechterung();
+            gesuchModelManager.getGesuch().gesuchsperiode = new TSGesuchsperiode();
         });
 
     }));
