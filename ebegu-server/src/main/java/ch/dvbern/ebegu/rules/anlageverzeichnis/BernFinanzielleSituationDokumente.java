@@ -158,16 +158,6 @@ public class BernFinanzielleSituationDokumente extends AbstractFinanzielleSituat
 
 		final String basisJahrString = String.valueOf(basisJahr);
 
-		add(getDokument(DokumentTyp.NACHWEIS_ERSATZINKOMMEN_SELBSTSTAENDIGKEIT_JAHR, finanzielleSituationJA, null,
-				basisJahrString, DokumentGrundPersonType.GESUCHSTELLER,
-				gesuchstellerNumber, DokumentGrundTyp.FINANZIELLESITUATION, stichtag), anlageVerzeichnis);
-		add(getDokument(DokumentTyp.NACHWEIS_ERSATZINKOMMEN_SELBSTSTAENDIGKEIT_JAHR_MINUS1, finanzielleSituationJA, null,
-				String.valueOf(basisJahr - 1), DokumentGrundPersonType.GESUCHSTELLER,
-				gesuchstellerNumber, DokumentGrundTyp.FINANZIELLESITUATION, stichtag), anlageVerzeichnis);
-		add(getDokument(DokumentTyp.NACHWEIS_ERSATZINKOMMEN_SELBSTSTAENDIGKEIT_JAHR_MINUS2, finanzielleSituationJA, null,
-				String.valueOf(basisJahr - 2), DokumentGrundPersonType.GESUCHSTELLER, gesuchstellerNumber,
-				DokumentGrundTyp.FINANZIELLESITUATION, stichtag), anlageVerzeichnis);
-
 		if (Boolean.TRUE.equals(finanzielleSituationJA.getSteuerdatenZugriff())
 			&& finanzielleSituationJA.getSteuerdatenAbfrageStatus() != null
 			&& finanzielleSituationJA.getSteuerdatenAbfrageStatus()

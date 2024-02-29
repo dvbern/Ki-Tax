@@ -102,6 +102,15 @@ abstract class AbstractFinanzielleSituationDokumente
 		add(getDokument(DokumentTyp.ERFOLGSRECHNUNGEN_JAHR_MINUS2, abstractFinanzielleSituation, null,
 			String.valueOf(basisJahr - 2), DokumentGrundPersonType.GESUCHSTELLER,
 			gesuchstellerNumber, dokumentGrundTyp, stichtag), anlageVerzeichnis);
+		add(getDokument(DokumentTyp.NACHWEIS_ERSATZINKOMMEN_SELBSTSTAENDIGKEIT_JAHR, abstractFinanzielleSituation, null,
+			basisJahrString, DokumentGrundPersonType.GESUCHSTELLER,
+			gesuchstellerNumber, dokumentGrundTyp, stichtag), anlageVerzeichnis);
+		add(getDokument(DokumentTyp.NACHWEIS_ERSATZINKOMMEN_SELBSTSTAENDIGKEIT_JAHR_MINUS1, abstractFinanzielleSituation, null,
+			String.valueOf(basisJahr - 1), DokumentGrundPersonType.GESUCHSTELLER,
+			gesuchstellerNumber, dokumentGrundTyp, stichtag), anlageVerzeichnis);
+		add(getDokument(DokumentTyp.NACHWEIS_ERSATZINKOMMEN_SELBSTSTAENDIGKEIT_JAHR_MINUS2, abstractFinanzielleSituation, null,
+			String.valueOf(basisJahr - 2), DokumentGrundPersonType.GESUCHSTELLER, gesuchstellerNumber,
+			dokumentGrundTyp, stichtag), anlageVerzeichnis);
 	}
 
 	@Override
