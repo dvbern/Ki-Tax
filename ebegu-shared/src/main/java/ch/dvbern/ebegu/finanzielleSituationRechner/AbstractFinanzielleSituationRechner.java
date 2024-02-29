@@ -540,13 +540,8 @@ public abstract class AbstractFinanzielleSituationRechner {
 		if (abstractFinanzielleSituation == null) {
 			return null;
 		}
-
 		BigDecimal totalErsatzeinkommen = abstractFinanzielleSituation.getErsatzeinkommen();
-
-		if (abstractFinanzielleSituation instanceof FinanzielleSituation) {
-			FinanzielleSituation finanzielleSituation = (FinanzielleSituation) abstractFinanzielleSituation;
-			totalErsatzeinkommen = subtract(totalErsatzeinkommen, finanzielleSituation.getErsatzeinkommenSelbststaendigkeitBasisjahr());
-		}
+		totalErsatzeinkommen = subtract(totalErsatzeinkommen, abstractFinanzielleSituation.getErsatzeinkommenSelbststaendigkeitBasisjahr());
 
 		return totalErsatzeinkommen;
 	}

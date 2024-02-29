@@ -225,9 +225,9 @@
                         </div>
 
                         <!-- Geschäftsgewinn Basisjahr-1 - disabled only show value vor bj-1-->
-                        <div class="row" ng-if="!vm.enableGeschaeftsgewinnBasisjahrMinus1()">
+                        <div class="row" ng-if="!vm.enableBasisjahrMinus1()">
                             <div class="col-sm-12 dv-input-container-small">
-                                <dv-input-container class="form-group no-margin">
+                                <dv-input-container class="form-group">
                                     <label class="md-no-float"
                                            data-translate="FINANZIELLE_SITUATION_GESCHAEFTSGEWINN_BASISJAHRMINUS1"
                                            for="geschaeftsgewinnBasisjahrMinus1"
@@ -246,9 +246,9 @@
                         </div>
 
                         <!-- Geschäftsgewinn Basisjahr-1  - geschaeftsgewinnBasisjahrMinus1 -->
-                        <div class="row" ng-if="vm.enableGeschaeftsgewinnBasisjahrMinus1()">
+                        <div class="row" ng-if="vm.enableBasisjahrMinus1()">
                             <div class="col-sm-12 dv-input-container-small">
-                                <dv-input-container class="form-group no-margin">
+                                <dv-input-container class="form-group">
                                     <label class="md-no-float"
                                            data-translate="FINANZIELLE_SITUATION_GESCHAEFTSGEWINN_BASISJAHRMINUS1"
                                            for="geschaeftsgewinnBasisjahrMinus1"
@@ -276,7 +276,7 @@
                         <!-- Geschäftsgewinn Basisjahr-2 -->
                         <div class="row">
                             <div class="col-sm-12 dv-input-container-small">
-                                <dv-input-container class="form-group no-margin">
+                                <dv-input-container class="form-group">
                                     <label class="md-no-float"
                                            data-translate="FINANZIELLE_SITUATION_GESCHAEFTSGEWINN_BASISJAHRMINUS2"
                                            for="geschaeftsgewinnBasisjahrMinus2"
@@ -294,126 +294,161 @@
                             </div>
                         </div>
 
-                    <!--Checkbox Ersatzeinkommen Selbstständigkeit -->
-                    <div class="row" ng-if="vm.ersatzeinkommenSelbststaendigkeitActivated">
-                        <div class="col-sm-12 dv-input-container-question" id="ersatzeinkommen-selbststaendigkeit-container">
-                            <div class="form-group">
+                        <!--Checkbox Ersatzeinkommen Selbstständigkeit -->
+                        <div class="row" ng-if="vm.ersatzeinkommenSelbststaendigkeitActivated">
+                            <div class="col-sm-12 dv-input-container-question" id="ersatzeinkommen-selbststaendigkeit-container">
+                                <div class="form-group">
                                         <span class="ebegu-h1 required">
                                             <span data-translate="FINANZIELLE_SITUATION_ERSATZEINKOMMEN_SELBSTAENDIGKEIT"></span>
                                             <dv-tooltip input-id="showErsatzeinkommenSelbststaendigkeit"
                                                         text="'FINANZIELLE_SITUATION_ERSATZEINKOMMEN_SELBSTAENDIGKEIT_HELP' | translate"></dv-tooltip>
                                         </span>
-                                <dv-radio-container name="showErsatzeinkommenSelbststaendigkeit"
-                                                    class="input-element radio"
-                                                    ng-model="vm.showErsatzeinkommenSelbststaendigkeit"
-                                                    data-test="show-ersatzeinkommen-selbststaendigkeit"
-                                                    id="showErsatzeinkommenSelbststaendigkeit"
-                                                    dv-enable-expression="!vm.isGesuchReadonly()"
-                                                    true-option-label="{{ 'LABEL_JA' | translate}}"
-                                                    false-option-label="{{ 'LABEL_NEIN' | translate}}"
-                                                    aria-label="{{'FINANZIELLE_SITUATION_ERSATZEINKOMMEN_SELBSTAENDIGKEIT'|translate}}"
-                                                    aria-described-by="steuerdatenzugriff-error"
-                                                    ng-change="vm.showErsatzeinkommenSelbststaendigkeitClicked()">
-                                </dv-radio-container>
-                                <dv-bisher gs="vm.showErsatzeinkommenSelbststaendigkeitGS" class="dv-bisher-break"
-                                           ja="vm.showErsatzeinkommenSelbststaendigkeit"
-                                           specific-bisher-text="vm.getTextErsatzeinkommenSelbstaendigKorrektur()"
-                                           show-if-bisher-none="vm.isNotNullOrUndefined(vm.model.getEkvToWorkWith_GS())"
-                                           show-specific-bisher-text-if-bisher-none="false"></dv-bisher>
+                                    <dv-radio-container name="showErsatzeinkommenSelbststaendigkeit"
+                                                        class="input-element radio"
+                                                        ng-model="vm.showErsatzeinkommenSelbststaendigkeit"
+                                                        data-test="show-ersatzeinkommen-selbststaendigkeit"
+                                                        id="showErsatzeinkommenSelbststaendigkeit"
+                                                        dv-enable-expression="!vm.isGesuchReadonly()"
+                                                        true-option-label="{{ 'LABEL_JA' | translate}}"
+                                                        false-option-label="{{ 'LABEL_NEIN' | translate}}"
+                                                        aria-label="{{'FINANZIELLE_SITUATION_ERSATZEINKOMMEN_SELBSTAENDIGKEIT'|translate}}"
+                                                        aria-described-by="steuerdatenzugriff-error"
+                                                        ng-change="vm.showErsatzeinkommenSelbststaendigkeitClicked()">
+                                    </dv-radio-container>
+                                    <dv-bisher gs="vm.showErsatzeinkommenSelbststaendigkeitGS" class="dv-bisher-break"
+                                               ja="vm.showErsatzeinkommenSelbststaendigkeit"
+                                               specific-bisher-text="vm.getTextErsatzeinkommenSelbstaendigKorrektur()"
+                                               show-if-bisher-none="vm.isNotNullOrUndefined(vm.model.getEkvToWorkWith_GS())"
+                                               show-specific-bisher-text-if-bisher-none="false"></dv-bisher>
+                                </div>
                             </div>
                         </div>
-                    </div>
 
-                    <div ng-if="vm.showErsatzeinkommenSelbststaendigkeit">
-                        <!-- Ersatzeinkommen Selbstständigkeit Basisjahr -->
-                        <div class="row">
-                            <div class="col-sm-12 dv-input-container-medium">
-                                <dv-input-container class="form-group">
-                                    <label class="md-no-float"
-                                           for="ersatzeinkommenSelbststaendigkeitBasisjahr">
+                        <div ng-if="vm.showErsatzeinkommenSelbststaendigkeit">
+                            <!-- Ersatzeinkommen Selbstständigkeit Basisjahr -->
+                            <div class="row">
+                                <div class="col-sm-12 dv-input-container-medium">
+                                    <dv-input-container class="form-group">
+                                        <label class="md-no-float"
+                                               for="ersatzeinkommenSelbststaendigkeitBasisjahr">
                                                 <span data-translate="FINANZIELLE_SITUATION_ERSATZEINKOMMEN_SELBSTSTAENDIGKEIT_JAHR"
                                                       translate-values="{jahr: {{vm.gesuchModelManager.getBasisjahrToWorkWith()}}}"></span>
-                                        <dv-tooltip input-id="geleisteteAlimente"
-                                                    text="'FINANZIELLE_SITUATION_ERSATZEINKOMMEN_BASISJAHR_TOOLTIP' | translate:{basisjahr: vm.getBasisjahr()}"></dv-tooltip>
-                                    </label>
-                                    <div class="dv-input-container-medium-select">
-                                        <dv-valueinput input-id="ersatzeinkommenSelbststaendigkeitBasisjahr"
-                                                       data-test="ersatzeinkommen-selbststaendigkeit-basisjahr"
-                                                       name="ersatzeinkommenSelbststaendigkeitBasisjahr"
-                                                       ng-model="vm.model.getEkvToWorkWith().ersatzeinkommenSelbststaendigkeitBasisjahr"
-                                                       allow-negative=false
-                                                       dv-on-blur="vm.calculate()"
-                                                       class="input-element"
-                                                       ng-disabled="vm.isGesuchReadonly() || vm.model.getEkvToWorkWith().ersatzeinkommen === 0 || !vm.hasGeschaeftsgewinn()">
-                                        </dv-valueinput>
-                                        <dv-error-messages input-id="ersatzeinkommenSelbststaendigkeitBasisjahr"
-                                                           for="vm.form.ersatzeinkommenSelbststaendigkeitBasisjahr.$error"
-                                                           class="error"></dv-error-messages>
-                                        <dv-bisher gs="vm.model.getEkvToWorkWith_GS().ersatzeinkommenSelbststaendigkeitBasisjahr"
-                                                   ja="vm.model.getEkvToWorkWith().ersatzeinkommenSelbststaendigkeitBasisjahr"
-                                                   show-if-bisher-none="false"
-                                                   block-existed="vm.showErsatzeinkommenSelbststaendigkeitGS === true"></dv-bisher>
-                                    </div>
-                                </dv-input-container>
+                                            <dv-tooltip input-id="geleisteteAlimente"
+                                                        text="'FINANZIELLE_SITUATION_ERSATZEINKOMMEN_BASISJAHR_TOOLTIP' | translate:{basisjahr: vm.gesuchModelManager.getBasisjahrToWorkWith()}"></dv-tooltip>
+                                        </label>
+                                        <div class="dv-input-container-medium-select">
+                                            <dv-valueinput input-id="ersatzeinkommenSelbststaendigkeitBasisjahr"
+                                                           data-test="ersatzeinkommen-selbststaendigkeit-basisjahr"
+                                                           name="ersatzeinkommenSelbststaendigkeitBasisjahr"
+                                                           ng-model="vm.model.getEkvToWorkWith().ersatzeinkommenSelbststaendigkeitBasisjahr"
+                                                           allow-negative=false
+                                                           dv-on-blur="vm.calculate()"
+                                                           class="input-element"
+                                                           ng-disabled="vm.isGesuchReadonly() || vm.model.getEkvToWorkWith().ersatzeinkommen === 0 || !vm.hasGeschaeftsgewinn()">
+                                            </dv-valueinput>
+                                            <dv-error-messages input-id="ersatzeinkommenSelbststaendigkeitBasisjahr"
+                                                               for="vm.form.ersatzeinkommenSelbststaendigkeitBasisjahr.$error"
+                                                               class="error"></dv-error-messages>
+                                            <dv-bisher gs="vm.model.getEkvToWorkWith_GS().ersatzeinkommenSelbststaendigkeitBasisjahr"
+                                                       ja="vm.model.getEkvToWorkWith().ersatzeinkommenSelbststaendigkeitBasisjahr"
+                                                       show-if-bisher-none="false"
+                                                       block-existed="vm.showErsatzeinkommenSelbststaendigkeitGS === true"></dv-bisher>
+                                        </div>
+                                    </dv-input-container>
+                                </div>
                             </div>
-                        </div>
 
-                        <div ng-if="!vm.isErsatzeinkommenValid()"
-                             class="well well-status-abgewiesen"
-                             data-test="ersatzeinkommen-invalid-error-message"
-                             data-translate="FINANZIELLE_SITUATION_ERSATZEINKOMMEN_INVALID"
-                             translate-values="{basisjahr: vm.gesuchModelManager.getBasisjahrToWorkWith() - 1}"></div>
+                            <div ng-if="!vm.isErsatzeinkommenValid()"
+                                 class="well well-status-abgewiesen"
+                                 data-test="ersatzeinkommen-invalid-error-message"
+                                 data-translate="FINANZIELLE_SITUATION_ERSATZEINKOMMEN_INVALID"
+                                 translate-values="{basisjahr: vm.gesuchModelManager.getBasisjahrToWorkWith() - 1}"></div>
 
-                        <!-- Ersatzeinkommen Selbstständigkeit Basisjahr -1 - disabled only show value vor bj-1 -->
-                        <div class="row">
-                            <div class="col-sm-12 dv-input-container-medium">
-                                <dv-input-container class="form-group">
-                                    <label class="md-no-float"
-                                           data-translate="FINANZIELLE_SITUATION_ERSATZEINKOMMEN_SELBSTSTAENDIGKEIT_JAHR"
-                                           for="ersatzeinkommenSelbststaendigkeitBasisjahrMinus1"
-                                           translate-values="{jahr: {{vm.gesuchModelManager.getBasisjahrToWorkWith() - 1}}}"></label>
-                                    <div class="dv-input-container-medium-select">
-                                        <dv-valueinput input-id="ersatzeinkommenSelbststaendigkeitBasisjahrMinus1"
-                                                       data-test="ersatzeinkommen-selbststaendigkeit-basisjahr-minus-1"
-                                                       name="ersatzeinkommenSelbststaendigkeitBasisjahrMinus1"
-                                                       ng-model="vm.ersatzeinkommenSelbststaendigkeitBasisjahrMinus1"
-                                                       allow-negative=false
-                                                       class="input-element"
-                                                       ng-disabled="true">
-                                        </dv-valueinput>
-                                    </div>
-                                </dv-input-container>
+                            <!-- Ersatzeinkommen Selbstständigkeit Basisjahr -1 - disabled only show value vor bj-1 -->
+                            <div class="row" ng-if="!vm.enableBasisjahrMinus1()">
+                                <div class="col-sm-12 dv-input-container-medium">
+                                    <dv-input-container class="form-group">
+                                        <label class="md-no-float"
+                                               data-translate="FINANZIELLE_SITUATION_ERSATZEINKOMMEN_SELBSTSTAENDIGKEIT_JAHR"
+                                               for="ersatzeinkommenSelbststaendigkeitBasisjahrMinus1"
+                                               translate-values="{jahr: {{vm.gesuchModelManager.getBasisjahrToWorkWith() - 1}}}"></label>
+                                        <div class="dv-input-container-medium-select">
+                                            <dv-valueinput input-id="ersatzeinkommenSelbststaendigkeitBasisjahrMinus1"
+                                                           data-test="ersatzeinkommen-selbststaendigkeit-basisjahr-minus-1"
+                                                           name="ersatzeinkommenSelbststaendigkeitBasisjahrMinus1"
+                                                           ng-model="vm.ersatzeinkommenSelbststaendigkeitBasisjahrMinus1"
+                                                           allow-negative=false
+                                                           class="input-element"
+                                                           ng-disabled="true">
+                                            </dv-valueinput>
+                                        </div>
+                                    </dv-input-container>
+                                </div>
                             </div>
-                        </div>
 
-                        <!-- Ersatzeinkommen Selbstständigkeit Basisjahr - 2 -->
-                        <div class="row">
-                            <div class="col-sm-12 dv-input-container-medium">
-                                <dv-input-container class="form-group">
-                                    <label class="md-no-float"
-                                           data-translate="FINANZIELLE_SITUATION_ERSATZEINKOMMEN_SELBSTSTAENDIGKEIT_JAHR"
-                                           for="ersatzeinkommenSelbststaendigkeitBasisjahrMinus2"
-                                           translate-values="{jahr: {{vm.gesuchModelManager.getBasisjahrToWorkWith() - 2}}}"></label>
-                                    <div class="dv-input-container-medium-select">
-                                        <dv-valueinput input-id="ersatzeinkommenSelbststaendigkeitBasisjahrMinus2"
-                                                       data-test="ersatzeinkommen-selbststaendigkeit-basisjahr-minus-2"
-                                                       name="ersatzeinkommenSelbststaendigkeitBasisjahrMinus2"
-                                                       ng-model="vm.ersatzeinkommenSelbststaendigkeitBasisjahrMinus2"
-                                                       allow-negative=false
-                                                       dv-on-blur="vm.calculate()"
-                                                       class="input-element"
-                                                       ng-disabled="true">
-                                        </dv-valueinput>
-                                    </div>
-                                </dv-input-container>
+                            <!-- Geschäftsgewinn Basisjahr-1  - geschaeftsgewinnBasisjahrMinus1 -->
+                            <div class="row" ng-if="vm.enableBasisjahrMinus1()">
+                                <div class="col-sm-12 dv-input-container-medium">
+                                    <dv-input-container class="form-group">
+                                        <label class="md-no-float"
+                                               data-translate="FINANZIELLE_SITUATION_ERSATZEINKOMMEN_SELBSTSTAENDIGKEIT_JAHR"
+                                               for="ersatzeinkommenSelbststaendigkeitBasisjahrMinus1"
+                                               translate-values="{jahr: {{vm.gesuchModelManager.getBasisjahrToWorkWith() - 1}}}"></label>
+                                        <div class="dv-input-container-medium-select">
+                                            <dv-valueinput input-id="ersatzeinkommenSelbststaendigkeitBasisjahrMinus1"
+                                                           data-test="geschaeftsgewinn-basisjahr-minus#1"
+                                                           name="ersatzeinkommenSelbststaendigkeitBasisjahrMinus1"
+                                                           ng-model="vm.model.getEkvToWorkWith().ersatzeinkommenSelbststaendigkeitBasisjahrMinus1"
+                                                           allow-negative=true
+                                                           class="input-element"
+                                                           dv-on-blur="vm.calculate()">
+                                            </dv-valueinput>
+                                            <dv-bisher
+                                                gs="vm.ersatzeinkommenSelbststaendigkeitBasisjahrMinus1GS"
+                                                ja="vm.ersatzeinkommenSelbststaendigkeitBasisjahrMinus1"
+                                                show-if-bisher-none="false"
+                                                block-existed="vm.showErsatzeinkommenSelbststaendigkeitGS === true"></dv-bisher>
+                                            <dv-error-messages input-id="ersatzeinkommenSelbststaendigkeitBasisjahrMinus1"
+                                                               for="vm.form.ersatzeinkommenSelbststaendigkeitBasisjahrMinus1.$error"
+                                                               class="error"></dv-error-messages>
+                                        </div>
+                                    </dv-input-container>
+                                </div>
                             </div>
+
+                            <!-- Ersatzeinkommen Selbstständigkeit Basisjahr - 2 -->
+                            <div class="row">
+                                <div class="col-sm-12 dv-input-container-medium">
+                                    <dv-input-container class="form-group">
+                                        <label class="md-no-float"
+                                               data-translate="FINANZIELLE_SITUATION_ERSATZEINKOMMEN_SELBSTSTAENDIGKEIT_JAHR"
+                                               for="ersatzeinkommenSelbststaendigkeitBasisjahrMinus2"
+                                               translate-values="{jahr: {{vm.gesuchModelManager.getBasisjahrToWorkWith() - 2}}}"></label>
+                                        <div class="dv-input-container-medium-select">
+                                            <dv-valueinput input-id="ersatzeinkommenSelbststaendigkeitBasisjahrMinus2"
+                                                           data-test="ersatzeinkommen-selbststaendigkeit-basisjahr-minus-2"
+                                                           name="ersatzeinkommenSelbststaendigkeitBasisjahrMinus2"
+                                                           ng-model="vm.ersatzeinkommenSelbststaendigkeitBasisjahrMinus2"
+                                                           allow-negative=false
+                                                           dv-on-blur="vm.calculate()"
+                                                           class="input-element"
+                                                           ng-disabled="true">
+                                            </dv-valueinput>
+                                        </div>
+                                    </dv-input-container>
+                                </div>
+                            </div>
+
+                            <div ng-if="!vm.isAtLeastOneErsatzeinkommenSelbststaendigkeitProvided()"
+                                 class="well well-status-abgewiesen"
+                                 data-test="all-ersatzeinkommen-selbststaendigkeit-zero-error-message"
+                                 data-translate="FINANZIELLE_SITUATION_ERSATZEINKOMMEN_SELBSTSTAENDIGKEIT_INVALID"></div>
                         </div>
-                    </div>
 
                         <!-- Durchschnitt Geschäftsgewinn -->
                         <div class="row">
                             <div class="col-sm-12 dv-input-container-small">
-                                <dv-input-container class="form-group no-margin"
+                                <dv-input-container class="form-group"
                                                     ng-if="vm.gesuchModelManager.gesuchstellerNumber === 1">
                                     <label class="md-no-float"
                                            data-translate="FINANZIELLE_SITUATION_GESCHAEFTSGEWINN_DURCHSCHNITT"
