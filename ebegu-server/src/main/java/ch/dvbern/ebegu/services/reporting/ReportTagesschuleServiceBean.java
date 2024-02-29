@@ -330,7 +330,8 @@ public class ReportTagesschuleServiceBean extends AbstractReportServiceBean impl
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	@Nonnull
 	public UploadFileInfo generateExcelReportTagesschuleRechnungsstellung(
-		@Nonnull Locale locale
+		@Nonnull Locale locale,
+		@Nonnull String gesuchsperiodeID
 	) throws ExcelMergeException, IOException {
 		ReportVorlage reportVorlage = ReportVorlage.VORLAGE_REPORT_TAGESSCHULE_RECHNUNGSSTELLUNG;
 		try (
@@ -340,8 +341,14 @@ public class ReportTagesschuleServiceBean extends AbstractReportServiceBean impl
 			Sheet sheet = workbook.getSheet(reportVorlage.getDataSheetName());
 
 			LocalDate stichtag = LocalDate.now();
+			Gesuchsperiode gesuchsperiode =
+				gesuchsperiodeService.findGesuchsperiode(gesuchsperiodeID).orElseThrow(() -> new EbeguEntityNotFoundException(
+					"generateExcelReportTagesschuleAnmeldungen",
+					ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
+					gesuchsperiodeID));
+
 			final List<TagesschuleRechnungsstellungDataRow> reportData =
-				getReportDataTagesschuleRechnungsstellung(stichtag);
+				getReportDataTagesschuleRechnungsstellung(stichtag, gesuchsperiode);
 
 			ExcelMergerDTO excelMergerDTO =
 				tagesschuleRechnungsstellungExcelConverter.toExcelMergerDTO(reportData, stichtag, locale,
@@ -362,16 +369,11 @@ public class ReportTagesschuleServiceBean extends AbstractReportServiceBean impl
 
 	@Nonnull
 	private List<TagesschuleRechnungsstellungDataRow> getReportDataTagesschuleRechnungsstellung(
-		@Nonnull LocalDate stichtag) {
+		@Nonnull LocalDate stichtag, Gesuchsperiode gesuchsperiode) {
 
 		// Wir suchen alle vergangenen Monate im Sinne von "in der aktuellen Gesuchsperiode vergangen"
 		var mandant = principalBean.getMandant();
 		Objects.requireNonNull(mandant);
-		Gesuchsperiode gesuchsperiode = gesuchsperiodeService.getGesuchsperiodeAm(stichtag, mandant)
-			.orElseThrow(() -> new EbeguEntityNotFoundException(
-				"getReportDataTagesschuleRechnungsstellung",
-				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
-				stichtag));
 		final Collection<InstitutionStammdaten> allowedTagesschulen =
 			institutionStammdatenService.getTagesschulenForCurrentBenutzer();
 
