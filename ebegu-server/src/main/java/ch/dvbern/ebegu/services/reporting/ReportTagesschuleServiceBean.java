@@ -343,7 +343,7 @@ public class ReportTagesschuleServiceBean extends AbstractReportServiceBean impl
 			LocalDate stichtag = LocalDate.now();
 			Gesuchsperiode gesuchsperiode =
 				gesuchsperiodeService.findGesuchsperiode(gesuchsperiodeID).orElseThrow(() -> new EbeguEntityNotFoundException(
-					"generateExcelReportTagesschuleAnmeldungen",
+					"generateExcelReportTagesschuleRechnungsstellung",
 					ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
 					gesuchsperiodeID));
 
