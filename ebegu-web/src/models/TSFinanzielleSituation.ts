@@ -159,18 +159,18 @@ export class TSFinanzielleSituation extends TSAbstractFinanzielleSituation {
         this._steuerdatenAbfrageTimestamp = value;
     }
 
-    public isSelbstaendig(): boolean {
-        return (this.geschaeftsgewinnBasisjahr !== null && this.geschaeftsgewinnBasisjahr !== undefined)
-            || (this.geschaeftsgewinnBasisjahrMinus1 !== null && this.geschaeftsgewinnBasisjahrMinus1 !== undefined)
-            || (this.geschaeftsgewinnBasisjahrMinus2 !== null && this.geschaeftsgewinnBasisjahrMinus2 !== undefined);
-    }
-
     public get ersatzeinkommenSelbststaendigkeitBasisjahrMinus2(): number {
         return this._ersatzeinkommenSelbststaendigkeitBasisjahrMinus2;
     }
 
     public set ersatzeinkommenSelbststaendigkeitBasisjahrMinus2(value: number) {
         this._ersatzeinkommenSelbststaendigkeitBasisjahrMinus2 = value;
+    }
+
+    public isSelbstaendig(): boolean {
+        return (this.geschaeftsgewinnBasisjahr !== null && this.geschaeftsgewinnBasisjahr !== undefined)
+            || (this.geschaeftsgewinnBasisjahrMinus1 !== null && this.geschaeftsgewinnBasisjahrMinus1 !== undefined)
+            || (this.geschaeftsgewinnBasisjahrMinus2 !== null && this.geschaeftsgewinnBasisjahrMinus2 !== undefined);
     }
 
     public hasErsatzeinkommenSelbststaendigkeit(): boolean {
