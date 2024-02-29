@@ -299,21 +299,27 @@ public class FamilienabzugAbschnittRule extends AbstractAbschnittRule {
 			return calculateKinderabzugForObhutAlternierendAusueben(kind, familiensituation, dateToCompare);
 		}
 		if (kind.getInErstausbildung() != null) {
-			if (!kind.getInErstausbildung()) {
+			return calculateKinderAbzugForInErstausbildungAnswered(kind, dateToCompare);
+		}
+		throw new EbeguRuntimeException("calculateFKJVKinderabzugForKind", "wrong properties for kind to calculate kinderabzug");
+	}
+
+	private Integer calculateKinderAbzugForInErstausbildungAnswered(@Nonnull Kind kind, LocalDate dateToCompare) throws EbeguRuntimeException {
+		Objects.requireNonNull(kind.getInErstausbildung());
+		if (!kind.getInErstausbildung()) {
+			return is18GeburtstagBeforeDate(kind, dateToCompare) ? 0 : 1;
+		}
+		if (kind.getAlimenteBezahlen() != null) {
+			if (!kind.getAlimenteBezahlen()) {
+				return 0;
+			}
+			return is18GeburtstagBeforeDate(kind, dateToCompare) ? 1 : 0;
+		}
+		if (kind.getAlimenteErhalten() != null) {
+			if (kind.getAlimenteErhalten()) {
 				return is18GeburtstagBeforeDate(kind, dateToCompare) ? 0 : 1;
 			}
-			if (kind.getAlimenteBezahlen() != null) {
-				if (!kind.getAlimenteBezahlen()) {
-					return 0;
-				}
-				return is18GeburtstagBeforeDate(kind, dateToCompare) ? 1 : 0;
-			}
-			if (kind.getAlimenteErhalten() != null) {
-				if (kind.getAlimenteErhalten()) {
-					return is18GeburtstagBeforeDate(kind, dateToCompare) ? 0 : 1;
-				}
-				return 1;
-			}
+			return 1;
 		}
 		throw new EbeguRuntimeException("calculateFKJVKinderabzugForKind", "wrong properties for kind to calculate kinderabzug");
 	}
