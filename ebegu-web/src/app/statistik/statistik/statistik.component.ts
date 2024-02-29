@@ -21,7 +21,7 @@ import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
 import {MatTableDataSource} from '@angular/material/table';
 import {TranslateService} from '@ngx-translate/core';
 import * as moment from 'moment';
-import {Observable} from 'rxjs';
+import {from, Observable} from 'rxjs';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {GemeindeRS} from '../../../gesuch/service/gemeindeRS.rest';
 import {TSBetreuungsangebotTyp} from '../../../models/enums/TSBetreuungsangebotTyp';
@@ -315,8 +315,9 @@ export class StatistikComponent implements OnInit, OnDestroy {
                     }, StatistikComponent.handleError);
                 break;
             case TSStatistikParameterType.TAGESSCHULE_RECHNUNGSSTELLUNG:
-                this.reportAsyncRS.getTagesschuleRechnungsstellungReportExcel()
-                    .subscribe((res: { workjobId: string }) => {
+                this.reportAsyncRS.getTagesschuleRechnungsstellungReportExcel(
+                    this.statistikParameter.gesuchsperiode
+                ).subscribe((res: { workjobId: string }) => {
                         this.informReportGenerationStarted(res);
                     }, StatistikComponent.handleError);
                 break;
@@ -775,5 +776,9 @@ export class StatistikComponent implements OnInit, OnDestroy {
 
     public requiredIfAlleInstitutionen(): boolean {
         return EbeguUtil.isNullOrUndefined(this.statistikParameter.institution);
+    }
+
+    public getActiveGesuchsperioden(): TSGesuchsperiode[] {
+        return this.gesuchsperioden?.filter(gp => gp.isAktiv());
     }
 }
