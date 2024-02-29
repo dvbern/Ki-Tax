@@ -156,8 +156,6 @@ public class BernFinanzielleSituationDokumente extends AbstractFinanzielleSituat
 			);
 		}
 
-		final String basisJahrString = String.valueOf(basisJahr);
-
 		if (Boolean.TRUE.equals(finanzielleSituationJA.getSteuerdatenZugriff())
 			&& finanzielleSituationJA.getSteuerdatenAbfrageStatus() != null
 			&& finanzielleSituationJA.getSteuerdatenAbfrageStatus()
