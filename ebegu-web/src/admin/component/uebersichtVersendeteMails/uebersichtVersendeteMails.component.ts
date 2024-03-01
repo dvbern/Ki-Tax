@@ -17,6 +17,7 @@ import {ChangeDetectorRef, Component, ViewChild} from '@angular/core';
 import {MatPaginator} from '@angular/material/paginator';
 import {MatSort, MatSortable, Sort} from '@angular/material/sort';
 import {MatTableDataSource} from '@angular/material/table';
+import * as moment from 'moment';
 import {UebersichtVersendeteMailsRS} from '../../../app/core/service/uebersichtVersendeteMailsRS';
 import {TSUebersichtVersendeteMails} from '../../../models/TSUebersichtVersendeteMails';
 
@@ -81,8 +82,11 @@ export class UebersichtVersendeteMailsComponent {
     }
 
     private sortTable(): void {
-        this.dataSource.sortingDataAccessor = (data: any, sortHeaderId: string): string => {
+        this.dataSource.sortingDataAccessor = (data: any, sortHeaderId: any) => {
             if (typeof data[sortHeaderId] === 'string') {
+                if (sortHeaderId === 'zeitpunktVersand') {
+                    return moment(data.zeitpunktVersand, 'DD.MM.YYYY HH:mm:ss').toDate().getTime();
+                }
                 return data[sortHeaderId].toLocaleLowerCase();
             }
             return data[sortHeaderId];
