@@ -45,7 +45,27 @@ abstract class AbstractFinanzielleSituationDokumente
 		this.isFKJV = false;
 	}
 
-	void getAllDokumenteGesuchsteller(
+	void getAllDokumenteGesuchstellerAutomatischeSteuerabfrage(
+		Set<DokumentGrund> anlageVerzeichnis,
+		int basisJahr,
+		int gesuchstellerNumber,
+		AbstractFinanzielleSituation abstractFinanzielleSituation,
+		DokumentGrundTyp dokumentGrundTyp,
+		@Nonnull LocalDate stichtag
+	) {
+		final String basisJahrString = String.valueOf(basisJahr);
+		add(getDokument(DokumentTyp.NACHWEIS_ERSATZINKOMMEN_SELBSTSTAENDIGKEIT_JAHR, abstractFinanzielleSituation, null,
+			basisJahrString, DokumentGrundPersonType.GESUCHSTELLER,
+			gesuchstellerNumber, dokumentGrundTyp, stichtag), anlageVerzeichnis);
+		add(getDokument(DokumentTyp.NACHWEIS_ERSATZINKOMMEN_SELBSTSTAENDIGKEIT_JAHR_MINUS1, abstractFinanzielleSituation, null,
+			String.valueOf(basisJahr - 1), DokumentGrundPersonType.GESUCHSTELLER,
+			gesuchstellerNumber, dokumentGrundTyp, stichtag), anlageVerzeichnis);
+		add(getDokument(DokumentTyp.NACHWEIS_ERSATZINKOMMEN_SELBSTSTAENDIGKEIT_JAHR_MINUS2, abstractFinanzielleSituation, null,
+			String.valueOf(basisJahr - 2), DokumentGrundPersonType.GESUCHSTELLER, gesuchstellerNumber,
+			dokumentGrundTyp, stichtag), anlageVerzeichnis);
+	}
+
+	void getAllDokumenteGesuchstellerManuelleSteuerabfrage(
 		Set<DokumentGrund> anlageVerzeichnis,
 		int basisJahr,
 		boolean gemeinsam,
@@ -102,15 +122,6 @@ abstract class AbstractFinanzielleSituationDokumente
 		add(getDokument(DokumentTyp.ERFOLGSRECHNUNGEN_JAHR_MINUS2, abstractFinanzielleSituation, null,
 			String.valueOf(basisJahr - 2), DokumentGrundPersonType.GESUCHSTELLER,
 			gesuchstellerNumber, dokumentGrundTyp, stichtag), anlageVerzeichnis);
-		add(getDokument(DokumentTyp.NACHWEIS_ERSATZINKOMMEN_SELBSTSTAENDIGKEIT_JAHR, abstractFinanzielleSituation, null,
-			basisJahrString, DokumentGrundPersonType.GESUCHSTELLER,
-			gesuchstellerNumber, dokumentGrundTyp, stichtag), anlageVerzeichnis);
-		add(getDokument(DokumentTyp.NACHWEIS_ERSATZINKOMMEN_SELBSTSTAENDIGKEIT_JAHR_MINUS1, abstractFinanzielleSituation, null,
-			String.valueOf(basisJahr - 1), DokumentGrundPersonType.GESUCHSTELLER,
-			gesuchstellerNumber, dokumentGrundTyp, stichtag), anlageVerzeichnis);
-		add(getDokument(DokumentTyp.NACHWEIS_ERSATZINKOMMEN_SELBSTSTAENDIGKEIT_JAHR_MINUS2, abstractFinanzielleSituation, null,
-			String.valueOf(basisJahr - 2), DokumentGrundPersonType.GESUCHSTELLER, gesuchstellerNumber,
-			dokumentGrundTyp, stichtag), anlageVerzeichnis);
 	}
 
 	@Override

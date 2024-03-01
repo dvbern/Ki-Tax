@@ -156,6 +156,15 @@ public class BernFinanzielleSituationDokumente extends AbstractFinanzielleSituat
 			);
 		}
 
+		getAllDokumenteGesuchstellerAutomatischeSteuerabfrage(
+			anlageVerzeichnis,
+			basisJahr,
+			gesuchstellerNumber,
+			finanzielleSituationJA,
+			DokumentGrundTyp.FINANZIELLESITUATION,
+			stichtag
+		);
+
 		if (Boolean.TRUE.equals(finanzielleSituationJA.getSteuerdatenZugriff())
 			&& finanzielleSituationJA.getSteuerdatenAbfrageStatus() != null
 			&& finanzielleSituationJA.getSteuerdatenAbfrageStatus()
@@ -163,7 +172,7 @@ public class BernFinanzielleSituationDokumente extends AbstractFinanzielleSituat
 			return;
 		}
 
-		getAllDokumenteGesuchsteller(
+		getAllDokumenteGesuchstellerManuelleSteuerabfrage(
 			anlageVerzeichnis,
 			basisJahr,
 			gemeinsam,

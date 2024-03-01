@@ -161,7 +161,10 @@ public class BernEinkommensverschlechterungDokumente extends AbstractFinanzielle
 			einkommensverschlechterung = einkommensverschlechterungContainer.getEkvJABasisJahrPlus1();
 		}
 
-		getAllDokumenteGesuchsteller(anlageVerzeichnis, basisJahr, gemeinsam,
+		getAllDokumenteGesuchstellerAutomatischeSteuerabfrage(anlageVerzeichnis, basisJahr,
+			gesuchstellerNumber, einkommensverschlechterung, DokumentGrundTyp.EINKOMMENSVERSCHLECHTERUNG, stichtag);
+
+		getAllDokumenteGesuchstellerManuelleSteuerabfrage(anlageVerzeichnis, basisJahr, gemeinsam,
 			gesuchstellerNumber, einkommensverschlechterung, DokumentGrundTyp.EINKOMMENSVERSCHLECHTERUNG, stichtag);
 
 		add(
