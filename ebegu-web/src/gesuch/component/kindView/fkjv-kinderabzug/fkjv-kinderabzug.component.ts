@@ -23,7 +23,7 @@ import {
     Input,
     OnDestroy,
     OnInit,
-    ViewChild
+    ViewChild,
 } from '@angular/core';
 import {NgForm} from '@angular/forms';
 import {Subject} from 'rxjs';
@@ -43,7 +43,7 @@ const LOG = LogFactory.createLog('FkjvKinderabzugComponent');
     selector: 'dv-fkjv-kinderabzug',
     templateUrl: './fkjv-kinderabzug.component.html',
     styleUrls: ['./fkjv-kinderabzug.component.less'],
-    changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FkjvKinderabzugComponent implements OnInit, AfterViewInit, OnDestroy {
 
@@ -59,7 +59,7 @@ export class FkjvKinderabzugComponent implements OnInit, AfterViewInit, OnDestro
     public constructor(
         private readonly gesuchModelManager: GesuchModelManager,
         private readonly cd: ChangeDetectorRef,
-        private readonly fkjvExchangeService: FjkvKinderabzugExchangeService
+        private readonly fkjvExchangeService: FjkvKinderabzugExchangeService,
     ) {
     }
 
@@ -78,7 +78,7 @@ export class FkjvKinderabzugComponent implements OnInit, AfterViewInit, OnDestro
             }, err => LOG.error(err));
         this.kindIsOrGetsVolljaehrig = EbeguUtil.calculateKindIsOrGetsVolljaehrig(
             this.getModel().geburtsdatum,
-            gesuchsperiode
+            gesuchsperiode,
         );
         this.change();
     }
@@ -120,7 +120,7 @@ export class FkjvKinderabzugComponent implements OnInit, AfterViewInit, OnDestro
 
     public gemeinsamesGesuchVisible(): boolean {
         return this.getModel().obhutAlternierendAusueben &&
-            this.getModel().familienErgaenzendeBetreuung &&
+            EbeguUtil.isNotNullOrUndefined(this.getModel().familienErgaenzendeBetreuung) &&
             this.isAlleinerziehenOrShortKonkubinat();
     }
 
