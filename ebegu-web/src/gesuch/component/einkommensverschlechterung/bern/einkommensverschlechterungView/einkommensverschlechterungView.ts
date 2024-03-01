@@ -280,12 +280,14 @@ export class EinkommensverschlechterungViewController extends AbstractGesuchView
     }
 
     public isAtLeastOneErsatzeinkommenSelbststaendigkeitProvided(): boolean {
-        const finSit = this.model.getEkvToWorkWith();
+        const ekv = this.model.getEkvToWorkWith();
         return !this.showErsatzeinkommenSelbststaendigkeit ||
-            (EbeguUtil.isNotNullOrUndefined(finSit.ersatzeinkommenSelbststaendigkeitBasisjahr)
-                && finSit.ersatzeinkommenSelbststaendigkeitBasisjahr > 0)
-            || (EbeguUtil.isNotNullOrUndefined(finSit.ersatzeinkommenSelbststaendigkeitBasisjahrMinus1)
-                && finSit.ersatzeinkommenSelbststaendigkeitBasisjahrMinus1 > 0);
+            (EbeguUtil.isNotNullOrUndefined(ekv.ersatzeinkommenSelbststaendigkeitBasisjahr)
+                && ekv.ersatzeinkommenSelbststaendigkeitBasisjahr > 0)
+            || (EbeguUtil.isNotNullOrUndefined(this.ersatzeinkommenSelbststaendigkeitBasisjahrMinus1)
+                && this.ersatzeinkommenSelbststaendigkeitBasisjahrMinus1 > 0)
+            || (EbeguUtil.isNotNullOrUndefined(this.ersatzeinkommenSelbststaendigkeitBasisjahrMinus2)
+                && this.ersatzeinkommenSelbststaendigkeitBasisjahrMinus2 > 0);
     }
 
     public isErsatzeinkommenValid(): boolean {
