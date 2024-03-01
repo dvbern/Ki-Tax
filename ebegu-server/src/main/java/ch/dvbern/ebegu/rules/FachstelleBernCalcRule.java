@@ -94,22 +94,26 @@ public class FachstelleBernCalcRule extends AbstractFachstellenCalcRule {
 						getFachstelleName(pensumFachstelle.getFachstelle())
 					);
 				} else {
-					// Es gibt ein Fachstelle Pensum, aber das Betreuungspensum ist zu tief. Wir muessen uns das Fachstelle
-					// Pensum als
-					// Restanspruch merken, damit es für eine eventuelle andere Betreuung dieses Kindes noch gilt!
-					int verfuegbarerRestanspruch = inputData.getAnspruchspensumRest();
-					// wir muessen nur was machen wenn wir schon einen Restanspruch gesetzt haben
-					if (verfuegbarerRestanspruch < roundedPensumFachstelle) {
-						inputData.setAnspruchspensumRest(roundedPensumFachstelle);
-					}
-					if (intersectsAnyBetreuungspensum(inputData.getParent(), betreuung)) {
-						inputData.addBemerkung(
-							MsgKey.FACHSTELLE_SPRACHLICHE_INTEGRATION_ZU_TIEF_MSG,
-							getLocale(),
-							roundedPensumFachstelle);
-					}
+					handlePensumTooLow(inputData, betreuung, roundedPensumFachstelle);
 				}
 			}
+		}
+	}
+
+	private void handlePensumTooLow(@Nonnull BGCalculationInput inputData, Betreuung betreuung, int roundedPensumFachstelle) {
+		// Es gibt ein Fachstelle Pensum, aber das Betreuungspensum ist zu tief. Wir muessen uns das Fachstelle
+		// Pensum als
+		// Restanspruch merken, damit es für eine eventuelle andere Betreuung dieses Kindes noch gilt!
+		int verfuegbarerRestanspruch = inputData.getAnspruchspensumRest();
+		// wir muessen nur was machen wenn wir schon einen Restanspruch gesetzt haben
+		if (verfuegbarerRestanspruch < roundedPensumFachstelle) {
+			inputData.setAnspruchspensumRest(roundedPensumFachstelle);
+		}
+		if (intersectsAnyBetreuungspensum(inputData.getParent(), betreuung)) {
+			inputData.addBemerkung(
+				MsgKey.FACHSTELLE_SPRACHLICHE_INTEGRATION_ZU_TIEF_MSG,
+				getLocale(),
+				roundedPensumFachstelle);
 		}
 	}
 
