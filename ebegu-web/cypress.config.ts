@@ -14,20 +14,6 @@ export default defineConfig({
             on('task', {
                 ...dvTasks,
             });
-            on('after:spec',
-                (spec: Cypress.Spec, results: CypressCommandLine.RunResult) => {
-                  if (results && results.video) {
-                    // Do we have failures for any retry attempts?
-                    const failures = results.tests.some((test) =>
-                      test.attempts.some((attempt) => attempt.state === 'failed')
-                    )
-                    if (!failures) {
-                      // delete the video if the spec passed and no tests retried
-                      fs.unlinkSync(results.video)
-                    }
-                  }
-                }
-              );
             on('before:browser:launch', (browser , launchOptions) => {
                 // the browser width and height we want to get
                 // our screenshots and videos will be of that resolution
