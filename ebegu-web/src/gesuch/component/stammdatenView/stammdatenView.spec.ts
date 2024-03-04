@@ -40,6 +40,8 @@ import {DokumenteRS} from '../../service/dokumenteRS.rest';
 import {GesuchModelManager} from '../../service/gesuchModelManager';
 import {WizardStepManager} from '../../service/wizardStepManager';
 import {StammdatenViewController} from './stammdatenView';
+import {TSDateRange} from '../../../models/types/TSDateRange';
+import * as moment from 'moment/moment';
 import ITranslateService = angular.translate.ITranslateService;
 
 describe('stammdatenView', () => {
@@ -165,9 +167,11 @@ describe('stammdatenView', () => {
             const result = stammdatenViewController.getFamilienSituationDisplayValue();
             expect(result).toEqual('');
         });
-        it('should return ANDERER_ELTERNTEIL if KONKUBINAT_KEIN_KIND AND ZU_ZWEIT', () => {
+
+        it('should return ANDERER_ELTERNTEIL if KONKUBINAT_KEIN_KIND AND ZU_ZWEIT AND SHORT KONKUBINAT', () => {
             const famSitMock = initTest();
             famSitMock.familienstatus = TSFamilienstatus.KONKUBINAT_KEIN_KIND;
+            famSitMock.startKonkubinat = moment('2024-01-01');
             famSitMock.geteilteObhut = true;
             famSitMock.gesuchstellerKardinalitaet = TSGesuchstellerKardinalitaet.ZU_ZWEIT;
             gesuchModelManager.getGesuch().familiensituationContainer.familiensituationJA = famSitMock;
@@ -177,68 +181,81 @@ describe('stammdatenView', () => {
             expect($translateMock.instant).toHaveBeenCalledWith(jasmine.stringMatching('ANDERER_ELTERNTEIL'));
         });
 
-        it('should return ANDERER_ELTERNTEIL if KONKUBINAT_KEIN_KIND und NEIN_UNTERHALTSVEREINBARUNG', () => {
+        it('should return ANDERER_ELTERNTEIL if KONKUBINAT_KEIN_KIND,NEIN_UNTERHALTSVEREINBARUNG AND SHORT KONKUBINAT', () => {
             const famSitMock = initTest();
             famSitMock.familienstatus = TSFamilienstatus.KONKUBINAT_KEIN_KIND;
+            famSitMock.startKonkubinat = moment('2024-01-01');
             famSitMock.geteilteObhut = false;
             famSitMock.unterhaltsvereinbarung = TSUnterhaltsvereinbarungAnswer.NEIN_UNTERHALTSVEREINBARUNG;
             gesuchModelManager.getGesuch().familiensituationContainer.familiensituationJA = famSitMock;
-            spyOn(famSitMock, 'konkubinatGetXYearsInPeriod').and.returnValue(true);
             stammdatenViewController.getFamilienSituationDisplayValue();
             expect($translateMock.instant).toHaveBeenCalled();
             expect($translateMock.instant).toHaveBeenCalledWith(jasmine.stringMatching('ANDERER_ELTERNTEIL'));
         });
 
-        it('should return GS2_KONKUBINAT_KEIN_KIND if KONKUBINAT_KEIN_KIND, ALLEINE',
-            () => {
-                const famSitMock = initTest();
-                famSitMock.familienstatus = TSFamilienstatus.KONKUBINAT_KEIN_KIND;
-                famSitMock.geteilteObhut = true;
-                famSitMock.gesuchstellerKardinalitaet = TSGesuchstellerKardinalitaet.ALLEINE;
-                gesuchModelManager.getGesuch().familiensituationContainer.familiensituationJA = famSitMock;
-                spyOn(famSitMock, 'konkubinatGetXYearsInPeriod').and.returnValue(true);
-                stammdatenViewController.getFamilienSituationDisplayValue();
-                expect($translateMock.instant).toHaveBeenCalled();
-                expect($translateMock.instant).toHaveBeenCalledWith(jasmine.stringMatching('GS2_KONKUBINAT_KEIN_KIND'));
-            });
-
-        it('should return ANDERER_ELTERNTEIL if Konkubinat too short',
-            () => {
-                const famSitMock = initTest();
-                famSitMock.familienstatus = TSFamilienstatus.KONKUBINAT_KEIN_KIND;
-                gesuchModelManager.getGesuch().familiensituationContainer.familiensituationJA = famSitMock;
-                spyOn(famSitMock, 'konkubinatGetXYearsInPeriod').and.returnValue(false);
-                spyOn(famSitMock, 'konkubinatIsShorterThanXYearsAtAnyTimeAfterStartOfPeriode').and.returnValue(true);
-                stammdatenViewController.getFamilienSituationDisplayValue();
-                expect($translateMock.instant).toHaveBeenCalled();
-                expect($translateMock.instant).toHaveBeenCalledWith(jasmine.stringMatching('ANDERER_ELTERNTEIL'));
-            });
-
-        it('should return GS2_KONKUBINAT_KEIN_KIND if Konkubinat not too short',
-            () => {
-                const famSitMock = initTest();
-                famSitMock.familienstatus = TSFamilienstatus.KONKUBINAT_KEIN_KIND;
-                gesuchModelManager.getGesuch().familiensituationContainer.familiensituationJA = famSitMock;
-                spyOn(famSitMock, 'konkubinatGetXYearsInPeriod').and.returnValue(false);
-                spyOn(famSitMock, 'konkubinatIsShorterThanXYearsAtAnyTimeAfterStartOfPeriode').and.returnValue(false);
-                stammdatenViewController.getFamilienSituationDisplayValue();
-                expect($translateMock.instant).toHaveBeenCalled();
-                expect($translateMock.instant).toHaveBeenCalledWith(jasmine.stringMatching('GS2_KONKUBINAT_KEIN_KIND'));
-            });
-
-        it('should return GS2_KONKUBINAT_KEIN_KIND if KONKUBINAT_KEIN_KIND und JA_UNTERHALTSVEREINBARUNG', () => {
+        it('should return GS2_KONKUBINAT_KEIN_KIND if KONKUBINAT_KEIN_KIND, JA_UNTERHALTSVEREINBARUNG AND ' +
+            'konkubiat gets long during periode', () => {
             const famSitMock = initTest();
             famSitMock.familienstatus = TSFamilienstatus.KONKUBINAT_KEIN_KIND;
+            famSitMock.startKonkubinat = moment('2023-01-01');
             famSitMock.geteilteObhut = false;
             famSitMock.unterhaltsvereinbarung = TSUnterhaltsvereinbarungAnswer.JA_UNTERHALTSVEREINBARUNG;
             gesuchModelManager.getGesuch().familiensituationContainer.familiensituationJA = famSitMock;
-            spyOn(famSitMock, 'konkubinatGetXYearsInPeriod').and.returnValue(true);
             stammdatenViewController.getFamilienSituationDisplayValue();
             expect($translateMock.instant).toHaveBeenCalled();
             expect($translateMock.instant).toHaveBeenCalledWith(jasmine.stringMatching('GS2_KONKUBINAT_KEIN_KIND'));
         });
 
-        it('should return ANDERER_ELTERNTEIL if ALLEINERZIEHEND and ZUR_ZWEIT', () => {
+        it('should return GS2_KONKUBINAT_KEIN_KIND if KONKUBINAT_KEIN_KIND, UNTERHALTSVEREINBARUNG_NICHT_MOEGLICH AND ' +
+            'konkubiat gets long during periode', () => {
+            const famSitMock = initTest();
+            famSitMock.familienstatus = TSFamilienstatus.KONKUBINAT_KEIN_KIND;
+            famSitMock.startKonkubinat = moment('2023-01-01');
+            famSitMock.geteilteObhut = false;
+            famSitMock.unterhaltsvereinbarung = TSUnterhaltsvereinbarungAnswer.UNTERHALTSVEREINBARUNG_NICHT_MOEGLICH;
+            gesuchModelManager.getGesuch().familiensituationContainer.familiensituationJA = famSitMock;
+            stammdatenViewController.getFamilienSituationDisplayValue();
+            expect($translateMock.instant).toHaveBeenCalled();
+            expect($translateMock.instant).toHaveBeenCalledWith(jasmine.stringMatching('GS2_KONKUBINAT_KEIN_KIND'));
+        });
+
+        it('should return GS2_KONKUBINAT_KEIN_KIND if KONKUBINAT_KEIN_KIND, GETEILTE_OBHUT AND ALLEINE ' +
+            'AND konkubiat gets long during periode', () => {
+            const famSitMock = initTest();
+            famSitMock.familienstatus = TSFamilienstatus.KONKUBINAT_KEIN_KIND;
+            famSitMock.startKonkubinat = moment('2023-01-01');
+            famSitMock.geteilteObhut = true;
+            famSitMock.gesuchstellerKardinalitaet = TSGesuchstellerKardinalitaet.ALLEINE;
+            gesuchModelManager.getGesuch().familiensituationContainer.familiensituationJA = famSitMock;
+            stammdatenViewController.getFamilienSituationDisplayValue();
+            expect($translateMock.instant).toHaveBeenCalled();
+            expect($translateMock.instant).toHaveBeenCalledWith(jasmine.stringMatching('GS2_KONKUBINAT_KEIN_KIND'));
+        });
+
+        it('should return GS2_KONKUBINAT_KEIN_KIND if KONKUBINAT_KEIN_KIND, AND long konkubiat', () => {
+            const famSitMock = initTest();
+            famSitMock.familienstatus = TSFamilienstatus.KONKUBINAT_KEIN_KIND;
+            famSitMock.startKonkubinat = moment('2022-01-01');
+            gesuchModelManager.getGesuch().familiensituationContainer.familiensituationJA = famSitMock;
+            stammdatenViewController.getFamilienSituationDisplayValue();
+            expect($translateMock.instant).toHaveBeenCalled();
+            expect($translateMock.instant).toHaveBeenCalledWith(jasmine.stringMatching('GS2_KONKUBINAT_KEIN_KIND'));
+        });
+
+        it('should return ANDERER_ELTERNTEIL if KONKUBINAT_KEIN_KIND, GETEILTE_OBHUT AND ZU_ZWEIT AND  ' +
+            'konkubiat gets long during periode', () => {
+            const famSitMock = initTest();
+            famSitMock.familienstatus = TSFamilienstatus.KONKUBINAT_KEIN_KIND;
+            famSitMock.geteilteObhut = true;
+            famSitMock.gesuchstellerKardinalitaet = TSGesuchstellerKardinalitaet.ZU_ZWEIT;
+            famSitMock.startKonkubinat = moment('2023-01-01');
+            gesuchModelManager.getGesuch().familiensituationContainer.familiensituationJA = famSitMock;
+            stammdatenViewController.getFamilienSituationDisplayValue();
+            expect($translateMock.instant).toHaveBeenCalled();
+            expect($translateMock.instant).toHaveBeenCalledWith(jasmine.stringMatching('ANDERER_ELTERNTEIL'));
+        });
+
+        it('should return ANDERER_ELTERNTEIL if ALLEINERZIEHEND and ZU_ZWEIT', () => {
             const famSitMock = initTest();
             famSitMock.familienstatus = TSFamilienstatus.ALLEINERZIEHEND;
             famSitMock.geteilteObhut = true;
@@ -260,28 +277,6 @@ describe('stammdatenView', () => {
             expect($translateMock.instant).toHaveBeenCalledWith(jasmine.stringMatching('ANDERER_ELTERNTEIL'));
         });
 
-        it('should return GS2_VERHEIRATET if ALLEINERZIEHEND and ALLEINE', () => {
-            const famSitMock = initTest();
-            famSitMock.familienstatus = TSFamilienstatus.ALLEINERZIEHEND;
-            famSitMock.geteilteObhut = true;
-            famSitMock.gesuchstellerKardinalitaet = TSGesuchstellerKardinalitaet.ALLEINE;
-            gesuchModelManager.getGesuch().familiensituationContainer.familiensituationJA = famSitMock;
-            stammdatenViewController.getFamilienSituationDisplayValue();
-            expect($translateMock.instant).toHaveBeenCalled();
-            expect($translateMock.instant).toHaveBeenCalledWith(jasmine.stringMatching('GS2_VERHEIRATET'));
-        });
-
-        it('should return GS2_ALLEINERZIEHEND if ALLEINERZIEHEND and JA_UNTERHALTSVEREINBARUNG', () => {
-            const famSitMock = initTest();
-            famSitMock.familienstatus = TSFamilienstatus.ALLEINERZIEHEND;
-            famSitMock.geteilteObhut = false;
-            famSitMock.unterhaltsvereinbarung = TSUnterhaltsvereinbarungAnswer.JA_UNTERHALTSVEREINBARUNG;
-            gesuchModelManager.getGesuch().familiensituationContainer.familiensituationJA = famSitMock;
-            stammdatenViewController.getFamilienSituationDisplayValue();
-            expect($translateMock.instant).toHaveBeenCalled();
-            expect($translateMock.instant).toHaveBeenCalledWith(jasmine.stringMatching('GS2_ALLEINERZIEHEND'));
-        });
-
         it('should return GS2_VERHEIRATET if VERHEIRATET', () => {
             const famSitMock = initTest();
             famSitMock.familienstatus = TSFamilienstatus.VERHEIRATET;
@@ -300,12 +295,80 @@ describe('stammdatenView', () => {
             expect($translateMock.instant).toHaveBeenCalledWith(jasmine.stringMatching('GS2_KONKUBINAT'));
         });
 
+        it('should return GS2_VERHEIRATET if VERHEIRATET and Mutation to Alleine', () => {
+            const famSitMockMutation = initTest();
+            famSitMockMutation.familienstatus = TSFamilienstatus.ALLEINERZIEHEND;
+            gesuchModelManager.getGesuch().familiensituationContainer.familiensituationJA = famSitMockMutation;
+            famSitMockMutation.geteilteObhut = true;
+            famSitMockMutation.gesuchstellerKardinalitaet = TSGesuchstellerKardinalitaet.ZU_ZWEIT;
+            gesuchModelManager.getGesuch().typ = TSAntragTyp.MUTATION;
+
+            const famSitMockErstantrag = new TSFamiliensituation();
+            famSitMockErstantrag.familienstatus = TSFamilienstatus.VERHEIRATET;
+            gesuchModelManager.getGesuch().familiensituationContainer.familiensituationErstgesuch = famSitMockErstantrag;
+
+            stammdatenViewController.getFamilienSituationDisplayValue();
+            expect($translateMock.instant).toHaveBeenCalled();
+            expect($translateMock.instant).toHaveBeenCalledWith(jasmine.stringMatching('GS2_VERHEIRATET'));
+        });
+
+        it('should return GS2_KONKUBINAT if KONKUBINAT and Muataion to Alleine', () => {
+            const famSitMockMutation = initTest();
+            famSitMockMutation.familienstatus = TSFamilienstatus.ALLEINERZIEHEND;
+            gesuchModelManager.getGesuch().familiensituationContainer.familiensituationJA = famSitMockMutation;
+            famSitMockMutation.geteilteObhut = true;
+            famSitMockMutation.gesuchstellerKardinalitaet = TSGesuchstellerKardinalitaet.ZU_ZWEIT;
+            gesuchModelManager.getGesuch().typ = TSAntragTyp.MUTATION;
+
+            const famSitMockErstantrag = new TSFamiliensituation();
+            famSitMockErstantrag.familienstatus = TSFamilienstatus.KONKUBINAT;
+            gesuchModelManager.getGesuch().familiensituationContainer.familiensituationErstgesuch = famSitMockErstantrag;
+
+            stammdatenViewController.getFamilienSituationDisplayValue();
+            expect($translateMock.instant).toHaveBeenCalled();
+            expect($translateMock.instant).toHaveBeenCalledWith(jasmine.stringMatching('GS2_KONKUBINAT'));
+        });
+
+        it('should return GS2_VERHEIRATET if KONKUBINAT and Muataion to VERHEIRATET mit gleichem GS2', () => {
+            const famSitMockMutation = initTest();
+            famSitMockMutation.familienstatus = TSFamilienstatus.VERHEIRATET;
+            famSitMockMutation.partnerIdentischMitVorgesuch = true;
+            gesuchModelManager.getGesuch().familiensituationContainer.familiensituationJA = famSitMockMutation;
+            gesuchModelManager.getGesuch().typ = TSAntragTyp.MUTATION;
+
+            const famSitMockErstantrag = new TSFamiliensituation();
+            famSitMockErstantrag.familienstatus = TSFamilienstatus.KONKUBINAT;
+            gesuchModelManager.getGesuch().familiensituationContainer.familiensituationErstgesuch = famSitMockErstantrag;
+
+            stammdatenViewController.getFamilienSituationDisplayValue();
+            expect($translateMock.instant).toHaveBeenCalled();
+            expect($translateMock.instant).toHaveBeenCalledWith(jasmine.stringMatching('GS2_VERHEIRATET'));
+        });
+
+        it('should return GS2_VERHEIRATET if VERHEIRATET and Muataion to KONKUBINAT mit ungleichem GS2', () => {
+            const famSitMockMutation = initTest();
+            famSitMockMutation.familienstatus = TSFamilienstatus.KONKUBINAT;
+            famSitMockMutation.partnerIdentischMitVorgesuch = false;
+            gesuchModelManager.getGesuch().familiensituationContainer.familiensituationJA = famSitMockMutation;
+            gesuchModelManager.getGesuch().typ = TSAntragTyp.MUTATION;
+
+            const famSitMockErstantrag = new TSFamiliensituation();
+            famSitMockErstantrag.familienstatus = TSFamilienstatus.VERHEIRATET;
+            gesuchModelManager.getGesuch().familiensituationContainer.familiensituationErstgesuch = famSitMockErstantrag;
+
+            stammdatenViewController.getFamilienSituationDisplayValue();
+            expect($translateMock.instant).toHaveBeenCalled();
+            expect($translateMock.instant).toHaveBeenCalledWith(jasmine.stringMatching('GS2_VERHEIRATET'));
+        });
+
         function initTest(): TSFamiliensituation {
             stammdatenViewController.gesuchModelManager.isFKJVTexte = true;
             stammdatenViewController.gesuchstellerNumber = 2;
             const famSitMock = new TSFamiliensituation();
-            famSitMock.partnerIdentischMitVorgesuch = true;
+            famSitMock.minDauerKonkubinat = 2;
             gesuchModelManager.getGesuch().gesuchsperiode = new TSGesuchsperiode();
+            gesuchModelManager.getGesuch().gesuchsperiode.gueltigkeit =
+                new TSDateRange(moment('2024-08-01'), moment('2025-07-31'));
             gesuchModelManager.getGesuch().familiensituationContainer = new TSFamiliensituationContainer();
             return famSitMock;
         }
