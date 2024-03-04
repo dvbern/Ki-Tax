@@ -76,7 +76,7 @@ class FachstelleBernCalcRuleTest {
 		 * => Betreuung 60% Anspruch 40% 1.8. - 31.7.
 		 */
 		@Test
-		void pensumTooLowSprachlicheIntegrationShouldHaveAnsprch() {
+		void pensumTooLowSprachlicheIntegrationShouldHaveAnspruch() {
 			final int betreuungspensum = 60;
 			final Betreuung betreuung = createBetreuungAndGesuch(TestDataUtil.START_PERIODE, TestDataUtil.ENDE_PERIODE,
 				betreuungspensum, PENSUM_TOO_LOW);
@@ -98,7 +98,7 @@ class FachstelleBernCalcRuleTest {
 		 * => Betreuung 60% Anspruch 100% 1.8. - 31.7.
 		 */
 		@Test
-		void pensumHighEnoughWithSprachlicheIntegrationShouldHaveAnsprchOfPensum() {
+		void pensumHighEnoughWithSprachlicheIntegrationShouldHaveAnspruchOfPensum() {
 			final int betreuungspensum = 60;
 			final Betreuung betreuung = createBetreuungAndGesuch(TestDataUtil.START_PERIODE, TestDataUtil.ENDE_PERIODE,
 				betreuungspensum, 80);
@@ -179,7 +179,7 @@ class FachstelleBernCalcRuleTest {
 		 * Arbeitspensum: 10%
 		 * Fachstelle Sprachliche Förderung: 40% 1.8.-31.7.
 		 * Kita Betreuung 60% 15.8. - 31.10.
-		 * Kita Betreuung 60% 1.1. - 31.10.
+		 * Kita Betreuung 60% 1.1. - 31.7.
 		 * <p>
 		 * => Betreuung 0% Anspruch 0% 1.8-14.8.
 		 *    Betreuung 60% Anspruch 40% 15.8-31.8.
@@ -225,13 +225,13 @@ class FachstelleBernCalcRuleTest {
 		 * Arbeitspensum: 10%
 		 * Fachstelle Sprachliche Förderung: 40% 1.8.-31.7.
 		 * Kita Betreuung 30% 15.8. - 31.10.
-		 * Kita Betreuung 30% 1.1. - 31.10.
+		 * Kita Betreuung 30% 1.1. - 31.7.
 		 * <p>
 		 * => Betreuung 0% Anspruch 0% 1.8-14.8.
-		 *    Betreuung 30% Anspruch 40% 15.8-31.8.
-		 *    Betreuung 30% Anspruch 40% 1.9.-31.10.
+		 *    Betreuung 30% Anspruch 0% 15.8-31.8.
+		 *    Betreuung 30% Anspruch 0% 1.9.-31.10.
 		 *    Betreuung 0% Anspruch 0% 1.11.-31.12.
-		 *    Betreuung 30% Anspruch 40% 1.1.-31.7.
+		 *    Betreuung 30% Anspruch 0% 1.1.-31.7.
 		 */
 		@Test
 		void pensumTooLowWithSprachlicheIntegrationShouldHaveNoAnspruchDuringBetreuungenOnlyWithMultipleLowPensen() {
@@ -271,13 +271,13 @@ class FachstelleBernCalcRuleTest {
 		 * Arbeitspensum: 80%
 		 * Fachstelle Sprachliche Förderung: 40% 1.8.-31.7.
 		 * Kita Betreuung 60% 15.8. - 31.10.
-		 * Kita Betreuung 60% 1.1. - 31.10.
+		 * Kita Betreuung 60% 1.1. - 31.7.
 		 * <p>
 		 * => Betreuung 0% Anspruch 100% 1.8-14.8.
 		 *    Betreuung 60% Anspruch 100% 15.8-31.8.
 		 *    Betreuung 60% Anspruch 100% 1.9.-31.10.
 		 *    Betreuung 0% Anspruch 100% 1.11.-31.12.
-		 *    Betreuung 60% Anspruch 40% 1.1.-31.7.
+		 *    Betreuung 60% Anspruch 100% 1.1.-31.7.
 		 */
 		@Test
 		void pensumWithSprachlicheIntegrationShouldHaveAnspruchWithMultiplePensen() {
@@ -418,7 +418,7 @@ class FachstelleBernCalcRuleTest {
 		 * Arbeitspensum: 10%
 		 * Fachstelle Sprachliche Förderung: 40% 1.8.-31.7.
 		 * Kita Betreuung 60% 15.8. - 31.10.
-		 * Kita Betreuung 60% 1.1. - 31.10.
+		 * Kita Betreuung 60% 1.1. - 31.7.
 		 */
 		@Test
 		void pensumTooLowWithSprachlicheIntegrationShouldHaveAnspruchDuringBetreuungenOnlyWithMultiplePensen() {
@@ -466,7 +466,7 @@ class FachstelleBernCalcRuleTest {
 		 * Arbeitspensum: 10%
 		 * Fachstelle Sprachliche Förderung: 40% 1.8.-31.7.
 		 * Kita Betreuung 30% 15.8. - 31.10.
-		 * Kita Betreuung 30% 1.1. - 31.10.
+		 * Kita Betreuung 30% 1.1. - 31.7.
 		 */
 		@Test
 		void pensumTooLowWithSprachlicheIntegrationShouldHaveNoAnspruchDuringBetreuungenOnlyWithMultipleLowPensen() {
@@ -510,7 +510,7 @@ class FachstelleBernCalcRuleTest {
 		 * Arbeitspensum: 80%
 		 * Fachstelle Sprachliche Förderung: 40% 1.8.-31.7.
 		 * Kita Betreuung 60% 15.8. - 31.10.
-		 * Kita Betreuung 60% 1.1. - 31.10.
+		 * Kita Betreuung 60% 1.1. - 31.7.
 		 */
 		@Test
 		void pensumWithSprachlicheIntegrationShouldHaveAnspruchWithMultiplePensen() {
