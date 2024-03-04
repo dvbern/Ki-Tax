@@ -286,6 +286,8 @@ export class EinkommensverschlechterungViewController extends AbstractGesuchView
                 && ekv.ersatzeinkommenSelbststaendigkeitBasisjahr > 0)
             || (EbeguUtil.isNotNullOrUndefined(this.ersatzeinkommenSelbststaendigkeitBasisjahrMinus1)
                 && this.ersatzeinkommenSelbststaendigkeitBasisjahrMinus1 > 0)
+            || (EbeguUtil.isNotNullOrUndefined(this.model.getEkvToWorkWith().ersatzeinkommenSelbststaendigkeitBasisjahrMinus1)
+                && this.model.getEkvToWorkWith().ersatzeinkommenSelbststaendigkeitBasisjahrMinus1 > 0)
             || (EbeguUtil.isNotNullOrUndefined(this.ersatzeinkommenSelbststaendigkeitBasisjahrMinus2)
                 && this.ersatzeinkommenSelbststaendigkeitBasisjahrMinus2 > 0);
     }
