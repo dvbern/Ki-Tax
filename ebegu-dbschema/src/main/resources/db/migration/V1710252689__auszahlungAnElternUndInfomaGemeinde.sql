@@ -38,7 +38,9 @@ VALUES (UNHEX(REPLACE(UUID(), '-', '')), @mandant_id_luzern, now(), now(), 'flyw
 
 # schwyz
 INSERT INTO application_property (id, mandant_id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version, vorgaenger_id, name, value)
-VALUES (UNHEX(REPLACE(UUID(), '-', '')), @mandant_id_schwyz, now(), now(), 'flyway', 'flyway', 0, null, 'AUSZAHLUNGEN_AN_ELTERN', 'false');
+VALUES (UNHEX(REPLACE(UUID(), '-', '')), @mandant_id_schwyz, now(), now(), 'flyway', 'flyway', 0, null, 'AUSZAHLUNGEN_AN_ELTERN', 'true');
 
 ALTER TABLE gemeinde ADD COLUMN infoma_zahlungen BIT NOT NULL DEFAULT FALSE;
 ALTER TABLE gemeinde_aud ADD COLUMN infoma_zahlungen BIT;
+
+update gemeinde set infoma_zahlungen = true where name like '%Luzern%';
