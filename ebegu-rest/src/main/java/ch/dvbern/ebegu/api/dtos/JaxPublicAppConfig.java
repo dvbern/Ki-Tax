@@ -27,6 +27,7 @@ public class JaxPublicAppConfig {
 	private String notverordnungDefaultEinreichefristPrivat;
 	private boolean lastenausgleichAktiv;
 	private boolean ferienbetreuungAktiv;
+	private final boolean angebotMittagstischEnabled;
 	private boolean lastenausgleichTagesschulenAktiv;
 	private boolean gemeindeKennzahlenAktiv;
 	private BigDecimal lastenausgleichTagesschulenAnteilZweitpruefungDe;
@@ -92,6 +93,7 @@ public class JaxPublicAppConfig {
 			boolean erlaubenInstitutionenZuWaehlen,
 			boolean angebotTSActivated,
 			boolean angebotFIActivated,
+			boolean angebotMittagstischEnabled,
 			boolean angebotTFOActivated
 		) {
 		this.currentNode = currentNode;
@@ -108,6 +110,7 @@ public class JaxPublicAppConfig {
 		this.notverordnungDefaultEinreichefristPrivat = notverordnungDefaultEinreichefristPrivat;
 		this.lastenausgleichAktiv = lastenausgleichAktiv;
 		this.ferienbetreuungAktiv = ferienbetreuungAktiv;
+		this.angebotMittagstischEnabled = angebotMittagstischEnabled;
 		this.lastenausgleichTagesschulenAktiv = lastenausgleichTagesschulenAktiv;
 		this.gemeindeKennzahlenAktiv = gemeindeKennzahlenAktiv;
 		this.lastenausgleichTagesschulenAnteilZweitpruefungDe = lastenausgleichTagesschulenAnteilZweitpruefungDe;
@@ -433,5 +436,9 @@ public class JaxPublicAppConfig {
 
 	public void setAngebotTFOActivated(boolean angebotTFOActivated) {
 		this.angebotTFOActivated = angebotTFOActivated;
+	}
+
+	public boolean isAngebotMittagstischEnabled() {
+		return angebotMittagstischEnabled;
 	}
 }

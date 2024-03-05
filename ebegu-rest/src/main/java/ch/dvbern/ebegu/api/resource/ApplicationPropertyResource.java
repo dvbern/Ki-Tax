@@ -378,6 +378,7 @@ public class ApplicationPropertyResource {
 		ApplicationProperty erlaubenInstitutionenZuWaehlen = this.applicationPropertyService.readApplicationProperty(ApplicationPropertyKey.ERLAUBEN_INSTITUTIONEN_ZU_WAEHLEN, mandant).orElseThrow(() -> notFound);
 		ApplicationProperty angebotTSEnabled = this.applicationPropertyService.readApplicationProperty(ApplicationPropertyKey.ANGEBOT_TS_ENABLED, mandant).orElseThrow(() -> notFound);
 		ApplicationProperty angebotFIEnabled = this.applicationPropertyService.readApplicationProperty(ApplicationPropertyKey.ANGEBOT_FI_ENABLED, mandant).orElseThrow(() -> notFound);
+		ApplicationProperty angebotMittagstischEnabled = this.applicationPropertyService.readApplicationProperty(ApplicationPropertyKey.ANGEBOT_MITTAGSTISCH_ENABLED, mandant).orElseThrow(() -> notFound);
 		ApplicationProperty angebotTFOEnabled = this.applicationPropertyService.readApplicationProperty(ApplicationPropertyKey.ANGEBOT_TFO_ENABLED, mandant).orElseThrow(() -> notFound);
 
 		String nodeName = "";
@@ -435,6 +436,7 @@ public class ApplicationPropertyResource {
 			stringToBool(erlaubenInstitutionenZuWaehlen.getValue()),
 			stringToBool(angebotTSEnabled.getValue()),
 			stringToBool(angebotFIEnabled.getValue()),
+			stringToBool(angebotMittagstischEnabled.getValue()),
 			stringToBool(angebotTFOEnabled.getValue())
 			);
 		return Response.ok(pubAppConf).build();
