@@ -17,15 +17,6 @@
 
 package ch.dvbern.ebegu.api.util.health;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.stream.Collectors;
-
-import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-
 import ch.dvbern.ebegu.config.EbeguConfiguration;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.kafka.clients.admin.AdminClient;
@@ -34,6 +25,14 @@ import org.eclipse.microprofile.health.Health;
 import org.eclipse.microprofile.health.HealthCheck;
 import org.eclipse.microprofile.health.HealthCheckResponse;
 import org.eclipse.microprofile.health.HealthCheckResponseBuilder;
+
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * Checks if there is a connection to Kafka
@@ -84,6 +83,9 @@ public class DVKafkaHealthCheck implements HealthCheck {
 				.map(node -> node.host() + ':' + node.port())
 				.collect(Collectors.joining(","));
 			return builder.withData("nodes", nodes).build();
+		} catch (InterruptedException e) {
+			Thread.currentThread().interrupt();
+			return builder.down().withData("reason", e.getMessage()).build();
 		} catch (Exception e) {
 			return builder.down().withData("reason", e.getMessage()).build();
 		}

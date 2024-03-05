@@ -15,8 +15,12 @@
 
 package ch.dvbern.ebegu.api.resource;
 
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
+import ch.dvbern.ebegu.enums.UserRoleName;
+import ch.dvbern.ebegu.services.DailyBatch;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nullable;
 import javax.annotation.security.RolesAllowed;
@@ -28,13 +32,8 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-
-import ch.dvbern.ebegu.enums.UserRoleName;
-import ch.dvbern.ebegu.services.DailyBatch;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 
 /**
  * Resource fuer DailyBatch. Dies darf nur als SUPERADMIN aufgerufen werden
@@ -58,16 +57,7 @@ public class DailyBatchResource {
 	@Produces(MediaType.TEXT_PLAIN)
 	public Response runBatchCleanDownloadFiles() {
 		Future<Boolean> booleanFuture = dailyBatch.runBatchCleanDownloadFiles();
-		try {
-			Boolean resultat = booleanFuture.get();
-			dailyBatch.runBatchCleanDownloadFiles();
-			String info = String.format("Manuelle ausführung! Batchjob CleanDownloadFiles durchgefuehrt mit Resultat: {%s}", resultat);
-			LOGGER.info(info);
-			return Response.ok(info).build();
-		} catch (InterruptedException | ExecutionException e) {
-			LOGGER.error("Manuelle ausführung! Batch-Job Mahnung CleanDownloadFiles konnte nicht durchgefuehrt werden!", e);
-			return Response.serverError().build();
-		}
+		return exectureFuture(booleanFuture, "CleanDownloadFiles");
 	}
 
 	@ApiOperation(value = "Führt den Job runBatchMahnungFristablauf aus.", response = String.class)
@@ -78,15 +68,7 @@ public class DailyBatchResource {
 	@Produces(MediaType.TEXT_PLAIN)
 	public Response runBatchMahnungFristablauf() {
 		Future<Boolean> booleanFuture = dailyBatch.runBatchMahnungFristablauf();
-		try {
-			Boolean resultat = booleanFuture.get();
-			String info = String.format("Manuelle ausführung! Batchjob MahnungFristablauf durchgefuehrt mit Resultat: {%s}", resultat);
-			LOGGER.info(info);
-			return Response.ok(info).build();
-		} catch (InterruptedException | ExecutionException e) {
-			LOGGER.error("Manuelle ausführung! Batch-Job Mahnung Fristablauf konnte nicht durchgefuehrt werden!", e);
-			return Response.serverError().build();
-		}
+		return exectureFuture(booleanFuture, "MahnungFristablauf");
 	}
 
 	@ApiOperation(value = "Führt den Job UpdateBGInstitutionGemeinden aus.", response = String.class)
@@ -97,13 +79,26 @@ public class DailyBatchResource {
 	@Produces(MediaType.TEXT_PLAIN)
 	public Response runBatchUpdateGemeindeForBGInstitutionen() {
 		Future<Integer> count = dailyBatch.runBatchUpdateGemeindeForBGInstitutionen();
+		return exectureFuture(count, "UpdateGemeindeForBGInstitutionen");
+	}
+
+	private static Response exectureFuture(Future<?> future, String batchjobName) {
 		try {
-			String info = String.format("Manuelle ausführung! Batchjob UpdateGemeindeForBGInstitutionen durchgefuehrt. Anzahl Änderungen: {%s}", count.get());
+			var result = future.get();
+			String info = String.format("Manuelle ausführung! Batchjob {%s} durchgefuehrt mit Resultat: {%s}", batchjobName, result);
 			LOGGER.info(info);
 			return Response.ok(info).build();
-		} catch (InterruptedException | ExecutionException e) {
-			LOGGER.error("Manuelle ausführung! Batch-Job UpdateGemeindeForBGInstitutionen konnte nicht durchgefuehrt werden!", e);
-			return Response.serverError().build();
+		} catch (ExecutionException e) {
+			return logExceptionAndBuildError(batchjobName, e);
+		} catch (InterruptedException e) {
+			Thread.currentThread().interrupt();
+			return logExceptionAndBuildError(batchjobName, e);
 		}
+	}
+
+	private static Response logExceptionAndBuildError(String batchjobName, Exception e) {
+		String errorMessage = String.format("Manuelle ausführung! Batch-Job Mahnung {%s} konnte nicht durchgefuehrt werden!", batchjobName);
+		LOGGER.error(errorMessage, e);
+		return Response.serverError().build();
 	}
 }
