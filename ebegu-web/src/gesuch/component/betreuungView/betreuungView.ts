@@ -175,6 +175,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     private angebotTS: boolean;
     private angebotFI: boolean;
     private angebotTFO: boolean = false;
+    private angebotMittagstisch: boolean = false;
     private isLuzern: boolean;
     private sprachfoerderungBestaetigenAktiviert: boolean;
     public readonly demoFeature = TSDemoFeature.FACHSTELLEN_UEBERGANGSLOESUNG;
@@ -750,6 +751,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
             getTSBetreuungsangebotTypValuesForMandantIfTagesschulanmeldungen(
                 this.angebotTS,
                 this.angebotTFO,
+                this.angebotMittagstisch,
                 this.checkIfGemeindeOrBetreuungHasTSAnmeldung(),
                 this.gesuchModelManager.getGemeinde(),
                 this.gesuchModelManager.getGesuchsperiode());
@@ -1856,6 +1858,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         return this.applicationPropertyRS.getPublicPropertiesCached().then(res => {
             this.angebotTS = res.angebotTSActivated;
             this.angebotFI = res.angebotFIActivated;
+            this.angebotMittagstisch = res.angebotMittagstischActivated;
             //wenn TFO aktiv on mandant then check if tfo is activ on gemeinde
             if (res.angebotTFOActivated) {
                 this.angebotTFO = this.gesuchModelManager.getGemeinde().angebotBGTFO;
@@ -1864,7 +1867,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     }
 
     public hasMandantZusaetzlichesBereuungsangebot(): boolean {
-        return this.angebotTS || this.angebotFI || this.angebotTFO;
+        return this.angebotTS || this.angebotFI || this.angebotTFO || this.angebotMittagstisch;
     }
 
     public getEingewoehnungLabel(): string {
