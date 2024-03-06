@@ -345,7 +345,7 @@ public class BetreuungStornierenEventHandlerTest extends EasyMockSupport {
 
 			mockClient(clientGueltigkeit);
 
-			expect(betreuungEventHelper.getMutationsmeldungBenutzer()).andReturn(new Benutzer());
+			expect(betreuungEventHelper.getMutationsmeldungBenutzer(betreuung)).andReturn(new Benutzer());
 
 			expect(gemeindeService.getGemeindeStammdatenByGemeindeId(gemeinde.getId()))
 				.andReturn(Optional.of(TestDataUtil.createGemeindeStammdaten(gemeinde)));
