@@ -226,6 +226,11 @@ public enum ApplicationPropertyKey {
 	 */
 	ANGEBOT_FI_ENABLED,
 
+	/**
+	 * Ist für den Mandanten das Angebot Mittagstisch aktiviert
+	 */
+	ANGEBOT_MITTAGSTISCH_ENABLED,
+
 	/*
 	 * Wenn dieses Datum überschritten wird, ist die SprachfoerderungBestaegit Flag Wert beruecksichtig.
 	 */

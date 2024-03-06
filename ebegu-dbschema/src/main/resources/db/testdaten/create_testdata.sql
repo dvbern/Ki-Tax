@@ -53,6 +53,7 @@ UPDATE application_property SET value = 'false' WHERE name = 'INSTITUTIONEN_DURC
 UPDATE application_property SET value = 'false' WHERE name = 'ERLAUBEN_INSTITUTIONEN_ZU_WAEHLEN' AND mandant_id = @bern_mandant_id;
 UPDATE application_property SET value = 'true' WHERE name = 'ANGEBOT_TS_ENABLED' AND mandant_id = @bern_mandant_id;
 UPDATE application_property SET value = 'true' WHERE name = 'ANGEBOT_FI_ENABLED' AND mandant_id = @bern_mandant_id;
+UPDATE application_property SET value = 'false' WHERE name = 'ANGEBOT_MITTAGSTISCH_ENABLED' AND mandant_id = @bern_mandant_id;
 UPDATE application_property SET value = 'true' WHERE name = 'ANGEBOT_TFO_ENABLED' AND mandant_id = @bern_mandant_id;
 UPDATE application_property SET value = 'logo-kibon-white-bern.svg' WHERE name = 'LOGO_WHITE_FILE_NAME' AND mandant_id = @bern_mandant_id;
 UPDATE application_property SET value = 'false' WHERE name = 'EVALUATOR_DEBUG_ENABLED' AND mandant_id = @bern_mandant_id;

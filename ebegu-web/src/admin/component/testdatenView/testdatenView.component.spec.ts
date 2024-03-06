@@ -80,6 +80,7 @@ describe('testdatenView', () => {
             angebotTSActivated: true,
             angebotFIActivated: true,
             angebotTFOActivated: true,
+            angebotMittagstischActivated: false,
             infomaZahlungen: true,
             frenchEnabled: true,
             geresEnabledForMandant: true,
