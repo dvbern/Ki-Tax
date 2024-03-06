@@ -126,6 +126,7 @@ import ch.dvbern.ebegu.errors.EbeguExistingAntragRuntimeException;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.errors.MailException;
 import ch.dvbern.ebegu.i18n.LocaleThreadLocal;
+import ch.dvbern.ebegu.inbox.util.TechnicalUserConfigurationVisitor;
 import ch.dvbern.ebegu.nesko.handler.KibonAnfrageContext;
 import ch.dvbern.ebegu.nesko.handler.KibonAnfrageHelper;
 import ch.dvbern.ebegu.nesko.utils.KibonAnfrageUtil;
@@ -169,8 +170,7 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 
 	private static final Logger LOG = LoggerFactory.getLogger(MitteilungServiceBean.class.getSimpleName());
 
-	static final String TECHNICAL_KIBON_BENUTZER_ID = "99999999-2222-2222-2222-222222222222";
-
+	static final TechnicalUserConfigurationVisitor technicalUserConfigVisitor = new TechnicalUserConfigurationVisitor();
 	@Inject
 	private Persistence persistence;
 
@@ -1120,7 +1120,7 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 
 		neueVeranlagungsMitteilung.setEmpfaengerTyp(MitteilungTeilnehmerTyp.JUGENDAMT);
 		neueVeranlagungsMitteilung.setSenderTyp(MitteilungTeilnehmerTyp.JUGENDAMT);
-		neueVeranlagungsMitteilung.setSender(getTechnicalKibonBenutzer());
+		neueVeranlagungsMitteilung.setSender(getTechnicalKibonBenutzer(neueVeranlagungsMitteilung.getDossier()));
 		neueVeranlagungsMitteilung.setMitteilungStatus(MitteilungStatus.NEU);
 		neueVeranlagungsMitteilung.setSentDatum(LocalDateTime.now());
 		neueVeranlagungsMitteilung.setEmpfaenger(getEmpfaengerBeiMitteilungAnGemeinde(neueVeranlagungsMitteilung));
@@ -1129,11 +1129,13 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 	}
 
 	@Nonnull
-	private Benutzer getTechnicalKibonBenutzer() {
-		return benutzerService.findBenutzerById(TECHNICAL_KIBON_BENUTZER_ID)
+	private Benutzer getTechnicalKibonBenutzer(Dossier dossier) {
+		String technicalUserID =
+			technicalUserConfigVisitor.process(dossier.getFall().getMandant().getMandantIdentifier()).getTechnicalUser();
+		return benutzerService.findBenutzerById(technicalUserID)
 				.orElseThrow(() -> new EbeguEntityNotFoundException(EMPTY,
 						ERROR_ENTITY_NOT_FOUND,
-						TECHNICAL_KIBON_BENUTZER_ID));
+						technicalUserID));
 	}
 
 	@Override

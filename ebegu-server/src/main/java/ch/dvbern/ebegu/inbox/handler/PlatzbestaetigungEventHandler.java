@@ -458,7 +458,7 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 		Betreuungsmitteilung betreuungsmitteilung = new Betreuungsmitteilung();
 		betreuungsmitteilung.setDossier(gesuch.getDossier());
 		betreuungsmitteilung.setSenderTyp(MitteilungTeilnehmerTyp.INSTITUTION);
-		betreuungsmitteilung.setSender(betreuungEventHelper.getMutationsmeldungBenutzer());
+		betreuungsmitteilung.setSender(betreuungEventHelper.getMutationsmeldungBenutzer(betreuung));
 		betreuungsmitteilung.setEmpfaengerTyp(MitteilungTeilnehmerTyp.JUGENDAMT);
 		betreuungsmitteilung.setEmpfaenger(gesuch.getDossier().getFall().getBesitzer());
 		betreuungsmitteilung.setMitteilungStatus(MitteilungStatus.NEU);
