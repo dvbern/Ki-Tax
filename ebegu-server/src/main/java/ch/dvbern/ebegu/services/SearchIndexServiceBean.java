@@ -27,6 +27,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 
+import ch.dvbern.ebegu.authentication.PrincipalBean;
 import ch.dvbern.ebegu.dto.suchfilter.lucene.EBEGUGermanAnalyzer;
 import ch.dvbern.ebegu.dto.suchfilter.lucene.IndexedEBEGUFieldName;
 import ch.dvbern.ebegu.dto.suchfilter.lucene.LuceneUtil;
@@ -48,8 +49,14 @@ import org.hibernate.search.query.dsl.QueryContextBuilder;
 import org.hibernate.search.query.dsl.TermMatchingContext;
 import org.hibernate.search.query.dsl.TermTermination;
 
+import static ch.dvbern.ebegu.dto.suchfilter.lucene.IndexedEBEGUFieldName.DOSSIER_FALL_MANDANT;
+import static ch.dvbern.ebegu.dto.suchfilter.lucene.IndexedEBEGUFieldName.GESUCH_FALL_MANDANT;
+
 @Stateless
 public class SearchIndexServiceBean implements SearchIndexService {
+
+	@Inject
+	private PrincipalBean principalBean;
 
 	@Nonnull
 	private static final List<SearchFilter> SEARCH_FILTER_FOR_ALL_ENTITIES =
@@ -147,12 +154,18 @@ public class SearchIndexServiceBean implements SearchIndexService {
 		QueryBuilder qb = queryContextBuilder.forEntity(entityClass).get();
 		//noinspection rawtypes
 		BooleanJunction<? extends BooleanJunction> booleanJunction = qb.bool();
+		if(filter.getSearchEntityType() == SearchEntityType.GESUCH || filter.getSearchEntityType() == SearchEntityType.DOSSIER) {
+			booleanJunction.must(qb
+				.keyword()
+				.onField(filter.getSearchEntityType() == SearchEntityType.GESUCH ? GESUCH_FALL_MANDANT.getIndexedFieldName() :
+					DOSSIER_FALL_MANDANT.getIndexedFieldName())
+				.matching(principalBean.getMandant().getMandantIdentifier()).createQuery());
+		}
 		// create a MUST (= AND) query for every search term
 		for (String currSearchTerm : searchTermList) {
 			Query subtermquery = createTermquery(currSearchTerm, filter, qb);
 			booleanJunction = booleanJunction.must(subtermquery);
 		}
-
 		Query query = booleanJunction.createQuery();
 		return fullTextEntityManager.createFullTextQuery(query, entityClass);
 	}
