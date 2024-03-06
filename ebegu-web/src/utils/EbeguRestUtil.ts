@@ -4586,6 +4586,7 @@ export class EbeguRestUtil {
         publicAppConfigTS.angebotTSActivated = data.angebotTSActivated;
         publicAppConfigTS.angebotFIActivated = data.angebotFIActivated;
         publicAppConfigTS.angebotTFOActivated = data.angebotTFOActivated;
+        publicAppConfigTS.angebotMittagstischActivated = data.angebotMittagstischEnabled;
         publicAppConfigTS.infomaZahlungen = data.infomaZahlungen;
         publicAppConfigTS.frenchEnabled = data.frenchEnabled;
         publicAppConfigTS.geresEnabledForMandant = data.geresEnabledForMandant;
