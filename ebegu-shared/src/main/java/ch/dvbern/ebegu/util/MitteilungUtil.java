@@ -18,6 +18,7 @@
 package ch.dvbern.ebegu.util;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
@@ -96,6 +97,11 @@ public final class MitteilungUtil {
 		String datumBis = Constants.DATE_FORMATTER.format(pensumMitteilung.getGueltigkeit().getGueltigBis());
 		Mandant mandant = Objects.requireNonNull(pensumMitteilung.getBetreuungsmitteilung().getDossier().getFall().getMandant());
 
+		BigDecimal monatlicheBetreuungskosten = pensumMitteilung.getMonatlicheBetreuungskosten();
+		final BigDecimal multipliedPensum = MathUtil.DEFAULT.multiply(pensumMitteilung.getPensum(), multiplier);
+		if (betreuungspensumAnzeigeTyp == BetreuungspensumAnzeigeTyp.NUR_MAHLZEITEN) {
+			monatlicheBetreuungskosten = pensumMitteilung.getMonatlicheBetreuungskosten().divide(multipliedPensum, 2, RoundingMode.HALF_UP);
+		}
 		if (mahlzeitenverguenstigungEnabled) {
 			BigDecimal hauptmahlzeiten = pensumMitteilung.getMonatlicheHauptmahlzeiten();
 			BigDecimal nebemahlzeiten = pensumMitteilung.getMonatlicheNebenmahlzeiten();
@@ -105,26 +111,39 @@ public final class MitteilungUtil {
 			BigDecimal tarifNeben = pensumMitteilung.getTarifProNebenmahlzeit();
 
 			return ServerMessageUtil.getMessage(
-				betreuungspensumAnzeigeTyp.equals(BetreuungspensumAnzeigeTyp.NUR_STUNDEN) ?
+				betreuungspensumAnzeigeTyp == BetreuungspensumAnzeigeTyp.NUR_STUNDEN ?
 					"mutationsmeldung_message_mahlzeitverguenstigung_mit_tarif_stunden" :
-					"mutationsmeldung_message_mahlzeitverguenstigung_mit_tarif", locale, mandant,
+					"mutationsmeldung_message_mahlzeitverguenstigung_mit_tarif",
+				locale,
+				mandant,
 				index,
 				datumAb,
 				datumBis,
-				MathUtil.DEFAULT.multiply(pensumMitteilung.getPensum() , multiplier),
-				pensumMitteilung.getMonatlicheBetreuungskosten(),
+				multipliedPensum,
+				monatlicheBetreuungskosten,
 				hauptmahlzeiten,
 				nebemahlzeiten,
 				tarifHaupt,
 				tarifNeben);
-		} else {
-			return ServerMessageUtil.getMessage(betreuungspensumAnzeigeTyp.equals(BetreuungspensumAnzeigeTyp.NUR_STUNDEN) ?
-					"mutationsmeldung_message_stunden" :"mutationsmeldung_message", locale, mandant,
-				index,
-				datumAb,
-				datumBis,
-				MathUtil.DEFAULT.multiply(pensumMitteilung.getPensum() , multiplier),
-				pensumMitteilung.getMonatlicheBetreuungskosten());
 		}
+		return ServerMessageUtil.getMessage(
+			getMutationsmeldungTranslationKey(betreuungspensumAnzeigeTyp),
+			locale,
+			mandant,
+			index,
+			datumAb,
+			datumBis,
+			multipliedPensum,
+			monatlicheBetreuungskosten);
+	}
+
+	@Nonnull
+	private static String getMutationsmeldungTranslationKey(@Nonnull BetreuungspensumAnzeigeTyp betreuungspensumAnzeigeTyp) {
+		if (betreuungspensumAnzeigeTyp == BetreuungspensumAnzeigeTyp.NUR_MAHLZEITEN) {
+			return "mutationsmeldung_message_mittagstisch";
+		}
+		return betreuungspensumAnzeigeTyp == BetreuungspensumAnzeigeTyp.NUR_STUNDEN ?
+			"mutationsmeldung_message_stunden" :
+			"mutationsmeldung_message";
 	}
 }
