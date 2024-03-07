@@ -77,7 +77,7 @@ export class TSAbstractDecimalPensumEntity extends TSAbstractDateRangedEntity {
             return;
         }
         const mahlzeiten = EbeguUtil.roundDefaultBetreuungspensum(this.pensum * multiplierMittagstisch);
-        this.kostenProMahlzeit = this.monatlicheBetreuungskosten / mahlzeiten;
+        this.kostenProMahlzeit = mahlzeiten === 0 ? 0 : this.monatlicheBetreuungskosten / mahlzeiten;
     }
 
     public recalculateMonatlicheMahlzeitenKosten(multiplierMittagstisch: number): void {
