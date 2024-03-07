@@ -58,6 +58,10 @@ const getMonatlicheBetreuungskosten = (betreuungspensumIndex: number) => {
     return cy.getByData('monatliche-betreuungskosten#' + betreuungspensumIndex);
 };
 
+const getKostenProMahlzeit = (betreuungspensumIndex: number) => {
+    return cy.getByData('kosten-pro-mahlzeit#' + betreuungspensumIndex);
+};
+
 const getBetreuungspensumAb = (betreuungspensumIndex: number) => {
     return cy.getByData('betreuung-datum-ab#' + betreuungspensumIndex);
 };
@@ -142,6 +146,10 @@ const getEingewoehnung = () => {
 	return cy.getByData('eingewoehnung');
 };
 
+const getAbweichungenMeldenButton = () => {
+	return cy.getByData('abweichungen-melden', 'navigation-button');
+};
+
 const getGrundAblehnung = () => {
 	return cy.getByData('grund-ablehnung');
 };
@@ -164,6 +172,34 @@ const fillKitaBetreuungsForm = (dataset: keyof typeof FixtureBetreuung, gemeinde
         getInstitution().find('input').type(kita.institution, { delay: 30 });
         getInstitutionSuchtext().click();
         getInstitution().find('input').should('have.value', kita.institution);
+    });
+};
+
+const fillMittagstischBetreuungsForm = (dataset: keyof typeof FixtureBetreuung, gemeinde: GemeindeTestFall) => {
+    FixtureBetreuung[dataset]((data) => {
+        const mittagstisch = data[gemeinde].mittagstisch;
+        getBetreuungsangebot().select('Mittagstisch');
+        getHasVertrag('ja').click();
+        getInstitution().find('input').type(mittagstisch.institution);
+        getInstitutionSuchtext().click();
+        getInstitution().find('input').should('have.value', mittagstisch.institution);
+        getKesbPlatzierung('nein').click();
+        getHasErweiterteBeduerfnisse('nein').click();
+    });
+};
+
+const fillMittagstischBetreuungspensumForm = (dataset: keyof typeof FixtureBetreuung, gemeinde: GemeindeTestFall) => {
+    FixtureBetreuung[dataset]((data) => {
+        const pensen = data[gemeinde].mittagstisch.betreuungspensen;
+        pensen.forEach((pensum, index: number) => {
+            if (index > 0) {
+                AntragBetreuungPO.getWeiteresBetreuungspensumErfassenButton().click()
+            }
+            AntragBetreuungPO.getBetreuungspensum(index).type(pensum.anzahlMittagessenProMonat);
+            AntragBetreuungPO.getKostenProMahlzeit(index).type(pensum.kostenProMittagessen);
+            AntragBetreuungPO.getBetreuungspensumBis(0).find('input').type(pensum.bis);
+            AntragBetreuungPO.getBetreuungspensumAb(0).find('input').type(pensum.von);
+        });
     });
 };
 
@@ -266,10 +302,9 @@ const saveAndConfirmBetreuung = () => {
 };
 
 const platzBestaetigen = () => {
-    getKorrekteKostenBestaetigung().click();
-    getPlatzBestaetigenButton().click();
+    getKorrekteKostenBestaetigung().click();;
     cy.waitForRequest('GET', '**/search/pendenzenBetreuungen', () => {
-        ConfirmDialogPO.getDvLoadingConfirmButton().click();
+        getPlatzBestaetigenButton().click()
     });
 };
 
@@ -299,6 +334,7 @@ export const AntragBetreuungPO = {
     getBetreuungsstatus,
     getBetreuungspensum,
     getMonatlicheBetreuungskosten,
+    getKostenProMahlzeit,
     getBetreuungspensumAb,
     getBetreuungspensumBis,
     getKorrekteKostenBestaetigung,
@@ -324,12 +360,15 @@ export const AntragBetreuungPO = {
     getFachstelle,
     getEingewoehnung,
     getGrundAblehnung,
+    getAbweichungenMeldenButton,
     // page actions
     createNewBetreuung,
     createNewTagesschulAnmeldung,
     selectTagesschulBetreuung,
     fillTagesschulBetreuungsForm,
     fillKitaBetreuungsForm,
+    fillMittagstischBetreuungsForm,
+    fillMittagstischBetreuungspensumForm,
     fillOnlineKitaBetreuungsForm,
     fillOnlineTfoBetreuungsForm,
     fillKeinePlatzierung,
