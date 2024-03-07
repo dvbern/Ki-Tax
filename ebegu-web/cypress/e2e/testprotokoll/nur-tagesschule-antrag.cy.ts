@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2023 DV Bern AG, Switzerland
+ * Copyright (C) 2024 DV Bern AG, Switzerland
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -17,7 +17,7 @@
 
 import {AntragBetreuungPO, ConfirmDialogPO, TestFaellePO, VerfuegenPO, VerfuegungPO} from '@dv-e2e/page-objects';
 import { getUser } from '@dv-e2e/types';
-import {SidenavPO} from '../page-objects/antrag/sidenav.po';
+import {SidenavPO} from '../../page-objects/antrag/sidenav.po';
 
 describe('Kibon - Tagesschule Only [Superadmin]', () => {
     const adminUser = getUser('[1-Superadmin] E-BEGU Superuser');
