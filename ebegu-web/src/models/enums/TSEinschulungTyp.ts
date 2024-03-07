@@ -76,7 +76,7 @@ export function getTSEinschulungTypGemeindeValues(): Array<TSEinschulungTyp> {
     ];
 }
 
-export function getTSEinschulungTypValuesSchwytz(): Array<TSEinschulungTyp> {
+export function getTSEinschulungTypValuesSchwyz(): Array<TSEinschulungTyp> {
     return [
         TSEinschulungTyp.VORSCHULALTER,
         TSEinschulungTyp.PRIMARSTUFE,
