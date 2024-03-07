@@ -1168,9 +1168,7 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 		if (betreuung.getBetreuungsangebotTyp() == BetreuungsangebotTyp.MITTAGSTISCH) {
 			return BetreuungspensumAnzeigeTyp.NUR_MAHLZEITEN;
 		}
-		BetreuungspensumAnzeigeTyp betreuungspensumAnzeigeTyp =
-				BetreuungspensumAnzeigeTyp.valueOf(einstellungAnzeigeTyp.getValue());
-		return betreuungspensumAnzeigeTyp;
+		return BetreuungspensumAnzeigeTyp.valueOf(einstellungAnzeigeTyp.getValue());
 	}
 
 	private BigDecimal getMultiplierForMutationsMitteilung(
