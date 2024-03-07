@@ -17,7 +17,7 @@
 
 import {NgModule} from '@angular/core';
 import {NgHybridStateDeclaration, UIRouterUpgradeModule} from '@uirouter/angular-hybrid';
-import {TSBetreuungsangebotTyp} from '../../../models/enums/TSBetreuungsangebotTyp';
+import {getBgInstitutionenBetreuungsangebote} from '../../../models/enums/TSBetreuungsangebotTyp';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
 import {UiViewComponent} from '../../shared/ui-view/ui-view.component';
 import {AddInstitutionComponent} from '../add-institution/add-institution.component';
@@ -50,7 +50,7 @@ const states: NgHybridStateDeclaration[] = [
         params: {
             betreuungsangebote: {
                 type: 'any',
-                value: [TSBetreuungsangebotTyp.KITA, TSBetreuungsangebotTyp.TAGESFAMILIEN]
+                value: getBgInstitutionenBetreuungsangebote()
             },
             betreuungsangebot: {
                 type: 'any'
