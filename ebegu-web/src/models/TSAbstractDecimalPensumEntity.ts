@@ -25,6 +25,8 @@ export class TSAbstractDecimalPensumEntity extends TSAbstractDateRangedEntity {
     private _pensum: number;
     private _monatlicheBetreuungskosten: number;
     private _stuendlicheVollkosten: number;
+    // Transient field used for calculations. Not sent to server
+    private _kostenProMahlzeit: number;
 
     public constructor() {
         super();
@@ -60,5 +62,29 @@ export class TSAbstractDecimalPensumEntity extends TSAbstractDateRangedEntity {
 
     public set stuendlicheVollkosten(value: number) {
         this._stuendlicheVollkosten = value;
+    }
+
+    public get kostenProMahlzeit(): number {
+        return this._kostenProMahlzeit;
+    }
+
+    public set kostenProMahlzeit(value: number) {
+        this._kostenProMahlzeit = value;
+    }
+
+    public initKostenProMahlzeit(multiplierMittagstisch: number): void {
+        if (EbeguUtil.isNullOrUndefined(this.monatlicheBetreuungskosten)) {
+            return;
+        }
+        const mahlzeiten = EbeguUtil.roundDefaultBetreuungspensum(this.pensum * multiplierMittagstisch);
+        this.kostenProMahlzeit = this.monatlicheBetreuungskosten / mahlzeiten;
+    }
+
+    public recalculateMonatlicheMahlzeitenKosten(multiplierMittagstisch: number): void {
+        if (this.unitForDisplay !== TSPensumUnits.MAHLZEITEN) {
+            return;
+        }
+        const mahlzeiten = this.pensum * multiplierMittagstisch;
+        this.monatlicheBetreuungskosten = this.kostenProMahlzeit * mahlzeiten;
     }
 }

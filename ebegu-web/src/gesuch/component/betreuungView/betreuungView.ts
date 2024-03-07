@@ -164,6 +164,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
 
     private multiplierKita: number;
     private multiplierTFO: number;
+    private multiplierMittagstisch: number;
 
     public minPensumSprachlicheIndikation: number;
 
@@ -482,6 +483,9 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
             this.isKesbPlatzierung = !this.getErweiterteBetreuungJA().keineKesbPlatzierung;
         }
         this.allowedRoles = this.TSRoleUtil.getAdminJaSchulamtSozialdienstGesuchstellerRoles();
+        this.getBetreuungspensen().forEach(betreunungspensumContainer => {
+            betreunungspensumContainer.betreuungspensumJA.initKostenProMahlzeit(this.getMultiplierMittagstisch());
+        });
     }
 
     /**
@@ -1805,6 +1809,14 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         return this.multiplierTFO;
     }
 
+    public getMultiplierMittagstisch(): number {
+        if (EbeguUtil.isNullOrUndefined(this.multiplierMittagstisch)) {
+            this.calculateMultiplierMittagstisch();
+        }
+
+        return this.multiplierMittagstisch;
+    }
+
     private calculateMuliplyerKita(): void {
         if (this.betreuungspensumAnzeigeTypEinstellung === TSPensumAnzeigeTyp.NUR_STUNDEN) {
             this.multiplierKita = this.oeffnungstageKita * this.kitastundenprotag / 12 / 100;
@@ -1820,7 +1832,15 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         this.multiplierTFO = this.oeffnungstageTFO * this.oeffnungsstundenTFO / 12 / 100;
     }
 
-    public showBetreuungsKostenAndPensumInput(): boolean {
+    private calculateMultiplierMittagstisch(): void {
+        // Beispiel: 5 Tage Pro Woche, 4,1 Wochen  pro Monat => 20.5 Mahlzeiten Pro Monat
+        // 100% = 20.5 Mahlzeiten => 1% = 0.205 stunden
+        const mittagstischTageProWoche: number = 5;
+        const mittagstischWochenProMonat: number = 4.1;
+        this.multiplierMittagstisch = mittagstischTageProWoche * mittagstischWochenProMonat  / 100;
+    }
+
+    public showBetreuungsPensumInput(): boolean {
         if (!this.isBetreuungsangebotTagesfamilie()) {
             return true;
         }

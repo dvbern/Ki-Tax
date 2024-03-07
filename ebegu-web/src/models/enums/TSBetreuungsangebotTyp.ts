@@ -13,6 +13,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import {EbeguUtil} from '../../utils/EbeguUtil';
 import {TSGemeinde} from '../TSGemeinde';
 import {TSGesuchsperiode} from '../TSGesuchsperiode';
 
@@ -91,6 +92,10 @@ export function isSchulamt(status: TSBetreuungsangebotTyp): boolean {
 
 export function isJugendamt(status: TSBetreuungsangebotTyp): boolean {
     return !isSchulamt(status);
+}
+
+export function isBgInstitutionenBetreuungsangebot(angebotTyp: TSBetreuungsangebotTyp): boolean {
+    return EbeguUtil.isNotNullOrUndefined(angebotTyp) && getBgInstitutionenBetreuungsangebote().includes(angebotTyp);
 }
 
 /**
