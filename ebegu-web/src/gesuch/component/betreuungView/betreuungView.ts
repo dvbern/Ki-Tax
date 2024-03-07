@@ -154,7 +154,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     private besondereBeduerfnisseAufwandKonfigurierbar: boolean = false;
     private fachstellenTyp: TSFachstellenTyp;
     protected minEintrittsdatum: moment.Moment;
-    public betreuungspensumAnzeigeTyp: TSPensumAnzeigeTyp;
+    private betreuungspensumAnzeigeTypEinstellung: TSPensumAnzeigeTyp;
     public isTFOKostenBerechnungStuendlich: boolean = false;
 
     private oeffnungstageKita: number;
@@ -407,8 +407,16 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         const einstellungPensumAnzeigeTyp = this.ebeguRestUtil
             .parsePensumAnzeigeTyp(einstellung);
 
-        this.betreuungspensumAnzeigeTyp = EbeguUtil.isNotNullOrUndefined(einstellungPensumAnzeigeTyp) ?
+        this.betreuungspensumAnzeigeTypEinstellung = EbeguUtil.isNotNullOrUndefined(einstellungPensumAnzeigeTyp) ?
             einstellungPensumAnzeigeTyp : TSPensumAnzeigeTyp.ZEITEINHEIT_UND_PROZENT;
+    }
+
+    public getBetreuungspensumAnzeigeTyp(): TSPensumAnzeigeTyp {
+        if (this.isBetreuungsangebotMittagstisch()) {
+            return TSPensumAnzeigeTyp.NUR_MAHLZEITEN;
+        }
+
+        return this.betreuungspensumAnzeigeTypEinstellung;
     }
 
     private loadInfomaZahlungenActive(): void {
@@ -866,7 +874,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
             this.errorService.addMesageAsError('Betreuungsmodel ist nicht initialisiert.');
         }
         const tsBetreuungspensum = new TSBetreuungspensum();
-        tsBetreuungspensum.unitForDisplay = this.betreuungspensumAnzeigeTyp === TSPensumAnzeigeTyp.NUR_STUNDEN ?
+        tsBetreuungspensum.unitForDisplay = this.betreuungspensumAnzeigeTypEinstellung === TSPensumAnzeigeTyp.NUR_STUNDEN ?
             TSPensumUnits.HOURS :
             TSPensumUnits.PERCENTAGE;
         tsBetreuungspensum.nichtEingetreten = false;
@@ -1798,7 +1806,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     }
 
     private calculateMuliplyerKita(): void {
-        if (this.betreuungspensumAnzeigeTyp === TSPensumAnzeigeTyp.NUR_STUNDEN) {
+        if (this.betreuungspensumAnzeigeTypEinstellung === TSPensumAnzeigeTyp.NUR_STUNDEN) {
             this.multiplierKita = this.oeffnungstageKita * this.kitastundenprotag / 12 / 100;
             return;
         }
@@ -1820,6 +1828,13 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         return !this.isTFOKostenBerechnungStuendlich;
     }
 
+    public showBetreuungsKostenInput(): boolean {
+        if (this.isBetreuungsangebotMittagstisch()) {
+            return false;
+        }
+        return this.showBetreuungsPensumInput();
+    }
+
     public showStuendlicheKostenInput(): boolean {
         if (!this.isBetreuungsangebotTagesfamilie()) {
             return false;
@@ -1831,6 +1846,10 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     private isBetreuungsangebotTagesfamilie(): boolean {
         return this.betreuungsangebot
             && this.betreuungsangebot.key === TSBetreuungsangebotTyp.TAGESFAMILIEN;
+    }
+
+    private isBetreuungsangebotMittagstisch(): boolean {
+        return this.betreuungsangebot?.key === TSBetreuungsangebotTyp.MITTAGSTISCH;
     }
 
     private showHintUntermonatlich(): boolean {
@@ -1876,4 +1895,16 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         }
         return this.$translate.instant('EINGEWOEHNUNG');
     }
+
+    public showKostenMahlzeitInput(): boolean {
+        return this.isBetreuungsangebotMittagstisch();
+    }
+
+    public recalculateMonatlicheKostenFromMahlzeiten(betreuungspensumIndex: number): void {
+        if (!this.isBetreuungsangebotMittagstisch()) {
+            return;
+        }
+        this.getBetreuungspensum(betreuungspensumIndex).betreuungspensumJA.recalculateMonatlicheMahlzeitenKosten(this.multiplierMittagstisch);
+    }
+
 }

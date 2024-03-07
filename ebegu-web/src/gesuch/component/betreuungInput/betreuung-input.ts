@@ -98,8 +98,19 @@ export class BetreuungInput implements IController {
         if (this.betreuungInputSwitchTyp === TSPensumAnzeigeTyp.NUR_STUNDEN) {
             return this.translate.instant('STUNDEN_PLACEHOLDER');
         }
+        if (this.betreuungInputSwitchTyp === TSPensumAnzeigeTyp.NUR_MAHLZEITEN) {
+            return this.translate.instant('MAHLZEITEN_PLACEHOLDER');
+        }
 
         return this.translate.instant('PERCENTAGE_PLACEHOLDER');
+    }
+
+    public getBetreuungspensumLabel(index: number): string {
+        if (this.betreuungsangebotTyp === TSBetreuungsangebotTyp.MITTAGSTISCH) {
+            return this.translate.instant('PENSUM_MAHLZEITEN', {betreuungspensumnumber: index});
+        }
+
+        return this.translate.instant('BETREUUNGSPENSUM', {betreuungspensumnumber: index});
     }
 
     public setAngebotDependingVariables(): void {
