@@ -57,7 +57,7 @@ public class DailyBatchResource {
 	@Produces(MediaType.TEXT_PLAIN)
 	public Response runBatchCleanDownloadFiles() {
 		Future<Boolean> booleanFuture = dailyBatch.runBatchCleanDownloadFiles();
-		return exectureFuture(booleanFuture, "CleanDownloadFiles");
+		return executeFuture(booleanFuture, "CleanDownloadFiles");
 	}
 
 	@ApiOperation(value = "Führt den Job runBatchMahnungFristablauf aus.", response = String.class)
@@ -68,7 +68,7 @@ public class DailyBatchResource {
 	@Produces(MediaType.TEXT_PLAIN)
 	public Response runBatchMahnungFristablauf() {
 		Future<Boolean> booleanFuture = dailyBatch.runBatchMahnungFristablauf();
-		return exectureFuture(booleanFuture, "MahnungFristablauf");
+		return executeFuture(booleanFuture, "MahnungFristablauf");
 	}
 
 	@ApiOperation(value = "Führt den Job UpdateBGInstitutionGemeinden aus.", response = String.class)
@@ -79,10 +79,10 @@ public class DailyBatchResource {
 	@Produces(MediaType.TEXT_PLAIN)
 	public Response runBatchUpdateGemeindeForBGInstitutionen() {
 		Future<Integer> count = dailyBatch.runBatchUpdateGemeindeForBGInstitutionen();
-		return exectureFuture(count, "UpdateGemeindeForBGInstitutionen");
+		return executeFuture(count, "UpdateGemeindeForBGInstitutionen");
 	}
 
-	private static Response exectureFuture(Future<?> future, String batchjobName) {
+	private static Response executeFuture(Future<?> future, String batchjobName) {
 		try {
 			var result = future.get();
 			String info = String.format("Manuelle ausführung! Batchjob {%s} durchgefuehrt mit Resultat: {%s}", batchjobName, result);
