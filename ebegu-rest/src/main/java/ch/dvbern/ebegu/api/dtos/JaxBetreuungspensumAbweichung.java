@@ -22,6 +22,7 @@ import java.math.BigDecimal;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 
+import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.BetreuungspensumAbweichungStatus;
 
 /**
@@ -47,6 +48,8 @@ public class JaxBetreuungspensumAbweichung extends JaxAbstractMahlzeitenPensumDT
 	private BigDecimal vertraglicherTarifNeben;
 
 	private BigDecimal multiplier;
+
+	private BetreuungsangebotTyp betreuungsangebotTyp;
 
 	public BetreuungspensumAbweichungStatus getStatus() {
 		return status;
@@ -110,5 +113,13 @@ public class JaxBetreuungspensumAbweichung extends JaxAbstractMahlzeitenPensumDT
 
 	public void setMultiplier(BigDecimal multiplier) {
 		this.multiplier = multiplier;
+	}
+
+	public BetreuungsangebotTyp getBetreuungsangebotTyp() {
+		return betreuungsangebotTyp;
+	}
+
+	public void setBetreuungsangebotTyp(BetreuungsangebotTyp betreuungsangebotTyp) {
+		this.betreuungsangebotTyp = betreuungsangebotTyp;
 	}
 }

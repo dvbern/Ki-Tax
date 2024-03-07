@@ -1450,6 +1450,10 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 	public BigDecimal getMultiplierForAbweichnungen(@Nonnull Betreuung betreuung) {
 		Gesuchsperiode gp = betreuung.extractGesuchsperiode();
 
+		if (betreuung.isAngebotMittagstisch()) {
+			return BetreuungUtil.getMittagstischMultiplier();
+		}
+
 
 		if (betreuung.isAngebotKita()) {
 			Einstellung oeffnungstageKita = getEinstellung(EinstellungKey.OEFFNUNGSTAGE_KITA, gp);
