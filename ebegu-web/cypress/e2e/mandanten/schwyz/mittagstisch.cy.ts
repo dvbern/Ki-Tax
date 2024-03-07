@@ -114,7 +114,7 @@ describe('Mittagstisch Anmeldung', () => {
         MitteilungenPO.getMutationsmeldungHinzufuegenButton(0).click();
         ConfirmDialogPO.getDvLoadingConfirmButton().click();
         DossierToolbarPO.getAntraegeTrigger().click();
-        DossierToolbarPO.getAntrag(1).click();
+        DossierToolbarPO.getAntrag(2).click();
         SidenavPO.getGesuchsDaten().then(el$ => el$.data('antrags-id')).as('mutation1');
         SidenavPO.goTo('VERFUEGEN');
         verfuegen();
