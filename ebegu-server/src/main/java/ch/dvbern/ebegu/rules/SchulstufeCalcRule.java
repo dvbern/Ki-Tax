@@ -99,6 +99,8 @@ public class SchulstufeCalcRule extends AbstractCalcRule {
 			return MsgKey.SCHULSTUFE_KINDERGARTEN_1_MSG;
 		case FREIWILLIGER_KINDERGARTEN:
 			return MsgKey.SCHULSTUFE_FREIWILLIGER_KINDERGARTEN_MSG;
+		case SEKUNDAR_UND_HOEHER_STUFE:
+			return MsgKey.SCHULSTUFE_SEKUNDAR_UND_HOEHER_STUFE_MSG;
 		default:
 			return MsgKey.SCHULSTUFE_KINDERGARTEN_2_MSG;
 		}

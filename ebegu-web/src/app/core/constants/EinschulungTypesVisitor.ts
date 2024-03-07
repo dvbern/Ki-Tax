@@ -18,8 +18,8 @@
 import {
     getTSEinschulungTypValues,
     getTSEinschulungTypValuesAppenzellAusserrhoden,
-    getTSEinschulungTypValuesLuzern,
-    TSEinschulungTyp
+    getTSEinschulungTypValuesLuzern, getTSEinschulungTypValuesSchwytz,
+    TSEinschulungTyp,
 } from '../../../models/enums/TSEinschulungTyp';
 import {KiBonMandant} from './MANDANTS';
 import {MandantVisitor} from './MandantVisitor';
@@ -46,7 +46,7 @@ export class EinschulungTypesVisitor implements MandantVisitor<ReadonlyArray<TSE
     }
 
     public visitSchwyz(): ReadonlyArray<TSEinschulungTyp> {
-        return this.visitSolothurn();
+        return getTSEinschulungTypValuesSchwytz();
     }
 
 }

@@ -1184,6 +1184,8 @@
     "KLASSE7": "7. Klasse",
     "KLASSE8": "8. Klasse",
     "KLASSE9": "9. Klasse",
+    "PRIMARSTUFE": "Primarstufe",
+    "SEKUNDAR_UND_HOEHER_STUFE": "Sekundarstufe oder höher",
     "ABHAENGING": "Abhängig",
     "UNABHAENGING": "Unabhängig",
     "MINIMUM": "Minimum",

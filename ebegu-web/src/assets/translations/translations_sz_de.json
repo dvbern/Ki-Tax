@@ -83,5 +83,8 @@
     "KINDER_FACHSTELLENBESTAETIGUNG": "Fachstellenbestätigung",
     "DOK_ERWEITERTE_BETREUUNG": "Erweiterte Betreuung",
     "BETREUUNGSPENSUM_FACHSTELLE": "Von Fachstelle festgelegte Betreuung",
+    "FAM_ERGAENZENDE_BETREUUNG_BEIDE": "Wird dieses Kind extern betreut?",
+    "EINSCHULUNG": "Bitte wählen Sie aus, ob Ihr Kind bereits eingeschult ist oder nicht",
+    "VORSCHULALTER": "Nicht eingeschult",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }
