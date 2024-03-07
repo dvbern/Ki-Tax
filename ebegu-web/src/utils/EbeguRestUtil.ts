@@ -2859,8 +2859,12 @@ export class EbeguRestUtil {
             .toFixed(2));
 
         if (abweichungTS.betreuungsangebotTyp === TSBetreuungsangebotTyp.MITTAGSTISCH) {
-            const monatlicheKosten = Number((abweichungFromServer.monatlicheBetreuungskosten / pensum).toFixed(2));
-            const originalKosten = Number((abweichungFromServer.vertraglicheKosten / originalPensum).toFixed(2));
+            const monatlicheKosten = pensum === 0 ?
+                0 :
+                Number((abweichungFromServer.monatlicheBetreuungskosten / pensum).toFixed(2));
+            const originalKosten = originalPensum === 0 ?
+                0 :
+                Number((abweichungFromServer.vertraglicheKosten / originalPensum).toFixed(2));
 
             abweichungTS.monatlicheBetreuungskosten = monatlicheKosten;
             abweichungTS.vertraglicheKosten = originalKosten;
