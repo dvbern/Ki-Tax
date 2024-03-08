@@ -135,17 +135,6 @@ public final class EbeguRuleTestsHelper {
 		return calculate(betreuung, initialenRestanspruchAbschnitte, einstellungenGemaessAsiv, executor);
 	}
 
-	public static List<VerfuegungZeitabschnitt> calculateWithCustomEinstellungen(
-			AbstractPlatz betreuung,
-			Map<EinstellungKey, Einstellung> einstellungMap) {
-		List<VerfuegungZeitabschnitt> initialenRestanspruchAbschnitte =
-				createInitialenRestanspruch(betreuung.extractGesuchsperiode(), false);
-		TestDataUtil.calculateFinanzDaten(
-				betreuung.extractGesuch(),
-				FinanzielleSituationRechnerFactory.getRechner(betreuung.extractGesuch()));
-		return calculate(betreuung, initialenRestanspruchAbschnitte, einstellungMap, executor);
-	}
-
 	public static List<VerfuegungZeitabschnitt> calculateInklAllgemeineRegeln(Betreuung betreuung) {
 		List<VerfuegungZeitabschnitt> initialenRestanspruchAbschnitte =
 				createInitialenRestanspruch(betreuung.extractGesuchsperiode(), false);

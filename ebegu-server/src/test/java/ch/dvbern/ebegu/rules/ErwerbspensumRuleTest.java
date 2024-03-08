@@ -446,7 +446,7 @@ public class ErwerbspensumRuleTest extends AbstractBGRechnerTest {
 		var einstellungen = EbeguRuleTestsHelper.getEinstellungenConfiguratorAsiv(gesuch.getGesuchsperiode());
 		einstellungen.get(EinstellungKey.ABHAENGIGKEIT_ANSPRUCH_BESCHAEFTIGUNGPENSUM).setValue(
 			AnspruchBeschaeftigungAbhaengigkeitTyp.UNABHAENGING.name());
-		List<VerfuegungZeitabschnitt> result = EbeguRuleTestsHelper.calculateWithCustomEinstellungen(betreuung, einstellungen);
+		List<VerfuegungZeitabschnitt> result = EbeguRuleTestsHelper.calculate(betreuung, einstellungen);
 		assertNotNull(result);
 		assertEquals(1, result.size());
 		for (var verfuegungZeitabschnitt : result) {
