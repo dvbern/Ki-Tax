@@ -263,6 +263,10 @@ public final class EbeguRuleTestsHelper {
 				EinschulungTyp.KINDERGARTEN2.name(),
 				gesuchsperiode);
 		einstellungenMap.addEinstellung(
+			ANGEBOT_SCHULSTUFE,
+			BetreuungsangebotTyp.KITA.name(),
+			gesuchsperiode);
+		einstellungenMap.addEinstellung(
 				MIN_ERWERBSPENSUM_EINGESCHULT,
 				EINSTELLUNG_MIN_ERWERBSPENSUM_EINGESCHULT,
 				gesuchsperiode);

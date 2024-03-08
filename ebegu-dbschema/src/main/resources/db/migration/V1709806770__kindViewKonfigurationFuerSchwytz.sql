@@ -21,3 +21,22 @@ UPDATE einstellung set value = 'UNABHAENGING' where gesuchsperiode_id = @gesuchs
 UPDATE einstellung set value = 'KEINE' where gesuchsperiode_id = @gesuchsperiode_id and einstellung_key = 'KINDERABZUG_TYP' and gemeinde_id is null;
 UPDATE einstellung set value = 'true' WHERE einstellung_key = 'SPRACHE_AMTSPRACHE_DISABLED' AND gesuchsperiode_id = @gesuchsperiode_id and gemeinde_id is null;
 UPDATE einstellung set value = 'PRIMARSTUFE' where gesuchsperiode_id = @gesuchsperiode_id and einstellung_key = 'GEMEINDE_BG_BIS_UND_MIT_SCHULSTUFE' and gemeinde_id is null;
+
+INSERT INTO einstellung (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version,
+						 einstellung_key, value, gesuchsperiode_id)
+	(
+		SELECT UNHEX(REPLACE(UUID(), '-', '')) AS id,
+			NOW() AS timestamp_erstellt,
+			NOW() AS timestamp_muiert,
+			'ebegu' AS user_erstellt,
+			'ebegu' AS user_mutiert,
+			'0' AS version,
+			'ANGEBOT_SCHULSTUFE' AS einstellungkey,
+			'KITA' AS value,
+			id AS gesuchsperiode_id
+		FROM gesuchsperiode
+	);
+
+UPDATE einstellung INNER JOIN gesuchsperiode ON einstellung.gesuchsperiode_id = gesuchsperiode.id INNER JOIN mandant m ON gesuchsperiode.mandant_id = m.id
+SET value = 'KITA,TAGESFAMILIEN,MITTAGSTISCH'
+WHERE einstellung_key = 'ANGEBOT_SCHULSTUFE' AND mandant_identifier = 'SCHWYZ';
