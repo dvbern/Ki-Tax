@@ -1337,7 +1337,7 @@ public class PlatzbestaetigungEventHandlerTest extends EasyMockSupport {
 			withMahlzeitenverguenstigung(withMahlzeitenEnabled);
 			mockGetStundenTagenEinstellungen();
 
-			expect(betreuungEventHelper.getMutationsmeldungBenutzer()).andReturn(new Benutzer());
+			expect(betreuungEventHelper.getMutationsmeldungBenutzer(betreuung)).andReturn(new Benutzer());
 
 			expect(mitteilungService.isBetreuungGueltigForMutation(betreuung)).andReturn(true);
 
