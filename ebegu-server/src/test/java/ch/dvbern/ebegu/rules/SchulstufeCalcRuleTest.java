@@ -89,8 +89,7 @@ public class SchulstufeCalcRuleTest {
 
 	@Test
 	public void testPrimarSchulstufeBerechtigt() {
-		final Betreuung betreuung = prepareData(100, EinschulungTyp.OBLIGATORISCHER_KINDERGARTEN);
-		betreuung.getKind().getKindJA().setEinschulungTyp(EinschulungTyp.PRIMARSTUFE);
+		final Betreuung betreuung = prepareData(100, EinschulungTyp.SEKUNDAR_UND_HOEHER_STUFE);
 		var einstellungen = EbeguRuleTestsHelper.getEinstellungenConfiguratorAsiv(betreuung.extractGesuchsperiode());
 		einstellungen.get(EinstellungKey.GEMEINDE_BG_BIS_UND_MIT_SCHULSTUFE).setValue(
 			EinschulungTyp.PRIMARSTUFE.name());
