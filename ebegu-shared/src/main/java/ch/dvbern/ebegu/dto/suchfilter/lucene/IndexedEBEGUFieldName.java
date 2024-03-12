@@ -28,6 +28,7 @@ public enum IndexedEBEGUFieldName {
 	KIND_VORNAME("kindJA.nachname"),
 	KIND_NACHNAME("kindJA.vorname"),
 	KIND_GEBDATUM("kindJA.geburtsdatum", true),
+	KIND_FALL_MANDANT("gesuch.dossier.fall.mandant.mandantIdentifier"),
 	BETREUUNG_BGNR("bGNummer"),
 	GESUCH_FALL_NUMMER("dossier.fall.fallNummer"),
 	GESUCH_FALL_MANDANT("dossier.fall.mandant.mandantIdentifier"),
