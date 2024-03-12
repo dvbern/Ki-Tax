@@ -4597,8 +4597,8 @@ export class EbeguRestUtil {
         publicAppConfigTS.activatedDemoFeatures = data.activatedDemoFeatures;
         publicAppConfigTS.checkboxAuszahlungInZukunft = data.checkboxAuszahlungInZukunft;
         publicAppConfigTS.erlaubenInstitutionenZuWaehlen = data.erlaubenInstitutionenZuWaehlen;
+        publicAppConfigTS.auszahlungAnEltern = data.auszahlungAnEltern;
         return publicAppConfigTS;
-
     }
 
     public parseGemeindeRegistrierungList(data: unknown): TSGemeindeRegistrierung[] {

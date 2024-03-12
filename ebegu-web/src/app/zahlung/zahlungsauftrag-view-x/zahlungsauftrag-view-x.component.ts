@@ -445,7 +445,7 @@ export class ZahlungsauftragViewXComponent implements OnInit, AfterViewInit, OnD
         }
         this.applicationPropertyRS.getPublicPropertiesCached()
             .then((response: TSPublicAppConfig) => {
-                this.hasAuszahlungAnEltern = response.infomaZahlungen;
+                this.hasAuszahlungAnEltern = response.auszahlungAnEltern;
                 this.hasInfomaZahlung = response.infomaZahlungen;
             });
     }
