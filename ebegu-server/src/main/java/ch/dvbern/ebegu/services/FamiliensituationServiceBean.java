@@ -138,7 +138,8 @@ public class FamiliensituationServiceBean extends AbstractBaseService implements
 		//bei änderung der Familiensituation müssen die Fragen zum Kinderabzug im FKJV resetet werden
 		if (gesuch.getFinSitTyp() == FinanzielleSituationTyp.BERN_FKJV &&
 			oldFamiliensituation != null &&
-			oldFamiliensituation.getFamilienstatus() != newFamiliensituation.getFamilienstatus() &&
+			(oldFamiliensituation.getFamilienstatus() != newFamiliensituation.getFamilienstatus()
+				|| oldFamiliensituation.getGesuchstellerKardinalitaet() != newFamiliensituation.getGesuchstellerKardinalitaet()) &&
 			!Objects.equals(newFamiliensituation.getPartnerIdentischMitVorgesuch(), Boolean.FALSE)) {
 			resetFragenKinderabzugAndSetToUeberpruefen(gesuch);
 		}
