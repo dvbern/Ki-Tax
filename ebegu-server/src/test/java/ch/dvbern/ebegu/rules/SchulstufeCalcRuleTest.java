@@ -89,7 +89,7 @@ public class SchulstufeCalcRuleTest {
 
 	@Test
 	public void testPrimarSchulstufeBerechtigt() {
-		final Betreuung betreuung = prepareData(100, EinschulungTyp.SEKUNDAR_UND_HOEHER_STUFE);
+		final Betreuung betreuung = prepareData(100, EinschulungTyp.PRIMARSTUFE);
 		var einstellungen = EbeguRuleTestsHelper.getEinstellungenConfiguratorAsiv(betreuung.extractGesuchsperiode());
 		einstellungen.get(EinstellungKey.GEMEINDE_BG_BIS_UND_MIT_SCHULSTUFE).setValue(
 			EinschulungTyp.PRIMARSTUFE.name());
@@ -98,8 +98,8 @@ public class SchulstufeCalcRuleTest {
 	}
 
 	@Test
-	public void testPrimarSchulstufeNichtBerechtigt() {
-		final Betreuung betreuung = prepareData(100, EinschulungTyp.PRIMARSTUFE);
+	public void testSekundarSchulstufeNichtBerechtigt() {
+		final Betreuung betreuung = prepareData(100, EinschulungTyp.SEKUNDAR_UND_HOEHER_STUFE);
 		var einstellungen = EbeguRuleTestsHelper.getEinstellungenConfiguratorAsiv(betreuung.extractGesuchsperiode());
 		einstellungen.get(EinstellungKey.GEMEINDE_BG_BIS_UND_MIT_SCHULSTUFE).setValue(
 			EinschulungTyp.PRIMARSTUFE.name());
