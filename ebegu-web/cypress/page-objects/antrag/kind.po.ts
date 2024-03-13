@@ -56,7 +56,7 @@ const getEinschulungstyp = () => {
 };
 
 const getIsPflegekind = () => {
-	return cy.getByData('ist-pflegekind', 'checkbox');
+	return cy.getByData('ist-pflegekind', 'checkbox').find('.mdc-checkbox');
 };
 
 const getPflaegeEntschaedigungErhalten = (answer: string) => {
