@@ -178,7 +178,8 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 
 	private boolean exportBetreuung(boolean isNew, @Nonnull Betreuung mergedBetreuung) {
 		return (isNew || !mergedBetreuung.isEventPublished())
-			&& mergedBetreuung.getBetreuungsangebotTyp().isJugendamt();
+			&& mergedBetreuung.getBetreuungsangebotTyp().isJugendamt()
+			&& !mergedBetreuung.getBetreuungsangebotTyp().isMittagstisch();
 	}
 
 	@Nonnull
