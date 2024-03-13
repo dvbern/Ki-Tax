@@ -20,6 +20,7 @@ package ch.dvbern.ebegu.rules;
 import ch.dvbern.ebegu.entities.*;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.EnumFamilienstatus;
+import ch.dvbern.ebegu.enums.EnumGesuchstellerKardinalitaet;
 import ch.dvbern.ebegu.enums.Kinderabzug;
 import ch.dvbern.ebegu.enums.KinderabzugTyp;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
@@ -338,7 +339,8 @@ public class FamilienabzugAbschnittRule extends AbstractAbschnittRule {
 			return 0.5;
 		}
 
-		if (!isAlleinerziehendOrMinDauerKonkubinatNichtErreicht(familiensituation, dateToCompare)) {
+		if (isMinDauerKonkubinatErreicht(familiensituation, dateToCompare)
+			|| familiensituation.getGesuchstellerKardinalitaet() == EnumGesuchstellerKardinalitaet.ALLEINE) {
 			return 0.5;
 		}
 
@@ -350,18 +352,15 @@ public class FamilienabzugAbschnittRule extends AbstractAbschnittRule {
 		return 0.5;
 	}
 
-	public boolean isAlleinerziehendOrMinDauerKonkubinatNichtErreicht(
+	public boolean isMinDauerKonkubinatErreicht(
 		Familiensituation familiensituation,
 		LocalDate dateToCompare) {
-		if (EnumFamilienstatus.ALLEINERZIEHEND == familiensituation.getFamilienstatus()) {
-			return true;
-		}
 
 		if (EnumFamilienstatus.KONKUBINAT_KEIN_KIND != familiensituation.getFamilienstatus()) {
 			return false;
 		}
 
-		return !isKonkubinatMinReached(familiensituation, dateToCompare);
+		return isKonkubinatMinReached(familiensituation, dateToCompare);
 	}
 
 	private boolean isKonkubinatMinReached(Familiensituation familiensituation, LocalDate dateToCompare) {
