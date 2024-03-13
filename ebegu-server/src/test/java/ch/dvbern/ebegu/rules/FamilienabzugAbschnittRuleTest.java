@@ -23,6 +23,7 @@ import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map.Entry;
+import java.util.Objects;
 import java.util.Set;
 
 import javax.annotation.Nonnull;
@@ -38,6 +39,7 @@ import ch.dvbern.ebegu.entities.Kind;
 import ch.dvbern.ebegu.entities.KindContainer;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.EnumFamilienstatus;
+import ch.dvbern.ebegu.enums.EnumGesuchstellerKardinalitaet;
 import ch.dvbern.ebegu.enums.Kinderabzug;
 import ch.dvbern.ebegu.enums.KinderabzugTyp;
 import ch.dvbern.ebegu.test.TestDataUtil;
@@ -462,6 +464,13 @@ public class FamilienabzugAbschnittRuleTest {
 	@Test
 	public void kinderAbzugFKJV2_HalbesKindWennKeineGemeinsameGesuch() {
 		Gesuch gesuch = createGesuchWithTwoGesuchsteller();
+		// prepare famsit, so gemeinsamesGesuch can be answered in the gui
+		Objects.requireNonNull(gesuch.getFamiliensituationContainer());
+		Objects.requireNonNull(gesuch.getFamiliensituationContainer().getFamiliensituationJA());
+		gesuch.getFamiliensituationContainer().getFamiliensituationJA().setFamilienstatus(EnumFamilienstatus.KONKUBINAT_KEIN_KIND);
+		gesuch.getFamiliensituationContainer().getFamiliensituationJA().setGeteilteObhut(Boolean.TRUE);
+		gesuch.getFamiliensituationContainer().getFamiliensituationJA().setGesuchstellerKardinalitaet(EnumGesuchstellerKardinalitaet.ZU_ZWEIT);
+		gesuch.getFamiliensituationContainer().getFamiliensituationJA().setStartKonkubinat(LocalDate.of(2015, 10, 1));
 		Set<KindContainer> kindContainers = new LinkedHashSet<>();
 		final LocalDate date = LocalDate.of(2015, Month.MARCH, 25);
 		KindContainer kind = createKindContainer(Kinderabzug.HALBER_ABZUG, date);
@@ -479,6 +488,11 @@ public class FamilienabzugAbschnittRuleTest {
 	@Test
 	public void kinderAbzugFKJV2_GanzesKindWennGemeinsamesGesuch() {
 		Gesuch gesuch = createGesuchWithTwoGesuchsteller();
+		// prepare famsit, so gemeinsamesGesuch can be answered in the gui
+		Objects.requireNonNull(gesuch.getFamiliensituationContainer());
+		Objects.requireNonNull(gesuch.getFamiliensituationContainer().getFamiliensituationJA());
+		gesuch.getFamiliensituationContainer().getFamiliensituationJA().setFamilienstatus(EnumFamilienstatus.KONKUBINAT_KEIN_KIND);
+		gesuch.getFamiliensituationContainer().getFamiliensituationJA().setGeteilteObhut(Boolean.TRUE);
 		Set<KindContainer> kindContainers = new LinkedHashSet<>();
 		final LocalDate date = LocalDate.of(2015, Month.MARCH, 25);
 		KindContainer kind = createKindContainer(Kinderabzug.HALBER_ABZUG, date);
