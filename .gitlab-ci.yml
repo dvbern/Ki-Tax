@@ -198,7 +198,7 @@ include:
         policy: pull
     script:
         - cd ebegu-web
-        - npx cypress run --e2e --headless --browser chrome --spec ./cypress/e2e/testprotokoll/*.cy.ts
+        - npx cypress run --e2e --headless --browser chrome
     artifacts:
         when: always
         paths:
