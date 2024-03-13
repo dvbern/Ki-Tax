@@ -333,6 +333,8 @@ describe('Kibon - Testet die Fachlichkeit auf der Seite der Erwerbspensen', () =
                 cy.waitForRequest('GET', '**/gesuchsperioden/gemeinde/*', () => {
                     DossierToolbarPO.getAntragMutieren().click();
                 });
+
+                AntragCreationPO.getEingangsdatum().find('input').should('not.have.attr', 'disabled');
                 AntragCreationPO.getEingangsdatum().find('input').clear().type('1.1.2020');
                 NavigationPO.saveAndGoNext();
 
