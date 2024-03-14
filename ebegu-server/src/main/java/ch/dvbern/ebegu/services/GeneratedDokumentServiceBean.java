@@ -803,7 +803,7 @@ public class GeneratedDokumentServiceBean extends AbstractBaseService implements
 	@Override
 	public void createZahlungsFiles(@Nonnull Zahlungsauftrag zahlungsauftrag) throws MimeTypeParseException {
 		Objects.requireNonNull(zahlungsauftrag.getMandant());
-		for (IZahlungsfileGenerator generator : zahlungsfileGeneratorVisitor.getZahlungsfileGenerator(zahlungsauftrag.getMandant())) {
+		for (IZahlungsfileGenerator generator : zahlungsfileGeneratorVisitor.getZahlungsfileGenerator(zahlungsauftrag.getMandant(), zahlungsauftrag.getGemeinde())) {
 			getZahlungsfileDokumentAccssTokenGeneratedDokument(zahlungsauftrag, generator, true);
 		}
 	}

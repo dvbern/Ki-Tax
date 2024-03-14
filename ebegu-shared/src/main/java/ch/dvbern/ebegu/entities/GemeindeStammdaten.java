@@ -275,10 +275,6 @@ public class GemeindeStammdaten extends AbstractEntity {
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_gemeinde_stammdaten_gemeinde_ausgabestelle_id"), nullable = true)
 	private Gemeinde gemeindeAusgabestelle;
 
-	@NotNull
-	@Column(nullable = false)
-	private Boolean infomaZahlungen = false;
-
 	@Nonnull
 	@ManyToMany
 	@JoinTable(
@@ -822,13 +818,5 @@ public class GemeindeStammdaten extends AbstractEntity {
 
 	public void setZugelasseneBgInstitutionen(@Nonnull List<Institution> zugelasseneBgInstitutionen) {
 		this.zugelasseneBgInstitutionen = zugelasseneBgInstitutionen;
-	}
-
-	public Boolean getInfomaZahlungen() {
-		return infomaZahlungen;
-	}
-
-	public void setInfomaZahlungen(Boolean infomaZahlungen) {
-		this.infomaZahlungen = infomaZahlungen;
 	}
 }

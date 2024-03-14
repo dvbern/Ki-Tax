@@ -361,6 +361,7 @@ public class AbstractConverter {
 		gemeinde.setAngebotFI(jaxGemeinde.isAngebotFI());
 		gemeinde.setBesondereVolksschule(jaxGemeinde.isBesondereVolksschule());
 		gemeinde.setNurLats(jaxGemeinde.isNurLats());
+		gemeinde.setInfomaZahlungen(jaxGemeinde.getInfomaZahlungen());
 		return gemeinde;
 	}
 
@@ -382,6 +383,7 @@ public class AbstractConverter {
 		jaxGemeinde.setAngebotFI(persistedGemeinde.isAngebotFI());
 		jaxGemeinde.setBesondereVolksschule(persistedGemeinde.isBesondereVolksschule());
 		jaxGemeinde.setNurLats(persistedGemeinde.isNurLats());
+		jaxGemeinde.setInfomaZahlungen(persistedGemeinde.getInfomaZahlungen());
 		return jaxGemeinde;
 	}
 

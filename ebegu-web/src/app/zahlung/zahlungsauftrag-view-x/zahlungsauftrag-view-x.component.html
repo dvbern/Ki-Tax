@@ -193,7 +193,7 @@
                         <span [innerHTML]="'ZAHLUNG_INFOMA' | translate"></span>
                     </mat-header-cell>
                     <mat-cell *matCellDef="let element" class="ellipsis">
-                        <dv-loading-button type="button" (buttonClick)="downloadInfoma(element)"
+                        <dv-loading-button *ngIf="element.gemeinde.infomaZahlungen" type="button" (buttonClick)="downloadInfoma(element)"
                                            [buttonClass]="'dv-btn-operation'">
                             <i class="fa fa-lg fa-file-code-o"></i>
                         </dv-loading-button>

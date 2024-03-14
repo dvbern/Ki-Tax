@@ -198,7 +198,6 @@ public class JaxGemeindeStammdatenConverter extends AbstractConverter {
 			List<Institution> institutionen = institutionService.findAllInstitutionen(ids);
 			stammdaten.setZugelasseneBgInstitutionen(institutionen);
 		}
-		stammdaten.setInfomaZahlungen(jaxStammdaten.getInfomaZahlungen());
 
 		return stammdaten;
 	}
@@ -303,7 +302,6 @@ public class JaxGemeindeStammdatenConverter extends AbstractConverter {
 			.map(this::institutionToJAX)
 			.collect(Collectors.toList());
 		jaxStammdaten.setZugelasseneBgInstitutionen(jaxInstitutionen);
-		jaxStammdaten.setInfomaZahlungen(stammdaten.getInfomaZahlungen());
 
 		return jaxStammdaten;
 	}

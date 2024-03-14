@@ -41,7 +41,6 @@ import static ch.dvbern.ebegu.util.Constants.END_OF_TIME;
 public class JaxGemeinde extends JaxAbstractDTO {
 
 	private static final long serialVersionUID = 7980499854206395920L;
-
 	@NotNull
 	private String name;
 
@@ -77,6 +76,9 @@ public class JaxGemeinde extends JaxAbstractDTO {
 	private boolean besondereVolksschule = false;
 
 	private boolean nurLats = false;
+
+	@Nonnull
+	private Boolean infomaZahlungen;
 
 	// Dieses Feld wird *nur* für die Komponente gemeinde-multiselect.component verwendet
 	// Wir haben dort das Problem, dass in gewissen Einzelfällen die Id der Gemeinde (noch) nicht bekannt ist,
@@ -223,5 +225,14 @@ public class JaxGemeinde extends JaxAbstractDTO {
 
 	public void setAngebotBGTFO(boolean angebotBGTFO) {
 		this.angebotBGTFO = angebotBGTFO;
+	}
+
+	@Nonnull
+	public Boolean getInfomaZahlungen() {
+		return infomaZahlungen;
+	}
+
+	public void setInfomaZahlungen(@Nonnull Boolean infomaZahlungen) {
+		this.infomaZahlungen = infomaZahlungen;
 	}
 }

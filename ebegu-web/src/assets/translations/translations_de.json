@@ -1946,6 +1946,7 @@
     "NOTVERORDNUNG_DEFAULT_EINREICHEFRIST_PRIVAT": "Notverordnung default Einreichefrist privat",
     "KANTON_NOTVERORDNUNG_PHASE_2_AKTIV": "Notverordnung Phase 2 aktiv",
     "INFOMA_ZAHLUNGEN": "Infoma Zahlungen",
+    "INFOMA_ZAHLUNGEN_JA" : "Infoma Zahlungen aktiviert",
     "AUSZAHLUNGEN_AN_ELTERN": "Auszahlung an Eltern",
     "ANZAHL_MONATE_AUSZAHLEN_IN_ZUKUNFT": "Anzahl Monate in Zukunft auszahlen",
     "INSTITUTIONEN_DURCH_GEMEINDEN_EINLADEN": "Institutionen durch Gemeinden einladen",

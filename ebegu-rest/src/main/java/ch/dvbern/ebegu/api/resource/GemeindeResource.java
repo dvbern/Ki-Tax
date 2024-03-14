@@ -817,6 +817,10 @@ public class GemeindeResource {
 			gemeinde.setGueltigBis(jaxGemeinde.getGueltigBis());
 			datesChanged = true;
 		}
+		if (!gemeinde.getInfomaZahlungen().equals(jaxGemeinde.getInfomaZahlungen())) {
+			gemeinde.setInfomaZahlungen(jaxGemeinde.getInfomaZahlungen());
+			datesChanged = true;
+		}
 		if (datesChanged) {
 			gemeinde = gemeindeService.saveGemeinde(gemeinde);
 		}

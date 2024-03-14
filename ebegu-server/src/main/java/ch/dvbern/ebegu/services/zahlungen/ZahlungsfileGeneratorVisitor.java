@@ -1,6 +1,7 @@
 package ch.dvbern.ebegu.services.zahlungen;
 
 import ch.dvbern.ebegu.entities.ApplicationProperty;
+import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.enums.ApplicationPropertyKey;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
@@ -30,29 +31,35 @@ public class ZahlungsfileGeneratorVisitor implements MandantVisitor< List<IZahlu
 	@Inject
 	private ZahlungsfileGeneratorInfoma infomaGenerator;
 
+	private Gemeinde gemeinde;
+
+	public ZahlungsfileGeneratorVisitor(){};
+
 	public List<IZahlungsfileGenerator> getZahlungsfileGenerator(
-		@Nonnull Mandant mandant
+		@Nonnull Mandant mandant,
+		@Nonnull Gemeinde gemeinde
 	) {
+		this.gemeinde = gemeinde;
 		return mandant.getMandantIdentifier().accept(this);
 	}
 
 	@Override
-	public  List<IZahlungsfileGenerator> visitBern() {
+	public List<IZahlungsfileGenerator> visitBern() {
 		return getZahlungsfileGeneratorForMandant(MandantIdentifier.BERN);
 	}
 
 	@Override
-	public  List<IZahlungsfileGenerator> visitLuzern() {
+	public List<IZahlungsfileGenerator> visitLuzern() {
 		return getZahlungsfileGeneratorForMandant(MandantIdentifier.LUZERN);
 	}
 
 	@Override
-	public  List<IZahlungsfileGenerator> visitSolothurn() {
+	public List<IZahlungsfileGenerator> visitSolothurn() {
 		return getZahlungsfileGeneratorForMandant(MandantIdentifier.SOLOTHURN);
 	}
 
 	@Override
-	public  List<IZahlungsfileGenerator> visitAppenzellAusserrhoden() {
+	public List<IZahlungsfileGenerator> visitAppenzellAusserrhoden() {
 		return getZahlungsfileGeneratorForMandant(MandantIdentifier.APPENZELL_AUSSERRHODEN);
 	}
 
@@ -62,22 +69,25 @@ public class ZahlungsfileGeneratorVisitor implements MandantVisitor< List<IZahlu
 	}
 
 	@Nonnull
-	private  List<IZahlungsfileGenerator> getZahlungsfileGeneratorForMandant(@Nonnull MandantIdentifier mandantIdentifier) {
-		if (isInfomaZahlungenActivatedForMandant(mandantIdentifier)) {
+	private List<IZahlungsfileGenerator> getZahlungsfileGeneratorForMandant(@Nonnull MandantIdentifier mandantIdentifier) {
+		if (isInfomaZahlungenActivatedForMandantUndGemeinde(mandantIdentifier)) {
 			return List.of(infomaGenerator, painGenerator);
 		}
 		return List.of(painGenerator);
 	}
 
-	private boolean isInfomaZahlungenActivatedForMandant(@Nonnull MandantIdentifier mandantIdentifier) {
+	private boolean isInfomaZahlungenActivatedForMandantUndGemeinde(
+		@Nonnull MandantIdentifier mandantIdentifier) {
 		final Mandant mandant = mandantService
 			.findMandantByIdentifier(mandantIdentifier)
 			.orElseThrow(() -> new EbeguEntityNotFoundException("findMandantByIdentifier", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND));
-		ApplicationProperty infomaZahlungen  =
+		ApplicationProperty infomaZahlungen =
 			this.applicationPropertyService.readApplicationProperty(
 					ApplicationPropertyKey.INFOMA_ZAHLUNGEN,
 					mandant)
 				.orElse(null);
-		return infomaZahlungen != null && Boolean.parseBoolean(infomaZahlungen.getValue());
+		return infomaZahlungen != null
+			&& Boolean.parseBoolean(infomaZahlungen.getValue())
+			&& gemeinde.getInfomaZahlungen();
 	}
 }

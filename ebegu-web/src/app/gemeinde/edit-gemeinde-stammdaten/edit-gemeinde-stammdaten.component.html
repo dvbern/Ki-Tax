@@ -258,6 +258,19 @@
                             </div>
                         </div>
                     </div>
+                    <div class="row" *ngIf="isInfomazahlungen">
+                        <div class="col-sm-12">
+                            <div class="form-group">
+                                <div class="form-group checkbox-with-tooltip">
+                                    <mat-checkbox id="infomaZahlungen_id"
+                                                  name="infomaZahlungen_name"
+                                                  [(ngModel)]="stammdaten.gemeinde.infomaZahlungen">
+                                        {{'INFOMA_ZAHLUNGEN'|translate}}
+                                    </mat-checkbox>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
             <!-- Angebote Gemeinde-->
@@ -417,6 +430,13 @@
                             </h3>
                             <p>{{stammdaten.zusatzTextFreigabequittung}}</p>
                         </div>
+                    </div>
+                </div>
+                <div class="col-sm-6" *ngIf="stammdaten.infomaZahlungen">
+                    <div class="form-group">
+                        <h3>
+                            {{'INFOMA_ZAHLUNGEN_JA'| translate}}
+                        </h3>
                     </div>
                 </div>
             </div>

@@ -121,9 +121,6 @@ public class JaxGemeindeStammdaten extends JaxAbstractGemeindeStammdaten {
 	@Nonnull
 	private List<JaxInstitution> zugelasseneBgInstitutionen;
 
-	@Nonnull
-	private Boolean infomaZahlungen;
-
 	public JaxGemeindeStammdaten() {
 	}
 
@@ -491,14 +488,5 @@ public class JaxGemeindeStammdaten extends JaxAbstractGemeindeStammdaten {
 
 	public void setZugelasseneBgInstitutionen(@Nonnull List<JaxInstitution> zugelasseneBgInstitutionen) {
 		this.zugelasseneBgInstitutionen = zugelasseneBgInstitutionen;
-	}
-
-	@Nonnull
-	public Boolean getInfomaZahlungen() {
-		return infomaZahlungen;
-	}
-
-	public void setInfomaZahlungen(@Nonnull Boolean infomaZahlungen) {
-		this.infomaZahlungen = infomaZahlungen;
 	}
 }
