@@ -461,70 +461,157 @@ public class FamilienabzugAbschnittRuleTest {
 
 	@Nested
 	class KindMitAlternierenderObhutTests {
-		@Test
-		void kinderAbzugFKJV2_HalbesKindZaehltGanzFuerPauschale() {
-			Gesuch gesuch = createGesuchWithTwoGesuchsteller();
-			Set<KindContainer> kindContainers = new LinkedHashSet<>();
-			final LocalDate date = LocalDate.of(2015, Month.MARCH, 25);
-			KindContainer kind = createKindContainer(Kinderabzug.HALBER_ABZUG, date);
-			kind.getKindJA().setFamilienErgaenzendeBetreuung(false);
-			kind.getKindJA().setObhutAlternierendAusueben(true);
-			kind.getKindJA().setGemeinsamesGesuch(false);
 
-			kindContainers.add(kind);
-			gesuch.setKindContainers(kindContainers);
+		@Nested
+		class OhneFamilienergaenzenderBetreuungTest {
+			@Test
+			void kinderAbzugFKJV2_HalbesKindZaehltGanzFuerPauschale() {
+				Gesuch gesuch = createGesuchWithTwoGesuchsteller();
+				Set<KindContainer> kindContainers = new LinkedHashSet<>();
+				final LocalDate date = LocalDate.of(2015, Month.MARCH, 25);
+				KindContainer kind = createKindContainer(Kinderabzug.HALBER_ABZUG, date);
+				kind.getKindJA().setFamilienErgaenzendeBetreuung(false);
+				kind.getKindJA().setObhutAlternierendAusueben(true);
+				kind.getKindJA().setGemeinsamesGesuch(false);
+
+				kindContainers.add(kind);
+				gesuch.setKindContainers(kindContainers);
 
 
-			final Entry<Double, Integer> famGroesse = famabAbschnittRule_FKJV2.calculateFamiliengroesse(gesuch, LocalDate.now());
-			double familiengroesse = famGroesse.getKey();
-			double familienMitglieder = famGroesse.getValue();
-			Assertions.assertEquals(2.5, familiengroesse, DELTA);
-			Assertions.assertEquals(3, familienMitglieder, DELTA);
+				final Entry<Double, Integer> famGroesse = famabAbschnittRule_FKJV2.calculateFamiliengroesse(gesuch, LocalDate.now());
+				double familiengroesse = famGroesse.getKey();
+				double familienMitglieder = famGroesse.getValue();
+				Assertions.assertEquals(2.5, familiengroesse, DELTA);
+				Assertions.assertEquals(3, familienMitglieder, DELTA);
+			}
+			@Test
+			void kinderAbzugFKJV2_HalbesKindWennKeineGemeinsameGesuch() {
+				Gesuch gesuch = createGesuchWithTwoGesuchsteller();
+				// prepare famsit, so gemeinsamesGesuch can be answered in the gui
+				Objects.requireNonNull(gesuch.getFamiliensituationContainer());
+				final Familiensituation familiensituation = gesuch.getFamiliensituationContainer().getFamiliensituationJA();
+				Objects.requireNonNull(familiensituation);
+				familiensituation.setFkjvFamSit(true);
+				familiensituation.setFamilienstatus(EnumFamilienstatus.KONKUBINAT_KEIN_KIND);
+				familiensituation.setGeteilteObhut(Boolean.TRUE);
+				familiensituation.setGesuchstellerKardinalitaet(EnumGesuchstellerKardinalitaet.ZU_ZWEIT);
+				familiensituation.setStartKonkubinat(LocalDate.of(2015, 10, 1));
+				Set<KindContainer> kindContainers = new LinkedHashSet<>();
+				final LocalDate date = LocalDate.of(2015, Month.MARCH, 25);
+				KindContainer kind = createKindContainer(Kinderabzug.HALBER_ABZUG, date);
+				kind.getKindJA().setObhutAlternierendAusueben(true);
+				kind.getKindJA().setFamilienErgaenzendeBetreuung(false);
+				kind.getKindJA().setGemeinsamesGesuch(false);
+				kindContainers.add(kind);
+				gesuch.setKindContainers(kindContainers);
+
+				final Entry<Double, Integer> famGroesse = famabAbschnittRule_FKJV2.calculateFamiliengroesse(gesuch, LocalDate.now());
+				double familiengroesse = famGroesse.getKey();
+				Assertions.assertEquals(2.5, familiengroesse, DELTA);
+			}
+
+			@Test
+			void kinderAbzugFKJV2_GanzesKindWennGemeinsamesGesuch() {
+				Gesuch gesuch = createGesuchWithTwoGesuchsteller();
+				// prepare famsit, so gemeinsamesGesuch can be answered in the gui
+				Objects.requireNonNull(gesuch.getFamiliensituationContainer());
+				final Familiensituation familiensituation = gesuch.getFamiliensituationContainer().getFamiliensituationJA();
+				Objects.requireNonNull(familiensituation);
+				familiensituation.setFkjvFamSit(true);
+				familiensituation.setFamilienstatus(EnumFamilienstatus.KONKUBINAT_KEIN_KIND);
+				familiensituation.setGeteilteObhut(Boolean.TRUE);
+				familiensituation.setStartKonkubinat(LocalDate.of(2015, 10, 1));
+				Set<KindContainer> kindContainers = new LinkedHashSet<>();
+				final LocalDate date = LocalDate.of(2015, Month.MARCH, 25);
+				KindContainer kind = createKindContainer(Kinderabzug.HALBER_ABZUG, date);
+				kind.getKindJA().setObhutAlternierendAusueben(true);
+				kind.getKindJA().setFamilienErgaenzendeBetreuung(false);
+				kind.getKindJA().setGemeinsamesGesuch(true);
+				kindContainers.add(kind);
+				gesuch.setKindContainers(kindContainers);
+
+				final Entry<Double, Integer> famGroesse = famabAbschnittRule_FKJV2.calculateFamiliengroesse(gesuch, LocalDate.now());
+				double familiengroesse = famGroesse.getKey();
+				Assertions.assertEquals(3, familiengroesse, DELTA);
+			}
+
 		}
-		@Test
-		void kinderAbzugFKJV2_HalbesKindWennKeineGemeinsameGesuch() {
-			Gesuch gesuch = createGesuchWithTwoGesuchsteller();
-			// prepare famsit, so gemeinsamesGesuch can be answered in the gui
-			Objects.requireNonNull(gesuch.getFamiliensituationContainer());
-			Objects.requireNonNull(gesuch.getFamiliensituationContainer().getFamiliensituationJA());
-			gesuch.getFamiliensituationContainer().getFamiliensituationJA().setFamilienstatus(EnumFamilienstatus.KONKUBINAT_KEIN_KIND);
-			gesuch.getFamiliensituationContainer().getFamiliensituationJA().setGeteilteObhut(Boolean.TRUE);
-			gesuch.getFamiliensituationContainer().getFamiliensituationJA().setGesuchstellerKardinalitaet(EnumGesuchstellerKardinalitaet.ZU_ZWEIT);
-			gesuch.getFamiliensituationContainer().getFamiliensituationJA().setStartKonkubinat(LocalDate.of(2015, 10, 1));
-			Set<KindContainer> kindContainers = new LinkedHashSet<>();
-			final LocalDate date = LocalDate.of(2015, Month.MARCH, 25);
-			KindContainer kind = createKindContainer(Kinderabzug.HALBER_ABZUG, date);
-			kind.getKindJA().setObhutAlternierendAusueben(true);
-			kind.getKindJA().setFamilienErgaenzendeBetreuung(false);
-			kind.getKindJA().setGemeinsamesGesuch(false);
-			kindContainers.add(kind);
-			gesuch.setKindContainers(kindContainers);
 
-			final Entry<Double, Integer> famGroesse = famabAbschnittRule_FKJV2.calculateFamiliengroesse(gesuch, LocalDate.now());
-			double familiengroesse = famGroesse.getKey();
-			Assertions.assertEquals(2.5, familiengroesse, DELTA);
-		}
+		@Nested
+		class MitFamilienergaenzenderBetreuungTest {
+			@Test
+			void kindFKJVMitBetreuungUndFamSitAlleineShouldCountHalf() {
+				Gesuch gesuch = createGesuchWithOneGS();
+				// prepare famsit, so gemeinsamesGesuch can be answered in the gui
+				Objects.requireNonNull(gesuch.getFamiliensituationContainer());
+				final Familiensituation familiensituation = gesuch.getFamiliensituationContainer().getFamiliensituationJA();
+				Objects.requireNonNull(familiensituation);
+				familiensituation.setFkjvFamSit(true);
+				familiensituation.setFamilienstatus(EnumFamilienstatus.ALLEINERZIEHEND);
+				familiensituation.setGeteilteObhut(Boolean.TRUE);
+				familiensituation.setGesuchstellerKardinalitaet(EnumGesuchstellerKardinalitaet.ALLEINE);
+				Set<KindContainer> kindContainers = new LinkedHashSet<>();
+				final LocalDate date = LocalDate.of(2015, Month.MARCH, 25);
+				KindContainer kind = createKindContainer(Kinderabzug.HALBER_ABZUG, date);
+				kind.getKindJA().setObhutAlternierendAusueben(true);
+				kind.getKindJA().setFamilienErgaenzendeBetreuung(true);
+				kindContainers.add(kind);
+				gesuch.setKindContainers(kindContainers);
 
-		@Test
-		void kinderAbzugFKJV2_GanzesKindWennGemeinsamesGesuch() {
-			Gesuch gesuch = createGesuchWithTwoGesuchsteller();
-			// prepare famsit, so gemeinsamesGesuch can be answered in the gui
-			Objects.requireNonNull(gesuch.getFamiliensituationContainer());
-			Objects.requireNonNull(gesuch.getFamiliensituationContainer().getFamiliensituationJA());
-			gesuch.getFamiliensituationContainer().getFamiliensituationJA().setFamilienstatus(EnumFamilienstatus.KONKUBINAT_KEIN_KIND);
-			gesuch.getFamiliensituationContainer().getFamiliensituationJA().setGeteilteObhut(Boolean.TRUE);
-			Set<KindContainer> kindContainers = new LinkedHashSet<>();
-			final LocalDate date = LocalDate.of(2015, Month.MARCH, 25);
-			KindContainer kind = createKindContainer(Kinderabzug.HALBER_ABZUG, date);
-			kind.getKindJA().setObhutAlternierendAusueben(true);
-			kind.getKindJA().setFamilienErgaenzendeBetreuung(false);
-			kind.getKindJA().setGemeinsamesGesuch(true);
-			kindContainers.add(kind);
-			gesuch.setKindContainers(kindContainers);
+				final Entry<Double, Integer> famGroesse = famabAbschnittRule_FKJV2.calculateFamiliengroesse(gesuch, LocalDate.now());
+				double familiengroesse = famGroesse.getKey();
+				Assertions.assertEquals(1.5, familiengroesse, DELTA);
+			}
 
-			final Entry<Double, Integer> famGroesse = famabAbschnittRule_FKJV2.calculateFamiliengroesse(gesuch, LocalDate.now());
-			double familiengroesse = famGroesse.getKey();
-			Assertions.assertEquals(3, familiengroesse, DELTA);
+			@Test
+			void kindFKJVMitBetreuungNichtGemeinsamenGesuchUndFamSitZuZweitShouldCountHalf() {
+				Gesuch gesuch = createGesuchWithTwoGesuchsteller();
+				// prepare famsit, so gemeinsamesGesuch can be answered in the gui
+				Objects.requireNonNull(gesuch.getFamiliensituationContainer());
+				final Familiensituation familiensituation = gesuch.getFamiliensituationContainer().getFamiliensituationJA();
+				Objects.requireNonNull(familiensituation);
+				familiensituation.setFkjvFamSit(true);
+				familiensituation.setFamilienstatus(EnumFamilienstatus.ALLEINERZIEHEND);
+				familiensituation.setGeteilteObhut(Boolean.TRUE);
+				familiensituation.setGesuchstellerKardinalitaet(EnumGesuchstellerKardinalitaet.ZU_ZWEIT);
+				Set<KindContainer> kindContainers = new LinkedHashSet<>();
+				final LocalDate date = LocalDate.of(2015, Month.MARCH, 25);
+				KindContainer kind = createKindContainer(Kinderabzug.HALBER_ABZUG, date);
+				kind.getKindJA().setObhutAlternierendAusueben(true);
+				kind.getKindJA().setFamilienErgaenzendeBetreuung(true);
+				kind.getKindJA().setGemeinsamesGesuch(false);
+				kindContainers.add(kind);
+				gesuch.setKindContainers(kindContainers);
+
+				final Entry<Double, Integer> famGroesse = famabAbschnittRule_FKJV2.calculateFamiliengroesse(gesuch, LocalDate.now());
+				double familiengroesse = famGroesse.getKey();
+				Assertions.assertEquals(2.5, familiengroesse, DELTA);
+			}
+
+			@Test
+			void kindFKJVMitBetreuungGemeinsamenGesuchUndFamSitZuZweitShouldCountFull() {
+				Gesuch gesuch = createGesuchWithTwoGesuchsteller();
+				// prepare famsit, so gemeinsamesGesuch can be answered in the gui
+				Objects.requireNonNull(gesuch.getFamiliensituationContainer());
+				final Familiensituation familiensituation = gesuch.getFamiliensituationContainer().getFamiliensituationJA();
+				Objects.requireNonNull(familiensituation);
+				familiensituation.setFkjvFamSit(true);
+				familiensituation.setFamilienstatus(EnumFamilienstatus.ALLEINERZIEHEND);
+				familiensituation.setGeteilteObhut(Boolean.TRUE);
+				familiensituation.setGesuchstellerKardinalitaet(EnumGesuchstellerKardinalitaet.ZU_ZWEIT);
+				Set<KindContainer> kindContainers = new LinkedHashSet<>();
+				final LocalDate date = LocalDate.of(2015, Month.MARCH, 25);
+				KindContainer kind = createKindContainer(Kinderabzug.HALBER_ABZUG, date);
+				kind.getKindJA().setObhutAlternierendAusueben(true);
+				kind.getKindJA().setFamilienErgaenzendeBetreuung(true);
+				kind.getKindJA().setGemeinsamesGesuch(true);
+				kindContainers.add(kind);
+				gesuch.setKindContainers(kindContainers);
+
+				final Entry<Double, Integer> famGroesse = famabAbschnittRule_FKJV2.calculateFamiliengroesse(gesuch, LocalDate.now());
+				double familiengroesse = famGroesse.getKey();
+				Assertions.assertEquals(3, familiengroesse, DELTA);
+			}
 		}
 
 	}
