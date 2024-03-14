@@ -78,6 +78,7 @@ public class KindContainer extends AbstractMutableEntity implements Comparable<K
 	@NotNull
 	@ManyToOne(optional = false)
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_kind_container_gesuch_id"), nullable = false)
+	@IndexedEmbedded
 	private Gesuch gesuch;
 
 	@Nullable
