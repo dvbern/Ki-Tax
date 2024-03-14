@@ -176,6 +176,39 @@ include:
             ssh-private-key: $KIBON_SSH_PRIVATE_KEY
             ssh-target: 'sdvbvmkiba11.dvbern.ch'
 
+.run-e2e-tests:
+    stage: testing
+    variables:
+        environment: e2e
+        baseURL: "https://${environment}-be.kibon.ch/web/"
+    tags: [ 'os:linux', 'type:docker', 'zone:tz' ]
+    dependencies:
+        - build-frontend
+    image: '${DVB_DOCKER_REGISTRY}/dockerhub/cypress/browsers:node-18.14.1-chrome-110.0.5481.96-1-ff-109.0-edge-110.0.1587.41-1'
+    rules:
+        -   when: never
+    cache:
+        key:
+            files:
+                - ebegu-web/package-lock.json
+        paths:
+            - .npm
+            - ebegu-web/node_modules
+            - Cypress
+        policy: pull
+    script:
+        - cd ebegu-web
+        - npx cypress run --e2e --headless --browser chrome
+    artifacts:
+        when: always
+        paths:
+            - ebegu-web/cypress/videos/**/*.mp4
+            - ebegu-web/cypress/screenshots/**/*.png
+            - ebegu-web/cypress/results/*.xml
+        expire_in: 14 days
+        reports:
+            junit: ebegu-web/cypress/results/*.xml
+
 deploy:prod:
     dependencies: [ ]
     rules:
@@ -335,15 +368,8 @@ build-e2e-test-db-setup-image:
     extends: .build-e2e-test-db-setup-image
     needs: [ ]
 
-run-e2e-tests:
-    stage: testing
-    variables:
-        environment: e2e
-        baseURL: "https://${environment}-be.kibon.ch/web/"
-    tags: [ 'os:linux', 'type:docker', 'zone:tz' ]
-    dependencies:
-        - build-frontend
-    image: '${DVB_DOCKER_REGISTRY}/dockerhub/cypress/browsers:node-18.14.1-chrome-110.0.5481.96-1-ff-109.0-edge-110.0.1587.41-1'
+run-e2e-testprotokoll-tests:
+    extends: .run-e2e-tests
     rules:
         -   if: $CI_PIPELINE_SOURCE == "merge_request_event"
             when: manual
@@ -353,27 +379,20 @@ run-e2e-tests:
             variables:
                 environment: preview
         -   if: $CI_PIPELINE_SOURCE == "schedule"
-    cache:
-        key:
-            files:
-                - ebegu-web/package-lock.json
-        paths:
-            - .npm
-            - ebegu-web/node_modules
-            - Cypress
-        policy: pull
     script:
         - cd ebegu-web
-        - npx cypress run --e2e --headless --browser chrome
-    artifacts:
-        when: always
-        paths:
-            - ebegu-web/cypress/videos/**/*.mp4
-            - ebegu-web/cypress/screenshots/**/*.png
-            - ebegu-web/cypress/results/*.xml
-        expire_in: 14 days
-        reports:
-            junit: ebegu-web/cypress/results/*.xml
+        - npx cypress run --e2e --headless --browser chrome --spec ./cypress/e2e/testprotokoll/*.cy.ts
+
+run-e2e-all-tests:
+    extends: .run-e2e-tests
+    rules:
+        -   if: $CI_PIPELINE_SOURCE == "merge_request_event"
+            when: manual
+            needs:
+                - deploy
+                - build-frontend
+            variables:
+                environment: preview
 
 # based on stip-api's mirror job
 github-mirror:
