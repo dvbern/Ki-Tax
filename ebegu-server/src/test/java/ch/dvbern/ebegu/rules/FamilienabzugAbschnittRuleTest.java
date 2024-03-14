@@ -45,8 +45,9 @@ import ch.dvbern.ebegu.enums.KinderabzugTyp;
 import ch.dvbern.ebegu.test.TestDataUtil;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.MathUtil;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Nested;
 
 /**
  * Tests fuer FamilienabzugAbschnittRule
@@ -72,7 +73,7 @@ public class FamilienabzugAbschnittRuleTest {
 			pauschalabzugProPersonFamiliengroesse6, 5, KinderabzugTyp.FKJV_2, Constants.DEFAULT_LOCALE);
 
 	@Test
-	public void test2PKeinAbzug() {
+	void test2PKeinAbzug() {
 		Betreuung betreuung = TestDataUtil.createGesuchWithBetreuungspensum(false);
 		Gesuch gesuch = betreuung.extractGesuch();
 		gesuch.setKindContainers(new HashSet<>());
@@ -80,14 +81,14 @@ public class FamilienabzugAbschnittRuleTest {
 		gesuch.getKindContainers().add(defaultKindContainer);
 
 		List<VerfuegungZeitabschnitt> zeitabschnitte = EbeguRuleTestsHelper.calculate(betreuung);
-		Assert.assertNotNull(zeitabschnitte);
-		Assert.assertEquals(1, zeitabschnitte.size());
+		Assertions.assertNotNull(zeitabschnitte);
+		Assertions.assertEquals(1, zeitabschnitte.size());
 		final VerfuegungZeitabschnitt verfuegungZeitabschnitt = zeitabschnitte.iterator().next();
-		Assert.assertEquals(0, verfuegungZeitabschnitt.getAbzugFamGroesse().intValue());
+		Assertions.assertEquals(0, verfuegungZeitabschnitt.getAbzugFamGroesse().intValue());
 	}
 
 	@Test
-	public void test3P_Abzug() {
+	void test3P_Abzug() {
 		Betreuung betreuung = TestDataUtil.createGesuchWithBetreuungspensum(false);
 		Gesuch gesuch = betreuung.extractGesuch();
 		gesuch.setKindContainers(new HashSet<>());
@@ -98,14 +99,15 @@ public class FamilienabzugAbschnittRuleTest {
 		gesuch.getKindContainers().add(defaultKindContainer2);
 
 		List<VerfuegungZeitabschnitt> zeitabschnitte = EbeguRuleTestsHelper.calculate(betreuung);
-		Assert.assertNotNull(zeitabschnitte);
-		Assert.assertEquals(1, zeitabschnitte.size());
+		Assertions.assertNotNull(zeitabschnitte);
+		Assertions.assertEquals(1, zeitabschnitte.size());
 		final VerfuegungZeitabschnitt verfuegungZeitabschnitt = zeitabschnitte.iterator().next();
-		Assert.assertEquals(0, verfuegungZeitabschnitt.getAbzugFamGroesse().compareTo(pauschalabzugProPersonFamiliengroesse3.multiply(BigDecimal.valueOf(3))));
+		Assertions.assertEquals(0,
+			verfuegungZeitabschnitt.getAbzugFamGroesse().compareTo(pauschalabzugProPersonFamiliengroesse3.multiply(BigDecimal.valueOf(3))));
 	}
 
 	@Test
-	public void test4P_Abzug() {
+	void test4P_Abzug() {
 		Betreuung betreuung = TestDataUtil.createGesuchWithBetreuungspensum(true);
 		Gesuch gesuch = betreuung.extractGesuch();
 		gesuch.setKindContainers(new HashSet<>());
@@ -116,14 +118,15 @@ public class FamilienabzugAbschnittRuleTest {
 		gesuch.getKindContainers().add(defaultKindContainer2);
 
 		List<VerfuegungZeitabschnitt> zeitabschnitte = EbeguRuleTestsHelper.calculate(betreuung);
-		Assert.assertNotNull(zeitabschnitte);
-		Assert.assertEquals(1, zeitabschnitte.size());
+		Assertions.assertNotNull(zeitabschnitte);
+		Assertions.assertEquals(1, zeitabschnitte.size());
 		final VerfuegungZeitabschnitt verfuegungZeitabschnitt = zeitabschnitte.iterator().next();
-		Assert.assertEquals(0, verfuegungZeitabschnitt.getAbzugFamGroesse().compareTo(pauschalabzugProPersonFamiliengroesse4.multiply(BigDecimal.valueOf(4))));
+		Assertions.assertEquals(0,
+			verfuegungZeitabschnitt.getAbzugFamGroesse().compareTo(pauschalabzugProPersonFamiliengroesse4.multiply(BigDecimal.valueOf(4))));
 	}
 
 	@Test
-	public void test3P_Abzug_Kind_waehrendPeriode() {
+	void test3P_Abzug_Kind_waehrendPeriode() {
 		Betreuung betreuung = TestDataUtil.createGesuchWithBetreuungspensum(true);
 		Gesuch gesuch = betreuung.extractGesuch();
 		gesuch.setKindContainers(new HashSet<>());
@@ -136,24 +139,26 @@ public class FamilienabzugAbschnittRuleTest {
 		gesuch.getKindContainers().add(defaultKindContainer2);
 
 		List<VerfuegungZeitabschnitt> zeitabschnitte = EbeguRuleTestsHelper.calculate(betreuung);
-		Assert.assertNotNull(zeitabschnitte);
-		Assert.assertEquals(2, zeitabschnitte.size());
+		Assertions.assertNotNull(zeitabschnitte);
+		Assertions.assertEquals(2, zeitabschnitte.size());
 
 
 		final Iterator<VerfuegungZeitabschnitt> iterator = zeitabschnitte.iterator();
 		final VerfuegungZeitabschnitt verfuegungZeitabschnitt1 = iterator.next();
-		Assert.assertEquals(0, verfuegungZeitabschnitt1.getAbzugFamGroesse().compareTo(pauschalabzugProPersonFamiliengroesse3.multiply(BigDecimal.valueOf(3))));
+		Assertions.assertEquals(0,
+			verfuegungZeitabschnitt1.getAbzugFamGroesse().compareTo(pauschalabzugProPersonFamiliengroesse3.multiply(BigDecimal.valueOf(3))));
 		final LocalDate withDayOfMonth = geburtsdatum.plusMonths(1).withDayOfMonth(1);
-		Assert.assertEquals(0, verfuegungZeitabschnitt1.getGueltigkeit().getGueltigBis().compareTo(
+		Assertions.assertEquals(0, verfuegungZeitabschnitt1.getGueltigkeit().getGueltigBis().compareTo(
 			withDayOfMonth.minusDays(1)));
 
 		final VerfuegungZeitabschnitt verfuegungZeitabschnitt2 = iterator.next();
-		Assert.assertEquals(0, verfuegungZeitabschnitt2.getAbzugFamGroesse().compareTo(pauschalabzugProPersonFamiliengroesse4.multiply(BigDecimal.valueOf(4))));
-		Assert.assertEquals(0, verfuegungZeitabschnitt2.getGueltigkeit().getGueltigAb().compareTo(withDayOfMonth));
+		Assertions.assertEquals(0,
+			verfuegungZeitabschnitt2.getAbzugFamGroesse().compareTo(pauschalabzugProPersonFamiliengroesse4.multiply(BigDecimal.valueOf(4))));
+		Assertions.assertEquals(0, verfuegungZeitabschnitt2.getGueltigkeit().getGueltigAb().compareTo(withDayOfMonth));
 	}
 
 	@Test
-	public void test3P_Abzug_Zwiling_waehrendPeriode() {
+	void test3P_Abzug_Zwiling_waehrendPeriode() {
 		Betreuung betreuung = TestDataUtil.createGesuchWithBetreuungspensum(true);
 		Gesuch gesuch = betreuung.extractGesuch();
 		gesuch.setKindContainers(new HashSet<>());
@@ -170,95 +175,97 @@ public class FamilienabzugAbschnittRuleTest {
 		gesuch.getKindContainers().add(defaultKindContainer3);
 
 		List<VerfuegungZeitabschnitt> zeitabschnitte = EbeguRuleTestsHelper.calculate(betreuung);
-		Assert.assertNotNull(zeitabschnitte);
-		Assert.assertEquals(2, zeitabschnitte.size());
+		Assertions.assertNotNull(zeitabschnitte);
+		Assertions.assertEquals(2, zeitabschnitte.size());
 
 		final Iterator<VerfuegungZeitabschnitt> iterator = zeitabschnitte.iterator();
 		final VerfuegungZeitabschnitt verfuegungZeitabschnitt1 = iterator.next();
-		Assert.assertEquals(0, verfuegungZeitabschnitt1.getAbzugFamGroesse().compareTo(pauschalabzugProPersonFamiliengroesse3.multiply(BigDecimal.valueOf(3))));
+		Assertions.assertEquals(0,
+			verfuegungZeitabschnitt1.getAbzugFamGroesse().compareTo(pauschalabzugProPersonFamiliengroesse3.multiply(BigDecimal.valueOf(3))));
 		final LocalDate withDayOfMonth = geburtsdatum.plusMonths(1).withDayOfMonth(1);
-		Assert.assertEquals(0, verfuegungZeitabschnitt1.getGueltigkeit().getGueltigBis().compareTo(
+		Assertions.assertEquals(0, verfuegungZeitabschnitt1.getGueltigkeit().getGueltigBis().compareTo(
 			withDayOfMonth.minusDays(1)));
 
 		final VerfuegungZeitabschnitt verfuegungZeitabschnitt2 = iterator.next();
-		Assert.assertEquals(0, verfuegungZeitabschnitt2.getAbzugFamGroesse().compareTo(pauschalabzugProPersonFamiliengroesse5.multiply(BigDecimal.valueOf(5))));
-		Assert.assertEquals(0, verfuegungZeitabschnitt2.getGueltigkeit().getGueltigAb().compareTo(withDayOfMonth));
+		Assertions.assertEquals(0,
+			verfuegungZeitabschnitt2.getAbzugFamGroesse().compareTo(pauschalabzugProPersonFamiliengroesse5.multiply(BigDecimal.valueOf(5))));
+		Assertions.assertEquals(0, verfuegungZeitabschnitt2.getGueltigkeit().getGueltigAb().compareTo(withDayOfMonth));
 	}
 
 	@Test
-	public void testCalculateFamiliengroesseNoGesuchsteller() {
+	void testCalculateFamiliengroesseNoGesuchsteller() {
 		Gesuch gesuch = new Gesuch();
 		gesuch.setDossier(TestDataUtil.createDefaultDossier());
 		gesuch.setGesuchsperiode(TestDataUtil.createGesuchsperiode1718());
 		double familiengroesse = famabAbschnittRule.calculateFamiliengroesse(gesuch, DATE_2005).getKey();
-		Assert.assertEquals(0, familiengroesse, DELTA);
+		Assertions.assertEquals(0, familiengroesse, DELTA);
 	}
 
 	@Test
-	public void testCalculateFamiliengroesseOneGesuchsteller() {
+	void testCalculateFamiliengroesseOneGesuchsteller() {
 		Gesuch gesuch = createGesuchWithOneGS();
 		double familiengroesse = famabAbschnittRule.calculateFamiliengroesse(gesuch, DATE_2005).getKey();
-		Assert.assertEquals(1, familiengroesse, DELTA);
+		Assertions.assertEquals(1, familiengroesse, DELTA);
 	}
 
 	@Test
-	public void testCalculateFamiliengroesseOneGesuchstellerErstges() {
+	void testCalculateFamiliengroesseOneGesuchstellerErstges() {
 		Gesuch gesuch = createGesuchWithOneGS();
 		//aktuell alleinerziehend
 		double familiengroesse = famabAbschnittRule.calculateFamiliengroesse(gesuch, DATE_2005).getKey();
-		Assert.assertEquals(1, familiengroesse, DELTA);
+		Assertions.assertEquals(1, familiengroesse, DELTA);
 		// jetzt wechseln auf verheiratet
 		Familiensituation erstFamiliensituation = new Familiensituation();
 		erstFamiliensituation.setAenderungPer(null); //im erstgesuch immer null
 		erstFamiliensituation.setFamilienstatus(EnumFamilienstatus.VERHEIRATET);
 		gesuch.getFamiliensituationContainer().setFamiliensituationErstgesuch(erstFamiliensituation);
 		double newFamGr = famabAbschnittRule.calculateFamiliengroesse(gesuch, DATE_2005).getKey();
-		Assert.assertEquals(2, newFamGr, DELTA);
+		Assertions.assertEquals(2, newFamGr, DELTA);
 	}
 
 	@Test
-	public void testCalculateFamiliengroesseTwoGesuchsteller() {
+	void testCalculateFamiliengroesseTwoGesuchsteller() {
 		Gesuch gesuch = createGesuchWithTwoGesuchsteller();
 		double familiengroesse = famabAbschnittRule.calculateFamiliengroesse(gesuch, DATE_2005).getKey();
-		Assert.assertEquals(2, familiengroesse, DELTA);
+		Assertions.assertEquals(2, familiengroesse, DELTA);
 	}
 
 	@Test
-	public void testCalculateFamiliengroesseWithGanzerAbzugKind() {
+	void testCalculateFamiliengroesseWithGanzerAbzugKind() {
 		Gesuch gesuch = createGesuchWithKind(Kinderabzug.GANZER_ABZUG, null, LocalDate.of(2006, 5, 25));
 
 		double familiengroesse = famabAbschnittRule.calculateFamiliengroesse(gesuch, LocalDate.now()).getKey();
-		Assert.assertEquals(3, familiengroesse, DELTA);
+		Assertions.assertEquals(3, familiengroesse, DELTA);
 	}
 
 	@Test
-	public void testCalculateFamiliengroesseWithHalberAbzugKind() {
+	void testCalculateFamiliengroesseWithHalberAbzugKind() {
 		Gesuch gesuch = createGesuchWithKind(Kinderabzug.HALBER_ABZUG, null, LocalDate.of(2006, 5, 25));
 
 		double familiengroesse = famabAbschnittRule.calculateFamiliengroesse(gesuch, LocalDate.now()).getKey();
-		Assert.assertEquals(2.5, familiengroesse, DELTA);
+		Assertions.assertEquals(2.5, familiengroesse, DELTA);
 	}
 
 	@Test
-	public void testCalculateFamiliengroesseWithKeinAbzugKind() {
+	void testCalculateFamiliengroesseWithKeinAbzugKind() {
 		Gesuch gesuch = createGesuchWithKind(Kinderabzug.KEIN_ABZUG, null, LocalDate.of(2006, 5, 25));
 
 		double familiengroesse = famabAbschnittRule.calculateFamiliengroesse(gesuch, LocalDate.now()).getKey();
-		Assert.assertEquals(2, familiengroesse, DELTA);
+		Assertions.assertEquals(2, familiengroesse, DELTA);
 	}
 
 	@Test
-	public void testCalculateFamiliengroesseWithWrongGeburtsdatum() {
+	void testCalculateFamiliengroesseWithWrongGeburtsdatum() {
 		//das Kind war noch nicht geboren, innerhalb der Gesuchsperiode. So it cannot be counted for the abschnitt
 		Gesuch gesuch = createGesuchWithKind(Kinderabzug.GANZER_ABZUG, null, LocalDate.of(2017, 10, 25));
 
 		double familiengroesse = famabAbschnittRule.calculateFamiliengroesse(gesuch, LocalDate.of(2017, 9, 25))
 			.getKey();
-		Assert.assertEquals(2, familiengroesse, DELTA);
+		Assertions.assertEquals(2, familiengroesse, DELTA);
 	}
 
 	@Test
-	public void testCalculateFamiliengroesseWithGeburtsdatumAusserhalbPeriode() {
+	void testCalculateFamiliengroesseWithGeburtsdatumAusserhalbPeriode() {
 		// The Kind was born before the period start but after the date given as parameter. In this case the actual date
 		// is not important because within the period the Kind already exists and the familiy has already changed, so
 		// the Kind must be counted as well and the familiengroesse must be 3
@@ -266,58 +273,58 @@ public class FamilienabzugAbschnittRuleTest {
 
 		double familiengroesse = famabAbschnittRule.calculateFamiliengroesse(gesuch, LocalDate.of(2014, 9, 25))
 			.getKey();
-		Assert.assertEquals(3, familiengroesse, DELTA);
+		Assertions.assertEquals(3, familiengroesse, DELTA);
 	}
 
 	@Test
-	public void testCalculateFamiliengroesseWithCorrectGeburtsdatum() {
+	void testCalculateFamiliengroesseWithCorrectGeburtsdatum() {
 		//das Kind war schon geboren
 		Gesuch gesuch = createGesuchWithKind(Kinderabzug.GANZER_ABZUG, null, LocalDate.of(2006, 5, 25));
 
 		double familiengroesse = famabAbschnittRule.calculateFamiliengroesse(gesuch, LocalDate.now()).getKey();
-		Assert.assertEquals(3, familiengroesse, DELTA);
+		Assertions.assertEquals(3, familiengroesse, DELTA);
 	}
 
 	@Test
-	public void testCalculateFamiliengroesseWithTwoKinder() {
+	void testCalculateFamiliengroesseWithTwoKinder() {
 		//das Kind war schon geboren
 		Gesuch gesuch = createGesuchWithKind(Kinderabzug.GANZER_ABZUG, Kinderabzug.HALBER_ABZUG, LocalDate.of(2006, 5, 25));
 
 		final Entry<Double, Integer> famGroesse = famabAbschnittRule.calculateFamiliengroesse(gesuch, LocalDate.now());
 		double familiengroesse = famGroesse.getKey();
 		double familienMitglieder = famGroesse.getValue();
-		Assert.assertEquals(3.5, familiengroesse, DELTA);
-		Assert.assertEquals(4, familienMitglieder, DELTA);
+		Assertions.assertEquals(3.5, familiengroesse, DELTA);
+		Assertions.assertEquals(4, familienMitglieder, DELTA);
 	}
 
 	@Test
-	public void testCalculateFamiliengroesseWithTwoKinderKeinAbzug() {
+	void testCalculateFamiliengroesseWithTwoKinderKeinAbzug() {
 		//das Kind war schon geboren
 		Gesuch gesuch = createGesuchWithKind(Kinderabzug.HALBER_ABZUG, Kinderabzug.KEIN_ABZUG, LocalDate.of(2006, 5, 25));
 
 		final Entry<Double, Integer> famGroesse = famabAbschnittRule.calculateFamiliengroesse(gesuch, LocalDate.now());
 		double familiengroesse = famGroesse.getKey();
 		double familienMitglieder = famGroesse.getValue();
-		Assert.assertEquals(2.5, familiengroesse, DELTA);
-		Assert.assertEquals(3, familienMitglieder, DELTA);
+		Assertions.assertEquals(2.5, familiengroesse, DELTA);
+		Assertions.assertEquals(3, familienMitglieder, DELTA);
 	}
 
 	@Test
-	public void testCalculateAbzugAufgrundFamiliengroesseZero() {
-		Assert.assertEquals(0, famabAbschnittRule.calculateAbzugAufgrundFamiliengroesse(0, 0).intValue());
-		Assert.assertEquals(0, famabAbschnittRule.calculateAbzugAufgrundFamiliengroesse(1, 1).intValue());
-		Assert.assertEquals(0, famabAbschnittRule.calculateAbzugAufgrundFamiliengroesse(1.5, 2).intValue());
+	void testCalculateAbzugAufgrundFamiliengroesseZero() {
+		Assertions.assertEquals(0, famabAbschnittRule.calculateAbzugAufgrundFamiliengroesse(0, 0).intValue());
+		Assertions.assertEquals(0, famabAbschnittRule.calculateAbzugAufgrundFamiliengroesse(1, 1).intValue());
+		Assertions.assertEquals(0, famabAbschnittRule.calculateAbzugAufgrundFamiliengroesse(1.5, 2).intValue());
 	}
 
 	@Test
-	public void testCalculateAbzugAufgrundFamiliengroesse_EBEGU_1185_NR32_Familiengroesse_Berechnung() {
+	void testCalculateAbzugAufgrundFamiliengroesse_EBEGU_1185_NR32_Familiengroesse_Berechnung() {
 
 		/* Beispiel Nr. 1:
 		 * 1 Erwachsene Person (Alleinerziehend) und 1 Kind zu 50% in den Steuern abzugsberechtigt. Die Anzahl der Personen,
 		 * die im Haushalt wohnen, beträgt zwei, die anrechenbare Familiengrösse ist 1,5. Es ist damit kein Abzug möglich,
 		 * da 2-Personenhaushalt. Daher Fr. 0.00 in der Berechnung.
 		 */
-		Assert.assertEquals(0, famabAbschnittRule.calculateAbzugAufgrundFamiliengroesse(1.5, 2).intValue());
+		Assertions.assertEquals(0, famabAbschnittRule.calculateAbzugAufgrundFamiliengroesse(1.5, 2).intValue());
 
 		/* Beispiel Nr. 2:
 		 * 1 Erwachsene Person (Alleinerziehend) und 2 Kindern zu je 50% Abzugsmöglichkeit in den Steuern. Die Anzahl der Personen,
@@ -325,7 +332,7 @@ public class FamilienabzugAbschnittRuleTest {
 		 * Fr. 3'800.00 angenommen. Die anrechenbare Familiengrösse ist 2 und dieser Wert wird mit dem Ansatz von 3-Personenhaushalt
 		 * von Fr. 3'800.00 multipliziert; Ergebnis Fr. 7'600.00
 		 */
-		Assert.assertEquals(7600, famabAbschnittRule.calculateAbzugAufgrundFamiliengroesse(2, 3).intValue());
+		Assertions.assertEquals(7600, famabAbschnittRule.calculateAbzugAufgrundFamiliengroesse(2, 3).intValue());
 
 		/* Beispiel Nr. 3:
 		 * 1 Erwachsene Person (Alleinerziehend) mit 3 Kindern, für die Kinder ist je 50% Kinderabzug möglich. Es sind insgesamt
@@ -333,7 +340,7 @@ public class FamilienabzugAbschnittRuleTest {
 		 * Die anrechenbare Familiengrösse beträgt 2,5 und dieser Wert wird mit der Pauschale 4-Personenhaushalt von
 		 * Fr. 6'000.00 multipliziert; Ergebnis Fr. 15'000.00.
 		*/
-		Assert.assertEquals(15000, famabAbschnittRule.calculateAbzugAufgrundFamiliengroesse(2.5, 4).intValue());
+		Assertions.assertEquals(15000, famabAbschnittRule.calculateAbzugAufgrundFamiliengroesse(2.5, 4).intValue());
 
 		/*
 		 * Beispiel Nr. 4:
@@ -344,7 +351,7 @@ public class FamilienabzugAbschnittRuleTest {
 		 * Die anrechenbare Familiengrösse beträgt 2,5 und diese Familiengrösse wird mit der
 		 * Pauschale 3-Personenhaushalt von Fr. 3'800.00 multipliziert; Ergebnis Fr. 9'500.00.
 		 */
-		Assert.assertEquals(9500, famabAbschnittRule.calculateAbzugAufgrundFamiliengroesse(2.5, 3).intValue());
+		Assertions.assertEquals(9500, famabAbschnittRule.calculateAbzugAufgrundFamiliengroesse(2.5, 3).intValue());
 
 		/*
 		 * Beispiel Nr. 5:
@@ -353,7 +360,7 @@ public class FamilienabzugAbschnittRuleTest {
 		 * es wird nun der Ansatz von 6 Personenhaushalt von Fr. 7'700.00 genommen. Die anrechenbare Familiengrösse von 4,5
 		 * wird mit der Pauschale 6-Personenhaushalt von Fr. 7'700.00 multipliziert; Ergebnis Fr. 34'650.00.
 		 */
-		Assert.assertEquals(34650, famabAbschnittRule.calculateAbzugAufgrundFamiliengroesse(4.5, 6).intValue());
+		Assertions.assertEquals(34650, famabAbschnittRule.calculateAbzugAufgrundFamiliengroesse(4.5, 6).intValue());
 
 		/*
 		 * Beispiel Nr. 6:
@@ -361,11 +368,11 @@ public class FamilienabzugAbschnittRuleTest {
 		 * die Anzahl der Personen im gleichen Haushalt 4. Damit wird der Pauschalabzug von 4-Personenhaushalt angewendet.
 		 * Die anrechenbare Familiengrösse 4 wird mit 4-Personhaushalt von Fr. 6000.00 multipliziert; Ergebnis Fr. 24000.00.
 		 */
-		Assert.assertEquals(24000, famabAbschnittRule.calculateAbzugAufgrundFamiliengroesse(4.0, 4).intValue());
+		Assertions.assertEquals(24000, famabAbschnittRule.calculateAbzugAufgrundFamiliengroesse(4.0, 4).intValue());
 	}
 
 	@Test
-	public void testCalculateFamiliengroesseWithMutation1GSTo2GS() {
+	void testCalculateFamiliengroesseWithMutation1GSTo2GS() {
 		Gesuch gesuch = createGesuchWithTwoGesuchsteller();
 		final LocalDate date = LocalDate.of(1980, Month.MARCH, 25);
 		gesuch.extractFamiliensituation().setAenderungPer(date);
@@ -374,13 +381,16 @@ public class FamilienabzugAbschnittRuleTest {
 		famSitErstgesuch.setFamilienstatus(EnumFamilienstatus.ALLEINERZIEHEND);
 		gesuch.getFamiliensituationContainer().setFamiliensituationErstgesuch(famSitErstgesuch);
 
-		Assert.assertEquals(1, famabAbschnittRule.calculateFamiliengroesse(gesuch, date.minusMonths(1)).getKey(), DELTA);
-		Assert.assertEquals(1, famabAbschnittRule.calculateFamiliengroesse(gesuch, date.withDayOfMonth(31)).getKey(), DELTA);
-		Assert.assertEquals(2, famabAbschnittRule.calculateFamiliengroesse(gesuch, date.plusMonths(1).withDayOfMonth(1)).getKey(), DELTA);
+		Assertions.assertEquals(1, famabAbschnittRule.calculateFamiliengroesse(gesuch, date.minusMonths(1)).getKey(), DELTA);
+		Assertions.assertEquals(1, famabAbschnittRule.calculateFamiliengroesse(gesuch, date.withDayOfMonth(31)).getKey(), DELTA);
+		Assertions.assertEquals(
+			2,
+			famabAbschnittRule.calculateFamiliengroesse(gesuch, date.plusMonths(1).withDayOfMonth(1)).getKey(),
+			DELTA);
 	}
 
 	@Test
-	public void testCalculateFamiliengroesseWithMutation2GSTo1GS() {
+	void testCalculateFamiliengroesseWithMutation2GSTo1GS() {
 		Gesuch gesuch = createGesuchWithOneGS();
 		final LocalDate date = LocalDate.of(1980, Month.MARCH, 25);
 		gesuch.extractFamiliensituation().setAenderungPer(date);
@@ -389,13 +399,16 @@ public class FamilienabzugAbschnittRuleTest {
 		famSitErstgesuch.setFamilienstatus(EnumFamilienstatus.VERHEIRATET);
 		gesuch.getFamiliensituationContainer().setFamiliensituationErstgesuch(famSitErstgesuch);
 
-		Assert.assertEquals(2, famabAbschnittRule.calculateFamiliengroesse(gesuch, date.minusMonths(1)).getKey(), DELTA);
-		Assert.assertEquals(2, famabAbschnittRule.calculateFamiliengroesse(gesuch, date.withDayOfMonth(31)).getKey(), DELTA);
-		Assert.assertEquals(1, famabAbschnittRule.calculateFamiliengroesse(gesuch, date.plusMonths(1).withDayOfMonth(1)).getKey(), DELTA);
+		Assertions.assertEquals(2, famabAbschnittRule.calculateFamiliengroesse(gesuch, date.minusMonths(1)).getKey(), DELTA);
+		Assertions.assertEquals(2, famabAbschnittRule.calculateFamiliengroesse(gesuch, date.withDayOfMonth(31)).getKey(), DELTA);
+		Assertions.assertEquals(
+			1,
+			famabAbschnittRule.calculateFamiliengroesse(gesuch, date.plusMonths(1).withDayOfMonth(1)).getKey(),
+			DELTA);
 	}
 
 	@Test
-	public void testCalculateFamiliengroesseWithMutation2GSTo2GS() {
+	void testCalculateFamiliengroesseWithMutation2GSTo2GS() {
 		Gesuch gesuch = createGesuchWithTwoGesuchsteller();
 		final LocalDate date = LocalDate.of(1980, Month.MARCH, 25);
 		gesuch.extractFamiliensituation().setAenderungPer(date);
@@ -404,13 +417,16 @@ public class FamilienabzugAbschnittRuleTest {
 		famSitErstgesuch.setFamilienstatus(EnumFamilienstatus.KONKUBINAT);
 		gesuch.getFamiliensituationContainer().setFamiliensituationErstgesuch(famSitErstgesuch);
 
-		Assert.assertEquals(2, famabAbschnittRule.calculateFamiliengroesse(gesuch, date.minusMonths(1)).getKey(), DELTA);
-		Assert.assertEquals(2, famabAbschnittRule.calculateFamiliengroesse(gesuch, date.withDayOfMonth(31)).getKey(), DELTA);
-		Assert.assertEquals(2, famabAbschnittRule.calculateFamiliengroesse(gesuch, date.plusMonths(1).withDayOfMonth(1)).getKey(), DELTA);
+		Assertions.assertEquals(2, famabAbschnittRule.calculateFamiliengroesse(gesuch, date.minusMonths(1)).getKey(), DELTA);
+		Assertions.assertEquals(2, famabAbschnittRule.calculateFamiliengroesse(gesuch, date.withDayOfMonth(31)).getKey(), DELTA);
+		Assertions.assertEquals(
+			2,
+			famabAbschnittRule.calculateFamiliengroesse(gesuch, date.plusMonths(1).withDayOfMonth(1)).getKey(),
+			DELTA);
 	}
 
 	@Test
-	public void testFamiliensituationMutiert1GSTo2GS() {
+	void testFamiliensituationMutiert1GSTo2GS() {
 		Betreuung betreuung = TestDataUtil.createGesuchWithBetreuungspensum(true);
 		Gesuch gesuch = betreuung.extractGesuch();
 		final LocalDate date = LocalDate.of(TestDataUtil.PERIODE_JAHR_2, Month.MARCH, 25); // gesuchsperiode ist 2017/2018
@@ -425,90 +441,96 @@ public class FamilienabzugAbschnittRuleTest {
 		gesuch.getKindContainers().add(defaultKindContainer);
 
 		List<VerfuegungZeitabschnitt> zeitabschnitte = EbeguRuleTestsHelper.calculate(betreuung);
-		Assert.assertNotNull(zeitabschnitte);
-		Assert.assertEquals(2, zeitabschnitte.size());
+		Assertions.assertNotNull(zeitabschnitte);
+		Assertions.assertEquals(2, zeitabschnitte.size());
 
 		final VerfuegungZeitabschnitt zeitabschnitt0 = zeitabschnitte.get(0);
-		Assert.assertEquals(gesuch.getGesuchsperiode().getGueltigkeit().getGueltigAb(), zeitabschnitt0.getGueltigkeit().getGueltigAb());
-		Assert.assertEquals(date.withDayOfMonth(31), zeitabschnitt0.getGueltigkeit().getGueltigBis());
-		Assert.assertEquals(0, zeitabschnitt0.getAbzugFamGroesse().intValue());
-		Assert.assertEquals(BigDecimal.valueOf(2.0), zeitabschnitt0.getFamGroesse());
+		Assertions.assertEquals(gesuch.getGesuchsperiode().getGueltigkeit().getGueltigAb(),
+			zeitabschnitt0.getGueltigkeit().getGueltigAb());
+		Assertions.assertEquals(date.withDayOfMonth(31), zeitabschnitt0.getGueltigkeit().getGueltigBis());
+		Assertions.assertEquals(0, zeitabschnitt0.getAbzugFamGroesse().intValue());
+		Assertions.assertEquals(BigDecimal.valueOf(2.0), zeitabschnitt0.getFamGroesse());
 
 		final VerfuegungZeitabschnitt zeitabschnitt1 = zeitabschnitte.get(1);
-		Assert.assertEquals(date.plusMonths(1).withDayOfMonth(1), zeitabschnitt1.getGueltigkeit().getGueltigAb());
-		Assert.assertEquals(gesuch.getGesuchsperiode().getGueltigkeit().getGueltigBis(), zeitabschnitt1.getGueltigkeit().getGueltigBis());
-		Assert.assertEquals(11400, zeitabschnitt1.getAbzugFamGroesse().intValue());
-		Assert.assertEquals(BigDecimal.valueOf(3.0), zeitabschnitt1.getFamGroesse());
+		Assertions.assertEquals(date.plusMonths(1).withDayOfMonth(1), zeitabschnitt1.getGueltigkeit().getGueltigAb());
+		Assertions.assertEquals(gesuch.getGesuchsperiode().getGueltigkeit().getGueltigBis(),
+			zeitabschnitt1.getGueltigkeit().getGueltigBis());
+		Assertions.assertEquals(11400, zeitabschnitt1.getAbzugFamGroesse().intValue());
+		Assertions.assertEquals(BigDecimal.valueOf(3.0), zeitabschnitt1.getFamGroesse());
+	}
+
+	@Nested
+	class KindMitAlternierenderObhutTests {
+		@Test
+		void kinderAbzugFKJV2_HalbesKindZaehltGanzFuerPauschale() {
+			Gesuch gesuch = createGesuchWithTwoGesuchsteller();
+			Set<KindContainer> kindContainers = new LinkedHashSet<>();
+			final LocalDate date = LocalDate.of(2015, Month.MARCH, 25);
+			KindContainer kind = createKindContainer(Kinderabzug.HALBER_ABZUG, date);
+			kind.getKindJA().setFamilienErgaenzendeBetreuung(false);
+			kind.getKindJA().setObhutAlternierendAusueben(true);
+			kind.getKindJA().setGemeinsamesGesuch(false);
+
+			kindContainers.add(kind);
+			gesuch.setKindContainers(kindContainers);
+
+
+			final Entry<Double, Integer> famGroesse = famabAbschnittRule_FKJV2.calculateFamiliengroesse(gesuch, LocalDate.now());
+			double familiengroesse = famGroesse.getKey();
+			double familienMitglieder = famGroesse.getValue();
+			Assertions.assertEquals(2.5, familiengroesse, DELTA);
+			Assertions.assertEquals(3, familienMitglieder, DELTA);
+		}
+		@Test
+		void kinderAbzugFKJV2_HalbesKindWennKeineGemeinsameGesuch() {
+			Gesuch gesuch = createGesuchWithTwoGesuchsteller();
+			// prepare famsit, so gemeinsamesGesuch can be answered in the gui
+			Objects.requireNonNull(gesuch.getFamiliensituationContainer());
+			Objects.requireNonNull(gesuch.getFamiliensituationContainer().getFamiliensituationJA());
+			gesuch.getFamiliensituationContainer().getFamiliensituationJA().setFamilienstatus(EnumFamilienstatus.KONKUBINAT_KEIN_KIND);
+			gesuch.getFamiliensituationContainer().getFamiliensituationJA().setGeteilteObhut(Boolean.TRUE);
+			gesuch.getFamiliensituationContainer().getFamiliensituationJA().setGesuchstellerKardinalitaet(EnumGesuchstellerKardinalitaet.ZU_ZWEIT);
+			gesuch.getFamiliensituationContainer().getFamiliensituationJA().setStartKonkubinat(LocalDate.of(2015, 10, 1));
+			Set<KindContainer> kindContainers = new LinkedHashSet<>();
+			final LocalDate date = LocalDate.of(2015, Month.MARCH, 25);
+			KindContainer kind = createKindContainer(Kinderabzug.HALBER_ABZUG, date);
+			kind.getKindJA().setObhutAlternierendAusueben(true);
+			kind.getKindJA().setFamilienErgaenzendeBetreuung(false);
+			kind.getKindJA().setGemeinsamesGesuch(false);
+			kindContainers.add(kind);
+			gesuch.setKindContainers(kindContainers);
+
+			final Entry<Double, Integer> famGroesse = famabAbschnittRule_FKJV2.calculateFamiliengroesse(gesuch, LocalDate.now());
+			double familiengroesse = famGroesse.getKey();
+			Assertions.assertEquals(2.5, familiengroesse, DELTA);
+		}
+
+		@Test
+		void kinderAbzugFKJV2_GanzesKindWennGemeinsamesGesuch() {
+			Gesuch gesuch = createGesuchWithTwoGesuchsteller();
+			// prepare famsit, so gemeinsamesGesuch can be answered in the gui
+			Objects.requireNonNull(gesuch.getFamiliensituationContainer());
+			Objects.requireNonNull(gesuch.getFamiliensituationContainer().getFamiliensituationJA());
+			gesuch.getFamiliensituationContainer().getFamiliensituationJA().setFamilienstatus(EnumFamilienstatus.KONKUBINAT_KEIN_KIND);
+			gesuch.getFamiliensituationContainer().getFamiliensituationJA().setGeteilteObhut(Boolean.TRUE);
+			Set<KindContainer> kindContainers = new LinkedHashSet<>();
+			final LocalDate date = LocalDate.of(2015, Month.MARCH, 25);
+			KindContainer kind = createKindContainer(Kinderabzug.HALBER_ABZUG, date);
+			kind.getKindJA().setObhutAlternierendAusueben(true);
+			kind.getKindJA().setFamilienErgaenzendeBetreuung(false);
+			kind.getKindJA().setGemeinsamesGesuch(true);
+			kindContainers.add(kind);
+			gesuch.setKindContainers(kindContainers);
+
+			final Entry<Double, Integer> famGroesse = famabAbschnittRule_FKJV2.calculateFamiliengroesse(gesuch, LocalDate.now());
+			double familiengroesse = famGroesse.getKey();
+			Assertions.assertEquals(3, familiengroesse, DELTA);
+		}
+
 	}
 
 	@Test
-	public void kinderAbzugFKJV2_HalbesKindZaehltGanzFuerPauschale() {
-		Gesuch gesuch = createGesuchWithTwoGesuchsteller();
-		Set<KindContainer> kindContainers = new LinkedHashSet<>();
-		final LocalDate date = LocalDate.of(2015, Month.MARCH, 25);
-		KindContainer kind = createKindContainer(Kinderabzug.HALBER_ABZUG, date);
-		kind.getKindJA().setObhutAlternierendAusueben(true);
-		kind.getKindJA().setGemeinsamesGesuch(false);
-
-		kindContainers.add(kind);
-		gesuch.setKindContainers(kindContainers);
-
-
-		final Entry<Double, Integer> famGroesse = famabAbschnittRule_FKJV2.calculateFamiliengroesse(gesuch, LocalDate.now());
-		double familiengroesse = famGroesse.getKey();
-		double familienMitglieder = famGroesse.getValue();
-		Assert.assertEquals(2.5, familiengroesse, DELTA);
-		Assert.assertEquals(3, familienMitglieder, DELTA);
-	}
-
-	@Test
-	public void kinderAbzugFKJV2_HalbesKindWennKeineGemeinsameGesuch() {
-		Gesuch gesuch = createGesuchWithTwoGesuchsteller();
-		// prepare famsit, so gemeinsamesGesuch can be answered in the gui
-		Objects.requireNonNull(gesuch.getFamiliensituationContainer());
-		Objects.requireNonNull(gesuch.getFamiliensituationContainer().getFamiliensituationJA());
-		gesuch.getFamiliensituationContainer().getFamiliensituationJA().setFamilienstatus(EnumFamilienstatus.KONKUBINAT_KEIN_KIND);
-		gesuch.getFamiliensituationContainer().getFamiliensituationJA().setGeteilteObhut(Boolean.TRUE);
-		gesuch.getFamiliensituationContainer().getFamiliensituationJA().setGesuchstellerKardinalitaet(EnumGesuchstellerKardinalitaet.ZU_ZWEIT);
-		gesuch.getFamiliensituationContainer().getFamiliensituationJA().setStartKonkubinat(LocalDate.of(2015, 10, 1));
-		Set<KindContainer> kindContainers = new LinkedHashSet<>();
-		final LocalDate date = LocalDate.of(2015, Month.MARCH, 25);
-		KindContainer kind = createKindContainer(Kinderabzug.HALBER_ABZUG, date);
-		kind.getKindJA().setObhutAlternierendAusueben(true);
-		kind.getKindJA().setFamilienErgaenzendeBetreuung(false);
-		kind.getKindJA().setGemeinsamesGesuch(false);
-		kindContainers.add(kind);
-		gesuch.setKindContainers(kindContainers);
-
-		final Entry<Double, Integer> famGroesse = famabAbschnittRule_FKJV2.calculateFamiliengroesse(gesuch, LocalDate.now());
-		double familiengroesse = famGroesse.getKey();
-		Assert.assertEquals(2.5, familiengroesse, DELTA);
-	}
-
-	@Test
-	public void kinderAbzugFKJV2_GanzesKindWennGemeinsamesGesuch() {
-		Gesuch gesuch = createGesuchWithTwoGesuchsteller();
-		// prepare famsit, so gemeinsamesGesuch can be answered in the gui
-		Objects.requireNonNull(gesuch.getFamiliensituationContainer());
-		Objects.requireNonNull(gesuch.getFamiliensituationContainer().getFamiliensituationJA());
-		gesuch.getFamiliensituationContainer().getFamiliensituationJA().setFamilienstatus(EnumFamilienstatus.KONKUBINAT_KEIN_KIND);
-		gesuch.getFamiliensituationContainer().getFamiliensituationJA().setGeteilteObhut(Boolean.TRUE);
-		Set<KindContainer> kindContainers = new LinkedHashSet<>();
-		final LocalDate date = LocalDate.of(2015, Month.MARCH, 25);
-		KindContainer kind = createKindContainer(Kinderabzug.HALBER_ABZUG, date);
-		kind.getKindJA().setObhutAlternierendAusueben(true);
-		kind.getKindJA().setFamilienErgaenzendeBetreuung(false);
-		kind.getKindJA().setGemeinsamesGesuch(true);
-		kindContainers.add(kind);
-		gesuch.setKindContainers(kindContainers);
-
-		final Entry<Double, Integer> famGroesse = famabAbschnittRule_FKJV2.calculateFamiliengroesse(gesuch, LocalDate.now());
-		double familiengroesse = famGroesse.getKey();
-		Assert.assertEquals(3, familiengroesse, DELTA);
-	}
-
-	@Test
-	public void kinderAbzugFKJV2_GanzesKindZaehltGanzFuerPauschale() {
+	void kinderAbzugFKJV2_GanzesKindZaehltGanzFuerPauschale() {
 		Gesuch gesuch = createGesuchWithTwoGesuchsteller();
 		Set<KindContainer> kindContainers = new LinkedHashSet<>();
 		final LocalDate date = LocalDate.of(2015, Month.MARCH, 25);
@@ -522,12 +544,12 @@ public class FamilienabzugAbschnittRuleTest {
 		final Entry<Double, Integer> famGroesse = famabAbschnittRule_FKJV2.calculateFamiliengroesse(gesuch, LocalDate.now());
 		double familiengroesse = famGroesse.getKey();
 		double familienMitglieder = famGroesse.getValue();
-		Assert.assertEquals(3, familiengroesse, DELTA);
-		Assert.assertEquals(3, familienMitglieder, DELTA);
+		Assertions.assertEquals(3, familiengroesse, DELTA);
+		Assertions.assertEquals(3, familienMitglieder, DELTA);
 	}
 
 	@Test
-	public void kinderAbzugFKJV2_KindUeber18ZaehltNicht() {
+	void kinderAbzugFKJV2_KindUeber18ZaehltNicht() {
 		Gesuch gesuch = createGesuchWithTwoGesuchsteller();
 		Set<KindContainer> kindContainers = new LinkedHashSet<>();
 		final LocalDate u18 = LocalDate.of(2015, Month.MARCH, 25);
@@ -547,8 +569,8 @@ public class FamilienabzugAbschnittRuleTest {
 		final Entry<Double, Integer> famGroesse = famabAbschnittRule_FKJV2.calculateFamiliengroesse(gesuch, LocalDate.now());
 		double familiengroesse = famGroesse.getKey();
 		double familienMitglieder = famGroesse.getValue();
-		Assert.assertEquals(3, familiengroesse, DELTA);
-		Assert.assertEquals(3, familienMitglieder, DELTA);
+		Assertions.assertEquals(3, familiengroesse, DELTA);
+		Assertions.assertEquals(3, familienMitglieder, DELTA);
 	}
 
 	@Nonnull
