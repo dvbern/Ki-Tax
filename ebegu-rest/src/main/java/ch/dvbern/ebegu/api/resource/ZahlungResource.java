@@ -287,7 +287,7 @@ public class ZahlungResource {
 		String zahlungsauftragId = converter.toEntityId(zahlungsauftragJAXPId);
 
 		final Zahlungsauftrag zahlungsauftrag = zahlungService.zahlungsauftragAusloesen(zahlungsauftragId);
-		;
+
 		//Force creation and saving of ZahlungsFile Pain001
 		generatedDokumentService.createZahlungsFiles(zahlungsauftrag);
 

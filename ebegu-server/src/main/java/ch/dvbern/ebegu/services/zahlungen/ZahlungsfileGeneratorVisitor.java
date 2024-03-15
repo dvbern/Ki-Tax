@@ -33,8 +33,6 @@ public class ZahlungsfileGeneratorVisitor implements MandantVisitor< List<IZahlu
 
 	private Gemeinde gemeinde;
 
-	public ZahlungsfileGeneratorVisitor(){};
-
 	public List<IZahlungsfileGenerator> getZahlungsfileGenerator(
 		@Nonnull Mandant mandant,
 		@Nonnull Gemeinde gemeinde
