@@ -16,9 +16,6 @@
 import {TSAbstractFinanzielleSituation} from './TSAbstractFinanzielleSituation';
 
 export class TSEinkommensverschlechterung extends TSAbstractFinanzielleSituation {
-
-    private _geschaeftsgewinnBasisjahrMinus1: number;
-
     private _bruttolohnAbrechnung1: number;
     private _bruttolohnAbrechnung2: number;
     private _bruttolohnAbrechnung3: number;
@@ -26,14 +23,6 @@ export class TSEinkommensverschlechterung extends TSAbstractFinanzielleSituation
 
     public constructor() {
         super();
-    }
-
-    public get geschaeftsgewinnBasisjahrMinus1(): number {
-        return this._geschaeftsgewinnBasisjahrMinus1;
-    }
-
-    public set geschaeftsgewinnBasisjahrMinus1(value: number) {
-        this._geschaeftsgewinnBasisjahrMinus1 = value;
     }
 
     public get bruttolohnAbrechnung1(): number {

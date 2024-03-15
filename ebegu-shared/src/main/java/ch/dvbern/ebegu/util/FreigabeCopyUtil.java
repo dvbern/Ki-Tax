@@ -350,6 +350,7 @@ public final class FreigabeCopyUtil {
 		gs.setBruttovermoegen(ja.getBruttovermoegen());
 		gs.setSchulden(ja.getSchulden());
 		gs.setGeschaeftsgewinnBasisjahr(ja.getGeschaeftsgewinnBasisjahr());
+		gs.setGeschaeftsgewinnBasisjahrMinus1(ja.getGeschaeftsgewinnBasisjahrMinus1());
 		gs.setGeleisteteAlimente(ja.getGeleisteteAlimente());
 
 		gs.setSteuerbaresEinkommen(ja.getSteuerbaresEinkommen());
@@ -364,8 +365,9 @@ public final class FreigabeCopyUtil {
 		gs.setAmountEinkommenInVereinfachtemVerfahrenAbgerechnet(ja.getAmountEinkommenInVereinfachtemVerfahrenAbgerechnet());
 		gs.setGewinnungskosten(ja.getGewinnungskosten());
 		gs.setAbzugSchuldzinsen(ja.getAbzugSchuldzinsen());
+		gs.setErsatzeinkommenSelbststaendigkeitBasisjahr(ja.getErsatzeinkommenSelbststaendigkeitBasisjahr());
+		gs.setErsatzeinkommenSelbststaendigkeitBasisjahrMinus1(ja.getErsatzeinkommenSelbststaendigkeitBasisjahrMinus1());
 		copyFinanzielleSituationSelbstdeklaration(gs, ja);
-
 	}
 
 	private static void copyFinanzielleSituationSelbstdeklaration(@Nonnull AbstractFinanzielleSituation gs, @Nonnull AbstractFinanzielleSituation ja) {
@@ -376,7 +378,6 @@ public final class FreigabeCopyUtil {
 		if (gs.getSelbstdeklaration() == null){
 				gs.setSelbstdeklaration(new FinanzielleSituationSelbstdeklaration());
 		}
-
 		gs.getSelbstdeklaration().setEinkunftErwerb(ja.getSelbstdeklaration().getEinkunftErwerb());
 		gs.getSelbstdeklaration().setEinkunftVersicherung(ja.getSelbstdeklaration().getEinkunftVersicherung());
 		gs.getSelbstdeklaration().setEinkunftWertschriften(ja.getSelbstdeklaration().getEinkunftWertschriften());
@@ -449,7 +450,6 @@ public final class FreigabeCopyUtil {
 		@Nonnull Einkommensverschlechterung gs,
 		@Nonnull Einkommensverschlechterung ja) {
 		copyAbstractFinanzielleSituation(gs, ja);
-		gs.setGeschaeftsgewinnBasisjahrMinus1(ja.getGeschaeftsgewinnBasisjahrMinus1());
 		gs.setBruttolohnAbrechnung1(ja.getBruttolohnAbrechnung1());
 		gs.setBruttolohnAbrechnung2(ja.getBruttolohnAbrechnung2());
 		gs.setBruttolohnAbrechnung3(ja.getBruttolohnAbrechnung3());
@@ -476,7 +476,6 @@ public final class FreigabeCopyUtil {
 		copyAbstractFinanzielleSituation(gs, ja);
 		gs.setSteuerveranlagungErhalten(ja.getSteuerveranlagungErhalten());
 		gs.setSteuererklaerungAusgefuellt(ja.getSteuererklaerungAusgefuellt());
-		gs.setGeschaeftsgewinnBasisjahrMinus1(ja.getGeschaeftsgewinnBasisjahrMinus1());
 		gs.setGeschaeftsgewinnBasisjahrMinus2(ja.getGeschaeftsgewinnBasisjahrMinus2());
 		gs.setSteuerdatenZugriff(ja.getSteuerdatenZugriff());
 		gs.setAutomatischePruefungErlaubt(ja.getAutomatischePruefungErlaubt());
@@ -491,8 +490,6 @@ public final class FreigabeCopyUtil {
 		gs.setAbzuegeKinderAusbildung(ja.getAbzuegeKinderAusbildung());
 		gs.setBruttoLohn(ja.getBruttoLohn());
 		gs.setMomentanSelbststaendig(ja.getMomentanSelbststaendig());
-		gs.setErsatzeinkommenSelbststaendigkeitBasisjahr(ja.getErsatzeinkommenSelbststaendigkeitBasisjahr());
-		gs.setErsatzeinkommenSelbststaendigkeitBasisjahrMinus1(ja.getErsatzeinkommenSelbststaendigkeitBasisjahrMinus1());
 		gs.setErsatzeinkommenSelbststaendigkeitBasisjahrMinus2(ja.getErsatzeinkommenSelbststaendigkeitBasisjahrMinus2());
 		copyFinSitZusatzangabenAppenzell(gs, ja);
 	}

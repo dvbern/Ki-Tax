@@ -50,6 +50,9 @@ import java.util.Set;
  * Nachweis über Ersatzeinkommen
  * Notwendig wenn keine Veranlagung vorhanden und Ersatzeinkommen > 0
  * <p>
+ * Nachweis über Ersatzeinkommen Selbstaendigkeit der letzten drei Jahre (Basisjahr, Basisjahr-1, Basisjahr-2)
+ * Notwendig wenn Ersatzeinkommen(Basisjahr, Basisjahr-1, Basisjahr-2) > 0
+ * <p>
  * Nachweis über erhaltene Alimente (Unterhaltsbeiträge)
  * Notwendig, wenn keine Veranlagung vorhanden und erhaltene Alimente > 0
  * <p>
@@ -153,17 +156,14 @@ public class BernFinanzielleSituationDokumente extends AbstractFinanzielleSituat
 			);
 		}
 
-		final String basisJahrString = String.valueOf(basisJahr);
-
-		add(getDokument(DokumentTyp.NACHWEIS_ERSATZINKOMMEN_SELBSTSTAENDIGKEIT_JAHR, finanzielleSituationJA, null,
-				basisJahrString, DokumentGrundPersonType.GESUCHSTELLER,
-				gesuchstellerNumber, DokumentGrundTyp.FINANZIELLESITUATION, stichtag), anlageVerzeichnis);
-		add(getDokument(DokumentTyp.NACHWEIS_ERSATZINKOMMEN_SELBSTSTAENDIGKEIT_JAHR_MINUS1, finanzielleSituationJA, null,
-				String.valueOf(basisJahr - 1), DokumentGrundPersonType.GESUCHSTELLER,
-				gesuchstellerNumber, DokumentGrundTyp.FINANZIELLESITUATION, stichtag), anlageVerzeichnis);
-		add(getDokument(DokumentTyp.NACHWEIS_ERSATZINKOMMEN_SELBSTSTAENDIGKEIT_JAHR_MINUS2, finanzielleSituationJA, null,
-				String.valueOf(basisJahr - 2), DokumentGrundPersonType.GESUCHSTELLER, gesuchstellerNumber,
-				DokumentGrundTyp.FINANZIELLESITUATION, stichtag), anlageVerzeichnis);
+		getAllDokumenteGesuchstellerAutomatischeSteuerabfrage(
+			anlageVerzeichnis,
+			basisJahr,
+			gesuchstellerNumber,
+			finanzielleSituationJA,
+			DokumentGrundTyp.FINANZIELLESITUATION,
+			stichtag
+		);
 
 		if (Boolean.TRUE.equals(finanzielleSituationJA.getSteuerdatenZugriff())
 			&& finanzielleSituationJA.getSteuerdatenAbfrageStatus() != null
@@ -172,7 +172,7 @@ public class BernFinanzielleSituationDokumente extends AbstractFinanzielleSituat
 			return;
 		}
 
-		getAllDokumenteGesuchsteller(
+		getAllDokumenteGesuchstellerManuelleSteuerabfrage(
 			anlageVerzeichnis,
 			basisJahr,
 			gemeinsam,
@@ -306,13 +306,4 @@ public class BernFinanzielleSituationDokumente extends AbstractFinanzielleSituat
 		}
 		return false;
 	}
-
-	private boolean hasValueBigerThanZero(@Nullable BigDecimal bigDecimal) {
-		if (bigDecimal == null) {
-			return false;
-		}
-
-		return bigDecimal.compareTo(BigDecimal.ZERO) > 0;
-	}
-
 }
