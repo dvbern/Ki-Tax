@@ -318,6 +318,7 @@ public class JaxGemeindeStammdatenConverter extends AbstractConverter {
 		return jaxStammdaten;
 	}
 
+	@SuppressWarnings("PMD.UnusedPrivateMethod") // Die Methode ist verwendet
 	private void abstractGemeindeStammdatenToJax(
 		@Nonnull JaxAbstractGemeindeStammdaten jaxStammdaten,
 		@Nonnull GemeindeStammdaten stammdaten) {
