@@ -541,7 +541,7 @@ export class ZahlungsauftragViewXComponent implements OnInit, AfterViewInit, OnD
             allColumnNames.push('editSave');
             allColumnNames.push('ausloesen');
 
-            if (this.hasInfomaZahlung) {
+            if (this.hasInfomaZahlung && this.gemeindenList.some(gemeinde => gemeinde.infomaZahlungen === true)) {
                 allColumnNames.splice(3, 0, `zahlungInfoma`);
             }
         }
