@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2023 DV Bern AG, Switzerland
+ * Copyright (C) 2024 DV Bern AG, Switzerland
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -30,8 +30,8 @@ import {
 } from '@dv-e2e/page-objects';
 import { FixtureFinSit } from '@dv-e2e/fixtures';
 import {GemeindeTestFall, getUser} from '@dv-e2e/types';
-import {GesuchstellendePO} from '../page-objects/antrag/gesuchstellende.po';
-import {VerfuegungPO} from '../page-objects/antrag/verfuegung.po';
+import {GesuchstellendePO} from '../../page-objects/antrag/gesuchstellende.po';
+import {VerfuegungPO} from '../../page-objects/antrag/verfuegung.po';
 
 const gemeinde: GemeindeTestFall = 'London';
 

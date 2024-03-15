@@ -27,6 +27,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 
+import ch.dvbern.ebegu.authentication.PrincipalBean;
 import ch.dvbern.ebegu.dto.suchfilter.lucene.EBEGUGermanAnalyzer;
 import ch.dvbern.ebegu.dto.suchfilter.lucene.IndexedEBEGUFieldName;
 import ch.dvbern.ebegu.dto.suchfilter.lucene.LuceneUtil;
@@ -48,8 +49,15 @@ import org.hibernate.search.query.dsl.QueryContextBuilder;
 import org.hibernate.search.query.dsl.TermMatchingContext;
 import org.hibernate.search.query.dsl.TermTermination;
 
+import static ch.dvbern.ebegu.dto.suchfilter.lucene.IndexedEBEGUFieldName.DOSSIER_FALL_MANDANT;
+import static ch.dvbern.ebegu.dto.suchfilter.lucene.IndexedEBEGUFieldName.GESUCH_FALL_MANDANT;
+import static ch.dvbern.ebegu.dto.suchfilter.lucene.IndexedEBEGUFieldName.KIND_FALL_MANDANT;
+
 @Stateless
 public class SearchIndexServiceBean implements SearchIndexService {
+
+	@Inject
+	private PrincipalBean principalBean;
 
 	@Nonnull
 	private static final List<SearchFilter> SEARCH_FILTER_FOR_ALL_ENTITIES =
@@ -96,7 +104,8 @@ public class SearchIndexServiceBean implements SearchIndexService {
 	 * Suchterms der wildcardmarker * eingefuegt.
 	 * Es sollte drauf geachtet werden, dass der gleiche Analyzer verwendet wird mit dem jeweils auch der Index erzeugt wird.
 	 * Wir fuehren diesen schritt manuell durch weil Hibernate-Search bei wildcard queries den analyzer NICHT anwendet
-	 * vergl.doku (Wildcard queries do not apply the analyzer on the matching terms. Otherwise the risk of * or ? being mangled is too high.)
+	 * vergl.doku (Wildcard queries do not apply the analyzer on the matching terms. Otherwise the risk of * or ? being mangled
+	 * is too high.)
 	 *
 	 * @param searchText searchstring der tokenized werden soll
 	 * @return Liste der normalizierten und um wildcards ergaenzten suchstrings
@@ -131,7 +140,8 @@ public class SearchIndexServiceBean implements SearchIndexService {
 	@Override
 	public QuickSearchResultDTO quicksearch(String searchStringParam, boolean limitResult) {
 
-		List<SearchFilter> filterToUse = limitResult ? SEARCH_FILTER_FOR_ALL_ENTITIES_WITH_LIMIT : SEARCH_FILTER_FOR_ALL_ENTITIES;
+		List<SearchFilter> filterToUse = limitResult ? SEARCH_FILTER_FOR_ALL_ENTITIES_WITH_LIMIT :
+				SEARCH_FILTER_FOR_ALL_ENTITIES;
 		return this.search(searchStringParam, filterToUse);
 	}
 
@@ -147,14 +157,38 @@ public class SearchIndexServiceBean implements SearchIndexService {
 		QueryBuilder qb = queryContextBuilder.forEntity(entityClass).get();
 		//noinspection rawtypes
 		BooleanJunction<? extends BooleanJunction> booleanJunction = qb.bool();
+		setMandantFilter(booleanJunction, filter, qb);
 		// create a MUST (= AND) query for every search term
 		for (String currSearchTerm : searchTermList) {
 			Query subtermquery = createTermquery(currSearchTerm, filter, qb);
 			booleanJunction = booleanJunction.must(subtermquery);
 		}
-
 		Query query = booleanJunction.createQuery();
 		return fullTextEntityManager.createFullTextQuery(query, entityClass);
+	}
+
+	private void setMandantFilter(
+		@Nonnull BooleanJunction<? extends BooleanJunction> booleanJunction,
+		@Nonnull SearchFilter filter,
+		@Nonnull QueryBuilder qb) {
+		SearchEntityType searchEntityType = filter.getSearchEntityType();
+		String indexedFieldName = null;
+
+		if (searchEntityType == SearchEntityType.GESUCH || searchEntityType == SearchEntityType.DOSSIER) {
+			indexedFieldName = (searchEntityType == SearchEntityType.GESUCH) ?
+				GESUCH_FALL_MANDANT.getIndexedFieldName() :
+				DOSSIER_FALL_MANDANT.getIndexedFieldName();
+		} else if (searchEntityType == SearchEntityType.KIND_CONTAINER) {
+			indexedFieldName = KIND_FALL_MANDANT.getIndexedFieldName();
+		}
+
+		if (indexedFieldName != null) {
+			booleanJunction.must(qb
+				.keyword()
+				.onField(indexedFieldName)
+				.matching(principalBean.getMandant().getMandantIdentifier())
+				.createQuery());
+		}
 	}
 
 	/**

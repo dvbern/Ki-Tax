@@ -75,11 +75,15 @@ public class AbstractEntityListener {
 
 	@PostLoad
 	protected void postLoad(@Nonnull AbstractEntity entity) {
-		if (entity instanceof HasMandant) {
-			if (checkAccessAllowedIfAnonymous(entity, getPrincipalBean())) {
-				return;
+		try {
+			if (entity instanceof HasMandant) {
+				if (checkAccessAllowedIfAnonymous(entity, getPrincipalBean())) {
+					return;
+				}
+				checkMandant(entity);
 			}
-			checkMandant(entity);
+		} catch (ContextNotActiveException e) {  // Wegen Hibernate Search index rebuild
+			LOGGER.warn(e.getMessage());
 		}
 	}
 

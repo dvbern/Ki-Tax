@@ -48,6 +48,18 @@ public interface DossierService {
 	@Nonnull
 	Optional<Dossier> findDossier(@Nonnull String id, boolean doAuthCheck);
 
+	/**
+	 * Gibt das Dossier mit der uebergebenen ID zurueck nur wenn es stimmt mit dem Mandant des eingeloggte Benutzende.
+	 */
+	@Nonnull
+	Optional<Dossier> findDossierForMandant(@Nonnull String id);
+
+	/**
+	 * Gibt das Dossier mit der uebergebenen ID zurueck nur wenn es stimmt mit dem Mandant des eingeloggte Benutzende.
+	 * @param doAuthCheck: Definiert, ob die Berechtigungen (Lesen/Schreiben) für dieses Gesuch geprüft werden muessen.
+	 */
+	@Nonnull
+	Optional<Dossier> findDossierForMandant(@Nonnull String id, boolean doAuthCheck);
 
 	/**
 	 * Gibt eine Liste aller Dossiers des uebergebenen Falls zurück.
