@@ -30,12 +30,13 @@ import {Subject} from 'rxjs';
 import {takeUntil} from 'rxjs/operators';
 import {LogFactory} from '../../../../app/core/logging/LogFactory';
 import {TSFamilienstatus} from '../../../../models/enums/TSFamilienstatus';
+import {TSGesuchstellerKardinalitaet} from '../../../../models/enums/TSGesuchstellerKardinalitaet';
+import {TSFamiliensituation} from '../../../../models/TSFamiliensituation';
 import {TSKind} from '../../../../models/TSKind';
 import {TSKindContainer} from '../../../../models/TSKindContainer';
 import {EbeguUtil} from '../../../../utils/EbeguUtil';
 import {GesuchModelManager} from '../../../service/gesuchModelManager';
 import {FjkvKinderabzugExchangeService} from './fjkv-kinderabzug-exchange.service';
-import {TSFamiliensituation} from '../../../../models/TSFamiliensituation';
 
 const LOG = LogFactory.createLog('FkjvKinderabzugComponent');
 
@@ -121,7 +122,8 @@ export class FkjvKinderabzugComponent implements OnInit, AfterViewInit, OnDestro
     public gemeinsamesGesuchVisible(): boolean {
         return this.getModel().obhutAlternierendAusueben &&
             EbeguUtil.isNotNullOrUndefined(this.getModel().familienErgaenzendeBetreuung) &&
-            this.isAlleinerziehenOrShortKonkubinat();
+            EbeguUtil.isNotNullAndTrue(this.gesuchModelManager.getFamiliensituation().geteilteObhut) &&
+            this.gesuchModelManager.getFamiliensituation().gesuchstellerKardinalitaet === TSGesuchstellerKardinalitaet.ZU_ZWEIT;
     }
 
     public inErstausbildungVisible(): boolean {
@@ -171,11 +173,6 @@ export class FkjvKinderabzugComponent implements OnInit, AfterViewInit, OnDestro
 
     public famErgaenzendeBetreuuungVisible(): boolean {
         return !this.kindIsOrGetsVolljaehrig;
-    }
-
-    private isAlleinerziehenOrShortKonkubinat(): boolean {
-        return this.getFamiliensituationToUse().familienstatus === TSFamilienstatus.ALLEINERZIEHEND ||
-            this.isShortKonkubinat();
     }
 
     public hasKindBetreuungen(): boolean {
