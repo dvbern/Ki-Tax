@@ -2683,7 +2683,6 @@ export class EbeguRestUtil {
 
         restAbweichung.multiplier = abweichung.multiplier;
 
-        // These calculations should probably happen in the backend
         const pensum = restAbweichung.pensum ? restAbweichung.pensum / restAbweichung.multiplier : undefined;
         const originalPensum = restAbweichung.vertraglichesPensum
             ? restAbweichung.vertraglichesPensum / restAbweichung.multiplier
@@ -2853,7 +2852,6 @@ export class EbeguRestUtil {
 
         abweichungTS.multiplier = abweichungFromServer.multiplier;
 
-        // These calculations should probably happen in the backend
         const pensum = Number((abweichungFromServer.pensum * abweichungFromServer.multiplier).toFixed(2));
         const originalPensum = Number((abweichungFromServer.vertraglichesPensum * abweichungFromServer.multiplier)
             .toFixed(2));
