@@ -294,7 +294,9 @@ public class JaxGemeindeStammdatenConverter extends AbstractConverter {
 		}
 
 		jaxStammdaten.setGemeindeStammdatenKorrespondenz(JaxGemeindeStammdatenKorrespondenz.from(stammdaten.getGemeindeStammdatenKorrespondenz()));
-		convertAbstractFieldsToJAX(stammdaten.getGemeindeStammdatenKorrespondenz(), jaxStammdaten.getGemeindeStammdatenKorrespondenz());
+		convertAbstractFieldsToJAX(
+			stammdaten.getGemeindeStammdatenKorrespondenz(),
+			jaxStammdaten.getGemeindeStammdatenKorrespondenz());
 
 		jaxStammdaten.setAlleBgInstitutionenZugelassen(stammdaten.getAlleBgInstitutionenZugelassen());
 		var jaxInstitutionen = stammdaten.getZugelasseneBgInstitutionen()
@@ -316,7 +318,7 @@ public class JaxGemeindeStammdatenConverter extends AbstractConverter {
 		return jaxStammdaten;
 	}
 
-	private JaxAbstractGemeindeStammdaten abstractGemeindeStammdatenToJax(
+	private void abstractGemeindeStammdatenToJax(
 		@Nonnull JaxAbstractGemeindeStammdaten jaxStammdaten,
 		@Nonnull GemeindeStammdaten stammdaten) {
 		convertAbstractFieldsToJAX(stammdaten, jaxStammdaten);
@@ -343,7 +345,6 @@ public class JaxGemeindeStammdatenConverter extends AbstractConverter {
 				stammdaten.getGemeinde(),
 				gesuchsperiode));
 		}
-		return jaxStammdaten;
 	}
 
 	private void gemeindeStammdatenToJAXSetDefaultBenutzer(
