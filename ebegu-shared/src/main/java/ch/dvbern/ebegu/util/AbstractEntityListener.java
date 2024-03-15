@@ -33,6 +33,7 @@ import ch.dvbern.ebegu.entities.AbstractEntity;
 import ch.dvbern.ebegu.entities.AbstractPlatz;
 import ch.dvbern.ebegu.entities.ApplicationProperty;
 import ch.dvbern.ebegu.entities.Benutzer;
+import ch.dvbern.ebegu.entities.Fachstelle;
 import ch.dvbern.ebegu.entities.Fall;
 import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gesuch;
@@ -287,7 +288,8 @@ public class AbstractEntityListener {
 			|| abstractEntity instanceof Institution
 			|| abstractEntity instanceof Traegerschaft
 			|| abstractEntity instanceof Sozialdienst
-			|| abstractEntity instanceof Gesuchsperiode) && getPrincipalBean().getMandant() == null;
+			|| abstractEntity instanceof Gesuchsperiode
+			|| abstractEntity instanceof Fachstelle) && getPrincipalBean().getMandant() == null;
 	}
 
 	protected static boolean checkAccessAllowedIfAnonymous(
