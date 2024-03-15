@@ -509,6 +509,14 @@ export class EditInstitutionComponent implements OnInit {
         return this.stammdaten.betreuungsangebotTyp === TSBetreuungsangebotTyp.FERIENINSEL;
     }
 
+    public isMittagstisch(): boolean {
+        return this.stammdaten.betreuungsangebotTyp === TSBetreuungsangebotTyp.MITTAGSTISCH;
+    }
+
+    public isExportableInstitution(): boolean {
+        return !this.isFerieninsel() && !this.isMittagstisch();
+    }
+
     public traegerschaftId(traegerschaft: TSTraegerschaft): string {
         return traegerschaft.id;
     }
