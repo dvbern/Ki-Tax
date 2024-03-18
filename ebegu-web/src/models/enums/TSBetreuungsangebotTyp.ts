@@ -98,10 +98,6 @@ export function isJugendamt(status: TSBetreuungsangebotTyp): boolean {
     return !isSchulamt(status);
 }
 
-export function isBgInstitutionenBetreuungsangebot(angebotTyp: TSBetreuungsangebotTyp): boolean {
-    return EbeguUtil.isNotNullOrUndefined(angebotTyp) && getBgInstitutionenBetreuungsangebote().includes(angebotTyp);
-}
-
 /**
  * Gibt true zurueck wenn der gegebene betreuungsangebotTyp in der Liste types gefunden wird
  */
