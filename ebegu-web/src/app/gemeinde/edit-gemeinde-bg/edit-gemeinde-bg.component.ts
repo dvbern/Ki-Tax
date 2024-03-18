@@ -33,7 +33,7 @@ import {Observable} from 'rxjs';
 import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {TSAnspruchBeschaeftigungAbhaengigkeitTyp} from '../../../models/enums/TSAnspruchBeschaeftigungAbhaengigkeitTyp';
-import {getTSEinschulungTypGemeindeValues, TSEinschulungTyp} from '../../../models/enums/TSEinschulungTyp';
+import {TSEinschulungTyp} from '../../../models/enums/TSEinschulungTyp';
 import {getGemeindspezifischeBGConfigKeys, TSEinstellungKey} from '../../../models/enums/TSEinstellungKey';
 import {TSGemeindeStatus} from '../../../models/enums/TSGemeindeStatus';
 import {TSGesuchsperiodeStatus} from '../../../models/enums/TSGesuchsperiodeStatus';
@@ -44,13 +44,14 @@ import {TSGemeinde} from '../../../models/TSGemeinde';
 import {TSGemeindeKonfiguration} from '../../../models/TSGemeindeKonfiguration';
 import {TSGemeindeStammdaten} from '../../../models/TSGemeindeStammdaten';
 import {TSGesuchsperiode} from '../../../models/TSGesuchsperiode';
-import {EbeguRestUtil} from '../../../utils/EbeguRestUtil';
 import {TSInstitution} from '../../../models/TSInstitution';
 import {EbeguUtil} from '../../../utils/EbeguUtil';
 import {CONSTANTS} from '../../core/constants/CONSTANTS';
+import {EinschulungTypesGemeindeVisitor} from '../../core/constants/EinschulungTypesGemeindeVisitor';
 import {LogFactory} from '../../core/logging/LogFactory';
 import {ApplicationPropertyRS} from '../../core/rest-services/applicationPropertyRS.rest';
 import {InstitutionRS} from '../../core/service/institutionRS.rest';
+import {MandantService} from '../../shared/services/mandant.service';
 
 const LOG = LogFactory.createLog('EditGemeindeBGComponent');
 
@@ -82,7 +83,7 @@ export class EditGemeindeBGComponent implements OnInit {
 
     public konfigurationsListe: TSGemeindeKonfiguration[];
     public gemeindeStatus: TSGemeindeStatus;
-    public einschulungTypGemeindeValues: Array<TSEinschulungTyp>;
+    public einschulungTypGemeindeValues: ReadonlyArray<TSEinschulungTyp>;
     public dauerBabyTarife: TSEinstellung[];
     public erlaubenInstitutionenZuWaehlen: boolean;
     public institutionen: TSInstitution[];
@@ -97,7 +98,8 @@ export class EditGemeindeBGComponent implements OnInit {
         private readonly einstellungRS: EinstellungRS,
         private readonly cd: ChangeDetectorRef,
         private readonly applicationPropertyRS: ApplicationPropertyRS,
-        private readonly institutionRS: InstitutionRS
+        private readonly institutionRS: InstitutionRS,
+        private readonly  mandantService: MandantService
     ) {
 
     }
@@ -113,8 +115,12 @@ export class EditGemeindeBGComponent implements OnInit {
             },
             err => LOG.error(err));
 
+        this.mandantService.mandant$
+            .subscribe(mandant => {
+                this.einschulungTypGemeindeValues = new EinschulungTypesGemeindeVisitor().process(mandant);
+            }, err => LOG.error(err));
+
         this.navigationDest = this.$transition$.to();
-        this.einschulungTypGemeindeValues = getTSEinschulungTypGemeindeValues();
         this.anspruchBeschaeftigungAbhaengigkeitTypValues = Object.values(TSAnspruchBeschaeftigungAbhaengigkeitTyp);
         this.initDauerBabytarifEinstellungen();
         this.initGesuchsperiodeIdsGemeindespezifischeKonfigForBGMap();
