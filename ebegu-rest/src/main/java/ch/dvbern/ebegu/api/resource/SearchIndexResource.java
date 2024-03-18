@@ -183,7 +183,7 @@ public class SearchIndexResource {
 			.forEach(searchResultEntryDTO -> {
 				String dossierId = searchResultEntryDTO.getDossierId();
 				if (searchResultEntryDTO.getEntity() == SearchEntityType.DOSSIER && dossierId != null) {
-					Dossier dossier = dossierService.findDossier(dossierId).orElseThrow(()
+					Dossier dossier = dossierService.findDossierForMandant(dossierId).orElseThrow(()
 						-> new EbeguEntityNotFoundException(
 						"convertQuicksearchResultToDTO",
 						ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
@@ -210,7 +210,7 @@ public class SearchIndexResource {
 					&& searchResult.getGesuchID() == null
 					&& searchResult.getDossierId() != null
 				) {
-					Dossier dossier = dossierService.findDossier(searchResult.getDossierId(), false)
+					Dossier dossier = dossierService.findDossierForMandant(searchResult.getDossierId(), false)
 						.orElseThrow(() -> new EbeguEntityNotFoundException("hasDossierAnyMitteilung",
 							ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, searchResult.getDossierId()));
 

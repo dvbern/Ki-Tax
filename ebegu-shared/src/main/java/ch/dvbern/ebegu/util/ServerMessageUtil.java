@@ -82,6 +82,6 @@ public final class ServerMessageUtil {
 	 */
 	@Nonnull
 	private static String getKey(@Nonnull Enum<?> e) {
-		return e.getClass().getSimpleName() + '_' + e.name();
+		return e.getDeclaringClass().getSimpleName() + '_' + e.name();
 	}
 }

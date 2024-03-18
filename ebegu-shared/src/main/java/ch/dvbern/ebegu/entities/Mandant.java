@@ -53,6 +53,7 @@ public class Mandant extends AbstractMutableEntity implements Displayable {
 
 	@Column()
 	@Enumerated(EnumType.STRING)
+	@Field
 	private MandantIdentifier mandantIdentifier;
 
 	@Column(nullable = false)

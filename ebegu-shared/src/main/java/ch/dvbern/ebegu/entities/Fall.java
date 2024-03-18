@@ -97,6 +97,7 @@ public class Fall extends AbstractMutableEntity implements HasMandant {
 	@NotNull
 	@ManyToOne(optional = false)
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_fall_mandant_id"))
+	@IndexedEmbedded
 	private Mandant mandant;
 
 	public long getFallNummer() {

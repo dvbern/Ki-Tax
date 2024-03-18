@@ -178,7 +178,8 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 
 	private boolean exportBetreuung(boolean isNew, @Nonnull Betreuung mergedBetreuung) {
 		return (isNew || !mergedBetreuung.isEventPublished())
-			&& mergedBetreuung.getBetreuungsangebotTyp().isJugendamt();
+			&& mergedBetreuung.getBetreuungsangebotTyp().isJugendamt()
+			&& !mergedBetreuung.getBetreuungsangebotTyp().isMittagstisch();
 	}
 
 	@Nonnull
@@ -1449,6 +1450,10 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 	@Override
 	public BigDecimal getMultiplierForAbweichnungen(@Nonnull Betreuung betreuung) {
 		Gesuchsperiode gp = betreuung.extractGesuchsperiode();
+
+		if (betreuung.isAngebotMittagstisch()) {
+			return BetreuungUtil.getMittagstischMultiplier();
+		}
 
 
 		if (betreuung.isAngebotKita()) {

@@ -29,6 +29,7 @@ import {TSQuickSearchResult} from '../models/dto/TSQuickSearchResult';
 import {TSSearchResultEntry} from '../models/dto/TSSearchResultEntry';
 import {TSAdressetyp} from '../models/enums/TSAdressetyp';
 import {TSAnspruchBeschaeftigungAbhaengigkeitTyp} from '../models/enums/TSAnspruchBeschaeftigungAbhaengigkeitTyp';
+import {TSBetreuungsangebotTyp} from '../models/enums/TSBetreuungsangebotTyp';
 import {TSBetreuungspensumAbweichungStatus} from '../models/enums/TSBetreuungspensumAbweichungStatus';
 import {TSEinschulungTyp} from '../models/enums/TSEinschulungTyp';
 import {TSFachstellenTyp} from '../models/enums/TSFachstellenTyp';
@@ -42,16 +43,12 @@ import {TSDurchschnittKinderProTag} from '../models/gemeindeantrag/TSDurchschnit
 import {TSFerienbetreuungAngaben} from '../models/gemeindeantrag/TSFerienbetreuungAngaben';
 import {TSFerienbetreuungAngabenAngebot} from '../models/gemeindeantrag/TSFerienbetreuungAngabenAngebot';
 import {TSFerienbetreuungAngabenContainer} from '../models/gemeindeantrag/TSFerienbetreuungAngabenContainer';
-import {
-    TSFerienbetreuungAngabenKostenEinnahmen,
-} from '../models/gemeindeantrag/TSFerienbetreuungAngabenKostenEinnahmen';
+import {TSFerienbetreuungAngabenKostenEinnahmen} from '../models/gemeindeantrag/TSFerienbetreuungAngabenKostenEinnahmen';
 import {TSFerienbetreuungAngabenNutzung} from '../models/gemeindeantrag/TSFerienbetreuungAngabenNutzung';
 import {TSFerienbetreuungAngabenStammdaten} from '../models/gemeindeantrag/TSFerienbetreuungAngabenStammdaten';
 import {TSFerienbetreuungDokument} from '../models/gemeindeantrag/TSFerienbetreuungDokument';
 import {TSGemeindeAntrag} from '../models/gemeindeantrag/TSGemeindeAntrag';
-import {
-    TSLastenausgleichTagesschuleAngabenGemeinde,
-} from '../models/gemeindeantrag/TSLastenausgleichTagesschuleAngabenGemeinde';
+import {TSLastenausgleichTagesschuleAngabenGemeinde} from '../models/gemeindeantrag/TSLastenausgleichTagesschuleAngabenGemeinde';
 import {
     TSLastenausgleichTagesschuleAngabenGemeindeContainer,
 } from '../models/gemeindeantrag/TSLastenausgleichTagesschuleAngabenGemeindeContainer';
@@ -61,9 +58,7 @@ import {
 import {
     TSLastenausgleichTagesschuleAngabenInstitutionContainer,
 } from '../models/gemeindeantrag/TSLastenausgleichTagesschuleAngabenInstitutionContainer';
-import {
-    TSLastenausgleichTagesschulenStatusHistory,
-} from '../models/gemeindeantrag/TSLastenausgleichTagesschulenStatusHistory';
+import {TSLastenausgleichTagesschulenStatusHistory} from '../models/gemeindeantrag/TSLastenausgleichTagesschulenStatusHistory';
 import {TSOeffnungszeitenTagesschule} from '../models/gemeindeantrag/TSOeffnungszeitenTagesschule';
 import {TSKibonAnfrage} from '../models/neskovanp/TSKibonAnfrage';
 import {TSSteuerdatenResponse} from '../models/neskovanp/TSSteuerdatenResponse';
@@ -1990,7 +1985,6 @@ export class EbeguRestUtil {
             finanzielleSituation.steuererklaerungAusgefuellt || false;
         restFinanzielleSituation.steuerdatenZugriff = finanzielleSituation.steuerdatenZugriff;
         restFinanzielleSituation.geschaeftsgewinnBasisjahrMinus2 = finanzielleSituation.geschaeftsgewinnBasisjahrMinus2;
-        restFinanzielleSituation.geschaeftsgewinnBasisjahrMinus1 = finanzielleSituation.geschaeftsgewinnBasisjahrMinus1;
         restFinanzielleSituation.quellenbesteuert = finanzielleSituation.quellenbesteuert;
         restFinanzielleSituation.gemeinsameStekVorjahr = finanzielleSituation.gemeinsameStekVorjahr;
         restFinanzielleSituation.alleinigeStekVorjahr = finanzielleSituation.alleinigeStekVorjahr;
@@ -2001,10 +1995,6 @@ export class EbeguRestUtil {
         restFinanzielleSituation.unterhaltsBeitraege = finanzielleSituation.unterhaltsBeitraege;
         restFinanzielleSituation.automatischePruefungErlaubt = finanzielleSituation.automatischePruefungErlaubt;
         restFinanzielleSituation.momentanSelbststaendig = finanzielleSituation.momentanSelbststaendig;
-        restFinanzielleSituation.ersatzeinkommenSelbststaendigkeitBasisjahr =
-            finanzielleSituation.ersatzeinkommenSelbststaendigkeitBasisjahr;
-        restFinanzielleSituation.ersatzeinkommenSelbststaendigkeitBasisjahrMinus1 =
-            finanzielleSituation.ersatzeinkommenSelbststaendigkeitBasisjahrMinus1;
         restFinanzielleSituation.ersatzeinkommenSelbststaendigkeitBasisjahrMinus2 =
             finanzielleSituation.ersatzeinkommenSelbststaendigkeitBasisjahrMinus2;
 
@@ -2024,6 +2014,8 @@ export class EbeguRestUtil {
         restAbstractFinanzielleSituation.schulden = abstractFinanzielleSituation.schulden;
         restAbstractFinanzielleSituation.geschaeftsgewinnBasisjahr =
             abstractFinanzielleSituation.geschaeftsgewinnBasisjahr;
+        restAbstractFinanzielleSituation.geschaeftsgewinnBasisjahrMinus1 =
+            abstractFinanzielleSituation.geschaeftsgewinnBasisjahrMinus1;
         restAbstractFinanzielleSituation.geleisteteAlimente = abstractFinanzielleSituation.geleisteteAlimente;
         restAbstractFinanzielleSituation.steuerbaresEinkommen = abstractFinanzielleSituation.steuerbaresEinkommen;
         restAbstractFinanzielleSituation.steuerbaresVermoegen = abstractFinanzielleSituation.steuerbaresVermoegen;
@@ -2051,6 +2043,10 @@ export class EbeguRestUtil {
                 {},
                 abstractFinanzielleSituation.finSitZusatzangabenAppenzell);
         }
+        restAbstractFinanzielleSituation.ersatzeinkommenSelbststaendigkeitBasisjahr =
+            abstractFinanzielleSituation.ersatzeinkommenSelbststaendigkeitBasisjahr;
+        restAbstractFinanzielleSituation.ersatzeinkommenSelbststaendigkeitBasisjahrMinus1 =
+            abstractFinanzielleSituation.ersatzeinkommenSelbststaendigkeitBasisjahrMinus1;
         return restAbstractFinanzielleSituation;
     }
 
@@ -2125,6 +2121,8 @@ export class EbeguRestUtil {
             abstractFinanzielleSituationTS.schulden = abstractFinanzielleSituationFromServer.schulden;
             abstractFinanzielleSituationTS.geschaeftsgewinnBasisjahr =
                 abstractFinanzielleSituationFromServer.geschaeftsgewinnBasisjahr;
+            abstractFinanzielleSituationTS.geschaeftsgewinnBasisjahrMinus1 =
+                abstractFinanzielleSituationFromServer.geschaeftsgewinnBasisjahrMinus1;
             abstractFinanzielleSituationTS.geleisteteAlimente =
                 abstractFinanzielleSituationFromServer.geleisteteAlimente;
             abstractFinanzielleSituationTS.steuerbaresEinkommen =
@@ -2154,6 +2152,11 @@ export class EbeguRestUtil {
             abstractFinanzielleSituationTS.finSitZusatzangabenAppenzell =
                 this.parseFinSitZusatzangabenAppenzell(new TSFinSitZusatzangabenAppenzell(),
                     abstractFinanzielleSituationFromServer.finSitZusatzangabenAppenzell);
+            abstractFinanzielleSituationTS.ersatzeinkommenSelbststaendigkeitBasisjahr =
+                abstractFinanzielleSituationFromServer.ersatzeinkommenSelbststaendigkeitBasisjahr;
+            abstractFinanzielleSituationTS.ersatzeinkommenSelbststaendigkeitBasisjahrMinus1 =
+                abstractFinanzielleSituationFromServer.ersatzeinkommenSelbststaendigkeitBasisjahrMinus1;
+
             return abstractFinanzielleSituationTS;
         }
         return undefined;
@@ -2173,8 +2176,6 @@ export class EbeguRestUtil {
                 finanzielleSituationFromServer.steuerdatenZugriff;
             finanzielleSituationTS.geschaeftsgewinnBasisjahrMinus2 =
                 finanzielleSituationFromServer.geschaeftsgewinnBasisjahrMinus2;
-            finanzielleSituationTS.geschaeftsgewinnBasisjahrMinus1 =
-                finanzielleSituationFromServer.geschaeftsgewinnBasisjahrMinus1;
             finanzielleSituationTS.quellenbesteuert = finanzielleSituationFromServer.quellenbesteuert;
             finanzielleSituationTS.gemeinsameStekVorjahr = finanzielleSituationFromServer.gemeinsameStekVorjahr;
             finanzielleSituationTS.alleinigeStekVorjahr = finanzielleSituationFromServer.alleinigeStekVorjahr;
@@ -2190,10 +2191,6 @@ export class EbeguRestUtil {
                     DateUtil.localDateTimeToMoment(finanzielleSituationFromServer.steuerdatenAbfrageTimestamp);
             }
             finanzielleSituationTS.momentanSelbststaendig = finanzielleSituationFromServer.momentanSelbststaendig;
-            finanzielleSituationTS.ersatzeinkommenSelbststaendigkeitBasisjahr =
-                finanzielleSituationFromServer.ersatzeinkommenSelbststaendigkeitBasisjahr;
-            finanzielleSituationTS.ersatzeinkommenSelbststaendigkeitBasisjahrMinus1 =
-                finanzielleSituationFromServer.ersatzeinkommenSelbststaendigkeitBasisjahrMinus1;
             finanzielleSituationTS.ersatzeinkommenSelbststaendigkeitBasisjahrMinus2 =
                 finanzielleSituationFromServer.ersatzeinkommenSelbststaendigkeitBasisjahrMinus2;
             return finanzielleSituationTS;
@@ -2344,8 +2341,6 @@ export class EbeguRestUtil {
         einkommensverschlechterung: TSEinkommensverschlechterung
     ): TSEinkommensverschlechterung {
         this.abstractfinanzielleSituationToRestObject(restEinkommensverschlechterung, einkommensverschlechterung);
-        restEinkommensverschlechterung.geschaeftsgewinnBasisjahrMinus1 =
-            einkommensverschlechterung.geschaeftsgewinnBasisjahrMinus1;
         restEinkommensverschlechterung.bruttolohnAbrechnung1 = einkommensverschlechterung.bruttolohnAbrechnung1;
         restEinkommensverschlechterung.bruttolohnAbrechnung2 = einkommensverschlechterung.bruttolohnAbrechnung2;
         restEinkommensverschlechterung.bruttolohnAbrechnung3 = einkommensverschlechterung.bruttolohnAbrechnung3;
@@ -2395,8 +2390,6 @@ export class EbeguRestUtil {
             return undefined;
         }
         this.parseAbstractFinanzielleSituation(einkommensverschlechterungTS, einkommensverschlechterungFromServer);
-        einkommensverschlechterungTS.geschaeftsgewinnBasisjahrMinus1 =
-            einkommensverschlechterungFromServer.geschaeftsgewinnBasisjahrMinus1;
         einkommensverschlechterungTS.bruttolohnAbrechnung1 = einkommensverschlechterungFromServer.bruttolohnAbrechnung1;
         einkommensverschlechterungTS.bruttolohnAbrechnung2 = einkommensverschlechterungFromServer.bruttolohnAbrechnung2;
         einkommensverschlechterungTS.bruttolohnAbrechnung3 = einkommensverschlechterungFromServer.bruttolohnAbrechnung3;
@@ -2695,6 +2688,14 @@ export class EbeguRestUtil {
 
         restAbweichung.vertraglichesPensum = originalPensum;
         restAbweichung.pensum = pensum;
+
+        if (abweichung.betreuungsangebotTyp === TSBetreuungsangebotTyp.MITTAGSTISCH) {
+            const kosten = abweichung.pensum * abweichung.monatlicheBetreuungskosten;
+            const originalKosten = originalPensum * restAbweichung.vertraglicheKosten;
+            restAbweichung.monatlicheBetreuungskosten = kosten;
+            restAbweichung.vertraglicheKosten = originalKosten;
+        }
+
         restAbweichung.monatlicheHauptmahlzeiten = abweichung.monatlicheHauptmahlzeiten;
         restAbweichung.monatlicheNebenmahlzeiten = abweichung.monatlicheNebenmahlzeiten;
         restAbweichung.vertraglicheHauptmahlzeiten = abweichung.vertraglicheHauptmahlzeiten;
@@ -2845,12 +2846,25 @@ export class EbeguRestUtil {
         this.parseAbstractBetreuungspensumEntity(abweichungTS, abweichungFromServer);
         abweichungTS.status = abweichungFromServer.status;
         abweichungTS.vertraglicheKosten = abweichungFromServer.vertraglicheKosten;
+        abweichungTS.betreuungsangebotTyp = abweichungFromServer.betreuungsangebotTyp;
 
         abweichungTS.multiplier = abweichungFromServer.multiplier;
 
         const pensum = Number((abweichungFromServer.pensum * abweichungFromServer.multiplier).toFixed(2));
         const originalPensum = Number((abweichungFromServer.vertraglichesPensum * abweichungFromServer.multiplier)
             .toFixed(2));
+
+        if (abweichungTS.betreuungsangebotTyp === TSBetreuungsangebotTyp.MITTAGSTISCH) {
+            const monatlicheKosten = pensum === 0 ?
+                0 :
+                Number((abweichungFromServer.monatlicheBetreuungskosten / pensum).toFixed(2));
+            const originalKosten = originalPensum === 0 ?
+                0 :
+                Number((abweichungFromServer.vertraglicheKosten / originalPensum).toFixed(2));
+
+            abweichungTS.monatlicheBetreuungskosten = monatlicheKosten;
+            abweichungTS.vertraglicheKosten = originalKosten;
+        }
 
         abweichungTS.vertraglicheHauptmahlzeiten = abweichungFromServer.vertraglicheHauptmahlzeiten;
         abweichungTS.vertraglicheNebenmahlzeiten = abweichungFromServer.vertraglicheNebenmahlzeiten;

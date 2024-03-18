@@ -23,7 +23,7 @@ import {
     NavigationPO,
     TestFaellePO, VerfuegenPO, VerfuegungPO,
 } from '@dv-e2e/page-objects';
-import {SidenavPO} from '../page-objects/antrag/sidenav.po';
+import {SidenavPO} from '../../page-objects/antrag/sidenav.po';
 
 describe('Kibon - Online TS-Anmeldung (Mischgesuch) [Gesuchsteller]', () => {
     const userSuperadmin = getUser('[1-Superadmin] E-BEGU Superuser');

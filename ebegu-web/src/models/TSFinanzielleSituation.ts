@@ -24,7 +24,6 @@ export class TSFinanzielleSituation extends TSAbstractFinanzielleSituation {
     private _steuerdatenZugriff: boolean;
     private _automatischePruefungErlaubt: boolean;
     private _geschaeftsgewinnBasisjahrMinus2: number;
-    private _geschaeftsgewinnBasisjahrMinus1: number;
     private _quellenbesteuert: boolean;
     private _gemeinsameStekVorjahr: boolean;
     private _alleinigeStekVorjahr: boolean;
@@ -35,8 +34,6 @@ export class TSFinanzielleSituation extends TSAbstractFinanzielleSituation {
     private _bruttoLohn: number;
     private _momentanSelbststaendig: boolean;
     private _steuerdatenAbfrageTimestamp: moment.Moment;
-    private _ersatzeinkommenSelbststaendigkeitBasisjahr: number;
-    private _ersatzeinkommenSelbststaendigkeitBasisjahrMinus1: number;
     private _ersatzeinkommenSelbststaendigkeitBasisjahrMinus2: number;
 
     public constructor() {
@@ -73,14 +70,6 @@ export class TSFinanzielleSituation extends TSAbstractFinanzielleSituation {
 
     public set geschaeftsgewinnBasisjahrMinus2(value: number) {
         this._geschaeftsgewinnBasisjahrMinus2 = value;
-    }
-
-    public get geschaeftsgewinnBasisjahrMinus1(): number {
-        return this._geschaeftsgewinnBasisjahrMinus1;
-    }
-
-    public set geschaeftsgewinnBasisjahrMinus1(value: number) {
-        this._geschaeftsgewinnBasisjahrMinus1 = value;
     }
 
     public get gemeinsameStekVorjahr(): boolean {
@@ -170,22 +159,6 @@ export class TSFinanzielleSituation extends TSAbstractFinanzielleSituation {
         this._steuerdatenAbfrageTimestamp = value;
     }
 
-    public get ersatzeinkommenSelbststaendigkeitBasisjahr(): number {
-        return this._ersatzeinkommenSelbststaendigkeitBasisjahr;
-    }
-
-    public set ersatzeinkommenSelbststaendigkeitBasisjahr(value: number) {
-        this._ersatzeinkommenSelbststaendigkeitBasisjahr = value;
-    }
-
-    public get ersatzeinkommenSelbststaendigkeitBasisjahrMinus1(): number {
-        return this._ersatzeinkommenSelbststaendigkeitBasisjahrMinus1;
-    }
-
-    public set ersatzeinkommenSelbststaendigkeitBasisjahrMinus1(value: number) {
-        this._ersatzeinkommenSelbststaendigkeitBasisjahrMinus1 = value;
-    }
-
     public get ersatzeinkommenSelbststaendigkeitBasisjahrMinus2(): number {
         return this._ersatzeinkommenSelbststaendigkeitBasisjahrMinus2;
     }
@@ -196,8 +169,8 @@ export class TSFinanzielleSituation extends TSAbstractFinanzielleSituation {
 
     public isSelbstaendig(): boolean {
         return (this.geschaeftsgewinnBasisjahr !== null && this.geschaeftsgewinnBasisjahr !== undefined)
-            || (this._geschaeftsgewinnBasisjahrMinus1 !== null && this._geschaeftsgewinnBasisjahrMinus1 !== undefined)
-            || (this._geschaeftsgewinnBasisjahrMinus2 !== null && this._geschaeftsgewinnBasisjahrMinus2 !== undefined);
+            || (this.geschaeftsgewinnBasisjahrMinus1 !== null && this.geschaeftsgewinnBasisjahrMinus1 !== undefined)
+            || (this.geschaeftsgewinnBasisjahrMinus2 !== null && this.geschaeftsgewinnBasisjahrMinus2 !== undefined);
     }
 
     public hasErsatzeinkommenSelbststaendigkeit(): boolean {

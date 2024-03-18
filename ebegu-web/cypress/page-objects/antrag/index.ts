@@ -15,6 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+export * from './abweichungen.po';
 export * from './abwesenheit.po';
 export * from './antrag-creation.po';
 export * from './beschaeftigungspensum.po';

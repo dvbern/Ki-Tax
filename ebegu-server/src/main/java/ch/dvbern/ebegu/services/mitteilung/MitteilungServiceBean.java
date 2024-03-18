@@ -104,6 +104,7 @@ import ch.dvbern.ebegu.entities.SteuerdatenResponse_;
 import ch.dvbern.ebegu.entities.sozialdienst.SozialdienstFall;
 import ch.dvbern.ebegu.entities.sozialdienst.SozialdienstFall_;
 import ch.dvbern.ebegu.enums.AntragStatus;
+import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.BetreuungspensumAbweichungStatus;
 import ch.dvbern.ebegu.enums.BetreuungspensumAnzeigeTyp;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
@@ -1153,7 +1154,7 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 				mitteilung.getBetreuung().extractGemeinde(),
 				mitteilung.getBetreuung().extractGesuchsperiode());
 		BetreuungspensumAnzeigeTyp betreuungspensumAnzeigeTyp =
-				BetreuungspensumAnzeigeTyp.valueOf(einstellungAnzeigeTyp.getValue());
+			getBetreuungspensumAnzeigeTyp(einstellungAnzeigeTyp, mitteilung.getBetreuung());
 
 		BigDecimal multiplier = getMultiplierForMutationsMitteilung(mitteilung, betreuungspensumAnzeigeTyp);
 
@@ -1164,8 +1165,19 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 				multiplier);
 	}
 
+	@Nonnull
+	private static BetreuungspensumAnzeigeTyp getBetreuungspensumAnzeigeTyp(Einstellung einstellungAnzeigeTyp, Betreuung betreuung) {
+		if (betreuung.getBetreuungsangebotTyp() == BetreuungsangebotTyp.MITTAGSTISCH) {
+			return BetreuungspensumAnzeigeTyp.NUR_MAHLZEITEN;
+		}
+		return BetreuungspensumAnzeigeTyp.valueOf(einstellungAnzeigeTyp.getValue());
+	}
+
 	private BigDecimal getMultiplierForMutationsMitteilung(
 			@Nonnull Betreuungsmitteilung mitteilung, @Nonnull BetreuungspensumAnzeigeTyp betreuungspensumAnzeigeTyp) {
+		if (betreuungspensumAnzeigeTyp == BetreuungspensumAnzeigeTyp.NUR_MAHLZEITEN) {
+			return BetreuungUtil.getMittagstischMultiplier();
+		}
 		if (!betreuungspensumAnzeigeTyp.equals(BetreuungspensumAnzeigeTyp.NUR_STUNDEN)) {
 			return BigDecimal.ONE;
 		}
