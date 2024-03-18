@@ -387,7 +387,7 @@ public class FachstelleRuleTest {
 				40));
 		var einstellungen = EbeguRuleTestsHelper.getEinstellungenConfiguratorAsiv(gesuch.getGesuchsperiode());
 		einstellungen.get(EinstellungKey.SPRACHFOERDERUNG_BESTAETIGEN).setValue("true");
-		return EbeguRuleTestsHelper.calculateWithCustomEinstellungen(betreuung, einstellungen);
+		return EbeguRuleTestsHelper.calculate(betreuung, einstellungen);
 	}
 
 	private void setPensumFachstelle(

@@ -39,9 +39,12 @@ import javax.validation.ConstraintViolationException;
 import javax.validation.Validation;
 import javax.validation.Validator;
 
+import ch.dvbern.ebegu.authentication.PrincipalBean;
 import ch.dvbern.ebegu.entities.AbstractEntity_;
+import ch.dvbern.ebegu.entities.Dossier_;
 import ch.dvbern.ebegu.entities.Einkommensverschlechterung;
 import ch.dvbern.ebegu.entities.EinkommensverschlechterungContainer;
+import ch.dvbern.ebegu.entities.Fall_;
 import ch.dvbern.ebegu.entities.Familiensituation;
 import ch.dvbern.ebegu.entities.FinanzielleSituation;
 import ch.dvbern.ebegu.entities.FinanzielleSituationContainer;
@@ -70,6 +73,8 @@ public class GesuchstellerServiceBean extends AbstractBaseService implements Ges
 	private Persistence persistence;
 	@Inject
 	private WizardStepService wizardStepService;
+	@Inject
+	private PrincipalBean principalBean;
 	@Inject
 	private CriteriaQueryHelper criteriaQueryHelper;
 
@@ -266,7 +271,9 @@ public class GesuchstellerServiceBean extends AbstractBaseService implements Ges
 		Predicate predicateGs1 = root.get(Gesuch_.gesuchsteller1).get(AbstractEntity_.id).in(gesuchstellerContainerIDs);
 		Predicate predicateGs2 = root.get(Gesuch_.gesuchsteller2).get(AbstractEntity_.id).in(gesuchstellerContainerIDs);
 		Predicate predicateGs1OrGs2 = cb.or(predicateGs1, predicateGs2);
-		query.where(predicateGs1OrGs2);
+		Predicate predicateMandant = cb.equal(root.get(Gesuch_.dossier).get(Dossier_.fall).get(Fall_.mandant), principalBean.getMandant());
+
+		query.where(cb.and(predicateGs1OrGs2, predicateMandant));
 		query.distinct(true);
 		return persistence.getCriteriaResults(query);
 	}

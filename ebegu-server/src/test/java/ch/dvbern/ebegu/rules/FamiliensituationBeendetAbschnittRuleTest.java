@@ -34,7 +34,7 @@ class FamiliensituationBeendetAbschnittRuleTest {
 		einstellungen = EbeguRuleTestsHelper.getEinstellungenConfiguratorAsiv(erstGesuch.extractGesuchsperiode());
 		einstellungen.get(EinstellungKey.GESUCH_BEENDEN_BEI_TAUSCH_GS2).setValue(String.valueOf(true));
 
-		zeitAbschnitteErstgesuch = EbeguRuleTestsHelper.calculateWithCustomEinstellungen(erstGesuch, einstellungen);
+		zeitAbschnitteErstgesuch = EbeguRuleTestsHelper.calculate(erstGesuch, einstellungen);
 		Verfuegung verfuegungErstgesuch = new Verfuegung();
 		verfuegungErstgesuch.setZeitabschnitte(zeitAbschnitteErstgesuch);
 		erstGesuch.setVerfuegung(verfuegungErstgesuch);
@@ -57,7 +57,7 @@ class FamiliensituationBeendetAbschnittRuleTest {
 			.getGesuchsteller2()));
 
 		einstellungen.get(EinstellungKey.GESUCH_BEENDEN_BEI_TAUSCH_GS2).setValue(String.valueOf(false));
-		List<VerfuegungZeitabschnitt> zeitabschnitteMutation = EbeguRuleTestsHelper.calculateWithCustomEinstellungen(mutation, einstellungen);
+		List<VerfuegungZeitabschnitt> zeitabschnitteMutation = EbeguRuleTestsHelper.calculate(mutation, einstellungen);
 		assertNotNull(zeitabschnitteMutation);
 		assertEquals(1, zeitabschnitteMutation.size()); //kein neuer Zeitabschnitt erstellt
 	}
@@ -78,7 +78,7 @@ class FamiliensituationBeendetAbschnittRuleTest {
 		TestDataUtil.createDefaultGesuchstellerAdresseContainer(Objects.requireNonNull(mutation.extractGesuch()
 			.getGesuchsteller2()));
 
-		List<VerfuegungZeitabschnitt> zeitabschnitteMutation = EbeguRuleTestsHelper.calculateWithCustomEinstellungen(mutation, einstellungen);
+		List<VerfuegungZeitabschnitt> zeitabschnitteMutation = EbeguRuleTestsHelper.calculate(mutation, einstellungen);
 		assertNotNull(zeitabschnitteMutation);
 		assertEquals(2, zeitabschnitteMutation.size());
 		LocalDate firstOfNextMonth = TestDataUtil.START_PERIODE.plusDays(DAYS_TO_ADD).with(TemporalAdjusters.firstDayOfNextMonth());
@@ -103,7 +103,7 @@ class FamiliensituationBeendetAbschnittRuleTest {
 		TestDataUtil.createDefaultGesuchstellerAdresseContainer(Objects.requireNonNull(mutation.extractGesuch()
 				.getGesuchsteller2()));
 
-		List<VerfuegungZeitabschnitt> zeitabschnitteMutation = EbeguRuleTestsHelper.calculateWithCustomEinstellungen(mutation, einstellungen);
+		List<VerfuegungZeitabschnitt> zeitabschnitteMutation = EbeguRuleTestsHelper.calculate(mutation, einstellungen);
 		assertNotNull(zeitabschnitteMutation);
 		assertEquals(1, zeitabschnitteMutation.size());
 	}
@@ -124,7 +124,7 @@ class FamiliensituationBeendetAbschnittRuleTest {
 		TestDataUtil.createDefaultGesuchstellerAdresseContainer(Objects.requireNonNull(mutation.extractGesuch()
 				.getGesuchsteller2()));
 
-		List<VerfuegungZeitabschnitt> zeitabschnitteMutation = EbeguRuleTestsHelper.calculateWithCustomEinstellungen(mutation, einstellungen);
+		List<VerfuegungZeitabschnitt> zeitabschnitteMutation = EbeguRuleTestsHelper.calculate(mutation, einstellungen);
 		assertNotNull(zeitabschnitteMutation);
 		assertEquals(1, zeitabschnitteMutation.size());
 	}

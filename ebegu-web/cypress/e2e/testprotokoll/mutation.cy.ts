@@ -1,3 +1,20 @@
+/*
+ * Copyright (C) 2024 DV Bern AG, Switzerland
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
 import {
     AbwesenheitPo, AntragCreationPO,
     ConfirmDialogPO,
@@ -8,8 +25,8 @@ import {
     UmzugPO, VerfuegenPO,
 } from '@dv-e2e/page-objects';
 import { getUser, normalizeUser } from '@dv-e2e/types';
-import {SidenavPO} from '../page-objects/antrag/sidenav.po';
-import {VerfuegungPO} from '../page-objects/antrag/verfuegung.po';
+import {SidenavPO} from '../../page-objects/antrag/sidenav.po';
+import {VerfuegungPO} from '../../page-objects/antrag/verfuegung.po';
 
 describe('Kibon - mutationen [Gesuchsteller]', () => {
     const userSuperadmin = getUser('[1-Superadmin] E-BEGU Superuser');
@@ -113,6 +130,7 @@ describe('Kibon - mutationen [Gesuchsteller]', () => {
         VerfuegenPO.getBetreuungsstatus(1,0).should('include.text', 'Geschlossen ohne Verfügung');
 
         DossierToolbarPO.getAntragMutieren().click();
+        AntragCreationPO.getEingangsdatum().find('input').should('not.have.attr', 'disabled');
         AntragCreationPO.getEingangsdatum().find('input').type('01.05.2023');
         cy.intercept('GET', '**/gesuche/dossier/**').as('createNewMutation');
         NavigationPO.saveAndGoNext();

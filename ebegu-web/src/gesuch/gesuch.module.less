@@ -483,13 +483,19 @@ dv-accordion.ewksubsub {
     .md-off,
     .md-on,
     .md-icon,
-    .mat-radio-group,
-    .mat-radio-button,
-    .mat-radio-label,
-    .mat-radio-container,
-    .mat-radio-label-content,
-    .mat-radio-outer-circle,
-    .mat-radio-inner-circle,
+    .mat-mdc-radio-group,
+    .mat-mdc-radio-button,
+    .mat-mdc-radio-label,
+    .mat-mdc-radio-container,
+    .mat-mdc-radio-label-content,
+    .mdc-radio__outer-circle,
+    .mdc-form-field,
+    .mdc-checkbox,
+    .mdc-checkbox > *,
+    .mdc-radio,
+    .mat-mdc-radio-touch-target,
+    .mdc-radio__background,
+    .mdc-radio__inner-circle,
     .mat-ripple,
     .mat-ripple-element,
     .mat-checkbox,
@@ -502,6 +508,48 @@ dv-accordion.ewksubsub {
 ) {
         position: static;
     }
+
+    .mat-mdc-radio-group .mat-mdc-radio-button {
+        .mdc-radio__background, .mat-mdc-radio-touch-target, input.mdc-radio__native-control {
+            height: 1.5rem !important;
+            width: 1.5rem !important;
+        }
+
+        .mdc-radio__native-control:checked + .mdc-radio__background .mdc-radio__inner-circle {
+            transform: scale(0.35);
+        }
+
+
+        .mdc-radio__inner-circle {
+            border-radius: 50%;
+            border-width: 0;
+            background-color: #424242;
+            height: 1.5rem;
+            width: 1.5rem;
+        }
+
+        .mdc-form-field .mdc-radio {
+            padding: 1px;
+            width: 2rem;
+
+            & + label {
+                color: #000;
+                font-style: normal;
+                font-weight: 600;
+                line-height: 2.5rem;
+            }
+
+            &.mdc-radio--disabled  + label {
+                color: #858585;
+            }
+        }
+
+
+        .mdc-radio__outer-circle {
+            border-width: 1px;
+        }
+    }
+
 }
 
 .betreuung-table-header {

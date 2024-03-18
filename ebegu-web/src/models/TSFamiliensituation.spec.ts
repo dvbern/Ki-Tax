@@ -48,4 +48,40 @@ describe('Familiensituation', () => {
             expect(familiensituation.konkuinatOhneKindBecomesXYearsDuringPeriode(periode)).toBeTruthy();
         });
     });
+    describe('spezialfall konkubinat ohne kind wird nicht X jährig während Periode (kurzes Konkubinat)', () => {
+        const periodeStart: moment.Moment = moment('2023-08-01');
+        const periodeEnd: moment.Moment = moment('2024-07-31');
+        const periode = new TSGesuchsperiode(TSGesuchsperiodeStatus.AKTIV,
+            new TSDateRange(periodeStart, periodeEnd));
+
+        it('should return false if not Konkubinat kein Kind', () => {
+            const familiensituation = new TSFamiliensituation();
+            familiensituation.familienstatus = TSFamilienstatus.KONKUBINAT;
+            expect(familiensituation.isShortKonkubinatForEntirePeriode(periode)).toBeFalsy();
+        });
+
+        it('should return false if Konkubinat reacheas min Dauer in Periode', () => {
+            const familiensituation = new TSFamiliensituation();
+            familiensituation.familienstatus = TSFamilienstatus.KONKUBINAT_KEIN_KIND;
+            familiensituation.minDauerKonkubinat = 2;
+            familiensituation.startKonkubinat = moment('2021-08-01');
+            expect(familiensituation.isShortKonkubinatForEntirePeriode(periode)).toBeFalsy();
+        });
+
+        it('should return false if Konkubinat is older than min Dauer for enire', () => {
+            const familiensituation = new TSFamiliensituation();
+            familiensituation.familienstatus = TSFamilienstatus.KONKUBINAT_KEIN_KIND;
+            familiensituation.minDauerKonkubinat = 2;
+            familiensituation.startKonkubinat = moment('2021-31-07');
+            expect(familiensituation.isShortKonkubinatForEntirePeriode(periode)).toBeFalsy();
+        });
+
+        it('should return true if Konkubinat is younger than min Dauer for enire', () => {
+            const familiensituation = new TSFamiliensituation();
+            familiensituation.familienstatus = TSFamilienstatus.KONKUBINAT_KEIN_KIND;
+            familiensituation.minDauerKonkubinat = 2;
+            familiensituation.startKonkubinat = moment('2022-08-01');
+            expect(familiensituation.isShortKonkubinatForEntirePeriode(periode)).toBeTruthy();
+        });
+    });
 });

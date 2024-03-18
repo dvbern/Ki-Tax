@@ -20,6 +20,7 @@ package ch.dvbern.ebegu.rules;
 import ch.dvbern.ebegu.entities.*;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.EnumFamilienstatus;
+import ch.dvbern.ebegu.enums.EnumGesuchstellerKardinalitaet;
 import ch.dvbern.ebegu.enums.Kinderabzug;
 import ch.dvbern.ebegu.enums.KinderabzugTyp;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
@@ -57,7 +58,8 @@ public class FamilienabzugAbschnittRule extends AbstractAbschnittRule {
 	private final Integer paramMinDauerKonkubinat;
 	private final KinderabzugTyp kinderabzugTyp;
 
-	public FamilienabzugAbschnittRule(DateRange validityPeriod,
+	public FamilienabzugAbschnittRule(
+		DateRange validityPeriod,
 		BigDecimal pauschalabzugProPersonFamiliengroesse3,
 		BigDecimal pauschalabzugProPersonFamiliengroesse4,
 		BigDecimal pauschalabzugProPersonFamiliengroesse5,
@@ -129,11 +131,15 @@ public class FamilienabzugAbschnittRule extends AbstractAbschnittRule {
 
 		// aufsteigend durch die unterschiedlichen famGr gehen und immer den letzen Abschnitt  unterteilen in zwei Abschnitte
 		for (Map.Entry<LocalDate, Map.Entry<Double, Integer>> entry : famGrMap.entrySet()) {
-			final VerfuegungZeitabschnitt lastVerfuegungZeitabschnitt = familienAbzugZeitabschnitt.get(familienAbzugZeitabschnitt.size() - 1);
+			final VerfuegungZeitabschnitt lastVerfuegungZeitabschnitt =
+				familienAbzugZeitabschnitt.get(familienAbzugZeitabschnitt.size() - 1);
 			lastVerfuegungZeitabschnitt.getGueltigkeit().setGueltigBis(entry.getKey().minusDays(1));
 
-			final VerfuegungZeitabschnitt verfuegungZeitabschnitt = createZeitabschnittWithinValidityPeriodOfRule(entry.getKey(), gesuch.getGesuchsperiode().getGueltigkeit().getGueltigBis());
-			verfuegungZeitabschnitt.setAbzugFamGroesseForAsivAndGemeinde(calculateAbzugAufgrundFamiliengroesse(entry.getValue().getKey(), entry.getValue().getValue()));
+			final VerfuegungZeitabschnitt verfuegungZeitabschnitt = createZeitabschnittWithinValidityPeriodOfRule(
+				entry.getKey(),
+				gesuch.getGesuchsperiode().getGueltigkeit().getGueltigBis());
+			verfuegungZeitabschnitt.setAbzugFamGroesseForAsivAndGemeinde(calculateAbzugAufgrundFamiliengroesse(entry.getValue()
+				.getKey(), entry.getValue().getValue()));
 			verfuegungZeitabschnitt.setFamGroesseForAsivAndGemeinde(new BigDecimal(String.valueOf(entry.getValue().getKey())));
 
 			familienAbzugZeitabschnitt.add(verfuegungZeitabschnitt);
@@ -203,7 +209,8 @@ public class FamilienabzugAbschnittRule extends AbstractAbschnittRule {
 	) {
 		if (this.kinderabzugTyp.isFKJV()) {
 			boolean isKinderabzugTypV2 = this.kinderabzugTyp == KinderabzugTyp.FKJV_2;
-			return addAbzugFromKinderFkjv(gesuch, stichtag, famGrBeruecksichtigungAbzug, famGrAnzahlPersonen, isKinderabzugTypV2);
+			return addAbzugFromKinderFkjv(gesuch, stichtag, famGrBeruecksichtigungAbzug, famGrAnzahlPersonen,
+				isKinderabzugTypV2);
 		}
 		return addAbzugFromKinderAsiv(gesuch, stichtag, famGrBeruecksichtigungAbzug, famGrAnzahlPersonen);
 	}
@@ -221,7 +228,8 @@ public class FamilienabzugAbschnittRule extends AbstractAbschnittRule {
 		for (KindContainer kindContainer : gesuch.getKindContainers()) {
 			Kind kind = kindContainer.getKindJA();
 			if (kind != null && (dateToCompare == null || kind.getGeburtsdatum().isBefore(dateToCompare))) {
-				Kinderabzug kinderabzug = isErstesHalbjahr ? kind.getKinderabzugErstesHalbjahr() : kind.getKinderabzugZweitesHalbjahr();
+				Kinderabzug kinderabzug =
+					isErstesHalbjahr ? kind.getKinderabzugErstesHalbjahr() : kind.getKinderabzugZweitesHalbjahr();
 				if (kinderabzug == Kinderabzug.HALBER_ABZUG) {
 					famGrBeruecksichtigungAbzug += 0.5;
 					famGrAnzahlPersonen++;
@@ -258,8 +266,10 @@ public class FamilienabzugAbschnittRule extends AbstractAbschnittRule {
 	}
 
 	private int calculateFKJVAnzahlPersonen(double beruecksichtigungAbzug, boolean isKinderAbzugTypeVersion2) {
-		// in der FKJV Periode 22/23 hatten wir einen Fehler, der die Kinder immer mitzählte, auch wenn es für ein Kind keinen Kinderabzug gab.
-		// dies wird auf die Periode 23/24 geändert. Kinder ohne Kinderabzug zählen nicht zur Familiengrösse und Kinder für die der
+		// in der FKJV Periode 22/23 hatten wir einen Fehler, der die Kinder immer mitzählte, auch wenn es für ein Kind keinen
+		// Kinderabzug gab.
+		// dies wird auf die Periode 23/24 geändert. Kinder ohne Kinderabzug zählen nicht zur Familiengrösse und Kinder für die
+		// der
 		// halbe oder der ganze Pauschalabzug abgezogen werden kann, zählen ganz zur Familiengrösse
 		if (!isKinderAbzugTypeVersion2) {
 			return 1;
@@ -272,7 +282,10 @@ public class FamilienabzugAbschnittRule extends AbstractAbschnittRule {
 		return 1;
 	}
 
-	private double calculateFKJVKinderabzugForKind(@Nonnull Kind kind, Familiensituation familiensituation, LocalDate dateToCompare) {
+	private double calculateFKJVKinderabzugForKind(
+		@Nonnull Kind kind,
+		Familiensituation familiensituation,
+		LocalDate dateToCompare) {
 		if (kind.getPflegekind()) {
 			Objects.requireNonNull(kind.getPflegeEntschaedigungErhalten());
 			if (kind.getPflegeEntschaedigungErhalten()) {
@@ -287,34 +300,47 @@ public class FamilienabzugAbschnittRule extends AbstractAbschnittRule {
 			return calculateKinderabzugForObhutAlternierendAusueben(kind, familiensituation, dateToCompare);
 		}
 		if (kind.getInErstausbildung() != null) {
-			if (!kind.getInErstausbildung()) {
-				return is18GeburtstagBeforeDate(kind, dateToCompare) ? 0 : 1;
-			}
-			if (kind.getAlimenteBezahlen() != null) {
-				if (!kind.getAlimenteBezahlen()) {
-					return 0;
-				}
-				return is18GeburtstagBeforeDate(kind, dateToCompare) ? 1 : 0;
-			}
-			if (kind.getAlimenteErhalten() != null) {
-				if (kind.getAlimenteErhalten()) {
-					return is18GeburtstagBeforeDate(kind, dateToCompare) ? 0 : 1;
-				}
-				return 1;
-			}
+			return calculateKinderAbzugForInErstausbildungAnswered(kind, dateToCompare);
 		}
 		throw new EbeguRuntimeException("calculateFKJVKinderabzugForKind", "wrong properties for kind to calculate kinderabzug");
 	}
 
-	private double calculateKinderabzugForObhutAlternierendAusueben(Kind kind, Familiensituation familiensituation, LocalDate dateToCompare) {
+	private Integer calculateKinderAbzugForInErstausbildungAnswered(@Nonnull Kind kind, LocalDate dateToCompare) throws EbeguRuntimeException {
+		Objects.requireNonNull(kind.getInErstausbildung());
+		if (!kind.getInErstausbildung()) {
+			return is18GeburtstagBeforeDate(kind, dateToCompare) ? 0 : 1;
+		}
+		if (kind.getAlimenteBezahlen() != null) {
+			if (!kind.getAlimenteBezahlen()) {
+				return 0;
+			}
+			return is18GeburtstagBeforeDate(kind, dateToCompare) ? 1 : 0;
+		}
+		if (kind.getAlimenteErhalten() != null) {
+			if (kind.getAlimenteErhalten()) {
+				return is18GeburtstagBeforeDate(kind, dateToCompare) ? 0 : 1;
+			}
+			return 1;
+		}
+		throw new EbeguRuntimeException("calculateFKJVKinderabzugForKind", "wrong properties for kind to calculate kinderabzug");
+	}
+
+	private double calculateKinderabzugForObhutAlternierendAusueben(
+		Kind kind,
+		Familiensituation familiensituation,
+		LocalDate dateToCompare) {
 		Objects.requireNonNull(kind.getFamilienErgaenzendeBetreuung());
 		Objects.requireNonNull(familiensituation);
 
 		if (!kind.getFamilienErgaenzendeBetreuung()) {
+			if (Boolean.TRUE.equals(kind.getGemeinsamesGesuch())) {
+				return 1;
+			}
 			return 0.5;
 		}
 
-		if (!isAlleinerziehendOrMinDauerKonkubinatNichtErreicht(familiensituation, dateToCompare)) {
+		if (isMinDauerKonkubinatErreicht(familiensituation, dateToCompare)
+			|| familiensituation.getGesuchstellerKardinalitaet() == EnumGesuchstellerKardinalitaet.ALLEINE) {
 			return 0.5;
 		}
 
@@ -326,16 +352,15 @@ public class FamilienabzugAbschnittRule extends AbstractAbschnittRule {
 		return 0.5;
 	}
 
-	public boolean isAlleinerziehendOrMinDauerKonkubinatNichtErreicht(Familiensituation familiensituation, LocalDate dateToCompare) {
-		if (EnumFamilienstatus.ALLEINERZIEHEND == familiensituation.getFamilienstatus()) {
-			return true;
-		}
+	public boolean isMinDauerKonkubinatErreicht(
+		Familiensituation familiensituation,
+		LocalDate dateToCompare) {
 
 		if (EnumFamilienstatus.KONKUBINAT_KEIN_KIND != familiensituation.getFamilienstatus()) {
 			return false;
 		}
 
-		return !isKonkubinatMinReached(familiensituation, dateToCompare);
+		return isKonkubinatMinReached(familiensituation, dateToCompare);
 	}
 
 	private boolean isKonkubinatMinReached(Familiensituation familiensituation, LocalDate dateToCompare) {
@@ -353,13 +378,15 @@ public class FamilienabzugAbschnittRule extends AbstractAbschnittRule {
 	}
 
 	public List<VerfuegungZeitabschnitt> createInitialenFamilienAbzug(Gesuch gesuch) {
-		VerfuegungZeitabschnitt initialFamAbzug = createZeitabschnittWithinValidityPeriodOfRule(gesuch.getGesuchsperiode().getGueltigkeit());
+		VerfuegungZeitabschnitt initialFamAbzug =
+			createZeitabschnittWithinValidityPeriodOfRule(gesuch.getGesuchsperiode().getGueltigkeit());
 		//initial gilt die Familiengroesse die am letzten Tag vor dem Start der neuen Gesuchsperiode vorhanden war
 		Double famGrBeruecksichtigungAbzug = 0.0;
 		Integer famGrAnzahlPersonen = 0;
 
 		if (gesuch.getGesuchsperiode() != null) {
-			Map.Entry<Double, Integer> famGr = calculateFamiliengroesse(gesuch, gesuch.getGesuchsperiode().getGueltigkeit().getGueltigAb());
+			Map.Entry<Double, Integer> famGr =
+				calculateFamiliengroesse(gesuch, gesuch.getGesuchsperiode().getGueltigkeit().getGueltigAb());
 			famGrBeruecksichtigungAbzug = famGr.getKey();
 			famGrAnzahlPersonen = famGr.getValue();
 		}
@@ -406,10 +433,15 @@ public class FamilienabzugAbschnittRule extends AbstractAbschnittRule {
 		Double famGrBeruecksichtigungAbzug = 0.0;
 
 		Familiensituation familiensituation = gesuch.extractFamiliensituation();
-		if (familiensituation != null) { // wenn die Familiensituation nicht vorhanden ist, kann man nichts machen (die Daten wurden falsch eingegeben)
-			famGrBeruecksichtigungAbzug = calculateGanzFamiliensituation(gesuch, familiensituation, date, date, famGrBeruecksichtigungAbzug);
+		if (familiensituation
+			!= null) { // wenn die Familiensituation nicht vorhanden ist, kann man nichts machen (die Daten wurden falsch eingegeben)
+			famGrBeruecksichtigungAbzug =
+				calculateGanzFamiliensituation(gesuch, familiensituation, date, date, famGrBeruecksichtigungAbzug);
 		} else {
-			LOG.warn("Die Familiengroesse kann noch nicht richtig berechnet werden weil die Familiensituation nicht richtig ausgefuellt ist. Antragnummer: {}", gesuch.getJahrFallAndGemeindenummer());
+			LOG.warn(
+				"Die Familiengroesse kann noch nicht richtig berechnet werden weil die Familiensituation nicht richtig "
+					+ "ausgefuellt ist. Antragnummer: {}",
+				gesuch.getJahrFallAndGemeindenummer());
 		}
 
 		// es gibt keine 'halben' Eltern, deswegen sind die Werte hier gleich.

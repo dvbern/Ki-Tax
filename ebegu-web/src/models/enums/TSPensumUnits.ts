@@ -19,4 +19,5 @@ export enum TSPensumUnits {
     PERCENTAGE = 'PERCENTAGE',
     DAYS = 'DAYS',
     HOURS = 'HOURS',
+    MAHLZEITEN = 'MAHLZEITEN',
 }

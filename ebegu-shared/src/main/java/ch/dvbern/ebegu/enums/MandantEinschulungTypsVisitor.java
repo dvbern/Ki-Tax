@@ -50,6 +50,6 @@ public class MandantEinschulungTypsVisitor implements MandantVisitor<List<Einsch
 
 	@Override
 	public List<EinschulungTyp> visitSchwyz() {
-		return this.visitSolothurn();
+		return EinschulungTyp.getListSZ();
 	}
 }

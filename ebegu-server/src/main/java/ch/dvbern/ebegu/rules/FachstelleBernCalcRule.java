@@ -18,8 +18,10 @@ package ch.dvbern.ebegu.rules;
 import ch.dvbern.ebegu.dto.BGCalculationInput;
 import ch.dvbern.ebegu.entities.AbstractPlatz;
 import ch.dvbern.ebegu.entities.Betreuung;
+import ch.dvbern.ebegu.entities.BetreuungspensumContainer;
 import ch.dvbern.ebegu.entities.Einstellung;
 import ch.dvbern.ebegu.entities.PensumFachstelle;
+import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.*;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.MathUtil;
@@ -92,22 +94,37 @@ public class FachstelleBernCalcRule extends AbstractFachstellenCalcRule {
 						getFachstelleName(pensumFachstelle.getFachstelle())
 					);
 				} else {
-					// Es gibt ein Fachstelle Pensum, aber das Betreuungspensum ist zu tief. Wir muessen uns das Fachstelle
-					// Pensum als
-					// Restanspruch merken, damit es für eine eventuelle andere Betreuung dieses Kindes noch gilt!
-					int verfuegbarerRestanspruch = inputData.getAnspruchspensumRest();
-					// wir muessen nur was machen wenn wir schon einen Restanspruch gesetzt haben
-					if (verfuegbarerRestanspruch < roundedPensumFachstelle) {
-						inputData.setAnspruchspensumRest(roundedPensumFachstelle);
-					}
-					inputData.addBemerkung(
-						MsgKey.FACHSTELLE_SPRACHLICHE_INTEGRATION_ZU_TIEF_MSG,
-						getLocale(),
-						roundedPensumFachstelle);
+					handlePensumTooLow(inputData, betreuung, roundedPensumFachstelle);
 				}
 			}
 		}
 	}
+
+	private void handlePensumTooLow(@Nonnull BGCalculationInput inputData, Betreuung betreuung, int roundedPensumFachstelle) {
+		// Es gibt ein Fachstelle Pensum, aber das Betreuungspensum ist zu tief. Wir muessen uns das Fachstelle
+		// Pensum als
+		// Restanspruch merken, damit es für eine eventuelle andere Betreuung dieses Kindes noch gilt!
+		int verfuegbarerRestanspruch = inputData.getAnspruchspensumRest();
+		// wir muessen nur was machen wenn wir schon einen Restanspruch gesetzt haben
+		if (verfuegbarerRestanspruch < roundedPensumFachstelle) {
+			inputData.setAnspruchspensumRest(roundedPensumFachstelle);
+		}
+		if (intersectsAnyBetreuungspensum(inputData.getParent(), betreuung)) {
+			inputData.addBemerkung(
+				MsgKey.FACHSTELLE_SPRACHLICHE_INTEGRATION_ZU_TIEF_MSG,
+				getLocale(),
+				roundedPensumFachstelle);
+		}
+	}
+
+	private boolean intersectsAnyBetreuungspensum(VerfuegungZeitabschnitt verfuegungZeitabschnitt, Betreuung betreuung) {
+		DateRange zeitabschnittGueltigkeit = verfuegungZeitabschnitt.getGueltigkeit();
+		return betreuung.getBetreuungspensumContainers()
+			.stream()
+			.map(BetreuungspensumContainer::getBetreuungspensumJA)
+			.anyMatch(betreuungspensum -> zeitabschnittGueltigkeit.intersects(betreuungspensum.getGueltigkeit()));
+	}
+
 
 	@Override
 	public boolean isRelevantForGemeinde(@Nonnull Map<EinstellungKey, Einstellung> einstellungMap) {

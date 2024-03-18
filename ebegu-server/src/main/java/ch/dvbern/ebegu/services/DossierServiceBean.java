@@ -37,6 +37,7 @@ import javax.validation.ConstraintViolationException;
 import javax.validation.Validation;
 import javax.validation.Validator;
 
+import ch.dvbern.ebegu.authentication.PrincipalBean;
 import ch.dvbern.ebegu.entities.AbstractEntity_;
 import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Dossier;
@@ -84,10 +85,37 @@ public class DossierServiceBean extends AbstractBaseService implements DossierSe
 	@Inject
 	private GemeindeService gemeindeService;
 
+	@Inject
+	private PrincipalBean principalBean;
+
 	@Nonnull
 	@Override
 	public Optional<Dossier> findDossier(@Nonnull String id) {
 		return findDossier(id, true);
+	}
+
+	@Nonnull
+	@Override
+	public Optional<Dossier> findDossierForMandant(@Nonnull String id) {
+		return findDossierForMandant(id, true);
+	}
+
+	@Nonnull
+	@Override
+	public Optional<Dossier> findDossierForMandant(@Nonnull String id, boolean doAuthCheck) {
+		Objects.requireNonNull(id, "id muss gesetzt sein");
+		final CriteriaBuilder cb = persistence.getCriteriaBuilder();
+		final CriteriaQuery<Dossier> query = cb.createQuery(Dossier.class);
+
+		Root<Dossier> root = query.from(Dossier.class);
+		Predicate predicateId = cb.equal(root.get(AbstractEntity_.id),id);
+		Predicate predicateMandant = cb.equal(root.get(Dossier_.fall).get(Fall_.mandant), principalBean.getMandant());
+		query.where(cb.and(predicateId, predicateMandant));
+		Dossier dossier = persistence.getCriteriaSingleResult(query);
+		if (doAuthCheck && dossier != null) {
+			authorizer.checkReadAuthorizationDossier(dossier);
+		}
+		return Optional.ofNullable(dossier);
 	}
 
 	@Nonnull

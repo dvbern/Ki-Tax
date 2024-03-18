@@ -104,6 +104,7 @@ import ch.dvbern.ebegu.entities.SteuerdatenResponse_;
 import ch.dvbern.ebegu.entities.sozialdienst.SozialdienstFall;
 import ch.dvbern.ebegu.entities.sozialdienst.SozialdienstFall_;
 import ch.dvbern.ebegu.enums.AntragStatus;
+import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.BetreuungspensumAbweichungStatus;
 import ch.dvbern.ebegu.enums.BetreuungspensumAnzeigeTyp;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
@@ -126,6 +127,7 @@ import ch.dvbern.ebegu.errors.EbeguExistingAntragRuntimeException;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.errors.MailException;
 import ch.dvbern.ebegu.i18n.LocaleThreadLocal;
+import ch.dvbern.ebegu.inbox.util.TechnicalUserConfigurationVisitor;
 import ch.dvbern.ebegu.nesko.handler.KibonAnfrageContext;
 import ch.dvbern.ebegu.nesko.handler.KibonAnfrageHelper;
 import ch.dvbern.ebegu.nesko.utils.KibonAnfrageUtil;
@@ -169,8 +171,7 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 
 	private static final Logger LOG = LoggerFactory.getLogger(MitteilungServiceBean.class.getSimpleName());
 
-	static final String TECHNICAL_KIBON_BENUTZER_ID = "99999999-2222-2222-2222-222222222222";
-
+	static final TechnicalUserConfigurationVisitor technicalUserConfigVisitor = new TechnicalUserConfigurationVisitor();
 	@Inject
 	private Persistence persistence;
 
@@ -1120,7 +1121,7 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 
 		neueVeranlagungsMitteilung.setEmpfaengerTyp(MitteilungTeilnehmerTyp.JUGENDAMT);
 		neueVeranlagungsMitteilung.setSenderTyp(MitteilungTeilnehmerTyp.JUGENDAMT);
-		neueVeranlagungsMitteilung.setSender(getTechnicalKibonBenutzer());
+		neueVeranlagungsMitteilung.setSender(getTechnicalKibonBenutzer(neueVeranlagungsMitteilung.getDossier()));
 		neueVeranlagungsMitteilung.setMitteilungStatus(MitteilungStatus.NEU);
 		neueVeranlagungsMitteilung.setSentDatum(LocalDateTime.now());
 		neueVeranlagungsMitteilung.setEmpfaenger(getEmpfaengerBeiMitteilungAnGemeinde(neueVeranlagungsMitteilung));
@@ -1129,11 +1130,13 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 	}
 
 	@Nonnull
-	private Benutzer getTechnicalKibonBenutzer() {
-		return benutzerService.findBenutzerById(TECHNICAL_KIBON_BENUTZER_ID)
+	private Benutzer getTechnicalKibonBenutzer(Dossier dossier) {
+		String technicalUserID =
+			technicalUserConfigVisitor.process(dossier.getFall().getMandant().getMandantIdentifier()).getTechnicalUser();
+		return benutzerService.findBenutzerById(technicalUserID)
 				.orElseThrow(() -> new EbeguEntityNotFoundException(EMPTY,
 						ERROR_ENTITY_NOT_FOUND,
-						TECHNICAL_KIBON_BENUTZER_ID));
+						technicalUserID));
 	}
 
 	@Override
@@ -1151,7 +1154,7 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 				mitteilung.getBetreuung().extractGemeinde(),
 				mitteilung.getBetreuung().extractGesuchsperiode());
 		BetreuungspensumAnzeigeTyp betreuungspensumAnzeigeTyp =
-				BetreuungspensumAnzeigeTyp.valueOf(einstellungAnzeigeTyp.getValue());
+			getBetreuungspensumAnzeigeTyp(einstellungAnzeigeTyp, mitteilung.getBetreuung());
 
 		BigDecimal multiplier = getMultiplierForMutationsMitteilung(mitteilung, betreuungspensumAnzeigeTyp);
 
@@ -1162,8 +1165,19 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 				multiplier);
 	}
 
+	@Nonnull
+	private static BetreuungspensumAnzeigeTyp getBetreuungspensumAnzeigeTyp(Einstellung einstellungAnzeigeTyp, Betreuung betreuung) {
+		if (betreuung.getBetreuungsangebotTyp() == BetreuungsangebotTyp.MITTAGSTISCH) {
+			return BetreuungspensumAnzeigeTyp.NUR_MAHLZEITEN;
+		}
+		return BetreuungspensumAnzeigeTyp.valueOf(einstellungAnzeigeTyp.getValue());
+	}
+
 	private BigDecimal getMultiplierForMutationsMitteilung(
 			@Nonnull Betreuungsmitteilung mitteilung, @Nonnull BetreuungspensumAnzeigeTyp betreuungspensumAnzeigeTyp) {
+		if (betreuungspensumAnzeigeTyp == BetreuungspensumAnzeigeTyp.NUR_MAHLZEITEN) {
+			return BetreuungUtil.getMittagstischMultiplier();
+		}
 		if (!betreuungspensumAnzeigeTyp.equals(BetreuungspensumAnzeigeTyp.NUR_STUNDEN)) {
 			return BigDecimal.ONE;
 		}

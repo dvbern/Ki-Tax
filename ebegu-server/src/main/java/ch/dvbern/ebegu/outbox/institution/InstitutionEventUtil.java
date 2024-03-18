@@ -28,6 +28,6 @@ public final class InstitutionEventUtil {
 	}
 
 	public static boolean isExportable(@Nonnull InstitutionStammdaten stammdaten) {
-		return stammdaten.getInstitution().getStatus() != InstitutionStatus.NUR_LATS;
+		return stammdaten.getInstitution().getStatus() != InstitutionStatus.NUR_LATS && !stammdaten.getBetreuungsangebotTyp().isMittagstisch();
 	}
 }

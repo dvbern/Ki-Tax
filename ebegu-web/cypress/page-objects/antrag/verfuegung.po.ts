@@ -68,6 +68,23 @@ const nichtEintretenVerfuegen = () => {
     });
 };
 
+const betreuungKontrollierenAndVerfuegen = () => {
+	cy.waitForRequest('PUT', '**/verfuegung/verfuegen/**', () => {
+        getVerfuegungsBemerkungenKontrolliert().click();
+        getVerfuegenButton().click();
+        ConfirmDialogPO.getDvLoadingConfirmButton().click();
+    });
+};
+
+// In der Mutation müssen wir die VerfügungsBemerkung Checkbox nicht mehr setzen
+const betreuungVerfuegen = () => {
+	cy.waitForRequest('PUT', '**/verfuegung/verfuegen/**', () => {
+        getVerfuegungsBemerkungenKontrolliert().click();
+        getVerfuegenButton().click();
+        ConfirmDialogPO.getDvLoadingConfirmButton().click();
+    });
+};
+
 export const VerfuegungPO = {
     // PAGE OBJECTS
     getBetreuungspensumProzent,
@@ -81,5 +98,6 @@ export const VerfuegungPO = {
     getNichtEintretenButton,
     getAnspruchberechtigtesBetreuungspensum,
     // PAGE ACTIONS
-    nichtEintretenVerfuegen
+    nichtEintretenVerfuegen,
+    betreuungKontrollierenAndVerfuegen,
 };

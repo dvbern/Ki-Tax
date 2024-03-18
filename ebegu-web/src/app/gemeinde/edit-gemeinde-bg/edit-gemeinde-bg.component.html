@@ -86,22 +86,28 @@
                     </div>
 
                     <!--                    benachrichtigungen bei verfügungen per email senden-->
-                    <div class="form-group checkbox-with-tooltip mt-5">
-                        <mat-checkbox id="benachrichtigungBgEmailAuto_id" name="benachrichtigungBgEmailAuto_id"
-                                      [(ngModel)]="stammdaten.benachrichtigungBgEmailAuto">
-                            {{'BENACHRICHTIGUNGEN_EMAIL_SENDEN'|translate}}
-                        </mat-checkbox>
-                        <dv-tooltip id="benachrichtigungBgEmailAuto-tooltip"
-                                    [text]="'BENACHRICHTIGUNGEN_EMAIL_SENDEN_HELP'|translate"></dv-tooltip>
+                    <div class="form-group">
+                        <div class="form-group checkbox-with-tooltip">
+                            <div>
+                                <mat-checkbox id="benachrichtigungBgEmailAuto_id" name="benachrichtigungBgEmailAuto_id"
+                                              [(ngModel)]="stammdaten.benachrichtigungBgEmailAuto">
+                                    {{'BENACHRICHTIGUNGEN_EMAIL_SENDEN'|translate}}
+                                </mat-checkbox>
+                            </div>
+                            <dv-tooltip id="benachrichtigungBgEmailAuto-tooltip"
+                                        [text]="'BENACHRICHTIGUNGEN_EMAIL_SENDEN_HELP'|translate"></dv-tooltip>
+                        </div>
                     </div>
 
                     <!--                    standard fusszeile bei verfügungen-->
                     <div class="form-group">
                         <div class="form-group checkbox-with-tooltip">
-                            <mat-checkbox id="standardDokSignature_id" name="standardDokSignature_id"
-                                          [(ngModel)]="stammdaten.standardDokSignature">
-                                {{'STANDARD_DOK_SIGNATURE'|translate}}
-                            </mat-checkbox>
+                            <div>
+                                <mat-checkbox id="standardDokSignature_id" name="standardDokSignature_id"
+                                              [(ngModel)]="stammdaten.standardDokSignature">
+                                    {{'STANDARD_DOK_SIGNATURE'|translate}}
+                                </mat-checkbox>
+                            </div>
                             <dv-tooltip id="standardDokSignature_tooltip"
                                         [text]="'STANDARD_DOK_SIGNATURE_HELP'|translate"></dv-tooltip>
                         </div>
@@ -228,12 +234,14 @@
                     <!--Zusätzlicher Text in Verfügung-->
                     <div class="form-group">
                         <div class="form-group checkbox-with-tooltip">
-                            <mat-checkbox id="zusatzTextBG_id"
-                                          name="zusatzTextBG_id"
-                                          [(ngModel)]="stammdaten.hasZusatzTextVerfuegung"
-                                          (change)="zusatzTextBgHasChange(stammdaten)">
-                                {{'ZUSAETZLICHER_TEXT_VERFUEGUNG_JA'|translate}}
-                            </mat-checkbox>
+                            <div>
+                                <mat-checkbox id="zusatzTextBG_id"
+                                              name="zusatzTextBG_id"
+                                              [(ngModel)]="stammdaten.hasZusatzTextVerfuegung"
+                                              (change)="zusatzTextBgHasChange(stammdaten)">
+                                    {{'ZUSAETZLICHER_TEXT_VERFUEGUNG_JA'|translate}}
+                                </mat-checkbox>
+                            </div>
                             <dv-tooltip id="zusatzText_tooltip"
                                         [text]="'ZUSAETZLICHER_TEXT_VERFUEGUNG_HELP'|translate"></dv-tooltip>
                         </div>

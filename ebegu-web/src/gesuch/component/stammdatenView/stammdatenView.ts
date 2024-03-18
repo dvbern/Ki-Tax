@@ -41,7 +41,6 @@ import {TSGeschlecht} from '../../../models/enums/TSGeschlecht';
 import {TSGesuchstellerKardinalitaet} from '../../../models/enums/TSGesuchstellerKardinalitaet';
 import {TSRole} from '../../../models/enums/TSRole';
 import {getTSSpracheValues, TSSprache} from '../../../models/enums/TSSprache';
-import {TSUnterhaltsvereinbarungAnswer} from '../../../models/enums/TSUnterhaltsvereinbarungAnswer';
 import {TSWizardStepName} from '../../../models/enums/TSWizardStepName';
 import {TSWizardStepStatus} from '../../../models/enums/TSWizardStepStatus';
 import {TSSozialdienstFallDokument} from '../../../models/sozialdienst/TSSozialdienstFallDokument';
@@ -63,6 +62,7 @@ import {DokumenteRS} from '../../service/dokumenteRS.rest';
 import {GesuchModelManager} from '../../service/gesuchModelManager';
 import {WizardStepManager} from '../../service/wizardStepManager';
 import {AbstractGesuchViewController} from '../abstractGesuchView';
+import {TSUnterhaltsvereinbarungAnswer} from '../../../models/enums/TSUnterhaltsvereinbarungAnswer';
 import IPromise = angular.IPromise;
 import IQService = angular.IQService;
 import IRootScopeService = angular.IRootScopeService;
@@ -223,43 +223,67 @@ export class StammdatenViewController extends AbstractGesuchViewController<TSGes
         if (this.gesuchstellerNumber === 1) {
             return '1';
         }
-        let tsFamiliensituation: TSFamiliensituation = this.getGesuch().extractFamiliensituation();
+
+        const tsFamiliensituation: TSFamiliensituation = this.getFamiliensituationToExtractGs2Titel();
         if (EbeguUtil.isNullOrUndefined(tsFamiliensituation)) {
             return '';
         }
-        const partnerIdentisch: boolean = tsFamiliensituation.partnerIdentischMitVorgesuch;
-        let familienstatus: TSFamilienstatus = tsFamiliensituation.familienstatus;
-        if (EbeguUtil.isNotNullAndFalse(partnerIdentisch)) {
-            familienstatus = this.getGesuch().extractFamiliensituationErstgesuch().familienstatus;
-            tsFamiliensituation = this.getGesuch().extractFamiliensituationErstgesuch();
+
+        const familienstatusTitel = this.isGs2AndererElternteil(tsFamiliensituation) ?
+            'ANDERER_ELTERNTEIL' : `GS2_${tsFamiliensituation.familienstatus}`;
+
+        return `2 (${this.$translate.instant(familienstatusTitel)})`;
+    }
+
+    private getFamiliensituationToExtractGs2Titel(): TSFamiliensituation {
+        if (EbeguUtil.isNullOrUndefined(this.getGesuch().extractFamiliensituation())) {
+            return undefined;
         }
-        switch (familienstatus) {
-            case TSFamilienstatus.KONKUBINAT_KEIN_KIND:
-                if (tsFamiliensituation.konkubinatGetXYearsInPeriod(this.getGesuch().gesuchsperiode.gueltigkeit)) {
-                    if (tsFamiliensituation.gesuchstellerKardinalitaet === TSGesuchstellerKardinalitaet.ZU_ZWEIT ||
-                        tsFamiliensituation.unterhaltsvereinbarung ===
-                        TSUnterhaltsvereinbarungAnswer.NEIN_UNTERHALTSVEREINBARUNG) {
-                        return `2 (${this.$translate.instant('ANDERER_ELTERNTEIL')})`;
-                    }
-                } else if (tsFamiliensituation
-                    .konkubinatIsShorterThanXYearsAtAnyTimeAfterStartOfPeriode(this.getGesuch().gesuchsperiode)) {
-                    return `2 (${this.$translate.instant('ANDERER_ELTERNTEIL')})`;
-                }
-                break;
-            case TSFamilienstatus.ALLEINERZIEHEND:
-                if (tsFamiliensituation.gesuchstellerKardinalitaet === TSGesuchstellerKardinalitaet.ZU_ZWEIT ||
-                    tsFamiliensituation.unterhaltsvereinbarung ===
-                    TSUnterhaltsvereinbarungAnswer.NEIN_UNTERHALTSVEREINBARUNG) {
-                    return `2 (${this.$translate.instant('ANDERER_ELTERNTEIL')})`;
-                }
-                if (tsFamiliensituation.gesuchstellerKardinalitaet === TSGesuchstellerKardinalitaet.ALLEINE) {
-                    return `2 (${this.$translate.instant('GS2_VERHEIRATET')})`;
-                }
-                break;
-            default:
-                break;
+
+        if (!this.getGesuch().isMutation()) {
+            return this.getGesuch().extractFamiliensituation();
         }
-        return `2 (${this.$translate.instant(`GS2_${familienstatus}`)})`;
+
+        const endOfPeriode = this.gesuchModelManager.getGesuchsperiode().gueltigkeit.gueltigBis;
+
+        if (!this.getGesuch().extractFamiliensituation().hasSecondGesuchsteller(endOfPeriode)) {
+            //Wenn Mutation nur ein Gesuchsteller hat, aber zwei im Antrag verlangt werden, muss der Titel für den GS2 immer
+            //aus dem Erstgesuch kommen
+            return this.getGesuch().extractFamiliensituationErstgesuch();
+        }
+
+        if (EbeguUtil.isNotNullAndFalse(this.getGesuch().extractFamiliensituation()?.partnerIdentischMitVorgesuch)) {
+            //Wenn der Partner nicht identisch ist, wird das Gesuch beendet und der Titel muss immer aus dem Erstgesuch kommen
+            return this.getGesuch().extractFamiliensituationErstgesuch();
+        }
+
+        //Wenn der Partner identisch ist, soll der Titel aus der Mutation kommen -> z.B. bei Heirat wird dann der korrekte neue
+        //Familienstatus-Titel angezeigt
+        return this.getGesuch().extractFamiliensituation();
+    }
+
+    private isGs2AndererElternteil(familiensituation: TSFamiliensituation) {
+        if (familiensituation.familienstatus === TSFamilienstatus.ALLEINERZIEHEND) {
+            //wenn alleinerziehend ist gs2 immer der andere elternteil
+            return true;
+        }
+
+        if (familiensituation.familienstatus !== TSFamilienstatus.KONKUBINAT_KEIN_KIND) {
+            //wenn nicht alleinzerziehend und nicht Konkubinat kein Kind ist der GS2 nie der andere Elternteil
+            return false;
+        }
+
+        if (familiensituation.isShortKonkubinatForEntirePeriode(this.getGesuch().gesuchsperiode)) {
+            // wenn das Konkubinat kurz ist, ist der 2 GS immer der andere Elternteil
+            return true;
+        }
+
+        if (!familiensituation.konkubinatGetXYearsInPeriod(this.getGesuch().gesuchsperiode.gueltigkeit)) {
+            // wenn das Konkubinat während der ganzen Periode lang ist, ist der 2 GS nie der andere Elternteil
+            return false;
+        }
+        return familiensituation.gesuchstellerKardinalitaet === TSGesuchstellerKardinalitaet.ZU_ZWEIT ||
+            familiensituation.unterhaltsvereinbarung === TSUnterhaltsvereinbarungAnswer.NEIN_UNTERHALTSVEREINBARUNG;
     }
 
     public korrespondenzAdrClicked(): void {

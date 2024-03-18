@@ -32,6 +32,9 @@ public enum EinstellungKey {
 	// Bis zu welcher Schulstufe sollen Gutscheine ausgestellt werden?
 	GEMEINDE_BG_BIS_UND_MIT_SCHULSTUFE(MandantIdentifier.getAll(), EinstellungTyp.GEMEINDE),
 
+	// Fuer welche Angebottyp gilt die SchulstufeCalcRule?
+	ANGEBOT_SCHULSTUFE(MandantIdentifier.getAll()),
+
 	// Ab welchem Datum können Anmeldungen für die Tagesschule erfasst werden
 	GEMEINDE_TAGESSCHULE_ANMELDUNGEN_DATUM_AB(MandantIdentifier.getAll(), EinstellungTyp.GEMEINDE),
 

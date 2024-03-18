@@ -17,15 +17,6 @@
 
 package ch.dvbern.ebegu.api.util.health;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.stream.Collectors;
-
-import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-
 import ch.dvbern.ebegu.config.EbeguConfiguration;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.kafka.clients.admin.AdminClient;
@@ -34,6 +25,14 @@ import org.eclipse.microprofile.health.Health;
 import org.eclipse.microprofile.health.HealthCheck;
 import org.eclipse.microprofile.health.HealthCheckResponse;
 import org.eclipse.microprofile.health.HealthCheckResponseBuilder;
+
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * Checks if there is a connection to Kafka
@@ -46,6 +45,7 @@ import org.eclipse.microprofile.health.HealthCheckResponseBuilder;
 public class DVKafkaHealthCheck implements HealthCheck {
 
 	private static final String NAME = "dv-kafka-connection-check";
+	private static final String REASON_KEY = "reason";
 
 	@Inject
 	private EbeguConfiguration ebeguConfiguration;
@@ -75,7 +75,7 @@ public class DVKafkaHealthCheck implements HealthCheck {
 	@SuppressFBWarnings(value = "REC_CATCH_EXCEPTION", justification = "Health Check reports reason")
 	public HealthCheckResponse call() {
 		if (!ebeguConfiguration.getKafkaURL().isPresent()) {
-			return HealthCheckResponse.named(NAME).down().withData("reason", "Bootstrap URL not configured").build();
+			return HealthCheckResponse.named(NAME).down().withData(REASON_KEY, "Bootstrap URL not configured").build();
 		}
 
 		HealthCheckResponseBuilder builder = HealthCheckResponse.named(NAME).up();
@@ -84,8 +84,11 @@ public class DVKafkaHealthCheck implements HealthCheck {
 				.map(node -> node.host() + ':' + node.port())
 				.collect(Collectors.joining(","));
 			return builder.withData("nodes", nodes).build();
+		} catch (InterruptedException e) {
+			Thread.currentThread().interrupt();
+			return builder.down().withData(REASON_KEY, e.getMessage()).build();
 		} catch (Exception e) {
-			return builder.down().withData("reason", e.getMessage()).build();
+			return builder.down().withData(REASON_KEY, e.getMessage()).build();
 		}
 	}
 }

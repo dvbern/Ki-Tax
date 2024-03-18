@@ -15,23 +15,18 @@
 
 package ch.dvbern.ebegu.services;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.concurrent.TimeUnit;
-
-import javax.annotation.Nonnull;
-import javax.ejb.Local;
-import javax.ejb.Stateless;
-import javax.inject.Inject;
-
 import ch.dvbern.ebegu.dto.geoadmin.JaxWohnadresse;
 import ch.dvbern.ebegu.entities.Adresse;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
 import ch.dvbern.lib.cdipersistence.Persistence;
+
+import javax.annotation.Nonnull;
+import javax.ejb.Local;
+import javax.ejb.Stateless;
+import javax.inject.Inject;
+import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Service fuer Adresse
@@ -85,6 +80,7 @@ public class AdresseServiceBean extends AbstractBaseService implements AdresseSe
 		try {
 			TimeUnit.MILLISECONDS.sleep(WAIT_MILLISECONDS_BEFORE_REQUEST);
 		} catch (InterruptedException e) {
+			Thread.currentThread().interrupt();
 			throw new EbeguRuntimeException("updateGemeindeAndBFS", "Program Interrupted", e);
 		}
 		List<JaxWohnadresse> wohnadresseList = geoadminSearchService.findWohnadressenByStrasseAndPlz(
