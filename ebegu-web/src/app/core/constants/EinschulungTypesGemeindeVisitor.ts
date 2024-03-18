@@ -16,29 +16,28 @@
  */
 
 import {
-    getTSEinschulungTypValues,
-    getTSEinschulungTypValuesAppenzellAusserrhoden,
-    getTSEinschulungTypValuesLuzern, getTSEinschulungTypValuesSchwyz,
+    getTSEinschulungTypGemeindeValues,
+    getTSEinschulungTypValuesSchwyz,
     TSEinschulungTyp,
 } from '../../../models/enums/TSEinschulungTyp';
 import {KiBonMandant} from './MANDANTS';
 import {MandantVisitor} from './MandantVisitor';
 
-export class EinschulungTypesVisitor implements MandantVisitor<ReadonlyArray<TSEinschulungTyp>> {
+export class EinschulungTypesGemeindeVisitor implements MandantVisitor<ReadonlyArray<TSEinschulungTyp>> {
 
     public process(mandant: KiBonMandant): ReadonlyArray<TSEinschulungTyp> {
         return mandant.accept(this);
     }
     public visitBern(): ReadonlyArray<TSEinschulungTyp> {
-        return getTSEinschulungTypValues();
+        return getTSEinschulungTypGemeindeValues();
     }
 
     public visitLuzern(): ReadonlyArray<TSEinschulungTyp> {
-        return getTSEinschulungTypValuesLuzern();
+        return this.visitBern();
     }
 
     public visitAppenzellAusserrhoden(): ReadonlyArray<TSEinschulungTyp> {
-        return getTSEinschulungTypValuesAppenzellAusserrhoden();
+        return this.visitBern();
     }
 
     public visitSolothurn(): ReadonlyArray<TSEinschulungTyp> {

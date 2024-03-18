@@ -135,17 +135,6 @@ public final class EbeguRuleTestsHelper {
 		return calculate(betreuung, initialenRestanspruchAbschnitte, einstellungenGemaessAsiv, executor);
 	}
 
-	public static List<VerfuegungZeitabschnitt> calculateWithCustomEinstellungen(
-			AbstractPlatz betreuung,
-			Map<EinstellungKey, Einstellung> einstellungMap) {
-		List<VerfuegungZeitabschnitt> initialenRestanspruchAbschnitte =
-				createInitialenRestanspruch(betreuung.extractGesuchsperiode(), false);
-		TestDataUtil.calculateFinanzDaten(
-				betreuung.extractGesuch(),
-				FinanzielleSituationRechnerFactory.getRechner(betreuung.extractGesuch()));
-		return calculate(betreuung, initialenRestanspruchAbschnitte, einstellungMap, executor);
-	}
-
 	public static List<VerfuegungZeitabschnitt> calculateInklAllgemeineRegeln(Betreuung betreuung) {
 		List<VerfuegungZeitabschnitt> initialenRestanspruchAbschnitte =
 				createInitialenRestanspruch(betreuung.extractGesuchsperiode(), false);
@@ -262,6 +251,10 @@ public final class EbeguRuleTestsHelper {
 				GEMEINDE_BG_BIS_UND_MIT_SCHULSTUFE,
 				EinschulungTyp.KINDERGARTEN2.name(),
 				gesuchsperiode);
+		einstellungenMap.addEinstellung(
+			ANGEBOT_SCHULSTUFE,
+			BetreuungsangebotTyp.KITA.name(),
+			gesuchsperiode);
 		einstellungenMap.addEinstellung(
 				MIN_ERWERBSPENSUM_EINGESCHULT,
 				EINSTELLUNG_MIN_ERWERBSPENSUM_EINGESCHULT,
