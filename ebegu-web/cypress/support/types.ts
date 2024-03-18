@@ -124,3 +124,5 @@ export type MainnavStep = 'ALLE_FAELLE'
     | 'STATISTIKEN';
 
 export type GemeindeTestFall = 'London' | 'Paris' | 'Testgemeinde Schwyz';
+
+export type TestInstitution = 'Tagesschule Paris';
