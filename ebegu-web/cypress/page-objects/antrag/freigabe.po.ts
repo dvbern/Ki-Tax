@@ -15,6 +15,8 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import {ConfirmDialogPO} from '../dialogs';
+
 const getFreigebenButton = () => {
     return cy.getByData('container.freigeben', 'navigation-button');
 };
@@ -23,7 +25,22 @@ const getFreigabequittungEinscannenSimulierenButton = () => {
 	return cy.getByData('container.antrag-freigeben-simulieren', 'navigation-button');
 };
 
+const freigeben = () => {
+    FreigabePO.getFreigebenButton().click();
+    cy.getDownloadUrl(() => {
+        cy.waitForRequest('GET', '**/dossier/fall/**', () => {
+            ConfirmDialogPO.getDvLoadingConfirmButton().click();
+        });
+    }).then(downloadUrl => {
+        return cy.request(downloadUrl)
+            .then(response => expect(response.headers['content-disposition']).to.match(/Freigabequittung_.*\.pdf/));
+    });
+};
+
 export const FreigabePO = {
+    // PAGE OBJECTS
     getFreigebenButton,
     getFreigabequittungEinscannenSimulierenButton,
+    // PAGE ACTIONS
+    freigeben,
 };

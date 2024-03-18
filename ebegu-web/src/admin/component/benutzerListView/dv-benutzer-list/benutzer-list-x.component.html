@@ -196,8 +196,6 @@
                 <ng-container matColumnDef="role-filter">
                     <mat-header-cell *matHeaderCellDef="let column">
                         <mat-form-field class="dv-username-mat-form-field" floatLabel="never">
-                            <div class="select-background"></div>
-                            <mat-label translate>ALLE</mat-label>
                             <mat-select [value]="filterPredicate.role" (selectionChange)="applyFilter($event.value, 'role')" panelClass="mat-select-panel1">
                                 <mat-option selected><span translate>ALLE</span></mat-option>
                                 <mat-option *ngFor="let r of getRoles()"
@@ -226,8 +224,6 @@
                 <ng-container matColumnDef="gemeinde-filter">
                     <mat-header-cell *matHeaderCellDef="let column">
                         <mat-form-field class="dv-gemeinde-mat-form-field" floatLabel="never">
-                            <div class="select-background"></div>
-                            <mat-label translate>ALLE</mat-label>
                             <mat-select [value]="filterPredicate.gemeinde" (selectionChange)="applyFilter($event.value, 'gemeinde')" panelClass="mat-select-panel1">
                                 <mat-option selected><span translate>ALLE</span></mat-option>
                                 <mat-option *ngFor="let g of gemeindeList"
@@ -240,8 +236,6 @@
                 <ng-container matColumnDef="institution-filter">
                     <mat-header-cell *matHeaderCellDef="let column">
                         <mat-form-field class="dv-institution-mat-form-field" floatLabel="never">
-                            <div class="select-background"></div>
-                            <mat-label translate>ALLE</mat-label>
                             <mat-select [value]="filterPredicate.institution" (selectionChange)="applyFilter($event.value, 'institution')" panelClass="mat-select-panel1">
                                 <mat-option selected><span translate>ALLE</span></mat-option>
                                 <mat-option *ngFor="let i of institutionenList"
@@ -254,8 +248,6 @@
                 <ng-container matColumnDef="traegerschaft-filter">
                     <mat-header-cell *matHeaderCellDef="let column">
                         <mat-form-field class="dv-traegerschaft-mat-form-field" floatLabel="never">
-                            <div class="select-background"></div>
-                            <mat-label translate>ALLE</mat-label>
                             <mat-select [value]="filterPredicate.traegerschaft" (selectionChange)="applyFilter($event.value, 'traegerschaft')" panelClass="mat-select-panel1">
                                 <mat-option selected><span translate>ALLE</span></mat-option>
                                 <mat-option *ngFor="let t of traegerschaftenList"
@@ -268,8 +260,6 @@
                 <ng-container matColumnDef="sozialdienst-filter">
                     <mat-header-cell *matHeaderCellDef="let column">
                         <mat-form-field class="dv-sozialdienst-mat-form-field" floatLabel="never">
-                            <div class="select-background"></div>
-                            <mat-label translate>ALLE</mat-label>
                             <mat-select [value]="filterPredicate.sozialdienst" (selectionChange)="applyFilter($event.value, 'sozialdienst')" panelClass="mat-select-panel1">
                                 <mat-option selected><span translate>ALLE</span></mat-option>
                                 <mat-option *ngFor="let s of sozialdienstList"
@@ -282,8 +272,6 @@
                 <ng-container matColumnDef="status-filter">
                     <mat-header-cell *matHeaderCellDef="let column">
                         <mat-form-field class="dv-status-mat-form-field" floatLabel="never">
-                            <div class="select-background"></div>
-                            <mat-label translate>ALLE</mat-label>
                             <mat-select [value]="filterPredicate.status" (selectionChange)="applyFilter($event.value, 'status')" panelClass="mat-select-panel1">
                                 <mat-option selected><span translate>ALLE</span></mat-option>
                                 <mat-option *ngFor="let s of benutzerStatuses"

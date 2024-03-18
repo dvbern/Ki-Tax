@@ -18,8 +18,6 @@
 import {CommonModule} from '@angular/common';
 import {NgModule} from '@angular/core';
 import {ReactiveFormsModule} from '@angular/forms';
-import {MatButtonModule} from '@angular/material/button';
-import {MatMenuModule} from '@angular/material/menu';
 import {MatSidenavModule} from '@angular/material/sidenav';
 import {MatToolbarModule} from '@angular/material/toolbar';
 import {RouterModule} from '@angular/router';
@@ -54,8 +52,6 @@ import {TagesschulenUiViewComponent} from './tagesschulen-ui-view/tagesschulen-u
         MatSidenavModule,
         RouterModule,
         UIRouterModule,
-        MatMenuModule,
-        MatButtonModule,
         SharedModule,
         ReactiveFormsModule,
         WizardstepXModule

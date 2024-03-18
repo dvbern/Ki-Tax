@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018 DV Bern AG, Switzerland
+ * Copyright (C) 2024 DV Bern AG, Switzerland
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -15,9 +15,8 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-export enum TSPensumUnits {
-    PERCENTAGE = 'PERCENTAGE',
-    DAYS = 'DAYS',
-    HOURS = 'HOURS',
-    MAHLZEITEN = 'MAHLZEITEN',
-}
+alter table einkommensverschlechterung add ersatzeinkommen_selbststaendigkeit_basisjahr DECIMAL(19, 2);
+alter table einkommensverschlechterung_aud add ersatzeinkommen_selbststaendigkeit_basisjahr DECIMAL(19, 2);
+
+alter table einkommensverschlechterung add ersatzeinkommen_selbststaendigkeit_basisjahr_minus1 DECIMAL(19, 2);
+alter table einkommensverschlechterung_aud add ersatzeinkommen_selbststaendigkeit_basisjahr_minus1 DECIMAL(19, 2);

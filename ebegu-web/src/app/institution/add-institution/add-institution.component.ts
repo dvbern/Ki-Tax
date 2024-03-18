@@ -21,7 +21,7 @@ import {MatDialog, MatDialogConfig} from '@angular/material/dialog';
 import {TranslateService} from '@ngx-translate/core';
 import {StateService, Transition} from '@uirouter/core';
 import * as moment from 'moment';
-import {filter, mergeMap, take} from 'rxjs/operators';
+import {take} from 'rxjs/operators';
 import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {GemeindeRS} from '../../../gesuch/service/gemeindeRS.rest';
 import {TSBetreuungsangebotTyp} from '../../../models/enums/TSBetreuungsangebotTyp';
@@ -98,6 +98,8 @@ export class AddInstitutionComponent implements OnInit {
                             return props.angebotFIActivated;
                         case TSBetreuungsangebotTyp.TAGESSCHULE:
                             return props.angebotTSActivated;
+                        case TSBetreuungsangebotTyp.MITTAGSTISCH:
+                            return props.angebotMittagstischActivated;
                         default:
                             return true;
                     }

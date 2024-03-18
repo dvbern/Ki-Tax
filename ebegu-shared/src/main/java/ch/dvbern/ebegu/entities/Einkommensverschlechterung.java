@@ -40,10 +40,6 @@ public class Einkommensverschlechterung extends AbstractFinanzielleSituation {
 	private static final long serialVersionUID = -8959552696602183511L;
 
 	@Nullable
-	@Column(nullable = true)
-	private BigDecimal geschaeftsgewinnBasisjahrMinus1;
-
-	@Nullable
 	@Column(name = "bruttolohn_abrechnung_1", nullable = true)
 	private BigDecimal bruttolohnAbrechnung1;
 
@@ -81,15 +77,6 @@ public class Einkommensverschlechterung extends AbstractFinanzielleSituation {
 	@Nullable
 	public SteuerdatenAnfrageStatus getSteuerdatenAbfrageStatus() {
 		return null;
-	}
-
-	@Nullable
-	public BigDecimal getGeschaeftsgewinnBasisjahrMinus1() {
-		return geschaeftsgewinnBasisjahrMinus1;
-	}
-
-	public void setGeschaeftsgewinnBasisjahrMinus1(@Nullable BigDecimal geschaeftsgewinnBasisjahrMinus1) {
-		this.geschaeftsgewinnBasisjahrMinus1 = geschaeftsgewinnBasisjahrMinus1;
 	}
 
 	@Nullable
@@ -138,7 +125,6 @@ public class Einkommensverschlechterung extends AbstractFinanzielleSituation {
 		case MUTATION_NEUES_DOSSIER:
 		case ERNEUERUNG_AR_2023:
 			super.copyAbstractFinanzielleSituation(target, copyType);
-			target.setGeschaeftsgewinnBasisjahrMinus1(this.getGeschaeftsgewinnBasisjahrMinus1());
 			target.setBruttolohnAbrechnung1(this.getBruttolohnAbrechnung1());
 			target.setBruttolohnAbrechnung2(this.getBruttolohnAbrechnung2());
 			target.setBruttolohnAbrechnung3(this.getBruttolohnAbrechnung3());
@@ -170,9 +156,7 @@ public class Einkommensverschlechterung extends AbstractFinanzielleSituation {
 			return false;
 		}
 		final Einkommensverschlechterung otherEinkommensverschlechterung = (Einkommensverschlechterung) other;
-		return MathUtil.isSame(
-			getGeschaeftsgewinnBasisjahrMinus1(),
-			otherEinkommensverschlechterung.getGeschaeftsgewinnBasisjahrMinus1()) &&
+		return
 			MathUtil.isSame(getBruttolohnAbrechnung1(), otherEinkommensverschlechterung.getBruttolohnAbrechnung1()) &&
 			MathUtil.isSame(getBruttolohnAbrechnung2(), otherEinkommensverschlechterung.getBruttolohnAbrechnung2()) &&
 			MathUtil.isSame(getBruttolohnAbrechnung3(), otherEinkommensverschlechterung.getBruttolohnAbrechnung3());
