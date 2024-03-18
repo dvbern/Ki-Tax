@@ -29,6 +29,7 @@ import {TSQuickSearchResult} from '../models/dto/TSQuickSearchResult';
 import {TSSearchResultEntry} from '../models/dto/TSSearchResultEntry';
 import {TSAdressetyp} from '../models/enums/TSAdressetyp';
 import {TSAnspruchBeschaeftigungAbhaengigkeitTyp} from '../models/enums/TSAnspruchBeschaeftigungAbhaengigkeitTyp';
+import {TSBetreuungsangebotTyp} from '../models/enums/TSBetreuungsangebotTyp';
 import {TSBetreuungspensumAbweichungStatus} from '../models/enums/TSBetreuungspensumAbweichungStatus';
 import {TSEinschulungTyp} from '../models/enums/TSEinschulungTyp';
 import {TSFachstellenTyp} from '../models/enums/TSFachstellenTyp';
@@ -42,16 +43,12 @@ import {TSDurchschnittKinderProTag} from '../models/gemeindeantrag/TSDurchschnit
 import {TSFerienbetreuungAngaben} from '../models/gemeindeantrag/TSFerienbetreuungAngaben';
 import {TSFerienbetreuungAngabenAngebot} from '../models/gemeindeantrag/TSFerienbetreuungAngabenAngebot';
 import {TSFerienbetreuungAngabenContainer} from '../models/gemeindeantrag/TSFerienbetreuungAngabenContainer';
-import {
-    TSFerienbetreuungAngabenKostenEinnahmen,
-} from '../models/gemeindeantrag/TSFerienbetreuungAngabenKostenEinnahmen';
+import {TSFerienbetreuungAngabenKostenEinnahmen} from '../models/gemeindeantrag/TSFerienbetreuungAngabenKostenEinnahmen';
 import {TSFerienbetreuungAngabenNutzung} from '../models/gemeindeantrag/TSFerienbetreuungAngabenNutzung';
 import {TSFerienbetreuungAngabenStammdaten} from '../models/gemeindeantrag/TSFerienbetreuungAngabenStammdaten';
 import {TSFerienbetreuungDokument} from '../models/gemeindeantrag/TSFerienbetreuungDokument';
 import {TSGemeindeAntrag} from '../models/gemeindeantrag/TSGemeindeAntrag';
-import {
-    TSLastenausgleichTagesschuleAngabenGemeinde,
-} from '../models/gemeindeantrag/TSLastenausgleichTagesschuleAngabenGemeinde';
+import {TSLastenausgleichTagesschuleAngabenGemeinde} from '../models/gemeindeantrag/TSLastenausgleichTagesschuleAngabenGemeinde';
 import {
     TSLastenausgleichTagesschuleAngabenGemeindeContainer,
 } from '../models/gemeindeantrag/TSLastenausgleichTagesschuleAngabenGemeindeContainer';
@@ -61,9 +58,7 @@ import {
 import {
     TSLastenausgleichTagesschuleAngabenInstitutionContainer,
 } from '../models/gemeindeantrag/TSLastenausgleichTagesschuleAngabenInstitutionContainer';
-import {
-    TSLastenausgleichTagesschulenStatusHistory,
-} from '../models/gemeindeantrag/TSLastenausgleichTagesschulenStatusHistory';
+import {TSLastenausgleichTagesschulenStatusHistory} from '../models/gemeindeantrag/TSLastenausgleichTagesschulenStatusHistory';
 import {TSOeffnungszeitenTagesschule} from '../models/gemeindeantrag/TSOeffnungszeitenTagesschule';
 import {TSKibonAnfrage} from '../models/neskovanp/TSKibonAnfrage';
 import {TSSteuerdatenResponse} from '../models/neskovanp/TSSteuerdatenResponse';
@@ -2693,6 +2688,14 @@ export class EbeguRestUtil {
 
         restAbweichung.vertraglichesPensum = originalPensum;
         restAbweichung.pensum = pensum;
+
+        if (abweichung.betreuungsangebotTyp === TSBetreuungsangebotTyp.MITTAGSTISCH) {
+            const kosten = abweichung.pensum * abweichung.monatlicheBetreuungskosten;
+            const originalKosten = originalPensum * restAbweichung.vertraglicheKosten;
+            restAbweichung.monatlicheBetreuungskosten = kosten;
+            restAbweichung.vertraglicheKosten = originalKosten;
+        }
+
         restAbweichung.monatlicheHauptmahlzeiten = abweichung.monatlicheHauptmahlzeiten;
         restAbweichung.monatlicheNebenmahlzeiten = abweichung.monatlicheNebenmahlzeiten;
         restAbweichung.vertraglicheHauptmahlzeiten = abweichung.vertraglicheHauptmahlzeiten;
@@ -2843,12 +2846,25 @@ export class EbeguRestUtil {
         this.parseAbstractBetreuungspensumEntity(abweichungTS, abweichungFromServer);
         abweichungTS.status = abweichungFromServer.status;
         abweichungTS.vertraglicheKosten = abweichungFromServer.vertraglicheKosten;
+        abweichungTS.betreuungsangebotTyp = abweichungFromServer.betreuungsangebotTyp;
 
         abweichungTS.multiplier = abweichungFromServer.multiplier;
 
         const pensum = Number((abweichungFromServer.pensum * abweichungFromServer.multiplier).toFixed(2));
         const originalPensum = Number((abweichungFromServer.vertraglichesPensum * abweichungFromServer.multiplier)
             .toFixed(2));
+
+        if (abweichungTS.betreuungsangebotTyp === TSBetreuungsangebotTyp.MITTAGSTISCH) {
+            const monatlicheKosten = pensum === 0 ?
+                0 :
+                Number((abweichungFromServer.monatlicheBetreuungskosten / pensum).toFixed(2));
+            const originalKosten = originalPensum === 0 ?
+                0 :
+                Number((abweichungFromServer.vertraglicheKosten / originalPensum).toFixed(2));
+
+            abweichungTS.monatlicheBetreuungskosten = monatlicheKosten;
+            abweichungTS.vertraglicheKosten = originalKosten;
+        }
 
         abweichungTS.vertraglicheHauptmahlzeiten = abweichungFromServer.vertraglicheHauptmahlzeiten;
         abweichungTS.vertraglicheNebenmahlzeiten = abweichungFromServer.vertraglicheNebenmahlzeiten;

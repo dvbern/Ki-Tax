@@ -29,7 +29,7 @@ public class MinPensumEinstellungKeyBetreuungsTypVisitor implements Betreuungsan
 
 	@Override
 	public EinstellungKey visitMittagtisch() {
-		throw new NotImplementedException();
+		return EinstellungKey.PARAM_PENSUM_TAGESELTERN_MIN;
 	}
 
 	@Override

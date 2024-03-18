@@ -19,6 +19,7 @@ package ch.dvbern.ebegu.util;
 
 import org.junit.Test;
 
+import static java.math.BigDecimal.*;
 import static org.junit.Assert.*;
 
 public class BetreuungUtilTest {
@@ -63,5 +64,10 @@ public class BetreuungUtilTest {
 		assertFalse("88.99999.77.66", BetreuungUtil.validateBGNummer("88.99999.003.77.66"));
 		assertFalse("88.999999.66", BetreuungUtil.validateBGNummer("88.999999.003.66"));
 		assertFalse("88.999999.66", BetreuungUtil.validateBGNummer("88.999999.003.66"));
+	}
+
+	@Test
+	public void hardcodedMittagstischMultiplierCalculationShouldBeHardcodedValue() {
+		assertEquals(BetreuungUtil.getMittagstischMultiplier(), valueOf(0.205));
 	}
 }

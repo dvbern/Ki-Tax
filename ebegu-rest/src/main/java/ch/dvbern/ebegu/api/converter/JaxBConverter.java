@@ -3814,13 +3814,13 @@ public class JaxBConverter extends AbstractConverter {
 	public List<JaxBetreuungspensumAbweichung> betreuungspensumAbweichungenToJax(@Nonnull Betreuung betreuung) {
 		return betreuung.fillAbweichungen(betreuungService.getMultiplierForAbweichnungen(betreuung))
 			.stream()
-			.map(this::betreuungspensumAbweichungToJax)
+			.map((BetreuungspensumAbweichung abweichung) -> betreuungspensumAbweichungToJax(abweichung, betreuung.getBetreuungsangebotTyp()))
 			.collect(Collectors.toList());
 	}
 
 	@Nonnull
 	private JaxBetreuungspensumAbweichung betreuungspensumAbweichungToJax(
-		@Nonnull BetreuungspensumAbweichung abweichung) {
+		@Nonnull BetreuungspensumAbweichung abweichung, @Nonnull BetreuungsangebotTyp betreuungsangebotTyp) {
 		JaxBetreuungspensumAbweichung jaxAbweichung = new JaxBetreuungspensumAbweichung();
 		convertAbstractPensumFieldsToJAX(abweichung, jaxAbweichung);
 		jaxAbweichung.setVertraglicheKosten(abweichung.getVertraglicheKosten());
@@ -3835,6 +3835,7 @@ public class JaxBConverter extends AbstractConverter {
 		jaxAbweichung.setVertraglicherTarifHaupt(abweichung.getVertraglicherTarifHauptmahlzeit());
 		jaxAbweichung.setVertraglicherTarifNeben(abweichung.getVertraglicherTarifNebenmahlzeit());
 		jaxAbweichung.setMultiplier(abweichung.getMultiplier());
+		jaxAbweichung.setBetreuungsangebotTyp(betreuungsangebotTyp);
 
 		return jaxAbweichung;
 	}

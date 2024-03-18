@@ -39,6 +39,7 @@ SET @bruennen_id = UNHEX(REPLACE('1188c355-b3d6-11ee-829a-0242ac160002', '-', ''
 SET @weissenstein_id = UNHEX(REPLACE('1722f92b-b3d6-11ee-829a-0242ac160002', '-', ''));
 SET @tfo_id = UNHEX(REPLACE('1c218a88-b3d6-11ee-829a-0242ac160002', '-', ''));
 SET @ts_id = UNHEX(REPLACE('e67aa195-b912-11ee-8d78-0242ac160002', '-', ''));
+SET @mittagstisch_id = UNHEX(REPLACE('7212f92b-b3c6-21ea-729b-1242ac160003', '-', ''));
 SET @system_user = UNHEX(REPLACE('33333333-3333-3333-3333-333333333333', '-', ''));
 
 # APPLICATION PROPERTIES
@@ -123,6 +124,9 @@ INSERT IGNORE INTO institution (id, timestamp_erstellt, timestamp_mutiert, user_
 INSERT IGNORE INTO institution (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version, vorgaenger_id, name, mandant_id, traegerschaft_id, status, event_published)
 	VALUES (@weissenstein_id, NOW(), NOW(), 'flyway:Kanton Schwyz', 'flyway:Kanton Schwyz', 0, null, 'Weissenstein SZ',
 			@mandant_id_schwyz, @traegerschaft_schwyz_id, 'AKTIV', false);
+INSERT IGNORE INTO institution (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version, vorgaenger_id, name, mandant_id, traegerschaft_id, status, event_published)
+	VALUES (@mittagstisch_id, NOW(), NOW(), 'flyway:Kanton Schwyz', 'flyway:Kanton Schwyz', 0, null, 'Mittagstisch SZ',
+			@mandant_id_schwyz, @traegerschaft_schwyz_id, 'AKTIV', false);
 
 INSERT IGNORE INTO adresse (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version, vorgaenger_id, gueltig_ab, gueltig_bis, gemeinde, hausnummer, land, organisation, ort, plz, strasse, zusatzzeile)
 	VALUES (UNHEX(REPLACE('34b03b7e-b3e8-11ee-829a-0242ac160002', '-', '')), NOW(), NOW(), 'flyway:Kanton Schwyz', 'flyway:Kanton Schwyz', 0, null, '1000-01-01', '9999-12-31', null, '4', 'CH', 'Tageseltern Schwyz', 'Schwyz', '4500', 'Gasstrasse', null);
@@ -130,6 +134,8 @@ INSERT IGNORE INTO adresse (id, timestamp_erstellt, timestamp_mutiert, user_erst
 	VALUES (UNHEX(REPLACE('3b3277b4-b3e8-11ee-829a-0242ac160002', '-', '')), NOW(), NOW(), 'flyway:Kanton Schwyz', 'flyway:Kanton Schwyz', 0, null, '1000-01-01', '9999-12-31', null, '5', 'CH', 'Weissenstein Schwyz', 'Schwyz', '4500', 'Weberstrasse', null);
 INSERT IGNORE INTO adresse (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version, vorgaenger_id, gueltig_ab, gueltig_bis, gemeinde, hausnummer, land, organisation, ort, plz, strasse, zusatzzeile)
 	VALUES (UNHEX(REPLACE('40933ba4-b3e8-11ee-829a-0242ac160002', '-', '')), NOW(), NOW(), 'flyway:Kanton Schwyz', 'flyway:Kanton Schwyz', 0, null, '1000-01-01', '9999-12-31', null, '27', 'CH', 'Brünnen Schwyz', 'Schwyz', '4500', 'Colombstrasse', null);
+INSERT IGNORE INTO adresse (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version, vorgaenger_id, gueltig_ab, gueltig_bis, gemeinde, hausnummer, land, organisation, ort, plz, strasse, zusatzzeile)
+	VALUES (UNHEX(REPLACE('ed882d63-dc72-11ee-8dae-0242ac160002', '-', '')), NOW(), NOW(), 'flyway:Kanton Schwyz', 'flyway:Kanton Schwyz', 0, null, '1000-01-01', '9999-12-31', null, '27', 'CH', 'Mittagstisch Schwyz', 'Schwyz', '4500', 'MIttagstrasse', null);
 
 INSERT IGNORE INTO auszahlungsdaten(id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version, iban, kontoinhaber, adresse_kontoinhaber_id)
 	VALUES (UNHEX(REPLACE('4ef020a5-b3e8-11ee-829a-0242ac160002', '-', '')), NOW(), NOW(), 'flyway:Kanton Schwyz', 'flyway:Kanton Schwyz', 0, 'CH82 0900 0000 1001 5000 6', 'Kontoinhaber Bruennen SZ', null);
@@ -137,6 +143,8 @@ INSERT IGNORE INTO auszahlungsdaten(id, timestamp_erstellt, timestamp_mutiert, u
 	VALUES (UNHEX(REPLACE('539c6b3e-b3e8-11ee-829a-0242ac160002', '-', '')), NOW(), NOW(), 'flyway:Kanton Schwyz', 'flyway:Kanton Schwyz', 0, 'CH82 0900 0000 1001 5000 6', 'Kontoinhaber Weissenstein SZ', null);
 INSERT IGNORE INTO auszahlungsdaten(id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version, iban, kontoinhaber, adresse_kontoinhaber_id)
 	VALUES (UNHEX(REPLACE('5913320b-b3e8-11ee-829a-0242ac160002', '-', '')), NOW(), NOW(), 'flyway:Kanton Schwyz', 'flyway:Kanton Schwyz', 0, 'CH82 0900 0000 1001 5000 6', 'Kontoinhaber Tageseltern Schwyz', null);
+INSERT IGNORE INTO auszahlungsdaten(id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version, iban, kontoinhaber, adresse_kontoinhaber_id)
+	VALUES (UNHEX(REPLACE('fcc33b19-dc72-11ee-8dae-0242ac160002', '-', '')), NOW(), NOW(), 'flyway:Kanton Schwyz', 'flyway:Kanton Schwyz', 0, 'CH82 0900 0000 1001 5000 6', 'Kontoinhaber Mittagstisch Schwyz', null);
 
 INSERT IGNORE INTO institution_stammdaten_betreuungsgutscheine(id, timestamp_erstellt, timestamp_mutiert, user_erstellt,
 															   user_mutiert, version, auszahlungsdaten_id,
@@ -180,6 +188,20 @@ VALUES (UNHEX(REPLACE('95440105-b3e8-11ee-829a-0242ac160002', '-', '')), NOW(), 
 		'flyway:Kanton Schwyz', 'flyway:Kanton Schwyz', 0, UNHEX(REPLACE('4ef020a5-b3e8-11ee-829a-0242ac160002', '-', '')), FALSE, FALSE, FALSE,
 		FALSE, 40, NULL, '08:00', '18:00', 0, 0.00, 0.00, 0.00, 0.00, FALSE, FALSE, FALSE, FALSE);
 
+INSERT IGNORE INTO institution_stammdaten_betreuungsgutscheine(id, timestamp_erstellt, timestamp_mutiert, user_erstellt,
+															   user_mutiert, version, auszahlungsdaten_id,
+															   alterskategorie_baby, alterskategorie_vorschule,
+															   alterskategorie_kindergarten, alterskategorie_schule,
+															   anzahl_plaetze,
+															   anzahl_plaetze_firmen, offen_von, offen_bis,
+															   oeffnungstage_pro_jahr, auslastung_institutionen,
+															   anzahl_kinder_warteliste, summe_pensum_warteliste,
+															   dauer_warteliste, frueh_eroeffnung, spaet_eroeffnung,
+															   wochenende_eroeffnung, uebernachtung_moeglich)
+VALUES (UNHEX(REPLACE('159918e0-dc73-11ee-8dae-0242ac160002', '-', '')), NOW(), NOW(),
+		'flyway:Kanton Schwyz', 'flyway:Kanton Schwyz', 0, UNHEX(REPLACE('fcc33b19-dc72-11ee-8dae-0242ac160002', '-', '')), FALSE, FALSE, FALSE,
+		FALSE, 40, NULL, '08:00', '18:00', 0, 0.00, 0.00, 0.00, 0.00, FALSE, FALSE, FALSE, FALSE);
+
 INSERT IGNORE INTO institution_stammdaten (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert,
 										   version, vorgaenger_id, gueltig_ab, gueltig_bis, betreuungsangebot_typ,
 										   adresse_id, institution_id, institution_stammdaten_tagesschule_id,
@@ -190,6 +212,18 @@ VALUES (UNHEX(REPLACE('9fdc2b4d-b3e8-11ee-829a-0242ac160002', '-', '')), NOW(), 
 		UNHEX(REPLACE('34b03b7e-b3e8-11ee-829a-0242ac160002', '-', '')),
 		@tfo_id, NULL, NULL,
 		UNHEX(REPLACE('65dd4898-b3e8-11ee-829a-0242ac160002', '-', '')), 'tagesfamilien-sz@mailbucket.dvbern.ch', NULL,
+		NULL);
+
+INSERT IGNORE INTO institution_stammdaten (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert,
+										   version, vorgaenger_id, gueltig_ab, gueltig_bis, betreuungsangebot_typ,
+										   adresse_id, institution_id, institution_stammdaten_tagesschule_id,
+										   institution_stammdaten_ferieninsel_id,
+										   institution_stammdaten_betreuungsgutscheine_id, mail, telefon, webseite)
+VALUES (UNHEX(REPLACE('28026216-dc73-11ee-8dae-0242ac160002', '-', '')), NOW(), NOW(),
+		'flyway:Kanton Schwyz', 'flyway:Kanton Schwyz', 0, NULL, '2019-08-01', '9999-12-31', 'MITTAGSTISCH',
+		UNHEX(REPLACE('ed882d63-dc72-11ee-8dae-0242ac160002', '-', '')),
+		@mittagstisch_id, NULL, NULL,
+		UNHEX(REPLACE('159918e0-dc73-11ee-8dae-0242ac160002', '-', '')), 'mittagstisch-sz@mailbucket.dvbern.ch', NULL,
 		NULL);
 
 INSERT IGNORE INTO institution_stammdaten (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert,

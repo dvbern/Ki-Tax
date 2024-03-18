@@ -296,6 +296,11 @@ public class Betreuung extends AbstractPlatz {
 	}
 
 	@Transient
+	public boolean isAngebotMittagstisch() {
+		return BetreuungsangebotTyp.MITTAGSTISCH == getBetreuungsangebotTyp();
+	}
+
+	@Transient
 	public boolean isAngebotAuszuzahlen() {
 		return BetreuungsangebotTyp.getBetreuungsgutscheinTypes().contains(getBetreuungsangebotTyp());
 	}

@@ -23,7 +23,12 @@ const getSimpleConfirmButton = () => {
     return cy.getByData('container.confirm');
 };
 
+const getDialogOkButton = () => {
+	return cy.getByData('dialog-ok');
+};
+
 export const ConfirmDialogPO = {
     getDvLoadingConfirmButton,
-    getSimpleConfirmButton
+    getSimpleConfirmButton,
+    getDialogOkButton,
 };

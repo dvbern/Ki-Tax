@@ -19,6 +19,8 @@ import java.time.LocalDate;
 import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.annotation.Nonnull;
 
@@ -26,10 +28,7 @@ import ch.dvbern.ebegu.entities.AbstractPlatz;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.types.DateRange;
-import com.google.common.collect.ImmutableList;
 
-import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.KITA;
-import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.TAGESFAMILIEN;
 import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.TAGESSCHULE;
 
 /**
@@ -43,7 +42,7 @@ public final class MonatsRule extends AbstractAbschlussRule {
 
 	@Override
 	protected List<BetreuungsangebotTyp> getApplicableAngebotTypes() {
-		return ImmutableList.of(KITA, TAGESFAMILIEN, TAGESSCHULE);
+		return Stream.concat(BetreuungsangebotTyp.getBetreuungsgutscheinTypes().stream(), Stream.of(TAGESSCHULE)).collect(Collectors.toList());
 	}
 
 	@Nonnull

@@ -41,6 +41,7 @@ export function getTSBetreuungsangebotTypValuesForMandant(
 export function getTSBetreuungsangebotTypValuesForMandantIfTagesschulanmeldungen(
     tagesschuleEnabledForMandant: boolean,
     tagesfamilieEnabledForMandantAndGemeinde: boolean,
+    mittagstischEnabledForMandantAndGemeinde: boolean,
     tagesschuleAnmeldungenConfigured: boolean,
     gemeinde: TSGemeinde,
     gesuchsperiode: TSGesuchsperiode
@@ -50,6 +51,9 @@ export function getTSBetreuungsangebotTypValuesForMandantIfTagesschulanmeldungen
         angebote.push(TSBetreuungsangebotTyp.KITA);
         if (tagesfamilieEnabledForMandantAndGemeinde) {
             angebote.push(TSBetreuungsangebotTyp.TAGESFAMILIEN);
+        }
+        if (mittagstischEnabledForMandantAndGemeinde) {
+            angebote.push(TSBetreuungsangebotTyp.MITTAGSTISCH);
         }
     }
     if (tagesschuleEnabledForMandant && tagesschuleAnmeldungenConfigured && gemeinde.angebotTS && !gemeinde.nurLats
@@ -92,6 +96,10 @@ export function isSchulamt(status: TSBetreuungsangebotTyp): boolean {
 
 export function isJugendamt(status: TSBetreuungsangebotTyp): boolean {
     return !isSchulamt(status);
+}
+
+export function isBgInstitutionenBetreuungsangebot(angebotTyp: TSBetreuungsangebotTyp): boolean {
+    return EbeguUtil.isNotNullOrUndefined(angebotTyp) && getBgInstitutionenBetreuungsangebote().includes(angebotTyp);
 }
 
 /**
