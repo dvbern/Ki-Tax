@@ -15,53 +15,8 @@
 
 package ch.dvbern.ebegu.services.reporting;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Locale;
-import java.util.Objects;
-import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
-
-import javax.annotation.Nonnull;
-import javax.ejb.Local;
-import javax.ejb.Stateless;
-import javax.ejb.TransactionAttribute;
-import javax.ejb.TransactionAttributeType;
-import javax.inject.Inject;
-import javax.persistence.TypedQuery;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Join;
-import javax.persistence.criteria.JoinType;
-import javax.persistence.criteria.ParameterExpression;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
-
 import ch.dvbern.ebegu.authentication.PrincipalBean;
-import ch.dvbern.ebegu.entities.AbstractDateRangedEntity_;
-import ch.dvbern.ebegu.entities.AnmeldungTagesschule;
-import ch.dvbern.ebegu.entities.AnmeldungTagesschule_;
-import ch.dvbern.ebegu.entities.BelegungTagesschule;
-import ch.dvbern.ebegu.entities.Einstellung;
-import ch.dvbern.ebegu.entities.EinstellungenTagesschule;
-import ch.dvbern.ebegu.entities.Gesuch_;
-import ch.dvbern.ebegu.entities.Gesuchsperiode;
-import ch.dvbern.ebegu.entities.Gesuchsperiode_;
-import ch.dvbern.ebegu.entities.Gesuchsteller;
-import ch.dvbern.ebegu.entities.GesuchstellerContainer;
-import ch.dvbern.ebegu.entities.InstitutionStammdaten;
-import ch.dvbern.ebegu.entities.InstitutionStammdaten_;
-import ch.dvbern.ebegu.entities.KindContainer;
-import ch.dvbern.ebegu.entities.KindContainer_;
-import ch.dvbern.ebegu.entities.Verfuegung;
-import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
-import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt_;
-import ch.dvbern.ebegu.entities.Verfuegung_;
+import ch.dvbern.ebegu.entities.*;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
 import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
@@ -87,6 +42,21 @@ import ch.dvbern.oss.lib.excelmerger.ExcelMergerDTO;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.jboss.ejb3.annotation.TransactionTimeout;
+
+import javax.annotation.Nonnull;
+import javax.ejb.Local;
+import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
+import javax.inject.Inject;
+import javax.persistence.TypedQuery;
+import javax.persistence.criteria.*;
+import java.io.IOException;
+import java.io.InputStream;
+import java.time.LocalDate;
+import java.util.*;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 import static java.util.Objects.requireNonNull;
 
@@ -340,7 +310,6 @@ public class ReportTagesschuleServiceBean extends AbstractReportServiceBean impl
 		) {
 			Sheet sheet = workbook.getSheet(reportVorlage.getDataSheetName());
 
-			LocalDate datumErstellt = LocalDate.now();
 			Gesuchsperiode gesuchsperiode =
 				gesuchsperiodeService.findGesuchsperiode(gesuchsperiodeID).orElseThrow(() -> new EbeguEntityNotFoundException(
 					"generateExcelReportTagesschuleRechnungsstellung",
@@ -351,7 +320,7 @@ public class ReportTagesschuleServiceBean extends AbstractReportServiceBean impl
 				getReportDataTagesschuleRechnungsstellung(gesuchsperiode);
 
 			ExcelMergerDTO excelMergerDTO =
-				tagesschuleRechnungsstellungExcelConverter.toExcelMergerDTO(reportData, datumErstellt, locale,
+				tagesschuleRechnungsstellungExcelConverter.toExcelMergerDTO(reportData, locale,
 									requireNonNull(principalBean.getMandant()));
 
 			mergeData(sheet, excelMergerDTO, reportVorlage.getMergeFields());
