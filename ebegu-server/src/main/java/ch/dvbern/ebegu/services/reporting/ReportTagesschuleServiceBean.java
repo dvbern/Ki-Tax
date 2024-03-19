@@ -340,7 +340,7 @@ public class ReportTagesschuleServiceBean extends AbstractReportServiceBean impl
 		) {
 			Sheet sheet = workbook.getSheet(reportVorlage.getDataSheetName());
 
-			LocalDate stichtag = LocalDate.now();
+			LocalDate datumErstellt = LocalDate.now();
 			Gesuchsperiode gesuchsperiode =
 				gesuchsperiodeService.findGesuchsperiode(gesuchsperiodeID).orElseThrow(() -> new EbeguEntityNotFoundException(
 					"generateExcelReportTagesschuleRechnungsstellung",
@@ -348,11 +348,11 @@ public class ReportTagesschuleServiceBean extends AbstractReportServiceBean impl
 					gesuchsperiodeID));
 
 			final List<TagesschuleRechnungsstellungDataRow> reportData =
-				getReportDataTagesschuleRechnungsstellung(stichtag, gesuchsperiode);
+				getReportDataTagesschuleRechnungsstellung(gesuchsperiode);
 
 			ExcelMergerDTO excelMergerDTO =
-				tagesschuleRechnungsstellungExcelConverter.toExcelMergerDTO(reportData, stichtag, locale,
-					requireNonNull(principalBean.getMandant()));
+				tagesschuleRechnungsstellungExcelConverter.toExcelMergerDTO(reportData, datumErstellt, locale,
+									requireNonNull(principalBean.getMandant()));
 
 			mergeData(sheet, excelMergerDTO, reportVorlage.getMergeFields());
 			tagesschuleRechnungsstellungExcelConverter.applyAutoSize(sheet);
@@ -369,7 +369,7 @@ public class ReportTagesschuleServiceBean extends AbstractReportServiceBean impl
 
 	@Nonnull
 	private List<TagesschuleRechnungsstellungDataRow> getReportDataTagesschuleRechnungsstellung(
-		@Nonnull LocalDate stichtag, Gesuchsperiode gesuchsperiode) {
+		Gesuchsperiode gesuchsperiode) {
 
 		// Wir suchen alle vergangenen Monate im Sinne von "in der aktuellen Gesuchsperiode vergangen"
 		var mandant = principalBean.getMandant();
@@ -387,7 +387,6 @@ public class ReportTagesschuleServiceBean extends AbstractReportServiceBean impl
 
 		ParameterExpression<LocalDate> datumVonParam = cb.parameter(LocalDate.class, "datumVon");
 		ParameterExpression<LocalDate> datumBisParam = cb.parameter(LocalDate.class, "datumBis");
-		ParameterExpression<LocalDate> stichtagParam = cb.parameter(LocalDate.class, "stichtag");
 		ParameterExpression<Collection> allowedTagesschulenParam =
 			cb.parameter(Collection.class, "allowedTagesschulen");
 
@@ -406,10 +405,6 @@ public class ReportTagesschuleServiceBean extends AbstractReportServiceBean impl
 			datumVonParam,
 			datumBisParam
 		);
-		// Datum ab Zeitabschnitt muss kleiner/gleich dem Stichtag sein
-		final Predicate predicateNurVergangene = cb.lessThanOrEqualTo(
-			root.get(AbstractDateRangedEntity_.gueltigkeit).get(DateRange_.gueltigAb),
-			stichtagParam);
 		// Nur der letzte Abschnitt
 		final Predicate predicateGueltig =
 			cb.equal(joinAnmeldungTagesschule.get(AnmeldungTagesschule_.gueltig), Boolean.TRUE);
@@ -418,21 +413,17 @@ public class ReportTagesschuleServiceBean extends AbstractReportServiceBean impl
 			predicateBerechtigt,
 			predicateAnmeldungStatus,
 			predicateAktuelleGesuchsperiode,
-			predicateNurVergangene,
 			predicateGueltig);
 
 		TypedQuery<VerfuegungZeitabschnitt> typedQuery = persistence.getEntityManager().createQuery(query);
 		typedQuery.setParameter(datumVonParam, gesuchsperiode.getGueltigkeit().getGueltigAb());
 		typedQuery.setParameter(datumBisParam, gesuchsperiode.getGueltigkeit().getGueltigBis());
-		typedQuery.setParameter(stichtagParam, stichtag);
 		typedQuery.setParameter(allowedTagesschulenParam, allowedTagesschulen);
 		final List<VerfuegungZeitabschnitt> zeitabschnitteList = typedQuery.getResultList();
 		List<TagesschuleRechnungsstellungDataRow> dataRows = new ArrayList<>();
 		zeitabschnitteList
 			.stream()
-			.map(verfuegungZeitabschnitt -> TagesschuleRechnungsstellungDataRow.createRows(
-				verfuegungZeitabschnitt,
-				stichtag))
+			.map(TagesschuleRechnungsstellungDataRow::createRows)
 			.forEach(dataRows::addAll);
 		return dataRows.stream()
 			.sorted(Comparator.naturalOrder())

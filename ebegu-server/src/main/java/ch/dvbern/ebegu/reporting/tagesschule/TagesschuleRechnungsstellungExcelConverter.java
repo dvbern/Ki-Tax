@@ -43,7 +43,7 @@ public class TagesschuleRechnungsstellungExcelConverter implements ExcelConverte
 	@Nonnull
 	public ExcelMergerDTO toExcelMergerDTO(
 		@Nonnull List<TagesschuleRechnungsstellungDataRow> data,
-		@Nonnull LocalDate stichtag,
+		@Nonnull LocalDate datumErstellt,
 		@Nonnull Locale locale,
 		@Nonnull Mandant mandant) {
 
@@ -52,7 +52,7 @@ public class TagesschuleRechnungsstellungExcelConverter implements ExcelConverte
 		ExcelMergerDTO excelMerger = new ExcelMergerDTO();
 		addHeaders(excelMerger, locale, mandant);
 
-		excelMerger.addValue(MergeFieldTagesschuleRechnungsstellung.datumErstellt, stichtag);
+		excelMerger.addValue(MergeFieldTagesschuleRechnungsstellung.datumErstellt, datumErstellt);
 
 		data.forEach(dataRow -> {
 			ExcelMergerDTO excelRowGroup = excelMerger.createGroup(MergeFieldTagesschuleRechnungsstellung.repeatRow);
