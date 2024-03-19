@@ -334,7 +334,7 @@ public class MailTemplateConfiguration {
 		GemeindeStammdaten stammdaten = gemeindeService
 			.getGemeindeStammdatenByGemeindeId(gesuch.getDossier().getGemeinde().getId())
 			.orElseThrow(() -> new EbeguEntityNotFoundException(
-				"GemeindeStammdaten",
+				"getWarnungFreigabequittungFehlt",
 				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, gesuch.getDossier().getGemeinde().getId()));
 
 		paramMap.put(ADRESSE, stammdaten.getAdresseForGesuch(gesuch).getAddressAsStringInOneLine());
