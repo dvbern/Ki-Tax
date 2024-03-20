@@ -15,29 +15,7 @@
 
 package ch.dvbern.ebegu.rules;
 
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.time.Month;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map.Entry;
-import java.util.Objects;
-import java.util.Set;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
-import ch.dvbern.ebegu.entities.Betreuung;
-import ch.dvbern.ebegu.entities.Familiensituation;
-import ch.dvbern.ebegu.entities.FamiliensituationContainer;
-import ch.dvbern.ebegu.entities.Gesuch;
-import ch.dvbern.ebegu.entities.Gesuchsteller;
-import ch.dvbern.ebegu.entities.GesuchstellerContainer;
-import ch.dvbern.ebegu.entities.Kind;
-import ch.dvbern.ebegu.entities.KindContainer;
-import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
+import ch.dvbern.ebegu.entities.*;
 import ch.dvbern.ebegu.enums.EnumFamilienstatus;
 import ch.dvbern.ebegu.enums.EnumGesuchstellerKardinalitaet;
 import ch.dvbern.ebegu.enums.Kinderabzug;
@@ -47,8 +25,8 @@ import ch.dvbern.ebegu.test.TestDataUtil;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.MathUtil;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -60,6 +38,7 @@ import java.util.Map.Entry;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
  * Tests fuer FamilienabzugAbschnittRule
@@ -961,8 +940,8 @@ public class FamilienabzugAbschnittRuleTest {
 		assertThat(familienMitglieder, is(3.0));
 	}
 
-	@Test(expected = EbeguRuntimeException.class)
-	public void kinderAbzugFKJV_inErstausbildung_keineFrageZuAlimentenBeantwortet() {
+	@Test()
+	public void kinderAbzugFKJV_inErstausbildung_keineFrageZuAlimentenBeantwortet_throwsExcption() {
 		Gesuch gesuch = createGesuchWithTwoGesuchsteller();
 		gesuch.setKindContainers(new LinkedHashSet<>());
 
@@ -970,18 +949,23 @@ public class FamilienabzugAbschnittRuleTest {
 		kind.getKindJA().setInErstausbildung(true);
 		gesuch.getKindContainers().add(kind);
 
-		famabAbschnittRule_FKJV2.calculateFamiliengroesse(gesuch, LocalDate.now());
+
+		assertThrows(EbeguRuntimeException.class, () -> {
+			famabAbschnittRule_FKJV2.calculateFamiliengroesse(gesuch, LocalDate.now());
+		});
 	}
 
-	@Test(expected = EbeguRuntimeException.class)
-	public void kinderAbzugFKJV_keineFrageBeantwortet() {
+	@Test()
+	public void kinderAbzugFKJV_keineFrageBeantwortet_throwsExcption() {
 		Gesuch gesuch = createGesuchWithTwoGesuchsteller();
 		gesuch.setKindContainers(new LinkedHashSet<>());
 
 		KindContainer kind = createKindContainer(LocalDate.of(2000, Month.MARCH, 25));
 		gesuch.getKindContainers().add(kind);
 
-		famabAbschnittRule_FKJV2.calculateFamiliengroesse(gesuch, LocalDate.now());
+		assertThrows(EbeguRuntimeException.class, () -> {
+			famabAbschnittRule_FKJV2.calculateFamiliengroesse(gesuch, LocalDate.now());
+		});
 	}
 
 	@Nonnull
