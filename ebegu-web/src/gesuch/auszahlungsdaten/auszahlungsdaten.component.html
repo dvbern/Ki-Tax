@@ -66,6 +66,132 @@
                 </div>
             </div>
         </div>
+
+        <ng-container *ngIf="showAddress">
+            <div class="row">
+                <div class="col-sm-12 dv-input-container-medium">
+                    <div class="checkbox">
+                        <mat-checkbox [(ngModel)]="auszahlungsdaten.abweichendeZahlungsadresse"
+                                      name="abweichendeZahlungsadresse" id="abweichendeZahlungsadresse"
+                                      [aria-label]="'INFOMA_ABWEICHENDE_ZAHLUNGSADRESSE' | translate"
+                                      (change)="abweichendeZahlungsadresseChanged()">
+                            <span translate>INFOMA_ABWEICHENDE_ZAHLUNGSADRESSE</span>
+                        </mat-checkbox>
+                    </div>
+                </div>
+            </div>
+
+            <div *ngIf="auszahlungsdaten.abweichendeZahlungsadresse">
+                <div class="dv-adresse row">
+                    <!--Strasse-->
+                    <div class="col-sm-12 dv-input-container-small">
+                        <dv-input-container class="form-group">
+                            <label class="md-no-float required" for="adresseStrasse">{{'ADRESSE_STRASSE' | translate}}</label>
+                            <input id="adresseStrasse" type="text" name="adresseStrasse"
+                                   [(ngModel)]="auszahlungsdaten.zahlungsadresse.strasse"
+                                   dv-max-length class="form-control" required>
+                            <dv-bisher-x
+                                [showBisher]="isKorrekturModusOrFreigegeben()"
+                                [deklaration]="auszahlungsdatenGS?.zahlungsadresse?.strasse"
+                                [korrektur]="auszahlungsdaten.zahlungsadresse.strasse"></dv-bisher-x>
+                            <dv-error-messages for="adresseForm.adresseStrasse.$error"
+                                               class="error"></dv-error-messages>
+                        </dv-input-container>
+                    </div>
+                    <div class="col-sm-12 dv-input-container-small">
+                        <dv-input-container class="form-group secondColumn">
+                            <label class="md-no-float"
+                                   for="adresseHausnummer">{{'ADRESSE_HAUSNUMMER' | translate}}</label>
+                            <input id="adresseHausnummer" type="text"
+                                   name="adresseHausnummer"
+                                   [(ngModel)]="auszahlungsdaten.zahlungsadresse.hausnummer"
+                                   dv-max-length class="form-control">
+                            <dv-bisher-x
+                                [showBisher]="isKorrekturModusOrFreigegeben()"
+                                [deklaration]="auszahlungsdatenGS?.zahlungsadresse?.hausnummer"
+                                [korrektur]="auszahlungsdaten.zahlungsadresse.hausnummer"></dv-bisher-x>
+                            <dv-error-messages for="adresseForm.adresseHausnummer.$error"
+                                               class="error"></dv-error-messages>
+                        </dv-input-container>
+                    </div>
+                </div>
+                <!-- Adresse Zusatz-->
+                <div class="row">
+                    <div class="col-sm-12 dv-input-container-medium">
+                        <dv-input-container class="form-group">
+                            <label class="md-no-float"
+                                   for="adresseZusatzzeile">{{'ADRESSE_ZUSATZZEILE' | translate}}</label>
+                            <input id="adresseZusatzzeile" type="text"
+                                   name="adresseZusatzzeile"
+                                   [(ngModel)]="auszahlungsdaten.zahlungsadresse.zusatzzeile"
+                                   dv-max-length class="form-control">
+                            <dv-bisher-x
+                                [showBisher]="isKorrekturModusOrFreigegeben()"
+                                [deklaration]="auszahlungsdatenGS?.zahlungsadresse?.zusatzzeile"
+                                [korrektur]="auszahlungsdaten.zahlungsadresse.zusatzzeile"></dv-bisher-x>
+                            <dv-error-messages for="adresseForm.adresseZusatzzeile.$error"
+                                               class="error"></dv-error-messages>
+                        </dv-input-container>
+                    </div>
+                </div>
+                <!-- PLZ ORT-->
+                <div class="row">
+                    <div class="col-sm-12 dv-input-container-small">
+                        <dv-input-container class="form-group">
+                            <label class="md-no-float required"
+                                   for="adressePlz">{{'ADRESSE_PLZ' | translate}}
+                            </label>
+                            <input id="adressePlz" type="text" name="adressePlz"
+                                   [(ngModel)]="auszahlungsdaten.zahlungsadresse.plz"
+                                   dv-max-length class="form-control" required>
+                            <dv-bisher-x
+                                [showBisher]="isKorrekturModusOrFreigegeben()"
+                                [deklaration]="auszahlungsdatenGS?.zahlungsadresse?.plz"
+                                [korrektur]="auszahlungsdaten.zahlungsadresse.plz"></dv-bisher-x>
+                            <dv-error-messages for="adresseForm.adressePlz.$error"
+                                               class="error"></dv-error-messages>
+                        </dv-input-container>
+                    </div>
+                    <div class="col-sm-12 dv-input-container-small">
+                        <dv-input-container class="form-group secondColumn">
+                            <label class="md-no-float required" for="adresseOrt">{{'ADRESSE_ORT' | translate}}</label>
+                            <input id="adresseOrt" type="text" name="adresseOrt"
+                                   [(ngModel)]="auszahlungsdaten.zahlungsadresse.ort"
+                                   dv-max-length class="form-control" required>
+                            <dv-bisher-x
+                                [showBisher]="isKorrekturModusOrFreigegeben()"
+                                [deklaration]="auszahlungsdatenGS?.zahlungsadresse?.ort"
+                                [korrektur]="auszahlungsdaten.zahlungsadresse.ort"></dv-bisher-x>
+                            <dv-error-messages for="adresseForm.adresseOrt.$error" class="error"></dv-error-messages>
+                        </dv-input-container>
+                    </div>
+                </div>
+
+                <!-- Land-->
+                <div class="row">
+                    <div class="col-sm-12 dv-input-container-small">
+                        <div class="form-group">
+                            <label class="md-no-float" for="adresseLand">{{'ADRESSE_LAND' | translate}}
+                            </label>
+                            <div class="dv-select-style">
+                                <select name="adresseLand" id="adresseLand"
+                                        [(ngModel)]="auszahlungsdaten.zahlungsadresse.land"
+                                        class="form-control"
+                                        required>
+                                    <option *ngFor="let land of laenderList" [value]="land.code">{{land.translationKey | translate}}</option>
+                                </select>
+                                <dv-bisher-x
+                                    [showBisher]="isKorrekturModusOrFreigegeben()"
+                                    [deklaration]="auszahlungsdatenGS?.zahlungsadresse?.land"
+                                    [korrektur]="auszahlungsdaten.zahlungsadresse.land"></dv-bisher-x>
+                                <dv-error-messages for="adresseForm.adresseLand.$error"
+                                                   class="error"></dv-error-messages>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </ng-container>
     </div>
 </fieldset>
 
