@@ -23,6 +23,7 @@ import ch.dvbern.ebegu.entities.Einstellung;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.GesuchstellerContainer;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
+import ch.dvbern.ebegu.enums.AnspruchBeschaeftigungAbhaengigkeitTyp;
 import ch.dvbern.ebegu.enums.EinschulungTyp;
 import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.enums.MsgKey;
@@ -53,7 +54,7 @@ public class SchulstufeCalcRuleTest {
 	@Test
 	public void kindSchule() {
 		List<VerfuegungZeitabschnitt> result = EbeguRuleTestsHelper.calculate(prepareData(100, EinschulungTyp.KLASSE1));
-		assertNichtBerechtigt(result);
+		assertNichtBerechtigtFuerKINDERGARTEN2(result);
 	}
 
 	@Test
@@ -68,7 +69,7 @@ public class SchulstufeCalcRuleTest {
 						betreuung.extractGesuchsperiode()));
 		betreuung.getKind().getKindJA().setKeinPlatzInSchulhort(false);
 		List<VerfuegungZeitabschnitt> result = EbeguRuleTestsHelper.calculate(betreuung, einstellungen);
-		assertNichtBerechtigt(result);
+		assertNichtBerechtigtFuerFREIWILLIGER_KINDERGARTEN(result);
 	}
 
 	@Test
@@ -86,6 +87,26 @@ public class SchulstufeCalcRuleTest {
 		assertBerechtigt(result);
 	}
 
+	@Test
+	public void testPrimarSchulstufeBerechtigt() {
+		final Betreuung betreuung = prepareData(100, EinschulungTyp.PRIMARSTUFE);
+		var einstellungen = EbeguRuleTestsHelper.getEinstellungenConfiguratorAsiv(betreuung.extractGesuchsperiode());
+		einstellungen.get(EinstellungKey.GEMEINDE_BG_BIS_UND_MIT_SCHULSTUFE).setValue(
+			EinschulungTyp.PRIMARSTUFE.name());
+		List<VerfuegungZeitabschnitt> result = EbeguRuleTestsHelper.calculate(betreuung, einstellungen);
+		assertBerechtigt(result);
+	}
+
+	@Test
+	public void testSekundarSchulstufeNichtBerechtigt() {
+		final Betreuung betreuung = prepareData(100, EinschulungTyp.SEKUNDAR_UND_HOEHER_STUFE);
+		var einstellungen = EbeguRuleTestsHelper.getEinstellungenConfiguratorAsiv(betreuung.extractGesuchsperiode());
+		einstellungen.get(EinstellungKey.GEMEINDE_BG_BIS_UND_MIT_SCHULSTUFE).setValue(
+			EinschulungTyp.PRIMARSTUFE.name());
+		List<VerfuegungZeitabschnitt> result = EbeguRuleTestsHelper.calculate(betreuung, einstellungen);
+		assertNichtBerechtigtFuerPRIMARSTUFE(result);
+	}
+
 	private void assertBerechtigt(List<VerfuegungZeitabschnitt> result) {
 		Assert.assertNotNull(result);
 		Assert.assertEquals(1, result.size());
@@ -98,7 +119,19 @@ public class SchulstufeCalcRuleTest {
 		Assert.assertTrue(result.get(0).getBemerkungenDTOList().containsMsgKey(MsgKey.VERFUEGUNG_MIT_ANSPRUCH));
 	}
 
-	private void assertNichtBerechtigt(List<VerfuegungZeitabschnitt> result) {
+	private void assertNichtBerechtigtFuerKINDERGARTEN2(List<VerfuegungZeitabschnitt> result) {
+		assertNichtBerechtigt(result, MsgKey.SCHULSTUFE_KINDERGARTEN_2_MSG);
+	}
+
+	private void assertNichtBerechtigtFuerPRIMARSTUFE(List<VerfuegungZeitabschnitt> result) {
+		assertNichtBerechtigt(result, MsgKey.SCHULSTUFE_PRIMARSTUFE_MSG);
+	}
+
+	private void assertNichtBerechtigtFuerFREIWILLIGER_KINDERGARTEN(List<VerfuegungZeitabschnitt> result) {
+		assertNichtBerechtigt(result, MsgKey.SCHULSTUFE_FREIWILLIGER_KINDERGARTEN_MSG);
+	}
+
+	private void assertNichtBerechtigt(List<VerfuegungZeitabschnitt> result, MsgKey msgKey) {
 		Assert.assertNotNull(result);
 		Assert.assertEquals(1, result.size());
 		VerfuegungZeitabschnitt verfuegungZeitabschnitt = result.get(0);
@@ -107,10 +140,7 @@ public class SchulstufeCalcRuleTest {
 		Assert.assertFalse(result.get(0).getBemerkungenDTOList().isEmpty());
 		Assert.assertEquals(2, result.get(0).getBemerkungenDTOList().uniqueSize());
 		Assert.assertTrue(result.get(0).getBemerkungenDTOList().containsMsgKey(MsgKey.ERWERBSPENSUM_ANSPRUCH));
-		Assert.assertTrue(result.get(0).getBemerkungenDTOList().containsMsgKey(MsgKey.SCHULSTUFE_KINDERGARTEN_2_MSG)
-				|| result.get(0)
-				.getBemerkungenDTOList()
-				.containsMsgKey(MsgKey.SCHULSTUFE_FREIWILLIGER_KINDERGARTEN_MSG));
+		Assert.assertTrue(result.get(0).getBemerkungenDTOList().containsMsgKey(msgKey));
 	}
 
 	private Betreuung prepareData(final int pensum, final EinschulungTyp schulstufe) {

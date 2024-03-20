@@ -43,6 +43,7 @@ import ch.dvbern.ebegu.services.AbstractBaseService;
 import ch.dvbern.ebegu.services.EinstellungService;
 import ch.dvbern.ebegu.test.TestDataUtil;
 
+import static ch.dvbern.ebegu.enums.EinstellungKey.ANGEBOT_SCHULSTUFE;
 import static ch.dvbern.ebegu.enums.EinstellungKey.FACHSTELLE_MAX_PENSUM_SOZIALE_INTEGRATION;
 import static ch.dvbern.ebegu.enums.EinstellungKey.FACHSTELLE_MAX_PENSUM_SPRACHLICHE_INTEGRATION;
 import static ch.dvbern.ebegu.enums.EinstellungKey.FACHSTELLE_MIN_PENSUM_SOZIALE_INTEGRATION;
@@ -80,6 +81,9 @@ public class EinstellungDummyServiceBean extends AbstractBaseService implements 
 		dummyObjects.put(
 			GEMEINDE_BG_BIS_UND_MIT_SCHULSTUFE,
 			new Einstellung(GEMEINDE_BG_BIS_UND_MIT_SCHULSTUFE, "KINDERGARTEN2", gesuchsperiode1718));
+		dummyObjects.put(
+			ANGEBOT_SCHULSTUFE,
+			new Einstellung(ANGEBOT_SCHULSTUFE, "KITA", gesuchsperiode1718));
 		dummyObjects.put(
 			FACHSTELLE_MIN_PENSUM_SOZIALE_INTEGRATION,
 			new Einstellung(FACHSTELLE_MIN_PENSUM_SOZIALE_INTEGRATION, "20", gesuchsperiode1718));

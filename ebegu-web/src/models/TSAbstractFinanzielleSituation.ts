@@ -28,6 +28,7 @@ export class TSAbstractFinanzielleSituation extends TSAbstractMutableEntity {
     private _bruttovermoegen: number;
     private _schulden: number;
     private _geschaeftsgewinnBasisjahr: number;
+    private _geschaeftsgewinnBasisjahrMinus1: number;
     private _geleisteteAlimente: number;
     private _steuerbaresEinkommen: number;
     private _steuerbaresVermoegen: number;
@@ -45,6 +46,8 @@ export class TSAbstractFinanzielleSituation extends TSAbstractMutableEntity {
     private _abzugSchuldzinsen: number;
     private _selbstdeklaration: TSFinanzielleSituationSelbstdeklaration;
     private _finSitZusatzangabenAppenzell: TSFinSitZusatzangabenAppenzell;
+    private _ersatzeinkommenSelbststaendigkeitBasisjahr: number;
+    private _ersatzeinkommenSelbststaendigkeitBasisjahrMinus1: number;
 
     public constructor() {
         super();
@@ -230,5 +233,29 @@ export class TSAbstractFinanzielleSituation extends TSAbstractMutableEntity {
 
     public set finSitZusatzangabenAppenzell(value: TSFinSitZusatzangabenAppenzell) {
         this._finSitZusatzangabenAppenzell = value;
+    }
+
+    public get ersatzeinkommenSelbststaendigkeitBasisjahr(): number {
+        return this._ersatzeinkommenSelbststaendigkeitBasisjahr;
+    }
+
+    public set ersatzeinkommenSelbststaendigkeitBasisjahr(value: number) {
+        this._ersatzeinkommenSelbststaendigkeitBasisjahr = value;
+    }
+
+    public get ersatzeinkommenSelbststaendigkeitBasisjahrMinus1(): number {
+        return this._ersatzeinkommenSelbststaendigkeitBasisjahrMinus1;
+    }
+
+    public set ersatzeinkommenSelbststaendigkeitBasisjahrMinus1(value: number) {
+        this._ersatzeinkommenSelbststaendigkeitBasisjahrMinus1 = value;
+    }
+
+    public get geschaeftsgewinnBasisjahrMinus1(): number {
+        return this._geschaeftsgewinnBasisjahrMinus1;
+    }
+
+    public set geschaeftsgewinnBasisjahrMinus1(value: number) {
+        this._geschaeftsgewinnBasisjahrMinus1 = value;
     }
 }

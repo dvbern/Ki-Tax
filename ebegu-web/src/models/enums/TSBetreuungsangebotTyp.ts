@@ -13,6 +13,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import {EbeguUtil} from '../../utils/EbeguUtil';
 import {TSGemeinde} from '../TSGemeinde';
 import {TSGesuchsperiode} from '../TSGesuchsperiode';
 
@@ -20,7 +21,8 @@ export enum TSBetreuungsangebotTyp {
     KITA = 'KITA',
     TAGESFAMILIEN = 'TAGESFAMILIEN',
     TAGESSCHULE = 'TAGESSCHULE',
-    FERIENINSEL = 'FERIENINSEL'
+    FERIENINSEL = 'FERIENINSEL',
+    MITTAGSTISCH = 'MITTAGSTISCH'
 }
 
 export function getTSBetreuungsangebotTypValuesForMandant(
@@ -39,6 +41,7 @@ export function getTSBetreuungsangebotTypValuesForMandant(
 export function getTSBetreuungsangebotTypValuesForMandantIfTagesschulanmeldungen(
     tagesschuleEnabledForMandant: boolean,
     tagesfamilieEnabledForMandantAndGemeinde: boolean,
+    mittagstischEnabledForMandantAndGemeinde: boolean,
     tagesschuleAnmeldungenConfigured: boolean,
     gemeinde: TSGemeinde,
     gesuchsperiode: TSGesuchsperiode
@@ -48,6 +51,9 @@ export function getTSBetreuungsangebotTypValuesForMandantIfTagesschulanmeldungen
         angebote.push(TSBetreuungsangebotTyp.KITA);
         if (tagesfamilieEnabledForMandantAndGemeinde) {
             angebote.push(TSBetreuungsangebotTyp.TAGESFAMILIEN);
+        }
+        if (mittagstischEnabledForMandantAndGemeinde) {
+            angebote.push(TSBetreuungsangebotTyp.MITTAGSTISCH);
         }
     }
     if (tagesschuleEnabledForMandant && tagesschuleAnmeldungenConfigured && gemeinde.angebotTS && !gemeinde.nurLats
@@ -75,8 +81,13 @@ export function getBgInstitutionenAndTsBetreuungsangebote(): ReadonlyArray<TSBet
 export function getBgInstitutionenBetreuungsangebote(): ReadonlyArray<TSBetreuungsangebotTyp> {
     return [
         TSBetreuungsangebotTyp.KITA,
-        TSBetreuungsangebotTyp.TAGESFAMILIEN
+        TSBetreuungsangebotTyp.TAGESFAMILIEN,
+        TSBetreuungsangebotTyp.MITTAGSTISCH
     ];
+}
+
+export function isBgInstitutionenBetreuungsangebot(angebotTyp: TSBetreuungsangebotTyp): boolean {
+    return EbeguUtil.isNotNullOrUndefined(angebotTyp) && getBgInstitutionenBetreuungsangebote().includes(angebotTyp);
 }
 
 export function isSchulamt(status: TSBetreuungsangebotTyp): boolean {

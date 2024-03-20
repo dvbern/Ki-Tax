@@ -34,9 +34,6 @@ public class JaxEinkommensverschlechterung extends JaxAbstractFinanzielleSituati
 	private static final long serialVersionUID = 3659631207762053261L;
 
 	@Nullable
-	private BigDecimal geschaeftsgewinnBasisjahrMinus1;
-
-	@Nullable
 	private BigDecimal bruttolohnAbrechnung1;
 
 	@Nullable
@@ -47,15 +44,6 @@ public class JaxEinkommensverschlechterung extends JaxAbstractFinanzielleSituati
 
 	@Nullable
 	private Boolean extraLohn;
-
-	@Nullable
-	public BigDecimal getGeschaeftsgewinnBasisjahrMinus1() {
-		return geschaeftsgewinnBasisjahrMinus1;
-	}
-
-	public void setGeschaeftsgewinnBasisjahrMinus1(@Nullable BigDecimal geschaeftsgewinnBasisjahrMinus1) {
-		this.geschaeftsgewinnBasisjahrMinus1 = geschaeftsgewinnBasisjahrMinus1;
-	}
 
 	@Nullable
 	public BigDecimal getBruttolohnAbrechnung1() {

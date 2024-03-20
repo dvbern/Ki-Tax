@@ -65,6 +65,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import static ch.dvbern.ebegu.api.resource.util.ResourceConstants.DOCX_FILE_EXTENSION;
 import static ch.dvbern.ebegu.enums.UserRoleName.*;
 
 /**
@@ -615,7 +616,7 @@ public class LastenausgleichTagesschuleAngabenGemeindeResource {
 
 		if (document.length > 0) {
 			try {
-				return RestUtil.buildDownloadResponse(true, ".docx",
+				return RestUtil.buildDownloadResponse(true, DOCX_FILE_EXTENSION,
 					"application/octet-stream", document);
 
 			} catch (IOException e) {

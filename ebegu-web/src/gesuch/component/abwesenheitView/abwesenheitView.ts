@@ -18,7 +18,7 @@ import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
 import {DvDialog} from '../../../app/core/directive/dv-dialog/dv-dialog';
 import {ErrorService} from '../../../app/core/errors/service/ErrorService';
 import {LogFactory} from '../../../app/core/logging/LogFactory';
-import {TSBetreuungsangebotTyp} from '../../../models/enums/TSBetreuungsangebotTyp';
+import {isBgInstitutionenBetreuungsangebot} from '../../../models/enums/TSBetreuungsangebotTyp';
 import {TSEinstellungKey} from '../../../models/enums/TSEinstellungKey';
 import {TSWizardStepName} from '../../../models/enums/TSWizardStepName';
 import {TSWizardStepStatus} from '../../../models/enums/TSWizardStepStatus';
@@ -131,12 +131,7 @@ export class AbwesenheitViewController extends AbstractGesuchViewController<Arra
         kinderList.forEach(kind => {
             const betreuungenFromKind = kind.betreuungen;
             betreuungenFromKind.forEach(betreuung => {
-                if (betreuung.institutionStammdaten
-                    && betreuung.institutionStammdaten.betreuungsangebotTyp
-                    && (
-                        betreuung.institutionStammdaten.betreuungsangebotTyp === TSBetreuungsangebotTyp.KITA
-                        || betreuung.institutionStammdaten.betreuungsangebotTyp === TSBetreuungsangebotTyp.TAGESFAMILIEN
-                    )) {
+                if (isBgInstitutionenBetreuungsangebot(betreuung.getAngebotTyp())) {
                     this.betreuungList.push({betreuung, kind});
                 }
             });

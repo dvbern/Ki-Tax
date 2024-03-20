@@ -73,10 +73,6 @@ public class FinanzielleSituation extends AbstractFinanzielleSituation {
 
 	@Nullable
 	@Column(nullable = true)
-	private BigDecimal geschaeftsgewinnBasisjahrMinus1;
-
-	@Nullable
-	@Column(nullable = true)
 	private Boolean quellenbesteuert;
 
 	@Nullable
@@ -110,16 +106,6 @@ public class FinanzielleSituation extends AbstractFinanzielleSituation {
 	@Nullable
 	@Column(nullable = true)
 	private Boolean momentanSelbststaendig;
-
-	@Nullable
-	@Column(nullable = true)
-	@Min(0)
-	private BigDecimal ersatzeinkommenSelbststaendigkeitBasisjahr;
-
-	@Nullable
-	@Column(nullable = true)
-	@Min(0)
-	private BigDecimal ersatzeinkommenSelbststaendigkeitBasisjahrMinus1;
 
 	@Nullable
 	@Column(nullable = true)
@@ -170,15 +156,6 @@ public class FinanzielleSituation extends AbstractFinanzielleSituation {
 
 	public void setGeschaeftsgewinnBasisjahrMinus2(@Nullable final BigDecimal geschaeftsgewinnBasisjahrMinus2) {
 		this.geschaeftsgewinnBasisjahrMinus2 = geschaeftsgewinnBasisjahrMinus2;
-	}
-
-	@Nullable
-	public BigDecimal getGeschaeftsgewinnBasisjahrMinus1() {
-		return geschaeftsgewinnBasisjahrMinus1;
-	}
-
-	public void setGeschaeftsgewinnBasisjahrMinus1(@Nullable final BigDecimal geschaeftsgewinnBasisjahrMinus1) {
-		this.geschaeftsgewinnBasisjahrMinus1 = geschaeftsgewinnBasisjahrMinus1;
 	}
 
 	@Nullable
@@ -291,25 +268,6 @@ public class FinanzielleSituation extends AbstractFinanzielleSituation {
 	}
 
 	@Nullable
-	public BigDecimal getErsatzeinkommenSelbststaendigkeitBasisjahr() {
-		return ersatzeinkommenSelbststaendigkeitBasisjahr;
-	}
-
-	public void setErsatzeinkommenSelbststaendigkeitBasisjahr(@Nullable BigDecimal ersatzeinkommenSelbststaendigkeitBasisjahr) {
-		this.ersatzeinkommenSelbststaendigkeitBasisjahr = ersatzeinkommenSelbststaendigkeitBasisjahr;
-	}
-
-	@Nullable
-	public BigDecimal getErsatzeinkommenSelbststaendigkeitBasisjahrMinus1() {
-		return ersatzeinkommenSelbststaendigkeitBasisjahrMinus1;
-	}
-
-	public void setErsatzeinkommenSelbststaendigkeitBasisjahrMinus1(
-		@Nullable BigDecimal ersatzeinkommenSelbststaendigkeitBasisjahrMinus1) {
-		this.ersatzeinkommenSelbststaendigkeitBasisjahrMinus1 = ersatzeinkommenSelbststaendigkeitBasisjahrMinus1;
-	}
-
-	@Nullable
 	public BigDecimal getErsatzeinkommenSelbststaendigkeitBasisjahrMinus2() {
 		return ersatzeinkommenSelbststaendigkeitBasisjahrMinus2;
 	}
@@ -328,7 +286,6 @@ public class FinanzielleSituation extends AbstractFinanzielleSituation {
 			super.copyAbstractFinanzielleSituation(target, copyType);
 			target.setSteuerveranlagungErhalten(this.getSteuerveranlagungErhalten());
 			target.setSteuererklaerungAusgefuellt(this.getSteuererklaerungAusgefuellt());
-			target.setGeschaeftsgewinnBasisjahrMinus1(this.getGeschaeftsgewinnBasisjahrMinus1());
 			target.setGeschaeftsgewinnBasisjahrMinus2(this.getGeschaeftsgewinnBasisjahrMinus2());
 			target.setSteuerdatenZugriff(this.getSteuerdatenZugriff());
 			target.setGemeinsameStekVorjahr(this.getGemeinsameStekVorjahr());
@@ -343,8 +300,6 @@ public class FinanzielleSituation extends AbstractFinanzielleSituation {
 			target.setSteuerdatenAbfrageTimestamp(this.getSteuerdatenAbfrageTimestamp());
 			target.setAutomatischePruefungErlaubt(this.getAutomatischePruefungErlaubt());
 			target.setMomentanSelbststaendig(this.getMomentanSelbststaendig());
-			target.setErsatzeinkommenSelbststaendigkeitBasisjahr(this.getErsatzeinkommenSelbststaendigkeitBasisjahr());
-			target.setErsatzeinkommenSelbststaendigkeitBasisjahrMinus1(this.getErsatzeinkommenSelbststaendigkeitBasisjahrMinus1());
 			target.setErsatzeinkommenSelbststaendigkeitBasisjahrMinus2(this.getErsatzeinkommenSelbststaendigkeitBasisjahrMinus2());
 			break;
 		case ERNEUERUNG:
@@ -373,7 +328,6 @@ public class FinanzielleSituation extends AbstractFinanzielleSituation {
 				Objects.equals(getSteuererklaerungAusgefuellt(), otherFinSit.getSteuererklaerungAusgefuellt()) &&
 				Objects.equals(getSteuerdatenZugriff(), otherFinSit.getSteuerdatenZugriff()) &&
 				Objects.equals(getAutomatischePruefungErlaubt(), otherFinSit.getAutomatischePruefungErlaubt()) &&
-			MathUtil.isSame(getGeschaeftsgewinnBasisjahrMinus1(), otherFinSit.getGeschaeftsgewinnBasisjahrMinus1()) &&
 			MathUtil.isSame(getGeschaeftsgewinnBasisjahrMinus2(), otherFinSit.getGeschaeftsgewinnBasisjahrMinus2()) &&
 			Objects.equals(getAlleinigeStekVorjahr(), otherFinSit.getAlleinigeStekVorjahr()) &&
 			Objects.equals(getGemeinsameStekVorjahr(), otherFinSit.getGemeinsameStekVorjahr()) &&
@@ -385,8 +339,6 @@ public class FinanzielleSituation extends AbstractFinanzielleSituation {
 			MathUtil.isSame(getAbzuegeKinderAusbildung(), otherFinSit.getAbzuegeKinderAusbildung()) &&
 			MathUtil.isSame(getUnterhaltsBeitraege(), otherFinSit.getUnterhaltsBeitraege()) &&
 			Objects.equals(getMomentanSelbststaendig(), otherFinSit.getMomentanSelbststaendig()) &&
-			MathUtil.isSame(getErsatzeinkommenSelbststaendigkeitBasisjahr(), otherFinSit.getErsatzeinkommenSelbststaendigkeitBasisjahr()) &&
-			MathUtil.isSame(getErsatzeinkommenSelbststaendigkeitBasisjahrMinus1(), otherFinSit.getErsatzeinkommenSelbststaendigkeitBasisjahrMinus1()) &&
 			MathUtil.isSame(getErsatzeinkommenSelbststaendigkeitBasisjahrMinus2(), otherFinSit.getErsatzeinkommenSelbststaendigkeitBasisjahrMinus2());
 	}
 

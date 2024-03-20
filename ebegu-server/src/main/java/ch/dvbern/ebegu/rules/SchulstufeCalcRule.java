@@ -49,19 +49,24 @@ public class SchulstufeCalcRule extends AbstractCalcRule {
 	@Nonnull
 	private final EinschulungTyp einschulungsTypAnspruchsgrenze;
 
+	@Nonnull
+	private final List<BetreuungsangebotTyp> betreuungsangebotTyps;
+
 	public SchulstufeCalcRule(
 		@Nonnull DateRange validityPeriod,
 		@Nonnull EinschulungTyp einschulungsTypAnspruchsgrenze,
+		@Nonnull List<BetreuungsangebotTyp> betreuungsangebotTyps,
 		@Nonnull Locale locale
 	) {
 		super(RuleKey.SCHULSTUFE, RuleType.REDUKTIONSREGEL, RuleValidity.ASIV, validityPeriod, locale);
 		this.einschulungsTypAnspruchsgrenze = einschulungsTypAnspruchsgrenze;
+		this.betreuungsangebotTyps = betreuungsangebotTyps;
 	}
 
 	@Override
 	protected List<BetreuungsangebotTyp> getAnwendbareAngebote() {
 		// Die Regel gilt nur fuer Kita
-		return ImmutableList.of(KITA);
+		return betreuungsangebotTyps;
 	}
 
 	@SuppressWarnings("PMD.CollapsibleIfStatements")
@@ -99,6 +104,8 @@ public class SchulstufeCalcRule extends AbstractCalcRule {
 			return MsgKey.SCHULSTUFE_KINDERGARTEN_1_MSG;
 		case FREIWILLIGER_KINDERGARTEN:
 			return MsgKey.SCHULSTUFE_FREIWILLIGER_KINDERGARTEN_MSG;
+		case PRIMARSTUFE:
+			return MsgKey.SCHULSTUFE_PRIMARSTUFE_MSG;
 		default:
 			return MsgKey.SCHULSTUFE_KINDERGARTEN_2_MSG;
 		}

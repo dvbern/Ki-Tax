@@ -2652,6 +2652,7 @@ public class JaxBConverter extends AbstractConverter {
 		abstractFinanzielleSituation.setBruttovermoegen(abstractFinanzielleSituationJAXP.getBruttovermoegen());
 		abstractFinanzielleSituation.setSchulden(abstractFinanzielleSituationJAXP.getSchulden());
 		abstractFinanzielleSituation.setGeschaeftsgewinnBasisjahr(abstractFinanzielleSituationJAXP.getGeschaeftsgewinnBasisjahr());
+		abstractFinanzielleSituation.setGeschaeftsgewinnBasisjahrMinus1(abstractFinanzielleSituationJAXP.getGeschaeftsgewinnBasisjahrMinus1());
 		abstractFinanzielleSituation.setGeleisteteAlimente(abstractFinanzielleSituationJAXP.getGeleisteteAlimente());
 
 		abstractFinanzielleSituation.setEinkommenInVereinfachtemVerfahrenAbgerechnet(abstractFinanzielleSituationJAXP.getEinkommenInVereinfachtemVerfahrenAbgerechnet());
@@ -2687,6 +2688,8 @@ public class JaxBConverter extends AbstractConverter {
 				finSitZusatzangabenAppenzellToMerge));
 		}
 
+		abstractFinanzielleSituation.setErsatzeinkommenSelbststaendigkeitBasisjahr(abstractFinanzielleSituationJAXP.getErsatzeinkommenSelbststaendigkeitBasisjahr());
+		abstractFinanzielleSituation.setErsatzeinkommenSelbststaendigkeitBasisjahrMinus1(abstractFinanzielleSituationJAXP.getErsatzeinkommenSelbststaendigkeitBasisjahrMinus1());
 
 		return abstractFinanzielleSituation;
 	}
@@ -2707,6 +2710,7 @@ public class JaxBConverter extends AbstractConverter {
 		jaxAbstractFinanzielleSituation.setBruttovermoegen(persistedAbstractFinanzielleSituation.getBruttovermoegen());
 		jaxAbstractFinanzielleSituation.setSchulden(persistedAbstractFinanzielleSituation.getSchulden());
 		jaxAbstractFinanzielleSituation.setGeschaeftsgewinnBasisjahr(persistedAbstractFinanzielleSituation.getGeschaeftsgewinnBasisjahr());
+		jaxAbstractFinanzielleSituation.setGeschaeftsgewinnBasisjahrMinus1(persistedAbstractFinanzielleSituation.getGeschaeftsgewinnBasisjahrMinus1());
 		jaxAbstractFinanzielleSituation.setGeleisteteAlimente(persistedAbstractFinanzielleSituation.getGeleisteteAlimente());
 
 		jaxAbstractFinanzielleSituation.setEinkommenInVereinfachtemVerfahrenAbgerechnet(
@@ -2729,6 +2733,8 @@ public class JaxBConverter extends AbstractConverter {
 			persistedAbstractFinanzielleSituation.getSelbstdeklaration()));
 
 		jaxAbstractFinanzielleSituation.setFinSitZusatzangabenAppenzell(finSitZusatzangabenAppenzellToJax(persistedAbstractFinanzielleSituation.getFinSitZusatzangabenAppenzell()));
+		jaxAbstractFinanzielleSituation.setErsatzeinkommenSelbststaendigkeitBasisjahr(persistedAbstractFinanzielleSituation.getErsatzeinkommenSelbststaendigkeitBasisjahr());
+		jaxAbstractFinanzielleSituation.setErsatzeinkommenSelbststaendigkeitBasisjahrMinus1(persistedAbstractFinanzielleSituation.getErsatzeinkommenSelbststaendigkeitBasisjahrMinus1());
 	}
 
 	private FinanzielleSituation finanzielleSituationToEntity(
@@ -2758,7 +2764,6 @@ public class JaxBConverter extends AbstractConverter {
 		finanzielleSituation.setSteuererklaerungAusgefuellt(finanzielleSituationJAXP.getSteuererklaerungAusgefuellt());
 		finanzielleSituation.setSteuerdatenZugriff(finanzielleSituationJAXP.getSteuerdatenZugriff());
 		finanzielleSituation.setGeschaeftsgewinnBasisjahrMinus2(finanzielleSituationJAXP.getGeschaeftsgewinnBasisjahrMinus2());
-		finanzielleSituation.setGeschaeftsgewinnBasisjahrMinus1(finanzielleSituationJAXP.getGeschaeftsgewinnBasisjahrMinus1());
 
 		finanzielleSituation.setQuellenbesteuert(finanzielleSituationJAXP.getQuellenbesteuert());
 		finanzielleSituation.setGemeinsameStekVorjahr(finanzielleSituationJAXP.getGemeinsameStekVorjahr());
@@ -2770,9 +2775,6 @@ public class JaxBConverter extends AbstractConverter {
 		finanzielleSituation.setVeranlagt(finanzielleSituationJAXP.getVeranlagt());
 		finanzielleSituation.setVeranlagtVorjahr(finanzielleSituationJAXP.getVeranlagtVorjahr());
 		finanzielleSituation.setMomentanSelbststaendig(finanzielleSituationJAXP.getMomentanSelbststaendig());
-
-		finanzielleSituation.setErsatzeinkommenSelbststaendigkeitBasisjahr(finanzielleSituationJAXP.getErsatzeinkommenSelbststaendigkeitBasisjahr());
-		finanzielleSituation.setErsatzeinkommenSelbststaendigkeitBasisjahrMinus1(finanzielleSituationJAXP.getErsatzeinkommenSelbststaendigkeitBasisjahrMinus1());
 		finanzielleSituation.setErsatzeinkommenSelbststaendigkeitBasisjahrMinus2(finanzielleSituationJAXP.getErsatzeinkommenSelbststaendigkeitBasisjahrMinus2());
 
 		return finanzielleSituation;
@@ -2849,7 +2851,6 @@ public class JaxBConverter extends AbstractConverter {
 		jaxFinanzielleSituation.setSteuererklaerungAusgefuellt(persistedFinanzielleSituation.getSteuererklaerungAusgefuellt());
 		jaxFinanzielleSituation.setSteuerdatenZugriff(persistedFinanzielleSituation.getSteuerdatenZugriff());
 		jaxFinanzielleSituation.setGeschaeftsgewinnBasisjahrMinus2(persistedFinanzielleSituation.getGeschaeftsgewinnBasisjahrMinus2());
-		jaxFinanzielleSituation.setGeschaeftsgewinnBasisjahrMinus1(persistedFinanzielleSituation.getGeschaeftsgewinnBasisjahrMinus1());
 
 		jaxFinanzielleSituation.setQuellenbesteuert(persistedFinanzielleSituation.getQuellenbesteuert());
 		jaxFinanzielleSituation.setGemeinsameStekVorjahr(persistedFinanzielleSituation.getGemeinsameStekVorjahr());
@@ -2865,8 +2866,6 @@ public class JaxBConverter extends AbstractConverter {
 		jaxFinanzielleSituation.setAutomatischePruefungErlaubt(persistedFinanzielleSituation.getAutomatischePruefungErlaubt());
 		jaxFinanzielleSituation.setMomentanSelbststaendig(persistedFinanzielleSituation.getMomentanSelbststaendig());
 
-		jaxFinanzielleSituation.setErsatzeinkommenSelbststaendigkeitBasisjahr(persistedFinanzielleSituation.getErsatzeinkommenSelbststaendigkeitBasisjahr());
-		jaxFinanzielleSituation.setErsatzeinkommenSelbststaendigkeitBasisjahrMinus1(persistedFinanzielleSituation.getErsatzeinkommenSelbststaendigkeitBasisjahrMinus1());
 		jaxFinanzielleSituation.setErsatzeinkommenSelbststaendigkeitBasisjahrMinus2(persistedFinanzielleSituation.getErsatzeinkommenSelbststaendigkeitBasisjahrMinus2());
 
 		return jaxFinanzielleSituation;
@@ -2937,7 +2936,6 @@ public class JaxBConverter extends AbstractConverter {
 		requireNonNull(einkommensverschlechterungJAXP);
 
 		abstractFinanzielleSituationToEntity(einkommensverschlechterungJAXP, einkommensverschlechterung);
-		einkommensverschlechterung.setGeschaeftsgewinnBasisjahrMinus1(einkommensverschlechterungJAXP.getGeschaeftsgewinnBasisjahrMinus1());
 		einkommensverschlechterung.setBruttolohnAbrechnung1(einkommensverschlechterungJAXP.getBruttolohnAbrechnung1());
 		einkommensverschlechterung.setBruttolohnAbrechnung2(einkommensverschlechterungJAXP.getBruttolohnAbrechnung2());
 		einkommensverschlechterung.setBruttolohnAbrechnung3(einkommensverschlechterungJAXP.getBruttolohnAbrechnung3());
@@ -2957,7 +2955,6 @@ public class JaxBConverter extends AbstractConverter {
 		JaxEinkommensverschlechterung eikvs = new JaxEinkommensverschlechterung();
 
 		abstractFinanzielleSituationToJAX(persistedEinkommensverschlechterung, eikvs);
-		eikvs.setGeschaeftsgewinnBasisjahrMinus1(persistedEinkommensverschlechterung.getGeschaeftsgewinnBasisjahrMinus1());
 		eikvs.setBruttolohnAbrechnung1(persistedEinkommensverschlechterung.getBruttolohnAbrechnung1());
 		eikvs.setBruttolohnAbrechnung2(persistedEinkommensverschlechterung.getBruttolohnAbrechnung2());
 		eikvs.setBruttolohnAbrechnung3(persistedEinkommensverschlechterung.getBruttolohnAbrechnung3());
@@ -3756,13 +3753,13 @@ public class JaxBConverter extends AbstractConverter {
 	public List<JaxBetreuungspensumAbweichung> betreuungspensumAbweichungenToJax(@Nonnull Betreuung betreuung) {
 		return betreuung.fillAbweichungen(betreuungService.getMultiplierForAbweichnungen(betreuung))
 			.stream()
-			.map(this::betreuungspensumAbweichungToJax)
+			.map((BetreuungspensumAbweichung abweichung) -> betreuungspensumAbweichungToJax(abweichung, betreuung.getBetreuungsangebotTyp()))
 			.collect(Collectors.toList());
 	}
 
 	@Nonnull
 	private JaxBetreuungspensumAbweichung betreuungspensumAbweichungToJax(
-		@Nonnull BetreuungspensumAbweichung abweichung) {
+		@Nonnull BetreuungspensumAbweichung abweichung, @Nonnull BetreuungsangebotTyp betreuungsangebotTyp) {
 		JaxBetreuungspensumAbweichung jaxAbweichung = new JaxBetreuungspensumAbweichung();
 		convertAbstractPensumFieldsToJAX(abweichung, jaxAbweichung);
 		jaxAbweichung.setVertraglicheKosten(abweichung.getVertraglicheKosten());
@@ -3777,6 +3774,7 @@ public class JaxBConverter extends AbstractConverter {
 		jaxAbweichung.setVertraglicherTarifHaupt(abweichung.getVertraglicherTarifHauptmahlzeit());
 		jaxAbweichung.setVertraglicherTarifNeben(abweichung.getVertraglicherTarifNebenmahlzeit());
 		jaxAbweichung.setMultiplier(abweichung.getMultiplier());
+		jaxAbweichung.setBetreuungsangebotTyp(betreuungsangebotTyp);
 
 		return jaxAbweichung;
 	}

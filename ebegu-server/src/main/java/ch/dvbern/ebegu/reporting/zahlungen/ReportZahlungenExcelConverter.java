@@ -37,6 +37,7 @@ public class ReportZahlungenExcelConverter implements ExcelConverter {
 
     @Override
     public void applyAutoSize(@Nonnull Sheet sheet) {
+		// No autosizing defined for columns
     }
 
     public void mergeRows(@Nonnull RowFiller rowFiller, @Nonnull List<ZahlungenDataRow> reportData) {

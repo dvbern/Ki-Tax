@@ -26,6 +26,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.persistence.EntityManager;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.regex.Pattern;
 
 /**
@@ -98,5 +99,12 @@ public final class BetreuungUtil {
 		return MathUtil.EXACT.divide(
 			MathUtil.EXACT.divide(oeffnungszeitProJahr, MathUtil.EXACT.from(12)),
 			MathUtil.EXACT.from(100));
+	}
+
+	public static BigDecimal getMittagstischMultiplier() {
+		var mittagstischTageProWoche = BigDecimal.valueOf(5);
+		var mittagstischWochenProMonat = BigDecimal.valueOf(4.1);
+
+		return mittagstischTageProWoche.multiply(mittagstischWochenProMonat).divide(BigDecimal.valueOf(100), 3, RoundingMode.HALF_UP);
 	}
 }

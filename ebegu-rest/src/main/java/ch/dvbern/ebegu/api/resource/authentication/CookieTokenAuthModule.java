@@ -49,6 +49,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 
+import static ch.dvbern.ebegu.api.AuthConstants.COOKIE_AUTHORIZATION_HEADER;
 import static ch.dvbern.ebegu.util.Constants.LOGINCONNECTOR_USER_USERNAME;
 import static javax.security.auth.message.AuthStatus.SEND_FAILURE;
 import static javax.servlet.http.HttpServletResponse.SC_UNAUTHORIZED;
@@ -241,7 +242,7 @@ public class CookieTokenAuthModule extends HttpServerAuthModule {
 		}
 		Response response = null;
 		try {
-			String header = request.getHeader("Authorization");
+			String header = request.getHeader(COOKIE_AUTHORIZATION_HEADER);
 			final String[] strings = BasicAuthHelper.parseHeader(header);
 
 			if (strings == null || strings.length != 2) {
@@ -261,7 +262,7 @@ public class CookieTokenAuthModule extends HttpServerAuthModule {
 				.target(this.keycloackAuthServer)
 				.request(MediaType.APPLICATION_FORM_URLENCODED)
 				.accept(MediaType.APPLICATION_JSON)
-				.header("Authorization", BasicAuthHelper.createHeader(this.keycloackClient, this.keycloackPassword))
+				.header(COOKIE_AUTHORIZATION_HEADER, BasicAuthHelper.createHeader(this.keycloackClient, this.keycloackPassword))
 				.buildPost(Entity.form(form))
 				.invoke();
 
@@ -287,7 +288,7 @@ public class CookieTokenAuthModule extends HttpServerAuthModule {
 		@Nonnull String expectedUser,
 		@Nonnull String expectedPassword) {
 
-		String header = request.getHeader("Authorization");
+		String header = request.getHeader(COOKIE_AUTHORIZATION_HEADER);
 		final String[] strings = BasicAuthHelper.parseHeader(header);
 
 		if (strings != null && strings.length == 2) {

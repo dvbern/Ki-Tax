@@ -21,7 +21,9 @@ export enum TSEinschulungTyp {
     FREIWILLIGER_KINDERGARTEN = 'FREIWILLIGER_KINDERGARTEN',
     KINDERGARTEN2 = 'KINDERGARTEN2',
     OBLIGATORISCHER_KINDERGARTEN = 'OBLIGATORISCHER_KINDERGARTEN',
+    PRIMARSTUFE = 'PRIMARSTUFE',
     PRIMAR_SEKUNDAR_STUFE = 'PRIMAR_SEKUNDAR_STUFE',
+    SEKUNDAR_UND_HOEHER_STUFE = 'SEKUNDAR_UND_HOEHER_STUFE',
     KLASSE1 = 'KLASSE1',
     KLASSE2 = 'KLASSE2',
     KLASSE3 = 'KLASSE3',
@@ -71,5 +73,13 @@ export function getTSEinschulungTypGemeindeValues(): Array<TSEinschulungTyp> {
         TSEinschulungTyp.VORSCHULALTER,
         TSEinschulungTyp.KINDERGARTEN1,
         TSEinschulungTyp.KINDERGARTEN2
+    ];
+}
+
+export function getTSEinschulungTypValuesSchwyz(): Array<TSEinschulungTyp> {
+    return [
+        TSEinschulungTyp.VORSCHULALTER,
+        TSEinschulungTyp.PRIMARSTUFE,
+        TSEinschulungTyp.SEKUNDAR_UND_HOEHER_STUFE
     ];
 }

@@ -154,7 +154,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     private besondereBeduerfnisseAufwandKonfigurierbar: boolean = false;
     private fachstellenTyp: TSFachstellenTyp;
     protected minEintrittsdatum: moment.Moment;
-    public betreuungspensumAnzeigeTyp: TSPensumAnzeigeTyp;
+    private betreuungspensumAnzeigeTypEinstellung: TSPensumAnzeigeTyp;
     public isTFOKostenBerechnungStuendlich: boolean = false;
 
     private oeffnungstageKita: number;
@@ -164,6 +164,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
 
     private multiplierKita: number;
     private multiplierTFO: number;
+    private multiplierMittagstisch: number;
 
     public minPensumSprachlicheIndikation: number;
 
@@ -174,6 +175,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     private angebotTS: boolean;
     private angebotFI: boolean;
     private angebotTFO: boolean = false;
+    private angebotMittagstisch: boolean = false;
     private isLuzern: boolean;
     private sprachfoerderungBestaetigenAktiviert: boolean;
 
@@ -406,8 +408,16 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         const einstellungPensumAnzeigeTyp = this.ebeguRestUtil
             .parsePensumAnzeigeTyp(einstellung);
 
-        this.betreuungspensumAnzeigeTyp = EbeguUtil.isNotNullOrUndefined(einstellungPensumAnzeigeTyp) ?
+        this.betreuungspensumAnzeigeTypEinstellung = EbeguUtil.isNotNullOrUndefined(einstellungPensumAnzeigeTyp) ?
             einstellungPensumAnzeigeTyp : TSPensumAnzeigeTyp.ZEITEINHEIT_UND_PROZENT;
+    }
+
+    public getBetreuungspensumAnzeigeTyp(): TSPensumAnzeigeTyp {
+        if (this.isBetreuungsangebotMittagstisch()) {
+            return TSPensumAnzeigeTyp.NUR_MAHLZEITEN;
+        }
+
+        return this.betreuungspensumAnzeigeTypEinstellung;
     }
 
     /**
@@ -461,6 +471,9 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
             this.isKesbPlatzierung = !this.getErweiterteBetreuungJA().keineKesbPlatzierung;
         }
         this.allowedRoles = this.TSRoleUtil.getAdminJaSchulamtSozialdienstGesuchstellerRoles();
+        this.getBetreuungspensen().forEach(betreunungspensumContainer => {
+            betreunungspensumContainer.betreuungspensumJA.initKostenProMahlzeit(this.getMultiplierMittagstisch());
+        });
     }
 
     /**
@@ -738,6 +751,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
             getTSBetreuungsangebotTypValuesForMandantIfTagesschulanmeldungen(
                 this.angebotTS,
                 this.angebotTFO,
+                this.angebotMittagstisch,
                 this.checkIfGemeindeOrBetreuungHasTSAnmeldung(),
                 this.gesuchModelManager.getGemeinde(),
                 this.gesuchModelManager.getGesuchsperiode());
@@ -852,7 +866,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
             this.errorService.addMesageAsError('Betreuungsmodel ist nicht initialisiert.');
         }
         const tsBetreuungspensum = new TSBetreuungspensum();
-        tsBetreuungspensum.unitForDisplay = this.betreuungspensumAnzeigeTyp === TSPensumAnzeigeTyp.NUR_STUNDEN ?
+        tsBetreuungspensum.unitForDisplay = this.betreuungspensumAnzeigeTypEinstellung === TSPensumAnzeigeTyp.NUR_STUNDEN ?
             TSPensumUnits.HOURS :
             TSPensumUnits.PERCENTAGE;
         tsBetreuungspensum.nichtEingetreten = false;
@@ -1783,8 +1797,16 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         return this.multiplierTFO;
     }
 
+    public getMultiplierMittagstisch(): number {
+        if (EbeguUtil.isNullOrUndefined(this.multiplierMittagstisch)) {
+            this.calculateMultiplierMittagstisch();
+        }
+
+        return this.multiplierMittagstisch;
+    }
+
     private calculateMuliplyerKita(): void {
-        if (this.betreuungspensumAnzeigeTyp === TSPensumAnzeigeTyp.NUR_STUNDEN) {
+        if (this.betreuungspensumAnzeigeTypEinstellung === TSPensumAnzeigeTyp.NUR_STUNDEN) {
             this.multiplierKita = this.oeffnungstageKita * this.kitastundenprotag / 12 / 100;
             return;
         }
@@ -1798,12 +1820,27 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         this.multiplierTFO = this.oeffnungstageTFO * this.oeffnungsstundenTFO / 12 / 100;
     }
 
-    public showBetreuungsKostenAndPensumInput(): boolean {
+    private calculateMultiplierMittagstisch(): void {
+        // Beispiel: 5 Tage Pro Woche, 4,1 Wochen  pro Monat => 20.5 Mahlzeiten Pro Monat
+        // 100% = 20.5 Mahlzeiten => 1% = 0.205 stunden
+        const mittagstischTageProWoche: number = 5;
+        const mittagstischWochenProMonat: number = 4.1;
+        this.multiplierMittagstisch = mittagstischTageProWoche * mittagstischWochenProMonat  / 100;
+    }
+
+    public showBetreuungsPensumInput(): boolean {
         if (!this.isBetreuungsangebotTagesfamilie()) {
             return true;
         }
 
         return !this.isTFOKostenBerechnungStuendlich;
+    }
+
+    public showBetreuungsKostenInput(): boolean {
+        if (this.isBetreuungsangebotMittagstisch()) {
+            return false;
+        }
+        return this.showBetreuungsPensumInput();
     }
 
     public showStuendlicheKostenInput(): boolean {
@@ -1817,6 +1854,10 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     private isBetreuungsangebotTagesfamilie(): boolean {
         return this.betreuungsangebot
             && this.betreuungsangebot.key === TSBetreuungsangebotTyp.TAGESFAMILIEN;
+    }
+
+    private isBetreuungsangebotMittagstisch(): boolean {
+        return this.betreuungsangebot?.key === TSBetreuungsangebotTyp.MITTAGSTISCH;
     }
 
     private showHintUntermonatlich(): boolean {
@@ -1844,6 +1885,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         return this.applicationPropertyRS.getPublicPropertiesCached().then(res => {
             this.angebotTS = res.angebotTSActivated;
             this.angebotFI = res.angebotFIActivated;
+            this.angebotMittagstisch = res.angebotMittagstischActivated;
             //wenn TFO aktiv on mandant then check if tfo is activ on gemeinde
             if (res.angebotTFOActivated) {
                 this.angebotTFO = this.gesuchModelManager.getGemeinde().angebotBGTFO;
@@ -1852,7 +1894,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     }
 
     public hasMandantZusaetzlichesBereuungsangebot(): boolean {
-        return this.angebotTS || this.angebotFI || this.angebotTFO;
+        return this.angebotTS || this.angebotFI || this.angebotTFO || this.angebotMittagstisch;
     }
 
     public getEingewoehnungLabel(): string {
@@ -1861,4 +1903,16 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         }
         return this.$translate.instant('EINGEWOEHNUNG');
     }
+
+    public showKostenMahlzeitInput(): boolean {
+        return this.isBetreuungsangebotMittagstisch();
+    }
+
+    public recalculateMonatlicheKostenFromMahlzeiten(betreuungspensumIndex: number): void {
+        if (!this.isBetreuungsangebotMittagstisch()) {
+            return;
+        }
+        this.getBetreuungspensum(betreuungspensumIndex).betreuungspensumJA.recalculateMonatlicheMahlzeitenKosten(this.multiplierMittagstisch);
+    }
+
 }
