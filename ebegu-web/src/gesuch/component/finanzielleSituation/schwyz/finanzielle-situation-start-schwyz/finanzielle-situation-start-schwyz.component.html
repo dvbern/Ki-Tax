@@ -1,7 +1,142 @@
-<p>finanzielle-situation-start-schwyz works!</p>
+<div class="gesuch-modul">
+    <h1 class="access-for-all-title" translate>AFA_GESUCHSFORMULAR</h1>
+    <div class="row view-title">
+        <div class="col-md-12">
+            <h2>
+                <span translate
+                      [translateParams]="{gesuchsteller: getAntragstellerNameForCurrentStep(), basisjahr: getYearForDeklaration()}">FINANZIELLE_SITUATION</span>
+            </h2>
+            <hr class="header"/>
+        </div>
+    </div>
 
-<dv-navigation-x (dvSave)="prepareSave($event.onResult)"
-                 [dvNext]="true"
-                 [dvPrevious]="true"
-                 [dvSubStep]="getSubStepIndex()"
-                 [dvSubStepName]="getSubStepName()"></dv-navigation-x>
+    <form #form="ngForm" class="gesuch">
+        <dv-auszahlungsdaten [auszahlungsdaten]="model.zahlungsinformationen"
+                             [auszahlungsdatenGS]="model.zahlungsinformationenGS"
+                             [showAddress]="true">
+        </dv-auszahlungsdaten>
+
+        <div class="form-group">
+            <dv-radio-container-x>
+                          <span>
+                             <label for="quellenbesteuert_id" class="required ebegu-h1">
+							        {{'QUELLENBESTEUERT' | translate}}
+						     </label>
+                          </span>
+                <mat-radio-group
+                    [(ngModel)]="getModel().finanzielleSituationJA.quellenbesteuert"
+                    name="quellenbesteuert"
+                    id="quellenbesteuert_id"
+                    #quellenbesteuert="ngModel"
+                    [disabled]="isGesuchReadonly()"
+                    (ngModelChange)="onQuellenbesteuertChange()"
+                    required>
+                    <mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
+                    <mat-radio-button [value]="false">{{'LABEL_NEIN' | translate }}</mat-radio-button>
+                </mat-radio-group>
+                <dv-error-messages *ngIf="form.submitted"
+                                   [errorObject]="quellenbesteuert.errors"
+                                   inputId="quellenbesteuert_id">
+                </dv-error-messages>
+            </dv-radio-container-x>
+        </div>
+
+        <ng-container *ngIf="isNotNullOrUndefined(getModel().finanzielleSituationJA.quellenbesteuert)">
+            <ng-container *ngIf="getModel().finanzielleSituationJA.quellenbesteuert; then quellenbesteuertFragen else nichtQuellenbesteuertFragen"></ng-container>
+        </ng-container>
+        <ng-template #quellenbesteuertFragen>
+            <h3 class="margin-bottom-20">{{'LETZTE_RECHTSKRAETIGTE_STEUERVERANLAGUNG' | translate}} <dv-tooltip [text]="'LETZTE_RECHTSKRAETIGTE_STEUERVERANLAGUNG_HINT' | translate"></dv-tooltip></h3>
+            <div class="row">
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <dv-input-label-field
+                            [name]="'nettoEinkommen'"
+                            [(model)]="getModel().finanzielleSituationJA.nettolohn"
+                            [labelMessageKey]="'FINANZIELLE_SITUATION_NETTOEINKOMMEN'"
+                            [tooltipMessageKey]="'FINANZIELLE_SITUATION_NETTOEINKOMMEN_HINT'"
+                            [inputRequired]="true"
+                            [deklaration]="getModel().finanzielleSituationGS?.nettolohn"
+                            [korrektur]="getModel().finanzielleSituationJA.nettolohn"
+                            [showBisher]="isNotNullOrUndefined(getModel().finanzielleSituationGS)">
+                        </dv-input-label-field>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <dv-input-label-field
+                            [name]="'einkaeufeVorsorge'"
+                            [(model)]="getModel().finanzielleSituationJA.einkaeufeVorsorge"
+                            [labelMessageKey]="'FINANZIELLE_SITUATION_EINKAEUFE_VORSORGE'"
+                            [tooltipMessageKey]="'FINANZIELLE_SITUATION_EINKAEUFE_VORSORGE_TOOLTIP'"
+                            [inputDisabled]="gesuchModelManager.isGesuchReadonly()"
+                            [inputRequired]="true"
+                            [deklaration]="getModel().finanzielleSituationGS?.einkaeufeVorsorge"
+                            [korrektur]="getModel().finanzielleSituationJA.einkaeufeVorsorge"
+                            [showBisher]="isNotNullOrUndefined(getModel().finanzielleSituationGS)">
+                        </dv-input-label-field>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <dv-input-label-field
+                            [name]="'abzuegeLiegenschaft'"
+                            [(model)]="getModel().finanzielleSituationJA.abzuegeLiegenschaft"
+                                [labelMessageKey]="'FINANZIELLE_SITUATION_ABZUEGE_LIEGENSCHAFT'"
+                            [tooltipMessageKey]="'FINANZIELLE_SITUATION_ABZUEGE_LIEGENSCHAFT_TOOLTIP'"
+                            [inputDisabled]="gesuchModelManager.isGesuchReadonly()"
+                            [inputRequired]="true"
+                            [allowNegative]="true"
+                            [deklaration]="getModel().finanzielleSituationGS?.abzuegeLiegenschaft"
+                            [korrektur]="getModel().finanzielleSituationJA.abzuegeLiegenschaft"
+                            [showBisher]="isNotNullOrUndefined(getModel().finanzielleSituationGS)">
+                        </dv-input-label-field>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-6">
+                    <dv-input-label-field
+                        [(model)]="getModel().finanzielleSituationJA.steuerbaresVermoegen"
+                        [labelMessageKey]="'FINANZIELLE_SITUATION_STEUERBARES_VERMOEGEN'"
+                        [tooltipMessageKey]="'FINANZIELLE_SITUATION_STEUERBARES_VERMOEGEN_HELP'"
+                        [inputRequired]="true"
+                        [inputDisabled]="gesuchModelManager.isGesuchReadonly()"
+                        [deklaration]="getModel().finanzielleSituationGS?.steuerbaresVermoegen"
+                        [korrektur]="getModel().finanzielleSituationJA?.steuerbaresVermoegen"
+                        [showBisher]="isNotNullOrUndefined(getModel().finanzielleSituationGS)">
+                    </dv-input-label-field>
+                </div>
+            </div>
+        </ng-template>
+        <ng-template #nichtQuellenbesteuertFragen>
+            <div class="row">
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <dv-input-label-field
+                            [name]="'bruttoLohn'"
+                            [(model)]="getModel().finanzielleSituationJA.bruttoLohn"
+                            [labelMessageKey]="'FINANZIELLE_SITUATION_BRUTTOLOHN'"
+                            [inputRequired]="true"
+                            [tooltipMessageKey]="'FINANZIELLE_SITUATION_BRUTTOLOHN_HINT'"
+                            [showBisher]="isNotNullOrUndefined(getModel().finanzielleSituationGS)"
+                            [deklaration]="getModel().finanzielleSituationGS?.bruttoLohn"
+                            [korrektur]="getModel().finanzielleSituationJA.bruttoLohn">
+                        </dv-input-label-field>
+                    </div>
+                </div>
+            </div>
+        </ng-template>
+    </form>
+
+    <dv-navigation-x (dvSave)="prepareSave($event.onResult)"
+                     [dvNext]="true"
+                     [dvPrevious]="true"
+                     [dvSubStep]="getSubStepIndex()"
+                     [dvSubStepName]="getSubStepName()"></dv-navigation-x>
+</div>
+
+
