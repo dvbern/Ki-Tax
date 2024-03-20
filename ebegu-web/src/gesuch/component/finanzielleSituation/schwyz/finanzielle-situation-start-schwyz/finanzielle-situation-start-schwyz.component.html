@@ -51,12 +51,12 @@
                     <div class="form-group">
                         <dv-input-label-field
                             [name]="'nettoEinkommen'"
-                            [(model)]="getModel().finanzielleSituationJA.nettolohn"
-                            [labelMessageKey]="'FINANZIELLE_SITUATION_NETTOEINKOMMEN'"
-                            [tooltipMessageKey]="'FINANZIELLE_SITUATION_NETTOEINKOMMEN_HINT'"
+                            [(model)]="getModel().finanzielleSituationJA.steuerbaresEinkommen"
+                            [labelMessageKey]="'FINANZIELLE_SITUATION_STEUERBARES_EINKOMMEN'"
+                            [tooltipMessageKey]="'FINANZIELLE_SITUATION_STEUERBARES_EINKOMMEN_HINT'"
                             [inputRequired]="true"
-                            [deklaration]="getModel().finanzielleSituationGS?.nettolohn"
-                            [korrektur]="getModel().finanzielleSituationJA.nettolohn"
+                            [deklaration]="getModel().finanzielleSituationGS?.steuerbaresEinkommen"
+                            [korrektur]="getModel().finanzielleSituationJA.steuerbaresEinkommen"
                             [showBisher]="isNotNullOrUndefined(getModel().finanzielleSituationGS)">
                         </dv-input-label-field>
                     </div>
