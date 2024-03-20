@@ -378,6 +378,8 @@ public final class EbeguUtil {
 					&& finanzielleSituation.getSteuerbaresVermoegen() != null);
 		} else if (finSitTyp.equals(FinanzielleSituationTyp.APPENZELL)) {
 			valid = isFinSitAppenzellVollstaendig(finanzielleSituation);
+		} else if (finSitTyp == FinanzielleSituationTyp.SCHWYZ) {
+			valid = isFinSitSchwyzVollstaendig(finanzielleSituation);
 		} else {
 			valid = isAbstractFinanzielleSituationVollstaendig(finanzielleSituation, finSitTyp, gesuch);
 		}
@@ -403,6 +405,14 @@ public final class EbeguUtil {
 		return finanzielleSituation.getFinSitZusatzangabenAppenzell().isVollstaendig()
 			&& finanzielleSituation.getSteuerbaresEinkommen() != null
 			&& finanzielleSituation.getSteuerbaresVermoegen() != null;
+	}
+
+	private static boolean isFinSitSchwyzVollstaendig(FinanzielleSituation finanzielleSituation) {
+		return finanzielleSituation.getBruttoLohn() != null ||
+			(finanzielleSituation.getSteuerbaresEinkommen() != null
+				&& finanzielleSituation.getEinkaeufeVorsorge() != null
+				&& finanzielleSituation.getAbzuegeLiegenschaft() != null
+				&& finanzielleSituation.getSteuerbaresVermoegen() != null);
 	}
 
 	private static boolean isEinkommensverschlechterungVollstaendig(
