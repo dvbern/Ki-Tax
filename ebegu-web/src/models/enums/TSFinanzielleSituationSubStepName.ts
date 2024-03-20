@@ -39,6 +39,11 @@ export enum TSFinanzielleSituationSubStepName {
 
     // appenzell
     APPENZELL_START = 'APPENZELL_START',
-    APPENZELL_GS2 = 'APPENZELL_GS2'
+    APPENZELL_GS2 = 'APPENZELL_GS2',
+
+    // schwyz
+    SCHWYZ_START = 'SCHWYZ_START',
+    SCHWYZ_GS1 = 'SCHWYZ_GS1',
+    SCHWYZ_GS2 = 'SCHWYZ_GS2'
 
 }

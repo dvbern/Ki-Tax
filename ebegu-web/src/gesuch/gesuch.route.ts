@@ -61,6 +61,9 @@ import {
     FinanzielleSituationStartViewLuzernComponent
 } from './component/finanzielleSituation/luzern/finanzielle-situation-start-view-luzern/finanzielle-situation-start-view-luzern.component';
 import {
+    FinanzielleSituationStartSchwyzComponent
+} from './component/finanzielleSituation/schwyz/finanzielle-situation-start-schwyz/finanzielle-situation-start-schwyz.component';
+import {
     AngabenGs1Component
 } from './component/finanzielleSituation/solothurn/angaben-gs/angaben-gs1/angaben-gs1.component';
 import {
@@ -736,6 +739,79 @@ export class EbeguFinanzielleSituationAppenzellGS2State implements Ng1StateDecla
         roles: TSRoleUtil.getAllRolesButTraegerschaftInstitution(),
     };
 }
+export class EbeguFinanzielleSituationStartSchwyzState implements Ng1StateDeclaration {
+    public name = 'gesuch.finanzielleSituationStartSchwyz';
+    public url = '/finanzielleSituationSchywz/:gesuchId';
+
+    public views: any = {
+        gesuchViewPort: {
+            component: FinanzielleSituationStartSchwyzComponent,
+        },
+        kommentarViewPort: {
+            template: kommentarView,
+        },
+    };
+
+    public resolve = {
+        gesuchModelManager: getGesuchModelManager,
+    };
+
+    public data = {
+        roles: TSRoleUtil.getAllRolesButTraegerschaftInstitution(),
+    };
+}
+
+export class EbeguFinanzielleSituationGS1SchwyzState implements Ng1StateDeclaration {
+    public name = 'gesuch.finanzielleSituationSchwyzGS1';
+    public url = '/finanzielleSituationSchywz/:gesuchstellerNumber/:gesuchId';
+
+    public params: {
+        gesuchstellerNumber: 1
+    };
+
+    public views: any = {
+        gesuchViewPort: {
+            component: FinanzielleSituationStartSchwyzComponent,
+        },
+        kommentarViewPort: {
+            template: kommentarView,
+        },
+    };
+
+    public resolve = {
+        gesuchModelManager: getGesuchModelManager,
+    };
+
+    public data = {
+        roles: TSRoleUtil.getAllRolesButTraegerschaftInstitution(),
+    };
+}
+
+export class EbeguFinanzielleSituationGS2SchwyzState implements Ng1StateDeclaration {
+    public name = 'gesuch.finanzielleSituationSchwyzGS2';
+    public url = '/finanzielleSituationSchywz/:gesuchstellerNumber/:gesuchId';
+
+    public params: {
+        gesuchstellerNumber: 1
+    };
+
+    public views: any = {
+        gesuchViewPort: {
+            component: FinanzielleSituationStartSchwyzComponent,
+        },
+        kommentarViewPort: {
+            template: kommentarView,
+        },
+    };
+
+    public resolve = {
+        gesuchModelManager: getGesuchModelManager,
+    };
+
+    public data = {
+        roles: TSRoleUtil.getAllRolesButTraegerschaftInstitution(),
+    };
+}
 
 export class EbeguVerfuegenListState implements Ng1StateDeclaration {
     public name = 'gesuch.verfuegen';
@@ -1167,6 +1243,9 @@ const ng1States: Ng1StateDeclaration[] = [
     new EbeguFinanzielleSituationGS2SolothurnState(),
     new EbeguFinanzielleSituationAppenzellState(),
     new EbeguFinanzielleSituationAppenzellGS2State(),
+    new EbeguFinanzielleSituationStartSchwyzState(),
+    new EbeguFinanzielleSituationGS1SchwyzState(),
+    new EbeguFinanzielleSituationGS2SchwyzState(),
     new EbeguKindState(),
     new EbeguErwerbspensenListState(),
     new EbeguErwerbspensumState(),

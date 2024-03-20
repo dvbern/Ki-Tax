@@ -81,6 +81,9 @@ import {InfomaFieldsComponent} from './component/finanzielleSituation/luzern/inf
 import {ResultatComponent} from './component/finanzielleSituation/luzern/resultat/resultat.component';
 import {VeranlagungComponent} from './component/finanzielleSituation/luzern/veranlagung/veranlagung.component';
 import {
+    FinanzielleSituationStartSchwyzComponent
+} from './component/finanzielleSituation/schwyz/finanzielle-situation-start-schwyz/finanzielle-situation-start-schwyz.component';
+import {
     AngabenGs1Component
 } from './component/finanzielleSituation/solothurn/angaben-gs/angaben-gs1/angaben-gs1.component';
 import {
@@ -118,6 +121,7 @@ import {
 import {
     EinkommensverschlechterungAppenzellResultateViewComponent
 } from './component/einkommensverschlechterung/appenzell/einkommensverschlechterung-appenzell-resultate-view/einkommensverschlechterung-appenzell-resultate-view.component';
+import {EbeguFinanzielleSituationGS1SchwyzState} from './gesuch.route';
 
 @NgModule({
     imports: [
@@ -158,6 +162,7 @@ import {
         SteuerveranlagungGemeinsamComponent,
         AngabenGs1Component,
         AngabenGs2Component,
+        FinanzielleSituationStartSchwyzComponent,
         MassgebendesEinkommenComponent,
         FkjvKinderabzugComponent,
         MassgebendesEinkommenComponent,
