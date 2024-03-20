@@ -308,6 +308,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     }
 
     private initEinstellungen(): void {
+        this.loadAuszahlungAnEltern();
         const gesuchsperiodeId: string = this.gesuchModelManager.getGesuchsperiode().id;
         this.einstellungRS.getAllEinstellungenBySystemCached(
             gesuchsperiodeId,
@@ -376,6 +377,18 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         ).subscribe(res => {
             this.zuschlagBehinderungProStd = Number(res.value);
         }, error => LOG.error(error));
+    }
+
+    private loadAuszahlungAnEltern(): void {
+        if (EbeguUtil.isNotNullOrUndefined(this.auszahlungAnEltern)) {
+            // properties wurden bereits geladen
+            return;
+        }
+
+        this.applicationPropertyRS.getPublicPropertiesCached()
+            .then((response: TSPublicAppConfig) => {
+                this.auszahlungAnEltern = response.auszahlungAnEltern;
+            });
     }
 
     private initBetreuungsangebotTyp() {
