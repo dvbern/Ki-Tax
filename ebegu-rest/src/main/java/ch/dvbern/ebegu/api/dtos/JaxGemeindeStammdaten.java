@@ -121,9 +121,6 @@ public class JaxGemeindeStammdaten extends JaxAbstractGemeindeStammdaten {
 	@Nonnull
 	private List<JaxInstitution> zugelasseneBgInstitutionen;
 
-	public JaxGemeindeStammdaten() {
-	}
-
 	@Nullable
 	public String getAdministratoren() {
 		return administratoren;

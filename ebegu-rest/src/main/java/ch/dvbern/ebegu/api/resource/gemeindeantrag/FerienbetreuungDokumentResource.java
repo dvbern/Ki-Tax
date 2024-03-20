@@ -56,6 +56,7 @@ import ch.dvbern.ebegu.services.gemeindeantrag.FerienbetreuungDokumentService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
+import static ch.dvbern.ebegu.api.resource.util.ResourceConstants.DOCX_FILE_EXTENSION;
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_BG;
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_FERIENBETREUUNG;
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_GEMEINDE;
@@ -156,7 +157,7 @@ public class FerienbetreuungDokumentResource {
 
 		if (document.length > 0) {
 			try {
-				return RestUtil.buildDownloadResponse(true, ".docx",
+				return RestUtil.buildDownloadResponse(true, DOCX_FILE_EXTENSION,
 					"application/octet-stream", document);
 
 			} catch (IOException e) {

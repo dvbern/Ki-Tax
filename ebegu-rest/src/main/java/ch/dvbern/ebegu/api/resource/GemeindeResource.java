@@ -56,6 +56,7 @@ import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static ch.dvbern.ebegu.api.resource.util.ResourceConstants.UPLOAD_WARNING;
 import static ch.dvbern.ebegu.enums.UserRoleName.*;
 import static java.util.Objects.requireNonNull;
 
@@ -482,7 +483,7 @@ public class GemeindeResource {
 
 		List<TransferFile> fileList = MultipartFormToFileConverter.parse(input);
 
-		Validate.notEmpty(fileList, "Need to upload something");
+		Validate.notEmpty(fileList, UPLOAD_WARNING);
 
 		String gemeindeId = converter.toEntityId(gemeindeJAXPId);
 
@@ -504,7 +505,7 @@ public class GemeindeResource {
 
 		List<TransferFile> fileList = MultipartFormToFileConverter.parse(input);
 
-		Validate.notEmpty(fileList, "Need to upload something");
+		Validate.notEmpty(fileList, UPLOAD_WARNING);
 
 		String gemeindeId = converter.toEntityId(gemeindeJAXPId);
 
@@ -522,7 +523,7 @@ public class GemeindeResource {
 	@PermitAll // Oeffentlich
 	public Response isSupportedImage(@Nonnull @NotNull MultipartFormDataInput input) {
 		List<TransferFile> fileList = MultipartFormToFileConverter.parse(input);
-		Validate.notEmpty(fileList, "Need to upload something");
+		Validate.notEmpty(fileList, UPLOAD_WARNING);
 		TransferFile file = fileList.get(0);
 		try {
 			Image.getInstance(file.getContent());

@@ -70,6 +70,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.jboss.ejb3.annotation.TransactionTimeout;
 
+import static ch.dvbern.ebegu.api.resource.util.ResourceConstants.DOCX_FILE_EXTENSION;
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_BG;
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_GEMEINDE;
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_MANDANT;
@@ -362,17 +363,17 @@ public class GesuchsperiodeResource {
 				}
 				else if (dokumentTyp == DokumentTyp.VORLAGE_MERKBLATT_TS){
 					//noinspection StringConcatenationMissingWhitespace
-					return RestUtil.buildDownloadResponse(true, "vorlageMerkblattTS" + sprache + ".docx",
+					return RestUtil.buildDownloadResponse(true, "vorlageMerkblattTS" + sprache + DOCX_FILE_EXTENSION,
 						APPLICATION_OCTET_STREAM, content);
 				}
 				else if (dokumentTyp == DokumentTyp.VORLAGE_VERFUEGUNG_LATS){
 					//noinspection StringConcatenationMissingWhitespace
-					return RestUtil.buildDownloadResponse(true, "vorlageVerfuegungLats" + sprache + ".docx",
+					return RestUtil.buildDownloadResponse(true, "vorlageVerfuegungLats" + sprache + DOCX_FILE_EXTENSION,
 						APPLICATION_OCTET_STREAM, content);
 				}
 				else if (dokumentTyp == DokumentTyp.VORLAGE_VERFUEGUNG_FERIENBETREUUNG){
 					//noinspection StringConcatenationMissingWhitespace
-					return RestUtil.buildDownloadResponse(true, "vorlageVerfuegungFerienbetreuung" + sprache + ".docx",
+					return RestUtil.buildDownloadResponse(true, "vorlageVerfuegungFerienbetreuung" + sprache + DOCX_FILE_EXTENSION,
 						APPLICATION_OCTET_STREAM, content);
 				}
 			} catch (IOException e) {

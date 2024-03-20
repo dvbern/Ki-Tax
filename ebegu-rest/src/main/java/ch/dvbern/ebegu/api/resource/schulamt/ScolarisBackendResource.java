@@ -72,6 +72,7 @@ import io.swagger.annotations.ApiResponses;
 import org.jboss.resteasy.util.BasicAuthHelper;
 import org.slf4j.Logger;
 
+import static ch.dvbern.ebegu.api.AuthConstants.COOKIE_AUTHORIZATION_HEADER;
 import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
 import static javax.servlet.http.HttpServletResponse.SC_FORBIDDEN;
 import static org.slf4j.LoggerFactory.getLogger;
@@ -140,7 +141,8 @@ public class ScolarisBackendResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	@Path("/anmeldung/{referenznummer}")
 	@RolesAllowed(SUPER_ADMIN)
-	public Response getAnmeldung(@Nonnull @PathParam("referenznummer") String referenznummer,
+	public Response getAnmeldung(
+		@Nonnull @PathParam("referenznummer") String referenznummer,
 		@Context HttpServletRequest request) {
 
 		try {
@@ -250,7 +252,6 @@ public class ScolarisBackendResource {
 				return createBadParameterResponse("Can not parse date for stichtagParam");
 			}
 
-
 			//check if Gemeinde Scolaris erlaubt:
 			final List<AbstractAnmeldung> anmeldungenList = betreuungService.findNewestAnmeldungByBGNummer(referenznummer);
 
@@ -281,8 +282,9 @@ public class ScolarisBackendResource {
 			int yearFromBGNummer = BetreuungUtil.getYearFromBGNummer(referenznummer);
 			// TODO: Mandantenfähigkeit: Wie läuft die Authentifizierung hier? Kann man den Mandanten über den Principal abfragen?
 			Gesuchsperiode gesuchsperiodeFromBGNummer =
-				gesuchsperiodeService.getGesuchsperiodeAm(LocalDate.of(yearFromBGNummer, Month.AUGUST, 1),
-								mandantService.getMandantBern())
+				gesuchsperiodeService.getGesuchsperiodeAm(
+						LocalDate.of(yearFromBGNummer, Month.AUGUST, 1),
+						mandantService.getMandantBern())
 					.orElseThrow(() -> new EbeguEntityNotFoundException(
 						"getFinanzielleSituation",
 						ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
@@ -293,7 +295,7 @@ public class ScolarisBackendResource {
 			//Get "neustes" Gesuch on Stichtag an fallnummer
 			Gemeinde gemeinde = anmeldung.extractGemeinde();
 			return gesuchService.getNeustesGesuchFuerFallnumerForSchulamtInterface(gemeinde, gesuchsperiodeFromBGNummer,
-				fallNummer)
+					fallNummer)
 				.map(neustesGesuch -> toFinanzielleSituationDTO(fallNummer, stichtag, neustesGesuch)
 					.map(dto -> Response.ok(dto).build())
 					.orElseGet(() -> createNoResultsResponse("No FinanzielleSituation for Stichtag")))
@@ -374,10 +376,11 @@ public class ScolarisBackendResource {
 		).build();
 	}
 
-	private boolean isScolarisAktiviert(@Nonnull AnmeldungTagesschule anmeldungTagesschule,
+	private boolean isScolarisAktiviert(
+		@Nonnull AnmeldungTagesschule anmeldungTagesschule,
 		@Nonnull HttpServletRequest request) {
 		//Extract username:
-		String header = request.getHeader("Authorization");
+		String header = request.getHeader(COOKIE_AUTHORIZATION_HEADER);
 		final String[] strings = BasicAuthHelper.parseHeader(header);
 
 		if (strings == null || strings.length != 2) {
@@ -390,7 +393,11 @@ public class ScolarisBackendResource {
 		//check if Gemeinde erlaubt Scolaris
 		Objects.requireNonNull(anmeldungTagesschule.extractGemeinde());
 		GemeindeStammdaten gemeindeStammdaten =
-			gemeindeService.getGemeindeStammdatenByGemeindeId(anmeldungTagesschule.extractGemeinde().getId()).get();
+			gemeindeService.getGemeindeStammdatenByGemeindeId(anmeldungTagesschule.extractGemeinde().getId())
+				.orElseThrow(() -> new EbeguEntityNotFoundException(
+					"isScolarisAktiviert",
+					ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
+					anmeldungTagesschule.extractGemeinde().getId()));
 		AtomicBoolean isScolarisErlaubt = new AtomicBoolean(false);
 		gemeindeStammdaten.getExternalClients().forEach(externalClient -> {
 			if (externalClient.getClientName().equals("scolaris")) {
@@ -400,7 +407,8 @@ public class ScolarisBackendResource {
 
 		//and if username match
 		boolean usernameMatch =
-			gemeindeStammdaten.getUsernameScolaris() != null && gemeindeStammdaten.getUsernameScolaris().equals(scolarisGemeindeUsername);
+			gemeindeStammdaten.getUsernameScolaris() != null && gemeindeStammdaten.getUsernameScolaris()
+				.equals(scolarisGemeindeUsername);
 
 		return isScolarisErlaubt.get() && usernameMatch;
 	}

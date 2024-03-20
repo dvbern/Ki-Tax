@@ -21,8 +21,10 @@ import ch.dvbern.ebegu.entities.*;
 import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeContainer;
 import ch.dvbern.ebegu.enums.ApplicationPropertyKey;
 import ch.dvbern.ebegu.enums.EinladungTyp;
+import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.GemeindeAngebotTyp;
 import ch.dvbern.ebegu.enums.Sprache;
+import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.services.ApplicationPropertyService;
 import ch.dvbern.ebegu.services.BenutzerService;
@@ -39,6 +41,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
+
 import java.io.IOException;
 import java.io.StringWriter;
 import java.time.LocalDate;
@@ -184,7 +187,7 @@ public class MailTemplateConfiguration {
 		paramMap.put("datumErstellung", Constants.DATE_FORMATTER.format(datumErstellung));
 		paramMap.put("birthday", Constants.DATE_FORMATTER.format(birthdayKind));
 		paramMap.put("status", ServerMessageUtil.translateEnumValue(betreuung.getBetreuungsstatus(), sprache.getLocale(),
-				requireNonNull(fall.getMandant())));
+			requireNonNull(fall.getMandant())));
 
 		return processTemplateBetreuungGeloescht(
 			betreuung,
@@ -238,7 +241,10 @@ public class MailTemplateConfiguration {
 		@Nonnull List<Sprache> sprachen
 	) {
 		Mandant mandant = mitteilung.getFall().getMandant();
-		return processTemplateMitteilung(mitteilung, paramsWithEmpfaenger(empfaengerMail, mandant.getMandantIdentifier()), sprachen);
+		return processTemplateMitteilung(
+			mitteilung,
+			paramsWithEmpfaenger(empfaengerMail, mandant.getMandantIdentifier()),
+			sprachen);
 	}
 
 	private Locale getLocaleFromSprachen(List<Sprache> sprachen) {
@@ -326,7 +332,10 @@ public class MailTemplateConfiguration {
 		Map<Object, Object> paramMap = paramsWithEmpfaenger(empfaengerMail, mandant.getMandantIdentifier());
 
 		GemeindeStammdaten stammdaten = gemeindeService
-			.getGemeindeStammdatenByGemeindeId(gesuch.getDossier().getGemeinde().getId()).get();
+			.getGemeindeStammdatenByGemeindeId(gesuch.getDossier().getGemeinde().getId())
+			.orElseThrow(() -> new EbeguEntityNotFoundException(
+				"getWarnungFreigabequittungFehlt",
+				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, gesuch.getDossier().getGemeinde().getId()));
 
 		paramMap.put(ADRESSE, stammdaten.getAdresseForGesuch(gesuch).getAddressAsStringInOneLine());
 		paramMap.put(ANZAHL_TAGE, anzahlTage);
@@ -393,8 +402,8 @@ public class MailTemplateConfiguration {
 		paramMap.put("eingeladener", eingeladener);
 
 		final boolean isFrenchEnabled = Boolean.TRUE.equals(this.applicationPropertyService.findApplicationPropertyAsBoolean(
-				ApplicationPropertyKey.FRENCH_ENABLED,
-				eingeladener.getMandant()));
+			ApplicationPropertyKey.FRENCH_ENABLED,
+			eingeladener.getMandant()));
 		Locale locale = isFrenchEnabled ? Constants.DEUTSCH_FRENCH_LOCALE : Constants.DEUTSCH_LOCALE;
 
 		addRoleContentInLanguage(einladender, einladung, eingeladener, paramMap, "contentDE", "footerDE", Constants.DEUTSCH_LOCALE);
@@ -417,7 +426,7 @@ public class MailTemplateConfiguration {
 		Mandant mandant = institutionStammdaten.getInstitution().getMandant();
 		Map<Object, Object> paramMap = paramsWithEmpfaenger(empfaengerMail, mandant.getMandantIdentifier());
 		Locale locale = getMandantLocale(institutionStammdaten.getInstitution()
-				.getMandant());
+			.getMandant());
 		paramMap.put(INSTITUTION_STAMMDATEN, institutionStammdaten);
 		paramMap.put(UNGELESENDE_MITTEILUNG, ungelesendeMitteilung);
 		paramMap.put(OFFENE_PENDENZEN, offenePendenzen);
@@ -440,7 +449,6 @@ public class MailTemplateConfiguration {
 		paramMap.put("gemeinde", gemeinde);
 		return doProcessTemplate(getTemplateFileName(MailTemplate.InfoGemeindeAngebotAktiviert), mandantLocale, paramMap);
 	}
-
 
 	public String getInfoGesuchVerfuegtVerantwortlicherTS(
 		@Nonnull Gesuch gesuch,
@@ -479,8 +487,12 @@ public class MailTemplateConfiguration {
 		);
 
 		paramMap.put(contentName, content);
-		paramMap.put(footerName,
-			ServerMessageUtil.getMessage(getFooterKeyForEinladungTyp(einladung.getEinladungTyp()), locale, einladender.getMandant()));
+		paramMap.put(
+			footerName,
+			ServerMessageUtil.getMessage(
+				getFooterKeyForEinladungTyp(einladung.getEinladungTyp()),
+				locale,
+				einladender.getMandant()));
 	}
 
 	private String getFooterKeyForEinladungTyp(EinladungTyp einladungTyp) {
@@ -571,8 +583,8 @@ public class MailTemplateConfiguration {
 		return doProcessTemplate(getTemplateFileName(nameOfTemplate), mandantLocale, paramMap);
 	}
 
-	private String getSenderFullNameForEmail(Gesuch gesuch, Gesuchsteller gesuchsteller){
-		if(gesuch.getFall().getSozialdienstFall() != null) {
+	private String getSenderFullNameForEmail(Gesuch gesuch, Gesuchsteller gesuchsteller) {
+		if (gesuch.getFall().getSozialdienstFall() != null) {
 			return gesuch.getFall().getSozialdienstFall().getSozialdienst().getName();
 		}
 		return gesuchsteller.getFullName();
@@ -588,7 +600,7 @@ public class MailTemplateConfiguration {
 
 		final Mandant mandant = betreuung.extractGesuch().extractMandant();
 		Locale mandantLocale = new MandantLocaleVisitor(sprache.getLocale())
-				.process(mandant);
+			.process(mandant);
 
 		paramMap.put(BETREUUNG, betreuung);
 		paramMap.put(GRUSS, getEmailGruss(mandant, mandantLocale, betreuung.extractGemeinde().getName()));
@@ -611,7 +623,9 @@ public class MailTemplateConfiguration {
 		Map<Object, Object> paramMap = paramsWithEmpfaenger(empfaengerMail, mandant.getMandantIdentifier());
 		paramMap.put(BETREUUNG, betreuung);
 		paramMap.put(SENDER_FULL_NAME, getSenderFullNameForEmail(betreuung.extractGesuch(), gesuchsteller));
-		paramMap.put(GRUSS, getEmailGruss(mandant, mandantLocale, betreuung.extractGesuch().getDossier().getGemeinde().getName()));
+		paramMap.put(
+			GRUSS,
+			getEmailGruss(mandant, mandantLocale, betreuung.extractGesuch().getDossier().getGemeinde().getName()));
 		paramMap.put(FALL, betreuung.extractGesuch().getDossier().getFall());
 		paramMap.put(GESUCHSPERIODE, betreuung.extractGesuch().getGesuchsperiode());
 
@@ -655,7 +669,7 @@ public class MailTemplateConfiguration {
 	) {
 		final Mandant mandant = betreuung.extractGesuch().extractMandant();
 		Locale mandantLocale = new MandantLocaleVisitor(sprache.getLocale())
-				.process(mandant);
+			.process(mandant);
 
 		paramMap.put(BETREUUNG, betreuung);
 		paramMap.put(GRUSS, getEmailGruss(mandant, mandantLocale, betreuung.extractGemeinde().getName()));
@@ -714,7 +728,7 @@ public class MailTemplateConfiguration {
 		}
 	}
 
-	private String getTemplateFileName(@Nonnull final  MailTemplate mailTemplate) {
+	private String getTemplateFileName(@Nonnull final MailTemplate mailTemplate) {
 		return mailTemplate.name() + FTL_FILE_EXTENSION;
 	}
 
@@ -757,7 +771,7 @@ public class MailTemplateConfiguration {
 	}
 
 	@Nonnull
-	private  Map<Object, Object> initParamMapWithoutHostname() {
+	private Map<Object, Object> initParamMapWithoutHostname() {
 		Map<Object, Object> paramMap = new HashMap<>();
 		paramMap.put("configuration", ebeguConfiguration);
 		paramMap.put("templateConfiguration", this);
@@ -801,7 +815,6 @@ public class MailTemplateConfiguration {
 		paramMap.put("betreff", betreff);
 		paramMap.put("inhalt", inhalt);
 
-
 		return doProcessTemplate(getTemplateFileName(MailTemplate.NotrechtGenerischeMitteilung), locale, paramMap);
 	}
 
@@ -837,10 +850,16 @@ public class MailTemplateConfiguration {
 		return doProcessTemplate(getTemplateFileName(MailTemplate.NotrechtProvisorischeVerfuegung), locale, paramMap);
 	}
 
-	public String getInfoGemeindeLastenausgleichDurch(Lastenausgleich lastenausgleich, List<Sprache> sprachen, @Nonnull String empfaengerMail) {
+	public String getInfoGemeindeLastenausgleichDurch(
+		Lastenausgleich lastenausgleich,
+		List<Sprache> sprachen,
+		@Nonnull String empfaengerMail) {
 		Map<Object, Object> paramMap = paramsWithEmpfaenger(empfaengerMail, lastenausgleich.getMandant().getMandantIdentifier());
 		paramMap.put("jahr", lastenausgleich.getJahr().toString());
-		return doProcessTemplate(getTemplateFileName(MailTemplate.InfoGemeindeLastenausgleichDurch), getLocaleFromSprachen(sprachen), paramMap);
+		return doProcessTemplate(
+			getTemplateFileName(MailTemplate.InfoGemeindeLastenausgleichDurch),
+			getLocaleFromSprachen(sprachen),
+			paramMap);
 	}
 
 	public String getInfoSchulamtAnmeldungStorniert(
@@ -857,29 +876,38 @@ public class MailTemplateConfiguration {
 			sprache);
 	}
 
-	public String getInfoGemeindeLastenausgleichTagesschuleZurueckAnGemeinde(LastenausgleichTagesschuleAngabenGemeindeContainer container, List<Sprache> sprachen, @Nonnull String empfaengerMail) {
+	public String getInfoGemeindeLastenausgleichTagesschuleZurueckAnGemeinde(
+		LastenausgleichTagesschuleAngabenGemeindeContainer container,
+		List<Sprache> sprachen,
+		@Nonnull String empfaengerMail) {
 		Mandant mandant = container.getGemeinde().getMandant();
 		Map<Object, Object> paramMap = paramsWithEmpfaenger(empfaengerMail, mandant.getMandantIdentifier());
 		paramMap.put("id", container.getId());
-		return doProcessTemplate(getTemplateFileName(MailTemplate.InfoGemeindeLastenausgleichZurueckAnGemeinde), getLocaleFromSprachen(sprachen), paramMap);
+		return doProcessTemplate(
+			getTemplateFileName(MailTemplate.InfoGemeindeLastenausgleichZurueckAnGemeinde),
+			getLocaleFromSprachen(sprachen),
+			paramMap);
 	}
 
 	public String getInitGSZPVNr(
-			String url,
-			List<Sprache> sprachen,
-			@Nonnull String empfaengerMail,
-			String trunctatedHostname) {
+		String url,
+		List<Sprache> sprachen,
+		@Nonnull String empfaengerMail,
+		String trunctatedHostname) {
 		Map<Object, Object> paramMap = initParamMapWithoutHostname();
 		paramMap.put(EMPFAENGER_MAIL, empfaengerMail);
 		paramMap.put("link", url);
 		paramMap.put(HOSTNAME, trunctatedHostname);
-		return doProcessTemplate(getTemplateFileName(MailTemplate.GesuchstellerInitZPV), getLocaleFromSprachen(sprachen), paramMap);
+		return doProcessTemplate(
+			getTemplateFileName(MailTemplate.GesuchstellerInitZPV),
+			getLocaleFromSprachen(sprachen),
+			paramMap);
 	}
 
 	private Locale getMandantLocale(Mandant mandant) {
 		final boolean frenchEnabled = Boolean.TRUE.equals(applicationPropertyService.findApplicationPropertyAsBoolean(
-				ApplicationPropertyKey.FRENCH_ENABLED,
-				mandant));
+			ApplicationPropertyKey.FRENCH_ENABLED,
+			mandant));
 		return frenchEnabled ? Constants.DEUTSCH_FRENCH_LOCALE : Constants.DEFAULT_LOCALE;
 	}
 }

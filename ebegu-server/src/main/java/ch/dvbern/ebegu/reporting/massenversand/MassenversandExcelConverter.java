@@ -42,6 +42,7 @@ public class MassenversandExcelConverter implements ExcelConverter {
 
 	@Override
 	public void applyAutoSize(@Nonnull Sheet sheet) {
+		// No autosizing defined for columns
 	}
 
 	@Nonnull
