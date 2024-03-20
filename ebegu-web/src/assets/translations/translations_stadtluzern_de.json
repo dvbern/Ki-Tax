@@ -178,7 +178,6 @@
     "FINANZIELLE_SITUATION_GUELTIG_AB_NULL_INFO": "Wenn kein Datum gesetzt wird, ist die finanzielle Situation ab dem {{datum}} gültig",
     "BEGRUENDUNG_AUSZAHLUNG_AN_INSTITUTION": "Begründung für Auszahlung an Institution",
     "EINSCHULUNG_HINT": "Falls Ihr Kind noch nicht in der Schule ist, wählen Sie Vorschulalter.",
-    "CHECKBOX_AUSZAHLUNG_IN_ZUKUNFT": "Folgemonat ausbezahlen",
     "ANSPRUCH_MONATSWEISE": "Anspruchsberechnung monatsweise",
     "MUTATION_KORREKTUR_AUSBEZAHLT_RUECKFORDERUNG_ELTERN": "Diese Verfügung führt zu einer Rückforderung der Auszahlung an die Eltern von {{betrag}} CHF.",
     "MUTATION_KORREKTUR_AUSBEZAHLT_RUECKZAHLUNG_ELTERN": "Diese Verfügung führt zu einer zusätzlichen Auszahlung an die Eltern von {{betrag}} CHF.",
