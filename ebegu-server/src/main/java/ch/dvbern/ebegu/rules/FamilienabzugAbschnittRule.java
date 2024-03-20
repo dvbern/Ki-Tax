@@ -339,7 +339,8 @@ public class FamilienabzugAbschnittRule extends AbstractAbschnittRule {
 			return 0.5;
 		}
 
-		if (isMinDauerKonkubinatErreicht(familiensituation, dateToCompare)
+		if (isVerheiratetOrKonkubinatMitKind(familiensituation.getFamilienstatus())
+			|| isMinDauerKonkubinatErreicht(familiensituation, dateToCompare)
 			|| familiensituation.getGesuchstellerKardinalitaet() == EnumGesuchstellerKardinalitaet.ALLEINE) {
 			return 0.5;
 		}
@@ -350,6 +351,11 @@ public class FamilienabzugAbschnittRule extends AbstractAbschnittRule {
 		}
 
 		return 0.5;
+	}
+
+	public boolean isVerheiratetOrKonkubinatMitKind(EnumFamilienstatus familienstatus) {
+		return familienstatus == EnumFamilienstatus.VERHEIRATET ||
+			familienstatus == EnumFamilienstatus.KONKUBINAT;
 	}
 
 	public boolean isMinDauerKonkubinatErreicht(
