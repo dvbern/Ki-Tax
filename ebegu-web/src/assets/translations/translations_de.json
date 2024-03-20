@@ -3207,5 +3207,6 @@
     "GESUCH_BEENDEN_BEI_TAUSCH_GS2": "Antrag beenden, wenn der Gesuchsteller 2 innerhalb der Periode ändert",
     "WARNUNG_GS2_AUSFUELLEN": "Bitte erfassen Sie zuerst die Daten von Antragssteller/in 2 in der Rubrik Antragsstellende.",
     "CHECKBOX_AUSZAHLUNG_IN_ZUKUNFT": "Folgemonat ausbezahlen",
+    "BEGRUENDUNG_AUSZAHLUNG_AN_INSTITUTION": "Begründung für Auszahlung an Institution",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

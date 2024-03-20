@@ -3107,5 +3107,6 @@
     "GESUCH_BEENDEN_BEI_TAUSCH_GS2": "Antrag beenden, wenn der Gesuchsteller 2 innerhalb der Periode ändert",
     "WARNUNG_GS2_AUSFUELLEN": "Veuillez saisir les données de l'auteur-e de la demande 2.",
     "CHECKBOX_AUSZAHLUNG_IN_ZUKUNFT": "Payer le mois suivant",
+    "BEGRUENDUNG_AUSZAHLUNG_AN_INSTITUTION": "Motif du paiement à l'institution",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }
