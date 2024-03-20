@@ -22,6 +22,7 @@ import ch.dvbern.ebegu.entities.Familiensituation;
 import ch.dvbern.ebegu.enums.FinanzielleSituationTyp;
 import ch.dvbern.ebegu.util.FinanzielleSituationTypVisitor;
 import com.sun.istack.NotNull;
+import org.apache.commons.lang.NotImplementedException;
 
 public class EinkommenVerschlechterungDokumenteVisitor implements FinanzielleSituationTypVisitor<AbstractDokumente<AbstractFinanzielleSituation, Familiensituation>> {
 
@@ -53,5 +54,10 @@ public class EinkommenVerschlechterungDokumenteVisitor implements FinanzielleSit
 	@Override
 	public AbstractDokumente<AbstractFinanzielleSituation, Familiensituation> visitFinSitAppenzell() {
 		return new AppenzellEinkommensverschlechterungDokumente();
+	}
+
+	@Override
+	public AbstractDokumente<AbstractFinanzielleSituation, Familiensituation> visitFinSitSchwyz() {
+		throw new NotImplementedException();
 	}
 }
