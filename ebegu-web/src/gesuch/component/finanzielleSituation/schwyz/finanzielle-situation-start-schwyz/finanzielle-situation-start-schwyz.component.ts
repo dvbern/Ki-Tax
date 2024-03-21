@@ -19,6 +19,7 @@ import {AbstractGesuchViewX} from '../../../abstractGesuchViewX';
 export class FinanzielleSituationStartSchwyzComponent extends AbstractGesuchViewX<TSFinanzModel> implements OnInit {
 
     public hasMultipleGS: boolean;
+    public massgebendesEinkommen = 0;
 
     public constructor(
         protected readonly gesuchModelManager: GesuchModelManager,
