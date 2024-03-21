@@ -36,7 +36,7 @@ import {TSKind} from '../../../../models/TSKind';
 import {TSKindContainer} from '../../../../models/TSKindContainer';
 import {EbeguUtil} from '../../../../utils/EbeguUtil';
 import {GesuchModelManager} from '../../../service/gesuchModelManager';
-import {FjkvKinderabzugExchangeService} from './fjkv-kinderabzug-exchange.service';
+import {KinderabzugExchangeService} from '../service/kinderabzug-exchange.service';
 
 const LOG = LogFactory.createLog('FkjvKinderabzugComponent');
 
@@ -60,7 +60,7 @@ export class FkjvKinderabzugComponent implements OnInit, AfterViewInit, OnDestro
     public constructor(
         private readonly gesuchModelManager: GesuchModelManager,
         private readonly cd: ChangeDetectorRef,
-        private readonly fkjvExchangeService: FjkvKinderabzugExchangeService,
+        private readonly fkjvExchangeService: KinderabzugExchangeService,
     ) {
     }
 

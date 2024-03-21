@@ -58,7 +58,7 @@ import {GlobalCacheService} from '../../service/globalCacheService';
 import {HybridFormBridgeService} from '../../service/hybrid-form-bridge.service';
 import {WizardStepManager} from '../../service/wizardStepManager';
 import {AbstractGesuchViewController} from '../abstractGesuchView';
-import {FjkvKinderabzugExchangeService} from './fkjv-kinderabzug/fjkv-kinderabzug-exchange.service';
+import {KinderabzugExchangeService} from './service/kinderabzug-exchange.service';
 import IPromise = angular.IPromise;
 import IQService = angular.IQService;
 import IScope = angular.IScope;
@@ -92,7 +92,7 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
         'AuthServiceRS',
         'EbeguRestUtil',
         'MandantService',
-        'FjkvKinderabzugExchangeService',
+        'KinderabzugExchangeService',
         'HybridFormBridgeService',
     ];
 
@@ -140,7 +140,7 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
         private readonly authServiceRS: AuthServiceRS,
         private readonly ebeguRestUtil: EbeguRestUtil,
         private readonly mandantService: MandantService,
-        private readonly fjkvKinderabzugExchangeService: FjkvKinderabzugExchangeService,
+        private readonly kinderabzugExchangeService: KinderabzugExchangeService,
         private readonly hybridFormBridgeService: HybridFormBridgeService,
     ) {
         super(gesuchModelManager, berechnungsManager, wizardStepManager, $scope, TSWizardStepName.KINDER, $timeout);
@@ -221,9 +221,9 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
             this.errorService.addMesageAsError(invalidPensumFachstellen[0].error);
             return undefined;
         }
-        if (this.fjkvKinderabzugExchangeService.form && !this.fjkvKinderabzugExchangeService.form.valid) {
-            this.fjkvKinderabzugExchangeService.form.onSubmit(null);
-            this.fjkvKinderabzugExchangeService.triggerFormValidation();
+        if (this.kinderabzugExchangeService.form && !this.kinderabzugExchangeService.form.valid) {
+            this.kinderabzugExchangeService.form.onSubmit(null);
+            this.kinderabzugExchangeService.triggerFormValidation();
             return undefined;
         }
 
@@ -318,6 +318,7 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
             this.showFachstelle = false;
             this.resetPensumFachstellen();
         }
+        this.familienErgaenzendeBetreuungChanged();
     }
 
     private resetPensumFachstellen(): void {
@@ -378,14 +379,12 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
         return isKinderabzugTypFKJV(this.kinderabzugTyp);
     }
 
-    public isGeburtsdatumValid(): boolean {
-        return this.getModel()?.geburtsdatum?.isValid();
+    public showSchwyzKinderabzug(): boolean {
+        return this.kinderabzugTyp === TSKinderabzugTyp.SCHWYZ;
     }
 
-    public isUnder18Years(): boolean {
-        const gebDatum = this.getModel()?.geburtsdatum;
-        const gesuchsperiode = this.gesuchModelManager.getGesuchsperiode();
-        return gebDatum?.isValid() && !EbeguUtil.calculateKindIsOrGetsVolljaehrig(gebDatum, gesuchsperiode);
+    public isGeburtsdatumValid(): boolean {
+        return this.getModel()?.geburtsdatum?.isValid();
     }
 
     public isAusserordentlicherAnspruchRequired(): boolean {
@@ -483,7 +482,11 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
     }
 
     public geburtsdatumChanged(): void {
-        this.fjkvKinderabzugExchangeService.triggerGeburtsdatumChanged(this.getModel().geburtsdatum);
+        this.kinderabzugExchangeService.triggerGeburtsdatumChanged(this.getModel().geburtsdatum);
+    }
+
+    public familienErgaenzendeBetreuungChanged(): void {
+        this.kinderabzugExchangeService.triggerFamilienErgaenzendeBetreuungChanged();
     }
 
     public isFachstellenTypLuzern(): boolean {

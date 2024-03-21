@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2021 DV Bern AG, Switzerland
+ * Copyright (C) 2024 DV Bern AG, Switzerland
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -15,14 +15,5 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-export enum TSKinderabzugTyp {
-    KEINE = 'KEINE',
-    ASIV = 'ASIV',
-    FKJV = 'FKJV',
-    FKJV_2 = 'FKJV_2',
-    SCHWYZ = 'SCHWYZ'
-}
-
-export function isKinderabzugTypFKJV(kinderabzugTyp: TSKinderabzugTyp): boolean {
-    return kinderabzugTyp === TSKinderabzugTyp.FKJV || kinderabzugTyp === TSKinderabzugTyp.FKJV_2;
-}
+ALTER TABLE kind ADD COLUMN unterhaltspflichtig bit;
+ALTER TABLE kind_aud ADD COLUMN unterhaltspflichtig bit;

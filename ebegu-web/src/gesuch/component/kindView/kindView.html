@@ -226,6 +226,11 @@
                         </div>
                     </div>
 
+                    <dv-schwyz-kinderabzug
+                        ng-if="vm.showSchwyzKinderabzug()"
+                        [kind-container]="vm.getContainer()"
+                    ></dv-schwyz-kinderabzug>
+
                     <!--sprichtAmtssprache-->
                     <div ng-if="vm.isGeburtsdatumValid() && !vm.isOrGetsKindVolljaehrigDuringGP() || !vm.showFkjvKinderabzug()">
                         <div class="row" ng-if="!vm.isSpracheAmtspracheDisabled ">

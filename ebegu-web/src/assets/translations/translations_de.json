@@ -2961,7 +2961,7 @@
     "GEMEINDESPEZIFISCHE_BG_KONFIGURATIONEN_TITLE": "Gemeindespezifische Konfigurationen für BG",
     "ABHAENGIGKEIT_ANSPRUCH_BESCHAEFTIGUNGPENSUM": "Abhängigkeit des Anspruchs vom Beschäftigungspensum (Abhaengig, Unabhaengig, Minimum)",
     "ABHAENGIGKEIT_ANSPRUCH_BESCHAEFTIGUNGPENSUM_HELP": "Die Einstellung kann 3 Werte haben ABHAENGING, UNABHAENGING oder MINIMUM. Abhängig = Der Anspruch hängt vom Beschäftigungspensum ab (wie in Bern) Unabhängig = Der Anspruch hängt nicht vom Beschäftigungspensum ab (wie in Solothurn) Minimal = Es muss ein minimum an Beschäftigungspensum erreicht werden um einen Anspruch zu erhalten (wie in Grenchen)",
-    "KINDERABZUG_TYP": "Kinderabzugtyp (FKJV, FKJV_2, ASIV oder KEINE)",
+    "KINDERABZUG_TYP": "Kinderabzugtyp (FKJV, FKJV_2, ASIV, SCHWYZ oder KEINE)",
     "TS_MUTATION_EXISTIERT": "Es gibt bereits eine Mutation zu diesem Antrag",
     "TS_MUTATION_EXISTIERT_BODY": "Die Tagesschulanmeldung muss bei der neusten Mutation bearbeitet werden. Falls diese noch in Bearbeitung der Antragstellenden ist, muss sie zuerst freigegeben oder gelöscht werden.",
     "FREMD_ID": "Fremd-ID",
@@ -3204,5 +3204,8 @@
     "SPRACHFOERDERUNG_BESTAETIGEN_TFO": "Die vermittelte Betreuungsperson eignet sich für die Aufgabe der Sprachförderung und erreicht mindestens ein Sprachniveau von C1 in der künftigen Schulsprache.",
     "GESUCH_BEENDEN_BEI_TAUSCH_GS2": "Antrag beenden, wenn der Gesuchsteller 2 innerhalb der Periode ändert",
     "WARNUNG_GS2_AUSFUELLEN": "Bitte erfassen Sie zuerst die Daten von Antragssteller/in 2 in der Rubrik Antragsstellende.",
+    "KINDERABZUG_UNTERHALTSPFLICHTIG": "Sind Sie für das Kind, für welches das Beitragsgesuch gestellt wird, unterhaltspflichtig?",
+    "WOHNT_KIND_HAUSHALT": "Wohnt dieses Kind mindestens zur Hälfte bei Ihnen?",
+    "KIND_PARTNER_UNTERHALTSPFLICHTIG": "Ist Ihr Partner auch unterhaltspflichtig für dieses Kind?",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

@@ -1,0 +1,46 @@
+<form #form='ngForm' class="gesuch">
+    <ng-container *ngIf="getModel()">
+        <div class="row" *ngIf="wirdKindExternBetreut()">
+            <div class="col-xs-12">
+                <dv-radio-container-x>
+                    <dv-radio-input-x
+                        data-test="container.obhut-alternierend-ausueben"
+                        [label]="'KINDERABZUG_UNTERHALTSPFLICHTIG'"
+                        [(model)]="getModel().unterhaltspflichtig"
+                        (modelChange)="change()"
+                        [dvBisherValue]="getModelGS()?.unterhaltspflichtig"
+                        [required]="true"
+                    ></dv-radio-input-x>
+                </dv-radio-container-x>
+            </div>
+        </div>
+        <div class="row" *ngIf="lebtKindImHaushaltVisible()">
+            <div class="col-xs-12">
+                <dv-radio-container-x>
+                    <dv-radio-input-x
+                        data-test="container.ergaenzende-betreuung-beide"
+                        [label]="'WOHNT_KIND_HAUSHALT'"
+                        [(model)]="getModel().lebtKindAlternierend"
+                        (modelChange)="change()"
+                        [dvBisherValue]="getModelGS()?.lebtKindAlternierend"
+                        [required]="true"
+                    ></dv-radio-input-x>
+                </dv-radio-container-x>
+            </div>
+        </div>
+        <div class="row" *ngIf="partnerUnterhaltspflichtigVisible()">
+            <div class="col-xs-12">
+                <dv-radio-container-x>
+                    <dv-radio-input-x
+                        data-test="container.ergaenzende-betreuung-beide"
+                        [label]="'KIND_PARTNER_UNTERHALTSPFLICHTIG'"
+                        [(model)]="getModel().gemeinsamesGesuch"
+                        (modelChange)="change()"
+                        [dvBisherValue]="getModelGS()?.gemeinsamesGesuch"
+                        [required]="true"
+                    ></dv-radio-input-x>
+                </dv-radio-container-x>
+            </div>
+        </div>
+    </ng-container>
+</form>
