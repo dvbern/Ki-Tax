@@ -121,7 +121,6 @@ import {
 import {
     EinkommensverschlechterungAppenzellResultateViewComponent
 } from './component/einkommensverschlechterung/appenzell/einkommensverschlechterung-appenzell-resultate-view/einkommensverschlechterung-appenzell-resultate-view.component';
-import {EbeguFinanzielleSituationGS1SchwyzState} from './gesuch.route';
 
 @NgModule({
     imports: [
