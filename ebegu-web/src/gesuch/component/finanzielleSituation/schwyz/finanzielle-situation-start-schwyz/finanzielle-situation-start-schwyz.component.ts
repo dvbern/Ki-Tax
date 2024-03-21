@@ -4,6 +4,7 @@ import {TSWizardStepName} from '../../../../../models/enums/TSWizardStepName';
 import {TSWizardStepStatus} from '../../../../../models/enums/TSWizardStepStatus';
 import {TSFinanzielleSituationContainer} from '../../../../../models/TSFinanzielleSituationContainer';
 import {TSFinanzModel} from '../../../../../models/TSFinanzModel';
+import {TSGesuch} from '../../../../../models/TSGesuch';
 import {EbeguUtil} from '../../../../../utils/EbeguUtil';
 import {GesuchModelManager} from '../../../../service/gesuchModelManager';
 import {WizardStepManager} from '../../../../service/wizardStepManager';
@@ -38,6 +39,8 @@ export class FinanzielleSituationStartSchwyzComponent extends AbstractGesuchView
         this.model =
             new TSFinanzModel(this.gesuchModelManager.getBasisjahr(), this.gesuchModelManager.isGesuchsteller2Required(), 1);
         this.model.copyFinSitDataFromGesuch(this.gesuchModelManager.getGesuch());
+        // this field is not present on schwyz but will be checked in a lot of distributed places. Therefore we set it
+        this.model.familienSituation.sozialhilfeBezueger = false;
     }
 
     public prepareSave(onResult: (arg: any) => void): Promise<TSFinanzielleSituationContainer> {
@@ -50,7 +53,8 @@ export class FinanzielleSituationStartSchwyzComponent extends AbstractGesuchView
 
     private save(onResult: (arg: any) => void): Promise<TSFinanzielleSituationContainer> {
         this.model.copyFinSitDataToGesuch(this.getGesuch());
-        return this.gesuchModelManager.saveFinanzielleSituationStart().then(async () => {
+        return this.gesuchModelManager.saveFinanzielleSituationStart().then(async (gesuch: TSGesuch) => {
+            this.model.copyFinSitDataToGesuch(gesuch);
             await this.updateWizardStepStatus();
             onResult(this.getModel());
             return this.getModel();
