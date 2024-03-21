@@ -39,7 +39,7 @@ import java.util.Objects;
  */
 @Audited
 @Entity
-@CheckFinanzielleSituationSchwyzComplete
+@CheckFinanzielleSituationSchwyzComplete(groups = CheckFinanzielleSituationSchwyzComplete.class)
 public class FinanzielleSituation extends AbstractFinanzielleSituation {
 
 	private static final long serialVersionUID = -4401110366293613225L;

@@ -20,6 +20,7 @@ package ch.dvbern.ebegu.api.resource;
 import java.time.LocalDate;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -33,7 +34,10 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.ConstraintViolation;
+import javax.validation.ConstraintViolationException;
 import javax.validation.Valid;
+import javax.validation.Validator;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -82,6 +86,8 @@ import ch.dvbern.ebegu.services.FinanzielleSituationService;
 import ch.dvbern.ebegu.services.GesuchService;
 import ch.dvbern.ebegu.services.GesuchstellerService;
 import ch.dvbern.ebegu.util.Constants;
+import ch.dvbern.ebegu.validationgroups.CheckFachstellenValidationGroup;
+import ch.dvbern.ebegu.validationgroups.CheckFinstCompleteValidationGroup;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
@@ -132,6 +138,9 @@ public class FinanzielleSituationResource {
 	@Inject
 	private JaxBConverter converter;
 
+	@Inject
+	private Validator validator;
+
 	@Resource
 	private EJBContext context;    //fuer rollback
 
@@ -170,6 +179,13 @@ public class FinanzielleSituationResource {
 			gesuchsteller.getFinanzielleSituationContainer());
 
 		convertedFinSitCont.setGesuchsteller(gesuchsteller);
+
+		Set<ConstraintViolation<FinanzielleSituation>> finSitCompleteViolations =
+			validator.validate(convertedFinSitCont.getFinanzielleSituationJA(), CheckFinstCompleteValidationGroup.class);
+
+		if (!finSitCompleteViolations.isEmpty()) {
+			throw new ConstraintViolationException(finSitCompleteViolations);
+		}
 
 		FinanzielleSituationContainer persistedFinSit =
 			this.finanzielleSituationService.saveFinanzielleSituation(convertedFinSitCont, gesuchId);
@@ -219,6 +235,13 @@ public class FinanzielleSituationResource {
 
 		if (familiensituationJA.isAbweichendeZahlungsadresse()) {
 			requireNonNull(familiensituationJA.getZahlungsadresse());
+		}
+
+		Set<ConstraintViolation<FinanzielleSituation>> finSitCompleteViolations =
+			validator.validate(convertedFinSitCont.getFinanzielleSituationJA(), CheckFinstCompleteValidationGroup.class);
+
+		if (!finSitCompleteViolations.isEmpty()) {
+			throw new ConstraintViolationException(finSitCompleteViolations);
 		}
 
 		Gesuch gesuch = gesuchService
