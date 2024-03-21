@@ -259,7 +259,6 @@ public class FinanzielleSituationResource {
 		boolean auszahlungAusserhalbVonKibon = familiensituationJA.isAuszahlungAusserhalbVonKibon();
 
 		requireNonNull(sozialhilfeBezueger);
-		requireNonNull(gemeinsameSteuererklaerung);
 
 		if (gesuchJAXP.getFinSitTyp().equals(FinanzielleSituationTyp.BERN)
 			|| gesuchJAXP.getFinSitTyp().equals(FinanzielleSituationTyp.BERN_FKJV)
