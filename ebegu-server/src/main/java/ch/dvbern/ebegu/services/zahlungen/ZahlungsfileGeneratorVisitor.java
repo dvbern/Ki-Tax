@@ -63,7 +63,7 @@ public class ZahlungsfileGeneratorVisitor implements MandantVisitor< List<IZahlu
 
 	@Override
 	public List<IZahlungsfileGenerator> visitSchwyz() {
-		return this.visitSolothurn();
+		return getZahlungsfileGeneratorForMandant(MandantIdentifier.SCHWYZ);
 	}
 
 	@Nonnull
