@@ -34,7 +34,7 @@ export class FinanzielleSituationSubStepManagerSchwyz extends FinanzielleSituati
         if (currentSubStep === TSFinanzielleSituationSubStepName.SCHWYZ_START
             && this.hasSecondGesuchsteller()
             && !this.gesuchModelManager.getGesuch().extractFamiliensituation().gemeinsameSteuererklaerung) {
-            return TSFinanzielleSituationSubStepName.APPENZELL_GS2;
+            return TSFinanzielleSituationSubStepName.SCHWYZ_GS1;
         }
         if (currentSubStep === TSFinanzielleSituationSubStepName.SCHWYZ_GS1) {
             return TSFinanzielleSituationSubStepName.SCHWYZ_GS2;

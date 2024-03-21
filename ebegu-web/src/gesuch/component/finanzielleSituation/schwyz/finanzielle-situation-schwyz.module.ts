@@ -18,6 +18,7 @@
 import {NgModule} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {SharedModule} from '../../../../app/shared/shared.module';
+import {NgGesuchModule} from '../../../ng-gesuch.module';
 import {BruttolohnSchwyzComponent} from './bruttolohn-schwyz/bruttolohn-schwyz.component';
 import {FinanzielleSituationGsSchwyzComponent} from './finanzielle-situation-gs-schwyz/finanzielle-situation-gs-schwyz.component';
 import {FinanzielleSituationSingleGsComponent} from './finanzielle-situation-single-gs/finanzielle-situation-single-gs.component';

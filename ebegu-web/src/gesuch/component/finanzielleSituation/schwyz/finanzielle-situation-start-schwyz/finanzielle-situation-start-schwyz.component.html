@@ -4,7 +4,7 @@
         <div class="col-md-12">
             <h2>
                 <span translate
-                      [translateParams]="{gesuchsteller: getAntragstellerNameForCurrentStep(), basisjahr: getYearForDeklaration()}">FINANZIELLE_SITUATION</span>
+                      [translateParams]="{basisjahr: getYearForDeklaration()}">FINANZIELLE_SITUATION</span>
             </h2>
             <hr class="header"/>
         </div>
@@ -16,7 +16,18 @@
                              [showAddress]="true">
         </dv-auszahlungsdaten>
 
-        <ng-container *ngIf="isAlleinigesGesuch; then alleinigesGesuch"></ng-container>
+        <ng-container *ngIf="hasMultipleGS; then mehrereGS else alleinigesGesuch"></ng-container>
+
+        <ng-template #mehrereGS>
+            <dv-steuerveranlagung-gemeinsam
+                [model]="model"
+            ></dv-steuerveranlagung-gemeinsam>
+            <dv-steuerveranlagt-schwyz *ngIf="model.familienSituation.gemeinsameSteuererklaerung"
+                                                [finSitJA]="getModel().finanzielleSituationJA"
+                                                [finSitGS]="getModel().finanzielleSituationGS"
+                                                [readonly]="gesuchModelManager.isGesuchReadonly()">
+            </dv-steuerveranlagt-schwyz>
+        </ng-template>
 
         <ng-template #alleinigesGesuch>
             <dv-finanzielle-situation-single-gs [finSitJA]="getModel().finanzielleSituationJA"

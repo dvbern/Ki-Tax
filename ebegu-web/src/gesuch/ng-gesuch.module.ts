@@ -97,9 +97,6 @@ import {
     SteuerveranlagungErhaltenComponent
 } from './component/finanzielleSituation/solothurn/steuerveranlagung-erhalten/steuerveranlagung-erhalten.component';
 import {
-    SteuerveranlagungGemeinsamComponent
-} from './component/finanzielleSituation/solothurn/steuerveranlagung-gemeinsam/steuerveranlagung-gemeinsam.component';
-import {
     VeranlagungSolothurnComponent
 } from './component/finanzielleSituation/solothurn/veranlagung/veranlagung-solothurn.component';
 import {
@@ -156,7 +153,6 @@ import {
         VeranlagungSolothurnComponent,
         SteuerveranlagungErhaltenComponent,
         BruttolohnComponent,
-        SteuerveranlagungGemeinsamComponent,
         AngabenGs1Component,
         AngabenGs2Component,
         MassgebendesEinkommenComponent,
@@ -175,7 +171,7 @@ import {
     exports: [
         DvSwitchComponent,
         ZahlungsstatusIconComponent
-    ]
+    ],
 })
 
 export class NgGesuchModule {
