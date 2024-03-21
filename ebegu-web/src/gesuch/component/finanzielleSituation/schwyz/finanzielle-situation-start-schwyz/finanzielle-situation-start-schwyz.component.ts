@@ -13,7 +13,6 @@ import {AbstractGesuchViewX} from '../../../abstractGesuchViewX';
 @Component({
     selector: 'dv-finanzielle-situation-start-schwyz',
     templateUrl: './finanzielle-situation-start-schwyz.component.html',
-    styleUrls: ['./finanzielle-situation-start-schwyz.component.less'],
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FinanzielleSituationStartSchwyzComponent extends AbstractGesuchViewX<TSFinanzModel> implements OnInit {
