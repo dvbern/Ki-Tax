@@ -19,7 +19,6 @@ import {CUSTOM_ELEMENTS_SCHEMA, NgModule} from '@angular/core';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {UpgradeModule} from '@angular/upgrade/static';
 import {SharedModule} from '../app/shared/shared.module';
-import {AuszahlungsdatenComponent} from './auszahlungsdaten/auszahlungsdaten.component';
 import {
     SelbstdeklarationComponent
 } from './component/abstractFinanzielleSituation/luzern/selbstdeklaration/selbstdeklaration.component';
@@ -80,9 +79,7 @@ import {
 import {InfomaFieldsComponent} from './component/finanzielleSituation/luzern/infoma-fields/infoma-fields.component';
 import {ResultatComponent} from './component/finanzielleSituation/luzern/resultat/resultat.component';
 import {VeranlagungComponent} from './component/finanzielleSituation/luzern/veranlagung/veranlagung.component';
-import {
-    FinanzielleSituationStartSchwyzComponent
-} from './component/finanzielleSituation/schwyz/finanzielle-situation-start-schwyz/finanzielle-situation-start-schwyz.component';
+import {FinanzielleSituationSchwyzModule} from './component/finanzielleSituation/schwyz/finanzielle-situation-schwyz.module';
 import {
     AngabenGs1Component
 } from './component/finanzielleSituation/solothurn/angaben-gs/angaben-gs1/angaben-gs1.component';
@@ -128,7 +125,8 @@ import {
         ReactiveFormsModule,
         UpgradeModule,
         SharedModule,
-        FallToolbarModule
+        FallToolbarModule,
+        FinanzielleSituationSchwyzModule
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA],
     declarations: [
@@ -161,7 +159,6 @@ import {
         SteuerveranlagungGemeinsamComponent,
         AngabenGs1Component,
         AngabenGs2Component,
-        FinanzielleSituationStartSchwyzComponent,
         MassgebendesEinkommenComponent,
         FkjvKinderabzugComponent,
         MassgebendesEinkommenComponent,
@@ -173,7 +170,6 @@ import {
         FamiliensituationViewXComponent,
         FamiliensituationAppenzellViewXComponent,
         ZahlungsstatusIconComponent,
-        AuszahlungsdatenComponent,
         KindFachstelleComponent
     ],
     exports: [

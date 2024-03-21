@@ -16,34 +16,15 @@
                              [showAddress]="true">
         </dv-auszahlungsdaten>
 
-        <div class="form-group">
-            <dv-radio-container-x>
-                          <span>
-                             <label for="quellenbesteuert_id" class="required ebegu-h1">
-							        {{'QUELLENBESTEUERT' | translate}}
-						     </label>
-                          </span>
-                <mat-radio-group
-                    [(ngModel)]="getModel().finanzielleSituationJA.quellenbesteuert"
-                    name="quellenbesteuert"
-                    id="quellenbesteuert_id"
-                    #quellenbesteuert="ngModel"
-                    [disabled]="isGesuchReadonly()"
-                    (ngModelChange)="onQuellenbesteuertChange()"
-                    required>
-                    <mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
-                    <mat-radio-button [value]="false">{{'LABEL_NEIN' | translate }}</mat-radio-button>
-                </mat-radio-group>
-                <dv-error-messages *ngIf="form.submitted"
-                                   [errorObject]="quellenbesteuert.errors"
-                                   inputId="quellenbesteuert_id">
-                </dv-error-messages>
-            </dv-radio-container-x>
-        </div>
+        <ng-container *ngIf="isAlleinigesGesuch; then alleinigesGesuch"></ng-container>
 
-        <ng-container *ngIf="isNotNullOrUndefined(getModel().finanzielleSituationJA.quellenbesteuert)">
-            <ng-container *ngIf="getModel().finanzielleSituationJA.quellenbesteuert; then quellenbesteuertFragen else nichtQuellenbesteuertFragen"></ng-container>
-            <div class="row margin-bottom-20">
+        <ng-template #alleinigesGesuch>
+            <dv-finanzielle-situation-single-gs [finSitJA]="getModel().finanzielleSituationJA"
+                                                [finSitGS]="getModel().finanzielleSituationGS"
+                                                [readonly]="gesuchModelManager.isGesuchReadonly()">
+            </dv-finanzielle-situation-single-gs>
+
+            <div class="row margin-bottom-20" *ngIf="isNotNullOrUndefined(getModel().finanzielleSituationJA.quellenbesteuert)">
                 <div class="col-sm-6">
                     <dv-input-label-field
                         [model]="massgebendesEinkommen"
@@ -52,97 +33,7 @@
                     </dv-input-label-field>
                 </div>
             </div>
-        </ng-container>
-
-
-        <ng-template #quellenbesteuertFragen>
-            <h3 class="margin-bottom-20">{{'LETZTE_RECHTSKRAETIGTE_STEUERVERANLAGUNG' | translate}} <dv-tooltip [text]="'LETZTE_RECHTSKRAETIGTE_STEUERVERANLAGUNG_HINT' | translate"></dv-tooltip></h3>
-            <div class="row">
-                <div class="col-sm-6">
-                    <div class="form-group">
-                        <dv-input-label-field
-                            [name]="'nettoEinkommen'"
-                            [(model)]="getModel().finanzielleSituationJA.steuerbaresEinkommen"
-                            [labelMessageKey]="'FINANZIELLE_SITUATION_STEUERBARES_EINKOMMEN'"
-                            [tooltipMessageKey]="'FINANZIELLE_SITUATION_STEUERBARES_EINKOMMEN_HINT'"
-                            [inputRequired]="true"
-                            [deklaration]="getModel().finanzielleSituationGS?.steuerbaresEinkommen"
-                            [korrektur]="getModel().finanzielleSituationJA.steuerbaresEinkommen"
-                            [showBisher]="isNotNullOrUndefined(getModel().finanzielleSituationGS)">
-                        </dv-input-label-field>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-sm-6">
-                    <div class="form-group">
-                        <dv-input-label-field
-                            [name]="'einkaeufeVorsorge'"
-                            [(model)]="getModel().finanzielleSituationJA.einkaeufeVorsorge"
-                            [labelMessageKey]="'FINANZIELLE_SITUATION_EINKAEUFE_VORSORGE'"
-                            [tooltipMessageKey]="'FINANZIELLE_SITUATION_EINKAEUFE_VORSORGE_TOOLTIP'"
-                            [inputDisabled]="gesuchModelManager.isGesuchReadonly()"
-                            [inputRequired]="true"
-                            [deklaration]="getModel().finanzielleSituationGS?.einkaeufeVorsorge"
-                            [korrektur]="getModel().finanzielleSituationJA.einkaeufeVorsorge"
-                            [showBisher]="isNotNullOrUndefined(getModel().finanzielleSituationGS)">
-                        </dv-input-label-field>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-sm-6">
-                    <div class="form-group">
-                        <dv-input-label-field
-                            [name]="'abzuegeLiegenschaft'"
-                            [(model)]="getModel().finanzielleSituationJA.abzuegeLiegenschaft"
-                                [labelMessageKey]="'FINANZIELLE_SITUATION_ABZUEGE_LIEGENSCHAFT'"
-                            [tooltipMessageKey]="'FINANZIELLE_SITUATION_ABZUEGE_LIEGENSCHAFT_TOOLTIP'"
-                            [inputDisabled]="gesuchModelManager.isGesuchReadonly()"
-                            [inputRequired]="true"
-                            [allowNegative]="true"
-                            [deklaration]="getModel().finanzielleSituationGS?.abzuegeLiegenschaft"
-                            [korrektur]="getModel().finanzielleSituationJA.abzuegeLiegenschaft"
-                            [showBisher]="isNotNullOrUndefined(getModel().finanzielleSituationGS)">
-                        </dv-input-label-field>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-xs-6">
-                    <dv-input-label-field
-                        [(model)]="getModel().finanzielleSituationJA.steuerbaresVermoegen"
-                        [labelMessageKey]="'FINANZIELLE_SITUATION_STEUERBARES_VERMOEGEN'"
-                        [tooltipMessageKey]="'FINANZIELLE_SITUATION_STEUERBARES_VERMOEGEN_HELP'"
-                        [inputRequired]="true"
-                        [inputDisabled]="gesuchModelManager.isGesuchReadonly()"
-                        [deklaration]="getModel().finanzielleSituationGS?.steuerbaresVermoegen"
-                        [korrektur]="getModel().finanzielleSituationJA?.steuerbaresVermoegen"
-                        [showBisher]="isNotNullOrUndefined(getModel().finanzielleSituationGS)">
-                    </dv-input-label-field>
-                </div>
-            </div>
         </ng-template>
-        <ng-template #nichtQuellenbesteuertFragen>
-            <div class="row">
-                <div class="col-sm-6">
-                    <div class="form-group">
-                        <dv-input-label-field
-                            [name]="'bruttoLohn'"
-                            [(model)]="getModel().finanzielleSituationJA.bruttoLohn"
-                            [labelMessageKey]="'FINANZIELLE_SITUATION_BRUTTOLOHN'"
-                            [inputRequired]="true"
-                            [tooltipMessageKey]="'FINANZIELLE_SITUATION_BRUTTOLOHN_HINT'"
-                            [showBisher]="isNotNullOrUndefined(getModel().finanzielleSituationGS)"
-                            [deklaration]="getModel().finanzielleSituationGS?.bruttoLohn"
-                            [korrektur]="getModel().finanzielleSituationJA.bruttoLohn">
-                        </dv-input-label-field>
-                    </div>
-                </div>
-            </div>
-        </ng-template>
-
-
     </form>
 
     <dv-navigation-x (dvSave)="prepareSave($event.onResult)"

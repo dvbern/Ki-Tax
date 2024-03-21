@@ -22,6 +22,7 @@ import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {TranslateLoader, TranslateModule, TranslateService} from '@ngx-translate/core';
 import {UIRouterModule} from '@uirouter/angular';
 import {GuidedTourModule} from 'ngx-guided-tour';
+import {AuszahlungsdatenComponent} from '../../gesuch/auszahlungsdaten/auszahlungsdaten.component';
 import {DvEingabeHintComponent} from '../../gesuch/component/dv-eingabe-hint/dv-eingabe-hint.component';
 import {DvNgHelpDialogComponent} from '../../gesuch/dialog/dv-ng-help-dialog/dv-ng-help-dialog.component';
 import {DvNgSupportDialogComponent} from '../../gesuch/dialog/dv-ng-support-dialog.component';
@@ -225,7 +226,8 @@ export function createTranslateLoader(http: HttpClient, mandantService: MandantS
         DvDemoFeatureWrapperComponent,
         PulldownUserMenuComponent,
         PulldownUserMenuButtonComponent,
-        LanguageSelectorComponent
+        LanguageSelectorComponent,
+        AuszahlungsdatenComponent,
     ],
     // adding custom elements schema disables Angular's element validation: you can now use transclusion for the
     // dv-accordion-tab with multi-slot transclusion (tab-title & tab-body elements).
@@ -305,7 +307,8 @@ export function createTranslateLoader(http: HttpClient, mandantService: MandantS
         DvCheckboxXComponent,
         WarningComponent,
         DvNgEnableElementDirective,
-        DvIfViewportSizeDirective
+        DvIfViewportSizeDirective,
+        AuszahlungsdatenComponent
     ],
     providers: [
         // Leave empty (if you have singleton services, add them to CoreModule)

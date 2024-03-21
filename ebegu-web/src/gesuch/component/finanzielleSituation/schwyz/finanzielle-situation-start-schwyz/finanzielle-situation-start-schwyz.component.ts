@@ -19,6 +19,7 @@ export class FinanzielleSituationStartSchwyzComponent extends AbstractGesuchView
 
     public hasMultipleGS: boolean;
     public massgebendesEinkommen = 0;
+    public isAlleinigesGesuch = true;
 
     public constructor(
         protected readonly gesuchModelManager: GesuchModelManager,
@@ -101,17 +102,4 @@ export class FinanzielleSituationStartSchwyzComponent extends AbstractGesuchView
         return EbeguUtil.isNotNullOrUndefined(toCheck);
     }
 
-    public onQuellenbesteuertChange(): void {
-        if (EbeguUtil.isNullOrUndefined(this.getModel().finanzielleSituationJA.quellenbesteuert)) {
-            return;
-        }
-        if (this.getModel().finanzielleSituationJA.quellenbesteuert) {
-            this.getModel().finanzielleSituationJA.bruttoLohn = null;
-        } else {
-            this.getModel().finanzielleSituationJA.nettolohn = null;
-            this.getModel().finanzielleSituationJA.einkaeufeVorsorge = null;
-            this.getModel().finanzielleSituationJA.abzuegeLiegenschaft = null;
-            this.getModel().finanzielleSituationJA.steuerbaresVermoegen = null;
-        }
-    }
 }
