@@ -25,6 +25,7 @@ import java.util.Optional;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.security.PermitAll;
+import javax.persistence.EntityManager;
 import javax.validation.constraints.NotNull;
 
 import ch.dvbern.ebegu.dto.JaxAntragDTO;
@@ -513,4 +514,13 @@ public interface GesuchService {
 	 * von Gesuchsteler 1 oder 2 handelt. Betrachtet wird finanzielleSituationJA
 	 */
 	Optional<Gesuch> findGesuchForFinSit(@Nonnull String finSitId);
+
+	/**
+	 * Findet für eine FinanzielleSituation das Gesuch, egal ob es sich dabei um die Finanzielle Situation
+	 * von Gesuchsteler 1 oder 2 handelt. Betrachtet wird finanzielleSituationJA
+	 *
+	 * Overload mit EntityManager, wird an manchen Stellen benötigt, da in manchen Kontexten (z.B. Validatoren)
+	 * nicht auf die existierende Persistence zugeriffen werden kann
+	 */
+	Optional<Gesuch> findGesuchForFinSit(@Nonnull String finSitId, EntityManager entityManager);
 }

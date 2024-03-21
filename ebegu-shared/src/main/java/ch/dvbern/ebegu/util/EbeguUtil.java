@@ -407,7 +407,7 @@ public final class EbeguUtil {
 			&& finanzielleSituation.getSteuerbaresVermoegen() != null;
 	}
 
-	private static boolean isFinSitSchwyzVollstaendig(FinanzielleSituation finanzielleSituation) {
+	public static boolean isFinSitSchwyzVollstaendig(FinanzielleSituation finanzielleSituation) {
 		return finanzielleSituation.getBruttoLohn() != null ||
 			(finanzielleSituation.getSteuerbaresEinkommen() != null
 				&& finanzielleSituation.getEinkaeufeVorsorge() != null
