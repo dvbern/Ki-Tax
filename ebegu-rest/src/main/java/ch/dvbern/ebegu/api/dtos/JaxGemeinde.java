@@ -17,7 +17,9 @@
 
 package ch.dvbern.ebegu.api.dtos;
 
-import java.time.LocalDate;
+import ch.dvbern.ebegu.enums.GemeindeStatus;
+import ch.dvbern.lib.date.converters.LocalDateXMLConverter;
+import org.apache.commons.lang3.builder.CompareToBuilder;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -26,10 +28,7 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-
-import ch.dvbern.ebegu.enums.GemeindeStatus;
-import ch.dvbern.lib.date.converters.LocalDateXMLConverter;
-import org.apache.commons.lang3.builder.CompareToBuilder;
+import java.time.LocalDate;
 
 import static ch.dvbern.ebegu.util.Constants.END_OF_TIME;
 
@@ -78,7 +77,7 @@ public class JaxGemeinde extends JaxAbstractDTO {
 	private boolean nurLats = false;
 
 	@Nonnull
-	private Boolean infomaZahlungen;
+	private Boolean infomaZahlungen = false;
 
 	// Dieses Feld wird *nur* für die Komponente gemeinde-multiselect.component verwendet
 	// Wir haben dort das Problem, dass in gewissen Einzelfällen die Id der Gemeinde (noch) nicht bekannt ist,
