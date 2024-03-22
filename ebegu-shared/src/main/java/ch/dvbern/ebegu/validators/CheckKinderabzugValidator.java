@@ -43,6 +43,9 @@ public class CheckKinderabzugValidator implements ConstraintValidator<CheckKinde
 		if (!validateKindErstausbildung(kind)) {
 			return false;
 		}
+		if (!validateKindAbzugTypSchwyz(kind)) {
+			return false;
+		}
 		return true;
 	}
 
@@ -98,6 +101,19 @@ public class CheckKinderabzugValidator implements ConstraintValidator<CheckKinde
 			}
 			if (kind.getAlimenteErhalten() != null) {
 				return kind.getAlimenteBezahlen() == null;
+			}
+		}
+		return true;
+	}
+
+	private boolean validateKindAbzugTypSchwyz(@Nonnull Kind kind) {
+		if (kind.getUnterhaltspflichtig() != null) {
+			if (kind.getUnterhaltspflichtig() == true) {
+				if (kind.getLebtKindAlternierend() == null) {
+					return false;
+				}
+			} else if (kind.getLebtKindAlternierend() != null) {
+				return false;
 			}
 		}
 		return true;
