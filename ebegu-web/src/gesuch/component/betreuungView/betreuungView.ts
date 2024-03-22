@@ -1443,6 +1443,8 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
                 return this.showEingewohenungFKJV();
             case TSEingewoehnungTyp.LUZERN:
                 return true;
+            case TSEingewoehnungTyp.PAUSCHALE:
+                return false;
             default: {
                 const errorMsg = `not implemented eingewoehnungTyp ${this.eingewoehnungTyp}`;
                 LOG.error(errorMsg);

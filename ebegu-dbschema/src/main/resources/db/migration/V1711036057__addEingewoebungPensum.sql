@@ -51,3 +51,10 @@ alter table betreuungspensum
     add constraint FK_betreuungspensum_eingewoehnung_pauschale_id
         foreign key (eingewoehnung_pauschale_id)
             references eingewoehnung_pauschale(id);
+
+update einstellung set value = 'PAUSCHALE'
+where einstellung.einstellung_key = 'EINGEWOEHNUNG_TYP' and
+      ebegu.einstellung.gesuchsperiode_id =
+        (select gesuchsperiode.id from gesuchsperiode
+                   join mandant on gesuchsperiode.mandant_id = mandant.id
+                   where mandant_identifier = 'LUZERN' and gesuchsperiode.gueltig_ab = '2024-08-01');

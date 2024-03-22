@@ -2935,7 +2935,7 @@
     "BENUTZENDE_EINGEBEN": "Benutzende eingeben",
     "GEMEINDEN_STATISTIK": "Gemeinden",
     "FERIENBETREUUNG_STATISTIK": "Ferienbetreuung",
-    "EINGEWOEHNUNG_TYP": "Typ der Eingewöhung (FKJV, LUZERN, KEINE)",
+    "EINGEWOEHNUNG_TYP": "Typ der Eingewöhung (FKJV, LUZERN, PAUSCHALE, KEINE)",
     "FKJV_MAX_DIFFERENZ_BESCHAEFTIGUNGSPENSUM": "FKJV: Maximale Differenz zwischen erforderlichem und effektivem Beschäftigungspensum für ausserordentlicher Anspruch (in %)",
     "FKJV_SOZIALE_INTEGRATION_BIS_SCHULSTUFE": "FKJV: Soziale Indikation bis und mit Schulstufe",
     "SPRACHLICHE_INTEGRATION_BIS_SCHULSTUFE": "Sprachliche Integration bis und mit Schulstufe",
