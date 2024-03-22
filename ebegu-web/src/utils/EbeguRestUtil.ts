@@ -194,6 +194,7 @@ import {TSDateRange} from '../models/types/TSDateRange';
 import {TSLand} from '../models/types/TSLand';
 import {DateUtil} from './DateUtil';
 import {EbeguUtil} from './EbeguUtil';
+import {TSEingewoehnungPauschale} from '../models/TSEingewoehnungPauschale';
 
 export class EbeguRestUtil {
 
@@ -2749,8 +2750,22 @@ export class EbeguRestUtil {
                     0 :
                     betreuungspensum.tarifProNebenmahlzeit;
             restBetreuungspensum.unitForDisplay = betreuungspensum.unitForDisplay;
+
+            if (betreuungspensum.eingewoehnungPauschale) {
+                restBetreuungspensum.eingewoehnungPauschale =
+                    this.eingewohnungPauschaleToRestObject({}, betreuungspensum.eingewoehnungPauschale);
+            }
         }
         return restBetreuungspensum;
+    }
+
+    private eingewohnungPauschaleToRestObject(
+        restEingewoehnungPauschale: any,
+        eingewoehnungPauschale: TSEingewoehnungPauschale
+    ): any {
+        this.abstractDateRangeEntityToRestObject(restEingewoehnungPauschale, eingewoehnungPauschale);
+        restEingewoehnungPauschale.pauschale = eingewoehnungPauschale.pauschale;
+        return restEingewoehnungPauschale;
     }
 
     public betreuungsmitteilungPensumToRestObject(
@@ -2952,7 +2967,22 @@ export class EbeguRestUtil {
             betreuungspensumTS.tarifProHauptmahlzeit = betreuungspensumFromServer.tarifProHauptmahlzeit;
             betreuungspensumTS.tarifProNebenmahlzeit = betreuungspensumFromServer.tarifProNebenmahlzeit;
             betreuungspensumTS.unitForDisplay = betreuungspensumFromServer.unitForDisplay;
+            betreuungspensumTS.eingewoehnungPauschale = this.parseEingewoehnungPauschale(new TSEingewoehnungPauschale(),
+                betreuungspensumFromServer.eingewoehnungPauschale);
+
             return betreuungspensumTS;
+        }
+        return undefined;
+    }
+
+    private parseEingewoehnungPauschale(
+        eingewoehnungPauschaleTS: TSEingewoehnungPauschale,
+        eingewoehnungPauschaleFromServer: any
+    ): TSEingewoehnungPauschale {
+        if (eingewoehnungPauschaleFromServer) {
+            this.parseDateRangeEntity(eingewoehnungPauschaleTS, eingewoehnungPauschaleFromServer);
+            eingewoehnungPauschaleTS.pauschale = eingewoehnungPauschaleFromServer.pauschale;
+            return eingewoehnungPauschaleTS;
         }
         return undefined;
     }

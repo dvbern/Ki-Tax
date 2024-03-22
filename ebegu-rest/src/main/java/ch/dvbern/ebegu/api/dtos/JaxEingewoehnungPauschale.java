@@ -15,36 +15,32 @@
 
 package ch.dvbern.ebegu.api.dtos;
 
+import javax.annotation.Nonnull;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlTransient;
+import java.math.BigDecimal;
 
 /**
- * DTO fuer Daten des Betreuungspensum
+ * Superklasse fuer ein Pensum
  */
+@XmlTransient
 @XmlAccessorType(XmlAccessType.FIELD)
-public class JaxBetreuungspensum extends JaxAbstractMahlzeitenPensumDTO {
-
-	private static final long serialVersionUID = -8012537546244511785L;
-
-	private Boolean nichtEingetreten = false;
-
-	private JaxEingewoehnungPauschale eingewoehnungPauschale;
+public class JaxEingewoehnungPauschale extends JaxAbstractDateRangedDTO {
 
 
-	public Boolean getNichtEingetreten() {
-		return nichtEingetreten;
+	private static final long serialVersionUID = 5161971483109161443L;
+
+	@Nonnull
+	private BigDecimal pauschale;
+
+
+	@Nonnull
+	public BigDecimal getPauschale() {
+		return pauschale;
 	}
 
-	public void setNichtEingetreten(Boolean nichtEingetreten) {
-		this.nichtEingetreten = nichtEingetreten;
-	}
-
-	public JaxEingewoehnungPauschale getEingewoehnungPauschale() {
-		return eingewoehnungPauschale;
-	}
-
-	public void setEingewoehnungPauschale(JaxEingewoehnungPauschale eingewoehnungPauschale) {
-		this.eingewoehnungPauschale = eingewoehnungPauschale;
+	public void setPauschale(@Nonnull BigDecimal pauschale) {
+		this.pauschale = pauschale;
 	}
 }
-

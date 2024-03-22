@@ -1435,6 +1435,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         if (this.isSchulamt()) {
             return false;
         }
+
         switch (this.eingewoehnungTyp) {
             case TSEingewoehnungTyp.KEINE:
                 return false;

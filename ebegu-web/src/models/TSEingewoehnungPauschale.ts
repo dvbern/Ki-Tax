@@ -13,31 +13,21 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {TSAbstractMahlzeitenPensum} from './TSAbstractMahlzeitenPensum';
-import {TSEingewoehnungPauschale} from './TSEingewoehnungPauschale';
+import {TSAbstractDateRangedEntity} from './TSAbstractDateRangedEntity';
 
-export class TSBetreuungspensum extends TSAbstractMahlzeitenPensum {
+export class TSEingewoehnungPauschale extends TSAbstractDateRangedEntity {
 
-    private _nichtEingetreten: boolean;
-    private _eingewoehnungPauschale: TSEingewoehnungPauschale;
+    private _pauschale: number;
 
     public constructor() {
         super();
     }
 
-    public get nichtEingetreten(): boolean {
-        return this._nichtEingetreten;
+    public get pauschale(): number {
+        return this._pauschale;
     }
 
-    public set nichtEingetreten(value: boolean) {
-        this._nichtEingetreten = value;
-    }
-
-    public get eingewoehnungPauschale(): TSEingewoehnungPauschale {
-        return this._eingewoehnungPauschale;
-    }
-
-    public set eingewoehnungPauschale(value: TSEingewoehnungPauschale) {
-        this._eingewoehnungPauschale = value;
+    public set pauschale(value: number) {
+        this._pauschale = value;
     }
 }

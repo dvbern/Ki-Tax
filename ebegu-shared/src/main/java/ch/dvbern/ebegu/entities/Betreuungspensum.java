@@ -15,18 +15,18 @@
 
 package ch.dvbern.ebegu.entities;
 
-import java.util.Objects;
-
-import javax.annotation.Nonnull;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.validation.constraints.NotNull;
-
 import ch.dvbern.ebegu.enums.AntragCopyType;
 import ch.dvbern.ebegu.types.DateRange;
+import ch.dvbern.ebegu.util.EbeguUtil;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.commons.lang3.builder.CompareToBuilder;
 import org.hibernate.envers.Audited;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+import java.util.Objects;
 
 /**
  * Entity fuer Betreuungspensen.
@@ -42,6 +42,12 @@ public class Betreuungspensum extends AbstractMahlzeitenPensum implements Compar
 	@NotNull
 	@Column(nullable = false)
 	private Boolean nichtEingetreten = false;
+
+
+	@Nullable
+	@OneToOne(optional = true, cascade = CascadeType.ALL, orphanRemoval = true)
+	@JoinColumn(foreignKey = @ForeignKey(name = "FK_betreuungspensum_eingewoehnung_pauschale_id"), nullable = true)
+	private EingewoehnungPauschale eingewoehnungPauschale;
 
 	public Betreuungspensum() {
 	}
@@ -85,6 +91,7 @@ public class Betreuungspensum extends AbstractMahlzeitenPensum implements Compar
 		super.copyAbstractBetreuungspensumMahlzeitenEntity(target, copyType);
 		switch (copyType) {
 		case MUTATION:
+			target.setEingewoehnungPauschale(this.getEingewoehnungPauschale());
 			target.setNichtEingetreten(this.getNichtEingetreten());
 			break;
 		case ERNEUERUNG:
@@ -112,6 +119,16 @@ public class Betreuungspensum extends AbstractMahlzeitenPensum implements Compar
 		}
 		final Betreuungspensum otherBetreuungspensum = (Betreuungspensum) other;
 		return Objects.equals(getNichtEingetreten(), otherBetreuungspensum.getNichtEingetreten())
-			&& this.getUnitForDisplay() == otherBetreuungspensum.getUnitForDisplay();
+			&& this.getUnitForDisplay() == otherBetreuungspensum.getUnitForDisplay()
+			&& EbeguUtil.isSame(this.eingewoehnungPauschale, other);
+	}
+
+	@Nullable
+	public EingewoehnungPauschale getEingewoehnungPauschale() {
+		return eingewoehnungPauschale;
+	}
+
+	public void setEingewoehnungPauschale(@Nullable EingewoehnungPauschale eingewoehnungPauschale) {
+		this.eingewoehnungPauschale = eingewoehnungPauschale;
 	}
 }
