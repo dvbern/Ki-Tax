@@ -14,6 +14,9 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
+SET @gesuchsperiode_id = UNHEX(REPLACE('1b0ed338-b3d2-11ee-829a-0242ac160002', '-', ''));
 
 ALTER TABLE kind ADD COLUMN unterhaltspflichtig bit;
 ALTER TABLE kind_aud ADD COLUMN unterhaltspflichtig bit;
+
+UPDATE einstellung set value = 'SCHWYZ' where gesuchsperiode_id = @gesuchsperiode_id and einstellung_key = 'KINDERABZUG_TYP' and gemeinde_id is null;
