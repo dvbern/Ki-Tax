@@ -1817,6 +1817,7 @@ public final class TestDataUtil {
 		saveEinstellung(ZUSATZLICHE_FELDER_ERSATZEINKOMMEN, "false", gesuchsperiode, persistence);
 		saveEinstellung(SPRACHFOERDERUNG_BESTAETIGEN, "false", gesuchsperiode, persistence);
 		saveEinstellung(GESUCH_BEENDEN_BEI_TAUSCH_GS2, "false", gesuchsperiode, persistence);
+		saveEinstellung(SCHULERGAENZENDE_BETREUUNGEN, "false", gesuchsperiode, persistence);
 	}
 
 	public static void saveEinstellung(
