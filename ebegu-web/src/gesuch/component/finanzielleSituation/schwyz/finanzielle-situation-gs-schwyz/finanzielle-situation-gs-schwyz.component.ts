@@ -17,6 +17,7 @@ import {AbstractGesuchViewX} from '../../../abstractGesuchViewX';
 })
 export class FinanzielleSituationGsSchwyzComponent extends AbstractGesuchViewX<TSFinanzModel> implements OnInit {
     public massgebendesEinkommen = 0;
+    public gesuchstellerNumber: number;
 
     public constructor(
         protected readonly gesuchmodelManager: GesuchModelManager,
@@ -27,20 +28,26 @@ export class FinanzielleSituationGsSchwyzComponent extends AbstractGesuchViewX<T
     }
 
     public ngOnInit(): void {
+        this.initGesuchstellerNumber();
         this.initFinanzModel();
     }
 
-    public getModel(): TSFinanzielleSituationContainer {
-        return this.model.getFiSiConToWorkWith();
+    private initGesuchstellerNumber() {
+        this.gesuchstellerNumber = parseInt(this.$stateParams.params.gesuchstellerNumber, 10);
+        this.gesuchModelManager.setGesuchstellerNumber(this.gesuchstellerNumber);
     }
 
     private initFinanzModel(): void {
         this.model = new TSFinanzModel(this.gesuchModelManager.getBasisjahr(),
             this.gesuchModelManager.isGesuchsteller2Required(),
-            parseInt(this.$stateParams.params.gesuchstellerNumber, 10));
+            this.gesuchstellerNumber);
         this.model.copyFinSitDataFromGesuch(this.gesuchModelManager.getGesuch());
         // this field is not present on schwyz but will be checked in a lot of distributed places. Therefore we set it
         this.model.familienSituation.sozialhilfeBezueger = false;
+    }
+
+    public getModel(): TSFinanzielleSituationContainer {
+        return this.model.getFiSiConToWorkWith();
     }
 
     public isNotNullOrUndefined(toCheck: any): boolean {
