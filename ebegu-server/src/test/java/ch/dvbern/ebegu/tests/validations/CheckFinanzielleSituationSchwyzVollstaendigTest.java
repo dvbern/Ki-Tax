@@ -31,15 +31,12 @@ import ch.dvbern.ebegu.validators.finsit.CheckFinanzielleSituationCompleteSchwyz
 import org.easymock.EasyMockExtension;
 import org.easymock.EasyMockSupport;
 import org.easymock.Mock;
-import org.easymock.TestSubject;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.extension.ExtendWith;
 
+import static org.easymock.EasyMock.anyObject;
 import static org.easymock.EasyMock.anyString;
 import static org.easymock.EasyMock.expect;
-import static org.easymock.EasyMock.replay;
 import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.*;
 
@@ -48,9 +45,6 @@ import static org.hamcrest.Matchers.*;
  */
 @ExtendWith(EasyMockExtension.class)
 class CheckFinanzielleSituationSchwyzVollstaendigTest extends EasyMockSupport {
-
-	@TestSubject
-	private final CheckFinanzielleSituationCompleteSchwyzValidator validator = new CheckFinanzielleSituationCompleteSchwyzValidator();
 
 	@Mock
 	private GesuchService gesuchService;
@@ -62,6 +56,7 @@ class CheckFinanzielleSituationSchwyzVollstaendigTest extends EasyMockSupport {
 
 	@Test
 	void emptyFinSitShouldNotBeValid() {
+		final CheckFinanzielleSituationCompleteSchwyzValidator validator = new CheckFinanzielleSituationCompleteSchwyzValidator(gesuchService);
 		FinanzielleSituation finanzielleSituation = new FinanzielleSituation();
 		setupGesuchMock();
 		replayAll();
@@ -71,6 +66,7 @@ class CheckFinanzielleSituationSchwyzVollstaendigTest extends EasyMockSupport {
 
 	@Test
 	void nettolohnMissingShouldNotBeValid() {
+		final CheckFinanzielleSituationCompleteSchwyzValidator validator = new CheckFinanzielleSituationCompleteSchwyzValidator(gesuchService);
 		FinanzielleSituation finanzielleSituation = new FinanzielleSituation();
 		setupGesuchMock();
 		finanzielleSituation.setAbzuegeLiegenschaft(BigDecimal.ZERO);
@@ -83,6 +79,7 @@ class CheckFinanzielleSituationSchwyzVollstaendigTest extends EasyMockSupport {
 
 	@Test
 	void abzuegeLiegenschaftenMissingShouldNotBeValid() {
+		final CheckFinanzielleSituationCompleteSchwyzValidator validator = new CheckFinanzielleSituationCompleteSchwyzValidator(gesuchService);
 		FinanzielleSituation finanzielleSituation = new FinanzielleSituation();
 		setupGesuchMock();
 		finanzielleSituation.setSteuerbaresEinkommen(BigDecimal.valueOf(87000));
@@ -95,6 +92,7 @@ class CheckFinanzielleSituationSchwyzVollstaendigTest extends EasyMockSupport {
 
 	@Test
 	void einkaeufeVorsorgeMissingShouldNotBeValid() {
+		final CheckFinanzielleSituationCompleteSchwyzValidator validator = new CheckFinanzielleSituationCompleteSchwyzValidator(gesuchService);
 		FinanzielleSituation finanzielleSituation = new FinanzielleSituation();
 		setupGesuchMock();
 		finanzielleSituation.setSteuerbaresEinkommen(BigDecimal.valueOf(87000));
@@ -107,6 +105,7 @@ class CheckFinanzielleSituationSchwyzVollstaendigTest extends EasyMockSupport {
 
 	@Test
 	void setSteuerbaresVermoegenMissingShouldNotBeValid() {
+		final CheckFinanzielleSituationCompleteSchwyzValidator validator = new CheckFinanzielleSituationCompleteSchwyzValidator(gesuchService);
 		FinanzielleSituation finanzielleSituation = new FinanzielleSituation();
 		setupGesuchMock();
 		finanzielleSituation.setSteuerbaresEinkommen(BigDecimal.valueOf(87000));
@@ -119,6 +118,7 @@ class CheckFinanzielleSituationSchwyzVollstaendigTest extends EasyMockSupport {
 
 	@Test
 	void bruttolohnShouldBeValid() {
+		final CheckFinanzielleSituationCompleteSchwyzValidator validator = new CheckFinanzielleSituationCompleteSchwyzValidator(gesuchService);
 		FinanzielleSituation finanzielleSituation = new FinanzielleSituation();
 		setupGesuchMock();
 		finanzielleSituation.setBruttoLohn(BigDecimal.valueOf(87000));
@@ -129,6 +129,7 @@ class CheckFinanzielleSituationSchwyzVollstaendigTest extends EasyMockSupport {
 
 	@Test
 	void quellsteuerValuesFilledInShouldBeValid() {
+		final CheckFinanzielleSituationCompleteSchwyzValidator validator = new CheckFinanzielleSituationCompleteSchwyzValidator(gesuchService);
 		FinanzielleSituation finanzielleSituation = new FinanzielleSituation();
 		setupGesuchMock();
 		finanzielleSituation.setSteuerbaresEinkommen(BigDecimal.valueOf(87000));
@@ -143,7 +144,7 @@ class CheckFinanzielleSituationSchwyzVollstaendigTest extends EasyMockSupport {
 	private void setupGesuchMock() {
 		Gesuch gesuch = new Gesuch();
 		gesuch.setFinSitTyp(FinanzielleSituationTyp.SCHWYZ);
-		expect(gesuchService.findGesuchForFinSit(anyString())).andReturn(Optional.of(gesuch));
+		expect(gesuchService.findGesuchForFinSit(anyString(), anyObject())).andReturn(Optional.of(gesuch));
 	}
 
 }

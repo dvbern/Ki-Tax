@@ -31,10 +31,12 @@ import ch.dvbern.ebegu.enums.FinanzielleSituationTyp;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.services.GesuchService;
 import ch.dvbern.ebegu.util.EbeguUtil;
+import lombok.RequiredArgsConstructor;
 
 /**
  * Dieser Validator die Komplettheit und Gültigkeit eines FinanzielleSituationContainer
  */
+@RequiredArgsConstructor(onConstructor_ = @Inject)
 public class CheckFinanzielleSituationCompleteSchwyzValidator implements
 	ConstraintValidator<CheckFinanzielleSituationSchwyzComplete, FinanzielleSituation> {
 
@@ -44,8 +46,7 @@ public class CheckFinanzielleSituationCompleteSchwyzValidator implements
 	@PersistenceUnit(unitName = "ebeguPersistenceUnit")
 	private EntityManagerFactory entityManagerFactory;
 
-	@Inject
-	private GesuchService gesuchService;
+	private final GesuchService gesuchService;
 
 	@Override
 	public void initialize(CheckFinanzielleSituationSchwyzComplete constraintAnnotation) {
