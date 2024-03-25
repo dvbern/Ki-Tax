@@ -97,4 +97,11 @@ export class FinanzielleSituationStartSchwyzComponent extends AbstractGesuchView
         return EbeguUtil.isNotNullOrUndefined(toCheck);
     }
 
+    public resetAllFinSitSchwyzData(): void {
+        this.getModel().finanzielleSituationJA.bruttoLohn = null;
+        this.getModel().finanzielleSituationJA.steuerbaresEinkommen = null;
+        this.getModel().finanzielleSituationJA.abzuegeLiegenschaft = null;
+        this.getModel().finanzielleSituationJA.einkaeufeVorsorge = null;
+        this.getModel().finanzielleSituationJA.steuerbaresVermoegen = null;
+    }
 }

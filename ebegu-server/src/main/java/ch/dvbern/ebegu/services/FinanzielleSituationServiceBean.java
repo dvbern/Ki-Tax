@@ -50,6 +50,7 @@ import ch.dvbern.ebegu.entities.NeueVeranlagungsMitteilung;
 import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.FinSitStatus;
+import ch.dvbern.ebegu.enums.FinanzielleSituationTyp;
 import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
@@ -111,6 +112,8 @@ public class FinanzielleSituationServiceBean extends AbstractBaseService impleme
 			finSitStartDTO,
 			gesuch
 		);
+
+		handleDataResetsOnFinSitStartSave(gesuch, finSitStartDTO);
 
 		wizardStepService.updateSteps(
 			gesuchId,
@@ -183,6 +186,23 @@ public class FinanzielleSituationServiceBean extends AbstractBaseService impleme
 		handleGemeinsameSteuererklaerung(gesuch);
 
 		return gesuchService.updateGesuch(gesuch, false);
+	}
+
+	private void handleDataResetsOnFinSitStartSave(Gesuch gesuch, FinanzielleSituationStartDTO finSitStartDTO) {
+		if (gesuch.getFinSitTyp() == FinanzielleSituationTyp.SCHWYZ) {
+			if (Objects.equals(finSitStartDTO.getGemeinsameSteuererklaerung(), Boolean.TRUE) &&
+				gesuch.getGesuchsteller2() != null && gesuch.getGesuchsteller2().getFinanzielleSituationContainer() != null) {
+				var finSit = gesuch.getGesuchsteller2().getFinanzielleSituationContainer().getFinanzielleSituationJA();
+				finSit.setBruttoLohn(null);
+				finSit.setQuellenbesteuert(null);
+				finSit.setSteuerbaresEinkommen(null);
+				finSit.setSteuerbaresVermoegen(null);
+				finSit.setEinkaeufeVorsorge(null);
+				finSit.setAbzuegeLiegenschaft(null);
+
+				saveFinanzielleSituation(gesuch.getGesuchsteller2().getFinanzielleSituationContainer(), gesuch.getId());
+			}
+		}
 	}
 
 	@Nonnull

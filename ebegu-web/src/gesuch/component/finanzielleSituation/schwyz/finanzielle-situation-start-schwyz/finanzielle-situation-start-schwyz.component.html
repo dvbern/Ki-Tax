@@ -4,7 +4,7 @@
         <div class="col-md-12">
             <h2>
                 <span translate
-                      [translateParams]="{basisjahr: getYearForDeklaration()}">FINANZIELLE_SITUATION</span>
+                      [translateParams]="{gesuchsteller: '', basisjahr: getYearForDeklaration()}">FINANZIELLE_SITUATION</span>
             </h2>
             <hr class="header"/>
         </div>
@@ -21,6 +21,7 @@
         <ng-template #mehrereGS>
             <dv-steuerveranlagung-gemeinsam
                 [model]="model"
+                (gemeinsamChanged)="resetAllFinSitSchwyzData()"
             ></dv-steuerveranlagung-gemeinsam>
             <dv-steuerveranlagt-schwyz *ngIf="model.familienSituation.gemeinsameSteuererklaerung"
                                                 [finSitJA]="getModel().finanzielleSituationJA"
