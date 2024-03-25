@@ -33,10 +33,8 @@ import java.util.Objects;
 @SuppressWarnings("ComparableImplementedButEqualsNotOverridden")
 @Audited
 @Entity
-@AssociationOverrides({
-	@AssociationOverride(name = "eingewoehnungPauschale",
-		joinColumns = @JoinColumn(name = "eingewoehnung_pauschale_id"), foreignKey = @ForeignKey(name = "FK_betreuungspensum_eingewoehnung_pauschale_id")),
-})
+@AssociationOverride(name = "eingewoehnungPauschale",
+	joinColumns = @JoinColumn(name = "eingewoehnung_pauschale_id"), foreignKey = @ForeignKey(name = "FK_betreuungspensum_eingewoehnung_pauschale_id"))
 public class Betreuungspensum extends AbstractMahlzeitenPensum implements Comparable<Betreuungspensum> {
 
 	private static final long serialVersionUID = -9032857320571372370L;

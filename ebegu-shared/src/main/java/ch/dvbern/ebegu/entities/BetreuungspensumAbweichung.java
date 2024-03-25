@@ -32,10 +32,8 @@ import java.util.Objects;
 
 @Audited
 @Entity
-@AssociationOverrides({
-	@AssociationOverride(name = "eingewoehnungPauschale",
-		joinColumns = @JoinColumn(name = "eingewoehnung_pauschale_id"), foreignKey = @ForeignKey(name = "FK_betreuungspensum_abweichung_eingewoehnung_pauschale_id")),
-})
+@AssociationOverride(name = "eingewoehnungPauschale",
+		joinColumns = @JoinColumn(name = "eingewoehnung_pauschale_id"), foreignKey = @ForeignKey(name = "FK_betreuungspensum_abweichung_eingewoehnung_pauschale_id"))
 public class BetreuungspensumAbweichung extends AbstractMahlzeitenPensum implements Comparable<BetreuungspensumAbweichung>  {
 
 	private static final long serialVersionUID = -8308660793880620086L;

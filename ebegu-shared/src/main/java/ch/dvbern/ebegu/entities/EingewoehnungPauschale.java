@@ -30,6 +30,7 @@ public class EingewoehnungPauschale extends AbstractDateRangedEntity {
 	@Override
 	@SuppressWarnings("PMD.CompareObjectsWithEquals")
 	public boolean isSame(AbstractEntity other) {
+		//noinspection ObjectEquality
 		if (this.equals(other)) {
 			return true;
 		}
