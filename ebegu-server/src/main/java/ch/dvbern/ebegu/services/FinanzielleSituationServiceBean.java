@@ -189,9 +189,8 @@ public class FinanzielleSituationServiceBean extends AbstractBaseService impleme
 	}
 
 	private void handleDataResetsOnFinSitStartSave(Gesuch gesuch, FinanzielleSituationStartDTO finSitStartDTO) {
-		if (gesuch.getFinSitTyp() == FinanzielleSituationTyp.SCHWYZ) {
-			if (Objects.equals(finSitStartDTO.getGemeinsameSteuererklaerung(), Boolean.TRUE) &&
-				gesuch.getGesuchsteller2() != null && gesuch.getGesuchsteller2().getFinanzielleSituationContainer() != null) {
+		if (gesuch.getFinSitTyp() == FinanzielleSituationTyp.SCHWYZ && (Objects.equals(finSitStartDTO.getGemeinsameSteuererklaerung(), Boolean.TRUE) &&
+				gesuch.getGesuchsteller2() != null && gesuch.getGesuchsteller2().getFinanzielleSituationContainer() != null)) {
 				var finSit = gesuch.getGesuchsteller2().getFinanzielleSituationContainer().getFinanzielleSituationJA();
 				finSit.setBruttoLohn(null);
 				finSit.setQuellenbesteuert(null);
@@ -201,7 +200,7 @@ public class FinanzielleSituationServiceBean extends AbstractBaseService impleme
 				finSit.setAbzuegeLiegenschaft(null);
 
 				saveFinanzielleSituation(gesuch.getGesuchsteller2().getFinanzielleSituationContainer(), gesuch.getId());
-			}
+
 		}
 	}
 
