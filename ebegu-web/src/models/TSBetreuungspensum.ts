@@ -15,14 +15,17 @@
 
 import {TSAbstractMahlzeitenPensum} from './TSAbstractMahlzeitenPensum';
 import {TSEingewoehnungPauschale} from './TSEingewoehnungPauschale';
+import {EbeguUtil} from '../utils/EbeguUtil';
 
 export class TSBetreuungspensum extends TSAbstractMahlzeitenPensum {
 
     private _nichtEingetreten: boolean;
     private _eingewoehnungPauschale: TSEingewoehnungPauschale;
+    private _hasEingewoehnungsPauschale: boolean;
 
     public constructor() {
         super();
+        this._hasEingewoehnungsPauschale = EbeguUtil.isNotNullOrUndefined(this.eingewoehnungPauschale);
     }
 
     public get nichtEingetreten(): boolean {
@@ -39,5 +42,13 @@ export class TSBetreuungspensum extends TSAbstractMahlzeitenPensum {
 
     public set eingewoehnungPauschale(value: TSEingewoehnungPauschale) {
         this._eingewoehnungPauschale = value;
+    }
+
+    public get hasEingewoehnungsPauschale(): boolean {
+        return this._hasEingewoehnungsPauschale;
+    }
+
+    public set hasEingewoehnungsPauschale(value: boolean) {
+        this._hasEingewoehnungsPauschale = value;
     }
 }

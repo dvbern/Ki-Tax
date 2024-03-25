@@ -3386,6 +3386,8 @@ public class JaxBConverter extends AbstractConverter {
 				betreuungspensum.getEingewoehnungPauschale() : new EingewoehnungPauschale();
 			betreuungspensum.setEingewoehnungPauschale(
 				convertEingewoehnungspauschaleToEntity(jaxBetreuungspensum.getEingewoehnungPauschale(), eingewoehnungPauschale));
+		} else {
+			betreuungspensum.setEingewoehnungPauschale(null);
 		}
 		return betreuungspensum;
 	}

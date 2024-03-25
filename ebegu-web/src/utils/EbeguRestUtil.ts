@@ -2969,6 +2969,7 @@ export class EbeguRestUtil {
             betreuungspensumTS.unitForDisplay = betreuungspensumFromServer.unitForDisplay;
             betreuungspensumTS.eingewoehnungPauschale = this.parseEingewoehnungPauschale(new TSEingewoehnungPauschale(),
                 betreuungspensumFromServer.eingewoehnungPauschale);
+            betreuungspensumTS.hasEingewoehnungsPauschale = EbeguUtil.isNotNullOrUndefined(betreuungspensumTS.eingewoehnungPauschale);
 
             return betreuungspensumTS;
         }
