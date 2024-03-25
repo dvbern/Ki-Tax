@@ -920,6 +920,7 @@
                                                                  name="eingewoehnungPauschale-{{$index}}"
                                                                  ng-model="vm.getBetreuungspensum($index).betreuungspensumJA.hasEingewoehnungsPauschale"
                                                                  ng-change="vm.onEingewoehnungPauschaleChange($index)"
+                                                                 ng-disabled="!vm.isEingewoehnungPauschaleEnabled()"
                                                                  aria-label="{{'EINGEWOEHNUNG_PAUSCHALE_CHECKBOX'| translate}}">
                                                         <span data-translate="EINGEWOEHNUNG_PAUSCHALE_CHECKBOX"></span>
                                                     </md-checkbox>
