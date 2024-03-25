@@ -100,7 +100,10 @@ public class AbstractDecimalPensum extends AbstractDateRangedEntity {
 		target.setMonatlicheBetreuungskosten(this.getMonatlicheBetreuungskosten());
 		target.setUnitForDisplay(this.getUnitForDisplay());
 		target.setStuendlicheVollkosten(this.getStuendlicheVollkosten());
-		target.setEingewoehnungPauschale(this.getEingewoehnungPauschale());
+		if (this.getEingewoehnungPauschale() != null) {
+			target.setEingewoehnungPauschale(this.getEingewoehnungPauschale()
+				.copyEingewohnungEntity(new EingewoehnungPauschale(), copyType));
+		}
 	}
 
 	public void applyPensumFromDays(@Nonnull BigDecimal days, @Nonnull BigDecimal maxTageProMonat) {
