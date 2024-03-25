@@ -53,10 +53,13 @@ export class FinanzielleSituationStartSchwyzComponent extends AbstractGesuchView
 
     private save(onResult: (arg: any) => void): Promise<TSFinanzielleSituationContainer> {
         this.model.copyFinSitDataToGesuch(this.getGesuch());
-        return this.gesuchModelManager.saveFinanzielleSituationStart().then(async (gesuch: TSGesuch) => {
-            this.model.copyFinSitDataToGesuch(gesuch);
-            await this.updateWizardStepStatus();
-            onResult(this.getModel());
+        return this.gesuchModelManager.saveFinanzielleSituationStart()
+            .then(() => this.gesuchModelManager.updateGesuch())
+            .then(async () => {
+                if (!this.hasMultipleGS || this.model.familienSituation.gemeinsameSteuererklaerung) {
+                    await this.updateWizardStepStatus();
+                }
+                onResult(this.getModel());
             return this.getModel();
         }) as Promise<TSFinanzielleSituationContainer>;
     }
@@ -65,16 +68,11 @@ export class FinanzielleSituationStartSchwyzComponent extends AbstractGesuchView
      * updates the Status of the Step depending on whether the Gesuch is a Mutation or not
      */
     protected updateWizardStepStatus(): Promise<void> {
-        const status = this.isFinSitOk() ? TSWizardStepStatus.OK : TSWizardStepStatus.IN_BEARBEITUNG;
         return this.gesuchModelManager.getGesuch().isMutation() ?
             this.wizardStepManager.updateCurrentWizardStepStatusMutiert() as Promise<void> :
             this.wizardStepManager.updateCurrentWizardStepStatusSafe(
                 TSWizardStepName.FINANZIELLE_SITUATION_SCHWYZ,
-                status) as Promise<void>;
-    }
-
-    private isFinSitOk(): boolean {
-        return  !this.hasMultipleGS || this.model.familienSituation.gemeinsameSteuererklaerung;
+                TSWizardStepStatus.OK) as Promise<void>;
     }
 
     public getSubStepName(): TSFinanzielleSituationSubStepName {
