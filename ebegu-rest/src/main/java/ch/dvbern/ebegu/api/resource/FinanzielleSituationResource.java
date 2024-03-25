@@ -134,9 +134,6 @@ public class FinanzielleSituationResource {
 	@Inject
 	private JaxBConverter converter;
 
-	@Inject
-	private Validator validator;
-
 	@Resource
 	private EJBContext context;    //fuer rollback
 
