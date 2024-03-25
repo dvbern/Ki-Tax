@@ -20,8 +20,6 @@ package ch.dvbern.ebegu.entities;
 import ch.dvbern.ebegu.enums.AntragCopyType;
 import ch.dvbern.ebegu.enums.SteuerdatenAnfrageStatus;
 import ch.dvbern.ebegu.util.MathUtil;
-import ch.dvbern.ebegu.validationgroups.CheckFinstCompleteValidationGroup;
-import ch.dvbern.ebegu.validators.finsit.CheckFinanzielleSituationSchwyzComplete;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.RelationTargetAuditMode;
@@ -40,7 +38,6 @@ import java.util.Objects;
  */
 @Audited
 @Entity
-@CheckFinanzielleSituationSchwyzComplete(groups = CheckFinstCompleteValidationGroup.class)
 public class FinanzielleSituation extends AbstractFinanzielleSituation {
 
 	private static final long serialVersionUID = -4401110366293613225L;

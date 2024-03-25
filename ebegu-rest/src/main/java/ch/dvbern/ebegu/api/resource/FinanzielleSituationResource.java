@@ -20,7 +20,6 @@ package ch.dvbern.ebegu.api.resource;
 import java.time.LocalDate;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.Set;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -34,8 +33,6 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletResponse;
-import javax.validation.ConstraintViolation;
-import javax.validation.ConstraintViolationException;
 import javax.validation.Valid;
 import javax.validation.Validator;
 import javax.validation.constraints.NotNull;
@@ -178,13 +175,6 @@ public class FinanzielleSituationResource {
 			gesuchsteller.getFinanzielleSituationContainer());
 
 		convertedFinSitCont.setGesuchsteller(gesuchsteller);
-
-		Set<ConstraintViolation<FinanzielleSituation>> finSitCompleteViolations =
-			validator.validate(convertedFinSitCont.getFinanzielleSituationJA(), CheckFinstCompleteValidationGroup.class);
-
-		if (!finSitCompleteViolations.isEmpty()) {
-			throw new ConstraintViolationException(finSitCompleteViolations);
-		}
 
 		FinanzielleSituationContainer persistedFinSit =
 			this.finanzielleSituationService.saveFinanzielleSituation(convertedFinSitCont, gesuchId);
