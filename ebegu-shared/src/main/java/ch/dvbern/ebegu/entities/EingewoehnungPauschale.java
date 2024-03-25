@@ -34,7 +34,7 @@ public class EingewoehnungPauschale extends AbstractDateRangedEntity {
 			return true;
 		}
 
-		if (other == null || !getClass().equals(other.getClass())) {
+		if (!(other instanceof EingewoehnungPauschale)) {
 			return false;
 		}
 
