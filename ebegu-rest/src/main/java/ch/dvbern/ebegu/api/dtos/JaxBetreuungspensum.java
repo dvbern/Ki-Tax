@@ -28,8 +28,6 @@ public class JaxBetreuungspensum extends JaxAbstractMahlzeitenPensumDTO {
 
 	private Boolean nichtEingetreten = false;
 
-	private JaxEingewoehnungPauschale eingewoehnungPauschale;
-
 
 	public Boolean getNichtEingetreten() {
 		return nichtEingetreten;
@@ -37,14 +35,6 @@ public class JaxBetreuungspensum extends JaxAbstractMahlzeitenPensumDTO {
 
 	public void setNichtEingetreten(Boolean nichtEingetreten) {
 		this.nichtEingetreten = nichtEingetreten;
-	}
-
-	public JaxEingewoehnungPauschale getEingewoehnungPauschale() {
-		return eingewoehnungPauschale;
-	}
-
-	public void setEingewoehnungPauschale(JaxEingewoehnungPauschale eingewoehnungPauschale) {
-		this.eingewoehnungPauschale = eingewoehnungPauschale;
 	}
 }
 

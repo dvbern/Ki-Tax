@@ -17,29 +17,25 @@
 
 package ch.dvbern.ebegu.entities;
 
-import java.math.BigDecimal;
-import java.util.Objects;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.ForeignKey;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Transient;
-import javax.validation.constraints.NotNull;
-
 import ch.dvbern.ebegu.enums.AntragCopyType;
 import ch.dvbern.ebegu.enums.BetreuungspensumAbweichungStatus;
 import ch.dvbern.ebegu.util.MathUtil;
 import org.apache.commons.lang3.builder.CompareToBuilder;
 import org.hibernate.envers.Audited;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+import java.math.BigDecimal;
+import java.util.Objects;
+
 @Audited
 @Entity
+@AssociationOverrides({
+	@AssociationOverride(name = "eingewoehnungPauschale",
+		joinColumns = @JoinColumn(name = "eingewoehnung_pauschale_id"), foreignKey = @ForeignKey(name = "FK_betreuungspensum_abweichung_eingewoehnung_pauschale_id")),
+})
 public class BetreuungspensumAbweichung extends AbstractMahlzeitenPensum implements Comparable<BetreuungspensumAbweichung>  {
 
 	private static final long serialVersionUID = -8308660793880620086L;

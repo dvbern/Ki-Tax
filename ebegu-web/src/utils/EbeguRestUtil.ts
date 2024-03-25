@@ -409,6 +409,19 @@ export class EbeguRestUtil {
         restObj.pensum = betreuungspensumEntity.pensum;
         restObj.monatlicheBetreuungskosten = betreuungspensumEntity.monatlicheBetreuungskosten;
         restObj.stuendlicheVollkosten = betreuungspensumEntity.stuendlicheVollkosten;
+        if (betreuungspensumEntity.eingewoehnungPauschale) {
+            restObj.eingewoehnungPauschale =
+                this.eingewohnungPauschaleToRestObject({}, betreuungspensumEntity.eingewoehnungPauschale);
+        }
+    }
+
+    private eingewohnungPauschaleToRestObject(
+        restEingewoehnungPauschale: any,
+        eingewoehnungPauschale: TSEingewoehnungPauschale
+    ): any {
+        this.abstractDateRangeEntityToRestObject(restEingewoehnungPauschale, eingewoehnungPauschale);
+        restEingewoehnungPauschale.pauschale = eingewoehnungPauschale.pauschale;
+        return restEingewoehnungPauschale;
     }
 
     private parseAbstractPensumEntity(
@@ -428,7 +441,23 @@ export class EbeguRestUtil {
         betreuungspensumTS.pensum = betreuungspensumFromServer.pensum;
         betreuungspensumTS.monatlicheBetreuungskosten = betreuungspensumFromServer.monatlicheBetreuungskosten;
         betreuungspensumTS.stuendlicheVollkosten = betreuungspensumFromServer.stuendlicheVollkosten;
+        betreuungspensumTS.eingewoehnungPauschale = this.parseEingewoehnungPauschale(new TSEingewoehnungPauschale(),
+            betreuungspensumFromServer.eingewoehnungPauschale);
+        betreuungspensumTS.hasEingewoehnungsPauschale = EbeguUtil.isNotNullOrUndefined(betreuungspensumTS.eingewoehnungPauschale);
     }
+
+    private parseEingewoehnungPauschale(
+        eingewoehnungPauschaleTS: TSEingewoehnungPauschale,
+        eingewoehnungPauschaleFromServer: any
+    ): TSEingewoehnungPauschale {
+        if (eingewoehnungPauschaleFromServer) {
+            this.parseDateRangeEntity(eingewoehnungPauschaleTS, eingewoehnungPauschaleFromServer);
+            eingewoehnungPauschaleTS.pauschale = eingewoehnungPauschaleFromServer.pauschale;
+            return eingewoehnungPauschaleTS;
+        }
+        return undefined;
+    }
+
 
     private abstractAntragEntityToRestObject(restObj: any, antragEntity: TSAbstractAntragEntity): void {
         this.abstractMutableEntityToRestObject(restObj, antragEntity);
@@ -2750,22 +2779,8 @@ export class EbeguRestUtil {
                     0 :
                     betreuungspensum.tarifProNebenmahlzeit;
             restBetreuungspensum.unitForDisplay = betreuungspensum.unitForDisplay;
-
-            if (betreuungspensum.eingewoehnungPauschale) {
-                restBetreuungspensum.eingewoehnungPauschale =
-                    this.eingewohnungPauschaleToRestObject({}, betreuungspensum.eingewoehnungPauschale);
-            }
         }
         return restBetreuungspensum;
-    }
-
-    private eingewohnungPauschaleToRestObject(
-        restEingewoehnungPauschale: any,
-        eingewoehnungPauschale: TSEingewoehnungPauschale
-    ): any {
-        this.abstractDateRangeEntityToRestObject(restEingewoehnungPauschale, eingewoehnungPauschale);
-        restEingewoehnungPauschale.pauschale = eingewoehnungPauschale.pauschale;
-        return restEingewoehnungPauschale;
     }
 
     public betreuungsmitteilungPensumToRestObject(
@@ -2967,27 +2982,10 @@ export class EbeguRestUtil {
             betreuungspensumTS.tarifProHauptmahlzeit = betreuungspensumFromServer.tarifProHauptmahlzeit;
             betreuungspensumTS.tarifProNebenmahlzeit = betreuungspensumFromServer.tarifProNebenmahlzeit;
             betreuungspensumTS.unitForDisplay = betreuungspensumFromServer.unitForDisplay;
-            betreuungspensumTS.eingewoehnungPauschale = this.parseEingewoehnungPauschale(new TSEingewoehnungPauschale(),
-                betreuungspensumFromServer.eingewoehnungPauschale);
-            betreuungspensumTS.hasEingewoehnungsPauschale = EbeguUtil.isNotNullOrUndefined(betreuungspensumTS.eingewoehnungPauschale);
-
             return betreuungspensumTS;
         }
         return undefined;
     }
-
-    private parseEingewoehnungPauschale(
-        eingewoehnungPauschaleTS: TSEingewoehnungPauschale,
-        eingewoehnungPauschaleFromServer: any
-    ): TSEingewoehnungPauschale {
-        if (eingewoehnungPauschaleFromServer) {
-            this.parseDateRangeEntity(eingewoehnungPauschaleTS, eingewoehnungPauschaleFromServer);
-            eingewoehnungPauschaleTS.pauschale = eingewoehnungPauschaleFromServer.pauschale;
-            return eingewoehnungPauschaleTS;
-        }
-        return undefined;
-    }
-
     public parseBetreuungsmitteilungPensum(
         betreuungspensumTS: TSBetreuungsmitteilungPensum,
         betreuungspensumFromServer: any

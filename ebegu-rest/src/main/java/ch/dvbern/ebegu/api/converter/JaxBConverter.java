@@ -3380,25 +3380,7 @@ public class JaxBConverter extends AbstractConverter {
 		betreuungspensum.setTarifProHauptmahlzeit(jaxBetreuungspensum.getTarifProHauptmahlzeit());
 		betreuungspensum.setTarifProNebenmahlzeit(jaxBetreuungspensum.getTarifProNebenmahlzeit());
 		betreuungspensum.setNichtEingetreten(jaxBetreuungspensum.getNichtEingetreten());
-
-		if (jaxBetreuungspensum.getEingewoehnungPauschale() != null) {
-			EingewoehnungPauschale eingewoehnungPauschale = betreuungspensum.getEingewoehnungPauschale() != null ?
-				betreuungspensum.getEingewoehnungPauschale() : new EingewoehnungPauschale();
-			betreuungspensum.setEingewoehnungPauschale(
-				convertEingewoehnungspauschaleToEntity(jaxBetreuungspensum.getEingewoehnungPauschale(), eingewoehnungPauschale));
-		} else {
-			betreuungspensum.setEingewoehnungPauschale(null);
-		}
 		return betreuungspensum;
-	}
-
-	private EingewoehnungPauschale convertEingewoehnungspauschaleToEntity(
-		JaxEingewoehnungPauschale jaxEingewoehnungPauschale,
-		EingewoehnungPauschale eingewoehnungPauschale) {
-
-		convertAbstractDateRangedFieldsToEntity(jaxEingewoehnungPauschale, eingewoehnungPauschale);
-		eingewoehnungPauschale.setPauschale(jaxEingewoehnungPauschale.getPauschale());
-		return eingewoehnungPauschale;
 	}
 
 	@Nonnull
@@ -3924,22 +3906,7 @@ public class JaxBConverter extends AbstractConverter {
 		jaxBetreuungspensum.setMonatlicheNebenmahlzeiten(betreuungspensum.getMonatlicheNebenmahlzeiten());
 		jaxBetreuungspensum.setTarifProHauptmahlzeit(betreuungspensum.getTarifProHauptmahlzeit());
 		jaxBetreuungspensum.setTarifProNebenmahlzeit(betreuungspensum.getTarifProNebenmahlzeit());
-
-		if (betreuungspensum.getEingewoehnungPauschale() != null) {
-			jaxBetreuungspensum.setEingewoehnungPauschale(
-				eingewoehnungPauschaleToJax(betreuungspensum.getEingewoehnungPauschale(), new JaxEingewoehnungPauschale()));
-		}
 		return jaxBetreuungspensum;
-	}
-
-	@Nonnull
-	private JaxEingewoehnungPauschale eingewoehnungPauschaleToJax(
-		EingewoehnungPauschale eingewoehnungPauschale,
-		JaxEingewoehnungPauschale jaxEingewoehnungPauschale) {
-
-		convertAbstractDateRangedFieldsToJAX(eingewoehnungPauschale, jaxEingewoehnungPauschale);
-		jaxEingewoehnungPauschale.setPauschale(eingewoehnungPauschale.getPauschale());
-		return jaxEingewoehnungPauschale;
 	}
 
 	@Nonnull

@@ -17,22 +17,19 @@
 
 package ch.dvbern.ebegu.entities;
 
-import java.math.BigDecimal;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.persistence.Column;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.MappedSuperclass;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotNull;
-
 import ch.dvbern.ebegu.enums.AntragCopyType;
 import ch.dvbern.ebegu.enums.PensumUnits;
+import ch.dvbern.ebegu.util.EbeguUtil;
 import ch.dvbern.ebegu.util.MathUtil;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.hibernate.envers.Audited;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.persistence.*;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
+import java.math.BigDecimal;
 
 /**
  * Abstrakte Entitaet. Muss von Entitaeten erweitert werden, die ein Pensum (Prozent) als BigDecimal,
@@ -69,6 +66,11 @@ public class AbstractDecimalPensum extends AbstractDateRangedEntity {
 	@Column(nullable = true)
 	private BigDecimal stuendlicheVollkosten;
 
+	@Nullable
+	@OneToOne(optional = true, cascade = CascadeType.ALL, orphanRemoval = true)
+	@JoinColumn(foreignKey = @ForeignKey(name = "eingewoehnungPauschale"), nullable = true)
+	private EingewoehnungPauschale eingewoehnungPauschale;
+
 	@Override
 	@SuppressWarnings("PMD.CompareObjectsWithEquals")
 	@SuppressFBWarnings("BC_UNCONFIRMED_CAST")
@@ -85,7 +87,8 @@ public class AbstractDecimalPensum extends AbstractDateRangedEntity {
 			&& this.getPensum().compareTo(otherAbstDateRangedEntity.getPensum()) == 0
 			&& this.getUnitForDisplay() == otherAbstDateRangedEntity.getUnitForDisplay()
 			&& this.getMonatlicheBetreuungskosten().compareTo(((AbstractDecimalPensum) other).monatlicheBetreuungskosten) == 0
-			&& MathUtil.isSame(this.getStuendlicheVollkosten(), ((AbstractDecimalPensum) other).getStuendlicheVollkosten());
+			&& MathUtil.isSame(this.getStuendlicheVollkosten(), ((AbstractDecimalPensum) other).getStuendlicheVollkosten())
+			&& EbeguUtil.isSame(this.eingewoehnungPauschale, other);
 	}
 
 	public void copyAbstractBetreuungspensumEntity(
@@ -97,6 +100,7 @@ public class AbstractDecimalPensum extends AbstractDateRangedEntity {
 		target.setMonatlicheBetreuungskosten(this.getMonatlicheBetreuungskosten());
 		target.setUnitForDisplay(this.getUnitForDisplay());
 		target.setStuendlicheVollkosten(this.getStuendlicheVollkosten());
+		target.setEingewoehnungPauschale(this.getEingewoehnungPauschale());
 	}
 
 	public void applyPensumFromDays(@Nonnull BigDecimal days, @Nonnull BigDecimal maxTageProMonat) {
@@ -157,5 +161,14 @@ public class AbstractDecimalPensum extends AbstractDateRangedEntity {
 
 	public void setStuendlicheVollkosten(@Nullable BigDecimal tfoStuendlichVollkosten) {
 		this.stuendlicheVollkosten = tfoStuendlichVollkosten;
+	}
+
+	@Nullable
+	public EingewoehnungPauschale getEingewoehnungPauschale() {
+		return eingewoehnungPauschale;
+	}
+
+	public void setEingewoehnungPauschale(@Nullable EingewoehnungPauschale eingewoehnungPauschale) {
+		this.eingewoehnungPauschale = eingewoehnungPauschale;
 	}
 }
