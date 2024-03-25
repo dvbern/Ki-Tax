@@ -457,8 +457,6 @@ export class EbeguRestUtil {
         }
         return undefined;
     }
-
-
     private abstractAntragEntityToRestObject(restObj: any, antragEntity: TSAbstractAntragEntity): void {
         this.abstractMutableEntityToRestObject(restObj, antragEntity);
         restObj.dossier = this.dossierToRestObject({}, antragEntity.dossier);
