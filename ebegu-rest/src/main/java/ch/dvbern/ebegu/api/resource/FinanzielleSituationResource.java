@@ -86,7 +86,6 @@ import ch.dvbern.ebegu.services.FinanzielleSituationService;
 import ch.dvbern.ebegu.services.GesuchService;
 import ch.dvbern.ebegu.services.GesuchstellerService;
 import ch.dvbern.ebegu.util.Constants;
-import ch.dvbern.ebegu.validationgroups.CheckFachstellenValidationGroup;
 import ch.dvbern.ebegu.validationgroups.CheckFinstCompleteValidationGroup;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -237,12 +236,6 @@ public class FinanzielleSituationResource {
 			requireNonNull(familiensituationJA.getZahlungsadresse());
 		}
 
-		Set<ConstraintViolation<FinanzielleSituation>> finSitCompleteViolations =
-			validator.validate(convertedFinSitCont.getFinanzielleSituationJA(), CheckFinstCompleteValidationGroup.class);
-
-		if (!finSitCompleteViolations.isEmpty()) {
-			throw new ConstraintViolationException(finSitCompleteViolations);
-		}
 
 		Gesuch gesuch = gesuchService
 			.findGesuch(gesuchId)
@@ -276,33 +269,17 @@ public class FinanzielleSituationResource {
 			}
 		}
 
-		Boolean sozialhilfeBezueger = familiensituationJA.getSozialhilfeBezueger();
 		Boolean gemeinsameSteuererklaerung = familiensituationJA.getGemeinsameSteuererklaerung();
-		Boolean verguenstigungGewuenscht = familiensituationJA.getVerguenstigungGewuenscht();
 		boolean auszahlungAusserhalbVonKibon = familiensituationJA.isAuszahlungAusserhalbVonKibon();
-
+		Boolean sozialhilfeBezueger = familiensituationJA.getSozialhilfeBezueger();
 		requireNonNull(sozialhilfeBezueger);
-
-		if (gesuchJAXP.getFinSitTyp().equals(FinanzielleSituationTyp.BERN)
-			|| gesuchJAXP.getFinSitTyp().equals(FinanzielleSituationTyp.BERN_FKJV)
-			|| gesuchJAXP.getFinSitTyp().equals(FinanzielleSituationTyp.SOLOTHURN)) {
-
-			if (sozialhilfeBezueger.equals(Boolean.TRUE)) {
-				// Sozialhilfebezueger bekommen immer eine Verguenstigung
-				verguenstigungGewuenscht = Boolean.TRUE;
-			} else {
-				requireNonNull(verguenstigungGewuenscht);
-			}
-		} else {
-			verguenstigungGewuenscht = Boolean.TRUE;
-		}
 
 		FinanzielleSituationStartDTO finSitStartDTO = new FinanzielleSituationStartDTO(
 			sozialhilfeBezueger,
 			familiensituationJA.getZustaendigeAmtsstelle(),
 			familiensituationJA.getNameBetreuer(),
 			gemeinsameSteuererklaerung,
-			verguenstigungGewuenscht,
+			calculateVerguenstigungGewuenscht(gesuchJAXP, familiensituationJA),
 			familiensituationJA.isKeineMahlzeitenverguenstigungBeantragt(),
 			familiensituationJA.getIban(),
 			familiensituationJA.getKontoinhaber(),
@@ -321,6 +298,30 @@ public class FinanzielleSituationResource {
 		);
 
 		return converter.gesuchToJAX(persistedGesuch);
+	}
+
+	@Nonnull
+	private static Boolean calculateVerguenstigungGewuenscht(
+		@Nonnull JaxGesuch gesuchJAXP,
+		JaxFamiliensituation familiensituation) {
+		Boolean sozialhilfeBezueger = familiensituation.getSozialhilfeBezueger();
+		requireNonNull(sozialhilfeBezueger);
+
+		Boolean verguenstigungGewuenscht = familiensituation.getVerguenstigungGewuenscht();
+		if (gesuchJAXP.getFinSitTyp() == FinanzielleSituationTyp.BERN
+			|| gesuchJAXP.getFinSitTyp() == FinanzielleSituationTyp.BERN_FKJV
+			|| gesuchJAXP.getFinSitTyp() == FinanzielleSituationTyp.SOLOTHURN) {
+
+			if (sozialhilfeBezueger.equals(Boolean.TRUE)) {
+				// Sozialhilfebezueger bekommen immer eine Verguenstigung
+				verguenstigungGewuenscht = Boolean.TRUE;
+			} else {
+				requireNonNull(verguenstigungGewuenscht);
+			}
+		} else {
+			verguenstigungGewuenscht = Boolean.TRUE;
+		}
+		return verguenstigungGewuenscht;
 	}
 
 	@ApiOperation(value = "Berechnet die FinanzielleSituation fuer das uebergebene Gesuch. Die Berechnung wird " +
