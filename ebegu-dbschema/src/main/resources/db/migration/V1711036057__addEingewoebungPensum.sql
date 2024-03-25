@@ -47,11 +47,11 @@ CREATE TABLE eingewoehnung_pauschale_aud (
 alter table betreuungspensum add column eingewoehnung_pauschale_id binary(16);
 alter table betreuungspensum_aud add column eingewoehnung_pauschale_id binary(16);
 
-ALTER table betreuungspensum_abweichung add eingewoehnung_pauschale_id DECIMAL(19, 2);
-ALTER table betreuungspensum_abweichung_aud add eingewoehnung_pauschale_id DECIMAL(19, 2);
+ALTER table betreuungspensum_abweichung add eingewoehnung_pauschale_id binary(16);
+ALTER table betreuungspensum_abweichung_aud add eingewoehnung_pauschale_id binary(16);
 
-ALTER table betreuungsmitteilung_pensum add eingewoehnung_pauschale_id DECIMAL(19, 2);
-ALTER table betreuungsmitteilung_pensum_aud add eingewoehnung_pauschale_id DECIMAL(19, 2);
+ALTER table betreuungsmitteilung_pensum add eingewoehnung_pauschale_id binary(16);
+ALTER table betreuungsmitteilung_pensum_aud add eingewoehnung_pauschale_id binary(16);
 
 alter table betreuungspensum
     add constraint FK_betreuungspensum_eingewoehnung_pauschale_id
