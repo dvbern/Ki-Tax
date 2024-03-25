@@ -43,8 +43,9 @@ public class EingewoehnungPauschale extends AbstractDateRangedEntity {
 			&& MathUtil.isSame(this.getPauschale(), otherEingewoehnung.getPauschale());
 	}
 
-	public void copyEingewohnungEntity(@Nonnull EingewoehnungPauschale target, @Nonnull AntragCopyType copyType) {
+	public EingewoehnungPauschale copyEingewohnungEntity(@Nonnull EingewoehnungPauschale target, @Nonnull AntragCopyType copyType) {
 		super.copyAbstractEntity(target, copyType);
 		target.setPauschale(this.getPauschale());
+		return target;
 	}
 }

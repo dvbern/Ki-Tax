@@ -1485,10 +1485,6 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     }
 
     public isEingewoehnungPauschaleEnabled(): boolean {
-        if (this.isGesuchReadonly()) {
-            return false;
-        }
-
         if (!this.isPensumEditable()) {
             return false;
         }

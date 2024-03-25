@@ -17,25 +17,19 @@
 
 package ch.dvbern.ebegu.util;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Locale;
-import java.util.Objects;
-import java.util.Set;
-import java.util.stream.Collectors;
-
-import javax.annotation.Nonnull;
-
-import ch.dvbern.ebegu.entities.Benutzer;
-import ch.dvbern.ebegu.entities.Betreuung;
-import ch.dvbern.ebegu.entities.Betreuungsmitteilung;
-import ch.dvbern.ebegu.entities.BetreuungsmitteilungPensum;
-import ch.dvbern.ebegu.entities.Mandant;
+import ch.dvbern.ebegu.entities.*;
 import ch.dvbern.ebegu.enums.BetreuungspensumAnzeigeTyp;
 import ch.dvbern.ebegu.enums.MitteilungStatus;
 import ch.dvbern.ebegu.enums.MitteilungTeilnehmerTyp;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.*;
+import java.util.stream.Collectors;
+
+import static ch.dvbern.ebegu.util.Constants.DATE_FORMATTER;
 
 public final class MitteilungUtil {
 
@@ -93,8 +87,8 @@ public final class MitteilungUtil {
 		@Nonnull BetreuungspensumAnzeigeTyp betreuungspensumAnzeigeTyp,
 		@Nonnull BigDecimal multiplier
 	) {
-		String datumAb = Constants.DATE_FORMATTER.format(pensumMitteilung.getGueltigkeit().getGueltigAb());
-		String datumBis = Constants.DATE_FORMATTER.format(pensumMitteilung.getGueltigkeit().getGueltigBis());
+		String datumAb = DATE_FORMATTER.format(pensumMitteilung.getGueltigkeit().getGueltigAb());
+		String datumBis = DATE_FORMATTER.format(pensumMitteilung.getGueltigkeit().getGueltigBis());
 		Mandant mandant = Objects.requireNonNull(pensumMitteilung.getBetreuungsmitteilung().getDossier().getFall().getMandant());
 
 		BigDecimal monatlicheBetreuungskosten = pensumMitteilung.getMonatlicheBetreuungskosten();
@@ -124,7 +118,8 @@ public final class MitteilungUtil {
 				hauptmahlzeiten,
 				nebemahlzeiten,
 				tarifHaupt,
-				tarifNeben);
+				tarifNeben)
+				+ createEingewoehnungPauschale(locale, mandant, pensumMitteilung.getEingewoehnungPauschale());
 		}
 		return ServerMessageUtil.getMessage(
 			getMutationsmeldungTranslationKey(betreuungspensumAnzeigeTyp),
@@ -134,7 +129,30 @@ public final class MitteilungUtil {
 			datumAb,
 			datumBis,
 			multipliedPensum,
-			monatlicheBetreuungskosten);
+			monatlicheBetreuungskosten)
+			+ createEingewoehnungPauschale(locale, mandant, pensumMitteilung.getEingewoehnungPauschale());
+	}
+
+	private static String createEingewoehnungPauschale(
+		Locale locale,
+		Mandant mandant,
+		@Nullable EingewoehnungPauschale eingewoehnungPauschale
+	) {
+		if (eingewoehnungPauschale == null) {
+			return "";
+		}
+
+		BigDecimal pauschale = eingewoehnungPauschale.getPauschale();
+		String eingewoehnungDatumAb = DATE_FORMATTER.format(eingewoehnungPauschale.getGueltigkeit().getGueltigAb());
+		String eingewoehnungDatumBis = DATE_FORMATTER.format(eingewoehnungPauschale.getGueltigkeit().getGueltigBis());
+
+		return ServerMessageUtil.getMessage(
+			"mutationsmeldung_message_eingewoehnung_pauschale",
+			locale,
+			mandant,
+			eingewoehnungDatumAb,
+			eingewoehnungDatumBis,
+			pauschale);
 	}
 
 	@Nonnull
