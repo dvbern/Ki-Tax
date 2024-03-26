@@ -32,7 +32,7 @@
               #form="ngForm"
 			  novalidate>
             <fieldset [disabled]="isFinSitReadonly()">
-                <div class="row" *ngIf="showInfomaFields()">
+                <div class="row" *ngIf="showZahlungsinformationen()">
                     <div class="col-md-12 margin-bottom-20">
                         <h3 translate class="uppercase ebegu-h1">ZAHLUNGSINFORMATIONEN</h3>
                         <div class="margin-top-10">
@@ -43,7 +43,7 @@
                         </div>
                     </div>
                     <div class="col-md-12">
-                        <dv-infoma-fields [model]="model"></dv-infoma-fields>
+                        <dv-zahlungsinformationen-fields [model]="model" [infomaAktiv]="showInfomaFields()"></dv-zahlungsinformationen-fields>
                         <mat-divider class="margin-bottom-50"></mat-divider>
                     </div>
                 </div>

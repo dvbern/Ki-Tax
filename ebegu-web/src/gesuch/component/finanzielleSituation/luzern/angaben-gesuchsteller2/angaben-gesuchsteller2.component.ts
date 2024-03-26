@@ -15,10 +15,10 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {ChangeDetectionStrategy, Component, ViewChild} from '@angular/core';
-import {NgForm} from '@angular/forms';
+import {ChangeDetectionStrategy, Component} from '@angular/core';
 import {TranslateService} from '@ngx-translate/core';
 import {IPromise} from 'angular';
+import {ApplicationPropertyRS} from '../../../../../app/core/rest-services/applicationPropertyRS.rest';
 import {AuthServiceRS} from '../../../../../authentication/service/AuthServiceRS.rest';
 import {TSFinanzielleSituationSubStepName} from '../../../../../models/enums/TSFinanzielleSituationSubStepName';
 import {TSFinanzielleSituationContainer} from '../../../../../models/TSFinanzielleSituationContainer';
@@ -40,9 +40,10 @@ export class AngabenGesuchsteller2Component extends AbstractFinSitLuzernView {
         protected wizardStepManager: WizardStepManager,
         protected finSitLuService: FinanzielleSituationLuzernService,
         protected authServiceRS: AuthServiceRS,
-        protected readonly translate: TranslateService
+        protected readonly translate: TranslateService,
+        protected readonly applicationPropertyRS: ApplicationPropertyRS
     ) {
-        super(gesuchModelManager, wizardStepManager, 2, finSitLuService, authServiceRS, translate);
+        super(gesuchModelManager, wizardStepManager, 2, finSitLuService, authServiceRS, translate, applicationPropertyRS);
     }
 
     public isGemeinsam(): boolean {
