@@ -15,21 +15,27 @@
 
 package ch.dvbern.ebegu.rules;
 
-import java.math.BigDecimal;
-import java.util.List;
-
 import ch.dvbern.ebegu.entities.Betreuung;
+import ch.dvbern.ebegu.entities.EingewoehnungPauschale;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
+import ch.dvbern.ebegu.enums.MsgKey;
 import ch.dvbern.ebegu.rules.initalizer.RestanspruchInitializer;
 import ch.dvbern.ebegu.test.TestDataUtil;
 import ch.dvbern.ebegu.util.MathUtil;
+import org.hamcrest.Matchers;
 import org.junit.Assert;
 import org.junit.Test;
+
+import java.math.BigDecimal;
+import java.util.List;
 
 import static ch.dvbern.ebegu.rules.EbeguRuleTestsHelper.calculate;
 import static ch.dvbern.ebegu.rules.EbeguRuleTestsHelper.calculateWithRemainingRestanspruch;
 import static ch.dvbern.ebegu.util.Constants.ZUSCHLAG_ERWERBSPENSUM_FUER_TESTS;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.notNullValue;
 
 /**
  * Tests für Betreuungspensum-Regel
@@ -176,5 +182,47 @@ public class BetreuungspensumRuleTest {
 		Assert.assertEquals(BigDecimal.valueOf(800), result.get(0).getBgCalculationInputAsiv().getMonatlicheBetreuungskosten());
 		result = EbeguRuleTestsHelper.runSingleAbschlussRule(restanspruchInitializer, betreuung, result);
 		Assert.assertEquals(0, result.get(0).getBgCalculationInputAsiv().getAnspruchspensumRest());
+	}
+
+	@Test
+	public void betreuungspensum_ohneEingewoehnungPaschale_hasNoEingewoehnungMessageAndNoPauschaleSet() {
+		Betreuung betreuung = EbeguRuleTestsHelper.createBetreuungWithPensum(TestDataUtil.START_PERIODE, TestDataUtil.ENDE_PERIODE, BetreuungsangebotTyp.KITA, 80,  BigDecimal.valueOf(800));
+		assertThat(betreuung.getKind().getGesuch().getGesuchsteller1(), notNullValue());
+		betreuung.getKind().getGesuch().getGesuchsteller1().addErwerbspensumContainer(TestDataUtil.createErwerbspensum(TestDataUtil.START_PERIODE, TestDataUtil.ENDE_PERIODE, 60));
+
+		assertThat((betreuung.getBetreuungspensumContainers().size()), Matchers.is(1));
+		//explizit im Test keine Eingewöhnungspauschale setzten --> Test ist immer korrekt auch wenn die Testdaten mal ändern sollten
+		betreuung.getBetreuungspensumContainers().forEach(pensum -> {
+			pensum.getBetreuungspensumJA().setEingewoehnungPauschale(null);
+		});
+
+		List<VerfuegungZeitabschnitt> result = calculate(betreuung);
+
+		assertThat(result, notNullValue());
+		assertThat(result.size(), Matchers.is(1));
+		assertThat(result.get(0).getBgCalculationInputAsiv().getEingewoehnungPauschale(), is(BigDecimal.ZERO));
+		assertThat(result.get(0).getBemerkungenDTOList().containsMsgKey(MsgKey.EINGEWOEHUNG_PASCHALE), is(false));
+	}
+
+	@Test
+	public void betreuungspensum_mitEingewoehnungPaschale_hasEingewoehnungMessageAndPauschaleSet() {
+		BigDecimal eingewoehnungPauschale = BigDecimal.valueOf(500);
+
+		Betreuung betreuung = EbeguRuleTestsHelper.createBetreuungWithPensum(TestDataUtil.START_PERIODE, TestDataUtil.ENDE_PERIODE, BetreuungsangebotTyp.KITA, 80,  BigDecimal.valueOf(800));
+		assertThat(betreuung.getKind().getGesuch().getGesuchsteller1(), notNullValue());
+		betreuung.getKind().getGesuch().getGesuchsteller1().addErwerbspensumContainer(TestDataUtil.createErwerbspensum(TestDataUtil.START_PERIODE, TestDataUtil.ENDE_PERIODE, 60));
+
+		assertThat((betreuung.getBetreuungspensumContainers().size()), Matchers.is(1));
+		betreuung.getBetreuungspensumContainers().forEach(pensum -> {
+			pensum.getBetreuungspensumJA().setEingewoehnungPauschale(new EingewoehnungPauschale());
+			pensum.getBetreuungspensumJA().getEingewoehnungPauschale().setPauschale(eingewoehnungPauschale);
+		});
+
+		List<VerfuegungZeitabschnitt> result = calculate(betreuung);
+
+		assertThat(result, notNullValue());
+		assertThat(result.size(), Matchers.is(1));
+		assertThat(result.get(0).getBgCalculationInputAsiv().getEingewoehnungPauschale(), Matchers.is(eingewoehnungPauschale));
+		assertThat(result.get(0).getBemerkungenDTOList().containsMsgKey(MsgKey.EINGEWOEHUNG_PASCHALE), is(true));
 	}
 }
