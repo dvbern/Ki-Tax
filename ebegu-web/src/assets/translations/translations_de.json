@@ -3205,6 +3205,6 @@
     "GESUCH_BEENDEN_BEI_TAUSCH_GS2": "Antrag beenden, wenn der Gesuchsteller 2 innerhalb der Periode ändert",
     "WARNUNG_GS2_AUSFUELLEN": "Bitte erfassen Sie zuerst die Daten von Antragssteller/in 2 in der Rubrik Antragsstellende.",
     "SCHULERGAENZENDE_BETREUUNGEN": "Schulergänzende Betreuungen aktiviert",
-    "SCHULERGAENZENDE_BETREUUNG_FRAGE": "Findet die Betreuung während der Schulfreienzeit (Ferien) statt",
+    "SCHULERGAENZENDE_BETREUUNG_FRAGE": "Findet die Betreuung während der schulfreien Zeit (Ferien) statt?",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }
