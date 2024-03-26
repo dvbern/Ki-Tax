@@ -31,7 +31,6 @@ import {GesuchModelManager} from '../../../../service/gesuchModelManager';
 @Component({
     selector: 'dv-zahlungsinformationen-fields',
     templateUrl: './zahlungsinformationen-fields.component.html',
-    styleUrls: ['./zahlungsinformationen-fields.component.less'],
     changeDetection: ChangeDetectionStrategy.OnPush,
     viewProviders: [{provide: ControlContainer, useExisting: NgForm}]
 })
