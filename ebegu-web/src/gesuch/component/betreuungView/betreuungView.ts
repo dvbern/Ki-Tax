@@ -180,8 +180,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     private angebotMittagstisch: boolean = false;
     private isLuzern: boolean;
     private sprachfoerderungBestaetigenAktiviert: boolean;
-
-    private schulergaenzendeBetreuung: boolean = false;
+    private schulergaenzendeBetreuungAktiv: boolean = false;
     public readonly demoFeature = TSDemoFeature.FACHSTELLEN_UEBERGANGSLOESUNG;
 
     public constructor(
@@ -365,7 +364,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
             response.filter(r => r.key === TSEinstellungKey.SCHULERGAENZENDE_BETREUUNGEN)
                 .forEach(value => {
                     if (EbeguUtil.isNotNullAndTrue(value.getValueAsBoolean())) {
-                        this.schulergaenzendeBetreuung = true;
+                        this.schulergaenzendeBetreuungAktiv = true;
                     }
                 });
         }, error => LOG.error(error));
@@ -1103,6 +1102,13 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         }
 
         return this.enableFieldsEditedByGemeinde();
+    }
+
+    public isSchulergaezendeBetreuungEnabled(): boolean {
+        if (this.authServiceRS.isOneOfRoles(TSRoleUtil.getGesuchstellerOnlyRoles())) {
+            return false;
+        }
+        return this.isPensumEditable();
     }
 
     public resetAnspruchFachstelleWennPensumUnterschritten() {
@@ -1940,7 +1946,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     }
 
     public showSchulergaezendeBetreuungFrage(): boolean {
-        return this.schulergaenzendeBetreuung && this.kindModel.kindJA.einschulungTyp !== TSEinschulungTyp.VORSCHULALTER;
+        return this.schulergaenzendeBetreuungAktiv && this.kindModel.kindJA.einschulungTyp !== TSEinschulungTyp.VORSCHULALTER;
     }
 
 }
