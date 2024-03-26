@@ -1,4 +1,5 @@
 import {ChangeDetectionStrategy, Component} from '@angular/core';
+import {TranslateService} from '@ngx-translate/core';
 import {EinstellungRS} from '../../../../admin/service/einstellungRS.rest';
 import {ErrorService} from '../../../../app/core/errors/service/ErrorService';
 import {LogFactory} from '../../../../app/core/logging/LogFactory';
@@ -26,7 +27,8 @@ export class FamiliensituationSchwyzComponent extends AbstractFamiliensitutaionV
         protected readonly wizardStepManager: WizardStepManager,
         protected readonly familiensituationRS: FamiliensituationRS,
         protected readonly authService: AuthServiceRS,
-        private readonly einstellungRS: EinstellungRS
+        private readonly einstellungRS: EinstellungRS,
+        private readonly translate: TranslateService
     ) {
         super(gesuchModelManager, errorService, wizardStepManager, familiensituationRS, authService);
         this.getFamiliensituation().familienstatus = TSFamilienstatus.SCHWYZ;
@@ -49,4 +51,11 @@ export class FamiliensituationSchwyzComponent extends AbstractFamiliensitutaionV
     }
 
     protected readonly TSGesuchstellerKardinalitaet = TSGesuchstellerKardinalitaet;
+
+    public getBisherText(): string {
+        return this.translate.instant(
+            this.getFamiliensituationGS()?.gesuchstellerKardinalitaet === TSGesuchstellerKardinalitaet.ALLEINE ?
+                'LABEL_NEIN' :
+                'LABEL_JA');
+    }
 }

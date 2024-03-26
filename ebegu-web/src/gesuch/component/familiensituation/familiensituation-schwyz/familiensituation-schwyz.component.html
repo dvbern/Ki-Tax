@@ -16,7 +16,6 @@
         <div class="col-md-12">
 
             <form role="form" name="form" class="" novalidate unsaved-warning-form>
-                <fieldset>
 
                     <!--Aenderung per-->
                     <div class="row" *ngIf="isMutation()">
@@ -68,14 +67,12 @@
                                 <dv-error-messages *ngIf="savedClicked || gesuchstellerKardinalitaet.touched" [inputId]="'gesuchstellerKardinalitaet'"
                                                    class="error"></dv-error-messages>
                                 <dv-bisher-x [showBisher]="showBisher()"
+                                             [specificBisherText]="getBisherText()"
                                              [deklaration]="getFamiliensituationGS()?.gesuchstellerKardinalitaet"
                                              [korrektur]="getFamiliensituation()?.gesuchstellerKardinalitaet"></dv-bisher-x>
                             </div>
                         </div>
                     </div>
-
-
-                </fieldset>
 
                 <div class="row">
                     <div class="col-md-12">
