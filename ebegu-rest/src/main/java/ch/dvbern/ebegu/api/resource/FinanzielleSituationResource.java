@@ -34,7 +34,6 @@ import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
-import javax.validation.Validator;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -83,7 +82,6 @@ import ch.dvbern.ebegu.services.FinanzielleSituationService;
 import ch.dvbern.ebegu.services.GesuchService;
 import ch.dvbern.ebegu.services.GesuchstellerService;
 import ch.dvbern.ebegu.util.Constants;
-import ch.dvbern.ebegu.validationgroups.CheckFinstCompleteValidationGroup;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
@@ -222,7 +220,6 @@ public class FinanzielleSituationResource {
 		if (familiensituationJA.isAbweichendeZahlungsadresse()) {
 			requireNonNull(familiensituationJA.getZahlungsadresse());
 		}
-
 
 		Gesuch gesuch = gesuchService
 			.findGesuch(gesuchId)

@@ -2807,43 +2807,6 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 		return Optional.ofNullable(persistence.getCriteriaSingleResult(query));
 	}
 
-	@Override
-	public Optional<Gesuch> findGesuchForFinSit(@Nonnull String finSitId, EntityManager entityManager) {
-		final CriteriaBuilder cb = entityManager.getCriteriaBuilder();
-		final CriteriaQuery<Gesuch> query = cb.createQuery(Gesuch.class);
-		Root<Gesuch> root = query.from(Gesuch.class);
-
-		Join<Gesuch, GesuchstellerContainer> gesuchsteller1 = root.join(Gesuch_.gesuchsteller1, JoinType.LEFT);
-		Join<GesuchstellerContainer, FinanzielleSituationContainer> finSit1Cont =
-			gesuchsteller1.join(GesuchstellerContainer_.finanzielleSituationContainer, JoinType.LEFT);
-		Join<FinanzielleSituationContainer, FinanzielleSituation> finSit1Ja =
-			finSit1Cont.join(FinanzielleSituationContainer_.finanzielleSituationJA, JoinType.LEFT);
-
-		Predicate predicateGS1 = cb.equal(finSit1Ja.get(AbstractEntity_.id),
-			finSitId
-		);
-
-		Join<Gesuch, GesuchstellerContainer> gesuchsteller2 = root.join(Gesuch_.gesuchsteller2, JoinType.LEFT);
-		Join<GesuchstellerContainer, FinanzielleSituationContainer> finSit2Cont =
-			gesuchsteller2.join(GesuchstellerContainer_.finanzielleSituationContainer, JoinType.LEFT);
-		Join<FinanzielleSituationContainer, FinanzielleSituation> finSit2Ja =
-			finSit2Cont.join(FinanzielleSituationContainer_.finanzielleSituationJA, JoinType.LEFT);
-
-		Predicate predicateGS2 = cb.equal(finSit2Ja.get(AbstractEntity_.id),
-			finSitId
-		);
-
-		query.where(cb.or(predicateGS1, predicateGS2));
-		final List<Gesuch> resultList = entityManager.createQuery(query).getResultList();
-		if (resultList.isEmpty()) {
-			throw new EbeguEntityNotFoundException("findGesuchForFinSit", finSitId);
-		}
-		if (resultList.size() > 1) {
-			throw new EbeguRuntimeException("findGesuchForFinSit", "Too many results found");
-		}
-		return Optional.ofNullable(resultList.get(0));
-	}
-
 }
 
 
