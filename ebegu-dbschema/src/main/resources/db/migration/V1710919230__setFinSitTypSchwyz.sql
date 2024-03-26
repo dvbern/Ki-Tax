@@ -20,4 +20,4 @@ SET @mandant_schwyz_id = (SELECT id FROM mandant WHERE mandant_identifier = 'SCH
 UPDATE einstellung
 SET value = 'SCHWYZ'
 WHERE gesuchsperiode_id IN (SELECT id FROM gesuchsperiode WHERE mandant_id = @mandant_schwyz_id) AND
-	  ebegu.einstellung.einstellung_key = 'FINANZIELLE_SITUATION_TYP';
+	  einstellung_key = 'FINANZIELLE_SITUATION_TYP';
