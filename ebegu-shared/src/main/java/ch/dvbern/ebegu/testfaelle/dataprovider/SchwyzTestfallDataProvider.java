@@ -46,6 +46,6 @@ public class SchwyzTestfallDataProvider extends AbstractTestfallDataProvider {
 
 	@Override
 	public FinanzielleSituationTyp getFinanzielleSituationTyp() {
-		return FinanzielleSituationTyp.SOLOTHURN;
+		return FinanzielleSituationTyp.SCHWYZ;
 	}
 }
