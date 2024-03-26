@@ -18,8 +18,10 @@
 package ch.dvbern.ebegu.rechner;
 
 import ch.dvbern.ebegu.dto.BGCalculationInput;
+import ch.dvbern.ebegu.dto.VerfuegungsBemerkungDTO;
 import ch.dvbern.ebegu.entities.BGCalculationResult;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
+import ch.dvbern.ebegu.enums.MsgKey;
 import ch.dvbern.ebegu.enums.PensumUnits;
 import ch.dvbern.ebegu.rechner.rules.RechnerRule;
 import ch.dvbern.ebegu.util.DateUtil;
@@ -117,7 +119,7 @@ public abstract class AbstractLuzernRechner extends AbstractRechner {
 		BigDecimal gutscheinProMonat = calculateGutscheinProZeitabschnitt(gutschein);
 		BigDecimal vollkostenProMonat = calculateVollkostenProZeitabschnitt(vollkostenGekuerzt);
 
-		BigDecimal gutscheinEingewoehnung = calculateGutscheinEingewoehnug(gutscheinProMonat, vollkostenProMonat);
+		BigDecimal gutscheinEingewoehnung = handleEingewoehnug(gutscheinProMonat, vollkostenProMonat, verfuegungZeitabschnitt);
 		BigDecimal verguenstigung = EXACT.add(gutscheinEingewoehnung, gutscheinProMonat);
 
 		BGCalculationResult result = new BGCalculationResult();
@@ -142,7 +144,11 @@ public abstract class AbstractLuzernRechner extends AbstractRechner {
 		verfuegungZeitabschnitt.setBgCalculationResultGemeinde(result);
 	}
 
-	private BigDecimal calculateGutscheinEingewoehnug(BigDecimal gutscheinProMonat, BigDecimal vollkostenProMonat) {
+	private BigDecimal handleEingewoehnug(
+		BigDecimal gutscheinProMonat,
+		BigDecimal vollkostenProMonat,
+		VerfuegungZeitabschnitt zeitabschnitt
+	) {
 		if (input.getEingewoehnungPauschale().compareTo(BigDecimal.ZERO) <= 0) {
 			return BigDecimal.ZERO;
 		}
@@ -151,9 +157,31 @@ public abstract class AbstractLuzernRechner extends AbstractRechner {
 			return BigDecimal.ZERO;
 		}
 
-		return EXACT.divide(
+		BigDecimal gutscheinEingewoehung = calculateGutscheinEingewoehnung(gutscheinProMonat, vollkostenProMonat);
+		setGutscheinEingewoehnungToBemerkung(gutscheinEingewoehung, zeitabschnitt);
+		return gutscheinEingewoehung;
+	}
+
+	private BigDecimal calculateGutscheinEingewoehnung(BigDecimal gutscheinProMonat, BigDecimal vollkostenProMonat) {
+		BigDecimal gutscheinEingewoehung =  EXACT.divide(
 			EXACT.multiply(input.getEingewoehnungPauschale(), gutscheinProMonat),
 			vollkostenProMonat);
+		return MathUtil.roundToFrankenRappen(gutscheinEingewoehung);
+	}
+
+	private void setGutscheinEingewoehnungToBemerkung(
+		BigDecimal gutscheinEingewoehnung,
+		VerfuegungZeitabschnitt zeitabschnitt
+	) {
+		VerfuegungsBemerkungDTO eingewoehungBemerkung = zeitabschnitt
+			.getBemerkungenDTOList()
+			.findFirstBemerkungByMsgKey(MsgKey.EINGEWOEHUNG_PASCHALE);
+
+		if (eingewoehungBemerkung == null) {
+			return;
+		}
+
+		eingewoehungBemerkung.setArgs(new Object[]{gutscheinEingewoehnung});
 	}
 
 	protected BigDecimal calculateGutscheinGekuerzt(BigDecimal differenzVollkostenUndGutschein, BigDecimal gutscheinVorZuschlagUndSelbstbehalt) {

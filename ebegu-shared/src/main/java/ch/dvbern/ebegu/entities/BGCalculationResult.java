@@ -286,9 +286,6 @@ public class BGCalculationResult extends AbstractEntity {
 		this.massgebendesEinkommenVorAbzugFamgr = roundToFrankenRappen(massgebendesEinkommenVorAbzugFamgr);
 
 		this.verguenstigungMahlzeitenTotal = roundUpToFranken(verguenstigungMahlzeitenTotal);
-		if (this.gutscheinEingewoehnung != null) {
-			this.gutscheinEingewoehnung = MathUtil.toTwoKommastelle(this.gutscheinEingewoehnung);
-		}
 		return this;
 	}
 
