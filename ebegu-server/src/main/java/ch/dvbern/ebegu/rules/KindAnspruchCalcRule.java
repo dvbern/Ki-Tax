@@ -44,8 +44,8 @@ public class KindAnspruchCalcRule extends AbstractCalcRule {
 	@Override
 	void executeRule(@Nonnull AbstractPlatz platz, @Nonnull BGCalculationInput inputData) {
 		if (kinderabzugTyp.equals(KinderabzugTyp.SCHWYZ) &&
-			(platz.getKind().getKindJA().getLebtKindAlternierend() == null ||
-				platz.getKind().getKindJA().getLebtKindAlternierend() == false)) {
+			(Boolean.FALSE.equals(platz.getKind().getKindJA().getUnterhaltspflichtig()) ||
+				Boolean.FALSE.equals(platz.getKind().getKindJA().getLebtKindAlternierend()))) {
 			inputData.setAnspruchZeroAndSaveRestanspruch();
 			inputData.addBemerkung(MsgKey.KEIN_ANSPRUCH_NICHT_BEITRAGSBERECHTIGT, getLocale());
 		}

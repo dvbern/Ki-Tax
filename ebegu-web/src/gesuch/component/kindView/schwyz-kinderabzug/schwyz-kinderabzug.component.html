@@ -1,14 +1,14 @@
 <form role="form" class="gesuch">
-    <ng-container *ngIf="getModel()">
+    <ng-container *ngIf="this.kindContainer?.kindJA">
         <div class="row" *ngIf="wirdKindExternBetreut()">
             <div class="col-xs-12">
                 <dv-radio-container-x>
                     <dv-radio-input-x
                         data-test="container.obhut-alternierend-ausueben"
                         [label]="'KINDERABZUG_UNTERHALTSPFLICHTIG'"
-                        [(model)]="getModel().unterhaltspflichtig"
+                        [(model)]="kindContainer.kindJA.unterhaltspflichtig"
                         (modelChange)="change()"
-                        [dvBisherValue]="getModelGS()?.unterhaltspflichtig"
+                        [dvBisherValue]="kindContainer.kindGS?.unterhaltspflichtig"
                         [required]="true"
                     ></dv-radio-input-x>
                 </dv-radio-container-x>
@@ -20,9 +20,9 @@
                     <dv-radio-input-x
                         data-test="container.ergaenzende-betreuung-beide"
                         [label]="'WOHNT_KIND_HAUSHALT'"
-                        [(model)]="getModel().lebtKindAlternierend"
+                        [(model)]="kindContainer.kindJA.lebtKindAlternierend"
                         (modelChange)="change()"
-                        [dvBisherValue]="getModelGS()?.lebtKindAlternierend"
+                        [dvBisherValue]="kindContainer.kindGS?.lebtKindAlternierend"
                         [required]="true"
                     ></dv-radio-input-x>
                 </dv-radio-container-x>
@@ -34,9 +34,9 @@
                     <dv-radio-input-x
                         data-test="container.ergaenzende-betreuung-beide"
                         [label]="'KIND_PARTNER_UNTERHALTSPFLICHTIG'"
-                        [(model)]="getModel().gemeinsamesGesuch"
+                        [(model)]="kindContainer.kindJA.gemeinsamesGesuch"
                         (modelChange)="change()"
-                        [dvBisherValue]="getModelGS()?.gemeinsamesGesuch"
+                        [dvBisherValue]="kindContainer.kindGS?.gemeinsamesGesuch"
                         [required]="true"
                     ></dv-radio-input-x>
                 </dv-radio-container-x>

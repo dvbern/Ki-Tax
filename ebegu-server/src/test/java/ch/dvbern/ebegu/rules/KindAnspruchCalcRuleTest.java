@@ -56,9 +56,6 @@ public class KindAnspruchCalcRuleTest {
 			BetreuungsangebotTyp.KITA,
 			60,
 			new BigDecimal(2000));
-		// default Beitragsberechtigt
-		betreuung.getKind().getKindJA().setUnterhaltspflichtig(true);
-		betreuung.getKind().getKindJA().setLebtKindAlternierend(true);
 		// erwerbspensum fuer GS
 		final Gesuch gesuch = betreuung.extractGesuch();
 		TestDataUtil.createDefaultAdressenForGS(gesuch, false);
@@ -72,6 +69,8 @@ public class KindAnspruchCalcRuleTest {
 
 	@Test
 	public void testKindBeitragsberechtigt() {
+		betreuung.getKind().getKindJA().setUnterhaltspflichtig(true);
+		betreuung.getKind().getKindJA().setLebtKindAlternierend(true);
 		List<VerfuegungZeitabschnitt> result = EbeguRuleTestsHelper.calculate(betreuung, einstellungen);
 		Assert.assertEquals(1, result.size());
 		Assert.assertEquals(100, result.get(0).getAnspruchberechtigtesPensum());
@@ -80,6 +79,7 @@ public class KindAnspruchCalcRuleTest {
 
 	@Test
 	public void testKindNichtBeitragsberechtigtKindNichtAlternierend() {
+		betreuung.getKind().getKindJA().setUnterhaltspflichtig(true);
 		betreuung.getKind().getKindJA().setLebtKindAlternierend(false);
 		List<VerfuegungZeitabschnitt> result = EbeguRuleTestsHelper.calculate(betreuung, einstellungen);
 		Assert.assertEquals(1, result.size());

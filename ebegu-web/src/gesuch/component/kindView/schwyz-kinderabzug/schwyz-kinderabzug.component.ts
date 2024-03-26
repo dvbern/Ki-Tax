@@ -24,7 +24,6 @@ const LOG = LogFactory.createLog('SchwyzKinderabzugComponent');
 @Component({
     selector: 'dv-schwyz-kinderabzug',
     templateUrl: './schwyz-kinderabzug.component.html',
-    styleUrls: ['./schwyz-kinderabzug.component.less'],
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SchwyzKinderabzugComponent implements OnInit, AfterViewInit, OnDestroy {
@@ -66,13 +65,6 @@ export class SchwyzKinderabzugComponent implements OnInit, AfterViewInit, OnDest
         this.unsubscribe$.next();
     }
 
-    public getModel(): TSKind | undefined {
-        if (this.kindContainer?.kindJA) {
-            return this.kindContainer.kindJA;
-        }
-        return undefined;
-    }
-
     public getModelGS(): TSKind | undefined {
         if (this.kindContainer?.kindGS) {
             return this.kindContainer.kindGS;
@@ -81,32 +73,33 @@ export class SchwyzKinderabzugComponent implements OnInit, AfterViewInit, OnDest
     }
 
     public wirdKindExternBetreut(): boolean {
-        return EbeguUtil.isNotNullAndTrue(this.getModel().familienErgaenzendeBetreuung);
+        return EbeguUtil.isNotNullAndTrue(this.kindContainer?.kindJA.familienErgaenzendeBetreuung);
     }
 
     public change(): void {
         this.deleteValuesOfHiddenQuestions();
-        this.cd.markForCheck();
     }
 
     private deleteValuesOfHiddenQuestions(): void {
-        if (!this.wirdKindExternBetreut()) {
-            this.getModel().unterhaltspflichtig = undefined;
-        }
-        if (!this.lebtKindImHaushaltVisible()) {
-            this.getModel().lebtKindAlternierend = undefined;
-        }
-        if (!this.partnerUnterhaltspflichtigVisible()) {
-            this.getModel().gemeinsamesGesuch = undefined;
+        if (this.kindContainer && this.kindContainer.kindJA) {
+            if (!this.wirdKindExternBetreut()) {
+                this.kindContainer.kindJA.unterhaltspflichtig = undefined;
+            }
+            if (!this.lebtKindImHaushaltVisible()) {
+                this.kindContainer.kindJA.lebtKindAlternierend = undefined;
+            }
+            if (!this.partnerUnterhaltspflichtigVisible()) {
+                this.kindContainer.kindJA.gemeinsamesGesuch = undefined;
+            }
         }
     }
 
     public lebtKindImHaushaltVisible(): boolean {
-        return EbeguUtil.isNotNullAndTrue(this.getModel().unterhaltspflichtig);
+        return EbeguUtil.isNotNullAndTrue(this.kindContainer?.kindJA.unterhaltspflichtig);
     }
 
     public partnerUnterhaltspflichtigVisible(): boolean {
         return this.gesuchModelManager.getFamiliensituation().familienstatus !== TSFamilienstatus.ALLEINERZIEHEND &&
-            EbeguUtil.isNotNullAndTrue(this.getModel().lebtKindAlternierend);
+            EbeguUtil.isNotNullAndTrue(this.kindContainer?.kindJA.lebtKindAlternierend);
     }
 }
