@@ -51,6 +51,7 @@ public class Betreuungspensum extends AbstractMahlzeitenPensum implements Compar
 	public Betreuungspensum() {
 	}
 
+	@SuppressWarnings("PMD.ConstructorCallsOverridableMethod")
 	public Betreuungspensum(BetreuungsmitteilungPensum betPensumMitteilung) {
 		this.setGueltigkeit(new DateRange(betPensumMitteilung.getGueltigkeit()));
 		this.setPensum(betPensumMitteilung.getPensum());
