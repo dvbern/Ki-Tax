@@ -647,6 +647,7 @@ describe('EbeguRestUtil', () => {
         tsBetreuungspensum.tarifProHauptmahlzeit = tarifProHauptmahlzeit;
         tsBetreuungspensum.tarifProNebenmahlzeit = tarifProNebenmahlzeit;
         tsBetreuungspensum.gueltigkeit = gueltigkeit;
+        tsBetreuungspensum.betreuungInFerienzeit = false;
         return tsBetreuungspensum;
     }
 
