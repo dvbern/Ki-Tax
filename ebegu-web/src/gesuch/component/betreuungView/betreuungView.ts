@@ -42,6 +42,7 @@ import {
 } from '../../../models/enums/TSBetreuungsangebotTyp';
 import {TSBetreuungsstatus} from '../../../models/enums/TSBetreuungsstatus';
 import {stringEingewoehnungTyp, TSEingewoehnungTyp} from '../../../models/enums/TSEingewoehnungTyp';
+import {TSEinschulungTyp} from '../../../models/enums/TSEinschulungTyp';
 import {TSEinstellungKey} from '../../../models/enums/TSEinstellungKey';
 import {TSFachstellenTyp} from '../../../models/enums/TSFachstellenTyp';
 import {TSInstitutionStatus} from '../../../models/enums/TSInstitutionStatus';
@@ -1103,6 +1104,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
 
         return this.enableFieldsEditedByGemeinde();
     }
+
     public resetAnspruchFachstelleWennPensumUnterschritten() {
         const unterschritten = this.getErweiterteBetreuungJA()?.anspruchFachstelleWennPensumUnterschritten;
         if (!EbeguUtil.isNullOrUndefined(unterschritten) && unterschritten) {
@@ -1845,7 +1847,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         // 100% = 20.5 Mahlzeiten => 1% = 0.205 stunden
         const mittagstischTageProWoche: number = 5;
         const mittagstischWochenProMonat: number = 4.1;
-        this.multiplierMittagstisch = mittagstischTageProWoche * mittagstischWochenProMonat  / 100;
+        this.multiplierMittagstisch = mittagstischTageProWoche * mittagstischWochenProMonat / 100;
     }
 
     public showBetreuungsPensumInput(): boolean {
@@ -1932,12 +1934,13 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         if (!this.isBetreuungsangebotMittagstisch()) {
             return;
         }
-        this.getBetreuungspensum(betreuungspensumIndex).betreuungspensumJA.recalculateMonatlicheMahlzeitenKosten(this.multiplierMittagstisch);
+        this.getBetreuungspensum(betreuungspensumIndex)
+            .betreuungspensumJA
+            .recalculateMonatlicheMahlzeitenKosten(this.multiplierMittagstisch);
     }
 
     public showSchulergaezendeBetreuungFrage(): boolean {
-        // TODO true if Einstellung aktiv und kind primarschule oder Sekundarstufe
-        return this.schulergaenzendeBetreuung;
+        return this.schulergaenzendeBetreuung && this.kindModel.kindJA.einschulungTyp !== TSEinschulungTyp.VORSCHULALTER;
     }
 
 }
