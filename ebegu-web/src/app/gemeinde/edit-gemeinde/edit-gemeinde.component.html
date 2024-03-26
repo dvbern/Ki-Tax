@@ -90,10 +90,12 @@
         <!-- Buttons -->
         <div class="dv-footer">
             <dv-loading-button type="button" *ngIf="!editMode && isGemeindeEditable()"
+                               data-test="container.edit"
                                (buttonClick)="setEditMode()">
                 <span translate>GEMEINDE_EDIT</span>
             </dv-loading-button>
             <dv-loading-button *ngIf="editMode"
+                               data-test="container.save"
                                [type]="'submit'">
                 <span translate>GEMEINDE_SPEICHERN</span>
             </dv-loading-button>
