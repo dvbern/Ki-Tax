@@ -1,4 +1,12 @@
-import {Component, OnInit, ChangeDetectionStrategy, Input, Output, EventEmitter} from '@angular/core';
+import {
+    Component,
+    OnInit,
+    ChangeDetectionStrategy,
+    Input,
+    Output,
+    EventEmitter,
+} from '@angular/core';
+import {ControlContainer, NgForm} from '@angular/forms';
 import {ListResourceRS} from '../../app/core/service/listResourceRS.rest';
 import {TSAdresse} from '../../models/TSAdresse';
 import {TSZahlungsinformationen} from '../../models/TSZahlungsinformationen';
@@ -9,7 +17,8 @@ import {GesuchModelManager} from '../service/gesuchModelManager';
 @Component({
     selector: 'dv-auszahlungsdaten',
     templateUrl: './auszahlungsdaten.component.html',
-    changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.Default,
+    viewProviders: [{provide: ControlContainer, useExisting: NgForm}]
 })
 export class AuszahlungsdatenComponent implements OnInit {
 

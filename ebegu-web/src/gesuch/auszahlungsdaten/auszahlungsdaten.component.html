@@ -88,13 +88,14 @@
                         <dv-input-container class="form-group">
                             <label class="md-no-float required" for="adresseStrasse">{{'ADRESSE_STRASSE' | translate}}</label>
                             <input id="adresseStrasse" type="text" name="adresseStrasse"
+                                   #adresseStrasse="ngModel"
                                    [(ngModel)]="auszahlungsdaten.zahlungsadresse.strasse"
                                    dv-max-length class="form-control" required>
                             <dv-bisher-x
                                 [showBisher]="isKorrekturModusOrFreigegeben()"
                                 [deklaration]="auszahlungsdatenGS?.zahlungsadresse?.strasse"
                                 [korrektur]="auszahlungsdaten.zahlungsadresse.strasse"></dv-bisher-x>
-                            <dv-error-messages for="adresseForm.adresseStrasse.$error"
+                            <dv-error-messages [errorObject]="adresseStrasse.errors"
                                                class="error"></dv-error-messages>
                         </dv-input-container>
                     </div>
@@ -104,13 +105,14 @@
                                    for="adresseHausnummer">{{'ADRESSE_HAUSNUMMER' | translate}}</label>
                             <input id="adresseHausnummer" type="text"
                                    name="adresseHausnummer"
+                                   #adresseHausnummer="ngModel"
                                    [(ngModel)]="auszahlungsdaten.zahlungsadresse.hausnummer"
                                    dv-max-length class="form-control">
                             <dv-bisher-x
                                 [showBisher]="isKorrekturModusOrFreigegeben()"
                                 [deklaration]="auszahlungsdatenGS?.zahlungsadresse?.hausnummer"
                                 [korrektur]="auszahlungsdaten.zahlungsadresse.hausnummer"></dv-bisher-x>
-                            <dv-error-messages for="adresseForm.adresseHausnummer.$error"
+                            <dv-error-messages [errorObject]="adresseHausnummer.errors"
                                                class="error"></dv-error-messages>
                         </dv-input-container>
                     </div>
@@ -123,13 +125,14 @@
                                    for="adresseZusatzzeile">{{'ADRESSE_ZUSATZZEILE' | translate}}</label>
                             <input id="adresseZusatzzeile" type="text"
                                    name="adresseZusatzzeile"
+                                   #adresseZusatzzeile="ngModel"
                                    [(ngModel)]="auszahlungsdaten.zahlungsadresse.zusatzzeile"
                                    dv-max-length class="form-control">
                             <dv-bisher-x
                                 [showBisher]="isKorrekturModusOrFreigegeben()"
                                 [deklaration]="auszahlungsdatenGS?.zahlungsadresse?.zusatzzeile"
                                 [korrektur]="auszahlungsdaten.zahlungsadresse.zusatzzeile"></dv-bisher-x>
-                            <dv-error-messages for="adresseForm.adresseZusatzzeile.$error"
+                            <dv-error-messages [errorObject]="adresseZusatzzeile.errors"
                                                class="error"></dv-error-messages>
                         </dv-input-container>
                     </div>
@@ -143,12 +146,13 @@
                             </label>
                             <input id="adressePlz" type="text" name="adressePlz"
                                    [(ngModel)]="auszahlungsdaten.zahlungsadresse.plz"
+                                   #adressePlz="ngModel"
                                    dv-max-length class="form-control" required>
                             <dv-bisher-x
                                 [showBisher]="isKorrekturModusOrFreigegeben()"
                                 [deklaration]="auszahlungsdatenGS?.zahlungsadresse?.plz"
                                 [korrektur]="auszahlungsdaten.zahlungsadresse.plz"></dv-bisher-x>
-                            <dv-error-messages for="adresseForm.adressePlz.$error"
+                            <dv-error-messages [errorObject]="adressePlz.errors"
                                                class="error"></dv-error-messages>
                         </dv-input-container>
                     </div>
@@ -157,12 +161,13 @@
                             <label class="md-no-float required" for="adresseOrt">{{'ADRESSE_ORT' | translate}}</label>
                             <input id="adresseOrt" type="text" name="adresseOrt"
                                    [(ngModel)]="auszahlungsdaten.zahlungsadresse.ort"
+                                   #adresseOrt="ngModel"
                                    dv-max-length class="form-control" required>
                             <dv-bisher-x
                                 [showBisher]="isKorrekturModusOrFreigegeben()"
                                 [deklaration]="auszahlungsdatenGS?.zahlungsadresse?.ort"
                                 [korrektur]="auszahlungsdaten.zahlungsadresse.ort"></dv-bisher-x>
-                            <dv-error-messages for="adresseForm.adresseOrt.$error" class="error"></dv-error-messages>
+                            <dv-error-messages [errorObject]="adresseOrt.errors" class="error"></dv-error-messages>
                         </dv-input-container>
                     </div>
                 </div>
@@ -176,6 +181,7 @@
                             <div class="dv-select-style">
                                 <select name="adresseLand" id="adresseLand"
                                         [(ngModel)]="auszahlungsdaten.zahlungsadresse.land"
+                                        #adresseLand="ngModel"
                                         class="form-control"
                                         required>
                                     <option *ngFor="let land of laenderList" [value]="land.code">{{land.translationKey | translate}}</option>
@@ -184,7 +190,7 @@
                                     [showBisher]="isKorrekturModusOrFreigegeben()"
                                     [deklaration]="auszahlungsdatenGS?.zahlungsadresse?.land"
                                     [korrektur]="auszahlungsdaten.zahlungsadresse.land"></dv-bisher-x>
-                                <dv-error-messages for="adresseForm.adresseLand.$error"
+                                <dv-error-messages [errorObject]="adresseLand.errors"
                                                    class="error"></dv-error-messages>
                             </div>
                         </div>
