@@ -81,7 +81,7 @@ export class SchwyzKinderabzugComponent implements OnInit, AfterViewInit, OnDest
     }
 
     private deleteValuesOfHiddenQuestions(): void {
-        if (this.kindContainer && this.kindContainer.kindJA) {
+        if (this.kindContainer?.kindJA) {
             if (!this.wirdKindExternBetreut()) {
                 this.kindContainer.kindJA.unterhaltspflichtig = undefined;
             }

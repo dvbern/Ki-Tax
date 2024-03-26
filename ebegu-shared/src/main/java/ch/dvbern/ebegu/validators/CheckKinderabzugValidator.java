@@ -108,7 +108,7 @@ public class CheckKinderabzugValidator implements ConstraintValidator<CheckKinde
 
 	private boolean validateKindAbzugTypSchwyz(@Nonnull Kind kind) {
 		if (kind.getUnterhaltspflichtig() != null) {
-			if (kind.getUnterhaltspflichtig() == true) {
+			if (Boolean.TRUE.equals(kind.getUnterhaltspflichtig())) {
 				if (kind.getLebtKindAlternierend() == null) {
 					return false;
 				}

@@ -127,7 +127,7 @@ export class FkjvKinderabzugComponent implements OnInit, AfterViewInit, OnDestro
     }
 
     private deleteValuesOfHiddenQuestions(): void {
-        if (this.kindContainer && this.kindContainer.kindJA) {
+        if (this.kindContainer?.kindJA) {
             if (!this.pflegeEntschaedigungErhaltenVisible()) {
                 this.kindContainer.kindJA.pflegeEntschaedigungErhalten = undefined;
             }
