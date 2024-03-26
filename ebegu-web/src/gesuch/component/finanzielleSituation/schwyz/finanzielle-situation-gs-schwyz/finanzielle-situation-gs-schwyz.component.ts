@@ -61,10 +61,6 @@ export class FinanzielleSituationGsSchwyzComponent extends AbstractGesuchViewX<T
         return gs.gesuchstellerJA.getFullName();
     }
 
-    public getYearForDeklaration(): number {
-        return this.gesuchModelManager.getBasisjahr();
-    }
-
     public getSubStepName(): TSFinanzielleSituationSubStepName {
         return this.model.getGesuchstellerNumber() === 1 ?
             TSFinanzielleSituationSubStepName.SCHWYZ_GS1 :
