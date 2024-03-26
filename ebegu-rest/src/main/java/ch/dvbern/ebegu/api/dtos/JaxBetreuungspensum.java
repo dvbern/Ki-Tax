@@ -26,6 +26,8 @@ public class JaxBetreuungspensum extends JaxAbstractMahlzeitenPensumDTO {
 
 	private Boolean nichtEingetreten = false;
 
+	private Boolean betreuungInFerienzeit;
+
 	private static final long serialVersionUID = -8012537546244511785L;
 
 	public Boolean getNichtEingetreten() {
@@ -34,6 +36,14 @@ public class JaxBetreuungspensum extends JaxAbstractMahlzeitenPensumDTO {
 
 	public void setNichtEingetreten(Boolean nichtEingetreten) {
 		this.nichtEingetreten = nichtEingetreten;
+	}
+
+	public Boolean getBetreuungInFerienzeit() {
+		return betreuungInFerienzeit;
+	}
+
+	public void setBetreuungInFerienzeit(Boolean betreuungInFerienzeit) {
+		this.betreuungInFerienzeit = betreuungInFerienzeit;
 	}
 }
 

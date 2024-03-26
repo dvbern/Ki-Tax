@@ -179,6 +179,8 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     private angebotMittagstisch: boolean = false;
     private isLuzern: boolean;
     private sprachfoerderungBestaetigenAktiviert: boolean;
+
+    private schulergaenzendeBetreuung: boolean = false;
     public readonly demoFeature = TSDemoFeature.FACHSTELLEN_UEBERGANGSLOESUNG;
 
     public constructor(
@@ -358,6 +360,12 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
             response.filter(r => r.key === TSEinstellungKey.SPRACHFOERDERUNG_BESTAETIGEN)
                 .forEach(einstellung => {
                     this.sprachfoerderungBestaetigenAktiviert = einstellung.getValueAsBoolean();
+                });
+            response.filter(r => r.key === TSEinstellungKey.SCHULERGAENZENDE_BETREUUNGEN)
+                .forEach(value => {
+                    if (EbeguUtil.isNotNullAndTrue(value.getValueAsBoolean())) {
+                        this.schulergaenzendeBetreuung = true;
+                    }
                 });
         }, error => LOG.error(error));
 
@@ -1925,6 +1933,11 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
             return;
         }
         this.getBetreuungspensum(betreuungspensumIndex).betreuungspensumJA.recalculateMonatlicheMahlzeitenKosten(this.multiplierMittagstisch);
+    }
+
+    public showSchulergaezendeBetreuungFrage(): boolean {
+        // TODO true if Einstellung aktiv und kind primarschule oder Sekundarstufe
+        return this.schulergaenzendeBetreuung;
     }
 
 }

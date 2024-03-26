@@ -2749,6 +2749,7 @@ export class EbeguRestUtil {
                     0 :
                     betreuungspensum.tarifProNebenmahlzeit;
             restBetreuungspensum.unitForDisplay = betreuungspensum.unitForDisplay;
+            restBetreuungspensum.betreuungInFerienzeit = betreuungspensum.betreuungInFerienzeit;
         }
         return restBetreuungspensum;
     }
@@ -2762,6 +2763,7 @@ export class EbeguRestUtil {
         restBetreuungspensum.monatlicheNebenmahlzeiten = betreuungspensum.monatlicheNebenmahlzeiten;
         restBetreuungspensum.tarifProHauptmahlzeit = betreuungspensum.tarifProHauptmahlzeit;
         restBetreuungspensum.tarifProNebenmahlzeit = betreuungspensum.tarifProNebenmahlzeit;
+        restBetreuungspensum.betreuungInFerienzeit = betreuungspensum.betreuungInFerienzeit;
         return restBetreuungspensum;
     }
 
@@ -2952,6 +2954,7 @@ export class EbeguRestUtil {
             betreuungspensumTS.tarifProHauptmahlzeit = betreuungspensumFromServer.tarifProHauptmahlzeit;
             betreuungspensumTS.tarifProNebenmahlzeit = betreuungspensumFromServer.tarifProNebenmahlzeit;
             betreuungspensumTS.unitForDisplay = betreuungspensumFromServer.unitForDisplay;
+            betreuungspensumTS.betreuungInFerienzeit = betreuungspensumFromServer.betreuungInFerienzeit;
             return betreuungspensumTS;
         }
         return undefined;
@@ -2967,6 +2970,7 @@ export class EbeguRestUtil {
             betreuungspensumTS.monatlicheNebenmahlzeiten = betreuungspensumFromServer.monatlicheNebenmahlzeiten;
             betreuungspensumTS.tarifProHauptmahlzeit = betreuungspensumFromServer.tarifProHauptmahlzeit;
             betreuungspensumTS.tarifProNebenmahlzeit = betreuungspensumFromServer.tarifProNebenmahlzeit;
+            betreuungspensumTS.betreuungInFerienzeit = betreuungspensumFromServer.betreuungInFerienzeit;
             return betreuungspensumTS;
         }
         return undefined;

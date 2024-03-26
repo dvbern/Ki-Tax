@@ -18,6 +18,7 @@ package ch.dvbern.ebegu.entities;
 import java.util.Objects;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.validation.constraints.NotNull;
@@ -43,6 +44,10 @@ public class Betreuungspensum extends AbstractMahlzeitenPensum implements Compar
 	@Column(nullable = false)
 	private Boolean nichtEingetreten = false;
 
+	@Nullable
+	@Column(nullable = true)
+	private Boolean betreuungInFerienzeit;
+
 	public Betreuungspensum() {
 	}
 
@@ -57,6 +62,7 @@ public class Betreuungspensum extends AbstractMahlzeitenPensum implements Compar
 		this.setTarifProHauptmahlzeit(betPensumMitteilung.getTarifProHauptmahlzeit());
 		this.setTarifProNebenmahlzeit(betPensumMitteilung.getTarifProNebenmahlzeit());
 		this.setStuendlicheVollkosten(betPensumMitteilung.getStuendlicheVollkosten());
+		this.setBetreuungInFerienzeit(betPensumMitteilung.getBetreuungInFerienzeit());
 	}
 
 	public Betreuungspensum(DateRange gueltigkeit) {
@@ -70,6 +76,15 @@ public class Betreuungspensum extends AbstractMahlzeitenPensum implements Compar
 
 	public void setNichtEingetreten(@Nonnull Boolean nichtEingetreten) {
 		this.nichtEingetreten = nichtEingetreten;
+	}
+
+	@Nullable
+	public Boolean getBetreuungInFerienzeit() {
+		return betreuungInFerienzeit;
+	}
+
+	public void setBetreuungInFerienzeit(@Nullable Boolean betreuungInFerienzeit) {
+		this.betreuungInFerienzeit = betreuungInFerienzeit;
 	}
 
 	@Override
@@ -86,6 +101,7 @@ public class Betreuungspensum extends AbstractMahlzeitenPensum implements Compar
 		switch (copyType) {
 		case MUTATION:
 			target.setNichtEingetreten(this.getNichtEingetreten());
+			target.setBetreuungInFerienzeit(this.getBetreuungInFerienzeit());
 			break;
 		case ERNEUERUNG:
 		case ERNEUERUNG_AR_2023:
@@ -112,6 +128,7 @@ public class Betreuungspensum extends AbstractMahlzeitenPensum implements Compar
 		}
 		final Betreuungspensum otherBetreuungspensum = (Betreuungspensum) other;
 		return Objects.equals(getNichtEingetreten(), otherBetreuungspensum.getNichtEingetreten())
+			&& Objects.equals(getBetreuungInFerienzeit(), otherBetreuungspensum.getBetreuungInFerienzeit())
 			&& this.getUnitForDisplay() == otherBetreuungspensum.getUnitForDisplay();
 	}
 }

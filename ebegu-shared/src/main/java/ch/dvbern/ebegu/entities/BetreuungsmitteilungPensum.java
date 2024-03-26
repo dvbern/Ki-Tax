@@ -18,6 +18,7 @@ package ch.dvbern.ebegu.entities;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.ForeignKey;
 import javax.persistence.JoinColumn;
@@ -53,6 +54,10 @@ public class BetreuungsmitteilungPensum extends AbstractMahlzeitenPensum impleme
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_betreuungspensum_mitteilung_betreuungspensum_abweichung"))
 	private BetreuungspensumAbweichung betreuungspensumAbweichung;
 
+	@Nullable
+	@Column(nullable = true)
+	private Boolean betreuungInFerienzeit;
+
 	@Nonnull
 	public Betreuungsmitteilung getBetreuungsmitteilung() {
 		return betreuungsmitteilung;
@@ -71,6 +76,14 @@ public class BetreuungsmitteilungPensum extends AbstractMahlzeitenPensum impleme
 		this.betreuungspensumAbweichung = betreuungspensumAbweichung;
 	}
 
+	@Nullable
+	public Boolean getBetreuungInFerienzeit() {
+		return betreuungInFerienzeit;
+	}
+
+	public void setBetreuungInFerienzeit(@Nullable Boolean betreuungInFerienzeit) {
+		this.betreuungInFerienzeit = betreuungInFerienzeit;
+	}
 
 	@Override
 	public int compareTo(@Nonnull BetreuungsmitteilungPensum o) {

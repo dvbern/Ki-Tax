@@ -33,3 +33,8 @@ INSERT INTO einstellung (id, timestamp_erstellt, timestamp_mutiert, user_erstell
 
 UPDATE einstellung set value = 'true' where gesuchsperiode_id = @gesuchsperiode_id and einstellung_key = 'SCHULERGAENZENDE_BETREUUNGEN' and gemeinde_id is null;
 
+
+alter table betreuungspensum add betreuung_in_ferienzeit BIT;
+alter table betreuungspensum_aud add betreuung_in_ferienzeit BIT;
+alter table betreuungsmitteilung_pensum add betreuung_in_ferienzeit BIT;
+alter table betreuungsmitteilung_pensum_aud add betreuung_in_ferienzeit BIT;

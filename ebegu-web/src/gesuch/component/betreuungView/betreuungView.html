@@ -659,6 +659,32 @@
 
                                 <!--Betreuungspensen-->
                                 <div ng-repeat="betpen in vm.getBetreuungspensen()">
+                                    <!--Schulergaenzende Betreuung-->
+                                    <div class="row" ng-if="vm.showSchulergaezendeBetreuungFrage()">
+                                        <div class="col-sm-6 dv-input-container-question">
+                                            <dv-input-container class="form-group">
+                                                <span class="ebegu-h1 required">
+                                                    <span data-translate="SCHULERGAENZENDE_BETREUUNG_FRAGE"></span>
+                                                </span>
+
+                                                <dv-radio-container name="schulergaezendeBetreuung-{{$index}}"
+                                                                    class="input-element"
+                                                                    data-test="schulergaezende-betreuung-{{$index}}"
+                                                                    ng-model="vm.getBetreuungspensum($index).betreuungspensumJA.betreuungInFerienzeit"
+                                                                    aria-label="{{'SCHULERGAENZENDE_BETREUUNG_FRAGE'|translate}}"
+                                                                    aria-described-by="schulergaezendeBetreuung-{{$index}}-error"
+                                                                    ng-required="true"
+                                                                    dv-enable-element
+                                                >
+                                                </dv-radio-container>
+                                                <dv-error-messages input-id="schulergaezendeBetreuung-{{$index}}"
+                                                                   for="vm.form['schulergaezendeBetreuung-' + $index].$error"
+                                                                   class="error"></dv-error-messages>
+                                            </dv-input-container>
+                                        </div>
+                                    </div>
+
+
                                     <!--Betreuungspensum-->
                                     <div ng-if="vm.showBetreuungsPensumInput()">
                                         <dv-betreuung-input pensum-container="vm.getBetreuungspensum($index)"
