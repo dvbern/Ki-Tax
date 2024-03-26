@@ -14,6 +14,7 @@ import {AbstractFamiliensitutaionView} from '../AbstractFamiliensitutaionView';
 import {TSGesuchstellerKardinalitaet} from '../../../../models/enums/TSGesuchstellerKardinalitaet';
 
 const LOG = LogFactory.createLog('FamiliensituationSchwyzComponent');
+
 @Component({
     selector: 'dv-familiensituation-schwyz',
     templateUrl: './familiensituation-schwyz.component.html',
@@ -28,7 +29,7 @@ export class FamiliensituationSchwyzComponent extends AbstractFamiliensitutaionV
         protected readonly familiensituationRS: FamiliensituationRS,
         protected readonly authService: AuthServiceRS,
         private readonly einstellungRS: EinstellungRS,
-        private readonly translate: TranslateService
+        private readonly translate: TranslateService,
     ) {
         super(gesuchModelManager, errorService, wizardStepManager, familiensituationRS, authService);
         this.getFamiliensituation().familienstatus = TSFamilienstatus.SCHWYZ;
@@ -36,7 +37,7 @@ export class FamiliensituationSchwyzComponent extends AbstractFamiliensitutaionV
 
     public ngOnInit(): void {
         this.einstellungRS.getAllEinstellungenBySystemCached(
-            this.gesuchModelManager.getGesuchsperiode().id
+            this.gesuchModelManager.getGesuchsperiode().id,
         ).subscribe((response: TSEinstellung[]) => {
             response.filter(r => r.key === TSEinstellungKey.MINIMALDAUER_KONKUBINAT)
                 .forEach(value => {
