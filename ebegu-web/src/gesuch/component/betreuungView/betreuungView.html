@@ -571,7 +571,7 @@
                     </div>
 
                     <!--Eingewoehnung Periode-->
-                    <div class="row" ng-if="vm.showEingewoehnung()">
+                    <div class="row" ng-if="vm.showEingewoehnungPeriode()">
                         <div class="col-xs-12 dv-input-container-question">
                             <div class="checkbox">
                                 <md-checkbox ng-model="vm.getBetreuungModel().eingewoehnung"
@@ -579,7 +579,7 @@
                                              id="eingewoehnung"
                                              name="eingewoehnung"
                                              aria-label="{{'EINGEWOEHNUNG'| translate}}"
-                                             ng-disabled="!vm.isEingewoehnungEnabled()">
+                                             ng-disabled="!vm.isEingewoehnungPeriodeEnabled()">
                                     <span>{{vm.getEingewoehnungLabel()}}</span>
                                 </md-checkbox>
                                 <dv-tooltip input-id="eingewoehnung"
@@ -907,6 +907,90 @@
                                                 <dv-error-messages input-id="datumBis-{{$index}}"
                                                                    for="vm.form['datumBis-' + $index].$error"></dv-error-messages>
                                             </dv-input-container>
+                                        </div>
+                                    </div>
+
+                                    <!-- Eingewohnung Pauschale pro Betreuungspensum -->
+                                    <div ng-if="vm.showEingewoehnungPauschale()"
+                                         ng-disabled="!vm.isEingewoehnungPauschaleEnabled()">
+                                        <div class="row">
+                                            <div class="col-sm-12 dv-input-container-question">
+                                                <div class="checkbox">
+                                                    <md-checkbox id="eingewoehnungPauschale-{{$index}}"
+                                                                 name="eingewoehnungPauschale-{{$index}}"
+                                                                 ng-model="vm.getBetreuungspensum($index).betreuungspensumJA.hasEingewoehnungsPauschale"
+                                                                 ng-change="vm.onEingewoehnungPauschaleChange($index)"
+                                                                 ng-disabled="!vm.isEingewoehnungPauschaleEnabled()"
+                                                                 aria-label="{{'EINGEWOEHNUNG_PAUSCHALE_CHECKBOX'| translate}}">
+                                                        <span data-translate="EINGEWOEHNUNG_PAUSCHALE_CHECKBOX"></span>
+                                                    </md-checkbox>
+                                                    <dv-tooltip input-id="eingewoehnungPauschaleInfo-{{$index}}"
+                                                                text="'EINGEWOEHNUNG_PAUSCHALE_CHECKBOX_INFO' | translate"></dv-tooltip>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div ng-if="vm.getBetreuungspensum($index).betreuungspensumJA.hasEingewoehnungsPauschale">
+                                            <div class="row">
+                                                <div class="col-sm-12 dv-input-container-small">
+                                                    <dv-input-container class="form-group">
+                                                        <label class="md-no-float"
+                                                               data-translate="EINGEWOEHNUNG_PAUSCHALE"
+                                                               for="eingewoehnungPauschale">
+                                                        </label>
+                                                        <div class="dv-input-container-small">
+                                                            <input aria-describedby="eingewoehnungPauschale-error"
+                                                                   id="eingewoehnungPauschale-{{$index}}"
+                                                                   type="number" min="0" step="0.05"
+                                                                   ng-pattern="vm.CONSTANTS.PATTERN_TWO_DECIMALS"
+                                                                   name="eingewoehnungPauschale-{{$index}}"
+                                                                   class="form-control"
+                                                                   ng-model="vm.getBetreuungspensum($index).betreuungspensumJA.eingewoehnungPauschale.pauschale"
+                                                                   ng-required="true">
+                                                            <dv-error-messages input-id="eingewoehnungPauschale-{{$index}}"
+                                                                               step="0.05"
+                                                                               for="vm.form['eingewoehnungPauschale-' + $index].$error"></dv-error-messages>
+                                                        </div>
+                                                    </dv-input-container>
+                                                </div>
+                                            </div>
+
+                                            <!-- gueltig ab / gueltig bis -->
+                                            <div class="row">
+                                                <div class="col-sm-12 dv-input-container-small">
+                                                    <dv-input-container class="form-group">
+                                                        <label class="md-no-float"
+                                                               data-translate="VON_BETREUUNG"
+                                                               for="eingewoehnungDatumAb-{{$index}}">
+                                                        </label>
+                                                        <dv-datepicker input-id="eingewoehnungDatumAb-{{$index}}" name="eingewoehnungDatumAb-{{$index}}"
+                                                                       class="input-element"
+                                                                       ng-required="true"
+                                                                       ng-model="vm.getBetreuungspensum($index).betreuungspensumJA.eingewoehnungPauschale.gueltigkeit.gueltigAb"
+                                                                       ng-attr-placeholder="{{'DATE_PLACEHOLDER' | translate}}">
+                                                        </dv-datepicker>
+                                                        <dv-error-messages input-id="eingewoehnungDatumAb-{{$index}}"
+                                                                           for="vm.form['eingewoehnungDatumAb-' + $index].$error"></dv-error-messages>
+                                                    </dv-input-container>
+                                                </div>
+
+                                                <div class="col-sm-12 dv-input-container-small">
+                                                    <dv-input-container class="form-group">
+                                                        <label class="md-no-float"
+                                                               data-translate="BIS_BETREUUNG"
+                                                               for="eingewoehnungDatumBis-{{$index}}">
+                                                        </label>
+                                                        <dv-datepicker input-id="eingewoehnungDatumBis-{{$index}}" name="eingewoehnungDatumBis-{{$index}}"
+                                                                       class="input-element"
+                                                                       ng-required="true"
+                                                                       ng-model="vm.getBetreuungspensum($index).betreuungspensumJA.eingewoehnungPauschale.gueltigkeit.gueltigBis"
+                                                                       ng-attr-placeholder="{{'DATE_PLACEHOLDER' | translate}}">
+                                                        </dv-datepicker>
+                                                        <dv-error-messages input-id="eingewoehnungDatumBis-{{$index}}"
+                                                                           for="vm.form['eingewoehnungDatumBis-' + $index].$error"></dv-error-messages>
+                                                    </dv-input-container>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
 

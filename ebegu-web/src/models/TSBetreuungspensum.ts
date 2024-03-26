@@ -18,7 +18,6 @@ import {TSAbstractMahlzeitenPensum} from './TSAbstractMahlzeitenPensum';
 export class TSBetreuungspensum extends TSAbstractMahlzeitenPensum {
 
     private _nichtEingetreten: boolean;
-
     public constructor() {
         super();
     }

@@ -17,7 +17,7 @@
 
 package ch.dvbern.ebegu.api.dtos;
 
-import java.math.BigDecimal;
+import ch.dvbern.ebegu.enums.PensumUnits;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -26,8 +26,7 @@ import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlTransient;
-
-import ch.dvbern.ebegu.enums.PensumUnits;
+import java.math.BigDecimal;
 
 /**
  * Superklasse fuer ein Betreuungspensum
@@ -53,6 +52,8 @@ public class JaxAbstractDecimalPensumDTO extends JaxAbstractDateRangedDTO {
 
 	@Nullable
 	private BigDecimal stuendlicheVollkosten;
+
+	private JaxEingewoehnungPauschale eingewoehnungPauschale;
 
 	public PensumUnits getUnitForDisplay() {
 		return unitForDisplay;
@@ -87,5 +88,13 @@ public class JaxAbstractDecimalPensumDTO extends JaxAbstractDateRangedDTO {
 
 	public void setStuendlicheVollkosten(@Nullable BigDecimal stuendlicheVollkosten) {
 		this.stuendlicheVollkosten = stuendlicheVollkosten;
+	}
+
+	public JaxEingewoehnungPauschale getEingewoehnungPauschale() {
+		return eingewoehnungPauschale;
+	}
+
+	public void setEingewoehnungPauschale(JaxEingewoehnungPauschale eingewoehnungPauschale) {
+		this.eingewoehnungPauschale = eingewoehnungPauschale;
 	}
 }
