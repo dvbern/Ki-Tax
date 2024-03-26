@@ -1489,7 +1489,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
             return false;
         }
 
-        return this.eingewoehnungTyp === TSEingewoehnungTyp.PAUSCHALE;
+        return this.authServiceRS.isOneOfRoles(TSRoleUtil.getTraegerschaftInstitutionRoles());
     }
 
     public onEingewoehnungPauschaleChange(betreuungspensumIndex: number): void {

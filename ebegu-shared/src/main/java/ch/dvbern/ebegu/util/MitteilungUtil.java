@@ -119,7 +119,7 @@ public final class MitteilungUtil {
 				nebemahlzeiten,
 				tarifHaupt,
 				tarifNeben)
-				+ createEingewoehnungPauschale(locale, mandant, pensumMitteilung.getEingewoehnungPauschale());
+				+ createNachrichtEingewoehnungPauschale(locale, mandant, pensumMitteilung.getEingewoehnungPauschale());
 		}
 		return ServerMessageUtil.getMessage(
 			getMutationsmeldungTranslationKey(betreuungspensumAnzeigeTyp),
@@ -130,10 +130,10 @@ public final class MitteilungUtil {
 			datumBis,
 			multipliedPensum,
 			monatlicheBetreuungskosten)
-			+ createEingewoehnungPauschale(locale, mandant, pensumMitteilung.getEingewoehnungPauschale());
+			+ createNachrichtEingewoehnungPauschale(locale, mandant, pensumMitteilung.getEingewoehnungPauschale());
 	}
 
-	private static String createEingewoehnungPauschale(
+	private static String createNachrichtEingewoehnungPauschale(
 		Locale locale,
 		Mandant mandant,
 		@Nullable EingewoehnungPauschale eingewoehnungPauschale

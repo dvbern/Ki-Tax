@@ -256,6 +256,13 @@ public class BetreuungspensumAbweichung extends AbstractMahlzeitenPensum impleme
 			}
 		}
 
+		if (getEingewoehnungPauschale() != null) {
+			EingewoehnungPauschale eingewoehnungPauschale = new EingewoehnungPauschale();
+			eingewoehnungPauschale.setGueltigkeit(getEingewoehnungPauschale().getGueltigkeit());
+			eingewoehnungPauschale.setPauschale(getEingewoehnungPauschale().getPauschale());
+			mitteilungPensum.setEingewoehnungPauschale(eingewoehnungPauschale);
+		}
+
 		return mitteilungPensum;
 	}
 }
