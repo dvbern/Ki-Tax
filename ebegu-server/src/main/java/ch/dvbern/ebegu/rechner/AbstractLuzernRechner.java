@@ -181,7 +181,7 @@ public abstract class AbstractLuzernRechner extends AbstractRechner {
 			return;
 		}
 
-		eingewoehungBemerkung.setArgs(new Object[]{gutscheinEingewoehnung});
+		eingewoehungBemerkung.setArgs(gutscheinEingewoehnung);
 	}
 
 	protected BigDecimal calculateGutscheinGekuerzt(BigDecimal differenzVollkostenUndGutschein, BigDecimal gutscheinVorZuschlagUndSelbstbehalt) {

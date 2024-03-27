@@ -99,8 +99,12 @@ public class VerfuegungsBemerkungDTO {
 		this.gueltigkeit = gueltigkeit;
 	}
 
-	public void setArgs(@Nullable Object[] args) {
-		this.args = args;
+	public void setArgs(@Nullable Object... args) {
+		if (args == null) {
+			return;
+		}
+
+		this.args = Arrays.copyOf(args, args.length);
 	}
 
 	public String getTranslated(Mandant mandant) {
