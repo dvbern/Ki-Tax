@@ -5,6 +5,7 @@ import {TSWizardStepName} from '../../../../../models/enums/TSWizardStepName';
 import {TSWizardStepStatus} from '../../../../../models/enums/TSWizardStepStatus';
 import {TSFinanzielleSituationContainer} from '../../../../../models/TSFinanzielleSituationContainer';
 import {TSFinanzModel} from '../../../../../models/TSFinanzModel';
+import {TSGesuchstellerContainer} from '../../../../../models/TSGesuchstellerContainer';
 import {EbeguUtil} from '../../../../../utils/EbeguUtil';
 import {GesuchModelManager} from '../../../../service/gesuchModelManager';
 import {WizardStepManager} from '../../../../service/wizardStepManager';
@@ -18,6 +19,7 @@ import {AbstractGesuchViewX} from '../../../abstractGesuchViewX';
 export class FinanzielleSituationGsSchwyzComponent extends AbstractGesuchViewX<TSFinanzModel> implements OnInit {
     public massgebendesEinkommen = 0;
     public gesuchstellerNumber: number;
+    public gesuchsteller: TSGesuchstellerContainer;
 
     public constructor(
         protected readonly gesuchmodelManager: GesuchModelManager,
@@ -36,6 +38,9 @@ export class FinanzielleSituationGsSchwyzComponent extends AbstractGesuchViewX<T
     private initGesuchstellerNumber() {
         this.gesuchstellerNumber = parseInt(this.$stateParams.params.gesuchstellerNumber, 10);
         this.gesuchModelManager.setGesuchstellerNumber(this.gesuchstellerNumber);
+        this.gesuchsteller = this.gesuchstellerNumber === 1 ?
+            this.gesuchmodelManager.getGesuch().gesuchsteller1 :
+            this.gesuchmodelManager.getGesuch().gesuchsteller2;
     }
 
     private initFinanzModel(): void {
@@ -56,10 +61,7 @@ export class FinanzielleSituationGsSchwyzComponent extends AbstractGesuchViewX<T
     }
 
     public getAntragstellerNameForCurrentStep(): string {
-        const gs = this.model.getGesuchstellerNumber() === 1 ?
-            this.gesuchmodelManager.getGesuch().gesuchsteller1 :
-            this.gesuchmodelManager.getGesuch().gesuchsteller2;
-        return gs.gesuchstellerJA.getFullName();
+        return this.gesuchsteller.gesuchstellerJA.getFullName();
     }
 
     public getSubStepName(): TSFinanzielleSituationSubStepName {

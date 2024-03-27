@@ -1,5 +1,15 @@
 <div class="gesuch-modul">
     <h1 class="access-for-all-title" translate>AFA_GESUCHSFORMULAR</h1>
+
+    <ng-container *ngIf="isNotNullOrUndefined(gesuchsteller); then gsPresent else gsNotPresent"></ng-container>
+
+</div>
+<ng-template #gsNotPresent>
+    <div data-test="warnung-gs2-ausfuellen" class="well well-status-warten">
+        <span translate>WARNUNG_GS2_AUSFUELLEN</span>
+    </div>
+</ng-template>
+<ng-template #gsPresent>
     <div class="row view-title">
         <div class="col-md-12">
             <h2>
@@ -33,4 +43,4 @@
                      [dvSubStep]="gesuchmodelManager.gesuchstellerNumber"
                      [dvSubStepName]="getSubStepName()"></dv-navigation-x>
 
-</div>
+</ng-template>
