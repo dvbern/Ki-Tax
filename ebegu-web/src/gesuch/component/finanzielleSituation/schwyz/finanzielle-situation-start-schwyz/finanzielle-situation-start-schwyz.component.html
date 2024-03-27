@@ -10,6 +10,11 @@
         </div>
     </div>
 
+    <ng-container *ngIf="!hasMultipleGS || gs2Ausgefuellt; then allGSAusgefuellt else notAllGSAusgefuellt"></ng-container>
+
+</div>
+
+<ng-template #allGSAusgefuellt>
     <form #form="ngForm" class="gesuch">
         <dv-auszahlungsdaten [auszahlungsdaten]="model.zahlungsinformationen"
                              [auszahlungsdatenGS]="model.zahlungsinformationenGS"
@@ -24,9 +29,9 @@
                 (gemeinsamChanged)="resetAllFinSitSchwyzData()"
             ></dv-steuerveranlagung-gemeinsam>
             <dv-steuerveranlagt-schwyz *ngIf="model.familienSituation.gemeinsameSteuererklaerung"
-                                                [finSitJA]="getModel().finanzielleSituationJA"
-                                                [finSitGS]="getModel().finanzielleSituationGS"
-                                                [readonly]="gesuchModelManager.isGesuchReadonly()">
+                                       [finSitJA]="getModel().finanzielleSituationJA"
+                                       [finSitGS]="getModel().finanzielleSituationGS"
+                                       [readonly]="gesuchModelManager.isGesuchReadonly()">
             </dv-steuerveranlagt-schwyz>
         </ng-template>
 
@@ -53,6 +58,12 @@
                      [dvPrevious]="true"
                      [dvSubStep]="getSubStepIndex()"
                      [dvSubStepName]="getSubStepName()"></dv-navigation-x>
-</div>
+</ng-template>
+
+<ng-template #notAllGSAusgefuellt>
+    <div data-test="warnung-gs2-ausfuellen" class="well well-status-warten">
+        <span translate>WARNUNG_GS2_AUSFUELLEN</span>
+    </div>
+</ng-template>
 
 

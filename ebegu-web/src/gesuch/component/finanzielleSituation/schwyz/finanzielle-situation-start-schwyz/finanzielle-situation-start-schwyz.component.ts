@@ -18,6 +18,7 @@ export class FinanzielleSituationStartSchwyzComponent extends AbstractGesuchView
 
     public hasMultipleGS = false;
     public massgebendesEinkommen = 0;
+    public gs2Ausgefuellt = false;
 
     public constructor(
         protected readonly gesuchModelManager: GesuchModelManager,
@@ -31,6 +32,7 @@ export class FinanzielleSituationStartSchwyzComponent extends AbstractGesuchView
             TSWizardStepStatus.IN_BEARBEITUNG);
         this.hasMultipleGS = this.gesuchModelManager.getFamiliensituation()
             .hasSecondGesuchsteller(this.gesuchModelManager.getGesuchsperiode().gueltigkeit.gueltigBis);
+        this.gs2Ausgefuellt = EbeguUtil.isNotNullOrUndefined(this.gesuchModelManager.getGesuch().gesuchsteller2);
         this.initFinanzModel();
     }
 
