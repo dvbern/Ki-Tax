@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit} from '@angular/core';
+import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
 import {UIRouterGlobals} from '@uirouter/core';
 import {TSFinanzielleSituationSubStepName} from '../../../../../models/enums/TSFinanzielleSituationSubStepName';
 import {TSWizardStepName} from '../../../../../models/enums/TSWizardStepName';
@@ -24,8 +24,7 @@ export class FinanzielleSituationGsSchwyzComponent extends AbstractGesuchViewX<T
     public constructor(
         protected readonly gesuchmodelManager: GesuchModelManager,
         protected readonly wizardStepManager: WizardStepManager,
-        private readonly $stateParams: UIRouterGlobals,
-        private readonly cd: ChangeDetectorRef
+        private readonly $stateParams: UIRouterGlobals
     ) {
         super(gesuchmodelManager, wizardStepManager, TSWizardStepName.FINANZIELLE_SITUATION_SCHWYZ);
     }
@@ -73,7 +72,6 @@ export class FinanzielleSituationGsSchwyzComponent extends AbstractGesuchViewX<T
     public prepareSave(onResult: (arg: any) => void): Promise<TSFinanzielleSituationContainer> {
         if (!this.isGesuchValid()) {
             onResult(undefined);
-            this.cd.detectChanges()
             return undefined;
         }
         return this.save(onResult);
