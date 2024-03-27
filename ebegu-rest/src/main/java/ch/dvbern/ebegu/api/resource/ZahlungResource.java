@@ -48,6 +48,7 @@ import javax.inject.Inject;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Collection;
@@ -93,7 +94,8 @@ public class ZahlungResource {
 	@Path("/all")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, JURIST, REVISOR, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, JURIST, REVISOR,
+		ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
 	public JaxPaginationDTO<JaxZahlungsauftrag> getAllZahlungsauftraege(
 		@Nullable @QueryParam("gemeinde") String filterGemeinde,
 		@Nullable @QueryParam("sortPredicate") String sortPredicate,
@@ -132,7 +134,8 @@ public class ZahlungResource {
 	@Path("/institution")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_INSTITUTION, ADMIN_INSTITUTION, SACHBEARBEITER_TRAEGERSCHAFT})
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_INSTITUTION, ADMIN_INSTITUTION,
+		SACHBEARBEITER_TRAEGERSCHAFT })
 	public JaxPaginationDTO<JaxZahlungsauftrag> getAllZahlungsauftraegeInstitution(
 		@Nullable @QueryParam("gemeinde") String filterGemeinde,
 		@Nullable @QueryParam("sortPredicate") String sortPredicate,
@@ -144,7 +147,7 @@ public class ZahlungResource {
 		JaxPaginationDTO<JaxZahlungsauftrag> jaxPaginationDTO = new JaxPaginationDTO<>();
 		Collection<Institution> allowedInst = institutionService.getInstitutionenReadableForCurrentBenutzer(false);
 
-		if(CollectionUtils.isEmpty(allowedInst)) {
+		if (CollectionUtils.isEmpty(allowedInst)) {
 			return jaxPaginationDTO;
 		}
 
@@ -159,7 +162,10 @@ public class ZahlungResource {
 		);
 
 		List<JaxZahlungsauftrag> zahlungenList = zahlungService.getAllZahlungsauftraege(zahlungenSearchParamsDTO).stream()
-			.map(zahlungsauftrag -> converter.zahlungsauftragToJAX(zahlungsauftrag, principalBean.discoverMostPrivilegedRole(), allowedInst))
+			.map(zahlungsauftrag -> converter.zahlungsauftragToJAX(
+				zahlungsauftrag,
+				principalBean.discoverMostPrivilegedRole(),
+				allowedInst))
 			.collect(Collectors.toList());
 
 		Long count = zahlungService.countAllZahlungsauftraege(zahlungenSearchParamsDTO);
@@ -214,8 +220,8 @@ public class ZahlungResource {
 			}
 
 			List<String> allowedInstIds = allowedInst.stream()
-					.map(AbstractEntity::getId)
-					.collect(Collectors.toList());
+				.map(AbstractEntity::getId)
+				.collect(Collectors.toList());
 			zahlungenParams.setAllowedInstitutionIds(allowedInstIds);
 		}
 		return zahlungenParams;
@@ -228,7 +234,8 @@ public class ZahlungResource {
 	@Path("/zahlungsauftrag/{zahlungsauftragId}")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, JURIST, REVISOR, ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, JURIST, REVISOR,
+		ADMIN_MANDANT, SACHBEARBEITER_MANDANT })
 	public JaxZahlungsauftrag findZahlungsauftrag(
 		@Nonnull @NotNull @PathParam("zahlungsauftragId") JaxId zahlungsauftragJAXPId) {
 
@@ -249,7 +256,8 @@ public class ZahlungResource {
 	@Path("/zahlungsauftraginstitution/{zahlungsauftragId}")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION, ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT})
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION, ADMIN_TRAEGERSCHAFT,
+		SACHBEARBEITER_TRAEGERSCHAFT })
 	public JaxZahlungsauftrag findZahlungsauftraginstitution(
 		@Nonnull @NotNull @PathParam("zahlungsauftragId") JaxId zahlungsauftragJAXPId) {
 
@@ -292,7 +300,7 @@ public class ZahlungResource {
 	@Path("/create")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
-	@RolesAllowed({SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE})
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE })
 	@TransactionTimeout(value = Constants.MAX_TIMEOUT_MINUTES, unit = TimeUnit.MINUTES)
 	public JaxZahlungsauftrag createZahlung(
 		@QueryParam("zahlungslaufTyp") String sZahlungslaufTyp,
@@ -313,14 +321,14 @@ public class ZahlungResource {
 		}
 
 		final Zahlungsauftrag zahlungsauftrag = zahlungService
-				.zahlungsauftragErstellen(
-						zahlungslaufTyp,
-						gemeindeId,
-						faelligkeitsdatum,
-						beschrieb,
-						auszahlungInZukunft,
-						datumGeneriert,
-						requireNonNull(principalBean.getMandant()));
+			.zahlungsauftragErstellen(
+				zahlungslaufTyp,
+				gemeindeId,
+				faelligkeitsdatum,
+				beschrieb,
+				auszahlungInZukunft,
+				datumGeneriert,
+				requireNonNull(principalBean.getMandant()));
 
 		zahlungService.zahlungenKontrollieren(zahlungslaufTyp, gemeindeId, auszahlungInZukunft);
 
@@ -330,8 +338,8 @@ public class ZahlungResource {
 	private void validateDatumGeneriert(LocalDateTime datumGeneriert) {
 		if (LocalDate.now().atStartOfDay().isAfter(datumGeneriert)) {
 			throw new EbeguRuntimeException(
-					"validateDatumGeneriert",
-					ErrorCodeEnum.ERROR_GENERIERT_DATUM_MUSS_IN_ZUKUNFT_LIEGEN);
+				"validateDatumGeneriert",
+				ErrorCodeEnum.ERROR_GENERIERT_DATUM_MUSS_IN_ZUKUNFT_LIEGEN);
 		}
 	}
 
@@ -348,7 +356,8 @@ public class ZahlungResource {
 		@QueryParam("id") String id) throws EbeguRuntimeException {
 
 		LocalDate faelligkeitsdatum = DateUtil.parseStringToDateOrReturnNow(stringFaelligkeitsdatum);
-		final Zahlungsauftrag zahlungsauftragUpdated = zahlungService.zahlungsauftragAktualisieren(id, faelligkeitsdatum, beschrieb);
+		final Zahlungsauftrag zahlungsauftragUpdated =
+			zahlungService.zahlungsauftragAktualisieren(id, faelligkeitsdatum, beschrieb);
 		return converter.zahlungsauftragToJAX(zahlungsauftragUpdated, false);
 	}
 
@@ -358,7 +367,8 @@ public class ZahlungResource {
 	@Path("/bestaetigen/{zahlungId}")
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
-	@RolesAllowed({ SUPER_ADMIN, ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION, ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT })
+	@RolesAllowed({ SUPER_ADMIN, ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION, ADMIN_TRAEGERSCHAFT,
+		SACHBEARBEITER_TRAEGERSCHAFT })
 	public JaxZahlung zahlungBestaetigen(
 		@Nonnull @NotNull @PathParam("zahlungId") JaxId zahlungJAXPId) {
 

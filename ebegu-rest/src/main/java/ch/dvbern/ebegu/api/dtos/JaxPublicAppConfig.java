@@ -53,49 +53,51 @@ public class JaxPublicAppConfig {
 	private boolean angebotTSActivated;
 	private boolean angebotFIActivated;
 	private boolean angebotTFOActivated;
+	private boolean auszahlungAnEltern;
 
 	public JaxPublicAppConfig(
-			String currentNode,
-			boolean devmode,
-			String whitelist,
-			boolean dummyMode,
-			String sentryEnvName,
-			String backgroundColor,
-			boolean zahlungentestmode,
-			boolean personenSucheDisabled,
-			String kitaxHost,
-			String kitaxEndpoint,
-			String notverordnungDefaultEinreichefristOeffentlich,
-			String notverordnungDefaultEinreichefristPrivat,
-			boolean lastenausgleichAktiv,
-			boolean ferienbetreuungAktiv,
-			boolean lastenausgleichTagesschulenAktiv,
-			boolean gemeindeKennzahlenAktiv,
-			BigDecimal lastenausgleichTagesschulenAnteilZweitpruefungDe,
-			BigDecimal lastenausgleichTagesschulenAnteilZweitpruefungFr,
-			BigDecimal lastenausgleichTagesschulenAutoZweitpruefungDe,
-			BigDecimal lastenausgleichTagesschulenAutoZweitpruefungFr,
-			String primaryColor,
-			String primaryColorDark,
-			String primaryColorLight,
-			String logoFileName,
-			String logoFileNameWhite,
-			boolean multimandantAktiviert,
-			boolean infomaZahlungen,
-			boolean frenchEnabled,
-			boolean geresEnabled,
-			boolean ebeguKibonAnfrageTestGuiEnabled,
-			String steuerschnittstelleAktivAb,
-			boolean zusatzinformationenInstitution,
-			String activatedDemoFeatures,
-			boolean checkboxAuszahlungInZukunft,
-			boolean institutionenDurchGemeindenEinladen,
-			boolean erlaubenInstitutionenZuWaehlen,
-			boolean angebotTSActivated,
-			boolean angebotFIActivated,
-			boolean angebotMittagstischEnabled,
-			boolean angebotTFOActivated
-		) {
+		String currentNode,
+		boolean devmode,
+		String whitelist,
+		boolean dummyMode,
+		String sentryEnvName,
+		String backgroundColor,
+		boolean zahlungentestmode,
+		boolean personenSucheDisabled,
+		String kitaxHost,
+		String kitaxEndpoint,
+		String notverordnungDefaultEinreichefristOeffentlich,
+		String notverordnungDefaultEinreichefristPrivat,
+		boolean lastenausgleichAktiv,
+		boolean ferienbetreuungAktiv,
+		boolean lastenausgleichTagesschulenAktiv,
+		boolean gemeindeKennzahlenAktiv,
+		BigDecimal lastenausgleichTagesschulenAnteilZweitpruefungDe,
+		BigDecimal lastenausgleichTagesschulenAnteilZweitpruefungFr,
+		BigDecimal lastenausgleichTagesschulenAutoZweitpruefungDe,
+		BigDecimal lastenausgleichTagesschulenAutoZweitpruefungFr,
+		String primaryColor,
+		String primaryColorDark,
+		String primaryColorLight,
+		String logoFileName,
+		String logoFileNameWhite,
+		boolean multimandantAktiviert,
+		boolean infomaZahlungen,
+		boolean frenchEnabled,
+		boolean geresEnabled,
+		boolean ebeguKibonAnfrageTestGuiEnabled,
+		String steuerschnittstelleAktivAb,
+		boolean zusatzinformationenInstitution,
+		String activatedDemoFeatures,
+		boolean checkboxAuszahlungInZukunft,
+		boolean institutionenDurchGemeindenEinladen,
+		boolean erlaubenInstitutionenZuWaehlen,
+		boolean angebotTSActivated,
+		boolean angebotFIActivated,
+		boolean angebotMittagstischEnabled,
+		boolean angebotTFOActivated,
+		boolean auszahlungAnEltern
+	) {
 		this.currentNode = currentNode;
 		this.devmode = devmode;
 		this.whitelist = whitelist;
@@ -136,6 +138,7 @@ public class JaxPublicAppConfig {
 		this.erlaubenInstitutionenZuWaehlen = erlaubenInstitutionenZuWaehlen;
 		this.angebotFIActivated = angebotFIActivated;
 		this.angebotTFOActivated = angebotTFOActivated;
+		this.auszahlungAnEltern = auszahlungAnEltern;
 	}
 
 	public String getCurrentNode() {
@@ -440,5 +443,13 @@ public class JaxPublicAppConfig {
 
 	public boolean isAngebotMittagstischEnabled() {
 		return angebotMittagstischEnabled;
+	}
+
+	public boolean isAuszahlungAnEltern() {
+		return auszahlungAnEltern;
+	}
+
+	public void setAuszahlungAnEltern(boolean auszahlungAnEltern) {
+		this.auszahlungAnEltern = auszahlungAnEltern;
 	}
 }

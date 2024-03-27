@@ -77,7 +77,7 @@ import {
 import {
     FinanzielleSituationStartViewLuzernComponent
 } from './component/finanzielleSituation/luzern/finanzielle-situation-start-view-luzern/finanzielle-situation-start-view-luzern.component';
-import {InfomaFieldsComponent} from './component/finanzielleSituation/luzern/infoma-fields/infoma-fields.component';
+import {ZahlungsinformationenFieldsComponent} from './component/finanzielleSituation/luzern/zahlungsinformationen-fields/zahlungsinformationen-fields.component';
 import {ResultatComponent} from './component/finanzielleSituation/luzern/resultat/resultat.component';
 import {VeranlagungComponent} from './component/finanzielleSituation/luzern/veranlagung/veranlagung.component';
 import {
@@ -149,7 +149,7 @@ import {
         VeranlagungComponent,
         FinSitFelderAppenzellComponent,
         FinanzielleSituationAppenzellViewComponent,
-        InfomaFieldsComponent,
+        ZahlungsinformationenFieldsComponent,
         VeranlagungComponent,
         ResultatComponent,
         VeranlagungSolothurnComponent,

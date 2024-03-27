@@ -19,11 +19,9 @@ package ch.dvbern.ebegu.api.converter;
 
 import ch.dvbern.ebegu.api.dtos.JaxAdresse;
 import ch.dvbern.ebegu.api.dtos.gemeindeantrag.*;
-import ch.dvbern.ebegu.authentication.PrincipalBean;
 import ch.dvbern.ebegu.entities.Adresse;
 import ch.dvbern.ebegu.entities.Auszahlungsdaten;
 import ch.dvbern.ebegu.entities.gemeindeantrag.*;
-import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.services.BenutzerService;
 import ch.dvbern.ebegu.services.GemeindeService;
 import ch.dvbern.lib.cdipersistence.Persistence;
@@ -39,7 +37,6 @@ import javax.ws.rs.core.Response.Status;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
-import javax.ws.rs.ForbiddenException;
 
 import static java.util.Objects.requireNonNull;
 
@@ -50,7 +47,7 @@ public class JaxFerienbetreuungConverter extends AbstractConverter {
 	private Persistence persistence;
 
 	@Inject
-	private JaxBConverter jaxBConverter;
+	private JaxBenutzerConverter jaxBenutzerConverter;
 
 	@Inject
 	private GemeindeService gemeindeService;
@@ -349,7 +346,7 @@ public class JaxFerienbetreuungConverter extends AbstractConverter {
 		jaxContainer.setInternerKommentar(container.getInternerKommentar());
 
 		if (container.getVerantwortlicher() != null) {
-			jaxContainer.setVerantwortlicher(jaxBConverter.benutzerToJaxBenutzerNoDetails(container.getVerantwortlicher()));
+			jaxContainer.setVerantwortlicher(jaxBenutzerConverter.benutzerToJaxBenutzerNoDetails(container.getVerantwortlicher()));
 		}
 		return jaxContainer;
 	}

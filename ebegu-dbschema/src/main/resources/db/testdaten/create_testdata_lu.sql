@@ -85,6 +85,7 @@ UPDATE application_property SET value = '100000' WHERE name = 'LASTENAUSGLEICH_T
 UPDATE application_property SET value = '50000' WHERE name = 'LASTENAUSGLEICH_TAGESSCHULEN_AUTO_ZWEITPRUEFUNG_FR' AND mandant_id = @mandant_id_luzern;
 UPDATE application_property SET value = 'false' WHERE name = 'GEMEINDE_KENNZAHLEN_AKTIV' AND mandant_id = @mandant_id_luzern;
 UPDATE application_property SET value = 'false' WHERE name = 'LASTENAUSGLEICH_AKTIV' AND mandant_id = @mandant_id_luzern;
+UPDATE application_property SET value = 'true' WHERE name = 'AUSZAHLUNGEN_AN_ELTERN' AND mandant_id = @mandant_id_luzern;
 
 # Gesuchsperiode
 UPDATE gesuchsperiode SET status = 'AKTIV' WHERE id = @gesuchsperiode_22_23_lu_id;
@@ -120,10 +121,10 @@ INSERT IGNORE INTO berechtigung (id, timestamp_erstellt, timestamp_mutiert, user
 INSERT IGNORE INTO gemeinde (
 	id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version, name, gemeinde_nummer, mandant_id, status, bfs_nummer,
 	betreuungsgutscheine_startdatum, tagesschulanmeldungen_startdatum, ferieninselanmeldungen_startdatum, angebotbg,
-                      angebotts, angebotfi, angebotbgtfo, gueltig_bis)
+                      angebotts, angebotfi, angebotbgtfo, gueltig_bis, infoma_zahlungen)
 SELECT @luzern_test_gemeinde_id, '2018-01-01 00:00:00', '2018-01-01 00:00:00', 'flyway', 'flyway', 0,
 	   'Testgemeinde Luzern', max(gemeinde_nummer)+1,  @mandant_id_luzern, 'AKTIV', 99997,
-	'2016-01-01', '2020-08-01', '2020-08-01', true, false, false, true, '9999-12-31' from gemeinde;
+	'2016-01-01', '2020-08-01', '2020-08-01', true, false, false, true, '9999-12-31', true from gemeinde;
 
 INSERT IGNORE INTO adresse (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version, vorgaenger_id, gueltig_ab, gueltig_bis, gemeinde,
 					 hausnummer, land, organisation, ort, plz, strasse, zusatzzeile) VALUES (UNHEX(REPLACE('2476287e-3264-11ec-a17e-b89a2ae4a038', '-', '')),
@@ -327,12 +328,12 @@ INSERT IGNORE INTO adresse (id, timestamp_erstellt, timestamp_mutiert, user_erst
 INSERT IGNORE INTO adresse (id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version, vorgaenger_id, gueltig_ab, gueltig_bis, gemeinde, hausnummer, land, organisation, ort, plz, strasse, zusatzzeile)
 	VALUES (UNHEX(REPLACE('c41ab591-30a3-11ec-a86f-b89a2ae4a038', '-', '')), '2016-01-01 00:00:00', '2016-01-01 00:00:00', 'flyway', 'flyway', 0, null, '1000-01-01', '9999-12-31', null, '27', 'CH', 'Brünnen', 'Luzern', '6000', 'Colombstrasse', null);
 
-INSERT IGNORE INTO auszahlungsdaten(id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version, iban, kontoinhaber, adresse_kontoinhaber_id)
-	VALUES (UNHEX(REPLACE('ad4c1134-30a4-11ec-a86f-b89a2ae4a038', '-', '')), '2020-01-01 00:00:00', '2020-01-01 00:00:00', 'flyway', 'flyway', 0, 'CH82 0900 0000 1001 5000 6', 'Kontoinhaber Bruennen LU', null);
-INSERT IGNORE INTO auszahlungsdaten(id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version, iban, kontoinhaber, adresse_kontoinhaber_id)
-	VALUES (UNHEX(REPLACE('b4625718-30a4-11ec-a86f-b89a2ae4a038', '-', '')), '2020-01-01 00:00:00', '2020-01-01 00:00:00', 'flyway', 'flyway', 0, 'CH82 0900 0000 1001 5000 6', 'Kontoinhaber Weissenstein LU', null);
-INSERT IGNORE INTO auszahlungsdaten(id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version, iban, kontoinhaber, adresse_kontoinhaber_id)
-	VALUES (UNHEX(REPLACE('be37b235-30a4-11ec-a86f-b89a2ae4a038', '-', '')), '2020-01-01 00:00:00', '2020-01-01 00:00:00', 'flyway', 'flyway', 0, 'CH82 0900 0000 1001 5000 6', 'Kontoinhaber Tageseltern Luzern', null);
+INSERT IGNORE INTO auszahlungsdaten(id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version, iban, kontoinhaber, adresse_kontoinhaber_id, infoma_kreditorennummer, infoma_bankcode)
+	VALUES (UNHEX(REPLACE('ad4c1134-30a4-11ec-a86f-b89a2ae4a038', '-', '')), '2020-01-01 00:00:00', '2020-01-01 00:00:00', 'flyway', 'flyway', 0, 'CH82 0900 0000 1001 5000 6', 'Kontoinhaber Bruennen LU', null, 'BRU000', 'BRU0001');
+INSERT IGNORE INTO auszahlungsdaten(id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version, iban, kontoinhaber, adresse_kontoinhaber_id, infoma_kreditorennummer, infoma_bankcode)
+	VALUES (UNHEX(REPLACE('b4625718-30a4-11ec-a86f-b89a2ae4a038', '-', '')), '2020-01-01 00:00:00', '2020-01-01 00:00:00', 'flyway', 'flyway', 0, 'CH82 0900 0000 1001 5000 6', 'Kontoinhaber Weissenstein LU', null, 'WEISS000', 'WEISS0001');
+INSERT IGNORE INTO auszahlungsdaten(id, timestamp_erstellt, timestamp_mutiert, user_erstellt, user_mutiert, version, iban, kontoinhaber, adresse_kontoinhaber_id, infoma_kreditorennummer, infoma_bankcode)
+	VALUES (UNHEX(REPLACE('be37b235-30a4-11ec-a86f-b89a2ae4a038', '-', '')), '2020-01-01 00:00:00', '2020-01-01 00:00:00', 'flyway', 'flyway', 0, 'CH82 0900 0000 1001 5000 6', 'Kontoinhaber Tageseltern Luzern', null, 'TAG000', 'TAG0001');
 
 INSERT IGNORE INTO institution_stammdaten_betreuungsgutscheine(id, timestamp_erstellt, timestamp_mutiert, user_erstellt,
 															   user_mutiert, version, auszahlungsdaten_id,

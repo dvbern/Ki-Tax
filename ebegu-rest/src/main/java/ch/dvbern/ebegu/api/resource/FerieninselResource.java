@@ -34,6 +34,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 import ch.dvbern.ebegu.api.converter.JaxBConverter;
+import ch.dvbern.ebegu.api.converter.gemeinde.JaxGemeindeStammdatenConverter;
 import ch.dvbern.ebegu.api.dtos.JaxBelegungFerieninselTag;
 import ch.dvbern.ebegu.api.dtos.JaxGemeindeStammdatenGesuchsperiodeFerieninsel;
 import ch.dvbern.ebegu.api.dtos.JaxId;
@@ -71,6 +72,10 @@ public class FerieninselResource {
 	@Inject
 	private JaxBConverter converter;
 
+	@SuppressWarnings("CdiInjectionPointsInspection")
+	@Inject
+	private JaxGemeindeStammdatenConverter gemeindeStammdatenConverter;
+
 
 	@ApiOperation(value = "Returns the FerieninselStammdaten for the Gesuchsperiode and Gemeinde with the specified "
 		+ "ID for the given Ferien. The result also contains a "
@@ -100,7 +105,7 @@ public class FerieninselResource {
 
 		if (stammdatenOptional.isPresent()) {
 			GemeindeStammdatenGesuchsperiodeFerieninsel stammdaten = stammdatenOptional.get();
-			JaxGemeindeStammdatenGesuchsperiodeFerieninsel ferieninselStammdatenJAX = converter.ferieninselStammdatenToJAX(stammdaten);
+			JaxGemeindeStammdatenGesuchsperiodeFerieninsel ferieninselStammdatenJAX = gemeindeStammdatenConverter.ferieninselStammdatenToJAX(stammdaten);
 			// Zur gefundenen Ferieninsel die tatsaechlich verfuegbaren Tage fuer die Belegung ermitteln (nur Wochentage, ohne Feiertage)
 			List<BelegungFerieninselTag> possibleFerieninselTage = ferieninselStammdatenService.getPossibleFerieninselTage(stammdaten);
 			List<JaxBelegungFerieninselTag> possibleFerieninselTageJAX = converter.belegungFerieninselTageListToJAX(possibleFerieninselTage);
