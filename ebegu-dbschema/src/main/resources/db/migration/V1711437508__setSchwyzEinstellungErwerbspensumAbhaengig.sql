@@ -20,4 +20,4 @@ SET @mandant_schwyz_id = (SELECT id FROM mandant WHERE mandant_identifier = 'SCH
 UPDATE einstellung
 SET value = 'ABHAENGING'
 WHERE gesuchsperiode_id IN (SELECT id FROM gesuchsperiode WHERE mandant_id = @mandant_schwyz_id) AND
-	  ebegu.einstellung.einstellung_key = 'ABHAENGIGKEIT_ANSPRUCH_BESCHAEFTIGUNGPENSUM';
+	  einstellung.einstellung_key = 'ABHAENGIGKEIT_ANSPRUCH_BESCHAEFTIGUNGPENSUM';
