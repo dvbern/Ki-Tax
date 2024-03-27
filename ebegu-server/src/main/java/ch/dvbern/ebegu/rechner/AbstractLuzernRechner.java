@@ -17,19 +17,19 @@
 
 package ch.dvbern.ebegu.rechner;
 
-import java.math.BigDecimal;
-import java.util.List;
-
-import javax.annotation.Nonnull;
-
 import ch.dvbern.ebegu.dto.BGCalculationInput;
+import ch.dvbern.ebegu.dto.VerfuegungsBemerkungDTO;
 import ch.dvbern.ebegu.entities.BGCalculationResult;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
-import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
+import ch.dvbern.ebegu.enums.MsgKey;
 import ch.dvbern.ebegu.enums.PensumUnits;
 import ch.dvbern.ebegu.rechner.rules.RechnerRule;
 import ch.dvbern.ebegu.util.DateUtil;
 import ch.dvbern.ebegu.util.MathUtil;
+
+import javax.annotation.Nonnull;
+import java.math.BigDecimal;
+import java.util.List;
 
 public abstract class AbstractLuzernRechner extends AbstractRechner {
 
@@ -119,6 +119,9 @@ public abstract class AbstractLuzernRechner extends AbstractRechner {
 		BigDecimal gutscheinProMonat = calculateGutscheinProZeitabschnitt(gutschein);
 		BigDecimal vollkostenProMonat = calculateVollkostenProZeitabschnitt(vollkostenGekuerzt);
 
+		BigDecimal gutscheinEingewoehnung = handleEingewoehnug(gutscheinProMonat, vollkostenProMonat, verfuegungZeitabschnitt);
+		BigDecimal verguenstigung = EXACT.add(gutscheinEingewoehnung, gutscheinProMonat);
+
 		BGCalculationResult result = new BGCalculationResult();
 		VerfuegungZeitabschnitt.initBGCalculationResult(this.input, result);
 
@@ -128,16 +131,57 @@ public abstract class AbstractLuzernRechner extends AbstractRechner {
 		result.setMinimalerElternbeitragGekuerzt(minimalerSelbstbehalt);
 		result.setVerguenstigungOhneBeruecksichtigungMinimalbeitrag(guscheinGekuerztInklZuschlag);
 		result.setVerguenstigungOhneBeruecksichtigungVollkosten(gutscheinVorAbzugSelbstbehalt);
-		result.setVerguenstigung(gutscheinProMonat);
+		result.setVerguenstigung(verguenstigung);
 		result.setZeiteinheit(getZeiteinheit());
 		result.setBetreuungspensumZeiteinheit(betreuungsZeiteinheiten);
 		result.setBgPensumZeiteinheit(verfuegteZeiteinheit);
 		result.setAnspruchspensumZeiteinheit(anspruchsberechtigteZeiteinheiten);
 		result.setVerguenstigungProZeiteinheit(gutschein);
 		result.setBabyTarif(input.isBabyTarif());
+		result.setGutscheinEingewoehnung(gutscheinEingewoehnung);
 		result.roundAllValues();
 		verfuegungZeitabschnitt.setBgCalculationResultAsiv(result);
 		verfuegungZeitabschnitt.setBgCalculationResultGemeinde(result);
+	}
+
+	private BigDecimal handleEingewoehnug(
+		BigDecimal gutscheinProMonat,
+		BigDecimal vollkostenProMonat,
+		VerfuegungZeitabschnitt zeitabschnitt
+	) {
+		if (input.getEingewoehnungPauschale().compareTo(BigDecimal.ZERO) <= 0) {
+			return BigDecimal.ZERO;
+		}
+
+		if (vollkostenProMonat.compareTo(BigDecimal.ZERO) <= 0) {
+			return BigDecimal.ZERO;
+		}
+
+		BigDecimal gutscheinEingewoehung = calculateGutscheinEingewoehnung(gutscheinProMonat, vollkostenProMonat);
+		setGutscheinEingewoehnungToBemerkung(gutscheinEingewoehung, zeitabschnitt);
+		return gutscheinEingewoehung;
+	}
+
+	private BigDecimal calculateGutscheinEingewoehnung(BigDecimal gutscheinProMonat, BigDecimal vollkostenProMonat) {
+		BigDecimal gutscheinEingewoehung =  EXACT.divide(
+			EXACT.multiply(input.getEingewoehnungPauschale(), gutscheinProMonat),
+			vollkostenProMonat);
+		return MathUtil.roundToFrankenRappen(gutscheinEingewoehung);
+	}
+
+	private void setGutscheinEingewoehnungToBemerkung(
+		BigDecimal gutscheinEingewoehnung,
+		VerfuegungZeitabschnitt zeitabschnitt
+	) {
+		VerfuegungsBemerkungDTO eingewoehungBemerkung = zeitabschnitt
+			.getBemerkungenDTOList()
+			.findFirstBemerkungByMsgKey(MsgKey.EINGEWOEHUNG_PASCHALE);
+
+		if (eingewoehungBemerkung == null) {
+			return;
+		}
+
+		eingewoehungBemerkung.setArgs(gutscheinEingewoehnung);
 	}
 
 	protected BigDecimal calculateGutscheinGekuerzt(BigDecimal differenzVollkostenUndGutschein, BigDecimal gutscheinVorZuschlagUndSelbstbehalt) {

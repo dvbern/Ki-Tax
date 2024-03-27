@@ -17,16 +17,19 @@
 
 package ch.dvbern.ebegu.rechner;
 
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.time.Month;
-
 import ch.dvbern.ebegu.entities.BGCalculationResult;
 import ch.dvbern.ebegu.entities.Verfuegung;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.EinschulungTyp;
 import ch.dvbern.ebegu.types.DateRange;
 import org.junit.Assert;
+
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.Month;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
 
 public class AbstractLuzernRechnerTest extends AbstractBGRechnerTest {
 
@@ -92,6 +95,18 @@ public class AbstractLuzernRechnerTest extends AbstractBGRechnerTest {
 		Assert.assertEquals("BGZeiteinheit not equal", testValues.expectedBgZeiteinheit.stripTrailingZeros(), result.getBgPensumZeiteinheit().stripTrailingZeros());
 		BigDecimal bgPensum =  testValues.betreuungsPensum.min(BigDecimal.valueOf(testValues.anspruchsPensum));
 		Assert.assertEquals("BGPensum not equal", bgPensum.stripTrailingZeros(), result.getBgPensumProzent().stripTrailingZeros());
+
+		if (result.getGutscheinEingewoehnung() == null) {
+			assertThat(
+				"Gutschein Eingewöhnung not zero",
+				BigDecimal.ZERO,
+				is(testValues.expectedGutscheinEingewoehnung.stripTrailingZeros()));
+		} else {
+			assertThat(
+				"Gutschein Eingewöhnung not equal",
+				result.getGutscheinEingewoehnung().stripTrailingZeros(),
+				is(testValues.expectedGutscheinEingewoehnung.stripTrailingZeros()));
+		}
 	}
 
 	protected static class TestValues {
@@ -114,9 +129,10 @@ public class AbstractLuzernRechnerTest extends AbstractBGRechnerTest {
 		protected BigDecimal expectedBetreuungsZeiteinheit = BigDecimal.ZERO;
 		protected BigDecimal expectedAnspruchsZeiteinheit = BigDecimal.ZERO;
 		protected BigDecimal expectedBgZeiteinheit = BigDecimal.ZERO;
+		protected BigDecimal expectedGutscheinEingewoehnung = BigDecimal.ZERO;
 
 		protected DateRange gueltigkeit = new DateRange(
 			LocalDate.of(2019, Month.AUGUST, 1),
-			LocalDate.of(2019, Month.AUGUST, 31));;
+			LocalDate.of(2019, Month.AUGUST, 31));
 	}
 }

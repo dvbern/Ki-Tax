@@ -321,6 +321,38 @@ public class KitaLuzernRechnerTest extends AbstractLuzernRechnerTest {
 		assertCalculationResultResult(zeitabschnitt.getRelevantBgCalculationResult(), testValues);
 	}
 
+	@Test
+	public void testKindWithEingewoehnung() { //Test Kind1 gemäss Excel
+		TestValues testValues = new TestValues();
+		testValues.monatlicheBetreuungsKosten = MathUtil.DEFAULT.fromNullSafe(1600);
+		testValues.betreuungsPensum = MathUtil.DEFAULT.fromNullSafe(60);
+		testValues.anspruchsPensum = 60;
+		testValues.einkommen = MathUtil.DEFAULT.fromNullSafe(120000);
+		testValues.isBaby = false;
+
+		testValues.expectedVollkosten = MathUtil.DEFAULT.fromNullSafe(1600);
+		testValues.expectedVerguenstigungOhneBeruecksichtigungMinimalbetrag = BigDecimal.valueOf(123);
+		testValues.expectedVerguenstigungOhneBeruecksichtigungVollkosten = BigDecimal.valueOf(123);
+		testValues.expectedMinimalerElternbeitrag = BigDecimal.valueOf(184.50);
+		testValues.expectedBetreuungsZeiteinheit = BigDecimal.valueOf(12.3);
+		testValues.expectedAnspruchsZeiteinheit =  BigDecimal.valueOf(12.3);
+		testValues.expectedBgZeiteinheit =  BigDecimal.valueOf(12.3);
+
+		//gutschein pro Monat = 123
+		//expected pauschale * verguenstigung / vollkosten => 500 * 123 / 1600 = 38.44 (38.45 auf 5rp gerundet
+		testValues.expectedGutscheinEingewoehnung = BigDecimal.valueOf(38.45);
+
+		//expected verguenstigung = gutschein pro Monat + gutschein eingewoehnung => 123 + 38.45 = 161.45
+		testValues.expectedVerguenstigung = BigDecimal.valueOf(161.45);
+		VerfuegungZeitabschnitt zeitabschnitt = prepareVerfuegung(testValues);
+		zeitabschnitt.getBgCalculationInputAsiv().setEingewoehnungPauschale(BigDecimal.valueOf(500));
+
+		KitaLuzernRechner rechner = new KitaLuzernRechner(Collections.emptyList());
+		rechner.calculate(zeitabschnitt, defaultParameterDTO);
+
+		assertCalculationResultResult(zeitabschnitt.getRelevantBgCalculationResult(), testValues);
+	}
+
 	@Override
 	protected void assertCalculationResultResult(BGCalculationResult result, TestValues testValues) {
 		super.assertCalculationResultResult(result, testValues);
