@@ -101,6 +101,7 @@
             </dv-loading-button>
 
             <button type="button" class="dv-btn cancel-button"
+                    data-test="container.cancel"
                     *ngIf="!isRegistering()"
                     (click)="cancel()"
                     [textContent]="'CANCEL' | translate">

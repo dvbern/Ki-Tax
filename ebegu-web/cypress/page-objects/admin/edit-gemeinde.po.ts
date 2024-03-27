@@ -58,6 +58,10 @@ const getSaveButton = () => {
 	return cy.getByData('container.save', 'navigation-button');
 };
 
+const getCancelButton = () => {
+	return cy.getByData('container.cancel');
+};
+
 // !! -- PAGE ACTIONS -- !!
 
 const fillGemeindeStammdaten = (dataset: keyof typeof GemeindeFixture, gemeinde: string) => {
@@ -79,6 +83,7 @@ export const EditGemeindePO = {
     // PAGE OBJECTS
     getEditButton,
     getSaveButton,
+    getCancelButton,
     // PAGE ACTIONS
     fillGemeindeStammdaten
 };

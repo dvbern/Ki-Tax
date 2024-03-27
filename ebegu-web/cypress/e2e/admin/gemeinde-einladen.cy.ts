@@ -45,6 +45,7 @@ describe('Einladung einer Gemeinde und Ausfüllen der Stammdaten durch Mandant',
             });
 
             GemeindeListPO.getSearchField().type(invitedGemeinde);
+            GemeindeListPO.getSearchItem(0).find('mat-cell').eq(1).should('contain.text', 'Eingeladen');
             GemeindeListPO.getSearchItem(0).click();
 
             EditGemeindePO.getEditButton().click();
@@ -52,6 +53,9 @@ describe('Einladung einer Gemeinde und Ausfüllen der Stammdaten durch Mandant',
             cy.waitForRequest('PUT', '**/gemeinde/stammdaten', () => {
                 EditGemeindePO.getSaveButton().click();
             });
+            EditGemeindePO.getCancelButton().click();
+            GemeindeListPO.getSearchField().clear().type(invitedGemeinde);
+            GemeindeListPO.getSearchItem(0).find('mat-cell').eq(1).should('contain.text', 'Eingeladen');
 
         });
     })

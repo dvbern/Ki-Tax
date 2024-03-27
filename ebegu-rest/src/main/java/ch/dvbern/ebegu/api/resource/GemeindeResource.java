@@ -343,8 +343,8 @@ public class GemeindeResource {
 			saveFerieninseln(konfiguration.getFerieninselStammdaten(), stammdaten.getGemeinde());
 		});
 
-		// Statuswechsel
-		if (convertedStammdaten.getGemeinde().getStatus() == GemeindeStatus.EINGELADEN) {
+		// Statuswechsel, Mandant kann Gemeinden nicht aktivieren
+		if (convertedStammdaten.getGemeinde().getStatus() == GemeindeStatus.EINGELADEN && !principalBean.isCallerInAnyOfRole(UserRole.getMandantRoles())) {
 			convertedStammdaten.getGemeinde().setStatus(GemeindeStatus.AKTIV);
 		}
 
