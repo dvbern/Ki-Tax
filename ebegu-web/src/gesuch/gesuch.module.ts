@@ -74,6 +74,9 @@ import {
     FamiliensituationAppenzellViewXComponent
 } from './component/familiensituation/familiensituation-appenzell-view-x/familiensituation-appenzell-view-x.component';
 import {
+    FamiliensituationSchwyzComponent
+} from './component/familiensituation/familiensituation-schwyz/familiensituation-schwyz.component';
+import {
     FamiliensituationViewXComponent
 } from './component/familiensituation/familiensituation-view-x/familiensituation-view-x.component';
 import {
@@ -146,6 +149,7 @@ export const GESUCH_JS_MODULE =
         .run(gesuchRun)
         .component('familiensituationView', downgradeComponent({component: FamiliensituationViewXComponent}))
         .component('familiensituationAppenzellView', downgradeComponent({component: FamiliensituationAppenzellViewXComponent}))
+        .component('familiensituationSchwyzView', downgradeComponent({component: FamiliensituationSchwyzComponent}))
         .component('stammdatenView', new StammdatenViewComponentConfig())
         .component('umzugView', new UmzugViewComponentConfig())
         .component('kinderListView', new KinderListViewComponentConfig())

@@ -51,6 +51,9 @@ import {
     FamiliensituationAppenzellViewXComponent
 } from './component/familiensituation/familiensituation-appenzell-view-x/familiensituation-appenzell-view-x.component';
 import {
+    FamiliensituationSchwyzComponent
+} from './component/familiensituation/familiensituation-schwyz/familiensituation-schwyz.component';
+import {
     FamiliensituationViewXComponent
 } from './component/familiensituation/familiensituation-view-x/familiensituation-view-x.component';
 import {
@@ -168,6 +171,7 @@ import {
         FallCreationViewXComponent,
         FamiliensituationViewXComponent,
         FamiliensituationAppenzellViewXComponent,
+        FamiliensituationSchwyzComponent,
         ZahlungsstatusIconComponent,
         AuszahlungsdatenComponent,
         KindFachstelleComponent
