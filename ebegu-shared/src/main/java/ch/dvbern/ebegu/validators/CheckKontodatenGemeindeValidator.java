@@ -18,21 +18,24 @@
 package ch.dvbern.ebegu.validators;
 
 import javax.annotation.Nonnull;
+import javax.inject.Inject;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
+import ch.dvbern.ebegu.authentication.PrincipalBean;
 import ch.dvbern.ebegu.entities.GemeindeStammdaten;
+import ch.dvbern.ebegu.enums.UserRole;
+import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 
 /**
  * Validator for Betreuungspensen, checks that the entered betreuungspensum is bigger than the minimum
  * that is allowed for the Betreungstyp for a given date
  */
+@RequiredArgsConstructor(onConstructor_ = @Inject)
 public class CheckKontodatenGemeindeValidator implements ConstraintValidator<CheckKontodatenGemeinde, GemeindeStammdaten> {
 
-	public CheckKontodatenGemeindeValidator() {
-	}
-
+	private final PrincipalBean principal;
 
 	@Override
 	public void initialize(CheckKontodatenGemeinde constraintAnnotation) {
@@ -42,17 +45,19 @@ public class CheckKontodatenGemeindeValidator implements ConstraintValidator<Che
 	@Override
 	public boolean isValid(@Nonnull GemeindeStammdaten stammdaten, ConstraintValidatorContext context) {
 
+		// Mandant does not have edit permissions for these fields, so they must be able to
+		// save them empty
+		if (this.principal.isCallerInAnyOfRole(UserRole.getMandantRoles())) {
+			return true;
+		}
+
 		if (!stammdaten.getGemeinde().isAngebotBG()) {
 			// Keine Kontodaten benötigt
 			return true;
 		}
 
-		if (StringUtils.isEmpty(stammdaten.getKontoinhaber())
-			|| StringUtils.isEmpty(stammdaten.getBic())
-			|| stammdaten.getIban() == null) {
-			return false;
-		}
-
-		return true;
+		return !StringUtils.isEmpty(stammdaten.getKontoinhaber())
+			&& !StringUtils.isEmpty(stammdaten.getBic())
+			&& stammdaten.getIban() != null;
 	}
 }
