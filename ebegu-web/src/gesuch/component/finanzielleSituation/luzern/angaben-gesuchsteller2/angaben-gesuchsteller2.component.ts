@@ -30,7 +30,6 @@ import {FinanzielleSituationLuzernService} from '../finanzielle-situation-luzern
 @Component({
     selector: 'dv-angaben-gesuchsteller2',
     templateUrl: '../finanzielle-situation-luzern.component.html',
-    styleUrls: ['../finanzielle-situation-luzern.component.less'],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AngabenGesuchsteller2Component extends AbstractFinSitLuzernView {

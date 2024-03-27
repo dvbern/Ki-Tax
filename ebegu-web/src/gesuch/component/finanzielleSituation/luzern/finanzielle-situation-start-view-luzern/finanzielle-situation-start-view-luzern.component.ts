@@ -36,7 +36,6 @@ import {ResultatComponent} from '../resultat/resultat.component';
 @Component({
     selector: 'dv-finanzielle-situation-start-view-luzern',
     templateUrl: '../finanzielle-situation-luzern.component.html',
-    styleUrls: ['../finanzielle-situation-luzern.component.less'],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class FinanzielleSituationStartViewLuzernComponent extends AbstractFinSitLuzernView {
