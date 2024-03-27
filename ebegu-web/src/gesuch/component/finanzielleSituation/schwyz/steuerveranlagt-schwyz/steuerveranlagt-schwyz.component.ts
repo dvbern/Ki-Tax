@@ -1,11 +1,13 @@
 import {ChangeDetectionStrategy, Component, Input} from '@angular/core';
+import {ControlContainer, NgForm} from '@angular/forms';
 import {TSFinanzielleSituation} from '../../../../../models/TSFinanzielleSituation';
 import {EbeguUtil} from '../../../../../utils/EbeguUtil';
 
 @Component({
     selector: 'dv-steuerveranlagt-schwyz',
     templateUrl: './steuerveranlagt-schwyz.component.html',
-    changeDetection: ChangeDetectionStrategy.OnPush,
+    changeDetection: ChangeDetectionStrategy.Default,
+    viewProviders: [{provide: ControlContainer, useExisting: NgForm}]
 })
 export class SteuerveranlagtSchwyzComponent {
 

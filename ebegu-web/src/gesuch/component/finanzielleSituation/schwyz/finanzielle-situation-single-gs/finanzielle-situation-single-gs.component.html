@@ -16,7 +16,7 @@
             <mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
             <mat-radio-button [value]="false">{{'LABEL_NEIN' | translate }}</mat-radio-button>
         </mat-radio-group>
-        <dv-error-messages *ngIf="form?.submitted"
+        <dv-error-messages *ngIf="quellenbesteuert.touched"
                            [errorObject]="quellenbesteuert.errors"
                            inputId="quellenbesteuert_id">
         </dv-error-messages>
@@ -31,7 +31,6 @@
     <dv-steuerveranlagt-schwyz [finSitJA]="finSitJA"
                                [finSitGS]="finSitGS"
                                [readonly]="readonly">
-
     </dv-steuerveranlagt-schwyz>
 </ng-template>
 <ng-template #bruttolohnFragen>

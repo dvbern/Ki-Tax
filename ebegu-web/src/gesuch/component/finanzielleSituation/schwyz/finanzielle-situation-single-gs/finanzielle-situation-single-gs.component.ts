@@ -6,7 +6,7 @@ import {EbeguUtil} from '../../../../../utils/EbeguUtil';
 @Component({
     selector: 'dv-finanzielle-situation-single-gs',
     templateUrl: './finanzielle-situation-single-gs.component.html',
-    changeDetection: ChangeDetectionStrategy.OnPush,
+    changeDetection: ChangeDetectionStrategy.Default,
     viewProviders: [{provide: ControlContainer, useExisting: NgForm}],
 })
 export class FinanzielleSituationSingleGsComponent {
