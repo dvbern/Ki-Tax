@@ -46,7 +46,7 @@ public class EingewoehnungPauschale extends AbstractDateRangedEntity {
 	}
 
 	public EingewoehnungPauschale copyEingewohnungEntity(@Nonnull EingewoehnungPauschale target, @Nonnull AntragCopyType copyType) {
-		super.copyAbstractEntity(target, copyType);
+		super.copyAbstractDateRangedEntity(target, copyType);
 		target.setPauschale(this.getPauschale());
 		return target;
 	}
