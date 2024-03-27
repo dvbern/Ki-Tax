@@ -161,11 +161,6 @@ public class BetreuungspensumAbschnittRule extends AbstractAbschnittRule {
 			zeitabschnitt.setStuendlicheVollkosten(betreuungspensum.getStuendlicheVollkosten());
 		}
 
-		if (betreuungspensum.getEingewoehnungPauschale() != null) {
-			zeitabschnitt.setEingewoehnungPauschale(betreuungspensum.getEingewoehnungPauschale().getPauschale());
-			zeitabschnitt.getBgCalculationInputAsiv().addBemerkung(MsgKey.EINGEWOEHUNG_PASCHALE, getLocale());
-		}
-
 		// ErweiterteBetreuung-Flag gesetzt?
 		boolean besondereBeduerfnisse = betreuung.hasErweiterteBetreuung();
 
