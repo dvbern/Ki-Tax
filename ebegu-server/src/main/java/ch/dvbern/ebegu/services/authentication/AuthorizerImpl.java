@@ -1431,7 +1431,8 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 		case ADMIN_GEMEINDE:
 		case ADMIN_BG:
 			if (institutionStammdaten.getBetreuungsangebotTyp().isKita()
-				|| institutionStammdaten.getBetreuungsangebotTyp().isTagesfamilien()) {
+				|| institutionStammdaten.getBetreuungsangebotTyp().isTagesfamilien()
+			    || institutionStammdaten.getBetreuungsangebotTyp().isMittagstisch()) {
 				// Kitas und Tageseltern dürfen von Gemeinden nur editiert werden, falls
 				// institutionen durch Gemeinde einladen aktiv ist
 				return Boolean.TRUE.equals(applicationPropertyService.findApplicationPropertyAsBoolean(
@@ -1445,7 +1446,8 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 		case ADMIN_TS:
 		case SACHBEARBEITER_TS: {
 			if (institutionStammdaten.getBetreuungsangebotTyp().isKita()
-				|| institutionStammdaten.getBetreuungsangebotTyp().isTagesfamilien()) {
+				|| institutionStammdaten.getBetreuungsangebotTyp().isTagesfamilien()
+				|| institutionStammdaten.getBetreuungsangebotTyp().isMittagstisch()) {
 				/// Kitas und Tageseltern koennen ohne Einschraenkungen gelesen aber nicht editiert werden durch
 				// Gemeinde-Benutzer,
 				return false;
