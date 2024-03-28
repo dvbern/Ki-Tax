@@ -64,7 +64,7 @@ const verfuegenStarten = () => {
 const finSitAkzeptieren = () => {
 	return cy.waitForRequest('POST',  '**/changeFinSitStatus/**', () => {
         // likely to be an angularjs issue, where radio-buttons are enabled but not clickable soon after first render
-        cy.wait(200);
+        cy.wait(400);
         getFinSitAkzeptiert('AKZEPTIERT').click();
     });
 };
