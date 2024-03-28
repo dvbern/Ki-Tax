@@ -459,29 +459,40 @@ public class Betreuung extends AbstractPlatz {
 
 			if ((von.isBefore(abweichungVon) || DateUtil.isSameMonthAndYear(von, abweichungVon))
 				&& (bis.isAfter(abweichungBis) || DateUtil.isSameMonthAndYear(bis, abweichungBis))) {
-				//HIT!!
-				if (von.isBefore(abweichungVon)) {
-					von = abweichungVon;
-				}
-
-				if (bis.isAfter(abweichungBis)) {
-					bis = abweichungBis;
-				}
-				BigDecimal anteil = DateUtil.calculateAnteilMonatInklWeekend(von, bis);
-				abweichung.addPensum(pensum.getPensum().multiply(anteil));
-				abweichung.addKosten(pensum.getMonatlicheBetreuungskosten().multiply(anteil));
-				abweichung.addHauptmahlzeiten(pensum.getMonatlicheHauptmahlzeiten().multiply(anteil));
-				abweichung.addNebenmahlzeiten(pensum.getMonatlicheNebenmahlzeiten().multiply(anteil));
-				abweichung.addTarifHaupt(pensum.getTarifProHauptmahlzeit().multiply(anteil));
-				abweichung.addTarifNeben(pensum.getTarifProNebenmahlzeit().multiply(anteil));
-				abweichung.setStuendlicheVollkosten(pensum.getStuendlicheVollkosten());
-
-				if (pensum.getEingewoehnungPauschale() != null && DateUtil.isSameMonthAndYear(pensum.getGueltigkeit().getGueltigAb(), abweichungVon)) {
-					abweichung.addEingewoehnungPauschale(pensum.getEingewoehnungPauschale());
-				}
+				setAbweichungDatenFromPensum(abweichung, abweichungVon, abweichungBis, pensum, von, bis);
 			}
 		}
 		return abweichung;
+	}
+
+	private static void setAbweichungDatenFromPensum(
+		BetreuungspensumAbweichung abweichung,
+		LocalDate abweichungVon,
+		LocalDate abweichungBis,
+		Betreuungspensum pensum,
+		LocalDate von,
+		LocalDate bis) {
+		if (von.isBefore(abweichungVon)) {
+			von = abweichungVon;
+		}
+
+		if (bis.isAfter(abweichungBis)) {
+			bis = abweichungBis;
+		}
+		BigDecimal anteil = DateUtil.calculateAnteilMonatInklWeekend(von, bis);
+		abweichung.addPensum(pensum.getPensum().multiply(anteil));
+		abweichung.addKosten(pensum.getMonatlicheBetreuungskosten().multiply(anteil));
+		abweichung.addHauptmahlzeiten(pensum.getMonatlicheHauptmahlzeiten().multiply(anteil));
+		abweichung.addNebenmahlzeiten(pensum.getMonatlicheNebenmahlzeiten().multiply(anteil));
+		abweichung.addTarifHaupt(pensum.getTarifProHauptmahlzeit().multiply(anteil));
+		abweichung.addTarifNeben(pensum.getTarifProNebenmahlzeit().multiply(anteil));
+		abweichung.setStuendlicheVollkosten(pensum.getStuendlicheVollkosten());
+
+		if (pensum.getEingewoehnungPauschale() != null && DateUtil.isSameMonthAndYear(
+			pensum.getGueltigkeit().getGueltigAb(),
+			abweichungVon)) {
+			abweichung.addEingewoehnungPauschale(pensum.getEingewoehnungPauschale());
+		}
 	}
 
 	// initiate an empty BetreuungspensumAbweichung for every month within the Gesuchsperiode
