@@ -32,7 +32,6 @@ import com.lowagie.text.Element;
 import com.lowagie.text.Font;
 import com.lowagie.text.Paragraph;
 import com.lowagie.text.Phrase;
-import com.lowagie.text.pdf.PdfContentByte;
 import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
 import org.jetbrains.annotations.Nullable;
@@ -123,10 +122,6 @@ public class VerfuegungPdfGeneratorSolothurn extends AbstractVerfuegungPdfGenera
 		//defualt no-op: wird nur in Luzern angezeigt
 	}
 
-	@Override
-	protected void createFusszeileNormaleVerfuegung(@Nonnull PdfContentByte dirPdfContentByte) throws DocumentException {
-		//no-op: wird in Solothurn nicht angezeigt
-	}
 
 	@Override
 	protected float[] getVerfuegungColumnWidths() {
