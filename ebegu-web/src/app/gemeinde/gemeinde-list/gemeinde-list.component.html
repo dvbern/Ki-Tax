@@ -36,7 +36,7 @@
         <div *ngIf="hatBerechtigungHinzufuegen()"
              class="margin-top-50 row">
             <div class="col-md-3">
-                <dv-loading-button (buttonClick)="addGemeinde();">
+                <dv-loading-button (buttonClick)="addGemeinde();" data-test="container.gemeinde-hinzufuegen">
                     <span translate>GEMEINDE_HINZUFUEGEN</span>
                 </dv-loading-button>
             </div>

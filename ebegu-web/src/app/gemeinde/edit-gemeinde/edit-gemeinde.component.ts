@@ -190,15 +190,10 @@ export class EditGemeindeComponent implements OnInit {
             || EbeguUtil.isEmptyStringNullOrUndefined(stammdaten.adresse.strasse))
             ? false
             : !stammdaten.beschwerdeAdresse;
-        if (EbeguUtil.isNullOrUndefined(stammdaten.beschwerdeAdresse)) {
+        if (this.hasEditBGPermission() && EbeguUtil.isNullOrUndefined(stammdaten.beschwerdeAdresse)) {
             stammdaten.beschwerdeAdresse = new TSAdresse();
         }
-        if (EbeguUtil.isNullOrUndefined(stammdaten.bgAdresse)) {
-            this.altBGAdresse = false;
-            stammdaten.bgAdresse = new TSAdresse();
-        } else {
-            this.altBGAdresse = true;
-        }
+
         if (EbeguUtil.isNullOrUndefined(stammdaten.tsAdresse)) {
             this.altTSAdresse = false;
             stammdaten.tsAdresse = new TSAdresse();
@@ -433,11 +428,15 @@ export class EditGemeindeComponent implements OnInit {
         this.editMode = false;
     }
 
-    public editModeForBG(): boolean {
-        if (this.authServiceRS.isOneOfRoles([TSRole.ADMIN_BG, TSRole.ADMIN_GEMEINDE, TSRole.SUPER_ADMIN])) {
+    public isEditModeForBG(): boolean {
+        if (this.hasEditBGPermission()) {
             return this.editMode;
         }
         return false;
+    }
+
+    private hasEditBGPermission(): boolean {
+        return this.authServiceRS.isOneOfRoles([TSRole.ADMIN_BG, TSRole.ADMIN_GEMEINDE, TSRole.SUPER_ADMIN]);
     }
 
     public editModeForTSFI(): boolean {
