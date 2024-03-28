@@ -222,6 +222,7 @@ describe('Kibon - generate Testfälle [Gemeinde Sachbearbeiter]', () => {
 
             AntragBetreuungPO.getBetreuung(0, 0).click();
             AntragBetreuungPO.fillKitaBetreuungspensumForm('withValid', gemeinde);
+            AntragBetreuungPO.getErweiterteBeduerfnisseBestaetigt().click();
             AntragBetreuungPO.platzBestaetigen();
         }
         cy.changeLogin(userSB);
