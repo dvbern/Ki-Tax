@@ -36,7 +36,7 @@ public class SchwyzTestfallDataProvider extends AbstractTestfallDataProvider {
 		finanzielleSituation.setSteuerveranlagungErhalten(true);
 		// required in all finsit
 		finanzielleSituation.setSteuererklaerungAusgefuellt(true);
-		finanzielleSituation.setQuellenbesteuert(true);
+		finanzielleSituation.setQuellenbesteuert(false);
 		finanzielleSituation.setSteuerbaresEinkommen(einkommen);
 		finanzielleSituation.setSteuerbaresVermoegen(vermoegen);
 		finanzielleSituation.setAbzuegeLiegenschaft(BigDecimal.ZERO);

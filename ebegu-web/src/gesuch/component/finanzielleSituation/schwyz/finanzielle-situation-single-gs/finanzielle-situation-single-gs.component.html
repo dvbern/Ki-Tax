@@ -24,10 +24,10 @@
 </div>
 
 <ng-container *ngIf="isNotNullOrUndefined(finSitJA.quellenbesteuert)">
-    <ng-container *ngIf="finSitJA.quellenbesteuert; then quellenbesteuertFragen else bruttolohnFragen"></ng-container>
+    <ng-container *ngIf="finSitJA.quellenbesteuert; then bruttolohnFragen else steuerveranlagFragen"></ng-container>
 </ng-container>
 
-<ng-template #quellenbesteuertFragen>
+<ng-template #steuerveranlagFragen>
     <dv-steuerveranlagt-schwyz [finSitJA]="finSitJA"
                                [finSitGS]="finSitGS"
                                [readonly]="readonly">
