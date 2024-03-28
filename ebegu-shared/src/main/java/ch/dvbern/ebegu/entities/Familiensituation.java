@@ -383,6 +383,8 @@ public class Familiensituation extends AbstractMutableEntity {
 	public boolean hasSecondGesuchsteller(LocalDate referenzdatum) {
 		if (this.familienstatus != null) {
 			switch (this.familienstatus) {
+			case SCHWYZ:
+				return this.gesuchstellerKardinalitaet == EnumGesuchstellerKardinalitaet.ZU_ZWEIT;
 			case APPENZELL:
 				return this.hasSecondGesuchstellerAppenzell();
 			case ALLEINERZIEHEND:

@@ -47,6 +47,7 @@ import javax.ws.rs.core.UriInfo;
 
 import ch.dvbern.ebegu.api.AuthConstants;
 import ch.dvbern.ebegu.api.converter.JaxBConverter;
+import ch.dvbern.ebegu.api.converter.JaxBenutzerConverter;
 import ch.dvbern.ebegu.api.dtos.JaxBenutzer;
 import ch.dvbern.ebegu.api.dtos.JaxBenutzerNoDetails;
 import ch.dvbern.ebegu.api.dtos.JaxBenutzerSearchresultDTO;
@@ -116,7 +117,7 @@ public class BenutzerResource {
 	private SuperAdminService superAdminService;
 
 	@Inject
-	private JaxBConverter converter;
+	private JaxBenutzerConverter converter;
 
 	@Inject
 	private TraegerschaftService traegerschaftService;

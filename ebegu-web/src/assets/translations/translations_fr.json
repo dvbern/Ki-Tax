@@ -1882,7 +1882,9 @@
     "NOTVERORDNUNG_DEFAULT_EINREICHEFRIST_OEFFENTLICH": "Délais de soumission publique par défault selon l'ordonnance cantonale de nécessité",
     "NOTVERORDNUNG_DEFAULT_EINREICHEFRIST_PRIVAT": "Délais de soumission privé par défault selon l'ordonnance cantonale de nécessité",
     "KANTON_NOTVERORDNUNG_PHASE_2_AKTIV": "Notverordnung Phase 2 aktiv",
-    "INFOMA_ZAHLUNGEN": "Infoma Zahlungen (Zahlungssystem Luzern)",
+    "INFOMA_ZAHLUNGEN": "Versement Infoma",
+    "INFOMA_ZAHLUNGEN_JA": "Versement Infoma activé",
+    "AUSZAHLUNGEN_AN_ELTERN": "Auszahlung an Eltern",
     "ANZAHL_MONATE_AUSZAHLEN_IN_ZUKUNFT": "Nombre de mois à payer dnas le futur",
     "INSTITUTIONEN_DURCH_GEMEINDEN_EINLADEN": "Inviter une institution par une commune",
     "GERES_ENABLED_FOR_MANDANT": "Activer Geres pour le mandant",
@@ -3107,5 +3109,7 @@
     "SPRACHFOERDERUNG_BESTAETIGEN_TFO": "L’accueillant∙e en milieu familial est apte à assurer l’encouragement linguistique et possède au minimum un niveau C1 dans la langue parlée plus tard à l’école.",
     "GESUCH_BEENDEN_BEI_TAUSCH_GS2": "Antrag beenden, wenn der Gesuchsteller 2 innerhalb der Periode ändert",
     "WARNUNG_GS2_AUSFUELLEN": "Veuillez saisir les données de l'auteur-e de la demande 2.",
+    "CHECKBOX_AUSZAHLUNG_IN_ZUKUNFT": "Payer le mois suivant",
+    "BEGRUENDUNG_AUSZAHLUNG_AN_INSTITUTION": "Motif du paiement à l'institution",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

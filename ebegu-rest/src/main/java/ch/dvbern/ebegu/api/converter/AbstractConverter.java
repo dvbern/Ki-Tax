@@ -25,6 +25,7 @@ import ch.dvbern.ebegu.util.Constants;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import java.time.LocalDate;
@@ -350,6 +351,7 @@ public class AbstractConverter {
 		gemeinde.setAngebotFI(jaxGemeinde.isAngebotFI());
 		gemeinde.setBesondereVolksschule(jaxGemeinde.isBesondereVolksschule());
 		gemeinde.setNurLats(jaxGemeinde.isNurLats());
+		gemeinde.setInfomaZahlungen(jaxGemeinde.getInfomaZahlungen());
 		return gemeinde;
 	}
 
@@ -371,6 +373,7 @@ public class AbstractConverter {
 		jaxGemeinde.setAngebotFI(persistedGemeinde.isAngebotFI());
 		jaxGemeinde.setBesondereVolksschule(persistedGemeinde.isBesondereVolksschule());
 		jaxGemeinde.setNurLats(persistedGemeinde.isNurLats());
+		jaxGemeinde.setInfomaZahlungen(persistedGemeinde.getInfomaZahlungen());
 		return jaxGemeinde;
 	}
 
@@ -403,6 +406,90 @@ public class AbstractConverter {
 		gesuchsperiode.setStatus(jaxGesuchsperiode.getStatus());
 
 		return gesuchsperiode;
+	}
+
+	public TextRessource textRessourceToEntity(
+		@Nonnull final JaxTextRessource textRessourceJAX,
+		@Nullable TextRessource textRessource) {
+		requireNonNull(textRessourceJAX);
+
+		if (textRessource == null) {
+			textRessource = new TextRessource();
+		}
+
+		convertAbstractFieldsToEntity(textRessourceJAX, textRessource);
+
+		textRessource.setTextDeutsch(textRessourceJAX.getTextDeutsch());
+		textRessource.setTextFranzoesisch(textRessourceJAX.getTextFranzoesisch());
+
+		return textRessource;
+	}
+
+	public JaxTextRessource textRessourceToJAX(@Nonnull final TextRessource textRessource) {
+		Objects.requireNonNull(textRessource);
+
+		final JaxTextRessource jaxTextRessource = new JaxTextRessource();
+
+		convertAbstractFieldsToJAX(textRessource, jaxTextRessource);
+
+		jaxTextRessource.setTextDeutsch(textRessource.getTextDeutsch());
+		jaxTextRessource.setTextFranzoesisch(textRessource.getTextFranzoesisch());
+
+		return jaxTextRessource;
+	}
+
+	public JaxInstitution institutionToJAX(final Institution persistedInstitution) {
+		final JaxInstitution jaxInstitution = new JaxInstitution();
+		convertAbstractVorgaengerFieldsToJAX(persistedInstitution, jaxInstitution);
+		jaxInstitution.setName(persistedInstitution.getName());
+		Objects.requireNonNull(persistedInstitution.getMandant());
+		jaxInstitution.setMandant(mandantToJAX(persistedInstitution.getMandant()));
+		jaxInstitution.setStatus(persistedInstitution.getStatus());
+		jaxInstitution.setStammdatenCheckRequired(persistedInstitution.isStammdatenCheckRequired());
+		if (persistedInstitution.getTraegerschaft() != null) {
+			jaxInstitution.setTraegerschaft(traegerschaftLightToJAX(persistedInstitution.getTraegerschaft()));
+		}
+		return jaxInstitution;
+	}
+
+	public JaxMandant mandantToJAX(@Nonnull final Mandant persistedMandant) {
+		final JaxMandant jaxMandant = new JaxMandant();
+		convertAbstractVorgaengerFieldsToJAX(persistedMandant, jaxMandant);
+		jaxMandant.setName(persistedMandant.getName());
+		jaxMandant.setMandantIdentifier(persistedMandant.getMandantIdentifier());
+		return jaxMandant;
+	}
+
+	public Mandant mandantToEntity(final JaxMandant mandantJAXP, final Mandant mandant) {
+		requireNonNull(mandant);
+		requireNonNull(mandantJAXP);
+		convertAbstractVorgaengerFieldsToEntity(mandantJAXP, mandant);
+		mandant.setName(mandantJAXP.getName());
+		return mandant;
+	}
+
+	/**
+	 * Diese Methode verwenden ausser wenn man der Institution Count und InstitutionNamen benoetigt
+	 */
+	public JaxTraegerschaft traegerschaftLightToJAX(final Traegerschaft persistedTraegerschaft) {
+		final JaxTraegerschaft jaxTraegerschaft = new JaxTraegerschaft();
+		convertAbstractVorgaengerFieldsToJAX(persistedTraegerschaft, jaxTraegerschaft);
+		jaxTraegerschaft.setName(persistedTraegerschaft.getName());
+		jaxTraegerschaft.setActive(persistedTraegerschaft.getActive());
+		return jaxTraegerschaft;
+	}
+
+	@Nonnull
+	public JaxEinstellung einstellungToJAX(@Nonnull final Einstellung einstellung) {
+		final JaxEinstellung jaxEinstellung = new JaxEinstellung();
+		convertAbstractFieldsToJAX(einstellung, jaxEinstellung);
+		jaxEinstellung.setKey(einstellung.getKey());
+		jaxEinstellung.setValue(einstellung.getValue());
+		jaxEinstellung.setErklaerung(einstellung.getErklaerung());
+		jaxEinstellung.setGemeindeId(null == einstellung.getGemeinde() ? null : einstellung.getGemeinde().getId());
+		jaxEinstellung.setGesuchsperiodeId(einstellung.getGesuchsperiode().getId());
+		// Mandant wird aktuell nicht gemappt
+		return jaxEinstellung;
 	}
 
 	protected PrincipalBean getPrincipalBean() {

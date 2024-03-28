@@ -43,7 +43,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.google.common.base.Strings;
 import org.apache.commons.lang3.NotImplementedException;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Validate;
@@ -141,6 +140,8 @@ public class JaxBConverter extends AbstractConverter {
 	private JaxSozialdienstConverter jaxSozialdienstConverter;
 	@Inject
 	private InternePendenzService internePendenzService;
+	@Inject
+	private JaxBenutzerConverter jaxBenutzerConverter;
 
 	public JaxBConverter() {
 		//nop
@@ -214,19 +215,6 @@ public class JaxBConverter extends AbstractConverter {
 		applicationProperty.setErklaerung(jaxAP.getErklaerung());
 
 		return applicationProperty;
-	}
-
-	@Nonnull
-	public JaxEinstellung einstellungToJAX(@Nonnull final Einstellung einstellung) {
-		final JaxEinstellung jaxEinstellung = new JaxEinstellung();
-		convertAbstractFieldsToJAX(einstellung, jaxEinstellung);
-		jaxEinstellung.setKey(einstellung.getKey());
-		jaxEinstellung.setValue(einstellung.getValue());
-		jaxEinstellung.setErklaerung(einstellung.getErklaerung());
-		jaxEinstellung.setGemeindeId(null == einstellung.getGemeinde() ? null : einstellung.getGemeinde().getId());
-		jaxEinstellung.setGesuchsperiodeId(einstellung.getGesuchsperiode().getId());
-		// Mandant wird aktuell nicht gemappt
-		return jaxEinstellung;
 	}
 
 	@Nonnull
@@ -759,7 +747,7 @@ public class JaxBConverter extends AbstractConverter {
 		jaxFall.setFallNummer(persistedFall.getFallNummer());
 		jaxFall.setNextNumberKind(persistedFall.getNextNumberKind());
 		if (persistedFall.getBesitzer() != null) {
-			jaxFall.setBesitzer(benutzerToJaxBenutzer(persistedFall.getBesitzer()));
+			jaxFall.setBesitzer(jaxBenutzerConverter.benutzerToJaxBenutzer(persistedFall.getBesitzer()));
 		}
 		if (persistedFall.getSozialdienstFall() != null) {
 			jaxFall.setSozialdienstFall(jaxSozialdienstConverter.sozialdienstFallToJAX(persistedFall.getSozialdienstFall()));
@@ -840,10 +828,10 @@ public class JaxBConverter extends AbstractConverter {
 		jaxDossier.setGemeinde(gemeindeToJAX(persistedDossier.getGemeinde()));
 		jaxDossier.setBemerkungen(persistedDossier.getBemerkungen());
 		if (persistedDossier.getVerantwortlicherBG() != null) {
-			jaxDossier.setVerantwortlicherBG(benutzerToJaxBenutzerNoDetails(persistedDossier.getVerantwortlicherBG()));
+			jaxDossier.setVerantwortlicherBG(jaxBenutzerConverter.benutzerToJaxBenutzerNoDetails(persistedDossier.getVerantwortlicherBG()));
 		}
 		if (persistedDossier.getVerantwortlicherTS() != null) {
-			jaxDossier.setVerantwortlicherTS(benutzerToJaxBenutzerNoDetails(persistedDossier.getVerantwortlicherTS()));
+			jaxDossier.setVerantwortlicherTS(jaxBenutzerConverter.benutzerToJaxBenutzerNoDetails(persistedDossier.getVerantwortlicherTS()));
 		}
 		return jaxDossier;
 	}
@@ -1156,14 +1144,6 @@ public class JaxBConverter extends AbstractConverter {
 		return jaxGesuch;
 	}
 
-	public JaxMandant mandantToJAX(@Nonnull final Mandant persistedMandant) {
-		final JaxMandant jaxMandant = new JaxMandant();
-		convertAbstractVorgaengerFieldsToJAX(persistedMandant, jaxMandant);
-		jaxMandant.setName(persistedMandant.getName());
-		jaxMandant.setMandantIdentifier(persistedMandant.getMandantIdentifier());
-		return jaxMandant;
-	}
-
 	/**
 	 * Diese Methode verwenden nur wenn man der Institution Count und InstitutionNamen benoetigt
 	 */
@@ -1182,25 +1162,6 @@ public class JaxBConverter extends AbstractConverter {
 			.collect(Collectors.joining(", ")));
 		jaxTraegerschaft.setInstitutionCount(institutionen.size());
 		return jaxTraegerschaft;
-	}
-
-	/**
-	 * Diese Methode verwenden ausser wenn man der Institution Count und InstitutionNamen benoetigt
-	 */
-	public JaxTraegerschaft traegerschaftLightToJAX(final Traegerschaft persistedTraegerschaft) {
-		final JaxTraegerschaft jaxTraegerschaft = new JaxTraegerschaft();
-		convertAbstractVorgaengerFieldsToJAX(persistedTraegerschaft, jaxTraegerschaft);
-		jaxTraegerschaft.setName(persistedTraegerschaft.getName());
-		jaxTraegerschaft.setActive(persistedTraegerschaft.getActive());
-		return jaxTraegerschaft;
-	}
-
-	public Mandant mandantToEntity(final JaxMandant mandantJAXP, final Mandant mandant) {
-		requireNonNull(mandant);
-		requireNonNull(mandantJAXP);
-		convertAbstractVorgaengerFieldsToEntity(mandantJAXP, mandant);
-		mandant.setName(mandantJAXP.getName());
-		return mandant;
 	}
 
 	public Traegerschaft traegerschaftToEntity(
@@ -1246,20 +1207,6 @@ public class JaxBConverter extends AbstractConverter {
 		jaxExternalClient.setType(persistedExternalClient.getType());
 
 		return jaxExternalClient;
-	}
-
-	public JaxInstitution institutionToJAX(final Institution persistedInstitution) {
-		final JaxInstitution jaxInstitution = new JaxInstitution();
-		convertAbstractVorgaengerFieldsToJAX(persistedInstitution, jaxInstitution);
-		jaxInstitution.setName(persistedInstitution.getName());
-		Objects.requireNonNull(persistedInstitution.getMandant());
-		jaxInstitution.setMandant(mandantToJAX(persistedInstitution.getMandant()));
-		jaxInstitution.setStatus(persistedInstitution.getStatus());
-		jaxInstitution.setStammdatenCheckRequired(persistedInstitution.isStammdatenCheckRequired());
-		if (persistedInstitution.getTraegerschaft() != null) {
-			jaxInstitution.setTraegerschaft(traegerschaftLightToJAX(persistedInstitution.getTraegerschaft()));
-		}
-		return jaxInstitution;
 	}
 
 	public JaxInstitutionListDTO institutionListDTOToJAX(final Entry<Institution, InstitutionStammdaten> entry) {
@@ -3983,225 +3930,6 @@ public class JaxBConverter extends AbstractConverter {
 		return jaxErweiterteBetreuung;
 	}
 
-	@Nonnull
-	public Benutzer jaxBenutzerToBenutzer(
-		@Nonnull JaxBenutzer jaxBenutzer,
-		@Nonnull Benutzer benutzer) {
-
-		benutzer.setUsername(jaxBenutzer.getUsername());
-		benutzer.setExternalUUID(
-			Strings.isNullOrEmpty(jaxBenutzer.getExternalUUID()) ? null : jaxBenutzer.getExternalUUID()
-		);
-		benutzer.setEmail(jaxBenutzer.getEmail());
-		benutzer.setNachname(jaxBenutzer.getNachname());
-		benutzer.setVorname(jaxBenutzer.getVorname());
-		benutzer.setStatus(jaxBenutzer.getStatus());
-		if (jaxBenutzer.getMandant() != null && jaxBenutzer.getMandant().getId() != null) {
-			// Mandant darf nicht vom Client ueberschrieben werden
-			Mandant mandantFromDB = mandantService.findMandant(jaxBenutzer.getMandant().getId())
-				.orElseThrow(() -> new EbeguEntityNotFoundException(
-					"jaxBenutzerToBenutzer -> mandant",
-					ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
-					benutzer.getMandant().getId()));
-			benutzer.setMandant(mandantFromDB);
-		} else {
-			throw new EbeguEntityNotFoundException(
-				"jaxBenutzerToBenutzer -> mandant",
-				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND);
-		}
-		// Berechtigungen
-		final Set<Berechtigung> convertedBerechtigungen = berechtigungenListToEntity(
-			jaxBenutzer.getBerechtigungen(),
-			benutzer.getBerechtigungen(),
-			benutzer
-		);
-		//change the existing collection to reflect changes
-		// Already tested: All existing module of the list remain as they were, that means their data are updated
-		// and the objects are not created again. ID and InsertTimeStamp are the same as before
-		benutzer.getBerechtigungen().clear();
-		benutzer.getBerechtigungen().addAll(convertedBerechtigungen);
-		return benutzer;
-	}
-
-	@Nonnull
-	private Set<Berechtigung> berechtigungenListToEntity(
-		@Nonnull Set<JaxBerechtigung> jaxBerechtigungenList,
-		@Nonnull Set<Berechtigung> berechtigungenList,
-		@Nonnull Benutzer benutzer) {
-
-		final Set<Berechtigung> convertedBerechtigungen = new TreeSet<>();
-		for (final JaxBerechtigung jaxBerechtigung : jaxBerechtigungenList) {
-			final Berechtigung berechtigungToMergeWith = berechtigungenList
-				.stream()
-				.filter(existingBerechtigung -> existingBerechtigung.getId().equals(jaxBerechtigung.getId()))
-				.reduce(StreamsUtil.toOnlyElement())
-				.orElseGet(Berechtigung::new);
-			final Berechtigung berechtigungToAdd = berechtigungToEntity(jaxBerechtigung, berechtigungToMergeWith);
-			berechtigungToAdd.setBenutzer(benutzer);
-			final boolean added = convertedBerechtigungen.add(berechtigungToAdd);
-			if (!added) {
-				LOGGER.warn("dropped duplicate berechtigung {}", berechtigungToAdd);
-			}
-		}
-		return convertedBerechtigungen;
-	}
-
-	public JaxBenutzer benutzerToJaxBenutzer(@Nonnull Benutzer benutzer) {
-		JaxBenutzer jaxLoginElement = new JaxBenutzer();
-		jaxLoginElement.setVorname(benutzer.getVorname());
-		jaxLoginElement.setNachname(benutzer.getNachname());
-		jaxLoginElement.setEmail(benutzer.getEmail());
-		jaxLoginElement.setMandant(mandantToJAX(benutzer.getMandant()));
-		jaxLoginElement.setUsername(benutzer.getUsername());
-		jaxLoginElement.setExternalUUID(benutzer.getExternalUUID());
-		jaxLoginElement.setStatus(benutzer.getStatus());
-		jaxLoginElement.setCurrentBerechtigung(berechtigungToJax(benutzer.getCurrentBerechtigung()));
-		// Berechtigungen
-		Set<JaxBerechtigung> jaxBerechtigungen = new TreeSet<>();
-		if (benutzer.getBerechtigungen() != null) {
-			jaxBerechtigungen = benutzer.getBerechtigungen().stream()
-				.map(this::berechtigungToJax)
-				.sorted()
-				.collect(Collectors.toCollection(TreeSet::new));
-		}
-		jaxLoginElement.setBerechtigungen(jaxBerechtigungen);
-
-		return jaxLoginElement;
-	}
-
-	public JaxBenutzerNoDetails benutzerToJaxBenutzerNoDetails(@Nonnull Benutzer benutzer) {
-		JaxBenutzerNoDetails jaxLoginElement = new JaxBenutzerNoDetails();
-		jaxLoginElement.setVorname(benutzer.getVorname());
-		jaxLoginElement.setNachname(benutzer.getNachname());
-		jaxLoginElement.setUsername(benutzer.getUsername());
-		Set<String> gemeindeIds = benutzer.getBerechtigungen()
-			.stream()
-			.flatMap(berechtigung -> berechtigung.getGemeindeList()
-				.stream())
-			.map(AbstractEntity::getId)
-			.collect(Collectors.toSet());
-		jaxLoginElement.setGemeindeIds(gemeindeIds);
-		return jaxLoginElement;
-	}
-
-	public Berechtigung berechtigungToEntity(JaxBerechtigung jaxBerechtigung, Berechtigung berechtigung) {
-		convertAbstractDateRangedFieldsToEntity(jaxBerechtigung, berechtigung);
-		berechtigung.setRole(jaxBerechtigung.getRole());
-
-		// wir muessen Traegerschaft und Institution auch updaten wenn sie null sind. Es koennte auch so aus dem IAM
-		// kommen
-		if (jaxBerechtigung.getInstitution() != null && jaxBerechtigung.getInstitution().getId() != null) {
-			final Optional<Institution> institutionFromDB =
-				institutionService.findInstitution(jaxBerechtigung.getInstitution().getId(), false);
-			if (institutionFromDB.isPresent()) {
-				// Institution darf nicht vom Client ueberschrieben werden
-				berechtigung.setInstitution(institutionFromDB.get());
-			} else {
-				throw new EbeguEntityNotFoundException(
-					"berechtigungToEntity",
-					ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
-					jaxBerechtigung.getInstitution().getId());
-			}
-		} else {
-			berechtigung.setInstitution(null);
-		}
-
-		if (jaxBerechtigung.getTraegerschaft() != null && jaxBerechtigung.getTraegerschaft().getId() != null) {
-			final Optional<Traegerschaft> traegerschaftFromDB =
-				traegerschaftService.findTraegerschaft(jaxBerechtigung.getTraegerschaft().getId());
-			if (traegerschaftFromDB.isPresent()) {
-				// Traegerschaft darf nicht vom Client ueberschrieben werden
-				berechtigung.setTraegerschaft(traegerschaftFromDB.get());
-			} else {
-				throw new EbeguEntityNotFoundException(
-					"berechtigungToEntity -> traegerschaft",
-					ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
-					jaxBerechtigung.getTraegerschaft().getId());
-			}
-		} else {
-			berechtigung.setTraegerschaft(null);
-		}
-
-		if (jaxBerechtigung.getSozialdienst() != null && jaxBerechtigung.getSozialdienst().getId() != null) {
-			final Optional<Sozialdienst> sozialdienstFromDB =
-				sozialdienstService.findSozialdienst(jaxBerechtigung.getSozialdienst().getId());
-			if (sozialdienstFromDB.isPresent()) {
-				// Traegerschaft darf nicht vom Client ueberschrieben werden
-				berechtigung.setSozialdienst(sozialdienstFromDB.get());
-			} else {
-				throw new EbeguEntityNotFoundException(
-					"berechtigungToEntity -> sozialdienst",
-					ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
-					jaxBerechtigung.getSozialdienst().getId());
-			}
-		} else {
-			berechtigung.setSozialdienst(null);
-		}
-
-		// Gemeinden: Duerfen nicht vom Frontend übernommen werden, sondern müssen aus der DB gelesen werden!
-		loadGemeindenFromJax(jaxBerechtigung, berechtigung);
-		return berechtigung;
-	}
-
-	private void loadGemeindenFromJax(@Nonnull JaxBerechtigung jaxBerechtigung, @Nonnull Berechtigung berechtigung) {
-		final Set<Gemeinde> gemeindeListe = new HashSet<>();
-		for (JaxGemeinde jaxGemeinde : jaxBerechtigung.getGemeindeList()) {
-			if (jaxGemeinde.getId() != null) {
-				Gemeinde gemeinde = gemeindeService.findGemeinde(jaxGemeinde.getId())
-					.orElseThrow(() -> new EbeguRuntimeException(
-						"findGemeinde",
-						ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
-						jaxGemeinde.getId()));
-				gemeindeListe.add(gemeinde);
-			}
-		}
-		berechtigung.setGemeindeList(gemeindeListe);
-	}
-
-	public JaxBerechtigung berechtigungToJax(Berechtigung berechtigung) {
-		JaxBerechtigung jaxBerechtigung = new JaxBerechtigung();
-		convertAbstractDateRangedFieldsToJAX(berechtigung, jaxBerechtigung);
-		jaxBerechtigung.setRole(berechtigung.getRole());
-		if (berechtigung.getInstitution() != null) {
-			jaxBerechtigung.setInstitution(institutionToJAX(berechtigung.getInstitution()));
-		}
-		if (berechtigung.getTraegerschaft() != null) {
-			jaxBerechtigung.setTraegerschaft(traegerschaftLightToJAX(berechtigung.getTraegerschaft()));
-		}
-		if (berechtigung.getSozialdienst() != null) {
-			jaxBerechtigung.setSozialdienst(jaxSozialdienstConverter.sozialdienstToJAX(berechtigung.getSozialdienst()));
-		}
-		// Gemeinden
-		Set<JaxGemeinde> jaxGemeinden = berechtigung.getGemeindeList().stream()
-			.map(this::gemeindeToJAX)
-			.collect(Collectors.toCollection(TreeSet::new));
-		jaxBerechtigung.setGemeindeList(jaxGemeinden);
-
-		return jaxBerechtigung;
-	}
-
-	public JaxBerechtigungHistory berechtigungHistoryToJax(BerechtigungHistory history) {
-		JaxBerechtigungHistory jaxHistory = new JaxBerechtigungHistory();
-		convertAbstractDateRangedFieldsToJAX(history, jaxHistory);
-		requireNonNull(history.getUserErstellt());
-		jaxHistory.setUserErstellt(history.getUserErstellt());
-		jaxHistory.setUsername(history.getUsername());
-		jaxHistory.setRole(history.getRole());
-		if (history.getInstitution() != null) {
-			jaxHistory.setInstitution(institutionToJAX(history.getInstitution()));
-		}
-		if (history.getTraegerschaft() != null) {
-			jaxHistory.setTraegerschaft(traegerschaftLightToJAX(history.getTraegerschaft()));
-		}
-		if (history.getSozialdienst() != null) {
-			jaxHistory.setSozialdienst(jaxSozialdienstConverter.sozialdienstToJAX(history.getSozialdienst()));
-		}
-		jaxHistory.setGemeinden(history.getGemeinden());
-		jaxHistory.setStatus(history.getStatus());
-		jaxHistory.setGeloescht(history.getGeloescht());
-		return jaxHistory;
-	}
-
 	public JaxDokumente dokumentGruendeToJAX(Set<DokumentGrund> dokumentGrunds) {
 		JaxDokumente jaxDokumente = new JaxDokumente();
 
@@ -4243,7 +3971,7 @@ public class JaxBConverter extends AbstractConverter {
 				dokument.getUserErstellt().substring(0, userMandantTrennungPosition) :
 				dokument.getUserErstellt();
 			benutzerService.findBenutzer(username, getPrincipalBean().getMandant())
-				.map(this::benutzerToJaxBenutzer)
+				.map(benutzer -> jaxBenutzerConverter.benutzerToJaxBenutzer(benutzer))
 				.ifPresent(jaxDokument::setUserUploaded);
 		}
 		return jaxDokument;
@@ -4400,7 +4128,7 @@ public class JaxBConverter extends AbstractConverter {
 			antragStatusHistory.getGesuch(),
 			antragStatusHistory.getStatus())
 		);
-		jaxAntragStatusHistory.setBenutzer(benutzerToJaxBenutzer(antragStatusHistory.getBenutzer()));
+		jaxAntragStatusHistory.setBenutzer(jaxBenutzerConverter.benutzerToJaxBenutzer(antragStatusHistory.getBenutzer()));
 		jaxAntragStatusHistory.setTimestampVon(antragStatusHistory.getTimestampVon());
 		jaxAntragStatusHistory.setTimestampBis(antragStatusHistory.getTimestampBis());
 		return jaxAntragStatusHistory;
@@ -4815,7 +4543,7 @@ public class JaxBConverter extends AbstractConverter {
 	public JaxMitteilung mitteilungToJAX(Mitteilung persistedMitteilung, JaxMitteilung jaxMitteilung) {
 		convertAbstractVorgaengerFieldsToJAX(persistedMitteilung, jaxMitteilung);
 		if (persistedMitteilung.getEmpfaenger() != null) {
-			jaxMitteilung.setEmpfaenger(benutzerToJaxBenutzer(persistedMitteilung.getEmpfaenger()));
+			jaxMitteilung.setEmpfaenger(jaxBenutzerConverter.benutzerToJaxBenutzer(persistedMitteilung.getEmpfaenger()));
 		}
 		jaxMitteilung.setEmpfaengerTyp(persistedMitteilung.getEmpfaengerTyp());
 		jaxMitteilung.setDossier(this.dossierToJAX(persistedMitteilung.getDossier()));
@@ -4830,7 +4558,7 @@ public class JaxBConverter extends AbstractConverter {
 		}
 		jaxMitteilung.setMessage(persistedMitteilung.getMessage());
 		jaxMitteilung.setMitteilungStatus(persistedMitteilung.getMitteilungStatus());
-		jaxMitteilung.setSender(benutzerToJaxBenutzer(persistedMitteilung.getSender()));
+		jaxMitteilung.setSender(jaxBenutzerConverter.benutzerToJaxBenutzer(persistedMitteilung.getSender()));
 		jaxMitteilung.setSenderTyp(persistedMitteilung.getSenderTyp());
 		jaxMitteilung.setSubject(persistedMitteilung.getSubject());
 		jaxMitteilung.setSentDatum(persistedMitteilung.getSentDatum());
@@ -5022,28 +4750,6 @@ public class JaxBConverter extends AbstractConverter {
 		zeitraeumeList.addAll(transformedZeitraeume);
 	}
 
-	@Nonnull
-	public JaxGemeindeStammdatenGesuchsperiodeFerieninsel ferieninselStammdatenToJAX(
-		@Nonnull GemeindeStammdatenGesuchsperiodeFerieninsel persistedFerieninselStammdaten) {
-
-		final JaxGemeindeStammdatenGesuchsperiodeFerieninsel jaxGemeindeStammdatenGesuchsperiodeFerieninsel =
-			new JaxGemeindeStammdatenGesuchsperiodeFerieninsel();
-
-		convertAbstractVorgaengerFieldsToJAX(
-			persistedFerieninselStammdaten,
-			jaxGemeindeStammdatenGesuchsperiodeFerieninsel);
-		jaxGemeindeStammdatenGesuchsperiodeFerieninsel.setFerienname(persistedFerieninselStammdaten.getFerienname());
-		jaxGemeindeStammdatenGesuchsperiodeFerieninsel.setAnmeldeschluss(persistedFerieninselStammdaten.getAnmeldeschluss());
-		jaxGemeindeStammdatenGesuchsperiodeFerieninsel.setFerienActive(persistedFerieninselStammdaten.isFerienActive());
-		for (GemeindeStammdatenGesuchsperiodeFerieninselZeitraum ferieninselZeitraum :
-			persistedFerieninselStammdaten.getZeitraumList()) {
-			JaxFerieninselZeitraum jaxFerieninselZeitraum = new JaxFerieninselZeitraum();
-			convertAbstractDateRangedFieldsToJAX(ferieninselZeitraum, jaxFerieninselZeitraum);
-			jaxGemeindeStammdatenGesuchsperiodeFerieninsel.getZeitraumList().add(jaxFerieninselZeitraum);
-		}
-		return jaxGemeindeStammdatenGesuchsperiodeFerieninsel;
-	}
-
 	@Nullable
 	public BelegungFerieninsel belegungFerieninselToEntity(
 		@Nullable JaxBelegungFerieninsel belegungFerieninselJAX,
@@ -5136,406 +4842,6 @@ public class JaxBConverter extends AbstractConverter {
 		jaxTag.setTag(persistedFerieninselTag.getTag());
 
 		return jaxTag;
-	}
-
-	@SuppressWarnings("PMD.NcssMethodCount")
-	@Nonnull
-	public GemeindeStammdaten gemeindeStammdatenToEntity(
-		@Nonnull final JaxGemeindeStammdaten jaxStammdaten,
-		@Nonnull final GemeindeStammdaten stammdaten
-	) {
-		requireNonNull(stammdaten);
-		requireNonNull(stammdaten.getAdresse());
-		requireNonNull(jaxStammdaten);
-		requireNonNull(jaxStammdaten.getGemeinde());
-		requireNonNull(jaxStammdaten.getGemeinde().getId());
-		requireNonNull(jaxStammdaten.getAdresse());
-		requireNonNull(jaxStammdaten.getStandardRechtsmittelbelehrung());
-		requireNonNull(jaxStammdaten.getBenachrichtigungBgEmailAuto());
-		requireNonNull(jaxStammdaten.getBenachrichtigungTsEmailAuto());
-		requireNonNull(jaxStammdaten.getStandardDokSignature());
-
-		convertAbstractFieldsToEntity(jaxStammdaten, stammdaten);
-
-		// Die Gemeinde selbst ändert nicht, nur wieder von der DB lesen
-		gemeindeService.findGemeinde(jaxStammdaten.getGemeinde().getId())
-			.ifPresent(stammdaten::setGemeinde);
-
-		Mandant mandant = stammdaten.getGemeinde().getMandant();
-
-		if (jaxStammdaten.getDefaultBenutzerBG() != null) {
-			benutzerService.findBenutzer(jaxStammdaten.getDefaultBenutzerBG().getUsername(), mandant)
-				.ifPresent(stammdaten::setDefaultBenutzerBG);
-		}
-		if (jaxStammdaten.getDefaultBenutzerTS() != null) {
-			benutzerService.findBenutzer(jaxStammdaten.getDefaultBenutzerTS().getUsername(), mandant)
-				.ifPresent(stammdaten::setDefaultBenutzerTS);
-		}
-		if (jaxStammdaten.getDefaultBenutzer() != null) {
-			benutzerService.findBenutzer(jaxStammdaten.getDefaultBenutzer().getUsername(), mandant)
-				.ifPresent(stammdaten::setDefaultBenutzer);
-		}
-
-		if (jaxStammdaten.getGemeindeAusgabestelle() != null) {
-			Objects.requireNonNull(jaxStammdaten.getGemeindeAusgabestelle().getId());
-			gemeindeService.findGemeinde(jaxStammdaten.getGemeindeAusgabestelle().getId())
-				.ifPresent(stammdaten::setGemeindeAusgabestelle);
-		} else {
-			stammdaten.setGemeindeAusgabestelle(null);
-		}
-
-		gemeindeStammdatenAdressenToEntity(jaxStammdaten, stammdaten);
-		stammdaten.setMail(jaxStammdaten.getMail());
-		stammdaten.setTelefon(jaxStammdaten.getTelefon());
-		stammdaten.setWebseite(jaxStammdaten.getWebseite());
-		stammdaten.setHasAltGemeindeKontakt(jaxStammdaten.getHasAltGemeindeKontakt());
-		stammdaten.setAltGemeindeKontaktText(jaxStammdaten.getAltGemeindeKontaktText());
-
-		if (jaxStammdaten.isKorrespondenzspracheDe() && jaxStammdaten.isKorrespondenzspracheFr()) {
-			stammdaten.setKorrespondenzsprache(KorrespondenzSpracheTyp.DE_FR);
-		} else if (jaxStammdaten.isKorrespondenzspracheDe()) {
-			stammdaten.setKorrespondenzsprache(KorrespondenzSpracheTyp.DE);
-		} else if (jaxStammdaten.isKorrespondenzspracheFr()) {
-			stammdaten.setKorrespondenzsprache(KorrespondenzSpracheTyp.FR);
-		} else {
-			throw new IllegalArgumentException("Die Korrespondenzsprache muss gesetzt sein");
-		}
-
-		stammdaten.setKontoinhaber(jaxStammdaten.getKontoinhaber());
-		stammdaten.setBic(jaxStammdaten.getBic());
-		if (jaxStammdaten.getIban() != null) {
-			stammdaten.setIban(new IBAN(jaxStammdaten.getIban()));
-		}
-
-		stammdaten.setStandardRechtsmittelbelehrung(jaxStammdaten.getStandardRechtsmittelbelehrung());
-		stammdaten.setBenachrichtigungBgEmailAuto(jaxStammdaten.getBenachrichtigungBgEmailAuto());
-		stammdaten.setBenachrichtigungTsEmailAuto(jaxStammdaten.getBenachrichtigungTsEmailAuto());
-		stammdaten.setStandardDokSignature(jaxStammdaten.getStandardDokSignature());
-
-		stammdaten.setStandardDokTitle(jaxStammdaten.getStandardDokTitle());
-		stammdaten.setStandardDokUnterschriftTitel(jaxStammdaten.getStandardDokUnterschriftTitel());
-		stammdaten.setStandardDokUnterschriftName(jaxStammdaten.getStandardDokUnterschriftName());
-		stammdaten.setStandardDokUnterschriftTitel2(jaxStammdaten.getStandardDokUnterschriftTitel2());
-		stammdaten.setStandardDokUnterschriftName2(jaxStammdaten.getStandardDokUnterschriftName2());
-		stammdaten.setTsVerantwortlicherNachVerfuegungBenachrichtigen(jaxStammdaten.getTsVerantwortlicherNachVerfuegungBenachrichtigen());
-
-		stammdaten.setHasZusatzTextVerfuegung(jaxStammdaten.getHasZusatzTextVerfuegung());
-		stammdaten.setZusatzTextVerfuegung(jaxStammdaten.getZusatzTextVerfuegung());
-		stammdaten.setHasZusatzTextFreigabequittung(jaxStammdaten.getHasZusatzTextFreigabequittung());
-		stammdaten.setZusatzTextFreigabequittung(jaxStammdaten.getZusatzTextFreigabequittung());
-
-		stammdaten.setBgEmail(jaxStammdaten.getBgEmail());
-		stammdaten.setBgTelefon(jaxStammdaten.getBgTelefon());
-		stammdaten.setTsEmail(jaxStammdaten.getTsEmail());
-		stammdaten.setTsTelefon(jaxStammdaten.getTsTelefon());
-		stammdaten.setEmailBeiGesuchsperiodeOeffnung(jaxStammdaten.getEmailBeiGesuchsperiodeOeffnung());
-
-		if (jaxStammdaten.getRechtsmittelbelehrung() != null) {
-			if (stammdaten.getRechtsmittelbelehrung() == null) {
-				stammdaten.setRechtsmittelbelehrung(new TextRessource());
-			}
-			stammdaten.setRechtsmittelbelehrung(textRessourceToEntity(
-				jaxStammdaten.getRechtsmittelbelehrung(),
-				stammdaten.getRechtsmittelbelehrung()));
-		}
-
-		stammdaten.setUsernameScolaris(jaxStammdaten.getUsernameScolaris());
-		stammdaten.setGutscheinSelberAusgestellt(jaxStammdaten.getGutscheinSelberAusgestellt());
-
-		jaxStammdaten.getGemeindeStammdatenKorrespondenz().apply(stammdaten.getGemeindeStammdatenKorrespondenz());
-
-		stammdaten.setAlleBgInstitutionenZugelassen(jaxStammdaten.getAlleBgInstitutionenZugelassen());
-		if (jaxStammdaten.getAlleBgInstitutionenZugelassen()) {
-			stammdaten.setZugelasseneBgInstitutionen(new ArrayList<>());
-		} else {
-			var ids = jaxStammdaten.getZugelasseneBgInstitutionen()
-				.stream()
-				.map(JaxAbstractDTO::getId)
-				.collect(Collectors.toList());
-			List<Institution> institutionen = institutionService.findAllInstitutionen(ids);
-			stammdaten.setZugelasseneBgInstitutionen(institutionen);
-		}
-
-		return stammdaten;
-	}
-
-	private void gemeindeStammdatenAdressenToEntity(
-		@Nonnull JaxGemeindeStammdaten jaxStammdaten,
-		@Nonnull GemeindeStammdaten stammdaten
-	) {
-		adresseToEntity(jaxStammdaten.getAdresse(), stammdaten.getAdresse());
-
-		if (jaxStammdaten.getBgAdresse() != null) {
-			if (stammdaten.getBgAdresse() == null) {
-				stammdaten.setBgAdresse(new Adresse());
-			}
-			adresseToEntity(jaxStammdaten.getBgAdresse(), stammdaten.getBgAdresse());
-		} else {
-			stammdaten.setBgAdresse(null);
-		}
-
-		if (jaxStammdaten.getTsAdresse() != null) {
-			if (stammdaten.getTsAdresse() == null) {
-				stammdaten.setTsAdresse(new Adresse());
-			}
-			adresseToEntity(jaxStammdaten.getTsAdresse(), stammdaten.getTsAdresse());
-		} else {
-			stammdaten.setTsAdresse(null);
-		}
-
-		if (jaxStammdaten.getBeschwerdeAdresse() != null) {
-			if (stammdaten.getBeschwerdeAdresse() == null) {
-				stammdaten.setBeschwerdeAdresse(new Adresse());
-			}
-			adresseToEntity(jaxStammdaten.getBeschwerdeAdresse(), stammdaten.getBeschwerdeAdresse());
-		} else {
-			stammdaten.setBeschwerdeAdresse(null);
-		}
-	}
-
-	@SuppressWarnings("PMD.NcssMethodCount")
-	public JaxGemeindeStammdaten gemeindeStammdatenToJAX(@Nonnull final GemeindeStammdaten stammdaten) {
-		requireNonNull(stammdaten);
-		requireNonNull(stammdaten.getGemeinde());
-		requireNonNull(stammdaten.getAdresse());
-		final JaxGemeindeStammdaten jaxStammdaten = new JaxGemeindeStammdaten();
-		abstractGemeindeStammdatenToJax(jaxStammdaten, stammdaten);
-		Collection<Benutzer> administratoren = benutzerService.getGemeindeAdministratoren(stammdaten.getGemeinde());
-		Collection<Benutzer> sachbearbeiter = benutzerService.getGemeindeSachbearbeiter(stammdaten.getGemeinde());
-		jaxStammdaten.setAdministratoren(administratoren.stream()
-			.map(Benutzer::getFullName)
-			.collect(Collectors.joining(", ")));
-		jaxStammdaten.setSachbearbeiter(sachbearbeiter.stream()
-			.map(Benutzer::getFullName)
-			.collect(Collectors.joining(", ")));
-		jaxStammdaten.setGemeinde(gemeindeToJAX(stammdaten.getGemeinde()));
-		gemeindeStammdatenToJAXSetKorrespondenzsprache(jaxStammdaten, stammdaten);
-		gemeindeStammdatenToJAXSetDefaultBenutzer(jaxStammdaten, stammdaten);
-		gemeindeStammdatenZusaetzlicheAdressenToJax(jaxStammdaten, stammdaten);
-		jaxStammdaten.setBgTelefon(stammdaten.getBgTelefon());
-		jaxStammdaten.setBgEmail(stammdaten.getBgEmail());
-		jaxStammdaten.setTsTelefon(stammdaten.getTsTelefon());
-		jaxStammdaten.setTsEmail(stammdaten.getTsEmail());
-		jaxStammdaten.setEmailBeiGesuchsperiodeOeffnung(stammdaten.getEmailBeiGesuchsperiodeOeffnung());
-		jaxStammdaten.setHasZusatzTextVerfuegung(stammdaten.getHasZusatzTextVerfuegung());
-		jaxStammdaten.setZusatzTextVerfuegung(stammdaten.getZusatzTextVerfuegung());
-		jaxStammdaten.setHasZusatzTextFreigabequittung(stammdaten.getHasZusatzTextFreigabequittung());
-		jaxStammdaten.setZusatzTextFreigabequittung(stammdaten.getZusatzTextFreigabequittung());
-		jaxStammdaten.setKontoinhaber(stammdaten.getKontoinhaber());
-		jaxStammdaten.setBic(stammdaten.getBic());
-		if (stammdaten.getIban() != null) {
-			jaxStammdaten.setIban(stammdaten.getIban().getIban());
-		}
-
-		jaxStammdaten.setStandardRechtsmittelbelehrung(stammdaten.getStandardRechtsmittelbelehrung());
-		jaxStammdaten.setBenachrichtigungBgEmailAuto(stammdaten.getBenachrichtigungBgEmailAuto());
-		jaxStammdaten.setBenachrichtigungTsEmailAuto(stammdaten.getBenachrichtigungTsEmailAuto());
-		jaxStammdaten.setStandardDokSignature(stammdaten.getStandardDokSignature());
-
-		jaxStammdaten.setStandardDokTitle(stammdaten.getStandardDokTitle());
-		jaxStammdaten.setStandardDokUnterschriftTitel(stammdaten.getStandardDokUnterschriftTitel());
-		jaxStammdaten.setStandardDokUnterschriftName(stammdaten.getStandardDokUnterschriftName());
-		jaxStammdaten.setStandardDokUnterschriftTitel2(stammdaten.getStandardDokUnterschriftTitel2());
-		jaxStammdaten.setStandardDokUnterschriftName2(stammdaten.getStandardDokUnterschriftName2());
-		jaxStammdaten.setTsVerantwortlicherNachVerfuegungBenachrichtigen(stammdaten.getTsVerantwortlicherNachVerfuegungBenachrichtigen());
-
-		if (stammdaten.getRechtsmittelbelehrung() != null) {
-			jaxStammdaten.setRechtsmittelbelehrung(textRessourceToJAX(stammdaten.getRechtsmittelbelehrung()));
-		}
-
-		jaxStammdaten.setUsernameScolaris(stammdaten.getUsernameScolaris());
-
-		jaxStammdaten.setGutscheinSelberAusgestellt(stammdaten.getGutscheinSelberAusgestellt());
-		if (stammdaten.getGemeindeAusgabestelle() != null) {
-			jaxStammdaten.setGemeindeAusgabestelle(gemeindeToJAX(stammdaten.getGemeindeAusgabestelle()));
-		}
-
-		jaxStammdaten.setGemeindeStammdatenKorrespondenz(JaxGemeindeStammdatenKorrespondenz.from(stammdaten.getGemeindeStammdatenKorrespondenz()));
-		convertAbstractFieldsToJAX(stammdaten.getGemeindeStammdatenKorrespondenz(), jaxStammdaten.getGemeindeStammdatenKorrespondenz());
-
-		jaxStammdaten.setAlleBgInstitutionenZugelassen(stammdaten.getAlleBgInstitutionenZugelassen());
-		var jaxInstitutionen = stammdaten.getZugelasseneBgInstitutionen()
-			.stream()
-			.map(this::institutionToJAX)
-			.collect(Collectors.toList());
-		jaxStammdaten.setZugelasseneBgInstitutionen(jaxInstitutionen);
-
-		return jaxStammdaten;
-	}
-
-	public JaxGemeindeStammdatenLite gemeindeStammdatenLiteToJAX(@Nonnull final GemeindeStammdaten stammdaten) {
-		requireNonNull(stammdaten);
-		requireNonNull(stammdaten.getGemeinde());
-		requireNonNull(stammdaten.getAdresse());
-		final JaxGemeindeStammdatenLite jaxStammdaten = new JaxGemeindeStammdatenLite();
-		abstractGemeindeStammdatenToJax(jaxStammdaten, stammdaten);
-		jaxStammdaten.setGemeindeName(stammdaten.getGemeinde().getName());
-		return jaxStammdaten;
-	}
-
-	private JaxAbstractGemeindeStammdaten abstractGemeindeStammdatenToJax(
-		@Nonnull JaxAbstractGemeindeStammdaten jaxStammdaten,
-		@Nonnull GemeindeStammdaten stammdaten) {
-		convertAbstractFieldsToJAX(stammdaten, jaxStammdaten);
-		jaxStammdaten.setMail(stammdaten.getMail());
-		jaxStammdaten.setTelefon(stammdaten.getTelefon());
-		jaxStammdaten.setWebseite(stammdaten.getWebseite());
-		gemeindeStammdatenToJAXSetKorrespondenzsprache(jaxStammdaten, stammdaten);
-		jaxStammdaten.setAdresse(adresseToJAX(stammdaten.getAdresse()));
-		jaxStammdaten.setHasAltGemeindeKontakt(stammdaten.getHasAltGemeindeKontakt());
-		jaxStammdaten.setAltGemeindeKontaktText(stammdaten.getAltGemeindeKontaktText());
-		// Konfiguration: Wir laden die Gesuchsperioden, die vor dem Ende der Gemeinde-Gültigkeit liegen
-		Objects.requireNonNull(stammdaten.getGemeinde().getMandant());
-		List<Gesuchsperiode> gueltigeGesuchsperiodenForGemeinde =
-			gesuchsperiodeService.getAllGesuchsperioden(stammdaten.getGemeinde().getMandant())
-				.stream()
-				.filter(gesuchsperiode -> gesuchsperiode.getMandant().equals(stammdaten.getGemeinde().getMandant()))
-				.filter(gesuchsperiode -> stammdaten.getGemeinde()
-					.getGueltigBis()
-					.isAfter(gesuchsperiode.getGueltigkeit().getGueltigAb()))
-				.collect(Collectors.toList());
-
-		for (Gesuchsperiode gesuchsperiode : gueltigeGesuchsperiodenForGemeinde) {
-			jaxStammdaten.getKonfigurationsListe().add(loadGemeindeKonfiguration(
-				stammdaten.getGemeinde(),
-				gesuchsperiode));
-		}
-		return jaxStammdaten;
-	}
-
-	private void gemeindeStammdatenToJAXSetDefaultBenutzer(
-		@Nonnull JaxGemeindeStammdaten jaxStammdaten,
-		@Nonnull GemeindeStammdaten stammdaten
-	) {
-		jaxStammdaten.setBenutzerListeBG(benutzerService.getBenutzerBgOrGemeinde(stammdaten.getGemeinde())
-			.stream().map(this::benutzerToJaxBenutzer).collect(Collectors.toList()));
-		jaxStammdaten.setBenutzerListeTS(benutzerService.getBenutzerTsOrGemeinde(stammdaten.getGemeinde())
-			.stream().map(this::benutzerToJaxBenutzer).collect(Collectors.toList()));
-
-		if (!stammdaten.isNew()) {
-			if (stammdaten.getDefaultBenutzerBG() != null) {
-				jaxStammdaten.setDefaultBenutzerBG(benutzerToJaxBenutzer(stammdaten.getDefaultBenutzerBG()));
-			}
-			if (stammdaten.getDefaultBenutzerTS() != null) {
-				jaxStammdaten.setDefaultBenutzerTS(benutzerToJaxBenutzer(stammdaten.getDefaultBenutzerTS()));
-			}
-			if (stammdaten.getDefaultBenutzer() != null) {
-				jaxStammdaten.setDefaultBenutzer(benutzerToJaxBenutzer(stammdaten.getDefaultBenutzer()));
-			}
-		}
-	}
-
-	private void gemeindeStammdatenZusaetzlicheAdressenToJax(
-		@Nonnull JaxGemeindeStammdaten jaxStammdaten,
-		@Nonnull GemeindeStammdaten stammdaten
-	) {
-		if (stammdaten.getBeschwerdeAdresse() != null) {
-			jaxStammdaten.setBeschwerdeAdresse(adresseToJAX(stammdaten.getBeschwerdeAdresse()));
-		}
-		if (stammdaten.getBgAdresse() != null) {
-			jaxStammdaten.setBgAdresse(adresseToJAX(stammdaten.getBgAdresse()));
-		}
-		if (stammdaten.getTsAdresse() != null) {
-			jaxStammdaten.setTsAdresse(adresseToJAX(stammdaten.getTsAdresse()));
-		}
-	}
-
-	private void gemeindeStammdatenToJAXSetKorrespondenzsprache(
-		@Nonnull JaxAbstractGemeindeStammdaten jaxStammdaten,
-		@Nonnull GemeindeStammdaten stammdaten
-	) {
-		if (KorrespondenzSpracheTyp.DE == stammdaten.getKorrespondenzsprache()) {
-			jaxStammdaten.setKorrespondenzspracheDe(true);
-			jaxStammdaten.setKorrespondenzspracheFr(false);
-		} else if (KorrespondenzSpracheTyp.FR == stammdaten.getKorrespondenzsprache()) {
-			jaxStammdaten.setKorrespondenzspracheDe(false);
-			jaxStammdaten.setKorrespondenzspracheFr(true);
-		} else if (KorrespondenzSpracheTyp.DE_FR == stammdaten.getKorrespondenzsprache()) {
-			jaxStammdaten.setKorrespondenzspracheDe(true);
-			jaxStammdaten.setKorrespondenzspracheFr(true);
-		}
-	}
-
-	public TextRessource textRessourceToEntity(
-		@Nonnull final JaxTextRessource textRessourceJAX,
-		@Nullable TextRessource textRessource) {
-		requireNonNull(textRessourceJAX);
-
-		if (textRessource == null) {
-			textRessource = new TextRessource();
-		}
-
-		convertAbstractFieldsToEntity(textRessourceJAX, textRessource);
-
-		textRessource.setTextDeutsch(textRessourceJAX.getTextDeutsch());
-		textRessource.setTextFranzoesisch(textRessourceJAX.getTextFranzoesisch());
-
-		return textRessource;
-	}
-
-	public JaxTextRessource textRessourceToJAX(@Nonnull final TextRessource textRessource) {
-		Objects.requireNonNull(textRessource);
-
-		final JaxTextRessource jaxTextRessource = new JaxTextRessource();
-
-		convertAbstractFieldsToJAX(textRessource, jaxTextRessource);
-
-		jaxTextRessource.setTextDeutsch(textRessource.getTextDeutsch());
-		jaxTextRessource.setTextFranzoesisch(textRessource.getTextFranzoesisch());
-
-		return jaxTextRessource;
-	}
-
-	private JaxGemeindeKonfiguration loadGemeindeKonfiguration(
-		@Nonnull Gemeinde gemeinde,
-		@Nonnull Gesuchsperiode gesuchsperiode) {
-		JaxGemeindeKonfiguration konfiguration = new JaxGemeindeKonfiguration();
-		konfiguration.setGesuchsperiodeName(gesuchsperiode.getGesuchsperiodeDisplayName(LocaleThreadLocal.get()));
-		konfiguration.setGesuchsperiodeStatusName(gesuchsperiode.getGesuchsperiodeStatusName(LocaleThreadLocal.get()));
-		konfiguration.setGesuchsperiode(gesuchsperiodeToJAX(gesuchsperiode));
-		Map<EinstellungKey, Einstellung> gemeindeKonfigurationMap = einstellungService
-			.getGemeindeEinstellungenActiveForMandantOnlyAsMap(gemeinde, gesuchsperiode);
-		konfiguration.getKonfigurationen().addAll(gemeindeKonfigurationMap.entrySet().stream()
-			.map(x -> einstellungToJAX(x.getValue()))
-			.collect(Collectors.toList()));
-
-		Optional<Einstellung> erwerbspensumZuschlagMax =
-			einstellungService.getEinstellungByMandant(EinstellungKey.ERWERBSPENSUM_ZUSCHLAG, gesuchsperiode);
-		if (erwerbspensumZuschlagMax.isPresent()) {
-			konfiguration.setErwerbspensumZuschlagMax(
-				erwerbspensumZuschlagMax.get().getValueAsInteger()
-			);
-		}
-		Optional<Einstellung> erwerbspensumMiminumVorschuleMax =
-			einstellungService.getEinstellungByMandant(
-				EinstellungKey.GEMEINDE_MIN_ERWERBSPENSUM_NICHT_EINGESCHULT,
-				gesuchsperiode);
-		if (erwerbspensumMiminumVorschuleMax.isPresent()) {
-			konfiguration.setErwerbspensumMiminumVorschuleMax(
-				erwerbspensumMiminumVorschuleMax.get().getValueAsInteger()
-			);
-		}
-		Optional<Einstellung> erwerbspensumMiminumSchulkinderMax =
-			einstellungService.getEinstellungByMandant(
-				EinstellungKey.GEMEINDE_MIN_ERWERBSPENSUM_EINGESCHULT,
-				gesuchsperiode);
-		if (erwerbspensumMiminumSchulkinderMax.isPresent()) {
-			konfiguration.setErwerbspensumMiminumSchulkinderMax(
-				erwerbspensumMiminumSchulkinderMax.get().getValueAsInteger()
-			);
-		}
-
-		List<JaxGemeindeStammdatenGesuchsperiodeFerieninsel> ferieninselStammdaten =
-			ferieninselStammdatenService.findGesuchsperiodeFerieninselByGemeindeAndPeriode(
-				gemeinde.getId(),
-				gesuchsperiode.getId())
-				.stream()
-				.map(this::ferieninselStammdatenToJAX)
-				.collect(Collectors.toList());
-
-		konfiguration.setFerieninselStammdaten(ferieninselStammdaten);
-
-		return konfiguration;
 	}
 
 	@Nullable
@@ -6085,7 +5391,7 @@ public class JaxBConverter extends AbstractConverter {
 		jaxGemeindeAntrag.setAntragAbgeschlossen(gemeindeAntrag.isAntragAbgeschlossen());
 
 		if (gemeindeAntrag.getVerantwortlicher() != null) {
-			jaxGemeindeAntrag.setVerantwortlicher(benutzerToJaxBenutzerNoDetails(gemeindeAntrag.getVerantwortlicher()));
+			jaxGemeindeAntrag.setVerantwortlicher(jaxBenutzerConverter.benutzerToJaxBenutzerNoDetails(gemeindeAntrag.getVerantwortlicher()));
 		}
 
 		return jaxGemeindeAntrag;
@@ -6112,7 +5418,7 @@ public class JaxBConverter extends AbstractConverter {
 		jaxGemeindeContainer.setAlleAngabenInKibonErfasst(gemeindeContainer.getAlleAngabenInKibonErfasst());
 		jaxGemeindeContainer.setInternerKommentar(gemeindeContainer.getInternerKommentar());
 		if (gemeindeContainer.getVerantwortlicher() != null) {
-			jaxGemeindeContainer.setVerantwortlicher(benutzerToJaxBenutzerNoDetails(gemeindeContainer.getVerantwortlicher()));
+			jaxGemeindeContainer.setVerantwortlicher(jaxBenutzerConverter.benutzerToJaxBenutzerNoDetails(gemeindeContainer.getVerantwortlicher()));
 		}
 		if (gemeindeContainer.getAngabenDeklaration() != null) {
 			jaxGemeindeContainer.setAngabenDeklaration(lastenausgleichTagesschuleAngabenGemeindeToJax(gemeindeContainer.getAngabenDeklaration()));
@@ -6544,7 +5850,7 @@ public class JaxBConverter extends AbstractConverter {
 		convertAbstractFieldsToJAX(latsStatusHistory, jaxStatusHistory);
 		jaxStatusHistory.setContainerId(latsStatusHistory.getAngabenGemeindeContainer().getId());
 		jaxStatusHistory.setStatus(latsStatusHistory.getStatus());
-		jaxStatusHistory.setBenutzer(benutzerToJaxBenutzer(latsStatusHistory.getBenutzer()));
+		jaxStatusHistory.setBenutzer(jaxBenutzerConverter.benutzerToJaxBenutzer(latsStatusHistory.getBenutzer()));
 		jaxStatusHistory.setTimestampVon(latsStatusHistory.getTimestampVon());
 		jaxStatusHistory.setTimestampBis(latsStatusHistory.getTimestampBis());
 		return jaxStatusHistory;

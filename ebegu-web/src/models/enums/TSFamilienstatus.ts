@@ -20,7 +20,8 @@ export enum TSFamilienstatus {
     KONKUBINAT = 'KONKUBINAT',
     KONKUBINAT_KEIN_KIND = 'KONKUBINAT_KEIN_KIND',
     ALLEINERZIEHEND = 'ALLEINERZIEHEND',
-    APPENZELL = 'APPENZELL'
+    APPENZELL = 'APPENZELL',
+    SCHWYZ = 'SCHWYZ'
 }
 
 export function getTSFamilienstatusValues(): Array<TSFamilienstatus> {

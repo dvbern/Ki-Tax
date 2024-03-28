@@ -54,4 +54,5 @@ export class TSPublicAppConfig {
     public checkboxAuszahlungInZukunft: boolean;
     public institutionenDurchGemeindenEinladen: boolean;
     public erlaubenInstitutionenZuWaehlen: boolean;
+    public auszahlungAnEltern: boolean;
 }

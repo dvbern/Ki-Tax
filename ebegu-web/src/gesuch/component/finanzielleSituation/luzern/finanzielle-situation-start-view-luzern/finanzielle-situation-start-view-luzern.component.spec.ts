@@ -18,6 +18,7 @@
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {StateService} from '@uirouter/angular';
 import {ErrorService} from '../../../../../app/core/errors/service/ErrorService';
+import {ApplicationPropertyRS} from '../../../../../app/core/rest-services/applicationPropertyRS.rest';
 import {SharedModule} from '../../../../../app/shared/shared.module';
 import {AuthServiceRS} from '../../../../../authentication/service/AuthServiceRS.rest';
 import {SHARED_MODULE_OVERRIDES} from '../../../../../hybridTools/mockUpgradedDirective';
@@ -27,9 +28,11 @@ import {TSFamiliensituation} from '../../../../../models/TSFamiliensituation';
 import {TSFamiliensituationContainer} from '../../../../../models/TSFamiliensituationContainer';
 import {TSFinanzielleSituation} from '../../../../../models/TSFinanzielleSituation';
 import {TSFinanzielleSituationContainer} from '../../../../../models/TSFinanzielleSituationContainer';
+import {TSGemeinde} from '../../../../../models/TSGemeinde';
 import {TSGesuch} from '../../../../../models/TSGesuch';
 import {TSGesuchsteller} from '../../../../../models/TSGesuchsteller';
 import {TSGesuchstellerContainer} from '../../../../../models/TSGesuchstellerContainer';
+import {TSPublicAppConfig} from '../../../../../models/TSPublicAppConfig';
 import {BerechnungsManager} from '../../../../service/berechnungsManager';
 import {FinanzielleSituationRS} from '../../../../service/finanzielleSituationRS.rest';
 import {GesuchModelManager} from '../../../../service/gesuchModelManager';
@@ -51,6 +54,7 @@ const gesuchModelManagerSpy = jasmine.createSpyObj<GesuchModelManager>(
         'getGemeinde',
         'setGesuchstellerNumber'
     ]);
+gesuchModelManagerSpy.getGemeinde.and.returnValue(new TSGemeinde());
 const wizardStepMangerSpy = jasmine.createSpyObj<WizardStepManager>(
     WizardStepManager.name, ['getCurrentStep', 'setCurrentStep', 'isNextStepBesucht', 'isNextStepEnabled',
         'getCurrentStepName', 'updateCurrentWizardStepStatusSafe']);
@@ -66,6 +70,10 @@ const berechnungsManagerSpy =
 const authServiceSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name, ['isOneOfRoles']);
 berechnungsManagerSpy.calculateFinanzielleSituationTemp.and
     .returnValue(Promise.resolve(new TSFinanzielleSituationResultateDTO()));
+
+const applicationPropertyRSSpy =
+    jasmine.createSpyObj<ApplicationPropertyRS>(ApplicationPropertyRS.name, ['getPublicPropertiesCached']);
+applicationPropertyRSSpy.getPublicPropertiesCached.and.returnValue(Promise.resolve(new TSPublicAppConfig()));
 
 FinanzielleSituationLuzernService.finSitNeedsTwoSeparateAntragsteller = () => false;
 
@@ -89,7 +97,8 @@ describe('FinanzielleSituationStartViewLuzernComponent', () => {
                 {provide: StateService, useValue: stateServiceSpy},
                 {provide: ErrorService, useValue: errorServiceSpy},
                 {provide: BerechnungsManager, useValue: berechnungsManagerSpy},
-                {provide: AuthServiceRS, useValue: authServiceSpy}
+                {provide: AuthServiceRS, useValue: authServiceSpy},
+                {provide: ApplicationPropertyRS, useValue: applicationPropertyRSSpy}
             ],
             imports: [
                 SharedModule

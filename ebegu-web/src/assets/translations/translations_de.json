@@ -1955,7 +1955,9 @@
     "NOTVERORDNUNG_DEFAULT_EINREICHEFRIST_OEFFENTLICH": "Notverordnung default Einreichefrist öffentlich",
     "NOTVERORDNUNG_DEFAULT_EINREICHEFRIST_PRIVAT": "Notverordnung default Einreichefrist privat",
     "KANTON_NOTVERORDNUNG_PHASE_2_AKTIV": "Notverordnung Phase 2 aktiv",
-    "INFOMA_ZAHLUNGEN": "Infoma Zahlungen (Zahlungssystem Luzern)",
+    "INFOMA_ZAHLUNGEN": "Infoma Zahlungen",
+    "INFOMA_ZAHLUNGEN_JA" : "Infoma Zahlungen aktiviert",
+    "AUSZAHLUNGEN_AN_ELTERN": "Auszahlung an Eltern",
     "ANZAHL_MONATE_AUSZAHLEN_IN_ZUKUNFT": "Anzahl Monate in Zukunft auszahlen",
     "INSTITUTIONEN_DURCH_GEMEINDEN_EINLADEN": "Institutionen durch Gemeinden einladen",
     "GERES_ENABLED_FOR_MANDANT": "Geres für Mandant aktiviert",
@@ -3207,5 +3209,7 @@
     "SPRACHFOERDERUNG_BESTAETIGEN_TFO": "Die vermittelte Betreuungsperson eignet sich für die Aufgabe der Sprachförderung und erreicht mindestens ein Sprachniveau von C1 in der künftigen Schulsprache.",
     "GESUCH_BEENDEN_BEI_TAUSCH_GS2": "Antrag beenden, wenn der Gesuchsteller 2 innerhalb der Periode ändert",
     "WARNUNG_GS2_AUSFUELLEN": "Bitte erfassen Sie zuerst die Daten von Antragssteller/in 2 in der Rubrik Antragsstellende.",
+    "CHECKBOX_AUSZAHLUNG_IN_ZUKUNFT": "Folgemonat ausbezahlen",
+    "BEGRUENDUNG_AUSZAHLUNG_AN_INSTITUTION": "Begründung für Auszahlung an Institution",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }
