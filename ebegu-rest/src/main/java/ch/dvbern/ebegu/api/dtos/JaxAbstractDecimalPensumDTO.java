@@ -53,6 +53,7 @@ public class JaxAbstractDecimalPensumDTO extends JaxAbstractDateRangedDTO {
 	@Nullable
 	private BigDecimal stuendlicheVollkosten;
 
+	@Nullable
 	private JaxEingewoehnungPauschale eingewoehnungPauschale;
 
 	public PensumUnits getUnitForDisplay() {
@@ -90,11 +91,12 @@ public class JaxAbstractDecimalPensumDTO extends JaxAbstractDateRangedDTO {
 		this.stuendlicheVollkosten = stuendlicheVollkosten;
 	}
 
+	@Nullable
 	public JaxEingewoehnungPauschale getEingewoehnungPauschale() {
 		return eingewoehnungPauschale;
 	}
 
-	public void setEingewoehnungPauschale(JaxEingewoehnungPauschale eingewoehnungPauschale) {
+	public void setEingewoehnungPauschale(@Nullable JaxEingewoehnungPauschale eingewoehnungPauschale) {
 		this.eingewoehnungPauschale = eingewoehnungPauschale;
 	}
 }

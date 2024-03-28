@@ -475,6 +475,10 @@ public class Betreuung extends AbstractPlatz {
 				abweichung.addTarifHaupt(pensum.getTarifProHauptmahlzeit().multiply(anteil));
 				abweichung.addTarifNeben(pensum.getTarifProNebenmahlzeit().multiply(anteil));
 				abweichung.setStuendlicheVollkosten(pensum.getStuendlicheVollkosten());
+
+				if (pensum.getEingewoehnungPauschale() != null && DateUtil.isSameMonthAndYear(pensum.getGueltigkeit().getGueltigAb(), abweichungVon)) {
+					abweichung.addEingewoehnungPauschale(pensum.getEingewoehnungPauschale());
+				}
 			}
 		}
 		return abweichung;

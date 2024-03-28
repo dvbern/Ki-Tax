@@ -265,7 +265,7 @@ public class AbstractConverter {
 	}
 
 	@Nonnull
-	private JaxEingewoehnungPauschale eingewoehnungPauschaleToJax(
+	protected JaxEingewoehnungPauschale eingewoehnungPauschaleToJax(
 		EingewoehnungPauschale eingewoehnungPauschale,
 		JaxEingewoehnungPauschale jaxEingewoehnungPauschale) {
 

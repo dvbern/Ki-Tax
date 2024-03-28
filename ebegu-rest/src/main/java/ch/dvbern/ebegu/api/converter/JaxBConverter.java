@@ -3518,6 +3518,12 @@ public class JaxBConverter extends AbstractConverter {
 		jaxAbweichung.setVertraglicherTarifNeben(abweichung.getVertraglicherTarifNebenmahlzeit());
 		jaxAbweichung.setMultiplier(abweichung.getMultiplier());
 		jaxAbweichung.setBetreuungsangebotTyp(betreuungsangebotTyp);
+		if (abweichung.getVertraglicheEingewoehnungPauschale() != null) {
+			jaxAbweichung.setEingewoehnungPauschale(eingewoehnungPauschaleToJax(abweichung.getVertraglicheEingewoehnungPauschale(), new JaxEingewoehnungPauschale()));
+			if (abweichung.getEingewoehnungPauschale() != null) {
+				jaxAbweichung.getEingewoehnungPauschale().setId(abweichung.getEingewoehnungPauschale().getId());
+			}
+		}
 
 		return jaxAbweichung;
 	}
