@@ -39,6 +39,7 @@
                             <select [(ngModel)]="selectedUnregisteredGemeinde"
                                     name="bfsGemeinde"
                                     class="form-control"
+                                    data-test="gemeinde-selection"
                                     id="bfsGemeinde"
                                     [disabled]="gemeinde.besondereVolksschule"
                                     [required]="true"
@@ -175,6 +176,7 @@
                             <input id="admin_mail_ID" type="email" name="admin_mail"
                                    [(ngModel)]="adminMail"
                                    email
+                                   data-test="admin-mail"
                                    [maxlength]="255" class="form-control" required>
                             <dv-error-messages [errorObject]="form.controls.admin_mail?.errors"
                                                input-id="admin_mail_ID">
@@ -187,7 +189,7 @@
 
         <!-- Buttons -->
         <div class="dv-footer">
-            <dv-loading-button [type]="'submit'">
+            <dv-loading-button [type]="'submit'" data-test="container.einladung-senden">
                 <span translate>EINLADUNG_SENDEN</span>
             </dv-loading-button>
 

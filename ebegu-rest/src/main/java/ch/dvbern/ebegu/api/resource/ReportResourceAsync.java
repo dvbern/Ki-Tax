@@ -682,6 +682,7 @@ public class ReportResourceAsync {
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_MANDANT, SACHBEARBEITER_MANDANT,
 		ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, ADMIN_TS, SACHBEARBEITER_TS })
 	public Response getTagesschuleRechnungsstellungReportExcel(
+		@QueryParam("gesuchsperiodeId") @Nonnull String gesuchsperiodeId,
 		@Context HttpServletRequest request,
 		@Context UriInfo uriInfo
 	) {
@@ -695,7 +696,7 @@ public class ReportResourceAsync {
 			ReportVorlage.VORLAGE_REPORT_TAGESSCHULE_RECHNUNGSSTELLUNG,
 			null,
 			null,
-			null,
+			gesuchsperiodeId,
 			LocaleThreadLocal.get(),
 				Objects.requireNonNull(principalBean.getMandant())
 		);

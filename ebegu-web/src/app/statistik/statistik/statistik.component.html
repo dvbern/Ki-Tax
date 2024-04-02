@@ -776,7 +776,25 @@
                                   [ngClass]="{'ng-submitted': tagesschuleRechnungsstellungRef.submitted}"
                                   (ngSubmit)="generateStatistik(tagesschuleRechnungsstellungRef, TSStatistikParameterType.TAGESSCHULE_RECHNUNGSSTELLUNG)">
                                 <div class="row">
-                                    <div class="col-xs-3 col-xs-offset-9 statistik-button statistik-no-fields">
+                                    <div class="col-xs-offset-6 col-xs-3 form-group">
+                                        <label class="md-no-float required" for="tagesschuleRechnungsstellung_gp"
+                                               translate>GESUCHSPERIODEN</label>
+                                        <div class="dv-select-style">
+                                            <select name="tagesschuleRechnungsstellung_gp_name"
+                                                    id="tagesschuleRechnungsstellung_gp"
+                                                    [(ngModel)]="statistikParameter.gesuchsperiode"
+                                                    #gesuchZeitraumTSGP='ngModel'
+                                                    required
+                                                    class="form-control">
+                                                <option
+                                                    *ngFor="let gesuchsperiode of getActiveGesuchsperioden()"
+                                                    [value]="gesuchsperiode.id">{{gesuchsperiode.gesuchsperiodeString}}</option>
+                                            </select>
+                                            <dv-error-messages [errorObject]="gesuchZeitraumTSGP.errors"
+                                                               class="error"></dv-error-messages>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-3 statistik-button statistik-no-fields">
                                         <dv-loading-button type="submit">
                                             <span class="uppercase" translate>GENERIEREN</span>
                                         </dv-loading-button>

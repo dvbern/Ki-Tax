@@ -295,14 +295,13 @@ public class TagesschuleRechnungsstellungDataRow implements Comparable<Tagesschu
 
 	@Nonnull
 	public static Collection<TagesschuleRechnungsstellungDataRow> createRows(
-		@Nonnull VerfuegungZeitabschnitt zeitabschnitt,
-		@Nonnull LocalDate stichtag
+		@Nonnull VerfuegungZeitabschnitt zeitabschnitt
 	) {
 		// Der Zeitabschnitt einer Tagesschule-Verfuegung enthaelt mehrere Monate!
 		Collection<TagesschuleRechnungsstellungDataRow> dataRows = new ArrayList<>();
 		LocalDate monatsStart = zeitabschnitt.getGueltigkeit().getGueltigAb();
 		LocalDate monatsEnd = zeitabschnitt.getGueltigkeit().getGueltigBis();
-		while (!monatsStart.isAfter(stichtag) && monatsStart.isBefore(monatsEnd)) {
+		while (monatsStart.isBefore(monatsEnd)) {
 			dataRows.add(createRow(zeitabschnitt, monatsStart));
 			monatsStart = monatsStart.plusMonths(1);
 		}

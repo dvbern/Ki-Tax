@@ -21,6 +21,7 @@ import java.time.Month;
 import javax.inject.Inject;
 
 import ch.dvbern.ebegu.api.converter.JaxBConverter;
+import ch.dvbern.ebegu.api.converter.JaxBenutzerConverter;
 import ch.dvbern.ebegu.api.dtos.JaxBenutzerNoDetails;
 import ch.dvbern.ebegu.api.dtos.JaxDossier;
 import ch.dvbern.ebegu.api.resource.DossierResource;
@@ -59,7 +60,7 @@ public class DossierResourceTest extends AbstractEbeguRestLoginTest {
 	@Inject
 	private Persistence persistence;
 	@Inject
-	private JaxBConverter converter;
+	private JaxBenutzerConverter converter;
 
 
 	@Test

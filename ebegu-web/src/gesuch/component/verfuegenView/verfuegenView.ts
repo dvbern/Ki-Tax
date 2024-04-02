@@ -258,7 +258,7 @@ export class VerfuegenViewController extends AbstractGesuchViewController<any> {
         this.applicationPropertyRS.getPublicPropertiesCached().then((response: TSPublicAppConfig) => {
             // Schemas are only visible in devmode
             this.showSchemas = response.devmode;
-            this.isAuszahlungAnAntragstellerEnabled = response.infomaZahlungen;
+            this.isAuszahlungAnAntragstellerEnabled = response.auszahlungAnEltern;
 
             this.setFragenObIgnorieren();
         });

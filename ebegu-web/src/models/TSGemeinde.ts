@@ -35,6 +35,7 @@ export class TSGemeinde extends TSAbstractEntity {
     public nurLats: boolean;
     public key: string;
     public gueltigBis: moment.Moment;
+    public infomaZahlungen: boolean;
 
     public isAtLeastOneAngebotSelected(): boolean {
         const hasAngebot = this.angebotBG || this.angebotTS || this.angebotFI;

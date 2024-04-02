@@ -27,9 +27,14 @@ const getTestdatenLink = () => {
 	return cy.getByData('action-admin.testdaten');
 };
 
+const getGemeindenLink = () => {
+	return cy.getByData('action-gemeinde.list');
+};
+
 
 export const MainNavigationPO = {
     getTestdatenLink,
     getMenuButton,
     getMobileMenuButton,
+    getGemeindenLink,
 };
