@@ -29,6 +29,7 @@ end;
 
 DELIMITER ;
 
+START TRANSACTION;
 
 # Variables definition
 SET @bern_mandant_id = UNHEX('E3736EB86EEF40EF9E5296AB48D8F220');
@@ -531,3 +532,5 @@ INSERT IGNORE INTO gemeinde_stammdaten_gesuchsperiode_ferieninsel (id, timestamp
 INSERT IGNORE INTO sozialdienst (id,timestamp_erstellt,timestamp_mutiert,user_erstellt,user_mutiert,version,vorgaenger_id,name,status,mandant_id) VALUES (UNHEX(REPLACE('f44a68f2-dda2-4bf2-936a-68e20264b620', '-', '')),now(), now(),'flyway','flyway',0,null,'BernerSozialdienst','AKTIV', UNHEX(REPLACE('e3736eb8-6eef-40ef-9e52-96ab48d8f220', '-', '')));
 INSERT IGNORE INTO adresse (id,timestamp_erstellt,timestamp_mutiert,user_erstellt,user_mutiert,version,vorgaenger_id,gueltig_ab,gueltig_bis,gemeinde,hausnummer,land,organisation,ort,plz,strasse,zusatzzeile) VALUES (UNHEX(REPLACE('a805a101-4200-473a-accc-bbb423ea1999', '-', '')),now(), now(),'flyway','flyway',0,null,'1000-01-01','9999-12-31',null,'2','CH','Bern Sozialdienst','Paris','3000','Sozialdienst Strasse',null);
 INSERT IGNORE INTO sozialdienst_stammdaten (id,timestamp_erstellt,timestamp_mutiert,user_erstellt,user_mutiert,version,vorgaenger_id,mail,telefon,webseite,adresse_id,sozialdienst_id) VALUES (UNHEX(REPLACE('0f1c6b9e-37de-4c10-8ddc-9514fb840f5f', '-', '')),now(), now(),'flyway','flyway',0,null,'test@mailbucket.dvbern.ch','078 898 98 98','http://test.dvbern.ch',UNHEX(REPLACE('a805a101-4200-473a-accc-bbb423ea1999', '-', '')),UNHEX(REPLACE('f44a68f2-dda2-4bf2-936a-68e20264b620', '-', '')));
+
+COMMIT;

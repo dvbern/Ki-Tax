@@ -29,6 +29,8 @@ end;
 
 DELIMITER ;
 
+START TRANSACTION;
+
 # Variables definition
 SET @mandant_id_schwyz = UNHEX(REPLACE('08687de9-b3d0-11ee-829a-0242ac160002', '-', ''));
 call select_gesuchsperiode('2024-08-01', @mandant_id_schwyz, @gesuchsperiode_24_25_id);
@@ -375,3 +377,4 @@ INSERT IGNORE INTO modul_tagesschule (id, timestamp_erstellt, timestamp_mutiert,
 VALUES (UNHEX('baff3e93b91211ee8d780242ac160002'), '2023-12-08 09:45:52', '2023-12-08 09:45:52', 'ebegu:Kanton Schwyz',
 		'ebegu:Kanton Schwyz', 0, 'FRIDAY', UNHEX('4edfb4c3b91211ee8d780242ac160002'));
 
+COMMIT;
