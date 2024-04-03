@@ -38,7 +38,6 @@ SET @traegerschaft_schwyz_id = UNHEX(REPLACE('ef7ef939-b3e7-11ee-829a-0242ac1600
 SET @bruennen_id = UNHEX(REPLACE('1188c355-b3d6-11ee-829a-0242ac160002', '-', ''));
 SET @weissenstein_id = UNHEX(REPLACE('1722f92b-b3d6-11ee-829a-0242ac160002', '-', ''));
 SET @tfo_id = UNHEX(REPLACE('1c218a88-b3d6-11ee-829a-0242ac160002', '-', ''));
-SET @ts_id = UNHEX(REPLACE('e67aa195-b912-11ee-8d78-0242ac160002', '-', ''));
 SET @mittagstisch_id = UNHEX(REPLACE('7212f92b-b3c6-21ea-729b-1242ac160003', '-', ''));
 SET @system_user = UNHEX(REPLACE('33333333-3333-3333-3333-333333333333', '-', ''));
 
