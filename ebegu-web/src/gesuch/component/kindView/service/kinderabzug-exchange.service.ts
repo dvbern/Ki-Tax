@@ -54,10 +54,10 @@ export class KinderabzugExchangeService {
     }
 
     public getFamilienErgaenzendeBetreuungChanged$(): Observable<moment.Moment> {
-        return this._geburtsdatumChanged.asObservable();
+        return this._familienErgaenzendeBetreuungChanged.asObservable();
     }
 
     public triggerFamilienErgaenzendeBetreuungChanged(): void {
-        this._geburtsdatumChanged.next();
+        this._familienErgaenzendeBetreuungChanged.next();
     }
 }
