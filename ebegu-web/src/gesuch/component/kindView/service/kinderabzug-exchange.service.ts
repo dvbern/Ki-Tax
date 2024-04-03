@@ -51,6 +51,8 @@ export class KinderabzugExchangeService {
 
     public triggerFormValidation(): void {
         this._formValidationTriggered.next();
+        this._form?.form.markAllAsTouched();
+        this._form?.onSubmit(null);
     }
 
     public getFamilienErgaenzendeBetreuungChanged$(): Observable<moment.Moment> {

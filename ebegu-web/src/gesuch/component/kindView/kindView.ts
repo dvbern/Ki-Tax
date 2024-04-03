@@ -213,6 +213,7 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
     public save(): IPromise<TSKindContainer> {
         this.submitted = true;
         this.errorService.clearAll();
+        this.kinderabzugExchangeService.triggerFormValidation();
         if (!this.isGesuchValid()) {
             return undefined;
         }
@@ -221,11 +222,7 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
             this.errorService.addMesageAsError(invalidPensumFachstellen[0].error);
             return undefined;
         }
-        if (this.kinderabzugExchangeService.form && !this.kinderabzugExchangeService.form.valid) {
-            this.kinderabzugExchangeService.form.onSubmit(null);
-            this.kinderabzugExchangeService.triggerFormValidation();
-            return undefined;
-        }
+
 
         if (!this.hybridFormBridgeService.forms.reduce((prev, cur) => cur.valid && prev, true)) {
             return undefined;
