@@ -223,7 +223,6 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
             return undefined;
         }
 
-
         if (!this.hybridFormBridgeService.forms.reduce((prev, cur) => cur.valid && prev, true)) {
             return undefined;
         }
