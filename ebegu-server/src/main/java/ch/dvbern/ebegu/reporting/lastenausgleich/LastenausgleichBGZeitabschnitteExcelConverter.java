@@ -43,6 +43,7 @@ public class LastenausgleichBGZeitabschnitteExcelConverter implements ExcelConve
 
 	@Override
 	public void applyAutoSize(@Nonnull Sheet sheet) {
+		// No autosizing defined for columns
 	}
 
 

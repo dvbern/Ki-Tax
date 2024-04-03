@@ -183,9 +183,6 @@ public class JaxRueckforderungFormular extends JaxAbstractDTO {
 	@XmlJavaTypeAdapter(LocalDateTimeXMLConverter.class)
 	private LocalDateTime beschwerdeAusbezahltAm;
 
-	public JaxRueckforderungFormular() {
-	}
-
 	@Nonnull
 	public List<JaxRueckforderungMitteilung> getRueckforderungMitteilungen() {
 		return rueckforderungMitteilungen;

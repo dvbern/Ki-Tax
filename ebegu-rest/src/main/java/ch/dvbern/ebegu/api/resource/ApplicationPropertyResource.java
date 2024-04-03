@@ -353,6 +353,10 @@ public class ApplicationPropertyResource {
 			this.applicationPropertyService.readApplicationProperty(ApplicationPropertyKey.INFOMA_ZAHLUNGEN,
 							mandant)
 				.orElseThrow(() -> notFound);
+		ApplicationProperty auszahlungAnEltern  =
+			this.applicationPropertyService.readApplicationProperty(ApplicationPropertyKey.AUSZAHLUNGEN_AN_ELTERN,
+					mandant)
+				.orElseThrow(() -> notFound);
 		ApplicationProperty frenchEnabled =
 				this.applicationPropertyService.readApplicationProperty(ApplicationPropertyKey.FRENCH_ENABLED, mandant)
 						.orElseThrow(() -> notFound);
@@ -437,7 +441,8 @@ public class ApplicationPropertyResource {
 			stringToBool(angebotTSEnabled.getValue()),
 			stringToBool(angebotFIEnabled.getValue()),
 			stringToBool(angebotMittagstischEnabled.getValue()),
-			stringToBool(angebotTFOEnabled.getValue())
+			stringToBool(angebotTFOEnabled.getValue()),
+			stringToBool(auszahlungAnEltern.getValue())
 			);
 		return Response.ok(pubAppConf).build();
 	}

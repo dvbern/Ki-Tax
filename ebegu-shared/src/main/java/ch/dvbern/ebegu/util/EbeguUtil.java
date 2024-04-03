@@ -471,6 +471,9 @@ public final class EbeguUtil {
 		if (gesuch.getFamiliensituationContainer().getFamiliensituationJA().getFamilienstatus() == EnumFamilienstatus.APPENZELL) {
 			return isFamilienSituationVollstaendigAppenzell(famSitJA);
 		}
+		if (gesuch.getFamiliensituationContainer().getFamiliensituationJA().getFamilienstatus() == EnumFamilienstatus.SCHWYZ) {
+			return famSitJA.getGesuchstellerKardinalitaet() != null;
+		}
 		return (gesuch.getFamiliensituationContainer().getFamiliensituationJA().getVerguenstigungGewuenscht() != null
 			|| BooleanUtils.isTrue(gesuch.getFamiliensituationContainer()
 			.getFamiliensituationJA()

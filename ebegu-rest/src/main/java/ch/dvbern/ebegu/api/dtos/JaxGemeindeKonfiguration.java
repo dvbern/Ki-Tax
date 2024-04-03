@@ -17,12 +17,16 @@
 
 package ch.dvbern.ebegu.api.dtos;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.Nonnull;
 
-public class JaxGemeindeKonfiguration {
+public class JaxGemeindeKonfiguration implements Serializable {
+
+	private static final long serialVersionUID = 549308935162296882L;
+
 	@Nonnull
 	private String gesuchsperiodeName;
 	@Nonnull

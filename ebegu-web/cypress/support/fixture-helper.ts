@@ -25,6 +25,7 @@ import type * as FinSit from '../fixtures/antrag/finsit.json';
 import type * as Papier from '../fixtures/antrag/papier.json';
 import type * as CreateTagesschule from '../fixtures/institution/create-tagesschule.json';
 import type * as Tagesschule from '../fixtures/institution/tagesschule.json';
+import type * as Gemeinde from '../fixtures/admin/gemeinde.json';
 
 const fromFixture =
     <T, FixturePart extends keyof T = keyof T>(fixture: string, fixturePart: FixturePart) =>
@@ -71,4 +72,8 @@ export const FixtureCreateTagesschule = {
 
 export const FixtureTagesschule = {
     withValid: fromFixture<typeof Tagesschule>('institution/tagesschule.json', 'valid'),
+};
+
+export const GemeindeFixture = {
+    withValid: fromFixture<typeof Gemeinde>('admin/gemeinde.json', 'valid'),
 };

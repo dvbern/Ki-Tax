@@ -171,7 +171,6 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     // felder um aus provisorischer Betreuung ein Betreuungspensum zu erstellen
     public provMonatlicheBetreuungskosten: number;
     private hideKesbPlatzierung: boolean;
-    public infomaZahlungen: boolean;
     private mandant: KiBonMandant;
     private angebotTS: boolean;
     private angebotFI: boolean;
@@ -179,6 +178,8 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     private angebotMittagstisch: boolean = false;
     private isLuzern: boolean;
     private sprachfoerderungBestaetigenAktiviert: boolean;
+
+    public auszahlungAnEltern: boolean;
     public readonly demoFeature = TSDemoFeature.FACHSTELLEN_UEBERGANGSLOESUNG;
 
     public constructor(
@@ -307,7 +308,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     }
 
     private initEinstellungen(): void {
-        this.loadInfomaZahlungenActive();
+        this.loadAuszahlungAnEltern();
         const gesuchsperiodeId: string = this.gesuchModelManager.getGesuchsperiode().id;
         this.einstellungRS.getAllEinstellungenBySystemCached(
             gesuchsperiodeId,
@@ -378,6 +379,18 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         }, error => LOG.error(error));
     }
 
+    private loadAuszahlungAnEltern(): void {
+        if (EbeguUtil.isNotNullOrUndefined(this.auszahlungAnEltern)) {
+            // properties wurden bereits geladen
+            return;
+        }
+
+        this.applicationPropertyRS.getPublicPropertiesCached()
+            .then((response: TSPublicAppConfig) => {
+                this.auszahlungAnEltern = response.auszahlungAnEltern;
+            });
+    }
+
     private initBetreuungsangebotTyp() {
         if (this.$stateParams.betreuungsangebotTyp) {
             for (const obj of this.betreuungsangebotValues) {
@@ -420,18 +433,6 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         return this.betreuungspensumAnzeigeTypEinstellung;
     }
 
-    private loadInfomaZahlungenActive(): void {
-        if (EbeguUtil.isNotNullOrUndefined(this.infomaZahlungen)) {
-            // properties wurden bereits geladen
-            return;
-        }
-
-        this.applicationPropertyRS.getPublicPropertiesCached()
-            .then((response: TSPublicAppConfig) => {
-                this.infomaZahlungen = response.infomaZahlungen;
-            });
-    }
-
     /**
      * Creates a Betreuung for the kind given by the kindNumber attribute of the class.
      * Thus the kindnumber must be set before this method is called.
@@ -451,11 +452,11 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         tsBetreuung.kindId = this.gesuchModelManager.getKindToWorkWith().id;
         tsBetreuung.gesuchsperiode = this.gesuchModelManager.getGesuchsperiode();
 
-        // sollte defaultmässig true sein, falls infomaZahlungen aktiviert
+        // sollte defaultmässig true sein, falls AuszahlungAnEltern aktiviert
         this.applicationPropertyRS.getPublicPropertiesCached()
             .then((response: TSPublicAppConfig) => {
-                this.infomaZahlungen = response.infomaZahlungen;
-                tsBetreuung.auszahlungAnEltern = response.infomaZahlungen;
+                tsBetreuung.auszahlungAnEltern = response.auszahlungAnEltern;
+                this.auszahlungAnEltern = response.auszahlungAnEltern;
             });
 
         return tsBetreuung;

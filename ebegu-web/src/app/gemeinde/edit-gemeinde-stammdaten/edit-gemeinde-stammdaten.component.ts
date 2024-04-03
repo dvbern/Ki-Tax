@@ -60,6 +60,8 @@ export class EditGemeindeStammdatenComponent implements OnInit, OnDestroy {
     public minDateTSFI = moment('20200801', 'YYYYMMDD');
     public frenchEnabled: boolean = false;
 
+    public isInfomazahlungen: boolean = false;
+
     private readonly unsubscribe$ = new Subject<void>();
     public ebeguUtil = EbeguUtil;
 
@@ -74,6 +76,9 @@ export class EditGemeindeStammdatenComponent implements OnInit, OnDestroy {
         if (!this.gemeindeId) {
             return;
         }
+        this.applicationPropertyRS.getPublicPropertiesCached().then(res => {
+            this.isInfomazahlungen = res.infomaZahlungen;
+        });
         this.stammdaten$
             .pipe(takeUntil(this.unsubscribe$))
             .subscribe(
