@@ -12,8 +12,7 @@ import {NgForm} from '@angular/forms';
 import {Subject} from 'rxjs';
 import {takeUntil} from 'rxjs/operators';
 import {LogFactory} from '../../../../app/core/logging/LogFactory';
-import {TSFamilienstatus} from '../../../../models/enums/TSFamilienstatus';
-import {TSKind} from '../../../../models/TSKind';
+import {TSGesuchstellerKardinalitaet} from '../../../../models/enums/TSGesuchstellerKardinalitaet';
 import {TSKindContainer} from '../../../../models/TSKindContainer';
 import {EbeguUtil} from '../../../../utils/EbeguUtil';
 import {GesuchModelManager} from '../../../service/gesuchModelManager';
@@ -54,6 +53,7 @@ export class SchwyzKinderabzugComponent implements OnInit, AfterViewInit, OnDest
             .pipe(takeUntil(this.unsubscribe$))
             .subscribe(() => {
                 this.change();
+                this.cd.markForCheck();
             }, err => LOG.error(err));
     }
 
@@ -63,13 +63,6 @@ export class SchwyzKinderabzugComponent implements OnInit, AfterViewInit, OnDest
 
     public ngOnDestroy(): void {
         this.unsubscribe$.next();
-    }
-
-    public getModelGS(): TSKind | undefined {
-        if (this.kindContainer?.kindGS) {
-            return this.kindContainer.kindGS;
-        }
-        return undefined;
     }
 
     public wirdKindExternBetreut(): boolean {
@@ -99,7 +92,7 @@ export class SchwyzKinderabzugComponent implements OnInit, AfterViewInit, OnDest
     }
 
     public partnerUnterhaltspflichtigVisible(): boolean {
-        return this.gesuchModelManager.getFamiliensituation().familienstatus !== TSFamilienstatus.ALLEINERZIEHEND &&
-            EbeguUtil.isNotNullAndTrue(this.kindContainer?.kindJA.lebtKindAlternierend);
+        return this.gesuchModelManager.getFamiliensituation().gesuchstellerKardinalitaet === TSGesuchstellerKardinalitaet.ZU_ZWEIT
+            && EbeguUtil.isNotNullAndTrue(this.kindContainer?.kindJA.lebtKindAlternierend);
     }
 }

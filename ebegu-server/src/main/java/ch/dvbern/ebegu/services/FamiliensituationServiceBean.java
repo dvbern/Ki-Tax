@@ -83,7 +83,7 @@ public class FamiliensituationServiceBean extends AbstractBaseService implements
 		removeGS2DataOnChangeFrom2To1GS(gesuch, newFamiliensituation, mergedFamiliensituationContainer, oldFamiliensituation);
 		handleFamSitChangeForMandanten(gesuch, mergedFamiliensituationContainer, oldFamiliensituation);
 		handlePossibleGS2Tausch(gesuch, newFamiliensituation);
-		handlePossibleFKJVKinderabzugFragenReset(gesuch, newFamiliensituation, oldFamiliensituation);
+		handlePossibleKinderabzugFragenReset(gesuch, newFamiliensituation, oldFamiliensituation);
 
 		wizardStepService.updateSteps(gesuch.getId(), oldFamiliensituation, newFamiliensituation, WizardStepName
 			.FAMILIENSITUATION);
@@ -182,8 +182,9 @@ public class FamiliensituationServiceBean extends AbstractBaseService implements
 		return Boolean.TRUE.equals(einstellung.getValueAsBoolean());
 	}
 
-	private void handlePossibleFKJVKinderabzugFragenReset(Gesuch gesuch, Familiensituation newFamiliensituation, Familiensituation oldFamiliensituation) {
-		if (gesuch.getFinSitTyp() == FinanzielleSituationTyp.BERN_FKJV &&
+	private void handlePossibleKinderabzugFragenReset(Gesuch gesuch, Familiensituation newFamiliensituation, Familiensituation oldFamiliensituation) {
+		if (gesuch.getFinSitTyp() == FinanzielleSituationTyp.BERN_FKJV
+			|| newFamiliensituation.getFamilienstatus() == EnumFamilienstatus.SCHWYZ &&
 			oldFamiliensituation != null &&
 			(oldFamiliensituation.getFamilienstatus() != newFamiliensituation.getFamilienstatus()
 				|| oldFamiliensituation.getGesuchstellerKardinalitaet() != newFamiliensituation.getGesuchstellerKardinalitaet()) &&
