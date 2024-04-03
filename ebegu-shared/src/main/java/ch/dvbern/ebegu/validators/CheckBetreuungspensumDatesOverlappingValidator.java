@@ -16,7 +16,9 @@
 package ch.dvbern.ebegu.validators;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import javax.validation.ConstraintValidator;
@@ -30,24 +32,26 @@ import ch.dvbern.ebegu.entities.BetreuungspensumContainer;
  * Validator fuer Datum in Betreuungspensen. Die Zeitraeume duerfen sich nicht ueberschneiden
  */
 public class CheckBetreuungspensumDatesOverlappingValidator implements ConstraintValidator<CheckBetreuungspensumDatesOverlapping, Betreuung> {
-	@Override
-	public void initialize(CheckBetreuungspensumDatesOverlapping constraintAnnotation) {
-		// nop
-	}
 
 	@Override
 	public boolean isValid(Betreuung instance, ConstraintValidatorContext context) {
-		return !(checkOverlapping("JA", instance.getBetreuungspensumContainers()) || checkOverlapping("GS", instance.getBetreuungspensumContainers()));
+		return !hasOverlap(BetreuungspensumContainer::getBetreuungspensumJA, instance.getBetreuungspensumContainers())
+			&& !hasOverlap(BetreuungspensumContainer::getBetreuungspensumGS, instance.getBetreuungspensumContainers());
 	}
 
 	/**
 	 * prueft ob es eine ueberschneidung zwischen den Zeitrauemen gibt
 	 */
-	private boolean checkOverlapping(String type, Set<BetreuungspensumContainer> betreuungspensumContainers) {
+	private boolean hasOverlap(
+		Function<BetreuungspensumContainer, Betreuungspensum> pensumMapper,
+		Set<BetreuungspensumContainer> betreuungspensumContainers
+	) {
 		// Da es wahrscheinlich wenige Betreuungspensen innerhalb einer Betreuung gibt, macht es vielleicht mehr Sinn diese Version zu nutzen
+		Function<BetreuungspensumContainer, Betreuungspensum> getBetreuungspensumGS =
+			BetreuungspensumContainer::getBetreuungspensumGS;
 		List<Betreuungspensum> gueltigkeitStream = betreuungspensumContainers.stream()
-			.filter(cont -> "GS".equalsIgnoreCase(type) ? cont.getBetreuungspensumGS() != null : cont.getBetreuungspensumJA() != null)
-			.map("GS".equalsIgnoreCase(type) ? BetreuungspensumContainer::getBetreuungspensumGS : BetreuungspensumContainer::getBetreuungspensumJA)
+			.map(pensumMapper)
+			.filter(Objects::nonNull)
 			.collect(Collectors.toList());
 
 		//Achtung hier MUSS instanz verglichen werden
