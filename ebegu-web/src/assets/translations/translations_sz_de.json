@@ -100,5 +100,6 @@
     "FINANZIELLE_SITUATION_STEUERBARES_VERMOEGEN_HELP": "Auf Steuererklärung Formular 1, Abs. 13",
     "FINANZIELLE_SITUATION_BRUTTOLOHN": "Bruttoeinkommen",
     "FINANZIELLE_SITUATION_BRUTTOLOHN_HINT": "Bruttolohn gemäss Ziff. 8 auf dem Lohnausweis des Vorjahres",
+    "FINANZIELLE_SITUATION_STEK_GEMEINSAM": "Haben Sie Ihre letzte rechtskräftige Steuerveranlagung mit {{namegs2}} erhalten?",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }
