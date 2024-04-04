@@ -46,7 +46,7 @@ export class FinanzielleSituationSubStepManagerSchwyz extends FinanzielleSituati
         currentSubStep: TSFinanzielleSituationSubStepName,
     ): TSFinanzielleSituationSubStepName {
         if (currentSubStep === TSFinanzielleSituationSubStepName.SCHWYZ_GS2) {
-            return TSFinanzielleSituationSubStepName.SCHWYZ_GS2;
+            return TSFinanzielleSituationSubStepName.SCHWYZ_GS1;
         }
         if (currentSubStep === TSFinanzielleSituationSubStepName.SCHWYZ_GS1) {
             return TSFinanzielleSituationSubStepName.SCHWYZ_START;
