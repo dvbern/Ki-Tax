@@ -23,6 +23,7 @@ import {LogFactory} from '../../../../app/core/logging/LogFactory';
 import {AuthServiceRS} from '../../../../authentication/service/AuthServiceRS.rest';
 import {isAtLeastFreigegeben} from '../../../../models/enums/TSAntragStatus';
 import {TSEinstellungKey} from '../../../../models/enums/TSEinstellungKey';
+import {TSFinanzielleSituationTyp} from '../../../../models/enums/TSFinanzielleSituationTyp';
 import {TSRole} from '../../../../models/enums/TSRole';
 import {TSWizardStepName} from '../../../../models/enums/TSWizardStepName';
 import {TSWizardStepStatus} from '../../../../models/enums/TSWizardStepStatus';
@@ -145,7 +146,7 @@ export class EinkommensverschlechterungInfoViewController
     }
 
     public showEkvi(): boolean {
-        return this.getEinkommensverschlechterungsInfo().einkommensverschlechterung;
+        return !this.hasMandantOnlyEKVBasisJahr() && this.getEinkommensverschlechterungsInfo().einkommensverschlechterung;
     }
 
     public showJahrPlus1(): boolean {
@@ -153,7 +154,11 @@ export class EinkommensverschlechterungInfoViewController
     }
 
     public showJahrPlus2(): boolean {
-        return this.getEinkommensverschlechterungsInfo().ekvFuerBasisJahrPlus2;
+        return !this.hasMandantOnlyEKVBasisJahr() && this.getEinkommensverschlechterungsInfo().ekvFuerBasisJahrPlus2;
+    }
+
+    private hasMandantOnlyEKVBasisJahr(): boolean {
+        return this.gesuchModelManager.getGesuch().finSitTyp === TSFinanzielleSituationTyp.SCHWYZ;
     }
 
     public confirmAndSave(): IPromise<TSEinkommensverschlechterungInfoContainer> {
@@ -324,7 +329,8 @@ export class EinkommensverschlechterungInfoViewController
      * users from entering wrong input data
      */
     private isConfirmationOnlyOnePeriodeRequired(): boolean {
-        return this.getEinkommensverschlechterungsInfo().ekvFuerBasisJahrPlus1 &&
+        return !this.hasMandantOnlyEKVBasisJahr() &&
+            this.getEinkommensverschlechterungsInfo().ekvFuerBasisJahrPlus1 &&
             !this.getEinkommensverschlechterungsInfo().ekvFuerBasisJahrPlus2;
     }
 
@@ -350,6 +356,9 @@ export class EinkommensverschlechterungInfoViewController
     }
 
     public showAblehnungBasisJahrPlus1(): boolean {
+        if (this.hasMandantOnlyEKVBasisJahr()) {
+            return true;
+        }
         return (!this.isAmt() && this.showEkvi() && this.showJahrPlus1()
                 && this.getEinkommensverschlechterungsInfo().ekvBasisJahrPlus1Annulliert && this.isGesuchFreigegeben())
             || (this.isAmt() && this.showEkvi() && this.showJahrPlus1());
@@ -420,5 +429,14 @@ export class EinkommensverschlechterungInfoViewController
             minAbweichungEkv: this.grenzwertEKV?.toLocaleString('de-ch'),
             basisjahr: this.getBasisjahr()
         };
+    }
+
+    public onEinkommensverschlechterungChange(): void {
+        if (!this.hasMandantOnlyEKVBasisJahr()) {
+            return;
+        }
+        if (this.model.einkommensverschlechterungInfoJA.einkommensverschlechterung) {
+            this.model.einkommensverschlechterungInfoJA.ekvFuerBasisJahrPlus1 = true;
+        }
     }
 }
