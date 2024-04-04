@@ -25,6 +25,7 @@ import {
     FinanzielleSituationStartSchwyzComponent
 } from './finanzielle-situation-start-schwyz/finanzielle-situation-start-schwyz.component';
 import {SteuerveranlagtSchwyzComponent} from './steuerveranlagt-schwyz/steuerveranlagt-schwyz.component';
+import { FinanzielleSituationResultateSchwyzComponent } from './finanzielle-situation-resultate-schwyz/finanzielle-situation-resultate-schwyz.component';
 
 @NgModule({
     declarations: [
@@ -33,6 +34,7 @@ import {SteuerveranlagtSchwyzComponent} from './steuerveranlagt-schwyz/steuerver
         FinanzielleSituationStartSchwyzComponent,
         FinanzielleSituationGsSchwyzComponent,
         FinanzielleSituationSingleGsComponent,
+        FinanzielleSituationResultateSchwyzComponent,
     ],
     imports: [
         SharedModule,

@@ -2,7 +2,6 @@ import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
 import {UIRouterGlobals} from '@uirouter/core';
 import {TSFinanzielleSituationSubStepName} from '../../../../../models/enums/TSFinanzielleSituationSubStepName';
 import {TSWizardStepName} from '../../../../../models/enums/TSWizardStepName';
-import {TSWizardStepStatus} from '../../../../../models/enums/TSWizardStepStatus';
 import {TSFinanzielleSituationContainer} from '../../../../../models/TSFinanzielleSituationContainer';
 import {TSFinanzModel} from '../../../../../models/TSFinanzModel';
 import {TSGesuchstellerContainer} from '../../../../../models/TSGesuchstellerContainer';
@@ -79,21 +78,10 @@ export class FinanzielleSituationGsSchwyzComponent extends AbstractGesuchViewX<T
 
     private save(onResult: (arg: any) => void): Promise<TSFinanzielleSituationContainer> {
         this.model.copyFinSitDataToGesuch(this.getGesuch());
-        return this.gesuchModelManager.saveFinanzielleSituation().then(async (finSitCon: TSFinanzielleSituationContainer) => {
-            if (this.model.getGesuchstellerNumber() === 2) {
-                await this.updateWizardStepStatus();
-            }
+        return this.gesuchModelManager.saveFinanzielleSituation().then((finSitCon: TSFinanzielleSituationContainer) => {
             onResult(finSitCon);
             return finSitCon;
         }) as Promise<TSFinanzielleSituationContainer>;
-    }
-
-    protected updateWizardStepStatus(): Promise<void> {
-        return this.gesuchModelManager.getGesuch().isMutation() ?
-            this.wizardStepManager.updateCurrentWizardStepStatusMutiert() as Promise<void> :
-            this.wizardStepManager.updateCurrentWizardStepStatusSafe(
-                TSWizardStepName.FINANZIELLE_SITUATION_SCHWYZ,
-                TSWizardStepStatus.OK) as Promise<void>;
     }
 
 }
