@@ -43,11 +43,6 @@ public class CheckBetreuungMitteilungZeitraumInstitutionsStammdatenZeitraumValid
 	Betreuungsmitteilung> {
 
 	@Override
-	public void initialize(CheckBetreuungMitteilungZeitraumInstitutionsStammdatenZeitraum constraintAnnotation) {
-		// nop
-	}
-
-	@Override
 	public boolean isValid(Betreuungsmitteilung betreuungsmitteilung, ConstraintValidatorContext context) {
 		assert betreuungsmitteilung.getBetreuung() != null;
 		DateRange institutionStammdatenDateRange =

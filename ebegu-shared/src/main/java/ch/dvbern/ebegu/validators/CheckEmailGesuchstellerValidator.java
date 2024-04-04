@@ -29,11 +29,6 @@ import org.apache.commons.lang.StringUtils;
 @SuppressWarnings({ "ConstantConditions", "PMD.CollapsibleIfStatements" })
 public class CheckEmailGesuchstellerValidator implements ConstraintValidator<CheckEmailGesuchsteller, Gesuch> {
 
-	@Override
-	public void initialize(CheckEmailGesuchsteller constraintAnnotation) {
-		//nop
-	}
-
 	@SuppressWarnings("ConstantConditions")
 	@Override
 	public boolean isValid(Gesuch gesuch, ConstraintValidatorContext context) {

@@ -28,11 +28,6 @@ import ch.dvbern.ebegu.types.DateRange;
 public class CheckBetreuungZeitraumInGesuchsperiodeValidator implements ConstraintValidator<CheckBetreuungZeitraumInGesuchsperiode, Betreuung> {
 
 	@Override
-	public void initialize(CheckBetreuungZeitraumInGesuchsperiode constraintAnnotation) {
-		// nop
-	}
-
-	@Override
 	public boolean isValid(Betreuung betreuung, ConstraintValidatorContext context) {
 		final DateRange gueltigkeitGesuchsperiode = betreuung.extractGesuchsperiode().getGueltigkeit();
 		for (BetreuungspensumContainer betreuungspensumContainer : betreuung.getBetreuungspensumContainers()) {

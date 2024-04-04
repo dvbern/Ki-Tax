@@ -32,11 +32,6 @@ import ch.dvbern.ebegu.entities.Betreuung;
 public class CheckAbwesenheitDatesOverlappingValidator implements ConstraintValidator<CheckAbwesenheitDatesOverlapping, Betreuung> {
 
 	@Override
-	public void initialize(CheckAbwesenheitDatesOverlapping constraintAnnotation) {
-		// nop
-	}
-
-	@Override
 	public boolean isValid(Betreuung instance, ConstraintValidatorContext context) {
 		return !(checkOverlapping("JA", instance.getAbwesenheitContainers())
 			|| checkOverlapping("GS", instance.getAbwesenheitContainers()));

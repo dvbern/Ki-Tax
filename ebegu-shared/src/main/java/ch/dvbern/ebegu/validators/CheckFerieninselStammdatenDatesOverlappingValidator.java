@@ -27,10 +27,6 @@ import ch.dvbern.ebegu.entities.GemeindeStammdatenGesuchsperiodeFerieninselZeitr
  * Die Zeitraeume einer Ferieninsel duerfen sich nicht ueberschneiden.
  */
 public class CheckFerieninselStammdatenDatesOverlappingValidator implements ConstraintValidator<CheckFerieninselStammdatenDatesOverlapping, GemeindeStammdatenGesuchsperiodeFerieninsel> {
-	@Override
-	public void initialize(CheckFerieninselStammdatenDatesOverlapping constraintAnnotation) {
-		// nop
-	}
 
 	@Override
 	public boolean isValid(GemeindeStammdatenGesuchsperiodeFerieninsel instance, ConstraintValidatorContext context) {

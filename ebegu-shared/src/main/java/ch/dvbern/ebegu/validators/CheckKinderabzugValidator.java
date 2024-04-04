@@ -28,11 +28,6 @@ import ch.dvbern.ebegu.entities.Kind;
 public class CheckKinderabzugValidator implements ConstraintValidator<CheckKinderabzug, Kind> {
 
 	@Override
-	public void initialize(CheckKinderabzug constraintAnnotation) {
-		//nop
-	}
-
-	@Override
 	public boolean isValid(@Nonnull Kind kind, @Nullable ConstraintValidatorContext context) {
 		if (!validatePflegekind(kind)) {
 			return false;

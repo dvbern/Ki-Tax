@@ -27,10 +27,6 @@ import ch.dvbern.ebegu.entities.BetreuungsmitteilungPensum;
  * Validator fuer Datum in Betreuungspensen. Die Zeitraeume duerfen sich nicht ueberschneiden
  */
 public class CheckBetreuungsmitteilungDatesOverlappingValidator implements ConstraintValidator<CheckBetreuungsmitteilungDatesOverlapping, Betreuungsmitteilung> {
-	@Override
-	public void initialize(CheckBetreuungsmitteilungDatesOverlapping constraintAnnotation) {
-		// nop
-	}
 
 	@Override
 	public boolean isValid(Betreuungsmitteilung instance, ConstraintValidatorContext context) {

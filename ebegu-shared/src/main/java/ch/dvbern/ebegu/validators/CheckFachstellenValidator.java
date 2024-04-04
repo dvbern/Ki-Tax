@@ -67,11 +67,6 @@ public class CheckFachstellenValidator implements ConstraintValidator<CheckFachs
 	}
 
 	@Override
-	public void initialize(CheckFachstellen constraintAnnotation) {
-		// nop
-	}
-
-	@Override
 	public boolean isValid(@Nonnull KindContainer kindContainer, ConstraintValidatorContext context) {
 		if (kindContainer.getKindJA() == null
 			|| kindContainer.getKindJA().getPensumFachstelle().isEmpty()

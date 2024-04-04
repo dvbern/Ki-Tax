@@ -24,11 +24,6 @@ import javax.validation.ConstraintValidatorContext;
 public class CheckIBANStringValidator implements ConstraintValidator<CheckIBANString, String> {
 
 	@Override
-	public void initialize(CheckIBANString constraintAnnotation) {
-		// nop
-	}
-
-	@Override
 	public boolean isValid(@Nullable String iban, ConstraintValidatorContext constraintValidatorContext) {
 		// we should allow nullable iban fields
 		if (iban == null) {

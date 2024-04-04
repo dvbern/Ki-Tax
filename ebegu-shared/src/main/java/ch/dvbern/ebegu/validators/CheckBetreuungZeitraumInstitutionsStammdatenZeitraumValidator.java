@@ -36,11 +36,6 @@ import ch.dvbern.ebegu.util.ValidationMessageUtil;
 public class CheckBetreuungZeitraumInstitutionsStammdatenZeitraumValidator implements ConstraintValidator<CheckBetreuungZeitraumInstitutionsStammdatenZeitraum, Betreuung> {
 
 	@Override
-	public void initialize(CheckBetreuungZeitraumInstitutionsStammdatenZeitraum constraintAnnotation) {
-		// nop
-	}
-
-	@Override
 	public boolean isValid(Betreuung betreuung, ConstraintValidatorContext context) {
 		DateRange institutionStammdatenDateRange = betreuung.getInstitutionStammdaten().getGueltigkeit();
 		// Uns interessiert grundsaetzlich nur der Bereich innerhalb der Gesuchsperiode

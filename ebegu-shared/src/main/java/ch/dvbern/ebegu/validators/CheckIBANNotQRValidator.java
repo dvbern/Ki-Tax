@@ -30,11 +30,6 @@ public class CheckIBANNotQRValidator implements ConstraintValidator<CheckIBANNot
 	private static final Pattern QR_PATTERN = Pattern.compile("(LI|CH)\\d{2}3[01]\\d{3}\\w{12}");
 
 	@Override
-	public void initialize(CheckIBANNotQR constraintAnnotation) {
-		// nop
-	}
-
-	@Override
 	public boolean isValid(@Nullable IBAN iban, @Nullable ConstraintValidatorContext constraintValidatorContext) {
 		// we should allow nullable iban fields
 		if (iban == null) {

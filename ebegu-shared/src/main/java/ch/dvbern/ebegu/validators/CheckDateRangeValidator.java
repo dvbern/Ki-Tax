@@ -23,11 +23,6 @@ import ch.dvbern.ebegu.types.DateRange;
 
 public class CheckDateRangeValidator implements ConstraintValidator<CheckDateRange, DateRange> {
 
-	@Override
-	public void initialize(CheckDateRange constraintAnnotation) {
-		// nop
-	}
-
 	/**
 	 * gueltigAb und gueltigBis duerfen auch gleich sein. Dies bedeutet eine Zeitspannung von 1 Tag
 	 */

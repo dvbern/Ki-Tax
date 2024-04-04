@@ -17,8 +17,6 @@
 
 package ch.dvbern.ebegu.validators;
 
-import java.util.regex.Pattern;
-
 import javax.annotation.Nullable;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
@@ -26,11 +24,6 @@ import javax.validation.ConstraintValidatorContext;
 import ch.dvbern.oss.lib.beanvalidation.embeddables.IBAN;
 
 public class CheckIBANUppercaseValidator implements ConstraintValidator<CheckIBANUppercase, IBAN> {
-
-	@Override
-	public void initialize(CheckIBANUppercase constraintAnnotation) {
-		// nop
-	}
 
 	@Override
 	public boolean isValid(@Nullable IBAN iban, ConstraintValidatorContext constraintValidatorContext) {

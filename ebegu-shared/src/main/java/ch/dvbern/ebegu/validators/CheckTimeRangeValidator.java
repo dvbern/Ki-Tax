@@ -24,11 +24,6 @@ import ch.dvbern.ebegu.entities.ModulTagesschuleGroup;
 public class CheckTimeRangeValidator implements ConstraintValidator<CheckTimeRange, ModulTagesschuleGroup> {
 
 	@Override
-	public void initialize(CheckTimeRange constraintAnnotation) {
-		// nop
-	}
-
-	@Override
 	public boolean isValid(@Nonnull ModulTagesschuleGroup modul, ConstraintValidatorContext constraintValidatorContext) {
 		return modul.getZeitVon().isBefore(modul.getZeitBis()); // es ist nicht erlaubt dass sie gleich sind
 	}
