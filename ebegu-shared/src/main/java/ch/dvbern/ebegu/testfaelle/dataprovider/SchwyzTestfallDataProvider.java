@@ -34,6 +34,9 @@ public class SchwyzTestfallDataProvider extends AbstractTestfallDataProvider {
 	@Override
 	public Familiensituation createVerheiratet() {
 		Familiensituation familiensituation = new Familiensituation();
+		familiensituation.setVerguenstigungGewuenscht(true);
+		familiensituation.setSozialhilfeBezueger(false);
+		familiensituation.setAuszahlungsdaten(createDefaultAuszahlungsdaten());
 		familiensituation.setFamilienstatus(EnumFamilienstatus.SCHWYZ);
 		familiensituation.setGesuchstellerKardinalitaet(EnumGesuchstellerKardinalitaet.ZU_ZWEIT);
 		return familiensituation;
@@ -42,6 +45,9 @@ public class SchwyzTestfallDataProvider extends AbstractTestfallDataProvider {
 	@Override
 	public Familiensituation createAlleinerziehend() {
 		Familiensituation familiensituation = new Familiensituation();
+		familiensituation.setVerguenstigungGewuenscht(true);
+		familiensituation.setSozialhilfeBezueger(false);
+		familiensituation.setAuszahlungsdaten(createDefaultAuszahlungsdaten());
 		familiensituation.setFamilienstatus(EnumFamilienstatus.SCHWYZ);
 		familiensituation.setGesuchstellerKardinalitaet(EnumGesuchstellerKardinalitaet.ALLEINE);
 		return familiensituation;
