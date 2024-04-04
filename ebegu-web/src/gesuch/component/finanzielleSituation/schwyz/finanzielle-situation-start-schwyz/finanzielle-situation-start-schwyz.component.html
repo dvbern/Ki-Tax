@@ -33,6 +33,16 @@
                                        [finSitGS]="getModel().finanzielleSituationGS"
                                        [readonly]="gesuchModelManager.isGesuchReadonly()">
             </dv-steuerveranlagt-schwyz>
+            <div class="row margin-bottom-20"
+                 *ngIf="model.familienSituation.gemeinsameSteuererklaerung">
+                <div class="col-sm-6">
+                    <dv-input-label-field
+                        [model]="massgebendesEinkommen"
+                        [labelMessageKey]="'FINANZIELLE_SITUATION_MASSGEBENDES_EINKOMMEN'"
+                        [inputDisabled]="true">
+                    </dv-input-label-field>
+                </div>
+            </div>
         </ng-template>
 
         <ng-template #alleinigesGesuch>
