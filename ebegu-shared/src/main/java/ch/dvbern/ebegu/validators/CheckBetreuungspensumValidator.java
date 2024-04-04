@@ -109,6 +109,7 @@ public class CheckBetreuungspensumValidator implements ConstraintValidator<Check
 		return true;
 	}
 
+	@Nullable
 	private EntityManager createEntityManager() {
 		if (entityManagerFactory != null) {
 			return entityManagerFactory.createEntityManager(); // creates a new EntityManager
