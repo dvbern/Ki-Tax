@@ -39,6 +39,7 @@ public class SchwyzTestfallDataProvider extends AbstractTestfallDataProvider {
 		familiensituation.setAuszahlungsdaten(createDefaultAuszahlungsdaten());
 		familiensituation.setFamilienstatus(EnumFamilienstatus.SCHWYZ);
 		familiensituation.setGesuchstellerKardinalitaet(EnumGesuchstellerKardinalitaet.ZU_ZWEIT);
+		familiensituation.setGemeinsameSteuererklaerung(false);
 		return familiensituation;
 	}
 
