@@ -70,7 +70,7 @@ alter table betreuungsmitteilung_pensum
 
 update einstellung set value = 'PAUSCHALE'
 where einstellung.einstellung_key = 'EINGEWOEHNUNG_TYP' and
-      ebegu.einstellung.gesuchsperiode_id =
+      einstellung.gesuchsperiode_id =
         (select gesuchsperiode.id from gesuchsperiode
                    join mandant on gesuchsperiode.mandant_id = mandant.id
                    where mandant_identifier = 'LUZERN' and gesuchsperiode.gueltig_ab = '2024-08-01');
