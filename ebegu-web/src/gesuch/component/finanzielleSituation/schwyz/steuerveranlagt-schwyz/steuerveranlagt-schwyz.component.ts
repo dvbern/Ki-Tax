@@ -1,5 +1,6 @@
 import {ChangeDetectionStrategy, Component, Input} from '@angular/core';
 import {ControlContainer, NgForm} from '@angular/forms';
+import {TSAbstractFinanzielleSituation} from '../../../../../models/TSAbstractFinanzielleSituation';
 import {TSFinanzielleSituation} from '../../../../../models/TSFinanzielleSituation';
 import {EbeguUtil} from '../../../../../utils/EbeguUtil';
 
@@ -12,13 +13,13 @@ import {EbeguUtil} from '../../../../../utils/EbeguUtil';
 export class SteuerveranlagtSchwyzComponent {
 
     @Input()
-    public finSitJA!: TSFinanzielleSituation;
+    public finSitJA!: TSAbstractFinanzielleSituation;
 
     @Input()
     public readonly!: boolean;
 
     @Input()
-    public finSitGS?: TSFinanzielleSituation;
+    public finSitGS?: TSAbstractFinanzielleSituation;
 
     public isNotNullOrUndefined(toCheck: any): boolean {
         return EbeguUtil.isNotNullOrUndefined(toCheck);

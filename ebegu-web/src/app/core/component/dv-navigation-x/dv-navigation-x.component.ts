@@ -590,6 +590,9 @@ export class DvNavigationXComponent implements OnInit {
         if (TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_APPENZELL === this.wizardStepManager.getCurrentStepName()) {
             stateName = 'gesuch.einkommensverschlechterungAppenzellResultate';
         }
+        if (TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_SCHWYZ === this.wizardStepManager.getCurrentStepName()) {
+            stateName = 'gesuch.einkommensverschlechterungResultateSchwyz';
+        }
         return this.$state.go(stateName, {
             basisjahrPlus: basisjahrPlus ? basisjahrPlus : '1',
             gesuchId: this.getGesuchId()

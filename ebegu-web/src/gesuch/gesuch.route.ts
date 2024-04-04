@@ -42,6 +42,9 @@ import {
     EinkommensverschlechterungSchwyzGsComponent
 } from './component/einkommensverschlechterung/schwyz/einkommensverschlechterung-schwyz-gs/einkommensverschlechterung-schwyz-gs.component';
 import {
+    EinkommensverschlechterungSchwyzResultateComponent
+} from './component/einkommensverschlechterung/schwyz/einkommensverschlechterung-schwyz-resultate/einkommensverschlechterung-schwyz-resultate.component';
+import {
     EinkommensverschlechterungSolothurnResultateViewComponent
 } from './component/einkommensverschlechterung/solothurn/einkommensverschlechterung-solothurn-resultate-view/einkommensverschlechterung-solothurn-resultate-view.component';
 import {
@@ -910,6 +913,28 @@ export class EbeguEinkommensverschlechterungSchwyzState implements Ng1StateDecla
     };
 }
 
+export class EbeguEinkommensverschlechterungSchwyzResultateState implements Ng1StateDeclaration {
+    public name = 'gesuch.einkommensverschlechterungResultateSchwyz';
+    public url = '/sz/einkommensverschlechterung/:gesuchId/resultate';
+
+    public views: any = {
+        gesuchViewPort: {
+            component: EinkommensverschlechterungSchwyzResultateComponent,
+        },
+        kommentarViewPort: {
+            template: kommentarView,
+        },
+    };
+
+    public resolve = {
+        gesuch: getGesuchModelManager,
+    };
+
+    public data = {
+        roles: TSRoleUtil.getAllRolesButTraegerschaftInstitution(),
+    };
+}
+
 export class EbeguEinkommensverschlechterungLuzernResultateState implements Ng1StateDeclaration {
     public name = 'gesuch.einkommensverschlechterungLuzernResultate';
     public url = '/lu/einkommensverschlechterungResultate/:gesuchId/:basisjahrPlus';
@@ -1250,7 +1275,8 @@ const ng1States: Ng1StateDeclaration[] = [
     new EbeguSozialhilfeZeitraumListState(),
     new EbeguSozialhilfeZeitraumState(),
     new EbeguInternePendenzenState(),
-    new EbeguEinkommensverschlechterungSchwyzState()
+    new EbeguEinkommensverschlechterungSchwyzState(),
+    new EbeguEinkommensverschlechterungSchwyzResultateState()
     // new OnboardingTest()
 ];
 

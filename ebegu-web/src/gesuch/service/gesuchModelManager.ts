@@ -41,7 +41,7 @@ import {
     isAtLeastFreigegeben,
     isAtLeastFreigegebenOrFreigabequittung,
     isStatusVerfuegenVerfuegt,
-    TSAntragStatus
+    TSAntragStatus,
 } from '../../models/enums/TSAntragStatus';
 import {TSAntragTyp} from '../../models/enums/TSAntragTyp';
 import {TSAuthEvent} from '../../models/enums/TSAuthEvent';
@@ -88,7 +88,7 @@ import {TSVerfuegung} from '../../models/TSVerfuegung';
 import {EbeguUtil} from '../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../utils/TSRoleUtil';
 import {
-    FinanzielleSituationAppenzellService
+    FinanzielleSituationAppenzellService,
 } from '../component/finanzielleSituation/appenzell/finanzielle-situation-appenzell.service';
 import {InternePendenzenRS} from '../component/internePendenzenView/internePendenzenRS.rest';
 import {DossierRS} from './dossierRS.rest';
@@ -325,6 +325,9 @@ export class GesuchModelManager {
             return gs === 2 ?
                 this.getEkvFuerBasisJahrPlus(bj) && this.isGesuchsteller2RequiredForLuzernEKV() :
                 this.getEkvFuerBasisJahrPlus(bj);
+        }
+        if (this.wizardStepManager.getCurrentStepName() === TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_SCHWYZ) {
+            return bj === 1 && (gs === 1 || this.isGesuchsteller2Required() && gs === 2);
         }
         return gs === 2 ?
             this.getEkvFuerBasisJahrPlus(bj) && this.isGesuchsteller2Required() :
