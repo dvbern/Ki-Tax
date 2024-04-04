@@ -114,13 +114,15 @@ describe('wizardStepManager', () => {
             // eslint-disable-next-line no-magic-numbers
             expect(wizardStepManager.getAllowedSteps()[15]).toBe(TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_SOLOTHURN);
             // eslint-disable-next-line no-magic-numbers
-            expect(wizardStepManager.getAllowedSteps()[16]).toBe(TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_APPENZELL);
+            expect(wizardStepManager.getAllowedSteps()[16]).toBe(TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_SCHWYZ);
             // eslint-disable-next-line no-magic-numbers
-            expect(wizardStepManager.getAllowedSteps()[17]).toBe(TSWizardStepName.DOKUMENTE);
+            expect(wizardStepManager.getAllowedSteps()[17]).toBe(TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_APPENZELL);
             // eslint-disable-next-line no-magic-numbers
-            expect(wizardStepManager.getAllowedSteps()[18]).toBe(TSWizardStepName.FREIGABE);
+            expect(wizardStepManager.getAllowedSteps()[18]).toBe(TSWizardStepName.DOKUMENTE);
             // eslint-disable-next-line no-magic-numbers
-            expect(wizardStepManager.getAllowedSteps()[19]).toBe(TSWizardStepName.VERFUEGEN);
+            expect(wizardStepManager.getAllowedSteps()[19]).toBe(TSWizardStepName.FREIGABE);
+            // eslint-disable-next-line no-magic-numbers
+            expect(wizardStepManager.getAllowedSteps()[20]).toBe(TSWizardStepName.VERFUEGEN);
         });
     });
     describe('findStepsFromGesuch', () => {

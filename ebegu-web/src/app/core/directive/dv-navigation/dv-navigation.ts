@@ -330,6 +330,7 @@ export class NavigatorController implements IController {
         if (TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG === this.wizardStepManager.getCurrentStepName() ||
             TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_LUZERN === this.wizardStepManager.getCurrentStepName() ||
             TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_SOLOTHURN === this.wizardStepManager.getCurrentStepName() ||
+            TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_SCHWYZ === this.wizardStepManager.getCurrentStepName() ||
             TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_APPENZELL === this.wizardStepManager.getCurrentStepName()) {
             if (this.dvSubStep === 1) {
                 const info = this.gesuchModelManager.getGesuch().extractEinkommensverschlechterungInfo();
@@ -408,6 +409,7 @@ export class NavigatorController implements IController {
         if (TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG === this.wizardStepManager.getCurrentStepName() ||
             TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_LUZERN === this.wizardStepManager.getCurrentStepName() ||
             TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_SOLOTHURN === this.wizardStepManager.getCurrentStepName() ||
+            TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_SCHWYZ === this.wizardStepManager.getCurrentStepName() ||
             TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_APPENZELL === this.wizardStepManager.getCurrentStepName()) {
             if (this.dvSubStep === 1) {
                 return this.navigateToStep(this.wizardStepManager.getPreviousStep(this.gesuchModelManager.getGesuch()));
@@ -498,6 +500,7 @@ export class NavigatorController implements IController {
             case TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG:
             case TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_LUZERN:
             case TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_SOLOTHURN:
+            case TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_SCHWYZ:
             case TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_APPENZELL:
                 return this.state.go('gesuch.einkommensverschlechterungInfo', gesuchIdParam);
             case TSWizardStepName.DOKUMENTE:
@@ -532,6 +535,9 @@ export class NavigatorController implements IController {
         }
         if (TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_SOLOTHURN === this.wizardStepManager.getCurrentStepName()) {
             stateName = 'gesuch.einkommensverschlechterungSolothurn';
+        }
+        if (TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_SCHWYZ === this.wizardStepManager.getCurrentStepName()) {
+            stateName = 'gesuch.einkommensverschlechterungSchwyz';
         }
         if (TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_APPENZELL === this.wizardStepManager.getCurrentStepName()) {
             stateName = 'gesuch.einkommensverschlechterungAppenzell';

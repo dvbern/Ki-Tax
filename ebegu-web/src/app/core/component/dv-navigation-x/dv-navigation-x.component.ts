@@ -288,6 +288,7 @@ export class DvNavigationXComponent implements OnInit {
         if (TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG === this.wizardStepManager.getCurrentStepName() ||
             TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_LUZERN === this.wizardStepManager.getCurrentStepName() ||
             TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_SOLOTHURN === this.wizardStepManager.getCurrentStepName() ||
+            TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_SCHWYZ === this.wizardStepManager.getCurrentStepName() ||
             TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_APPENZELL === this.wizardStepManager.getCurrentStepName()) {
             if (this.dvSubStep === 1) {
                 const info = this.gesuchModelManager.getGesuch().extractEinkommensverschlechterungInfo();
@@ -374,6 +375,7 @@ export class DvNavigationXComponent implements OnInit {
         if (TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG === this.wizardStepManager.getCurrentStepName() ||
             TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_LUZERN === this.wizardStepManager.getCurrentStepName() ||
             TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_SOLOTHURN === this.wizardStepManager.getCurrentStepName() ||
+            TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_SCHWYZ === this.wizardStepManager.getCurrentStepName() ||
             TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_APPENZELL === this.wizardStepManager.getCurrentStepName()) {
             if (this.dvSubStep === 1) {
                 this.navigateToStep(this.wizardStepManager.getPreviousStep(this.gesuchModelManager.getGesuch()));
@@ -510,6 +512,7 @@ export class DvNavigationXComponent implements OnInit {
             case TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG:
             case TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_LUZERN:
             case TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_SOLOTHURN:
+            case TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_SCHWYZ:
             case TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_APPENZELL:
                 this.$state.go('gesuch.einkommensverschlechterungInfo', gesuchIdParam);
                 return;
@@ -551,6 +554,9 @@ export class DvNavigationXComponent implements OnInit {
         }
         if (TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_APPENZELL === this.wizardStepManager.getCurrentStepName()) {
             stateName = 'gesuch.einkommensverschlechterungAppenzell';
+        }
+        if (TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_SCHWYZ === this.wizardStepManager.getCurrentStepName()) {
+            stateName = 'gesuch.einkommensverschlechterungSchwyz';
         }
         return this.$state.go(stateName, {
             gesuchstellerNumber: gsNumber ? gsNumber : '1',

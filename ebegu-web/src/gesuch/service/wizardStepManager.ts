@@ -202,6 +202,7 @@ export class WizardStepManager {
         this.allowedSteps.push(TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG);
         this.allowedSteps.push(TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_LUZERN);
         this.allowedSteps.push(TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_SOLOTHURN);
+        this.allowedSteps.push(TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_SCHWYZ);
         this.allowedSteps.push(TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_APPENZELL);
         this.allowedSteps.push(TSWizardStepName.DOKUMENTE);
         this.allowedSteps.push(TSWizardStepName.FREIGABE);
@@ -582,6 +583,7 @@ export class WizardStepManager {
         this.hideStep(TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG);
         this.hideStep(TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_LUZERN);
         this.hideStep(TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_SOLOTHURN);
+        this.hideStep(TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_SCHWYZ);
         this.hideStep(TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_APPENZELL);
 
         // show just one step if gesuch.finSitTyp is empty (on gesuch creation)
@@ -595,7 +597,7 @@ export class WizardStepManager {
         } else if (gesuch.finSitTyp === TSFinanzielleSituationTyp.APPENZELL) {
             this.unhideStep(TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_APPENZELL);
         } else if (gesuch.finSitTyp === TSFinanzielleSituationTyp.SCHWYZ) {
-            // noop
+            this.unhideStep(TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_SCHWYZ);
         } else {
             throw new Error(`wrong FinSitTyp ${gesuch.finSitTyp}`);
         }
@@ -607,6 +609,9 @@ export class WizardStepManager {
         }
         if (gesuch.finSitTyp === TSFinanzielleSituationTyp.SOLOTHURN) {
             return TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_SOLOTHURN;
+        }
+        if (gesuch.finSitTyp === TSFinanzielleSituationTyp.SCHWYZ) {
+            return TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_SCHWYZ;
         }
         if (gesuch.finSitTyp === TSFinanzielleSituationTyp.APPENZELL) {
             return TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_APPENZELL;

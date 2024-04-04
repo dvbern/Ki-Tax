@@ -39,6 +39,9 @@ import {
     EinkommensverschlechterungLuzernViewComponent
 } from './component/einkommensverschlechterung/luzern/einkommensverschlechterung-luzern-view/einkommensverschlechterung-luzern-view.component';
 import {
+    EinkommensverschlechterungSchwyzGsComponent
+} from './component/einkommensverschlechterung/schwyz/einkommensverschlechterung-schwyz-gs/einkommensverschlechterung-schwyz-gs.component';
+import {
     EinkommensverschlechterungSolothurnResultateViewComponent
 } from './component/einkommensverschlechterung/solothurn/einkommensverschlechterung-solothurn-resultate-view/einkommensverschlechterung-solothurn-resultate-view.component';
 import {
@@ -144,6 +147,7 @@ import {
         EinkommensverschlechterungResultateViewComponent,
         EinkommensverschlechterungAppenzellViewComponent,
         EinkommensverschlechterungAppenzellResultateViewComponent,
+        EinkommensverschlechterungSchwyzGsComponent,
         DvFinanzielleSituationRequireXComponent,
         AngabenGesuchsteller2Component,
         SelbstdeklarationComponent,

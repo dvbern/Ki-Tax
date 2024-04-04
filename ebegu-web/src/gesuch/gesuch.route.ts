@@ -39,6 +39,9 @@ import {
     EinkommensverschlechterungLuzernViewComponent
 } from './component/einkommensverschlechterung/luzern/einkommensverschlechterung-luzern-view/einkommensverschlechterung-luzern-view.component';
 import {
+    EinkommensverschlechterungSchwyzGsComponent
+} from './component/einkommensverschlechterung/schwyz/einkommensverschlechterung-schwyz-gs/einkommensverschlechterung-schwyz-gs.component';
+import {
     EinkommensverschlechterungSolothurnResultateViewComponent
 } from './component/einkommensverschlechterung/solothurn/einkommensverschlechterung-solothurn-resultate-view/einkommensverschlechterung-solothurn-resultate-view.component';
 import {
@@ -881,6 +884,32 @@ export class EbeguEinkommensverschlechterungLuzernState implements Ng1StateDecla
     };
 }
 
+export class EbeguEinkommensverschlechterungSchwyzState implements Ng1StateDeclaration {
+    public name = 'gesuch.einkommensverschlechterungSchwyz';
+    public url = '/sz/einkommensverschlechterung/:gesuchId/:gesuchstellerNumber';
+    public params = {
+        gesuchstellerNumber: '1',
+        basisjahrPlus: '1',
+    };
+
+    public views: any = {
+        gesuchViewPort: {
+            component: EinkommensverschlechterungSchwyzGsComponent,
+        },
+        kommentarViewPort: {
+            template: kommentarView,
+        },
+    };
+
+    public resolve = {
+        gesuch: getGesuchModelManager,
+    };
+
+    public data = {
+        roles: TSRoleUtil.getAllRolesButTraegerschaftInstitution(),
+    };
+}
+
 export class EbeguEinkommensverschlechterungLuzernResultateState implements Ng1StateDeclaration {
     public name = 'gesuch.einkommensverschlechterungLuzernResultate';
     public url = '/lu/einkommensverschlechterungResultate/:gesuchId/:basisjahrPlus';
@@ -1221,6 +1250,7 @@ const ng1States: Ng1StateDeclaration[] = [
     new EbeguSozialhilfeZeitraumListState(),
     new EbeguSozialhilfeZeitraumState(),
     new EbeguInternePendenzenState(),
+    new EbeguEinkommensverschlechterungSchwyzState()
     // new OnboardingTest()
 ];
 
