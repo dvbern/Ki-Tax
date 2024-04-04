@@ -50,4 +50,8 @@ public class EingewoehnungPauschale extends AbstractDateRangedEntity {
 		target.setPauschale(this.getPauschale());
 		return target;
 	}
+
+	public void addPauschale(BigDecimal pauschaleToAdd) {
+		this.pauschale = this.pauschale.add(pauschaleToAdd);
+	}
 }

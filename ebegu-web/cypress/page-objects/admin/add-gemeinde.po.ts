@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2023 DV Bern AG, Switzerland
+ * Copyright (C) 2024 DV Bern AG, Switzerland
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -15,8 +15,20 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-export * from './add-gemeinde.po';
-export * from './gemeinde-list.po';
-export * from './institution-list.po';
-export * from './tagesschule.po';
-export * from './test-faelle.po';
+const getGemeindeSelection = () => {
+    return cy.getByData('gemeinde-selection');
+};
+
+const getAdminMail = () => {
+	return cy.getByData('admin-mail');
+};
+
+const getEinladungSendenButton = () => {
+	return cy.getByData('container.einladung-senden', 'navigation-button');
+};
+
+export const AddGemeindePO = {
+    getGemeindeSelection,
+    getAdminMail,
+    getEinladungSendenButton,
+};

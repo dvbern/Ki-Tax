@@ -19,6 +19,7 @@ package ch.dvbern.ebegu.entities;
 
 import ch.dvbern.ebegu.enums.AntragCopyType;
 import ch.dvbern.ebegu.enums.BetreuungspensumAbweichungStatus;
+import ch.dvbern.ebegu.util.DateUtil;
 import ch.dvbern.ebegu.util.MathUtil;
 import org.apache.commons.lang3.builder.CompareToBuilder;
 import org.hibernate.envers.Audited;
@@ -76,6 +77,10 @@ public class BetreuungspensumAbweichung extends AbstractMahlzeitenPensum impleme
 	@Transient
 	@Nullable
 	private BigDecimal vertraglicherTarifNebenmahlzeit = BigDecimal.ZERO;
+
+	@Transient
+	@Nullable
+	private EingewoehnungPauschale vertraglicheEingewoehnungPauschale = null;
 
 	@Nonnull
 	public BetreuungspensumAbweichungStatus getStatus() {
@@ -140,6 +145,15 @@ public class BetreuungspensumAbweichung extends AbstractMahlzeitenPensum impleme
 		this.vertraglicheNebenmahlzeiten = vertraglicheNebenmahlzeiten;
 	}
 
+	@Nullable
+	public EingewoehnungPauschale getVertraglicheEingewoehnungPauschale() {
+		return vertraglicheEingewoehnungPauschale;
+	}
+
+	public void setVertraglicheEingewoehnungPauschale(@Nullable EingewoehnungPauschale vertraglicheEingewoehnungPauschale) {
+		this.vertraglicheEingewoehnungPauschale = vertraglicheEingewoehnungPauschale;
+	}
+
 	public void addPensum(BigDecimal pensum) {
 		vertraglichesPensum = MathUtil.DEFAULT.addNullSafe(pensum, vertraglichesPensum);
 	}
@@ -165,6 +179,30 @@ public class BetreuungspensumAbweichung extends AbstractMahlzeitenPensum impleme
 	public void addTarifNeben(BigDecimal tarif) {
 		vertraglicherTarifNebenmahlzeit = MathUtil.DEFAULT.addNullSafe(MathUtil.roundToFrankenRappen(tarif),
 			vertraglicherTarifNebenmahlzeit);
+	}
+
+	public void addEingewoehnungPauschale(EingewoehnungPauschale eingewoehnungPauschale) {
+		if (this.getVertraglicheEingewoehnungPauschale() == null) {
+			this.setVertraglicheEingewoehnungPauschale(eingewoehnungPauschale.copyEingewohnungEntity(
+				new EingewoehnungPauschale(),
+				AntragCopyType.MUTATION));
+			return;
+		}
+
+		this.getVertraglicheEingewoehnungPauschale().addPauschale(eingewoehnungPauschale.getPauschale());
+
+		this.getVertraglicheEingewoehnungPauschale()
+			.getGueltigkeit()
+			.setGueltigAb(DateUtil.getMin(
+				this.getVertraglicheEingewoehnungPauschale().getGueltigkeit().getGueltigAb(),
+				eingewoehnungPauschale.getGueltigkeit().getGueltigAb()));
+
+		this.getVertraglicheEingewoehnungPauschale()
+			.getGueltigkeit()
+			.setGueltigBis(DateUtil.getMax(
+				this.getVertraglicheEingewoehnungPauschale().getGueltigkeit().getGueltigBis(),
+				eingewoehnungPauschale.getGueltigkeit().getGueltigBis()));
+
 	}
 
 	@Nonnull
@@ -238,7 +276,6 @@ public class BetreuungspensumAbweichung extends AbstractMahlzeitenPensum impleme
 		mitteilungPensum.setUnitForDisplay(getUnitForDisplay());
 		mitteilungPensum.setPensum(pensum);
 		mitteilungPensum.setMonatlicheBetreuungskosten(kosten);
-		//
 		mitteilungPensum.setMonatlicheHauptmahlzeiten(hauptmahlzeiten);
 		mitteilungPensum.setMonatlicheNebenmahlzeiten(nebenmahlzeiten);
 

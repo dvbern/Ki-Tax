@@ -516,7 +516,7 @@
                                     {{'BESCHWERDE_ADRESSE_IDENTISCH_KONTAKT'|translate}}
                                 </mat-checkbox>
                             </div>
-                            <div *ngIf="!keineBeschwerdeAdresse && stammdaten.standardRechtsmittelbelehrung">
+                            <div *ngIf="!keineBeschwerdeAdresse && stammdaten.beschwerdeAdresse && stammdaten.standardRechtsmittelbelehrung">
                                 <div class="col-sm-12">
                                     <div class="row">
                                         <div>
@@ -1456,7 +1456,7 @@
                     <!-- Beschwerdeadresse -->
                     <div *ngIf="stammdaten.standardRechtsmittelbelehrung; else displayRechtsmittelbelehrung"
                          class="mt-5">
-                        <div *ngIf="keineBeschwerdeAdresse; else displayBeschwerdeAdresse">
+                        <div *ngIf="keineBeschwerdeAdresse || !stammdaten.beschwerdeAdresse; else displayBeschwerdeAdresse">
                             <div class="form-group">
                                 <h3 translate>BESCHWERDE_ADRESSE</h3>
                                 <p translate>BESCHWERDE_ADRESSE_IDENTISCH_KONTAKT</p>
