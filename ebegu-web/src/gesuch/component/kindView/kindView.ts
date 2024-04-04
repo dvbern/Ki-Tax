@@ -214,7 +214,7 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
         this.submitted = true;
         this.errorService.clearAll();
         this.kinderabzugExchangeService.triggerFormValidation();
-        if (!this.isGesuchValid()) {
+        if (!this.isGesuchValid() || this.kinderabzugExchangeService.form?.invalid) {
             return undefined;
         }
         const invalidPensumFachstellen = this.checkFachstellenValidity();
