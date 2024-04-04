@@ -147,7 +147,6 @@ import {
         EinkommensverschlechterungResultateViewComponent,
         EinkommensverschlechterungAppenzellViewComponent,
         EinkommensverschlechterungAppenzellResultateViewComponent,
-        EinkommensverschlechterungSchwyzGsComponent,
         DvFinanzielleSituationRequireXComponent,
         AngabenGesuchsteller2Component,
         SelbstdeklarationComponent,

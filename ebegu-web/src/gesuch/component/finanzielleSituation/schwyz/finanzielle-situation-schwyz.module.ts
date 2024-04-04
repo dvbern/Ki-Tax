@@ -18,6 +18,12 @@
 import {NgModule} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {SharedModule} from '../../../../app/shared/shared.module';
+import {
+    EinkommensverschlechterungSchwyzGsComponent
+} from '../../einkommensverschlechterung/schwyz/einkommensverschlechterung-schwyz-gs/einkommensverschlechterung-schwyz-gs.component';
+import {
+    EinkommensverschlechterungSchwyzResultateComponent
+} from '../../einkommensverschlechterung/schwyz/einkommensverschlechterung-schwyz-resultate/einkommensverschlechterung-schwyz-resultate.component';
 import {BruttolohnSchwyzComponent} from './bruttolohn-schwyz/bruttolohn-schwyz.component';
 import {FinanzielleSituationGsSchwyzComponent} from './finanzielle-situation-gs-schwyz/finanzielle-situation-gs-schwyz.component';
 import {FinanzielleSituationSingleGsComponent} from './finanzielle-situation-single-gs/finanzielle-situation-single-gs.component';
@@ -33,6 +39,8 @@ import {SteuerveranlagtSchwyzComponent} from './steuerveranlagt-schwyz/steuerver
         FinanzielleSituationStartSchwyzComponent,
         FinanzielleSituationGsSchwyzComponent,
         FinanzielleSituationSingleGsComponent,
+        EinkommensverschlechterungSchwyzGsComponent,
+        EinkommensverschlechterungSchwyzResultateComponent
     ],
     imports: [
         SharedModule,
