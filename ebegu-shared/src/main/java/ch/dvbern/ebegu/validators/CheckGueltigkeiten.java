@@ -23,22 +23,26 @@ import javax.validation.Constraint;
 import javax.validation.Payload;
 
 import static java.lang.annotation.ElementType.ANNOTATION_TYPE;
+import static java.lang.annotation.ElementType.CONSTRUCTOR;
+import static java.lang.annotation.ElementType.FIELD;
+import static java.lang.annotation.ElementType.METHOD;
+import static java.lang.annotation.ElementType.PARAMETER;
 import static java.lang.annotation.ElementType.TYPE;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
- * Je nach {@link ch.dvbern.ebegu.enums.BetreuungsangebotTyp} der verknuepften Institutionstammdaten darf im Betreuungspensum nur eingeschraenkte
- * Werte eingegeben werden.
+ * Die Betreuungspensen einer Betreuung duerfen sich nicht ueberlappen
  */
-@Target({ TYPE, ANNOTATION_TYPE })
+@Target({ METHOD, FIELD, ANNOTATION_TYPE, CONSTRUCTOR, PARAMETER, TYPE })
 @Retention(RUNTIME)
-@Constraint(validatedBy = CheckBetreuungsmitteilungDatesOverlappingValidator.class)
+@Constraint(validatedBy = CheckGueltigkeitenValidator.class)
 @Documented
-public @interface CheckBetreuungsmitteilungDatesOverlapping {
+public @interface CheckGueltigkeiten {
 
 	String message() default "{invalid_betreuungspensen_dates}";
 
 	Class<?>[] groups() default {};
 
 	Class<? extends Payload>[] payload() default {};
+
 }

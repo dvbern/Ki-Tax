@@ -26,8 +26,8 @@ import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.BetreuungspensumContainer;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.test.TestDataUtil;
-import ch.dvbern.ebegu.validators.CheckBetreuungspensumDatesOverlapping;
-import ch.dvbern.ebegu.validators.CheckBetreuungspensumDatesOverlappingValidator;
+import ch.dvbern.ebegu.validators.CheckGueltigkeiten;
+import ch.dvbern.ebegu.validators.CheckGueltigkeitenValidator;
 import org.junit.jupiter.api.Test;
 
 import static ch.dvbern.ebegu.tests.util.validation.ViolationMatchers.violatesAnnotation;
@@ -35,16 +35,16 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.not;
 
 /**
- * Test fuer {@link CheckBetreuungspensumDatesOverlappingValidator}
+ * Test fuer {@link CheckGueltigkeitenValidator}
  */
-public class CheckBetreuungspensumDatesOverlappingValidatorTest extends AbstractValidatorTest {
+public class CheckGueltigkeitenValidatorTest extends AbstractValidatorTest {
 
 	@Test
 	public void testCheckBetreuungspensumDatesOverlapping() {
 		Betreuung betreuung = createBetreuungWithOverlappedDates(true); //overlapping
 		Set<ConstraintViolation<Betreuung>> violations = validate(betreuung);
 
-		assertThat(violations, violatesAnnotation(CheckBetreuungspensumDatesOverlapping.class));
+		assertThat(violations, violatesAnnotation(CheckGueltigkeiten.class));
 	}
 
 	@Test
@@ -52,7 +52,7 @@ public class CheckBetreuungspensumDatesOverlappingValidatorTest extends Abstract
 		Betreuung betreuung = createBetreuungWithOverlappedDates(false); // not overlapping
 		Set<ConstraintViolation<Betreuung>> violations = validate(betreuung);
 
-		assertThat(violations, not(violatesAnnotation(CheckBetreuungspensumDatesOverlapping.class)));
+		assertThat(violations, not(violatesAnnotation(CheckGueltigkeiten.class)));
 	}
 
 	@Nonnull

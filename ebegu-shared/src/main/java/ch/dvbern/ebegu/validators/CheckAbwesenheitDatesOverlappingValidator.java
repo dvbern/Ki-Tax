@@ -16,7 +16,9 @@
 package ch.dvbern.ebegu.validators;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import javax.validation.ConstraintValidator;
@@ -25,6 +27,7 @@ import javax.validation.ConstraintValidatorContext;
 import ch.dvbern.ebegu.entities.Abwesenheit;
 import ch.dvbern.ebegu.entities.AbwesenheitContainer;
 import ch.dvbern.ebegu.entities.Betreuung;
+import ch.dvbern.ebegu.util.GueltigkeitsUtil;
 
 /**
  * Validator fuer Datum in Abwesenheiten. Die Zeitraeume duerfen sich nicht ueberschneiden
@@ -33,24 +36,19 @@ public class CheckAbwesenheitDatesOverlappingValidator implements ConstraintVali
 
 	@Override
 	public boolean isValid(Betreuung instance, ConstraintValidatorContext context) {
-		return !(checkOverlapping("JA", instance.getAbwesenheitContainers())
-			|| checkOverlapping("GS", instance.getAbwesenheitContainers()));
+		return isOverlapFree(AbwesenheitContainer::getAbwesenheitJA, instance.getAbwesenheitContainers())
+			&& isOverlapFree(AbwesenheitContainer::getAbwesenheitGS, instance.getAbwesenheitContainers());
 	}
 
-	/**
-	 * prueft ob es eine ueberschneidung zwischen den Zeitrauemen gibt
-	 */
-	private boolean checkOverlapping(String type, Set<AbwesenheitContainer> abwesenheitContainers) {
-		// Da es wahrscheinlich wenige Betreuungspensen innerhalb einer Betreuung gibt, macht es vielleicht mehr Sinn diese Version zu nutzen
-		List<Abwesenheit> gueltigkeitStream = abwesenheitContainers.stream()
-			.filter(cont -> "GS".equalsIgnoreCase(type) ? cont.getAbwesenheitGS() != null : cont.getAbwesenheitJA() != null)
-			.map("GS".equalsIgnoreCase(type) ? AbwesenheitContainer::getAbwesenheitGS : AbwesenheitContainer::getAbwesenheitJA)
+	private boolean isOverlapFree(
+		Function<AbwesenheitContainer, Abwesenheit> mapper,
+		Set<AbwesenheitContainer> abwesenheitContainers
+	) {
+		List<Abwesenheit> gueltigkeitIntervals = abwesenheitContainers.stream()
+			.map(mapper)
+			.filter(Objects::nonNull)
 			.collect(Collectors.toList());
 
-		//Achtung hier MUSS instanz verglichen werden
-		return gueltigkeitStream.stream()
-			.anyMatch(o1 -> gueltigkeitStream.stream()
-				.anyMatch(o2 -> !o1.equals(o2) && o1.getGueltigkeit().intersects(o2.getGueltigkeit())));
+		return !GueltigkeitsUtil.hasOverlapingGueltigkeit(gueltigkeitIntervals);
 	}
-
 }

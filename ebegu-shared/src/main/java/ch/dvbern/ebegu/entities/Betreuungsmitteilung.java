@@ -15,6 +15,7 @@
 
 package ch.dvbern.ebegu.entities;
 
+import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -26,10 +27,11 @@ import javax.persistence.OneToMany;
 import javax.persistence.Transient;
 import javax.validation.Valid;
 
+import ch.dvbern.ebegu.entities.containers.AbstractMahlzeitenPensumContainer;
 import ch.dvbern.ebegu.validators.CheckBetreuungMitteilungZeitraumInGesuchsperiode;
 import ch.dvbern.ebegu.validators.CheckBetreuungMitteilungZeitraumInstitutionsStammdatenZeitraum;
 import ch.dvbern.ebegu.validators.CheckBetreuungsmitteilung;
-import ch.dvbern.ebegu.validators.CheckBetreuungsmitteilungDatesOverlapping;
+import ch.dvbern.ebegu.validators.CheckGueltigkeiten;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.hibernate.envers.Audited;
 
@@ -37,12 +39,11 @@ import org.hibernate.envers.Audited;
  * Entitaet zum Speichern von Betreuungsmitteilung in der Datenbank.
  */
 @CheckBetreuungsmitteilung
-@CheckBetreuungsmitteilungDatesOverlapping
 @CheckBetreuungMitteilungZeitraumInGesuchsperiode
 @CheckBetreuungMitteilungZeitraumInstitutionsStammdatenZeitraum
 @Audited
 @Entity
-public class Betreuungsmitteilung extends Mitteilung {
+public class Betreuungsmitteilung extends Mitteilung implements AbstractMahlzeitenPensumContainer {
 
 	private static final long serialVersionUID = 489324250868016126L;
 
@@ -57,6 +58,19 @@ public class Betreuungsmitteilung extends Mitteilung {
 	private String errorMessage;
 
 	private boolean betreuungStornieren = false;
+
+	@Nonnull
+	@Override
+	public List<? extends AbstractMahlzeitenPensum> getForGS() {
+		return List.of();
+	}
+
+	@CheckGueltigkeiten(message = "{invalid_betreuungspensen_dates}")
+	@Nonnull
+	@Override
+	public List<? extends AbstractMahlzeitenPensum> getForJA() {
+		return List.copyOf(betreuungspensen);
+	}
 
 	public Set<BetreuungsmitteilungPensum> getBetreuungspensen() {
 		return betreuungspensen;

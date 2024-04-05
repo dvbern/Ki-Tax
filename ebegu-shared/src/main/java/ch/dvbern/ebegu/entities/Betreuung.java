@@ -15,12 +15,59 @@
 
 package ch.dvbern.ebegu.entities;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.YearMonth;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
+import java.util.TreeSet;
+import java.util.stream.Collectors;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.persistence.AssociationOverride;
+import javax.persistence.AssociationOverrides;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.ForeignKey;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
+import javax.persistence.Table;
+import javax.persistence.Transient;
+import javax.persistence.UniqueConstraint;
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+
 import ch.dvbern.ebegu.dto.suchfilter.lucene.BGNummerBridge;
-import ch.dvbern.ebegu.enums.*;
+import ch.dvbern.ebegu.entities.containers.AbstractMahlzeitenPensumContainer;
+import ch.dvbern.ebegu.enums.AntragCopyType;
+import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
+import ch.dvbern.ebegu.enums.BetreuungspensumAbweichungStatus;
+import ch.dvbern.ebegu.enums.Eingangsart;
+import ch.dvbern.ebegu.enums.PensumUnits;
+import ch.dvbern.ebegu.enums.ZahlungslaufTyp;
 import ch.dvbern.ebegu.types.DateRange;
-import ch.dvbern.ebegu.util.*;
+import ch.dvbern.ebegu.util.Constants;
+import ch.dvbern.ebegu.util.DateUtil;
+import ch.dvbern.ebegu.util.MathUtil;
+import ch.dvbern.ebegu.util.ServerMessageUtil;
 import ch.dvbern.ebegu.validationgroups.BetreuungBestaetigenValidationGroup;
-import ch.dvbern.ebegu.validators.*;
+import ch.dvbern.ebegu.validators.CheckAbwesenheitDatesOverlapping;
+import ch.dvbern.ebegu.validators.CheckBetreuungZeitraumInGesuchsperiode;
+import ch.dvbern.ebegu.validators.CheckBetreuungZeitraumInstitutionsStammdatenZeitraum;
+import ch.dvbern.ebegu.validators.CheckBetreuungspensum;
+import ch.dvbern.ebegu.validators.CheckGueltigkeiten;
+import ch.dvbern.ebegu.validators.CheckGrundAblehnung;
+import ch.dvbern.ebegu.validators.CheckPlatzAndAngebottyp;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.hibernate.annotations.SortNatural;
 import org.hibernate.envers.Audited;
@@ -28,17 +75,6 @@ import org.hibernate.search.annotations.Analyze;
 import org.hibernate.search.annotations.Analyzer;
 import org.hibernate.search.annotations.ClassBridge;
 import org.hibernate.search.annotations.Indexed;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.persistence.*;
-import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.time.YearMonth;
-import java.util.*;
 
 /**
  * Entity fuer Betreuungen.
@@ -48,7 +84,6 @@ import java.util.*;
 @CheckPlatzAndAngebottyp
 @CheckGrundAblehnung
 @CheckBetreuungspensum
-@CheckBetreuungspensumDatesOverlapping
 @CheckAbwesenheitDatesOverlapping
 @CheckBetreuungZeitraumInGesuchsperiode (groups = BetreuungBestaetigenValidationGroup.class)
 @CheckBetreuungZeitraumInstitutionsStammdatenZeitraum (groups = BetreuungBestaetigenValidationGroup.class)
@@ -64,7 +99,7 @@ import java.util.*;
 @Indexed
 @Analyzer(definition = "EBEGUGermanAnalyzer")
 @ClassBridge(name = "bGNummer", impl = BGNummerBridge.class, analyze = Analyze.NO)
-public class Betreuung extends AbstractPlatz {
+public class Betreuung extends AbstractPlatz implements AbstractMahlzeitenPensumContainer {
 
 	private static final long serialVersionUID = -6776987863150835840L;
 
@@ -392,6 +427,26 @@ public class Betreuung extends AbstractPlatz {
 			break;
 		}
 		return target;
+	}
+
+	@CheckGueltigkeiten(message = "{invalid_betreuungspensen_dates}")
+	@Nonnull
+	@Override
+	public List<? extends AbstractMahlzeitenPensum> getForGS() {
+		return betreuungspensumContainers.stream()
+			.map(BetreuungspensumContainer::getBetreuungspensumGS)
+			.filter(Objects::nonNull)
+			.collect(Collectors.toList());
+	}
+
+	@CheckGueltigkeiten(message = "{invalid_betreuungspensen_dates}")
+	@Nonnull
+	@Override
+	public List<? extends AbstractMahlzeitenPensum> getForJA() {
+		return betreuungspensumContainers.stream()
+			.map(BetreuungspensumContainer::getBetreuungspensumJA)
+			.filter(Objects::nonNull)
+			.collect(Collectors.toList());
 	}
 
 	@Override
