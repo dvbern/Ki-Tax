@@ -64,6 +64,7 @@ import ch.dvbern.ebegu.validationgroups.BetreuungBestaetigenValidationGroup;
 import ch.dvbern.ebegu.validators.CheckGrundAblehnung;
 import ch.dvbern.ebegu.validators.CheckPlatzAndAngebottyp;
 import ch.dvbern.ebegu.validators.betreuungspensum.CheckBetreuungspensum;
+import ch.dvbern.ebegu.validators.betreuungspensum.CheckMittagstischPensum;
 import ch.dvbern.ebegu.validators.dateranges.CheckAbwesenheitDatesOverlapping;
 import ch.dvbern.ebegu.validators.dateranges.CheckBetreuungPensumContainerZeitraumInGesuchsperiode;
 import ch.dvbern.ebegu.validators.dateranges.CheckBetreuungZeitraumInstitutionsStammdatenZeitraum;
@@ -85,6 +86,7 @@ import org.hibernate.search.annotations.Indexed;
 @CheckGrundAblehnung
 @CheckBetreuungspensum
 @CheckAbwesenheitDatesOverlapping
+@CheckMittagstischPensum
 @CheckBetreuungPensumContainerZeitraumInGesuchsperiode(groups = BetreuungBestaetigenValidationGroup.class)
 @CheckBetreuungZeitraumInstitutionsStammdatenZeitraum (groups = BetreuungBestaetigenValidationGroup.class)
 // Der ForeignKey-Name wird leider nicht richtig generiert, muss von Hand angepasst werden!

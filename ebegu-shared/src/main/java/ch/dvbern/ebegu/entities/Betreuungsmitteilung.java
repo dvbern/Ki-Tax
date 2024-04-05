@@ -30,6 +30,7 @@ import javax.validation.Valid;
 
 import ch.dvbern.ebegu.entities.containers.BetreuungAndPensumContainer;
 import ch.dvbern.ebegu.validators.betreuungspensum.CheckBetreuungsmitteilung;
+import ch.dvbern.ebegu.validators.betreuungspensum.CheckMittagstischPensum;
 import ch.dvbern.ebegu.validators.dateranges.CheckBetreuungPensumContainerZeitraumInGesuchsperiode;
 import ch.dvbern.ebegu.validators.dateranges.CheckBetreuungZeitraumInstitutionsStammdatenZeitraum;
 import ch.dvbern.ebegu.validators.dateranges.CheckGueltigkeiten;
@@ -40,6 +41,7 @@ import org.hibernate.envers.Audited;
  * Entitaet zum Speichern von Betreuungsmitteilung in der Datenbank.
  */
 @CheckBetreuungsmitteilung
+@CheckMittagstischPensum
 @CheckBetreuungPensumContainerZeitraumInGesuchsperiode
 @CheckBetreuungZeitraumInstitutionsStammdatenZeitraum
 @Audited
