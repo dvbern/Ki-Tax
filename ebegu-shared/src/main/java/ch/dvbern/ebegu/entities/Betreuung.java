@@ -48,7 +48,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import ch.dvbern.ebegu.dto.suchfilter.lucene.BGNummerBridge;
-import ch.dvbern.ebegu.entities.containers.AbstractMahlzeitenPensumContainer;
+import ch.dvbern.ebegu.entities.containers.BetreuungAndPensumContainer;
 import ch.dvbern.ebegu.enums.AntragCopyType;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.BetreuungspensumAbweichungStatus;
@@ -65,7 +65,7 @@ import ch.dvbern.ebegu.validators.CheckGrundAblehnung;
 import ch.dvbern.ebegu.validators.CheckPlatzAndAngebottyp;
 import ch.dvbern.ebegu.validators.betreuungspensum.CheckBetreuungspensum;
 import ch.dvbern.ebegu.validators.dateranges.CheckAbwesenheitDatesOverlapping;
-import ch.dvbern.ebegu.validators.dateranges.CheckBetreuungZeitraumInGesuchsperiode;
+import ch.dvbern.ebegu.validators.dateranges.CheckBetreuungPensumContainerZeitraumInGesuchsperiode;
 import ch.dvbern.ebegu.validators.dateranges.CheckBetreuungZeitraumInstitutionsStammdatenZeitraum;
 import ch.dvbern.ebegu.validators.dateranges.CheckGueltigkeiten;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
@@ -85,7 +85,7 @@ import org.hibernate.search.annotations.Indexed;
 @CheckGrundAblehnung
 @CheckBetreuungspensum
 @CheckAbwesenheitDatesOverlapping
-@CheckBetreuungZeitraumInGesuchsperiode (groups = BetreuungBestaetigenValidationGroup.class)
+@CheckBetreuungPensumContainerZeitraumInGesuchsperiode(groups = BetreuungBestaetigenValidationGroup.class)
 @CheckBetreuungZeitraumInstitutionsStammdatenZeitraum (groups = BetreuungBestaetigenValidationGroup.class)
 // Der ForeignKey-Name wird leider nicht richtig generiert, muss von Hand angepasst werden!
 @AssociationOverrides({
@@ -99,7 +99,7 @@ import org.hibernate.search.annotations.Indexed;
 @Indexed
 @Analyzer(definition = "EBEGUGermanAnalyzer")
 @ClassBridge(name = "bGNummer", impl = BGNummerBridge.class, analyze = Analyze.NO)
-public class Betreuung extends AbstractPlatz implements AbstractMahlzeitenPensumContainer {
+public class Betreuung extends AbstractPlatz implements BetreuungAndPensumContainer {
 
 	private static final long serialVersionUID = -6776987863150835840L;
 
@@ -447,6 +447,12 @@ public class Betreuung extends AbstractPlatz implements AbstractMahlzeitenPensum
 			.map(BetreuungspensumContainer::getBetreuungspensumJA)
 			.filter(Objects::nonNull)
 			.collect(Collectors.toList());
+	}
+
+	@Nonnull
+	@Override
+	public Optional<Betreuung> findBetreuung() {
+		return Optional.of(this);
 	}
 
 	@Override
