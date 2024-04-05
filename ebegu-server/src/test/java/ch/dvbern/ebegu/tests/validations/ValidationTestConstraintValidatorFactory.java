@@ -32,10 +32,6 @@ import ch.dvbern.ebegu.validators.CheckPensumFachstelleValidator;
  */
 public class ValidationTestConstraintValidatorFactory implements ConstraintValidatorFactory {
 
-
-	public ValidationTestConstraintValidatorFactory() {
-	}
-
 	@Override
 	public <T extends ConstraintValidator<?, ?>> T getInstance(Class<T> key) {
 		if (key.equals(CheckBetreuungspensumValidator.class)) {

@@ -17,10 +17,10 @@
 
 package ch.dvbern.ebegu.tests.validations;
 
+import java.util.Set;
+
 import javax.annotation.Nonnull;
-import javax.validation.Configuration;
-import javax.validation.Validation;
-import javax.validation.ValidatorFactory;
+import javax.validation.ConstraintViolation;
 
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.KindContainer;
@@ -28,22 +28,20 @@ import ch.dvbern.ebegu.entities.PensumFachstelle;
 import ch.dvbern.ebegu.enums.IntegrationTyp;
 import ch.dvbern.ebegu.test.TestDataUtil;
 import ch.dvbern.ebegu.validators.CheckPensumFachstelle;
-import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static ch.dvbern.ebegu.tests.util.ValidationTestHelper.assertNotViolated;
-import static ch.dvbern.ebegu.tests.util.ValidationTestHelper.assertViolated;
+import static ch.dvbern.ebegu.tests.util.validation.ViolationMatchers.violatesAnnotation;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.not;
 
 /**
  * Tests for CheckPensumFachstelle
  * SOZIALE_INTEGRATION range from 20 to 60
  * SPRACHLICHE_INTEGRATION range from 40 to 40
  */
-public class CheckPensumFachstelleValidatorTest {
+public class CheckPensumFachstelleValidatorTest extends AbstractValidatorTest {
 
-	private ValidatorFactory customFactory;
 	private static final int SOZ_PENSUM_OK = 40;
 	private static final int SOZ_PENSUM_TOO_LOW = 0;
 	private static final int SOZ_PENSUM_TOO_HIGH = 80;
@@ -51,21 +49,13 @@ public class CheckPensumFachstelleValidatorTest {
 	private static final int SPRACH_PENSUM_TOO_LOW = 39;
 	private static final int SPRACH_PENSUM_OK = 40;
 
-	@Before
-	public void setUp() {
-		Configuration<?> config = Validation.byDefaultProvider().configure();
-		final ValidationTestConstraintValidatorFactory constraintValidatorFactory =
-			new ValidationTestConstraintValidatorFactory();
-		config.constraintValidatorFactory(constraintValidatorFactory);
-		this.customFactory = config.buildValidatorFactory();
-	}
-
 	@Test
 	public void testKindWithoutPensumFachstelle() {
 		KindContainer kind = createKindWithoutPensumFachstelle();
 
-		assertNotViolated(CheckPensumFachstelle.class, kind, customFactory,
-			"pensumFachstelle.pensum");
+		Set<ConstraintViolation<KindContainer>> violations = validate(kind);
+
+		assertThat(violations, not(violatesAnnotation(CheckPensumFachstelle.class)));
 	}
 
 	@Test
@@ -73,8 +63,9 @@ public class CheckPensumFachstelleValidatorTest {
 		KindContainer kind = createKindWithPensumFachstelle(
 			IntegrationTyp.SOZIALE_INTEGRATION, SOZ_PENSUM_TOO_LOW);
 
-		assertViolated(CheckPensumFachstelle.class, kind, customFactory,
-			"pensumFachstelle.pensum");
+		Set<ConstraintViolation<KindContainer>> violations = validate(kind);
+
+		assertThat(violations, violatesAnnotation(CheckPensumFachstelle.class));
 	}
 
 	@Test
@@ -86,8 +77,9 @@ public class CheckPensumFachstelleValidatorTest {
 			.getPensumFachstelle()
 			.add(createPensumFachstelleWithPensum(IntegrationTyp.SOZIALE_INTEGRATION, SOZ_PENSUM_OK));
 
-		assertViolated(CheckPensumFachstelle.class, kind, customFactory,
-			"pensumFachstelle.pensum");
+		Set<ConstraintViolation<KindContainer>> violations = validate(kind);
+
+		assertThat(violations, violatesAnnotation(CheckPensumFachstelle.class));
 	}
 
 	@Test
@@ -95,8 +87,9 @@ public class CheckPensumFachstelleValidatorTest {
 		KindContainer kind = createKindWithPensumFachstelle(
 			IntegrationTyp.SOZIALE_INTEGRATION, SOZ_PENSUM_TOO_HIGH);
 
-		assertViolated(CheckPensumFachstelle.class, kind, customFactory,
-			"pensumFachstelle.pensum");
+		Set<ConstraintViolation<KindContainer>> violations = validate(kind);
+
+		assertThat(violations, violatesAnnotation(CheckPensumFachstelle.class));
 	}
 
 	@Test
@@ -108,8 +101,9 @@ public class CheckPensumFachstelleValidatorTest {
 			.getPensumFachstelle()
 			.add(createPensumFachstelleWithPensum(IntegrationTyp.SOZIALE_INTEGRATION, SOZ_PENSUM_OK));
 
-		assertViolated(CheckPensumFachstelle.class, kind, customFactory,
-			"pensumFachstelle.pensum");
+		Set<ConstraintViolation<KindContainer>> violations = validate(kind);
+
+		assertThat(violations, violatesAnnotation(CheckPensumFachstelle.class));
 	}
 
 	@Test
@@ -117,8 +111,9 @@ public class CheckPensumFachstelleValidatorTest {
 		KindContainer kind = createKindWithPensumFachstelle(
 			IntegrationTyp.SOZIALE_INTEGRATION, 60);
 
-		assertNotViolated(CheckPensumFachstelle.class, kind, customFactory,
-			"pensumFachstelle.pensum");
+		Set<ConstraintViolation<KindContainer>> violations = validate(kind);
+
+		assertThat(violations, not(violatesAnnotation(CheckPensumFachstelle.class)));
 	}
 
 	@Test
@@ -126,8 +121,9 @@ public class CheckPensumFachstelleValidatorTest {
 		KindContainer kind = createKindWithPensumFachstelle(
 			IntegrationTyp.SOZIALE_INTEGRATION, 20);
 
-		assertNotViolated(CheckPensumFachstelle.class, kind, customFactory,
-			"pensumFachstelle.pensum");
+		Set<ConstraintViolation<KindContainer>> violations = validate(kind);
+
+		assertThat(violations, not(violatesAnnotation(CheckPensumFachstelle.class)));
 	}
 
 	@Test
@@ -135,8 +131,9 @@ public class CheckPensumFachstelleValidatorTest {
 		KindContainer kind = createKindWithPensumFachstelle(
 			IntegrationTyp.SOZIALE_INTEGRATION, 40);
 
-		assertNotViolated(CheckPensumFachstelle.class, kind, customFactory,
-			"pensumFachstelle.pensum");
+		Set<ConstraintViolation<KindContainer>> violations = validate(kind);
+
+		assertThat(violations, not(violatesAnnotation(CheckPensumFachstelle.class)));
 	}
 
 	@Test
@@ -148,8 +145,9 @@ public class CheckPensumFachstelleValidatorTest {
 			.getPensumFachstelle()
 			.add(createPensumFachstelleWithPensum(IntegrationTyp.SOZIALE_INTEGRATION, SOZ_PENSUM_OK));
 
-		assertNotViolated(CheckPensumFachstelle.class, kind, customFactory,
-			"pensumFachstelle.pensum");
+		Set<ConstraintViolation<KindContainer>> violations = validate(kind);
+
+		assertThat(violations, not(violatesAnnotation(CheckPensumFachstelle.class)));
 	}
 
 	@Test
@@ -157,8 +155,9 @@ public class CheckPensumFachstelleValidatorTest {
 		KindContainer kind = createKindWithPensumFachstelle(
 			IntegrationTyp.SPRACHLICHE_INTEGRATION, SPRACH_PENSUM_TOO_LOW);
 
-		assertViolated(CheckPensumFachstelle.class, kind, customFactory,
-			"pensumFachstelle.pensum");
+		Set<ConstraintViolation<KindContainer>> violations = validate(kind);
+
+		assertThat(violations, violatesAnnotation(CheckPensumFachstelle.class));
 	}
 
 	@Test
@@ -169,8 +168,9 @@ public class CheckPensumFachstelleValidatorTest {
 			.getPensumFachstelle()
 			.add(createPensumFachstelleWithPensum(IntegrationTyp.SPRACHLICHE_INTEGRATION, SPRACH_PENSUM_OK));
 
-		assertViolated(CheckPensumFachstelle.class, kind, customFactory,
-			"pensumFachstelle.pensum");
+		Set<ConstraintViolation<KindContainer>> violations = validate(kind);
+
+		assertThat(violations, violatesAnnotation(CheckPensumFachstelle.class));
 	}
 
 	@Test
@@ -178,8 +178,9 @@ public class CheckPensumFachstelleValidatorTest {
 		KindContainer kind = createKindWithPensumFachstelle(
 			IntegrationTyp.SPRACHLICHE_INTEGRATION, SPRACH_PENSUM_TOO_HIGH);
 
-		assertViolated(CheckPensumFachstelle.class, kind, customFactory,
-			"pensumFachstelle.pensum");
+		Set<ConstraintViolation<KindContainer>> violations = validate(kind);
+
+		assertThat(violations, violatesAnnotation(CheckPensumFachstelle.class));
 	}
 
 	@Test
@@ -191,8 +192,9 @@ public class CheckPensumFachstelleValidatorTest {
 			.getPensumFachstelle()
 			.add(createPensumFachstelleWithPensum(IntegrationTyp.SPRACHLICHE_INTEGRATION, SPRACH_PENSUM_TOO_HIGH));
 
-		assertViolated(CheckPensumFachstelle.class, kind, customFactory,
-			"pensumFachstelle.pensum");
+		Set<ConstraintViolation<KindContainer>> violations = validate(kind);
+
+		assertThat(violations, violatesAnnotation(CheckPensumFachstelle.class));
 	}
 
 	@Test
@@ -200,8 +202,9 @@ public class CheckPensumFachstelleValidatorTest {
 		KindContainer kind = createKindWithPensumFachstelle(
 			IntegrationTyp.SPRACHLICHE_INTEGRATION, 40);
 
-		assertNotViolated(CheckPensumFachstelle.class, kind, customFactory,
-			"pensumFachstelle.pensum");
+		Set<ConstraintViolation<KindContainer>> violations = validate(kind);
+
+		assertThat(violations, not(violatesAnnotation(CheckPensumFachstelle.class)));
 	}
 
 	@Test
@@ -209,8 +212,9 @@ public class CheckPensumFachstelleValidatorTest {
 		KindContainer kind = createKindWithPensumFachstelle(
 			IntegrationTyp.SPRACHLICHE_INTEGRATION, SPRACH_PENSUM_OK);
 
-		assertNotViolated(CheckPensumFachstelle.class, kind, customFactory,
-			"pensumFachstelle.pensum");
+		Set<ConstraintViolation<KindContainer>> violations = validate(kind);
+
+		assertThat(violations, not(violatesAnnotation(CheckPensumFachstelle.class)));
 	}
 
 	// HELP METHODS
@@ -223,7 +227,7 @@ public class CheckPensumFachstelleValidatorTest {
 		KindContainer kind = TestDataUtil.createDefaultKindContainer();
 		kind.setGesuch(gesuch);
 
-		MatcherAssert.assertThat(kind.getKindJA().getPensumFachstelle().size(), Matchers.is(1));
+		assertThat(kind.getKindJA().getPensumFachstelle().size(), Matchers.is(1));
 		PensumFachstelle pensumFachstelle = kind.getKindJA().getPensumFachstelle().stream().findFirst().orElseThrow();
 		pensumFachstelle.setIntegrationTyp(integrationTyp);
 		pensumFachstelle.setPensum(pensum);

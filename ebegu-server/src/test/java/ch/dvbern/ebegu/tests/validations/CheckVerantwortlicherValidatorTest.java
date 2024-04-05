@@ -15,40 +15,33 @@
 
 package ch.dvbern.ebegu.tests.validations;
 
-import javax.validation.Configuration;
-import javax.validation.Validation;
-import javax.validation.ValidatorFactory;
-
 import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Dossier;
 import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.test.TestDataUtil;
-import ch.dvbern.ebegu.tests.util.ValidationTestHelper;
 import ch.dvbern.ebegu.validationgroups.ChangeVerantwortlicherBGValidationGroup;
 import ch.dvbern.ebegu.validationgroups.ChangeVerantwortlicherTSValidationGroup;
 import ch.dvbern.ebegu.validators.CheckVerantwortlicherBG;
 import ch.dvbern.ebegu.validators.CheckVerantwortlicherTS;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import static ch.dvbern.ebegu.tests.util.validation.ViolationMatchers.violatesAnnotation;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.not;
 
 @SuppressWarnings("JUnitTestMethodWithNoAssertions")
-public class CheckVerantwortlicherValidatorTest {
+public class CheckVerantwortlicherValidatorTest extends AbstractValidatorTest {
 
-	private ValidatorFactory customFactory = null;
 	private Benutzer schUser = null;
 	private Benutzer jaUser = null;
 	private Benutzer jaAdmin = null;
 	private Benutzer schAdmin = null;
 
-	@Before
+	@BeforeEach
 	public void setUp() {
 		Mandant mandant = TestDataUtil.getMandantKantonBern();
-		// see https://docs.jboss.org/hibernate/validator/5.2/reference/en-US/html/chapter-bootstrapping.html#_constraintvalidatorfactory
-		Configuration<?> config = Validation.byDefaultProvider().configure();
-		//wir verwenden dummy service daher geben wir hier null als em mit
-		config.constraintValidatorFactory(new ValidationTestConstraintValidatorFactory());
-		this.customFactory = config.buildValidatorFactory();
 		schUser = TestDataUtil.createBenutzer(UserRole.SACHBEARBEITER_TS, "userSCH", null, null, mandant, null, null);
 		jaUser = TestDataUtil.createBenutzer(UserRole.SACHBEARBEITER_BG, "userJA", null, null, mandant, null, null);
 		jaAdmin = TestDataUtil.createBenutzer(UserRole.ADMIN_BG, "adminJA", null, null, mandant, null, null);
@@ -69,8 +62,13 @@ public class CheckVerantwortlicherValidatorTest {
 		final Dossier dossier = new Dossier();
 		dossier.setVerantwortlicherBG(user1);
 		dossier.setVerantwortlicherTS(user2);
-		ValidationTestHelper.assertNotViolated(CheckVerantwortlicherBG.class, dossier, customFactory, ChangeVerantwortlicherBGValidationGroup.class);
-		ValidationTestHelper.assertNotViolated(CheckVerantwortlicherTS.class, dossier, customFactory, ChangeVerantwortlicherTSValidationGroup.class);
+
+		assertThat(
+			validate(dossier, ChangeVerantwortlicherBGValidationGroup.class),
+			not(violatesAnnotation(CheckVerantwortlicherBG.class)));
+		assertThat(
+			validate(dossier, ChangeVerantwortlicherTSValidationGroup.class),
+			not(violatesAnnotation(CheckVerantwortlicherTS.class)));
 	}
 
 	@Test
@@ -78,8 +76,13 @@ public class CheckVerantwortlicherValidatorTest {
 		final Dossier dossier = new Dossier();
 		dossier.setVerantwortlicherBG(null);
 		dossier.setVerantwortlicherTS(null);
-		ValidationTestHelper.assertNotViolated(CheckVerantwortlicherBG.class, dossier, customFactory, ChangeVerantwortlicherBGValidationGroup.class);
-		ValidationTestHelper.assertNotViolated(CheckVerantwortlicherTS.class, dossier, customFactory, ChangeVerantwortlicherTSValidationGroup.class);
+
+		assertThat(
+			validate(dossier, ChangeVerantwortlicherBGValidationGroup.class),
+			not(violatesAnnotation(CheckVerantwortlicherBG.class)));
+		assertThat(
+			validate(dossier, ChangeVerantwortlicherTSValidationGroup.class),
+			not(violatesAnnotation(CheckVerantwortlicherTS.class)));
 	}
 
 	@Test
@@ -87,8 +90,13 @@ public class CheckVerantwortlicherValidatorTest {
 		final Dossier dossier = new Dossier();
 		dossier.setVerantwortlicherBG(schAdmin);
 		dossier.setVerantwortlicherTS(schAdmin);
-		ValidationTestHelper.assertViolated(CheckVerantwortlicherBG.class, dossier, customFactory, ChangeVerantwortlicherBGValidationGroup.class);
-		ValidationTestHelper.assertNotViolated(CheckVerantwortlicherTS.class, dossier, customFactory, ChangeVerantwortlicherTSValidationGroup.class);
+
+		assertThat(
+			validate(dossier, ChangeVerantwortlicherBGValidationGroup.class),
+			violatesAnnotation(CheckVerantwortlicherBG.class));
+		assertThat(
+			validate(dossier, ChangeVerantwortlicherTSValidationGroup.class),
+			not(violatesAnnotation(CheckVerantwortlicherTS.class)));
 	}
 
 	@Test
@@ -96,8 +104,12 @@ public class CheckVerantwortlicherValidatorTest {
 		final Dossier dossier = new Dossier();
 		dossier.setVerantwortlicherBG(jaAdmin);
 		dossier.setVerantwortlicherTS(jaAdmin);
-		ValidationTestHelper.assertNotViolated(CheckVerantwortlicherBG.class, dossier, customFactory, ChangeVerantwortlicherBGValidationGroup.class);
-		ValidationTestHelper.assertViolated(CheckVerantwortlicherTS.class, dossier, customFactory, ChangeVerantwortlicherTSValidationGroup.class);
-	}
 
+		assertThat(
+			validate(dossier, ChangeVerantwortlicherBGValidationGroup.class),
+			not(violatesAnnotation(CheckVerantwortlicherBG.class)));
+		assertThat(
+			validate(dossier, ChangeVerantwortlicherTSValidationGroup.class),
+			violatesAnnotation(CheckVerantwortlicherTS.class));
+	}
 }

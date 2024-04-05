@@ -884,16 +884,7 @@ public final class TestDataUtil {
 	}
 
 	public static Betreuung createDefaultBetreuung() {
-		Betreuung betreuung = new Betreuung();
-		betreuung.setInstitutionStammdaten(createDefaultInstitutionStammdaten());
-		betreuung.setBetreuungsstatus(Betreuungsstatus.BESTAETIGT);
-		betreuung.setBetreuungspensumContainers(new TreeSet<>());
-		betreuung.setAbwesenheitContainers(new HashSet<>());
-		betreuung.setKind(createDefaultKindContainer());
-		ErweiterteBetreuungContainer erweitContainer = TestDataUtil.createDefaultErweiterteBetreuungContainer();
-		erweitContainer.setBetreuung(betreuung);
-		betreuung.setErweiterteBetreuungContainer(erweitContainer);
-		return betreuung;
+		return createDefaultBetreuungOhneBetreuungPensum(createDefaultKindContainer());
 	}
 
 	public static Betreuung createDefaultBetreuungOhneBetreuungPensum(KindContainer kindContainer) {
@@ -903,29 +894,26 @@ public final class TestDataUtil {
 		betreuung.setBetreuungspensumContainers(new TreeSet<>());
 		betreuung.setAbwesenheitContainers(new HashSet<>());
 		betreuung.setKind(kindContainer);
+
 		ErweiterteBetreuungContainer erweitContainer = TestDataUtil.createDefaultErweiterteBetreuungContainer();
 		erweitContainer.setBetreuung(betreuung);
 		betreuung.setErweiterteBetreuungContainer(erweitContainer);
+
 		return betreuung;
 	}
 
 	public static Betreuung createDefaultBetreuung(int betreuungspensum, LocalDate von, LocalDate bis) {
-		Betreuung betreuung = new Betreuung();
-		betreuung.setInstitutionStammdaten(createDefaultInstitutionStammdaten());
-		betreuung.setBetreuungsstatus(Betreuungsstatus.BESTAETIGT);
-		betreuung.setBetreuungspensumContainers(new TreeSet<>());
-		final BetreuungspensumContainer betPensContainer = TestDataUtil.createBetPensContainer(betreuung);
-		final Betreuungspensum pensum = createBetreuungspensum();
+		Betreuung betreuung = createDefaultBetreuung();
+
+		BetreuungspensumContainer betPensContainer = TestDataUtil.createBetPensContainer(betreuung);
+		Betreuungspensum pensum = createBetreuungspensum();
 		pensum.setPensum(BigDecimal.valueOf(betreuungspensum));
 		pensum.setMonatlicheBetreuungskosten(BigDecimal.valueOf(2000));
 		pensum.setGueltigkeit(new DateRange(von, bis));
 		betPensContainer.setBetreuungspensumJA(pensum);
+
 		betreuung.getBetreuungspensumContainers().add(betPensContainer);
-		betreuung.setAbwesenheitContainers(new HashSet<>());
-		betreuung.setKind(createDefaultKindContainer());
-		ErweiterteBetreuungContainer erweitContainer = TestDataUtil.createDefaultErweiterteBetreuungContainer();
-		erweitContainer.setBetreuung(betreuung);
-		betreuung.setErweiterteBetreuungContainer(erweitContainer);
+
 		return betreuung;
 	}
 

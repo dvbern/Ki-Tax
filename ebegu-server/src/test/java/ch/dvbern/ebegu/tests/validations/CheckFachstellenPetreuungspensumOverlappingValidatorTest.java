@@ -37,7 +37,7 @@ import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.validators.CheckPensumFachstellenOverlappingValidator;
 
 /**
- * Test fuer {@link ch.dvbern.ebegu.validators.CheckPensumFachstellenOverlappingValidator}
+ * Test fuer {@link CheckPensumFachstellenOverlappingValidator}
  */
 @ExtendWith(EasyMockExtension.class)
 public class CheckFachstellenPetreuungspensumOverlappingValidatorTest {

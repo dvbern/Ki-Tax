@@ -22,61 +22,55 @@ import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.test.TestDataUtil;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.validators.CheckBerechtigungGemeindeValidator;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 /**
  * Tests fuer {@link CheckBerechtigungGemeindeValidator}
  */
 public class CheckBerechtigungGemeindeValidatorTest {
 
-	private CheckBerechtigungGemeindeValidator validator;
-	private Mandant mandant = new Mandant();
-	private Gemeinde gemeinde = new Gemeinde();
-
-	@Before
-	public void setUp() {
-		validator = new CheckBerechtigungGemeindeValidator();
-	}
+	private final CheckBerechtigungGemeindeValidator validator = new CheckBerechtigungGemeindeValidator();
+	private final Mandant mandant = new Mandant();
+	private final Gemeinde gemeinde = new Gemeinde();
 
 	@Test
 	public void checkGemeindeAbhaengigeRollenMitGemeindeValid() {
-		Assert.assertTrue(validator.isValid(createBenutzer(UserRole.ADMIN_BG, true).getCurrentBerechtigung(), null));
-		Assert.assertTrue(validator.isValid(createBenutzer(UserRole.SACHBEARBEITER_BG, true).getCurrentBerechtigung(), null));
-		Assert.assertTrue(validator.isValid(createBenutzer(UserRole.ADMIN_TS, true).getCurrentBerechtigung(), null));
-		Assert.assertTrue(validator.isValid(createBenutzer(UserRole.SACHBEARBEITER_TS, true).getCurrentBerechtigung(), null));
-		Assert.assertTrue(validator.isValid(createBenutzer(UserRole.JURIST, true).getCurrentBerechtigung(), null));
-		Assert.assertTrue(validator.isValid(createBenutzer(UserRole.REVISOR, true).getCurrentBerechtigung(), null));
-		Assert.assertTrue(validator.isValid(createBenutzer(UserRole.STEUERAMT, true).getCurrentBerechtigung(), null));
+		Assertions.assertTrue(validator.isValid(createBenutzer(UserRole.ADMIN_BG, true).getCurrentBerechtigung(), null));
+		Assertions.assertTrue(validator.isValid(createBenutzer(UserRole.SACHBEARBEITER_BG, true).getCurrentBerechtigung(), null));
+		Assertions.assertTrue(validator.isValid(createBenutzer(UserRole.ADMIN_TS, true).getCurrentBerechtigung(), null));
+		Assertions.assertTrue(validator.isValid(createBenutzer(UserRole.SACHBEARBEITER_TS, true).getCurrentBerechtigung(), null));
+		Assertions.assertTrue(validator.isValid(createBenutzer(UserRole.JURIST, true).getCurrentBerechtigung(), null));
+		Assertions.assertTrue(validator.isValid(createBenutzer(UserRole.REVISOR, true).getCurrentBerechtigung(), null));
+		Assertions.assertTrue(validator.isValid(createBenutzer(UserRole.STEUERAMT, true).getCurrentBerechtigung(), null));
 	}
 
 	@Test
 	public void checkGemeindeAbhaengigeRollenOhneGemeindeInvalid() {
-		Assert.assertFalse(validator.isValid(createBenutzer(UserRole.ADMIN_BG, false).getCurrentBerechtigung(), null));
-		Assert.assertFalse(validator.isValid(createBenutzer(UserRole.SACHBEARBEITER_BG, false).getCurrentBerechtigung(), null));
-		Assert.assertFalse(validator.isValid(createBenutzer(UserRole.ADMIN_TS, false).getCurrentBerechtigung(), null));
-		Assert.assertFalse(validator.isValid(createBenutzer(UserRole.SACHBEARBEITER_TS, false).getCurrentBerechtigung(), null));
-		Assert.assertFalse(validator.isValid(createBenutzer(UserRole.JURIST, false).getCurrentBerechtigung(), null));
-		Assert.assertFalse(validator.isValid(createBenutzer(UserRole.REVISOR, false).getCurrentBerechtigung(), null));
-		Assert.assertFalse(validator.isValid(createBenutzer(UserRole.STEUERAMT, false).getCurrentBerechtigung(), null));
+		Assertions.assertFalse(validator.isValid(createBenutzer(UserRole.ADMIN_BG, false).getCurrentBerechtigung(), null));
+		Assertions.assertFalse(validator.isValid(createBenutzer(UserRole.SACHBEARBEITER_BG, false).getCurrentBerechtigung(), null));
+		Assertions.assertFalse(validator.isValid(createBenutzer(UserRole.ADMIN_TS, false).getCurrentBerechtigung(), null));
+		Assertions.assertFalse(validator.isValid(createBenutzer(UserRole.SACHBEARBEITER_TS, false).getCurrentBerechtigung(), null));
+		Assertions.assertFalse(validator.isValid(createBenutzer(UserRole.JURIST, false).getCurrentBerechtigung(), null));
+		Assertions.assertFalse(validator.isValid(createBenutzer(UserRole.REVISOR, false).getCurrentBerechtigung(), null));
+		Assertions.assertFalse(validator.isValid(createBenutzer(UserRole.STEUERAMT, false).getCurrentBerechtigung(), null));
 	}
 
 
 	@Test
 	public void checkGemeindeUnabhaengigeRollenOhneGemeindeValid() {
-		Assert.assertTrue(validator.isValid(createBenutzer(UserRole.SUPER_ADMIN, false).getCurrentBerechtigung(), null));
-		Assert.assertTrue(validator.isValid(createBenutzer(UserRole.GESUCHSTELLER, false).getCurrentBerechtigung(), null));
-		Assert.assertTrue(validator.isValid(createBenutzer(UserRole.SACHBEARBEITER_TRAEGERSCHAFT, false).getCurrentBerechtigung(), null));
-		Assert.assertTrue(validator.isValid(createBenutzer(UserRole.SACHBEARBEITER_INSTITUTION, false).getCurrentBerechtigung(), null));
+		Assertions.assertTrue(validator.isValid(createBenutzer(UserRole.SUPER_ADMIN, false).getCurrentBerechtigung(), null));
+		Assertions.assertTrue(validator.isValid(createBenutzer(UserRole.GESUCHSTELLER, false).getCurrentBerechtigung(), null));
+		Assertions.assertTrue(validator.isValid(createBenutzer(UserRole.SACHBEARBEITER_TRAEGERSCHAFT, false).getCurrentBerechtigung(), null));
+		Assertions.assertTrue(validator.isValid(createBenutzer(UserRole.SACHBEARBEITER_INSTITUTION, false).getCurrentBerechtigung(), null));
 	}
 
 	@Test
 	public void checkGemeindeUnabhaengigeRollenMitGemeindeInvalid() {
-		Assert.assertFalse(validator.isValid(createBenutzer(UserRole.SUPER_ADMIN, true).getCurrentBerechtigung(), null));
-		Assert.assertFalse(validator.isValid(createBenutzer(UserRole.GESUCHSTELLER, true).getCurrentBerechtigung(), null));
-		Assert.assertFalse(validator.isValid(createBenutzer(UserRole.SACHBEARBEITER_TRAEGERSCHAFT, true).getCurrentBerechtigung(), null));
-		Assert.assertFalse(validator.isValid(createBenutzer(UserRole.SACHBEARBEITER_INSTITUTION, true).getCurrentBerechtigung(), null));
+		Assertions.assertFalse(validator.isValid(createBenutzer(UserRole.SUPER_ADMIN, true).getCurrentBerechtigung(), null));
+		Assertions.assertFalse(validator.isValid(createBenutzer(UserRole.GESUCHSTELLER, true).getCurrentBerechtigung(), null));
+		Assertions.assertFalse(validator.isValid(createBenutzer(UserRole.SACHBEARBEITER_TRAEGERSCHAFT, true).getCurrentBerechtigung(), null));
+		Assertions.assertFalse(validator.isValid(createBenutzer(UserRole.SACHBEARBEITER_INSTITUTION, true).getCurrentBerechtigung(), null));
 	}
 
 	private Benutzer createBenutzer(UserRole role, boolean addGemeinde) {
