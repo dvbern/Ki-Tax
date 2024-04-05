@@ -24,6 +24,9 @@ import {BerechnungsManager} from '../../../service/berechnungsManager';
 import {GesuchModelManager} from '../../../service/gesuchModelManager';
 import {FinanzielleSituationGsSchwyzComponent} from './finanzielle-situation-gs-schwyz/finanzielle-situation-gs-schwyz.component';
 import {
+    FinanzielleSituationResultateSchwyzComponent
+} from './finanzielle-situation-resultate-schwyz/finanzielle-situation-resultate-schwyz.component';
+import {
     FinanzielleSituationStartSchwyzComponent
 } from './finanzielle-situation-start-schwyz/finanzielle-situation-start-schwyz.component';
 
@@ -109,10 +112,33 @@ export class EbeguFinanzielleSituationGS2SchwyzState implements Ng1StateDeclarat
     };
 }
 
+export class EbeguFinanzielleSituationResultateSchwyzState implements Ng1StateDeclaration {
+    public name = 'gesuch.finanzielleSituationSchwyzResultate';
+    public url = '/finanzielleSituationSchywz/:gesuchId/resultate';
+
+    public views: any = {
+        gesuchViewPort: {
+            component: FinanzielleSituationResultateSchwyzComponent,
+        },
+        kommentarViewPort: {
+            template: kommentarView,
+        },
+    };
+
+    public resolve = {
+        gesuchModelManager: getGesuchModelManager,
+    };
+
+    public data = {
+        roles: TSRoleUtil.getAllRolesButTraegerschaftInstitution(),
+    };
+}
+
 const ng1States: Ng1StateDeclaration[] = [
     new EbeguFinanzielleSituationStartSchwyzState(),
     new EbeguFinanzielleSituationGS1SchwyzState(),
     new EbeguFinanzielleSituationGS2SchwyzState(),
+    new EbeguFinanzielleSituationResultateSchwyzState(),
 ];
 
 export class IGesuchStateParams {

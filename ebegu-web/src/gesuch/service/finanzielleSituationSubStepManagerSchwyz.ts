@@ -39,12 +39,18 @@ export class FinanzielleSituationSubStepManagerSchwyz extends FinanzielleSituati
         if (currentSubStep === TSFinanzielleSituationSubStepName.SCHWYZ_GS1) {
             return TSFinanzielleSituationSubStepName.SCHWYZ_GS2;
         }
+        if (currentSubStep === TSFinanzielleSituationSubStepName.SCHWYZ_GS2) {
+            return TSFinanzielleSituationSubStepName.SCHWYZ_RESULTATE;
+        }
         return TSFinanzielleSituationSubStepName.KEIN_WEITERER_SUBSTEP;
     }
 
     public getPreviousSubStepFinanzielleSituation(
         currentSubStep: TSFinanzielleSituationSubStepName,
     ): TSFinanzielleSituationSubStepName {
+        if (currentSubStep === TSFinanzielleSituationSubStepName.SCHWYZ_RESULTATE) {
+            return TSFinanzielleSituationSubStepName.SCHWYZ_GS2;
+        }
         if (currentSubStep === TSFinanzielleSituationSubStepName.SCHWYZ_GS2) {
             return TSFinanzielleSituationSubStepName.SCHWYZ_GS1;
         }
