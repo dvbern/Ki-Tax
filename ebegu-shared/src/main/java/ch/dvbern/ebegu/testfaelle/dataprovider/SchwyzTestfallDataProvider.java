@@ -18,13 +18,18 @@
 package ch.dvbern.ebegu.testfaelle.dataprovider;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 
 import ch.dvbern.ebegu.entities.Familiensituation;
 import ch.dvbern.ebegu.entities.FinanzielleSituation;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
+import ch.dvbern.ebegu.entities.Kind;
+import ch.dvbern.ebegu.enums.EinschulungTyp;
 import ch.dvbern.ebegu.enums.EnumFamilienstatus;
 import ch.dvbern.ebegu.enums.EnumGesuchstellerKardinalitaet;
 import ch.dvbern.ebegu.enums.FinanzielleSituationTyp;
+import ch.dvbern.ebegu.enums.Geschlecht;
+import ch.dvbern.ebegu.enums.Kinderabzug;
 
 public class SchwyzTestfallDataProvider extends AbstractTestfallDataProvider {
 	protected SchwyzTestfallDataProvider(Gesuchsperiode gesuchsperiode) {
@@ -38,8 +43,8 @@ public class SchwyzTestfallDataProvider extends AbstractTestfallDataProvider {
 		familiensituation.setSozialhilfeBezueger(false);
 		familiensituation.setAuszahlungsdaten(createDefaultAuszahlungsdaten());
 		familiensituation.setFamilienstatus(EnumFamilienstatus.SCHWYZ);
+		familiensituation.setGemeinsameSteuererklaerung(Boolean.TRUE);
 		familiensituation.setGesuchstellerKardinalitaet(EnumGesuchstellerKardinalitaet.ZU_ZWEIT);
-		familiensituation.setGemeinsameSteuererklaerung(false);
 		return familiensituation;
 	}
 
@@ -72,5 +77,29 @@ public class SchwyzTestfallDataProvider extends AbstractTestfallDataProvider {
 	@Override
 	public FinanzielleSituationTyp getFinanzielleSituationTyp() {
 		return FinanzielleSituationTyp.SCHWYZ;
+	}
+
+	@Override
+	public Kind createKind(
+		Geschlecht geschlecht,
+		String name,
+		String vorname,
+		LocalDate geburtsdatum,
+		boolean is18GeburtstagBeforeGPEnds,
+		Kinderabzug kinderabzug,
+		boolean betreuung) {
+		Kind kind = new Kind();
+		kind.setGeschlecht(geschlecht);
+		kind.setGeburtsdatum(geburtsdatum);
+		kind.setVorname(vorname);
+		kind.setNachname(name);
+		kind.setEinschulungTyp(EinschulungTyp.VORSCHULALTER);
+		if (betreuung) {
+			kind.setFamilienErgaenzendeBetreuung(true);
+			kind.setUnterhaltspflichtig(true);
+			kind.setLebtKindAlternierend(true);
+			kind.setGemeinsamesGesuch(true);
+		}
+		return kind;
 	}
 }

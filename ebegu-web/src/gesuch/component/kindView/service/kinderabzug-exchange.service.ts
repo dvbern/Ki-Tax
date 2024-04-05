@@ -21,11 +21,13 @@ import * as moment from 'moment';
 import {Observable, Subject} from 'rxjs';
 
 @Injectable()
-export class FjkvKinderabzugExchangeService {
+export class KinderabzugExchangeService {
 
     private _form: NgForm;
     private readonly _geburtsdatumChanged: Subject<moment.Moment> = new Subject();
     private readonly _formValidationTriggered: Subject<void> = new Subject();
+
+    private readonly _familienErgaenzendeBetreuungChanged: Subject<moment.Moment> = new Subject();
 
     public get form(): NgForm {
         return this._form;
@@ -49,5 +51,15 @@ export class FjkvKinderabzugExchangeService {
 
     public triggerFormValidation(): void {
         this._formValidationTriggered.next();
+        this._form?.form.markAllAsTouched();
+        this._form?.onSubmit(null);
+    }
+
+    public getFamilienErgaenzendeBetreuungChanged$(): Observable<moment.Moment> {
+        return this._familienErgaenzendeBetreuungChanged.asObservable();
+    }
+
+    public triggerFamilienErgaenzendeBetreuungChanged(): void {
+        this._familienErgaenzendeBetreuungChanged.next();
     }
 }

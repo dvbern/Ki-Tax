@@ -162,7 +162,7 @@ describe('kindView', () => {
             authServiceRS,
             ebeguRestUtil,
             mandantService,
-            $injector.get('FjkvKinderabzugExchangeService'),
+            $injector.get('KinderabzugExchangeService'),
             $injector.get('HybridFormBridgeService'),
         );
     }));

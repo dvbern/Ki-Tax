@@ -46,7 +46,7 @@ import {languageEnabledHookRunBlock} from '../../authentication/state-hooks/onBe
 import router from '../../dvbModules/router/router.module';
 import {environment} from '../../environments/environment';
 import {InternePendenzenRS} from '../../gesuch/component/internePendenzenView/internePendenzenRS.rest';
-import {FjkvKinderabzugExchangeService} from '../../gesuch/component/kindView/fkjv-kinderabzug/fjkv-kinderabzug-exchange.service';
+import {KinderabzugExchangeService} from '../../gesuch/component/kindView/service/kinderabzug-exchange.service';
 import {BerechnungsManager} from '../../gesuch/service/berechnungsManager';
 import {DokumenteRS} from '../../gesuch/service/dokumenteRS.rest';
 import {DossierRS} from '../../gesuch/service/dossierRS.rest';
@@ -262,7 +262,7 @@ export const CORE_JS_MODULE = angular
     .factory('SearchRS', downgradeInjectable(SearchRS) as any)
     .factory('HttpPendingService', downgradeInjectable(HttpPendingService) as any)
     .factory('FerieninselStammdatenRS', downgradeInjectable(FerieninselStammdatenRS) as any)
-    .factory('FjkvKinderabzugExchangeService', downgradeInjectable(FjkvKinderabzugExchangeService) as any)
+    .factory('KinderabzugExchangeService', downgradeInjectable(KinderabzugExchangeService) as any)
     .factory('DemoFeatureRS', downgradeInjectable(DemoFeatureRS) as any)
     .factory('CustomTranslationLoader',
         ['$http', 'MandantService', '$q', customTranslateLoader])
