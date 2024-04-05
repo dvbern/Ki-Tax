@@ -17,10 +17,10 @@
 
 package ch.dvbern.ebegu.finanzielleSituationRechner;
 
-import javax.annotation.Nonnull;
-
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.enums.FinanzielleSituationTyp;
+
+import javax.annotation.Nonnull;
 
 public final class FinanzielleSituationRechnerFactory {
 
@@ -37,6 +37,9 @@ public final class FinanzielleSituationRechnerFactory {
 		}
 		if(gesuch.getFinSitTyp() == FinanzielleSituationTyp.APPENZELL) {
 			return new FinanzielleSituationAppenzellRechner();
+		}
+		if(gesuch.getFinSitTyp() == FinanzielleSituationTyp.SCHWYZ) {
+			return new FinanzielleSituationSchwyzRechner();
 		}
 		// per default ist der Berner Rechner genommen
 		return new FinanzielleSituationBernRechner();
