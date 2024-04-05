@@ -15,22 +15,23 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.dvbern.ebegu.validators;
+package ch.dvbern.ebegu.validators.iban;
+
+import java.lang.annotation.Retention;
+import java.lang.annotation.Target;
 
 import javax.validation.Constraint;
 import javax.validation.Payload;
-import java.lang.annotation.Retention;
-import java.lang.annotation.Target;
 
 import static java.lang.annotation.ElementType.FIELD;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 @Target({ FIELD })
 @Retention(RUNTIME)
-@Constraint(validatedBy = CheckIBANStringValidator.class)
-public @interface CheckIBANString {
+@Constraint(validatedBy = CheckIBANUppercaseValidator.class)
+public @interface CheckIBANUppercase {
 
-	String message() default "{ungueltige.iban}";
+	String message() default "{iban_not_uppercase}";
 
 	Class<?>[] groups() default {};
 

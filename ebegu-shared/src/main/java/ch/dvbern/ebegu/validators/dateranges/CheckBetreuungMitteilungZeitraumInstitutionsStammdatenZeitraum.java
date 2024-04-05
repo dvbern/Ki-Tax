@@ -15,25 +15,33 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.dvbern.ebegu.validators;
+package ch.dvbern.ebegu.validators.dateranges;
 
+import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
 import javax.validation.Constraint;
 import javax.validation.Payload;
 
-import static java.lang.annotation.ElementType.FIELD;
+import static java.lang.annotation.ElementType.ANNOTATION_TYPE;
+import static java.lang.annotation.ElementType.TYPE;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
-@Target({ FIELD })
+/**
+ * Die Betreuungspensen einer BetreuungMitteilung müssen innerhalb der Verfügbarkeit der Institution liegen (Zeitraum
+ * der Institutionsstammdaten)
+ */
+@Target({ TYPE, ANNOTATION_TYPE })
 @Retention(RUNTIME)
-@Constraint(validatedBy = CheckIBANUppercaseValidator.class)
-public @interface CheckIBANUppercase {
+@Constraint(validatedBy = CheckBetreuungMitteilungZeitraumInstitutionsStammdatenZeitraumValidator.class)
+@Documented
+public @interface CheckBetreuungMitteilungZeitraumInstitutionsStammdatenZeitraum {
 
-	String message() default "{iban_not_uppercase}";
+	String message() default "{invalid_betreuungszeitraum_for_institutionsstammdaten}";
 
 	Class<?>[] groups() default {};
 
 	Class<? extends Payload>[] payload() default {};
+
 }

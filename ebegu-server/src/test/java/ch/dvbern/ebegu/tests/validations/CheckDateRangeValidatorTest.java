@@ -18,7 +18,7 @@ package ch.dvbern.ebegu.tests.validations;
 import java.time.LocalDate;
 
 import ch.dvbern.ebegu.types.DateRange;
-import ch.dvbern.ebegu.validators.CheckDateRangeValidator;
+import ch.dvbern.ebegu.validators.dateranges.CheckDateRangeValidator;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 

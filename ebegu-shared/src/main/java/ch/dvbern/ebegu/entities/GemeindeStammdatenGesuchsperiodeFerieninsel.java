@@ -37,7 +37,7 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
 import ch.dvbern.ebegu.enums.Ferienname;
-import ch.dvbern.ebegu.validators.CheckGueltigkeiten;
+import ch.dvbern.ebegu.validators.dateranges.CheckGueltigkeiten;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.hibernate.annotations.SortNatural;
 import org.hibernate.envers.Audited;

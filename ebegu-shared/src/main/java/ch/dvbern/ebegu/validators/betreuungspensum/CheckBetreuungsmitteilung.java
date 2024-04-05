@@ -13,7 +13,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package ch.dvbern.ebegu.validators;
+package ch.dvbern.ebegu.validators.betreuungspensum;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
@@ -22,27 +22,25 @@ import java.lang.annotation.Target;
 import javax.validation.Constraint;
 import javax.validation.Payload;
 
+import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
+
 import static java.lang.annotation.ElementType.ANNOTATION_TYPE;
-import static java.lang.annotation.ElementType.CONSTRUCTOR;
-import static java.lang.annotation.ElementType.FIELD;
-import static java.lang.annotation.ElementType.METHOD;
-import static java.lang.annotation.ElementType.PARAMETER;
 import static java.lang.annotation.ElementType.TYPE;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
- * Die Betreuungspensen einer Betreuung duerfen sich nicht ueberlappen
+ * Je nach {@link BetreuungsangebotTyp} der verknuepften Institutionstammdaten darf im Betreuungspensum nur eingeschraenkte
+ * Werte eingegeben werden.
  */
-@Target({ METHOD, FIELD, ANNOTATION_TYPE, CONSTRUCTOR, PARAMETER, TYPE })
+@Target({ TYPE, ANNOTATION_TYPE })
 @Retention(RUNTIME)
-@Constraint(validatedBy = CheckGueltigkeitenValidator.class)
+@Constraint(validatedBy = CheckBetreuungsmitteilungValidator.class)
 @Documented
-public @interface CheckGueltigkeiten {
+public @interface CheckBetreuungsmitteilung {
 
-	String message() default "{invalid_betreuungspensen_dates}";
+	String message() default "{invalid_betreuungspensum}";
 
 	Class<?>[] groups() default {};
 
 	Class<? extends Payload>[] payload() default {};
-
 }

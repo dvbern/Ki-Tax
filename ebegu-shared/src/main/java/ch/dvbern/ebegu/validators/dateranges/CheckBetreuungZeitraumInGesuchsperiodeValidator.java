@@ -13,14 +13,14 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package ch.dvbern.ebegu.validators;
+package ch.dvbern.ebegu.validators.dateranges;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
 import ch.dvbern.ebegu.entities.Betreuung;
-import ch.dvbern.ebegu.entities.BetreuungspensumContainer;
 import ch.dvbern.ebegu.types.DateRange;
+import ch.dvbern.ebegu.util.GueltigkeitsUtil;
 
 /**
  * Die Betreuungspensen einer Betreuung duerfen nicht komplett ausserhalb der Gesuchsperiode liegen
@@ -29,13 +29,8 @@ public class CheckBetreuungZeitraumInGesuchsperiodeValidator implements Constrai
 
 	@Override
 	public boolean isValid(Betreuung betreuung, ConstraintValidatorContext context) {
-		final DateRange gueltigkeitGesuchsperiode = betreuung.extractGesuchsperiode().getGueltigkeit();
-		for (BetreuungspensumContainer betreuungspensumContainer : betreuung.getBetreuungspensumContainers()) {
-			final DateRange pensumDateRange = betreuungspensumContainer.getBetreuungspensumJA().getGueltigkeit();
-			if (!gueltigkeitGesuchsperiode.getOverlap(pensumDateRange).isPresent()) {
-				return false;
-			}
-		}
-		return true;
+		DateRange gueltigkeitGesuchsperiode = betreuung.extractGesuchsperiode().getGueltigkeit();
+
+		return GueltigkeitsUtil.intersects(betreuung.getForJA(), gueltigkeitGesuchsperiode);
 	}
 }

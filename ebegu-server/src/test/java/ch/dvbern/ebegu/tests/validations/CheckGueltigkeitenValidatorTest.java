@@ -26,8 +26,8 @@ import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.BetreuungspensumContainer;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.test.TestDataUtil;
-import ch.dvbern.ebegu.validators.CheckGueltigkeiten;
-import ch.dvbern.ebegu.validators.CheckGueltigkeitenValidator;
+import ch.dvbern.ebegu.validators.dateranges.CheckGueltigkeiten;
+import ch.dvbern.ebegu.validators.dateranges.CheckGueltigkeitenValidator;
 import org.junit.jupiter.api.Test;
 
 import static ch.dvbern.ebegu.tests.util.validation.ViolationMatchers.violatesAnnotation;

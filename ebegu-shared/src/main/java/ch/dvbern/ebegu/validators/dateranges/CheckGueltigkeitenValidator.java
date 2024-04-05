@@ -13,21 +13,24 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package ch.dvbern.ebegu.validators;
+package ch.dvbern.ebegu.validators.dateranges;
 
-import javax.annotation.Nonnull;
+import java.util.Collection;
+
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
-import ch.dvbern.ebegu.types.DateRange;
+import ch.dvbern.ebegu.util.Gueltigkeit;
+import ch.dvbern.ebegu.util.GueltigkeitsUtil;
 
-public class CheckDateRangeValidator implements ConstraintValidator<CheckDateRange, DateRange> {
+/**
+ * {@link Gueltigkeit} of intervals may not overlap.
+ */
+public class CheckGueltigkeitenValidator
+	implements ConstraintValidator<CheckGueltigkeiten, Collection<? extends Gueltigkeit>> {
 
-	/**
-	 * gueltigAb und gueltigBis duerfen auch gleich sein. Dies bedeutet eine Zeitspannung von 1 Tag
-	 */
 	@Override
-	public boolean isValid(@Nonnull DateRange instance, ConstraintValidatorContext context) {
-		return !instance.getGueltigAb().isAfter(instance.getGueltigBis());
+	public boolean isValid(Collection<? extends Gueltigkeit> gueltigkeitIntervals, ConstraintValidatorContext context) {
+		return !GueltigkeitsUtil.hasOverlapingGueltigkeit(gueltigkeitIntervals);
 	}
 }

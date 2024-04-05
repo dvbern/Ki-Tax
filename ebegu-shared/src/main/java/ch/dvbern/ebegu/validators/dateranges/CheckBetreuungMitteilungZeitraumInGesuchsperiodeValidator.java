@@ -14,32 +14,29 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package ch.dvbern.ebegu.validators;
+package ch.dvbern.ebegu.validators.dateranges;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Betreuungsmitteilung;
-import ch.dvbern.ebegu.entities.BetreuungsmitteilungPensum;
-import ch.dvbern.ebegu.entities.BetreuungspensumContainer;
 import ch.dvbern.ebegu.types.DateRange;
+import ch.dvbern.ebegu.util.GueltigkeitsUtil;
+
+import static java.util.Objects.requireNonNull;
 
 /**
  * Die Betreuungspensen einer BetreuungMitteilung duerfen nicht komplett ausserhalb der Gesuchsperiode liegen
  */
-public class CheckBetreuungMitteilungZeitraumInGesuchsperiodeValidator implements ConstraintValidator<CheckBetreuungMitteilungZeitraumInGesuchsperiode, Betreuungsmitteilung> {
+public class CheckBetreuungMitteilungZeitraumInGesuchsperiodeValidator
+	implements ConstraintValidator<CheckBetreuungMitteilungZeitraumInGesuchsperiode, Betreuungsmitteilung> {
 
 	@Override
 	public boolean isValid(Betreuungsmitteilung betreuungMitteilung, ConstraintValidatorContext context) {
-		assert betreuungMitteilung.getBetreuung() != null;
-		final DateRange gueltigkeitGesuchsperiode = betreuungMitteilung.getBetreuung().extractGesuchsperiode().getGueltigkeit();
-		for (BetreuungsmitteilungPensum betreuungsmitteilungPensum : betreuungMitteilung.getBetreuungspensen()) {
-			final DateRange pensumDateRange = betreuungsmitteilungPensum.getGueltigkeit();
-			if (!gueltigkeitGesuchsperiode.getOverlap(pensumDateRange).isPresent()) {
-				return false;
-			}
-		}
-		return true;
+		Betreuung betreuung = requireNonNull(betreuungMitteilung.getBetreuung());
+		DateRange gueltigkeitGesuchsperiode = betreuung.extractGesuchsperiode().getGueltigkeit();
+
+		return GueltigkeitsUtil.intersects(betreuungMitteilung.getBetreuungspensen(), gueltigkeitGesuchsperiode);
 	}
 }

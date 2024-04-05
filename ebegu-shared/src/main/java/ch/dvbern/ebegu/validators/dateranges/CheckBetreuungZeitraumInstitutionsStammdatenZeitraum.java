@@ -1,19 +1,21 @@
 /*
- * Ki-Tax: System for the management of external childcare subsidies
- * Copyright (C) 2017 City of Bern Switzerland
+ * Copyright (C) 2024 DV Bern AG, Switzerland
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
+ *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.dvbern.ebegu.validators;
+package ch.dvbern.ebegu.validators.dateranges;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
@@ -27,18 +29,18 @@ import static java.lang.annotation.ElementType.TYPE;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
- * Je nach {@link ch.dvbern.ebegu.enums.BetreuungsangebotTyp} der verknuepften Institutionstammdaten darf im Betreuungspensum nur eingeschraenkte
- * Werte eingegeben werden.
+ * Die Betreuungspensen einer Betreuung müssen innerhalb der Verfügbarkeit der Institution liegen (Zeitraum der Institutionsstammdaten)
  */
 @Target({ TYPE, ANNOTATION_TYPE })
 @Retention(RUNTIME)
-@Constraint(validatedBy = CheckBetreuungsmitteilungValidator.class)
+@Constraint(validatedBy = CheckBetreuungZeitraumInstitutionsStammdatenZeitraumValidator.class)
 @Documented
-public @interface CheckBetreuungsmitteilung {
+public @interface CheckBetreuungZeitraumInstitutionsStammdatenZeitraum {
 
-	String message() default "{invalid_betreuungspensum}";
+	String message() default "{invalid_betreuungszeitraum_for_institutionsstammdaten}";
 
 	Class<?>[] groups() default {};
 
 	Class<? extends Payload>[] payload() default {};
+
 }

@@ -15,7 +15,7 @@
 
 package ch.dvbern.ebegu.tests.validations;
 
-import ch.dvbern.ebegu.validators.CheckIBANNotQRValidator;
+import ch.dvbern.ebegu.validators.iban.CheckIBANNotQRValidator;
 import ch.dvbern.oss.lib.beanvalidation.embeddables.IBAN;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;

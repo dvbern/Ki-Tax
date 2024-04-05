@@ -15,9 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.dvbern.ebegu.validators;
-
-import java.util.regex.Pattern;
+package ch.dvbern.ebegu.validators.iban;
 
 import javax.annotation.Nullable;
 import javax.validation.ConstraintValidator;
@@ -25,16 +23,21 @@ import javax.validation.ConstraintValidatorContext;
 
 import ch.dvbern.oss.lib.beanvalidation.embeddables.IBAN;
 
-public class CheckIBANNotQRValidator implements ConstraintValidator<CheckIBANNotQR, IBAN> {
-
-	private static final Pattern QR_PATTERN = Pattern.compile("(LI|CH)\\d{2}3[01]\\d{3}\\w{12}");
+public class CheckIBANUppercaseValidator implements ConstraintValidator<CheckIBANUppercase, IBAN> {
 
 	@Override
-	public boolean isValid(@Nullable IBAN iban, @Nullable ConstraintValidatorContext constraintValidatorContext) {
+	public boolean isValid(@Nullable IBAN iban, ConstraintValidatorContext constraintValidatorContext) {
 		// we should allow nullable iban fields
 		if (iban == null) {
 			return true;
 		}
-		return !QR_PATTERN.matcher(iban.getIban()).matches();
+		String ibanString = iban.getIban();
+		for(int i = 0; i < iban.getIban().length(); i++) {
+			char current = ibanString.charAt(i);
+			if(Character.isLetter(current) && Character.isLowerCase(current)) {
+				return false;
+			}
+		}
+		return true;
 	}
 }

@@ -26,7 +26,7 @@ import ch.dvbern.ebegu.entities.BetreuungspensumContainer;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.test.TestDataUtil;
-import ch.dvbern.ebegu.validators.CheckBetreuungspensum;
+import ch.dvbern.ebegu.validators.betreuungspensum.CheckBetreuungspensum;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 

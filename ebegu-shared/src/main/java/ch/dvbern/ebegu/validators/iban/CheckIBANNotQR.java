@@ -15,25 +15,25 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.dvbern.ebegu.validators;
+package ch.dvbern.ebegu.validators.iban;
 
-import javax.annotation.Nullable;
-import javax.validation.ConstraintValidator;
-import javax.validation.ConstraintValidatorContext;
+import java.lang.annotation.Retention;
+import java.lang.annotation.Target;
 
-public class CheckIBANStringValidator implements ConstraintValidator<CheckIBANString, String> {
+import javax.validation.Constraint;
+import javax.validation.Payload;
 
-	@Override
-	public boolean isValid(@Nullable String iban, ConstraintValidatorContext constraintValidatorContext) {
-		// we should allow nullable iban fields
-		if (iban == null) {
-			return true;
-		}
+import static java.lang.annotation.ElementType.FIELD;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
-		try {
-			return new ch.dvbern.oss.datatypes.IBAN(iban).isValid();
-		} catch (IllegalArgumentException x) {
-			return false;
-		}
-	}
+@Target(FIELD)
+@Retention(RUNTIME)
+@Constraint(validatedBy = CheckIBANNotQRValidator.class)
+public @interface CheckIBANNotQR {
+
+	String message() default "{iban_qr}";
+
+	Class<?>[] groups() default {};
+
+	Class<? extends Payload>[] payload() default {};
 }

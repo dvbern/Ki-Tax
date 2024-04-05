@@ -24,7 +24,7 @@ import javax.annotation.Nonnull;
 import ch.dvbern.ebegu.enums.Ferienname;
 import ch.dvbern.ebegu.tests.validations.AbstractValidatorTest;
 import ch.dvbern.ebegu.types.DateRange;
-import ch.dvbern.ebegu.validators.CheckGueltigkeiten;
+import ch.dvbern.ebegu.validators.dateranges.CheckGueltigkeiten;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;

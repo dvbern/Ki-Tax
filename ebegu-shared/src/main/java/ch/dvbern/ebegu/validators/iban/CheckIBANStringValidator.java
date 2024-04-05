@@ -15,29 +15,25 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.dvbern.ebegu.validators;
+package ch.dvbern.ebegu.validators.iban;
 
 import javax.annotation.Nullable;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
-import ch.dvbern.oss.lib.beanvalidation.embeddables.IBAN;
-
-public class CheckIBANUppercaseValidator implements ConstraintValidator<CheckIBANUppercase, IBAN> {
+public class CheckIBANStringValidator implements ConstraintValidator<CheckIBANString, String> {
 
 	@Override
-	public boolean isValid(@Nullable IBAN iban, ConstraintValidatorContext constraintValidatorContext) {
+	public boolean isValid(@Nullable String iban, ConstraintValidatorContext constraintValidatorContext) {
 		// we should allow nullable iban fields
 		if (iban == null) {
 			return true;
 		}
-		String ibanString = iban.getIban();
-		for(int i = 0; i < iban.getIban().length(); i++) {
-			char current = ibanString.charAt(i);
-			if(Character.isLetter(current) && Character.isLowerCase(current)) {
-				return false;
-			}
+
+		try {
+			return new ch.dvbern.oss.datatypes.IBAN(iban).isValid();
+		} catch (IllegalArgumentException x) {
+			return false;
 		}
-		return true;
 	}
 }

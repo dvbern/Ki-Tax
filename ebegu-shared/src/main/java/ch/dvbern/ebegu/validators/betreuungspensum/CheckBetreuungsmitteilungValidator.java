@@ -13,7 +13,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package ch.dvbern.ebegu.validators;
+package ch.dvbern.ebegu.validators.betreuungspensum;
 
 import java.math.BigDecimal;
 import java.text.MessageFormat;
@@ -54,11 +54,6 @@ public class CheckBetreuungsmitteilungValidator implements ConstraintValidator<C
 	private EntityManagerFactory entityManagerFactory;
 
 	public CheckBetreuungsmitteilungValidator() {
-	}
-
-	@Override
-	public void initialize(CheckBetreuungsmitteilung constraintAnnotation) {
-		// nop
 	}
 
 	private EntityManager createEntityManager() {

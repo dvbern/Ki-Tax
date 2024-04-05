@@ -1,6 +1,6 @@
 /*
  * Ki-Tax: System for the management of external childcare subsidies
- * Copyright (C) 2017 City of Bern Switzerland
+ * Copyright (C) 2018 City of Bern Switzerland
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
@@ -13,7 +13,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package ch.dvbern.ebegu.validators;
+package ch.dvbern.ebegu.validators.dateranges;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
@@ -22,26 +22,22 @@ import java.lang.annotation.Target;
 import javax.validation.Constraint;
 import javax.validation.Payload;
 
-import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
-
 import static java.lang.annotation.ElementType.ANNOTATION_TYPE;
 import static java.lang.annotation.ElementType.TYPE;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
- * Je nach {@link BetreuungsangebotTyp} der verknuepften Institutionstammdaten darf im Betreuungspensum nur eingeschraenkte
- * Werte eingegeben werden.
+ * Die Betreuungspensen einer Betreuung duerfen nicht komplett ausserhalb der Gesuchsperiode liegen
  */
 @Target({ TYPE, ANNOTATION_TYPE })
 @Retention(RUNTIME)
-@Constraint(validatedBy = CheckBetreuungspensumValidator.class)
+@Constraint(validatedBy = CheckBetreuungZeitraumInGesuchsperiodeValidator.class)
 @Documented
-public @interface CheckBetreuungspensum {
+public @interface CheckBetreuungZeitraumInGesuchsperiode {
 
-	String message() default "{invalid_betreuungspensum}";
+	String message() default "{invalid_betreuungszeitraum_for_gesuchsperiode}";
 
 	Class<?>[] groups() default {};
 
 	Class<? extends Payload>[] payload() default {};
-
 }

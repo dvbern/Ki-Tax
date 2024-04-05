@@ -28,10 +28,10 @@ import javax.persistence.Transient;
 import javax.validation.Valid;
 
 import ch.dvbern.ebegu.entities.containers.AbstractMahlzeitenPensumContainer;
-import ch.dvbern.ebegu.validators.CheckBetreuungMitteilungZeitraumInGesuchsperiode;
-import ch.dvbern.ebegu.validators.CheckBetreuungMitteilungZeitraumInstitutionsStammdatenZeitraum;
-import ch.dvbern.ebegu.validators.CheckBetreuungsmitteilung;
-import ch.dvbern.ebegu.validators.CheckGueltigkeiten;
+import ch.dvbern.ebegu.validators.betreuungspensum.CheckBetreuungsmitteilung;
+import ch.dvbern.ebegu.validators.dateranges.CheckBetreuungMitteilungZeitraumInGesuchsperiode;
+import ch.dvbern.ebegu.validators.dateranges.CheckBetreuungMitteilungZeitraumInstitutionsStammdatenZeitraum;
+import ch.dvbern.ebegu.validators.dateranges.CheckGueltigkeiten;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.hibernate.envers.Audited;
 

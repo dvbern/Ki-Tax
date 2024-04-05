@@ -21,7 +21,7 @@ import javax.validation.Validation;
 
 import ch.dvbern.ebegu.services.EinstellungService;
 import ch.dvbern.ebegu.tests.services.EinstellungDummyServiceBean;
-import ch.dvbern.ebegu.validators.CheckBetreuungspensumValidator;
+import ch.dvbern.ebegu.validators.betreuungspensum.CheckBetreuungspensumValidator;
 import ch.dvbern.ebegu.validators.CheckFachstellenValidator;
 import ch.dvbern.ebegu.validators.CheckPensumFachstelleValidator;
 
