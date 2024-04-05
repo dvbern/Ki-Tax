@@ -16,10 +16,11 @@
  */
 
 import {
-    FallToolbarPO,
+    FallToolbarPO, MainNavigationPO, TestFaellePO,
 
 } from '@dv-e2e/page-objects';
 import {getUser} from '@dv-e2e/types';
+import {UebersichtVersendeteMailsPO} from '../page-objects/admin/uebersichtVersendeteMails.po';
 
 const adminUser = getUser('[1-Superadmin] E-BEGU Superuser');
 
@@ -29,16 +30,16 @@ describe('Kibon - generate Tests for uebersichts Versendete Mails calls', () => 
     it('should access the Uebersicht View as Superadmin', () => {
         cy.login(adminUser);
         cy.visit('/#/faelle');
-        cy.getByData('page-menu').click();
-        cy.getByData('action-admin.uebersichtVersendeteMails').click();
+        MainNavigationPO.getMenuButton().click();
+        UebersichtVersendeteMailsPO.getNavigationToMailUebersichtsPage().click();
         cy.url().should('contain', 'uebersichtVersendeteMails');
     });
 
     it('should not have acces to the Ueberischt View as SB', () => {
         cy.login(userAdminBern);
         cy.visit('/#/faelle');
-        cy.getByData('page-menu').click();
-        cy.getByData('action-admin.uebersichtVersendeteMails').should('not.exist');
+        MainNavigationPO.getMenuButton().click();
+        UebersichtVersendeteMailsPO.getNavigationToMailUebersichtsPage().should('not.exist');
         cy.visit('/#/uebersichtVersendeteMails');
         cy.url().should('contain', 'faelle');
     });
@@ -46,7 +47,7 @@ describe('Kibon - generate Tests for uebersichts Versendete Mails calls', () => 
 })
 
 describe('Kibon - generate Tests for ubersicht Versendete Mails with Superadmin', () => {
-    const validSearchText = 'Unvollständige Unterlagen';
+    const validSearchText = 'kiBon Testsystem – Ihr Antrag wurde bearbeitet';
     const invalidSearchText = 'abc123def';
     let fallnummer: string;
 
@@ -56,46 +57,27 @@ describe('Kibon - generate Tests for ubersicht Versendete Mails with Superadmin'
     })
 
     it('should display sent Mails', () => {
-        cy.visit('/#/testdaten');
-        cy.getByData('creationType.bestaetigt').click();
-        cy.getByData('gesuchsteller').click();
-        cy.getByData('gesuchsteller.Alain-Lehmann').click();
-        cy.getByData('gemeinde').click();
-        cy.getByData('gemeinde.Ins').click();
-        cy.getByData('periode').click();
-        cy.getByData('periode.2023/24').click();
-        cy.getByData('testfall-1').click();
-        cy.wait(3000);
-        cy.getByData('dialog-link').click();
-        cy.wait(3000);
-        cy.getByData('sidenav.DOKUMENTE').click();
-        cy.getByData('container.navigation-save').click();
-        cy.getByData('container.freigeben').click();
-        cy.getByData('container.confirm').click();
-        cy.getByData('container.navigation-save').click();
-        cy.getByData('sidenav.FREIGABE').click();
-        cy.getByData('container.antrag-freigeben-simulieren').click();
-        cy.reload();
-        cy.getByData('container.navigation-save').click();
-        cy.getByData('erste-mahnung').click();
-        cy.wait(1000);
-        cy.getByData('fristablauf-mahnung').find('input').type('01.01.2025');
+        TestFaellePO.createOnlineTestfall({
+            testFall: 'testfall-1',
+            gemeinde: 'London',
+            periode: '2023/24',
+            betreuungsstatus: 'verfuegt',
+            besitzerin: '[5-GS] Jean Chambre',
+        })
         FallToolbarPO.getFallnummer().then(el$ => {
             fallnummer = el$.text();
-            cy.getByData('erste-mahnung-auslösen').click();
-            cy.wait(2000);
             cy.visit('/#/uebersichtVersendeteMails');
-            cy.getByData('sentMailsSubject').should('contain.text', fallnummer).and('contain.text', validSearchText);
+            UebersichtVersendeteMailsPO.getSentMailsSubject().should('contain.text', fallnummer).and('contain.text', validSearchText);
         });
     });
 
     it('should sort displayed Mails', () => {
-        cy.get('.cdk-column-empfaengerAdresse > .mat-sort-header-container > .mat-sort-header-arrow').click();
+        UebersichtVersendeteMailsPO.getVersendeteMailTableContent().click();
 
-        cy.get('.cdk-column-empfaengerAdresse > .mat-sort-header-container > .mat-sort-header-arrow')
+        UebersichtVersendeteMailsPO.getVersendeteMailTableContent()
             .then($address => {
                 var addresses: any[] = [];
-                cy.getByData('sentMailsAdress').then(elements => {
+                UebersichtVersendeteMailsPO.getSortedMails().then(elements => {
                     addresses = Array.from(elements).map(el => el.innerHTML.toLowerCase());
                     let copy = addresses.filter(el => true);
                     addresses.sort()
@@ -105,23 +87,23 @@ describe('Kibon - generate Tests for ubersicht Versendete Mails with Superadmin'
     });
 
     it('should search existing Mails', () => {
-        cy.getByData('SearchBarSentMails').type(validSearchText);
-        cy.getByData('sentMailsSubject').should('contain.text', validSearchText);
+        UebersichtVersendeteMailsPO.getSearchBarSentMails().type(validSearchText);
+        UebersichtVersendeteMailsPO.getSentMailsSubject().should('contain.text', validSearchText);
     });
 
     it('should search not existing Mails', () => {
-        cy.getByData('SearchBarSentMails').type(invalidSearchText);
-        cy.getByData('sentMailsSubject').should('not.exist');
+        UebersichtVersendeteMailsPO.getSearchBarSentMails().type(invalidSearchText);
+        UebersichtVersendeteMailsPO.getSentMailsSubject().should('not.exist');
     });
 
     it('should select Mail amount', () => {
-        cy.get('#mat-select-value-1').click();
-        cy.get('#mat-option-1').click();
-        cy.getByData('sentMailsSubject').should('have.length.within', 10, 25);
+        UebersichtVersendeteMailsPO.getPaginatorMailUebersicht().click();
+        UebersichtVersendeteMailsPO.getPaginatorAmountMailUebersicht().click();
+        UebersichtVersendeteMailsPO.getSentMailsSubject().should('have.length.within', 10, 25);
     });
 
     it('should change Table page', () => {
-        cy.get('.mat-paginator-navigation-next').click();
-        cy.get('.mat-paginator-range-label').should('not.contain.text', '1-10');
+        UebersichtVersendeteMailsPO.getNextMailsInTablle().click();
+        UebersichtVersendeteMailsPO.getNextMailsInTablleCheck().should('not.contain.text', '1-10');
     });
 })

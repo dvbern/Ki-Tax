@@ -133,7 +133,7 @@ import ch.dvbern.ebegu.api.dtos.JaxSozialhilfeZeitraumContainer;
 import ch.dvbern.ebegu.api.dtos.JaxTextRessource;
 import ch.dvbern.ebegu.api.dtos.JaxTraegerschaft;
 import ch.dvbern.ebegu.api.dtos.JaxTsCalculationResult;
-import ch.dvbern.ebegu.api.dtos.JaxUebersichtVersendeteMails;
+import ch.dvbern.ebegu.api.dtos.JaxVersendeteMails;
 import ch.dvbern.ebegu.api.dtos.JaxUnbezahlterUrlaub;
 import ch.dvbern.ebegu.api.dtos.JaxVerfuegung;
 import ch.dvbern.ebegu.api.dtos.JaxVerfuegungZeitabschnitt;
@@ -244,7 +244,7 @@ import ch.dvbern.ebegu.entities.SozialhilfeZeitraumContainer;
 import ch.dvbern.ebegu.entities.TSCalculationResult;
 import ch.dvbern.ebegu.entities.TextRessource;
 import ch.dvbern.ebegu.entities.Traegerschaft;
-import ch.dvbern.ebegu.entities.UebersichtVersendeteMails;
+import ch.dvbern.ebegu.entities.VersendeteMails;
 import ch.dvbern.ebegu.entities.UnbezahlterUrlaub;
 import ch.dvbern.ebegu.entities.Verfuegung;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
@@ -6869,13 +6869,13 @@ public class JaxBConverter extends AbstractConverter {
 	}
 
 	@Nonnull
-	public JaxUebersichtVersendeteMails uebersichtVersendeteMailsToJax(
-		@Nullable UebersichtVersendeteMails uebersichtVersendeteMails) {
-		final JaxUebersichtVersendeteMails jaxUebersichtVersendeteMails = new JaxUebersichtVersendeteMails();
-		convertAbstractFieldsToJAX(uebersichtVersendeteMails, jaxUebersichtVersendeteMails);
-		jaxUebersichtVersendeteMails.setZeitpunktVersand(uebersichtVersendeteMails.getZeitpunktVersand());
-		jaxUebersichtVersendeteMails.setEmpfaengerAdresse(uebersichtVersendeteMails.getEmpfaengerAdresse());
-		jaxUebersichtVersendeteMails.setBetreff(uebersichtVersendeteMails.getBetreff());
-		return jaxUebersichtVersendeteMails;
+	public JaxVersendeteMails versendeteMailsToJax(
+		@Nonnull VersendeteMails VersendeteMails) {
+		final JaxVersendeteMails jaxVersendeteMails = new JaxVersendeteMails();
+		convertAbstractFieldsToJAX(VersendeteMails, jaxVersendeteMails);
+		jaxVersendeteMails.setZeitpunktVersand(VersendeteMails.getZeitpunktVersand());
+		jaxVersendeteMails.setEmpfaengerAdresse(VersendeteMails.getEmpfaengerAdresse());
+		jaxVersendeteMails.setBetreff(VersendeteMails.getBetreff());
+		return jaxVersendeteMails;
 	}
 }

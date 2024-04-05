@@ -9,7 +9,7 @@ import javax.persistence.Entity;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 @Entity
-public class UebersichtVersendeteMails extends AbstractEntity {
+public class VersendeteMails extends AbstractEntity {
 	private static final long serialVersionUID = 3359889299785229122L;
 
 	@Nonnull
@@ -25,13 +25,13 @@ public class UebersichtVersendeteMails extends AbstractEntity {
 	private final String betreff;
 
 	@SuppressFBWarnings(value = "NP_STORE_INTO_NONNULL_FIELD", justification = "just for JPA")
-	protected UebersichtVersendeteMails() {
+	protected VersendeteMails() {
 		this.zeitpunktVersand = null;
 		this.empfaengerAdresse = "";
 		this.betreff = "";
 	}
 
-	public UebersichtVersendeteMails(@Nonnull LocalDateTime zeitpunktVersand, @Nonnull String empfaengerAdresse,
+	public VersendeteMails(@Nonnull LocalDateTime zeitpunktVersand, @Nonnull String empfaengerAdresse,
 			@Nonnull String betreff) {
 		this.zeitpunktVersand = zeitpunktVersand;
 		this.empfaengerAdresse = empfaengerAdresse;
