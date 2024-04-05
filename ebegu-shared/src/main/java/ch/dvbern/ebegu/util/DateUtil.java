@@ -86,7 +86,6 @@ public final class DateUtil {
 
 	/**
 	 * Berechnet den Anteil des Zeitabschnittes am gesamten Monat als dezimalzahl von 0 bis 1
-	 * Dabei werden nur Werktage (d.h. sa do werden ignoriert) beruecksichtigt
 	 */
 	public static BigDecimal calculateAnteilMonatInklWeekend(@Nonnull LocalDate von, @Nonnull LocalDate bis) {
 		LocalDate monatsanfang = von.with(TemporalAdjusters.firstDayOfMonth());
