@@ -114,6 +114,7 @@ import {
 } from './component/finanzielleSituation/luzern/finanzielle-situation-start-view-luzern/finanzielle-situation-start-view-luzern.component';
 import {ResultatComponent} from './component/finanzielleSituation/luzern/resultat/resultat.component';
 import {VeranlagungComponent} from './component/finanzielleSituation/luzern/veranlagung/veranlagung.component';
+import {finSitSchwyzRun} from './component/finanzielleSituation/schwyz/fin-sit-schwyz.route';
 import {
     FinanzielleSituationStartSolothurnComponent
 } from './component/finanzielleSituation/solothurn/finanzielle-situation-start-solothurn/finanzielle-situation-start-solothurn.component';
@@ -147,6 +148,7 @@ import {
 export const GESUCH_JS_MODULE =
     angular.module('ebeguWeb.gesuch', [CORE_JS_MODULE.name])
         .run(gesuchRun)
+        .run(finSitSchwyzRun)
         .component('familiensituationView', downgradeComponent({component: FamiliensituationViewXComponent}))
         .component('familiensituationAppenzellView', downgradeComponent({component: FamiliensituationAppenzellViewXComponent}))
         .component('familiensituationSchwyzView', downgradeComponent({component: FamiliensituationSchwyzComponent}))

@@ -34,14 +34,21 @@ public class SchwyzTestfallDataProvider extends AbstractTestfallDataProvider {
 	@Override
 	public Familiensituation createVerheiratet() {
 		Familiensituation familiensituation = new Familiensituation();
+		familiensituation.setVerguenstigungGewuenscht(true);
+		familiensituation.setSozialhilfeBezueger(false);
+		familiensituation.setAuszahlungsdaten(createDefaultAuszahlungsdaten());
 		familiensituation.setFamilienstatus(EnumFamilienstatus.SCHWYZ);
 		familiensituation.setGesuchstellerKardinalitaet(EnumGesuchstellerKardinalitaet.ZU_ZWEIT);
+		familiensituation.setGemeinsameSteuererklaerung(false);
 		return familiensituation;
 	}
 
 	@Override
 	public Familiensituation createAlleinerziehend() {
 		Familiensituation familiensituation = new Familiensituation();
+		familiensituation.setVerguenstigungGewuenscht(true);
+		familiensituation.setSozialhilfeBezueger(false);
+		familiensituation.setAuszahlungsdaten(createDefaultAuszahlungsdaten());
 		familiensituation.setFamilienstatus(EnumFamilienstatus.SCHWYZ);
 		familiensituation.setGesuchstellerKardinalitaet(EnumGesuchstellerKardinalitaet.ALLEINE);
 		return familiensituation;
@@ -49,11 +56,21 @@ public class SchwyzTestfallDataProvider extends AbstractTestfallDataProvider {
 
 	@Override
 	public FinanzielleSituation createFinanzielleSituation(BigDecimal vermoegen, BigDecimal einkommen) {
-		return null;
+		FinanzielleSituation finanzielleSituation = new FinanzielleSituation();
+		// required in all finsit
+		finanzielleSituation.setSteuerveranlagungErhalten(true);
+		// required in all finsit
+		finanzielleSituation.setSteuererklaerungAusgefuellt(true);
+		finanzielleSituation.setQuellenbesteuert(false);
+		finanzielleSituation.setSteuerbaresEinkommen(einkommen);
+		finanzielleSituation.setSteuerbaresVermoegen(vermoegen);
+		finanzielleSituation.setAbzuegeLiegenschaft(BigDecimal.ZERO);
+		finanzielleSituation.setEinkaeufeVorsorge(BigDecimal.ZERO);
+		return finanzielleSituation;
 	}
 
 	@Override
 	public FinanzielleSituationTyp getFinanzielleSituationTyp() {
-		return null;
+		return FinanzielleSituationTyp.SCHWYZ;
 	}
 }
