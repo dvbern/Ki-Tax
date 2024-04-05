@@ -22,7 +22,7 @@ import {EbeguNumberPipe} from '../../../shared/pipe/ebegu-number.pipe';
 @Component({
     selector: 'dv-valueinput-x',
     templateUrl: './dv-valueinput-x.component.html',
-    changeDetection: ChangeDetectionStrategy.OnPush,
+    changeDetection: ChangeDetectionStrategy.Default,
     viewProviders: [{provide: ControlContainer, useExisting: NgForm}]
 })
 export class DvValueinputXComponent {

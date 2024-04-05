@@ -1180,6 +1180,8 @@ public class WizardStepServiceBean extends AbstractBaseService implements Wizard
 			return WizardStepName.FINANZIELLE_SITUATION_SOLOTHURN;
 		case APPENZELL:
 			return WizardStepName.FINANZIELLE_SITUATION_APPENZELL;
+		case SCHWYZ:
+			return WizardStepName.FINANZIELLE_SITUATION_SCHWYZ;
 		default:
 			throw new EbeguRuntimeException(
 				"getFinSitWizardStepNameForGesuch",
@@ -1200,6 +1202,8 @@ public class WizardStepServiceBean extends AbstractBaseService implements Wizard
 			return WizardStepName.EINKOMMENSVERSCHLECHTERUNG_SOLOTHURN;
 		case APPENZELL:
 			return WizardStepName.EINKOMMENSVERSCHLECHTERUNG_APPENZELL;
+		case SCHWYZ:
+			return WizardStepName.EINKOMMENSVERSCHLECHTERUNG;
 		default:
 			throw new EbeguRuntimeException(
 				"getEKVWizardStepNameForGesuch",

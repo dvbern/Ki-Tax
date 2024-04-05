@@ -39,6 +39,9 @@ public class SchwyzTestfallDataProvider extends AbstractTestfallDataProvider {
 	@Override
 	public Familiensituation createVerheiratet() {
 		Familiensituation familiensituation = new Familiensituation();
+		familiensituation.setVerguenstigungGewuenscht(true);
+		familiensituation.setSozialhilfeBezueger(false);
+		familiensituation.setAuszahlungsdaten(createDefaultAuszahlungsdaten());
 		familiensituation.setFamilienstatus(EnumFamilienstatus.SCHWYZ);
 		familiensituation.setGemeinsameSteuererklaerung(Boolean.TRUE);
 		familiensituation.setGesuchstellerKardinalitaet(EnumGesuchstellerKardinalitaet.ZU_ZWEIT);
@@ -48,6 +51,9 @@ public class SchwyzTestfallDataProvider extends AbstractTestfallDataProvider {
 	@Override
 	public Familiensituation createAlleinerziehend() {
 		Familiensituation familiensituation = new Familiensituation();
+		familiensituation.setVerguenstigungGewuenscht(true);
+		familiensituation.setSozialhilfeBezueger(false);
+		familiensituation.setAuszahlungsdaten(createDefaultAuszahlungsdaten());
 		familiensituation.setFamilienstatus(EnumFamilienstatus.SCHWYZ);
 		familiensituation.setGesuchstellerKardinalitaet(EnumGesuchstellerKardinalitaet.ALLEINE);
 		return familiensituation;
@@ -55,18 +61,22 @@ public class SchwyzTestfallDataProvider extends AbstractTestfallDataProvider {
 
 	@Override
 	public FinanzielleSituation createFinanzielleSituation(BigDecimal vermoegen, BigDecimal einkommen) {
-		FinanzielleSituation finanzielleSituation = createDefaultFinanzielleSituation();
-		finanzielleSituation.setMomentanSelbststaendig(true);
-		finanzielleSituation.setNettolohn(einkommen);
+		FinanzielleSituation finanzielleSituation = new FinanzielleSituation();
+		// required in all finsit
+		finanzielleSituation.setSteuerveranlagungErhalten(true);
+		// required in all finsit
+		finanzielleSituation.setSteuererklaerungAusgefuellt(true);
+		finanzielleSituation.setQuellenbesteuert(false);
+		finanzielleSituation.setSteuerbaresEinkommen(einkommen);
 		finanzielleSituation.setSteuerbaresVermoegen(vermoegen);
-		finanzielleSituation.setUnterhaltsBeitraege(BigDecimal.ZERO);
-		finanzielleSituation.setAbzuegeKinderAusbildung(BigDecimal.ZERO);
+		finanzielleSituation.setAbzuegeLiegenschaft(BigDecimal.ZERO);
+		finanzielleSituation.setEinkaeufeVorsorge(BigDecimal.ZERO);
 		return finanzielleSituation;
 	}
 
 	@Override
 	public FinanzielleSituationTyp getFinanzielleSituationTyp() {
-		return FinanzielleSituationTyp.SOLOTHURN;
+		return FinanzielleSituationTyp.SCHWYZ;
 	}
 
 	@Override

@@ -19,7 +19,6 @@ import {CUSTOM_ELEMENTS_SCHEMA, NgModule} from '@angular/core';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {UpgradeModule} from '@angular/upgrade/static';
 import {SharedModule} from '../app/shared/shared.module';
-import {AuszahlungsdatenComponent} from './auszahlungsdaten/auszahlungsdaten.component';
 import {
     SelbstdeklarationComponent
 } from './component/abstractFinanzielleSituation/luzern/selbstdeklaration/selbstdeklaration.component';
@@ -83,6 +82,7 @@ import {
 import {ZahlungsinformationenFieldsComponent} from './component/finanzielleSituation/luzern/zahlungsinformationen-fields/zahlungsinformationen-fields.component';
 import {ResultatComponent} from './component/finanzielleSituation/luzern/resultat/resultat.component';
 import {VeranlagungComponent} from './component/finanzielleSituation/luzern/veranlagung/veranlagung.component';
+import {FinanzielleSituationSchwyzModule} from './component/finanzielleSituation/schwyz/finanzielle-situation-schwyz.module';
 import {
     AngabenGs1Component
 } from './component/finanzielleSituation/solothurn/angaben-gs/angaben-gs1/angaben-gs1.component';
@@ -99,9 +99,6 @@ import {
 import {
     SteuerveranlagungErhaltenComponent
 } from './component/finanzielleSituation/solothurn/steuerveranlagung-erhalten/steuerveranlagung-erhalten.component';
-import {
-    SteuerveranlagungGemeinsamComponent
-} from './component/finanzielleSituation/solothurn/steuerveranlagung-gemeinsam/steuerveranlagung-gemeinsam.component';
 import {
     VeranlagungSolothurnComponent
 } from './component/finanzielleSituation/solothurn/veranlagung/veranlagung-solothurn.component';
@@ -129,7 +126,8 @@ import {
         ReactiveFormsModule,
         UpgradeModule,
         SharedModule,
-        FallToolbarModule
+        FallToolbarModule,
+        FinanzielleSituationSchwyzModule
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA],
     declarations: [
@@ -159,7 +157,6 @@ import {
         VeranlagungSolothurnComponent,
         SteuerveranlagungErhaltenComponent,
         BruttolohnComponent,
-        SteuerveranlagungGemeinsamComponent,
         AngabenGs1Component,
         AngabenGs2Component,
         MassgebendesEinkommenComponent,
@@ -175,13 +172,12 @@ import {
         FamiliensituationAppenzellViewXComponent,
         FamiliensituationSchwyzComponent,
         ZahlungsstatusIconComponent,
-        AuszahlungsdatenComponent,
         KindFachstelleComponent
     ],
     exports: [
         DvSwitchComponent,
         ZahlungsstatusIconComponent
-    ]
+    ],
 })
 
 export class NgGesuchModule {

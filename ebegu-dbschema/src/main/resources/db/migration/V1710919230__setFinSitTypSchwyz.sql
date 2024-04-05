@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022 DV Bern AG, Switzerland
+ * Copyright (C) 2024 DV Bern AG, Switzerland
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -15,14 +15,9 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.dvbern.ebegu.util;
+SET @mandant_schwyz_id = (SELECT id FROM mandant WHERE mandant_identifier = 'SCHWYZ');
 
-public interface FinanzielleSituationTypVisitor<T> {
-
-	T visitFinSitBern();
-	T visitFinSitBernFKJV();
-	T visitFinSitLuzern();
-	T visitFinSitSolothurn();
-	T visitFinSitAppenzell();
-	T visitFinSitSchwyz();
-}
+UPDATE einstellung
+SET value = 'SCHWYZ'
+WHERE gesuchsperiode_id IN (SELECT id FROM gesuchsperiode WHERE mandant_id = @mandant_schwyz_id) AND
+	  einstellung_key = 'FINANZIELLE_SITUATION_TYP';
