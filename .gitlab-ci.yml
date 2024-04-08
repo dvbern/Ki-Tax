@@ -307,10 +307,6 @@ create-build-args:
         paths:
             - build-args.env
     needs: [ ]
-    rules:
-        -   if: $CI_PIPELINE_SOURCE == "schedule"
-            when: never
-        - when: always
 
 build-backend:
     extends: .build-backend
