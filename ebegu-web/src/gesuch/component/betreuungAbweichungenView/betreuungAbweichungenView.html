@@ -75,63 +75,63 @@
                     <tr ng-repeat="betreuung in vm.model.betreuungspensumAbweichungen"
                         ng-attr-data-test="abweichung-{{$index}}"
                         st-select-mode="single" role="row" tabindex="-1">
-                        <td>{{vm.getFormattedDate(vm.getAbweichung($index))}}</td>
+                        <td>{{vm.getFormattedDate(betreuung)}}</td>
                         <td>
                             <input aria-describedby="pensum-{{$index}}-error"
                                    id="pensum-{{$index}}" type="number"
                                    name="pensum-{{$index}}"
                                    data-test="pensum"
-                                   ng-change="vm.updateStatus({{$index}})"
-                                   ng-model="vm.getAbweichung($index).pensum"
+                                   ng-change="vm.updateStatus(betreuung)"
+                                   ng-model="betreuung.pensum"
                                    class="form-control  dv-input-container-medium"
-                                   ng-disabled="{{vm.isDisabled($index)}}"
-                                   ng-required="vm.isRowRequired($index)"
+                                   ng-disabled="vm.isDisabled(betreuung)"
+                                   ng-required="vm.isRowRequired(betreuung)"
                                    ng-pattern="vm.CONSTANTS.PATTERN_TWO_DECIMALS"
-                                   step="{{vm.getStepSize()}}"
-                                   ng-attr-placeholder="{{vm.getAbweichung($index).vertraglichesPensum}}">
+                                   step="vm.getStepSize()"
+                                   ng-attr-placeholder="{{betreuung.vertraglichesPensum}}">
                         </td>
                         <td>
                             <input aria-describedby="kosten-{{$index}}-error"
                                    id="kosten-{{$index}}" type="number"
                                    name="kosten-{{$index}}"
                                    data-test="kosten"
-                                   ng-change="vm.updateStatus({{$index}})"
-                                   ng-model="vm.getAbweichung($index).monatlicheBetreuungskosten"
+                                   ng-change="vm.updateStatus(betreuung)"
+                                   ng-model="betreuung.monatlicheBetreuungskosten"
                                    dv-max-length class="form-control dv-input-container-medium"
-                                   ng-disabled="{{vm.isDisabled($index)}}"
-                                   ng-required="vm.isRowRequired($index)"
+                                   ng-disabled="vm.isDisabled(betreuung)"
+                                   ng-required="vm.isRowRequired(betreuung)"
                                    ng-pattern="vm.CONSTANTS.PATTERN_TWO_DECIMALS"
-                                   ng-attr-placeholder="{{vm.getAbweichung($index).vertraglicheKosten}}">
+                                   ng-attr-placeholder="{{betreuung.vertraglicheKosten}}">
                         </td>
                         <td ng-if="vm.isMahlzeitenverguenstigungEnabled()">
                             <input aria-describedby="hauptmahlzeiten-{{$index}}-error"
                                    id="hauptmahlzeiten-{{$index}}" type="number"
                                    name="hauptmahlzeiten-{{$index}}"
-                                   ng-change="vm.updateStatus({{$index}})"
-                                   ng-model="vm.getAbweichung($index).monatlicheHauptmahlzeiten"
+                                   ng-change="vm.updateStatus(betreuung)"
+                                   ng-model="betreuung.monatlicheHauptmahlzeiten"
                                    dv-max-length class="form-control dv-input-container-medium"
-                                   ng-disabled="{{vm.isDisabled($index)}}"
+                                   ng-disabled="vm.isDisabled(betreuung)"
                                    step="0.01"
-                                   ng-required="vm.isRowRequired($index)"
-                                   ng-attr-placeholder="{{vm.getAbweichung($index).vertraglicheHauptmahlzeiten}}">
+                                   ng-required="vm.isRowRequired(betreuung)"
+                                   ng-attr-placeholder="{{betreuung.vertraglicheHauptmahlzeiten}}">
                         </td>
                         <td ng-if="vm.isMahlzeitenverguenstigungEnabled()">
                             <input aria-describedby="nebenmahlzeiten-{{$index}}-error"
                                    id="nebenmahlzeiten-{{$index}}" type="number"
                                    name="nebenmahlzeiten-{{$index}}"
-                                   ng-change="vm.updateStatus({{$index}})"
-                                   ng-model="vm.getAbweichung($index).monatlicheNebenmahlzeiten"
+                                   ng-change="vm.updateStatus(betreuung)"
+                                   ng-model="betreuung.monatlicheNebenmahlzeiten"
                                    dv-max-length class="form-control dv-input-container-medium"
-                                   ng-disabled="{{vm.isDisabled($index)}}"
+                                   ng-disabled="vm.isDisabled(betreuung)"
                                    step="0.01"
-                                   ng-required="vm.isRowRequired($index)"
-                                   ng-attr-placeholder="{{vm.getAbweichung($index).vertraglicheNebenmahlzeiten}}">
+                                   ng-required="vm.isRowRequired(betreuung)"
+                                   ng-attr-placeholder="{{betreuung.vertraglicheNebenmahlzeiten}}">
                         </td>
                         <td ng-if="vm.isMahlzeitenverguenstigungEnabled()">
-                            {{vm.getMonthlyMahlzeitenKosten($index)}}
+                            {{vm.getMonthlyMahlzeitenKosten(betreuung)}}
                         </td>
                         <td>
-                            <span class="fa {{vm.getIcon($index)}}" aria-hidden="true" title="{{vm.getIconTooltip($index)}}"></span>
+                            <span class="fa {{vm.getIcon(betreuung)}}" aria-hidden="true" title="{{vm.getIconTooltip(betreuung)}}"></span>
                         </td>
                     </tbody>
                 </table>

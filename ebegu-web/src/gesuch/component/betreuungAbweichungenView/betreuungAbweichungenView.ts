@@ -21,12 +21,10 @@ import {map} from 'rxjs/operators';
 import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
 import {MANDANTS} from '../../../app/core/constants/MANDANTS';
 import {DvDialog} from '../../../app/core/directive/dv-dialog/dv-dialog';
-import {ErrorService} from '../../../app/core/errors/service/ErrorService';
 import {LogFactory} from '../../../app/core/logging/LogFactory';
 import {BetreuungRS} from '../../../app/core/service/betreuungRS.rest';
 import {MitteilungRS} from '../../../app/core/service/mitteilungRS.rest';
 import {MandantService} from '../../../app/shared/services/mandant.service';
-import {AuthServiceRS} from '../../../authentication/service/AuthServiceRS.rest';
 import {TSBetreuungsangebotTyp} from '../../../models/enums/TSBetreuungsangebotTyp';
 import {TSBetreuungspensumAbweichungStatus} from '../../../models/enums/TSBetreuungspensumAbweichungStatus';
 import {TSEinstellungKey} from '../../../models/enums/TSEinstellungKey';
@@ -72,8 +70,6 @@ export class BetreuungAbweichungenViewController extends AbstractGesuchViewContr
         'CONSTANTS',
         '$scope',
         'BerechnungsManager',
-        'ErrorService',
-        'AuthServiceRS',
         'WizardStepManager',
         '$stateParams',
         'MitteilungRS',
@@ -100,11 +96,9 @@ export class BetreuungAbweichungenViewController extends AbstractGesuchViewContr
     public constructor(
         private readonly $state: StateService,
         gesuchModelManager: GesuchModelManager,
-        private readonly CONSTANTS: any,
+        public readonly CONSTANTS: any,
         $scope: IScope,
         berechnungsManager: BerechnungsManager,
-        private readonly errorService: ErrorService,
-        private readonly authServiceRS: AuthServiceRS,
         wizardStepManager: WizardStepManager,
         private readonly $stateParams: IBetreuungStateParams,
         private readonly mitteilungRS: MitteilungRS,
@@ -174,15 +168,6 @@ export class BetreuungAbweichungenViewController extends AbstractGesuchViewContr
         return this.kindModel;
     }
 
-    public getAbweichung(index: number): TSBetreuungspensumAbweichung {
-        if (this.model.betreuungspensumAbweichungen && index >= 0
-            && index < this.model.betreuungspensumAbweichungen.length) {
-            return this.model.betreuungspensumAbweichungen[index];
-        }
-
-        return undefined;
-    }
-
     public loadAbweichungen(): void {
         this.betreuungRS.loadAbweichungen(this.model.id).then(data => {
             this.model.betreuungspensumAbweichungen = data;
@@ -193,8 +178,7 @@ export class BetreuungAbweichungenViewController extends AbstractGesuchViewContr
         return `${abweichung.gueltigkeit.gueltigAb.month() + 1}.${abweichung.gueltigkeit.gueltigAb.year()}`;
     }
 
-    public updateStatus(index: number): void {
-        const abweichung = this.getAbweichung(index);
+    public updateStatus(abweichung: TSBetreuungspensumAbweichung): void {
         abweichung.status = TSBetreuungspensumAbweichungStatus.NONE;
 
         if (abweichung.pensum !== null && abweichung.pensum >= 0
@@ -204,8 +188,7 @@ export class BetreuungAbweichungenViewController extends AbstractGesuchViewContr
         }
     }
 
-    public getIcon(index: number): string {
-        const abweichung = this.getAbweichung(index);
+    public getIcon(abweichung: TSBetreuungspensumAbweichung): string {
         switch (abweichung.status) {
             case TSBetreuungspensumAbweichungStatus.NICHT_FREIGEGEBEN:
                 return 'fa-pencil black';
@@ -218,8 +201,7 @@ export class BetreuungAbweichungenViewController extends AbstractGesuchViewContr
         }
     }
 
-    public getIconTooltip(index: number): string {
-        const abweichung = this.getAbweichung(index);
+    public getIconTooltip(abweichung: TSBetreuungspensumAbweichung): string {
         switch (abweichung.status) {
             case TSBetreuungspensumAbweichungStatus.NICHT_FREIGEGEBEN:
                 return this.$translate.instant(`TSBetreuungspensumAbweichungStatus_${
@@ -244,8 +226,8 @@ export class BetreuungAbweichungenViewController extends AbstractGesuchViewContr
         // die gemeinde die vergünstigung deaktiviert hat
         if (!this.isMahlzeitenverguenstigungEnabled()) {
             this.model.betreuungspensumAbweichungen.forEach(a => {
-                a.monatlicheNebenmahlzeiten = 0;
-                a.monatlicheHauptmahlzeiten = 0;
+                a.monatlicheNebenmahlzeiten ??= 0;
+                a.monatlicheHauptmahlzeiten ??= 0;
             });
         }
 
@@ -296,9 +278,9 @@ export class BetreuungAbweichungenViewController extends AbstractGesuchViewContr
             });
     }
 
-    public isDisabled(index: number): boolean {
-        return this.getAbweichung(index).status === TSBetreuungspensumAbweichungStatus.VERRECHNET
-            || EbeguUtil.isNullOrUndefined(this.getAbweichung(index).vertraglicheKosten);
+    public isDisabled(abweichung: TSBetreuungspensumAbweichung): boolean {
+        return abweichung.status === TSBetreuungspensumAbweichungStatus.VERRECHNET
+            || EbeguUtil.isNullOrUndefined(abweichung.vertraglicheKosten);
     }
 
     public isAbweichungAllowed(): boolean {
@@ -364,9 +346,7 @@ export class BetreuungAbweichungenViewController extends AbstractGesuchViewContr
         return this.gesuchModelManager.gemeindeKonfiguration.konfigMahlzeitenverguenstigungEnabled;
     }
 
-    public isRowRequired(index: number): boolean {
-        const abweichung = this.getAbweichung(index);
-
+    public isRowRequired(abweichung: TSBetreuungspensumAbweichung): boolean {
         if (this.isMahlzeitenverguenstigungEnabled()) {
             return EbeguUtil.isNotNullAndPositive(abweichung.monatlicheHauptmahlzeiten)
                 || EbeguUtil.isNotNullAndPositive(abweichung.monatlicheNebenmahlzeiten)
@@ -377,9 +357,7 @@ export class BetreuungAbweichungenViewController extends AbstractGesuchViewContr
             || EbeguUtil.isNotNullAndPositive(abweichung.monatlicheBetreuungskosten);
     }
 
-    public getMonthlyMahlzeitenKosten(index: number): number {
-        const abweichung = this.getAbweichung(index);
-
+    public getMonthlyMahlzeitenKosten(abweichung: TSBetreuungspensumAbweichung): number {
         const hauptmahlzeiten = EbeguUtil.isNullOrUndefined(abweichung.monatlicheHauptmahlzeiten)
             ? abweichung.vertraglicheHauptmahlzeiten : abweichung.monatlicheHauptmahlzeiten;
 
