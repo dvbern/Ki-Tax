@@ -356,8 +356,9 @@ export class EinkommensverschlechterungInfoViewController
     }
 
     public showAblehnungBasisJahrPlus1(): boolean {
-        if (this.hasMandantOnlyEKVBasisJahr()) {
-            return true;
+        if (this.hasMandantOnlyEKVBasisJahr() && this.getEinkommensverschlechterungsInfo().einkommensverschlechterung) {
+            return this.isAmt()
+                || this.isGesuchFreigegeben() && this.getEinkommensverschlechterungsInfo().ekvBasisJahrPlus1Annulliert;
         }
         return (!this.isAmt() && this.showEkvi() && this.showJahrPlus1()
                 && this.getEinkommensverschlechterungsInfo().ekvBasisJahrPlus1Annulliert && this.isGesuchFreigegeben())
