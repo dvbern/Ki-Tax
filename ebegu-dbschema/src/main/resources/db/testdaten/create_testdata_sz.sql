@@ -375,3 +375,7 @@ INSERT IGNORE INTO modul_tagesschule (id, timestamp_erstellt, timestamp_mutiert,
 VALUES (UNHEX('baff3e93b91211ee8d780242ac160002'), '2023-12-08 09:45:52', '2023-12-08 09:45:52', 'ebegu:Kanton Schwyz',
 		'ebegu:Kanton Schwyz', 0, 'FRIDAY', UNHEX('4edfb4c3b91211ee8d780242ac160002'));
 
+# Set Einstellungen Periode 24/25
+UPDATE einstellung set value = 'KEINE' WHERE einstellung_key = 'FACHSTELLEN_TYP' AND gesuchsperiode_id = @gesuchsperiode_24_25_id AND gemeinde_id is null;
+UPDATE einstellung set value = 'KEINE' WHERE einstellung_key = 'AUSSERORDENTLICHER_ANSPRUCH_RULE' AND gesuchsperiode_id = @gesuchsperiode_24_25_id AND gemeinde_id is null;
+UPDATE einstellung set value = 'true' WHERE einstellung_key = 'ZEMIS_DISABLED' AND gesuchsperiode_id = @gesuchsperiode_24_25_id AND gemeinde_id is null;
