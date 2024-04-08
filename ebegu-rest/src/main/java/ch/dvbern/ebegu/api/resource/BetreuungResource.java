@@ -392,16 +392,10 @@ public class BetreuungResource {
 	@RolesAllowed({ SUPER_ADMIN, ADMIN_BG, SACHBEARBEITER_BG, ADMIN_GEMEINDE, SACHBEARBEITER_GEMEINDE, JURIST, REVISOR,
 		ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT, ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION, GESUCHSTELLER,
 		ADMIN_MANDANT, SACHBEARBEITER_MANDANT, ADMIN_TS, SACHBEARBEITER_TS,  ADMIN_SOZIALDIENST, SACHBEARBEITER_SOZIALDIENST })
-	public JaxBetreuung findBetreuung(
-		@Nonnull @NotNull @PathParam("betreuungId") JaxId betreuungJAXPId) {
-		Objects.requireNonNull(betreuungJAXPId.getId());
-		String id = converter.toEntityId(betreuungJAXPId);
-		Optional<Betreuung> fallOptional = betreuungService.findBetreuung(id);
+	public JaxBetreuung findBetreuung(@Nonnull @Valid @NotNull @PathParam("betreuungId") JaxId betreuungJAXPId) {
+		Betreuung betreuungToReturn = betreuungService.findBetreuung(betreuungJAXPId.getId())
+			.orElseThrow(() -> new EbeguEntityNotFoundException("findBetreuung", betreuungJAXPId.getId()));
 
-		if (!fallOptional.isPresent()) {
-			return null;
-		}
-		Betreuung betreuungToReturn = fallOptional.get();
 		return converter.betreuungToJAX(betreuungToReturn);
 	}
 
@@ -442,7 +436,6 @@ public class BetreuungResource {
 		+ "Dossier" +
 		"vorhanden sind. Es werden nur diejenigen Betreuungen zurückgegeben, für welche der eingeloggte Benutzer " +
 		"berechtigt ist.", responseContainer = "Collection", response = JaxBetreuung.class)
-	@Nullable
 	@GET
 	@Path("/alleBetreuungen/{dossierId}")
 	@Consumes(MediaType.APPLICATION_JSON)
@@ -455,11 +448,9 @@ public class BetreuungResource {
 		@Context UriInfo uriInfo,
 		@Context HttpServletResponse response) {
 
-		Optional<Dossier> dossierOptional = dossierService.findDossier(converter.toEntityId(jaxDossierId));
-		if (dossierOptional.isEmpty()) {
-			return null;
-		}
-		Dossier dossier = dossierOptional.get();
+		String id = converter.toEntityId(jaxDossierId);
+		Dossier dossier = dossierService.findDossier(id)
+			.orElseThrow(() -> new EbeguEntityNotFoundException("findAllBetreuungenWithVerfuegungFromFall", id));
 
 		Collection<Betreuung> betreuungCollection = betreuungService.findAllBetreuungenWithVerfuegungForDossier(dossier);
 		Collection<JaxBetreuung> jaxBetreuungList = converter.betreuungListToJax(betreuungCollection);
@@ -526,19 +517,12 @@ public class BetreuungResource {
 		@Context UriInfo uriInfo,
 		@Context HttpServletResponse response) {
 
-		Objects.requireNonNull(betreuungJax);
-		Objects.requireNonNull(betreuungId);
-		String id = converter.toEntityId(betreuungId);
-		Optional<Betreuung> betreuungOptional = betreuungService.findBetreuung(id);
+		Betreuung betreuung = betreuungService.findBetreuung(betreuungId.getId())
+			.orElseThrow(() -> new EbeguEntityNotFoundException("saveBetreuungspensumAbweichungen", betreuungId.getId()));
 
-		if (!betreuungOptional.isPresent()) {
-			return null;
-		}
-
-		Betreuung betreuung = betreuungOptional.get();
+		List<JaxBetreuungspensumAbweichung> jaxAbweichungen = betreuungJax.getBetreuungspensumAbweichungen();
 		Set<BetreuungspensumAbweichung> toStore =
-			converter.betreuungspensumAbweichungenToEntity(betreuungJax.getBetreuungspensumAbweichungen(),
-				betreuung.getBetreuungspensumAbweichungen());
+			converter.betreuungspensumAbweichungenToEntity(jaxAbweichungen, betreuung.getBetreuungspensumAbweichungen());
 
 		converter.setBetreuungInbetreuungsAbweichungen(toStore, betreuung);
 		betreuung.setBetreuungspensumAbweichungen(toStore);
@@ -561,14 +545,9 @@ public class BetreuungResource {
 		@Context UriInfo uriInfo,
 		@Context HttpServletResponse response) {
 
-		Objects.requireNonNull(betreuungId);
-		Optional<Betreuung> betreuungOptional = betreuungService.findBetreuung(betreuungId.getId());
+		Betreuung betreuung = betreuungService.findBetreuung(betreuungId.getId())
+			.orElseThrow(() -> new EbeguEntityNotFoundException("findBetreuungspensumAbweichungen", betreuungId.getId()));
 
-		if (!betreuungOptional.isPresent()) {
-			return null;
-		}
-
-		Betreuung betreuung = betreuungOptional.get();
 		return converter.betreuungspensumAbweichungenToJax(betreuung);
 	}
 
