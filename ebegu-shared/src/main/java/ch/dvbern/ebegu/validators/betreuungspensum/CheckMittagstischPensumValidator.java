@@ -30,7 +30,9 @@ import ch.dvbern.ebegu.util.MathUtil;
 
 /**
  * Validator for Betreuungspensen, for {@link BetreuungsangebotTyp#MITTAGSTISCH} checks that each
- * {@link AbstractMahlzeitenPensum#getPensum()} is derived from {@link AbstractMahlzeitenPensum#getMonatlicheHauptmahlzeiten()}.
+ * {@link AbstractMahlzeitenPensum#getPensum} is derived from {@link AbstractMahlzeitenPensum#getMonatlicheHauptmahlzeiten}
+ * and that {@link AbstractMahlzeitenPensum#getMonatlicheBetreuungskosten} matches
+ * {@link AbstractMahlzeitenPensum#getTarifProHauptmahlzeit}.
  */
 public class CheckMittagstischPensumValidator
 	implements ConstraintValidator<CheckMittagstischPensum, BetreuungAndPensumContainer> {
@@ -39,8 +41,12 @@ public class CheckMittagstischPensumValidator
 	public boolean isValid(BetreuungAndPensumContainer container, ConstraintValidatorContext context) {
 		return container.findBetreuung()
 			.filter(Betreuung::isAngebotMittagstisch)
-			.map(b -> container.getForJA().stream().allMatch(this::hasValidMittagstischPensum))
+			.map(b -> container.getForJA().stream().allMatch(this::isValid))
 			.orElse(true);
+	}
+
+	private boolean isValid(AbstractMahlzeitenPensum pensum) {
+		return hasValidMittagstischPensum(pensum) && hasValidKosten(pensum);
 	}
 
 	private boolean hasValidMittagstischPensum(AbstractMahlzeitenPensum pensum) {
@@ -50,5 +56,14 @@ public class CheckMittagstischPensumValidator
 		);
 
 		return MathUtil.isClose(derivedPensum, pensum.getPensum(), BigDecimal.valueOf(0.001));
+	}
+
+	private boolean hasValidKosten(AbstractMahlzeitenPensum pensum) {
+		BigDecimal derivedKosten =
+			MathUtil.toTwoKommastelle(pensum.getTarifProHauptmahlzeit().multiply(pensum.getMonatlicheHauptmahlzeiten()));
+
+		BigDecimal roundedKosten = MathUtil.toTwoKommastelle(pensum.getMonatlicheBetreuungskosten());
+
+		return MathUtil.isSame(derivedKosten, roundedKosten);
 	}
 }

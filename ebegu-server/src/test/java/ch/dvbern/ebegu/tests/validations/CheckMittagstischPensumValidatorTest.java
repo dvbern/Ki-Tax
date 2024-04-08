@@ -43,12 +43,14 @@ public class CheckMittagstischPensumValidatorTest extends AbstractValidatorTest 
 	@ParameterizedTest
 	@EnumSource(value = BetreuungsangebotTyp.class, names = "MITTAGSTISCH", mode = EnumSource.Mode.EXCLUDE)
 	void pensumAndMahlzeitenCanBeArbitrary(BetreuungsangebotTyp betreuungsangebotTyp) {
-		Betreuungspensum pensumGS =
-			withMahlzeitenAndBetreuungspensum(BigDecimal.valueOf(4), BigDecimal.valueOf(12.25), BigDecimal.valueOf(75));
-		Betreuungspensum pensumJA =
-			withMahlzeitenAndBetreuungspensum(BigDecimal.valueOf(5), BigDecimal.valueOf(13), BigDecimal.valueOf(80));
+		var pensumJA = createBetreuungspensum(
+			BigDecimal.valueOf(5),
+			BigDecimal.valueOf(13),
+			BigDecimal.valueOf(5 * 13),
+			BigDecimal.valueOf(80)
+		);
 
-		Betreuung betreuung = createBetreuung(betreuungsangebotTyp, pensumGS, pensumJA);
+		Betreuung betreuung = createBetreuung(betreuungsangebotTyp, pensumJA);
 
 		assertThat(validate(betreuung), not(violatesAnnotation(CheckMittagstischPensum.class)));
 	}
@@ -68,12 +70,9 @@ public class CheckMittagstischPensumValidatorTest extends AbstractValidatorTest 
 			"0, 0"
 		})
 		void shouldPassWhenPensumIsDerived(BigDecimal anzahlMahlzeiten, BigDecimal pensum) {
-			Betreuungspensum pensumGS =
-				withMahlzeitenAndBetreuungspensum(anzahlMahlzeiten, BigDecimal.valueOf(12.25), pensum);
-			Betreuungspensum pensumJA =
-				withMahlzeitenAndBetreuungspensum(anzahlMahlzeiten, BigDecimal.valueOf(13), pensum);
-
-			Betreuung betreuung = createBetreuung(BetreuungsangebotTyp.MITTAGSTISCH, pensumGS, pensumJA);
+			BigDecimal tarifProMahlzeit = BigDecimal.TEN;
+			BigDecimal monatlicheKosten = tarifProMahlzeit.multiply(anzahlMahlzeiten);
+			Betreuung betreuung = setup(anzahlMahlzeiten, tarifProMahlzeit, monatlicheKosten, pensum);
 
 			assertThat(validate(betreuung), not(violatesAnnotation(CheckMittagstischPensum.class)));
 		}
@@ -81,25 +80,46 @@ public class CheckMittagstischPensumValidatorTest extends AbstractValidatorTest 
 		@ParameterizedTest
 		@CsvSource("1, 2, 10, 20.5, 100")
 		void shouldFailWhenPensumMismatchesMahlzeiten(BigDecimal anzahlMahlzeiten) {
-			Betreuungspensum pensumGS =
-				withMahlzeitenAndBetreuungspensum(anzahlMahlzeiten, BigDecimal.valueOf(12.25), BigDecimal.ZERO);
-			Betreuungspensum pensumJA =
-				withMahlzeitenAndBetreuungspensum(anzahlMahlzeiten, BigDecimal.valueOf(13), BigDecimal.ZERO);
-
-			Betreuung betreuung = createBetreuung(BetreuungsangebotTyp.MITTAGSTISCH, pensumGS, pensumJA);
+			BigDecimal tarifProMahlzeit = BigDecimal.TEN;
+			BigDecimal monatlicheKosten = tarifProMahlzeit.multiply(anzahlMahlzeiten);
+			Betreuung betreuung = setup(anzahlMahlzeiten, tarifProMahlzeit, monatlicheKosten, BigDecimal.ZERO);
 
 			assertThat(validate(betreuung), violatesAnnotation(CheckMittagstischPensum.class));
+		}
+
+		@ParameterizedTest
+		@CsvSource("1, 2, 10, 20.5, 100")
+		void shouldFailWhenKostenMismatchesMahlzeitenTarif(double anzahlMahlzeiten) {
+			Betreuung betreuung = setup(
+				BigDecimal.valueOf(anzahlMahlzeiten),
+				BigDecimal.valueOf(13),
+				BigDecimal.TEN,
+				BigDecimal.valueOf(anzahlMahlzeiten * 100 / 20.5));
+
+			assertThat(validate(betreuung), violatesAnnotation(CheckMittagstischPensum.class));
+		}
+
+		Betreuung setup(
+			BigDecimal anzahlMahlzeiten,
+			BigDecimal tarifProMahlzeit,
+			BigDecimal monatlicheKosten,
+			BigDecimal pensum
+		) {
+			var pensumJA = createBetreuungspensum(anzahlMahlzeiten, tarifProMahlzeit, monatlicheKosten, pensum);
+
+			return createBetreuung(BetreuungsangebotTyp.MITTAGSTISCH, pensumJA);
 		}
 	}
 
 	@Nonnull
-	private Betreuungspensum withMahlzeitenAndBetreuungspensum(
+	private Betreuungspensum createBetreuungspensum(
 		BigDecimal anzahlMahlzeiten,
 		BigDecimal tarifProMahlzeit,
-		BigDecimal pensum
+		BigDecimal monatlicheKosten, BigDecimal pensum
 	) {
 		var result = TestDataUtil.createBetreuungspensumMittagstisch(anzahlMahlzeiten, tarifProMahlzeit);
 		result.setPensum(pensum);
+		result.setMonatlicheBetreuungskosten(monatlicheKosten);
 
 		return result;
 	}
@@ -107,7 +127,6 @@ public class CheckMittagstischPensumValidatorTest extends AbstractValidatorTest 
 	@Nonnull
 	private Betreuung createBetreuung(
 		@Nonnull BetreuungsangebotTyp betreuungsangebotTyp,
-		@Nonnull Betreuungspensum pensumGS,
 		@Nonnull Betreuungspensum pensumJA
 	) {
 		Gesuch gesuch = TestDataUtil.createDefaultGesuch();
@@ -118,7 +137,6 @@ public class CheckMittagstischPensumValidatorTest extends AbstractValidatorTest 
 		betreuung.getInstitutionStammdaten().setBetreuungsangebotTyp(betreuungsangebotTyp);
 
 		BetreuungspensumContainer betPensContainer = TestDataUtil.createBetPensContainer(betreuung);
-		betPensContainer.setBetreuungspensumGS(pensumGS);
 		betPensContainer.setBetreuungspensumJA(pensumJA);
 
 		betreuung.setBetreuungspensumContainers(Set.of(betPensContainer));
