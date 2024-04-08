@@ -34,7 +34,6 @@ export class BetreuungInputConfig implements IComponentOptions {
         betreuungsangebotTyp: '<',
         multiplierKita: '<',
         multiplierTfo: '<',
-        multiplierMittagstisch: '<',
         betreuungInputSwitchTyp: '<',
         isLuzern: '<'
     };
@@ -60,7 +59,6 @@ export class BetreuungInput implements IController {
     private multiplier: number = 1;
     private readonly multiplierKita: number;
     private readonly multiplierTfo: number;
-    private readonly multiplierMittagstisch: number;
 
     private pensumValue: number;
 
@@ -129,10 +127,6 @@ export class BetreuungInput implements IController {
         if (this.betreuungInputSwitchTyp === TSPensumAnzeigeTyp.NUR_PROZENT) {
             this.switchOptions = [TSPensumUnits.PERCENTAGE];
         }
-        if (this.betreuungInputSwitchTyp === TSPensumAnzeigeTyp.NUR_MAHLZEITEN) {
-            this.multiplier = this.multiplierMittagstisch;
-            this.switchOptions = [TSPensumUnits.MAHLZEITEN];
-        }
     }
 
     public toggle(): void {
@@ -142,7 +136,6 @@ export class BetreuungInput implements IController {
     private refreshContent(): void {
         this.parseToPercentage();
         this.updateLabel();
-        this.recalculateMonatlicheKostenFromMahlzeiten();
     }
 
     public updateLabel(): void {
@@ -172,8 +165,6 @@ export class BetreuungInput implements IController {
             this.pensumContainer.betreuungspensumJA.unitForDisplay = TSPensumUnits.PERCENTAGE;
         } else if (this.betreuungInputSwitchTyp === TSPensumAnzeigeTyp.NUR_STUNDEN) {
             this.pensumContainer.betreuungspensumJA.unitForDisplay = TSPensumUnits.HOURS;
-        } else if (this.betreuungInputSwitchTyp === TSPensumAnzeigeTyp.NUR_MAHLZEITEN) {
-            this.pensumContainer.betreuungspensumJA.unitForDisplay = TSPensumUnits.MAHLZEITEN;
         }
 
         if (EbeguUtil.isNullOrUndefined(this.pensumContainer.betreuungspensumJA.pensum)) {
@@ -209,12 +200,5 @@ export class BetreuungInput implements IController {
 
     public getStepSize(): string {
         return this.isLuzern ? '0.0000000001' : '0.01';
-    }
-
-    public recalculateMonatlicheKostenFromMahlzeiten(): void {
-        if (this.betreuungsangebotTyp !== TSBetreuungsangebotTyp.MITTAGSTISCH) {
-            return;
-        }
-        this.pensumContainer.betreuungspensumJA.recalculateMonatlicheMahlzeitenKosten(this.multiplierMittagstisch);
     }
 }
