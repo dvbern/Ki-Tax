@@ -561,7 +561,7 @@ public class Betreuung extends AbstractPlatz implements BetreuungAndPensumContai
 		while (from.isBefore(to)) {
 			BetreuungspensumAbweichung abweichung;
 			// check if we already stored something in the database
-			if (abweichungenFromDb != null) {
+			if (!abweichungenFromDb.isEmpty()) {
 				Optional<BetreuungspensumAbweichung> existing = searchExistingAbweichung(from, abweichungenFromDb);
 				abweichung = existing.orElse(createEmptyAbweichung(from, this.isAngebotTagesfamilien()));
 			} else {
