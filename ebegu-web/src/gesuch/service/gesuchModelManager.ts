@@ -327,7 +327,8 @@ export class GesuchModelManager {
                 this.getEkvFuerBasisJahrPlus(bj);
         }
         if (this.wizardStepManager.getCurrentStepName() === TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_SCHWYZ) {
-            return bj === 1 && (gs === 1 || this.isGesuchsteller2Required() && gs === 2);
+            return bj === 1 && (gs === 1 || (gs === 2 && this.isGesuchsteller2Required()
+                && EbeguUtil.isNotNullAndFalse(this.getFamiliensituation().gemeinsameSteuererklaerung)));
         }
         return gs === 2 ?
             this.getEkvFuerBasisJahrPlus(bj) && this.isGesuchsteller2Required() :
