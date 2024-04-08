@@ -59,12 +59,12 @@ import {HybridFormBridgeService} from '../../service/hybrid-form-bridge.service'
 import {WizardStepManager} from '../../service/wizardStepManager';
 import {AbstractGesuchViewController} from '../abstractGesuchView';
 import {KinderabzugExchangeService} from './service/kinderabzug-exchange.service';
+import {TSAusserordentlicherAnspruchTyp} from '../../../models/enums/TSAusserordentlicherAnspruchTyp';
 import IPromise = angular.IPromise;
 import IQService = angular.IQService;
 import IScope = angular.IScope;
 import ITimeoutService = angular.ITimeoutService;
 import ITranslateService = angular.translate.ITranslateService;
-import {TSEinkommensverschlechterungContainer} from '../../../models/TSEinkommensverschlechterungContainer';
 
 const LOG = LogFactory.createLog('KindViewController');
 
@@ -112,6 +112,7 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
 
     private kinderabzugTyp: TSKinderabzugTyp;
     private fachstellenTyp: TSFachstellenTyp;
+    private ausserodentlicherAnspruchTyp: TSAusserordentlicherAnspruchTyp;
     public maxPensumAusserordentlicherAnspruch: string;
     // When migrating to ng, use observable in template
     public submitted: boolean = false;
@@ -292,6 +293,10 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
     }
 
     public showAusserordentlicherAnspruchCheckbox(): boolean {
+        // Checkbox nie anzeigen, wenn kein ausserordentlicher Anspruch
+        if (this.ausserodentlicherAnspruchTyp === TSAusserordentlicherAnspruchTyp.KEINE) {
+            return false;
+        }
         // Checkbox wird nur angezeigt, wenn das Kind externe Betreuung hat und entweder bereits ein
         // Anspruch gesetzt ist, oder es sich um einen Gemeinde-User handelt
         return this.getModel().familienErgaenzendeBetreuung && (
@@ -511,6 +516,7 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
                 this.loadEinstellungAnspruchUnabhaengig(einstellungen);
                 this.loadEinstellungSpracheAmtsprache(einstellungen);
                 this.loadEinstellungFachstellenTyp(einstellungen);
+                this.loadEinstellungAusserordentlicherAnspruchTyp(einstellungen);
                 this.loadEinstellungSozialeIntegrationBisSchulstufe(einstellungen);
                 this.loadEinstellungSprachlicheIntegrationBisSchulstufe(einstellungen);
             }, error => LOG.error(error));
@@ -561,6 +567,12 @@ export class KindViewController extends AbstractGesuchViewController<TSKindConta
         this.integrationTypes = this.fachstellenTyp === TSFachstellenTyp.LUZERN ?
             [TSIntegrationTyp.SPRACHLICHE_INTEGRATION, TSIntegrationTyp.ZUSATZLEISTUNG_INTEGRATION] :
             [TSIntegrationTyp.SOZIALE_INTEGRATION, TSIntegrationTyp.SPRACHLICHE_INTEGRATION];
+    }
+
+    private loadEinstellungAusserordentlicherAnspruchTyp(einstellungen: TSEinstellung[]): void {
+        const einstellung = einstellungen
+            .find(e => e.key === TSEinstellungKey.AUSSERORDENTLICHER_ANSPRUCH_RULE);
+        this.ausserodentlicherAnspruchTyp = this.ebeguRestUtil.parseAusserordentlicherAnspruchTyp(einstellung.value);
     }
 
     private loadEinstellungSozialeIntegrationBisSchulstufe(einstellungen: TSEinstellung[]): void {
