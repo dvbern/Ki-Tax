@@ -1520,7 +1520,7 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 			Einstellung oeffnungstageKita = getEinstellung(EinstellungKey.OEFFNUNGSTAGE_KITA, gp);
 			Einstellung pensumAnzeigeTyp = getEinstellung(EinstellungKey.PENSUM_ANZEIGE_TYP, gp);
 			BetreuungspensumAnzeigeTyp betreuungspensumAnzeigeTyp = BetreuungspensumAnzeigeTyp.valueOf(pensumAnzeigeTyp.getValue());
-			if(betreuungspensumAnzeigeTyp.equals(BetreuungspensumAnzeigeTyp.NUR_STUNDEN)) {
+			if (betreuungspensumAnzeigeTyp == BetreuungspensumAnzeigeTyp.NUR_STUNDEN) {
 				return BetreuungUtil.calculateOeffnungszeitPerMonthProcentual(MathUtil.EXACT.multiply(oeffnungstageKita.getValueAsBigDecimal(), BetreuungUtil.ANZAHL_STUNDEN_PRO_TAG_KITA));
 			}
 			return BetreuungUtil.calculateOeffnungszeitPerMonthProcentual(oeffnungstageKita.getValueAsBigDecimal());

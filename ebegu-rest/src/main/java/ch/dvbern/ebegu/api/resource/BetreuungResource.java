@@ -15,12 +15,12 @@
 
 package ch.dvbern.ebegu.api.resource;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -58,7 +58,6 @@ import ch.dvbern.ebegu.entities.AnmeldungTagesschule;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.BetreuungspensumAbweichung;
 import ch.dvbern.ebegu.entities.Dossier;
-import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.KindContainer;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
@@ -168,7 +167,7 @@ public class BetreuungResource {
 		convertedBetreuung.setKind(kindContainer);
 		PensumUtil.transformBetreuungsPensumContainers(convertedBetreuung);
 
-		Betreuung persistedBetreuung = this.betreuungService.saveBetreuung(convertedBetreuung, abwesenheit, null);
+		Betreuung persistedBetreuung = betreuungService.saveBetreuung(convertedBetreuung, abwesenheit, null);
 		return converter.betreuungToJAX(persistedBetreuung);
 	}
 
@@ -177,19 +176,17 @@ public class BetreuungResource {
 			throw new EbeguRuntimeException(KibonLogLevel.NONE, "savePlatzAnmeldungTagesschule",
 				ErrorCodeEnum.ERROR_DUPLICATE_BETREUUNG);
 		}
-		AnmeldungTagesschule convertedAnmeldungTagesschule =
-			converter.anmeldungTagesschuleToStoreableEntity(betreuungJAXP);
-		resourceHelper.assertGesuchStatusForBenutzerRole(kindContainer.getGesuch(), convertedAnmeldungTagesschule);
+		AnmeldungTagesschule converted = converter.anmeldungTagesschuleToStoreableEntity(betreuungJAXP);
+		resourceHelper.assertGesuchStatusForBenutzerRole(kindContainer.getGesuch(), converted);
 
-		convertedAnmeldungTagesschule.setKind(kindContainer);
-		if (convertedAnmeldungTagesschule.isKeineDetailinformationen()) {
+		converted.setKind(kindContainer);
+		if (converted.isKeineDetailinformationen()) {
 			// eine Anmeldung ohne Detailinformationen muss immer als Uebernommen gespeichert werden
-			convertedAnmeldungTagesschule.setBetreuungsstatus(Betreuungsstatus.SCHULAMT_ANMELDUNG_UEBERNOMMEN);
+			converted.setBetreuungsstatus(Betreuungsstatus.SCHULAMT_ANMELDUNG_UEBERNOMMEN);
 		}
 
-		AnmeldungTagesschule persistedAnmeldungTagesschule =
-			this.betreuungService.saveAnmeldungTagesschule(convertedAnmeldungTagesschule);
-		return converter.anmeldungTagesschuleToJAX(persistedAnmeldungTagesschule);
+		AnmeldungTagesschule persisted = betreuungService.saveAnmeldungTagesschule(converted);
+		return converter.anmeldungTagesschuleToJAX(persisted);
 	}
 
 	private JaxBetreuung savePlatzAnmeldungFerieninsel(@Nonnull JaxBetreuung betreuungJAXP, @Nonnull KindContainer kindContainer) {
@@ -197,15 +194,12 @@ public class BetreuungResource {
 			throw new EbeguRuntimeException(KibonLogLevel.NONE, "savePlatzAnmeldungFerieninsel",
 				ErrorCodeEnum.ERROR_DUPLICATE_BETREUUNG);
 		}
-		AnmeldungFerieninsel convertedAnmeldungFerieninsel =
-			converter.anmeldungFerieninselToStoreableEntity(betreuungJAXP);
-		resourceHelper.assertGesuchStatusForBenutzerRole(kindContainer.getGesuch(), convertedAnmeldungFerieninsel);
+		AnmeldungFerieninsel converted = converter.anmeldungFerieninselToStoreableEntity(betreuungJAXP);
+		resourceHelper.assertGesuchStatusForBenutzerRole(kindContainer.getGesuch(), converted);
+		converted.setKind(kindContainer);
 
-		convertedAnmeldungFerieninsel.setKind(kindContainer);
-
-		AnmeldungFerieninsel persistedAnmeldungFerieninsel =
-			this.betreuungService.saveAnmeldungFerieninsel(convertedAnmeldungFerieninsel);
-		return converter.anmeldungFerieninselToJAX(persistedAnmeldungFerieninsel);
+		AnmeldungFerieninsel persisted = betreuungService.saveAnmeldungFerieninsel(converted);
+		return converter.anmeldungFerieninselToJAX(persisted);
 	}
 
 	@ApiOperation(value = "Speichert eine Abwesenheit in der Datenbank.", responseContainer = "List", response =
@@ -226,26 +220,23 @@ public class BetreuungResource {
 		Validate.notNull(abwesenheit, "abwesenheit may not be null");
 		Validate.notNull(betreuungenJAXP, "betreuungenJAXP may not be null");
 		Validator validator = Validation.byDefaultProvider().configure().buildValidatorFactory().getValidator();
-		betreuungenJAXP.forEach(jaxBetreuung -> validator.validate(jaxBetreuung));
+		betreuungenJAXP.forEach(validator::validate);
 
 		if (!betreuungenJAXP.isEmpty()) {
-			final String gesuchId = betreuungenJAXP.get(0).getGesuchId();
-			if (gesuchId != null) {
-				final Optional<Gesuch> gesuchOpt = gesuchService.findGesuch(gesuchId);
-				final Gesuch gesuch = gesuchOpt.orElseThrow(() -> new EbeguRuntimeException("saveAbwesenheiten",
-					ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, gesuchId));
-				resourceHelper.assertGesuchStatusForBenutzerRole(gesuch);
-			}
+			Optional.ofNullable(betreuungenJAXP.get(0).getGesuchId())
+				.map(gesuchId -> gesuchService.findGesuch(gesuchId)
+					.orElseThrow(() -> new EbeguEntityNotFoundException("saveAbwesenheiten", gesuchId)))
+				.ifPresent(gesuch -> resourceHelper.assertGesuchStatusForBenutzerRole(gesuch));
 		}
 
-		List<JaxBetreuung> resultBetreuungen = new ArrayList<>();
-		betreuungenJAXP.forEach(betreuungJAXP -> {
-			Betreuung convertedBetreuung = converter.betreuungToStoreableEntity(betreuungJAXP);
-			Betreuung persistedBetreuung = this.betreuungService.saveBetreuung(convertedBetreuung, abwesenheit, null);
+		return betreuungenJAXP.stream()
+			.map(betreuungJAXP -> {
+				Betreuung convertedBetreuung = converter.betreuungToStoreableEntity(betreuungJAXP);
+				Betreuung persistedBetreuung = betreuungService.saveBetreuung(convertedBetreuung, abwesenheit, null);
 
-			resultBetreuungen.add(converter.betreuungToJAX(persistedBetreuung));
-		});
-		return resultBetreuungen;
+				return converter.betreuungToJAX(persistedBetreuung);
+			})
+			.collect(Collectors.toList());
 	}
 
 	@ApiOperation(value = "Betreuungsplatzanfrage wird durch die Institution abgelehnt", response = JaxBetreuung.class)
@@ -271,7 +262,7 @@ public class BetreuungResource {
 
 		// Sicherstellen, dass das dazugehoerige Gesuch ueberhaupt noch editiert werden darf fuer meine Rolle
 		resourceHelper.assertGesuchStatusForBenutzerRole(convertedBetreuung.getKind().getGesuch());
-		Betreuung persistedBetreuung = this.betreuungService.betreuungPlatzAbweisen(convertedBetreuung, null);
+		Betreuung persistedBetreuung = betreuungService.betreuungPlatzAbweisen(convertedBetreuung, null);
 
 		return converter.betreuungToJAX(persistedBetreuung);
 	}
@@ -302,7 +293,7 @@ public class BetreuungResource {
 
 		// Sicherstellen, dass das dazugehoerige Gesuch ueberhaupt noch editiert werden darf fuer meine Rolle
 		resourceHelper.assertGesuchStatusForBenutzerRole(convertedBetreuung.getKind().getGesuch());
-		Betreuung persistedBetreuung = this.betreuungService.betreuungPlatzBestaetigen(convertedBetreuung, null);
+		Betreuung persistedBetreuung = betreuungService.betreuungPlatzBestaetigen(convertedBetreuung, null);
 
 		return converter.betreuungToJAX(persistedBetreuung);
 	}
@@ -331,7 +322,7 @@ public class BetreuungResource {
 		AbstractAnmeldung convertedBetreuung = converter.platzToStoreableEntity(betreuungJAXP);
 		// Sicherstellen, dass das dazugehoerige Gesuch ueberhaupt noch editiert werden darf fuer meine Rolle
 		resourceHelper.assertGesuchStatusForBenutzerRole(convertedBetreuung.getKind().getGesuch(), convertedBetreuung);
-		AbstractAnmeldung persistedBetreuung = this.betreuungService.anmeldungSchulamtAblehnen(convertedBetreuung);
+		AbstractAnmeldung persistedBetreuung = betreuungService.anmeldungSchulamtAblehnen(convertedBetreuung);
 
 		return converter.platzToJAX(persistedBetreuung);
 	}
@@ -358,8 +349,7 @@ public class BetreuungResource {
 		AbstractAnmeldung convertedBetreuung = converter.platzToStoreableEntity(betreuungJAXP);
 		// Sicherstellen, dass das dazugehoerige Gesuch ueberhaupt noch editiert werden darf fuer meine Rolle
 		resourceHelper.assertGesuchStatusForBenutzerRole(convertedBetreuung.getKind().getGesuch(), convertedBetreuung);
-		AbstractAnmeldung persistedBetreuung =
-			this.betreuungService.anmeldungSchulamtFalscheInstitution(convertedBetreuung);
+		AbstractAnmeldung persistedBetreuung = betreuungService.anmeldungSchulamtFalscheInstitution(convertedBetreuung);
 
 		return converter.platzToJAX(persistedBetreuung);
 	}
@@ -387,7 +377,7 @@ public class BetreuungResource {
 		AbstractAnmeldung convertedBetreuung = converter.platzToStoreableEntity(betreuungJAXP);
 		// Sicherstellen, dass das dazugehoerige Gesuch ueberhaupt noch editiert werden darf fuer meine Rolle
 		resourceHelper.assertGesuchStatusForBenutzerRole(convertedBetreuung.getKind().getGesuch(), convertedBetreuung);
-		AbstractAnmeldung persistedBetreuung = this.betreuungService.anmeldungSchulamtStornieren(convertedBetreuung);
+		AbstractAnmeldung persistedBetreuung = betreuungService.anmeldungSchulamtStornieren(convertedBetreuung);
 
 		return converter.platzToJAX(persistedBetreuung);
 	}
@@ -426,11 +416,11 @@ public class BetreuungResource {
 		ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT, ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION,
 		GESUCHSTELLER, ADMIN_TS, SACHBEARBEITER_TS, ADMIN_SOZIALDIENST, SACHBEARBEITER_SOZIALDIENST })
 	public Response removeBetreuung(
-		@Nonnull @NotNull @PathParam("betreuungId") JaxId betreuungJAXPId,
+		@Nonnull @Valid @NotNull @PathParam("betreuungId") JaxId betreuungJAXPId,
 		@Context HttpServletResponse response) {
 
-		Objects.requireNonNull(betreuungJAXPId.getId());
-		Optional<Betreuung> betreuung = betreuungService.findBetreuung(betreuungJAXPId.getId());
+		String id = betreuungJAXPId.getId();
+		Optional<Betreuung> betreuung = betreuungService.findBetreuung(id);
 
 		if (betreuung.isPresent()) {
 			// Sicherstellen, dass das dazugehoerige Gesuch ueberhaupt noch editiert werden darf fuer meine Rolle
@@ -438,15 +428,14 @@ public class BetreuungResource {
 			betreuungService.removeBetreuung(converter.toEntityId(betreuungJAXPId));
 			return Response.ok().build();
 		}
-		Optional<? extends AbstractAnmeldung> anmeldung = betreuungService.findAnmeldung(betreuungJAXPId.getId());
-		if (anmeldung.isPresent()) {
-			resourceHelper.assertGesuchStatusForBenutzerRole(anmeldung.get().extractGesuch());
-			betreuungService.removeAnmeldung(converter.toEntityId(betreuungJAXPId));
-			return Response.ok().build();
-		}
 
-		throw new EbeguEntityNotFoundException("removeBetreuung", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, "BetreuungID "
-			+ "invalid: " + betreuungJAXPId.getId());
+		var anmeldung = betreuungService.findAnmeldung(id)
+			.orElseThrow(() -> new EbeguEntityNotFoundException("removeBetreuung", id));
+
+		resourceHelper.assertGesuchStatusForBenutzerRole(anmeldung.extractGesuch());
+		betreuungService.removeAnmeldung(converter.toEntityId(betreuungJAXPId));
+
+		return Response.ok().build();
 	}
 
 	@ApiOperation(value = "Sucht alle verfügten Betreuungen aus allen Gesuchsperioden, welche zum übergebenen "
@@ -462,18 +451,17 @@ public class BetreuungResource {
 		ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT, ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION, GESUCHSTELLER,
 		ADMIN_MANDANT, SACHBEARBEITER_MANDANT, ADMIN_TS, SACHBEARBEITER_TS, ADMIN_SOZIALDIENST, SACHBEARBEITER_SOZIALDIENST })
 	public Response findAllBetreuungenWithVerfuegungFromFall(
-		@Nonnull @NotNull @PathParam("dossierId") JaxId jaxDossierId,
+		@Nonnull @NotNull @Valid @PathParam("dossierId") JaxId jaxDossierId,
 		@Context UriInfo uriInfo,
 		@Context HttpServletResponse response) {
 
 		Optional<Dossier> dossierOptional = dossierService.findDossier(converter.toEntityId(jaxDossierId));
-		if (!dossierOptional.isPresent()) {
+		if (dossierOptional.isEmpty()) {
 			return null;
 		}
 		Dossier dossier = dossierOptional.get();
 
-		Collection<Betreuung> betreuungCollection =
-			betreuungService.findAllBetreuungenWithVerfuegungForDossier(dossier);
+		Collection<Betreuung> betreuungCollection = betreuungService.findAllBetreuungenWithVerfuegungForDossier(dossier);
 		Collection<JaxBetreuung> jaxBetreuungList = converter.betreuungListToJax(betreuungCollection);
 
 		return Response.ok(jaxBetreuungList).build();
@@ -494,36 +482,34 @@ public class BetreuungResource {
 		@Context UriInfo uriInfo,
 		@Context HttpServletResponse response) {
 
-		Optional<KindContainer> kind = kindService.findKind(jaxAnmeldungDTO.getKindContainerId());
-		if (kind.isPresent()) {
-			KindContainer kindContainer = kind.get();
-			JaxBetreuung jaxBetreuung = jaxAnmeldungDTO.getBetreuung();
-			if (jaxAnmeldungDTO.getAdditionalKindQuestions() && !kindContainer.getKindJA().getFamilienErgaenzendeBetreuung()) {
-				kindContainer.getKindJA().setFamilienErgaenzendeBetreuung(true);
-				kindContainer.getKindJA().setEinschulungTyp(jaxAnmeldungDTO.getEinschulungTyp());
-				kindContainer.getKindJA().setSprichtAmtssprache(jaxAnmeldungDTO.getSprichtAmtssprache());
-				kindService.saveKind(kindContainer);
-			}
+		KindContainer kindContainer = kindService.findKind(jaxAnmeldungDTO.getKindContainerId())
+			.orElseThrow(() -> new EbeguEntityNotFoundException(
+				"createAnmeldung",
+				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
+				KIND_CONTAINER_ID_INVALID + jaxAnmeldungDTO.getKindContainerId()));
 
-			BetreuungsangebotTyp betreuungsangebotTyp =
-				jaxBetreuung.getInstitutionStammdaten().getBetreuungsangebotTyp();
-			switch (betreuungsangebotTyp) {
-			case TAGESSCHULE:
-				savePlatzAnmeldungTagesschule(jaxBetreuung, kindContainer);
-				break;
-			case FERIENINSEL:
-				savePlatzAnmeldungFerieninsel(jaxBetreuung, kindContainer);
-				break;
-			default:
-				throw new EbeguRuntimeException("createAnmeldung", "CreateAnmeldung ist nur für Tagesschulen und "
-					+ "Ferieninseln möglich");
-			}
-
-			return Response.ok().build();
+		if (jaxAnmeldungDTO.getAdditionalKindQuestions() && !kindContainer.getKindJA().getFamilienErgaenzendeBetreuung()) {
+			kindContainer.getKindJA().setFamilienErgaenzendeBetreuung(true);
+			kindContainer.getKindJA().setEinschulungTyp(jaxAnmeldungDTO.getEinschulungTyp());
+			kindContainer.getKindJA().setSprichtAmtssprache(jaxAnmeldungDTO.getSprichtAmtssprache());
+			kindService.saveKind(kindContainer);
 		}
-		throw new EbeguEntityNotFoundException("createAnmeldung", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
-			KIND_CONTAINER_ID_INVALID + jaxAnmeldungDTO
-				.getKindContainerId());
+
+		JaxBetreuung jaxBetreuung = jaxAnmeldungDTO.getBetreuung();
+		BetreuungsangebotTyp betreuungsangebotTyp = jaxBetreuung.getInstitutionStammdaten().getBetreuungsangebotTyp();
+		switch (betreuungsangebotTyp) {
+		case TAGESSCHULE:
+			savePlatzAnmeldungTagesschule(jaxBetreuung, kindContainer);
+			break;
+		case FERIENINSEL:
+			savePlatzAnmeldungFerieninsel(jaxBetreuung, kindContainer);
+			break;
+		default:
+			throw new EbeguRuntimeException("createAnmeldung", "CreateAnmeldung ist nur für Tagesschulen und "
+				+ "Ferieninseln möglich");
+		}
+
+		return Response.ok().build();
 	}
 
 	@ApiOperation(value = "Speichert die Abweichungen einer Betreuung in der Datenbank", response = Collection.class)
@@ -535,7 +521,7 @@ public class BetreuungResource {
 		ADMIN_TRAEGERSCHAFT, SACHBEARBEITER_TRAEGERSCHAFT, ADMIN_SOZIALDIENST, SACHBEARBEITER_SOZIALDIENST,
 		ADMIN_INSTITUTION, SACHBEARBEITER_INSTITUTION, GESUCHSTELLER, SACHBEARBEITER_TS, ADMIN_TS })
 	public Collection<JaxBetreuungspensumAbweichung> saveBetreuungspensumAbweichungen(
-		@Nonnull @NotNull @PathParam("betreuungId") JaxId betreuungId,
+		@Nonnull @NotNull @Valid @PathParam("betreuungId") JaxId betreuungId,
 		@Nonnull @NotNull @Valid JaxBetreuung betreuungJax,
 		@Context UriInfo uriInfo,
 		@Context HttpServletResponse response) {
@@ -618,7 +604,7 @@ public class BetreuungResource {
 					betreuungJAXP.getId(),
 					ErrorCodeEnum.ERROR_ANMELDUNG_KEINE_MODULE);
 			}
-			return converter.platzToJAX(this.betreuungService.anmeldungSchulamtModuleAkzeptieren(convertedBetreuung));
+			return converter.platzToJAX(betreuungService.anmeldungSchulamtModuleAkzeptieren(convertedBetreuung));
 		}
 
 		if (betreuungJAXP.getBelegungFerieninsel() == null || betreuungJAXP.getBelegungFerieninsel().getTage().isEmpty()) {
@@ -628,7 +614,6 @@ public class BetreuungResource {
 				ErrorCodeEnum.ERROR_ANMELDUNG_KEINE_MODULE);
 		}
 		AnmeldungFerieninsel convertedAnmeldungFerieninsel = (AnmeldungFerieninsel) convertedBetreuung;
-		return converter.platzToJAX(this.verfuegungService.anmeldungFerieninselUebernehmen(convertedAnmeldungFerieninsel));
-
+		return converter.platzToJAX(verfuegungService.anmeldungFerieninselUebernehmen(convertedAnmeldungFerieninsel));
 	}
 }

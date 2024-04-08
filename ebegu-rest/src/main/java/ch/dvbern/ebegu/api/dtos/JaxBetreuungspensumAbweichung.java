@@ -19,6 +19,8 @@ package ch.dvbern.ebegu.api.dtos;
 
 import java.math.BigDecimal;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 
@@ -33,93 +35,111 @@ public class JaxBetreuungspensumAbweichung extends JaxAbstractMahlzeitenPensumDT
 
 	private static final long serialVersionUID = 4496021781469239269L;
 
+	@Nonnull
 	private BetreuungspensumAbweichungStatus status;
 
+	@Nullable
 	private BigDecimal vertraglichesPensum;
 
+	@Nullable
 	private BigDecimal vertraglicheKosten;
 
+	@Nullable
 	private BigDecimal vertraglicheHauptmahlzeiten;
 
+	@Nullable
 	private BigDecimal vertraglicheNebenmahlzeiten;
 
+	@Nullable
 	private BigDecimal vertraglicherTarifHaupt;
 
+	@Nullable
 	private BigDecimal vertraglicherTarifNeben;
 
+	@Nullable
 	private BigDecimal multiplier;
 
+	@Nonnull
 	private BetreuungsangebotTyp betreuungsangebotTyp;
 
+	@Nonnull
 	public BetreuungspensumAbweichungStatus getStatus() {
 		return status;
 	}
 
-	public void setStatus(BetreuungspensumAbweichungStatus status) {
+	public void setStatus(@Nonnull BetreuungspensumAbweichungStatus status) {
 		this.status = status;
 	}
 
+	@Nullable
 	public BigDecimal getVertraglichesPensum() {
 		return vertraglichesPensum;
 	}
 
-	public void setVertraglichesPensum(BigDecimal vertraglichesPensum) {
+	public void setVertraglichesPensum(@Nullable BigDecimal vertraglichesPensum) {
 		this.vertraglichesPensum = vertraglichesPensum;
 	}
 
+	@Nullable
 	public BigDecimal getVertraglicheKosten() {
 		return vertraglicheKosten;
 	}
 
-	public void setVertraglicheKosten(BigDecimal vertraglicheKosten) {
+	public void setVertraglicheKosten(@Nullable BigDecimal vertraglicheKosten) {
 		this.vertraglicheKosten = vertraglicheKosten;
 	}
 
+	@Nullable
 	public BigDecimal getVertraglicheHauptmahlzeiten() {
 		return vertraglicheHauptmahlzeiten;
 	}
 
-	public void setVertraglicheHauptmahlzeiten(BigDecimal vertraglicheHauptmahlzeiten) {
+	public void setVertraglicheHauptmahlzeiten(@Nullable BigDecimal vertraglicheHauptmahlzeiten) {
 		this.vertraglicheHauptmahlzeiten = vertraglicheHauptmahlzeiten;
 	}
 
+	@Nullable
 	public BigDecimal getVertraglicheNebenmahlzeiten() {
 		return vertraglicheNebenmahlzeiten;
 	}
 
-	public void setVertraglicheNebenmahlzeiten(BigDecimal vertraglicheNebenmahlzeiten) {
+	public void setVertraglicheNebenmahlzeiten(@Nullable BigDecimal vertraglicheNebenmahlzeiten) {
 		this.vertraglicheNebenmahlzeiten = vertraglicheNebenmahlzeiten;
 	}
 
+	@Nullable
 	public BigDecimal getVertraglicherTarifHaupt() {
 		return vertraglicherTarifHaupt;
 	}
 
-	public void setVertraglicherTarifHaupt(BigDecimal vertraglicherTarifHaupt) {
+	public void setVertraglicherTarifHaupt(@Nullable BigDecimal vertraglicherTarifHaupt) {
 		this.vertraglicherTarifHaupt = vertraglicherTarifHaupt;
 	}
 
+	@Nullable
 	public BigDecimal getVertraglicherTarifNeben() {
 		return vertraglicherTarifNeben;
 	}
 
-	public void setVertraglicherTarifNeben(BigDecimal vertraglicherTarifNeben) {
+	public void setVertraglicherTarifNeben(@Nullable BigDecimal vertraglicherTarifNeben) {
 		this.vertraglicherTarifNeben = vertraglicherTarifNeben;
 	}
 
+	@Nullable
 	public BigDecimal getMultiplier() {
 		return multiplier;
 	}
 
-	public void setMultiplier(BigDecimal multiplier) {
+	public void setMultiplier(@Nullable BigDecimal multiplier) {
 		this.multiplier = multiplier;
 	}
 
+	@Nonnull
 	public BetreuungsangebotTyp getBetreuungsangebotTyp() {
 		return betreuungsangebotTyp;
 	}
 
-	public void setBetreuungsangebotTyp(BetreuungsangebotTyp betreuungsangebotTyp) {
+	public void setBetreuungsangebotTyp(@Nonnull BetreuungsangebotTyp betreuungsangebotTyp) {
 		this.betreuungsangebotTyp = betreuungsangebotTyp;
 	}
 }

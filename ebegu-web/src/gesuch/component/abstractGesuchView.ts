@@ -139,13 +139,13 @@ export class AbstractGesuchViewController<T> implements IController {
     }
 
     public extractFullNameGS1(): string {
-        return this.getGesuch() && this.getGesuch().gesuchsteller1
+        return this.getGesuch()?.gesuchsteller1
             ? this.getGesuch().gesuchsteller1.extractFullName()
             : '';
     }
 
     public extractFullNameGS2(): string {
-        return this.getGesuch() && this.getGesuch().gesuchsteller2
+        return this.getGesuch()?.gesuchsteller2
             ? this.getGesuch().gesuchsteller2.extractFullName()
             : '';
     }
