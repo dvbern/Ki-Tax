@@ -34,7 +34,7 @@ public class CheckBetreuungPensumContainerZeitraumInGesuchsperiodeValidator
 			.map(betreuung -> {
 				var gueltigkeitGesuchsperiode = betreuung.extractGesuchsperiode().getGueltigkeit();
 
-				return GueltigkeitsUtil.intersects(container.getForJA(), gueltigkeitGesuchsperiode);
+				return GueltigkeitsUtil.intersects(container.getBetreuungenJA(), gueltigkeitGesuchsperiode);
 			})
 			.orElse(true);
 	}

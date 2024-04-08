@@ -52,7 +52,6 @@ import ch.dvbern.ebegu.api.dtos.JaxBetreuungspensumAbweichung;
 import ch.dvbern.ebegu.api.dtos.JaxId;
 import ch.dvbern.ebegu.api.resource.util.BetreuungUtil;
 import ch.dvbern.ebegu.api.resource.util.ResourceHelper;
-import ch.dvbern.ebegu.authentication.PrincipalBean;
 import ch.dvbern.ebegu.entities.AbstractAnmeldung;
 import ch.dvbern.ebegu.entities.AnmeldungFerieninsel;
 import ch.dvbern.ebegu.entities.AnmeldungTagesschule;
@@ -72,6 +71,7 @@ import ch.dvbern.ebegu.services.DossierService;
 import ch.dvbern.ebegu.services.GesuchService;
 import ch.dvbern.ebegu.services.KindService;
 import ch.dvbern.ebegu.services.VerfuegungService;
+import ch.dvbern.ebegu.services.util.PensumUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.apache.commons.lang.Validate;
@@ -166,6 +166,7 @@ public class BetreuungResource {
 		resourceHelper.assertGesuchStatusForBenutzerRole(kindContainer.getGesuch(), convertedBetreuung);
 
 		convertedBetreuung.setKind(kindContainer);
+		PensumUtil.transformBetreuungsPensumContainers(convertedBetreuung);
 
 		Betreuung persistedBetreuung = this.betreuungService.saveBetreuung(convertedBetreuung, abwesenheit, null);
 		return converter.betreuungToJAX(persistedBetreuung);

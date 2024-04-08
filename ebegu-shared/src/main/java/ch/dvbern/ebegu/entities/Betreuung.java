@@ -434,7 +434,7 @@ public class Betreuung extends AbstractPlatz implements BetreuungAndPensumContai
 	@CheckGueltigkeiten(message = "{invalid_betreuungspensen_dates}")
 	@Nonnull
 	@Override
-	public List<? extends AbstractMahlzeitenPensum> getForGS() {
+	public List<? extends AbstractMahlzeitenPensum> getBetreuungenGS() {
 		return betreuungspensumContainers.stream()
 			.map(BetreuungspensumContainer::getBetreuungspensumGS)
 			.filter(Objects::nonNull)
@@ -444,7 +444,7 @@ public class Betreuung extends AbstractPlatz implements BetreuungAndPensumContai
 	@CheckGueltigkeiten(message = "{invalid_betreuungspensen_dates}")
 	@Nonnull
 	@Override
-	public List<? extends AbstractMahlzeitenPensum> getForJA() {
+	public List<? extends AbstractMahlzeitenPensum> getBetreuungenJA() {
 		return betreuungspensumContainers.stream()
 			.map(BetreuungspensumContainer::getBetreuungspensumJA)
 			.filter(Objects::nonNull)

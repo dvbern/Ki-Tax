@@ -44,7 +44,7 @@ public class CheckBetreuungZeitraumInstitutionsStammdatenZeitraumValidator
 	public boolean isValid(BetreuungAndPensumContainer container, ConstraintValidatorContext context) {
 		return container.findBetreuung()
 			.map(betreuung -> {
-				if (hasPensenGueltigkeitWithinInstitutionStammdatenGueltigkeit(betreuung, container.getForJA())) {
+				if (hasPensenGueltigkeitWithinInstitutionStammdatenGueltigkeit(betreuung, container.getBetreuungenJA())) {
 					return true;
 				}
 
