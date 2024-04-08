@@ -67,7 +67,6 @@ import ch.dvbern.ebegu.enums.AbholungTagesschule;
 import ch.dvbern.ebegu.enums.AntragStatus;
 import ch.dvbern.ebegu.enums.BelegungTagesschuleModulIntervall;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
-import ch.dvbern.ebegu.enums.EinschulungTyp;
 import ch.dvbern.ebegu.enums.GemeindeStatus;
 import ch.dvbern.ebegu.enums.Geschlecht;
 import ch.dvbern.ebegu.enums.Kinderabzug;
@@ -319,23 +318,7 @@ public abstract class AbstractTestfall {
 		Kinderabzug kinderabzug,
 		boolean betreuung) {
 
-		Kind kind = new Kind();
-		kind.setGeschlecht(geschlecht);
-		kind.setNachname(name);
-		kind.setVorname(vorname);
-		kind.setGeburtsdatum(geburtsdatum);
-		kind.setKinderabzugErstesHalbjahr(kinderabzug);
-		kind.setKinderabzugZweitesHalbjahr(kinderabzug);
-		if (is18GeburtstagBeforeGPEnds(geburtsdatum)) {
-			kind.setInErstausbildung(false);
-		} else {
-			kind.setObhutAlternierendAusueben(false);
-		}
-		kind.setFamilienErgaenzendeBetreuung(betreuung);
-		if (betreuung) {
-			kind.setSprichtAmtssprache(Boolean.TRUE);
-			kind.setEinschulungTyp(EinschulungTyp.VORSCHULALTER);
-		}
+		Kind kind = testfallDataProvider.createKind(geschlecht, name, vorname, geburtsdatum, is18GeburtstagBeforeGPEnds(geburtsdatum), kinderabzug, betreuung);
 		KindContainer kindContainer = new KindContainer();
 		kindContainer.setKindJA(kind);
 		return kindContainer;

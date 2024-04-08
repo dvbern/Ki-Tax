@@ -462,6 +462,11 @@ public class BetreuungsgutscheinConfigurator {
 				new SchulstufeCalcRule(defaultGueltigkeit, bgAusstellenBisUndMitStufe, betreuungsangebotTyps, locale);
 		addToRuleSetIfRelevantForGemeinde(schulstufeCalcRule, ruleParameterUtil);
 
+		// - Kind Lebt gar nicht im Hausalt - Betreuungspensum 0
+		KinderabzugTyp kinderAbzugTyp = KinderabzugTyp.valueOf(ruleParameterUtil.getEinstellung(KINDERABZUG_TYP).getValue());
+		KindAnspruchCalcRule kindAnspruchCalcRule = new KindAnspruchCalcRule(defaultGueltigkeit, locale, kinderAbzugTyp);
+		addToRuleSetIfRelevantForGemeinde(kindAnspruchCalcRule, ruleParameterUtil);
+
 		// - KESB Platzierung: Kein Anspruch, da die KESB den Platz bezahlt
 		KesbPlatzierungCalcRule kesbPlatzierungCalcRule = new KesbPlatzierungCalcRule(defaultGueltigkeit, locale);
 		addToRuleSetIfRelevantForGemeinde(kesbPlatzierungCalcRule, ruleParameterUtil);

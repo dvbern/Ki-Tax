@@ -22,6 +22,7 @@ public enum KinderabzugTyp {
 	ASIV,
 	FKJV,
 	FKJV_2,
+	SCHWYZ,
 	KEINE;
 
 	public boolean isFKJV() {
