@@ -1,0 +1,41 @@
+<div class="form-group">
+    <dv-radio-container-x>
+                          <span>
+                             <label for="quellenbesteuert_id" class="required ebegu-h1">
+							        {{'QUELLENBESTEUERT' | translate}}
+						     </label>
+                          </span>
+        <mat-radio-group
+            [(ngModel)]="finSitJA.quellenbesteuert"
+            name="quellenbesteuert"
+            id="quellenbesteuert_id"
+            #quellenbesteuert="ngModel"
+            [disabled]="readonly"
+            (ngModelChange)="onQuellenbesteuertChange()"
+            required>
+            <mat-radio-button [value]="true">{{'LABEL_JA' | translate }}</mat-radio-button>
+            <mat-radio-button [value]="false">{{'LABEL_NEIN' | translate }}</mat-radio-button>
+        </mat-radio-group>
+        <dv-error-messages *ngIf="quellenbesteuert.touched"
+                           [errorObject]="quellenbesteuert.errors"
+                           inputId="quellenbesteuert_id">
+        </dv-error-messages>
+    </dv-radio-container-x>
+</div>
+
+<ng-container *ngIf="isNotNullOrUndefined(finSitJA.quellenbesteuert)">
+    <ng-container *ngIf="finSitJA.quellenbesteuert; then bruttolohnFragen else steuerveranlagFragen"></ng-container>
+</ng-container>
+
+<ng-template #steuerveranlagFragen>
+    <dv-steuerveranlagt-schwyz [finSitJA]="finSitJA"
+                               [finSitGS]="finSitGS"
+                               [readonly]="readonly">
+    </dv-steuerveranlagt-schwyz>
+</ng-template>
+<ng-template #bruttolohnFragen>
+    <dv-bruttolohn-schwyz [finSitJA]="finSitJA"
+                          [finSitGS]="finSitGS"
+                          [readonly]="readonly">
+    </dv-bruttolohn-schwyz>
+</ng-template>
