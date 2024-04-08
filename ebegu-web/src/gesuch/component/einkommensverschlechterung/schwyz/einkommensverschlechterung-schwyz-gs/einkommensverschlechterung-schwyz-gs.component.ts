@@ -15,6 +15,9 @@ import {AbstractGesuchViewX} from '../../../abstractGesuchViewX';
 })
 export class EinkommensverschlechterungSchwyzGsComponent extends AbstractGesuchViewX<TSFinanzModel> {
 
+    public hasMultipleFinSit: boolean;
+    public isFinSitVollstaendigAusgefuellt: boolean;
+
     public constructor(
         protected readonly gesuchmodelManager: GesuchModelManager,
         protected readonly wizardstepManager: WizardStepManager,
@@ -22,9 +25,14 @@ export class EinkommensverschlechterungSchwyzGsComponent extends AbstractGesuchV
     ) {
         super(gesuchmodelManager, wizardstepManager, TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_SCHWYZ);
         this.initModel();
+        this.hasMultipleFinSit = this.gesuchmodelManager.isGesuchsteller2Required()
+            && EbeguUtil.isNotNullAndFalse(this.gesuchmodelManager.getFamiliensituation().gemeinsameSteuererklaerung);
         this.wizardStepManager.updateCurrentWizardStepStatusSafe(
             TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_SOLOTHURN,
             TSWizardStepStatus.IN_BEARBEITUNG);
+        this.isFinSitVollstaendigAusgefuellt =
+            this.wizardstepManager.getStepByName(TSWizardStepName.FINANZIELLE_SITUATION_SCHWYZ).wizardStepStatus
+            === TSWizardStepStatus.OK;
     }
 
     public prepareSave(onResult: (arg: any) => any): void {
@@ -75,4 +83,9 @@ export class EinkommensverschlechterungSchwyzGsComponent extends AbstractGesuchV
         this.model.copyFinSitDataFromGesuch(this.gesuchModelManager.getGesuch());
         this.model.initEinkommensverschlechterungContainer(parsedBasisJahrPlusNum, parsedGesuchstelllerNum);
     }
+
+    public getGSName(): string {
+        return this.gesuchmodelManager.gesuchstellerNumber === 1 ? this.extractFullNameGS1() : this.extractFullNameGS2();
+    }
+
 }

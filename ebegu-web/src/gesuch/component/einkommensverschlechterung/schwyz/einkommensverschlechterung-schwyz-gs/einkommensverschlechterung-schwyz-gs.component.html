@@ -3,7 +3,8 @@
     <div class="row view-title">
         <div class="col-md-12">
             <h2>
-                <span translate>EINKOMMENSVERSCHLECHTERUNG</span>
+                <span *ngIf="hasMultipleFinSit" translate [translateParams]="{antragstellende: getGSName()}">EKVI_EINKOMMENSVERSCHLECHTERUNG_FUER_BASISJAHR</span>
+                <span *ngIf="!hasMultipleFinSit" translate>EINKOMMENSVERSCHLECHTERUNG</span>
             </h2>
             <hr class="header"/>
         </div>
