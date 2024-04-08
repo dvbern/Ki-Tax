@@ -39,6 +39,7 @@ import ch.dvbern.ebegu.dto.FinanzielleSituationStartDTO;
 import ch.dvbern.ebegu.dto.JaxFinanzielleSituationAufteilungDTO;
 import ch.dvbern.ebegu.entities.AbstractEntity_;
 import ch.dvbern.ebegu.entities.Auszahlungsdaten;
+import ch.dvbern.ebegu.entities.Einkommensverschlechterung;
 import ch.dvbern.ebegu.entities.Einstellung;
 import ch.dvbern.ebegu.entities.Familiensituation;
 import ch.dvbern.ebegu.entities.FamiliensituationContainer;
@@ -86,6 +87,9 @@ public class FinanzielleSituationServiceBean extends AbstractBaseService impleme
 	@Inject
 	private PrincipalBean principalBean;
 
+	@Inject
+	private EinkommensverschlechterungService einkommensverschlechterungService;
+
 	@Nonnull
 	@Override
 	public Gesuch saveFinanzielleSituationStart(
@@ -113,7 +117,7 @@ public class FinanzielleSituationServiceBean extends AbstractBaseService impleme
 			gesuch
 		);
 
-		handleDataResetsOnFinSitStartSave(gesuch, finSitStartDTO);
+		handleDataResetsOnFinSitStartSave(gesuch, finanzielleSituation, finSitStartDTO);
 
 		wizardStepService.updateSteps(
 			gesuchId,
@@ -188,7 +192,10 @@ public class FinanzielleSituationServiceBean extends AbstractBaseService impleme
 		return gesuchService.updateGesuch(gesuch, false);
 	}
 
-	private void handleDataResetsOnFinSitStartSave(Gesuch gesuch, FinanzielleSituationStartDTO finSitStartDTO) {
+	private void handleDataResetsOnFinSitStartSave(Gesuch gesuch,
+		FinanzielleSituationContainer finanzielleSituation,
+		FinanzielleSituationStartDTO finSitStartDTO) {
+		handleEKVDataRestsOnFinSitStartSave(gesuch, finanzielleSituation);
 		if (gesuch.getFinSitTyp() == FinanzielleSituationTyp.SCHWYZ && (Objects.equals(finSitStartDTO.getGemeinsameSteuererklaerung(), Boolean.TRUE) &&
 				gesuch.getGesuchsteller2() != null && gesuch.getGesuchsteller2().getFinanzielleSituationContainer() != null)) {
 				var finSit = gesuch.getGesuchsteller2().getFinanzielleSituationContainer().getFinanzielleSituationJA();
@@ -201,6 +208,40 @@ public class FinanzielleSituationServiceBean extends AbstractBaseService impleme
 
 				saveFinanzielleSituation(gesuch.getGesuchsteller2().getFinanzielleSituationContainer(), gesuch.getId());
 
+		}
+	}
+
+	private void handleEKVDataRestsOnFinSitStartSave(Gesuch gesuch, FinanzielleSituationContainer finanzielleSituation) {
+		Objects.requireNonNull(gesuch.getGesuchsteller1());
+		if (gesuch.getFinSitTyp() == FinanzielleSituationTyp.SCHWYZ
+			&& gesuch.getGesuchsteller1().getEinkommensverschlechterungContainer() != null
+			&& gesuch.getGesuchsteller1().getEinkommensverschlechterungContainer().getEkvJABasisJahrPlus1() != null) {
+			var ekv = gesuch.getGesuchsteller1().getEinkommensverschlechterungContainer().getEkvJABasisJahrPlus1();
+			if (Boolean.TRUE.equals(finanzielleSituation.getFinanzielleSituationJA().getQuellenbesteuert())) {
+				ekv.setSteuerbaresEinkommen(null);
+				ekv.setEinkaeufeVorsorge(null);
+				ekv.setAbzuegeLiegenschaft(null);
+				ekv.setSteuerbaresVermoegen(null);
+			}
+			if (Boolean.FALSE.equals(finanzielleSituation.getFinanzielleSituationJA().getQuellenbesteuert())) {
+				ekv.setBruttolohnAbrechnung1(null);
+			}
+			einkommensverschlechterungService.saveEinkommensverschlechterungContainer(
+				gesuch.getGesuchsteller1().getEinkommensverschlechterungContainer(),
+				gesuch);
+		}
+
+		if (gesuch.getGesuchsteller2() != null && gesuch.getGesuchsteller2().getEinkommensverschlechterungContainer() != null
+			&& gesuch.getGesuchsteller2().getEinkommensverschlechterungContainer().getEkvJABasisJahrPlus1() != null) {
+			final Einkommensverschlechterung ekv =
+				gesuch.getGesuchsteller2().getEinkommensverschlechterungContainer().getEkvJABasisJahrPlus1();
+			ekv.setBruttolohnAbrechnung1(null);
+			ekv.setSteuerbaresEinkommen(null);
+			ekv.setSteuerbaresVermoegen(null);
+			ekv.setEinkaeufeVorsorge(null);
+			ekv.setAbzuegeLiegenschaft(null);
+			einkommensverschlechterungService.saveEinkommensverschlechterungContainer(gesuch.getGesuchsteller2()
+				.getEinkommensverschlechterungContainer(), gesuch);
 		}
 	}
 
@@ -220,6 +261,23 @@ public class FinanzielleSituationServiceBean extends AbstractBaseService impleme
 
 		// Steuererklaerungs/-veranlagungs-Flags nachfuehren fuer GS2
 		handleGemeinsameSteuererklaerung(gesuch);
+
+		if (gesuch.getFinSitTyp() == FinanzielleSituationTyp.SCHWYZ) {
+			Einkommensverschlechterung ekvGS1 = finanzielleSituation.getGesuchsteller().getEinkommensverschlechterungContainer().getEkvJABasisJahrPlus1();
+			if (Boolean.TRUE.equals(finanzielleSituation.getFinanzielleSituationJA().getQuellenbesteuert())) {
+				ekvGS1.setBruttolohnAbrechnung1(null);
+			}
+			if (Boolean.FALSE.equals(finanzielleSituation.getFinanzielleSituationJA().getQuellenbesteuert())) {
+				ekvGS1.setSteuerbaresEinkommen(null);
+				ekvGS1.setEinkaeufeVorsorge(null);
+				ekvGS1.setAbzuegeLiegenschaft(null);
+				ekvGS1.setSteuerbaresVermoegen(null);
+			}
+
+			if (Boolean.TRUE.equals(gesuch.extractFamiliensituation().getGemeinsameSteuererklaerung()) && gesuch.getGesuchsteller2() != null) {
+				gesuch.getGesuchsteller2().getEinkommensverschlechterungContainer().setEkvJABasisJahrPlus1(null);
+			}
+		}
 
 		wizardStepService.updateSteps(gesuchId, null, finanzielleSituationPersisted.getFinanzielleSituationJA(), wizardStepService.getFinSitWizardStepNameForGesuch(gesuch));
 
