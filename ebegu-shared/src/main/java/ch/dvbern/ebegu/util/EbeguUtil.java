@@ -44,6 +44,7 @@ import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Dokument;
 import ch.dvbern.ebegu.entities.Dossier;
 import ch.dvbern.ebegu.entities.Einkommensverschlechterung;
+import ch.dvbern.ebegu.entities.EinkommensverschlechterungInfoContainer;
 import ch.dvbern.ebegu.entities.Fall;
 import ch.dvbern.ebegu.entities.Familiensituation;
 import ch.dvbern.ebegu.entities.FamiliensituationContainer;
@@ -51,11 +52,13 @@ import ch.dvbern.ebegu.entities.FinanzielleSituation;
 import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.GemeindeStammdaten;
 import ch.dvbern.ebegu.entities.Gesuch;
+import ch.dvbern.ebegu.entities.GesuchstellerContainer;
 import ch.dvbern.ebegu.enums.AntragStatus;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
 import ch.dvbern.ebegu.enums.Eingangsart;
 import ch.dvbern.ebegu.enums.EnumFamilienstatus;
+import ch.dvbern.ebegu.enums.EnumGesuchstellerKardinalitaet;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.FinanzielleSituationTyp;
 import ch.dvbern.ebegu.enums.Sprache;
@@ -287,6 +290,9 @@ public final class EbeguUtil {
 		if (gesuch.getEinkommensverschlechterungInfoContainer() == null) {
 			return false;
 		}
+		if (gesuch.getFinSitTyp() == FinanzielleSituationTyp.SCHWYZ) {
+			return isEKVSchwyzIntroducedAndComplete(gesuch.getEinkommensverschlechterungInfoContainer(), gesuch);
+		}
 		if (gesuch.getEinkommensverschlechterungInfoContainer()
 			.getEinkommensverschlechterungInfoJA()
 			.getEinkommensverschlechterung()) {
@@ -330,6 +336,41 @@ public final class EbeguUtil {
 		return true;
 	}
 
+	private static boolean isEKVSchwyzIntroducedAndComplete(
+		EinkommensverschlechterungInfoContainer einkommensverschlechterungInfoContainer,
+		Gesuch gesuch) {
+		boolean hasEKV = einkommensverschlechterungInfoContainer.getEinkommensverschlechterungInfoJA().getEkvFuerBasisJahrPlus1();
+
+		if (!hasEKV) {
+			return true;
+		}
+
+		final Familiensituation familiensituation = gesuch.extractFamiliensituation();
+		Objects.requireNonNull(familiensituation);
+
+		if (familiensituation.getGesuchstellerKardinalitaet() == EnumGesuchstellerKardinalitaet.ALLEINE) {
+			return isEKVSchwyzGSVollstaendig(gesuch.getGesuchsteller1());
+		}
+
+		if (Boolean.TRUE.equals(familiensituation.getGemeinsameSteuererklaerung())) {
+			return isEKVSchwyzGSVollstaendig(gesuch.getGesuchsteller1());
+		}
+
+		return isEKVSchwyzGSVollstaendig(gesuch.getGesuchsteller1()) && isEKVSchwyzGSVollstaendig(gesuch.getGesuchsteller2());
+
+	}
+
+	private static boolean isEKVSchwyzGSVollstaendig(@Nullable GesuchstellerContainer gesuchstellerContainer) {
+		if (gesuchstellerContainer == null) {
+			return false;
+		}
+		var ekvGS1 = gesuchstellerContainer.getEinkommensverschlechterungContainer();
+		if (ekvGS1 == null || ekvGS1.getEkvJABasisJahrPlus1() == null) {
+			return false;
+		}
+		return isEKVSchwyzVollstaendig(ekvGS1.getEkvJABasisJahrPlus1());
+	}
+
 	private static boolean isEKVFuerJahrComplete(
 		Gesuch gesuch, Einkommensverschlechterung einkommensverschlechterungGS1,
 		Einkommensverschlechterung einkommensverschlechterungGS2) {
@@ -353,6 +394,7 @@ public final class EbeguUtil {
 			return requireNonNull(requireNonNull(gesuch.getFamiliensituationContainer()).getFamiliensituationJA()).getFamilienstatus()
 				== EnumFamilienstatus.VERHEIRATET;
 		case APPENZELL:
+		case SCHWYZ:
 			return Boolean.TRUE.equals(requireNonNull(requireNonNull(gesuch.getFamiliensituationContainer()).getFamiliensituationJA())
 				.getGemeinsameSteuererklaerung());
 		default:
@@ -413,6 +455,14 @@ public final class EbeguUtil {
 				&& finanzielleSituation.getEinkaeufeVorsorge() != null
 				&& finanzielleSituation.getAbzuegeLiegenschaft() != null
 				&& finanzielleSituation.getSteuerbaresVermoegen() != null);
+	}
+
+	public static boolean isEKVSchwyzVollstaendig(Einkommensverschlechterung ekv) {
+		return ekv.getBruttolohnAbrechnung1() != null ||
+			(ekv.getSteuerbaresEinkommen() != null
+				&& ekv.getEinkaeufeVorsorge() != null
+				&& ekv.getAbzuegeLiegenschaft() != null
+				&& ekv.getSteuerbaresVermoegen() != null);
 	}
 
 	private static boolean isEinkommensverschlechterungVollstaendig(
