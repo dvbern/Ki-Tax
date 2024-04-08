@@ -24,17 +24,6 @@
                                             [finSitGS]="getModel().finanzielleSituationGS"
                                             [readonly]="gesuchmodelManager.isGesuchReadonly()">
         </dv-finanzielle-situation-single-gs>
-
-        <div class="row margin-bottom-20"
-             *ngIf="isNotNullOrUndefined(getModel().finanzielleSituationJA.quellenbesteuert) && gesuchstellerNumber === 2">
-            <div class="col-sm-6">
-                <dv-input-label-field
-                    [model]="massgebendesEinkommen"
-                    [labelMessageKey]="'FINANZIELLE_SITUATION_MASSGEBENDES_EINKOMMEN'"
-                    [inputDisabled]="true">
-                </dv-input-label-field>
-            </div>
-        </div>
     </form>
 
     <dv-navigation-x (dvSave)="prepareSave($event.onResult)"

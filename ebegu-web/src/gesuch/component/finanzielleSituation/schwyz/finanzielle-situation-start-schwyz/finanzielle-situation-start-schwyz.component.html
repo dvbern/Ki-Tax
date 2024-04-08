@@ -26,7 +26,6 @@
         <ng-template #mehrereGS>
             <dv-steuerveranlagung-gemeinsam
                 [model]="model"
-                (gemeinsamChanged)="resetAllFinSitSchwyzData()"
             ></dv-steuerveranlagung-gemeinsam>
             <dv-steuerveranlagt-schwyz *ngIf="model.familienSituation.gemeinsameSteuererklaerung"
                                        [finSitJA]="getModel().finanzielleSituationJA"

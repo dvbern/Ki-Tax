@@ -23,15 +23,15 @@ import {TSKind} from '../../../../models/TSKind';
 import {TSKindContainer} from '../../../../models/TSKindContainer';
 import {TSDateRange} from '../../../../models/types/TSDateRange';
 import {GesuchModelManager} from '../../../service/gesuchModelManager';
-import {FjkvKinderabzugExchangeService} from './fjkv-kinderabzug-exchange.service';
+import {KinderabzugExchangeService} from '../service/kinderabzug-exchange.service';
 
 import {FkjvKinderabzugComponent} from './fkjv-kinderabzug.component';
 
 const gesuchModelManagerSpy = jasmine.createSpyObj<GesuchModelManager>(
     GesuchModelManager.name, ['getGesuch', 'getGesuchsperiode']
 );
-const fkjvExchangeServiceSpy = jasmine.createSpyObj<FjkvKinderabzugExchangeService>(
-    FjkvKinderabzugExchangeService.name,
+const fkjvExchangeServiceSpy = jasmine.createSpyObj<KinderabzugExchangeService>(
+    KinderabzugExchangeService.name,
     ['getFormValidationTriggered$', 'getGeburtsdatumChanged$']
 );
 
@@ -43,7 +43,7 @@ describe('FkjvKinderabzugComponent', () => {
         await TestBed.configureTestingModule({
             declarations: [FkjvKinderabzugComponent],
             providers: [
-                {provide: FjkvKinderabzugExchangeService, useValue: fkjvExchangeServiceSpy},
+                {provide: KinderabzugExchangeService, useValue: fkjvExchangeServiceSpy},
                 {provide: GesuchModelManager, useValue: gesuchModelManagerSpy}
             ]
         })

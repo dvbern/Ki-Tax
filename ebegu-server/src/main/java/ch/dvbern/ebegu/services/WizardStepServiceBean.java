@@ -858,7 +858,7 @@ public class WizardStepServiceBean extends AbstractBaseService implements Wizard
 			setWizardStepOkOrMutiert(wizardStep);
 		} else if (WizardStepName.KINDER == wizardStep.getWizardStepName()) {
 			//Nach Update der FamilienSituation kann es sein dass die Kinder View nicht mehr Valid ist
-			checkStepStatusForKinderOnChangeFamSit(wizardStep);
+			checkStepStatusForKinderOnChangeFamSit(wizardStep, oldEntity, newEntity);
 		} else if (WizardStepName.ERWERBSPENSUM == wizardStep.getWizardStepName()) {
 			checkStepStatusForErwerbspensum(wizardStep, true);
 		} else if (EbeguUtil.fromOneGSToTwoGS(oldEntity, newEntity, bis)) {
@@ -880,8 +880,12 @@ public class WizardStepServiceBean extends AbstractBaseService implements Wizard
 		}
 	}
 
-	private void checkStepStatusForKinderOnChangeFamSit(WizardStep wizardStep) {
+	private void checkStepStatusForKinderOnChangeFamSit(WizardStep wizardStep, @Nonnull Familiensituation oldFamiliensituation,
+		@Nonnull Familiensituation newFamiliensituation) {
 		if (hasNichtGepruefteKinder(findAllKinderFromGesuch(wizardStep))) {
+			wizardStep.setWizardStepStatus(WizardStepStatus.NOK);
+		}
+		if (newFamiliensituation.getGesuchstellerKardinalitaet() != oldFamiliensituation.getGesuchstellerKardinalitaet()) {
 			wizardStep.setWizardStepStatus(WizardStepStatus.NOK);
 		}
 	}

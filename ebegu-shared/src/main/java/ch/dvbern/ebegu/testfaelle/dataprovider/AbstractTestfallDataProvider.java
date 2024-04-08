@@ -1,6 +1,7 @@
 package ch.dvbern.ebegu.testfaelle.dataprovider;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 
 import javax.annotation.Nonnull;
 
@@ -9,7 +10,11 @@ import ch.dvbern.ebegu.entities.Erwerbspensum;
 import ch.dvbern.ebegu.entities.Familiensituation;
 import ch.dvbern.ebegu.entities.FinanzielleSituation;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
+import ch.dvbern.ebegu.entities.Kind;
+import ch.dvbern.ebegu.enums.EinschulungTyp;
 import ch.dvbern.ebegu.enums.FinanzielleSituationTyp;
+import ch.dvbern.ebegu.enums.Geschlecht;
+import ch.dvbern.ebegu.enums.Kinderabzug;
 import ch.dvbern.ebegu.enums.Taetigkeit;
 import ch.dvbern.oss.lib.beanvalidation.embeddables.IBAN;
 
@@ -64,6 +69,35 @@ public abstract class AbstractTestfallDataProvider {
 		finanzielleSituation.setNettolohn(BigDecimal.ZERO);
 		finanzielleSituation.setBruttovermoegen(BigDecimal.ZERO);
 		finanzielleSituation.setSchulden(BigDecimal.ZERO);
+	}
+
+	public Kind createKind(
+		Geschlecht geschlecht,
+		String name,
+		String vorname,
+		LocalDate geburtsdatum,
+		boolean is18GeburtstagBeforeGPEnds,
+		Kinderabzug kinderabzug,
+		boolean betreuung) {
+		Kind kind = new Kind();
+		kind.setGeschlecht(geschlecht);
+		kind.setNachname(name);
+		kind.setVorname(vorname);
+		kind.setGeburtsdatum(geburtsdatum);
+		kind.setKinderabzugErstesHalbjahr(kinderabzug);
+		kind.setKinderabzugZweitesHalbjahr(kinderabzug);
+		if (is18GeburtstagBeforeGPEnds) {
+			kind.setInErstausbildung(false);
+		} else {
+			kind.setObhutAlternierendAusueben(false);
+		}
+		kind.setFamilienErgaenzendeBetreuung(betreuung);
+		if (betreuung) {
+			kind.setSprichtAmtssprache(Boolean.TRUE);
+			kind.setEinschulungTyp(EinschulungTyp.VORSCHULALTER);
+		}
+
+		return kind;
 	}
 
 	public Erwerbspensum createErwerbspensum(int prozent) {

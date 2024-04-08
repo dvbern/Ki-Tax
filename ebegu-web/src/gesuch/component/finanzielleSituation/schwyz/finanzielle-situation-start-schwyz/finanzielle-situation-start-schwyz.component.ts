@@ -53,6 +53,13 @@ export class FinanzielleSituationStartSchwyzComponent extends AbstractGesuchView
     }
 
     private save(onResult: (arg: any) => void): Promise<TSFinanzielleSituationContainer> {
+        const hasGemeinsamChanged = this.getGesuch().extractFamiliensituation().gemeinsameSteuererklaerung
+            !== this.model.familienSituation.gemeinsameSteuererklaerung;
+        if (this.gesuchModelManager.isGesuchsteller2Required()
+            && hasGemeinsamChanged
+            && EbeguUtil.isNotNullAndFalse(this.model.familienSituation.gemeinsameSteuererklaerung)) {
+            this.resetAllFinSitSchwyzData();
+        }
         this.model.copyFinSitDataToGesuch(this.getGesuch());
         return this.gesuchModelManager.saveFinanzielleSituationStart()
             .then(() => this.gesuchModelManager.updateGesuch())
@@ -96,7 +103,8 @@ export class FinanzielleSituationStartSchwyzComponent extends AbstractGesuchView
         return EbeguUtil.isNotNullOrUndefined(toCheck);
     }
 
-    public resetAllFinSitSchwyzData(): void {
+    private resetAllFinSitSchwyzData(): void {
+        this.getModel().finanzielleSituationJA.quellenbesteuert = null;
         this.getModel().finanzielleSituationJA.bruttoLohn = null;
         this.getModel().finanzielleSituationJA.steuerbaresEinkommen = null;
         this.getModel().finanzielleSituationJA.abzuegeLiegenschaft = null;

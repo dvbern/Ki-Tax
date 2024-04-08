@@ -455,6 +455,9 @@ export class DvNavigationXComponent implements OnInit {
             case TSFinanzielleSituationSubStepName.SCHWYZ_GS2:
                 this.navigateToSchwyzFinSitGS2();
                 return;
+            case TSFinanzielleSituationSubStepName.SCHWYZ_RESULTATE:
+                this.navigateToSchwyzFinSitResultate();
+                return;
             default:
                 throw new Error(`not implemented for Substep ${navigateToSubStep}`);
         }
@@ -673,6 +676,13 @@ export class DvNavigationXComponent implements OnInit {
 
     private navigateToSchwyzFinSitGS2(): any {
         return this.$state.go('gesuch.finanzielleSituationSchwyzGS2', {
+            gesuchId: this.getGesuchId(),
+            gesuchstellerNumber: 2
+        });
+    }
+
+    private navigateToSchwyzFinSitResultate(): any {
+        return this.$state.go('gesuch.finanzielleSituationSchwyzResultate', {
             gesuchId: this.getGesuchId(),
             gesuchstellerNumber: 2
         });

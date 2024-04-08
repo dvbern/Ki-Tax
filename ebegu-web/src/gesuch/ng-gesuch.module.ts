@@ -114,6 +114,7 @@ import {
 import {InternePendenzenComponent} from './component/internePendenzenView/interne-pendenzen.component';
 import {FkjvKinderabzugComponent} from './component/kindView/fkjv-kinderabzug/fkjv-kinderabzug.component';
 import {KindFachstelleComponent} from './component/kindView/kind-fachstelle/kind-fachstelle.component';
+import {SchwyzKinderabzugComponent} from './component/kindView/schwyz-kinderabzug/schwyz-kinderabzug.component';
 import {ZahlungsstatusIconComponent} from './component/zahlungsstatus-icon/zahlungsstatus-icon.component';
 import {
     EinkommensverschlechterungAppenzellViewComponent
@@ -163,6 +164,7 @@ import {
         AngabenGs2Component,
         MassgebendesEinkommenComponent,
         FkjvKinderabzugComponent,
+        SchwyzKinderabzugComponent,
         MassgebendesEinkommenComponent,
         FinanzielleSituationAufteilungComponent,
         AufteilungComponent,

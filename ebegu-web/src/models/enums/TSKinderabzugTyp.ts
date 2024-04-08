@@ -19,7 +19,8 @@ export enum TSKinderabzugTyp {
     KEINE = 'KEINE',
     ASIV = 'ASIV',
     FKJV = 'FKJV',
-    FKJV_2 = 'FKJV_2'
+    FKJV_2 = 'FKJV_2',
+    SCHWYZ = 'SCHWYZ'
 }
 
 export function isKinderabzugTypFKJV(kinderabzugTyp: TSKinderabzugTyp): boolean {
