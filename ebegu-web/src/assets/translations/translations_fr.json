@@ -3111,5 +3111,6 @@
     "KINDERABZUG_UNTERHALTSPFLICHTIG": "Sind Sie für das Kind, für welches das Beitragsgesuch gestellt wird, unterhaltspflichtig?",
     "WOHNT_KIND_HAUSHALT": "Wohnt dieses Kind mindestens zur Hälfte bei Ihnen?",
     "KIND_PARTNER_UNTERHALTSPFLICHTIG": "Ist Ihr Partner auch unterhaltspflichtig für dieses Kind?",
+    "WARNUNG_FIN_SIT_AUSFUELLEN": "Bitte füllen Sie zuerst die Finanziellen Verhältnisse vollständig aus",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }
