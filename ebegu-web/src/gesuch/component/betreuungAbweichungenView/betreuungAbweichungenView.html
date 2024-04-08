@@ -51,14 +51,66 @@
           unsaved-warning-form>
 
         <div class="row margin-top-40">
-            <div class="col-md-12 table-responsive">
-
-                <table class="table">
+            <div class="col-md-12 table-responsive" ng-switch="vm.getBetreuungsangebotTyp()">
+                <table class="table" ng-switch-when="MITTAGSTISCH">
+                    <thead>
+                    <tr>
+                        <th data-translate="MONTH"></th>
+                        <th data-translate="PENSUM_MAHLZEITEN"></th>
+                        <th data-translate="KOSTEN_PRO_MAHLZEIT"></th>
+                        <th>
+                            <span data-translate="STATUS"></span>
+                            <dv-tooltip text="'BETREUUNGSPENSUM_ABWEICHUNGEN_STATUS_HELP' | translate"></dv-tooltip>
+                        </th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr ng-repeat="betreuung in vm.model.betreuungspensumAbweichungen"
+                        ng-attr-data-test="abweichung-{{$index}}"
+                        st-select-mode="single" role="row" tabindex="-1">
+                        <td>{{ vm.getFormattedDate(betreuung) }}</td>
+                        <td>
+                            <input aria-describedby="pensum-{{$index}}-error"
+                                   id="pensum-{{$index}}" type="number"
+                                   name="pensum-{{$index}}"
+                                   data-test="pensum"
+                                   min="0"
+                                   step="0.01"
+                                   ng-change="vm.updateStatusMittagstisch(betreuung)"
+                                   ng-model="betreuung.monatlicheHauptmahlzeiten"
+                                   class="form-control  dv-input-container-medium"
+                                   ng-disabled="vm.isDisabled(betreuung)"
+                                   ng-required="betreuung.tarifProHauptmahlzeit > 0"
+                                   ng-pattern="vm.CONSTANTS.PATTERN_TWO_DECIMALS"
+                                   ng-attr-placeholder="{{betreuung.vertraglicheHauptmahlzeiten}}">
+                        </td>
+                        <td>
+                            <input aria-describedby="kosten-{{$index}}-error"
+                                   id="kosten-{{$index}}" type="number"
+                                   name="kosten-{{$index}}"
+                                   data-test="kosten"
+                                   ng-change="vm.updateStatusMittagstisch(betreuung)"
+                                   ng-model="betreuung.tarifProHauptmahlzeit"
+                                   dv-max-length class="form-control dv-input-container-medium"
+                                   ng-disabled="vm.isDisabled(betreuung)"
+                                   ng-required="betreuung.monatlicheHauptmahlzeiten > 0"
+                                   ng-pattern="vm.CONSTANTS.PATTERN_TWO_DECIMALS"
+                                   min="0"
+                                   ng-attr-placeholder="{{betreuung.vertraglicherTarifHaupt}}">
+                        </td>
+                        <td>
+                            <span class="fa {{vm.getIcon(betreuung)}}"
+                                  aria-hidden="true"
+                                  title="{{vm.getIconTooltip(betreuung)}}"></span>
+                        </td>
+                    </tbody>
+                </table>
+                <table class="table" ng-switch-default>
                     <thead>
                     <tr>
                         <th data-translate="MONTH"></th>
                         <th>{{vm.getInputFormatTitle()}}</th>
-                        <th>{{vm.getKostenTitle()}}</th>
+                        <th data-translate="MONATLICHE_BETREUUNGSKOSTEN"></th>
                         <th ng-if="vm.isMahlzeitenverguenstigungEnabled()"
                             data-translate="MONATLICHE_HAUPTMAHLZEITEN"></th>
                         <th ng-if="vm.isMahlzeitenverguenstigungEnabled()"

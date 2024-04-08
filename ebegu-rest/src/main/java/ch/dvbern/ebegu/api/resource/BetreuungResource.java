@@ -15,6 +15,7 @@
 
 package ch.dvbern.ebegu.api.resource;
 
+import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
@@ -163,9 +164,7 @@ public class BetreuungResource {
 		}
 		Betreuung convertedBetreuung = converter.betreuungToStoreableEntity(betreuungJAXP);
 		resourceHelper.assertGesuchStatusForBenutzerRole(kindContainer.getGesuch(), convertedBetreuung);
-
 		convertedBetreuung.setKind(kindContainer);
-		PensumUtil.transformBetreuungsPensumContainers(convertedBetreuung);
 
 		Betreuung persistedBetreuung = betreuungService.saveBetreuung(convertedBetreuung, abwesenheit, null);
 		return converter.betreuungToJAX(persistedBetreuung);
@@ -520,12 +519,15 @@ public class BetreuungResource {
 		Betreuung betreuung = betreuungService.findBetreuung(betreuungId.getId())
 			.orElseThrow(() -> new EbeguEntityNotFoundException("saveBetreuungspensumAbweichungen", betreuungId.getId()));
 
+		BigDecimal multiplier = betreuungService.getMultiplierForAbweichnungen(betreuung);
+		List<BetreuungspensumAbweichung> trustedAbweichungen = betreuung.fillAbweichungen(multiplier);
+
 		List<JaxBetreuungspensumAbweichung> jaxAbweichungen = betreuungJax.getBetreuungspensumAbweichungen();
 		Set<BetreuungspensumAbweichung> toStore =
-			converter.betreuungspensumAbweichungenToEntity(jaxAbweichungen, betreuung.getBetreuungspensumAbweichungen());
+			converter.betreuungspensumAbweichungenToEntity(jaxAbweichungen, trustedAbweichungen);
+		converter.addAbweichungenToBetreuung(toStore, betreuung);
+		PensumUtil.transformBetreuungsPensumContainers(betreuung.asAbweichungPensumContainer());
 
-		converter.setBetreuungInbetreuungsAbweichungen(toStore, betreuung);
-		betreuung.setBetreuungspensumAbweichungen(toStore);
 		betreuungService.saveBetreuung(betreuung, false, null);
 		return converter.betreuungspensumAbweichungenToJax(betreuung);
 	}

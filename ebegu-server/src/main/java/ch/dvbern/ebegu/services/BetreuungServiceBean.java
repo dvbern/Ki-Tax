@@ -1512,7 +1512,7 @@ public class BetreuungServiceBean extends AbstractBaseService implements Betreuu
 		Gesuchsperiode gp = betreuung.extractGesuchsperiode();
 
 		if (betreuung.isAngebotMittagstisch()) {
-			return BetreuungUtil.getMittagstischMultiplier();
+			return BigDecimal.ONE;
 		}
 
 

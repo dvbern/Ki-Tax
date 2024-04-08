@@ -143,6 +143,7 @@ import ch.dvbern.ebegu.services.GesuchService;
 import ch.dvbern.ebegu.services.MailService;
 import ch.dvbern.ebegu.services.MitteilungService;
 import ch.dvbern.ebegu.services.VerfuegungService;
+import ch.dvbern.ebegu.services.util.PensumUtil;
 import ch.dvbern.ebegu.services.util.SearchUtil;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.types.DateRange_;
@@ -993,8 +994,7 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 	}
 
 	@Override
-	public void createMutationsmeldungAbweichungen(
-			@Nonnull Betreuungsmitteilung mitteilung, @Nonnull Betreuung betreuung) {
+	public void createMutationsmeldungAbweichungen(@Nonnull Betreuungsmitteilung mitteilung, @Nonnull Betreuung betreuung) {
 
 		// convert BetreuungspensumAbweichung to MitteilungPensum
 		// (1) Zusammenfuegen der bestehenden Pensen mit den evtl. hinzugefuegten Abweichungen. Resultat ist ein Pensum
@@ -1003,17 +1003,17 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 				betreuung.fillAbweichungen(betreuungService.getMultiplierForAbweichnungen(betreuung));
 		// (2) Die Abschnitte werden zu BetreuungsMitteilungspensen konvertiert.
 		Set<BetreuungsmitteilungPensum> pensenFromAbweichungen = initialAbweichungen.stream()
-				.filter(abweichung -> (abweichung.getVertraglichesPensum() != null))
+			.filter(abweichung -> abweichung.getVertraglichesPensum() != null)
 				.map(abweichung -> abweichung.convertAbweichungToMitteilungPensum(mitteilung))
 				.collect(Collectors.toSet());
 
 		mitteilung.setBetreuungspensen(pensenFromAbweichungen);
+		PensumUtil.transformBetreuungsPensumContainers(mitteilung);
 
-		final Locale locale = LocaleThreadLocal.get();
+		Locale locale = LocaleThreadLocal.get();
 
-		final Benutzer currentBenutzer = benutzerService.getCurrentBenutzer()
-				.orElseThrow(() -> new EbeguEntityNotFoundException("sendBetreuungsmitteilung",
-						ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND));
+		Benutzer currentBenutzer = benutzerService.getCurrentBenutzer()
+			.orElseThrow(() -> new EbeguEntityNotFoundException("sendBetreuungsmitteilung"));
 
 		MitteilungUtil.initializeBetreuungsmitteilung(mitteilung, betreuung, currentBenutzer, locale);
 		mitteilung.setMessage(createNachrichtForMutationsmeldung(mitteilung, pensenFromAbweichungen));

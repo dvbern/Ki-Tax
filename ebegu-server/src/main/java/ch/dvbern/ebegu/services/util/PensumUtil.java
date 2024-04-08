@@ -35,8 +35,8 @@ public class PensumUtil {
 		betreuung.findBetreuung()
 			.filter(Betreuung::isAngebotMittagstisch)
 			.ifPresent(b -> {
-				b.getBetreuungenGS().forEach(PensumUtil::transformMittagstischPensum);
-				b.getBetreuungenJA().forEach(PensumUtil::transformMittagstischPensum);
+				betreuung.getBetreuungenGS().forEach(PensumUtil::transformMittagstischPensum);
+				betreuung.getBetreuungenJA().forEach(PensumUtil::transformMittagstischPensum);
 			});
 	}
 

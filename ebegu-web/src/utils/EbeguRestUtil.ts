@@ -29,7 +29,6 @@ import {TSQuickSearchResult} from '../models/dto/TSQuickSearchResult';
 import {TSSearchResultEntry} from '../models/dto/TSSearchResultEntry';
 import {TSAdressetyp} from '../models/enums/TSAdressetyp';
 import {TSAnspruchBeschaeftigungAbhaengigkeitTyp} from '../models/enums/TSAnspruchBeschaeftigungAbhaengigkeitTyp';
-import {TSBetreuungsangebotTyp} from '../models/enums/TSBetreuungsangebotTyp';
 import {TSBetreuungspensumAbweichungStatus} from '../models/enums/TSBetreuungspensumAbweichungStatus';
 import {TSEinschulungTyp} from '../models/enums/TSEinschulungTyp';
 import {TSFachstellenTyp} from '../models/enums/TSFachstellenTyp';
@@ -2684,28 +2683,11 @@ export class EbeguRestUtil {
         this.abstractBetreuungspensumEntityToRestObject(restAbweichung, abweichung);
 
         restAbweichung.status = abweichung.status;
-
-        restAbweichung.multiplier = abweichung.multiplier;
-
-        const pensum = restAbweichung.pensum ? restAbweichung.pensum / restAbweichung.multiplier : undefined;
-        const originalPensum = restAbweichung.vertraglichesPensum
-            ? restAbweichung.vertraglichesPensum / restAbweichung.multiplier
-            : undefined;
-
-        restAbweichung.vertraglichesPensum = originalPensum;
-        restAbweichung.pensum = pensum;
-
-        if (abweichung.betreuungsangebotTyp === TSBetreuungsangebotTyp.MITTAGSTISCH) {
-            const kosten = abweichung.pensum * abweichung.monatlicheBetreuungskosten;
-            const originalKosten = originalPensum * restAbweichung.vertraglicheKosten;
-            restAbweichung.monatlicheBetreuungskosten = kosten;
-            restAbweichung.vertraglicheKosten = originalKosten;
-        }
-
+        restAbweichung.pensum = restAbweichung.pensum ? restAbweichung.pensum / restAbweichung.multiplier : undefined;
         restAbweichung.monatlicheHauptmahlzeiten = abweichung.monatlicheHauptmahlzeiten;
+        restAbweichung.tarifProHauptmahlzeit = abweichung.tarifProHauptmahlzeit;
         restAbweichung.monatlicheNebenmahlzeiten = abweichung.monatlicheNebenmahlzeiten;
-        restAbweichung.vertraglicheHauptmahlzeiten = abweichung.vertraglicheHauptmahlzeiten;
-        restAbweichung.vertraglicheNebenmahlzeiten = abweichung.vertraglicheNebenmahlzeiten;
+        restAbweichung.tarifProNebenmahlzeit = abweichung.tarifProNebenmahlzeit;
 
         return restAbweichung;
     }
@@ -2852,7 +2834,6 @@ export class EbeguRestUtil {
         this.parseAbstractBetreuungspensumEntity(abweichungTS, abweichungFromServer);
         abweichungTS.status = abweichungFromServer.status;
         abweichungTS.vertraglicheKosten = abweichungFromServer.vertraglicheKosten;
-        abweichungTS.betreuungsangebotTyp = abweichungFromServer.betreuungsangebotTyp;
 
         abweichungTS.multiplier = abweichungFromServer.multiplier;
 
@@ -2860,24 +2841,14 @@ export class EbeguRestUtil {
         const originalPensum = Number((abweichungFromServer.vertraglichesPensum * abweichungFromServer.multiplier)
             .toFixed(2));
 
-        if (abweichungTS.betreuungsangebotTyp === TSBetreuungsangebotTyp.MITTAGSTISCH) {
-            const monatlicheKosten = pensum === 0 ?
-                0 :
-                Number((abweichungFromServer.monatlicheBetreuungskosten / pensum).toFixed(2));
-            const originalKosten = originalPensum === 0 ?
-                0 :
-                Number((abweichungFromServer.vertraglicheKosten / originalPensum).toFixed(2));
-
-            abweichungTS.monatlicheBetreuungskosten = monatlicheKosten;
-            abweichungTS.vertraglicheKosten = originalKosten;
-        }
-
         abweichungTS.vertraglicheHauptmahlzeiten = abweichungFromServer.vertraglicheHauptmahlzeiten;
         abweichungTS.vertraglicheNebenmahlzeiten = abweichungFromServer.vertraglicheNebenmahlzeiten;
         abweichungTS.vertraglicherTarifHaupt = abweichungFromServer.vertraglicherTarifHaupt;
         abweichungTS.vertraglicherTarifNeben = abweichungFromServer.vertraglicherTarifNeben;
         abweichungTS.monatlicheHauptmahlzeiten = abweichungFromServer.monatlicheHauptmahlzeiten;
+        abweichungTS.tarifProHauptmahlzeit = this.undefinedOrPositive(abweichungFromServer.tarifProHauptmahlzeit);
         abweichungTS.monatlicheNebenmahlzeiten = abweichungFromServer.monatlicheNebenmahlzeiten;
+        abweichungTS.tarifProNebenmahlzeit = this.undefinedOrPositive(abweichungFromServer.tarifProNebenmahlzeit);
         abweichungTS.vertraglichesPensum = originalPensum;
         abweichungTS.pensum = pensum;
 
@@ -2888,6 +2859,10 @@ export class EbeguRestUtil {
         }
 
         return abweichungTS;
+    }
+
+    private undefinedOrPositive(value: number): number | undefined {
+        return value > 0 ? value : undefined;
     }
 
     public parseBetreuungspensumContainers(data: Array<any>): TSBetreuungspensumContainer[] {

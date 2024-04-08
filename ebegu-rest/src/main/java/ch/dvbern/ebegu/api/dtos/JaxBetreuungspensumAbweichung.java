@@ -24,7 +24,6 @@ import javax.annotation.Nullable;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 
-import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.BetreuungspensumAbweichungStatus;
 
 /**
@@ -58,9 +57,6 @@ public class JaxBetreuungspensumAbweichung extends JaxAbstractMahlzeitenPensumDT
 
 	@Nullable
 	private BigDecimal multiplier;
-
-	@Nonnull
-	private BetreuungsangebotTyp betreuungsangebotTyp;
 
 	@Nonnull
 	public BetreuungspensumAbweichungStatus getStatus() {
@@ -132,14 +128,5 @@ public class JaxBetreuungspensumAbweichung extends JaxAbstractMahlzeitenPensumDT
 
 	public void setMultiplier(@Nullable BigDecimal multiplier) {
 		this.multiplier = multiplier;
-	}
-
-	@Nonnull
-	public BetreuungsangebotTyp getBetreuungsangebotTyp() {
-		return betreuungsangebotTyp;
-	}
-
-	public void setBetreuungsangebotTyp(@Nonnull BetreuungsangebotTyp betreuungsangebotTyp) {
-		this.betreuungsangebotTyp = betreuungsangebotTyp;
 	}
 }

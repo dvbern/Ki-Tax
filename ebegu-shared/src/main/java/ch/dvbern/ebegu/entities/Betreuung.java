@@ -48,6 +48,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import ch.dvbern.ebegu.dto.suchfilter.lucene.BGNummerBridge;
+import ch.dvbern.ebegu.entities.containers.BetreuungAbweichung;
 import ch.dvbern.ebegu.entities.containers.BetreuungAndPensumContainer;
 import ch.dvbern.ebegu.enums.AntragCopyType;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
@@ -156,6 +157,7 @@ public class Betreuung extends AbstractPlatz implements BetreuungAndPensumContai
 	@Column(nullable = true)
 	private Boolean abwesenheitMutiert;
 
+	@Nonnull
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "betreuung")
 	@SortNatural
 	private Set<BetreuungspensumAbweichung> betreuungspensumAbweichungen = new TreeSet<>();
@@ -266,11 +268,12 @@ public class Betreuung extends AbstractPlatz implements BetreuungAndPensumContai
 		this.abwesenheitMutiert = abwesenheitMutiert;
 	}
 
+	@Nonnull
 	public Set<BetreuungspensumAbweichung> getBetreuungspensumAbweichungen() {
 		return betreuungspensumAbweichungen;
 	}
 
-	public void setBetreuungspensumAbweichungen(Set<BetreuungspensumAbweichung> betreuungspensumAbweichungen) {
+	public void setBetreuungspensumAbweichungen(@Nonnull Set<BetreuungspensumAbweichung> betreuungspensumAbweichungen) {
 		this.betreuungspensumAbweichungen = betreuungspensumAbweichungen;
 	}
 
@@ -394,12 +397,10 @@ public class Betreuung extends AbstractPlatz implements BetreuungAndPensumContai
 					.copyBetreuungspensumContainer(new BetreuungspensumContainer(), copyType, target));
 			}
 
-			if ( this.getBetreuungspensumAbweichungen() != null) {
-				for (BetreuungspensumAbweichung betreuungspensumAbweichung : this.getBetreuungspensumAbweichungen()) {
-					if (betreuungspensumAbweichung.getStatus() == BetreuungspensumAbweichungStatus.NICHT_FREIGEGEBEN) {
-						target.getBetreuungspensumAbweichungen().add(betreuungspensumAbweichung
-							.copyBetreuungspensumAbweichung(new BetreuungspensumAbweichung(), copyType, target));
-					}
+			for (BetreuungspensumAbweichung betreuungspensumAbweichung : this.getBetreuungspensumAbweichungen()) {
+				if (betreuungspensumAbweichung.getStatus() == BetreuungspensumAbweichungStatus.NICHT_FREIGEGEBEN) {
+					target.getBetreuungspensumAbweichungen().add(betreuungspensumAbweichung
+						.copyBetreuungspensumAbweichung(new BetreuungspensumAbweichung(), copyType, target));
 				}
 			}
 
@@ -449,6 +450,11 @@ public class Betreuung extends AbstractPlatz implements BetreuungAndPensumContai
 			.map(BetreuungspensumContainer::getBetreuungspensumJA)
 			.filter(Objects::nonNull)
 			.collect(Collectors.toList());
+	}
+
+	@CheckMittagstischPensum(message = "{invalid_mittagstisch_pensum}")
+	public BetreuungAbweichung asAbweichungPensumContainer() {
+		return new BetreuungAbweichung(this, this.betreuungspensumAbweichungen);
 	}
 
 	@Nonnull

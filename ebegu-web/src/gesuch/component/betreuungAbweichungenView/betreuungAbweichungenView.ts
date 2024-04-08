@@ -188,6 +188,12 @@ export class BetreuungAbweichungenViewController extends AbstractGesuchViewContr
         }
     }
 
+    public updateStatusMittagstisch(abweichung: TSBetreuungspensumAbweichung): void {
+        abweichung.status = Number(abweichung.monatlicheHauptmahlzeiten) > 0 && Number(abweichung.tarifProHauptmahlzeit) > 0
+            ? TSBetreuungspensumAbweichungStatus.NICHT_FREIGEGEBEN
+            : TSBetreuungspensumAbweichungStatus.NONE;
+    }
+
     public getIcon(abweichung: TSBetreuungspensumAbweichung): string {
         switch (abweichung.status) {
             case TSBetreuungspensumAbweichungStatus.NICHT_FREIGEGEBEN:
@@ -224,7 +230,7 @@ export class BetreuungAbweichungenViewController extends AbstractGesuchViewContr
 
         // die felder sind not null und müssen auf 0 gesetzt werden, damit die validierung nicht fehlschlägt falls
         // die gemeinde die vergünstigung deaktiviert hat
-        if (!this.isMahlzeitenverguenstigungEnabled()) {
+        if (!this.isMahlzeitenverguenstigungEnabled() && this.getBetreuungsangebotTyp() !== TSBetreuungsangebotTyp.MITTAGSTISCH) {
             this.model.betreuungspensumAbweichungen.forEach(a => {
                 a.monatlicheNebenmahlzeiten ??= 0;
                 a.monatlicheHauptmahlzeiten ??= 0;
@@ -320,21 +326,15 @@ export class BetreuungAbweichungenViewController extends AbstractGesuchViewContr
             });
     }
 
+    public getBetreuungsangebotTyp(): TSBetreuungsangebotTyp {
+        return this.model.getAngebotTyp();
+    }
+
     public getInputFormatTitle(): string {
-        if (this.model.getAngebotTyp() === TSBetreuungsangebotTyp.MITTAGSTISCH) {
-            return this.$translate.instant('PENSUM_MAHLZEITEN');
-        }
-        return this.model.getAngebotTyp() === TSBetreuungsangebotTyp.KITA
+        return this.getBetreuungsangebotTyp() === TSBetreuungsangebotTyp.KITA
         && this.betreuungspensumAnzeigeTypEinstellung !== TSPensumAnzeigeTyp.NUR_STUNDEN ?
             this.$translate.instant('DAYS') :
             this.$translate.instant('HOURS');
-    }
-
-    public getKostenTitle(): string {
-        if (this.model.getAngebotTyp() === TSBetreuungsangebotTyp.MITTAGSTISCH) {
-            return this.$translate.instant('KOSTEN_PRO_MAHLZEIT');
-        }
-        return this.$translate.instant('MONATLICHE_BETREUUNGSKOSTEN');
     }
 
     public cancel(): void {
