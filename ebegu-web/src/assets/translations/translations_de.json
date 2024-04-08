@@ -2980,7 +2980,7 @@
     "BESONDERE_BEDUERFNISSE_LUZERN": "Luzern: Ausserordentlicher Betreuungsaufwand konfigurierbar",
     "BESONDERE_BEDUERFNISSE_BETRAG": "Betrag ausserordentlicher Betreuungsaufwand",
     "FKJV_MAX_PENSUM_AUSSERORDENTLICHER_ANSPRUCH": "FKJV: Maximales Pensum bei ausserordentlichem Anspruch",
-    "AUSSERORDENTLICHER_ANSPRUCH_RULE": "Welche ausserordentlicher Anspruch Rule soll gelten",
+    "AUSSERORDENTLICHER_ANSPRUCH_RULE": "Welche ausserordentlicher Anspruch Rule soll gelten (FKJV, ASIV, KEINE)",
     "GESCHWISTERNBONUS_AKTIVIERT": "Luzern: Geschwisternbonus aktiviert",
     "FINANZIELLE_SITUATION_AUFTEILUNG": "Aufteilung finanzielle Situation zwischen {{gs1}} und {{gs2}}",
     "FINANZIELLE_SITUATION_REST": "Rest:",

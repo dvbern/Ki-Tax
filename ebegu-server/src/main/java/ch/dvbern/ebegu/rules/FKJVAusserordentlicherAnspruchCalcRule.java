@@ -17,22 +17,20 @@
 
 package ch.dvbern.ebegu.rules;
 
-import java.util.Locale;
-import java.util.Map;
-import java.util.Objects;
-
-import javax.annotation.Nonnull;
-
 import ch.dvbern.ebegu.dto.BGCalculationInput;
 import ch.dvbern.ebegu.entities.AbstractPlatz;
 import ch.dvbern.ebegu.entities.Einstellung;
 import ch.dvbern.ebegu.entities.Kind;
+import ch.dvbern.ebegu.enums.AusserordentlicherAnspruchTyp;
 import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.enums.MsgKey;
 import ch.dvbern.ebegu.types.DateRange;
 
-import static ch.dvbern.ebegu.enums.EinstellungKey.AUSSERORDENTLICHER_ANSPRUCH_RULE;
-import static ch.dvbern.ebegu.rules.AbstractAusserordentlicherAnspruchCalcRule.AusserordentlicherAnspruchType.FKJV;
+import javax.annotation.Nonnull;
+import java.util.Locale;
+import java.util.Map;
+
+import static ch.dvbern.ebegu.enums.AusserordentlicherAnspruchTyp.FKJV;
 
 /**
  * Regel für den ausserordentlichen Anspruch. Sie beachtet:
@@ -63,10 +61,8 @@ public class FKJVAusserordentlicherAnspruchCalcRule extends AbstractAusserordent
 	@Override
 	public boolean isRelevantForGemeinde(
 			@Nonnull Map<EinstellungKey, Einstellung> einstellungMap) {
-		Einstellung ausserOrdentlicherAnspruchRuleTyp = einstellungMap.get(AUSSERORDENTLICHER_ANSPRUCH_RULE);
-		Objects.requireNonNull(ausserOrdentlicherAnspruchRuleTyp,"Parameter AUSSERORDENTLICHER_ANSPRUCH_RULE muss gesetzt sein");
-
-		return ausserOrdentlicherAnspruchRuleTyp.getValue().equals(FKJV.toString());
+	    AusserordentlicherAnspruchTyp anspruchTyp = getAusserordentlicherAnspruchTypeFromEinstellungen(einstellungMap);
+		return anspruchTyp == FKJV;
 	}
 
 	@Override
