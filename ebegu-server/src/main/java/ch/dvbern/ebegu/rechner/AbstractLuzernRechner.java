@@ -149,11 +149,8 @@ public abstract class AbstractLuzernRechner extends AbstractRechner {
 		BigDecimal vollkostenProMonat,
 		VerfuegungZeitabschnitt zeitabschnitt
 	) {
-		if (input.getEingewoehnungPauschale().compareTo(BigDecimal.ZERO) <= 0) {
-			return BigDecimal.ZERO;
-		}
-
-		if (vollkostenProMonat.compareTo(BigDecimal.ZERO) <= 0) {
+		if (input.getEingewoehnungPauschale().compareTo(BigDecimal.ZERO) <= 0 || vollkostenProMonat.compareTo(BigDecimal.ZERO) <= 0) {
+			zeitabschnitt.getBemerkungenDTOList().removeBemerkungByMsgKey(MsgKey.EINGEWOEHUNG_PASCHALE);
 			return BigDecimal.ZERO;
 		}
 
