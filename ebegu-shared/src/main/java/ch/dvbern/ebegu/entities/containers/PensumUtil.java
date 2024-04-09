@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.dvbern.ebegu.services.util;
+package ch.dvbern.ebegu.entities.containers;
 
 import java.math.BigDecimal;
 
@@ -23,7 +23,6 @@ import javax.annotation.Nonnull;
 
 import ch.dvbern.ebegu.entities.AbstractMahlzeitenPensum;
 import ch.dvbern.ebegu.entities.Betreuung;
-import ch.dvbern.ebegu.entities.containers.BetreuungAndPensumContainer;
 import ch.dvbern.ebegu.enums.PensumUnits;
 import ch.dvbern.ebegu.util.BetreuungUtil;
 import lombok.experimental.UtilityClass;

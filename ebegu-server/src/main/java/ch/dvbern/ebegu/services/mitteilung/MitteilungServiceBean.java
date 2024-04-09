@@ -143,7 +143,6 @@ import ch.dvbern.ebegu.services.GesuchService;
 import ch.dvbern.ebegu.services.MailService;
 import ch.dvbern.ebegu.services.MitteilungService;
 import ch.dvbern.ebegu.services.VerfuegungService;
-import ch.dvbern.ebegu.services.util.PensumUtil;
 import ch.dvbern.ebegu.services.util.SearchUtil;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.types.DateRange_;
@@ -1008,7 +1007,6 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 				.collect(Collectors.toSet());
 
 		mitteilung.setBetreuungspensen(pensenFromAbweichungen);
-		PensumUtil.transformBetreuungsPensumContainers(mitteilung);
 
 		Locale locale = LocaleThreadLocal.get();
 

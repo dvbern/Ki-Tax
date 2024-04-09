@@ -158,17 +158,11 @@ public class MitteilungResource {
 		@Context UriInfo uriInfo,
 		@Context HttpServletResponse response) {
 
-		Objects.requireNonNull(mitteilungJAXP);
 		Objects.requireNonNull(mitteilungJAXP.getBetreuung());
-		Objects.requireNonNull(mitteilungJAXP.getBetreuung().getId());
+		String betreuungId = Objects.requireNonNull(mitteilungJAXP.getBetreuung().getId());
 
-		Betreuung betreuung =
-			betreuungService.findBetreuung(mitteilungJAXP.getBetreuung().getId())
-				.orElseThrow(() -> new EbeguEntityNotFoundException(
-					"sendBetreuungsmitteilung",
-					ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
-					mitteilungJAXP.getBetreuung()
-				));
+		Betreuung betreuung = betreuungService.findBetreuung(betreuungId)
+			.orElseThrow(() -> new EbeguEntityNotFoundException("sendBetreuungsmitteilung", betreuungId));
 
 		// we need to check if Betreuung was storniert and has an other one for the same institution whos not
 		if (!mitteilungService.isBetreuungGueltigForMutation(betreuung)) {
@@ -184,20 +178,17 @@ public class MitteilungResource {
 		Betreuungsmitteilung betreuungsmitteilung =
 			converter.betreuungsmitteilungToEntity(mitteilungJAXP, new Betreuungsmitteilung());
 
-		final Locale locale = LocaleThreadLocal.get();
+		Locale locale = LocaleThreadLocal.get();
 
-		final Benutzer currentBenutzer = benutzerService.getCurrentBenutzer()
-			.orElseThrow(() -> new EbeguEntityNotFoundException(
-				"sendBetreuungsmitteilung",
-				ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND));
+		Benutzer currentBenutzer = benutzerService.getCurrentBenutzer()
+			.orElseThrow(() -> new EbeguEntityNotFoundException("sendBetreuungsmitteilung"));
 
 		MitteilungUtil.initializeBetreuungsmitteilung(betreuungsmitteilung, betreuung, currentBenutzer, locale);
 
 		betreuungsmitteilung.setMessage(mitteilungService.createNachrichtForMutationsmeldung(betreuungsmitteilung,
 			betreuungsmitteilung.getBetreuungspensen()));
 
-		Betreuungsmitteilung persistedMitteilung =
-			this.mitteilungService.sendBetreuungsmitteilung(betreuungsmitteilung);
+		Betreuungsmitteilung persistedMitteilung = this.mitteilungService.sendBetreuungsmitteilung(betreuungsmitteilung);
 		return converter.betreuungsmitteilungToJAX(persistedMitteilung);
 	}
 
