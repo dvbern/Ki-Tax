@@ -20,16 +20,13 @@ import {IComponentController, IController, IQService, ITimeoutService} from 'ang
 import {FinanzielleSituationRS} from '../../../../gesuch/service/finanzielleSituationRS.rest';
 import {FinanzielleSituationSubStepManager} from '../../../../gesuch/service/finanzielleSituationSubStepManager';
 import {
-    FinanzielleSituationSubStepManagerAppenzell
+    FinanzielleSituationSubStepManagerAppenzell,
 } from '../../../../gesuch/service/finanzielleSituationSubStepManagerAppenzell';
+import {FinanzielleSituationSubStepManagerBernAsiv} from '../../../../gesuch/service/finanzielleSituationSubStepManagerBernAsiv';
+import {FinanzielleSituationSubStepManagerLuzern} from '../../../../gesuch/service/finanzielleSituationSubStepManagerLuzern';
+import {FinanzielleSituationSubStepManagerSchwyz} from '../../../../gesuch/service/finanzielleSituationSubStepManagerSchwyz';
 import {
-    FinanzielleSituationSubStepManagerBernAsiv
-} from '../../../../gesuch/service/finanzielleSituationSubStepManagerBernAsiv';
-import {
-    FinanzielleSituationSubStepManagerLuzern
-} from '../../../../gesuch/service/finanzielleSituationSubStepManagerLuzern';
-import {
-    FinanzielleSituationSubStepManagerSolothurn
+    FinanzielleSituationSubStepManagerSolothurn,
 } from '../../../../gesuch/service/finanzielleSituationSubStepManagerSolothurn';
 import {GesuchModelManager} from '../../../../gesuch/service/gesuchModelManager';
 import {WizardStepManager} from '../../../../gesuch/service/wizardStepManager';
@@ -154,6 +151,10 @@ export class NavigatorController implements IController {
                     case TSFinanzielleSituationTyp.APPENZELL:
                         this.finSitWizardSubStepManager =
                             new FinanzielleSituationSubStepManagerAppenzell(this.gesuchModelManager);
+                        break;
+                    case TSFinanzielleSituationTyp.SCHWYZ:
+                        this.finSitWizardSubStepManager =
+                            new FinanzielleSituationSubStepManagerSchwyz(this.gesuchModelManager);
                         break;
                     default:
                         throw new Error(`unexpected TSFinanzielleSituationTyp ${typ}`);
@@ -318,6 +319,7 @@ export class NavigatorController implements IController {
         if (TSWizardStepName.FINANZIELLE_SITUATION === this.wizardStepManager.getCurrentStepName()
             || TSWizardStepName.FINANZIELLE_SITUATION_LUZERN === this.wizardStepManager.getCurrentStepName()
             || TSWizardStepName.FINANZIELLE_SITUATION_SOLOTHURN === this.wizardStepManager.getCurrentStepName()
+            || TSWizardStepName.FINANZIELLE_SITUATION_SCHWYZ === this.wizardStepManager.getCurrentStepName()
             || TSWizardStepName.FINANZIELLE_SITUATION_APPENZELL === this.wizardStepManager.getCurrentStepName()) {
             const nextSubStep = this.finSitWizardSubStepManager.getNextSubStepFinanzielleSituation(this.dvSubStepName);
             const nextMainStep = this.wizardStepManager.getNextStep(this.gesuchModelManager.getGesuch());
@@ -395,6 +397,7 @@ export class NavigatorController implements IController {
 
         if (TSWizardStepName.FINANZIELLE_SITUATION === this.wizardStepManager.getCurrentStepName()
             || TSWizardStepName.FINANZIELLE_SITUATION_LUZERN === this.wizardStepManager.getCurrentStepName()
+            || TSWizardStepName.FINANZIELLE_SITUATION_SCHWYZ === this.wizardStepManager.getCurrentStepName()
             || TSWizardStepName.FINANZIELLE_SITUATION_SOLOTHURN === this.wizardStepManager.getCurrentStepName()) {
             const previousSubStep = this.finSitWizardSubStepManager.getPreviousSubStepFinanzielleSituation(this.dvSubStepName);
             const previousMainStep = this.wizardStepManager.getPreviousStep(this.gesuchModelManager.getGesuch());
@@ -484,6 +487,8 @@ export class NavigatorController implements IController {
                 return this.state.go('gesuch.erwerbsPensen', gesuchIdParam);
             case TSWizardStepName.FINANZIELLE_SITUATION:
                 return this.state.go('gesuch.finanzielleSituationStart', gesuchIdParam);
+            case TSWizardStepName.FINANZIELLE_SITUATION_SCHWYZ:
+                return this.state.go('gesuch.finanzielleSituationStartSchwyz', gesuchIdParam);
             case TSWizardStepName.FINANZIELLE_SITUATION_LUZERN:
                 return this.state.go('gesuch.finanzielleSituationStartLuzern', gesuchIdParam);
             case TSWizardStepName.FINANZIELLE_SITUATION_SOLOTHURN:

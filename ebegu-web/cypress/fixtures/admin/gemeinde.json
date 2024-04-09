@@ -1,0 +1,11 @@
+{
+    "valid": {
+        "stammdaten": {
+            "anschrift": "Gemeinde",
+            "strasse": "Gemeindestrasse",
+            "hausnummer": "10",
+            "plz": "3000",
+            "telefon": "031 333 33 33"
+        }
+    }
+}

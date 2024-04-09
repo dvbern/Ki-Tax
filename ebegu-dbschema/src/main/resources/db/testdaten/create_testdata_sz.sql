@@ -29,6 +29,8 @@ end;
 
 DELIMITER ;
 
+START TRANSACTION;
+
 # Variables definition
 SET @mandant_id_schwyz = UNHEX(REPLACE('08687de9-b3d0-11ee-829a-0242ac160002', '-', ''));
 call select_gesuchsperiode('2024-08-01', @mandant_id_schwyz, @gesuchsperiode_24_25_id);
@@ -273,3 +275,4 @@ VALUES (UNHEX(REPLACE(UUID(), '-', '')), NOW(), NOW(),
 		UNHEX(REPLACE('070e2aa4-b3e9-11ee-829a-0242ac160002', '-', '')));
 
 UPDATE mandant SET mandant.activated=true where id = @mandant_id_schwyz;
+COMMIT;

@@ -54,4 +54,9 @@ public class FinanzielleSituationDokumenteVisitor implements FinanzielleSituatio
 	public AbstractDokumente<AbstractFinanzielleSituation, Familiensituation> visitFinSitAppenzell() {
 		return new AppenzellFinanzielleSituationDokumente();
 	}
+
+	@Override
+	public AbstractDokumente<AbstractFinanzielleSituation, Familiensituation> visitFinSitSchwyz() {
+		return new SchwyzFinanzielleSitutaionDokumente();
+	}
 }

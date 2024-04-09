@@ -23,6 +23,6 @@ export class FamiliensituationVisitor implements MandantVisitor<any>  {
     }
 
     public visitSchwyz(): any {
-        return this.visitSolothurn();
+        return 'gesuch.familiensituation-schwyz';
     }
 }
