@@ -21,10 +21,10 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 
-public class EingewoehnungPauschaleAbschnittRuleTest {
+class EingewoehnungPauschaleAbschnittRuleTest {
 
 	@Test
-	public void betreuungspensum_ohneEingewoehnungPaschale_hasNoEingewoehnungMessageAndNoPauschaleSet() {
+	void betreuungspensum_ohneEingewoehnungPaschale_hasNoEingewoehnungMessageAndNoPauschaleSet() {
 		Betreuung betreuung = EbeguRuleTestsHelper.createBetreuungWithPensum(START_PERIODE, ENDE_PERIODE, BetreuungsangebotTyp.KITA, 80,  BigDecimal.valueOf(800));
 		assertThat(betreuung.getKind().getGesuch().getGesuchsteller1(), notNullValue());
 		betreuung.getKind().getGesuch().getGesuchsteller1().addErwerbspensumContainer(TestDataUtil.createErwerbspensum(START_PERIODE, ENDE_PERIODE, 60));
@@ -44,7 +44,7 @@ public class EingewoehnungPauschaleAbschnittRuleTest {
 	}
 
 	@Test
-	public void betreuungspensum_mitEingewoehnungPaschale_hasEingewoehnungMessageAndPauschaleFirstMonth() {
+	void betreuungspensum_mitEingewoehnungPaschale_hasEingewoehnungMessageAndPauschaleFirstMonth() {
 		BigDecimal eingewoehnungPauschale = BigDecimal.valueOf(500);
 
 		Betreuung betreuung = EbeguRuleTestsHelper.createBetreuungWithPensum(START_PERIODE, ENDE_PERIODE, BetreuungsangebotTyp.KITA, 80,  BigDecimal.valueOf(800));
@@ -73,7 +73,7 @@ public class EingewoehnungPauschaleAbschnittRuleTest {
 	}
 
 	@Test
-	public void betreuungspensum_eingewoehnungPaschaleStartsDuringMonth_hasEingewoehnugStartingDuringMonth() {
+	void betreuungspensum_eingewoehnungPaschaleStartsDuringMonth_hasEingewoehnugStartingDuringMonth() {
 		BigDecimal eingewoehnungPauschale = BigDecimal.valueOf(500);
 
 		Betreuung betreuung = EbeguRuleTestsHelper.createBetreuungWithPensum(START_PERIODE.plusDays(15), ENDE_PERIODE, BetreuungsangebotTyp.KITA, 80,  BigDecimal.valueOf(800));
@@ -109,7 +109,7 @@ public class EingewoehnungPauschaleAbschnittRuleTest {
 	}
 
 	@Test
-	public void betreuungspensum_eingewoehnungPaschaleStartsDuringMonth_hasEingewoehnugEndingDuringMonth() {
+	void betreuungspensum_eingewoehnungPaschaleStartsDuringMonth_hasEingewoehnugEndingDuringMonth() {
 		BigDecimal eingewoehnungPauschale = BigDecimal.valueOf(500);
 
 		Betreuung betreuung = EbeguRuleTestsHelper.createBetreuungWithPensum(START_PERIODE, START_PERIODE.plusDays(15), BetreuungsangebotTyp.KITA, 80,  BigDecimal.valueOf(800));
