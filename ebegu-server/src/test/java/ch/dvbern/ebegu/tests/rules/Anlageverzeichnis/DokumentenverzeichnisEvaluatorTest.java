@@ -37,9 +37,12 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import static org.easymock.EasyMock.expect;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -988,8 +991,30 @@ public class DokumentenverzeichnisEvaluatorTest extends EasyMockSupport {
 		@BeforeEach
 		public void setUpCalculator() {
 			gesuch = new Gesuch();
-			setUpTestgesuch(gesuch, TestDataUtil.getMandantSchwyz(), FinanzielleSituationTyp.SOLOTHURN);
+			setUpTestgesuch(gesuch, TestDataUtil.getMandantSchwyz(), FinanzielleSituationTyp.SCHWYZ);
+			setUpFamiliensituationAlleine();
+			setUpFamiliensituationZuZweit(false);
 			gesuch.setGesuchsteller1(TestDataUtil.createDefaultGesuchstellerContainer());
+		}
+
+		private void setUpFamiliensituationAlleine() {
+			final FamiliensituationContainer familiensituationContainer = new FamiliensituationContainer();
+			final Familiensituation familiensituationJA = new Familiensituation();
+			familiensituationJA.setSozialhilfeBezueger(false);
+			familiensituationJA.setGesuchstellerKardinalitaet(EnumGesuchstellerKardinalitaet.ALLEINE);
+			familiensituationJA.setGemeinsameSteuererklaerung(false);
+			familiensituationContainer.setFamiliensituationJA(familiensituationJA);
+			gesuch.setFamiliensituationContainer(familiensituationContainer);
+		}
+
+		private void setUpFamiliensituationZuZweit(boolean gemeinsameFinSit) {
+			final FamiliensituationContainer familiensituationContainer = new FamiliensituationContainer();
+			final Familiensituation familiensituationJA = new Familiensituation();
+			familiensituationJA.setSozialhilfeBezueger(false);
+			familiensituationJA.setGesuchstellerKardinalitaet(EnumGesuchstellerKardinalitaet.ZU_ZWEIT);
+			familiensituationJA.setGemeinsameSteuererklaerung(gemeinsameFinSit);
+			familiensituationContainer.setFamiliensituationJA(familiensituationJA);
+			gesuch.setFamiliensituationContainer(familiensituationContainer);
 		}
 
 		@Nested
@@ -1053,6 +1078,140 @@ public class DokumentenverzeichnisEvaluatorTest extends EasyMockSupport {
 
 				return erwerbspensumContainer;
 			}
+		}
+
+		@Nested
+		class EinkommensverschlechterungDokumenteTest {
+
+			@Test
+			void noEKVInfoContainer_shouldNotRequireAnyNachweis() {
+				setUpEinstellungMock(gesuch, AnspruchBeschaeftigungAbhaengigkeitTyp.ABHAENGING.name());
+				setUpFamiliensituationAlleine();
+				gesuch.setEinkommensverschlechterungInfoContainer(null);
+
+				final Set<DokumentGrund> dokumentGruende = evaluator.calculate(gesuch, Constants.DEFAULT_LOCALE);
+
+				assertThat(dokumentGruende.size(), is(0));
+			}
+
+			@Test
+			void ekvInfoContainerNoEkv_shouldNotRequireAnyNachweis() {
+				final boolean einkommensverschlechterung = false;
+				setUpEinstellungMock(gesuch, AnspruchBeschaeftigungAbhaengigkeitTyp.ABHAENGING.name());
+				setUpFamiliensituationZuZweit(false);
+				setUpEkvInfoContainer(einkommensverschlechterung);
+
+				final Set<DokumentGrund> dokumentGruende = evaluator.calculate(gesuch, Constants.DEFAULT_LOCALE);
+
+				assertThat(dokumentGruende.size(), is(0));
+			}
+
+			@Test
+			void oneGSNoEKVContainer_ShouldNotRequireAnyNachweis() {
+				setUpEinstellungMock(gesuch, AnspruchBeschaeftigungAbhaengigkeitTyp.ABHAENGING.name());
+				setUpEkvInfoContainer(true);
+				Objects.requireNonNull(gesuch.getGesuchsteller1());
+				gesuch.getGesuchsteller1().setEinkommensverschlechterungContainer(null);
+
+				final Set<DokumentGrund> dokumentGruende = evaluator.calculate(gesuch, Constants.DEFAULT_LOCALE);
+
+				assertThat(dokumentGruende.size(), is(0));
+			}
+
+			@Test
+			void ekvOneGSQuellbesteuertBruttolohn_ShouldRequireNachweisBruttolohn() {
+				setUpEinstellungMock(gesuch, AnspruchBeschaeftigungAbhaengigkeitTyp.ABHAENGING.name());
+				setUpFamiliensituationAlleine();
+				setUpEkvInfoContainer(true);
+				final Einkommensverschlechterung ekv = new Einkommensverschlechterung();
+				ekv.setBruttolohnAbrechnung1(BigDecimal.valueOf(120000));
+				setUpEkvGS(ekv, gesuch.getGesuchsteller1());
+
+				final Set<DokumentGrund> dokumentGruende = evaluator.calculate(gesuch, Constants.DEFAULT_LOCALE);
+				final DokumentGrund dokumentGrund = dokumentGruende.stream().findFirst().orElse(new DokumentGrund());
+
+				assertThat(dokumentGruende.size(), is(1));
+				assertThat(dokumentGrund.getDokumentTyp(), is(DokumentTyp.NACHWEIS_BRUTTOLOHN));
+			}
+
+			@Test
+			void ekvOneGSNotQuellbesteuertBruttolohn_ShouldRequireNachweiseForAllFields() {
+				setUpEinstellungMock(gesuch, AnspruchBeschaeftigungAbhaengigkeitTyp.ABHAENGING.name());
+				setUpFamiliensituationAlleine();
+				setUpEkvInfoContainer(true);
+				final Einkommensverschlechterung ekv = new Einkommensverschlechterung();
+				ekv.setSteuerbaresEinkommen(BigDecimal.valueOf(120000));
+				ekv.setSteuerbaresVermoegen(BigDecimal.valueOf(100000));
+				ekv.setEinkaeufeVorsorge(BigDecimal.valueOf(0));
+				ekv.setAbzuegeLiegenschaft(BigDecimal.valueOf(0));
+				setUpEkvGS(ekv, gesuch.getGesuchsteller1());
+
+				final Set<DokumentGrund> dokumentGruende = evaluator.calculate(gesuch, Constants.DEFAULT_LOCALE);
+
+				assertThat(dokumentGruende.size(), is(4));
+				List.of(
+						DokumentTyp.NACHWEIS_NETTOLOHN,
+						DokumentTyp.NACHWEIS_EINKAEUFE_VORSORGE,
+						DokumentTyp.NACHWEIS_ABZUEGE_LIEGENSCHAFT,
+						DokumentTyp.NACHWEIS_VERMOEGEN)
+					.forEach(dokumentTyp -> {
+						var gruendeOfTyp = dokumentGruende.stream()
+							.filter(dokumentGrund -> dokumentGrund.getDokumentTyp() == dokumentTyp)
+							.collect(
+								Collectors.toList());
+						assertThat(gruendeOfTyp.size(), is(1));
+					});
+			}
+
+			@Test
+			void ekvTwoGSQuellbesteuertBruttolohn_ShouldRequireEachNachweisPerGS() {
+				setUpEinstellungMock(gesuch, AnspruchBeschaeftigungAbhaengigkeitTyp.ABHAENGING.name());
+				setUpFamiliensituationZuZweit(false);
+				setUpEkvInfoContainer(true);
+				gesuch.setGesuchsteller2(new GesuchstellerContainer());
+				setUpEkvGS(setUpEkvQuellbesteuert(), gesuch.getGesuchsteller1());
+				setUpEkvGS(setUpEkvQuellbesteuert(), gesuch.getGesuchsteller2());
+
+				final Set<DokumentGrund> dokumentGruende = evaluator.calculate(gesuch, Constants.DEFAULT_LOCALE);
+				final DokumentGrund dokumentGrundGS1 = dokumentGruende.stream()
+					.filter(dokumentGrund -> dokumentGrund.getPersonNumber() != null)
+					.filter(dokumentGrund -> dokumentGrund.getPersonNumber() == 1)
+					.findFirst()
+					.orElse(new DokumentGrund());
+				final DokumentGrund dokumentGrundGS2 = dokumentGruende.stream()
+					.filter(dokumentGrund -> dokumentGrund.getPersonNumber() != null)
+					.filter(dokumentGrund -> dokumentGrund.getPersonNumber() == 2)
+					.findFirst()
+					.orElse(new DokumentGrund());
+
+				assertThat(dokumentGruende.size(), is(2));
+				assertThat(dokumentGrundGS1.getDokumentTyp(), is(DokumentTyp.NACHWEIS_BRUTTOLOHN));
+				assertThat(dokumentGrundGS2.getDokumentTyp(), is(DokumentTyp.NACHWEIS_BRUTTOLOHN));
+			}
+
+			@Nonnull
+			private Einkommensverschlechterung setUpEkvQuellbesteuert() {
+				final Einkommensverschlechterung ekvGS2 = new Einkommensverschlechterung();
+				ekvGS2.setBruttolohnAbrechnung1(BigDecimal.valueOf(10000));
+				return ekvGS2;
+			}
+
+			private void setUpEkvInfoContainer(boolean einkommensverschlechterung) {
+				final EinkommensverschlechterungInfoContainer ekvInfoContainer = new EinkommensverschlechterungInfoContainer();
+				final EinkommensverschlechterungInfo ekvInfoJA = new EinkommensverschlechterungInfo();
+				ekvInfoJA.setEkvFuerBasisJahrPlus1(true);
+				ekvInfoJA.setEinkommensverschlechterung(einkommensverschlechterung);
+				ekvInfoContainer.setEinkommensverschlechterungInfoJA(ekvInfoJA);
+				gesuch.setEinkommensverschlechterungInfoContainer(ekvInfoContainer);
+			}
+
+			private void setUpEkvGS(Einkommensverschlechterung ekv, @Nullable GesuchstellerContainer gesuchsteller) {
+				final EinkommensverschlechterungContainer ekvContainer = new EinkommensverschlechterungContainer();
+				ekvContainer.setEkvJABasisJahrPlus1(ekv);
+				Objects.requireNonNull(gesuchsteller);
+				gesuchsteller.setEinkommensverschlechterungContainer(ekvContainer);
+			}
+
 		}
 
 

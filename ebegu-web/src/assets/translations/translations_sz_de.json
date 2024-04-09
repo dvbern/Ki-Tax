@@ -104,5 +104,9 @@
     "ERWERBSPENSUM_NACHWEIS_RAV": "Anmeldebestätigung der Arbeitslosenkasse oder Nachweis der Anmeldung beim regionalen Arbeitsvermittlungszentrum (RAV) und zeitlichen Aufwand",
     "SELBSTAENDIG": "Selbständig erwerbend",
     "EKVI_EINKOMMENSVERSCHLECHTERUNG_JA_NEIN": "Weicht Ihr massgebendes Familieneinkommen wesentlich von Ihrer letzten rechtkräftigen Steuerveranlagung ab? (Richtwert: Abweichung mindestens 20%)",
+    "EINKOMMENSVERSCHLECHTERUNG_NACHWEIS_ABZUEGE_LIEGENSCHAFT": "Nachweis über Abzüge ausserodentlichen Liegenschaftsaufwand",
+    "EINKOMMENSVERSCHLECHTERUNG_NACHWEIS_NETTOLOHN": "Nachweis über das Reineinkommen",
+    "EINKOMMENSVERSCHLECHTERUNG_NACHWEIS_EINKAEUFE_VORSORGE": "Nachweis über Einkäufe Berufliche Vorsorge",
+    "EINKOMMENSVERSCHLECHTERUNG_NACHWEIS_BRUTTOLOHN": "Nachweis Bruttoeinkommen",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }
