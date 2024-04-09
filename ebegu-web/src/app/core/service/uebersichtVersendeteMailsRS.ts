@@ -34,7 +34,7 @@ export class UebersichtVersendeteMailsRS {
     public getAllMails(): Observable<TSUebersichtVersendeteMails[]> {
         return this.getInfo(`${this.serviceURL}/allMails`);
     }
-    private getInfo(url: string): Observable<Array<TSUebersichtVersendeteMails> | never> {
+    private getInfo(url: string): Observable<Array<TSUebersichtVersendeteMails>> {
         return this.http.get(url)
             .pipe(map((response: any) => this.ebeguRestUtil.parseTSUebersichtVersendeteMailsList(response)));
     }

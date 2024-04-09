@@ -15,7 +15,7 @@
 
 import {ChangeDetectorRef, Component, ViewChild} from '@angular/core';
 import {MatPaginator} from '@angular/material/paginator';
-import {MatSort, MatSortable, Sort} from '@angular/material/sort';
+import {MatSort, MatSortable} from '@angular/material/sort';
 import {MatTableDataSource} from '@angular/material/table';
 import * as moment from 'moment';
 import {UebersichtVersendeteMailsRS} from '../../../app/core/service/uebersichtVersendeteMailsRS';
