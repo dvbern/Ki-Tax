@@ -194,6 +194,7 @@ import {TSDateRange} from '../models/types/TSDateRange';
 import {TSLand} from '../models/types/TSLand';
 import {DateUtil} from './DateUtil';
 import {EbeguUtil} from './EbeguUtil';
+import {TSAusserordentlicherAnspruchTyp} from '../models/enums/TSAusserordentlicherAnspruchTyp';
 import {TSEingewoehnungPauschale} from '../models/TSEingewoehnungPauschale';
 
 export class EbeguRestUtil {
@@ -2462,6 +2463,7 @@ export class EbeguRestUtil {
         restKind.familienErgaenzendeBetreuung = kind.familienErgaenzendeBetreuung;
         restKind.zukunftigeGeburtsdatum = kind.zukunftigeGeburtsdatum;
         restKind.inPruefung = kind.inPruefung;
+        restKind.unterhaltspflichtig = kind.unterhaltspflichtig;
         if (kind.pensumFachstellen) {
             restKind.pensumFachstellen = this.pensumFachstellenToRestObject(kind.pensumFachstellen);
         }
@@ -2537,6 +2539,7 @@ export class EbeguRestUtil {
             kindTS.familienErgaenzendeBetreuung = kindFromServer.familienErgaenzendeBetreuung;
             kindTS.zukunftigeGeburtsdatum = kindFromServer.zukunftigeGeburtsdatum;
             kindTS.inPruefung = kindFromServer.inPruefung;
+            kindTS.unterhaltspflichtig = kindFromServer.unterhaltspflichtig;
             if (kindFromServer.pensumFachstellen) {
                 kindTS.pensumFachstellen =
                     this.parsePensumFachstellen(kindFromServer.pensumFachstellen);
@@ -6225,6 +6228,13 @@ export class EbeguRestUtil {
             return typ as TSFachstellenTyp;
         }
         throw new Error(`TSFachstellenTyp ${typ} not defined`);
+    }
+
+    public parseAusserordentlicherAnspruchTyp(typ: any): TSAusserordentlicherAnspruchTyp {
+        if (Object.values(TSAusserordentlicherAnspruchTyp).includes(typ)) {
+            return typ as TSAusserordentlicherAnspruchTyp;
+        }
+        throw new Error(`TSAusserordentlicherAnspruchTyp ${typ} not defined`);
     }
 
     public parseEinschulungTyp(typ: any): TSEinschulungTyp {

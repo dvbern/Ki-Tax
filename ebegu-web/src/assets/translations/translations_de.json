@@ -2963,7 +2963,7 @@
     "GEMEINDESPEZIFISCHE_BG_KONFIGURATIONEN_TITLE": "Gemeindespezifische Konfigurationen für BG",
     "ABHAENGIGKEIT_ANSPRUCH_BESCHAEFTIGUNGPENSUM": "Abhängigkeit des Anspruchs vom Beschäftigungspensum (Abhaengig, Unabhaengig, Minimum)",
     "ABHAENGIGKEIT_ANSPRUCH_BESCHAEFTIGUNGPENSUM_HELP": "Die Einstellung kann 3 Werte haben ABHAENGING, UNABHAENGING oder MINIMUM. Abhängig = Der Anspruch hängt vom Beschäftigungspensum ab (wie in Bern) Unabhängig = Der Anspruch hängt nicht vom Beschäftigungspensum ab (wie in Solothurn) Minimal = Es muss ein minimum an Beschäftigungspensum erreicht werden um einen Anspruch zu erhalten (wie in Grenchen)",
-    "KINDERABZUG_TYP": "Kinderabzugtyp (FKJV, FKJV_2, ASIV oder KEINE)",
+    "KINDERABZUG_TYP": "Kinderabzugtyp (FKJV, FKJV_2, ASIV, SCHWYZ oder KEINE)",
     "TS_MUTATION_EXISTIERT": "Es gibt bereits eine Mutation zu diesem Antrag",
     "TS_MUTATION_EXISTIERT_BODY": "Die Tagesschulanmeldung muss bei der neusten Mutation bearbeitet werden. Falls diese noch in Bearbeitung der Antragstellenden ist, muss sie zuerst freigegeben oder gelöscht werden.",
     "FREMD_ID": "Fremd-ID",
@@ -2980,7 +2980,7 @@
     "BESONDERE_BEDUERFNISSE_LUZERN": "Luzern: Ausserordentlicher Betreuungsaufwand konfigurierbar",
     "BESONDERE_BEDUERFNISSE_BETRAG": "Betrag ausserordentlicher Betreuungsaufwand",
     "FKJV_MAX_PENSUM_AUSSERORDENTLICHER_ANSPRUCH": "FKJV: Maximales Pensum bei ausserordentlichem Anspruch",
-    "AUSSERORDENTLICHER_ANSPRUCH_RULE": "Welche ausserordentlicher Anspruch Rule soll gelten",
+    "AUSSERORDENTLICHER_ANSPRUCH_RULE": "Welche ausserordentlicher Anspruch Rule soll gelten (FKJV, ASIV, KEINE)",
     "GESCHWISTERNBONUS_AKTIVIERT": "Luzern: Geschwisternbonus aktiviert",
     "FINANZIELLE_SITUATION_AUFTEILUNG": "Aufteilung finanzielle Situation zwischen {{gs1}} und {{gs2}}",
     "FINANZIELLE_SITUATION_REST": "Rest:",
@@ -3211,5 +3211,8 @@
     "WARNUNG_GS2_AUSFUELLEN": "Bitte erfassen Sie zuerst die Daten von Antragssteller/in 2 in der Rubrik Antragsstellende.",
     "CHECKBOX_AUSZAHLUNG_IN_ZUKUNFT": "Folgemonat ausbezahlen",
     "BEGRUENDUNG_AUSZAHLUNG_AN_INSTITUTION": "Begründung für Auszahlung an Institution",
+    "KINDERABZUG_UNTERHALTSPFLICHTIG": "Sind Sie für das Kind, für welches das Beitragsgesuch gestellt wird, unterhaltspflichtig?",
+    "WOHNT_KIND_HAUSHALT": "Wohnt dieses Kind mindestens zur Hälfte bei Ihnen?",
+    "KIND_PARTNER_UNTERHALTSPFLICHTIG": "Ist Ihr Partner auch unterhaltspflichtig für dieses Kind?",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

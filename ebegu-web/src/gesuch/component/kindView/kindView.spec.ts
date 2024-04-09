@@ -42,6 +42,7 @@ import {BerechnungsManager} from '../../service/berechnungsManager';
 import {GesuchModelManager} from '../../service/gesuchModelManager';
 import {WizardStepManager} from '../../service/wizardStepManager';
 import {KindViewController} from './kindView';
+import {TSAusserordentlicherAnspruchTyp} from '../../../models/enums/TSAusserordentlicherAnspruchTyp';
 
 function createEinstellungen(
     sozialeIntegrationBis = TSEinschulungTyp.VORSCHULALTER,
@@ -52,6 +53,7 @@ function createEinstellungen(
     anspruchUnabhaengigBeschaeftigungspensum = TSAnspruchBeschaeftigungAbhaengigkeitTyp.ABHAENGING,
     zemisDisabled = 'true',
     fachstellenTyp = TSFachstellenTyp.BERN,
+    ausserordentlicherAnspruchTyp = TSAusserordentlicherAnspruchTyp.FKJV
 ): TSEinstellung[] {
     return [
         new TSEinstellung(null, TSEinstellungKey.ZEMIS_DISABLED, zemisDisabled),
@@ -66,6 +68,7 @@ function createEinstellungen(
         new TSEinstellung(null, TSEinstellungKey.FACHSTELLEN_TYP, fachstellenTyp),
         new TSEinstellung(null, TSEinstellungKey.FKJV_SOZIALE_INTEGRATION_BIS_SCHULSTUFE, sozialeIntegrationBis),
         new TSEinstellung(null, TSEinstellungKey.SPRACHLICHE_INTEGRATION_BIS_SCHULSTUFE, sprachlicheIntegrationBis),
+        new TSEinstellung(null, TSEinstellungKey.AUSSERORDENTLICHER_ANSPRUCH_RULE, ausserordentlicherAnspruchTyp)
     ];
 }
 
@@ -162,7 +165,7 @@ describe('kindView', () => {
             authServiceRS,
             ebeguRestUtil,
             mandantService,
-            $injector.get('FjkvKinderabzugExchangeService'),
+            $injector.get('KinderabzugExchangeService'),
             $injector.get('HybridFormBridgeService'),
         );
     }));

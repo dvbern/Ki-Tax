@@ -145,6 +145,10 @@ public class Kind extends AbstractPersonEntity {
 	@Nonnull
 	private Boolean inPruefung = false;
 
+	@Column(nullable = true)
+	@Nullable
+	private Boolean unterhaltspflichtig;
+
 	public Kind() {
 	}
 
@@ -353,6 +357,7 @@ public class Kind extends AbstractPersonEntity {
 			target.setAlimenteBezahlen(this.getAlimenteBezahlen());
 			target.setZukunftigeGeburtsdatum(target.getGeburtsdatum().isAfter(regelStartDatum) ? true : false);
 			target.setKeinPlatzInSchulhort(this.getKeinPlatzInSchulhort());
+			target.setUnterhaltspflichtig(this.getUnterhaltspflichtig());
 			copyFachstelle(target, copyType);
 			copyAusserordentlicherAnspruch(target, copyType);
 			break;
@@ -368,6 +373,7 @@ public class Kind extends AbstractPersonEntity {
 			target.setLebtKindAlternierend(this.getLebtKindAlternierend());
 			target.setAlimenteErhalten(this.getAlimenteErhalten());
 			target.setAlimenteBezahlen(this.getAlimenteBezahlen());
+			target.setUnterhaltspflichtig(this.getUnterhaltspflichtig());
 			target.setZukunftigeGeburtsdatum(target.getGeburtsdatum().isAfter(regelStartDatum) ? true : false);
 			copyFachstelleIfStillValid(target, copyType, gesuchsperiode);
 			// Ausserordentlicher Anspruch wird nicht kopiert, auch wenn er noch gueltig waere.
@@ -441,6 +447,7 @@ public class Kind extends AbstractPersonEntity {
 			getKinderabzugZweitesHalbjahr() == otherKind.getKinderabzugZweitesHalbjahr() &&
 			Objects.equals(getFamilienErgaenzendeBetreuung(), otherKind.getFamilienErgaenzendeBetreuung()) &&
 			Objects.equals(getSprichtAmtssprache(), otherKind.getSprichtAmtssprache()) &&
+			Objects.equals(getUnterhaltspflichtig(), otherKind.getUnterhaltspflichtig()) &&
 			getEinschulungTyp() == otherKind.getEinschulungTyp() &&
 			sameFachstellen &&
 			EbeguUtil.isSame(
@@ -481,5 +488,14 @@ public class Kind extends AbstractPersonEntity {
 
 	public void setKeinPlatzInSchulhort(@Nonnull Boolean keinPlatzInSchulhort) {
 		this.keinPlatzInSchulhort = keinPlatzInSchulhort;
+	}
+
+	@Nullable
+	public Boolean getUnterhaltspflichtig() {
+		return unterhaltspflichtig;
+	}
+
+	public void setUnterhaltspflichtig(@Nullable Boolean unterhaltspflichtig) {
+		this.unterhaltspflichtig = unterhaltspflichtig;
 	}
 }

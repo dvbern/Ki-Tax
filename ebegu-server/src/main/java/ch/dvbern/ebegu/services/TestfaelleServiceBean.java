@@ -652,6 +652,9 @@ public class TestfaelleServiceBean extends AbstractBaseService implements Testfa
 		if (mutation.getFinSitTyp().equals(FinanzielleSituationTyp.SOLOTHURN)) {
 			return WizardStepName.FINANZIELLE_SITUATION_SOLOTHURN;
 		}
+		if (mutation.getFinSitTyp().equals(FinanzielleSituationTyp.SCHWYZ)) {
+			return WizardStepName.FINANZIELLE_SITUATION_SCHWYZ;
+		}
 		return WizardStepName.FINANZIELLE_SITUATION;
 	}
 

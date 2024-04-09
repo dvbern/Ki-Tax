@@ -1414,10 +1414,6 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 		Benutzer currentBenutzer = principalBean.getBenutzer();
 
 		switch (currentBenutzer.getRole()) {
-		case GESUCHSTELLER: {
-			// Gesuchsteller ist NIE berechtigt
-			return false;
-		}
 		case ADMIN_INSTITUTION:
 		case SACHBEARBEITER_INSTITUTION: {
 			return institutionStammdaten.getInstitution().equals(currentBenutzer.getInstitution());
@@ -1430,8 +1426,7 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 		}
 		case ADMIN_GEMEINDE:
 		case ADMIN_BG:
-			if (institutionStammdaten.getBetreuungsangebotTyp().isKita()
-				|| institutionStammdaten.getBetreuungsangebotTyp().isTagesfamilien()) {
+			if (institutionStammdaten.getBetreuungsangebotTyp().isBetreuungsgutscheinAngebot()) {
 				// Kitas und Tageseltern dürfen von Gemeinden nur editiert werden, falls
 				// institutionen durch Gemeinde einladen aktiv ist
 				return Boolean.TRUE.equals(applicationPropertyService.findApplicationPropertyAsBoolean(
@@ -1444,18 +1439,12 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 		case SACHBEARBEITER_BG:
 		case ADMIN_TS:
 		case SACHBEARBEITER_TS: {
-			if (institutionStammdaten.getBetreuungsangebotTyp().isKita()
-				|| institutionStammdaten.getBetreuungsangebotTyp().isTagesfamilien()) {
+			if (institutionStammdaten.getBetreuungsangebotTyp().isBetreuungsgutscheinAngebot()) {
 				/// Kitas und Tageseltern koennen ohne Einschraenkungen gelesen aber nicht editiert werden durch
 				// Gemeinde-Benutzer,
 				return false;
 			}
 			return tagesschuleOrFerieninselAllowedForGemeindeOrInstitution(institutionStammdaten);
-		}
-		case REVISOR:
-		case STEUERAMT:
-		case JURIST: {
-			return false;
 		}
 		case ADMIN_MANDANT:
 		case SACHBEARBEITER_MANDANT: {
@@ -1466,6 +1455,10 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 			// Superadmin darf alles
 			return true;
 		}
+		case GESUCHSTELLER:
+		case REVISOR:
+		case STEUERAMT:
+		case JURIST:
 		default: {
 			return false;
 		}
@@ -2101,7 +2094,7 @@ public class AuthorizerImpl implements Authorizer, BooleanAuthorizer {
 		checkReadAuthorization(internePendenz.getGesuch());
 		if (!principalBean.isCallerInAnyOfRole(UserRole.getSuperadminAllGemeindeRoles())) {
 			throwViolation(internePendenz);
-		};
+		}
 	}
 
 	@Override

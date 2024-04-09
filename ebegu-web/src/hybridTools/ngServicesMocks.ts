@@ -30,7 +30,7 @@ import {I18nServiceRSRest} from '../app/i18n/services/i18nServiceRS.rest';
 import {MandantService} from '../app/shared/services/mandant.service';
 import {AuthLifeCycleService} from '../authentication/service/authLifeCycle.service';
 import {InternePendenzenRS} from '../gesuch/component/internePendenzenView/internePendenzenRS.rest';
-import {FjkvKinderabzugExchangeService} from '../gesuch/component/kindView/fkjv-kinderabzug/fjkv-kinderabzug-exchange.service';
+import {KinderabzugExchangeService} from '../gesuch/component/kindView/service/kinderabzug-exchange.service';
 import {FamiliensituationRS} from '../gesuch/service/familiensituationRS.service';
 import {GesuchGenerator} from '../gesuch/service/gesuchGenerator';
 import {HybridFormBridgeService} from '../gesuch/service/hybrid-form-bridge.service';
@@ -146,7 +146,7 @@ class InstitutionRSMock extends InstitutionRS {
 class SearchRSMock extends SearchRS {
 }
 
-class FjkvKinderabzugExchangeServiceMock extends FjkvKinderabzugExchangeService {
+class KinderabzugExchangeServiceMock extends KinderabzugExchangeService {
 }
 
 class FamiliensituationRSMock extends FamiliensituationRS {
@@ -177,7 +177,7 @@ export function ngServicesMock($provide: angular.auto.IProvideService): void {
     $provide.service('SearchRS', SearchRSMock);
     $provide.service('FamiliensituationRS', FamiliensituationRSMock);
     $provide.service('DemoFeatureRS', DemoFeatureRSMock);
-    $provide.service('FjkvKinderabzugExchangeService', FjkvKinderabzugExchangeServiceMock);
+    $provide.service('KinderabzugExchangeService', KinderabzugExchangeServiceMock);
     $provide.service('HybridFormBridgeService', HybridFormBridgeServiceMock);
     $provide.value('LOCALE_ID', 'de-CH');
     $provide.value('platformId', 'de-CH');

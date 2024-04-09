@@ -179,6 +179,7 @@ public class Familiensituation extends AbstractMutableEntity {
 			this.minDauerKonkubinat = that.getMinDauerKonkubinat();
 			this.unterhaltsvereinbarung = that.getUnterhaltsvereinbarung();
 			this.auszahlungAusserhalbVonKibon = that.isAuszahlungAusserhalbVonKibon();
+			this.gesuchstellerKardinalitaet = that.gesuchstellerKardinalitaet;
 		}
 	}
 

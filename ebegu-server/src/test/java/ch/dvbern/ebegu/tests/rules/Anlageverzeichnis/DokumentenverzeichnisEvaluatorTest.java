@@ -29,6 +29,7 @@ import org.easymock.TestSubject;
 import org.junit.Assert;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -41,6 +42,8 @@ import java.util.Objects;
 import java.util.Set;
 
 import static org.easymock.EasyMock.expect;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.*;
 
 /**
  * Tests für die Regeln der Benötigten Dokumenten
@@ -975,5 +978,83 @@ public class DokumentenverzeichnisEvaluatorTest extends EasyMockSupport {
 		finanzielleSituationJA.setGeschaeftsgewinnBasisjahr(ZEHN_TAUSEND);
 		finanzielleSituationJA.setGeschaeftsgewinnBasisjahrMinus1(ZEHN_TAUSEND);
 		finanzielleSituationJA.setGeschaeftsgewinnBasisjahrMinus2(ZEHN_TAUSEND);
+	}
+
+	@Nested
+	class SchwyzTest {
+
+		private Gesuch gesuch;
+
+		@BeforeEach
+		public void setUpCalculator() {
+			gesuch = new Gesuch();
+			setUpTestgesuch(gesuch, TestDataUtil.getMandantSchwyz(), FinanzielleSituationTyp.SOLOTHURN);
+			gesuch.setGesuchsteller1(TestDataUtil.createDefaultGesuchstellerContainer());
+		}
+
+		@Nested
+		class ErwebspensumDokumenteTest {
+			@Test
+			void erwerbspensumRAV_shouldOnlyHaveNachweisRAV() {
+				setUpGesuchForErwerbspensumTest(Taetigkeit.RAV);
+
+				final Set<DokumentGrund> dokumentGruende = evaluator.calculate(gesuch, Constants.DEFAULT_LOCALE);
+				final DokumentGrund dokumentGrund = dokumentGruende.stream().findFirst().orElse(new DokumentGrund());
+
+				assertThat(dokumentGruende.size(), is(1));
+				assertThat(dokumentGrund.getDokumentTyp(), is(DokumentTyp.NACHWEIS_RAV));
+				assertThat(dokumentGrund.getPersonNumber(), is(1));
+			}
+
+			@Test
+			void erwerbspensumAngestellt_shouldOnlyHaveNachweisAngestellt() {
+				setUpGesuchForErwerbspensumTest(Taetigkeit.ANGESTELLT);
+
+				final Set<DokumentGrund> dokumentGruende = evaluator.calculate(gesuch, Constants.DEFAULT_LOCALE);
+				final DokumentGrund dokumentGrund = dokumentGruende.stream().findFirst().orElse(new DokumentGrund());
+
+				assertThat(dokumentGruende.size(), is(1));
+				assertThat(dokumentGrund.getDokumentTyp(), is(DokumentTyp.NACHWEIS_ERWERBSPENSUM));
+			}
+
+			@Test
+			void erwerbspensumInAusbildung_shouldOnlyHaveNachweisInAusbildung() {
+				setUpGesuchForErwerbspensumTest(Taetigkeit.AUSBILDUNG);
+
+				final Set<DokumentGrund> dokumentGruende = evaluator.calculate(gesuch, Constants.DEFAULT_LOCALE);
+				final DokumentGrund dokumentGrund = dokumentGruende.stream().findFirst().orElse(new DokumentGrund());
+
+				assertThat(dokumentGruende.size(), is(1));
+				assertThat(dokumentGrund.getDokumentTyp(), is(DokumentTyp.NACHWEIS_AUSBILDUNG));
+			}
+
+			@Test
+			void erwerbspensumSelbststaendig_shouldOnlyHaveNachweisSelbststaendig() {
+				setUpGesuchForErwerbspensumTest(Taetigkeit.SELBSTAENDIG);
+
+				final Set<DokumentGrund> dokumentGruende = evaluator.calculate(gesuch, Constants.DEFAULT_LOCALE);
+				final DokumentGrund dokumentGrund = dokumentGruende.stream().findFirst().orElse(new DokumentGrund());
+
+				assertThat(dokumentGruende.size(), is(1));
+				assertThat(dokumentGrund.getDokumentTyp(), is(DokumentTyp.NACHWEIS_SELBSTAENDIGKEIT));
+			}
+
+			private void setUpGesuchForErwerbspensumTest(Taetigkeit rav) {
+				setUpEinstellungMock(gesuch, AnspruchBeschaeftigungAbhaengigkeitTyp.ABHAENGING.name());
+				Objects.requireNonNull(gesuch.getGesuchsteller1());
+				gesuch.getGesuchsteller1().setErwerbspensenContainers(Set.of(createErwerbspensumContainer(rav, gesuch.getGesuchsteller1())));
+			}
+
+			private ErwerbspensumContainer createErwerbspensumContainer(Taetigkeit taetigkeit, GesuchstellerContainer gesuchstellerContainer) {
+				final Erwerbspensum erwerbspensum = createErwerbspensum(gesuch, "Hugo", taetigkeit, false);
+				final ErwerbspensumContainer erwerbspensumContainer = new ErwerbspensumContainer();
+				erwerbspensumContainer.setErwerbspensumJA(erwerbspensum);
+				erwerbspensumContainer.setGesuchsteller(gesuchstellerContainer);
+
+				return erwerbspensumContainer;
+			}
+		}
+
+
 	}
 }

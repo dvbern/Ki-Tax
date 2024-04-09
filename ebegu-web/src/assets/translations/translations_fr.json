@@ -2887,7 +2887,7 @@
     "GEMEINDE_ANTRAG_GELOESCHT": "La demande {{typ}} pour la commune {{gemeinde}} pour la période {{periode}} a été effacée",
     "KITAPLUS_ZUSCHLAG_AKTIVIERT": "Supplément KITAplus activé (Lucerne)",
     "GEMEINDESPEZIFISCHE_BG_KONFIGURATIONEN": "Configurations spécifiques pour la commune pour les bons de garde (Soleur)",
-    "KINDERABZUG_TYP": "Type de déduction pour vos enfants (FKJV, FKJV_2, OPIS, AUCUNE)",
+    "KINDERABZUG_TYP": "Type de déduction pour vos enfants (FKJV, FKJV_2, OPIS, SCHWYZ ou KEINE)",
     "TS_MUTATION_EXISTIERT": "Il existe déjà une mutation pour cette demande",
     "TS_MUTATION_EXISTIERT_BODY": "L'inscription à l'école à journée continue doit être modifiée dans la dernière demande de changement. Si elle est encore en modification par l'auteur-e de la demande, elle doit alors dabord être libérée ou supprimée.",
     "FREMD_ID": "ID-étrangé",
@@ -2904,7 +2904,7 @@
     "BESONDERE_BEDUERFNISSE_LUZERN": "Lucerne: configurer les frais de garde extraordinaires",
     "BESONDERE_BEDUERFNISSE_BETRAG": "Montant des frais de garde extraordinaires",
     "FKJV_MAX_PENSUM_AUSSERORDENTLICHER_ANSPRUCH": "FKJV: Maximales Pensum bei ausserordentlichem Anspruch",
-    "AUSSERORDENTLICHER_ANSPRUCH_RULE": "Quelle cas particulier s'applique",
+    "AUSSERORDENTLICHER_ANSPRUCH_RULE": "Quelle cas particulier s'applique (FKJV, ASIV, KEINE)",
     "GESCHWISTERNBONUS_AKTIVIERT": "Luzern: activé le bonus de fratrie",
     "FINANZIELLE_SITUATION_AUFTEILUNG": "Situation financière : répartition entre {{gs1}} et {{gs2}}",
     "FINANZIELLE_SITUATION_REST": "Reste:",
@@ -3111,5 +3111,8 @@
     "WARNUNG_GS2_AUSFUELLEN": "Veuillez saisir les données de l'auteur-e de la demande 2.",
     "CHECKBOX_AUSZAHLUNG_IN_ZUKUNFT": "Payer le mois suivant",
     "BEGRUENDUNG_AUSZAHLUNG_AN_INSTITUTION": "Motif du paiement à l'institution",
+    "KINDERABZUG_UNTERHALTSPFLICHTIG": "Sind Sie für das Kind, für welches das Beitragsgesuch gestellt wird, unterhaltspflichtig?",
+    "WOHNT_KIND_HAUSHALT": "Wohnt dieses Kind mindestens zur Hälfte bei Ihnen?",
+    "KIND_PARTNER_UNTERHALTSPFLICHTIG": "Ist Ihr Partner auch unterhaltspflichtig für dieses Kind?",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

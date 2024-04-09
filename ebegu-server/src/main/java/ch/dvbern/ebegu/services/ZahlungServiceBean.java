@@ -840,12 +840,18 @@ public class ZahlungServiceBean extends AbstractBaseService implements ZahlungSe
 		// Die nextBelegnummerInfoma hochzaehlen
 		final Mandant mandant = zahlungsauftrag.getMandant();
 		Objects.requireNonNull(mandant);
-		final long oldNextNummer = mandant.getNextInofmaBelegnummer(zahlungsauftrag.getZahlungslaufTyp());
-		final int anzahlNeueZahlungen = zahlungsauftrag.getZahlungen().size();
-		mandantService.updateNextInfomaBelegnummer(
-			mandant,
-			zahlungsauftrag.getZahlungslaufTyp(),
-			oldNextNummer + anzahlNeueZahlungen);
+		final boolean infomaZahlungenAktiviert =
+			Boolean.TRUE.equals(applicationPropertyService.findApplicationPropertyAsBoolean(
+				ApplicationPropertyKey.INFOMA_ZAHLUNGEN,
+				mandant));
+		if (infomaZahlungenAktiviert) {
+			final long oldNextNummer = mandant.getNextInofmaBelegnummer(zahlungsauftrag.getZahlungslaufTyp());
+			final int anzahlNeueZahlungen = zahlungsauftrag.getZahlungen().size();
+			mandantService.updateNextInfomaBelegnummer(
+				mandant,
+				zahlungsauftrag.getZahlungslaufTyp(),
+				oldNextNummer + anzahlNeueZahlungen);
+		}
 		return persistence.merge(zahlungsauftrag);
 	}
 

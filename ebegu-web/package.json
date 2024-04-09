@@ -127,10 +127,10 @@
     "@angular/upgrade": "^15.2.10",
     "@ngx-translate/core": "^11.0.1",
     "@ngx-translate/http-loader": "^4.0.0",
-    "@uirouter/angular": "^10.0.0",
-    "@uirouter/angular-hybrid": "^15.0.1",
-    "@uirouter/angularjs": "^1.0.28",
-    "@uirouter/core": "^6.0.6",
+    "@uirouter/angular": "^11.0.0",
+    "@uirouter/angular-hybrid": "^15.0.0",
+    "@uirouter/angularjs": "^1.1.0",
+    "@uirouter/core": "^6.1.0",
     "@uirouter/rx": "^1.0.0",
     "@uirouter/visualizer": "^7.0.0",
     "angular": "^1.7.9",
@@ -166,5 +166,20 @@
     "rxjs": "^6.6.3",
     "tslib": "^2.0.0",
     "zone.js": "~0.11.4"
+  },
+  "overrides": {
+    "@uirouter/angular": {
+      "@angular/common": "^15.2.0",
+      "@angular/core": "^15.2.0"
+    },
+    "@uirouter/angular-hybrid": {
+      "@angular/common": "^15.2.0",
+      "@angular/core": "^15.2.0",
+      "@angular/upgrade": "^15.2.0",
+      "@uirouter/angular": "^11.0.0"
+    },
+    "ngx-guided-tour": {
+      "bootstrap": "^3.4.1"
+    }
   }
 }
