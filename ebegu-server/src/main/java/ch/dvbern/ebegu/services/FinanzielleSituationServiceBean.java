@@ -261,8 +261,15 @@ public class FinanzielleSituationServiceBean extends AbstractBaseService impleme
 
 		// Steuererklaerungs/-veranlagungs-Flags nachfuehren fuer GS2
 		handleGemeinsameSteuererklaerung(gesuch);
+		resetHiddenEKVFieldsDependingOnFinSit(finanzielleSituation, gesuch);
 
-		if (gesuch.getFinSitTyp() == FinanzielleSituationTyp.SCHWYZ) {
+		wizardStepService.updateSteps(gesuchId, null, finanzielleSituationPersisted.getFinanzielleSituationJA(), wizardStepService.getFinSitWizardStepNameForGesuch(gesuch));
+
+		return finanzielleSituationPersisted;
+	}
+
+	private static void resetHiddenEKVFieldsDependingOnFinSit(@Nonnull FinanzielleSituationContainer finanzielleSituation, Gesuch gesuch) {
+		if (gesuch.getFinSitTyp() == FinanzielleSituationTyp.SCHWYZ && finanzielleSituation.getGesuchsteller().getEinkommensverschlechterungContainer() != null) {
 			Einkommensverschlechterung ekvGS1 = finanzielleSituation.getGesuchsteller().getEinkommensverschlechterungContainer().getEkvJABasisJahrPlus1();
 			if (Boolean.TRUE.equals(finanzielleSituation.getFinanzielleSituationJA().getQuellenbesteuert())) {
 				ekvGS1.setBruttolohnAbrechnung1(null);
@@ -274,14 +281,15 @@ public class FinanzielleSituationServiceBean extends AbstractBaseService impleme
 				ekvGS1.setSteuerbaresVermoegen(null);
 			}
 
-			if (Boolean.TRUE.equals(gesuch.extractFamiliensituation().getGemeinsameSteuererklaerung()) && gesuch.getGesuchsteller2() != null) {
-				gesuch.getGesuchsteller2().getEinkommensverschlechterungContainer().setEkvJABasisJahrPlus1(null);
+			final Familiensituation familiensituation = gesuch.extractFamiliensituation();
+			Objects.requireNonNull(familiensituation);
+
+			if (Boolean.TRUE.equals(familiensituation.getGemeinsameSteuererklaerung())
+				&& gesuch.getGesuchsteller2() != null
+				&& gesuch.getGesuchsteller2().getEinkommensverschlechterungContainer() != null) {
+				gesuch.getGesuchsteller2().setEinkommensverschlechterungContainer(null);
 			}
 		}
-
-		wizardStepService.updateSteps(gesuchId, null, finanzielleSituationPersisted.getFinanzielleSituationJA(), wizardStepService.getFinSitWizardStepNameForGesuch(gesuch));
-
-		return finanzielleSituationPersisted;
 	}
 
 	private void handleGemeinsameSteuererklaerung(@Nonnull Gesuch gesuch) {
