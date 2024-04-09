@@ -30,4 +30,12 @@ where einstellung_key = 'AUSSERORDENTLICHER_ANSPRUCH_RULE'
        join mandant m on gesuchsperiode.mandant_id = m.id
        where mandant_identifier = 'SCHWYZ');
 
+update einstellung
+set value = 'true'
+where einstellung_key = 'ZEMIS_DISABLED'
+  and gesuchsperiode_id in
+      (select gesuchsperiode.id from gesuchsperiode
+       join mandant m on gesuchsperiode.mandant_id = m.id
+       where mandant_identifier = 'SCHWYZ');
+
 
