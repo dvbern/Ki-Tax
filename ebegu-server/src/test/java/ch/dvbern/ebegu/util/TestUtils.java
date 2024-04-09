@@ -117,6 +117,7 @@ public final class TestUtils {
 	public static BGRechnerParameterDTO getRechnerParamterSchwyz() {
 		BGRechnerParameterDTO defaultParameter = getParameter();
 
+		defaultParameter.setOeffnungstageKita(BigDecimal.valueOf(246));
 		defaultParameter.setMinMassgebendesEinkommen(BigDecimal.valueOf(47_193));
 		defaultParameter.setMaxMassgebendesEinkommen(BigDecimal.valueOf(153_215));
 		defaultParameter.setMinVerguenstigungProTg(BigDecimal.valueOf(30));

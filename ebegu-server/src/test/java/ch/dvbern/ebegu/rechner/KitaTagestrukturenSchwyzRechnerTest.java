@@ -33,78 +33,52 @@ import org.junit.jupiter.api.Test;
 
 import static ch.dvbern.ebegu.rechner.KitaTagestrukturenSchwyzRechner.NORMKOSTEN_PRIMARSTUFE_WAEHREND_SCHULFREIEN_ZEIT;
 import static ch.dvbern.ebegu.rechner.KitaTagestrukturenSchwyzRechner.NORMKOSTEN_PRIMARSTUFE_WAEHREND_SCHULZEIT;
-import static ch.dvbern.ebegu.util.MathUtil.EXACT;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class KitaTagestrukturenSchwyzRechnerTest {
 
+	public static final BigDecimal TAGE_100_PROZENT_PENSUM = new BigDecimal("20.50");
+	public static final BigDecimal TAGE_80_PROZENT_PENSUM = new BigDecimal("16.40");
+	public static final BigDecimal VOLLKOSTEN = new BigDecimal("4000.00");
+	public static final BigDecimal MINIMALER_ELTERNBEITRAG = new BigDecimal("492.00");
+
 	@Test
-	void testKindEingeschultBetreuungWaehrendSchulzeit() {
+	void testKind1() {
 		// given
 		var testee = new KitaTagestrukturenSchwyzRechner();
 		var parameter = TestUtils.getRechnerParamterSchwyz();
 		var verfuegungZeitabschnitt = new VerfuegungZeitabschnitt();
 		setGueltigkeitGanzerApril(verfuegungZeitabschnitt);
 
-		// TODO mobj input type correct?
-		var input = verfuegungZeitabschnitt.getBgCalculationInputAsiv();
+		var input = verfuegungZeitabschnitt.getRelevantBgCalculationInput();
 		setDefaultInputs(input);
 
 		// when
 		testee.calculate(verfuegungZeitabschnitt, parameter);
 
 		// then
-		var result = verfuegungZeitabschnitt.getBgCalculationResultAsiv();
+		var result = verfuegungZeitabschnitt.getRelevantBgCalculationResult();
 		checkMappedInputs(input, result);
+		assertEquals(TAGE_100_PROZENT_PENSUM, result.getAnspruchspensumZeiteinheit());
+		assertEquals(TAGE_80_PROZENT_PENSUM, result.getBgPensumZeiteinheit());
+		assertEquals(TAGE_80_PROZENT_PENSUM, result.getBetreuungspensumZeiteinheit());
 		assertEquals(
-			new BigDecimal("4000.00"),
+			VOLLKOSTEN,
 			result.getVollkosten());
+		var gutschein = new BigDecimal("750.40");
 		assertEquals(
-			new BigDecimal("750.40"),
+			gutschein,
 			result.getVerguenstigungOhneBeruecksichtigungVollkosten());
 		assertEquals(
-			new BigDecimal("574.00"),
+			gutschein,
 			result.getVerguenstigungOhneBeruecksichtigungMinimalbeitrag());
-		assertEquals(
-			new BigDecimal("10.75"),
-			result.getMinimalerElternbeitrag());
+		assertEquals(MINIMALER_ELTERNBEITRAG, result.getMinimalerElternbeitrag());
+		assertEquals(new BigDecimal("176.40"), result.getMinimalerElternbeitragGekuerzt());
+		assertEquals(new BigDecimal("315.60"), result.getElternbeitrag());
 	}
 
 	@Test
-	void testKindEingeschultBetreuungWaehrendSchulzeitOhneGeschwister() {
-		// given
-		var testee = new KitaTagestrukturenSchwyzRechner();
-		var parameter = TestUtils.getRechnerParamterSchwyz();
-		var verfuegungZeitabschnitt = new VerfuegungZeitabschnitt();
-		setGueltigkeitGanzerApril(verfuegungZeitabschnitt);
-
-		// TODO mobj input type correct?
-		var input = verfuegungZeitabschnitt.getBgCalculationInputAsiv();
-		setDefaultInputs(input);
-		input.setAnzahlGeschwister(0);
-
-		// when
-		testee.calculate(verfuegungZeitabschnitt, parameter);
-
-		// then
-		var result = verfuegungZeitabschnitt.getBgCalculationResultAsiv();
-		checkMappedInputs(input, result);
-		assertEquals(
-			new BigDecimal("4000.00"),
-			result.getVollkosten());
-		assertEquals(
-			new BigDecimal("558.80"),
-			result.getVerguenstigungOhneBeruecksichtigungVollkosten());
-		assertEquals(
-			new BigDecimal("558.80"),
-			result.getVerguenstigungOhneBeruecksichtigungMinimalbeitrag());
-		assertEquals(
-			new BigDecimal("0.00"),
-			result.getMinimalerElternbeitrag());
-	}
-
-	@Test
-	void testKindEingeschultBetreuungWaehrendSchulzeitHalberMonat() {
+	void testKind1HalberMonat() {
 		// given
 		var testee = new KitaTagestrukturenSchwyzRechner();
 		var parameter = TestUtils.getRechnerParamterSchwyz();
@@ -113,40 +87,120 @@ class KitaTagestrukturenSchwyzRechnerTest {
 			LocalDate.of(2024, Month.APRIL, 16),
 			LocalDate.of(2024, Month.APRIL, 30)));
 
-		// TODO mobj input type correct?
-		var input = verfuegungZeitabschnitt.getBgCalculationInputAsiv();
+		var input = verfuegungZeitabschnitt.getRelevantBgCalculationInput();
 		setDefaultInputs(input);
 
 		// when
 		testee.calculate(verfuegungZeitabschnitt, parameter);
 
 		// then
-		var result = verfuegungZeitabschnitt.getBgCalculationResultAsiv();
+		var result = verfuegungZeitabschnitt.getRelevantBgCalculationResult();
 		checkMappedInputs(input, result);
+		assertEquals(new BigDecimal("10.00"), result.getAnspruchspensumZeiteinheit());
+		assertEquals(new BigDecimal("8.20"), result.getBgPensumZeiteinheit());
+		assertEquals(new BigDecimal("8.20"), result.getBgPensumZeiteinheit());
 		assertEquals(
 			new BigDecimal("2000.00"),
 			result.getVollkosten());
+		var gutschein = new BigDecimal("375.20");
 		assertEquals(
-			new BigDecimal("375.20"),
+			gutschein,
 			result.getVerguenstigungOhneBeruecksichtigungVollkosten());
 		assertEquals(
-			new BigDecimal("287.00"),
+			gutschein,
 			result.getVerguenstigungOhneBeruecksichtigungMinimalbeitrag());
 		assertEquals(
-			new BigDecimal("10.75"),
+			new BigDecimal("246.00"),
 			result.getMinimalerElternbeitrag());
+		assertEquals(new BigDecimal("88.20"), result.getMinimalerElternbeitragGekuerzt());
+		assertEquals(new BigDecimal("157.80"), result.getElternbeitrag());
 	}
 
 	@Test
-	void testKindNichtEingeschultKeinBabyTarif() {
+	void testKind2() {
 		// given
 		var testee = new KitaTagestrukturenSchwyzRechner();
 		var parameter = TestUtils.getRechnerParamterSchwyz();
 		var verfuegungZeitabschnitt = new VerfuegungZeitabschnitt();
 		setGueltigkeitGanzerApril(verfuegungZeitabschnitt);
 
-		// TODO mobj input type correct?
-		var input = verfuegungZeitabschnitt.getBgCalculationInputAsiv();
+		var input = verfuegungZeitabschnitt.getRelevantBgCalculationInput();
+		setDefaultInputs(input);
+		input.setAnzahlGeschwister(0);
+
+		// when
+		testee.calculate(verfuegungZeitabschnitt, parameter);
+
+		// then
+		var result = verfuegungZeitabschnitt.getRelevantBgCalculationResult();
+		checkMappedInputs(input, result);
+		assertEquals(TAGE_100_PROZENT_PENSUM, result.getAnspruchspensumZeiteinheit());
+		assertEquals(TAGE_80_PROZENT_PENSUM, result.getBgPensumZeiteinheit());
+		assertEquals(TAGE_80_PROZENT_PENSUM, result.getBetreuungspensumZeiteinheit());
+		assertEquals(
+			VOLLKOSTEN,
+			result.getVollkosten());
+		var gutschein = new BigDecimal("558.80");
+		assertEquals(
+			gutschein,
+			result.getVerguenstigungOhneBeruecksichtigungVollkosten());
+		assertEquals(
+			gutschein,
+			result.getVerguenstigungOhneBeruecksichtigungMinimalbeitrag());
+		assertEquals(
+			MINIMALER_ELTERNBEITRAG,
+			result.getMinimalerElternbeitrag());
+		assertEquals(new BigDecimal("0.00"), result.getMinimalerElternbeitragGekuerzt());
+		assertEquals(new BigDecimal("507.20"), result.getElternbeitrag());
+	}
+
+	@Test
+	void testKind3() {
+		// given
+		var testee = new KitaTagestrukturenSchwyzRechner();
+		var parameter = TestUtils.getRechnerParamterSchwyz();
+		var verfuegungZeitabschnitt = new VerfuegungZeitabschnitt();
+		setGueltigkeitGanzerApril(verfuegungZeitabschnitt);
+
+		var input = verfuegungZeitabschnitt.getRelevantBgCalculationInput();
+		setDefaultInputs(input);
+		input.setAnzahlGeschwister(11);
+
+		// when
+		testee.calculate(verfuegungZeitabschnitt, parameter);
+
+		// then
+		var result = verfuegungZeitabschnitt.getRelevantBgCalculationResult();
+		checkMappedInputs(input, result);
+		assertEquals(TAGE_100_PROZENT_PENSUM, result.getAnspruchspensumZeiteinheit());
+		assertEquals(TAGE_80_PROZENT_PENSUM, result.getBgPensumZeiteinheit());
+		assertEquals(TAGE_80_PROZENT_PENSUM, result.getBetreuungspensumZeiteinheit());
+		assertEquals(
+			VOLLKOSTEN,
+			result.getVollkosten());
+		var gutschein = new BigDecimal("1066.00");
+		assertEquals(
+			gutschein,
+			result.getVerguenstigungOhneBeruecksichtigungVollkosten());
+		assertEquals(
+			gutschein,
+			result.getVerguenstigungOhneBeruecksichtigungMinimalbeitrag());
+		assertEquals(
+			MINIMALER_ELTERNBEITRAG,
+			result.getMinimalerElternbeitrag());
+		assertEquals(MINIMALER_ELTERNBEITRAG, result.getMinimalerElternbeitragGekuerzt());
+		assertEquals(new BigDecimal("0.00"), result.getElternbeitrag());
+	}
+
+	@Test
+	void testKind4() {
+		// given
+		var testee = new KitaTagestrukturenSchwyzRechner();
+		var parameter = TestUtils.getRechnerParamterSchwyz();
+		var verfuegungZeitabschnitt = new VerfuegungZeitabschnitt();
+		setGueltigkeitGanzerApril(verfuegungZeitabschnitt);
+
+		var input = verfuegungZeitabschnitt.getRelevantBgCalculationInput();
 		setDefaultInputs(input);
 		input.setEinschulungTyp(null);
 		input.setBetreuungWaehrendSchulzeit(false);
@@ -155,32 +209,37 @@ class KitaTagestrukturenSchwyzRechnerTest {
 		testee.calculate(verfuegungZeitabschnitt, parameter);
 
 		// then
-		var result = verfuegungZeitabschnitt.getBgCalculationResultAsiv();
+		var result = verfuegungZeitabschnitt.getRelevantBgCalculationResult();
 		checkMappedInputs(input, result);
+		assertEquals(TAGE_100_PROZENT_PENSUM, result.getAnspruchspensumZeiteinheit());
+		assertEquals(TAGE_80_PROZENT_PENSUM, result.getBgPensumZeiteinheit());
+		assertEquals(TAGE_80_PROZENT_PENSUM, result.getBetreuungspensumZeiteinheit());
 		assertEquals(
-			new BigDecimal("4000.00"),
+			VOLLKOSTEN,
 			result.getVollkosten());
+		var gutschein = new BigDecimal("1788.15");
 		assertEquals(
-			new BigDecimal("1788.15"),
+			gutschein,
 			result.getVerguenstigungOhneBeruecksichtigungVollkosten());
 		assertEquals(
-			new BigDecimal("1640.00"),
+			gutschein,
 			result.getVerguenstigungOhneBeruecksichtigungMinimalbeitrag());
 		assertEquals(
-			new BigDecimal("9.05"),
+			MINIMALER_ELTERNBEITRAG,
 			result.getMinimalerElternbeitrag());
+		assertEquals(new BigDecimal("148.15"), result.getMinimalerElternbeitragGekuerzt());
+		assertEquals(new BigDecimal("343.85"), result.getElternbeitrag());
 	}
 
 	@Test
-	void testMassgebendesEinkommenNaheObergrenze() {
+	void testKind5_MassgebendesEinkommenNaheObergrenze() {
 		// given
 		var testee = new KitaTagestrukturenSchwyzRechner();
 		var parameter = TestUtils.getRechnerParamterSchwyz();
 		var verfuegungZeitabschnitt = new VerfuegungZeitabschnitt();
 		setGueltigkeitGanzerApril(verfuegungZeitabschnitt);
 
-		// TODO mobj input type correct?
-		var input = verfuegungZeitabschnitt.getBgCalculationInputAsiv();
+		var input = verfuegungZeitabschnitt.getRelevantBgCalculationInput();
 		setDefaultInputs(input);
 		input.setEinschulungTyp(null);
 		input.setBetreuungWaehrendSchulzeit(false);
@@ -191,32 +250,37 @@ class KitaTagestrukturenSchwyzRechnerTest {
 		testee.calculate(verfuegungZeitabschnitt, parameter);
 
 		// then
-		var result = verfuegungZeitabschnitt.getBgCalculationResultAsiv();
+		var result = verfuegungZeitabschnitt.getRelevantBgCalculationResult();
 		checkMappedInputs(input, result);
+		assertEquals(TAGE_100_PROZENT_PENSUM, result.getAnspruchspensumZeiteinheit());
+		assertEquals(TAGE_80_PROZENT_PENSUM, result.getBgPensumZeiteinheit());
+		assertEquals(TAGE_80_PROZENT_PENSUM, result.getBetreuungspensumZeiteinheit());
 		assertEquals(
-			new BigDecimal("4000.00"),
+			VOLLKOSTEN,
 			result.getVollkosten());
+		var gutschein = new BigDecimal("0.20");
 		assertEquals(
-			new BigDecimal("0.20"),
+			gutschein,
 			result.getVerguenstigungOhneBeruecksichtigungVollkosten());
 		assertEquals(
-			new BigDecimal("0.20"),
+			gutschein,
 			result.getVerguenstigungOhneBeruecksichtigungMinimalbeitrag());
 		assertEquals(
-			new BigDecimal("0.00"),
+			MINIMALER_ELTERNBEITRAG,
 			result.getMinimalerElternbeitrag());
+		assertEquals(new BigDecimal("0.00"), result.getMinimalerElternbeitragGekuerzt());
+		assertEquals(new BigDecimal("2131.80"), result.getElternbeitrag());
 	}
 
 	@Test
-	void testMassgebendesEinkommenNaheUntergrenze() {
+	void testKind6_MassgebendesEinkommenNaheUntergrenze() {
 		// given
 		var testee = new KitaTagestrukturenSchwyzRechner();
 		var parameter = TestUtils.getRechnerParamterSchwyz();
 		var verfuegungZeitabschnitt = new VerfuegungZeitabschnitt();
 		setGueltigkeitGanzerApril(verfuegungZeitabschnitt);
 
-		// TODO mobj input type correct?
-		var input = verfuegungZeitabschnitt.getBgCalculationInputAsiv();
+		var input = verfuegungZeitabschnitt.getRelevantBgCalculationInput();
 		setDefaultInputs(input);
 
 		input.setEinschulungTyp(null);
@@ -228,32 +292,37 @@ class KitaTagestrukturenSchwyzRechnerTest {
 		testee.calculate(verfuegungZeitabschnitt, parameter);
 
 		// then
-		var result = verfuegungZeitabschnitt.getBgCalculationResultAsiv();
+		var result = verfuegungZeitabschnitt.getRelevantBgCalculationResult();
 		checkMappedInputs(input, result);
+		assertEquals(TAGE_100_PROZENT_PENSUM, result.getAnspruchspensumZeiteinheit());
+		assertEquals(TAGE_80_PROZENT_PENSUM, result.getBgPensumZeiteinheit());
+		assertEquals(TAGE_80_PROZENT_PENSUM, result.getBetreuungspensumZeiteinheit());
 		assertEquals(
-			new BigDecimal("4000.00"),
+			VOLLKOSTEN,
 			result.getVollkosten());
+		var gutschein = new BigDecimal("1836.65");
 		assertEquals(
-			new BigDecimal("1836.65"),
+			gutschein,
 			result.getVerguenstigungOhneBeruecksichtigungVollkosten());
 		assertEquals(
-			new BigDecimal("1640.00"),
+			gutschein,
 			result.getVerguenstigungOhneBeruecksichtigungMinimalbeitrag());
 		assertEquals(
-			new BigDecimal("12.00"),
+			MINIMALER_ELTERNBEITRAG,
 			result.getMinimalerElternbeitrag());
+		assertEquals(new BigDecimal("196.65"), result.getMinimalerElternbeitragGekuerzt());
+		assertEquals(new BigDecimal("295.35"), result.getElternbeitrag());
 	}
 
 	@Test
-	void testTagestarifTieferAlsNormkosten() {
+	void testKind7_TagestarifTieferAlsNormkosten() {
 		// given
 		var testee = new KitaTagestrukturenSchwyzRechner();
 		var parameter = TestUtils.getRechnerParamterSchwyz();
 		var verfuegungZeitabschnitt = new VerfuegungZeitabschnitt();
 		setGueltigkeitGanzerApril(verfuegungZeitabschnitt);
-		// TODO mobj input type correct?
 
-		var input = verfuegungZeitabschnitt.getBgCalculationInputAsiv();
+		var input = verfuegungZeitabschnitt.getRelevantBgCalculationInput();
 		setDefaultInputs(input);
 		input.setEinschulungTyp(null);
 		input.setBetreuungWaehrendSchulzeit(false);
@@ -263,20 +332,26 @@ class KitaTagestrukturenSchwyzRechnerTest {
 		testee.calculate(verfuegungZeitabschnitt, parameter);
 
 		// then
-		var result = verfuegungZeitabschnitt.getBgCalculationResultAsiv();
+		var result = verfuegungZeitabschnitt.getRelevantBgCalculationResult();
 		checkMappedInputs(input, result);
+		assertEquals(TAGE_100_PROZENT_PENSUM, result.getAnspruchspensumZeiteinheit());
+		assertEquals(TAGE_80_PROZENT_PENSUM, result.getBgPensumZeiteinheit());
+		assertEquals(TAGE_80_PROZENT_PENSUM, result.getBetreuungspensumZeiteinheit());
 		assertEquals(
 			new BigDecimal("2000.00"),
 			result.getVollkosten());
+		var gutschein = new BigDecimal("1677.45");
 		assertEquals(
-			new BigDecimal("1708.35"),
+			gutschein,
 			result.getVerguenstigungOhneBeruecksichtigungVollkosten());
 		assertEquals(
-			new BigDecimal("1558.00"),
+			gutschein,
 			result.getVerguenstigungOhneBeruecksichtigungMinimalbeitrag());
 		assertEquals(
-			new BigDecimal("9.15"),
+			MINIMALER_ELTERNBEITRAG,
 			result.getMinimalerElternbeitrag());
+		assertEquals(new BigDecimal("169.45"), result.getMinimalerElternbeitragGekuerzt());
+		assertEquals(new BigDecimal("322.55"), result.getElternbeitrag());
 	}
 
 	private void setGueltigkeitGanzerApril(VerfuegungZeitabschnitt verfuegungZeitabschnitt) {
@@ -285,15 +360,15 @@ class KitaTagestrukturenSchwyzRechnerTest {
 			LocalDate.of(2024, Month.APRIL, 30)));
 	}
 
-	private void setDefaultInputs(BGCalculationInput bgCalculationInputAsiv) {
-		bgCalculationInputAsiv.setBabyTarif(false);
-		bgCalculationInputAsiv.setEinschulungTyp(EinschulungTyp.KLASSE1);
-		bgCalculationInputAsiv.setBetreuungWaehrendSchulzeit(true);
-		bgCalculationInputAsiv.setAnzahlGeschwister(4);
-		bgCalculationInputAsiv.setBetreuungspensumProzent(new BigDecimal(80));
-		bgCalculationInputAsiv.setAnspruchspensumProzent(100);
-		bgCalculationInputAsiv.setMassgebendesEinkommenVorAbzugFamgr(new BigDecimal(50_000));
-		bgCalculationInputAsiv.setMonatlicheBetreuungskosten(new BigDecimal(20 * 200));
+	private void setDefaultInputs(BGCalculationInput input) {
+		input.setBabyTarif(false);
+		input.setEinschulungTyp(EinschulungTyp.KLASSE1);
+		input.setBetreuungWaehrendSchulzeit(true);
+		input.setAnzahlGeschwister(4);
+		input.setBetreuungspensumProzent(new BigDecimal(80));
+		input.setAnspruchspensumProzent(100);
+		input.setMassgebendesEinkommenVorAbzugFamgr(new BigDecimal(50_000));
+		input.setMonatlicheBetreuungskosten(new BigDecimal(20 * 200));
 	}
 
 	@Test
@@ -301,7 +376,7 @@ class KitaTagestrukturenSchwyzRechnerTest {
 		// given
 		var testee = new KitaTagestrukturenSchwyzRechner();
 		var verfuegungZeitabschnitt = new VerfuegungZeitabschnitt();
-		var input = verfuegungZeitabschnitt.getBgCalculationInputAsiv();
+		var input = verfuegungZeitabschnitt.getRelevantBgCalculationInput();
 		input.setBabyTarif(true);
 
 		var parameter = TestUtils.getRechnerParamterSchwyz();
@@ -318,7 +393,7 @@ class KitaTagestrukturenSchwyzRechnerTest {
 		// given
 		var testee = new KitaTagestrukturenSchwyzRechner();
 		var verfuegungZeitabschnitt = new VerfuegungZeitabschnitt();
-		var input = verfuegungZeitabschnitt.getBgCalculationInputAsiv();
+		var input = verfuegungZeitabschnitt.getRelevantBgCalculationInput();
 		var parameter = TestUtils.getRechnerParamterSchwyz();
 
 		// when
@@ -333,7 +408,7 @@ class KitaTagestrukturenSchwyzRechnerTest {
 		// given
 		var testee = new KitaTagestrukturenSchwyzRechner();
 		var verfuegungZeitabschnitt = new VerfuegungZeitabschnitt();
-		var input = verfuegungZeitabschnitt.getBgCalculationInputAsiv();
+		var input = verfuegungZeitabschnitt.getRelevantBgCalculationInput();
 		input.setEinschulungTyp(EinschulungTyp.KLASSE1);
 		input.setBetreuungWaehrendSchulzeit(false);
 		var parameter = TestUtils.getRechnerParamterSchwyz();
@@ -350,7 +425,7 @@ class KitaTagestrukturenSchwyzRechnerTest {
 		// given
 		var testee = new KitaTagestrukturenSchwyzRechner();
 		var verfuegungZeitabschnitt = new VerfuegungZeitabschnitt();
-		var input = verfuegungZeitabschnitt.getBgCalculationInputAsiv();
+		var input = verfuegungZeitabschnitt.getRelevantBgCalculationInput();
 		input.setEinschulungTyp(EinschulungTyp.KLASSE1);
 		input.setBetreuungWaehrendSchulzeit(true);
 		var parameter = TestUtils.getRechnerParamterSchwyz();
@@ -367,27 +442,23 @@ class KitaTagestrukturenSchwyzRechnerTest {
 		// given
 		var testee = new KitaTagestrukturenSchwyzRechner();
 
-		var parameter = TestUtils.getRechnerParamterSchwyz();
-		parameter.setOeffnungstageKita(BigDecimal.valueOf(240));
-
 		var verfuegungZeitabschnitt = new VerfuegungZeitabschnitt();
-		setGueltigkeitGanzerApril(verfuegungZeitabschnitt);
-		// TODO mobj input type correct?
-		verfuegungZeitabschnitt.getBgCalculationInputAsiv().setMonatlicheBetreuungskosten(new BigDecimal(2000));
-
-		var pensum = EXACT.pctToFraction(new BigDecimal(80));
+		verfuegungZeitabschnitt.getRelevantBgCalculationInput().setMonatlicheBetreuungskosten(new BigDecimal(2000));
+		var effektiveBetreuungsTage = new BigDecimal("16");
 
 		// when
 		BigDecimal tagestarif =
-			testee.calculateTagesTarif(pensum, parameter, verfuegungZeitabschnitt.getBgCalculationInputAsiv());
+			testee.calculateTagesTarif(effektiveBetreuungsTage, verfuegungZeitabschnitt.getRelevantBgCalculationInput());
 
 		// then
 		assertEquals(new BigDecimal("125.0000000000"), tagestarif);
 	}
 
 	private void checkMappedInputs(BGCalculationInput input, BGCalculationResult result) {
-		assertEquals(MathUtil.ZWEI_NACHKOMMASTELLE.from(input.getBetreuungspensumProzent()), result.getBetreuungspensumProzent());
-		assertEquals(MathUtil.ZWEI_NACHKOMMASTELLE.from(input.getAnspruchspensumProzent()), result.getAnspruchspensumZeiteinheit());
-		assertEquals(MathUtil.ZWEI_NACHKOMMASTELLE.from(input.getBgPensumProzent()), result.getBgPensumZeiteinheit());
+		assertEquals(
+			MathUtil.ZWEI_NACHKOMMASTELLE.from(input.getBetreuungspensumProzent()),
+			result.getBetreuungspensumProzent());
+		assertEquals(input.getAnspruchspensumProzent(), result.getAnspruchspensumProzent());
+		assertEquals(MathUtil.ZWEI_NACHKOMMASTELLE.from(input.getBgPensumProzent()), result.getBgPensumProzent());
 	}
 }
