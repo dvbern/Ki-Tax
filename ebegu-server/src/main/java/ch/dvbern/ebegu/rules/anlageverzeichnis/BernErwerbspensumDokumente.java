@@ -97,7 +97,7 @@ public class BernErwerbspensumDokumente extends AbstractDokumente<Erwerbspensum,
 		}
 	}
 
-	private void getAllDokumenteGesuchsteller(
+	protected void getAllDokumenteGesuchsteller(
 			@Nonnull Set<DokumentGrund> anlageVerzeichnis,
 			@Nullable GesuchstellerContainer gesuchsteller,
 			@Nonnull Integer gesuchstellerNumber,
@@ -136,7 +136,7 @@ public class BernErwerbspensumDokumente extends AbstractDokumente<Erwerbspensum,
 	}
 
 	@Nullable
-	private DokumentGrund getDokument(
+	protected DokumentGrund getDokument(
 		@Nonnull Integer gesuchstellerNumber,
 		@Nonnull Erwerbspensum erwerbspensumJA,
 		@Nonnull DokumentTyp dokumentTyp,
