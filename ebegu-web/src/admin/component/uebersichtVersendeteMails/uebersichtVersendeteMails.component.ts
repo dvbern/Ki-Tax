@@ -19,7 +19,7 @@ import {MatSort, MatSortable} from '@angular/material/sort';
 import {MatTableDataSource} from '@angular/material/table';
 import * as moment from 'moment';
 import {UebersichtVersendeteMailsRS} from '../../../app/core/service/uebersichtVersendeteMailsRS';
-import {TSUebersichtVersendeteMails} from '../../../models/TSUebersichtVersendeteMails';
+import {TSVersendeteMail} from '../../../models/TSVersendeteMail';
 
 @Component({
     selector: 'dv-uebersicht-Versendete-Mails',
@@ -51,7 +51,7 @@ export class UebersichtVersendeteMailsComponent {
     public ngAfterViewInit(): void {
         this.dataSource.sort = this.sort;
     }
-    private assignResultToDataSource(result: TSUebersichtVersendeteMails[]): void {
+    private assignResultToDataSource(result: TSVersendeteMail[]): void {
         this.dataSource.data = result.map(
             item => ({
                 zeitpunktVersand: this.parseMomentToString(item.zeitpunktVersand),
@@ -65,7 +65,7 @@ export class UebersichtVersendeteMailsComponent {
     private passFilterToServer(): void {
         this.dataSource = new MatTableDataSource<TableUebersichtVersendeteMails>([]);
         this.uebersichtVersendeteMailsRS.getAllMails()
-            .subscribe((result: TSUebersichtVersendeteMails[]) => {
+            .subscribe((result: TSVersendeteMail[]) => {
                     this.assignResultToDataSource(result);
                     this.changeDetectorRef.markForCheck();
                 },

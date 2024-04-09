@@ -13,15 +13,15 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 import ch.dvbern.ebegu.api.converter.JaxBConverter;
-import ch.dvbern.ebegu.api.dtos.JaxUebersichtVersendeteMails;
-import ch.dvbern.ebegu.services.UebersichtVersendeteMailsService;
+import ch.dvbern.ebegu.api.dtos.JaxVersendeteMail;
+import ch.dvbern.ebegu.services.VersendeteMailsService;
 
 import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
 
-@Path("uebersichtVersendeteMails")
-public class UebersichtVersendeteMailsResource {
+@Path("versendeteMails")
+public class VersendeteMailResource {
 	@Inject
-	private UebersichtVersendeteMailsService uebersichtVersendeteMailsService;
+	private VersendeteMailsService versendeteMailsService;
 
 	@Inject
 	private JaxBConverter converter;
@@ -32,9 +32,9 @@ public class UebersichtVersendeteMailsResource {
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
 	@RolesAllowed(SUPER_ADMIN)
-	public List<JaxUebersichtVersendeteMails> getAllMails() {
-		return uebersichtVersendeteMailsService.getAll().stream()
-			.map(uebersichtVersendeteMails -> converter.uebersichtVersendeteMailsToJax(uebersichtVersendeteMails))
+	public List<JaxVersendeteMail> getAllMails() {
+		return versendeteMailsService.getAll().stream()
+			.map(versendeteMails -> converter.versendeteMailsToJax(versendeteMails))
 			.collect(Collectors.toList());
 	}
 }

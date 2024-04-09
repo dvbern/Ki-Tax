@@ -18,3 +18,4 @@
 export * from './institution-list.po';
 export * from './tagesschule.po';
 export * from './test-faelle.po';
+export * from './uebersichtVersendeteMails.po'

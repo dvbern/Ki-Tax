@@ -18,23 +18,23 @@ import {Injectable} from '@angular/core';
 import {CONSTANTS} from '../constants/CONSTANTS';
 import {Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
-import {TSUebersichtVersendeteMails} from '../../../models/TSUebersichtVersendeteMails';
+import {TSVersendeteMail} from '../../../models/TSVersendeteMail';
 import {EbeguRestUtil} from '../../../utils/EbeguRestUtil';
 
 @Injectable({
     providedIn: 'root'
 })
 export class UebersichtVersendeteMailsRS {
-    public readonly serviceURL = `${CONSTANTS.REST_API}uebersichtVersendeteMails`;
+    public readonly serviceURL = `${CONSTANTS.REST_API}versendeteMails`;
     private readonly ebeguRestUtil = new EbeguRestUtil();
     public constructor(
         public http: HttpClient
     ) {
     }
-    public getAllMails(): Observable<TSUebersichtVersendeteMails[]> {
+    public getAllMails(): Observable<TSVersendeteMail[]> {
         return this.getInfo(`${this.serviceURL}/allMails`);
     }
-    private getInfo(url: string): Observable<Array<TSUebersichtVersendeteMails>> {
+    private getInfo(url: string): Observable<Array<TSVersendeteMail>> {
         return this.http.get(url)
             .pipe(map((response: any) => this.ebeguRestUtil.parseTSUebersichtVersendeteMailsList(response)));
     }
