@@ -1,7 +1,7 @@
 import {ChangeDetectionStrategy, Component, Input} from '@angular/core';
 import {ControlContainer, NgForm} from '@angular/forms';
 import {TSAbstractFinanzielleSituation} from '../../../../../models/TSAbstractFinanzielleSituation';
-import {TSFinanzielleSituation} from '../../../../../models/TSFinanzielleSituation';
+import {TSEinkommensverschlechterung} from '../../../../../models/TSEinkommensverschlechterung';
 import {EbeguUtil} from '../../../../../utils/EbeguUtil';
 
 @Component({
@@ -23,5 +23,9 @@ export class SteuerveranlagtSchwyzComponent {
 
     public isNotNullOrUndefined(toCheck: any): boolean {
         return EbeguUtil.isNotNullOrUndefined(toCheck);
+    }
+
+    public isEKV(abstractFinSit: TSAbstractFinanzielleSituation): abstractFinSit is TSEinkommensverschlechterung {
+        return abstractFinSit instanceof TSEinkommensverschlechterung;
     }
 }
