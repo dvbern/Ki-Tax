@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020 DV Bern AG, Switzerland
+ * Copyright (C) 2024 DV Bern AG, Switzerland
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -15,12 +15,13 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.dvbern.ebegu.inbox.handler;
+package ch.dvbern.ebegu.inbox.handler.pensum;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
@@ -31,6 +32,7 @@ import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import ch.dvbern.ebegu.entities.AbstractDecimalPensum;
 import ch.dvbern.ebegu.entities.AbstractMahlzeitenPensum;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Betreuungsmitteilung;
@@ -38,27 +40,35 @@ import ch.dvbern.ebegu.entities.BetreuungsmitteilungPensum;
 import ch.dvbern.ebegu.entities.Betreuungspensum;
 import ch.dvbern.ebegu.entities.BetreuungspensumContainer;
 import ch.dvbern.ebegu.enums.AntragCopyType;
+import ch.dvbern.ebegu.inbox.handler.ProcessingContext;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.Gueltigkeit;
 import ch.dvbern.ebegu.util.GueltigkeitsUtil;
 import ch.dvbern.kibon.exchange.commons.platzbestaetigung.ZeitabschnittDTO;
-import com.google.errorprone.annotations.CanIgnoreReturnValue;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.experimental.UtilityClass;
 
-import static ch.dvbern.ebegu.inbox.handler.PlatzbestaetigungEventHandler.GO_LIVE;
-import static ch.dvbern.ebegu.util.EbeguUtil.coalesce;
-import static java.math.BigDecimal.ZERO;
+import static ch.dvbern.ebegu.util.EbeguUtil.collectionComparator;
 
+@UtilityClass
 public final class PensumMappingUtil {
 
-	private static final Logger LOG = LoggerFactory.getLogger(PensumMappingUtil.class);
+	public static final LocalDate GO_LIVE = LocalDate.of(2021, 1, 1);
 
-	private PensumMappingUtil() {
-		// util
-	}
+	public static final Comparator<AbstractMahlzeitenPensum> COMPARATOR = Comparator
+		.comparing(AbstractMahlzeitenPensum::getMonatlicheBetreuungskosten)
+		.thenComparing(AbstractDecimalPensum::getPensumRounded)
+		.thenComparing(AbstractMahlzeitenPensum::getTarifProHauptmahlzeit)
+		.thenComparing(AbstractMahlzeitenPensum::getTarifProNebenmahlzeit)
+		.thenComparing(AbstractMahlzeitenPensum::getMonatlicheHauptmahlzeiten)
+		.thenComparing(AbstractMahlzeitenPensum::getMonatlicheNebenmahlzeiten);
 
-	public static void addZeitabschnitteToBetreuung(@Nonnull ProcessingContext ctx) {
+	public static final Comparator<AbstractMahlzeitenPensum> COMPARATOR_WITH_GUELTIGKEIT = PensumMappingUtil.COMPARATOR
+		.thenComparing(AbstractMahlzeitenPensum::getGueltigkeit);
+
+	public static final Comparator<Betreuungsmitteilung> MITTEILUNG_COMPARATOR = Comparator
+		.comparing(Betreuungsmitteilung::getBetreuungspensen, collectionComparator(COMPARATOR_WITH_GUELTIGKEIT));
+
+	public static void addZeitabschnitteToBetreuung(@Nonnull ProcessingContext ctx, @Nonnull PensumMapper mapper) {
 		Betreuung betreuung = ctx.getBetreuung();
 		DateRange gueltigkeit = ctx.getGueltigkeitInPeriode();
 
@@ -87,7 +97,7 @@ public final class PensumMappingUtil {
 		containersToUpdate.removeIf(c -> c.getGueltigkeit().intersects(gueltigkeit));
 
 		List<BetreuungspensumContainer> toImport =
-			convertZeitabschnitte(ctx, gueltigkeit, z -> toBetreuungspensumContainer(z, ctx));
+			convertZeitabschnitte(ctx, gueltigkeit, z -> toBetreuungspensumContainer(z, ctx, mapper));
 
 		writeBack(
 			betreuung.getBetreuungspensumContainers(),
@@ -122,9 +132,11 @@ public final class PensumMappingUtil {
 	@Nonnull
 	private static BetreuungspensumContainer toBetreuungspensumContainer(
 		@Nonnull ZeitabschnittDTO zeitabschnittDTO,
-		@Nonnull ProcessingContext ctx) {
+		@Nonnull ProcessingContext ctx,
+		@Nonnull PensumMapper mapper) {
 
-		Betreuungspensum betreuungspensum = toAbstractMahlzeitenPensum(new Betreuungspensum(), zeitabschnittDTO, ctx);
+		Betreuungspensum betreuungspensum = new Betreuungspensum();
+		mapper.toAbstractMahlzeitenPensum(betreuungspensum, zeitabschnittDTO);
 
 		BetreuungspensumContainer container = new BetreuungspensumContainer();
 		container.setBetreuungspensumJA(betreuungspensum);
@@ -136,14 +148,15 @@ public final class PensumMappingUtil {
 	public static void addZeitabschnitteToBetreuungsmitteilung(
 		@Nonnull ProcessingContext ctx,
 		@Nullable Betreuungsmitteilung latest,
-		@Nonnull Betreuungsmitteilung betreuungsmitteilung) {
+		@Nonnull Betreuungsmitteilung betreuungsmitteilung,
+		@Nonnull PensumMapper mapper) {
 
 		DateRange mutationRange = getMutationRange(ctx);
 
 		List<BetreuungsmitteilungPensum> existing = getExisting(ctx, latest, mutationRange);
 
 		List<BetreuungsmitteilungPensum> toImport =
-			convertZeitabschnitte(ctx, mutationRange, z -> toBetreuungsmitteilungPensum(z, ctx));
+			convertZeitabschnitte(ctx, mutationRange, z -> toBetreuungsmitteilungPensum(z, mapper));
 
 		writeBack(betreuungsmitteilung.getBetreuungspensen(), a -> a, ctx, existing, toImport);
 
@@ -225,75 +238,12 @@ public final class PensumMappingUtil {
 	@Nonnull
 	private static BetreuungsmitteilungPensum toBetreuungsmitteilungPensum(
 		@Nonnull ZeitabschnittDTO zeitabschnitt,
-		@Nonnull ProcessingContext ctx) {
+		@Nonnull PensumMapper mapper) {
 
-		return toAbstractMahlzeitenPensum(new BetreuungsmitteilungPensum(), zeitabschnitt, ctx);
-	}
+		BetreuungsmitteilungPensum betreuungsmitteilungPensum = new BetreuungsmitteilungPensum();
+		mapper.toAbstractMahlzeitenPensum(betreuungsmitteilungPensum, zeitabschnitt);
 
-	@Nonnull
-	@CanIgnoreReturnValue
-	static <T extends AbstractMahlzeitenPensum> T toAbstractMahlzeitenPensum(
-		@Nonnull T target,
-		@Nonnull ZeitabschnittDTO zeitabschnittDTO,
-		@Nonnull ProcessingContext ctx) {
-
-		target.getGueltigkeit().setGueltigAb(zeitabschnittDTO.getVon());
-		target.getGueltigkeit().setGueltigBis(zeitabschnittDTO.getBis());
-		target.setMonatlicheBetreuungskosten(zeitabschnittDTO.getBetreuungskosten());
-		setPensum(target, zeitabschnittDTO, ctx);
-
-		if (ctx.isMahlzeitVerguenstigungEnabled()) {
-			target.setMonatlicheHauptmahlzeiten(coalesce(zeitabschnittDTO.getAnzahlHauptmahlzeiten(), ZERO));
-			target.setMonatlicheNebenmahlzeiten(coalesce(zeitabschnittDTO.getAnzahlNebenmahlzeiten(), ZERO));
-
-			setTarifeProMahlzeiten(target, zeitabschnittDTO, ctx);
-		}
-
-		return target;
-	}
-
-	private static <T extends AbstractMahlzeitenPensum> void setPensum(
-		@Nonnull T target,
-		@Nonnull ZeitabschnittDTO zeitabschnittDTO,
-		@Nonnull ProcessingContext ctx) {
-
-		switch (zeitabschnittDTO.getPensumUnit()) {
-		case DAYS:
-			target.applyPensumFromDays(zeitabschnittDTO.getBetreuungspensum(), ctx.getMaxTageProMonat());
-			break;
-		case HOURS:
-			target.applyPensumFromHours(zeitabschnittDTO.getBetreuungspensum(), ctx.getMaxStundenProMonat());
-			break;
-		case PERCENTAGE:
-			target.applyPensumFromPercentage(zeitabschnittDTO.getBetreuungspensum());
-			break;
-		default:
-			throw new IllegalArgumentException("Unsupported pensum unit: " + zeitabschnittDTO.getPensumUnit());
-		}
-	}
-
-	private static <T extends AbstractMahlzeitenPensum> void setTarifeProMahlzeiten(
-		@Nonnull T target,
-		@Nonnull ZeitabschnittDTO zeitabschnittDTO,
-		@Nonnull ProcessingContext ctx) {
-
-		// Die Mahlzeitkosten koennen null sein, wir nehmen dann die default Werten
-		if (zeitabschnittDTO.getTarifProHauptmahlzeiten() != null) {
-			target.setTarifProHauptmahlzeit(zeitabschnittDTO.getTarifProHauptmahlzeiten());
-		} else {
-			target.setVollstaendig(false);
-			ctx.requireHumanConfirmation();
-			LOG.info("PlatzbestaetigungEvent fuer Betreuung mit RefNr: {} hat kein Hauptmahlzeiten Tarif", ctx.getDto().getRefnr());
-			ctx.setHumanConfirmationMessage("PlatzbestaetigungEvent hat keinen Hauptmahlzeiten Tarif");
-		}
-		if (zeitabschnittDTO.getTarifProNebenmahlzeiten() != null) {
-			target.setTarifProNebenmahlzeit(zeitabschnittDTO.getTarifProNebenmahlzeiten());
-		} else {
-			target.setVollstaendig(false);
-			ctx.requireHumanConfirmation();
-			LOG.info("PlatzbestaetigungEvent fuer Betreuung mit RefNr: {} hat kein Nebenmahlzeiten Tarif", ctx.getDto().getRefnr());
-			ctx.setHumanConfirmationMessage("PlatzbestaetigungEvent hat keinen Nebenmahlzeiten Tarif");
-		}
+		return betreuungsmitteilungPensum;
 	}
 
 	@SafeVarargs
@@ -370,6 +320,6 @@ public final class PensumMappingUtil {
 		@Nonnull AbstractMahlzeitenPensum current,
 		@Nonnull AbstractMahlzeitenPensum next) {
 
-		return PlatzbestaetigungEventHandler.COMPARATOR.compare(current, next) == 0;
+		return COMPARATOR.compare(current, next) == 0;
 	}
 }

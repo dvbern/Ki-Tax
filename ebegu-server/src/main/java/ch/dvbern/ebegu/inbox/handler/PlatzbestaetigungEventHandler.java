@@ -17,37 +17,77 @@
 
 package ch.dvbern.ebegu.inbox.handler;
 
-import ch.dvbern.ebegu.entities.*;
-import ch.dvbern.ebegu.enums.*;
-import ch.dvbern.ebegu.errors.EbeguRuntimeException;
-import ch.dvbern.ebegu.errors.KibonLogLevel;
-import ch.dvbern.ebegu.inbox.services.BetreuungEventHelper;
-import ch.dvbern.ebegu.kafka.BaseEventHandler;
-import ch.dvbern.ebegu.kafka.EventType;
-import ch.dvbern.ebegu.services.*;
-import ch.dvbern.ebegu.types.DateRange;
-import ch.dvbern.ebegu.util.*;
-import ch.dvbern.kibon.exchange.commons.platzbestaetigung.BetreuungEventDTO;
-import ch.dvbern.kibon.exchange.commons.types.Zeiteinheit;
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Locale;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
+import java.util.function.BiFunction;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.*;
-import java.util.function.BiFunction;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
+import ch.dvbern.ebegu.entities.AbstractEntity;
+import ch.dvbern.ebegu.entities.AbstractMahlzeitenPensum;
+import ch.dvbern.ebegu.entities.Benutzer;
+import ch.dvbern.ebegu.entities.Betreuung;
+import ch.dvbern.ebegu.entities.Betreuungsmitteilung;
+import ch.dvbern.ebegu.entities.BetreuungsmitteilungPensum;
+import ch.dvbern.ebegu.entities.BetreuungspensumContainer;
+import ch.dvbern.ebegu.entities.ErweiterteBetreuung;
+import ch.dvbern.ebegu.entities.ErweiterteBetreuungContainer;
+import ch.dvbern.ebegu.entities.Gemeinde;
+import ch.dvbern.ebegu.entities.Gesuchsperiode;
+import ch.dvbern.ebegu.entities.InstitutionExternalClient;
+import ch.dvbern.ebegu.entities.Mandant;
+import ch.dvbern.ebegu.entities.Mitteilung;
+import ch.dvbern.ebegu.enums.AntragStatus;
+import ch.dvbern.ebegu.enums.AntragTyp;
+import ch.dvbern.ebegu.enums.Betreuungsstatus;
+import ch.dvbern.ebegu.enums.EinstellungKey;
+import ch.dvbern.ebegu.enums.GesuchsperiodeStatus;
+import ch.dvbern.ebegu.errors.EbeguRuntimeException;
+import ch.dvbern.ebegu.errors.KibonLogLevel;
+import ch.dvbern.ebegu.inbox.handler.pensum.PensumMapper;
+import ch.dvbern.ebegu.inbox.handler.pensum.PensumMapperFactory;
+import ch.dvbern.ebegu.inbox.handler.pensum.PensumMappingUtil;
+import ch.dvbern.ebegu.inbox.services.BetreuungEventHelper;
+import ch.dvbern.ebegu.kafka.BaseEventHandler;
+import ch.dvbern.ebegu.kafka.EventType;
+import ch.dvbern.ebegu.services.ApplicationPropertyService;
+import ch.dvbern.ebegu.services.BetreuungMonitoringService;
+import ch.dvbern.ebegu.services.BetreuungService;
+import ch.dvbern.ebegu.services.EinstellungService;
+import ch.dvbern.ebegu.services.GemeindeService;
+import ch.dvbern.ebegu.services.MitteilungService;
+import ch.dvbern.ebegu.types.DateRange;
+import ch.dvbern.ebegu.util.EbeguUtil;
+import ch.dvbern.ebegu.util.Gueltigkeit;
+import ch.dvbern.ebegu.util.GueltigkeitsUtil;
+import ch.dvbern.ebegu.util.MathUtil;
+import ch.dvbern.ebegu.util.MitteilungUtil;
+import ch.dvbern.ebegu.util.ServerMessageUtil;
+import ch.dvbern.kibon.exchange.commons.platzbestaetigung.BetreuungEventDTO;
+import ch.dvbern.kibon.exchange.commons.types.Zeiteinheit;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import static ch.dvbern.ebegu.enums.EinstellungKey.*;
-import static ch.dvbern.ebegu.util.EbeguUtil.collectionComparator;
+import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_MAHLZEITENVERGUENSTIGUNG_ENABLED;
+import static ch.dvbern.ebegu.enums.EinstellungKey.OEFFNUNGSSTUNDEN_TFO;
+import static ch.dvbern.ebegu.enums.EinstellungKey.OEFFNUNGSTAGE_KITA;
+import static ch.dvbern.ebegu.enums.EinstellungKey.OEFFNUNGSTAGE_TFO;
+import static ch.dvbern.ebegu.inbox.handler.pensum.PensumMappingUtil.COMPARATOR_WITH_GUELTIGKEIT;
+import static ch.dvbern.ebegu.inbox.handler.pensum.PensumMappingUtil.MITTEILUNG_COMPARATOR;
 
 @ApplicationScoped
 public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEventDTO> {
@@ -57,24 +97,9 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 	private static final String BETREFF_KEY = "mutationsmeldung_betreff_von";
 	private static final String MESSAGE_KEY = "mutationsmeldung_message";
 	private static final String MESSAGE_MAHLZEIT_KEY = "mutationsmeldung_message_mahlzeitverguenstigung_mit_tarif";
-	static final LocalDate GO_LIVE = LocalDate.of(2021, 1, 1);
 
 	@Inject
 	private ApplicationPropertyService applicationPropertyService;
-
-	static final Comparator<AbstractMahlzeitenPensum> COMPARATOR = Comparator
-		.comparing(AbstractMahlzeitenPensum::getMonatlicheBetreuungskosten)
-		.thenComparing(AbstractDecimalPensum::getPensumRounded)
-		.thenComparing(AbstractMahlzeitenPensum::getTarifProHauptmahlzeit)
-		.thenComparing(AbstractMahlzeitenPensum::getTarifProNebenmahlzeit)
-		.thenComparing(AbstractMahlzeitenPensum::getMonatlicheHauptmahlzeiten)
-		.thenComparing(AbstractMahlzeitenPensum::getMonatlicheNebenmahlzeiten);
-
-	private static final Comparator<AbstractMahlzeitenPensum> COMPARATOR_WITH_GUELTIGKEIT = COMPARATOR
-		.thenComparing(AbstractMahlzeitenPensum::getGueltigkeit);
-
-	private static final Comparator<Betreuungsmitteilung> MITTEILUNG_COMPARATOR = Comparator
-		.comparing(Betreuungsmitteilung::getBetreuungspensen, collectionComparator(COMPARATOR_WITH_GUELTIGKEIT));
 
 	@Inject
 	private BetreuungService betreuungService;
@@ -254,8 +279,8 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 
 	protected boolean isPlatzbestaetigungStatus(
 		@Nonnull Betreuungsstatus status,
-		@Nonnull AntragStatus antragStatus, 
-                @Nonnull AntragTyp antragTyp) {
+		@Nonnull AntragStatus antragStatus,
+		@Nonnull AntragTyp antragTyp) {
 		if (antragTyp == AntragTyp.MUTATION) {
 			return false;
 		}
@@ -331,7 +356,8 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 		setEingewoehnungPhase(ctx);
 		setBetreuungInGemeinde(ctx);
 		setSprachfoerderungBestaetigt(ctx);
-		PensumMappingUtil.addZeitabschnitteToBetreuung(ctx);
+		PensumMapper pensumMapper = PensumMapperFactory.createPensumMapper(ctx);
+		PensumMappingUtil.addZeitabschnitteToBetreuung(ctx, pensumMapper);
 
 		return ctx.isReadyForBestaetigen();
 	}
@@ -449,30 +475,29 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 		@Nullable Betreuungsmitteilung latest) {
 
 		Betreuung betreuung = ctx.getBetreuung();
-		Gesuch gesuch = betreuung.extractGesuch();
-		Locale locale = EbeguUtil.extractKorrespondenzsprache(gesuch, gemeindeService).getLocale();
+
+		String clientName = ctx.getEventMonitor().getClientName();
+		Locale locale = EbeguUtil.extractKorrespondenzsprache(betreuung.extractGesuch(), gemeindeService).getLocale();
+		Benutzer benutzer = betreuungEventHelper.getMutationsmeldungBenutzer(betreuung);
 		Mandant mandant = betreuungEventHelper.getMandantFromBgNummer(ctx.getDto().getRefnr())
 			.orElseThrow(() -> new EbeguRuntimeException(
 				KibonLogLevel.ERROR, "createBetreuungsmitteilung", "Mandant konnte nicht gefunden werden"));
 
 		Betreuungsmitteilung betreuungsmitteilung = new Betreuungsmitteilung();
-		betreuungsmitteilung.setDossier(gesuch.getDossier());
-		betreuungsmitteilung.setSenderTyp(MitteilungTeilnehmerTyp.INSTITUTION);
-		betreuungsmitteilung.setSender(betreuungEventHelper.getMutationsmeldungBenutzer(betreuung));
-		betreuungsmitteilung.setEmpfaengerTyp(MitteilungTeilnehmerTyp.JUGENDAMT);
-		betreuungsmitteilung.setEmpfaenger(gesuch.getDossier().getFall().getBesitzer());
-		betreuungsmitteilung.setMitteilungStatus(MitteilungStatus.NEU);
-		betreuungsmitteilung.setSubject(ServerMessageUtil.getMessage(BETREFF_KEY, locale, mandant)
-			+ ' '
-			+ ctx.getEventMonitor().getClientName());
 		betreuungsmitteilung.setBetreuung(betreuung);
 
-		PensumMappingUtil.addZeitabschnitteToBetreuungsmitteilung(ctx, latest, betreuungsmitteilung);
+		PensumMapper pensumMapper = PensumMapperFactory.createPensumMapper(ctx);
+		PensumMappingUtil.addZeitabschnitteToBetreuungsmitteilung(ctx, latest, betreuungsmitteilung, pensumMapper);
 
+		MitteilungUtil.initializeBetreuungsmitteilung(betreuungsmitteilung, betreuung, benutzer, locale);
+
+		boolean isStorniert = betreuung.getBetreuungsstatus() == Betreuungsstatus.STORNIERT;
 		betreuungsmitteilung.getBetreuungspensen().stream()
-			.filter(p -> betreuung.getBetreuungsstatus() == Betreuungsstatus.STORNIERT && p.getPensum().compareTo(
-				BigDecimal.ZERO) == 0)
+			.filter(p -> isStorniert && p.getPensum().compareTo(BigDecimal.ZERO) == 0)
 			.forEach(p -> p.setVollstaendig(false));
+
+		// overriding subject: keep below MitteilungUtil.initializeBetreuungsmitteilung
+		betreuungsmitteilung.setSubject(ServerMessageUtil.getMessage(BETREFF_KEY, locale, mandant) + ' ' + clientName);
 
 		BiFunction<BetreuungsmitteilungPensum, Integer, String> messageMapper = ctx.isMahlzeitVerguenstigungEnabled() ?
 			mahlzeitenMessage(locale, mandant) :

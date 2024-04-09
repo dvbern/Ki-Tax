@@ -39,7 +39,7 @@ public class PensumUtil {
 			});
 	}
 
-	private static void transformMittagstischPensum(AbstractMahlzeitenPensum pensum) {
+	public static void transformMittagstischPensum(@Nonnull AbstractMahlzeitenPensum pensum) {
 		pensum.setTarifProNebenmahlzeit(BigDecimal.ZERO);
 		pensum.setMonatlicheNebenmahlzeiten(BigDecimal.ZERO);
 		pensum.setUnitForDisplay(PensumUnits.PERCENTAGE);
