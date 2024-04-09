@@ -16,7 +16,7 @@
 package ch.dvbern.ebegu.services;
 
 import ch.dvbern.ebegu.config.EbeguConfiguration;
-import ch.dvbern.ebegu.entities.VersendeteMails;
+import ch.dvbern.ebegu.entities.VersendeteMail;
 import ch.dvbern.ebegu.errors.MailException;
 import ch.dvbern.ebegu.util.UploadFileInfo;
 import ch.dvbern.ebegu.util.mandant.MandantIdentifier;
@@ -290,7 +290,7 @@ public abstract class AbstractMailServiceBean extends AbstractBaseService {
 		LocalDateTime zeitpunktVersand = LocalDateTime.now();
 		String empfaengerAdresse = mailadress;
 		String betreff = subject;
-		VersendeteMails VersendeteMails = new VersendeteMails(zeitpunktVersand, empfaengerAdresse, betreff);
-		versendeteMailsService.saveVersendeteMails(VersendeteMails);
+		VersendeteMail VersendeteMail = new VersendeteMail(zeitpunktVersand, empfaengerAdresse, betreff);
+		versendeteMailsService.saveVersendeteMail(VersendeteMail);
 	}
 }

@@ -185,7 +185,7 @@ import {TSSupportAnfrage} from '../models/TSSupportAnfrage';
 import {TSTextRessource} from '../models/TSTextRessource';
 import {TSTraegerschaft} from '../models/TSTraegerschaft';
 import {TSTsCalculationResult} from '../models/TSTsCalculationResult';
-import {TSVersendeteMails} from '../models/TSVersendeteMails';
+import {TSVersendeteMail} from '../models/TSVersendeteMail';
 import {TSUnbezahlterUrlaub} from '../models/TSUnbezahlterUrlaub';
 import {TSVerfuegung} from '../models/TSVerfuegung';
 import {TSVerfuegungZeitabschnitt} from '../models/TSVerfuegungZeitabschnitt';
@@ -6310,18 +6310,18 @@ export class EbeguRestUtil {
         };
     }
 
-    public parseTSUebersichtVersendeteMailsList(data: any): TSVersendeteMails[] {
+    public parseTSUebersichtVersendeteMailsList(data: any): TSVersendeteMail[] {
         if (!data) {
             return [];
         }
         return Array.isArray(data)
-        ? data.map(item => this.parseTSUebersichtVersendeteMails(new TSVersendeteMails(), item))
-        : [this.parseTSUebersichtVersendeteMails(new TSVersendeteMails(), data)];
+        ? data.map(item => this.parseTSUebersichtVersendeteMails(new TSVersendeteMail(), item))
+        : [this.parseTSUebersichtVersendeteMails(new TSVersendeteMail(), data)];
     }
     private parseTSUebersichtVersendeteMails(
-        uebersichtVersendeteMails: TSVersendeteMails,
+        uebersichtVersendeteMails: TSVersendeteMail,
         uebersichtVersendeteMailsFromServer: any
-    ): TSVersendeteMails {
+    ): TSVersendeteMail {
         this.parseAbstractEntity(uebersichtVersendeteMails, uebersichtVersendeteMailsFromServer);
         uebersichtVersendeteMails.zeitpunktVersand = DateUtil.localDateTimeToMoment(
             uebersichtVersendeteMailsFromServer.zeitpunktVersand

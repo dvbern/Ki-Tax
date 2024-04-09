@@ -13,13 +13,13 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 import ch.dvbern.ebegu.api.converter.JaxBConverter;
-import ch.dvbern.ebegu.api.dtos.JaxVersendeteMails;
+import ch.dvbern.ebegu.api.dtos.JaxVersendeteMail;
 import ch.dvbern.ebegu.services.VersendeteMailsService;
 
 import static ch.dvbern.ebegu.enums.UserRoleName.SUPER_ADMIN;
 
 @Path("versendeteMails")
-public class VersendeteMailsResource {
+public class VersendeteMailResource {
 	@Inject
 	private VersendeteMailsService versendeteMailsService;
 
@@ -32,9 +32,9 @@ public class VersendeteMailsResource {
 	@Consumes(MediaType.WILDCARD)
 	@Produces(MediaType.APPLICATION_JSON)
 	@RolesAllowed(SUPER_ADMIN)
-	public List<JaxVersendeteMails> getAllMails() {
+	public List<JaxVersendeteMail> getAllMails() {
 		return versendeteMailsService.getAll().stream()
-			.map(VersendeteMails -> converter.versendeteMailsToJax(VersendeteMails))
+			.map(versendeteMails -> converter.versendeteMailsToJax(versendeteMails))
 			.collect(Collectors.toList());
 	}
 }

@@ -17,7 +17,7 @@
 
 import {TSAbstractEntity} from './TSAbstractEntity';
 
-export class TSVersendeteMails extends TSAbstractEntity {
+export class TSVersendeteMail extends TSAbstractEntity {
     public zeitpunktVersand: moment.Moment;
     public empfaengerAdresse: string;
     public betreff: string;

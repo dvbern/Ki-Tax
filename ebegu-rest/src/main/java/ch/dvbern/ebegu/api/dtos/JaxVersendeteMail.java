@@ -7,7 +7,7 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import ch.dvbern.lib.date.converters.LocalDateTimeXMLConverter;
 
-public class JaxVersendeteMails extends JaxAbstractDTO {
+public class JaxVersendeteMail extends JaxAbstractDTO {
 	private static final long serialVersionUID = 3359889275785229022L;
 
 	@Nonnull

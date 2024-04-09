@@ -5,12 +5,12 @@ import java.util.Collection;
 import javax.annotation.Nonnull;
 import javax.validation.Valid;
 
-import ch.dvbern.ebegu.entities.VersendeteMails;
+import ch.dvbern.ebegu.entities.VersendeteMail;
 
 public interface VersendeteMailsService {
 	@Nonnull
-	VersendeteMails saveVersendeteMails(@Valid @Nonnull VersendeteMails VersendeteMails);
+	VersendeteMail saveVersendeteMail(@Valid @Nonnull VersendeteMail versendeteMail);
 
 	@Nonnull
-	Collection<VersendeteMails> getAll();
+	Collection<VersendeteMail> getAll();
 }

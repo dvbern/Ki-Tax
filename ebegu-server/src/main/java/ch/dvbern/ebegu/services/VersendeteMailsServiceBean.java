@@ -9,7 +9,7 @@ import javax.inject.Inject;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 
-import ch.dvbern.ebegu.entities.VersendeteMails;
+import ch.dvbern.ebegu.entities.VersendeteMail;
 import ch.dvbern.lib.cdipersistence.Persistence;
 
 @Stateless
@@ -20,16 +20,16 @@ public class VersendeteMailsServiceBean extends AbstractBaseService implements V
 
 	@Override
 	@Nonnull
-	public VersendeteMails saveVersendeteMails(@Nonnull VersendeteMails VersendeteMails) {
-		return persistence.persist(VersendeteMails);
+	public VersendeteMail saveVersendeteMail(@Nonnull VersendeteMail versendeteMail) {
+		return persistence.persist(versendeteMail);
 	}
 
 	@Nonnull
 	@Override
-	public Collection<VersendeteMails> getAll() {
+	public Collection<VersendeteMail> getAll() {
 		final CriteriaBuilder builder = persistence.getCriteriaBuilder();
-		final CriteriaQuery<VersendeteMails> query = builder.createQuery(VersendeteMails.class);
-		query.from(VersendeteMails.class);
+		final CriteriaQuery<VersendeteMail> query = builder.createQuery(VersendeteMail.class);
+		query.from(VersendeteMail.class);
 
 		return persistence.getEntityManager().createQuery(query)
 			.getResultList();

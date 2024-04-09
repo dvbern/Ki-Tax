@@ -18,7 +18,7 @@ import {Injectable} from '@angular/core';
 import {CONSTANTS} from '../constants/CONSTANTS';
 import {Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
-import {TSVersendeteMails} from '../../../models/TSVersendeteMails';
+import {TSVersendeteMail} from '../../../models/TSVersendeteMail';
 import {EbeguRestUtil} from '../../../utils/EbeguRestUtil';
 
 @Injectable({
@@ -31,10 +31,10 @@ export class UebersichtVersendeteMailsRS {
         public http: HttpClient
     ) {
     }
-    public getAllMails(): Observable<TSVersendeteMails[]> {
+    public getAllMails(): Observable<TSVersendeteMail[]> {
         return this.getInfo(`${this.serviceURL}/allMails`);
     }
-    private getInfo(url: string): Observable<Array<TSVersendeteMails> | never> {
+    private getInfo(url: string): Observable<Array<TSVersendeteMail> | never> {
         return this.http.get(url)
             .pipe(map((response: any) => this.ebeguRestUtil.parseTSUebersichtVersendeteMailsList(response)));
     }
