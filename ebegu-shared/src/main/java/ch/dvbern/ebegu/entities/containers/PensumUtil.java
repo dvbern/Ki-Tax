@@ -30,12 +30,12 @@ import lombok.experimental.UtilityClass;
 @UtilityClass
 public class PensumUtil {
 
-	public static void transformBetreuungsPensumContainers(@Nonnull BetreuungAndPensumContainer betreuung) {
-		betreuung.findBetreuung()
+	public static void transformBetreuungsPensumContainers(@Nonnull BetreuungAndPensumContainer container) {
+		container.findBetreuung()
 			.filter(Betreuung::isAngebotMittagstisch)
 			.ifPresent(b -> {
-				betreuung.getBetreuungenGS().forEach(PensumUtil::transformMittagstischPensum);
-				betreuung.getBetreuungenJA().forEach(PensumUtil::transformMittagstischPensum);
+				container.getBetreuungenGS().forEach(PensumUtil::transformMittagstischPensum);
+				container.getBetreuungenJA().forEach(PensumUtil::transformMittagstischPensum);
 			});
 	}
 
