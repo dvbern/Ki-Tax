@@ -29,6 +29,8 @@ end;
 
 DELIMITER ;
 
+START TRANSACTION;
+
 # Variables definition
 SET @mandant_id_solothurn = UNHEX(REPLACE('7781a6bb-5374-11ec-98e8-f4390979fa3e', '-', ''));
 call select_gesuchsperiode('2022-08-01', @mandant_id_solothurn, @gesuchsperiode_22_23_id);
@@ -514,3 +516,5 @@ VALUES (UNHEX(REPLACE(UUID(), '-', '')), '2021-02-15 09:48:18', '2021-02-15 09:4
 UPDATE einstellung SET VALUE='true' WHERE einstellung_key='GEMEINDESPEZIFISCHE_BG_KONFIGURATIONEN' and einstellung.mandant_id = @mandant_id_solothurn;
 
 UPDATE mandant SET mandant.activated=true where id = @mandant_id_solothurn;
+
+COMMIT;

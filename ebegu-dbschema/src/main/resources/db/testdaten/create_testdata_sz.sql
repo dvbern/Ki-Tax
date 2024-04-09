@@ -29,6 +29,8 @@ end;
 
 DELIMITER ;
 
+START TRANSACTION;
+
 # Variables definition
 SET @mandant_id_schwyz = UNHEX(REPLACE('08687de9-b3d0-11ee-829a-0242ac160002', '-', ''));
 call select_gesuchsperiode('2024-08-01', @mandant_id_schwyz, @gesuchsperiode_24_25_id);
@@ -379,3 +381,4 @@ VALUES (UNHEX('baff3e93b91211ee8d780242ac160002'), '2023-12-08 09:45:52', '2023-
 UPDATE einstellung set value = 'KEINE' WHERE einstellung_key = 'FACHSTELLEN_TYP' AND gesuchsperiode_id = @gesuchsperiode_24_25_id AND gemeinde_id is null;
 UPDATE einstellung set value = 'KEINE' WHERE einstellung_key = 'AUSSERORDENTLICHER_ANSPRUCH_RULE' AND gesuchsperiode_id = @gesuchsperiode_24_25_id AND gemeinde_id is null;
 UPDATE einstellung set value = 'true' WHERE einstellung_key = 'ZEMIS_DISABLED' AND gesuchsperiode_id = @gesuchsperiode_24_25_id AND gemeinde_id is null;
+COMMIT;

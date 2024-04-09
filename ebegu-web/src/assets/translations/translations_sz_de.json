@@ -101,5 +101,9 @@
     "FINANZIELLE_SITUATION_BRUTTOLOHN": "Bruttoeinkommen",
     "FINANZIELLE_SITUATION_BRUTTOLOHN_HINT": "Bruttolohn gemäss Ziff. 8 auf dem Lohnausweis des Vorjahres",
     "FINANZIELLE_SITUATION_STEK_GEMEINSAM": "Haben Sie Ihre letzte rechtskräftige Steuerveranlagung mit {{namegs2}} erhalten?",
+    "ERWERBSPENSUM_NACHWEIS_SELBSTAENDIGKEIT": "Nachweis über die selbständige Erwerbstätigkeit (z.B. Anerkennung des Status als selbständig erwerbend durch die Ausgleichskasse oder z.B. durch Vorlage von Unternehmensunterlagen wie einem Handelsregistereintrag) sowie ggf. Nachweis über das Pensum",
+    "ERWERBSPENSUM_NACHWEIS_AUSBILDUNG": "Nachweis über Aus- oder Weiterbildung (z.B. Ausbildungsvertrag, Immatrikulationsbestätigung) und zeitlichen Aufwand",
+    "ERWERBSPENSUM_NACHWEIS_RAV": "Anmeldebestätigung der Arbeitslosenkasse oder Nachweis der Anmeldung beim regionalen Arbeitsvermittlungszentrum (RAV) und zeitlichen Aufwand",
+    "SELBSTAENDIG": "Selbständig erwerbend",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }
