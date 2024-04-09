@@ -36,6 +36,7 @@
                                 [(model)]="model.getEkvToWorkWith().bruttolohnAbrechnung1"
                                 [labelMessageKey]="'FINANZIELLE_SITUATION_BRUTTOLOHN'"
                                 [inputRequired]="true"
+                                [inputDisabled]="gesuchmodelManager.isGesuchReadonly()"
                                 [tooltipMessageKey]="'FINANZIELLE_SITUATION_BRUTTOLOHN_HINT'"
                                 [showBisher]="isNotNullOrUndefined(model.getEkvToWorkWith_GS())"
                                 [deklaration]="model.getEkvToWorkWith_GS()?.bruttolohnAbrechnung1"

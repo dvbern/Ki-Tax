@@ -1,4 +1,4 @@
-<h3 class="margin-bottom-20">{{'LETZTE_RECHTSKRAETIGTE_STEUERVERANLAGUNG' | translate}}
+<h3 *ngIf="!isEKV(finSitJA)" class="margin-bottom-20">{{'LETZTE_RECHTSKRAETIGTE_STEUERVERANLAGUNG' | translate}}
     <dv-tooltip [text]="'LETZTE_RECHTSKRAETIGTE_STEUERVERANLAGUNG_HINT' | translate"></dv-tooltip>
 </h3>
 <div class="row">
@@ -9,6 +9,7 @@
                 [(model)]="finSitJA.steuerbaresEinkommen"
                 [labelMessageKey]="'FINANZIELLE_SITUATION_STEUERBARES_EINKOMMEN'"
                 [tooltipMessageKey]="'FINANZIELLE_SITUATION_STEUERBARES_EINKOMMEN_HINT'"
+                [inputDisabled]="readonly"
                 [inputRequired]="true"
                 [deklaration]="finSitGS?.steuerbaresEinkommen"
                 [korrektur]="finSitJA.steuerbaresEinkommen"
