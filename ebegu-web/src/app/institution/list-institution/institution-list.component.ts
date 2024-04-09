@@ -56,6 +56,7 @@ export class InstitutionListComponent extends AbstractAdminViewX implements OnIn
     private institutionenDurchGemeindenEinladen: boolean = false;
     private angebotTSActivated: boolean;
     private angebotFIActivated: boolean;
+    private angebotMittagstischActivated: boolean;
 
     public constructor(
         private readonly institutionRS: InstitutionRS,
@@ -78,6 +79,7 @@ export class InstitutionListComponent extends AbstractAdminViewX implements OnIn
             this.institutionenDurchGemeindenEinladen = result.institutionenDurchGemeindenEinladen;
             this.angebotTSActivated = result.angebotTSActivated;
             this.angebotFIActivated = result.angebotFIActivated;
+            this.angebotMittagstischActivated = result.angebotMittagstischActivated;
         });
     }
 

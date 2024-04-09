@@ -314,7 +314,7 @@ public class GemeindeAntragResource {
 		if (sortPredicate == null) {
 			return gemeindeAntraege;
 		}
-		int reverseMultiplicator = (sortReverse != null && sortReverse) ? 1 : -1;
+		int reverseMultiplicator = Boolean.TRUE.equals(sortReverse) ? 1 : -1;
 		return gemeindeAntraege.stream().sorted((a, b) -> {
 			switch (sortPredicate) {
 			case "status":

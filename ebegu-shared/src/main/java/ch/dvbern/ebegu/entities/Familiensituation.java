@@ -179,6 +179,7 @@ public class Familiensituation extends AbstractMutableEntity {
 			this.minDauerKonkubinat = that.getMinDauerKonkubinat();
 			this.unterhaltsvereinbarung = that.getUnterhaltsvereinbarung();
 			this.auszahlungAusserhalbVonKibon = that.isAuszahlungAusserhalbVonKibon();
+			this.gesuchstellerKardinalitaet = that.gesuchstellerKardinalitaet;
 		}
 	}
 
@@ -383,6 +384,8 @@ public class Familiensituation extends AbstractMutableEntity {
 	public boolean hasSecondGesuchsteller(LocalDate referenzdatum) {
 		if (this.familienstatus != null) {
 			switch (this.familienstatus) {
+			case SCHWYZ:
+				return this.gesuchstellerKardinalitaet == EnumGesuchstellerKardinalitaet.ZU_ZWEIT;
 			case APPENZELL:
 				return this.hasSecondGesuchstellerAppenzell();
 			case ALLEINERZIEHEND:

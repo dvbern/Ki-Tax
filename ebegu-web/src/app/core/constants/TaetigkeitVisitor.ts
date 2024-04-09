@@ -56,7 +56,12 @@ export class TaetigkeitVisitor implements MandantVisitor<ReadonlyArray<TSTaetigk
     }
 
     public visitSchwyz(): ReadonlyArray<TSTaetigkeit> {
-        return this.visitSolothurn();
+        return [
+            TSTaetigkeit.ANGESTELLT,
+            TSTaetigkeit.SELBSTAENDIG,
+            TSTaetigkeit.AUSBILDUNG,
+            TSTaetigkeit.RAV
+        ];
     }
 
 }

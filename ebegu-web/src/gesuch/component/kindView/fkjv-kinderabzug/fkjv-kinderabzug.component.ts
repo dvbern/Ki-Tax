@@ -23,27 +23,26 @@ import {
     Input,
     OnDestroy,
     OnInit,
-    ViewChild
+    ViewChild,
 } from '@angular/core';
 import {NgForm} from '@angular/forms';
 import {Subject} from 'rxjs';
 import {takeUntil} from 'rxjs/operators';
 import {LogFactory} from '../../../../app/core/logging/LogFactory';
 import {TSFamilienstatus} from '../../../../models/enums/TSFamilienstatus';
-import {TSKind} from '../../../../models/TSKind';
+import {TSGesuchstellerKardinalitaet} from '../../../../models/enums/TSGesuchstellerKardinalitaet';
+import {TSFamiliensituation} from '../../../../models/TSFamiliensituation';
 import {TSKindContainer} from '../../../../models/TSKindContainer';
 import {EbeguUtil} from '../../../../utils/EbeguUtil';
 import {GesuchModelManager} from '../../../service/gesuchModelManager';
-import {FjkvKinderabzugExchangeService} from './fjkv-kinderabzug-exchange.service';
-import {TSFamiliensituation} from '../../../../models/TSFamiliensituation';
+import {KinderabzugExchangeService} from '../service/kinderabzug-exchange.service';
 
 const LOG = LogFactory.createLog('FkjvKinderabzugComponent');
 
 @Component({
     selector: 'dv-fkjv-kinderabzug',
     templateUrl: './fkjv-kinderabzug.component.html',
-    styleUrls: ['./fkjv-kinderabzug.component.less'],
-    changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FkjvKinderabzugComponent implements OnInit, AfterViewInit, OnDestroy {
 
@@ -59,7 +58,7 @@ export class FkjvKinderabzugComponent implements OnInit, AfterViewInit, OnDestro
     public constructor(
         private readonly gesuchModelManager: GesuchModelManager,
         private readonly cd: ChangeDetectorRef,
-        private readonly fkjvExchangeService: FjkvKinderabzugExchangeService
+        private readonly fkjvExchangeService: KinderabzugExchangeService,
     ) {
     }
 
@@ -77,8 +76,8 @@ export class FkjvKinderabzugComponent implements OnInit, AfterViewInit, OnDestro
                 this.change();
             }, err => LOG.error(err));
         this.kindIsOrGetsVolljaehrig = EbeguUtil.calculateKindIsOrGetsVolljaehrig(
-            this.getModel().geburtsdatum,
-            gesuchsperiode
+            this.kindContainer?.kindJA.geburtsdatum,
+            gesuchsperiode,
         );
         this.change();
     }
@@ -91,91 +90,74 @@ export class FkjvKinderabzugComponent implements OnInit, AfterViewInit, OnDestro
         this.unsubscribe$.next();
     }
 
-    public getModel(): TSKind | undefined {
-        if (this.kindContainer?.kindJA) {
-            return this.kindContainer.kindJA;
-        }
-        return undefined;
-    }
-
-    public getModelGS(): TSKind | undefined {
-        if (this.kindContainer?.kindGS) {
-            return this.kindContainer.kindGS;
-        }
-        return undefined;
-    }
-
     public change(): void {
         this.deleteValuesOfHiddenQuestions();
-        this.cd.markForCheck();
     }
 
     public pflegeEntschaedigungErhaltenVisible(): boolean {
-        return this.getModel().isPflegekind;
+        return this.kindContainer?.kindJA.isPflegekind;
     }
 
     public obhutAlternierendAusuebenVisible(): boolean {
-        return !this.kindIsOrGetsVolljaehrig && !this.getModel().isPflegekind;
+        return !this.kindIsOrGetsVolljaehrig && !this.kindContainer?.kindJA.isPflegekind;
     }
 
     public gemeinsamesGesuchVisible(): boolean {
-        return this.getModel().obhutAlternierendAusueben &&
-            this.getModel().familienErgaenzendeBetreuung &&
-            this.isAlleinerziehenOrShortKonkubinat();
+        return this.kindContainer?.kindJA.obhutAlternierendAusueben &&
+            EbeguUtil.isNotNullOrUndefined(this.kindContainer?.kindJA.familienErgaenzendeBetreuung) &&
+            EbeguUtil.isNotNullAndTrue(this.gesuchModelManager.getFamiliensituation().geteilteObhut) &&
+            this.gesuchModelManager.getFamiliensituation().gesuchstellerKardinalitaet === TSGesuchstellerKardinalitaet.ZU_ZWEIT;
     }
 
     public inErstausbildungVisible(): boolean {
-        return this.kindIsOrGetsVolljaehrig && !this.getModel().isPflegekind;
+        return this.kindIsOrGetsVolljaehrig && !this.kindContainer?.kindJA.isPflegekind;
     }
 
     public lebtKindAlternierendVisible(): boolean {
-        return this.getModel().inErstausbildung;
+        return this.kindContainer?.kindJA.inErstausbildung;
     }
 
     public alimenteErhaltenVisible(): boolean {
-        return this.getModel().lebtKindAlternierend;
+        return this.kindContainer?.kindJA.lebtKindAlternierend;
     }
 
     public alimenteBezahlenVisible(): boolean {
-        return EbeguUtil.isNotNullOrUndefined(this.getModel().lebtKindAlternierend)
-            && !this.getModel().lebtKindAlternierend;
+        return EbeguUtil.isNotNullOrUndefined(this.kindContainer?.kindJA.lebtKindAlternierend)
+            && !this.kindContainer?.kindJA.lebtKindAlternierend;
     }
 
     private deleteValuesOfHiddenQuestions(): void {
-        if (!this.pflegeEntschaedigungErhaltenVisible()) {
-            this.getModel().pflegeEntschaedigungErhalten = undefined;
-        }
-        if (!this.obhutAlternierendAusuebenVisible()) {
-            this.getModel().obhutAlternierendAusueben = undefined;
-        }
-        if (!this.gemeinsamesGesuchVisible()) {
-            this.getModel().gemeinsamesGesuch = undefined;
-        }
-        if (!this.inErstausbildungVisible()) {
-            this.getModel().inErstausbildung = undefined;
-        }
-        if (!this.lebtKindAlternierendVisible()) {
-            this.getModel().lebtKindAlternierend = undefined;
-        }
-        if (!this.alimenteErhaltenVisible()) {
-            this.getModel().alimenteErhalten = undefined;
-        }
-        if (!this.alimenteBezahlenVisible()) {
-            this.getModel().alimenteBezahlen = undefined;
-        }
-        // Wenn das Kind eine Betreuung hat ist es read-only und darf nicht zurück gesetzt werden
-        if (!this.famErgaenzendeBetreuuungVisible() && !this.hasKindBetreuungen()) {
-            this.getModel().familienErgaenzendeBetreuung = false;
+        if (this.kindContainer?.kindJA) {
+            if (!this.pflegeEntschaedigungErhaltenVisible()) {
+                this.kindContainer.kindJA.pflegeEntschaedigungErhalten = undefined;
+            }
+            if (!this.obhutAlternierendAusuebenVisible()) {
+                this.kindContainer.kindJA.obhutAlternierendAusueben = undefined;
+            }
+            if (!this.gemeinsamesGesuchVisible()) {
+                this.kindContainer.kindJA.gemeinsamesGesuch = undefined;
+            }
+            if (!this.inErstausbildungVisible()) {
+                this.kindContainer.kindJA.inErstausbildung = undefined;
+            }
+            if (!this.lebtKindAlternierendVisible()) {
+                this.kindContainer.kindJA.lebtKindAlternierend = undefined;
+            }
+            if (!this.alimenteErhaltenVisible()) {
+                this.kindContainer.kindJA.alimenteErhalten = undefined;
+            }
+            if (!this.alimenteBezahlenVisible()) {
+                this.kindContainer.kindJA.alimenteBezahlen = undefined;
+            }
+            // Wenn das Kind eine Betreuung hat ist es read-only und darf nicht zurück gesetzt werden
+            if (!this.famErgaenzendeBetreuuungVisible() && !this.hasKindBetreuungen()) {
+                this.kindContainer.kindJA.familienErgaenzendeBetreuung = false;
+            }
         }
     }
 
     public famErgaenzendeBetreuuungVisible(): boolean {
         return !this.kindIsOrGetsVolljaehrig;
-    }
-
-    private isAlleinerziehenOrShortKonkubinat(): boolean {
-        return this.getFamiliensituationToUse().familienstatus === TSFamilienstatus.ALLEINERZIEHEND ||
-            this.isShortKonkubinat();
     }
 
     public hasKindBetreuungen(): boolean {

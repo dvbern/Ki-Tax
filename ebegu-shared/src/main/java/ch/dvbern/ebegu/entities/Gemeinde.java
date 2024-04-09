@@ -129,6 +129,10 @@ public class Gemeinde extends AbstractEntity implements Comparable<Gemeinde>, Di
 	@Column(nullable = false)
 	private boolean nurLats = false;
 
+	@NotNull
+	@Column(nullable = false)
+	private Boolean infomaZahlungen = false;
+
 	@Nonnull
 	@NotNull
 	@Column(nullable = false)
@@ -234,6 +238,14 @@ public class Gemeinde extends AbstractEntity implements Comparable<Gemeinde>, Di
 
 	public void setGueltigBis(@Nonnull LocalDate gueltigBis) {
 		this.gueltigBis = gueltigBis;
+	}
+
+	public Boolean getInfomaZahlungen() {
+		return infomaZahlungen;
+	}
+
+	public void setInfomaZahlungen(Boolean infomaZahlungen) {
+		this.infomaZahlungen = infomaZahlungen;
 	}
 
 	@Override

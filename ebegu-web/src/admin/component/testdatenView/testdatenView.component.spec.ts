@@ -80,6 +80,7 @@ describe('testdatenView', () => {
             angebotTSActivated: true,
             angebotFIActivated: true,
             angebotTFOActivated: true,
+            angebotMittagstischActivated: false,
             infomaZahlungen: true,
             frenchEnabled: true,
             geresEnabledForMandant: true,
@@ -89,7 +90,8 @@ describe('testdatenView', () => {
             activatedDemoFeatures: '',
             checkboxAuszahlungInZukunft: false,
             institutionenDurchGemeindenEinladen: false,
-            erlaubenInstitutionenZuWaehlen: false
+            erlaubenInstitutionenZuWaehlen: false,
+            auszahlungAnEltern: true
         });
         const gemeindeRSSpy = jasmine.createSpyObj<GemeindeRS>(GemeindeRS.name, ['getAktiveGemeinden']);
         gemeindeRSSpy.getAktiveGemeinden.and.resolveTo([]);

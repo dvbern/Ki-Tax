@@ -41,6 +41,7 @@ public interface ReportTagesschuleService {
 
 	@Nonnull
 	UploadFileInfo generateExcelReportTagesschuleRechnungsstellung(
-		@Nonnull Locale locale
+		@Nonnull Locale locale,
+		@Nonnull String gesuchsperiodeID
 	) throws ExcelMergeException, IOException;
 }

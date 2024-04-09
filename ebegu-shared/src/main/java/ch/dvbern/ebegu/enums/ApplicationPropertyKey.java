@@ -159,9 +159,14 @@ public enum ApplicationPropertyKey {
 	MULTIMANDANT_AKTIV,
 
 	/**
-	 * Falls das Luzerner Zahlungssystem verwendet wird (Auszahlungen an Eltern, Infoma) ist dieses Flag true
+	 * Falls das Infoma Zahlungssystem verwendet wird ist dieses Flag true
 	 */
 	INFOMA_ZAHLUNGEN,
+
+	/**
+	 * Falls die Auszahlungen an Eltern verwendet wird ist dieses Flag true
+	 */
+	AUSZAHLUNGEN_AN_ELTERN,
 
 	/**
 	 * Sind die französischen Übersetzungen verfügbar
@@ -225,6 +230,11 @@ public enum ApplicationPropertyKey {
 	 * Ist für den Mandanten das Angebot FI aktiviert
 	 */
 	ANGEBOT_FI_ENABLED,
+
+	/**
+	 * Ist für den Mandanten das Angebot Mittagstisch aktiviert
+	 */
+	ANGEBOT_MITTAGSTISCH_ENABLED,
 
 	/*
 	 * Wenn dieses Datum überschritten wird, ist die SprachfoerderungBestaegit Flag Wert beruecksichtig.

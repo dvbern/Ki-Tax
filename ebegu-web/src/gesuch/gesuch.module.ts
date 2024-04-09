@@ -74,6 +74,9 @@ import {
     FamiliensituationAppenzellViewXComponent
 } from './component/familiensituation/familiensituation-appenzell-view-x/familiensituation-appenzell-view-x.component';
 import {
+    FamiliensituationSchwyzComponent
+} from './component/familiensituation/familiensituation-schwyz/familiensituation-schwyz.component';
+import {
     FamiliensituationViewXComponent
 } from './component/familiensituation/familiensituation-view-x/familiensituation-view-x.component';
 import {
@@ -111,6 +114,7 @@ import {
 } from './component/finanzielleSituation/luzern/finanzielle-situation-start-view-luzern/finanzielle-situation-start-view-luzern.component';
 import {ResultatComponent} from './component/finanzielleSituation/luzern/resultat/resultat.component';
 import {VeranlagungComponent} from './component/finanzielleSituation/luzern/veranlagung/veranlagung.component';
+import {finSitSchwyzRun} from './component/finanzielleSituation/schwyz/fin-sit-schwyz.route';
 import {
     FinanzielleSituationStartSolothurnComponent
 } from './component/finanzielleSituation/solothurn/finanzielle-situation-start-solothurn/finanzielle-situation-start-solothurn.component';
@@ -121,6 +125,7 @@ import {
 import {InternePendenzenComponent} from './component/internePendenzenView/interne-pendenzen.component';
 import {KinderListViewComponentConfig} from './component/kinderListView/kinderListView';
 import {FkjvKinderabzugComponent} from './component/kindView/fkjv-kinderabzug/fkjv-kinderabzug.component';
+import {SchwyzKinderabzugComponent} from './component/kindView/schwyz-kinderabzug/schwyz-kinderabzug.component';
 import {HybridFormBridgeService} from './service/hybrid-form-bridge.service';
 import {KindFachstelleComponent} from './component/kindView/kind-fachstelle/kind-fachstelle.component';
 import {KindViewComponentConfig} from './component/kindView/kindView';
@@ -144,8 +149,10 @@ import {
 export const GESUCH_JS_MODULE =
     angular.module('ebeguWeb.gesuch', [CORE_JS_MODULE.name])
         .run(gesuchRun)
+        .run(finSitSchwyzRun)
         .component('familiensituationView', downgradeComponent({component: FamiliensituationViewXComponent}))
         .component('familiensituationAppenzellView', downgradeComponent({component: FamiliensituationAppenzellViewXComponent}))
+        .component('familiensituationSchwyzView', downgradeComponent({component: FamiliensituationSchwyzComponent}))
         .component('stammdatenView', new StammdatenViewComponentConfig())
         .component('umzugView', new UmzugViewComponentConfig())
         .component('kinderListView', new KinderListViewComponentConfig())
@@ -219,6 +226,10 @@ export const GESUCH_JS_MODULE =
         .directive('internePendenzenDialog', downgradeComponent({component: InternePendenzDialogComponent}))
         .directive('dvFkjvKinderabzug', downgradeComponent({
             component: FkjvKinderabzugComponent,
+            inputs: ['kindContainer']
+        }))
+        .directive('dvSchwyzKinderabzug', downgradeComponent({
+            component: SchwyzKinderabzugComponent,
             inputs: ['kindContainer']
         }))
         .directive('dvKindFachstelle', downgradeComponent({

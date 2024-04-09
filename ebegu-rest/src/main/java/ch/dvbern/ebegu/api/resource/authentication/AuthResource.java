@@ -46,6 +46,7 @@ import javax.ws.rs.core.Response;
 
 import ch.dvbern.ebegu.api.AuthConstants;
 import ch.dvbern.ebegu.api.converter.JaxBConverter;
+import ch.dvbern.ebegu.api.converter.JaxBenutzerConverter;
 import ch.dvbern.ebegu.api.dtos.JaxAuthAccessElementCookieData;
 import ch.dvbern.ebegu.api.dtos.JaxBenutzer;
 import ch.dvbern.ebegu.api.dtos.JaxMandant;
@@ -92,7 +93,7 @@ public class AuthResource {
 	private BenutzerService benutzerService;
 
 	@Inject
-	private JaxBConverter converter;
+	private JaxBenutzerConverter converter;
 
 	@Inject
 	private UsernameRoleChecker usernameRoleChecker;
@@ -170,9 +171,13 @@ public class AuthResource {
 			mandantIdentifier = MandantIdentifier.SOLOTHURN;
 			break;
 		case "Kanton Bern":
-		default:
 			mandantIdentifier = MandantIdentifier.BERN;
 			break;
+		case "Kanton Schwyz":
+			mandantIdentifier = MandantIdentifier.SCHWYZ;
+			break;
+		default:
+			throw new IllegalStateException("Unexpected mandant: " + mandantNameDecoded);
 		}
 		return mandantIdentifier;
 	}

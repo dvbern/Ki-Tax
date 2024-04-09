@@ -69,10 +69,11 @@ public class EBEGUTokenAuthenticator implements TokenAuthenticator {
 		if (cache == null) {
 			LOG.warn("ACHTUNG: Cache konnte nicht initialisiert werden. " +
 				"Ist die Infinispan Cache konfiguration im Standalone.xml korrekt und ist der Dependencies Eintrag im MANIFEST.MF gesetzt?");
+		} else {
+			expirationLifespan = cache.getCacheConfiguration().expiration().lifespan() == -1 ?
+				Long.MAX_VALUE : cache.getCacheConfiguration().expiration().lifespan();
+			logCacheInfo();
 		}
-		expirationLifespan = cache.getCacheConfiguration().expiration().lifespan() == -1 ?
-			Long.MAX_VALUE : cache.getCacheConfiguration().expiration().lifespan();
-		logCacheInfo();
 	}
 
 	private void logCacheInfo() {

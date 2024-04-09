@@ -93,7 +93,7 @@ export class BetreuungAbweichungenViewController extends AbstractGesuchViewContr
     public institution: string;
     public isSavingData: boolean; // Semaphore
     public dvDialog: DvDialog;
-    public betreuungspensumAnzeigeTyp: TSPensumAnzeigeTyp;
+    public betreuungspensumAnzeigeTypEinstellung: TSPensumAnzeigeTyp;
     private existingMutationsmeldung: TSBetreuungsmitteilung;
     private isLuzern: boolean;
 
@@ -166,7 +166,7 @@ export class BetreuungAbweichungenViewController extends AbstractGesuchViewContr
         const einstellungPensumAnzeigeTyp = this.ebeguRestUtil
             .parsePensumAnzeigeTyp(einstellung);
 
-        this.betreuungspensumAnzeigeTyp = EbeguUtil.isNotNullOrUndefined(einstellungPensumAnzeigeTyp) ?
+        this.betreuungspensumAnzeigeTypEinstellung = EbeguUtil.isNotNullOrUndefined(einstellungPensumAnzeigeTyp) ?
             einstellungPensumAnzeigeTyp : TSPensumAnzeigeTyp.ZEITEINHEIT_UND_PROZENT;
     }
 
@@ -339,10 +339,20 @@ export class BetreuungAbweichungenViewController extends AbstractGesuchViewContr
     }
 
     public getInputFormatTitle(): string {
+        if (this.model.getAngebotTyp() === TSBetreuungsangebotTyp.MITTAGSTISCH) {
+            return this.$translate.instant('PENSUM_MAHLZEITEN');
+        }
         return this.model.getAngebotTyp() === TSBetreuungsangebotTyp.KITA
-        && this.betreuungspensumAnzeigeTyp !== TSPensumAnzeigeTyp.NUR_STUNDEN ?
+        && this.betreuungspensumAnzeigeTypEinstellung !== TSPensumAnzeigeTyp.NUR_STUNDEN ?
             this.$translate.instant('DAYS') :
             this.$translate.instant('HOURS');
+    }
+
+    public getKostenTitle(): string {
+        if (this.model.getAngebotTyp() === TSBetreuungsangebotTyp.MITTAGSTISCH) {
+            return this.$translate.instant('KOSTEN_PRO_MAHLZEIT');
+        }
+        return this.$translate.instant('MONATLICHE_BETREUUNGSKOSTEN');
     }
 
     public cancel(): void {

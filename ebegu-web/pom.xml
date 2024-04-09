@@ -36,7 +36,7 @@
         <profile>
             <id>ci</id>
             <properties>
-                <npm.init.arg>ci --legacy-peer-deps</npm.init.arg>
+                <npm.init.arg>ci</npm.init.arg>
             </properties>
         </profile>
 
@@ -67,8 +67,8 @@
                                     <goal>install-node-and-npm</goal>
                                 </goals>
                                 <configuration>
-                                    <nodeVersion>v16.20.2</nodeVersion>
-                                    <npmVersion>8.19.4</npmVersion>
+                                    <nodeVersion>v18.19.0</nodeVersion>
+                                    <npmVersion>10.2.3</npmVersion>
                                     <nodeDownloadRoot>https://nodejs.org/dist/</nodeDownloadRoot>
                                     <npmDownloadRoot>https://registry.npmjs.org/npm/-/</npmDownloadRoot>
                                 </configuration>

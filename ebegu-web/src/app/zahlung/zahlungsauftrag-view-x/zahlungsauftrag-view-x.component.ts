@@ -196,7 +196,6 @@ export class ZahlungsauftragViewXComponent implements OnInit, AfterViewInit, OnD
                             this.zahlungslaufTyp
                         );
                     }
-
                     return of(new TSPaginationResultDTO<TSZahlungsauftrag>([], 0));
                 })
             )
@@ -445,7 +444,7 @@ export class ZahlungsauftragViewXComponent implements OnInit, AfterViewInit, OnD
         }
         this.applicationPropertyRS.getPublicPropertiesCached()
             .then((response: TSPublicAppConfig) => {
-                this.hasAuszahlungAnEltern = response.infomaZahlungen;
+                this.hasAuszahlungAnEltern = response.auszahlungAnEltern;
                 this.hasInfomaZahlung = response.infomaZahlungen;
             });
     }
@@ -453,7 +452,7 @@ export class ZahlungsauftragViewXComponent implements OnInit, AfterViewInit, OnD
     public toggleAuszahlungslaufTyp(): void {
         this.filterGemeinde = null;
         this.gemeindenList
-            = TSZahlungslaufTyp.GEMEINDE_INSTITUTION === this.zahlungslaufTyp
+            = TSZahlungslaufTyp.GEMEINDE_INSTITUTION === this.zahlungslaufTyp || !this.hasMahlzeitenZahlungslaeufe
             ? Array.from(this.berechtigteGemeindenList)
             : Array.from(this.berechtigteGemeindenMitMahlzeitenList);
         this.totalResult = 0;
@@ -541,7 +540,7 @@ export class ZahlungsauftragViewXComponent implements OnInit, AfterViewInit, OnD
             allColumnNames.push('editSave');
             allColumnNames.push('ausloesen');
 
-            if (this.hasInfomaZahlung) {
+            if (this.hasInfomaZahlung && this.gemeindenList.some(gemeinde => gemeinde.infomaZahlungen === true)) {
                 allColumnNames.splice(3, 0, `zahlungInfoma`);
             }
         }
@@ -560,15 +559,6 @@ export class ZahlungsauftragViewXComponent implements OnInit, AfterViewInit, OnD
     }
 
     public showGemeindeFilter(): boolean {
-        return this.getGemeindenList().length > 1;
-    }
-
-    public getGemeindenList(): TSGemeinde[] {
-        if (this.hasMahlzeitenZahlungslaeufe &&
-            TSZahlungslaufTyp.GEMEINDE_ANTRAGSTELLER === this.zahlungslaufTyp) {
-            return this.berechtigteGemeindenMitMahlzeitenList;
-        }
-
-        return this.berechtigteGemeindenList;
+        return this.gemeindenList.length > 1;
     }
 }

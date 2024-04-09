@@ -16,6 +16,7 @@
 package ch.dvbern.ebegu.rules;
 
 import java.math.BigDecimal;
+import java.util.Arrays;
 import java.util.EnumSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -23,11 +24,13 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
 
 import ch.dvbern.ebegu.entities.Einstellung;
 import ch.dvbern.ebegu.entities.Gemeinde;
+import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.EinschulungTyp;
 import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.enums.KinderabzugTyp;
@@ -36,6 +39,7 @@ import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.KitaxUebergangsloesungParameter;
 import ch.dvbern.ebegu.util.KitaxUtil;
 import ch.dvbern.ebegu.util.RuleParameterUtil;
+import com.google.common.base.Enums;
 
 import static ch.dvbern.ebegu.enums.EinstellungKey.*;
 
@@ -70,6 +74,7 @@ public class BetreuungsgutscheinConfigurator {
 				PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_6,
 				PARAM_MAX_TAGE_ABWESENHEIT,
 				GEMEINDE_BG_BIS_UND_MIT_SCHULSTUFE,
+				ANGEBOT_SCHULSTUFE,
 				MIN_ERWERBSPENSUM_EINGESCHULT,
 				MIN_ERWERBSPENSUM_NICHT_EINGESCHULT,
 				GEMEINDE_MIN_ERWERBSPENSUM_EINGESCHULT,
@@ -446,9 +451,21 @@ public class BetreuungsgutscheinConfigurator {
 		Einstellung einstellungBgAusstellenBisStufe =
 				ruleParameterUtil.getEinstellung(GEMEINDE_BG_BIS_UND_MIT_SCHULSTUFE);
 		EinschulungTyp bgAusstellenBisUndMitStufe = EinschulungTyp.valueOf(einstellungBgAusstellenBisStufe.getValue());
+		Einstellung angebotSchulstufe = ruleParameterUtil.getEinstellung(ANGEBOT_SCHULSTUFE);
+		List<BetreuungsangebotTyp> betreuungsangebotTyps = Arrays.stream(angebotSchulstufe.getValue().split(","))
+			.map(angebot -> Enums.getIfPresent(
+				BetreuungsangebotTyp.class,
+				angebot.stripLeading().stripTrailing()).orNull())
+			.filter(Objects::nonNull)
+			.collect(Collectors.toList());
 		SchulstufeCalcRule schulstufeCalcRule =
-				new SchulstufeCalcRule(defaultGueltigkeit, bgAusstellenBisUndMitStufe, locale);
+				new SchulstufeCalcRule(defaultGueltigkeit, bgAusstellenBisUndMitStufe, betreuungsangebotTyps, locale);
 		addToRuleSetIfRelevantForGemeinde(schulstufeCalcRule, ruleParameterUtil);
+
+		// - Kind Lebt gar nicht im Hausalt - Betreuungspensum 0
+		KinderabzugTyp kinderAbzugTyp = KinderabzugTyp.valueOf(ruleParameterUtil.getEinstellung(KINDERABZUG_TYP).getValue());
+		KindAnspruchCalcRule kindAnspruchCalcRule = new KindAnspruchCalcRule(defaultGueltigkeit, locale, kinderAbzugTyp);
+		addToRuleSetIfRelevantForGemeinde(kindAnspruchCalcRule, ruleParameterUtil);
 
 		// - KESB Platzierung: Kein Anspruch, da die KESB den Platz bezahlt
 		KesbPlatzierungCalcRule kesbPlatzierungCalcRule = new KesbPlatzierungCalcRule(defaultGueltigkeit, locale);

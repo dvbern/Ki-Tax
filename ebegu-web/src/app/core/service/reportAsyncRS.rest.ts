@@ -199,8 +199,11 @@ export class ReportAsyncRS {
             });
     }
 
-    public getTagesschuleRechnungsstellungReportExcel(): Observable<{workjobId: string}> {
-        return this.http.get<{workjobId: string}>(`${this.serviceURL}/excel/tagesschuleRechnungsstellung`);
+    public getTagesschuleRechnungsstellungReportExcel(gesuchsperiodeId: string): Observable<{workjobId: string}> {
+        const params = ReportAsyncRS.createParamsFromObject({
+            gesuchsperiodeId
+        });
+        return this.http.get<{workjobId: string}>(`${this.serviceURL}/excel/tagesschuleRechnungsstellung`, {params});
     }
 
     public getNotrechtReportExcel(zahlungenAusloesen: boolean): Observable<{workjobId: string}> {

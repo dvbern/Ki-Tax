@@ -19,6 +19,7 @@ import {MatRadioChange} from '@angular/material/radio';
 import {TranslateService} from '@ngx-translate/core';
 import {IPromise} from 'angular';
 import {CONSTANTS} from '../../../../app/core/constants/CONSTANTS';
+import {ApplicationPropertyRS} from '../../../../app/core/rest-services/applicationPropertyRS.rest';
 import {AuthServiceRS} from '../../../../authentication/service/AuthServiceRS.rest';
 import {TSWizardStepName} from '../../../../models/enums/TSWizardStepName';
 import {TSWizardStepStatus} from '../../../../models/enums/TSWizardStepStatus';
@@ -38,13 +39,16 @@ import {isAtLeastFreigegeben, TSAntragStatus} from '../../../../models/enums/TSA
 
 export abstract class AbstractFinSitLuzernView extends AbstractGesuchViewX<TSFinanzModel> {
 
+    private isInfomazahlungenAktiv: boolean = false;
+
     protected constructor(
         protected gesuchModelManager: GesuchModelManager,
         protected wizardStepManager: WizardStepManager,
         protected gesuchstellerNumber: number,
         protected finSitLuService: FinanzielleSituationLuzernService = finSitLuService,
         protected authServiceRS: AuthServiceRS,
-        protected readonly translate: TranslateService
+        protected readonly translate: TranslateService,
+        protected readonly applicationPropertyRS: ApplicationPropertyRS
     ) {
         super(gesuchModelManager, wizardStepManager, TSWizardStepName.FINANZIELLE_SITUATION_LUZERN);
         this.model = new TSFinanzModel(this.gesuchModelManager.getBasisjahr(),
@@ -53,6 +57,9 @@ export abstract class AbstractFinSitLuzernView extends AbstractGesuchViewX<TSFin
         this.model.copyFinSitDataFromGesuch(this.gesuchModelManager.getGesuch());
         this.setupForm();
         this.gesuchModelManager.setGesuchstellerNumber(gesuchstellerNumber);
+        this.applicationPropertyRS.getPublicPropertiesCached().then(res => {
+            this.isInfomazahlungenAktiv = res.infomaZahlungen;
+        });
     }
 
     private setupForm(): void {
@@ -210,8 +217,12 @@ export abstract class AbstractFinSitLuzernView extends AbstractGesuchViewX<TSFin
            ||  (this.getGesuch().isMutation() && this.authServiceRS.isRole(TSRole.GESUCHSTELLER));
     }
 
-    public showInfomaFields(): boolean {
+    public showZahlungsinformationen(): boolean {
         return this.getAntragstellerNummer() === 1;
+    }
+
+    public showInfomaFields(): boolean {
+        return this.gesuchModelManager.getGemeinde().infomaZahlungen && this.isInfomazahlungenAktiv === true;
     }
 
     public hasPrevious(): boolean {

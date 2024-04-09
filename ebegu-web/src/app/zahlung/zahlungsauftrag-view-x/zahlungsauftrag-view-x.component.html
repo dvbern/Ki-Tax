@@ -43,7 +43,7 @@
                                         name="gemeinde"
                                         required>
                                     <option [ngValue]="null"></option>
-                                    <option *ngFor="let gemeindeEntry of getGemeindenList()" [ngValue]="gemeindeEntry">{{gemeindeEntry.name}}</option>
+                                    <option *ngFor="let gemeindeEntry of gemeindenList" [ngValue]="gemeindeEntry">{{gemeindeEntry.name}}</option>
                                 </select>
                                 <dv-error-messages [errorObject]="form?.form.get('gemeinde')?.errors"
                                                    class="error"></dv-error-messages>
@@ -193,7 +193,7 @@
                         <span [innerHTML]="'ZAHLUNG_INFOMA' | translate"></span>
                     </mat-header-cell>
                     <mat-cell *matCellDef="let element" class="ellipsis">
-                        <dv-loading-button type="button" (buttonClick)="downloadInfoma(element)"
+                        <dv-loading-button *ngIf="element.gemeinde.infomaZahlungen" type="button" (buttonClick)="downloadInfoma(element)"
                                            [buttonClass]="'dv-btn-operation'">
                             <i class="fa fa-lg fa-file-code-o"></i>
                         </dv-loading-button>

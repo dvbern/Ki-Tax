@@ -168,13 +168,13 @@ public class FinanzielleSituationSolothurnRechner extends AbstractFinanzielleSit
 		BigDecimal abzuegeKinderAusbildung = isNullOrZero(finanzielleSituation.getAbzuegeKinderAusbildung()) ?
 			BigDecimal.ZERO :
 			finanzielleSituation.getAbzuegeKinderAusbildung();
-		BigDecimal unterhaltsBeitraege = isNullOrZero(finanzielleSituation.getUnterhaltsBeitraege()) ?
+		BigDecimal abzuegeUnterhaltsBeitraege = isNullOrZero(finanzielleSituation.getUnterhaltsBeitraege()) ?
 			BigDecimal.ZERO :
 			finanzielleSituation.getUnterhaltsBeitraege();
 		BigDecimal steuerbaresVermoegen5Prozent = calcualteStuerbaresVermoegen5Prozent(finanzielleSituation.getSteuerbaresVermoegen());
 
 		return MathUtil.EXACT.subtractNullSafe(nettoLohn, abzuegeKinderAusbildung)
-			.add(unterhaltsBeitraege)
+			.subtract(abzuegeUnterhaltsBeitraege)
 			.add(steuerbaresVermoegen5Prozent);
 	}
 

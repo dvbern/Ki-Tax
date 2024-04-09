@@ -42,6 +42,7 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 import javax.interceptor.Interceptors;
+import javax.persistence.EntityManager;
 import javax.persistence.Query;
 import javax.persistence.Tuple;
 import javax.persistence.TypedQuery;
@@ -639,9 +640,13 @@ public class GesuchServiceBean extends AbstractBaseService implements GesuchServ
 		final CriteriaQuery<Gesuch> query = cb.createQuery(Gesuch.class);
 
 		Root<Gesuch> root = query.from(Gesuch.class);
+		List<Predicate> predicates = new ArrayList<>();
 
 		Predicate predicateId = root.get(AbstractEntity_.id).in(gesuchIds);
-		query.where(predicateId);
+		predicates.add(predicateId);
+		Predicate predicateMandant = cb.equal(root.get(Gesuch_.dossier).get(Dossier_.fall).get(Fall_.mandant), principalBean.getMandant());
+		predicates.add(predicateMandant);
+		query.where(CriteriaQueryHelper.concatenateExpressions(cb, predicates));
 		query.orderBy(cb.asc(root.get(Gesuch_.dossier).get(Dossier_.fall).get(AbstractEntity_.id)));
 		List<Gesuch> criteriaResults = persistence.getCriteriaResults(query);
 		return criteriaResults.stream()

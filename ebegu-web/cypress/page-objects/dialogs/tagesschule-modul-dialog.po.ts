@@ -36,23 +36,23 @@ const getVerpflegungskosten = () => {
 };
 
 const getMontag = () => {
-	return cy.getByData('institution.tageschule.modul.montag');
+	return cy.getByData('institution.tageschule.modul.montag').find('.mdc-checkbox');
 };
 
 const getDienstag = () => {
-	return cy.getByData('institution.tageschule.modul.dienstag');
+	return cy.getByData('institution.tageschule.modul.dienstag').find('.mdc-checkbox');
 };
 
 const getMittwoch = () => {
-	return cy.getByData('institution.tageschule.modul.mittwoch');
+	return cy.getByData('institution.tageschule.modul.mittwoch').find('.mdc-checkbox');
 };
 
 const getDonnerstag = () => {
-	return cy.getByData('institution.tageschule.modul.donnerstag');
+	return cy.getByData('institution.tageschule.modul.donnerstag').find('.mdc-checkbox');
 };
 
 const getFreitag = () => {
-	return cy.getByData('institution.tageschule.modul.freitag');
+	return cy.getByData('institution.tageschule.modul.freitag').find('.mdc-checkbox');
 };
 
 const getOkButton = () => {
@@ -60,7 +60,7 @@ const getOkButton = () => {
 };
 
 const getWirdPaedagogischBetreut = () => {
-	return cy.getByData('institution.tageschule.modul.wirdPaedagogischBetreut');
+	return cy.getByData('institution.tageschule.modul.wirdPaedagogischBetreut').find('.mdc-checkbox');
 };
 
 const getIntervall = () => {

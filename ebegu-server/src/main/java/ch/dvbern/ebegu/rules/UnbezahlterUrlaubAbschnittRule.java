@@ -17,30 +17,15 @@
 
 package ch.dvbern.ebegu.rules;
 
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-import java.util.Objects;
-import java.util.Set;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
-import ch.dvbern.ebegu.entities.Erwerbspensum;
-import ch.dvbern.ebegu.entities.ErwerbspensumContainer;
-import ch.dvbern.ebegu.entities.Familiensituation;
-import ch.dvbern.ebegu.entities.Gesuch;
-import ch.dvbern.ebegu.entities.GesuchstellerContainer;
-import ch.dvbern.ebegu.entities.UnbezahlterUrlaub;
-import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
+import ch.dvbern.ebegu.entities.*;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.MsgKey;
 import ch.dvbern.ebegu.types.DateRange;
-import com.google.common.collect.ImmutableList;
 
-import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.KITA;
-import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.TAGESFAMILIEN;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.time.LocalDate;
+import java.util.*;
 
 /**
  * Regel für unbezahlten Urlaub. In dem Teil des Urlaubs, welcher 3 Monate übersteigt, verfällt der Anspruch (für dieses Erwerbspensum!)
@@ -54,7 +39,7 @@ public class UnbezahlterUrlaubAbschnittRule extends AbstractErwerbspensumAbschni
 
 	@Override
 	protected List<BetreuungsangebotTyp> getAnwendbareAngebote() {
-		return ImmutableList.of(KITA, TAGESFAMILIEN);
+		return BetreuungsangebotTyp.getBetreuungsgutscheinTypes();
 	}
 
 	/**

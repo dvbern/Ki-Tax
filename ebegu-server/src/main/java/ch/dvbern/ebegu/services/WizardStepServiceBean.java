@@ -42,6 +42,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import javax.validation.constraints.NotNull;
+
 import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -151,7 +152,8 @@ public class WizardStepServiceBean extends AbstractBaseService implements Wizard
 	public List<WizardStep> createWizardStepList(Gesuch gesuch) {
 		List<WizardStep> wizardStepList = new ArrayList<>();
 
-		Boolean abwesenheitActiv = einstellungService.findEinstellung(EinstellungKey.ABWESENHEIT_AKTIV,
+		Boolean abwesenheitActiv = einstellungService.findEinstellung(
+			EinstellungKey.ABWESENHEIT_AKTIV,
 			gesuch.extractGemeinde(),
 			gesuch.getGesuchsperiode()).getValueAsBoolean();
 
@@ -500,7 +502,10 @@ public class WizardStepServiceBean extends AbstractBaseService implements Wizard
 					gemeindeService.getGemeindeStammdatenByGemeindeId(verfuegenWizardStep.getGesuch()
 						.getDossier()
 						.getGemeinde()
-						.getId()).get();
+						.getId()).orElseThrow(() -> new EbeguEntityNotFoundException(
+						"gesuchVerfuegen",
+						ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
+						verfuegenWizardStep.getGesuch().getDossier().getGemeinde().getId()));
 				if (gemeindeStammdaten.getBenachrichtigungBgEmailAuto()) {
 					if (!verfuegenWizardStep.getGesuch().isMutation()) {
 						// Erstgesuch
@@ -853,7 +858,7 @@ public class WizardStepServiceBean extends AbstractBaseService implements Wizard
 			setWizardStepOkOrMutiert(wizardStep);
 		} else if (WizardStepName.KINDER == wizardStep.getWizardStepName()) {
 			//Nach Update der FamilienSituation kann es sein dass die Kinder View nicht mehr Valid ist
-			checkStepStatusForKinderOnChangeFamSit(wizardStep);
+			checkStepStatusForKinderOnChangeFamSit(wizardStep, oldEntity, newEntity);
 		} else if (WizardStepName.ERWERBSPENSUM == wizardStep.getWizardStepName()) {
 			checkStepStatusForErwerbspensum(wizardStep, true);
 		} else if (EbeguUtil.fromOneGSToTwoGS(oldEntity, newEntity, bis)) {
@@ -875,8 +880,12 @@ public class WizardStepServiceBean extends AbstractBaseService implements Wizard
 		}
 	}
 
-	private void checkStepStatusForKinderOnChangeFamSit(WizardStep wizardStep) {
+	private void checkStepStatusForKinderOnChangeFamSit(WizardStep wizardStep, @Nonnull Familiensituation oldFamiliensituation,
+		@Nonnull Familiensituation newFamiliensituation) {
 		if (hasNichtGepruefteKinder(findAllKinderFromGesuch(wizardStep))) {
+			wizardStep.setWizardStepStatus(WizardStepStatus.NOK);
+		}
+		if (newFamiliensituation.getGesuchstellerKardinalitaet() != oldFamiliensituation.getGesuchstellerKardinalitaet()) {
 			wizardStep.setWizardStepStatus(WizardStepStatus.NOK);
 		}
 	}
@@ -935,7 +944,7 @@ public class WizardStepServiceBean extends AbstractBaseService implements Wizard
 		}
 	}
 
-	private boolean isErwerbespensumContainerEmpty(GesuchstellerContainer gesuchsteller) {
+	private boolean isErwerbespensumContainerEmpty(@Nullable GesuchstellerContainer gesuchsteller) {
 		if (gesuchsteller == null) {
 			return true;
 		}
@@ -1052,12 +1061,14 @@ public class WizardStepServiceBean extends AbstractBaseService implements Wizard
 			if (isErwerbespensumContainerEmpty(gesuch.getGesuchsteller1())) {
 				// Wenn der Step auf NOK gesetzt wird, muss er enabled sein, damit korrigiert werden kann!
 				status = WizardStepStatus.NOK;
-			}
-			if (status != WizardStepStatus.NOK
-				&& gesuch.getGesuchsteller2() != null
-				&& isErwerbspensumRequiredForGS2(gesuch)) {
-				// Wenn der Step auf NOK gesetzt wird, muss er enabled sein, damit korrigiert werden kann!
-				status = WizardStepStatus.NOK;
+			} else {
+				if (isErwerbspensumRequiredForGS2(gesuch) && isErwerbespensumContainerEmpty(gesuch.getGesuchsteller2())) {
+					// Wenn der Step auf NOK gesetzt wird, muss er enabled sein, damit korrigiert werden kann!
+					status = WizardStepStatus.NOK;
+				}
+				if (!isErwerbspensumRequiredForGS2(gesuch) && isErwerbespensumContainerEmpty(gesuch.getGesuchsteller2())) {
+					status = WizardStepStatus.OK;
+				}
 			}
 		} else if (changesBecauseOtherStates && wizardStep.getWizardStepStatus() != WizardStepStatus.MUTIERT) {
 			status = WizardStepStatus.OK;
@@ -1088,7 +1099,10 @@ public class WizardStepServiceBean extends AbstractBaseService implements Wizard
 		if (familiensituation == null) {
 			return false;
 		}
-		if (isUnterhaltsvereinbarungAbschlossenOrNichtMoeglich(familiensituation)) {
+		if (!gesuch.hasSecondGesuchstellerAtAnyTimeOfGesuchsperiode()) {
+			return false;
+		}
+		if (familiensituation.getUnterhaltsvereinbarung() != null) {
 			return false;
 		}
 
@@ -1109,19 +1123,6 @@ public class WizardStepServiceBean extends AbstractBaseService implements Wizard
 		return Boolean.TRUE.equals(einstellung.getValueAsBoolean());
 	}
 
-
-
-
-
-	private boolean isUnterhaltsvereinbarungAbschlossenOrNichtMoeglich(Familiensituation familiensituation) {
-		if (familiensituation.getUnterhaltsvereinbarung() == null) {
-			return false;
-		}
-
-		var unterhaltsvereinbarung = familiensituation.getUnterhaltsvereinbarung();
-		return unterhaltsvereinbarung == UnterhaltsvereinbarungAnswer.JA_UNTERHALTSVEREINBARUNG
-			|| unterhaltsvereinbarung == UnterhaltsvereinbarungAnswer.UNTERHALTSVEREINBARUNG_NICHT_MOEGLICH;
-	}
 
 	/**
 	 * Der Step mit dem uebergebenen StepName bekommt den Status OK. Diese Methode wird immer aufgerufen, um den
@@ -1179,6 +1180,8 @@ public class WizardStepServiceBean extends AbstractBaseService implements Wizard
 			return WizardStepName.FINANZIELLE_SITUATION_SOLOTHURN;
 		case APPENZELL:
 			return WizardStepName.FINANZIELLE_SITUATION_APPENZELL;
+		case SCHWYZ:
+			return WizardStepName.FINANZIELLE_SITUATION_SCHWYZ;
 		default:
 			throw new EbeguRuntimeException(
 				"getFinSitWizardStepNameForGesuch",
@@ -1199,6 +1202,8 @@ public class WizardStepServiceBean extends AbstractBaseService implements Wizard
 			return WizardStepName.EINKOMMENSVERSCHLECHTERUNG_SOLOTHURN;
 		case APPENZELL:
 			return WizardStepName.EINKOMMENSVERSCHLECHTERUNG_APPENZELL;
+		case SCHWYZ:
+			return WizardStepName.EINKOMMENSVERSCHLECHTERUNG;
 		default:
 			throw new EbeguRuntimeException(
 				"getEKVWizardStepNameForGesuch",

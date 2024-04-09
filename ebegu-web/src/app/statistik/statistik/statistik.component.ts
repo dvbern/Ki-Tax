@@ -315,8 +315,9 @@ export class StatistikComponent implements OnInit, OnDestroy {
                     }, StatistikComponent.handleError);
                 break;
             case TSStatistikParameterType.TAGESSCHULE_RECHNUNGSSTELLUNG:
-                this.reportAsyncRS.getTagesschuleRechnungsstellungReportExcel()
-                    .subscribe((res: { workjobId: string }) => {
+                this.reportAsyncRS.getTagesschuleRechnungsstellungReportExcel(
+                    this.statistikParameter.gesuchsperiode
+                ).subscribe((res: { workjobId: string }) => {
                         this.informReportGenerationStarted(res);
                     }, StatistikComponent.handleError);
                 break;
@@ -775,5 +776,9 @@ export class StatistikComponent implements OnInit, OnDestroy {
 
     public requiredIfAlleInstitutionen(): boolean {
         return EbeguUtil.isNullOrUndefined(this.statistikParameter.institution);
+    }
+
+    public getActiveGesuchsperioden(): TSGesuchsperiode[] {
+        return this.gesuchsperioden?.filter(gp => gp.isAktiv());
     }
 }

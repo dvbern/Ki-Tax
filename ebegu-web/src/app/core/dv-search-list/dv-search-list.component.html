@@ -110,7 +110,7 @@
         </ng-container>
 
         <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-        <mat-row *matRowDef="let row; columns: displayedColumns;" (click)="open(row.id)" class="pointer-cursor"></mat-row>
+        <mat-row *matRowDef="let row; let idx = index; columns: displayedColumns;" (click)="open(row.id)" [attr.data-test]="'search-list-item.' + idx" class="pointer-cursor"></mat-row>
     </mat-table>
     <mat-paginator [pageSizeOptions]="[10, 25, 100]"></mat-paginator>
     <div class="mat-row" *ngIf="showNoContentMessage()"

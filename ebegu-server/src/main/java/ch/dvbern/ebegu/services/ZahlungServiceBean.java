@@ -45,6 +45,7 @@ import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 import javax.persistence.criteria.*;
 import javax.ws.rs.BadRequestException;
+
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -162,7 +163,7 @@ public class ZahlungServiceBean extends AbstractBaseService implements ZahlungSe
 
 		// Damit wir spaeter die Auszahlungsdaten valdieren koennen, muessen wir wissen, ob es eine PAIN oder
 		// eine INFOMA Zahlung ist. Wir lesen es hier einmalig fuer den ganzen Auftrag.
-		ApplicationProperty infomaZahlungen  =
+		ApplicationProperty infomaZahlungen =
 			this.applicationPropertyService.readApplicationProperty(
 					ApplicationPropertyKey.INFOMA_ZAHLUNGEN,
 					mandant)
@@ -220,7 +221,7 @@ public class ZahlungServiceBean extends AbstractBaseService implements ZahlungSe
 			zeitabschnittVon = ZahlungslaufUtil.ermittleZahlungslaufGueltigVon(zeitabschnittBis, lastZahlungsauftrag);
 			isRepetition = ZahlungslaufUtil.isZahlunglaufRepetition(zeitabschnittBis, lastZahlungsauftrag);
 		} else {
-			zeitabschnittVon =  Constants.START_OF_DATETIME.toLocalDate(); // Default, falls dies der erste Auftrag ist
+			zeitabschnittVon = Constants.START_OF_DATETIME.toLocalDate(); // Default, falls dies der erste Auftrag ist
 		}
 
 		zahlungsauftrag.setGueltigkeit(new DateRange(zeitabschnittVon, zeitabschnittBis));
@@ -246,7 +247,12 @@ public class ZahlungServiceBean extends AbstractBaseService implements ZahlungSe
 			for (VerfuegungZeitabschnitt zeitabschnitt : gueltigeVerfuegungZeitabschnitte) {
 				if (zahlungslaufHelper.isAuszuzahlen(zeitabschnitt) && zahlungslaufHelper.getZahlungsstatus(
 					zeitabschnitt).isNeu()) {
-					createZahlungsposition(zahlungslaufHelper, zeitabschnitt, zahlungsauftrag, zahlungProInstitution, isInfomaZahlung);
+					createZahlungsposition(
+						zahlungslaufHelper,
+						zeitabschnitt,
+						zahlungsauftrag,
+						zahlungProInstitution,
+						isInfomaZahlung);
 				}
 			}
 		}
@@ -346,10 +352,10 @@ public class ZahlungServiceBean extends AbstractBaseService implements ZahlungSe
 			root.get(AbstractDateRangedEntity_.gueltigkeit).get(DateRange_.gueltigBis),
 			zeitabschnittVon);
 		predicates.add(predicateEnd);
-		// Nur Angebot KITA und TAGESFAMILIEN
+		// Nur Angebot Betreuungsgutschein
 		Predicate predicateAngebot =
 			joinBetreuung.get(Betreuung_.institutionStammdaten).get(InstitutionStammdaten_.betreuungsangebotTyp)
-				.in(BetreuungsangebotTyp.KITA, BetreuungsangebotTyp.TAGESFAMILIEN);
+				.in(BetreuungsangebotTyp.getBetreuungsgutscheinTypes());
 		predicates.add(predicateAngebot);
 		// Nur neueste Verfuegung jedes Falls beachten
 		Predicate predicateGueltig = cb.equal(joinBetreuung.get(Betreuung_.gueltig), Boolean.TRUE);
@@ -404,6 +410,7 @@ public class ZahlungServiceBean extends AbstractBaseService implements ZahlungSe
 			zeitabschnittBis);
 		predicates.add(predicateStart);
 		// Nur Angebot KITA und TAGESFAMILIEN
+
 		Predicate predicateAngebot =
 			joinBetreuung.get(Betreuung_.institutionStammdaten).get(InstitutionStammdaten_.betreuungsangebotTyp)
 				.in(BetreuungsangebotTyp.KITA, BetreuungsangebotTyp.TAGESFAMILIEN);
@@ -438,26 +445,26 @@ public class ZahlungServiceBean extends AbstractBaseService implements ZahlungSe
 		@Nonnull Zahlungsauftrag zahlungsauftrag,
 		@Nonnull Map<String, Zahlung> zahlungProInstitution,
 		boolean isInfomaZahlung) {
-			Zahlungsposition zahlungsposition = new Zahlungsposition();
-			zahlungsposition.setVerfuegungZeitabschnitt(zeitabschnitt);
-			zahlungsposition.setBetrag(helper.getAuszahlungsbetrag(zeitabschnitt));
-			zahlungsposition.setStatus(ZahlungspositionStatus.NORMAL);
-			Zahlung zahlung = findZahlungForEmpfaengerOrCreate(
-				helper,
-				zeitabschnitt,
-				zahlungsauftrag,
-				zahlungProInstitution,
-				isInfomaZahlung);
-			zahlungsposition.setZahlung(zahlung);
-			zahlung.getZahlungspositionen().add(zahlungsposition);
-			helper.setZahlungsstatus(zeitabschnitt, getZahluntsstatusVerrechnet(zeitabschnitt));
+		Zahlungsposition zahlungsposition = new Zahlungsposition();
+		zahlungsposition.setVerfuegungZeitabschnitt(zeitabschnitt);
+		zahlungsposition.setBetrag(helper.getAuszahlungsbetrag(zeitabschnitt));
+		zahlungsposition.setStatus(ZahlungspositionStatus.NORMAL);
+		Zahlung zahlung = findZahlungForEmpfaengerOrCreate(
+			helper,
+			zeitabschnitt,
+			zahlungsauftrag,
+			zahlungProInstitution,
+			isInfomaZahlung);
+		zahlungsposition.setZahlung(zahlung);
+		zahlung.getZahlungspositionen().add(zahlungsposition);
+		helper.setZahlungsstatus(zeitabschnitt, getZahluntsstatusVerrechnet(zeitabschnitt));
 	}
 
 	private VerfuegungsZeitabschnittZahlungsstatus getZahluntsstatusVerrechnet(
 		@Nonnull VerfuegungZeitabschnitt zeitabschnitt) {
-			return zeitabschnitt.hasBetreuungspensum() ?
-				VerfuegungsZeitabschnittZahlungsstatus.VERRECHNET :
-				VerfuegungsZeitabschnittZahlungsstatus.VERRECHNET_KEINE_BETREUUNG;
+		return zeitabschnitt.hasBetreuungspensum() ?
+			VerfuegungsZeitabschnittZahlungsstatus.VERRECHNET :
+			VerfuegungsZeitabschnittZahlungsstatus.VERRECHNET_KEINE_BETREUUNG;
 	}
 
 	/**
@@ -557,7 +564,7 @@ public class ZahlungServiceBean extends AbstractBaseService implements ZahlungSe
 			zahlungsauftrag,
 			zahlungProInstitution,
 			auszahlungsdaten
-			);
+		);
 
 	}
 
@@ -569,14 +576,18 @@ public class ZahlungServiceBean extends AbstractBaseService implements ZahlungSe
 		Auszahlungsdaten auszahlungsdaten = familiensituation.getAuszahlungsdaten();
 
 		if (auszahlungsdaten == null) {
-			// Falls auf dem Gesuch keine Auszahlungsdaten vorhanden sind, werden die Auszahlungsdaten von der Betreuung genommen.
-			// Beim Gesuch handelt es sich um das Aktuell gültige Gesuch, bei der Betreuung um die Betruung die Ausbezahltw werden soll.
+			// Falls auf dem Gesuch keine Auszahlungsdaten vorhanden sind, werden die Auszahlungsdaten von der Betreuung
+			// genommen.
+			// Beim Gesuch handelt es sich um das Aktuell gültige Gesuch, bei der Betreuung um die Betruung die Ausbezahltw
+			// werden soll.
 			// Es gibt Fälle auf welchen beim gültigen Gesuch keine Auszahlungsdaten vorhanden sind
 			// -> Mutation 1 MZV gewünscht, Auszahlungsdaten vorhanden auf Betreuung (diese soll ausbezahlt werden)
 			// -> Mutation 2 MZV nicht mehr gewünscht, keine Auszahlungdaten mehr auf dem gültigen Gesuch vorhanden,
 			// also nehmen wir die Daten aus der Betreuung
-			Familiensituation familiensituationBetreuung =  betreuung.extractGesuch().extractFamiliensituation();
-			Objects.requireNonNull(familiensituationBetreuung, "Die Familiensituation muessen zu diesem Zeitpunkt definiert sein");
+			Familiensituation familiensituationBetreuung = betreuung.extractGesuch().extractFamiliensituation();
+			Objects.requireNonNull(
+				familiensituationBetreuung,
+				"Die Familiensituation muessen zu diesem Zeitpunkt definiert sein");
 			auszahlungsdaten = familiensituationBetreuung.getAuszahlungsdaten();
 		}
 
@@ -600,7 +611,12 @@ public class ZahlungServiceBean extends AbstractBaseService implements ZahlungSe
 		}
 		// Es gibt noch keine Zahlung fuer diesen Empfaenger, wir erstellen eine Neue
 		Zahlung zahlung =
-			createZahlungForAntragsteller(letztesGueltigesGesuch, betreuung.getBetreuungsangebotTyp(), fallId, zahlungsauftrag, auszahlungsdaten);
+			createZahlungForAntragsteller(
+				letztesGueltigesGesuch,
+				betreuung.getBetreuungsangebotTyp(),
+				fallId,
+				zahlungsauftrag,
+				auszahlungsdaten);
 		zahlungProInstitution.put(fallId, zahlung);
 		return zahlung;
 	}
@@ -824,9 +840,18 @@ public class ZahlungServiceBean extends AbstractBaseService implements ZahlungSe
 		// Die nextBelegnummerInfoma hochzaehlen
 		final Mandant mandant = zahlungsauftrag.getMandant();
 		Objects.requireNonNull(mandant);
-		final long oldNextNummer = mandant.getNextInofmaBelegnummer(zahlungsauftrag.getZahlungslaufTyp());
-		final int anzahlNeueZahlungen = zahlungsauftrag.getZahlungen().size();
-		mandantService.updateNextInfomaBelegnummer(mandant, zahlungsauftrag.getZahlungslaufTyp(), oldNextNummer + anzahlNeueZahlungen);
+		final boolean infomaZahlungenAktiviert =
+			Boolean.TRUE.equals(applicationPropertyService.findApplicationPropertyAsBoolean(
+				ApplicationPropertyKey.INFOMA_ZAHLUNGEN,
+				mandant));
+		if (infomaZahlungenAktiviert) {
+			final long oldNextNummer = mandant.getNextInofmaBelegnummer(zahlungsauftrag.getZahlungslaufTyp());
+			final int anzahlNeueZahlungen = zahlungsauftrag.getZahlungen().size();
+			mandantService.updateNextInfomaBelegnummer(
+				mandant,
+				zahlungsauftrag.getZahlungslaufTyp(),
+				oldNextNummer + anzahlNeueZahlungen);
+		}
 		return persistence.merge(zahlungsauftrag);
 	}
 

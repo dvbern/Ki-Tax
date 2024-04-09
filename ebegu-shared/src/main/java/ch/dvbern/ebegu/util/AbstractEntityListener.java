@@ -33,6 +33,7 @@ import ch.dvbern.ebegu.entities.AbstractEntity;
 import ch.dvbern.ebegu.entities.AbstractPlatz;
 import ch.dvbern.ebegu.entities.ApplicationProperty;
 import ch.dvbern.ebegu.entities.Benutzer;
+import ch.dvbern.ebegu.entities.Fachstelle;
 import ch.dvbern.ebegu.entities.Fall;
 import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gesuch;
@@ -44,6 +45,7 @@ import ch.dvbern.ebegu.entities.KindContainer;
 import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.entities.Traegerschaft;
 import ch.dvbern.ebegu.entities.Verfuegung;
+import ch.dvbern.ebegu.entities.sozialdienst.Sozialdienst;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.GesuchDeletionCause;
 import ch.dvbern.ebegu.enums.SequenceType;
@@ -74,11 +76,15 @@ public class AbstractEntityListener {
 
 	@PostLoad
 	protected void postLoad(@Nonnull AbstractEntity entity) {
-		if (entity instanceof HasMandant) {
-			if (checkAccessAllowedIfAnonymous(entity, getPrincipalBean())) {
-				return;
+		try {
+			if (entity instanceof HasMandant) {
+				if (checkAccessAllowedIfAnonymous(entity, getPrincipalBean())) {
+					return;
+				}
+				checkMandant(entity);
 			}
-			checkMandant(entity);
+		} catch (ContextNotActiveException e) {  // Wegen Hibernate Search index rebuild
+			LOGGER.warn(e.getMessage());
 		}
 	}
 
@@ -281,7 +287,9 @@ public class AbstractEntityListener {
 		return (abstractEntity instanceof Benutzer
 			|| abstractEntity instanceof Institution
 			|| abstractEntity instanceof Traegerschaft
-			|| abstractEntity instanceof Gesuchsperiode) && getPrincipalBean().getMandant() == null;
+			|| abstractEntity instanceof Sozialdienst
+			|| abstractEntity instanceof Gesuchsperiode
+			|| abstractEntity instanceof Fachstelle) && getPrincipalBean().getMandant() == null;
 	}
 
 	protected static boolean checkAccessAllowedIfAnonymous(
@@ -294,6 +302,9 @@ public class AbstractEntityListener {
 				|| entity instanceof Mandant //anonym geladen bevor login (mandant wahl)
 				|| entity instanceof Benutzer // wegen locallogin
 				|| entity instanceof Institution // wegen locallogin (laden Institution mit Berechtigungen)
+				|| entity instanceof Sozialdienst // wegen locallogin (laden Sozialdienst mit Berechtigungen)
+				|| entity instanceof Fall // wegen platzbestaetigung
+				|| entity instanceof Gesuchsperiode // wegen platzbestaetigung
 				|| entity instanceof Traegerschaft) {// wegen locallogin (laden Tragerschaft mit Berechtigungen)
 				return true;
 			}

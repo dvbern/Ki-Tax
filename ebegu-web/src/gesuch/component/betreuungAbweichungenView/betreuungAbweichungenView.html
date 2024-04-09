@@ -58,7 +58,7 @@
                     <tr>
                         <th data-translate="MONTH"></th>
                         <th>{{vm.getInputFormatTitle()}}</th>
-                        <th data-translate="MONATLICHE_BETREUUNGSKOSTEN"></th>
+                        <th>{{vm.getKostenTitle()}}</th>
                         <th ng-if="vm.isMahlzeitenverguenstigungEnabled()"
                             data-translate="MONATLICHE_HAUPTMAHLZEITEN"></th>
                         <th ng-if="vm.isMahlzeitenverguenstigungEnabled()"
@@ -73,12 +73,14 @@
                     </thead>
                     <tbody>
                     <tr ng-repeat="betreuung in vm.model.betreuungspensumAbweichungen"
+                        ng-attr-data-test="abweichung-{{$index}}"
                         st-select-mode="single" role="row" tabindex="-1">
                         <td>{{vm.getFormattedDate(vm.getAbweichung($index))}}</td>
                         <td>
                             <input aria-describedby="pensum-{{$index}}-error"
                                    id="pensum-{{$index}}" type="number"
                                    name="pensum-{{$index}}"
+                                   data-test="pensum"
                                    ng-change="vm.updateStatus({{$index}})"
                                    ng-model="vm.getAbweichung($index).pensum"
                                    class="form-control  dv-input-container-medium"
@@ -92,6 +94,7 @@
                             <input aria-describedby="kosten-{{$index}}-error"
                                    id="kosten-{{$index}}" type="number"
                                    name="kosten-{{$index}}"
+                                   data-test="kosten"
                                    ng-change="vm.updateStatus({{$index}})"
                                    ng-model="vm.getAbweichung($index).monatlicheBetreuungskosten"
                                    dv-max-length class="form-control dv-input-container-medium"
@@ -139,14 +142,14 @@
         <span dv-show-element
               dv-show-allowed-roles="vm.TSRoleUtil.getTraegerschaftInstitutionRoles()"
               dv-show-expression="vm.isFreigabeAllowed()">
-            <dv-loading-button button-click="vm.preFreigeben()" type="submit">
+            <dv-loading-button button-click="vm.preFreigeben()" type="submit" data-test="container.freigeben">
                 <span class="uppercase" data-translate="FREIGEBEN"></span>
             </dv-loading-button>
         </span>
         <span dv-show-element
               dv-show-allowed-roles="vm.TSRoleUtil.getTraegerschaftInstitutionRoles()"
               dv-show-expression="vm.isAbweichungAllowed()">
-            <dv-loading-button button-click="vm.save()" type="submit">
+            <dv-loading-button button-click="vm.save()" type="submit" data-test="container.save">
                 <span class="uppercase" data-translate="SPEICHERN"></span>
             </dv-loading-button>
         </span>

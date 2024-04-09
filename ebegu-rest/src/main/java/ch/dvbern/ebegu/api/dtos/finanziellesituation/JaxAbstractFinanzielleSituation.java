@@ -49,6 +49,8 @@ public class JaxAbstractFinanzielleSituation extends JaxAbstractDTO {
 
 	private BigDecimal geschaeftsgewinnBasisjahr;
 
+	private BigDecimal geschaeftsgewinnBasisjahrMinus1;
+
 	private BigDecimal geleisteteAlimente;
 
 	private BigDecimal steuerbaresEinkommen;
@@ -87,6 +89,12 @@ public class JaxAbstractFinanzielleSituation extends JaxAbstractDTO {
 
 	@Nullable
 	private JaxFinSitZusatzangabenAppenzell finSitZusatzangabenAppenzell;
+
+	@Nullable
+	private BigDecimal ersatzeinkommenSelbststaendigkeitBasisjahr;
+
+	@Nullable
+	private BigDecimal ersatzeinkommenSelbststaendigkeitBasisjahrMinus1;
 
 	@Nullable
 	public BigDecimal getNettolohn() {
@@ -144,7 +152,13 @@ public class JaxAbstractFinanzielleSituation extends JaxAbstractDTO {
 	public void setGeschaeftsgewinnBasisjahr(final BigDecimal geschaeftsgewinnBasisjahr) {
 		this.geschaeftsgewinnBasisjahr = geschaeftsgewinnBasisjahr;
 	}
+	public BigDecimal getGeschaeftsgewinnBasisjahrMinus1() {
+		return geschaeftsgewinnBasisjahrMinus1;
+	}
 
+	public void setGeschaeftsgewinnBasisjahrMinus1(final BigDecimal geschaeftsgewinnBasisjahrMinus1) {
+		this.geschaeftsgewinnBasisjahrMinus1 = geschaeftsgewinnBasisjahrMinus1;
+	}
 	public BigDecimal getGeleisteteAlimente() {
 		return geleisteteAlimente;
 	}
@@ -274,5 +288,25 @@ public class JaxAbstractFinanzielleSituation extends JaxAbstractDTO {
 
 	public void setFinSitZusatzangabenAppenzell(@Nullable JaxFinSitZusatzangabenAppenzell finSitZusatzangabenAppenzell) {
 		this.finSitZusatzangabenAppenzell = finSitZusatzangabenAppenzell;
+	}
+
+
+	@Nullable
+	public BigDecimal getErsatzeinkommenSelbststaendigkeitBasisjahr() {
+		return ersatzeinkommenSelbststaendigkeitBasisjahr;
+	}
+
+	public void setErsatzeinkommenSelbststaendigkeitBasisjahr(@Nullable BigDecimal ersatzeinkommenSelbststaendigkeitBasisjahr) {
+		this.ersatzeinkommenSelbststaendigkeitBasisjahr = ersatzeinkommenSelbststaendigkeitBasisjahr;
+	}
+
+	@Nullable
+	public BigDecimal getErsatzeinkommenSelbststaendigkeitBasisjahrMinus1() {
+		return ersatzeinkommenSelbststaendigkeitBasisjahrMinus1;
+	}
+
+	public void setErsatzeinkommenSelbststaendigkeitBasisjahrMinus1(
+		@Nullable BigDecimal ersatzeinkommenSelbststaendigkeitBasisjahrMinus1) {
+		this.ersatzeinkommenSelbststaendigkeitBasisjahrMinus1 = ersatzeinkommenSelbststaendigkeitBasisjahrMinus1;
 	}
 }

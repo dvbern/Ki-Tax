@@ -560,4 +560,8 @@ export class EbeguUtil {
         return !(EbeguUtil.isNullOrUndefined(sprachlicheIntegrationen) ||
             sprachlicheIntegrationen.length === 0);
     }
+
+    public static roundDefaultBetreuungspensum(toRound: number): number {
+        return Number(toRound.toFixed(2));
+    }
 }

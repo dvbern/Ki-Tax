@@ -1438,9 +1438,9 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 			row.setBgStunden(zeitabschnitt.getBgPensumZeiteinheit());
 
 			// Wir koennen nicht die gespeicherte Zeiteinheit nehmen, da diese entweder Prozent oder Tage/Stunden ist
-			// Daher fix TAGE fuer Kita und STUNDEN fuer TFO
+			// Daher fix TAGE fuer Kita, Mittagstisch und STUNDEN fuer TFO
 			PensumUnits zeiteinheit =
-				betreuung.getBetreuungsangebotTyp() == BetreuungsangebotTyp.KITA ? PensumUnits.DAYS : PensumUnits.HOURS;
+				betreuung.getBetreuungsangebotTyp() == BetreuungsangebotTyp.TAGESFAMILIEN? PensumUnits.HOURS : PensumUnits.DAYS;
 			row.setBgPensumZeiteinheit(ServerMessageUtil.translateEnumValue(zeiteinheit, locale,
 				requireNonNull(betreuung.extractGemeinde().getMandant())));
 
@@ -2192,6 +2192,7 @@ public class ReportServiceBean extends AbstractReportServiceBean implements Repo
 	public void setBetreuungsangebotValues(
 		@Nonnull BenutzerDataRow row,
 		@Nonnull EnumSet<BetreuungsangebotTyp> angebote) {
+
 
 		row.setKita(angebote.stream().anyMatch(BetreuungsangebotTyp::isKita));
 		row.setTagesfamilien(angebote.stream().anyMatch(BetreuungsangebotTyp::isTagesfamilien));

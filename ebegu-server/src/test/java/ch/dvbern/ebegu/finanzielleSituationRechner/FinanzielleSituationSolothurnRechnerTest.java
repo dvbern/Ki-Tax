@@ -125,11 +125,11 @@ public class FinanzielleSituationSolothurnRechnerTest {
 
 	/**
 	 * Nettoeinkommen                              78'000
-	 * + Unterhaltsbeitraege                       2'500
+	 * - Unterhaltsbeitraege                       2'500
 	 * - abzuege für Kinder in Ausbildung          1'630
 	 * + Steuerbares Vermögen*0.05   23'462*0.05   1'173.10
 	 *
-	 * = massgebendes Einkommen                   80'043.10
+	 * = massgebendes Einkommen                   75'043.10
 	 */
 	@Test
 	public void testEinGesuchstellerNettolohn() {
@@ -138,8 +138,8 @@ public class FinanzielleSituationSolothurnRechnerTest {
 		BigDecimal abzuegeAusbildung = BigDecimal.valueOf(1630);
 		BigDecimal steuerbaresVermoegen = BigDecimal.valueOf(23462);
 
-		BigDecimal expectedMassgebendesEinkommen = BigDecimal.valueOf(80043.10);
-		BigDecimal expectedMassgebendesEinkommenGS1  =  BigDecimal.valueOf(80043.10);
+		BigDecimal expectedMassgebendesEinkommen = BigDecimal.valueOf(75043.10);
+		BigDecimal expectedMassgebendesEinkommenGS1  =  BigDecimal.valueOf(75043.10);
 		BigDecimal expectedMassgebendesEinkommenGS2  = BigDecimal.ZERO;
 
 		FinanzielleSituation finanzielleSituationGS1 = createFinSitWithNettolohn(nettoeinkommen, unterhaltsbeitraege, abzuegeAusbildung, steuerbaresVermoegen);
@@ -233,11 +233,11 @@ public class FinanzielleSituationSolothurnRechnerTest {
 
 	/**
 	 * Nettoeinkommen                              64'251
-	 * 0 Unterhaltsbeitraege                       1'870
+	 * - Unterhaltsbeitraege                       1'870
 	 * - abzuege für Kinder in Ausbildung          0
 	 * + Steuerbares Vermögen*0.05   41'205*0.05   2'060.25
 	 *
-	 * = massgebendes Einkommen                   68'181.25
+	 * = massgebendes Einkommen                   64'441.25
 	 */
 	@Test
 	public void testZweiGesuchstellerNettolohnGS2Zero() {
@@ -251,8 +251,8 @@ public class FinanzielleSituationSolothurnRechnerTest {
 		BigDecimal abzuegeAusbildungGS2 = BigDecimal.valueOf(1630);
 		BigDecimal steuerbaresVermoegenGS2 = BigDecimal.valueOf(1173);
 
-		BigDecimal expectedMassgebendesEinkommen = BigDecimal.valueOf(68181.25);
-		BigDecimal expectedMassgebendesEinkommenGS1  = BigDecimal.valueOf(68181.25);
+		BigDecimal expectedMassgebendesEinkommen = BigDecimal.valueOf(64441.25);
+		BigDecimal expectedMassgebendesEinkommenGS1  = BigDecimal.valueOf(64441.25);
 		BigDecimal expectedMassgebendesEinkommenGS2  = BigDecimal.ZERO;
 
 		FinanzielleSituation finanzielleSituationGS1 = createFinSitWithNettolohn(nettoeinkommenGS1, unterhaltsbeitraegeGS1, abzuegeAusbildungGS1, steuerbaresVermoegenGS1);
@@ -272,8 +272,8 @@ public class FinanzielleSituationSolothurnRechnerTest {
 		BigDecimal abzuegeAusbildungGS1 = BigDecimal.valueOf(1630);
 		BigDecimal steuerbaresVermoegenGS1 = BigDecimal.valueOf(23462);
 
-		BigDecimal expectedMassgebendesEinkommen = BigDecimal.valueOf(80043.1);
-		BigDecimal expectedMassgebendesEinkommenGS1 = BigDecimal.valueOf(80043.1);
+		BigDecimal expectedMassgebendesEinkommen = BigDecimal.valueOf(75043.10);
+		BigDecimal expectedMassgebendesEinkommenGS1 = BigDecimal.valueOf(75043.10);
 		BigDecimal expectedMassgebendesEinkommenGS2  = BigDecimal.ZERO;
 
 		FinanzielleSituation finanzielleSituationGS1 = createFinSitWithNettolohn(nettoeinkommenGS1, unterhaltsbeitraegeGS1, abzuegeAusbildungGS1, steuerbaresVermoegenGS1);
@@ -290,17 +290,17 @@ public class FinanzielleSituationSolothurnRechnerTest {
 	 *
 	 * GS1
 	 * Nettoeinkommen                              74'504
-	 * + Unterhaltsbeitraege                       0
+	 * - Unterhaltsbeitraege                       0
 	 * - abzuege für Kinder in Ausbildung          750
 	 * + Steuerbares Vermögen*0.05   0*0.05        0
 	 * = massgebendes Einkommen                   73'754
 	 *
 	 * GS2
 	 * Nettoeinkommen                              25'841
-	 * + Unterhaltsbeitraege                       1'260
+	 * - Unterhaltsbeitraege                       1'260
 	 * - abzuege für Kinder in Ausbildung          0
 	 * + Steuerbares Vermögen*0.05   15'785*0.05   789.25
-	 * = massgebendes Einkommen                    27'890.25
+	 * = massgebendes Einkommen                    25'370.25
 	 *
 	 * Total massgebendes Einkommen = 101'644.25
 	 */
@@ -316,9 +316,9 @@ public class FinanzielleSituationSolothurnRechnerTest {
 		BigDecimal abzuegeAusbildungGS2 = BigDecimal.valueOf(0);
 		BigDecimal steuerbaresVermoegenGS2 = BigDecimal.valueOf(15785);
 
-		BigDecimal expectedMassgebendesEinkommen = BigDecimal.valueOf(101644.25);
+		BigDecimal expectedMassgebendesEinkommen = BigDecimal.valueOf(99124.25);
 		BigDecimal expectedMassgebendesEinkommenGS1  = BigDecimal.valueOf(73754);
-		BigDecimal expectedMassgebendesEinkommenGS2  = BigDecimal.valueOf(27890.25);
+		BigDecimal expectedMassgebendesEinkommenGS2  = BigDecimal.valueOf(25370.25);
 
 		FinanzielleSituation finanzielleSituationGS1 = createFinSitWithNettolohn(nettoeinkommenGS1, unterhaltsbeitraegeGS1, abzuegeAusbildungGS1, steuerbaresVermoegenGS1);
 		FinanzielleSituation finanzielleSituationGS2 = createFinSitWithNettolohn(nettoeinkommenGS2, unterhaltsbeitraegeGS2, abzuegeAusbildungGS2, steuerbaresVermoegenGS2);

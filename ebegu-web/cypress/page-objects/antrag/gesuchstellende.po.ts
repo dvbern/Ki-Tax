@@ -103,4 +103,5 @@ export const GesuchstellendePO = {
     getFormularTitle,
     // page actions
     fillVerheiratet,
+    fillBaseGesuchsteller,
 };

@@ -16,15 +16,15 @@
   -->
 
 <form role="form">
-    <ng-container *ngIf="getModel()">
+    <ng-container *ngIf="kindContainer?.kindJA">
         <div class="row">
             <div class="col-sm-12 dv-input-container-medium">
                 <dv-checkbox-x
                     data-test="ist-pflegekind"
                     [label]="'KINDERABZUG_IS_PFLEGEKIND'"
-                    [(model)]="getModel().isPflegekind"
+                    [(model)]="kindContainer.kindJA.isPflegekind"
                     (modelChange)="change()"
-                    [dvBisherValue]="getModelGS()?.isPflegekind"
+                    [dvBisherValue]="kindContainer.kindGS?.isPflegekind"
                 ></dv-checkbox-x>
             </div>
         </div>
@@ -35,9 +35,9 @@
                         data-test="container.pflege-entschaedigung-erhalten"
                         [label]="'KINDERABZUG_PFLEGE_ENTSCHAEDIGUNG_ERHALTEN'"
                         [tooltip]="'KINDERABZUG_PFLEGE_ENTSCHAEDIGUNG_ERHALTEN_INFO'"
-                        [(model)]="getModel().pflegeEntschaedigungErhalten"
+                        [(model)]="kindContainer.kindJA.pflegeEntschaedigungErhalten"
                         (modelChange)="change()"
-                        [dvBisherValue]="getModelGS()?.pflegeEntschaedigungErhalten"
+                        [dvBisherValue]="kindContainer.kindGS?.pflegeEntschaedigungErhalten"
                         [required]="true"
                     ></dv-radio-input-x>
                 </dv-radio-container-x>
@@ -50,9 +50,9 @@
                         data-test="container.obhut-alternierend-ausueben"
                         [label]="'KINDERABZUG_OBHUT_ALTERNIEREND_AUSUEBEN'"
                         [tooltip]="'KINDERABZUG_OBHUT_ALTERNIEREND_AUSUEBEN_INFO'"
-                        [(model)]="getModel().obhutAlternierendAusueben"
+                        [(model)]="kindContainer.kindJA.obhutAlternierendAusueben"
                         (modelChange)="change()"
-                        [dvBisherValue]="getModelGS()?.obhutAlternierendAusueben"
+                        [dvBisherValue]="kindContainer.kindGS?.obhutAlternierendAusueben"
                         [required]="true"
                     ></dv-radio-input-x>
                 </dv-radio-container-x>
@@ -64,15 +64,14 @@
                     <dv-radio-input-x
                         data-test="container.ergaenzende-betreuung-beide"
                         [label]="'FAM_ERGAENZENDE_BETREUUNG_BEIDE'"
-                        [(model)]="getModel().familienErgaenzendeBetreuung"
+                        [(model)]="kindContainer.kindJA.familienErgaenzendeBetreuung"
                         (modelChange)="change()"
                         [readonly]="hasKindBetreuungen()"
-                        [dvBisherValue]="getModelGS()?.familienErgaenzendeBetreuung"
+                        [dvBisherValue]="kindContainer.kindGS?.familienErgaenzendeBetreuung"
                         [inlineHint]="'FAM_ERGAENZENDE_BETREUUNG_NOT_EDITABLE'"
                         [required]="true"
                     ></dv-radio-input-x>
                 </dv-radio-container-x>
-
             </div>
         </div>
         <div class="row" *ngIf="gemeinsamesGesuchVisible()">
@@ -82,9 +81,9 @@
                         data-test="container.gemeinsames-gesuch"
                         [label]="'KINDERABZUG_GEMEINSAMES_GESUCH'"
                         [tooltip]="'KINDERABZUG_GEMEINSAMES_GESUCH_INFO'"
-                        [(model)]="getModel().gemeinsamesGesuch"
+                        [(model)]="kindContainer.kindJA.gemeinsamesGesuch"
                         (modelChange)="change()"
-                        [dvBisherValue]="getModelGS()?.gemeinsamesGesuch"
+                        [dvBisherValue]="kindContainer.kindGS?.gemeinsamesGesuch"
                         [required]="true"
                     ></dv-radio-input-x>
                 </dv-radio-container-x>
@@ -97,9 +96,9 @@
                         data-test="container.in-erstausbildung"
                         [label]="'KINDERABZUG_IN_ERSTAUSBILDUNG'"
                         [tooltip]="'KINDERABZUG_IN_ERSTAUSBILDUNG_INFO'"
-                        [(model)]="getModel().inErstausbildung"
+                        [(model)]="kindContainer.kindJA.inErstausbildung"
                         (modelChange)="change()"
-                        [dvBisherValue]="getModelGS()?.inErstausbildung"
+                        [dvBisherValue]="kindContainer.kindGS?.inErstausbildung"
                         [required]="true"
                     ></dv-radio-input-x>
                 </dv-radio-container-x>
@@ -111,9 +110,9 @@
                     <dv-radio-input-x
                         data-test="container.lebt-kind-alternierend"
                         [label]="'KINDERABZUG_LEBT_KIND_ALTERNIEREND'"
-                        [(model)]="getModel().lebtKindAlternierend"
+                        [(model)]="kindContainer.kindJA.lebtKindAlternierend"
                         (modelChange)="change()"
-                        [dvBisherValue]="getModelGS()?.lebtKindAlternierend"
+                        [dvBisherValue]="kindContainer.kindGS?.lebtKindAlternierend"
                         [required]="true"
                     ></dv-radio-input-x>
                 </dv-radio-container-x>
@@ -125,9 +124,9 @@
                     <dv-radio-input-x
                         data-test="container.alimente-erhalten"
                         [label]="'KINDERABZUG_ALIMENTE_ERHALTEN'"
-                        [(model)]="getModel().alimenteErhalten"
+                        [(model)]="kindContainer.kindJA.alimenteErhalten"
                         (modelChange)="change()"
-                        [dvBisherValue]="getModelGS()?.alimenteErhalten"
+                        [dvBisherValue]="kindContainer.kindGS?.alimenteErhalten"
                         [required]="true"
                     ></dv-radio-input-x>
                 </dv-radio-container-x>
@@ -139,9 +138,9 @@
                     <dv-radio-input-x
                         data-test="container.alimente-bezahlen"
                         [label]="'KINDERABZUG_ALIMENTE_BEZAHLEN'"
-                        [(model)]="getModel().alimenteBezahlen"
+                        [(model)]="kindContainer.kindJA.alimenteBezahlen"
                         (modelChange)="change()"
-                        [dvBisherValue]="getModelGS()?.alimenteBezahlen"
+                        [dvBisherValue]="kindContainer.kindGS?.alimenteBezahlen"
                         [required]="true"
                     ></dv-radio-input-x>
                 </dv-radio-container-x>

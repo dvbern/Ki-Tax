@@ -6,7 +6,6 @@ import ch.dvbern.ebegu.enums.EnumFamilienstatus;
 import ch.dvbern.ebegu.enums.EnumGesuchstellerKardinalitaet;
 import ch.dvbern.ebegu.enums.UnterhaltsvereinbarungAnswer;
 import ch.dvbern.ebegu.types.DateRange;
-import com.google.common.collect.ImmutableList;
 
 import javax.annotation.Nonnull;
 import java.time.LocalDate;
@@ -15,8 +14,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
-
-import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.*;
 
 public class FamiliensituationBeendetAbschnittRule extends AbstractAbschnittRule {
 	public static final int ZERO = 0;
@@ -137,6 +134,6 @@ public class FamiliensituationBeendetAbschnittRule extends AbstractAbschnittRule
 
 	@Override
 	protected List<BetreuungsangebotTyp> getAnwendbareAngebote() {
-		return ImmutableList.of(KITA, TAGESFAMILIEN, TAGESSCHULE);
+		return BetreuungsangebotTyp.getBerechnetesAngebotTypes();
 	}
 }

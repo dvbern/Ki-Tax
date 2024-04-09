@@ -20,14 +20,14 @@ package ch.dvbern.ebegu.rules;
 import ch.dvbern.ebegu.entities.*;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.types.DateRange;
-import com.google.common.collect.ImmutableList;
 
 import javax.annotation.Nonnull;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
-import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.*;
 
 /**
  * Setzt die Information ueber Sozialhilfe in die benoetigten Zeitabschnitte.
@@ -41,7 +41,7 @@ public class SozialhilfeAbschnittRule extends AbstractAbschnittRule {
 
 	@Override
 	protected List<BetreuungsangebotTyp> getAnwendbareAngebote() {
-		return ImmutableList.of(KITA, TAGESFAMILIEN, TAGESSCHULE);
+		return BetreuungsangebotTyp.getBerechnetesAngebotTypes();
 	}
 
 	@Nonnull

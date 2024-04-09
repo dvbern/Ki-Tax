@@ -151,3 +151,16 @@ To create a new Fixture dataset, follow these steps:
    >     cy.getByData('einschulung-typ').select(kind1.einschulungstyp);
    > });
    > ```
+
+### Known issues
+
+#### Mat-Checkbox
+With the update to angular 15, we cannot directly click on a mat-checkbox anymore. This is probably
+due to our styling that moves quite a lot of stuff around (has yet to be confirmed with an empty
+new project). The currently employed workaround is to do a `.find('.mdc-checkbox')`.
+
+#### AngularJS Radio-Button
+When a radio button from AngularJS is clicked quickly after its first rendered, the click might
+not be registred leading to the radio-button not being activated. The workaround is to use
+`.wait()` with a short timeout to give AngularJS the time it apparently needs to make the click
+register.

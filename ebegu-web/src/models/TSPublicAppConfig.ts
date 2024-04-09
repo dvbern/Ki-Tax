@@ -43,6 +43,7 @@ export class TSPublicAppConfig {
     public angebotTSActivated: boolean;
     public angebotFIActivated: boolean;
     public angebotTFOActivated: boolean;
+    public angebotMittagstischActivated: boolean;
     public infomaZahlungen: boolean;
     public frenchEnabled: boolean;
     public geresEnabledForMandant: boolean;
@@ -53,4 +54,5 @@ export class TSPublicAppConfig {
     public checkboxAuszahlungInZukunft: boolean;
     public institutionenDurchGemeindenEinladen: boolean;
     public erlaubenInstitutionenZuWaehlen: boolean;
+    public auszahlungAnEltern: boolean;
 }

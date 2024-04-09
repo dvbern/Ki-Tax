@@ -15,20 +15,19 @@
 
 package ch.dvbern.ebegu.util;
 
-import java.math.BigDecimal;
-import java.util.Objects;
-import java.util.regex.Pattern;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.persistence.EntityManager;
-
 import ch.dvbern.ebegu.entities.Einstellung;
 import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.services.EinstellungService;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.persistence.EntityManager;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.regex.Pattern;
 
 /**
  * Allgemeine Utils fuer Betreuung
@@ -57,14 +56,8 @@ public final class BetreuungUtil {
 		@Nonnull EinstellungService einstellungService,
 		@Nonnull final EntityManager em) {
 
-		EinstellungKey key = null;
-		if (betreuungsangebotTyp == BetreuungsangebotTyp.KITA) {
-			key = EinstellungKey.PARAM_PENSUM_KITA_MIN;
-		} else if (betreuungsangebotTyp == BetreuungsangebotTyp.TAGESSCHULE) {
-			key = EinstellungKey.PARAM_PENSUM_TAGESSCHULE_MIN;
-		} else if (betreuungsangebotTyp == BetreuungsangebotTyp.TAGESFAMILIEN) {
-			key = EinstellungKey.PARAM_PENSUM_TAGESELTERN_MIN;
-		}
+		EinstellungKey key = new MinPensumEinstellungKeyBetreuungsTypVisitor().getEinstellungenKey(betreuungsangebotTyp);
+
 		if (key != null) {
 			Einstellung parameter = einstellungService.findEinstellung(key, gemeinde, gesuchsperiode, em);
 			return parameter.getValueAsBigDecimal();
@@ -106,5 +99,12 @@ public final class BetreuungUtil {
 		return MathUtil.EXACT.divide(
 			MathUtil.EXACT.divide(oeffnungszeitProJahr, MathUtil.EXACT.from(12)),
 			MathUtil.EXACT.from(100));
+	}
+
+	public static BigDecimal getMittagstischMultiplier() {
+		var mittagstischTageProWoche = BigDecimal.valueOf(5);
+		var mittagstischWochenProMonat = BigDecimal.valueOf(4.1);
+
+		return mittagstischTageProWoche.multiply(mittagstischWochenProMonat).divide(BigDecimal.valueOf(100), 3, RoundingMode.HALF_UP);
 	}
 }

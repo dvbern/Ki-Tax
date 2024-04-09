@@ -15,26 +15,17 @@
 
 package ch.dvbern.ebegu.rules;
 
+import ch.dvbern.ebegu.entities.*;
+import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
+import ch.dvbern.ebegu.types.DateRange;
+
+import javax.annotation.Nonnull;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.stream.Collectors;
-
-import javax.annotation.Nonnull;
-import javax.validation.constraints.NotNull;
-
-import ch.dvbern.ebegu.entities.AbstractPlatz;
-import ch.dvbern.ebegu.entities.Abwesenheit;
-import ch.dvbern.ebegu.entities.AbwesenheitContainer;
-import ch.dvbern.ebegu.entities.Betreuung;
-import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
-import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
-import ch.dvbern.ebegu.types.DateRange;
-import com.google.common.collect.ImmutableList;
-
-import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.KITA;
-import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.TAGESFAMILIEN;
 
 /**
  * Regel für Abwesenheiten. Sie beachtet:
@@ -59,7 +50,7 @@ public class AbwesenheitAbschnittRule extends AbstractAbschnittRule {
 
 	@Override
 	protected List<BetreuungsangebotTyp> getAnwendbareAngebote() {
-		return ImmutableList.of(KITA, TAGESFAMILIEN);
+		return BetreuungsangebotTyp.getBetreuungsgutscheinTypes();
 	}
 
 	/**

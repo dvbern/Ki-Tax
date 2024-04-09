@@ -94,6 +94,7 @@ export type TestGesuchstellende = Extract<User, '[5-GS] Emma Gerber' | '[5-GS] H
 export type SidenavStep = 'SOZIALDIENSTFALL_ERSTELLEN'
     | 'GESUCH_ERSTELLEN'
     | 'FAMILIENSITUATION'
+    | 'GESUCHSTELLER'
     | 'UMZUG'
     | 'KINDER'
     | 'BETREUUNG'
@@ -122,4 +123,6 @@ export type MainnavStep = 'ALLE_FAELLE'
     | 'ZAHLUNGEN'
     | 'STATISTIKEN';
 
-export type GemeindeTestFall = 'London' | 'Paris';
+export type GemeindeTestFall = 'London' | 'Paris' | 'Testgemeinde Schwyz';
+
+export type TestInstitution = 'Tagesschule Paris';

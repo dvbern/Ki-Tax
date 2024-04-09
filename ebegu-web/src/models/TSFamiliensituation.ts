@@ -195,6 +195,9 @@ export class TSFamiliensituation extends TSAbstractMutableEntity {
 
     public hasSecondGesuchsteller(endOfPeriode: moment.Moment): boolean {
         switch (this.familienstatus) {
+            case TSFamilienstatus.SCHWYZ:
+                return EbeguUtil.isNotNullOrUndefined(this.gesuchstellerKardinalitaet) &&
+                    this.gesuchstellerKardinalitaet === TSGesuchstellerKardinalitaet.ZU_ZWEIT;
             case TSFamilienstatus.APPENZELL:
                 return this.hasSecondGesuchstellerAppenzell();
             case TSFamilienstatus.ALLEINERZIEHEND:
@@ -252,6 +255,14 @@ export class TSFamiliensituation extends TSAbstractMutableEntity {
             && this.konkubinatGetsLongerThanXYearsBeforeEndOfPeriode(periode.gueltigkeit.gueltigBis);
     }
 
+    public isShortKonkubinatForEntirePeriode(periode: TSGesuchsperiode): boolean {
+        if (this.familienstatus !== TSFamilienstatus.KONKUBINAT_KEIN_KIND) {
+            return false;
+        }
+
+        return periode.gueltigkeit.gueltigBis.isBefore(this.getStartKonkubinatPlusMinDauer());
+    }
+
     public getStartKonkubinatPlusMinDauer( ): moment.Moment {
         const konkubinat_start: moment.Moment = moment(this.startKonkubinat.clone());
         return konkubinat_start.add({years: this.minDauerKonkubinat});
@@ -278,6 +289,9 @@ export class TSFamiliensituation extends TSAbstractMutableEntity {
                             other.gemeinsamerHaushaltMitObhutsberechtigterPerson)
                 && EbeguUtil.areSameOrWithoutValue(
                         this.gemeinsamerHaushaltMitPartner, other.gemeinsamerHaushaltMitPartner);
+        }
+        if (this.familienstatus === TSFamilienstatus.SCHWYZ) {
+            same = EbeguUtil.areSameOrWithoutValue(this.gesuchstellerKardinalitaet, other.gesuchstellerKardinalitaet);
         }
         return same;
     }

@@ -73,7 +73,7 @@ public enum MandantIdentifier {
 
 		@Override
 		public String getUrlCode() {
-			return "schwyz";
+			return "sz";
 		}
 	};
 

@@ -17,22 +17,21 @@
 
 package ch.dvbern.ebegu.rules;
 
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-
-import javax.annotation.Nonnull;
-
 import ch.dvbern.ebegu.dto.BGCalculationInput;
 import ch.dvbern.ebegu.entities.AbstractPlatz;
 import ch.dvbern.ebegu.entities.Einstellung;
+import ch.dvbern.ebegu.enums.AusserordentlicherAnspruchTyp;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.types.DateRange;
-import com.google.common.collect.ImmutableList;
 
-import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.KITA;
-import static ch.dvbern.ebegu.enums.BetreuungsangebotTyp.TAGESFAMILIEN;
+import javax.annotation.Nonnull;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Objects;
+
+import static ch.dvbern.ebegu.enums.EinstellungKey.AUSSERORDENTLICHER_ANSPRUCH_RULE;
 
 public abstract class AbstractAusserordentlicherAnspruchCalcRule extends AbstractCalcRule {
 
@@ -46,14 +45,17 @@ public abstract class AbstractAusserordentlicherAnspruchCalcRule extends Abstrac
 
 	@Override
 	protected List<BetreuungsangebotTyp> getAnwendbareAngebote() {
-		return ImmutableList.of(KITA, TAGESFAMILIEN);
+		return BetreuungsangebotTyp.getBetreuungsgutscheinTypes();
 	}
 
 	@Override
 	public abstract boolean isRelevantForGemeinde(@Nonnull Map<EinstellungKey, Einstellung> einstellungMap);
 
-	protected enum AusserordentlicherAnspruchType {
-		ASIV,
-		FKJV
+	protected AusserordentlicherAnspruchTyp getAusserordentlicherAnspruchTypeFromEinstellungen(
+		@Nonnull Map<EinstellungKey, Einstellung> einstellungMap
+	) {
+		Einstellung ausserOrdentlicherAnspruchRuleTyp = einstellungMap.get(AUSSERORDENTLICHER_ANSPRUCH_RULE);
+		Objects.requireNonNull(ausserOrdentlicherAnspruchRuleTyp,"Parameter AUSSERORDENTLICHER_ANSPRUCH_RULE muss gesetzt sein");
+		return AusserordentlicherAnspruchTyp.valueOf(ausserOrdentlicherAnspruchRuleTyp.getValue());
 	}
 }

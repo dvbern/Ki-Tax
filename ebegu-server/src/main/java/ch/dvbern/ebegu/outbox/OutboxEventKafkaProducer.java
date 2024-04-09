@@ -17,25 +17,6 @@
 
 package ch.dvbern.ebegu.outbox;
 
-import java.nio.charset.StandardCharsets;
-import java.time.ZoneId;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Properties;
-import java.util.concurrent.ExecutionException;
-import java.util.function.Consumer;
-
-import javax.annotation.Nonnull;
-import javax.ejb.Schedule;
-import javax.ejb.Stateless;
-import javax.inject.Inject;
-import javax.persistence.EntityManager;
-import javax.persistence.LockModeType;
-import javax.persistence.PersistenceContext;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Root;
-
 import ch.dvbern.ebegu.config.EbeguConfiguration;
 import ch.dvbern.ebegu.entities.AbstractEntity_;
 import ch.dvbern.kibon.exchange.commons.util.AvroConverter;
@@ -52,14 +33,29 @@ import org.apache.kafka.common.serialization.StringSerializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.annotation.Nonnull;
+import javax.ejb.Schedule;
+import javax.ejb.Stateless;
+import javax.inject.Inject;
+import javax.persistence.EntityManager;
+import javax.persistence.LockModeType;
+import javax.persistence.PersistenceContext;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
+import java.nio.charset.StandardCharsets;
+import java.time.ZoneId;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Properties;
+import java.util.concurrent.ExecutionException;
+import java.util.function.Consumer;
+
 import static ch.dvbern.kibon.exchange.commons.util.EventUtil.MESSAGE_HEADER_EVENT_ID;
 import static ch.dvbern.kibon.exchange.commons.util.EventUtil.MESSAGE_HEADER_EVENT_TYPE;
 import static io.confluent.kafka.serializers.AbstractKafkaSchemaSerDeConfig.SCHEMA_REGISTRY_URL_CONFIG;
 import static java.util.Objects.requireNonNull;
-import static org.apache.kafka.clients.producer.ProducerConfig.ACKS_CONFIG;
-import static org.apache.kafka.clients.producer.ProducerConfig.BOOTSTRAP_SERVERS_CONFIG;
-import static org.apache.kafka.clients.producer.ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG;
-import static org.apache.kafka.clients.producer.ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG;
+import static org.apache.kafka.clients.producer.ProducerConfig.*;
 
 @Stateless
 public class OutboxEventKafkaProducer {
@@ -142,7 +138,14 @@ public class OutboxEventKafkaProducer {
 					event.getAggregateId(),
 					metadata.offset());
 				entityManager.remove(event);
-			} catch (InterruptedException | ExecutionException e) {
+			} catch (ExecutionException e) {
+				LOG.error(
+					"Kafka export failed. Event of type: {} with the aggregate id: {} not sent:",
+					event.getAggregateType(),
+					event.getAggregateId(),
+					e.getCause());
+			} catch (InterruptedException e) {
+				Thread.currentThread().interrupt();
 				LOG.error(
 					"Kafka export failed. Event of type: {} with the aggregate id: {} not sent:",
 					event.getAggregateType(),

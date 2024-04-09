@@ -1,0 +1,46 @@
+<form role="form" class="gesuch">
+    <ng-container *ngIf="this.kindContainer?.kindJA">
+        <div class="row" *ngIf="wirdKindExternBetreut()">
+            <div class="col-xs-12">
+                <dv-radio-container-x>
+                    <dv-radio-input-x
+                        data-test="container.obhut-alternierend-ausueben"
+                        [label]="'KINDERABZUG_UNTERHALTSPFLICHTIG'"
+                        [(model)]="kindContainer.kindJA.unterhaltspflichtig"
+                        (modelChange)="change()"
+                        [dvBisherValue]="kindContainer.kindGS?.unterhaltspflichtig"
+                        [required]="true"
+                    ></dv-radio-input-x>
+                </dv-radio-container-x>
+            </div>
+        </div>
+        <div class="row" *ngIf="lebtKindImHaushaltVisible()">
+            <div class="col-xs-12">
+                <dv-radio-container-x>
+                    <dv-radio-input-x
+                        data-test="container.ergaenzende-betreuung-beide"
+                        [label]="'WOHNT_KIND_HAUSHALT'"
+                        [(model)]="kindContainer.kindJA.lebtKindAlternierend"
+                        (modelChange)="change()"
+                        [dvBisherValue]="kindContainer.kindGS?.lebtKindAlternierend"
+                        [required]="true"
+                    ></dv-radio-input-x>
+                </dv-radio-container-x>
+            </div>
+        </div>
+        <div class="row" *ngIf="partnerUnterhaltspflichtigVisible()">
+            <div class="col-xs-12">
+                <dv-radio-container-x>
+                    <dv-radio-input-x
+                        data-test="container.ergaenzende-betreuung-beide"
+                        [label]="'KIND_PARTNER_UNTERHALTSPFLICHTIG'"
+                        [(model)]="kindContainer.kindJA.gemeinsamesGesuch"
+                        (modelChange)="change()"
+                        [dvBisherValue]="kindContainer.kindGS?.gemeinsamesGesuch"
+                        [required]="true"
+                    ></dv-radio-input-x>
+                </dv-radio-container-x>
+            </div>
+        </div>
+    </ng-container>
+</form>

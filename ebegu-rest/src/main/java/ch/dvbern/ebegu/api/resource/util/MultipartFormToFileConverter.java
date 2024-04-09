@@ -40,9 +40,10 @@ import org.apache.commons.lang3.Validate;
 import org.jboss.resteasy.plugins.providers.multipart.InputPart;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 
+import static ch.dvbern.ebegu.api.resource.util.ResourceConstants.PART_FILE;
+
 public final class MultipartFormToFileConverter {
 
-	private static final String PART_FILE = "file";
 	private static final Pattern MATCH_QUOTE = Pattern.compile("\"");
 
 	private MultipartFormToFileConverter() {

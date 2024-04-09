@@ -29,8 +29,10 @@ public enum EinschulungTyp {
 	FREIWILLIGER_KINDERGARTEN(1),
 	KINDERGARTEN2(2),
 	OBLIGATORISCHER_KINDERGARTEN(2),
+	PRIMARSTUFE(3),
 	PRIMAR_SEKUNDAR_STUFE(3),
 	KLASSE1(3),
+	SEKUNDAR_UND_HOEHER_STUFE(4),
 	KLASSE2(4),
 	KLASSE3(5),
 	KLASSE4(6),
@@ -78,6 +80,14 @@ public enum EinschulungTyp {
 		return List.of(
 				VORSCHULALTER,
 				KLASSE1
+		);
+	}
+
+	public static List<EinschulungTyp> getListSZ() {
+		return List.of(
+			VORSCHULALTER,
+			PRIMARSTUFE,
+			SEKUNDAR_UND_HOEHER_STUFE
 		);
 	}
 

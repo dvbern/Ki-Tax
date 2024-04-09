@@ -29,6 +29,8 @@ end;
 
 DELIMITER ;
 
+START TRANSACTION;
+
 # Variables definition
 SET @mandant_id_solothurn = UNHEX(REPLACE('7781a6bb-5374-11ec-98e8-f4390979fa3e', '-', ''));
 call select_gesuchsperiode('2022-08-01', @mandant_id_solothurn, @gesuchsperiode_22_23_id);
@@ -53,6 +55,7 @@ UPDATE application_property SET value = 'VERAENDERUNG_BEI_MUTATION' WHERE name =
 UPDATE application_property SET value = 'true' WHERE name = 'ERLAUBEN_INSTITUTIONEN_ZU_WAEHLEN' AND mandant_id = @mandant_id_solothurn;
 UPDATE application_property SET value = 'false' WHERE name = 'ANGEBOT_TS_ENABLED' AND mandant_id = @mandant_id_solothurn;
 UPDATE application_property SET value = 'false' WHERE name = 'ANGEBOT_FI_ENABLED' AND mandant_id = @mandant_id_solothurn;
+UPDATE application_property SET value = 'false' WHERE name = 'ANGEBOT_MITTAGSTISCH_ENABLED' AND mandant_id = @mandant_id_solothurn;
 UPDATE application_property SET value = 'true' WHERE name = 'ANGEBOT_TFO_ENABLED' AND mandant_id = @mandant_id_solothurn;
 UPDATE application_property SET value = 'false' WHERE name = 'INFOMA_ZAHLUNGEN' AND mandant_id = @mandant_id_solothurn;
 UPDATE application_property SET value = 'true' WHERE name = 'SCHNITTSTELLE_EVENTS_AKTIVIERT' AND mandant_id = @mandant_id_solothurn;
@@ -82,6 +85,7 @@ UPDATE application_property SET value = '100000' WHERE name = 'LASTENAUSGLEICH_T
 UPDATE application_property SET value = '50000' WHERE name = 'LASTENAUSGLEICH_TAGESSCHULEN_AUTO_ZWEITPRUEFUNG_FR' AND mandant_id = @mandant_id_solothurn;
 UPDATE application_property SET value = 'false' WHERE name = 'GEMEINDE_KENNZAHLEN_AKTIV' AND mandant_id = @mandant_id_solothurn;
 UPDATE application_property SET value = 'false' WHERE name = 'LASTENAUSGLEICH_AKTIV' AND mandant_id = @mandant_id_solothurn;
+UPDATE application_property SET value = 'false' WHERE name = 'AUSZAHLUNGEN_AN_ELTERN' AND mandant_id = @mandant_id_solothurn;
 
 # Gesuchsperiode
 # noinspection SqlWithoutWhere
@@ -512,3 +516,5 @@ VALUES (UNHEX(REPLACE(UUID(), '-', '')), '2021-02-15 09:48:18', '2021-02-15 09:4
 UPDATE einstellung SET VALUE='true' WHERE einstellung_key='GEMEINDESPEZIFISCHE_BG_KONFIGURATIONEN' and einstellung.mandant_id = @mandant_id_solothurn;
 
 UPDATE mandant SET mandant.activated=true where id = @mandant_id_solothurn;
+
+COMMIT;
