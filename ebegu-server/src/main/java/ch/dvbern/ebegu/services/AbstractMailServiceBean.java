@@ -234,25 +234,24 @@ public abstract class AbstractMailServiceBean extends AbstractBaseService {
 			if (startIndex == -1) {
 				// No more encoded parts, append the rest of the string and break
 				decodedBuilder.append(mixedString.substring(start));
-				break;
-			} else {
-				// Append non-encoded part before the encoded section
-				if (startIndex != start) {
-					decodedBuilder.append(mixedString.substring(start, startIndex));
-				}
-				int endIndex = mixedString.indexOf("?=", startIndex) + 2;
-				if (endIndex == 1) { // No closing tag found, break to avoid an infinite loop
-					break;
-				}
-				// Extract the encoded part without the MIME and encoding prefix and suffix
-				String encodedPart = mixedString.substring(startIndex + 10, endIndex - 2);
-				// Decode and append the encoded part
-				byte[] decodedBytes = Base64.getDecoder().decode(encodedPart);
-				decodedBuilder.append(new String(decodedBytes, StandardCharsets.UTF_8));
-
-				// Move start index forward
-				start = endIndex;
+				return decodedBuilder.toString();
 			}
+			// Append non-encoded part before the encoded section
+			if (startIndex != start) {
+				decodedBuilder.append(mixedString.substring(start, startIndex));
+			}
+			int endIndex = mixedString.indexOf("?=", startIndex) + 2;
+			if (endIndex == 1) { // No closing tag found, break to avoid an infinite loop
+				return decodedBuilder.toString();
+			}
+			// Extract the encoded part without the MIME and encoding prefix and suffix
+			String encodedPart = mixedString.substring(startIndex + 10, endIndex - 2);
+			// Decode and append the encoded part
+			byte[] decodedBytes = Base64.getDecoder().decode(encodedPart);
+			decodedBuilder.append(new String(decodedBytes, StandardCharsets.UTF_8));
+
+			// Move start index forward
+			start = endIndex;
 		}
 
 		return decodedBuilder.toString();
