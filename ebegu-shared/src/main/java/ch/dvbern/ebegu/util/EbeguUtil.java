@@ -303,13 +303,7 @@ public final class EbeguUtil {
 				if (gesuch.getGesuchsteller1().getEinkommensverschlechterungContainer() == null) {
 					return false;
 				}
-				if (!isEKVFuerJahrComplete(
-					gesuch,
-					gesuch.getGesuchsteller1().getEinkommensverschlechterungContainer().getEkvJABasisJahrPlus1(),
-					gesuch.getGesuchsteller2() != null
-						&& gesuch.getGesuchsteller2().getEinkommensverschlechterungContainer() != null ?
-						gesuch.getGesuchsteller2().getEinkommensverschlechterungContainer().getEkvJABasisJahrPlus1() :
-						null)) {
+				if (isEKVFuerBasisJahrPlus1Incomplete(gesuch)) {
 					return false;
 				}
 			}
@@ -318,22 +312,36 @@ public final class EbeguUtil {
 				.getEkvFuerBasisJahrPlus2()) {
 
 				Objects.requireNonNull(gesuch.getGesuchsteller1());
-				if (gesuch.getGesuchsteller1().getEinkommensverschlechterungContainer() == null) {
-					return false;
-				}
-				if (!isEKVFuerJahrComplete(
-					gesuch,
-					gesuch.getGesuchsteller1().getEinkommensverschlechterungContainer().getEkvJABasisJahrPlus2(),
-					gesuch.getGesuchsteller2() != null
-						&& gesuch.getGesuchsteller2().getEinkommensverschlechterungContainer() != null ?
-						gesuch.getGesuchsteller2().getEinkommensverschlechterungContainer().getEkvJABasisJahrPlus2() :
-						null)) {
-					return false;
-				}
+				return gesuch.getGesuchsteller1().getEinkommensverschlechterungContainer() != null
+					&& isEKVFuerBasisJahrPlus2Complete(gesuch);
 			}
 		}
 		// EKV is not activated
 		return true;
+	}
+
+	private static boolean isEKVFuerBasisJahrPlus2Complete(@Nonnull Gesuch gesuch) {
+		Objects.requireNonNull(gesuch.getGesuchsteller1());
+		Objects.requireNonNull(gesuch.getGesuchsteller1().getEinkommensverschlechterungContainer());
+		return isEKVFuerJahrComplete(
+			gesuch,
+			gesuch.getGesuchsteller1().getEinkommensverschlechterungContainer().getEkvJABasisJahrPlus2(),
+			gesuch.getGesuchsteller2() != null
+				&& gesuch.getGesuchsteller2().getEinkommensverschlechterungContainer() != null ?
+				gesuch.getGesuchsteller2().getEinkommensverschlechterungContainer().getEkvJABasisJahrPlus2() :
+				null);
+	}
+
+	private static boolean isEKVFuerBasisJahrPlus1Incomplete(@Nonnull Gesuch gesuch) {
+		Objects.requireNonNull(gesuch.getGesuchsteller1());
+		Objects.requireNonNull(gesuch.getGesuchsteller1().getEinkommensverschlechterungContainer());
+		return !isEKVFuerJahrComplete(
+			gesuch,
+			gesuch.getGesuchsteller1().getEinkommensverschlechterungContainer().getEkvJABasisJahrPlus1(),
+			gesuch.getGesuchsteller2() != null
+				&& gesuch.getGesuchsteller2().getEinkommensverschlechterungContainer() != null ?
+				gesuch.getGesuchsteller2().getEinkommensverschlechterungContainer().getEkvJABasisJahrPlus1() :
+				null);
 	}
 
 	private static boolean isEKVSchwyzIntroducedAndComplete(
@@ -372,8 +380,8 @@ public final class EbeguUtil {
 	}
 
 	private static boolean isEKVFuerJahrComplete(
-		Gesuch gesuch, Einkommensverschlechterung einkommensverschlechterungGS1,
-		Einkommensverschlechterung einkommensverschlechterungGS2) {
+		Gesuch gesuch, @Nullable Einkommensverschlechterung einkommensverschlechterungGS1,
+		@Nullable Einkommensverschlechterung einkommensverschlechterungGS2) {
 		if (einkommensverschlechterungGS1 == null || !isEinkommensverschlechterungVollstaendig(einkommensverschlechterungGS1, gesuch.getFinSitTyp(), gesuch)) {
 			return false;
 		}
