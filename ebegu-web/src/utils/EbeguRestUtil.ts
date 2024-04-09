@@ -405,8 +405,8 @@ export class EbeguRestUtil {
     ): void {
         this.abstractDateRangeEntityToRestObject(restObj, betreuungspensumEntity);
         restObj.unitForDisplay = betreuungspensumEntity.unitForDisplay;
-        restObj.pensum = betreuungspensumEntity.pensum;
-        restObj.monatlicheBetreuungskosten = betreuungspensumEntity.monatlicheBetreuungskosten;
+        restObj.pensum = betreuungspensumEntity.pensum ?? 0;
+        restObj.monatlicheBetreuungskosten = betreuungspensumEntity.monatlicheBetreuungskosten ?? 0;
         restObj.stuendlicheVollkosten = betreuungspensumEntity.stuendlicheVollkosten;
     }
 
@@ -2683,7 +2683,7 @@ export class EbeguRestUtil {
         this.abstractBetreuungspensumEntityToRestObject(restAbweichung, abweichung);
 
         restAbweichung.status = abweichung.status;
-        restAbweichung.pensum = restAbweichung.pensum ? restAbweichung.pensum / restAbweichung.multiplier : undefined;
+        restAbweichung.pensum = restAbweichung.pensum ? restAbweichung.pensum / abweichung.multiplier : 0;
         restAbweichung.monatlicheHauptmahlzeiten = abweichung.monatlicheHauptmahlzeiten;
         restAbweichung.tarifProHauptmahlzeit = abweichung.tarifProHauptmahlzeit;
         restAbweichung.monatlicheNebenmahlzeiten = abweichung.monatlicheNebenmahlzeiten;
@@ -2720,22 +2720,10 @@ export class EbeguRestUtil {
             // wenn es null ist, wird es als null zum Server geschickt und der Server versucht, es zu validieren und
             // wirft eine NPE
             restBetreuungspensum.nichtEingetreten = betreuungspensum.nichtEingetreten;
-            restBetreuungspensum.monatlicheHauptmahlzeiten =
-                EbeguUtil.isNullOrUndefined(betreuungspensum.monatlicheHauptmahlzeiten) ?
-                    0 :
-                    betreuungspensum.monatlicheHauptmahlzeiten;
-            restBetreuungspensum.monatlicheNebenmahlzeiten =
-                EbeguUtil.isNullOrUndefined(betreuungspensum.monatlicheNebenmahlzeiten) ?
-                    0 :
-                    betreuungspensum.monatlicheNebenmahlzeiten;
-            restBetreuungspensum.tarifProHauptmahlzeit =
-                EbeguUtil.isNullOrUndefined(betreuungspensum.tarifProHauptmahlzeit) ?
-                    0 :
-                    betreuungspensum.tarifProHauptmahlzeit;
-            restBetreuungspensum.tarifProNebenmahlzeit =
-                EbeguUtil.isNullOrUndefined(betreuungspensum.tarifProNebenmahlzeit) ?
-                    0 :
-                    betreuungspensum.tarifProNebenmahlzeit;
+            restBetreuungspensum.monatlicheHauptmahlzeiten = betreuungspensum.monatlicheHauptmahlzeiten ?? 0;
+            restBetreuungspensum.monatlicheNebenmahlzeiten = betreuungspensum.monatlicheNebenmahlzeiten ?? 0;
+            restBetreuungspensum.tarifProHauptmahlzeit = betreuungspensum.tarifProHauptmahlzeit ?? 0;
+            restBetreuungspensum.tarifProNebenmahlzeit = betreuungspensum.tarifProNebenmahlzeit ?? 0;
             restBetreuungspensum.unitForDisplay = betreuungspensum.unitForDisplay;
         }
         return restBetreuungspensum;

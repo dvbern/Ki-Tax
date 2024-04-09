@@ -233,7 +233,9 @@ export class BetreuungAbweichungenViewController extends AbstractGesuchViewContr
         if (!this.isMahlzeitenverguenstigungEnabled() && this.getBetreuungsangebotTyp() !== TSBetreuungsangebotTyp.MITTAGSTISCH) {
             this.model.betreuungspensumAbweichungen.forEach(a => {
                 a.monatlicheNebenmahlzeiten ??= 0;
+                a.tarifProNebenmahlzeit ??= 0;
                 a.monatlicheHauptmahlzeiten ??= 0;
+                a.tarifProHauptmahlzeit ??= 0;
             });
         }
 
