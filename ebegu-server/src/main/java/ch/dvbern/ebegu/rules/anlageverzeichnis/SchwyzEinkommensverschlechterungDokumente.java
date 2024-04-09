@@ -9,6 +9,7 @@ import ch.dvbern.ebegu.entities.GesuchstellerContainer;
 import ch.dvbern.ebegu.enums.DokumentGrundPersonType;
 import ch.dvbern.ebegu.enums.DokumentGrundTyp;
 import ch.dvbern.ebegu.enums.DokumentTyp;
+import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -96,6 +97,11 @@ public class SchwyzEinkommensverschlechterungDokumente
 		case NACHWEIS_VERMOEGEN:
 			return dataForDocument.getSteuerbaresVermoegen() != null;
 		case NACHWEIS_BRUTTOLOHN:
+			if (!(dataForDocument instanceof Einkommensverschlechterung)) {
+				throw new EbeguRuntimeException(
+					"isDokumentNeeded",
+					"This class must only be used with Einkommensverschlechterunt");
+			}
 			return ((Einkommensverschlechterung) dataForDocument).getBruttolohnAbrechnung1() != null;
 		default:
 			return false;
