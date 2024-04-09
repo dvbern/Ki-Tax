@@ -194,6 +194,7 @@ import {TSDateRange} from '../models/types/TSDateRange';
 import {TSLand} from '../models/types/TSLand';
 import {DateUtil} from './DateUtil';
 import {EbeguUtil} from './EbeguUtil';
+import {TSAusserordentlicherAnspruchTyp} from '../models/enums/TSAusserordentlicherAnspruchTyp';
 
 export class EbeguRestUtil {
 
@@ -6200,6 +6201,13 @@ export class EbeguRestUtil {
             return typ as TSFachstellenTyp;
         }
         throw new Error(`TSFachstellenTyp ${typ} not defined`);
+    }
+
+    public parseAusserordentlicherAnspruchTyp(typ: any): TSAusserordentlicherAnspruchTyp {
+        if (Object.values(TSAusserordentlicherAnspruchTyp).includes(typ)) {
+            return typ as TSAusserordentlicherAnspruchTyp;
+        }
+        throw new Error(`TSAusserordentlicherAnspruchTyp ${typ} not defined`);
     }
 
     public parseEinschulungTyp(typ: any): TSEinschulungTyp {

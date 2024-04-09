@@ -275,4 +275,9 @@ VALUES (UNHEX(REPLACE(UUID(), '-', '')), NOW(), NOW(),
 		UNHEX(REPLACE('070e2aa4-b3e9-11ee-829a-0242ac160002', '-', '')));
 
 UPDATE mandant SET mandant.activated=true where id = @mandant_id_schwyz;
+
+# Set Einstellungen Periode 24/25
+UPDATE einstellung set value = 'KEINE' WHERE einstellung_key = 'FACHSTELLEN_TYP' AND gesuchsperiode_id = @gesuchsperiode_24_25_id AND gemeinde_id is null;
+UPDATE einstellung set value = 'KEINE' WHERE einstellung_key = 'AUSSERORDENTLICHER_ANSPRUCH_RULE' AND gesuchsperiode_id = @gesuchsperiode_24_25_id AND gemeinde_id is null;
+UPDATE einstellung set value = 'true' WHERE einstellung_key = 'ZEMIS_DISABLED' AND gesuchsperiode_id = @gesuchsperiode_24_25_id AND gemeinde_id is null;
 COMMIT;

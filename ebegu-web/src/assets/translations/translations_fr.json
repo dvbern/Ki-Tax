@@ -2904,7 +2904,7 @@
     "BESONDERE_BEDUERFNISSE_LUZERN": "Lucerne: configurer les frais de garde extraordinaires",
     "BESONDERE_BEDUERFNISSE_BETRAG": "Montant des frais de garde extraordinaires",
     "FKJV_MAX_PENSUM_AUSSERORDENTLICHER_ANSPRUCH": "FKJV: Maximales Pensum bei ausserordentlichem Anspruch",
-    "AUSSERORDENTLICHER_ANSPRUCH_RULE": "Quelle cas particulier s'applique",
+    "AUSSERORDENTLICHER_ANSPRUCH_RULE": "Quelle cas particulier s'applique (FKJV, ASIV, KEINE)",
     "GESCHWISTERNBONUS_AKTIVIERT": "Luzern: activé le bonus de fratrie",
     "FINANZIELLE_SITUATION_AUFTEILUNG": "Situation financière : répartition entre {{gs1}} et {{gs2}}",
     "FINANZIELLE_SITUATION_REST": "Reste:",
