@@ -308,32 +308,44 @@ export class GesuchModelManager {
     // eslint-disable-next-line
     public isRequiredEKV_GS_BJ(gs: number, bj: number): boolean {
         if (this.wizardStepManager.getCurrentStepName() === TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_APPENZELL) {
-            if (gs === 1) {
-                return this.getEkvFuerBasisJahrPlus(bj);
-            }
-            if (this.gesuch.extractFamiliensituation().gemeinsameSteuererklaerung) {
-                return false;
-            }
-            // GS 2 Spezialfall
-            if (this.isSpezialFallAR()) {
-                return this.getEkvFuerBasisJahrPlus(bj);
-            }
-            // GS 2 Normalfall
-            return this.getEkvFuerBasisJahrPlus(bj) && EbeguUtil.isNotNullOrUndefined(this.gesuch.gesuchsteller2);
+            return this.isRequiredEKV_GS_BJ_Appenzell(gs, bj);
         }
         if (this.wizardStepManager.getCurrentStepName() === TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_LUZERN) {
-            return gs === 2 ?
-                this.getEkvFuerBasisJahrPlus(bj) && this.isGesuchsteller2RequiredForLuzernEKV() :
-                this.getEkvFuerBasisJahrPlus(bj);
+            return this.isRequiredEKV_GS_BJ_Luzern(gs, bj);
         }
         if (this.wizardStepManager.getCurrentStepName() === TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_SCHWYZ) {
-            return bj === 1 && (gs === 1 || (gs === 2 && this.isGesuchsteller2Required()
-                && EbeguUtil.isNotNullAndFalse(this.getFamiliensituation().gemeinsameSteuererklaerung)));
+            return this.isRequiredEKV_GS_BJ_Schwyz(bj, gs);
         }
         return gs === 2 ?
             this.getEkvFuerBasisJahrPlus(bj) && this.isGesuchsteller2Required() :
             this.getEkvFuerBasisJahrPlus(bj);
 
+    }
+
+    private isRequiredEKV_GS_BJ_Schwyz(bj: number, gs: number): boolean {
+        return bj === 1 && (gs === 1 || (gs === 2 && this.isGesuchsteller2Required()
+            && EbeguUtil.isNotNullAndFalse(this.getFamiliensituation().gemeinsameSteuererklaerung)));
+    }
+
+    private isRequiredEKV_GS_BJ_Luzern(gs: number, bj: number): boolean {
+        return gs === 2 ?
+            this.getEkvFuerBasisJahrPlus(bj) && this.isGesuchsteller2RequiredForLuzernEKV() :
+            this.getEkvFuerBasisJahrPlus(bj);
+    }
+
+    private isRequiredEKV_GS_BJ_Appenzell(gs: number, bj: number): boolean {
+        if (gs === 1) {
+            return this.getEkvFuerBasisJahrPlus(bj);
+        }
+        if (this.gesuch.extractFamiliensituation().gemeinsameSteuererklaerung) {
+            return false;
+        }
+        // GS 2 Spezialfall
+        if (this.isSpezialFallAR()) {
+            return this.getEkvFuerBasisJahrPlus(bj);
+        }
+        // GS 2 Normalfall
+        return this.getEkvFuerBasisJahrPlus(bj) && EbeguUtil.isNotNullOrUndefined(this.gesuch.gesuchsteller2);
     }
 
     /**
