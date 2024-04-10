@@ -22,3 +22,13 @@ WHERE einstellung_key = 'ABHAENGIGKEIT_ANSPRUCH_BESCHAEFTIGUNGPENSUM'
 		(SELECT gesuchsperiode.id FROM gesuchsperiode
 									   JOIN mandant m ON gesuchsperiode.mandant_id = m.id
 		 WHERE mandant_identifier = 'SCHWYZ');
+
+
+UPDATE einstellung
+SET value = '0'
+WHERE einstellung_key = 'ERWERBSPENSUM_ZUSCHLAG'
+	AND gesuchsperiode_id IN
+		(SELECT gesuchsperiode.id FROM gesuchsperiode
+									   JOIN mandant m ON gesuchsperiode.mandant_id = m.id
+		 WHERE mandant_identifier = 'SCHWYZ');
+
