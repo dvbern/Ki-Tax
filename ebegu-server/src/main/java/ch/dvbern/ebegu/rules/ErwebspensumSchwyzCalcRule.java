@@ -26,23 +26,29 @@ import ch.dvbern.ebegu.entities.AbstractPlatz;
 import ch.dvbern.ebegu.entities.Kind;
 import ch.dvbern.ebegu.types.DateRange;
 
-public class ErwebspensumSchwyzCalcRule extends ErwerbspensumMinimumCalcRule {
+public class ErwebspensumSchwyzCalcRule extends ErwerbspensumCalcRule {
 
 	protected ErwebspensumSchwyzCalcRule(
-		@Nonnull RuleKey ruleKey,
-		@Nonnull RuleType ruleType,
-		@Nonnull RuleValidity ruleValidity,
 		@Nonnull DateRange validityPeriod,
+		int minErwerbspensumNichtEingeschult,
+		int minErwerbspensumEingeschult,
+		int paramMinDauerKonkubinat,
 		@Nonnull Locale locale) {
-		super(ruleKey, ruleType, ruleValidity, validityPeriod, locale);
+		super(
+			RuleValidity.ASIV,
+			validityPeriod,
+			minErwerbspensumNichtEingeschult,
+			minErwerbspensumEingeschult,
+			paramMinDauerKonkubinat,
+			locale);
 	}
 
 	@Override
-	void executeRule(@Nonnull AbstractPlatz platz, @Nonnull BGCalculationInput inputData) {
+	protected boolean isErwerbspensumRelevantForGS2(@Nonnull AbstractPlatz platz, @Nonnull BGCalculationInput inputData) {
 		Kind kind = platz.getKind().getKindJA();
-
 		final boolean has2GsOnFamiliensituation = hasSecondGSForZeit(platz.extractGesuch(), inputData.getParent().getGueltigkeit());
+		// kinder von erstgesuch betrachten wenn vor famsit änderungsdatum
 		final boolean has2GSOnKind = Boolean.TRUE.equals(kind.getGemeinsamesGesuch());
-		setAnspruch(inputData, has2GsOnFamiliensituation && has2GSOnKind);
+		return has2GsOnFamiliensituation && has2GSOnKind;
 	}
 }
