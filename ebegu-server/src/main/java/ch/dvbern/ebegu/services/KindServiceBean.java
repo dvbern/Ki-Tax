@@ -17,8 +17,10 @@ package ch.dvbern.ebegu.services;
 
 import ch.dvbern.ebegu.dto.KindDubletteDTO;
 import ch.dvbern.ebegu.entities.*;
+import ch.dvbern.ebegu.enums.AnspruchBeschaeftigungAbhaengigkeitTyp;
 import ch.dvbern.ebegu.enums.AntragStatus;
 import ch.dvbern.ebegu.enums.AntragTyp;
+import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.WizardStepName;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
@@ -59,6 +61,12 @@ public class KindServiceBean extends AbstractBaseService implements KindService 
 	@Inject
 	private ValidatorFactory validatorFactory;
 
+	@Inject
+	private EinstellungService einstellungService;
+
+	@Inject
+	private GesuchstellerService gesuchstellerService;
+
 	private static final Logger LOGGER = LoggerFactory.getLogger(KindService.class);
 
 	@Nonnull
@@ -81,9 +89,31 @@ public class KindServiceBean extends AbstractBaseService implements KindService 
 			throw new ConstraintViolationException(constraintViolations);
 		}
 
+		resetGesuchDataOnKindSave(kind);
+
 		wizardStepService.updateSteps(kind.getGesuch().getId(), null, mergedKind.getKindJA(), WizardStepName.KINDER);
 
 		return mergedKind;
+	}
+
+	private void resetGesuchDataOnKindSave(@Nonnull KindContainer kind) {
+		final Gesuch gesuch = kind.getGesuch();
+
+		Einstellung anspruchBeschaeftigungTyp = einstellungService.getEinstellungByMandant(
+				EinstellungKey.ABHAENGIGKEIT_ANSPRUCH_BESCHAEFTIGUNGPENSUM,
+				gesuch
+					.getGesuchsperiode())
+			.orElseThrow(() -> new EbeguEntityNotFoundException("saveKind",
+				"Einstellung ABHAENGIGKEIT_ANSPRUCH_BESCHAEFTIGUNGPENSUM is missing for gesuchsperiode {}",
+				gesuch.getGesuchsperiode().getId()));
+
+		if (AnspruchBeschaeftigungAbhaengigkeitTyp.valueOf(anspruchBeschaeftigungTyp.getValue()) == AnspruchBeschaeftigungAbhaengigkeitTyp.SCHWYZ && gesuch.getGesuchsteller2() != null) {
+			boolean hasKindWithUnterhaltspflichtGS2 = gesuch.getKindContainers().stream().map(KindContainer::getKindJA).anyMatch(kindJA -> Boolean.TRUE.equals(kindJA.getGemeinsamesGesuch()));
+			if (!hasKindWithUnterhaltspflichtGS2 && !gesuch.getGesuchsteller2().getErwerbspensenContainers().isEmpty()) {
+				gesuch.getGesuchsteller2().getErwerbspensenContainers().clear();
+				gesuchstellerService.saveGesuchsteller(gesuch.getGesuchsteller2(), gesuch, 2, false);
+			}
+		}
 	}
 
 	@Override
