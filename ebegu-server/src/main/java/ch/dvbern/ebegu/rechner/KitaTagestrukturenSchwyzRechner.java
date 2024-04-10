@@ -34,7 +34,6 @@ import static ch.dvbern.ebegu.util.MathUtil.EXACT;
 
 public class KitaTagestrukturenSchwyzRechner extends AbstractRechner {
 
-	// TODO mobj Periodeneinstellungen?
 	static final BigDecimal NORMKOSTEN_PRIMARSTUFE_WAEHREND_SCHULZEIT = new BigDecimal(65);
 	static final BigDecimal NORMKOSTEN_PRIMARSTUFE_WAEHREND_SCHULFREIEN_ZEIT = new BigDecimal(100);
 
@@ -44,9 +43,7 @@ public class KitaTagestrukturenSchwyzRechner extends AbstractRechner {
 		@Nonnull BGRechnerParameterDTO parameterDTO) {
 		var input = verfuegungZeitabschnitt.getRelevantBgCalculationInput();
 
-		var anteilMonat = DateUtil.calculateAnteilMonatInklWeekend(
-			verfuegungZeitabschnitt.getGueltigkeit().getGueltigAb(),
-			verfuegungZeitabschnitt.getGueltigkeit().getGueltigBis());
+		var anteilMonat = calculateAnteilMonat(verfuegungZeitabschnitt);
 		var obergrenze = parameterDTO.getMaxMassgebendesEinkommen();
 		var untergrenze = parameterDTO.getMinMassgebendesEinkommen();
 		var minimalTarif = parameterDTO.getMinVerguenstigungProTg();
@@ -54,7 +51,7 @@ public class KitaTagestrukturenSchwyzRechner extends AbstractRechner {
 		var effektivesPensumFaktor = EXACT.pctToFraction(input.getBetreuungspensumProzent());
 		var anspruchsPensumFaktor = EXACT.pctToFraction(BigDecimal.valueOf(input.getAnspruchspensumProzent()));
 		var anspruchsberechtigtesEinkommen = input.getMassgebendesEinkommen();
-		var anzahlGeschwister = BigDecimal.valueOf(input.getAnzahlGeschwister());
+		var geschwisterBonus = calculateGeschwisterBonus(input);
 		var oeffnungsTageProMonat = EXACT.divide(parameterDTO.getOeffnungstageKita(), BigDecimal.valueOf(12));
 		var effektiveBetreuungsTageProZeitabschnitt =
 			Objects.requireNonNull(EXACT.multiply(oeffnungsTageProMonat, effektivesPensumFaktor, anteilMonat));
@@ -62,34 +59,28 @@ public class KitaTagestrukturenSchwyzRechner extends AbstractRechner {
 		var anspruchsberechtigteBetreuungsTageProZeitabschnitt =
 			Objects.requireNonNull(EXACT.multiply(oeffnungsTageProMonat, anspruchsPensumFaktor, anteilMonat));
 
-		var geschwisterBonus = EXACT.divide(anzahlGeschwister, BigDecimal.TEN);
-
 		var normKosten = calculateNormkosten(input, parameterDTO);
 		var tagesTarif = calculateTagesTarif(effektiveBetreuungsTageProZeitabschnitt, input);
-
 		var tarif = tagesTarif.min(normKosten);
 
 		var u = EXACT.multiply(EXACT.divide(minimalTarif, normKosten), EXACT.subtract(BigDecimal.ONE, geschwisterBonus));
 		var z = EXACT.divide(EXACT.subtract(BigDecimal.ONE, u), EXACT.subtract(obergrenze, untergrenze));
-		var selbstbehaltFaktor =
-			MathUtil.minimumMaximum(
-				EXACT.add(u, EXACT.multiply(z, EXACT.subtract(anspruchsberechtigtesEinkommen, untergrenze))),
-				BigDecimal.ZERO,
-				BigDecimal.ONE);
+		var selbstbehaltFaktor = calculateSelbstbehaltFaktor(u, z, anspruchsberechtigtesEinkommen, untergrenze);
 
 		var selbstbehaltProTag = EXACT.multiply(tarif, selbstbehaltFaktor);
 		var beitragProTagVorAbzug = EXACT.multiply(tarif, EXACT.subtract(BigDecimal.ONE, selbstbehaltFaktor));
-		var minimalerBeitragDerErziehungsberechtigtenProTag = BigDecimal.ZERO.max(EXACT.subtract(minimalTarif, selbstbehaltProTag));
+		var minimalerBeitragDerErziehungsberechtigtenProTag =
+			BigDecimal.ZERO.max(EXACT.subtract(minimalTarif, selbstbehaltProTag));
 		var totalBetreuungsbeitragProTag =
 			BigDecimal.ZERO.max(EXACT.subtract(beitragProTagVorAbzug, minimalerBeitragDerErziehungsberechtigtenProTag));
 		var gutschein = EXACT.multiply(totalBetreuungsbeitragProTag, bgBetreuungsTageProZeitabschnitt);
 		var vollkosten = EXACT.multiply(input.getMonatlicheBetreuungskosten(), anteilMonat);
-		var gutscheinVorAbzugSelbstbehalt = Objects.requireNonNull(EXACT.multiply(
-			beitragProTagVorAbzug,
-			bgBetreuungsTageProZeitabschnitt));
+		var gutscheinVorAbzugSelbstbehalt =
+			Objects.requireNonNull(EXACT.multiply(beitragProTagVorAbzug, bgBetreuungsTageProZeitabschnitt));
 		var minimalerBeitragProZeitAbschnitt = EXACT.multiply(minimalTarif, bgBetreuungsTageProZeitabschnitt);
 		var elternbeitrag = EXACT.multiply(selbstbehaltProTag, bgBetreuungsTageProZeitabschnitt);
-		var minimalerElternbeitragGekuerzt = EXACT.multiply(minimalerBeitragDerErziehungsberechtigtenProTag, bgBetreuungsTageProZeitabschnitt);
+		var minimalerElternbeitragGekuerzt =
+			EXACT.multiply(minimalerBeitragDerErziehungsberechtigtenProTag, bgBetreuungsTageProZeitabschnitt);
 
 		BGCalculationResult result = new BGCalculationResult();
 		VerfuegungZeitabschnitt.initBGCalculationResult(input, result);
@@ -122,6 +113,28 @@ public class KitaTagestrukturenSchwyzRechner extends AbstractRechner {
 
 		verfuegungZeitabschnitt.setBgCalculationResultAsiv(result);
 		verfuegungZeitabschnitt.setBgCalculationResultGemeinde(result);
+	}
+
+	private static BigDecimal calculateSelbstbehaltFaktor(
+		BigDecimal u,
+		BigDecimal z,
+		BigDecimal anspruchsberechtigtesEinkommen,
+		BigDecimal untergrenze) {
+		return MathUtil.minimumMaximum(
+			EXACT.add(u, EXACT.multiply(z, EXACT.subtract(anspruchsberechtigtesEinkommen, untergrenze))),
+			BigDecimal.ZERO,
+			BigDecimal.ONE);
+	}
+
+	private static BigDecimal calculateAnteilMonat(VerfuegungZeitabschnitt verfuegungZeitabschnitt) {
+		return DateUtil.calculateAnteilMonatInklWeekend(
+			verfuegungZeitabschnitt.getGueltigkeit().getGueltigAb(),
+			verfuegungZeitabschnitt.getGueltigkeit().getGueltigBis());
+	}
+
+	private static BigDecimal calculateGeschwisterBonus(BGCalculationInput input) {
+		var anzahlGeschwister = BigDecimal.valueOf(input.getAnzahlGeschwister());
+		return EXACT.divide(anzahlGeschwister, BigDecimal.TEN);
 	}
 
 	protected PensumUnits getZeiteinheit() {
