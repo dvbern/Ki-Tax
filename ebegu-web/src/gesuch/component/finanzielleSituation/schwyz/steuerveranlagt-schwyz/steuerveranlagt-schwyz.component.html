@@ -12,7 +12,8 @@
                 [inputRequired]="true"
                 [deklaration]="finSitGS?.steuerbaresEinkommen"
                 [korrektur]="finSitJA.steuerbaresEinkommen"
-                [showBisher]="isNotNullOrUndefined(finSitGS)">
+                [showBisher]="isNotNullOrUndefined(finSitGS)"
+                [dvOnBlur]="onValueChangeFunction">
             </dv-input-label-field>
         </div>
     </div>
@@ -29,7 +30,8 @@
                 [inputRequired]="true"
                 [deklaration]="finSitGS?.einkaeufeVorsorge"
                 [korrektur]="finSitJA.einkaeufeVorsorge"
-                [showBisher]="isNotNullOrUndefined(finSitGS)">
+                [showBisher]="isNotNullOrUndefined(finSitGS)"
+                [dvOnBlur]="onValueChangeFunction">
             </dv-input-label-field>
         </div>
     </div>
@@ -47,7 +49,8 @@
                 [allowNegative]="true"
                 [deklaration]="finSitGS?.abzuegeLiegenschaft"
                 [korrektur]="finSitJA.abzuegeLiegenschaft"
-                [showBisher]="isNotNullOrUndefined(finSitGS)">
+                [showBisher]="isNotNullOrUndefined(finSitGS)"
+                [dvOnBlur]="onValueChangeFunction">
             </dv-input-label-field>
         </div>
     </div>
@@ -62,7 +65,8 @@
             [inputDisabled]="readonly"
             [deklaration]="finSitGS?.steuerbaresVermoegen"
             [korrektur]="finSitJA?.steuerbaresVermoegen"
-            [showBisher]="isNotNullOrUndefined(finSitGS)">
+            [showBisher]="isNotNullOrUndefined(finSitGS)"
+            [dvOnBlur]="onValueChangeFunction">
         </dv-input-label-field>
     </div>
 </div>

@@ -30,12 +30,14 @@
 <ng-template #steuerveranlagFragen>
     <dv-steuerveranlagt-schwyz [finSitJA]="finSitJA"
                                [finSitGS]="finSitGS"
-                               [readonly]="readonly">
+                               [readonly]="readonly"
+                               [finanzModel]="finanzModel">
     </dv-steuerveranlagt-schwyz>
 </ng-template>
 <ng-template #bruttolohnFragen>
     <dv-bruttolohn-schwyz [finSitJA]="finSitJA"
                           [finSitGS]="finSitGS"
-                          [readonly]="readonly">
+                          [readonly]="readonly"
+                          [finanzModel]="finanzModel">
     </dv-bruttolohn-schwyz>
 </ng-template>
