@@ -20,7 +20,9 @@ package ch.dvbern.ebegu.inbox.handler.pensum;
 import javax.annotation.Nonnull;
 
 import ch.dvbern.ebegu.inbox.handler.ProcessingContext;
+import lombok.experimental.UtilityClass;
 
+@UtilityClass
 public class PensumMapperFactory {
 
 	@Nonnull

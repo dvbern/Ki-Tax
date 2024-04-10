@@ -634,9 +634,6 @@ public class MitteilungResource {
 		@Context UriInfo uriInfo,
 		@Context HttpServletResponse response) {
 
-		Objects.requireNonNull(mitteilungJAXP);
-		Objects.requireNonNull(mitteilungJAXP);
-
 		Optional<Betreuung> betreuungOpt = betreuungService.findBetreuung(converter.toEntityId(jaxBetreuungId));
 
 		if (betreuungOpt.isEmpty()) {

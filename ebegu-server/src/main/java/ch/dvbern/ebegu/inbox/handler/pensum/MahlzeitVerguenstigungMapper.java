@@ -41,12 +41,10 @@ public class MahlzeitVerguenstigungMapper implements PensumMapper {
 		@Nonnull AbstractMahlzeitenPensum target,
 		@Nonnull ZeitabschnittDTO zeitabschnittDTO
 	) {
-		if (ctx.isMahlzeitVerguenstigungEnabled()) {
-			target.setMonatlicheHauptmahlzeiten(coalesce(zeitabschnittDTO.getAnzahlHauptmahlzeiten(), ZERO));
-			target.setMonatlicheNebenmahlzeiten(coalesce(zeitabschnittDTO.getAnzahlNebenmahlzeiten(), ZERO));
+		target.setMonatlicheHauptmahlzeiten(coalesce(zeitabschnittDTO.getAnzahlHauptmahlzeiten(), ZERO));
+		target.setMonatlicheNebenmahlzeiten(coalesce(zeitabschnittDTO.getAnzahlNebenmahlzeiten(), ZERO));
 
-			setTarifeProMahlzeiten(target, zeitabschnittDTO, ctx);
-		}
+		setTarifeProMahlzeiten(target, zeitabschnittDTO, ctx);
 	}
 
 	private static <T extends AbstractMahlzeitenPensum> void setTarifeProMahlzeiten(
