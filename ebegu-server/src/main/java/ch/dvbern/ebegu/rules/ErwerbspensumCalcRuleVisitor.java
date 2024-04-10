@@ -7,10 +7,8 @@ import java.util.Objects;
 import ch.dvbern.ebegu.entities.Einstellung;
 import ch.dvbern.ebegu.enums.AnspruchBeschaeftigungAbhaengigkeitTyp;
 import ch.dvbern.ebegu.enums.EinstellungKey;
-import ch.dvbern.ebegu.enums.FinanzielleSituationTyp;
 import ch.dvbern.ebegu.util.AnspruchBeschaeftigungAbhangigkeitTypVisitor;
 import ch.dvbern.ebegu.util.Constants;
-import com.sun.istack.NotNull;
 
 import static ch.dvbern.ebegu.enums.EinstellungKey.ABHAENGIGKEIT_ANSPRUCH_BESCHAEFTIGUNGPENSUM;
 import static ch.dvbern.ebegu.enums.EinstellungKey.MINIMALDAUER_KONKUBINAT;
@@ -61,6 +59,17 @@ public class ErwerbspensumCalcRuleVisitor implements AnspruchBeschaeftigungAbhan
 	@Override
 	public AbstractErwerbspensumCalcRule visitMinimum() {
 		return new ErwerbspensumMinimumCalcRule(
+			RuleKey.ERWERBSPENSUM,
+			RuleType.GRUNDREGEL_CALC,
+			RuleValidity.ASIV,
+			Constants.DEFAULT_GUELTIGKEIT,
+			locale
+		);
+	}
+
+	@Override
+	public AbstractErwerbspensumCalcRule visitSchwyz() {
+		return new ErwebspensumSchwyzCalcRule(
 			RuleKey.ERWERBSPENSUM,
 			RuleType.GRUNDREGEL_CALC,
 			RuleValidity.ASIV,
