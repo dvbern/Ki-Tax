@@ -36,13 +36,13 @@ public class BetreuungAbweichung implements BetreuungAndPensumContainer {
 
 	@Nonnull
 	@Override
-	public List<? extends AbstractMahlzeitenPensum> getBetreuungenGS() {
+	public List<AbstractMahlzeitenPensum> getBetreuungenGS() {
 		return List.of();
 	}
 
 	@Nonnull
 	@Override
-	public List<? extends AbstractMahlzeitenPensum> getBetreuungenJA() {
+	public List<AbstractMahlzeitenPensum> getBetreuungenJA() {
 		return List.copyOf(abweichungen);
 	}
 
