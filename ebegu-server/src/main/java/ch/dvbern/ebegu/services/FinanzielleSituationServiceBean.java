@@ -278,8 +278,9 @@ public class FinanzielleSituationServiceBean extends AbstractBaseService impleme
 				var finSitToCompare = finanzielleSituation.getGesuchsteller().isSame(gesuch.getGesuchsteller2()) ?
 					finanzielleSituation :
 					gesuch.getGesuchsteller2().getFinanzielleSituationContainer();
-				Objects.requireNonNull(finSitToCompare);
-				handleSchwyzGSEKVDataReset(gesuch.getGesuchsteller2(), gesuch, finSitToCompare);
+				if (finSitToCompare != null) {
+					handleSchwyzGSEKVDataReset(gesuch.getGesuchsteller2(), gesuch, finSitToCompare);
+				}
 			}
 		}
 	}
