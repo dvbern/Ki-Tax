@@ -29,13 +29,13 @@ import ch.dvbern.ebegu.enums.EinschulungTyp;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.MathUtil;
 import ch.dvbern.ebegu.util.TestUtils;
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 
 import static ch.dvbern.ebegu.rechner.KitaTagestrukturenSchwyzRechner.NORMKOSTEN_PRIMARSTUFE_WAEHREND_SCHULFREIEN_ZEIT;
 import static ch.dvbern.ebegu.rechner.KitaTagestrukturenSchwyzRechner.NORMKOSTEN_PRIMARSTUFE_WAEHREND_SCHULZEIT;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-class KitaTagestrukturenSchwyzRechnerTest {
+public class KitaTagestrukturenSchwyzRechnerTest {
 
 	public static final BigDecimal TAGE_100_PROZENT_PENSUM = new BigDecimal("20.50");
 	public static final BigDecimal TAGE_80_PROZENT_PENSUM = new BigDecimal("16.40");
@@ -43,7 +43,7 @@ class KitaTagestrukturenSchwyzRechnerTest {
 	public static final BigDecimal MINIMALER_ELTERNBEITRAG = new BigDecimal("492.00");
 
 	@Test
-	void testKind1() {
+	public void testKind1() {
 		// given
 		var testee = new KitaTagestrukturenSchwyzRechner();
 		var parameter = TestUtils.getRechnerParamterSchwyz();
@@ -78,7 +78,7 @@ class KitaTagestrukturenSchwyzRechnerTest {
 	}
 
 	@Test
-	void testKind1HalberMonat() {
+	public void testKind1HalberMonat() {
 		// given
 		var testee = new KitaTagestrukturenSchwyzRechner();
 		var parameter = TestUtils.getRechnerParamterSchwyz();
@@ -117,7 +117,7 @@ class KitaTagestrukturenSchwyzRechnerTest {
 	}
 
 	@Test
-	void testKind2() {
+	public void testKind2() {
 		// given
 		var testee = new KitaTagestrukturenSchwyzRechner();
 		var parameter = TestUtils.getRechnerParamterSchwyz();
@@ -155,7 +155,7 @@ class KitaTagestrukturenSchwyzRechnerTest {
 	}
 
 	@Test
-	void testKind3() {
+	public void testKind3() {
 		// given
 		var testee = new KitaTagestrukturenSchwyzRechner();
 		var parameter = TestUtils.getRechnerParamterSchwyz();
@@ -193,7 +193,7 @@ class KitaTagestrukturenSchwyzRechnerTest {
 	}
 
 	@Test
-	void testKind4() {
+	public void testKind4() {
 		// given
 		var testee = new KitaTagestrukturenSchwyzRechner();
 		var parameter = TestUtils.getRechnerParamterSchwyz();
@@ -232,7 +232,7 @@ class KitaTagestrukturenSchwyzRechnerTest {
 	}
 
 	@Test
-	void testKind5_MassgebendesEinkommenNaheObergrenze() {
+	public void testKind5_MassgebendesEinkommenNaheObergrenze() {
 		// given
 		var testee = new KitaTagestrukturenSchwyzRechner();
 		var parameter = TestUtils.getRechnerParamterSchwyz();
@@ -273,7 +273,7 @@ class KitaTagestrukturenSchwyzRechnerTest {
 	}
 
 	@Test
-	void testKind6_MassgebendesEinkommenNaheUntergrenze() {
+	public void testKind6_MassgebendesEinkommenNaheUntergrenze() {
 		// given
 		var testee = new KitaTagestrukturenSchwyzRechner();
 		var parameter = TestUtils.getRechnerParamterSchwyz();
@@ -315,7 +315,7 @@ class KitaTagestrukturenSchwyzRechnerTest {
 	}
 
 	@Test
-	void testKind7_TagestarifTieferAlsNormkosten() {
+	public void testKind7_TagestarifTieferAlsNormkosten() {
 		// given
 		var testee = new KitaTagestrukturenSchwyzRechner();
 		var parameter = TestUtils.getRechnerParamterSchwyz();
@@ -372,7 +372,7 @@ class KitaTagestrukturenSchwyzRechnerTest {
 	}
 
 	@Test
-	void testCalculateNormkostenForBabyTarif() {
+	public void testCalculateNormkostenForBabyTarif() {
 		// given
 		var testee = new KitaTagestrukturenSchwyzRechner();
 		var verfuegungZeitabschnitt = new VerfuegungZeitabschnitt();
@@ -389,7 +389,7 @@ class KitaTagestrukturenSchwyzRechnerTest {
 	}
 
 	@Test
-	void testCalculateNormkostenIfNotEingeschult() {
+	public void testCalculateNormkostenIfNotEingeschult() {
 		// given
 		var testee = new KitaTagestrukturenSchwyzRechner();
 		var verfuegungZeitabschnitt = new VerfuegungZeitabschnitt();
@@ -404,7 +404,7 @@ class KitaTagestrukturenSchwyzRechnerTest {
 	}
 
 	@Test
-	void testCalculateNormkostenIfEingeschultAberAusserhalbDerSchulzeitBetreut() {
+	public void testCalculateNormkostenIfEingeschultAberAusserhalbDerSchulzeitBetreut() {
 		// given
 		var testee = new KitaTagestrukturenSchwyzRechner();
 		var verfuegungZeitabschnitt = new VerfuegungZeitabschnitt();
@@ -421,7 +421,7 @@ class KitaTagestrukturenSchwyzRechnerTest {
 	}
 
 	@Test
-	void testCalculateNormkostenIfEingeschultAberWaehrendDerSchulzeitBetreut() {
+	public void testCalculateNormkostenIfEingeschultAberWaehrendDerSchulzeitBetreut() {
 		// given
 		var testee = new KitaTagestrukturenSchwyzRechner();
 		var verfuegungZeitabschnitt = new VerfuegungZeitabschnitt();
@@ -438,7 +438,7 @@ class KitaTagestrukturenSchwyzRechnerTest {
 	}
 
 	@Test
-	void testCalculateTagesTarif() {
+	public void testCalculateTagesTarif() {
 		// given
 		var testee = new KitaTagestrukturenSchwyzRechner();
 
