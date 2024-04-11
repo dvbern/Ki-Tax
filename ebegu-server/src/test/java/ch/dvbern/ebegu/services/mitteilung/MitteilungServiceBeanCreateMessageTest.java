@@ -45,7 +45,9 @@ import org.easymock.TestSubject;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.EnumSource;
 
 import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_MAHLZEITENVERGUENSTIGUNG_ENABLED;
 import static ch.dvbern.ebegu.enums.EinstellungKey.OEFFNUNGSSTUNDEN_TFO;
@@ -127,11 +129,12 @@ class MitteilungServiceBeanCreateMessageTest extends EasyMockSupport {
 				+ "Hauptmahlzeiten: 5 à CHF 7, monatliche Nebenmahlzeiten: 9.75 à CHF 0.35"));
 	}
 
-	@Test
-	void mittagstisch() {
+	@ParameterizedTest
+	@EnumSource(BetreuungspensumAnzeigeTyp.class)
+	void mittagstisch_doesNotDependOnAnzeigeTyp(BetreuungspensumAnzeigeTyp anzeigeTyp) {
 		BetreuungsmitteilungPensum pensum = createPensum();
 		PensumUtil.transformMittagstischPensum(pensum);
-		String result = run(BetreuungsangebotTyp.MITTAGSTISCH, BetreuungspensumAnzeigeTyp.NUR_MAHLZEITEN, pensum);
+		String result = run(BetreuungsangebotTyp.MITTAGSTISCH, anzeigeTyp, pensum);
 
 		assertThat(
 			result,
@@ -187,10 +190,12 @@ class MitteilungServiceBeanCreateMessageTest extends EasyMockSupport {
 
 		String mahlzeitenVerguenstigung = mahlzeitenVerguenstigungEnabled.toString();
 		expect(einstellungService.findEinstellung(GEMEINDE_MAHLZEITENVERGUENSTIGUNG_ENABLED, gemeinde, periode))
-			.andReturn(new Einstellung(GEMEINDE_MAHLZEITENVERGUENSTIGUNG_ENABLED, mahlzeitenVerguenstigung, periode));
+			.andReturn(new Einstellung(GEMEINDE_MAHLZEITENVERGUENSTIGUNG_ENABLED, mahlzeitenVerguenstigung, periode))
+			.anyTimes();
 
 		expect(einstellungService.findEinstellung(PENSUM_ANZEIGE_TYP, gemeinde, periode))
-			.andReturn(new Einstellung(PENSUM_ANZEIGE_TYP, anzeigeTyp.name(), periode));
+			.andReturn(new Einstellung(PENSUM_ANZEIGE_TYP, anzeigeTyp.name(), periode))
+			.anyTimes();
 
 		expect(einstellungService.findEinstellung(OEFFNUNGSTAGE_KITA, gemeinde, periode))
 			.andReturn(new Einstellung(OEFFNUNGSTAGE_KITA, "220", periode))

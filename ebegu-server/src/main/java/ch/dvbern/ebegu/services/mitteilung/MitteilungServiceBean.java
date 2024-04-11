@@ -32,6 +32,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -104,7 +105,6 @@ import ch.dvbern.ebegu.entities.SteuerdatenResponse_;
 import ch.dvbern.ebegu.entities.sozialdienst.SozialdienstFall;
 import ch.dvbern.ebegu.entities.sozialdienst.SozialdienstFall_;
 import ch.dvbern.ebegu.enums.AntragStatus;
-import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.BetreuungspensumAbweichungStatus;
 import ch.dvbern.ebegu.enums.BetreuungspensumAnzeigeTyp;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
@@ -148,10 +148,17 @@ import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.types.DateRange_;
 import ch.dvbern.ebegu.util.BetreuungUtil;
 import ch.dvbern.ebegu.util.Constants;
+import ch.dvbern.ebegu.util.Gueltigkeit;
 import ch.dvbern.ebegu.util.MathUtil;
 import ch.dvbern.ebegu.util.MitteilungUtil;
 import ch.dvbern.ebegu.util.ServerMessageUtil;
+import ch.dvbern.ebegu.util.betreuungsmitteilung.messages.BetreuungsmitteilungPensumMessageFactory;
+import ch.dvbern.ebegu.util.betreuungsmitteilung.messages.DefaultMessageFactory;
+import ch.dvbern.ebegu.util.betreuungsmitteilung.messages.MahlzeitenVerguenstigungMessageFactory;
+import ch.dvbern.ebegu.util.betreuungsmitteilung.messages.MittagstischMessageFactory;
+import ch.dvbern.ebegu.util.mandant.MandantIdentifier;
 import ch.dvbern.lib.cdipersistence.Persistence;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
@@ -1130,12 +1137,11 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 
 	@Nonnull
 	private Benutzer getTechnicalKibonBenutzer(Dossier dossier) {
-		String technicalUserID =
-			technicalUserConfigVisitor.process(dossier.getFall().getMandant().getMandantIdentifier()).getTechnicalUser();
+		MandantIdentifier mandantIdentifier = dossier.getFall().getMandant().getMandantIdentifier();
+		String technicalUserID = technicalUserConfigVisitor.process(mandantIdentifier).getTechnicalUser();
+
 		return benutzerService.findBenutzerById(technicalUserID)
-				.orElseThrow(() -> new EbeguEntityNotFoundException(EMPTY,
-						ERROR_ENTITY_NOT_FOUND,
-						technicalUserID));
+			.orElseThrow(() -> new EbeguEntityNotFoundException(EMPTY, ERROR_ENTITY_NOT_FOUND, technicalUserID));
 	}
 
 	@Override
@@ -1144,7 +1150,28 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 		@Nonnull Set<BetreuungsmitteilungPensum> changedBetreuungen,
 		@Nonnull Locale locale) {
 
+		List<BetreuungsmitteilungPensum> sorted = changedBetreuungen.stream()
+			.sorted(Gueltigkeit.GUELTIG_AB_COMPARATOR)
+			.collect(Collectors.toList());
+
+		BetreuungsmitteilungPensumMessageFactory factory = messageFactory(mitteilung, locale);
+
+		return IntStream.rangeClosed(1, sorted.size())
+			.mapToObj(index -> factory.messageForPensum(index, sorted.get(index - 1)))
+			.collect(Collectors.joining(StringUtils.LF));
+	}
+
+	private BetreuungsmitteilungPensumMessageFactory messageFactory(
+		@Nonnull Betreuungsmitteilung mitteilung,
+		@Nonnull Locale locale
+	) {
 		Betreuung betreuung = requireNonNull(mitteilung.getBetreuung());
+		Mandant mandant = betreuung.extractGesuch().extractMandant();
+
+		if (betreuung.isAngebotMittagstisch()) {
+			return new MittagstischMessageFactory(mandant, locale);
+		}
+
 		boolean mvzEnabled = einstellungService.findEinstellung(
 			EinstellungKey.GEMEINDE_MAHLZEITENVERGUENSTIGUNG_ENABLED,
 			betreuung.extractGemeinde(),
@@ -1154,27 +1181,19 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 			EinstellungKey.PENSUM_ANZEIGE_TYP,
 			betreuung.extractGemeinde(),
 			betreuung.extractGesuchsperiode());
-		BetreuungspensumAnzeigeTyp betreuungspensumAnzeigeTyp =
-			getBetreuungspensumAnzeigeTyp(einstellungAnzeigeTyp, betreuung);
 
-		Mandant mandant = betreuung.extractGesuch().extractMandant();
-
+		BetreuungspensumAnzeigeTyp betreuungspensumAnzeigeTyp = getBetreuungspensumAnzeigeTyp(einstellungAnzeigeTyp);
 		BigDecimal multiplier = getMultiplierForMutationsMitteilung(mitteilung, betreuungspensumAnzeigeTyp);
 
-		return MitteilungUtil.createNachrichtForMutationsmeldung(
-			changedBetreuungen,
-			mvzEnabled,
-			locale,
-			betreuungspensumAnzeigeTyp,
-			multiplier,
-			mandant);
+		if (mvzEnabled) {
+			return new MahlzeitenVerguenstigungMessageFactory(mandant, locale, betreuungspensumAnzeigeTyp, multiplier);
+		}
+
+		return new DefaultMessageFactory(mandant, locale, betreuungspensumAnzeigeTyp, multiplier);
 	}
 
 	@Nonnull
-	private static BetreuungspensumAnzeigeTyp getBetreuungspensumAnzeigeTyp(Einstellung einstellungAnzeigeTyp, Betreuung betreuung) {
-		if (betreuung.getBetreuungsangebotTyp() == BetreuungsangebotTyp.MITTAGSTISCH) {
-			return BetreuungspensumAnzeigeTyp.NUR_MAHLZEITEN;
-		}
+	private BetreuungspensumAnzeigeTyp getBetreuungspensumAnzeigeTyp(Einstellung einstellungAnzeigeTyp) {
 		return BetreuungspensumAnzeigeTyp.valueOf(einstellungAnzeigeTyp.getValue());
 	}
 
@@ -1182,9 +1201,6 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 		@Nonnull Betreuungsmitteilung mitteilung,
 		@Nonnull BetreuungspensumAnzeigeTyp betreuungspensumAnzeigeTyp
 	) {
-		if (betreuungspensumAnzeigeTyp == BetreuungspensumAnzeigeTyp.NUR_MAHLZEITEN) {
-			return BetreuungUtil.getMittagstischMultiplier();
-		}
 		if (betreuungspensumAnzeigeTyp != BetreuungspensumAnzeigeTyp.NUR_STUNDEN) {
 			return BigDecimal.ONE;
 		}
