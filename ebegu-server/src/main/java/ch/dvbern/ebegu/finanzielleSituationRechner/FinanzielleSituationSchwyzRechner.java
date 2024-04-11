@@ -42,14 +42,14 @@ public class FinanzielleSituationSchwyzRechner extends AbstractFinanzielleSituat
 		@Nonnull FinanzielleSituationResultateDTO finSitResultDTO
 	) {
 		if (finanzielleSituationGS1 != null) {
-			if (finanzielleSituationGS1.getQuellenbesteuert() != null && finanzielleSituationGS1.getQuellenbesteuert()) {
+			if (Boolean.TRUE.equals(finanzielleSituationGS1.getQuellenbesteuert())) {
 				finSitResultDTO.setMassgebendesEinkVorAbzFamGrGS1(calculateForQuellenBesteuerte(finanzielleSituationGS1));
 			} else {
 				finSitResultDTO.setMassgebendesEinkVorAbzFamGrGS1(calculateForNichtQuellenBesteuerte(finanzielleSituationGS1));
 			}
 		}
 		if(finanzielleSituationGS2 != null) {
-			if (finanzielleSituationGS2.getQuellenbesteuert() != null && finanzielleSituationGS2.getQuellenbesteuert()) {
+			if (Boolean.TRUE.equals(finanzielleSituationGS2.getQuellenbesteuert())) {
 				finSitResultDTO.setMassgebendesEinkVorAbzFamGrGS2(calculateForQuellenBesteuerte(finanzielleSituationGS2));
 			} else {
 				finSitResultDTO.setMassgebendesEinkVorAbzFamGrGS2(calculateForNichtQuellenBesteuerte(finanzielleSituationGS2));

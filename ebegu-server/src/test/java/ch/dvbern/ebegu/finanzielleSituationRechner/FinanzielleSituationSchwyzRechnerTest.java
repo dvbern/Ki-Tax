@@ -19,11 +19,14 @@ package ch.dvbern.ebegu.finanzielleSituationRechner;
 
 import java.math.BigDecimal;
 
+import javax.annotation.Nonnull;
+
 import ch.dvbern.ebegu.entities.FinanzielleSituation;
 import ch.dvbern.ebegu.entities.FinanzielleSituationContainer;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.GesuchstellerContainer;
-import org.junit.Test;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
@@ -32,154 +35,235 @@ public class FinanzielleSituationSchwyzRechnerTest {
 
 	private FinanzielleSituationSchwyzRechner finanzielleSituationSchwyzRechner = new FinanzielleSituationSchwyzRechner();
 
-
-	/**
-	 * Steuerbares Einkommen								60'000
-	 *
-	 * Steuerbares Vermögen	10'000 - 200'000, 10% =		   + 0
-	 * Abzüge für den effektiven Liegenschaftsunterhalt... + 1'000
-	 * Einkäufe in die berufliche Vorsorge Subtrahieren    + 1'000
-	 *                                                     -------
-	 *                                                      62'000
-	 *                                                     */
-	@Test
-	public void calculateForNichtQuellenBesteuerteTest() {
-		Gesuch gesuch = prepareGesuch(false, false);
-		finanzielleSituationSchwyzRechner.calculateFinanzDaten(gesuch, null);
-		assertThat(gesuch.getFinanzDatenDTO_alleine().getMassgebendesEinkBjVorAbzFamGr(), is(BigDecimal.valueOf(62000)));
-
-		//zwei Antragstellende, beides ueberpruefen
-		gesuch = prepareGesuch(true, false);
-		finanzielleSituationSchwyzRechner.calculateFinanzDaten(gesuch, null);
-		assertThat(gesuch.getFinanzDatenDTO_alleine().getMassgebendesEinkBjVorAbzFamGr(), is(BigDecimal.valueOf(62000)));
-		assertThat(gesuch.getFinanzDatenDTO_zuZweit().getMassgebendesEinkBjVorAbzFamGr(), is(BigDecimal.valueOf(124000)));
-	}
-
-	/**
-	 * Steuerbares Einkommen								60'000
-	 *
-	 * Steuerbares Vermögen	200'000 - 200'000, 10% =		   + 0
-	 * Abzüge für den effektiven Liegenschaftsunterhalt... + 1'000
-	 * Einkäufe in die berufliche Vorsorge Subtrahieren    + 1'000
-	 *                                                     -------
-	 *                                                      62'000
-	 *                                                     */
-	@Test
-	public void calculateForNichtQuellenBesteuerteMitSteuerbaresVermoegenAnGrenzeTest() {
-		Gesuch gesuch = prepareGesuch(false, false);
-		gesuch.getGesuchsteller1().getFinanzielleSituationContainer().getFinanzielleSituationJA().setSteuerbaresVermoegen(new BigDecimal(200000));
-		finanzielleSituationSchwyzRechner.calculateFinanzDaten(gesuch, null);
-		assertThat(gesuch.getFinanzDatenDTO_alleine().getMassgebendesEinkBjVorAbzFamGr(), is(BigDecimal.valueOf(62000)));
-	}
-
-	/**
-	 * Steuerbares Einkommen								60'000
-	 *
-	 * Steuerbares Vermögen	250'000 - 200'000, 10% =	   + 5'000
-	 * Abzüge für den effektiven Liegenschaftsunterhalt... + 1'000
-	 * Einkäufe in die berufliche Vorsorge Subtrahieren    + 1'000
-	 *                                                     -------
-	 *                                                      67'000
-	 *                                                     */
-	@Test
-	public void calculateForNichtQuellenBesteuerteMitSteuerbaresVermoegenTest() {
-		Gesuch gesuch = prepareGesuch(false, false);
-		gesuch.getGesuchsteller1().getFinanzielleSituationContainer().getFinanzielleSituationJA().setSteuerbaresVermoegen(new BigDecimal(250000));
-		finanzielleSituationSchwyzRechner.calculateFinanzDaten(gesuch, null);
-		assertThat(gesuch.getFinanzDatenDTO_alleine().getMassgebendesEinkBjVorAbzFamGr(), is(BigDecimal.valueOf(67000)));
-	}
-
-	/**
-	 * Brutto Einkommen									    60'000
-	 *
-	 * Brutto Einkommen 20% =		   					  - 12'000
-	 *                                                     -------
-	 *                                                      48'000
-	 *                                                     */
-	@Test
-	public void calculateForQuellenBesteuerteTest() {
-		Gesuch gesuch = prepareGesuch(false, true);
-		finanzielleSituationSchwyzRechner.calculateFinanzDaten(gesuch, null);
-		assertThat(gesuch.getFinanzDatenDTO_alleine().getMassgebendesEinkBjVorAbzFamGr(), is(BigDecimal.valueOf(48000)));
-
-		//zwei Antragstellende, beides ueberpruefen
-		gesuch = prepareGesuch(true, true);
-		finanzielleSituationSchwyzRechner.calculateFinanzDaten(gesuch, null);
-		assertThat(gesuch.getFinanzDatenDTO_alleine().getMassgebendesEinkBjVorAbzFamGr(), is(BigDecimal.valueOf(48000)));
-		assertThat(gesuch.getFinanzDatenDTO_zuZweit().getMassgebendesEinkBjVorAbzFamGr(), is(BigDecimal.valueOf(96000)));
-	}
-
-	@Test
-	public void quellenBesteuertAllesNullTest(){
-		Gesuch gesuch = prepareGesuch(false, true);
-		gesuch.getGesuchsteller1().getFinanzielleSituationContainer().getFinanzielleSituationJA().setBruttoLohn(null);
-		finanzielleSituationSchwyzRechner.calculateFinanzDaten(gesuch, null);
-		assertThat(gesuch.getFinanzDatenDTO_alleine().getMassgebendesEinkBjVorAbzFamGr(), is(BigDecimal.valueOf(0)));
-	}
-
-	@Test
-	public void nichtQuellenBesteuertAllesNullTest(){
-		Gesuch gesuch = prepareGesuch(false, false);
-		gesuch.getGesuchsteller1().getFinanzielleSituationContainer().getFinanzielleSituationJA().setSteuerbaresEinkommen(null);
-		gesuch.getGesuchsteller1().getFinanzielleSituationContainer().getFinanzielleSituationJA().setEinkaeufeVorsorge(null);
-		gesuch.getGesuchsteller1().getFinanzielleSituationContainer().getFinanzielleSituationJA().setAbzuegeLiegenschaft(null);
-		gesuch.getGesuchsteller1().getFinanzielleSituationContainer().getFinanzielleSituationJA().setSteuerbaresVermoegen(null);
-		finanzielleSituationSchwyzRechner.calculateFinanzDaten(gesuch, null);
-		assertThat(gesuch.getFinanzDatenDTO_alleine().getMassgebendesEinkBjVorAbzFamGr(), is(BigDecimal.valueOf(0)));
-	}
-
-	@Test
-	public void quellenBesteuertZweiteGSNullTest() {
-		Gesuch gesuch = prepareGesuch(true, true);
-		gesuch.getGesuchsteller2().getFinanzielleSituationContainer().setFinanzielleSituationJA(null);
-		finanzielleSituationSchwyzRechner.calculateFinanzDaten(gesuch, null);
-		assertThat(gesuch.getFinanzDatenDTO_alleine().getMassgebendesEinkBjVorAbzFamGr(), is(BigDecimal.valueOf(48000)));
-		assertThat(gesuch.getFinanzDatenDTO_zuZweit().getMassgebendesEinkBjVorAbzFamGr(), is(BigDecimal.valueOf(48000)));
-	}
-
-	@Test
-	public void nichtQuellenBesteuertZweiteGSNullTest() {
-		Gesuch gesuch = prepareGesuch(true, false);
-		gesuch.getGesuchsteller2().getFinanzielleSituationContainer().setFinanzielleSituationJA(null);
-		finanzielleSituationSchwyzRechner.calculateFinanzDaten(gesuch, null);
-		assertThat(gesuch.getFinanzDatenDTO_alleine().getMassgebendesEinkBjVorAbzFamGr(), is(BigDecimal.valueOf(62000)));
-		assertThat(gesuch.getFinanzDatenDTO_zuZweit().getMassgebendesEinkBjVorAbzFamGr(), is(BigDecimal.valueOf(62000)));
-	}
-
-	private Gesuch prepareGesuch(boolean secondGesuchsteller, boolean quellenbesteuert) {
-		Gesuch gesuch = new Gesuch();
-		gesuch.setGesuchsteller1(quellenbesteuert ?
-			createGesuchstellerMitFinSitQuellenbesteuert(): createGesuchstellerMitFinSit());
-		if(secondGesuchsteller) {
-			gesuch.setGesuchsteller2(quellenbesteuert ?
-				createGesuchstellerMitFinSitQuellenbesteuert(): createGesuchstellerMitFinSit());
+	@Nested
+	class SingleGSTest {
+		/**
+		 * Steuerbares Einkommen								60'000
+		 *
+		 * Steuerbares Vermögen	10'000 - 200'000, 10% =		   + 0
+		 * Abzüge für den effektiven Liegenschaftsunterhalt... + 1'000
+		 * Einkäufe in die berufliche Vorsorge Subtrahieren    + 1'000
+		 * -------
+		 * 62'000
+		 */
+		@Test
+		public void calculateForNichtQuellenBesteuerteTest() {
+			Gesuch gesuch = prepareGesuch();
+			setFinSitValueForNichtQuellenbesteuert(gesuch.getGesuchsteller1().getFinanzielleSituationContainer().getFinanzielleSituationJA(),
+				new BigDecimal(60000),
+				new BigDecimal(10000),
+				new BigDecimal(1000),
+				new BigDecimal(1000));
+			finanzielleSituationSchwyzRechner.calculateFinanzDaten(gesuch, null);
+			assertThat(gesuch.getFinanzDatenDTO_alleine().getMassgebendesEinkBjVorAbzFamGr(), is(BigDecimal.valueOf(62000)));
 		}
-		return gesuch;
+
+		/**
+		 * Steuerbares Einkommen								60'000
+		 *
+		 * Steuerbares Vermögen	200'000 - 200'000, 10% =		   + 0
+		 * Abzüge für den effektiven Liegenschaftsunterhalt... + 1'000
+		 * Einkäufe in die berufliche Vorsorge Subtrahieren    + 1'000
+		 * -------
+		 * 62'000
+		 */
+		@Test
+		public void calculateForNichtQuellenBesteuerteMitSteuerbaresVermoegenAnGrenzeTest() {
+			Gesuch gesuch = prepareGesuch();
+			setFinSitValueForNichtQuellenbesteuert(gesuch.getGesuchsteller1().getFinanzielleSituationContainer().getFinanzielleSituationJA(),
+				new BigDecimal(60000),
+				new BigDecimal(200000),
+				new BigDecimal(1000),
+				new BigDecimal(1000));
+			gesuch.getGesuchsteller1()
+				.getFinanzielleSituationContainer()
+				.getFinanzielleSituationJA()
+				.setSteuerbaresVermoegen(new BigDecimal(200000));
+			finanzielleSituationSchwyzRechner.calculateFinanzDaten(gesuch, null);
+			assertThat(gesuch.getFinanzDatenDTO_alleine().getMassgebendesEinkBjVorAbzFamGr(), is(BigDecimal.valueOf(62000)));
+		}
+
+		/**
+		 * Steuerbares Einkommen								60'000
+		 *
+		 * Steuerbares Vermögen	250'000 - 200'000, 10% =	   + 5'000
+		 * Abzüge für den effektiven Liegenschaftsunterhalt... + 1'000
+		 * Einkäufe in die berufliche Vorsorge Subtrahieren    + 1'000
+		 * -------
+		 * 67'000
+		 */
+		@Test
+		public void calculateForNichtQuellenBesteuerteMitSteuerbaresVermoegenTest() {
+			Gesuch gesuch = prepareGesuch();
+			setFinSitValueForNichtQuellenbesteuert(gesuch.getGesuchsteller1().getFinanzielleSituationContainer().getFinanzielleSituationJA(),
+				new BigDecimal(60000),
+				new BigDecimal(250000),
+				new BigDecimal(1000),
+				new BigDecimal(1000));
+			gesuch.getGesuchsteller1()
+				.getFinanzielleSituationContainer()
+				.getFinanzielleSituationJA()
+				.setSteuerbaresVermoegen(new BigDecimal(250000));
+			finanzielleSituationSchwyzRechner.calculateFinanzDaten(gesuch, null);
+			assertThat(gesuch.getFinanzDatenDTO_alleine().getMassgebendesEinkBjVorAbzFamGr(), is(BigDecimal.valueOf(67000)));
+		}
+
+		/**
+		 * Brutto Einkommen									    60'000
+		 *
+		 * Brutto Einkommen 20% =		   					  - 12'000
+		 * -------
+		 * 48'000
+		 */
+		@Test
+		public void calculateForQuellenBesteuerteTest() {
+			Gesuch gesuch = prepareGesuch();
+			setFinSitValueForQuellenbesteuert(gesuch.getGesuchsteller1().getFinanzielleSituationContainer().getFinanzielleSituationJA(),
+				new BigDecimal(60000));
+			finanzielleSituationSchwyzRechner.calculateFinanzDaten(gesuch, null);
+			assertThat(gesuch.getFinanzDatenDTO_alleine().getMassgebendesEinkBjVorAbzFamGr(), is(BigDecimal.valueOf(48000)));
+		}
+
+		@Test
+		public void quellenBesteuertAllesNullTest() {
+			Gesuch gesuch = prepareGesuch();
+			setFinSitValueForQuellenbesteuert(gesuch.getGesuchsteller1().getFinanzielleSituationContainer().getFinanzielleSituationJA(),
+				null);
+			finanzielleSituationSchwyzRechner.calculateFinanzDaten(gesuch, null);
+			assertThat(gesuch.getFinanzDatenDTO_alleine().getMassgebendesEinkBjVorAbzFamGr(), is(BigDecimal.valueOf(0)));
+		}
+
+		@Test
+		public void nichtQuellenBesteuertAllesNullTest() {
+			Gesuch gesuch = prepareGesuch();
+			setFinSitValueForNichtQuellenbesteuert(gesuch.getGesuchsteller1().getFinanzielleSituationContainer().getFinanzielleSituationJA(),
+				null,
+				null,
+				null,
+				null);
+			finanzielleSituationSchwyzRechner.calculateFinanzDaten(gesuch, null);
+			assertThat(gesuch.getFinanzDatenDTO_alleine().getMassgebendesEinkBjVorAbzFamGr(), is(BigDecimal.valueOf(0)));
+		}
+
+		private Gesuch prepareGesuch() {
+			Gesuch gesuch = new Gesuch();
+			gesuch.setGesuchsteller1(createGesuchstellerMitLeerenFinSit());
+			return gesuch;
+		}
 	}
 
-	private GesuchstellerContainer createGesuchstellerMitFinSit() {
+	@Nested
+	class TwoGSTest {
+		/**
+		 * Steuerbares Einkommen								60'000
+		 *
+		 * Steuerbares Vermögen	10'000 - 200'000, 10% =		   + 0
+		 * Abzüge für den effektiven Liegenschaftsunterhalt... + 1'000
+		 * Einkäufe in die berufliche Vorsorge Subtrahieren    + 1'000
+		 * -------
+		 * 62'000
+		 *
+		 * GS2 gleich => 62'000 x 2 = 124'000
+		 */
+		@Test
+		public void calculateForNichtQuellenBesteuerteTest() {
+			Gesuch gesuch = prepareGesuch();
+			setFinSitValueForNichtQuellenbesteuert(gesuch.getGesuchsteller1().getFinanzielleSituationContainer().getFinanzielleSituationJA(),
+				new BigDecimal(60000),
+				new BigDecimal(200000),
+				new BigDecimal(1000),
+				new BigDecimal(1000));
+			setFinSitValueForNichtQuellenbesteuert(gesuch.getGesuchsteller2().getFinanzielleSituationContainer().getFinanzielleSituationJA(),
+				new BigDecimal(60000),
+				new BigDecimal(200000),
+				new BigDecimal(1000),
+				new BigDecimal(1000));
+			finanzielleSituationSchwyzRechner.calculateFinanzDaten(gesuch, null);
+			assertThat(gesuch.getFinanzDatenDTO_alleine().getMassgebendesEinkBjVorAbzFamGr(), is(BigDecimal.valueOf(62000)));
+			assertThat(gesuch.getFinanzDatenDTO_zuZweit().getMassgebendesEinkBjVorAbzFamGr(), is(BigDecimal.valueOf(124000)));
+		}
+
+
+		/**
+		 * Brutto Einkommen									    60'000
+		 *
+		 * Brutto Einkommen 20% =		   					  - 12'000
+		 * -------
+		 * 48'000
+		 *
+		 * GS 2 gleich => 48'000 x 2 = 96'000
+		 *
+		 */
+		@Test
+		public void calculateForQuellenBesteuerteTest() {
+			Gesuch gesuch = prepareGesuch();
+			setFinSitValueForQuellenbesteuert(gesuch.getGesuchsteller1().getFinanzielleSituationContainer().getFinanzielleSituationJA(),
+				new BigDecimal(60000));
+			setFinSitValueForQuellenbesteuert(gesuch.getGesuchsteller2().getFinanzielleSituationContainer().getFinanzielleSituationJA(),
+				new BigDecimal(60000));
+			finanzielleSituationSchwyzRechner.calculateFinanzDaten(gesuch, null);
+			assertThat(gesuch.getFinanzDatenDTO_alleine().getMassgebendesEinkBjVorAbzFamGr(), is(BigDecimal.valueOf(48000)));
+			assertThat(gesuch.getFinanzDatenDTO_zuZweit().getMassgebendesEinkBjVorAbzFamGr(), is(BigDecimal.valueOf(96000)));
+		}
+
+		@Test
+		public void quellenBesteuertZweiteGSNullTest() {
+			Gesuch gesuch = prepareGesuch();
+			setFinSitValueForQuellenbesteuert(gesuch.getGesuchsteller1().getFinanzielleSituationContainer().getFinanzielleSituationJA(),
+				new BigDecimal(60000));
+			gesuch.getGesuchsteller2().getFinanzielleSituationContainer().setFinanzielleSituationJA(null);
+			finanzielleSituationSchwyzRechner.calculateFinanzDaten(gesuch, null);
+			assertThat(gesuch.getFinanzDatenDTO_alleine().getMassgebendesEinkBjVorAbzFamGr(), is(BigDecimal.valueOf(48000)));
+			assertThat(gesuch.getFinanzDatenDTO_zuZweit().getMassgebendesEinkBjVorAbzFamGr(), is(BigDecimal.valueOf(48000)));
+		}
+
+		@Test
+		public void nichtQuellenBesteuertZweiteGSNullTest() {
+			Gesuch gesuch = prepareGesuch();
+			setFinSitValueForNichtQuellenbesteuert(gesuch.getGesuchsteller1().getFinanzielleSituationContainer().getFinanzielleSituationJA(),
+				new BigDecimal(60000),
+				new BigDecimal(200000),
+				new BigDecimal(1000),
+				new BigDecimal(1000));
+			gesuch.getGesuchsteller2().getFinanzielleSituationContainer().setFinanzielleSituationJA(null);
+			finanzielleSituationSchwyzRechner.calculateFinanzDaten(gesuch, null);
+			assertThat(gesuch.getFinanzDatenDTO_alleine().getMassgebendesEinkBjVorAbzFamGr(), is(BigDecimal.valueOf(62000)));
+			assertThat(gesuch.getFinanzDatenDTO_zuZweit().getMassgebendesEinkBjVorAbzFamGr(), is(BigDecimal.valueOf(62000)));
+		}
+
+		private Gesuch prepareGesuch() {
+			Gesuch gesuch = new Gesuch();
+			gesuch.setGesuchsteller1(createGesuchstellerMitLeerenFinSit());
+			gesuch.setGesuchsteller2(createGesuchstellerMitLeerenFinSit());
+			return gesuch;
+		}
+	}
+
+	private GesuchstellerContainer createGesuchstellerMitLeerenFinSit() {
 		GesuchstellerContainer gesuchstellerContainer = new GesuchstellerContainer();
 		FinanzielleSituationContainer finanzielleSituationContainer = new FinanzielleSituationContainer();
 		FinanzielleSituation finanzielleSituationForTest = new FinanzielleSituation();
+		finanzielleSituationContainer.setFinanzielleSituationJA(finanzielleSituationForTest);
+		gesuchstellerContainer.setFinanzielleSituationContainer(finanzielleSituationContainer);
+		return gesuchstellerContainer;
+	}
+
+	private void setFinSitValueForNichtQuellenbesteuert (@Nonnull FinanzielleSituation finanzielleSituationForTest,
+		@Nonnull BigDecimal steuerbaresEinkommen,
+		@Nonnull BigDecimal steuerbaresVermoegen,
+		@Nonnull BigDecimal einkaeufeVorsorge,
+		@Nonnull BigDecimal abzuegeLiegenschaft
+	) {
 		finanzielleSituationForTest.setQuellenbesteuert(false);
-		finanzielleSituationForTest.setSteuerbaresEinkommen(BigDecimal.valueOf(60000));
-		finanzielleSituationForTest.setEinkaeufeVorsorge(BigDecimal.valueOf(1000));
-		finanzielleSituationForTest.setAbzuegeLiegenschaft(BigDecimal.valueOf(1000));
-		finanzielleSituationForTest.setSteuerbaresVermoegen(BigDecimal.valueOf(10000));
-		finanzielleSituationContainer.setFinanzielleSituationJA(finanzielleSituationForTest);
-		gesuchstellerContainer.setFinanzielleSituationContainer(finanzielleSituationContainer);
-		return gesuchstellerContainer;
+		finanzielleSituationForTest.setSteuerbaresEinkommen(steuerbaresEinkommen);
+		finanzielleSituationForTest.setEinkaeufeVorsorge(einkaeufeVorsorge);
+		finanzielleSituationForTest.setAbzuegeLiegenschaft(abzuegeLiegenschaft);
+		finanzielleSituationForTest.setSteuerbaresVermoegen(steuerbaresVermoegen);
 	}
 
-	private GesuchstellerContainer createGesuchstellerMitFinSitQuellenbesteuert() {
-		GesuchstellerContainer gesuchstellerContainer = new GesuchstellerContainer();
-		FinanzielleSituationContainer finanzielleSituationContainer = new FinanzielleSituationContainer();
-		FinanzielleSituation finanzielleSituationForTest = new FinanzielleSituation();
+	private void setFinSitValueForQuellenbesteuert (@Nonnull FinanzielleSituation finanzielleSituationForTest,
+		@Nonnull BigDecimal bruttolohn) {
 		finanzielleSituationForTest.setQuellenbesteuert(true);
-		finanzielleSituationForTest.setBruttoLohn(BigDecimal.valueOf(60000));
-		finanzielleSituationContainer.setFinanzielleSituationJA(finanzielleSituationForTest);
-		gesuchstellerContainer.setFinanzielleSituationContainer(finanzielleSituationContainer);
-		return gesuchstellerContainer;
+		finanzielleSituationForTest.setBruttoLohn(bruttolohn);
 	}
-
 }
