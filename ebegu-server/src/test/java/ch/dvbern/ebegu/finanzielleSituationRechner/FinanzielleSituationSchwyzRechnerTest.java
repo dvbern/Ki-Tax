@@ -109,6 +109,43 @@ public class FinanzielleSituationSchwyzRechnerTest {
 		assertThat(gesuch.getFinanzDatenDTO_zuZweit().getMassgebendesEinkBjVorAbzFamGr(), is(BigDecimal.valueOf(96000)));
 	}
 
+	@Test
+	public void quellenBesteuertAllesNullTest(){
+		Gesuch gesuch = prepareGesuch(false, true);
+		gesuch.getGesuchsteller1().getFinanzielleSituationContainer().getFinanzielleSituationJA().setBruttoLohn(null);
+		finanzielleSituationSchwyzRechner.calculateFinanzDaten(gesuch, null);
+		assertThat(gesuch.getFinanzDatenDTO_alleine().getMassgebendesEinkBjVorAbzFamGr(), is(BigDecimal.valueOf(0)));
+	}
+
+	@Test
+	public void nichtQuellenBesteuertAllesNullTest(){
+		Gesuch gesuch = prepareGesuch(false, false);
+		gesuch.getGesuchsteller1().getFinanzielleSituationContainer().getFinanzielleSituationJA().setSteuerbaresEinkommen(null);
+		gesuch.getGesuchsteller1().getFinanzielleSituationContainer().getFinanzielleSituationJA().setEinkaeufeVorsorge(null);
+		gesuch.getGesuchsteller1().getFinanzielleSituationContainer().getFinanzielleSituationJA().setAbzuegeLiegenschaft(null);
+		gesuch.getGesuchsteller1().getFinanzielleSituationContainer().getFinanzielleSituationJA().setSteuerbaresVermoegen(null);
+		finanzielleSituationSchwyzRechner.calculateFinanzDaten(gesuch, null);
+		assertThat(gesuch.getFinanzDatenDTO_alleine().getMassgebendesEinkBjVorAbzFamGr(), is(BigDecimal.valueOf(0)));
+	}
+
+	@Test
+	public void quellenBesteuertZweiteGSNullTest() {
+		Gesuch gesuch = prepareGesuch(true, true);
+		gesuch.getGesuchsteller2().getFinanzielleSituationContainer().setFinanzielleSituationJA(null);
+		finanzielleSituationSchwyzRechner.calculateFinanzDaten(gesuch, null);
+		assertThat(gesuch.getFinanzDatenDTO_alleine().getMassgebendesEinkBjVorAbzFamGr(), is(BigDecimal.valueOf(48000)));
+		assertThat(gesuch.getFinanzDatenDTO_zuZweit().getMassgebendesEinkBjVorAbzFamGr(), is(BigDecimal.valueOf(48000)));
+	}
+
+	@Test
+	public void nichtQuellenBesteuertZweiteGSNullTest() {
+		Gesuch gesuch = prepareGesuch(true, false);
+		gesuch.getGesuchsteller2().getFinanzielleSituationContainer().setFinanzielleSituationJA(null);
+		finanzielleSituationSchwyzRechner.calculateFinanzDaten(gesuch, null);
+		assertThat(gesuch.getFinanzDatenDTO_alleine().getMassgebendesEinkBjVorAbzFamGr(), is(BigDecimal.valueOf(62000)));
+		assertThat(gesuch.getFinanzDatenDTO_zuZweit().getMassgebendesEinkBjVorAbzFamGr(), is(BigDecimal.valueOf(62000)));
+	}
+
 	private Gesuch prepareGesuch(boolean secondGesuchsteller, boolean quellenbesteuert) {
 		Gesuch gesuch = new Gesuch();
 		gesuch.setGesuchsteller1(quellenbesteuert ?
