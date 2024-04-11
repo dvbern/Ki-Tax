@@ -309,6 +309,11 @@
                             </div>
                         </div>
 
+                        <dv-schwyz-kinderabzug
+                            ng-if="vm.showSchwyzKinderabzug()"
+                            [kind-container]="vm.getContainer()"
+                        ></dv-schwyz-kinderabzug>
+
                         <ng-container ng-if="vm.showExtendedKindQuestions()">
                             <!--Show Fachstelle?-->
                             <div class="row" ng-if="vm.isFachstellenActivated()">

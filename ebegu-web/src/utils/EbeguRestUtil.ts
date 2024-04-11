@@ -194,6 +194,7 @@ import {TSDateRange} from '../models/types/TSDateRange';
 import {TSLand} from '../models/types/TSLand';
 import {DateUtil} from './DateUtil';
 import {EbeguUtil} from './EbeguUtil';
+import {TSAusserordentlicherAnspruchTyp} from '../models/enums/TSAusserordentlicherAnspruchTyp';
 
 export class EbeguRestUtil {
 
@@ -967,6 +968,7 @@ export class EbeguRestUtil {
             restGemeinde.angebotFI = gemeinde.angebotFI;
             restGemeinde.besondereVolksschule = gemeinde.besondereVolksschule;
             restGemeinde.nurLats = gemeinde.nurLats;
+            restGemeinde.infomaZahlungen = gemeinde.infomaZahlungen;
             return restGemeinde;
         }
         return undefined;
@@ -994,6 +996,8 @@ export class EbeguRestUtil {
             gemeindeTS.besondereVolksschule = gemeindeFromServer.besondereVolksschule;
             gemeindeTS.nurLats = gemeindeFromServer.nurLats;
             gemeindeTS.key = gemeindeFromServer.key;
+            gemeindeTS.infomaZahlungen = gemeindeFromServer.infomaZahlungen;
+
             return gemeindeTS;
         }
         return undefined;
@@ -2431,6 +2435,7 @@ export class EbeguRestUtil {
         restKind.familienErgaenzendeBetreuung = kind.familienErgaenzendeBetreuung;
         restKind.zukunftigeGeburtsdatum = kind.zukunftigeGeburtsdatum;
         restKind.inPruefung = kind.inPruefung;
+        restKind.unterhaltspflichtig = kind.unterhaltspflichtig;
         if (kind.pensumFachstellen) {
             restKind.pensumFachstellen = this.pensumFachstellenToRestObject(kind.pensumFachstellen);
         }
@@ -2506,6 +2511,7 @@ export class EbeguRestUtil {
             kindTS.familienErgaenzendeBetreuung = kindFromServer.familienErgaenzendeBetreuung;
             kindTS.zukunftigeGeburtsdatum = kindFromServer.zukunftigeGeburtsdatum;
             kindTS.inPruefung = kindFromServer.inPruefung;
+            kindTS.unterhaltspflichtig = kindFromServer.unterhaltspflichtig;
             if (kindFromServer.pensumFachstellen) {
                 kindTS.pensumFachstellen =
                     this.parsePensumFachstellen(kindFromServer.pensumFachstellen);
@@ -4615,8 +4621,8 @@ export class EbeguRestUtil {
         publicAppConfigTS.activatedDemoFeatures = data.activatedDemoFeatures;
         publicAppConfigTS.checkboxAuszahlungInZukunft = data.checkboxAuszahlungInZukunft;
         publicAppConfigTS.erlaubenInstitutionenZuWaehlen = data.erlaubenInstitutionenZuWaehlen;
+        publicAppConfigTS.auszahlungAnEltern = data.auszahlungAnEltern;
         return publicAppConfigTS;
-
     }
 
     public parseGemeindeRegistrierungList(data: unknown): TSGemeindeRegistrierung[] {
@@ -6199,6 +6205,13 @@ export class EbeguRestUtil {
             return typ as TSFachstellenTyp;
         }
         throw new Error(`TSFachstellenTyp ${typ} not defined`);
+    }
+
+    public parseAusserordentlicherAnspruchTyp(typ: any): TSAusserordentlicherAnspruchTyp {
+        if (Object.values(TSAusserordentlicherAnspruchTyp).includes(typ)) {
+            return typ as TSAusserordentlicherAnspruchTyp;
+        }
+        throw new Error(`TSAusserordentlicherAnspruchTyp ${typ} not defined`);
     }
 
     public parseEinschulungTyp(typ: any): TSEinschulungTyp {

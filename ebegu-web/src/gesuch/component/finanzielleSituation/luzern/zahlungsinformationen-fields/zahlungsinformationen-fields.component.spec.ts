@@ -29,7 +29,7 @@ import {TSGesuch} from '../../../../../models/TSGesuch';
 import {TSZahlungsinformationen} from '../../../../../models/TSZahlungsinformationen';
 import {GesuchModelManager} from '../../../../service/gesuchModelManager';
 
-import {InfomaFieldsComponent} from './infoma-fields.component';
+import {ZahlungsinformationenFieldsComponent} from './zahlungsinformationen-fields.component';
 
 const gesuchModelManagerSpy = jasmine.createSpyObj<GesuchModelManager>(GesuchModelManager.name,
     ['getGesuch', 'getFamiliensituation']);
@@ -38,9 +38,9 @@ const listResourceRSSpy = jasmine.createSpyObj<ListResourceRS>(ListResourceRS.na
 const authServiceRSSpy = jasmine.createSpyObj<AuthServiceRS>(AuthServiceRS.name,
     ['isOneOfRoles']);
 
-describe('InfomaFieldsComponent', () => {
-    let component: InfomaFieldsComponent;
-    let fixture: ComponentFixture<InfomaFieldsComponent>;
+describe('ZahlungsinformationenFieldsComponent', () => {
+    let component: ZahlungsinformationenFieldsComponent;
+    let fixture: ComponentFixture<ZahlungsinformationenFieldsComponent>;
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
@@ -49,7 +49,7 @@ describe('InfomaFieldsComponent', () => {
                 SharedModule
             ],
             declarations: [
-                InfomaFieldsComponent
+                ZahlungsinformationenFieldsComponent
             ],
             providers: [
                 {provide: GesuchModelManager, useValue: gesuchModelManagerSpy},
@@ -71,7 +71,7 @@ describe('InfomaFieldsComponent', () => {
         gesuchModelManagerSpy.getGesuch.and.returnValue(gesuch);
         gesuchModelManagerSpy.getFamiliensituation.and.returnValue(famSit);
 
-        fixture = TestBed.createComponent(InfomaFieldsComponent);
+        fixture = TestBed.createComponent(ZahlungsinformationenFieldsComponent);
         component = fixture.componentInstance;
         component.model = new TSFinanzModel(1, false, 1, 2);
         component.model.zahlungsinformationen = new TSZahlungsinformationen();

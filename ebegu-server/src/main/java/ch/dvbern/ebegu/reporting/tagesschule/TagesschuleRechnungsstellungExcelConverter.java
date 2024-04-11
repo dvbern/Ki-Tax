@@ -17,19 +17,18 @@
 
 package ch.dvbern.ebegu.reporting.tagesschule;
 
-import java.time.LocalDate;
-import java.util.List;
-import java.util.Locale;
-
-import javax.annotation.Nonnull;
-import javax.enterprise.context.Dependent;
-
 import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.enums.reporting.MergeFieldTagesschuleRechnungsstellung;
 import ch.dvbern.ebegu.util.ServerMessageUtil;
 import ch.dvbern.oss.lib.excelmerger.ExcelConverter;
 import ch.dvbern.oss.lib.excelmerger.ExcelMergerDTO;
 import org.apache.poi.ss.usermodel.Sheet;
+
+import javax.annotation.Nonnull;
+import javax.enterprise.context.Dependent;
+import java.time.LocalDate;
+import java.util.List;
+import java.util.Locale;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -43,7 +42,6 @@ public class TagesschuleRechnungsstellungExcelConverter implements ExcelConverte
 	@Nonnull
 	public ExcelMergerDTO toExcelMergerDTO(
 		@Nonnull List<TagesschuleRechnungsstellungDataRow> data,
-		@Nonnull LocalDate stichtag,
 		@Nonnull Locale locale,
 		@Nonnull Mandant mandant) {
 
@@ -52,7 +50,7 @@ public class TagesschuleRechnungsstellungExcelConverter implements ExcelConverte
 		ExcelMergerDTO excelMerger = new ExcelMergerDTO();
 		addHeaders(excelMerger, locale, mandant);
 
-		excelMerger.addValue(MergeFieldTagesschuleRechnungsstellung.datumErstellt, stichtag);
+		excelMerger.addValue(MergeFieldTagesschuleRechnungsstellung.datumErstellt, LocalDate.now());
 
 		data.forEach(dataRow -> {
 			ExcelMergerDTO excelRowGroup = excelMerger.createGroup(MergeFieldTagesschuleRechnungsstellung.repeatRow);

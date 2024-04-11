@@ -219,7 +219,8 @@ public class ReportJobGeneratorBatchlet extends AbstractBatchlet {
 				return this.reportTagesschuleService.generateExcelReportTagesschuleAnmeldungen(stammdatenId, gesuchPeriodeId, locale);
 			}
 			case VORLAGE_REPORT_TAGESSCHULE_RECHNUNGSSTELLUNG: {
-				return this.reportTagesschuleService.generateExcelReportTagesschuleRechnungsstellung(locale);
+				Objects.requireNonNull(gesuchPeriodeId);
+				return this.reportTagesschuleService.generateExcelReportTagesschuleRechnungsstellung(locale, gesuchPeriodeId);
 			}
 			case VORLAGE_REPORT_NOTRECHT: {
 				return generateReportNotrecht();

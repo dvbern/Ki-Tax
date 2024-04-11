@@ -30,6 +30,7 @@ end;
 
 DELIMITER ;
 
+START TRANSACTION;
 
  # Variables definition
 SET @mandant_id_ar = UNHEX(REPLACE('5b9e6fa4-3991-11ed-a63d-b05cda43de9c', '-', ''));
@@ -87,6 +88,8 @@ UPDATE application_property SET value = 'false' WHERE name = 'ERLAUBEN_INSTITUTI
 UPDATE application_property SET value = 'false' WHERE name = 'ANGEBOT_FI_ENABLED' AND mandant_id = @mandant_id_ar;
 UPDATE application_property SET value = 'false' WHERE name = 'ANGEBOT_MITTAGSTISCH_ENABLED' AND mandant_id = @mandant_id_ar;
 UPDATE application_property SET value = 'false' WHERE name = 'ANGEBOT_TFO_ENABLED' AND mandant_id = @mandant_id_ar;
+UPDATE application_property SET value = 'false' WHERE name = 'AUSZAHLUNGEN_AN_ELTERN' AND mandant_id = @mandant_id_ar;
+
 
 UPDATE mandant SET activated = TRUE WHERE id = @mandant_id_ar;
 
@@ -386,3 +389,5 @@ VALUES (UNHEX(REPLACE(UUID(), '-', '')),  now(), now(),
 		'flyway', 'flyway', 0, NULL, 'sozialdienst-ar@mailbucket.dvbern.ch', '078 898 98 98', 'http://sodialdienst-ar.dvbern.ch',
 		UNHEX(REPLACE('1bfb8920-39ab-11ed-a63d-b05cda43de9c', '-', '')),
 		UNHEX(REPLACE('1653a0c7-39ab-11ed-a63d-b05cda43de9c', '-', '')));
+
+COMMIT;

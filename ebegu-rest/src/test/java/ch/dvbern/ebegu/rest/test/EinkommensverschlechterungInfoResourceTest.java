@@ -20,6 +20,7 @@ import java.util.Objects;
 import javax.inject.Inject;
 
 import ch.dvbern.ebegu.api.converter.JaxBConverter;
+import ch.dvbern.ebegu.api.converter.JaxBenutzerConverter;
 import ch.dvbern.ebegu.api.dtos.JaxDossier;
 import ch.dvbern.ebegu.api.dtos.JaxEinkommensverschlechterungInfoContainer;
 import ch.dvbern.ebegu.api.dtos.JaxFall;
@@ -68,7 +69,7 @@ public class EinkommensverschlechterungInfoResourceTest extends AbstractEbeguRes
 	private DossierResource dossierResource;
 
 	@Inject
-	private JaxBConverter converter;
+	private JaxBenutzerConverter converter;
 
 	@Inject
 	private Persistence persistence;

@@ -112,4 +112,35 @@ public class CheckKinderabzugValidatorTest {
 		Assert.assertFalse(validator.isValid(kind, null));
 	}
 
+	@Test
+	public void checkPathKinderAbzugTypSchwyzKeinUnterhaltspflichtigNotValid() {
+		var kind = new Kind();
+		kind.setUnterhaltspflichtig(false);
+		kind.setLebtKindAlternierend(true);
+		Assert.assertFalse(validator.isValid(kind, null));
+	}
+
+	@Test
+	public void checkPathKinderAbzugTypSchwyzUnterhaltspflichtigNotValid() {
+		var kind = new Kind();
+		kind.setUnterhaltspflichtig(true);
+		kind.setLebtKindAlternierend(null);
+		Assert.assertFalse(validator.isValid(kind, null));
+	}
+
+	@Test
+	public void checkPathKinderAbzugTypSchwyzUnterhaltspflichtigValid() {
+		var kind = new Kind();
+		kind.setUnterhaltspflichtig(true);
+		kind.setLebtKindAlternierend(true);
+		Assert.assertTrue(validator.isValid(kind, null));
+	}
+
+	@Test
+	public void checkPathKinderAbzugTypSchwyzKeinUnterhaltspflichtigValid() {
+		var kind = new Kind();
+		kind.setUnterhaltspflichtig(false);
+		kind.setLebtKindAlternierend(null);
+		Assert.assertTrue(validator.isValid(kind, null));
+	}
 }

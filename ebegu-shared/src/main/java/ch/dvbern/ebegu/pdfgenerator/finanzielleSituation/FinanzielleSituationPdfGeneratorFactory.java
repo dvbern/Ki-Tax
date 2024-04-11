@@ -17,16 +17,15 @@
 
 package ch.dvbern.ebegu.pdfgenerator.finanzielleSituation;
 
-import java.time.LocalDate;
-
-import javax.annotation.Nonnull;
-
 import ch.dvbern.ebegu.entities.GemeindeStammdaten;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Verfuegung;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.finanzielleSituationRechner.AbstractFinanzielleSituationRechner;
 import ch.dvbern.ebegu.pdfgenerator.DokumentAnFamilieGenerator;
+
+import javax.annotation.Nonnull;
+import java.time.LocalDate;
 
 public abstract class FinanzielleSituationPdfGeneratorFactory {
 	public static DokumentAnFamilieGenerator getGenerator(
@@ -47,7 +46,8 @@ public abstract class FinanzielleSituationPdfGeneratorFactory {
 				finanzielleSituationRechner
 			);
 		case SOLOTHURN:
-			return new FinanzielleSituationPdfGeneratorSolothurn(
+		case SCHWYZ: //Schwyz FinSitPDF wird in KIBON-3438 umgesetzt
+				return new FinanzielleSituationPdfGeneratorSolothurn(
 				gesuch,
 				verfuegungFuerMassgEinkommen,
 				stammdaten,
@@ -70,7 +70,7 @@ public abstract class FinanzielleSituationPdfGeneratorFactory {
 				erstesEinreichungsdatum,
 				finanzielleSituationRechner
 			);
-		default:
+			default:
 			throw new EbeguRuntimeException("getGenerator", "No PDF Generator found for finSitTyp: " + gesuch.getFinSitTyp());
 		}
 	}

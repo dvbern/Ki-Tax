@@ -29,16 +29,17 @@ import {TSRoleUtil} from '../../../../../utils/TSRoleUtil';
 import {GesuchModelManager} from '../../../../service/gesuchModelManager';
 
 @Component({
-    selector: 'dv-infoma-fields',
-    templateUrl: './infoma-fields.component.html',
-    styleUrls: ['./infoma-fields.component.less'],
+    selector: 'dv-zahlungsinformationen-fields',
+    templateUrl: './zahlungsinformationen-fields.component.html',
     changeDetection: ChangeDetectionStrategy.OnPush,
     viewProviders: [{provide: ControlContainer, useExisting: NgForm}]
 })
-export class InfomaFieldsComponent implements OnInit {
+export class ZahlungsinformationenFieldsComponent implements OnInit {
 
     @Input() public readonly: boolean;
     @Input() public model: TSFinanzModel;
+
+    @Input() public infomaAktiv: boolean;
     public laenderList: TSLand[];
 
     public constructor(

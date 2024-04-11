@@ -1,5 +1,6 @@
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {NgForm} from '@angular/forms';
+import {ListResourceRS} from '../../app/core/service/listResourceRS.rest';
 import {SharedModule} from '../../app/shared/shared.module';
 import {SHARED_MODULE_OVERRIDES} from '../../hybridTools/mockUpgradedDirective';
 import {TSZahlungsinformationen} from '../../models/TSZahlungsinformationen';
@@ -15,6 +16,8 @@ describe('AuszahlungsdatenComponent', () => {
             ['openGesuch', 'isGesuchReadonly', 'isKorrekturModusJugendamt']);
     gesuchModelManagerSpy.isGesuchReadonly.and.returnValue(false);
     gesuchModelManagerSpy.isKorrekturModusJugendamt.and.returnValue(false);
+    const listRSSpy = jasmine.createSpyObj<ListResourceRS>(ListResourceRS.name, ['getLaenderList']);
+    listRSSpy.getLaenderList.and.resolveTo([]);
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
@@ -22,6 +25,7 @@ describe('AuszahlungsdatenComponent', () => {
             declarations: [AuszahlungsdatenComponent],
             providers: [
                 {provide: GesuchModelManager, useValue: gesuchModelManagerSpy},
+                {provide: ListResourceRS, useValue: listRSSpy},
                 {provide: NgForm, useValue: new NgForm([], [])}
             ]
         }).overrideModule(SharedModule, SHARED_MODULE_OVERRIDES)

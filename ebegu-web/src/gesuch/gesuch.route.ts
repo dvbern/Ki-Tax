@@ -49,6 +49,9 @@ import {
     FamiliensituationAppenzellViewXComponent
 } from './component/familiensituation/familiensituation-appenzell-view-x/familiensituation-appenzell-view-x.component';
 import {
+    FamiliensituationSchwyzComponent
+} from './component/familiensituation/familiensituation-schwyz/familiensituation-schwyz.component';
+import {
     FamiliensituationViewXComponent
 } from './component/familiensituation/familiensituation-view-x/familiensituation-view-x.component';
 import {
@@ -257,6 +260,28 @@ export class EbeguFamiliensituationAppenzellState implements Ng1StateDeclaration
     public views: any = {
         gesuchViewPort: {
             component: FamiliensituationAppenzellViewXComponent,
+        },
+        kommentarViewPort: {
+            template: kommentarView,
+        },
+    };
+
+    public resolve = {
+        gesuch: getGesuchModelManager,
+    };
+
+    public data = {
+        roles: TSRoleUtil.getAllRolesButAnonymous(),
+    };
+}
+
+export class EbeguFamiliensituationSchwyzState implements Ng1StateDeclaration {
+    public name = 'gesuch.familiensituation-schwyz';
+    public url = '/familiensituation-sz/:gesuchId';
+
+    public views: any = {
+        gesuchViewPort: {
+            component: FamiliensituationSchwyzComponent,
         },
         kommentarViewPort: {
             template: kommentarView,
@@ -1154,6 +1179,7 @@ const ng1States: Ng1StateDeclaration[] = [
     new EbeguFamiliensituationState(),
     new EbeguFamiliensituationDefaultState(),
     new EbeguFamiliensituationAppenzellState(),
+    new EbeguFamiliensituationSchwyzState(),
     new EbeguStammdatenState(),
     new EbeguUmzugState(),
     new EbeguKinderListState(),

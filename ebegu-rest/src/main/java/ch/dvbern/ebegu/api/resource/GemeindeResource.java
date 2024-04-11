@@ -19,6 +19,7 @@ package ch.dvbern.ebegu.api.resource;
 
 import ch.dvbern.ebegu.api.AuthConstants;
 import ch.dvbern.ebegu.api.converter.JaxBConverter;
+import ch.dvbern.ebegu.api.converter.gemeinde.JaxGemeindeStammdatenConverter;
 import ch.dvbern.ebegu.api.dtos.*;
 import ch.dvbern.ebegu.api.resource.util.MultipartFormToFileConverter;
 import ch.dvbern.ebegu.api.resource.util.TransferFile;
@@ -89,6 +90,9 @@ public class GemeindeResource {
 
 	@Inject
 	private JaxBConverter converter;
+
+	@Inject
+	private JaxGemeindeStammdatenConverter gemeindeStammdatenConverter;
 
 	@Inject
 	private FerieninselStammdatenService ferieninselStammdatenService;
@@ -257,7 +261,7 @@ public class GemeindeResource {
 			stammdatenFromDB = initGemeindeStammdaten(gemeindeId);
 		}
 		return stammdatenFromDB
-			.map(stammdaten -> converter.gemeindeStammdatenToJAX(stammdaten))
+			.map(stammdaten -> gemeindeStammdatenConverter.gemeindeStammdatenToJAX(stammdaten))
 			.orElse(null);
 	}
 
@@ -279,7 +283,7 @@ public class GemeindeResource {
 			stammdatenFromDB = initGemeindeStammdaten(gemeindeId);
 		}
 		return stammdatenFromDB
-			.map(stammdaten -> converter.gemeindeStammdatenLiteToJAX(stammdaten))
+			.map(stammdaten -> gemeindeStammdatenConverter.gemeindeStammdatenLiteToJAX(stammdaten))
 			.orElse(null);
 	}
 
@@ -326,7 +330,7 @@ public class GemeindeResource {
 			stammdaten.setAdresse(new Adresse());
 			stammdaten.setGemeindeStammdatenKorrespondenz(new GemeindeStammdatenKorrespondenz());
 		}
-		GemeindeStammdaten convertedStammdaten = converter.gemeindeStammdatenToEntity(jaxStammdaten, stammdaten);
+		GemeindeStammdaten convertedStammdaten = gemeindeStammdatenConverter.gemeindeStammdatenToEntity(jaxStammdaten, stammdaten);
 
 		// Konfiguration
 		// Die Konfiguratoin kann bearbeitet werden, bis die Periode geschlossen ist.
@@ -343,8 +347,8 @@ public class GemeindeResource {
 			saveFerieninseln(konfiguration.getFerieninselStammdaten(), stammdaten.getGemeinde());
 		});
 
-		// Statuswechsel
-		if (convertedStammdaten.getGemeinde().getStatus() == GemeindeStatus.EINGELADEN) {
+		// Statuswechsel, Mandant kann Gemeinden nicht aktivieren
+		if (convertedStammdaten.getGemeinde().getStatus() == GemeindeStatus.EINGELADEN && !principalBean.isCallerInAnyOfRole(UserRole.getMandantRoles())) {
 			convertedStammdaten.getGemeinde().setStatus(GemeindeStatus.AKTIV);
 		}
 
@@ -357,7 +361,7 @@ public class GemeindeResource {
 
 		GemeindeStammdaten persistedStammdaten = gemeindeService.saveGemeindeStammdaten(convertedStammdaten);
 
-		return converter.gemeindeStammdatenToJAX(persistedStammdaten);
+		return gemeindeStammdatenConverter.gemeindeStammdatenToJAX(persistedStammdaten);
 
 	}
 
@@ -595,7 +599,7 @@ public class GemeindeResource {
 	public JaxGemeindeStammdaten deleteAlternativeLogoTagesschule(
 		@Nonnull @NotNull @PathParam("gemeindeId") JaxId gemeindeJAXPId) {
 		String gemeindeId = converter.toEntityId(gemeindeJAXPId);
-		return converter.gemeindeStammdatenToJAX(gemeindeService.deleteAlternativeLogoTagesschule(gemeindeId));
+		return gemeindeStammdatenConverter.gemeindeStammdatenToJAX(gemeindeService.deleteAlternativeLogoTagesschule(gemeindeId));
 	}
 
 	@ApiOperation(value = "Returns all unregistered Gemeinden from BFS", responseContainer = "Collection",
@@ -812,6 +816,10 @@ public class GemeindeResource {
 		}
 		if (!gemeinde.getGueltigBis().equals(jaxGemeinde.getGueltigBis())) {
 			gemeinde.setGueltigBis(jaxGemeinde.getGueltigBis());
+			datesChanged = true;
+		}
+		if (!gemeinde.getInfomaZahlungen().equals(jaxGemeinde.getInfomaZahlungen())) {
+			gemeinde.setInfomaZahlungen(jaxGemeinde.getInfomaZahlungen());
 			datesChanged = true;
 		}
 		if (datesChanged) {

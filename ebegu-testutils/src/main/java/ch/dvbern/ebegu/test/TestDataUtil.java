@@ -278,6 +278,16 @@ public final class TestDataUtil {
 		return mandant;
 	}
 
+	@Nonnull
+	public static Mandant getMandantSchwyz() {
+		Mandant mandant;
+		mandant = new Mandant();
+		mandant.setId(AbstractTestfall.ID_MANDANT_KANTON_SCHWYZ);
+		mandant.setMandantIdentifier(MandantIdentifier.SCHWYZ);
+		mandant.setName("Schwyz");
+		return mandant;
+	}
+
 	public static Gemeinde getTestGemeinde(Persistence persistence) {
 		Gemeinde gemeinde = persistence.find(Gemeinde.class, GEMEINDE_PARIS_ID);
 		if (gemeinde == null) {
