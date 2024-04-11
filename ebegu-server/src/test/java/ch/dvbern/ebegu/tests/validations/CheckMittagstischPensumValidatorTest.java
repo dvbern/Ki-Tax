@@ -115,7 +115,8 @@ class CheckMittagstischPensumValidatorTest extends AbstractValidatorTest {
 	private Betreuungspensum createBetreuungspensum(
 		BigDecimal anzahlMahlzeiten,
 		BigDecimal tarifProMahlzeit,
-		BigDecimal monatlicheKosten, BigDecimal pensum
+		BigDecimal monatlicheKosten,
+		BigDecimal pensum
 	) {
 		var result = TestDataUtil.createBetreuungspensumMittagstisch(anzahlMahlzeiten, tarifProMahlzeit);
 		result.setPensum(pensum);

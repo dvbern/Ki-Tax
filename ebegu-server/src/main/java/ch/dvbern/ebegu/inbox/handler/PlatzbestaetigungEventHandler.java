@@ -37,12 +37,10 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import ch.dvbern.ebegu.entities.AbstractEntity;
-import ch.dvbern.ebegu.entities.AbstractMahlzeitenPensum;
 import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Betreuungsmitteilung;
 import ch.dvbern.ebegu.entities.BetreuungsmitteilungPensum;
-import ch.dvbern.ebegu.entities.BetreuungspensumContainer;
 import ch.dvbern.ebegu.entities.ErweiterteBetreuung;
 import ch.dvbern.ebegu.entities.ErweiterteBetreuungContainer;
 import ch.dvbern.ebegu.entities.Gemeinde;
@@ -569,11 +567,8 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 	}
 
 	protected boolean isSame(@Nonnull Betreuungsmitteilung betreuungsmitteilung, @Nonnull Betreuung betreuung) {
-		List<? extends AbstractMahlzeitenPensum> fromBetreuung = betreuung.getBetreuungspensumContainers().stream()
-			.map(BetreuungspensumContainer::getBetreuungspensumJA)
-			.collect(Collectors.toList());
-
-		Set<? extends AbstractMahlzeitenPensum> fromMitteilung = betreuungsmitteilung.getBetreuungspensen();
+		var fromBetreuung = betreuung.getBetreuungenJA();
+		var fromMitteilung = betreuungsmitteilung.getBetreuungenJA();
 
 		return EbeguUtil.areComparableCollections(fromBetreuung, fromMitteilung, COMPARATOR_WITH_GUELTIGKEIT);
 	}

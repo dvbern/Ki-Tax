@@ -1014,7 +1014,7 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 			.orElseThrow(() -> new EbeguEntityNotFoundException("sendBetreuungsmitteilung"));
 
 		MitteilungUtil.initializeBetreuungsmitteilung(mitteilung, betreuung, currentBenutzer, locale);
-		mitteilung.setMessage(createNachrichtForMutationsmeldung(mitteilung, pensenFromAbweichungen));
+		mitteilung.setMessage(createNachrichtForMutationsmeldung(mitteilung, pensenFromAbweichungen, locale));
 
 		sendBetreuungsmitteilung(mitteilung);
 	}
@@ -1044,14 +1044,15 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 				findAllBetreuungsMitteilungenForInstitution(institution);
 
 		offeneMutationsmitteilungenForInstitution.forEach(mitteilung -> {
-			mitteilung.setBetreuungspensen(betreuungService.capBetreuungspensenToGueltigkeit(mitteilung.getBetreuungspensen(),
-					gueltigkeit));
+			Set<BetreuungsmitteilungPensum> betreuungspensen = betreuungService.capBetreuungspensenToGueltigkeit(
+				mitteilung.getBetreuungspensen(),
+				gueltigkeit);
+			mitteilung.setBetreuungspensen(betreuungspensen);
 
-			if (mitteilung.getBetreuungspensen().isEmpty()) {
+			if (betreuungspensen.isEmpty()) {
 				persistence.remove(mitteilung);
 			} else {
-				mitteilung.setMessage(createNachrichtForMutationsmeldung(mitteilung,
-						mitteilung.getBetreuungspensen()));
+				mitteilung.setMessage(createNachrichtForMutationsmeldung(mitteilung, betreuungspensen, LocaleThreadLocal.get()));
 				persistence.merge(mitteilung);
 			}
 		});
@@ -1139,28 +1140,34 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 
 	@Override
 	public String createNachrichtForMutationsmeldung(
-			@Nonnull Betreuungsmitteilung mitteilung,
-			@Nonnull Set<BetreuungsmitteilungPensum> changedBetreuungen) {
-		final Locale locale = LocaleThreadLocal.get();
-		assert mitteilung.getBetreuung() != null;
-		final boolean mvzEnabled =
-				einstellungService.findEinstellung(EinstellungKey.GEMEINDE_MAHLZEITENVERGUENSTIGUNG_ENABLED,
-						mitteilung.getBetreuung().extractGemeinde(),
-						mitteilung.getBetreuung().extractGesuchsperiode()).getValueAsBoolean();
+		@Nonnull Betreuungsmitteilung mitteilung,
+		@Nonnull Set<BetreuungsmitteilungPensum> changedBetreuungen,
+		@Nonnull Locale locale) {
 
-		final Einstellung einstellungAnzeigeTyp = einstellungService.findEinstellung(EinstellungKey.PENSUM_ANZEIGE_TYP,
-				mitteilung.getBetreuung().extractGemeinde(),
-				mitteilung.getBetreuung().extractGesuchsperiode());
+		Betreuung betreuung = requireNonNull(mitteilung.getBetreuung());
+		boolean mvzEnabled = einstellungService.findEinstellung(
+			EinstellungKey.GEMEINDE_MAHLZEITENVERGUENSTIGUNG_ENABLED,
+			betreuung.extractGemeinde(),
+			betreuung.extractGesuchsperiode()).getValueAsBoolean();
+
+		Einstellung einstellungAnzeigeTyp = einstellungService.findEinstellung(
+			EinstellungKey.PENSUM_ANZEIGE_TYP,
+			betreuung.extractGemeinde(),
+			betreuung.extractGesuchsperiode());
 		BetreuungspensumAnzeigeTyp betreuungspensumAnzeigeTyp =
-			getBetreuungspensumAnzeigeTyp(einstellungAnzeigeTyp, mitteilung.getBetreuung());
+			getBetreuungspensumAnzeigeTyp(einstellungAnzeigeTyp, betreuung);
+
+		Mandant mandant = betreuung.extractGesuch().extractMandant();
 
 		BigDecimal multiplier = getMultiplierForMutationsMitteilung(mitteilung, betreuungspensumAnzeigeTyp);
 
-		return MitteilungUtil.createNachrichtForMutationsmeldung(changedBetreuungen,
-				mvzEnabled,
-				locale,
-				betreuungspensumAnzeigeTyp,
-				multiplier);
+		return MitteilungUtil.createNachrichtForMutationsmeldung(
+			changedBetreuungen,
+			mvzEnabled,
+			locale,
+			betreuungspensumAnzeigeTyp,
+			multiplier,
+			mandant);
 	}
 
 	@Nonnull
@@ -1172,28 +1179,32 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 	}
 
 	private BigDecimal getMultiplierForMutationsMitteilung(
-			@Nonnull Betreuungsmitteilung mitteilung, @Nonnull BetreuungspensumAnzeigeTyp betreuungspensumAnzeigeTyp) {
+		@Nonnull Betreuungsmitteilung mitteilung,
+		@Nonnull BetreuungspensumAnzeigeTyp betreuungspensumAnzeigeTyp
+	) {
 		if (betreuungspensumAnzeigeTyp == BetreuungspensumAnzeigeTyp.NUR_MAHLZEITEN) {
 			return BetreuungUtil.getMittagstischMultiplier();
 		}
-		if (!betreuungspensumAnzeigeTyp.equals(BetreuungspensumAnzeigeTyp.NUR_STUNDEN)) {
+		if (betreuungspensumAnzeigeTyp != BetreuungspensumAnzeigeTyp.NUR_STUNDEN) {
 			return BigDecimal.ONE;
 		}
-		assert mitteilung.getBetreuung() != null;
-		if (mitteilung.getBetreuung().isAngebotKita()) {
+
+		Betreuung betreuung = requireNonNull(mitteilung.getBetreuung());
+		if (betreuung.isAngebotKita()) {
 			BigDecimal oeffnungstageKita = einstellungService.findEinstellung(EinstellungKey.OEFFNUNGSTAGE_KITA,
-					mitteilung.getBetreuung().extractGemeinde(),
-					mitteilung.getBetreuung().extractGesuchsperiode()).getValueAsBigDecimal();
+					betreuung.extractGemeinde(),
+					betreuung.extractGesuchsperiode()).getValueAsBigDecimal();
 			return BetreuungUtil.calculateOeffnungszeitPerMonthProcentual(MathUtil.EXACT.multiply(oeffnungstageKita,
 					BetreuungUtil.ANZAHL_STUNDEN_PRO_TAG_KITA));
 		}
 		BigDecimal oeffnungstageTFO = einstellungService.findEinstellung(EinstellungKey.OEFFNUNGSTAGE_TFO,
-				mitteilung.getBetreuung().extractGemeinde(),
-				mitteilung.getBetreuung().extractGesuchsperiode()).getValueAsBigDecimal();
+				betreuung.extractGemeinde(),
+				betreuung.extractGesuchsperiode()).getValueAsBigDecimal();
 
 		BigDecimal oeffnungsstundenTFO = einstellungService.findEinstellung(EinstellungKey.OEFFNUNGSSTUNDEN_TFO,
-				mitteilung.getBetreuung().extractGemeinde(),
-				mitteilung.getBetreuung().extractGesuchsperiode()).getValueAsBigDecimal();
+				betreuung.extractGemeinde(),
+				betreuung.extractGesuchsperiode()).getValueAsBigDecimal();
+
 		return MathUtil.DEFAULT.divide(MathUtil.DEFAULT.divide(MathUtil.DEFAULT.multiply(oeffnungstageTFO,
 				oeffnungsstundenTFO), new BigDecimal(12)), new BigDecimal(100));
 	}

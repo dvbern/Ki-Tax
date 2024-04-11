@@ -186,7 +186,7 @@ public class MitteilungResource {
 		MitteilungUtil.initializeBetreuungsmitteilung(betreuungsmitteilung, betreuung, currentBenutzer, locale);
 
 		betreuungsmitteilung.setMessage(mitteilungService.createNachrichtForMutationsmeldung(betreuungsmitteilung,
-			betreuungsmitteilung.getBetreuungspensen()));
+			betreuungsmitteilung.getBetreuungspensen(), locale));
 
 		Betreuungsmitteilung persistedMitteilung = this.mitteilungService.sendBetreuungsmitteilung(betreuungsmitteilung);
 		return converter.betreuungsmitteilungToJAX(persistedMitteilung);

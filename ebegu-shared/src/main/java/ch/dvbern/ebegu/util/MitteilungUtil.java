@@ -22,7 +22,6 @@ import java.math.RoundingMode;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
-import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -66,7 +65,8 @@ public final class MitteilungUtil {
 		boolean mahlzeitenverguenstigungEnabled,
 		@Nonnull Locale locale,
 		@Nonnull BetreuungspensumAnzeigeTyp betreuungspensumAnzeigeTyp,
-		@Nonnull BigDecimal multiplier
+		@Nonnull BigDecimal multiplier,
+		@Nonnull Mandant mandant
 	) {
 		final StringBuilder message = new StringBuilder();
 		final int[] index = { 1 }; // Array, weil es final sein muss, damit es in LambdaExpression verwendet werden darf...
@@ -81,7 +81,7 @@ public final class MitteilungUtil {
 			if (index[0] > 1) {
 				message.append('\n');
 			}
-			message.append(createNachrichtForMutationsmeldung(betreuungspensumContainer, mahlzeitenverguenstigungEnabled, index[0], locale, betreuungspensumAnzeigeTyp, multiplier));
+			message.append(createNachrichtForMutationsmeldung(betreuungspensumContainer, mahlzeitenverguenstigungEnabled, index[0], locale, betreuungspensumAnzeigeTyp, multiplier, mandant));
 			index[0]++;
 		});
 		return message.toString();
@@ -93,11 +93,11 @@ public final class MitteilungUtil {
 		boolean mahlzeitenverguenstigungEnabled, int index,
 		@Nonnull Locale locale,
 		@Nonnull BetreuungspensumAnzeigeTyp betreuungspensumAnzeigeTyp,
-		@Nonnull BigDecimal multiplier
+		@Nonnull BigDecimal multiplier,
+		@Nonnull Mandant mandant
 	) {
 		String datumAb = Constants.DATE_FORMATTER.format(pensumMitteilung.getGueltigkeit().getGueltigAb());
 		String datumBis = Constants.DATE_FORMATTER.format(pensumMitteilung.getGueltigkeit().getGueltigBis());
-		Mandant mandant = Objects.requireNonNull(pensumMitteilung.getBetreuungsmitteilung().getDossier().getFall().getMandant());
 
 		BigDecimal monatlicheBetreuungskosten = pensumMitteilung.getMonatlicheBetreuungskosten();
 		final BigDecimal multipliedPensum = MathUtil.DEFAULT.multiply(pensumMitteilung.getPensum(), multiplier);
