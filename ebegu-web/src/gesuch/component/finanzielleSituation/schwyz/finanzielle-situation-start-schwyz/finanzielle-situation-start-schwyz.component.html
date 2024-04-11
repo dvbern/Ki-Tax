@@ -29,8 +29,6 @@
                 (gemeinsamChanged)="this.gemeinsamChanged($event)"
             ></dv-steuerveranlagung-gemeinsam>
             <dv-steuerveranlagt-schwyz *ngIf="model.familienSituation.gemeinsameSteuererklaerung"
-                                       [finSitJA]="getModel().finanzielleSituationJA"
-                                       [finSitGS]="getModel().finanzielleSituationGS"
                                        [readonly]="gesuchModelManager.isGesuchReadonly()">
             </dv-steuerveranlagt-schwyz>
             <div class="row margin-bottom-20"
@@ -46,9 +44,7 @@
         </ng-template>
 
         <ng-template #alleinigesGesuch>
-            <dv-finanzielle-situation-single-gs [finSitJA]="getModel().finanzielleSituationJA"
-                                                [finSitGS]="getModel().finanzielleSituationGS"
-                                                [readonly]="gesuchModelManager.isGesuchReadonly()"
+            <dv-finanzielle-situation-single-gs [readonly]="gesuchModelManager.isGesuchReadonly()"
                                                 [finanzModel]="model">
             </dv-finanzielle-situation-single-gs>
 

@@ -16,13 +16,7 @@ export class FinanzielleSituationSingleGsComponent {
     @ViewChild(NgForm) public form: NgForm;
 
     @Input()
-    public finSitJA!: TSFinanzielleSituation;
-
-    @Input()
     public readonly!: boolean;
-
-    @Input()
-    public finSitGS?: TSFinanzielleSituation;
 
     @Input()
     public finanzModel: TSFinanzModel;
@@ -33,16 +27,16 @@ export class FinanzielleSituationSingleGsComponent {
     }
 
     public onQuellenbesteuertChange(): void {
-        if (EbeguUtil.isNullOrUndefined(this.finSitJA.quellenbesteuert)) {
+        if (EbeguUtil.isNullOrUndefined(this.getFinSitJA().quellenbesteuert)) {
             return;
         }
-        if (this.finSitJA.quellenbesteuert) {
-            this.finSitJA.bruttoLohn = null;
+        if (this.getFinSitJA().quellenbesteuert) {
+            this.getFinSitJA().bruttoLohn = null;
         } else {
-            this.finSitJA.steuerbaresEinkommen = null;
-            this.finSitJA.einkaeufeVorsorge = null;
-            this.finSitJA.abzuegeLiegenschaft = null;
-            this.finSitJA.steuerbaresVermoegen = null;
+            this.getFinSitJA().steuerbaresEinkommen = null;
+            this.getFinSitJA().einkaeufeVorsorge = null;
+            this.getFinSitJA().abzuegeLiegenschaft = null;
+            this.getFinSitJA().steuerbaresVermoegen = null;
         }
         this.finanzielleSituationSchwyzService.calculateMassgebendesEinkommen(this.finanzModel);
     }
@@ -51,4 +45,7 @@ export class FinanzielleSituationSingleGsComponent {
         return EbeguUtil.isNotNullOrUndefined(toCheck);
     }
 
+    public getFinSitJA(): TSFinanzielleSituation {
+        return this.finanzModel.getFiSiConToWorkWith()?.finanzielleSituationJA;
+    }
 }

@@ -14,13 +14,7 @@ import {FinanzielleSituationSchwyzService} from '../finanzielle-situation-schwyz
 export class SteuerveranlagtSchwyzComponent {
 
     @Input()
-    public finSitJA!: TSFinanzielleSituation;
-
-    @Input()
     public readonly!: boolean;
-
-    @Input()
-    public finSitGS?: TSFinanzielleSituation;
 
     @Input()
     public finanzModel: TSFinanzModel;
@@ -37,4 +31,13 @@ export class SteuerveranlagtSchwyzComponent {
     public onValueChangeFunction = (): void => {
         this.finanzielleSituationSchwyzService.calculateMassgebendesEinkommen(this.finanzModel);
     };
+
+    public getFinSitJA(): TSFinanzielleSituation {
+        return this.finanzModel.getFiSiConToWorkWith()?.finanzielleSituationJA;
+    }
+
+    public getFinSitGS(): TSFinanzielleSituation {
+        return this.finanzModel.getFiSiConToWorkWith()?.finanzielleSituationGS;
+    }
+
 }
