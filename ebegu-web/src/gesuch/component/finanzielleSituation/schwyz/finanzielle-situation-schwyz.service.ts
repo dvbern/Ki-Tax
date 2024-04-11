@@ -15,8 +15,6 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-
-
 import {Injectable} from '@angular/core';
 import {Observable, ReplaySubject, Subject} from 'rxjs';
 import {TSFinanzielleSituationResultateDTO} from '../../../../models/dto/TSFinanzielleSituationResultateDTO';
@@ -34,7 +32,6 @@ export class FinanzielleSituationSchwyzService {
         private readonly berechnungsManager: BerechnungsManager
     ) {
     }
-
     public get massgebendesEinkommenStore(): Observable<TSFinanzielleSituationResultateDTO> {
         return this._massgebendesEinkommenStore.asObservable();
     }
