@@ -28,23 +28,11 @@
                 </dv-steuerveranlagt-schwyz>
             </ng-template>
             <ng-template #bruttolohnFragen>
-                <div class="row">
-                    <div class="col-sm-6">
-                        <div class="form-group">
-                            <dv-input-label-field
-                                [name]="'bruttoLohn'"
-                                [(model)]="model.getEkvToWorkWith().bruttolohnAbrechnung1"
-                                [labelMessageKey]="'FINANZIELLE_SITUATION_BRUTTOLOHN'"
-                                [inputRequired]="true"
-                                [inputDisabled]="gesuchmodelManager.isGesuchReadonly()"
-                                [tooltipMessageKey]="'FINANZIELLE_SITUATION_BRUTTOLOHN_HINT'"
-                                [showBisher]="isNotNullOrUndefined(model.getEkvToWorkWith_GS())"
-                                [deklaration]="model.getEkvToWorkWith_GS()?.bruttolohnAbrechnung1"
-                                [korrektur]="model.getEkvToWorkWith().bruttolohnAbrechnung1">
-                            </dv-input-label-field>
-                        </div>
-                    </div>
-                </div>
+                <dv-bruttolohn-schwyz [finSitJA]="model.getEkvToWorkWith()"
+                                      [finSitGS]="model.getEkvToWorkWith_GS()"
+                                      [readonly]="gesuchmodelManager.isGesuchReadonly()">
+
+                </dv-bruttolohn-schwyz>
 
             </ng-template>
         </form>

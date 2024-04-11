@@ -466,7 +466,7 @@ public final class EbeguUtil {
 	}
 
 	public static boolean isEKVSchwyzVollstaendig(Einkommensverschlechterung ekv) {
-		return ekv.getBruttolohnAbrechnung1() != null ||
+		return ekv.getBruttoLohn() != null ||
 			(ekv.getSteuerbaresEinkommen() != null
 				&& ekv.getEinkaeufeVorsorge() != null
 				&& ekv.getAbzuegeLiegenschaft() != null
