@@ -29,7 +29,8 @@
                 (gemeinsamChanged)="this.gemeinsamChanged($event)"
             ></dv-steuerveranlagung-gemeinsam>
             <dv-steuerveranlagt-schwyz *ngIf="model.familienSituation.gemeinsameSteuererklaerung"
-                                       [readonly]="gesuchModelManager.isGesuchReadonly()">
+                                       [readonly]="gesuchModelManager.isGesuchReadonly()"
+                                       [finanzModel]="model">
             </dv-steuerveranlagt-schwyz>
             <div class="row margin-bottom-20"
                  *ngIf="model.familienSituation.gemeinsameSteuererklaerung">

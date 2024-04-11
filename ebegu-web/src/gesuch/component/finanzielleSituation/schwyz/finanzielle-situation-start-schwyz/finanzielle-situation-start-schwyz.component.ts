@@ -5,6 +5,7 @@ import {TSFinanzielleSituationResultateDTO} from '../../../../../models/dto/TSFi
 import {TSFinanzielleSituationSubStepName} from '../../../../../models/enums/TSFinanzielleSituationSubStepName';
 import {TSWizardStepName} from '../../../../../models/enums/TSWizardStepName';
 import {TSWizardStepStatus} from '../../../../../models/enums/TSWizardStepStatus';
+import {TSFinanzielleSituation} from '../../../../../models/TSFinanzielleSituation';
 import {TSFinanzielleSituationContainer} from '../../../../../models/TSFinanzielleSituationContainer';
 import {TSFinanzModel} from '../../../../../models/TSFinanzModel';
 import {EbeguUtil} from '../../../../../utils/EbeguUtil';
@@ -127,6 +128,10 @@ export class FinanzielleSituationStartSchwyzComponent extends AbstractGesuchView
     }
 
     public gemeinsamChanged($event: MatRadioChange): void {
+        if ($event.value === true) {
+            this.model.finanzielleSituationContainerGS2.finanzielleSituationJA = new TSFinanzielleSituation();
+            this.model.finanzielleSituationContainerGS1.finanzielleSituationJA = new TSFinanzielleSituation();
+        }
         this.calculate();
     }
 
