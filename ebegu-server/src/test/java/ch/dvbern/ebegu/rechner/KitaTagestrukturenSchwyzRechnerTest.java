@@ -96,7 +96,7 @@ public class KitaTagestrukturenSchwyzRechnerTest {
 		// then
 		var result = verfuegungZeitabschnitt.getRelevantBgCalculationResult();
 		checkMappedInputs(input, result);
-		assertEquals(new BigDecimal("10.00"), result.getAnspruchspensumZeiteinheit());
+		assertEquals(new BigDecimal("10.25"), result.getAnspruchspensumZeiteinheit());
 		assertEquals(new BigDecimal("8.20"), result.getBgPensumZeiteinheit());
 		assertEquals(new BigDecimal("8.20"), result.getBgPensumZeiteinheit());
 		assertEquals(
