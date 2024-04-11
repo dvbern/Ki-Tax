@@ -237,8 +237,10 @@ public class BetreuungspensumAbweichung extends AbstractMahlzeitenPensum impleme
 		// really not sure why tarife for Mahlzeiten are different than everything else...
 		// Tarif is immutable at this point and we just copy the old value
 		if (requireNonNull(mitteilung.getBetreuung()).isAngebotMittagstisch()) {
-			mitteilungPensum.setTarifProHauptmahlzeit(getTarifProHauptmahlzeit());
-			mitteilungPensum.setTarifProNebenmahlzeit(getTarifProNebenmahlzeit());
+			BigDecimal kostenHauptmahlzeit = vertraglichWhenStatusNone(getTarifProHauptmahlzeit(), getVertraglicherTarifHauptmahlzeit());
+			BigDecimal kostenNebenmahlzeit = vertraglichWhenStatusNone(getTarifProNebenmahlzeit(), getVertraglicherTarifNebenmahlzeit());
+			mitteilungPensum.setTarifProHauptmahlzeit(kostenHauptmahlzeit);
+			mitteilungPensum.setTarifProNebenmahlzeit(kostenNebenmahlzeit);
 		} else {
 			mitteilungPensum.setTarifProHauptmahlzeit(requireNonNull(vertraglicherTarifHauptmahlzeit));
 			mitteilungPensum.setTarifProNebenmahlzeit(requireNonNull(vertraglicherTarifNebenmahlzeit));
