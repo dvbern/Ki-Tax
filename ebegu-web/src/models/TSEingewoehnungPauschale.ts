@@ -13,22 +13,21 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package ch.dvbern.ebegu.enums;
+import {TSAbstractDateRangedEntity} from './TSAbstractDateRangedEntity';
 
-/**
- * Enum fuer Typ der Eingewöhung
- */
-public enum EingewoehnungTyp {
-	FKJV,
-	LUZERN,
-	PAUSCHALE,
-	KEINE;
+export class TSEingewoehnungPauschale extends TSAbstractDateRangedEntity {
 
-	public boolean isEingewoehnungTypPeriode() {
-		return this == FKJV || this == LUZERN;
-	}
+    private _pauschale: number;
 
-	public boolean isEingewoehnunTypPauschale() {
-		return this == PAUSCHALE;
-	}
+    public constructor() {
+        super();
+    }
+
+    public get pauschale(): number {
+        return this._pauschale;
+    }
+
+    public set pauschale(value: number) {
+        this._pauschale = value;
+    }
 }

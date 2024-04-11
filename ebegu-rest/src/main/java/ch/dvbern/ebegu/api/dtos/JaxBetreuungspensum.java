@@ -24,9 +24,10 @@ import javax.xml.bind.annotation.XmlAccessorType;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class JaxBetreuungspensum extends JaxAbstractMahlzeitenPensumDTO {
 
+	private static final long serialVersionUID = -8012537546244511785L;
+
 	private Boolean nichtEingetreten = false;
 
-	private static final long serialVersionUID = -8012537546244511785L;
 
 	public Boolean getNichtEingetreten() {
 		return nichtEingetreten;
