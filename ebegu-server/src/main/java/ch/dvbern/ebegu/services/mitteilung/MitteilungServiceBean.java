@@ -158,6 +158,7 @@ import ch.dvbern.ebegu.util.betreuungsmitteilung.messages.MahlzeitenVerguenstigu
 import ch.dvbern.ebegu.util.betreuungsmitteilung.messages.MittagstischMessageFactory;
 import ch.dvbern.ebegu.util.mandant.MandantIdentifier;
 import ch.dvbern.lib.cdipersistence.Persistence;
+import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
@@ -778,14 +779,14 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 	}
 
 	@Override
-	public void replaceBetreungsmitteilungen(
-			@Valid @Nonnull Betreuungsmitteilung betreuungsmitteilung) {
+	public void replaceBetreungsmitteilungen(@Valid @Nonnull Betreuungsmitteilung betreuungsmitteilung) {
 		removeOffeneBetreuungsmitteilungenForBetreuung(requireNonNull(betreuungsmitteilung.getBetreuung()));
 		sendBetreuungsmitteilung(betreuungsmitteilung);
 	}
 
 	@Nonnull
 	@Override
+	@CanIgnoreReturnValue
 	public Betreuungsmitteilung sendBetreuungsmitteilung(@Valid @Nonnull Betreuungsmitteilung betreuungsmitteilung) {
 		Objects.requireNonNull(betreuungsmitteilung);
 		if (MitteilungTeilnehmerTyp.INSTITUTION != betreuungsmitteilung.getSenderTyp()) {

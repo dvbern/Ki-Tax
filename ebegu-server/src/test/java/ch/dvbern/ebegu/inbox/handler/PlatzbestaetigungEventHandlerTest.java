@@ -108,6 +108,7 @@ import static ch.dvbern.ebegu.inbox.handler.PlatzbestaetigungTestUtil.matches;
 import static ch.dvbern.ebegu.inbox.handler.pensum.PensumMappingUtil.GO_LIVE;
 import static com.spotify.hamcrest.pojo.IsPojo.pojo;
 import static java.util.Objects.requireNonNull;
+import static org.easymock.EasyMock.anyObject;
 import static org.easymock.EasyMock.eq;
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.expectLastCall;
@@ -1049,24 +1050,7 @@ public class PlatzbestaetigungEventHandlerTest extends EasyMockSupport {
 
 			testProcessingSuccess();
 
-			// ignoring the dates, because their formatting is not platform independent
-			assertThat(capture.getValue().getMessage(), stringContainsInOrder(
-				"Pensum 1 von ", " bis ", ": 50%, monatliche Betreuungskosten: CHF ", "\n",
-				"Pensum 2 von ", " bis ", ": 80%, monatliche Betreuungskosten: CHF "));
-		}
-
-		@Test
-		void createsMahlzeitenMessage() {
-			Capture<Betreuungsmitteilung> capture = expectNewMitteilung();
-
-			testProcessingSuccess();
-
-			// ignoring dates & currency, because their formatting is not platform independent
-			assertThat(capture.getValue().getMessage(), stringContainsInOrder(
-				"Pensum 1 von ", " bis ", ": 50%, monatliche Betreuungskosten: CHF ",
-				"monatliche Hauptmahlzeiten: 0 à CHF 0, monatliche Nebenmahlzeiten: 0 à CHF 0\n",
-				"Pensum 2 von ", " bis ", ": 80%, monatliche Betreuungskosten: CHF ",
-				"monatliche Hauptmahlzeiten: 0 à CHF 0, monatliche Nebenmahlzeiten: 0 à CHF 0"));
+			assertThat(capture.getValue().getMessage(), is("my test message"));
 		}
 
 		@Test
@@ -1402,6 +1386,9 @@ public class PlatzbestaetigungEventHandlerTest extends EasyMockSupport {
 
 			expect(mitteilungService.findOffeneBetreuungsmitteilungenForBetreuung(betreuung))
 				.andReturn(Arrays.asList(existing));
+
+			expect(mitteilungService.createNachrichtForMutationsmeldung(anyObject(), anyObject(), anyObject()))
+				.andReturn("my test message");
 
 			expect(gemeindeService.getGemeindeStammdatenByGemeindeId(gemeinde.getId()))
 				.andReturn(Optional.of(TestDataUtil.createGemeindeStammdaten(gemeinde)));

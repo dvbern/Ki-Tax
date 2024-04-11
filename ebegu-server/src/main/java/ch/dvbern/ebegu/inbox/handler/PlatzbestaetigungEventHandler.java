@@ -26,10 +26,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.Set;
-import java.util.function.BiFunction;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -40,7 +37,6 @@ import ch.dvbern.ebegu.entities.AbstractEntity;
 import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Betreuungsmitteilung;
-import ch.dvbern.ebegu.entities.BetreuungsmitteilungPensum;
 import ch.dvbern.ebegu.entities.ErweiterteBetreuung;
 import ch.dvbern.ebegu.entities.ErweiterteBetreuungContainer;
 import ch.dvbern.ebegu.entities.Gemeinde;
@@ -69,14 +65,12 @@ import ch.dvbern.ebegu.services.GemeindeService;
 import ch.dvbern.ebegu.services.MitteilungService;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.EbeguUtil;
-import ch.dvbern.ebegu.util.Gueltigkeit;
 import ch.dvbern.ebegu.util.GueltigkeitsUtil;
 import ch.dvbern.ebegu.util.MathUtil;
 import ch.dvbern.ebegu.util.MitteilungUtil;
 import ch.dvbern.ebegu.util.ServerMessageUtil;
 import ch.dvbern.kibon.exchange.commons.platzbestaetigung.BetreuungEventDTO;
 import ch.dvbern.kibon.exchange.commons.types.Zeiteinheit;
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -447,7 +441,6 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 			mitteilungService.findOffeneBetreuungsmitteilungenForBetreuung(betreuung);
 
 		Optional<Betreuungsmitteilung> latest = findLatest(open);
-
 		Betreuungsmitteilung betreuungsmitteilung = createBetreuungsmitteilung(ctx, latest.orElse(null));
 
 		if (latest.filter(l -> MITTEILUNG_COMPARATOR.compare(l, betreuungsmitteilung) == 0).isPresent()) {
@@ -472,10 +465,22 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 		@Nonnull ProcessingContext ctx,
 		@Nullable Betreuungsmitteilung latest) {
 
+		Locale locale = EbeguUtil.extractKorrespondenzsprache(ctx.getBetreuung().extractGesuch(), gemeindeService).getLocale();
+		Betreuungsmitteilung mitteilung = createBetreuungsmitteilung(ctx, locale, latest);
+		String msg = mitteilungService.createNachrichtForMutationsmeldung(mitteilung, mitteilung.getBetreuungspensen(), locale);
+		mitteilung.setMessage(msg);
+
+		return mitteilung;
+	}
+
+	@Nonnull
+	private Betreuungsmitteilung createBetreuungsmitteilung(
+		@Nonnull ProcessingContext ctx,
+		@Nonnull Locale locale,
+		@Nullable Betreuungsmitteilung latest) {
+
 		Betreuung betreuung = ctx.getBetreuung();
 
-		String clientName = ctx.getEventMonitor().getClientName();
-		Locale locale = EbeguUtil.extractKorrespondenzsprache(betreuung.extractGesuch(), gemeindeService).getLocale();
 		Benutzer benutzer = betreuungEventHelper.getMutationsmeldungBenutzer(betreuung);
 		Mandant mandant = betreuungEventHelper.getMandantFromBgNummer(ctx.getDto().getRefnr())
 			.orElseThrow(() -> new EbeguRuntimeException(
@@ -495,13 +500,8 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 			.forEach(p -> p.setVollstaendig(false));
 
 		// overriding subject: keep below MitteilungUtil.initializeBetreuungsmitteilung
+		String clientName = ctx.getEventMonitor().getClientName();
 		betreuungsmitteilung.setSubject(ServerMessageUtil.getMessage(BETREFF_KEY, locale, mandant) + ' ' + clientName);
-
-		BiFunction<BetreuungsmitteilungPensum, Integer, String> messageMapper = ctx.isMahlzeitVerguenstigungEnabled() ?
-			mahlzeitenMessage(locale, mandant) :
-			defaultMessage(locale, mandant);
-
-		betreuungsmitteilung.setMessage(getMessage(messageMapper, betreuungsmitteilung.getBetreuungspensen()));
 
 		return betreuungsmitteilung;
 	}
@@ -514,56 +514,6 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 			.thenComparing(AbstractEntity::getId);
 
 		return open.stream().max(bySentDateTime);
-	}
-
-	@Nonnull
-	private String getMessage(
-		@Nonnull BiFunction<BetreuungsmitteilungPensum, Integer, String> messageMapper,
-		@Nonnull Set<BetreuungsmitteilungPensum> pensen) {
-
-		List<BetreuungsmitteilungPensum> sorted = pensen.stream()
-			.sorted(Gueltigkeit.GUELTIG_AB_COMPARATOR)
-			.collect(Collectors.toList());
-
-		return IntStream.rangeClosed(1, sorted.size())
-			.mapToObj(index -> messageMapper.apply(sorted.get(index - 1), index))
-			.collect(Collectors.joining(StringUtils.LF));
-	}
-
-	@Nonnull
-	private BiFunction<BetreuungsmitteilungPensum, Integer, String> mahlzeitenMessage(
-		@Nonnull Locale lang,
-		@Nonnull Mandant mandant) {
-
-		return (pensum, counter) -> ServerMessageUtil.getMessage(
-			MESSAGE_MAHLZEIT_KEY,
-			lang,
-			mandant,
-			counter,
-			pensum.getGueltigkeit().getGueltigAb(),
-			pensum.getGueltigkeit().getGueltigBis(),
-			pensum.getPensum(),
-			pensum.getMonatlicheBetreuungskosten(),
-			pensum.getMonatlicheHauptmahlzeiten(),
-			pensum.getTarifProHauptmahlzeit(),
-			pensum.getMonatlicheNebenmahlzeiten(),
-			pensum.getTarifProNebenmahlzeit());
-	}
-
-	@Nonnull
-	private BiFunction<BetreuungsmitteilungPensum, Integer, String> defaultMessage(
-		@Nonnull Locale lang,
-		@Nonnull Mandant mandant) {
-
-		return (pensum, counter) -> ServerMessageUtil.getMessage(
-			MESSAGE_KEY,
-			lang,
-			mandant,
-			counter,
-			pensum.getGueltigkeit().getGueltigAb(),
-			pensum.getGueltigkeit().getGueltigBis(),
-			pensum.getPensum(),
-			pensum.getMonatlicheBetreuungskosten());
 	}
 
 	protected boolean isSame(@Nonnull Betreuungsmitteilung betreuungsmitteilung, @Nonnull Betreuung betreuung) {
