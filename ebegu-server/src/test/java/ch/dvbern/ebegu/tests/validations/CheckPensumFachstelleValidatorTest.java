@@ -30,6 +30,8 @@ import ch.dvbern.ebegu.test.TestDataUtil;
 import ch.dvbern.ebegu.validators.CheckPensumFachstelle;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import static ch.dvbern.ebegu.tests.util.validation.ViolationMatchers.violatesAnnotation;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -106,30 +108,14 @@ class CheckPensumFachstelleValidatorTest extends AbstractValidatorTest {
 		assertThat(violations, violatesAnnotation(CheckPensumFachstelle.class));
 	}
 
-	@Test
-	void testSozialPensumMax() {
-		KindContainer kind = createKindWithPensumFachstelle(
-			IntegrationTyp.SOZIALE_INTEGRATION, 60);
-
-		Set<ConstraintViolation<KindContainer>> violations = validate(kind);
-
-		assertThat(violations, not(violatesAnnotation(CheckPensumFachstelle.class)));
-	}
-
-	@Test
-	void testSozialPensumMin() {
-		KindContainer kind = createKindWithPensumFachstelle(
-			IntegrationTyp.SOZIALE_INTEGRATION, 20);
-
-		Set<ConstraintViolation<KindContainer>> violations = validate(kind);
-
-		assertThat(violations, not(violatesAnnotation(CheckPensumFachstelle.class)));
-	}
-
-	@Test
-	void testSozialPensumInRange() {
-		KindContainer kind = createKindWithPensumFachstelle(
-			IntegrationTyp.SOZIALE_INTEGRATION, 40);
+	@ParameterizedTest
+	@ValueSource(ints = {
+		60, // max
+		20, // min
+		40 // in range
+	})
+	void testSozialPensumMax(int pensum) {
+		KindContainer kind = createKindWithPensumFachstelle(IntegrationTyp.SOZIALE_INTEGRATION, pensum);
 
 		Set<ConstraintViolation<KindContainer>> violations = validate(kind);
 

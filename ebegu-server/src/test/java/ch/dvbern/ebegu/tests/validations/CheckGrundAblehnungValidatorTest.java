@@ -15,6 +15,8 @@
 
 package ch.dvbern.ebegu.tests.validations;
 
+import javax.annotation.Nullable;
+
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
 import ch.dvbern.ebegu.test.TestDataUtil;
@@ -22,6 +24,9 @@ import ch.dvbern.ebegu.validators.CheckGrundAblehnungValidator;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.NullSource;
+import org.junit.jupiter.params.provider.ValueSource;
 
 /**
  * Tests fuer CheckGrundAblehnungValidator
@@ -32,40 +37,25 @@ class CheckGrundAblehnungValidatorTest {
 	private Betreuung betreuung;
 
 	@BeforeEach
-	void setUp() throws Exception {
+	void setUp() {
 		validator = new CheckGrundAblehnungValidator();
 		betreuung = TestDataUtil.createDefaultBetreuung();
 	}
 
-	@Test
-	void testNichtAbgewiesenEmptyGrund() {
-		betreuung.setGrundAblehnung("");
+	@ParameterizedTest(name = "#{index} - with args=<{0}>")
+	@ValueSource(strings = {"", "mein Grund"})
+	@NullSource
+	void testNichtAbgewiesen(@Nullable String grund) {
+		betreuung.setGrundAblehnung(grund);
 		Assertions.assertTrue(validator.isValid(betreuung, null));
 	}
 
-	@Test
-	void testNichtAbgewiesenNullGrund() {
-		betreuung.setGrundAblehnung(null);
-		Assertions.assertTrue(validator.isValid(betreuung, null));
-	}
-
-	@Test
-	void testNichtAbgewiesenWithGrund() {
-		betreuung.setGrundAblehnung("mein Grund");
-		Assertions.assertTrue(validator.isValid(betreuung, null));
-	}
-
-	@Test
-	void testAbgewiesenEmptyGrund() {
+	@ParameterizedTest(name = "#{index} - with args=<{0}>")
+	@ValueSource(strings = "")
+	@NullSource
+	void testAbgewiesen(@Nullable String grund) {
 		betreuung.setBetreuungsstatus(Betreuungsstatus.ABGEWIESEN);
-		betreuung.setGrundAblehnung("");
-		Assertions.assertFalse(validator.isValid(betreuung, null));
-	}
-
-	@Test
-	void testAbgewiesenNullGrund() {
-		betreuung.setBetreuungsstatus(Betreuungsstatus.ABGEWIESEN);
-		betreuung.setGrundAblehnung(null);
+		betreuung.setGrundAblehnung(grund);
 		Assertions.assertFalse(validator.isValid(betreuung, null));
 	}
 
@@ -75,5 +65,4 @@ class CheckGrundAblehnungValidatorTest {
 		betreuung.setGrundAblehnung("mein Grund");
 		Assertions.assertTrue(validator.isValid(betreuung, null));
 	}
-
 }

@@ -32,7 +32,7 @@ import org.junit.jupiter.params.provider.CsvSource;
 import static ch.dvbern.ebegu.tests.util.validation.ViolationMatchers.violatesAnnotation;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-public class GemeindeStammdatenGesuchsperiodeFerieninselValidatorTest extends AbstractValidatorTest {
+class GemeindeStammdatenGesuchsperiodeFerieninselValidatorTest extends AbstractValidatorTest {
 
 	@Test
 	void valid() {
