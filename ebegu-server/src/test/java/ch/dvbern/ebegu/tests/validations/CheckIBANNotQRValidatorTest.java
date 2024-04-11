@@ -24,23 +24,23 @@ import org.junit.jupiter.api.Test;
 /**
  * Tests fuer CheckDateRangeValidator
  */
-public class CheckIBANNotQRValidatorTest {
+class CheckIBANNotQRValidatorTest {
 
 	private CheckIBANNotQRValidator validator;
 
 	@BeforeEach
-	public void setUp() {
+	void setUp() {
 		validator = new CheckIBANNotQRValidator();
 	}
 
 	@Test
-	public void test_shouldBeInvalidIfQRIBAN() {
+	void test_shouldBeInvalidIfQRIBAN() {
 		IBAN iban = new IBAN("CH4431999123000889012");
 		Assertions.assertFalse(validator.isValid(iban, null));
 	}
 
 	@Test
-	public void test_shouldBeValidIfNormalIBAN() {
+	void test_shouldBeValidIfNormalIBAN() {
 		IBAN iban = new IBAN("CH9300762011623852957");
 		Assertions.assertTrue(validator.isValid(iban, null));
 	}

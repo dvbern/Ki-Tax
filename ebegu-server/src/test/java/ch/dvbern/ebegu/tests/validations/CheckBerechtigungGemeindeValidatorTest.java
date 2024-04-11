@@ -28,14 +28,14 @@ import org.junit.jupiter.api.Test;
 /**
  * Tests fuer {@link CheckBerechtigungGemeindeValidator}
  */
-public class CheckBerechtigungGemeindeValidatorTest {
+class CheckBerechtigungGemeindeValidatorTest {
 
 	private final CheckBerechtigungGemeindeValidator validator = new CheckBerechtigungGemeindeValidator();
 	private final Mandant mandant = new Mandant();
 	private final Gemeinde gemeinde = new Gemeinde();
 
 	@Test
-	public void checkGemeindeAbhaengigeRollenMitGemeindeValid() {
+	void checkGemeindeAbhaengigeRollenMitGemeindeValid() {
 		Assertions.assertTrue(validator.isValid(createBenutzer(UserRole.ADMIN_BG, true).getCurrentBerechtigung(), null));
 		Assertions.assertTrue(validator.isValid(createBenutzer(UserRole.SACHBEARBEITER_BG, true).getCurrentBerechtigung(), null));
 		Assertions.assertTrue(validator.isValid(createBenutzer(UserRole.ADMIN_TS, true).getCurrentBerechtigung(), null));
@@ -46,7 +46,7 @@ public class CheckBerechtigungGemeindeValidatorTest {
 	}
 
 	@Test
-	public void checkGemeindeAbhaengigeRollenOhneGemeindeInvalid() {
+	void checkGemeindeAbhaengigeRollenOhneGemeindeInvalid() {
 		Assertions.assertFalse(validator.isValid(createBenutzer(UserRole.ADMIN_BG, false).getCurrentBerechtigung(), null));
 		Assertions.assertFalse(validator.isValid(createBenutzer(UserRole.SACHBEARBEITER_BG, false).getCurrentBerechtigung(), null));
 		Assertions.assertFalse(validator.isValid(createBenutzer(UserRole.ADMIN_TS, false).getCurrentBerechtigung(), null));
@@ -58,7 +58,7 @@ public class CheckBerechtigungGemeindeValidatorTest {
 
 
 	@Test
-	public void checkGemeindeUnabhaengigeRollenOhneGemeindeValid() {
+	void checkGemeindeUnabhaengigeRollenOhneGemeindeValid() {
 		Assertions.assertTrue(validator.isValid(createBenutzer(UserRole.SUPER_ADMIN, false).getCurrentBerechtigung(), null));
 		Assertions.assertTrue(validator.isValid(createBenutzer(UserRole.GESUCHSTELLER, false).getCurrentBerechtigung(), null));
 		Assertions.assertTrue(validator.isValid(createBenutzer(UserRole.SACHBEARBEITER_TRAEGERSCHAFT, false).getCurrentBerechtigung(), null));
@@ -66,7 +66,7 @@ public class CheckBerechtigungGemeindeValidatorTest {
 	}
 
 	@Test
-	public void checkGemeindeUnabhaengigeRollenMitGemeindeInvalid() {
+	void checkGemeindeUnabhaengigeRollenMitGemeindeInvalid() {
 		Assertions.assertFalse(validator.isValid(createBenutzer(UserRole.SUPER_ADMIN, true).getCurrentBerechtigung(), null));
 		Assertions.assertFalse(validator.isValid(createBenutzer(UserRole.GESUCHSTELLER, true).getCurrentBerechtigung(), null));
 		Assertions.assertFalse(validator.isValid(createBenutzer(UserRole.SACHBEARBEITER_TRAEGERSCHAFT, true).getCurrentBerechtigung(), null));

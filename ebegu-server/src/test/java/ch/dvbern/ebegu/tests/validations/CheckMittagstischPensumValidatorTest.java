@@ -38,7 +38,7 @@ import static ch.dvbern.ebegu.tests.util.validation.ViolationMatchers.violatesAn
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.not;
 
-public class CheckMittagstischPensumValidatorTest extends AbstractValidatorTest {
+class CheckMittagstischPensumValidatorTest extends AbstractValidatorTest {
 
 	@ParameterizedTest
 	@EnumSource(value = BetreuungsangebotTyp.class, names = "MITTAGSTISCH", mode = EnumSource.Mode.EXCLUDE)

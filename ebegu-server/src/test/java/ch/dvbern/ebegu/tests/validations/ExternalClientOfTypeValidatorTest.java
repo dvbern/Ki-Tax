@@ -26,7 +26,7 @@ import ch.dvbern.ebegu.validators.ExternalClientOfType;
 import com.google.common.collect.Sets;
 import org.junit.jupiter.api.Test;
 
-public class ExternalClientOfTypeValidatorTest extends AbstractValidatorTest {
+class ExternalClientOfTypeValidatorTest extends AbstractValidatorTest {
 
 	private static final ExternalClient VALID = new ExternalClient("foo", ExternalClientType.EXCHANGE_SERVICE_USER, ExternalClientInstitutionType.EXCHANGE_SERVICE_INSTITUTION);
 	@SuppressWarnings("ConstantConditions")
@@ -34,7 +34,7 @@ public class ExternalClientOfTypeValidatorTest extends AbstractValidatorTest {
 
 	@SuppressWarnings("JUnitTestMethodWithNoAssertions")
 	@Test
-	public void testMatchesType() {
+	void testMatchesType() {
 		TestSingleProperty test = new TestSingleProperty(VALID);
 
 		assertValid(test);
@@ -42,7 +42,7 @@ public class ExternalClientOfTypeValidatorTest extends AbstractValidatorTest {
 
 	@SuppressWarnings("JUnitTestMethodWithNoAssertions")
 	@Test
-	public void testViolateType() {
+	void testViolateType() {
 		TestSingleProperty test = new TestSingleProperty(INVALID);
 
 		assertInvalid(test);
@@ -50,7 +50,7 @@ public class ExternalClientOfTypeValidatorTest extends AbstractValidatorTest {
 
 	@SuppressWarnings("JUnitTestMethodWithNoAssertions")
 	@Test
-	public void testMatchesTypeInSet() {
+	void testMatchesTypeInSet() {
 		TestSetProperty test = new TestSetProperty(Sets.newHashSet(VALID, VALID));
 
 		assertValid(test);
@@ -58,7 +58,7 @@ public class ExternalClientOfTypeValidatorTest extends AbstractValidatorTest {
 
 	@SuppressWarnings("JUnitTestMethodWithNoAssertions")
 	@Test
-	public void testViolatesInvalidTypeInSet() {
+	void testViolatesInvalidTypeInSet() {
 		TestSetProperty test = new TestSetProperty(Sets.newHashSet(VALID, INVALID));
 
 		assertInvalid(test);

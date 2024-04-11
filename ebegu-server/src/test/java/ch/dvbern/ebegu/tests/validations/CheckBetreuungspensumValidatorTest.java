@@ -41,10 +41,10 @@ import static org.hamcrest.Matchers.not;
 /**
  * Tests der den Validator fuer die Werte in Betreuungspensum checkt
  */
-public class CheckBetreuungspensumValidatorTest extends AbstractValidatorTest {
+class CheckBetreuungspensumValidatorTest extends AbstractValidatorTest {
 
 	@Test
-	public void testKitaGSWrongValue() {
+	void testKitaGSWrongValue() {
 		Betreuung betreuung = createBetreuung(BetreuungsangebotTyp.KITA, BigDecimal.valueOf(9), BigDecimal.valueOf(9));
 		// Das passiert weil wir nur den ersten falschen Werten checken. Deswegen als wir den Fehler in betreuungspensumGS finden, checken
 		// wir nicht weiter und betreuungspensumJA wirft keine Violation
@@ -57,7 +57,7 @@ public class CheckBetreuungspensumValidatorTest extends AbstractValidatorTest {
 	}
 
 	@Test
-	public void testKitaJAWrongValue() {
+	void testKitaJAWrongValue() {
 		Betreuung betreuung = createBetreuung(BetreuungsangebotTyp.KITA, BigDecimal.TEN, BigDecimal.valueOf(9));
 		// Jetzt ist betreuungspensumGS richtig und wir finden den Fehler in betreuungspensumJA
 		Set<ConstraintViolation<Betreuung>> violations = validate(betreuung);
@@ -69,7 +69,7 @@ public class CheckBetreuungspensumValidatorTest extends AbstractValidatorTest {
 	}
 
 	@Test
-	public void testKitaRightValues() {
+	void testKitaRightValues() {
 		Betreuung betreuung = createBetreuung(BetreuungsangebotTyp.KITA, BigDecimal.TEN, BigDecimal.TEN);
 		Set<ConstraintViolation<Betreuung>> violations = validate(betreuung);
 
@@ -77,7 +77,7 @@ public class CheckBetreuungspensumValidatorTest extends AbstractValidatorTest {
 	}
 
 	@Test
-	public void testTageselternGSWrongValue() {
+	void testTageselternGSWrongValue() {
 		Betreuung betreuung = createBetreuung(BetreuungsangebotTyp.TAGESFAMILIEN, BigDecimal.valueOf(19), BigDecimal.valueOf(19));
 		// Das passiert weil wir nur den ersten falschen Werten checken. Deswegen als wir den Fehler in betreuungspensumGS finden, checken
 		// wir nicht weiter und betreuungspensumJA wirft keine Violation
@@ -90,7 +90,7 @@ public class CheckBetreuungspensumValidatorTest extends AbstractValidatorTest {
 	}
 
 	@Test
-	public void testTageselternJAWrongValue() {
+	void testTageselternJAWrongValue() {
 		Betreuung betreuung = createBetreuung(BetreuungsangebotTyp.TAGESFAMILIEN, BigDecimal.valueOf(20), BigDecimal.valueOf(19));
 		// Jetzt ist betreuungspensumGS richtig und wir finden den Fehler in betreuungspensumJA
 		Set<ConstraintViolation<Betreuung>> violations = validate(betreuung);
@@ -102,7 +102,7 @@ public class CheckBetreuungspensumValidatorTest extends AbstractValidatorTest {
 	}
 
 	@Test
-	public void testTageselternRightValues() {
+	void testTageselternRightValues() {
 		Betreuung betreuung = createBetreuung(BetreuungsangebotTyp.TAGESFAMILIEN, BigDecimal.valueOf(20), BigDecimal.valueOf(20));
 		Set<ConstraintViolation<Betreuung>> violations = validate(betreuung);
 
@@ -113,7 +113,7 @@ public class CheckBetreuungspensumValidatorTest extends AbstractValidatorTest {
 	 * Fuer Tagesschule gibt es keinen Minimalwert
 	 */
 	@Test
-	public void testTagesschule() {
+	void testTagesschule() {
 		Betreuung betreuung = createBetreuung(BetreuungsangebotTyp.TAGESSCHULE, BigDecimal.ONE, BigDecimal.ONE);
 		Set<ConstraintViolation<Betreuung>> violations = validate(betreuung);
 
@@ -121,7 +121,7 @@ public class CheckBetreuungspensumValidatorTest extends AbstractValidatorTest {
 	}
 
 	@Test
-	public void testSeveralBetreuungspensumContainers() {
+	void testSeveralBetreuungspensumContainers() {
 		Betreuung betreuung = createBetreuung(BetreuungsangebotTyp.KITA, BigDecimal.valueOf(10), BigDecimal.valueOf(10));
 
 		BetreuungspensumContainer betPensContainer = TestDataUtil.createBetPensContainer(betreuung);

@@ -24,17 +24,17 @@ import org.junit.jupiter.api.Test;
 /**
  * Tests fuer {@link CheckKinderabzugValidator}
  */
-public class CheckKinderabzugValidatorTest {
+class CheckKinderabzugValidatorTest {
 
 	private CheckKinderabzugValidator validator;
 
 	@BeforeEach
-	public void setUp() {
+	void setUp() {
 		validator = new CheckKinderabzugValidator();
 	}
 
 	@Test
-	public void checkPathPflegekindValid() {
+	void checkPathPflegekindValid() {
 		var kind = new Kind();
 		kind.setPflegekind(true);
 		kind.setPflegeEntschaedigungErhalten(true);
@@ -42,7 +42,7 @@ public class CheckKinderabzugValidatorTest {
 	}
 
 	@Test
-	public void checkPathPflegekindNotValid() {
+	void checkPathPflegekindNotValid() {
 		var kind = new Kind();
 		kind.setPflegekind(true);
 		kind.setPflegeEntschaedigungErhalten(true);
@@ -51,7 +51,7 @@ public class CheckKinderabzugValidatorTest {
 	}
 
 	@Test
-	public void checkPathObhutalternierendValid() {
+	void checkPathObhutalternierendValid() {
 		var kind = new Kind();
 		kind.setPflegekind(false);
 		kind.setObhutAlternierendAusueben(true);
@@ -60,7 +60,7 @@ public class CheckKinderabzugValidatorTest {
 	}
 
 	@Test
-	public void checkPathObhutalternierendNotValid() {
+	void checkPathObhutalternierendNotValid() {
 		var kind = new Kind();
 		kind.setPflegekind(false);
 		kind.setObhutAlternierendAusueben(true);
@@ -70,7 +70,7 @@ public class CheckKinderabzugValidatorTest {
 	}
 
 	@Test
-	public void checkPathAlimenteBezahlenValid() {
+	void checkPathAlimenteBezahlenValid() {
 		var kind = new Kind();
 		kind.setPflegekind(false);
 		kind.setInErstausbildung(true);
@@ -80,7 +80,7 @@ public class CheckKinderabzugValidatorTest {
 	}
 
 	@Test
-	public void checkPathAlimenteBezahlenNotValid() {
+	void checkPathAlimenteBezahlenNotValid() {
 		var kind = new Kind();
 		kind.setPflegekind(false);
 		kind.setInErstausbildung(true);
@@ -91,7 +91,7 @@ public class CheckKinderabzugValidatorTest {
 	}
 
 	@Test
-	public void checkPathAlimenteErhaltenValid() {
+	void checkPathAlimenteErhaltenValid() {
 		var kind = new Kind();
 		kind.setPflegekind(false);
 		kind.setInErstausbildung(true);
@@ -101,7 +101,7 @@ public class CheckKinderabzugValidatorTest {
 	}
 
 	@Test
-	public void checkPathAlimenteErhaltenNotValid() {
+	void checkPathAlimenteErhaltenNotValid() {
 		var kind = new Kind();
 		kind.setPflegekind(false);
 		kind.setInErstausbildung(true);
@@ -112,7 +112,7 @@ public class CheckKinderabzugValidatorTest {
 	}
 
 	@Test
-	public void checkPathKinderAbzugTypSchwyzKeinUnterhaltspflichtigNotValid() {
+	void checkPathKinderAbzugTypSchwyzKeinUnterhaltspflichtigNotValid() {
 		var kind = new Kind();
 		kind.setUnterhaltspflichtig(false);
 		kind.setLebtKindAlternierend(true);
@@ -120,7 +120,7 @@ public class CheckKinderabzugValidatorTest {
 	}
 
 	@Test
-	public void checkPathKinderAbzugTypSchwyzUnterhaltspflichtigNotValid() {
+	void checkPathKinderAbzugTypSchwyzUnterhaltspflichtigNotValid() {
 		var kind = new Kind();
 		kind.setUnterhaltspflichtig(true);
 		kind.setLebtKindAlternierend(null);
@@ -128,7 +128,7 @@ public class CheckKinderabzugValidatorTest {
 	}
 
 	@Test
-	public void checkPathKinderAbzugTypSchwyzUnterhaltspflichtigValid() {
+	void checkPathKinderAbzugTypSchwyzUnterhaltspflichtigValid() {
 		var kind = new Kind();
 		kind.setUnterhaltspflichtig(true);
 		kind.setLebtKindAlternierend(true);
@@ -136,7 +136,7 @@ public class CheckKinderabzugValidatorTest {
 	}
 
 	@Test
-	public void checkPathKinderAbzugTypSchwyzKeinUnterhaltspflichtigValid() {
+	void checkPathKinderAbzugTypSchwyzKeinUnterhaltspflichtigValid() {
 		var kind = new Kind();
 		kind.setUnterhaltspflichtig(false);
 		kind.setLebtKindAlternierend(null);

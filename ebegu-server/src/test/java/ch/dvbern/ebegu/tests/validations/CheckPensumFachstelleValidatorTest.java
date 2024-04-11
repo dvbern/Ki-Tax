@@ -40,7 +40,7 @@ import static org.hamcrest.Matchers.not;
  * SOZIALE_INTEGRATION range from 20 to 60
  * SPRACHLICHE_INTEGRATION range from 40 to 40
  */
-public class CheckPensumFachstelleValidatorTest extends AbstractValidatorTest {
+class CheckPensumFachstelleValidatorTest extends AbstractValidatorTest {
 
 	private static final int SOZ_PENSUM_OK = 40;
 	private static final int SOZ_PENSUM_TOO_LOW = 0;
@@ -50,7 +50,7 @@ public class CheckPensumFachstelleValidatorTest extends AbstractValidatorTest {
 	private static final int SPRACH_PENSUM_OK = 40;
 
 	@Test
-	public void testKindWithoutPensumFachstelle() {
+	void testKindWithoutPensumFachstelle() {
 		KindContainer kind = createKindWithoutPensumFachstelle();
 
 		Set<ConstraintViolation<KindContainer>> violations = validate(kind);
@@ -59,7 +59,7 @@ public class CheckPensumFachstelleValidatorTest extends AbstractValidatorTest {
 	}
 
 	@Test
-	public void testSozialPensumTooLow() {
+	void testSozialPensumTooLow() {
 		KindContainer kind = createKindWithPensumFachstelle(
 			IntegrationTyp.SOZIALE_INTEGRATION, SOZ_PENSUM_TOO_LOW);
 
@@ -69,7 +69,7 @@ public class CheckPensumFachstelleValidatorTest extends AbstractValidatorTest {
 	}
 
 	@Test
-	public void testSozialPensumOkSozialPensumTooLow() {
+	void testSozialPensumOkSozialPensumTooLow() {
 		KindContainer kind = createKindWithPensumFachstelle(
 			IntegrationTyp.SOZIALE_INTEGRATION, SOZ_PENSUM_TOO_LOW);
 
@@ -83,7 +83,7 @@ public class CheckPensumFachstelleValidatorTest extends AbstractValidatorTest {
 	}
 
 	@Test
-	public void testSozialPensumTooHigh() {
+	void testSozialPensumTooHigh() {
 		KindContainer kind = createKindWithPensumFachstelle(
 			IntegrationTyp.SOZIALE_INTEGRATION, SOZ_PENSUM_TOO_HIGH);
 
@@ -93,7 +93,7 @@ public class CheckPensumFachstelleValidatorTest extends AbstractValidatorTest {
 	}
 
 	@Test
-	public void testSozialPensumOkSozialPensumTooHigh() {
+	void testSozialPensumOkSozialPensumTooHigh() {
 		KindContainer kind = createKindWithPensumFachstelle(
 			IntegrationTyp.SOZIALE_INTEGRATION, SOZ_PENSUM_TOO_HIGH);
 
@@ -107,7 +107,7 @@ public class CheckPensumFachstelleValidatorTest extends AbstractValidatorTest {
 	}
 
 	@Test
-	public void testSozialPensumMax() {
+	void testSozialPensumMax() {
 		KindContainer kind = createKindWithPensumFachstelle(
 			IntegrationTyp.SOZIALE_INTEGRATION, 60);
 
@@ -117,7 +117,7 @@ public class CheckPensumFachstelleValidatorTest extends AbstractValidatorTest {
 	}
 
 	@Test
-	public void testSozialPensumMin() {
+	void testSozialPensumMin() {
 		KindContainer kind = createKindWithPensumFachstelle(
 			IntegrationTyp.SOZIALE_INTEGRATION, 20);
 
@@ -127,7 +127,7 @@ public class CheckPensumFachstelleValidatorTest extends AbstractValidatorTest {
 	}
 
 	@Test
-	public void testSozialPensumInRange() {
+	void testSozialPensumInRange() {
 		KindContainer kind = createKindWithPensumFachstelle(
 			IntegrationTyp.SOZIALE_INTEGRATION, 40);
 
@@ -137,7 +137,7 @@ public class CheckPensumFachstelleValidatorTest extends AbstractValidatorTest {
 	}
 
 	@Test
-	public void testTwoSozialPensumInRange() {
+	void testTwoSozialPensumInRange() {
 		KindContainer kind = createKindWithPensumFachstelle(
 			IntegrationTyp.SOZIALE_INTEGRATION, SOZ_PENSUM_OK);
 
@@ -151,7 +151,7 @@ public class CheckPensumFachstelleValidatorTest extends AbstractValidatorTest {
 	}
 
 	@Test
-	public void testSprachlichPensumTooLow() {
+	void testSprachlichPensumTooLow() {
 		KindContainer kind = createKindWithPensumFachstelle(
 			IntegrationTyp.SPRACHLICHE_INTEGRATION, SPRACH_PENSUM_TOO_LOW);
 
@@ -161,7 +161,7 @@ public class CheckPensumFachstelleValidatorTest extends AbstractValidatorTest {
 	}
 
 	@Test
-	public void testSprachlichPensumOkSprachlichPensumTooLow() {
+	void testSprachlichPensumOkSprachlichPensumTooLow() {
 		KindContainer kind = createKindWithPensumFachstelle(
 			IntegrationTyp.SPRACHLICHE_INTEGRATION, SPRACH_PENSUM_TOO_LOW);
 		kind.getKindJA()
@@ -174,7 +174,7 @@ public class CheckPensumFachstelleValidatorTest extends AbstractValidatorTest {
 	}
 
 	@Test
-	public void testSprachlichPensumTooHigh() {
+	void testSprachlichPensumTooHigh() {
 		KindContainer kind = createKindWithPensumFachstelle(
 			IntegrationTyp.SPRACHLICHE_INTEGRATION, SPRACH_PENSUM_TOO_HIGH);
 
@@ -184,7 +184,7 @@ public class CheckPensumFachstelleValidatorTest extends AbstractValidatorTest {
 	}
 
 	@Test
-	public void testSprachlichPensumOkSprachlichPensumTooHigh() {
+	void testSprachlichPensumOkSprachlichPensumTooHigh() {
 		KindContainer kind = createKindWithPensumFachstelle(
 			IntegrationTyp.SPRACHLICHE_INTEGRATION, SPRACH_PENSUM_TOO_HIGH);
 
@@ -198,7 +198,7 @@ public class CheckPensumFachstelleValidatorTest extends AbstractValidatorTest {
 	}
 
 	@Test
-	public void testSprachlichPensumInRange() {
+	void testSprachlichPensumInRange() {
 		KindContainer kind = createKindWithPensumFachstelle(
 			IntegrationTyp.SPRACHLICHE_INTEGRATION, 40);
 
@@ -208,7 +208,7 @@ public class CheckPensumFachstelleValidatorTest extends AbstractValidatorTest {
 	}
 
 	@Test
-	public void testTwoSprachlichPensumInRange() {
+	void testTwoSprachlichPensumInRange() {
 		KindContainer kind = createKindWithPensumFachstelle(
 			IntegrationTyp.SPRACHLICHE_INTEGRATION, SPRACH_PENSUM_OK);
 

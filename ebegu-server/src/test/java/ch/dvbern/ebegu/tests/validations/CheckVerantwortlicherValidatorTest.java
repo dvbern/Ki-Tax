@@ -32,7 +32,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.not;
 
 @SuppressWarnings("JUnitTestMethodWithNoAssertions")
-public class CheckVerantwortlicherValidatorTest extends AbstractValidatorTest {
+class CheckVerantwortlicherValidatorTest extends AbstractValidatorTest {
 
 	private Benutzer schUser = null;
 	private Benutzer jaUser = null;
@@ -40,7 +40,7 @@ public class CheckVerantwortlicherValidatorTest extends AbstractValidatorTest {
 	private Benutzer schAdmin = null;
 
 	@BeforeEach
-	public void setUp() {
+	void setUp() {
 		Mandant mandant = TestDataUtil.getMandantKantonBern();
 		schUser = TestDataUtil.createBenutzer(UserRole.SACHBEARBEITER_TS, "userSCH", null, null, mandant, null, null);
 		jaUser = TestDataUtil.createBenutzer(UserRole.SACHBEARBEITER_BG, "userJA", null, null, mandant, null, null);
@@ -49,12 +49,12 @@ public class CheckVerantwortlicherValidatorTest extends AbstractValidatorTest {
 	}
 
 	@Test
-	public void testCheckVerantwortlicherNormalUsers() {
+	void testCheckVerantwortlicherNormalUsers() {
 		testCheckVerantwortlicherUsers(jaUser, schUser);
 	}
 
 	@Test
-	public void testCheckVerantwortlicherAdminUsers() {
+	void testCheckVerantwortlicherAdminUsers() {
 		testCheckVerantwortlicherUsers(jaAdmin, schAdmin);
 	}
 
@@ -72,7 +72,7 @@ public class CheckVerantwortlicherValidatorTest extends AbstractValidatorTest {
 	}
 
 	@Test
-	public void testCheckVerantwortlicherNullUsers() {
+	void testCheckVerantwortlicherNullUsers() {
 		final Dossier dossier = new Dossier();
 		dossier.setVerantwortlicherBG(null);
 		dossier.setVerantwortlicherTS(null);
@@ -86,7 +86,7 @@ public class CheckVerantwortlicherValidatorTest extends AbstractValidatorTest {
 	}
 
 	@Test
-	public void testCheckVerantwortlicherWrongSCHUser() {
+	void testCheckVerantwortlicherWrongSCHUser() {
 		final Dossier dossier = new Dossier();
 		dossier.setVerantwortlicherBG(schAdmin);
 		dossier.setVerantwortlicherTS(schAdmin);
@@ -100,7 +100,7 @@ public class CheckVerantwortlicherValidatorTest extends AbstractValidatorTest {
 	}
 
 	@Test
-	public void testCheckVerantwortlicherWrongJAUser() {
+	void testCheckVerantwortlicherWrongJAUser() {
 		final Dossier dossier = new Dossier();
 		dossier.setVerantwortlicherBG(jaAdmin);
 		dossier.setVerantwortlicherTS(jaAdmin);

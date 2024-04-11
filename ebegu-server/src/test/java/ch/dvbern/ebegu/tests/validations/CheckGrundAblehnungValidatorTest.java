@@ -26,51 +26,51 @@ import org.junit.jupiter.api.Test;
 /**
  * Tests fuer CheckGrundAblehnungValidator
  */
-public class CheckGrundAblehnungValidatorTest {
+class CheckGrundAblehnungValidatorTest {
 
 	private CheckGrundAblehnungValidator validator;
 	private Betreuung betreuung;
 
 	@BeforeEach
-	public void setUp() throws Exception {
+	void setUp() throws Exception {
 		validator = new CheckGrundAblehnungValidator();
 		betreuung = TestDataUtil.createDefaultBetreuung();
 	}
 
 	@Test
-	public void testNichtAbgewiesenEmptyGrund() {
+	void testNichtAbgewiesenEmptyGrund() {
 		betreuung.setGrundAblehnung("");
 		Assertions.assertTrue(validator.isValid(betreuung, null));
 	}
 
 	@Test
-	public void testNichtAbgewiesenNullGrund() {
+	void testNichtAbgewiesenNullGrund() {
 		betreuung.setGrundAblehnung(null);
 		Assertions.assertTrue(validator.isValid(betreuung, null));
 	}
 
 	@Test
-	public void testNichtAbgewiesenWithGrund() {
+	void testNichtAbgewiesenWithGrund() {
 		betreuung.setGrundAblehnung("mein Grund");
 		Assertions.assertTrue(validator.isValid(betreuung, null));
 	}
 
 	@Test
-	public void testAbgewiesenEmptyGrund() {
+	void testAbgewiesenEmptyGrund() {
 		betreuung.setBetreuungsstatus(Betreuungsstatus.ABGEWIESEN);
 		betreuung.setGrundAblehnung("");
 		Assertions.assertFalse(validator.isValid(betreuung, null));
 	}
 
 	@Test
-	public void testAbgewiesenNullGrund() {
+	void testAbgewiesenNullGrund() {
 		betreuung.setBetreuungsstatus(Betreuungsstatus.ABGEWIESEN);
 		betreuung.setGrundAblehnung(null);
 		Assertions.assertFalse(validator.isValid(betreuung, null));
 	}
 
 	@Test
-	public void testAbgewiesenWithGrund() {
+	void testAbgewiesenWithGrund() {
 		betreuung.setBetreuungsstatus(Betreuungsstatus.ABGEWIESEN);
 		betreuung.setGrundAblehnung("mein Grund");
 		Assertions.assertTrue(validator.isValid(betreuung, null));

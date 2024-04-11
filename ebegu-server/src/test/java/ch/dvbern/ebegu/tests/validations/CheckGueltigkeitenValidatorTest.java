@@ -37,10 +37,10 @@ import static org.hamcrest.Matchers.not;
 /**
  * Test fuer {@link CheckGueltigkeitenValidator}
  */
-public class CheckGueltigkeitenValidatorTest extends AbstractValidatorTest {
+class CheckGueltigkeitenValidatorTest extends AbstractValidatorTest {
 
 	@Test
-	public void testCheckBetreuungspensumDatesOverlapping() {
+	void testCheckBetreuungspensumDatesOverlapping() {
 		Betreuung betreuung = createBetreuungWithOverlappedDates(true); //overlapping
 		Set<ConstraintViolation<Betreuung>> violations = validate(betreuung);
 
@@ -48,7 +48,7 @@ public class CheckGueltigkeitenValidatorTest extends AbstractValidatorTest {
 	}
 
 	@Test
-	public void testCheckBetreuungspensumDatesNotOverlapping() {
+	void testCheckBetreuungspensumDatesNotOverlapping() {
 		Betreuung betreuung = createBetreuungWithOverlappedDates(false); // not overlapping
 		Set<ConstraintViolation<Betreuung>> violations = validate(betreuung);
 

@@ -25,24 +25,24 @@ import org.junit.jupiter.api.Test;
 /**
  * Tests fuer {@link CheckMitteilungCompletenessValidator}
  */
-public class CheckMitteilungCompletenessValidatorTest {
+class CheckMitteilungCompletenessValidatorTest {
 
 	CheckMitteilungCompletenessValidator validator;
 
 	@BeforeEach
-	public void setUp() {
+	void setUp() {
 		validator = new CheckMitteilungCompletenessValidator();
 	}
 
 	@Test
-	public void testNeuNoMessageNoSubject() {
+	void testNeuNoMessageNoSubject() {
 		Mitteilung mitteilung = new Mitteilung();
 		mitteilung.setMitteilungStatus(MitteilungStatus.NEU);
 		Assertions.assertFalse(validator.isValid(mitteilung, null));
 	}
 
 	@Test
-	public void testNeuNoMessage() {
+	void testNeuNoMessage() {
 		Mitteilung mitteilung = new Mitteilung();
 		mitteilung.setMitteilungStatus(MitteilungStatus.NEU);
 		mitteilung.setSubject("subject");
@@ -50,7 +50,7 @@ public class CheckMitteilungCompletenessValidatorTest {
 	}
 
 	@Test
-	public void testNeuNoSubject() {
+	void testNeuNoSubject() {
 		Mitteilung mitteilung = new Mitteilung();
 		mitteilung.setMitteilungStatus(MitteilungStatus.NEU);
 		mitteilung.setMessage("message");
@@ -58,7 +58,7 @@ public class CheckMitteilungCompletenessValidatorTest {
 	}
 
 	@Test
-	public void testNeuComplete() {
+	void testNeuComplete() {
 		Mitteilung mitteilung = new Mitteilung();
 		mitteilung.setMitteilungStatus(MitteilungStatus.NEU);
 		mitteilung.setSubject("subject");
