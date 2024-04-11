@@ -47,6 +47,7 @@ import ch.dvbern.ebegu.entities.FinanzielleSituation;
 import ch.dvbern.ebegu.entities.FinanzielleSituationContainer;
 import ch.dvbern.ebegu.entities.FinanzielleSituation_;
 import ch.dvbern.ebegu.entities.Gesuch;
+import ch.dvbern.ebegu.entities.GesuchstellerContainer;
 import ch.dvbern.ebegu.entities.NeueVeranlagungsMitteilung;
 import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
@@ -195,9 +196,15 @@ public class FinanzielleSituationServiceBean extends AbstractBaseService impleme
 	private void handleDataResetsOnFinSitStartSave(Gesuch gesuch,
 		FinanzielleSituationContainer finanzielleSituation,
 		FinanzielleSituationStartDTO finSitStartDTO) {
-		handleEKVDataRestsOnFinSitStartSave(gesuch, finanzielleSituation);
-		if (gesuch.getFinSitTyp() == FinanzielleSituationTyp.SCHWYZ && (Objects.equals(finSitStartDTO.getGemeinsameSteuererklaerung(), Boolean.TRUE) &&
-				gesuch.getGesuchsteller2() != null && gesuch.getGesuchsteller2().getFinanzielleSituationContainer() != null)) {
+		if (gesuch.getFinSitTyp() == FinanzielleSituationTyp.SCHWYZ && Boolean.TRUE.equals(finSitStartDTO.getGemeinsameSteuererklaerung())) {
+			Objects.requireNonNull(gesuch.getGesuchsteller1());
+			if (gesuch.getGesuchsteller1().getFinanzielleSituationContainer() != null) {
+				gesuch.getGesuchsteller1().getFinanzielleSituationContainer().getFinanzielleSituationJA().setQuellenbesteuert(false);
+				gesuch.getGesuchsteller1().getFinanzielleSituationContainer().getFinanzielleSituationJA().setBruttoLohn(null);
+				saveFinanzielleSituation(gesuch.getGesuchsteller1().getFinanzielleSituationContainer(), gesuch.getId());
+			}
+
+			if (gesuch.getGesuchsteller2() != null && gesuch.getGesuchsteller2().getFinanzielleSituationContainer() != null) {
 				var finSit = gesuch.getGesuchsteller2().getFinanzielleSituationContainer().getFinanzielleSituationJA();
 				finSit.setBruttoLohn(null);
 				finSit.setQuellenbesteuert(null);
@@ -207,41 +214,73 @@ public class FinanzielleSituationServiceBean extends AbstractBaseService impleme
 				finSit.setAbzuegeLiegenschaft(null);
 
 				saveFinanzielleSituation(gesuch.getGesuchsteller2().getFinanzielleSituationContainer(), gesuch.getId());
-
+			}
 		}
+
+		if (gesuch.getFinSitTyp() == FinanzielleSituationTyp.SCHWYZ && Boolean.FALSE.equals(finSitStartDTO.getGemeinsameSteuererklaerung())) {
+			Objects.requireNonNull(gesuch.getGesuchsteller1());
+			handleSchwyzGSFinSitDataReset(gesuch.getGesuchsteller1(), gesuch);
+			if (gesuch.getGesuchsteller2() != null) {
+				handleSchwyzGSFinSitDataReset(gesuch.getGesuchsteller2(), gesuch);
+			}
+		}
+		handleEKVDataResetsOnFinSitStartSave(gesuch, finanzielleSituation);
 	}
 
-	private void handleEKVDataRestsOnFinSitStartSave(Gesuch gesuch, FinanzielleSituationContainer finanzielleSituation) {
-		Objects.requireNonNull(gesuch.getGesuchsteller1());
-		if (gesuch.getFinSitTyp() == FinanzielleSituationTyp.SCHWYZ
-			&& gesuch.getGesuchsteller1().getEinkommensverschlechterungContainer() != null
-			&& gesuch.getGesuchsteller1().getEinkommensverschlechterungContainer().getEkvJABasisJahrPlus1() != null) {
-			var ekv = gesuch.getGesuchsteller1().getEinkommensverschlechterungContainer().getEkvJABasisJahrPlus1();
-			if (Boolean.TRUE.equals(finanzielleSituation.getFinanzielleSituationJA().getQuellenbesteuert())) {
-				ekv.setSteuerbaresEinkommen(null);
-				ekv.setEinkaeufeVorsorge(null);
-				ekv.setAbzuegeLiegenschaft(null);
-				ekv.setSteuerbaresVermoegen(null);
-			}
-			if (Boolean.FALSE.equals(finanzielleSituation.getFinanzielleSituationJA().getQuellenbesteuert())) {
-				ekv.setBruttolohnAbrechnung1(null);
-			}
-			einkommensverschlechterungService.saveEinkommensverschlechterungContainer(
-				gesuch.getGesuchsteller1().getEinkommensverschlechterungContainer(),
-				gesuch);
+	private void handleSchwyzGSFinSitDataReset(GesuchstellerContainer gesuchsteller, Gesuch gesuch) {
+		if (gesuchsteller.getFinanzielleSituationContainer() == null) {
+			return;
 		}
+		var finSit = gesuchsteller.getFinanzielleSituationContainer().getFinanzielleSituationJA();
+		if (Boolean.TRUE.equals(finSit.getQuellenbesteuert())) {
+			finSit.setSteuerbaresEinkommen(null);
+			finSit.setSteuerbaresVermoegen(null);
+			finSit.setEinkaeufeVorsorge(null);
+			finSit.setAbzuegeLiegenschaft(null);
+		}
+		if (Boolean.FALSE.equals(finSit.getQuellenbesteuert())) {
+			finSit.setBruttoLohn(null);
+		}
+		saveFinanzielleSituation(gesuchsteller.getFinanzielleSituationContainer(), gesuch.getId());
+	}
 
-		if (gesuch.getGesuchsteller2() != null && gesuch.getGesuchsteller2().getEinkommensverschlechterungContainer() != null
-			&& gesuch.getGesuchsteller2().getEinkommensverschlechterungContainer().getEkvJABasisJahrPlus1() != null) {
-			final Einkommensverschlechterung ekv =
-				gesuch.getGesuchsteller2().getEinkommensverschlechterungContainer().getEkvJABasisJahrPlus1();
-			ekv.setBruttolohnAbrechnung1(null);
+	private void handleSchwyzGSEKVDataReset(GesuchstellerContainer gesuchsteller, Gesuch gesuch,
+		FinanzielleSituationContainer finSitContainer) {
+		if (gesuchsteller.getFinanzielleSituationContainer() == null || gesuchsteller.getEinkommensverschlechterungContainer() == null) {
+			return;
+		}
+		var finSit = finSitContainer.getFinanzielleSituationJA();
+		var ekv = gesuchsteller.getEinkommensverschlechterungContainer().getEkvJABasisJahrPlus1();
+
+		if (Boolean.TRUE.equals(finSit.getQuellenbesteuert())) {
 			ekv.setSteuerbaresEinkommen(null);
 			ekv.setSteuerbaresVermoegen(null);
 			ekv.setEinkaeufeVorsorge(null);
 			ekv.setAbzuegeLiegenschaft(null);
-			einkommensverschlechterungService.saveEinkommensverschlechterungContainer(gesuch.getGesuchsteller2()
-				.getEinkommensverschlechterungContainer(), gesuch);
+		}
+		if (Boolean.FALSE.equals(finSit.getQuellenbesteuert())) {
+			ekv.setBruttoLohn(null);
+		}
+		einkommensverschlechterungService.saveEinkommensverschlechterungContainer(gesuchsteller.getEinkommensverschlechterungContainer(), gesuch);
+	}
+
+	private void handleEKVDataResetsOnFinSitStartSave(Gesuch gesuch, FinanzielleSituationContainer finanzielleSituation) {
+		final Familiensituation familiensituation = gesuch.extractFamiliensituation();
+		final GesuchstellerContainer gesuchsteller1 = gesuch.getGesuchsteller1();
+		Objects.requireNonNull(gesuchsteller1);
+		Objects.requireNonNull(familiensituation);
+		if (gesuch.getFinSitTyp() == FinanzielleSituationTyp.SCHWYZ
+			&& gesuchsteller1.getEinkommensverschlechterungContainer() != null
+			&& gesuchsteller1.getEinkommensverschlechterungContainer().getEkvJABasisJahrPlus1() != null) {
+			handleSchwyzGSEKVDataReset(gesuchsteller1, gesuch, finanzielleSituation);
+
+			if (gesuch.getGesuchsteller2() != null) {
+				var finSitToCompare = finanzielleSituation.getGesuchsteller().isSame(gesuch.getGesuchsteller2()) ?
+					finanzielleSituation :
+					gesuch.getGesuchsteller2().getFinanzielleSituationContainer();
+				Objects.requireNonNull(finSitToCompare);
+				handleSchwyzGSEKVDataReset(gesuch.getGesuchsteller2(), gesuch, finSitToCompare);
+			}
 		}
 	}
 
@@ -268,18 +307,9 @@ public class FinanzielleSituationServiceBean extends AbstractBaseService impleme
 		return finanzielleSituationPersisted;
 	}
 
-	private static void resetHiddenEKVFieldsDependingOnFinSit(@Nonnull FinanzielleSituationContainer finanzielleSituation, Gesuch gesuch) {
+	private void resetHiddenEKVFieldsDependingOnFinSit(@Nonnull FinanzielleSituationContainer finanzielleSituation, Gesuch gesuch) {
 		if (gesuch.getFinSitTyp() == FinanzielleSituationTyp.SCHWYZ && finanzielleSituation.getGesuchsteller().getEinkommensverschlechterungContainer() != null) {
-			Einkommensverschlechterung ekvGS1 = finanzielleSituation.getGesuchsteller().getEinkommensverschlechterungContainer().getEkvJABasisJahrPlus1();
-			if (Boolean.TRUE.equals(finanzielleSituation.getFinanzielleSituationJA().getQuellenbesteuert())) {
-				ekvGS1.setBruttolohnAbrechnung1(null);
-			}
-			if (Boolean.FALSE.equals(finanzielleSituation.getFinanzielleSituationJA().getQuellenbesteuert())) {
-				ekvGS1.setSteuerbaresEinkommen(null);
-				ekvGS1.setEinkaeufeVorsorge(null);
-				ekvGS1.setAbzuegeLiegenschaft(null);
-				ekvGS1.setSteuerbaresVermoegen(null);
-			}
+			handleSchwyzGSEKVDataReset(finanzielleSituation.getGesuchsteller(), gesuch, finanzielleSituation);
 
 			final Familiensituation familiensituation = gesuch.extractFamiliensituation();
 			Objects.requireNonNull(familiensituation);
