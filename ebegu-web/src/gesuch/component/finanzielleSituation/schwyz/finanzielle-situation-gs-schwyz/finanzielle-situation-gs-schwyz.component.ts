@@ -78,7 +78,9 @@ export class FinanzielleSituationGsSchwyzComponent extends AbstractGesuchViewX<T
 
     private save(onResult: (arg: any) => void): Promise<TSFinanzielleSituationContainer> {
         this.model.copyFinSitDataToGesuch(this.getGesuch());
-        return this.gesuchModelManager.saveFinanzielleSituation().then((finSitCon: TSFinanzielleSituationContainer) => {
+        return this.gesuchModelManager.saveFinanzielleSituation().then(finSitCon => {
+            return this.gesuchmodelManager.reloadGesuch().then(() => finSitCon);
+        }).then((finSitCon: TSFinanzielleSituationContainer) => {
             onResult(finSitCon);
             return finSitCon;
         }) as Promise<TSFinanzielleSituationContainer>;
