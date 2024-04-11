@@ -377,6 +377,7 @@ public class KitaTagestrukturenSchwyzRechnerTest {
 		var testee = new KitaTagestrukturenSchwyzRechner();
 		var verfuegungZeitabschnitt = new VerfuegungZeitabschnitt();
 		var input = verfuegungZeitabschnitt.getRelevantBgCalculationInput();
+		setDefaultInputs(input);
 		input.setBabyTarif(true);
 
 		var parameter = TestUtils.getRechnerParamterSchwyz();
@@ -389,11 +390,30 @@ public class KitaTagestrukturenSchwyzRechnerTest {
 	}
 
 	@Test
+	public void testCalculateNormkostenIfFreiwilligerKindergarten() {
+		// given
+		var testee = new KitaTagestrukturenSchwyzRechner();
+		var verfuegungZeitabschnitt = new VerfuegungZeitabschnitt();
+		var input = verfuegungZeitabschnitt.getRelevantBgCalculationInput();
+		setDefaultInputs(input);
+		input.setEinschulungTyp(EinschulungTyp.FREIWILLIGER_KINDERGARTEN);
+		var parameter = TestUtils.getRechnerParamterSchwyz();
+
+		// when
+		var normkosten = testee.calculateNormkosten(input, parameter);
+
+		// then
+		assertEquals(parameter.getMaxVerguenstigungVorschuleKindProTg(), normkosten);
+	}
+
+	@Test
 	public void testCalculateNormkostenIfNotEingeschult() {
 		// given
 		var testee = new KitaTagestrukturenSchwyzRechner();
 		var verfuegungZeitabschnitt = new VerfuegungZeitabschnitt();
 		var input = verfuegungZeitabschnitt.getRelevantBgCalculationInput();
+		setDefaultInputs(input);
+		input.setEinschulungTyp(null);
 		var parameter = TestUtils.getRechnerParamterSchwyz();
 
 		// when
@@ -409,6 +429,7 @@ public class KitaTagestrukturenSchwyzRechnerTest {
 		var testee = new KitaTagestrukturenSchwyzRechner();
 		var verfuegungZeitabschnitt = new VerfuegungZeitabschnitt();
 		var input = verfuegungZeitabschnitt.getRelevantBgCalculationInput();
+		setDefaultInputs(input);
 		input.setEinschulungTyp(EinschulungTyp.KLASSE1);
 		input.setBetreuungWaehrendSchulzeit(false);
 		var parameter = TestUtils.getRechnerParamterSchwyz();
@@ -426,6 +447,7 @@ public class KitaTagestrukturenSchwyzRechnerTest {
 		var testee = new KitaTagestrukturenSchwyzRechner();
 		var verfuegungZeitabschnitt = new VerfuegungZeitabschnitt();
 		var input = verfuegungZeitabschnitt.getRelevantBgCalculationInput();
+		setDefaultInputs(input);
 		input.setEinschulungTyp(EinschulungTyp.KLASSE1);
 		input.setBetreuungWaehrendSchulzeit(true);
 		var parameter = TestUtils.getRechnerParamterSchwyz();
@@ -452,6 +474,21 @@ public class KitaTagestrukturenSchwyzRechnerTest {
 
 		// then
 		assertEquals(new BigDecimal("125.0000000000"), tagestarif);
+	}
+
+	@Test
+	public void testCalculateTagesTarifZeroBetreuungstage() {
+		// given
+		var testee = new KitaTagestrukturenSchwyzRechner();
+
+		var verfuegungZeitabschnitt = new VerfuegungZeitabschnitt();
+
+		// when
+		BigDecimal tagestarif =
+			testee.calculateTagesTarif(BigDecimal.ZERO, verfuegungZeitabschnitt.getRelevantBgCalculationInput());
+
+		// then
+		assertEquals(BigDecimal.ZERO, tagestarif);
 	}
 
 	private void checkMappedInputs(BGCalculationInput input, BGCalculationResult result) {
