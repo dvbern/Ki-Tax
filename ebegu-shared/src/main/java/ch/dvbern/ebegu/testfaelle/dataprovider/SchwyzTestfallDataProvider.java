@@ -94,6 +94,7 @@ public class SchwyzTestfallDataProvider extends AbstractTestfallDataProvider {
 		kind.setVorname(vorname);
 		kind.setNachname(name);
 		kind.setEinschulungTyp(EinschulungTyp.VORSCHULALTER);
+		kind.setSprichtAmtssprache(true);
 		kind.setKinderabzugErstesHalbjahr(Kinderabzug.GANZER_ABZUG);
 		if (betreuung) {
 			kind.setFamilienErgaenzendeBetreuung(true);

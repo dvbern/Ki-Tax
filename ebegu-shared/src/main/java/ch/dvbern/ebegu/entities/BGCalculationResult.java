@@ -178,6 +178,10 @@ public class BGCalculationResult extends AbstractEntity {
 	// false, wenn sozialhilfebzeüger und finsit abgelehnt
 	private boolean sozialhilfeAkzeptiert;
 
+	@Nullable
+	@Column(nullable = true)
+	private BigDecimal gutscheinEingewoehnung;
+
 	@Transient
 	@Nonnull
 	private Function<BigDecimal, BigDecimal> zeiteinheitenRoundingStrategy = MathUtil::toTwoKommastelle;
@@ -227,6 +231,7 @@ public class BGCalculationResult extends AbstractEntity {
 		this.beitragshoeheProzent = toCopy.beitragshoeheProzent;
 		this.verguenstigungGewuenscht = toCopy.verguenstigungGewuenscht;
 		this.sozialhilfeAkzeptiert = toCopy.sozialhilfeAkzeptiert;
+		this.gutscheinEingewoehnung = toCopy.gutscheinEingewoehnung;
 	}
 
 	public boolean isCloseTo(@Nonnull BGCalculationResult that) {
@@ -255,6 +260,7 @@ public class BGCalculationResult extends AbstractEntity {
 		verguenstigungProZeiteinheit = that.verguenstigungProZeiteinheit;
 		verguenstigungGewuenscht = that.verguenstigungGewuenscht;
 		sozialhilfeAkzeptiert = that.sozialhilfeAkzeptiert;
+		gutscheinEingewoehnung = that.gutscheinEingewoehnung;
 	}
 
 	@CanIgnoreReturnValue
@@ -312,6 +318,7 @@ public class BGCalculationResult extends AbstractEntity {
 			.add("babyTarif", babyTarif)
 			.add("verguensigungGewuenscht", verguenstigungGewuenscht)
 			.add("sozialhilfeAbgelehnt", sozialhilfeAkzeptiert)
+			.add("eingewoehnungAnteil", gutscheinEingewoehnung)
 			.toString();
 	}
 
@@ -342,7 +349,8 @@ public class BGCalculationResult extends AbstractEntity {
 			auszahlungAnEltern == otherResult.isAuszahlungAnEltern() &&
 			babyTarif == otherResult.babyTarif &&
 			Objects.equals(beitragshoeheProzent, otherResult.beitragshoeheProzent) &&
-			sozialhilfeAkzeptiert == otherResult.sozialhilfeAkzeptiert;
+			sozialhilfeAkzeptiert == otherResult.sozialhilfeAkzeptiert &&
+			MathUtil.isSame(gutscheinEingewoehnung, otherResult.gutscheinEingewoehnung);
 	}
 
 	public static boolean isSameSichtbareDaten(@Nullable BGCalculationResult thisEntity, @Nullable BGCalculationResult otherEntity) {
@@ -425,7 +433,8 @@ public class BGCalculationResult extends AbstractEntity {
 				thisEntity.auszahlungAnEltern == otherEntity.auszahlungAnEltern &&
 				thisEntity.babyTarif == otherEntity.babyTarif &&
 				Objects.equals(thisEntity.beitragshoeheProzent, otherEntity.beitragshoeheProzent) &&
-				thisEntity.sozialhilfeAkzeptiert == otherEntity.sozialhilfeAkzeptiert
+				thisEntity.sozialhilfeAkzeptiert == otherEntity.sozialhilfeAkzeptiert &&
+				MathUtil.isSame(thisEntity.gutscheinEingewoehnung, otherEntity.gutscheinEingewoehnung)
 		));
 	}
 
@@ -758,6 +767,16 @@ public class BGCalculationResult extends AbstractEntity {
 
 	public boolean isSozialhilfeAkzeptiert() {
 		return sozialhilfeAkzeptiert;
+	}
+
+
+	@Nullable
+	public BigDecimal getGutscheinEingewoehnung() {
+		return gutscheinEingewoehnung;
+	}
+
+	public void setGutscheinEingewoehnung(@Nullable BigDecimal gutscheinEingewoehnung) {
+		this.gutscheinEingewoehnung = gutscheinEingewoehnung;
 	}
 
 	// changes in mutationen can be ignored, as long as nothing except FinSit data changes

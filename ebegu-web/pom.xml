@@ -36,7 +36,7 @@
         <profile>
             <id>ci</id>
             <properties>
-                <npm.init.arg>ci --legacy-peer-deps</npm.init.arg>
+                <npm.init.arg>ci</npm.init.arg>
             </properties>
         </profile>
 

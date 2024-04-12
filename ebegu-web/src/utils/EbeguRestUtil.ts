@@ -194,6 +194,8 @@ import {TSDateRange} from '../models/types/TSDateRange';
 import {TSLand} from '../models/types/TSLand';
 import {DateUtil} from './DateUtil';
 import {EbeguUtil} from './EbeguUtil';
+import {TSAusserordentlicherAnspruchTyp} from '../models/enums/TSAusserordentlicherAnspruchTyp';
+import {TSEingewoehnungPauschale} from '../models/TSEingewoehnungPauschale';
 
 export class EbeguRestUtil {
 
@@ -408,6 +410,19 @@ export class EbeguRestUtil {
         restObj.pensum = betreuungspensumEntity.pensum;
         restObj.monatlicheBetreuungskosten = betreuungspensumEntity.monatlicheBetreuungskosten;
         restObj.stuendlicheVollkosten = betreuungspensumEntity.stuendlicheVollkosten;
+        if (betreuungspensumEntity.eingewoehnungPauschale) {
+            restObj.eingewoehnungPauschale =
+                this.eingewohnungPauschaleToRestObject({}, betreuungspensumEntity.eingewoehnungPauschale);
+        }
+    }
+
+    private eingewohnungPauschaleToRestObject(
+        restEingewoehnungPauschale: any,
+        eingewoehnungPauschale: TSEingewoehnungPauschale
+    ): any {
+        this.abstractDateRangeEntityToRestObject(restEingewoehnungPauschale, eingewoehnungPauschale);
+        restEingewoehnungPauschale.pauschale = eingewoehnungPauschale.pauschale;
+        return restEingewoehnungPauschale;
     }
 
     private parseAbstractPensumEntity(
@@ -427,8 +442,22 @@ export class EbeguRestUtil {
         betreuungspensumTS.pensum = betreuungspensumFromServer.pensum;
         betreuungspensumTS.monatlicheBetreuungskosten = betreuungspensumFromServer.monatlicheBetreuungskosten;
         betreuungspensumTS.stuendlicheVollkosten = betreuungspensumFromServer.stuendlicheVollkosten;
+        betreuungspensumTS.eingewoehnungPauschale = this.parseEingewoehnungPauschale(new TSEingewoehnungPauschale(),
+            betreuungspensumFromServer.eingewoehnungPauschale);
+        betreuungspensumTS.hasEingewoehnungsPauschale = EbeguUtil.isNotNullOrUndefined(betreuungspensumTS.eingewoehnungPauschale);
     }
 
+    private parseEingewoehnungPauschale(
+        eingewoehnungPauschaleTS: TSEingewoehnungPauschale,
+        eingewoehnungPauschaleFromServer: any
+    ): TSEingewoehnungPauschale {
+        if (eingewoehnungPauschaleFromServer) {
+            this.parseDateRangeEntity(eingewoehnungPauschaleTS, eingewoehnungPauschaleFromServer);
+            eingewoehnungPauschaleTS.pauschale = eingewoehnungPauschaleFromServer.pauschale;
+            return eingewoehnungPauschaleTS;
+        }
+        return undefined;
+    }
     private abstractAntragEntityToRestObject(restObj: any, antragEntity: TSAbstractAntragEntity): void {
         this.abstractMutableEntityToRestObject(restObj, antragEntity);
         restObj.dossier = this.dossierToRestObject({}, antragEntity.dossier);
@@ -2961,7 +2990,6 @@ export class EbeguRestUtil {
         }
         return undefined;
     }
-
     public parseBetreuungsmitteilungPensum(
         betreuungspensumTS: TSBetreuungsmitteilungPensum,
         betreuungspensumFromServer: any
@@ -6200,6 +6228,13 @@ export class EbeguRestUtil {
             return typ as TSFachstellenTyp;
         }
         throw new Error(`TSFachstellenTyp ${typ} not defined`);
+    }
+
+    public parseAusserordentlicherAnspruchTyp(typ: any): TSAusserordentlicherAnspruchTyp {
+        if (Object.values(TSAusserordentlicherAnspruchTyp).includes(typ)) {
+            return typ as TSAusserordentlicherAnspruchTyp;
+        }
+        throw new Error(`TSAusserordentlicherAnspruchTyp ${typ} not defined`);
     }
 
     public parseEinschulungTyp(typ: any): TSEinschulungTyp {

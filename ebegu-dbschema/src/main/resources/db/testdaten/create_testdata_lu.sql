@@ -29,7 +29,7 @@ end;
 
 DELIMITER ;
 
-
+START TRANSACTION;
 
 # Variables definition
 SET @mandant_id_luzern = UNHEX(REPLACE('485d7483-30a2-11ec-a86f-b89a2ae4a038', '-', ''));
@@ -432,3 +432,5 @@ VALUES (UNHEX(REPLACE(UUID(), '-', '')), '2021-02-15 09:48:18', '2021-02-15 09:4
 		UNHEX(REPLACE('7049ec48-30ab-11ec-a86f-b89a2ae4a038', '-', '')));
 
 UPDATE mandant SET mandant.activated=true where id = @mandant_id_luzern;
+
+COMMIT;
