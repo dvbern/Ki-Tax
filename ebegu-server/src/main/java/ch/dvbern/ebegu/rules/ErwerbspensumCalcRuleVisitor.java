@@ -73,7 +73,7 @@ public class ErwerbspensumCalcRuleVisitor implements AnspruchBeschaeftigungAbhan
 		Einstellung minEWPeingeschultAsiv = einstellungMap.get(MIN_ERWERBSPENSUM_EINGESCHULT);
 		Einstellung paramMinDauerKonkubinat = einstellungMap.get(MINIMALDAUER_KONKUBINAT);
 
-		return new ErwebspensumSchwyzCalcRule(
+		return new ErwerbspensumSchwyzCalcRule(
 			Constants.DEFAULT_GUELTIGKEIT,
 			minEWPnichtEingeschultAsiv.getValueAsInteger(),
 			minEWPeingeschultAsiv.getValueAsInteger(),

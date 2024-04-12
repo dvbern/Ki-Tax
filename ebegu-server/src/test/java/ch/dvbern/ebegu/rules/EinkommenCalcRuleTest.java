@@ -137,7 +137,6 @@ public class EinkommenCalcRuleTest {
 		Betreuung betreuung = EbeguRuleTestsHelper.createBetreuungWithPensum(
 			TestDataUtil.START_PERIODE, TestDataUtil.ENDE_PERIODE, KITA,100, BigDecimal.ZERO);
 		Gesuch gesuch = betreuung.extractGesuch();
-		TestDataUtil.createDefaultAdressenForGS(gesuch, false);
 
 		gesuch.setEinkommensverschlechterungInfoContainer(new EinkommensverschlechterungInfoContainer());
 		final EinkommensverschlechterungInfo einkommensverschlechterungInfoJA = new EinkommensverschlechterungInfo();
@@ -444,7 +443,6 @@ public class EinkommenCalcRuleTest {
 	) {
 		Gesuch gesuch = platz.extractGesuch();
 		gesuch.setFinSitStatus(finSitStatus);
-		TestDataUtil.createDefaultAdressenForGS(gesuch, false);
 		TestDataUtil.calculateFinanzDaten(gesuch, new FinanzielleSituationBernRechner());
 		assertNotNull(gesuch.getGesuchsteller1());
 		gesuch.getGesuchsteller1().addErwerbspensumContainer(TestDataUtil.createErwerbspensum(TestDataUtil.START_PERIODE, TestDataUtil.ENDE_PERIODE, 100));

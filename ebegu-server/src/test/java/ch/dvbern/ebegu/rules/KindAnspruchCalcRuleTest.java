@@ -58,7 +58,6 @@ public class KindAnspruchCalcRuleTest {
 			new BigDecimal(2000));
 		// erwerbspensum fuer GS
 		final Gesuch gesuch = betreuung.extractGesuch();
-		TestDataUtil.createDefaultAdressenForGS(gesuch, false);
 		GesuchstellerContainer gesuchsteller1 = betreuung.extractGesuch().getGesuchsteller1();
 		gesuchsteller1.addErwerbspensumContainer(TestDataUtil.createErwerbspensum(TestDataUtil.START_PERIODE, TestDataUtil.ENDE_PERIODE, 100));
 

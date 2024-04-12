@@ -1390,7 +1390,6 @@ public class MutationsMergerTest {
 				BetreuungsangebotTyp.KITA, 100, new BigDecimal(2000));
 		final Gesuch gesuch = betreuung.extractGesuch();
 		gesuch.setTyp(antragTyp);
-		TestDataUtil.createDefaultAdressenForGS(gesuch, false);
 		Set<KindContainer> kindContainers = new LinkedHashSet<>();
 		final KindContainer kindContainer = betreuung.getKind();
 		Set<Betreuung> betreuungen = new TreeSet<>();

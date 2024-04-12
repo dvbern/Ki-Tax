@@ -26,9 +26,9 @@ import ch.dvbern.ebegu.entities.AbstractPlatz;
 import ch.dvbern.ebegu.entities.Kind;
 import ch.dvbern.ebegu.types.DateRange;
 
-public class ErwebspensumSchwyzCalcRule extends ErwerbspensumCalcRule {
+public class ErwerbspensumSchwyzCalcRule extends ErwerbspensumCalcRule {
 
-	protected ErwebspensumSchwyzCalcRule(
+	protected ErwerbspensumSchwyzCalcRule(
 		@Nonnull DateRange validityPeriod,
 		int minErwerbspensumNichtEingeschult,
 		int minErwerbspensumEingeschult,
