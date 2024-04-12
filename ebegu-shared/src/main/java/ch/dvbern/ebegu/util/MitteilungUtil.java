@@ -24,6 +24,7 @@ import javax.annotation.Nonnull;
 import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Betreuungsmitteilung;
+import ch.dvbern.ebegu.entities.containers.PensumUtil;
 import ch.dvbern.ebegu.enums.MitteilungStatus;
 import ch.dvbern.ebegu.enums.MitteilungTeilnehmerTyp;
 
@@ -39,6 +40,7 @@ public final class MitteilungUtil {
 		@Nonnull Benutzer currentBenutzer,
 		Locale locale
 	) {
+		PensumUtil.transformBetreuungsPensumContainers(betreuungsmitteilung);
 		betreuungsmitteilung.setDossier(betreuung.extractGesuch().getDossier());
 		betreuungsmitteilung.setSenderTyp(MitteilungTeilnehmerTyp.INSTITUTION);
 		betreuungsmitteilung.setEmpfaengerTyp(MitteilungTeilnehmerTyp.JUGENDAMT);
