@@ -48,7 +48,8 @@ public class PensumMapperFactory {
 		return PensumMapper.combine(
 			PensumMapper.GUELTIGKEIT_MAPPER,
 			PensumMapper.KOSTEN_MAPPER,
-			pensumValueMapper
+			pensumValueMapper,
+			PensumMapper.EINGEWOEHNUNG_PAUSCHALE_MAPPER
 		);
 	}
 }

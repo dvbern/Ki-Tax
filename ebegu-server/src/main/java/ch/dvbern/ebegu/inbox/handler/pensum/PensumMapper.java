@@ -22,7 +22,9 @@ import java.util.Arrays;
 import javax.annotation.Nonnull;
 
 import ch.dvbern.ebegu.entities.AbstractMahlzeitenPensum;
+import ch.dvbern.ebegu.entities.EingewoehnungPauschale;
 import ch.dvbern.ebegu.entities.containers.PensumUtil;
+import ch.dvbern.kibon.exchange.commons.platzbestaetigung.EingewoehnungDTO;
 import ch.dvbern.kibon.exchange.commons.platzbestaetigung.ZeitabschnittDTO;
 
 @FunctionalInterface
@@ -52,5 +54,20 @@ public interface PensumMapper {
 		target.setMonatlicheHauptmahlzeiten(zeitabschnittDTO.getAnzahlHauptmahlzeiten());
 		target.setTarifProHauptmahlzeit(zeitabschnittDTO.getTarifProHauptmahlzeiten());
 		PensumUtil.transformMittagstischPensum(target);
+	};
+
+	PensumMapper EINGEWOEHNUNG_PAUSCHALE_MAPPER = (target, zeitabschnittDTO) -> {
+		EingewoehnungDTO eingewoehnung = zeitabschnittDTO.getEingewoehnung();
+		if (eingewoehnung == null) {
+			target.setEingewoehnungPauschale(null);
+
+			return;
+		}
+
+		EingewoehnungPauschale pauschale = new EingewoehnungPauschale();
+		pauschale.setPauschale(eingewoehnung.getPauschale());
+		pauschale.getGueltigkeit().setGueltigAb(eingewoehnung.getVon());
+		pauschale.getGueltigkeit().setGueltigBis(eingewoehnung.getBis());
+		target.setEingewoehnungPauschale(pauschale);
 	};
 }

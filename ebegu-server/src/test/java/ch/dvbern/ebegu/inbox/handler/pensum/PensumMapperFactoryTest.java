@@ -18,6 +18,7 @@
 package ch.dvbern.ebegu.inbox.handler.pensum;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import javax.annotation.Nonnull;
@@ -27,6 +28,7 @@ import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.BetreuungsmitteilungPensum;
 import ch.dvbern.ebegu.entities.Betreuungspensum;
 import ch.dvbern.ebegu.entities.BetreuungspensumContainer;
+import ch.dvbern.ebegu.entities.EingewoehnungPauschale;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.containers.PensumUtil;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
@@ -37,6 +39,7 @@ import ch.dvbern.ebegu.services.BetreuungMonitoringService;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.kibon.exchange.commons.platzbestaetigung.BetreuungEventDTO;
+import ch.dvbern.kibon.exchange.commons.platzbestaetigung.EingewoehnungDTO;
 import ch.dvbern.kibon.exchange.commons.platzbestaetigung.ZeitabschnittDTO;
 import ch.dvbern.kibon.exchange.commons.types.Zeiteinheit;
 import org.easymock.EasyMockExtension;
@@ -55,6 +58,8 @@ import static java.util.Objects.requireNonNull;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.closeTo;
 import static org.hamcrest.Matchers.comparesEqualTo;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.nullValue;
 
 @ExtendWith(EasyMockExtension.class)
 class PensumMapperFactoryTest {
@@ -143,6 +148,43 @@ class PensumMapperFactoryTest {
 			.where(AbstractMahlzeitenPensum::getTarifProNebenmahlzeit, comparesEqualTo(BigDecimal.ZERO))
 			.where(AbstractMahlzeitenPensum::getPensum, closeTo(BigDecimal.valueOf(4 * 100 / 20.5), BigDecimal.valueOf(1.0e-8)))
 			.where(AbstractMahlzeitenPensum::getMonatlicheBetreuungskosten, comparesEqualTo(BigDecimal.valueOf(4 * 12.25))));
+	}
+
+	@Test
+	void readEingewoehnungPauschale() {
+		Betreuung betreuung = betreuungWithSingleContainer(gesuch);
+		ZeitabschnittDTO z = createZeitabschnittDTO(Constants.DEFAULT_GUELTIGKEIT);
+		EingewoehnungDTO eingewoehnung =
+			new EingewoehnungDTO(BigDecimal.valueOf(123.45), LocalDate.of(2024, 1, 1), LocalDate.of(2024, 1, 31));
+		z.setEingewoehnung(eingewoehnung);
+
+		ProcessingContext ctx = initProcessingContext(betreuung, z, true);
+		PensumMapper pensumMapper = PensumMapperFactory.createPensumMapper(ctx);
+
+		BetreuungsmitteilungPensum actual = new BetreuungsmitteilungPensum();
+		pensumMapper.toAbstractMahlzeitenPensum(actual, z);
+
+		assertThat(actual.getEingewoehnungPauschale(), pojo(EingewoehnungPauschale.class)
+			.where(EingewoehnungPauschale::getPauschale, comparesEqualTo(BigDecimal.valueOf(123.45)))
+			.where(EingewoehnungPauschale::getGueltigkeit, pojo(DateRange.class)
+				.where(DateRange::getGueltigAb, comparesEqualTo(LocalDate.of(2024, 1, 1)))
+				.where(DateRange::getGueltigBis, comparesEqualTo(LocalDate.of(2024, 1, 31)))
+			));
+	}
+
+	@Test
+	void readEingewoehnungPauschale_null() {
+		Betreuung betreuung = betreuungWithSingleContainer(gesuch);
+		ZeitabschnittDTO z = createZeitabschnittDTO(Constants.DEFAULT_GUELTIGKEIT);
+		z.setEingewoehnung(null);
+
+		ProcessingContext ctx = initProcessingContext(betreuung, z, true);
+		PensumMapper pensumMapper = PensumMapperFactory.createPensumMapper(ctx);
+
+		BetreuungsmitteilungPensum actual = new BetreuungsmitteilungPensum();
+		pensumMapper.toAbstractMahlzeitenPensum(actual, z);
+
+		assertThat(actual.getEingewoehnungPauschale(), is(nullValue()));
 	}
 
 	@Nonnull
