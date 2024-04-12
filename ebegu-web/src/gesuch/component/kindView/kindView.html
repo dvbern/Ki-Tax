@@ -126,7 +126,7 @@
                         </div>
                     </div>
 
-                    <ng-container ng-if="vm.showAsivKinderabzug()">
+                    <ng-container ng-if="vm.showKinderabzugHalbjahr1()">
                         <!-- Kinderabzug: Erstes Halbjahr -->
                         <div class="row">
                             <div class="col-xs-12 dv-input-container-question">
@@ -138,7 +138,7 @@
                                                 text="'KINDERABZUG_HELP' | translate"></dv-tooltip>
                                 </span>
                                     <dv-radio-container name="kinderabzugErstesHalbjahr" ng-model="vm.getModel().kinderabzugErstesHalbjahr"
-                                                        ng-required="vm.showAsivKinderabzug()"
+                                                        ng-required="vm.showKinderabzugHalbjahr1()"
                                                         dv-enable-element
                                                         dv-enable-allowed-roles="vm.allowedRoles"
                                                         dv-enable-expression="!vm.isGesuchReadonly()"
@@ -154,6 +154,8 @@
                                 </dv-input-container>
                             </div>
                         </div>
+                    </ng-container>
+                    <ng-container ng-if="vm.showKinderabzugHalbjahr2()">
                         <!-- Kinderabzug: Zweites Halbjahr -->
                         <div class="row">
                             <div class="col-xs-12 dv-input-container-question">
@@ -165,7 +167,7 @@
                                                 text="'KINDERABZUG_HELP' | translate"></dv-tooltip>
                                 </span>
                                     <dv-radio-container name="kinderabzugZweitesHalbjahr" ng-model="vm.getModel().kinderabzugZweitesHalbjahr"
-                                                        ng-required="vm.showAsivKinderabzug()"
+                                                        ng-required="vm.showKinderabzugHalbjahr2()"
                                                         dv-enable-element
                                                         dv-enable-allowed-roles="vm.allowedRoles"
                                                         dv-enable-expression="!vm.isGesuchReadonly()"
