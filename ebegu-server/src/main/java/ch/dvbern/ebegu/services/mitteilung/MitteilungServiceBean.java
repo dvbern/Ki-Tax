@@ -907,8 +907,7 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 			}
 			if (AntragStatus.getVerfuegtAbgeschlossenIgnoriertAndSTVStates().contains(neustesGesuch.getStatus())) {
 				// create Mutation if there is currently no Mutation
-				Gesuch mutation =
-						Gesuch.createMutation(gesuch.getDossier(), neustesGesuch.getGesuchsperiode(), LocalDate.now());
+				Gesuch mutation = Gesuch.createMutation(gesuch.getDossier(), neustesGesuch.getGesuchsperiode(), LocalDate.now());
 				mutation = gesuchService.createGesuch(mutation);
 				authorizer.checkWriteAuthorization(mutation);
 				if (mitteilung instanceof NeueVeranlagungsMitteilung) {
@@ -1008,7 +1007,14 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 		// pro Monat mit entweder dem vertraglichen oder dem abgewichenen Pensum ODER 0.
 		List<BetreuungspensumAbweichung> initialAbweichungen =
 				betreuung.fillAbweichungen(betreuungService.getMultiplierForAbweichnungen(betreuung));
-		// (2) Die Abschnitte werden zu BetreuungsMitteilungspensen konvertiert.
+		// (2) Da die Eingewöhnungspauschale in den Abweichungen readonly ist, müssen wir sie von den Readonly-Attributen
+		// übernehmen
+		initialAbweichungen.forEach(abweichung -> {
+			if (abweichung.getEingewoehnungPauschale() == null && abweichung.getVertraglicheEingewoehnungPauschale() != null) {
+				abweichung.setEingewoehnungPauschale(abweichung.getVertraglicheEingewoehnungPauschale());
+			}
+		});
+		// (3) Die Abschnitte werden zu BetreuungsMitteilungspensen konvertiert.
 		Set<BetreuungsmitteilungPensum> pensenFromAbweichungen = initialAbweichungen.stream()
 			.filter(abweichung -> abweichung.getVertraglichesPensum() != null)
 				.map(abweichung -> abweichung.convertAbweichungToMitteilungPensum(mitteilung))

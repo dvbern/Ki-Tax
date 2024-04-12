@@ -70,6 +70,7 @@ import ch.dvbern.ebegu.api.dtos.JaxDokumente;
 import ch.dvbern.ebegu.api.dtos.JaxDossier;
 import ch.dvbern.ebegu.api.dtos.JaxDownloadFile;
 import ch.dvbern.ebegu.api.dtos.JaxEbeguVorlage;
+import ch.dvbern.ebegu.api.dtos.JaxEingewoehnungPauschale;
 import ch.dvbern.ebegu.api.dtos.JaxEinkommensverschlechterung;
 import ch.dvbern.ebegu.api.dtos.JaxEinkommensverschlechterungContainer;
 import ch.dvbern.ebegu.api.dtos.JaxEinkommensverschlechterungInfo;
@@ -1786,7 +1787,8 @@ public class JaxBConverter extends AbstractConverter {
 			}
 			institutionStammdaten.getAuszahlungsdaten().setIban(new IBAN(institutionStammdatenJAXP.getIban()));
 			institutionStammdaten.getAuszahlungsdaten().setKontoinhaber(institutionStammdatenJAXP.getKontoinhaber());
-			institutionStammdaten.getAuszahlungsdaten().setInfomaKreditorennummer(institutionStammdatenJAXP.getInfomaKreditorennummer());
+			institutionStammdaten.getAuszahlungsdaten()
+				.setInfomaKreditorennummer(institutionStammdatenJAXP.getInfomaKreditorennummer());
 			institutionStammdaten.getAuszahlungsdaten().setInfomaBankcode(institutionStammdatenJAXP.getInfomaBankcode());
 			Adresse convertedAdresse = null;
 			if (institutionStammdatenJAXP.getAdresseKontoinhaber() != null) {
@@ -3766,6 +3768,14 @@ public class JaxBConverter extends AbstractConverter {
 		jaxAbweichung.setVertraglicherTarifHaupt(abweichung.getVertraglicherTarifHauptmahlzeit());
 		jaxAbweichung.setVertraglicherTarifNeben(abweichung.getVertraglicherTarifNebenmahlzeit());
 		jaxAbweichung.setMultiplier(abweichung.getMultiplier());
+		if (abweichung.getVertraglicheEingewoehnungPauschale() != null) {
+			jaxAbweichung.setEingewoehnungPauschale(eingewoehnungPauschaleToJax(
+				abweichung.getVertraglicheEingewoehnungPauschale(),
+				new JaxEingewoehnungPauschale()));
+			if (abweichung.getEingewoehnungPauschale() != null) {
+				jaxAbweichung.getEingewoehnungPauschale().setId(abweichung.getEingewoehnungPauschale().getId());
+			}
+		}
 
 		return jaxAbweichung;
 	}
@@ -4101,7 +4111,6 @@ public class JaxBConverter extends AbstractConverter {
 		jaxBetreuungspensum.setMonatlicheNebenmahlzeiten(betreuungspensum.getMonatlicheNebenmahlzeiten());
 		jaxBetreuungspensum.setTarifProHauptmahlzeit(betreuungspensum.getTarifProHauptmahlzeit());
 		jaxBetreuungspensum.setTarifProNebenmahlzeit(betreuungspensum.getTarifProNebenmahlzeit());
-
 		return jaxBetreuungspensum;
 	}
 
@@ -5476,8 +5485,8 @@ public class JaxBConverter extends AbstractConverter {
 	public List<JaxRueckforderungMitteilung> rueckforderungMitteilungenToJax(
 		@Nonnull Set<RueckforderungMitteilung> rueckforderungMitteilungen, @Nonnull String institutionName) {
 		return rueckforderungMitteilungen.stream().map(rueckforderungMitteilung -> rueckforderungMitteilungToJax(
-			rueckforderungMitteilung,
-			institutionName))
+				rueckforderungMitteilung,
+				institutionName))
 			.collect(Collectors.toList());
 	}
 
@@ -6014,9 +6023,9 @@ public class JaxBConverter extends AbstractConverter {
 	public static OeffnungszeitenTagesschuleDTO[] convert(@Nonnull String oeffnungszeiten) {
 		try {
 			return EbeguUtil.convertOeffnungszeiten(oeffnungszeiten);
-		} catch(JsonProcessingException e) {
-			LOGGER.warn("Problem converting Oeffnungszeiten: " +e.getMessage());
-			return new OeffnungszeitenTagesschuleDTO[]{};
+		} catch (JsonProcessingException e) {
+			LOGGER.warn("Problem converting Oeffnungszeiten: " + e.getMessage());
+			return new OeffnungszeitenTagesschuleDTO[] {};
 		}
 	}
 

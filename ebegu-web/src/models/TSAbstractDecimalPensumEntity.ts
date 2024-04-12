@@ -17,6 +17,7 @@
 
 import {TSPensumUnits} from './enums/TSPensumUnits';
 import {TSAbstractDateRangedEntity} from './TSAbstractDateRangedEntity';
+import {TSEingewoehnungPauschale} from './TSEingewoehnungPauschale';
 
 export class TSAbstractDecimalPensumEntity extends TSAbstractDateRangedEntity {
 
@@ -24,6 +25,9 @@ export class TSAbstractDecimalPensumEntity extends TSAbstractDateRangedEntity {
     private _pensum: number;
     private _monatlicheBetreuungskosten: number;
     private _stuendlicheVollkosten: number;
+    private _eingewoehnungPauschale: TSEingewoehnungPauschale;
+    // Transient field used for calculations. Not sent to server
+    private _hasEingewoehnungsPauschale: boolean;
 
     public constructor() {
         super();
@@ -59,5 +63,21 @@ export class TSAbstractDecimalPensumEntity extends TSAbstractDateRangedEntity {
 
     public set stuendlicheVollkosten(value: number) {
         this._stuendlicheVollkosten = value;
+    }
+
+    public get eingewoehnungPauschale(): TSEingewoehnungPauschale {
+        return this._eingewoehnungPauschale;
+    }
+
+    public set eingewoehnungPauschale(value: TSEingewoehnungPauschale) {
+        this._eingewoehnungPauschale = value;
+    }
+
+    public get hasEingewoehnungsPauschale(): boolean {
+        return this._hasEingewoehnungsPauschale;
+    }
+
+    public set hasEingewoehnungsPauschale(value: boolean) {
+        this._hasEingewoehnungsPauschale = value;
     }
 }
