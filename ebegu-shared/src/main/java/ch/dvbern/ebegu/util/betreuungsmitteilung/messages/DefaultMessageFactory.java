@@ -18,6 +18,7 @@
 package ch.dvbern.ebegu.util.betreuungsmitteilung.messages;
 
 import java.math.BigDecimal;
+import java.text.NumberFormat;
 import java.util.Locale;
 
 import ch.dvbern.ebegu.entities.BetreuungsmitteilungPensum;
@@ -49,6 +50,8 @@ public class DefaultMessageFactory implements BetreuungsmitteilungPensumMessageF
 
 	@Override
 	public String messageForPensum(int index, BetreuungsmitteilungPensum pensum) {
+		NumberFormat numberFormat = NumberFormat.getNumberInstance(locale);
+
 		return ServerMessageUtil.getMessage(
 			messageKey,
 			locale,
@@ -56,7 +59,8 @@ public class DefaultMessageFactory implements BetreuungsmitteilungPensumMessageF
 			index,
 			formatAb(pensum),
 			formatBis(pensum),
-			MathUtil.DEFAULT.multiply(pensum.getPensum(), pensumMultiplier),
-			pensum.getMonatlicheBetreuungskosten());
+			numberFormat.format(MathUtil.DEFAULT.multiply(pensum.getPensum(), pensumMultiplier)),
+			numberFormat.format(pensum.getMonatlicheBetreuungskosten())
+		);
 	}
 }

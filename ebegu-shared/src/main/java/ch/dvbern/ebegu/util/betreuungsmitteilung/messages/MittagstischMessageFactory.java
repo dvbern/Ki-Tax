@@ -17,6 +17,7 @@
 
 package ch.dvbern.ebegu.util.betreuungsmitteilung.messages;
 
+import java.text.NumberFormat;
 import java.util.Locale;
 
 import ch.dvbern.ebegu.entities.BetreuungsmitteilungPensum;
@@ -35,6 +36,8 @@ public class MittagstischMessageFactory implements BetreuungsmitteilungPensumMes
 
 	@Override
 	public String messageForPensum(int index, BetreuungsmitteilungPensum pensum) {
+		NumberFormat decimalFormat = NumberFormat.getNumberInstance(locale);
+
 		return ServerMessageUtil.getMessage(
 			"mutationsmeldung_message_mittagstisch",
 			locale,
@@ -42,7 +45,8 @@ public class MittagstischMessageFactory implements BetreuungsmitteilungPensumMes
 			index,
 			formatAb(pensum),
 			formatBis(pensum),
-			pensum.getMonatlicheHauptmahlzeiten(),
-			pensum.getTarifProHauptmahlzeit());
+			decimalFormat.format(pensum.getMonatlicheHauptmahlzeiten()),
+			decimalFormat.format(pensum.getTarifProHauptmahlzeit())
+		);
 	}
 }

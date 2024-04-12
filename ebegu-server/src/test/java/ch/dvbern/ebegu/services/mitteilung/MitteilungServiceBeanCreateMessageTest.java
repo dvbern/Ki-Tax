@@ -83,8 +83,8 @@ class MitteilungServiceBeanCreateMessageTest extends EasyMockSupport {
 
 		assertThat(
 			result,
-			is("Pensum 1 von 01.01.2024 bis 29.08.2024: 75%, monatliche Betreuungskosten: CHF 1,230.35\n"
-				+ "Pensum 2 von 01.01.2024 bis 29.08.2024: 75%, monatliche Betreuungskosten: CHF 1,230.35"));
+			is("Pensum 1 von 01.01.2024 bis 29.08.2024: 75%, monatliche Betreuungskosten: CHF 1’230.35\n"
+				+ "Pensum 2 von 01.01.2024 bis 29.08.2024: 75%, monatliche Betreuungskosten: CHF 1’230.35"));
 	}
 
 	@Test
@@ -94,7 +94,7 @@ class MitteilungServiceBeanCreateMessageTest extends EasyMockSupport {
 
 		assertThat(
 			result,
-			is("Pensum 1 von 01.01.2024 bis 29.08.2024: 75%, monatliche Betreuungskosten: CHF 1,230.35"));
+			is("Pensum 1 von 01.01.2024 bis 29.08.2024: 75%, monatliche Betreuungskosten: CHF 1’230.35"));
 	}
 
 	@Test
@@ -104,7 +104,7 @@ class MitteilungServiceBeanCreateMessageTest extends EasyMockSupport {
 
 		assertThat(
 			result,
-			is("Pensum 1 von 01.01.2024 bis 29.08.2024: 75%, monatliche Betreuungskosten: CHF 1,230.35, monatliche "
+			is("Pensum 1 von 01.01.2024 bis 29.08.2024: 75%, monatliche Betreuungskosten: CHF 1’230.35, monatliche "
 				+ "Hauptmahlzeiten: 5 à CHF 7, monatliche Nebenmahlzeiten: 9.75 à CHF 0.35"));
 
 	}
@@ -116,7 +116,7 @@ class MitteilungServiceBeanCreateMessageTest extends EasyMockSupport {
 
 		assertThat(
 			result,
-			is("Pensum 1 von 01.01.2024 bis 29.08.2024: 137.5 Stunden, monatliche Betreuungskosten: CHF 1,230.35"));
+			is("Pensum 1 von 01.01.2024 bis 29.08.2024: 137.5 Stunden, monatliche Betreuungskosten: CHF 1’230.35"));
 	}
 
 	@Test
@@ -126,7 +126,7 @@ class MitteilungServiceBeanCreateMessageTest extends EasyMockSupport {
 
 		assertThat(
 			result,
-			is("Pensum 1 von 01.01.2024 bis 29.08.2024: 137.5 Stunden, monatliche Betreuungskosten: CHF 1,230.35, monatliche "
+			is("Pensum 1 von 01.01.2024 bis 29.08.2024: 137.5 Stunden, monatliche Betreuungskosten: CHF 1’230.35, monatliche "
 				+ "Hauptmahlzeiten: 5 à CHF 7, monatliche Nebenmahlzeiten: 9.75 à CHF 0.35"));
 	}
 
@@ -152,7 +152,7 @@ class MitteilungServiceBeanCreateMessageTest extends EasyMockSupport {
 
 		assertThat(
 			result,
-			is("Pensum 1 von 01.01.2024 bis 29.08.2024: 165 Stunden, monatliche Betreuungskosten: CHF 1,230.35"));
+			is("Pensum 1 von 01.01.2024 bis 29.08.2024: 165 Stunden, monatliche Betreuungskosten: CHF 1’230.35"));
 	}
 
 	@ParameterizedTest
@@ -167,10 +167,7 @@ class MitteilungServiceBeanCreateMessageTest extends EasyMockSupport {
 			result,
 			stringContainsInOrder(
 				"Pensum 1 von 01.01.2024 bis 29.08.2024: ",
-				// ignoring pensum to make it easier to test percentage & hours
-				", monatliche Betreuungskosten: CHF 1,230.35",
-				", ",
-				"Eingewöhnung von 28.12.2023 bis 07.01.2024: Pauschale: CHF 777"
+				", Eingewöhnung von 28.12.2023 bis 07.01.2024: Pauschale: CHF 777"
 			));
 	}
 

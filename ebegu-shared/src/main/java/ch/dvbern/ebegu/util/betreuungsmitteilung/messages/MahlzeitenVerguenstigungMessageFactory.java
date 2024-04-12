@@ -18,6 +18,7 @@
 package ch.dvbern.ebegu.util.betreuungsmitteilung.messages;
 
 import java.math.BigDecimal;
+import java.text.NumberFormat;
 import java.util.Locale;
 
 import ch.dvbern.ebegu.entities.BetreuungsmitteilungPensum;
@@ -49,6 +50,8 @@ public class MahlzeitenVerguenstigungMessageFactory implements Betreuungsmitteil
 
 	@Override
 	public String messageForPensum(int index, BetreuungsmitteilungPensum pensum) {
+		NumberFormat decimalFormat = NumberFormat.getNumberInstance(locale);
+
 		return ServerMessageUtil.getMessage(
 			messageKey,
 			locale,
@@ -56,11 +59,12 @@ public class MahlzeitenVerguenstigungMessageFactory implements Betreuungsmitteil
 			index,
 			formatAb(pensum),
 			formatBis(pensum),
-			MathUtil.DEFAULT.multiply(pensum.getPensum(), pensumMultiplier),
-			pensum.getMonatlicheBetreuungskosten(),
-			pensum.getMonatlicheHauptmahlzeiten(),
-			pensum.getMonatlicheNebenmahlzeiten(),
-			pensum.getTarifProHauptmahlzeit(),
-			pensum.getTarifProNebenmahlzeit());
+			decimalFormat.format(MathUtil.DEFAULT.multiply(pensum.getPensum(), pensumMultiplier)),
+			decimalFormat.format(pensum.getMonatlicheBetreuungskosten()),
+			decimalFormat.format(pensum.getMonatlicheHauptmahlzeiten()),
+			decimalFormat.format(pensum.getMonatlicheNebenmahlzeiten()),
+			decimalFormat.format(pensum.getTarifProHauptmahlzeit()),
+			decimalFormat.format(pensum.getTarifProNebenmahlzeit())
+		);
 	}
 }

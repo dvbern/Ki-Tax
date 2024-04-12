@@ -17,6 +17,7 @@
 
 package ch.dvbern.ebegu.util.betreuungsmitteilung.messages;
 
+import java.text.NumberFormat;
 import java.util.Locale;
 
 import ch.dvbern.ebegu.entities.BetreuungsmitteilungPensum;
@@ -48,6 +49,7 @@ public class EingewoehnungsPauschaleMessageFactory implements Betreuungsmitteilu
 			mandant,
 			formatAb(eingewoehnungPauschale),
 			formatBis(eingewoehnungPauschale),
-			eingewoehnungPauschale.getPauschale());
+			NumberFormat.getNumberInstance(locale).format(eingewoehnungPauschale.getPauschale())
+		);
 	}
 }
