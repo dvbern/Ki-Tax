@@ -87,8 +87,6 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 	private static final Logger LOG = LoggerFactory.getLogger(PlatzbestaetigungEventHandler.class);
 
 	private static final String BETREFF_KEY = "mutationsmeldung_betreff_von";
-	private static final String MESSAGE_KEY = "mutationsmeldung_message";
-	private static final String MESSAGE_MAHLZEIT_KEY = "mutationsmeldung_message_mahlzeitverguenstigung_mit_tarif";
 
 	@Inject
 	private ApplicationPropertyService applicationPropertyService;
