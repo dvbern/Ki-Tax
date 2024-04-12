@@ -1947,7 +1947,13 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     }
 
     public showSchulergaezendeBetreuungFrage(): boolean {
-        return this.schulergaenzendeBetreuungAktiv && this.kindModel.kindJA.einschulungTyp !== TSEinschulungTyp.VORSCHULALTER;
+        return this.schulergaenzendeBetreuungAktiv && this.kindModel.kindJA.einschulungTyp !== TSEinschulungTyp.VORSCHULALTER
+            && this.isBetreuungsangebotTypForShulergaezendeBetreuung();
+    }
+
+    private isBetreuungsangebotTypForShulergaezendeBetreuung(): boolean {
+        return this.isBetreuungsangebottyp(TSBetreuungsangebotTyp.TAGESFAMILIEN) ||
+            this.isBetreuungsangebottyp(TSBetreuungsangebotTyp.KITA);
     }
 
 }

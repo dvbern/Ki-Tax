@@ -196,6 +196,8 @@ public class BGCalculationInput {
 	private boolean gesuchBeendenKonkubinatMitZweiGS = false;
 	private BigDecimal bgStundenFaktor = BigDecimal.ZERO;
 
+	private boolean betreuungInFerienzeit = false;
+
 	public BGCalculationInput(@Nonnull VerfuegungZeitabschnitt parent, @Nonnull RuleValidity ruleValidity) {
 		this.parent = parent;
 		this.ruleValidity = ruleValidity;
@@ -895,6 +897,7 @@ public class BGCalculationInput {
 		if (!other.finsitAccepted) {
 			this.finsitAccepted = false;
 		}
+		this.betreuungInFerienzeit = other.betreuungInFerienzeit;
 	}
 
 	/**
@@ -1100,7 +1103,8 @@ public class BGCalculationInput {
 			MathUtil.isSame(this.bgStundenFaktor, other.bgStundenFaktor) &&
 			this.integrationTypFachstellenPensum == other.integrationTypFachstellenPensum &&
 			this.verguenstigungGewuenscht == other.verguenstigungGewuenscht &&
-			this.finsitAccepted == other.finsitAccepted;
+			this.finsitAccepted == other.finsitAccepted &&
+			this.betreuungInFerienzeit == other.betreuungInFerienzeit;
 	}
 
 	@SuppressWarnings("PMD.CompareObjectsWithEquals")
@@ -1132,7 +1136,8 @@ public class BGCalculationInput {
 			MathUtil.isSame(tarifHauptmahlzeit, that.tarifHauptmahlzeit) &&
 			MathUtil.isSame(tarifNebenmahlzeit, that.tarifNebenmahlzeit) &&
 			MathUtil.isSame(anzahlHauptmahlzeiten, that.anzahlHauptmahlzeiten) &&
-			MathUtil.isSame(anzahlNebenmahlzeiten, that.anzahlNebenmahlzeiten);
+			MathUtil.isSame(anzahlNebenmahlzeiten, that.anzahlNebenmahlzeiten) &&
+			betreuungInFerienzeit == that.betreuungInFerienzeit;
 	}
 
 	private boolean isSameErwerbspensum(@Nullable Integer thisErwerbspensumGS, @Nullable Integer thatErwerbspensumGS) {
@@ -1317,5 +1322,13 @@ public class BGCalculationInput {
 
 	public void setFinsitAccepted(boolean finsitAccepted) {
 		this.finsitAccepted = finsitAccepted;
+	}
+
+	public boolean isBetreuungInFerienzeit() {
+		return betreuungInFerienzeit;
+	}
+
+	public void setBetreuungInFerienzeit(boolean betreuungInFerienzeit) {
+		this.betreuungInFerienzeit = betreuungInFerienzeit;
 	}
 }
