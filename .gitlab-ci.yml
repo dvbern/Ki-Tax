@@ -40,7 +40,7 @@ include:
         inputs:
             name: .build-backend
             java-image-version: 11-jdk-alpine
-            maven-goal: -Drevision=$VERSION -Pcoverage -Pcopy-wildfly-dependencies -P!frontend clean install
+            maven-goal: -Drevision=$VERSION -Pcoverage -Pcopy-wildfly-dependencies -P!frontend clean org.jacoco:jacoco-maven-plugin:prepare-agent install org.jacoco:jacoco-maven-plugin:report-aggregate
 
     -   component: gitlab.dvbern.ch/devops/gitlab/components/maven@v0.1.7
         inputs:
