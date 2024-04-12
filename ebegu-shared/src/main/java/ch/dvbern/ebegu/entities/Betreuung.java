@@ -540,7 +540,8 @@ public class Betreuung extends AbstractPlatz implements BetreuungAndPensumContai
 		LocalDate abweichungBis,
 		Betreuungspensum pensum,
 		LocalDate von,
-		LocalDate bis) {
+		LocalDate bis
+	) {
 		if (von.isBefore(abweichungVon)) {
 			von = abweichungVon;
 		}

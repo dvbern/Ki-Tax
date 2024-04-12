@@ -154,6 +154,7 @@ import ch.dvbern.ebegu.util.MitteilungUtil;
 import ch.dvbern.ebegu.util.ServerMessageUtil;
 import ch.dvbern.ebegu.util.betreuungsmitteilung.messages.BetreuungsmitteilungPensumMessageFactory;
 import ch.dvbern.ebegu.util.betreuungsmitteilung.messages.DefaultMessageFactory;
+import ch.dvbern.ebegu.util.betreuungsmitteilung.messages.EingewoehnungsPauschaleMessageFactory;
 import ch.dvbern.ebegu.util.betreuungsmitteilung.messages.MahlzeitenVerguenstigungMessageFactory;
 import ch.dvbern.ebegu.util.betreuungsmitteilung.messages.MittagstischMessageFactory;
 import ch.dvbern.ebegu.util.mandant.MandantIdentifier;
@@ -166,6 +167,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static ch.dvbern.ebegu.enums.ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND;
+import static ch.dvbern.ebegu.util.betreuungsmitteilung.messages.BetreuungsmitteilungPensumMessageFactory.combine;
 import static java.util.Objects.requireNonNull;
 import static org.apache.commons.lang3.StringUtils.EMPTY;
 
@@ -1193,10 +1195,16 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 		BigDecimal multiplier = getMultiplierForMutationsMitteilung(mitteilung, betreuungspensumAnzeigeTyp);
 
 		if (mvzEnabled) {
-			return new MahlzeitenVerguenstigungMessageFactory(mandant, locale, betreuungspensumAnzeigeTyp, multiplier);
+			return combine(
+				new MahlzeitenVerguenstigungMessageFactory(mandant, locale, betreuungspensumAnzeigeTyp, multiplier),
+				new EingewoehnungsPauschaleMessageFactory(mandant, locale)
+			);
 		}
 
-		return new DefaultMessageFactory(mandant, locale, betreuungspensumAnzeigeTyp, multiplier);
+		return combine(
+			new DefaultMessageFactory(mandant, locale, betreuungspensumAnzeigeTyp, multiplier),
+			new EingewoehnungsPauschaleMessageFactory(mandant, locale)
+		);
 	}
 
 	@Nonnull

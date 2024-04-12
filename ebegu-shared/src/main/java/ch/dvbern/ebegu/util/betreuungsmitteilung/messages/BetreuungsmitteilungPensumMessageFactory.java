@@ -17,18 +17,30 @@
 
 package ch.dvbern.ebegu.util.betreuungsmitteilung.messages;
 
+import java.util.Arrays;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
+
 import ch.dvbern.ebegu.entities.BetreuungsmitteilungPensum;
 import ch.dvbern.ebegu.util.Constants;
+import ch.dvbern.ebegu.util.Gueltigkeit;
 
 public interface BetreuungsmitteilungPensumMessageFactory {
 
-	default String formatAb(BetreuungsmitteilungPensum pensum) {
+	default String formatAb(Gueltigkeit pensum) {
 		return Constants.DATE_FORMATTER.format(pensum.getGueltigkeit().getGueltigAb());
 	}
 
-	default String formatBis(BetreuungsmitteilungPensum pensum) {
+	default String formatBis(Gueltigkeit pensum) {
 		return Constants.DATE_FORMATTER.format(pensum.getGueltigkeit().getGueltigBis());
 	}
 
 	String messageForPensum(int index, BetreuungsmitteilungPensum pensum);
+
+	static BetreuungsmitteilungPensumMessageFactory combine(BetreuungsmitteilungPensumMessageFactory... factories) {
+		return (index, pensum) -> Arrays.stream(factories)
+			.map(factory -> factory.messageForPensum(index, pensum))
+			.filter(Predicate.not(String::isEmpty))
+			.collect(Collectors.joining(", "));
+	}
 }
