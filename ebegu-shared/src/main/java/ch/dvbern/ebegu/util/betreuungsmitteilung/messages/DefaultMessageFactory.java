@@ -57,10 +57,6 @@ public class DefaultMessageFactory implements BetreuungsmitteilungPensumMessageF
 			formatAb(pensum),
 			formatBis(pensum),
 			MathUtil.DEFAULT.multiply(pensum.getPensum(), pensumMultiplier),
-			pensum.getMonatlicheBetreuungskosten(),
-			pensum.getMonatlicheHauptmahlzeiten(),
-			pensum.getMonatlicheNebenmahlzeiten(),
-			pensum.getTarifProHauptmahlzeit(),
-			pensum.getTarifProNebenmahlzeit());
+			pensum.getMonatlicheBetreuungskosten());
 	}
 }
