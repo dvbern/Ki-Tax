@@ -26,6 +26,9 @@ export class FinanzielleSituationStartSchwyzComponent extends AbstractGesuchView
     public hasMultipleGS = false;
     public gs2Ausgefuellt = false;
 
+    private finSitGS1JAToRestore: TSFinanzielleSituation;
+    private finSitGS2JAToRestore: TSFinanzielleSituation;
+
     public resultate?: TSFinanzielleSituationResultateDTO;
 
     public constructor(
@@ -129,8 +132,15 @@ export class FinanzielleSituationStartSchwyzComponent extends AbstractGesuchView
 
     public gemeinsamChanged($event: MatRadioChange): void {
         if ($event.value === true) {
+            this.finSitGS1JAToRestore = this.model.finanzielleSituationContainerGS1.finanzielleSituationJA;
+            this.finSitGS2JAToRestore = this.model.finanzielleSituationContainerGS2.finanzielleSituationJA;
             this.model.finanzielleSituationContainerGS2.finanzielleSituationJA = new TSFinanzielleSituation();
             this.model.finanzielleSituationContainerGS1.finanzielleSituationJA = new TSFinanzielleSituation();
+        } else {
+            this.model.finanzielleSituationContainerGS2.finanzielleSituationJA =
+                this.finSitGS2JAToRestore ? this.finSitGS2JAToRestore : new TSFinanzielleSituation();
+            this.model.finanzielleSituationContainerGS1.finanzielleSituationJA =
+                this.finSitGS1JAToRestore ? this.finSitGS1JAToRestore : new TSFinanzielleSituation();
         }
         this.calculate();
     }
