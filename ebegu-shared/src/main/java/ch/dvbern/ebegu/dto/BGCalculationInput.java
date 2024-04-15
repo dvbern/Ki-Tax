@@ -21,6 +21,8 @@ import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.*;
 import ch.dvbern.ebegu.rules.RuleValidity;
 import ch.dvbern.ebegu.util.MathUtil;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -196,6 +198,15 @@ public class BGCalculationInput {
 	private boolean gesuchBeendenKonkubinatMitZweiGS = false;
 	private BigDecimal bgStundenFaktor = BigDecimal.ZERO;
 
+	private BigDecimal eingewoehnungPauschale = BigDecimal.ZERO;
+
+	private Boolean isBetreuungWaehrendSchulzeit;
+
+	@Getter
+	@Setter
+	// Zu verstehen als "Anzahl anderer Kinder im gleichen Haushalt"
+	private int anzahlGeschwister = 0;
+
 	public BGCalculationInput(@Nonnull VerfuegungZeitabschnitt parent, @Nonnull RuleValidity ruleValidity) {
 		this.parent = parent;
 		this.ruleValidity = ruleValidity;
@@ -267,6 +278,9 @@ public class BGCalculationInput {
 		this.integrationTypFachstellenPensum = toCopy.integrationTypFachstellenPensum;
 		this.verguenstigungGewuenscht = toCopy.verguenstigungGewuenscht;
 		this.finsitAccepted = toCopy.finsitAccepted;
+		this.eingewoehnungPauschale = toCopy.eingewoehnungPauschale;
+		this.isBetreuungWaehrendSchulzeit = toCopy.isBetreuungWaehrendSchulzeit;
+		this.anzahlGeschwister = toCopy.anzahlGeschwister;
 	}
 
 	@Nonnull
@@ -895,6 +909,8 @@ public class BGCalculationInput {
 		if (!other.finsitAccepted) {
 			this.finsitAccepted = false;
 		}
+
+		this.eingewoehnungPauschale = add(this.eingewoehnungPauschale, other.eingewoehnungPauschale);
 	}
 
 	/**
@@ -987,7 +1003,7 @@ public class BGCalculationInput {
 		this.tsInputMitBetreuung.calculatePercentage(percentage);
 		this.tsInputOhneBetreuung.calculatePercentage(percentage);
 		this.bezahltVollkostenMonatAnteil = calculatePercentage(this.bezahltVollkostenMonatAnteil, percentage);
-
+		this.eingewoehnungPauschale = calculatePercentage(this.eingewoehnungPauschale, percentage);
 	}
 
 	public void roundValuesAfterCalculateProportinaly() {
@@ -1100,7 +1116,8 @@ public class BGCalculationInput {
 			MathUtil.isSame(this.bgStundenFaktor, other.bgStundenFaktor) &&
 			this.integrationTypFachstellenPensum == other.integrationTypFachstellenPensum &&
 			this.verguenstigungGewuenscht == other.verguenstigungGewuenscht &&
-			this.finsitAccepted == other.finsitAccepted;
+			this.finsitAccepted == other.finsitAccepted &&
+			MathUtil.isSame(this.eingewoehnungPauschale, other.eingewoehnungPauschale);
 	}
 
 	@SuppressWarnings("PMD.CompareObjectsWithEquals")
@@ -1132,7 +1149,8 @@ public class BGCalculationInput {
 			MathUtil.isSame(tarifHauptmahlzeit, that.tarifHauptmahlzeit) &&
 			MathUtil.isSame(tarifNebenmahlzeit, that.tarifNebenmahlzeit) &&
 			MathUtil.isSame(anzahlHauptmahlzeiten, that.anzahlHauptmahlzeiten) &&
-			MathUtil.isSame(anzahlNebenmahlzeiten, that.anzahlNebenmahlzeiten);
+			MathUtil.isSame(anzahlNebenmahlzeiten, that.anzahlNebenmahlzeiten) &&
+			MathUtil.isSame(eingewoehnungPauschale, that.eingewoehnungPauschale);
 	}
 
 	private boolean isSameErwerbspensum(@Nullable Integer thisErwerbspensumGS, @Nullable Integer thatErwerbspensumGS) {
@@ -1317,5 +1335,21 @@ public class BGCalculationInput {
 
 	public void setFinsitAccepted(boolean finsitAccepted) {
 		this.finsitAccepted = finsitAccepted;
+	}
+
+	public BigDecimal getEingewoehnungPauschale() {
+		return eingewoehnungPauschale;
+	}
+
+	public void setEingewoehnungPauschale(BigDecimal eingewoehnungPauschale) {
+		this.eingewoehnungPauschale = eingewoehnungPauschale;
+	}
+
+	public Boolean isBetreuungWaehrendSchulzeit() {
+		return isBetreuungWaehrendSchulzeit;
+	}
+
+	public void setBetreuungWaehrendSchulzeit(Boolean betreuungWaehrendSchulzeit) {
+		isBetreuungWaehrendSchulzeit = betreuungWaehrendSchulzeit;
 	}
 }

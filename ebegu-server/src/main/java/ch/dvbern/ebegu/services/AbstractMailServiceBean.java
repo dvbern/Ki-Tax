@@ -40,6 +40,7 @@ import java.net.URL;
 import java.time.LocalDateTime;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
+import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 
 import static ch.dvbern.ebegu.util.Constants.NEW_LINE_CHAR_PATTERN;
@@ -160,11 +161,14 @@ public abstract class AbstractMailServiceBean extends AbstractBaseService {
 
 	@SuppressFBWarnings("REC_CATCH_EXCEPTION")
 	private void  doSendMessage(@Nonnull String messageBody, @Nonnull String mailadress, @Nonnull MandantIdentifier mandantIdentifier) throws MailException {
-		final SMTPSClient client = new SMTPSClient("UTF-8");
+		final SMTPSClient client = new SMTPSClient("TLS", false, StandardCharsets.UTF_8.displayName());
 		Writer writer = null;
 		try {
 			client.setDefaultTimeout(CONNECTION_TIMEOUT);
 			client.connect(configuration.getSMTPHost(), configuration.getSMTPPort());
+			if (!client.execTLS()) {
+				LOG.warn("connecting to %s without {}", configuration.getSMTPHost());
+			}
 			client.setSoTimeout(CONNECTION_TIMEOUT);
 			assertPositiveCompletion(client);
 			client.helo(configuration.getHostname(mandantIdentifier));
@@ -192,6 +196,7 @@ public abstract class AbstractMailServiceBean extends AbstractBaseService {
 				try {
 					writer.close();
 				} catch (IOException ignore) {
+					// NOP
 				}
 			}
 		}

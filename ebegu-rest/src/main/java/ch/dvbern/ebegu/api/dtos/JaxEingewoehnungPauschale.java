@@ -13,22 +13,34 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package ch.dvbern.ebegu.enums;
+package ch.dvbern.ebegu.api.dtos;
+
+import javax.annotation.Nonnull;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlTransient;
+import java.math.BigDecimal;
 
 /**
- * Enum fuer Typ der Eingewöhung
+ * Superklasse fuer ein Pensum
  */
-public enum EingewoehnungTyp {
-	FKJV,
-	LUZERN,
-	PAUSCHALE,
-	KEINE;
+@XmlTransient
+@XmlAccessorType(XmlAccessType.FIELD)
+public class JaxEingewoehnungPauschale extends JaxAbstractDateRangedDTO {
 
-	public boolean isEingewoehnungTypPeriode() {
-		return this == FKJV || this == LUZERN;
+
+	private static final long serialVersionUID = 5161971483109161443L;
+
+	@Nonnull
+	private BigDecimal pauschale;
+
+
+	@Nonnull
+	public BigDecimal getPauschale() {
+		return pauschale;
 	}
 
-	public boolean isEingewoehnunTypPauschale() {
-		return this == PAUSCHALE;
+	public void setPauschale(@Nonnull BigDecimal pauschale) {
+		this.pauschale = pauschale;
 	}
 }
