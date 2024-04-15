@@ -1,6 +1,5 @@
 package ch.dvbern.ebegu.entities;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import javax.annotation.Nonnull;
