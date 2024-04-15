@@ -586,6 +586,7 @@ export class WizardStepManager {
 
         // show just one step if gesuch.finSitTyp is empty (on gesuch creation)
         if (gesuch.finSitTyp === TSFinanzielleSituationTyp.BERN ||
+            gesuch.finSitTyp === TSFinanzielleSituationTyp.SCHWYZ ||
             gesuch.finSitTyp === TSFinanzielleSituationTyp.BERN_FKJV || !gesuch.finSitTyp) {
             this.unhideStep(TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG);
         } else if (gesuch.finSitTyp === TSFinanzielleSituationTyp.LUZERN) {
@@ -594,8 +595,6 @@ export class WizardStepManager {
             this.unhideStep(TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_SOLOTHURN);
         } else if (gesuch.finSitTyp === TSFinanzielleSituationTyp.APPENZELL) {
             this.unhideStep(TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_APPENZELL);
-        } else if (gesuch.finSitTyp === TSFinanzielleSituationTyp.SCHWYZ) {
-            // noop
         } else {
             throw new Error(`wrong FinSitTyp ${gesuch.finSitTyp}`);
         }
