@@ -294,7 +294,7 @@ public abstract class AbstractMailServiceBean extends AbstractBaseService {
 		LocalDateTime zeitpunktVersand = LocalDateTime.now();
 		String empfaengerAdresse = mailadress;
 		String betreff = subject;
-		VersendeteMail VersendeteMail = new VersendeteMail(zeitpunktVersand, empfaengerAdresse, betreff);
-		versendeteMailsService.saveVersendeteMail(VersendeteMail);
+		VersendeteMail versendeteMail = new VersendeteMail(zeitpunktVersand, empfaengerAdresse, betreff);
+		versendeteMailsService.saveVersendeteMail(versendeteMail);
 	}
 }

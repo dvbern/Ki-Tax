@@ -1,5 +1,6 @@
 package ch.dvbern.ebegu.entities;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import javax.annotation.Nonnull;
@@ -26,7 +27,7 @@ public class VersendeteMail extends AbstractEntity {
 
 	@SuppressFBWarnings(value = "NP_STORE_INTO_NONNULL_FIELD", justification = "just for JPA")
 	protected VersendeteMail() {
-		this.zeitpunktVersand = null;
+		this.zeitpunktVersand = LocalDateTime.now();
 		this.empfaengerAdresse = "";
 		this.betreff = "";
 	}
