@@ -353,6 +353,7 @@ public final class EbeguUtil {
 			return requireNonNull(requireNonNull(gesuch.getFamiliensituationContainer()).getFamiliensituationJA()).getFamilienstatus()
 				== EnumFamilienstatus.VERHEIRATET;
 		case APPENZELL:
+		case SCHWYZ:
 			return Boolean.TRUE.equals(requireNonNull(requireNonNull(gesuch.getFamiliensituationContainer()).getFamiliensituationJA())
 				.getGemeinsameSteuererklaerung());
 		default:
