@@ -648,6 +648,9 @@ describe('EbeguRestUtil', () => {
         tsBetreuungspensum.tarifProNebenmahlzeit = tarifProNebenmahlzeit;
         tsBetreuungspensum.gueltigkeit = gueltigkeit;
         tsBetreuungspensum.betreuungInFerienzeit = false;
+        tsBetreuungspensum.eingewoehnungPauschale = undefined;
+        tsBetreuungspensum.hasEingewoehnungsPauschale = false;
+
         return tsBetreuungspensum;
     }
 

@@ -29,6 +29,8 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.commons.lang3.builder.CompareToBuilder;
 import org.hibernate.envers.Audited;
 
+import javax.persistence.*;
+
 /**
  * Entity fuer Betreuungspensen.
  * Note: this class has a natural ordering that is inconsistent with equals.
@@ -36,6 +38,8 @@ import org.hibernate.envers.Audited;
 @SuppressWarnings("ComparableImplementedButEqualsNotOverridden")
 @Audited
 @Entity
+@AssociationOverride(name = "eingewoehnungPauschale",
+	joinColumns = @JoinColumn(name = "eingewoehnung_pauschale_id"), foreignKey = @ForeignKey(name = "FK_betreuungspensum_eingewoehnung_pauschale_id"))
 public class Betreuungspensum extends AbstractMahlzeitenPensum implements Comparable<Betreuungspensum> {
 
 	private static final long serialVersionUID = -9032857320571372370L;
@@ -64,6 +68,13 @@ public class Betreuungspensum extends AbstractMahlzeitenPensum implements Compar
 		this.setTarifProNebenmahlzeit(betPensumMitteilung.getTarifProNebenmahlzeit());
 		this.setStuendlicheVollkosten(betPensumMitteilung.getStuendlicheVollkosten());
 		this.setBetreuungInFerienzeit(betPensumMitteilung.getBetreuungInFerienzeit());
+
+		if (betPensumMitteilung.getEingewoehnungPauschale() != null) {
+			EingewoehnungPauschale eingewoehnungPauschale = new EingewoehnungPauschale();
+			eingewoehnungPauschale.setPauschale(betPensumMitteilung.getEingewoehnungPauschale().getPauschale());
+			eingewoehnungPauschale.setGueltigkeit(betPensumMitteilung.getEingewoehnungPauschale().getGueltigkeit());
+			this.setEingewoehnungPauschale(eingewoehnungPauschale);
+		}
 	}
 
 	public Betreuungspensum(DateRange gueltigkeit) {

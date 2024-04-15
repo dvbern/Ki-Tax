@@ -338,8 +338,8 @@ build-frontend:
         expire_in: 7 days
 
 analyze-backend:
-    variables:
-        GIT_DEPTH: 0
+    before_script:
+        - git fetch --unshallow
     extends: .analyze-backend-maven
     needs:
         - build-backend
@@ -357,8 +357,8 @@ build-frontend-image:
         - create-build-args
 
 analyze-frontend:
-    variables:
-        GIT_DEPTH: 0
+    before_script:
+        - git fetch --unshallow
     extends: .analyze-frontend-cli
     allow_failure: true # TODO remove after SONAR_TOKEN clash is resolved
     needs:

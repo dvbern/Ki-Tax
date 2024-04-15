@@ -32,6 +32,8 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.commons.lang3.builder.CompareToBuilder;
 import org.hibernate.envers.Audited;
 
+import javax.persistence.*;
+
 /**
  * Entity fuer BetreuungsmitteilungPensum.
  * Note: this class has a natural ordering that is inconsistent with equals.
@@ -39,6 +41,8 @@ import org.hibernate.envers.Audited;
 @SuppressWarnings("ComparableImplementedButEqualsNotOverridden")
 @Audited
 @Entity
+@AssociationOverride(name = "eingewoehnungPauschale",
+	joinColumns = @JoinColumn(name = "eingewoehnung_pauschale_id"), foreignKey = @ForeignKey(name = "FK_betreuungsmitteilung_pensum_eingewoehnung_pauschale_id"))
 public class BetreuungsmitteilungPensum extends AbstractMahlzeitenPensum implements Comparable<BetreuungsmitteilungPensum> {
 
 	private static final long serialVersionUID = -9032858720574672370L;

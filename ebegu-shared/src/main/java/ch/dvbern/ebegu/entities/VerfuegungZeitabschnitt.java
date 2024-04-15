@@ -601,6 +601,11 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 
 	}
 
+	public void setEingewoehnungPauschale(BigDecimal eingewoehnungPauschale) {
+		this.getBgCalculationInputAsiv().setEingewoehnungPauschale(eingewoehnungPauschale);
+		this.getBgCalculationInputGemeinde().setEingewoehnungPauschale(eingewoehnungPauschale);
+	}
+
 	public void calculateInputValuesProportionaly(double percentag) {
 		this.getBgCalculationInputAsiv().calculateInputValuesProportionaly(percentag);
 		this.getBgCalculationInputGemeinde().calculateInputValuesProportionaly(percentag);
@@ -851,6 +856,7 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 		result.setAuszahlungAnEltern(input.isAuszahlungAnEltern());
 		result.setVerguenstigungGewuenscht(input.isVerguenstigungGewuenscht());
 		result.setSozialhilfeAkzeptiert(input.isSozialhilfeempfaenger() && input.isFinsitAccepted());
+		result.setBabyTarif(input.isBabyTarif());
 	}
 
 	public boolean isSameMZV(VerfuegungZeitabschnitt other) {

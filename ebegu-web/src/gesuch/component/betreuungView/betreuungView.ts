@@ -81,6 +81,7 @@ import ILogService = angular.ILogService;
 import IScope = angular.IScope;
 import ITimeoutService = angular.ITimeoutService;
 import ITranslateService = angular.translate.ITranslateService;
+import {TSEingewoehnungPauschale} from '../../../models/TSEingewoehnungPauschale';
 
 const removeDialogTemplate = require('../../dialog/removeDialogTemplate.html');
 const okHtmlDialogTempl = require('../../dialog/okHtmlDialogTemplate.html');
@@ -1448,17 +1449,20 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         return this.isTagesschule() && this.checkIfGemeindeOrBetreuungHasTSAnmeldung();
     }
 
-    public showEingewoehnung(): boolean {
+    public showEingewoehnungPeriode(): boolean {
         if (this.isSchulamt()) {
             return false;
         }
+
         switch (this.eingewoehnungTyp) {
             case TSEingewoehnungTyp.KEINE:
                 return false;
             case TSEingewoehnungTyp.FKJV:
-                return this.showEingewohenungFKJV();
+                return this.showEingewohenungPeriodeFKJV();
             case TSEingewoehnungTyp.LUZERN:
                 return true;
+            case TSEingewoehnungTyp.PAUSCHALE:
+                return false;
             default: {
                 const errorMsg = `not implemented eingewoehnungTyp ${this.eingewoehnungTyp}`;
                 LOG.error(errorMsg);
@@ -1467,7 +1471,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         }
     }
 
-    private showEingewohenungFKJV(): boolean {
+    private showEingewohenungPeriodeFKJV(): boolean {
         if (this.isBetreuungsstatusAusstehend()) {
             return false;
         }
@@ -1477,7 +1481,11 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         return true;
     }
 
-    public isEingewoehnungEnabled(): boolean {
+    public showEingewoehnungPauschale(): boolean {
+        return this.eingewoehnungTyp === TSEingewoehnungTyp.PAUSCHALE;
+    }
+
+    public isEingewoehnungPeriodeEnabled(): boolean {
         if (this.isGesuchReadonly()) {
             return false;
         }
@@ -1491,6 +1499,24 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
             return true;
         }
         return false;
+    }
+
+    public isEingewoehnungPauschaleEnabled(): boolean {
+        if (!this.isPensumEditable()) {
+            return false;
+        }
+
+        return this.authServiceRS.isOneOfRoles(TSRoleUtil.getTraegerschaftInstitutionRoles());
+    }
+
+    public onEingewoehnungPauschaleChange(betreuungspensumIndex: number): void {
+        const pensumToUse = this.getBetreuungspensum(betreuungspensumIndex).betreuungspensumJA;
+
+        if (pensumToUse.hasEingewoehnungsPauschale) {
+            pensumToUse.eingewoehnungPauschale = new TSEingewoehnungPauschale();
+        } else {
+            pensumToUse.eingewoehnungPauschale = null;
+        }
     }
 
     private checkIfGemeindeOrBetreuungHasTSAnmeldung(): boolean {
@@ -1894,7 +1920,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     }
 
     private showHintEingewoehnung(): boolean {
-        return this.mandant === MANDANTS.LUZERN
+        return this.eingewoehnungTyp === TSEingewoehnungTyp.LUZERN
             && !this.authServiceRS.isOneOfRoles(TSRoleUtil.getGesuchstellerSozialdienstRolle());
     }
 

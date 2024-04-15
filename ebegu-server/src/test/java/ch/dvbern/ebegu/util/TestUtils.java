@@ -114,4 +114,16 @@ public final class TestUtils {
 
 		return defaultParameter;
 	}
+	public static BGRechnerParameterDTO getRechnerParamterSchwyz() {
+		BGRechnerParameterDTO defaultParameter = getParameter();
+
+		defaultParameter.setOeffnungstageKita(BigDecimal.valueOf(246));
+		defaultParameter.setMinMassgebendesEinkommen(BigDecimal.valueOf(47_193));
+		defaultParameter.setMaxMassgebendesEinkommen(BigDecimal.valueOf(153_215));
+		defaultParameter.setMinVerguenstigungProTg(BigDecimal.valueOf(30));
+		defaultParameter.setMaxVerguenstigungVorschuleBabyProTg(BigDecimal.valueOf(185));
+		defaultParameter.setMaxVerguenstigungVorschuleKindProTg(BigDecimal.valueOf(130));
+
+		return defaultParameter;
+	}
 }
