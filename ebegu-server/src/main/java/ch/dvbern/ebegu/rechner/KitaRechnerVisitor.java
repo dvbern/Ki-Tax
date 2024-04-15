@@ -58,6 +58,6 @@ public class KitaRechnerVisitor implements MandantVisitor<AbstractRechner> {
 
 	@Override
 	public AbstractRechner visitSchwyz() {
-		return this.visitSolothurn();
+		return new KitaTagestrukturenSchwyzRechner();
 	}
 }
