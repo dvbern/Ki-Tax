@@ -4645,6 +4645,7 @@ export class EbeguRestUtil {
         publicAppConfigTS.checkboxAuszahlungInZukunft = data.checkboxAuszahlungInZukunft;
         publicAppConfigTS.erlaubenInstitutionenZuWaehlen = data.erlaubenInstitutionenZuWaehlen;
         publicAppConfigTS.auszahlungAnEltern = data.auszahlungAnEltern;
+        publicAppConfigTS.abweichnungenEnabled = data.abweichnungenEnabled;
         return publicAppConfigTS;
     }
 

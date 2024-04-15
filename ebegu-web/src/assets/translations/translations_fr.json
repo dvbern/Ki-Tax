@@ -3082,6 +3082,7 @@
     "ANGEBOT_MITTAGSTISCH_ENABLED": "Angebot Mittagstisch aktiviert",
     "ANGEBOT_TS_ENABLED": "Angebot Tagesschulen aktiviert",
     "ANGEBOT_TFO_ENABLED": "Angebot Tagesfamilienorganisationen aktiviert",
+    "ABWEICHUNGEN_ENABLED": "Activer les différences",
     "MUTATIONSMELDUNG_BETREFF": "Annonce de changement",
     "VERARBEITET": "verarbeitet",
     "FEHLER_BEI_MITTEILUNG_BEARBEITUNG": "Messages qui n'ont pas pu être traités en raison d'erreurs :",
