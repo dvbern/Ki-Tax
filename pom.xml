@@ -75,7 +75,7 @@
         <maven-pmd-plugin.version>3.16.0</maven-pmd-plugin.version>
         <spotbugs-maven-plugin.version>4.6.0.0</spotbugs-maven-plugin.version>
         <spotbugs-annotations.version>4.6.0</spotbugs-annotations.version>
-        <lombok.version>1.18.22</lombok.version>
+        <lombok.version>1.18.32</lombok.version>
         <version.kibon-belogin-connector>2023.20.0</version.kibon-belogin-connector>
         <argLine/> <!-- Do not remove or surefire plugin will break if coverage profile is not enabled --> 
     </properties>
@@ -662,7 +662,7 @@
             <dependency>
                 <groupId>org.easymock</groupId>
                 <artifactId>easymock</artifactId>
-                <version>4.2</version>
+                <version>5.2.0</version>
                 <scope>test</scope>
             </dependency>
             <dependency>

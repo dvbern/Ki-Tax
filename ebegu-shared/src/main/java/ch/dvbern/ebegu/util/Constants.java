@@ -15,9 +15,6 @@
 
 package ch.dvbern.ebegu.util;
 
-import ch.dvbern.ebegu.enums.EinschulungTyp;
-import ch.dvbern.ebegu.types.DateRange;
-
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
@@ -28,6 +25,9 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import java.util.regex.Pattern;
+
+import ch.dvbern.ebegu.enums.EinschulungTyp;
+import ch.dvbern.ebegu.types.DateRange;
 
 /**
  * Interface fuer Konstanten.
@@ -52,10 +52,9 @@ public final class Constants {
 	public static final String LOG_MDC_EBEGUUSER = "ebeguuser";
 	public static final String LOG_MDC_AUTHUSERID = "ebeguauthuserid";
 
-	public static final Locale DEFAULT_LOCALE = new Locale("de", "CH");
-	public static final Locale DEUTSCH_LOCALE = DEFAULT_LOCALE;
+	public static final Locale DEUTSCH_LOCALE = new Locale("de", "CH");
+	public static final Locale DEFAULT_LOCALE = DEUTSCH_LOCALE;
 	public static final Locale FRENCH_LOCALE = new Locale("fr", "CH");
-	public static final Locale DEUTSCH_FRENCH_LOCALE = new Locale("defr", "CH");
 
 	public static final Character LINE_BREAK = '\n';
 	public static final Pattern NEW_LINE_CHAR_PATTERN = Pattern.compile("[\n\r]");

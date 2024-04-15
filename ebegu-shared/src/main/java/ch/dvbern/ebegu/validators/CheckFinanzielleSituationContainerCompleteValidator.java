@@ -30,11 +30,6 @@ public class CheckFinanzielleSituationContainerCompleteValidator implements
 
 	private static final Logger LOG = LoggerFactory.getLogger(CheckFinanzielleSituationContainerCompleteValidator.class.getSimpleName());
 
-	@Override
-	public void initialize(CheckFinanzielleSituationContainerComplete constraintAnnotation) {
-		//nop
-	}
-
 	@SuppressWarnings("ConstantConditions")
 	@Override
 	public boolean isValid(FinanzielleSituationContainer finSitContainer, ConstraintValidatorContext context) {

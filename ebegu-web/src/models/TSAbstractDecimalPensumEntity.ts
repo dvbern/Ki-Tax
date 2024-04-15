@@ -15,7 +15,6 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {EbeguUtil} from '../utils/EbeguUtil';
 import {TSPensumUnits} from './enums/TSPensumUnits';
 import {TSAbstractDateRangedEntity} from './TSAbstractDateRangedEntity';
 import {TSEingewoehnungPauschale} from './TSEingewoehnungPauschale';
@@ -27,8 +26,6 @@ export class TSAbstractDecimalPensumEntity extends TSAbstractDateRangedEntity {
     private _monatlicheBetreuungskosten: number;
     private _stuendlicheVollkosten: number;
     private _eingewoehnungPauschale: TSEingewoehnungPauschale;
-    // Transient field used for calculations. Not sent to server
-    private _kostenProMahlzeit: number;
     // Transient field used for calculations. Not sent to server
     private _hasEingewoehnungsPauschale: boolean;
 
@@ -68,14 +65,6 @@ export class TSAbstractDecimalPensumEntity extends TSAbstractDateRangedEntity {
         this._stuendlicheVollkosten = value;
     }
 
-    public get kostenProMahlzeit(): number {
-        return this._kostenProMahlzeit;
-    }
-
-    public set kostenProMahlzeit(value: number) {
-        this._kostenProMahlzeit = value;
-    }
-
     public get eingewoehnungPauschale(): TSEingewoehnungPauschale {
         return this._eingewoehnungPauschale;
     }
@@ -90,21 +79,5 @@ export class TSAbstractDecimalPensumEntity extends TSAbstractDateRangedEntity {
 
     public set hasEingewoehnungsPauschale(value: boolean) {
         this._hasEingewoehnungsPauschale = value;
-    }
-
-    public initKostenProMahlzeit(multiplierMittagstisch: number): void {
-        if (EbeguUtil.isNullOrUndefined(this.monatlicheBetreuungskosten)) {
-            return;
-        }
-        const mahlzeiten = EbeguUtil.roundDefaultBetreuungspensum(this.pensum * multiplierMittagstisch);
-        this.kostenProMahlzeit = mahlzeiten === 0 ? 0 : this.monatlicheBetreuungskosten / mahlzeiten;
-    }
-
-    public recalculateMonatlicheMahlzeitenKosten(multiplierMittagstisch: number): void {
-        if (this.unitForDisplay !== TSPensumUnits.MAHLZEITEN) {
-            return;
-        }
-        const mahlzeiten = this.pensum * multiplierMittagstisch;
-        this.monatlicheBetreuungskosten = this.kostenProMahlzeit * mahlzeiten;
     }
 }

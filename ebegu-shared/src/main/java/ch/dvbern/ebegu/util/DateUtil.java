@@ -114,7 +114,7 @@ public final class DateUtil {
 
 	public static String incrementYear(@Nonnull String dateStr) {
 		LocalDate date = Date.valueOf(dateStr).toLocalDate();
-		return date.plus(1, ChronoUnit.YEARS).toString();
+		return date.plusYears(1).toString();
 	}
 
 	public static DateRange limitToDateRange(DateRange range, DateRange gesuchsperiode) {

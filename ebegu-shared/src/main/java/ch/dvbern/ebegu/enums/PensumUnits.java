@@ -24,5 +24,4 @@ public enum PensumUnits {
 	PERCENTAGE,
 	DAYS,
 	HOURS,
-	MAHLZEITEN,
 }

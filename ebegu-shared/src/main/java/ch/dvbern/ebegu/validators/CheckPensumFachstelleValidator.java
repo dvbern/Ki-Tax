@@ -76,11 +76,6 @@ public class CheckPensumFachstelleValidator implements ConstraintValidator<Check
 	}
 
 	@Override
-	public void initialize(CheckPensumFachstelle constraintAnnotation) {
-		// nop
-	}
-
-	@Override
 	public boolean isValid(@Nonnull KindContainer kindContainer, ConstraintValidatorContext context) {
 
 		if (kindContainer.getKindJA() == null

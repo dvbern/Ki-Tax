@@ -19,6 +19,7 @@ package ch.dvbern.ebegu.services;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 import java.util.Set;
 
@@ -257,7 +258,8 @@ public interface MitteilungService {
 
 	Gesuch neueVeranlagungssmitteilungBearbeiten(NeueVeranlagungsMitteilung neueVeranlagungsMitteilung);
 
-	String createNachrichtForMutationsmeldung(Betreuungsmitteilung betreuungsmitteilung, Set<BetreuungsmitteilungPensum> betreuungspensen);
+	String createNachrichtForMutationsmeldung(Betreuungsmitteilung mitteilung, Set<BetreuungsmitteilungPensum> changedBetreuungen,
+		Locale locale);
 
 	Collection<NeueVeranlagungsMitteilung> findOffeneNeueVeranlagungsmitteilungenForGesuch(List<String> gesuchIds);
 }
