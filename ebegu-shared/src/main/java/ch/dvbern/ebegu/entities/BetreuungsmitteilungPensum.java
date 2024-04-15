@@ -15,21 +15,16 @@
 
 package ch.dvbern.ebegu.entities;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.ForeignKey;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
-import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
-
 import ch.dvbern.ebegu.enums.AntragCopyType;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.commons.lang3.builder.CompareToBuilder;
 import org.hibernate.envers.Audited;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.persistence.*;
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 
 /**
  * Entity fuer BetreuungsmitteilungPensum.
@@ -38,6 +33,8 @@ import org.hibernate.envers.Audited;
 @SuppressWarnings("ComparableImplementedButEqualsNotOverridden")
 @Audited
 @Entity
+@AssociationOverride(name = "eingewoehnungPauschale",
+	joinColumns = @JoinColumn(name = "eingewoehnung_pauschale_id"), foreignKey = @ForeignKey(name = "FK_betreuungsmitteilung_pensum_eingewoehnung_pauschale_id"))
 public class BetreuungsmitteilungPensum extends AbstractMahlzeitenPensum implements Comparable<BetreuungsmitteilungPensum> {
 
 	private static final long serialVersionUID = -9032858720574672370L;
