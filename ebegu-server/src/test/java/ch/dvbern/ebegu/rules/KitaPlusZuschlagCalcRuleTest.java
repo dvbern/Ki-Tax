@@ -131,7 +131,7 @@ public class KitaPlusZuschlagCalcRuleTest {
 		einstellungenMap.get(KITAPLUS_ZUSCHLAG_AKTIVIERT).setValue("false");
 
 		List<VerfuegungZeitabschnitt> result = EbeguRuleTestsHelper.calculate(betreuung, einstellungenMap);
-		Assert.assertEquals(result.get(0).getVerguenstigung(), new BigDecimal("1414.50"));
+		Assert.assertEquals(new BigDecimal("1414.50"), result.get(0).getVerguenstigung());
 	}
 
 	@Test

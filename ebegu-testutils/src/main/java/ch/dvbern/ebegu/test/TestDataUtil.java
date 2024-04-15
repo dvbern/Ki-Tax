@@ -102,7 +102,7 @@ public final class TestDataUtil {
 		gesuchstellerAdresse.setZusatzzeile("c/o Uwe Untermieter");
 		gesuchstellerAdresse.setPlz("3006");
 		gesuchstellerAdresse.setOrt("Bern");
-		gesuchstellerAdresse.setGueltigkeit(new DateRange(LocalDate.now(), Constants.END_OF_TIME));
+		gesuchstellerAdresse.setGueltigkeit(new DateRange(START_OF_TIME, Constants.END_OF_TIME));
 		gesuchstellerAdresse.setAdresseTyp(AdresseTyp.WOHNADRESSE);
 		return gesuchstellerAdresse;
 	}
@@ -1192,6 +1192,7 @@ public final class TestDataUtil {
 			gesuch.extractFamiliensituation().setFamilienstatus(EnumFamilienstatus.ALLEINERZIEHEND);
 		}
 		gesuch.setGesuchsteller1(new GesuchstellerContainer());
+		gesuch.getGesuchsteller1().addAdresse(TestDataUtil.createDefaultGesuchstellerAdresseContainer(gesuch.getGesuchsteller1()));
 		gesuch.getGesuchsteller1().setFinanzielleSituationContainer(new FinanzielleSituationContainer());
 		gesuch.getGesuchsteller1()
 			.getFinanzielleSituationContainer()
@@ -2031,34 +2032,6 @@ public final class TestDataUtil {
 		filterDTO.getPagination().setStart(0);
 		filterDTO.getPagination().setNumber(10);
 		return filterDTO;
-	}
-
-	public static void createDefaultAdressenForGS(final Gesuch gesuch, final boolean gs2) {
-		List<GesuchstellerAdresseContainer> adressen1 = new ArrayList<>();
-		Objects.requireNonNull(gesuch.getGesuchsteller1());
-		final GesuchstellerAdresseContainer adresseGS1 = TestDataUtil.
-			createDefaultGesuchstellerAdresseContainer(gesuch.getGesuchsteller1());
-		Objects.requireNonNull(adresseGS1.getGesuchstellerAdresseJA());
-		adresseGS1.getGesuchstellerAdresseJA().setNichtInGemeinde(false);
-		adresseGS1.getGesuchstellerAdresseJA()
-			.setGueltigkeit(new DateRange(Constants.START_OF_TIME, Constants.END_OF_TIME));
-		adressen1.add(adresseGS1);
-		Objects.requireNonNull(gesuch.getGesuchsteller1());
-		gesuch.getGesuchsteller1().setAdressen(adressen1);
-
-		if (gs2) {
-			List<GesuchstellerAdresseContainer> adressen2 = new ArrayList<>();
-			Objects.requireNonNull(gesuch.getGesuchsteller2());
-			final GesuchstellerAdresseContainer adresseGS2 = TestDataUtil
-				.createDefaultGesuchstellerAdresseContainer(gesuch.getGesuchsteller2());
-			Objects.requireNonNull(adresseGS2.getGesuchstellerAdresseJA());
-			adresseGS2.getGesuchstellerAdresseJA().setNichtInGemeinde(false);
-			adresseGS2.getGesuchstellerAdresseJA()
-				.setGueltigkeit(new DateRange(Constants.START_OF_TIME, Constants.END_OF_TIME));
-			adressen2.add(adresseGS2);
-			Objects.requireNonNull(gesuch.getGesuchsteller2());
-			gesuch.getGesuchsteller2().setAdressen(adressen2);
-		}
 	}
 
 	public static Mahnung createMahnung(MahnungTyp typ, Gesuch gesuch) {

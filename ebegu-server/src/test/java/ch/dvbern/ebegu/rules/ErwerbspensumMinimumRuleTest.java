@@ -162,7 +162,6 @@ public class ErwerbspensumMinimumRuleTest extends AbstractBGRechnerTest {
 	private Betreuung createBetreuungWithPensum(int pensumGS1, int pensumGS2, boolean gs2) {
 		final Betreuung betreuung = TestDataUtil.createGesuchWithBetreuungspensum(gs2);
 		Gesuch gesuch = betreuung.extractGesuch();
-		TestDataUtil.createDefaultAdressenForGS(gesuch, gs2);
 
 		Assert.assertNotNull(gesuch.getGesuchsteller1());
 

@@ -178,6 +178,5 @@ public class ErwerbspensumZuschlagRuleTest extends AbstractEbeguRuleTest {
 		Gesuch gesuch = betreuung.extractGesuch();
 		assertNotNull(gesuch.getGesuchsteller1());
 		gesuch.getGesuchsteller1().addErwerbspensumContainer(erwerbspensum);
-		TestDataUtil.createDefaultAdressenForGS(gesuch, false);
 	}
 }
