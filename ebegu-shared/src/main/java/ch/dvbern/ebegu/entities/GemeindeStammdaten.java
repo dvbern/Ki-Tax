@@ -47,10 +47,10 @@ import javax.validation.constraints.Size;
 
 import ch.dvbern.ebegu.enums.KorrespondenzSpracheTyp;
 import ch.dvbern.ebegu.util.Constants;
-import ch.dvbern.ebegu.validators.CheckIBANNotQR;
-import ch.dvbern.ebegu.validators.CheckIBANUppercase;
 import ch.dvbern.ebegu.validators.CheckKontodatenGemeinde;
 import ch.dvbern.ebegu.validators.ExternalClientOfType;
+import ch.dvbern.ebegu.validators.iban.CheckIBANNotQR;
+import ch.dvbern.ebegu.validators.iban.CheckIBANUppercase;
 import ch.dvbern.oss.lib.beanvalidation.embeddables.IBAN;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.commons.lang.StringUtils;

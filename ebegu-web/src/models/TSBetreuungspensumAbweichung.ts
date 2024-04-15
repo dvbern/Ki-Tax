@@ -15,7 +15,6 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import {TSBetreuungsangebotTyp} from './enums/TSBetreuungsangebotTyp';
 import {TSBetreuungspensumAbweichungStatus} from './enums/TSBetreuungspensumAbweichungStatus';
 import {TSAbstractMahlzeitenPensum} from './TSAbstractMahlzeitenPensum';
 
@@ -29,11 +28,6 @@ export class TSBetreuungspensumAbweichung extends TSAbstractMahlzeitenPensum {
     private _vertraglicherTarifHaupt: number;
     private _vertraglicherTarifNeben: number;
     private _multiplier: number;
-    private _betreuungsangebotTyp: TSBetreuungsangebotTyp;
-
-    public constructor() {
-        super();
-    }
 
     public get status(): TSBetreuungspensumAbweichungStatus {
         return this._status;
@@ -97,13 +91,5 @@ export class TSBetreuungspensumAbweichung extends TSAbstractMahlzeitenPensum {
 
     public set multiplier(value: number) {
         this._multiplier = value;
-    }
-
-    public get betreuungsangebotTyp(): TSBetreuungsangebotTyp {
-        return this._betreuungsangebotTyp;
-    }
-
-    public set betreuungsangebotTyp(value: TSBetreuungsangebotTyp) {
-        this._betreuungsangebotTyp = value;
     }
 }

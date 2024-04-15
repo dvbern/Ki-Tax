@@ -28,11 +28,6 @@ import ch.dvbern.ebegu.util.EnumUtil;
  */
 public class CheckBerechtigungInstitutionTraegerschaftValidator implements ConstraintValidator<CheckBerechtigungInstitutionTraegerschaft, Berechtigung> {
 
-	@Override
-	public void initialize(CheckBerechtigungInstitutionTraegerschaft constraintAnnotation) {
-		//nop
-	}
-
 	/**
 	 * Folgende Regeln muessen erfuellt werden:
 	 * - Wenn Rolle=SACHBEARBEITER_INSTITUTION der Benutzer muss mit einer Institution verknuepft werden

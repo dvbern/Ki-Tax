@@ -19,8 +19,11 @@ import java.util.Objects;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.persistence.AssociationOverride;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.ForeignKey;
+import javax.persistence.JoinColumn;
 import javax.validation.constraints.NotNull;
 
 import ch.dvbern.ebegu.enums.AntragCopyType;
@@ -36,6 +39,8 @@ import org.hibernate.envers.Audited;
 @SuppressWarnings("ComparableImplementedButEqualsNotOverridden")
 @Audited
 @Entity
+@AssociationOverride(name = "eingewoehnungPauschale",
+	joinColumns = @JoinColumn(name = "eingewoehnung_pauschale_id"), foreignKey = @ForeignKey(name = "FK_betreuungspensum_eingewoehnung_pauschale_id"))
 public class Betreuungspensum extends AbstractMahlzeitenPensum implements Comparable<Betreuungspensum> {
 
 	private static final long serialVersionUID = -9032857320571372370L;
@@ -64,6 +69,13 @@ public class Betreuungspensum extends AbstractMahlzeitenPensum implements Compar
 		this.setTarifProNebenmahlzeit(betPensumMitteilung.getTarifProNebenmahlzeit());
 		this.setStuendlicheVollkosten(betPensumMitteilung.getStuendlicheVollkosten());
 		this.setBetreuungInFerienzeit(betPensumMitteilung.getBetreuungInFerienzeit());
+
+		if (betPensumMitteilung.getEingewoehnungPauschale() != null) {
+			EingewoehnungPauschale eingewoehnungPauschale = new EingewoehnungPauschale();
+			eingewoehnungPauschale.setPauschale(betPensumMitteilung.getEingewoehnungPauschale().getPauschale());
+			eingewoehnungPauschale.setGueltigkeit(betPensumMitteilung.getEingewoehnungPauschale().getGueltigkeit());
+			this.setEingewoehnungPauschale(eingewoehnungPauschale);
+		}
 	}
 
 	public Betreuungspensum(DateRange gueltigkeit) {

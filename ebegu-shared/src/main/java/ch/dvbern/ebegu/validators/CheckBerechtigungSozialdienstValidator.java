@@ -26,10 +26,6 @@ import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.util.EnumUtil;
 
 public class CheckBerechtigungSozialdienstValidator implements ConstraintValidator<CheckBerechtigungSozialdienst, Berechtigung> {
-	@Override
-	public void initialize(CheckBerechtigungSozialdienst constraintAnnotation) {
-
-	}
 
 	@Override
 	public boolean isValid(

@@ -20,13 +20,6 @@ import java.time.LocalDate;
 import javax.annotation.Nonnull;
 import javax.validation.ConstraintValidatorContext;
 
-import org.easymock.EasyMockExtension;
-import org.easymock.Mock;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Fachstelle;
 import ch.dvbern.ebegu.entities.KindContainer;
@@ -35,12 +28,18 @@ import ch.dvbern.ebegu.enums.IntegrationTyp;
 import ch.dvbern.ebegu.test.TestDataUtil;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.validators.CheckPensumFachstellenOverlappingValidator;
+import org.easymock.EasyMockExtension;
+import org.easymock.Mock;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
- * Test fuer {@link ch.dvbern.ebegu.validators.CheckPensumFachstellenOverlappingValidator}
+ * Test fuer {@link CheckPensumFachstellenOverlappingValidator}
  */
 @ExtendWith(EasyMockExtension.class)
-public class CheckFachstellenPetreuungspensumOverlappingValidatorTest {
+class CheckFachstellenPetreuungspensumOverlappingValidatorTest {
 
 	private CheckPensumFachstellenOverlappingValidator validator;
 	@Mock
@@ -56,12 +55,12 @@ public class CheckFachstellenPetreuungspensumOverlappingValidatorTest {
 	private static final LocalDate JUL_31 = LocalDate.of(BASIS_JAHR_PLUS, 7, 31);
 
 	@BeforeEach
-	public void setUp() {
+	void setUp() {
 		this.validator = new CheckPensumFachstellenOverlappingValidator();
 	}
 
 	@Test
-	public void testCheckBetreuungspensumTwoDatesOverlapping() {
+	void testCheckBetreuungspensumTwoDatesOverlapping() {
 		DateRange augTilJan = new DateRange(AUGUST_FIRST, JAN_FIRST);
 		DateRange augTilOct = new DateRange(AUGUST_FIRST, OCTOBER_31);
 		KindContainer kindContainer = createBetreuungWithFachstellenFachstellen(augTilJan, augTilOct); //overlapping
@@ -69,7 +68,7 @@ public class CheckFachstellenPetreuungspensumOverlappingValidatorTest {
 	}
 
 	@Test
-	public void testCheckBetreuungspensumTwoDatesOneDayOverlapping() {
+	void testCheckBetreuungspensumTwoDatesOneDayOverlapping() {
 		DateRange augTilOct = new DateRange(AUGUST_FIRST, OCTOBER_31);
 		DateRange octTilJan = new DateRange(OCTOBER_31, JAN_FIRST);
 		KindContainer kindContainer = createBetreuungWithFachstellenFachstellen(augTilOct, octTilJan); //overlapping
@@ -77,7 +76,7 @@ public class CheckFachstellenPetreuungspensumOverlappingValidatorTest {
 	}
 
 	@Test
-	public void testCheckBetreuungspensumThreeDatesOneOverlapping() {
+	void testCheckBetreuungspensumThreeDatesOneOverlapping() {
 		DateRange augTilJan = new DateRange(AUGUST_FIRST, OCTOBER_31);
 		DateRange augTilOct = new DateRange(NOV_FIRST, JAN_FIRST);
 		DateRange octTilJan = new DateRange(OCTOBER_31, JAN_FIRST);
@@ -86,13 +85,13 @@ public class CheckFachstellenPetreuungspensumOverlappingValidatorTest {
 	}
 
 	@Test
-	public void testCheckBetreuungspensumEmptyNotOverlapping() {
+	void testCheckBetreuungspensumEmptyNotOverlapping() {
 		KindContainer kindContainer = createBetreuungWithFachstellenFachstellen(); //overlapping
 		Assertions.assertTrue(validator.isValid(kindContainer, contextMock));
 	}
 
 	@Test
-	public void testCheckPensumFachstellenTwoDatesNotOverlapping() {
+	void testCheckPensumFachstellenTwoDatesNotOverlapping() {
 		DateRange augTilOct = new DateRange(AUGUST_FIRST, OCTOBER_31);
 		DateRange novTilJan = new DateRange(NOV_FIRST, JAN_FIRST);
 		KindContainer kindContainer = createBetreuungWithFachstellenFachstellen(augTilOct, novTilJan); // not overlapping
@@ -100,7 +99,7 @@ public class CheckFachstellenPetreuungspensumOverlappingValidatorTest {
 	}
 
 	@Test
-	public void testCheckPensumFachstellenThreeDatesNotOverlapping() {
+	void testCheckPensumFachstellenThreeDatesNotOverlapping() {
 		DateRange augTilOct = new DateRange(AUGUST_FIRST, OCTOBER_31);
 		DateRange novTilJan = new DateRange(NOV_FIRST, JAN_FIRST);
 		DateRange febTilJul = new DateRange(FEB_FIRST, JUL_31);
@@ -109,7 +108,7 @@ public class CheckFachstellenPetreuungspensumOverlappingValidatorTest {
 	}
 
 	@Test
-	public void testCheckPensumFachstellenTwoDateSameOverlapping() {
+	void testCheckPensumFachstellenTwoDateSameOverlapping() {
 		DateRange augTilOct = new DateRange(AUGUST_FIRST, OCTOBER_31);
 		DateRange novTilJan = new DateRange(AUGUST_FIRST, OCTOBER_31);
 		KindContainer kindContainer = createBetreuungWithFachstellenFachstellen(augTilOct, novTilJan); // not overlapping

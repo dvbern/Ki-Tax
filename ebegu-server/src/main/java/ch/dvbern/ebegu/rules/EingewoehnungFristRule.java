@@ -17,17 +17,6 @@
 
 package ch.dvbern.ebegu.rules;
 
-import java.time.LocalDate;
-import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.ListIterator;
-import java.util.Locale;
-
-import javax.annotation.Nonnull;
-
 import ch.dvbern.ebegu.entities.AbstractPlatz;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
@@ -54,7 +43,7 @@ public class EingewoehnungFristRule extends AbstractAbschlussRule {
 	protected EingewoehnungFristRule(@Nonnull Locale locale, boolean isDebug, EingewoehnungTyp eingewoehnungTyp) {
 		super(isDebug);
 		this.locale = locale;
-		this.eingewoehnungAktiviert = eingewoehnungTyp.eingewoehnungAktiviert();
+		this.eingewoehnungAktiviert = eingewoehnungTyp.isEingewoehnungTypPeriode();
 	}
 
 	@Nonnull

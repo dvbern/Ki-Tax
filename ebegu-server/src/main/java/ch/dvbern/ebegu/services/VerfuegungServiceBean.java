@@ -925,4 +925,33 @@ public class VerfuegungServiceBean extends AbstractBaseService implements Verfue
 		loadCalculatorParameters(gesuch.extractGemeinde(), gesuch.getGesuchsperiode());
 		return bgEvaluator;
 	}
+
+	@Nonnull
+	public BGRechnerParameterDTO loadCalculatorParameters(
+		@Nonnull Gemeinde gemeinde,
+		@Nonnull Gesuchsperiode gesuchsperiode) {
+		Map<EinstellungKey, Einstellung> paramMap =
+			einstellungService.getAllEinstellungenByGemeindeAsMap(gemeinde, gesuchsperiode);
+		return new BGRechnerParameterDTO(paramMap, gesuchsperiode, gemeinde);
+	}
+
+	@Nonnull
+	public KitaxUebergangsloesungParameter loadKitaxUebergangsloesungParameter(@Nonnull Mandant mandant) {
+		Collection<KitaxUebergangsloesungInstitutionOeffnungszeiten> oeffnungszeiten =
+			criteriaQueryHelper.getAll(KitaxUebergangsloesungInstitutionOeffnungszeiten.class);
+		return new KitaxUebergangsloesungParameter(
+			applicationPropertyService.getStadtBernAsivStartDatum(mandant),
+			applicationPropertyService.isStadtBernAsivConfigured(mandant),
+			oeffnungszeiten
+		);
+	}
+
+	/**
+	 * @return gibt die Verfuegung der vorherigen verfuegten Betreuung zurueck.
+	 */
+	@Nonnull
+	protected Optional<Verfuegung> findVorgaengerVerfuegung(@Nonnull AbstractPlatz abstractPlatz) {
+		final Optional<AbstractPlatz> vorgaengerPlatz = findVorgaengerPlatz(abstractPlatz);
+		return vorgaengerPlatz.map(AbstractPlatz::getVerfuegung);
+	}
 }
