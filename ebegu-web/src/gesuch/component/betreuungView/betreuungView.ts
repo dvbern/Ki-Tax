@@ -179,6 +179,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     private angebotMittagstisch: boolean = false;
     private isLuzern: boolean;
     private sprachfoerderungBestaetigenAktiviert: boolean;
+    private abweichungenAktiviert: boolean;
 
     public auszahlungAnEltern: boolean;
     public readonly demoFeature = TSDemoFeature.FACHSTELLEN_UEBERGANGSLOESUNG;
@@ -303,6 +304,9 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
                         }
                     }
                 }
+                this.applicationPropertyRS.getPublicPropertiesCached().then(res => {
+                    this.abweichungenAktiviert = res.abweichungenEnabled;
+                });
                 this.initEinstellungen();
             });
 
@@ -1952,6 +1956,10 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
             return;
         }
         this.getBetreuungspensum(betreuungspensumIndex).betreuungspensumJA.recalculateMonatlicheMahlzeitenKosten(this.multiplierMittagstisch);
+    }
+
+    public isAbweichungenAktiviert(): boolean {
+        return this.abweichungenAktiviert;
     }
 
 }

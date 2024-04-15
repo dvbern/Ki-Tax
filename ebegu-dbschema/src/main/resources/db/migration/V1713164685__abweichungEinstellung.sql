@@ -22,4 +22,4 @@ INSERT IGNORE INTO application_property (id, mandant_id, timestamp_erstellt, tim
 SELECT UNHEX(REPLACE(UUID(), '-', '')), id, NOW(), NOW(), 'flyway', 'flyway', 0, NULL, 'ABWEICHUNGEN_ENABLED', 'true'
 FROM mandant;
 
-UPDATE application_property SET value = 'false' WHERE name = 'ABWEICHUNGEN_ENABLED' AND mandant_id = @mandant_id_schwyz;
+UPDATE application_property SET value = 'false' WHERE name = 'ABWEICHUNGEN_ENABLED' AND mandant_id = @mandant_schwyz_id;
