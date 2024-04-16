@@ -27,6 +27,13 @@ import ch.dvbern.ebegu.util.Gueltigkeit;
 
 public interface BetreuungsmitteilungPensumMessageFactory {
 
+	static BetreuungsmitteilungPensumMessageFactory combine(BetreuungsmitteilungPensumMessageFactory... factories) {
+		return (index, pensum) -> Arrays.stream(factories)
+			.map(factory -> factory.messageForPensum(index, pensum))
+			.filter(Predicate.not(String::isEmpty))
+			.collect(Collectors.joining(", "));
+	}
+
 	default String formatAb(Gueltigkeit pensum) {
 		return Constants.DATE_FORMATTER.format(pensum.getGueltigkeit().getGueltigAb());
 	}
@@ -36,11 +43,4 @@ public interface BetreuungsmitteilungPensumMessageFactory {
 	}
 
 	String messageForPensum(int index, BetreuungsmitteilungPensum pensum);
-
-	static BetreuungsmitteilungPensumMessageFactory combine(BetreuungsmitteilungPensumMessageFactory... factories) {
-		return (index, pensum) -> Arrays.stream(factories)
-			.map(factory -> factory.messageForPensum(index, pensum))
-			.filter(Predicate.not(String::isEmpty))
-			.collect(Collectors.joining(", "));
-	}
 }

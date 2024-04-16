@@ -54,6 +54,7 @@ import static ch.dvbern.ebegu.enums.EinstellungKey.OEFFNUNGSSTUNDEN_TFO;
 import static ch.dvbern.ebegu.enums.EinstellungKey.OEFFNUNGSTAGE_KITA;
 import static ch.dvbern.ebegu.enums.EinstellungKey.OEFFNUNGSTAGE_TFO;
 import static ch.dvbern.ebegu.enums.EinstellungKey.PENSUM_ANZEIGE_TYP;
+import static ch.dvbern.ebegu.enums.EinstellungKey.SCHULERGAENZENDE_BETREUUNGEN;
 import static ch.dvbern.ebegu.util.Constants.DEUTSCH_LOCALE;
 import static java.util.Objects.requireNonNull;
 import static org.easymock.EasyMock.expect;
@@ -100,7 +101,7 @@ class MitteilungServiceBeanCreateMessageTest extends EasyMockSupport {
 	@Test
 	void percentageWithMahlzeitenVerguenstigungEnabled() {
 		BetreuungsmitteilungPensum pensum = createPensum();
-		String result = run(BetreuungsangebotTyp.KITA, BetreuungspensumAnzeigeTyp.NUR_PROZENT, true, pensum);
+		String result = run(BetreuungsangebotTyp.KITA, BetreuungspensumAnzeigeTyp.NUR_PROZENT, true, false, pensum);
 
 		assertThat(
 			result,
@@ -122,7 +123,7 @@ class MitteilungServiceBeanCreateMessageTest extends EasyMockSupport {
 	@Test
 	void stundenWithMahlzeitenVerguenstigungEnabled() {
 		BetreuungsmitteilungPensum pensum = createPensum();
-		String result = run(BetreuungsangebotTyp.KITA, BetreuungspensumAnzeigeTyp.NUR_STUNDEN, true, pensum);
+		String result = run(BetreuungsangebotTyp.KITA, BetreuungspensumAnzeigeTyp.NUR_STUNDEN, true, false, pensum);
 
 		assertThat(
 			result,
@@ -171,13 +172,45 @@ class MitteilungServiceBeanCreateMessageTest extends EasyMockSupport {
 			));
 	}
 
+	@ParameterizedTest
+	@CsvSource({ "TAGESFAMILIEN, NUR_STUNDEN", "KITA, NUR_PROZENT" })
+	void betreuungInFerienzeit(BetreuungsangebotTyp angebotsTyp, BetreuungspensumAnzeigeTyp anzeigeTyp) {
+		BetreuungsmitteilungPensum pensum = createPensum();
+		pensum.setBetreuungInFerienzeit(true);
+
+		String result = run(angebotsTyp, anzeigeTyp, false, true, pensum);
+
+		assertThat(
+			result,
+			stringContainsInOrder(
+				"Pensum 1 von 01.01.2024 bis 29.08.2024: ",
+				", (während der schulfreien Zeit))"
+			));
+	}
+
+	@ParameterizedTest
+	@CsvSource({ "TAGESFAMILIEN, NUR_STUNDEN", "KITA, NUR_PROZENT" })
+	void betreuungNichtInFerienzeit(BetreuungsangebotTyp angebotsTyp, BetreuungspensumAnzeigeTyp anzeigeTyp) {
+		BetreuungsmitteilungPensum pensum = createPensum();
+		pensum.setBetreuungInFerienzeit(false);
+
+		String result = run(angebotsTyp, anzeigeTyp, false, true, pensum);
+
+		assertThat(
+			result,
+			stringContainsInOrder(
+				"Pensum 1 von 01.01.2024 bis 29.08.2024: ",
+				", (während der Schulzeit))"
+			));
+	}
+
 	@Nonnull
 	private String run(
 		@Nonnull BetreuungsangebotTyp angebotTyp,
 		@Nonnull BetreuungspensumAnzeigeTyp anzeigeTyp,
 		@Nonnull BetreuungsmitteilungPensum... pensen
 	) {
-		return run(angebotTyp, anzeigeTyp, false, pensen);
+		return run(angebotTyp, anzeigeTyp, false, false, pensen);
 	}
 
 	@Nonnull
@@ -185,6 +218,7 @@ class MitteilungServiceBeanCreateMessageTest extends EasyMockSupport {
 		@Nonnull BetreuungsangebotTyp angebotTyp,
 		@Nonnull BetreuungspensumAnzeigeTyp anzeigeTyp,
 		@Nonnull Boolean mahlzeitenVerguenstigungEnabled,
+		@Nonnull Boolean betreuungInFerienEnabled,
 		@Nonnull BetreuungsmitteilungPensum... pensen
 	) {
 		Betreuungsmitteilung mitteilung = createBetreuungsmitteilung(angebotTyp, pensen);
@@ -211,6 +245,11 @@ class MitteilungServiceBeanCreateMessageTest extends EasyMockSupport {
 
 		expect(einstellungService.findEinstellung(OEFFNUNGSSTUNDEN_TFO, gemeinde, periode))
 			.andReturn(new Einstellung(OEFFNUNGSTAGE_TFO, "11", periode))
+			.anyTimes();
+
+		String betreuungInFerien = betreuungInFerienEnabled.toString();
+		expect(einstellungService.findEinstellung(SCHULERGAENZENDE_BETREUUNGEN, gemeinde, periode))
+			.andReturn(new Einstellung(SCHULERGAENZENDE_BETREUUNGEN, betreuungInFerien, periode))
 			.anyTimes();
 
 		replayAll();
