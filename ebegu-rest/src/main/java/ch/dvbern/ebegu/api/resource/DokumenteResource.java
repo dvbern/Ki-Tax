@@ -17,7 +17,6 @@ package ch.dvbern.ebegu.api.resource;
 
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.Optional;
 import java.util.Set;
 
 import javax.annotation.Nonnull;
@@ -25,7 +24,7 @@ import javax.annotation.Nullable;
 import javax.annotation.security.PermitAll;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -33,7 +32,6 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
-import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 
 import ch.dvbern.ebegu.api.converter.JaxBConverter;
@@ -44,7 +42,6 @@ import ch.dvbern.ebegu.entities.Dokument;
 import ch.dvbern.ebegu.entities.DokumentGrund;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.enums.DokumentGrundTyp;
-import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.i18n.LocaleThreadLocal;
 import ch.dvbern.ebegu.rules.anlageverzeichnis.DokumentenverzeichnisEvaluator;
@@ -54,8 +51,6 @@ import ch.dvbern.ebegu.services.GesuchService;
 import ch.dvbern.ebegu.util.DokumenteUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-
-import static java.util.Objects.requireNonNull;
 
 /**
  * REST Resource fuer Dokumente
@@ -82,7 +77,6 @@ public class DokumenteResource {
 	@Inject
 	private DokumentService dokumentService;
 
-
 	@ApiOperation(value = "Gibt alle Dokumentgruende zurück, welche zum uebergebenen Gesuch vorhanden sind.",
 		response = JaxDokumente.class)
 	@Nullable
@@ -91,18 +85,19 @@ public class DokumenteResource {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	public JaxDokumente getDokumente(
-		@Nonnull @NotNull @PathParam("gesuchId") JaxId gesuchId) {
+		@Nonnull @NotNull @Valid @PathParam("gesuchId") JaxId gesuchId) {
 
-		Optional<Gesuch> gesuch = gesuchService.findGesuch(gesuchId.getId());
-		if (gesuch.isPresent()) {
-			final Set<DokumentGrund> dokumentGrundsNeeded = dokumentenverzeichnisEvaluator
-				.calculate(gesuch.get(), LocaleThreadLocal.get());
-			dokumentenverzeichnisEvaluator.addOptionalDokumentGruende(dokumentGrundsNeeded);
-			final Collection<DokumentGrund> persistedDokumentGrund = dokumentGrundService.findAllDokumentGrundByGesuch(gesuch.get());
-			final Set<DokumentGrund> dokumentGrundsMerged = DokumenteUtil.mergeNeededAndPersisted(dokumentGrundsNeeded, persistedDokumentGrund);
-			return converter.dokumentGruendeToJAX(dokumentGrundsMerged);
-		}
-		throw new EbeguEntityNotFoundException("getDokumente", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, "GesuchId invalid: " + gesuchId.getId());
+		Gesuch gesuch = gesuchService.findGesuch(gesuchId.getId())
+			.orElseThrow(() -> new EbeguEntityNotFoundException("getDokumente", gesuchId.getId()));
+
+		Set<DokumentGrund> dokumentGrundsNeeded = dokumentenverzeichnisEvaluator.calculate(gesuch, LocaleThreadLocal.get());
+		dokumentenverzeichnisEvaluator.addOptionalDokumentGruende(dokumentGrundsNeeded);
+
+		Collection<DokumentGrund> persisted = dokumentGrundService.findAllDokumentGrundByGesuch(gesuch);
+
+		Set<DokumentGrund> merged = DokumenteUtil.mergeNeededAndPersisted(dokumentGrundsNeeded, persisted);
+
+		return converter.dokumentGruendeToJAX(merged);
 	}
 
 	@ApiOperation(value = "Gibt alle Dokumentegruende eines bestimmten Typs zurück, die zu einem Gesuch vorhanden sind",
@@ -116,21 +111,19 @@ public class DokumenteResource {
 		@Nonnull @NotNull @PathParam("gesuchId") JaxId gesuchId,
 		@Nonnull @NotNull @PathParam("dokumentGrundTyp") DokumentGrundTyp dokumentGrundTyp) {
 
-		Optional<Gesuch> gesuch = gesuchService.findGesuch(gesuchId.getId());
-		if (gesuch.isPresent()) {
-			final Set<DokumentGrund> dokumentGrundsNeeded = new HashSet<>();
+		Gesuch gesuch = gesuchService.findGesuch(gesuchId.getId())
+			.orElseThrow(() -> new EbeguEntityNotFoundException("getDokumenteByTyp", gesuchId.getId()));
 
-			dokumentenverzeichnisEvaluator.addOptionalDokumentGruendeByType(dokumentGrundsNeeded, dokumentGrundTyp);
+		Set<DokumentGrund> dokumentGrundsNeeded = new HashSet<>();
 
-			Collection<DokumentGrund> persistedDokumentGrund = dokumentGrundService
-				.findAllDokumentGrundByGesuchAndDokumentType(gesuch.get(), dokumentGrundTyp);
+		dokumentenverzeichnisEvaluator.addOptionalDokumentGruendeByType(dokumentGrundsNeeded, dokumentGrundTyp);
 
-			final Set<DokumentGrund> dokumentGrundsMerged = DokumenteUtil
-				.mergeNeededAndPersisted(dokumentGrundsNeeded, persistedDokumentGrund);
+		Collection<DokumentGrund> persisted =
+			dokumentGrundService.findAllDokumentGrundByGesuchAndDokumentType(gesuch, dokumentGrundTyp);
 
-			return converter.dokumentGruendeToJAX(dokumentGrundsMerged);
-		}
-		throw new EbeguEntityNotFoundException("getDokumenteByTyp", ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, "GesuchId invalid: " + gesuchId.getId());
+		Set<DokumentGrund> merged = DokumenteUtil.mergeNeededAndPersisted(dokumentGrundsNeeded, persisted);
+
+		return converter.dokumentGruendeToJAX(merged);
 	}
 
 	@ApiOperation("Loescht das Dokument mit der uebergebenen Id in der Datenbank")
@@ -138,23 +131,15 @@ public class DokumenteResource {
 	@DELETE
 	@Path("/{dokumentId}")
 	@Consumes(MediaType.WILDCARD)
-	public JaxDokumentGrund removeDokument(
-		@Nonnull @NotNull @PathParam("dokumentId") JaxId dokumentJAXPId,
-		@Context HttpServletResponse response) {
-
-		requireNonNull(dokumentJAXPId.getId());
+	public JaxDokumentGrund removeDokument(@Nonnull @NotNull @Valid @PathParam("dokumentId") JaxId dokumentJAXPId) {
 		String dokumentId = converter.toEntityId(dokumentJAXPId);
 
-		Dokument dokument = dokumentService.findDokument(dokumentId).orElseThrow(() -> new EbeguEntityNotFoundException("removeDokument",
-			ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND, dokumentId));
+		Dokument dokument = dokumentService.findDokument(dokumentId)
+			.orElseThrow(() -> new EbeguEntityNotFoundException("removeDokument", dokumentId));
 
-		DokumentGrund dokumentGrund = dokumentGrundService.findDokumentGrund(dokument.getDokumentGrund().getId())
-			.orElseThrow(() ->
-				new EbeguEntityNotFoundException(
-					"findDokumentGrund_loadDokumentGrund",
-					ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND,
-					dokument.getDokumentGrund().getId()
-				));
+		String grundId = dokument.getDokumentGrund().getId();
+		DokumentGrund dokumentGrund = dokumentGrundService.findDokumentGrund(grundId)
+			.orElseThrow(() -> new EbeguEntityNotFoundException("findDokumentGrund_loadDokumentGrund", grundId));
 
 		dokumentGrund.getDokumente().remove(dokument);
 		dokumentService.removeDokument(dokument);
