@@ -66,6 +66,7 @@ import ch.dvbern.ebegu.services.EinstellungService;
 import ch.dvbern.ebegu.test.TestDataUtil;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.Constants;
+import com.spotify.hamcrest.pojo.IsPojo;
 import org.easymock.EasyMockExtension;
 import org.easymock.EasyMockSupport;
 import org.easymock.Mock;
@@ -76,9 +77,11 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
+import static com.spotify.hamcrest.pojo.IsPojo.pojo;
 import static java.util.Objects.requireNonNull;
 import static org.easymock.EasyMock.expect;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.is;
 
 /**
@@ -1007,77 +1010,78 @@ class DokumentenverzeichnisEvaluatorTest extends EasyMockSupport {
 
 		@Nested
 		class ErwebspensumDokumenteTest {
+
 			@Test
 			void erwerbspensumRAV_shouldOnlyHaveNachweisRAV() {
-				Gesuch gesuch = setUpGesuchForErwerbspensumTest(Taetigkeit.RAV);
+				Set<DokumentGrund> dokumentGruende = test(Taetigkeit.RAV);
 
-				final Set<DokumentGrund> dokumentGruende = evaluator.calculate(gesuch, Constants.DEFAULT_LOCALE);
-				final DokumentGrund dokumentGrund = dokumentGruende.stream().findFirst().orElse(new DokumentGrund());
-
-				assertThat(dokumentGruende.size(), is(1));
-				assertThat(dokumentGrund.getDokumentTyp(), is(DokumentTyp.NACHWEIS_RAV));
-				assertThat(dokumentGrund.getPersonNumber(), is(1));
+				assertThat(dokumentGruende, contains(
+					dokumentOfTyp(DokumentTyp.NACHWEIS_RAV).where(DokumentGrund::getPersonNumber, is(1))
+				));
 			}
 
 			@Test
 			void erwerbspensumAngestellt_shouldOnlyHaveNachweisAngestellt() {
-				Gesuch gesuch = setUpGesuchForErwerbspensumTest(Taetigkeit.ANGESTELLT);
+				Set<DokumentGrund> dokumentGruende = test(Taetigkeit.ANGESTELLT);
 
-				final Set<DokumentGrund> dokumentGruende = evaluator.calculate(gesuch, Constants.DEFAULT_LOCALE);
-				final DokumentGrund dokumentGrund = dokumentGruende.stream().findFirst().orElse(new DokumentGrund());
-
-				assertThat(dokumentGruende.size(), is(1));
-				assertThat(dokumentGrund.getDokumentTyp(), is(DokumentTyp.NACHWEIS_ERWERBSPENSUM));
+				assertThat(dokumentGruende, contains(
+					dokumentOfTyp(DokumentTyp.NACHWEIS_ERWERBSPENSUM)
+				));
 			}
 
 			@Test
 			void erwerbspensumInAusbildung_shouldOnlyHaveNachweisInAusbildung() {
-				Gesuch gesuch = setUpGesuchForErwerbspensumTest(Taetigkeit.AUSBILDUNG);
+				Set<DokumentGrund> dokumentGruende = test(Taetigkeit.AUSBILDUNG);
 
-				final Set<DokumentGrund> dokumentGruende = evaluator.calculate(gesuch, Constants.DEFAULT_LOCALE);
-				final DokumentGrund dokumentGrund = dokumentGruende.stream().findFirst().orElse(new DokumentGrund());
-
-				assertThat(dokumentGruende.size(), is(1));
-				assertThat(dokumentGrund.getDokumentTyp(), is(DokumentTyp.NACHWEIS_AUSBILDUNG));
+				assertThat(dokumentGruende, contains(
+					dokumentOfTyp(DokumentTyp.NACHWEIS_AUSBILDUNG)
+				));
 			}
 
 			@Test
 			void erwerbspensumSelbststaendig_shouldOnlyHaveNachweisSelbststaendig() {
-				Gesuch gesuch = setUpGesuchForErwerbspensumTest(Taetigkeit.SELBSTAENDIG);
+				Set<DokumentGrund> dokumentGruende = test(Taetigkeit.SELBSTAENDIG);
 
-				final Set<DokumentGrund> dokumentGruende = evaluator.calculate(gesuch, Constants.DEFAULT_LOCALE);
-				final DokumentGrund dokumentGrund = dokumentGruende.stream().findFirst().orElse(new DokumentGrund());
-
-				assertThat(dokumentGruende.size(), is(1));
-				assertThat(dokumentGrund.getDokumentTyp(), is(DokumentTyp.NACHWEIS_SELBSTAENDIGKEIT));
+				assertThat(dokumentGruende, contains(
+					dokumentOfTyp(DokumentTyp.NACHWEIS_SELBSTAENDIGKEIT)
+				));
 			}
 
-			private Gesuch setUpGesuchForErwerbspensumTest(Taetigkeit rav) {
-				Gesuch gesuch = setUpTestgesuch(TestDataUtil.getMandantSchwyz(), FinanzielleSituationTyp.SCHWYZ);
-
-				GesuchstellerContainer gesuchsteller = TestDataUtil.createDefaultGesuchstellerContainer();
-				gesuch.setGesuchsteller1(gesuchsteller);
-
-				setUpEinstellungMock(gesuch, AnspruchBeschaeftigungAbhaengigkeitTyp.ABHAENGING.name());
-
-				ErwerbspensumContainer erwerbspensumContainer = createErwerbspensumContainer(rav, gesuchsteller, gesuch);
-				gesuchsteller.setErwerbspensenContainers(Set.of(erwerbspensumContainer));
-
-				return gesuch;
-			}
-
-			private ErwerbspensumContainer createErwerbspensumContainer(
-				Taetigkeit taetigkeit,
-				GesuchstellerContainer gesuchstellerContainer,
-				Gesuch gesuch
-			) {
-				final Erwerbspensum erwerbspensum = createErwerbspensum(gesuch, taetigkeit, false);
-				final ErwerbspensumContainer erwerbspensumContainer = new ErwerbspensumContainer();
-				erwerbspensumContainer.setErwerbspensumJA(erwerbspensum);
-				erwerbspensumContainer.setGesuchsteller(gesuchstellerContainer);
-
-				return erwerbspensumContainer;
+			private Set<DokumentGrund> test(Taetigkeit taetigkeit) {
+				return evaluator.calculate(setUpGesuchForErwerbspensumTest(taetigkeit), Constants.DEFAULT_LOCALE);
 			}
 		}
+
+		private Gesuch setUpGesuchForErwerbspensumTest(Taetigkeit rav) {
+			Gesuch gesuch = setUpTestgesuch(TestDataUtil.getMandantSchwyz(), FinanzielleSituationTyp.SCHWYZ);
+
+			GesuchstellerContainer gesuchsteller = TestDataUtil.createDefaultGesuchstellerContainer();
+			gesuch.setGesuchsteller1(gesuchsteller);
+
+			setUpEinstellungMock(gesuch, AnspruchBeschaeftigungAbhaengigkeitTyp.ABHAENGING.name());
+
+			ErwerbspensumContainer erwerbspensumContainer = createErwerbspensumContainer(rav, gesuchsteller, gesuch);
+			gesuchsteller.setErwerbspensenContainers(Set.of(erwerbspensumContainer));
+
+			return gesuch;
+		}
+
+		private ErwerbspensumContainer createErwerbspensumContainer(
+			Taetigkeit taetigkeit,
+			GesuchstellerContainer gesuchstellerContainer,
+			Gesuch gesuch
+		) {
+			final Erwerbspensum erwerbspensum = createErwerbspensum(gesuch, taetigkeit, false);
+			final ErwerbspensumContainer erwerbspensumContainer = new ErwerbspensumContainer();
+			erwerbspensumContainer.setErwerbspensumJA(erwerbspensum);
+			erwerbspensumContainer.setGesuchsteller(gesuchstellerContainer);
+
+			return erwerbspensumContainer;
+		}
+	}
+
+	private IsPojo<DokumentGrund> dokumentOfTyp(DokumentTyp typ) {
+		return pojo(DokumentGrund.class)
+			.where(DokumentGrund::getDokumentTyp, is(typ));
 	}
 }
