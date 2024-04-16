@@ -15,6 +15,8 @@
 
 package ch.dvbern.ebegu.entities;
 
+import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -26,10 +28,12 @@ import javax.persistence.OneToMany;
 import javax.persistence.Transient;
 import javax.validation.Valid;
 
-import ch.dvbern.ebegu.validators.CheckBetreuungMitteilungZeitraumInGesuchsperiode;
-import ch.dvbern.ebegu.validators.CheckBetreuungMitteilungZeitraumInstitutionsStammdatenZeitraum;
-import ch.dvbern.ebegu.validators.CheckBetreuungsmitteilung;
-import ch.dvbern.ebegu.validators.CheckBetreuungsmitteilungDatesOverlapping;
+import ch.dvbern.ebegu.entities.containers.BetreuungAndPensumContainer;
+import ch.dvbern.ebegu.validators.betreuungspensum.CheckBetreuungsmitteilung;
+import ch.dvbern.ebegu.validators.betreuungspensum.CheckMittagstischPensum;
+import ch.dvbern.ebegu.validators.dateranges.CheckBetreuungPensumContainerZeitraumInGesuchsperiode;
+import ch.dvbern.ebegu.validators.dateranges.CheckBetreuungZeitraumInstitutionsStammdatenZeitraum;
+import ch.dvbern.ebegu.validators.dateranges.CheckGueltigkeiten;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.hibernate.envers.Audited;
 
@@ -37,12 +41,12 @@ import org.hibernate.envers.Audited;
  * Entitaet zum Speichern von Betreuungsmitteilung in der Datenbank.
  */
 @CheckBetreuungsmitteilung
-@CheckBetreuungsmitteilungDatesOverlapping
-@CheckBetreuungMitteilungZeitraumInGesuchsperiode
-@CheckBetreuungMitteilungZeitraumInstitutionsStammdatenZeitraum
+@CheckMittagstischPensum
+@CheckBetreuungPensumContainerZeitraumInGesuchsperiode
+@CheckBetreuungZeitraumInstitutionsStammdatenZeitraum
 @Audited
 @Entity
-public class Betreuungsmitteilung extends Mitteilung {
+public class Betreuungsmitteilung extends Mitteilung implements BetreuungAndPensumContainer {
 
 	private static final long serialVersionUID = 489324250868016126L;
 
@@ -57,6 +61,25 @@ public class Betreuungsmitteilung extends Mitteilung {
 	private String errorMessage;
 
 	private boolean betreuungStornieren = false;
+
+	@Nonnull
+	@Override
+	public List<AbstractMahlzeitenPensum> getBetreuungenGS() {
+		return List.of();
+	}
+
+	@CheckGueltigkeiten(message = "{invalid_betreuungspensen_dates}")
+	@Nonnull
+	@Override
+	public List<AbstractMahlzeitenPensum> getBetreuungenJA() {
+		return List.copyOf(betreuungspensen);
+	}
+
+	@Nonnull
+	@Override
+	public Optional<Betreuung> findBetreuung() {
+		return Optional.ofNullable(getBetreuung());
+	}
 
 	public Set<BetreuungsmitteilungPensum> getBetreuungspensen() {
 		return betreuungspensen;

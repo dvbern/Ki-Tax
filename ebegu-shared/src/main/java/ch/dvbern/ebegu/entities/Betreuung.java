@@ -15,12 +15,61 @@
 
 package ch.dvbern.ebegu.entities;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.YearMonth;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
+import java.util.TreeSet;
+import java.util.stream.Collectors;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.persistence.AssociationOverride;
+import javax.persistence.AssociationOverrides;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.ForeignKey;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
+import javax.persistence.Table;
+import javax.persistence.Transient;
+import javax.persistence.UniqueConstraint;
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+
 import ch.dvbern.ebegu.dto.suchfilter.lucene.BGNummerBridge;
-import ch.dvbern.ebegu.enums.*;
+import ch.dvbern.ebegu.entities.containers.BetreuungAbweichung;
+import ch.dvbern.ebegu.entities.containers.BetreuungAndPensumContainer;
+import ch.dvbern.ebegu.enums.AntragCopyType;
+import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
+import ch.dvbern.ebegu.enums.BetreuungspensumAbweichungStatus;
+import ch.dvbern.ebegu.enums.Eingangsart;
+import ch.dvbern.ebegu.enums.PensumUnits;
+import ch.dvbern.ebegu.enums.ZahlungslaufTyp;
 import ch.dvbern.ebegu.types.DateRange;
-import ch.dvbern.ebegu.util.*;
+import ch.dvbern.ebegu.util.Constants;
+import ch.dvbern.ebegu.util.DateUtil;
+import ch.dvbern.ebegu.util.MathUtil;
+import ch.dvbern.ebegu.util.ServerMessageUtil;
 import ch.dvbern.ebegu.validationgroups.BetreuungBestaetigenValidationGroup;
-import ch.dvbern.ebegu.validators.*;
+import ch.dvbern.ebegu.validators.CheckGrundAblehnung;
+import ch.dvbern.ebegu.validators.CheckPlatzAndAngebottyp;
+import ch.dvbern.ebegu.validators.betreuungspensum.CheckBetreuungspensum;
+import ch.dvbern.ebegu.validators.betreuungspensum.CheckMittagstischPensum;
+import ch.dvbern.ebegu.validators.dateranges.CheckAbwesenheitDatesOverlapping;
+import ch.dvbern.ebegu.validators.dateranges.CheckBetreuungPensumContainerZeitraumInGesuchsperiode;
+import ch.dvbern.ebegu.validators.dateranges.CheckBetreuungZeitraumInstitutionsStammdatenZeitraum;
+import ch.dvbern.ebegu.validators.dateranges.CheckGueltigkeiten;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.hibernate.annotations.SortNatural;
 import org.hibernate.envers.Audited;
@@ -28,17 +77,6 @@ import org.hibernate.search.annotations.Analyze;
 import org.hibernate.search.annotations.Analyzer;
 import org.hibernate.search.annotations.ClassBridge;
 import org.hibernate.search.annotations.Indexed;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.persistence.*;
-import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.time.YearMonth;
-import java.util.*;
 
 /**
  * Entity fuer Betreuungen.
@@ -48,9 +86,9 @@ import java.util.*;
 @CheckPlatzAndAngebottyp
 @CheckGrundAblehnung
 @CheckBetreuungspensum
-@CheckBetreuungspensumDatesOverlapping
 @CheckAbwesenheitDatesOverlapping
-@CheckBetreuungZeitraumInGesuchsperiode (groups = BetreuungBestaetigenValidationGroup.class)
+@CheckMittagstischPensum
+@CheckBetreuungPensumContainerZeitraumInGesuchsperiode(groups = BetreuungBestaetigenValidationGroup.class)
 @CheckBetreuungZeitraumInstitutionsStammdatenZeitraum (groups = BetreuungBestaetigenValidationGroup.class)
 // Der ForeignKey-Name wird leider nicht richtig generiert, muss von Hand angepasst werden!
 @AssociationOverrides({
@@ -64,7 +102,7 @@ import java.util.*;
 @Indexed
 @Analyzer(definition = "EBEGUGermanAnalyzer")
 @ClassBridge(name = "bGNummer", impl = BGNummerBridge.class, analyze = Analyze.NO)
-public class Betreuung extends AbstractPlatz {
+public class Betreuung extends AbstractPlatz implements BetreuungAndPensumContainer {
 
 	private static final long serialVersionUID = -6776987863150835840L;
 
@@ -119,6 +157,7 @@ public class Betreuung extends AbstractPlatz {
 	@Column(nullable = true)
 	private Boolean abwesenheitMutiert;
 
+	@Nonnull
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "betreuung")
 	@SortNatural
 	private Set<BetreuungspensumAbweichung> betreuungspensumAbweichungen = new TreeSet<>();
@@ -229,11 +268,12 @@ public class Betreuung extends AbstractPlatz {
 		this.abwesenheitMutiert = abwesenheitMutiert;
 	}
 
+	@Nonnull
 	public Set<BetreuungspensumAbweichung> getBetreuungspensumAbweichungen() {
 		return betreuungspensumAbweichungen;
 	}
 
-	public void setBetreuungspensumAbweichungen(Set<BetreuungspensumAbweichung> betreuungspensumAbweichungen) {
+	public void setBetreuungspensumAbweichungen(@Nonnull Set<BetreuungspensumAbweichung> betreuungspensumAbweichungen) {
 		this.betreuungspensumAbweichungen = betreuungspensumAbweichungen;
 	}
 
@@ -357,12 +397,10 @@ public class Betreuung extends AbstractPlatz {
 					.copyBetreuungspensumContainer(new BetreuungspensumContainer(), copyType, target));
 			}
 
-			if ( this.getBetreuungspensumAbweichungen() != null) {
-				for (BetreuungspensumAbweichung betreuungspensumAbweichung : this.getBetreuungspensumAbweichungen()) {
-					if (betreuungspensumAbweichung.getStatus() == BetreuungspensumAbweichungStatus.NICHT_FREIGEGEBEN) {
-						target.getBetreuungspensumAbweichungen().add(betreuungspensumAbweichung
-							.copyBetreuungspensumAbweichung(new BetreuungspensumAbweichung(), copyType, target));
-					}
+			for (BetreuungspensumAbweichung betreuungspensumAbweichung : this.getBetreuungspensumAbweichungen()) {
+				if (betreuungspensumAbweichung.getStatus() == BetreuungspensumAbweichungStatus.NICHT_FREIGEGEBEN) {
+					target.getBetreuungspensumAbweichungen().add(betreuungspensumAbweichung
+						.copyBetreuungspensumAbweichung(new BetreuungspensumAbweichung(), copyType, target));
 				}
 			}
 
@@ -392,6 +430,37 @@ public class Betreuung extends AbstractPlatz {
 			break;
 		}
 		return target;
+	}
+
+	@CheckGueltigkeiten(message = "{invalid_betreuungspensen_dates}")
+	@Nonnull
+	@Override
+	public List<AbstractMahlzeitenPensum> getBetreuungenGS() {
+		return betreuungspensumContainers.stream()
+			.map(BetreuungspensumContainer::getBetreuungspensumGS)
+			.filter(Objects::nonNull)
+			.collect(Collectors.toList());
+	}
+
+	@CheckGueltigkeiten(message = "{invalid_betreuungspensen_dates}")
+	@Nonnull
+	@Override
+	public List<AbstractMahlzeitenPensum> getBetreuungenJA() {
+		return betreuungspensumContainers.stream()
+			.map(BetreuungspensumContainer::getBetreuungspensumJA)
+			.filter(Objects::nonNull)
+			.collect(Collectors.toList());
+	}
+
+	@CheckMittagstischPensum(message = "{invalid_mittagstisch_pensum}")
+	public BetreuungAbweichung asAbweichungPensumContainer() {
+		return new BetreuungAbweichung(this, this.betreuungspensumAbweichungen);
+	}
+
+	@Nonnull
+	@Override
+	public Optional<Betreuung> findBetreuung() {
+		return Optional.of(this);
 	}
 
 	@Override
@@ -471,7 +540,8 @@ public class Betreuung extends AbstractPlatz {
 		LocalDate abweichungBis,
 		Betreuungspensum pensum,
 		LocalDate von,
-		LocalDate bis) {
+		LocalDate bis
+	) {
 		if (von.isBefore(abweichungVon)) {
 			von = abweichungVon;
 		}
@@ -507,7 +577,7 @@ public class Betreuung extends AbstractPlatz {
 		while (from.isBefore(to)) {
 			BetreuungspensumAbweichung abweichung;
 			// check if we already stored something in the database
-			if (abweichungenFromDb != null) {
+			if (!abweichungenFromDb.isEmpty()) {
 				Optional<BetreuungspensumAbweichung> existing = searchExistingAbweichung(from, abweichungenFromDb);
 				abweichung = existing.orElse(createEmptyAbweichung(from, this.isAngebotTagesfamilien()));
 			} else {

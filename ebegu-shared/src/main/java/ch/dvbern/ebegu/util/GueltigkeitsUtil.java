@@ -82,4 +82,12 @@ public final class GueltigkeitsUtil {
 			return !currentBis.isBefore(nextAb);
 		});
 	}
+
+	public static <T extends Gueltigkeit> boolean intersects(
+		@Nonnull Collection<T> entities,
+		@Nonnull DateRange requireIntersection
+	) {
+		return entities.stream()
+			.allMatch(e -> e.getGueltigkeit().intersects(requireIntersection));
+	}
 }

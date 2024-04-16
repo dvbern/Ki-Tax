@@ -9,6 +9,7 @@
                 [(model)]="getFinSitJA().steuerbaresEinkommen"
                 [labelMessageKey]="'FINANZIELLE_SITUATION_STEUERBARES_EINKOMMEN'"
                 [tooltipMessageKey]="'FINANZIELLE_SITUATION_STEUERBARES_EINKOMMEN_HINT'"
+                [inputDisabled]="readonly"
                 [inputRequired]="true"
                 [deklaration]="getFinSitGS()?.steuerbaresEinkommen"
                 [korrektur]="getFinSitJA().steuerbaresEinkommen"

@@ -15,19 +15,21 @@
 
 package ch.dvbern.ebegu.util;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.regex.Pattern;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.persistence.EntityManager;
+
+import ch.dvbern.ebegu.entities.AbstractMahlzeitenPensum;
 import ch.dvbern.ebegu.entities.Einstellung;
 import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.services.EinstellungService;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.persistence.EntityManager;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.util.regex.Pattern;
 
 /**
  * Allgemeine Utils fuer Betreuung
@@ -106,5 +108,16 @@ public final class BetreuungUtil {
 		var mittagstischWochenProMonat = BigDecimal.valueOf(4.1);
 
 		return mittagstischTageProWoche.multiply(mittagstischWochenProMonat).divide(BigDecimal.valueOf(100), 3, RoundingMode.HALF_UP);
+	}
+
+	@Nonnull
+	public static BigDecimal derivePensumMittagstisch(@Nonnull AbstractMahlzeitenPensum pensum) {
+		return MathUtil.EXACT.divide(pensum.getMonatlicheHauptmahlzeiten(), BetreuungUtil.getMittagstischMultiplier());
+	}
+
+	@Nonnull
+	public static BigDecimal deriveKostenMittagstisch(@Nonnull AbstractMahlzeitenPensum pensum) {
+		return MathUtil.toTwoKommastelle(pensum.getTarifProHauptmahlzeit()
+			.multiply(pensum.getMonatlicheHauptmahlzeiten()));
 	}
 }

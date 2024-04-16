@@ -10,15 +10,20 @@ import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.sozialdienst.SozialdienstFall;
 import ch.dvbern.ebegu.enums.AntragStatus;
+import com.google.errorprone.annotations.CanIgnoreReturnValue;
 
 /**
  * Vereinfachte Zusammenstellung von Testdaten. Kann weiter ergänzt werden
  * Verwendung:
- *
+ * <pre>
+ * {@code
  * Gesuch gesuch = GesuchBuilder.create(builder -> builder
  * 			.withGesuchsteller1("Meier", "Thomas")
  * 			.withGesuchsteller2("Müller", "Anna"));
+ * }
+ * </pre>
  */
+@CanIgnoreReturnValue
 public class GesuchBuilder {
 
 	private final Gesuch gesuch;

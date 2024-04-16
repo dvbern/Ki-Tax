@@ -5,6 +5,7 @@
                 [name]="'bruttoLohn'"
                 [(model)]="getFinSitJA().bruttoLohn"
                 [labelMessageKey]="'FINANZIELLE_SITUATION_BRUTTOLOHN'"
+                [inputDisabled]="readonly"
                 [inputRequired]="true"
                 [tooltipMessageKey]="'FINANZIELLE_SITUATION_BRUTTOLOHN_HINT'"
                 [showBisher]="isNotNullOrUndefined(getFinSitGS())"
