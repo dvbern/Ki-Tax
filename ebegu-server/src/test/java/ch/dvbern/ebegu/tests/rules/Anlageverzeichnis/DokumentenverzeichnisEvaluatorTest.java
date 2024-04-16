@@ -85,7 +85,7 @@ import static org.hamcrest.Matchers.is;
  * Tests für die Regeln der Benötigten Dokumenten
  */
 @ExtendWith(EasyMockExtension.class)
-public class DokumentenverzeichnisEvaluatorTest extends EasyMockSupport {
+class DokumentenverzeichnisEvaluatorTest extends EasyMockSupport {
 
 	private static final BigDecimal ZEHN_TAUSEND = BigDecimal.valueOf(100000);
 
@@ -105,7 +105,7 @@ public class DokumentenverzeichnisEvaluatorTest extends EasyMockSupport {
 	private Mandant mandantLuzern;
 
 	@BeforeEach
-	public void setUpCalculator() {
+	void setUpCalculator() {
 		testgesuchBern = new Gesuch();
 		testgesuchLuzern = new Gesuch();
 		mandantBern = TestDataUtil.getMandantKantonBern();
@@ -237,7 +237,7 @@ public class DokumentenverzeichnisEvaluatorTest extends EasyMockSupport {
 	}
 
 	@Test
-	public void kindDokumentFachstelleBernTest() {
+	void kindDokumentFachstelleBernTest() {
 		setUpEinstellungMock(testgesuchBern, AnspruchBeschaeftigungAbhaengigkeitTyp.ABHAENGING.name());
 
 		clearKinder(testgesuchBern);
@@ -250,7 +250,7 @@ public class DokumentenverzeichnisEvaluatorTest extends EasyMockSupport {
 	}
 
 	@Test
-	public void kindDokumentFachstelleLuzernTest() {
+	void kindDokumentFachstelleLuzernTest() {
 		setUpEinstellungMock(testgesuchLuzern, AnspruchBeschaeftigungAbhaengigkeitTyp.ABHAENGING.name());
 
 		clearKinder(testgesuchLuzern);
@@ -263,7 +263,7 @@ public class DokumentenverzeichnisEvaluatorTest extends EasyMockSupport {
 	}
 
 	@Test
-	public void kindDokumentFachstelleSrachlicheIntegrationLuzernTest() {
+	void kindDokumentFachstelleSrachlicheIntegrationLuzernTest() {
 		setUpEinstellungMock(testgesuchLuzern, AnspruchBeschaeftigungAbhaengigkeitTyp.ABHAENGING.name());
 
 		clearKinder(testgesuchLuzern);
@@ -275,7 +275,7 @@ public class DokumentenverzeichnisEvaluatorTest extends EasyMockSupport {
 	}
 
 	@Test
-	public void kindDokumentAbsageschreibenHortPlatzShouldBeRequiredIfKindHasKeinPlatzHort() {
+	void kindDokumentAbsageschreibenHortPlatzShouldBeRequiredIfKindHasKeinPlatzHort() {
 		setUpEinstellungMock(testgesuchLuzern, AnspruchBeschaeftigungAbhaengigkeitTyp.ABHAENGING.name());
 
 		clearKinder(testgesuchLuzern);
@@ -339,7 +339,7 @@ public class DokumentenverzeichnisEvaluatorTest extends EasyMockSupport {
 	}
 
 	@Test
-	public void erwpDokumentNeueintrittAfterTest() {
+	void erwpDokumentNeueintrittAfterTest() {
 		setUpEinstellungMock(testgesuchBern, AnspruchBeschaeftigungAbhaengigkeitTyp.ABHAENGING.name());
 
 		final Erwerbspensum erwerbspensum = createErwerbspensum(testgesuchBern, Taetigkeit.ANGESTELLT, false);
@@ -357,7 +357,7 @@ public class DokumentenverzeichnisEvaluatorTest extends EasyMockSupport {
 	}
 
 	@Test
-	public void erwpDokumentNeueintrittBeforeTest() {
+	void erwpDokumentNeueintrittBeforeTest() {
 		setUpEinstellungMock(testgesuchBern, AnspruchBeschaeftigungAbhaengigkeitTyp.ABHAENGING.name());
 
 		final Erwerbspensum erwerbspensum = createErwerbspensum(testgesuchBern, Taetigkeit.ANGESTELLT, false);
@@ -369,7 +369,7 @@ public class DokumentenverzeichnisEvaluatorTest extends EasyMockSupport {
 	}
 
 	@Test
-	public void erwpDokumentSelbstaendigTest() {
+	void erwpDokumentSelbstaendigTest() {
 		setUpEinstellungMock(testgesuchBern, AnspruchBeschaeftigungAbhaengigkeitTyp.ABHAENGING.name());
 
 		final Erwerbspensum erwerbspensum = createErwerbspensum(testgesuchBern, Taetigkeit.SELBSTAENDIG, false);
@@ -388,7 +388,7 @@ public class DokumentenverzeichnisEvaluatorTest extends EasyMockSupport {
 	}
 
 	@Test
-	public void erwpDokumentAusbildung() {
+	void erwpDokumentAusbildung() {
 		setUpEinstellungMock(testgesuchBern, AnspruchBeschaeftigungAbhaengigkeitTyp.ABHAENGING.name());
 
 		final Erwerbspensum erwerbspensum = createErwerbspensum(testgesuchBern, Taetigkeit.AUSBILDUNG, false);
@@ -404,7 +404,7 @@ public class DokumentenverzeichnisEvaluatorTest extends EasyMockSupport {
 	}
 
 	@Test
-	public void erwpDokumentRAV() {
+	void erwpDokumentRAV() {
 		setUpEinstellungMock(testgesuchBern, AnspruchBeschaeftigungAbhaengigkeitTyp.ABHAENGING.name());
 
 		final Erwerbspensum erwerbspensum = createErwerbspensum(testgesuchBern, Taetigkeit.RAV, false);
@@ -420,7 +420,7 @@ public class DokumentenverzeichnisEvaluatorTest extends EasyMockSupport {
 	}
 
 	@Test
-	public void erwpDokumentArzt() {
+	void erwpDokumentArzt() {
 		setUpEinstellungMock(testgesuchBern, AnspruchBeschaeftigungAbhaengigkeitTyp.ABHAENGING.name());
 
 		final Erwerbspensum erwerbspensum = createErwerbspensum(testgesuchBern, Taetigkeit.ANGESTELLT, true);
@@ -436,7 +436,7 @@ public class DokumentenverzeichnisEvaluatorTest extends EasyMockSupport {
 	}
 
 	@Test
-	public void erwpDokumentAngestelltLuzern() {
+	void erwpDokumentAngestelltLuzern() {
 		setUpEinstellungMock(testgesuchLuzern, AnspruchBeschaeftigungAbhaengigkeitTyp.ABHAENGING.name());
 
 		final Erwerbspensum erwerbspensum = createErwerbspensum(testgesuchLuzern, Taetigkeit.ANGESTELLT, false);
@@ -449,7 +449,7 @@ public class DokumentenverzeichnisEvaluatorTest extends EasyMockSupport {
 	}
 
 	@Test
-	public void erwpDokumentArbeitlosLuzern() {
+	void erwpDokumentArbeitlosLuzern() {
 		setUpEinstellungMock(testgesuchLuzern, AnspruchBeschaeftigungAbhaengigkeitTyp.ABHAENGING.name());
 
 		final Erwerbspensum erwerbspensum = createErwerbspensum(testgesuchLuzern, Taetigkeit.RAV, false);
@@ -465,7 +465,7 @@ public class DokumentenverzeichnisEvaluatorTest extends EasyMockSupport {
 	}
 
 	@Test
-	public void erwpDokumentInAusbildungLuzern() {
+	void erwpDokumentInAusbildungLuzern() {
 		setUpEinstellungMock(testgesuchLuzern, AnspruchBeschaeftigungAbhaengigkeitTyp.ABHAENGING.name());
 
 		final Erwerbspensum erwerbspensum = createErwerbspensum(testgesuchLuzern, Taetigkeit.AUSBILDUNG, false);
@@ -481,7 +481,7 @@ public class DokumentenverzeichnisEvaluatorTest extends EasyMockSupport {
 	}
 
 	@Test
-	public void erwpDokumentGesundheitlicheIndikationLuzern() {
+	void erwpDokumentGesundheitlicheIndikationLuzern() {
 		setUpEinstellungMock(testgesuchLuzern, AnspruchBeschaeftigungAbhaengigkeitTyp.ABHAENGING.name());
 
 		final Erwerbspensum erwerbspensum = createErwerbspensum(testgesuchLuzern,
@@ -498,7 +498,7 @@ public class DokumentenverzeichnisEvaluatorTest extends EasyMockSupport {
 	}
 
 	@Test
-	public void erwpDokumentSelbststaendigLuzern() {
+	void erwpDokumentSelbststaendigLuzern() {
 		setUpEinstellungMock(testgesuchLuzern, AnspruchBeschaeftigungAbhaengigkeitTyp.ABHAENGING.name());
 
 		final Erwerbspensum erwerbspensum = createErwerbspensum(testgesuchLuzern, Taetigkeit.SELBSTAENDIG, false);
@@ -559,7 +559,7 @@ public class DokumentenverzeichnisEvaluatorTest extends EasyMockSupport {
 	}
 
 	@Test
-	public void finSiSteuerveranlagungGemeinsam() {
+	void finSiSteuerveranlagungGemeinsam() {
 		setUpEinstellungMock(testgesuchBern, AnspruchBeschaeftigungAbhaengigkeitTyp.ABHAENGING.name());
 
 		createFinanzielleSituationGS(1, testgesuchBern, "Sämi", true);
@@ -575,7 +575,7 @@ public class DokumentenverzeichnisEvaluatorTest extends EasyMockSupport {
 	}
 
 	@Test
-	public void finSiSteuerveranlagungNichtGemeinsam() {
+	void finSiSteuerveranlagungNichtGemeinsam() {
 		setUpEinstellungMock(testgesuchBern, AnspruchBeschaeftigungAbhaengigkeitTyp.ABHAENGING.name());
 
 		createFinanzielleSituationGS(1, testgesuchBern, "Sämi", true);
@@ -602,7 +602,7 @@ public class DokumentenverzeichnisEvaluatorTest extends EasyMockSupport {
 	}
 
 	@Test
-	public void finSiNichtGemeinsam() {
+	void finSiNichtGemeinsam() {
 		setUpEinstellungMock(testgesuchBern, AnspruchBeschaeftigungAbhaengigkeitTyp.ABHAENGING.name());
 
 		createFinanzielleSituationGS(1, testgesuchBern, "Sämi", false);
@@ -642,7 +642,7 @@ public class DokumentenverzeichnisEvaluatorTest extends EasyMockSupport {
 	}
 
 	@Test
-	public void finSiDokumenteTest() {
+	void finSiDokumenteTest() {
 		setUpEinstellungMock(testgesuchBern, AnspruchBeschaeftigungAbhaengigkeitTyp.ABHAENGING.name());
 
 		createFinanzielleSituationGS(1, testgesuchBern, "Sämi", false);
@@ -710,7 +710,7 @@ public class DokumentenverzeichnisEvaluatorTest extends EasyMockSupport {
 	}
 
 	@Test
-	public void finSiDokumentSteuerabfrageTest() {
+	void finSiDokumentSteuerabfrageTest() {
 		setUpEinstellungMock(testgesuchBern, AnspruchBeschaeftigungAbhaengigkeitTyp.ABHAENGING.name());
 
 		createFinanzielleSituationGS(1, testgesuchBern, "Sämi", false);
@@ -737,7 +737,7 @@ public class DokumentenverzeichnisEvaluatorTest extends EasyMockSupport {
 	}
 
 	@Test
-	public void ekvDokumenteTest() {
+	void ekvDokumenteTest() {
 
 		createEinkommensverschlechterungGS(1, testgesuchBern, "Sämi");
 		createEinkommensverschlechterungGS(2, testgesuchBern, "Alex");
@@ -808,7 +808,7 @@ public class DokumentenverzeichnisEvaluatorTest extends EasyMockSupport {
 	}
 
 	@Test
-	public void familiensituationDokumenteTest() {
+	void familiensituationDokumenteTest() {
 		setUpEinstellungMock(testgesuchBern, AnspruchBeschaeftigungAbhaengigkeitTyp.ABHAENGING.name());
 
 		createFamilienSituation(testgesuchBern, true, true);
@@ -820,7 +820,7 @@ public class DokumentenverzeichnisEvaluatorTest extends EasyMockSupport {
 	}
 
 	@Test
-	public void erwerbspensumDokumenteNotRequiredTest() {
+	void erwerbspensumDokumenteNotRequiredTest() {
 		setUpEinstellungMock(testgesuchBern, AnspruchBeschaeftigungAbhaengigkeitTyp.UNABHAENGING.name());
 
 		createFinanzielleSituationGS(1, testgesuchBern, "Sämi", true);
@@ -839,7 +839,7 @@ public class DokumentenverzeichnisEvaluatorTest extends EasyMockSupport {
 	}
 
 	@Test
-	public void ersatzeinkommenSelbststaendigkeit_DokumenteRequired_1GS() {
+	void ersatzeinkommenSelbststaendigkeit_DokumenteRequired_1GS() {
 		setUpEinstellungMock(testgesuchBern, AnspruchBeschaeftigungAbhaengigkeitTyp.ABHAENGING.name());
 		createFinanzielleSituationGS(1, testgesuchBern, "Sämi", true);
 		createFamilienSituation(testgesuchBern, false, false);
@@ -886,7 +886,7 @@ public class DokumentenverzeichnisEvaluatorTest extends EasyMockSupport {
 	}
 
 	@Test
-	public void ersatzeinkommenSelbststaendigkeit_DokumenteRequired_2GS() {
+	void ersatzeinkommenSelbststaendigkeit_DokumenteRequired_2GS() {
 		setUpEinstellungMock(testgesuchBern, AnspruchBeschaeftigungAbhaengigkeitTyp.ABHAENGING.name());
 		createFinanzielleSituationGS(1, testgesuchBern, "Sämi", true);
 		createFinanzielleSituationGS(2, testgesuchBern, "Alex", true);
@@ -932,7 +932,7 @@ public class DokumentenverzeichnisEvaluatorTest extends EasyMockSupport {
 	}
 
 	@Test
-	public void ersatzeinkommenSelbststaendigkeit_DokumenteNotRequiredWhenNoGeschaeftsGewinn() {
+	void ersatzeinkommenSelbststaendigkeit_DokumenteNotRequiredWhenNoGeschaeftsGewinn() {
 		setUpEinstellungMock(testgesuchBern, AnspruchBeschaeftigungAbhaengigkeitTyp.ABHAENGING.name());
 		createFinanzielleSituationGS(1, testgesuchBern, "Sämi", true);
 		createFinanzielleSituationGS(2, testgesuchBern, "Alex", true);
@@ -955,7 +955,7 @@ public class DokumentenverzeichnisEvaluatorTest extends EasyMockSupport {
 	}
 
 	@Test
-	public void nachweisEkInVerinfachtemVerfahren_DokumentRequiredWhenVeranlagt() {
+	void nachweisEkInVerinfachtemVerfahren_DokumentRequiredWhenVeranlagt() {
 		setUpEinstellungMock(testgesuchBern, AnspruchBeschaeftigungAbhaengigkeitTyp.ABHAENGING.name());
 		createFinanzielleSituationGS(1, testgesuchBern, "Sämi", true);
 		createFamilienSituation(testgesuchBern, false, false);
@@ -975,7 +975,7 @@ public class DokumentenverzeichnisEvaluatorTest extends EasyMockSupport {
 	}
 
 	@Test
-	public void nachweisEkInVerinfachtemVerfahren_DokumenteRequiredWhenNotVeranlagt() {
+	void nachweisEkInVerinfachtemVerfahren_DokumenteRequiredWhenNotVeranlagt() {
 		setUpEinstellungMock(testgesuchBern, AnspruchBeschaeftigungAbhaengigkeitTyp.ABHAENGING.name());
 		createFinanzielleSituationGS(1, testgesuchBern, "Sämi", false);
 		createFamilienSituation(testgesuchBern, false, false);
@@ -1019,7 +1019,7 @@ public class DokumentenverzeichnisEvaluatorTest extends EasyMockSupport {
 		private Gesuch gesuch;
 
 		@BeforeEach
-		public void setUpCalculator() {
+		void setUpCalculator() {
 			gesuch = new Gesuch();
 			setUpTestgesuch(gesuch, TestDataUtil.getMandantSchwyz(), FinanzielleSituationTyp.SOLOTHURN);
 			gesuch.setGesuchsteller1(TestDataUtil.createDefaultGesuchstellerContainer());
