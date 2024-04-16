@@ -25,13 +25,10 @@ export class TSAbstractDecimalPensumEntity extends TSAbstractDateRangedEntity {
     private _pensum: number;
     private _monatlicheBetreuungskosten: number;
     private _stuendlicheVollkosten: number;
+    private _betreuuteTage: number;
     private _eingewoehnungPauschale: TSEingewoehnungPauschale;
     // Transient field used for calculations. Not sent to server
     private _hasEingewoehnungsPauschale: boolean;
-
-    public constructor() {
-        super();
-    }
 
     public get unitForDisplay(): TSPensumUnits {
         return this._unitForDisplay;
@@ -63,6 +60,14 @@ export class TSAbstractDecimalPensumEntity extends TSAbstractDateRangedEntity {
 
     public set stuendlicheVollkosten(value: number) {
         this._stuendlicheVollkosten = value;
+    }
+
+    public get betreuuteTage(): number {
+        return this._betreuuteTage;
+    }
+
+    public set betreuuteTage(value: number) {
+        this._betreuuteTage = value;
     }
 
     public get eingewoehnungPauschale(): TSEingewoehnungPauschale {

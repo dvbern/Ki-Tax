@@ -198,9 +198,6 @@ import {EbeguUtil} from './EbeguUtil';
 
 export class EbeguRestUtil {
 
-    public constructor() {
-    }
-
     /**
      * Wandelt Data in einen TSApplicationProperty Array um, welches danach zurueckgeliefert wird
      */
@@ -409,6 +406,7 @@ export class EbeguRestUtil {
         restObj.pensum = betreuungspensumEntity.pensum ?? 0;
         restObj.monatlicheBetreuungskosten = betreuungspensumEntity.monatlicheBetreuungskosten ?? 0;
         restObj.stuendlicheVollkosten = betreuungspensumEntity.stuendlicheVollkosten;
+        restObj.betreuuteTage = betreuungspensumEntity.betreuuteTage;
         if (betreuungspensumEntity.eingewoehnungPauschale) {
             restObj.eingewoehnungPauschale =
                 this.eingewohnungPauschaleToRestObject({}, betreuungspensumEntity.eingewoehnungPauschale);
@@ -441,6 +439,7 @@ export class EbeguRestUtil {
         betreuungspensumTS.pensum = betreuungspensumFromServer.pensum;
         betreuungspensumTS.monatlicheBetreuungskosten = betreuungspensumFromServer.monatlicheBetreuungskosten;
         betreuungspensumTS.stuendlicheVollkosten = betreuungspensumFromServer.stuendlicheVollkosten;
+        betreuungspensumTS.betreuuteTage = betreuungspensumFromServer.betreuuteTage;
         betreuungspensumTS.eingewoehnungPauschale = this.parseEingewoehnungPauschale(new TSEingewoehnungPauschale(),
             betreuungspensumFromServer.eingewoehnungPauschale);
         betreuungspensumTS.hasEingewoehnungsPauschale = EbeguUtil.isNotNullOrUndefined(betreuungspensumTS.eingewoehnungPauschale);

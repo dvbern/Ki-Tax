@@ -17,9 +17,9 @@
 
 package ch.dvbern.ebegu.enums;
 
-import ch.dvbern.ebegu.util.mandant.MandantIdentifier;
-
 import java.util.List;
+
+import ch.dvbern.ebegu.util.mandant.MandantIdentifier;
 
 /**
  * Keys für die Einstellungen
@@ -110,6 +110,9 @@ public enum EinstellungKey {
 
 	// Wenn aktiv werden in der Gemeinde werde keine Gutscheine für Sozialhilfeempfänger ausgestellt
 	GEMEINDE_KEIN_GUTSCHEIN_FUER_SOZIALHILFE_EMPFAENGER(MandantIdentifier.SOLOTHURN, EinstellungTyp.GEMEINDE),
+
+	// KIBON-3455: Wenn aktiv wird in der Betreuungspensum Erfassung ein Zusätzliches Feld "monatliche Betreuungstage" angezeigt
+	INPUT_TAGESELTERN_BETREUUTE_TAGE(MandantIdentifier.SCHWYZ), // TODO FlyWay Migration? Testdaten Anpassung?
 
 	// *** Einstellungen fuer die Gutscheinberechnung
 
