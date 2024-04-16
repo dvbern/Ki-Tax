@@ -61,7 +61,6 @@ import ch.dvbern.ebegu.api.dtos.JaxBetreuungMonitoring;
 import ch.dvbern.ebegu.api.dtos.JaxBetreuungsmitteilung;
 import ch.dvbern.ebegu.api.dtos.JaxBetreuungsmitteilungPensum;
 import ch.dvbern.ebegu.api.dtos.JaxBetreuungspensum;
-import ch.dvbern.ebegu.api.dtos.JaxBetreuungspensumAbweichung;
 import ch.dvbern.ebegu.api.dtos.JaxBetreuungspensumContainer;
 import ch.dvbern.ebegu.api.dtos.JaxBetreuungsstandort;
 import ch.dvbern.ebegu.api.dtos.JaxDokument;
