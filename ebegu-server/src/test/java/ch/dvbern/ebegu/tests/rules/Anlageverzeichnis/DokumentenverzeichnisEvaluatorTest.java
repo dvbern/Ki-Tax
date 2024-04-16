@@ -101,21 +101,15 @@ class DokumentenverzeichnisEvaluatorTest extends EasyMockSupport {
 	private final LuzernErwerbspensumDokumente luzernErwerbspensumDokumente = new LuzernErwerbspensumDokumente();
 	private Gesuch testgesuchBern;
 	private Gesuch testgesuchLuzern;
-	private Mandant mandantBern;
-	private Mandant mandantLuzern;
 
 	@BeforeEach
 	void setUpCalculator() {
-		testgesuchBern = new Gesuch();
-		testgesuchLuzern = new Gesuch();
-		mandantBern = TestDataUtil.getMandantKantonBern();
-		mandantLuzern = TestDataUtil.getMandantLuzern();
-
-		setUpTestgesuch(testgesuchBern, mandantBern, FinanzielleSituationTyp.BERN);
-		setUpTestgesuch(testgesuchLuzern, mandantLuzern, FinanzielleSituationTyp.LUZERN);
+		testgesuchBern = setUpTestgesuch(TestDataUtil.getMandantKantonBern(), FinanzielleSituationTyp.BERN);
+		testgesuchLuzern = setUpTestgesuch(TestDataUtil.getMandantLuzern(), FinanzielleSituationTyp.LUZERN);
 	}
 
-	private void setUpTestgesuch(Gesuch gesuch, Mandant mandant, FinanzielleSituationTyp finanzielleSituationTyp) {
+	private Gesuch setUpTestgesuch(Mandant mandant, FinanzielleSituationTyp finanzielleSituationTyp) {
+		Gesuch gesuch = new Gesuch();
 		gesuch.setGesuchsperiode(TestDataUtil.createGesuchsperiode1718());
 		gesuch.getGesuchsperiode().getGueltigkeit().setGueltigAb(Constants.GESUCHSPERIODE_17_18_AB);
 		gesuch.getGesuchsperiode().getGueltigkeit().setGueltigBis(Constants.GESUCHSPERIODE_17_18_BIS);
@@ -128,6 +122,8 @@ class DokumentenverzeichnisEvaluatorTest extends EasyMockSupport {
 		Dossier dossier = new Dossier();
 		dossier.setFall(fall);
 		gesuch.setDossier(dossier);
+
+		return gesuch;
 	}
 
 	private void setUpEinstellungMock(@Nonnull Gesuch testgesuch, @Nonnull String anspruchUnabhaengig) {
@@ -167,9 +163,8 @@ class DokumentenverzeichnisEvaluatorTest extends EasyMockSupport {
 
 	private Erwerbspensum createErwerbspensum(Gesuch gesuch, Taetigkeit taetigkeit, boolean gesundheitlicheEinschraenkungen) {
 		final ErwerbspensumContainer erwerbspensumContainer = TestDataUtil.createErwerbspensumContainer();
+		final Erwerbspensum erwerbspensumJA = requireNonNull(erwerbspensumContainer.getErwerbspensumJA());
 
-		final Erwerbspensum erwerbspensumJA = erwerbspensumContainer.getErwerbspensumJA();
-		Assertions.assertNotNull(erwerbspensumJA);
 		if (gesundheitlicheEinschraenkungen) {
 			erwerbspensumJA.setTaetigkeit(Taetigkeit.GESUNDHEITLICHE_EINSCHRAENKUNGEN);
 		} else {
@@ -300,22 +295,15 @@ class DokumentenverzeichnisEvaluatorTest extends EasyMockSupport {
 		return dokumentGrund;
 	}
 
-	private DokumentGrund assertDokumentGrundBern(Erwerbspensum erwerbspensum) {
-		return assertDokumentGrund(erwerbspensum, testgesuchBern, mandantBern);
-	}
-
-	private DokumentGrund assertDokumentGrundLuzern(Erwerbspensum erwerbspensum) {
-		return assertDokumentGrund(erwerbspensum, testgesuchLuzern, mandantLuzern);
-	}
-
-	private DokumentGrund assertDokumentGrund(Erwerbspensum erwerbspensum, Gesuch gesuch, Mandant mandant) {
+	private DokumentGrund assertDokumentGrund(Erwerbspensum erwerbspensum, Gesuch gesuch) {
 		final Set<DokumentGrund> calculate = evaluator.calculate(gesuch, Constants.DEFAULT_LOCALE);
 		Assertions.assertEquals(1, calculate.size());
 		final DokumentGrund dokumentGrund = calculate.iterator().next();
 		Assertions.assertEquals(DokumentGrundTyp.ERWERBSPENSUM, dokumentGrund.getDokumentGrundTyp());
 		Assertions.assertEquals(DokumentGrundPersonType.GESUCHSTELLER, dokumentGrund.getPersonType());
 		Assertions.assertEquals(Integer.valueOf(1), dokumentGrund.getPersonNumber());
-		Assertions.assertEquals(erwerbspensum.getName(Constants.DEFAULT_LOCALE, mandant), dokumentGrund.getTag());
+		String erwerbspensumName = erwerbspensum.getName(Constants.DEFAULT_LOCALE, gesuch.extractMandant());
+		Assertions.assertEquals(erwerbspensumName, dokumentGrund.getTag());
 		return dokumentGrund;
 	}
 
@@ -331,11 +319,8 @@ class DokumentenverzeichnisEvaluatorTest extends EasyMockSupport {
 	private DokumentGrund extractDocumentFromList(@Nonnull Set<DokumentGrund> dokumentGrundList, @Nonnull DokumentTyp typOfDocumentToExtract) {
 		return dokumentGrundList.stream()
 			.filter(dg -> dg.getDokumentTyp() == typOfDocumentToExtract)
-			.findFirst()
-			.orElseThrow(() -> {
-				Assertions.fail("Dokument of Type " + typOfDocumentToExtract + " expected");
-				return new RuntimeException();
-			});
+			.findAny()
+			.orElseThrow(() -> new IllegalStateException("Dokument of Type " + typOfDocumentToExtract + " expected"));
 	}
 
 	@Test
@@ -382,9 +367,8 @@ class DokumentenverzeichnisEvaluatorTest extends EasyMockSupport {
 		final Set<DokumentGrund> dokumentList = evaluator.calculate(testgesuchBern, Constants.DEFAULT_LOCALE);
 		Assertions.assertEquals(1, dokumentList.size());
 		DokumentGrund nachweisSelbstaendigkeit = extractDocumentFromList(dokumentList, DokumentTyp.NACHWEIS_SELBSTAENDIGKEIT);
-		assertDokumentGrundCorrect(nachweisSelbstaendigkeit, erwerbspensum.getName(Constants.DEFAULT_LOCALE,
-				mandantBern),
-			DokumentTyp.NACHWEIS_SELBSTAENDIGKEIT);
+		String erwerbspensumName = erwerbspensum.getName(Constants.DEFAULT_LOCALE, testgesuchBern.extractMandant());
+		assertDokumentGrundCorrect(nachweisSelbstaendigkeit, erwerbspensumName, DokumentTyp.NACHWEIS_SELBSTAENDIGKEIT);
 	}
 
 	@Test
@@ -398,7 +382,7 @@ class DokumentenverzeichnisEvaluatorTest extends EasyMockSupport {
 		Assertions.assertFalse(bernErwerbspensumDokumente.isDokumentNeeded(DokumentTyp.NACHWEIS_RAV, erwerbspensum));
 		Assertions.assertFalse(bernErwerbspensumDokumente.isDokumentNeeded(DokumentTyp.BESTAETIGUNG_ARZT, erwerbspensum));
 
-		final DokumentGrund dokumentGrund = assertDokumentGrundBern(erwerbspensum);
+		final DokumentGrund dokumentGrund = assertDokumentGrund(erwerbspensum, testgesuchBern);
 
 		Assertions.assertEquals(DokumentTyp.NACHWEIS_AUSBILDUNG, dokumentGrund.getDokumentTyp());
 	}
@@ -414,7 +398,7 @@ class DokumentenverzeichnisEvaluatorTest extends EasyMockSupport {
 		Assertions.assertTrue(bernErwerbspensumDokumente.isDokumentNeeded(DokumentTyp.NACHWEIS_RAV, erwerbspensum));
 		Assertions.assertFalse(bernErwerbspensumDokumente.isDokumentNeeded(DokumentTyp.BESTAETIGUNG_ARZT, erwerbspensum));
 
-		final DokumentGrund dokumentGrund = assertDokumentGrundBern(erwerbspensum);
+		final DokumentGrund dokumentGrund = assertDokumentGrund(erwerbspensum, testgesuchBern);
 
 		Assertions.assertEquals(DokumentTyp.NACHWEIS_RAV, dokumentGrund.getDokumentTyp());
 	}
@@ -430,7 +414,7 @@ class DokumentenverzeichnisEvaluatorTest extends EasyMockSupport {
 		Assertions.assertFalse(bernErwerbspensumDokumente.isDokumentNeeded(DokumentTyp.NACHWEIS_RAV, erwerbspensum));
 		Assertions.assertTrue(bernErwerbspensumDokumente.isDokumentNeeded(DokumentTyp.BESTAETIGUNG_ARZT, erwerbspensum));
 
-		final DokumentGrund dokumentGrund = assertDokumentGrundBern(erwerbspensum);
+		final DokumentGrund dokumentGrund = assertDokumentGrund(erwerbspensum, testgesuchBern);
 
 		Assertions.assertEquals(DokumentTyp.BESTAETIGUNG_ARZT, dokumentGrund.getDokumentTyp());
 	}
@@ -460,7 +444,7 @@ class DokumentenverzeichnisEvaluatorTest extends EasyMockSupport {
 		Assertions.assertFalse(luzernErwerbspensumDokumente.isDokumentNeeded(DokumentTyp.NACHWEIS_GESUNDHEITLICHE_INDIKATION, erwerbspensum));
 		Assertions.assertFalse(luzernErwerbspensumDokumente.isDokumentNeeded(DokumentTyp.NACHWEIS_SELBSTAENDIGKEIT, erwerbspensum));
 
-		final DokumentGrund dokumentGrund = assertDokumentGrundLuzern(erwerbspensum);
+		final DokumentGrund dokumentGrund = assertDokumentGrund(erwerbspensum, testgesuchLuzern);
 		Assertions.assertEquals(DokumentTyp.NACHWEIS_ARBEITSSUCHEND, dokumentGrund.getDokumentTyp());
 	}
 
@@ -476,7 +460,7 @@ class DokumentenverzeichnisEvaluatorTest extends EasyMockSupport {
 		Assertions.assertFalse(luzernErwerbspensumDokumente.isDokumentNeeded(DokumentTyp.NACHWEIS_GESUNDHEITLICHE_INDIKATION, erwerbspensum));
 		Assertions.assertFalse(luzernErwerbspensumDokumente.isDokumentNeeded(DokumentTyp.NACHWEIS_SELBSTAENDIGKEIT, erwerbspensum));
 
-		final DokumentGrund dokumentGrund = assertDokumentGrundLuzern(erwerbspensum);
+		final DokumentGrund dokumentGrund = assertDokumentGrund(erwerbspensum, testgesuchLuzern);
 		Assertions.assertEquals(DokumentTyp.NACHWEIS_AUSBILDUNG, dokumentGrund.getDokumentTyp());
 	}
 
@@ -493,7 +477,7 @@ class DokumentenverzeichnisEvaluatorTest extends EasyMockSupport {
 		Assertions.assertTrue(luzernErwerbspensumDokumente.isDokumentNeeded(DokumentTyp.NACHWEIS_GESUNDHEITLICHE_INDIKATION, erwerbspensum));
 		Assertions.assertFalse(luzernErwerbspensumDokumente.isDokumentNeeded(DokumentTyp.NACHWEIS_SELBSTAENDIGKEIT, erwerbspensum));
 
-		final DokumentGrund dokumentGrund = assertDokumentGrundLuzern(erwerbspensum);
+		final DokumentGrund dokumentGrund = assertDokumentGrund(erwerbspensum, testgesuchLuzern);
 		Assertions.assertEquals(DokumentTyp.NACHWEIS_GESUNDHEITLICHE_INDIKATION, dokumentGrund.getDokumentTyp());
 	}
 
@@ -509,7 +493,7 @@ class DokumentenverzeichnisEvaluatorTest extends EasyMockSupport {
 		Assertions.assertFalse(luzernErwerbspensumDokumente.isDokumentNeeded(DokumentTyp.NACHWEIS_GESUNDHEITLICHE_INDIKATION, erwerbspensum));
 		Assertions.assertTrue(luzernErwerbspensumDokumente.isDokumentNeeded(DokumentTyp.NACHWEIS_SELBSTAENDIGKEIT, erwerbspensum));
 
-		final DokumentGrund dokumentGrund = assertDokumentGrundLuzern(erwerbspensum);
+		final DokumentGrund dokumentGrund = assertDokumentGrund(erwerbspensum, testgesuchLuzern);
 		Assertions.assertEquals(DokumentTyp.NACHWEIS_SELBSTAENDIGKEIT, dokumentGrund.getDokumentTyp());
 	}
 
@@ -525,8 +509,13 @@ class DokumentenverzeichnisEvaluatorTest extends EasyMockSupport {
 		return grunds;
 	}
 
-	private Set<DokumentGrund> getDokumentGrundsForType(DokumentTyp dokumentTyp, Set<DokumentGrund> dokumentGrunds,
-		@Nullable DokumentGrundPersonType personType, @Nullable Integer personNumber, @Nullable String year) {
+	private Set<DokumentGrund> getDokumentGrundsForType(
+		DokumentTyp dokumentTyp,
+		Set<DokumentGrund> dokumentGrunds,
+		@Nullable DokumentGrundPersonType personType,
+		@Nullable Integer personNumber,
+		@Nullable String year) {
+
 		Set<DokumentGrund> grunds = new HashSet<>();
 
 		for (DokumentGrund dokumentGrund : dokumentGrunds) {
@@ -1016,20 +1005,11 @@ class DokumentenverzeichnisEvaluatorTest extends EasyMockSupport {
 	@Nested
 	class SchwyzTest {
 
-		private Gesuch gesuch;
-
-		@BeforeEach
-		void setUpCalculator() {
-			gesuch = new Gesuch();
-			setUpTestgesuch(gesuch, TestDataUtil.getMandantSchwyz(), FinanzielleSituationTyp.SOLOTHURN);
-			gesuch.setGesuchsteller1(TestDataUtil.createDefaultGesuchstellerContainer());
-		}
-
 		@Nested
 		class ErwebspensumDokumenteTest {
 			@Test
 			void erwerbspensumRAV_shouldOnlyHaveNachweisRAV() {
-				setUpGesuchForErwerbspensumTest(Taetigkeit.RAV);
+				Gesuch gesuch = setUpGesuchForErwerbspensumTest(Taetigkeit.RAV);
 
 				final Set<DokumentGrund> dokumentGruende = evaluator.calculate(gesuch, Constants.DEFAULT_LOCALE);
 				final DokumentGrund dokumentGrund = dokumentGruende.stream().findFirst().orElse(new DokumentGrund());
@@ -1041,7 +1021,7 @@ class DokumentenverzeichnisEvaluatorTest extends EasyMockSupport {
 
 			@Test
 			void erwerbspensumAngestellt_shouldOnlyHaveNachweisAngestellt() {
-				setUpGesuchForErwerbspensumTest(Taetigkeit.ANGESTELLT);
+				Gesuch gesuch = setUpGesuchForErwerbspensumTest(Taetigkeit.ANGESTELLT);
 
 				final Set<DokumentGrund> dokumentGruende = evaluator.calculate(gesuch, Constants.DEFAULT_LOCALE);
 				final DokumentGrund dokumentGrund = dokumentGruende.stream().findFirst().orElse(new DokumentGrund());
@@ -1052,7 +1032,7 @@ class DokumentenverzeichnisEvaluatorTest extends EasyMockSupport {
 
 			@Test
 			void erwerbspensumInAusbildung_shouldOnlyHaveNachweisInAusbildung() {
-				setUpGesuchForErwerbspensumTest(Taetigkeit.AUSBILDUNG);
+				Gesuch gesuch = setUpGesuchForErwerbspensumTest(Taetigkeit.AUSBILDUNG);
 
 				final Set<DokumentGrund> dokumentGruende = evaluator.calculate(gesuch, Constants.DEFAULT_LOCALE);
 				final DokumentGrund dokumentGrund = dokumentGruende.stream().findFirst().orElse(new DokumentGrund());
@@ -1063,7 +1043,7 @@ class DokumentenverzeichnisEvaluatorTest extends EasyMockSupport {
 
 			@Test
 			void erwerbspensumSelbststaendig_shouldOnlyHaveNachweisSelbststaendig() {
-				setUpGesuchForErwerbspensumTest(Taetigkeit.SELBSTAENDIG);
+				Gesuch gesuch = setUpGesuchForErwerbspensumTest(Taetigkeit.SELBSTAENDIG);
 
 				final Set<DokumentGrund> dokumentGruende = evaluator.calculate(gesuch, Constants.DEFAULT_LOCALE);
 				final DokumentGrund dokumentGrund = dokumentGruende.stream().findFirst().orElse(new DokumentGrund());
@@ -1072,13 +1052,25 @@ class DokumentenverzeichnisEvaluatorTest extends EasyMockSupport {
 				assertThat(dokumentGrund.getDokumentTyp(), is(DokumentTyp.NACHWEIS_SELBSTAENDIGKEIT));
 			}
 
-			private void setUpGesuchForErwerbspensumTest(Taetigkeit rav) {
+			private Gesuch setUpGesuchForErwerbspensumTest(Taetigkeit rav) {
+				Gesuch gesuch = setUpTestgesuch(TestDataUtil.getMandantSchwyz(), FinanzielleSituationTyp.SCHWYZ);
+
+				GesuchstellerContainer gesuchsteller = TestDataUtil.createDefaultGesuchstellerContainer();
+				gesuch.setGesuchsteller1(gesuchsteller);
+
 				setUpEinstellungMock(gesuch, AnspruchBeschaeftigungAbhaengigkeitTyp.ABHAENGING.name());
-				requireNonNull(gesuch.getGesuchsteller1());
-				gesuch.getGesuchsteller1().setErwerbspensenContainers(Set.of(createErwerbspensumContainer(rav, gesuch.getGesuchsteller1())));
+
+				ErwerbspensumContainer erwerbspensumContainer = createErwerbspensumContainer(rav, gesuchsteller, gesuch);
+				gesuchsteller.setErwerbspensenContainers(Set.of(erwerbspensumContainer));
+
+				return gesuch;
 			}
 
-			private ErwerbspensumContainer createErwerbspensumContainer(Taetigkeit taetigkeit, GesuchstellerContainer gesuchstellerContainer) {
+			private ErwerbspensumContainer createErwerbspensumContainer(
+				Taetigkeit taetigkeit,
+				GesuchstellerContainer gesuchstellerContainer,
+				Gesuch gesuch
+			) {
 				final Erwerbspensum erwerbspensum = createErwerbspensum(gesuch, taetigkeit, false);
 				final ErwerbspensumContainer erwerbspensumContainer = new ErwerbspensumContainer();
 				erwerbspensumContainer.setErwerbspensumJA(erwerbspensum);
@@ -1087,7 +1079,5 @@ class DokumentenverzeichnisEvaluatorTest extends EasyMockSupport {
 				return erwerbspensumContainer;
 			}
 		}
-
-
 	}
 }
