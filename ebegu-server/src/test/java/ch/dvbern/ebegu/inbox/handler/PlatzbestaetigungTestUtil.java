@@ -17,8 +17,26 @@
 
 package ch.dvbern.ebegu.inbox.handler;
 
-import ch.dvbern.ebegu.entities.*;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.Month;
+import java.util.Arrays;
+import java.util.Collection;
+
+import javax.annotation.Nonnull;
+
+import ch.dvbern.ebegu.entities.AbstractMahlzeitenPensum;
+import ch.dvbern.ebegu.entities.Betreuung;
+import ch.dvbern.ebegu.entities.Betreuungsmitteilung;
+import ch.dvbern.ebegu.entities.BetreuungsmitteilungPensum;
+import ch.dvbern.ebegu.entities.Betreuungspensum;
+import ch.dvbern.ebegu.entities.BetreuungspensumContainer;
+import ch.dvbern.ebegu.entities.Gesuch;
+import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.enums.PensumUnits;
+import ch.dvbern.ebegu.test.TestDataUtil;
+import ch.dvbern.ebegu.test.util.TestDataInstitutionStammdatenBuilder;
+import ch.dvbern.ebegu.testfaelle.Testfall01_WaeltiDagmar;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.MathUtil;
@@ -26,25 +44,32 @@ import ch.dvbern.kibon.exchange.commons.platzbestaetigung.BetreuungEventDTO;
 import ch.dvbern.kibon.exchange.commons.platzbestaetigung.ZeitabschnittDTO;
 import ch.dvbern.kibon.exchange.commons.types.Zeiteinheit;
 import com.spotify.hamcrest.pojo.IsPojo;
+import lombok.experimental.UtilityClass;
 import org.hamcrest.Matcher;
-
-import javax.annotation.Nonnull;
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.util.Arrays;
-import java.util.Collection;
 
 import static ch.dvbern.ebegu.util.EbeguUtil.coalesce;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.spotify.hamcrest.pojo.IsPojo.pojo;
 import static java.util.Objects.requireNonNull;
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.comparesEqualTo;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
 
+@UtilityClass
 public final class PlatzbestaetigungTestUtil {
 
 	public static final String REF_NUMMER = "20.007305.002.1.3";
 
-	private PlatzbestaetigungTestUtil() {
+	@Nonnull
+	public static Gesuch initGesuch() {
+		Gesuchsperiode gesuchsperiode = TestDataUtil.createGesuchsperiodeXXYY(2020, 2021);
+
+		Testfall01_WaeltiDagmar testfall_1GS =
+			new Testfall01_WaeltiDagmar(gesuchsperiode, false, new TestDataInstitutionStammdatenBuilder(gesuchsperiode));
+		testfall_1GS.createFall();
+		testfall_1GS.createGesuch(LocalDate.of(2016, Month.DECEMBER, 12));
+
+		return testfall_1GS.fillInGesuch();
 	}
 
 	@Nonnull

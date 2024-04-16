@@ -1,51 +1,50 @@
 package ch.dvbern.ebegu.entities;
 
 import ch.dvbern.ebegu.test.GesuchBuilder;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
-
-public class GesuchTest {
+class GesuchTest {
 
 	@Test
-	public void familiennameNormalesGesuchEinGesuchsteller() {
+	void familiennameNormalesGesuchEinGesuchsteller() {
 		Gesuch gesuch = GesuchBuilder.create(builder -> builder
 			.withGesuchsteller1("Meier", "Thomas"));
-		Assert.assertEquals("Meier", gesuch.extractFamiliennamenString());
+		Assertions.assertEquals("Meier", gesuch.extractFamiliennamenString());
 	}
 
 	@Test
-	public void familiennameNormalesGesuchZweiGesuchsteller() {
+	void familiennameNormalesGesuchZweiGesuchsteller() {
 		Gesuch gesuch = GesuchBuilder.create(builder -> builder
 			.withGesuchsteller1("Meier", "Thomas")
 			.withGesuchsteller2("Müller", "Anna"));
-		Assert.assertEquals("Meier, Müller", gesuch.extractFamiliennamenString());
+		Assertions.assertEquals("Meier, Müller", gesuch.extractFamiliennamenString());
 	}
 
 	@Test
-	public void familiennameSozialfallGesuchEinGesuchsteller() {
+	void familiennameSozialfallGesuchEinGesuchsteller() {
 		Gesuch gesuch = GesuchBuilder.create(builder -> builder
 			.withoutGesuchsteller1()
 			.withoutGesuchsteller2()
 			.withSozialdienst("Hostettler", "Jonas", null, null));
-		Assert.assertEquals("Hostettler", gesuch.extractFamiliennamenString());
+		Assertions.assertEquals("Hostettler", gesuch.extractFamiliennamenString());
 	}
 
 	@Test
-	public void familiennameSozialfallGesuchZweiGesuchsteller() {
+	void familiennameSozialfallGesuchZweiGesuchsteller() {
 		Gesuch gesuch = GesuchBuilder.create(builder -> builder
 			.withoutGesuchsteller1()
 			.withoutGesuchsteller2()
 			.withSozialdienst("Meier", "Thomas", "Schmied", "Katherina"));
-		Assert.assertEquals("Meier, Schmied", gesuch.extractFamiliennamenString());
+		Assertions.assertEquals("Meier, Schmied", gesuch.extractFamiliennamenString());
 	}
 
 	@Test
-	public void familiennameSozialfallGesuchZweiGesuchstellerAusgefuellt() {
+	void familiennameSozialfallGesuchZweiGesuchstellerAusgefuellt() {
 		Gesuch gesuch = GesuchBuilder.create(builder -> builder
 			.withSozialdienst("Meier", "Thomas", "Schmied", "Katherina")
 			.withGesuchsteller1("Muster", "Thomas")
 			.withGesuchsteller2("Müller", "Anna"));
-		Assert.assertEquals("Muster, Müller", gesuch.extractFamiliennamenString());
+		Assertions.assertEquals("Muster, Müller", gesuch.extractFamiliennamenString());
 	}
 }

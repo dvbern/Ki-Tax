@@ -30,11 +30,6 @@ public class CheckGesuchstellerContainerCompleteValidator implements
 
 	private static final Logger LOG = LoggerFactory.getLogger(CheckGesuchstellerContainerCompleteValidator.class.getSimpleName());
 
-	@Override
-	public void initialize(CheckGesuchstellerContainerComplete constraintAnnotation) {
-		//nop
-	}
-
 	@SuppressWarnings("ConstantConditions")
 	@Override
 	public boolean isValid(GesuchstellerContainer gsContainer, ConstraintValidatorContext context) {

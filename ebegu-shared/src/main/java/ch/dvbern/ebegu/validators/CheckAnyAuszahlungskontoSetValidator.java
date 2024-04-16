@@ -26,11 +26,6 @@ import org.apache.commons.lang.StringUtils;
 public class CheckAnyAuszahlungskontoSetValidator implements ConstraintValidator<CheckAnyAuszahlungskontoSet, Auszahlungsdaten> {
 
 	@Override
-	public void initialize(CheckAnyAuszahlungskontoSet constraintAnnotation) {
-		//nop
-	}
-
-	@Override
 	public boolean isValid(Auszahlungsdaten berechtigung, @Nullable ConstraintValidatorContext context) {
 		// Es muss entweder eine IBAN oder eine infomaKontonummer gesetzt sein
 		if (berechtigung.getIban() != null) {

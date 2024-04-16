@@ -17,49 +17,157 @@
 
 package ch.dvbern.ebegu.services.mitteilung;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeParseException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Locale;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.ejb.EJBAccessException;
+import javax.ejb.EJBTransactionRolledbackException;
+import javax.ejb.Local;
+import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
+import javax.inject.Inject;
+import javax.persistence.TypedQuery;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Expression;
+import javax.persistence.criteria.Join;
+import javax.persistence.criteria.JoinType;
+import javax.persistence.criteria.ParameterExpression;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+import javax.persistence.criteria.SetJoin;
+import javax.persistence.metamodel.SingularAttribute;
+import javax.validation.ConstraintViolation;
+import javax.validation.ConstraintViolationException;
+import javax.validation.Valid;
+import javax.validation.Validation;
+import javax.validation.Validator;
+
 import ch.dvbern.ebegu.authentication.PrincipalBean;
 import ch.dvbern.ebegu.config.EbeguConfiguration;
 import ch.dvbern.ebegu.dto.neskovanp.Veranlagungsstand;
 import ch.dvbern.ebegu.dto.suchfilter.smarttable.MitteilungPredicateObjectDTO;
 import ch.dvbern.ebegu.dto.suchfilter.smarttable.MitteilungTableFilterDTO;
-import ch.dvbern.ebegu.entities.*;
+import ch.dvbern.ebegu.entities.AbstractDateRangedEntity_;
+import ch.dvbern.ebegu.entities.AbstractEntity_;
+import ch.dvbern.ebegu.entities.AbstractPlatz_;
+import ch.dvbern.ebegu.entities.Benutzer;
+import ch.dvbern.ebegu.entities.Benutzer_;
+import ch.dvbern.ebegu.entities.Berechtigung;
+import ch.dvbern.ebegu.entities.Berechtigung_;
+import ch.dvbern.ebegu.entities.Betreuung;
+import ch.dvbern.ebegu.entities.Betreuungsmitteilung;
+import ch.dvbern.ebegu.entities.BetreuungsmitteilungPensum;
+import ch.dvbern.ebegu.entities.Betreuungsmitteilung_;
+import ch.dvbern.ebegu.entities.Betreuungspensum;
+import ch.dvbern.ebegu.entities.BetreuungspensumAbweichung;
+import ch.dvbern.ebegu.entities.BetreuungspensumAbweichung_;
+import ch.dvbern.ebegu.entities.BetreuungspensumContainer;
+import ch.dvbern.ebegu.entities.Dossier;
+import ch.dvbern.ebegu.entities.Dossier_;
+import ch.dvbern.ebegu.entities.Einstellung;
+import ch.dvbern.ebegu.entities.Fall;
+import ch.dvbern.ebegu.entities.Fall_;
+import ch.dvbern.ebegu.entities.Gemeinde;
+import ch.dvbern.ebegu.entities.GemeindeStammdaten;
+import ch.dvbern.ebegu.entities.Gemeinde_;
+import ch.dvbern.ebegu.entities.Gesuch;
+import ch.dvbern.ebegu.entities.Institution;
+import ch.dvbern.ebegu.entities.InstitutionStammdaten;
+import ch.dvbern.ebegu.entities.InstitutionStammdaten_;
+import ch.dvbern.ebegu.entities.Institution_;
+import ch.dvbern.ebegu.entities.KindContainer;
+import ch.dvbern.ebegu.entities.KindContainer_;
+import ch.dvbern.ebegu.entities.Mandant;
+import ch.dvbern.ebegu.entities.Mitteilung;
+import ch.dvbern.ebegu.entities.Mitteilung_;
+import ch.dvbern.ebegu.entities.NeueVeranlagungsMitteilung;
+import ch.dvbern.ebegu.entities.NeueVeranlagungsMitteilung_;
+import ch.dvbern.ebegu.entities.SteuerdatenResponse;
+import ch.dvbern.ebegu.entities.SteuerdatenResponse_;
 import ch.dvbern.ebegu.entities.sozialdienst.SozialdienstFall;
 import ch.dvbern.ebegu.entities.sozialdienst.SozialdienstFall_;
-import ch.dvbern.ebegu.enums.*;
-import ch.dvbern.ebegu.errors.*;
+import ch.dvbern.ebegu.enums.AntragStatus;
+import ch.dvbern.ebegu.enums.BetreuungspensumAbweichungStatus;
+import ch.dvbern.ebegu.enums.BetreuungspensumAnzeigeTyp;
+import ch.dvbern.ebegu.enums.Betreuungsstatus;
+import ch.dvbern.ebegu.enums.EinstellungKey;
+import ch.dvbern.ebegu.enums.ErrorCodeEnum;
+import ch.dvbern.ebegu.enums.FinSitStatus;
+import ch.dvbern.ebegu.enums.GesuchstellerTyp;
+import ch.dvbern.ebegu.enums.MessageTypes;
+import ch.dvbern.ebegu.enums.MitteilungStatus;
+import ch.dvbern.ebegu.enums.MitteilungTeilnehmerTyp;
+import ch.dvbern.ebegu.enums.SearchMode;
+import ch.dvbern.ebegu.enums.SteuerdatenAnfrageStatus;
+import ch.dvbern.ebegu.enums.UserRole;
+import ch.dvbern.ebegu.enums.UserRoleName;
+import ch.dvbern.ebegu.enums.Verantwortung;
+import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
+import ch.dvbern.ebegu.errors.EbeguException;
+import ch.dvbern.ebegu.errors.EbeguExistingAntragException;
+import ch.dvbern.ebegu.errors.EbeguExistingAntragRuntimeException;
+import ch.dvbern.ebegu.errors.EbeguRuntimeException;
+import ch.dvbern.ebegu.errors.MailException;
 import ch.dvbern.ebegu.i18n.LocaleThreadLocal;
 import ch.dvbern.ebegu.inbox.util.TechnicalUserConfigurationVisitor;
 import ch.dvbern.ebegu.nesko.handler.KibonAnfrageContext;
 import ch.dvbern.ebegu.nesko.handler.KibonAnfrageHelper;
 import ch.dvbern.ebegu.nesko.utils.KibonAnfrageUtil;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
-import ch.dvbern.ebegu.services.*;
+import ch.dvbern.ebegu.services.AbstractBaseService;
+import ch.dvbern.ebegu.services.Authorizer;
+import ch.dvbern.ebegu.services.BenutzerService;
+import ch.dvbern.ebegu.services.BetreuungService;
+import ch.dvbern.ebegu.services.EinstellungService;
+import ch.dvbern.ebegu.services.FinanzielleSituationService;
+import ch.dvbern.ebegu.services.GemeindeService;
+import ch.dvbern.ebegu.services.GesuchService;
+import ch.dvbern.ebegu.services.MailService;
+import ch.dvbern.ebegu.services.MitteilungService;
+import ch.dvbern.ebegu.services.VerfuegungService;
 import ch.dvbern.ebegu.services.util.SearchUtil;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.types.DateRange_;
-import ch.dvbern.ebegu.util.*;
+import ch.dvbern.ebegu.util.BetreuungUtil;
+import ch.dvbern.ebegu.util.Constants;
+import ch.dvbern.ebegu.util.Gueltigkeit;
+import ch.dvbern.ebegu.util.MathUtil;
+import ch.dvbern.ebegu.util.MitteilungUtil;
+import ch.dvbern.ebegu.util.ServerMessageUtil;
+import ch.dvbern.ebegu.util.betreuungsmitteilung.messages.BetreuungsmitteilungPensumMessageFactory;
+import ch.dvbern.ebegu.util.betreuungsmitteilung.messages.DefaultMessageFactory;
+import ch.dvbern.ebegu.util.betreuungsmitteilung.messages.EingewoehnungsPauschaleMessageFactory;
+import ch.dvbern.ebegu.util.betreuungsmitteilung.messages.MahlzeitenVerguenstigungMessageFactory;
+import ch.dvbern.ebegu.util.betreuungsmitteilung.messages.MittagstischMessageFactory;
+import ch.dvbern.ebegu.util.mandant.MandantIdentifier;
 import ch.dvbern.lib.cdipersistence.Persistence;
+import com.google.errorprone.annotations.CanIgnoreReturnValue;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.ejb.*;
-import javax.inject.Inject;
-import javax.persistence.TypedQuery;
-import javax.persistence.criteria.*;
-import javax.persistence.metamodel.SingularAttribute;
-import javax.validation.*;
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeParseException;
-import java.util.*;
-import java.util.stream.Collectors;
-
 import static ch.dvbern.ebegu.enums.ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND;
+import static ch.dvbern.ebegu.util.betreuungsmitteilung.messages.BetreuungsmitteilungPensumMessageFactory.combine;
 import static java.util.Objects.requireNonNull;
 import static org.apache.commons.lang3.StringUtils.EMPTY;
 
@@ -673,14 +781,14 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 	}
 
 	@Override
-	public void replaceBetreungsmitteilungen(
-			@Valid @Nonnull Betreuungsmitteilung betreuungsmitteilung) {
+	public void replaceBetreungsmitteilungen(@Valid @Nonnull Betreuungsmitteilung betreuungsmitteilung) {
 		removeOffeneBetreuungsmitteilungenForBetreuung(requireNonNull(betreuungsmitteilung.getBetreuung()));
 		sendBetreuungsmitteilung(betreuungsmitteilung);
 	}
 
 	@Nonnull
 	@Override
+	@CanIgnoreReturnValue
 	public Betreuungsmitteilung sendBetreuungsmitteilung(@Valid @Nonnull Betreuungsmitteilung betreuungsmitteilung) {
 		Objects.requireNonNull(betreuungsmitteilung);
 		if (MitteilungTeilnehmerTyp.INSTITUTION != betreuungsmitteilung.getSenderTyp()) {
@@ -801,8 +909,7 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 			}
 			if (AntragStatus.getVerfuegtAbgeschlossenIgnoriertAndSTVStates().contains(neustesGesuch.getStatus())) {
 				// create Mutation if there is currently no Mutation
-				Gesuch mutation =
-						Gesuch.createMutation(gesuch.getDossier(), neustesGesuch.getGesuchsperiode(), LocalDate.now());
+				Gesuch mutation = Gesuch.createMutation(gesuch.getDossier(), neustesGesuch.getGesuchsperiode(), LocalDate.now());
 				mutation = gesuchService.createGesuch(mutation);
 				authorizer.checkWriteAuthorization(mutation);
 				if (mitteilung instanceof NeueVeranlagungsMitteilung) {
@@ -895,8 +1002,7 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 	}
 
 	@Override
-	public void createMutationsmeldungAbweichungen(
-			@Nonnull Betreuungsmitteilung mitteilung, @Nonnull Betreuung betreuung) {
+	public void createMutationsmeldungAbweichungen(@Nonnull Betreuungsmitteilung mitteilung, @Nonnull Betreuung betreuung) {
 
 		// convert BetreuungspensumAbweichung to MitteilungPensum
 		// (1) Zusammenfuegen der bestehenden Pensen mit den evtl. hinzugefuegten Abweichungen. Resultat ist ein Pensum
@@ -912,20 +1018,19 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 		});
 		// (3) Die Abschnitte werden zu BetreuungsMitteilungspensen konvertiert.
 		Set<BetreuungsmitteilungPensum> pensenFromAbweichungen = initialAbweichungen.stream()
-				.filter(abweichung -> (abweichung.getVertraglichesPensum() != null))
+			.filter(abweichung -> abweichung.getVertraglichesPensum() != null)
 				.map(abweichung -> abweichung.convertAbweichungToMitteilungPensum(mitteilung))
 				.collect(Collectors.toSet());
 
 		mitteilung.setBetreuungspensen(pensenFromAbweichungen);
 
-		final Locale locale = LocaleThreadLocal.get();
+		Locale locale = LocaleThreadLocal.get();
 
-		final Benutzer currentBenutzer = benutzerService.getCurrentBenutzer()
-				.orElseThrow(() -> new EbeguEntityNotFoundException("sendBetreuungsmitteilung",
-						ErrorCodeEnum.ERROR_ENTITY_NOT_FOUND));
+		Benutzer currentBenutzer = benutzerService.getCurrentBenutzer()
+			.orElseThrow(() -> new EbeguEntityNotFoundException("sendBetreuungsmitteilung"));
 
 		MitteilungUtil.initializeBetreuungsmitteilung(mitteilung, betreuung, currentBenutzer, locale);
-		mitteilung.setMessage(createNachrichtForMutationsmeldung(mitteilung, pensenFromAbweichungen));
+		mitteilung.setMessage(createNachrichtForMutationsmeldung(mitteilung, pensenFromAbweichungen, locale));
 
 		sendBetreuungsmitteilung(mitteilung);
 	}
@@ -955,14 +1060,15 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 				findAllBetreuungsMitteilungenForInstitution(institution);
 
 		offeneMutationsmitteilungenForInstitution.forEach(mitteilung -> {
-			mitteilung.setBetreuungspensen(betreuungService.capBetreuungspensenToGueltigkeit(mitteilung.getBetreuungspensen(),
-					gueltigkeit));
+			Set<BetreuungsmitteilungPensum> betreuungspensen = betreuungService.capBetreuungspensenToGueltigkeit(
+				mitteilung.getBetreuungspensen(),
+				gueltigkeit);
+			mitteilung.setBetreuungspensen(betreuungspensen);
 
-			if (mitteilung.getBetreuungspensen().isEmpty()) {
+			if (betreuungspensen.isEmpty()) {
 				persistence.remove(mitteilung);
 			} else {
-				mitteilung.setMessage(createNachrichtForMutationsmeldung(mitteilung,
-						mitteilung.getBetreuungspensen()));
+				mitteilung.setMessage(createNachrichtForMutationsmeldung(mitteilung, betreuungspensen, LocaleThreadLocal.get()));
 				persistence.merge(mitteilung);
 			}
 		});
@@ -1040,71 +1146,96 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 
 	@Nonnull
 	private Benutzer getTechnicalKibonBenutzer(Dossier dossier) {
-		String technicalUserID =
-			technicalUserConfigVisitor.process(dossier.getFall().getMandant().getMandantIdentifier()).getTechnicalUser();
+		MandantIdentifier mandantIdentifier = dossier.getFall().getMandant().getMandantIdentifier();
+		String technicalUserID = technicalUserConfigVisitor.process(mandantIdentifier).getTechnicalUser();
+
 		return benutzerService.findBenutzerById(technicalUserID)
-				.orElseThrow(() -> new EbeguEntityNotFoundException(EMPTY,
-						ERROR_ENTITY_NOT_FOUND,
-						technicalUserID));
+			.orElseThrow(() -> new EbeguEntityNotFoundException(EMPTY, ERROR_ENTITY_NOT_FOUND, technicalUserID));
 	}
 
 	@Override
 	public String createNachrichtForMutationsmeldung(
-			@Nonnull Betreuungsmitteilung mitteilung,
-			@Nonnull Set<BetreuungsmitteilungPensum> changedBetreuungen) {
-		final Locale locale = LocaleThreadLocal.get();
-		assert mitteilung.getBetreuung() != null;
-		final boolean mvzEnabled =
-				einstellungService.findEinstellung(EinstellungKey.GEMEINDE_MAHLZEITENVERGUENSTIGUNG_ENABLED,
-						mitteilung.getBetreuung().extractGemeinde(),
-						mitteilung.getBetreuung().extractGesuchsperiode()).getValueAsBoolean();
+		@Nonnull Betreuungsmitteilung mitteilung,
+		@Nonnull Set<BetreuungsmitteilungPensum> changedBetreuungen,
+		@Nonnull Locale locale) {
 
-		final Einstellung einstellungAnzeigeTyp = einstellungService.findEinstellung(EinstellungKey.PENSUM_ANZEIGE_TYP,
-				mitteilung.getBetreuung().extractGemeinde(),
-				mitteilung.getBetreuung().extractGesuchsperiode());
-		BetreuungspensumAnzeigeTyp betreuungspensumAnzeigeTyp =
-			getBetreuungspensumAnzeigeTyp(einstellungAnzeigeTyp, mitteilung.getBetreuung());
+		List<BetreuungsmitteilungPensum> sorted = changedBetreuungen.stream()
+			.sorted(Gueltigkeit.GUELTIG_AB_COMPARATOR)
+			.collect(Collectors.toList());
 
+		BetreuungsmitteilungPensumMessageFactory factory = messageFactory(mitteilung, locale);
+
+		return IntStream.rangeClosed(1, sorted.size())
+			.mapToObj(index -> factory.messageForPensum(index, sorted.get(index - 1)))
+			.collect(Collectors.joining(StringUtils.LF));
+	}
+
+	private BetreuungsmitteilungPensumMessageFactory messageFactory(
+		@Nonnull Betreuungsmitteilung mitteilung,
+		@Nonnull Locale locale
+	) {
+		Betreuung betreuung = requireNonNull(mitteilung.getBetreuung());
+		Mandant mandant = betreuung.extractGesuch().extractMandant();
+
+		if (betreuung.isAngebotMittagstisch()) {
+			return new MittagstischMessageFactory(mandant, locale);
+		}
+
+		boolean mvzEnabled = einstellungService.findEinstellung(
+			EinstellungKey.GEMEINDE_MAHLZEITENVERGUENSTIGUNG_ENABLED,
+			betreuung.extractGemeinde(),
+			betreuung.extractGesuchsperiode()).getValueAsBoolean();
+
+		Einstellung einstellungAnzeigeTyp = einstellungService.findEinstellung(
+			EinstellungKey.PENSUM_ANZEIGE_TYP,
+			betreuung.extractGemeinde(),
+			betreuung.extractGesuchsperiode());
+
+		BetreuungspensumAnzeigeTyp betreuungspensumAnzeigeTyp = getBetreuungspensumAnzeigeTyp(einstellungAnzeigeTyp);
 		BigDecimal multiplier = getMultiplierForMutationsMitteilung(mitteilung, betreuungspensumAnzeigeTyp);
 
-		return MitteilungUtil.createNachrichtForMutationsmeldung(changedBetreuungen,
-				mvzEnabled,
-				locale,
-				betreuungspensumAnzeigeTyp,
-				multiplier);
+		if (mvzEnabled) {
+			return combine(
+				new MahlzeitenVerguenstigungMessageFactory(mandant, locale, betreuungspensumAnzeigeTyp, multiplier),
+				new EingewoehnungsPauschaleMessageFactory(mandant, locale)
+			);
+		}
+
+		return combine(
+			new DefaultMessageFactory(mandant, locale, betreuungspensumAnzeigeTyp, multiplier),
+			new EingewoehnungsPauschaleMessageFactory(mandant, locale)
+		);
 	}
 
 	@Nonnull
-	private static BetreuungspensumAnzeigeTyp getBetreuungspensumAnzeigeTyp(Einstellung einstellungAnzeigeTyp, Betreuung betreuung) {
-		if (betreuung.getBetreuungsangebotTyp() == BetreuungsangebotTyp.MITTAGSTISCH) {
-			return BetreuungspensumAnzeigeTyp.NUR_MAHLZEITEN;
-		}
+	private BetreuungspensumAnzeigeTyp getBetreuungspensumAnzeigeTyp(Einstellung einstellungAnzeigeTyp) {
 		return BetreuungspensumAnzeigeTyp.valueOf(einstellungAnzeigeTyp.getValue());
 	}
 
 	private BigDecimal getMultiplierForMutationsMitteilung(
-			@Nonnull Betreuungsmitteilung mitteilung, @Nonnull BetreuungspensumAnzeigeTyp betreuungspensumAnzeigeTyp) {
-		if (betreuungspensumAnzeigeTyp == BetreuungspensumAnzeigeTyp.NUR_MAHLZEITEN) {
-			return BetreuungUtil.getMittagstischMultiplier();
-		}
-		if (!betreuungspensumAnzeigeTyp.equals(BetreuungspensumAnzeigeTyp.NUR_STUNDEN)) {
+		@Nonnull Betreuungsmitteilung mitteilung,
+		@Nonnull BetreuungspensumAnzeigeTyp betreuungspensumAnzeigeTyp
+	) {
+		if (betreuungspensumAnzeigeTyp != BetreuungspensumAnzeigeTyp.NUR_STUNDEN) {
 			return BigDecimal.ONE;
 		}
-		assert mitteilung.getBetreuung() != null;
-		if (mitteilung.getBetreuung().isAngebotKita()) {
+
+		Betreuung betreuung = requireNonNull(mitteilung.getBetreuung());
+		if (betreuung.isAngebotKita()) {
 			BigDecimal oeffnungstageKita = einstellungService.findEinstellung(EinstellungKey.OEFFNUNGSTAGE_KITA,
-					mitteilung.getBetreuung().extractGemeinde(),
-					mitteilung.getBetreuung().extractGesuchsperiode()).getValueAsBigDecimal();
+					betreuung.extractGemeinde(),
+					betreuung.extractGesuchsperiode()).getValueAsBigDecimal();
 			return BetreuungUtil.calculateOeffnungszeitPerMonthProcentual(MathUtil.EXACT.multiply(oeffnungstageKita,
 					BetreuungUtil.ANZAHL_STUNDEN_PRO_TAG_KITA));
 		}
 		BigDecimal oeffnungstageTFO = einstellungService.findEinstellung(EinstellungKey.OEFFNUNGSTAGE_TFO,
-				mitteilung.getBetreuung().extractGemeinde(),
-				mitteilung.getBetreuung().extractGesuchsperiode()).getValueAsBigDecimal();
+				betreuung.extractGemeinde(),
+				betreuung.extractGesuchsperiode()).getValueAsBigDecimal();
 
 		BigDecimal oeffnungsstundenTFO = einstellungService.findEinstellung(EinstellungKey.OEFFNUNGSSTUNDEN_TFO,
-				mitteilung.getBetreuung().extractGemeinde(),
-				mitteilung.getBetreuung().extractGesuchsperiode()).getValueAsBigDecimal();
+				betreuung.extractGemeinde(),
+				betreuung.extractGesuchsperiode()).getValueAsBigDecimal();
+
 		return MathUtil.DEFAULT.divide(MathUtil.DEFAULT.divide(MathUtil.DEFAULT.multiply(oeffnungstageTFO,
 				oeffnungsstundenTFO), new BigDecimal(12)), new BigDecimal(100));
 	}
