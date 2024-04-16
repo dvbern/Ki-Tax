@@ -909,7 +909,7 @@ public class BGCalculationInput {
 		if (!other.finsitAccepted) {
 			this.finsitAccepted = false;
 		}
-		this.betreuungInFerienzeit = other.betreuungInFerienzeit;
+		this.betreuungInFerienzeit = this.betreuungInFerienzeit || other.betreuungInFerienzeit;
 
 		this.eingewoehnungPauschale = add(this.eingewoehnungPauschale, other.eingewoehnungPauschale);
 	}
