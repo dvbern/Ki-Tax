@@ -21,20 +21,16 @@ import javax.validation.Validation;
 
 import ch.dvbern.ebegu.services.EinstellungService;
 import ch.dvbern.ebegu.tests.services.EinstellungDummyServiceBean;
-import ch.dvbern.ebegu.validators.CheckBetreuungspensumValidator;
 import ch.dvbern.ebegu.validators.CheckFachstellenValidator;
 import ch.dvbern.ebegu.validators.CheckPensumFachstelleValidator;
+import ch.dvbern.ebegu.validators.betreuungspensum.CheckBetreuungspensumValidator;
 
 /**
  * This class helps us test our ConstraintValidators without actually starting a CDI container.
  * Since we are using services inside the validators we need a way to initialize the Validator with a dummy.
  * This Factory allows us to initialize the Validator ourself, giving us the oppurtunity to use a DummyService for the validotr
  */
-public class ValidationTestConstraintValidatorFactory implements ConstraintValidatorFactory {
-
-
-	public ValidationTestConstraintValidatorFactory() {
-	}
+class ValidationTestConstraintValidatorFactory implements ConstraintValidatorFactory {
 
 	@Override
 	public <T extends ConstraintValidator<?, ?>> T getInstance(Class<T> key) {

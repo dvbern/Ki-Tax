@@ -99,5 +99,9 @@ public enum BetreuungsangebotTyp {
 		return getBerechnetesAngebotTypes().contains(this);
 	}
 
+	public boolean isBetreuungsgutscheinAngebot() {
+		return getBetreuungsgutscheinTypes().contains(this);
+	}
+
 	public abstract <T> T accept(BetreuungsangebotTypVisitor<T> visitor);
 }

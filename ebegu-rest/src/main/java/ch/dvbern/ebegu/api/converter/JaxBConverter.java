@@ -29,7 +29,6 @@ import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Optional;
@@ -45,8 +44,6 @@ import javax.inject.Inject;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response.Status;
 
-import ch.dvbern.ebegu.api.dtos.JaxAbstractDTO;
-import ch.dvbern.ebegu.api.dtos.JaxAbstractGemeindeStammdaten;
 import ch.dvbern.ebegu.api.dtos.JaxAbstractInstitutionStammdaten;
 import ch.dvbern.ebegu.api.dtos.JaxAbwesenheit;
 import ch.dvbern.ebegu.api.dtos.JaxAbwesenheitContainer;
@@ -73,6 +70,7 @@ import ch.dvbern.ebegu.api.dtos.JaxDokumente;
 import ch.dvbern.ebegu.api.dtos.JaxDossier;
 import ch.dvbern.ebegu.api.dtos.JaxDownloadFile;
 import ch.dvbern.ebegu.api.dtos.JaxEbeguVorlage;
+import ch.dvbern.ebegu.api.dtos.JaxEingewoehnungPauschale;
 import ch.dvbern.ebegu.api.dtos.JaxEinkommensverschlechterung;
 import ch.dvbern.ebegu.api.dtos.JaxEinkommensverschlechterungContainer;
 import ch.dvbern.ebegu.api.dtos.JaxEinkommensverschlechterungInfo;
@@ -92,11 +90,7 @@ import ch.dvbern.ebegu.api.dtos.JaxFamiliensituation;
 import ch.dvbern.ebegu.api.dtos.JaxFamiliensituationContainer;
 import ch.dvbern.ebegu.api.dtos.JaxFerieninselZeitraum;
 import ch.dvbern.ebegu.api.dtos.JaxGemeinde;
-import ch.dvbern.ebegu.api.dtos.JaxGemeindeKonfiguration;
-import ch.dvbern.ebegu.api.dtos.JaxGemeindeStammdaten;
 import ch.dvbern.ebegu.api.dtos.JaxGemeindeStammdatenGesuchsperiodeFerieninsel;
-import ch.dvbern.ebegu.api.dtos.JaxGemeindeStammdatenKorrespondenz;
-import ch.dvbern.ebegu.api.dtos.JaxGemeindeStammdatenLite;
 import ch.dvbern.ebegu.api.dtos.JaxGesuch;
 import ch.dvbern.ebegu.api.dtos.JaxGesuchsteller;
 import ch.dvbern.ebegu.api.dtos.JaxGesuchstellerContainer;
@@ -115,7 +109,6 @@ import ch.dvbern.ebegu.api.dtos.JaxKindContainer;
 import ch.dvbern.ebegu.api.dtos.JaxLastenausgleich;
 import ch.dvbern.ebegu.api.dtos.JaxLastenausgleichTagesschulenStatusHistory;
 import ch.dvbern.ebegu.api.dtos.JaxMahnung;
-import ch.dvbern.ebegu.api.dtos.JaxMandant;
 import ch.dvbern.ebegu.api.dtos.JaxMitteilung;
 import ch.dvbern.ebegu.api.dtos.JaxModulTagesschule;
 import ch.dvbern.ebegu.api.dtos.JaxModulTagesschuleGroup;
@@ -201,7 +194,6 @@ import ch.dvbern.ebegu.entities.FinanzielleSituation;
 import ch.dvbern.ebegu.entities.FinanzielleSituationContainer;
 import ch.dvbern.ebegu.entities.FinanzielleSituationSelbstdeklaration;
 import ch.dvbern.ebegu.entities.Gemeinde;
-import ch.dvbern.ebegu.entities.GemeindeStammdaten;
 import ch.dvbern.ebegu.entities.GemeindeStammdatenGesuchsperiodeFerieninsel;
 import ch.dvbern.ebegu.entities.GemeindeStammdatenGesuchsperiodeFerieninselZeitraum;
 import ch.dvbern.ebegu.entities.Gesuch;
@@ -234,7 +226,6 @@ import ch.dvbern.ebegu.entities.RueckforderungMitteilung;
 import ch.dvbern.ebegu.entities.SozialhilfeZeitraum;
 import ch.dvbern.ebegu.entities.SozialhilfeZeitraumContainer;
 import ch.dvbern.ebegu.entities.TSCalculationResult;
-import ch.dvbern.ebegu.entities.TextRessource;
 import ch.dvbern.ebegu.entities.Traegerschaft;
 import ch.dvbern.ebegu.entities.UnbezahlterUrlaub;
 import ch.dvbern.ebegu.entities.Verfuegung;
@@ -244,6 +235,7 @@ import ch.dvbern.ebegu.entities.Vorlage;
 import ch.dvbern.ebegu.entities.WizardStep;
 import ch.dvbern.ebegu.entities.Zahlung;
 import ch.dvbern.ebegu.entities.Zahlungsauftrag;
+import ch.dvbern.ebegu.entities.containers.PensumUtil;
 import ch.dvbern.ebegu.entities.gemeindeantrag.GemeindeAntrag;
 import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeinde;
 import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeContainer;
@@ -256,17 +248,14 @@ import ch.dvbern.ebegu.enums.AntragStatusDTO;
 import ch.dvbern.ebegu.enums.ApplicationPropertyKey;
 import ch.dvbern.ebegu.enums.BenutzerStatus;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
-import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.InstitutionStatus;
-import ch.dvbern.ebegu.enums.KorrespondenzSpracheTyp;
 import ch.dvbern.ebegu.enums.MitteilungTyp;
 import ch.dvbern.ebegu.enums.UserRole;
 import ch.dvbern.ebegu.enums.ZahlungslaufTyp;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.EbeguFingerWegException;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
-import ch.dvbern.ebegu.i18n.LocaleThreadLocal;
 import ch.dvbern.ebegu.services.AdresseService;
 import ch.dvbern.ebegu.services.BenutzerService;
 import ch.dvbern.ebegu.services.BetreuungService;
@@ -1798,7 +1787,8 @@ public class JaxBConverter extends AbstractConverter {
 			}
 			institutionStammdaten.getAuszahlungsdaten().setIban(new IBAN(institutionStammdatenJAXP.getIban()));
 			institutionStammdaten.getAuszahlungsdaten().setKontoinhaber(institutionStammdatenJAXP.getKontoinhaber());
-			institutionStammdaten.getAuszahlungsdaten().setInfomaKreditorennummer(institutionStammdatenJAXP.getInfomaKreditorennummer());
+			institutionStammdaten.getAuszahlungsdaten()
+				.setInfomaKreditorennummer(institutionStammdatenJAXP.getInfomaKreditorennummer());
 			institutionStammdaten.getAuszahlungsdaten().setInfomaBankcode(institutionStammdatenJAXP.getInfomaBankcode());
 			Adresse convertedAdresse = null;
 			if (institutionStammdatenJAXP.getAdresseKontoinhaber() != null) {
@@ -3230,42 +3220,39 @@ public class JaxBConverter extends AbstractConverter {
 	}
 
 	public Set<BetreuungspensumAbweichung> betreuungspensumAbweichungenToEntity(
-		final @Nonnull List<JaxBetreuungspensumAbweichung> abweichungenJAXP,
-		final @Nonnull Set<BetreuungspensumAbweichung> abweichungen) {
+		@Nonnull List<JaxBetreuungspensumAbweichung> abweichungenJAXP,
+		@Nonnull Collection<BetreuungspensumAbweichung> abweichungen) {
 
-		final Set<BetreuungspensumAbweichung> transformedAbweichungen = new TreeSet<>();
-		for (final JaxBetreuungspensumAbweichung jaxAbweichung : abweichungenJAXP) {
-			final BetreuungspensumAbweichung abweichungToMergeWith = abweichungen
+		Set<BetreuungspensumAbweichung> transformedAbweichungen = new TreeSet<>();
+		for (JaxBetreuungspensumAbweichung jaxAbweichung : abweichungenJAXP) {
+			LocalDate date = requireNonNull(jaxAbweichung.getGueltigAb());
+
+			BetreuungspensumAbweichung abweichungToMergeWith = abweichungen
 				.stream()
-				.filter(existingAbweichung -> existingAbweichung.getId().equals(jaxAbweichung.getId()))
+				.filter(existingAbweichung -> existingAbweichung.getGueltigkeit().contains(date))
 				.reduce(StreamsUtil.toOnlyElement())
 				.orElse(new BetreuungspensumAbweichung());
-			final BetreuungspensumAbweichung abweichungToAdd =
-				betreuungspensumAbweichungToEntity(jaxAbweichung, abweichungToMergeWith);
-			final boolean added = transformedAbweichungen.add(abweichungToAdd);
+
+			var abweichungToAdd = betreuungspensumAbweichungToEntity(jaxAbweichung, abweichungToMergeWith);
+			boolean added = transformedAbweichungen.add(abweichungToAdd);
 			if (!added) {
 				LOGGER.warn(DROPPED_DUPLICATE_ABWEICHUNG + "{}", abweichungToAdd);
 			}
 		}
 
-		// change the existing collection to reflect changes
-		// Already tested: All existing Betreuungspensen of the list remain as they were, that means their data are
-		// updated and the objects are not created again. ID and InsertTimeStamp are the same as before
-		abweichungen.clear();
-		abweichungen.addAll(transformedAbweichungen);
-
-		return abweichungen;
+		return transformedAbweichungen;
 	}
 
 	private BetreuungspensumAbweichung betreuungspensumAbweichungToEntity(
-		final @Nonnull JaxBetreuungspensumAbweichung jaxAbweichung,
-		final @Nonnull BetreuungspensumAbweichung abweichung
+		@Nonnull JaxBetreuungspensumAbweichung jaxAbweichung,
+		@Nonnull BetreuungspensumAbweichung abweichung
 	) {
 		convertAbstractPensumFieldsToEntity(jaxAbweichung, abweichung);
 		abweichung.setMonatlicheHauptmahlzeiten(jaxAbweichung.getMonatlicheHauptmahlzeiten());
+		abweichung.setTarifProHauptmahlzeit(jaxAbweichung.getTarifProHauptmahlzeit());
 		abweichung.setMonatlicheNebenmahlzeiten(jaxAbweichung.getMonatlicheNebenmahlzeiten());
-		abweichung.setStatus(jaxAbweichung.getStatus());
-		abweichung.setMultiplier(jaxAbweichung.getMultiplier());
+		abweichung.setTarifProNebenmahlzeit(jaxAbweichung.getTarifProNebenmahlzeit());
+		abweichung.setStatus(jaxAbweichung.getStatus()); // the frontend should not be able to decide this...
 
 		return abweichung;
 	}
@@ -3406,7 +3393,10 @@ public class JaxBConverter extends AbstractConverter {
 			.flatMap(id -> betreuungService.findBetreuung(id))
 			.orElseGet(Betreuung::new);
 
-		return this.betreuungToEntity(betreuungJAXP, betreuungToMergeWith);
+		Betreuung betreuung = betreuungToEntity(betreuungJAXP, betreuungToMergeWith);
+		PensumUtil.transformBetreuungsPensumContainers(betreuung);
+
+		return betreuung;
 	}
 
 	public <T extends AbstractPlatz> T platzToStoreableEntity(@Nonnull final JaxBetreuung betreuungJAXP) {
@@ -3419,11 +3409,13 @@ public class JaxBConverter extends AbstractConverter {
 		return (T) betreuungToStoreableEntity(betreuungJAXP);
 	}
 
-	public void setBetreuungInbetreuungsAbweichungen(
+	public void addAbweichungenToBetreuung(
 		final Set<BetreuungspensumAbweichung> betreuungspensumAbweichungen,
 		final Betreuung betreuung) {
 
 		betreuungspensumAbweichungen.forEach(c -> c.setBetreuung(betreuung));
+		betreuung.getBetreuungspensumAbweichungen().clear();
+		betreuung.getBetreuungspensumAbweichungen().addAll(betreuungspensumAbweichungen);
 	}
 
 	private void setBetreuungInbetreuungsPensumContainers(
@@ -3755,7 +3747,7 @@ public class JaxBConverter extends AbstractConverter {
 	public List<JaxBetreuungspensumAbweichung> betreuungspensumAbweichungenToJax(@Nonnull Betreuung betreuung) {
 		return betreuung.fillAbweichungen(betreuungService.getMultiplierForAbweichnungen(betreuung))
 			.stream()
-			.map((BetreuungspensumAbweichung abweichung) -> betreuungspensumAbweichungToJax(abweichung, betreuung.getBetreuungsangebotTyp()))
+			.map(abweichung -> betreuungspensumAbweichungToJax(abweichung, betreuung.getBetreuungsangebotTyp()))
 			.collect(Collectors.toList());
 	}
 
@@ -3776,7 +3768,14 @@ public class JaxBConverter extends AbstractConverter {
 		jaxAbweichung.setVertraglicherTarifHaupt(abweichung.getVertraglicherTarifHauptmahlzeit());
 		jaxAbweichung.setVertraglicherTarifNeben(abweichung.getVertraglicherTarifNebenmahlzeit());
 		jaxAbweichung.setMultiplier(abweichung.getMultiplier());
-		jaxAbweichung.setBetreuungsangebotTyp(betreuungsangebotTyp);
+		if (abweichung.getVertraglicheEingewoehnungPauschale() != null) {
+			jaxAbweichung.setEingewoehnungPauschale(eingewoehnungPauschaleToJax(
+				abweichung.getVertraglicheEingewoehnungPauschale(),
+				new JaxEingewoehnungPauschale()));
+			if (abweichung.getEingewoehnungPauschale() != null) {
+				jaxAbweichung.getEingewoehnungPauschale().setId(abweichung.getEingewoehnungPauschale().getId());
+			}
+		}
 
 		return jaxAbweichung;
 	}
@@ -4112,7 +4111,6 @@ public class JaxBConverter extends AbstractConverter {
 		jaxBetreuungspensum.setMonatlicheNebenmahlzeiten(betreuungspensum.getMonatlicheNebenmahlzeiten());
 		jaxBetreuungspensum.setTarifProHauptmahlzeit(betreuungspensum.getTarifProHauptmahlzeit());
 		jaxBetreuungspensum.setTarifProNebenmahlzeit(betreuungspensum.getTarifProNebenmahlzeit());
-
 		return jaxBetreuungspensum;
 	}
 
@@ -5487,8 +5485,8 @@ public class JaxBConverter extends AbstractConverter {
 	public List<JaxRueckforderungMitteilung> rueckforderungMitteilungenToJax(
 		@Nonnull Set<RueckforderungMitteilung> rueckforderungMitteilungen, @Nonnull String institutionName) {
 		return rueckforderungMitteilungen.stream().map(rueckforderungMitteilung -> rueckforderungMitteilungToJax(
-			rueckforderungMitteilung,
-			institutionName))
+				rueckforderungMitteilung,
+				institutionName))
 			.collect(Collectors.toList());
 	}
 
@@ -6025,9 +6023,9 @@ public class JaxBConverter extends AbstractConverter {
 	public static OeffnungszeitenTagesschuleDTO[] convert(@Nonnull String oeffnungszeiten) {
 		try {
 			return EbeguUtil.convertOeffnungszeiten(oeffnungszeiten);
-		} catch(JsonProcessingException e) {
-			LOGGER.warn("Problem converting Oeffnungszeiten: " +e.getMessage());
-			return new OeffnungszeitenTagesschuleDTO[]{};
+		} catch (JsonProcessingException e) {
+			LOGGER.warn("Problem converting Oeffnungszeiten: " + e.getMessage());
+			return new OeffnungszeitenTagesschuleDTO[] {};
 		}
 	}
 

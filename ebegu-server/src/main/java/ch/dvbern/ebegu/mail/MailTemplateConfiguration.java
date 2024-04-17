@@ -15,9 +15,37 @@
 
 package ch.dvbern.ebegu.mail;
 
+import java.io.IOException;
+import java.io.StringWriter;
+import java.time.LocalDate;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
+
 import ch.dvbern.ebegu.config.EbeguConfiguration;
 import ch.dvbern.ebegu.einladung.Einladung;
-import ch.dvbern.ebegu.entities.*;
+import ch.dvbern.ebegu.entities.AbstractAnmeldung;
+import ch.dvbern.ebegu.entities.Benutzer;
+import ch.dvbern.ebegu.entities.Betreuung;
+import ch.dvbern.ebegu.entities.Fall;
+import ch.dvbern.ebegu.entities.Gemeinde;
+import ch.dvbern.ebegu.entities.GemeindeStammdaten;
+import ch.dvbern.ebegu.entities.Gesuch;
+import ch.dvbern.ebegu.entities.Gesuchsperiode;
+import ch.dvbern.ebegu.entities.Gesuchsteller;
+import ch.dvbern.ebegu.entities.Institution;
+import ch.dvbern.ebegu.entities.InstitutionStammdaten;
+import ch.dvbern.ebegu.entities.Kind;
+import ch.dvbern.ebegu.entities.Lastenausgleich;
+import ch.dvbern.ebegu.entities.Mandant;
+import ch.dvbern.ebegu.entities.Mitteilung;
+import ch.dvbern.ebegu.entities.RueckforderungFormular;
 import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeContainer;
 import ch.dvbern.ebegu.enums.ApplicationPropertyKey;
 import ch.dvbern.ebegu.enums.EinladungTyp;
@@ -36,16 +64,6 @@ import ch.dvbern.ebegu.util.mandant.MandantIdentifier;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.enterprise.context.Dependent;
-import javax.inject.Inject;
-
-import java.io.IOException;
-import java.io.StringWriter;
-import java.time.LocalDate;
-import java.util.*;
 
 import static java.util.Objects.requireNonNull;
 
@@ -78,6 +96,8 @@ public class MailTemplateConfiguration {
 	public static final String HOSTNAME = "hostname";
 	public static final String GRUSS = "gruss";
 	public static final String GRUSS_FR = "gruss_fr";
+
+	private static final Locale DEUTSCH_FRENCH_LOCALE = new Locale("defr", "CH");
 
 	private final Configuration freeMarkerConfiguration;
 
@@ -249,7 +269,7 @@ public class MailTemplateConfiguration {
 
 	private Locale getLocaleFromSprachen(List<Sprache> sprachen) {
 		if (sprachen.contains(Sprache.DEUTSCH) && sprachen.contains(Sprache.FRANZOESISCH)) {
-			return Constants.DEUTSCH_FRENCH_LOCALE;
+			return DEUTSCH_FRENCH_LOCALE;
 		}
 		if (sprachen.contains(Sprache.FRANZOESISCH)) {
 			return Constants.FRENCH_LOCALE;
@@ -404,7 +424,7 @@ public class MailTemplateConfiguration {
 		final boolean isFrenchEnabled = Boolean.TRUE.equals(this.applicationPropertyService.findApplicationPropertyAsBoolean(
 			ApplicationPropertyKey.FRENCH_ENABLED,
 			eingeladener.getMandant()));
-		Locale locale = isFrenchEnabled ? Constants.DEUTSCH_FRENCH_LOCALE : Constants.DEUTSCH_LOCALE;
+		Locale locale = isFrenchEnabled ? DEUTSCH_FRENCH_LOCALE : Constants.DEUTSCH_LOCALE;
 
 		addRoleContentInLanguage(einladender, einladung, eingeladener, paramMap, "contentDE", "footerDE", Constants.DEUTSCH_LOCALE);
 		if (isFrenchEnabled) {
@@ -908,6 +928,6 @@ public class MailTemplateConfiguration {
 		final boolean frenchEnabled = Boolean.TRUE.equals(applicationPropertyService.findApplicationPropertyAsBoolean(
 			ApplicationPropertyKey.FRENCH_ENABLED,
 			mandant));
-		return frenchEnabled ? Constants.DEUTSCH_FRENCH_LOCALE : Constants.DEFAULT_LOCALE;
+		return frenchEnabled ? DEUTSCH_FRENCH_LOCALE : Constants.DEFAULT_LOCALE;
 	}
 }

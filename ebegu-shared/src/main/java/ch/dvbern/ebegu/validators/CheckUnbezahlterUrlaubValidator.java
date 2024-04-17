@@ -29,11 +29,6 @@ import ch.dvbern.ebegu.entities.UnbezahlterUrlaub;
 public class CheckUnbezahlterUrlaubValidator implements ConstraintValidator<CheckUnbezahlterUrlaub, Erwerbspensum> {
 
 	@Override
-	public void initialize(CheckUnbezahlterUrlaub constraintAnnotation) {
-		// nop
-	}
-
-	@Override
 	public boolean isValid(Erwerbspensum erwerbspensum, ConstraintValidatorContext context) {
 		if (erwerbspensum != null && erwerbspensum.getUnbezahlterUrlaub() != null) {
 			// ab: Muss grösser / gleich sein als das ab des Erwerbspensum

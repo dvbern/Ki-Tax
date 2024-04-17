@@ -30,14 +30,6 @@ import ch.dvbern.ebegu.enums.gemeindeantrag.LastenausgleichTagesschuleAngabenGem
 public class CheckLastenausgleichTagesschuleAngabenGemeindeValidator
 	implements ConstraintValidator<CheckLastenausgleichTagesschuleAngabenGemeinde, LastenausgleichTagesschuleAngabenGemeindeContainer> {
 
-	public CheckLastenausgleichTagesschuleAngabenGemeindeValidator() {
-	}
-
-	@Override
-	public void initialize(CheckLastenausgleichTagesschuleAngabenGemeinde constraintAnnotation) {
-		// nop
-	}
-
 	@Override
 	public boolean isValid(@Nonnull LastenausgleichTagesschuleAngabenGemeindeContainer stammdaten, ConstraintValidatorContext context) {
 		if (stammdaten.getStatus() != LastenausgleichTagesschuleAngabenGemeindeStatus.NEU) {

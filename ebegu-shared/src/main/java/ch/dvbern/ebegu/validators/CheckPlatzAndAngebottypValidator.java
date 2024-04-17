@@ -31,11 +31,6 @@ import ch.dvbern.ebegu.entities.Betreuung;
 public class CheckPlatzAndAngebottypValidator implements ConstraintValidator<CheckPlatzAndAngebottyp, AbstractPlatz> {
 
 	@Override
-	public void initialize(CheckPlatzAndAngebottyp constraintAnnotation) {
-		//nop
-	}
-
-	@Override
 	public boolean isValid(@Nonnull AbstractPlatz platz, @Nullable ConstraintValidatorContext context) {
 		if (platz.getBetreuungsangebotTyp().isTagesschule()) {
 			return platz instanceof AnmeldungTagesschule;

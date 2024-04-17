@@ -17,20 +17,68 @@
 
 package ch.dvbern.ebegu.inbox.handler;
 
-import ch.dvbern.ebegu.entities.*;
-import ch.dvbern.ebegu.enums.*;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.Month;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Stream;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
+import ch.dvbern.ebegu.entities.AbstractMahlzeitenPensum;
+import ch.dvbern.ebegu.entities.Benutzer;
+import ch.dvbern.ebegu.entities.Betreuung;
+import ch.dvbern.ebegu.entities.Betreuungsmitteilung;
+import ch.dvbern.ebegu.entities.BetreuungsmitteilungPensum;
+import ch.dvbern.ebegu.entities.Betreuungspensum;
+import ch.dvbern.ebegu.entities.BetreuungspensumContainer;
+import ch.dvbern.ebegu.entities.Dossier;
+import ch.dvbern.ebegu.entities.Einstellung;
+import ch.dvbern.ebegu.entities.ErweiterteBetreuung;
+import ch.dvbern.ebegu.entities.ExternalClient;
+import ch.dvbern.ebegu.entities.Gemeinde;
+import ch.dvbern.ebegu.entities.Gesuch;
+import ch.dvbern.ebegu.entities.Gesuchsperiode;
+import ch.dvbern.ebegu.entities.InstitutionExternalClient;
+import ch.dvbern.ebegu.entities.Mandant;
+import ch.dvbern.ebegu.enums.AntragStatus;
+import ch.dvbern.ebegu.enums.AntragTyp;
+import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
+import ch.dvbern.ebegu.enums.Betreuungsstatus;
+import ch.dvbern.ebegu.enums.GesuchsperiodeStatus;
+import ch.dvbern.ebegu.enums.MitteilungStatus;
+import ch.dvbern.ebegu.enums.MitteilungTeilnehmerTyp;
 import ch.dvbern.ebegu.inbox.services.BetreuungEventHelper;
-import ch.dvbern.ebegu.services.*;
+import ch.dvbern.ebegu.services.ApplicationPropertyService;
+import ch.dvbern.ebegu.services.BetreuungMonitoringService;
+import ch.dvbern.ebegu.services.BetreuungService;
+import ch.dvbern.ebegu.services.EinstellungService;
+import ch.dvbern.ebegu.services.GemeindeService;
+import ch.dvbern.ebegu.services.MitteilungService;
 import ch.dvbern.ebegu.test.TestDataUtil;
 import ch.dvbern.ebegu.test.util.TestDataInstitutionStammdatenBuilder;
 import ch.dvbern.ebegu.testfaelle.Testfall01_WaeltiDagmar;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.Constants;
+import ch.dvbern.ebegu.util.mandant.MandantIdentifier;
 import ch.dvbern.kibon.exchange.commons.platzbestaetigung.BetreuungEventDTO;
 import ch.dvbern.kibon.exchange.commons.platzbestaetigung.ZeitabschnittDTO;
 import ch.dvbern.kibon.exchange.commons.types.Zeiteinheit;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
-import org.easymock.*;
+import org.easymock.Capture;
+import org.easymock.EasyMock;
+import org.easymock.EasyMockExtension;
+import org.easymock.EasyMockSupport;
+import org.easymock.Mock;
+import org.easymock.MockType;
+import org.easymock.TestSubject;
 import org.hamcrest.Matcher;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
@@ -43,27 +91,34 @@ import org.junit.jupiter.params.provider.EnumSource;
 import org.junit.jupiter.params.provider.EnumSource.Mode;
 import org.junit.jupiter.params.provider.MethodSource;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.Month;
-import java.util.*;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.Stream;
-
-import static ch.dvbern.ebegu.enums.EinstellungKey.*;
-import static ch.dvbern.ebegu.inbox.handler.PlatzbestaetigungEventHandler.GO_LIVE;
+import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_MAHLZEITENVERGUENSTIGUNG_ENABLED;
+import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_ENABLED;
+import static ch.dvbern.ebegu.enums.EinstellungKey.OEFFNUNGSSTUNDEN_TFO;
+import static ch.dvbern.ebegu.enums.EinstellungKey.OEFFNUNGSTAGE_KITA;
+import static ch.dvbern.ebegu.enums.EinstellungKey.OEFFNUNGSTAGE_TFO;
+import static ch.dvbern.ebegu.inbox.handler.PlatzbestaetigungTestUtil.REF_NUMMER;
+import static ch.dvbern.ebegu.inbox.handler.PlatzbestaetigungTestUtil.createBetreuungEventDTO;
+import static ch.dvbern.ebegu.inbox.handler.PlatzbestaetigungTestUtil.createBetreuungMitteilung;
+import static ch.dvbern.ebegu.inbox.handler.PlatzbestaetigungTestUtil.createBetreuungsmitteilungPensum;
+import static ch.dvbern.ebegu.inbox.handler.PlatzbestaetigungTestUtil.createZeitabschnittDTO;
+import static ch.dvbern.ebegu.inbox.handler.PlatzbestaetigungTestUtil.failed;
+import static ch.dvbern.ebegu.inbox.handler.PlatzbestaetigungTestUtil.getSingleContainer;
+import static ch.dvbern.ebegu.inbox.handler.PlatzbestaetigungTestUtil.ignored;
 import static ch.dvbern.ebegu.inbox.handler.PlatzbestaetigungTestUtil.matches;
-import static ch.dvbern.ebegu.inbox.handler.PlatzbestaetigungTestUtil.*;
+import static ch.dvbern.ebegu.inbox.handler.pensum.PensumMappingUtil.GO_LIVE;
 import static com.spotify.hamcrest.pojo.IsPojo.pojo;
 import static java.util.Objects.requireNonNull;
-import static org.easymock.EasyMock.*;
+import static org.easymock.EasyMock.anyObject;
+import static org.easymock.EasyMock.eq;
+import static org.easymock.EasyMock.expect;
+import static org.easymock.EasyMock.expectLastCall;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.notNullValue;
+import static org.hamcrest.Matchers.nullValue;
+import static org.hamcrest.Matchers.sameInstance;
+import static org.hamcrest.Matchers.stringContainsInOrder;
 
 @ExtendWith(EasyMockExtension.class)
 public class PlatzbestaetigungEventHandlerTest extends EasyMockSupport {
@@ -139,7 +194,12 @@ public class PlatzbestaetigungEventHandlerTest extends EasyMockSupport {
 		"BESTAETIGT, IN_BEARBEITUNG_SOZIALDIENST, MUTATION, false",
 		"BESTAETIGT, IN_BEARBEITUNG_JA, ERSTGESUCH, false"
 	})
-	void isPlatzbestaetigungStatus(@Nonnull Betreuungsstatus betreuungsstatus, @Nonnull AntragStatus antragStatus, @Nonnull AntragTyp antragTyp, @Nonnull boolean expectedResult) {
+	void isPlatzbestaetigungStatus(
+		@Nonnull Betreuungsstatus betreuungsstatus,
+		@Nonnull AntragStatus antragStatus,
+		@Nonnull AntragTyp antragTyp,
+		boolean expectedResult
+	) {
 		assertThat(handler.isPlatzbestaetigungStatus(betreuungsstatus, antragStatus, antragTyp), is(expectedResult));
 	}
 
@@ -598,10 +658,8 @@ public class PlatzbestaetigungEventHandlerTest extends EasyMockSupport {
 			@Test
 			void requireHumanConfirmationWhenClientGueltigkeitIsNotCoveringEntirePeriod_withSomeOtherClientInPeriode() {
 				LocalDate periodeAb = gesuchsperiode.getGueltigkeit().getGueltigAb();
-				clientGueltigkeit =
-					new DateRange(periodeAb.plusDays(1), Constants.END_OF_TIME);
-				InstitutionExternalClient client2 =
-					mockClient(new DateRange(Constants.START_OF_TIME, periodeAb), "client2");
+				clientGueltigkeit = new DateRange(periodeAb.plusDays(1), Constants.END_OF_TIME);
+				InstitutionExternalClient client2 = mockClient(new DateRange(Constants.START_OF_TIME, periodeAb), "client2");
 
 				expectHumanConfirmation();
 				expectBetreuungFound(betreuung);
@@ -992,24 +1050,7 @@ public class PlatzbestaetigungEventHandlerTest extends EasyMockSupport {
 
 			testProcessingSuccess();
 
-			// ignoring the dates, because their formatting is not platform independent
-			assertThat(capture.getValue().getMessage(), stringContainsInOrder(
-				"Pensum 1 von ", " bis ", ": 50%, monatliche Betreuungskosten: CHF ", "\n",
-				"Pensum 2 von ", " bis ", ": 80%, monatliche Betreuungskosten: CHF "));
-		}
-
-		@Test
-		void createsMahlzeitenMessage() {
-			Capture<Betreuungsmitteilung> capture = expectNewMitteilung();
-
-			testProcessingSuccess();
-
-			// ignoring dates & currency, because their formatting is not platform independent
-			assertThat(capture.getValue().getMessage(), stringContainsInOrder(
-				"Pensum 1 von ", " bis ", ": 50%, monatliche Betreuungskosten: CHF ",
-				"monatliche Hauptmahlzeiten: 0 à CHF 0, monatliche Nebenmahlzeiten: 0 à CHF 0\n",
-				"Pensum 2 von ", " bis ", ": 80%, monatliche Betreuungskosten: CHF ",
-				"monatliche Hauptmahlzeiten: 0 à CHF 0, monatliche Nebenmahlzeiten: 0 à CHF 0"));
+			assertThat(capture.getValue().getMessage(), is("my test message"));
 		}
 
 		@Test
@@ -1337,12 +1378,17 @@ public class PlatzbestaetigungEventHandlerTest extends EasyMockSupport {
 			withMahlzeitenverguenstigung(withMahlzeitenEnabled);
 			mockGetStundenTagenEinstellungen();
 
-			expect(betreuungEventHelper.getMutationsmeldungBenutzer(betreuung)).andReturn(new Benutzer());
+			Benutzer benutzer = mock(Benutzer.class);
+			expect(betreuungEventHelper.getMutationsmeldungBenutzer(betreuung)).andReturn(benutzer);
+			expect(benutzer.getMandant()).andReturn(TestDataUtil.createMandant(MandantIdentifier.BERN)).anyTimes();
 
 			expect(mitteilungService.isBetreuungGueltigForMutation(betreuung)).andReturn(true);
 
 			expect(mitteilungService.findOffeneBetreuungsmitteilungenForBetreuung(betreuung))
 				.andReturn(Arrays.asList(existing));
+
+			expect(mitteilungService.createNachrichtForMutationsmeldung(anyObject(), anyObject(), anyObject()))
+				.andReturn("my test message");
 
 			expect(gemeindeService.getGemeindeStammdatenByGemeindeId(gemeinde.getId()))
 				.andReturn(Optional.of(TestDataUtil.createGemeindeStammdaten(gemeinde)));

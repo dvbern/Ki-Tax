@@ -15,19 +15,6 @@
 
 package ch.dvbern.ebegu.rules;
 
-import java.math.BigDecimal;
-import java.util.Arrays;
-import java.util.EnumSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
-import java.util.stream.Collectors;
-
-import javax.annotation.Nonnull;
-
 import ch.dvbern.ebegu.entities.Einstellung;
 import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
@@ -40,6 +27,11 @@ import ch.dvbern.ebegu.util.KitaxUebergangsloesungParameter;
 import ch.dvbern.ebegu.util.KitaxUtil;
 import ch.dvbern.ebegu.util.RuleParameterUtil;
 import com.google.common.base.Enums;
+
+import javax.annotation.Nonnull;
+import java.math.BigDecimal;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import static ch.dvbern.ebegu.enums.EinstellungKey.*;
 
@@ -211,6 +203,11 @@ public class BetreuungsgutscheinConfigurator {
 		BetreuungspensumAbschnittRule betreuungspensumAbschnittRule =
 				new BetreuungspensumAbschnittRule(defaultGueltigkeit, locale, kitaxParameterDTO);
 		addToRuleSetIfRelevantForGemeinde(betreuungspensumAbschnittRule, ruleParameterUtil);
+
+		// Eingewoehnung Pauschale
+		EingewoehnungPauschaleAbschnittRule eingewoehnungPauschaleAbschnittRule =
+				new EingewoehnungPauschaleAbschnittRule(defaultGueltigkeit, locale);
+		addToRuleSetIfRelevantForGemeinde(eingewoehnungPauschaleAbschnittRule, ruleParameterUtil);
 
 		// - Pensum Tagesschule
 		TagesschuleBetreuungszeitAbschnittRule tagesschuleAbschnittRule =

@@ -18,6 +18,7 @@
 export enum TSEingewoehnungTyp {
     FKJV = 'FKJV',
     LUZERN = 'LUZERN',
+    PAUSCHALE = 'PAUSCHALE',
     KEINE = 'KEINE'
 }
 

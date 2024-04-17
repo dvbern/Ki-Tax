@@ -18,11 +18,10 @@
 package ch.dvbern.ebegu.entities;
 
 import java.math.BigDecimal;
-import java.util.Objects;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import javax.persistence.Column;
+import javax.persistence.AssociationOverride;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -34,12 +33,18 @@ import javax.validation.constraints.NotNull;
 
 import ch.dvbern.ebegu.enums.AntragCopyType;
 import ch.dvbern.ebegu.enums.BetreuungspensumAbweichungStatus;
+import ch.dvbern.ebegu.util.DateUtil;
 import ch.dvbern.ebegu.util.MathUtil;
 import org.apache.commons.lang3.builder.CompareToBuilder;
 import org.hibernate.envers.Audited;
 
+import static java.util.Objects.requireNonNull;
+
 @Audited
 @Entity
+@AssociationOverride(name = "eingewoehnungPauschale",
+	joinColumns = @JoinColumn(name = "eingewoehnung_pauschale_id"),
+	foreignKey = @ForeignKey(name = "FK_betreuungspensum_abweichung_eingewoehnung_pauschale_id"))
 public class BetreuungspensumAbweichung extends AbstractMahlzeitenPensum implements Comparable<BetreuungspensumAbweichung>  {
 
 	private static final long serialVersionUID = -8308660793880620086L;
@@ -82,6 +87,10 @@ public class BetreuungspensumAbweichung extends AbstractMahlzeitenPensum impleme
 	@Transient
 	@Nullable
 	private BigDecimal vertraglicherTarifNebenmahlzeit = BigDecimal.ZERO;
+
+	@Transient
+	@Nullable
+	private EingewoehnungPauschale vertraglicheEingewoehnungPauschale = null;
 
 	@Nonnull
 	public BetreuungspensumAbweichungStatus getStatus() {
@@ -146,6 +155,15 @@ public class BetreuungspensumAbweichung extends AbstractMahlzeitenPensum impleme
 		this.vertraglicheNebenmahlzeiten = vertraglicheNebenmahlzeiten;
 	}
 
+	@Nullable
+	public EingewoehnungPauschale getVertraglicheEingewoehnungPauschale() {
+		return vertraglicheEingewoehnungPauschale;
+	}
+
+	public void setVertraglicheEingewoehnungPauschale(@Nullable EingewoehnungPauschale vertraglicheEingewoehnungPauschale) {
+		this.vertraglicheEingewoehnungPauschale = vertraglicheEingewoehnungPauschale;
+	}
+
 	public void addPensum(BigDecimal pensum) {
 		vertraglichesPensum = MathUtil.DEFAULT.addNullSafe(pensum, vertraglichesPensum);
 	}
@@ -171,6 +189,30 @@ public class BetreuungspensumAbweichung extends AbstractMahlzeitenPensum impleme
 	public void addTarifNeben(BigDecimal tarif) {
 		vertraglicherTarifNebenmahlzeit = MathUtil.DEFAULT.addNullSafe(MathUtil.roundToFrankenRappen(tarif),
 			vertraglicherTarifNebenmahlzeit);
+	}
+
+	public void addEingewoehnungPauschale(EingewoehnungPauschale eingewoehnungPauschale) {
+		if (this.getVertraglicheEingewoehnungPauschale() == null) {
+			this.setVertraglicheEingewoehnungPauschale(eingewoehnungPauschale.copyEingewohnungEntity(
+				new EingewoehnungPauschale(),
+				AntragCopyType.MUTATION));
+			return;
+		}
+
+		this.getVertraglicheEingewoehnungPauschale().addPauschale(eingewoehnungPauschale.getPauschale());
+
+		this.getVertraglicheEingewoehnungPauschale()
+			.getGueltigkeit()
+			.setGueltigAb(DateUtil.getMin(
+				this.getVertraglicheEingewoehnungPauschale().getGueltigkeit().getGueltigAb(),
+				eingewoehnungPauschale.getGueltigkeit().getGueltigAb()));
+
+		this.getVertraglicheEingewoehnungPauschale()
+			.getGueltigkeit()
+			.setGueltigBis(DateUtil.getMax(
+				this.getVertraglicheEingewoehnungPauschale().getGueltigkeit().getGueltigBis(),
+				eingewoehnungPauschale.getGueltigkeit().getGueltigBis()));
+
 	}
 
 	@Nonnull
@@ -222,35 +264,29 @@ public class BetreuungspensumAbweichung extends AbstractMahlzeitenPensum impleme
 		mitteilungPensum.setBetreuungsmitteilung(mitteilung);
 		mitteilungPensum.setGueltigkeit(getGueltigkeit());
 
-		BigDecimal pensum = getStatus() == BetreuungspensumAbweichungStatus.NONE
-			? getVertraglichesPensum() : getPensum();
-
-		BigDecimal kosten = getStatus() == BetreuungspensumAbweichungStatus.NONE
-			? getVertraglicheKosten() : getMonatlicheBetreuungskosten();
-
-		BigDecimal hauptmahlzeiten = getStatus() == BetreuungspensumAbweichungStatus.NONE
-			? getVertraglicheHauptmahlzeiten() : getMonatlicheHauptmahlzeiten();
-
-		BigDecimal nebenmahlzeiten = getStatus() == BetreuungspensumAbweichungStatus.NONE
-			? getVertraglicheNebenmahlzeiten() : getMonatlicheNebenmahlzeiten();
-
-		Objects.requireNonNull(pensum);
-		Objects.requireNonNull(kosten);
-		Objects.requireNonNull(hauptmahlzeiten);
-		Objects.requireNonNull(nebenmahlzeiten);
-		Objects.requireNonNull(vertraglicherTarifHauptmahlzeit);
-		Objects.requireNonNull(vertraglicherTarifNebenmahlzeit);
+		BigDecimal pensum = vertraglichWhenStatusNone(getPensum(), getVertraglichesPensum());
+		BigDecimal kosten = vertraglichWhenStatusNone(getMonatlicheBetreuungskosten(), getVertraglicheKosten());
+		BigDecimal hauptmahlzeiten = vertraglichWhenStatusNone(getMonatlicheHauptmahlzeiten(), getVertraglicheHauptmahlzeiten());
+		BigDecimal nebenmahlzeiten = vertraglichWhenStatusNone(getMonatlicheNebenmahlzeiten(), getVertraglicheNebenmahlzeiten());
 
 		mitteilungPensum.setUnitForDisplay(getUnitForDisplay());
 		mitteilungPensum.setPensum(pensum);
 		mitteilungPensum.setMonatlicheBetreuungskosten(kosten);
-		//
 		mitteilungPensum.setMonatlicheHauptmahlzeiten(hauptmahlzeiten);
 		mitteilungPensum.setMonatlicheNebenmahlzeiten(nebenmahlzeiten);
 
+		// really not sure why tarife for Mahlzeiten are different than everything else...
 		// Tarif is immutable at this point and we just copy the old value
-		mitteilungPensum.setTarifProHauptmahlzeit(vertraglicherTarifHauptmahlzeit);
-		mitteilungPensum.setTarifProNebenmahlzeit(vertraglicherTarifNebenmahlzeit);
+		if (requireNonNull(mitteilung.getBetreuung()).isAngebotMittagstisch()) {
+			BigDecimal kostenHauptmahlzeit = vertraglichWhenStatusNone(getTarifProHauptmahlzeit(), getVertraglicherTarifHauptmahlzeit());
+			BigDecimal kostenNebenmahlzeit = vertraglichWhenStatusNone(getTarifProNebenmahlzeit(), getVertraglicherTarifNebenmahlzeit());
+			mitteilungPensum.setTarifProHauptmahlzeit(kostenHauptmahlzeit);
+			mitteilungPensum.setTarifProNebenmahlzeit(kostenNebenmahlzeit);
+		} else {
+			mitteilungPensum.setTarifProHauptmahlzeit(requireNonNull(vertraglicherTarifHauptmahlzeit));
+			mitteilungPensum.setTarifProNebenmahlzeit(requireNonNull(vertraglicherTarifNebenmahlzeit));
+		}
+		// not sure why this is different either...
 		mitteilungPensum.setStuendlicheVollkosten(getStuendlicheVollkosten());
 
 		// as soon as we created a Mitteilung out of the Abweichung we set the state to verrechnet (freigegeben) and
@@ -262,6 +298,18 @@ public class BetreuungspensumAbweichung extends AbstractMahlzeitenPensum impleme
 			}
 		}
 
+		if (getEingewoehnungPauschale() != null) {
+			EingewoehnungPauschale eingewoehnungPauschale = new EingewoehnungPauschale();
+			eingewoehnungPauschale.setGueltigkeit(getEingewoehnungPauschale().getGueltigkeit());
+			eingewoehnungPauschale.setPauschale(getEingewoehnungPauschale().getPauschale());
+			mitteilungPensum.setEingewoehnungPauschale(eingewoehnungPauschale);
+		}
+
 		return mitteilungPensum;
+	}
+
+	@Nonnull
+	private BigDecimal vertraglichWhenStatusNone(BigDecimal value, @Nullable BigDecimal vertraglicherValue) {
+		return requireNonNull(status == BetreuungspensumAbweichungStatus.NONE ? vertraglicherValue : value);
 	}
 }

@@ -90,6 +90,42 @@ public class TageselternLuzernRechnerTest extends AbstractLuzernRechnerTest {
 	}
 
 	@Test
+	public void testBabyMitEingewoehnung() {
+		TestValues testValues = new TestValues();
+		testValues.stuendlicheVollkosten = MathUtil.DEFAULT.fromNullSafe(16.3);
+		testValues.betreuungsPensum = MathUtil.DEFAULT.fromNullSafe(13.3037694);
+		testValues.anspruchsPensum = 10;
+		testValues.einkommen = MathUtil.DEFAULT.fromNullSafe(80000);
+		testValues.isBaby = true;
+
+		testValues.expectedVollkosten = MathUtil.DEFAULT.fromNullSafe(367.55);
+		testValues.expectedVerguenstigungOhneBeruecksichtigungMinimalbetrag = BigDecimal.valueOf(9.10);
+		testValues.expectedVerguenstigungOhneBeruecksichtigungVollkosten = BigDecimal.valueOf(9.10);
+		testValues.expectedVerguenstigungProZeiteinheit = BigDecimal.valueOf(9.12);
+		testValues.expectedElternbeitrag = BigDecimal.valueOf(0);
+		testValues.expectedMinimalerElternbeitrag = BigDecimal.valueOf(0.7);
+		testValues.expectedBetreuungsZeiteinheit = BigDecimal.valueOf(29.99);
+		testValues.expectedAnspruchsZeiteinheit =  BigDecimal.valueOf(22.55);
+		testValues.expectedBgZeiteinheit =  BigDecimal.valueOf(22.55);
+
+		//gutschein pro Monat = 205.59
+		//expected pauschale * verguenstigung / vollkosten => 500 * 205.60 / 367.55 = 279.66 (279.65 auf 5rp gerundet)
+		testValues.expectedGutscheinEingewoehnung = BigDecimal.valueOf(279.65);
+
+		//expected verguenstigung = gutschein pro Monat + gutschein eingewoehnung => 205.59 + 279.65 = 485.24 (485.25 auf 5rp gerundet)
+		testValues.expectedVerguenstigung = BigDecimal.valueOf(485.25);
+
+		VerfuegungZeitabschnitt zeitabschnitt = prepareVerfuegung(testValues);
+		zeitabschnitt.getBgCalculationInputAsiv().setEingewoehnungPauschale(BigDecimal.valueOf(500));
+
+		AbstractLuzernRechner rechner = new TageselternLuzernRechner(Collections.emptyList());
+		rechner.calculate(zeitabschnitt, defaultParameterDTO);
+
+		BGCalculationResult result = zeitabschnitt.getBgCalculationResultAsiv();
+		assertCalculationResultResult(result, testValues);
+	}
+
+	@Test
 	public void testKindEWPGreaterThenMax() { //Kind 2 im BG_Rechner_Luzern Excel
 		TestValues testValues = new TestValues();
 		testValues.stuendlicheVollkosten = MathUtil.DEFAULT.fromNullSafe(10);

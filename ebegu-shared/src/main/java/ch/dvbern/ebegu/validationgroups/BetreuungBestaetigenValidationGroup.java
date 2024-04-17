@@ -15,8 +15,10 @@
 
 package ch.dvbern.ebegu.validationgroups;
 
+import javax.validation.groups.Default;
+
 /**
  * ValidationGroup für Validierung der Betreuungszeitraeume und der verlinkten Institutionsstammdaten (Gueltigkeit)
  */
-public interface BetreuungBestaetigenValidationGroup {
+public interface BetreuungBestaetigenValidationGroup extends Default {
 }

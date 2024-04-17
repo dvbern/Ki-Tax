@@ -36,7 +36,7 @@ import javax.persistence.Embeddable;
 import javax.validation.constraints.NotNull;
 
 import ch.dvbern.ebegu.util.Constants;
-import ch.dvbern.ebegu.validators.CheckDateRange;
+import ch.dvbern.ebegu.validators.dateranges.CheckDateRange;
 import com.google.common.base.MoreObjects;
 
 import static com.google.common.base.Preconditions.checkNotNull;

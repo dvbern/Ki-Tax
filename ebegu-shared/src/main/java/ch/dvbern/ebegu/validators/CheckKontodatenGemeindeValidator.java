@@ -38,11 +38,6 @@ public class CheckKontodatenGemeindeValidator implements ConstraintValidator<Che
 	private final PrincipalBean principal;
 
 	@Override
-	public void initialize(CheckKontodatenGemeinde constraintAnnotation) {
-		// nop
-	}
-
-	@Override
 	public boolean isValid(@Nonnull GemeindeStammdaten stammdaten, ConstraintValidatorContext context) {
 
 		// Mandant does not have edit permissions for these fields, so they must be able to
