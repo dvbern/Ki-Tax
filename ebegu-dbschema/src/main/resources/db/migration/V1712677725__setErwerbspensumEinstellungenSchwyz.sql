@@ -32,3 +32,21 @@ WHERE einstellung_key = 'ERWERBSPENSUM_ZUSCHLAG'
 									   JOIN mandant m ON gesuchsperiode.mandant_id = m.id
 		 WHERE mandant_identifier = 'SCHWYZ');
 
+
+UPDATE einstellung
+SET value = '20'
+WHERE einstellung_key = 'MIN_ERWERBSPENSUM_EINGESCHULT'
+	AND gesuchsperiode_id IN
+		(SELECT gesuchsperiode.id FROM gesuchsperiode
+									   JOIN mandant m ON gesuchsperiode.mandant_id = m.id
+		 WHERE mandant_identifier = 'SCHWYZ');
+
+
+UPDATE einstellung
+SET value = '20'
+WHERE einstellung_key = 'GEMEINDE_MIN_ERWERBSPENSUM_EINGESCHULT'
+	AND gesuchsperiode_id IN
+		(SELECT gesuchsperiode.id FROM gesuchsperiode
+									   JOIN mandant m ON gesuchsperiode.mandant_id = m.id
+		 WHERE mandant_identifier = 'SCHWYZ');
+
