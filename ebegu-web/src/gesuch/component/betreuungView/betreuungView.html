@@ -1202,7 +1202,7 @@
 
                     <span dv-show-element
                           dv-show-allowed-roles="vm.TSRoleUtil.getTraegerschaftInstitutionRoles()"
-                          dv-show-expression="vm.isMutationsmeldungAllowed() && !vm.isMutationsmeldungStatus && vm.isAbweichungenAktiviert()">
+                          dv-show-expression="vm.isMutationsmeldungAllowed() && !vm.isMutationsmeldungStatus && vm.abweichungenAktiviert">
                         <dv-loading-button button-click="vm.gotoBetreuungAbweichungen()"
                                            data-test="abweichungen-melden"
                                            aria-label="{{'ABWEICHUNGEN_MELDEN' | translate}}">
