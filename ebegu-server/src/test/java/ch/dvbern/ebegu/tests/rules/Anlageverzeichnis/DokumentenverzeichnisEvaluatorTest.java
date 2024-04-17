@@ -19,7 +19,9 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
+import java.util.function.Function;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -37,6 +39,7 @@ import ch.dvbern.ebegu.entities.Familiensituation;
 import ch.dvbern.ebegu.entities.FamiliensituationContainer;
 import ch.dvbern.ebegu.entities.FinanzielleSituation;
 import ch.dvbern.ebegu.entities.FinanzielleSituationContainer;
+import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.GesuchstellerContainer;
@@ -64,6 +67,7 @@ import ch.dvbern.ebegu.rules.anlageverzeichnis.LuzernErwerbspensumDokumente;
 import ch.dvbern.ebegu.rules.anlageverzeichnis.LuzernKindDokumente;
 import ch.dvbern.ebegu.services.EinstellungService;
 import ch.dvbern.ebegu.test.TestDataUtil;
+import ch.dvbern.ebegu.testfaelle.dataprovider.SchwyzTestfallDataProvider;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.Constants;
 import com.spotify.hamcrest.pojo.IsPojo;
@@ -71,6 +75,7 @@ import org.easymock.EasyMockExtension;
 import org.easymock.EasyMockSupport;
 import org.easymock.Mock;
 import org.easymock.TestSubject;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
@@ -82,7 +87,9 @@ import static java.util.Objects.requireNonNull;
 import static org.easymock.EasyMock.expect;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.nullValue;
 
 /**
  * Tests für die Regeln der Benötigten Dokumenten
@@ -111,6 +118,11 @@ class DokumentenverzeichnisEvaluatorTest extends EasyMockSupport {
 		testgesuchLuzern = setUpTestgesuch(TestDataUtil.getMandantLuzern(), FinanzielleSituationTyp.LUZERN);
 	}
 
+	@AfterEach
+	void tearDown() {
+		verifyAll();
+	}
+
 	private Gesuch setUpTestgesuch(Mandant mandant, FinanzielleSituationTyp finanzielleSituationTyp) {
 		Gesuch gesuch = new Gesuch();
 		gesuch.setGesuchsperiode(TestDataUtil.createGesuchsperiode1718());
@@ -129,11 +141,29 @@ class DokumentenverzeichnisEvaluatorTest extends EasyMockSupport {
 		return gesuch;
 	}
 
-	private void setUpEinstellungMock(@Nonnull Gesuch testgesuch, @Nonnull String anspruchUnabhaengig) {
-		var einstellung = new Einstellung();
-		einstellung.setValue(anspruchUnabhaengig);
-		expect(einstellungServiceMock.findEinstellung(EinstellungKey.ABHAENGIGKEIT_ANSPRUCH_BESCHAEFTIGUNGPENSUM,
-			testgesuch.extractGemeinde(), testgesuch.getGesuchsperiode()))
+	@Nonnull
+	private Einstellung createEinstellung(EinstellungKey key, String value) {
+		Einstellung einstellung = new Einstellung();
+		einstellung.setKey(key);
+		einstellung.setValue(value);
+
+		return einstellung;
+	}
+
+	private void setUpDefaultEinstellungMock(@Nonnull Gesuch gesuch) {
+		Einstellung einstellung = createEinstellung(
+			EinstellungKey.ABHAENGIGKEIT_ANSPRUCH_BESCHAEFTIGUNGPENSUM,
+			AnspruchBeschaeftigungAbhaengigkeitTyp.ABHAENGING.name()
+		);
+
+		setUpEinstellungMock(gesuch, einstellung);
+	}
+
+	private void setUpEinstellungMock(@Nonnull Gesuch gesuch, @Nonnull Einstellung einstellung) {
+		Gemeinde gemeinde = gesuch.extractGemeinde();
+		Gesuchsperiode gesuchsperiode = gesuch.getGesuchsperiode();
+
+		expect(einstellungServiceMock.findEinstellung(einstellung.getKey(), gemeinde, gesuchsperiode))
 			.andReturn(einstellung)
 			.anyTimes();
 		replayAll();
@@ -225,18 +255,19 @@ class DokumentenverzeichnisEvaluatorTest extends EasyMockSupport {
 	}
 
 	private void createFamilienSituation(Gesuch gesuch, boolean gemeinsam, boolean sozialhilfe) {
-		final FamiliensituationContainer famSitContainer = TestDataUtil.createDefaultFamiliensituationContainer();
-		Familiensituation famSit = famSitContainer.extractFamiliensituation();
-		requireNonNull(famSit).setFamilienstatus(EnumFamilienstatus.VERHEIRATET);
-		Assertions.assertNotNull(famSit);
+		FamiliensituationContainer famSitContainer = TestDataUtil.createDefaultFamiliensituationContainer();
+
+		Familiensituation famSit = requireNonNull(famSitContainer.extractFamiliensituation());
+		famSit.setFamilienstatus(EnumFamilienstatus.VERHEIRATET);
 		famSit.setGemeinsameSteuererklaerung(gemeinsam);
 		famSit.setSozialhilfeBezueger(sozialhilfe);
+
 		gesuch.setFamiliensituationContainer(famSitContainer);
 	}
 
 	@Test
 	void kindDokumentFachstelleBernTest() {
-		setUpEinstellungMock(testgesuchBern, AnspruchBeschaeftigungAbhaengigkeitTyp.ABHAENGING.name());
+		setUpDefaultEinstellungMock(testgesuchBern);
 
 		clearKinder(testgesuchBern);
 		Kind kind = createKind(testgesuchBern, FachstelleName.ERZIEHUNGSBERATUNG, null);
@@ -249,7 +280,7 @@ class DokumentenverzeichnisEvaluatorTest extends EasyMockSupport {
 
 	@Test
 	void kindDokumentFachstelleLuzernTest() {
-		setUpEinstellungMock(testgesuchLuzern, AnspruchBeschaeftigungAbhaengigkeitTyp.ABHAENGING.name());
+		setUpDefaultEinstellungMock(testgesuchLuzern);
 
 		clearKinder(testgesuchLuzern);
 		Kind kind = createKind(testgesuchLuzern, FachstelleName.ERZIEHUNGSBERATUNG, IntegrationTyp.SOZIALE_INTEGRATION);
@@ -262,7 +293,7 @@ class DokumentenverzeichnisEvaluatorTest extends EasyMockSupport {
 
 	@Test
 	void kindDokumentFachstelleSrachlicheIntegrationLuzernTest() {
-		setUpEinstellungMock(testgesuchLuzern, AnspruchBeschaeftigungAbhaengigkeitTyp.ABHAENGING.name());
+		setUpDefaultEinstellungMock(testgesuchLuzern);
 
 		clearKinder(testgesuchLuzern);
 		Kind kind = createKind(testgesuchLuzern, FachstelleName.ERZIEHUNGSBERATUNG, IntegrationTyp.SPRACHLICHE_INTEGRATION);
@@ -274,7 +305,7 @@ class DokumentenverzeichnisEvaluatorTest extends EasyMockSupport {
 
 	@Test
 	void kindDokumentAbsageschreibenHortPlatzShouldBeRequiredIfKindHasKeinPlatzHort() {
-		setUpEinstellungMock(testgesuchLuzern, AnspruchBeschaeftigungAbhaengigkeitTyp.ABHAENGING.name());
+		setUpDefaultEinstellungMock(testgesuchLuzern);
 
 		clearKinder(testgesuchLuzern);
 		Kind kind = createKind(testgesuchLuzern, null, null);
@@ -328,7 +359,7 @@ class DokumentenverzeichnisEvaluatorTest extends EasyMockSupport {
 
 	@Test
 	void erwpDokumentNeueintrittAfterTest() {
-		setUpEinstellungMock(testgesuchBern, AnspruchBeschaeftigungAbhaengigkeitTyp.ABHAENGING.name());
+		setUpDefaultEinstellungMock(testgesuchBern);
 
 		final Erwerbspensum erwerbspensum = createErwerbspensum(testgesuchBern, Taetigkeit.ANGESTELLT, false);
 
@@ -346,7 +377,7 @@ class DokumentenverzeichnisEvaluatorTest extends EasyMockSupport {
 
 	@Test
 	void erwpDokumentNeueintrittBeforeTest() {
-		setUpEinstellungMock(testgesuchBern, AnspruchBeschaeftigungAbhaengigkeitTyp.ABHAENGING.name());
+		setUpDefaultEinstellungMock(testgesuchBern);
 
 		final Erwerbspensum erwerbspensum = createErwerbspensum(testgesuchBern, Taetigkeit.ANGESTELLT, false);
 
@@ -358,7 +389,7 @@ class DokumentenverzeichnisEvaluatorTest extends EasyMockSupport {
 
 	@Test
 	void erwpDokumentSelbstaendigTest() {
-		setUpEinstellungMock(testgesuchBern, AnspruchBeschaeftigungAbhaengigkeitTyp.ABHAENGING.name());
+		setUpDefaultEinstellungMock(testgesuchBern);
 
 		final Erwerbspensum erwerbspensum = createErwerbspensum(testgesuchBern, Taetigkeit.SELBSTAENDIG, false);
 
@@ -376,7 +407,7 @@ class DokumentenverzeichnisEvaluatorTest extends EasyMockSupport {
 
 	@Test
 	void erwpDokumentAusbildung() {
-		setUpEinstellungMock(testgesuchBern, AnspruchBeschaeftigungAbhaengigkeitTyp.ABHAENGING.name());
+		setUpDefaultEinstellungMock(testgesuchBern);
 
 		final Erwerbspensum erwerbspensum = createErwerbspensum(testgesuchBern, Taetigkeit.AUSBILDUNG, false);
 
@@ -392,7 +423,7 @@ class DokumentenverzeichnisEvaluatorTest extends EasyMockSupport {
 
 	@Test
 	void erwpDokumentRAV() {
-		setUpEinstellungMock(testgesuchBern, AnspruchBeschaeftigungAbhaengigkeitTyp.ABHAENGING.name());
+		setUpDefaultEinstellungMock(testgesuchBern);
 
 		final Erwerbspensum erwerbspensum = createErwerbspensum(testgesuchBern, Taetigkeit.RAV, false);
 
@@ -408,7 +439,7 @@ class DokumentenverzeichnisEvaluatorTest extends EasyMockSupport {
 
 	@Test
 	void erwpDokumentArzt() {
-		setUpEinstellungMock(testgesuchBern, AnspruchBeschaeftigungAbhaengigkeitTyp.ABHAENGING.name());
+		setUpDefaultEinstellungMock(testgesuchBern);
 
 		final Erwerbspensum erwerbspensum = createErwerbspensum(testgesuchBern, Taetigkeit.ANGESTELLT, true);
 
@@ -424,7 +455,7 @@ class DokumentenverzeichnisEvaluatorTest extends EasyMockSupport {
 
 	@Test
 	void erwpDokumentAngestelltLuzern() {
-		setUpEinstellungMock(testgesuchLuzern, AnspruchBeschaeftigungAbhaengigkeitTyp.ABHAENGING.name());
+		setUpDefaultEinstellungMock(testgesuchLuzern);
 
 		final Erwerbspensum erwerbspensum = createErwerbspensum(testgesuchLuzern, Taetigkeit.ANGESTELLT, false);
 
@@ -437,7 +468,7 @@ class DokumentenverzeichnisEvaluatorTest extends EasyMockSupport {
 
 	@Test
 	void erwpDokumentArbeitlosLuzern() {
-		setUpEinstellungMock(testgesuchLuzern, AnspruchBeschaeftigungAbhaengigkeitTyp.ABHAENGING.name());
+		setUpDefaultEinstellungMock(testgesuchLuzern);
 
 		final Erwerbspensum erwerbspensum = createErwerbspensum(testgesuchLuzern, Taetigkeit.RAV, false);
 
@@ -453,7 +484,7 @@ class DokumentenverzeichnisEvaluatorTest extends EasyMockSupport {
 
 	@Test
 	void erwpDokumentInAusbildungLuzern() {
-		setUpEinstellungMock(testgesuchLuzern, AnspruchBeschaeftigungAbhaengigkeitTyp.ABHAENGING.name());
+		setUpDefaultEinstellungMock(testgesuchLuzern);
 
 		final Erwerbspensum erwerbspensum = createErwerbspensum(testgesuchLuzern, Taetigkeit.AUSBILDUNG, false);
 
@@ -469,7 +500,7 @@ class DokumentenverzeichnisEvaluatorTest extends EasyMockSupport {
 
 	@Test
 	void erwpDokumentGesundheitlicheIndikationLuzern() {
-		setUpEinstellungMock(testgesuchLuzern, AnspruchBeschaeftigungAbhaengigkeitTyp.ABHAENGING.name());
+		setUpDefaultEinstellungMock(testgesuchLuzern);
 
 		final Erwerbspensum erwerbspensum = createErwerbspensum(testgesuchLuzern,
 			Taetigkeit.GESUNDHEITLICHE_EINSCHRAENKUNGEN, false);
@@ -486,7 +517,7 @@ class DokumentenverzeichnisEvaluatorTest extends EasyMockSupport {
 
 	@Test
 	void erwpDokumentSelbststaendigLuzern() {
-		setUpEinstellungMock(testgesuchLuzern, AnspruchBeschaeftigungAbhaengigkeitTyp.ABHAENGING.name());
+		setUpDefaultEinstellungMock(testgesuchLuzern);
 
 		final Erwerbspensum erwerbspensum = createErwerbspensum(testgesuchLuzern, Taetigkeit.SELBSTAENDIG, false);
 
@@ -552,50 +583,58 @@ class DokumentenverzeichnisEvaluatorTest extends EasyMockSupport {
 
 	@Test
 	void finSiSteuerveranlagungGemeinsam() {
-		setUpEinstellungMock(testgesuchBern, AnspruchBeschaeftigungAbhaengigkeitTyp.ABHAENGING.name());
+		setUpDefaultEinstellungMock(testgesuchBern);
 
 		createFinanzielleSituationGS(1, testgesuchBern, "Sämi", true);
 		createFinanzielleSituationGS(2, testgesuchBern, "Alex", true);
 
 		createFamilienSituation(testgesuchBern, true, false);
 		final Set<DokumentGrund> dokumentGrunds = evaluator.calculate(testgesuchBern, Constants.DEFAULT_LOCALE);
-		Assertions.assertEquals(1, dokumentGrunds.size());
 
-		final DokumentGrund dokumentGrund = dokumentGrunds.iterator().next();
-		Assertions.assertEquals(DokumentGrundTyp.FINANZIELLESITUATION, dokumentGrund.getDokumentGrundTyp());
-		Assertions.assertEquals(DokumentTyp.STEUERVERANLAGUNG, dokumentGrund.getDokumentTyp());
+		assertThat(dokumentGrunds, contains(
+			steuerveranlagungForGesuchsteller(0)
+		));
 	}
 
 	@Test
 	void finSiSteuerveranlagungNichtGemeinsam() {
-		setUpEinstellungMock(testgesuchBern, AnspruchBeschaeftigungAbhaengigkeitTyp.ABHAENGING.name());
+		setUpDefaultEinstellungMock(testgesuchBern);
 
 		createFinanzielleSituationGS(1, testgesuchBern, "Sämi", true);
 		createFinanzielleSituationGS(2, testgesuchBern, "Alex", true);
 
 		createFamilienSituation(testgesuchBern, false, false);
-		final Set<DokumentGrund> dokumentGrunds = evaluator.calculate(testgesuchBern, Constants.DEFAULT_LOCALE);
-		Assertions.assertEquals(2, dokumentGrunds.size());
+		Set<DokumentGrund> dokumentGrunds = evaluator.calculate(testgesuchBern, Constants.DEFAULT_LOCALE);
 
-		final Set<DokumentGrund> dokumentGrundGS1 = getDokumentGrundsForGS(1, dokumentGrunds);
-
-		assertGundDokumente(dokumentGrundGS1);
-
-		final Set<DokumentGrund> dokumentGrundGS2 = getDokumentGrundsForGS(2, dokumentGrunds);
-		Assertions.assertNotNull(testgesuchBern.getGesuchsteller2());
-		assertType(dokumentGrundGS2, DokumentTyp.STEUERVERANLAGUNG, testgesuchBern.getGesuchsteller2().extractFullName(), "2016",
-			DokumentGrundPersonType.GESUCHSTELLER, 2, DokumentGrundTyp.FINANZIELLESITUATION);
+		assertThat(dokumentGrunds, containsInAnyOrder(
+			steuerveranlagungForGesuchsteller(1),
+			steuerveranlagungForGesuchsteller(2)
+		));
 	}
 
-	private void assertGundDokumente(Set<DokumentGrund> dokumentGrundGS1) {
-		Assertions.assertNotNull(testgesuchBern.getGesuchsteller1());
-		assertType(dokumentGrundGS1, DokumentTyp.STEUERVERANLAGUNG, testgesuchBern.getGesuchsteller1().extractFullName(), "2016",
-			DokumentGrundPersonType.GESUCHSTELLER, 1, DokumentGrundTyp.FINANZIELLESITUATION);
+	private IsPojo<DokumentGrund> steuerveranlagungForGesuchsteller(int GS) {
+		return steuerveranlagungForGesuchsteller(GS, "2016");
+	}
+
+	private IsPojo<DokumentGrund> steuerveranlagungForGesuchsteller(int GS, @Nullable String tag) {
+		return dokumentOfTyp(DokumentTyp.STEUERVERANLAGUNG)
+			.where(DokumentGrund::getDokumentGrundTyp, is(DokumentGrundTyp.FINANZIELLESITUATION))
+			.where(DokumentGrund::getPersonType, is(DokumentGrundPersonType.GESUCHSTELLER))
+			.where(DokumentGrund::getPersonNumber, is(GS))
+			.where(DokumentGrund::getTag, is(tag));
+	}
+
+	private IsPojo<DokumentGrund> quellensteuerForGesuchsteller(int GS) {
+		return dokumentOfTyp(DokumentTyp.NACHWEIS_ABGERECHNETE_QUELLENSTEUERN)
+			.where(DokumentGrund::getDokumentGrundTyp, is(DokumentGrundTyp.FINANZIELLESITUATION))
+			.where(DokumentGrund::getPersonType, is(DokumentGrundPersonType.GESUCHSTELLER))
+			.where(DokumentGrund::getPersonNumber, is(GS))
+			.where(DokumentGrund::getTag, is(nullValue()));
 	}
 
 	@Test
 	void finSiNichtGemeinsam() {
-		setUpEinstellungMock(testgesuchBern, AnspruchBeschaeftigungAbhaengigkeitTyp.ABHAENGING.name());
+		setUpDefaultEinstellungMock(testgesuchBern);
 
 		createFinanzielleSituationGS(1, testgesuchBern, "Sämi", false);
 		createFinanzielleSituationGS(2, testgesuchBern, "Alex", false);
@@ -619,23 +658,30 @@ class DokumentenverzeichnisEvaluatorTest extends EasyMockSupport {
 			DokumentGrundPersonType.GESUCHSTELLER, 2, DokumentGrundTyp.FINANZIELLESITUATION);
 	}
 
-	private void assertType(Set<DokumentGrund> dokumentGrundGS1, DokumentTyp dokumentTyp, @Nullable String fullname, @Nullable String year,
-		@Nullable DokumentGrundPersonType personType, @Nullable Integer personNumber, DokumentGrundTyp dokumentGrundTyp) {
+	private void assertType(
+		Set<DokumentGrund> dokumentGrundGS1,
+		DokumentTyp dokumentTyp,
+		@Nullable String fullname,
+		@Nullable String year,
+		@Nullable DokumentGrundPersonType personType,
+		@Nullable Integer personNumber,
+		DokumentGrundTyp dokumentGrundTyp
+	) {
 		final Set<DokumentGrund> dokumentGrundsForType = getDokumentGrundsForType(dokumentTyp, dokumentGrundGS1, personType, personNumber, year);
 		Assertions.assertEquals(
 			1,
 			dokumentGrundsForType.size(),
 			"No document with dokumentGrundTyp: " + dokumentGrundTyp + "; dokumentTyp: " + dokumentTyp + "; fullname: " + fullname + "; year: " + year);
-		final DokumentGrund dokumentGrund = dokumentGrundsForType.iterator().next();
-		Assertions.assertEquals(personType, dokumentGrund.getPersonType());
-		Assertions.assertEquals(personNumber, dokumentGrund.getPersonNumber());
-		Assertions.assertEquals(dokumentTyp, dokumentGrund.getDokumentTyp());
 
+		assertThat(dokumentGrundsForType.iterator().next(), dokumentOfTyp(dokumentTyp)
+			.where(DokumentGrund::getDokumentGrundTyp, is(dokumentGrundTyp))
+			.where(DokumentGrund::getPersonType, is(personType))
+			.where(DokumentGrund::getPersonNumber, is(personNumber)));
 	}
 
 	@Test
 	void finSiDokumenteTest() {
-		setUpEinstellungMock(testgesuchBern, AnspruchBeschaeftigungAbhaengigkeitTyp.ABHAENGING.name());
+		setUpDefaultEinstellungMock(testgesuchBern);
 
 		createFinanzielleSituationGS(1, testgesuchBern, "Sämi", false);
 		createFamilienSituation(testgesuchBern, false, false);
@@ -703,7 +749,7 @@ class DokumentenverzeichnisEvaluatorTest extends EasyMockSupport {
 
 	@Test
 	void finSiDokumentSteuerabfrageTest() {
-		setUpEinstellungMock(testgesuchBern, AnspruchBeschaeftigungAbhaengigkeitTyp.ABHAENGING.name());
+		setUpDefaultEinstellungMock(testgesuchBern);
 
 		createFinanzielleSituationGS(1, testgesuchBern, "Sämi", false);
 		createFamilienSituation(testgesuchBern, false, false);
@@ -738,7 +784,7 @@ class DokumentenverzeichnisEvaluatorTest extends EasyMockSupport {
 		gesuchsperiode.setGueltigkeit(new DateRange(LocalDate.of(2016, 8, 1), Constants.GESUCHSPERIODE_17_18_AB));
 
 		testgesuchBern.setGesuchsperiode(gesuchsperiode);
-		setUpEinstellungMock(testgesuchBern, AnspruchBeschaeftigungAbhaengigkeitTyp.ABHAENGING.name());
+		setUpDefaultEinstellungMock(testgesuchBern);
 		createFamilienSituation(testgesuchBern, true, false);
 
 		Assertions.assertNotNull(testgesuchBern.getGesuchsteller1());
@@ -801,7 +847,7 @@ class DokumentenverzeichnisEvaluatorTest extends EasyMockSupport {
 
 	@Test
 	void familiensituationDokumenteTest() {
-		setUpEinstellungMock(testgesuchBern, AnspruchBeschaeftigungAbhaengigkeitTyp.ABHAENGING.name());
+		setUpDefaultEinstellungMock(testgesuchBern);
 
 		createFamilienSituation(testgesuchBern, true, true);
 
@@ -813,7 +859,11 @@ class DokumentenverzeichnisEvaluatorTest extends EasyMockSupport {
 
 	@Test
 	void erwerbspensumDokumenteNotRequiredTest() {
-		setUpEinstellungMock(testgesuchBern, AnspruchBeschaeftigungAbhaengigkeitTyp.UNABHAENGING.name());
+		Einstellung einstellung = createEinstellung(
+			EinstellungKey.ABHAENGIGKEIT_ANSPRUCH_BESCHAEFTIGUNGPENSUM,
+			AnspruchBeschaeftigungAbhaengigkeitTyp.UNABHAENGING.name()
+		);
+		setUpEinstellungMock(testgesuchBern, einstellung);
 
 		createFinanzielleSituationGS(1, testgesuchBern, "Sämi", true);
 		createFinanzielleSituationGS(2, testgesuchBern, "Alex", true);
@@ -832,7 +882,7 @@ class DokumentenverzeichnisEvaluatorTest extends EasyMockSupport {
 
 	@Test
 	void ersatzeinkommenSelbststaendigkeit_DokumenteRequired_1GS() {
-		setUpEinstellungMock(testgesuchBern, AnspruchBeschaeftigungAbhaengigkeitTyp.ABHAENGING.name());
+		setUpDefaultEinstellungMock(testgesuchBern);
 		createFinanzielleSituationGS(1, testgesuchBern, "Sämi", true);
 		createFamilienSituation(testgesuchBern, false, false);
 
@@ -879,7 +929,7 @@ class DokumentenverzeichnisEvaluatorTest extends EasyMockSupport {
 
 	@Test
 	void ersatzeinkommenSelbststaendigkeit_DokumenteRequired_2GS() {
-		setUpEinstellungMock(testgesuchBern, AnspruchBeschaeftigungAbhaengigkeitTyp.ABHAENGING.name());
+		setUpDefaultEinstellungMock(testgesuchBern);
 		createFinanzielleSituationGS(1, testgesuchBern, "Sämi", true);
 		createFinanzielleSituationGS(2, testgesuchBern, "Alex", true);
 		createFamilienSituation(testgesuchBern, false, false);
@@ -925,7 +975,7 @@ class DokumentenverzeichnisEvaluatorTest extends EasyMockSupport {
 
 	@Test
 	void ersatzeinkommenSelbststaendigkeit_DokumenteNotRequiredWhenNoGeschaeftsGewinn() {
-		setUpEinstellungMock(testgesuchBern, AnspruchBeschaeftigungAbhaengigkeitTyp.ABHAENGING.name());
+		setUpDefaultEinstellungMock(testgesuchBern);
 		createFinanzielleSituationGS(1, testgesuchBern, "Sämi", true);
 		createFinanzielleSituationGS(2, testgesuchBern, "Alex", true);
 		createFamilienSituation(testgesuchBern, false, false);
@@ -948,7 +998,7 @@ class DokumentenverzeichnisEvaluatorTest extends EasyMockSupport {
 
 	@Test
 	void nachweisEkInVerinfachtemVerfahren_DokumentRequiredWhenVeranlagt() {
-		setUpEinstellungMock(testgesuchBern, AnspruchBeschaeftigungAbhaengigkeitTyp.ABHAENGING.name());
+		setUpDefaultEinstellungMock(testgesuchBern);
 		createFinanzielleSituationGS(1, testgesuchBern, "Sämi", true);
 		createFamilienSituation(testgesuchBern, false, false);
 
@@ -968,7 +1018,7 @@ class DokumentenverzeichnisEvaluatorTest extends EasyMockSupport {
 
 	@Test
 	void nachweisEkInVerinfachtemVerfahren_DokumenteRequiredWhenNotVeranlagt() {
-		setUpEinstellungMock(testgesuchBern, AnspruchBeschaeftigungAbhaengigkeitTyp.ABHAENGING.name());
+		setUpDefaultEinstellungMock(testgesuchBern);
 		createFinanzielleSituationGS(1, testgesuchBern, "Sämi", false);
 		createFamilienSituation(testgesuchBern, false, false);
 
@@ -1005,6 +1055,7 @@ class DokumentenverzeichnisEvaluatorTest extends EasyMockSupport {
 		finanzielleSituationJA.setGeschaeftsgewinnBasisjahrMinus2(ZEHN_TAUSEND);
 	}
 
+	@SuppressWarnings("EmptyClass")
 	@Nested
 	class SchwyzTest {
 
@@ -1048,35 +1099,212 @@ class DokumentenverzeichnisEvaluatorTest extends EasyMockSupport {
 			}
 
 			private Set<DokumentGrund> test(Taetigkeit taetigkeit) {
-				return evaluator.calculate(setUpGesuchForErwerbspensumTest(taetigkeit), Constants.DEFAULT_LOCALE);
+				Gesuch gesuch = setUpGesuchForErwerbspensumTest(taetigkeit);
+				setUpDefaultEinstellungMock(gesuch);
+
+				return evaluator.calculate(gesuch, Constants.DEFAULT_LOCALE);
+			}
+
+			private Gesuch setUpGesuchForErwerbspensumTest(Taetigkeit rav) {
+				Gesuch gesuch = setUpTestgesuch(TestDataUtil.getMandantSchwyz(), FinanzielleSituationTyp.SCHWYZ);
+
+				GesuchstellerContainer gesuchsteller = TestDataUtil.createDefaultGesuchstellerContainer();
+				gesuch.setGesuchsteller1(gesuchsteller);
+
+				ErwerbspensumContainer erwerbspensumContainer = createErwerbspensumContainer(rav, gesuchsteller, gesuch);
+				gesuchsteller.setErwerbspensenContainers(Set.of(erwerbspensumContainer));
+
+				return gesuch;
+			}
+
+			private ErwerbspensumContainer createErwerbspensumContainer(
+				Taetigkeit taetigkeit,
+				GesuchstellerContainer gesuchstellerContainer,
+				Gesuch gesuch
+			) {
+				final Erwerbspensum erwerbspensum = createErwerbspensum(gesuch, taetigkeit, false);
+				final ErwerbspensumContainer erwerbspensumContainer = new ErwerbspensumContainer();
+				erwerbspensumContainer.setErwerbspensumJA(erwerbspensum);
+				erwerbspensumContainer.setGesuchsteller(gesuchstellerContainer);
+
+				return erwerbspensumContainer;
 			}
 		}
 
-		private Gesuch setUpGesuchForErwerbspensumTest(Taetigkeit rav) {
-			Gesuch gesuch = setUpTestgesuch(TestDataUtil.getMandantSchwyz(), FinanzielleSituationTyp.SCHWYZ);
+		@Nested
+		class FinSitDokumenteTest {
 
-			GesuchstellerContainer gesuchsteller = TestDataUtil.createDefaultGesuchstellerContainer();
-			gesuch.setGesuchsteller1(gesuchsteller);
+			@Nested
+			class WhenSingleGesuchsteller {
 
-			setUpEinstellungMock(gesuch, AnspruchBeschaeftigungAbhaengigkeitTyp.ABHAENGING.name());
+				@Test
+				void verheirated_veranlagt() {
+					var dokumentGrunds = testSingleGesuchsteller(
+						SchwyzTestfallDataProvider::createVerheiratet,
+						SchwzyTestData::createFinanzielleSituationVeranlagt
+					);
 
-			ErwerbspensumContainer erwerbspensumContainer = createErwerbspensumContainer(rav, gesuchsteller, gesuch);
-			gesuchsteller.setErwerbspensenContainers(Set.of(erwerbspensumContainer));
+					assertThat(dokumentGrunds, contains(
+						steuerveranlagungForGesuchsteller(0, null)
+					));
+				}
 
-			return gesuch;
-		}
+				@Test
+				void alleinerziehend_veranlagt() {
+					var dokumentGrunds = testSingleGesuchsteller(
+						SchwyzTestfallDataProvider::createAlleinerziehend,
+						SchwzyTestData::createFinanzielleSituationVeranlagt
+					);
 
-		private ErwerbspensumContainer createErwerbspensumContainer(
-			Taetigkeit taetigkeit,
-			GesuchstellerContainer gesuchstellerContainer,
-			Gesuch gesuch
-		) {
-			final Erwerbspensum erwerbspensum = createErwerbspensum(gesuch, taetigkeit, false);
-			final ErwerbspensumContainer erwerbspensumContainer = new ErwerbspensumContainer();
-			erwerbspensumContainer.setErwerbspensumJA(erwerbspensum);
-			erwerbspensumContainer.setGesuchsteller(gesuchstellerContainer);
+					assertThat(dokumentGrunds, contains(
+						steuerveranlagungForGesuchsteller(1, null)
+					));
+				}
 
-			return erwerbspensumContainer;
+				@Test
+				void alleinerziehend_quellenbesteuert() {
+					var dokumentGrunds = testSingleGesuchsteller(
+						SchwyzTestfallDataProvider::createAlleinerziehend,
+						SchwzyTestData::createFinanzielleSituationQuellenbesteuert
+					);
+
+					assertThat(dokumentGrunds, contains(
+						quellensteuerForGesuchsteller(1)
+					));
+				}
+
+				Set<DokumentGrund> testSingleGesuchsteller(
+					Function<SchwzyTestData, Familiensituation> famSit,
+					Function<SchwzyTestData, FinanzielleSituation> finSit
+				) {
+					var gesuch = setUpTestgesuch(TestDataUtil.getMandantSchwyz(), FinanzielleSituationTyp.SCHWYZ);
+					var schwyzTestData = new SchwzyTestData(gesuch.getGesuchsperiode());
+
+					var gesuchsteller = createGesuchsteller(finSit.apply(schwyzTestData));
+					gesuch.setGesuchsteller1(gesuchsteller);
+
+					addFamiliensituation(famSit.apply(schwyzTestData), gesuch);
+
+					setUpDefaultEinstellungMock(gesuch);
+
+					return evaluator.calculate(gesuch, Constants.DEFAULT_LOCALE);
+				}
+			}
+
+			@Nested
+			class WhenMultipleGesuchsteller {
+
+				@Test
+				void gemeinsamVeranlagt() {
+					var dokumentGrunds = testGemeinsameSteuererklaerung(
+						SchwzyTestData::createFinanzielleSituationVeranlagt
+					);
+
+					assertThat(dokumentGrunds, contains(
+						steuerveranlagungForGesuchsteller(0, null)
+					));
+				}
+
+				@Test
+				void beideQuellenbesteuert() {
+					var dokumentGrunds = testIndividuelleSteuererklaerungen(
+						SchwzyTestData::createFinanzielleSituationQuellenbesteuert,
+						SchwzyTestData::createFinanzielleSituationQuellenbesteuert
+					);
+
+					assertThat(dokumentGrunds, containsInAnyOrder(
+						quellensteuerForGesuchsteller(1),
+						quellensteuerForGesuchsteller(2)
+					));
+				}
+
+				@Test
+				void mixed() {
+					var dokumentGrunds = testIndividuelleSteuererklaerungen(
+						SchwzyTestData::createFinanzielleSituationQuellenbesteuert,
+						SchwzyTestData::createFinanzielleSituationVeranlagt
+					);
+
+					assertThat(dokumentGrunds, containsInAnyOrder(
+						quellensteuerForGesuchsteller(1),
+						steuerveranlagungForGesuchsteller(2, null)
+					));
+				}
+
+				Set<DokumentGrund> testGemeinsameSteuererklaerung(
+					Function<SchwzyTestData, FinanzielleSituation> finSitGs
+				) {
+					return testMultipleGesuchsteller(true, finSitGs, a -> Optional.empty());
+				}
+
+				Set<DokumentGrund> testIndividuelleSteuererklaerungen(
+					Function<SchwzyTestData, FinanzielleSituation> finSitGs1,
+					Function<SchwzyTestData, FinanzielleSituation> finSitGs2
+				) {
+					return testMultipleGesuchsteller(false, finSitGs1, finSitGs2.andThen(Optional::of));
+				}
+
+				Set<DokumentGrund> testMultipleGesuchsteller(
+					boolean gemeinsameSteuererklaerung,
+					Function<SchwzyTestData, FinanzielleSituation> finSitGs1,
+					Function<SchwzyTestData, Optional<FinanzielleSituation>> finSitGs2
+				) {
+					var gesuch = setUpTestgesuch(TestDataUtil.getMandantSchwyz(), FinanzielleSituationTyp.SCHWYZ);
+					var schwyzTestData = new SchwzyTestData(gesuch.getGesuchsperiode());
+
+					gesuch.setGesuchsteller1(createGesuchsteller(finSitGs1.apply(schwyzTestData)));
+
+					GesuchstellerContainer gesuchsteller2 = finSitGs2.apply(schwyzTestData)
+						.map(FinSitDokumenteTest.this::createGesuchsteller)
+						.orElseGet(TestDataUtil::createDefaultGesuchstellerContainer);
+					gesuch.setGesuchsteller2(gesuchsteller2);
+
+					// nur in diesem Fall darf es 2 Gesuchsteller geben (Verheirated / Konkubinat  ist ebenbürtig)
+					Familiensituation verheiratet = schwyzTestData.createVerheiratet();
+					verheiratet.setGemeinsameSteuererklaerung(gemeinsameSteuererklaerung);
+					addFamiliensituation(verheiratet, gesuch);
+
+					setUpDefaultEinstellungMock(gesuch);
+
+					return evaluator.calculate(gesuch, Constants.DEFAULT_LOCALE);
+				}
+			}
+
+			private void addFamiliensituation(Familiensituation familiensituation, Gesuch gesuch) {
+				FamiliensituationContainer famSitContainer = new FamiliensituationContainer();
+				famSitContainer.setFamiliensituationJA(familiensituation);
+
+				gesuch.setFamiliensituationContainer(famSitContainer);
+			}
+
+			class SchwzyTestData extends SchwyzTestfallDataProvider {
+
+				protected SchwzyTestData(Gesuchsperiode gesuchsperiode) {
+					super(gesuchsperiode);
+				}
+
+				FinanzielleSituation createFinanzielleSituationQuellenbesteuert() {
+					FinanzielleSituation finanzielleSituation = new FinanzielleSituation();
+					finanzielleSituation.setQuellenbesteuert(true);
+					finanzielleSituation.setBruttoLohn(BigDecimal.valueOf(100_000));
+
+					return finanzielleSituation;
+				}
+
+				FinanzielleSituation createFinanzielleSituationVeranlagt() {
+					return createFinanzielleSituation(BigDecimal.valueOf(123_456), BigDecimal.valueOf(88_000));
+				}
+			}
+
+			GesuchstellerContainer createGesuchsteller(FinanzielleSituation finSit) {
+				GesuchstellerContainer gesuchsteller = TestDataUtil.createDefaultGesuchstellerContainer();
+
+				FinanzielleSituationContainer finSitContainer = new FinanzielleSituationContainer();
+				finSitContainer.setFinanzielleSituationJA(finSit);
+				gesuchsteller.setFinanzielleSituationContainer(finSitContainer);
+
+				return gesuchsteller;
+			}
 		}
 	}
 
