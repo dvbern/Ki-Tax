@@ -29,9 +29,14 @@ public interface BetreuungsmitteilungPensumMessageFactory {
 
 	static BetreuungsmitteilungPensumMessageFactory combine(BetreuungsmitteilungPensumMessageFactory... factories) {
 		return (index, pensum) -> Arrays.stream(factories)
-			.map(factory -> factory.messageForPensum(index, pensum))
-			.filter(Predicate.not(String::isEmpty))
-			.collect(Collectors.joining(", "));
+			.map(factory -> {
+				String messageToAdd = factory.messageForPensum(index, pensum);
+				if(!messageToAdd.isEmpty()){
+					messageToAdd = factory.getTrennenZeichnen() + messageToAdd;
+				}
+				return messageToAdd;
+			})
+			.collect(Collectors.joining());
 	}
 
 	default String formatAb(Gueltigkeit pensum) {
@@ -43,4 +48,6 @@ public interface BetreuungsmitteilungPensumMessageFactory {
 	}
 
 	String messageForPensum(int index, BetreuungsmitteilungPensum pensum);
+
+	default String getTrennenZeichnen(){ return "";}
 }

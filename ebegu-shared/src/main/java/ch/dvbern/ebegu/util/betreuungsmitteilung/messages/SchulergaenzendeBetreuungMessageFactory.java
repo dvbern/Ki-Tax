@@ -17,11 +17,39 @@
 
 package ch.dvbern.ebegu.util.betreuungsmitteilung.messages;
 
+import java.util.Locale;
+
 import ch.dvbern.ebegu.entities.BetreuungsmitteilungPensum;
+import ch.dvbern.ebegu.entities.Mandant;
+import ch.dvbern.ebegu.util.ServerMessageUtil;
 
 public class SchulergaenzendeBetreuungMessageFactory implements BetreuungsmitteilungPensumMessageFactory {
+
+	private final Mandant mandant;
+	private final Locale locale;
+
+	public SchulergaenzendeBetreuungMessageFactory(Mandant mandant, Locale locale) {
+		this.mandant = mandant;
+		this.locale = locale;
+	}
+
 	@Override
 	public String messageForPensum(int index, BetreuungsmitteilungPensum pensum) {
-		return null;
+		if (Boolean.TRUE.equals(pensum.getBetreuungInFerienzeit())) {
+			return ServerMessageUtil.getMessage(
+				"mutationsmeldung_message_betreuung_in_ferienzeit",
+				locale,
+				mandant);
+		}
+
+		return ServerMessageUtil.getMessage(
+			"mutationsmeldung_message_betreuung_nicht_in_ferienzeit",
+			locale,
+			mandant);
+	}
+
+	@Override
+	public String getTrennenZeichnen() {
+		return " ";
 	}
 }

@@ -52,4 +52,9 @@ public class EingewoehnungsPauschaleMessageFactory implements Betreuungsmitteilu
 			NumberFormat.getNumberInstance(locale).format(eingewoehnungPauschale.getPauschale())
 		);
 	}
+
+	@Override
+	public String getTrennenZeichnen() {
+		return ",";
+	}
 }

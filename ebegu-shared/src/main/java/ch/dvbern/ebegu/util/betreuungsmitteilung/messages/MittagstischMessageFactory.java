@@ -49,4 +49,9 @@ public class MittagstischMessageFactory implements BetreuungsmitteilungPensumMes
 			decimalFormat.format(pensum.getTarifProHauptmahlzeit())
 		);
 	}
+
+	@Override
+	public String getTrennenZeichnen() {
+		return ",";
+	}
 }

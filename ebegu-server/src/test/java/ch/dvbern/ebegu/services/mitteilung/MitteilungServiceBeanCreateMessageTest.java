@@ -184,7 +184,7 @@ class MitteilungServiceBeanCreateMessageTest extends EasyMockSupport {
 			result,
 			stringContainsInOrder(
 				"Pensum 1 von 01.01.2024 bis 29.08.2024: ",
-				", (während der schulfreien Zeit))"
+				" (während der schulfreien Zeit)"
 			));
 	}
 
@@ -193,14 +193,16 @@ class MitteilungServiceBeanCreateMessageTest extends EasyMockSupport {
 	void betreuungNichtInFerienzeit(BetreuungsangebotTyp angebotsTyp, BetreuungspensumAnzeigeTyp anzeigeTyp) {
 		BetreuungsmitteilungPensum pensum = createPensum();
 		pensum.setBetreuungInFerienzeit(false);
+		BetreuungsmitteilungPensum pensum2 = createPensum();
+		pensum.setBetreuungInFerienzeit(true);
 
-		String result = run(angebotsTyp, anzeigeTyp, false, true, pensum);
+		String result = run(angebotsTyp, anzeigeTyp, false, true, pensum, pensum2);
 
 		assertThat(
 			result,
 			stringContainsInOrder(
 				"Pensum 1 von 01.01.2024 bis 29.08.2024: ",
-				", (während der Schulzeit))"
+				" (während der Schulzeit)"
 			));
 	}
 

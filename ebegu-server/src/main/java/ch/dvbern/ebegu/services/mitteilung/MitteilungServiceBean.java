@@ -157,6 +157,7 @@ import ch.dvbern.ebegu.util.betreuungsmitteilung.messages.DefaultMessageFactory;
 import ch.dvbern.ebegu.util.betreuungsmitteilung.messages.EingewoehnungsPauschaleMessageFactory;
 import ch.dvbern.ebegu.util.betreuungsmitteilung.messages.MahlzeitenVerguenstigungMessageFactory;
 import ch.dvbern.ebegu.util.betreuungsmitteilung.messages.MittagstischMessageFactory;
+import ch.dvbern.ebegu.util.betreuungsmitteilung.messages.SchulergaenzendeBetreuungMessageFactory;
 import ch.dvbern.ebegu.util.mandant.MandantIdentifier;
 import ch.dvbern.lib.cdipersistence.Persistence;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
@@ -1191,13 +1192,33 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 			betreuung.extractGemeinde(),
 			betreuung.extractGesuchsperiode());
 
+		boolean schulergaenzendeBetreuungEnabled = mitteilung.getBetreuungspensen().stream().anyMatch(
+			betreuungspensum -> Boolean.TRUE.equals(betreuungspensum.getBetreuungInFerienzeit())
+		);
+
 		BetreuungspensumAnzeigeTyp betreuungspensumAnzeigeTyp = getBetreuungspensumAnzeigeTyp(einstellungAnzeigeTyp);
 		BigDecimal multiplier = getMultiplierForMutationsMitteilung(mitteilung, betreuungspensumAnzeigeTyp);
 
-		if (mvzEnabled) {
+		if (mvzEnabled && !schulergaenzendeBetreuungEnabled) {
 			return combine(
 				new MahlzeitenVerguenstigungMessageFactory(mandant, locale, betreuungspensumAnzeigeTyp, multiplier),
 				new EingewoehnungsPauschaleMessageFactory(mandant, locale)
+			);
+		}
+
+		if (mvzEnabled && schulergaenzendeBetreuungEnabled) {
+			return combine(
+				new MahlzeitenVerguenstigungMessageFactory(mandant, locale, betreuungspensumAnzeigeTyp, multiplier),
+				new EingewoehnungsPauschaleMessageFactory(mandant, locale),
+				new SchulergaenzendeBetreuungMessageFactory(mandant, locale)
+			);
+		}
+
+		if (schulergaenzendeBetreuungEnabled) {
+			return combine(
+				new DefaultMessageFactory(mandant, locale, betreuungspensumAnzeigeTyp, multiplier),
+				new EingewoehnungsPauschaleMessageFactory(mandant, locale),
+				new SchulergaenzendeBetreuungMessageFactory(mandant, locale)
 			);
 		}
 
