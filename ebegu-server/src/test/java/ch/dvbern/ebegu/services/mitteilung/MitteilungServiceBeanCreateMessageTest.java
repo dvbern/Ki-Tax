@@ -168,7 +168,7 @@ class MitteilungServiceBeanCreateMessageTest extends EasyMockSupport {
 			result,
 			stringContainsInOrder(
 				"Pensum 1 von 01.01.2024 bis 29.08.2024: ",
-				", Eingewöhnung von 28.12.2023 bis 07.01.2024: Pauschale: CHF 777"
+				", monatliche Betreuungskosten: CHF 1’230.35, Eingewöhnung von 28.12.2023 bis 07.01.2024: Pauschale: CHF 777"
 			));
 	}
 
@@ -184,7 +184,7 @@ class MitteilungServiceBeanCreateMessageTest extends EasyMockSupport {
 			result,
 			stringContainsInOrder(
 				"Pensum 1 von 01.01.2024 bis 29.08.2024: ",
-				" (während der schulfreien Zeit)"
+				", monatliche Betreuungskosten: CHF 1’230.35 (während der schulfreien Zeit)"
 			));
 	}
 
@@ -202,7 +202,7 @@ class MitteilungServiceBeanCreateMessageTest extends EasyMockSupport {
 			result,
 			stringContainsInOrder(
 				"Pensum 1 von 01.01.2024 bis 29.08.2024: ",
-				" (während der Schulzeit)"
+				", monatliche Betreuungskosten: CHF 1’230.35 (während der Schulzeit)"
 			));
 	}
 

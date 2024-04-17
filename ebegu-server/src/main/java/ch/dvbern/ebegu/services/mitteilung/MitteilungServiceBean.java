@@ -1192,39 +1192,29 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 			betreuung.extractGemeinde(),
 			betreuung.extractGesuchsperiode());
 
+		BetreuungspensumAnzeigeTyp betreuungspensumAnzeigeTyp = getBetreuungspensumAnzeigeTyp(einstellungAnzeigeTyp);
+		BigDecimal multiplier = getMultiplierForMutationsMitteilung(mitteilung, betreuungspensumAnzeigeTyp);
+
+		BetreuungsmitteilungPensumMessageFactory pensumFactory = mvzEnabled ?
+			new MahlzeitenVerguenstigungMessageFactory(mandant, locale, betreuungspensumAnzeigeTyp, multiplier) :
+			new DefaultMessageFactory(mandant, locale, betreuungspensumAnzeigeTyp, multiplier);
+
 		boolean schulergaenzendeBetreuungEnabled = mitteilung.getBetreuungspensen().stream().anyMatch(
 			betreuungspensum -> Boolean.TRUE.equals(betreuungspensum.getBetreuungInFerienzeit())
 		);
 
-		BetreuungspensumAnzeigeTyp betreuungspensumAnzeigeTyp = getBetreuungspensumAnzeigeTyp(einstellungAnzeigeTyp);
-		BigDecimal multiplier = getMultiplierForMutationsMitteilung(mitteilung, betreuungspensumAnzeigeTyp);
-
-		if (mvzEnabled && !schulergaenzendeBetreuungEnabled) {
-			return combine(
-				new MahlzeitenVerguenstigungMessageFactory(mandant, locale, betreuungspensumAnzeigeTyp, multiplier),
-				new EingewoehnungsPauschaleMessageFactory(mandant, locale)
-			);
-		}
-
-		if (mvzEnabled && schulergaenzendeBetreuungEnabled) {
-			return combine(
-				new MahlzeitenVerguenstigungMessageFactory(mandant, locale, betreuungspensumAnzeigeTyp, multiplier),
-				new EingewoehnungsPauschaleMessageFactory(mandant, locale),
-				new SchulergaenzendeBetreuungMessageFactory(mandant, locale)
-			);
-		}
-
-		if (schulergaenzendeBetreuungEnabled) {
-			return combine(
-				new DefaultMessageFactory(mandant, locale, betreuungspensumAnzeigeTyp, multiplier),
-				new EingewoehnungsPauschaleMessageFactory(mandant, locale),
-				new SchulergaenzendeBetreuungMessageFactory(mandant, locale)
-			);
-		}
+		BetreuungsmitteilungPensumMessageFactory schulergaenzendeBetreuungFactory = schulergaenzendeBetreuungEnabled ?
+			new SchulergaenzendeBetreuungMessageFactory(mandant, locale) :
+			BetreuungsmitteilungPensumMessageFactory.empty();
 
 		return combine(
-			new DefaultMessageFactory(mandant, locale, betreuungspensumAnzeigeTyp, multiplier),
-			new EingewoehnungsPauschaleMessageFactory(mandant, locale)
+			" ",
+			combine(
+				", ",
+				pensumFactory,
+				new EingewoehnungsPauschaleMessageFactory(mandant, locale)
+			),
+			schulergaenzendeBetreuungFactory
 		);
 	}
 

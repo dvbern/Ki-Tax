@@ -35,21 +35,10 @@ public class SchulergaenzendeBetreuungMessageFactory implements Betreuungsmittei
 
 	@Override
 	public String messageForPensum(int index, BetreuungsmitteilungPensum pensum) {
-		if (Boolean.TRUE.equals(pensum.getBetreuungInFerienzeit())) {
-			return ServerMessageUtil.getMessage(
-				"mutationsmeldung_message_betreuung_in_ferienzeit",
-				locale,
-				mandant);
-		}
+		String message = Boolean.TRUE.equals(pensum.getBetreuungInFerienzeit()) ?
+			"mutationsmeldung_message_betreuung_in_ferienzeit" :
+			"mutationsmeldung_message_betreuung_nicht_in_ferienzeit";
 
-		return ServerMessageUtil.getMessage(
-			"mutationsmeldung_message_betreuung_nicht_in_ferienzeit",
-			locale,
-			mandant);
-	}
-
-	@Override
-	public String getTrennenZeichnen() {
-		return " ";
+		return ServerMessageUtil.getMessage(message, locale, mandant);
 	}
 }
