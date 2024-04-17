@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
+import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -200,7 +201,7 @@ public class EinstellungServiceBean extends AbstractBaseService implements Einst
 	}
 
 	private Map<EinstellungKey, Einstellung> mapEinstellungByKey(Collection<Einstellung> einstellungList) {
-		Map<EinstellungKey, Einstellung> einstellungMapedByKey = new HashMap<>();
+		Map<EinstellungKey, Einstellung> einstellungMapedByKey = new EnumMap<>(EinstellungKey.class);
 
 		einstellungList.forEach(einstellung -> {
 			if (einstellungMapedByKey.containsKey(einstellung.getKey())) {

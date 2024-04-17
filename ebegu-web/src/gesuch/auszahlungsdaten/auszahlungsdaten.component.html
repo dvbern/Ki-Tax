@@ -73,6 +73,7 @@
                     <div class="checkbox">
                         <mat-checkbox [(ngModel)]="auszahlungsdaten.abweichendeZahlungsadresse"
                                       name="abweichendeZahlungsadresse" id="abweichendeZahlungsadresse"
+                                      [disabled]="isReadOnly()"
                                       [aria-label]="'INFOMA_ABWEICHENDE_ZAHLUNGSADRESSE' | translate"
                                       (change)="abweichendeZahlungsadresseChanged()">
                             <span translate>INFOMA_ABWEICHENDE_ZAHLUNGSADRESSE</span>
@@ -89,6 +90,7 @@
                             <label class="md-no-float required" for="adresseStrasse">{{'ADRESSE_STRASSE' | translate}}</label>
                             <input id="adresseStrasse" type="text" name="adresseStrasse"
                                    #adresseStrasse="ngModel"
+                                   [disabled]="isReadOnly()"
                                    [(ngModel)]="auszahlungsdaten.zahlungsadresse.strasse"
                                    dv-max-length class="form-control" required>
                             <dv-bisher-x
@@ -106,6 +108,7 @@
                             <input id="adresseHausnummer" type="text"
                                    name="adresseHausnummer"
                                    #adresseHausnummer="ngModel"
+                                   [disabled]="isReadOnly()"
                                    [(ngModel)]="auszahlungsdaten.zahlungsadresse.hausnummer"
                                    dv-max-length class="form-control">
                             <dv-bisher-x
@@ -126,6 +129,7 @@
                             <input id="adresseZusatzzeile" type="text"
                                    name="adresseZusatzzeile"
                                    #adresseZusatzzeile="ngModel"
+                                   [disabled]="isReadOnly()"
                                    [(ngModel)]="auszahlungsdaten.zahlungsadresse.zusatzzeile"
                                    dv-max-length class="form-control">
                             <dv-bisher-x
@@ -147,6 +151,7 @@
                             <input id="adressePlz" type="text" name="adressePlz"
                                    [(ngModel)]="auszahlungsdaten.zahlungsadresse.plz"
                                    #adressePlz="ngModel"
+                                   [disabled]="isReadOnly()"
                                    dv-max-length class="form-control" required>
                             <dv-bisher-x
                                 [showBisher]="isKorrekturModusOrFreigegeben()"
@@ -162,6 +167,7 @@
                             <input id="adresseOrt" type="text" name="adresseOrt"
                                    [(ngModel)]="auszahlungsdaten.zahlungsadresse.ort"
                                    #adresseOrt="ngModel"
+                                   [disabled]="isReadOnly()"
                                    dv-max-length class="form-control" required>
                             <dv-bisher-x
                                 [showBisher]="isKorrekturModusOrFreigegeben()"
@@ -182,6 +188,7 @@
                                 <select name="adresseLand" id="adresseLand"
                                         [(ngModel)]="auszahlungsdaten.zahlungsadresse.land"
                                         #adresseLand="ngModel"
+                                        [disabled]="isReadOnly()"
                                         class="form-control"
                                         required>
                                     <option *ngFor="let land of laenderList" [value]="land.code">{{land.translationKey | translate}}</option>

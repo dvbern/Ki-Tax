@@ -29,11 +29,6 @@ import ch.dvbern.ebegu.entities.Verfuegung;
 public class CheckVerfuegungPlatzValidator implements ConstraintValidator<CheckVerfuegungPlatz, Verfuegung> {
 
 	@Override
-	public void initialize(CheckVerfuegungPlatz constraintAnnotation) {
-		// nop
-	}
-
-	@Override
 	public boolean isValid(Verfuegung verfuegung, ConstraintValidatorContext context) {
 		boolean isBetreuung = verfuegung.getBetreuung() != null;
 		boolean isTagesschule = verfuegung.getAnmeldungTagesschule() != null;

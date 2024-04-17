@@ -17,17 +17,30 @@
 
 package ch.dvbern.ebegu.services;
 
-import ch.dvbern.ebegu.entities.*;
-import ch.dvbern.ebegu.types.DateRange;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.validation.Valid;
 import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.validation.Valid;
+import javax.validation.groups.ConvertGroup;
+
+import ch.dvbern.ebegu.entities.AbstractAnmeldung;
+import ch.dvbern.ebegu.entities.AbstractPlatz;
+import ch.dvbern.ebegu.entities.Abwesenheit;
+import ch.dvbern.ebegu.entities.AnmeldungFerieninsel;
+import ch.dvbern.ebegu.entities.AnmeldungTagesschule;
+import ch.dvbern.ebegu.entities.Betreuung;
+import ch.dvbern.ebegu.entities.BetreuungsmitteilungPensum;
+import ch.dvbern.ebegu.entities.Dossier;
+import ch.dvbern.ebegu.entities.Gesuchsperiode;
+import ch.dvbern.ebegu.entities.Institution;
+import ch.dvbern.ebegu.entities.Mandant;
+import ch.dvbern.ebegu.types.DateRange;
+import ch.dvbern.ebegu.validationgroups.BetreuungBestaetigenValidationGroup;
 
 /**
  * Service zum Verwalten von Betreuungen
@@ -68,7 +81,7 @@ public interface BetreuungService {
 	 * falls damit alle Betreuungen des Gesuchs bestaetigt sind.
 	 */
 	@Nonnull
-	Betreuung betreuungPlatzBestaetigen(@Valid @Nonnull Betreuung betreuung, @Nullable String externalClient);
+	Betreuung betreuungPlatzBestaetigen(@Valid @ConvertGroup(to = BetreuungBestaetigenValidationGroup.class) @Nonnull Betreuung betreuung, @Nullable String externalClient);
 
 	/**
 	 * Setzt die Schulamt-Anmeldung auf SCHULAMT_ANMELDUNG_ABGELEHNT und sendet dem Gesuchsteller eine E-Mail

@@ -27,11 +27,6 @@ import ch.dvbern.ebegu.entities.Dossier;
 public class CheckVerantwortlicherValidatorBG implements ConstraintValidator<CheckVerantwortlicherBG, Dossier> {
 
 	@Override
-	public void initialize(CheckVerantwortlicherBG constraintAnnotation) {
-		// nop
-	}
-
-	@Override
 	public boolean isValid(Dossier instance, ConstraintValidatorContext context) {
 		return instance.getVerantwortlicherBG() == null || instance.getVerantwortlicherBG().getRole().isRoleGemeindeOrBG()
 			|| instance.getVerantwortlicherBG().getRole().isSuperadmin();

@@ -21,6 +21,7 @@ import java.text.MessageFormat;
 import java.util.Objects;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -67,11 +68,6 @@ public class CheckFachstellenValidator implements ConstraintValidator<CheckFachs
 	}
 
 	@Override
-	public void initialize(CheckFachstellen constraintAnnotation) {
-		// nop
-	}
-
-	@Override
 	public boolean isValid(@Nonnull KindContainer kindContainer, ConstraintValidatorContext context) {
 		if (kindContainer.getKindJA() == null
 			|| kindContainer.getKindJA().getPensumFachstelle().isEmpty()
@@ -115,6 +111,7 @@ public class CheckFachstellenValidator implements ConstraintValidator<CheckFachs
 		return schulstufeEinstellung;
 	}
 
+	@Nullable
 	private EntityManager createEntityManager() {
 		if (entityManagerFactory != null) {
 			return entityManagerFactory.createEntityManager(); // creates a new EntityManager

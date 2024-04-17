@@ -15,38 +15,34 @@
 
 package ch.dvbern.ebegu.tests.validations;
 
-import java.time.LocalDate;
-
-import ch.dvbern.ebegu.types.DateRange;
-import ch.dvbern.ebegu.validators.CheckDateRangeValidator;
-import ch.dvbern.ebegu.validators.CheckIBANNotQRValidator;
+import ch.dvbern.ebegu.validators.iban.CheckIBANNotQRValidator;
 import ch.dvbern.oss.lib.beanvalidation.embeddables.IBAN;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * Tests fuer CheckDateRangeValidator
  */
-public class CheckIBANNotQRValidatorTest {
+class CheckIBANNotQRValidatorTest {
 
 	private CheckIBANNotQRValidator validator;
 
-	@Before
-	public void setUp() {
+	@BeforeEach
+	void setUp() {
 		validator = new CheckIBANNotQRValidator();
 	}
 
 	@Test
-	public void test_shouldBeInvalidIfQRIBAN() {
+	void test_shouldBeInvalidIfQRIBAN() {
 		IBAN iban = new IBAN("CH4431999123000889012");
-		Assert.assertFalse(validator.isValid(iban, null));
+		Assertions.assertFalse(validator.isValid(iban, null));
 	}
 
 	@Test
-	public void test_shouldBeValidIfNormalIBAN() {
+	void test_shouldBeValidIfNormalIBAN() {
 		IBAN iban = new IBAN("CH9300762011623852957");
-		Assert.assertTrue(validator.isValid(iban, null));
+		Assertions.assertTrue(validator.isValid(iban, null));
 	}
 
 }

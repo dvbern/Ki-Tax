@@ -32,14 +32,6 @@ import java.util.Collection;
  */
 public class CheckFachstellenFromDateValidator implements ConstraintValidator<CheckFachstellenFromDate, KindContainer> {
 
-	public CheckFachstellenFromDateValidator() {
-	}
-
-	@Override
-	public void initialize(CheckFachstellenFromDate constraintAnnotation) {
-		// nop
-	}
-
 	@Override
 	public boolean isValid(@Nonnull KindContainer kindContainer, ConstraintValidatorContext context) {
 		if (kindContainer.getKindJA() == null
