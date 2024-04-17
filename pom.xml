@@ -77,6 +77,7 @@
         <spotbugs-annotations.version>4.6.0</spotbugs-annotations.version>
         <lombok.version>1.18.32</lombok.version>
         <version.kibon-belogin-connector>2023.20.0</version.kibon-belogin-connector>
+        <sonar.coverage.jacoco.xmlReportPaths>${project.basedir}/../ebegu-server/target/site/jacoco-aggregate/jacoco.xml,${project.basedir}/../ebegu-testutils/target/site/jacoco-aggregate/jacoco.xml,${project.basedir}/../ebegu-rest/target/site/jacoco-aggregate/jacoco.xml,${project.basedir}/../ebegu-external-api/target/site/jacoco-aggregate/jacoco.xml,${project.basedir}/../ebegu-web/target/site/jacoco-aggregate/jacoco.xml,${project.basedir}/../ebegu-dbschema/target/site/jacoco-aggregate/jacoco.xml,${project.basedir}/../ebegu-ws/target/site/jacoco-aggregate/jacoco.xml,${project.basedir}/../ebegu-shared/target/site/jacoco-aggregate/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
         <argLine/> <!-- Do not remove or surefire plugin will break if coverage profile is not enabled --> 
     </properties>
 
@@ -939,24 +940,16 @@
                     <plugin>
                         <groupId>org.jacoco</groupId>
                         <artifactId>jacoco-maven-plugin</artifactId>
-                        <version>0.8.10</version>
+                        <version>0.8.12</version>
+                        <configuration>
+                            <includeCurrentProject>true</includeCurrentProject>
+                        </configuration>
                         <executions>
                             <execution>
                                 <id>prepare-agent</id>
                                 <goals>
                                     <goal>prepare-agent</goal>
                                 </goals>
-                            </execution>
-                            <execution>
-                                <id>report</id>
-                                <goals>
-                                    <goal>report</goal>
-                                </goals>
-                                <configuration>
-                                    <formats>
-                                        <format>XML</format>
-                                    </formats>
-                                </configuration>
                             </execution>
                         </executions>
                     </plugin>
