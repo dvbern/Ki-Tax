@@ -19,6 +19,7 @@ import {Ng1StateDeclaration, StateParams} from '@uirouter/angularjs';
 import {StateService} from '@uirouter/core';
 import {delay, take} from 'rxjs/operators';
 import {FamiliensituationVisitor} from '../app/core/constants/FamiliensituationVisitor';
+import {ApplicationPropertyRS} from '../app/core/rest-services/applicationPropertyRS.rest';
 import {KindRS} from '../app/core/service/kindRS.rest';
 import {MandantService} from '../app/shared/services/mandant.service';
 import {AuthServiceRS} from '../authentication/service/AuthServiceRS.rest';
@@ -456,6 +457,19 @@ export class EbeguBetreuungAbweichungenState implements Ng1StateDeclaration {
 
     public resolve = {
         gesuch: getGesuchModelManager,
+        propertyCheck: ['ApplicationPropertyRS', '$q', '$state', function(applicationPropertyRS: ApplicationPropertyRS, $q: IQService, $state: StateService) {
+            var deferred = $q.defer();
+            applicationPropertyRS.getPublicPropertiesCached().then(res => {
+                if (!res || res.abweichungenEnabled !== true) {
+                    $state.go('gesuch.betreuung'); // Redirect to access denied state or any other state
+                    deferred.reject();
+                } else {
+                    // If the property is set and meets the condition, allow state transition
+                    deferred.resolve();
+                }
+            });
+            return deferred.promise;
+        }]
     };
 
     public data = {
