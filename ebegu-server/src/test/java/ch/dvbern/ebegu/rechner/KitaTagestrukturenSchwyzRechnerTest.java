@@ -65,13 +65,14 @@ class KitaTagestrukturenSchwyzRechnerTest {
 		assertEquals(
 			VOLLKOSTEN,
 			result.getVollkosten());
-		var gutschein = new BigDecimal("750.40");
+		var gutscheinVorAbzugSelbstbehalt = new BigDecimal("750.40");
 		assertEquals(
-			gutschein,
+			gutscheinVorAbzugSelbstbehalt,
 			result.getVerguenstigungOhneBeruecksichtigungVollkosten());
 		assertEquals(
-			gutschein,
+			gutscheinVorAbzugSelbstbehalt,
 			result.getVerguenstigungOhneBeruecksichtigungMinimalbeitrag());
+		assertEquals(new BigDecimal("574.00"), result.getVerguenstigung());
 		assertEquals(MINIMALER_ELTERNBEITRAG, result.getMinimalerElternbeitrag());
 		assertEquals(new BigDecimal("176.40"), result.getMinimalerElternbeitragGekuerzt());
 		assertEquals(new BigDecimal("315.60"), result.getElternbeitrag());
@@ -102,13 +103,14 @@ class KitaTagestrukturenSchwyzRechnerTest {
 		assertEquals(
 			new BigDecimal("2000.00"),
 			result.getVollkosten());
-		var gutschein = new BigDecimal("375.20");
+		var gutscheinVorAbzugSelbstbehalt = new BigDecimal("375.20");
 		assertEquals(
-			gutschein,
+			gutscheinVorAbzugSelbstbehalt,
 			result.getVerguenstigungOhneBeruecksichtigungVollkosten());
 		assertEquals(
-			gutschein,
+			gutscheinVorAbzugSelbstbehalt,
 			result.getVerguenstigungOhneBeruecksichtigungMinimalbeitrag());
+		assertEquals(new BigDecimal("287.00"), result.getVerguenstigung());
 		assertEquals(
 			new BigDecimal("246.00"),
 			result.getMinimalerElternbeitrag());
@@ -140,13 +142,14 @@ class KitaTagestrukturenSchwyzRechnerTest {
 		assertEquals(
 			VOLLKOSTEN,
 			result.getVollkosten());
-		var gutschein = new BigDecimal("558.80");
+		var gutscheinVorAbzugSelbstbehalt = new BigDecimal("558.80");
 		assertEquals(
-			gutschein,
+			gutscheinVorAbzugSelbstbehalt,
 			result.getVerguenstigungOhneBeruecksichtigungVollkosten());
 		assertEquals(
-			gutschein,
+			gutscheinVorAbzugSelbstbehalt,
 			result.getVerguenstigungOhneBeruecksichtigungMinimalbeitrag());
+		assertEquals(new BigDecimal("558.80"), result.getVerguenstigung());
 		assertEquals(
 			MINIMALER_ELTERNBEITRAG,
 			result.getMinimalerElternbeitrag());
@@ -178,13 +181,14 @@ class KitaTagestrukturenSchwyzRechnerTest {
 		assertEquals(
 			VOLLKOSTEN,
 			result.getVollkosten());
-		var gutschein = new BigDecimal("1066.00");
+		var gutscheinVorAbzugSelbstbehalt = new BigDecimal("1066.00");
 		assertEquals(
-			gutschein,
+			gutscheinVorAbzugSelbstbehalt,
 			result.getVerguenstigungOhneBeruecksichtigungVollkosten());
 		assertEquals(
-			gutschein,
+			gutscheinVorAbzugSelbstbehalt,
 			result.getVerguenstigungOhneBeruecksichtigungMinimalbeitrag());
+		assertEquals(new BigDecimal("574.00"), result.getVerguenstigung());
 		assertEquals(
 			MINIMALER_ELTERNBEITRAG,
 			result.getMinimalerElternbeitrag());
@@ -217,13 +221,14 @@ class KitaTagestrukturenSchwyzRechnerTest {
 		assertEquals(
 			VOLLKOSTEN,
 			result.getVollkosten());
-		var gutschein = new BigDecimal("1788.15");
+		var gutscheinVorAbzugSelbstbehalt = new BigDecimal("1788.15");
 		assertEquals(
-			gutschein,
+			gutscheinVorAbzugSelbstbehalt,
 			result.getVerguenstigungOhneBeruecksichtigungVollkosten());
 		assertEquals(
-			gutschein,
+			gutscheinVorAbzugSelbstbehalt,
 			result.getVerguenstigungOhneBeruecksichtigungMinimalbeitrag());
+		assertEquals(new BigDecimal("1640.00"), result.getVerguenstigung());
 		assertEquals(
 			MINIMALER_ELTERNBEITRAG,
 			result.getMinimalerElternbeitrag());
@@ -258,13 +263,14 @@ class KitaTagestrukturenSchwyzRechnerTest {
 		assertEquals(
 			VOLLKOSTEN,
 			result.getVollkosten());
-		var gutschein = new BigDecimal("0.20");
+		var gutscheinVorAbzugSelbstbehalt = new BigDecimal("0.20");
 		assertEquals(
-			gutschein,
+			gutscheinVorAbzugSelbstbehalt,
 			result.getVerguenstigungOhneBeruecksichtigungVollkosten());
 		assertEquals(
-			gutschein,
+			gutscheinVorAbzugSelbstbehalt,
 			result.getVerguenstigungOhneBeruecksichtigungMinimalbeitrag());
+		assertEquals(new BigDecimal("0.20"), result.getVerguenstigung());
 		assertEquals(
 			MINIMALER_ELTERNBEITRAG,
 			result.getMinimalerElternbeitrag());
@@ -300,13 +306,14 @@ class KitaTagestrukturenSchwyzRechnerTest {
 		assertEquals(
 			VOLLKOSTEN,
 			result.getVollkosten());
-		var gutschein = new BigDecimal("1836.65");
+		var gutscheinVorAbzugSelbstbehalt = new BigDecimal("1836.65");
 		assertEquals(
-			gutschein,
+			gutscheinVorAbzugSelbstbehalt,
 			result.getVerguenstigungOhneBeruecksichtigungVollkosten());
 		assertEquals(
-			gutschein,
+			gutscheinVorAbzugSelbstbehalt,
 			result.getVerguenstigungOhneBeruecksichtigungMinimalbeitrag());
+		assertEquals(new BigDecimal("1640.00"), result.getVerguenstigung());
 		assertEquals(
 			MINIMALER_ELTERNBEITRAG,
 			result.getMinimalerElternbeitrag());
@@ -340,13 +347,14 @@ class KitaTagestrukturenSchwyzRechnerTest {
 		assertEquals(
 			new BigDecimal("2000.00"),
 			result.getVollkosten());
-		var gutschein = new BigDecimal("1677.45");
+		var gutscheinVorAbzugSelbstbehalt = new BigDecimal("1677.45");
 		assertEquals(
-			gutschein,
+			gutscheinVorAbzugSelbstbehalt,
 			result.getVerguenstigungOhneBeruecksichtigungVollkosten());
 		assertEquals(
-			gutschein,
+			gutscheinVorAbzugSelbstbehalt,
 			result.getVerguenstigungOhneBeruecksichtigungMinimalbeitrag());
+		assertEquals(new BigDecimal("1508.00"), result.getVerguenstigung());
 		assertEquals(
 			MINIMALER_ELTERNBEITRAG,
 			result.getMinimalerElternbeitrag());
