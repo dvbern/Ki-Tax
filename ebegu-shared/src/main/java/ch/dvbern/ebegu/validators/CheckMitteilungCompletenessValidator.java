@@ -26,11 +26,6 @@ import ch.dvbern.ebegu.entities.Mitteilung;
 public class CheckMitteilungCompletenessValidator implements ConstraintValidator<CheckMitteilungCompleteness, Mitteilung> {
 
 	@Override
-	public void initialize(CheckMitteilungCompleteness constraintAnnotation) {
-		// nop
-	}
-
-	@Override
 	public boolean isValid(Mitteilung instance, ConstraintValidatorContext context) {
 		return instance.getMessage() != null && !instance.getMessage().isEmpty()
 			&& instance.getSubject() != null && !instance.getSubject().isEmpty();

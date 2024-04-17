@@ -28,14 +28,6 @@ import ch.dvbern.ebegu.entities.Gemeinde;
  */
 public class CheckGemeindeAtLeastOneAngebotValidator implements ConstraintValidator<CheckGemeindeAtLeastOneAngebot, Gemeinde> {
 
-	public CheckGemeindeAtLeastOneAngebotValidator() {
-	}
-
-	@Override
-	public void initialize(CheckGemeindeAtLeastOneAngebot constraintAnnotation) {
-		// nop
-	}
-
 	@Override
 	public boolean isValid(@Nonnull Gemeinde gemeinde, ConstraintValidatorContext context) {
 		return gemeinde.isBesondereVolksschule() || gemeinde.isAngebotBG() || gemeinde.isAngebotTS() || gemeinde.isAngebotFI();

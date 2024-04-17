@@ -46,7 +46,6 @@ import {TSEinstellungKey} from '../../../models/enums/TSEinstellungKey';
 import {TSFachstellenTyp} from '../../../models/enums/TSFachstellenTyp';
 import {TSInstitutionStatus} from '../../../models/enums/TSInstitutionStatus';
 import {TSPensumAnzeigeTyp} from '../../../models/enums/TSPensumAnzeigeTyp';
-import {TSPensumUnits} from '../../../models/enums/TSPensumUnits';
 import {TSRole} from '../../../models/enums/TSRole';
 import {TSWizardStepName} from '../../../models/enums/TSWizardStepName';
 import {TSBelegungTagesschule} from '../../../models/TSBelegungTagesschule';
@@ -54,6 +53,7 @@ import {TSBetreuung} from '../../../models/TSBetreuung';
 import {TSBetreuungsmitteilung} from '../../../models/TSBetreuungsmitteilung';
 import {TSBetreuungspensum} from '../../../models/TSBetreuungspensum';
 import {TSBetreuungspensumContainer} from '../../../models/TSBetreuungspensumContainer';
+import {TSEingewoehnungPauschale} from '../../../models/TSEingewoehnungPauschale';
 import {TSEinstellung} from '../../../models/TSEinstellung';
 import {TSErweiterteBetreuung} from '../../../models/TSErweiterteBetreuung';
 import {TSErweiterteBetreuungContainer} from '../../../models/TSErweiterteBetreuungContainer';
@@ -63,7 +63,6 @@ import {TSInstitutionStammdaten} from '../../../models/TSInstitutionStammdaten';
 import {TSInstitutionStammdatenSummary} from '../../../models/TSInstitutionStammdatenSummary';
 import {TSKindContainer} from '../../../models/TSKindContainer';
 import {TSPublicAppConfig} from '../../../models/TSPublicAppConfig';
-import {TSDateRange} from '../../../models/types/TSDateRange';
 import {DateUtil} from '../../../utils/DateUtil';
 import {EbeguRestUtil} from '../../../utils/EbeguRestUtil';
 import {EbeguUtil} from '../../../utils/EbeguUtil';
@@ -76,6 +75,7 @@ import {GesuchModelManager} from '../../service/gesuchModelManager';
 import {GlobalCacheService} from '../../service/globalCacheService';
 import {WizardStepManager} from '../../service/wizardStepManager';
 import {AbstractGesuchViewController} from '../abstractGesuchView';
+import {createTSBetreuungspensum} from './betreuungView.util';
 import ILogService = angular.ILogService;
 import IScope = angular.IScope;
 import ITimeoutService = angular.ITimeoutService;
@@ -164,7 +164,6 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
 
     private multiplierKita: number;
     private multiplierTFO: number;
-    private multiplierMittagstisch: number;
 
     public minPensumSprachlicheIndikation: number;
 
@@ -484,9 +483,6 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
             this.isKesbPlatzierung = !this.getErweiterteBetreuungJA().keineKesbPlatzierung;
         }
         this.allowedRoles = this.TSRoleUtil.getAdminJaSchulamtSozialdienstGesuchstellerRoles();
-        this.getBetreuungspensen().forEach(betreunungspensumContainer => {
-            betreunungspensumContainer.betreuungspensumJA.initKostenProMahlzeit(this.getMultiplierMittagstisch());
-        });
     }
 
     /**
@@ -875,41 +871,17 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
             && (this.getBetreuungspensen() === undefined || this.getBetreuungspensen() === null)) {
             this.getBetreuungModel().betreuungspensumContainers = [];
         }
-        if (!this.getBetreuungModel()) {
+        const betreuungsangebotTyp = this.getBetreuungsangebot();
+        if (!this.getBetreuungModel() || !betreuungsangebotTyp) {
             this.errorService.addMesageAsError('Betreuungsmodel ist nicht initialisiert.');
         }
-        const tsBetreuungspensum = new TSBetreuungspensum();
-        tsBetreuungspensum.unitForDisplay = this.betreuungspensumAnzeigeTypEinstellung === TSPensumAnzeigeTyp.NUR_STUNDEN ?
-            TSPensumUnits.HOURS :
-            TSPensumUnits.PERCENTAGE;
-        tsBetreuungspensum.nichtEingetreten = false;
-        tsBetreuungspensum.gueltigkeit = new TSDateRange();
-
-        if (!this.isMahlzeitenverguenstigungActive()) {
-            // die felder sind not null und müssen auf 0 gesetzt werden, damit die validierung nicht fehlschlägt falls
-            // die gemeinde die vergünstigung deaktiviert hat
-            tsBetreuungspensum.monatlicheNebenmahlzeiten = 0;
-            tsBetreuungspensum.monatlicheHauptmahlzeiten = 0;
-            tsBetreuungspensum.tarifProHauptmahlzeit = 0;
-            tsBetreuungspensum.tarifProNebenmahlzeit = 0;
-        } else if (this.instStamm.institutionStammdatenBetreuungsgutscheine) {
-            // Wir setzen die Defaults der Institution, falls vorhanden (der else-Fall waere bei einer Unbekannten
-            // Institution, dort werden die Mahlzeiten eh nicht angezeigt, oder im Fall einer Tagesschule, wo die
-            // Tarife auf dem Modul hinterlegt sind)
-            tsBetreuungspensum.tarifProHauptmahlzeit =
-                this.instStamm.institutionStammdatenBetreuungsgutscheine.tarifProHauptmahlzeit;
-            tsBetreuungspensum.tarifProNebenmahlzeit =
-                this.instStamm.institutionStammdatenBetreuungsgutscheine.tarifProNebenmahlzeit;
-        }
-
-        if (this.isTFOKostenBerechnungStuendlich
-            && this.betreuungsangebot
-            && this.betreuungsangebot.key === TSBetreuungsangebotTyp.TAGESFAMILIEN) {
-            // die felder sind not null und müssen auf 0 gesetzt werden, damit die Validierung nicht fehlschlägt falls
-            // die TFO Kosten stündlich eingegeben werden
-            tsBetreuungspensum.monatlicheBetreuungskosten = 0;
-            tsBetreuungspensum.pensum = 0;
-        }
+        const tsBetreuungspensum: TSBetreuungspensum = createTSBetreuungspensum({
+            anzeigeEinstellung: this.betreuungspensumAnzeigeTypEinstellung,
+            betreuungsangebotTyp,
+            instStammdaten: this.instStamm,
+            isTFOKostenBerechnungStuendlich: this.isTFOKostenBerechnungStuendlich,
+            mahlzeitenverguenstigungActive: this.isMahlzeitenverguenstigungActive(),
+        });
 
         this.getBetreuungspensen().push(new TSBetreuungspensumContainer(undefined,
             tsBetreuungspensum));
@@ -1432,17 +1404,20 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         return this.isTagesschule() && this.checkIfGemeindeOrBetreuungHasTSAnmeldung();
     }
 
-    public showEingewoehnung(): boolean {
+    public showEingewoehnungPeriode(): boolean {
         if (this.isSchulamt()) {
             return false;
         }
+
         switch (this.eingewoehnungTyp) {
             case TSEingewoehnungTyp.KEINE:
                 return false;
             case TSEingewoehnungTyp.FKJV:
-                return this.showEingewohenungFKJV();
+                return this.showEingewohenungPeriodeFKJV();
             case TSEingewoehnungTyp.LUZERN:
                 return true;
+            case TSEingewoehnungTyp.PAUSCHALE:
+                return false;
             default: {
                 const errorMsg = `not implemented eingewoehnungTyp ${this.eingewoehnungTyp}`;
                 LOG.error(errorMsg);
@@ -1451,7 +1426,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         }
     }
 
-    private showEingewohenungFKJV(): boolean {
+    private showEingewohenungPeriodeFKJV(): boolean {
         if (this.isBetreuungsstatusAusstehend()) {
             return false;
         }
@@ -1461,7 +1436,11 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         return true;
     }
 
-    public isEingewoehnungEnabled(): boolean {
+    public showEingewoehnungPauschale(): boolean {
+        return this.eingewoehnungTyp === TSEingewoehnungTyp.PAUSCHALE;
+    }
+
+    public isEingewoehnungPeriodeEnabled(): boolean {
         if (this.isGesuchReadonly()) {
             return false;
         }
@@ -1475,6 +1454,24 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
             return true;
         }
         return false;
+    }
+
+    public isEingewoehnungPauschaleEnabled(): boolean {
+        if (!this.isPensumEditable()) {
+            return false;
+        }
+
+        return this.authServiceRS.isOneOfRoles(TSRoleUtil.getTraegerschaftInstitutionRoles());
+    }
+
+    public onEingewoehnungPauschaleChange(betreuungspensumIndex: number): void {
+        const pensumToUse = this.getBetreuungspensum(betreuungspensumIndex).betreuungspensumJA;
+
+        if (pensumToUse.hasEingewoehnungsPauschale) {
+            pensumToUse.eingewoehnungPauschale = new TSEingewoehnungPauschale();
+        } else {
+            pensumToUse.eingewoehnungPauschale = null;
+        }
     }
 
     private checkIfGemeindeOrBetreuungHasTSAnmeldung(): boolean {
@@ -1810,14 +1807,6 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         return this.multiplierTFO;
     }
 
-    public getMultiplierMittagstisch(): number {
-        if (EbeguUtil.isNullOrUndefined(this.multiplierMittagstisch)) {
-            this.calculateMultiplierMittagstisch();
-        }
-
-        return this.multiplierMittagstisch;
-    }
-
     private calculateMuliplyerKita(): void {
         if (this.betreuungspensumAnzeigeTypEinstellung === TSPensumAnzeigeTyp.NUR_STUNDEN) {
             this.multiplierKita = this.oeffnungstageKita * this.kitastundenprotag / 12 / 100;
@@ -1833,15 +1822,11 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         this.multiplierTFO = this.oeffnungstageTFO * this.oeffnungsstundenTFO / 12 / 100;
     }
 
-    private calculateMultiplierMittagstisch(): void {
-        // Beispiel: 5 Tage Pro Woche, 4,1 Wochen  pro Monat => 20.5 Mahlzeiten Pro Monat
-        // 100% = 20.5 Mahlzeiten => 1% = 0.205 stunden
-        const mittagstischTageProWoche: number = 5;
-        const mittagstischWochenProMonat: number = 4.1;
-        this.multiplierMittagstisch = mittagstischTageProWoche * mittagstischWochenProMonat  / 100;
-    }
-
     public showBetreuungsPensumInput(): boolean {
+        if (this.isBetreuungsangebotMittagstisch()) {
+            return false;
+        }
+
         if (!this.isBetreuungsangebotTagesfamilie()) {
             return true;
         }
@@ -1865,12 +1850,15 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     }
 
     private isBetreuungsangebotTagesfamilie(): boolean {
-        return this.betreuungsangebot
-            && this.betreuungsangebot.key === TSBetreuungsangebotTyp.TAGESFAMILIEN;
+        return this.getBetreuungsangebot() === TSBetreuungsangebotTyp.TAGESFAMILIEN;
     }
 
     private isBetreuungsangebotMittagstisch(): boolean {
-        return this.betreuungsangebot?.key === TSBetreuungsangebotTyp.MITTAGSTISCH;
+        return this.getBetreuungsangebot() === TSBetreuungsangebotTyp.MITTAGSTISCH;
+    }
+
+    private getBetreuungsangebot(): TSBetreuungsangebotTyp | undefined {
+        return this.betreuungsangebot?.key;
     }
 
     private showHintUntermonatlich(): boolean {
@@ -1878,7 +1866,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     }
 
     private showHintEingewoehnung(): boolean {
-        return this.mandant === MANDANTS.LUZERN
+        return this.eingewoehnungTyp === TSEingewoehnungTyp.LUZERN
             && !this.authServiceRS.isOneOfRoles(TSRoleUtil.getGesuchstellerSozialdienstRolle());
     }
 
@@ -1916,16 +1904,4 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
         }
         return this.$translate.instant('EINGEWOEHNUNG');
     }
-
-    public showKostenMahlzeitInput(): boolean {
-        return this.isBetreuungsangebotMittagstisch();
-    }
-
-    public recalculateMonatlicheKostenFromMahlzeiten(betreuungspensumIndex: number): void {
-        if (!this.isBetreuungsangebotMittagstisch()) {
-            return;
-        }
-        this.getBetreuungspensum(betreuungspensumIndex).betreuungspensumJA.recalculateMonatlicheMahlzeitenKosten(this.multiplierMittagstisch);
-    }
-
 }

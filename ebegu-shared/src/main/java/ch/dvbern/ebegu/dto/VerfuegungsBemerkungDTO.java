@@ -15,18 +15,17 @@
 
 package ch.dvbern.ebegu.dto;
 
-import java.util.Arrays;
-import java.util.Locale;
-import java.util.Objects;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
 import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.enums.MsgKey;
 import ch.dvbern.ebegu.rules.RuleValidity;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.ServerMessageUtil;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.Arrays;
+import java.util.Locale;
+import java.util.Objects;
 
 /**
  * DTO für eine Verfügungsbemerkung
@@ -98,6 +97,14 @@ public class VerfuegungsBemerkungDTO {
 
 	public void setGueltigkeit(@Nullable DateRange gueltigkeit) {
 		this.gueltigkeit = gueltigkeit;
+	}
+
+	public void setArgs(@Nullable Object... args) {
+		if (args == null) {
+			return;
+		}
+
+		this.args = Arrays.copyOf(args, args.length);
 	}
 
 	public String getTranslated(Mandant mandant) {

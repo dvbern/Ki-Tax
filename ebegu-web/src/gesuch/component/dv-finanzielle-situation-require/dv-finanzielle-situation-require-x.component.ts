@@ -99,7 +99,7 @@ export class DvFinanzielleSituationRequireXComponent implements OnInit {
     public setFinanziellesituationRequired(): void {
         const required = EbeguUtil.isFinanzielleSituationRequired(this.sozialhilfeBezueger,
             this.verguenstigungGewuenscht);
-        // Wenn es sich ge�ndert und nicht den Initialwert "undefined" hat, m�ssen gewisse Daten gesetzt werden
+        // Wenn es sich geändert und nicht den Initialwert "undefined" hat, müssen gewisse Daten gesetzt werden
         if (EbeguUtil.isNotNullOrUndefined(this.finanzielleSituationRequired) &&
             required !== this.finanzielleSituationRequired &&
             this.gesuchModelManager.getGesuch()) {

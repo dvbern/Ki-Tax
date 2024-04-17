@@ -21,9 +21,14 @@ package ch.dvbern.ebegu.enums;
 public enum EingewoehnungTyp {
 	FKJV,
 	LUZERN,
+	PAUSCHALE,
 	KEINE;
 
-	public boolean eingewoehnungAktiviert() {
+	public boolean isEingewoehnungTypPeriode() {
 		return this == FKJV || this == LUZERN;
+	}
+
+	public boolean isEingewoehnunTypPauschale() {
+		return this == PAUSCHALE;
 	}
 }

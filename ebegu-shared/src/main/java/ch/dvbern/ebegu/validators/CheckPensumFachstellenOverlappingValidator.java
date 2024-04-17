@@ -36,11 +36,6 @@ public class CheckPensumFachstellenOverlappingValidator
 	implements ConstraintValidator<CheckPensumFachstellenOverlapping, KindContainer> {
 
 	@Override
-	public void initialize(CheckPensumFachstellenOverlapping constraintAnnotation) {
-		// nop
-	}
-
-	@Override
 	public boolean isValid(@Nonnull KindContainer kindContainer, ConstraintValidatorContext context) {
 		if (kindContainer.getKindJA() == null) {
 			return true;

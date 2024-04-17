@@ -18,38 +18,32 @@ package ch.dvbern.ebegu.tests.validations;
 import java.time.LocalDate;
 
 import ch.dvbern.ebegu.types.DateRange;
-import ch.dvbern.ebegu.validators.CheckDateRangeValidator;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import ch.dvbern.ebegu.validators.dateranges.CheckDateRangeValidator;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 /**
  * Tests fuer CheckDateRangeValidator
  */
-public class CheckDateRangeValidatorTest {
+class CheckDateRangeValidatorTest {
 
-	private CheckDateRangeValidator validator;
-
-	@Before
-	public void setUp() {
-		validator = new CheckDateRangeValidator();
-	}
+	private final CheckDateRangeValidator validator = new CheckDateRangeValidator();
 
 	@Test
-	public void testgueltigAbBeforeBis() {
+	void testgueltigAbBeforeBis() {
 		DateRange dateRange = new DateRange(LocalDate.of(2015, 10, 9), LocalDate.of(2015, 10, 10));
-		Assert.assertTrue(validator.isValid(dateRange, null));
+		Assertions.assertTrue(validator.isValid(dateRange, null));
 	}
 
 	@Test
-	public void testgueltigAbEqualsBis() {
+	void testgueltigAbEqualsBis() {
 		DateRange dateRange = new DateRange(LocalDate.of(2015, 10, 9), LocalDate.of(2015, 10, 9));
-		Assert.assertTrue(validator.isValid(dateRange, null));
+		Assertions.assertTrue(validator.isValid(dateRange, null));
 	}
 
 	@Test
-	public void testgueltigAbAfterBis() {
+	void testgueltigAbAfterBis() {
 		DateRange dateRange = new DateRange(LocalDate.of(2015, 10, 9), LocalDate.of(2015, 10, 8));
-		Assert.assertFalse(validator.isValid(dateRange, null));
+		Assertions.assertFalse(validator.isValid(dateRange, null));
 	}
 }

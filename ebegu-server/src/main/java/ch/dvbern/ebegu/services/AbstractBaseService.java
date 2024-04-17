@@ -17,8 +17,6 @@
 
 package ch.dvbern.ebegu.services;
 
-import java.util.Collection;
-import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -30,17 +28,7 @@ import javax.inject.Inject;
 import ch.dvbern.ebegu.config.EbeguConfiguration;
 import ch.dvbern.ebegu.entities.AbstractEntity;
 import ch.dvbern.ebegu.entities.AbstractPlatz;
-import ch.dvbern.ebegu.entities.Einstellung;
-import ch.dvbern.ebegu.entities.Gemeinde;
-import ch.dvbern.ebegu.entities.Gesuchsperiode;
-import ch.dvbern.ebegu.entities.KitaxUebergangsloesungInstitutionOeffnungszeiten;
-import ch.dvbern.ebegu.entities.Mandant;
-import ch.dvbern.ebegu.entities.Verfuegung;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
-import ch.dvbern.ebegu.enums.EinstellungKey;
-import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
-import ch.dvbern.ebegu.rechner.BGRechnerParameterDTO;
-import ch.dvbern.ebegu.util.KitaxUebergangsloesungParameter;
 import ch.dvbern.lib.cdipersistence.Persistence;
 import org.hibernate.Session;
 import org.hibernate.search.FullTextSession;
@@ -57,16 +45,7 @@ public abstract class AbstractBaseService {
 	private Persistence persistence;
 
 	@Inject
-	private EinstellungService einstellungService;
-
-	@Inject
 	private EbeguConfiguration ebeguConfiguration;
-
-	@Inject
-	private ApplicationPropertyService applicationPropertyService;
-
-	@Inject
-	private CriteriaQueryHelper criteriaQueryHelper;
 
 	private static final Logger LOG = LoggerFactory.getLogger(AbstractBaseService.class.getSimpleName());
 
@@ -81,27 +60,6 @@ public abstract class AbstractBaseService {
 		// ... und neu erstellen
 		Object customer = fullTextSession.load(clazz, id);
 		fullTextSession.index(customer);
-	}
-
-	@Nonnull
-	public BGRechnerParameterDTO loadCalculatorParameters(
-		@Nonnull Gemeinde gemeinde,
-		@Nonnull Gesuchsperiode gesuchsperiode) {
-		Map<EinstellungKey, Einstellung> paramMap =
-			einstellungService.getAllEinstellungenByGemeindeAsMap(gemeinde, gesuchsperiode);
-		return new BGRechnerParameterDTO(paramMap, gesuchsperiode, gemeinde);
-	}
-
-	@Nonnull
-	public KitaxUebergangsloesungParameter loadKitaxUebergangsloesungParameter(@Nonnull Mandant mandant) {
-		Collection<KitaxUebergangsloesungInstitutionOeffnungszeiten> oeffnungszeiten =
-			criteriaQueryHelper.getAll(KitaxUebergangsloesungInstitutionOeffnungszeiten.class);
-		KitaxUebergangsloesungParameter parameter = new KitaxUebergangsloesungParameter(
-			applicationPropertyService.getStadtBernAsivStartDatum(mandant),
-			applicationPropertyService.isStadtBernAsivConfigured(mandant),
-			oeffnungszeiten
-		);
-		return parameter;
 	}
 
 	public void updateGueltigFlagOnPlatzAndVorgaenger(@Nonnull AbstractPlatz platz) {
@@ -157,15 +115,6 @@ public abstract class AbstractBaseService {
 			return findVorgaengerPlatz(vorgaengerPlatz);
 		}
 		return Optional.empty();
-	}
-
-	/**
-	 * @return gibt die Verfuegung der vorherigen verfuegten Betreuung zurueck.
-	 */
-	@Nonnull
-	protected Optional<Verfuegung> findVorgaengerVerfuegung(@Nonnull AbstractPlatz abstractPlatz) {
-		final Optional<AbstractPlatz> vorgaengerPlatz = findVorgaengerPlatz(abstractPlatz);
-		return vorgaengerPlatz.map(AbstractPlatz::getVerfuegung);
 	}
 
 	protected void logExceptionAccordingToEnvironment(

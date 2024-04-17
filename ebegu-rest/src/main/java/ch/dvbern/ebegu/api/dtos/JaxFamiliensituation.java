@@ -18,7 +18,7 @@ package ch.dvbern.ebegu.api.dtos;
 import ch.dvbern.ebegu.enums.EnumFamilienstatus;
 import ch.dvbern.ebegu.enums.EnumGesuchstellerKardinalitaet;
 import ch.dvbern.ebegu.enums.UnterhaltsvereinbarungAnswer;
-import ch.dvbern.ebegu.validators.CheckIBANString;
+import ch.dvbern.ebegu.validators.iban.CheckIBANString;
 import ch.dvbern.lib.date.converters.LocalDateXMLConverter;
 
 import javax.annotation.Nonnull;

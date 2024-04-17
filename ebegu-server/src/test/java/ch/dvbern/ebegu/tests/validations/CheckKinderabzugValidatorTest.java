@@ -17,130 +17,129 @@ package ch.dvbern.ebegu.tests.validations;
 
 import ch.dvbern.ebegu.entities.Kind;
 import ch.dvbern.ebegu.validators.CheckKinderabzugValidator;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * Tests fuer {@link CheckKinderabzugValidator}
  */
-public class CheckKinderabzugValidatorTest {
+class CheckKinderabzugValidatorTest {
 
 	private CheckKinderabzugValidator validator;
-	private Kind kind = new Kind();
 
-	@Before
-	public void setUp() {
+	@BeforeEach
+	void setUp() {
 		validator = new CheckKinderabzugValidator();
 	}
 
 	@Test
-	public void checkPathPflegekindValid() {
+	void checkPathPflegekindValid() {
 		var kind = new Kind();
 		kind.setPflegekind(true);
 		kind.setPflegeEntschaedigungErhalten(true);
-		Assert.assertTrue(validator.isValid(kind, null));
+		Assertions.assertTrue(validator.isValid(kind, null));
 	}
 
 	@Test
-	public void checkPathPflegekindNotValid() {
+	void checkPathPflegekindNotValid() {
 		var kind = new Kind();
 		kind.setPflegekind(true);
 		kind.setPflegeEntschaedigungErhalten(true);
 		kind.setObhutAlternierendAusueben(true);
-		Assert.assertFalse(validator.isValid(kind, null));
+		Assertions.assertFalse(validator.isValid(kind, null));
 	}
 
 	@Test
-	public void checkPathObhutalternierendValid() {
+	void checkPathObhutalternierendValid() {
 		var kind = new Kind();
 		kind.setPflegekind(false);
 		kind.setObhutAlternierendAusueben(true);
 		kind.setGemeinsamesGesuch(false);
-		Assert.assertTrue(validator.isValid(kind, null));
+		Assertions.assertTrue(validator.isValid(kind, null));
 	}
 
 	@Test
-	public void checkPathObhutalternierendNotValid() {
+	void checkPathObhutalternierendNotValid() {
 		var kind = new Kind();
 		kind.setPflegekind(false);
 		kind.setObhutAlternierendAusueben(true);
 		kind.setInErstausbildung(true);
 		kind.setGemeinsamesGesuch(false);
-		Assert.assertFalse(validator.isValid(kind, null));
+		Assertions.assertFalse(validator.isValid(kind, null));
 	}
 
 	@Test
-	public void checkPathAlimenteBezahlenValid() {
+	void checkPathAlimenteBezahlenValid() {
 		var kind = new Kind();
 		kind.setPflegekind(false);
 		kind.setInErstausbildung(true);
 		kind.setLebtKindAlternierend(false);
 		kind.setAlimenteBezahlen(true);
-		Assert.assertTrue(validator.isValid(kind, null));
+		Assertions.assertTrue(validator.isValid(kind, null));
 	}
 
 	@Test
-	public void checkPathAlimenteBezahlenNotValid() {
+	void checkPathAlimenteBezahlenNotValid() {
 		var kind = new Kind();
 		kind.setPflegekind(false);
 		kind.setInErstausbildung(true);
 		kind.setObhutAlternierendAusueben(true);
 		kind.setLebtKindAlternierend(false);
 		kind.setAlimenteBezahlen(true);
-		Assert.assertFalse(validator.isValid(kind, null));
+		Assertions.assertFalse(validator.isValid(kind, null));
 	}
 
 	@Test
-	public void checkPathAlimenteErhaltenValid() {
+	void checkPathAlimenteErhaltenValid() {
 		var kind = new Kind();
 		kind.setPflegekind(false);
 		kind.setInErstausbildung(true);
 		kind.setLebtKindAlternierend(true);
 		kind.setAlimenteErhalten(true);
-		Assert.assertTrue(validator.isValid(kind, null));
+		Assertions.assertTrue(validator.isValid(kind, null));
 	}
 
 	@Test
-	public void checkPathAlimenteErhaltenNotValid() {
+	void checkPathAlimenteErhaltenNotValid() {
 		var kind = new Kind();
 		kind.setPflegekind(false);
 		kind.setInErstausbildung(true);
 		kind.setLebtKindAlternierend(true);
 		kind.setAlimenteErhalten(true);
 		kind.setAlimenteBezahlen(true);
-		Assert.assertFalse(validator.isValid(kind, null));
+		Assertions.assertFalse(validator.isValid(kind, null));
 	}
 
 	@Test
-	public void checkPathKinderAbzugTypSchwyzKeinUnterhaltspflichtigNotValid() {
+	void checkPathKinderAbzugTypSchwyzKeinUnterhaltspflichtigNotValid() {
 		var kind = new Kind();
 		kind.setUnterhaltspflichtig(false);
 		kind.setLebtKindAlternierend(true);
-		Assert.assertFalse(validator.isValid(kind, null));
+		Assertions.assertFalse(validator.isValid(kind, null));
 	}
 
 	@Test
-	public void checkPathKinderAbzugTypSchwyzUnterhaltspflichtigNotValid() {
+	void checkPathKinderAbzugTypSchwyzUnterhaltspflichtigNotValid() {
 		var kind = new Kind();
 		kind.setUnterhaltspflichtig(true);
 		kind.setLebtKindAlternierend(null);
-		Assert.assertFalse(validator.isValid(kind, null));
+		Assertions.assertFalse(validator.isValid(kind, null));
 	}
 
 	@Test
-	public void checkPathKinderAbzugTypSchwyzUnterhaltspflichtigValid() {
+	void checkPathKinderAbzugTypSchwyzUnterhaltspflichtigValid() {
 		var kind = new Kind();
 		kind.setUnterhaltspflichtig(true);
 		kind.setLebtKindAlternierend(true);
-		Assert.assertTrue(validator.isValid(kind, null));
+		Assertions.assertTrue(validator.isValid(kind, null));
 	}
 
 	@Test
-	public void checkPathKinderAbzugTypSchwyzKeinUnterhaltspflichtigValid() {
+	void checkPathKinderAbzugTypSchwyzKeinUnterhaltspflichtigValid() {
 		var kind = new Kind();
 		kind.setUnterhaltspflichtig(false);
 		kind.setLebtKindAlternierend(null);
-		Assert.assertTrue(validator.isValid(kind, null));
+		Assertions.assertTrue(validator.isValid(kind, null));
 	}
 }

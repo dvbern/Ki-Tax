@@ -86,7 +86,6 @@ public final class DateUtil {
 
 	/**
 	 * Berechnet den Anteil des Zeitabschnittes am gesamten Monat als dezimalzahl von 0 bis 1
-	 * Dabei werden nur Werktage (d.h. sa do werden ignoriert) beruecksichtigt
 	 */
 	public static BigDecimal calculateAnteilMonatInklWeekend(@Nonnull LocalDate von, @Nonnull LocalDate bis) {
 		LocalDate monatsanfang = von.with(TemporalAdjusters.firstDayOfMonth());
@@ -115,7 +114,7 @@ public final class DateUtil {
 
 	public static String incrementYear(@Nonnull String dateStr) {
 		LocalDate date = Date.valueOf(dateStr).toLocalDate();
-		return date.plus(1, ChronoUnit.YEARS).toString();
+		return date.plusYears(1).toString();
 	}
 
 	public static DateRange limitToDateRange(DateRange range, DateRange gesuchsperiode) {
