@@ -17,6 +17,20 @@
 
 package ch.dvbern.ebegu.entities;
 
+import java.math.BigDecimal;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.persistence.AssociationOverride;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.ForeignKey;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Transient;
+import javax.validation.constraints.NotNull;
+
 import ch.dvbern.ebegu.enums.AntragCopyType;
 import ch.dvbern.ebegu.enums.BetreuungspensumAbweichungStatus;
 import ch.dvbern.ebegu.util.DateUtil;
@@ -24,17 +38,13 @@ import ch.dvbern.ebegu.util.MathUtil;
 import org.apache.commons.lang3.builder.CompareToBuilder;
 import org.hibernate.envers.Audited;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.persistence.*;
-import javax.validation.constraints.NotNull;
-import java.math.BigDecimal;
-import java.util.Objects;
+import static java.util.Objects.requireNonNull;
 
 @Audited
 @Entity
 @AssociationOverride(name = "eingewoehnungPauschale",
-		joinColumns = @JoinColumn(name = "eingewoehnung_pauschale_id"), foreignKey = @ForeignKey(name = "FK_betreuungspensum_abweichung_eingewoehnung_pauschale_id"))
+	joinColumns = @JoinColumn(name = "eingewoehnung_pauschale_id"),
+	foreignKey = @ForeignKey(name = "FK_betreuungspensum_abweichung_eingewoehnung_pauschale_id"))
 public class BetreuungspensumAbweichung extends AbstractMahlzeitenPensum implements Comparable<BetreuungspensumAbweichung>  {
 
 	private static final long serialVersionUID = -8308660793880620086L;
@@ -254,24 +264,10 @@ public class BetreuungspensumAbweichung extends AbstractMahlzeitenPensum impleme
 		mitteilungPensum.setBetreuungsmitteilung(mitteilung);
 		mitteilungPensum.setGueltigkeit(getGueltigkeit());
 
-		BigDecimal pensum = getStatus() == BetreuungspensumAbweichungStatus.NONE
-			? getVertraglichesPensum() : getPensum();
-
-		BigDecimal kosten = getStatus() == BetreuungspensumAbweichungStatus.NONE
-			? getVertraglicheKosten() : getMonatlicheBetreuungskosten();
-
-		BigDecimal hauptmahlzeiten = getStatus() == BetreuungspensumAbweichungStatus.NONE
-			? getVertraglicheHauptmahlzeiten() : getMonatlicheHauptmahlzeiten();
-
-		BigDecimal nebenmahlzeiten = getStatus() == BetreuungspensumAbweichungStatus.NONE
-			? getVertraglicheNebenmahlzeiten() : getMonatlicheNebenmahlzeiten();
-
-		Objects.requireNonNull(pensum);
-		Objects.requireNonNull(kosten);
-		Objects.requireNonNull(hauptmahlzeiten);
-		Objects.requireNonNull(nebenmahlzeiten);
-		Objects.requireNonNull(vertraglicherTarifHauptmahlzeit);
-		Objects.requireNonNull(vertraglicherTarifNebenmahlzeit);
+		BigDecimal pensum = vertraglichWhenStatusNone(getPensum(), getVertraglichesPensum());
+		BigDecimal kosten = vertraglichWhenStatusNone(getMonatlicheBetreuungskosten(), getVertraglicheKosten());
+		BigDecimal hauptmahlzeiten = vertraglichWhenStatusNone(getMonatlicheHauptmahlzeiten(), getVertraglicheHauptmahlzeiten());
+		BigDecimal nebenmahlzeiten = vertraglichWhenStatusNone(getMonatlicheNebenmahlzeiten(), getVertraglicheNebenmahlzeiten());
 
 		mitteilungPensum.setUnitForDisplay(getUnitForDisplay());
 		mitteilungPensum.setPensum(pensum);
@@ -279,9 +275,18 @@ public class BetreuungspensumAbweichung extends AbstractMahlzeitenPensum impleme
 		mitteilungPensum.setMonatlicheHauptmahlzeiten(hauptmahlzeiten);
 		mitteilungPensum.setMonatlicheNebenmahlzeiten(nebenmahlzeiten);
 
+		// really not sure why tarife for Mahlzeiten are different than everything else...
 		// Tarif is immutable at this point and we just copy the old value
-		mitteilungPensum.setTarifProHauptmahlzeit(vertraglicherTarifHauptmahlzeit);
-		mitteilungPensum.setTarifProNebenmahlzeit(vertraglicherTarifNebenmahlzeit);
+		if (requireNonNull(mitteilung.getBetreuung()).isAngebotMittagstisch()) {
+			BigDecimal kostenHauptmahlzeit = vertraglichWhenStatusNone(getTarifProHauptmahlzeit(), getVertraglicherTarifHauptmahlzeit());
+			BigDecimal kostenNebenmahlzeit = vertraglichWhenStatusNone(getTarifProNebenmahlzeit(), getVertraglicherTarifNebenmahlzeit());
+			mitteilungPensum.setTarifProHauptmahlzeit(kostenHauptmahlzeit);
+			mitteilungPensum.setTarifProNebenmahlzeit(kostenNebenmahlzeit);
+		} else {
+			mitteilungPensum.setTarifProHauptmahlzeit(requireNonNull(vertraglicherTarifHauptmahlzeit));
+			mitteilungPensum.setTarifProNebenmahlzeit(requireNonNull(vertraglicherTarifNebenmahlzeit));
+		}
+		// not sure why this is different either...
 		mitteilungPensum.setStuendlicheVollkosten(getStuendlicheVollkosten());
 
 		// as soon as we created a Mitteilung out of the Abweichung we set the state to verrechnet (freigegeben) and
@@ -301,5 +306,10 @@ public class BetreuungspensumAbweichung extends AbstractMahlzeitenPensum impleme
 		}
 
 		return mitteilungPensum;
+	}
+
+	@Nonnull
+	private BigDecimal vertraglichWhenStatusNone(BigDecimal value, @Nullable BigDecimal vertraglicherValue) {
+		return requireNonNull(status == BetreuungspensumAbweichungStatus.NONE ? vertraglicherValue : value);
 	}
 }

@@ -21,6 +21,8 @@ import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.*;
 import ch.dvbern.ebegu.rules.RuleValidity;
 import ch.dvbern.ebegu.util.MathUtil;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -198,6 +200,13 @@ public class BGCalculationInput {
 
 	private BigDecimal eingewoehnungPauschale = BigDecimal.ZERO;
 
+	private Boolean isBetreuungWaehrendSchulzeit;
+
+	@Getter
+	@Setter
+	// Zu verstehen als "Anzahl anderer Kinder im gleichen Haushalt"
+	private int anzahlGeschwister = 0;
+
 	public BGCalculationInput(@Nonnull VerfuegungZeitabschnitt parent, @Nonnull RuleValidity ruleValidity) {
 		this.parent = parent;
 		this.ruleValidity = ruleValidity;
@@ -270,6 +279,8 @@ public class BGCalculationInput {
 		this.verguenstigungGewuenscht = toCopy.verguenstigungGewuenscht;
 		this.finsitAccepted = toCopy.finsitAccepted;
 		this.eingewoehnungPauschale = toCopy.eingewoehnungPauschale;
+		this.isBetreuungWaehrendSchulzeit = toCopy.isBetreuungWaehrendSchulzeit;
+		this.anzahlGeschwister = toCopy.anzahlGeschwister;
 	}
 
 	@Nonnull
@@ -1332,5 +1343,13 @@ public class BGCalculationInput {
 
 	public void setEingewoehnungPauschale(BigDecimal eingewoehnungPauschale) {
 		this.eingewoehnungPauschale = eingewoehnungPauschale;
+	}
+
+	public Boolean isBetreuungWaehrendSchulzeit() {
+		return isBetreuungWaehrendSchulzeit;
+	}
+
+	public void setBetreuungWaehrendSchulzeit(Boolean betreuungWaehrendSchulzeit) {
+		isBetreuungWaehrendSchulzeit = betreuungWaehrendSchulzeit;
 	}
 }

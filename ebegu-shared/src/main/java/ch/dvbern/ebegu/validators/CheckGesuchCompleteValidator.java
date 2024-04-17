@@ -35,11 +35,6 @@ public class CheckGesuchCompleteValidator implements ConstraintValidator<CheckGe
 
 	private static final Logger LOG = LoggerFactory.getLogger(CheckGesuchCompleteValidator.class.getSimpleName());
 
-	@Override
-	public void initialize(CheckGesuchComplete constraintAnnotation) {
-		//nop
-	}
-
 	@SuppressWarnings("ConstantConditions")
 	@Override
 	public boolean isValid(Gesuch gesuch, ConstraintValidatorContext context) {

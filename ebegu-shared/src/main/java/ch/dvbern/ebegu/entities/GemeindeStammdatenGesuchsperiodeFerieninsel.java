@@ -37,7 +37,7 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
 import ch.dvbern.ebegu.enums.Ferienname;
-import ch.dvbern.ebegu.validators.CheckFerieninselStammdatenDatesOverlapping;
+import ch.dvbern.ebegu.validators.dateranges.CheckGueltigkeiten;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.hibernate.annotations.SortNatural;
 import org.hibernate.envers.Audited;
@@ -47,7 +47,6 @@ import org.hibernate.envers.Audited;
  */
 @Audited
 @Entity
-@CheckFerieninselStammdatenDatesOverlapping
 public class GemeindeStammdatenGesuchsperiodeFerieninsel extends AbstractMutableEntity {
 
 	private static final long serialVersionUID = 6703477164293147908L;
@@ -63,6 +62,7 @@ public class GemeindeStammdatenGesuchsperiodeFerieninsel extends AbstractMutable
 	private GemeindeStammdatenGesuchsperiode gemeindeStammdatenGesuchsperiode;
 
 	@NotNull
+	@CheckGueltigkeiten(message = "{invalid_ferieninsel_zeitraeume}")
 	@Valid
 	@SortNatural
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)

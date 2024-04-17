@@ -19,68 +19,49 @@ package ch.dvbern.ebegu.tests.validations;
 
 import java.util.Set;
 
-import javax.validation.Configuration;
-import javax.validation.Validation;
-import javax.validation.ValidatorFactory;
-
 import ch.dvbern.ebegu.entities.ExternalClient;
 import ch.dvbern.ebegu.enums.ExternalClientInstitutionType;
 import ch.dvbern.ebegu.enums.ExternalClientType;
-import ch.dvbern.ebegu.tests.util.ValidationTestHelper;
 import ch.dvbern.ebegu.validators.ExternalClientOfType;
 import com.google.common.collect.Sets;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-public class ExternalClientOfTypeValidatorTest {
-
-	@SuppressWarnings("FieldCanBeLocal")
-	private ValidatorFactory customFactory;
+class ExternalClientOfTypeValidatorTest extends AbstractValidatorTest {
 
 	private static final ExternalClient VALID = new ExternalClient("foo", ExternalClientType.EXCHANGE_SERVICE_USER, ExternalClientInstitutionType.EXCHANGE_SERVICE_INSTITUTION);
 	@SuppressWarnings("ConstantConditions")
 	private static final ExternalClient INVALID = new ExternalClient("bar", null, ExternalClientInstitutionType.EXCHANGE_SERVICE_INSTITUTION);
 
-	@Before
-	public void setUp() {
-		// see https://docs.jboss.org/hibernate/validator/5.2/reference/en-US/html/chapter-bootstrapping
-		// .html#_constraintvalidatorfactory
-		Configuration<?> config = Validation.byDefaultProvider().configure();
-		//wir verwenden dummy service daher geben wir hier null als em mit
-		config.constraintValidatorFactory(new ValidationTestConstraintValidatorFactory());
-		this.customFactory = config.buildValidatorFactory();
-	}
-
 	@SuppressWarnings("JUnitTestMethodWithNoAssertions")
 	@Test
-	public void testMatchesType() {
+	void testMatchesType() {
 		TestSingleProperty test = new TestSingleProperty(VALID);
 
-		ValidationTestHelper.assertNotViolated(test);
+		assertValid(test);
 	}
 
 	@SuppressWarnings("JUnitTestMethodWithNoAssertions")
 	@Test
-	public void testViolateType() {
+	void testViolateType() {
 		TestSingleProperty test = new TestSingleProperty(INVALID);
 
-		ValidationTestHelper.assertViolated(test);
+		assertInvalid(test);
 	}
 
 	@SuppressWarnings("JUnitTestMethodWithNoAssertions")
 	@Test
-	public void testMatchesTypeInSet() {
+	void testMatchesTypeInSet() {
 		TestSetProperty test = new TestSetProperty(Sets.newHashSet(VALID, VALID));
 
-		ValidationTestHelper.assertNotViolated(test);
+		assertValid(test);
 	}
 
 	@SuppressWarnings("JUnitTestMethodWithNoAssertions")
 	@Test
-	public void testViolatesInvalidTypeInSet() {
+	void testViolatesInvalidTypeInSet() {
 		TestSetProperty test = new TestSetProperty(Sets.newHashSet(VALID, INVALID));
 
-		ValidationTestHelper.assertViolated(test);
+		assertInvalid(test);
 	}
 
 	private static final class TestSetProperty {

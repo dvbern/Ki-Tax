@@ -30,11 +30,6 @@ public class CheckFamiliensituationContainerCompleteValidator implements
 
 	private static final Logger LOG = LoggerFactory.getLogger(CheckFamiliensituationContainerCompleteValidator.class.getSimpleName());
 
-	@Override
-	public void initialize(CheckFamiliensituationContainerComplete constraintAnnotation) {
-		//nop
-	}
-
 	@SuppressWarnings("ConstantConditions")
 	@Override
 	public boolean isValid(FamiliensituationContainer famSitContainer, ConstraintValidatorContext context) {

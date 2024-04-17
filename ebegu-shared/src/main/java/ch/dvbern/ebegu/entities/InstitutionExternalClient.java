@@ -20,7 +20,6 @@ package ch.dvbern.ebegu.entities;
 import java.io.Serializable;
 
 import javax.annotation.Nonnull;
-import javax.persistence.Embedded;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.ForeignKey;
@@ -33,6 +32,7 @@ import javax.validation.constraints.NotNull;
 
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.types.InstitutionExternalClientId;
+import ch.dvbern.ebegu.util.Gueltigkeit;
 import org.hibernate.envers.Audited;
 
 @Audited
@@ -41,7 +41,7 @@ import org.hibernate.envers.Audited;
 	@Index(name = "IX_institution_external_clients_institution_id", columnList = "institution_id"),
 	@Index(name = "IX_institution_external_clients_external_client_id", columnList = "external_client_id"),
 })
-public class InstitutionExternalClient implements Serializable {
+public class InstitutionExternalClient implements Serializable, Gueltigkeit {
 
 	private static final long serialVersionUID = 6067667517915309689L;
 
@@ -64,11 +64,13 @@ public class InstitutionExternalClient implements Serializable {
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_institution_external_clients_external_client_id"), insertable = false, updatable = false)
 	private ExternalClient externalClient;
 
+	@Override
 	@Nonnull
 	public DateRange getGueltigkeit() {
 		return gueltigkeit;
 	}
 
+	@Override
 	public void setGueltigkeit(@Nonnull DateRange gueltigkeit) {
 		this.gueltigkeit = gueltigkeit;
 	}

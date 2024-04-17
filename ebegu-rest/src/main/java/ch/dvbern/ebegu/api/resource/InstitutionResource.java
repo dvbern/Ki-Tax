@@ -30,6 +30,7 @@ import ch.dvbern.ebegu.errors.KibonLogLevel;
 import ch.dvbern.ebegu.services.*;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.Constants;
+import ch.dvbern.ebegu.util.GueltigkeitsUtil;
 import ch.dvbern.ebegu.util.InstitutionStammdatenInitalizerVisitor;
 import com.google.common.base.Preconditions;
 import io.swagger.annotations.Api;
@@ -483,9 +484,7 @@ public class InstitutionResource {
 	}
 
 	private boolean checkExternalClientDateOverlapping(List<InstitutionExternalClient> institutionExternalClients) {
-		return institutionExternalClients.stream()
-			.anyMatch(o1 -> institutionExternalClients.stream()
-				.anyMatch(o2 -> !o1.equals(o2) && o1.getGueltigkeit().intersects(o2.getGueltigkeit())));
+		return GueltigkeitsUtil.hasOverlapingGueltigkeit(institutionExternalClients);
 	}
 
 	@ApiOperation(value = "Find and return a list of all editable Institutionen of the currently logged in Benutzer. "

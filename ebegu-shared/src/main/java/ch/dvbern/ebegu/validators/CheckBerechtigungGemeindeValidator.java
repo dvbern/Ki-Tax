@@ -42,11 +42,6 @@ import ch.dvbern.ebegu.util.ValidationMessageUtil;
  */
 public class CheckBerechtigungGemeindeValidator implements ConstraintValidator<CheckBerechtigungGemeinde, Berechtigung> {
 
-	@Override
-	public void initialize(CheckBerechtigungGemeinde constraintAnnotation) {
-		//nop
-	}
-
 	/**
 	 * Prueft ob die Berechtigung gueltig ist
 	 */
