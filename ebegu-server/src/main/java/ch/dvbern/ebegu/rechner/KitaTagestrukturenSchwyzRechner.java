@@ -46,13 +46,13 @@ public class KitaTagestrukturenSchwyzRechner extends AbstractRechner {
 		var anteilMonat = calculateAnteilMonat(verfuegungZeitabschnitt);
 		var obergrenze = parameterDTO.getMaxMassgebendesEinkommen();
 		var untergrenze = parameterDTO.getMinMassgebendesEinkommen();
-		var minimalTarif = parameterDTO.getMinVerguenstigungProTg();
+		var minimalTarif = getMinimalTarif(parameterDTO);
 		var bgPensumFaktor = EXACT.pctToFraction(input.getBgPensumProzent());
 		var effektivesPensumFaktor = EXACT.pctToFraction(input.getBetreuungspensumProzent());
 		var anspruchsPensumFaktor = EXACT.pctToFraction(BigDecimal.valueOf(input.getAnspruchspensumProzent()));
 		var anspruchsberechtigtesEinkommen = input.getMassgebendesEinkommen();
 		var geschwisterBonus = calculateGeschwisterBonus(input);
-		var oeffnungsTageProMonat = EXACT.divide(parameterDTO.getOeffnungstageKita(), BigDecimal.valueOf(12));
+		var oeffnungsTageProMonat = EXACT.divide(getOeffnungstage(parameterDTO), BigDecimal.valueOf(12));
 		var effektiveBetreuungsTageProZeitabschnitt =
 			Objects.requireNonNull(EXACT.multiply(oeffnungsTageProMonat, effektivesPensumFaktor, anteilMonat));
 		var bgBetreuungsTageProZeitabschnitt = EXACT.multiply(oeffnungsTageProMonat, bgPensumFaktor, anteilMonat);
@@ -113,6 +113,14 @@ public class KitaTagestrukturenSchwyzRechner extends AbstractRechner {
 
 		verfuegungZeitabschnitt.setBgCalculationResultAsiv(result);
 		verfuegungZeitabschnitt.setBgCalculationResultGemeinde(result);
+	}
+
+	protected BigDecimal getOeffnungstage(BGRechnerParameterDTO parameterDTO) {
+		return parameterDTO.getOeffnungstageKita();
+	}
+
+	protected BigDecimal getMinimalTarif(BGRechnerParameterDTO parameterDTO) {
+		return parameterDTO.getMinVerguenstigungProTg();
 	}
 
 	private static BigDecimal calculateSelbstbehaltFaktor(
