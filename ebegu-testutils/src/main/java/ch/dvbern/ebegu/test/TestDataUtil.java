@@ -348,7 +348,7 @@ public final class TestDataUtil {
 		gesuchstellerAdresse.setZusatzzeile("c/o Uwe Untermieter");
 		gesuchstellerAdresse.setPlz("3006");
 		gesuchstellerAdresse.setOrt("Bern");
-		gesuchstellerAdresse.setGueltigkeit(new DateRange(START_OF_TIME, Constants.END_OF_TIME));
+		gesuchstellerAdresse.setGueltigkeit(new DateRange(Constants.START_OF_TIME, Constants.END_OF_TIME));
 		gesuchstellerAdresse.setAdresseTyp(AdresseTyp.WOHNADRESSE);
 		return gesuchstellerAdresse;
 	}
