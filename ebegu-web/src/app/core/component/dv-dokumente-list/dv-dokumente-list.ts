@@ -27,6 +27,7 @@ import {GesuchModelManager} from '../../../../gesuch/service/gesuchModelManager'
 import {WizardStepManager} from '../../../../gesuch/service/wizardStepManager';
 import {isAnyStatusOfGeprueftVerfuegenVerfuegtOrAbgeschlossen} from '../../../../models/enums/TSAntragStatus';
 import {TSDokumentGrundPersonType} from '../../../../models/enums/TSDokumentGrundPersonType';
+import {TSDokumentTyp} from '../../../../models/enums/TSDokumentTyp';
 import {TSRole} from '../../../../models/enums/TSRole';
 import {TSDokument} from '../../../../models/TSDokument';
 import {TSDokumentGrund} from '../../../../models/TSDokumentGrund';
@@ -337,6 +338,11 @@ export class DVDokumenteListController implements IController {
     public getTableTitleText(): string {
         return this.$translate.instant(this.tableTitle, {basisjahr: this.titleValue});
     }
+
+    public get dokumentTyp(): typeof TSDokumentTyp {
+        return TSDokumentTyp;
+    }
+
 
     private isAppenzellSpeziallFall(gesuch: TSGesuch): boolean {
         if (this.mandant !== MANDANTS.APPENZELL_AUSSERRHODEN) {

@@ -108,5 +108,6 @@
     "ERWERBSPENSUM_NACHWEIS_AUSBILDUNG": "Nachweis über Aus- oder Weiterbildung (z.B. Ausbildungsvertrag, Immatrikulationsbestätigung) und zeitlichen Aufwand",
     "ERWERBSPENSUM_NACHWEIS_RAV": "Anmeldebestätigung der Arbeitslosenkasse oder Nachweis der Anmeldung beim regionalen Arbeitsvermittlungszentrum (RAV) und zeitlichen Aufwand",
     "SELBSTAENDIG": "Selbständig erwerbend",
+    "NACHWEIS_ABGERECHNETE_QUELLENSTEUERN_HINT": "Bestätigung über abgerechnete Quellensteuern der Steuerverwaltung SZ",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }
