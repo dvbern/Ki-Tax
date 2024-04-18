@@ -17,6 +17,7 @@
 
 package ch.dvbern.ebegu.services;
 
+import java.lang.reflect.Field;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -32,12 +33,14 @@ import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.enums.EnumFamilienstatus;
 import ch.dvbern.ebegu.enums.FinanzielleSituationTyp;
 import ch.dvbern.ebegu.enums.UnterhaltsvereinbarungAnswer;
+import ch.dvbern.ebegu.services.famsitchangehandler.FamSitChangeHandlerBernBean;
 import org.easymock.EasyMockExtension;
 import org.easymock.EasyMockSupport;
 import ch.dvbern.ebegu.test.TestDataUtil;
 import ch.dvbern.lib.cdipersistence.Persistence;
 import org.easymock.Mock;
 import org.easymock.TestSubject;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -48,7 +51,7 @@ import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.*;
 
 @ExtendWith(EasyMockExtension.class)
-public class FamiliensituationServiceBeanTest extends EasyMockSupport {
+class FamiliensituationServiceBeanTest extends EasyMockSupport {
 
 	@TestSubject
 	private final FamiliensituationServiceBean familiensituationServiceBean = new FamiliensituationServiceBean();
@@ -62,8 +65,16 @@ public class FamiliensituationServiceBeanTest extends EasyMockSupport {
 	@Mock
 	private Persistence persistence;
 
+	@Mock
+	private GesuchstellerService gesuchstellerService;
+
+	@BeforeEach
+	void setup() throws NoSuchFieldException, IllegalAccessException {
+		setPrivateField(familiensituationServiceBean, "famSitChangeHandler", new FamSitChangeHandlerBernBean(gesuchstellerService, einstellungService));
+	}
+
 	@Test
-	public void shouldNotRemoveGS2ErwerbspensumOnChangeToKonkubinatMitKind() {
+	void shouldNotRemoveGS2ErwerbspensumOnChangeToKonkubinatMitKind() {
 		Gesuch gesuch = setupGesuch();
 		Familiensituation familiensituation = setupFamiliensituation(gesuch, EnumFamilienstatus.VERHEIRATET);
 		assertThat(gesuch.getFamiliensituationContainer(), notNullValue());
@@ -85,7 +96,7 @@ public class FamiliensituationServiceBeanTest extends EasyMockSupport {
 	}
 
 	@Test
-	public void shouldNotRemoveGS2ErwerbspensumOnChangeToLongKonkubinatOhneKind() {
+	void shouldNotRemoveGS2ErwerbspensumOnChangeToLongKonkubinatOhneKind() {
 		Gesuch gesuch = setupGesuch();
 		Familiensituation familiensituation = setupFamiliensituation(gesuch, EnumFamilienstatus.VERHEIRATET);
 		assertThat(gesuch.getFamiliensituationContainer(), notNullValue());
@@ -109,7 +120,7 @@ public class FamiliensituationServiceBeanTest extends EasyMockSupport {
 	}
 
 	@Test
-	public void shouldNotRemoveGS2ErwerbspensumOnChangeToShortKonkubinatOhneKindGeteilteObhut() {
+	void shouldNotRemoveGS2ErwerbspensumOnChangeToShortKonkubinatOhneKindGeteilteObhut() {
 		Gesuch gesuch = setupGesuch();
 		Familiensituation familiensituation = setupFamiliensituation(gesuch, EnumFamilienstatus.VERHEIRATET);
 		assertThat(gesuch.getFamiliensituationContainer(), notNullValue());
@@ -134,7 +145,7 @@ public class FamiliensituationServiceBeanTest extends EasyMockSupport {
 	}
 
 	@Test
-	public void shouldNotRemoveGS2ErwerbspensumOnChangeToShortKonkubinatOhneKindNichtGeteilteObhutUnterhaltsvereinbarung() {
+	void shouldNotRemoveGS2ErwerbspensumOnChangeToShortKonkubinatOhneKindNichtGeteilteObhutUnterhaltsvereinbarung() {
 		Gesuch gesuch = setupGesuch();
 		Familiensituation familiensituation = setupFamiliensituation(gesuch, EnumFamilienstatus.VERHEIRATET);
 		assertThat(gesuch.getFamiliensituationContainer(), notNullValue());
@@ -161,7 +172,7 @@ public class FamiliensituationServiceBeanTest extends EasyMockSupport {
 
 
 	@Test
-	public void shouldRemoveGS2ErwerbspensumOnChangeToShortKonkubinatOhneKindNichtGeteilteObhutKeineUnterhaltsvereinbarung() {
+	void shouldRemoveGS2ErwerbspensumOnChangeToShortKonkubinatOhneKindNichtGeteilteObhutKeineUnterhaltsvereinbarung() {
 		Gesuch gesuch = setupGesuch();
 		Familiensituation familiensituation = setupFamiliensituation(gesuch, EnumFamilienstatus.VERHEIRATET);
 		assertThat(gesuch.getFamiliensituationContainer(), notNullValue());
@@ -188,7 +199,7 @@ public class FamiliensituationServiceBeanTest extends EasyMockSupport {
 
 
 	@Test
-	public void shouldNotRemoveGS2ErwerbspensumOnChangeToShortKonkubinatOhneKindNichtGeteilteObhutKeineUnterhaltsvereinbarungEinstellungDeaktiviert() {
+	void shouldNotRemoveGS2ErwerbspensumOnChangeToShortKonkubinatOhneKindNichtGeteilteObhutKeineUnterhaltsvereinbarungEinstellungDeaktiviert() {
 		Gesuch gesuch = setupGesuch();
 		Familiensituation familiensituation = setupFamiliensituation(gesuch, EnumFamilienstatus.VERHEIRATET);
 		assertThat(gesuch.getFamiliensituationContainer(), notNullValue());
@@ -258,5 +269,11 @@ public class FamiliensituationServiceBeanTest extends EasyMockSupport {
 		gesuch.setGesuchsteller2(gs2Container);
 		gesuch.setFinSitTyp(FinanzielleSituationTyp.BERN_FKJV);
 		return gesuch;
+	}
+
+	private void setPrivateField(Object object, String fieldName, Object value) throws NoSuchFieldException, IllegalAccessException {
+		Field field = object.getClass().getDeclaredField(fieldName);
+		field.setAccessible(true);
+		field.set(object, value);
 	}
 }
