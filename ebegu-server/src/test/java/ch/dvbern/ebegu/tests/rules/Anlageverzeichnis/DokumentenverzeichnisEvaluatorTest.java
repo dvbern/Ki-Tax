@@ -1067,6 +1067,10 @@ public class DokumentenverzeichnisEvaluatorTest extends EasyMockSupport {
 			private void setUpGesuchForErwerbspensumTest(Taetigkeit rav) {
 				setUpEinstellungMock(gesuch, AnspruchBeschaeftigungAbhaengigkeitTyp.ABHAENGING.name());
 				Objects.requireNonNull(gesuch.getGesuchsteller1());
+				Objects.requireNonNull(gesuch.getFamiliensituationContainer());
+				Objects.requireNonNull(gesuch.getFamiliensituationContainer().getFamiliensituationJA());
+				gesuch.getFamiliensituationContainer().getFamiliensituationJA().setVerguenstigungGewuenscht(true);
+				gesuch.getFamiliensituationContainer().getFamiliensituationJA().setSozialhilfeBezueger(false);
 				gesuch.getGesuchsteller1().setErwerbspensenContainers(Set.of(createErwerbspensumContainer(rav, gesuch.getGesuchsteller1())));
 			}
 
@@ -1124,7 +1128,7 @@ public class DokumentenverzeichnisEvaluatorTest extends EasyMockSupport {
 				setUpFamiliensituationAlleine();
 				setUpEkvInfoContainer(true);
 				final Einkommensverschlechterung ekv = new Einkommensverschlechterung();
-				ekv.setBruttolohnAbrechnung1(BigDecimal.valueOf(120000));
+				ekv.setBruttoLohn(BigDecimal.valueOf(120000));
 				setUpEkvGS(ekv, gesuch.getGesuchsteller1());
 
 				final Set<DokumentGrund> dokumentGruende = evaluator.calculate(gesuch, Constants.DEFAULT_LOCALE);
@@ -1191,9 +1195,9 @@ public class DokumentenverzeichnisEvaluatorTest extends EasyMockSupport {
 
 			@Nonnull
 			private Einkommensverschlechterung setUpEkvQuellbesteuert() {
-				final Einkommensverschlechterung ekvGS2 = new Einkommensverschlechterung();
-				ekvGS2.setBruttolohnAbrechnung1(BigDecimal.valueOf(10000));
-				return ekvGS2;
+				final Einkommensverschlechterung ekvGS = new Einkommensverschlechterung();
+				ekvGS.setBruttoLohn(BigDecimal.valueOf(10000));
+				return ekvGS;
 			}
 
 			private void setUpEkvInfoContainer(boolean einkommensverschlechterung) {
