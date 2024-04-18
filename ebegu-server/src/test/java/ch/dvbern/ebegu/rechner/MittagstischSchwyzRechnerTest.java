@@ -48,6 +48,7 @@ class MittagstischSchwyzRechnerTest {
 		input.setMassgebendesEinkommenVorAbzugFamgr(new BigDecimal(10_000));
 		input.setAnspruchspensumProzent(80);
 		input.setBetreuungspensumProzent(BigDecimal.valueOf(80));
+		input.setAbzugFamGroesse(BigDecimal.ZERO);
 
 
 		// when
@@ -89,6 +90,7 @@ class MittagstischSchwyzRechnerTest {
 		input.setMassgebendesEinkommenVorAbzugFamgr(new BigDecimal(10_000));
 		input.setAnspruchspensumProzent(80);
 		input.setBetreuungspensumProzent(BigDecimal.valueOf(80));
+		input.setAbzugFamGroesse(BigDecimal.ZERO);
 
 		// when
 		testee.calculate(verfuegungZeitabschnitt, parameter);
@@ -129,6 +131,7 @@ class MittagstischSchwyzRechnerTest {
 		input.setAnspruchspensumProzent(50);
 		input.setBetreuungspensumProzent(BigDecimal.valueOf(50));
 		input.setTarifHauptmahlzeit(BigDecimal.valueOf(12));
+		input.setAbzugFamGroesse(BigDecimal.ZERO);
 
 		// when
 		testee.calculate(verfuegungZeitabschnitt, parameter);
@@ -169,6 +172,7 @@ class MittagstischSchwyzRechnerTest {
 		input.setMassgebendesEinkommenVorAbzugFamgr(new BigDecimal(63_300));
 		input.setAnzahlGeschwister(1);
 		input.setTarifHauptmahlzeit(BigDecimal.valueOf(11.5));
+		input.setAbzugFamGroesse(BigDecimal.ZERO);
 
 		// when
 		testee.calculate(verfuegungZeitabschnitt, parameter);
@@ -209,6 +213,7 @@ class MittagstischSchwyzRechnerTest {
 		input.setTarifHauptmahlzeit(BigDecimal.valueOf(15));
 		input.setAnzahlGeschwister(2);
 		input.setMassgebendesEinkommenVorAbzugFamgr(new BigDecimal(136_600));
+		input.setAbzugFamGroesse(BigDecimal.ZERO);
 
 		// when
 		testee.calculate(verfuegungZeitabschnitt, parameter);
@@ -249,6 +254,7 @@ class MittagstischSchwyzRechnerTest {
 		input.setTarifHauptmahlzeit(BigDecimal.valueOf(18.5));
 		input.setAnzahlGeschwister(3);
 		input.setMassgebendesEinkommenVorAbzugFamgr(new BigDecimal(59_900));
+		input.setAbzugFamGroesse(BigDecimal.ZERO);
 
 		// when
 		testee.calculate(verfuegungZeitabschnitt, parameter);
