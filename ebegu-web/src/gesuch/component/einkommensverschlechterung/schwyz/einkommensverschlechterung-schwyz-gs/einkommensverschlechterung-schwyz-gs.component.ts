@@ -32,7 +32,9 @@ export class EinkommensverschlechterungSchwyzGsComponent extends AbstractGesuchV
             TSWizardStepStatus.IN_BEARBEITUNG);
         this.isFinSitVollstaendigAusgefuellt =
             this.wizardstepManager.getStepByName(TSWizardStepName.FINANZIELLE_SITUATION_SCHWYZ).wizardStepStatus
-            === TSWizardStepStatus.OK;
+            === TSWizardStepStatus.OK
+            || this.wizardStepManager.getStepByName(TSWizardStepName.FINANZIELLE_SITUATION_SCHWYZ).wizardStepStatus
+            === TSWizardStepStatus.MUTIERT;
     }
 
     public prepareSave(onResult: (arg: any) => any): void {
