@@ -38,8 +38,8 @@ import ch.dvbern.ebegu.dto.FinanzielleSituationResultateDTO;
 import ch.dvbern.ebegu.dto.FinanzielleSituationStartDTO;
 import ch.dvbern.ebegu.dto.JaxFinanzielleSituationAufteilungDTO;
 import ch.dvbern.ebegu.entities.AbstractEntity_;
+import ch.dvbern.ebegu.entities.AbstractFinanzielleSituation;
 import ch.dvbern.ebegu.entities.Auszahlungsdaten;
-import ch.dvbern.ebegu.entities.Einkommensverschlechterung;
 import ch.dvbern.ebegu.entities.Einstellung;
 import ch.dvbern.ebegu.entities.Familiensituation;
 import ch.dvbern.ebegu.entities.FamiliensituationContainer;
@@ -206,14 +206,7 @@ public class FinanzielleSituationServiceBean extends AbstractBaseService impleme
 
 			if (gesuch.getGesuchsteller2() != null && gesuch.getGesuchsteller2().getFinanzielleSituationContainer() != null) {
 				var finSit = gesuch.getGesuchsteller2().getFinanzielleSituationContainer().getFinanzielleSituationJA();
-				finSit.setBruttoLohn(null);
-				finSit.setQuellenbesteuert(null);
-				finSit.setSteuerbaresEinkommen(null);
-				finSit.setSteuerbaresVermoegen(null);
-				finSit.setEinkaeufeVorsorge(null);
-				finSit.setAbzuegeLiegenschaft(null);
-
-				saveFinanzielleSituation(gesuch.getGesuchsteller2().getFinanzielleSituationContainer(), gesuch.getId());
+				resetCompleteSchwyzFinSitData(finSit, gesuch.getGesuchsteller2());
 			}
 		}
 
@@ -225,6 +218,26 @@ public class FinanzielleSituationServiceBean extends AbstractBaseService impleme
 			}
 		}
 		handleEKVDataResetsOnFinSitStartSave(gesuch, finanzielleSituation);
+	}
+
+	@Override
+	public void resetCompleteSchwyzFinSitData(
+		AbstractFinanzielleSituation finSit,
+		GesuchstellerContainer gesuchstellerContainer) {
+		if (gesuchstellerContainer.getFinanzielleSituationContainer() == null) {
+			return;
+		}
+		if (finSit instanceof FinanzielleSituation) {
+			((FinanzielleSituation) finSit).setQuellenbesteuert(null);
+		}
+		finSit.setBruttoLohn(null);
+		finSit.setSteuerbaresEinkommen(null);
+		finSit.setSteuerbaresVermoegen(null);
+		finSit.setEinkaeufeVorsorge(null);
+		finSit.setAbzuegeLiegenschaft(null);
+
+		final Gesuch gesuchForFinSit = gesuchService.findGesuchOfGS(gesuchstellerContainer);
+		saveFinanzielleSituation(gesuchstellerContainer.getFinanzielleSituationContainer(), gesuchForFinSit.getId());
 	}
 
 	private void handleSchwyzGSFinSitDataReset(GesuchstellerContainer gesuchsteller, Gesuch gesuch) {

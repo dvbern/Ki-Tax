@@ -18,6 +18,7 @@ package ch.dvbern.ebegu.services;
 import ch.dvbern.ebegu.entities.*;
 import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.enums.EnumFamilienstatus;
+import ch.dvbern.ebegu.enums.EnumGesuchstellerKardinalitaet;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.FinanzielleSituationTyp;
 import ch.dvbern.ebegu.enums.WizardStepName;
@@ -27,6 +28,7 @@ import ch.dvbern.ebegu.util.EbeguUtil;
 import ch.dvbern.lib.cdipersistence.Persistence;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -59,6 +61,9 @@ public class FamiliensituationServiceBean extends AbstractBaseService implements
 
 	@Inject
 	private EinstellungService einstellungService;
+
+	@Inject
+	private FinanzielleSituationService finanzielleSituationService;
 
 	@Override
 	public FamiliensituationContainer saveFamiliensituation(
@@ -99,6 +104,9 @@ public class FamiliensituationServiceBean extends AbstractBaseService implements
 		Objects.requireNonNull(newFamiliensituation);
 		LocalDate gesuchsperiodeBis = gesuch.getGesuchsperiode().getGueltigkeit().getGueltigBis();
 
+		adaptSchwyzFinSitDataOnFamSitChange(gesuch, loadedFamiliensituation, newFamiliensituation);
+
+
 		if (gesuch.isMutation()) {
 			if (EbeguUtil.fromOneGSToTwoGS(familiensituationContainer, gesuchsperiodeBis) &&
 				newFamiliensituation.getGemeinsameSteuererklaerung() == null) {
@@ -119,6 +127,32 @@ public class FamiliensituationServiceBean extends AbstractBaseService implements
 				newFamiliensituation.setGemeinsameSteuererklaerung(null);
 			}
 		}
+	}
+
+	private void adaptSchwyzFinSitDataOnFamSitChange(Gesuch gesuch, @Nullable Familiensituation loadedFamiliensituation, Familiensituation newFamiliensituation) {
+		if (loadedFamiliensituation == null || gesuch.getFinSitTyp() != FinanzielleSituationTyp.SCHWYZ) {
+			return;
+		}
+		if (isSchwyzChangeFromGemeinsamStekToAlleine(loadedFamiliensituation, newFamiliensituation)
+			&& gesuch.getGesuchsteller1() != null
+			&& gesuch.getGesuchsteller1().getFinanzielleSituationContainer() != null) {
+
+			finanzielleSituationService.resetCompleteSchwyzFinSitData(gesuch.getGesuchsteller1()
+				.getFinanzielleSituationContainer()
+				.getFinanzielleSituationJA(), gesuch.getGesuchsteller1());
+
+			if (gesuch.getGesuchsteller1().getEinkommensverschlechterungContainer() != null) {
+				finanzielleSituationService.resetCompleteSchwyzFinSitData(gesuch.getGesuchsteller1()
+					.getEinkommensverschlechterungContainer()
+					.getEkvJABasisJahrPlus1(), gesuch.getGesuchsteller1());
+			}
+		}
+	}
+
+	private static boolean isSchwyzChangeFromGemeinsamStekToAlleine(@Nonnull Familiensituation loadedFamiliensituation, Familiensituation newFamiliensituation) {
+		return loadedFamiliensituation.getGesuchstellerKardinalitaet() == EnumGesuchstellerKardinalitaet.ZU_ZWEIT
+			&& newFamiliensituation.getGesuchstellerKardinalitaet() == EnumGesuchstellerKardinalitaet.ALLEINE
+			&& Boolean.TRUE.equals(loadedFamiliensituation.getGemeinsameSteuererklaerung());
 	}
 
 	private static Familiensituation getOldFamiliensituation(
