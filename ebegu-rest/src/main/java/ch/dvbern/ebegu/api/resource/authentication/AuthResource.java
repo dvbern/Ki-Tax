@@ -70,6 +70,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static ch.dvbern.ebegu.util.mandant.MandantCookieUtil.convertCookieNameToMandantIdentifier;
+
 /**
  * This resource has functions to login or logout
  */
@@ -156,31 +158,7 @@ public class AuthResource {
 		return mandantIdentifier.name().toLowerCase(Locale.ROOT);
 	}
 
-	@Nonnull
-	private static MandantIdentifier convertCookieNameToMandantIdentifier(String mandantNameDecoded) {
-		MandantIdentifier mandantIdentifier = null;
 
-		switch (mandantNameDecoded) {
-		case "Stadt Luzern":
-			mandantIdentifier = MandantIdentifier.LUZERN;
-			break;
-		case "Appenzell Ausserrhoden":
-			mandantIdentifier = MandantIdentifier.APPENZELL_AUSSERRHODEN;
-			break;
-		case "Kanton Solothurn":
-			mandantIdentifier = MandantIdentifier.SOLOTHURN;
-			break;
-		case "Kanton Bern":
-			mandantIdentifier = MandantIdentifier.BERN;
-			break;
-		case "Kanton Schwyz":
-			mandantIdentifier = MandantIdentifier.SCHWYZ;
-			break;
-		default:
-			throw new IllegalStateException("Unexpected mandant: " + mandantNameDecoded);
-		}
-		return mandantIdentifier;
-	}
 
 	@Path("/init-connect-gs-zpv")
 	@Consumes(MediaType.WILDCARD)
