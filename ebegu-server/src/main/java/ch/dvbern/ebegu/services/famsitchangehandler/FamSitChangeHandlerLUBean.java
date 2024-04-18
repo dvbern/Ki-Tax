@@ -17,6 +17,8 @@
 
 package ch.dvbern.ebegu.services.famsitchangehandler;
 
+import java.time.LocalDate;
+
 import javax.annotation.Nonnull;
 
 import ch.dvbern.ebegu.entities.Familiensituation;
@@ -25,15 +27,13 @@ import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.enums.EnumFamilienstatus;
 import ch.dvbern.ebegu.enums.FinanzielleSituationTyp;
 import ch.dvbern.ebegu.services.EinstellungService;
-import ch.dvbern.ebegu.services.FinanzielleSituationService;
 import ch.dvbern.ebegu.services.GesuchstellerService;
 
 public class FamSitChangeHandlerLUBean extends FamSitChangeHandlerBernBean {
 
 	public FamSitChangeHandlerLUBean(
-		GesuchstellerService gesuchstellerService, EinstellungService einstellungService,
-		FinanzielleSituationService finanzielleSituationService) {
-		super(gesuchstellerService, einstellungService, finanzielleSituationService);
+		GesuchstellerService gesuchstellerService, EinstellungService einstellungService) {
+		super(gesuchstellerService, einstellungService);
 	}
 
 	@Override
@@ -41,16 +41,6 @@ public class FamSitChangeHandlerLUBean extends FamSitChangeHandlerBernBean {
 		Gesuch gesuch,
 		FamiliensituationContainer mergedFamiliensituationContainer,
 		Familiensituation oldFamiliensituation) {
-		if (gesuch.getFinSitTyp() == FinanzielleSituationTyp.LUZERN) {
-			handleFamSitChangeLuzern(gesuch, mergedFamiliensituationContainer, oldFamiliensituation);
-		}
-	}
-
-	private void handleFamSitChangeLuzern(
-		@Nonnull Gesuch gesuch,
-		FamiliensituationContainer mergedFamiliensituationContainer,
-		Familiensituation oldFamiliensituation) {
-
 		if (oldFamiliensituation == null
 			|| mergedFamiliensituationContainer.getFamiliensituationJA() == null
 			|| gesuch.getGesuchsteller1() == null) {
@@ -91,5 +81,30 @@ public class FamSitChangeHandlerLUBean extends FamSitChangeHandlerBernBean {
 		if (oldIsVerheiratet && newIsKonkubinatOrAlleinerziehend) {
 			gesuch.getGesuchsteller1().setFinanzielleSituationContainer(null);
 		}
+	}
+
+	@Override
+	protected void adaptFinSitDataInMutation(
+		Gesuch gesuch,
+		FamiliensituationContainer familiensituationContainer,
+		Familiensituation loadedFamiliensituation,
+		Familiensituation newFamiliensituation,
+		LocalDate gesuchsperiodeBis) {
+		super.adaptFinSitDataInMutation(gesuch, familiensituationContainer, loadedFamiliensituation, newFamiliensituation, gesuchsperiodeBis);
+
+		if (gesuch.getFinSitTyp() == FinanzielleSituationTyp.LUZERN &&
+			isScheidung(loadedFamiliensituation, newFamiliensituation)) {
+			gesuch.setFinSitAenderungGueltigAbDatum(newFamiliensituation.getAenderungPer());
+		}
+	}
+
+	private boolean isScheidung(
+		@Nonnull Familiensituation oldFamiliensituation,
+		Familiensituation newFamiliensituation) {
+		if (oldFamiliensituation.getFamilienstatus() != EnumFamilienstatus.VERHEIRATET) {
+			return false;
+		}
+
+		return newFamiliensituation.getFamilienstatus() == EnumFamilienstatus.ALLEINERZIEHEND;
 	}
 }

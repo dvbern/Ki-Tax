@@ -20,7 +20,6 @@ package ch.dvbern.ebegu.services.famsitchangehandler;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 
-import javax.annotation.Nonnull;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.RequestScoped;
 import javax.enterprise.inject.Produces;
@@ -46,11 +45,13 @@ public class FamSitChangeHandlerProducer {
 		FinanzielleSituationService finanzielleSituationService) {
 		switch (getMandantFromCookie(request)) {
 		case LUZERN:
-			return new FamSitChangeHandlerLUBean(gesuchstellerService, einstellungService, finanzielleSituationService);
+			return new FamSitChangeHandlerLUBean(gesuchstellerService, einstellungService);
 		case APPENZELL_AUSSERRHODEN:
-			return new FamSitChangeHandlerARBean(gesuchstellerService, einstellungService, finanzielleSituationService);
+			return new FamSitChangeHandlerARBean(gesuchstellerService, einstellungService);
+		case SCHWYZ:
+			return new FamSitChangeHandlerSchwyzBean(gesuchstellerService, einstellungService, finanzielleSituationService);
 		default:
-			return new FamSitChangeHandlerBernBean(gesuchstellerService, einstellungService, finanzielleSituationService);
+			return new FamSitChangeHandlerBernBean(gesuchstellerService, einstellungService);
 		}
 	}
 

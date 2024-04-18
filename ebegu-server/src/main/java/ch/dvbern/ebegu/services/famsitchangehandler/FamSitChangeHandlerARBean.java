@@ -27,14 +27,12 @@ import ch.dvbern.ebegu.entities.FinanzielleSituationContainer;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.enums.FinanzielleSituationTyp;
 import ch.dvbern.ebegu.services.EinstellungService;
-import ch.dvbern.ebegu.services.FinanzielleSituationService;
 import ch.dvbern.ebegu.services.GesuchstellerService;
 
 public class FamSitChangeHandlerARBean extends FamSitChangeHandlerBernBean {
 	public FamSitChangeHandlerARBean(
-		GesuchstellerService gesuchstellerService, EinstellungService einstellungService,
-		FinanzielleSituationService finanzielleSituationService) {
-		super(gesuchstellerService, einstellungService, finanzielleSituationService);
+		GesuchstellerService gesuchstellerService, EinstellungService einstellungService) {
+		super(gesuchstellerService, einstellungService);
 	}
 
 	@Override

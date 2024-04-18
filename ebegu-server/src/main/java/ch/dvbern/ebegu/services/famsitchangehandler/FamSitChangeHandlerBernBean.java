@@ -20,19 +20,14 @@ package ch.dvbern.ebegu.services.famsitchangehandler;
 import java.time.LocalDate;
 import java.util.Objects;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
 import ch.dvbern.ebegu.entities.Einstellung;
 import ch.dvbern.ebegu.entities.Familiensituation;
 import ch.dvbern.ebegu.entities.FamiliensituationContainer;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.enums.EnumFamilienstatus;
-import ch.dvbern.ebegu.enums.EnumGesuchstellerKardinalitaet;
 import ch.dvbern.ebegu.enums.FinanzielleSituationTyp;
 import ch.dvbern.ebegu.services.EinstellungService;
-import ch.dvbern.ebegu.services.FinanzielleSituationService;
 import ch.dvbern.ebegu.services.GesuchstellerService;
 import ch.dvbern.ebegu.util.EbeguUtil;
 
@@ -42,15 +37,12 @@ public class FamSitChangeHandlerBernBean implements FamSitChangeHandler {
 
 	private final GesuchstellerService gesuchstellerService;
 	private final EinstellungService einstellungService;
-	private final FinanzielleSituationService finanzielleSituationService;
 
 	public FamSitChangeHandlerBernBean(
 		GesuchstellerService gesuchstellerService,
-		EinstellungService einstellungService,
-		FinanzielleSituationService finanzielleSituationService) {
+		EinstellungService einstellungService) {
 		this.gesuchstellerService = gesuchstellerService;
 		this.einstellungService = einstellungService;
-		this.finanzielleSituationService = finanzielleSituationService;
 	}
 	@Override
 	public void handleFamSitChange(
@@ -109,26 +101,12 @@ public class FamSitChangeHandlerBernBean implements FamSitChangeHandler {
 		Gesuch gesuch,
 		FamiliensituationContainer familiensituationContainer,
 		Familiensituation loadedFamiliensituation) {
-
 		Familiensituation newFamiliensituation = familiensituationContainer.extractFamiliensituation();
 		Objects.requireNonNull(newFamiliensituation);
 		LocalDate gesuchsperiodeBis = gesuch.getGesuchsperiode().getGueltigkeit().getGueltigBis();
 
-		adaptSchwyzFinSitDataOnFamSitChange(gesuch, loadedFamiliensituation, newFamiliensituation);
-
-
 		if (gesuch.isMutation()) {
-			if (EbeguUtil.fromOneGSToTwoGS(familiensituationContainer, gesuchsperiodeBis) &&
-				newFamiliensituation.getGemeinsameSteuererklaerung() == null) {
-				newFamiliensituation.setGemeinsameSteuererklaerung(false);
-			}
-
-			Objects.requireNonNull(loadedFamiliensituation);
-
-			if (gesuch.getFinSitTyp() == FinanzielleSituationTyp.LUZERN &&
-				isScheidung(loadedFamiliensituation, newFamiliensituation)) {
-				gesuch.setFinSitAenderungGueltigAbDatum(newFamiliensituation.getAenderungPer());
-			}
+			adaptFinSitDataInMutation(gesuch, familiensituationContainer, loadedFamiliensituation, newFamiliensituation, gesuchsperiodeBis);
 		} else {
 			Familiensituation familiensituationErstgesuch =
 				familiensituationContainer.getFamiliensituationErstgesuch();
@@ -141,30 +119,27 @@ public class FamSitChangeHandlerBernBean implements FamSitChangeHandler {
 		}
 	}
 
-	private void adaptSchwyzFinSitDataOnFamSitChange(Gesuch gesuch, @Nullable Familiensituation loadedFamiliensituation, Familiensituation newFamiliensituation) {
-		if (loadedFamiliensituation == null || gesuch.getFinSitTyp() != FinanzielleSituationTyp.SCHWYZ) {
-			return;
-		}
-		if (isSchwyzChangeFromGemeinsamStekToAlleine(loadedFamiliensituation, newFamiliensituation)
-			&& gesuch.getGesuchsteller1() != null
-			&& gesuch.getGesuchsteller1().getFinanzielleSituationContainer() != null) {
-
-			finanzielleSituationService.resetCompleteSchwyzFinSitData(gesuch.getGesuchsteller1()
-				.getFinanzielleSituationContainer()
-				.getFinanzielleSituationJA(), gesuch.getGesuchsteller1());
-
-			if (gesuch.getGesuchsteller1().getEinkommensverschlechterungContainer() != null) {
-				finanzielleSituationService.resetCompleteSchwyzFinSitData(gesuch.getGesuchsteller1()
-					.getEinkommensverschlechterungContainer()
-					.getEkvJABasisJahrPlus1(), gesuch.getGesuchsteller1());
-			}
-		}
+	/**
+	 * @param gesuch is required in overriding methods
+	 * @param loadedFamiliensituation is required in overriding methods
+	 */
+	protected void adaptFinSitDataInMutation(
+		Gesuch gesuch,
+		FamiliensituationContainer familiensituationContainer,
+		Familiensituation loadedFamiliensituation,
+		Familiensituation newFamiliensituation,
+		LocalDate gesuchsperiodeBis) {
+		handleOnGsToTwoGSFinSitDataChange(familiensituationContainer, newFamiliensituation, gesuchsperiodeBis);
 	}
 
-	private static boolean isSchwyzChangeFromGemeinsamStekToAlleine(@Nonnull Familiensituation loadedFamiliensituation, Familiensituation newFamiliensituation) {
-		return loadedFamiliensituation.getGesuchstellerKardinalitaet() == EnumGesuchstellerKardinalitaet.ZU_ZWEIT
-			&& newFamiliensituation.getGesuchstellerKardinalitaet() == EnumGesuchstellerKardinalitaet.ALLEINE
-			&& Boolean.TRUE.equals(loadedFamiliensituation.getGemeinsameSteuererklaerung());
+	protected static void handleOnGsToTwoGSFinSitDataChange(
+		FamiliensituationContainer familiensituationContainer,
+		Familiensituation newFamiliensituation,
+		LocalDate gesuchsperiodeBis) {
+		if (EbeguUtil.fromOneGSToTwoGS(familiensituationContainer, gesuchsperiodeBis) &&
+			newFamiliensituation.getGemeinsameSteuererklaerung() == null) {
+			newFamiliensituation.setGemeinsameSteuererklaerung(false);
+		}
 	}
 
 
@@ -219,16 +194,6 @@ public class FamSitChangeHandlerBernBean implements FamSitChangeHandler {
 		return gesuch.getGesuchsteller2() != null && !familiensituationErstgesuch.hasSecondGesuchsteller(
 			gesuchsperiodeBis)
 			&& !newFamiliensituation.hasSecondGesuchsteller(gesuchsperiodeBis);
-	}
-
-	private boolean isScheidung(
-		@Nonnull Familiensituation oldFamiliensituation,
-		Familiensituation newFamiliensituation) {
-		if (oldFamiliensituation.getFamilienstatus() != EnumFamilienstatus.VERHEIRATET) {
-			return false;
-		}
-
-		return newFamiliensituation.getFamilienstatus() == EnumFamilienstatus.ALLEINERZIEHEND;
 	}
 
 }
