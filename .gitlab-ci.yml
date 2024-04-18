@@ -273,14 +273,14 @@ deploy:
         name: $DEPLOY_ENV
         url: $DEPLOY_URL
     rules:
-        -   if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
-        -   if: $CI_MERGE_REQUEST_ID
-            when: manual
-            allow_failure: true
         -   if: $CI_COMMIT_TAG
             when: never
         -   if: $CI_PIPELINE_SOURCE == "schedule"
             when: never
+        -   if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+        -   if: $CI_MERGE_REQUEST_ID
+            when: manual
+            allow_failure: true
 
 deploy:e2e:
     extends: .docker-compose-deploy:e2e
@@ -289,9 +289,9 @@ deploy:e2e:
         name: e2e
         url: https://e2e.kibon.ch
     rules:
-        -   if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
         -   if: $CI_PIPELINE_SOURCE == "schedule"
             when: never
+        -   if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
 
 create-build-args:
     image: '$DVB_DOCKER_REGISTRY/dockerhub/library/eclipse-temurin:11-jdk-alpine'
