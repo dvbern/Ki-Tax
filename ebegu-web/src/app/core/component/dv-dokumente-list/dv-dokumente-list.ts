@@ -343,7 +343,6 @@ export class DVDokumenteListController implements IController {
         return TSDokumentTyp;
     }
 
-
     private isAppenzellSpeziallFall(gesuch: TSGesuch): boolean {
         if (this.mandant !== MANDANTS.APPENZELL_AUSSERRHODEN) {
             return false;
