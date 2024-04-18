@@ -154,6 +154,10 @@ const getGrundAblehnung = () => {
 	return cy.getByData('grund-ablehnung');
 };
 
+const getErweiterteBeduerfnisseBestaetigt = () => {
+	return cy.getByData('erweiterte-beduerfnisse-bestaetigt');
+};
+
 // !! -- PAGE ACTIONS -- !!
 const createNewBetreuung = (kindIndex: number = 0) => {
     cy.waitForRequest('GET', '**/institutionstammdaten/gesuchsperiode/gemeinde/*', () => {
@@ -361,6 +365,7 @@ export const AntragBetreuungPO = {
     getEingewoehnung,
     getGrundAblehnung,
     getAbweichungenMeldenButton,
+    getErweiterteBeduerfnisseBestaetigt,
     // page actions
     createNewBetreuung,
     createNewTagesschulAnmeldung,

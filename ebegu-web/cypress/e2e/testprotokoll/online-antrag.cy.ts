@@ -295,6 +295,7 @@ describe('Kibon - generate Testfälle [Online-Antrag]', () => {
             AntragBetreuungPO.fillKitaBetreuungspensumForm('withValid', 'London');
             AntragBetreuungPO.getBetreuungspensumAb(0).find('input').clear().type('01.08.2023');
             AntragBetreuungPO.getBetreuungspensumBis(0).find('input').clear().type('31.07.2024');
+            AntragBetreuungPO.getErweiterteBeduerfnisseBestaetigt().click();
             AntragBetreuungPO.platzBestaetigen();
 
             cy.changeLogin(userTraegerschaft);
