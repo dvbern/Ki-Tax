@@ -32,6 +32,8 @@ import ch.dvbern.ebegu.services.FinanzielleSituationService;
 import ch.dvbern.ebegu.services.GesuchstellerService;
 import ch.dvbern.ebegu.util.mandant.MandantIdentifier;
 
+import static ch.dvbern.ebegu.util.mandant.MandantCookieUtil.convertCookieNameToMandantIdentifier;
+
 @ApplicationScoped
 public class FamSitChangeHandlerProducer {
 
@@ -63,31 +65,5 @@ public class FamSitChangeHandlerProducer {
 			}
 		}
 		throw new IllegalStateException("mandant Cookie is missing");
-	}
-
-	@Nonnull
-	private static MandantIdentifier convertCookieNameToMandantIdentifier(String mandantNameDecoded) {
-		MandantIdentifier mandantIdentifier = null;
-
-		switch (mandantNameDecoded) {
-		case "Stadt Luzern":
-			mandantIdentifier = MandantIdentifier.LUZERN;
-			break;
-		case "Appenzell Ausserrhoden":
-			mandantIdentifier = MandantIdentifier.APPENZELL_AUSSERRHODEN;
-			break;
-		case "Kanton Solothurn":
-			mandantIdentifier = MandantIdentifier.SOLOTHURN;
-			break;
-		case "Kanton Bern":
-			mandantIdentifier = MandantIdentifier.BERN;
-			break;
-		case "Kanton Schwyz":
-			mandantIdentifier = MandantIdentifier.SCHWYZ;
-			break;
-		default:
-			throw new IllegalStateException("Unexpected mandant: " + mandantNameDecoded);
-		}
-		return mandantIdentifier;
 	}
 }
