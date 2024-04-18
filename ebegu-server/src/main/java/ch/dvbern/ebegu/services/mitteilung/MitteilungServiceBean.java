@@ -1199,9 +1199,10 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 			new MahlzeitenVerguenstigungMessageFactory(mandant, locale, betreuungspensumAnzeigeTyp, multiplier) :
 			new DefaultMessageFactory(mandant, locale, betreuungspensumAnzeigeTyp, multiplier);
 
-		boolean schulergaenzendeBetreuungEnabled = mitteilung.getBetreuungspensen().stream().anyMatch(
-			betreuungspensum -> Boolean.TRUE.equals(betreuungspensum.getBetreuungInFerienzeit())
-		);
+		boolean schulergaenzendeBetreuungEnabled = einstellungService.findEinstellung(
+			EinstellungKey.SCHULERGAENZENDE_BETREUUNGEN,
+			betreuung.extractGemeinde(),
+			betreuung.extractGesuchsperiode()).getValueAsBoolean();
 
 		BetreuungsmitteilungPensumMessageFactory schulergaenzendeBetreuungFactory = schulergaenzendeBetreuungEnabled ?
 			new SchulergaenzendeBetreuungMessageFactory(mandant, locale) :
