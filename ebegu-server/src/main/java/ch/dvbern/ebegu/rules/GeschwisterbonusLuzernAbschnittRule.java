@@ -21,6 +21,7 @@ import ch.dvbern.ebegu.entities.*;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.EinschulungTyp;
 import ch.dvbern.ebegu.enums.EinstellungKey;
+import ch.dvbern.ebegu.enums.GeschwisterbonusTyp;
 import ch.dvbern.ebegu.enums.MsgKey;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.types.DateRange;
@@ -31,11 +32,11 @@ import java.time.temporal.TemporalAdjusters;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class GeschwisterbonusAbschnittRule extends AbstractAbschnittRule {
+public class GeschwisterbonusLuzernAbschnittRule extends AbstractAbschnittRule {
 
 	private final EinschulungTyp einstellungBgAusstellenBisStufe;
 
-	protected GeschwisterbonusAbschnittRule(
+	protected GeschwisterbonusLuzernAbschnittRule(
 		@Nonnull EinschulungTyp einstellungBgAusstellenBisStufe,
 		@Nonnull DateRange validityPeriod,
 		@Nonnull Locale locale) {
@@ -202,7 +203,7 @@ public class GeschwisterbonusAbschnittRule extends AbstractAbschnittRule {
 
 	@Override
 	public boolean isRelevantForGemeinde(@Nonnull Map<EinstellungKey, Einstellung> einstellungMap) {
-		Einstellung geschwisternbonusAktiv = einstellungMap.get(EinstellungKey.GESCHWISTERNBONUS_AKTIVIERT);
-		return geschwisternbonusAktiv.getValueAsBoolean();
+		Einstellung geschwisterbonus = einstellungMap.get(EinstellungKey.GESCHWISTERNBONUS_TYP);
+		return GeschwisterbonusTyp.getEnumValue(geschwisterbonus) == GeschwisterbonusTyp.LUZERN;
 	}
 }
