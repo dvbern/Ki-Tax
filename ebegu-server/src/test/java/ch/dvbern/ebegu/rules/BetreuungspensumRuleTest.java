@@ -16,10 +16,13 @@
 package ch.dvbern.ebegu.rules;
 
 import ch.dvbern.ebegu.entities.Betreuung;
+import ch.dvbern.ebegu.entities.Betreuungspensum;
+import ch.dvbern.ebegu.entities.BetreuungspensumContainer;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.rules.initalizer.RestanspruchInitializer;
 import ch.dvbern.ebegu.test.TestDataUtil;
+import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.MathUtil;
 import org.junit.Assert;
 import org.junit.Test;
@@ -176,5 +179,21 @@ public class BetreuungspensumRuleTest {
 		Assert.assertEquals(BigDecimal.valueOf(800), result.get(0).getBgCalculationInputAsiv().getMonatlicheBetreuungskosten());
 		result = EbeguRuleTestsHelper.runSingleAbschlussRule(restanspruchInitializer, betreuung, result);
 		Assert.assertEquals(0, result.get(0).getBgCalculationInputAsiv().getAnspruchspensumRest());
+	}
+
+	@Test
+	public void testBetreuungInFerienErstesPensum() {
+		Betreuung betreuung = EbeguRuleTestsHelper.createBetreuungWithPensum(TestDataUtil.START_PERIODE.plusMonths(1), TestDataUtil.ENDE_PERIODE, BetreuungsangebotTyp.TAGESFAMILIEN, 80,  BigDecimal.valueOf(800));
+		Betreuungspensum betreuungspensum = new Betreuungspensum();
+		betreuungspensum.setBetreuungInFerienzeit(true);
+		betreuungspensum.setGueltigkeit(new DateRange(TestDataUtil.START_PERIODE, TestDataUtil.START_PERIODE.plusMonths(1).minusDays(1)));
+		BetreuungspensumContainer betreuungspensumContainer = new BetreuungspensumContainer();
+		betreuungspensumContainer.setBetreuungspensumJA(betreuungspensum);
+		betreuung.getBetreuungspensumContainers().add(betreuungspensumContainer);
+		List<VerfuegungZeitabschnitt> result = calculate(betreuung);
+		Assert.assertNotNull(result);
+		Assert.assertEquals(2, result.size());
+		Assert.assertTrue(result.get(0).getBgCalculationInputAsiv().isBetreuungInFerienzeit());
+		Assert.assertFalse(result.get(1).getBgCalculationInputAsiv().isBetreuungInFerienzeit());
 	}
 }

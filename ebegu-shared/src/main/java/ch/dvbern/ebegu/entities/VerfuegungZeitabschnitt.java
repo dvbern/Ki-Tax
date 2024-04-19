@@ -894,4 +894,9 @@ public class VerfuegungZeitabschnitt extends AbstractDateRangedEntity implements
 		this.bgCalculationInputAsiv.setGesuchBeendenKonkubinatMitZweiGS(gesuchBeenden);
 		this.bgCalculationInputGemeinde.setGesuchBeendenKonkubinatMitZweiGS(gesuchBeenden);
 	}
+
+	public void setBetreuungInFerienzeit(boolean betreuungInFerienzeit) {
+		this.bgCalculationInputAsiv.setBetreuungInFerienzeit(betreuungInFerienzeit);
+		this.bgCalculationInputGemeinde.setBetreuungInFerienzeit(betreuungInFerienzeit);
+	}
 }
