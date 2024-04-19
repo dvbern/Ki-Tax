@@ -15,16 +15,23 @@
 
 package ch.dvbern.ebegu.entities;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.persistence.AssociationOverride;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.ForeignKey;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
+
 import ch.dvbern.ebegu.enums.AntragCopyType;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.commons.lang3.builder.CompareToBuilder;
 import org.hibernate.envers.Audited;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.persistence.*;
-import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
 
 /**
  * Entity fuer BetreuungsmitteilungPensum.
@@ -50,6 +57,10 @@ public class BetreuungsmitteilungPensum extends AbstractMahlzeitenPensum impleme
 	@JoinColumn(foreignKey = @ForeignKey(name = "FK_betreuungspensum_mitteilung_betreuungspensum_abweichung"))
 	private BetreuungspensumAbweichung betreuungspensumAbweichung;
 
+	@Nullable
+	@Column(nullable = true)
+	private Boolean betreuungInFerienzeit;
+
 	@Nonnull
 	public Betreuungsmitteilung getBetreuungsmitteilung() {
 		return betreuungsmitteilung;
@@ -68,6 +79,14 @@ public class BetreuungsmitteilungPensum extends AbstractMahlzeitenPensum impleme
 		this.betreuungspensumAbweichung = betreuungspensumAbweichung;
 	}
 
+	@Nullable
+	public Boolean getBetreuungInFerienzeit() {
+		return betreuungInFerienzeit;
+	}
+
+	public void setBetreuungInFerienzeit(@Nullable Boolean betreuungInFerienzeit) {
+		this.betreuungInFerienzeit = betreuungInFerienzeit;
+	}
 
 	@Override
 	public int compareTo(@Nonnull BetreuungsmitteilungPensum o) {

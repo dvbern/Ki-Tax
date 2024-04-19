@@ -203,7 +203,7 @@ public class KitaTagestrukturenSchwyzRechnerTest {
 		var input = verfuegungZeitabschnitt.getRelevantBgCalculationInput();
 		setDefaultInputs(input);
 		input.setEinschulungTyp(null);
-		input.setBetreuungWaehrendSchulzeit(false);
+		input.setBetreuungInFerienzeit(false);
 
 		// when
 		testee.calculate(verfuegungZeitabschnitt, parameter);
@@ -242,7 +242,7 @@ public class KitaTagestrukturenSchwyzRechnerTest {
 		var input = verfuegungZeitabschnitt.getRelevantBgCalculationInput();
 		setDefaultInputs(input);
 		input.setEinschulungTyp(null);
-		input.setBetreuungWaehrendSchulzeit(false);
+		input.setBetreuungInFerienzeit(true);
 		input
 			.setMassgebendesEinkommenVorAbzugFamgr(parameter.getMaxMassgebendesEinkommen().subtract(BigDecimal.TEN));
 
@@ -284,7 +284,7 @@ public class KitaTagestrukturenSchwyzRechnerTest {
 		setDefaultInputs(input);
 
 		input.setEinschulungTyp(null);
-		input.setBetreuungWaehrendSchulzeit(false);
+		input.setBetreuungInFerienzeit(true);
 		input
 			.setMassgebendesEinkommenVorAbzugFamgr(parameter.getMinMassgebendesEinkommen().add(BigDecimal.TEN));
 
@@ -325,7 +325,7 @@ public class KitaTagestrukturenSchwyzRechnerTest {
 		var input = verfuegungZeitabschnitt.getRelevantBgCalculationInput();
 		setDefaultInputs(input);
 		input.setEinschulungTyp(null);
-		input.setBetreuungWaehrendSchulzeit(false);
+		input.setBetreuungInFerienzeit(true);
 		input.setMonatlicheBetreuungskosten(new BigDecimal(2000));
 
 		// when
@@ -363,7 +363,7 @@ public class KitaTagestrukturenSchwyzRechnerTest {
 	private void setDefaultInputs(BGCalculationInput input) {
 		input.setBabyTarif(false);
 		input.setEinschulungTyp(EinschulungTyp.KLASSE1);
-		input.setBetreuungWaehrendSchulzeit(true);
+		input.setBetreuungInFerienzeit(false);
 		input.setAnzahlGeschwister(4);
 		input.setBetreuungspensumProzent(new BigDecimal(80));
 		input.setAnspruchspensumProzent(100);
@@ -431,7 +431,7 @@ public class KitaTagestrukturenSchwyzRechnerTest {
 		var input = verfuegungZeitabschnitt.getRelevantBgCalculationInput();
 		setDefaultInputs(input);
 		input.setEinschulungTyp(EinschulungTyp.KLASSE1);
-		input.setBetreuungWaehrendSchulzeit(false);
+		input.setBetreuungInFerienzeit(true);
 		var parameter = TestUtils.getRechnerParamterSchwyz();
 
 		// when
@@ -449,7 +449,7 @@ public class KitaTagestrukturenSchwyzRechnerTest {
 		var input = verfuegungZeitabschnitt.getRelevantBgCalculationInput();
 		setDefaultInputs(input);
 		input.setEinschulungTyp(EinschulungTyp.KLASSE1);
-		input.setBetreuungWaehrendSchulzeit(true);
+		input.setBetreuungInFerienzeit(false);
 		var parameter = TestUtils.getRechnerParamterSchwyz();
 
 		// when

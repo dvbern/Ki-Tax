@@ -231,7 +231,7 @@ public enum EinstellungKey {
 
 	// "FKJV: Anspruchsberechnung monatsweise"
 	// Siehe KIBON-2095. Falls true wird der Anspruch nur monatsweise berechnet
-	ANSPRUCH_MONATSWEISE(List.of(MandantIdentifier.BERN, MandantIdentifier.LUZERN, MandantIdentifier.SOLOTHURN)),
+	ANSPRUCH_MONATSWEISE(List.of(MandantIdentifier.BERN, MandantIdentifier.LUZERN, MandantIdentifier.SOLOTHURN, MandantIdentifier.SCHWYZ)),
 
 	// "FKJV: Textanpassungen"
 	// Siehe KIBON-2194. Für FKJV Perioden müssen gewisse Texte angepasst werden
@@ -348,7 +348,10 @@ public enum EinstellungKey {
 	KITA_STUNDEN_PRO_TAG(MandantIdentifier.getAll()),
 
 	//Das Gesuch wird beendent, wenn der Gesuchsteller 2 innerhalb der Periode ändert KIBONBE-31, KIBON-2583
-	GESUCH_BEENDEN_BEI_TAUSCH_GS2(MandantIdentifier.getAll());
+	GESUCH_BEENDEN_BEI_TAUSCH_GS2(MandantIdentifier.getAll()),
+
+	// Addiert die Moeglichkeit Betreuung in die Schulferien getrennt zu melden
+	SCHULERGAENZENDE_BETREUUNGEN(MandantIdentifier.getAll());
 
 	private EinstellungTyp typ;
 	private List<MandantIdentifier> activeForMandant;
