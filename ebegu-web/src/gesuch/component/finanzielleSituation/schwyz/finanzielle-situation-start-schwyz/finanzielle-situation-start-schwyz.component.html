@@ -26,17 +26,17 @@
         <ng-template #mehrereGS>
             <dv-steuerveranlagung-gemeinsam
                 [model]="model"
+                (gemeinsamChanged)="this.gemeinsamChanged($event)"
             ></dv-steuerveranlagung-gemeinsam>
             <dv-steuerveranlagt-schwyz *ngIf="model.familienSituation.gemeinsameSteuererklaerung"
-                                       [finSitJA]="getModel().finanzielleSituationJA"
-                                       [finSitGS]="getModel().finanzielleSituationGS"
-                                       [readonly]="gesuchModelManager.isGesuchReadonly()">
+                                       [readonly]="gesuchModelManager.isGesuchReadonly()"
+                                       [finanzModel]="model">
             </dv-steuerveranlagt-schwyz>
             <div class="row margin-bottom-20"
                  *ngIf="model.familienSituation.gemeinsameSteuererklaerung">
                 <div class="col-sm-6">
                     <dv-input-label-field
-                        [model]="massgebendesEinkommen"
+                        [model]="resultate?.massgebendesEinkVorAbzFamGr"
                         [labelMessageKey]="'FINANZIELLE_SITUATION_MASSGEBENDES_EINKOMMEN'"
                         [inputDisabled]="true">
                     </dv-input-label-field>
@@ -45,15 +45,14 @@
         </ng-template>
 
         <ng-template #alleinigesGesuch>
-            <dv-finanzielle-situation-single-gs [finSitJA]="getModel().finanzielleSituationJA"
-                                                [finSitGS]="getModel().finanzielleSituationGS"
-                                                [readonly]="gesuchModelManager.isGesuchReadonly()">
+            <dv-finanzielle-situation-single-gs [readonly]="gesuchModelManager.isGesuchReadonly()"
+                                                [finanzModel]="model">
             </dv-finanzielle-situation-single-gs>
 
             <div class="row margin-bottom-20" *ngIf="isNotNullOrUndefined(getModel().finanzielleSituationJA.quellenbesteuert)">
                 <div class="col-sm-6">
                     <dv-input-label-field
-                        [model]="massgebendesEinkommen"
+                        [model]="resultate?.massgebendesEinkVorAbzFamGr"
                         [labelMessageKey]="'FINANZIELLE_SITUATION_MASSGEBENDES_EINKOMMEN'"
                         [inputDisabled]="true">
                     </dv-input-label-field>
