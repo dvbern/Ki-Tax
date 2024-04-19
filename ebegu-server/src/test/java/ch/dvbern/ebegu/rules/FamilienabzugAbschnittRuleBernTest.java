@@ -16,6 +16,7 @@
 package ch.dvbern.ebegu.rules;
 
 import ch.dvbern.ebegu.entities.*;
+import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.enums.EnumFamilienstatus;
 import ch.dvbern.ebegu.enums.EnumGesuchstellerKardinalitaet;
 import ch.dvbern.ebegu.enums.Kinderabzug;
@@ -30,6 +31,7 @@ import org.junit.jupiter.api.Test;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.Month;
@@ -43,8 +45,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 /**
  * Tests fuer FamilienabzugAbschnittRule
  */
-public class FamilienabzugAbschnittRuleTest {
-
+public class FamilienabzugAbschnittRuleBernTest {
 	private final BigDecimal pauschalabzugProPersonFamiliengroesse3 = MathUtil.DEFAULT.from(Constants.PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_3_FUER_TESTS);
 	private final BigDecimal pauschalabzugProPersonFamiliengroesse4 = MathUtil.DEFAULT.from(Constants.PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_4_FUER_TESTS);
 	private final BigDecimal pauschalabzugProPersonFamiliengroesse5 = MathUtil.DEFAULT.from(Constants.PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_5_FUER_TESTS);
@@ -53,15 +54,11 @@ public class FamilienabzugAbschnittRuleTest {
 	private static final double DELTA = 1.0e-15;
 	public static final LocalDate DATE_2005 = LocalDate.of(2005, 12, 31);
 
-	private final FamilienabzugAbschnittRule famabAbschnittRule =
-		new FamilienabzugAbschnittRule(Constants.DEFAULT_GUELTIGKEIT, pauschalabzugProPersonFamiliengroesse3,
-			pauschalabzugProPersonFamiliengroesse4, pauschalabzugProPersonFamiliengroesse5,
-			pauschalabzugProPersonFamiliengroesse6, 5, KinderabzugTyp.ASIV, Constants.DEFAULT_LOCALE);
+	private final FamilienabzugAbschnittRuleBern famabAbschnittRule =
+		new FamilienabzugAbschnittRuleBern(getEinstellungMapForAsiv(), Constants.DEFAULT_GUELTIGKEIT,  Constants.DEFAULT_LOCALE);
 
-	private final FamilienabzugAbschnittRule famabAbschnittRule_FKJV2 =
-		new FamilienabzugAbschnittRule(Constants.DEFAULT_GUELTIGKEIT, pauschalabzugProPersonFamiliengroesse3,
-			pauschalabzugProPersonFamiliengroesse4, pauschalabzugProPersonFamiliengroesse5,
-			pauschalabzugProPersonFamiliengroesse6, 2, KinderabzugTyp.FKJV_2, Constants.DEFAULT_LOCALE);
+	private final FamilienabzugAbschnittRuleBern famabAbschnittRule_FKJV2 =
+		new FamilienabzugAbschnittRuleBern(getEinstellungMapForFKJV2(), Constants.DEFAULT_GUELTIGKEIT, Constants.DEFAULT_LOCALE);
 
 	@Test
 	void test2PKeinAbzug() {
@@ -93,8 +90,10 @@ public class FamilienabzugAbschnittRuleTest {
 		Assertions.assertNotNull(zeitabschnitte);
 		Assertions.assertEquals(1, zeitabschnitte.size());
 		final VerfuegungZeitabschnitt verfuegungZeitabschnitt = zeitabschnitte.iterator().next();
-		Assertions.assertEquals(0,
-			verfuegungZeitabschnitt.getAbzugFamGroesse().compareTo(pauschalabzugProPersonFamiliengroesse3.multiply(BigDecimal.valueOf(3))));
+		Assertions.assertEquals(
+			0,
+			verfuegungZeitabschnitt.getAbzugFamGroesse()
+				.compareTo(pauschalabzugProPersonFamiliengroesse3.multiply(BigDecimal.valueOf(3))));
 	}
 
 	@Test
@@ -112,8 +111,10 @@ public class FamilienabzugAbschnittRuleTest {
 		Assertions.assertNotNull(zeitabschnitte);
 		Assertions.assertEquals(1, zeitabschnitte.size());
 		final VerfuegungZeitabschnitt verfuegungZeitabschnitt = zeitabschnitte.iterator().next();
-		Assertions.assertEquals(0,
-			verfuegungZeitabschnitt.getAbzugFamGroesse().compareTo(pauschalabzugProPersonFamiliengroesse4.multiply(BigDecimal.valueOf(4))));
+		Assertions.assertEquals(
+			0,
+			verfuegungZeitabschnitt.getAbzugFamGroesse()
+				.compareTo(pauschalabzugProPersonFamiliengroesse4.multiply(BigDecimal.valueOf(4))));
 	}
 
 	@Test
@@ -133,18 +134,21 @@ public class FamilienabzugAbschnittRuleTest {
 		Assertions.assertNotNull(zeitabschnitte);
 		Assertions.assertEquals(2, zeitabschnitte.size());
 
-
 		final Iterator<VerfuegungZeitabschnitt> iterator = zeitabschnitte.iterator();
 		final VerfuegungZeitabschnitt verfuegungZeitabschnitt1 = iterator.next();
-		Assertions.assertEquals(0,
-			verfuegungZeitabschnitt1.getAbzugFamGroesse().compareTo(pauschalabzugProPersonFamiliengroesse3.multiply(BigDecimal.valueOf(3))));
+		Assertions.assertEquals(
+			0,
+			verfuegungZeitabschnitt1.getAbzugFamGroesse()
+				.compareTo(pauschalabzugProPersonFamiliengroesse3.multiply(BigDecimal.valueOf(3))));
 		final LocalDate withDayOfMonth = geburtsdatum.plusMonths(1).withDayOfMonth(1);
 		Assertions.assertEquals(0, verfuegungZeitabschnitt1.getGueltigkeit().getGueltigBis().compareTo(
 			withDayOfMonth.minusDays(1)));
 
 		final VerfuegungZeitabschnitt verfuegungZeitabschnitt2 = iterator.next();
-		Assertions.assertEquals(0,
-			verfuegungZeitabschnitt2.getAbzugFamGroesse().compareTo(pauschalabzugProPersonFamiliengroesse4.multiply(BigDecimal.valueOf(4))));
+		Assertions.assertEquals(
+			0,
+			verfuegungZeitabschnitt2.getAbzugFamGroesse()
+				.compareTo(pauschalabzugProPersonFamiliengroesse4.multiply(BigDecimal.valueOf(4))));
 		Assertions.assertEquals(0, verfuegungZeitabschnitt2.getGueltigkeit().getGueltigAb().compareTo(withDayOfMonth));
 	}
 
@@ -171,15 +175,19 @@ public class FamilienabzugAbschnittRuleTest {
 
 		final Iterator<VerfuegungZeitabschnitt> iterator = zeitabschnitte.iterator();
 		final VerfuegungZeitabschnitt verfuegungZeitabschnitt1 = iterator.next();
-		Assertions.assertEquals(0,
-			verfuegungZeitabschnitt1.getAbzugFamGroesse().compareTo(pauschalabzugProPersonFamiliengroesse3.multiply(BigDecimal.valueOf(3))));
+		Assertions.assertEquals(
+			0,
+			verfuegungZeitabschnitt1.getAbzugFamGroesse()
+				.compareTo(pauschalabzugProPersonFamiliengroesse3.multiply(BigDecimal.valueOf(3))));
 		final LocalDate withDayOfMonth = geburtsdatum.plusMonths(1).withDayOfMonth(1);
 		Assertions.assertEquals(0, verfuegungZeitabschnitt1.getGueltigkeit().getGueltigBis().compareTo(
 			withDayOfMonth.minusDays(1)));
 
 		final VerfuegungZeitabschnitt verfuegungZeitabschnitt2 = iterator.next();
-		Assertions.assertEquals(0,
-			verfuegungZeitabschnitt2.getAbzugFamGroesse().compareTo(pauschalabzugProPersonFamiliengroesse5.multiply(BigDecimal.valueOf(5))));
+		Assertions.assertEquals(
+			0,
+			verfuegungZeitabschnitt2.getAbzugFamGroesse()
+				.compareTo(pauschalabzugProPersonFamiliengroesse5.multiply(BigDecimal.valueOf(5))));
 		Assertions.assertEquals(0, verfuegungZeitabschnitt2.getGueltigkeit().getGueltigAb().compareTo(withDayOfMonth));
 	}
 
@@ -318,9 +326,11 @@ public class FamilienabzugAbschnittRuleTest {
 		Assertions.assertEquals(0, famabAbschnittRule.calculateAbzugAufgrundFamiliengroesse(1.5, 2).intValue());
 
 		/* Beispiel Nr. 2:
-		 * 1 Erwachsene Person (Alleinerziehend) und 2 Kindern zu je 50% Abzugsmöglichkeit in den Steuern. Die Anzahl der Personen,
+		 * 1 Erwachsene Person (Alleinerziehend) und 2 Kindern zu je 50% Abzugsmöglichkeit in den Steuern. Die Anzahl der
+		 * Personen,
 		 * die im gleichen Haushalt wohnen, beträgt somit 3 Personen und es wird nun der Ansatz 3-Personenhaushalt von
-		 * Fr. 3'800.00 angenommen. Die anrechenbare Familiengrösse ist 2 und dieser Wert wird mit dem Ansatz von 3-Personenhaushalt
+		 * Fr. 3'800.00 angenommen. Die anrechenbare Familiengrösse ist 2 und dieser Wert wird mit dem Ansatz von
+		 * 3-Personenhaushalt
 		 * von Fr. 3'800.00 multipliziert; Ergebnis Fr. 7'600.00
 		 */
 		Assertions.assertEquals(7600, famabAbschnittRule.calculateAbzugAufgrundFamiliengroesse(2, 3).intValue());
@@ -330,7 +340,7 @@ public class FamilienabzugAbschnittRuleTest {
 		 * 4 Personen im gleichen Haushalt wohnhaft, somit wird die Pauschale einer 4-Personenhaushalt von Fr. 5'960.00 genommen.
 		 * Die anrechenbare Familiengrösse beträgt 2,5 und dieser Wert wird mit der Pauschale 4-Personenhaushalt von
 		 * Fr. 6'000.00 multipliziert; Ergebnis Fr. 15'000.00.
-		*/
+		 */
 		Assertions.assertEquals(15000, famabAbschnittRule.calculateAbzugAufgrundFamiliengroesse(2.5, 4).intValue());
 
 		/*
@@ -436,7 +446,8 @@ public class FamilienabzugAbschnittRuleTest {
 		Assertions.assertEquals(2, zeitabschnitte.size());
 
 		final VerfuegungZeitabschnitt zeitabschnitt0 = zeitabschnitte.get(0);
-		Assertions.assertEquals(gesuch.getGesuchsperiode().getGueltigkeit().getGueltigAb(),
+		Assertions.assertEquals(
+			gesuch.getGesuchsperiode().getGueltigkeit().getGueltigAb(),
 			zeitabschnitt0.getGueltigkeit().getGueltigAb());
 		Assertions.assertEquals(date.withDayOfMonth(31), zeitabschnitt0.getGueltigkeit().getGueltigBis());
 		Assertions.assertEquals(0, zeitabschnitt0.getAbzugFamGroesse().intValue());
@@ -444,7 +455,8 @@ public class FamilienabzugAbschnittRuleTest {
 
 		final VerfuegungZeitabschnitt zeitabschnitt1 = zeitabschnitte.get(1);
 		Assertions.assertEquals(date.plusMonths(1).withDayOfMonth(1), zeitabschnitt1.getGueltigkeit().getGueltigAb());
-		Assertions.assertEquals(gesuch.getGesuchsperiode().getGueltigkeit().getGueltigBis(),
+		Assertions.assertEquals(
+			gesuch.getGesuchsperiode().getGueltigkeit().getGueltigBis(),
 			zeitabschnitt1.getGueltigkeit().getGueltigBis());
 		Assertions.assertEquals(11400, zeitabschnitt1.getAbzugFamGroesse().intValue());
 		Assertions.assertEquals(BigDecimal.valueOf(3.0), zeitabschnitt1.getFamGroesse());
@@ -468,13 +480,14 @@ public class FamilienabzugAbschnittRuleTest {
 				kindContainers.add(kind);
 				gesuch.setKindContainers(kindContainers);
 
-
-				final Entry<Double, Integer> famGroesse = famabAbschnittRule_FKJV2.calculateFamiliengroesse(gesuch, LocalDate.now());
+				final Entry<Double, Integer> famGroesse =
+					famabAbschnittRule_FKJV2.calculateFamiliengroesse(gesuch, LocalDate.now());
 				double familiengroesse = famGroesse.getKey();
 				double familienMitglieder = famGroesse.getValue();
 				Assertions.assertEquals(2.5, familiengroesse, DELTA);
 				Assertions.assertEquals(3, familienMitglieder, DELTA);
 			}
+
 			@Test
 			void kinderAbzugFKJV2_HalbesKindWennKeineGemeinsameGesuch() {
 				Gesuch gesuch = createGesuchWithTwoGesuchsteller();
@@ -496,7 +509,8 @@ public class FamilienabzugAbschnittRuleTest {
 				kindContainers.add(kind);
 				gesuch.setKindContainers(kindContainers);
 
-				final Entry<Double, Integer> famGroesse = famabAbschnittRule_FKJV2.calculateFamiliengroesse(gesuch, LocalDate.now());
+				final Entry<Double, Integer> famGroesse =
+					famabAbschnittRule_FKJV2.calculateFamiliengroesse(gesuch, LocalDate.now());
 				double familiengroesse = famGroesse.getKey();
 				Assertions.assertEquals(2.5, familiengroesse, DELTA);
 			}
@@ -521,7 +535,8 @@ public class FamilienabzugAbschnittRuleTest {
 				kindContainers.add(kind);
 				gesuch.setKindContainers(kindContainers);
 
-				final Entry<Double, Integer> famGroesse = famabAbschnittRule_FKJV2.calculateFamiliengroesse(gesuch, LocalDate.now());
+				final Entry<Double, Integer> famGroesse =
+					famabAbschnittRule_FKJV2.calculateFamiliengroesse(gesuch, LocalDate.now());
 				double familiengroesse = famGroesse.getKey();
 				Assertions.assertEquals(3, familiengroesse, DELTA);
 			}
@@ -549,7 +564,8 @@ public class FamilienabzugAbschnittRuleTest {
 				kindContainers.add(kind);
 				gesuch.setKindContainers(kindContainers);
 
-				final Entry<Double, Integer> famGroesse = famabAbschnittRule_FKJV2.calculateFamiliengroesse(gesuch, LocalDate.now());
+				final Entry<Double, Integer> famGroesse =
+					famabAbschnittRule_FKJV2.calculateFamiliengroesse(gesuch, LocalDate.now());
 				double familiengroesse = famGroesse.getKey();
 				Assertions.assertEquals(1.5, familiengroesse, DELTA);
 			}
@@ -574,7 +590,8 @@ public class FamilienabzugAbschnittRuleTest {
 				kindContainers.add(kind);
 				gesuch.setKindContainers(kindContainers);
 
-				final Entry<Double, Integer> famGroesse = famabAbschnittRule_FKJV2.calculateFamiliengroesse(gesuch, LocalDate.now());
+				final Entry<Double, Integer> famGroesse =
+					famabAbschnittRule_FKJV2.calculateFamiliengroesse(gesuch, LocalDate.now());
 				double familiengroesse = famGroesse.getKey();
 				Assertions.assertEquals(2.5, familiengroesse, DELTA);
 			}
@@ -599,7 +616,8 @@ public class FamilienabzugAbschnittRuleTest {
 				kindContainers.add(kind);
 				gesuch.setKindContainers(kindContainers);
 
-				final Entry<Double, Integer> famGroesse = famabAbschnittRule_FKJV2.calculateFamiliengroesse(gesuch, LocalDate.now());
+				final Entry<Double, Integer> famGroesse =
+					famabAbschnittRule_FKJV2.calculateFamiliengroesse(gesuch, LocalDate.now());
 				double familiengroesse = famGroesse.getKey();
 				Assertions.assertEquals(3, familiengroesse, DELTA);
 			}
@@ -617,7 +635,6 @@ public class FamilienabzugAbschnittRuleTest {
 
 		kindContainers.add(kind);
 		gesuch.setKindContainers(kindContainers);
-
 
 		final Entry<Double, Integer> famGroesse = famabAbschnittRule_FKJV2.calculateFamiliengroesse(gesuch, LocalDate.now());
 		double familiengroesse = famGroesse.getKey();
@@ -642,7 +659,6 @@ public class FamilienabzugAbschnittRuleTest {
 		kindContainers.add(kindOver18);
 
 		gesuch.setKindContainers(kindContainers);
-
 
 		final Entry<Double, Integer> famGroesse = famabAbschnittRule_FKJV2.calculateFamiliengroesse(gesuch, LocalDate.now());
 		double familiengroesse = famGroesse.getKey();
@@ -687,7 +703,6 @@ public class FamilienabzugAbschnittRuleTest {
 		assertThat(familienMitglieder, is(3.0));
 	}
 
-
 	@Test
 	public void kinderAbzugFKJV_obhutAlternierend_betreuut_verheiratet() {
 		Gesuch gesuch = createGesuchWithTwoGesuchsteller();
@@ -727,7 +742,9 @@ public class FamilienabzugAbschnittRuleTest {
 	public void kinderAbzugFKJV_obhutAlternierend_betreuut_konkubinatMindauerNichtErreicht_Alleine() {
 		Gesuch gesuch = createGesuchWithOneGS();
 		gesuch.setKindContainers(new LinkedHashSet<>());
-		gesuch.getFamiliensituationContainer().getFamiliensituationJA().setFamilienstatus(EnumFamilienstatus.KONKUBINAT_KEIN_KIND);
+		gesuch.getFamiliensituationContainer()
+			.getFamiliensituationJA()
+			.setFamilienstatus(EnumFamilienstatus.KONKUBINAT_KEIN_KIND);
 		gesuch.getFamiliensituationContainer().getFamiliensituationJA().setStartKonkubinat(LocalDate.now().minusYears(1));
 
 		KindContainer kind = createKindContainer(LocalDate.of(2020, Month.MARCH, 25));
@@ -747,7 +764,9 @@ public class FamilienabzugAbschnittRuleTest {
 	public void kinderAbzugFKJV_obhutAlternierend_betreuut_konkubinatMindauerErreicht() {
 		Gesuch gesuch = createGesuchWithOneGS();
 		gesuch.setKindContainers(new LinkedHashSet<>());
-		gesuch.getFamiliensituationContainer().getFamiliensituationJA().setFamilienstatus(EnumFamilienstatus.KONKUBINAT_KEIN_KIND);
+		gesuch.getFamiliensituationContainer()
+			.getFamiliensituationJA()
+			.setFamilienstatus(EnumFamilienstatus.KONKUBINAT_KEIN_KIND);
 		gesuch.getFamiliensituationContainer().getFamiliensituationJA().setStartKonkubinat(LocalDate.now().minusYears(3));
 
 		KindContainer kind = createKindContainer(LocalDate.of(2020, Month.MARCH, 25));
@@ -949,7 +968,6 @@ public class FamilienabzugAbschnittRuleTest {
 		kind.getKindJA().setInErstausbildung(true);
 		gesuch.getKindContainers().add(kind);
 
-
 		assertThrows(EbeguRuntimeException.class, () -> {
 			famabAbschnittRule_FKJV2.calculateFamiliengroesse(gesuch, LocalDate.now());
 		});
@@ -1029,4 +1047,60 @@ public class FamilienabzugAbschnittRuleTest {
 		return kindContainer;
 	}
 
+	private Map<EinstellungKey, Einstellung> getEinstellungMapForAsiv() {
+		Map<EinstellungKey, Einstellung> einstellungMapForAsiv = new HashMap<>();
+		einstellungMapForAsiv.putAll(getDefaultEinstellungMap());
+		Einstellung einstellungMinimalKonkubinat = new Einstellung(EinstellungKey.MINIMALDAUER_KONKUBINAT, "5", new Gesuchsperiode());
+		einstellungMapForAsiv.put(EinstellungKey.MINIMALDAUER_KONKUBINAT, einstellungMinimalKonkubinat);
+		Einstellung einstellungKinderabzugTyp = new Einstellung(EinstellungKey.KINDERABZUG_TYP, KinderabzugTyp.ASIV.name(), new Gesuchsperiode());
+		einstellungMapForAsiv.put(EinstellungKey.KINDERABZUG_TYP, einstellungKinderabzugTyp);
+
+		return einstellungMapForAsiv;
+	}
+
+	private Map<EinstellungKey, Einstellung> getEinstellungMapForFKJV2() {
+		Map<EinstellungKey, Einstellung> einstellungMapForFKJV2 = new HashMap<>();
+
+		einstellungMapForFKJV2.putAll(getDefaultEinstellungMap());
+		Einstellung einstellungMinimalKonkubinat = new Einstellung(EinstellungKey.MINIMALDAUER_KONKUBINAT, "2", new Gesuchsperiode());
+		einstellungMapForFKJV2.put(EinstellungKey.MINIMALDAUER_KONKUBINAT, einstellungMinimalKonkubinat);
+		Einstellung einstellungKinderabzugTyp = new Einstellung(EinstellungKey.KINDERABZUG_TYP, KinderabzugTyp.FKJV_2.name(), new Gesuchsperiode());
+		einstellungMapForFKJV2.put(EinstellungKey.KINDERABZUG_TYP, einstellungKinderabzugTyp);
+
+		return einstellungMapForFKJV2;
+	}
+
+	private Map<EinstellungKey, Einstellung> getDefaultEinstellungMap() {
+		Map<EinstellungKey, Einstellung> defaultEinstellungMap = new HashMap<>();
+		Einstellung einstellungPauschalabzugProPersonFamiliengroesse3 =
+			new Einstellung(EinstellungKey.PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_3,
+				Constants.PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_3_FUER_TESTS,
+				new Gesuchsperiode());
+		defaultEinstellungMap.put(
+			EinstellungKey.PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_3,
+			einstellungPauschalabzugProPersonFamiliengroesse3);
+		Einstellung einstellungPauschalabzugProPersonFamiliengroesse4 =
+			new Einstellung(EinstellungKey.PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_4,
+				Constants.PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_4_FUER_TESTS,
+				new Gesuchsperiode());
+		defaultEinstellungMap.put(
+			EinstellungKey.PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_4,
+			einstellungPauschalabzugProPersonFamiliengroesse4);
+		Einstellung einstellungPauschalabzugProPersonFamiliengroesse5 =
+			new Einstellung(EinstellungKey.PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_5,
+				Constants.PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_5_FUER_TESTS,
+				new Gesuchsperiode());
+		defaultEinstellungMap.put(
+			EinstellungKey.PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_5,
+			einstellungPauschalabzugProPersonFamiliengroesse5);
+		Einstellung einstellungPauschalabzugProPersonFamiliengroesse6 =
+			new Einstellung(EinstellungKey.PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_6,
+				Constants.PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_6_FUER_TESTS,
+				new Gesuchsperiode());
+		defaultEinstellungMap.put(
+			EinstellungKey.PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_6,
+			einstellungPauschalabzugProPersonFamiliengroesse6);
+
+		return defaultEinstellungMap;
+	}
 }

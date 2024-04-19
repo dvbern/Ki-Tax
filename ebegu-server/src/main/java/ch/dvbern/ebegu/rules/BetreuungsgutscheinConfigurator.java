@@ -160,28 +160,10 @@ public class BetreuungsgutscheinConfigurator {
 				new UnbezahlterUrlaubAbschnittRule(defaultGueltigkeit, locale);
 		addToRuleSetIfRelevantForGemeinde(unbezahlterUrlaubAbschnittRule, ruleParameterUtil);
 
-		//Familenabzug: Berechnet den Familienabzug aufgrund der Familiengroesse
-		Einstellung param_pauschalabzug_pro_person_familiengroesse_3 =
-				ruleParameterUtil.getEinstellung(PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_3);
-		Einstellung param_pauschalabzug_pro_person_familiengroesse_4 =
-				ruleParameterUtil.getEinstellung(PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_4);
-		Einstellung param_pauschalabzug_pro_person_familiengroesse_5 =
-				ruleParameterUtil.getEinstellung(PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_5);
-		Einstellung param_pauschalabzug_pro_person_familiengroesse_6 =
-				ruleParameterUtil.getEinstellung(PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_6);
-		Einstellung param_minimaldauer_konkubinat = ruleParameterUtil.getEinstellung(MINIMALDAUER_KONKUBINAT);
-		Einstellung param_kinderabzug_typ = ruleParameterUtil.getEinstellung(KINDERABZUG_TYP);
+		AbstractFamilienabzugAbschnittRule familienabzugAbschnittRuleToUse = new FamilienabzugAbschnittRuleVisitor(ruleParameterUtil.getEinstellungen(),
+			defaultGueltigkeit, locale).getFamilienabzugAbschnittRule(gemeinde.getMandant().getMandantIdentifier());
 
-		FamilienabzugAbschnittRule familienabzugAbschnittRule = new FamilienabzugAbschnittRule(
-				defaultGueltigkeit,
-				param_pauschalabzug_pro_person_familiengroesse_3.getValueAsBigDecimal(),
-				param_pauschalabzug_pro_person_familiengroesse_4.getValueAsBigDecimal(),
-				param_pauschalabzug_pro_person_familiengroesse_5.getValueAsBigDecimal(),
-				param_pauschalabzug_pro_person_familiengroesse_6.getValueAsBigDecimal(),
-				param_minimaldauer_konkubinat.getValueAsInteger(),
-				KinderabzugTyp.valueOf(param_kinderabzug_typ.getValue()),
-				locale);
-		addToRuleSetIfRelevantForGemeinde(familienabzugAbschnittRule, ruleParameterUtil);
+		addToRuleSetIfRelevantForGemeinde(familienabzugAbschnittRuleToUse, ruleParameterUtil);
 
 		// Betreuungsgutscheine Gueltigkeit
 		GutscheineStartdatumAbschnittRule gutscheineStartdatumAbschnittRule =
@@ -252,6 +234,7 @@ public class BetreuungsgutscheinConfigurator {
 		addToRuleSetIfRelevantForGemeinde(abwesenheitAbschnittRule, ruleParameterUtil);
 
 		// Zivilstandsaenderung
+		Einstellung param_minimaldauer_konkubinat = ruleParameterUtil.getEinstellung(MINIMALDAUER_KONKUBINAT);
 		ZivilstandsaenderungAbschnittRule zivilstandsaenderungAbschnittRule = new ZivilstandsaenderungAbschnittRule(
 				defaultGueltigkeit,
 				param_minimaldauer_konkubinat.getValueAsInteger(),
