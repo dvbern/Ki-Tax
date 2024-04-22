@@ -34,6 +34,7 @@ import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.containers.PensumUtil;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.BetreuungspensumAnzeigeTyp;
+import ch.dvbern.ebegu.enums.EinschulungTyp;
 import ch.dvbern.ebegu.enums.PensumUnits;
 import ch.dvbern.ebegu.services.EinstellungService;
 import ch.dvbern.ebegu.test.TestDataUtil;
@@ -42,7 +43,7 @@ import org.easymock.EasyMockExtension;
 import org.easymock.EasyMockSupport;
 import org.easymock.Mock;
 import org.easymock.TestSubject;
-import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -59,7 +60,10 @@ import static ch.dvbern.ebegu.util.Constants.DEUTSCH_LOCALE;
 import static java.util.Objects.requireNonNull;
 import static org.easymock.EasyMock.expect;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.emptyString;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.stringContainsInOrder;
 
 @ExtendWith(EasyMockExtension.class)
@@ -75,7 +79,7 @@ class MitteilungServiceBeanCreateMessageTest extends EasyMockSupport {
 	void emptyWhenNoPensen() {
 		String result = run(BetreuungsangebotTyp.KITA, BetreuungspensumAnzeigeTyp.NUR_PROZENT);
 
-		assertThat(result, Matchers.emptyString());
+		assertThat(result, emptyString());
 	}
 
 	@Test
@@ -172,36 +176,68 @@ class MitteilungServiceBeanCreateMessageTest extends EasyMockSupport {
 			));
 	}
 
-	@ParameterizedTest
-	@CsvSource({ "TAGESFAMILIEN, NUR_STUNDEN", "KITA, NUR_PROZENT" })
-	void betreuungInFerienzeit(BetreuungsangebotTyp angebotsTyp, BetreuungspensumAnzeigeTyp anzeigeTyp) {
-		BetreuungsmitteilungPensum pensum = createPensum();
-		pensum.setBetreuungInFerienzeit(true);
+	@Nested
+	class SchulergaenzendeBetreuungMessageTest {
 
-		String result = run(angebotsTyp, anzeigeTyp, false, true, pensum);
+		@Test
+		void noSchulergaenzendeBetreuungMessageWhenEinstellungDisabled() {
+			BetreuungsmitteilungPensum pensum = createPensum();
+			pensum.setBetreuungInFerienzeit(true);
 
-		assertThat(
-			result,
-			stringContainsInOrder(
-				"Pensum 1 von 01.01.2024 bis 29.08.2024: ",
-				", monatliche Betreuungskosten: CHF 1’230.35 (während der schulfreien Zeit)"
-			));
-	}
+			String result = run(BetreuungsangebotTyp.KITA, BetreuungspensumAnzeigeTyp.NUR_PROZENT, false, false, pensum);
 
-	@ParameterizedTest
-	@CsvSource({ "TAGESFAMILIEN, NUR_STUNDEN", "KITA, NUR_PROZENT" })
-	void betreuungNichtInFerienzeit(BetreuungsangebotTyp angebotsTyp, BetreuungspensumAnzeigeTyp anzeigeTyp) {
-		BetreuungsmitteilungPensum pensum = createPensum();
-		pensum.setBetreuungInFerienzeit(false);
+			assertThat(result, not(containsString("während der schulfreien Zeit")));
+		}
 
-		String result = run(angebotsTyp, anzeigeTyp, false, true, pensum);
+		@Test
+		void noSchulergaenzendeBetreuungMessageWhenVorschule() {
+			BetreuungsmitteilungPensum pensum = createPensum();
+			pensum.setBetreuungInFerienzeit(true);
+			Betreuungsmitteilung betreuungsmitteilung = createBetreuungsmitteilung(BetreuungsangebotTyp.KITA, pensum);
+			requireNonNull(betreuungsmitteilung.getBetreuung()).getKind()
+				.getKindJA()
+				.setEinschulungTyp(EinschulungTyp.KINDERGARTEN1);
 
-		assertThat(
-			result,
-			stringContainsInOrder(
-				"Pensum 1 von 01.01.2024 bis 29.08.2024: ",
-				", monatliche Betreuungskosten: CHF 1’230.35 (während der Schulzeit)"
-			));
+			String result = run(betreuungsmitteilung, BetreuungspensumAnzeigeTyp.NUR_PROZENT, false, false, pensum);
+
+			assertThat(result, not(containsString("während der schulfreien Zeit")));
+		}
+
+		@ParameterizedTest
+		@CsvSource({ "TAGESFAMILIEN, NUR_STUNDEN", "KITA, NUR_PROZENT" })
+		void betreuungInFerienzeit(BetreuungsangebotTyp angebotsTyp, BetreuungspensumAnzeigeTyp anzeigeTyp) {
+			BetreuungsmitteilungPensum pensum = createPensum();
+			pensum.setBetreuungInFerienzeit(true);
+			Betreuungsmitteilung betreuungsmitteilung = createBetreuungsmitteilung(angebotsTyp, pensum);
+			requireNonNull(betreuungsmitteilung.getBetreuung()).getKind().getKindJA().setEinschulungTyp(EinschulungTyp.KLASSE1);
+
+			String result = run(betreuungsmitteilung, anzeigeTyp, false, true, pensum);
+
+			assertThat(
+				result,
+				stringContainsInOrder(
+					"Pensum 1 von 01.01.2024 bis 29.08.2024: ",
+					", monatliche Betreuungskosten: CHF 1’230.35 (während der schulfreien Zeit)"
+				));
+		}
+
+		@ParameterizedTest
+		@CsvSource({ "TAGESFAMILIEN, NUR_STUNDEN", "KITA, NUR_PROZENT" })
+		void betreuungNichtInFerienzeit(BetreuungsangebotTyp angebotsTyp, BetreuungspensumAnzeigeTyp anzeigeTyp) {
+			BetreuungsmitteilungPensum pensum = createPensum();
+			pensum.setBetreuungInFerienzeit(false);
+			Betreuungsmitteilung betreuungsmitteilung = createBetreuungsmitteilung(angebotsTyp, pensum);
+			requireNonNull(betreuungsmitteilung.getBetreuung()).getKind().getKindJA().setEinschulungTyp(EinschulungTyp.KLASSE1);
+
+			String result = run(betreuungsmitteilung, anzeigeTyp, false, true, pensum);
+
+			assertThat(
+				result,
+				stringContainsInOrder(
+					"Pensum 1 von 01.01.2024 bis 29.08.2024: ",
+					", monatliche Betreuungskosten: CHF 1’230.35 (während der Schulzeit)"
+				));
+		}
 	}
 
 	@Nonnull
@@ -222,6 +258,18 @@ class MitteilungServiceBeanCreateMessageTest extends EasyMockSupport {
 		@Nonnull BetreuungsmitteilungPensum... pensen
 	) {
 		Betreuungsmitteilung mitteilung = createBetreuungsmitteilung(angebotTyp, pensen);
+
+		return run(mitteilung, anzeigeTyp, mahlzeitenVerguenstigungEnabled, betreuungInFerienEnabled, pensen);
+	}
+
+	@Nonnull
+	private String run(
+		@Nonnull Betreuungsmitteilung mitteilung,
+		@Nonnull BetreuungspensumAnzeigeTyp anzeigeTyp,
+		@Nonnull Boolean mahlzeitenVerguenstigungEnabled,
+		@Nonnull Boolean betreuungInFerienEnabled,
+		@Nonnull BetreuungsmitteilungPensum... pensen
+	) {
 		Betreuung betreuung = requireNonNull(mitteilung.getBetreuung());
 		Gemeinde gemeinde = betreuung.extractGemeinde();
 		Gesuchsperiode periode = betreuung.extractGesuchsperiode();
