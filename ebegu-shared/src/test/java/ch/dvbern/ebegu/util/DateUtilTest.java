@@ -17,44 +17,44 @@ package ch.dvbern.ebegu.util;
 
 import java.time.LocalDate;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 /**
  * Tests fuer DateUtil
  */
-public class DateUtilTest {
+class DateUtilTest {
 
 	@Test
-	public void parseStringToDateOrReturnNowTestNullString() {
+	void parseStringToDateOrReturnNowTestNullString() {
 		final LocalDate now = LocalDate.now();
 		final LocalDate returnedDate = DateUtil.parseStringToDateOrReturnNow(null);
-		Assert.assertNotNull(returnedDate);
-		Assert.assertTrue(now.isEqual(returnedDate));
+		Assertions.assertNotNull(returnedDate);
+		Assertions.assertTrue(now.isEqual(returnedDate));
 	}
 
 	@Test
-	public void parseStringToDateOrReturnNowTestEmptyString() {
+	void parseStringToDateOrReturnNowTestEmptyString() {
 		final LocalDate now = LocalDate.now();
 		final LocalDate returnedDate = DateUtil.parseStringToDateOrReturnNow("");
-		Assert.assertNotNull(returnedDate);
-		Assert.assertTrue(now.isEqual(returnedDate));
+		Assertions.assertNotNull(returnedDate);
+		Assertions.assertTrue(now.isEqual(returnedDate));
 	}
 
 	@Test
-	public void parseStringToDateOrReturnNowTest() {
+	void parseStringToDateOrReturnNowTest() {
 		final LocalDate now = LocalDate.now();
 		final LocalDate returnedDate = DateUtil.parseStringToDateOrReturnNow("2015-12-31");
-		Assert.assertNotNull(returnedDate);
-		Assert.assertEquals(2015, returnedDate.getYear());
-		Assert.assertEquals(12, returnedDate.getMonthValue());
-		Assert.assertEquals(31, returnedDate.getDayOfMonth());
+		Assertions.assertNotNull(returnedDate);
+		Assertions.assertEquals(2015, returnedDate.getYear());
+		Assertions.assertEquals(12, returnedDate.getMonthValue());
+		Assertions.assertEquals(31, returnedDate.getDayOfMonth());
 	}
 
 	@Test
-	public void testIncrementYear() {
+	void testIncrementYear() {
 		final String oldDate = "2020-05-17";
 		final String newDate = DateUtil.incrementYear(oldDate);
-		Assert.assertEquals("2021-05-17", newDate);
+		Assertions.assertEquals("2021-05-17", newDate);
 	}
 }
