@@ -20,9 +20,8 @@
         </div>
     </div>
     <form #form="ngForm">
-        <dv-finanzielle-situation-single-gs [finSitJA]="getModel().finanzielleSituationJA"
-                                            [finSitGS]="getModel().finanzielleSituationGS"
-                                            [readonly]="gesuchmodelManager.isGesuchReadonly()">
+        <dv-finanzielle-situation-single-gs [readonly]="gesuchmodelManager.isGesuchReadonly()"
+                                            [finanzModel]="model">
         </dv-finanzielle-situation-single-gs>
     </form>
 
