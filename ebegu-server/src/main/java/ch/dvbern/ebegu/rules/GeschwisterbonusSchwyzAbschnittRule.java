@@ -28,6 +28,7 @@ import javax.annotation.Nonnull;
 
 import ch.dvbern.ebegu.entities.AbstractPlatz;
 import ch.dvbern.ebegu.entities.Einstellung;
+import ch.dvbern.ebegu.entities.KindContainer;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.EinstellungKey;
@@ -43,79 +44,10 @@ public class GeschwisterbonusSchwyzAbschnittRule extends AbstractAbschnittRule {
 		super(RuleKey.GESCHWISTERBONUS, RuleType.GRUNDREGEL_DATA, RuleValidity.ASIV, validityPeriod, locale);
 	}
 
-	@Nonnull
 	@Override
-	List<VerfuegungZeitabschnitt> createVerfuegungsZeitabschnitte(@Nonnull AbstractPlatz platz) {
-		var gesuch = platz.extractGesuch();
-		final DateRange gpGueltigkeit = platz.extractGesuchsperiode().getGueltigkeit();
-		var createdAbschnitte = gesuch.getKindContainers().stream()
-			.filter(kindContainer -> {
-				var geburtsdatum = kindContainer.getKindJA().getGeburtsdatum();
-				return DateUtil.isSameDateOrAfter(geburtsdatum, gpGueltigkeit.getGueltigAb().minusYears(18))
-					&& DateUtil.isSameDateOrBefore(geburtsdatum, gpGueltigkeit.getGueltigBis());
-			})
-			.filter(kindContainer -> !kindContainer.isSame(platz.getKind()))
-			.filter(kindContainer -> !kindContainer.getBetreuungen().isEmpty())
-			.map(kindContainer -> kindContainer.getKindJA().getGeburtsdatum())
-			.flatMap(geburtsdatum -> {
-				if (isBornDuringGP(geburtsdatum, gpGueltigkeit)) {
-					return Stream.of(
-						createZeitabschnittWithoutGeschwister(
-							new DateRange(
-								gpGueltigkeit.getGueltigAb(),
-								mapDateIntoGueltigkeit(geburtsdatum, gpGueltigkeit))),
-						createZeitabschnittWithGeschwister(new DateRange(
-							mapDateIntoGueltigkeit(geburtsdatum, gpGueltigkeit).plusDays(1),
-							gpGueltigkeit.getGueltigBis()))
-					);
-				}
-				if (reaches18DuringGP(geburtsdatum, gpGueltigkeit)) {
-					return Stream.of(
-						createZeitabschnittWithGeschwister(
-							new DateRange(
-								gpGueltigkeit.getGueltigAb(),
-								mapDateIntoGueltigkeit(geburtsdatum, gpGueltigkeit))),
-						createZeitabschnittWithoutGeschwister(new DateRange(
-							mapDateIntoGueltigkeit(geburtsdatum, gpGueltigkeit).plusDays(1),
-							gpGueltigkeit.getGueltigBis()))
-					);
-				}
-
-				return Stream.of(createZeitabschnittWithGeschwister(gpGueltigkeit));
-			}).collect(Collectors.toList());
-
-		return mergeZeitabschnitte(createdAbschnitte);
-	}
-
-
-	private LocalDate mapDateIntoGueltigkeit(LocalDate date, DateRange gueltigkeit) {
-		return date.getMonthValue() >= 8 ?
-			LocalDate.of(gueltigkeit.getGueltigAb().getYear(), date.getMonth(), date.getDayOfMonth()) :
-			LocalDate.of(gueltigkeit.getGueltigBis().getYear(), date.getMonth(), date.getDayOfMonth());
-	}
-
-	private boolean isBornDuringGP(LocalDate geburtsdatum, DateRange gpGueltigkeit) {
-		return gpGueltigkeit.contains(geburtsdatum);
-	}
-
-	private boolean reaches18DuringGP(LocalDate geburtsdatum, DateRange gpGueltigkeit) {
-		return gpGueltigkeit.contains(geburtsdatum.plusYears(18));
-	}
-
-	@Nonnull
-	private VerfuegungZeitabschnitt createZeitabschnittWithGeschwister(DateRange gpGueltigkeit) {
-		final VerfuegungZeitabschnitt zeitabschnitt =
-			createZeitabschnittWithinValidityPeriodOfRule(gpGueltigkeit);
-		zeitabschnitt.setAnzahlGeschwister(1);
-		return zeitabschnitt;
-	}
-
-	@Nonnull
-	private VerfuegungZeitabschnitt createZeitabschnittWithoutGeschwister(DateRange gpGueltigkeit) {
-		final VerfuegungZeitabschnitt zeitabschnitt =
-			createZeitabschnittWithinValidityPeriodOfRule(gpGueltigkeit);
-		zeitabschnitt.setAnzahlGeschwister(0);
-		return zeitabschnitt;
+	public boolean isRelevantForGemeinde(@Nonnull Map<EinstellungKey, Einstellung> einstellungMap) {
+		Einstellung geschwisterbonus = einstellungMap.get(EinstellungKey.GESCHWISTERNBONUS_TYP);
+		return GeschwisterbonusTyp.getEnumValue(geschwisterbonus) == GeschwisterbonusTyp.LUZERN;
 	}
 
 	@Override
@@ -123,9 +55,92 @@ public class GeschwisterbonusSchwyzAbschnittRule extends AbstractAbschnittRule {
 		return BetreuungsangebotTyp.getBetreuungsgutscheinTypes();
 	}
 
+	@Nonnull
 	@Override
-	public boolean isRelevantForGemeinde(@Nonnull Map<EinstellungKey, Einstellung> einstellungMap) {
-		Einstellung geschwisterbonus = einstellungMap.get(EinstellungKey.GESCHWISTERNBONUS_TYP);
-		return GeschwisterbonusTyp.getEnumValue(geschwisterbonus) == GeschwisterbonusTyp.LUZERN;
+	List<VerfuegungZeitabschnitt> createVerfuegungsZeitabschnitte(@Nonnull AbstractPlatz platz) {
+		var gesuch = platz.extractGesuch();
+		final DateRange gpGueltigkeit = platz.extractGesuchsperiode().getGueltigkeit();
+		var createdAbschnitte = gesuch.getKindContainers().stream()
+			.filter(kindContainer -> !kindContainer.isSame(platz.getKind()))
+			.filter(kindContainer -> !kindContainer.getBetreuungen().isEmpty())
+			.filter(kindContainer -> contributesToGeschwisterbonus(kindContainer, gpGueltigkeit))
+			.flatMap(this::createAbschnittGeburtstagTuplesForBetreuungen)
+			.map(this::limitGueltigkeitWithGeburtstag)
+			.map(this::setAnzahlGeschwister)
+			.map(VerfuegungZeitabschnittGeburtsdatumTuple::getZeitabschnitt)
+			.collect(Collectors.toList());
+
+		return mergeZeitabschnitte(createdAbschnitte);
+	}
+
+	private static boolean contributesToGeschwisterbonus(KindContainer kindContainer, DateRange gpGueltigkeit) {
+		var geburtsdatum = kindContainer.getKindJA().getGeburtsdatum();
+		return DateUtil.isSameDateOrAfter(geburtsdatum, gpGueltigkeit.getGueltigAb().minusYears(18))
+			&& DateUtil.isSameDateOrBefore(geburtsdatum, gpGueltigkeit.getGueltigBis());
+	}
+
+	@Nonnull
+	private Stream<VerfuegungZeitabschnittGeburtsdatumTuple> createAbschnittGeburtstagTuplesForBetreuungen(KindContainer kindContainer) {
+		return kindContainer.getBetreuungen()
+			.stream()
+			.flatMap(betreuung -> betreuung.getBetreuungspensumContainers().stream())
+			.map(betreuungspensumContainer -> new VerfuegungZeitabschnittGeburtsdatumTuple(
+				createZeitabschnittWithinValidityPeriodOfRule(betreuungspensumContainer.getGueltigkeit()),
+				kindContainer.getKindJA().getGeburtsdatum()));
+	}
+
+	@Nonnull
+	private VerfuegungZeitabschnittGeburtsdatumTuple limitGueltigkeitWithGeburtstag(
+		VerfuegungZeitabschnittGeburtsdatumTuple zeitabschnittGeburtsdatumTuple) {
+		var geburtsdatum = zeitabschnittGeburtsdatumTuple.getGeburtsdatum();
+		var gueltigkeit = zeitabschnittGeburtsdatumTuple.getZeitabschnitt().getGueltigkeit();
+
+		if (isBornDuringGueltigkeit(geburtsdatum, gueltigkeit)) {
+			gueltigkeit.setGueltigAb(mapDateIntoGueltigkeit(geburtsdatum, gueltigkeit));
+		}
+		if (reaches18DuringGP(geburtsdatum, gueltigkeit)) {
+			gueltigkeit.setGueltigBis(mapDateIntoGueltigkeit(geburtsdatum, gueltigkeit));
+		}
+
+		return zeitabschnittGeburtsdatumTuple;
+	}
+
+	private boolean isBornDuringGueltigkeit(LocalDate geburtsdatum, DateRange gpGueltigkeit) {
+		return gpGueltigkeit.contains(geburtsdatum);
+	}
+
+	private boolean reaches18DuringGP(LocalDate geburtsdatum, DateRange gpGueltigkeit) {
+		return gpGueltigkeit.contains(geburtsdatum.plusYears(18));
+	}
+
+	private LocalDate mapDateIntoGueltigkeit(LocalDate date, DateRange gueltigkeit) {
+		return date.getMonthValue() >= 8 ?
+			LocalDate.of(gueltigkeit.getGueltigAb().getYear(), date.getMonth(), date.getDayOfMonth()) :
+			LocalDate.of(gueltigkeit.getGueltigBis().getYear(), date.getMonth(), date.getDayOfMonth());
+	}
+
+	@Nonnull
+	private VerfuegungZeitabschnittGeburtsdatumTuple setAnzahlGeschwister(
+		VerfuegungZeitabschnittGeburtsdatumTuple zeitabschnittGeburtsdatumTuple) {
+		zeitabschnittGeburtsdatumTuple.getZeitabschnitt().setAnzahlGeschwister(1);
+		return zeitabschnittGeburtsdatumTuple;
+	}
+
+	private static class VerfuegungZeitabschnittGeburtsdatumTuple {
+		private final VerfuegungZeitabschnitt zeitabschnitt;
+		private final LocalDate geburtsdatum;
+
+		private VerfuegungZeitabschnittGeburtsdatumTuple(VerfuegungZeitabschnitt zeitabschnitt, LocalDate geburtsdatum) {
+			this.zeitabschnitt = zeitabschnitt;
+			this.geburtsdatum = geburtsdatum;
+		}
+
+		public VerfuegungZeitabschnitt getZeitabschnitt() {
+			return zeitabschnitt;
+		}
+
+		public LocalDate getGeburtsdatum() {
+			return geburtsdatum;
+		}
 	}
 }

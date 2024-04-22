@@ -20,10 +20,14 @@ package ch.dvbern.ebegu.rules;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
 
 import ch.dvbern.ebegu.entities.Betreuung;
+import ch.dvbern.ebegu.entities.Betreuungspensum;
+import ch.dvbern.ebegu.entities.BetreuungspensumContainer;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.KindContainer;
 import ch.dvbern.ebegu.entities.Mandant;
@@ -75,7 +79,7 @@ class GeschwisterbonusSchwyzAbschnittRuleTest {
 		@Test
 		void oneOtherKindOver18DuringPeriode_shouldCreateNoZeitabschnitte() {
 			final LocalDate geburtsdatumGeschwister = GP_START.minusYears(20);
-			addGeschwister(geburtsdatumGeschwister);
+			addGeschwisterWithBetreuungEntirePeriode(geburtsdatumGeschwister);
 
 			final List<VerfuegungZeitabschnitt> verfuegungZeitabschnitte = executeRule(betreuung);
 			assertThat(verfuegungZeitabschnitte.isEmpty(), is(true));
@@ -86,7 +90,7 @@ class GeschwisterbonusSchwyzAbschnittRuleTest {
 		class ZeitabschnittGueltigkeitTest {
 			@Test
 			void oneOtherKindU18ganzePeriode_shouldCreateOneZeitabschnittForEntirePeriode() {
-				addGeschwister(GP_END.minusYears(5));
+				addGeschwisterWithBetreuungEntirePeriode(GP_END.minusYears(5));
 
 				final List<VerfuegungZeitabschnitt> verfuegungZeitabschnitte = executeRule(betreuung);
 
@@ -95,58 +99,101 @@ class GeschwisterbonusSchwyzAbschnittRuleTest {
 			}
 
 			@Test
-			void oneOtherKindBornDuringPeriode_shouldCreateZeitabschnitteBeforeAndFromBirth() {
+			void oneOtherKindBornDuringPeriodeWithBetreuung_shouldCreateZeitabschnitteFromBirth() {
 				final LocalDate geburtsdatumGeschwister = GP_START.plusMonths(2);
 				final LocalDate geburtsdatumGeschwisterInGP = LocalDate.of(
 					GP_START.getYear(),
 					geburtsdatumGeschwister.getMonth(),
 					geburtsdatumGeschwister.getDayOfMonth());
-				addGeschwister(geburtsdatumGeschwister);
-				addGeschwister(geburtsdatumGeschwister);
+				addGeschwisterWithBetreuungEntirePeriode(geburtsdatumGeschwister);
+				addGeschwisterWithBetreuungEntirePeriode(geburtsdatumGeschwister);
 
 				final List<VerfuegungZeitabschnitt> verfuegungZeitabschnitte = executeRule(betreuung);
 
-				assertThat(verfuegungZeitabschnitte.get(0).getGueltigkeit().getGueltigAb(), equalTo(GP_START));
 				assertThat(
-					verfuegungZeitabschnitte.get(0).getGueltigkeit().getGueltigBis(),
+					verfuegungZeitabschnitte.get(0).getGueltigkeit().getGueltigAb(),
 					equalTo(geburtsdatumGeschwisterInGP));
-
-				assertThat(
-					verfuegungZeitabschnitte.get(1).getGueltigkeit().getGueltigAb(),
-					equalTo(geburtsdatumGeschwisterInGP.plusDays(1)));
-				assertThat(verfuegungZeitabschnitte.get(1).getGueltigkeit().getGueltigBis(), equalTo(GP_END));
+				assertThat(verfuegungZeitabschnitte.get(0).getGueltigkeit().getGueltigBis(), equalTo(GP_END));
 			}
 
 			@Test
-			void oneOtherKindReaching18DuringPeriode_shouldCreateZeitabschnitteBeforeAndFromBirthday() {
+			void oneOtherKindReaching18DuringPeriode_shouldCreateZeitabschnitteBeforeBirthday() {
 				final LocalDate geburtsdatumGeschwister = GP_START.plusMonths(2).minusYears(18);
 				final LocalDate geburtsdatumGeschwisterInGP = LocalDate.of(
 					GP_START.getYear(),
 					geburtsdatumGeschwister.getMonth(),
 					geburtsdatumGeschwister.getDayOfMonth());
-				addGeschwister(geburtsdatumGeschwister);
+				addGeschwisterWithBetreuungEntirePeriode(geburtsdatumGeschwister);
 
 				final List<VerfuegungZeitabschnitt> verfuegungZeitabschnitte = executeRule(betreuung);
 
-				assertThat(verfuegungZeitabschnitte.get(0).getGueltigkeit().getGueltigAb(), equalTo(GP_START));
 				assertThat(
-					verfuegungZeitabschnitte.get(0).getGueltigkeit().getGueltigBis(),
-					equalTo(geburtsdatumGeschwisterInGP));
-
-				assertThat(
-					verfuegungZeitabschnitte.get(1).getGueltigkeit().getGueltigAb(),
-					equalTo(geburtsdatumGeschwisterInGP.plusDays(1)));
-				assertThat(verfuegungZeitabschnitte.get(1).getGueltigkeit().getGueltigBis(), equalTo(GP_END));
+					verfuegungZeitabschnitte.get(0).getGueltigkeit().getGueltigAb(),
+					equalTo(GP_START));
+				assertThat(verfuegungZeitabschnitte.get(0).getGueltigkeit().getGueltigBis(), equalTo(geburtsdatumGeschwisterInGP));
 			}
 
 			@Test
 			void oneOtherKindOver18DuringPeriode_shouldCreateNoZeitabschnitte() {
 				final LocalDate geburtsdatumGeschwister = GP_START.minusYears(20);
-				addGeschwister(geburtsdatumGeschwister);
+				addGeschwisterWithBetreuungEntirePeriode(geburtsdatumGeschwister);
 
 				final List<VerfuegungZeitabschnitt> verfuegungZeitabschnitte = executeRule(betreuung);
 				assertThat(verfuegungZeitabschnitte.isEmpty(), is(true));
+			}
 
+			@Test
+			void u18KindWithBetreuungEndingDuringPeriode_shouldCreateZeitabschnitteBeforeAndAfterEnding() {
+				final LocalDate geburtsdatumGeschwister = GP_START.minusYears(5);
+				final LocalDate betreuungEnde = GP_START.plusMonths(3);
+				addGeschwisterWithBetreuungspensen(
+					geburtsdatumGeschwister,
+					Set.of(new DateRange(GP_START, betreuungEnde)));
+
+				final List<VerfuegungZeitabschnitt> verfuegungZeitabschnitte = executeRule(betreuung);
+				assertThat(verfuegungZeitabschnitte.size(), is(1));
+				assertThat(verfuegungZeitabschnitte.get(0).getGueltigkeit().getGueltigAb(), equalTo(GP_START));
+				assertThat(verfuegungZeitabschnitte.get(0).getGueltigkeit().getGueltigBis(), equalTo(betreuungEnde));
+			}
+
+			@Test
+			void u18KindWithBetreuungStartingAndEndingDuringPeriode_shouldCreateZeitabschnitteBeforeDuringAndAfterEnding() {
+				final LocalDate geburtsdatumGeschwister = GP_START.minusYears(5);
+				final LocalDate betreuungStart = GP_START.plusMonths(1);
+				final LocalDate betreuungEnde = GP_START.plusMonths(3);
+				addGeschwisterWithBetreuungspensen(
+					geburtsdatumGeschwister,
+					Set.of(new DateRange(betreuungStart, betreuungEnde)));
+
+				final List<VerfuegungZeitabschnitt> verfuegungZeitabschnitte = executeRule(betreuung);
+				assertThat(verfuegungZeitabschnitte.size(), is(1));
+				assertThat(verfuegungZeitabschnitte.get(0).getGueltigkeit().getGueltigAb(), equalTo(betreuungStart));
+				assertThat(verfuegungZeitabschnitte.get(0).getGueltigkeit().getGueltigBis(), equalTo(betreuungEnde));
+			}
+
+			@Test
+			void kindReaching18WithBetreuungStartingAndEndingDuringPeriode_shouldCreateZeitabschnitteBeforeDuringBetreuungUntilBirthday() {
+				final LocalDate geburtsdatumGeschwister = GP_START.minusYears(18).plusMonths(2);
+				final LocalDate geburtsdatumGeschwisterInGP = geburtsdatumGeschwister.plusYears(18);
+				final LocalDate betreuungStart = GP_START.plusMonths(1);
+				final LocalDate betreuungEnde = GP_START.plusMonths(3);
+				addGeschwisterWithBetreuungspensen(
+					geburtsdatumGeschwister,
+					Set.of(new DateRange(betreuungStart, betreuungEnde)));
+
+				final List<VerfuegungZeitabschnitt> verfuegungZeitabschnitte = executeRule(betreuung);
+				assertThat(verfuegungZeitabschnitte.size(), is(1));
+				assertThat(verfuegungZeitabschnitte.get(0).getGueltigkeit().getGueltigAb(), equalTo(betreuungStart));
+				assertThat(
+					verfuegungZeitabschnitte.get(0).getGueltigkeit().getGueltigBis(),
+					equalTo(geburtsdatumGeschwisterInGP));
+			}
+
+			private void addGeschwisterWithBetreuungspensen(LocalDate geburtsdatum, Set<DateRange> pensenGueltigkeiten) {
+				KindContainer kind2 = TestDataUtil.createDefaultKindContainer();
+				kind2.getKindJA().setGeburtsdatum(geburtsdatum);
+				kind2.getBetreuungen().add(createBetreuungWithPensen(kind2, pensenGueltigkeiten));
+				gesuch.getKindContainers().add(kind2);
 			}
 		}
 
@@ -154,7 +201,7 @@ class GeschwisterbonusSchwyzAbschnittRuleTest {
 		class AnzahlGeschwisterTest {
 			@Test
 			void oneOtherKindU18ganzePeriode_shouldHaveAnzahlGeschwister1ForEntirePeriode() {
-				addGeschwister(GP_END.minusYears(5));
+				addGeschwisterWithBetreuungEntirePeriode(GP_END.minusYears(5));
 
 				final List<VerfuegungZeitabschnitt> verfuegungZeitabschnitte = executeRule(betreuung);
 
@@ -165,23 +212,21 @@ class GeschwisterbonusSchwyzAbschnittRuleTest {
 			@Test
 			void oneOtherKindBornDuringPeriode_shouldshouldHaveAnzahlGeschwister1AfterBirth() {
 				final LocalDate geburtsdatumGeschwister = GP_START.plusMonths(2);
-				addGeschwister(geburtsdatumGeschwister);
+				addGeschwisterWithBetreuungEntirePeriode(geburtsdatumGeschwister);
 
 				final List<VerfuegungZeitabschnitt> verfuegungZeitabschnitte = executeRule(betreuung);
 
-				assertThat(verfuegungZeitabschnitte.get(0).getBgCalculationInputAsiv().getAnzahlGeschwister(), is(0));
-				assertThat(verfuegungZeitabschnitte.get(1).getBgCalculationInputAsiv().getAnzahlGeschwister(), is(1));
+				assertThat(verfuegungZeitabschnitte.get(0).getBgCalculationInputAsiv().getAnzahlGeschwister(), is(1));
 			}
 
 			@Test
 			void oneOtherKindReaching18DuringPeriode_shouldCreateZeitabschnitteBeforeAndFromBirthday() {
 				final LocalDate geburtsdatumGeschwister = GP_START.plusMonths(2).minusYears(18);
-				addGeschwister(geburtsdatumGeschwister);
+				addGeschwisterWithBetreuungEntirePeriode(geburtsdatumGeschwister);
 
 				final List<VerfuegungZeitabschnitt> verfuegungZeitabschnitte = executeRule(betreuung);
 
 				assertThat(verfuegungZeitabschnitte.get(0).getBgCalculationInputAsiv().getAnzahlGeschwister(), is(1));
-				assertThat(verfuegungZeitabschnitte.get(1).getBgCalculationInputAsiv().getAnzahlGeschwister(), is(0));
 			}
 		}
 	}
@@ -191,8 +236,8 @@ class GeschwisterbonusSchwyzAbschnittRuleTest {
 		@Test
 		void twoOtherKindOver18DuringPeriode_shouldCreateNoZeitabschnitte() {
 			final LocalDate geburtsdatumGeschwister = GP_START.minusYears(20);
-			addGeschwister(geburtsdatumGeschwister);
-			addGeschwister(geburtsdatumGeschwister);
+			addGeschwisterWithBetreuungEntirePeriode(geburtsdatumGeschwister);
+			addGeschwisterWithBetreuungEntirePeriode(geburtsdatumGeschwister);
 
 			final List<VerfuegungZeitabschnitt> verfuegungZeitabschnitte = executeRule(betreuung);
 			assertThat(verfuegungZeitabschnitte.isEmpty(), is(true));
@@ -203,8 +248,8 @@ class GeschwisterbonusSchwyzAbschnittRuleTest {
 		class ZeitabschnittGueltigkeitTest {
 			@Test
 			void twoOtherKindU18ganzePeriode_shouldCreateOneZeitabschnittForEntirePeriode() {
-				addGeschwister(GP_END.minusYears(5));
-				addGeschwister(GP_END.minusYears(5));
+				addGeschwisterWithBetreuungEntirePeriode(GP_END.minusYears(5));
+				addGeschwisterWithBetreuungEntirePeriode(GP_END.minusYears(5));
 
 				final List<VerfuegungZeitabschnitt> verfuegungZeitabschnitte = executeRule(betreuung);
 
@@ -215,38 +260,38 @@ class GeschwisterbonusSchwyzAbschnittRuleTest {
 			@Test
 			void oneKindU18ganzePeriodeoneOtherKindBornDuringPeriode_shouldCreateZeitabschnitteBeforeAndFromBirth() {
 				final LocalDate geburtsdatumGeschwister = GP_START.plusMonths(2);
-				addGeschwister(GP_START.minusYears(12));
-				addGeschwister(geburtsdatumGeschwister);
+				addGeschwisterWithBetreuungEntirePeriode(GP_START.minusYears(12));
+				addGeschwisterWithBetreuungEntirePeriode(geburtsdatumGeschwister);
 
 				final List<VerfuegungZeitabschnitt> verfuegungZeitabschnitte = executeRule(betreuung);
 
 				assertThat(verfuegungZeitabschnitte.get(0).getGueltigkeit().getGueltigAb(), equalTo(GP_START));
 				assertThat(
 					verfuegungZeitabschnitte.get(0).getGueltigkeit().getGueltigBis(),
-					equalTo(geburtsdatumGeschwister));
+					equalTo(geburtsdatumGeschwister.minusDays(1)));
 
 				assertThat(
 					verfuegungZeitabschnitte.get(1).getGueltigkeit().getGueltigAb(),
-					equalTo(geburtsdatumGeschwister.plusDays(1)));
+					equalTo(geburtsdatumGeschwister));
 				assertThat(verfuegungZeitabschnitte.get(1).getGueltigkeit().getGueltigBis(), equalTo(GP_END));
 			}
 
 			@Test
-			void twoOtherKindReaching18DuringPeriode_shouldCreateZeitabschnitteBeforeAndFromEachBirthday() {
+			void twoOtherKindReaching18DuringPeriode_shouldCreateZeitabschnitteBeforeEachBirthday() {
 				final LocalDate geburtsdatumGeschwister = GP_START.plusMonths(2).minusYears(18);
 				final LocalDate geburtsdatumGeschwister1InGP = LocalDate.of(
 					GP_START.getYear(),
 					geburtsdatumGeschwister.getMonth(),
 					geburtsdatumGeschwister.getDayOfMonth());
-				addGeschwister(geburtsdatumGeschwister);
+				addGeschwisterWithBetreuungEntirePeriode(geburtsdatumGeschwister);
 				final LocalDate geburtsdatumGeschwister2 = GP_START.plusMonths(7).minusYears(18);
 				final LocalDate geburtsdatumGeschwister2InGP = LocalDate.of(
 					GP_END.getYear(),
 					geburtsdatumGeschwister2.getMonth(),
 					geburtsdatumGeschwister2.getDayOfMonth());
-				addGeschwister(geburtsdatumGeschwister);
-				addGeschwister(geburtsdatumGeschwister);
-				addGeschwister(geburtsdatumGeschwister2);
+				addGeschwisterWithBetreuungEntirePeriode(geburtsdatumGeschwister);
+				addGeschwisterWithBetreuungEntirePeriode(geburtsdatumGeschwister);
+				addGeschwisterWithBetreuungEntirePeriode(geburtsdatumGeschwister2);
 
 				final List<VerfuegungZeitabschnitt> verfuegungZeitabschnitte = executeRule(betreuung);
 
@@ -261,11 +306,6 @@ class GeschwisterbonusSchwyzAbschnittRuleTest {
 				assertThat(
 					verfuegungZeitabschnitte.get(1).getGueltigkeit().getGueltigBis(),
 					equalTo(geburtsdatumGeschwister2InGP));
-
-				assertThat(
-					verfuegungZeitabschnitte.get(2).getGueltigkeit().getGueltigAb(),
-					equalTo(geburtsdatumGeschwister2InGP.plusDays(1)));
-				assertThat(verfuegungZeitabschnitte.get(2).getGueltigkeit().getGueltigBis(), equalTo(GP_END));
 			}
 		}
 
@@ -273,8 +313,8 @@ class GeschwisterbonusSchwyzAbschnittRuleTest {
 		class AnzahlGeschwisterTest {
 			@Test
 			void twoOtherKindU18ganzePeriode_shouldCreateOneZeitabschnittForEntirePeriode() {
-				addGeschwister(GP_END.minusYears(5));
-				addGeschwister(GP_END.minusYears(5));
+				addGeschwisterWithBetreuungEntirePeriode(GP_END.minusYears(5));
+				addGeschwisterWithBetreuungEntirePeriode(GP_END.minusYears(5));
 
 				final List<VerfuegungZeitabschnitt> verfuegungZeitabschnitte = executeRule(betreuung);
 
@@ -285,8 +325,8 @@ class GeschwisterbonusSchwyzAbschnittRuleTest {
 			@Test
 			void oneKindU18ganzePeriodeoneOtherKindBornDuringPeriode_shouldCreateZeitabschnitteBeforeAndFromBirth() {
 				final LocalDate geburtsdatumGeschwister = GP_START.plusMonths(2);
-				addGeschwister(GP_START.minusYears(12));
-				addGeschwister(geburtsdatumGeschwister);
+				addGeschwisterWithBetreuungEntirePeriode(GP_START.minusYears(12));
+				addGeschwisterWithBetreuungEntirePeriode(geburtsdatumGeschwister);
 
 				final List<VerfuegungZeitabschnitt> verfuegungZeitabschnitte = executeRule(betreuung);
 
@@ -298,19 +338,18 @@ class GeschwisterbonusSchwyzAbschnittRuleTest {
 			void twoOtherKindReaching18DuringPeriode_shouldCreateZeitabschnitteBeforeAndFromEachBirthday() {
 				final LocalDate geburtsdatumGeschwister = GP_START.plusMonths(2).minusYears(18);
 				final LocalDate geburtsdatumGeschwister2 = GP_START.plusMonths(7).minusYears(18);
-				addGeschwister(geburtsdatumGeschwister);
-				addGeschwister(geburtsdatumGeschwister2);
+				addGeschwisterWithBetreuungEntirePeriode(geburtsdatumGeschwister);
+				addGeschwisterWithBetreuungEntirePeriode(geburtsdatumGeschwister2);
 
 				final List<VerfuegungZeitabschnitt> verfuegungZeitabschnitte = executeRule(betreuung);
 
 				assertThat(verfuegungZeitabschnitte.get(0).getBgCalculationInputAsiv().getAnzahlGeschwister(), is(2));
 				assertThat(verfuegungZeitabschnitte.get(1).getBgCalculationInputAsiv().getAnzahlGeschwister(), is(1));
-				assertThat(verfuegungZeitabschnitte.get(2).getBgCalculationInputAsiv().getAnzahlGeschwister(), is(0));
 			}
 		}
 	}
 
-	private void addGeschwister(LocalDate geburtsdatum) {
+	private void addGeschwisterWithBetreuungEntirePeriode(LocalDate geburtsdatum) {
 		KindContainer kind2 = TestDataUtil.createDefaultKindContainer();
 		kind2.getKindJA().setGeburtsdatum(geburtsdatum);
 		kind2.getBetreuungen().add(TestDataUtil.createDefaultBetreuung(40, GP_START, GP_END));
@@ -328,6 +367,23 @@ class GeschwisterbonusSchwyzAbschnittRuleTest {
 			60,
 			new BigDecimal(2000),
 			schwyz);
+	}
+
+	private Betreuung createBetreuungWithPensen(KindContainer kindContainer, Set<DateRange> betreuungspensen) {
+		Mandant schwyz = new Mandant();
+		schwyz.setMandantIdentifier(MandantIdentifier.SCHWYZ);
+
+		Betreuung toCreate = TestDataUtil.createDefaultBetreuungOhneBetreuungPensum(kindContainer);
+		toCreate.setBetreuungspensumContainers(betreuungspensen.stream().map(gueltigkeit -> {
+			BetreuungspensumContainer container = new BetreuungspensumContainer();
+			final Betreuungspensum betreuungspensumJA = new Betreuungspensum(gueltigkeit);
+			betreuungspensumJA.setPensum(BigDecimal.valueOf(50));
+			betreuungspensumJA.setMonatlicheBetreuungskosten(BigDecimal.valueOf(500));
+			container.setBetreuungspensumJA(betreuungspensumJA);
+			return container;
+		}).collect(Collectors.toSet()));
+
+		return toCreate;
 	}
 
 	private List<VerfuegungZeitabschnitt> executeRule(Betreuung betreuung) {
