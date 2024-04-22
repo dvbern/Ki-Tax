@@ -20,6 +20,7 @@ import ch.dvbern.ebegu.enums.EnumFamilienstatus;
 import ch.dvbern.ebegu.enums.EnumGesuchstellerKardinalitaet;
 import ch.dvbern.ebegu.enums.Kinderabzug;
 import ch.dvbern.ebegu.enums.KinderabzugTyp;
+import ch.dvbern.ebegu.enums.UnterhaltsvereinbarungAnswer;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.test.TestDataUtil;
 import ch.dvbern.ebegu.util.Constants;
@@ -526,6 +527,100 @@ public class FamilienabzugAbschnittRuleTest {
 				Assertions.assertEquals(3, familiengroesse, DELTA);
 			}
 
+			@Test
+			void kinderAbzugFKJV2_HalbesKindWennKeineUnterhaltsvereinbarungAbgeschlossenUndNichtGemeinsamGesuch() {
+				Gesuch gesuch = createGesuchWithTwoGesuchsteller();
+				// prepare famsit, so gemeinsamesGesuch can be answered in the gui
+				Objects.requireNonNull(gesuch.getFamiliensituationContainer());
+				final Familiensituation familiensituation = gesuch.getFamiliensituationContainer().getFamiliensituationJA();
+				Objects.requireNonNull(familiensituation);
+				familiensituation.setFkjvFamSit(true);
+				familiensituation.setFamilienstatus(EnumFamilienstatus.ALLEINERZIEHEND);
+				familiensituation.setGeteilteObhut(Boolean.TRUE);
+				familiensituation.setUnterhaltsvereinbarung(UnterhaltsvereinbarungAnswer.NEIN_UNTERHALTSVEREINBARUNG);
+				Set<KindContainer> kindContainers = new LinkedHashSet<>();
+				final LocalDate date = LocalDate.of(2015, Month.MARCH, 25);
+				KindContainer kind = createKindContainer(Kinderabzug.GANZER_ABZUG, date);
+				kind.getKindJA().setObhutAlternierendAusueben(true);
+				kind.getKindJA().setFamilienErgaenzendeBetreuung(false);
+				kind.getKindJA().setGemeinsamesGesuch(false);
+				kindContainers.add(kind);
+				gesuch.setKindContainers(kindContainers);
+
+				final Entry<Double, Integer> famGroesse = famabAbschnittRule_FKJV2.calculateFamiliengroesse(gesuch, LocalDate.now());
+				double familiengroesse = famGroesse.getKey();
+				Assertions.assertEquals(1.5, familiengroesse, DELTA);
+			}
+			@Test
+			void kinderAbzugFKJV2_GanzesKindWennKeineUnterhaltsvereinbarungAbgeschlossenUndGemeinsamGesuch() {
+				Gesuch gesuch = createGesuchWithTwoGesuchsteller();
+				// prepare famsit, so gemeinsamesGesuch can be answered in the gui
+				Objects.requireNonNull(gesuch.getFamiliensituationContainer());
+				final Familiensituation familiensituation = gesuch.getFamiliensituationContainer().getFamiliensituationJA();
+				Objects.requireNonNull(familiensituation);
+				familiensituation.setFkjvFamSit(true);
+				familiensituation.setFamilienstatus(EnumFamilienstatus.ALLEINERZIEHEND);
+				familiensituation.setGeteilteObhut(Boolean.TRUE);
+				familiensituation.setUnterhaltsvereinbarung(UnterhaltsvereinbarungAnswer.NEIN_UNTERHALTSVEREINBARUNG);
+				Set<KindContainer> kindContainers = new LinkedHashSet<>();
+				final LocalDate date = LocalDate.of(2015, Month.MARCH, 25);
+				KindContainer kind = createKindContainer(Kinderabzug.GANZER_ABZUG, date);
+				kind.getKindJA().setObhutAlternierendAusueben(true);
+				kind.getKindJA().setFamilienErgaenzendeBetreuung(false);
+				kind.getKindJA().setGemeinsamesGesuch(true);
+				kindContainers.add(kind);
+				gesuch.setKindContainers(kindContainers);
+
+				final Entry<Double, Integer> famGroesse = famabAbschnittRule_FKJV2.calculateFamiliengroesse(gesuch, LocalDate.now());
+				double familiengroesse = famGroesse.getKey();
+				Assertions.assertEquals(2.0, familiengroesse, DELTA);
+			}
+			@Test
+			void kinderAbzugFKJV2_HalbesKindWennJaUnterhaltsvereinbarungGesuch() {
+				Gesuch gesuch = createGesuchWithTwoGesuchsteller();
+				// prepare famsit, so gemeinsamesGesuch can be answered in the gui
+				Objects.requireNonNull(gesuch.getFamiliensituationContainer());
+				final Familiensituation familiensituation = gesuch.getFamiliensituationContainer().getFamiliensituationJA();
+				Objects.requireNonNull(familiensituation);
+				familiensituation.setFkjvFamSit(true);
+				familiensituation.setFamilienstatus(EnumFamilienstatus.ALLEINERZIEHEND);
+				familiensituation.setGeteilteObhut(Boolean.TRUE);
+				familiensituation.setUnterhaltsvereinbarung(UnterhaltsvereinbarungAnswer.JA_UNTERHALTSVEREINBARUNG);
+				Set<KindContainer> kindContainers = new LinkedHashSet<>();
+				final LocalDate date = LocalDate.of(2015, Month.MARCH, 25);
+				KindContainer kind = createKindContainer(Kinderabzug.GANZER_ABZUG, date);
+				kind.getKindJA().setObhutAlternierendAusueben(true);
+				kind.getKindJA().setFamilienErgaenzendeBetreuung(false);
+				kindContainers.add(kind);
+				gesuch.setKindContainers(kindContainers);
+
+				final Entry<Double, Integer> famGroesse = famabAbschnittRule_FKJV2.calculateFamiliengroesse(gesuch, LocalDate.now());
+				double familiengroesse = famGroesse.getKey();
+				Assertions.assertEquals(1.5, familiengroesse, DELTA);
+			}
+			@Test
+			void kinderAbzugFKJV2_HalbesKindWennUnterhaltsvereinbarungNichtMoeglichGesuch() {
+				Gesuch gesuch = createGesuchWithTwoGesuchsteller();
+				// prepare famsit, so gemeinsamesGesuch can be answered in the gui
+				Objects.requireNonNull(gesuch.getFamiliensituationContainer());
+				final Familiensituation familiensituation = gesuch.getFamiliensituationContainer().getFamiliensituationJA();
+				Objects.requireNonNull(familiensituation);
+				familiensituation.setFkjvFamSit(true);
+				familiensituation.setFamilienstatus(EnumFamilienstatus.ALLEINERZIEHEND);
+				familiensituation.setGeteilteObhut(Boolean.TRUE);
+				familiensituation.setUnterhaltsvereinbarung(UnterhaltsvereinbarungAnswer.UNTERHALTSVEREINBARUNG_NICHT_MOEGLICH);
+				Set<KindContainer> kindContainers = new LinkedHashSet<>();
+				final LocalDate date = LocalDate.of(2015, Month.MARCH, 25);
+				KindContainer kind = createKindContainer(Kinderabzug.GANZER_ABZUG, date);
+				kind.getKindJA().setObhutAlternierendAusueben(true);
+				kind.getKindJA().setFamilienErgaenzendeBetreuung(false);
+				kindContainers.add(kind);
+				gesuch.setKindContainers(kindContainers);
+
+				final Entry<Double, Integer> famGroesse = famabAbschnittRule_FKJV2.calculateFamiliengroesse(gesuch, LocalDate.now());
+				double familiengroesse = famGroesse.getKey();
+				Assertions.assertEquals(1.5, familiengroesse, DELTA);
+			}
 		}
 
 		@Nested
@@ -601,7 +696,7 @@ public class FamilienabzugAbschnittRuleTest {
 
 				final Entry<Double, Integer> famGroesse = famabAbschnittRule_FKJV2.calculateFamiliengroesse(gesuch, LocalDate.now());
 				double familiengroesse = famGroesse.getKey();
-				Assertions.assertEquals(3, familiengroesse, DELTA);
+				Assertions.assertEquals(3.0, familiengroesse, DELTA);
 			}
 		}
 
