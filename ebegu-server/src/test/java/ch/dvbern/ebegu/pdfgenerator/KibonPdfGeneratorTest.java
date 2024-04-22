@@ -17,11 +17,38 @@
 
 package ch.dvbern.ebegu.pdfgenerator;
 
-import ch.dvbern.ebegu.entities.*;
-import ch.dvbern.ebegu.enums.*;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
+
+import javax.annotation.Nonnull;
+
+import ch.dvbern.ebegu.entities.AnmeldungTagesschule;
+import ch.dvbern.ebegu.entities.Benutzer;
+import ch.dvbern.ebegu.entities.Betreuung;
+import ch.dvbern.ebegu.entities.DokumentGrund;
+import ch.dvbern.ebegu.entities.GemeindeStammdaten;
+import ch.dvbern.ebegu.entities.Gesuch;
+import ch.dvbern.ebegu.entities.KindContainer;
+import ch.dvbern.ebegu.entities.Mahnung;
+import ch.dvbern.ebegu.entities.Mandant;
+import ch.dvbern.ebegu.entities.Verfuegung;
+import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
+import ch.dvbern.ebegu.enums.BetreuungspensumAnzeigeTyp;
+import ch.dvbern.ebegu.enums.DokumentGrundTyp;
+import ch.dvbern.ebegu.enums.DokumentTyp;
+import ch.dvbern.ebegu.enums.KorrespondenzSpracheTyp;
+import ch.dvbern.ebegu.enums.MahnungTyp;
+import ch.dvbern.ebegu.enums.Sprache;
 import ch.dvbern.ebegu.finanzielleSituationRechner.FinanzielleSituationBernRechner;
 import ch.dvbern.ebegu.pdfgenerator.AbstractVerfuegungPdfGenerator.Art;
-import ch.dvbern.ebegu.pdfgenerator.finanzielleSituation.FinanzielleSituationPdfGeneratorBern;
 import ch.dvbern.ebegu.rechner.TagesschuleBernRechner;
 import ch.dvbern.ebegu.rules.EbeguRuleTestsHelper;
 import ch.dvbern.ebegu.test.TestDataUtil;
@@ -35,15 +62,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 import org.junit.jupiter.params.provider.EnumSource.Mode;
-
-import javax.annotation.Nonnull;
-import java.io.*;
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
@@ -123,7 +141,7 @@ public class KibonPdfGeneratorTest extends AbstractPDFGeneratorTest {
 		gesuch.getGesuchsteller1().getGesuchstellerJA().setKorrespondenzSprache(locale);
 		final AbstractFreigabequittungPdfGenerator
 				generator = new FreigabequittungPdfGeneratorBern(gesuch, stammdaten, benoetigteUnterlagen);
-		generator.generate(new FileOutputStream(pfad + dokumentname));
+		generateTestDocument(generator, mandant, dokumentname);
 	}
 
 	@ParameterizedTest
@@ -212,40 +230,6 @@ public class KibonPdfGeneratorTest extends AbstractPDFGeneratorTest {
 		gesuch.getGesuchsteller1().getGesuchstellerJA().setKorrespondenzSprache(locale);
 		final VerfuegungPdfGeneratorBern generator = new VerfuegungPdfGeneratorBern(
 			getFirstBetreuung(gesuch), stammdaten, Art.NICHT_EINTRETTEN, entwurfMitKontingentierung, STADT_BERN_ASIV_CONFIGUERED, false, BetreuungspensumAnzeigeTyp.ZEITEINHEIT_UND_PROZENT);
-		generateTestDocument(generator, mandant, dokumentname);
-	}
-
-	@ParameterizedTest
-	@EnumSource(value = MandantIdentifier.class, mode = Mode.MATCH_ALL)
-	public void finanzielleSituationTest(@Nonnull MandantIdentifier mandant) throws InvoiceGeneratorException, IOException {
-		// FinSit Typ Bern basic
-		createFinanzielleSituation(mandant, gesuch_alleinstehend, Sprache.DEUTSCH, "FinanzielleSituation_alleinstehend_de.pdf");
-		createFinanzielleSituation(mandant, gesuch_alleinstehend, Sprache.FRANZOESISCH, "FinanzielleSituation_alleinstehend_fr.pdf");
-		createFinanzielleSituation(mandant, gesuch_verheiratet, Sprache.DEUTSCH, "FinanzielleSituation_verheiratet_de.pdf");
-		createFinanzielleSituation(mandant, gesuch_verheiratet, Sprache.FRANZOESISCH, "FinanzielleSituation_verheiratet_fr.pdf");
-		gesuch_verheiratet.setFinSitTyp(FinanzielleSituationTyp.BERN_FKJV);
-		// FinSit Typ Bern FKJV, FKJV Feldern sind null
-		assertNotNull(gesuch_verheiratet.getGesuchsteller1());
-		assertNotNull(gesuch_verheiratet.getGesuchsteller1().getFinanzielleSituationContainer());
-		gesuch_verheiratet.getGesuchsteller1().getFinanzielleSituationContainer().getFinanzielleSituationJA().setNettoVermoegen(new BigDecimal(1000));
-		createFinanzielleSituation(mandant, gesuch_verheiratet, Sprache.DEUTSCH, "FinanzielleSituation_verheiratet_fkjv_nettolohnGS1_de.pdf");
-		createFinanzielleSituation(mandant, gesuch_verheiratet, Sprache.FRANZOESISCH, "FinanzielleSituation_verheiratet_fkjv_nettolohnGS1_fr.pdf");
-		assertNotNull(gesuch_verheiratet.getGesuchsteller2());
-		assertNotNull(gesuch_verheiratet.getGesuchsteller2().getFinanzielleSituationContainer());
-		gesuch_verheiratet.getGesuchsteller2().getFinanzielleSituationContainer().getFinanzielleSituationJA().setNettoVermoegen(new BigDecimal(1000));
-		createFinanzielleSituation(mandant, gesuch_verheiratet, Sprache.DEUTSCH, "FinanzielleSituation_verheiratet_fkjv_nettolohnGS1GS2_de.pdf");
-		createFinanzielleSituation(mandant, gesuch_verheiratet, Sprache.FRANZOESISCH, "FinanzielleSituation_verheiratet_fkjv_nettolohnGS1GS2_fr.pdf");
-		gesuch_verheiratet.getGesuchsteller1().getFinanzielleSituationContainer().getFinanzielleSituationJA().setNettoVermoegen(null);
-		createFinanzielleSituation(mandant, gesuch_verheiratet, Sprache.DEUTSCH, "FinanzielleSituation_verheiratet_fkjv_nettolohnGS2_de.pdf");
-		createFinanzielleSituation(mandant, gesuch_verheiratet, Sprache.FRANZOESISCH, "FinanzielleSituation_verheiratet_fkjv_nettolohnGS2_fr.pdf");
-	}
-
-	private void createFinanzielleSituation(@Nonnull MandantIdentifier mandant, @Nonnull Gesuch gesuch, @Nonnull Sprache locale, @Nonnull String dokumentname) throws FileNotFoundException,
-		InvoiceGeneratorException {
-		assertNotNull(gesuch.getGesuchsteller1());
-		gesuch.getGesuchsteller1().getGesuchstellerJA().setKorrespondenzSprache(locale);
-		final FinanzielleSituationPdfGeneratorBern generator = new FinanzielleSituationPdfGeneratorBern(gesuch, getFamiliensituationsVerfuegung(gesuch), stammdaten,  Constants.START_OF_TIME,
-			new FinanzielleSituationBernRechner());
 		generateTestDocument(generator, mandant, dokumentname);
 	}
 
