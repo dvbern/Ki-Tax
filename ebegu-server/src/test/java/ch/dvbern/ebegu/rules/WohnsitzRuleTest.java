@@ -51,12 +51,6 @@ public class WohnsitzRuleTest {
 
 		final Gesuch gesuch = betreuung.extractGesuch();
 
-		gesuch.getGesuchsteller1().addAdresse(createGesuchstellerAdresse(
-			TestDataUtil.START_PERIODE,
-			TestDataUtil.ENDE_PERIODE,
-			false,
-			gesuch.getGesuchsteller1()));
-
 		List<VerfuegungZeitabschnitt> zeitabschnittList = EbeguRuleTestsHelper.calculate(betreuung);
 
 		Assert.assertNotNull(zeitabschnittList);
@@ -72,12 +66,7 @@ public class WohnsitzRuleTest {
 		Betreuung betreuung = createTestdata(false);
 
 		final Gesuch gesuch = betreuung.extractGesuch();
-
-		gesuch.getGesuchsteller1().addAdresse(createGesuchstellerAdresse(
-			TestDataUtil.START_PERIODE,
-			TestDataUtil.ENDE_PERIODE,
-			true,
-			gesuch.getGesuchsteller1()));
+		gesuch.getGesuchsteller1().getAdressen().get(0).getGesuchstellerAdresseJA().setNichtInGemeinde(true);
 
 		createDossier(gesuch);
 
@@ -146,7 +135,7 @@ public class WohnsitzRuleTest {
 		Betreuung betreuung = createTestdata(true);
 
 		final Gesuch gesuch = betreuung.extractGesuch();
-
+		gesuch.getGesuchsteller1().getAdressen().clear();
 		gesuch.getGesuchsteller1().addAdresse(createGesuchstellerAdresse(
 			TestDataUtil.START_PERIODE,
 			zuzugsDatum.minusDays(1),
@@ -186,7 +175,7 @@ public class WohnsitzRuleTest {
 		Betreuung betreuung = createTestdata(true);
 
 		final Gesuch gesuch = betreuung.extractGesuch();
-
+		gesuch.getGesuchsteller1().getAdressen().clear();
 		gesuch.getGesuchsteller1().addAdresse(createGesuchstellerAdresse(
 			TestDataUtil.START_PERIODE,
 			wegzugsDatum.minusDays(1),
@@ -232,6 +221,7 @@ public class WohnsitzRuleTest {
 		gesuch.extractFamiliensituation().setFamilienstatus(EnumFamilienstatus.VERHEIRATET);
 		gesuch.extractFamiliensituation().setAenderungPer(LocalDate.of(TestDataUtil.PERIODE_JAHR_2, Month.MARCH, 26));
 
+		gesuch.getGesuchsteller1().getAdressen().clear();
 		gesuch.getGesuchsteller1().addAdresse(createGesuchstellerAdresse(
 			TestDataUtil.START_PERIODE,
 			TestDataUtil.ENDE_PERIODE,

@@ -1043,7 +1043,7 @@ export class GesuchModelManager {
                 }
 
                 return storedKindCont;
-            });
+            }).then(storedKindCont => this.reloadGesuch().then(() => storedKindCont));
     }
 
     /**

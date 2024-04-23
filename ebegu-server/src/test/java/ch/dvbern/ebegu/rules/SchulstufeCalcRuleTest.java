@@ -20,10 +20,8 @@ import java.util.Map;
 
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Einstellung;
-import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.GesuchstellerContainer;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
-import ch.dvbern.ebegu.enums.AnspruchBeschaeftigungAbhaengigkeitTyp;
 import ch.dvbern.ebegu.enums.EinschulungTyp;
 import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.enums.MsgKey;
@@ -145,8 +143,6 @@ public class SchulstufeCalcRuleTest {
 
 	private Betreuung prepareData(final int pensum, final EinschulungTyp schulstufe) {
 		Betreuung betreuung = TestDataUtil.createGesuchWithBetreuungspensum(false);
-		final Gesuch gesuch = betreuung.extractGesuch();
-		TestDataUtil.createDefaultAdressenForGS(gesuch, false);
 		betreuung.getKind().getKindJA().setEinschulungTyp(schulstufe);
 		GesuchstellerContainer gesuchsteller1 = betreuung.extractGesuch().getGesuchsteller1();
 		Assert.assertNotNull(gesuchsteller1);

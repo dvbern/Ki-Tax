@@ -6169,8 +6169,8 @@ export class EbeguRestUtil {
         throw new Error(`FinanzielleSituationTyp ${typ} not defined`);
     }
 
-    public parseAnspruchBeschaeftigungAbhaengigkeitTyp(typ: any): TSAnspruchBeschaeftigungAbhaengigkeitTyp {
-        if (Object.values(TSAnspruchBeschaeftigungAbhaengigkeitTyp).includes(typ.value)) {
+    public parseAnspruchBeschaeftigungAbhaengigkeitTyp(typ: TSEinstellung): TSAnspruchBeschaeftigungAbhaengigkeitTyp {
+        if (Object.values(TSAnspruchBeschaeftigungAbhaengigkeitTyp).includes(typ.value as any)) {
             return typ.value as TSAnspruchBeschaeftigungAbhaengigkeitTyp;
         }
         throw new Error(`TSAnspruchBeschaeftigungAbhaengigkeitTyp ${typ} not defined`);
