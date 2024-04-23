@@ -40,7 +40,7 @@ public abstract class AbstractFamilienabzugAbschnittRuleBern extends AbstractFam
 	private final BigDecimal pauschalabzugProPersonFamiliengroesse6;
 
 
-	public AbstractFamilienabzugAbschnittRuleBern(
+	protected AbstractFamilienabzugAbschnittRuleBern(
 		@Nonnull Map<EinstellungKey, Einstellung> einstellungMap,
 		DateRange validityPeriod,
 		@Nonnull Locale locale

@@ -80,7 +80,7 @@ public class FamilienabzugAbschnittRuleFKJV extends AbstractFamilienabzugAbschni
 			}
 		}
 
-		return new AbstractMap.SimpleEntry(famGrBeruecksichtigungAbzug, famGrAnzahlPersonen);
+		return new AbstractMap.SimpleEntry<>(famGrBeruecksichtigungAbzug, famGrAnzahlPersonen);
 	}
 
 	private int calculateFKJVAnzahlPersonen(double beruecksichtigungAbzug, boolean isKinderAbzugTypeVersion2) {

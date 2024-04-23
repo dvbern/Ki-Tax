@@ -55,7 +55,7 @@ public class FamilienabzugAbschnittRuleSchwyzTest {
 			Constants.DEFAULT_LOCALE);
 
 	@Test
-	public void singleGS_kinderZaehltGanz_test() {
+	void singleGS_kinderZaehltGanz_test() {
 		Gesuch gesuch = createGesuchWithOneGesuchstellerAndOneKinderWithAbzug(Kinderabzug.GANZER_ABZUG);
 		final Entry<Double, Integer> famGroesse =
 			famabAbschnittRule_SCHWYZ.calculateFamiliengroesse(gesuch, LocalDate.now());
@@ -66,7 +66,7 @@ public class FamilienabzugAbschnittRuleSchwyzTest {
 	}
 
 	@Test
-	public void singleGS_kinderZaehltHalb_test() {
+	void singleGS_kinderZaehltHalb_test() {
 		Gesuch gesuch = createGesuchWithOneGesuchstellerAndOneKinderWithAbzug(Kinderabzug.HALBER_ABZUG);
 		final Entry<Double, Integer> famGroesse =
 			famabAbschnittRule_SCHWYZ.calculateFamiliengroesse(gesuch, LocalDate.now());
@@ -77,7 +77,7 @@ public class FamilienabzugAbschnittRuleSchwyzTest {
 	}
 
 	@Test
-	public void zweiGS_kinderZaehltGanz_test() {
+	void zweiGS_kinderZaehltGanz_test() {
 		Gesuch gesuch = createGesuchWithTwoGesuchstellerAndOneKinderWithAbzug(Kinderabzug.GANZER_ABZUG);
 		final Entry<Double, Integer> famGroesse =
 			famabAbschnittRule_SCHWYZ.calculateFamiliengroesse(gesuch, LocalDate.now());
@@ -88,7 +88,7 @@ public class FamilienabzugAbschnittRuleSchwyzTest {
 	}
 
 	@Test
-	public void zweiGS_kinderZaehltHalb_test() {
+	void zweiGS_kinderZaehltHalb_test() {
 		Gesuch gesuch = createGesuchWithTwoGesuchstellerAndOneKinderWithAbzug(Kinderabzug.HALBER_ABZUG);
 		final Entry<Double, Integer> famGroesse =
 			famabAbschnittRule_SCHWYZ.calculateFamiliengroesse(gesuch, LocalDate.now());
@@ -99,7 +99,7 @@ public class FamilienabzugAbschnittRuleSchwyzTest {
 	}
 
 	@Test
-	public void singleGS_zweiKinderZaehltGanz_test() {
+	void singleGS_zweiKinderZaehltGanz_test() {
 		Gesuch gesuch = createGesuchWithOneGesuchstellerAndOneKinderWithAbzug(Kinderabzug.GANZER_ABZUG);
 		final KindContainer kind = TestDataUtil.createDefaultKindContainer();
 		kind.getKindJA().setKinderabzugErstesHalbjahr(Kinderabzug.GANZER_ABZUG);
@@ -113,7 +113,7 @@ public class FamilienabzugAbschnittRuleSchwyzTest {
 	}
 
 	@Test
-	public void zweiGS_zweiKinderZaehltGanz_test() {
+	void zweiGS_zweiKinderZaehltGanz_test() {
 		Gesuch gesuch = createGesuchWithTwoGesuchstellerAndOneKinderWithAbzug(Kinderabzug.GANZER_ABZUG);
 		final KindContainer kind = TestDataUtil.createDefaultKindContainer();
 		kind.getKindJA().setKinderabzugErstesHalbjahr(Kinderabzug.GANZER_ABZUG);
@@ -127,7 +127,7 @@ public class FamilienabzugAbschnittRuleSchwyzTest {
 	}
 
 	@Test
-	public void singleGS_zweiKinderEineZaehltHalb_test() {
+	void singleGS_zweiKinderEineZaehltHalb_test() {
 		Gesuch gesuch = createGesuchWithOneGesuchstellerAndOneKinderWithAbzug(Kinderabzug.GANZER_ABZUG);
 		final KindContainer kind = TestDataUtil.createDefaultKindContainer();
 		kind.getKindJA().setKinderabzugErstesHalbjahr(Kinderabzug.HALBER_ABZUG);
@@ -141,7 +141,7 @@ public class FamilienabzugAbschnittRuleSchwyzTest {
 	}
 
 	@Test
-	public void zweiGS_zweiKinderEineZaehltHalb_test() {
+	void zweiGS_zweiKinderEineZaehltHalb_test() {
 		Gesuch gesuch = createGesuchWithTwoGesuchstellerAndOneKinderWithAbzug(Kinderabzug.GANZER_ABZUG);
 		final KindContainer kind = TestDataUtil.createDefaultKindContainer();
 		kind.getKindJA().setKinderabzugErstesHalbjahr(Kinderabzug.HALBER_ABZUG);
@@ -167,7 +167,7 @@ public class FamilienabzugAbschnittRuleSchwyzTest {
 		"3.5, 2, 10050",
 		"4.0, 2, 13400",
 	})
-	public void calculateAbzugAufgrundFamiliengroesseTest(
+	void calculateAbzugAufgrundFamiliengroesseTest(
 		double famGrBeruecksichtigungAbzug,
 		int famGrAnzahlEltern,
 		BigDecimal resultExpected) {

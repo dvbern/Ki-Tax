@@ -73,6 +73,6 @@ public class FamilienabzugAbschnittRuleASIV extends AbstractFamilienabzugAbschni
 			}
 		}
 
-		return new AbstractMap.SimpleEntry(famGrBeruecksichtigungAbzug, famGrAnzahlPersonen);
+		return new AbstractMap.SimpleEntry<>(famGrBeruecksichtigungAbzug, famGrAnzahlPersonen);
 	}
 }

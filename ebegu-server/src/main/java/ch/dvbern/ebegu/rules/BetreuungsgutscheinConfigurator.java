@@ -238,10 +238,10 @@ public class BetreuungsgutscheinConfigurator {
 		addToRuleSetIfRelevantForGemeinde(abwesenheitAbschnittRule, ruleParameterUtil);
 
 		// Zivilstandsaenderung
-		Einstellung param_minimaldauer_konkubinat = ruleParameterUtil.getEinstellung(MINIMALDAUER_KONKUBINAT);
+		Einstellung minimaldauerKonkubinat = ruleParameterUtil.getEinstellung(MINIMALDAUER_KONKUBINAT);
 		ZivilstandsaenderungAbschnittRule zivilstandsaenderungAbschnittRule = new ZivilstandsaenderungAbschnittRule(
 				defaultGueltigkeit,
-				param_minimaldauer_konkubinat.getValueAsInteger(),
+				minimaldauerKonkubinat.getValueAsInteger(),
 				locale);
 		addToRuleSetIfRelevantForGemeinde(zivilstandsaenderungAbschnittRule, ruleParameterUtil);
 

@@ -76,6 +76,6 @@ public class FamilienabzugAbschnittRuleSchwyz extends AbstractFamilienabzugAbsch
 				}
 			}
 		}
-		return new AbstractMap.SimpleEntry(famGrBeruecksichtigungAbzug, famGrAnzahlEltern);
+		return new AbstractMap.SimpleEntry<>(famGrBeruecksichtigungAbzug, famGrAnzahlEltern);
 	}
 }
