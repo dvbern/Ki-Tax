@@ -43,7 +43,7 @@ public class AnspruchAbAlterAbschnittRule extends AbstractAbschnittRule {
 
 	@Nonnull
 	@Override
-	List<VerfuegungZeitabschnitt> createVerfuegungsZeitabschnitte(@Nonnull AbstractPlatz platz) {
+	protected List<VerfuegungZeitabschnitt> createVerfuegungsZeitabschnitte(@Nonnull AbstractPlatz platz) {
 		if (requiredAgeInMonths <= 0) {
 			return new ArrayList<>();
 		}

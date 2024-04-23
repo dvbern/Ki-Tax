@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.dvbern.ebegu.rules;
+package ch.dvbern.ebegu.rules.familienabzug;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -41,6 +41,10 @@ import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.enums.EnumFamilienstatus;
+import ch.dvbern.ebegu.rules.AbstractAbschnittRule;
+import ch.dvbern.ebegu.rules.RuleKey;
+import ch.dvbern.ebegu.rules.RuleType;
+import ch.dvbern.ebegu.rules.RuleValidity;
 import ch.dvbern.ebegu.types.DateRange;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,7 +52,7 @@ import org.slf4j.LoggerFactory;
 import static ch.dvbern.ebegu.enums.EinstellungKey.MINIMALDAUER_KONKUBINAT;
 
 public abstract class AbstractFamilienabzugAbschnittRule extends AbstractAbschnittRule {
-	private static final Logger LOG = LoggerFactory.getLogger(FamilienabzugAbschnittRuleBern.class);
+	private static final Logger LOG = LoggerFactory.getLogger(AbstractFamilienabzugAbschnittRule.class);
 
 	private final Integer paramMinDauerKonkubinat;
 

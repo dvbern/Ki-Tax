@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.dvbern.ebegu.rules;
+package ch.dvbern.ebegu.rules.familienabzug;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2023 DV Bern AG, Switzerland
+ * Copyright (C) 2024 DV Bern AG, Switzerland
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -8,16 +8,29 @@
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program. If not, see <https://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.dvbern.ebegu.rules;
+package ch.dvbern.ebegu.rules.familienabzug;
 
-import ch.dvbern.ebegu.entities.*;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.AbstractMap;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Objects;
+
+import javax.annotation.Nonnull;
+
+import ch.dvbern.ebegu.entities.Einstellung;
+import ch.dvbern.ebegu.entities.Familiensituation;
+import ch.dvbern.ebegu.entities.Gesuch;
+import ch.dvbern.ebegu.entities.Kind;
+import ch.dvbern.ebegu.entities.KindContainer;
 import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.enums.EnumFamilienstatus;
 import ch.dvbern.ebegu.enums.EnumGesuchstellerKardinalitaet;
@@ -29,17 +42,11 @@ import ch.dvbern.ebegu.util.MathUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.annotation.Nonnull;
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.util.*;
-
 import static ch.dvbern.ebegu.enums.EinstellungKey.KINDERABZUG_TYP;
 import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_3;
 import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_4;
 import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_5;
 import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_6;
-
 
 /**
  * Umsetzung der ASIV Revision
@@ -51,9 +58,9 @@ import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_PAUSCHALABZUG_PRO_PERSO
  * der Familiensituation ist das Datum "Aendern per" relevant.
  */
 @SuppressWarnings("MethodParameterNamingConvention")
-public class FamilienabzugAbschnittRuleBern extends AbstractFamilienabzugAbschnittRule {
+public class FamilienabzugAbschnittRuleFKJV extends AbstractFamilienabzugAbschnittRuleASIV {
 
-	private static final Logger LOG = LoggerFactory.getLogger(FamilienabzugAbschnittRuleBern.class);
+	private static final Logger LOG = LoggerFactory.getLogger(FamilienabzugAbschnittRuleFKJV.class);
 
 	private final BigDecimal pauschalabzugProPersonFamiliengroesse3;
 	private final BigDecimal pauschalabzugProPersonFamiliengroesse4;
@@ -61,20 +68,22 @@ public class FamilienabzugAbschnittRuleBern extends AbstractFamilienabzugAbschni
 	private final BigDecimal pauschalabzugProPersonFamiliengroesse6;
 	private final KinderabzugTyp kinderabzugTyp;
 
-
-	public FamilienabzugAbschnittRuleBern(
+	public FamilienabzugAbschnittRuleFKJV(
 		@Nonnull Map<EinstellungKey, Einstellung> einstellungMap,
 		DateRange validityPeriod,
 		@Nonnull Locale locale
 	) {
 		super(einstellungMap, validityPeriod, locale);
-		this.pauschalabzugProPersonFamiliengroesse3 = einstellungMap.get(PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_3).getValueAsBigDecimal();
-		this.pauschalabzugProPersonFamiliengroesse4 = einstellungMap.get(PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_4).getValueAsBigDecimal();
-		this.pauschalabzugProPersonFamiliengroesse5 = einstellungMap.get(PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_5).getValueAsBigDecimal();
-		this.pauschalabzugProPersonFamiliengroesse6 = einstellungMap.get(PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_6).getValueAsBigDecimal();
+		this.pauschalabzugProPersonFamiliengroesse3 =
+			einstellungMap.get(PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_3).getValueAsBigDecimal();
+		this.pauschalabzugProPersonFamiliengroesse4 =
+			einstellungMap.get(PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_4).getValueAsBigDecimal();
+		this.pauschalabzugProPersonFamiliengroesse5 =
+			einstellungMap.get(PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_5).getValueAsBigDecimal();
+		this.pauschalabzugProPersonFamiliengroesse6 =
+			einstellungMap.get(PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_6).getValueAsBigDecimal();
 		this.kinderabzugTyp = KinderabzugTyp.valueOf(einstellungMap.get(KINDERABZUG_TYP).getValue());
 	}
-
 
 	protected Map.Entry<Double, Integer> addAbzugFromKinder(
 		@Nonnull Gesuch gesuch,
@@ -82,49 +91,7 @@ public class FamilienabzugAbschnittRuleBern extends AbstractFamilienabzugAbschni
 		@Nonnull Double famGrBeruecksichtigungAbzug,
 		int famGrAnzahlPersonen
 	) {
-		if (this.kinderabzugTyp.isFKJV()) {
-			boolean isKinderabzugTypV2 = this.kinderabzugTyp == KinderabzugTyp.FKJV_2;
-			return addAbzugFromKinderFkjv(gesuch, stichtag, famGrBeruecksichtigungAbzug, famGrAnzahlPersonen,
-				isKinderabzugTypV2);
-		}
-		return addAbzugFromKinderAsiv(gesuch, stichtag, famGrBeruecksichtigungAbzug, famGrAnzahlPersonen);
-	}
-
-	private Map.Entry<Double, Integer> addAbzugFromKinderAsiv(
-		@Nonnull Gesuch gesuch,
-		@Nonnull LocalDate konkubinatBeginningNextMonth,
-		@Nonnull Double famGrBeruecksichtigungAbzug,
-		int famGrAnzahlPersonen
-	) {
-		LocalDate dateToCompare = getRelevantDateForKinder(gesuch.getGesuchsperiode(), konkubinatBeginningNextMonth);
-
-		// Ermitteln, ob der KinderabzugErstesHalbjahr oder KinderabzugZweitesHalbjahr zum Zug kommen soll
-		boolean isErstesHalbjahr = gesuch.getGesuchsperiode().getBasisJahrPlus1() == konkubinatBeginningNextMonth.getYear();
-		for (KindContainer kindContainer : gesuch.getKindContainers()) {
-			Kind kind = kindContainer.getKindJA();
-			if (kind != null && (dateToCompare == null || kind.getGeburtsdatum().isBefore(dateToCompare))) {
-				Kinderabzug kinderabzug =
-					isErstesHalbjahr ? kind.getKinderabzugErstesHalbjahr() : kind.getKinderabzugZweitesHalbjahr();
-				if (kinderabzug == Kinderabzug.HALBER_ABZUG) {
-					famGrBeruecksichtigungAbzug += 0.5;
-					famGrAnzahlPersonen++;
-				} else if (kinderabzug == Kinderabzug.GANZER_ABZUG) {
-					famGrBeruecksichtigungAbzug += 1;
-					famGrAnzahlPersonen++;
-				}
-			}
-		}
-
-		return new AbstractMap.SimpleEntry(famGrBeruecksichtigungAbzug, famGrAnzahlPersonen);
-	}
-
-	private Map.Entry<Double, Integer> addAbzugFromKinderFkjv(
-		@Nonnull Gesuch gesuch,
-		@Nonnull LocalDate stichtag,
-		@Nonnull Double famGrBeruecksichtigungAbzug,
-		int famGrAnzahlPersonen,
-		boolean isKinderAbzugTypeVersion2
-	) {
+		boolean isKinderabzugTypV2 = this.kinderabzugTyp == KinderabzugTyp.FKJV_2;
 		LocalDate dateToCompare = getRelevantDateForKinder(gesuch.getGesuchsperiode(), stichtag);
 		Familiensituation familiensituation = gesuch.extractFamiliensituation();
 
@@ -133,7 +100,7 @@ public class FamilienabzugAbschnittRuleBern extends AbstractFamilienabzugAbschni
 			if (kind != null && (dateToCompare == null || kind.getGeburtsdatum().isBefore(dateToCompare))) {
 				double beruecksichtigungAbzug = calculateFKJVKinderabzugForKind(kind, familiensituation, dateToCompare);
 				famGrBeruecksichtigungAbzug += beruecksichtigungAbzug;
-				famGrAnzahlPersonen += calculateFKJVAnzahlPersonen(beruecksichtigungAbzug, isKinderAbzugTypeVersion2);
+				famGrAnzahlPersonen += calculateFKJVAnzahlPersonen(beruecksichtigungAbzug, isKinderabzugTypV2);
 			}
 		}
 
@@ -180,7 +147,8 @@ public class FamilienabzugAbschnittRuleBern extends AbstractFamilienabzugAbschni
 		throw new EbeguRuntimeException("calculateFKJVKinderabzugForKind", "wrong properties for kind to calculate kinderabzug");
 	}
 
-	private Integer calculateKinderAbzugForInErstausbildungAnswered(@Nonnull Kind kind, LocalDate dateToCompare) throws EbeguRuntimeException {
+	private Integer calculateKinderAbzugForInErstausbildungAnswered(@Nonnull Kind kind, LocalDate dateToCompare)
+		throws EbeguRuntimeException {
 		Objects.requireNonNull(kind.getInErstausbildung());
 		if (!kind.getInErstausbildung()) {
 			return is18GeburtstagBeforeDate(kind, dateToCompare) ? 0 : 1;
@@ -259,7 +227,8 @@ public class FamilienabzugAbschnittRuleBern extends AbstractFamilienabzugAbschni
 		}
 
 		// Ein Bigdecimal darf nicht aus einem double erzeugt werden, da das Ergebnis nicht genau die gegebene Nummer waere
-		// deswegen muss man hier familiengroesse als String uebergeben. Sonst bekommen wir PMD rule AvoidDecimalLiteralsInBigDecimalConstructor
+		// deswegen muss man hier familiengroesse als String uebergeben. Sonst bekommen wir PMD rule
+		// AvoidDecimalLiteralsInBigDecimalConstructor
 		// Wir runden die Zahl ausserdem zu einer Ganzzahl weil wir fuer das Massgebende einkommen mit Ganzzahlen rechnen
 		return MathUtil.GANZZAHL.from(new BigDecimal(String.valueOf(famGrBeruecksichtigungAbzug)).multiply(abzugFromServer));
 	}

@@ -21,6 +21,8 @@ import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.EinschulungTyp;
 import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.enums.KinderabzugTyp;
+import ch.dvbern.ebegu.rules.familienabzug.AbstractFamilienabzugAbschnittRule;
+import ch.dvbern.ebegu.rules.familienabzug.FamilienabzugAbschnittRuleVisitor;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.KitaxUebergangsloesungParameter;
@@ -161,8 +163,9 @@ public class BetreuungsgutscheinConfigurator {
 				new UnbezahlterUrlaubAbschnittRule(defaultGueltigkeit, locale);
 		addToRuleSetIfRelevantForGemeinde(unbezahlterUrlaubAbschnittRule, ruleParameterUtil);
 
+		KinderabzugTyp kinderAbzugTyp = KinderabzugTyp.valueOf(ruleParameterUtil.getEinstellung(KINDERABZUG_TYP).getValue());
 		AbstractFamilienabzugAbschnittRule familienabzugAbschnittRuleToUse = new FamilienabzugAbschnittRuleVisitor(ruleParameterUtil.getEinstellungen(),
-			defaultGueltigkeit, locale).getFamilienabzugAbschnittRule(gemeinde.getMandant().getMandantIdentifier());
+			defaultGueltigkeit, locale).getFamilienabzugAbschnittRule(kinderAbzugTyp);
 
 		addToRuleSetIfRelevantForGemeinde(familienabzugAbschnittRuleToUse, ruleParameterUtil);
 
