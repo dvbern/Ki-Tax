@@ -536,7 +536,7 @@ public class FamilienabzugAbschnittRuleTest {
 				Objects.requireNonNull(familiensituation);
 				familiensituation.setFkjvFamSit(true);
 				familiensituation.setFamilienstatus(EnumFamilienstatus.ALLEINERZIEHEND);
-				familiensituation.setGeteilteObhut(Boolean.TRUE);
+				familiensituation.setGeteilteObhut(Boolean.FALSE);
 				familiensituation.setUnterhaltsvereinbarung(UnterhaltsvereinbarungAnswer.NEIN_UNTERHALTSVEREINBARUNG);
 				Set<KindContainer> kindContainers = new LinkedHashSet<>();
 				final LocalDate date = LocalDate.of(2015, Month.MARCH, 25);
@@ -549,7 +549,7 @@ public class FamilienabzugAbschnittRuleTest {
 
 				final Entry<Double, Integer> famGroesse = famabAbschnittRule_FKJV2.calculateFamiliengroesse(gesuch, LocalDate.now());
 				double familiengroesse = famGroesse.getKey();
-				Assertions.assertEquals(1.5, familiengroesse, DELTA);
+				Assertions.assertEquals(2.5, familiengroesse, DELTA);
 			}
 			@Test
 			void kinderAbzugFKJV2_GanzesKindWennKeineUnterhaltsvereinbarungAbgeschlossenUndGemeinsamGesuch() {
@@ -560,7 +560,7 @@ public class FamilienabzugAbschnittRuleTest {
 				Objects.requireNonNull(familiensituation);
 				familiensituation.setFkjvFamSit(true);
 				familiensituation.setFamilienstatus(EnumFamilienstatus.ALLEINERZIEHEND);
-				familiensituation.setGeteilteObhut(Boolean.TRUE);
+				familiensituation.setGeteilteObhut(Boolean.FALSE);
 				familiensituation.setUnterhaltsvereinbarung(UnterhaltsvereinbarungAnswer.NEIN_UNTERHALTSVEREINBARUNG);
 				Set<KindContainer> kindContainers = new LinkedHashSet<>();
 				final LocalDate date = LocalDate.of(2015, Month.MARCH, 25);
@@ -573,7 +573,7 @@ public class FamilienabzugAbschnittRuleTest {
 
 				final Entry<Double, Integer> famGroesse = famabAbschnittRule_FKJV2.calculateFamiliengroesse(gesuch, LocalDate.now());
 				double familiengroesse = famGroesse.getKey();
-				Assertions.assertEquals(2.0, familiengroesse, DELTA);
+				Assertions.assertEquals(3.0, familiengroesse, DELTA);
 			}
 			@Test
 			void kinderAbzugFKJV2_HalbesKindWennJaUnterhaltsvereinbarungGesuch() {
@@ -584,7 +584,7 @@ public class FamilienabzugAbschnittRuleTest {
 				Objects.requireNonNull(familiensituation);
 				familiensituation.setFkjvFamSit(true);
 				familiensituation.setFamilienstatus(EnumFamilienstatus.ALLEINERZIEHEND);
-				familiensituation.setGeteilteObhut(Boolean.TRUE);
+				familiensituation.setGeteilteObhut(Boolean.FALSE);
 				familiensituation.setUnterhaltsvereinbarung(UnterhaltsvereinbarungAnswer.JA_UNTERHALTSVEREINBARUNG);
 				Set<KindContainer> kindContainers = new LinkedHashSet<>();
 				final LocalDate date = LocalDate.of(2015, Month.MARCH, 25);
@@ -607,7 +607,7 @@ public class FamilienabzugAbschnittRuleTest {
 				Objects.requireNonNull(familiensituation);
 				familiensituation.setFkjvFamSit(true);
 				familiensituation.setFamilienstatus(EnumFamilienstatus.ALLEINERZIEHEND);
-				familiensituation.setGeteilteObhut(Boolean.TRUE);
+				familiensituation.setGeteilteObhut(Boolean.FALSE);
 				familiensituation.setUnterhaltsvereinbarung(UnterhaltsvereinbarungAnswer.UNTERHALTSVEREINBARUNG_NICHT_MOEGLICH);
 				Set<KindContainer> kindContainers = new LinkedHashSet<>();
 				final LocalDate date = LocalDate.of(2015, Month.MARCH, 25);
