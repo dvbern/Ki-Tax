@@ -9,7 +9,7 @@ import {FinanzielleSituationSchwyzService} from '../finanzielle-situation-schwyz
     selector: 'dv-bruttolohn-schwyz',
     templateUrl: './bruttolohn-schwyz.component.html',
     changeDetection: ChangeDetectionStrategy.Default,
-    viewProviders: [{provide: ControlContainer, useExisting: NgForm}]
+    viewProviders: [{provide: ControlContainer, useExisting: NgForm}],
 })
 export class BruttolohnSchwyzComponent {
 
@@ -17,10 +17,13 @@ export class BruttolohnSchwyzComponent {
     public readonly!: boolean;
 
     @Input()
+    public isEKV: boolean = false;
+
+    @Input()
     public finanzModel: TSFinanzModel;
 
     public constructor(
-        public finanzielleSituationSchwyzService: FinanzielleSituationSchwyzService
+        public finanzielleSituationSchwyzService: FinanzielleSituationSchwyzService,
     ) {
     }
 
@@ -33,11 +36,11 @@ export class BruttolohnSchwyzComponent {
     };
 
     public getFinSitJA(): TSAbstractFinanzielleSituation {
-        return this.finanzModel.getFiSiConToWorkWith()?.finanzielleSituationJA;
+        return this.isEKV ? this.finanzModel.getEkvToWorkWith() : this.finanzModel.getFiSiConToWorkWith()?.finanzielleSituationJA;
     }
 
     public getFinSitGS(): TSAbstractFinanzielleSituation {
-        return this.finanzModel.getFiSiConToWorkWith()?.finanzielleSituationGS;
+        return this.isEKV ? this.finanzModel.getEkvToWorkWith() : this.finanzModel.getFiSiConToWorkWith()?.finanzielleSituationGS;
     }
 
 }

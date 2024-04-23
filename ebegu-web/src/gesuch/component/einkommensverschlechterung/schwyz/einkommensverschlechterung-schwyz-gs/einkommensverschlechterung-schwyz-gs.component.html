@@ -22,14 +22,14 @@
 
             <ng-container *ngIf="model.getFiSiConToWorkWith().finanzielleSituationJA.quellenbesteuert; then bruttolohnFragen else steuerveranlagFragen"></ng-container>
             <ng-template #steuerveranlagFragen>
-                <dv-steuerveranlagt-schwyz [finSitJA]="model.getEkvToWorkWith()"
-                                           [finSitGS]="model.getEkvToWorkWith_GS()"
+                <dv-steuerveranlagt-schwyz [finanzModel]="model"
+                                           [isEKV]="true"
                                            [readonly]="gesuchmodelManager.isGesuchReadonly()">
                 </dv-steuerveranlagt-schwyz>
             </ng-template>
             <ng-template #bruttolohnFragen>
-                <dv-bruttolohn-schwyz [finSitJA]="model.getEkvToWorkWith()"
-                                      [finSitGS]="model.getEkvToWorkWith_GS()"
+                <dv-bruttolohn-schwyz [finanzModel]="model"
+                                      [isEKV]="true"
                                       [readonly]="gesuchmodelManager.isGesuchReadonly()">
 
                 </dv-bruttolohn-schwyz>
