@@ -3,15 +3,16 @@
         <div class="form-group">
             <dv-input-label-field
                 [name]="'bruttoLohn'"
-                [(model)]="finSitJA.bruttoLohn"
+                [(model)]="getFinSitJA().bruttoLohn"
                 [labelMessageKey]="'FINANZIELLE_SITUATION_BRUTTOLOHN'"
                 [inputDisabled]="readonly"
                 [inputRequired]="true"
                 [inputDisabled]="readonly"
                 [tooltipMessageKey]="'FINANZIELLE_SITUATION_BRUTTOLOHN_HINT'"
-                [showBisher]="isNotNullOrUndefined(finSitGS)"
-                [deklaration]="finSitGS?.bruttoLohn"
-                [korrektur]="finSitJA.bruttoLohn">
+                [showBisher]="isNotNullOrUndefined(getFinSitGS())"
+                [deklaration]="getFinSitGS()?.bruttoLohn"
+                [korrektur]="getFinSitJA().bruttoLohn"
+                [dvOnBlur]="onValueChangeFunction">
             </dv-input-label-field>
         </div>
     </div>

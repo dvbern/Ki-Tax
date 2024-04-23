@@ -6,7 +6,7 @@
 						     </label>
                           </span>
         <mat-radio-group
-            [(ngModel)]="finSitJA.quellenbesteuert"
+            [(ngModel)]="getFinSitJA().quellenbesteuert"
             name="quellenbesteuert"
             id="quellenbesteuert_id"
             #quellenbesteuert="ngModel"
@@ -23,19 +23,17 @@
     </dv-radio-container-x>
 </div>
 
-<ng-container *ngIf="isNotNullOrUndefined(finSitJA.quellenbesteuert)">
-    <ng-container *ngIf="finSitJA.quellenbesteuert; then bruttolohnFragen else steuerveranlagFragen"></ng-container>
+<ng-container *ngIf="isNotNullOrUndefined(getFinSitJA().quellenbesteuert)">
+    <ng-container *ngIf="getFinSitJA().quellenbesteuert; then bruttolohnFragen else steuerveranlagFragen"></ng-container>
 </ng-container>
 
 <ng-template #steuerveranlagFragen>
-    <dv-steuerveranlagt-schwyz [finSitJA]="finSitJA"
-                               [finSitGS]="finSitGS"
-                               [readonly]="readonly">
+    <dv-steuerveranlagt-schwyz [readonly]="readonly"
+                               [finanzModel]="finanzModel">
     </dv-steuerveranlagt-schwyz>
 </ng-template>
 <ng-template #bruttolohnFragen>
-    <dv-bruttolohn-schwyz [finSitJA]="finSitJA"
-                          [finSitGS]="finSitGS"
-                          [readonly]="readonly">
+    <dv-bruttolohn-schwyz [readonly]="readonly"
+                          [finanzModel]="finanzModel">
     </dv-bruttolohn-schwyz>
 </ng-template>

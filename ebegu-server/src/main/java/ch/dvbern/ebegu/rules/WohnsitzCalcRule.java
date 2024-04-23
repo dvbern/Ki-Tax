@@ -46,7 +46,7 @@ public class WohnsitzCalcRule extends AbstractCalcRule {
 	@SuppressWarnings("PMD.CollapsibleIfStatements")
 	@Override
 	protected void executeRule(@Nonnull AbstractPlatz platz, @Nonnull BGCalculationInput inputData) {
-		if (areNotInBern(inputData)) {
+		if (areNotInGemeinde(inputData)) {
 			inputData.setAnspruchZeroAndSaveRestanspruch();
 			inputData.addBemerkung(
 				MsgKey.WOHNSITZ_MSG,
@@ -58,7 +58,7 @@ public class WohnsitzCalcRule extends AbstractCalcRule {
 	/**
 	 * Nur GS 1 ist relevant. GS 2 muss per Definition bei GS 1 wohnen
 	 */
-	private boolean areNotInBern(@Nonnull BGCalculationInput inputData) {
+	private boolean areNotInGemeinde(@Nonnull BGCalculationInput inputData) {
 		return inputData.isWohnsitzNichtInGemeindeGS1();
 	}
 }

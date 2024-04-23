@@ -580,7 +580,6 @@ class FachstelleBernCalcRuleTest {
 	) {
 		Gesuch gesuch = platz.extractGesuch();
 		gesuch.setFinSitStatus(FinSitStatus.AKZEPTIERT);
-		TestDataUtil.createDefaultAdressenForGS(gesuch, false);
 		TestDataUtil.calculateFinanzDaten(gesuch, new FinanzielleSituationBernRechner());
 		Assertions.assertNotNull(gesuch.getGesuchsteller1());
 		gesuch.getGesuchsteller1().addErwerbspensumContainer(

@@ -152,13 +152,13 @@ public class KitaTagestrukturenSchwyzRechner extends AbstractRechner {
 			return parameter.getMaxVerguenstigungVorschuleKindProTg();
 		}
 
-		var betreuungWaehrendSchulzeit = input.isBetreuungWaehrendSchulzeit();
+		var betreuungInFerienzeit = input.isBetreuungInFerienzeit();
 
-		if (Boolean.TRUE.equals(betreuungWaehrendSchulzeit)) {
-			return NORMKOSTEN_PRIMARSTUFE_WAEHREND_SCHULZEIT;
+		if (Boolean.TRUE.equals(betreuungInFerienzeit)) {
+			return NORMKOSTEN_PRIMARSTUFE_WAEHREND_SCHULFREIEN_ZEIT;
 		}
 
-		return NORMKOSTEN_PRIMARSTUFE_WAEHREND_SCHULFREIEN_ZEIT;
+		return NORMKOSTEN_PRIMARSTUFE_WAEHREND_SCHULZEIT;
 	}
 
 	BigDecimal calculateTagesTarif(BigDecimal betreuungsTageProZeitabschnitt, BGCalculationInput input) {

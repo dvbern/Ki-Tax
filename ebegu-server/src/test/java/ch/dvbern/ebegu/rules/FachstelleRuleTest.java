@@ -45,7 +45,6 @@ public class FachstelleRuleTest {
 			EbeguRuleTestsHelper.createBetreuungWithPensum(TestDataUtil.START_PERIODE, TestDataUtil.ENDE_PERIODE,
 				BetreuungsangebotTyp.KITA, 60, new BigDecimal(2000));
 		final Gesuch gesuch = betreuung.extractGesuch();
-		TestDataUtil.createDefaultAdressenForGS(gesuch, false);
 		setPensumFachstelle(
 			TestDataUtil.START_PERIODE,
 			TestDataUtil.ENDE_PERIODE,
@@ -81,7 +80,6 @@ public class FachstelleRuleTest {
 			EbeguRuleTestsHelper.createBetreuungWithPensum(TestDataUtil.START_PERIODE, TestDataUtil.ENDE_PERIODE,
 				BetreuungsangebotTyp.KITA, 60, new BigDecimal(2000));
 		final Gesuch gesuch = betreuung.extractGesuch();
-		TestDataUtil.createDefaultAdressenForGS(gesuch, false);
 		setPensumFachstelle(
 			TestDataUtil.START_PERIODE,
 			TestDataUtil.ENDE_PERIODE,
@@ -116,7 +114,6 @@ public class FachstelleRuleTest {
 			EbeguRuleTestsHelper.createBetreuungWithPensum(TestDataUtil.START_PERIODE, TestDataUtil.ENDE_PERIODE,
 				BetreuungsangebotTyp.KITA, 60, new BigDecimal(2000));
 		final Gesuch gesuch = betreuung.extractGesuch();
-		TestDataUtil.createDefaultAdressenForGS(gesuch, false);
 
 		var sep30 = LocalDate.of(TestDataUtil.START_PERIODE.getYear(), 9, 30);
 		var oct1 = LocalDate.of(TestDataUtil.START_PERIODE.getYear(), 10, 1);
@@ -159,7 +156,6 @@ public class FachstelleRuleTest {
 			EbeguRuleTestsHelper.createBetreuungWithPensum(TestDataUtil.START_PERIODE, TestDataUtil.ENDE_PERIODE,
 				BetreuungsangebotTyp.KITA, 60, new BigDecimal(2000));
 		final Gesuch gesuch = betreuung.extractGesuch();
-		TestDataUtil.createDefaultAdressenForGS(gesuch, false);
 
 		var sep15 = LocalDate.of(TestDataUtil.START_PERIODE.getYear(), 9, 15);
 		var nov1 = LocalDate.of(TestDataUtil.START_PERIODE.getYear(), 11, 1);
@@ -208,7 +204,6 @@ public class FachstelleRuleTest {
 			EbeguRuleTestsHelper.createBetreuungWithPensum(TestDataUtil.START_PERIODE, TestDataUtil.ENDE_PERIODE,
 				BetreuungsangebotTyp.KITA, 60, new BigDecimal(2000));
 		final Gesuch gesuch = betreuung.extractGesuch();
-		TestDataUtil.createDefaultAdressenForGS(gesuch, false);
 
 		var sep15 = LocalDate.of(TestDataUtil.START_PERIODE.getYear(), 9, 15);
 		var sep16 = LocalDate.of(TestDataUtil.START_PERIODE.getYear(), 9, 16);
@@ -252,7 +247,6 @@ public class FachstelleRuleTest {
 			EbeguRuleTestsHelper.createBetreuungWithPensum(TestDataUtil.START_PERIODE, TestDataUtil.ENDE_PERIODE,
 				BetreuungsangebotTyp.KITA, 60, new BigDecimal(2000));
 		final Gesuch gesuch = betreuung.extractGesuch();
-		TestDataUtil.createDefaultAdressenForGS(gesuch, false);
 
 		var sep15 = LocalDate.of(TestDataUtil.START_PERIODE.getYear(), 9, 15);
 		var sep16 = LocalDate.of(TestDataUtil.START_PERIODE.getYear(), 9, 16);
@@ -308,7 +302,6 @@ public class FachstelleRuleTest {
 			EbeguRuleTestsHelper.createBetreuungWithPensum(TestDataUtil.START_PERIODE, TestDataUtil.ENDE_PERIODE,
 				BetreuungsangebotTyp.KITA, 60, new BigDecimal(2000));
 		final Gesuch gesuch = betreuung.extractGesuch();
-		TestDataUtil.createDefaultAdressenForGS(gesuch, false);
 		betreuung.getKind().getKindJA().setPensumFachstelle(new TreeSet<>());
 
 		setPensumFachstelle(
@@ -367,7 +360,6 @@ public class FachstelleRuleTest {
 			EbeguRuleTestsHelper.createBetreuungWithPensum(TestDataUtil.START_PERIODE, TestDataUtil.ENDE_PERIODE,
 				BetreuungsangebotTyp.KITA, 60, new BigDecimal(2000));
 		final Gesuch gesuch = betreuung.extractGesuch();
-		TestDataUtil.createDefaultAdressenForGS(gesuch, false);
 		betreuung.getErweiterteBetreuungContainer()
 			.getErweiterteBetreuungJA()
 			.setSprachfoerderungBestaetigt(sprachfoerderungBestaetigt);

@@ -1,10 +1,15 @@
+#!/bin/bash
+set -Eeuo pipefail
+
+SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
+
 echo script name:
 read -r scriptname
 
 timestamp="$(date +%s)"
 year=$(date +'%Y')
 filename="V${timestamp}__${scriptname}.sql"
-filepath="ebegu-dbschema/src/main/resources/db/migration/"
+filepath="${SCRIPT_DIR}/../migration/"
 
 echo "/*
  * Copyright (C) ${year} DV Bern AG, Switzerland

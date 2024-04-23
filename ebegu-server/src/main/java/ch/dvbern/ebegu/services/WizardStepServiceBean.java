@@ -1096,6 +1096,7 @@ public class WizardStepServiceBean extends AbstractBaseService implements Wizard
 	 */
 	private boolean isErwerbspensumRequiredForGS2(Gesuch gesuch) {
 		Familiensituation familiensituation = gesuch.extractFamiliensituation();
+
 		if (familiensituation == null) {
 			return false;
 		}
@@ -1111,6 +1112,10 @@ public class WizardStepServiceBean extends AbstractBaseService implements Wizard
 			return false;
 		}
 
+		if (isAbhaengigkeitBeschaeftigungspensumAnspruchSchwyz(gesuch) && hasNoKindWithUnterhaltspflichtGS2(gesuch)) {
+			return false;
+		}
+
 		return gesuch.getGesuchsteller2() == null
 			|| gesuch.getGesuchsteller2().getErwerbspensenContainers().isEmpty();
 	}
@@ -1121,6 +1126,18 @@ public class WizardStepServiceBean extends AbstractBaseService implements Wizard
 			gesuch.getGesuchsperiode());
 
 		return Boolean.TRUE.equals(einstellung.getValueAsBoolean());
+	}
+
+	private boolean isAbhaengigkeitBeschaeftigungspensumAnspruchSchwyz(Gesuch gesuch) {
+		Einstellung einstellung = einstellungService.findEinstellung(EinstellungKey.ABHAENGIGKEIT_ANSPRUCH_BESCHAEFTIGUNGPENSUM,
+			gesuch.extractGemeinde(),
+			gesuch.getGesuchsperiode());
+
+		return AnspruchBeschaeftigungAbhaengigkeitTyp.valueOf(einstellung.getValue()) == AnspruchBeschaeftigungAbhaengigkeitTyp.SCHWYZ;
+	}
+
+	private boolean hasNoKindWithUnterhaltspflichtGS2(Gesuch gesuch) {
+		return gesuch.getKindContainers().stream().map(KindContainer::getKindJA).noneMatch(kind -> Boolean.TRUE.equals(kind.getGemeinsamesGesuch()));
 	}
 
 
