@@ -205,31 +205,4 @@ public class FamilienabzugAbschnittRuleFKJV extends AbstractFamilienabzugAbschni
 		return familienstatus == EnumFamilienstatus.VERHEIRATET ||
 			familienstatus == EnumFamilienstatus.KONKUBINAT;
 	}
-
-	/**
-	 * Berechnete Familiengrösse (halber Abzug berücksichtigen) multipliziert mit dem ermittelten Personen-Haushalt-Pauschalabzug
-	 * (Anzahl Personen in Familie)
-	 *
-	 * @return abzug aufgrund Familiengrösse
-	 */
-	public BigDecimal calculateAbzugAufgrundFamiliengroesse(double famGrBeruecksichtigungAbzug, int famGrAnzahlPersonen) {
-
-		BigDecimal abzugFromServer = BigDecimal.ZERO;
-		// Unter 3 Personen gibt es keinen Abzug!
-		if (famGrAnzahlPersonen == 3) {
-			abzugFromServer = pauschalabzugProPersonFamiliengroesse3;
-		} else if (famGrAnzahlPersonen == 4) {
-			abzugFromServer = pauschalabzugProPersonFamiliengroesse4;
-		} else if (famGrAnzahlPersonen == 5) {
-			abzugFromServer = pauschalabzugProPersonFamiliengroesse5;
-		} else if (famGrAnzahlPersonen > 5) {
-			abzugFromServer = pauschalabzugProPersonFamiliengroesse6;
-		}
-
-		// Ein Bigdecimal darf nicht aus einem double erzeugt werden, da das Ergebnis nicht genau die gegebene Nummer waere
-		// deswegen muss man hier familiengroesse als String uebergeben. Sonst bekommen wir PMD rule
-		// AvoidDecimalLiteralsInBigDecimalConstructor
-		// Wir runden die Zahl ausserdem zu einer Ganzzahl weil wir fuer das Massgebende einkommen mit Ganzzahlen rechnen
-		return MathUtil.GANZZAHL.from(new BigDecimal(String.valueOf(famGrBeruecksichtigungAbzug)).multiply(abzugFromServer));
-	}
 }

@@ -25,7 +25,6 @@ import ch.dvbern.ebegu.enums.Kinderabzug;
 import ch.dvbern.ebegu.enums.KinderabzugTyp;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.rules.EbeguRuleTestsHelper;
-import ch.dvbern.ebegu.rules.familienabzug.FamilienabzugAbschnittRuleBern;
 import ch.dvbern.ebegu.test.TestDataUtil;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.MathUtil;
@@ -61,8 +60,8 @@ public class FamilienabzugAbschnittRuleBernTest {
 	private final FamilienabzugAbschnittRuleBern famabAbschnittRule =
 		new FamilienabzugAbschnittRuleBern(getEinstellungMapForAsiv(), Constants.DEFAULT_GUELTIGKEIT,  Constants.DEFAULT_LOCALE);
 
-	private final FamilienabzugAbschnittRuleBern famabAbschnittRule_FKJV2 =
-		new FamilienabzugAbschnittRuleBern(getEinstellungMapForFKJV2(), Constants.DEFAULT_GUELTIGKEIT, Constants.DEFAULT_LOCALE);
+	private final FamilienabzugAbschnittRuleFKJV famabAbschnittRule_FKJV2 =
+		new FamilienabzugAbschnittRuleFKJV(getEinstellungMapForFKJV2(), Constants.DEFAULT_GUELTIGKEIT, Constants.DEFAULT_LOCALE);
 
 	@Test
 	void test2PKeinAbzug() {
