@@ -173,7 +173,6 @@ public abstract class AbstractTestfall {
 		this.mandant = new Mandant();
 		this.mandant.setMandantIdentifier(MandantIdentifier.BERN);
 		this.mandant.setName("Kanton Bern");
-		this.mandant.setName("Kanton Bern");
 		return this.mandant;
 	}
 
