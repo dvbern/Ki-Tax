@@ -17,15 +17,16 @@
 
 package ch.dvbern.ebegu.finanzielleSituationRechner;
 
+import java.math.BigDecimal;
+
+import javax.annotation.Nonnull;
+
 import ch.dvbern.ebegu.dto.FinanzielleSituationResultateDTO;
 import ch.dvbern.ebegu.entities.AbstractFinanzielleSituation;
 import ch.dvbern.ebegu.entities.Einkommensverschlechterung;
 import ch.dvbern.ebegu.entities.FinanzielleSituation;
 import ch.dvbern.ebegu.entities.Gesuch;
 import org.apache.commons.lang.NotImplementedException;
-
-import javax.annotation.Nonnull;
-import java.math.BigDecimal;
 
 public class FinanzielleSituationBernRechner extends AbstractFinanzielleSituationRechner {
 

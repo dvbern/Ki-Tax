@@ -36,7 +36,6 @@ import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.GesuchstellerContainer;
 import ch.dvbern.ebegu.entities.Verfuegung;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
-import ch.dvbern.ebegu.finanzielleSituationRechner.AbstractFinanzielleSituationRechner;
 import ch.dvbern.ebegu.pdfgenerator.PdfUtil;
 import ch.dvbern.ebegu.pdfgenerator.TableRowLabelValue;
 import ch.dvbern.ebegu.util.Constants;
@@ -85,17 +84,15 @@ public class FinanzielleSituationPdfGeneratorAppenzell extends FinanzielleSituat
 			@Nonnull Gesuch gesuch,
 			@Nonnull Verfuegung verfuegungFuerMassgEinkommen,
 			@Nonnull GemeindeStammdaten stammdaten,
-			@Nonnull LocalDate erstesEinreichungsdatum,
-			@Nonnull AbstractFinanzielleSituationRechner finanzielleSituationRechner
+			@Nonnull LocalDate erstesEinreichungsdatum
 	) {
-		super(gesuch, verfuegungFuerMassgEinkommen, stammdaten, erstesEinreichungsdatum, finanzielleSituationRechner);
-		hasSecondGesuchsteller = calculateHasSecondGesuchsteller(gesuch);
-		finanzDatenDTO = finanzielleSituationRechner.calculateResultateFinanzielleSituation(gesuch, hasSecondGesuchsteller);
-
+		super(gesuch, verfuegungFuerMassgEinkommen, stammdaten, erstesEinreichungsdatum);
 	}
 
 	@Override
 	protected void initializeValues() {
+		hasSecondGesuchsteller = calculateHasSecondGesuchsteller(gesuch);
+		finanzDatenDTO = finanzielleSituationRechner.calculateResultateFinanzielleSituation(gesuch, hasSecondGesuchsteller);
 		Objects.requireNonNull(gesuch.getGesuchsteller1());
 
 		angabenGS1Bj = requireNonNull(getAngabenGS1(gesuch, false));

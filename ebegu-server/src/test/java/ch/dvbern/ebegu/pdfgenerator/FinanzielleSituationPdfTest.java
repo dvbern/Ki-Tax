@@ -18,156 +18,125 @@
 package ch.dvbern.ebegu.pdfgenerator;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.math.BigDecimal;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.Arrays;
+import java.util.Collections;
 
-import javax.annotation.Nonnull;
-
-import ch.dvbern.ebegu.entities.Benutzer;
+import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.GemeindeStammdaten;
 import ch.dvbern.ebegu.entities.Gesuch;
+import ch.dvbern.ebegu.entities.Gesuchsperiode;
+import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.entities.Verfuegung;
-import ch.dvbern.ebegu.enums.FinanzielleSituationTyp;
-import ch.dvbern.ebegu.enums.KorrespondenzSpracheTyp;
-import ch.dvbern.ebegu.enums.Sprache;
-import ch.dvbern.ebegu.finanzielleSituationRechner.FinanzielleSituationBernRechner;
-import ch.dvbern.ebegu.pdfgenerator.finanzielleSituation.FinanzielleSituationPdfGeneratorBern;
+import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
+import ch.dvbern.ebegu.pdfgenerator.finanzielleSituation.FinanzielleSituationPdfGeneratorFactory;
 import ch.dvbern.ebegu.test.TestDataUtil;
+import ch.dvbern.ebegu.test.mandant.MandantFactory;
+import ch.dvbern.ebegu.test.util.TestDataInstitutionStammdatenBuilder;
+import ch.dvbern.ebegu.testfaelle.AbstractTestfall;
+import ch.dvbern.ebegu.testfaelle.Testfall01_WaeltiDagmar;
+import ch.dvbern.ebegu.testfaelle.Testfall02_FeutzYvonne;
+import ch.dvbern.ebegu.tests.util.PdfUnitTestUtil;
+import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.mandant.MandantIdentifier;
 import ch.dvbern.lib.invoicegenerator.errors.InvoiceGeneratorException;
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
-import org.junit.jupiter.api.BeforeEach;
+import org.hamcrest.Matchers;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 import org.junit.jupiter.params.provider.EnumSource.Mode;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.hamcrest.MatcherAssert.assertThat;
 
-public class FinanzielleSituationPdfTest extends AbstractPDFGeneratorTest {
+public class FinanzielleSituationPdfTest {
 
-	private GemeindeStammdaten stammdaten;
-	private Gesuch gesuch_alleinstehend;
-	private Gesuch gesuch_verheiratet;
+	private static final String PATH_PREFIX = FileUtils.getTempDirectoryPath() + "/kiBon/FinanzielleSituation/";
 
-	private final String pfad = FileUtils.getTempDirectoryPath() + "/generated/";
+	@BeforeAll
+	static void beforeAll() throws IOException {
+		 FileUtils.deleteDirectory(new File(PATH_PREFIX));
 
-	@BeforeEach
-	public void init() throws IOException {
-		final InputStream inputStream = KibonPdfGeneratorTest.class.getResourceAsStream("Moosseedorf_gross.png");
-		assertNotNull(inputStream);
-		final byte[] gemeindeLogo = IOUtils.toByteArray(inputStream);
-		stammdaten = TestDataUtil.createGemeindeWithStammdaten();
-		stammdaten.getGemeindeStammdatenKorrespondenz().setLogoContent(gemeindeLogo);
-		stammdaten.setKorrespondenzsprache(KorrespondenzSpracheTyp.DE_FR);
-		Benutzer defaultBenutzer = TestDataUtil.createDefaultBenutzer();
-		gesuch_alleinstehend = TestDataUtil.createTestgesuchDagmar(new FinanzielleSituationBernRechner());
-		gesuch_verheiratet = TestDataUtil.createTestgesuchYvonneFeuz(new FinanzielleSituationBernRechner());
-		gesuch_alleinstehend.getDossier().setVerantwortlicherBG(defaultBenutzer);
-		gesuch_verheiratet.getDossier().setVerantwortlicherBG(defaultBenutzer);
-
-		// Verzeichnis pro Mandant erstellen
-		FileUtils.forceMkdir(new File(pfad));
-		for (MandantIdentifier mandant : MandantIdentifier.values()) {
-			FileUtils.forceMkdir(new File(pfad + '/' + mandant.name()));
-		}
-
-		Gesuch gesuch_tagesschule = TestDataUtil.createTestfall11_SchulamtOnly();
-		gesuch_tagesschule.getDossier().setVerantwortlicherTS(defaultBenutzer);
+		Arrays.stream(MandantIdentifier.values())
+			.map(FinanzielleSituationPdfTest::getOutputPath)
+			.forEach(path -> {
+				//noinspection ResultOfMethodCallIgnored
+				path.toFile().mkdirs();
+			});
 	}
 
 	@ParameterizedTest
 	@EnumSource(value = MandantIdentifier.class, mode = Mode.MATCH_ALL)
-	public void finanzielleSituationTest(@Nonnull MandantIdentifier mandant) throws InvoiceGeneratorException, IOException {
-		// FinSit Typ Bern basic
-		createFinanzielleSituation(mandant, gesuch_alleinstehend, Sprache.DEUTSCH, "FinanzielleSituation_alleinstehend_de.pdf");
-		createFinanzielleSituation(
-			mandant,
-			gesuch_alleinstehend,
-			Sprache.FRANZOESISCH,
-			"FinanzielleSituation_alleinstehend_fr.pdf");
-		createFinanzielleSituation(mandant, gesuch_verheiratet, Sprache.DEUTSCH, "FinanzielleSituation_verheiratet_de.pdf");
-		createFinanzielleSituation(mandant, gesuch_verheiratet, Sprache.FRANZOESISCH, "FinanzielleSituation_verheiratet_fr.pdf");
-		gesuch_verheiratet.setFinSitTyp(FinanzielleSituationTyp.BERN_FKJV);
-		// FinSit Typ Bern FKJV, FKJV Feldern sind null
-		assertNotNull(gesuch_verheiratet.getGesuchsteller1());
-		assertNotNull(gesuch_verheiratet.getGesuchsteller1().getFinanzielleSituationContainer());
-		gesuch_verheiratet.getGesuchsteller1()
-			.getFinanzielleSituationContainer()
-			.getFinanzielleSituationJA()
-			.setNettoVermoegen(new BigDecimal(1000));
-		createFinanzielleSituation(
-			mandant,
-			gesuch_verheiratet,
-			Sprache.DEUTSCH,
-			"FinanzielleSituation_verheiratet_fkjv_nettolohnGS1_de.pdf");
-		createFinanzielleSituation(
-			mandant,
-			gesuch_verheiratet,
-			Sprache.FRANZOESISCH,
-			"FinanzielleSituation_verheiratet_fkjv_nettolohnGS1_fr.pdf");
-		assertNotNull(gesuch_verheiratet.getGesuchsteller2());
-		assertNotNull(gesuch_verheiratet.getGesuchsteller2().getFinanzielleSituationContainer());
-		gesuch_verheiratet.getGesuchsteller2()
-			.getFinanzielleSituationContainer()
-			.getFinanzielleSituationJA()
-			.setNettoVermoegen(new BigDecimal(1000));
-		createFinanzielleSituation(
-			mandant,
-			gesuch_verheiratet,
-			Sprache.DEUTSCH,
-			"FinanzielleSituation_verheiratet_fkjv_nettolohnGS1GS2_de.pdf");
-		createFinanzielleSituation(
-			mandant,
-			gesuch_verheiratet,
-			Sprache.FRANZOESISCH,
-			"FinanzielleSituation_verheiratet_fkjv_nettolohnGS1GS2_fr.pdf");
-		gesuch_verheiratet.getGesuchsteller1()
-			.getFinanzielleSituationContainer()
-			.getFinanzielleSituationJA()
-			.setNettoVermoegen(null);
-		createFinanzielleSituation(
-			mandant,
-			gesuch_verheiratet,
-			Sprache.DEUTSCH,
-			"FinanzielleSituation_verheiratet_fkjv_nettolohnGS2_de.pdf");
-		createFinanzielleSituation(
-			mandant,
-			gesuch_verheiratet,
-			Sprache.FRANZOESISCH,
-			"FinanzielleSituation_verheiratet_fkjv_nettolohnGS2_fr.pdf");
+	void testAlleinstehend(MandantIdentifier identifier) {
+		Mandant mandant = MandantFactory.fromIdentifier(identifier);
+		Gesuchsperiode gesuchsperiode = TestDataUtil.createGesuchsperiode1718(mandant);
+		Gemeinde gemeinde = TestDataUtil.createGemeindeLondon(mandant);
+
+		TestDataInstitutionStammdatenBuilder institution = new TestDataInstitutionStammdatenBuilder(gesuchsperiode);
+		var testFall = new Testfall01_WaeltiDagmar(gesuchsperiode, true, gemeinde, institution);
+		Gesuch gesuch = setupGesuch(testFall, gesuchsperiode);
+
+		File pdf = generatePdf(gesuch, "WaeltiDagmar.pdf");
+		String text = PdfUnitTestUtil.getText(pdf);
+
+		assertThat(text, Matchers.stringContainsInOrder("Berechnung der finanziellen Verhältnisse"));
 	}
 
-	private void createFinanzielleSituation(
-		@Nonnull MandantIdentifier mandant,
-		@Nonnull Gesuch gesuch,
-		@Nonnull Sprache locale,
-		@Nonnull String dokumentname) throws
-		FileNotFoundException,
-		InvoiceGeneratorException {
-		assertNotNull(gesuch.getGesuchsteller1());
-		gesuch.getGesuchsteller1().getGesuchstellerJA().setKorrespondenzSprache(locale);
-		final FinanzielleSituationPdfGeneratorBern generator = new FinanzielleSituationPdfGeneratorBern(gesuch,
-			getFamiliensituationsVerfuegung(gesuch),
-			stammdaten,
-			Constants.START_OF_TIME,
-			new FinanzielleSituationBernRechner());
-		generateTestDocument(generator, mandant, dokumentname);
+	@ParameterizedTest
+	@EnumSource(value = MandantIdentifier.class, mode = Mode.MATCH_ALL)
+	void testVerheirated(MandantIdentifier identifier) {
+		Mandant mandant = MandantFactory.fromIdentifier(identifier);
+		Gesuchsperiode gesuchsperiode = TestDataUtil.createGesuchsperiode1718(mandant);
+		Gemeinde gemeinde = TestDataUtil.createGemeindeLondon(mandant);
+
+		TestDataInstitutionStammdatenBuilder institution = new TestDataInstitutionStammdatenBuilder(gesuchsperiode);
+		var testFall = new Testfall02_FeutzYvonne(gesuchsperiode, true, gemeinde, institution);
+		Gesuch gesuch = setupGesuch(testFall, gesuchsperiode);
+
+		File pdf = generatePdf(gesuch, "FeutzYvonne.pdf");
+		String text = PdfUnitTestUtil.getText(pdf);
+
+		assertThat(text, Matchers.stringContainsInOrder("Berechnung der finanziellen Verhältnisse"));
 	}
 
-	private Verfuegung getFamiliensituationsVerfuegung(@Nonnull Gesuch gesuch) {
-		return evaluator.evaluateFamiliensituation(gesuch, Constants.DEFAULT_LOCALE);
+	private File generatePdf(Gesuch gesuch, String dokumentname) {
+		Gesuchsperiode gesuchsperiode = gesuch.getGesuchsperiode();
+
+		// there are no easy-to-use Mandant rules for test cases, so we create our own...
+		Verfuegung verfuegung = new Verfuegung();
+		VerfuegungZeitabschnitt single =
+			new VerfuegungZeitabschnitt(new DateRange(gesuchsperiode.getGueltigkeit().getGueltigAb()).withFullMonths());
+		single.getRelevantBgCalculationResult().setEinkommensjahr(gesuchsperiode.getBasisJahr());
+
+		verfuegung.setZeitabschnitte(Collections.singletonList(single));
+
+		GemeindeStammdaten gemeindeStammdaten = TestDataUtil.createGemeindeStammdaten(gesuch.extractGemeinde());
+		var generator =
+			FinanzielleSituationPdfGeneratorFactory.getGenerator(gesuch, verfuegung, gemeindeStammdaten,
+				Constants.START_OF_TIME);
+		MandantIdentifier mandant = gesuch.extractMandant().getMandantIdentifier();
+
+		try {
+			Path path = Path.of(getOutputPath(mandant).toString(), dokumentname);
+			generator.generate(Files.newOutputStream(path));
+
+			return path.toFile();
+		} catch (IOException | InvoiceGeneratorException e) {
+			throw new IllegalStateException("Failed to generate PDF", e);
+		}
 	}
 
-	private void generateTestDocument(
-		@Nonnull KibonPdfGenerator generator,
-		@Nonnull MandantIdentifier mandant,
-		@Nonnull String dokumentname)
-		throws FileNotFoundException, InvoiceGeneratorException {
-		generator.generate(new FileOutputStream(pfad + mandant + '/' + dokumentname));
+	private Gesuch setupGesuch(AbstractTestfall testFall, Gesuchsperiode gesuchsperiode) {
+		testFall.createGesuch(gesuchsperiode.getDatumAktiviert());
+		testFall.fillInGesuch();
+
+		return testFall.getGesuch();
+	}
+
+	static Path getOutputPath(MandantIdentifier mandant) {
+		return Path.of(PATH_PREFIX, mandant.name());
 	}
 }

@@ -17,12 +17,13 @@
 
 package ch.dvbern.ebegu.finanzielleSituationRechner;
 
-import ch.dvbern.ebegu.entities.AbstractFinanzielleSituation;
-import org.apache.commons.lang.NotImplementedException;
+import java.math.BigDecimal;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.math.BigDecimal;
+
+import ch.dvbern.ebegu.entities.AbstractFinanzielleSituation;
+import org.apache.commons.lang.NotImplementedException;
 
 public class FinanzielleSituationFKJVRechner extends FinanzielleSituationBernRechner {
 

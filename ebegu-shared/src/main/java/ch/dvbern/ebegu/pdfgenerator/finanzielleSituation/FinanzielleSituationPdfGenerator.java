@@ -35,6 +35,7 @@ import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Verfuegung;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.finanzielleSituationRechner.AbstractFinanzielleSituationRechner;
+import ch.dvbern.ebegu.finanzielleSituationRechner.FinanzielleSituationRechnerFactory;
 import ch.dvbern.ebegu.pdfgenerator.DokumentAnFamilieGenerator;
 import ch.dvbern.ebegu.pdfgenerator.PdfGenerator.CustomGenerator;
 import ch.dvbern.ebegu.pdfgenerator.PdfUtil;
@@ -79,8 +80,7 @@ public abstract class FinanzielleSituationPdfGenerator extends DokumentAnFamilie
 		@Nonnull Gesuch gesuch,
 		@Nonnull Verfuegung verfuegungFuerMassgEinkommen,
 		@Nonnull GemeindeStammdaten stammdaten,
-		@Nonnull LocalDate erstesEinreichungsdatum,
-		@Nonnull AbstractFinanzielleSituationRechner finanzielleSituationRechner
+		@Nonnull LocalDate erstesEinreichungsdatum
 	) {
 		super(gesuch, stammdaten);
 		this.verfuegungFuerMassgEinkommen = verfuegungFuerMassgEinkommen;
@@ -92,7 +92,7 @@ public abstract class FinanzielleSituationPdfGenerator extends DokumentAnFamilie
 		boolean hasSecondGsEndeGP = hasSecondGesuchsteller();
 		boolean isMutationWithSecondGs = gesuch.isMutation() && gesuch.getGesuchsteller2() != null;
 		this.hasSecondGesuchsteller = hasSecondGsEndeGP || isMutationWithSecondGs;
-		this.finanzielleSituationRechner = finanzielleSituationRechner;
+		this.finanzielleSituationRechner = FinanzielleSituationRechnerFactory.getRechner(gesuch);
 	}
 
 	@Nonnull

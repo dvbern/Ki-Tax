@@ -15,33 +15,70 @@
 
 package ch.dvbern.ebegu.services;
 
-import ch.dvbern.ebegu.config.EbeguConfiguration;
-import ch.dvbern.ebegu.entities.*;
-import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungAngabenContainer;
-import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeContainer;
-import ch.dvbern.ebegu.entities.sozialdienst.SozialdienstFall;
-import ch.dvbern.ebegu.enums.*;
-import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
-import ch.dvbern.ebegu.errors.MergeDocException;
-import ch.dvbern.ebegu.finanzielleSituationRechner.FinanzielleSituationRechnerFactory;
-import ch.dvbern.ebegu.i18n.LocaleThreadLocal;
-import ch.dvbern.ebegu.pdfgenerator.*;
-import ch.dvbern.ebegu.pdfgenerator.AbstractVerfuegungPdfGenerator.Art;
-import ch.dvbern.ebegu.pdfgenerator.finanzielleSituation.FinanzielleSituationPdfGeneratorFactory;
-import ch.dvbern.ebegu.rules.anlageverzeichnis.DokumentenverzeichnisEvaluator;
-import ch.dvbern.ebegu.util.DokumenteUtil;
-import ch.dvbern.ebegu.util.EbeguUtil;
-import ch.dvbern.lib.invoicegenerator.errors.InvoiceGeneratorException;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Locale;
+import java.util.Objects;
+import java.util.Optional;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.time.LocalDate;
-import java.util.*;
+
+import ch.dvbern.ebegu.config.EbeguConfiguration;
+import ch.dvbern.ebegu.entities.AnmeldungTagesschule;
+import ch.dvbern.ebegu.entities.Betreuung;
+import ch.dvbern.ebegu.entities.DokumentGrund;
+import ch.dvbern.ebegu.entities.Einstellung;
+import ch.dvbern.ebegu.entities.GemeindeStammdaten;
+import ch.dvbern.ebegu.entities.Gesuch;
+import ch.dvbern.ebegu.entities.Mahnung;
+import ch.dvbern.ebegu.entities.Mandant;
+import ch.dvbern.ebegu.entities.RueckforderungFormular;
+import ch.dvbern.ebegu.entities.Verfuegung;
+import ch.dvbern.ebegu.entities.gemeindeantrag.FerienbetreuungAngabenContainer;
+import ch.dvbern.ebegu.entities.gemeindeantrag.LastenausgleichTagesschuleAngabenGemeindeContainer;
+import ch.dvbern.ebegu.entities.sozialdienst.SozialdienstFall;
+import ch.dvbern.ebegu.enums.BetreuungspensumAnzeigeTyp;
+import ch.dvbern.ebegu.enums.EinstellungKey;
+import ch.dvbern.ebegu.enums.ErrorCodeEnum;
+import ch.dvbern.ebegu.enums.RueckforderungInstitutionTyp;
+import ch.dvbern.ebegu.enums.Sprache;
+import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
+import ch.dvbern.ebegu.errors.MergeDocException;
+import ch.dvbern.ebegu.i18n.LocaleThreadLocal;
+import ch.dvbern.ebegu.pdfgenerator.AbstractVerfuegungPdfGenerator;
+import ch.dvbern.ebegu.pdfgenerator.AbstractVerfuegungPdfGenerator.Art;
+import ch.dvbern.ebegu.pdfgenerator.AnmeldebestaetigungTSPDFGenerator;
+import ch.dvbern.ebegu.pdfgenerator.BegleitschreibenPdfGenerator;
+import ch.dvbern.ebegu.pdfgenerator.DokumentAnFamilieGenerator;
+import ch.dvbern.ebegu.pdfgenerator.ErsteMahnungPdfGeneratorVisitor;
+import ch.dvbern.ebegu.pdfgenerator.FerienbetreuungReportPdfGenerator;
+import ch.dvbern.ebegu.pdfgenerator.FreigabequittungPdfQuittungVisitor;
+import ch.dvbern.ebegu.pdfgenerator.KibonPdfGenerator;
+import ch.dvbern.ebegu.pdfgenerator.LATSReportPdfGenerator;
+import ch.dvbern.ebegu.pdfgenerator.MahnungPdfGenerator;
+import ch.dvbern.ebegu.pdfgenerator.MandantPdfGenerator;
+import ch.dvbern.ebegu.pdfgenerator.MusterPdfGenerator;
+import ch.dvbern.ebegu.pdfgenerator.PdfUtil;
+import ch.dvbern.ebegu.pdfgenerator.RueckforderungPrivatDefinitivVerfuegungPdfGenerator;
+import ch.dvbern.ebegu.pdfgenerator.RueckforderungPrivateVerfuegungPdfGenerator;
+import ch.dvbern.ebegu.pdfgenerator.RueckforderungProvVerfuegungPdfGenerator;
+import ch.dvbern.ebegu.pdfgenerator.RueckforderungPublicVerfuegungPdfGenerator;
+import ch.dvbern.ebegu.pdfgenerator.VerfuegungPdfGeneratorVisitor;
+import ch.dvbern.ebegu.pdfgenerator.VollmachtPdfGenerator;
+import ch.dvbern.ebegu.pdfgenerator.ZweiteMahnungPdfGenerator;
+import ch.dvbern.ebegu.pdfgenerator.finanzielleSituation.FinanzielleSituationPdfGeneratorFactory;
+import ch.dvbern.ebegu.rules.anlageverzeichnis.DokumentenverzeichnisEvaluator;
+import ch.dvbern.ebegu.util.DokumenteUtil;
+import ch.dvbern.ebegu.util.EbeguUtil;
+import ch.dvbern.lib.invoicegenerator.errors.InvoiceGeneratorException;
 
 @Stateless
 @Local(PDFService.class)
@@ -216,8 +253,7 @@ public class PDFServiceBean implements PDFService {
 				gesuch,
 				famGroessenVerfuegung,
 				stammdaten,
-				erstesEinreichungsdatum,
-				FinanzielleSituationRechnerFactory.getRechner(gesuch)
+				erstesEinreichungsdatum
 			);
 			return generateDokument(pdfGenerator, !writeProtected, locale, stammdaten.getGemeinde().getMandant());
 		}
@@ -282,7 +318,7 @@ public class PDFServiceBean implements PDFService {
 	@Override
 	public byte[] generateAnmeldebestaetigungFuerTagesschule(
 		@Nonnull AnmeldungTagesschule anmeldungTagesschule,
-		@Nonnull boolean mitTarif,
+		boolean mitTarif,
 		boolean writeProtected,
 		@Nonnull Locale locale
 	) throws MergeDocException {
