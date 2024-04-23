@@ -17,7 +17,6 @@
 
 package ch.dvbern.ebegu.rules.familienabzug;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.AbstractMap;
 import java.util.Locale;
@@ -34,19 +33,11 @@ import ch.dvbern.ebegu.entities.KindContainer;
 import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.enums.EnumFamilienstatus;
 import ch.dvbern.ebegu.enums.EnumGesuchstellerKardinalitaet;
-import ch.dvbern.ebegu.enums.Kinderabzug;
 import ch.dvbern.ebegu.enums.KinderabzugTyp;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.types.DateRange;
-import ch.dvbern.ebegu.util.MathUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import static ch.dvbern.ebegu.enums.EinstellungKey.KINDERABZUG_TYP;
-import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_3;
-import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_4;
-import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_5;
-import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_6;
 
 /**
  * Umsetzung der ASIV Revision
@@ -58,14 +49,7 @@ import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_PAUSCHALABZUG_PRO_PERSO
  * der Familiensituation ist das Datum "Aendern per" relevant.
  */
 @SuppressWarnings("MethodParameterNamingConvention")
-public class FamilienabzugAbschnittRuleFKJV extends AbstractFamilienabzugAbschnittRuleASIV {
-
-	private static final Logger LOG = LoggerFactory.getLogger(FamilienabzugAbschnittRuleFKJV.class);
-
-	private final BigDecimal pauschalabzugProPersonFamiliengroesse3;
-	private final BigDecimal pauschalabzugProPersonFamiliengroesse4;
-	private final BigDecimal pauschalabzugProPersonFamiliengroesse5;
-	private final BigDecimal pauschalabzugProPersonFamiliengroesse6;
+public class FamilienabzugAbschnittRuleFKJV extends AbstractFamilienabzugAbschnittRuleBern {
 	private final KinderabzugTyp kinderabzugTyp;
 
 	public FamilienabzugAbschnittRuleFKJV(
@@ -74,14 +58,6 @@ public class FamilienabzugAbschnittRuleFKJV extends AbstractFamilienabzugAbschni
 		@Nonnull Locale locale
 	) {
 		super(einstellungMap, validityPeriod, locale);
-		this.pauschalabzugProPersonFamiliengroesse3 =
-			einstellungMap.get(PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_3).getValueAsBigDecimal();
-		this.pauschalabzugProPersonFamiliengroesse4 =
-			einstellungMap.get(PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_4).getValueAsBigDecimal();
-		this.pauschalabzugProPersonFamiliengroesse5 =
-			einstellungMap.get(PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_5).getValueAsBigDecimal();
-		this.pauschalabzugProPersonFamiliengroesse6 =
-			einstellungMap.get(PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_6).getValueAsBigDecimal();
 		this.kinderabzugTyp = KinderabzugTyp.valueOf(einstellungMap.get(KINDERABZUG_TYP).getValue());
 	}
 

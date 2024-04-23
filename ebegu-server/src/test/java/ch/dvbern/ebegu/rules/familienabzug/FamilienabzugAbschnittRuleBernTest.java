@@ -57,8 +57,8 @@ public class FamilienabzugAbschnittRuleBernTest {
 	private static final double DELTA = 1.0e-15;
 	public static final LocalDate DATE_2005 = LocalDate.of(2005, 12, 31);
 
-	private final FamilienabzugAbschnittRuleBern famabAbschnittRule =
-		new FamilienabzugAbschnittRuleBern(getEinstellungMapForAsiv(), Constants.DEFAULT_GUELTIGKEIT,  Constants.DEFAULT_LOCALE);
+	private final FamilienabzugAbschnittRuleASIV famabAbschnittRule =
+		new FamilienabzugAbschnittRuleASIV(getEinstellungMapForAsiv(), Constants.DEFAULT_GUELTIGKEIT,  Constants.DEFAULT_LOCALE);
 
 	private final FamilienabzugAbschnittRuleFKJV famabAbschnittRule_FKJV2 =
 		new FamilienabzugAbschnittRuleFKJV(getEinstellungMapForFKJV2(), Constants.DEFAULT_GUELTIGKEIT, Constants.DEFAULT_LOCALE);

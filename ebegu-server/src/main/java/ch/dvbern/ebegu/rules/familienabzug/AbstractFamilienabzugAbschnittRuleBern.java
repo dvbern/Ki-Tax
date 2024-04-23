@@ -33,14 +33,14 @@ import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_PAUSCHALABZUG_PRO_PERSO
 import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_5;
 import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_6;
 
-public abstract class AbstractFamilienabzugAbschnittRuleASIV extends AbstractFamilienabzugAbschnittRule {
+public abstract class AbstractFamilienabzugAbschnittRuleBern extends AbstractFamilienabzugAbschnittRule {
 	private final BigDecimal pauschalabzugProPersonFamiliengroesse3;
 	private final BigDecimal pauschalabzugProPersonFamiliengroesse4;
 	private final BigDecimal pauschalabzugProPersonFamiliengroesse5;
 	private final BigDecimal pauschalabzugProPersonFamiliengroesse6;
 
 
-	public AbstractFamilienabzugAbschnittRuleASIV(
+	public AbstractFamilienabzugAbschnittRuleBern(
 		@Nonnull Map<EinstellungKey, Einstellung> einstellungMap,
 		DateRange validityPeriod,
 		@Nonnull Locale locale

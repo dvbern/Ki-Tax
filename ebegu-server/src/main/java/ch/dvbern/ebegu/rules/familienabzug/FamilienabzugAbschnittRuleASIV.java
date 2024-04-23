@@ -19,27 +19,13 @@ package ch.dvbern.ebegu.rules.familienabzug;
 
 import ch.dvbern.ebegu.entities.*;
 import ch.dvbern.ebegu.enums.EinstellungKey;
-import ch.dvbern.ebegu.enums.EnumFamilienstatus;
-import ch.dvbern.ebegu.enums.EnumGesuchstellerKardinalitaet;
 import ch.dvbern.ebegu.enums.Kinderabzug;
-import ch.dvbern.ebegu.enums.KinderabzugTyp;
-import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.types.DateRange;
-import ch.dvbern.ebegu.util.MathUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
 
 import javax.annotation.Nonnull;
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.*;
-
-import static ch.dvbern.ebegu.enums.EinstellungKey.KINDERABZUG_TYP;
-import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_3;
-import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_4;
-import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_5;
-import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_PAUSCHALABZUG_PRO_PERSON_FAMILIENGROESSE_6;
-
 
 /**
  * Umsetzung der ASIV Revision
@@ -51,12 +37,9 @@ import static ch.dvbern.ebegu.enums.EinstellungKey.PARAM_PAUSCHALABZUG_PRO_PERSO
  * der Familiensituation ist das Datum "Aendern per" relevant.
  */
 @SuppressWarnings("MethodParameterNamingConvention")
-public class FamilienabzugAbschnittRuleBern extends AbstractFamilienabzugAbschnittRuleASIV {
+public class FamilienabzugAbschnittRuleASIV extends AbstractFamilienabzugAbschnittRuleBern {
 
-	private static final Logger LOG = LoggerFactory.getLogger(FamilienabzugAbschnittRuleBern.class);
-
-
-	public FamilienabzugAbschnittRuleBern(
+	public FamilienabzugAbschnittRuleASIV(
 		@Nonnull Map<EinstellungKey, Einstellung> einstellungMap,
 		DateRange validityPeriod,
 		@Nonnull Locale locale

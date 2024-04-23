@@ -25,8 +25,6 @@ import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.enums.KinderabzugTyp;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.KinderabzugTypVisitor;
-import ch.dvbern.ebegu.util.mandant.MandantIdentifier;
-import ch.dvbern.ebegu.util.mandant.MandantVisitor;
 import com.sun.istack.NotNull;
 
 public class FamilienabzugAbschnittRuleVisitor implements KinderabzugTypVisitor<AbstractFamilienabzugAbschnittRule> {
@@ -47,17 +45,17 @@ public class FamilienabzugAbschnittRuleVisitor implements KinderabzugTypVisitor<
 
 	@Override
 	public AbstractFamilienabzugAbschnittRule visitASIV() {
-		return new FamilienabzugAbschnittRuleBern(einstellungMap, validityPeriod, locale);
+		return new FamilienabzugAbschnittRuleASIV(einstellungMap, validityPeriod, locale);
 	}
 
 	@Override
 	public AbstractFamilienabzugAbschnittRule visitFKJV() {
-		return new FamilienabzugAbschnittRuleBern(einstellungMap, validityPeriod, locale);
+		return new FamilienabzugAbschnittRuleASIV(einstellungMap, validityPeriod, locale);
 	}
 
 	@Override
 	public AbstractFamilienabzugAbschnittRule visitFKJV2() {
-		return new FamilienabzugAbschnittRuleBern(einstellungMap, validityPeriod, locale);
+		return new FamilienabzugAbschnittRuleASIV(einstellungMap, validityPeriod, locale);
 	}
 
 	@Override
