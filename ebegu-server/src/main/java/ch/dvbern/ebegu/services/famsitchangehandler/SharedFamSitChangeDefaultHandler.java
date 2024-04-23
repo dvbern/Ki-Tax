@@ -33,12 +33,12 @@ import ch.dvbern.ebegu.util.EbeguUtil;
 
 import static ch.dvbern.ebegu.services.util.ErwerbspensumHelper.isKonkubinatOhneKindAndGS2ErwerbspensumOmittable;
 
-public class FamSitChangeHandlerBernBean implements FamSitChangeHandler {
+public class SharedFamSitChangeDefaultHandler implements FamSitChangeHandler {
 
 	private final GesuchstellerService gesuchstellerService;
 	private final EinstellungService einstellungService;
 
-	public FamSitChangeHandlerBernBean(
+	public SharedFamSitChangeDefaultHandler(
 		GesuchstellerService gesuchstellerService,
 		EinstellungService einstellungService) {
 		this.gesuchstellerService = gesuchstellerService;

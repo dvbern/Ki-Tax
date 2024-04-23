@@ -30,10 +30,10 @@ import ch.dvbern.ebegu.services.EinstellungService;
 import ch.dvbern.ebegu.services.FinanzielleSituationService;
 import ch.dvbern.ebegu.services.GesuchstellerService;
 
-public class FamSitChangeHandlerSchwyzBean extends FamSitChangeHandlerBernBean {
+public class FamSitChangeHandlerSchwyz extends SharedFamSitChangeDefaultHandler {
 	private final FinanzielleSituationService finanzielleSituationService;
 
-	public FamSitChangeHandlerSchwyzBean(
+	public FamSitChangeHandlerSchwyz(
 		GesuchstellerService gesuchstellerService,
 		EinstellungService einstellungService,
 		FinanzielleSituationService finanzielleSituationService) {

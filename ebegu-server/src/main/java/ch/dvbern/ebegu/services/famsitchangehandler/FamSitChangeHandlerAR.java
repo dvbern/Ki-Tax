@@ -29,8 +29,8 @@ import ch.dvbern.ebegu.enums.FinanzielleSituationTyp;
 import ch.dvbern.ebegu.services.EinstellungService;
 import ch.dvbern.ebegu.services.GesuchstellerService;
 
-public class FamSitChangeHandlerARBean extends FamSitChangeHandlerBernBean {
-	public FamSitChangeHandlerARBean(
+public class FamSitChangeHandlerAR extends SharedFamSitChangeDefaultHandler {
+	public FamSitChangeHandlerAR(
 		GesuchstellerService gesuchstellerService, EinstellungService einstellungService) {
 		super(gesuchstellerService, einstellungService);
 	}

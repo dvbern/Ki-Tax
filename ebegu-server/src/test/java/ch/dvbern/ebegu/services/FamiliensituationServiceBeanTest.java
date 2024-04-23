@@ -33,7 +33,7 @@ import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.enums.EnumFamilienstatus;
 import ch.dvbern.ebegu.enums.FinanzielleSituationTyp;
 import ch.dvbern.ebegu.enums.UnterhaltsvereinbarungAnswer;
-import ch.dvbern.ebegu.services.famsitchangehandler.FamSitChangeHandlerBernBean;
+import ch.dvbern.ebegu.services.famsitchangehandler.SharedFamSitChangeDefaultHandler;
 import org.easymock.EasyMockExtension;
 import org.easymock.EasyMockSupport;
 import ch.dvbern.ebegu.test.TestDataUtil;
@@ -70,7 +70,7 @@ class FamiliensituationServiceBeanTest extends EasyMockSupport {
 
 	@BeforeEach
 	void setup() throws NoSuchFieldException, IllegalAccessException {
-		setPrivateField(familiensituationServiceBean, "famSitChangeHandler", new FamSitChangeHandlerBernBean(gesuchstellerService, einstellungService));
+		setPrivateField(familiensituationServiceBean, "famSitChangeHandler", new SharedFamSitChangeDefaultHandler(gesuchstellerService, einstellungService));
 	}
 
 	@Test

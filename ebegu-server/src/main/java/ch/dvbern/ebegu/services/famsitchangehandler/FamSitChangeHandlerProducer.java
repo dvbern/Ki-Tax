@@ -45,13 +45,13 @@ public class FamSitChangeHandlerProducer {
 		FinanzielleSituationService finanzielleSituationService) {
 		switch (getMandantFromCookie(request)) {
 		case LUZERN:
-			return new FamSitChangeHandlerLUBean(gesuchstellerService, einstellungService);
+			return new FamSitChangeHandlerLU(gesuchstellerService, einstellungService);
 		case APPENZELL_AUSSERRHODEN:
-			return new FamSitChangeHandlerARBean(gesuchstellerService, einstellungService);
+			return new FamSitChangeHandlerAR(gesuchstellerService, einstellungService);
 		case SCHWYZ:
-			return new FamSitChangeHandlerSchwyzBean(gesuchstellerService, einstellungService, finanzielleSituationService);
+			return new FamSitChangeHandlerSchwyz(gesuchstellerService, einstellungService, finanzielleSituationService);
 		default:
-			return new FamSitChangeHandlerBernBean(gesuchstellerService, einstellungService);
+			return new SharedFamSitChangeDefaultHandler(gesuchstellerService, einstellungService);
 		}
 	}
 
