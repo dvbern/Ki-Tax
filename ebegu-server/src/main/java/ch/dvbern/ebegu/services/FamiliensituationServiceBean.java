@@ -72,10 +72,7 @@ public class FamiliensituationServiceBean extends AbstractBaseService implements
 		// get old FamSit to compare with
 		Familiensituation oldFamiliensituation = getOldFamiliensituation(loadedFamiliensituation, mergedFamiliensituationContainer);
 
-		famSitChangeHandler.removeGS2DataOnChangeFrom2To1GS(gesuch, newFamiliensituation, mergedFamiliensituationContainer, oldFamiliensituation);
-		famSitChangeHandler.handleFamSitChange(gesuch, mergedFamiliensituationContainer, oldFamiliensituation);
-		famSitChangeHandler.handlePossibleGS2Tausch(gesuch, newFamiliensituation);
-		famSitChangeHandler.handlePossibleKinderabzugFragenReset(gesuch, newFamiliensituation, oldFamiliensituation);
+		famSitChangeHandler.handleFamSitChangeAfterSave(gesuch, newFamiliensituation, mergedFamiliensituationContainer, oldFamiliensituation);
 
 		wizardStepService.updateSteps(gesuch.getId(), oldFamiliensituation, newFamiliensituation, WizardStepName
 			.FAMILIENSITUATION);

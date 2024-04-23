@@ -22,25 +22,14 @@ import ch.dvbern.ebegu.entities.FamiliensituationContainer;
 import ch.dvbern.ebegu.entities.Gesuch;
 
 public interface FamSitChangeHandler {
-
-	void handleFamSitChange(
-		Gesuch gesuch,
-		FamiliensituationContainer mergedFamiliensituationContainer,
-		Familiensituation oldFamiliensituation
-	);
-
-	void removeGS2DataOnChangeFrom2To1GS(
-		Gesuch gesuch,
-		Familiensituation newFamiliensituation,
-		FamiliensituationContainer mergedFamiliensituationContainer,
-		Familiensituation oldFamiliensituation);
-
-	void handlePossibleGS2Tausch(Gesuch gesuch, Familiensituation newFamiliensituation);
-
-	void handlePossibleKinderabzugFragenReset(Gesuch gesuch, Familiensituation newFamiliensituation, Familiensituation oldFamiliensituation);
-
 	void adaptFinSitDataOnFamSitChange(
 		Gesuch gesuch,
 		FamiliensituationContainer familiensituationContainer,
 		Familiensituation loadedFamiliensituation);
+
+	void handleFamSitChangeAfterSave(
+		Gesuch gesuch,
+		Familiensituation newFamiliensituation,
+		FamiliensituationContainer mergedFamiliensituationContainer,
+		Familiensituation oldFamiliensituation);
 }

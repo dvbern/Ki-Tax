@@ -44,16 +44,14 @@ public class FamSitChangeHandlerBernBean implements FamSitChangeHandler {
 		this.gesuchstellerService = gesuchstellerService;
 		this.einstellungService = einstellungService;
 	}
-	@Override
-	public void handleFamSitChange(
+	protected void handleFamSitChange(
 		Gesuch gesuch,
 		FamiliensituationContainer mergedFamiliensituationContainer,
 		Familiensituation oldFamiliensituation) {
 		// noop
 	}
 
-	@Override
-	public void removeGS2DataOnChangeFrom2To1GS(
+	protected void removeGS2DataOnChangeFrom2To1GS(
 		Gesuch gesuch,
 		Familiensituation newFamiliensituation,
 		FamiliensituationContainer mergedFamiliensituationContainer,
@@ -71,8 +69,7 @@ public class FamSitChangeHandlerBernBean implements FamSitChangeHandler {
 		}
 	}
 
-	@Override
-	public void handlePossibleGS2Tausch(Gesuch gesuch, Familiensituation newFamiliensituation) {
+	protected void handlePossibleGS2Tausch(Gesuch gesuch, Familiensituation newFamiliensituation) {
 		if (isGesuchBeendenBeiTauschGS2Active(gesuch)
 			&& isKonkubinatOhneKindAndGS2ErwerbspensumOmittable(newFamiliensituation, gesuch.getGesuchsperiode())
 			&& gesuch.getGesuchsteller2() != null
@@ -81,8 +78,7 @@ public class FamSitChangeHandlerBernBean implements FamSitChangeHandler {
 		}
 	}
 
-	@Override
-	public void handlePossibleKinderabzugFragenReset(
+	protected void handlePossibleKinderabzugFragenReset(
 		Gesuch gesuch,
 		Familiensituation newFamiliensituation,
 		Familiensituation oldFamiliensituation) {
@@ -117,6 +113,18 @@ public class FamSitChangeHandlerBernBean implements FamSitChangeHandler {
 				newFamiliensituation.setGemeinsameSteuererklaerung(null);
 			}
 		}
+	}
+
+	@Override
+	public void handleFamSitChangeAfterSave(
+		Gesuch gesuch,
+		Familiensituation newFamiliensituation,
+		FamiliensituationContainer mergedFamiliensituationContainer,
+		Familiensituation oldFamiliensituation) {
+		removeGS2DataOnChangeFrom2To1GS(gesuch, newFamiliensituation, mergedFamiliensituationContainer, oldFamiliensituation);
+		handleFamSitChange(gesuch, mergedFamiliensituationContainer, oldFamiliensituation);
+		handlePossibleGS2Tausch(gesuch, newFamiliensituation);
+		handlePossibleKinderabzugFragenReset(gesuch, newFamiliensituation, oldFamiliensituation);
 	}
 
 	/**
