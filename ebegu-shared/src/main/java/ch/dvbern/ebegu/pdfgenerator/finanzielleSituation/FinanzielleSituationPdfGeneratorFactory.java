@@ -40,8 +40,14 @@ public final class FinanzielleSituationPdfGeneratorFactory {
 		switch (gesuch.getFinSitTyp()) {
 		case BERN_FKJV:
 		case BERN:
-		case SCHWYZ:
 			return new FinanzielleSituationPdfGeneratorBern(
+				gesuch,
+				verfuegungFuerMassgEinkommen,
+				stammdaten,
+				erstesEinreichungsdatum
+			);
+		case SCHWYZ:
+			return new FinanzielleSituationPdfGeneratorSchwyz(
 				gesuch,
 				verfuegungFuerMassgEinkommen,
 				stammdaten,

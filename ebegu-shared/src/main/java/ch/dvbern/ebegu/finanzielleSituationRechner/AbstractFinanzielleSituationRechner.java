@@ -536,7 +536,7 @@ public abstract class AbstractFinanzielleSituationRechner {
 	}
 
 	@Nullable
-	public BigDecimal calcErsatzeinkommen(AbstractFinanzielleSituation abstractFinanzielleSituation) {
+	public BigDecimal calcErsatzeinkommen(@Nullable AbstractFinanzielleSituation abstractFinanzielleSituation) {
 		if (abstractFinanzielleSituation == null) {
 			return null;
 		}
