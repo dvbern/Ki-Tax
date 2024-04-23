@@ -112,6 +112,15 @@ public class WizardStepServiceBeanStatusTest extends EasyMockSupport {
 				EinstellungKey.GESUCH_BEENDEN_BEI_TAUSCH_GS2,
 				"true",
 				gesuch.getGesuchsperiode())).times(2);
+			mockSaveWizardSteps(wizardSteps);
+			expect(erwerbspensumService.isErwerbspensumRequired(gesuch)).andReturn(true);
+			expect(einstellungService.findEinstellung(
+				EinstellungKey.ABHAENGIGKEIT_ANSPRUCH_BESCHAEFTIGUNGPENSUM,
+				gesuch.extractGemeinde(),
+				gesuch.getGesuchsperiode())).andReturn(new Einstellung(
+				EinstellungKey.ABHAENGIGKEIT_ANSPRUCH_BESCHAEFTIGUNGPENSUM,
+				"ABHAENGING",
+				gesuch.getGesuchsperiode())).times(2);
 			replayAll();
 
 			wizardStepService.updateSteps(
