@@ -106,7 +106,6 @@ export class FkjvKinderabzugComponent implements OnInit, AfterViewInit, OnDestro
     public gemeinsamesGesuchVisible(): boolean {
         return this.kindContainer?.kindJA.obhutAlternierendAusueben &&
             EbeguUtil.isNotNullOrUndefined(this.kindContainer?.kindJA.familienErgaenzendeBetreuung) &&
-            EbeguUtil.isNotNullAndTrue(this.gesuchModelManager.getFamiliensituation().geteilteObhut) &&
             (this.gesuchModelManager.getFamiliensituation().gesuchstellerKardinalitaet === TSGesuchstellerKardinalitaet.ZU_ZWEIT
                 || this.gesuchModelManager.getFamiliensituation().unterhaltsvereinbarung
                 === TSUnterhaltsvereinbarungAnswer.NEIN_UNTERHALTSVEREINBARUNG
