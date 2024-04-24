@@ -48,7 +48,7 @@ public class GeschwisterbonusSchwyzAbschnittRule extends AbstractAbschnittRule {
 	@Override
 	public boolean isRelevantForGemeinde(@Nonnull Map<EinstellungKey, Einstellung> einstellungMap) {
 		Einstellung geschwisterbonus = einstellungMap.get(EinstellungKey.GESCHWISTERNBONUS_TYP);
-		return GeschwisterbonusTyp.getEnumValue(geschwisterbonus) == GeschwisterbonusTyp.LUZERN;
+		return GeschwisterbonusTyp.getEnumValue(geschwisterbonus) == GeschwisterbonusTyp.SCHWYZ;
 	}
 
 	@Override

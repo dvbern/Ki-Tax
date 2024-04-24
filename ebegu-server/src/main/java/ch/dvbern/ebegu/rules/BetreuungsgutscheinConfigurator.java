@@ -218,13 +218,18 @@ public class BetreuungsgutscheinConfigurator {
 		FachstelleAbschnittRule fachstelleAbschnittRule = new FachstelleAbschnittRule(defaultGueltigkeit, locale);
 		addToRuleSetIfRelevantForGemeinde(fachstelleAbschnittRule, ruleParameterUtil);
 
-		// - GeschwisterBonus
+		// - GeschwisterBonus LU
 		Einstellung einstellungBgAusstellenBisStufe =
 				ruleParameterUtil.getEinstellung(GEMEINDE_BG_BIS_UND_MIT_SCHULSTUFE);
 		EinschulungTyp bgAusstellenBisUndMitStufe = EinschulungTyp.valueOf(einstellungBgAusstellenBisStufe.getValue());
 		GeschwisterbonusLuzernAbschnittRule geschwisterbonusLuzernAbschnittRule =
 				new GeschwisterbonusLuzernAbschnittRule(bgAusstellenBisUndMitStufe, defaultGueltigkeit, locale);
 		addToRuleSetIfRelevantForGemeinde(geschwisterbonusLuzernAbschnittRule, ruleParameterUtil);
+
+		// - GeschwisterBonus Schwyz
+		GeschwisterbonusSchwyzAbschnittRule geschwisterbonusSchwyzAbschnittRule =
+			new GeschwisterbonusSchwyzAbschnittRule(defaultGueltigkeit, locale);
+		addToRuleSetIfRelevantForGemeinde(geschwisterbonusSchwyzAbschnittRule, ruleParameterUtil);
 
 		// - Ausserordentlicher Anspruch
 		AusserordentlicherAnspruchAbschnittRule ausserordntl =
