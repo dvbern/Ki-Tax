@@ -47,10 +47,10 @@
         </ng-template>
 
         <ng-template #alleinigesGesuch>
-            <dv-finanzielle-situation-single-gs [readonly]="gesuchModelManager.isGesuchReadonly()"
+            <dv-finanzielle-situation-single-gs-schwyz [readonly]="gesuchModelManager.isGesuchReadonly()"
                                                 (valueChanged)="recalculateMassgendesEinkommen()"
                                                 [finanzModel]="model">
-            </dv-finanzielle-situation-single-gs>
+            </dv-finanzielle-situation-single-gs-schwyz>
 
             <div class="row margin-bottom-20" *ngIf="isNotNullOrUndefined(getModel().finanzielleSituationJA.quellenbesteuert)">
                 <div class="col-sm-6">

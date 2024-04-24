@@ -5,12 +5,12 @@ import {TSFinanzModel} from '../../../../../models/TSFinanzModel';
 import {EbeguUtil} from '../../../../../utils/EbeguUtil';
 
 @Component({
-    selector: 'dv-finanzielle-situation-single-gs',
-    templateUrl: './finanzielle-situation-single-gs.component.html',
+    selector: 'dv-finanzielle-situation-single-gs-schwyz',
+    templateUrl: './finanzielle-situation-single-gs-schwyz.component.html',
     changeDetection: ChangeDetectionStrategy.Default,
     viewProviders: [{provide: ControlContainer, useExisting: NgForm}],
 })
-export class FinanzielleSituationSingleGsComponent {
+export class FinanzielleSituationSingleGsSchwyzComponent {
 
     @ViewChild(NgForm) public form: NgForm;
 

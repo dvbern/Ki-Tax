@@ -20,10 +20,10 @@
         </div>
     </div>
     <form #form="ngForm">
-        <dv-finanzielle-situation-single-gs [readonly]="gesuchmodelManager.isGesuchReadonly()"
+        <dv-finanzielle-situation-single-gs-schwyz [readonly]="gesuchmodelManager.isGesuchReadonly()"
                                             (valueChanged)="recalculateMassgebendesEinkommen()"
                                             [finanzModel]="model">
-        </dv-finanzielle-situation-single-gs>
+        </dv-finanzielle-situation-single-gs-schwyz>
     </form>
 
     <dv-navigation-x (dvSave)="prepareSave($event.onResult)"

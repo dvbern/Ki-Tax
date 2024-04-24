@@ -34,5 +34,4 @@ export class SteuerveranlagtSchwyzComponent {
        this.valueChanged.emit();
     };
 
-
 }
