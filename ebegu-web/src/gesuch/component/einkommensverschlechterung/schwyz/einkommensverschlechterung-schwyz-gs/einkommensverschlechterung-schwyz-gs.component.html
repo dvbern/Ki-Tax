@@ -28,10 +28,10 @@
                 </dv-steuerveranlagt-schwyz>
             </ng-template>
             <ng-template #bruttolohnFragen>
-                <dv-bruttolohn-schwyz [finanzModel]="model"
-                                      [isEKV]="true"
-                                      [readonly]="gesuchmodelManager.isGesuchReadonly()">
-
+                <dv-bruttolohn-schwyz [finSitJA]="model.getEkvToWorkWith()"
+                                      [finSitGS]="model.getEkvToWorkWith_GS()"
+                                      [readonly]="gesuchmodelManager.isGesuchReadonly()"
+                                      (valueChanged)="recalculatedMassgebendesEinkommen()">
                 </dv-bruttolohn-schwyz>
 
             </ng-template>

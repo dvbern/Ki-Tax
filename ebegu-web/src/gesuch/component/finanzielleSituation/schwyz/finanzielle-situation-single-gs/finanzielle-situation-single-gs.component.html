@@ -33,7 +33,10 @@
     </dv-steuerveranlagt-schwyz>
 </ng-template>
 <ng-template #bruttolohnFragen>
-    <dv-bruttolohn-schwyz [readonly]="readonly"
-                          [finanzModel]="finanzModel">
+    <dv-bruttolohn-schwyz [finSitJA]="finanzModel.getFiSiConToWorkWith().finanzielleSituationJA"
+                          [finSitGS]="finanzModel.getFiSiConToWorkWith().finanzielleSituationGS"
+                          [readonly]="readonly"
+                          (valueChanged)="recalculateMassgebendesEinkommen()"
+    >
     </dv-bruttolohn-schwyz>
 </ng-template>

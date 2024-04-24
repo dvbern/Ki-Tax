@@ -90,4 +90,8 @@ export class EinkommensverschlechterungSchwyzGsComponent extends AbstractGesuchV
         return this.gesuchmodelManager.gesuchstellerNumber === 1 ? this.extractFullNameGS1() : this.extractFullNameGS2();
     }
 
+    public recalculatedMassgebendesEinkommen(): void {
+        // noop, will be implemented in KIBON-3471
+    }
+
 }

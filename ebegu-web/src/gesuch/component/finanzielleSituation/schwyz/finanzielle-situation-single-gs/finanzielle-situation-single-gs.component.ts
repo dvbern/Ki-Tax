@@ -38,6 +38,10 @@ export class FinanzielleSituationSingleGsComponent {
             this.getFinSitJA().abzuegeLiegenschaft = null;
             this.getFinSitJA().steuerbaresVermoegen = null;
         }
+        this.recalculateMassgebendesEinkommen();
+    }
+
+    public recalculateMassgebendesEinkommen(): void {
         this.finanzielleSituationSchwyzService.calculateMassgebendesEinkommen(this.finanzModel);
     }
 
