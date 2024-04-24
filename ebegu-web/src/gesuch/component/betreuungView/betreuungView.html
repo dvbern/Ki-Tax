@@ -210,6 +210,7 @@
 
                             <dv-betreuung-input pensum-container="vm.getBetreuungspensum(0)"
                                                 input-id="provPensum"
+                                                index="$index"
                                                 is-disabled="!vm.isEnabled()"
                                                 betreuungsangebot-typ="vm.betreuungsangebot.key"
                                                 betreuung-input-switch-typ="vm.getBetreuungspensumAnzeigeTyp()"
@@ -665,6 +666,7 @@
                                                             input-id="betreuungspensum-{{$index}}"
                                                             betreuungsangebot-typ="vm.getBetreuungModel().getAngebotTyp()"
                                                             is-disabled="!vm.isPensumEditable()"
+                                                            index="$index"
                                                             multiplier-kita="vm.getMultiplierKita()"
                                                             multiplier-tfo="vm.getMultiplierTFO()"
                                                             betreuung-input-switch-typ="vm.getBetreuungspensumAnzeigeTyp()"
