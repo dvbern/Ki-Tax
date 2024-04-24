@@ -3013,7 +3013,7 @@
     "KINDERABZUG_ALIMENTE_BEZAHLEN": "Zahlen Sie Unterhaltsbeiträge für das Kind?",
     "NETTO_VERMOEGEN_STAND": "Nettovermögen Stand 31.12.{{year}}",
     "EINGEWOEHNUNG": "Findet eine Eingewöhnung bei der Institution statt, bevor Sie mit Ihrer Beschäftigung beginnen?",
-    "EINGEWOEHNUNG_PAUSCHALE": "Eingewöhnungspauschale",
+    "EINGEWOEHNUNG_PAUSCHALE": "Eingewöhnungskosten in CHF",
     "EINGEWOEHNUNG_PAUSCHALE_CHECKBOX": "Es findet eine Eingewöhnung statt",
     "EINGEWOEHNUNG_PAUSCHALE_CHECKBOX_INFO": "Deklarieren Sie hier die Kosten, welche Sie für die Eingewöhnung den Eltern in Rechnung stellen. Wenn Sie keine separaten Kosten für die Eingewöhnung verrechnen, entfernen Sie das Häckchen bei 'Es findet eine Eingewöhnung statt'",
     "EINGEWOEHNUNG_FKJV": "Das Kind wird im Zeitraum, für den diese Platzbestätigung gilt, zuerst eingewöhnt",
