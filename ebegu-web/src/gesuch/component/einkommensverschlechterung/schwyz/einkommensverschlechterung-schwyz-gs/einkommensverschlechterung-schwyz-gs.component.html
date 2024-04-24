@@ -25,6 +25,7 @@
                 <dv-steuerveranlagt-schwyz [finSitJA]="model.getEkvToWorkWith()"
                                            [finSitGS]="model.getEkvToWorkWith_GS()"
                                            [readonly]="gesuchmodelManager.isGesuchReadonly()"
+                                           [showHeader]="false"
                                            (valueChanged)="recalculatedMassgebendesEinkommen()"
                 >
                 </dv-steuerveranlagt-schwyz>
