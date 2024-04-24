@@ -956,8 +956,7 @@
                                                                  aria-label="{{'EINGEWOEHNUNG_PAUSCHALE_CHECKBOX'| translate}}">
                                                         <span data-translate="EINGEWOEHNUNG_PAUSCHALE_CHECKBOX"></span>
                                                     </md-checkbox>
-                                                    <dv-tooltip input-id="eingewoehnungPauschaleInfo-{{$index}}"
-                                                                text="'EINGEWOEHNUNG_PAUSCHALE_CHECKBOX_INFO' | translate"></dv-tooltip>
+                                                    <div class="mock-dv-tooltip"></div>
                                                 </div>
                                             </div>
                                         </div>
@@ -967,8 +966,10 @@
                                                 <div class="col-sm-12 dv-input-container-small">
                                                     <dv-input-container class="form-group">
                                                         <label class="md-no-float"
-                                                               data-translate="EINGEWOEHNUNG_PAUSCHALE"
                                                                for="eingewoehnungPauschale">
+                                                            <span data-translate="EINGEWOEHNUNG_PAUSCHALE"></span>
+                                                            <dv-tooltip input-id="eingewoehnungPauschaleInfo-{{$index}}"
+                                                                        text="'EINGEWOEHNUNG_PAUSCHALE_CHECKBOX_INFO' | translate"></dv-tooltip>
                                                         </label>
                                                         <div class="dv-input-container-small">
                                                             <input aria-describedby="eingewoehnungPauschale-error"
