@@ -87,6 +87,10 @@ export class FinanzielleSituationStartSchwyzComponent extends AbstractGesuchView
             }) as Promise<TSFinanzielleSituationContainer>;
     }
 
+    public recalculateMassgendesEinkommen(): void {
+        this.finanzielleSituationSchwyzService.calculateMassgebendesEinkommen(this.model);
+    }
+
     /**
      * updates the Status of the Step depending on whether the Gesuch is a Mutation or not
      */

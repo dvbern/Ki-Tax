@@ -1,46 +1,43 @@
-import {ChangeDetectionStrategy, Component, Input} from '@angular/core';
+import {ChangeDetectionStrategy, Component, EventEmitter, Input, OnChanges, Output, SimpleChanges} from '@angular/core';
 import {ControlContainer, NgForm} from '@angular/forms';
 import {TSAbstractFinanzielleSituation} from '../../../../../models/TSAbstractFinanzielleSituation';
-import {TSFinanzModel} from '../../../../../models/TSFinanzModel';
+import {TSEinkommensverschlechterung} from '../../../../../models/TSEinkommensverschlechterung';
 import {EbeguUtil} from '../../../../../utils/EbeguUtil';
-import {FinanzielleSituationSchwyzService} from '../finanzielle-situation-schwyz.service';
 
 @Component({
     selector: 'dv-steuerveranlagt-schwyz',
     templateUrl: './steuerveranlagt-schwyz.component.html',
     changeDetection: ChangeDetectionStrategy.Default,
-    viewProviders: [{provide: ControlContainer, useExisting: NgForm}]
+    viewProviders: [{provide: ControlContainer, useExisting: NgForm}],
 })
-export class SteuerveranlagtSchwyzComponent {
+export class SteuerveranlagtSchwyzComponent implements OnChanges {
 
     @Input()
     public readonly!: boolean;
 
     @Input()
-    public isEKV: boolean = false;
+    public finSitJA!: TSAbstractFinanzielleSituation;
 
     @Input()
-    public finanzModel: TSFinanzModel;
+    public finSitGS?: TSAbstractFinanzielleSituation;
 
-    public constructor(
-        public finanzielleSituationSchwyzService: FinanzielleSituationSchwyzService
-    ) {
-    }
+    @Output()
+    public valueChanged = new EventEmitter<void>();
+
+    public isEKV = false;
 
     public isNotNullOrUndefined(toCheck: any): boolean {
         return EbeguUtil.isNotNullOrUndefined(toCheck);
     }
 
     public onValueChangeFunction = (): void => {
-        this.finanzielleSituationSchwyzService.calculateMassgebendesEinkommen(this.finanzModel);
+       this.valueChanged.emit();
     };
 
-    public getFinSitJA(): TSAbstractFinanzielleSituation {
-        return this.isEKV ? this.finanzModel.getEkvToWorkWith() : this.finanzModel.getFiSiConToWorkWith()?.finanzielleSituationJA;
-    }
-
-    public getFinSitGS(): TSAbstractFinanzielleSituation {
-        return this.isEKV ? this.finanzModel.getEkvToWorkWith() : this.finanzModel.getFiSiConToWorkWith()?.finanzielleSituationGS;
+    public ngOnChanges(changes: SimpleChanges): void {
+        if (changes.finSitJA) {
+            this.isEKV = this.finSitJA instanceof TSEinkommensverschlechterung;
+        }
     }
 
 }
