@@ -31,14 +31,14 @@
     <dv-steuerveranlagt-schwyz [finSitJA]="finanzModel.getFiSiConToWorkWith().finanzielleSituationJA"
                                [finSitGS]="finanzModel.getFiSiConToWorkWith().finanzielleSituationGS"
                                [readonly]="readonly"
-                               (valueChanged)="recalculateMassgebendesEinkommen()">
+                               (valueChanged)="emitValueChanged()">
     </dv-steuerveranlagt-schwyz>
 </ng-template>
 <ng-template #bruttolohnFragen>
     <dv-bruttolohn-schwyz [finSitJA]="finanzModel.getFiSiConToWorkWith().finanzielleSituationJA"
                           [finSitGS]="finanzModel.getFiSiConToWorkWith().finanzielleSituationGS"
                           [readonly]="readonly"
-                          (valueChanged)="recalculateMassgebendesEinkommen()"
+                          (valueChanged)="emitValueChanged()"
     >
     </dv-bruttolohn-schwyz>
 </ng-template>

@@ -21,6 +21,7 @@
     </div>
     <form #form="ngForm">
         <dv-finanzielle-situation-single-gs [readonly]="gesuchmodelManager.isGesuchReadonly()"
+                                            (valueChanged)="recalculateMassgebendesEinkommen()"
                                             [finanzModel]="model">
         </dv-finanzielle-situation-single-gs>
     </form>

@@ -9,6 +9,7 @@ import {EbeguUtil} from '../../../../../utils/EbeguUtil';
 import {GesuchModelManager} from '../../../../service/gesuchModelManager';
 import {WizardStepManager} from '../../../../service/wizardStepManager';
 import {AbstractGesuchViewX} from '../../../abstractGesuchViewX';
+import {FinanzielleSituationSchwyzService} from '../finanzielle-situation-schwyz.service';
 
 @Component({
     selector: 'dv-finanzielle-situation-gs-schwyz',
@@ -23,7 +24,8 @@ export class FinanzielleSituationGsSchwyzComponent extends AbstractGesuchViewX<T
     public constructor(
         protected readonly gesuchmodelManager: GesuchModelManager,
         protected readonly wizardStepManager: WizardStepManager,
-        private readonly $stateParams: UIRouterGlobals
+        private readonly $stateParams: UIRouterGlobals,
+        private readonly finSitSchwyzService: FinanzielleSituationSchwyzService
     ) {
         super(gesuchmodelManager, wizardStepManager, TSWizardStepName.FINANZIELLE_SITUATION_SCHWYZ);
     }
@@ -60,6 +62,10 @@ export class FinanzielleSituationGsSchwyzComponent extends AbstractGesuchViewX<T
 
     public getAntragstellerNameForCurrentStep(): string {
         return this.gesuchsteller.gesuchstellerJA.getFullName();
+    }
+
+    public recalculateMassgebendesEinkommen(): void {
+        this.finSitSchwyzService.calculateMassgebendesEinkommen(this.model);
     }
 
     public getSubStepName(): TSFinanzielleSituationSubStepName {

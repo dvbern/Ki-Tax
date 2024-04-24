@@ -1,9 +1,8 @@
-import {ChangeDetectionStrategy, Component, Input, ViewChild} from '@angular/core';
+import {ChangeDetectionStrategy, Component, EventEmitter, Input, Output, ViewChild} from '@angular/core';
 import {ControlContainer, NgForm} from '@angular/forms';
 import {TSFinanzielleSituation} from '../../../../../models/TSFinanzielleSituation';
 import {TSFinanzModel} from '../../../../../models/TSFinanzModel';
 import {EbeguUtil} from '../../../../../utils/EbeguUtil';
-import {FinanzielleSituationSchwyzService} from '../finanzielle-situation-schwyz.service';
 
 @Component({
     selector: 'dv-finanzielle-situation-single-gs',
@@ -21,10 +20,8 @@ export class FinanzielleSituationSingleGsComponent {
     @Input()
     public finanzModel: TSFinanzModel;
 
-    public constructor(
-        public finanzielleSituationSchwyzService: FinanzielleSituationSchwyzService
-    ) {
-    }
+    @Output()
+    public valueChanged = new EventEmitter<void>();
 
     public onQuellenbesteuertChange(): void {
         if (EbeguUtil.isNullOrUndefined(this.getFinSitJA().quellenbesteuert)) {
@@ -38,11 +35,11 @@ export class FinanzielleSituationSingleGsComponent {
             this.getFinSitJA().abzuegeLiegenschaft = null;
             this.getFinSitJA().steuerbaresVermoegen = null;
         }
-        this.recalculateMassgebendesEinkommen();
+        this.valueChanged.emit();
     }
 
-    public recalculateMassgebendesEinkommen(): void {
-        this.finanzielleSituationSchwyzService.calculateMassgebendesEinkommen(this.finanzModel);
+    public emitValueChanged(): void {
+        this.valueChanged.emit();
     }
 
     public isNotNullOrUndefined(toCheck: any): boolean {
