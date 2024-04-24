@@ -130,7 +130,32 @@ class GeschwisterbonusSchwyzAbschnittRuleTest {
 				assertThat(
 					verfuegungZeitabschnitte.get(0).getGueltigkeit().getGueltigAb(),
 					equalTo(GP_START));
-				assertThat(verfuegungZeitabschnitte.get(0).getGueltigkeit().getGueltigBis(), equalTo(geburtsdatumGeschwisterInGP));
+				assertThat(
+					verfuegungZeitabschnitte.get(0).getGueltigkeit().getGueltigBis(),
+					equalTo(geburtsdatumGeschwisterInGP));
+			}
+
+			@Test
+			void oneOtherKindReaching18DuringPeriodeWithSecondPensumCompletelyAfterBirthday_shouldCreateZeitabschnitteBeforeBirthday() {
+				final LocalDate geburtsdatumGeschwister = GP_START.plusMonths(2).minusYears(18);
+				final LocalDate geburtsdatumGeschwisterInGP = LocalDate.of(
+					GP_START.getYear(),
+					geburtsdatumGeschwister.getMonth(),
+					geburtsdatumGeschwister.getDayOfMonth());
+				addGeschwisterWithBetreuungspensen(
+					geburtsdatumGeschwister,
+					Set.of(new DateRange(GP_START, GP_START.plusMonths(4)), new DateRange(GP_START.plusMonths(9), GP_END)));
+
+				final List<VerfuegungZeitabschnitt> verfuegungZeitabschnitte = executeRule(betreuung);
+
+
+				assertThat(
+					verfuegungZeitabschnitte.get(0).getGueltigkeit().getGueltigAb(),
+					equalTo(GP_START));
+				assertThat(
+					verfuegungZeitabschnitte.get(0).getGueltigkeit().getGueltigBis(),
+					equalTo(geburtsdatumGeschwisterInGP));
+				assertThat(verfuegungZeitabschnitte.size(), is(1));
 			}
 
 			@Test

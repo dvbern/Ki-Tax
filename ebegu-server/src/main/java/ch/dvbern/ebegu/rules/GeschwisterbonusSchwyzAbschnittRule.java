@@ -33,6 +33,7 @@ import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.enums.GeschwisterbonusTyp;
+import ch.dvbern.ebegu.enums.MsgKey;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.DateUtil;
 
@@ -68,6 +69,7 @@ public class GeschwisterbonusSchwyzAbschnittRule extends AbstractAbschnittRule {
 			.map(this::limitGueltigkeitWithGeburtstag)
 			.map(this::setAnzahlGeschwister)
 			.map(VerfuegungZeitabschnittGeburtsdatumTuple::getZeitabschnitt)
+			.filter(verfuegungZeitabschnitt -> verfuegungZeitabschnitt.getGueltigkeit().isValid())
 			.collect(Collectors.toList());
 
 		return mergeZeitabschnitte(createdAbschnitte);
@@ -98,19 +100,26 @@ public class GeschwisterbonusSchwyzAbschnittRule extends AbstractAbschnittRule {
 		if (isBornDuringGueltigkeit(geburtsdatum, gueltigkeit)) {
 			gueltigkeit.setGueltigAb(mapDateIntoGueltigkeit(geburtsdatum, gueltigkeit));
 		}
-		if (reaches18DuringGP(geburtsdatum, gueltigkeit)) {
+		if (reaches18During(geburtsdatum, gueltigkeit)) {
 			gueltigkeit.setGueltigBis(mapDateIntoGueltigkeit(geburtsdatum, gueltigkeit));
+		}
+		if (reaches18Before(geburtsdatum, gueltigkeit)) {
+			gueltigkeit.setGueltigBis(gueltigkeit.getGueltigAb().minusDays(1));
 		}
 
 		return zeitabschnittGeburtsdatumTuple;
 	}
 
-	private boolean isBornDuringGueltigkeit(LocalDate geburtsdatum, DateRange gpGueltigkeit) {
-		return gpGueltigkeit.contains(geburtsdatum);
+	private boolean isBornDuringGueltigkeit(LocalDate geburtsdatum, DateRange gueltigkeit) {
+		return gueltigkeit.contains(geburtsdatum);
 	}
 
-	private boolean reaches18DuringGP(LocalDate geburtsdatum, DateRange gpGueltigkeit) {
-		return gpGueltigkeit.contains(geburtsdatum.plusYears(18));
+	private boolean reaches18During(LocalDate geburtsdatum, DateRange gueltigkeit) {
+		return gueltigkeit.contains(geburtsdatum.plusYears(18));
+	}
+
+	private boolean reaches18Before(LocalDate geburtsdatum, DateRange gueltigkeit) {
+		return gueltigkeit.getGueltigAb().isAfter(geburtsdatum.plusYears(18));
 	}
 
 	private LocalDate mapDateIntoGueltigkeit(LocalDate date, DateRange gueltigkeit) {
