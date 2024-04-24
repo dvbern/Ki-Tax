@@ -72,7 +72,9 @@ public class GeschwisterbonusSchwyzAbschnittRule extends AbstractAbschnittRule {
 			.filter(verfuegungZeitabschnitt -> verfuegungZeitabschnitt.getGueltigkeit().isValid())
 			.collect(Collectors.toList());
 
-		return mergeZeitabschnitte(createdAbschnitte);
+		final List<VerfuegungZeitabschnitt> mergedAbschnitte = mergeZeitabschnitte(createdAbschnitte);
+		mergedAbschnitte.forEach(abschnitt -> abschnitt.getBgCalculationInputAsiv().addBemerkung(MsgKey.GESCHWISTERBONUS_SCHWYZ, getLocale(), abschnitt.getBgCalculationInputAsiv().getAnzahlGeschwister()));
+		return mergedAbschnitte;
 	}
 
 	private static boolean contributesToGeschwisterbonus(KindContainer kindContainer, DateRange gpGueltigkeit) {
