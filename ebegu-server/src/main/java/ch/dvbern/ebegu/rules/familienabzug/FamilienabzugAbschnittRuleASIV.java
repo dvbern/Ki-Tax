@@ -48,6 +48,7 @@ public class FamilienabzugAbschnittRuleASIV extends AbstractFamilienabzugAbschni
 	}
 
 
+	@Override
 	protected Map.Entry<Double, Integer> addAbzugFromKinder(
 		@Nonnull Gesuch gesuch,
 		@Nonnull LocalDate stichtag,

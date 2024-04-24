@@ -145,7 +145,7 @@ public abstract class AbstractFamilienabzugAbschnittRule extends AbstractAbschni
 	 * GANZER_ABZUG = 1
 	 * <p>
 	 * Nur die Kinder die vor dem uebergebenen Datum geboren sind werden mitberechnet
-	 * <p>
+	 * </p>
 	 *
 	 * @param gesuch das Gesuch aus welchem die Daten geholt werden
 	 * @param date das Datum fuer das die familiengroesse kalkuliert werden muss

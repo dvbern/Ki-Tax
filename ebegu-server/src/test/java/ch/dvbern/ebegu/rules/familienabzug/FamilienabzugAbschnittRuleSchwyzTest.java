@@ -19,7 +19,7 @@ package ch.dvbern.ebegu.rules.familienabzug;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.HashMap;
+import java.util.EnumMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -46,7 +46,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
-public class FamilienabzugAbschnittRuleSchwyzTest {
+class FamilienabzugAbschnittRuleSchwyzTest {
 
 	private final FamilienabzugAbschnittRuleSchwyz famabAbschnittRule_SCHWYZ =
 		new FamilienabzugAbschnittRuleSchwyz(
@@ -201,8 +201,9 @@ public class FamilienabzugAbschnittRuleSchwyzTest {
 		famSit.setGesuchstellerKardinalitaet(zweiGS ?
 			EnumGesuchstellerKardinalitaet.ZU_ZWEIT :
 			EnumGesuchstellerKardinalitaet.ALLEINE);
-		gesuch.setFamiliensituationContainer(new FamiliensituationContainer());
-		gesuch.getFamiliensituationContainer().setFamiliensituationJA(famSit);
+		final FamiliensituationContainer familiensituationContainer = new FamiliensituationContainer();
+		familiensituationContainer.setFamiliensituationJA(famSit);
+		gesuch.setFamiliensituationContainer(familiensituationContainer);
 		gesuch.setKindContainers(new HashSet<>());
 		final KindContainer kind = TestDataUtil.createDefaultKindContainer();
 		kind.getKindJA().setKinderabzugErstesHalbjahr(kinderabzug);
@@ -211,7 +212,7 @@ public class FamilienabzugAbschnittRuleSchwyzTest {
 	}
 
 	private Map<EinstellungKey, Einstellung> getEinstellungMapForSchwyz() {
-		Map<EinstellungKey, Einstellung> einstellungMapForSchwyz = new HashMap<>();
+		Map<EinstellungKey, Einstellung> einstellungMapForSchwyz = new EnumMap<>(EinstellungKey.class);
 		Einstellung einstellungMinimalKonkubinat =
 			new Einstellung(EinstellungKey.MINIMALDAUER_KONKUBINAT, "2", new Gesuchsperiode());
 		einstellungMapForSchwyz.put(EinstellungKey.MINIMALDAUER_KONKUBINAT, einstellungMinimalKonkubinat);

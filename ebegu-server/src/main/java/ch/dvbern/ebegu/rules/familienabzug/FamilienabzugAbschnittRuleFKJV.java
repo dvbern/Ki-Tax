@@ -61,6 +61,7 @@ public class FamilienabzugAbschnittRuleFKJV extends AbstractFamilienabzugAbschni
 		this.kinderabzugTyp = KinderabzugTyp.valueOf(einstellungMap.get(KINDERABZUG_TYP).getValue());
 	}
 
+	@Override
 	protected Map.Entry<Double, Integer> addAbzugFromKinder(
 		@Nonnull Gesuch gesuch,
 		@Nonnull LocalDate stichtag,
