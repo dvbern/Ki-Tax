@@ -31,15 +31,15 @@ import org.junit.jupiter.api.Test;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
-public class FinanzielleSituationSchwyzRechnerTest {
+class FinanzielleSituationSchwyzRechnerTest {
 
-	private FinanzielleSituationSchwyzRechner finanzielleSituationSchwyzRechner = new FinanzielleSituationSchwyzRechner();
+	private final FinanzielleSituationSchwyzRechner finanzielleSituationSchwyzRechner = new FinanzielleSituationSchwyzRechner();
 
 	@Nested
 	class SingleGSTest {
 		/**
 		 * Steuerbares Einkommen								60'000
-		 *
+		 * <p>
 		 * Steuerbares Vermögen	10'000 - 200'000, 10% =		   + 0
 		 * Abzüge für den effektiven Liegenschaftsunterhalt... + 1'000
 		 * Einkäufe in die berufliche Vorsorge Subtrahieren    + 1'000
@@ -47,7 +47,7 @@ public class FinanzielleSituationSchwyzRechnerTest {
 		 * 62'000
 		 */
 		@Test
-		public void calculateForNichtQuellenBesteuerteTest() {
+		void calculateForNichtQuellenBesteuerteTest() {
 			Gesuch gesuch = prepareGesuch();
 			setFinSitValueForNichtQuellenbesteuert(gesuch.getGesuchsteller1().getFinanzielleSituationContainer().getFinanzielleSituationJA(),
 				new BigDecimal(60000),
@@ -60,7 +60,7 @@ public class FinanzielleSituationSchwyzRechnerTest {
 
 		/**
 		 * Steuerbares Einkommen								60'000
-		 *
+		 * <p>
 		 * Steuerbares Vermögen	200'000 - 200'000, 10% =		   + 0
 		 * Abzüge für den effektiven Liegenschaftsunterhalt... + 1'000
 		 * Einkäufe in die berufliche Vorsorge Subtrahieren    + 1'000
@@ -68,7 +68,7 @@ public class FinanzielleSituationSchwyzRechnerTest {
 		 * 62'000
 		 */
 		@Test
-		public void calculateForNichtQuellenBesteuerteMitSteuerbaresVermoegenAnGrenzeTest() {
+		void calculateForNichtQuellenBesteuerteMitSteuerbaresVermoegenAnGrenzeTest() {
 			Gesuch gesuch = prepareGesuch();
 			setFinSitValueForNichtQuellenbesteuert(gesuch.getGesuchsteller1().getFinanzielleSituationContainer().getFinanzielleSituationJA(),
 				new BigDecimal(60000),
@@ -85,7 +85,7 @@ public class FinanzielleSituationSchwyzRechnerTest {
 
 		/**
 		 * Steuerbares Einkommen								60'000
-		 *
+		 * <p>
 		 * Steuerbares Vermögen	250'000 - 200'000, 10% =	   + 5'000
 		 * Abzüge für den effektiven Liegenschaftsunterhalt... + 1'000
 		 * Einkäufe in die berufliche Vorsorge Subtrahieren    + 1'000
@@ -93,7 +93,7 @@ public class FinanzielleSituationSchwyzRechnerTest {
 		 * 67'000
 		 */
 		@Test
-		public void calculateForNichtQuellenBesteuerteMitSteuerbaresVermoegenTest() {
+		void calculateForNichtQuellenBesteuerteMitSteuerbaresVermoegenTest() {
 			Gesuch gesuch = prepareGesuch();
 			setFinSitValueForNichtQuellenbesteuert(gesuch.getGesuchsteller1().getFinanzielleSituationContainer().getFinanzielleSituationJA(),
 				new BigDecimal(60000),
@@ -110,13 +110,13 @@ public class FinanzielleSituationSchwyzRechnerTest {
 
 		/**
 		 * Brutto Einkommen									    60'000
-		 *
+		 * <p>
 		 * Brutto Einkommen 20% =		   					  - 12'000
 		 * -------
 		 * 48'000
 		 */
 		@Test
-		public void calculateForQuellenBesteuerteTest() {
+		void calculateForQuellenBesteuerteTest() {
 			Gesuch gesuch = prepareGesuch();
 			setFinSitValueForQuellenbesteuert(gesuch.getGesuchsteller1().getFinanzielleSituationContainer().getFinanzielleSituationJA(),
 				new BigDecimal(60000));
@@ -125,7 +125,7 @@ public class FinanzielleSituationSchwyzRechnerTest {
 		}
 
 		@Test
-		public void quellenBesteuertAllesNullTest() {
+		void quellenBesteuertAllesNullTest() {
 			Gesuch gesuch = prepareGesuch();
 			setFinSitValueForQuellenbesteuert(gesuch.getGesuchsteller1().getFinanzielleSituationContainer().getFinanzielleSituationJA(),
 				null);
@@ -134,7 +134,7 @@ public class FinanzielleSituationSchwyzRechnerTest {
 		}
 
 		@Test
-		public void nichtQuellenBesteuertAllesNullTest() {
+		void nichtQuellenBesteuertAllesNullTest() {
 			Gesuch gesuch = prepareGesuch();
 			setFinSitValueForNichtQuellenbesteuert(gesuch.getGesuchsteller1().getFinanzielleSituationContainer().getFinanzielleSituationJA(),
 				null,
@@ -156,17 +156,17 @@ public class FinanzielleSituationSchwyzRechnerTest {
 	class TwoGSTest {
 		/**
 		 * Steuerbares Einkommen								60'000
-		 *
+		 * <p>
 		 * Steuerbares Vermögen	10'000 - 200'000, 10% =		   + 0
 		 * Abzüge für den effektiven Liegenschaftsunterhalt... + 1'000
 		 * Einkäufe in die berufliche Vorsorge Subtrahieren    + 1'000
 		 * -------
 		 * 62'000
-		 *
+		 * <p>
 		 * GS2 gleich => 62'000 x 2 = 124'000
 		 */
 		@Test
-		public void calculateForNichtQuellenBesteuerteTest() {
+		void calculateForNichtQuellenBesteuerteTest() {
 			Gesuch gesuch = prepareGesuch();
 			setFinSitValueForNichtQuellenbesteuert(gesuch.getGesuchsteller1().getFinanzielleSituationContainer().getFinanzielleSituationJA(),
 				new BigDecimal(60000),
@@ -186,16 +186,16 @@ public class FinanzielleSituationSchwyzRechnerTest {
 
 		/**
 		 * Brutto Einkommen									    60'000
-		 *
+		 * <p>
 		 * Brutto Einkommen 20% =		   					  - 12'000
 		 * -------
 		 * 48'000
-		 *
+		 * <p>
 		 * GS 2 gleich => 48'000 x 2 = 96'000
 		 *
 		 */
 		@Test
-		public void calculateForQuellenBesteuerteTest() {
+		void calculateForQuellenBesteuerteTest() {
 			Gesuch gesuch = prepareGesuch();
 			setFinSitValueForQuellenbesteuert(gesuch.getGesuchsteller1().getFinanzielleSituationContainer().getFinanzielleSituationJA(),
 				new BigDecimal(60000));
@@ -207,7 +207,7 @@ public class FinanzielleSituationSchwyzRechnerTest {
 		}
 
 		@Test
-		public void quellenBesteuertZweiteGSNullTest() {
+		void quellenBesteuertZweiteGSNullTest() {
 			Gesuch gesuch = prepareGesuch();
 			setFinSitValueForQuellenbesteuert(gesuch.getGesuchsteller1().getFinanzielleSituationContainer().getFinanzielleSituationJA(),
 				new BigDecimal(60000));
@@ -218,7 +218,7 @@ public class FinanzielleSituationSchwyzRechnerTest {
 		}
 
 		@Test
-		public void nichtQuellenBesteuertZweiteGSNullTest() {
+		void nichtQuellenBesteuertZweiteGSNullTest() {
 			Gesuch gesuch = prepareGesuch();
 			setFinSitValueForNichtQuellenbesteuert(gesuch.getGesuchsteller1().getFinanzielleSituationContainer().getFinanzielleSituationJA(),
 				new BigDecimal(60000),
