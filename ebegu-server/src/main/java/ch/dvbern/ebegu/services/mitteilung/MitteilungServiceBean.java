@@ -157,6 +157,7 @@ import ch.dvbern.ebegu.util.betreuungsmitteilung.messages.DefaultMessageFactory;
 import ch.dvbern.ebegu.util.betreuungsmitteilung.messages.EingewoehnungsPauschaleMessageFactory;
 import ch.dvbern.ebegu.util.betreuungsmitteilung.messages.MahlzeitenVerguenstigungMessageFactory;
 import ch.dvbern.ebegu.util.betreuungsmitteilung.messages.MittagstischMessageFactory;
+import ch.dvbern.ebegu.util.betreuungsmitteilung.messages.SchulergaenzendeBetreuungMessageFactory;
 import ch.dvbern.ebegu.util.mandant.MandantIdentifier;
 import ch.dvbern.lib.cdipersistence.Persistence;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
@@ -1194,17 +1195,31 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 		BetreuungspensumAnzeigeTyp betreuungspensumAnzeigeTyp = getBetreuungspensumAnzeigeTyp(einstellungAnzeigeTyp);
 		BigDecimal multiplier = getMultiplierForMutationsMitteilung(mitteilung, betreuungspensumAnzeigeTyp);
 
-		if (mvzEnabled) {
-			return combine(
-				new MahlzeitenVerguenstigungMessageFactory(mandant, locale, betreuungspensumAnzeigeTyp, multiplier),
-				new EingewoehnungsPauschaleMessageFactory(mandant, locale)
-			);
-		}
+		BetreuungsmitteilungPensumMessageFactory pensumFactory = mvzEnabled ?
+			new MahlzeitenVerguenstigungMessageFactory(mandant, locale, betreuungspensumAnzeigeTyp, multiplier) :
+			new DefaultMessageFactory(mandant, locale, betreuungspensumAnzeigeTyp, multiplier);
+
+		BetreuungsmitteilungPensumMessageFactory schulergaenzendeBetreuungFactory = showSchulergaenzendeBetreuung(betreuung) ?
+			new SchulergaenzendeBetreuungMessageFactory(mandant, locale) :
+			BetreuungsmitteilungPensumMessageFactory.empty();
 
 		return combine(
-			new DefaultMessageFactory(mandant, locale, betreuungspensumAnzeigeTyp, multiplier),
-			new EingewoehnungsPauschaleMessageFactory(mandant, locale)
+			" ",
+			combine(
+				", ",
+				pensumFactory,
+				new EingewoehnungsPauschaleMessageFactory(mandant, locale)
+			),
+			schulergaenzendeBetreuungFactory
 		);
+	}
+
+	private boolean showSchulergaenzendeBetreuung(Betreuung betreuung) {
+		return requireNonNull(betreuung.getKind().getKindJA().getEinschulungTyp()).isEingeschult()
+			&& einstellungService.findEinstellung(
+			EinstellungKey.SCHULERGAENZENDE_BETREUUNGEN,
+			betreuung.extractGemeinde(),
+			betreuung.extractGesuchsperiode()).getValueAsBoolean();
 	}
 
 	@Nonnull
