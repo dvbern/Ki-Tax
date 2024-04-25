@@ -34,6 +34,7 @@ public class FinanzielleSituationBernRechner extends AbstractFinanzielleSituatio
 	 * Nimmt das uebergebene FinanzielleSituationResultateDTO und mit den Daten vom Gesuch, berechnet alle im
 	 * FinanzielleSituationResultateDTO benoetigten Daten und setzt sie direkt im dto.
 	 */
+	@Override
 	public void setFinanzielleSituationParameters(
 		@Nonnull Gesuch gesuch,
 		final FinanzielleSituationResultateDTO finSitResultDTO,
@@ -59,6 +60,7 @@ public class FinanzielleSituationBernRechner extends AbstractFinanzielleSituatio
 	 * Nimmt das uebergebene FinanzielleSituationResultateDTO und mit den Daten vom Gesuch, berechnet alle im
 	 * FinanzielleSituationResultateDTO benoetigten Daten.
 	 */
+	@Override
 	public void setEinkommensverschlechterungParameters(
 		@Nonnull Gesuch gesuch, int basisJahrPlus,
 		final FinanzielleSituationResultateDTO einkVerResultDTO, boolean hasSecondGesuchsteller) {

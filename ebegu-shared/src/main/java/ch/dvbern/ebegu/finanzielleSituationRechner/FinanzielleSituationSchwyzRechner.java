@@ -32,19 +32,25 @@ import ch.dvbern.ebegu.util.MathUtil;
 import org.apache.commons.lang.NotImplementedException;
 
 public class FinanzielleSituationSchwyzRechner extends AbstractFinanzielleSituationRechner {
+
 	@Override
 	public void setFinanzielleSituationParameters(
 		@Nonnull Gesuch gesuch,
 		FinanzielleSituationResultateDTO finSitResultDTO,
-		boolean hasSecondGesuchsteller) {
-		final FinanzielleSituation finanzielleSituationGS1 = getFinanzielleSituationGS(gesuch.getGesuchsteller1());
+		boolean hasSecondGesuchsteller
+	) {
+		FinanzielleSituation finanzielleSituationGS1 = getFinanzielleSituationGS(gesuch.getGesuchsteller1());
 
-		FinanzielleSituation finanzielleSituationGS2 = null;
-		if (hasSecondGesuchsteller && gesuch.getGesuchsteller2() != null) {
-			finanzielleSituationGS2 = getFinanzielleSituationGS(gesuch.getGesuchsteller2());
-		}
+		FinanzielleSituation finanzielleSituationGS2 = hasSecondGesuchsteller && gesuch.getGesuchsteller2() != null ?
+			getFinanzielleSituationGS(gesuch.getGesuchsteller2()) :
+			null;
 
-		calculateFinSit(finanzielleSituationGS1, finanzielleSituationGS2, finSitResultDTO);
+		calculateAbstractFinSit(
+			finSitResultDTO,
+			finanzielleSituationGS1,
+			finanzielleSituationGS1 != null && Boolean.TRUE.equals(finanzielleSituationGS1.getQuellenbesteuert()),
+			finanzielleSituationGS2,
+			finanzielleSituationGS2 != null && Boolean.TRUE.equals(finanzielleSituationGS2.getQuellenbesteuert()));
 	}
 
 	@Override
@@ -52,115 +58,82 @@ public class FinanzielleSituationSchwyzRechner extends AbstractFinanzielleSituat
 		@Nonnull Gesuch gesuch,
 		int basisJahrPlus,
 		FinanzielleSituationResultateDTO einkVerResultDTO,
-		boolean hasSecondGesuchsteller) {
-		final Einkommensverschlechterung einkommensverschlechterungGS1 = getEinkommensverschlechterungGS(gesuch.getGesuchsteller1(), 1);
-		final FinanzielleSituation finanzielleSituationGS1 = getFinanzielleSituationGS(gesuch.getGesuchsteller1());
-
-		Einkommensverschlechterung einkommensverschlechterungGS2 = null;
-		FinanzielleSituation finanzielleSituationGS2 = null;
-		if (hasSecondGesuchsteller && gesuch.getGesuchsteller2() != null) {
-			einkommensverschlechterungGS2 = getEinkommensverschlechterungGS(gesuch.getGesuchsteller2(), 1);
-			finanzielleSituationGS2 = getFinanzielleSituationGS(gesuch.getGesuchsteller2());
-		}
-
-		final boolean gs1Quellenbesteuert = finanzielleSituationGS1 != null && Boolean.TRUE.equals(finanzielleSituationGS1.getQuellenbesteuert());
-		final boolean gs2Quellenbesteuert = finanzielleSituationGS2 != null && Boolean.TRUE.equals(finanzielleSituationGS2.getQuellenbesteuert());
-
-		calculateAbstractFinSit(einkVerResultDTO, einkommensverschlechterungGS1, gs1Quellenbesteuert, einkommensverschlechterungGS2, gs2Quellenbesteuert);
-	}
-
-	private void calculateFinSit(
-		@Nullable FinanzielleSituation finanzielleSituationGS1,
-		@Nullable FinanzielleSituation finanzielleSituationGS2,
-		@Nonnull FinanzielleSituationResultateDTO finSitResultDTO
+		boolean hasSecondGesuchsteller
 	) {
-		final boolean gs1Quellenbesteuert = finanzielleSituationGS1 != null && Boolean.TRUE.equals(finanzielleSituationGS1.getQuellenbesteuert());
-		final boolean gs2Quellenbesteuert = finanzielleSituationGS2 != null && Boolean.TRUE.equals(finanzielleSituationGS2.getQuellenbesteuert());
+		Einkommensverschlechterung ekvGS1 = getEinkommensverschlechterungGS(gesuch.getGesuchsteller1(), 1);
+		FinanzielleSituation finSitGS1 = getFinanzielleSituationGS(gesuch.getGesuchsteller1());
+
+		Einkommensverschlechterung ekvGS2 = null;
+		FinanzielleSituation finSitGS2 = null;
+		if (hasSecondGesuchsteller && gesuch.getGesuchsteller2() != null) {
+			ekvGS2 = getEinkommensverschlechterungGS(gesuch.getGesuchsteller2(), 1);
+			finSitGS2 = getFinanzielleSituationGS(gesuch.getGesuchsteller2());
+		}
 
 		calculateAbstractFinSit(
-			finSitResultDTO,
-			finanzielleSituationGS1,
-			gs1Quellenbesteuert,
-			finanzielleSituationGS2,
-			gs2Quellenbesteuert);
+			einkVerResultDTO,
+			ekvGS1,
+			finSitGS1 != null && Boolean.TRUE.equals(finSitGS1.getQuellenbesteuert()),
+			ekvGS2,
+			finSitGS2 != null && Boolean.TRUE.equals(finSitGS2.getQuellenbesteuert()));
 	}
 
+	@SuppressWarnings("PMD.UnusedPrivateMethod")
 	private void calculateAbstractFinSit(
-		@Nonnull FinanzielleSituationResultateDTO finSitResultDTO, @Nullable AbstractFinanzielleSituation finanzielleSituationGS1,
-		boolean gs1Quellenbesteuert, @Nullable AbstractFinanzielleSituation finanzielleSituationGS2,
-		boolean gs2Quellenbesteuert) {
+		@Nonnull FinanzielleSituationResultateDTO finSitResultDTO,
+		@Nullable AbstractFinanzielleSituation finanzielleSituationGS1,
+		boolean gs1Quellenbesteuert,
+		@Nullable AbstractFinanzielleSituation finanzielleSituationGS2,
+		boolean gs2Quellenbesteuert
+	) {
 		if (finanzielleSituationGS1 != null) {
-			if (gs1Quellenbesteuert) {
-				finSitResultDTO.setMassgebendesEinkVorAbzFamGrGS1(calculateForQuellenBesteuerte(finanzielleSituationGS1));
-			} else {
-				finSitResultDTO.setMassgebendesEinkVorAbzFamGrGS1(calculateForNichtQuellenBesteuerte(finanzielleSituationGS1));
-			}
+			var einkommen1 = gs1Quellenbesteuert ?
+				calculateForQuellenBesteuerte(finanzielleSituationGS1) :
+				calculateForNichtQuellenBesteuerte(finanzielleSituationGS1);
+			finSitResultDTO.setMassgebendesEinkVorAbzFamGrGS1(einkommen1);
 		}
-		if(finanzielleSituationGS2 != null) {
-			if (gs2Quellenbesteuert) {
-				finSitResultDTO.setMassgebendesEinkVorAbzFamGrGS2(calculateForQuellenBesteuerte(finanzielleSituationGS2));
-			} else {
-				finSitResultDTO.setMassgebendesEinkVorAbzFamGrGS2(calculateForNichtQuellenBesteuerte(finanzielleSituationGS2));
-			}
+		if (finanzielleSituationGS2 != null) {
+			var einkommen2 = gs2Quellenbesteuert ?
+				calculateForQuellenBesteuerte(finanzielleSituationGS2) :
+				calculateForNichtQuellenBesteuerte(finanzielleSituationGS2);
+			finSitResultDTO.setMassgebendesEinkVorAbzFamGrGS2(einkommen2);
 		}
 		finSitResultDTO.setMassgebendesEinkVorAbzFamGr(
 			add(finSitResultDTO.getMassgebendesEinkVorAbzFamGrGS1(), finSitResultDTO.getMassgebendesEinkVorAbzFamGrGS2())
 		);
 	}
 
-	private BigDecimal calculateForNichtQuellenBesteuerte(
-		@Nonnull AbstractFinanzielleSituation finanzielleSituation) {
-
-		var einkommenGS1 = calcEinkommen(finanzielleSituation);
-		var einkaufBeruflicheVorsorgeGS1 = calcEinkaeufeVorsorge(finanzielleSituation);
-		var abzuegeLiegenschaftsaufwandGS1 = calcAbzuegeLiegenschaftsaufwand(finanzielleSituation);
-		var reinvermoegenNachAbzugGS1 = calcReinvermoegenNachAbzug(finanzielleSituation);
-
+	private BigDecimal calculateForNichtQuellenBesteuerte(@Nonnull AbstractFinanzielleSituation finanzielleSituation) {
 		return calculateMassgebendesEinkommen(
-			einkommenGS1,
-			einkaufBeruflicheVorsorgeGS1,
-			abzuegeLiegenschaftsaufwandGS1,
-			reinvermoegenNachAbzugGS1
+			calcEinkommen(finanzielleSituation),
+			calcEinkaeufeVorsorge(finanzielleSituation),
+			calcAbzuegeLiegenschaftsaufwand(finanzielleSituation),
+			calcReinvermoegenNachAbzug(finanzielleSituation)
 		);
 	}
 
 	@Nonnull
-	private BigDecimal calcEinkommen(@Nullable AbstractFinanzielleSituation finanzielleSituation) {
-		BigDecimal total = BigDecimal.ZERO;
-		if(finanzielleSituation != null) {
-			total =  add(total, finanzielleSituation.getSteuerbaresEinkommen());
-		}
-		return MathUtil.positiveNonNullAndRound(total);
+	private BigDecimal calcEinkommen(@Nonnull AbstractFinanzielleSituation finanzielleSituation) {
+		return MathUtil.positiveNonNullAndRound(finanzielleSituation.getSteuerbaresEinkommen());
 	}
 
 	@Nonnull
-	private BigDecimal calcEinkaeufeVorsorge(@Nullable AbstractFinanzielleSituation finanzielleSituation) {
-		BigDecimal total = BigDecimal.ZERO;
-		if(finanzielleSituation != null) {
-			total =  add(total, finanzielleSituation.getEinkaeufeVorsorge());
-		}
-		return MathUtil.positiveNonNullAndRound(total);
+	private BigDecimal calcEinkaeufeVorsorge(@Nonnull AbstractFinanzielleSituation finanzielleSituation) {
+		return MathUtil.positiveNonNullAndRound(finanzielleSituation.getEinkaeufeVorsorge());
 	}
 
 	@Nonnull
-	private BigDecimal calcAbzuegeLiegenschaftsaufwand(@Nullable AbstractFinanzielleSituation finanzielleSituation) {
-		BigDecimal total = BigDecimal.ZERO;
-		if(finanzielleSituation != null) {
-			total =  add(total, finanzielleSituation.getAbzuegeLiegenschaft());
-		}
-		return MathUtil.positiveNonNullAndRound(total);
+	private BigDecimal calcAbzuegeLiegenschaftsaufwand(@Nonnull AbstractFinanzielleSituation finanzielleSituation) {
+		return MathUtil.positiveNonNullAndRound(finanzielleSituation.getAbzuegeLiegenschaft());
 	}
 
 	@Nonnull
-	private BigDecimal calcReinvermoegenNachAbzug(@Nullable AbstractFinanzielleSituation finanzielleSituation) {
-		BigDecimal total = BigDecimal.ZERO;
-		if(finanzielleSituation != null) {
-			var reinvermoegenMitAbzug = subtract(finanzielleSituation.getSteuerbaresVermoegen(), new BigDecimal(200000));
-			if(BigDecimal.ZERO.compareTo(reinvermoegenMitAbzug) == -1) {
-				total = percent(reinvermoegenMitAbzug, 10);
-			}
-		}
-		return MathUtil.positiveNonNullAndRound(total);
+	private BigDecimal calcReinvermoegenNachAbzug(@Nonnull AbstractFinanzielleSituation finanzielleSituation) {
+		var reinvermoegenMitAbzug = subtract(finanzielleSituation.getSteuerbaresVermoegen(), new BigDecimal(200_000));
+
+		return BigDecimal.ZERO.compareTo(reinvermoegenMitAbzug) < 0 ?
+			MathUtil.positiveNonNullAndRound(percent(reinvermoegenMitAbzug, 10)) :
+			BigDecimal.ZERO;
 	}
 
 	private BigDecimal calculateMassgebendesEinkommen(
@@ -169,42 +142,32 @@ public class FinanzielleSituationSchwyzRechner extends AbstractFinanzielleSituat
 		@Nonnull BigDecimal abzuegeLiegenschaftsaufwand,
 		@Nonnull BigDecimal reinvermoegenNachAbzug
 	) {
+		BigDecimal anrechenbaresEinkommen = einkommen
+			.add(einkaufBeruflicheVorsorge)
+			.add(abzuegeLiegenschaftsaufwand)
+			.add(reinvermoegenNachAbzug);
 
-		BigDecimal anrechenbaresEinkommen = add(einkommen, einkaufBeruflicheVorsorge);
-		anrechenbaresEinkommen = add(anrechenbaresEinkommen, abzuegeLiegenschaftsaufwand);
-		anrechenbaresEinkommen = add(anrechenbaresEinkommen, reinvermoegenNachAbzug);
 		return MathUtil.positiveNonNullAndRound(anrechenbaresEinkommen);
 	}
 
-	private BigDecimal calculateForQuellenBesteuerte(
-		@Nonnull AbstractFinanzielleSituation finanzielleSituation) {
+	private BigDecimal calculateForQuellenBesteuerte(@Nonnull AbstractFinanzielleSituation finanzielleSituation) {
 		var bruttoeinkommen = calcBruttoeinkommen(finanzielleSituation);
 		var bruttopauschale = calcBruttopauschale(finanzielleSituation);
+
 		return calculateMassgebendesEinkommen(bruttoeinkommen, bruttopauschale);
 	}
 
 	@Nonnull
-	private BigDecimal calcBruttoeinkommen(@Nullable AbstractFinanzielleSituation finanzielleSituation) {
-		BigDecimal total = BigDecimal.ZERO;
-		if(finanzielleSituation != null) {
-			total =  add(total, finanzielleSituation.getBruttoLohn());
-		}
-		return MathUtil.positiveNonNullAndRound(total);
+	private BigDecimal calcBruttoeinkommen(@Nonnull AbstractFinanzielleSituation finanzielleSituation) {
+		return MathUtil.positiveNonNullAndRound(finanzielleSituation.getBruttoLohn());
 	}
 
 	@Nonnull
-	private BigDecimal calcBruttopauschale(@Nullable AbstractFinanzielleSituation finanzielleSituation) {
-		BigDecimal total = BigDecimal.ZERO;
-		if(finanzielleSituation != null) {
-			total = percent(finanzielleSituation.getBruttoLohn(), 20);
-		}
-		return MathUtil.positiveNonNullAndRound(total);
+	private BigDecimal calcBruttopauschale(@Nonnull AbstractFinanzielleSituation finanzielleSituation) {
+		return MathUtil.positiveNonNullAndRound(percent(finanzielleSituation.getBruttoLohn(), 20));
 	}
 
-	private BigDecimal calculateMassgebendesEinkommen(
-		@Nonnull BigDecimal bruttoeinkommen,
-		@Nonnull BigDecimal bruttopauschale
-	) {
+	private BigDecimal calculateMassgebendesEinkommen(@Nonnull BigDecimal bruttoeinkommen, @Nonnull BigDecimal bruttopauschale) {
 		BigDecimal anrechenbaresEinkommen = subtract(bruttoeinkommen, bruttopauschale);
 		return MathUtil.positiveNonNullAndRound(anrechenbaresEinkommen);
 	}
