@@ -36,6 +36,7 @@ import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
 import ch.dvbern.ebegu.enums.EinschulungTyp;
 import ch.dvbern.ebegu.enums.EinstellungKey;
+import ch.dvbern.ebegu.enums.KinderabzugTyp;
 import ch.dvbern.ebegu.services.BetreuungService;
 import ch.dvbern.ebegu.services.EinstellungService;
 import ch.dvbern.ebegu.services.GesuchstellerService;
@@ -53,7 +54,7 @@ import org.junit.jupiter.params.provider.EnumSource.Mode;
 import static org.easymock.EasyMock.expect;
 
 @ExtendWith(EasyMockExtension.class)
-public class KindServiceHandlerTest extends EasyMockSupport {
+class KindServiceHandlerTest extends EasyMockSupport {
 
 	@TestSubject
 	private final KindServiceHandler kindServiceHandler = new KindServiceHandler();
@@ -64,6 +65,23 @@ public class KindServiceHandlerTest extends EasyMockSupport {
 
 	@Mock
 	private GesuchstellerService gesuchstellerService;
+
+	@ParameterizedTest
+	@EnumSource(value = KinderabzugTyp.class,
+		names = { "SCHWYZ"},
+		mode = Mode.EXCLUDE)
+	void keinResetOnKindSaveKinderabzugTypNichtSchwyz(KinderabzugTyp kinderabzugTyp) {
+		KindContainer kindContainer = prepareKindContainer(EinschulungTyp.VORSCHULALTER, false);
+		Einstellung kinderabzugTypEinstellung = new Einstellung();
+		kinderabzugTypEinstellung.setValue(kinderabzugTyp.name());
+		expect(einstellungService.getEinstellungByMandant(
+			EinstellungKey.KINDERABZUG_TYP,
+			kindContainer.getGesuch().getGesuchsperiode())).andReturn(Optional.of(kinderabzugTypEinstellung)).once();
+		replayAll();
+		KindContainer oldKind = prepareKindContainer(EinschulungTyp.VORSCHULALTER, false);
+		kindServiceHandler.resetKindBetreuungenStatusOnKindSave(kindContainer, oldKind);
+		verifyAll();
+	}
 
 	@ParameterizedTest
 	@EnumSource(value = EinschulungTyp.class,
@@ -98,6 +116,22 @@ public class KindServiceHandlerTest extends EasyMockSupport {
 		verifyAll();
 	}
 
+	@ParameterizedTest
+	@EnumSource(value = KinderabzugTyp.class,
+		names = { "SCHWYZ"},
+		mode = Mode.EXCLUDE)
+	void keinResetKindBetreuungenpensenFragenOnKindSaveKinderabzugTypNichtSchwyz(KinderabzugTyp kinderabzugTyp) {
+		KindContainer kindContainer = prepareKindContainer(EinschulungTyp.PRIMARSTUFE, false);
+		Einstellung kinderabzugTypEinstellung = new Einstellung();
+		kinderabzugTypEinstellung.setValue(kinderabzugTyp.name());
+		expect(einstellungService.getEinstellungByMandant(
+			EinstellungKey.KINDERABZUG_TYP,
+			kindContainer.getGesuch().getGesuchsperiode())).andReturn(Optional.of(kinderabzugTypEinstellung)).once();
+		replayAll();
+		KindContainer oldKind = prepareKindContainer(EinschulungTyp.VORSCHULALTER, false);
+		kindServiceHandler.resetKindBetreuungenDatenOnKindSave(kindContainer, oldKind);
+		verifyAll();
+	}
 	@Test
 	void resetKindBetreuungenpensenFragenOnKindSaveMitEinschulungAenderung_von_SCHULSTUFE_to_VORSCHULALTER() {
 		KindContainer kindContainer = prepareKindContainer(EinschulungTyp.PRIMARSTUFE, false);
