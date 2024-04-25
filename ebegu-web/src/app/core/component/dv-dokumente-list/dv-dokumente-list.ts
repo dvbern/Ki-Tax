@@ -54,7 +54,7 @@ export class DVDokumenteListConfig implements IComponentOptions {
         dokumente: '<',
         tableId: '@',
         tableTitle: '@',
-        tag: '@',
+        tag: '<',
         titleValue: '<',
         onUploadDone: '&',
         onRemove: '&',

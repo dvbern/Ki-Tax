@@ -18,6 +18,7 @@ import {TSDokumenteDTO} from '../../../models/dto/TSDokumenteDTO';
 import {TSCacheTyp} from '../../../models/enums/TSCacheTyp';
 import {TSDokumentGrundTyp} from '../../../models/enums/TSDokumentGrundTyp';
 import {TSDokumentTyp} from '../../../models/enums/TSDokumentTyp';
+import {TSFinanzielleSituationTyp} from '../../../models/enums/TSFinanzielleSituationTyp';
 import {TSWizardStepName} from '../../../models/enums/TSWizardStepName';
 import {TSWizardStepStatus} from '../../../models/enums/TSWizardStepStatus';
 import {TSDokument} from '../../../models/TSDokument';
@@ -209,4 +210,12 @@ export class DokumenteViewController extends AbstractGesuchViewController<any> {
         this.gesuchModelManager.getGesuch().dokumenteHochgeladen = false;
         this.gesuchModelManager.updateGesuch();
     }
+
+    public getTagAnhandFinanzielleSituationTyp(): string | null {
+        if (this.gesuchModelManager.getGesuch().finSitTyp === TSFinanzielleSituationTyp.SCHWYZ) {
+            return null;
+        }
+        return 'DOK_JAHR';
+    }
+
 }
