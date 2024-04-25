@@ -46,6 +46,9 @@ import org.easymock.TestSubject;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
+import org.junit.jupiter.params.provider.EnumSource.Mode;
 
 import static org.easymock.EasyMock.expect;
 
@@ -62,8 +65,11 @@ public class KindServiceHandlerTest extends EasyMockSupport {
 	@Mock
 	private GesuchstellerService gesuchstellerService;
 
-	@Test
-	void resetKindBetreuungenStatusOnKindSaveMitEinschulungAenderung_von_VORSCHULALTER_to_SCHULSTUFE() {
+	@ParameterizedTest
+	@EnumSource(value = EinschulungTyp.class,
+		names = { "PRIMARSTUFE", "SEKUNDAR_UND_HOEHER_STUFE" },
+		mode = Mode.INCLUDE)
+	void resetKindBetreuungenStatusOnKindSaveMitEinschulungAenderung_von_VORSCHULALTER_to_SCHULSTUFE(EinschulungTyp einschulungTyp) {
 		KindContainer kindContainer = prepareKindContainer(EinschulungTyp.VORSCHULALTER, false);
 		Einstellung kinderabzugTyp = new Einstellung();
 		kinderabzugTyp.setValue("SCHWYZ");
@@ -73,7 +79,7 @@ public class KindServiceHandlerTest extends EasyMockSupport {
 		expect(betreuungService.saveBetreuung(kindContainer.getBetreuungen().stream().findFirst().get(), false, null)).andReturn(
 			kindContainer.getBetreuungen().stream().findFirst().get()).once();
 		replayAll();
-		KindContainer oldKind = prepareKindContainer(EinschulungTyp.PRIMARSTUFE, false);
+		KindContainer oldKind = prepareKindContainer(einschulungTyp, false);
 		kindServiceHandler.resetKindBetreuungenStatusOnKindSave(kindContainer, oldKind);
 		verifyAll();
 	}
