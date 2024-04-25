@@ -128,7 +128,7 @@ public class KindResource {
 		}
 		KindContainer convertedKind = converter.kindContainerToEntity(kindContainerJAXP, kindToMerge);
 		convertedKind.setGesuch(gesuch);
-		KindContainer persistedKind = this.kindService.saveKind(convertedKind);
+		KindContainer persistedKind = this.kindService.saveKind(convertedKind, kindToMerge);
 
 		return converter.kindContainerToJAX(persistedKind);
 	}
