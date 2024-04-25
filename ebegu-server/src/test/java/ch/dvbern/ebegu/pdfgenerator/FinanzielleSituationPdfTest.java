@@ -22,11 +22,17 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Optional;
 import java.util.function.Function;
 
+import javax.annotation.Nonnull;
+
+import au.com.origin.snapshots.Expect;
+import au.com.origin.snapshots.annotations.SnapshotName;
+import au.com.origin.snapshots.junit5.SnapshotExtension;
 import ch.dvbern.ebegu.entities.Einkommensverschlechterung;
 import ch.dvbern.ebegu.entities.EinkommensverschlechterungContainer;
 import ch.dvbern.ebegu.entities.EinkommensverschlechterungInfo;
@@ -60,6 +66,7 @@ import org.apache.commons.io.FileUtils;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 import org.junit.jupiter.params.provider.EnumSource.Mode;
@@ -68,9 +75,12 @@ import static java.util.Objects.requireNonNull;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.stringContainsInOrder;
 
+@ExtendWith(SnapshotExtension.class)
 class FinanzielleSituationPdfTest {
 
 	private static final String PATH_PREFIX = FileUtils.getTempDirectoryPath() + "/kiBon/FinanzielleSituation/";
+
+	private Expect expect;
 
 	@BeforeAll
 	static void beforeAll() throws IOException {
@@ -84,6 +94,7 @@ class FinanzielleSituationPdfTest {
 			});
 	}
 
+	@SnapshotName("finsit-testAlleinstehend")
 	@ParameterizedTest
 	@EnumSource(value = MandantIdentifier.class, mode = Mode.MATCH_ALL)
 	void testAlleinstehend(MandantIdentifier identifier) {
@@ -98,9 +109,13 @@ class FinanzielleSituationPdfTest {
 		File pdf = generatePdf(gesuch, "WaeltiDagmar.pdf");
 		String text = PdfUnitTestUtil.getText(pdf);
 
+		expect.scenario(identifier.name())
+			.toMatchSnapshot(textForSnapshot(text));
+
 		assertThat(text, stringContainsInOrder("Berechnung der finanziellen Verhältnisse"));
 	}
 
+	@SnapshotName("finsit-testVerheirated")
 	@ParameterizedTest
 	@EnumSource(value = MandantIdentifier.class, mode = Mode.MATCH_ALL)
 	void testVerheirated(MandantIdentifier identifier) {
@@ -115,6 +130,8 @@ class FinanzielleSituationPdfTest {
 		File pdf = generatePdf(gesuch, "FeutzYvonne.pdf");
 		String text = PdfUnitTestUtil.getText(pdf);
 
+		expect.scenario(identifier.name()).toMatchSnapshot(textForSnapshot(text));
+
 		assertThat(text, stringContainsInOrder("Berechnung der finanziellen Verhältnisse"));
 	}
 
@@ -124,6 +141,9 @@ class FinanzielleSituationPdfTest {
 		@Nested
 		class WhenSingleGesuchsteller {
 
+			private Expect expect;
+
+			@SnapshotName("finsit-schwyz-single-veranlagt")
 			@Test
 			void alleinerziehend_veranlagt() {
 				var gesuch = setupSingleGesuchsteller(
@@ -133,6 +153,8 @@ class FinanzielleSituationPdfTest {
 
 				File pdf = generatePdf(gesuch, "single-veranlagt.pdf");
 				String text = PdfUnitTestUtil.getText(pdf);
+
+				expect.toMatchSnapshot(textForSnapshot(text));
 
 				assertThat(text, stringContainsInOrder(
 					"Berechnung der finanziellen Verhältnisse",
@@ -144,6 +166,7 @@ class FinanzielleSituationPdfTest {
 				));
 			}
 
+			@SnapshotName("finsit-schwyz-single-quellenbesteuert")
 			@Test
 			void alleinerziehend_quellenbesteuert() {
 				var gesuch = setupSingleGesuchsteller(
@@ -154,7 +177,12 @@ class FinanzielleSituationPdfTest {
 				File pdf = generatePdf(gesuch, "single-quellenbesteuert.pdf");
 				String text = PdfUnitTestUtil.getText(pdf);
 
-				assertThat(text, stringContainsInOrder("Berechnung der finanziellen Verhältnisse"));
+				expect.toMatchSnapshot(textForSnapshot(text));
+
+				assertThat(text, stringContainsInOrder(
+					"Berechnung der finanziellen Verhältnisse",
+					"Bruttolohn"
+				));
 			}
 
 			Gesuch setupSingleGesuchsteller(
@@ -176,6 +204,9 @@ class FinanzielleSituationPdfTest {
 		@Nested
 		class WhenMultipleGesuchsteller {
 
+			private Expect expect;
+
+			@SnapshotName("finsit-schwyz-gemeinsam-veranlagt")
 			@Test
 			void gemeinsamVeranlagt() {
 				var gesuch = setupGemeinsameSteuererklaerung(
@@ -184,6 +215,8 @@ class FinanzielleSituationPdfTest {
 
 				File pdf = generatePdf(gesuch, "gemeinsamVeranlagt.pdf");
 				String text = PdfUnitTestUtil.getText(pdf);
+
+				expect.toMatchSnapshot(textForSnapshot(text));
 
 				assertThat(text, stringContainsInOrder("Berechnung der finanziellen Verhältnisse"));
 			}
@@ -197,6 +230,8 @@ class FinanzielleSituationPdfTest {
 
 				File pdf = generatePdf(gesuch, "beideQuellenbesteuert.pdf");
 				String text = PdfUnitTestUtil.getText(pdf);
+
+				expect.toMatchSnapshot(textForSnapshot(text));
 
 				assertThat(text, stringContainsInOrder(
 					"Berechnung der finanziellen Verhältnisse",
@@ -222,6 +257,8 @@ class FinanzielleSituationPdfTest {
 
 				File pdf = generatePdf(gesuch, "mixed.pdf");
 				String text = PdfUnitTestUtil.getText(pdf);
+
+				expect.toMatchSnapshot(textForSnapshot(text));
 
 				assertThat(text, stringContainsInOrder("Berechnung der finanziellen Verhältnisse"));
 			}
@@ -265,6 +302,8 @@ class FinanzielleSituationPdfTest {
 
 				File pdf = generatePdf(gesuch, "einkommensverschlaechterung.pdf");
 				String text = PdfUnitTestUtil.getText(pdf);
+
+				expect.toMatchSnapshot(textForSnapshot(text));
 
 				assertThat(text, stringContainsInOrder("Berechnung der finanziellen Verhältnisse"));
 			}
@@ -398,5 +437,10 @@ class FinanzielleSituationPdfTest {
 
 	static Path getOutputPath(MandantIdentifier mandant) {
 		return Path.of(PATH_PREFIX, mandant.name());
+	}
+
+	@Nonnull
+	private String textForSnapshot(String text) {
+		return text.replaceAll(Constants.DATE_FORMATTER.format(LocalDate.now()), "<TODAY>");
 	}
 }
