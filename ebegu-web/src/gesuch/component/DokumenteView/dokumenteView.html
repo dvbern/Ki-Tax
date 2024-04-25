@@ -35,7 +35,7 @@
 
                     <dv-dokumente-list dokumente="vm.dokumenteKinder" table-id="dokumenteKinder"
                                        table-title="DOK_KINDER"
-                                       tag="ZEITRAUM"
+                                       tag="'ZEITRAUM'"
                                        on-upload-done="vm.addUploadedDokuments(dokument, vm.dokumenteKinder)"
                                        on-remove="vm.removeDokument(dokumentGrund, dokument, vm.dokumenteKinder)">
                     </dv-dokumente-list>
@@ -48,7 +48,7 @@
 
                     <dv-dokumente-list dokumente="vm.dokumenteFinSit" table-id="dokumenteFinSit"
                                        table-title="DOK_FINANZIELLE_SITUATION"
-                                       tag="DOK_JAHR"
+                                       tag="vm.getTagAnhandFinanzielleSituationTyp()"
                                        title-value="vm.gesuchModelManager.getBasisjahr()"
                                        on-upload-done="vm.addUploadedDokuments(dokument, vm.dokumenteFinSit)"
                                        on-remove="vm.removeDokument(dokumentGrund, dokument, vm.dokumenteFinSit)">
@@ -56,14 +56,14 @@
 
                     <dv-dokumente-list dokumente="vm.dokumenteErwp" table-id="dokumenteErwp"
                                        table-title="DOK_ERWERBSPENSUM"
-                                       tag="DOK_TAETIGKEIT"
+                                       tag="'DOK_TAETIGKEIT'"
                                        on-upload-done="vm.addUploadedDokuments(dokument, vm.dokumenteErwp)"
                                        on-remove="vm.removeDokument(dokumentGrund, dokument, vm.dokumenteErwp)">
                     </dv-dokumente-list>
 
                     <dv-dokumente-list dokumente="vm.dokumenteEkv" table-id="dokumenteEkv"
                                        table-title="EKVI_EINKOMMENSVERSCHLECHTERUNG"
-                                       tag="DOK_JAHR"
+                                       tag="vm.getTagAnhandFinanzielleSituationTyp()"
                                        on-upload-done="vm.addUploadedDokuments(dokument, vm.dokumenteEkv)"
                                        on-remove="vm.removeDokument(dokumentGrund, dokument, vm.dokumenteEkv)">
                     </dv-dokumente-list>

@@ -108,6 +108,6 @@
     "ERWERBSPENSUM_NACHWEIS_AUSBILDUNG": "Nachweis über Aus- oder Weiterbildung (z.B. Ausbildungsvertrag, Immatrikulationsbestätigung) und zeitlichen Aufwand",
     "ERWERBSPENSUM_NACHWEIS_RAV": "Anmeldebestätigung der Arbeitslosenkasse oder Nachweis der Anmeldung beim regionalen Arbeitsvermittlungszentrum (RAV) und zeitlichen Aufwand",
     "SELBSTAENDIG": "Selbständig erwerbend",
-    "NACHWEIS_ABGERECHNETE_QUELLENSTEUERN_HINT": "Bestätigung über abgerechnete Quellensteuern der Steuerverwaltung SZ",
+    "NACHWEIS_ABGERECHNETE_QUELLENSTEUERN_HINT": "Die Bestätigung der kantonalen Steuerverwaltung kann formlos unter Angabe der Personalien und des vergangenen Kalenderjahres angefordert werden unter: <a href='mailto:quest.stv@sz.ch'>quest.stv@sz.ch</a> oder +41 41 819 13 77",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }
