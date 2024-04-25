@@ -408,6 +408,14 @@ public class BGCalculationInputMergerTest {
 		Assert.assertEquals(61, bgCalculationInput1.getAnspruchspensumProzent());
 	}
 
+	@Test
+	public void test_betreuungInFerienzeit() {
+		bgCalculationInput1.setBetreuungInFerienzeit(true);
+		bgCalculationInput2.setBetreuungInFerienzeit(false);
+		bgCalculationInput1.add(bgCalculationInput2);
+		Assert.assertTrue(bgCalculationInput1.isBetreuungInFerienzeit());
+	}
+
 	@Before
 	public void init() {
 		bgCalculationInput1 = new BGCalculationInput(new VerfuegungZeitabschnitt(), RuleValidity.ASIV);

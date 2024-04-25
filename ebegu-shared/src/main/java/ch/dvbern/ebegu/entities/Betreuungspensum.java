@@ -15,16 +15,22 @@
 
 package ch.dvbern.ebegu.entities;
 
+import java.util.Objects;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.persistence.AssociationOverride;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.ForeignKey;
+import javax.persistence.JoinColumn;
+import javax.validation.constraints.NotNull;
+
 import ch.dvbern.ebegu.enums.AntragCopyType;
 import ch.dvbern.ebegu.types.DateRange;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.commons.lang3.builder.CompareToBuilder;
 import org.hibernate.envers.Audited;
-
-import javax.annotation.Nonnull;
-import javax.persistence.*;
-import javax.validation.constraints.NotNull;
-import java.util.Objects;
 
 /**
  * Entity fuer Betreuungspensen.
@@ -43,9 +49,14 @@ public class Betreuungspensum extends AbstractMahlzeitenPensum implements Compar
 	@Column(nullable = false)
 	private Boolean nichtEingetreten = false;
 
+	@Nullable
+	@Column(nullable = true)
+	private Boolean betreuungInFerienzeit;
+
 	public Betreuungspensum() {
 	}
 
+	@SuppressWarnings("PMD.ConstructorCallsOverridableMethod")
 	public Betreuungspensum(BetreuungsmitteilungPensum betPensumMitteilung) {
 		this.setGueltigkeit(new DateRange(betPensumMitteilung.getGueltigkeit()));
 		this.setPensum(betPensumMitteilung.getPensum());
@@ -57,6 +68,7 @@ public class Betreuungspensum extends AbstractMahlzeitenPensum implements Compar
 		this.setTarifProHauptmahlzeit(betPensumMitteilung.getTarifProHauptmahlzeit());
 		this.setTarifProNebenmahlzeit(betPensumMitteilung.getTarifProNebenmahlzeit());
 		this.setStuendlicheVollkosten(betPensumMitteilung.getStuendlicheVollkosten());
+		this.setBetreuungInFerienzeit(betPensumMitteilung.getBetreuungInFerienzeit());
 
 		if (betPensumMitteilung.getEingewoehnungPauschale() != null) {
 			EingewoehnungPauschale eingewoehnungPauschale = new EingewoehnungPauschale();
@@ -79,6 +91,15 @@ public class Betreuungspensum extends AbstractMahlzeitenPensum implements Compar
 		this.nichtEingetreten = nichtEingetreten;
 	}
 
+	@Nullable
+	public Boolean getBetreuungInFerienzeit() {
+		return betreuungInFerienzeit;
+	}
+
+	public void setBetreuungInFerienzeit(@Nullable Boolean betreuungInFerienzeit) {
+		this.betreuungInFerienzeit = betreuungInFerienzeit;
+	}
+
 	@Override
 	public int compareTo(Betreuungspensum o) {
 		CompareToBuilder builder = new CompareToBuilder();
@@ -93,6 +114,7 @@ public class Betreuungspensum extends AbstractMahlzeitenPensum implements Compar
 		switch (copyType) {
 		case MUTATION:
 			target.setNichtEingetreten(this.getNichtEingetreten());
+			target.setBetreuungInFerienzeit(this.getBetreuungInFerienzeit());
 			break;
 		case ERNEUERUNG:
 		case ERNEUERUNG_AR_2023:
@@ -119,6 +141,7 @@ public class Betreuungspensum extends AbstractMahlzeitenPensum implements Compar
 		}
 		final Betreuungspensum otherBetreuungspensum = (Betreuungspensum) other;
 		return Objects.equals(getNichtEingetreten(), otherBetreuungspensum.getNichtEingetreten())
+			&& Objects.equals(getBetreuungInFerienzeit(), otherBetreuungspensum.getBetreuungInFerienzeit())
 			&& this.getUnitForDisplay() == otherBetreuungspensum.getUnitForDisplay();
 	}
 }

@@ -7,10 +7,8 @@ import java.util.Objects;
 import ch.dvbern.ebegu.entities.Einstellung;
 import ch.dvbern.ebegu.enums.AnspruchBeschaeftigungAbhaengigkeitTyp;
 import ch.dvbern.ebegu.enums.EinstellungKey;
-import ch.dvbern.ebegu.enums.FinanzielleSituationTyp;
 import ch.dvbern.ebegu.util.AnspruchBeschaeftigungAbhangigkeitTypVisitor;
 import ch.dvbern.ebegu.util.Constants;
-import com.sun.istack.NotNull;
 
 import static ch.dvbern.ebegu.enums.EinstellungKey.ABHAENGIGKEIT_ANSPRUCH_BESCHAEFTIGUNGPENSUM;
 import static ch.dvbern.ebegu.enums.EinstellungKey.MINIMALDAUER_KONKUBINAT;
@@ -65,6 +63,21 @@ public class ErwerbspensumCalcRuleVisitor implements AnspruchBeschaeftigungAbhan
 			RuleType.GRUNDREGEL_CALC,
 			RuleValidity.ASIV,
 			Constants.DEFAULT_GUELTIGKEIT,
+			locale
+		);
+	}
+
+	@Override
+	public AbstractErwerbspensumCalcRule visitSchwyz() {
+		Einstellung minEWPnichtEingeschultAsiv = einstellungMap.get(MIN_ERWERBSPENSUM_NICHT_EINGESCHULT);
+		Einstellung minEWPeingeschultAsiv = einstellungMap.get(MIN_ERWERBSPENSUM_EINGESCHULT);
+		Einstellung paramMinDauerKonkubinat = einstellungMap.get(MINIMALDAUER_KONKUBINAT);
+
+		return new ErwerbspensumSchwyzCalcRule(
+			Constants.DEFAULT_GUELTIGKEIT,
+			minEWPnichtEingeschultAsiv.getValueAsInteger(),
+			minEWPeingeschultAsiv.getValueAsInteger(),
+			paramMinDauerKonkubinat.getValueAsInteger(),
 			locale
 		);
 	}

@@ -17,7 +17,12 @@
 
 package ch.dvbern.ebegu.util.mandant;
 
+import ch.dvbern.ebegu.entities.Mandant;
+
 public interface MandantVisitor<T> {
+	default T visit(Mandant mandant) {
+		return mandant.getMandantIdentifier().accept(this);
+	}
 	T visitBern();
 	T visitLuzern();
 	T visitSolothurn();

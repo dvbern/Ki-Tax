@@ -130,8 +130,10 @@ describe('Kibon - mutationen [Gesuchsteller]', () => {
         VerfuegenPO.getBetreuungsstatus(1,0).should('include.text', 'Geschlossen ohne Verfügung');
 
         DossierToolbarPO.getAntragMutieren().click();
+        // we have an issue, that the input field cannot be typed in but it has not yet been reproducable locally
+        cy.wait(1000);
         AntragCreationPO.getEingangsdatum().find('input').should('not.have.attr', 'disabled');
-        AntragCreationPO.getEingangsdatum().find('input').type('01.05.2023');
+        AntragCreationPO.getEingangsdatum().find('input').click().type('01.05.2023');
         cy.intercept('GET', '**/gesuche/dossier/**').as('createNewMutation');
         NavigationPO.saveAndGoNext();
         cy.wait('@createNewMutation');

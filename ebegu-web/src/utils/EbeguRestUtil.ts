@@ -2753,6 +2753,7 @@ export class EbeguRestUtil {
             restBetreuungspensum.tarifProHauptmahlzeit = betreuungspensum.tarifProHauptmahlzeit ?? 0;
             restBetreuungspensum.tarifProNebenmahlzeit = betreuungspensum.tarifProNebenmahlzeit ?? 0;
             restBetreuungspensum.unitForDisplay = betreuungspensum.unitForDisplay;
+            restBetreuungspensum.betreuungInFerienzeit = betreuungspensum.betreuungInFerienzeit;
         }
         return restBetreuungspensum;
     }
@@ -2766,6 +2767,7 @@ export class EbeguRestUtil {
         restBetreuungspensum.monatlicheNebenmahlzeiten = betreuungspensum.monatlicheNebenmahlzeiten;
         restBetreuungspensum.tarifProHauptmahlzeit = betreuungspensum.tarifProHauptmahlzeit;
         restBetreuungspensum.tarifProNebenmahlzeit = betreuungspensum.tarifProNebenmahlzeit;
+        restBetreuungspensum.betreuungInFerienzeit = betreuungspensum.betreuungInFerienzeit;
         return restBetreuungspensum;
     }
 
@@ -2949,6 +2951,7 @@ export class EbeguRestUtil {
             betreuungspensumTS.tarifProHauptmahlzeit = betreuungspensumFromServer.tarifProHauptmahlzeit;
             betreuungspensumTS.tarifProNebenmahlzeit = betreuungspensumFromServer.tarifProNebenmahlzeit;
             betreuungspensumTS.unitForDisplay = betreuungspensumFromServer.unitForDisplay;
+            betreuungspensumTS.betreuungInFerienzeit = betreuungspensumFromServer.betreuungInFerienzeit;
             return betreuungspensumTS;
         }
         return undefined;
@@ -2963,6 +2966,7 @@ export class EbeguRestUtil {
             betreuungspensumTS.monatlicheNebenmahlzeiten = betreuungspensumFromServer.monatlicheNebenmahlzeiten;
             betreuungspensumTS.tarifProHauptmahlzeit = betreuungspensumFromServer.tarifProHauptmahlzeit;
             betreuungspensumTS.tarifProNebenmahlzeit = betreuungspensumFromServer.tarifProNebenmahlzeit;
+            betreuungspensumTS.betreuungInFerienzeit = betreuungspensumFromServer.betreuungInFerienzeit;
             return betreuungspensumTS;
         }
         return undefined;
@@ -6166,8 +6170,8 @@ export class EbeguRestUtil {
         throw new Error(`FinanzielleSituationTyp ${typ} not defined`);
     }
 
-    public parseAnspruchBeschaeftigungAbhaengigkeitTyp(typ: any): TSAnspruchBeschaeftigungAbhaengigkeitTyp {
-        if (Object.values(TSAnspruchBeschaeftigungAbhaengigkeitTyp).includes(typ.value)) {
+    public parseAnspruchBeschaeftigungAbhaengigkeitTyp(typ: TSEinstellung): TSAnspruchBeschaeftigungAbhaengigkeitTyp {
+        if (Object.values(TSAnspruchBeschaeftigungAbhaengigkeitTyp).includes(typ.value as any)) {
             return typ.value as TSAnspruchBeschaeftigungAbhaengigkeitTyp;
         }
         throw new Error(`TSAnspruchBeschaeftigungAbhaengigkeitTyp ${typ} not defined`);
