@@ -148,6 +148,7 @@ import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.types.DateRange_;
 import ch.dvbern.ebegu.util.BetreuungUtil;
 import ch.dvbern.ebegu.util.Constants;
+import ch.dvbern.ebegu.util.EbeguUtil;
 import ch.dvbern.ebegu.util.Gueltigkeit;
 import ch.dvbern.ebegu.util.MathUtil;
 import ch.dvbern.ebegu.util.MitteilungUtil;
@@ -1025,7 +1026,7 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 
 		mitteilung.setBetreuungspensen(pensenFromAbweichungen);
 
-		Locale locale = LocaleThreadLocal.get();
+		Locale locale = EbeguUtil.extractKorrespondenzsprache(betreuung.extractGesuch(), gemeindeService).getLocale();
 
 		Benutzer currentBenutzer = benutzerService.getCurrentBenutzer()
 			.orElseThrow(() -> new EbeguEntityNotFoundException("sendBetreuungsmitteilung"));
@@ -1069,7 +1070,10 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 			if (betreuungspensen.isEmpty()) {
 				persistence.remove(mitteilung);
 			} else {
-				mitteilung.setMessage(createNachrichtForMutationsmeldung(mitteilung, betreuungspensen, LocaleThreadLocal.get()));
+				Objects.requireNonNull(mitteilung.getBetreuung());
+				final Locale locale =
+					EbeguUtil.extractKorrespondenzsprache(mitteilung.getBetreuung().extractGesuch(), gemeindeService).getLocale();
+				mitteilung.setMessage(createNachrichtForMutationsmeldung(mitteilung, betreuungspensen, locale));
 				persistence.merge(mitteilung);
 			}
 		});
