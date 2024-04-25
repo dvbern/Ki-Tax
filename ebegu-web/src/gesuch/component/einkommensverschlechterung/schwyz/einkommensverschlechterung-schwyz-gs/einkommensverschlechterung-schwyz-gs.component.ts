@@ -15,7 +15,6 @@ import {AbstractGesuchViewX} from '../../../abstractGesuchViewX';
 })
 export class EinkommensverschlechterungSchwyzGsComponent extends AbstractGesuchViewX<TSFinanzModel> {
 
-    public hasMultipleFinSit: boolean;
     public isFinSitVollstaendigAusgefuellt: boolean;
 
     public constructor(
@@ -25,8 +24,6 @@ export class EinkommensverschlechterungSchwyzGsComponent extends AbstractGesuchV
     ) {
         super(gesuchmodelManager, wizardstepManager, TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_SCHWYZ);
         this.initModel();
-        this.hasMultipleFinSit = this.gesuchmodelManager.isGesuchsteller2Required()
-            && EbeguUtil.isNotNullAndFalse(this.gesuchmodelManager.getFamiliensituation().gemeinsameSteuererklaerung);
         this.wizardStepManager.updateCurrentWizardStepStatusSafe(
             TSWizardStepName.EINKOMMENSVERSCHLECHTERUNG_SOLOTHURN,
             TSWizardStepStatus.IN_BEARBEITUNG);
@@ -87,6 +84,10 @@ export class EinkommensverschlechterungSchwyzGsComponent extends AbstractGesuchV
     }
 
     public getGSName(): string {
+        if (this.gesuchmodelManager.isGesuchsteller2Required()
+            && EbeguUtil.isNotNullAndTrue(this.gesuchmodelManager.getFamiliensituation().gemeinsameSteuererklaerung)) {
+            return `${this.extractFullNameGS1()} + ${this.extractFullNameGS2()}`;
+        }
         return this.gesuchmodelManager.gesuchstellerNumber === 1 ? this.extractFullNameGS1() : this.extractFullNameGS2();
     }
 
