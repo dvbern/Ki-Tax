@@ -1,10 +1,10 @@
 package ch.dvbern.ebegu.rules;
 
+import java.util.Locale;
+
 import ch.dvbern.ebegu.enums.FinanzielleSituationTyp;
 import ch.dvbern.ebegu.util.FinanzielleSituationTypVisitor;
 import com.sun.istack.NotNull;
-
-import java.util.Locale;
 
 public class MutationsMergerFinanzielleSituationVisitor implements FinanzielleSituationTypVisitor<AbstractMutationsMergerFinanzielleSituation> {
 
@@ -46,6 +46,6 @@ public class MutationsMergerFinanzielleSituationVisitor implements FinanzielleSi
 
 	@Override
 	public AbstractMutationsMergerFinanzielleSituation visitFinSitSchwyz() {
-		return new MutationsMergerFinanzielleSituationBern(locale);
+		return new MutationsMergerFinanzielleSituationLuzern(locale);
 	}
 }

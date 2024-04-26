@@ -1,10 +1,10 @@
 package ch.dvbern.ebegu.rules;
 
+import java.util.Locale;
+
 import ch.dvbern.ebegu.util.mandant.MandantIdentifier;
 import ch.dvbern.ebegu.util.mandant.MandantVisitor;
 import com.sun.istack.NotNull;
-
-import java.util.Locale;
 
 public class MutationsMergerAnspruchHandlerVisitor implements MandantVisitor<AbstractMutationsMergerAnspruchHandler> {
 
@@ -39,6 +39,6 @@ public class MutationsMergerAnspruchHandlerVisitor implements MandantVisitor<Abs
 
 	@Override
 	public AbstractMutationsMergerAnspruchHandler visitSchwyz() {
-		return this.visitSolothurn();
+		return this.visitLuzern();
 	}
 }
