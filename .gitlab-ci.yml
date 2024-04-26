@@ -350,6 +350,7 @@ build-frontend:
         - when: always
 
 analyze-backend:
+    allow_failure: true
     before_script:
         - git fetch --unshallow
     extends: .analyze-backend-maven

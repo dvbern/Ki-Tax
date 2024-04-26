@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2021 DV Bern AG, Switzerland
+ * Copyright (C) 2024 DV Bern AG, Switzerland
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -15,17 +15,11 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.dvbern.ebegu.util.mandant;
+SET @mandant_schwyz_id = (SELECT id FROM mandant WHERE mandant_identifier = 'SCHWYZ');
 
-import ch.dvbern.ebegu.entities.Mandant;
+INSERT IGNORE INTO application_property (id, mandant_id, timestamp_erstellt, timestamp_mutiert, user_erstellt,
+										 user_mutiert, version, vorgaenger_id, name, value)
+SELECT UNHEX(REPLACE(UUID(), '-', '')), id, NOW(), NOW(), 'flyway', 'flyway', 0, NULL, 'ABWEICHUNGEN_ENABLED', 'true'
+FROM mandant;
 
-public interface MandantVisitor<T> {
-	default T visit(Mandant mandant) {
-		return mandant.getMandantIdentifier().accept(this);
-	}
-	T visitBern();
-	T visitLuzern();
-	T visitSolothurn();
-	T visitAppenzellAusserrhoden();
-	T visitSchwyz();
-}
+UPDATE application_property SET value = 'false' WHERE name = 'ABWEICHUNGEN_ENABLED' AND mandant_id = @mandant_schwyz_id;

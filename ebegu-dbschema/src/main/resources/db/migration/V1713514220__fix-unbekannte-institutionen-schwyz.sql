@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2021 DV Bern AG, Switzerland
+ * Copyright (C) 2024 DV Bern AG, Switzerland
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -15,17 +15,21 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.dvbern.ebegu.util.mandant;
+SET @mandant_id_schwyz = (SELECT id
+						  FROM mandant
+						  WHERE mandant_identifier = 'SCHWYZ');
 
-import ch.dvbern.ebegu.entities.Mandant;
+# fix "Unbekannte Kita"
+UPDATE institution
+SET mandant_id = @mandant_id_schwyz
+WHERE id = UNHEX(REPLACE('00000000-0000-0000-0000-000000000012', '-', ''));
 
-public interface MandantVisitor<T> {
-	default T visit(Mandant mandant) {
-		return mandant.getMandantIdentifier().accept(this);
-	}
-	T visitBern();
-	T visitLuzern();
-	T visitSolothurn();
-	T visitAppenzellAusserrhoden();
-	T visitSchwyz();
-}
+# fix "Unbekannte TFO"
+UPDATE institution
+SET mandant_id = @mandant_id_schwyz
+WHERE id = UNHEX(REPLACE('00000000-0000-0000-0000-000000000013', '-', ''));
+
+# fix "Unbekannte Tagesschule"
+UPDATE institution
+SET mandant_id = @mandant_id_schwyz
+WHERE id = UNHEX(REPLACE('00000000-0000-0000-0000-000000000014', '-', ''));

@@ -210,6 +210,7 @@
 
                             <dv-betreuung-input pensum-container="vm.getBetreuungspensum(0)"
                                                 input-id="provPensum"
+                                                index="$index"
                                                 is-disabled="!vm.isEnabled()"
                                                 betreuungsangebot-typ="vm.betreuungsangebot.key"
                                                 betreuung-input-switch-typ="vm.getBetreuungspensumAnzeigeTyp()"
@@ -692,6 +693,7 @@
                                                             input-id="betreuungspensum-{{$index}}"
                                                             betreuungsangebot-typ="vm.getBetreuungModel().getAngebotTyp()"
                                                             is-disabled="!vm.isPensumEditable()"
+                                                            index="$index"
                                                             multiplier-kita="vm.getMultiplierKita()"
                                                             multiplier-tfo="vm.getMultiplierTFO()"
                                                             betreuung-input-switch-typ="vm.getBetreuungspensumAnzeigeTyp()"
@@ -981,8 +983,7 @@
                                                                  aria-label="{{'EINGEWOEHNUNG_PAUSCHALE_CHECKBOX'| translate}}">
                                                         <span data-translate="EINGEWOEHNUNG_PAUSCHALE_CHECKBOX"></span>
                                                     </md-checkbox>
-                                                    <dv-tooltip input-id="eingewoehnungPauschaleInfo-{{$index}}"
-                                                                text="'EINGEWOEHNUNG_PAUSCHALE_CHECKBOX_INFO' | translate"></dv-tooltip>
+                                                    <div class="mock-dv-tooltip"></div>
                                                 </div>
                                             </div>
                                         </div>
@@ -992,8 +993,10 @@
                                                 <div class="col-sm-12 dv-input-container-small">
                                                     <dv-input-container class="form-group">
                                                         <label class="md-no-float"
-                                                               data-translate="EINGEWOEHNUNG_PAUSCHALE"
                                                                for="eingewoehnungPauschale">
+                                                            <span data-translate="EINGEWOEHNUNG_PAUSCHALE"></span>
+                                                            <dv-tooltip input-id="eingewoehnungPauschaleInfo-{{$index}}"
+                                                                        text="'EINGEWOEHNUNG_PAUSCHALE_CHECKBOX_INFO' | translate"></dv-tooltip>
                                                         </label>
                                                         <div class="dv-input-container-small">
                                                             <input aria-describedby="eingewoehnungPauschale-error"
@@ -1259,7 +1262,7 @@
 
                     <span dv-show-element
                           dv-show-allowed-roles="vm.TSRoleUtil.getTraegerschaftInstitutionRoles()"
-                          dv-show-expression="vm.isMutationsmeldungAllowed() && !vm.isMutationsmeldungStatus">
+                          dv-show-expression="vm.isMutationsmeldungAllowed() && !vm.isMutationsmeldungStatus && vm.abweichungenAktiviert">
                         <dv-loading-button button-click="vm.gotoBetreuungAbweichungen()"
                                            data-test="abweichungen-melden"
                                            aria-label="{{'ABWEICHUNGEN_MELDEN' | translate}}">

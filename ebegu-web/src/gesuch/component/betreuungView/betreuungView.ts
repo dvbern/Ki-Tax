@@ -179,6 +179,7 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
     private isLuzern: boolean;
     private sprachfoerderungBestaetigenAktiviert: boolean;
     private schulergaenzendeBetreuungAktiv: boolean = false;
+    public abweichungenAktiviert: boolean;
 
     public auszahlungAnEltern: boolean;
     public readonly demoFeature = TSDemoFeature.FACHSTELLEN_UEBERGANGSLOESUNG;
@@ -303,6 +304,9 @@ export class BetreuungViewController extends AbstractGesuchViewController<TSBetr
                         }
                     }
                 }
+                this.applicationPropertyRS.getPublicPropertiesCached().then(res => {
+                    this.abweichungenAktiviert = res.abweichungenEnabled;
+                });
                 this.initEinstellungen();
             });
 
