@@ -69,11 +69,12 @@ import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.errors.KibonLogLevel;
-import ch.dvbern.ebegu.i18n.LocaleThreadLocal;
 import ch.dvbern.ebegu.services.BenutzerService;
 import ch.dvbern.ebegu.services.BetreuungService;
 import ch.dvbern.ebegu.services.DossierService;
+import ch.dvbern.ebegu.services.GemeindeService;
 import ch.dvbern.ebegu.services.MitteilungService;
+import ch.dvbern.ebegu.util.EbeguUtil;
 import ch.dvbern.ebegu.util.MitteilungUtil;
 import ch.dvbern.ebegu.util.MonitoringUtil;
 import io.swagger.annotations.Api;
@@ -125,6 +126,9 @@ public class MitteilungResource {
 
 	@Inject
 	private BenutzerService benutzerService;
+
+	@Inject
+	private GemeindeService gemeindeService;
 
 	@ApiOperation(value = "Speichert eine Mitteilung", response = JaxMitteilung.class)
 	@Nullable
@@ -178,7 +182,7 @@ public class MitteilungResource {
 		Betreuungsmitteilung betreuungsmitteilung =
 			converter.betreuungsmitteilungToEntity(mitteilungJAXP, new Betreuungsmitteilung());
 
-		Locale locale = LocaleThreadLocal.get();
+		Locale locale = EbeguUtil.extractKorrespondenzsprache(betreuung.extractGesuch(), gemeindeService).getLocale();
 
 		Benutzer currentBenutzer = benutzerService.getCurrentBenutzer()
 			.orElseThrow(() -> new EbeguEntityNotFoundException("sendBetreuungsmitteilung"));

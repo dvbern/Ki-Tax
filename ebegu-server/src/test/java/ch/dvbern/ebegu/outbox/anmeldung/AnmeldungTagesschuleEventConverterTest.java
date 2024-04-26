@@ -163,7 +163,6 @@ public class AnmeldungTagesschuleEventConverterTest {
 		Betreuung betreuung = TestDataUtil.createGesuchWithBetreuungspensum(false);
 		Gesuch gesuch = betreuung.extractGesuch();
 		gesuch.setFreigabeDatum(LocalDate.now());
-		TestDataUtil.createDefaultAdressenForGS(gesuch, false);
 		requireNonNull(gesuch.getGesuchsteller1()).setGesuchstellerJA(TestDataUtil.createDefaultGesuchsteller());
 		betreuung.getInstitutionStammdaten().setBetreuungsangebotTyp(BetreuungsangebotTyp.TAGESSCHULE);
 		return TestDataUtil.createAnmeldungTagesschuleWithModules(

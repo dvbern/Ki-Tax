@@ -34,6 +34,7 @@ import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.enums.EnumFamilienstatus;
 import ch.dvbern.ebegu.enums.EnumGesuchstellerKardinalitaet;
 import ch.dvbern.ebegu.enums.KinderabzugTyp;
+import ch.dvbern.ebegu.enums.UnterhaltsvereinbarungAnswer;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
 import ch.dvbern.ebegu.types.DateRange;
 
@@ -166,7 +167,8 @@ public class FamilienabzugAbschnittRuleFKJV extends AbstractFamilienabzugAbschni
 
 		if (isVerheiratetOrKonkubinatMitKind(familiensituation.getFamilienstatus())
 			|| isMinDauerKonkubinatErreicht(familiensituation, dateToCompare)
-			|| familiensituation.getGesuchstellerKardinalitaet() == EnumGesuchstellerKardinalitaet.ALLEINE) {
+			|| familiensituation.getGesuchstellerKardinalitaet() == EnumGesuchstellerKardinalitaet.ALLEINE
+			|| (familiensituation.getUnterhaltsvereinbarung() != null && !UnterhaltsvereinbarungAnswer.NEIN_UNTERHALTSVEREINBARUNG.equals(familiensituation.getUnterhaltsvereinbarung()))) {
 			return 0.5;
 		}
 
