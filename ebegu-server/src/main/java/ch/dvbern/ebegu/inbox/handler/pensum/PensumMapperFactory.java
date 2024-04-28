@@ -19,6 +19,9 @@ package ch.dvbern.ebegu.inbox.handler.pensum;
 
 import javax.annotation.Nonnull;
 
+import ch.dvbern.ebegu.entities.AbstractMahlzeitenPensum;
+import ch.dvbern.ebegu.entities.BetreuungsmitteilungPensum;
+import ch.dvbern.ebegu.entities.Betreuungspensum;
 import ch.dvbern.ebegu.inbox.handler.ProcessingContext;
 import lombok.experimental.UtilityClass;
 
@@ -26,7 +29,20 @@ import lombok.experimental.UtilityClass;
 public class PensumMapperFactory {
 
 	@Nonnull
-	public static PensumMapper createPensumMapper(@Nonnull ProcessingContext ctx) {
+	public static PensumMapper<Betreuungspensum> createForPlatzbestaetigung(@Nonnull ProcessingContext ctx) {
+		return PensumMapper.combine(
+			PensumMapperFactory.createPensumMapper(ctx),
+			PensumMapper.BETREUUNG_IN_FERIENZEIT_MAPPER
+		);
+	}
+
+	@Nonnull
+	public static PensumMapper<BetreuungsmitteilungPensum> createForBetreuungsmitteilung(@Nonnull ProcessingContext ctx) {
+		return PensumMapper.combine(PensumMapperFactory.createPensumMapper(ctx));
+	}
+
+	@Nonnull
+	static PensumMapper<AbstractMahlzeitenPensum> createPensumMapper(@Nonnull ProcessingContext ctx) {
 		if (ctx.getBetreuung().isAngebotMittagstisch()) {
 			return PensumMapper.MITTAGSTISCH_MAPPER;
 		}
@@ -42,7 +58,7 @@ public class PensumMapperFactory {
 	}
 
 	@Nonnull
-	private static PensumMapper defaultMapper(@Nonnull ProcessingContext ctx) {
+	private static PensumMapper<AbstractMahlzeitenPensum> defaultMapper(@Nonnull ProcessingContext ctx) {
 		PensumValueMapper pensumValueMapper = new PensumValueMapper(ctx.getMaxTageProMonat(), ctx.getMaxStundenProMonat());
 
 		return PensumMapper.combine(

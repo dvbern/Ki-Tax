@@ -48,6 +48,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.NullSource;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import static ch.dvbern.ebegu.inbox.handler.PlatzbestaetigungTestUtil.betreuungWithSingleContainer;
 import static ch.dvbern.ebegu.inbox.handler.PlatzbestaetigungTestUtil.createBetreuungEventDTO;
@@ -87,7 +89,7 @@ class PensumMapperFactoryTest {
 		z.setBetreuungspensum(betreuungspensum);
 
 		ProcessingContext ctx = initProcessingContext(betreuung, z, true);
-		PensumMapper pensumMapper = PensumMapperFactory.createPensumMapper(ctx);
+		PensumMapper<AbstractMahlzeitenPensum> pensumMapper = PensumMapperFactory.createPensumMapper(ctx);
 
 		BetreuungsmitteilungPensum actual = new BetreuungsmitteilungPensum();
 		pensumMapper.toAbstractMahlzeitenPensum(actual, z);
@@ -103,7 +105,7 @@ class PensumMapperFactoryTest {
 		z.setAnzahlNebenmahlzeiten(BigDecimal.TEN);
 
 		ProcessingContext ctx = initProcessingContext(betreuung, z, false);
-		PensumMapper pensumMapper = PensumMapperFactory.createPensumMapper(ctx);
+		PensumMapper<AbstractMahlzeitenPensum> pensumMapper = PensumMapperFactory.createPensumMapper(ctx);
 
 		BetreuungsmitteilungPensum actual = new BetreuungsmitteilungPensum();
 		pensumMapper.toAbstractMahlzeitenPensum(actual, z);
@@ -136,7 +138,7 @@ class PensumMapperFactoryTest {
 		z.setAnzahlNebenmahlzeiten(BigDecimal.TEN);
 
 		ProcessingContext ctx = initProcessingContext(betreuung, z, false);
-		PensumMapper pensumMapper = PensumMapperFactory.createPensumMapper(ctx);
+		PensumMapper<AbstractMahlzeitenPensum> pensumMapper = PensumMapperFactory.createPensumMapper(ctx);
 
 		BetreuungsmitteilungPensum actual = new BetreuungsmitteilungPensum();
 		pensumMapper.toAbstractMahlzeitenPensum(actual, z);
@@ -159,7 +161,7 @@ class PensumMapperFactoryTest {
 		z.setEingewoehnung(eingewoehnung);
 
 		ProcessingContext ctx = initProcessingContext(betreuung, z, true);
-		PensumMapper pensumMapper = PensumMapperFactory.createPensumMapper(ctx);
+		PensumMapper<AbstractMahlzeitenPensum> pensumMapper = PensumMapperFactory.createPensumMapper(ctx);
 
 		BetreuungsmitteilungPensum actual = new BetreuungsmitteilungPensum();
 		pensumMapper.toAbstractMahlzeitenPensum(actual, z);
@@ -179,12 +181,32 @@ class PensumMapperFactoryTest {
 		z.setEingewoehnung(null);
 
 		ProcessingContext ctx = initProcessingContext(betreuung, z, true);
-		PensumMapper pensumMapper = PensumMapperFactory.createPensumMapper(ctx);
+		PensumMapper<AbstractMahlzeitenPensum> pensumMapper = PensumMapperFactory.createPensumMapper(ctx);
 
 		BetreuungsmitteilungPensum actual = new BetreuungsmitteilungPensum();
 		pensumMapper.toAbstractMahlzeitenPensum(actual, z);
 
 		assertThat(actual.getEingewoehnungPauschale(), is(nullValue()));
+	}
+
+	@ParameterizedTest
+	@NullSource
+	@ValueSource(booleans = { true, false })
+	void readBetreuungInFerienzeit(Boolean betreuungInFerienzeit) {
+		Betreuung betreuung = betreuungWithSingleContainer(gesuch);
+		ZeitabschnittDTO z = createZeitabschnittDTO(Constants.DEFAULT_GUELTIGKEIT);
+		z.setBetreuungInFerienzeit(betreuungInFerienzeit);
+
+		ProcessingContext ctx = initProcessingContext(betreuung, z, true);
+		PensumMapper<Betreuungspensum> combine = PensumMapper.combine(
+			PensumMapperFactory.createPensumMapper(ctx),
+			PensumMapper.BETREUUNG_IN_FERIENZEIT_MAPPER
+		);
+
+		Betreuungspensum actual = new Betreuungspensum();
+		combine.toAbstractMahlzeitenPensum(actual, z);
+
+		assertThat(actual.getBetreuungInFerienzeit(), is(betreuungInFerienzeit));
 	}
 
 	@Nonnull

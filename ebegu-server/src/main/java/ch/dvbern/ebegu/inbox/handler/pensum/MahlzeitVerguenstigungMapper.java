@@ -30,7 +30,7 @@ import static ch.dvbern.ebegu.util.EbeguUtil.coalesce;
 import static java.math.BigDecimal.ZERO;
 
 @Value
-public class MahlzeitVerguenstigungMapper implements PensumMapper {
+public class MahlzeitVerguenstigungMapper implements PensumMapper<AbstractMahlzeitenPensum> {
 
 	private static final Logger LOG = LoggerFactory.getLogger(MahlzeitVerguenstigungMapper.class);
 

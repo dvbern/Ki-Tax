@@ -37,6 +37,8 @@ import ch.dvbern.ebegu.entities.AbstractEntity;
 import ch.dvbern.ebegu.entities.Benutzer;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Betreuungsmitteilung;
+import ch.dvbern.ebegu.entities.BetreuungsmitteilungPensum;
+import ch.dvbern.ebegu.entities.Betreuungspensum;
 import ch.dvbern.ebegu.entities.ErweiterteBetreuung;
 import ch.dvbern.ebegu.entities.ErweiterteBetreuungContainer;
 import ch.dvbern.ebegu.entities.Gemeinde;
@@ -346,7 +348,7 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 		setEingewoehnungPhase(ctx);
 		setBetreuungInGemeinde(ctx);
 		setSprachfoerderungBestaetigt(ctx);
-		PensumMapper pensumMapper = PensumMapperFactory.createPensumMapper(ctx);
+		PensumMapper<Betreuungspensum> pensumMapper = PensumMapperFactory.createForPlatzbestaetigung(ctx);
 		PensumMappingUtil.addZeitabschnitteToBetreuung(ctx, pensumMapper);
 
 		return ctx.isReadyForBestaetigen();
@@ -487,7 +489,7 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 		Betreuungsmitteilung betreuungsmitteilung = new Betreuungsmitteilung();
 		betreuungsmitteilung.setBetreuung(betreuung);
 
-		PensumMapper pensumMapper = PensumMapperFactory.createPensumMapper(ctx);
+		PensumMapper<BetreuungsmitteilungPensum> pensumMapper = PensumMapperFactory.createForBetreuungsmitteilung(ctx);
 		PensumMappingUtil.addZeitabschnitteToBetreuungsmitteilung(ctx, latest, betreuungsmitteilung, pensumMapper);
 
 		MitteilungUtil.initializeBetreuungsmitteilung(betreuungsmitteilung, betreuung, benutzer, locale);

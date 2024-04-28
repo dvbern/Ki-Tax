@@ -68,7 +68,10 @@ public final class PensumMappingUtil {
 	public static final Comparator<Betreuungsmitteilung> MITTEILUNG_COMPARATOR = Comparator
 		.comparing(Betreuungsmitteilung::getBetreuungspensen, collectionComparator(COMPARATOR_WITH_GUELTIGKEIT));
 
-	public static void addZeitabschnitteToBetreuung(@Nonnull ProcessingContext ctx, @Nonnull PensumMapper mapper) {
+	public static void addZeitabschnitteToBetreuung(
+		@Nonnull ProcessingContext ctx,
+		@Nonnull PensumMapper<Betreuungspensum> mapper
+	) {
 		Betreuung betreuung = ctx.getBetreuung();
 		DateRange gueltigkeit = ctx.getGueltigkeitInPeriode();
 
@@ -149,8 +152,8 @@ public final class PensumMappingUtil {
 		@Nonnull ProcessingContext ctx,
 		@Nullable Betreuungsmitteilung latest,
 		@Nonnull Betreuungsmitteilung betreuungsmitteilung,
-		@Nonnull PensumMapper mapper) {
-
+		@Nonnull PensumMapper<BetreuungsmitteilungPensum> mapper
+	) {
 		DateRange mutationRange = getMutationRange(ctx);
 
 		List<BetreuungsmitteilungPensum> existing = getExisting(ctx, latest, mutationRange);
