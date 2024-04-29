@@ -17,7 +17,7 @@
 
 import {ILogService, IPromise, IQService} from 'angular';
 import * as moment from 'moment';
-import {BehaviorSubject, Observable, of, Subscription} from 'rxjs';
+import {BehaviorSubject, defer, Observable, of, Subscription} from 'rxjs';
 import {mergeMap} from 'rxjs/operators';
 import {EinstellungRS} from '../../admin/service/einstellungRS.rest';
 import {CONSTANTS} from '../../app/core/constants/CONSTANTS';
@@ -128,6 +128,7 @@ export class GesuchModelManager {
     public numberInternePendenzen: number;
     public hasAbgelaufenePendenz: boolean;
     public isFKJVTexte: boolean;
+    private _sozialversicherungsnummer: string;
 
     public ewkResultat: TSEWKResultat;
 
@@ -1909,5 +1910,13 @@ export class GesuchModelManager {
         return FinanzielleSituationAppenzellService.finSitNeedsTwoSeparateAntragsteller(
             this.getGesuch()
         ) && EbeguUtil.isNullOrUndefined(this.getGesuch().gesuchsteller2);
+    }
+
+    public getsozialversicherungsnummer(): string {
+        return this._sozialversicherungsnummer;
+    }
+
+    public setsozialversicherungsnummer(value: string) {
+        this._sozialversicherungsnummer = value;
     }
 }

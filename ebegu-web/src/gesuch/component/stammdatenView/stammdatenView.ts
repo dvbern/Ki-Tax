@@ -124,6 +124,7 @@ export class StammdatenViewController extends AbstractGesuchViewController<TSGes
     private isLuzern: boolean;
     public demoFeature2754: boolean = false;
     private angebotTS: boolean;
+    public sozialversicherungsnummerRequiredEinstellung: boolean;
 
     public constructor(
         $stateParams: IStammdatenStateParams,
@@ -165,6 +166,7 @@ export class StammdatenViewController extends AbstractGesuchViewController<TSGes
         this.initViewmodel();
         this.initAusweisNachweis();
         this.setFrenchEnabled();
+        this.initSozialversicherungsnummer();
     }
 
     private initAusweisNachweis(): void {
@@ -632,5 +634,17 @@ export class StammdatenViewController extends AbstractGesuchViewController<TSGes
 
     public showHintMandatoryFields(): boolean {
         return !this.isLuzern || this.gesuchModelManager.getGesuchstellerNumber() === 1;
+    }
+
+    private initSozialversicherungsnummer(): void {
+        this.einstellungRS.findEinstellung(TSEinstellungKey.SOZIALVERSICHERUNGSNUMMER_PERIODE,
+            this.gesuchModelManager.getGemeinde().id,
+            this.gesuchModelManager.getGesuchsperiode().id).subscribe(sozialversicherungsnummerRequired => {
+                this.sozialversicherungsnummerRequiredEinstellung = sozialversicherungsnummerRequired.value === 'true';
+
+                if (!this.sozialversicherungsnummerRequiredEinstellung) {
+                    return;
+                }
+        }, error => LOG.error(error));
     }
 }

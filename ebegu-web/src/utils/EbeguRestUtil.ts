@@ -552,6 +552,7 @@ export class EbeguRestUtil {
             restGesuchsteller.telefonAusland = gesuchsteller.telefonAusland || undefined;
             restGesuchsteller.diplomatenstatus = gesuchsteller.diplomatenstatus;
             restGesuchsteller.korrespondenzSprache = gesuchsteller.korrespondenzSprache;
+            restGesuchsteller.sozialversicherungsnummer = gesuchsteller.sozialversicherungsnummer;
             return restGesuchsteller;
         }
         return undefined;
@@ -566,6 +567,7 @@ export class EbeguRestUtil {
             gesuchstellerTS.telefonAusland = gesuchstellerFromServer.telefonAusland;
             gesuchstellerTS.diplomatenstatus = gesuchstellerFromServer.diplomatenstatus;
             gesuchstellerTS.korrespondenzSprache = gesuchstellerFromServer.korrespondenzSprache;
+            gesuchstellerTS.sozialversicherungsnummer = gesuchstellerFromServer.sozialversicherungsnummer;
             return gesuchstellerTS;
         }
         return undefined;
@@ -6328,7 +6330,7 @@ export class EbeguRestUtil {
             institution: filter.institution,
             traegerschaft: filter.traegerschaft,
             sozialdienst: filter.sozialdienst,
-            status: filter.status
+            status: filter.status,
         };
     }
 }

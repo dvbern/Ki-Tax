@@ -150,10 +150,34 @@
                             </div>
                         </div>
                     </div>
+                    <div class="row margin-bottom-3rem" ng-if="vm.sozialversicherungsnummerRequiredEinstellung">
+                        <!--Sozialversicherungsnummer-->
+                        <div class="col-sm-12 dv-input-container-small">
+                            <dv-input-container class="form-group">
+                                <label class="md-no-float required">
+                                    <span data-translate="SOZIALVERSICHERUNGSNUMMER" for="sozialversicherungsnummer_ID"></span>
+                                    <dv-tooltip input-id="sozialversicherungsnummer_ID" text="'SOZIALVERSICHERUNGSNUMMER_HELP' | translate"></dv-tooltip>
+                                </label>
+                                <input id="sozialversicherungsnummer_ID"
+                                       type="text"
+                                       ng-required="true"
+                                       ng-model="vm.getModelJA().sozialversicherungsnummer"
+                                       name="sozialversicherungsnummer"
+                                       data-test="sozialversicherungsnummer"
+                                       dv-max-length
+                                       dv-ahv-check
+                                       dv-ahv-gesuchsteller-check
+                                       class="form-control"
+                                       required>
+                                <dv-error-messages input-id="sozialversicherungsnummer_ID" for="vm.form.sozialversicherungsnummer.$error"
+                                                   class="error"></dv-error-messages>
+                            </dv-input-container>
+                        </div>
+                    </div>
                 </fieldset>
                     <div class="row" ng-if="vm.isAusweisNachweisRequired()">
                         <div class="col-sm-12 dv-input-container-medium">
-                            <p class="inline-hint margin-bottom-20 margin-top-20" translate>AUSWEIS_NACHWEIS_DESCRIPTION</p>
+                            <p class="inline-hint margin-bottom-20 margin-top-20" translate>AUSWEIS_NACHWEIS_DESCRIPTI ON</p>
                             <dv-input-container class="form-group margin-bottom-50">
                                 <dv-multiple-file-upload
                                     (download)="vm.downloadAusweisDokument($event[0],$event[1])"

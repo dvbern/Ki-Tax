@@ -264,26 +264,13 @@ public abstract class AbstractTestfall {
 	protected GesuchstellerContainer createGesuchstellerContainer(String name, String vorname) {
 		GesuchstellerContainer gesuchstellerCont = new GesuchstellerContainer();
 		gesuchstellerCont.setAdressen(new ArrayList<>());
-		gesuchstellerCont.setGesuchstellerJA(createGesuchsteller(name, vorname));
+		gesuchstellerCont.setGesuchstellerJA(testfallDataProvider.createGesuchsteller(name, vorname));
 		gesuchstellerCont.getAdressen().add(createWohnadresseContainer(gesuchstellerCont));
 		return gesuchstellerCont;
 	}
 
-	protected Gesuchsteller createGesuchsteller(String name, String vorname) {
-		Gesuchsteller gesuchsteller = new Gesuchsteller();
-		gesuchsteller.setGeschlecht(Geschlecht.WEIBLICH);
-		gesuchsteller.setNachname(name);
-		gesuchsteller.setVorname(vorname);
-		gesuchsteller.setGeburtsdatum(LocalDate.of(1980, Month.MARCH, 25));
-		gesuchsteller.setDiplomatenstatus(false);
-		gesuchsteller.setMail("test@mailbucket.dvbern.ch");
-		gesuchsteller.setMobile("079 000 00 00");
-		gesuchsteller.setKorrespondenzSprache(Sprache.DEUTSCH);
-		return gesuchsteller;
-	}
-
 	protected Gesuchsteller createGesuchsteller() {
-		return createGesuchsteller(getNachname(), getVorname());
+		return testfallDataProvider.createGesuchsteller(getNachname(), getVorname());
 	}
 
 	protected GesuchstellerAdresseContainer createWohnadresseContainer(GesuchstellerContainer gesuchstellerCont) {
