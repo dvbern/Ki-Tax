@@ -75,6 +75,7 @@ import {TSFall} from '../../models/TSFall';
 import {TSFamiliensituation} from '../../models/TSFamiliensituation';
 import {TSFamiliensituationContainer} from '../../models/TSFamiliensituationContainer';
 import {TSFinanzielleSituationContainer} from '../../models/TSFinanzielleSituationContainer';
+import {TSFreigabe} from '../../models/TSFreigabe';
 import {TSGemeinde} from '../../models/TSGemeinde';
 import {TSGemeindeKonfiguration} from '../../models/TSGemeindeKonfiguration';
 import {TSGemeindeStammdatenLite} from '../../models/TSGemeindeStammdatenLite';
@@ -1617,22 +1618,15 @@ export class GesuchModelManager {
         return undefined;
     }
 
-    /**
-     * Antrag freigeben
-     */
-    public antragFreigeben(antragId: string, usernameJA: string, usernameSCH: string): IPromise<TSGesuch> {
-        return this.gesuchRS.antragFreigeben(antragId, usernameJA, usernameSCH).then(response => {
+    public antragFreigeben(antragId: string, freigabe: TSFreigabe): IPromise<TSGesuch> {
+        return this.gesuchRS.antragFreigeben(antragId, freigabe).then(response => {
             this.setGesuch(response);
 
             return response;
         });
     }
 
-    /**
-     * Antrag zurueckziehen
-     */
     public antragZurueckziehen(antragId: string): IPromise<TSGesuch> {
-        // eslint-disable-next-line
         return this.gesuchRS.antragZurueckziehen(antragId).then(response => {
             this.setGesuch(response);
 

@@ -126,6 +126,7 @@ import {InternePendenzenComponent} from './component/internePendenzenView/intern
 import {KinderListViewComponentConfig} from './component/kinderListView/kinderListView';
 import {FkjvKinderabzugComponent} from './component/kindView/fkjv-kinderabzug/fkjv-kinderabzug.component';
 import {SchwyzKinderabzugComponent} from './component/kindView/schwyz-kinderabzug/schwyz-kinderabzug.component';
+import {OnlineFreigabeComponent} from './freigabe/component/onlineFreigabe/online-freigabe.component';
 import {HybridFormBridgeService} from './service/hybrid-form-bridge.service';
 import {KindFachstelleComponent} from './component/kindView/kind-fachstelle/kind-fachstelle.component';
 import {KindViewComponentConfig} from './component/kindView/kindView';
@@ -261,4 +262,5 @@ export const GESUCH_JS_MODULE =
                 outputs: ['tryAgainEvent']
             }))
         .directive('dvZahlungsstatusIcon', downgradeComponent({component: ZahlungsstatusIconComponent}))
+        .component('dvOnlineFreigabe', downgradeComponent({component: OnlineFreigabeComponent}))
 ;

@@ -18,11 +18,12 @@ import {AuthServiceRS} from '../../authentication/service/AuthServiceRS.rest';
 import {TSAntragDTO} from '../../models/TSAntragDTO';
 import {TSBenutzer} from '../../models/TSBenutzer';
 import {TSDossier} from '../../models/TSDossier';
+import {TSFreigabe} from '../../models/TSFreigabe';
 import {EbeguUtil} from '../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../utils/TSRoleUtil';
 import {DossierRS} from '../service/dossierRS.rest';
 import {GemeindeRS} from '../service/gemeindeRS.rest';
-import {GesuchRS} from '../service/gesuchRS.rest';
+import {GesuchModelManager} from '../service/gesuchModelManager';
 import IPromise = angular.IPromise;
 import IDialogService = angular.material.IDialogService;
 
@@ -36,7 +37,7 @@ export class FreigabeController {
         'errorMessage',
         'gesuch',
         '$mdDialog',
-        'GesuchRS',
+        'GesuchModelManager',
         'BenutzerRS',
         'AuthServiceRS',
         'GemeindeRS',
@@ -56,7 +57,7 @@ export class FreigabeController {
         private readonly errorMessage: string,
         private readonly gesuch: TSAntragDTO,
         private readonly $mdDialog: IDialogService,
-        private readonly gesuchRS: GesuchRS,
+        private readonly gesuchModelManager: GesuchModelManager,
         private readonly benutzerRS: BenutzerRSX,
         private readonly authService: AuthServiceRS,
         private readonly gemeindeRS: GemeindeRS,
@@ -158,8 +159,8 @@ export class FreigabeController {
         return EbeguUtil.isNotNullOrUndefined(this.errorMessage);
     }
 
-    public freigeben(): IPromise<any> {
-        return this.gesuchRS.antragFreigeben(this.docID, this.selectedUserBG, this.selectedUserTS)
+    public freigeben(): IPromise<void> {
+        return this.gesuchModelManager.antragFreigeben(this.docID, new TSFreigabe(this.selectedUserBG, this.selectedUserTS))
             .then(() => this.$mdDialog.hide());
     }
 

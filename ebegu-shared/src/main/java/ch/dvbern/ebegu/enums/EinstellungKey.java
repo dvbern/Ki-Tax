@@ -351,7 +351,9 @@ public enum EinstellungKey {
 	GESUCH_BEENDEN_BEI_TAUSCH_GS2(MandantIdentifier.getAll()),
 
 	// Addiert die Moeglichkeit Betreuung in die Schulferien getrennt zu melden
-	SCHULERGAENZENDE_BETREUUNGEN(MandantIdentifier.getAll());
+	SCHULERGAENZENDE_BETREUUNGEN(MandantIdentifier.getAll()),
+
+	GESUCHFREIGABE_ONLINE(MandantIdentifier.getAll());
 
 	private EinstellungTyp typ;
 	private List<MandantIdentifier> activeForMandant;

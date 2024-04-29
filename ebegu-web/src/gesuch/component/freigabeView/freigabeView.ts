@@ -29,6 +29,7 @@ import {TSSozialdienstFallStatus} from '../../../models/enums/TSSozialdienstFall
 import {TSWizardStepName} from '../../../models/enums/TSWizardStepName';
 import {TSWizardStepStatus} from '../../../models/enums/TSWizardStepStatus';
 import {TSDownloadFile} from '../../../models/TSDownloadFile';
+import {TSFreigabe} from '../../../models/TSFreigabe';
 import {DateUtil} from '../../../utils/DateUtil';
 import {EbeguUtil} from '../../../utils/EbeguUtil';
 import {TSRoleUtil} from '../../../utils/TSRoleUtil';
@@ -131,7 +132,7 @@ export class FreigabeViewController extends AbstractGesuchViewController<any> {
 
     public gesuchFreigeben(): void {
         const gesuchID = this.gesuchModelManager.getGesuch().id;
-        this.gesuchModelManager.antragFreigeben(gesuchID, null, null);
+        this.gesuchModelManager.antragFreigeben(gesuchID, new TSFreigabe(null, null));
     }
 
     public freigabeZurueckziehen(): void {

@@ -78,6 +78,19 @@ export class EinstellungRS {
             }));
     }
 
+    public getEinstellung(gesuchsperiodeId: string, key: TSEinstellungKey): Observable<TSEinstellung> {
+        return this.getAllEinstellungenBySystemCached(gesuchsperiodeId)
+            .pipe(map(einstellungen => {
+                const einstellung = einstellungen.find(_einstellung => _einstellung.key === key);
+
+                if (!einstellung) {
+                    throw new Error(`Einstellung ${key} not found`);
+                }
+
+                return einstellung;
+            }));
+    }
+
     private getAllEinstellungenBySystem(gesuchsperiodeId: string): Observable<TSEinstellung[]> {
         return this.http.get(`${this.serviceURL}/gesuchsperiode/${gesuchsperiodeId}`)
             .pipe(map((response: any) =>
