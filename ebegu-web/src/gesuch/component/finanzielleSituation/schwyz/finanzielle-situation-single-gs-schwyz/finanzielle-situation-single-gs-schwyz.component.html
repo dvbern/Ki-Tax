@@ -28,12 +28,17 @@
 </ng-container>
 
 <ng-template #steuerveranlagFragen>
-    <dv-steuerveranlagt-schwyz [readonly]="readonly"
-                               [finanzModel]="finanzModel">
+    <dv-steuerveranlagt-schwyz [finSitJA]="finanzModel.getFiSiConToWorkWith().finanzielleSituationJA"
+                               [finSitGS]="finanzModel.getFiSiConToWorkWith().finanzielleSituationGS"
+                               [readonly]="readonly"
+                               (valueChanged)="emitValueChanged()">
     </dv-steuerveranlagt-schwyz>
 </ng-template>
 <ng-template #bruttolohnFragen>
-    <dv-bruttolohn-schwyz [readonly]="readonly"
-                          [finanzModel]="finanzModel">
+    <dv-bruttolohn-schwyz [finSitJA]="finanzModel.getFiSiConToWorkWith().finanzielleSituationJA"
+                          [finSitGS]="finanzModel.getFiSiConToWorkWith().finanzielleSituationGS"
+                          [readonly]="readonly"
+                          (valueChanged)="emitValueChanged()"
+    >
     </dv-bruttolohn-schwyz>
 </ng-template>

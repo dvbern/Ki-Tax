@@ -23,9 +23,11 @@ import javax.annotation.Nullable;
 import ch.dvbern.ebegu.dto.FinanzielleSituationResultateDTO;
 import ch.dvbern.ebegu.dto.FinanzielleSituationStartDTO;
 import ch.dvbern.ebegu.dto.JaxFinanzielleSituationAufteilungDTO;
+import ch.dvbern.ebegu.entities.AbstractFinanzielleSituation;
 import ch.dvbern.ebegu.entities.FinanzielleSituation;
 import ch.dvbern.ebegu.entities.FinanzielleSituationContainer;
 import ch.dvbern.ebegu.entities.Gesuch;
+import ch.dvbern.ebegu.entities.GesuchstellerContainer;
 import ch.dvbern.ebegu.entities.NeueVeranlagungsMitteilung;
 
 /**
@@ -84,4 +86,8 @@ public interface FinanzielleSituationService {
 	@Nullable
     FinanzielleSituation findFinanzielleSituationForNeueVeranlagungsMitteilung(@Nonnull
 		NeueVeranlagungsMitteilung persistedMitteilung);
+
+	void resetCompleteSchwyzFinSitData(
+		AbstractFinanzielleSituation finSit,
+		GesuchstellerContainer gesuchstellerContainer);
 }

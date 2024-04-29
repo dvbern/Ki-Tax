@@ -16,28 +16,22 @@
 package ch.dvbern.ebegu.services;
 
 import ch.dvbern.ebegu.entities.*;
-import ch.dvbern.ebegu.enums.EinstellungKey;
-import ch.dvbern.ebegu.enums.EnumFamilienstatus;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
-import ch.dvbern.ebegu.enums.FinanzielleSituationTyp;
 import ch.dvbern.ebegu.enums.WizardStepName;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.persistence.CriteriaQueryHelper;
-import ch.dvbern.ebegu.util.EbeguUtil;
+import ch.dvbern.ebegu.services.famsitchangehandler.FamSitChangeHandler;
 import ch.dvbern.lib.cdipersistence.Persistence;
 
 import javax.annotation.Nonnull;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-import javax.validation.constraints.NotNull;
-import java.time.LocalDate;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Objects;
 import java.util.Optional;
-
-import static ch.dvbern.ebegu.services.util.ErwerbspensumHelper.isKonkubinatOhneKindAndGS2ErwerbspensumOmittable;
 
 /**
  * Service fuer familiensituation
@@ -51,14 +45,12 @@ public class FamiliensituationServiceBean extends AbstractBaseService implements
 	@Inject
 	private CriteriaQueryHelper criteriaQueryHelper;
 	@Inject
-	private GesuchstellerService gesuchstellerService;
-	@Inject
 	private WizardStepService wizardStepService;
 	@Inject
 	private SozialhilfeZeitraumService sozialhilfeZeitraumService;
 
 	@Inject
-	private EinstellungService einstellungService;
+	private FamSitChangeHandler famSitChangeHandler;
 
 	@Override
 	public FamiliensituationContainer saveFamiliensituation(
@@ -72,7 +64,7 @@ public class FamiliensituationServiceBean extends AbstractBaseService implements
 		// Falls noch nicht vorhanden, werden die GemeinsameSteuererklaerung fuer FS und EV auf false gesetzt
 		Familiensituation newFamiliensituation = familiensituationContainer.extractFamiliensituation();
 		Objects.requireNonNull(newFamiliensituation);
-		adaptFinSitDataOnFamSitChange(gesuch, familiensituationContainer, loadedFamiliensituation);
+		famSitChangeHandler.adaptFinSitDataOnFamSitChange(gesuch, familiensituationContainer, loadedFamiliensituation);
 
 		final FamiliensituationContainer mergedFamiliensituationContainer = persistence.merge(familiensituationContainer);
 		gesuch.setFamiliensituationContainer(mergedFamiliensituationContainer);
@@ -80,45 +72,11 @@ public class FamiliensituationServiceBean extends AbstractBaseService implements
 		// get old FamSit to compare with
 		Familiensituation oldFamiliensituation = getOldFamiliensituation(loadedFamiliensituation, mergedFamiliensituationContainer);
 
-		removeGS2DataOnChangeFrom2To1GS(gesuch, newFamiliensituation, mergedFamiliensituationContainer, oldFamiliensituation);
-		handleFamSitChangeForMandanten(gesuch, mergedFamiliensituationContainer, oldFamiliensituation);
-		handlePossibleGS2Tausch(gesuch, newFamiliensituation);
-		handlePossibleKinderabzugFragenReset(gesuch, newFamiliensituation, oldFamiliensituation);
+		famSitChangeHandler.handleFamSitChangeAfterSave(gesuch, newFamiliensituation, mergedFamiliensituationContainer, oldFamiliensituation);
 
 		wizardStepService.updateSteps(gesuch.getId(), oldFamiliensituation, newFamiliensituation, WizardStepName
 			.FAMILIENSITUATION);
 		return mergedFamiliensituationContainer;
-	}
-
-	private void adaptFinSitDataOnFamSitChange(
-		Gesuch gesuch,
-		FamiliensituationContainer familiensituationContainer,
-		Familiensituation loadedFamiliensituation) {
-
-		Familiensituation newFamiliensituation = familiensituationContainer.extractFamiliensituation();
-		Objects.requireNonNull(newFamiliensituation);
-		LocalDate gesuchsperiodeBis = gesuch.getGesuchsperiode().getGueltigkeit().getGueltigBis();
-
-		if (gesuch.isMutation()) {
-			if (EbeguUtil.fromOneGSToTwoGS(familiensituationContainer, gesuchsperiodeBis) &&
-				newFamiliensituation.getGemeinsameSteuererklaerung() == null) {
-				newFamiliensituation.setGemeinsameSteuererklaerung(false);
-			}
-
-			if (gesuch.getFinSitTyp() == FinanzielleSituationTyp.LUZERN &&
-				isScheidung(loadedFamiliensituation, newFamiliensituation)) {
-				gesuch.setFinSitAenderungGueltigAbDatum(newFamiliensituation.getAenderungPer());
-			}
-		} else {
-			Familiensituation familiensituationErstgesuch =
-				familiensituationContainer.getFamiliensituationErstgesuch();
-			if (familiensituationErstgesuch != null &&
-				(!familiensituationErstgesuch.hasSecondGesuchsteller(gesuchsperiodeBis)
-					&& !newFamiliensituation.hasSecondGesuchsteller(gesuchsperiodeBis))) {
-				// if there is no GS2 the field gemeinsameSteuererklaerung must be set to null
-				newFamiliensituation.setGemeinsameSteuererklaerung(null);
-			}
-		}
 	}
 
 	private static Familiensituation getOldFamiliensituation(
@@ -135,163 +93,7 @@ public class FamiliensituationServiceBean extends AbstractBaseService implements
 		return oldFamiliensituation;
 	}
 
-	private void handleFamSitChangeForMandanten(
-		Gesuch gesuch,
-		FamiliensituationContainer mergedFamiliensituationContainer,
-		Familiensituation oldFamiliensituation) {
-		if (gesuch.getFinSitTyp() == FinanzielleSituationTyp.LUZERN) {
-			changeFamSitLuzern(gesuch, mergedFamiliensituationContainer, oldFamiliensituation);
-		}
 
-		if (gesuch.getFinSitTyp() == FinanzielleSituationTyp.APPENZELL) {
-			changeFamSitAR(gesuch, mergedFamiliensituationContainer, oldFamiliensituation);
-		}
-	}
-
-	private void removeGS2DataOnChangeFrom2To1GS(
-		Gesuch gesuch,
-		Familiensituation newFamiliensituation,
-		FamiliensituationContainer mergedFamiliensituationContainer,
-		Familiensituation oldFamiliensituation) {
-		Objects.requireNonNull(mergedFamiliensituationContainer);
-		Objects.requireNonNull(mergedFamiliensituationContainer.extractFamiliensituation());
-		if (gesuch.getGesuchsteller2() != null
-			&& isNeededToRemoveGesuchsteller2(gesuch, mergedFamiliensituationContainer.extractFamiliensituation(),
-			oldFamiliensituation)
-		) {
-			gesuchstellerService.removeGesuchsteller(gesuch.getGesuchsteller2());
-			gesuch.setGesuchsteller2(null);
-			newFamiliensituation.setGemeinsameSteuererklaerung(false);
-		}
-	}
-
-	private void handlePossibleGS2Tausch(Gesuch gesuch, Familiensituation newFamiliensituation) {
-		if (isGesuchBeendenBeiTauschGS2Active(gesuch)
-			&& isKonkubinatOhneKindAndGS2ErwerbspensumOmittable(newFamiliensituation, gesuch.getGesuchsperiode())
-			&& gesuch.getGesuchsteller2() != null
-			&& !gesuch.getGesuchsteller2().getErwerbspensenContainers().isEmpty()) {
-			gesuch.getGesuchsteller2().getErwerbspensenContainers().clear();
-		}
-	}
-
-	private boolean isGesuchBeendenBeiTauschGS2Active(Gesuch gesuch) {
-		Einstellung einstellung = einstellungService.findEinstellung(EinstellungKey.GESUCH_BEENDEN_BEI_TAUSCH_GS2,
-			gesuch.extractGemeinde(),
-			gesuch.getGesuchsperiode());
-
-		return Boolean.TRUE.equals(einstellung.getValueAsBoolean());
-	}
-
-	private void handlePossibleKinderabzugFragenReset(Gesuch gesuch, Familiensituation newFamiliensituation, Familiensituation oldFamiliensituation) {
-		if (gesuch.getFinSitTyp() == FinanzielleSituationTyp.BERN_FKJV
-			|| newFamiliensituation.getFamilienstatus() == EnumFamilienstatus.SCHWYZ &&
-			oldFamiliensituation != null &&
-			(oldFamiliensituation.getFamilienstatus() != newFamiliensituation.getFamilienstatus()
-				|| oldFamiliensituation.getGesuchstellerKardinalitaet() != newFamiliensituation.getGesuchstellerKardinalitaet()) &&
-			!Objects.equals(newFamiliensituation.getPartnerIdentischMitVorgesuch(), Boolean.FALSE)) {
-			resetFragenKinderabzugAndSetToUeberpruefen(gesuch);
-		}
-	}
-
-
-
-	private boolean isScheidung(
-		@NotNull Familiensituation oldFamiliensituation,
-		@NotNull Familiensituation newFamiliensituation) {
-		if (oldFamiliensituation.getFamilienstatus() != EnumFamilienstatus.VERHEIRATET) {
-			return false;
-		}
-
-		return newFamiliensituation.getFamilienstatus() == EnumFamilienstatus.ALLEINERZIEHEND;
-	}
-
-	private void changeFamSitLuzern(
-		@Nonnull Gesuch gesuch,
-		FamiliensituationContainer mergedFamiliensituationContainer,
-		Familiensituation oldFamiliensituation) {
-
-		if (oldFamiliensituation == null
-			|| mergedFamiliensituationContainer.getFamiliensituationJA() == null
-			|| gesuch.getGesuchsteller1() == null) {
-			return;
-		}
-
-		boolean isKonkubinat = oldFamiliensituation.getFamilienstatus() == EnumFamilienstatus.KONKUBINAT
-			|| oldFamiliensituation.getFamilienstatus() == EnumFamilienstatus.KONKUBINAT_KEIN_KIND;
-
-		// KONKUBINAT => VERHEIRATET: beide Container löschen
-		if (isKonkubinat
-			&& mergedFamiliensituationContainer.getFamiliensituationJA().getFamilienstatus()
-			== EnumFamilienstatus.VERHEIRATET
-			&& gesuch.getGesuchsteller2() != null) {
-			gesuch.getGesuchsteller1().setFinanzielleSituationContainer(null);
-			gesuch.getGesuchsteller2().setFinanzielleSituationContainer(null);
-		}
-
-		// ALLEINERZIEHEND => VERHEIRATET: Container GS1 löschen
-		boolean isAlleinerziehend = oldFamiliensituation.getFamilienstatus() == EnumFamilienstatus.ALLEINERZIEHEND;
-		if (isAlleinerziehend && mergedFamiliensituationContainer.getFamiliensituationJA().getFamilienstatus()
-			== EnumFamilienstatus.VERHEIRATET
-			&& gesuch.getGesuchsteller1() != null) {
-			gesuch.getGesuchsteller1().setFinanzielleSituationContainer(null);
-		}
-
-		// VERHEIRATET => KONKUBINAT: Container GS1 löschen
-		// VERHEIRATET => ALLEINERZIEHEND: Container GS1 löschen
-		boolean oldIsVerheiratet = oldFamiliensituation.getFamilienstatus() == EnumFamilienstatus.VERHEIRATET;
-		boolean newIsKonkubinatOrAlleinerziehend =
-			mergedFamiliensituationContainer.getFamiliensituationJA().getFamilienstatus()
-				== EnumFamilienstatus.KONKUBINAT
-				|| mergedFamiliensituationContainer.getFamiliensituationJA().getFamilienstatus()
-				== EnumFamilienstatus.KONKUBINAT_KEIN_KIND
-				|| mergedFamiliensituationContainer.getFamiliensituationJA().getFamilienstatus()
-				== EnumFamilienstatus.ALLEINERZIEHEND;
-
-		if (oldIsVerheiratet && newIsKonkubinatOrAlleinerziehend) {
-			gesuch.getGesuchsteller1().setFinanzielleSituationContainer(null);
-		}
-	}
-	private void changeFamSitAR(
-		@Nonnull Gesuch gesuch,
-		FamiliensituationContainer mergedFamiliensituationContainer,
-		Familiensituation oldFamiliensituation) {
-
-		if (oldFamiliensituation == null
-			|| mergedFamiliensituationContainer.getFamiliensituationJA() == null
-			|| gesuch.getGesuchsteller1() == null) {
-			return;
-		}
-
-		if (oldFamiliensituation.isSpezialFallAR()
-				&& !mergedFamiliensituationContainer.getFamiliensituationJA().isSpezialFallAR()) {
-			resetFinSitARZusatzangabenPartner(gesuch);
-			mergedFamiliensituationContainer.getFamiliensituationJA().setGemeinsameSteuererklaerung(null);
-		}
-	}
-
-	private static void resetFinSitARZusatzangabenPartner(@Nonnull Gesuch gesuch) {
-		Objects.requireNonNull(gesuch.getGesuchsteller1());
-		final FinanzielleSituationContainer finSitGS1Container =
-				gesuch.getGesuchsteller1().getFinanzielleSituationContainer();
-		if (finSitGS1Container != null
-				&& finSitGS1Container.getFinanzielleSituationJA() != null
-				&& finSitGS1Container.getFinanzielleSituationJA().getFinSitZusatzangabenAppenzell() != null) {
-			finSitGS1Container
-					.getFinanzielleSituationJA()
-					.getFinSitZusatzangabenAppenzell()
-					.setZusatzangabenPartner(null);
-		}
-	}
-
-	private void resetFragenKinderabzugAndSetToUeberpruefen(Gesuch gesuch) {
-		gesuch.getKindContainers()
-			.forEach(kindContainer -> {
-				if (kindContainer.getKindJA() != null) {
-					kindContainer.getKindJA().setGemeinsamesGesuch(null);
-					kindContainer.getKindJA().setInPruefung(true);
-				}
-			});
-	}
 
 	@Nonnull
 	@Override
@@ -320,37 +122,4 @@ public class FamiliensituationServiceBean extends AbstractBaseService implements
 		persistence.remove(familiensituationToRemove);
 	}
 
-	/**
-	 * Wenn die neue Familiensituation nur 1GS hat und der zweite GS schon existiert, wird dieser
-	 * und seine Daten endgueltig geloescht. Dies gilt aber nur fuer ERSTGESUCH.
-	 * Bei Mutation oder nach Freigabe kann der GS2 geloescht werden wenn er gar nicht mehr ins Gesuch
-	 * beruecksichtig wird. D.H. alle Daten die die FamSit / FinSit Regeln betreffen muessen geprueft werden
-	 */
-	private boolean isNeededToRemoveGesuchsteller2(
-		Gesuch gesuch,
-		Familiensituation newFamiliensituation,
-		Familiensituation familiensituationErstgesuch
-	) {
-		LocalDate gesuchsperiodeBis = gesuch.getGesuchsperiode().getGueltigkeit().getGueltigBis();
-		LocalDate gesuchsperiodeAb = gesuch.getGesuchsperiode().getGueltigkeit().getGueltigAb();
-		return gesuch.getGesuchsteller2() != null && ((!gesuch.isMutation()
-			&& !newFamiliensituation.hasSecondGesuchsteller(gesuchsperiodeBis))
-			|| (gesuch.isMutation() && isChanged1To2Reverted(gesuch, newFamiliensituation,
-			familiensituationErstgesuch))
-			|| (gesuch.isMutation() && (newFamiliensituation.getAenderungPer() != null
-			&& newFamiliensituation.getAenderungPer().isBefore(gesuchsperiodeAb)) && (
-			(gesuch.getRegelnGueltigAb() != null && gesuch.getRegelnGueltigAb().isBefore(gesuchsperiodeAb))
-				|| (gesuch.getRegelnGueltigAb() == null && gesuch.getEingangsdatum() != null && gesuch.getEingangsdatum().isBefore(gesuchsperiodeAb)))));
-	}
-
-	private boolean isChanged1To2Reverted(
-		Gesuch gesuch,
-		Familiensituation newFamiliensituation,
-		Familiensituation familiensituationErstgesuch
-	) {
-		LocalDate gesuchsperiodeBis = gesuch.getGesuchsperiode().getGueltigkeit().getGueltigBis();
-		return gesuch.getGesuchsteller2() != null && !familiensituationErstgesuch.hasSecondGesuchsteller(
-			gesuchsperiodeBis)
-			&& !newFamiliensituation.hasSecondGesuchsteller(gesuchsperiodeBis);
-	}
 }
