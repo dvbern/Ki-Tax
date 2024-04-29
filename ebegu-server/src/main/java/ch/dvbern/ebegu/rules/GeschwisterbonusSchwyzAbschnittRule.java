@@ -65,7 +65,7 @@ public class GeschwisterbonusSchwyzAbschnittRule extends AbstractAbschnittRule {
 			.filter(kindContainer -> !kindContainer.isSame(platz.getKind()))
 			.filter(kindContainer -> !kindContainer.getBetreuungen().isEmpty())
 			.filter(kindContainer -> contributesToGeschwisterbonus(kindContainer, gpGueltigkeit))
-			.flatMap(this::createAbschnittGeburtstagTuplesForBetreuungen)
+			.flatMap(kindContainer -> createAbschnittGeburtstagTuplesForBetreuungen(kindContainer, gpGueltigkeit))
 			.map(this::limitGueltigkeitWithGeburtstag)
 			.map(this::setAnzahlGeschwister)
 			.map(VerfuegungZeitabschnittGeburtsdatumTuple::getZeitabschnitt)
@@ -84,12 +84,16 @@ public class GeschwisterbonusSchwyzAbschnittRule extends AbstractAbschnittRule {
 	}
 
 	@Nonnull
-	private Stream<VerfuegungZeitabschnittGeburtsdatumTuple> createAbschnittGeburtstagTuplesForBetreuungen(KindContainer kindContainer) {
+	private Stream<VerfuegungZeitabschnittGeburtsdatumTuple> createAbschnittGeburtstagTuplesForBetreuungen(
+		KindContainer kindContainer,
+		DateRange gpGueltigkeit) {
 		return kindContainer.getBetreuungen()
 			.stream()
 			.flatMap(betreuung -> betreuung.getBetreuungspensumContainers().stream())
 			.map(betreuungspensumContainer -> new VerfuegungZeitabschnittGeburtsdatumTuple(
-				createZeitabschnittWithinValidityPeriodOfRule(betreuungspensumContainer.getGueltigkeit()),
+				createZeitabschnittWithinValidityPeriodOfRule(DateUtil.limitToDateRange(
+					betreuungspensumContainer.getGueltigkeit(),
+					gpGueltigkeit)),
 				kindContainer.getKindJA().getGeburtsdatum()));
 	}
 

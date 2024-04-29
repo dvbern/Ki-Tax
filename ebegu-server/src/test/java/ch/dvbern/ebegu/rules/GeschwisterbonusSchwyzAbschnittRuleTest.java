@@ -95,7 +95,21 @@ class GeschwisterbonusSchwyzAbschnittRuleTest {
 				final List<VerfuegungZeitabschnitt> verfuegungZeitabschnitte = executeRule(betreuung);
 
 				assertThat(verfuegungZeitabschnitte.size(), is(1));
-				assertThat(verfuegungZeitabschnitte.get(0).getBgCalculationInputAsiv().getAnzahlGeschwister(), is(1));
+				assertThat(verfuegungZeitabschnitte.get(0).getGueltigkeit().getGueltigAb(), equalTo(GP_START));
+				assertThat(verfuegungZeitabschnitte.get(0).getGueltigkeit().getGueltigBis(), equalTo(GP_END));
+			}
+
+			@Test
+			void oneOtherKindU18ganzePeriodeBetreuungEndOfTime_shouldCreateOneZeitabschnittForEntirePeriode() {
+				addGeschwisterWithBetreuungspensen(
+					GP_START.minusYears(5).plusMonths(2),
+					Set.of(new DateRange(GP_START, Constants.END_OF_TIME)));
+
+				final List<VerfuegungZeitabschnitt> verfuegungZeitabschnitte = executeRule(betreuung);
+
+				assertThat(verfuegungZeitabschnitte.size(), is(1));
+				assertThat(verfuegungZeitabschnitte.get(0).getGueltigkeit().getGueltigAb(), equalTo(GP_START));
+				assertThat(verfuegungZeitabschnitte.get(0).getGueltigkeit().getGueltigBis(), equalTo(GP_END));
 			}
 
 			@Test
@@ -147,7 +161,6 @@ class GeschwisterbonusSchwyzAbschnittRuleTest {
 					Set.of(new DateRange(GP_START, GP_START.plusMonths(4)), new DateRange(GP_START.plusMonths(9), GP_END)));
 
 				final List<VerfuegungZeitabschnitt> verfuegungZeitabschnitte = executeRule(betreuung);
-
 
 				assertThat(
 					verfuegungZeitabschnitte.get(0).getGueltigkeit().getGueltigAb(),
