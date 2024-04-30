@@ -19,6 +19,7 @@ package ch.dvbern.ebegu.inbox.handler;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.Month;
 import java.util.Arrays;
 import java.util.Collection;
@@ -36,6 +37,7 @@ import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.enums.PensumUnits;
 import ch.dvbern.ebegu.inbox.handler.pensum.PensumMapper;
 import ch.dvbern.ebegu.inbox.handler.pensum.PensumValueMapper;
+import ch.dvbern.ebegu.services.BetreuungMonitoringService;
 import ch.dvbern.ebegu.test.TestDataUtil;
 import ch.dvbern.ebegu.test.util.TestDataInstitutionStammdatenBuilder;
 import ch.dvbern.ebegu.testfaelle.Testfall01_WaeltiDagmar;
@@ -53,6 +55,7 @@ import static ch.dvbern.ebegu.util.EbeguUtil.coalesce;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.spotify.hamcrest.pojo.IsPojo.pojo;
 import static java.util.Objects.requireNonNull;
+import static org.easymock.EasyMock.mock;
 import static org.hamcrest.Matchers.comparesEqualTo;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
@@ -156,6 +159,36 @@ public final class PlatzbestaetigungTestUtil {
 	}
 
 	@Nonnull
+	public static <T extends AbstractMahlzeitenPensum> PensumMapper<T> unitTestPensumMapper() {
+		return PensumMapper.combine(
+			PensumMapper.GUELTIGKEIT_MAPPER,
+			PensumMapper.KOSTEN_MAPPER,
+			new PensumValueMapper(BigDecimal.valueOf(20), BigDecimal.valueOf(220))
+		);
+	}
+
+	@Nonnull
+	public static ProcessingContext initProcessingContext(@Nonnull ZeitabschnittDTO zeitabschnitt) {
+		Gesuch gesuch = PlatzbestaetigungTestUtil.initGesuch();
+		Betreuung betreuung = betreuungWithSingleContainer(gesuch);
+		BetreuungEventDTO betreuungEventDTO = createBetreuungEventDTO(zeitabschnitt);
+
+		return new ProcessingContext(
+			betreuung,
+			betreuungEventDTO,
+			getClientPeriodeGueltigkeit(betreuung),
+			new EventMonitor(mock(BetreuungMonitoringService.class), LocalDateTime.now(), betreuungEventDTO.getRefnr(),
+				"client"),
+			true);
+	}
+
+	@Nonnull
+	private static DateRange getClientPeriodeGueltigkeit(@Nonnull Betreuung betreuung) {
+		return betreuung.extractGesuchsperiode().getGueltigkeit().getOverlap(Constants.DEFAULT_GUELTIGKEIT)
+			.orElseThrow(() -> new IllegalArgumentException("client gueltigkeit & periode do not overlap"));
+	}
+
+	@Nonnull
 	public static Matcher<Processing> failed(@Nonnull String message) {
 		return failed(is(message));
 	}
@@ -193,15 +226,6 @@ public final class PlatzbestaetigungTestUtil {
 		@Nonnull LocalDate bis) {
 
 		return matches(z, new DateRange(von, bis));
-	}
-
-	@Nonnull
-	public static <T extends AbstractMahlzeitenPensum> PensumMapper<T> unitTestPensumMapper() {
-		return PensumMapper.combine(
-			PensumMapper.GUELTIGKEIT_MAPPER,
-			PensumMapper.KOSTEN_MAPPER,
-			new PensumValueMapper(BigDecimal.valueOf(20), BigDecimal.valueOf(220))
-		);
 	}
 
 	@Nonnull
