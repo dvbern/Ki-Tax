@@ -46,6 +46,6 @@ public class MutationsMergerFinanzielleSituationVisitor implements FinanzielleSi
 
 	@Override
 	public AbstractMutationsMergerFinanzielleSituation visitFinSitSchwyz() {
-		return new MutationsMergerFinanzielleSituationLuzern(locale);
+		return new MutationsMergerFinanzielleSituationSchwyz(locale);
 	}
 }
