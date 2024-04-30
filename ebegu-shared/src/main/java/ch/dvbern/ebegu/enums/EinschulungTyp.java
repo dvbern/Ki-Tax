@@ -95,6 +95,7 @@ public enum EinschulungTyp {
 		return this != VORSCHULALTER && this != FREIWILLIGER_KINDERGARTEN;
 	}
 
+	// oh mann...
 	public boolean isEingeschultAppenzell() {
 		return this.getOrdinalitaet() >= 1;
 	}

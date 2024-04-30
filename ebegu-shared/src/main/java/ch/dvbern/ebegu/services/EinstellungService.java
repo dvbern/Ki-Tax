@@ -17,6 +17,7 @@
 
 package ch.dvbern.ebegu.services;
 
+import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -27,10 +28,12 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.persistence.EntityManager;
 
+import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Einstellung;
 import ch.dvbern.ebegu.entities.Gemeinde;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.enums.EinstellungKey;
+import ch.dvbern.ebegu.errors.NoEinstellungFoundException;
 
 /**
  * Service zum Verwalten von Einstellungen.
@@ -140,4 +143,18 @@ public interface EinstellungService {
 	List<Einstellung> findEinstellungen(@Nonnull EinstellungKey key, @Nullable Gesuchsperiode gesuchsperiode);
 
 	Map<EinstellungKey, Einstellung> loadRuleParameters(Gemeinde gemeinde, Gesuchsperiode gesuchsperiode, Set<EinstellungKey> keysToLoad);
+
+	default boolean isEnabled(@Nonnull EinstellungKey key, @Nonnull Betreuung betreuung) {
+		Gemeinde gemeinde = betreuung.extractGemeinde();
+		Gesuchsperiode periode = betreuung.extractGesuchsperiode();
+
+		return findEinstellung(key, gemeinde, periode).getValueAsBoolean();
+	}
+
+	default BigDecimal getEinstellungAsBigDecimal(@Nonnull EinstellungKey key, @Nonnull Betreuung betreuung) {
+		Gemeinde gemeinde = betreuung.extractGemeinde();
+		Gesuchsperiode periode = betreuung.extractGesuchsperiode();
+
+		return findEinstellung(key, gemeinde, periode).getValueAsBigDecimal();
+	}
 }

@@ -34,6 +34,8 @@ import ch.dvbern.ebegu.entities.BetreuungspensumContainer;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.enums.PensumUnits;
+import ch.dvbern.ebegu.inbox.handler.pensum.PensumMapper;
+import ch.dvbern.ebegu.inbox.handler.pensum.PensumValueMapper;
 import ch.dvbern.ebegu.test.TestDataUtil;
 import ch.dvbern.ebegu.test.util.TestDataInstitutionStammdatenBuilder;
 import ch.dvbern.ebegu.testfaelle.Testfall01_WaeltiDagmar;
@@ -191,6 +193,15 @@ public final class PlatzbestaetigungTestUtil {
 		@Nonnull LocalDate bis) {
 
 		return matches(z, new DateRange(von, bis));
+	}
+
+	@Nonnull
+	public static <T extends AbstractMahlzeitenPensum> PensumMapper<T> unitTestPensumMapper() {
+		return PensumMapper.combine(
+			PensumMapper.GUELTIGKEIT_MAPPER,
+			PensumMapper.KOSTEN_MAPPER,
+			new PensumValueMapper(BigDecimal.valueOf(20), BigDecimal.valueOf(220))
+		);
 	}
 
 	@Nonnull

@@ -15,27 +15,26 @@
 
 package ch.dvbern.ebegu.entities;
 
-import ch.dvbern.ebegu.enums.AntragCopyType;
-import ch.dvbern.ebegu.types.DateRange;
-import ch.dvbern.ebegu.util.Gueltigkeit;
-import com.google.errorprone.annotations.CanIgnoreReturnValue;
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.hibernate.envers.Audited;
+import java.util.Objects;
 
 import javax.annotation.Nonnull;
 import javax.persistence.Embedded;
 import javax.persistence.MappedSuperclass;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
-import java.util.Objects;
+
+import ch.dvbern.ebegu.enums.AntragCopyType;
+import ch.dvbern.ebegu.types.DateRange;
+import ch.dvbern.ebegu.util.Gueltigkeit;
+import com.google.errorprone.annotations.CanIgnoreReturnValue;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 
 /**
  * Abstrakte Entitaet. Muss von Entitaeten erweitert werden, die eine Periode (DateRange) mit datumVon und datumBis haben.
  */
 @MappedSuperclass
-@Audited
-public class AbstractDateRangedEntity extends AbstractMutableEntity implements Gueltigkeit {
+public abstract class AbstractDateRangedEntity extends AbstractMutableEntity implements Gueltigkeit {
 
 	private static final long serialVersionUID = -7541083148864749528L;
 

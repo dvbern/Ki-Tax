@@ -1218,7 +1218,8 @@ public class MitteilungServiceBean extends AbstractBaseService implements Mittei
 		);
 	}
 
-	private boolean showSchulergaenzendeBetreuung(Betreuung betreuung) {
+	@Override
+	public boolean showSchulergaenzendeBetreuung(Betreuung betreuung) {
 		return requireNonNull(betreuung.getKind().getKindJA().getEinschulungTyp()).isEingeschult()
 			&& einstellungService.findEinstellung(
 			EinstellungKey.SCHULERGAENZENDE_BETREUUNGEN,

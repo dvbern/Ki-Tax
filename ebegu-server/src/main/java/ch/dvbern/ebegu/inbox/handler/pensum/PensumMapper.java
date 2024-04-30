@@ -22,9 +22,7 @@ import java.util.Arrays;
 import javax.annotation.Nonnull;
 
 import ch.dvbern.ebegu.entities.AbstractMahlzeitenPensum;
-import ch.dvbern.ebegu.entities.Betreuungspensum;
 import ch.dvbern.ebegu.entities.EingewoehnungPauschale;
-import ch.dvbern.ebegu.entities.containers.PensumUtil;
 import ch.dvbern.kibon.exchange.commons.platzbestaetigung.EingewoehnungDTO;
 import ch.dvbern.kibon.exchange.commons.platzbestaetigung.ZeitabschnittDTO;
 
@@ -43,6 +41,11 @@ public interface PensumMapper<T extends AbstractMahlzeitenPensum> {
 			.forEach(m -> m.toAbstractMahlzeitenPensum(target, zeitabschnittDTO));
 	}
 
+	static <T extends AbstractMahlzeitenPensum> PensumMapper<T> nop() {
+		return (target, zeitabschnittDTO) -> {
+		};
+	}
+
 	PensumMapper<AbstractMahlzeitenPensum> GUELTIGKEIT_MAPPER = (target, zeitabschnittDTO) -> {
 		target.getGueltigkeit().setGueltigAb(zeitabschnittDTO.getVon());
 		target.getGueltigkeit().setGueltigBis(zeitabschnittDTO.getBis());
@@ -50,13 +53,6 @@ public interface PensumMapper<T extends AbstractMahlzeitenPensum> {
 
 	PensumMapper<AbstractMahlzeitenPensum> KOSTEN_MAPPER = (target, zeitabschnittDTO) ->
 		target.setMonatlicheBetreuungskosten(zeitabschnittDTO.getBetreuungskosten());
-
-	PensumMapper<AbstractMahlzeitenPensum> MITTAGSTISCH_MAPPER = (target, zeitabschnittDTO) -> {
-		GUELTIGKEIT_MAPPER.toAbstractMahlzeitenPensum(target, zeitabschnittDTO);
-		target.setMonatlicheHauptmahlzeiten(zeitabschnittDTO.getAnzahlHauptmahlzeiten());
-		target.setTarifProHauptmahlzeit(zeitabschnittDTO.getTarifProHauptmahlzeiten());
-		PensumUtil.transformMittagstischPensum(target);
-	};
 
 	PensumMapper<AbstractMahlzeitenPensum> EINGEWOEHNUNG_PAUSCHALE_MAPPER = (target, zeitabschnittDTO) -> {
 		EingewoehnungDTO eingewoehnung = zeitabschnittDTO.getEingewoehnung();
@@ -71,10 +67,5 @@ public interface PensumMapper<T extends AbstractMahlzeitenPensum> {
 		pauschale.getGueltigkeit().setGueltigAb(eingewoehnung.getVon());
 		pauschale.getGueltigkeit().setGueltigBis(eingewoehnung.getBis());
 		target.setEingewoehnungPauschale(pauschale);
-	};
-
-	PensumMapper<Betreuungspensum> BETREUUNG_IN_FERIENZEIT_MAPPER = (target, zeitabschnittDTO) -> {
-		// TODO only when einstellung for Ferienzeit?
-		target.setBetreuungInFerienzeit(zeitabschnittDTO.getBetreuungInFerienzeit());
 	};
 }

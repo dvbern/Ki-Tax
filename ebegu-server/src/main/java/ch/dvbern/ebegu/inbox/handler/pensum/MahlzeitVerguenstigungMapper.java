@@ -61,7 +61,7 @@ public class MahlzeitVerguenstigungMapper implements PensumMapper<AbstractMahlze
 			LOG.info(
 				"PlatzbestaetigungEvent fuer Betreuung mit RefNr: {} hat kein Hauptmahlzeiten Tarif",
 				ctx.getDto().getRefnr());
-			ctx.setHumanConfirmationMessage("PlatzbestaetigungEvent hat keinen Hauptmahlzeiten Tarif");
+			ctx.addHumanConfirmationMessage("PlatzbestaetigungEvent hat keinen Hauptmahlzeiten Tarif");
 		}
 		if (zeitabschnittDTO.getTarifProNebenmahlzeiten() != null) {
 			target.setTarifProNebenmahlzeit(zeitabschnittDTO.getTarifProNebenmahlzeiten());
@@ -71,7 +71,7 @@ public class MahlzeitVerguenstigungMapper implements PensumMapper<AbstractMahlze
 			LOG.info(
 				"PlatzbestaetigungEvent fuer Betreuung mit RefNr: {} hat kein Nebenmahlzeiten Tarif",
 				ctx.getDto().getRefnr());
-			ctx.setHumanConfirmationMessage("PlatzbestaetigungEvent hat keinen Nebenmahlzeiten Tarif");
+			ctx.addHumanConfirmationMessage("PlatzbestaetigungEvent hat keinen Nebenmahlzeiten Tarif");
 		}
 	}
 }

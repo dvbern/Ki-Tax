@@ -42,7 +42,6 @@ import ch.dvbern.ebegu.entities.Betreuungspensum;
 import ch.dvbern.ebegu.entities.ErweiterteBetreuung;
 import ch.dvbern.ebegu.entities.ErweiterteBetreuungContainer;
 import ch.dvbern.ebegu.entities.Gemeinde;
-import ch.dvbern.ebegu.entities.Gesuchsperiode;
 import ch.dvbern.ebegu.entities.InstitutionExternalClient;
 import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.entities.Mitteilung;
@@ -68,22 +67,21 @@ import ch.dvbern.ebegu.services.MitteilungService;
 import ch.dvbern.ebegu.types.DateRange;
 import ch.dvbern.ebegu.util.EbeguUtil;
 import ch.dvbern.ebegu.util.GueltigkeitsUtil;
-import ch.dvbern.ebegu.util.MathUtil;
 import ch.dvbern.ebegu.util.MitteilungUtil;
 import ch.dvbern.ebegu.util.ServerMessageUtil;
 import ch.dvbern.kibon.exchange.commons.platzbestaetigung.BetreuungEventDTO;
 import ch.dvbern.kibon.exchange.commons.types.Zeiteinheit;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static ch.dvbern.ebegu.enums.EinstellungKey.GEMEINDE_MAHLZEITENVERGUENSTIGUNG_ENABLED;
-import static ch.dvbern.ebegu.enums.EinstellungKey.OEFFNUNGSSTUNDEN_TFO;
-import static ch.dvbern.ebegu.enums.EinstellungKey.OEFFNUNGSTAGE_KITA;
-import static ch.dvbern.ebegu.enums.EinstellungKey.OEFFNUNGSTAGE_TFO;
 import static ch.dvbern.ebegu.inbox.handler.pensum.PensumMappingUtil.COMPARATOR_WITH_GUELTIGKEIT;
 import static ch.dvbern.ebegu.inbox.handler.pensum.PensumMappingUtil.MITTEILUNG_COMPARATOR;
 
 @ApplicationScoped
+@NoArgsConstructor
+@AllArgsConstructor
 public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEventDTO> {
 
 	private static final Logger LOG = LoggerFactory.getLogger(PlatzbestaetigungEventHandler.class);
@@ -98,6 +96,9 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 
 	@Inject
 	private EinstellungService einstellungService;
+
+	@Inject
+	private PensumMapperFactory pensumMapperFactory;
 
 	@Inject
 	private MitteilungService mitteilungService;
@@ -211,23 +212,7 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 			return validationProcess;
 		}
 
-		boolean mahlzeitVergunstigungEnabled = isEnabled(betreuung, GEMEINDE_MAHLZEITENVERGUENSTIGUNG_ENABLED);
-		BigDecimal maxTageProJahr = getEinstellungAsBigdecimal(betreuung, OEFFNUNGSTAGE_KITA);
-		BigDecimal maxTageProJahrTFO = getEinstellungAsBigdecimal(betreuung, OEFFNUNGSTAGE_TFO);
-		BigDecimal hoursProTag = getEinstellungAsBigdecimal(betreuung, OEFFNUNGSSTUNDEN_TFO);
-		BigDecimal anzahlMonatProJahr = new BigDecimal("12.00");
-		BigDecimal maxTageProMonat = MathUtil.DEFAULT.divideNullSafe(maxTageProJahr, anzahlMonatProJahr);
-
-		BigDecimal maxTageProMonatTFO = MathUtil.DEFAULT.divideNullSafe(maxTageProJahrTFO, anzahlMonatProJahr);
-		BigDecimal maxStundenProMonat = MathUtil.DEFAULT.multiplyNullSafe(maxTageProMonatTFO, hoursProTag);
-
-		ProcessingContext ctx = new ProcessingContext(
-			betreuung,
-			dto,
-			overlap.get(),
-			mahlzeitVergunstigungEnabled,
-			eventMonitor,
-			maxTageProMonat, maxStundenProMonat, singleClientForPeriod);
+		ProcessingContext ctx = new ProcessingContext(betreuung, dto, overlap.get(), eventMonitor, singleClientForPeriod);
 
 		Betreuungsstatus status = betreuung.getBetreuungsstatus();
 
@@ -321,7 +306,7 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 				refnr);
 			ctx.getEventMonitor().record(
 				"PlatzbestaetigungEvent eingelesen, aber nicht automatisch bestätigt: %s",
-				ctx.getHumanConfirmationMessage());
+				ctx.getHumanConfirmationMessages());
 		}
 
 		return Processing.success();
@@ -339,7 +324,7 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 					+ " die Drittanwendung nicht für die gesamte Gesuchsperiode berechtigt ist"
 				,
 				ctx.getDto().getRefnr());
-			ctx.setHumanConfirmationMessage(
+			ctx.addHumanConfirmationMessage(
 				"Eine manuelle Bestätigung ist nötig, weil"
 					+ " die Drittanwendung nicht für die gesamte Gesuchsperiode berechtigt ist");
 		}
@@ -348,7 +333,7 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 		setEingewoehnungPhase(ctx);
 		setBetreuungInGemeinde(ctx);
 		setSprachfoerderungBestaetigt(ctx);
-		PensumMapper<Betreuungspensum> pensumMapper = PensumMapperFactory.createForPlatzbestaetigung(ctx);
+		PensumMapper<Betreuungspensum> pensumMapper = pensumMapperFactory.createForPlatzbestaetigung(ctx);
 		PensumMappingUtil.addZeitabschnitteToBetreuung(ctx, pensumMapper);
 
 		return ctx.isReadyForBestaetigen();
@@ -400,7 +385,7 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 
 	private void setBetreuungInGemeinde(@Nonnull ProcessingContext ctx) {
 		Betreuung betreuung = ctx.getBetreuung();
-		boolean enabled = isEnabled(betreuung, EinstellungKey.GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_ENABLED);
+		boolean enabled = einstellungService.isEnabled(EinstellungKey.GEMEINDE_ZUSAETZLICHER_GUTSCHEIN_ENABLED, betreuung);
 
 		if (!enabled) {
 			// no need to set BetreuungInGemeinde -> continue automated processing
@@ -416,7 +401,7 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 			LOG.info(
 				"PlatzbestaetigungEvent fuer Betreuung mit RefNr: {} hat keine Gemeinde spezifiziert",
 				ctx.getDto().getRefnr());
-			ctx.setHumanConfirmationMessage("PlatzbestaetigungEvent hat keine Gemeinde spezifiziert");
+			ctx.addHumanConfirmationMessage("PlatzbestaetigungEvent hat keine Gemeinde spezifiziert");
 			return;
 		}
 
@@ -489,7 +474,7 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 		Betreuungsmitteilung betreuungsmitteilung = new Betreuungsmitteilung();
 		betreuungsmitteilung.setBetreuung(betreuung);
 
-		PensumMapper<BetreuungsmitteilungPensum> pensumMapper = PensumMapperFactory.createForBetreuungsmitteilung(ctx);
+		PensumMapper<BetreuungsmitteilungPensum> pensumMapper = pensumMapperFactory.createForBetreuungsmitteilung(ctx);
 		PensumMappingUtil.addZeitabschnitteToBetreuungsmitteilung(ctx, latest, betreuungsmitteilung, pensumMapper);
 
 		MitteilungUtil.initializeBetreuungsmitteilung(betreuungsmitteilung, betreuung, benutzer, locale);
@@ -521,20 +506,6 @@ public class PlatzbestaetigungEventHandler extends BaseEventHandler<BetreuungEve
 		var fromMitteilung = betreuungsmitteilung.getBetreuungenJA();
 
 		return EbeguUtil.areComparableCollections(fromBetreuung, fromMitteilung, COMPARATOR_WITH_GUELTIGKEIT);
-	}
-
-	private boolean isEnabled(@Nonnull Betreuung betreuung, @Nonnull EinstellungKey key) {
-		Gemeinde gemeinde = betreuung.extractGemeinde();
-		Gesuchsperiode periode = betreuung.extractGesuchsperiode();
-
-		return einstellungService.findEinstellung(key, gemeinde, periode).getValueAsBoolean();
-	}
-
-	private BigDecimal getEinstellungAsBigdecimal(@Nonnull Betreuung betreuung, @Nonnull EinstellungKey key) {
-		Gemeinde gemeinde = betreuung.extractGemeinde();
-		Gesuchsperiode periode = betreuung.extractGesuchsperiode();
-
-		return einstellungService.findEinstellung(key, gemeinde, periode).getValueAsBigDecimal();
 	}
 
 	@Nonnull

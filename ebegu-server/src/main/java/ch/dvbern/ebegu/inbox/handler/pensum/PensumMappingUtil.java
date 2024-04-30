@@ -136,7 +136,7 @@ public final class PensumMappingUtil {
 	private static BetreuungspensumContainer toBetreuungspensumContainer(
 		@Nonnull ZeitabschnittDTO zeitabschnittDTO,
 		@Nonnull ProcessingContext ctx,
-		@Nonnull PensumMapper mapper) {
+		@Nonnull PensumMapper<Betreuungspensum> mapper) {
 
 		Betreuungspensum betreuungspensum = new Betreuungspensum();
 		mapper.toAbstractMahlzeitenPensum(betreuungspensum, zeitabschnittDTO);
@@ -241,7 +241,7 @@ public final class PensumMappingUtil {
 	@Nonnull
 	private static BetreuungsmitteilungPensum toBetreuungsmitteilungPensum(
 		@Nonnull ZeitabschnittDTO zeitabschnitt,
-		@Nonnull PensumMapper mapper) {
+		@Nonnull PensumMapper<BetreuungsmitteilungPensum> mapper) {
 
 		BetreuungsmitteilungPensum betreuungsmitteilungPensum = new BetreuungsmitteilungPensum();
 		mapper.toAbstractMahlzeitenPensum(betreuungsmitteilungPensum, zeitabschnitt);
