@@ -657,10 +657,10 @@ public class DokumentenverzeichnisEvaluatorTest extends EasyMockSupport {
 		//Test wenn Steuererklärung nicht ausgefüllt ist
 		finanzielleSituationJA.setSteuererklaerungAusgefuellt(false);
 		dokumentGrunds = evaluator.calculate(testgesuch, Constants.DEFAULT_LOCALE);
-		Assert.assertEquals(8, dokumentGrunds.size());
+		Assert.assertEquals(10, dokumentGrunds.size());
 
 		dokumentGrundGS1 = getDokumentGrundsForGS(1, dokumentGrunds);
-		Assert.assertEquals(8, dokumentGrundGS1.size());
+		Assert.assertEquals(10, dokumentGrundGS1.size());
 
 		assertType(dokumentGrundGS1, DokumentTyp.JAHRESLOHNAUSWEISE, testgesuch.getGesuchsteller1().extractFullName(), "2016",
 			DokumentGrundPersonType.GESUCHSTELLER, 1, DokumentGrundTyp.FINANZIELLESITUATION);
@@ -677,6 +677,8 @@ public class DokumentenverzeichnisEvaluatorTest extends EasyMockSupport {
 		assertType(dokumentGrundGS1, DokumentTyp.ERFOLGSRECHNUNGEN_JAHR_MINUS1, testgesuch.getGesuchsteller1().extractFullName(), "2015",
 			DokumentGrundPersonType.GESUCHSTELLER, 1, DokumentGrundTyp.FINANZIELLESITUATION);
 		assertType(dokumentGrundGS1, DokumentTyp.ERFOLGSRECHNUNGEN_JAHR_MINUS2, testgesuch.getGesuchsteller1().extractFullName(), "2014",
+			DokumentGrundPersonType.GESUCHSTELLER, 1, DokumentGrundTyp.FINANZIELLESITUATION);
+		assertType(dokumentGrundGS1, DokumentTyp.NACHWEIS_VERMOEGEN, testgesuch.getGesuchsteller1().extractFullName(), "2016",
 			DokumentGrundPersonType.GESUCHSTELLER, 1, DokumentGrundTyp.FINANZIELLESITUATION);
 	}
 
@@ -729,7 +731,7 @@ public class DokumentenverzeichnisEvaluatorTest extends EasyMockSupport {
 		ekvJABasisJahrPlus2.setNettolohn(BigDecimal.valueOf(200000));
 
 		Set<DokumentGrund> dokumentGrunds = evaluator.calculate(testgesuch, Constants.DEFAULT_LOCALE);
-		Assert.assertEquals(8, dokumentGrunds.size()); // Vermoegen wird neu immer gefragt (2 GS x 2 EKVs)
+		Assert.assertEquals(10, dokumentGrunds.size()); // Vermoegen wird neu immer gefragt (2 GS x 2 EKVs)
 
 		Set<DokumentGrund> dokumentGrundGS1 = getDokumentGrundsForGS(1, dokumentGrunds);
 		Assert.assertEquals(4, dokumentGrundGS1.size());

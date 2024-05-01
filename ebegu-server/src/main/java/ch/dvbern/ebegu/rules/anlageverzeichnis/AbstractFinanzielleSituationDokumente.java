@@ -157,8 +157,7 @@ abstract class AbstractFinanzielleSituationDokumente
 		case STEUERERKLAERUNG:
 		case NACHWEIS_VERMOEGEN:
 			// Vermögen muss immer ausgewiesen werden!
-			return !abstractFinanzielleSituation.getSteuerveranlagungErhalten()
-				&& abstractFinanzielleSituation.getSteuererklaerungAusgefuellt();
+			return !abstractFinanzielleSituation.getSteuerveranlagungErhalten();
 		case JAHRESLOHNAUSWEISE:
 			return isJahresLohnausweisNeeded(abstractFinanzielleSituation);
 		case NACHWEIS_FAMILIENZULAGEN:
