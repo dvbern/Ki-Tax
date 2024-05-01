@@ -86,6 +86,7 @@ public class FinanzielleSituationPdfGeneratorSolothurn extends FinanzielleSituat
 		super(gesuch, verfuegungFuerMassgEinkommen, stammdaten, erstesEinreichungsdatum);
 	}
 
+	@Override
 	protected void initializeValues() {
 		basisJahrGS1 = requireFinanzielleSituation(gesuch.getGesuchsteller1());
 		gs1 = requireNonNull(requireNonNull(gesuch.getGesuchsteller1()).getGesuchstellerJA());
@@ -129,6 +130,7 @@ public class FinanzielleSituationPdfGeneratorSolothurn extends FinanzielleSituat
 		}
 	}
 
+	@Override
 	protected void createPageBasisJahr(
 		@Nonnull PdfGenerator generator,
 		@Nonnull Document document

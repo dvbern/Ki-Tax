@@ -81,6 +81,7 @@ public class FinanzielleSituationPdfGeneratorSchwyz extends FinanzielleSituation
 		super(gesuch, verfuegungFuerMassgEinkommen, stammdaten, erstesEinreichungsdatum);
 	}
 
+	@Override
 	protected void initializeValues() {
 		boolean hasFinSitGS2 = findFinanzielleSituation(gesuch.getGesuchsteller2()).isPresent();
 
@@ -88,6 +89,7 @@ public class FinanzielleSituationPdfGeneratorSchwyz extends FinanzielleSituation
 		initialzeEkv();
 	}
 
+	@Override
 	protected void createPageBasisJahr(@Nonnull PdfGenerator generator, @Nonnull Document document) {
 		var gesuchsteller1 = requireNonNull(gesuch.getGesuchsteller1());
 		var finSit1 = requireFinanzielleSituation(gesuchsteller1);
