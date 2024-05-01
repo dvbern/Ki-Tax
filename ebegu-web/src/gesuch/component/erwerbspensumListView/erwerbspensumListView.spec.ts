@@ -19,7 +19,6 @@ import {of} from 'rxjs';
 import {EinstellungRS} from '../../../admin/service/einstellungRS.rest';
 import {ngServicesMock} from '../../../hybridTools/ngServicesMocks';
 import {translationsMock} from '../../../hybridTools/translationsMock';
-import {TSAnspruchBeschaeftigungAbhaengigkeitTyp} from '../../../models/enums/TSAnspruchBeschaeftigungAbhaengigkeitTyp';
 import {TSEinstellungKey} from '../../../models/enums/TSEinstellungKey';
 import {TSDossier} from '../../../models/TSDossier';
 import {TSEinstellung} from '../../../models/TSEinstellung';
@@ -55,21 +54,26 @@ describe('erwerbspensumListView', () => {
     let gesuchsperiode: TSGesuchsperiode;
     let $httpBackend: IHttpBackendService;
     let ebeguRestUtil: EbeguRestUtil;
+    let einstellungRS: EinstellungRS;
 
     beforeEach(angular.mock.inject(($injector: IInjectorService) => {
         prepareDossier();
         prepareGesuchsperiode();
-
+        const einstellung = new TSEinstellung();
+        einstellung.key = TSEinstellungKey.ABHAENGIGKEIT_ANSPRUCH_BESCHAEFTIGUNGPENSUM;
+        einstellung.value = 'SCHWYZ';
         gesuchModelManager = $injector.get('GesuchModelManager');
         $componentController = $injector.get('$componentController');
         $q = $injector.get('$q');
         scope = $injector.get('$rootScope').$new();
         $httpBackend = $injector.get('$httpBackend');
         ebeguRestUtil = $injector.get('EbeguRestUtil');
+        einstellungRS = $injector.get('EinstellungRS');
 
         spyOn(gesuchModelManager, 'showInfoAusserordentlichenAnspruch').and.returnValue($q.when(false));
         spyOn(gesuchModelManager, 'getDossier').and.returnValue(dossier);
         spyOn(gesuchModelManager, 'getGesuchsperiode').and.returnValue(gesuchsperiode);
+        spyOn(einstellungRS, 'getAllEinstellungenBySystemCached').and.returnValue(of([einstellung]));
         gesuchModelManager.gemeindeKonfiguration = TestDataUtil.createGemeindeKonfiguration();
         gesuchModelManager.gemeindeStammdaten = gemeindeStammdaten;
 

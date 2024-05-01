@@ -84,7 +84,7 @@ export class DVDokumenteListController implements IController {
     public dokumente: TSDokumentGrund[];
     public tableId: string;
     public tableTitle: string;
-    public tag: string;
+    public tag: string | null;
     public titleValue: string;
     public onUploadDone: (dokumentGrund: any) => void;
     public onRemove: (attrs: any) => void;

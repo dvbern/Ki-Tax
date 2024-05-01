@@ -38,6 +38,7 @@ public abstract class FinanzielleSituationPdfGeneratorFactory {
 		switch (gesuch.getFinSitTyp()) {
 		case BERN_FKJV:
 		case BERN:
+		case SCHWYZ:
 			return new FinanzielleSituationPdfGeneratorBern(
 				gesuch,
 				verfuegungFuerMassgEinkommen,
@@ -46,7 +47,6 @@ public abstract class FinanzielleSituationPdfGeneratorFactory {
 				finanzielleSituationRechner
 			);
 		case SOLOTHURN:
-		case SCHWYZ: //Schwyz FinSitPDF wird in KIBON-3438 umgesetzt
 				return new FinanzielleSituationPdfGeneratorSolothurn(
 				gesuch,
 				verfuegungFuerMassgEinkommen,

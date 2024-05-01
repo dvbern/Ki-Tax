@@ -74,9 +74,6 @@ public class JaxFinanzielleSituation extends JaxAbstractFinanzielleSituation {
 	private BigDecimal abzuegeKinderAusbildung;
 
 	@Nullable
-	private BigDecimal bruttoLohn;
-
-	@Nullable
 	private SteuerdatenAnfrageStatus steuerdatenAbfrageStatus;
 
 	@Nullable
@@ -187,14 +184,6 @@ public class JaxFinanzielleSituation extends JaxAbstractFinanzielleSituation {
 		this.abzuegeKinderAusbildung = abzuegeKinderAusbildung;
 	}
 
-	@Nullable
-	public BigDecimal getBruttoLohn() {
-		return bruttoLohn;
-	}
-
-	public void setBruttoLohn(@Nullable BigDecimal bruttoLohn) {
-		this.bruttoLohn = bruttoLohn;
-	}
 
 	@Nullable
 	public SteuerdatenAnfrageStatus getSteuerdatenAbfrageStatus() {

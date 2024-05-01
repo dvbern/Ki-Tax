@@ -1,13 +1,20 @@
-import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit} from '@angular/core';
+import {MatRadioChange} from '@angular/material/radio';
+import {LogFactory} from '../../../../../app/core/logging/LogFactory';
+import {TSFinanzielleSituationResultateDTO} from '../../../../../models/dto/TSFinanzielleSituationResultateDTO';
 import {TSFinanzielleSituationSubStepName} from '../../../../../models/enums/TSFinanzielleSituationSubStepName';
 import {TSWizardStepName} from '../../../../../models/enums/TSWizardStepName';
 import {TSWizardStepStatus} from '../../../../../models/enums/TSWizardStepStatus';
+import {TSFinanzielleSituation} from '../../../../../models/TSFinanzielleSituation';
 import {TSFinanzielleSituationContainer} from '../../../../../models/TSFinanzielleSituationContainer';
 import {TSFinanzModel} from '../../../../../models/TSFinanzModel';
 import {EbeguUtil} from '../../../../../utils/EbeguUtil';
 import {GesuchModelManager} from '../../../../service/gesuchModelManager';
 import {WizardStepManager} from '../../../../service/wizardStepManager';
 import {AbstractGesuchViewX} from '../../../abstractGesuchViewX';
+import {FinanzielleSituationSchwyzService} from '../finanzielle-situation-schwyz.service';
+
+const LOG = LogFactory.createLog('FinanzielleSituationStartSchwyzComponent');
 
 @Component({
     selector: 'dv-finanzielle-situation-start-schwyz',
@@ -17,11 +24,17 @@ import {AbstractGesuchViewX} from '../../../abstractGesuchViewX';
 export class FinanzielleSituationStartSchwyzComponent extends AbstractGesuchViewX<TSFinanzModel> implements OnInit {
 
     public hasMultipleGS = false;
-    public massgebendesEinkommen = 0;
     public gs2Ausgefuellt = false;
 
+    private finSitGS1JAToRestore: TSFinanzielleSituation;
+    private finSitGS2JAToRestore: TSFinanzielleSituation;
+
+    public resultate?: TSFinanzielleSituationResultateDTO;
+
     public constructor(
+        protected ref: ChangeDetectorRef,
         protected readonly gesuchModelManager: GesuchModelManager,
+        private readonly finanzielleSituationSchwyzService: FinanzielleSituationSchwyzService,
         private readonly wizardstepManager: WizardStepManager,
     ) {
         super(gesuchModelManager, wizardstepManager, TSWizardStepName.FINANZIELLE_SITUATION_SCHWYZ);
@@ -40,6 +53,8 @@ export class FinanzielleSituationStartSchwyzComponent extends AbstractGesuchView
         this.model =
             new TSFinanzModel(this.gesuchModelManager.getBasisjahr(), this.gesuchModelManager.isGesuchsteller2Required(), 1);
         this.model.copyFinSitDataFromGesuch(this.gesuchModelManager.getGesuch());
+        this.setupCalculation();
+        this.calculate();
         // this field is not present on schwyz but will be checked in a lot of distributed places. Therefore we set it
         this.model.familienSituation.sozialhilfeBezueger = false;
     }
@@ -68,8 +83,12 @@ export class FinanzielleSituationStartSchwyzComponent extends AbstractGesuchView
                     await this.updateWizardStepStatus();
                 }
                 onResult(this.getModel());
-            return this.getModel();
-        }) as Promise<TSFinanzielleSituationContainer>;
+                return this.getModel();
+            }) as Promise<TSFinanzielleSituationContainer>;
+    }
+
+    public recalculateMassgendesEinkommen(): void {
+        this.finanzielleSituationSchwyzService.calculateMassgebendesEinkommen(this.model);
     }
 
     /**
@@ -101,6 +120,35 @@ export class FinanzielleSituationStartSchwyzComponent extends AbstractGesuchView
 
     public isNotNullOrUndefined(toCheck: any): boolean {
         return EbeguUtil.isNotNullOrUndefined(toCheck);
+    }
+
+    public calculate(): void {
+        this.finanzielleSituationSchwyzService.calculateMassgebendesEinkommen(this.model);
+    }
+
+    public setupCalculation(): void {
+        this.finanzielleSituationSchwyzService.massgebendesEinkommenStore.subscribe(resultate => {
+                this.resultate = resultate;
+                this.ref.markForCheck();
+            }, error => LOG.error(error),
+        );
+    }
+
+    public gemeinsamChanged($event: MatRadioChange): void {
+        if ($event.value === true) {
+            this.finSitGS1JAToRestore = this.model.finanzielleSituationContainerGS1.finanzielleSituationJA;
+            this.finSitGS2JAToRestore = this.model.finanzielleSituationContainerGS2.finanzielleSituationJA;
+            this.model.finanzielleSituationContainerGS2.finanzielleSituationJA = new TSFinanzielleSituation();
+            if (this.model.finanzielleSituationContainerGS1.finanzielleSituationJA.quellenbesteuert) {
+                this.model.finanzielleSituationContainerGS1.finanzielleSituationJA = new TSFinanzielleSituation();
+            }
+        } else {
+            this.model.finanzielleSituationContainerGS2.finanzielleSituationJA =
+                this.finSitGS2JAToRestore ? this.finSitGS2JAToRestore : new TSFinanzielleSituation();
+            this.model.finanzielleSituationContainerGS1.finanzielleSituationJA =
+                this.finSitGS1JAToRestore ? this.finSitGS1JAToRestore : new TSFinanzielleSituation();
+        }
+        this.calculate();
     }
 
     private resetAllFinSitSchwyzData(): void {

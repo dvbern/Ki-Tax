@@ -32,6 +32,7 @@ import {TSWizardStepStatus} from '../../../models/enums/TSWizardStepStatus';
 import {TSEinstellung} from '../../../models/TSEinstellung';
 import {TSErwerbspensumContainer} from '../../../models/TSErwerbspensumContainer';
 import {TSFamiliensituation} from '../../../models/TSFamiliensituation';
+import {EbeguRestUtil} from '../../../utils/EbeguRestUtil';
 import {EbeguUtil} from '../../../utils/EbeguUtil';
 import {RemoveDialogController} from '../../dialog/RemoveDialogController';
 import {BerechnungsManager} from '../../service/berechnungsManager';
@@ -67,7 +68,8 @@ export class ErwerbspensumListViewController
         'AuthServiceRS',
         '$timeout',
         '$translate',
-        'EinstellungRS'
+        'EinstellungRS',
+        'EbeguRestUtil'
     ];
 
     public erwerbspensenGS1: Array<TSErwerbspensumContainer> = undefined;
@@ -78,6 +80,7 @@ export class ErwerbspensumListViewController
     public gemeindeTelefon: string = '';
     public gemeindeEmail: string = '';
     private isGesuchBeendenFamSitActive = false;
+    private anspruchBeschaeftigungAbhaengigkeit: TSAnspruchBeschaeftigungAbhaengigkeitTyp;
 
     public constructor(
         private readonly $state: StateService,
@@ -91,6 +94,7 @@ export class ErwerbspensumListViewController
         $timeout: ITimeoutService,
         private readonly $translate: ITranslateService,
         private readonly einstellungRS: EinstellungRS,
+        private readonly ebeguRestUtil: EbeguRestUtil,
     ) {
         super(gesuchModelManager,
             berechnungsManager,
@@ -106,6 +110,9 @@ export class ErwerbspensumListViewController
                 .forEach(value => {
                     this.isGesuchBeendenFamSitActive = value.getValueAsBoolean();
                 });
+            const einstellung = response.find(r => r.key === TSEinstellungKey.ABHAENGIGKEIT_ANSPRUCH_BESCHAEFTIGUNGPENSUM);
+            this.anspruchBeschaeftigungAbhaengigkeit =
+                this.ebeguRestUtil.parseAnspruchBeschaeftigungAbhaengigkeitTyp(einstellung);
         }, error => LOG.error(error));
     }
 
@@ -283,6 +290,9 @@ export class ErwerbspensumListViewController
         if (EbeguUtil.isNotNullAndFalse(partnerIdentischMitVorgesuch)){
             familiensituation = this.getGesuch().extractFamiliensituationErstgesuch();
         }
+        if (this.anspruchBeschaeftigungAbhaengigkeit === TSAnspruchBeschaeftigungAbhaengigkeitTyp.SCHWYZ) {
+            return this.isErwerbspensumGS2RequiredSchwyz(familiensituation);
+        }
         // Wenn zwei Gesuchsteller und keine Unterhatsvereinbarung abgeschlossen ist,
         // muss das Erwerbspensum von GS2 nicht angegeben werden
         const unterhaltsvereinbarung = familiensituation.unterhaltsvereinbarung;
@@ -305,6 +315,15 @@ export class ErwerbspensumListViewController
         }
 
         return true;
+    }
+
+    private isErwerbspensumGS2RequiredSchwyz(familiensituation: TSFamiliensituation): boolean {
+        const hasAnyKindWithUnterhalt = this.getGesuch()
+            .kindContainers
+            .map(kc => kc.kindJA)
+            .reduce((curr, kind) => curr || kind.gemeinsamesGesuch, false);
+        return familiensituation.hasSecondGesuchsteller(this.gesuchModelManager.getGesuchsperiode().gueltigkeit.gueltigBis)
+            && hasAnyKindWithUnterhalt;
     }
 
     private isPensumGS2InKonkubinatOmittable(familiensituation: TSFamiliensituation): boolean {

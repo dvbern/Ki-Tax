@@ -145,11 +145,25 @@ import {
 import {
     EinkommensverschlechterungAppenzellViewComponent
 } from './component/einkommensverschlechterung/appenzell/einkommensverschlechterung-appenzell-view/einkommensverschlechterung-appenzell-view.component';
+import {abweichungenEnabledHook} from './state-hooks/abweichungen-enabled.hook';
+import { TransitionService } from '@uirouter/core';
+import { ApplicationPropertyRS } from '../app/core/rest-services/applicationPropertyRS.rest';
+import { AuthServiceRS } from '../authentication/service/AuthServiceRS.rest';
 
 export const GESUCH_JS_MODULE =
     angular.module('ebeguWeb.gesuch', [CORE_JS_MODULE.name])
         .run(gesuchRun)
         .run(finSitSchwyzRun)
+        .run([
+            '$transitions',
+            'ApplicationPropertyRS',
+            'AuthServiceRS',
+            (
+                $transitions: TransitionService,
+                applicationPropertyRS: ApplicationPropertyRS,
+                authService: AuthServiceRS,
+            ) => abweichungenEnabledHook($transitions, applicationPropertyRS, authService),
+        ])
         .component('familiensituationView', downgradeComponent({component: FamiliensituationViewXComponent}))
         .component('familiensituationAppenzellView', downgradeComponent({component: FamiliensituationAppenzellViewXComponent}))
         .component('familiensituationSchwyzView', downgradeComponent({component: FamiliensituationSchwyzComponent}))

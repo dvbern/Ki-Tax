@@ -30,6 +30,7 @@ import ch.dvbern.ebegu.entities.DokumentGrund;
 import ch.dvbern.ebegu.entities.Dossier;
 import ch.dvbern.ebegu.entities.Einkommensverschlechterung;
 import ch.dvbern.ebegu.entities.EinkommensverschlechterungContainer;
+import ch.dvbern.ebegu.entities.EinkommensverschlechterungInfo;
 import ch.dvbern.ebegu.entities.EinkommensverschlechterungInfoContainer;
 import ch.dvbern.ebegu.entities.Einstellung;
 import ch.dvbern.ebegu.entities.Erwerbspensum;
@@ -54,6 +55,7 @@ import ch.dvbern.ebegu.enums.DokumentTyp;
 import ch.dvbern.ebegu.enums.EinschulungTyp;
 import ch.dvbern.ebegu.enums.EinstellungKey;
 import ch.dvbern.ebegu.enums.EnumFamilienstatus;
+import ch.dvbern.ebegu.enums.EnumGesuchstellerKardinalitaet;
 import ch.dvbern.ebegu.enums.FachstelleName;
 import ch.dvbern.ebegu.enums.FinanzielleSituationTyp;
 import ch.dvbern.ebegu.enums.IntegrationTyp;
@@ -81,6 +83,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.spotify.hamcrest.pojo.IsPojo.pojo;
 import static java.util.Objects.requireNonNull;
@@ -1059,6 +1064,26 @@ class DokumentenverzeichnisEvaluatorTest extends EasyMockSupport {
 	@Nested
 	class SchwyzTest {
 
+		private void setUpFamiliensituationAlleine(Gesuch testGesuch) {
+			final FamiliensituationContainer familiensituationContainer = new FamiliensituationContainer();
+			final Familiensituation familiensituationJA = new Familiensituation();
+			familiensituationJA.setSozialhilfeBezueger(false);
+			familiensituationJA.setGesuchstellerKardinalitaet(EnumGesuchstellerKardinalitaet.ALLEINE);
+			familiensituationJA.setGemeinsameSteuererklaerung(false);
+			familiensituationContainer.setFamiliensituationJA(familiensituationJA);
+			testGesuch.setFamiliensituationContainer(familiensituationContainer);
+		}
+
+		private void setUpFamiliensituationZuZweit(boolean gemeinsameFinSit, Gesuch testGesuch) {
+			final FamiliensituationContainer familiensituationContainer = new FamiliensituationContainer();
+			final Familiensituation familiensituationJA = new Familiensituation();
+			familiensituationJA.setSozialhilfeBezueger(false);
+			familiensituationJA.setGesuchstellerKardinalitaet(EnumGesuchstellerKardinalitaet.ZU_ZWEIT);
+			familiensituationJA.setGemeinsameSteuererklaerung(gemeinsameFinSit);
+			familiensituationContainer.setFamiliensituationJA(familiensituationJA);
+			testGesuch.setFamiliensituationContainer(familiensituationContainer);
+		}
+
 		@Nested
 		class ErwebspensumDokumenteTest {
 
@@ -1129,6 +1154,147 @@ class DokumentenverzeichnisEvaluatorTest extends EasyMockSupport {
 
 				return erwerbspensumContainer;
 			}
+		}
+
+		@Nested
+		class EinkommensverschlechterungDokumenteTest {
+
+			@Test
+			void noEKVInfoContainer_shouldNotRequireAnyNachweis() {
+				Gesuch testGesuch = setUpGesuchForEKV();
+				setUpFamiliensituationAlleine(testGesuch);
+				testGesuch.setEinkommensverschlechterungInfoContainer(null);
+
+				final Set<DokumentGrund> dokumentGruende = evaluator.calculate(testGesuch, Constants.DEFAULT_LOCALE);
+
+				assertThat(dokumentGruende.size(), is(0));
+			}
+
+			@Test
+			void ekvInfoContainerNoEkv_shouldNotRequireAnyNachweis() {
+				Gesuch testGesuch = setUpGesuchForEKV();
+				setUpFamiliensituationZuZweit(false, testGesuch);
+				setUpEkvInfoContainer(false, testGesuch);
+
+				final Set<DokumentGrund> dokumentGruende = evaluator.calculate(testGesuch, Constants.DEFAULT_LOCALE);
+
+				assertThat(dokumentGruende.size(), is(0));
+			}
+
+			@Test
+			void oneGSNoEKVContainer_ShouldNotRequireAnyNachweis() {
+				Gesuch testGesuch = setUpGesuchForEKV();
+				setUpEkvInfoContainer(true, testGesuch);
+				Objects.requireNonNull(testGesuch.getGesuchsteller1());
+				testGesuch.getGesuchsteller1().setEinkommensverschlechterungContainer(null);
+
+				final Set<DokumentGrund> dokumentGruende = evaluator.calculate(testGesuch, Constants.DEFAULT_LOCALE);
+
+				assertThat(dokumentGruende.size(), is(0));
+			}
+
+			@Test
+			void ekvOneGSQuellbesteuertBruttolohn_ShouldRequireNachweisBruttolohn() {
+				Gesuch testGesuch = setUpGesuchForEKV();
+				setUpFamiliensituationAlleine(testGesuch);
+				setUpEkvInfoContainer(true, testGesuch);
+				final Einkommensverschlechterung ekv = new Einkommensverschlechterung();
+				ekv.setBruttoLohn(BigDecimal.valueOf(120000));
+				setUpEkvGS(ekv, testGesuch.getGesuchsteller1());
+
+				final Set<DokumentGrund> dokumentGruende = evaluator.calculate(testGesuch, Constants.DEFAULT_LOCALE);
+				final DokumentGrund dokumentGrund = dokumentGruende.stream().findFirst().orElse(new DokumentGrund());
+
+				assertThat(dokumentGruende.size(), is(1));
+				assertThat(dokumentGrund.getDokumentTyp(), is(DokumentTyp.NACHWEIS_BRUTTOLOHN));
+			}
+
+			@Test
+			void ekvOneGSNotQuellbesteuertBruttolohn_ShouldRequireNachweiseForAllFields() {
+				Gesuch testGesuch = setUpGesuchForEKV();
+				setUpFamiliensituationAlleine(testGesuch);
+				setUpEkvInfoContainer(true, testGesuch);
+				final Einkommensverschlechterung ekv = new Einkommensverschlechterung();
+				ekv.setSteuerbaresEinkommen(BigDecimal.valueOf(120000));
+				ekv.setSteuerbaresVermoegen(BigDecimal.valueOf(100000));
+				ekv.setEinkaeufeVorsorge(BigDecimal.valueOf(0));
+				ekv.setAbzuegeLiegenschaft(BigDecimal.valueOf(0));
+				setUpEkvGS(ekv, testGesuch.getGesuchsteller1());
+
+				final Set<DokumentGrund> dokumentGruende = evaluator.calculate(testGesuch, Constants.DEFAULT_LOCALE);
+
+				assertThat(dokumentGruende.size(), is(4));
+				List.of(
+						DokumentTyp.NACHWEIS_NETTOLOHN,
+						DokumentTyp.NACHWEIS_EINKAEUFE_VORSORGE,
+						DokumentTyp.NACHWEIS_ABZUEGE_LIEGENSCHAFT,
+						DokumentTyp.NACHWEIS_VERMOEGEN)
+					.forEach(dokumentTyp -> {
+						var gruendeOfTyp = dokumentGruende.stream()
+							.filter(dokumentGrund -> dokumentGrund.getDokumentTyp() == dokumentTyp)
+							.collect(
+								Collectors.toList());
+						assertThat(gruendeOfTyp.size(), is(1));
+					});
+			}
+
+			@Test
+			void ekvTwoGSQuellbesteuertBruttolohn_ShouldRequireEachNachweisPerGS() {
+				Gesuch testGesuch = setUpGesuchForEKV();
+				setUpFamiliensituationZuZweit(false, testGesuch);
+				setUpEkvInfoContainer(true, testGesuch);
+				testGesuch.setGesuchsteller2(new GesuchstellerContainer());
+				setUpEkvGS(setUpEkvQuellbesteuert(), testGesuch.getGesuchsteller1());
+				setUpEkvGS(setUpEkvQuellbesteuert(), testGesuch.getGesuchsteller2());
+
+				final Set<DokumentGrund> dokumentGruende = evaluator.calculate(testGesuch, Constants.DEFAULT_LOCALE);
+				final DokumentGrund dokumentGrundGS1 = dokumentGruende.stream()
+					.filter(dokumentGrund -> dokumentGrund.getPersonNumber() != null)
+					.filter(dokumentGrund -> dokumentGrund.getPersonNumber() == 1)
+					.findFirst()
+					.orElse(new DokumentGrund());
+				final DokumentGrund dokumentGrundGS2 = dokumentGruende.stream()
+					.filter(dokumentGrund -> dokumentGrund.getPersonNumber() != null)
+					.filter(dokumentGrund -> dokumentGrund.getPersonNumber() == 2)
+					.findFirst()
+					.orElse(new DokumentGrund());
+
+				assertThat(dokumentGruende.size(), is(2));
+				assertThat(dokumentGrundGS1.getDokumentTyp(), is(DokumentTyp.NACHWEIS_BRUTTOLOHN));
+				assertThat(dokumentGrundGS2.getDokumentTyp(), is(DokumentTyp.NACHWEIS_BRUTTOLOHN));
+			}
+
+			private Gesuch setUpGesuchForEKV() {
+				Gesuch gesuchToCreate = setUpTestgesuch(TestDataUtil.getMandantSchwyz(), FinanzielleSituationTyp.SCHWYZ);
+				gesuchToCreate.setGesuchsteller1(TestDataUtil.createDefaultGesuchstellerContainer());
+				setupEinstellungBeschaeftigungsPensumAbhaengig(gesuchToCreate);
+
+				return gesuchToCreate;
+			}
+
+			@Nonnull
+			private Einkommensverschlechterung setUpEkvQuellbesteuert() {
+				final Einkommensverschlechterung ekvGS = new Einkommensverschlechterung();
+				ekvGS.setBruttoLohn(BigDecimal.valueOf(10000));
+				return ekvGS;
+			}
+
+			private void setUpEkvInfoContainer(boolean einkommensverschlechterung, Gesuch testGesuch) {
+				final EinkommensverschlechterungInfoContainer ekvInfoContainer = new EinkommensverschlechterungInfoContainer();
+				final EinkommensverschlechterungInfo ekvInfoJA = new EinkommensverschlechterungInfo();
+				ekvInfoJA.setEkvFuerBasisJahrPlus1(true);
+				ekvInfoJA.setEinkommensverschlechterung(einkommensverschlechterung);
+				ekvInfoContainer.setEinkommensverschlechterungInfoJA(ekvInfoJA);
+				testGesuch.setEinkommensverschlechterungInfoContainer(ekvInfoContainer);
+			}
+
+			private void setUpEkvGS(Einkommensverschlechterung ekv, @Nullable GesuchstellerContainer gesuchsteller) {
+				final EinkommensverschlechterungContainer ekvContainer = new EinkommensverschlechterungContainer();
+				ekvContainer.setEkvJABasisJahrPlus1(ekv);
+				Objects.requireNonNull(gesuchsteller);
+				gesuchsteller.setEinkommensverschlechterungContainer(ekvContainer);
+			}
+
 		}
 
 		@Nested

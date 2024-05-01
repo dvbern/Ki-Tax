@@ -72,7 +72,6 @@ public class SozialhilfeCalcRuleTest {
 	private Betreuung createDefaultBetruungForTest() {
 		final Betreuung betreuung = TestDataUtil.createGesuchWithBetreuungspensum(false);
 		Gesuch gesuch = betreuung.extractGesuch();
-		TestDataUtil.createDefaultAdressenForGS(gesuch, false);
 
 		ErwerbspensumContainer erwerbspensum = TestDataUtil.createErwerbspensum(
 			betreuung.extractGesuchsperiode().getGueltigkeit().getGueltigAb(),

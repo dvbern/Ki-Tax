@@ -40,7 +40,7 @@ include:
         inputs:
             name: .build-backend
             java-image-version: 11-jdk-alpine
-            maven-goal: -Drevision=$VERSION -Pcoverage -Pcopy-wildfly-dependencies -P!frontend clean install
+            maven-goal: -Drevision=$VERSION -Pcoverage -Pcopy-wildfly-dependencies -P!frontend clean install org.jacoco:jacoco-maven-plugin:report-aggregate
 
     -   component: gitlab.dvbern.ch/devops/gitlab/components/maven@v0.1.7
         inputs:
@@ -273,12 +273,14 @@ deploy:
         name: $DEPLOY_ENV
         url: $DEPLOY_URL
     rules:
+        -   if: $CI_COMMIT_TAG
+            when: never
+        -   if: $CI_PIPELINE_SOURCE == "schedule"
+            when: never
         -   if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
         -   if: $CI_MERGE_REQUEST_ID
             when: manual
             allow_failure: true
-        -   if: $CI_COMMIT_TAG
-            when: never
 
 deploy:e2e:
     extends: .docker-compose-deploy:e2e
@@ -287,6 +289,8 @@ deploy:e2e:
         name: e2e
         url: https://e2e.kibon.ch
     rules:
+        -   if: $CI_PIPELINE_SOURCE == "schedule"
+            when: never
         -   if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
 
 create-build-args:
@@ -318,6 +322,10 @@ build-backend:
             - 'ebegu-*/target/surefire-reports/'
             - 'ebegu-*/target/classes'
         expire_in: 7 days
+    rules:
+        -   if: $CI_PIPELINE_SOURCE == "schedule"
+            when: never
+        - when: always
 
 build-frontend:
     extends: .build-frontend
@@ -336,25 +344,42 @@ build-frontend:
             - 'ebegu-web/target/*'
             - 'ebegu-web/build/*'
         expire_in: 7 days
+    rules:
+        -   if: $CI_PIPELINE_SOURCE == "schedule"
+            when: never
+        - when: always
 
 analyze-backend:
+    allow_failure: true
     before_script:
         - git fetch --unshallow
     extends: .analyze-backend-maven
     needs:
         - build-backend
+    rules:
+        -   if: $CI_PIPELINE_SOURCE == "schedule"
+            when: never
+        - when: always
 
 build-backend-image:
     extends: .build-backend-image
     needs:
         - build-backend
         - create-build-args
+    rules:
+        -   if: $CI_PIPELINE_SOURCE == "schedule"
+            when: never
+        - when: always
 
 build-frontend-image:
     extends: .build-frontend-image
     needs:
         - build-frontend
         - create-build-args
+    rules:
+        -   if: $CI_PIPELINE_SOURCE == "schedule"
+            when: never
+        - when: always
 
 analyze-frontend:
     before_script:
@@ -363,10 +388,18 @@ analyze-frontend:
     allow_failure: true # TODO remove after SONAR_TOKEN clash is resolved
     needs:
         - build-frontend
+    rules:
+        -   if: $CI_PIPELINE_SOURCE == "schedule"
+            when: never
+        - when: always
 
 build-e2e-test-db-setup-image:
     extends: .build-e2e-test-db-setup-image
     needs: [ ]
+    rules:
+        -   if: $CI_PIPELINE_SOURCE == "schedule"
+            when: never
+        - when: always
 
 run-e2e-testprotokoll-tests:
     extends: .run-e2e-tests
