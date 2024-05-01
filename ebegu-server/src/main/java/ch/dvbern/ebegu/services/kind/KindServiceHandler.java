@@ -33,14 +33,12 @@ import ch.dvbern.ebegu.enums.AnspruchBeschaeftigungAbhaengigkeitTyp;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
 import ch.dvbern.ebegu.enums.EinschulungTyp;
 import ch.dvbern.ebegu.enums.EinstellungKey;
-import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.KinderabzugTyp;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.services.BetreuungService;
 import ch.dvbern.ebegu.services.EinstellungService;
 import ch.dvbern.ebegu.services.GesuchstellerService;
 import ch.dvbern.ebegu.services.KindService;
-import ch.dvbern.lib.cdipersistence.Persistence;
 
 @Stateless
 public class KindServiceHandler {
@@ -52,9 +50,6 @@ public class KindServiceHandler {
 
 	@Inject
 	private BetreuungService betreuungService;
-
-	@Inject
-	private Persistence persistence;
 
 	public void resetKindBetreuungenStatusOnKindSave(@Nonnull KindContainer kind, @Nullable EinschulungTyp alteEinschulungTyp) {
 		if (!isSchwyzEinschulungTypAktiviert(kind) || alteEinschulungTyp == null) {
