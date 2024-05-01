@@ -1,24 +1,27 @@
 /*
- * Ki-Tax: System for the management of external childcare subsidies
- * Copyright (C) 2017 City of Bern Switzerland
+ * Copyright (C) 2024 DV Bern AG, Switzerland
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
+ *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package ch.dvbern.ebegu.rules;
+package ch.dvbern.ebegu.rules.mutationsmerger;
 
 import ch.dvbern.ebegu.entities.*;
 import ch.dvbern.ebegu.enums.*;
 import ch.dvbern.ebegu.errors.EbeguRuntimeException;
-import ch.dvbern.ebegu.finanzielleSituationRechner.FinanzielleSituationBernRechner;
+import ch.dvbern.ebegu.rules.EbeguRuleTestsHelper;
+import ch.dvbern.ebegu.rules.MonatsRule;
 import ch.dvbern.ebegu.test.TestDataUtil;
 import ch.dvbern.ebegu.util.MathUtil;
 import ch.dvbern.ebegu.util.mandant.MandantIdentifier;
@@ -30,7 +33,6 @@ import javax.annotation.Nullable;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.Month;
 import java.time.temporal.TemporalAdjusters;
 import java.util.*;
@@ -39,7 +41,6 @@ import static ch.dvbern.ebegu.test.TestDataUtil.START_PERIODE;
 import static ch.dvbern.ebegu.test.TestDataUtil.getMandantLuzern;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertNotNull;
 
 /**
  * Tests fuer Verfügungsmuster
@@ -54,6 +55,8 @@ public class MutationsMergerTest {
 	private final LocalDate OCTOBER_31 = START_PERIODE.plusMonths(3).minusDays(1);
 
 	private static final BigDecimal MAX_MASGEBENDES_EINKOMMEN = BigDecimal.valueOf(160000);
+
+	private static final BigDecimal DEFAULT_MASGEBENDES_EINKOMMEN = MathUtil.DEFAULT.from(50000);
 	private static final int DEFAULT_PENSUM = 80;
 
 	@Test
@@ -66,7 +69,7 @@ public class MutationsMergerTest {
 
 		// Erstgesuch Gesuch vorbereiten
 		Betreuung erstgesuchBetreuung =
-			prepareData(MathUtil.DEFAULT.from(50000), AntragTyp.ERSTGESUCH, bpPensumVorMutation, START_PERIODE);
+			MutationsMergerTestUtil.prepareData(MathUtil.DEFAULT.from(50000), AntragTyp.ERSTGESUCH, bpPensumVorMutation, START_PERIODE);
 		List<VerfuegungZeitabschnitt> zabetrErtgesuch = EbeguRuleTestsHelper.calculate(erstgesuchBetreuung);
 		Verfuegung verfuegungErstgesuch = new Verfuegung();
 		verfuegungErstgesuch.setZeitabschnitte(EbeguRuleTestsHelper.runSingleAbschlussRule(
@@ -108,7 +111,7 @@ public class MutationsMergerTest {
 
 		// Erstgesuch Gesuch vorbereiten
 		Betreuung erstgesuchBetreuung =
-			prepareData(MathUtil.DEFAULT.from(50000), AntragTyp.ERSTGESUCH, bpPensumVorMutation, START_PERIODE);
+			MutationsMergerTestUtil.prepareData(MathUtil.DEFAULT.from(50000), AntragTyp.ERSTGESUCH, bpPensumVorMutation, START_PERIODE);
 		List<VerfuegungZeitabschnitt> zabetrErtgesuch = EbeguRuleTestsHelper.calculate(erstgesuchBetreuung);
 		Verfuegung verfuegungErstgesuch = new Verfuegung();
 		verfuegungErstgesuch.setZeitabschnitte(EbeguRuleTestsHelper.runSingleAbschlussRule(
@@ -151,7 +154,7 @@ public class MutationsMergerTest {
 
 		// Erstgesuch Gesuch vorbereiten
 		Betreuung erstgesuchBetreuung =
-			prepareData(MathUtil.DEFAULT.from(50000), AntragTyp.ERSTGESUCH, bpPensumVorMutation, START_PERIODE);
+			MutationsMergerTestUtil.prepareData(MathUtil.DEFAULT.from(50000), AntragTyp.ERSTGESUCH, bpPensumVorMutation, START_PERIODE);
 		List<VerfuegungZeitabschnitt> zabetrErtgesuch = EbeguRuleTestsHelper.calculate(erstgesuchBetreuung);
 		Verfuegung verfuegungErstgesuch = new Verfuegung();
 		verfuegungErstgesuch.setZeitabschnitte(EbeguRuleTestsHelper.runSingleAbschlussRule(
@@ -194,7 +197,7 @@ public class MutationsMergerTest {
 
 		// Erstgesuch Gesuch vorbereiten
 		Betreuung erstgesuchBetreuung =
-			prepareData(MathUtil.DEFAULT.from(50000), AntragTyp.ERSTGESUCH, bpPensumVorMutation, START_PERIODE);
+			MutationsMergerTestUtil.prepareData(MathUtil.DEFAULT.from(50000), AntragTyp.ERSTGESUCH, bpPensumVorMutation, START_PERIODE);
 		List<VerfuegungZeitabschnitt> zabetrErtgesuch = EbeguRuleTestsHelper.calculate(erstgesuchBetreuung);
 		Verfuegung verfuegungErstgesuch = new Verfuegung();
 		verfuegungErstgesuch.setZeitabschnitte(EbeguRuleTestsHelper.runSingleAbschlussRule(
@@ -235,7 +238,7 @@ public class MutationsMergerTest {
 		int bpPensumNachMutation = 80;
 
 		// Erstgesuch Gesuch vorbereiten
-		Verfuegung verfuegungErstgesuch = prepareErstGesuchVerfuegung(bpPensumVorMutation);
+		Verfuegung verfuegungErstgesuch = MutationsMergerTestUtil.prepareErstGesuchVerfuegung(bpPensumVorMutation, DEFAULT_MASGEBENDES_EINKOMMEN);
 
 		// Mutiertes Gesuch vorbereiten
 		Betreuung mutierteBetreuung = prepareMutation(eingangsdatumMuation, bpPensumNachMutation, aenderungsDatumPensum,
@@ -268,7 +271,7 @@ public class MutationsMergerTest {
 		int bpPensumNachMutation = 80;
 
 		// Erstgesuch Gesuch vorbereiten
-		Verfuegung verfuegungErstgesuch = prepareErstGesuchVerfuegung(bpPensumVorMutation);
+		Verfuegung verfuegungErstgesuch = MutationsMergerTestUtil.prepareErstGesuchVerfuegung(bpPensumVorMutation, DEFAULT_MASGEBENDES_EINKOMMEN);
 
 		// Mutiertes Gesuch vorbereiten
 		Betreuung mutierteBetreuung = prepareMutation(eingangsdatumMuation, bpPensumNachMutation, aenderungsDatumPensum, bpPensumVorMutation);
@@ -298,7 +301,7 @@ public class MutationsMergerTest {
 		int bpPensumVorMutation = 60;
 		int bpPensumNachMutation = 80;
 		// Erstgesuch Gesuch vorbereiten
-		Verfuegung verfuegungErstgesuch = prepareErstGesuchVerfuegung(bpPensumVorMutation);
+		Verfuegung verfuegungErstgesuch = MutationsMergerTestUtil.prepareErstGesuchVerfuegung(bpPensumVorMutation,DEFAULT_MASGEBENDES_EINKOMMEN);
 
 		// Mutiertes Gesuch vorbereiten
 		Betreuung mutierteBetreuung = prepareMutation(eingangsdatumMuation, bpPensumNachMutation, aenderungsDatumPensum,
@@ -331,7 +334,7 @@ public class MutationsMergerTest {
 		int bpPensumNachMutation = 80;
 
 		// Erstgesuch Gesuch vorbereiten
-		Verfuegung verfuegungErstgesuch = prepareErstGesuchVerfuegung(bpPensumVorMutation);
+		Verfuegung verfuegungErstgesuch = MutationsMergerTestUtil.prepareErstGesuchVerfuegung(bpPensumVorMutation,DEFAULT_MASGEBENDES_EINKOMMEN);
 
 		// Mutiertes Gesuch vorbereiten
 		Betreuung mutierteBetreuung = prepareMutation(eingangsdatumMuation, bpPensumNachMutation, aenderungsDatumPensum,
@@ -362,7 +365,7 @@ public class MutationsMergerTest {
 		int bpPensumVorMutation = 60;
 		int bpPensumNachMutation = 80;
 		// Erstgesuch Gesuch vorbereiten
-		Verfuegung verfuegungErstgesuch = prepareErstGesuchVerfuegung(bpPensumVorMutation);
+		Verfuegung verfuegungErstgesuch = MutationsMergerTestUtil.prepareErstGesuchVerfuegung(bpPensumVorMutation,DEFAULT_MASGEBENDES_EINKOMMEN);
 
 		// Mutiertes Gesuch vorbereiten
 		Betreuung mutierteBetreuung = prepareMutation(eingangsdatumMuation, bpPensumNachMutation, aenderungsDatumPensum,
@@ -396,7 +399,7 @@ public class MutationsMergerTest {
 		int bpPensumVorMutation = 60;
 		int bpPensumNachMutation = 80;
 		// Erstgesuch Gesuch vorbereiten
-		Verfuegung verfuegungErstgesuch = prepareErstGesuchVerfuegung(bpPensumVorMutation);
+		Verfuegung verfuegungErstgesuch = MutationsMergerTestUtil.prepareErstGesuchVerfuegung(bpPensumVorMutation,DEFAULT_MASGEBENDES_EINKOMMEN);
 
 		// Mutiertes Gesuch vorbereiten
 		Betreuung mutierteBetreuung = prepareMutation(eingangsdatumMuation, bpPensumNachMutation, aenderungsDatumPensum,
@@ -428,8 +431,8 @@ public class MutationsMergerTest {
 	@Test
 	public void test_Mutation_nichtZuSpaet() {
 		//Erstgesuch pünktlich
-		Verfuegung verfuegungErstGesuch = prepareErstGesuchVerfuegung(DEFAULT_PENSUM);
-		Betreuung mutierteBetreuung = prepareData(MathUtil.DEFAULT.from(50000), AntragTyp.MUTATION);
+		Verfuegung verfuegungErstGesuch = MutationsMergerTestUtil.prepareErstGesuchVerfuegung(DEFAULT_PENSUM, DEFAULT_MASGEBENDES_EINKOMMEN);
+		Betreuung mutierteBetreuung = MutationsMergerTestUtil.prepareData(MathUtil.DEFAULT.from(50000), AntragTyp.MUTATION);
 		//Mutation pünktlich eingereicht
 		mutierteBetreuung.extractGesuch().setEingangsdatum(START_PERIODE.minusDays(15));
 		mutierteBetreuung.initVorgaengerVerfuegungen(verfuegungErstGesuch, null);
@@ -453,7 +456,7 @@ public class MutationsMergerTest {
 			.getGueltigAb()
 			.isEqual(START_PERIODE.plusMonths(2).plusDays(15).minusDays(30)));
 		Assert.assertFalse(verfuegungErstGesuch.getZeitabschnitte().get(2).isZuSpaetEingereicht());
-		Betreuung mutierteBetreuung = prepareData(MathUtil.DEFAULT.from(50000), AntragTyp.MUTATION, 30, START_PERIODE);
+		Betreuung mutierteBetreuung = MutationsMergerTestUtil.prepareData(MathUtil.DEFAULT.from(50000), AntragTyp.MUTATION, 30, START_PERIODE);
 		mutierteBetreuung.extractGesuch()
 			.getFall()
 			.setMandant(TestDataUtil.createMandant(MandantIdentifier.APPENZELL_AUSSERRHODEN));
@@ -471,8 +474,8 @@ public class MutationsMergerTest {
 	@Test
 	public void test_Mutation_nichtZuSpaetAR() {
 		//Erstgesuch pünktlich
-		Verfuegung verfuegungErstGesuch = prepareErstGesuchVerfuegung(30);
-		Betreuung mutierteBetreuung = prepareData(MathUtil.DEFAULT.from(50000), AntragTyp.MUTATION, 20, START_PERIODE);
+		Verfuegung verfuegungErstGesuch = MutationsMergerTestUtil. prepareErstGesuchVerfuegung(80, DEFAULT_MASGEBENDES_EINKOMMEN);
+		Betreuung mutierteBetreuung = MutationsMergerTestUtil.prepareData(MathUtil.DEFAULT.from(50000), AntragTyp.MUTATION, 20, START_PERIODE);
 		mutierteBetreuung.extractGesuch()
 			.getFall()
 			.setMandant(TestDataUtil.createMandant(MandantIdentifier.APPENZELL_AUSSERRHODEN));
@@ -488,8 +491,8 @@ public class MutationsMergerTest {
 	@Test
 	public void test_Mutation_nichtZuSpaetWegenAlternativDatumAR() {
 		//Erstgesuch pünktlich
-		Verfuegung verfuegungErstGesuch = prepareErstGesuchVerfuegung(30);
-		Betreuung mutierteBetreuung = prepareData(MathUtil.DEFAULT.from(50000), AntragTyp.MUTATION, 20, START_PERIODE);
+		Verfuegung verfuegungErstGesuch = MutationsMergerTestUtil. prepareErstGesuchVerfuegung(80, DEFAULT_MASGEBENDES_EINKOMMEN);
+		Betreuung mutierteBetreuung = MutationsMergerTestUtil.prepareData(MathUtil.DEFAULT.from(50000), AntragTyp.MUTATION, 20, START_PERIODE);
 		mutierteBetreuung.extractGesuch()
 			.getFall()
 			.setMandant(TestDataUtil.createMandant(MandantIdentifier.APPENZELL_AUSSERRHODEN));
@@ -507,9 +510,9 @@ public class MutationsMergerTest {
 	@Test
 	public void test_Mutation_30TageVorZeitabschnittStart_nichtZuSpaetAR() {
 		//Erstgesuch pünktlich
-		Verfuegung verfuegungErstGesuch = prepareErstGesuchVerfuegung(80);
+		Verfuegung verfuegungErstGesuch = MutationsMergerTestUtil. prepareErstGesuchVerfuegung(80, DEFAULT_MASGEBENDES_EINKOMMEN);
 		//Mutation 15 Tage nach Zeitabschnitt Start pünktlich eingereicht
-		Betreuung mutierteBetreuung = prepareData(MathUtil.DEFAULT.from(50000), AntragTyp.MUTATION, 80, START_PERIODE);
+		Betreuung mutierteBetreuung = MutationsMergerTestUtil.prepareData(MathUtil.DEFAULT.from(50000), AntragTyp.MUTATION, 80, START_PERIODE);
 		mutierteBetreuung.extractGesuch().setEingangsdatum(START_PERIODE.minusDays(30));
 		mutierteBetreuung.extractGesuch()
 			.getFall()
@@ -524,8 +527,8 @@ public class MutationsMergerTest {
 	@Test
 	public void test_Mutation_31TageNachZeitabschnittStart_zuSpaetAR() {
 		//Erstgesuch pünktlich
-		Verfuegung verfuegungErstGesuch = prepareErstGesuchVerfuegung(80);
-		Betreuung mutierteBetreuung = prepareData(MathUtil.DEFAULT.from(50000), AntragTyp.MUTATION, 80, START_PERIODE);
+		Verfuegung verfuegungErstGesuch = MutationsMergerTestUtil. prepareErstGesuchVerfuegung(80, DEFAULT_MASGEBENDES_EINKOMMEN);
+		Betreuung mutierteBetreuung = MutationsMergerTestUtil.prepareData(MathUtil.DEFAULT.from(50000), AntragTyp.MUTATION, 80, START_PERIODE);
 		mutierteBetreuung.extractGesuch()
 			.getFall()
 			.setMandant(TestDataUtil.createMandant(MandantIdentifier.APPENZELL_AUSSERRHODEN));
@@ -544,9 +547,9 @@ public class MutationsMergerTest {
 	public void test_Mutation_Flag_zuSpaet_oneMonthAR() {
 		Mandant mandant = TestDataUtil.createMandant(MandantIdentifier.APPENZELL_AUSSERRHODEN);
 		//Erstgesuch pünklich
-		Verfuegung verfuegungErstGesuch = prepareErstGesuchVerfuegung(80);
+		Verfuegung verfuegungErstGesuch = MutationsMergerTestUtil. prepareErstGesuchVerfuegung(80, DEFAULT_MASGEBENDES_EINKOMMEN);
 		//Mutation 15 (45-30) Tage zu spät
-		Betreuung mutierteBetreuung = prepareData(MathUtil.DEFAULT.from(50000), AntragTyp.MUTATION);
+		Betreuung mutierteBetreuung = MutationsMergerTestUtil.prepareData(MathUtil.DEFAULT.from(50000), AntragTyp.MUTATION);
 		mutierteBetreuung.extractGesuch().setEingangsdatum(START_PERIODE.plusDays(30).plusDays(15));
 		mutierteBetreuung.extractGesuch().getFall().setMandant(mandant);
 		mutierteBetreuung.initVorgaengerVerfuegungen(verfuegungErstGesuch, null);
@@ -575,9 +578,9 @@ public class MutationsMergerTest {
 	@Test
 	public void test_Mutation_Flag_zuSpaet_oneMonth() {
 		//Erstgesuch pünklich
-		Verfuegung verfuegungErstGesuch = prepareErstGesuchVerfuegung(80);
+		Verfuegung verfuegungErstGesuch = MutationsMergerTestUtil.prepareErstGesuchVerfuegung(80, DEFAULT_MASGEBENDES_EINKOMMEN);
 		//Mutation 15 Tage zu spät
-		Betreuung mutierteBetreuung = prepareData(MathUtil.DEFAULT.from(50000), AntragTyp.MUTATION);
+		Betreuung mutierteBetreuung = MutationsMergerTestUtil.prepareData(MathUtil.DEFAULT.from(50000), AntragTyp.MUTATION);
 		mutierteBetreuung.extractGesuch().setEingangsdatum(START_PERIODE.plusDays(15));
 		mutierteBetreuung.initVorgaengerVerfuegungen(verfuegungErstGesuch, null);
 
@@ -604,9 +607,9 @@ public class MutationsMergerTest {
 	@Test
 	public void test_Mutation_Flag_zuSpaet_twoMonth() {
 		//Erstgesuch pünklich
-		Verfuegung verfuegungErstGesuch = prepareErstGesuchVerfuegung(DEFAULT_PENSUM);
+		Verfuegung verfuegungErstGesuch = MutationsMergerTestUtil.prepareErstGesuchVerfuegung(DEFAULT_PENSUM, DEFAULT_MASGEBENDES_EINKOMMEN);
 		//Mutation 1 Monat und 15 Tage zu spät
-		Betreuung mutierteBetreuung = prepareData(MathUtil.DEFAULT.from(50000), AntragTyp.MUTATION);
+		Betreuung mutierteBetreuung = MutationsMergerTestUtil.prepareData(MathUtil.DEFAULT.from(50000), AntragTyp.MUTATION);
 		mutierteBetreuung.extractGesuch().setEingangsdatum(START_PERIODE.plusMonths(1).plusDays(15));
 		mutierteBetreuung.initVorgaengerVerfuegungen(verfuegungErstGesuch, null);
 
@@ -631,7 +634,7 @@ public class MutationsMergerTest {
 	@Test
 	public void test_Mutation_erstGesuch_zu_spaet_keine_Bemerkung() {
 		// Zu spät eingereichtes Erstgesuch vorbereiten
-		Betreuung erstGesuchBetreuung = prepareData(MathUtil.DEFAULT.from(50000), AntragTyp.ERSTGESUCH);
+		Betreuung erstGesuchBetreuung = MutationsMergerTestUtil.prepareData(MathUtil.DEFAULT.from(50000), AntragTyp.ERSTGESUCH);
 		erstGesuchBetreuung.extractGesuch().setEingangsdatum(START_PERIODE.plusDays(15));
 		List<VerfuegungZeitabschnitt> zabetrErtgesuch = EbeguRuleTestsHelper.calculate(erstGesuchBetreuung);
 
@@ -660,9 +663,9 @@ public class MutationsMergerTest {
 
 	@Test
 	public void test_Mutation_AuszahlungAnEltern_keine_Aenderung() {
-		Verfuegung verfuegungErstGesuch = prepareErstGesuchVerfuegung(DEFAULT_PENSUM);
+		Verfuegung verfuegungErstGesuch = MutationsMergerTestUtil.prepareErstGesuchVerfuegung(DEFAULT_PENSUM, DEFAULT_MASGEBENDES_EINKOMMEN);
 
-		Betreuung mutierteBetreuung = prepareData(MathUtil.DEFAULT.from(50000), AntragTyp.MUTATION);
+		Betreuung mutierteBetreuung = MutationsMergerTestUtil.prepareData(MathUtil.DEFAULT.from(50000), AntragTyp.MUTATION);
 		mutierteBetreuung.extractGesuch().setEingangsdatum(START_PERIODE.plusMonths(1));
 		mutierteBetreuung.initVorgaengerVerfuegungen(verfuegungErstGesuch, null);
 
@@ -687,9 +690,9 @@ public class MutationsMergerTest {
 
 	@Test
 	public void test_Mutation_AuszahlungAnEltern_Aenderung_noch_kein_Auszahlung() {
-		Verfuegung verfuegungErstGesuch = prepareErstGesuchVerfuegung(DEFAULT_PENSUM);
+		Verfuegung verfuegungErstGesuch = MutationsMergerTestUtil.prepareErstGesuchVerfuegung(DEFAULT_PENSUM, DEFAULT_MASGEBENDES_EINKOMMEN);
 
-		Betreuung mutierteBetreuung = prepareData(MathUtil.DEFAULT.from(50000), AntragTyp.MUTATION);
+		Betreuung mutierteBetreuung = MutationsMergerTestUtil.prepareData(MathUtil.DEFAULT.from(50000), AntragTyp.MUTATION);
 		mutierteBetreuung.initVorgaengerVerfuegungen(verfuegungErstGesuch, null);
 		mutierteBetreuung.extractGesuch().setEingangsdatum(START_PERIODE.plusMonths(1));
 		mutierteBetreuung.setAuszahlungAnEltern(true);
@@ -716,11 +719,11 @@ public class MutationsMergerTest {
 	@Test
 	public void finSitFKJV_einkommenChanged() {
 		//EK ErstGesuch = 50000
-		Verfuegung verfuegungErstGesuch = prepareErstGesuchVerfuegung(DEFAULT_PENSUM);
+		Verfuegung verfuegungErstGesuch = MutationsMergerTestUtil.prepareErstGesuchVerfuegung(DEFAULT_PENSUM, DEFAULT_MASGEBENDES_EINKOMMEN);
 
 		//EK Mutation = 40000
 		LocalDate October31 = START_PERIODE.plusMonths(3).minusDays(1);
-		Betreuung mutierteBetreuung = prepareData(MathUtil.DEFAULT.from(40000), AntragTyp.MUTATION);
+		Betreuung mutierteBetreuung = MutationsMergerTestUtil.prepareData(MathUtil.DEFAULT.from(40000), AntragTyp.MUTATION);
 		mutierteBetreuung.initVorgaengerVerfuegungen(verfuegungErstGesuch, null);
 		mutierteBetreuung.extractGesuch().setFinSitTyp(FinanzielleSituationTyp.BERN_FKJV);
 		mutierteBetreuung.extractGesuch().setEingangsdatum(OCTOBER_31);
@@ -742,9 +745,9 @@ public class MutationsMergerTest {
 	@Test
 	public void finSitFKJV_familiengroesse_steigt() {
 		//Erst Gesuch Fam Groesse = 2
-		Verfuegung verfuegungErstGesuch = prepareErstGesuchVerfuegung(DEFAULT_PENSUM);
+		Verfuegung verfuegungErstGesuch = MutationsMergerTestUtil.prepareErstGesuchVerfuegung(DEFAULT_PENSUM, DEFAULT_MASGEBENDES_EINKOMMEN);
 
-		Betreuung mutierteBetreuung = prepareData(MathUtil.DEFAULT.from(40000), AntragTyp.MUTATION);
+		Betreuung mutierteBetreuung = MutationsMergerTestUtil.prepareData(MathUtil.DEFAULT.from(40000), AntragTyp.MUTATION);
 
 		//Mutation per 31.10 FamGroesse = 3
 		final KindContainer defaultKindContainer = TestDataUtil.createDefaultKindContainer();
@@ -775,15 +778,15 @@ public class MutationsMergerTest {
 	@Test
 	public void finSitFKJV_familiengroesse_sinkt() {
 		//Erst Gesuch Fam Groesse = 3
-		Betreuung erstgesuchBetreuung = prepareData(MathUtil.DEFAULT.from(50000), AntragTyp.ERSTGESUCH);
+		Betreuung erstgesuchBetreuung = MutationsMergerTestUtil.prepareData(MathUtil.DEFAULT.from(50000), AntragTyp.ERSTGESUCH);
 		final KindContainer defaultKindContainer = TestDataUtil.createDefaultKindContainer();
 		defaultKindContainer.getKindJA().setKinderabzugErstesHalbjahr(Kinderabzug.GANZER_ABZUG);
 		defaultKindContainer.getKindJA().setKinderabzugZweitesHalbjahr(Kinderabzug.GANZER_ABZUG);
 		erstgesuchBetreuung.extractGesuch().getKindContainers().add(defaultKindContainer);
 
-		Verfuegung verfuegung = prepareVerfuegungForBetreuung(erstgesuchBetreuung);
+		Verfuegung verfuegung = MutationsMergerTestUtil. prepareVerfuegungForBetreuung(erstgesuchBetreuung);
 
-		Betreuung mutierteBetreuung = prepareData(MathUtil.DEFAULT.from(50000), AntragTyp.MUTATION);
+		Betreuung mutierteBetreuung = MutationsMergerTestUtil.prepareData(MathUtil.DEFAULT.from(50000), AntragTyp.MUTATION);
 
 		//Mutation per 31.10 FamGroesse = 3
 		final KindContainer defaultKindContainer1 = TestDataUtil.createDefaultKindContainer();
@@ -814,10 +817,10 @@ public class MutationsMergerTest {
 	@Test
 	public void finSitFKJV_einkommenNotChanged() {
 		//EK ErstGesuch = 50000
-		Verfuegung verfuegungErstGesuch = prepareErstGesuchVerfuegung(DEFAULT_PENSUM);
+		Verfuegung verfuegungErstGesuch = MutationsMergerTestUtil.prepareErstGesuchVerfuegung(DEFAULT_PENSUM, DEFAULT_MASGEBENDES_EINKOMMEN);
 
 		//EK Mutation = 50000
-		Betreuung mutierteBetreuung = prepareData(MathUtil.DEFAULT.from(50000), AntragTyp.MUTATION);
+		Betreuung mutierteBetreuung = MutationsMergerTestUtil.prepareData(MathUtil.DEFAULT.from(50000), AntragTyp.MUTATION);
 		mutierteBetreuung.initVorgaengerVerfuegungen(verfuegungErstGesuch, null);
 		mutierteBetreuung.extractGesuch().setFinSitTyp(FinanzielleSituationTyp.BERN_FKJV);
 		mutierteBetreuung.extractGesuch().setEingangsdatum(OCTOBER_31);
@@ -834,10 +837,10 @@ public class MutationsMergerTest {
 	@Test
 	public void finSitFKJV_ekv() {
 		//EK ErstGesuch = 50000
-		Verfuegung verfuegungErstGesuch = prepareErstGesuchVerfuegung(DEFAULT_PENSUM);
+		Verfuegung verfuegungErstGesuch = MutationsMergerTestUtil.prepareErstGesuchVerfuegung(DEFAULT_PENSUM, DEFAULT_MASGEBENDES_EINKOMMEN);
 
 		//EK Mutation = 50000
-		Betreuung mutierteBetreuung = prepareData(MathUtil.DEFAULT.from(50000), AntragTyp.MUTATION);
+		Betreuung mutierteBetreuung = MutationsMergerTestUtil.prepareData(MathUtil.DEFAULT.from(50000), AntragTyp.MUTATION);
 
 		EinkommensverschlechterungContainer ekv = TestDataUtil.createDefaultEinkommensverschlechterungsContainer();
 		Objects.requireNonNull(mutierteBetreuung.extractGesuch().getGesuchsteller1()).setEinkommensverschlechterungContainer(ekv);
@@ -901,11 +904,11 @@ public class MutationsMergerTest {
 	@Test
 	public void finSitFKJV_einkommenAndEKVChanged() {
 		//EK ErstGesuch = 50000
-		Verfuegung verfuegungErstGesuch = prepareErstGesuchVerfuegung(DEFAULT_PENSUM);
+		Verfuegung verfuegungErstGesuch = MutationsMergerTestUtil.prepareErstGesuchVerfuegung(DEFAULT_PENSUM, DEFAULT_MASGEBENDES_EINKOMMEN);
 
 		//EK Mutation = 40000
 		LocalDate October31 = START_PERIODE.plusMonths(3).minusDays(1);
-		Betreuung mutierteBetreuung = prepareData(MathUtil.DEFAULT.from(40000), AntragTyp.MUTATION);
+		Betreuung mutierteBetreuung = MutationsMergerTestUtil.prepareData(MathUtil.DEFAULT.from(40000), AntragTyp.MUTATION);
 
 		EinkommensverschlechterungContainer ekv = TestDataUtil.createDefaultEinkommensverschlechterungsContainer();
 		Objects.requireNonNull(mutierteBetreuung.extractGesuch().getGesuchsteller1()).setEinkommensverschlechterungContainer(ekv);
@@ -974,10 +977,10 @@ public class MutationsMergerTest {
 	@Test
 	public void finSitGueltigAbSetNotFKJV() {
 		//EK ErstGesuch = 50000
-		Verfuegung verfuegungErstGesuch = prepareErstGesuchVerfuegung(DEFAULT_PENSUM);
+		Verfuegung verfuegungErstGesuch = MutationsMergerTestUtil.prepareErstGesuchVerfuegung(DEFAULT_PENSUM, DEFAULT_MASGEBENDES_EINKOMMEN);
 
 		//EK Mutation = 40000 ab 31.10.
-		Betreuung mutierteBetreuung = prepareData(MathUtil.DEFAULT.from(40000), AntragTyp.MUTATION);
+		Betreuung mutierteBetreuung = MutationsMergerTestUtil.prepareData(MathUtil.DEFAULT.from(40000), AntragTyp.MUTATION);
 		mutierteBetreuung.initVorgaengerVerfuegungen(verfuegungErstGesuch, null);
 
 		mutierteBetreuung.extractGesuch()
@@ -1031,15 +1034,15 @@ public class MutationsMergerTest {
 
 	@Test
 	public void mutationAenderungToVerguenstigungBeantragt() {
-		Betreuung erstgesuchBetreuung = prepareData(MathUtil.DEFAULT.from(160000), AntragTyp.ERSTGESUCH);
+		Betreuung erstgesuchBetreuung = MutationsMergerTestUtil.prepareData(MathUtil.DEFAULT.from(160000), AntragTyp.ERSTGESUCH);
 		erstgesuchBetreuung.extractGesuch()
 			.getFamiliensituationContainer()
 			.getFamiliensituationJA()
 			.setVerguenstigungGewuenscht(false);
-		Verfuegung verfuegungErstGesuch = prepareVerfuegungForBetreuung(erstgesuchBetreuung);
+		Verfuegung verfuegungErstGesuch = MutationsMergerTestUtil.prepareVerfuegungForBetreuung(erstgesuchBetreuung);
 
 		//EK Mutation = 40000 ab 31.10.
-		Betreuung mutierteBetreuung = prepareData(MathUtil.DEFAULT.from(40000), AntragTyp.MUTATION);
+		Betreuung mutierteBetreuung = MutationsMergerTestUtil.prepareData(MathUtil.DEFAULT.from(40000), AntragTyp.MUTATION);
 		mutierteBetreuung.initVorgaengerVerfuegungen(verfuegungErstGesuch, null);
 
 		mutierteBetreuung.extractGesuch()
@@ -1091,10 +1094,10 @@ public class MutationsMergerTest {
 	@Test
 	public void mutationAenderungToNoVerguenstigungBeantragt() {
 		//EK ErstGesuch = 50000
-		Verfuegung verfuegungErstGesuch = prepareErstGesuchVerfuegung(DEFAULT_PENSUM);
+		Verfuegung verfuegungErstGesuch = MutationsMergerTestUtil.prepareErstGesuchVerfuegung(DEFAULT_PENSUM, DEFAULT_MASGEBENDES_EINKOMMEN);
 
 		//EK Mutation = 40000 ab 31.10.
-		Betreuung mutierteBetreuung = prepareData(MathUtil.DEFAULT.from(40000), AntragTyp.MUTATION);
+		Betreuung mutierteBetreuung = MutationsMergerTestUtil.prepareData(MathUtil.DEFAULT.from(40000), AntragTyp.MUTATION);
 		mutierteBetreuung.extractGesuch()
 			.getFamiliensituationContainer()
 			.getFamiliensituationJA()
@@ -1120,12 +1123,12 @@ public class MutationsMergerTest {
 
 	@Test
 	public void test_Mutation_AuszahlungAnEltern_Aenderung_mit_Auszahlung() {
-		Verfuegung verfuegungErstGesuch = prepareErstGesuchVerfuegung(DEFAULT_PENSUM);
+		Verfuegung verfuegungErstGesuch = MutationsMergerTestUtil.prepareErstGesuchVerfuegung(DEFAULT_PENSUM, DEFAULT_MASGEBENDES_EINKOMMEN);
 		VerfuegungZeitabschnitt verfuegterZaAugust =
 			findZeitabschnittByMonth(verfuegungErstGesuch.getZeitabschnitte(), Month.AUGUST);
 		verfuegterZaAugust.setZahlungsstatusInstitution(VerfuegungsZeitabschnittZahlungsstatus.VERRECHNET);
 
-		Betreuung mutierteBetreuung = prepareData(MathUtil.DEFAULT.from(50000), AntragTyp.MUTATION);
+		Betreuung mutierteBetreuung = MutationsMergerTestUtil.prepareData(MathUtil.DEFAULT.from(50000), AntragTyp.MUTATION);
 		mutierteBetreuung.initVorgaengerVerfuegungen(verfuegungErstGesuch, null);
 		mutierteBetreuung.extractGesuch().setEingangsdatum(START_PERIODE.plusMonths(1));
 		mutierteBetreuung.setAuszahlungAnEltern(true);
@@ -1221,9 +1224,9 @@ public class MutationsMergerTest {
 	@Test
 	public void mutationFinSitAbgehelnt_ErstantragNichtAbgelehnt() {
 		//EK 50000, Anspruch-Pensum 100%
-		Verfuegung verfuegungErstGesuch = prepareErstGesuchVerfuegung(DEFAULT_PENSUM);
+		Verfuegung verfuegungErstGesuch = MutationsMergerTestUtil.prepareErstGesuchVerfuegung(DEFAULT_PENSUM, DEFAULT_MASGEBENDES_EINKOMMEN);
 
-		Betreuung mutierteBetreuung = prepareData(MathUtil.DEFAULT.from(40000), AntragTyp.MUTATION);
+		Betreuung mutierteBetreuung = MutationsMergerTestUtil.prepareData(MathUtil.DEFAULT.from(40000), AntragTyp.MUTATION);
 		mutierteBetreuung.extractGesuch().setFinSitStatus(FinSitStatus.ABGELEHNT);
 		mutierteBetreuung.initVorgaengerVerfuegungen(verfuegungErstGesuch, null);
 		mutierteBetreuung.extractGesuch().setFinSitTyp(FinanzielleSituationTyp.BERN_FKJV);
@@ -1241,16 +1244,16 @@ public class MutationsMergerTest {
 	@Test
 	public void mutationFinSitAbgehelnt_ErstantragAbgelehnt() {
 		//EK 50000 Anspruch-Pensum 100% (80% + 20 Zuschlag)
-		Betreuung erstgesuchBetreuung = prepareData(MathUtil.DEFAULT.from(50000), AntragTyp.ERSTGESUCH);
+		Betreuung erstgesuchBetreuung = MutationsMergerTestUtil.prepareData(MathUtil.DEFAULT.from(50000), AntragTyp.ERSTGESUCH);
 		erstgesuchBetreuung.extractGesuch().setFinSitStatus(FinSitStatus.ABGELEHNT);
-		Verfuegung verfuegungErstGesuch = prepareVerfuegungForBetreuung(erstgesuchBetreuung);
+		Verfuegung verfuegungErstGesuch = MutationsMergerTestUtil. prepareVerfuegungForBetreuung(erstgesuchBetreuung);
 
 		verfuegungErstGesuch.getZeitabschnitte().forEach(zeitabschnitt -> {
 			assertThat(zeitabschnitt.getAnspruchberechtigtesPensum(), is(0));
 			assertEqualBigDecimal(MAX_MASGEBENDES_EINKOMMEN, zeitabschnitt.getMassgebendesEinkommen());
 		});
 
-		Betreuung mutierteBetreuung = prepareData(MathUtil.DEFAULT.from(40000), AntragTyp.MUTATION);
+		Betreuung mutierteBetreuung = MutationsMergerTestUtil.prepareData(MathUtil.DEFAULT.from(40000), AntragTyp.MUTATION);
 		mutierteBetreuung.extractGesuch().setFinSitStatus(FinSitStatus.ABGELEHNT);
 		mutierteBetreuung.initVorgaengerVerfuegungen(verfuegungErstGesuch, null);
 		mutierteBetreuung.extractGesuch().setFinSitTyp(FinanzielleSituationTyp.BERN_FKJV);
@@ -1270,12 +1273,12 @@ public class MutationsMergerTest {
 		int bpPensumNachMutation = 80;
 		//Erstrantrag Anspruchpensum 60%, FinSit akzeptiert
 		Betreuung erstgesuchBetreuung =
-			prepareData(MathUtil.DEFAULT.from(50000), AntragTyp.ERSTGESUCH, bpPensumVorMutation, START_PERIODE);
-		Verfuegung verfuegungErstGesuch = prepareVerfuegungForBetreuung(erstgesuchBetreuung);
+			MutationsMergerTestUtil.prepareData(MathUtil.DEFAULT.from(50000), AntragTyp.ERSTGESUCH, bpPensumVorMutation, START_PERIODE);
+		Verfuegung verfuegungErstGesuch = MutationsMergerTestUtil. prepareVerfuegungForBetreuung(erstgesuchBetreuung);
 
 		//Mutaiton per 1.9., Anspruchpensum 100%, FinSitAbgehlent
 		Betreuung mutierteBetreuung =
-			prepareData(MathUtil.DEFAULT.from(40000), AntragTyp.MUTATION, bpPensumNachMutation, START_PERIODE);
+			MutationsMergerTestUtil.prepareData(MathUtil.DEFAULT.from(40000), AntragTyp.MUTATION, bpPensumNachMutation, START_PERIODE);
 		mutierteBetreuung.extractGesuch().setFinSitStatus(FinSitStatus.ABGELEHNT);
 		mutierteBetreuung.initVorgaengerVerfuegungen(verfuegungErstGesuch, null);
 		mutierteBetreuung.extractGesuch().setFinSitTyp(FinanzielleSituationTyp.BERN_FKJV);
@@ -1299,13 +1302,13 @@ public class MutationsMergerTest {
 		int bpPensumNachMutation = 60;
 		//Erstrantrag Anspruchpensum 60% (40% Pensum + 20% Zuschlag)
 		Betreuung erstgesuchBetreuung =
-			prepareData(MathUtil.DEFAULT.from(50000), AntragTyp.ERSTGESUCH, bpPensumVorMutation, START_PERIODE);
+			MutationsMergerTestUtil.prepareData(MathUtil.DEFAULT.from(50000), AntragTyp.ERSTGESUCH, bpPensumVorMutation, START_PERIODE);
 		erstgesuchBetreuung.extractGesuch().getDossier().getFall().setMandant(getMandantLuzern());
-		Verfuegung verfuegungErstGesuch = prepareVerfuegungForBetreuung(erstgesuchBetreuung);
+		Verfuegung verfuegungErstGesuch = MutationsMergerTestUtil.prepareVerfuegungForBetreuung(erstgesuchBetreuung);
 
 		//Mutaiton per 1.9., Anspruchpensum 80% (60% + 20% zuschlag)
 		Betreuung mutierteBetreuung =
-			prepareData(MathUtil.DEFAULT.from(40000), AntragTyp.MUTATION, bpPensumNachMutation, START_PERIODE);
+			MutationsMergerTestUtil.prepareData(MathUtil.DEFAULT.from(40000), AntragTyp.MUTATION, bpPensumNachMutation, START_PERIODE);
 		mutierteBetreuung.extractGesuch().getDossier().getFall().setMandant(getMandantLuzern());
 		mutierteBetreuung.initVorgaengerVerfuegungen(verfuegungErstGesuch, null);
 		mutierteBetreuung.extractGesuch().setFinSitTyp(FinanzielleSituationTyp.LUZERN);
@@ -1329,13 +1332,13 @@ public class MutationsMergerTest {
 		int bpPensumNachMutation = 20;
 		//Erstrantrag Anspruchpensum 60% (40% Pensum + 20% Zuschlag)
 		Betreuung erstgesuchBetreuung =
-			prepareData(MathUtil.DEFAULT.from(50000), AntragTyp.ERSTGESUCH, bpPensumVorMutation, START_PERIODE);
+			MutationsMergerTestUtil.prepareData(MathUtil.DEFAULT.from(50000), AntragTyp.ERSTGESUCH, bpPensumVorMutation, START_PERIODE);
 		erstgesuchBetreuung.extractGesuch().getDossier().getFall().setMandant(getMandantLuzern());
-		Verfuegung verfuegungErstGesuch = prepareVerfuegungForBetreuung(erstgesuchBetreuung);
+		Verfuegung verfuegungErstGesuch = MutationsMergerTestUtil.prepareVerfuegungForBetreuung(erstgesuchBetreuung);
 
 		//Mutaiton per 1.9., Anspruchpensum 40% (20% Pensum + 20% Zuschlag)
 		Betreuung mutierteBetreuung =
-			prepareData(MathUtil.DEFAULT.from(40000), AntragTyp.MUTATION, bpPensumNachMutation, START_PERIODE);
+			MutationsMergerTestUtil.prepareData(MathUtil.DEFAULT.from(40000), AntragTyp.MUTATION, bpPensumNachMutation, START_PERIODE);
 		mutierteBetreuung.extractGesuch().getDossier().getFall().setMandant(getMandantLuzern());
 		mutierteBetreuung.initVorgaengerVerfuegungen(verfuegungErstGesuch, null);
 		mutierteBetreuung.extractGesuch().setFinSitTyp(FinanzielleSituationTyp.LUZERN);
@@ -1359,29 +1362,16 @@ public class MutationsMergerTest {
 			(TestDataUtil.createErwerbspensum(START_PERIODE, TestDataUtil.ENDE_PERIODE, pensum));
 	}
 
-	private Verfuegung prepareErstGesuchVerfuegung(int pbPensum) {
-		Betreuung erstgesuchBetreuung = prepareData(MathUtil.DEFAULT.from(50000), AntragTyp.ERSTGESUCH, pbPensum, START_PERIODE);
-		return prepareVerfuegungForBetreuung(erstgesuchBetreuung);
-	}
+
 
 	private Verfuegung prepareErstGesuchVerfuegung(LocalDate eingangsdatum, Mandant mandantAR, int bpPensum) {
-		Betreuung erstgesuchBetreuung = prepareData(MathUtil.DEFAULT.from(50000), AntragTyp.ERSTGESUCH, bpPensum, START_PERIODE);
+		Betreuung erstgesuchBetreuung = MutationsMergerTestUtil.prepareData(MathUtil.DEFAULT.from(50000), AntragTyp.ERSTGESUCH, bpPensum, START_PERIODE);
 		erstgesuchBetreuung.extractGesuch().setEingangsdatum(eingangsdatum);
 		erstgesuchBetreuung.extractGesuch().getFall().setMandant(mandantAR);
-		return prepareVerfuegungForBetreuung(erstgesuchBetreuung);
+		return MutationsMergerTestUtil.prepareVerfuegungForBetreuung(erstgesuchBetreuung);
 	}
 
-	private Verfuegung prepareVerfuegungForBetreuung(Betreuung betreuung) {
-		List<VerfuegungZeitabschnitt> zabetrErtgesuch = EbeguRuleTestsHelper.calculate(betreuung);
-		Verfuegung verfuegungErstgesuch = new Verfuegung();
-		final List<VerfuegungZeitabschnitt> verfuegungsZeitabschnitteErstgesuch =
-			EbeguRuleTestsHelper.runSingleAbschlussRule(monatsRule, betreuung, zabetrErtgesuch);
-		verfuegungErstgesuch.setZeitabschnitte(verfuegungsZeitabschnitteErstgesuch);
-		betreuung.setVerfuegung(verfuegungErstgesuch);
-		betreuung.extractGesuch().setTimestampVerfuegt(LocalDateTime.now());
-		verfuegungErstgesuch.setBetreuung(betreuung);
-		return verfuegungErstgesuch;
-	}
+
 
 	private Verfuegung prepareErstTagesschuleGesuchVerfuegung(LocalDate eingangsdatum, Mandant mandantAR) {
 		AnmeldungTagesschule anmeldungTagesschule = TestDataUtil.createGesuchWithAnmeldungTagesschule();
@@ -1473,49 +1463,11 @@ public class MutationsMergerTest {
 			});
 	}
 
-	private Betreuung prepareData(BigDecimal massgebendesEinkommen, AntragTyp antragTyp) {
-		return prepareData(massgebendesEinkommen, antragTyp, DEFAULT_PENSUM, START_PERIODE);
-	}
-
-	private Betreuung prepareData(
-		BigDecimal massgebendesEinkommen,
-		AntragTyp antragTyp,
-		int bpPensum,
-		LocalDate aenderungsDatumBpPensum) {
-		Betreuung betreuung =
-			EbeguRuleTestsHelper.createBetreuungWithPensum(START_PERIODE, TestDataUtil.ENDE_PERIODE,
-				BetreuungsangebotTyp.KITA, 100, new BigDecimal(2000));
-		final Gesuch gesuch = betreuung.extractGesuch();
-		gesuch.setTyp(antragTyp);
-		Set<KindContainer> kindContainers = new LinkedHashSet<>();
-		final KindContainer kindContainer = betreuung.getKind();
-		Set<Betreuung> betreuungen = new TreeSet<>();
-		betreuungen.add(betreuung);
-		kindContainer.setBetreuungen(betreuungen);
-		kindContainers.add(betreuung.getKind());
-		gesuch.setKindContainers(kindContainers);
-
-		TestDataUtil.calculateFinanzDaten(gesuch, new FinanzielleSituationBernRechner());
-		gesuch.getFinanzDatenDTO().setMassgebendesEinkBjVorAbzFamGr(massgebendesEinkommen);
-		Assert.assertNotNull(gesuch.getGesuchsteller1());
-		gesuch.getGesuchsteller1().addErwerbspensumContainer(TestDataUtil.createErwerbspensum(
-			aenderungsDatumBpPensum, TestDataUtil.ENDE_PERIODE, bpPensum));
-
-		gesuch.getGesuchsteller1().setFinanzielleSituationContainer(new FinanzielleSituationContainer());
-		assertNotNull(gesuch.getGesuchsteller1().getFinanzielleSituationContainer());
-		gesuch.getGesuchsteller1().getFinanzielleSituationContainer().setFinanzielleSituationJA(new FinanzielleSituation());
-		gesuch.getGesuchsteller1()
-			.getFinanzielleSituationContainer()
-			.getFinanzielleSituationJA()
-			.setNettolohn(massgebendesEinkommen);
-		return betreuung;
-	}
-
 	@Nonnull
-	private Betreuung prepareMutation(@Nonnull LocalDate eingangsdatumMuation, int bpPensum, LocalDate aenderungsDatumPensum,
+	protected Betreuung prepareMutation(@Nonnull LocalDate eingangsdatumMuation, int bpPensum, LocalDate aenderungsDatumPensum,
 		int bpPensumVorMutation) {
 		Betreuung mutierteBetreuung =
-			prepareData(MathUtil.DEFAULT.from(50000), AntragTyp.MUTATION, bpPensum, aenderungsDatumPensum);
+			MutationsMergerTestUtil.prepareData(MathUtil.DEFAULT.from(50000), AntragTyp.MUTATION, bpPensum, aenderungsDatumPensum);
 		mutierteBetreuung.extractGesuch().getGesuchsteller1().addErwerbspensumContainer(TestDataUtil.createErwerbspensum(
 			START_PERIODE, aenderungsDatumPensum.minusDays(1), bpPensumVorMutation));
 		mutierteBetreuung.extractGesuch().setEingangsdatum(eingangsdatumMuation);
