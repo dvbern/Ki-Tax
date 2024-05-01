@@ -25,23 +25,18 @@ import javax.annotation.Nonnull;
 
 import ch.dvbern.ebegu.entities.AbstractPlatz;
 import ch.dvbern.ebegu.entities.Einstellung;
-import ch.dvbern.ebegu.entities.KitaxUebergangsloesungInstitutionOeffnungszeiten;
 import ch.dvbern.ebegu.entities.Mandant;
 import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.EingewoehnungTyp;
 import ch.dvbern.ebegu.enums.EinschulungTyp;
 import ch.dvbern.ebegu.enums.EinstellungKey;
-import ch.dvbern.ebegu.enums.MsgKey;
-import ch.dvbern.ebegu.rechner.AbstractRechner;
 import ch.dvbern.ebegu.rechner.BGRechnerFactory;
 import ch.dvbern.ebegu.rechner.BGRechnerParameterDTO;
-import ch.dvbern.ebegu.rechner.kitax.EmptyKitaxBernRechner;
 import ch.dvbern.ebegu.rechner.rules.RechnerRule;
 import ch.dvbern.ebegu.rules.initalizer.RestanspruchInitializer;
 import ch.dvbern.ebegu.rules.initalizer.RestanspruchInitializerVisitor;
 import ch.dvbern.ebegu.util.EinschulungstypBgStundenFaktorVisitor;
 import ch.dvbern.ebegu.util.KitaxUebergangsloesungParameter;
-import ch.dvbern.ebegu.util.KitaxUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -81,12 +76,12 @@ public class BetreuungsgutscheinExecutor {
 				zeitabschnitte = rule.calculate(platz, zeitabschnitte);
 				if (isDebug) {
 					LOG.info(
-						"{} ({}: {}" + ')',
+						"{} ({}: {})",
 						rule.getClass().getSimpleName(),
 						rule.getRuleKey().name(),
 						rule.getRuleType().name());
 					for (VerfuegungZeitabschnitt verfuegungZeitabschnitt : zeitabschnitte) {
-						LOG.info(verfuegungZeitabschnitt.toString());
+						LOG.info("{}", verfuegungZeitabschnitt);
 					}
 				}
 			}
@@ -136,49 +131,10 @@ public class BetreuungsgutscheinExecutor {
 		@Nonnull AbstractPlatz platz,
 		@Nonnull List<VerfuegungZeitabschnitt> zeitabschnitte
 	) {
-
-		Mandant mandant = platz.getInstitutionStammdaten().getInstitution().getMandant();
-		assert mandant != null;
-		AbstractRechner
-			asivRechner = BGRechnerFactory.getRechner(platz.getBetreuungsangebotTyp(), rechnerRulesForGemeinde, mandant);
-		final boolean possibleKitaxRechner = KitaxUtil.isGemeindeWithKitaxUebergangsloesung(platz.extractGemeinde())
-			&& platz.getBetreuungsangebotTyp().isJugendamt();
-		// Den richtigen Rechner anwerfen
-		zeitabschnitte.forEach(zeitabschnitt -> {
-			// Es kann erst jetzt entschieden werden, welcher Rechner zum Einsatz kommt,
-			// da fuer Stadt Bern bis zum Zeitpunkt X der alte Ki-Tax Rechner verwendet werden soll.
-			AbstractRechner rechnerToUse = null;
-			if (possibleKitaxRechner) {
-				if (zeitabschnitt.getGueltigkeit().endsBefore(kitaxParameter.getStadtBernAsivStartDate())) {
-					if (zeitabschnitt.getBgCalculationInputGemeinde().isBetreuungInGemeinde()) {
-						String kitaName = platz.getInstitutionStammdaten().getInstitution().getName();
-						KitaxUebergangsloesungInstitutionOeffnungszeiten oeffnungszeiten = null;
-						if (platz.getInstitutionStammdaten().getBetreuungsangebotTyp().isKita()) {
-							// Die Oeffnungszeiten sind nur fuer Kitas relevant
-							oeffnungszeiten = kitaxParameter.getOeffnungszeiten(kitaName);
-						}
-						rechnerToUse = BGRechnerFactory.getKitaxRechner(platz, kitaxParameter, oeffnungszeiten, locale);
-					} else {
-						// Betreuung findet nicht in Gemeinde statt
-						rechnerToUse = new EmptyKitaxBernRechner(locale, MsgKey.ZUSATZGUTSCHEIN_NEIN_NICHT_IN_GEMEINDE);
-					}
-				} else if (kitaxParameter.isStadtBernAsivConfiguered()) {
-					// Es ist Bern, und der Abschnitt liegt nach dem Stichtag. Falls ASIV schon konfiguriert ist,
-					// koennen wir den normalen ASIV Rechner verwenden.
-					rechnerToUse = asivRechner;
-				} else {
-					// Auch in diesem Fall muss zumindest ein leeres Objekt erstellt werden. Evtl. braucht es hier einen
-					// NullRechner? Wegen Bemerkungen?
-					rechnerToUse = new EmptyKitaxBernRechner(locale, MsgKey.FEBR_INFO_ASIV_NOT_CONFIGUERD);
-				}
-			} else {
-				// Alle anderen rechnen normal mit dem Asiv-Rechner
-				rechnerToUse = asivRechner;
-			}
-			if (rechnerToUse != null) {
-				rechnerToUse.calculate(zeitabschnitt, bgRechnerParameterDTO);
-			}
-		});
+		for (VerfuegungZeitabschnitt verfuegungZeitabschnitt : zeitabschnitte) {
+			var rechnerToUse = BGRechnerFactory.getRechner(kitaxParameter, locale, rechnerRulesForGemeinde, platz, verfuegungZeitabschnitt);
+			rechnerToUse.calculate(verfuegungZeitabschnitt, bgRechnerParameterDTO);
+		}
 	}
 
 	@Nonnull

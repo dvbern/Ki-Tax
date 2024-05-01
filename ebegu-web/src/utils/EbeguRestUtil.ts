@@ -2022,7 +2022,6 @@ export class EbeguRestUtil {
         restFinanzielleSituation.veranlagt = finanzielleSituation.veranlagt;
         restFinanzielleSituation.veranlagtVorjahr = finanzielleSituation.veranlagtVorjahr;
         restFinanzielleSituation.abzuegeKinderAusbildung = finanzielleSituation.abzuegeKinderAusbildung;
-        restFinanzielleSituation.bruttoLohn = finanzielleSituation.bruttoLohn;
         restFinanzielleSituation.unterhaltsBeitraege = finanzielleSituation.unterhaltsBeitraege;
         restFinanzielleSituation.automatischePruefungErlaubt = finanzielleSituation.automatischePruefungErlaubt;
         restFinanzielleSituation.momentanSelbststaendig = finanzielleSituation.momentanSelbststaendig;
@@ -2053,6 +2052,7 @@ export class EbeguRestUtil {
         restAbstractFinanzielleSituation.geschaeftsverlust = abstractFinanzielleSituation.geschaeftsverlust;
         restAbstractFinanzielleSituation.abzuegeLiegenschaft = abstractFinanzielleSituation.abzuegeLiegenschaft;
         restAbstractFinanzielleSituation.einkaeufeVorsorge = abstractFinanzielleSituation.einkaeufeVorsorge;
+        restAbstractFinanzielleSituation.bruttoLohn = abstractFinanzielleSituation.bruttoLohn;
 
         restAbstractFinanzielleSituation.gewinnungskosten = abstractFinanzielleSituation.gewinnungskosten;
         restAbstractFinanzielleSituation.einkommenInVereinfachtemVerfahrenAbgerechnet =
@@ -2187,6 +2187,7 @@ export class EbeguRestUtil {
                 abstractFinanzielleSituationFromServer.ersatzeinkommenSelbststaendigkeitBasisjahr;
             abstractFinanzielleSituationTS.ersatzeinkommenSelbststaendigkeitBasisjahrMinus1 =
                 abstractFinanzielleSituationFromServer.ersatzeinkommenSelbststaendigkeitBasisjahrMinus1;
+            abstractFinanzielleSituationTS.bruttoLohn = abstractFinanzielleSituationFromServer.bruttoLohn;
 
             return abstractFinanzielleSituationTS;
         }
@@ -2213,7 +2214,6 @@ export class EbeguRestUtil {
             finanzielleSituationTS.veranlagt = finanzielleSituationFromServer.veranlagt;
             finanzielleSituationTS.veranlagtVorjahr = finanzielleSituationFromServer.veranlagtVorjahr;
             finanzielleSituationTS.abzuegeKinderAusbildung = finanzielleSituationFromServer.abzuegeKinderAusbildung;
-            finanzielleSituationTS.bruttoLohn = finanzielleSituationFromServer.bruttoLohn;
             finanzielleSituationTS.unterhaltsBeitraege = finanzielleSituationFromServer.unterhaltsBeitraege;
             finanzielleSituationTS.automatischePruefungErlaubt =
                 finanzielleSituationFromServer.automatischePruefungErlaubt;
@@ -4612,6 +4612,7 @@ export class EbeguRestUtil {
         publicAppConfigTS.checkboxAuszahlungInZukunft = data.checkboxAuszahlungInZukunft;
         publicAppConfigTS.erlaubenInstitutionenZuWaehlen = data.erlaubenInstitutionenZuWaehlen;
         publicAppConfigTS.auszahlungAnEltern = data.auszahlungAnEltern;
+        publicAppConfigTS.abweichungenEnabled = data.abweichungenEnabled;
         return publicAppConfigTS;
     }
 

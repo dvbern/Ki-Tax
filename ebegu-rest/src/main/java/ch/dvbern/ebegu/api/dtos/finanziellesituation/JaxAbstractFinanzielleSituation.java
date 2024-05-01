@@ -32,7 +32,8 @@ import ch.dvbern.ebegu.api.dtos.JaxAbstractDTO;
 public class JaxAbstractFinanzielleSituation extends JaxAbstractDTO {
 
 	private static final long serialVersionUID = -4629044440787545634L;
-
+	@Nullable
+	protected BigDecimal bruttoLohn;
 
 	@Nullable
 	private BigDecimal nettolohn;
@@ -309,4 +310,13 @@ public class JaxAbstractFinanzielleSituation extends JaxAbstractDTO {
 		@Nullable BigDecimal ersatzeinkommenSelbststaendigkeitBasisjahrMinus1) {
 		this.ersatzeinkommenSelbststaendigkeitBasisjahrMinus1 = ersatzeinkommenSelbststaendigkeitBasisjahrMinus1;
 	}
+	@Nullable
+	public BigDecimal getBruttoLohn() {
+		return bruttoLohn;
+	}
+
+	public void setBruttoLohn(@Nullable BigDecimal bruttoLohn) {
+		this.bruttoLohn = bruttoLohn;
+	}
+
 }

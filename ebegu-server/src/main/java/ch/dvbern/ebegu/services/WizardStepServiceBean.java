@@ -1220,7 +1220,7 @@ public class WizardStepServiceBean extends AbstractBaseService implements Wizard
 		case APPENZELL:
 			return WizardStepName.EINKOMMENSVERSCHLECHTERUNG_APPENZELL;
 		case SCHWYZ:
-			return WizardStepName.EINKOMMENSVERSCHLECHTERUNG;
+			return WizardStepName.EINKOMMENSVERSCHLECHTERUNG_SCHWYZ;
 		default:
 			throw new EbeguRuntimeException(
 				"getEKVWizardStepNameForGesuch",

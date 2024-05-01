@@ -41,6 +41,9 @@ import java.math.BigDecimal;
 public abstract class AbstractFinanzielleSituation extends AbstractMutableEntity {
 
 	private static final long serialVersionUID = 2596930494846119259L;
+	@Nullable
+	@Column(nullable = true)
+	protected BigDecimal bruttoLohn;
 
 	@Nullable
 	@Column(nullable = true)
@@ -413,6 +416,16 @@ public abstract class AbstractFinanzielleSituation extends AbstractMutableEntity
 		this.ersatzeinkommenSelbststaendigkeitBasisjahrMinus1 = ersatzeinkommenSelbststaendigkeitBasisjahrMinus1;
 	}
 
+	@Nullable
+	public BigDecimal getBruttoLohn() {
+		return bruttoLohn;
+	}
+
+	public void setBruttoLohn(@Nullable BigDecimal bruttoLohn) {
+		this.bruttoLohn = bruttoLohn;
+	}
+
+
 	@Nonnull
 	public AbstractFinanzielleSituation copyAbstractFinanzielleSituation(
 		@Nonnull AbstractFinanzielleSituation target,
@@ -443,6 +456,7 @@ public abstract class AbstractFinanzielleSituation extends AbstractMutableEntity
 			target.setEinkommenInVereinfachtemVerfahrenAbgerechnet(this.getEinkommenInVereinfachtemVerfahrenAbgerechnet());
 			target.setAmountEinkommenInVereinfachtemVerfahrenAbgerechnet(this.getAmountEinkommenInVereinfachtemVerfahrenAbgerechnet());
 			target.setBruttoertraegeVermoegen(this.getBruttoertraegeVermoegen());
+			target.setBruttoLohn(this.getBruttoLohn());
 			if (this.getSelbstdeklaration() != null) {
 				target.setSelbstdeklaration(this.getSelbstdeklaration().copySelbsteklaration(new FinanzielleSituationSelbstdeklaration(), copyType));
 			}
@@ -493,7 +507,8 @@ public abstract class AbstractFinanzielleSituation extends AbstractMutableEntity
 					otherFinSituation.getAmountEinkommenInVereinfachtemVerfahrenAbgerechnet()) &&
 			MathUtil.isSame(getDurchschnittlicherGeschaeftsgewinn(), otherFinSituation.getDurchschnittlicherGeschaeftsgewinn()) &&
 		    MathUtil.isSame(getErsatzeinkommenSelbststaendigkeitBasisjahr(), otherFinSituation.getErsatzeinkommenSelbststaendigkeitBasisjahr()) &&
-			MathUtil.isSame(getErsatzeinkommenSelbststaendigkeitBasisjahrMinus1(), otherFinSituation.getErsatzeinkommenSelbststaendigkeitBasisjahrMinus1());
+			MathUtil.isSame(getErsatzeinkommenSelbststaendigkeitBasisjahrMinus1(), otherFinSituation.getErsatzeinkommenSelbststaendigkeitBasisjahrMinus1()) &&
+			MathUtil.isSame(getBruttoLohn(), otherFinSituation.getBruttoLohn());
 	}
 
 	public boolean isVollstaendig(FinanzielleSituationTyp finSitTyp) {
