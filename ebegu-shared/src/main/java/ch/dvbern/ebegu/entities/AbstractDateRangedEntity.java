@@ -44,9 +44,6 @@ public abstract class AbstractDateRangedEntity extends AbstractMutableEntity imp
 	@Valid
 	private DateRange gueltigkeit = new DateRange();
 
-	public AbstractDateRangedEntity() {
-	}
-
 	@Override
 	@Nonnull
 	public DateRange getGueltigkeit() {

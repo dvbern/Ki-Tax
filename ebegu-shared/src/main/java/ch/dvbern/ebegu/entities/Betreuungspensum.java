@@ -18,7 +18,6 @@ package ch.dvbern.ebegu.entities;
 import java.util.Objects;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.persistence.AssociationOverride;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -48,10 +47,6 @@ public class Betreuungspensum extends AbstractBetreuungsPensum implements Compar
 	@NotNull
 	@Column(nullable = false)
 	private Boolean nichtEingetreten = false;
-
-	@Nullable
-	@Column(nullable = true)
-	private Boolean betreuungInFerienzeit;
 
 	public Betreuungspensum() {
 	}
@@ -89,15 +84,6 @@ public class Betreuungspensum extends AbstractBetreuungsPensum implements Compar
 
 	public void setNichtEingetreten(@Nonnull Boolean nichtEingetreten) {
 		this.nichtEingetreten = nichtEingetreten;
-	}
-
-	@Nullable
-	public Boolean getBetreuungInFerienzeit() {
-		return betreuungInFerienzeit;
-	}
-
-	public void setBetreuungInFerienzeit(@Nullable Boolean betreuungInFerienzeit) {
-		this.betreuungInFerienzeit = betreuungInFerienzeit;
 	}
 
 	@Override

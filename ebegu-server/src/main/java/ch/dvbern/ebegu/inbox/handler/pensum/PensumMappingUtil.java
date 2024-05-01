@@ -32,13 +32,14 @@ import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import ch.dvbern.ebegu.entities.AbstractDecimalPensum;
+import ch.dvbern.ebegu.entities.AbstractBetreuungsPensum;
 import ch.dvbern.ebegu.entities.AbstractMahlzeitenPensum;
 import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Betreuungsmitteilung;
 import ch.dvbern.ebegu.entities.BetreuungsmitteilungPensum;
 import ch.dvbern.ebegu.entities.Betreuungspensum;
 import ch.dvbern.ebegu.entities.BetreuungspensumContainer;
+import ch.dvbern.ebegu.entities.EingewoehnungPauschale;
 import ch.dvbern.ebegu.enums.AntragCopyType;
 import ch.dvbern.ebegu.inbox.handler.ProcessingContext;
 import ch.dvbern.ebegu.types.DateRange;
@@ -48,21 +49,29 @@ import ch.dvbern.kibon.exchange.commons.platzbestaetigung.ZeitabschnittDTO;
 import lombok.experimental.UtilityClass;
 
 import static ch.dvbern.ebegu.util.EbeguUtil.collectionComparator;
+import static java.util.Comparator.naturalOrder;
+import static java.util.Comparator.nullsFirst;
 
 @UtilityClass
 public final class PensumMappingUtil {
 
 	public static final LocalDate GO_LIVE = LocalDate.of(2021, 1, 1);
 
-	public static final Comparator<AbstractMahlzeitenPensum> COMPARATOR = Comparator
-		.comparing(AbstractMahlzeitenPensum::getMonatlicheBetreuungskosten)
-		.thenComparing(AbstractDecimalPensum::getPensumRounded)
-		.thenComparing(AbstractMahlzeitenPensum::getTarifProHauptmahlzeit)
-		.thenComparing(AbstractMahlzeitenPensum::getTarifProNebenmahlzeit)
-		.thenComparing(AbstractMahlzeitenPensum::getMonatlicheHauptmahlzeiten)
-		.thenComparing(AbstractMahlzeitenPensum::getMonatlicheNebenmahlzeiten);
+	public static final Comparator<EingewoehnungPauschale> EINGEWOEHNUNG_PAUSCHALE_COMPARATOR = Comparator
+		.comparing(EingewoehnungPauschale::getPauschale)
+		.thenComparing(EingewoehnungPauschale::getGueltigkeit);
 
-	public static final Comparator<AbstractMahlzeitenPensum> COMPARATOR_WITH_GUELTIGKEIT = PensumMappingUtil.COMPARATOR
+	public static final Comparator<AbstractBetreuungsPensum> COMPARATOR = Comparator
+		.comparing(AbstractBetreuungsPensum::getMonatlicheBetreuungskosten)
+		.thenComparing(AbstractBetreuungsPensum::getPensumRounded)
+		.thenComparing(AbstractBetreuungsPensum::getTarifProHauptmahlzeit)
+		.thenComparing(AbstractBetreuungsPensum::getTarifProNebenmahlzeit)
+		.thenComparing(AbstractBetreuungsPensum::getMonatlicheHauptmahlzeiten)
+		.thenComparing(AbstractBetreuungsPensum::getMonatlicheNebenmahlzeiten)
+		.thenComparing(AbstractBetreuungsPensum::getEingewoehnungPauschale, nullsFirst(EINGEWOEHNUNG_PAUSCHALE_COMPARATOR))
+		.thenComparing(AbstractBetreuungsPensum::getBetreuungInFerienzeit, nullsFirst(naturalOrder()));
+
+	public static final Comparator<AbstractBetreuungsPensum> COMPARATOR_WITH_GUELTIGKEIT = PensumMappingUtil.COMPARATOR
 		.thenComparing(AbstractMahlzeitenPensum::getGueltigkeit);
 
 	public static final Comparator<Betreuungsmitteilung> MITTEILUNG_COMPARATOR = Comparator
@@ -252,7 +261,7 @@ public final class PensumMappingUtil {
 	@SafeVarargs
 	private static <T extends Gueltigkeit> void writeBack(
 		@Nonnull Set<T> target,
-		@Nonnull Function<T, AbstractMahlzeitenPensum> mapper,
+		@Nonnull Function<T, AbstractBetreuungsPensum> mapper,
 		@Nonnull ProcessingContext ctx,
 		@Nonnull Collection<T>... remaining) {
 
@@ -284,7 +293,7 @@ public final class PensumMappingUtil {
 	@Nonnull
 	static <T extends Gueltigkeit> Collection<T> extendGueltigkeit(
 		@Nonnull Collection<T> pensen,
-		@Nonnull Function<T, AbstractMahlzeitenPensum> mapper) {
+		@Nonnull Function<T, AbstractBetreuungsPensum> mapper) {
 
 		if (pensen.size() <= 1) {
 			return pensen;
@@ -320,8 +329,8 @@ public final class PensumMappingUtil {
 	}
 
 	private static boolean areSame(
-		@Nonnull AbstractMahlzeitenPensum current,
-		@Nonnull AbstractMahlzeitenPensum next) {
+		@Nonnull AbstractBetreuungsPensum current,
+		@Nonnull AbstractBetreuungsPensum next) {
 
 		return COMPARATOR.compare(current, next) == 0;
 	}
