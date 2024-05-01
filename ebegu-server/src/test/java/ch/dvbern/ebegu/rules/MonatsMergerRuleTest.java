@@ -328,7 +328,6 @@ public class MonatsMergerRuleTest {
 	private List<VerfuegungZeitabschnitt> createGesuchAndCalculateZeitabschnitt(boolean anspruchMonatsweise, final boolean gs2, ErwerbspensumContainer... erwerbspensumContainers) {
 		final Betreuung betreuung = TestDataUtil.createGesuchWithBetreuungspensum(gs2);
 		Gesuch gesuch = betreuung.extractGesuch();
-		TestDataUtil.createDefaultAdressenForGS(gesuch, gs2);
 		Assert.assertNotNull(gesuch.getGesuchsteller1());
 
 		Arrays.stream(erwerbspensumContainers)
@@ -341,7 +340,6 @@ public class MonatsMergerRuleTest {
 	private Betreuung createBetreuungWithErwerpspensen(ErwerbspensumContainer... erwerbspensumContainers) {
 		final Betreuung betreuung = TestDataUtil.createGesuchWithBetreuungspensum(false);
 		Gesuch gesuch = betreuung.extractGesuch();
-		TestDataUtil.createDefaultAdressenForGS(gesuch, false);
 		Assert.assertNotNull(gesuch.getGesuchsteller1());
 
 		Arrays.stream(erwerbspensumContainers)

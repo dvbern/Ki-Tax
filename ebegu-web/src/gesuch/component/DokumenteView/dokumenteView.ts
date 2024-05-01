@@ -217,5 +217,4 @@ export class DokumenteViewController extends AbstractGesuchViewController<any> {
         }
         return 'DOK_JAHR';
     }
-
 }

@@ -32,6 +32,7 @@ export class BetreuungInputConfig implements IComponentOptions {
         isDisabled: '<',
         id: '@inputId',
         betreuungsangebotTyp: '<',
+        index: '<',
         multiplierKita: '<',
         multiplierTfo: '<',
         betreuungInputSwitchTyp: '<',
@@ -51,6 +52,7 @@ export class BetreuungInput implements IController {
     public pensumContainer: TSBetreuungspensumContainer;
     public isDisabled: boolean = false;
     public id: string;
+    public index: number;
     public step: number = 0.01;
     public betreuungInputSwitchTyp: TSPensumAnzeigeTyp = TSPensumAnzeigeTyp.ZEITEINHEIT_UND_PROZENT;
 

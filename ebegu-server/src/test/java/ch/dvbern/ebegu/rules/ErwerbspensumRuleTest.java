@@ -521,10 +521,6 @@ public class ErwerbspensumRuleTest extends AbstractBGRechnerTest {
 
 	private Betreuung createGesuch(final boolean gs2) {
 		final Betreuung betreuung = TestDataUtil.createGesuchWithBetreuungspensum(gs2);
-		final Gesuch gesuch = betreuung.extractGesuch();
-
-		TestDataUtil.createDefaultAdressenForGS(gesuch, gs2);
-
 		return betreuung;
 	}
 

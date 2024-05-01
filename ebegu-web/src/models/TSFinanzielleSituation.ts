@@ -31,7 +31,6 @@ export class TSFinanzielleSituation extends TSAbstractFinanzielleSituation {
     private _veranlagtVorjahr: boolean;
     private _abzuegeKinderAusbildung: number;
     private _unterhaltsBeitraege: number;
-    private _bruttoLohn: number;
     private _momentanSelbststaendig: boolean;
     private _steuerdatenAbfrageTimestamp: moment.Moment;
     private _ersatzeinkommenSelbststaendigkeitBasisjahrMinus2: number;
@@ -125,14 +124,6 @@ export class TSFinanzielleSituation extends TSAbstractFinanzielleSituation {
 
     public set abzuegeKinderAusbildung(value: number) {
         this._abzuegeKinderAusbildung = value;
-    }
-
-    public get bruttoLohn(): number {
-        return this._bruttoLohn;
-    }
-
-    public set bruttoLohn(value: number) {
-        this._bruttoLohn = value;
     }
 
     public get momentanSelbststaendig(): boolean {

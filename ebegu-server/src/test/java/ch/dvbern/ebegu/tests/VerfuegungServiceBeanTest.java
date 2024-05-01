@@ -130,7 +130,6 @@ public class VerfuegungServiceBeanTest extends AbstractEbeguLoginTest {
 			LocalDate.of(1980, Month.MARCH, 25),
 			null,
 			gesuchsperiode);
-		TestDataUtil.createDefaultAdressenForGS(gesuch, false);
 		finanzielleSituationService.calculateFinanzDaten(gesuch);
 		Gesuch berechnetesGesuch = this.verfuegungService.calculateVerfuegung(gesuch);
 		Assert.assertNotNull(berechnetesGesuch);
@@ -159,7 +158,6 @@ public class VerfuegungServiceBeanTest extends AbstractEbeguLoginTest {
 			LocalDate.of(2016, Month.MARCH, 25),
 			AntragStatus.VERFUEGT,
 			gesuchsperiode);
-		TestDataUtil.createDefaultAdressenForGS(gesuch, false);
 		Set<KindContainer> kindContainers = gesuch.getKindContainers();
 		KindContainer kind = kindContainers.iterator().next();
 		Assert.assertEquals(1, kindContainers.size());

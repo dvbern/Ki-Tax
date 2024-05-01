@@ -34,7 +34,7 @@ public class BetreuungsangebotRechnerVisitor implements BetreuungsangebotTypVisi
 
 	@Override
 	public AbstractRechner visitMittagtisch() {
-		return this.visitTagesfamilien();
+		return new MittagstischRechnerVisitor().visit(mandant);
 	}
 
 	@Override

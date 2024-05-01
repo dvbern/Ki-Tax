@@ -3013,7 +3013,7 @@
     "KINDERABZUG_ALIMENTE_BEZAHLEN": "Zahlen Sie Unterhaltsbeiträge für das Kind?",
     "NETTO_VERMOEGEN_STAND": "Nettovermögen Stand 31.12.{{year}}",
     "EINGEWOEHNUNG": "Findet eine Eingewöhnung bei der Institution statt, bevor Sie mit Ihrer Beschäftigung beginnen?",
-    "EINGEWOEHNUNG_PAUSCHALE": "Eingewöhnungspauschale",
+    "EINGEWOEHNUNG_PAUSCHALE": "Eingewöhnungskosten in CHF",
     "EINGEWOEHNUNG_PAUSCHALE_CHECKBOX": "Es findet eine Eingewöhnung statt",
     "EINGEWOEHNUNG_PAUSCHALE_CHECKBOX_INFO": "Deklarieren Sie hier die Kosten, welche Sie für die Eingewöhnung den Eltern in Rechnung stellen. Wenn Sie keine separaten Kosten für die Eingewöhnung verrechnen, entfernen Sie das Häckchen bei 'Es findet eine Eingewöhnung statt'",
     "EINGEWOEHNUNG_FKJV": "Das Kind wird im Zeitraum, für den diese Platzbestätigung gilt, zuerst eingewöhnt",
@@ -3181,6 +3181,7 @@
     "ANGEBOT_MITTAGSTISCH_ENABLED": "Angebot Mittagstisch aktiviert",
     "ANGEBOT_TS_ENABLED": "Angebot Tagesschulen aktiviert",
     "ANGEBOT_TFO_ENABLED": "Angebot Tagesfamilienorganisationen aktiviert",
+    "ABWEICHUNGEN_ENABLED": "Abweichungen aktiviert",
     "MUTATIONSMELDUNG_BETREFF": "Mutationsmeldung",
     "VERARBEITET": "verarbeitet",
     "FEHLER_BEI_MITTEILUNG_BEARBEITUNG": "Mitteilungen, die durch Fehler nicht bearbeitet werden konnten:",
@@ -3214,5 +3215,8 @@
     "KINDERABZUG_UNTERHALTSPFLICHTIG": "Sind Sie für das Kind, für welches das Beitragsgesuch gestellt wird, unterhaltspflichtig?",
     "WOHNT_KIND_HAUSHALT": "Wohnt dieses Kind mindestens zur Hälfte bei Ihnen?",
     "KIND_PARTNER_UNTERHALTSPFLICHTIG": "Ist Ihr Partner auch unterhaltspflichtig für dieses Kind?",
+    "SCHULERGAENZENDE_BETREUUNGEN": "Schulergänzende Betreuungen aktiviert",
+    "SCHULERGAENZENDE_BETREUUNG_FRAGE": "Findet die Betreuung während der schulfreien Zeit (Ferien) statt?",
+    "WARNUNG_FIN_SIT_AUSFUELLEN": "Bitte füllen Sie zuerst die Finanziellen Verhältnisse vollständig aus",
     "THE_END": "Diesen Key immer zuunterst lassen wegen Mergeproblemen!"
 }

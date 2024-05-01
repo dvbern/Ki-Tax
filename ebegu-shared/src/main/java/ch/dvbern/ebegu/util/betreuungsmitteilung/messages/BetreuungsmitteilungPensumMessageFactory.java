@@ -24,8 +24,22 @@ import java.util.stream.Collectors;
 import ch.dvbern.ebegu.entities.BetreuungsmitteilungPensum;
 import ch.dvbern.ebegu.util.Constants;
 import ch.dvbern.ebegu.util.Gueltigkeit;
+import org.apache.commons.lang.StringUtils;
 
 public interface BetreuungsmitteilungPensumMessageFactory {
+
+	static BetreuungsmitteilungPensumMessageFactory empty() {
+		return (index, pensum) -> StringUtils.EMPTY;
+	}
+
+	static BetreuungsmitteilungPensumMessageFactory combine(
+		String trennzeichen,
+		BetreuungsmitteilungPensumMessageFactory... factories) {
+		return (index, pensum) -> Arrays.stream(factories)
+			.map(factory -> factory.messageForPensum(index, pensum))
+			.filter(Predicate.not(String::isEmpty))
+			.collect(Collectors.joining(trennzeichen));
+	}
 
 	default String formatAb(Gueltigkeit pensum) {
 		return Constants.DATE_FORMATTER.format(pensum.getGueltigkeit().getGueltigAb());
@@ -36,11 +50,4 @@ public interface BetreuungsmitteilungPensumMessageFactory {
 	}
 
 	String messageForPensum(int index, BetreuungsmitteilungPensum pensum);
-
-	static BetreuungsmitteilungPensumMessageFactory combine(BetreuungsmitteilungPensumMessageFactory... factories) {
-		return (index, pensum) -> Arrays.stream(factories)
-			.map(factory -> factory.messageForPensum(index, pensum))
-			.filter(Predicate.not(String::isEmpty))
-			.collect(Collectors.joining(", "));
-	}
 }

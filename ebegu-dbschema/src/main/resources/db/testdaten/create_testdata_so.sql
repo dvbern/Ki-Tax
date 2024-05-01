@@ -86,6 +86,7 @@ UPDATE application_property SET value = '50000' WHERE name = 'LASTENAUSGLEICH_TA
 UPDATE application_property SET value = 'false' WHERE name = 'GEMEINDE_KENNZAHLEN_AKTIV' AND mandant_id = @mandant_id_solothurn;
 UPDATE application_property SET value = 'false' WHERE name = 'LASTENAUSGLEICH_AKTIV' AND mandant_id = @mandant_id_solothurn;
 UPDATE application_property SET value = 'false' WHERE name = 'AUSZAHLUNGEN_AN_ELTERN' AND mandant_id = @mandant_id_solothurn;
+UPDATE application_property SET value = 'true' WHERE name = 'ABWEICHUNGEN_ENABLED' AND mandant_id = @mandant_id_solothurn;
 
 # Gesuchsperiode
 # noinspection SqlWithoutWhere

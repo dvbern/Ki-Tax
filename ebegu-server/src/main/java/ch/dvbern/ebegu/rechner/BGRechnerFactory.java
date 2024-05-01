@@ -18,14 +18,20 @@ package ch.dvbern.ebegu.rechner;
 import ch.dvbern.ebegu.entities.AbstractPlatz;
 import ch.dvbern.ebegu.entities.KitaxUebergangsloesungInstitutionOeffnungszeiten;
 import ch.dvbern.ebegu.entities.Mandant;
+import ch.dvbern.ebegu.entities.VerfuegungZeitabschnitt;
 import ch.dvbern.ebegu.enums.BetreuungsangebotTyp;
+import ch.dvbern.ebegu.enums.MsgKey;
+import ch.dvbern.ebegu.errors.EbeguRuntimeException;
+import ch.dvbern.ebegu.rechner.kitax.EmptyKitaxBernRechner;
 import ch.dvbern.ebegu.rechner.kitax.KitaKitaxBernRechner;
 import ch.dvbern.ebegu.rechner.kitax.TageselternKitaxBernRechner;
 import ch.dvbern.ebegu.rechner.rules.RechnerRule;
 import ch.dvbern.ebegu.util.KitaxUebergangsloesungParameter;
+import ch.dvbern.ebegu.util.KitaxUtil;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
@@ -37,6 +43,70 @@ import java.util.Objects;
 public final class BGRechnerFactory {
 
 	private BGRechnerFactory() {
+
+	}
+
+	@Nonnull
+	public static AbstractRechner getRechner(
+		@Nonnull KitaxUebergangsloesungParameter kitaxParameter,
+		@Nonnull Locale locale,
+		@Nonnull List<RechnerRule> rechnerRulesForGemeinde,
+		@Nonnull AbstractPlatz platz,
+		@Nonnull VerfuegungZeitabschnitt zeitabschnitt
+	) {
+		Mandant mandant = platz.getInstitutionStammdaten().getInstitution().getMandant();
+		assert mandant != null;
+		AbstractRechner
+			asivRechner = BGRechnerFactory.getRechner(platz.getBetreuungsangebotTyp(), rechnerRulesForGemeinde, mandant);
+		final boolean possibleKitaxRechner = KitaxUtil.isGemeindeWithKitaxUebergangsloesung(platz.extractGemeinde())
+			&& platz.getBetreuungsangebotTyp().isJugendamt();
+		// Den richtigen Rechner anwerfen
+		// Es kann erst jetzt entschieden werden, welcher Rechner zum Einsatz kommt,
+		// da fuer Stadt Bern bis zum Zeitpunkt X der alte Ki-Tax Rechner verwendet werden soll.
+		AbstractRechner rechnerToUse = null;
+		if (possibleKitaxRechner) {
+			if (zeitabschnitt.getGueltigkeit().endsBefore(kitaxParameter.getStadtBernAsivStartDate())) {
+				rechnerToUse = getPreAsivRechner(kitaxParameter, locale, platz, zeitabschnitt);
+			} else if (kitaxParameter.isStadtBernAsivConfiguered()) {
+				// Es ist Bern, und der Abschnitt liegt nach dem Stichtag. Falls ASIV schon konfiguriert ist,
+				// koennen wir den normalen ASIV Rechner verwenden.
+				rechnerToUse = asivRechner;
+			} else {
+				// Auch in diesem Fall muss zumindest ein leeres Objekt erstellt werden. Evtl. braucht es hier einen
+				// NullRechner? Wegen Bemerkungen?
+				rechnerToUse = new EmptyKitaxBernRechner(locale, MsgKey.FEBR_INFO_ASIV_NOT_CONFIGUERD);
+			}
+		} else {
+			// Alle anderen rechnen normal mit dem Asiv-Rechner
+			rechnerToUse = asivRechner;
+		}
+
+		if (rechnerToUse == null) {
+			throw new EbeguRuntimeException("getRechner", "could not determine Rechner");
+		}
+
+		return rechnerToUse;
+	}
+
+	private static AbstractRechner getPreAsivRechner(
+		KitaxUebergangsloesungParameter kitaxParameter,
+		Locale locale,
+		AbstractPlatz platz,
+		VerfuegungZeitabschnitt zeitabschnitt) {
+		AbstractRechner rechnerToUse;
+		if (zeitabschnitt.getBgCalculationInputGemeinde().isBetreuungInGemeinde()) {
+			String kitaName = platz.getInstitutionStammdaten().getInstitution().getName();
+			KitaxUebergangsloesungInstitutionOeffnungszeiten oeffnungszeiten = null;
+			if (platz.getInstitutionStammdaten().getBetreuungsangebotTyp().isKita()) {
+				// Die Oeffnungszeiten sind nur fuer Kitas relevant
+				oeffnungszeiten = kitaxParameter.getOeffnungszeiten(kitaName);
+			}
+			rechnerToUse = BGRechnerFactory.getKitaxRechner(platz, kitaxParameter, oeffnungszeiten, locale);
+		} else {
+			// Betreuung findet nicht in Gemeinde statt
+			rechnerToUse = new EmptyKitaxBernRechner(locale, MsgKey.ZUSATZGUTSCHEIN_NEIN_NICHT_IN_GEMEINDE);
+		}
+		return rechnerToUse;
 	}
 
 	@Nullable
@@ -49,7 +119,7 @@ public final class BGRechnerFactory {
 	}
 
 	@Nullable
-	public static AbstractRechner getKitaxRechner(
+	private static AbstractRechner getKitaxRechner(
 		@Nonnull AbstractPlatz betreuung,
 		@Nonnull KitaxUebergangsloesungParameter kitaxParameterDTO,
 		@Nullable KitaxUebergangsloesungInstitutionOeffnungszeiten oeffnungszeiten,

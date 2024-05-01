@@ -729,8 +729,6 @@ public class EingewoehnungFristRuleTest {
 		container.getGueltigkeit().setGueltigBis(TestDataUtil.ENDE_PERIODE);
 		betreuung.getBetreuungspensumContainers().add(container);
 
-		final Gesuch gesuch = betreuung.extractGesuch();
-		TestDataUtil.createDefaultAdressenForGS(gesuch, gs2);
 		return betreuung;
 	}
 

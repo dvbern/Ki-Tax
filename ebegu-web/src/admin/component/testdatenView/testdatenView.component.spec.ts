@@ -15,7 +15,6 @@
 
 import {ComponentFixture, TestBed, waitForAsync} from '@angular/core/testing';
 import {MAT_DATE_LOCALE} from '@angular/material/core';
-import {NoopAnimationsModule} from '@angular/platform-browser/animations';
 import * as moment from 'moment';
 import {of} from 'rxjs';
 import {ErrorService} from '../../../app/core/errors/service/ErrorService';
@@ -91,7 +90,8 @@ describe('testdatenView', () => {
             checkboxAuszahlungInZukunft: false,
             institutionenDurchGemeindenEinladen: false,
             erlaubenInstitutionenZuWaehlen: false,
-            auszahlungAnEltern: true
+            auszahlungAnEltern: true,
+            abweichungenEnabled: true
         });
         const gemeindeRSSpy = jasmine.createSpyObj<GemeindeRS>(GemeindeRS.name, ['getAktiveGemeinden']);
         gemeindeRSSpy.getAktiveGemeinden.and.resolveTo([]);
