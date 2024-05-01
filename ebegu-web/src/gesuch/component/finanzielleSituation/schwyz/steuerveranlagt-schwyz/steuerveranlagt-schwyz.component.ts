@@ -1,15 +1,13 @@
-import {ChangeDetectionStrategy, Component, Input} from '@angular/core';
+import {ChangeDetectionStrategy, Component, EventEmitter, Input, Output} from '@angular/core';
 import {ControlContainer, NgForm} from '@angular/forms';
-import {TSFinanzielleSituation} from '../../../../../models/TSFinanzielleSituation';
-import {TSFinanzModel} from '../../../../../models/TSFinanzModel';
+import {TSAbstractFinanzielleSituation} from '../../../../../models/TSAbstractFinanzielleSituation';
 import {EbeguUtil} from '../../../../../utils/EbeguUtil';
-import {FinanzielleSituationSchwyzService} from '../finanzielle-situation-schwyz.service';
 
 @Component({
     selector: 'dv-steuerveranlagt-schwyz',
     templateUrl: './steuerveranlagt-schwyz.component.html',
     changeDetection: ChangeDetectionStrategy.Default,
-    viewProviders: [{provide: ControlContainer, useExisting: NgForm}]
+    viewProviders: [{provide: ControlContainer, useExisting: NgForm}],
 })
 export class SteuerveranlagtSchwyzComponent {
 
@@ -17,27 +15,23 @@ export class SteuerveranlagtSchwyzComponent {
     public readonly!: boolean;
 
     @Input()
-    public finanzModel: TSFinanzModel;
+    public finSitJA!: TSAbstractFinanzielleSituation;
 
-    public constructor(
-        public finanzielleSituationSchwyzService: FinanzielleSituationSchwyzService
-    ) {
-    }
+    @Input()
+    public finSitGS?: TSAbstractFinanzielleSituation;
+
+    @Input()
+    public showHeader = true;
+
+    @Output()
+    public valueChanged = new EventEmitter<void>();
 
     public isNotNullOrUndefined(toCheck: any): boolean {
         return EbeguUtil.isNotNullOrUndefined(toCheck);
     }
 
     public onValueChangeFunction = (): void => {
-        this.finanzielleSituationSchwyzService.calculateMassgebendesEinkommen(this.finanzModel);
+       this.valueChanged.emit();
     };
-
-    public getFinSitJA(): TSFinanzielleSituation {
-        return this.finanzModel.getFiSiConToWorkWith()?.finanzielleSituationJA;
-    }
-
-    public getFinSitGS(): TSFinanzielleSituation {
-        return this.finanzModel.getFiSiConToWorkWith()?.finanzielleSituationGS;
-    }
 
 }

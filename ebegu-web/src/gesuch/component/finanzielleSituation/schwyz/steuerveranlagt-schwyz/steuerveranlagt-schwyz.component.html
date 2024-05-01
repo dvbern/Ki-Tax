@@ -1,4 +1,4 @@
-<h3 class="margin-bottom-20">{{'LETZTE_RECHTSKRAETIGTE_STEUERVERANLAGUNG' | translate}}
+<h3 *ngIf="showHeader" class="margin-bottom-20">{{'LETZTE_RECHTSKRAETIGTE_STEUERVERANLAGUNG' | translate}}
     <dv-tooltip [text]="'LETZTE_RECHTSKRAETIGTE_STEUERVERANLAGUNG_HINT' | translate"></dv-tooltip>
 </h3>
 <div class="row">
@@ -6,14 +6,14 @@
         <div class="form-group">
             <dv-input-label-field
                 [name]="'nettoEinkommen'"
-                [(model)]="getFinSitJA().steuerbaresEinkommen"
+                [(model)]="finSitJA.steuerbaresEinkommen"
                 [labelMessageKey]="'FINANZIELLE_SITUATION_STEUERBARES_EINKOMMEN'"
                 [tooltipMessageKey]="'FINANZIELLE_SITUATION_STEUERBARES_EINKOMMEN_HINT'"
                 [inputDisabled]="readonly"
                 [inputRequired]="true"
-                [deklaration]="getFinSitGS()?.steuerbaresEinkommen"
-                [korrektur]="getFinSitJA().steuerbaresEinkommen"
-                [showBisher]="isNotNullOrUndefined(getFinSitGS())"
+                [deklaration]="finSitGS?.steuerbaresEinkommen"
+                [korrektur]="finSitJA.steuerbaresEinkommen"
+                [showBisher]="isNotNullOrUndefined(finSitGS)"
                 [dvOnBlur]="onValueChangeFunction">
             </dv-input-label-field>
         </div>
@@ -24,14 +24,14 @@
         <div class="form-group">
             <dv-input-label-field
                 [name]="'einkaeufeVorsorge'"
-                [(model)]="getFinSitJA().einkaeufeVorsorge"
+                [(model)]="finSitJA.einkaeufeVorsorge"
                 [labelMessageKey]="'FINANZIELLE_SITUATION_EINKAEUFE_VORSORGE'"
                 [tooltipMessageKey]="'FINANZIELLE_SITUATION_EINKAEUFE_VORSORGE_TOOLTIP'"
                 [inputDisabled]="readonly"
                 [inputRequired]="true"
-                [deklaration]="getFinSitGS()?.einkaeufeVorsorge"
-                [korrektur]="getFinSitJA().einkaeufeVorsorge"
-                [showBisher]="isNotNullOrUndefined(getFinSitGS())"
+                [deklaration]="finSitGS?.einkaeufeVorsorge"
+                [korrektur]="finSitJA.einkaeufeVorsorge"
+                [showBisher]="isNotNullOrUndefined(finSitGS)"
                 [dvOnBlur]="onValueChangeFunction">
             </dv-input-label-field>
         </div>
@@ -42,32 +42,34 @@
         <div class="form-group">
             <dv-input-label-field
                 [name]="'abzuegeLiegenschaft'"
-                [(model)]="getFinSitJA().abzuegeLiegenschaft"
+                [(model)]="finSitJA.abzuegeLiegenschaft"
                 [labelMessageKey]="'FINANZIELLE_SITUATION_ABZUEGE_LIEGENSCHAFT'"
                 [tooltipMessageKey]="'FINANZIELLE_SITUATION_ABZUEGE_LIEGENSCHAFT_TOOLTIP'"
                 [inputDisabled]="readonly"
                 [inputRequired]="true"
                 [allowNegative]="true"
-                [deklaration]="getFinSitGS()?.abzuegeLiegenschaft"
-                [korrektur]="getFinSitJA().abzuegeLiegenschaft"
-                [showBisher]="isNotNullOrUndefined(getFinSitGS())"
+                [deklaration]="finSitGS?.abzuegeLiegenschaft"
+                [korrektur]="finSitJA.abzuegeLiegenschaft"
+                [showBisher]="isNotNullOrUndefined(finSitGS)"
                 [dvOnBlur]="onValueChangeFunction">
             </dv-input-label-field>
         </div>
     </div>
 </div>
 <div class="row">
-    <div class="col-xs-6">
-        <dv-input-label-field
-            [(model)]="getFinSitJA().steuerbaresVermoegen"
-            [labelMessageKey]="'FINANZIELLE_SITUATION_STEUERBARES_VERMOEGEN'"
-            [tooltipMessageKey]="'FINANZIELLE_SITUATION_STEUERBARES_VERMOEGEN_HELP'"
-            [inputRequired]="true"
-            [inputDisabled]="readonly"
-            [deklaration]="getFinSitGS()?.steuerbaresVermoegen"
-            [korrektur]="getFinSitJA()?.steuerbaresVermoegen"
-            [showBisher]="isNotNullOrUndefined(getFinSitGS())"
-            [dvOnBlur]="onValueChangeFunction">
-        </dv-input-label-field>
+    <div class="col-sm-6">
+        <div class="form-group">
+            <dv-input-label-field
+                [(model)]="finSitJA.steuerbaresVermoegen"
+                [labelMessageKey]="'FINANZIELLE_SITUATION_STEUERBARES_VERMOEGEN'"
+                [tooltipMessageKey]="'FINANZIELLE_SITUATION_STEUERBARES_VERMOEGEN_HELP'"
+                [inputRequired]="true"
+                [inputDisabled]="readonly"
+                [deklaration]="finSitGS?.steuerbaresVermoegen"
+                [korrektur]="finSitJA?.steuerbaresVermoegen"
+                [showBisher]="isNotNullOrUndefined(finSitGS)"
+                [dvOnBlur]="onValueChangeFunction">
+            </dv-input-label-field>
+        </div>
     </div>
 </div>
