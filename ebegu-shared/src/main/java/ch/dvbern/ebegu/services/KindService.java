@@ -18,6 +18,7 @@ package ch.dvbern.ebegu.services;
 import ch.dvbern.ebegu.dto.KindDubletteDTO;
 import ch.dvbern.ebegu.entities.KindContainer;
 import ch.dvbern.ebegu.entities.Mandant;
+import ch.dvbern.ebegu.enums.EinschulungTyp;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -38,7 +39,7 @@ public interface KindService {
 	 * @param kind Das Kind als DTO
 	 */
 	@Nonnull
-	KindContainer saveKind(@Nonnull KindContainer kind, @Nullable KindContainer oldKind);
+	KindContainer saveKind(@Nonnull KindContainer kind, @Nullable EinschulungTyp alteEinschulungTyp);
 
 	/**
 	 * @param key PK (id) des Kindes

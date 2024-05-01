@@ -17,22 +17,30 @@
 
 package ch.dvbern.ebegu.services.kind;
 
+import java.util.Set;
+import java.util.TreeSet;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import ch.dvbern.ebegu.entities.Betreuung;
 import ch.dvbern.ebegu.entities.Einstellung;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.KindContainer;
 import ch.dvbern.ebegu.enums.AnspruchBeschaeftigungAbhaengigkeitTyp;
 import ch.dvbern.ebegu.enums.Betreuungsstatus;
+import ch.dvbern.ebegu.enums.EinschulungTyp;
 import ch.dvbern.ebegu.enums.EinstellungKey;
+import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.KinderabzugTyp;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.services.BetreuungService;
 import ch.dvbern.ebegu.services.EinstellungService;
 import ch.dvbern.ebegu.services.GesuchstellerService;
+import ch.dvbern.ebegu.services.KindService;
+import ch.dvbern.lib.cdipersistence.Persistence;
 
 @Stateless
 public class KindServiceHandler {
@@ -45,16 +53,17 @@ public class KindServiceHandler {
 	@Inject
 	private BetreuungService betreuungService;
 
-	protected void resetKindBetreuungenStatusOnKindSave(@Nonnull KindContainer kind, @Nullable KindContainer oldKind) {
-		if (!isSchwyzEinschulungTypAktiviert(kind) || oldKind == null) {
+	@Inject
+	private Persistence persistence;
+
+	public void resetKindBetreuungenStatusOnKindSave(@Nonnull KindContainer kind, @Nullable EinschulungTyp alteEinschulungTyp) {
+		if (!isSchwyzEinschulungTypAktiviert(kind) || alteEinschulungTyp == null) {
 			return; //Betreuungstatus muss nur wenn der KinderabzugTyp = SCHWYZ resetet werden
 		}
-		if (kind.getKindJA().getEinschulungTyp() != null &&
-			!kind.getKindJA().getEinschulungTyp().isEingeschult() &&
-			oldKind.getKindJA().getEinschulungTyp() != null &&
-			oldKind.getKindJA().getEinschulungTyp().isEingeschult()
-		) {
-			kind.getBetreuungen().forEach(betreuung -> {
+		if (wechseltKindVonVorschulalterZuSchulstufe(kind, alteEinschulungTyp)) {
+			Set<Betreuung> betreuungTreeSet = new TreeSet<>();
+			betreuungTreeSet.addAll(kind.getBetreuungen());
+			betreuungTreeSet.forEach(betreuung -> {
 				if (betreuung.isAngebotKita() || betreuung.isAngebotTagesfamilien() &&
 					Betreuungsstatus.BESTAETIGT.equals(betreuung.getBetreuungsstatus())
 				) {
@@ -63,10 +72,12 @@ public class KindServiceHandler {
 					betreuungService.saveBetreuung(betreuung, false, null);
 				}
 			});
+			kind.getBetreuungen().clear();
+			kind.getBetreuungen().addAll(betreuungTreeSet);
 		}
 	}
 
-	protected void resetGesuchDataOnKindSave(@Nonnull KindContainer kind) {
+	public void resetGesuchDataOnKindSave(@Nonnull KindContainer kind) {
 		final Gesuch gesuch = kind.getGesuch();
 
 		Einstellung anspruchBeschaeftigungTyp = einstellungService.getEinstellungByMandant(
@@ -91,22 +102,17 @@ public class KindServiceHandler {
 		}
 	}
 
-	public void resetKindBetreuungenDatenOnKindSave(@Nonnull KindContainer kind, @Nullable KindContainer oldKind) {
-		if (!isSchwyzEinschulungTypAktiviert(kind) || oldKind == null) {
+	public void resetKindBetreuungenDatenOnKindSave(@Nonnull KindContainer kind, @Nullable EinschulungTyp alteEinschulungTyp) {
+		if (!isSchwyzEinschulungTypAktiviert(kind) || alteEinschulungTyp == null) {
 			return; //Betreuungstatus muss nur wenn der KinderabzugTyp = SCHWYZ resetet werden
 		}
-		if (kind.getKindJA().getEinschulungTyp() != null &&
-			kind.getKindJA().getEinschulungTyp().isEingeschult() &&
-			oldKind.getKindJA().getEinschulungTyp() != null &&
-			!oldKind.getKindJA().getEinschulungTyp().isEingeschult()
-		) {
+		if (wechseltKindVonSchulstufeZuVorschulalter(kind, alteEinschulungTyp)) {
 			kind.getBetreuungen().forEach(betreuung -> {
 				if (betreuung.isAngebotKita() || betreuung.isAngebotTagesfamilien()) {
 					betreuung.getBetreuungspensumContainers().forEach(
 						betreuungspensumContainer -> betreuungspensumContainer.getBetreuungspensumJA()
 							.setBetreuungInFerienzeit(null)
 					);
-					betreuungService.saveBetreuung(betreuung, false, null);
 				}
 			});
 		}
@@ -124,5 +130,21 @@ public class KindServiceHandler {
 				"Einstellung KINDERABZUG_TYP is missing for gesuchsperiode {}",
 				gesuch.getGesuchsperiode().getId()));
 		return KinderabzugTyp.SCHWYZ.equals(KinderabzugTyp.valueOf(kinderabzugTyp.getValue()));
+	}
+
+	private boolean wechseltKindVonVorschulalterZuSchulstufe(
+		@Nonnull KindContainer kind,
+		@Nullable EinschulungTyp alteEinschulungTyp) {
+		return kind.getKindJA().getEinschulungTyp() != null &&
+			kind.getKindJA().getEinschulungTyp().isEingeschult() &&
+			!alteEinschulungTyp.isEingeschult();
+	}
+
+	private boolean wechseltKindVonSchulstufeZuVorschulalter(
+		@Nonnull KindContainer kind,
+		@Nullable EinschulungTyp alteEinschulungTyp) {
+		return kind.getKindJA().getEinschulungTyp() != null &&
+			!kind.getKindJA().getEinschulungTyp().isEingeschult() &&
+			alteEinschulungTyp.isEingeschult();
 	}
 }

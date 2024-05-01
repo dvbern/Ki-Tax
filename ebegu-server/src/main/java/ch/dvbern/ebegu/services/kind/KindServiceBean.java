@@ -21,6 +21,7 @@ import ch.dvbern.ebegu.dto.KindDubletteDTO;
 import ch.dvbern.ebegu.entities.*;
 import ch.dvbern.ebegu.enums.AntragStatus;
 import ch.dvbern.ebegu.enums.AntragTyp;
+import ch.dvbern.ebegu.enums.EinschulungTyp;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.enums.WizardStepName;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
@@ -75,13 +76,13 @@ public class KindServiceBean extends AbstractBaseService implements KindService 
 
 	@Nonnull
 	@Override
-	public KindContainer saveKind(@Nonnull KindContainer kind, @Nullable KindContainer oldKind) {
+	public KindContainer saveKind(@Nonnull KindContainer kind, @Nullable EinschulungTyp alteEinschulungTyp) {
 		Objects.requireNonNull(kind);
 		if (!kind.isNew()) {
 			// Den Lucene-Index manuell nachführen, da es bei unidirektionalen Relationen nicht automatisch geschieht!
 			updateLuceneIndex(KindContainer.class, kind.getId());
 		}
-
+		kindServiceHandler.resetKindBetreuungenDatenOnKindSave(kind, alteEinschulungTyp);
 		final KindContainer mergedKind = persistence.merge(kind);
 		mergedKind.getGesuch().addKindContainer(mergedKind);
 
@@ -93,11 +94,9 @@ public class KindServiceBean extends AbstractBaseService implements KindService 
 			throw new ConstraintViolationException(constraintViolations);
 		}
 
-		kindServiceHandler.resetGesuchDataOnKindSave(kind);
+		kindServiceHandler.resetGesuchDataOnKindSave(mergedKind);
 
-		kindServiceHandler.resetKindBetreuungenStatusOnKindSave(kind, oldKind);
-
-		kindServiceHandler.resetKindBetreuungenDatenOnKindSave(kind, oldKind);
+		kindServiceHandler.resetKindBetreuungenStatusOnKindSave(mergedKind, alteEinschulungTyp);
 
 		wizardStepService.updateSteps(kind.getGesuch().getId(), null, mergedKind.getKindJA(), WizardStepName.KINDER);
 

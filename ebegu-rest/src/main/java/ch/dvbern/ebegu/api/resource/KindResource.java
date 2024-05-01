@@ -52,6 +52,7 @@ import ch.dvbern.ebegu.dto.KindDubletteDTO;
 import ch.dvbern.ebegu.entities.Gesuch;
 import ch.dvbern.ebegu.entities.Institution;
 import ch.dvbern.ebegu.entities.KindContainer;
+import ch.dvbern.ebegu.enums.EinschulungTyp;
 import ch.dvbern.ebegu.enums.ErrorCodeEnum;
 import ch.dvbern.ebegu.errors.EbeguEntityNotFoundException;
 import ch.dvbern.ebegu.services.GesuchService;
@@ -59,6 +60,7 @@ import ch.dvbern.ebegu.services.InstitutionService;
 import ch.dvbern.ebegu.services.KindService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.checkerframework.checker.units.qual.K;
 
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_BG;
 import static ch.dvbern.ebegu.enums.UserRoleName.ADMIN_GEMEINDE;
@@ -122,13 +124,17 @@ public class KindResource {
 		resourceHelper.assertGesuchStatusForBenutzerRole(gesuch);
 
 		KindContainer kindToMerge = new KindContainer();
+		EinschulungTyp alteEinschulungTyp = null;
 		if (kindContainerJAXP.getId() != null) {
 			Optional<KindContainer> optional = kindService.findKind(kindContainerJAXP.getId());
 			kindToMerge = optional.orElse(new KindContainer());
+			if(kindToMerge.getKindJA() != null) {
+				alteEinschulungTyp = kindToMerge.getKindJA().getEinschulungTyp();
+			}
 		}
 		KindContainer convertedKind = converter.kindContainerToEntity(kindContainerJAXP, kindToMerge);
 		convertedKind.setGesuch(gesuch);
-		KindContainer persistedKind = this.kindService.saveKind(convertedKind, kindToMerge);
+		KindContainer persistedKind = this.kindService.saveKind(convertedKind, alteEinschulungTyp);
 
 		return converter.kindContainerToJAX(persistedKind);
 	}
